@@ -76,6 +76,10 @@ class FeatureVariableBinding:
         for var in self._merged_vars.get(var,[var]):
             self._bindings[var] = value
 
+    def __repr__(self):
+        return '<Bindings: %s; Merged=%s>' % (self._bindings,
+                                              self._merged_vars)
+
 # This corresponds to "Category" in Rob Speer's code.
 class FeatureStructure:
     """
@@ -111,7 +115,8 @@ class FeatureStructure:
     @ivar _features: A dictionary mapping from feature names to values.
     @ivar _forward: This variable is used during unification to record
         the 'cannonical' copy of a feature structure.  This is
-        necessary to maintain reentrance links.
+        necessary to maintain reentrance links.  Initially, C{_forward}
+        is set to C{None}.
     """
     def __init__(self, **features):
         self._features = features
@@ -128,6 +133,9 @@ class FeatureStructure:
             return self._features[index[0]][index[1:]]
         else:
             raise IndexError('Bad feature path')
+
+    def feature_names(self):
+        return self._features.keys()
 
     #################################################################
     ## Unification
@@ -152,19 +160,26 @@ class FeatureStructure:
             bindings = FeatureVariableBinding()
             
             selfcopy._destructively_unify(othercopy, bindings)
-            selfcopy._cleanup_forwards()
+
+            # Do bindings before forwards??
             if apply_bindings:
-                selfcopy._apply_bindings(bindings)
+                selfcopy._apply_bindings(bindings, {})
+            selfcopy._cleanup_forwards({})
+                
             return selfcopy
         except FeatureStructure._UnificationFailureError: return None
 
-    def _apply_bindings(self, bindings):
+    def _apply_bindings(self, bindings, visited):
+        # Only visit each node once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+    
         for (fname, fval) in self._features.items():
             if (isinstance(fval, FeatureVariable) and
                 bindings.is_bound(fval)):
                 self._features[fname] = bindings.lookup(fval)
             if isinstance(fval, FeatureStructure):
-                fval._apply_bindings(bindings)
+                fval._apply_bindings(bindings, visited)
 
     class _UnificationFailureError(Exception):
         """
@@ -223,17 +238,21 @@ class FeatureStructure:
             else:
                 self._features[fname] = otherval
 
-    def _cleanup_forwards(self):
+    def _cleanup_forwards(self, visited):
         """
         Use the C{_forward} links on a feature structure generated
         by L{_destructively_unify} to ensure that reentrancy is
         preserved.
         """
+        # Only visit each node once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+        
         for fname, fval in self._features.items():
             if isinstance(fval, FeatureStructure):
                 if fval._forward is not None:
                     self._features[fname] = fval._forward
-                fval._cleanup_forwards()
+                fval._cleanup_forwards(visited)
     
     #################################################################
     ## String Represenations
@@ -266,18 +285,23 @@ class FeatureStructure:
             it.
         """
         segments = []
-        for (fname, fval) in self._features.items():
+        items = self._features.items()
+        items.sort() # sorting note: keys are unique strings, so we'll
+                     # never fall through to comparing values.
+        for (fname, fval) in items:
             if not isinstance(fval, FeatureStructure):
                 segments.append('%s = %s' % (fname, fval))
             elif reentrance_ids.has_key(id(fval)):
                 segments.append('%s -> (%s)' % (fname,
                                                 reentrance_ids[id(fval)]))
             else:
-                fval_repr = fval._repr(reentrances, reentrance_ids)
                 is_reentrant = reentrances[id(fval)]
                 if is_reentrant:
                     # Pick a new id.
                     reentrance_ids[id(fval)] = len(reentrance_ids)+1
+                    
+                fval_repr = fval._repr(reentrances, reentrance_ids)
+                if is_reentrant:
                     segments.append('%s = (%d) %s' % 
                                     (fname, reentrance_ids[id(fval)],
                                      fval_repr))
@@ -298,11 +322,18 @@ class FeatureStructure:
             displayed, an identifier is added to reentrance_ids for
             it.
         """
+        # Special case:
+        if len(self._features) == 0:
+            return ['[]']
+        
         # What's the longest feature name?  Use this to align names.
         maxfnamelen = max([len(fname) for fname in self._features.keys()])
 
         lines = []
-        for (fname, fval) in self._features.items():
+        items = self._features.items()
+        items.sort() # sorting note: keys are unique strings, so we'll
+                     # never fall through to comparing values.
+        for (fname, fval) in items:
             if not isinstance(fval, FeatureStructure):
                 # It's not a nested feature structure -- just print it.
                 lines.append('%s = %s' % (fname.ljust(maxfnamelen), fval))
@@ -318,6 +349,12 @@ class FeatureStructure:
                 # other values by a blank line.
                 if lines and lines[-1] != '': lines.append('')
 
+                # Is it reentrant?  If so, assign it an id number.
+                is_reentrant = reentrances[id(fval)]
+                if is_reentrant:
+                    # Pick a new id.
+                    reentrance_ids[id(fval)] = len(reentrance_ids)+1
+                    
                 # Recursively print the feature's value (fval).
                 fval_lines = fval._str(reentrances, reentrance_ids)
                 
@@ -327,13 +364,9 @@ class FeatureStructure:
                 # Pick which line we'll display fname on.
                 nameline = (len(fval_lines)-1)/2
                 
-                # Is it reentrant?  If it is, then pick a new
-                # identifier number for it; and display that id
+                # Is it reentrant?  If it is, display its id
                 # (along with fname) on the name line.
-                is_reentrant = reentrances[id(fval)]
                 if is_reentrant:
-                    # Pick a new id.
-                    reentrance_ids[id(fval)] = len(reentrance_ids)+1
                     # Indent each line to make room for the id.
                     fid = ' (%s)' % reentrance_ids[id(fval)]
                     fval_lines = [(' '*len(fid))+l for l in fval_lines]
@@ -364,7 +397,7 @@ class FeatureStructure:
 
         return lines
 
-    def _find_reentrances(self, reentrances=None):
+    def _find_reentrances(self, reentrances=None, visited=None):
         """
         Find all of the feature values contained by self that are
         reentrant (i.e., that can be reached by multiple paths through
@@ -374,6 +407,11 @@ class FeatureStructure:
         """
         if reentrances is None: reentrances={}
 
+        # Visit each node only once.
+        if visited is None: visited={}
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+
         # Walk through the feature tree.  The first time we see a
         # feature value, map it to False (not reentrant).  If we see a
         # feature value more than once, then map it to C{True}
@@ -382,17 +420,18 @@ class FeatureStructure:
             # False the first time we see it; True if we see it more
             # than once.
             reentrances[id(fval)] = reentrances.has_key(id(fval))
-            # Recurse to contained feature structures (only if this
-            # is the first time we saw it).
-            if not reentrances[id(fval)]:
-                if isinstance(fval, FeatureStructure):
-                    fval._find_reentrances(reentrances)
+            # Recurse to contained feature structures.
+            if isinstance(fval, FeatureStructure):
+                fval._find_reentrances(reentrances)
 
         return reentrances
 
     #################################################################
     ## Parsing
     #################################################################
+
+    # [XX] This won't read in reentrant structures.
+    # [XX] Audit this code to make sure the call to eval is secure.
     def parse(str):
         # Get rid of any newlines, etc.
         str = ' '.join(str.split())
@@ -433,33 +472,101 @@ class FeatureStructure:
 # TESTING...
 #//////////////////////////////////////////////////////////////////////
 
-#f1=FeatureStructure.parse('[CAT=np, AGREE=[number=singular, gender=?g]]')
-#f2=FeatureStructure.parse('[CAT=np, AGREE=[gender=masculine]]')
-#
-f6=FeatureStructure.parse('[SUBJECT=[AGREE=[PERSON=third]]]')
-#
-ftemp=FeatureStructure(NUMBER='singular')
-f7=FeatureStructure(AGREE=ftemp, SUBJECT=FeatureStructure(AGREE=ftemp))
-f8 = f6.unify(f7)
+import unittest
 
+# Note: since FeatureStructure.__repr__() sorts by keys before
+# displaying, there is a single unique string repr for each
+# FeatureStructure.
+class FeatureStructureTestCase(unittest.TestCase):
+    'Unit testing for FeatureStructure'
 
-#x,y,z=[FeatureStructure(x=1), FeatureStructure(y=1), FeatureStructure(z=1)]
-#f6=FeatureStructure(A=x,B=x, C=z)
-#f7=FeatureStructure(B=y,C=y)
-#f6=FeatureStructure(A=x,B=z)
-#f7=FeatureStructure(A=y,B=y)
+    def failUnlessEqualSorted(self, list1, list2):
+        list1.sort()
+        list2.sort()
+        self.failUnlessEqual(list1, list2)
 
-x,y,z = [FeatureVariable(n) for n in 'xyz']
-f1 = FeatureStructure(A=FeatureStructure(a=1), B=FeatureStructure(b=1))
-f2 = FeatureStructure(A=y, B=y)
-f3 = f1.unify(f2)
+    def testUnification(self):
+        'Test basic unification'
 
-print f6,'\n'
-print f7,'\n'
-print f8,'\n'
-print `f8`
+        # Copying from self to other.
+        fs1 = FeatureStructure(number='singular')
+        fs2 = fs1.unify(FeatureStructure())
+        self.failUnlessEqual(repr(fs2), '[number = singular]')
 
+        # Copying from other to self
+        fs1 = FeatureStructure()
+        fs2 = fs1.unify(FeatureStructure(number='singular'))
+        self.failUnlessEqual(repr(fs2), '[number = singular]')
 
+        # Cross copying
+        fs1 = FeatureStructure(number='singular')
+        fs2 = fs1.unify(FeatureStructure(person='3rd'))
+        self.failUnlessEqual(repr(fs2), '[number = singular, person = 3rd]')
 
-# Reentrancy?
-# [AGREE=1[NUMBER=singular, PERSON=third], SUBJECT=[AGREE->1]]
+        # Merging a nested structure
+        fs1 = FeatureStructure(A=FeatureStructure(B='b'))
+        fs2 = FeatureStructure(A=FeatureStructure(C='c'))
+        fs3 = fs1.unify(fs2)
+        self.failUnlessEqual(repr(fs3), '[A = [B = b, C = c]]')
+
+    def testReentrantUnification(self):
+        'Test unification of reentrant objects'
+        fs1 = FeatureStructure(B='b')
+        fs2 = FeatureStructure(A=fs1, E=FeatureStructure(F=fs1))
+        fs3 = FeatureStructure(A=FeatureStructure(C='c'),
+                               E=FeatureStructure(F=FeatureStructure(D='d')))
+        
+        fs4 = fs2.unify(fs3)
+        fs4repr = '[A = (1) [B = b, C = c, D = d], E = [F -> (1)]]'
+        self.failUnlessEqual(repr(fs4), fs4repr)
+
+        fs5 = fs3.unify(fs2)
+        fs5repr = '[A = (1) [B = b, C = c, D = d], E = [F -> (1)]]'
+        self.failUnlessEqual(repr(fs5), fs5repr)
+
+    def testCyclicUnification(self):
+        'Create a cyclic structure via unification'
+        # Create the following cyclic feature structure:
+        #     [G = (1) [H -> (1)], F = (1)]
+        # Where fs['G'] == fs['G', 'H'] == fs['G', 'H', 'H'] == ...
+        fs1 = FeatureStructure()
+        fs2 = FeatureStructure()
+        fs3 = FeatureStructure(F=fs1, G=fs1)
+        fs4 = FeatureStructure(F=FeatureStructure(H=fs2), G=fs2)
+        fs5 = fs3.unify(fs4)
+
+        # Check that we got the value right.
+        self.failUnlessEqual(repr(fs5), '[F = (1) [H -> (1)], G -> (1)]')
+
+        # Check that we got the cyclicity right.
+        self.failUnless(fs5['F'] is fs5['G'])
+        self.failUnless(fs5['F'] is fs5['G', 'H'])
+        self.failUnless(fs5['F'] is fs5['G', 'H', 'H'])
+        self.failUnless(fs5['F'] is fs5[('G',)+(('H',)*10)])
+
+    def testCyclicUnificationFromBinding(self):
+        'create a cyclic structure via variables'
+        x = FeatureVariable('x')
+        fs1 = FeatureStructure(F=FeatureStructure(H=x))
+        fs2 = FeatureStructure(F=x)
+        fs3 = fs1.unify(fs2)
+
+        # Check that we got the value right.
+        self.failUnlessEqual(repr(fs3), '[F = (1) [H -> (1)]]')
+
+        # Check that we got the cyclicity right.
+        self.failUnless(fs3['F'] is fs3['F','H'])
+        self.failUnless(fs3['F'] is fs3['F','H','H'])
+        self.failUnless(fs3['F'] is fs3[('F',)+(('H',)*10)])
+
+def testsuite():
+    t1 = unittest.makeSuite(FeatureStructureTestCase)
+    return unittest.TestSuite( (t1,) )
+
+def test():
+    runner = unittest.TextTestRunner()
+    runner.run(testsuite())
+
+if __name__ == '__main__':
+    test()
+    
