@@ -320,7 +320,7 @@ class Set:
         @param other: The object to compare this Set to.
         @type other: any
         """
-        if not _classeq(self, other): return -1
+        if not isinstance(other, Set): return -1
         return cmp(self._dict, other._dict)
 
     def __eq__(self, other):
@@ -336,7 +336,7 @@ class Set:
         @return: 1 if the given object is equal to this Set.
         @rtype: int
         """
-        if not _classeq(self, other): return 0
+        if not isinstance(other, Set): return 0
         return self._dict == other._dict
 
     def elements(self):
