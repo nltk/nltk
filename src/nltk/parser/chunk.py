@@ -8,19 +8,26 @@
 # $Id$
 
 """
-A chunk parser is a kind of robust parser which identifies
-linguistic groups (such as noun phrases) in unrestricted text,
-typically one sentence at a time.  This task is sometimes called
-X{chunking} the text, and the resulting text extents are called
+
+A chunk parser is a robust parser which identifies linguistic groups
+(such as noun phrases) in unrestricted text.  This task is sometimes
+called X{chunking} the text, and the resulting groups are called
 X{chunks}.
 
-Chunks are represented using X{chunk structures}, a list of lists.  If
-M{t1...tn} are tokens, and M{[t1,...,tn]} is the input to a chunk
-parser which identified M{tj...tk} as a chunk, the resulting chunk
-structure would be M{[t1,...,tj-1,[tj,...tk],tk+1,tn]}.
+Chunks are represented using chunk structures.  A X{chunk structure}
+is a tree containing tokens and chunks, where each chunk is a
+subtree containing only tokens.  For example, the chunk structure for
+noun phrase chunks in the sentence "I saw the big dog on the hill" is::
 
-B{Currently, ChunkParserI is not a subinterface of ParserI (it returns
-chunk structures, not tree tokens).  This will change soon.}
+  ('SENTENCE':
+    ('NP': 'I')
+    'saw'
+    ('NP': 'the' 'big' 'dog')
+    'on'
+    ('NP': 'the' 'hill'))@[0:8]
+
+Chunk structure tokens are represented using C{TreeToken}s; and chunk
+structure tokens are represented using C{Tree}s.
 
 Helper Functions
 ================
@@ -29,8 +36,8 @@ The C{nltk.chunkparser} module also defines two helper classes and
 functions:
 
     - C{ChunkedTaggedTokenizer} is a tagged tokenizer that is
-      sensitive to chunks that are delimited by brackets ([]).  It
-      converts a string to a chunk structure.
+      sensitive to chunks that are delimited by square brackets
+      (C{[...]}).  It converts a string to a chunk structure token.
     - C{ChunkScore} is a utility class for scoring chunk parsers.  It
       can evaluate chunk parsing based on a number of statistics
       (precision, recall, f-measure, misssed chunks, incorrect
@@ -144,6 +151,8 @@ leftward zero-length assertions).
      pattern is valid.
 """
 
+from nltk.parser import ParserI
+from nltk.tree import TreeToken, AbstractTree
 from nltk.token import TokenizerI, Token, Location, LineTokenizer
 from nltk.tagger import parseTaggedType
 from nltk.chktype import chktype as _chktype
@@ -217,29 +226,57 @@ Indication of current efficiency::
 ##  Chunk Parser Interface & Helpers
 ##//////////////////////////////////////////////////////
 
-class ChunkParserI:
+class ChunkParserI(ParserI):
     """
-    A processing interface for deriving chunk structures from a list of
-    tokens.
+    A processing interface for deriving parses represent possible
+    chunk structures for a sequence of tokens.  Typically, chunk
+    parsers are used to find the base syntactic constituants in a
+    text.  Unlike L{ParserI}, C{ChunkParserI} guarantees that the
+    C{parse} method will always generate a parse.
     """
     def __init__(self):
         """
         Construct a new C{ChunkParser}.
         """
+        assert 0, "ChunkParserI is an abstract interface"
 
     def parse(self, tokens):
         """
-        Parse the piece of text contained in the given list of
-        tokens.  Return the chunk structure.
+        Return the best chunk structure for the given text.
         
-        @return: A chunk structure.
-        @rtype: C{list} of (C{token} or (C{list} of C{token}))
-
-        @param tokens: The list of tokens to be parsed.
-        @type tokens: C{list} of C{token}
+        @return: The highest-quality chunk structure for the given
+            text.  If multiple chunk structures are tied for the
+            highest quality, then choose one arbitrarily.  If no chunk
+            structure is available for the given text, return C{None}.
+        @rtype: C{TreeToken}
+        @param text: The text to be chunked.  This text consists
+            of a list of C{Tokens}, ordered by their C{Location}.
+        @type text: C{list} of C{Token}
         """
         assert 0, "ChunkParserI is an abstract interface"
 
+    def parse_n(self, text, n=None):
+        """
+        @return: A list of the C{n} best chunk structures for the
+            given text, sorted in descending order of quality (or all
+            chunk structures, if the text has less than C{n} chunk
+            structures).  The order among chunk structures with the
+            same quality is undefined.  In other words, the first
+            chunk structure in the list will have the highest quality;
+            and each subsequent chunk structure will have equal or
+            lower quality.  This list will always contain at least one
+            chunk structure.
+        @rtype: C{list} of C{TreeToken}
+        @param n: The number of chunk structures to generate.  At most
+           C{n} chunk structures will be returned.  If C{n} is not
+           specified, return all chunk structures.
+        @type n: C{int}
+        @param text: The text to be parsed.  This text consists
+            of a list of C{Tokens}, ordered by their C{Location}.
+        @type text: C{list} of C{Token}
+        """
+        assert 0, "ChunkParserI is an abstract interface"
+        
 class ChunkedTaggedTokenizer(TokenizerI):
     """
     A tagged tokenizer that is sensitive to [] chunks, and returns a
@@ -249,8 +286,8 @@ class ChunkedTaggedTokenizer(TokenizerI):
     doesn't return a list of tokens)
     """
     def __init__(self): pass
-    def tokenize(self, str, source=None):
-        _chktype("ChunkedTaggedTokenizer.tokenize", 1, str, (_StringType,))
+    def tokenize(self, str, chunk_node='CHUNK', top_node='TEXT', source=None):
+        assert _chktype(1, str, _StringType)
 
         # check that brackets are balanced and not nested
         brackets = re.sub(r'[^\[\]]', '', str)
@@ -261,7 +298,7 @@ class ChunkedTaggedTokenizer(TokenizerI):
         pieces = re.split(r'[\[\]]', str)
 
         # Use this alternating list to create the chunklist.
-        chunklist = []
+        children = []
         index = 0
         piece_in_chunk = 0
         for piece in pieces:
@@ -275,14 +312,14 @@ class ChunkedTaggedTokenizer(TokenizerI):
                 
             # Add the list of tokens to our chunk list.
             if piece_in_chunk:
-                chunklist.append(subsequence)
+                children.append(TreeToken(chunk_node, *subsequence))
             else:
-                chunklist += subsequence
+                children += subsequence
 
             # Update piece_in_chunk
             piece_in_chunk = not piece_in_chunk
 
-        return chunklist
+        return TreeToken(top_node, *children)
 
 def unchunk(chunked_sent):
     """
@@ -297,11 +334,11 @@ def unchunk(chunked_sent):
     @rtype: C{list} of C{TaggedToken}
     """
     unchunked_sent = []
-    for token in chunked_sent:
-        if isinstance(token, Token):
-            unchunked_sent.append(token)
+    for token in chunked_sent.children():
+        if isinstance(token, AbstractTree):
+            unchunked_sent.extend(token.children())
         else:
-            unchunked_sent.extend(token)
+            unchunked_sent.append(token)
     return unchunked_sent
 
 """
@@ -400,7 +437,7 @@ class ChunkScore:
         correct = self._chunk_toks(correct)
         guessed = self._chunk_toks(guessed)
         while correct and guessed:
-            if correct[-1].loc() == guessed[-1].loc():
+            if correct == guessed:
                 self._tp_num += 1
                 if len(self._tp) < self._max_tp:
                     self._tp.append(correct[-1])
@@ -527,30 +564,11 @@ class ChunkScore:
                 ("    Recall:    %5.1f%%\n" % (self.recall()*100))+
                 ("    F-Measure: %5.1f%%\n" % (self.f_measure()*100)))
         
-    def _chunk_tok(self, chunk):
+    def _chunk_toks(self, text):
         """
-        Construct a unified "chunk token" containing the merged
-        contents of a chunk.  This makes it much easier to tell what
-        chunks were missed or were generated incorrectly.
+        @return: The list of tokens contained in C{text}.
         """
-        # Calculate the type
-        chunktype = [tok.type() for tok in chunk]
-
-        # Calculate the location
-        loc0 = chunk[0].loc()
-        locn = chunk[-1].loc()
-        chunkloc = Location(loc0.start(), locn.end(),
-                            unit=loc0.unit(), source=loc0.source())
-
-        # Return the token.
-        return Token(chunktype, chunkloc)
-
-    def _chunk_toks(self, chunked_sent):
-        toks = []
-        for piece in chunked_sent:
-            if type(piece) == type([]):
-                toks.append(self._chunk_tok(piece))
-        return toks
+        return [tok for tok in text if isinstance(tok, AbstractTree)]
 
 ##//////////////////////////////////////////////////////
 ##  Precompiled regular expressions
@@ -636,8 +654,8 @@ class ChunkString:
             probably use level 3 if you use any non-standard
             subclasses of C{REChunkParserRule}.
         """
-        _chktype("ChunkString", 1, tagged_tokens, ([Token],))
-        _chktype("ChunkString", 2, debug_level, (type(0),))
+        assert _chktype(1, tagged_tokens, [Token])
+        assert _chktype(2, debug_level, type(0))
         self._ttoks = tagged_tokens
         tags = [tok.type().tag() for tok in tagged_tokens]
         self._str = '<' + '><'.join(tags) + '>'
@@ -680,7 +698,7 @@ class ChunkString:
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid chunkstring')
 
-    def to_chunkstruct(self):
+    def to_chunkstruct(self, chunk_node='CHUNK', top_node='TEXT'):
         """
         @return: the chunk structure encoded by this C{ChunkString}.
             A chunk structure is a C{list} containing tagged tokens
@@ -707,7 +725,7 @@ class ChunkString:
 
             # Add this list of tokens to our chunkstruct.
             if piece_in_chunk:
-                chunkstruct.append(subsequence)
+                chunkstruct.append(TreeToken(chunk_node, *subsequence))
             else:
                 chunkstruct += subsequence
 
@@ -715,7 +733,7 @@ class ChunkString:
             index += length
             piece_in_chunk = not piece_in_chunk
 
-        return chunkstruct
+        return TreeToken(top_node, *chunkstruct)
                 
     def xform(self, regexp, repl):
         """
@@ -945,8 +963,8 @@ class REChunkParserRule:
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        _chktype("REChunkParserRule", 2, repl, (type(''),))
-        _chktype("REChunkParserRule", 3, descr, (type(''),))
+        assert _chktype(2, repl, type(''))
+        assert _chktype(3, descr, type(''))
         self._repl = repl
         self._descr = descr
         if type(regexp) == type(''):
@@ -968,7 +986,7 @@ class REChunkParserRule:
         @raise ValueError: If this transformation generateds an
             invalid chunkstring.
         """
-        _chktype("REChunkParserRule.apply", 1, chunkstr, (ChunkString,))
+        assert _chktype(1, chunkstr, ChunkString)
         chunkstr.xform(self._regexp, self._repl)
 
     def descr(self):
@@ -1015,8 +1033,8 @@ class ChunkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        _chktype("ChunkRule", 1, tag_pattern, (type(''),))
-        _chktype("ChunkRule", 2, descr, (type(''),))
+        assert _chktype(1, tag_pattern, type(''))
+        assert _chktype(2, descr, type(''))
         self._pattern = tag_pattern
         regexp = re.compile('(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')'+
                             ChunkString.IN_CHINK_PATTERN)
@@ -1058,8 +1076,8 @@ class ChinkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        _chktype("ChinkRule", 1, tag_pattern, (type(''),))
-        _chktype("ChinkRule", 2, descr, (type(''),))
+        assert _chktype(1, tag_pattern, type(''))
+        assert _chktype(2, descr, type(''))
         self._pattern = tag_pattern
         regexp = re.compile('(?P<chink>'+tag_pattern2re_pattern(tag_pattern)+')'+
                             ChunkString.IN_CHUNK_PATTERN)
@@ -1099,8 +1117,8 @@ class UnChunkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        _chktype("UnChunkRule", 1, tag_pattern, (type(''),))
-        _chktype("UnChunkRule", 2, descr, (type(''),))
+        assert _chktype(1, tag_pattern, type(''))
+        assert _chktype(2, descr, type(''))
         self._pattern = tag_pattern
         regexp = re.compile('\{(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')\}')
         REChunkParserRule.__init__(self, regexp, '\g<chunk>', descr)
@@ -1151,9 +1169,9 @@ class MergeRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        _chktype("MergeRule", 1, left_tag_pattern, (type(''),))
-        _chktype("MergeRule", 2, right_tag_pattern, (type(''),))
-        _chktype("MergeRule", 3, descr, (type(''),))
+        assert _chktype(1, left_tag_pattern, type(''))
+        assert _chktype(2, right_tag_pattern, type(''))
+        assert _chktype(3, descr, type(''))
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
@@ -1206,9 +1224,9 @@ class SplitRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        _chktype("SplitRule", 1, left_tag_pattern, (type(''),))
-        _chktype("SplitRule", 2, right_tag_pattern, (type(''),))
-        _chktype("SplitRule", 3, descr, (type(''),))
+        assert _chktype(1, left_tag_pattern, type(''))
+        assert _chktype(2, right_tag_pattern, type(''))
+        assert _chktype(3, descr, type(''))
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
@@ -1267,8 +1285,8 @@ class REChunkParser(ChunkParserI):
             C{1} will generate normal tracing output; and C{2} or
             highter will generate verbose tracing output.
         """
-        _chktype("REChunkParser", 1, rules, ([REChunkParserRule],))
-        _chktype("REChunkParser", 2, trace, (type(0),))
+        assert _chktype(1, rules, [REChunkParserRule])
+        assert _chktype(2, trace, type(0))
         self._rules = rules
         self._trace = trace
 
@@ -1312,7 +1330,7 @@ class REChunkParser(ChunkParserI):
         for rule in self._rules:
             rule.apply(chunkstr)
         
-    def parse(self, tagged_sentence, trace=None):
+    def parse(self, tokens, chunk_node='CHUNK', top_node='TEXT', trace=None):
         """
         @rtype: chunk structure
         @return: a chunk structure that encodes the chunks in a given
@@ -1328,17 +1346,17 @@ class REChunkParser(ChunkParserI):
             overrides the trace level value that was given to the
             constructor. 
         """
-        _chktype("REChunkParser.parse", 1, tagged_sentence, ([Token],))
-        _chktype("REChunkParser.parse", 2, trace, (type(None), type(0)))
-        if len(tagged_sentence) == 0:
-            print 'Warning: parsing empty sentence'
+        assert _chktype(1, tokens, [Token])
+        assert _chktype(2, trace, type(None), type(0))
+        if len(tokens) == 0:
+            print 'Warning: parsing empty text'
             return []
         
         # Use the default trace value?
         if trace == None: trace = self._trace
 
         # Create the chunkstring.
-        chunkstr = ChunkString(tagged_sentence)
+        chunkstr = ChunkString(tokens)
 
         # Apply the sequence of rules to the chunkstring.
         if trace:
@@ -1348,7 +1366,7 @@ class REChunkParser(ChunkParserI):
             self._notrace_apply(chunkstr)
 
         # Use the chunkstring to create a chunk structure.
-        return chunkstr.to_chunkstruct()
+        return chunkstr.to_chunkstruct(chunk_node, top_node)
 
     def rules(self):
         """
@@ -1396,8 +1414,8 @@ def demo_eval(chunkparser, text):
     sentence in the text, and scores the result.  It prints the final
     score (precision, recall, and f-measure); and reports the set of
     chunks that were missed and the set of chunks that were
-    incorrect.  I{Warning: for large texts, these sets might be very
-    large.}
+    incorrect.  (At most 10 missing chunks and 10 incorrect chunks are
+    reported).
 
     @param chunkparser: The chunkparser to be tested
     @type chunkparser: C{ChunkParserI}
@@ -1411,17 +1429,36 @@ def demo_eval(chunkparser, text):
     sentences = LineTokenizer().xtokenize(text)
     ctt = ChunkedTaggedTokenizer()
     for sentence in sentences:
-        correct = ctt.tokenize(sentence.type(), source=sentence.loc())
+        correct = ctt.tokenize(sentence.type(), chunk_node='NP', source=sentence.loc())
         unchunked = unchunk(correct)
-        guess = chunkparser.parse(unchunked)
+        guess = chunkparser.parse(unchunked, chunk_node='NP')
         chunkscore.score(correct, guess)
 
     print '/'+('='*75)+'\\'
     print 'Scoring', chunkparser
     print ('-'*77)
     print chunkscore
-    print 'Missed:', chunkscore.missed()
-    print 'Incorrect:', chunkscore.incorrect()
+
+    # Missed chunks.
+    if not chunkscore.missed():
+        print 'Missed: (none)'
+    else:
+        print 'Missed:'
+        for chunk in chunkscore.missed()[:10]:
+            print '  ', chunk
+        if len(chunkscore.missed()) > 10:
+               print '  ...'
+
+    # Incorrect chunks.
+    if not chunkscore.incorrect():
+        print 'Incorrect: (none)'
+    else:
+        print 'Incorrect:'
+        for chunk in chunkscore.incorrect()[:10]:
+            print '  ', chunk
+        if len(chunkscore.incorrect()) > 10:
+               print '  ...'
+    
     print '\\'+('='*75)+'/'
     print
 
