@@ -933,7 +933,7 @@ class SimpleFreqDist(FreqDistI):
             C{SimpleFreqDist}.
         @rtype: string
         """
-        return str(self._dict)
+        return '{SimpleFreqDist: '+str(self._dict)[1:]
 
   
 ##//////////////////////////////////////////////////////
@@ -1275,7 +1275,7 @@ class CFFreqDist(FreqDistI):
         if max_feature == None: return None
         else: return CFSample(context, max_feature)
 
-    def __str__(self):
+    def __repr__(self):
         """
         Return the informal string representation of this
         C{CFFreqDist}.  The informal representation of a
@@ -1286,7 +1286,7 @@ class CFFreqDist(FreqDistI):
             C{CFFreqDist}.
         @rtype: string
         """
-        return repr(self._context_fdists)
+        return '{CFFreqDist: '+str(self._context_fdists)[1:]
         
 ##//////////////////////////////////////////////////////
 ##  Probability Distribution
