@@ -47,7 +47,7 @@ class ContextWordFeatureDetector(AbstractFeatureDetector):
         if offset >= 0: self._feature = 'CW+%d' % offset
         else: self._feature = 'CW%d' % offset
         
-    def raw_detect_features(self, token):
+    def get_features(self, token):
         try:
             tok = token['CONTEXT'].get(self._offset)
             return {self._feature: tok['TEXT']}
@@ -74,7 +74,7 @@ class BagOfContextWordsFeatureDetector(AbstractFeatureDetector):
         AbstractFeatureDetector.__init__(self, **property_names)
         self._window = window
         
-    def raw_detect_features(self, token):
+    def get_features(self, token):
         bow = [tok['TEXT'] for tok in
                token['CONTEXT'].getrange(-self._window, 0)+
                token['CONTEXT'].getrange(1, 1+self._window)]
@@ -99,7 +99,7 @@ class SetOfContextWordsFeatureDetector(AbstractFeatureDetector):
         AbstractFeatureDetector.__init__(self, **property_names)
         self._window = window
         
-    def raw_detect_features(self, token):
+    def get_features(self, token):
         sow = Set([tok['TEXT'] for tok in
                    token['CONTEXT'].getrange(-self._window, 0)+
                    token['CONTEXT'].getrange(1, 1+self._window)])
