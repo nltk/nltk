@@ -248,7 +248,7 @@ class NthOrderTagger(TaggerI):
         prev_tags = ['UNK' for x in range(self._n)]
       
         for token in tagged_tokens:
-            context = tuple(prev_tags+[token.type()])
+            context = tuple(prev_tags+[token.type().base()])
             feature = token.type().tag()
             self._freqDist.inc( probability.CFSample(context, feature) )
 
