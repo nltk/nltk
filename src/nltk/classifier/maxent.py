@@ -39,10 +39,10 @@ class MaxentClassifier(ClassifierI):
 
     What do do if there are features we haven't seen before??
     """
-    def __init__(self, features, labels, weights):
+    def __init__(self, fdlist, labels, weights):
         """
         """
-        self._features = features
+        self._fdlist = fdlist
         self._labels = labels
         self._weights = weights
 
@@ -67,7 +67,7 @@ class MaxentClassifier(ClassifierI):
         # Find the non-normalized probability estimates
         for label in self._labels:
             labeled_text = LabeledText(text, label)
-            featurevalues = self._features.detect(labeled_text)
+            featurevalues = self._fdlist.detect(labeled_text)
             zeros = 0
             p = 1.0
             for (id,val) in featurevalues.assignments():
@@ -110,7 +110,7 @@ class MaxentClassifier(ClassifierI):
         # Find the non-normalized probability estimates
         for label in self._labels:
             labeled_text = LabeledText(text, label)
-            featurevalues = self._features.detect(labeled_text)
+            featurevalues = self._fdlist.detect(labeled_text)
             p = 1.0
             for (id,val) in featurevalues.assignments():
                 if val == 1: p *= self._weights[id]
@@ -138,7 +138,7 @@ class MaxentClassifier(ClassifierI):
         # estimates.
         for label in self._labels:
             labeled_text = LabeledText(text, label)
-            featurevalues = self._features.detect(labeled_text)
+            featurevalues = self._fdlist.detect(labeled_text)
             p = 1.0
             for (id,val) in featurevalues.assignments():
                 if val == 1: p *= self._weights[id]
@@ -156,7 +156,7 @@ class MaxentClassifier(ClassifierI):
         return self._weights
 
     def features(self):
-        return self._features
+        return self._fdlist
 
     def labels(self):
         return self._labels
@@ -197,6 +197,15 @@ class MaxentClassifier(ClassifierI):
                 likelihood += log(dist[label])
         return likelihood
     
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this Naive Bayes
+            classifier.  
+        """
+        return ('<MaxentClassifier: %d labels, %d features>' %
+                (len(self._labels), len(self._fdlist)))
+
 ##//////////////////////////////////////////////////////
 ##  GIS
 ##//////////////////////////////////////////////////////
@@ -451,6 +460,8 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         return MaxentClassifier(filtered_fdlist, labels,
                                 classifier.weights())
 
+   def __repr__(self):
+        return '<GISMaxentClassifierTrainer: %d features>' % len(self._fdlist)
 
 ##//////////////////////////////////////////////////////
 ##  IIS
@@ -459,7 +470,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
 class IISMaxentClassifierTrainer(ClassifierTrainerI):
     """
     """
-    def __init__(self, fdlist, labels=None):
+    def __init__(self, fdlist):
         """
         Construct a new classifier trainer, using the given feature
         detector list.
@@ -750,6 +761,10 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         # we return.
         return MaxentClassifier(filtered_fdlist, labels,
                                 classifier.weights())
+
+   def __repr__(self):
+        return '<IISMaxentClassifierTrainer: %d features>' % len(self._fdlist)
+        
 
 ##//////////////////////////////////////////////////////
 ##  Test code
