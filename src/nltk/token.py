@@ -572,3 +572,47 @@ class ProbabilisticToken(Token, ProbabilisticMixIn):
     def __str__(self):
         return Token.__str__(self)+' (p=%s)' % self._prob
 
+##//////////////////////////////////////////////////////
+##  Demonstration
+##//////////////////////////////////////////////////////
+
+def demo():
+    """
+    A demonstration showing how L{Location}s and L{Token}s can be
+    used.  This demonstration simply creates two locations and
+    two tokens, and shows the results of calling several of their
+    methods.
+    """
+    print "loc = Location(3, 5, unit='w', source='corpus.txt')"
+    loc = Location(3, 5, unit='w', source='corpus.txt')
+    
+    print "loc2 = Location(10, 11, unit='w', source='corpus.txt')"
+    loc2 = Location(10, 11, unit='w', source='corpus.txt')
+    
+    print "tok = Token('big', loc2)"
+    tok = Token('big', loc2)
+    
+    print "tok = Token((12, 83), loc)  # type can be any immutable"
+    tok2 = Token((12, 83), loc)
+    print
+    
+    print "print loc                 =>", loc
+    print "print loc.start()         =>", loc.start()
+    print "print loc.end()           =>", loc.end()
+    print "print loc.length()        =>", loc.length()
+    print "print loc.unit()          =>", loc.unit()
+    print "print loc.source()        =>", loc.source()
+    print "print loc2                =>", loc2
+    print "print loc.prec(loc2)      =>", loc.prec(loc2)
+    print "print loc.succ(loc2)      =>", loc.succ(loc2)
+    print "print loc.overlaps(loc2)  =>", loc.overlaps(loc2)
+    print "print tok                 =>", tok
+    print "print tok.type()          =>", tok.type
+    print "print tok.loc()           =>", tok.loc
+    print "print tok2                =>", tok2
+    print "print tok2.type()         =>", tok2.type
+    print "print tok2.loc()          =>", tok2.loc
+
+if __name__ == '__main__':
+    demo()
+    
