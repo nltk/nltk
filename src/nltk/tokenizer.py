@@ -159,7 +159,9 @@ class AbstractTokenizer(TokenizerI):
         assert chktype(1, token, Token)
         text_prop = self._propnames.get('text', 'text')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        token[text_prop] = ''.join(token[text_prop])
+        text = token[text_prop]
+        if hasattr(text, '__iter__') and hasattr(text, 'next'):
+            token[text_prop] = ''.join(text)
         self.tokenize(token)
         token[subtokens_prop] = iter(token[subtokens_prop])
 
