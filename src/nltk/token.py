@@ -26,17 +26,18 @@ the C{Location} class to represent their locations.  The token module
 does not define a single class or interface for representing text
 types.  Instead, text types may be represented by any immutable
 object.  Typically, elements of text will be represented with strings.
-In addition, the token module defines several simple classes that can
-be used as text types.  Currently, the following classes are defined:
+In addition, the several simple classes are designed for use as text
+types, including:
 
-    - C{TaggedType}: A type consisting of a base type and a tag.  For
-      example, this class could be used to represent part-of-speech
-      tagged words.
-    - C{LabeledType}: A type consisting of a text and a label.  This
-      class is used by the text classification package to assign
-      categories to texts.
-    - C{Tree}: A type representing a homogenous hierarchical structure.
-      For example, this class could be used to represent syntax trees.
+    - L{TaggedType<nltk.tagger.TaggedType>}: A type consisting of a
+      base type and a tag.  For example, this class could be used to
+      represent part-of-speech tagged words.
+    - C{LabeledText<ntlk.classifier.LabeledText>}: A type consisting
+      of a text and a label.  This class is used by the text
+      classification package to assign categories to texts.
+    - C{Tree<nltk.tree.Tree>}: A type representing a homogenous
+      hierarchical structure.  For example, this class could be used
+      to represent syntax trees.
 
 In addition, the token module defines the C{TokenizerI} interface, as
 well as several implementations of that interface.  A X{tokenizer} is
@@ -55,23 +56,23 @@ class Location:
     """
     A span over indices in a text.
 
-    The text over which the location is defined is identified by the
-    C{Location}'s X{source}.  A typical value for a C{Location}'s
-    source would be the name of the file containing the text.  The
-    unit of the indices in the text is specified by the C{Location}'s
-    X{unit}.  Typical units are \"word\" and \"character\".  A
-    C{Location}'s source and unit fields are optional; if not
-    specified, they will default to C{None}.
-
-    The span itself is represented with by the C{Location}'s X{start
+    The extent of the span is represented by the C{Location}'s X{start
     index} and X{end index}.  A C{Location} identifies the text
     beginning at its start index, and including everything up to (but
     not including) the text at its end index.
 
-    A location with a start index of 5 and an end index of 10, a
-    source of 'example.txt', and a unit of 'word' can be written as::
+    The unit of the indices in the text is specified by the
+    C{Location}'s X{unit}.  Typical units are \"w\" (for words) and
+    \"c\" (for characters).  The text over which the location is
+    defined is identified by the C{Location}'s X{source}.  A typical
+    value for a C{Location}'s source would be the name of the file
+    containing the text.  A C{Location}'s source and unit fields are
+    optional; if not specified, they will default to C{None}.
 
-        @[word 5:word 10]@'example.txt'
+    A location with a start index of 5 and an end index of 10, a
+    source of 'example.txt', and a unit of 'w' is be written::
+
+        @[5w:10w]@'example.txt'
 
     C{Location}s are immutable.
 
@@ -90,7 +91,7 @@ class Location:
     @ivar _unit: The index unit used by this C{Location}.  Typical
           units are 'character' and 'word'.
     """
-    def __init__(self, start, end=None, **kwargs):
+    def __init__(self, start, end=None, unit=None, source=None):
         """
         Construct a new C{Location}.
 
@@ -99,35 +100,34 @@ class Location:
         @param end: The end index of the new C{Location}.  If not
             specified, the end index defaults to C{start+1}
         @type end: C{int}
-        @param kwargs: Keyword arguments.  Legal keywords are
-            \"source\", which specifies the text over which the
-            C{Location}'s is defined; and the \"unit\", which
-            specifies the unit of the C{Location}'s indices.
+        @param unit: The unit of the indices in the text that
+            contains this location.
+        @type unit: C{string}
+        @param source: The source of the text that contains this
+            location.
+        @unit source: (any)
         """
-        # Set the start and end locations
+        # Check types
         assert _chktype(1, start, types.IntType, types.LongType,
                         types.FloatType)
         assert _chktype(2, end, types.IntType, types.LongType,
                         types.FloatType, types.NoneType)
+        assert _chktype(3, unit, types.StringType, types.NoneType)
+        
+        # Set the start and end locations
         self._start = start
-        if end is not None: self._end = end
-        else: self._end = self._start+1
+        if end is None: self._end = self._start+1
+        else: self._end = end
+
+        # Check that the location is valid.
         if self._end<self._start:
             raise ValueError("A Location's start index must be less "+
                              "than or equal to its end index.")
 
         # Set the source and unit
-        self._source = self._unit = None
-        for (key, val) in kwargs.items():
-            if key == 'source':
-                self._source = val
-            elif key == 'unit':
-                if type(val) not in (types.StringType, types.NoneType):
-                    raise TypeError("Unit must have type string")
-                if val is not None:
-                    self._unit = val.lower()
-            else:
-                assert 0, "Invalid keyword argument: "+key
+        self._source = source
+        if unit is None: self._unit = None
+        else: self._unit = unit.lower()
 
     def start(self):
         """
@@ -450,60 +450,19 @@ class Token:
     #    - loc()
     #    - __eq__()
     #    - __hash__()
-    def __init__(self, type, location_or_start=None, end=None, **kwargs):
+    def __init__(self, type, location=None):
         """
-        Construct a new Token, with the given type and location.  The
-        location may be specified in one of three ways:
-        
-            - If no location is specified, the token's location
-              defaults to C{None}.
-            - A location may be given as the second argument to the
-              constructor.
-            - The start, end, source, and unit may be specified
-              directly, using the second and third arguments, and the
-              keyword arguments.
-
-        Examples of each way of specifying the location are:
-
-            >>> Token('run')
-            'run'@[?]
-            >>> Token('run', Location(6, 9, unit='c'))
-            'run'@[6c:9c]
-            >>> Token('run', 6, 9, unit='c')
-            'run'@[6c:9c]
+        Construct a new Token, with the given type and location.
         
         @param type: The type for the new Token.
         @type type: (any)
-        @param location_or_start: The location of the new token; or
-            the start index of the new token's location.  If no value
+        @param location: The location of the new token.  If no value
             is specified, the location defaults to C{None}.
-        @type location_or_start: C{TextLocation} or C{int}
-        @param end: The end index of the new token's location.  This
-            may only be specified when C{location_or_start} gives the
-            start index of the new token's location.
-        @param kwargs: Keyword argments, specifying the source or unit
-            for the new token's location.  These may only be specified
-            when C{location_or_start} gives the start index of the new
-            token's location.            
+        @type location: C{TextLocation} or C{None}
         """
-        assert _chktype(2, location_or_start, types.IntType,
-                        types.LongType, types.FloatType,
-                        Location, types.NoneType)
-        assert _chktype(3, end, types.IntType, types.LongType,
-                        types.FloatType, types.NoneType)
+        assert _chktype(2, location, Location, types.NoneType)
         self._type = type
-        if isinstance(location_or_start, Location):
-            self._location = location_or_start
-            if (end is not None) or (len(kwargs)!=0):
-                raise TypeError("end and keyword arguments may not "+
-                                "be specified in addition to a Location.")
-        elif location_or_start is None:
-            self._location = location_or_start
-            if (end is not None) or (len(kwargs)!=0):
-                raise TypeError("end and keyword arguments may not "+
-                                "be specified for a location of None.")
-        else:
-            self._location = Location(location_or_start, end, **kwargs)
+        self._location = location
 
     def type(self):
         """
@@ -590,12 +549,22 @@ class Token:
         """
         return hash( (self._type, self._location) )
 
-# !! This needs proper documentation
 from nltk.probability import ProbabilisticMixIn
 class ProbabilisticToken(Token, ProbabilisticMixIn):
-    def __init__(self, p, type, location_or_start=None, end=None, **kwargs):
+    """
+    A single occurance of a unit of text that has a probability
+    associated with it.  This probability can represent a variety of
+    different likelihoods, such as:
+
+      - The likelihood that this token occured in a specific context.
+      - The likelihood that this token is correct for a specific
+        context.
+      - The likelihood that this token will be generated in a
+        specific context.
+    """
+    def __init__(self, p, type, location):
         ProbabilisticMixIn.__init__(self, p)
-        Token.__init__(self, type, location_or_start, end, **kwargs)
+        Token.__init__(self, type, location)
     def __repr__(self):
         return Token.__repr__(self)+' (p=%s)' % self._p
     def __str__(self):
@@ -606,11 +575,10 @@ class ProbabilisticToken(Token, ProbabilisticMixIn):
 ##//////////////////////////////////////////////////////
 class TokenizerI:
     """
-    Processing class responsible for separating a string of text into
-    a list of C{Token}s.  This process is also known as X{tokenizing}
+    A processing class responsible for separating a string of text
+    into a list of C{Token}s.  This process is known as X{tokenizing}
     the string of text.  Particular C{Tokenizer}s may split the text
     at different points, or may produce Tokens with different types.
-
     """
     def __init__(self):
         """
@@ -671,20 +639,24 @@ class _XTokenTuple:
     only supports token tuples where the location of the M{n}th token
     is @[M{n}].
     """
-    def __init__(self, typelist, **kws):
+    def __init__(self, typelist, unit=None, source=None):
         self._typelist = tuple(typelist)
-        self._kws = kws
+        self._unit = unit
+        self._source = source
 
     def __getitem__(self, index):
         if type(index) == types.SliceType:
-            if index.stop == sys.maxint:
-                return tuple([Token(self._typelist[i], i, **self._kws) for i in
-                              range(index.start, len(self))])
-            else:
-                return tuple([Token(self._typelist[i], i, **self._kws) for i in
-                              range(index.start, index.stop)])
+            start, stop = (index.start, index.stop)
+            if stop == sys.maxint: stop = len(self)
+
+            toks = []
+            for i in range(start, stop):
+                loc = Location(i, unit=self._unit, source=self._source)
+                toks.append(Token(self._typelist[i], loc))
+            return toks
         else:
-            return Token(self._typelist[index], index, **self._kws)
+            loc = Location(index, unit=self._unit, source=self._source)
+            return Token(self._typelist[index], loc)
 
     def __len__(self):
         return len(self._typelist)
@@ -692,13 +664,12 @@ class _XTokenTuple:
     def __in__(self, token):
         if not isinstance(token, Token): return 0
         loc = token.loc()
-        if loc is None:
-            return 0
+        if loc is None: return 0
+        if loc.length() != 1: return 0
+        if loc.unit() != self._unit: return 0
+        if loc.source() != self._source: return 0
         start = loc.start()
-        if Location(start, **self._kws) != loc:
-            return 0
-        if start<0 or start>=len(self._typelist):
-            return 0
+        if start<0 or start>=len(self._typelist): return 0
         return self._typelist[start] == token.type()
 
     def __repr__(self):
@@ -708,63 +679,57 @@ class WSTokenizer(TokenizerI):
     """
     A tokenizer that separates a string of text into words, based on
     whitespace.  Each word is encoded as a C{Token} whose type is a
-    C{string}.  Location indices start at zero, and have a unit of
-    C{'w'}.
+    C{string}.  Location indices start at zero, and have a default
+    unit of C{'w'}.
     """
     def __init__(self): pass
-    def tokenize(self, str, source=None):
+    def tokenize(self, str, unit='w', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
         words = str.split()
-        return [Token(words[i], Location(i, unit='w', source=source))
+        return [Token(words[i], Location(i, unit=unit, source=source))
                 for i in range(len(words))]
 
-    def xtokenize(self, str, source=None):
+    def xtokenize(self, str, unit='w', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
-        return _XTokenTuple(str.split(), source=source, unit='w')
+        return _XTokenTuple(str.split(), unit='w', source=source)
 
+# Do we really want this tokenizer to ignore whitespace characters?
 class CharTokenizer(TokenizerI):
     """
     A tokenizer that returns each non-whitespace character as a token.
     Each character is encoded as a C{Token} whose type is a C{string}.
-    Location indices start at zero, and have a unit of C{'c'}.
+    Location indices start at zero, and have a default unit of C{'c'}.
     """
     def __init__(self): pass
-    def tokenize(self, str, source=None):
+    def tokenize(self, str, unit='c', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
-        chars = [c for c in str]
-        return [Token(chars[i], Location(i, unit='c', source=source))
-                for i in range(len(chars))
-                if chars[i] not in ' \t\n\r\v']
+        return [Token(str[i], Location(i, unit=unit, source=source))
+                for i in range(len(str))
+                if str[i] not in ' \t\n\r\v']
 
 class LineTokenizer(TokenizerI):
     """
     A tokenizer that separates a string of text into sentences, based
-    on newline characters.  Each sentence is encoded as a C{Token}
-    whose type is a C{string}.  Location indices start at zero, and
-    have a unit of C{'s'}.
+    on newline characters.  Blank lines are ignored.  Each sentence is
+    encoded as a C{Token} whose type is a C{string}.  Location indices
+    start at zero, and have a default unit of C{'l'}.
     """
     def __init__(self): pass
-    def tokenize(self, str, source=None):
+    def tokenize(self, str, unit='l', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
-        tokens = []
-        i = 0
-        for sent in str.split('\n'):
-            if sent.strip() != '':
-                tok = Token(sent, Location(i, unit='s', source=source))
-                tokens.append(tok)
-                i += 1
-        return tokens
+        lines = [s for s in str.split('\n') if s.strip() != '']
+        return [Token(lines[i], Location(i, unit=unit, source=source))
+                for i in range(len(lines))]
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
-        return _XTokenTuple([s for s in str.split('\n')
-                             if s.strip() != ''],
-                            source=source, unit='s') 
+        lines = [s for s in str.split('\n') if s.strip() != '']
+        return _XTokenTuple(lines, source=source, unit='l') 
 
 class RETokenizer(TokenizerI):
     """
@@ -774,61 +739,48 @@ class RETokenizer(TokenizerI):
     is encoded as a C{Token} whose type is a C{string}.  Location
     indices start at zero, and have a unit of C{'word'}.
     """
-    def __init__(self, regexp, positive=1):
+    def __init__(self, regexp, positive=0):
         """
-        @type regexp: string
+        @type regexp: C{string} or C{SRE_Pattern}
         """
         if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
         assert _chktype(1, regexp, types.StringType)
         self._regexp = re.compile('('+regexp+')', re.UNICODE)
         self._positive = positive
         
-    def tokenize(self, str, **kwargs):
+    def tokenize(self, str, unit='w', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
 
-        if '\0' in str or '\1' in str:
-            raise ValueError("RETokenizer can't handle "+
-                             "strings containing '\\0' or '\\1'")
-
-        if self._positive:
-            # Surround each match with \0...\1
-            str = re.sub(self._regexp, '\0\\1\1', str)
-
-            # Special case: if we found no tokens at all, return an empty list.
-            if '\0' not in str: return []
-
-            str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)',
-                         '\0', str)
-            words = str.split('\0')
-        else:
-            words = re.sub(self._regexp, '\0', str).split('\0')
+        # This split will return a list of alternating matches and
+        # non-matches.  If positive=1, then we want the odd elements;
+        # if positive=0, then we want the even elements.
+        words = self._regexp.split(str)
         
-        tokens = []
-        loc = 0
-        for i in range(len(words)):
-            if words[i] == '': continue
-            tokens.append(Token(words[i], Location(loc, **kwargs)))
-            loc += 1
-        return tokens
+        if self._positive:
+            words = [words[i] for i in range(len(words))
+                     if i%2==1 and words[i] != '']
+        else:
+            words = [words[i] for i in range(len(words))
+                     if i%2==0 and words[i] != '']
+            
+        return [Token(words[i], Location(i, unit=unit, source=source))
+                for i in range(len(words))]
 
-    # Does not handle self._positive!!
-    def xtokenize(self, str, **kwargs):
+    def xtokenize(self, str, unit='w', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
 
-        if '\0' in str or '\1' in str:
-            raise ValueError("RETokenizer can't handle "+
-                             "strings containing '\\0' or '\\1'")
-
+        # This split will return a list of alternating matches and
+        # non-matches.  If positive=1, then we want the odd elements;
+        # if positive=0, then we want the even elements.
+        words = self._regexp.split(str)
+        
         if self._positive:
-            str = re.sub(self._regexp, '\0\\1\1', str)
-            if '\0' in str:
-                str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)',
-                             '\0', str)
+            words = [words[i] for i in range(len(words))
+                     if i%2==1 and words[i] != '']
         else:
-            str = re.sub(self._regexp, '\0', str)
-            
-        words = [w for w in str.split('\0') if w != '']
-        return _XTokenTuple(words, **kwargs)
+            words = [words[i] for i in range(len(words))
+                     if i%2==0 and words[i] != '']
 
+        return _XTokenTuple(words, unit, source)
