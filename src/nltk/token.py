@@ -45,7 +45,8 @@ a class which converts a string of text into its constituent tokens.
 Different tokenizers may split the text up differently.
 
 @group Data Types: Location, Token
-@group Tokenizers: TokenizerI, WSTokenizer, RETokenizer, CharTokenizer,
+@group Interfaces: TokenizerI
+@group Tokenizers: WSTokenizer, RETokenizer, CharTokenizer,
     LineTokenizer, _XTokenTuple
 @sort: Location, Token, TokenizerI, WSTokenizer, RETokenizer, CharTokenizer,
     LineTokenizer, _XTokenTuple
