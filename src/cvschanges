@@ -8,7 +8,7 @@ for the life of me find it..
 
 To use the script, type:
 
-    src/cvschanges release-<m>-<n>
+    src/cvschanges release-<m>-<n-1> [outputfile]
 
 from the root of the repository.
 
@@ -19,11 +19,70 @@ CVSCOMMAND = 'cvs log "-r%s:" 2>/dev/null'
 
 BIGDIV = '='*77
 SMALLDIV = '-'*28
-def filter_log(log):
+
+def filter_entry(entry, since_tag):
+    # Strip whitespace.
+    entry = entry.strip()
+
+    # Ignore empty entries (fencepost case for split)
+    if entry == '': return ''
+    
+    # Discard entries for attic files.
+    if re.match('^.*/Attic/', entry): return ''
+
+    # Get the revision corresponding to the requested symbolic name.
+    m = re.search('\n\t%s: ([0-9.]+)\n' % since_tag, entry)
+    if m: since_rev = m.group(1)
+    else: since_rev = 'NEW_FILE'
+
+    # Get the revision number for the head.
+    head_rev = re.search('(?:.*\n)*head: ([0-9.]+)', entry).group(1)
+
+    # Discard entries that haven't changed.
+    if head_rev == since_rev: return ''
+
+    # Get rid of any borderline log messages.
+    entry = re.sub('%s\nrevision %s\n(.*\n)?' % (SMALLDIV, since_rev),
+                   '', entry)
+
+    # Get rid fo ",v" :)
+    regexp = re.compile(r'RCS file: (.*),v')
+    entry = re.sub(regexp, r'FILE: \1', entry)
+
+    # Get rid of excess info.
+    discard = re.compile(r'(Working file:\s+(.*)\n(.*\n)+?'+
+                         'total revisions:.*)|'+
+                         '(\ndescription:\n)|'+
+                         '(revision [0-9.]+\ndate: .*\n)'
+                         )
+    entry = discard.sub('', entry)
+    
+    # Return the filtered entry
+    return entry.strip() + '\n'
+
+
+def filter_log(log, since_tag):
     log = re.sub(r'^(\? .*\n)*', '', log).strip()
 
     # Split into entries.
     entries = log.split(BIGDIV)
+
+    # Filter out entries that we don't want, and remove excess info.
+    entries = [filter_entry(entry, since_tag) for entry in entries]
+    entries = [entry for entry in entries if entry != '']
+    
+    # Join the entries back together.
+    log = (BIGDIV+'\n').join(entries)
+    
+    # Get rid of multiple consecutive empty lines
+    log = re.sub('\n\n\n+', '\n\n', log)
+
+    return log + BIGDIV + '\n'
+
+
+
+
+    
 
     # Strip whitespace
     entries = [entry.strip()+'\n' for entry in entries]
@@ -32,15 +91,19 @@ def filter_log(log):
     regexp = re.compile('^.*/Attic/.*')
     entries = [entry for entry in entries if not regexp.match(entry)]
 
+    newfile = re.compile('(.*\n)+?' + SMALLDIV +'\nrevision .*\.1\n')
+
     # Get rid of any entries that have only one revision; they're the
     # borderline cases. (UNLESS IT'S A NEW FILE?!)
-    #regexp = re.compile('(.*\n)+?' + SMALLDIV + '\n(.*\n)+?' + SMALLDIV + '\n')
-    #entries = [entry for entry in entries if regexp.match(entry)]
+    regexp = re.compile('(.*\n)+?' + SMALLDIV + '\n(.*\n)+?' + SMALLDIV + '\n')
+    entries = [entry for entry in entries
+               if regexp.match(entry) or newfile.match(entry)]
 
     # Get rid of the last revision in each entry; they're the
     # borderline cases. (UNLESS IT'S A NEW FILE?!)
-    #entries = [SMALLDIV.join(entry.split(SMALLDIV)[:-1])
-    #           for entry in entries]
+    for i in range(len(entries)):
+        if not newfile.match(entries[i]):
+            entries[i] = SMALLDIV.join(entries[i].split(SMALLDIV)[:-1])
 
     # Get rid of head, branch, locks, etc.
     regexp = re.compile(r'Working file:\s+(.*)\n(.*\n)+?total revisions:.*')
@@ -54,14 +117,9 @@ def filter_log(log):
     entries = [re.sub(regexp, '', entry) for entry in entries]
 
     # Get rid of revision number, date, etc.
-    regexp = re.compile(r'revision (.*)\ndate:.*\n')
+    regexp = re.compile(r'revisionX (.*)\ndate:.*\n')
     entries = [re.sub(regexp, r'', entry) for entry in entries]
     
-
-#    # Get rid of descriptions.
-#    log = re.sub(r'description:\n(.*\n)+?(?=----------------------------)',
-#                 '', log)
-
     # Join the entries back together.
     log = (BIGDIV+'\n').join(entries)
     
@@ -82,13 +140,14 @@ def main():
         filename = '/tmp/changes.cvslog'
     else:
         usage()
+    since_tag = sys.argv[1]
         
-    command = CVSCOMMAND % sys.argv[1]
+    command = CVSCOMMAND % since_tag
     print 'Getting the cvs log...\n    %s' % command
     log = os.popen(command).read()
 
     print 'Filtering log...'
-    log = filter_log(log)
+    log = filter_log(log, since_tag)
 
     print 'Writing output to %s...' % filename
     out = open(filename, 'w')
