@@ -735,6 +735,25 @@ class Chart:
         str += (' '*(width-1)+'.')*(self._num_leaves-end)
         return str + '| %s ' % edge
 
+    def pp_leaves(self, width=5):
+        """
+        @return: A pretty-printed string representation of this
+            chart's leaves.  This string can be used as a header
+            for calls to L{pp_edge}.
+        """
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        leaf_prop = self._propnames.get('leaf', 'leaf')
+        
+        if self._token and width>1:
+            header = '|.'
+            for tok in self._token[subtokens_prop]:
+                header += tok[leaf_prop][:width-1].center(width-1)+'.'
+            header += '|'
+        else:
+            header = ''
+
+        return header
+
     def pp(self, width=5):
         """
         @return: A pretty-printed string representation of this chart.
@@ -742,27 +761,14 @@ class Chart:
         @param width: The number of characters allotted to each
             index in the sentence.
         """
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        leaf_prop = self._propnames.get('leaf', 'leaf')
-        
-        # Draw a header.
-        if self._token and width>1:
-            header = '|.'
-            for tok in self._token[subtokens_prop]:
-                header += tok[leaf_prop][:width-1].center(width-1)+'.'
-            header += '|\n'
-            header += '|'+'-'*(self._num_leaves*width+1)+'|\n'
-        else:
-            header = ''
-        
         # sort edges: primary key=length, secondary key=start index.
         # (and filter out the token edges)
         edges = [(e.length(), e.start(), e) for e in self]
         edges.sort()
         edges = [e for (_,_,e) in edges]
         
-        return header + '\n'.join([self.pp_edge(edge, width)
-                                   for edge in edges])
+        return self.pp_leaves(width) + '\n'.join([self.pp_edge(edge, width)
+                                                  for edge in edges])
 
 ########################################################################
 ##  Chart Rules
@@ -1177,7 +1183,7 @@ class ScannerRule(AbstractChartRule):
         if edge.is_complete() or edge.end()>=chart.num_leaves(): return
         index = edge.end()
         leaf = chart.leaf(index)
-        if edge.next() in self._word_to_pos[leaf]:
+        if edge.next() in self._word_to_pos.get(leaf, []):
             new_leaf_edge = LeafEdge(leaf, index)
             if chart.insert(new_leaf_edge, ()):
                 yield new_leaf_edge
@@ -1194,43 +1200,100 @@ class PredictorRule(TopDownExpandRule): pass
 ########################################################################
 
 class EarleyChartParser(ParserI):
-    def __init__(self, grammar, root_node, lexicon, **propnames):
+    """
+    A chart parser implementing the Earley parsing algorithm:
+
+        - For each index I{end} in [0, 1, ..., N]:
+          - For each I{edge} s.t. I{edge}.end = I{end}:
+            - If I{edge} is incomplete, and I{edge}.next is not a part
+              of speech:
+                - Apply PredictorRule to I{edge}
+            - If I{edge} is incomplete, and I{edge}.next is a part of
+              speech:
+                - Apply ScannerRule to I{edge}
+            - If I{edge} is complete:
+                - Apply CompleterRule to I{edge}
+
+    C{EarleyChartParser} uses a X{lexicon} to decide whether a leaf
+    has a given part of speech.  This lexicon is encoded as a
+    dictionary that maps each word to a list of parts of speech that
+    word can have.
+    """
+    def __init__(self, grammar, lexicon, trace=0, **propnames):
+        """
+        Create a new Earley chart parser, that uses C{grammar} to
+        parse texts.
+        
+        @type grammar: C{CFG}
+        @param grammar: The grammar used to parse texts.
+        @type lexicon: C{dict} from C{string} to (C{list} of C{string})
+        @param lexicon: A lexicon of words that records the parts of
+            speech that each word can have.  Each key is a word, and
+            the corresponding value is a list of parts of speech.
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            and higher numbers will produce more verbose tracing
+            output.
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
         self._grammar = grammar
-        self._root_node = root_node
         self._lexicon = lexicon
         self._propnames = propnames
+        self._trace = trace
 
-    def parse(self, token):
+    def parse_n(self, token):
+        trees_prop = self._propnames.get('trees', 'trees')
+        trees_prop = self._propnames.get('trees', 'trees')
         chart = Chart(token, **self._propnames)
-        self._parse(chart, self._grammar)
-        for tree in chart.parses(self._root_node):
-            print tree
-#        print '='*60
-#        for tree in chart.trees(TreeEdge((1,10), Nonterminal('VP'),
-#                                     (Nonterminal('VP'), Nonterminal('PP')),
-#                                     1)):
-#            print tree
-    tok = Token(text='John saw the dog with a cookie with a dog')    
-    def _parse(self, chart, grammar):
-        root = Nonterminal('-ROOT-')
-        edge = TreeEdge((0,0), root, (self._root_node,))
+        grammar = self._grammar
+
+        # Width, for printing trace edges.
+        w = 50/(chart.num_leaves()+1)
+
+        # Initialize the chart with a special "starter" edge.
+        root = Nonterminal('[INIT]')
+        edge = TreeEdge((0,0), root, (grammar.start(),))
         chart.insert(edge, ())
 
+        # Create the 3 rules:
         predictor = PredictorRule()
         completer = CompleterRule()
         scanner = ScannerRule(self._lexicon)
-        
+
+        if self._trace > 0: print ' ', chart.pp_leaves(w)
         for end in range(chart.num_leaves()+1):
-            # Deep trickiness going on here:
+            if self._trace > 1: print 'Processing queue %d' % end
             for edge in chart.select(end=end):
                 if edge.is_incomplete():
-                    for e in predictor.apply_iter(chart, grammar, edge):
-                        print 'P', chart.pp_edge(e)
-                    for e in scanner.apply_iter(chart, grammar, edge):
-                        print 'S', chart.pp_edge(e)
-                elif edge.is_complete():
-                    for e in completer.apply_iter(chart, grammar, edge):
-                        print 'C', chart.pp_edge(e)
+                    for e in predictor.apply(chart, grammar, edge):
+                        if self._trace > 0:
+                            print 'Predictor', chart.pp_edge(e,w)
+                if edge.is_incomplete():
+                    for e in scanner.apply(chart, grammar, edge):
+                        if self._trace > 0:
+                            print 'Scanner  ', chart.pp_edge(e,w)
+                if edge.is_complete():
+                    for e in completer.apply(chart, grammar, edge):
+                        if self._trace > 0:
+                            print 'Completer', chart.pp_edge(e,w)
+                            
+
+        token[trees_prop] = chart.parses(self._root_node)
+            
+    def parse(self, token):
+        # Delegate to parse_n
+        trees_prop = self._propnames.get('trees', 'trees')
+        tree_prop = self._propnames.get('tree', 'tree')
+        
+        self.parse_n(token)
+
+        if len(token[trees_prop]) == 0: token[tree_prop] = None
+        else: token[tree_prop] = token[trees_prop][0]
+        del token[trees_prop]
 
 ########################################################################
 ##  Generic Chart Parser
@@ -1307,8 +1370,9 @@ def demo():
     tok = Token(text='John saw the dog with a cookie with a dog')
     #tok = Token(text='John saw')
     WSTokenizer().tokenize(tok)
-    parser = EarleyChartParser(grammar1, S, lexicon, leaf='text')
-    parser.parse(tok)
+    parser = EarleyChartParser(grammar1, S, lexicon, leaf='text', trace=1)
+    parser.parse_n(tok)
+    #for tree in tok['trees']: print tree
     #parser = ChartParser(grammar2, S, BU_STRATEGY, leaf='text')
     #parser.parse(tok)
     #parser = ChartParser(grammar2, S, TD_STRATEGY, leaf='text')
