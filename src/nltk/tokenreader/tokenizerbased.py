@@ -11,6 +11,10 @@
 Token readers whose behavior is based on tokenizers.
 """
 
+from nltk.token import *
+from nltk.tokenreader import TokenReaderI
+from nltk import PropertyIndirectionI
+
 class TokenizerBasedTokenReader(TokenReaderI, PropertyIndirectionI):
     """
     A token reader whose behavior is based on a given tokenizer.  This
@@ -36,7 +40,9 @@ class TokenizerBasedTokenReader(TokenReaderI, PropertyIndirectionI):
             in the output token's C{TEXT} property; otherwise, discard
             it.
         @param tokenizer_args, tokenizer_kwargs: Arguments that are
-            passed on to the tokenizer's C{tokenize} method.
+            passed on to the tokenizer's C{tokenize} method.  Depending
+            on the tokenizer, this often includes the C{add_locs},
+            C{add_context}, and C{source} parameters.
         """
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
@@ -49,7 +55,8 @@ class TokenizerBasedTokenReader(TokenReaderI, PropertyIndirectionI):
             del tok[TEXT]
         return tok
                          
-    def read_tokens(self, s, *tokenizer_args, **tokenizer_kwargs):
+    def read_tokens(self, s, add_text=False,
+                    *tokenizer_args, **tokenizer_kwargs):
         """
         @return: A list of the tokens encoded by the string C{s}.
             This list will contain the single token returned by
@@ -59,9 +66,12 @@ class TokenizerBasedTokenReader(TokenReaderI, PropertyIndirectionI):
             in the output token's C{TEXT} property; otherwise, discard
             it.
         @param tokenizer_args, tokenizer_kwargs: Arguments that are
-            passed on to the tokenizer's C{tokenize} method.
+            passed on to the tokenizer's C{tokenize} method.  Depending
+            on the tokenizer, this often includes the C{add_locs},
+            C{add_context}, and C{source} parameters.
         """
-        return [self.read_token(s, *tokenizer_args, **tokenizer_kwargs)]
+        return [self.read_token(s, add_text, *tokenizer_args,
+                                **tokenizer_kwargs)]
 
     def property(self, property):
         return self._tokenizer.property(property)
@@ -82,7 +92,7 @@ class WhitespaceSeparatedTokenReader(TokenizerBasedTokenReader):
         from nltk.tokenizer import WhitespaceTokenizer
         tokenizer = WhitespaceTokenizer(**property_names)
         TokenizerBasedTokenReader.__init__(self, tokenizer)
-        
+
 class NewlineSeparatedTokenReader(TokenizerBasedTokenReader):
     """
     A token reader that reads in tokens that are stored as simple
