@@ -444,7 +444,7 @@ def demo():
         detector.detect_features(tok)
 
     # Build a feature encoder, based on the training data.
-    encoder = learn_encoder(train, unseen_cutoff=0, bag=True)
+    encoder = learn_encoder(train, unseen_cutoff=0)
 
     # Run the feature encoder on the test data.
     for tok in test[:10]:
