@@ -1,5 +1,5 @@
 **
-* tts: Python extension module for Festival
+* SPEECH: Speech synthesis tools for Python and NLTK
 *
 * Author: David Zhang <dlz@students.cs.mu.oz.au>
 *	  Steven Bird <sb@cs.mu.oz.au>
@@ -7,6 +7,29 @@
 * For license information, see LICENSE.TXT
 **
 
+This package contains various tools to enable speech synthesis within Python,
+either stand-alone or as part of the Natural Language Toolkit.
+
+The essential part of this package is the tts extension module, which allows
+Python users to connect to Festival in order to use its simple speech synthesis
+functions. Instructions for installation and usage of this module is given in
+the first part of this README.
+
+This package also contains other tools to facilitate speech synthesis. Festival
+comes with a fair amount of intelligence which allows it to synthesize texts
+that contain numbers, special characters, etc. However much of this intelligence
+is hard to modify and modification requires knowledge of Scheme, a variant of
+Lisp, as well as editing Festival source files. After disabling intelligence in
+Festival the various other Python modules in this package attempt to reproduce
+some of that intelligence; this makes the process much more transparent and can
+be used in an educational context or by those people who need to customise the
+behaviour of the speech synthesis. These modules are considered part of the
+NLTK; their usage is described in the second part of this README.
+
+More information can be found in the source code.
+
+
+*** tts: Python extension module for speech synthesis using Festival ***
 
 DEPENDENCIES
 
@@ -117,7 +140,8 @@ to the Festival manual for more information. Examples:
 >> tts.say_file("README")
 >> tts.text_to_wave("Hello world", "hello.wav")
 
-If any of the functions crash with a Segmentation Fault, the most likely cause is that the Festival engine was not initialized properly.
+If any of the functions crash with a Segmentation Fault, the most likely cause
+is that the Festival engine was not initialized properly.
 
 
 SAMPLE APPLICATION
@@ -130,3 +154,114 @@ $ python weather.py
 
 If you have a working Internet connection it will download the weather, print
 it to the screen and then read it out.
+
+
+*** Speech Tokenizers ***
+
+FILES
+
+token.py
+	The SpeechTokenizer and untokenizer
+rules.py
+	Default and other common rules used by the Speech Tokenizer
+numbers.py
+	Functions for converting number tokens to words
+html.py
+	Functions for converting tokens containing HTML tags to words
+token_tts.py
+	Wrapper functions for the tts module that use the tokenizer and untokenizer
+
+
+DEPENDENCIES
+
+The SpeechTokenizer uses the token class defined in the token module of NLTK, hence the
+Natural Language Toolkit must be installed. As this should be distributed as part of the
+NLTK that should not be a problem. The SpeechTokenizer also uses default rules specified
+in the rules module.
+
+Currently, the default rules in the rules module define a few rules to handle numbers in
+the text, including integers, decimals and currency; these rules refer to functions
+defined in the numbers module. The set of HTML rules, while not added as default, are
+useful for HTML texts and refer to functions in the html module.
+
+Finally, the token_tts module uses both the tts extension module as well as the Speech
+Tokenizer and untokenizer.
+
+
+INSTALLATION
+
+While there are no specific installation procedures for the modules themselves, the
+intelligence built into Festival should be disabled to see the full effect of the
+tokenizing and untokenizing functions.
+
+At the moment there is no simple way to do this except to edit the Festival init files
+directly. In the Festival install directory, find the file
+
+festival/lib/token.scm
+
+and add the following line to the end of the file:
+
+(define (english_token_to_words token name) "" (set! name (list name)))
+
+This will bypass the "english_token_to_words" function which Festival calls to convert
+unrecognised tokens to lexical items, which means all the pre-processing of the text is
+done in the Python modules.
+
+
+USAGE
+
+The Wrapper Functions: token_tts
+
+The simplest way to use the tokenizers and untokenizers as a black box is to use the
+token_tts module. It has exactly the same interface as the tts module, but each of the
+functions additionally pass the text through the tokenizers before speech synthesis is
+carried out. Furthermore the module defines an additional function, say_URL, which does
+what its name suggests. Some examples:
+
+>> token_tts.say_text("Hello world")
+>> token_tts.say_file("README")
+>> token_tts.text_to_wave("Hello world", "hello.wav")
+>> token_tts.say_URL("http://www.google.com.au")
+
+To simply pass the text through the tokenizer and untokenizer without speech synthesis,
+use the process function. It uses the SpeechTokenizer with default rules.
+
+>> token_tts.process("123")
+' one hundred and twenty three'
+
+
+The Speech Tokenizer
+
+The SpeechTokenizer is a Python class that implements the TokenizerI interface in the
+NLTK. It tokenizes text in a similar fashion to that of the RETokenizer, but the regular
+expressions are specified sequentially and are given a order of precedence. Furthermore,
+and more importantly, assigned to each regular expression is a function to apply to any
+token that matches that regular expression. Collectively, this (regexp, func) pair is
+known as a rule, and two sets of rules are defined in the rules module, demonstrating the
+use of this framework for tokenizing text.
+
+The SpeechTokenizer can be intialized with no rules, in which case the default set of
+rules defined in the rules module is used; note that if a set of rules IS supplied during
+intialization, then the default set will NOT be loaded.
+
+Apart from defining the .tokenize function as required by the TokenizerI interface, the
+SpeechTokenizer also defines the .add_rule function to add a rule to its internal set of
+rules, as well as .add_rules which adds a list of rules.
+
+An example of tokenizing some HTML text:
+
+>> import token
+>> st = token.SpeechTokenizer()		# load default rules
+>> st.add_rules(rules.html_rules)	# add HTML rules
+>> st.tokenize('<H1>My Page</H1>')
+
+
+SAMPLE APPLICATION
+
+The sample application, token_weather.py, is almost identical to the weather.py, with
+the only difference being that the weather text is passed through the tokenizers and
+untokenizers before being sent to speech synthesis, much like the functions in token_tts
+and tts.
+
+After the intelligence in Festival is disabled, the user will find that much of the
+numbers in the text is not pronounced, unless they are passed through the tokenizers.
