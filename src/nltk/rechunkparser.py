@@ -473,6 +473,14 @@ def _clean(pattern):
     return pattern
 
 class REChunkParserRule:
+    """
+    A rule specifying how to update the chunking in a C{ChunkString}.
+    The C{apply} method is used to modify the chunking encoded by a
+    C{ChunkString}.  The C{REChunkParserRule} class itself can be used
+    to implement any transformational rule based on regular
+    expressions.  There are also a number of subclasses, which can be
+    used to implement simpler types of rules.
+    """
     def __init__(self, regexp, repl, descr):
         """
         @type regexp: C{regexp}
