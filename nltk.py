@@ -7,17 +7,149 @@
 #
 
 """##
-foo (error in pydoc)
--@exclude .*Type
+The Natural Language Toolkit is a package intended to simplify the
+task of programming natural language systems.  It is intended to be
+used as a teaching tool, not as a basis for building production
+systems. <P>
+
+<H1> Interfaces </H1>
+
+The Natural Language Toolkit is implemented as a set of interfaces and
+classes.  Interfaces are a concept loosely borrowed from Java.  They
+are essentially a specification of a set of methods.  Any class that
+implements all of an interface's methods according to the interface's
+specification are said to \"implement\" that interface. <P>
+
+In the context of this toolkit, an interface is implemented as a
+class, all of whose methods simply raise AssertionError.  The
+__doc__ strings of these methods, together with the methods'
+declarations,  provide specifications for the methods. <P>
+
+Interface classes are named with a trailing \"I\", such as
+<CODE>TokenizerI</CODE> or <CODE>EventI</CODE>.
+
+<H1> Interface and Class Hierarchy </H1>
+
+The classes defined by the Natural Language Toolkit can be divided
+into two basic categories: Data classes; and Processing (or
+Task-Oriented) Classes.
+
+<H2> Data Classes </H2>
+
+Data classes are used to store several different types of information
+that are relavant to natural language processing.  Data classes can
+generally be grouped into small clusters, with minimal interaction
+between the clusters.  The clusters that are currently defined by the
+Natural Language Toolkit are listed below.  Under each cluster, the
+top-level classes and interfaces contained in that cluster are given.
+
+<UL>
+  <LI> <B>Sets</B>: Encodes the mathmatical notion of a \"finite set\".
+  <UL>
+    <LI> <A coderef='nltk.Set'>Set</A>: A finite set.
+  </UL>
+  <LI> <B>Tokens</B>: Encodes units of text such as words.
+  <UL>
+    <LI> <A coderef='nltk.TokenTypeI'>TokenTypeI</A>:
+         A unit of text.
+    <LI> <A coderef='nltk.TextLocationI'>TextLocationI</A>:
+         A location within a text.
+    <LI> <A coderef='nltk.Token'>Token</A>:
+         An occurance of a unit of text.
+         Consists of a TokenType and a TextLocation.
+  </UL>
+  <LI> <B>Syntax Trees</B>: Encodes syntax trees.  Not fully designed 
+        yet.
+  <LI> <B>Probability</B>: Encodes data structures associated with
+        the mathmatical notion of probability, such as events and
+        frequency distributions.
+  <UL>
+    <LI> Sample: Encodes the mathmatical notion of a
+          \"sample\".  This is actually not implemented as a class or
+          an interface -- (almost) anything can be a Sample.
+    <LI> <A coderef='nltk.EventI'>EventI</A>:
+         A (possibly infinite) set of samples.
+    <LI> <A coderef='nltk.FreqDistI'>FreqDistI</A>:
+          The frequency distribution of a collection of samples.
+    <LI> <A coderef='nltk.ProbDistI'>ProbDistI</A>:
+          A probability distribution, typically derived from a
+          frequency distribution (e.g., using ELE).
+  </UL>
+</UL>
+
+<H2> Processing Classes </H2>
+
+Processing classes are used to perform a variety of tasks that are
+relavant to natural language processing.  Processing classes can
+generally be grouped into small clusters, with minimial interaction
+between the clusters.  Each cluster typically makes use of several
+data-class clusters.  The processing clusters that are currently
+defined by the Natural Language Toolkit are listed below.  Under each
+cluster, the interfaces contained in that cluster are given.
+
+<UL>
+  <LI> <B>Tokenizers</B>: Separate a string of text into a list of
+       Tokens. 
+  <UL>
+     <LI> <A coderef='nltk.TokenizerI'>TokenizerI</A>
+  </UL>
+  <LI> <B>Taggers</B>: Assign tags to each Token in a list of Tokens.
+  <UL>
+     <LI> <A coderef='nltk.TaggerI'>TaggerI</A>
+  </UL>
+  <LI> <B>Language Model</B>: (not yet designed/implemented)
+  <LI> <B>Parser</B>: (not yet designed/implemented)
+</UL>
+
+<H1> Open Questions </H1>
+
+The following is a list of currently unresolved questions, pertaining
+to currently implemented interfaces and classes.
+<UL>
+  <LI> Terminology/Naming Questions
+  <UL>
+    <LI> Is \"Token Type\" too easily confusable with the notion of
+         type in python?  E.g., names like SimpleTokenType suggest
+         that they are similar to StringType, IntType, etc. when they
+         are very different.  I could use \"TokenTyp\" to distinguish, 
+         but this also seems somewhat confusing to the uninitiated.
+    <LI> What name can be used for the \"word content\" of a token
+         type?  Currently, <CODE>name</CODE> is used, but that's not a 
+         very intuitive name.  <CODE>word</CODE> might be used,
+         although often times the string is not a word (e.g., \".\").
+  </UL>
+  <LI> Is the token/token type/text location system too complex?
+       Often, one only cares about the token type.  E.g., a tokenizer
+       could be defined as mapping string to list of TokenType, and a
+       tagger as mapping list of SimpleTokenType to TaggedTokenType.
+       But sometimes we really need to be able to distinguish tokens,
+       not just token types.. e.g., to test the chunk parser from the
+       chunk parsing problem set.
+  <LI> How should text locations be represented?  character index?
+       token index?  To some extent, it dosen't matter, as long as
+       __cmp__ is properly defined.  Should text locations have ranges 
+       or just starting points?  etc.
+</UL>
+
+@exclude .*(?!Token).....Type
+@exclude ....Type
+@exclude ...Type
 @exclude _typemsg
 @exclude _Old.*
 
 @variable _type_safety_level The level of type safety to use when
 checking the input parameters to methods defined by the Natural
-Language Toolkit.  Currently defined values are 0 (no type checking);
-1 (check types only); 2 (check types and classes); and 3 (full type
-checking).  Note that using level 3 could potentially result in
-signifigant loss of efficiency.
+Language Toolkit.  Currently defined values are:
+<UL>
+  <LI> 0: no type checking
+  <LI> 1: check types only
+  <LI> 2: check types and classes
+  <LI> 3: check types, classes, list contents, and tuple contents
+  <LI> 4: check types, classes, list contents, tuple contents, and
+       dictionary contents.
+</UL>
+Higher levels of type safety (3-4) can result in signifigant loss of
+efficiency. 
 """
 
 from types import *
@@ -74,28 +206,37 @@ def make_docs(target='/home/edloper/html/'):
 # 0 = no type checks
 # 1 = just raw types
 # 2 = types & classes
-# 3 = full type safety
-_type_safety_level=3
+# 3 = types, classes, lists, & tuples
+# 4 = full type safety (types, classes, lists, tuples, dictionaries)
+_type_safety_level=4
     
 def _typemsg(types):
     """##
     Construct a string naming the given type specification.  This
-    function is intended soley for use by _chktype.
+    function is intended soley for use by _chktype.  However, it can
+    also be useful in making sure that you got your type
+    specification correct.
     """
     typestr = ''
     for typ in types:
         if type(typ) in (TypeType, ClassType):
-            typestr += typ.__name__
+            typestr = typestr + typ.__name__ + ' or'
         elif type(typ) == ListType:
-            typestr += '(list whose elements are: '+_typemsg(typ)+')'
+            typestr = typestr + '(list whose elements are: '+ \
+                      _typemsg(typ)+') or'
         elif type(typ) == TupleType:
-            typestr += '(tuple whose elements are: '+_typemsg(typ)+')'
+            typestr = typestr + '(tuple whose elements are: '+ \
+                      _typemsg(typ)+') or'
+        elif type(typ) == DictType:
+            for (key, val) in typ.items():
+                typestr = typestr + '(dictionary from ' + \
+                          _typemsg((key,)) + ' to ' + _typemsg(val) + \
+                          ') or'
         else:
             raise AssertionError('Bad arg to typemsg')
-        typestr = typestr + ' or'
     return typestr[:-3]
 
-def _chktype(name, n, arg, types):
+def _chktype(name, n, arg, types, d=0):
     """##
     Automated type-checking function for parameters of functions and
     methods.  This function will check to ensure that a given argument
@@ -104,7 +245,13 @@ def _chktype(name, n, arg, types):
     containing the name of the function or method, the argument
     number, and the allowable types. <P>
 
-    Soon, support will be added for dictionaries.
+    This function has a well-defined interface, and is designed for
+    efficient use; however, it should not necessarily be used by users 
+    of the toolkit, since it is somewhat advanced. <P>
+
+    This method does NOT handle recursive structures well; in
+    particular, recursive arguments may cause it to enter an infinite
+    loop. 
 
     @param name The name of the function or method whose parameter's
            type is being checked.
@@ -121,10 +268,12 @@ def _chktype(name, n, arg, types):
 
     @param types A list of the allowable types.  Each allowable type
            should be either a type (e.g., types.IntType); a class
-           (e.g., Token); a list of allowable types; or a tuple of
-           allowable types.  If the argument matches any of the
-           allowable types, then _chktype will return; otherwise, a
-           TypeError will be raised.  Matching is defined as follows:
+           (e.g., Token); a list of allowable types; a tuple of
+           allowable types; or a dictionary from allowable types to
+           lists of allowable types.  If the argument matches any of
+           the allowable types, then _chktype will return; otherwise,
+           a TypeError will be raised.  Matching is defined as
+           follows:
            <UL>
              <LI> An argument matches a type if its type is equal to
                   that type.
@@ -136,42 +285,84 @@ def _chktype(name, n, arg, types):
              <LI> An arguent matches a tuple if the argument is a tuple
                   and each element of the argument matches any element
                   of the allowable type tuple.
+             <LI> An argument matches a dictionary if the argument is
+                  a dictionary and for each (key, value) pair of the
+                  argument, there is some (key_t, value_t) pair in the
+                  allowable type dictionary such that key matches
+                  key_t and value matches some element of value_t.
            </UL>
     @type types List or Tuple
+    @see _type_safety_level
     """
+    # Unfortunately, this code is not really commented right now.
+    # It's by far the most complex/advanced code in this module, and
+    # isn't really intended to be played with.  It should be possible,
+    # if not easy, to figure out how it works, given its definition in 
+    # the __doc__ string.  I'll comment it one day, though.
     if _type_safety_level <= 0: return
+    _DEBUG=0
+    if _DEBUG: print ' '*d, 'Check', name, n, arg, types
     if type(types) not in (ListType, TupleType):
         raise AssertionError("_chktype expected a list of types/classes")
     for t in types:
         if type(t) == TypeType:
             if type(arg) == t: return
+        elif _type_safety_level <= 1:
+            return
         elif type(t) == ClassType:
-            if _type_safety_level <= 1: return
             if isinstance(arg, t): return
         elif type(t) == ListType:
-            if _type_safety_level <= 2: return
             if type(arg) == ListType:
+                if _type_safety_level <= 2: return
                 type_ok = 1
                 for elt in arg:
-                    try: _chktype(name, n, elt, t)
+                    try: _chktype(name, n, elt, t, d+4)
                     except: type_ok = 0
                 if type_ok: return
         elif type(t) == TupleType:
-            if _type_safety_level <= 2: return
             if type(arg) == TupleType:
+                if _type_safety_level <= 2: return
                 type_ok = 1
                 for elt in arg:
-                    try: _chktype(name, n, elt, t)
+                    try: _chktype(name, n, elt, t, d+4)
                     except: type_ok = 0
+                if type_ok: return
+        elif type(t) == DictType:
+            if type(arg) == DictType:
+                if _type_safety_level <= 3: return
+                type_ok = 1
+                for key in arg.keys():
+                    if t.has_key(type(key)):
+                        try: _chktype(name, n, arg[key], t[type(key)], 
+                                      d+4)
+                        except: type_ok = 0
+                    elif type(key) in (ListType, TupleType, DictType):
+                        subtype_ok = 0
+                        for t_key in t.keys():
+                            if type(key) == type(t_key):
+                                try:
+                                    _chktype(name, n, key, (t_key,), d+4)
+                                    _chktype(name, n, arg[key],
+                                             t[t_key], d+4)
+                                    subtype_ok = 1
+                                except: pass
+                        if not subtype_ok: type_ok = 0
+                    else:
+                        type_ok = 0
                 if type_ok: return
         else:
             raise AssertionError("_chktype expected a valid "+\
                                  "type specification.")
 
+    if _DEBUG: print ' '*d, 'raising on', arg
     # Type mismatch -- construct a user-readable error.
-    errstr = "argument " + `n` + " to " + name + "() must " +\
-             "have type: " + _typemsg(types)
-    raise TypeError(errstr)
+    errstr = "\n  Argument " + `n` + " to " + name + "() must " +\
+             "have type: "
+    typestr = _typemsg(types)
+    if len(typestr) + len(errstr) <= 75:
+        raise TypeError(errstr+typestr)
+    else:
+        raise TypeError(errstr+'\n      '+typestr)
 
 #################################################################
 ##  Set class
@@ -179,29 +370,33 @@ def _chktype(name, n, arg, types):
 
 class Set:
     """##
+
     An unordered container class that contains no duplicate elements.
     In particular, a set contains no elements e1 and e2 such that
-    e1==e2.  Currently, the Set class is given a fairly minimal
-    implementation.  However, more members (e.g., to iterate over a
-    set) may be defined in the future.
+    e1==e2.  Currently, the <CODE>Set</CODE> class is given a fairly
+    minimal implementation.  However, more members (e.g., to iterate
+    over a set) may be defined in the future.
 
-    Although the Set class attempts to ensure that it contains no
-    duplicate elements, it can only do so under the following
-    circumstances:
+    Although the <CODE>Set</CODE> class attempts to ensure that it
+    contains no duplicate elements, it can only do so under the
+    following circumstances:
+    
     <UL>
-      <LI> For all elements ei, ej added to the Set, ei==ej if and
-           only if ej==ei.  This should always be the case as long as
-           the elements in the Set use well-defined comparison
-           functions.  An example where it would not be the case would
-           be if ei defined __cmp__() to always return 0, and ej
-           defined __cmp__() to always return -1.
-      <LI> Mutable elements inserted in the Set are not modified after
-           they are inserted.
+      <LI> For all elements ei, ej added to the <CODE>Set</CODE>,
+           ei==ej if and only if ej==ei.  This should always be the
+           case as long as the elements in the <CODE>Set</CODE> use
+           well-defined comparison functions.  An example where it
+           would not be the case would be if ei defined
+           <CODE>__cmp__</CODE>() to always return 0, and ej defined
+           <CODE>__cmp__</CODE>() to always return -1.
+           
+      <LI> Mutable elements inserted in the <CODE>Set</CODE> are not
+           modified after they are inserted.
     </UL>
 
-    If these circumstances are not met, the Set will continue to
-    function, but it will no longer guarantee that it contains no
-    duplicate elements.
+    If these circumstances are not met, the <CODE>Set</CODE> will
+    continue to function, but it will no longer guarantee that it
+    contains no duplicate elements.
     """
     def __init__(self, *lst):
         """##
@@ -279,8 +474,10 @@ class Set:
         element <I>e</I> if and only if both <CODE>self</CODE> and
         <CODE>other</CODE> contain <I>e</I>. <P>
 
-        This method is invoked for expressions of the form
-        <CODE>set1 & set2</CODE>.
+        This method is invoked for expressions of the form:
+        <PRE>
+          set1 & set2
+        </PRE>.
         
         @param other The Set with which this Set will be intersected.
         @type other Set
@@ -298,8 +495,10 @@ class Set:
         if and only if either <CODE>self</CODE> or <CODE>other</CODE>
         contain <I>e</I>. <P>
         
-        This method is invoked for expressions of the form
-        <CODE>set1 | set2</CODE>.
+        This method is invoked for expressions of the form:
+        <PRE>
+          set1 | set2
+        </PRE>.
         
         @param other The Set with which this Set will be unioned.
         @type other Set
@@ -312,7 +511,7 @@ class Set:
         """##
         Return true if this set contains the given element.
         Formally, return true if and only if this Set contains an
-        element <I>e</I> such that <CODE>elt</CODE>==e.
+        element <I>e</I> such that <CODE>elt</CODE>==<I>e</I>.
         
         @param elt The element whose presence in the set is to be
                tested.
@@ -326,10 +525,12 @@ class Set:
         """##
         Return true if this set contains the given element.
         Formally, return true if and only if this Set contains an
-        element <I>e</I> such that <CODE>elt</CODE>==e.
+        element <I>e</I> such that <CODE>elt</CODE>==<I>e</I>.
         
-        This method is invoked for expressions of the form
-        <CODE>elt in set</CODE>.
+        This method is invoked for expressions of the form:
+        <PRE>
+          elt in set
+        </PRE>
         
         @param elt The element whose presence in the set is to be
                tested.
@@ -371,10 +572,14 @@ class Set:
         """##
         Return the informal string representation of this Set.  Sets
         are informally represented by strings of the form:
-        <CODE>{elt1, elt2, ..., eltn}</CODE>.
+        <PRE>
+          {elt1, elt2, ..., eltn}
+        </PRE>. 
         For example, the informal string representation of
-        <CODE>Set('apple', 'orange', 'pear')</CODE> is
-        <CODE>{'apple', 'orange', 'pear'}</CODE>.
+        <CODE>Set('apple', 'orange', 'pear')</CODE> is:
+        <PRE>
+          {'apple', 'orange', 'pear'}
+        </PRE>
 
         @return The informal string representation of this Set.
         @returntype string
@@ -413,6 +618,18 @@ class Set:
         if not isinstance(other, Set): return -1000
         return cmp(self._lst, other._lst)
 
+    def elements(self):
+        """##
+        Return a <CODE>list</CODE> of the elements in this
+        <CODE>Set</CODE>.  Changes to this <CODE>list</CODE> will not
+        be reflected in the <CODE>Set</CODE>, and changes in the
+        <CODE>Set</CODE> will not be reflected in this
+        <CODE>list</CODE>.  This function is intended to allow
+        iteration over a Set.
+        """
+        # We have to make a copy of the list.
+        return self._lst[:]
+
     def __hash__(self):
         """##
         Return the hash value for this Set.  If two Sets are equal,
@@ -444,7 +661,7 @@ class Token:
     An occurance of a single unit of text, such as a word or a
     punctuation mark.  A Token consists of a token type and a source.
     The token type is the unit of text (e.g., a specific word).
-    Source is the position at which this token occured in the
+    The source is the position at which this token occured in the
     text. <P>
 
     The precise defintion of what counts as a token type, or unit of
@@ -513,7 +730,7 @@ class TextLocationI:
         @return 0 if the given object is equal to this text location.
         @returntype int
         """
-        raise NotImplementedError()
+        raise AssertionError()
 
 class IndexTextLocation(TextLocationI):
     """##
@@ -553,14 +770,14 @@ class TokenTypeI:
     def __cmp__(self, other):
         """##
         Return 0 if the given object is equal to this token type.
-        Otherwise,  return a non-zero number.
+        Otherwise, return a non-zero number.
         
         @param other The object to compare this token type to.
         @type other any
         @return 0 if the given object is equal to this token type.
         @returntype int
         """
-        raise NotImplementedError()
+        raise AssertionError()
     
     def __hash__(self):
         """##
@@ -571,7 +788,7 @@ class TokenTypeI:
         @return The hash value for this token type.
         @returntype int
         """
-        raise NotImplementedError()
+        raise AssertionError()
 
 class SimpleTokenType(TokenTypeI):
     """##
@@ -592,7 +809,7 @@ class SimpleTokenType(TokenTypeI):
         self._name = name
     def __cmp__(self, other):
         # Inherit documentation from TokenTypeI
-        if not isinstance(other, SimpleToken): return -1000
+        if not isinstance(other, SimpleTokenType): return -1000
         else: return cmp(self._name, other._name)
     def __hash__(self):
         # Inherit documentation from TokenTypeI
@@ -652,7 +869,7 @@ class TaggedTokenType(TokenTypeI):
         self._tag = tag
     def __cmp__(self, other):
         # Inherit documentation from TokenTypeI
-        if not isinstance(other, SimpleToken): return -1000
+        if not isinstance(other, TaggedTokenType): return -1000
         elif self._tag != other.tag:
             return cmp(self._tag, other._tag)
         else:
@@ -741,7 +958,7 @@ class TokenizerI:
                 that are contained in <CODE>str</CODE>.
         @returntype list of Token
         """
-        raise NotImplementedError()
+        raise AssertionError()
 
 class SimpleTokenizer(TokenizerI):
     """##
@@ -789,9 +1006,9 @@ class TaggedTokenizer(TokenizerI):
 
 # class SyntaxNodeI:
 #     def tag(self):
-#         raise NotImplementedError()
+#         raise AssertionError()
 #     def setTag(self, tag):
-#         raise NotImplementedError()
+#         raise AssertionError()
 #     # also, all list functions??  
 
 # # Case sensitivity?
@@ -897,109 +1114,397 @@ class TaggedTokenizer(TokenizerI):
 ##  Event
 ##//////////////////////////////////////////////////////
 
-# Comparison of events!?!??
-class _OldEvent:
-    """##
-    The <CODE>Event</CODE> class represents events in a probability
-    space.  An <CODE>Event</CODE> is defined with respect to a
-    sample space, and can be thought of as a subset of that sample
-    space.  <CODE>Event</CODE>s can be defined either by specifying
-    the samples that make them up, or by means of a function.  <P/>
-
-    For example, consider the sample space composed of all integers.
-    We can define the following <CODE>Event</CODE>s in that sample
-    space:
-    <PRE>
-    e1 = Event(1, 2, 3)
-    e2 = Event(lambda x: x>0)
-    </PRE>
-
-    We can also test whether a sample is contained in an event:
-    <PRE>
-    if 1 in e1: print 'Event e1 contains 1'
-    </PRE>
-
-    Should we be able to test for subset?
-    <PRE>
-    if e1.is_subset(e2): print 'Event e1 is a subset of event e2'
-    </PRE>
-    """
-    # check whether all members of source are not functions or Events??
-    def __init__(self, *source):
-        self._range = None
-        if len(source) == 0:
-            raise TypeError("Event expected at least 1 argument")
-        if (len(source) == 1) and (type(source[0]) == FunctionType):
-            self._func = source[0]
-            self._set = None
-        else:
-            self._func = None
-            self._set = apply(Set, source)
-
-    def contains(self, sample):
-        if self._func:
-            return self._func(sample)
-        elif self._set:
-            return sample in self._set
-        else: raise AssertionError('Bad Event')
-          
-    def __contains__(self, elt):
-        return self.contains(elt)
-
-    def toSet(self, sample_space):
-        _chktype("toSet", 1, sample_space, (Set,))
-        if self._set:
-            return self._set.union(sample_space)
-        elif self._func:
-            self._set = Set()
-            for elt in sample_space:
-                if self._func(elt):
-                    self._set.append(elt)
-            return self._set
-        else: raise AssertionError('Bad Event')
-  
-    def toFunc(self):
-        if self._func:
-            return self._func
-        elif self._set:
-            return (lambda x:x in self._set)
-        else: raise AssertionError('Bad Event')
-
 class EventI:
     """##
-    An event
+    A subset of the samples that compose some sample space.  Note that 
+    this subset need not be finite.  Events are typically written as
+    the set of samples they contain, or as a function in first order
+    logic.  Examples are:
+    <PRE>
+      {1,2,3}
+      {x:x>0}
+    </PRE>
+
+    The only method that events are required to implement is
+    <CODE>__contains__()</CODE>, which tests whether a sample is a
+    contained by the event.  However, when possible, events should
+    also define the following methods:
+    <UL>
+      <LI> <CODE>__cmp__()</CODE>, which tests whether this event is
+           equal to another event.
+      <LI> <CODE>subset()</CODE>, which tests whether this event is a
+           subset of another event.
+      <LI> <CODE>superset()</CODE>, which tests whether this event is
+           a superset of another event.
+      <LI> <CODE>union()</CODE>, which returns an event containing the
+           union of this event's samples and another event's samples.
+      <LI> <CODE>intersection()</CODE>, which returns an event
+           containing the intersection of this event's samples and
+           another event's samples.
+      <LI> <CODE>samples()</CODE>, which returns a <CODE>Set</CODE>
+           containing all of the samples that are contained by this
+           event. 
+      <LI> <CODE>__len__()</CODE>, which returns the number of samples 
+           contained by this event.
+    </UL>
+    
+    Classes implementing the <CODE>EventI</CODE> interface may choose
+    to only support certain classes of samples, or may choose to only
+    support certain types of events as arguments to the optional
+    methods (<CODE>__cmp__</CODE>, <CODE>subset</CODE>, etc.).  If a
+    method is unable to return a correct result because it is given an 
+    unsupported type of sample or event, it should raise a
+    NotImplementedError.  (?? is this the right exception? use
+    NotSupportedError? ValueError? ??)
     """
     def __contains__(self, sample):
-        raise NotImplementedError()
+        """##
+        Return true if and only if the given sample is contained in
+        this event.  Return false if <CODE>sample</CODE> is not a
+        supported type of sample for this <CODE>Event</CODE> class.
+        
+        @return A true value if and only if the given sample is
+        contained in this event.
+        @returntype boolean
+        """
+        raise AssertionError()
+    
     def contains(self, sample):
+        """##
+        Return true if and only if the given sample is contained in
+        this event.  Return false if <CODE>sample</CODE> is not a
+        supported type of sample for this <CODE>Event</CODE> class.
+        
+        @return A true value if and only if the given sample is
+        contained in this event.
+        @returntype boolean
+        """
+        return self.__contains__(sample) # Is this ok?????
+    
+    def __cmp__(self, other):
+        # ok not to implement!
+        """##
+        Return 0 if the given object is equal to the event.  Formally, 
+        return 0 if and only if every sample contained by this event
+        is also contained by <CODE>other</CODE>, and every sample
+        contained by <CODE>other</CODE> is contained by this event.
+        Otherwise, return some nonzero number.
+        
+        @param other The object to compare this event to.
+        @type other Event
+        @return 0 if the given object is equal to this event.
+        @returntype int
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError If <CODE>other</CODE> is not an
+               Event, or is not a supported Event type.
+        """
         raise NotImplementedError()
-    def __cmp__(self, other): # ok not to implement!
+    
+    def subset(self, other):
+        """##
+        Return true if this event is a subset of the given 
+        event.  Formally, return true if and only if every sample
+        contained by this event is contained by <CODE>other</CODE>.
+        
+        @param other The object to compare this event to.
+        @type other Event
+        @return true if this event is a subset of the given event.
+        @returntype boolean
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError If <CODE>other</CODE> is not a
+               supported Event type.
+        """
+        # ok not to implement!
         raise NotImplementedError()
+    
+    def superset(self, other):
+        """##
+        Return true if this event is a superset of the given 
+        event.  Formally, return true if and only if every sample
+        contained by <CODE>other</CODE> is contained by this event.
+        
+        @param other The object to compare this event to.
+        @type other Event
+        @return true if this event is a superset of the given event.
+        @returntype boolean
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError If <CODE>other</CODE> is not a
+               supported Event type.
+        """
+        # ok not to implement!
+        raise NotImplementedError()
+    
+    def samples(self):
+        """##
+        Return a <CODE>Set</CODE> containing all of the samples
+        contained by this event.  The effects of changes to this
+        <CODE>Set</CODE> on the <CODE>Event</CODE> are undefined.  The 
+        effects of changes to the <CODE>Event</CODE> on this
+        <CODE>Set</CODE> are also undefined.
+        
+        @return The set of samples contained in this event.
+        @returntype Set
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        """
+        # ok not to implement!
+        raise NotImplementedError()
+
+    def __len__(self):
+        """##
+        Return the number of samples contained by this event.  If this 
+        event contains an infinite number of samples, return None.  If 
+        this event is unable to determine how many samples are
+        contained, raise NotImplementedError.
+
+        @return The number of samples contained by this event.
+        @returntype int
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        """
+    def union(self, other):
+        """##
+        Return an event containing the union of this event's samples
+        and another event's samples.  Formally, return an event that
+        contains a sample if and only if either self or other contains 
+        that sample.
+
+        @param other The <CODE>Event</CODE> with which to union this
+               <CODE>Event</CODE>.
+        @type other Event
+        @return An event containing the union of this event's samples
+                and another event's samples.
+        @returntype Event
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError If <CODE>other</CODE> is not a
+               supported Event type.
+        """
+        raise NotImplementedError()
+    
+    def intersection(self, other):
+        """##
+        Return an event containing the intersection of this event's
+        samples and another event's samples.  Formally, return an
+        event that contains a sample if and only if both self and
+        other contains that sample.
+
+        @param other The <CODE>Event</CODE> with which to intersection
+               this <CODE>Event</CODE>.               
+        @type other Event
+        @return An event containing the intersection of this event's
+                samples and another event's samples.
+        @returntype Event
+        @raise NotImplementedError If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError If <CODE>other</CODE> is not a
+               supported Event type.
+        """
+        raise NotImplementedError()
+    
 
 class SampleEvent(EventI):
+    """##
+    An <CODE>Event</CODE> containing a single sample.
+    """
     def __init__(self, sample):
+        """##
+        Construct a new <CODE>SampleEvent</CODE>, containing only the
+        given sample.
+        @param sample The sample that the new event should contain.
+        @type sample any
+        """
         self._sample = sample
     def __contains__(self, sample):
+        # Inherit docs from EventI
         return sample == self._sample
     def contains(self, sample):
+        # Inherit docs from EventI
         return sample == self._sample
+    def __cmp__(self, other):
+        # Inherit docs from EventI
+        return self.samples() == other.samples()
+    def subset(self, other):
+        # Inherit docs from EventI
+        return self._sample in other
+    def superset(self, other):
+        # Inherit docs from EventI
+        if isinstance(other, SampleEvent):
+            return self._sample == other._sample
+        elif isinstance(other, SetEvent):
+            return (len(other) == 0) or \
+                   (len(other) == 1 and self._sample in other)
+        else:
+            raise NotImplementedError()
+    def union(self, other): 
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a or x in b))
+        return FuncEvent(f)
+    def intersection(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x in b))
+        return FuncEvent(f)
+    def samples(self):
+        # Inherit docs from EventI
+        return Set(self._sample)
+    def __len__(self):
+        # Inherit docs from EventI
+        return 1
+    def sample(self):
+        """##
+        Return the single sample contained by this
+        <CODE>SampleEvent</CODE>.
+        @return The single sample contained by this
+        <CODE>SampleEvent</CODE>.
+        @returntype any
+        """
+        return self._sample
   
 class SetEvent(EventI):
+    """##
+    An <CODE>Event</CODE> whose samples are defined by a Set.
+    """
     def __init__(self, set):
+        """##
+        Construct a new <CODE>SetEvent</CODE>, whose samples are the
+        elements of the given set.
+        @param set The set of samples that the new event should
+               contain.
+        @type set Set
+        """
         self._set = set
     def __contains__(self, sample):
+        # Inherit docs from EventI
         return sample in self._set
     def contains(self, sample):
+        # Inherit docs from EventI
         return sample in self._set
+    def __cmp__(self, other):
+        # Inherit docs from EventI
+        return self.samples() == other.samples()
+    def subset(self, other):
+        # Inherit docs from EventI
+        for elt in self._set.elements():
+            if elt not in other: return 0
+        return 1
+    def superset(self, other):
+        # Inherit docs from EventI
+        if isinstance(other, SampleEvent):
+            return other.sample() in self
+        elif isinstance(other, SetEvent):
+            return other.subset(self)
+        else:
+            raise NotImplementedError()
+    def union(self, other): 
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x in b))
+        return FuncEvent(f)
+    def intersection(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a or x in b))
+        return FuncEvent(f)
+    def samples(self):
+        # Inherit docs from EventI
+        # Make a copy -- it's safer.
+        return self._set.copy()
+    def __len__(self):
+        # Inherit docs from EventI
+        return len(self._set)
 
 class FuncEvent(EventI):
+    """##
+    An <CODE>Event</CODE> whose samples are defined by a function.
+    This function should return 1 for any samples contained in the
+    <CODE>Event</CODE>, and 0 for any samples not contained in the
+    <CODE>Event</CODE>.  <CODE>FuncEvent</CODE>s are often created
+    using <CODE>lambda</CODE> expressions.  Examples, with their
+    corresponding sets, are:
+    <PRE>
+    e1 = FuncEvent(lambda x:x>3)            <I>{x:x>3}</I>
+    e2 = FuncEvent(lambda x:x[0:2]=='hi')   <I>{x:x[0:2]=='hi'}</I>
+    </PRE>
+    """
     def __init__(self, func):
+        """##
+        Construct a new <CODE>FuncEvent</CODE> from the given
+        function.  The function should return 1 for any samples
+        contained in the <CODE>Event</CODE>, and 0 for any samples not 
+        contained in the <CODE>Event</CODE>.
+        @param func A function specifying what samples are in this
+               <CODE>Event</CODE>.
+        @type func Function or BuiltinFunction
+        """
         self._func = func
     def __contains__(self, sample):
         return self._func(sample) != 0
     def contains(self, sample):
         return self._func(sample) != 0
+    def __cmp__(self, other):
+        "## Not implemented by this Event class."
+        raise NotImplementedError()
+    def subset(self, other): 
+        "## Not implemented by this Event class."
+        raise NotImplementedError()
+    def superset(self, other):
+        # Inherit docs from EventI
+        if isinstance(other, SampleEvent):
+            return other.sample() in self
+        elif isinstance(other, SetEvent):
+            for elt in other.samples().elements():
+                if elt not in self: return 0
+            return 1
+        else:
+            raise NotImplementedError()
+    def union(self, other): 
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x in b))
+        return FuncEvent(f)
+    def intersection(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a or x in b))
+        return FuncEvent(f)
+    def samples(self):
+        "## Not implemented by this Event class."
+        raise NotImplementedError()
+    def __len__(self): 
+        "## Not implemented by this Event class."
+        raise NotImplementedError()
 
+class NullEvent(EventI):
+    """##
+    An event that contains no samples.
+    """
+    def __contains__(self, sample): return 0
+    def contains(self, sample): return 0
+    def __cmp__(self, other): return len(other)==0
+    def subset(self, other): return 1
+    def superset(self, other): return len(other)==0
+    def union(self, other): return other
+    def intersection(self, other): return self
+    def samples(self): return Set()
+    def __len__(self): return 0
+
+class UniversalEvent(EventI):
+    """##
+    An event that contains every sample.
+    """
+    def __contains__(self, sample): return 1
+    def contains(self, sample): return 1
+    def __cmp__(self, other):
+        if isinstance(other, UniversalEvent): return 1
+        else: raise NotImplementedError()
+    def subset(self, other): return self==other
+    def superset(self, other): return 1
+    def union(self, other): return self
+    def intersection(self, other): return other
+    def samples(self): 
+        "## Not implemented by this Event class."
+        raise NotImplementedError()
+    def __len__(self): return None
+        
 ##//////////////////////////////////////////////////////
 ##  Frequency Distribution
 ##//////////////////////////////////////////////////////
@@ -1035,19 +1540,19 @@ class FreqDistI:
     </UL>
     """
     def inc(self, sample):
-        raise NotImplementedError()
+        raise AssertionError()
     def N(self):
-        raise NotImplementedError()
+        raise AssertionError()
     def freq(self, event):
-        raise NotImplementedError()
+        raise AssertionError()
     def count(self, event):
-        raise NotImplementedError()
+        raise AssertionError()
     def cond_freq(self, event, condition): 
-        raise NotImplementedError()
+        raise AssertionError()
     def sampleSet(self):
         """## Return a set containing all samples that make up this
         FreqDist. """
-        raise NotImplementedError()
+        raise AssertionError()
 
 class SimpleFreqDist:
     def __init__(self):
@@ -1241,8 +1746,8 @@ class TaggerI:
     """##
     Interface for taggers, which map [Word] -> [TaggedWord]
     """
-    def tag(self, words): 
-        raise NotImplementedError()
+    def tag(self, tokens): 
+        raise AssertionError()
 
 class NN_CD_Tagger(TaggerI):
     def __init__(self): pass
@@ -1339,4 +1844,3 @@ def test_tagger():
     s = ''
     for t in ft.tag(tokens): s += str(t.type())
     return s
-    
