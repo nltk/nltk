@@ -527,7 +527,7 @@ def _demo_tagger(gold_documents, tagger):
 
     for gold_doc in gold_documents:
         # Remove tags to create the test document
-        test_doc = Token(SUBTOKENS=[tok.exclude('TAG') for tok in gold_doc['SUBTOKENS']])
+        test_doc = gold_doc.exclude('TAG')
 
         # Now tag the test document
         tagger.tag(test_doc)
