@@ -122,7 +122,7 @@ import sys, os.path, re
 from nltk.tokenizer import WSTokenizer, RegexpTokenizer
 from nltk.token import Token, CharSpanLocation, SpanLocation
 from nltk.tagger import TaggedTokenizer
-#from nltk.tree import TreebankTokenizer
+from nltk.tree import TreebankTokenizer
 #from nltk.parser.chunk import ChunkedTaggedTokenizer, ConllChunkedTokenizer
 
 #################################################################
@@ -837,9 +837,9 @@ class TreebankCorpusReader(CorpusReaderI):
     A corpus reader implementation for the Treebank.
     """
     # Default tokenizers.
-    #_ws_tokenizer = WSTokenizer()
-    #_tb_tokenizer = TreebankTokenizer()
-    #_tag_tokenizer = TaggedTokenizer()
+    _ws_tokenizer = WSTokenizer()
+    _tb_tokenizer = TreebankTokenizer()
+    _tag_tokenizer = TaggedTokenizer()
     
     def __init__(self, name, rootdir, description_file=None,
                  license_file=None, copyright_file=None):
@@ -985,7 +985,8 @@ class TreebankCorpusReader(CorpusReaderI):
         return item_token
 
     def xtokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._default_tokenizer
+        if tokenizer is None:
+            tokenizer = self._tokenizer(item)
         item_token = self.xread(item)
         tokenizer.xtokenize(item_token)
         return item_token
@@ -1354,9 +1355,15 @@ def _test_treebank():
     m = treebank.items('merged')[0]
     for (name, item) in zip('rtpm', (r, t, p, m)):
         contents = treebank.read(item)
-        tokenized = treebank.tokenize(item)
-        print 'read(%s)       => %s' % (name, _truncate_repr(contents, 70-17))
-        print 'tokenize(%s)   => %s' % (name, _truncate_repr(tokenized, 70-17))
+        print 'read(%s)       => %s' % (name, _truncate_repr(contents, 70,17))
+        try:
+            tok = treebank.xtokenize(item)
+            tokrepr = _xtokenize_repr(tok.exclude('loc'), 70,17,2)
+            print 'tokenize(%s)   => %s' % (name, tokrepr)
+        except NotImplementedError:
+            tok = treebank.tokenize(item)
+            tokrepr = _truncate_repr(tok.exclude('loc'), 70,17,2)
+            print 'tokenize(%s)   => %s' % (name, tokrepr)
 
 def demo():
     """
@@ -1369,7 +1376,7 @@ def demo():
     _test_corpus(words)
     #_test_corpus(semcor)
     #_test_corpus(senseval)
-    #_test_treebank()
+    _test_treebank()
     print '='*70
     
 if __name__ == '__main__':
