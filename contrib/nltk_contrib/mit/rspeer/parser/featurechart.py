@@ -250,8 +250,8 @@ def demo():
 
 	sent = Token(TEXT='I saw John with a dog with my cookie')
 	print "Sentence:\n", sent
-	from nltk.tokenizer import WSTokenizer
-	WSTokenizer().tokenize(sent)
+	from nltk.tokenizer import WhitespaceTokenizer
+	WhitespaceTokenizer().tokenize(sent)
 	t = time.time()
 	cp = FeatureEarleyChartParser(earley_grammar, earley_lexicon,
 						   LEAF='TEXT', trace=1)

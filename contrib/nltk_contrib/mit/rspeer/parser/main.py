@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from readfile import GrammarFile
 from featurechart import *
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 
 NAME = '6.863 Earley Parser'
 DATE = 'June 3, 2004'
@@ -13,14 +13,14 @@ def demo():
 	gfile = GrammarFile.read_file('test.cfg')
 	cp = gfile.earley_parser()
 	sent = Token(TEXT='Poirot sent the solutions')
-	WSTokenizer().tokenize(sent)
+	WhitespaceTokenizer().tokenize(sent)
 	cp.parse_n(sent)
 	for tree in sent['TREES']: print tree
 
 def text_parse(grammar, sentence, trace=2, drawtrees=False, latex=False):
 	parser = grammar.earley_parser(trace=trace)
 	sent = Token(TEXT=sentence)
-	WSTokenizer().tokenize(sent)
+	WhitespaceTokenizer().tokenize(sent)
 	parser.parse_n(sent)
 	for tree in sent['TREES']: print tree
 

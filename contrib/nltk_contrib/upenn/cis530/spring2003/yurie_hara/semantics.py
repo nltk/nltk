@@ -18,7 +18,7 @@ __docformat__ = 'plaintext'
 
 from nltk.cfg import CFG, CFGProduction, Nonterminal
 from nltk.parser.chart import *
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 from nltk.tree import *
 
 def GetLambda(lex, word):
@@ -205,7 +205,7 @@ def demo():
     parser = IncrementalChartParser(grammar, INCREMENTAL_TD_STRATEGY)
 
     # Create a tokenizer
-    tokenizer = WSTokenizer()
+    tokenizer = WhitespaceTokenizer()
 
     # Parse the sentences
     parses = []

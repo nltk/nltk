@@ -774,7 +774,7 @@ def stem_file(input_file):
 
     # reading in the input file          
     text=open(input_file).read()
-    all_tokens=WSTokenizer().tokenize(text)
+    all_tokens=WhitespaceTokenizer().tokenize(text)
     stemmed_toks=[]
 
     # stemming process
@@ -806,8 +806,6 @@ def demo(targetfile):
 if __name__ == '__main__':
     from nltk.corpus import gutenberg
     demo(gutenberg.path('blake-poems.txt'))
-
-
 
 
     

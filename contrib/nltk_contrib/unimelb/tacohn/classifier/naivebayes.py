@@ -39,7 +39,7 @@ from nltk_contrib.unimelb.tacohn.classifier import *
 from nltk_contrib.unimelb.tacohn.classifier.feature import *
 from nltk.probability import *
 from nltk.token import Token
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 from nltk.corpus import brown
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import type_safety_level
@@ -472,7 +472,7 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
     
     if debug: print _timestamp(), ('%d tokens, %d labels' % (len(labeled_tokens), 
                                      len(classifier.labels())))
-    toks = WSTokenizer().tokenize("jury the reports aweerdr "+
+    toks = WhitespaceTokenizer().tokenize("jury the reports aweerdr "+
                                   "atlanta's atlanta_s moowerp's")
     
     #import time
