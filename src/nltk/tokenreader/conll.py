@@ -32,8 +32,18 @@ class ConllTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         PropertyIndirectionMixIn.__init__(self, **property_names)
         self._chunk_types = chunk_types
 
-    def read_token(self, s, source=None):
-
+    def read_token(self, s, add_contexts=False, add_locs=False, source=None):
+        """
+        @return: A token containing the chunked tagged text that is
+            encoded in the given CONLL 2000 style string.
+        @rtype: L{Token}
+        @param add_contexts: If true, then add a subtoken context
+            pointer to each subtoken.
+        @param add_locs: If true, then add locations to each subtoken.
+            Locations are based on sentence and word index numbers.
+        @param source: The soruce for subtokens' locations (ignored
+            unless C{add_locs=True}
+        """
         sentences = re.split('\s*\n\s*\n\s*', s)
         if sentences[0] == '': sentences = sentences[1:]
         if sentences[-1] == '': sentences = sentences[:-1]
@@ -41,10 +51,42 @@ class ConllTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         sent_toks = [self._read_sent(sent, source)
                      for sent in sentences]
 
-        return Token(SENTS=sent_toks)
+        result = Token(SENTS=sent_toks)
 
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
+        # Add locations, if requested.
+        if add_locs:
+            for sent_num, sent_tok in enumerate(sent_toks):
+                sent_loc = SentIndexLocation(sent_num, source)
+                sent_tok['LOC'] = sent_loc
+                for word_num, word_tok in enumerate(sent_tok['WORDS']):
+                    word_loc = WordIndexLocation(word_num, sent_loc)
+                    word_tok['LOC'] = word_loc
+
+        # Add contexts, if requested.
+        if add_contexts:
+            for sent_num, sent_tok in enumerate(sent_toks):
+                context = SubtokenContextPointer(result, 'SENTS', sent_num)
+                sent_tok['CONTEXT'] = context
+                for word_num, word_tok in enumerate(sent_tok['WORDS']):
+                    context = SubtokenContextPointer(result,'WORDS',word_num)
+                    word_tok['CONTEXT'] = context
+
+        return result
+
+    def read_tokens(self, s, add_contexts=False, add_locs=False, source=None):
+        """
+        @return: A list containing a single token, containing the
+            chunked tagged text that is encoded in the given CONLL
+            2000 style string.
+        @rtype: L{Token}
+        @param add_contexts: If true, then add a subtoken context
+            pointer to each subtoken.
+        @param add_locs: If true, then add locations to each subtoken.
+            Locations are based on sentence and word index numbers.
+        @param source: The soruce for subtokens' locations (ignored
+            unless C{add_locs=True}
+        """
+        return [self.read_token(s, add_contexts, add_locs, source)]
     
     _LINE_RE = re.compile('(\S+)\s+(\S+)\s+([BIO])-?(\S+)?')
     def _read_sent(self, s, source):
