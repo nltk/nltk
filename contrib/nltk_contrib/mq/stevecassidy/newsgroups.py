@@ -251,10 +251,10 @@ class my_twenty_tokenizer(AbstractTokenizer):
         assert chktype(1, text, str)
         return [s for s in text.split('\n') if s.strip() != '']
 
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, add_locs=False):
         # Delegate to self.raw_tokenize()
         assert chktype(1, token, Token)
-        self._tokenize_from_raw(token, addlocs)
+        self._tokenize_from_raw(token, add_locs)
 	# now we categorize the tokens and split them further
         wordtoks = []
         for tok in token['SUBTOKENS']:
