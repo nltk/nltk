@@ -289,6 +289,8 @@ class Set:
         r = self.recall(other)
         if p is None or r is None:
             return None
+        if p == 0 or r == 0:
+            return 0
         return 1/(alpha/p + (1-alpha)/r)
 
     def __repr__(self):
