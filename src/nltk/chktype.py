@@ -12,7 +12,7 @@ Type checking support for NLTK.
 
 Type checking for the parameters of functions and methods is performed
 using the C{chktype} function.  This function should be used in
-conjunction with an C{assert} statement:
+conjunction with an C{assert} statement::
 
     assert chktype(...)
 
@@ -91,7 +91,9 @@ def classeq(instance1, instance2):
         class.
     @rtype: C{bool}
     """
-    return instance1.__class__ == instance2.__class__
+    return (type(instance1) == _InstanceType and
+            type(instance2) == _InstanceType and
+            instance1.__class__ == instance2.__class__)
 
 def _typemsg(types):
     """
