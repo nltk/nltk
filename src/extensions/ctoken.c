@@ -177,7 +177,9 @@ int check_location_contexts_eq(PyObject *c1, PyObject *c2) {
     if (PyObject_Cmp(GET_LC_UNIT(c1), GET_LC_UNIT(c2), &result) == -1)
         return 0;
     if (result != 0) {
-        PyErr_SetString(PyExc_ValueError, LOC_ERROR_003);
+        PyErr_Format(PyExc_ValueError, LOC_ERROR_003,
+                     PyString_AS_STRING(PyObject_Repr(GET_LC_UNIT(c1))),
+                     PyString_AS_STRING(PyObject_Repr(GET_LC_UNIT(c2))));
         return 0;
     }
 
@@ -185,7 +187,9 @@ int check_location_contexts_eq(PyObject *c1, PyObject *c2) {
     if (PyObject_Cmp(GET_LC_SOURCE(c1), GET_LC_SOURCE(c2), &result) == -1)
         return 0;
     if (result != 0) {
-        PyErr_SetString(PyExc_ValueError, LOC_ERROR_004);
+        PyErr_Format(PyExc_ValueError, LOC_ERROR_004,
+                     PyString_AS_STRING(PyObject_Repr(GET_LC_SOURCE(c1))),
+                     PyString_AS_STRING(PyObject_Repr(GET_LC_SOURCE(c2))));
         return 0;
     }
 
@@ -267,10 +271,8 @@ nltkLocation__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
         self->end = PyInt_AS_LONG(end);
 
         /* Check that end<start */
-        if (self->end < self->start) {
-            PyErr_SetString(PyExc_ValueError, LOC_ERROR_001);
-            return NULL;
-        }
+        if (self->end < self->start)
+            return PyErr_Format(PyExc_ValueError, LOC_ERROR_001);
     }
 
     /* Set the unit & source.  Both default to NULL. */
@@ -491,9 +493,7 @@ static int nltkLocation__cmp__(nltkLocation *self, nltkLocation *other)
 /* hash(self) */
 static long nltkLocation__hash__(nltkLocation *self)
 {
-    /* It's unusual for 2 different locations to share a start offset
-       (for a given unit/source); so just hash off the start. */
-    return self->start;
+    return self->start + 5003*self->end;
 }
 
 /* self+other */
@@ -502,10 +502,9 @@ static long nltkLocation__hash__(nltkLocation *self)
 static nltkLocation *nltkLocation__add__(nltkLocation *self,
                                          nltkLocation *other) {
     /* Check type(other) */
-    if (!nltkLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, LOC_ERROR_002);
-        return NULL;
-    }
+    if (!nltkLocation_Check(other))
+        return (nltkLocation*) PyErr_Format(PyExc_TypeError, LOC_ERROR_002,
+                                        other->ob_type->tp_name);
 
     if (!CHECK_LOCATION_CONTEXTS_EQ(self->context, other->context))
         return NULL;
@@ -520,10 +519,14 @@ static nltkLocation *nltkLocation__add__(nltkLocation *self,
         loc->end = nltkLocation_END(self);
         return loc;
     }
-    else {
-        PyErr_SetString(PyExc_ValueError, LOC_ERROR_005);
-        return NULL;
-    }
+    else if (self->start < other->start)
+        return (nltkLocation*) PyErr_Format(PyExc_ValueError, LOC_ERROR_005,
+                       PyString_AS_STRING(PyObject_Repr((PyObject*)self)),
+                       PyString_AS_STRING(PyObject_Repr((PyObject*)other)));
+    else
+        return (nltkLocation*) PyErr_Format(PyExc_ValueError, LOC_ERROR_005,
+                       PyString_AS_STRING(PyObject_Repr((PyObject*)self)),
+                       PyString_AS_STRING(PyObject_Repr((PyObject*)other)));
 }
 
 /* getattr(self, name) */
@@ -762,7 +765,7 @@ static PyObject *getPropertyNameList(PyObject *prop_array[], int size) {
             for (j=0; j<size; j++)
                 if (PyList_GET_ITEM(pnl_cache[i], j) !=
                     PropArray_NAME(prop_array,j))
-                    j = size+1; /* Mismatch; go to the next cache cell */
+                    break; /* Mismatch; go to the next cache cell */
             if (j == size) {
                 /* This cache cell matches prop_array, so return it.
                  * But first, we have to make sure the reference
@@ -911,10 +914,8 @@ nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
     nltkType *self;
     
     /* Check that there are no positional arguments. */
-    if (PyObject_Length(args) != 0) {
-        PyErr_SetString(PyExc_TypeError, TYPE_ERROR_001);
-        return NULL;
-    }
+    if (PyObject_Length(args) != 0)
+        return (nltkType*) PyErr_Format(PyExc_TypeError, TYPE_ERROR_001);
 
     /* Special case: no keyword arguments */
     if (keywords == NULL) {
@@ -990,7 +991,7 @@ static PyObject *nltkType_get(nltkType *self, PyObject *args)
         }
 
     /* We couldn't find it. */
-    PyErr_SetString(PyExc_KeyError, TYPE_ERROR_002);
+    PyErr_Format(PyExc_KeyError, TYPE_ERROR_002, PyString_AS_STRING(property));
     Py_DECREF(property);
     return NULL;
 }
@@ -1049,10 +1050,8 @@ nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords)
     nltkType *newobj;
     
     /* Check that there are no positional arguments. */
-    if (PyObject_Length(args) != 0) {
-        PyErr_SetString(PyExc_TypeError, TYPE_ERROR_003);
-        return NULL;
-    }
+    if (PyObject_Length(args) != 0)
+        return (nltkType*)PyErr_Format(PyExc_TypeError, TYPE_ERROR_003);
 
     /* If keywords==null, then just return ourself */
     if (keywords == NULL) {
@@ -1126,10 +1125,9 @@ nltkType_select(nltkType *self, PyObject *args)
     for (i=0; i<size; i++)
         if (PyString_Check(PyTuple_GET_ITEM(args, i)))
             PyString_InternInPlace(&PyTuple_GET_ITEM(args, i));
-        else {
-            PyErr_SetString(PyExc_TypeError, TYPE_ERROR_006);
-            return NULL;
-        }
+        else
+            PyErr_Format(PyExc_TypeError, TYPE_ERROR_006,
+                         PyTuple_GET_ITEM(args, i)->ob_type->tp_name);
 
     /* Create the property array.  This is an array of alternating
      * names & values. */
@@ -1155,11 +1153,27 @@ nltkType_select(nltkType *self, PyObject *args)
         }
     }
 
-    /* NOTE: THIS CURRENTLY IGNORES EXTRA PROPERTIES.  IS THAT OK? */
+    /* If n<size, then one of two things happend: either args
+     * contained duplicates, or it included a property name that is
+     * not present in this type.  The former is harmless; but for the
+     * latter, we should raise a KeyError exception. */
+    if (n<size) {
+        /* Loop through each property name in args, and check that it
+         * is defined by self.  "j" is the index into args, and "i" is
+         * the index into self->prop_names. */
+        for (j=0; j<size; j++) {
+            for (i=0; i<self->ob_size; i++)
+                if (nltkType_PROP_NAME(self, i) ==
+                    PyTuple_GET_ITEM(args, j))
+                    break; /* We found this property name. */
+            if (i == self->ob_size)
+                PyErr_Format(PyExc_KeyError, TYPE_ERROR_007,
+                             PyString_AS_STRING(PyTuple_GET_ITEM(args, j)));
+        }
+    }
 
     /* Free the property array and return the new object.  Note that
-     * we use "n" for the property array size, not "size".  (n>size
-     * iff any properties were redefined.) */
+     * we use "n" for the property array size, not "size". */
     newobj = nltkTypeFromPropArray(self->ob_type, prop_array, n);
     PyMem_Free(prop_array);
     return newobj;
