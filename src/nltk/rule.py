@@ -2,16 +2,14 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
+#         Edward Loper <edloper@ldc.upenn.edu> (minor additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-
-# To do:
-#    - type checks
 
 """
 The rule module defines the C{Rule} class to represent simple
 rewriting rules, and the C{DottedRule} class to represented "dotted"
-rules used by chart parsers.
+rules used by chart parsers.  Both kinds of rule are immutable.
 """
 
 from token import *
@@ -24,55 +22,46 @@ class Rule:
     """
     A context-free grammar rule.
 
-    @type _lhs: C{string}
+    We do not hardcode any distinction between lexical and grammatical
+    rules.  The terminals and non-terminals can be any Python type.
+
+    @type _lhs: C{object}
     @ivar _lhs: The left-hand side of the rule, a non-terminal
-    @type _rhs: C{tuple} of C{string}s
+    @type _rhs: C{tuple} of C{objects}s
     @ivar _rhs: The right-hand side of the rule, a list of terminals
           and non-terminals.
     """
-    # [edloper 8/14/01] Do we want to require that lhs is a string?
-    # Should rhs be a tuple of strings, or what?  At the very least,
-    # we should require that terminals and nonterminals be immutable
-    # values.  But it might make sense to have generic Types as
-    # terminals, not just strings.  Also, how do we distinguish
-    # terminals from non-terminals, esp if the terminals *are* strings?
-    # [edloper 09/27/01] This isn't a problem if we assume that
-    # everything Rule is either a lexical rule or a non-lexical rule,
-    # and non-lexical rules have only nonterminals on the right..  But
-    # although that's fine for chart parsing, it might be annoying
-    # later if we decide to use Rule in other contexts..
 
     def __init__(self, lhs, rhs):
         """
         Construct a new C{Rule}.
 
         @param lhs: The left-hand side of the new C{Rule}.
-        @type lhs: C{string}
+        @type lhs: C{object}
         @param rhs: The right-hand side of the new C{Rule}.
-        @type rhs: C{tuple} of C{string}s
+        @type rhs: C{tuple} of C{objects}s
         """
-        # add type checks?
         self._lhs = lhs
         self._rhs = rhs
 
     def lhs(self):
         """
         @return: the left-hand side of the C{Rule}.
-        @rtype: C{string}
+        @rtype: C{object}
         """
         return self._lhs
 
     def rhs(self):
         """
         @return: the right-hand side of the C{Rule}.
-        @rtype: C{string}
+        @rtype: C{object}
         """
         return self._rhs
 
     def __getitem__(self, index):
         """
         @return: the specified rhs element (or the whole rhs).
-        @rtype: C{string} or C{tuple} of C{string}s
+        @rtype: C{object} or C{tuple} of C{objects}s
         @param index: An integer or slice indicating which elements to 
             return.
         @type index: C{int} or C{slice}
@@ -96,8 +85,6 @@ class Rule:
         @return: a pretty-printed version of the C{Rule}.
         @rtype: C{string}
         """
-        # [edloper 8/14/01] Are we assuming that terminals and
-        # nonterminals are all strings?
         return str(self._lhs) + ' -> ' + ''.join([str(s) for s in self._rhs])
 
     def __repr__(self):
@@ -105,10 +92,7 @@ class Rule:
         @return: A concise string representation of the C{Rule}.
         @rtype: C{string}
         """
-        str = repr(self._lhs) + ' ->'
-        for c in self._rhs:
-            str += ' '+repr(c)
-        return str
+        return 'Rule(' + repr(self._lhs) + ', ' + repr(self._rhs) + ')'
 
     def __str__(self):
         """
@@ -156,15 +140,15 @@ class DottedRule(Rule):
     The "dot" is a distinguished position at the boundary of any
     element on the right-hand side of the rule.
 
-    @type _lhs: C{string}
+    @type _lhs: C{object}
     @ivar _lhs: The left-hand side of the rule, a non-terminal
-    @type _rhs: C{tuple} of C{string}s
+    @type _rhs: C{tuple} of C{object}s
     @ivar _rhs: The right-hand side of the rule, a list of terminals
           and non-terminals.
     @type _pos: C{int}
     @ivar _pos: The position of the dot.
     """
-    # [edloper 09/27/01] DottedRule is now immutable.
+
     def __init__(self, lhs, rhs, pos=0):
         """
         Construct a new C{DottedRule}.
@@ -221,22 +205,23 @@ class DottedRule(Rule):
         """
         return DottedRule(self._lhs, self._rhs, self._pos)
 
-    # [edloper 8/14/01] Again, are we assuming that all
-    # terminals/nonterminals are strings?
     def pp(self):
         """
         @return: a pretty-printed version of the C{DottedRule}.
         @rtype: C{string}
         """
-        drhs = self._rhs[:self._pos] + ('*',) + self._rhs[self._pos:]
-        return self._lhs + ' -> ' + ''.join(drhs)
+        return str(self._lhs) + ' -> ' +\
+               ''.join([str(item) for item in self._rhs[:self._pos]]) +\
+               ' * ' +\
+               ''.join([str(item) for item in self._rhs[self._pos:]])
 
     def __repr__(self):
         """
         @return: A concise string representation of the C{DottedRule}.
         @rtype: C{string}
         """
-        return Rule.__repr__(self) + '[' + `self._pos` + ']'
+        return 'Rule(' + repr(self._lhs) + ', ' +\
+               repr(self._rhs) + ', ' + `self._pos` + ')'
 
     def __str__(self):
         """
