@@ -90,7 +90,7 @@ class Category(FeatureStruct, Nonterminal):
 	def symbol(self):
 		return self._features.get('symbol')
 	
-	def deepcopy(self):
+	def deepcopy(self, memo=None):
 		newcopy = Category()
 		features = newcopy._features
 
@@ -109,6 +109,15 @@ class Category(FeatureStruct, Nonterminal):
 	def feature_names(self):
 		return filter(lambda x: not (x in self._required and self[x] is None),
 		self._features.keys())
+	
+	def get_feature(self, *args):
+		try:
+			return self.__getitem__(*args)
+		except IndexError:
+			return StarValue()
+	
+	def has_feature(self, name):
+		return (name in self.feature_names())
 	
 	def __repr__(self):
 		if self._memorepr is None:
@@ -163,11 +172,11 @@ class Category(FeatureStruct, Nonterminal):
 		"""
 
 		# Special case:
-		if len(self._features) == 0:
-			if reentrances[id(self)]:
-				return ['(%s) []' % reentrance_ids[id(self)]]
-			else:
-				return ['[]']
+		if len(self.feature_names()) == 0:
+			return ['[]']
+		if self.feature_names() == ['symbol']:
+			return ['%s[]' % self['symbol']]
+		
 		
 		# What's the longest feature name?	Use this to align names.
 		maxfnamelen = max([len(k) for k in self.feature_names()])
@@ -176,6 +185,9 @@ class Category(FeatureStruct, Nonterminal):
 		items = self.feature_names()
 		items.sort() # sorting note: keys are unique strings, so we'll
 					 # never fall through to comparing values.
+		if 'symbol' in items:
+			items.remove('symbol')
+			items.insert(0, 'symbol')
 		for fname in items:
 			fval = self[fname]
 			if not isinstance(fval, FeatureStruct):
@@ -392,4 +404,5 @@ class Category(FeatureStruct, Nonterminal):
 	_parseval=staticmethod(_parseval)
 	_parse=staticmethod(_parse)
 	parse=staticmethod(parse)
+
 
