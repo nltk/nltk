@@ -154,8 +154,7 @@ from nltk.tree import TreeToken, AbstractTree
 from nltk.token import TokenizerI, Token, Location, LineTokenizer
 from nltk.tagger import parseTaggedType
 from nltk.chktype import chktype as _chktype
-from types import StringType as _StringType
-import re
+import types, re
 
 # Used for sorting by epydoc; and for "import *"
 __all__ = [
@@ -271,7 +270,7 @@ class ChunkedTaggedTokenizer(TokenizerI):
         
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
 
         # check that brackets are balanced and not nested
         brackets = re.sub(r'[^\[\]]', '', str)
@@ -390,6 +389,9 @@ class ChunkScore:
         @type guessed: chunk structure
         @param guessed: The chunked sentence to be scored.
         """
+        assert _chktype(1, correct, TreeToken)
+        assert _chktype(2, guessed, TreeToken)
+        
         correct = self._chunk_toks(correct)
         guessed = self._chunk_toks(guessed)
         while correct and guessed:
@@ -448,6 +450,7 @@ class ChunkScore:
             value.  C{alpha} should have a value in the range [0,1].
         @type alpha: C{float}
         """
+        assert _chktype(1, alpha, types.FloatType, types.IntType)
         p = self.precision()
         r = self.recall()
         if p == 0 or r == 0:    # what if alpha is 0 or 1?
@@ -611,7 +614,7 @@ class ChunkString:
             subclasses of C{REChunkParserRule}.
         """
         assert _chktype(1, tagged_tokens, [Token], (Token,))
-        assert _chktype(2, debug_level, type(0))
+        assert _chktype(2, debug_level, types.IntType)
         self._ttoks = tagged_tokens
         tags = [tok.type().tag() for tok in tagged_tokens]
         self._str = '<' + '><'.join(tags) + '>'
@@ -716,6 +719,10 @@ class ChunkString:
         @raise ValueError: If this transformation generateds an
             invalid chunkstring.
         """
+        if type(regexp).__name__ != 'SRE_Pattern':
+            assert _chktype(1, regexp, types.StringType)
+        assert _chktype(2, repl, types.StringType)
+        
         # Do the actual substitution
         self._str = re.sub(regexp, repl, self._str)
 
@@ -753,6 +760,9 @@ class ChunkString:
         @raise ValueError: If this transformation generateds an
             invalid chunkstring.
         """
+        if type(pattern).__name__ == 'SRE_Pattern': pattern = pattern.pattern
+        assert _chktype(1, pattern, types.StringType)
+        assert _chktype(2, repl, types.StringType)
         self.xform(pattern+ChunkString.IN_CHUNK_PATTERN, repl)
 
     def xform_chink(self, pattern, repl):
@@ -781,6 +791,9 @@ class ChunkString:
         @raise ValueError: If this transformation generateds an
             invalid chunkstring.
         """
+        if type(pattern).__name__ == 'SRE_Pattern': pattern = pattern.pattern
+        assert _chktype(1, pattern, types.StringType)
+        assert _chktype(2, repl, types.StringType)
         self.xform(pattern+ChunkString.IN_CHINK_PATTERN, repl)
 
     def __repr__(self):
@@ -849,6 +862,8 @@ def tag_pattern2re_pattern(tag_pattern):
     @return: A regular expression pattern corresponding to
         C{tag_pattern}. 
     """
+    assert _chktype(1, tag_pattern, types.StringType)
+    
     # Clean up the regular expression
     tag_pattern = re.sub(r'\s', '', tag_pattern)
     tag_pattern = re.sub(r'<', '(<(', tag_pattern)
@@ -919,11 +934,13 @@ class REChunkParserRule:
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        assert _chktype(2, repl, type(''))
-        assert _chktype(3, descr, type(''))
+        if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
+        assert _chktype(1, regexp, types.StringType)
+        assert _chktype(2, repl, types.StringType)
+        assert _chktype(3, descr, types.StringType)
         self._repl = repl
         self._descr = descr
-        if type(regexp) == type(''):
+        if type(regexp) == types.StringType:
             self._regexp = re.compile(regexp)
         else:
             self._regexp = regexp
@@ -989,11 +1006,12 @@ class ChunkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        assert _chktype(1, tag_pattern, type(''))
-        assert _chktype(2, descr, type(''))
+        assert _chktype(1, tag_pattern, types.StringType)
+        assert _chktype(2, descr, types.StringType)
         self._pattern = tag_pattern
-        regexp = re.compile('(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')'+
-                            ChunkString.IN_CHINK_PATTERN)
+        regexp = re.compile('(?P<chunk>%s)%s' %
+                            (tag_pattern2re_pattern(tag_pattern),
+                             ChunkString.IN_CHINK_PATTERN))
         REChunkParserRule.__init__(self, regexp, '{\g<chunk>}', descr)
 
     def __repr__(self):
@@ -1032,8 +1050,8 @@ class ChinkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        assert _chktype(1, tag_pattern, type(''))
-        assert _chktype(2, descr, type(''))
+        assert _chktype(1, tag_pattern, types.StringType)
+        assert _chktype(2, descr, types.StringType)
         self._pattern = tag_pattern
         regexp = re.compile('(?P<chink>%s)%s' %
                             (tag_pattern2re_pattern(tag_pattern),
@@ -1074,8 +1092,8 @@ class UnChunkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        assert _chktype(1, tag_pattern, type(''))
-        assert _chktype(2, descr, type(''))
+        assert _chktype(1, tag_pattern, types.StringType)
+        assert _chktype(2, descr, types.StringType)
         self._pattern = tag_pattern
         regexp = re.compile('\{(?P<chunk>%s)\}' %
                             tag_pattern2re_pattern(tag_pattern))
@@ -1127,9 +1145,9 @@ class MergeRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        assert _chktype(1, left_tag_pattern, type(''))
-        assert _chktype(2, right_tag_pattern, type(''))
-        assert _chktype(3, descr, type(''))
+        assert _chktype(1, left_tag_pattern, types.StringType)
+        assert _chktype(2, right_tag_pattern, types.StringType)
+        assert _chktype(3, descr, types.StringType)
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>%s)}{(?=%s)' %
@@ -1183,9 +1201,9 @@ class SplitRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        assert _chktype(1, left_tag_pattern, type(''))
-        assert _chktype(2, right_tag_pattern, type(''))
-        assert _chktype(3, descr, type(''))
+        assert _chktype(1, left_tag_pattern, types.StringType)
+        assert _chktype(2, right_tag_pattern, types.StringType)
+        assert _chktype(3, descr, types.StringType)
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>%s)(?=%s)' % 
@@ -1253,8 +1271,8 @@ class REChunkParser(ChunkParserI):
             C{1} will generate normal tracing output; and C{2} or
             highter will generate verbose tracing output.
         """
-        assert _chktype(1, rules, [REChunkParserRule])
-        assert _chktype(4, trace, type(0))
+        assert _chktype(1, rules, [REChunkParserRule], (REChunkParserRule,))
+        assert _chktype(4, trace, types.IntType)
         self._rules = rules
         self._trace = trace
         self._chunk_node = chunk_node
@@ -1317,7 +1335,7 @@ class REChunkParser(ChunkParserI):
             constructor. 
         """
         assert _chktype(1, tokens, [Token], (Token,))
-        assert _chktype(2, trace, type(None), type(0))
+        assert _chktype(2, trace, types.NoneType, types.IntType)
         if len(tokens) == 0:
             print 'Warning: parsing empty text'
             return []
@@ -1393,6 +1411,9 @@ def demo_eval(chunkparser, text):
         evaluation.
     @type text: C{string}
     """
+    assert _chktype(1, chunkparser, ChunkParserI)
+    assert _chktype(1, text, types.StringType)
+    
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
