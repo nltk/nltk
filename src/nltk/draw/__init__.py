@@ -759,15 +759,15 @@ class SymbolWidget(TextWidget):
       - C{color}: the color of the text.
       - C{draggable}: whether the text can be dragged by the user.
       
-    @cvar _SYMBOLS: A dictionary mapping from symbols to the character
+    @cvar SYMBOLS: A dictionary mapping from symbols to the character
         in the C{symbol} font used to render them.
     """
-    _SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',  
+    SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',  
                 'lambda': '\154', 'merge': '\304',
                 'forall': '\042', 'exists': '\044',
                 'subseteq': '\315', 'subset': '\314',
                 'notsubset': '\313', 'emptyset': '\306',
-                'imp': '\336', 'rightarrow': '\xde', #'\256',
+                'imp': '\336', 'rightarrow': chr(222), #'\256',
                 'equal': '\75', 'notequal': '\271',
                 'epsilon': 'e'}
     
@@ -800,13 +800,35 @@ class SymbolWidget(TextWidget):
         @type symbol: C{string}
         @param symbol: The name of the symbol to display.
         """
-        if not SymbolWidget._SYMBOLS.has_key(symbol):
+        if not SymbolWidget.SYMBOLS.has_key(symbol):
             raise ValueError('Unknown symbol: %s' % symbol)
         self._symbol = symbol
-        self.set_text(SymbolWidget._SYMBOLS[symbol])
+        self.set_text(SymbolWidget.SYMBOLS[symbol])
 
     def __repr__(self):
         return '[Symbol: %r]' % self._symbol
+
+    # A staticmethod that displays all symbols.
+    def symbolsheet():
+        """
+        Open a new Tkinter window that displays the entire alphabet
+        for the symbol font.  This is useful for constructing the
+        L{SymbolWidget.SYMBOLS} dictionary.
+        """
+        top = Tk()
+        def destroy(e, top=top): top.destroy()
+        top.bind('q', destroy)
+        Button(top, text='Quit', command=top.destroy).pack(side='bottom')
+        text = Text(top, font='symbol')
+        text.pack(side='left')
+        sb=Scrollbar(top, command=text.yview)
+        text['yscrollcommand']=sb.set
+        sb.pack(side='right', fill='y')
+        for i in range(256):
+            if i in (0,10): continue # null and newline
+            text.insert('end', '%3d  \t[%s]\n' % (i, chr(i)))
+        top.mainloop()
+    symbolsheet = staticmethod(symbolsheet)
 
 class AbstractContainerWidget(CanvasWidget):
     """
@@ -1095,6 +1117,8 @@ class SequenceWidget(CanvasWidget):
         default, children are center-aligned.
       - C{space}: The amount of horizontal space to place between
         children.  By default, one pixel of space is used.
+      - C{ordered}: If true, then keep the children in their
+        original order.
     """
     def __init__(self, canvas, *children, **attribs):
         """
@@ -1109,6 +1133,7 @@ class SequenceWidget(CanvasWidget):
         """
         self._align = 'center'
         self._space = 1
+        self._ordered = False
         self._children = list(children)
         for child in children: self._add_child_widget(child)
         CanvasWidget.__init__(self, canvas, **attribs)
@@ -1119,11 +1144,13 @@ class SequenceWidget(CanvasWidget):
                 raise ValueError('Bad alignment: %r' % value)
             self._align = value
         elif attr == 'space': self._space = value
+        elif attr == 'ordered': self._ordered = value
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
         if attr == 'align': return value
         elif attr == 'space': return self._space
+        elif attr == 'ordered': return self._ordered
         else: return CanvasWidget.__getitem__(self, attr)
 
     def _tags(self): return []
@@ -1137,9 +1164,26 @@ class SequenceWidget(CanvasWidget):
         # Align all children with child.
         (left, top, right, bot) = child.bbox()
         y = self._yalign(top, bot)
-        for child in self._children:
-            (x1, y1, x2, y2) = child.bbox()
-            child.move(0, y-self._yalign(y1,y2))
+        for c in self._children:
+            (x1, y1, x2, y2) = c.bbox()
+            c.move(0, y-self._yalign(y1,y2))
+
+        if self._ordered and len(self._children) > 1:
+            index = self._children.index(child)
+
+            x = right + self._space
+            for i in range(index+1, len(self._children)):
+                (x1, y1, x2, y2) = self._children[i].bbox()
+                if x > x1:
+                    self._children[i].move(x-x1, 0)
+                    x += x2-x1 + self._space
+
+            x = left - self._space
+            for i in range(index-1, -1, -1):
+                (x1, y1, x2, y2) = self._children[i].bbox()
+                if x < x2:
+                    self._children[i].move(x-x2, 0)
+                    x -= x2-x1 + self._space
 
     def _manage(self):
         if len(self._children) == 0: return
@@ -1230,6 +1274,8 @@ class StackWidget(CanvasWidget):
         default, children are center-aligned.
       - C{space}: The amount of vertical space to place between
         children.  By default, one pixel of space is used.
+      - C{ordered}: If true, then keep the children in their
+        original order.
     """
     def __init__(self, canvas, *children, **attribs):
         """
@@ -1244,6 +1290,7 @@ class StackWidget(CanvasWidget):
         """
         self._align = 'center'
         self._space = 1
+        self._ordered = False
         self._children = list(children)
         for child in children: self._add_child_widget(child)
         CanvasWidget.__init__(self, canvas, **attribs)
@@ -1254,11 +1301,13 @@ class StackWidget(CanvasWidget):
                 raise ValueError('Bad alignment: %r' % value)
             self._align = value
         elif attr == 'space': self._space = value
+        elif attr == 'ordered': self._ordered = value
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
         if attr == 'align': return value
         elif attr == 'space': return self._space
+        elif attr == 'ordered': return self._ordered
         else: return CanvasWidget.__getitem__(self, attr)
 
     def _tags(self): return []
@@ -1272,10 +1321,27 @@ class StackWidget(CanvasWidget):
         # Align all children with child.
         (left, top, right, bot) = child.bbox()
         x = self._xalign(left, right)
-        for child in self._children:
-            (x1, y1, x2, y2) = child.bbox()
-            child.move(x-self._xalign(x1,x2), 0)
+        for c in self._children:
+            (x1, y1, x2, y2) = c.bbox()
+            c.move(x-self._xalign(x1,x2), 0)
 
+        if self._ordered and len(self._children) > 1:
+            index = self._children.index(child)
+
+            y = bot + self._space
+            for i in range(index+1, len(self._children)):
+                (x1, y1, x2, y2) = self._children[i].bbox()
+                if y > y1:
+                    self._children[i].move(0, y-y1)
+                    y += y2-y1 + self._space
+        
+            y = top - self._space
+            for i in range(index-1, -1, -1):
+                (x1, y1, x2, y2) = self._children[i].bbox()
+                if y < y2:
+                    self._children[i].move(0, y-y2)
+                    y -= y2-y1 + self._space
+        
     def _manage(self):
         if len(self._children) == 0: return
         child = self._children[0]
@@ -1627,6 +1693,9 @@ class CanvasFrame:
         (left, top, right, bot) = self.scrollregion()
         w = widget.width()
         h = widget.height()
+
+        if w >= (right-left): return (0,0)
+        if h >= (bot-top): return (0,0)
 
         # Move the widget out of the way, for now.
         (x1,y1,x2,y2) = widget.bbox()
