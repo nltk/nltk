@@ -45,7 +45,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
     Currently, the following restrictions are imposed:
       - binary and unary branching only for the grammar
 
-    @param _grammar: The grammar, stored as a dictionary from
+    @ivar _grammar: The grammar, stored as a dictionary from
         right-hand-sides to grammar rules.
     """
     def __init__(self, grammar, basecat):
