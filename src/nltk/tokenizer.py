@@ -29,6 +29,7 @@ tokenizers, see the reference documentation for L{TokenizerI}.
 """
 
 import re, sys, types
+import sre_parse, sre_constants, sre_compile
 from nltk.chktype import chktype as _chktype 
 from nltk.chktype import classeq as _classeq
 from nltk.token import *
@@ -233,6 +234,50 @@ class LineTokenizer(TokenizerI):
         lines = [s for s in str.split('\n') if s.strip() != '']
         return _XTokenTuple(lines, self._unit, source)
 
+def _remove_group_identifiers(parsed_re):
+    """
+    Modifies the given parsed regular expression, replacing all groupings
+    (as indicated by parenthesis in the regular expression string) with
+    non-grouping variants (indicated with '(?:...)'). This works on the
+    output of sre_parse.parse, modifing the group indentifier in
+    SUBPATTERN structures to None.
+
+    @param parsed_re: the output of sre_parse.parse(string)
+    @type parsed_re: C{SubPattern}
+    """
+
+    is_list = isinstance(parsed_re, types.ListType)
+    is_tuple = isinstance(parsed_re, types.TupleType)
+
+    if isinstance(parsed_re, sre_parse.SubPattern):
+        # If it's a SubPattern, replace each item with its processed
+        # equivalent. These classes are mutable, so the in place
+        # modification is allowed.
+        for i in range(len(parsed_re)):
+            parsed_re[i] = _remove_group_identifiers(parsed_re[i])
+        return parsed_re
+    elif is_list or is_tuple:
+        # Otherwise, if it's a sequence, check for the tell-tale
+        # SUBPATTERN item and repair the sub item if needed
+        to_process = list(parsed_re)
+        if to_process[0] == sre_constants.SUBPATTERN:
+            # replace next int with None
+            sub_item = list(to_process[1])
+            sub_item[0] = None
+            to_process[1] = tuple(sub_item)
+
+        # Process each item, in the case of nested SUBPATTERNS
+        processed = map(_remove_group_identifiers, to_process)
+
+        # Coerce back into the original type
+        if is_list:
+            return processed
+        else:
+            return tuple(processed)
+    else:
+        # Don't need to do anything to other types
+        return parsed_re
+
 class RETokenizer(TokenizerI):
     """
     A tokenizer that separates a string of text into words, based on a
@@ -274,29 +319,28 @@ class RETokenizer(TokenizerI):
         assert _chktype(1, regexp, types.StringType)
         self._negative = negative
         self._unit = unit
-        
+
         # Replace any grouping parentheses with non-grouping ones.  We
         # need to do this, because the list returned by re.sub will
         # contain an element corresponding to every set of grouping
         # parentheses.  We must not touch escaped parentheses, and
         # need to handle the case of escaped escapes (e.g. "\\(").
         # We also need to handle nested parentheses, which means our
-        # regexp contexts must be zero-width.  We operate on a reversed
-        # version of the string to get around the problem that lookbehind
-        # assertions are required to be fixed-width.
-
-        a = list(regexp); a.reverse(); regexp = ''.join(a)
-        
-        regexp = re.sub(r'(?<!\?)' +             # Not a question mark
-                        r'\(' +                  # An open paren
-                        r'(?=(\\\\)*([^\\]|$))', # even backslashes
-                        r':?(', regexp)          # reversed (?:
-
-        a = list(regexp); a.reverse(); regexp = ''.join(a)
+        # regexp contexts must be zero-width. There are also issues with
+        # parenthesis appearing in bracketed contexts, hence we've
+        # operated on the intermediate parse structure from sre_parse.
+        parsed = sre_parse.parse(regexp)
+        parsed = _remove_group_identifiers(parsed)
 
         # Add grouping parentheses around the regexp; this will allow
         # us to access the material that was split on.
-        self._regexp = re.compile('('+regexp+')', re.UNICODE)
+        # Need to set the Pattern to expect a single group
+        pattern = sre_parse.Pattern()
+        pattern.groups += 1
+        grouped = sre_parse.SubPattern(pattern)
+        grouped.append((sre_constants.SUBPATTERN, (1, parsed)))
+
+        self._regexp = sre_compile.compile(grouped, re.UNICODE)
         
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
