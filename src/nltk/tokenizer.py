@@ -15,7 +15,7 @@ pieces.  This task, which is known as X{tokenizing}, is defined by the
 L{TokenizerI} interface.
 
 This module defines several implementations of the tokenizer
-interface, such as L{WSTokenizer}, which splits texts based on
+interface, such as L{WhitespaceTokenizer}, which splits texts based on
 whitespace; and L{RegexpTokenizer}, which uses a regular expression to
 divide a token into pieces.  Several other modules also define
 specialized tokenizers, such as L{nltk.tree.TreebankTokenizer} and
@@ -23,7 +23,7 @@ L{nltk.tagger.TaggedTokenizer}.  For a complete list of available
 tokenizers, see the reference documentation for L{TokenizerI}.
 
 @group Interfaces: TokenizerI
-@group Tokenizers: WSTokenizer, RegexpTokenizer, LineTokenizer,
+@group Tokenizers: WhitespaceTokenizer, RegexpTokenizer, LineTokenizer,
                    AbstractTokenizer
 """
 
@@ -308,10 +308,10 @@ class AbstractTokenizer(TokenizerI):
             # Yield the subtoken
             yield subtok
 
-class WSTokenizer(AbstractTokenizer):
+class WhitespaceTokenizer(AbstractTokenizer):
     """
     A tokenizer that divides a string of text into subtokens, based on
-    whitespace.  I.e., C{WSTokenizer} creates a token for each
+    whitespace.  I.e., C{WhitespaceTokenizer} creates a token for each
     whitespace-delimited substring in the input text.  Leading and
     trailing whitespace are ignored.
     
@@ -640,7 +640,7 @@ def demo(addlocs=False, addcontexts=False):
     print `s`
     print
     print 'Tokenize using whitespace:'
-    _display(tok, WSTokenizer(), addlocs, addcontexts)
+    _display(tok, WhitespaceTokenizer(), addlocs, addcontexts)
     print
     print 'Tokenize sequences of alphanumeric characters:'
     _display(tok, RegexpTokenizer(r'\w+', ), addlocs, addcontexts)
