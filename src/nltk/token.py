@@ -499,7 +499,7 @@ class Token:
             if (end is not None) or (len(kwargs)!=0):
                 raise TypeError("end and keyword arguments may not "+
                                 "be specified in addition to a Location.")
-        elif location_or_start == None:
+        elif location_or_start is None:
             self._location = location_or_start
             if (end is not None) or (len(kwargs)!=0):
                 raise TypeError("end and keyword arguments may not "+
@@ -591,7 +591,18 @@ class Token:
             not hashable.
         """
         return hash( (self._type, self._location) )
-    
+
+# !! This needs proper documentation
+from nltk.probability import ProbablisticMixIn
+class ProbablisticToken(Token, ProbablisticMixIn):
+    def __init__(self, p, type, location_or_start=None, end=None, **kwargs):
+        ProbablisticMixIn.__init__(self, p)
+        Token.__init__(self, type, location_or_start, end, **kwargs)
+    def __repr__(self):
+        return Token.__repr__(self)+' (p=%s)' % p
+    def __str__(self):
+        return Token.__str__(self)+' (p=%s)' % p
+
 ##//////////////////////////////////////////////////////
 ##  Tokenizers
 ##//////////////////////////////////////////////////////
@@ -683,7 +694,7 @@ class _XTokenTuple:
     def __in__(self, token):
         if not isinstance(token, Token): return 0
         loc = token.loc()
-        if loc == None:
+        if loc is None:
             return 0
         start = loc.start()
         if Location(start, **self._kws) != loc:
