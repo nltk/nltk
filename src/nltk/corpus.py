@@ -292,9 +292,11 @@ class Corpus:
 #################################################################
 # Standard Corpora
 #################################################################
+from nltk.tree import TreebankTokenizer
 
 twenty_newsgroups = Corpus('20 Newsgroups', '20_newsgroups')
-treebank = Corpus('Treebank', 'treebank', default_tokenizer=None)
+treebank = Corpus('Treebank', 'treebank',
+                  default_tokenizer=TreebankTokenizer)
 wordlist = Corpus('Wordlist', 'wordlist')
 reuters = Corpus('Reuters-21578', 'reuters-21578')
 
