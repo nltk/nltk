@@ -95,8 +95,9 @@ time.
 Emacs Tip
 =========
 
-If you evaluate the following, it will colorize tags and bracketing
-when you use an interactive python shell with emacs ("C-C !")::
+If you evaluate the following, it will colorize tags and
+bracketing when you use an interactive python shell with emacs or
+xemacs ("C-c !")::
 
    (let ()
      (defconst comint-mode-font-lock-keywords 
@@ -105,8 +106,9 @@ when you use an interactive python shell with emacs ("C-C !")::
      (add-hook 'comint-mode-hook (lambda () (turn-on-font-lock))))
 
 You can evaluate this code by copying it to a temporary buffer,
-placing the cursor after the last close parenthasis, and typing
-"C-x C-e".  The change will last until you close emacs.
+placing the cursor after the last close parenthasis, and typing "C-x
+C-e".  You should evaluate it before running the interactive session.
+The change will last until you close emacs.
 
 Unresolved Issues
 =================
@@ -119,6 +121,10 @@ instead.  But note that C{pre} does not include Unicode support, so
 this module will not work with unicode strings.  Note also that C{pre}
 regular expressions are not quite as advanced as C{re} ones (e.g., no
 leftward zero-length assertions).
+
+C{tag_pattern2re_pattern} does not currently handle the substring
+"\\\\." correctly.  But tags should not include backslashes, anyway,
+so it shouldn't be much of a problem.
 
 @type _VALID_CHUNK_STRING: C{regexp}
 @var _VALID_CHUNK_STRING: A regular expression to test whether a chunk
@@ -142,22 +148,11 @@ import string
 ##//////////////////////////////////////////////////////
 
 """
-Terms/representations that should be defined in module docstring..
-Chunking:
-  - chunk = a list of tagged tokens
-  - ttoklist = a list of tagged tokens (=chunk, but used in different
-    contexts)
-  - chunkstruct = a list of tagged tokens and chunks
-
-REChunking:
-  - ChunkString = string rep of chunked tags
-  - tag pattern = a regexp pattern over tags.  Has slightly different
-    rules than normal regexps (since it gets translated): <> act like
-    parens, . gets \w, etc.
-
 Issues:
   - maximum recursion depth issues! grr...
-  - generalize ChunkString constructor to accept a chunk struct?
+  - Fix tag_pattern2re_pattern to deal with '\\\\.' correctly?
+  - generalize ChunkString constructor to accept a chunk struct
+    instead of a tagged text?
   - Add more comments/docs, explaining precompiled regexps.
   - In order to conform to interfaces, we might eventually want to
     change reps: 
@@ -173,25 +168,25 @@ Indication of current efficiency::
 
   TIMING TEST (3 rules: chunk/unchunk/merge)
   1 x 10008 words:
-      Time = 15.3654409647
+      Time = 15.36 seconds
   8 x 1260 words:
-      Time = 10.0115730762
+      Time = 10.01 seconds
   27 x 372 words:
-      Time = 9.67810499668
+      Time = 9.678 seconds
   64 x 168 words:
-      Time = 10.1981619596
+      Time = 10.19 seconds
   125 x 84 words:
-      Time = 10.1149849892
+      Time = 10.11 seconds
   216 x 48 words:
-      Time = 10.5362759829
+      Time = 10.53 seconds
   343 x 36 words:
-      Time = 12.9556429386
+      Time = 12.95 seconds
   512 x 24 words:
-      Time = 13.6545710564
+      Time = 13.65 seconds
   729 x 24 words:
-      Time = 19.4766739607
+      Time = 19.47 seconds
   1000 x 12 words:
-      Time = 16.0188289881
+      Time = 16.01 seconds
 
 """
 
@@ -201,7 +196,7 @@ Indication of current efficiency::
 
 _TAGCHAR = r'[^\{\}<>]'
 _TAG = r'(<%s+?>)' % _TAGCHAR
-_VALID_TAG_PATTERN = pre.compile(r'^((%s|<%s>)+)$' %
+_VALID_TAG_PATTERN = pre.compile(r'^((%s|<%s>)*)$' %
                                 ('[^\{\}<>]+',
                                  '[^\{\}<>]+'))
 
@@ -474,7 +469,7 @@ class ChunkString:
         """
         # Add spaces to make everything line up.
         str = pre.sub(r'>(?!\})', r'> ', self._str)
-        str = pre.sub(r'([^\}])<', r'\1 <', str)
+        str = pre.sub(r'([^\{])<', r'\1 <', str)
         if str[0] == '<': str = ' ' + str
         return str
 
@@ -528,7 +523,8 @@ def tag_pattern2re_pattern(tag_pattern):
         raise ValueError('Bad tag pattern: %s' % tag_pattern)
 
     # We have to do this after, since it adds {}[]<>s
-    tag_pattern = pre.sub(r'\.', _TAGCHAR, tag_pattern)
+    # n.b.: THIS BREAKS if they use \\!!
+    tag_pattern = pre.sub(r'([^\\])\.', r'\1'+_TAGCHAR, tag_pattern)
     return tag_pattern
 
 class REChunkParserRule:
@@ -840,7 +836,7 @@ class SplitRule(REChunkParserRule):
         _chktype("SplitRule", 2, right_tag_pattern, (type(''),))
         _chktype("SplitRule", 3, descr, (type(''),))
         self._left_tag_pattern = left_tag_pattern
-        self._rigthpattern = right_tag_pattern
+        self._right_tag_pattern = right_tag_pattern
         regexp = pre.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
                             '(?='+tag_pattern2re_pattern(right_tag_pattern)+')')
         REChunkParserRule.__init__(self, regexp, r'\g<left>}{', descr)
@@ -857,7 +853,7 @@ class SplitRule(REChunkParserRule):
              description string; that string can be accessed
              separately with the C{descr} method.
         """
-        return ('<SplitRule: '+`self._left_tag_pattern`+', ',
+        return ('<SplitRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
 ##//////////////////////////////////////////////////////
@@ -1059,21 +1055,32 @@ def demo():
     text = """
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
     [ The/DT cats/NNS ] ./.
+    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
     """
+
+    print 'SOURCE STRING:'
+    print text
+    print
     
-    r1 = ChunkRule(r'<DT><JJ>*<NN.*>', 'Chunk NPs')
-    cp = REChunkParser([r1])
+    r1 = ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
+    cp = REChunkParser([r1], 1)
     demo_eval(cp, text)
 
     r1 = ChunkRule(r'<.*>+', 'Chunk everything')
-    r2 = ChinkRule(r'<VB.*>|<IN>', 'Chink VB?s and INs')
-    cp = REChunkParser([r1, r2])
+    r2 = ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
+    cp = REChunkParser([r1, r2], 1)
     demo_eval(cp, text)
 
     r1 = ChunkRule(r'(<.*>)', 'Chunk each tag')
-    r2 = UnChunkRule(r'<VB.*>|<IN>', 'Unchunk VB? and INs')
+    r2 = UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
     r3 = MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
-    cp = REChunkParser([r1,r2,r3])
+    cp = REChunkParser([r1,r2,r3], 1)
+    demo_eval(cp, text)
+
+    
+    r1 = ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
+    r2 = SplitRule('', r'<DT>', 'Split before DT')
+    cp = REChunkParser([r1,r2], 1)
     demo_eval(cp, text)
 
 if __name__ == '__main__':
