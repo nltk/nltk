@@ -9,6 +9,10 @@
 Drawing charts, etc.
 """
 
+#temporary
+import nltk.chartparser; reload(nltk.chartparser)
+import time
+
 import Tkinter
 #import math
 from nltk.chartparser import Chart, edgecmp
@@ -41,7 +45,7 @@ class ChartView:
         self._chart = chart
         
         # Initialize source
-        if source == None:
+        if source is None:
             loc = chart.loc()
             source = [Token(i, i) for i in
                       range(loc.start(), loc.end())]
@@ -64,6 +68,7 @@ class ChartView:
         self._source_canvas.pack(fill='both')
         self._chart_canvas = self._sb_canvas(root)
         self._chart_canvas['height'] = 400
+        self._chart_canvas['closeenough'] = 15
 
         self._analyze()
         self._chart_canvas.bind('<Configure>', self._configure)
@@ -90,17 +95,15 @@ class ChartView:
         self._unitsize = (e.width - 2*ChartView._MARGIN) / unitwidth
         self.draw()
 
-    def update(self):
+    def update(self, chart=None):
         """
         Draw any edges that have not been drawn.
         """
-        self.draw()
-        return
-        drawnedges = self._edgetags.keys()
+        if chart is not None:
+            self._chart = chart
         for edge in self._chart.edges():
-            if edge not in drawnedges:
-                self._draw_edge(edge)
-
+            if not self._edgetags.has_key(edge):
+                self._add_edge(edge)
         self._resize()
 
     def _edge_conflict(self, edge, lvl):
@@ -120,7 +123,7 @@ class ChartView:
 
     def _analyze_edge(self, edge):
         c = self._chart_canvas
-        str = ' '.join([repr(t) for t in edge.dr()])
+        str = ' '.join([repr(t) for t in edge.dotted_rule()])
         tag = c.create_text(0,0, text=str,
                             anchor='nw', justify='left')
         bbox = c.bbox(tag)
@@ -136,7 +139,7 @@ class ChartView:
         """
         if self._edgetags.has_key(edge): return
         self._analyze_edge(edge)
-        
+
         # Figure out what level to draw the edge on.
         lvl = 0
         while 1:
@@ -169,8 +172,8 @@ class ChartView:
                                 width=3, fill='#00f')
 
         # Draw a label for the edge.
-        rhs = [repr(t) for t in edge.dr()]
-        pos = edge.dr().pos()
+        rhs = [repr(t) for t in edge.dotted_rule()]
+        pos = edge.dotted_rule().pos()
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
@@ -181,7 +184,7 @@ class ChartView:
                                fill='#008', outline='#008')        
         rhstag2 = c.create_text(dotx+6, y, text=rhs2,
                                 anchor='nw', fill='#008')
-        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.dr().lhs()),
+        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.dotted_rule().lhs()),
                                 anchor='s', fill='#008',
                                 font=('helvetica', 12, 'bold'))
 
@@ -215,7 +218,7 @@ class ChartView:
             c.itemconfig(oldtags[2], fill='#008',
                                     outline='#008')
             c.itemconfig(oldtags[3], fill='#008')
-            if self._edgeselection == edge and state == None:
+            if self._edgeselection == edge and state is None:
                 self._edgeselection = None
                 return
             
@@ -271,18 +274,27 @@ class ChartView:
     def _resize(self):
         # Grow, if need be.
         c = self._chart_canvas
+
+        # Reset the chart width, if need be.
         width = ( (self._chart._loc.end() -
                    self._chart._loc.start()) * self._unitsize +
                   ChartView._MARGIN * 2 )
-        height = self._chart_height
         if int(c['width']) < width:
             c['width' ] = width
-        self._tree_canvas['height'] = self._tree_height
+            
+        # Reset the chart height, if need be.
+        height = self._chart_height
         c['scrollregion']=(0,0,width,height)
 
+        # Reset the height for the tree window.
+        self._tree_canvas['scrollregion'] = (0, 0, width,
+                                             self._tree_height)
+        if int(self._tree_canvas['height']) > self._tree_height:
+            self._tree_canvas['height'] = self._tree_height
+
+        # Reset the height for the source window.
         self._source_canvas['height'] = self._source_height
                                          
-
     def _draw_loclines(self):
         """
         Draw location lines.  These are vertical gridlines used to
@@ -292,6 +304,7 @@ class ChartView:
         c2 = self._source_canvas
         c3 = self._chart_canvas
         margin = ChartView._MARGIN
+        self._loclines = []
         for i in range(self._chart._loc.start()-1,
                        self._chart._loc.end()+1):
             x = i*self._unitsize + margin
@@ -300,7 +313,7 @@ class ChartView:
             c1.tag_lower(t1)
             t2=c2.create_line(x, 0, x, self._source_height)
             c2.tag_lower(t2)
-            t3=c3.create_line(x, 0, x, self._chart_height)
+            t3=c3.create_line(x, 0, x, 5000)
             c3.tag_lower(t3)
             t4=c3.create_text(x+2, 0, text=`i`, anchor='nw')
             c3.tag_lower(t4)
@@ -366,8 +379,9 @@ class ChartView:
         self._resize()
         self._draw_loclines()
 
-from nltk.chartparser import Rule, ChartParser
+from nltk.chartparser import Rule, ChartParser, SteppingChartParser
 from nltk.token import WSTokenizer
+
 class Demo:
     def __init__(self):
         # Create the root window.
@@ -394,57 +408,90 @@ class Demo:
         
         sent = 'the cat sat on the mat on the mat'
 
-        cp = ChartParser(grammar, lexicon, 'S')
-        tok_sent = WSTokenizer().tokenize(sent)
-        self._chart = cp.load_sentence(tok_sent)
-        self._cv = ChartView(self._root, self._chart, tok_sent)
+        self._grammar = grammar
+        self._lexicon = lexicon
+        self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
+        self._tok_sent = WSTokenizer().tokenize(sent)
+        self._cp.load(self._cp.bu_strategy(), self._tok_sent)
+        self._chart = self._cp.chart()
+        self._cv = ChartView(self._root, self._chart, self._tok_sent)
+        
+        Tkinter.Button(buttons, text='Top down',
+                       command=self.top_down).pack(side='left')
+        Tkinter.Button(buttons, text='Top down init',
+                       command=self.top_down_init).pack(side='left')
+        Tkinter.Button(buttons, text='Bottom Up',
+                       command=self.bottom_up).pack(side='left')
+        Tkinter.Button(buttons, text='Fundamental',
+                       command=self.fundamental).pack(side='left')
+        Tkinter.Button(buttons, text='Reset Chart',
+                       command=self.reset).pack(side='left')
 
-        def bottom_up(chart=self._chart, cv=self._cv, cp=cp):
-            cp.bottom_up_init(chart)
-            cv.update()
-        def fundamental(chart=self._chart, cv=self._cv, cp=cp):
-            edge1 = cv.selected_edge()
-            new_edge = None
-            if edge1 is not None and not edge1.complete():
-                for edge2 in chart.final_edges():
-                    if new_edge != None: break
-                    if (edge1.next() == edge2.lhs() and
-                        edge1.end() == edge2.start()):
-                        new_edge = edge1.fundamental(edge2)
-                        if not chart.add_edge(new_edge):
-                            new_edge = None
+        # Set up a button to control stepping (default on)
+        self._step = Tkinter.IntVar()
+        step = Tkinter.Checkbutton(buttons, text="Step", 
+                                   variable=self._step)
+        step.var = self._step
+        step.select()
+        step.pack(side='left')
 
-            if new_edge is None:
-                chart_edges = chart.edges()
-                chart_edges.sort(edgecmp)
-                for edge1 in chart_edges:
-                    if edge1.complete(): continue
-                    if new_edge != None: break
-                    for edge2 in chart.final_edges():
-                        if new_edge != None: break
-                        if (edge1.next() == edge2.lhs() and
-                            edge1.end() == edge2.start()):
-                            test_edge = edge1.fundamental(edge2)
-                            if test_edge not in chart_edges:
-                                new_edge = edge1
+    def reset(self):
+        self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
+        self._cp.load(self._cp.bu_strategy(), self._tok_sent)
+        self._chart = self._cp.chart()
+        self._cv.draw()
+        
+    def top_down_init(self):
+        if self._step.get():
+            self._cp.TD_init_step()
+        else:
+            self._cp.TD_init()
+        self._cv.update(self._cp.chart())
+        
+    def top_down(self):
+        # FIX ME
+        if self._step.get():
+            edge = self._cv.selected_edge()
+            if edge is not None:
+                self._cp.TD_step(edge)
+        else:
+            print 'ouch'
+        self._cv.update(self._cp.chart())
+        
+    def bottom_up(self):
+        if self._step.get():
+            edge = self._cv.selected_edge()
+            if edge is not None:
+                if not self._cp.BU_init_edge_step(edge):
+                    self._cv.select_edge(edge, 0)
+                    new_edge = self._cp.BU_init_step()
+                    if new_edge:
+                        self._cv.update(self._cp.chart())
+                        self._cv.select_edge(new_edge)
+            else:
+                self._cp.BU_init_step()
+        else:
+            self._cp.BU_init()
+        self._cv.update(self._cp.chart())
+        
+    def fundamental(self):
+        if self._step.get():
+            edge = self._cv.selected_edge()
+            if edge is not None:
+                self._cp.FR_step(edge)
+        else:
+            self._cp.FR()
+        self._cv.update(self._cp.chart())
+        return
 
-            cv.update()
-            if new_edge != None: 
-                cv.select_edge(new_edge, 1)
-
-        b1=Tkinter.Button(buttons, text='Bottom Up',
-                          command=bottom_up)
-        b2=Tkinter.Button(buttons, text='Fundamental',
-                          command=fundamental)
-        b1.pack(side='left')
-        b2.pack(side='left')
 
     def destroy(self, *args):
-        if self._root == None: return
+        if self._root is None: return
         self._root.destroy()
         self._root = None
 
-Demo()    
+if __name__ == '__main__':
+    Demo()    
 
         
 
