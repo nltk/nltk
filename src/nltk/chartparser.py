@@ -4,6 +4,8 @@
 # Author: Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+#
+# $Id$
 
 """
 The chartparser module defines the C{ChartParser} class, and two supporting

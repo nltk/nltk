@@ -1,3 +1,17 @@
+# Natural Language Toolkit: A Tree Editor
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Steven Bird <sb@ldc.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
+"""
+Tree.py is a simple tree-drawing program.  The tree must be in
+Tree (label, child1, child2, ...) form, for this to work.
+"""
+
 """
 I may want to get rid of the interactive scrollregion.
 I like the way it just keeps 0,0 as the left boundary.  Otherwise,
@@ -7,11 +21,6 @@ NOTE: FIX DESTROY AND QUIT
 
 """
 
-
-"""
-Tree.py is a simple tree-drawing program.  The tree must be in
-Tree (label, child1, child2, ...) form, for this to work.
-"""
 
 # The next few lines all deal with importing the proper modules
 

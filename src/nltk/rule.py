@@ -5,6 +5,8 @@
 #         Edward Loper <edloper@ldc.upenn.edu> (minor additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+#
+# $Id$
 
 """
 The rule module defines the C{Rule} class to represent simple
