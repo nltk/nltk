@@ -9,9 +9,40 @@
 
 """
 Classes for representing and processing probabilistic information.
+
+The L{FreqDist} class is used to encode X{frequency distributions},
+which count the number of times that each outcome of an experiment
+occurs.
+
+The L{ProbDistI} class defines a standard interface for X{probability
+distributions}, which encode the probability of each outcome for an
+experiment.  There are two types of probability distribution:
+
+  - X{derived probability distributions} are created from frequency
+    distributions.  They attempt to model the probability distribution
+    that generated the frequency distribution.
+  - X{analytic probability distributions} are created directly from
+    parameters (such as variance).
+
+The L{ProbabilisticMixIn} class is a mix-in class that can be used to
+associate probabilities with data classes (such as C{Token} or
+C{Tree}).
+
+@group Frequency Distributions: FreqDist
+@group Derived Probability Distributions: ProbDistI, MLEProbDist,
+    LidstoneProbDist, LaplaceProbDist, ELEProbDist, HeldoutProbDist,
+    CrossValidationProbDist
+@group Analyitic Probability Distributions: UniformProbDist
+@group Conditional Distributions: ConditionalFreqDist,
+    ConditionalProbDistI, ConditionalProbDist,
+@group Probabilistic Mix-In: ProbabilisticMixIn
+@sort: FreqDist, ProbDistI, MLEProbDist, LidstoneProbDist, LaplaceProbDist, 
+    ELEProbDist, HeldoutProbDist, CrossValidationProbDist, UniformProbDist,
+    ConditionalFreqDist, ConditionalProbDistI, ConditionalProbDist,
 """
 
 from nltk.chktype import chktype as _chktype
+from nltk.set import Set
 import types, math
 
 ##//////////////////////////////////////////////////////
@@ -285,9 +316,12 @@ class UniformProbDist(ProbDistI):
             raise ValueError('A Uniform probability distribution must '+
                              'have at least one sample.')
         self._samples = samples
-        self._p = 1/len(samples)
+        self._p = 1.0/len(samples)
+        self._sampleset = Set(*samples)
 
-    def prob(self, sample): return self._p
+    def prob(self, sample):
+        if sample in self._sampleset: return self._p
+        else: return 0
     def max(self): return self._samples[0]
     def samples(self): return self._samples
     def __repr__(self):
