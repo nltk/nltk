@@ -358,7 +358,9 @@ class ChartView:
         y = (level+1) * self._chart_level_size
         dy = self._text_height + 10
         self._chart_canvas.yview('moveto', 1.0)
-        self._chart_canvas.yview('moveto', float(y-dy)/self._chart_height)
+        if self._chart_height != 0:
+            self._chart_canvas.yview('moveto',
+                                     float(y-dy)/self._chart_height)
 
     def _draw_edge(self, edge, lvl):
         """
@@ -619,20 +621,51 @@ class ChartView:
                                   fill='white', outline='white')
             c.tag_lower(rt)
 
+    def _add_rhs(self, edge):
+        """
+        Edit the given tree to include nodes for the right hand side
+        of its rules.  For each unexpanded node (i.e., elt to the
+        right of the dot), att a new child whose token type is the
+        empty string.
+        """
+        tree = edge.tree()
+        drule = edge.drule()
+        rhs = drule[:]
+        pos = drule.pos()
+
+        if tree.loc() is None:
+            start_index = edge.loc().start()
+            (unit, source) = (edge.loc().unit(), edge.loc().source())
+        else:
+            start_index = tree.loc().end() - 1
+            (unit, source) = (tree.loc().unit(), tree.loc().source())
+        
+        rhchildren = []
+        for i in range(pos, len(rhs)):
+            tok = Token('', i+start_index, unit=unit, source=source)
+            rhchildren.append(TreeToken(rhs[i], tok))
+        children = list(tree.children()) + rhchildren
+        return TreeToken(tree.node(), *children)
+
     def _draw_tree(self):
         """Draw the syntax tree for the selected edge"""
         for tag in self._tree_tags:
             self._tree_canvas.delete(tag)
         if not self._edgeselection: return
-        if not self._edgeselection.tree(): return
-        tree = self._edgeselection.tree()
-        self._draw_treetok(tree, 0)
-        self._tree_height = ((tree.height()-1) *
+        if self._edgeselection.tree() is None: return
+        treetok = self._add_rhs(self._edgeselection)
+        
+        self._draw_treetok(treetok, 0)
+        self._tree_height = ((treetok.height()-1) *
                              (ChartView._TREE_LEVEL_SIZE +
                               self._text_height))
         self._resize()
 
     def _draw_treetok(self, treetok, depth):
+        """
+        Draw a treetoken.  Return the center x of this treetok.
+        Return a negative x if treetok is not expanded.
+        """
         c = self._tree_canvas
         margin = ChartView._MARGIN
         x1 = treetok.loc().start() * self._unitsize + margin
@@ -644,13 +677,30 @@ class ChartView:
                             font=('helvetica', self._fontsize, 'bold'),
                             fill='#042')
         self._tree_tags.append(tag)
+
+        # If we're unexpanded, return a negative x.
+        if (len(treetok.type()) == 1 and
+            isinstance(treetok[0], Token) and
+            treetok[0].type() == ''):
+            c.itemconfig(tag, fill='#024')
+            print 'hiya', treetok, x
+            return -x
+
         for child in treetok:
             if isinstance(child, TreeToken):
-                childx = self._draw_treetok(child, depth+1)
-                tag = c.create_line(x, y + self._text_height, childx,
-                                    y + ChartView._TREE_LEVEL_SIZE +
-                                    self._text_height, width=2,
-                                    fill='#084')
+                    childx = self._draw_treetok(child, depth+1)
+                    if childx >= 0:
+                        # Expanded child (left of dot)
+                        tag = c.create_line(x, y + self._text_height, childx,
+                                            y + ChartView._TREE_LEVEL_SIZE +
+                                            self._text_height, width=2,
+                                            fill='#084')
+                    else:
+                        # Unexpanded child (right of dot)
+                        tag = c.create_line(x, y + self._text_height, -childx,
+                                            y + ChartView._TREE_LEVEL_SIZE +
+                                            self._text_height, width=2,
+                                            fill='#048', dash='.')
             else:
                 tag = c.create_line(x, y + self._text_height, x, 5000,
                                     width=2, fill='#084')
@@ -695,14 +745,14 @@ class ChartDemo:
                 'BU_edge_rule': 'Bottom-up Initialization',
                 'TD_edge_rule': 'Top-down Edge-Triggered'}
     
-    def __init__(self, grammar, lexicon, tok_sent):
+    def __init__(self, grammar, lexicon, tok_sent, title='Chart Parsing Demo'):
 
         self.root = None
         try:
     
             # Create the root window.
             self._root = Tkinter.Tk()
-            self._root.title('Chart Parsing Demo')
+            self._root.title(title)
             self._root.bind('q', self.destroy)
             buttons3 = Tkinter.Frame(self._root)
             buttons3.pack(side='bottom', fill='x')
@@ -757,7 +807,7 @@ class ChartDemo:
                            command=self.zoomin).pack(side='right')
     
             # Set up a button to control stepping (default on)
-            self._step = Tkinter.IntVar()
+            self._step = Tkinter.IntVar(self._root)
             step = Tkinter.Checkbutton(buttons1, text="Step", 
                                        variable=self._step)
             step.pack(side='right')
@@ -868,6 +918,7 @@ def test():
         Rule('NP',('Det','N')),
         Rule('NP',('NP','PP')),
         Rule('VP',('VP','PP')),
+        Rule('VP',('VP','PP', 'PP')),
         Rule('VP',('V','NP')),
         Rule('PP',('P','NP')),
         )
