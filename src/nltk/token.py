@@ -419,7 +419,7 @@ class Token(dict):
             it uses an instance variable on each token to handle
             printing of cyclic structures.
         """
-        if self.__repr_cyclecheck: return '...'
+        if self.__repr_cyclecheck: return '<...>'
         self.__repr_cyclecheck = True
         
         props = self.keys()
@@ -491,79 +491,6 @@ class Token(dict):
     def __setstate__(self, state):
         dict.update(self, state)
         self.__repr_cyclecheck = False
-    def __reduce__(self):
-        return (_ptok_to_tok, (_tok_to_ptok(self),))
-
-#/////////////////////////////////////////////////////////////////
-# Pickling helpers
-#/////////////////////////////////////////////////////////////////
-# For some reason that I don't understand yet, pickle can't
-# deal with subclasses of dict that contain cyclic references.
-# So this is a somewhat hackish work-around, which converts a
-# token to an old-style object (_PickleToken) when pickling, and
-# restores it to a real token when unpickling.
-
-class _PickleToken: pass
-
-def _ptok_to_tok(val, memo=None):
-    if memo is None: memo = {}
-    memoval = memo.get(id(val))
-    if memoval is not None: return memoval
-
-    if isinstance(val, _PickleToken):
-        memoval = memo[id(val)] = Token()
-        for (k,v) in val.__dict__.items():
-            memoval[k] = _ptok_to_tok(v, memo)
-        return memoval
-    elif isinstance(val, list):
-        memoval = memo[id(val)] = []
-        for v in val:
-            memoval.append(_ptok_to_tok(v,memo))
-        return memoval
-    elif isinstance(val, dict):
-        memoval = memo[id(val)] = {}
-        for (k,v) in val.items():
-            memoval[k] = _ptok_to_tok(v, memo)
-        return memoval
-    elif isinstance(val, tuple):
-        return tuple([_ptok_to_tok(v,memo) for v in val])
-    elif isinstance(val, Set):
-        memoval = memo[id(val)] = Set()
-        for v in val:
-            memoval.add(v)
-        return memoval
-    else:
-        return val
-
-def _tok_to_ptok(val, memo=None):
-    if memo is None: memo = {}
-    memoval = memo.get(id(val))
-    if memoval is not None: return memoval
-
-    if isinstance(val, Token):
-        memoval = memo[id(val)] = _PickleToken()
-        for (k,v) in val.items():
-            memoval.__dict__[k] = _tok_to_ptok(v, memo)
-        return memoval
-    elif isinstance(val, list):
-        memoval = memo[id(val)] = []
-        for v in val:
-            memoval.append(_tok_to_ptok(v,memo))
-        return memoval
-    elif isinstance(val, dict):
-        memoval = memo[id(val)] = {}
-        for (k,v) in val.items():
-            memoval[k] = _tok_to_ptok(v, memo)
-        return memoval
-    elif isinstance(val, tuple):
-        return tuple([_tok_to_ptok(v,memo) for v in val])
-    elif isinstance(val, Set):
-        memoval = memo[id(val)] = Set()
-        for v in val:
-            memoval.add(v)
-        return memoval
-    else:
-        return val        
 
 #/////////////////////////////////////////////////////////////////
 # Standard Token Representations
@@ -594,6 +521,14 @@ Token.register_repr(('TEXT', 'SUBTOKENS', 'LOC'),
                     '<%(SUBTOKENS)r>')
 Token.register_repr(('SUBTOKENS', 'LOC'),
                     '<%(SUBTOKENS)r>')
+Token.register_repr(('WORDS',),
+                    '<%(WORDS)r>')
+Token.register_repr(('TEXT', 'WORDS'),
+                    '<%(WORDS)r>')
+Token.register_repr(('TEXT', 'WORDS', 'LOC'),
+                    '<%(WORDS)r>')
+Token.register_repr(('WORDS', 'LOC'),
+                    '<%(WORDS)r>')
 
 ######################################################################
 ## Frozen Token
@@ -740,31 +675,6 @@ class SafeToken(Token):
         # Is it immutable (or at least hashable)?
         try: hash(value); return True
         except TypeError: return False
-
-######################################################################
-## Probabilistic Token
-######################################################################
-
-# [XX] We may get rid of this!  (Just use a "PROB" property?)
-
-from nltk.probability import ProbabilisticMixIn
-class ProbabilisticToken(Token, ProbabilisticMixIn):
-    """
-    A single occurence of a unit of text that has a probability
-    associated with it.  This probability can represent a variety of
-    different likelihoods, such as:
-
-      - The likelihood that this token occured in a specific context.
-      - The likelihood that this token is correct for a specific
-        context.
-      - The likelihood that this token will be generated in a
-        specific context.
-    """
-    def __init__(self, prob, **properties):
-        ProbabilisticMixIn.__init__(self, prob)
-        Token.__init__(self, **properties)
-    def __repr__(self):
-        return Token.__repr__(self)+' (p=%s)' % self._prob
 
 ######################################################################
 ## Location
