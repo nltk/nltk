@@ -176,7 +176,6 @@ class Token(dict):
         frozen_properties = {}
         for (key, val) in self.items():
             frozen_properties[key] = self._freezeval(val)
-        print 'new frozentok', frozen_properties
         return FrozenToken(**frozen_properties)
 
     def copy(self, deep=True):
@@ -414,7 +413,7 @@ class FrozenToken(Token):
             immutable.
         """
         super(FrozenToken, self).update(properties)
-        self._hash = sum([hash(i) for i in self.items()])
+        self._hash = hash(sum([hash(i) for i in self.items()]))
         
     def __setitem__(self, property, value):
         raise TypeError('FrozenToken objects are immutable')
