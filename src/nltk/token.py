@@ -240,6 +240,9 @@ class Location:
         @return: A concise string representation of this C{Location}.
         @rtype: string
         """
+        ###### TEMPORARY
+        return self.__str__()
+    
         if self._unit is not None: unit = self._unit
         else: unit = ''
         
@@ -696,23 +699,47 @@ class WSTokenizer(TokenizerI):
     A tokenizer that separates a string of text into words, based on
     whitespace.  Each word is encoded as a C{Token} whose type is a
     C{string}.  Location indices start at zero, and have a unit of
-    C{'word'}.
+    C{'w'}.
     """
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
         words = str.split()
+        return [Token(words[i], Location(i, unit='s', source=source))
+                for i in range(len(words))]
+
+    def xtokenize(self, str, source=None):
+        # Inherit docs from TokenizerI
+        _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
+        return _XTokenTuple(str.split(), source=source, unit='w')
+
+class LineTokenizer(TokenizerI):
+    """
+    A tokenizer that separates a string of text into sentences, based
+    on newline characters.  Each sentence is encoded as a C{Token}
+    whose type is a C{string}.  Location indices start at zero, and
+    have a unit of C{'s'}.
+    """
+    def __init__(self): pass
+    def tokenize(self, str, source=None):
+        # Inherit docs from TokenizerI
+        _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
         tokens = []
-        for i in range(len(words)):
-            tokens.append(Token(words[i], Location(i, unit='w',
-                                                   source=source)))
+        i = 0
+        for sent in str.split('\n'):
+            if sent.strip() != '':
+                tok = Token(sent, Location(i, unit='s', source=source))
+                tokens.append(tok)
+                i += 1
         return tokens
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
-        return _XTokenTuple(str.split())
+        return _XTokenTuple([s for s in str.split('\n')
+                             if s.strip() != ''],
+                            source=source, unit='s') 
 
 class RETokenizer(TokenizerI):
     """
