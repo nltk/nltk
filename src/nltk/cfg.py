@@ -175,6 +175,22 @@ class Nonterminal:
         _chktype(1, rhs, Nonterminal)
         return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
 
+def nonterminals(symbols):
+    """
+    Given a string containing a list of symbol names, return a list of
+    C{Nonterminals} constructed from those symbols.  
+
+    @param symbols: The symbol name string.  This string can be
+        delimited by either spaces or commas.
+    @type symbols: C{string}
+    @return: A list of C{Nonterminals} constructed from the symbol
+        names given in C{symbols}.  The C{Nonterminals} are sorted
+        in the same order as the symbols names.
+    @rtype: C{list} of L{Nonterminal}
+    """
+    if ',' in symbols: symbol_list = symbols.split(',')
+    else: symbol_list = symbols.split()
+    return [Nonterminal(s.strip()) for s in symbol_list]
 
 #################################################################
 # CFGProduction and CFG
