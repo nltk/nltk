@@ -194,9 +194,9 @@ class ChunkParserI(ParserI):
             highest quality, then choose one arbitrarily.  If no chunk
             structure is available for the given text, return C{None}.
         @rtype: C{TreeToken}
-        @param text: The text to be chunked.  This text consists
+        @param tokens: The text to be chunked.  This text consists
             of a list of C{Tokens}, ordered by their C{Location}.
-        @type text: C{list} of C{Token}
+        @type tokens: C{list} of C{Token}
         """
         assert 0, "ChunkParserI is an abstract interface"
 

@@ -61,7 +61,7 @@ L{RecursiveDescentParser<nltk.parser.RecursiveDescentParser>}, and
 L{ChartParser<nltk.parser.chart.ChartParser>} are all implementations
 of the C{ParserI} interface.
 
-@author: L{Edward Loper<mailto:edloper@gradient.cis.upenn.edu>}
+@author: U{Edward Loper<mailto:edloper@gradient.cis.upenn.edu>}
 @version: 1.0
 
 @contributor: Steven Bird

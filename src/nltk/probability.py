@@ -40,11 +40,11 @@ C{Tree}).
     CrossValidationProbDist
 @group Analyitic Probability Distributions: UniformProbDist
 @group Conditional Distributions: ConditionalFreqDist,
-    ConditionalProbDistI, ConditionalProbDist,
+    ConditionalProbDistI, ConditionalProbDist
 @group Probabilistic Mix-In: ProbabilisticMixIn
 @sort: FreqDist, ProbDistI, MLEProbDist, LidstoneProbDist, LaplaceProbDist, 
     ELEProbDist, HeldoutProbDist, CrossValidationProbDist, UniformProbDist,
-    ConditionalFreqDist, ConditionalProbDistI, ConditionalProbDist,
+    ConditionalFreqDist, ConditionalProbDistI, ConditionalProbDist
 
 @todo: Better handling of log probabilities.
 """

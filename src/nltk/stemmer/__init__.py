@@ -40,7 +40,7 @@ class StemmerI:
         @type token: C{token}
         @rtype: C{Token}
         @return: A new token whose type is the morphological stem of
-            Ctoken.type()}, and whose location is C{token.loc()}.
+            C{token.type()}, and whose location is C{token.loc()}.
         """
         raise AssertionError, 'StemmerI is an abstract interface'
 
