@@ -13,10 +13,10 @@ EPYDOC = epydoc
 all: distributions
 
 usage:
-	@echo make distributions
-	@echo make test
-	@echo make checkdocs
-	@echo make clean
+	@echo "make distributions -- Build distributions (output to dist/)"
+	@echo "make test -- Run unit tests"
+	@echo "make checkdocs -- Check docstrings for completeness"
+	@echo "make clean -- Remove temporary and built files"
 
 # Tests.
 test: 
@@ -25,18 +25,14 @@ test:
 # Clean.  
 #    - Erase any pyc and pyo files.
 #    - Get rid of build/dist directories
+#    - Erase the MANIFEST file (it's generated from MANIFEST.in)
 clean:
+	rm -f `find . -name '*.pyc'`
+	rm -f `find . -name '*.pyo'`
 	rm -rf build dist MANIFEST
-	rm -f *.pyc nltk/*.pyc nltk/*/*.pyc
-	rm -f *.pyo nltk/*.pyo nltk/*/*.pyo
 
-# Distributions.
-# Build all from scratch; and create links for convenient access.
+# Distributions. Build all from scratch.
 distributions: clean sdist bdist
-	(cd dist && ln -s nltk-*.noarch.rpm nltk.rpm)
-	(cd dist && ln -s nltk-*.tar.gz nltk.tgz)
-	(cd dist && ln -s nltk-*.zip nltk.zip)
-	(cd dist && ln -s nltk-*.exe nltk.exe)
 
 # Source distributions
 sdist: gztardist zipdist
@@ -62,4 +58,4 @@ windist:
 	python setup.py -q bdist --format=wininst
 
 checkdocs:
-	$(EPYDOC) -v --check */*.py */*/*.py
+	$(EPYDOC) -v --check nltk
