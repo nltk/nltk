@@ -14,7 +14,7 @@ probabilistic parser module defines C{ProbabilisticParserI}, a
 standard interface for associating probabilities with parses for a
 text.  It also defines two implementations of the
 C{ProbablisticParserI} interface, C{ViterbiPCFGParser} and
-C{BottomUpPCFGParser}.
+C{BottomUpPCFGChartParser}.
 
 C{ViterbiPCFGParser} is a C{PCFG} parser based on a Viterbi-sytle
 algorithm.  It uses dynamic programming to efficiently find the single
@@ -56,7 +56,7 @@ __all__ = [
     
     'ViterbiPCFGParser',
     
-    'BottomUpPCFGParser',
+    'BottomUpPCFGChartParser',
     'InsidePCFGParser',
     'RandomPCFGParser',
     'LongestPCFGParser',
@@ -483,7 +483,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
     record partial results.  C{BottomUpPCFGChartParser} maintains a
     queue of edges that can be added to the chart.  This queue is
     initialized with edges for each token in the text that is being
-    parsed.  C{BottomUpPCFGParser} inserts these edges into to the
+    parsed.  C{BottomUpPCFGChartParser} inserts these edges into to the
     chart one at a time, starting with the most likely edges, and
     proceeding to less likely edges.  For each edge that is added to
     the chart, it may become possible to insert additional edges into
@@ -615,7 +615,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         for tok in text:
 # SB: should this be PCFGProduction?
 # also, the signature is wrong...
-            prod = CFGProduction(tok.type())
+            prod = PCFGProduction(1, tok.type())
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
             edge_queue.append(Edge(prod, probtok, tok.loc()))
 
