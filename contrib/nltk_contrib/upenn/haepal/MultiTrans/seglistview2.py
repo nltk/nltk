@@ -94,7 +94,7 @@ class CallhomeText(QTextEdit):
 
             QTextEdit.keyPressEvent(self, e)
 
-            self._data[p]['TEXT'] = self.text(p).ascii()[:-1]
+            self._data[p]['TEXT'] = unicode(self.text(p)[:-1])
             # note that [:-1] is used because a qt paragraph usually
             # contains a trailing white space
             if h0 != self.paragraphRect(p).height():
