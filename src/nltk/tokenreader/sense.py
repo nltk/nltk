@@ -461,7 +461,7 @@ def _demo_semcor_tokenizer(type, files):
         print 'Parsing', file, '...'
         print '=' * 75
         try:
-            tok = Token(text=open(file).read())
+            tok = Token(TEXT=open(file).read())
             r.tokenize(tok)
             for item in tok['SUBTOKENS']:
                 pprint.pprint(item)
@@ -475,13 +475,12 @@ def _demo_senseval_tokenizer(files):
         print '=' * 75
         print file
         print '=' * 75
-        tok = Token(text=open(file).read())
+        tok = Token(TEXT=open(file).read())
         tk.xtokenize(tok)
         for token in tok['SUBTOKENS']:
             print token
 
 if __name__ == '__main__':
-    #path = '/usr/share/nltk/semcor1.7/brown1/tagfiles'
     #files = ['%s/br-%s' % (path,x) for x in 'a01 a02 a11 k29'.split()]
     #_demo_semcor_tokenizer('sentence', files)
     path = '/usr/share/nltk/senseval/'
