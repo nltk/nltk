@@ -8,9 +8,39 @@
 # $Id$
 
 """
+Data classes and C{ParserI} implementations for "chart parsers," which
+use dynamic programming to efficiently parse a text.  A X{chart
+parser} derives parse trees for a text by iteratively adding "edges"
+to a "chart."  Each X{edge} represents a hypothesis about the tree
+structure for a subsequence of the text.  The X{chart} is a
+"blackboard" for composing and combining these hypotheses.
 
+When a chart parser begins parsing a text, it creates a new (empty)
+chart, spanning the text.  It then incrementally adds new edges to the
+chart.  A set of X{chart rules} specifies the conditions under which
+new edges should be added to the chart.
 
+Once the chart reaches a stage where none of the chart rules adds any
+new edges, parsing is complete.
+          
+The set of chart rules used by a chart parser is known as its
+X{strategy}.  Several standard strategies, such as X{top-down parsing}
+and X{bottom-up parsing}, are already defined by the
+C{nltk.chartparser} module; however, you can easily create your own
+rules and strategies, as well.
 
+Edges are encoded with the C{Edge} class, and charts are encoded with
+the C{Chart} class or one of its specailized subclasses.  The chart
+parser module includes definitions for three chart parsers:
+
+  - C{ChartParser} is a simple and flexible chart parser.  Its chart rules
+    must implement the C{ChartRuleI} interface.
+  - C{SteppingChartParser} is a subclass of C{ChartParser} that can be
+    used to step through the parsing process.
+  - C{IncrementalChartParser} is a more efficient chart parser
+    implementation.  Its chart rules implement the
+    C{IncrementalChartRule} interface, which returns only the edges
+    that can be produced from a given edge.
 """
 
 from nltk.parser import ParserI
@@ -19,135 +49,30 @@ from nltk.tree import TreeToken
 from nltk.set import Set
 from nltk.cfg import CFG, CFGProduction, Nonterminal
 
-def edgecmp(e1,e2):
-    return cmp((e1.loc().length(), e1.loc(), e1.dprod()),
-               (e2.loc().length(), e2.loc(), e2.dprod()))
+# Used for sorting by epydoc; and for "import *"
+__all__ = [
+    # Chart Parsers
+    'ChartParser',
+    'SteppingChartParser',
+    'IncrementalChartParser',
 
-# this code should be replaced with a more transparent version
-def _seq_loc(tok_sent):
-    """
-    Return the location that spans a given sequence of tokens.
-    """
-    return TreeToken('', *tok_sent).loc()
+    # Basic data types.
+    'Chart',
+    'Edge',
+    'FRChart',
 
-##//////////////////////////////////////////////////////
-##  Dotted Productions
-##//////////////////////////////////////////////////////
-
-class DottedCFGProduction(CFGProduction):
-    """
-    A dotted context-free grammar production.
-
-    The "dot" is a distinguished position at the boundary of any
-    element on the right-hand side of the production.
-
-    @type _lhs: C{object}
-    @ivar _lhs: The left-hand side of the production, a non-terminal
-    @type _rhs: C{tuple} of C{object}s
-    @ivar _rhs: The right-hand side of the production, a list of terminals
-          and non-terminals.
-    @type _pos: C{int}
-    @ivar _pos: The position of the dot.
-    """
-
-    def __init__(self, lhs, rhs, pos=0):
-        """
-        Construct a new C{DottedCFGProduction}.
-
-        @param lhs: The left-hand side of the new C{CFGProduction}.
-        @type lhs: C{object}
-        @param rhs: The right-hand side of the new C{CFGProduction}.
-        @type rhs: C{tuple} of C{objects}s
-        @param pos: The position of the dot (defaults to zero).
-        @type pos: C{int}
-        """
-        self._lhs = lhs
-        self._rhs = rhs
-        self._pos = pos
-
-    def pos(self):
-        """
-        @return: the position of the dot in the C{DottedCFGProduction}.
-        @rtype: C{int}
-        """
-        return self._pos
-
-    def next(self):
-        """
-        @return: the next element on the right-hand side following the dot.
-        @rtype: C{object}
-        """
-        return self.rhs()[self._pos]
-
-    def shift(self):
-        """
-        Shift the dot one position to the right (returns a new
-        DottedCFGProduction).
-        
-        @raise IndexError: If the dot position is beyond the end of
-            the projection's right hand side.
-        """
-        if self._pos < len(self.rhs()):
-            return DottedCFGProduction(self._lhs, self._rhs, self._pos + 1)
-        else:
-            raise IndexError('Attempt to move dot position past end of production')
-
-    def complete(self):
-        """
-        @return: true if the dot is in the final position on the
-            right-hand side.
-        @rtype: C{boolean}
-        """
-        return self._pos == len(self.rhs())
-
-    def copy(self):
-        """
-        @return: a copy of the dotted production
-        @rtype: C{DottedCFGProduction}
-        """
-        return DottedCFGProduction(self._lhs, self._rhs, self._pos)
-
-    def __repr__(self):
-        """
-        @return: A concise string representation of the C{DottedCFGProduction}.
-        @rtype: C{string}
-        """
-        return '[Production: %s]' % self
-
-    def __str__(self):
-        """
-        @return: A verbose string representation of the C{DottedCFGProduction}.
-        @rtype: C{string}
-        """
-        if isinstance(self._lhs, Nonterminal): str = '%s ->' % self._lhs
-        else: str = '%r ->' % self._lhs
-            
-        for elt in self._rhs[:self._pos]:
-            if isinstance(elt, Nonterminal): str += ' %s' % elt.symbol()
-            else: str += ' %r' % elt
-        str += ' *'
-        for elt in self._rhs[self._pos:]:
-            if isinstance(elt, Nonterminal): str += ' %s' % elt.symbol()
-            else: str += ' %r' % elt
-        return str
-
-    def __eq__(self, other):
-        """
-        @return: true if this C{DottedCFGProduction} is equal to C{other}.
-        @rtype: C{boolean}
-        """
-        return (CFGProduction.__eq__(self, other) and
-                self._pos == other._pos)
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    def __hash__(self):
-        """
-        @return: A hash value for the C{DottedCFGProduction}.
-        @rtype: C{int}
-        """
-        return hash((self._lhs, self._rhs, self._pos))
+    # Chart Rules.
+    'ChartRuleI',
+    'BottomUpRule',
+    'FundamentalRule',
+    'TopDownRule',
+    'TopDownInitRule',
+    'IncrementalChartRuleI',
+    'IncrementalBottomUpRule',
+    'IncrementalFundamentalRule',
+    'IncrementalTopDownRule',
+    'IncrementalTopDownInitRule',
+    ]
 
 ##//////////////////////////////////////////////////////
 ##  Edge
@@ -155,40 +80,77 @@ class DottedCFGProduction(CFGProduction):
 
 class Edge:
     """
-    An edge of a chart.  An edge is a span of tokens (i.e. a
-    C{Location}) with an associated C{DottedCFGProduction} and a C{Tree}.
-    The Edge class provides basic functions plus a some common
-    chart-parser functions on edges.
+    A hypothesis about the tree structure for a subsequence of the
+    text.  An edge consists of a CFG production, a location, a X{dot
+    position}, and a C{TreeToken}.  It specifies that its production's
+    left hand side might expand to its right hand side, starting with
+    the subsequence of text specified by its location.  The dot
+    position is an index into the production's right hand side, which
+    indicates what right hand side elements cover the text specified
+    by its location.
 
-    @type _dprod: C{DottedCFGProduction}
-    @ivar _dprod: The dotted production of the edge.
+    An edge with production C{[Production: A -> B C D]}, location
+    C{@[3w:8w]}, and dot position 2 is written::
+
+        [Edge: A -> B C * D]@[3w:8w]
+
+    @type _prod: C{CFGProduction}
+    @ivar _prod: The production of the edge.
+    @type _dotpos: C{int}
+    @ivar _dotpos: The position of the dot.
     @type _tree: C{TreeToken}
     @ivar _tree: The current parse tree of the edge.
     @type _loc: C{Location}
     @ivar _loc: The span of tokens covered by the edge.
     """
     
-    def __init__(self, dprod, tree, loc):
+    def __init__(self, prod, tree, loc, dotpos=0):
         """
         Construct a new C{Edge}.
 
-        @param dprod: The dotted production associated with the edge.
-        @type dprod: C{DottedCFGProduction}
+        @param prod: The production associated with the edge.
+        @type prod: C{CFGProduction}
         @param tree: The (partial) parse tree so far constructed for the edge.
         @type tree: C{TreeToken}
         @param loc: The location spanned by the edge.
         @type loc: C{Location}
+        @param dotpos: The position of the edge's dot.
+        @type dotpos: C{int}
         """
-        self._dprod = dprod
+        if not isinstance(prod, CFGProduction): raise ValueError
+        self._prod = prod
         self._tree = tree
         self._loc = loc
+        self._dotpos = dotpos
 
-    def dprod(self):
+    def prod(self):
         """
-        @return: the dotted production of the edge.
-        @rtype: C{DottedCFGProduction}
+        @return: the production of the edge.
+        @rtype: C{CFGProduction}
         """
-        return self._dprod
+        return self._prod
+
+    def dotpos(self):
+        """
+        @return: the position of the dot in the edge's C{CFGProduction}.
+        @rtype: C{int}
+        """
+        return self._dotpos
+
+    def next(self):
+        """
+        @return: the next element on the right-hand side following the dot.
+        @rtype: C{object}
+        """
+        return self._prod.rhs()[self._dotpos]
+
+    def complete(self):
+        """
+        @return: true if the dot is in the final position on the
+            right-hand side.
+        @rtype: C{boolean}
+        """
+        return self._dotpos == len(self._prod.rhs())
 
     def tree(self):
         """
@@ -197,14 +159,6 @@ class Edge:
         """
         return self._tree
     
-    # a complete edge is one whose dotted production is complete
-    def complete(self):
-        """
-        @return: true if the C{DottedCFGProduction} of this edge is complete
-        @rtype: C{boolean}
-        """
-        return self._dprod.complete()
-
     def loc(self):
         """
         @return: the location spanned by this edge
@@ -232,26 +186,47 @@ class Edge:
         @return: A concise string representation of the C{Edge}
         @rtype: C{string}
         """
-        return '[Edge: %s]%s' % (self._dprod, self._loc)
+        return '[Edge: %s]%s' % (self, self._loc)
 
     def __str__(self):
-        return '[Edge: %s]%r' % (self._dprod, self._loc)
+        if isinstance(self._prod._lhs, Nonterminal):
+            str = '%s ->' % (self._prod._lhs.symbol(),)
+        else:
+            str = '%r ->' % (self._prod._lhs,)
+        for elt in self._prod._rhs[:self._dotpos]:
+            if isinstance(elt, Nonterminal):
+                str += ' %s' % (elt.symbol(),)
+            else:
+                str += ' %r' % (elt,)
+        str += ' *'
+        for elt in self._prod._rhs[self._dotpos:]:
+            if isinstance(elt, Nonterminal):
+                str += ' %s' % (elt.symbol(),)
+            else:
+                str += ' %r' % (elt,)
+        return str
 
     def __eq__(self, other):
         """
         @return: true if this C{Edge} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (self._dprod == other._dprod and
+        return (self._prod == other._prod and
                 self._tree == other._tree and
-                self._loc == other._loc)
+                self._loc == other._loc and
+                self._dotpos == other._dotpos)
+
+    def __cmp__(self, other):
+        if self == other: return 0
+        return cmp((e1.loc().length(), e1.loc(), e1.prod()),
+                   (e2.loc().length(), e2.loc(), e2.prod()))
 
     def __hash__(self):
         """
         @return: A hash value for the C{Edge}.
         @rtype: C{int}
         """
-        return hash((self._dprod, self._tree, self._loc))
+        return hash((self._prod, self._tree, self._loc, self._dotpos))
 
 ##//////////////////////////////////////////////////////
 ##  Chart
@@ -309,8 +284,8 @@ class Chart:
     def complete_edges(self):
         """
         @return: A list of all complete edges contained in this chart.
-            A complete edge is an edge whose dotted production has its dot
-            in the final position.
+            A complete edge is an edge whose dot is in the final
+            position.
         @rtype: C{sequence} of C{Edge}
         """
         return [e for e in self.edges() if e.complete()]
@@ -318,25 +293,12 @@ class Chart:
     def incomplete_edges(self):
         """
         @return: A list of all incomplete edges contained in this chart.
-            An incomplete edge is an edge whose dotted production has its dot
-            in a nonfinal position.
+            An incomplete edge is an edge whose dot is in a nonfinal
+            position.
         @rtype: C{sequence} of C{Edge}
         """
         return [e for e in self.edges() if not e.complete()]
 
-    # [edloper 9/27/01] There is a copy module, which provides both
-    # shallow & deep copying..  But I'm not sure that we need this
-    # copy method anyway.  It wreaks havoc with my ChartView class,
-    # cuz it doesn't like having to switch to a new chart. :)
-    def copy(self):
-        """
-        @return: A deep copy of this chart.
-        @rtype: C{Chart}
-        """
-        chart = Chart(self.loc())
-        chart._edgeset = self._edgeset.copy()
-        return chart
-    
     def insert(self, edge):
         """
         Attempt to insert a new edge into this chart.  If the edge is
@@ -355,7 +317,7 @@ class Chart:
         spans the entire chart.
         """
         return [edge.tree() for edge in self.edges() if
-                edge.loc() == self._loc and edge.dprod().lhs() == node]
+                edge.loc() == self._loc and edge.prod().lhs() == node]
 
     def contains(self, edge):
         """
@@ -371,18 +333,6 @@ class Chart:
         """
         return edge in self._edgeset
             
-    #draw (NB, there is also a tkinter version nltk.draw.chart)
-    def old_draw(self, width=7):
-        print "="*75
-        edges = self.edges()
-        edges.sort(edgecmp)
-        for edge in edges:
-            start = edge.start()
-            end = edge.end()
-            indent = " " * width * start
-            print indent, edge.dprod()
-            print indent + "|" + "-"*(width*(end-start)-1) + "|"
-
     def draw(self, text=None, **kwargs):
         import nltk.draw.chart
         nltk.draw.chart.ChartView(self, text, **kwargs)
@@ -412,7 +362,7 @@ class Chart:
             str += '['+('-'*width)*(end-start-1) + '-'*(width-1)+'>'
         
         str += (' '*(width-1)+'.')*(chart_end-end)
-        return str + '| %s ' % edge.dprod()
+        return str + '| %s ' % edge #FIXME
         
     def pp(self, text=None, width=3):
         (chart_start, chart_end) = (self._loc.start(), self._loc.end())
@@ -425,7 +375,7 @@ class Chart:
             pos = chart_start
             for tok in text:
                 str += (tok.loc().start() - pos) * '   '
-                len = 3*(tok.loc().end() - tok.loc().start())
+                len = width*(tok.loc().end() - tok.loc().start())
                 type = ('%s' % tok.type())[:len-1]
                 str += ('%-'+`len`+'s') % type
                 pos = tok.loc().end()
@@ -433,7 +383,7 @@ class Chart:
 
         # Draw each edge on a separate line.
         edges = self.edges()
-        edges.sort(edgecmp)
+        edges.sort()
         for edge in edges:
             str += self.pp_edge(edge, width) + '\n'
         return str
@@ -444,12 +394,12 @@ class FRChart(Chart):
     that could combine with a given edge by the fundamental rule.  The
     fundamental rule can combine two edges C{M{e1}} and C{M{e2}} if
     C{M{e1}.end()==M{e2}.start()} and
-    C{M{e1}.dprod().next()==M{e2}.dprod().lhs()}.
+    C{M{e1}.next()==M{e2}.prod().lhs()}.
 
     C{FRChart} indexes the set of complete edges in the chart by their
-    start location and their dotted production's left hand side; and indexes
+    start location and their production's left hand side; and indexes
     the set of incomplete edges in the chart by their end location and
-    the element of their dotted production's right hand side following its
+    the element of their production's right hand side following its
     dot.  To access edges using these indices, use the optional
     arguments for C{complete_edges} and C{incomplete_edges}.
 
@@ -471,20 +421,20 @@ class FRChart(Chart):
         return_value = Chart.insert(self, edge)
         if return_value:
             if edge.complete():
-                key = (edge.start(), edge.dprod().lhs())
+                key = (edge.start(), edge.prod().lhs())
                 self._complete.setdefault(key, []).append(edge)
             else:
-                key = (edge.end(), edge.dprod().next())
+                key = (edge.end(), edge.next())
                 self._incomplete.setdefault(key, []).append(edge)
         return return_value
 
     def complete_edges(self, start=None, lhs=None):
         """
         @return: A list of complete edges contained in this chart.
-            A complete edge is an edge whose dotted production has its dot
+            A complete edge is an edge whose dot
             in the final position.  If C{start} and C{lhs} are 
             specified, then return all edges that begin at C{start}
-            and whose dotted productions have a left hand side C{lhs}.
+            and whose productions have a left hand side C{lhs}.
             Otherwise, return all complete edges contained in this
             chart. 
         @rtype: C{sequence} of C{Edge}
@@ -496,10 +446,10 @@ class FRChart(Chart):
     def incomplete_edges(self, end=None, next=None):
         """
         @return: A list of all incomplete edges contained in this chart.
-            An incomplete edge is an edge whose dotted production has its dot
+            An incomplete edge is an edge whose dot
             in a nonfinal position.  If C{end} and C{next} are 
             specified, then return all edges that end at C{end}
-            and that have dotted productions whose first element after the
+            and that have productions whose first element after the
             dot is C{next}.  Otherwise, return all complete edges
             contained in this chart.
         @rtype: C{sequence} of C{Edge}
@@ -523,11 +473,10 @@ class FRChart(Chart):
             combined with the fundamental rule.
         @type edge: C{Edge}
         """
-        dprod = edge.dprod()
         if edge.complete():
-            return self._incomplete.get((edge.start(), dprod.lhs()),[])
+            return self._incomplete.get((edge.start(), edge.prod().lhs()),[])
         else:
-            return self._complete.get((edge.end(), dprod.next()),[])
+            return self._complete.get((edge.end(), edge.next()),[])
 
 ##//////////////////////////////////////////////////////
 ##  ChartRule
@@ -549,6 +498,11 @@ class ChartRuleI:
 ##//////////////////////////////////////////////////////
 
 class ChartParser(ParserI):
+    """
+    A flexible chart parser that uses C{ChartRule}s to decide which
+    edges to add to a chart.
+    """
+    
     ##############################################
     # Initialization
     ##############################################
@@ -586,8 +540,8 @@ class ChartParser(ParserI):
         # Add an edge for each lexical item.
         #if self._trace: print 'Adding lexical edges...'
         for tok in text:
-            dprod = DottedCFGProduction(tok.type(), ())
-            new_edge = Edge(dprod, tok, tok.loc())
+            prod = CFGProduction(tok.type())
+            new_edge = Edge(prod, tok, tok.loc())
             if chart.insert(new_edge):
                 if self._trace > 1:
                     print '%-20s %s' % ('Lexical Insertion',
@@ -636,19 +590,17 @@ def self_loop_edge(production, loc):
     Return an edge formed from production and loc.  Its dot is at the
     leftmost position, and it has no children.
     """
-    dprod = DottedCFGProduction(production.lhs(), production.rhs(), 0)
-    treetok = TreeToken(dprod.lhs().symbol())
-    return Edge(dprod, treetok, loc)
+    treetok = TreeToken(production.lhs().symbol())
+    return Edge(production, treetok, loc)
 
 def fr_edge(edge1, edge2):
     """
     Return a fundamental-rule edge.
     """
-    loc = edge1._loc.union(edge2.loc())
-    dr = edge1._dprod.shift()
-    children = edge1._tree.children() + (edge2.tree(),)
-    treetok = TreeToken(edge1._tree.node(), *children)
-    return Edge(dr, treetok, loc)
+    loc = edge1.loc().union(edge2.loc())
+    children = edge1.tree().children() + (edge2.tree(),)
+    treetok = TreeToken(edge1.tree().node(), *children)
+    return Edge(edge1.prod(), treetok, loc, edge1.dotpos()+1)
     
 class TopDownInitRule(ChartRuleI):
     def apply(self, chart, grammar):
@@ -665,7 +617,7 @@ class TopDownRule(ChartRuleI):
         edges = []
         for production in grammar.productions():
             for edge in chart.incomplete_edges():
-                if production.lhs() == edge.dprod().next():
+                if production.lhs() == edge.next():
                     loc = edge.loc().end_loc()
                     edges.append(self_loop_edge(production, loc))
         return edges
@@ -676,7 +628,7 @@ class BottomUpRule(ChartRuleI):
         edges = []
         for production in grammar.productions():
             for edge in chart.edges():
-                if edge.dprod().lhs() == production.rhs()[0]:
+                if edge.prod().lhs() == production.rhs()[0]:
                     loc = edge.loc().start_loc()
                     edges.append(self_loop_edge(production, loc))
         return edges
@@ -687,7 +639,7 @@ class FundamentalRule(ChartRuleI):
         edges = []
         for edge in chart.incomplete_edges():
             for edge2 in chart.complete_edges():
-                if (edge.dprod().next() == edge2.dprod().lhs() and
+                if (edge.next() == edge2.prod().lhs() and
                     edge.end() == edge2.start()):
                     edges.append(fr_edge(edge, edge2))
         return edges
@@ -706,6 +658,16 @@ BU_STRATEGY = [BottomUpRule(), FundamentalRule()]
 ##//////////////////////////////////////////////////////
 
 class SteppingChartParser(ChartParser):
+    """
+    A C{ChartParser} that allows you to step through the parsing
+    process, adding a single edge at a time.  It also allows you to
+    change the parser's strategy midway through parsing a text.
+
+    The C{initialize} method is used to start parsing a text.  C{step}
+    adds a single edge to the chart.  C{set_strategy} changes the
+    strategy used by the chart parser.  C{parses} returns the set of
+    parses that has been found by the chart parser.
+    """
     def __init__(self, grammar, strategy=None, **kwargs):
         if strategy is None: strategy = []
         ChartParser.__init__(self, grammar, strategy, **kwargs)
@@ -716,28 +678,58 @@ class SteppingChartParser(ChartParser):
 
     def initialize(self, text):
         """
+        Start parsing a given text.
+        
         For now, just take a text.. eventually we want to be able to
-        take a chart!
+        take a chart, if the user wants to supply one.
         """
         self._chart = self._create_chart(text)
         self._edge_queue = []
         self._current_chartrule = None
 
     def set_strategy(self, strategy):
+        """
+        Change the startegy that the parser uses to decide which edges
+        to add to the chart.
+        """
         if strategy != self._strategy:
             self._strategy = strategy
             self._edge_queue = []
 
     def parses(self):
+        """
+        Return the parses that are currently contained in the parser's
+        chart.
+        """
+        if chart is None:
+            raise ValueError('You must initialize the parser first.')
         return self._chart.parses(self._grammar.start())
 
     def chart(self):
+        """
+        Return the chart that is used by the parser.
+        """
         return self._chart
 
     def current_chartrule(self):
+        """
+        @return: the chart rule that was used to generate the most
+            recent edge.
+        @rtype: C{ChartRuleI} or C{None}
+        """
         return self._current_chartrule
 
     def step(self, **kwarg):
+        """
+        Add a single edge to the chart.
+        
+        @rtype: C{Edge} or C{None}
+        @return: if an edge was added to the chart, then return the
+            new edge; otherwise, return C{None}.
+        """
+        if chart is None:
+            raise ValueError('You must initialize the parser before stepping.')
+        
         if kwarg.has_key('strategy'): self.set_strategy(kwarg['strategy'])
         
         # Try moving an edge from the queue to the chart (note that
@@ -795,7 +787,7 @@ class IncrementalChartRuleI:
     
 class IncrementalChartParser:
     """
-    Add one edge at a time..
+    A more efficient chart parser implementation.
     """
     def __init__(self, grammar, strategy, **kwargs):
         self._grammar = grammar
@@ -824,8 +816,8 @@ class IncrementalChartParser:
     def _create_edge_queue(self, text):
         edge_queue = []
         for tok in text:
-            dprod = DottedCFGProduction(tok.type(), ())
-            edge_queue.append(Edge(dprod, tok, tok.loc()))
+            prod = CFGProduction(tok.type())
+            edge_queue.append(Edge(prod, tok, tok.loc()))
 
         # Start with the first word (top of stack = last elt)
         edge_queue.reverse()
@@ -852,7 +844,7 @@ class IncrementalChartParser:
             
             # Check if the edge is a complete parse.
             if (edge.loc() == chart.loc() and
-                edge.dprod().lhs() == self._grammar.start()):
+                edge.prod().lhs() == self._grammar.start()):
                 parses.append(edge.tree())
                 if len(parses) == n: break
 
@@ -877,37 +869,37 @@ class IncrementalChartParser:
         if len(final_trees) == 0: return None
         else: return final_trees[0]
 
-class IncrementalTopDownInitRule(ChartRuleI):
+class IncrementalTopDownInitRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
         if isinstance(edge.tree(), TreeToken): return []
         return [self_loop_edge(production, chart.loc().start_loc())
                 for production in grammar.productions()
                 if production.lhs() == grammar.start()]
 
-class IncrementalTopDownRule(ChartRuleI):
+class IncrementalTopDownRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
         if edge.complete(): return []
         return [self_loop_edge(production, edge.loc().end_loc())
                 for production in grammar.productions()
-                if production.lhs() == edge.dprod().next()]
+                if production.lhs() == edge.next()]
 
 class IncrementalBottomUpRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
         return [self_loop_edge(production, edge.loc().start_loc())
                 for production in grammar.productions()
-                if edge.dprod().lhs() == production.rhs()[0]]
+                if edge.prod().lhs() == production.rhs()[0]]
 
 class IncrementalFundamentalRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
         if edge.complete():
             return [fr_edge(edge2, edge)
                     for edge2 in chart.incomplete_edges()
-                    if (edge2.dprod().next() == edge.dprod().lhs() and
+                    if (edge2.next() == edge.prod().lhs() and
                         edge2.end() == edge.start())]
         else:
             return [fr_edge(edge, edge2)
                     for edge2 in chart.complete_edges()
-                    if (edge.dprod().next() == edge2.dprod().lhs() and
+                    if (edge.next() == edge2.prod().lhs() and
                         edge.end() == edge2.start())]
 
 INCREMENTAL_BU_STRATEGY = [IncrementalBottomUpRule(),
@@ -956,21 +948,21 @@ def demo():
     if INCR:
         t = time.time()
         cp = IncrementalChartParser(grammar, INCREMENTAL_BU_STRATEGY, trace=tr)
-        for parse in cp.parse(tok_sent): print parse
+        for parse in cp.parse_n(tok_sent): print parse
         print 'incremental bottom up', (time.time()-t), '\n'
         t = time.time()
         cp = IncrementalChartParser(grammar, INCREMENTAL_TD_STRATEGY, trace=tr)
-        for parse in cp.parse(tok_sent): print parse
+        for parse in cp.parse_n(tok_sent): print parse
         print 'incremental top down ', (time.time()-t), '\n'
     if BU:
         t = time.time()
         cp = ChartParser(grammar, BU_STRATEGY, trace=tr)
-        for parse in cp.parse(tok_sent): print parse
+        for parse in cp.parse_n(tok_sent): print parse
         print 'global bottom up     ', (time.time()-t), '\n'
     if TD:
         t = time.time()
         cp = ChartParser(grammar, TD_STRATEGY, trace=tr)
-        for parse in cp.parse(tok_sent): print parse
+        for parse in cp.parse_n(tok_sent): print parse
         print 'global top down      ', (time.time()-t), '\n'
     if STEP:
         cp = SteppingChartParser(grammar, trace=tr)
