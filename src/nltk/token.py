@@ -472,6 +472,15 @@ class Token(dict):
         raise TypeError('%s objects cannot be used as booleans' %
                         self.__class__.__name__)
 
+    #/////////////////////////////////////////////////////////////////
+    # Pickling
+    #/////////////////////////////////////////////////////////////////
+
+    def __getstate__(self):
+        return dict(self)
+    def __setstate__(self, state):
+        dict.update(self, state)
+
 # Register some specialized string representations for common
 # sets of properties.
 Token.register_repr(('TEXT',),
