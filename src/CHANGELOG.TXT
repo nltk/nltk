@@ -1,4 +1,71 @@
 ##////////////////////////////////////////////////////////////////////////
+##  Version 1.1
+##////////////////////////////////////////////////////////////////////////
+Mon Aug 18 22:51:26 EDT 2003
+
+New Packages:
+  - Added nltk_data, a new package that contains sample data and
+    corpora that can be easily used with NLTK.  The new nltk.corpus
+    module can be used to access the data in this package.  Several
+    new tokenizers (such as TreebankTokenizer) are available to
+    tokenize this data appropriately.
+  - Added nltk_contrib, a new package that contains third-party
+    contributions to the toolkit.
+
+Additions to the main nltk package:
+  - Added a demo() function to every module defined by the toolkit.
+    These demo functions can be imported and called; or they can be
+    run by running the individual module as a script.
+  - Added a stemmer interface, and an implementation of the porter
+    stemmer.
+
+Graphical Demonstration Improvements:
+  - Added a colorized grammar editor (nltk.draw.cfg), that is used
+    by the parser demos.
+  - Added a dialog box to change the demo sentence
+  - Added a matrix view to the chart parser demo
+  - Interface improvements to the chart parser demo
+  - nltk.draw.plot now uses BLT & PWM to draw plots, if they are
+    available.
+  - Added menus
+  - Added text size controls; animation controls; and speed controls.
+
+Changes:
+  - Split nltk.token into 2 modules: the new nltk.token defines
+    locations and tokens; and the new nltk.tokenizer defines &
+    implements tokenization.
+  - Redesigned ConditionalProbDist.
+  - Changed chart parser rule orders for strategies, to match standard
+    parsing algorithms (eg Earley)
+  - Updated nltk.parser.chunk to generate flat Trees (instead of lists
+    of lists).  This allows it to chunk multiple categories.
+
+Minor improvements:
+  - nltk.cfg.nonterminals() provides a more convenient and less
+    error prone way to create nonterminals.
+  - Renamed ProbabilisticMixin.p() to prob()
+  - Overload the division operator of Nonterminal, to make it easy
+    to create "slashed" categories.
+  - Added logprob() methods, for reading probabilities in log space.
+  - Added nltk.set.MutableSet, for encoding mutable sets.
+  - TaggedTokenizer and ChunkedTaggedTokenizers now ignore untagged
+    words (rather than assignining them tags of None).
+  - Simplified the Location & Token constructors
+  - Added "source" optional parameter to TokenizerI.tokenize; and
+    "unit" optional parameter TokenizerI's constructor.
+  - Removed type consistancy checks from nltk.tree
+
+Testing & bug fixes, etc
+  - Assorted bug fixes in nltk.cfg, nltk.probability, nltk.set,
+    nltk.tagger, nltk.tokenizer, nltk.tree, nltk.classifier.maxent,
+    nltk.draw, nltk.draw.plot, nltk.draw.chart, nltk.draw.rdparser,
+    nltk.draw.srparser, nltk.draw.tree, nltk.parser,
+    nltk.parser.probabilistic,
+  - Expanded unit test suite
+  - Assorted efficiency improvements
+
+
+##////////////////////////////////////////////////////////////////////////
 ##  Version 1.0
 ##////////////////////////////////////////////////////////////////////////
 Sat Jul  6 06:52:19 EDT 2002
