@@ -10,7 +10,7 @@
 """
 
 Basic data classes for building feature-based classifiers.
-X{features} provide a standard way of encoding the information used to
+X{Features} provide a standard way of encoding the information used to
 make classification decisions.  This standard encoding allows the same
 classifier to be used to solve many different problems.
 
