@@ -270,10 +270,11 @@ Frozen tokens are immutable, and can not be modified:
 Freezing a cyclic token is currently BROKEN!  I.e., the following code
 will I{not} work:
 
-    >>> # tok1, tok2 = Token(), Token()
-    >>> # tok1['A'] = tok2
-    >>> # tok2['B'] = tok1
-    >>> # print tok1.freeze(), tok2.freeze()
+    >>> tok1, tok2 = Token(), Token()
+    >>> tok1['A'] = tok2
+    >>> tok2['B'] = tok1
+    >>> print tok1.freeze(), tok2.freeze()
+    <A=<B=...>> <B=<A=...>>
 
 Exclude and Project
 ===================
@@ -325,11 +326,14 @@ any contained subtokens:
 C{exclude} and C{project} should both work with cyclic properties; but
 currently, they do I{NOT}.
 
-    >>> # tok1, tok2 = Token(), Token()
-    >>> # tok1['A'] = tok2
-    >>> # tok2['B'] = tok1
-    >>> # tok2['C'] = tok1
-    >>> # print tok1.exclude('B')
+    >>> tok1, tok2 = Token(), Token()
+    >>> tok1['A'] = tok2
+    >>> tok2['B'] = tok1
+    >>> tok2['C'] = tok1
+    >>> print tok1
+    <A=<B=..., C=...>>
+    >>> print tok1.exclude('B')
+    <A=<C=...>>
 """
 
 def test_FrozenToken():
