@@ -64,10 +64,10 @@ class Tree:
     sets of its subtrees.  All node values in a tree's node value set
     must have the same pytype.
 
-    @ivar _nodetype: The pytype of this {Tree}'s nodes.  (Used to 
+    @ivar _nodetype: The pytype of this C{Tree}'s nodes.  (Used to 
         enforce consistancy conditions).
     @type _nodetype: C{type} or C{class}
-    @ivar _leaftype: The pytype of this {Tree}'s leaves. (Used to
+    @ivar _leaftype: The pytype of this C{Tree}'s leaves. (Used to
         enforce consistancy conditions).
     @type _leaftype: C{type} or C{class}
     """
@@ -224,7 +224,7 @@ class Tree:
 
     def __eq__(self, other):
         """
-        @return: true if this C{Tree} is equal to {other}.  In
+        @return: true if this C{Tree} is equal to C{other}.  In
             particular, return true if C{self.node()==other.node()},
             C{self.len()==other.len()}, and C{self[i]==other[i]} for
             all i, 0 <= i < self.len()
@@ -270,10 +270,10 @@ class TreeToken(token.Token):
     the node value sets of its subtrees.  All node values in a tree's
     node value set must have the same pytype.
 
-    @ivar _nodetype: The pytype of this {TreeToken}'s nodes.  (Used to 
+    @ivar _nodetype: The pytype of this C{TreeToken}'s nodes.  (Used to 
         enforce consistancy conditions).
     @type _nodetype: C{type} or C{class}
-    @ivar _leaftype: The pytype of this {TreeToken}'s leaves' types.
+    @ivar _leaftype: The pytype of this C{TreeToken}'s leaves' types.
         (Used to enforce consistancy conditions).
     @type _leaftype: C{type} or C{class}
     @ivar _loc: The location of this TreeToken.  Computed to enforce
@@ -484,7 +484,7 @@ class TreeToken(token.Token):
 
     def __eq__(self, other):
         """
-        @return: true if this C{TreeToken} is equal to {other}.  In
+        @return: true if this C{TreeToken} is equal to C{other}.  In
             particular, return true if C{self.node()==other.node()},
             C{self.len()==other.len()}, and C{self[i]==other[i]} for
             all i, 0 <= i < self.len()
