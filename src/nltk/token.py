@@ -480,6 +480,7 @@ class Token(dict):
         return dict(self)
     def __setstate__(self, state):
         dict.update(self, state)
+        self.__repr_cyclecheck = False
 
 # Register some specialized string representations for common
 # sets of properties.
