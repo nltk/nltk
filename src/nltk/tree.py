@@ -28,7 +28,7 @@ classes should never be mixed within a single tree.
 """
 
 from nltk.token import Token, CharSpanLocation, FrozenToken, TreeContextPointer
-from nltk.tokenizer import TokenizerI, TokenReaderI
+from nltk.tokenizer import TokenizerI
 from nltk import PropertyIndirectionMixIn
 from nltk.probability import ProbabilisticMixIn, ImmutableProbabilisticMixIn
 import re
@@ -425,115 +425,6 @@ class ImmutableTree(Tree):
     def __hash__(self):
         return hash( (self.node, tuple(self)) )
 
-class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
-    """
-    A token reader that reads treebank-style trees.  By default,
-    tokens are created that contain two properties: C{TREE} and
-    C{SUBTOKENS}.  The subtokens are shared as tree leaves and
-    elements of the subtoken list.  Each subtoken defines the C{TEXT}
-    property.  Optional arguments can be used to add the C{LOC} and
-    C{CONTEXT} properties to each subtoken.
-
-    @outprop: C{TREE}: The token's tree structure.
-    @outprop: C{SUBTOKENS}: A list of the tree's leaves.
-    @outprop: C{TEXT}: The text of the tree's subtokens.
-    """
-    def __init__(self, add_locs=False, add_contexts=False, 
-                 add_subtoks=True, **property_names):
-        """
-        @type add_locs: C{bool}
-        @param add_locs: Should this token reader add the C{LOC}
-            property to each subtoken?  If true, then this property
-            will map to a L{CharSpanLocation} object, whose character
-            indices are defined over the input string.
-        @type add_contexts: C{bool}
-        @param add_contexts: Should this token reader add the
-            C{CONTEXT} property to each subtoken?  If true, then this
-            property will map to a L{TreeContextPointer} object for
-            the subtoken.
-        @type add_subtoks: C{bool}
-        @param add_subtoks: Should this token reader add the C{SUBTOKENS}
-            property to the returned token?  If true, the C{SUBTOKENS}
-            will contain a list of the trees leaves.
-        """
-        PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._add_locs = add_locs
-        self._add_contexts = add_contexts
-        self._add_subtoks = add_subtoks
-        self._source = None # <- not thread-safe.
-
-    def read_token(self, s, source=None):
-        treetoks = self.read_tokens(s, source)
-        if len(treetoks) == 0:
-            raise ValueError, 'No tree found'
-        elif len(treetoks) > 1:
-            raise ValueError, 'Multiple trees found'
-        else:
-            return treetoks[0]
-
-    def read_tokens(self, s, source=None):
-        TREE = self.property('TREE')
-        SUBTOKENS = self.property('SUBTOKENS')
-        self._source = source
-        
-        treetoks = []
-        for tree in Tree.parse_iter(s, leafparser=self._leafparser):
-            # If the tree has an extra level with node='', then get
-            # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
-            if len(tree) == 1 and tree.node == '':
-                tree = tree[0]
-            
-            # Create a token, and add it to the list.
-            treetok = Token(**{TREE: tree})
-            treetoks.append(treetok)
-            
-            # Add contexts to leaf tokens, if requested.
-            if self._add_contexts:
-                self._add_contexts_to_leaves(treetok, tree, ())
-
-            # Add the SUBTOKENS property, if requested
-            if self._add_subtoks:
-                treetoks[-1][SUBTOKENS] = tree.leaves()
-
-        # Return the list
-        return treetoks
-
-    def _leafparser(self, text, (start, end)):
-        TEXT = self.property('TEXT')
-        LOC = self.property('LOC')
-        tok = Token(**{TEXT: text})
-        if self._add_locs:
-            tok[LOC] = CharSpanLocation(start, end, self._source)
-        return tok
-
-    def _add_contexts_to_leaves(self, container, val, path):
-        if isinstance(val, Tree):
-            for i, child in enumerate(val):
-                self._add_contexts_to_leaves(container, child, path+(i,))
-        elif isinstance(val, Token):
-            CONTEXT = self.property('CONTEXT')
-            TREE = self.property('TREE')
-            val[CONTEXT] = TreeContextPointer(container, TREE, path)
-        else:
-            assert 0, 'Unexpected object type in tree'
-
-class TreebankFileTokenReader(TokenReaderI):
-    def __init__(self, add_locs=False, add_contexts=False, 
-                 add_subtoks=True, **property_names):
-        self._tb_reader = TreebankTokenReader(
-            add_locs=add_locs, add_contexts=add_contexts,
-            add_subtoks=add_subtoks, **property_names)
-
-    def property(self, name):
-        return self._tb_reader.property(name)
-
-    def read_token(self, s, source=None):
-        treetoks = self._tb_reader.read_tokens(s, source)
-        return Token(**{self.property('SUBTOKENS'): treetoks})
-
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
-
 ######################################################################
 ## Parented Trees & Multi-Parented Trees
 ######################################################################
@@ -849,6 +740,7 @@ def demo():
     d.end()
 
     # Demonstrate the treebank token reader.
+    d.silent("from nltk.tokenreader.treebank import *")
     d("reader = TreebankTokenReader(add_locs=True, SUBTOKENS='WORDS')")
     d("treetok = reader.read_token(tree.pp_treebank())")
     d("print treetok.exclude('LOC')['WORDS']")
