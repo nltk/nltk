@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Treeabank Corpus Reader
+# Natural Language Toolkit: Tree Corpus Reader
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
