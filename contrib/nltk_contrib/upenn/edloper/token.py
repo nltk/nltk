@@ -8,12 +8,15 @@
 # $Id$
 
 """
-Proposed replacements for the current C{nltk.token} module.  In the
-new architecture, all text types are encoded using a single class,
-C{Type}.  A type is a read-only objects that defines a set of named
-properties, such as C{'text'}, C{'pos'}, or C{'waveform'}.
+Proposed replacements for the current C{nltk.token} module.
 
-I propose 3 implementations of the L{Type} class:
+Types
+=====
+In the new architecture, all text types are encoded using a single
+class, C{Type}.  A type is a read-only objects that defines a set of
+named properties, such as C{'text'}, C{'pos'}, or C{'waveform'}.
+
+I propose 3 alternative implementations of the L{Type} class:
 
   - With L{Type1}, properties are accessed exclusively via the
     L{Type.get<Type1.get>} method:
@@ -28,8 +31,10 @@ I propose 3 implementations of the L{Type} class:
     C{Type2} and C{Type3} are functionally equivalant, but C{Type3} is
     more efficient (but possibly harder to read).
 
+Tokens
+======
 A token is basically defined as a C{Type} plus a C{Location}.  I
-propose 8 implementations of the L{Token} class:
+propose 5 alernative implementations of the L{Token} class:
 
   - In L{Token1}, the token's type and location are accessed using
     the C{type()} and C{loc()} methods:
@@ -156,9 +161,6 @@ class Type:
     def get(self, property):
         """
         @return: the value of the given property.
-        @note: Subclasses of C{Type} should not redefine this method
-               without first considering the effects it would have on
-               the current implementation of L{Token.get}.
         """
         raise AssertionError, 'abstract class'
 
@@ -452,8 +454,8 @@ class Token3(Token):
     This class does I{not} \"forward\" attribute accesses to the
     token's type.
     
-    @ivar type: The token's type.
-    @ivar loc: The token's location.
+    @ivar _type: The token's type.
+    @ivar _loc: The token's location.
     """
     def get(self, property): return self.type().get(property)
     def has(self, property): return self.type().has(property)
