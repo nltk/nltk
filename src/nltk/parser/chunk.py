@@ -8,7 +8,6 @@
 # $Id$
 
 """
-
 Classes and interfaces for identifying non-overlapping linguistic
 groups (such as base noun phrases) in unrestricted text.  This task is
 called X{chunk parsing} or X{chunking}, and the identified groups are
@@ -147,6 +146,17 @@ REChunkParser
 @type _VALID_TAG_PATTERN: C{regexp}
 @var _VALID_TAG_PATTERN: A regular expression to test whether a tag
      pattern is valid.
+
+@group Interfaces: ChunkParserI
+@group Chunk Parsers: REChunkParser
+@group Chunk Parser Rules: REChunkParserRule, ChunkRule,
+    ChinkRule, MergeRule, SplitRule, UnChunkRule, ChunkString
+@group Evaluation: ChunkScore
+@group Tokenization: ChunkedTaggedTokenizer
+@sort: ChunkParserI, REChunkParser, REChunkParserRule, ChunkRule,
+    ChinkRule, MergeRule, SplitRule, UnChunkRule, ChunkString,
+    ChunkScore, ChunkedTaggedTokenizer, demo, demo_eval,
+    tag_pattern2re_pattern
 """
 
 from nltk.parser import ParserI
@@ -156,22 +166,6 @@ from nltk.tagger import parse_tagged_type
 from nltk.chktype import chktype as _chktype
 import types, re
 
-# Used for sorting by epydoc; and for "import *"
-# __all__ = [
-#     'ChunkParserI',
-#     'REChunkParser',
-#     'REChunkParserRule',
-#     'ChunkRule',
-#     'ChinkRule',
-#     'MergeRule',
-#     'SplitRule',
-#     'UnChunkRule',
-#     'ChunkString',
-#     'ChunkScore',
-#     'ChunkedTaggedTokenizer',
-#     'tag_pattern2re_pattern',
-#     ]
-    
 ##//////////////////////////////////////////////////////
 ##  Chunk Parser Interface & Helpers
 ##//////////////////////////////////////////////////////
@@ -1453,6 +1447,9 @@ def demo_eval(chunkparser, text):
     print
 
 def demo():
+    """
+    Demonstrate the C{REChunkParser}.
+    """
     text = """
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
     [ The/DT cats/NNS ] ./.
