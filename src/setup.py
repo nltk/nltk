@@ -20,8 +20,7 @@ USE_EXTENSIONS = 0
 ## Extension modules
 EXTENSIONS = [
     Extension('nltk._ctoken',
-              sources=['extensions/ctoken.c',
-                       'extensions/location_object.c']),
+              sources=['extensions/ctoken.c']),
     ]
 if not USE_EXTENSIONS: EXTENSIONS = None
 
