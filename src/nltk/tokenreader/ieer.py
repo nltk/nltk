@@ -16,7 +16,7 @@ from nltk.tokenreader import TokenReaderI
 from nltk import PropertyIndirectionMixIn
 import re
 
-class IeerChunkedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
+class IeerTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
     A token reader that splits a string of chunked tagged text in the
     IEER named entity format into tokens and chunks.  The input string
