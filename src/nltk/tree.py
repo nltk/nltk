@@ -680,6 +680,9 @@ def parse_treebank(str):
     # Add calls to the Tree constructor.
     str = re.sub(r'\(', 'Tree(', str)
 
+    # Empty nodes?
+    str = re.sub(r'Tree\(\)', r'Tree(" ")', str)
+
     # Strip whitespace and get rid of the comma after the last ')' 
     str = str.strip()[:-1]
 
