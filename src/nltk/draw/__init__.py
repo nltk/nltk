@@ -41,9 +41,8 @@ from Tkinter import *
 
 __all__ = (
     'CanvasFrame', 'CanvasWidget',
-    
-    'TextWidget', 'BoxWidget', 'OvalWidget',
-    'ParenWidget', 'BracketWidget',
+    'TextWidget', 'SymbolWidget',
+    'BoxWidget', 'OvalWidget', 'ParenWidget', 'BracketWidget',
     'SequenceWidget', 'StackWidget', 'SpaceWidget',
     'ScrollWatcherWidget', 'AbstractContainerWidget',
     
@@ -186,6 +185,9 @@ class CanvasWidget:
         @type parent: C{CanvasWidget}
         @param attribs: The new canvas widget's attributes.
         """
+        if not isinstance(canvas, Canvas):
+            raise TypeError('Expected a canvas!')
+        
         self.__canvas = canvas
         self.__parent = parent
         if not hasattr(self, '_CanvasWidget__children'): self.__children = []
@@ -399,6 +401,24 @@ class CanvasWidget:
         @rtype: C{string}
         """
         return '<%s>' % self.__class__.__name__
+
+    def hide(self):
+        """
+        Temporarily hide this canvas widget.
+
+        @rtype: C{None}
+        """
+        for tag in self.tags():
+            self.__canvas.itemconfig(tag, state='hidden')
+
+    def hide(self):
+        """
+        Show a hidden canvas widget.
+
+        @rtype: C{None}
+        """
+        for tag in self.tags():
+            self.__canvas.itemconfig(tag, state='normal')
 
     ##//////////////////////////////////////////////////////
     ##  Callback interface
@@ -670,7 +690,7 @@ class TextWidget(CanvasWidget):
         @param attribs: The new canvas widget's attributes.
         """
         self._text = text
-        self._tag = canvas.create_text(0, 0, text=text)
+        self._tag = canvas.create_text(1, 1, text=text)
         CanvasWidget.__init__(self, canvas, **attribs)
             
     def __setitem__(self, attr, value):
@@ -720,7 +740,7 @@ class SymbolWidget(TextWidget):
     name.  Currently, the following symbol names are defined: C{neg},
     C{disj}, C{conj}, C{lambda}, C{merge}, C{forall}, C{exists},
     C{subseteq}, C{subset}, C{notsubset}, C{emptyset}, C{imp},
-    C{rightarrow}, C{equal}, C{notequal}.
+    C{rightarrow}, C{equal}, C{notequal}, C{epsilon}.
         
     Attributes:
       - C{color}: the color of the text.
@@ -730,12 +750,13 @@ class SymbolWidget(TextWidget):
         in the C{symbol} font used to render them.
     """
     _SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',  
-               'lambda': '\154', 'merge': '\304',
-               'forall': '\042', 'exists': '\044',
-               'subseteq': '\315', 'subset': '\314',
-               'notsubset': '\313', 'emptyset': '\306',
-               'imp': '\336', 'rightarrow': '\256',
-               'equal': '\75', 'notequal': '\271'}
+                'lambda': '\154', 'merge': '\304',
+                'forall': '\042', 'exists': '\044',
+                'subseteq': '\315', 'subset': '\314',
+                'notsubset': '\313', 'emptyset': '\306',
+                'imp': '\336', 'rightarrow': '\256',
+                'equal': '\75', 'notequal': '\271',
+                'epsilon': 'e'}
     
     def __init__(self, canvas, symbol, **attribs):
         """
@@ -854,7 +875,7 @@ class BoxWidget(AbstractContainerWidget):
         """
         self._child = child
         self._margin = 1
-        self._box = canvas.create_rectangle(0,0,0,0)
+        self._box = canvas.create_rectangle(1,1,1,1)
         canvas.tag_lower(self._box)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
         
@@ -907,7 +928,7 @@ class OvalWidget(AbstractContainerWidget):
         """
         self._child = child
         self._margin = 1
-        self._oval = canvas.create_oval(0,0,0,0)
+        self._oval = canvas.create_oval(1,1,1,1)
         canvas.tag_lower(self._oval)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
         
@@ -934,10 +955,10 @@ class OvalWidget(AbstractContainerWidget):
         R = OvalWidget.RATIO
         (x1, y1, x2, y2) = child.bbox()
         margin = self._margin + self['width']/2
-        left = ( x1*(1+R) + x2*(1-R) ) / 2 - margin
-        right = ( x1*(1-R) + x2*(1+R) ) / 2 + margin
-        top = ( y1*(1+R) + y2*(1-R) ) / 2 - margin
-        bot = ( y1*(1-R) + y2*(1+R) ) / 2 + margin
+        left = int(( x1*(1+R) + x2*(1-R) ) / 2 - margin)
+        right = left + int((x2-x1)*R)
+        top = int(( y1*(1+R) + y2*(1-R) ) / 2 - margin)
+        bot = top + int((y2-y1)*R)
         self.canvas().coords(self._oval, left, top, right, bot)
 
     def _tags(self): return [self._oval]
@@ -964,9 +985,9 @@ class ParenWidget(AbstractContainerWidget):
         @param attribs: The new canvas widget's attributes.
         """
         self._child = child
-        self._oparen = canvas.create_arc(0,0,0,0, style='arc',
+        self._oparen = canvas.create_arc(1,1,1,1, style='arc',
                                          start=90, extent=180)
-        self._cparen = canvas.create_arc(0,0,0,0, style='arc',
+        self._cparen = canvas.create_arc(1,1,1,1, style='arc',
                                          start=-90, extent=180)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
         
@@ -1018,8 +1039,8 @@ class BracketWidget(AbstractContainerWidget):
         @param attribs: The new canvas widget's attributes.
         """
         self._child = child
-        self._obrack = canvas.create_line(0,0,0,0,0,0,0,0)
-        self._cbrack = canvas.create_line(0,0,0,0,0,0,0,0)
+        self._obrack = canvas.create_line(1,1,1,1,1,1,1,1)
+        self._cbrack = canvas.create_line(1,1,1,1,1,1,1,1)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
         
     def __setitem__(self, attr, value):
@@ -1124,6 +1145,9 @@ class SequenceWidget(CanvasWidget):
             self._children[i].move(x-x2, y-self._yalign(y1,y2))
             x -= x2-x1 + self._space
         
+    def __repr__(self):
+        return '[Sequence: ' + `self._children`[1:-1]+']'
+    
 class StackWidget(CanvasWidget):
     """
     A canvas widget that keeps a list of canvas widgets in a vertical
@@ -1198,6 +1222,9 @@ class StackWidget(CanvasWidget):
             self._children[i].move(x-self._xalign(x1,x2), y-y2)
             y -= y2-y1 + self._space
 
+    def __repr__(self):
+        return '[Stack: ' + `self._children`[1:-1]+']'
+    
 class SpaceWidget(CanvasWidget):
     """
     A canvas widget that takes up space but does not display
@@ -1219,7 +1246,10 @@ class SpaceWidget(CanvasWidget):
         @param height: The height of the new space widget.
         @param attribs: The new canvas widget's attributes.
         """
-        self._tag = canvas.create_line(0, 0, width, height, fill='')
+        # For some reason, 
+        if width > 4: width -= 4
+        if height > 4: height -= 4
+        self._tag = canvas.create_line(1, 1, width, height, fill='')
         CanvasWidget.__init__(self, canvas, **attribs)
 
     # note: width() and height() are already defined by CanvasWidget.
