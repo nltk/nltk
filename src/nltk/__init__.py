@@ -202,4 +202,10 @@ class PropertyIndirectionMixIn:
         @rtype: C{string}
         """
         return self.__property_names.get(generic_name, generic_name)
-    
+
+    def property_names(self):
+        """
+        @return: The property names dictionary.
+        @rtype: C{dict}
+        """
+        return self.__property_names
