@@ -719,14 +719,19 @@ words = SimpleCorpus(
 
 
 ###################################################
-## Treebank (not distributed with NLTK)
+## Treebank (fragment distributed with NLTK)
 from nltk.tree import TreebankTokenizer
 description = '''
 A collection of hand-annotated parse trees for english text.
 '''.strip()
 
+groups = [('raw', 'raw/.*\.raw'),
+          ('tagged', 'tagged/.*\pos'),
+          ('parsed', 'parsed/.*\.prd')]
+
 treebank = SimpleCorpus(
-    'treebank', 'treebank/', r'parsed/.*\.prd', description = description,
+    'treebank', 'treebank/', r'(raw|tagged|parsed)/.*\.(raw|pos|prd)',
+    groups, description = description,
     default_tokenizer=TreebankTokenizer())
 
 ###################################################
