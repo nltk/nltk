@@ -62,9 +62,6 @@ class Text:
     text itself and a rectangle behind the text which is only there for the
     purpose of hightlighting and unhighlighting the text.  If you do not want
     the highlight to be there, this class is unnecessary.
-
-    * move (self, canvas, dx, dy) -> move the text and the rectangle dx and dy
-    distance on the canvas.
     """
     
     def __init__(self, canvas, xloc, yloc, font_dict, **attr):
@@ -121,6 +118,10 @@ class Text:
         canvas.tag_bind(tag, '<Button-3>', print_tag)
 
     def move(self, canvas, dx, dy):
+        """
+        move the text and the rectangle dx and dy distance on the
+        canvas.
+        """
         canvas.move(self.tag, dx, dy)
         canvas.move(self.rectangle, dx, dy)
 
@@ -136,24 +137,10 @@ class Draw_Node:
     the Tree and Tree_Token classes.  More elegant code may have been able
     to do the tree drawing without having to declare new classes. 
 
-    * string (self) -> returns the string that corresponds to the collapsed
-    string of the node
-    
-    * display_collapsed (self, canvas, x, depth, options) -> draws the
-    collapsed form of the node 
-
-    * display_node (self, canvas, x, depth, options)  -> draws the node to
-    the canvas
-
-    -- NOTE:  This will be explained further in the tree_draw method of --
-    -- window, so for now, just basically consider the x value in the   --
-    -- above two methods as what should be the leftmost boundary for    --
-    -- where you can draw the node and anything below it                --
-
-    * move (self, canvas, dx, dy) -> move the node (and anything below it) dx
-    and dy
-
-    * dependancies (self) -> returns a list of all the descendants of the node
+    B{NOTE:  This will be explained further in the tree_draw method of
+    window, so for now, just basically consider the x value in the
+    above two methods as what should be the leftmost boundary for
+    where you can draw the node and anything below it}
     """
     
     def __init__(self, node):
@@ -345,7 +332,7 @@ class Draw_Node:
             self.xloc = x
             self.yloc = depth*shift
 
-        """    
+        """
         if not self.width:
             bbox = canvas.bbox(label.tag, self.dependancies())
             self.width = bbox[2]-bbox[0]
@@ -412,10 +399,6 @@ class Draw_Leaf:
     important information for the leaves that are to be displayed.  Leaves can
     be of any type that can be represented as a string, so it can be a string,
     a number, etc.
-
-    * display (self, canvas, x, depth, options) -> draw the leaf on the canvas
-
-    * move (self, canvas, dx, dy) -> move the leaf dx and dy on the canvas
     """
     
     def __init__(self, data):
@@ -473,10 +456,6 @@ class Draw_Token:
     """
     Draw_Token class: a purely structural class, Draw_Token stores all important information
     for the leaves that are to be displayed
-
-    * display(self, canvas, x, depth, options) -> draw the token on the canvas
-    
-    * move(self, canvas, dx, dy) -> move the token dx and dy on the canvas
     """
     
     def __init__(self, token):
@@ -565,16 +544,6 @@ class Window:
     Window class: this is the overarching class in the program.  It contains
     all the things which control the actual window in which everything is
     drawn.
-
-    * display (self) -> draw the tree
-
-    * drawtree (self, node, left, depth) -> recursively draw the node and all its descendants (if
-    there are any).  Returns the rightmost boundary of that node/descendants tree structure
-
-    * several appearance-changing methods:
-      - change_bg
-      - change_text
-      - change_line
     """
     
     ftypes = [('Postscript files', '.ps'),
@@ -767,8 +736,9 @@ class Window:
 
     def display(self):
         """
-        Effectively, this is like an update function.  Clear the screen, draw it, then set the
-        scrollable region to include everything.
+        Effectively, this is like an update function.  Clear the
+        screen, draw it, then set the scrollable region to include
+        everything.
         """
         
         self.c.delete(ALL)
@@ -785,10 +755,12 @@ class Window:
         
     def drawtree(self, node, left=0, depth=1):
         """
-        This is the main tree-drawing function.  It takes in a node,
-        a leftmost boundary, and the depth of the node.  Basically, you work your way down the tree
-        drawing each substructure at a time, starting from the left.  When you have all of the
-        children of a node drawn, you can draw the node.  So let's say you have a tree like this:
+        This is the main tree-drawing function.  It takes in a node, a
+        leftmost boundary, and the depth of the node.  Basically, you
+        work your way down the tree drawing each substructure at a
+        time, starting from the left.  When you have all of the
+        children of a node drawn, you can draw the node.  So let's say
+        you have a tree like this::
 
                    n1
                    |
@@ -804,7 +776,7 @@ class Window:
                          |     |
                          n8    n9
 
-        It will be drawn in the following order:
+        It will be drawn in the following order::
         
                    9
                    |
@@ -821,13 +793,15 @@ class Window:
                          5     6
 
 
-        It draws the node such that the text never an imaginary rectangle surrounding everything
-        on the same level or below to the left of it.
+        It draws the node such that the text never an imaginary
+        rectangle surrounding everything on the same level or below to
+        the left of it.
 
-        drawtree works under one key assumption--that a collapsed node is never wider than an
-        uncollaped one.  This is not such a bad assumtion, given that in an uncollapsed one, there
-        is a distance between each leaf that is wider than the spaces between the words in the
-        collapsed node.
+        drawtree works under one key assumption--that a collapsed node
+        is never wider than an uncollaped one.  This is not such a bad
+        assumtion, given that in an uncollapsed one, there is a
+        distance between each leaf that is wider than the spaces
+        between the words in the collapsed node.
 
         It returns the rightmost boundary of whatever is being drawn
         """
