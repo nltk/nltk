@@ -29,9 +29,12 @@ The tagger module also defines the function C{parseTaggedType()} and
 the tokenizer C{TaggedTokenizer}, for reading tagged tokens from
 strings.
 
-@group Tagged Type: TaggedType, TaggedTokenizer, parseTaggedType
-@group Taggers: TaggerI, SequentialTagger, NN_CD_Tagger, UnigramTagger,
+@group Data Types: TaggedType
+@group Interfaces: TaggerI
+@group Taggers: SequentialTagger, NN_CD_Tagger, UnigramTagger,
     NthOrderTagger, BackoffTagger
+@group Tokenizers: TaggedTokenizer
+@group Parsing: parseTaggedType
 @group Evaluation: untag, accuracy
 @sort: TaggedType, TaggedTokenizer, parseTaggedType, TaggerI, 
     SequentialTagger, NN_CD_Tagger, UnigramTagger, NthOrderTagger, 
