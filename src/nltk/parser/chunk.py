@@ -163,7 +163,7 @@ from nltk.parser import ParserI
 from nltk.tree import TreeToken, AbstractTree
 from nltk.tokenizer import TokenizerI, LineTokenizer
 from nltk.token import Token, Location
-from nltk.tagger import parse_tagged_type
+from nltk.tagger import parse_tagged_type, TaggedType
 from nltk.chktype import chktype as _chktype
 from nltk.set import Set
 import types, re
@@ -298,6 +298,103 @@ class ChunkedTaggedTokenizer(TokenizerI):
             # Update piece_in_chunk
             piece_in_chunk = not piece_in_chunk
 
+        return children
+
+class ConllChunkedTokenizer(TokenizerI):
+    """
+    A tokenizer that splits a string of chunked tagged text in the
+    CONLL 2000 chunking format into tokens and chunks.  Each token is
+    encoded as a C{Token} whose type is C{TaggedType}; and each chunk
+    is encoded as a C{TreeToken} containing C{Token}s with
+    C{TaggedType} types.
+
+    The input string is in the form of one tagged token per line.
+    Chunks are of three types, NP, VP and PP.  Each type is tagged with
+    B(egin) or I(nside), to indicate whether we are at the beginning of
+    a new chunk, or inside an existing chunk.
+
+      >>> cct = ConllChunkedTokenizer()
+      >>> toks = cct.tokenize(\"\"\"
+      he PRP B-NP
+      accepted VBD B-VP
+      the DT B-NP
+      position NN I-NP
+      of IN B-PP
+      vice NN B-NP
+      chairman NN I-NP
+      of IN B-PP
+      Carlyle NNP B-NP
+      Group NNP I-NP
+      , , O
+      a DT B-NP
+      merchant NN I-NP
+      banking NN I-NP
+      concern NN I-NP
+      . . O
+      \"\"\")
+      [('NP': 'he'/'PRP')@[0l],
+      ('VP': 'accepted'/'VBD')@[1l],
+      ('NP': 'the'/'DT' 'position'/'NN')@[2l:4l],
+      ('PP': 'of'/'IN')@[4l],
+      ('NP': 'vice'/'NN' 'chairman'/'NN')@[5l:7l],
+      ('PP': 'of'/'IN')@[7l],
+      ('NP': 'Carlyle'/'NNP' 'Group'/'NNP')@[8l:10l],
+      ','/','@[10l],
+      ('NP': 'a'/'DT' 'merchant'/'NN' 'banking'/'NN' 'concern'/'NN')@[11l:15l],
+      '.'/'.'@[15l]]
+
+    The C{TreeToken} constructor can be used to group this list of
+    tokens and chunks into a single chunk structure:
+
+      >>> chunkstruct = TreeToken('S', *toks)
+      ('S':
+        ('NP': 'he'/'PRP')
+        ('VP': 'accepted'/'VBD')
+        ('NP': 'the'/'DT' 'position'/'NN')
+        ('PP': 'of'/'IN')
+        ('NP': 'vice'/'NN' 'chairman'/'NN')
+        ('PP': 'of'/'IN')
+        ('NP': 'Carlyle'/'NNP' 'Group'/'NNP')
+        ','/','
+        ('NP': 'a'/'DT' 'merchant'/'NN' 'banking'/'NN' 'concern'/'NN')
+        '.'/'.')@[0l:16l]
+    """
+    def __init__(self):
+        """
+        Create a new C{ConllChunkedTokenizer}.
+        """
+        pass
+        
+    def tokenize(self, str, source=None):
+        # grab lines
+        lines = LineTokenizer().tokenize(str)
+
+        in_chunk = 0
+        chunktype = ''
+        children = []
+        subsequence = []
+        for line in lines:
+            (word, tag, chunktag) = line.type().split()
+            token = Token(TaggedType(word, tag), line.loc())
+
+            # finish the subseqence
+            if chunktag[0] in 'OB' and in_chunk == 1:
+                children.append(TreeToken(chunktype, *subsequence))
+                subsequence = []
+                in_chunk = 0
+
+            # start a subsequence
+            if chunktag[0] == 'B':
+                in_chunk = 1
+
+            # continue a subsequence
+            if chunktag[0] in 'IB':
+                chunktype = chunktag[2:4]
+                subsequence.append(token)
+            else:
+                chunktype = ''
+                children.append(token)
+                subsequence = []
         return children
 
 class ChunkScore:
