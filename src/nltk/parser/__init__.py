@@ -53,6 +53,7 @@ three sub-modules for specialized kinds of parsing:
 @see: C{nltk.cfg}
 """
 
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.tree import Tree, ImmutableTree
 from nltk.token import Token
 from nltk.cfg import Nonterminal, CFG, CFGProduction, nonterminals
@@ -62,7 +63,7 @@ import types
 ##//////////////////////////////////////////////////////
 ##  Parser Interface
 ##//////////////////////////////////////////////////////
-class ParserI:
+class ParserI(TaskI):
     """
     A processing class for deriving trees that represent possible
     structures for a sequence of tokens.  These tree structures are
@@ -112,7 +113,7 @@ class ParserI:
 ##//////////////////////////////////////////////////////
 ##  Abstract Base Class for Parsers
 ##//////////////////////////////////////////////////////
-class AbstractParser(ParserI):
+class AbstractParser(ParserI, PropertyIndirectionMixIn):
     """
     An abstract base class for parsers.  C{AbstractParser} provides
     a default implementation for L{parse_n} (based on C{parse}).
@@ -132,11 +133,11 @@ class AbstractParser(ParserI):
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractParser:
             raise AssertionError, "Abstract classes can't be instantiated"
-        self._property_names = property_names
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     def parse_n(self, token, n=None):
-        TREES = self._property_names.get('TREES', 'TREES')
-        TREE = self._property_names.get('TREE', 'TREE')
+        TREES = self.property('TREES')
+        TREE = self.property('TREE')
         if n == 0:
             token[TREES] = []   # (pathological case)
         else:
@@ -145,8 +146,8 @@ class AbstractParser(ParserI):
         del token[TREE]
 
     def _parse_from_parse_n(self, token):
-        TREES = self._property_names.get('TREES', 'TREES')
-        TREE = self._property_names.get('TREE', 'TREE')
+        TREES = self.property('TREES')
+        TREE = self.property('TREE')
         self.parse_n(token)
         if token[TREES] == []:
             token[TREE] = None
@@ -246,9 +247,9 @@ class ShiftReduceParser(AbstractParser):
     
     def parse(self, token):
         assert chktype(1, token, [Token], (Token))
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LEAF = self._property_names.get('LEAF', 'LEAF')
-        TREE = self._property_names.get('TREE', 'TREE')
+        SUBTOKENS = self.property('SUBTOKENS')
+        LEAF = self.property('LEAF')
+        TREE = self.property('TREE')
 
         # initialize the stack.
         stack = []
@@ -310,8 +311,8 @@ class ShiftReduceParser(AbstractParser):
         @param rightmost_stack: The rightmost elements of the parser's
             stack.
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
-        TREE = self._property_names.get('TREE', 'TREE')
+        LEAF = self.property('LEAF')
+        TREE = self.property('TREE')
         
         if len(rightmost_stack) != len(rhs): return 0
         for i in range(len(rightmost_stack)):
@@ -392,7 +393,7 @@ class ShiftReduceParser(AbstractParser):
             stack.  This is used with trace level 2 to print 'S'
             before shifted stacks and 'R' before reduced stacks.
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         str = '  '+marker+' [ '
         for elt in stack:
             if isinstance(elt, Tree):
@@ -535,8 +536,8 @@ class RecursiveDescentParser(AbstractParser):
         # Inherit docs from ParserI
         assert chktype(1, token, Token)
         assert chktype(2, n, types.IntType, types.NoneType)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TREES = self._property_names.get('TREES', 'TREES')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TREES = self.property('TREES')
 
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
@@ -626,7 +627,7 @@ class RecursiveDescentParser(AbstractParser):
             all subtrees that have not yet been expanded, and all
             leaves that have not yet been matched.
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
 
         tree_leaf = tree[frontier[0]][LEAF]
         if (len(rtext) > 0 and tree_leaf == rtext[0][LEAF]):
@@ -674,7 +675,7 @@ class RecursiveDescentParser(AbstractParser):
             all subtrees that have not yet been expanded, and all
             leaves that have not yet been matched.
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         
         if production is None: productions = self._grammar.productions()
         else: productions = [production]
@@ -716,7 +717,7 @@ class RecursiveDescentParser(AbstractParser):
             token that should be returned.
         @type production: C{CFGProduction}
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         children = []
         for elt in production.rhs():
             if isinstance(elt, Nonterminal):
@@ -748,7 +749,7 @@ class RecursiveDescentParser(AbstractParser):
 
         @rtype: C{None}
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         
         if treeloc == (): print "*",
         if isinstance(tree, Tree):
@@ -776,8 +777,8 @@ class RecursiveDescentParser(AbstractParser):
         print ']'
 
     def _trace_start(self, tree, frontier, text):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        SUBTOKENS = self.property('SUBTOKENS')
+        LEAF = self.property('LEAF')
         
         print 'Parsing %r' % ' '.join([tok[LEAF] for tok in text])
                                        
@@ -840,7 +841,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
 
     def parse(self, token):
         assert chktype(1, token, Token)
-        TREE = self._property_names.get('TREE', 'TREE')
+        TREE = self.property('TREE')
         
         self.initialize(token)
         while self.step(): pass
@@ -870,7 +871,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         C{[]} and sets its remaining text to C{token['SUBTOKENS']}.
         """
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
         self._stack = []
         self._remaining_text = token[SUBTOKENS][:]
         self._history = []
@@ -1022,7 +1023,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     def parse_n(self, token, n=None):
         assert chktype(1, token, Token)
         assert chktype(2, n, types.IntType, types.NoneType)
-        TREES = self._property_names.get('TREES', 'TREES')
+        TREES = self.property('TREES')
         
         self.initialize(token)
         while self.step() is not None: pass
@@ -1037,7 +1038,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         remaining text to C{token['SUBTOKENS']}.
         """
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
         
         self._rtext = token[SUBTOKENS]
         start = self._grammar.start().symbol()
@@ -1122,7 +1123,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
            return C{None}.
         @rtype: C{CFGProduction} or C{None}
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         
         assert chktype(1, production, CFGProduction, types.NoneType)
         # Make sure we *can* expand.
@@ -1159,7 +1160,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
             performed.  If no match was performed, return C{None}
         @rtype: C{Token} or C{None}
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         
         # Record that we've tried matching this token.
         tok = self._rtext[0]
@@ -1214,7 +1215,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
             expansions are available for the current parser state.
         @rtype: C{list} of C{CFGProduction}
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         
         tried_expansions = self._tried_e.get(self._freeze(self._tree), [])
         return [p for p in self.expandable_productions()
@@ -1226,7 +1227,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
             that has not yet been matched.
         @rtype: C{boolean}
         """
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         
         if len(self._rtext) == 0: return 0
         tried_matches = self._tried_m.get(self._freeze(self._tree), [])

@@ -159,6 +159,7 @@ RegexpChunkParser
     tag_pattern2re_pattern
 """
 
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.parser import ParserI, AbstractParser
 from nltk.tree import Tree
 from nltk.tokenizer import TokenizerI, AbstractTokenizer
@@ -272,8 +273,8 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
         self._tokenizer2 = RegexpTokenizer(WORD, **property_names)
 
     def _split_text_and_tag(self, subtok):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
         split = subtok[TEXT].find('/')
         if split >= 0:
             subtok[TAG] = subtok[TEXT][split+1:]
@@ -283,11 +284,11 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
         
     def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
-        LOC = self._property_names.get('LOC', 'LOC')
-        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
+        LOC = self.property('LOC')
+        CONTEXT = self.property('CONTEXT')
 
         # check that brackets are balanced and not nested
         brackets = re.sub(r'[^\[\]]', '', token[TEXT])
@@ -791,7 +792,7 @@ _VALID_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
 ##  ChunkString
 ##//////////////////////////////////////////////////////
 
-class ChunkString:
+class ChunkString(PropertyIndirectionMixIn):
     """
     A string-based encoding of a particular chunking of a text.
     Internally, the C{ChunkString} class uses a single string to
@@ -863,8 +864,8 @@ class ChunkString:
         """
         assert chktype(1, tagged_tokens, [Token], (Token,))
         assert chktype(2, debug_level, types.IntType)
-        self._property_names = property_names
-        TAG = self._property_names.get('TAG', 'TAG')
+        PropertyIndirectionMixIn.__init__(self, **property_names)
+        TAG = self.property('TAG')
         self._ttoks = tagged_tokens
         tags = [tok[TAG] for tok in tagged_tokens]
         self._str = '<' + '><'.join(tags) + '>'
@@ -902,7 +903,7 @@ class ChunkString:
 
         if verify_tags<=0: return
         
-        TAG = self._property_names.get('TAG', 'TAG')
+        TAG = self.property('TAG')
         tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
         tags2 = [tok[TAG] for tok in self._ttoks]
         if tags1 != tags2:
@@ -1594,8 +1595,8 @@ class RegexpChunkParser(ChunkParserI, AbstractParser):
         """
         assert chktype(1, token, Token)
         assert chktype(2, trace, types.NoneType, types.IntType)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TREE = self._property_names.get('TREE', 'TREE')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TREE = self.property('TREE')
 
         if len(token[SUBTOKENS]) == 0:
             print 'Warning: parsing empty text'
