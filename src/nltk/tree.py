@@ -287,7 +287,7 @@ class TreeToken(Token):
 
     def _noderepr(self):
         # This is a bit of a hack. :-/
-        if len(self) == 2 and self.has('node'): return self['node']
+        if len(self) == 2 and self.has('NODE'): return self['NODE']
 
         # Remove children & parent pointers.
         return repr(Token(**self).exclude('CHILDREN', 'PARENT',
@@ -795,7 +795,7 @@ def demo():
     d.hline()
 
     # Demonstrate basic tree accessors.
-    d("print tree['node']                    # tree's constituant type")
+    d("print tree['NODE']                    # tree's constituant type")
     d("print tree['CHILDREN'][0]             # tree's first child")
     d("print tree['CHILDREN'][1]             # tree's second child")
     d("print tree.height()")
