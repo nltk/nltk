@@ -12,7 +12,7 @@ Classes for representing and processing probabilistic information.
 """
 
 from nltk.chktype import chktype as _chktype
-import types
+import types, math
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -197,7 +197,7 @@ class FreqDist:
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        return '<FreqDist with %d outcomes>' % self.N()
+        return '<FreqDist with %d samples>' % self.N()
     
     def __str__(self):
         """
@@ -225,10 +225,8 @@ class ProbDistI:
     """
     def prob(self, sample):
         """
-        Return the probability for a given sample.
-        Probabilities are always real numbers in the range [0, 1]. 
-        
-        @return: The probability of a given sample.
+        @return: the probability for a given sample.  Probabilities
+            are always real numbers in the range [0, 1].
         @rtype: float
         @param sample: The sample whose probability
                should be returned.
@@ -236,13 +234,24 @@ class ProbDistI:
         """
         raise AssertionError()
 
+    def logprob(self, sample):
+        """
+        @return: the natural logarithm of the probability for a given
+            sample.  Log probabilities range from negitive infinity to
+            zero.
+        @rtype: float
+        @param sample: The sample whose probability
+               should be returned.
+        @type sample: any
+        """
+        # Default definition, in terms of prob()
+        return math.log(self.prob(sample))
+
     def max(self):
         """
-        Return the sample with the greatest probability.  If two or
-        more samples have the same probability, return one of them;
-        which sample is returned is undefined.
-
-        @return: The sample with the greatest probability.
+        @return: the sample with the greatest probability.  If two or
+            more samples have the same probability, return one of them;
+            which sample is returned is undefined.
         @rtype: any
         """
         raise AssertionError()
@@ -255,6 +264,35 @@ class ProbDistI:
         @rtype: C{list}
         """
         raise AssertionError()
+
+class UniformProbDist(ProbDistI):
+    """
+    A probability distribution that assigns equal probability to each
+    sample in a given set; and a zero probability to all other
+    samples.
+    """
+    def __init__(self, samples):
+        """
+        Construct a new uniform probability distribution, that assigns
+        equal probability to each sample in C{samples}.
+
+        @param samples: The samples that should be given uniform
+            probability.
+        @type samples: C{list}
+        @raise ValueError: If C{samples} is empty.
+        """
+        if len(samples) == 0:
+            raise ValueError('A Uniform probability distribution must '+
+                             'have at least one sample.')
+        self._samples = samples
+        self._p = 1/len(samples)
+
+    def prob(self, sample): return self._p
+    def max(self): return self._samples[0]
+    def samples(self): return self._samples
+    def __repr__(self):
+        return '<UniformProbDist with %d samples>' % len(self._samples)
+        
 
 class MLEProbDist(ProbDistI):
     """
@@ -298,7 +336,7 @@ class MLEProbDist(ProbDistI):
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
-        return '<MLEProbDist based on %d outcomes>' % self._freqdist.B()
+        return '<MLEProbDist based on %d samples>' % self._freqdist.N()
 
 class LidstoneProbDist(ProbDistI):
     """
@@ -370,7 +408,7 @@ class LidstoneProbDist(ProbDistI):
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
-        return '<LidstoneProbDist based on %d outcomes>' % self._freqdist.B()
+        return '<LidstoneProbDist based on %d samples>' % self._freqdist.N()
 
 class LaplaceProbDist(LidstoneProbDist):
     """
@@ -406,7 +444,7 @@ class LaplaceProbDist(LidstoneProbDist):
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
-        return '<LaplaceProbDist based on %d outcomes>' % self._freqdist.B()
+        return '<LaplaceProbDist based on %d samples>' % self._freqdist.N()
         
 class ELEProbDist(LidstoneProbDist):
     """
@@ -440,7 +478,7 @@ class ELEProbDist(LidstoneProbDist):
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
-        return '<ELEProbDist based on %d outcomes>' % self._freqdist.B()
+        return '<ELEProbDist based on %d samples>' % self._freqdist.N()
 
 class HeldoutProbDist(ProbDistI):
     """
@@ -590,8 +628,8 @@ class HeldoutProbDist(ProbDistI):
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
-        s = '<HeldoutProbDist: %d base outcomes; %d heldout outcomes>'
-        return s % (self._base_fdist.B(), self._heldout_fdist.B())
+        s = '<HeldoutProbDist: %d base samples; %d heldout samples>'
+        return s % (self._base_fdist.N(), self._heldout_fdist.N())
 
 class CrossValidationProbDist(ProbDistI):
     """
