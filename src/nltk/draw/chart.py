@@ -426,8 +426,8 @@ class ChartView:
         for tag in self._tree_tags:
             self._tree_canvas.delete(tag)
         if not self._edgeselection: return
-        if not self._edgeselection.children(): return
-        tree = self._edgeselection.children()[0]
+        if not self._edgeselection.tree(): return
+        tree = self._edgeselection.tree()
         self._draw_treetok(tree, 0)
         self._tree_height = ((tree.height()-1) *
                              (ChartView._TREE_LEVEL_SIZE +
@@ -525,6 +525,8 @@ class ChartDemo:
                            command=self.top_down_init).pack(side='left')
             Tkinter.Button(buttons1, text='Bottom Up',
                            command=self.bottom_up).pack(side='left')
+            Tkinter.Button(buttons1, text='Bottom Up init',
+                           command=self.bottom_up_init).pack(side='left')
             Tkinter.Button(buttons1, text='Fundamental',
                            command=self.fundamental).pack(side='left')
             Tkinter.Button(buttons2, text='Reset Chart',
@@ -586,6 +588,9 @@ class ChartDemo:
     def fundamental(self):
         self.apply_strategy(FR_STRATEGY, fr_edge_strategy)
     
+    def bottom_up_init(self):
+        self.apply_strategy(BUINIT_STRATEGY, None)
+        
     def bottom_up(self):
         self.apply_strategy(BU_STRATEGY, bu_edge_strategy)
         
