@@ -10,8 +10,8 @@
 """
 Unit testing for L{nltk.tokenizer}.
 
-@todo: Test L{nltk.token.CharTokenizer}
-@todo: Test L{nltk.token.LineTokenizer}
+@todo: Test L{nltk.tokenizer.CharTokenizer}
+@todo: Test L{nltk.tokenizer.LineTokenizer}
 """
 
 from nltk.token import *
@@ -25,7 +25,7 @@ import unittest
 
 class WSTokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for L{nltk.token.WSTokenizer}
+    Unit test cases for L{nltk.tokenizer.WSTokenizer}
     """
     def setUp(self):
         self.tokenizer = WSTokenizer()
@@ -55,7 +55,7 @@ class WSTokenizerTestCase(unittest.TestCase):
 
 class WSTokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for L{nltk.token.WSTokenizer}
+    Unit test cases for L{nltk.tokenizer.WSTokenizer}
     """
     def setUp(self):
         self.tokenizer = WSTokenizer()
@@ -108,7 +108,7 @@ class WSTokenizerTestCase(unittest.TestCase):
 
 class RETokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for L{nltk.token.WSTokenizer}
+    Unit test cases for L{nltk.tokenizer.WSTokenizer}
     """
     def setUp(self):
         self.tokenizers = [RETokenizer('\s+', negative=1),
