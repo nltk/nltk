@@ -51,7 +51,7 @@ C{Tree}).
 """
 
 from nltk.chktype import chktype as _chktype
-from nltk.set import Set
+from sets import Set
 from nltk.util import sum_logs
 import types, math, Numeric
 
@@ -364,9 +364,9 @@ class UniformProbDist(ProbDistI):
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
                              'have at least one sample.')
-        self._sampleset = Set(*samples)
+        self._sampleset = Set(samples)
         self._prob = 1.0/len(self._sampleset)
-        self._samples = self._sampleset.elements()
+        self._samples = list(self._sampleset)
 
     def prob(self, sample):
         if sample in self._sampleset: return self._prob
@@ -374,7 +374,7 @@ class UniformProbDist(ProbDistI):
     def max(self): return self._samples[0]
     def samples(self): return self._samples
     def __repr__(self):
-        return '<UniformProbDist with %d samples>' % len(self._samples)
+        return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
 class DictionaryProbDist(ProbDistI):
     """
@@ -1086,6 +1086,14 @@ class MutableProbDist(ProbDistI):
             if log: self._data[i] = exp(prob)
             else:   self._data[i] = prob
 
+##//////////////////////////////////////////////////////
+##  Probability Distribution Operations
+##//////////////////////////////////////////////////////
+
+def log_likelihood(test_pdist, actual_pdist):
+    # Is this right?
+    return sum([actual_pdist.prob(s) * math.log(test_pdist.prob(s))
+                for s in actual_pdist.samples()])
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
 ##//////////////////////////////////////////////////////
