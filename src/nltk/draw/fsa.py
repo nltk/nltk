@@ -2,8 +2,7 @@
 Draw a finite state automoton
 """
 
-import Tkinter, random, math
-from nltk.fsa import FSA
+import Tkinter, random, math, nltk.fsa
 
 class _Node:
     def __init__(self, x, y, label, canvas):
@@ -223,7 +222,8 @@ class FSADraw:
         return node
 
     def _make_edge(self, node1, node2, label):
-        if label is not None: 
+        # Handle epsilon transitions
+        if label == nltk.fsa.epsilon:
             edge = _Edge(node1, node2, label, self._canvas)
         else:
             edge = _Edge(node1, node2, 'e', self._canvas)
@@ -282,6 +282,6 @@ def show_fsa(fsa):
 if __name__ == '__main__':
     re = '(ab(c*)c)*'
     print 'Regular Expression:', re
-    fsa = FSA(re)
+    fsa = nltk.fsa.FSA(re)
     print fsa.pp()
     show_fsa(fsa)
