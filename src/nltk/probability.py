@@ -1694,28 +1694,28 @@ class GoodTuringProbDist(ProbDistI):
         
     
 ##//////////////////////////////////////////////////////
-##  Probablistic Mix-in
+##  Probabilistic Mix-in
 ##//////////////////////////////////////////////////////
 
-class ProbablisticMixIn:
+class ProbabilisticMixIn:
     """
     A mix-in class to associate probabilities with other classes
-    (tokens, trees, rules, etc.).  To use the C{ProbablisticMixIn}
+    (tokens, trees, rules, etc.).  To use the C{ProbabilisticMixIn}
     class, define a new class that derives from an existing class and
-    from ProbablisticMixIn.  You will need to define a new constructor 
+    from ProbabilisticMixIn.  You will need to define a new constructor 
     for the new class, which explicitly calls the constructors of both
     its parent classes.  For example:
 
         >>> class A:
         ...     def __init__(self, x, y): self.data = (x,y)
         ... 
-        >>> class ProbablisticA(A, ProbablisticMixIn):
+        >>> class ProbabilisticA(A, ProbabilisticMixIn):
         ...     def __init__(self, p, x, y):
         ...         A.__init__(self, x, y)
-        ...         ProbablisticMixIn.__init__(self, p)
+        ...         ProbabilisticMixIn.__init__(self, p)
 
     We suggest that you make C{p} the first argument for the new
-    probablistic class, and keep all other arguments the same as they
+    probabilistic class, and keep all other arguments the same as they
     were.  This ensures that there will be no problems with
     constructors that expect varargs parameters.
 

@@ -196,31 +196,31 @@ class ParserI2:
         """
         assert 0, "ParserI is an abstract interface"
 
-class ProbablisticParserI(ParserI2):
+class ProbabilisticParserI(ParserI2):
     """
     A processing interface for associating proabilities with trees
     that represent possible structures for a sequence of tokens.  A
-    C{ProbablisticParser} is a C{Parser} whose quality ratings are
+    C{ProbabilisticParser} is a C{Parser} whose quality ratings are
     probabilities.  In particular, the quality of a parse for a given
     text is the probability that the parse is the correct
     representation for the structure of the text.
 
     In order to allow access to the probabilities associated with each
-    parse, the parses are returned as C{ProbablisticTreeToken}s.
-    C{ProbablisticTreeToken}s are C{TreeToken}s that have
+    parse, the parses are returned as C{ProbabilisticTreeToken}s.
+    C{ProbabilisticTreeToken}s are C{TreeToken}s that have
     probabilities associated with them.
 
     In addition to the methods defined by the C{Parser} interface,
-    C{ProbablisticParser} defines the C{parse_dist} method, which
+    C{ProbabilisticParser} defines the C{parse_dist} method, which
     returns a C{ProbDist} whose samples are C{parses}.
 
-    @see: C{ProbablisticTreeToken}
+    @see: C{ProbabilisticTreeToken}
     """
     def __init__(self):
         """
-        Construct a new C{ProbablisticParser}.
+        Construct a new C{ProbabilisticParser}.
         """
-        assert 0, "ProbablisticParserI is an abstract interface"
+        assert 0, "ProbabilisticParserI is an abstract interface"
 
     def parse(self, text):
         """
@@ -231,7 +231,7 @@ class ProbablisticParserI(ParserI2):
             multiple parses are tied for the highest quality, then
             choose one arbitrarily.  If no parse is available for the
             given text, return C{None}.
-        @rtype: C{ProbablisticTreeToken} or C{None}
+        @rtype: C{ProbabilisticTreeToken} or C{None}
         @param text: The text to be parsed.  This text consists
             of a list of C{Tokens}, ordered by their C{Location}.
         @type text: C{list} of C{Token}
@@ -248,7 +248,7 @@ class ProbablisticParserI(ParserI2):
             each subsequent parse will have equal or lower quality.
             Note that the empty list will be returned if no parses
             were found.
-        @rtype: C{list} of C{ProbablisticTreeToken}
+        @rtype: C{list} of C{ProbabilisticTreeToken}
         @param n: The number of parses to generate.  At most C{n}
             parses will be returned.  If C{n} is C{None}, return all
             parses. 
@@ -272,6 +272,6 @@ class ProbablisticParserI(ParserI2):
             of a list of C{Tokens}, ordered by their C{Location}.
         @type text: C{list} of C{Token}
         """
-        assert 0, "ProbablisticParserI is an abstract interface"
+        assert 0, "ProbabilisticParserI is an abstract interface"
 
     
