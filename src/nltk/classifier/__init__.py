@@ -10,9 +10,9 @@
 """
 Processing classes and interfaces for labeling tokens with category
 labels (or X{classes}).  Typically, classes are represented with
-strings (such as C{'health'} or C{'sports'}); but any immutable type
-(such as strings and integers) can also be used.  Classifiers can be
-used to perform a wide range of classification tasks.  For example,
+strings (such as C{'health'} or C{'sports'}); but other immutable
+types (such as integers) can be used.  Classifiers can be used to
+perform a wide range of classification tasks.  For example,
 classifiers can be used...
 
   - to classify documents by topic.
@@ -62,10 +62,10 @@ class ClassifierI:
     C{integer}s, but can be any immutable type.  The set of classes
     that the classifier chooses from must be fixed and finite.
     
-    Typically, classifier classes encode specific classifier models;
-    but do not include the algorithms for training the classifiers.
-    Instead, L{ClassifierTrainer}s are used to generate classifiers
-    from training data.
+    Typically, C{ClassifierI} subclasses encode specific classifier
+    models; but do not include the algorithms for training the
+    classifiers.  Instead, L{ClassifierTrainer}s are used to generate
+    classifiers from training data.
 
     @outprop: C{CLASS}: The token's class.
     @outprop: C{CLASS_PROBS}: A probability distribution over the
@@ -76,7 +76,7 @@ class ClassifierI:
               the token, sorted in descending order of likelihood
               (optional).
     """
-    def labels(self):
+    def classes(self):
         """
         @return: the list of category labels used by this classifier.
         @rtype: C{list} of (immutable)
@@ -135,7 +135,7 @@ class MultiClassifierI:
               classes for the token, sorted in descending order of
               likelihood (optional).
     """
-    def labels(self):
+    def classes(self):
         """
         @return: the list of category labels used by this classifier.
         @rtype: C{list} of (immutable)
@@ -183,7 +183,7 @@ class ClassifierTrainerI:
 
     @inprop: C{CLASS}: The token's class.
     """
-    def train(self, training_tokens, labels=None):
+    def train(self, training_tokens, classes=None):
         """
         Train a new classifier, based on the given training tokens.
 
@@ -191,10 +191,10 @@ class ClassifierTrainerI:
         @param training_tokens: The list of classified tokens that the
             new classifier should be based on.  Each token in this
             list must define the C{CLASS} property.
-        @param labels: The set of possible labels.  If C{labels} is 
-            not specified, then the set of labels attested in the
+        @param classes: The set of possible classes.  If C{classes} is 
+            not specified, then the set of classes attested in the
             training data will be used.
-        @type labels: C{list} of (immutable)
+        @type classes: C{list} of (immutable)
         @return: A new classifier, trained from the given classified
             tokens.
         @rtype: C{ClassifierI}
@@ -208,7 +208,7 @@ class MultiClassifierTrainerI:
 
     @inprop: C{CLASS}: The token's class.
     """
-    def train(self, training_tokens, labels=None):
+    def train(self, training_tokens, classes=None):
         """
         Train a new multi-classifier, based on the given training
         tokens.
@@ -217,10 +217,10 @@ class MultiClassifierTrainerI:
         @param training_tokens: The list of classified tokens that the
             new multi-classifier should be based on.  Each token in
             this list must define the C{CLASSES} property.
-        @param labels: The set of possible labels.  If C{labels} is 
-            not specified, then the set of labels attested in the
+        @param classes: The set of possible classes.  If C{classes} is 
+            not specified, then the set of classes attested in the
             training data will be used.
-        @type labels: C{list} of (immutable)
+        @type classes: C{list} of (immutable)
         @return: A new multi-classifier, trained from the given
             classified tokens.
         @rtype: C{MultiClassifierI}
