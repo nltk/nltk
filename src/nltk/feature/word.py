@@ -29,6 +29,34 @@ class StemFeatureDetector(PropertyFeatureDetector):
     def __init__(self, **property_names):
         PropertyFeatureDetector.__init__(self, 'TEXT', **property_names)
 
+class ContextWordFeatureDetector(AbstractFeatureDetector):
+    """
+    A feature detector that extracts the text of the words in a
+    token's context, preserving duplicates, and stores it in the
+    C{BOW} feature.  In particular, C{BOW} is mapped to a list
+    containing the C{TEXT} feature of each word in a fixed-size window
+    centered on the token.
+    """
+    def __init__(self, offset, **property_names):
+        """
+        @param window: The number of words in the context to add to
+            the bag of words.
+        """
+        AbstractFeatureDetector.__init__(self, **property_names)
+        self._offset = offset
+        if offset >= 0: self._feature = 'CW+%d' % offset
+        else: self._feature = 'CW%d' % offset
+        
+    def raw_detect_features(self, token):
+        try:
+            tok = token['CONTEXT'].get(self._offset)
+            return {self._feature: tok['TEXT']}
+        except IndexError:
+            return {} # off the edge of the SUBTOKENS list.
+    
+    def features(self):
+        return [self._feature]
+
 class BagOfContextWordsFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that extracts the text of the words in a
