@@ -470,7 +470,9 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
 
         if self._trace:
             print 'Found %d parses with %d edges' % (len(parses), len(chart))
-                                                     
+
+        # Sort the parses by decreasing likelihood, and return them
+        parses.sort(lambda p1,p2: -cmp(p1.p(),p2.p()))
         return parses
 
     def sort_queue(self, queue, chart):
@@ -609,7 +611,9 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         return Edge(drule, tree, loc)
 
     def __repr__(self):
-        return '<BottomUpPCFGChartParser for %r>' % self._grammar
+        # Use __class__.__name__ to get the name of the class, since
+        # this method will be used by subclasses.
+        return '<%s for %r>' % (self.__class__.__name__, self._grammar)
 
 
 class InsidePCFGParser(BottomUpPCFGChartParser):
@@ -680,7 +684,7 @@ class RandomPCFGParser(BottomUpPCFGChartParser):
     # Inherit constructor
     def sort_queue(self, queue, chart):
         i = random.randint(0, len(queue)-1)
-        (queue[0], queue[i]) = (queue[i], queue[0])
+        (queue[-1], queue[i]) = (queue[i], queue[-1])
 
 class LongestPCFGParser(BottomUpPCFGChartParser):
     """
@@ -694,16 +698,34 @@ class LongestPCFGParser(BottomUpPCFGChartParser):
 
 class BeamPCFGParser(BottomUpPCFGChartParser):
     """
-    Only keep some edges...
+    A bottom-up parser for C{PCFG}s that limits the number of edges in
+    its edge queue.
     """
-    # Inherit constructor
+    def __init__(self, beam_size, grammar, trace=0):
+        """
+        Create a new C{BottomUpPCFGChartParser}, that uses C{grammar}
+        to parse texts.
+
+        @type beam_size: C{int}
+        @param beam_size: The maximum length for the parser's edge queue.
+        @type grammar: C{PCFG}
+        @param grammar: The grammar used to parse texts.
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            and higher numbers will produce more verbose tracing
+            output.
+        """
+        BottomUpPCFGChartParser.__init__(self, grammar, trace)
+        self._beam_size = beam_size
+        
     def sort_queue(self, queue, chart):
-        RATIO = 0.05
         queue.sort(lambda e1,e2:cmp(e1.tree().p(), e2.tree().p()))
-        best_p = queue[-1].tree().p()
-        new_queue = [edge for edge in queue
-                    if edge.tree().p() >= (best_p * RATIO)]
-        queue[:] = new_queue
+        if len(queue) > self._beam_size:
+            split = len(queue)-self._beam_size
+            for edge in queue[:split]:
+                print '  %-60s [DISCARDED]' % chart.pp_edge(edge,2)
+            queue[:] = queue[split:]
 
 ##//////////////////////////////////////////////////////
 ##  Test Code
@@ -797,8 +819,8 @@ if __name__ == '__main__':
         PCFG_Rule(0.8, Det, 'the'), PCFG_Rule(0.2, Det, 'my'),
         PCFG_Rule(0.5, N, 'dog'),   PCFG_Rule(0.5, N, 'cookie'),
 
-        PCFG_Rule(0.4, VP, VP, PP), PCFG_Rule(0.5, VP, V, NP),
-        PCFG_Rule(0.1, VP, V),
+        PCFG_Rule(0.1, VP, VP, PP), PCFG_Rule(0.7, VP, V, NP),
+        PCFG_Rule(0.2, VP, V),
         
         PCFG_Rule(0.35, V, 'ate'),  PCFG_Rule(0.65, V, 'saw'),
 
@@ -821,9 +843,9 @@ if __name__ == '__main__':
     parser2 = ViterbiPCFGParser(pcfg)
     parser3 = RandomPCFGParser(pcfg)
     parser4 = LongestPCFGParser(pcfg)
-    parser5 = BeamPCFGParser(pcfg)
+    parser5 = BeamPCFGParser(7, pcfg)
 
-    N = 5
+    N = 2
     if 1:
         print '\nRandom PCFG Parser'
         parser3.trace(1)
@@ -836,14 +858,15 @@ if __name__ == '__main__':
         print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
 
         print '\nInside PCFG Parser'
-        parser1.trace(1)
+        parser1.trace(5)
         parses = parser1.parse_n(text, N)
         print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
-
+        
         print '\nBeam PCFG Parser'
-        parser5.trace(3)
+        parser5.trace(1)
         parses = parser5.parse_n(text, N)
-        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+        if parses:
+            print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
 
     if 0:
         print '\nViterbi PCFG Parser'
