@@ -50,19 +50,23 @@ class FreqDist:
         self._Nr_cache = None
         self._max_cache = None
 
-    def inc(self, sample):
+    def inc(self, sample, count=1):
         """
         Increment this C{FreqDist}'s count for the given
         sample.
         
         @param sample: The sample whose count should be incremented.
         @type sample: any
+        @param count: The amount to increment the sample's count by.
+        @type count: C{int}
         @rtype: None
         @raise NotImplementedError: If C{sample} is not a
                supported sample type.
         """
-        self._N += 1
-        self._count[sample] = self._count.get(sample,0) + 1
+        assert _chktype(2, count, types.IntType)
+        
+        self._N += count
+        self._count[sample] = self._count.get(sample,0) + count
 
         # Invalidate the Nr cache and max cache.
         self._Nr_cache = None
@@ -165,6 +169,7 @@ class FreqDist:
                should be returned.
         @type sample: any.
         """
+        if self._N is 0: return 0
         return float(self._count.get(sample, 0)) / self._N
 
     def max(self):
@@ -778,14 +783,14 @@ class ConditionalProbDist:
         self._cfdist = cfdist
         
         # Do the estimation.
-        pdists = {}
+        self._pdists = {}
         for condition in cfdist.conditions():
-            pdists[condition] = pdist_factory(cfdist)
+            self._pdists[condition] = pdist_factory(cfdist[condition])
 
     def __getitem__(self, condition):
         # If the pdist doesn't exist, return uniform (???).
         if not self._pdists.has_key(condition):
-            return ZeroProbDist(self._cfdist.bins())
+            return MLEProbDist(FreqDist()) #ZeroProbDist(self._cfdist.bins())
             self._fdists[condition] = FreqDist(self._bins)
             
         return self._pdists[condition]
