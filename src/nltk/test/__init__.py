@@ -75,6 +75,10 @@ def test(module_names=DEFAULT_MODULES, verbose=0):
     """
     Run unit tests for the NLP toolkit; print results to stdout/stderr
     """
+    # Ensure that the type safety level is set to full.
+    import nltk.chktype
+    nltk.chktype.type_safety_level(1000)
+    
     import unittest
     runner = unittest.TextTestRunner()
     runner.run(testsuite(module_names, verbose))
@@ -89,7 +93,7 @@ if __name__ == '__main__':
     import sys
     files = []
     verbose = 0
-    
+
     for arg in sys.argv[1:]:
         if arg[:1] == '-':
             if arg[1:] in ('v', 'V', 'verbose', 'Verbose', 'VERBOSE'):
