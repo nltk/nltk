@@ -50,6 +50,7 @@ used to distinguish two tokens whose properties are otherwise equal
 
 import types, copy
 from nltk.chktype import chktype
+from nltk.util import FrozenDict
 
 ######################################################################
 ## Token
@@ -331,21 +332,21 @@ class Token(dict):
             else: return val._exclude(props, True, memo)
         elif isinstance(val, list):
             restrict = self._deep_restrict
-            return [restrict(v, props, incl) for v in val]
+            return [restrict(v, props, incl, memo) for v in val]
         elif isinstance(val, tuple):
             restrict = self._deep_restrict
-            return tuple([restrict(v, props, incl) for v in val])
+            return tuple([restrict(v, props, incl, memo) for v in val])
         elif isinstance(val, dict):
-            return dict(self._deep_restrict(val.items(), props, incl))
+            return dict(self._deep_restrict(val.items(), props, incl, memo))
         elif hasattr(val, '__iter__') and hasattr(val, 'next'):
-            return self._deep_restrict_iter(val, props, incl)
+            return self._deep_restrict_iter(val, props, incl, memo)
         else:
             hash(val) # Make sure it's immutable (or at least hashable).
             return val
 
-    def _deep_restrict_iter(self, val, props, incl):
+    def _deep_restrict_iter(self, val, props, incl, memo):
         for item in val:
-            yield self._deep_restrict(item, props, incl)
+            yield self._deep_restrict(item, props, incl, memo)
 
     def _freezeval(self, val, memo):
         """
@@ -357,11 +358,11 @@ class Token(dict):
             return val._freeze(memo)
         elif isinstance(val, list) or isinstance(val, tuple):
             freezeval = self._freezeval
-            return tuple([freezeval(v) for v in val])
+            return tuple([freezeval(v, memo) for v in val])
         elif isinstance(val, dict):
-            return FrozenDict(self._freezeval(val.items()))
+            return FrozenDict(self._freezeval(val.items(), memo))
         elif hasattr(val, '__iter__') and hasattr(val, 'next'):
-            return tuple([freezeval(v) for v in val])
+            return tuple([self._freezeval(v, memo) for v in val])
         else:
             hash(val) # Make sure it's immutable (or at least hashable).
             return val
@@ -664,8 +665,6 @@ class ProbabilisticToken(Token, ProbabilisticMixIn):
         Token.__init__(self, **properties)
     def __repr__(self):
         return Token.__repr__(self)+' (p=%s)' % self._prob
-    def __str__(self):
-        return Token.__str__(self)+' (p=%s)' % self._prob
 
 ######################################################################
 ## Location
@@ -700,7 +699,7 @@ class LocationI(object):
         raise NotImplementedError
 
     # Locations must be comparable:
-    def __cmp__(self):
+    def __cmp__(self, other):
         raise NotImplementedError()
 
     # Locations must be hashable:
@@ -1035,6 +1034,4 @@ def demo():
     print "print tok == tok2              =>", tok == tok2
     print "print tok == tok.copy()        =>", tok == tok.copy()
 
-if __name__ == '__main__':
-    demo()
-    
+if __name__ == '__main__': demo()
