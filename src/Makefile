@@ -10,6 +10,9 @@
 # Epydoc executable
 EPYDOC = epydoc
 
+# Get the version of nltk
+NLTK_VERSION=$(shell python -c 'import nltk; print nltk.__version__')
+
 all: distributions
 
 usage:
@@ -41,21 +44,25 @@ sdist: gztardist zipdist
 bdist: rpmdist windist
 
 # Produce dist/$(NAME)-$(VERSION).tar.gz
-gztardist:
+gztardist: INSTALL.TXT
 	python setup.py -q sdist --format=gztar
 
 # Produce dist/$(NAME)-$(VERSION).tar.gz
-zipdist:
+zipdist: INSTALL.TXT
 	python setup.py -q sdist --format=zip
 
 # Produce dist/$(NAME)-$(VERSION)-1.noarch.rpm
 # Produce dist/$(NAME)-$(VERSION)-1.src.rpm
-rpmdist:
+rpmdist: INSTALL.TXT
 	python setup.py -q bdist --format=rpm
 
 # Produce dist/$(NAME)-$(VERSION).win32.exe
-windist:
+windist: INSTALL.TXT
 	python setup.py -q bdist --format=wininst
 
 checkdocs:
 	$(EPYDOC) -v --check nltk
+
+# Automatically add the appropriate version number.
+INSTALL.TXT: INSTALL.TXT.in
+	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
