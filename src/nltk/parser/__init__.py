@@ -48,6 +48,13 @@ three sub-modules for specialized kinds of parsing:
 from nltk.tree import TreeToken
 from nltk.cfg import Nonterminal, CFG, CFGProduction
 
+__all__ = (
+    'ParserI',
+    'ShiftReduceParser', 'SteppingShiftReduceParser',
+    'RecursiveDescentParser', 'demo',
+    'chart', 'chunk', 'probabilistic',
+    )
+
 ##//////////////////////////////////////////////////////
 ##  Parser Interface
 ##//////////////////////////////////////////////////////
@@ -180,6 +187,22 @@ class ShiftReduceParser(ParserI):
         self._trace = trace
         self._check_grammar()
 
+    def grammar(self):
+        """
+        @return: The grammar used to parse texts.
+        @rtype: C{CFG}
+        """
+        return self._grammar
+
+    def set_grammar(self, grammar):
+        """
+        Change the grammar used to parse texts.
+        
+        @param grammar: The new grammar.
+        @type grammar: C{CFG}
+        """
+        return self._grammar
+    
     def parse_n(self, text):
         # Inherit documentation from ParserI; delegate to parse.
         treetok = self.parse(text)
@@ -271,9 +294,10 @@ class ShiftReduceParser(ParserI):
         earliest in the grammar.  The new C{TreeToken} replaces the
         elements in the stack.
 
-        @rtype: C{boolean}
-        @return: false if no CFG productions matched the rightmost
-            stack elements.
+        @rtype: C{CFGProduction} or C{boolean}
+        @return: If a reduction is performed, then return the CFG
+            production that the reduction is based on; otherwise,
+            return false.
         @type stack: C{list} of C{Token} and C{TreeToken}
         @param stack: A list of C{Token}s and C{TreeToken}s, encoding
             the structure of the text that has been parsed so far.
@@ -289,7 +313,8 @@ class ShiftReduceParser(ParserI):
             if self._match(production.rhs(), stack[-rhslen:]):
 
                 # combine the tree to reflect the reduction
-                treetok = TreeToken(production.lhs().symbol(), *stack[-rhslen:])
+                treetok = TreeToken(production.lhs().symbol(),
+                                    *stack[-rhslen:])
                 stack[-rhslen:] = [treetok]
 
                 # We reduced something
@@ -349,8 +374,8 @@ class ShiftReduceParser(ParserI):
         @rtype: C{None}
         """
         if self._trace > 2:
-            print 'Reduce %r <- %s' % (production.lhs(),
-                                       ' '.join([`s` for s in production.rhs()]))
+            rhs = ' '.join([`s` for s in production.rhs()])
+            print 'Reduce %r <- %s' % (production.lhs(), rhs)
         if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
         elif self._trace > 1: self._trace_stack(stack, remaining_text)
 
@@ -396,6 +421,22 @@ class RecursiveDescentParser(ParserI):
         self._grammar = grammar
         self._trace = trace
 
+    def grammar(self):
+        """
+        @return: The grammar used to parse texts.
+        @rtype: C{CFG}
+        """
+        return self._grammar
+
+    def set_grammar(self, grammar):
+        """
+        Change the grammar used to parse texts.
+        
+        @param grammar: The new grammar.
+        @type grammar: C{CFG}
+        """
+        return self._grammar
+    
     def parse(self, text):
         # Inherit docs from ProbabilisticParserI; and delegate to parse_n
         final_trees = self.parse_n(text, 1)
@@ -542,6 +583,89 @@ class RecursiveDescentParser(ParserI):
         for elt in expr: print `elt`,
         print ']'
 
+##//////////////////////////////////////////////////////
+##  Stepping Shift/Reduce Parser
+##//////////////////////////////////////////////////////
+class SteppingShiftReduceParser(ShiftReduceParser):
+    """
+    A C{ShiftReduceParser} that allows you to setp through the parsing
+    process, performing a single operation at a time.  It also allows
+    you to change the parser's grammar midway through parsing a text.
+
+    The C{initialize} method is used to start parsing a text.
+    C{shift} performs a single shift operation, and C{reduce} performs
+    a single reduce operation.  C{step} will perform a single reduce
+    operation if possible; otherwise, it will perform a single shift
+    operation.  C{parses} returns the set of parses that have been
+    found by the parser.
+    """
+    def __init__(self, grammar, trace=0):
+        ShiftReduceParser.__init__(self, grammar, trace)
+        self._stack = None
+        self._remaining_text = None
+
+    def stack(self):
+        """
+        @return: The parser's stack.
+        @rtype: C{list} of C{Token} and C{TreeToken}
+        """
+        return self._stack
+
+    def remaining_text(self):
+        """
+        @return: The portion of the text that is not yet covered by the
+            stack.
+        @rtype: C{list} of C{Token}
+        """
+        return self._remaining_text
+        
+    def initialize(self, text):
+        """
+        Start parsing a given text.  This sets the parser's stack to
+        C{[]} and sets its remaining text to C{text}.
+
+        @param text: The text to start parsing.
+        @type text: C{list} of C{Token}
+        """
+        self._stack = []
+        self._remaining_text = text[:]
+
+    def step(self):
+        """
+        Perform a single parsing operation.  If a reduction is
+        possible, then perform that reduction, and return the
+        production that it is based on.  Otherwise, if a shift is
+        possible, then perform it, and return 1.  Otherwise, return
+        0. 
+
+        @return: 0 if no operation was performed; 1 if a shift was
+            performed; and the CFG production used to reduce if a
+            reduction was performed.
+        @rtype: C{CFGProduction} or C{boolean}
+        """
+        return self.reduce() or self.shift()
+
+    def shift(self):
+        """
+        Move a token from the beginning of the remaining text to the
+        end of the stack.
+
+        @rtype: C{None}
+        """
+        if len(self._remaining_text) == 0: return 0
+        self._shift(self._stack, self._remaining_text)
+        return 1
+        
+    def reduce(self):
+        return self._reduce(self._stack, self._remaining_text)
+
+    def parses(self):
+        if len(self._remaining_text) != 0: return []
+        if len(self._stack) != 1: return []
+        if self._stack[0].node() != self._grammar.start().symbol():
+            return []
+        return self._stack
+    
 ##//////////////////////////////////////////////////////
 ##  Demonstration Code
 ##//////////////////////////////////////////////////////
