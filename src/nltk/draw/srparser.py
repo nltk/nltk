@@ -213,7 +213,7 @@ class ShiftReduceParserDemo:
     def _init_menubar(self, parent):
         menubar = Menu(parent)
 
-        fliemenu = Menu(menubar, tearoff=0)
+        filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(label='Reset', underline=0,
                              command=self.reset, accelerator='Del')
         filemenu.add_command(label='Exit', underline=1,
