@@ -40,19 +40,9 @@ defines three chart parsers:
     completer) to each edge it encounters.
 """
 """
-@group Data Types: Chart, EdgeI, ProductionEdge, TokenEdge, FRChart
-@group Chart Parsers: ChartParser, SteppingChartParser,
-    IncrementalChartParser
-@group Chart Rules: ChartRuleI, BottomUpRule, FundamentalRule,
-    TopDownRule, TopDownInitRule, IncrementalChartRuleI,
-    IncrementalBottomUpRule, IncrementalFundamentalRule,
-    IncrementalTopDownRule, IncrementalTopDownInitRule
-@sort: ChartParser, SteppingChartParser, IncrementalChartParser,
-    Chart, EdgeI, ProductionEdge, TokenEdge, FRChart,
-    ChartRuleI, BottomUpRule, FundamentalRule,
-    TopDownRule, TopDownInitRule, IncrementalChartRuleI,
-    IncrementalBottomUpRule, IncrementalFundamentalRule,
-    IncrementalTopDownRule, IncrementalTopDownInitRule, demo
+@group Data Types: Chart, EdgeI, *Edge
+@group Chart Parsers: *Parser
+@group Chart Rules: ChartRuleI, *Rule
 """
 
 import re
@@ -783,6 +773,60 @@ class Chart:
         return (self.pp_leaves(width) + '\n' +
                 '\n'.join([self.pp_edge(edge, width) for edge in edges]))
                 
+    #////////////////////////////////////////////////////////////
+    # Display: Dot (AT&T Graphviz)
+    #////////////////////////////////////////////////////////////
+
+    def dot_digraph(self):
+        # Header
+        s = 'digraph nltk_chart {\n'
+        #s += '  size="5,5";\n'
+        s += '  rankdir=LR;\n'
+        s += '  node [height=0.1,width=0.1];\n'
+        s += '  node [style=filled, color="lightgray"];\n'
+
+        # Set up the nodes
+        for y in range(self.num_edges(), -1, -1):
+            if y == 0:
+                s += '  node [style=filled, color="black"];\n'
+            for x in range(self.num_leaves()+1):
+                if y == 0 or (x <= self._edges[y-1].start() or
+                              x >= self._edges[y-1].end()):
+                    s += '  %04d.%04d [label=""];\n' % (x,y)
+
+        # Add a spacer
+        s += '  x [style=invis]; x->0000.0000 [style=invis];\n'
+
+        # Declare ranks.
+        for x in range(self.num_leaves()+1):
+            s += '  {rank=same;'
+            for y in range(self.num_edges()+1):
+                if y == 0 or (x <= self._edges[y-1].start() or
+                              x >= self._edges[y-1].end()):
+                    s += ' %04d.%04d' % (x,y)
+            s += '}\n'
+
+        # Add the leaves
+        s += '  edge [style=invis, weight=100];\n'
+        s += '  node [shape=plaintext]\n'
+        s += '  0000.0000'
+        for x in range(self.num_leaves()):
+            s += '->%s->%04d.0000' % (self.leaf(x), x+1)
+        s += ';\n\n'
+
+        # Add the edges
+        s += '  edge [style=solid, weight=1];\n'
+        for y, edge in enumerate(self):
+            for x in range(edge.start()):
+                s += ('  %04d.%04d -> %04d.%04d [style="invis"];\n' %
+                      (x, y+1, x+1, y+1))
+            s += ('  %04d.%04d -> %04d.%04d [label="%s"];\n' %
+                  (edge.start(), y+1, edge.end(), y+1, edge))
+            for x in range(edge.end(), self.num_leaves()):
+                s += ('  %04d.%04d -> %04d.%04d [style="invis"];\n' %
+                      (x, y+1, x+1, y+1))
+        s += '}\n'
+        return s
 
 ########################################################################
 ##  Chart Rules
@@ -1126,7 +1170,7 @@ class BottomUpInitRule(AbstractChartRule):
             if chart.insert(new_edge, ()):
                 yield new_edge
 
-class BottomUpRule(AbstractChartRule):
+class BottomUpPredictRule(AbstractChartRule):
     """
     A rule licensing any edge corresponding to a production whose
     right-hand side begins with a complete edge's left-hand side.  In
@@ -1308,7 +1352,7 @@ class EarleyChartParser(AbstractParser):
 
 TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(), 
                TopDownMatchRule(), SingleEdgeFundamentalRule()]
-BU_STRATEGY = [BottomUpInitRule(), BottomUpRule(),
+BU_STRATEGY = [BottomUpInitRule(), BottomUpPredictRule(),
                SingleEdgeFundamentalRule()]
 
 class ChartParser(AbstractParser):
@@ -1355,7 +1399,7 @@ class ChartParser(AbstractParser):
 
         # Width, for printing trace edges.
         w = 50/(chart.num_leaves()+1)
-        if self._trace > 0: print ' ', chart.pp_leaves(w)
+        if self._trace > 0: print chart.pp_leaves(w)
         
         edges_added = 1
         while edges_added > 0:
@@ -1651,4 +1695,4 @@ def demo():
     for (parser, t) in times_items:
         print format % (parser, t)
             
-if __name__ == '__main__': demo()
+#if __name__ == '__main__': demo()
