@@ -113,8 +113,6 @@ class ChartParser(ParserI):
     def parse_n(self, text, n=None):
         # Inherit documentation from ParserI
 
-        self._strategy[-1].start() # TEMP
-
         # Create a new chart.
         chart = self._create_chart(text)
 
@@ -132,7 +130,6 @@ class ChartParser(ParserI):
                     parses = chart.parses(self._grammar.start())
                     print 'Found %d parses with %d edges' % (len(parses), 
                                                              len(chart))
-                print "FR TIME", self._strategy[-1].sample()
                 return chart.parses(self._grammar.start())
 
     def parse(self, text, n=None):
@@ -210,19 +207,14 @@ class BottomUpRule(ChartRuleI):
                                                 
         return edges
 
-import time
 class FundamentalRule(ChartRuleI):
-    def start(self): self._t = 0
-    def sample(self): return self._t
     def apply(self, chart, grammar):
-        t0 = time.time()
         edges = []
         for edge in chart.incomplete_edges():
             for edge2 in chart.complete_edges():
                 if (edge.drule().next() == edge2.drule().lhs() and
                     edge.end() == edge2.start()):
                     edges.append(fr_edge(edge, edge2))
-        self._t += time.time() - t0
         return edges
 
 ##//////////////////////////////////////////////////////
