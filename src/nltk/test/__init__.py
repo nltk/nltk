@@ -18,9 +18,14 @@ def testsuite():
     Return a PyUnit testsuite for the NLP toolkit
     """
 
-    import nltk.test.token, nltk.test.tree
+    import nltk.test.token
+    import nltk.test.tree
+    import nltk.test.set
 
-    modules = nltk.test.token, nltk.test.tree
+    modules = (nltk.test.token,
+               nltk.test.tree,
+               nltk.test.set,
+               )
 
     return unittest.TestSuite([m.testsuite() for m in modules]) 
 
