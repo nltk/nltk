@@ -1213,6 +1213,7 @@ class EarleyChartParser(ParserI):
                 - Apply ScannerRule to I{edge}
             - If I{edge} is complete:
                 - Apply CompleterRule to I{edge}
+        - Return any complete parses in the chart
 
     C{EarleyChartParser} uses a X{lexicon} to decide whether a leaf
     has a given part of speech.  This lexicon is encoded as a
@@ -1280,8 +1281,8 @@ class EarleyChartParser(ParserI):
                     for e in completer.apply(chart, grammar, edge):
                         if self._trace > 0:
                             print 'Completer', chart.pp_edge(e,w)
-                            
 
+        # Output a list of complete parses.
         token[trees_prop] = chart.parses(self._root_node)
             
     def parse(self, token):
@@ -1298,36 +1299,99 @@ class EarleyChartParser(ParserI):
 ########################################################################
 ##  Generic Chart Parser
 ########################################################################
-# Apply rules until nothing else gets added.
 
 TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(), 
                TopDownMatchRule(), CompleterRule()]
 BU_STRATEGY = [BottomUpInitRule(), BottomUpRule(), CompleterRule()]
 
 class ChartParser(ParserI):
-    def __init__(self, grammar, root_node, strategy, **propnames):
+    """
+    A generic chart parser.  A X{strategy}, or list of
+    L{ChartRules<ChartRuleI>}, is used to decide what edges to add to
+    the chart.  In particular, C{ChartParser} uses the following
+    algorithm to parse texts:
+
+        - Until no new edges are added:
+          - For each I{rule} in I{strategy}:
+            - Apply I{rule} to any applicable edges in the chart.
+        - Return any complete parses in the chart
+    """
+    def __init__(self, grammar, strategy, trace=0, **propnames):
+        """
+        Create a new chart parser, that uses C{grammar} to parse
+        texts.
+
+        @type grammar: L{CFG}
+        @param grammar: The grammar used to parse texts.
+        @type strategy: C{list} of L{ChartRuleI}
+        @param strategy: A list of rules that should be used to decide
+            what edges to add to the chart.
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            and higher numbers will produce more verbose tracing
+            output.
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
         self._grammar = grammar
-        self._root_node = root_node
         self._strategy = strategy
+        self._trace = trace
         self._propnames = propnames
 
-    def parse(self, token):
+    def parse_n(self, token):
+        trees_prop = self._propnames.get('trees', 'trees')
+        trees_prop = self._propnames.get('trees', 'trees')
         chart = Chart(token, **self._propnames)
-        self._parse(chart, self._grammar)
-        for tree in chart.parses(self._root_node):
-            print tree
-    
-    def _parse(self, chart, grammar):
-        num_edges = -1
-        while num_edges < chart.num_edges():
-            if num_edges >= 0:
-                print 'added %d edges' % (chart.num_edges()-num_edges)
-            num_edges = chart.num_edges()
+        grammar = self._grammar
+
+        edges_added = 1
+        while edges_added > 0:
+            edges_added = 0
             for rule in self._strategy:
-                rulename = ''.join([w[0] for w in str(rule).split()])
-                #rule.apply_everywhere(chart, grammar)
-                for e in rule.apply_everywhere_iter(chart, grammar):
-                    print '%-5s%s' % (rulename, chart.pp_edge(e))
+                if self._trace > 0: print 'Applying', rule
+                for e in rule.apply_everywhere(chart, grammar):
+                    edges_added += 1
+                    if self._trace > 1: print chart.pp_edge(e,w)
+        
+        # Output a list of complete parses.
+        token[trees_prop] = chart.parses(grammar.start())
+        
+    def parse(self, token):
+        # Delegate to parse_n
+        trees_prop = self._propnames.get('trees', 'trees')
+        tree_prop = self._propnames.get('tree', 'tree')
+        
+        self.parse_n(token)
+
+        if len(token[trees_prop]) == 0: token[tree_prop] = None
+        else: token[tree_prop] = token[trees_prop][0]
+        del token[trees_prop]
+
+########################################################################
+##  Stepping Chart Parser
+########################################################################
+
+class SteppingChartParser(ChartParser):
+    """
+    A C{ChartParser} that allows you to step through the parsing
+    process, adding a single edge at a time.  It also allows you to
+    change the parser's strategy or grammar midway through parsing a
+    text.
+
+    The C{initialize} method is used to start parsing a text.  C{step}
+    adds a single edge to the chart.  C{set_strategy} changes the
+    strategy used by the chart parser.  C{parses} returns the set of
+    parses that has been found by the chart parser.
+    """
+
+    def __init__(self, **propnames):
+        self._propnames = propnames
+
+    def initialize(self, grammar, strategy):
+        pass
 
 ########################################################################
 ##  Demo Code
@@ -1370,13 +1434,15 @@ def demo():
     tok = Token(text='John saw the dog with a cookie with a dog')
     #tok = Token(text='John saw')
     WSTokenizer().tokenize(tok)
-    parser = EarleyChartParser(grammar1, S, lexicon, leaf='text', trace=1)
-    parser.parse_n(tok)
+    #parser = EarleyChartParser(grammar1, S, lexicon, leaf='text', trace=1)
+    #parser.parse_n(tok)
     #for tree in tok['trees']: print tree
-    #parser = ChartParser(grammar2, S, BU_STRATEGY, leaf='text')
-    #parser.parse(tok)
-    #parser = ChartParser(grammar2, S, TD_STRATEGY, leaf='text')
-    #parser.parse(tok)
+    parser = ChartParser(grammar2, BU_STRATEGY, leaf='text')
+    parser.parse_n(tok)
+    for tree in tok['trees']: print tree
+    #parser = ChartParser(grammar2, TD_STRATEGY, leaf='text')
+    #parser.parse_n(tok)
+    #for tree in tok['trees']: print tree
 
 import profile
 #profile.run('demo()')
