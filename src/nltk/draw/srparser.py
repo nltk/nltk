@@ -14,10 +14,11 @@ This tool allows you to explore algorithm used by the shift/reduce
 parser.  The shift/reduce parser maintains a stack, which records the
 structure of the portion of the text that has been parsed.  The stack
 is initially empty.  Its contents are shown on the left side of the
-demo window.
+main canvas.
 
-On the right side of the demo window is the remaining text.  This is
-the portion of the text which has not yet been considered by the parser.
+On the right side of the main canvas is the remaining text.  This is
+the portion of the text which has not yet been considered by the
+parser.
 
 The parser builds up a tree structure for the text using two
 operations: 
@@ -37,22 +38,50 @@ parser uses the following rules to decide which operation to use:
   - If multiple reductions are available, then apply the reduction
     whose CFG production is listed earliest in the grammar.
 
-Currently, there is no way to choose which production to apply;
-however, this functionality should be added in the near future.
+The "reduce" button applies the reduction whose CFG production is
+listed earliest in the grammar.  There are two ways to manually choose
+which reduction to apply:
 
-KEYBOARD SHORTCUTS:
-    [space]    Perform the next shift or reduce operation
-    [s]        Perform a shift operation
-    [r]        Perform a reduction operation
-    [delete]   Reset the parser
-    [g]        Show/hide grammar
-    [ctrl-a]   Toggle animations
-    [h]        Help
-    [p]        Print
-    [q]        Quit
+  - Select a production from the list of available reductions.  The
+    reduction based on that production will be applied to the top of
+    the stack.
+  - Click on one of the stack elements.  A popup window will appear, 
+    containing all available reductions.  Select one, and it will be
+    applied to the top of the stack.
+
+Note that reductions can only be applied to the top of the stack.
+
+Keyboard Shortcuts::
+      [Space]\t Perform the next shift or reduce operation
+      [s]\t Perform a shift operation
+      [r]\t Perform a reduction operation
+      [Delete]\t Reset the parser
+      [g]\t Show/hide available production list
+      [Ctrl-a]\t Toggle animations
+      [h]\t Help
+      [p]\t Print
+      [q]\t Quit
 """
 
-from nltk.draw.tree2 import *
+"""
+Possible future improvements:
+  - undo (shortcut=backspace).  Simplest implentation: keep a list of
+    the stack/remaining text after each operation; and roll-back by
+    setting to the old one.  This should probably be implemented in
+    the stepping parser, not in thte demo.  (i.e., stepping srparser
+    would have an undo() method).
+  - button/window to change and/or select text.  Just pop up a window
+    with an entry, and let them modify the text; and then retokenize
+    it?  Maybe give a warning if it contains tokens whose types are
+    not in the grammar.
+  - button/window to change and/or select grammar.  Select from
+    several alternative grammars?  Or actually change the grammar?  If
+    the later, then I'd want to define nltk.draw.cfg, which would be
+    responsible for that.
+"""
+
+from nltk.draw.tree import *
+from nltk.draw import *
 from nltk.parser import *
         
 class ShiftReduceParserDemo:
@@ -83,30 +112,51 @@ class ShiftReduceParserDemo:
         self._init_bindings()
 
         # Create the basic frames.
-        self._init_grammar(self._top)
         self._init_buttons(self._top)
         self._init_feedback(self._top)
+        self._init_grammar(self._top)
         self._init_canvas(self._top)
+
+        # A popup menu for reducing.
+        self._reduce_menu = Menu(self._canvas, tearoff=0)
 
         # Reset the demo, and set the feedback frame to empty.
         self.reset()
         self._lastoper1['text'] = ''
 
+    #########################################
+    ##  Initialization Helpers
+    #########################################
+
     def _init_grammar(self, parent):
-        # Grammar view.  Don't show it initially.  
+        # Grammar view.
         self._prodframe = listframe = Frame(parent)
-        listscroll = Scrollbar(self._prodframe, orient='vertical')
-        self._prodlist = listbox = Listbox(self._prodframe)
-        listbox.config(yscrollcommand = listscroll.set)
-        listscroll.config(command=listbox.yview)
-        listscroll.pack(side='right', fill='y')
-        listbox.pack(side='left', fill='both', expand=1)
+        self._prodframe.pack(fill='both', side='left', padx=2)
+        Label(self._prodframe, text='Available Reductions',
+              font=('helvetica', 14, 'bold')).pack()
+        self._prodlist = Listbox(self._prodframe, selectmode='single',
+                                 relief='groove', background='white',
+                                 foreground='#909090',
+                                 selectforeground='#004040',
+                                 selectbackground='#c0f0c0')
+
+        self._prodlist.pack(side='right', fill='both', expand=1)
 
         self._productions = list(self._parser.grammar().productions())
         for production in self._productions:
-            listbox.insert('end', production)
+            self._prodlist.insert('end', (' %s' % production))
+        self._prodlist.config(height=min(len(self._productions), 25))
 
-        self._show_grammar = 0
+        # Add a scrollbar if there are more than 25 productions.
+        if len(self._productions) > 25:
+            listscroll = Scrollbar(self._prodframe,
+                                   orient='vertical')
+            self._prodlist.config(yscrollcommand = listscroll.set)
+            listscroll.config(command=self._prodlist.yview)
+            listscroll.pack(side='left', fill='y')
+            
+        self._show_grammar = 1
+        self._prodlist.bind('<<ListboxSelect>>', self._prodlist_select)
         
     def _init_bindings(self):
         # Key bindings are a good thing.
@@ -120,7 +170,6 @@ class ShiftReduceParserDemo:
         self._top.bind('<Alt-r>', self.reduce)
         self._top.bind('<Control-r>', self.reduce)
         self._top.bind('<Delete>', self.reset)
-        self._top.bind('<BackSpace>', self.reset)
         self._top.bind('<p>', self.postscript)
         self._top.bind('<Alt-p>', self.postscript)
         self._top.bind('<Control-p>', self.postscript)
@@ -153,7 +202,7 @@ class ShiftReduceParserDemo:
                command=self.reset).pack(side='left')
 
     def _init_feedback(self, parent):
-        feedbackframe = Frame(parent)
+        self._feedbackframe = feedbackframe = Frame(parent)
         feedbackframe.pack(fill='x', side='bottom')
         Label(feedbackframe, text='Last Operation:').pack(side='left')
         lastoperframe = Frame(feedbackframe, relief='groove', border=2)
@@ -166,8 +215,9 @@ class ShiftReduceParserDemo:
 
     def _init_canvas(self, parent):
         self._cframe = CanvasFrame(parent, background='white', 
-                                   width=450, closeenough=10)
-        self._cframe.pack(expand=1, fill='both', side='top')
+                                   width=550, closeenough=10,
+                                   border=2, relief='sunken')
+        self._cframe.pack(expand=1, fill='both', side='top', pady=2)
         canvas = self._canvas = self._cframe.canvas()
 
         self._stackwidgets = []
@@ -182,6 +232,10 @@ class ShiftReduceParserDemo:
                                   font=('helvetica', 16, 'bold'))
         self._cframe.add_widget(self._stacklabel)
         self._cframe.add_widget(self._rtextlabel)
+
+    #########################################
+    ##  Main draw procedure
+    #########################################
 
     def _redraw(self):
         scrollregion = self._canvas['scrollregion'].split()
@@ -221,7 +275,7 @@ class ShiftReduceParserDemo:
             else:
                 widget = TextWidget(self._canvas, tok.type())
                 widget['color'] = '#000000'
-            widget.bind_click(self.reduce)
+            widget.bind_click(self._popup_reduce)
             self._stackwidgets.append(widget)
             self._cframe.add_widget(widget, stackx, y)
             stackx = widget.bbox()[2] + 10
@@ -232,7 +286,7 @@ class ShiftReduceParserDemo:
             widget = TextWidget(self._canvas, tok.type(), color='#000000')
             self._rtextwidgets.append(widget)
             self._cframe.add_widget(widget, rtextwidth, y)
-            rtextwidth = widget.bbox()[2] + 10
+            rtextwidth = widget.bbox()[2] + 5
 
         # Move the remaining text to the correct location (keep it
         # right-justified, when possible); and move the remaining text
@@ -250,13 +304,23 @@ class ShiftReduceParserDemo:
         self._canvas.coords(self._stacktop, midx, 0, midx, 5000)
         (x1, y1, x2, y2) = self._stacklabel.bbox()
 
-        # Let them shift by dragging.
+        # Set up binding to allow them to shift a token by dragging it.
         if len(self._rtextwidgets) > 0:
             def drag_shift(widget, midx=midx, self=self):
                 if widget.bbox()[0] < midx: self.shift()
                 else: self._redraw()
             self._rtextwidgets[0].bind_drag(drag_shift)
             self._rtextwidgets[0].bind_click(self.shift)
+
+        # Highlight the productions that can be reduced.
+        self._prodlist.selection_clear(0, 'end')
+        for prod in self._parser.reducible_productions():
+            index = self._productions.index(prod)
+            self._prodlist.selection_set(index)
+
+    #########################################
+    ##  Button Callbacks
+    #########################################
 
     def destroy(self, *e):
         if self._top is None: return
@@ -306,11 +370,69 @@ class ShiftReduceParserDemo:
         return production
 
     def help(self, *e):
-        ShowText(self._top, 'Help: Shift Reduce Parser Demo',
-                 (__doc__).strip(), width=75)
+        # The default font's not very legible; try using 'fixed' instead. 
+        try:
+            ShowText(self._top, 'Help: Shift Reduce Parser Demo',
+                     (__doc__).strip(), width=75, font='fixed')
+        except:
+            ShowText(self._top, 'Help: Shift Reduce Parser Demo',
+                     (__doc__).strip(), width=75)
 
     def postscript(self, *e):
         self._cframe.print_to_file()
+
+    def mainloop(self, *args, **varargs):
+        self._top.mainloop(*args, **varargs)
+
+    #########################################
+    ##  Reduce Production Selection
+    #########################################
+
+    def toggle_grammar(self, *e):
+        self._show_grammar = not self._show_grammar
+        if self._show_grammar:
+            self._prodframe.pack(fill='both', expand='y', side='left',
+                                 after=self._feedbackframe)
+            self._lastoper1['text'] = 'Show Grammar'
+        else:
+            self._prodframe.pack_forget()
+            self._lastoper1['text'] = 'Hide Grammar'
+        self._lastoper2['text'] = ''
+
+    def _prodlist_select(self, event):
+        selection = self._prodlist.curselection()
+        if len(selection) != 1: return
+        index = int(selection[0])
+        production = self._parser.reduce(self._productions[index])
+        if production:
+            self._lastoper1['text'] = 'Reduce:'
+            self._lastoper2['text'] = '%s' % production
+            if self._animate:
+                self._animate_reduce()
+            else:
+                self._redraw()
+        else:
+            # Reset the production selections.
+            self._prodlist.selection_clear(0, 'end')
+            for prod in self._parser.reducible_productions():
+                index = self._productions.index(prod)
+                self._prodlist.selection_set(index)
+
+    def _popup_reduce(self, widget):
+        # Remove old commands.
+        productions = self._parser.reducible_productions()
+        if len(productions) == 0: return
+        
+        self._reduce_menu.delete(0, 'end')
+        for production in productions:
+            self._reduce_menu.add_command(label=str(production),
+                                          command=self.reduce)
+        self._reduce_menu.post(self._canvas.winfo_pointerx(),
+                               self._canvas.winfo_pointery())
+
+    #########################################
+    ##  Animations
+    #########################################
 
     def toggle_animations(self, *e):
         self._animate = not self._animate
@@ -318,17 +440,6 @@ class ShiftReduceParserDemo:
             self._lastoper1['text'] = 'Animations On'
         else:
             self._lastoper1['text'] = 'Animations Off'
-        self._lastoper2['text'] = ''
-
-    def toggle_grammar(self, *e):
-        self._show_grammar = not self._show_grammar
-        if self._show_grammar:
-            self._prodframe.pack(fill='both', expand='y', side='left',
-                                 before=self._buttonframe)
-            self._lastoper1['text'] = 'Show Grammar'
-        else:
-            self._prodframe.pack_forget()
-            self._lastoper1['text'] = 'Hide Grammar'
         self._lastoper2['text'] = ''
 
     def _animate_shift(self):
@@ -397,8 +508,9 @@ def demo():
         # Syntactic Productions
         CFGProduction(S, NP, VP),
         CFGProduction(NP, Det, N),
-        CFGProduction(VP, V, NP, PP),
-        CFGProduction(NP, Det, N, PP),
+        CFGProduction(NP, NP, PP),
+        CFGProduction(VP, VP, PP),
+        CFGProduction(VP, V, NP),
         CFGProduction(PP, P, NP),
 
         # Lexical Productions
@@ -412,14 +524,12 @@ def demo():
 
     grammar = CFG(S, productions)
 
-    sent = 'my dog saw a man in the park'
-    print "Sentence:\n", sent
-
     # tokenize the sentence
+    sent = 'my dog saw a man in the park with a telescope'
     from nltk.token import WSTokenizer
     text = WSTokenizer().tokenize(sent)
 
-    ShiftReduceParserDemo(grammar, text)
+    ShiftReduceParserDemo(grammar, text).mainloop()
 
 if __name__ == '__main__': demo()
         
