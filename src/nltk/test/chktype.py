@@ -317,7 +317,7 @@ These should raise exceptions:
     >>> test(demo, {}, {}, {}, [])
     Traceback (most recent call last):
     ...
-    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a list)
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of int) to (tuple or list) or from (tuple of tuple) to (tuple of int)) (got a list)
     
     >>> test(demo, {}, {1:'x'}, {}, {})
     Traceback (most recent call last):
@@ -352,17 +352,17 @@ These should raise exceptions:
     >>> test(demo, {}, {}, {}, {(): 2})
     Traceback (most recent call last):
     ...
-    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a dict)
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of int) to (tuple or list) or from (tuple of tuple) to (tuple of int)) (got a dict)
     
     >>> test(demo, {}, {}, {}, {3: ()})
     Traceback (most recent call last):
     ...
-    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a dict)
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of int) to (tuple or list) or from (tuple of tuple) to (tuple of int)) (got a dict)
     
     >>> test(demo, {}, {}, {}, {((),): [33]})
     Traceback (most recent call last):
     ...
-    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a dict)
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of int) to (tuple or list) or from (tuple of tuple) to (tuple of int)) (got a dict)
 """
     
 #######################################################################
