@@ -860,7 +860,6 @@ class TreeView:
         for widget in self._widgets:
             widget['node_font'] = bold
             widget['leaf_font'] = helv
-            widget['loc_font'] = helv
             widget['xspace'] = xspace
             widget['yspace'] = yspace
             if self._size.get() < 20: widget['line_width'] = 1
