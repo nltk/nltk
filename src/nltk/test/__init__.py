@@ -49,8 +49,11 @@ def _load_modules(module_filenames, verbose=0):
     for mname in mnames:
         if mname == None: continue
         if verbose: print 'Importing', mname
-        exec('import '+mname)
-        exec('modules.append('+mname+')')
+        try:
+            exec('import '+mname)
+            exec('modules.append('+mname+')')
+        except:
+            print 'Warning: failed to import %s' % mname
 
     return modules
 
