@@ -20,6 +20,7 @@ Brill's transformational rule-based tagger.
 
 from nltk.tagger import TaggerI, DefaultTagger, RegexpTagger, \
      UnigramTagger, BackoffTagger, tagger_accuracy
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.token import Token
 from nltk.corpus import treebank
 
@@ -34,7 +35,7 @@ import sys           # for getting command-line arguments
 ## The Brill Tagger
 ######################################################################
 
-class BrillTagger(TaggerI):
+class BrillTagger(TaggerI, PropertyIndirectionMixIn):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     X{initial tagger} (such as L{DefaultTagger}) to assign an intial
@@ -58,10 +59,7 @@ class BrillTagger(TaggerI):
         """
         self._initial_tagger = initial_tagger
         self._rules = rules
-        self._property_names = property_names
-
-    def property(self, name):
-        return self._property_names.get(name, name)
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     def rules(self):
         return self._rules[:]
@@ -594,7 +592,7 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
 ## Brill Tagger Trainer
 ######################################################################
 
-class BrillTaggerTrainer:
+class BrillTaggerTrainer(PropertyIndirectionMixIn):
     """
     A trainer for brill taggers.
     """
@@ -603,10 +601,7 @@ class BrillTaggerTrainer:
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
-        self._property_names = property_names
-
-    def property(self, name):
-        return self._property_names.get(name, name)
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     #////////////////////////////////////////////////////////////
     # Training
@@ -802,7 +797,7 @@ class BrillTaggerTrainer:
 ## Fast Brill Tagger Trainer
 ######################################################################
 
-class FastBrillTaggerTrainer:
+class FastBrillTaggerTrainer(PropertyIndirectionMixIn):
     """
     A faster trainer for brill taggers.
     """
@@ -811,10 +806,7 @@ class FastBrillTaggerTrainer:
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
-        self._property_names = property_names
-
-    def property(self, name):
-        return self._property_names.get(name, name)
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     #////////////////////////////////////////////////////////////
     # Training
