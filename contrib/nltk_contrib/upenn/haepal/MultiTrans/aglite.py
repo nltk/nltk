@@ -1,6 +1,8 @@
 
 from nltk.token import *
 
+AllAnnotationSet = []
+
 class Region(SpanLocation):
     __slots__ = ()
     UNIT = 's'  # seconds
@@ -26,7 +28,7 @@ class Annotation(Token):
     
     """
     
-    __slots__ = ('id')
+    __slots__ = ('id', 'parent')
     
     def __init__(self, propdict=None, start=None, end=None, **kw):
         kw['LOC'] = Region(start, end)
@@ -44,6 +46,9 @@ class Annotation(Token):
     def setEnd(self, v):
         self['LOC']._end = v
 
+    def overlaps(self, ann):
+        return self['LOC'].overlaps(ann['LOC'])
+    
     start = property(getStart, setStart)
     end = property(getEnd, setEnd)
 
@@ -64,23 +69,45 @@ class AnnotationSet(object):
         def __iter__(self):
             return self
         def next(self):
-            try:
+            r = None
+            while r is None:
+                if self._next >= len(self._list):
+                    raise StopIteration()
                 r = self._list[self._next]
                 self._next += 1
-                while not r:
-                    r = self._list[self._next]
-                    self._next += 1
-                return r
-            except IndexError:
-                raise StopIteration()
+            return r
 
 
-    def __init__(self, ival=[]):
-        self._list = ival
+    def __init__(self, ival=None):
+        object.__init__(self)
+        AllAnnotationSet.append(self)
+        if ival is None:
+            self._list = []
+        else:
+            self._list = ival
         self._recycle = []
 
+
+    def __len__(self):
+        return len(self._list)
+
+    def __getitem__(self, i):
+        try:
+            return self._list[i]
+        except IndexError:
+            return None
+
+    def __str__(self):
+        return str([(i,a) for i,a in enumerate(self._list) if a is not None])
+    
+    def __iter__(self):
+        return AnnotationSet.Iterator(self)
+
+    ##############################
+    
     def add(self, ann):
         ann.id = len(self._list)
+        ann.parent = self
         self._list.append(ann)
         return ann
     
@@ -105,24 +132,42 @@ class AnnotationSet(object):
             return self._list.index(ann)
         except:
             return None
-        
-    def __len__(self):
-        return len(self._list)
 
-    def __getitem__(self, i):
-        try:
-            return self._list[i]
-        except IndexError:
-            return None
-
-    def __str__(self):
-        return str([(i,a) for i,a in enumerate(self._list) if a is not None])
+    def getByFeatureName(self, name):
+        """
+        Retrieve annotation with the specified feature,
+        no matter what the value is.
+        """
+        return [ann for ann in self._list \
+                if name in ann]
     
-    def __iter__(self):
-        return AnnotationSet.Iterator(self)
-
+    def getAnnotationSet(self, *args, **kw):
+        """
+        The followings are used to selectively retrieve annotations
+        from the annotation set:
+        
+        *args - contains a set of boolean functions
+        **kw  - a list of feature-value pairs
+        """
+        r = []
+        for ann in self._list:
+            if ann is None: continue
+            append = True
+            for k,v in kw.items():
+                if k not in ann or ann[k]!=v:
+                    append = False
+                    break
+            for f in args:
+                if not f(ann):
+                    append = False
+                    break
+            if append:
+                r.append(ann)
+        return r
+                    
+                
 
 if __name__ == "__main__":
-    pass
-
+    a = AnnotationSet()
+    a.x = 1
     
