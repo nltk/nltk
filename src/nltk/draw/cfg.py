@@ -18,6 +18,9 @@ from Tkinter import *
 from nltk.tree import *
 from nltk.draw.tree import tree_to_treesegment
 
+ARROW = '\256'   # <- this doesn't appear to be portable.
+ARROW = chr(222) # <- is this better??
+
 class ProductionList:
     """
     Display a colorized list of productions.  The program can
@@ -65,7 +68,7 @@ class ProductionList:
         for production in self._cfg.productions():
             self._textwidget.insert('end', '%s\t' % production.lhs(),
                                     'nonterminal')
-            self._textwidget.insert('end', '\256', 'arrow')
+            self._textwidget.insert('end', ARROW, 'arrow')
             
             for elt in production.rhs():
                 if isinstance(elt, Nonterminal):
@@ -167,12 +170,12 @@ class CFGEditor:
     """
     # Regular expressions used by _analyze_line.  Precompile them, so
     # we can process the text faster.
-    _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|\256)")
-    _ARROW_RE = re.compile("\s*(->|\256)\s*")
+    _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|("+ARROW+"))")
+    _ARROW_RE = re.compile("\s*(->|("+ARROW+"))\s*")
     _PRODUCTION_RE = re.compile(r"(^\s*\w+\s*)" +              # LHS
-                                "(->|\256)\s*" +               # arrow
+                                "(->|("+ARROW+"))\s*" +        # arrow
                                 r"((\w+|'[\w ]*'|\"[\w ]*\")\s*)*$") # RHS
-    _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|\256")
+    _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|("+ARROW+")")
     _BOLD = ('helvetica', -12, 'bold')
     
     def __init__(self, parent, cfg=None, set_cfg_callback=None):
@@ -313,12 +316,12 @@ class CFGEditor:
             arrow = self._textwidget.search('->', arrow, 'end+1char')
             if arrow == '': break
             self._textwidget.delete(arrow, arrow+'+2char')
-            self._textwidget.insert(arrow, '\256', 'arrow')
+            self._textwidget.insert(arrow, ARROW, 'arrow')
             self._textwidget.insert(arrow, '\t')
 
         arrow = '1.0'
         while 1:
-            arrow = self._textwidget.search('\256', arrow+'+1char',
+            arrow = self._textwidget.search(ARROW, arrow+'+1char',
                                             'end+1char')
             if arrow == '': break
             self._textwidget.tag_add('arrow', arrow, arrow+'+1char')
@@ -332,7 +335,7 @@ class CFGEditor:
         """
         # What type of token is it?
         if match.group()[0] in "'\"": tag = 'terminal'
-        elif match.group() in ('->', '\256'): tag = 'arrow'
+        elif match.group() in ('->', ARROW): tag = 'arrow'
         else:
             # If it's a nonterminal, then set up new bindings, so we
             # can highlight all instances of that nonterminal when we
@@ -421,7 +424,7 @@ class CFGEditor:
 
         # Get the text, normalize it, and split it into lines.
         text = self._textwidget.get('1.0', 'end')
-        text = re.sub('\256', '->', text)
+        text = re.sub(ARROW, '->', text)
         text = re.sub('\t', ' ', text)
         lines = text.split('\n')
 
