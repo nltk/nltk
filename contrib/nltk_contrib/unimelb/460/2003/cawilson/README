@@ -1,0 +1,132 @@
+433-460 Project, Word Sense Disambiguation System
+Authors:Claire Taylor (cltaylor) and Charlotte Wilson (cawilson)
+Date: 	October 2003
+
+-----------------------------------------------------------------------
+PATHS TO THE CORPORA:
+	To run the system using the either of the parallel corpora
+	you must ensure that the relevant path variables are set. 
+	These can be set at the top of the parallelCorpus module 
+	(parallelCorpus.py). 
+
+	To run the system using the senseval corpus (in nltk) ensure 
+	your NLTK_CORPORA environment variable is set. 
+
+-----------------------------------------------------------------------
+SYSTEM USAGE INSTRUCTIONS:
+
+1.Interactive Mode
+	This is the default mode and is most user friendly as it validates 
+	user input. The system prompts the user interactively to 
+	enter values for the system parameters. To run the program in 
+	interactive mode type: 
+		python senseDisambiguator.py
+
+2. Command-line Mode  
+	Input paramemters are not validated in this mode. System behaviour 
+	with invalid input may be user unfriendly. 
+
+	To run the program in command-line mode type with the default 
+	settings type:
+
+		python senseDisambguator.py sense_disambiguator 
+
+
+	To run the program and override the defaults, you must enter values 
+	for all parameters (described below). Type:
+		
+		python senseDisambguator.py sense_disambiguator [method 
+			context_window replacement iterate corpus num_files 
+			ambig_word num_senses]  
+	
+
+--------------------------------------------------------------------------
+THE TRANSLATION MODULE:
+The translation module is an important component of the system. Therefore
+there are two demo methods for this module. 
+
+1. Given an English word and a German sentence, get the German 
+translation of the English word in the given sentence. 
+
+	To run this with the default parallel corpus and number of files type:
+		python senseDisambiguator.py translate [english_word 
+			german_sentence]
+
+	To run this, specifying the parallel training corpus and number 
+	of files type:
+		python senseDisambiguator.py translate [english_word 
+			german_sentence corpus num_files]
+	
+
+2. Given an English word get its 20 most likely German translations. 
+
+	To run this with the default parallel corpus and number of files type:
+		python senseDisambiguator.py translate_list [english_word]
+
+	To run this, specifying the parallel training corpus and number 
+	of files type:
+		python senseDisambiguator.py translate_list [english_word 
+			corpus num_files]
+
+
+-----------------------------------------------------------------------
+INPUT PARAMETERS AND DEFAULTS: 
+
+Default settings: method=1, context_window=3, replacement=50, iterate=10
+		corpus=3, num_files=100, ambig_word="interest", num_senses=2 
+
+method		An integer between 1 and 3 (inclusive), where 1 
+		is naive bayes, 2 is naive bayes with bagging and 3 
+		is the basecase. See the report (report.pdf) in the 
+		assosciated documentation for more information on these
+		WSD methods.	
+
+context_window  A positive integer (including 0) or -1, specifying the size 
+		of the context window that naive bayes uses (i.e. the 
+		number of words either side of the ambiguous word). Entering
+		-1 sets the context window to be the whole of the sentence
+		in which the ambiguous word occurs.  
+
+replacement     The number of training instances that are to be replaced.
+		This is used for bagging only.  Each of the models (total 
+		number of models trained is equal to the value in iterate - 
+		see below) has a different data set created from the training
+		data set by replacing 'replacement' instances with copies of 
+		other training instances from the remaining data.  For
+		more information on bagging see the report or inline
+		documentation for the class.  If not running the bagger
+		then this value should be set to 0 or None.
+
+iterate		The number of models that will be trained for bagging.
+		Each of the models will be asked to predict the most likely
+		sense during testing and then the most frequently predicted
+		sense will be assigned.  If not running the bagger then this
+		value should be set to 0 or None. 
+
+corpus		An integer between 1 and 3 (inclusive), where 1 is the
+		senseval corpus, 2 is the the de-news parallel corpus and 3 
+		is the europarl parallel corpus. See the report (report.pdf) 
+		in the assosciated documentation for more information on 
+		these corpora.	
+
+num_files	The number of files of the europarl corpus to use - an integer
+		between 1 and 353 (inclusive). The europarl corpus is very 
+		large, therefore the user can specify how many of the 353 
+		files in the corpus to train on. If running the system with
+		a different corpus this value should be set to 0 or None.
+
+ambig_word 	One of "interest", "hard", "line" or "serve". The ambiguous 
+		word to use (the system performs WSD on one word only). 
+		Enter the full word. 
+
+num_senses	The number of sense distinctions to make when training on one
+		of the parallel corpora. For a language such as German 
+		with many compound nouns, possible translations are 
+		grouped into "senses" by common morphology. If using the 
+		system with a different language that does not have these 
+		compound constructions, set num_senses to 0, to get the 
+		direct translation as a sense-tag. Naturally, in order to 
+		disambiguate with sense-groupings (i.e. in German) this 
+		should be set at 2 or more.  
+
+For further information see report.pdf in the assosciated documentation.
