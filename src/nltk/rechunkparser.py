@@ -109,11 +109,14 @@ placing the cursor after the last close parenthasis, and typing
 Unresolved Issues
 =================
 
-Python's regular expression engine seems to generate "maximum
-recursion depth exceeded" errors when processing very large texts,
-even for regular expressions that should not require any recursion.
-We therefore recommend that you apply chunk parsing to texts one
-sentence at a time.
+If we use the C{re} module for regular expressions, Python's regular
+expression engine generates "maximum recursion depth exceeded" errors
+when processing very large texts, even for regular expressions that
+should not require any recursion.  We therefore use the C{pre} module
+instead.  But note that C{pre} does not include Unicode support, so
+this module will not work with unicode strings.  Note also that C{pre}
+regular expressions are not quite as advanced as C{re} ones (e.g., no
+leftward zero-length assertions).
 
 @type _VALID_CHUNK_STRING: C{regexp}
 @var _VALID_CHUNK_STRING: A regular expression to test whether a chunk
@@ -127,8 +130,9 @@ from nltk.token import Token, Location, LineTokenizer
 from nltk.chunkparser import ChunkParserI, ChunkedTaggedTokenizer
 from nltk.chunkparser import unchunk, ChunkScore
 from nltk.set import Set
+from nltk.chktype import chktype as _chktype
 
-import re
+import pre
 import string
 
 ##//////////////////////////////////////////////////////
@@ -150,15 +154,15 @@ REChunking:
     parens, . gets \w, etc.
 
 Issues:
+  - maximum recursion depth issues! grr...
   - generalize ChunkString constructor to accept a chunk struct?
-  - Add more documentation explaining precompiled regexps.
+  - Add more comments/docs, explaining precompiled regexps.
   - In order to conform to interfaces, we might eventually want to
     change reps: 
     - chunkparser output as a tree
     - chunkedtaggedtokenizer should produce a list of tokens
   - Efficiency issues? (currently we do ~500-1500 tokens/sec; faster
     when we chunk more text at a time)
-  - maximum recursion depth issues grr...
 
 Questions:
   - Should ChunkString be made immutable?
@@ -195,7 +199,7 @@ Indication of current efficiency::
 
 _TAGCHAR = r'[^\{\}<>]'
 _TAG = r'(<%s+?>)' % _TAGCHAR
-_VALID_TAG_PATTERN = re.compile(r'^((%s|<%s>)+)$' %
+_VALID_TAG_PATTERN = pre.compile(r'^((%s|<%s>)+)$' %
                                 ('[^\{\}<>]+',
                                  '[^\{\}<>]+'))
 
@@ -247,9 +251,9 @@ class ChunkString:
     # These are used by _verify
     _CHUNK = r'(\{%s+?\})+?' % _TAG
     _CHINK = r'(%s+?)+?' % _TAG
-    _VALID = re.compile(r'(\{?%s\}?)+?' % _TAG)
-    _BRACKETS = re.compile('[^\{\}]+')
-    _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
+    _VALID = pre.compile(r'(\{?%s\}?)+?' % _TAG)
+    _BRACKETS = pre.compile('[^\{\}]+')
+    _BALANCED_BRACKETS = pre.compile(r'(\{\})*$')
     
     def __init__(self, tagged_tokens, debug_level=3):
         """
@@ -273,6 +277,8 @@ class ChunkString:
             probably use level 3 if you use any non-standard
             subclasses of C{REChunkParserRule}.
         """
+        _chktype("ChunkString", 1, tagged_tokens, ([Token],))
+        _chktype("ChunkString", 2, debug_level, (type(0),))
         self._ttoks = tagged_tokens
         tags = [tok.type().tag() for tok in tagged_tokens]
         self._str = '<'+string.join(tags, '><')+'>'
@@ -310,7 +316,7 @@ class ChunkString:
 
         if verify_tags<=0: return
         
-        tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
+        tags1 = (pre.split(r'[\{\}<>]+', self._str))[1:-1]
         tags2 = [tok.type().tag() for tok in self._ttoks]
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid chunkstring')
@@ -328,7 +334,7 @@ class ChunkString:
         if self._debug > 0: self._verify(1)
             
         # Extract a list of alternating chinks & chunks
-        pieces = re.split('[{}]', self._str)
+        pieces = pre.split('[{}]', self._str)
 
         # Use this alternating list to create the chunkstruct.
         chunkstruct = []
@@ -378,12 +384,12 @@ class ChunkString:
             invalid chunkstring.
         """
         # Do the actual substitution
-        self._str = re.sub(regexp, repl, self._str)
+        self._str = pre.sub(regexp, repl, self._str)
 
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
-        self._str = re.sub('\{\}', '', self._str)
+        self._str = pre.sub('\{\}', '', self._str)
 
         # Make sure that the transformation was legal.
         if self._debug > 1: self._verify(self._debug-2)
@@ -465,8 +471,8 @@ class ChunkString:
             regardless of the chunking.
         """
         # Add spaces to make everything line up.
-        str = re.sub(r'>(?!\})', '> ', self._str)
-        str = re.sub(r'(?<!\{)<', ' <', str)
+        str = pre.sub(r'>(?!\})', r'> ', self._str)
+        str = pre.sub(r'([^\}])<', r'\1 <', str)
         if str[0] == '<': str = ' ' + str
         return str
 
@@ -511,16 +517,16 @@ def tag_pattern2re_pattern(tag_pattern):
         C{tag_pattern}. 
     """
     # Clean up the regular expression
-    tag_pattern = re.sub(r'\s', '', tag_pattern)
-    tag_pattern = re.sub(r'<', '(<(', tag_pattern)
-    tag_pattern = re.sub(r'>', ')>)', tag_pattern)
+    tag_pattern = pre.sub(r'\s', '', tag_pattern)
+    tag_pattern = pre.sub(r'<', '(<(', tag_pattern)
+    tag_pattern = pre.sub(r'>', ')>)', tag_pattern)
 
     # Check the regular expression
     if not _VALID_TAG_PATTERN.match(tag_pattern):
         raise ValueError('Bad tag pattern: %s' % tag_pattern)
 
     # We have to do this after, since it adds {}[]<>s
-    tag_pattern = re.sub(r'\.', _TAGCHAR, tag_pattern)
+    tag_pattern = pre.sub(r'\.', _TAGCHAR, tag_pattern)
     return tag_pattern
 
 class REChunkParserRule:
@@ -567,10 +573,12 @@ class REChunkParserRule:
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        _chktype("REChunkParserRule", 2, repl, (type(''),))
+        _chktype("REChunkParserRule", 3, descr, (type(''),))
         self._repl = repl
         self._descr = descr
         if type(regexp) == type(''):
-            self._regexp = re.compile(regexp)
+            self._regexp = pre.compile(regexp)
         else:
             self._regexp = regexp
 
@@ -588,6 +596,7 @@ class REChunkParserRule:
         @raise ValueError: If this transformation generateds an
             invalid chunkstring.
         """
+        _chktype("REChunkParserRule.apply", 1, chunkstr, (ChunkString,))
         chunkstr.xform(self._regexp, self._repl)
 
     def descr(self):
@@ -634,8 +643,10 @@ class ChunkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        _chktype("ChunkRule", 1, tag_pattern, (type(''),))
+        _chktype("ChunkRule", 2, descr, (type(''),))
         self._pattern = tag_pattern
-        regexp = re.compile('(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')'+
+        regexp = pre.compile('(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')'+
                             ChunkString.IN_CHINK_PATTERN)
         REChunkParserRule.__init__(self, regexp, '{\g<chunk>}', descr)
 
@@ -675,8 +686,10 @@ class ChinkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        _chktype("ChinkRule", 1, tag_pattern, (type(''),))
+        _chktype("ChinkRule", 2, descr, (type(''),))
         self._pattern = tag_pattern
-        regexp = re.compile('(?P<chink>'+tag_pattern2re_pattern(tag_pattern)+')'+
+        regexp = pre.compile('(?P<chink>'+tag_pattern2re_pattern(tag_pattern)+')'+
                             ChunkString.IN_CHUNK_PATTERN)
         REChunkParserRule.__init__(self, regexp, '}\g<chink>{', descr)
 
@@ -714,8 +727,10 @@ class UnChunkRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        _chktype("UnChunkRule", 1, tag_pattern, (type(''),))
+        _chktype("UnChunkRule", 2, descr, (type(''),))
         self._pattern = tag_pattern
-        regexp = re.compile('\{(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')\}')
+        regexp = pre.compile('\{(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')\}')
         REChunkParserRule.__init__(self, regexp, '\g<chunk>', descr)
 
     def __repr__(self):
@@ -764,9 +779,12 @@ class MergeRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        _chktype("MergeRule", 1, left_tag_pattern, (type(''),))
+        _chktype("MergeRule", 2, right_tag_pattern, (type(''),))
+        _chktype("MergeRule", 3, descr, (type(''),))
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
+        regexp = pre.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
                             '}{(?='+tag_pattern2re_pattern(right_tag_pattern)+')')
         REChunkParserRule.__init__(self, regexp, '\g<left>', descr)
 
@@ -816,9 +834,12 @@ class SplitRule(REChunkParserRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        _chktype("SplitRule", 1, left_tag_pattern, (type(''),))
+        _chktype("SplitRule", 2, right_tag_pattern, (type(''),))
+        _chktype("SplitRule", 3, descr, (type(''),))
         self._left_tag_pattern = left_tag_pattern
         self._rigthpattern = right_tag_pattern
-        regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
+        regexp = pre.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
                             '(?='+tag_pattern2re_pattern(right_tag_pattern)+')')
         REChunkParserRule.__init__(self, regexp, r'\g<left>}{', descr)
 
@@ -874,6 +895,8 @@ class REChunkParser(ChunkParserI):
             C{1} will generate normal tracing output; and C{2} or
             highter will generate verbose tracing output.
         """
+        _chktype("REChunkParser", 1, rules, ([REChunkParserRule],))
+        _chktype("REChunkParser", 2, trace, (type(0),))
         self._rules = rules
         self._trace = trace
 
@@ -913,6 +936,7 @@ class REChunkParser(ChunkParserI):
         @type chunkstr: C{ChunkString}
         @rtype: C{None}
         """
+        
         for rule in self._rules:
             rule.apply(chunkstr)
         
@@ -932,6 +956,8 @@ class REChunkParser(ChunkParserI):
             overrides the trace level value that was given to the
             constructor. 
         """
+        _chktype("REChunkParser.parse", 1, tagged_sentence, ([Token],))
+        _chktype("REChunkParser.parse", 2, trace, (type(None), type(0)))
         if len(tagged_sentence) == 0:
             print 'Warning: parsing empty sentence'
             return []
