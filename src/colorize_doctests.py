@@ -59,9 +59,13 @@ COMMAND = re.compile(r'([\t\ ]*)(&gt;&gt;&gt;|\.\.\.)'+
 
 # Comments get marked with <emphasis>...<emphasis>
 COMMENT = re.compile('^([\t\ ]*)(#.*)', re.MULTILINE)
-INLINE_COMMENT = re.compile(r'<command>'+
-                            r'(([^\'\"#\n]|%s)*?)' % STRING_LITERAL + 
-                            r'([\t\ ]*)(#.*)</command>')
+INLINE_COMMENT = re.compile(r'''
+    <command>
+        ((?:[^\'\"#\n]|%s)*?)  # Group 1: the command
+        ([\t  \ ]*)            # group 2: the separating whitespace
+        (\#.*)                 # group 3: the comment
+    </command>
+    ''' % STRING_LITERAL, re.VERBOSE)
 
 # This regexp is used to search for doctest example strings.
 PROGRAMLISTING_RE = re.compile(r'<programlisting>\s*<!\[CDATA\['+
@@ -81,8 +85,8 @@ def colorize(s):
     s = COMMENT.sub(r'\1<emphasis>\2</emphasis>', s)
 
     # Mark inline comments, but avoid '#' inside a string literal!
-    return INLINE_COMMENT.sub(r'<command>\1</command>\3'+
-                              r'<emphasis>\4</emphasis>', s)
+    return INLINE_COMMENT.sub(r'<command>\1</command>\2'+
+                              r'<emphasis>\3</emphasis>', s)
 
 # Process a single programlisting.
 def programlisting_subfunc(match):
