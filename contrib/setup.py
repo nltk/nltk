@@ -49,7 +49,7 @@ packages = find_packages('.')
 setup_dict = {
     #############################################
     ## Distribution Metadata
-    'name': "nltk_contrib",
+    'name': "nltk-contrib",
     'description': "Natural Language Toolkit: Contributions",
     
     'version': nltk_contrib.__version__,
