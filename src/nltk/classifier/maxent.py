@@ -19,9 +19,12 @@ from nltk.classifier import *
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, WSTokenizer
 
-from Numeric import zeros, ones, array, take, product, sum
-import time
+# Two different exp's!!!
 from math import log, exp
+from Numeric import take, identity
+from Numeric import product, sum, resize, matrixmultiply
+import Numeric
+import time
 
 ##//////////////////////////////////////////////////////
 ##  Maxent Classifier
@@ -255,7 +258,7 @@ class FilteredFDList(AbstractFeatureDetectorList):
     def __init__(self, fdlist, labeled_toks, labels):
         self._fdlist = fdlist
         
-        useful = zeros(len(fdlist))
+        useful = Numeric.zeros(len(fdlist))
         for tok in labeled_toks:
             text = tok.type().text()
             for label in labels:
@@ -263,7 +266,7 @@ class FilteredFDList(AbstractFeatureDetectorList):
                 for (id, val) in fvlist.assignments():
                     useful[id] = 1
         self._len = sum(useful)
-        self._idmap = zeros(len(fdlist))
+        self._idmap = Numeric.zeros(len(fdlist))
         src = 0
         for dest in range(len(useful)):
             if useful[dest]:
@@ -311,7 +314,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         """
         Find the frequency of each feature..
         """
-        fcount = zeros(len(fdlist), 'd')
+        fcount = Numeric.zeros(len(fdlist), 'd')
         
         for labeled_token in labeled_tokens:
             labeled_text = labeled_token.type()
@@ -323,7 +326,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
 
     def _fcount_estimated(self, classifier, fdlist,
                           labeled_tokens, labels):
-        fcount = zeros(len(fdlist), 'd')
+        fcount = Numeric.zeros(len(fdlist), 'd')
         for tok in labeled_tokens:
             text = tok.type().text()
             dist = classifier.distribution(text)
@@ -405,17 +408,19 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
                                                   labeled_tokens)
 
         # Build the classifier.  Start with weight=1 for each feature.
-        weights = ones(len(memoized_fdlist), 'd')
+        weights = Numeric.ones(len(memoized_fdlist), 'd')
         classifier = MaxentClassifier(memoized_fdlist, 
                                       labels, weights)
 
         # Train for a fixed number of iterations.
         if debug > 0:
-            print timestamp(),'  ==> Training (%d iterations)' % iter
+            print '  ==> Training (%d iterations)' % iter
         for i in range(iter):
             if debug > 3:
                 accuracy = classifier.accuracy(labeled_tokens)
                 print ('    --> Accuracy = %.3f' % accuracy)
+                ll = classifier.log_likelihood(labeled_tokens)
+                print ('    --> Log Likelihood = %.3f' % ll)
 
             if debug > 1:
                 print '    ==> Training iteration %d' % (i+1)
@@ -424,19 +429,16 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             # feature should occur in the training data.  This
             # represents our model's estimate for the frequency of
             # each feature.
-            if debug > 2: print timestamp(),'    --> Finding fcount_estimated'
+            if debug > 2: print '    --> Finding fcount_estimated'
             fcount_estimated = self._fcount_estimated(classifier,
                                                       memoized_fdlist,
                                                       labeled_tokens,
                                                       labels)
                     
-            if debug > 2: print timestamp(),'    --> Updating weights'
+            if debug > 2: print '    --> Updating weights'
             # Use fcount_estimated to update the classifier weights
             weights = classifier.weights()
-            #print '%5.3f %5.3f %5.3f' % tuple(weights)
-            #print '%5.3f %5.3f %5.3f' % tuple(fcount_emperical)
-            #print '%5.3f %5.3f %5.3f' % tuple(fcount_estimated)
-            #print
+            
             for fid in range(len(weights)):
                 if fcount_emperical[fid]==0:
                     weights[fid] = 0.0
@@ -447,6 +449,8 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         if debug > 3: 
             accuracy = classifier.accuracy(labeled_tokens)
             print ('    --> Accuracy = %.3f' % accuracy)
+            ll = classifier.log_likelihood(labeled_tokens)
+            print ('    --> Log Likelihood = %.3f' % ll)
                    
 
         global gis_classifier
@@ -487,7 +491,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         """
         Find the frequency of each feature..
         """
-        fcount = zeros(len(fdlist), 'd')
+        fcount = Numeric.zeros(len(fdlist), 'd')
         
         for labeled_token in labeled_tokens:
             labeled_text = labeled_token.type()
@@ -497,6 +501,136 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 
         return fcount / len(labeled_tokens)
 
+    def _nf_init(self, labeled_tokens, labels, num_features):
+        """
+        Initialize some useful variables having to do with nf.  These
+        are all constant for any given training session.
+        """
+        # Map from nf to indices.  This allows us to use smaller arrays. 
+        nfmap = {}
+        nfnum = 0
+        for i in xrange(len(labeled_tokens)):
+            for j in xrange(len(labels)):
+                nf = num_features[i, j]
+                if not nfmap.has_key(nf):
+                    nfmap[nf] = nfnum
+                    nfnum += 1
+        nfs = nfmap.keys()
+        nfs.sort()
+        self._nfarray = Numeric.array(nfs, 'd')
+        self._nfident = identity(len(self._nfarray)) * self._nfarray
+        self._nfmap = nfmap
+
+    def _deltas1(self, memoized_fdlist, labeled_tokens, labels,
+                 classifier, num_features, useless, useful,
+                 ffreq_emperical):
+        """
+        Find the deltas, using Newton's method.  This particular
+        version uses Numeric to do its computations.  But it might
+        take too much memory if fn can take on too many different
+        values
+
+        Size requirement: sizeof(double)*
+        """
+        NEWTON_CONVERGE = 1e-12
+        MAX_NEWTON = 30
+        
+        deltas = Numeric.ones(len(memoized_fdlist), 'd')
+
+        # Precompute the A matrix.
+        # A[nf][id] = sum ( p(text) * p(label|text) * f(text,label) )
+        # over all label,text s.t. num_features[label,text]=nf
+        A = Numeric.zeros((len(self._nfmap),
+                           len(memoized_fdlist)), 'd')
+        for i in xrange(len(labeled_tokens)):
+            text = labeled_tokens[i].type().text()
+            dist = classifier.distribution(text)
+            for j in xrange(len(labels)):
+                label = labels[j]
+                nf = num_features[i, j]
+                ltext = LabeledText(text, labels[j])
+                fvlist = memoized_fdlist.detect(ltext)
+                for (id, val) in fvlist.assignments():
+                    if dist[label]==0: continue
+                    A[self._nfmap[nf], id] += dist[label] * val
+        A /= len(labeled_tokens)
+
+        # Now solve for delta.
+        for rangenum in range(MAX_NEWTON):
+            # nf_delta[x][y] = nf[x] * delta[y]
+            nf_delta = outerproduct(self._nfarray, deltas)
+
+            # exp_nf_delta[x][y] = exp(nf[x] * delta[y])
+            exp_nf_delta = Numeric.exp(nf_delta)
+
+            # nf_exp_nf_delta[x][y] = nf[x] * exp(nf[x] * delta[y])
+            nf_exp_nf_delta = matrixmultiply(self._nfident, exp_nf_delta)
+
+            # sum1[i][nf] = sum p(text)p(label|text)f[i](label,text)exp(delta[i]nf)
+            # sum2[i][nf] = sum p(text)p(label|text)f[i](label,text)nf exp(delta[i]nf)
+            sum1 = sum(exp_nf_delta * A) 
+            sum2 = sum(nf_exp_nf_delta * A)
+
+            # Avoid division by zero.
+            sum2 += useless
+            
+            # Update the deltas.
+            deltas -= (ffreq_emperical - sum1) / -sum2
+            deltas *= useful
+
+            # We can stop once we converge.
+            n_error = (sum(abs((ffreq_emperical-sum1)*useful))/
+                       sum(abs(deltas)))
+            if n_error < NEWTON_CONVERGE:
+                return deltas
+
+        return deltas
+
+    def _deltas2(self, memoized_fdlist, labeled_tokens, labels,
+                 classifier, num_features, useless, useful,
+                 ffreq_emperical):
+        """
+        Find the deltas, using Newton's method.
+        """
+        NEWTON_CONVERGE = 1e-12
+        MAX_NEWTON = 30
+        
+        deltas = Numeric.ones(len(memoized_fdlist), 'd')
+
+        for rangenum in range(MAX_NEWTON):
+            sum1 = Numeric.zeros(len(memoized_fdlist), 'd')
+            sum2 = useless.copy()
+            for i in xrange(len(labeled_tokens)):
+                text = labeled_tokens[i].type().text()
+                dist = classifier.distribution(text)
+                for j in xrange(len(labels)):
+                    label = labels[j]
+                    nf = num_features[i, j]
+                    ltext = LabeledText(text, labels[j])
+                    fvlist = memoized_fdlist.detect(ltext)
+                    for (id, val) in fvlist.assignments():
+                        if dist[label]==0: continue
+                        x = (dist[label] * val *
+                             exp(deltas[id] * nf))
+                        sum1[id] += x
+                        sum2[id] += x * nf
+
+            # Normalize the sums
+            sum1 /= len(labeled_tokens)
+            sum2 /= len(labeled_tokens)
+
+            # Update the deltas.
+            deltas -= (ffreq_emperical - sum1) / -sum2
+            deltas *= useful
+
+            # We can stop once we converge.
+            n_error = (sum(abs((ffreq_emperical-sum1)*useful))/
+                       sum(abs(deltas)))
+            if n_error < NEWTON_CONVERGE:
+                break
+
+        return deltas
+                
     def train(self, labeled_tokens, **kwargs):
         """
         @param kwargs:
@@ -510,8 +644,6 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             then the set of all labels attested in the training data
             will be used instead.  (type=C{list} of (immutable)).
         """
-        NEWTON_CONVERGE = 1e-10
-        
         # Process the keyword arguments.
         iter = 5
         debug = 0
@@ -553,14 +685,14 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                                                 labeled_tokens)
 
         # Which features are useless?
-        useless = ones(len(memoized_fdlist), 'd')
+        useless = Numeric.ones(len(memoized_fdlist), 'd')
         for i in xrange(len(memoized_fdlist)):
             if ffreq_emperical[i] > 0:
                 useless[i] = 0
         useful = 1-useless
             
         # The number of features that fire for a given labeled instance.
-        num_features = zeros( (len(labeled_tokens), len(labels)) )
+        num_features = Numeric.zeros( (len(labeled_tokens), len(labels)) )
         for i in xrange(len(labeled_tokens)):
             for j in xrange(len(labels)):
                 ltext = LabeledText(labeled_tokens[i].type().text(),
@@ -569,9 +701,12 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                 for (id, val) in fvlist.assignments():
                     num_features[i, j] += val
 
+        # Where to do what?
+        self._nf_init(labeled_tokens, labels, num_features)
+        
         # Build the classifier.  Start with weight=0 for each feature.
         # Build the classifier.  Start with weight=1 for each feature??
-        weights = ones(len(memoized_fdlist), 'd') * 1
+        weights = Numeric.ones(len(memoized_fdlist), 'd') * 1
         classifier = MaxentClassifier(memoized_fdlist, 
                                       labels, weights)
 
@@ -594,87 +729,22 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             if debug > 1:
                 print '    ==> Training iteration %d' % (iternum+1)
 
-            # We want to find deltas.
-            deltas = ones(len(memoized_fdlist), 'd')
-
-            #print 'AA', classifier.distribution('of')
-            # Find deltas.  This is newton's method.
-            for rangenum in range(10):
-                if debug > 1:
-                    print '      --> Newton iteration %d' % (rangenum+1)
-                sum1 = zeros(len(memoized_fdlist), 'd')
-                sum2 = useless.copy()#zeros(len(memoized_fdlist), 'd')
-                for i in xrange(len(labeled_tokens)):
-                    text = labeled_tokens[i].type().text()
-                    dist = classifier.distribution(text)
-                    for j in xrange(len(labels)):
-                        label = labels[j]
-                        nf = num_features[i, j]
-                        ltext = LabeledText(text, labels[j])
-                        fvlist = memoized_fdlist.detect(ltext)
-                        for (id, val) in fvlist.assignments():
-                            if dist[label]==0: continue
-                            #if id in (2240,):
-                                #print 'XX', id, val, text, label, \
-                                #      nf, deltas[id], dist[label]
-                                #global x_dl
-                                #x_dl = dist[label]
-                                #global x_val
-                                #x_val = val
-                                #global x_di
-                                #x_di = deltas[id]
-                                #global x_nf
-                                #x_nf = nf
-                            x = (dist[label] * val *
-                                 exp(deltas[id] * nf))
-                            #if id in (2240,):
-                            #    print 'YY', x, x-0.024925271784730831
-                            #    print
-                            sum1[id] += x
-                            sum2[id] += x * nf
-
-                #print 'ZZ', sum1[2240]
-                # Normalize the sums
-                sum1 /= len(labeled_tokens)
-                sum2 /= len(labeled_tokens)
-                #print 'WW', sum1[2240]
-
-                # Update the deltas.
-                deltas -= (ffreq_emperical - sum1) / -sum2
-                deltas *= useful
-
-                if debug>10:
-                    print 'DELTAS:'
-                    for asdf in range(len(deltas)):
-                        #if deltas[asdf] == 0: continue
-                        #if (asdf > 20 and asdf not in (44, 175)): continue
-                        print ('%4d %8.4f %8.4f %8.4f %8.4f' %
-                               (asdf, deltas[asdf], ffreq_emperical[asdf],
-                                sum1[asdf], sum2[asdf]))
-
-                # We can stop once we converge.
-                n_error = (sum(abs((ffreq_emperical-sum1)*useful))/
-                           sum(abs(deltas)))
-                if n_error < NEWTON_CONVERGE:
-                    break
+            deltas = self._deltas1(memoized_fdlist, labeled_tokens,
+                                   labels, classifier, num_features,
+                                   useless, useful, ffreq_emperical)
 
             # Use the deltas to update our weights.
             weights += deltas
 
             for i in range(len(weights)):
                 if weights[i] < 0:
-                    print 'ACK NEGATIVE WEIGHT', weights[i]
-                    weights[i] = 1e-10
-                    asdf = i
-                    print ('%4d %12.8f %12.8f %12.8f %12.8f' %
-                           (asdf, deltas[asdf], ffreq_emperical[asdf],
-                            sum1[asdf], sum2[asdf]))
+                    print 'ACK NEGATIVE WEIGHT', i, weights[i]
             
-            if debug>1000:
+            if debug>30:
                 asdf = 0
                 print 'WEIGHTS:'
                 for w in classifier.weights()[:18]:
-                    if w == 1: continue
+                    #if w == 1: continue
                     print ('%8.4f' % w),
                     asdf += 1
                     if (asdf % 6) == 0: print
@@ -709,29 +779,22 @@ def simple_test():
     features = FunctionFeatureDetectorList(func1, (1,))
     features += AlwaysFeatureDetectorList()
 
-    trainer = IISMaxentClassifierTrainer(features)
-    classifier = trainer.train(toks, labels=labels, debug=5,
-                               C=1, iter=10)
+    if 0:
+        trainer = IISMaxentClassifierTrainer(features)
+    else:
+        trainer = GISMaxentClassifierTrainer(features)
+        
+    classifier = trainer.train(toks, labels=labels, iter=15)
     dist = classifier.distribution('to')
-    error1 = (abs(3.0/20 - dist['dans']) +
-              abs(3.0/20 - dist['en']) +
-              abs(7.0/30 - dist['a']) +
-              abs(7.0/30 - dist['au']) +
-              abs(7.0/30 - dist['pendant']))
-    print error1; return
-    
-    classifier = trainer.train(toks, labels=labels,
-                               C=5, iter=100)
-    dist = classifier.distribution('to')
-    error2 = (abs(3.0/20 - dist['dans']) +
+    error = (abs(3.0/20 - dist['dans']) +
               abs(3.0/20 - dist['en']) +
               abs(7.0/30 - dist['a']) +
               abs(7.0/30 - dist['au']) +
               abs(7.0/30 - dist['pendant']))
 
-    if (error1 + error2) > 1e-5:
+    if (error) > 1e-5:
         print 'WARNING: BROKEN MAXENT IMPLEMENTATION'
-        print '  Error: %10.5e %10.5e' % (error1, error2)
+        print '  Error: %10.5e' % error
     else:
         print 'Test passed'
 
@@ -753,12 +816,12 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=5):
     if debug: print timestamp(), '  got %d labels.' % len(labels)
     
     if debug: print timestamp(), 'constructing feature list...'
-    features = AlwaysFeatureDetectorList()
+    #features = AlwaysFeatureDetectorList()
     f_range = [(chr(i),l)
              for i in (range(ord('a'), ord('z'))+[ord("'")])
              for l in labels]
     func = lambda w:(w.text()[0:1], w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
+    features = FunctionFeatureDetectorList(func, f_range)
     func = lambda w:(w.text()[-1:], w.label())
     features += FunctionFeatureDetectorList(func, f_range)
     func = lambda w:(w.text()[-2:-1], w.label())
@@ -776,11 +839,11 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=5):
     # ======================
     if 1:
         trainer = IISMaxentClassifierTrainer(features)
-        classifier = trainer.train(labeled_tokens, iter=4,
+        classifier = trainer.train(labeled_tokens, iter=10,
                                    debug=debug)
     else:
         trainer = GISMaxentClassifierTrainer(features)
-        classifier = trainer.train(labeled_tokens, iter=10,
+        classifier = trainer.train(labeled_tokens, iter=20,
                                    debug=debug, C=4)
     if debug: print timestamp(), '  done training'
 
@@ -813,11 +876,11 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=5):
         if 1:
             items = classifier.distribution(word.type()).items()
             items.sort(lambda x,y:cmp(y[1], x[1]))
-            for (label,p) in items:
+            for (label,p) in items[:2]:
                 if p > 0.01:
                     print timestamp(), '    %3.5f %s' % (p, label)
-        label = classifier.classify(word.type())
-        if debug: print timestamp(), '  =>', label
+        #label = classifier.classify(word.type())
+        #if debug: print timestamp(), '  =>', label
 
     #print tuple(classifier.weights())
     return classifier
@@ -897,7 +960,7 @@ def test(classifier, labeled_tokens):
     print 'Accuracy:', float(correct)/total
     
 if __name__ == '__main__':
-    simple_test()
-    #toks = get_toks(1)[:200]
-    #demo(toks, 5)
+    #simple_test()
+    #toks = get_toks(1)[:100]
+    demo(toks, 5)
     #foo(toks, 5, 10)
