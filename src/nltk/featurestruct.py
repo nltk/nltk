@@ -41,24 +41,13 @@ L{FeatureVariable} class.  Feature structure variables are
 essentially just names; they do not directly contain values.  Instead,
 the mapping from variables to values is encoded externally to the
 variable, as a set of X{bindings}.  These bindings are stored using
-the L{FeatureBindings} class, which maintains two
-types of information about variables:
-
-  - For X{bound variables}, or variables that have been assigned
-    values, it records their values.
-    
-  - For X{unbound variables}, or variables that have not been assigned
-    values, it records which variables have been set equal to each
-    other, or X{merged}.  When an unbound variable is bound to a new
-    value, any variables that it has been merged with will be bound to
-    the same value.
+the L{FeatureBindings} class.
 
 @todo: more test cases
-@todo: s/merged/aliased
-@sort: FeatureStruct, FeatureVariable, MergedFeatureVariable,
+@sort: FeatureStruct, FeatureVariable, AliasedFeatureVariable,
        FeatureBindings
 @group Feature Structures: FeatureStruct
-@group Variables: FeatureVariable, MergedFeatureVariable,
+@group Variables: FeatureVariable, AliasedFeatureVariable,
                   FeatureBindings
 @group Unit Tests: FeatureStructTestCase
 """
@@ -144,20 +133,20 @@ class FeatureVariable:
     def __hash__(self):
         return self._identifier.__hash__()
 
-    def merge(self, variable):
+    def alias(self, variable):
         """
-        Return a merged variable that constrains this variable to be
+        Return an aliased variable that constrains this variable to be
         equal to C{variable}.
-        @rtype: L{MergedFeatureVariable}
+        @rtype: L{AliasedFeatureVariable}
         """
         if self == variable: return self
-        return MergedFeatureVariable(self, variable)
+        return AliasedFeatureVariable(self, variable)
 
     def parse(s):
         """
         Given a string that encodes a feature variable, return that
         variable.  This method can be used to parse both
-        C{FeatureVariables} and C{MergedFeatureVariables}.  However,
+        C{FeatureVariables} and C{AliasedFeatureVariables}.  However,
         this method can not be used to parse numbered variables, since
         doing so could violate the guarantee that each numbered
         variable object has a unique identifier.
@@ -167,47 +156,47 @@ class FeatureVariable:
         if match:
             return FeatureVariable(s[1:])
 
-        # Merged variable
+        # Aliased variable
         match = re.match(r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
                          r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>$', s)
         if match:
             idents = s[2:-1].split('=')
             vars = [FeatureVariable(i) for i in idents]
-            return MergedFeatureVariable(*vars)
+            return AliasedFeatureVariable(*vars)
 
         raise ValueError('Bad FeatureVariable string')
     
     parse=staticmethod(parse)
 
-class MergedFeatureVariable(FeatureVariable):
+class AliasedFeatureVariable(FeatureVariable):
     """    
-    A set of variables that are constrained to be equal.  A merged
+    A set of variables that are constrained to be equal.  An aliased
     variable can be used in place of a simple variable.  In
-    particular, a merged variable stands for a single feature value,
+    particular, an aliased variable stands for a single feature value,
     and requires that each its subvariables are bound to that same
-    value.  Merged variables can be categorized according to their
+    value.  Aliased variables can be categorized according to their
     values in a set of bindings:
     
-      - A merged variable is X{unbound} if none of its subvariables
+      - An aliased variable is X{unbound} if none of its subvariables
         is assigned a value.
         
-      - A merged variable is X{bound} if at least one of its
+      - An aliased variable is X{bound} if at least one of its
         subvariables is bound, and all of its bound subvariables are
         assigned the same value.  (If at least one subvariable is
         unbound, then the merved variable is said to be X{partially
         bound}.)
         
-      - A merged variable is X{inconsistant} if two or more
+      - An aliased variable is X{inconsistant} if two or more
         subvariables are bound to different values.
 
     @ivar _subvariables: The set of subvariables contained by
-        this merged variable.  This set is encoded as a dictionary
+        this aliased variable.  This set is encoded as a dictionary
         whose keys are variables.
     """
     def __init__(self, *subvariables):
         """
         Construct a new feature structure variable that contains the
-        given subvariables.  If C{subvariables} contains merged
+        given subvariables.  If C{subvariables} contains aliased
         variables, then they are replaced by their lists of
         subvariables.
         @raise ValueError: If no subvariables are specified.
@@ -217,22 +206,22 @@ class MergedFeatureVariable(FeatureVariable):
         assert _chktype(1, subvariables, (FeatureVariable,))
         self._subvariables = {}
         for subvar in subvariables:
-            if isinstance(subvar, MergedFeatureVariable):
+            if isinstance(subvar, AliasedFeatureVariable):
                 self._subvariables.update(subvar._subvariables)
             else:
                 self._subvariables[subvar] = 1
 
     def identifier(self):
         """
-        Raise C{ValueError}, since merged variables do not have a
+        Raise C{ValueError}, since aliased variables do not have a
         single identifier.
         """
-        raise ValueError('Merged variables do not have identifiers')
+        raise ValueError('Aliased variables do not have identifiers')
     
     def subvariables(self):
         """
         @return: A list of the variables that are constrained to be
-            equal by this merged variable.
+            equal by this aliased variable.
         """
         return self._subvariables.keys()
     
@@ -258,7 +247,7 @@ class FeatureBindings:
     """
     A partial mapping from feature variables to values.  Simple
     variables can be either X{bound} (i.e., assigned a value), or
-    X{unbound} (i.e., left unspecified).  Merged variables can
+    X{unbound} (i.e., left unspecified).  Aliased variables can
     additionally be X{inconsistant} (i.e., assigned multiple
     incompatible values).
 
@@ -292,7 +281,7 @@ class FeatureBindings:
     def is_bound(self, variable):
         """
         @return: True if the given variable is bound.  A simple
-        variable is bound if it has been assigned a value.  A merged
+        variable is bound if it has been assigned a value.  An aliased
         variable is bound if at least one of its subvariables is bound
         and all of its bound subvariables are assigned the same value.
         
@@ -300,7 +289,7 @@ class FeatureBindings:
         """
         assert _chktype(1, variable, FeatureVariable)
 
-        if isinstance(variable, MergedFeatureVariable):
+        if isinstance(variable, AliasedFeatureVariable):
             bindings = [self._bindings.get(v)
                         for v in variable.subvariables()
                         if self._bindings.has_key(v)]
@@ -311,32 +300,32 @@ class FeatureBindings:
         
         return self._bindings.has_key(variable)
 
-    def lookup(self, variable, update_merged_bindings=False):
+    def lookup(self, variable, update_aliased_bindings=False):
         """
         @return: The value that it assigned to the given variable, if
         it's bound; or the variable itself if it's unbound.  The value
-        assigned to a merged variable is defined as the value that's
+        assigned to an aliased variable is defined as the value that's
         assigned to its bound subvariables.
 
-        @param update_merged_bindings: If true, then looking up a
-            bound merged variable will cause any unbound subvariables
+        @param update_aliased_bindings: If true, then looking up a
+            bound aliased variable will cause any unbound subvariables
             it has to be bound to its value.  E.g., if C{?x} is bound
             to C{1} and C{?y} is unbound, then looking up C{?x=y} will
             cause C{?y} to be bound to C{1}.
-        @raise ValueError: If C{variable} is a merged variable with an
+        @raise ValueError: If C{variable} is an aliased variable with an
             inconsistant value (i.e., if two or more of its bound
             subvariables are assigned different values).
         """
         assert _chktype(1, variable, FeatureVariable)
 
-        # If it's a merged variable, then we need to check that the
+        # If it's an aliased variable, then we need to check that the
         # bindings of all of its subvariables are consistant.
-        if isinstance(variable, MergedFeatureVariable):
+        if isinstance(variable, AliasedFeatureVariable):
             # Get a list of all bindings.
             bindings = [self._bindings.get(v)
                         for v in variable.subvariables()
                         if self._bindings.has_key(v)]
-            # If it's unbound, return the (merged) variable.
+            # If it's unbound, return the (aliased) variable.
             if len(bindings) == 0: return variable
             # Make sure all the bindings are equal.
             val = bindings[0]
@@ -344,7 +333,7 @@ class FeatureBindings:
                 if binding != val:
                     raise ValueError('inconsistant value')
             # Set any unbound subvariables, if requested
-            if update_merged_bindings:
+            if update_aliased_bindings:
                 for subvar in variable.subvariables():
                     self._bindings[subvar] = val
             # Return the value.
@@ -354,7 +343,7 @@ class FeatureBindings:
     
     def bind(self, variable, value):
         """
-        Assign a value to a variable.  If C{variable} is a merged
+        Assign a value to a variable.  If C{variable} is an aliased
         variable, then the value is assigned to all of its
         subvariables.  Variables can only be bound to values; they may
         not be bound to other variables.
@@ -365,7 +354,7 @@ class FeatureBindings:
         if isinstance(value, FeatureVariable):
             raise ValueError('Variables cannot be bound to other variables')
         
-        if isinstance(variable, MergedFeatureVariable):
+        if isinstance(variable, AliasedFeatureVariable):
             for subvar in variable.subvariables():
                 self._bindings[subvar] = value
         else:
@@ -544,7 +533,7 @@ class FeatureStruct:
         """
         @return: The feature structure that is obtained by replacing
         each variable bound by C{bindings} with its values.  If
-        C{self} contains a merged variable that is partially bound by
+        C{self} contains an aliased variable that is partially bound by
         C{bindings}, then that variable's unbound subvariables will be
         bound to its value.  E.g., if the bindings C{<?x=1>} are
         applied to the feature structure C{[A = ?<x=y>]}, then the
@@ -556,16 +545,41 @@ class FeatureStruct:
         selfcopy._apply_bindings(bindings, {})
         return selfcopy
 
-    def rename_variables(self):
+    def rename_variables(self, newvars=None):
         """
         @return: The feature structure that is obtained by replacing
         each variable in this feature structure with a new variable
         that has a unique identifier.
+
+        @param newvars: A dictionary that is used to hold the mapping
+        from old variables to new variables.  For each variable M{v}
+        in this feature structure:
+
+          - If C{newvars} maps M{v} to M{v'}, then M{v} will be
+            replaced by M{v'}.
+          - If C{newvars} does not contain M{v}, then a new entry
+            will be added to C{newvars}, mapping M{v} to the new
+            variable that is used to replace it.
+
+        To consistantly rename the variables in a set of feature
+        structures, simply apply rename_variables to each one, using
+        the same dictionary:
+
+            >>> newvars = {}  # Maps old vars to alpha-renamed vars
+            >>> new_fstruct1 = ftruct1.rename_variables(newvars)
+            >>> new_fstruct2 = ftruct2.rename_variables(newvars)
+            >>> new_fstruct3 = ftruct3.rename_variables(newvars)
+
+        If newvars is not specified, then an empty dictionary is used.
+
+        @type newvars: C{dictionary} from L{FeatureStructVariable}
+        to L{FeatureStructVariable}
         
         @rtype: L{FeatureStructure}
         """
+        if newvars is None: newvars = {}
         selfcopy = self.deepcopy()
-        selfcopy._rename_variables({}, {})
+        selfcopy._rename_variables(newvars, {})
         return selfcopy
         
     def _apply_bindings(self, bindings, visited):
@@ -591,8 +605,7 @@ class FeatureStruct:
                     newvars[fval] = FeatureVariable()
                 self._features[fname] = newvars[fval]
             elif isinstance(fval, FeatureStruct):
-                fval._rename_variables(newvars, visited)
-        
+                fval._rename_variables(newvars, visited)        
 
     #################################################################
     ## Unification
@@ -602,7 +615,7 @@ class FeatureStruct:
     #   1. Make copies of self and other (preserving reentrance)
     #   2. Destructively unify self and other
     #   3. Apply forward pointers, to preserve reentrance.
-    #   4. Find any partially bound merged variables, and bind them.
+    #   4. Find any partially bound aliased variables, and bind them.
     #   5. Replace bound variables with their values.
     def unify(self, other, bindings=None, trace=False):
         """
@@ -622,7 +635,7 @@ class FeatureStruct:
             updated during unification.  Bound variables are
             treated as if they were replaced by their values.  Unbound
             variables are bound if they are unified with values; or
-            merged if they are unified with other unbound variables.
+            aliased if they are unified with other unbound variables.
             If C{bindings} is unspecified, then all variables are
             assumed to be unbound.
         """
@@ -654,9 +667,9 @@ class FeatureStruct:
         selfcopy._apply_forwards_to_bindings(bindings)
         selfcopy._apply_forwards(visited={})
 
-        # Find any partially bound merged variables, and bind their
+        # Find any partially bound aliased variables, and bind their
         # unbound subvariables.
-        selfcopy._rebind_merged_variables(bindings, visited={})
+        selfcopy._rebind_aliased_variables(bindings, visited={})
 
         # Replace bound vars with values.
         selfcopy._apply_bindings(bindings, visited={})
@@ -731,7 +744,7 @@ class FeatureStruct:
                 # Case 2: unify 2 variables
                 elif (isinstance(selfval, FeatureVariable) and
                       isinstance(otherval, FeatureVariable)):
-                    self._features[fname] = selfval.merge(otherval)
+                    self._features[fname] = selfval.alias(otherval)
                 
                 # Case 3: unify a variable with a value
                 elif isinstance(selfval, FeatureVariable):
@@ -799,16 +812,16 @@ class FeatureStruct:
                     self._features[fname] = fval
                 fval._apply_forwards(visited)
 
-    def _rebind_merged_variables(self, bindings, visited):
+    def _rebind_aliased_variables(self, bindings, visited):
         # Visit each node only once:
         if visited.has_key(id(self)): return
         visited[id(self)] = 1
     
         for (fname, fval) in self._features.items():
-            if isinstance(fval, MergedFeatureVariable):
+            if isinstance(fval, AliasedFeatureVariable):
                 bindings.lookup(fval, True)
             elif isinstance(fval, FeatureStruct):
-                fval._rebind_merged_variables(bindings, visited)
+                fval._rebind_aliased_variables(bindings, visited)
 
     #################################################################
     ## String Represenations
@@ -1165,7 +1178,6 @@ class FeatureStruct:
     _parseval=staticmethod(_parseval)
     _parse=staticmethod(_parse)
     parse=staticmethod(parse)
-    
 
 #//////////////////////////////////////////////////////////////////////
 # TESTING...
@@ -1288,7 +1300,7 @@ class FeatureStructTestCase(unittest.TestCase):
         self.failUnlessEqual(repr(fs3), '[a=(1)[], b->(1)]')
 
     def testVariableMerging(self):
-        'Merged variable tests'
+        'Aliased variable tests'
         fs1 = FeatureStruct.parse("[a=?x, b=?x]")
         fs2 = fs1.unify(FeatureStruct.parse("[b=?y, c=?y]"))
         self.failUnlessEqual(repr(fs2), '[a=?x, b=?<x=y>, c=?y]')
