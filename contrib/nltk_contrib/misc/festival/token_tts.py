@@ -19,7 +19,9 @@
 ##
 
 # speech modules
-import tts, token, rules
+import nltk_contrib.misc.festival.tts as tts
+import nltk_contrib.misc.festival.token as token
+import nltk_contrib.misc.festival.rules as rules
 import urllib
 
 ##

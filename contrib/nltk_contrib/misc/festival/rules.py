@@ -22,7 +22,8 @@
 ##
 
 
-import numbers, html
+import nltk_contrib.misc.festival.numbers as numbers
+import nltk_contrib.misc.festival.html as html
 
 # Returns a list with the original string as its only element
 def identity(s):
