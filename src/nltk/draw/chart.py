@@ -21,6 +21,7 @@ HELP_TEXT = """\
 
 
 """
+FONTSIZE=14
 
 class RuleView:
     """
@@ -83,7 +84,7 @@ class ChartView:
     _TOK_SPACING = 10
     _MARGIN = 10
     _TREE_LEVEL_SIZE = 15
-    _CHART_LEVEL_SIZE = 40
+    _CHART_LEVEL_SIZE = 45#40
     
     def __init__(self, root, chart, source=None):
         """
@@ -117,17 +118,15 @@ class ChartView:
         
         cframe = Tkinter.Frame(self._root, relief='sunk', border=2)
         cframe.pack(fill='both', side='bottom')
-        self._source_canvas = Tkinter.Canvas(cframe, width=600,
-                                             height=50)
+        self._source_canvas = Tkinter.Canvas(cframe, height=50)
         self._source_canvas.pack(fill='both')
         
         self._tree_canvas = self._sb_canvas(root, 'n', 'x')
         self._tree_canvas['height'] = 200
 
-
         self._analyze()
         self._chart_canvas.bind('<Configure>', self._configure)
-
+        
     def _sb_canvas(self, root, expand='y', fill='both', side='bottom'):
         cframe =Tkinter.Frame(root, relief='sunk', border=2)
         cframe.pack(fill=fill, expand=expand, side=side)
@@ -145,6 +144,7 @@ class ChartView:
         return canvas
 
     def _configure(self, e):
+        print 'configure'
         loc = self._chart.loc()
         unitwidth = loc.end() - loc.start()
         self._unitsize = (e.width - 2*ChartView._MARGIN) / unitwidth
@@ -184,6 +184,7 @@ class ChartView:
         c = self._chart_canvas
         str = ' '.join([repr(t) for t in edge.drule()])
         tag = c.create_text(0,0, text=str,
+                            font=('helvetica', FONTSIZE),
                             anchor='nw', justify='left')
         bbox = c.bbox(tag)
         c.delete(tag)
@@ -236,16 +237,18 @@ class ChartView:
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
+                                font=('helvetica', FONTSIZE),
                                 anchor='nw', fill='#00f')
         dotx = c.bbox(rhstag1)[2] + 6
         doty = (c.bbox(rhstag1)[1]+c.bbox(rhstag1)[3])/2
         dottag = c.create_oval(dotx-2, doty-2, dotx+2, doty+2, 
                                fill='#008', outline='#008')        
         rhstag2 = c.create_text(dotx+6, y, text=rhs2,
+                                font=('helvetica', FONTSIZE),
                                 anchor='nw', fill='#008')
         lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.drule().lhs()),
                                 anchor='s', fill='#008',
-                                font=('helvetica', 12, 'bold'))
+                                font=('helvetica', FONTSIZE, 'bold'))
 
         # Keep track of the edge's tags.
         self._edgetags[edge] = (linetag, rhstag1,
@@ -317,6 +320,7 @@ class ChartView:
         # Check against all tokens
         for tok in self._source:
             tag = c.create_text(0,0, text=repr(tok.type()),
+                                font=('helvetica', FONTSIZE),
                                 anchor='nw', justify='left')
             bbox = c.bbox(tag)
             c.delete(tag)
@@ -337,9 +341,24 @@ class ChartView:
         self._tree_height = (3 * (ChartView._TREE_LEVEL_SIZE +
                                   self._text_height))
         self._chart_height = 0
+
+        # Grow, if need-be
+        loc = self._chart.loc()
+        width = ( (loc.end() - loc.start())
+                  * self._unitsize +
+                  ChartView._MARGIN * 2 )
+        w = int(self._chart_canvas['width'])
+        if w < width:
+            self._chart_canvas['width' ] = width
+            unitwidth = loc.end() - loc.start()
+            self._unitsize = ((w - 2*ChartView._MARGIN) /
+                              unitwidth)
+
+        # Resize the scrollregions.
         self._resize()
 
     def _resize(self):
+        print 'resize'
         # Grow, if need be.
         c = self._chart_canvas
 
@@ -347,8 +366,6 @@ class ChartView:
         width = ( (self._chart._loc.end() -
                    self._chart._loc.start()) * self._unitsize +
                   ChartView._MARGIN * 2 )
-        if int(c['width']) < width:
-            c['width' ] = width
             
         # Reset the chart height, if need be.
         height = self._chart_height
@@ -383,7 +400,8 @@ class ChartView:
             c2.tag_lower(t2)
             t3=c3.create_line(x, 0, x, 5000)
             c3.tag_lower(t3)
-            t4=c3.create_text(x+2, 0, text=`i`, anchor='nw')
+            t4=c3.create_text(x+2, 0, text=`i`, anchor='nw',
+                              font=('helvetica', FONTSIZE))
             c3.tag_lower(t4)
             if i % 5 == 0:
                 c1.itemconfig(t1, width=2, fill='gray40')
@@ -414,6 +432,7 @@ class ChartView:
             x2 = tok.loc().end() * self._unitsize + margin
             x = (x1+x2)/2
             tag = c.create_text(x, y, text=repr(tok.type()),
+                                font=('helvetica', FONTSIZE),
                                 anchor='n', justify='left')
             bbox = c.bbox(tag)
             rt=c.create_rectangle(x1+2, bbox[1]-(ChartView._TOK_SPACING/2),
@@ -443,7 +462,7 @@ class ChartView:
         y = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         tag = c.create_text(x, y, anchor='n', justify='center',
                             text=str(treetok.node()),
-                            font=('helvetica', 12, 'bold'),
+                            font=('helvetica', FONTSIZE, 'bold'),
                             fill='#042')
         self._tree_tags.append(tag)
         for child in treetok:
@@ -485,8 +504,6 @@ class ChartView:
         # Draw the tree.
         self._draw_tree()
 
-        # Grow, if need-be
-        self._resize()
         self._draw_loclines()
 
 
@@ -601,7 +618,7 @@ class ChartDemo:
         self._root.destroy()
         self._root = None
 
-if __name__ == '__main__':
+def test():
     grammar = (
         Rule('S',('NP','VP')),
         Rule('NP',('Det','N')),
@@ -623,3 +640,5 @@ if __name__ == '__main__':
     
     ChartDemo(grammar, lexicon, tok_sent)
 
+#if __name__ == '__main__':
+#    test()
