@@ -7,16 +7,11 @@
 #
 # $Id$
 
-TESTS = token tree probability set
-
-
 all: distributions
 
-# Tests.  Run each test with Python.
-TESTS_PY := $(TESTS:=.py)
-test: $(TESTS_PY)
-%.py: 
-	python nltk/test/$@
+# Tests.
+test: 
+	python nltk/test/__init__.py -v nltk/test/*.py
 
 # Clean.  
 #    - Erase any pyc and pyo files.
