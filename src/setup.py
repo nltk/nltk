@@ -22,15 +22,14 @@ setup(
     
     version = nltk.__version__,
     url = nltk.__url__,
-    license = nltk.__copyright__,
     long_description = nltk.__longdescr__,
+    licence = nltk.__licence__,
     keywords = nltk.__keywords__,
     maintainer = nltk.__maintainer__,
     maintainer_email = nltk.__maintainer_email__,
     author = nltk.__author__,
     author_email = nltk.__author__,
     # platforms = <platforms>,
-      
     
     #############################################
     ## Package List

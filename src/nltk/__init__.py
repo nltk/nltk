@@ -141,7 +141,7 @@ Distributed and Licensed under provisions of the IBM Common Public
 License (Version 0.5), which is included by reference.  The IBM Common 
 Public License can be found in the file LICENSE.TXT in the
 distribution."""
-
+__licence__ = "IBM Common Public License (Version 0.5)"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Langauge Toolkit is a Python package that simplifies the
