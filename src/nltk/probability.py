@@ -106,7 +106,7 @@ class EventI:
         @param other: The object to compare this event to.
         @type other: Event
         @return: 1 if the given object is equal to this event.
-        @rtype: int
+        @rtype: C{int}
         @raise NotImplementedError: If this method is not implemented
                by this Event class.
         @raise NotImplementedError: If C{other} is not an
@@ -199,7 +199,7 @@ class EventI:
         @param other: The object to compare this event to.
         @type other: Event
         @return: 1 if the given object is equal to this event.
-        @rtype: int
+        @rtype: C{int}
         @raise NotImplementedError: If this method is not implemented
                by this Event class.
         @raise NotImplementedError: If C{other} is not an
@@ -245,7 +245,7 @@ class EventI:
         contained, raise NotImplementedError.
 
         @return: The number of samples contained by this event.
-        @rtype: int
+        @rtype: C{int}
         @raise NotImplementedError: If this method is not implemented
                by this Event class.
         """
@@ -713,7 +713,7 @@ class FreqDistI:
         @return: The total number of sample outcomes that have been
           recorded by this C{FreqDist}.  For the number of unique 
           I{samples} (or bins), see C{FreqDistI.B()}.
-        @rtype: int
+        @rtype: C{int}
         """
         raise AssertionError()
 
@@ -723,14 +723,21 @@ class FreqDistI:
           as outcomes by this this frequency distribution.  I.e.,
           return the number of X{bins} in this frequency
           distribution. 
-        @rtype: int
+        @rtype: C{int}
+        """
+        raise AssertionError()
+
+    def bins(self, event):
+        """
+        @return: The number of bins represented by the given event.
+        @rtype: C{int}
         """
         raise AssertionError()
 
     def Nr(self, r):
         """
         @return: The number of samples with frequency r.
-        @rtype: int
+        @rtype: C{int}
         """
         # What should we do for r=0??
         raise AssertionError()
@@ -768,7 +775,7 @@ class FreqDistI:
         Counts are non-negative integers.
         
         @return: The count of a given sample or event.
-        @rtype: int
+        @rtype: C{int}
         @param sample_or_event: the sample or event whose count
                should be returned.
         @type sample_or_event: EventI or any.
@@ -1074,7 +1081,7 @@ class CFSample:
         @type other: any
         @return: 0 if the given object is equal to this
                 C{CFSample}. 
-        @rtype: int
+        @rtype: C{int}
         """
         if not isinstance(other, CFSample): return -1000
         c = cmp(self._context, other._context)
@@ -1086,7 +1093,7 @@ class CFSample:
         Compute a hash value for this C{CFSample}.  
         
         @return: The hash value for this C{CFSample}.
-        @rtype: int
+        @rtype: C{int}
         """
         return hash(self._context)/2+hash(self._feature)/2
   
@@ -1512,7 +1519,8 @@ class ProbDistI:
 class MLEProbDist(ProbDistI):
     def __init__(self, freqdist):
         self._freqdist = freqdist
-
+    def freqdist(self):
+        return self._freqdist
     def prob(self, sample_or_event):
         return self._freqdist.freq(sample_or_event)
     def max(self):
@@ -1523,27 +1531,48 @@ class MLEProbDist(ProbDistI):
         return self._freqdist.cond_max(condition)
 
 class LidstoneProbDist(ProbDistI):
+    """
+    This still isn't quite right.  The question of what to do with the
+    bin incrementing when events come in (conditions, or finding
+    P(event) is slightly tricky.
+    """
     def __init__(self, freqdist, l, bins=None):
         self._freqdist = freqdist
-        self._bins = bins
-        self._l = l
-
-    def _estimate(self, freq):
-        N = self._freqdist.N()
-        c = freq*N
-        l = self._l
-        if self._bins == None:
-            B = self._freqdist.B()
+        if bins == None:
+            self._bins = freqdist.B()
         else:
-            B = self._bins
-        return (c+l) / (N+B*l)
+            self._bins = bins
+        self._l = l
+        self._N = self._freqdist.N()
+        self._NBl = self._N + self._bins * l
+        print self._NBl, self._N, self._bins, l
 
     def prob(self, sample_or_event):
-        f = self._freqdist.freq(sample_or_event)
-        return self._estimate(f)
+        # The count for the given event.
+        c = self._freqdist.count(sample_or_event)
+
+        # The number of bins for the sample/event
+        if isinstance(sample_or_event, EventI):
+            b = self._freqdist.bins(sample_or_event)
+        else:
+            b = 1
+
+        # Our probability estimate.
+        return (c + b*self._l) / self._NBl
+    
     def cond_prob(self, sample_or_event, condition):
+        l = float(self._l)
         f = self._freqdist.cond_freq(sample_or_event, condition)
-        return self._estimate(f)
+        if isinstance(sample_or_event, EventI):
+            b1 = self._freqdist.bins(sample_or_event)
+        else:
+            b1 = 1
+        b2 = self._freqdist.bins(condition)
+        c2 = self._freqdist.count(condition)
+
+        prob = (f * c2/(c2+l*b2)) + l*b1 / (c2+l*b2)
+        return prob
+    
     def cond_max(self, condition):
         return self._freqdist.cond_max(condition)
     def max(self):
