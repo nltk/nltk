@@ -364,12 +364,12 @@ class ConllChunkedTokenizer(TokenizerI):
     C{nltk.corpus.chunking.tokenize()}.
     """
 
-    def __init__(self, chunk_types = ('NP', 'VP', 'PP')):
+    def __init__(self, chunk_types = ['NP', 'VP', 'PP']):
         """
         Create a new C{ConllChunkedTokenizer}.
         
         @type chunk_types: C{string}
-        @param chunk_types: A tuple listing the node types to be extracted
+        @param chunk_types: A list of the node types to be extracted
             from the input.  Possible node types are
             C{"NP"}, C{"VP"}, and C{"PP"}.
         """
