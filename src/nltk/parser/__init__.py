@@ -418,12 +418,12 @@ class RecursiveDescentParser(ParserI):
     text.
 
     C{RecursiveDescentParser} uses a list of tree locations called a
-    X{frontier} to remember which subtrees that have not yet been
-    expanded and which leaves that have not yet been matched against
-    the text.  Each tree location consists of a list of child indices
-    specifying the path from the root of the tree to a subtree or a
-    leaf; see the reference documentation for C{TreeToken} for more
-    information about tree locations.
+    X{frontier} to remember which subtrees have not yet been expanded
+    and which leaves have not yet been matched against the text.  Each
+    tree location consists of a list of child indices specifying the
+    path from the root of the tree to a subtree or a leaf; see the
+    reference documentation for C{TreeToken} for more information
+    about tree locations.
 
     When the parser begins parsing a text, it constructs a tree
     containing only the start symbol, and a frontier containing the
@@ -869,7 +869,6 @@ class SteppingShiftReduceParser(ShiftReduceParser):
 ##//////////////////////////////////////////////////////
 class SteppingRecursiveDescentParser(RecursiveDescentParser):
     """
-
     A C{RecursiveDescentParser} that allows you to step through the
     parsing process, performing a single operation at a time.
 
@@ -924,7 +923,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._tried_m = {}
         self._history = []
         self._parses = []
-        self._trace_start(self._treetok, self._frontier, text)
+        if self._trace:
+            self._trace_start(self._treetok, self._frontier, text)
     
     def remaining_text(self):
         """
