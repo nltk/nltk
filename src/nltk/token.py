@@ -49,6 +49,7 @@ used to distinguish two tokens whose properties are otherwise equal
 # only be used by programmers at grandmaster and wizard levels."
 
 import types, copy
+from sets import Set
 from nltk.chktype import chktype
 from nltk.util import FrozenDict
 
@@ -482,7 +483,7 @@ class Token(dict):
                         self.__class__.__name__)
 
     #/////////////////////////////////////////////////////////////////
-    # Pickling
+    # Pickling & Copying
     #/////////////////////////////////////////////////////////////////
 
     def __getstate__(self):
@@ -490,7 +491,83 @@ class Token(dict):
     def __setstate__(self, state):
         dict.update(self, state)
         self.__repr_cyclecheck = False
+    def __reduce__(self):
+        return (_ptok_to_tok, (_tok_to_ptok(self),))
 
+#/////////////////////////////////////////////////////////////////
+# Pickling helpers
+#/////////////////////////////////////////////////////////////////
+# For some reason that I don't understand yet, pickle can't
+# deal with subclasses of dict that contain cyclic references.
+# So this is a somewhat hackish work-around, which converts a
+# token to an old-style object (_PickleToken) when pickling, and
+# restores it to a real token when unpickling.
+
+class _PickleToken: pass
+
+def _ptok_to_tok(val, memo=None):
+    if memo is None: memo = {}
+    memoval = memo.get(id(val))
+    if memoval is not None: return memoval
+
+    if isinstance(val, _PickleToken):
+        memoval = memo[id(val)] = Token()
+        for (k,v) in val.__dict__.items():
+            memoval[k] = _ptok_to_tok(v, memo)
+        return memoval
+    elif isinstance(val, list):
+        memoval = memo[id(val)] = []
+        for v in val:
+            memoval.append(_ptok_to_tok(v,memo))
+        return memoval
+    elif isinstance(val, dict):
+        memoval = memo[id(val)] = {}
+        for (k,v) in val.items():
+            memoval[k] = _ptok_to_tok(v, memo)
+        return memoval
+    elif isinstance(val, tuple):
+        return tuple([_ptok_to_tok(v,memo) for v in val])
+    elif isinstance(val, Set):
+        memoval = memo[id(val)] = Set()
+        for v in val:
+            memoval.add(v)
+        return memoval
+    else:
+        return val
+
+def _tok_to_ptok(val, memo=None):
+    if memo is None: memo = {}
+    memoval = memo.get(id(val))
+    if memoval is not None: return memoval
+
+    if isinstance(val, Token):
+        memoval = memo[id(val)] = _PickleToken()
+        for (k,v) in val.items():
+            memoval.__dict__[k] = _tok_to_ptok(v, memo)
+        return memoval
+    elif isinstance(val, list):
+        memoval = memo[id(val)] = []
+        for v in val:
+            memoval.append(_tok_to_ptok(v,memo))
+        return memoval
+    elif isinstance(val, dict):
+        memoval = memo[id(val)] = {}
+        for (k,v) in val.items():
+            memoval[k] = _tok_to_ptok(v, memo)
+        return memoval
+    elif isinstance(val, tuple):
+        return tuple([_tok_to_ptok(v,memo) for v in val])
+    elif isinstance(val, Set):
+        memoval = memo[id(val)] = Set()
+        for v in val:
+            memoval.add(v)
+        return memoval
+    else:
+        return val        
+
+#/////////////////////////////////////////////////////////////////
+# Standard Token Representations
+#/////////////////////////////////////////////////////////////////
 # Register some specialized string representations for common
 # sets of properties.
 Token.register_repr(('TEXT',),
