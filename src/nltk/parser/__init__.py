@@ -335,8 +335,6 @@ class ShiftReduceParser(AbstractParser):
         @param rightmost_stack: The rightmost elements of the parser's
             stack.
         """
-        LEAF = self.property('LEAF')
-        TREE = self.property('TREE')
         
         if len(rightmost_stack) != len(rhs): return 0
         for i in range(len(rightmost_stack)):
@@ -345,7 +343,7 @@ class ShiftReduceParser(AbstractParser):
                 if rightmost_stack[i].node != rhs[i].symbol(): return 0
             else:
                 if isinstance(rhs[i], Nonterminal): return 0
-                if rightmost_stack[i][LEAF] != rhs[i]: return 0
+                if rightmost_stack[i]['TEXT'] != rhs[i]: return 0
         return 1
 
     def _reduce(self, stack, remaining_text, production=None):
