@@ -433,11 +433,11 @@ def demo():
     train, test = toks[:split], toks[split:]
 
     # Create the feature detector.
-    from nltk.feature.word import BagOfWordsFeatureDetector
+    from nltk.feature.word import BagOfContextWordsFeatureDetector
     detector = MergedFeatureDetector(
         PropertyFeatureDetector('TEXT'),
         PropertyFeatureDetector('TAG'),
-        BagOfWordsFeatureDetector(window=2))
+        BagOfContextWordsFeatureDetector(window=2))
 
     # Run feature detection on the training data.
     for tok in train:

@@ -29,7 +29,7 @@ class StemFeatureDetector(PropertyFeatureDetector):
     def __init__(self, **property_names):
         PropertyFeatureDetector.__init__(self, 'TEXT', **property_names)
 
-class BagOfWordsFeatureDetector(AbstractFeatureDetector):
+class BagOfContextWordsFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that extracts the text of the words in a
     token's context, preserving duplicates, and stores it in the
@@ -55,7 +55,7 @@ class BagOfWordsFeatureDetector(AbstractFeatureDetector):
     def features(self):
         return ['BOW']
 
-class SetOfWordsFeatureDetector(AbstractFeatureDetector):
+class SetOfContextWordsFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that extracts the text of the words in a
     token's context, discarding duplicates, and stores it in the

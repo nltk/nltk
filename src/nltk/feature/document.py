@@ -13,7 +13,7 @@ Feature extractors for tokens that encode documents.
 
 from nltk.feature import *
 
-class BagOfWordsFeatureDetector(AbstractFeatureDetector):
+class BagOfContainedWordsFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that extracts the C{TEXT} of each subtoken in a
     document, and stores them (preserving duplicates) in the C{BOW}
@@ -29,7 +29,7 @@ class BagOfWordsFeatureDetector(AbstractFeatureDetector):
     def features(self):
         return ['BOW']
 
-class SetOfWordsFeatureDetector(AbstractFeatureDetector):
+class SetOfContainedWordsFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that extracts the C{TEXT} of each subtoken in a
     document, and stores them (discarding duplicates) in the C{SOW}
