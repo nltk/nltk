@@ -18,9 +18,9 @@ class TreebankCorpusReader(CorpusReaderI):
     # Default token readers.
     _ws_reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
     _prd_reader = TreebankFileTokenReader(SUBTOKENS='WORDS')
-    _mrg_reader = TreebankFileTokenReader(SUBTOKENS='WORDS',
-                                          preterminal_tags=True)
-    _tag_reader = TreebankTaggedTokenReader(SUBTOKENS='WORDS')
+    _mrg_reader = TreebankFileTokenReader(preterminal_tags=True,
+                                          SUBTOKENS='WORDS', TAG='POS')
+    _tag_reader = TreebankTaggedTokenReader(SUBTOKENS='WORDS', TAG='POS')
     
     def __init__(self, name, rootdir, treebank_2=False,
                  description_file=None, license_file=None,
