@@ -9,7 +9,6 @@
 # $Id$
 
 """
-
 Classes and interfaces for tagging each token of a document with
 supplementary information, such as its part of speech or its WordNet
 synset tag.  This task, which is known as X{tagging}, is defined by
@@ -48,15 +47,16 @@ class TaggerI(TaskI):
     ordered list of subtokens.  Tags are case sensitive strings that
     identify some aspect each subtoken, such as its part of speech or
     its word sense.
+
+    @inprop: C{SUBTOKENS}: The list of subtokens to tag.
+    @inprop: C{TEXT}: The text content of the subtokens.
+    @outprop: C{TAG}: The property where each subtoken's
+        tag should be stored.
     """
     def tag(self, token):
         """
         Assign a tag to each subtoken in C{token['SUBTOKENS']}, and
         write those tags to the subtokens' C{tag} properties.
-        @inprop: C{SUBTOKENS}: The list of subtokens to tag.
-        @inprop: C{TEXT}: The text content of the subtokens.
-        @outprop: C{TAG}: The property where each subtoken's
-            tag should be stored.
         """
         raise NotImplementedError()
 
@@ -72,8 +72,54 @@ class TaggerI(TaskI):
         """
         raise NotImplementedError()
 
-    # [XX] add tag_n -- but encoded how??
-    # [XX] add raw_tag_n
+    def get_tagging(self, token):
+        """
+        @return: A list of tags for C{token}'s subtokens.  The C{i}th
+        element of this list is the tag for the C{i}th subtoken.
+            
+        @rtype: C{list}
+        @raise NotImplementedError: If this method is not implemented
+            by a given tagger.
+        """
+        raise NotImplementedError()
+
+    def get_tagging_list(self, token):
+        """
+        @return: A list of possible lists of tags for C{token}'s
+        subtokens.  The C{i}th element of each list is the tag for the
+        C{i}th subtoken.  Where possible, this list is sorted from
+        most likely tagging list to least likely tagging list.
+            
+        @rtype: C{list}
+        @raise NotImplementedError: If this method is not implemented
+            by a given tagger.
+        """
+        raise NotImplementedError()
+
+    def get_tagging_probs(self, token):
+        """
+        @return: A probability distribution over possible lists of
+        tags for C{token}'s subtokens.  The C{i}th element of each
+        list is the tag for the C{i}th subtoken.
+            
+        @rtype: L{ProbDistI}        
+        @raise NotImplementedError: If this method is not implemented
+            by a given tagger.
+        """
+        raise NotImplementedError()
+
+    def get_tagging_scores(self, token):
+        """
+        @return: A dictionary, mapping from possible lists of tags for
+        C{token}'s subtokens to corresponding numeric scores.  The
+        C{i}th element of each list is the tag for the C{i}th
+        subtoken.
+            
+        @rtype: C{dict}
+        @raise NotImplementedError: If this method is not implemented
+            by a given tagger.
+        """
+        raise NotImplementedError()
 
 ##//////////////////////////////////////////////////////
 ##  Taggers
