@@ -15,7 +15,6 @@ rules used by chart parsers.
 """
 
 from token import *
-from string import join
 from chktype import chktype as _chktype
 from chktype import chkclass as _chkclass
 from types import SliceType as _SliceType
@@ -37,6 +36,12 @@ class Rule:
     # values.  But it might make sense to have generic Types as
     # terminals, not just strings.  Also, how do we distinguish
     # terminals from non-terminals, esp if the terminals *are* strings?
+    # [edloper 09/27/01] This isn't a problem if we assume that
+    # everything Rule is either a lexical rule or a non-lexical rule,
+    # and non-lexical rules have only nonterminals on the right..  But
+    # although that's fine for chart parsing, it might be annoying
+    # later if we decide to use Rule in other contexts..
+
     def __init__(self, lhs, rhs):
         """
         Construct a new C{Rule}.
@@ -46,15 +51,10 @@ class Rule:
         @param rhs: The right-hand side of the new C{Rule}.
         @type rhs: C{tuple} of C{string}s
         """
-        # add type checks
+        # add type checks?
         self._lhs = lhs
         self._rhs = rhs
 
-    # [edloper 8/14/01] It might be intuitive to add a rhs function
-    # (for symmetry).  Also, note that calling self[:] makes an
-    # unnecessary copy, where a rhs() method wouldn't..  But that's
-    # just a minor efficiency thing.
-    # SB: DONE
     def lhs(self):
         """
         @return: the left-hand side of the C{Rule}.
@@ -98,7 +98,7 @@ class Rule:
         """
         # [edloper 8/14/01] Are we assuming that terminals and
         # nonterminals are all strings?
-        return self._lhs + ' -> ' + join(self._rhs)
+        return str(self._lhs) + ' -> ' + ''.join([str(s) for s in self._rhs])
 
     def __repr__(self):
         """
@@ -124,6 +124,9 @@ class Rule:
         """
         return (self._lhs == other._lhs and
                 self._rhs == other._rhs)
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def __hash__(self):
         """
@@ -161,13 +164,7 @@ class DottedRule(Rule):
     @type _pos: C{int}
     @ivar _pos: The position of the dot.
     """
-    # [edloper 8/14/01] Note that DottedRules are mutable.  Thus,
-    # avoid using them as keys.  If we implement Sets with
-    # dictionaries, avoid putting them in Sets, too.  (The semantics
-    # of putting mutable objects in a Set is shady at best, anyway).
-    # Alternatively, incr could be redefined to return a new dotted
-    # rule, and dotted rules could be declared immutable.  You seem to
-    # always do a copy and then an incr, anyway.
+    # [edloper 09/27/01] DottedRule is now immutable.
     def __init__(self, lhs, rhs, pos=0):
         """
         Construct a new C{DottedRule}.
@@ -199,7 +196,8 @@ class DottedRule(Rule):
 
     def shift(self):
         """
-        Shift the dot one position to the right.
+        Shift the dot one position to the right (returns a new
+        DottedRule).
         @raise IndexError: If the dot position is beyond the end of
             the rule.
         """
@@ -231,7 +229,7 @@ class DottedRule(Rule):
         @rtype: C{string}
         """
         drhs = self._rhs[:self._pos] + ('*',) + self._rhs[self._pos:]
-        return self._lhs + ' -> ' + join(drhs)
+        return self._lhs + ' -> ' + ''.join(drhs)
 
     def __repr__(self):
         """
@@ -255,10 +253,9 @@ class DottedRule(Rule):
         return (Rule.__eq__(self, other) and
                 self._pos == other._pos)
 
-    # [edloper 8/14/01] Mutable data structures shouldn't have hash
-    # functions; it's misleading.  If you don't define it, it won't
-    # let you put them in dictionaries etc (which is a good thing for
-    # mutable datatypes).
+    def __ne__(self, other):
+        return not (self == other)
+
     def __hash__(self):
         """
         @return: A hash value for the C{DottedRule}.
