@@ -8,39 +8,44 @@
 # $Id$
 
 from Tkinter import *
+from tkFileDialog import asksaveasfilename
 
 from nltk.tree import Tree, TreeToken
 from nltk.token import Token, Location
 
 class TreeView:
 
-    _X_SPACING = 20
-    _Y_SPACING = 25
-    
-    
-    def __init__(self, tree):
+    _X_SPACING = 5
+    _Y_SPACING = 20
+
+    def __init__(self, tree, root=None):
         """
         Construct a new view of a Tree or a TreeToken.
         """
         self._tree = tree
         
-        # Create the tree window
-        self._top = top = Tk()
-        top.title('Tree Display')
-        self._top.bind('q', self.destroy)
+        # If we were not given a root window, then create one.
+        # Include buttons for performing common functions.
+        if root is None:
+            self._top = top = Tk()
+            top.title('Tree Display')
+            self._top.bind('q', self.destroy)
 
-        # Create the button frame.
-        self._buttons = buttons = Frame(top)
-        Button(buttons, text='Done', command=self.destroy).pack(side='right')
-        Button(buttons, text='Bigger Font',
-               command=self._font_grow).pack(side='left')
-        Button(buttons, text='Smaller Font',
-               command=self._font_shrink).pack(side='left')
-        Button(buttons, text='Print',
-               command=self._to_postscript).pack(side='left')
-        Button(buttons, text='Expand All',
-               command=self._expand_all).pack(side='left')
-        buttons.pack(side='bottom', fill='both')
+            # Create the button frame.
+            self._buttons = buttons = Frame(top)
+            Button(buttons, text='Done',
+                   command=self.destroy).pack(side='right')
+            Button(buttons, text='Zoom in',
+                   command=self._font_grow).pack(side='left')
+            Button(buttons, text='Zoom out',
+                   command=self._font_shrink).pack(side='left')
+            Button(buttons, text='Print',
+                   command=self._to_postscript).pack(side='left')
+            Button(buttons, text='Expand All',
+                   command=self._expand_all).pack(side='left')
+            buttons.pack(side='bottom', fill='both')
+        else:
+            self._top = top = root
         
         # Create the canvas view.
         self._view = view = Frame(top, relief='sunk', border=2)
@@ -59,7 +64,7 @@ class TreeView:
 
         # Keep track of which nodes are collapsed
         self._collapsed = {}
-        self._expand(tree)
+        self._expand_all(tree)
 
         self._points = 12
         self._find_textheight()
@@ -76,11 +81,24 @@ class TreeView:
         self._canvas['width'] = width
         self._canvas['height'] = height
 
-        # Enter main loop
-        mainloop()
+        # Enter main loop???
+        #if root is None:
+        #    mainloop()
 
+    # ////////////////////////////////////
+    # //  Private methods
+    # ////////////////////////////////////
+    
     def _find_textheight(self):
-        # Find the height of text.
+        """
+        Determine the value of _textheight.  This instance variable
+        records the maximum height of a letter, and is used when
+        deciding how much space to leave for the text at trees' nodes
+        and leaves.  It should be called whenever the font size
+        (_points) is changed.
+
+        @rtype: C{None}
+        """
         c = self._canvas
         tag = c.create_text(0, 0, text='Al^|qp', anchor='se',
                             font=('helvetica', self._points, 'bold'))
@@ -88,33 +106,32 @@ class TreeView:
         self._textheight = bbox[3]-bbox[1]
         c.delete(tag)
 
-    def _font_grow(self):
-        self._points += 2
-        self._find_textheight()
-        self._redraw()
+    def _font_grow(self): set_text_size(self._points+2)
+    def _font_shrink(self): set_text_size(self._points-2)
 
-    def _font_shrink(self):
-        if self._points <= 6: return
-        self._points -= 2
-        self._find_textheight()
-        self._redraw()
+    def _expand_all(self, tree=None):
+        """
+        Un-collapse the given tree and all of its descendants.  If no
+        tree is given, then the top-level tree will be un-collapsed.
+        If the given tree is not shown, then this will have no effect.
 
-    def _expand(self, tree):
+        This does I{not} redraw the tree.
+
+        @param tree: The tree to expand.
+        @type tree: C{Tree}
         """
-        Un-collapse the given tree and all of its descendants.
-        """
+        if tree is None: tree = self._tree
+        
         self._collapsed[tree] = 0
         for child in tree:
             if isinstance(child, Tree) or isinstance(child, TreeToken):
-                self._expand(child)
-
-    def _expand_all(self):
-        self._expand(self._tree)
-        self._redraw()
+                self._expand_all(child)
 
     def _redraw(self):
         """
-        Redraw the tree.
+        Redraw the tree.  This includes resetting the canvas region. 
+
+        @rtype: C{None}
         """
         # Draw the new before we delete the old; this sometimes
         # prevents blinking..
@@ -126,6 +143,13 @@ class TreeView:
         self._canvas.delete(*old)
 
     def _canvas_height(self, tree):
+        """
+        @rtype: C{int}
+        @return: the height needed to display the given tree, taking
+            collapsed nodes into account.
+        @type tree: C{Tree}
+        @param tree: The tree for which to display the needed height.
+        """
         if self._collapsed[tree]:
             return 2*self._textheight + TreeView._Y_SPACING
         else:
@@ -139,19 +163,35 @@ class TreeView:
             return height + (self._textheight + TreeView._Y_SPACING)
                 
     def _draw_collapsed_children(self, tree, left, depth):
-        # Returns the right edge...
+        """
+        Draw the children of a collapsed node.  All children are drawn
+        on a single line, separated by space characters.  A callback
+        is added to the triangle over the children, which will expand
+        them.
+
+        @param tree: The tree whose children should be displayed
+        @type tree: C{Tree}
+        @param left: The x position of the left edge at which the
+            children should be drawn.
+        @type left: C{int}
+        @param depth: The depth in self._tree of given tree.
+        @type depth: C{int}
+        @return: The x position of the right edge of the drawn
+            children.
+        @rtype: C{int}
+        """
         c = self._canvas
 
         # Draw children.
-        children = ' '.join([repr(t) for t in tree.leaves()])
+        children = ' '.join([str(t) for t in tree.leaves()])
         right = self._draw_leaf(children, left, depth+1)
 
         # Draw triangle
         node_y = (self._textheight + TreeView._Y_SPACING) * depth
         node_x = (left+right)/2
+        triangle_bottom = node_y+self._textheight+TreeView._Y_SPACING
         tag = c.create_polygon(node_x, node_y+self._textheight,
-                               left, node_y+self._textheight+TreeView._Y_SPACING,
-                               right, node_y+self._textheight+TreeView._Y_SPACING,
+                               left, bottom, right, bottom,
                                outline='black', fill='gray')
 
         # Set up a callback.
@@ -161,7 +201,21 @@ class TreeView:
         return right
         
     def _draw_expanded_children(self, tree, left, depth):
-        # Returns the right edge...
+        """
+        Draw the children of an un-collapsed node, including lines to
+        the child.
+
+        @param tree: The tree whose children should be displayed
+        @type tree: C{Tree}
+        @param left: The x position of the left edge at which the
+            children should be drawn.
+        @type left: C{int}
+        @param depth: The depth in self._tree of given tree.
+        @type depth: C{int}
+        @return: The x position of the right edge of the drawn
+            children.
+        @rtype: C{int}
+        """
         c = self._canvas
         left += (TreeView._X_SPACING/2)
 
@@ -172,7 +226,7 @@ class TreeView:
             if isinstance(child, Tree) or isinstance(child, TreeToken):
                 new_x = self._draw_tree(child, x, depth+1)
             else:
-                new_x = self._draw_leaf(repr(child), x, depth+1)
+                new_x = self._draw_leaf(str(child), x, depth+1)
             child_centers.append((x+new_x)/2)
             x = new_x + TreeView._X_SPACING
         right = new_x
@@ -185,15 +239,28 @@ class TreeView:
         for child_x in child_centers:
             c.create_line(node_x, node_y, child_x, child_y)
                           
-
         return right + (TreeView._X_SPACING/2)
         
     def _draw_tree(self, tree, left, depth):
+        """
+        Draw the given tree.  Set up a callback on each node, which
+        expands/collapses the node.
+
+        @param tree: The tree that should be displayed.
+        @type tree: C{Tree}
+        @param left: The x position of the left edge at which the
+            tree should be drawn.
+        @type left: C{int}
+        @param depth: The depth in self._tree of given tree.
+        @type depth: C{int}
+        @return: The x position of the right edge of the drawn
+            tree.
+        @rtype: C{int}
+        """
         # Returns right edge...
         c = self._canvas
         
         # Draw children
-        import random
         if self._collapsed[tree]:
             x = self._draw_collapsed_children(tree, left, depth)
         else:
@@ -202,7 +269,7 @@ class TreeView:
         # Draw node value.
         y = (self._textheight + TreeView._Y_SPACING) * depth
         node_x = (left+x)/2
-        tag = c.create_text(node_x, y, text=repr(tree.node()),
+        tag = c.create_text(node_x, y, text=str(tree.node()),
                             anchor='n', justify='center',
                             font=('helvetica', self._points, 'bold'))
         node_right = c.bbox(tag)[2] + (TreeView._X_SPACING/2)
@@ -224,6 +291,9 @@ class TreeView:
         return x
 
     def _draw_leaf(self, text, x, depth):
+        """
+        Draw an individual leaf.
+        """
         y = (self._textheight + TreeView._Y_SPACING) * depth
         tag = self._canvas.create_text(x, y, text=text,
                                        anchor='nw', justify='left',
@@ -231,59 +301,112 @@ class TreeView:
         return self._canvas.bbox(tag)[2]
 
     def _toggle(self, tree):
+        """
+        Collapse/expand the given tree.
+        """
         self._collapsed[tree] = not self._collapsed[tree]
         self._redraw()
 
+    def _to_postscript(self):
+        ftypes = [('Postscript files', '.ps'),
+                  ('All files', '*')]
+        filename = asksaveasfilename(filetypes=ftypes,
+                                     defaultextension='.ps')
+        if filename:
+            self.print_to_file(filename)
+
+    # ////////////////////////////////////
+    # //  Public methods
+    # ////////////////////////////////////
+
+    def set_text_size(self, points):
+        """
+        Set the size of the text used to render nodes and leaves.
+
+        @type points: C{int}
+        @param points: The desired font size, in points.  This should
+            typically be a number between 6 and 30; if a size smaller
+            than 4 points is given, 4 will be used.
+        @rtype: C{None}
+        """
+        if points < 4: points = 4
+        self._points = points
+        self._find_textheight()
+        self._redraw()
+
     def destroy(self, *args):
-        if self._top == None: return
+        """
+        Destroy the root window.
+        @rtype: C{None}
+        """
+        if self._top is None: return
         self._top.destroy()
         self._top = None
 
-    def _to_postscript(self):
-        warning = ('Warning: only the portion of the '+
-                   'tree currently shown will be saved')
-        _FileSelector(self.print_to_file, warning)
+    def expand(self, tree=None):
+        """
+        Expand the given tree.  If no tree is given, then all trees
+        will be expanded.
+
+        @param tree: The tree to expand.
+        @type tree: C{Tree}
+        @rtype: C{None}
+        """
+        if tree is None:
+            self._expand_all()
+        else:
+            if not self._collapsed.has_key(tree):
+                raise ValueError('The given tree is not displayed')
+            self._collapsed[tree] = 0
+            self._redraw()
+
+    def collapse(self, tree=None):
+        """
+        Collapse the given tree.  If no tree is given, then the top-
+        level tree will be collapsed.
+
+        @param tree: The tree to collapse.
+        @type tree: C{Tree}
+        @rtype: C{None}
+        """
+        if tree is None:
+            tree = self._tree
+        if not self._collapsed.has_key(tree):
+            raise ValueError('The given tree is not displayed')
+        self._collapsed[tree] = 0
+        self._redraw()
 
     def print_to_file(self, filename):
-        ps_str = self._canvas.postscript()
-        open(filename, 'w').write(ps_str)
+        """
+        Print this tree to the given file.
 
-class _FileSelector:
-    def __init__(self, cb, txt):
-        self._cb = cb
-        
-        # Create the tree window
-        self._top = Tk()
-        self._top.title('Printing to file...')
-        self._top.bind('q', self.destroy)
-        self._top.bind('<Enter>', self.ok)
-        self._top.bind('<Return>', self.ok)
-        if txt:
-            Label(self._top, text=txt).pack(side='top')
-        f = Frame(self._top, relief='groove', border=3)
-        Label(f, text='Filename:').pack(side='left')
-        self._e=Entry(f, width=30)
-        self._e.pack(side='right', expand='yes', fill='x')
-        f.pack(side='top', fill='x', expand='yes')
-        Button(self._top, text='Ok', command=self.ok).pack(side='left')
-        Button(self._top, text='Cancel', command=self.destroy).pack(side='right')
+        @param filename: The name of the file to print the tree to.
+        @type filename: C{string}
+        @rtype: C{None}
+        """
+        (x0, y0, w, h) = self._canvas['scrollregion'].split()
+        self._canvas.postscript(file=filename,
+                                width=int(w)+10, height=int(h)+10)
 
-    def destroy(self, *args):
-        if self._top == None: return
-        self._top.destroy()
-        self._top = None
+def print_tree(tree, filename):
+    """
+    Print the given tree to the given filename.  This uses a TreeView
+    to display the tree, but hopefully will never actually open a
+    window.
 
-    def ok(self, *args):
-        filename = self._e.get()
-        if not filename: return
-        self._cb(filename)
-        self.destroy()
+    @rtype: C{None}
+    """
+    top = Tk()
+    treeview = TreeView(tree, top)
+    top.mainloop(1)
+    treeview.print_to_file(filename)
+    top.destroy()
         
 # Temporary test code.
 if __name__ == '__main__':
     from random import randint
     def randomtree(depth=0, bf=None):
-        if bf == None: bf = randint(1,2)
+        if bf is None: bf = randint(1,2)
         if randint(0,7-depth) == 0 and depth>1:
             return 'L%d' % randint(0, 10)
         else:
@@ -292,7 +415,7 @@ if __name__ == '__main__':
             return Tree('Node %d' % randint(0,10000), *children)
 
     def randomtreetok(depth=0, left=0, bf=None):
-        if bf == None: bf = randint(1,2)
+        if bf is None: bf = randint(1,2)
         if randint(0,7-depth) == 0 and depth>1:
             len = randint(1,5)
             return Token('L%d' % randint(0, 10), left, left+len)
