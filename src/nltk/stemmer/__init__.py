@@ -21,6 +21,7 @@ C{StemmerI} defines a standard interface for stemmers.
 """
 
 from nltk.chktype import chktype
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.token import Token
 import re
 
@@ -28,7 +29,7 @@ import re
 ##  Stemmer Interface
 ##//////////////////////////////////////////////////////
 
-class StemmerI:
+class StemmerI(TaskI):
     """
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
@@ -86,7 +87,7 @@ class StemmerI:
         """
         raise NotImplementedError()
 
-class AbstractStemmer(StemmerI):
+class AbstractStemmer(StemmerI, PropertyIndirectionMixIn):
     """
     An abstract base class for stemmers.  C{AbstractStemmer} provides
     a default implementations for:
@@ -114,18 +115,18 @@ class AbstractStemmer(StemmerI):
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractStemmer:
             raise AssertionError, "Abstract classes can't be instantiated"
-        self._property_names = property_names
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     def raw_stem(self, text):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        STEM = self._property_names.get('STEM', 'STEM')
+        TEXT = self.property('TEXT')
+        STEM = self.property('STEM')
         token = Token({TEXT:text})
         self.stem(token)
         return token[STEM]
 
     def stem_n(self, token, n=None):
-        STEMS = self._property_names.get('STEMS', 'STEMS')
-        STEM = self._property_names.get('STEM', 'STEM')
+        STEMS = self.property('STEMS')
+        STEM = self.property('STEM')
         if n == 0:
             token[STEMS] = []   # (pathological case)
         else:
@@ -134,20 +135,20 @@ class AbstractStemmer(StemmerI):
         del token[STEM]
 
     def raw_stem_n(self, text, n=None):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        STEM = self._property_names.get('STEM', 'STEM')
+        TEXT = self.property('TEXT')
+        STEM = self.property('STEM')
         token = Token({TEXT:text})
         self.stem_n(token, n)
         return token[STEM]
 
     def _stem_from_raw(self, token):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        STEM = self._property_names.get('STEM', 'STEM')
+        TEXT = self.property('TEXT')
+        STEM = self.property('STEM')
         token[STEM] = self.raw_stem(token[TEXT])
 
     def _stem_n_from_raw(self, token):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        STEMS = self._property_names.get('STEMS', 'STEMS')
+        TEXT = self.property('TEXT')
+        STEMS = self.property('STEMS')
         token[STEMS] = self.raw_stem_n(token[TEXT])
 
 class RegexpStemmer(AbstractStemmer):

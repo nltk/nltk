@@ -35,6 +35,7 @@ the L{TaggerI} interface.
 
 import types, re
 from nltk.chktype import chktype
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.tokenizer import Token, AbstractTokenizer, WhitespaceTokenizer, TokenizerI
 from nltk.probability import FreqDist, ConditionalFreqDist
 
@@ -62,9 +63,9 @@ class TaggedTokenizer(AbstractTokenizer):
     
     def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
 
         # First, use WhitespaceTokenizer to divide on whitespace.
         self._wstokenizer.tokenize(token, addlocs, addcontexts)
@@ -81,7 +82,7 @@ class TaggedTokenizer(AbstractTokenizer):
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
 ##//////////////////////////////////////////////////////
-class TaggerI:
+class TaggerI(TaskI):
     """
     A processing interface for assigning a tag to each subtoken in an
     ordered list of subtokens.  Tags are case sensitive strings that
@@ -118,7 +119,7 @@ class TaggerI:
 ##  Taggers
 ##//////////////////////////////////////////////////////
 
-class AbstractTagger(TaggerI):
+class AbstractTagger(TaggerI, PropertyIndirectionMixIn):
     """
     An abstract base class for taggers.  C{AbstractTagger} provides a
     default implementation for L{raw_tag} (based on C{tag}).
@@ -138,12 +139,12 @@ class AbstractTagger(TaggerI):
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractTagger:
             raise AssertionError, "Abstract classes can't be instantiated"
-        self._property_names = property_names
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     def raw_tag(self, words):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
         
         subtoks = [Token({TEXT:w}) for w in words]
         token = Token({SUBTOKENS:subtoks})
@@ -151,9 +152,9 @@ class AbstractTagger(TaggerI):
         return [token[TAG] for token in token[SUBTOKENS]]
 
     def _tag_from_raw(self, token):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
         
         words = [subtok[TEXT] for sutbok in token[SUBTOKENS]]
         tags = self.raw_tag(words)
@@ -161,7 +162,8 @@ class AbstractTagger(TaggerI):
             subtok[TAG] = tag
 
     
-class SequentialTagger(TaggerI):
+# SB: shouldn't this inherit from AbstractTagger?
+class SequentialTagger(TaggerI,PropertyIndirectionMixIn):
     """
     An abstract base class for taggers that assign tags to subtokens
     one at a time, in sequential order.
@@ -188,7 +190,7 @@ class SequentialTagger(TaggerI):
             default property name to a new property name.
         """
         self._reverse = reverse
-        self._property_names = property_names
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     def tag_subtoken(self, subtokens, i):
         """
@@ -206,8 +208,8 @@ class SequentialTagger(TaggerI):
 
     def tag(self, token):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TAG = self._property_names.get('TAG', 'TAG')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TAG = self.property('TAG')
 
         # Tag each token, in sequential order.
         subtokens = token[SUBTOKENS]
@@ -266,7 +268,7 @@ class RegexpTagger(SequentialTagger):
         self._regexps = regexps
 
     def tag_subtoken(self, subtokens, i):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TEXT = self.property('TEXT')
         text = subtokens[i][TEXT]
         for regexp, tag in self._regexps:
             if re.match(regexp, text):
@@ -314,9 +316,9 @@ class UnigramTagger(SequentialTagger):
         @type tagged_token: L{Token}
         """
         assert chktype(1, tagged_token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
 
         # Record each text/tag pair in the frequency distribution.
         for subtok in tagged_token[SUBTOKENS]:
@@ -325,7 +327,7 @@ class UnigramTagger(SequentialTagger):
             self._freqdist[word].inc(tag)
 
     def tag_subtoken(self, subtokens, i):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TEXT = self.property('TEXT')
         
         # Find the most likely tag, given the subtoken's text.
         context = subtokens[i][TEXT]
@@ -405,9 +407,9 @@ class NthOrderTagger(SequentialTagger):
         @type tagged_token: L{Token}
         """
         assert chktype(1, tagged_token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
         left, right = self._left, self._right
         
         # Extract the list of subtokens & list of tags.
@@ -425,8 +427,8 @@ class NthOrderTagger(SequentialTagger):
             self._freqdist[context].inc(tag)
 
     def tag_subtoken(self, subtokens, i):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        TAG = self._property_names.get('TAG', 'TAG')
+        TEXT = self.property('TEXT')
+        TAG = self.property('TAG')
         left, right = self._left, self._right
         if i+left<0: return None
 
@@ -537,8 +539,8 @@ def tagger_accuracy(tagger, gold_standard):
 
     assert chktype(1, tagger, TaggerI)
     assert chktype(2, gold_standard, (Token,), [Token])
-    TAG = tagger._property_names.get('TAG', 'TAG')
-    SUBTOKENS = tagger._property_names.get('SUBTOKENS', 'SUBTOKENS')
+    TAG = tagger.property('TAG')
+    SUBTOKENS = tagger.property('SUBTOKENS')
 
     gold_toks = []
     test_toks = []
