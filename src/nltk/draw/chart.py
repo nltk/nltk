@@ -1391,9 +1391,9 @@ def demo():
     ChartDemo(grammar, tok_sent).mainloop()
 
 def demo2():
-    nonterminals = 'NP Det N'
-    (NP, Det, N) = [Nonterminal(s) for s in nonterminals.split()]
-    toks = [Token('the', 0), Token('park', 1), Token('I', 2), Token('saw', 3)]
+    (NP, Det, N) = nonterminals('NP the park')
+    toks = [Token('the', Location(0)), Token('park', Location(1)),
+            Token('I', Location(2)), Token('saw', Location(3))]
     tree = TreeToken('NP',
                      TreeToken('Det', toks[0]),
                      TreeToken('N', toks[1]))
