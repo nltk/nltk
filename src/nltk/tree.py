@@ -29,7 +29,7 @@ classes should never be mixed within a single tree.
 
 from nltk.token import Token, CharSpanLocation, FrozenToken
 from nltk.tokenizer import TokenizerI
-from nltk.probability import ProbabilisticMixIn
+from nltk.probability import ProbabilisticMixIn, ImmutableProbabilisticMixIn
 import re
 from nltk.chktype import chktype
 from nltk.chktype import classeq as _classeq
@@ -72,7 +72,7 @@ class Tree(list):
     M{iN})}, specifying
     C{self[M{i1}][M{i2}]...[M{iN}]}.
     """
-    def __init__(self, node, *children):
+    def __init__(self, node, children):
         """
         Construct a new tree.
         """
@@ -80,15 +80,71 @@ class Tree(list):
         self.node = node
 
     #////////////////////////////////////////////////////////////
-    # Copy & freeze
+    # Convert, copy, & freeze
     #////////////////////////////////////////////////////////////
+
+    # [classmethod]
+    def convert(cls, val):
+        """
+        Convert a tree between different types.  C{cls} determines
+        which class will be used to encode the new tree.  E.g.:
+
+           >>> # Convert tree into a Tree:
+           >>> tree = Tree.convert(tree)
+           >>> # Convert tree into a ParentedTree:
+           >>> tree = ParentedTree.convert(tree)
+           >>> # Convert tree into a MultiParentedTree:
+           >>> tree = MultiParentedTree.convert(tree)
+
+        @type tree: L{Tree}
+        @param tree: The tree that should be converted.
+        @return: The new C{Tree}.
+        """
+        if isinstance(val, Tree):
+            children = [cls.convert(child) for child in val]
+            return cls(val.node, children)
+        else:
+            return val
+    convert = classmethod(convert)
 
     def copy(self, deep=False):
         if not deep:
-            return Tree(self.node, *self)
+            return self.__class__(self.node, *self)
         else:
             return self.__class__.convert(self)
 
+    def freeze(self, leaf_freezer=None):
+        if leaf_freezer is None:
+            newcopy = ImmutableTree.convert(self)
+        else:
+            newcopy = self.copy(deep=True)
+            for pos in newcopy.treepositions('leaves'):
+                newcopy[pos] = leaf_freezer(newcopy[pos])
+            newcopy = ImmutableTree.convert(newcopy)
+        hash(newcopy) # Make sure the leaves are hashable.
+        return newcopy
+
+    #////////////////////////////////////////////////////////////
+    # Comparison operators
+    #////////////////////////////////////////////////////////////
+
+    def __cmp__(self, other):
+        c = cmp(self.node, other.node)
+        if c != 0: return c
+        else: return list.__cmp__(self, other)
+    def __eq__(self, other):
+        return self.node == other.node and list.__eq__(self, other)
+    def __ne__(self, other):
+        return self.node != other.node or list.__ne__(self, other)
+    def __lt__(self, other):
+        return cmp(self, other) < 0
+    def __le__(self, other):
+        return cmp(self, other) <= 0
+    def __gt__(self, other):
+        return cmp(self, other) > 0
+    def __ge__(self, other):
+        return cmp(self, other) >= 0
+    
     #////////////////////////////////////////////////////////////
     # Disabled list operations
     #////////////////////////////////////////////////////////////
@@ -191,34 +247,6 @@ class Tree(list):
                 positions.append( (i,) )
         if order in ('postorder', 'bothorder'): positions.append( () )
         return positions
-
-    #////////////////////////////////////////////////////////////
-    # Convert
-    #////////////////////////////////////////////////////////////
-
-    # [classmethod]
-    def convert(cls, val):
-        """
-        Convert a tree between different types.  C{cls} determines
-        which class will be used to encode the new tree.  E.g.:
-
-           >>> # Convert tree into a Tree:
-           >>> tree = Tree.convert(tree)
-           >>> # Convert tree into a ParentedTree:
-           >>> tree = ParentedTree.convert(tree)
-           >>> # Convert tree into a MultiParentedTree:
-           >>> tree = MultiParentedTree.convert(tree)
-
-        @type tree: L{Tree}
-        @param tree: The tree that should be converted.
-        @return: The new C{Tree}.
-        """
-        if isinstance(val, Tree):
-            children = [cls.convert(child) for child in val]
-            return cls(val.node, *children)
-        else:
-            return val
-    convert = classmethod(convert)
 
     #////////////////////////////////////////////////////////////
     # Visualization & String Representation
@@ -333,7 +361,7 @@ class Tree(list):
             # Beginning of a tree/subtree.
             if s[pos] == '(':
                 match = WORD.match(s, pos+1)
-                stack.append(Tree(match.group(1)))
+                stack.append(Tree(match.group(1), []))
                 pos = match.end()
 
             # End of a tree/subtree.
@@ -460,8 +488,8 @@ class AbstractParentedTree(Tree):
     subclasses, since they need to be different for
     C{ParentedTree} and C{MultiParentedTree}.
     """
-    def __init__(self, node, *children):
-        super(AbstractParentedTree, self).__init__(node, *children)
+    def __init__(self, node, children):
+        super(AbstractParentedTree, self).__init__(node, children)
         for child in children:
             self._setparent(child)
         
@@ -546,9 +574,9 @@ class ParentedTree(AbstractParentedTree):
     or C{MultiParentedTrees}.  Mixing tree implementations may result
     in incorrect parent pointers and in C{ValueError} exceptions.
     """
-    def __init__(self, node, *children):
+    def __init__(self, node, children):
         self._parent = None
-        super(ParentedTree, self).__init__(node, *children)
+        super(ParentedTree, self).__init__(node, children)
 
     def parent(self):
         return self._parent
@@ -601,9 +629,9 @@ class MultiParentedTree(AbstractParentedTree):
     result in incorrect parent pointers and in C{ValueError}
     exceptions.
     """
-    def __init__(self, node, *children):
+    def __init__(self, node, children):
         self._parents = []
-        super(MultiParentedTree, self).__init__(node, *children)
+        super(MultiParentedTree, self).__init__(node, children)
 
     def parents(self):
         return self._parents[:]
@@ -631,10 +659,33 @@ class MultiParentedTree(AbstractParentedTree):
         # Add self as a parent pointer.
         child._parents.append(self)
     
-##//////////////////////////////////////////////////////
-##  Demonstration
-##//////////////////////////////////////////////////////
+######################################################################
+## Probabilistic trees
+######################################################################
+class ProbabilisticTree(Tree, ProbabilisticMixIn):
+    def __init__(self, prob, node, children):
+        ProbabilisticMixIn.__init__(self, prob)
+        Tree.__init__(self, node, children)
 
+    def copy(self, deep=False):
+        t = Tree.copy(self)
+        t.prob = self.prob
+        return t
+
+class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
+    def __init__(self, node, children):
+        self.prob = 0
+        ImmutableTree.__init__(self, node, children)
+
+    def copy(self, deep=False):
+        t = Tree.copy(self)
+        t.prob = self.prob
+        return t
+
+######################################################################
+## Demonstration
+######################################################################
+        
 def demo():
     """
     A demonstration showing how C{Tree}s and C{Tree}s can be
