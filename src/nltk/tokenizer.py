@@ -574,7 +574,7 @@ def _display(token, tokenizer):
     """
     token = token.copy() # Make a new copy.
     tokenizer.tokenize(token)
-    tokens = token['subtokens']
+    tokens = token['SUBTOKENS']
     
     # Get the string representation:
     str = '    '+`tokens`+' '
@@ -595,7 +595,7 @@ def demo(addlocs=False):
     """
     # Define the test string.
     s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them."
-    tok = Token(text=s, loc=CharSpanLocation(0, len(s), 's'))
+    tok = Token(TEXT=s, LOC=CharSpanLocation(0, len(s), 's'))
     print 'Input text:'
     print `s`
     print
