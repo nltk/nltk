@@ -94,7 +94,7 @@ cluster, the interfaces contained in that cluster are given.
     a text.
 
 @author: Edward Loper
-@version: 0.3
+@version: 0.4
 """
 
 """
@@ -119,9 +119,10 @@ to currently implemented interfaces and classes.
   - Should FreqDist.max() and FreqDist.cond_max() be merged, with
        the condition as an optional argument?  Same for
        FreqDist.freq() and FreqDist.cond_freq().
-  - Should I implement cross-toolkit policies on how to use __str__ 
-       and __repr__?  If so, what should they be?
-
+  - What cross-toolkit policies on how to use __str__ 
+       and __repr__ should there be?
+  - What cross-toolkit policies on __cmp__, __eq__, __gt__, etc.
+       should there be? 
 """
 
 # Define some useful meta-data.
@@ -133,7 +134,7 @@ Distributed and Licensed under provisions of the IBM Common Public
 License (Version 0.5), which is included by reference.  The IBM Common 
 Public License can be found in the file LICENSE.TXT in the
 distribution."""
-__version__ = "0.3"
+__version__ = "0.4"
 __url__ = "http://nltk.sf.net/"
 
 
