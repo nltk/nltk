@@ -271,7 +271,7 @@ class ChunkedTaggedTokenizer(TokenizerI):
         brackets = re.sub(r'[^\[\]]', '', str)
         if not re.match(r'(\[\])*', brackets):
             print "ERROR: unbalanced or nested brackets"
-            
+
         # Extract a list of alternating chinks & chunks
         pieces = re.split(r'[\[\]]', str)
 
@@ -284,9 +284,10 @@ class ChunkedTaggedTokenizer(TokenizerI):
             subsequence = []
             ttypes = [parse_tagged_type(s) for s in piece.split()]
             for ttype in ttypes:
-                loc = Location(index, unit='w', source=source)
-                subsequence.append(Token(ttype, loc))
-                index += 1
+                if ttype.tag() is not None:
+                    loc = Location(index, unit='w', source=source)
+                    subsequence.append(Token(ttype, loc))
+                    index += 1
                 
             # Add the list of tokens to our chunk list.
             if piece_in_chunk:
