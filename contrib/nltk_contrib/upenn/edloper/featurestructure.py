@@ -134,6 +134,23 @@ class FeatureStructureVariable:
         if self == variable: return self
         return MergedFeatureStructureVariable(self, variable)
 
+    def parse(s):
+        # Simple variable
+        match = re.match(r'\?\w+$', s)
+        if match:
+            return FeatureStructureVariable(match.group()[1:])
+
+        # Merged variable
+        match = re.match(r'\?<\w+(=\w+)*>$', s)
+        if match:
+            idents = s[2:-1].split('=')
+            vars = [FeatureStructureVariable(i) for i in idents]
+            return MergedFeatureStructureVariable(*vars)
+
+        raise ValueError('Bad FeatureStructureVariable string')
+    
+    parse=staticmethod(parse)
+
 class MergedFeatureStructureVariable(FeatureStructureVariable):
     """    
     A set of variables that are constrained to be equal.  A merged
@@ -196,11 +213,11 @@ class MergedFeatureStructureVariable(FeatureStructureVariable):
         @return: A string representation of this feature structure
            variable.  A feature structure variable with identifiers
            C{I{X1}, I{X2}, ..., I{Xn}} is represented as
-           C{'?I{X1}=I{X2}=...=I{Xn}'}.
+           C{'?<I{X1}=I{X2}=...=I{Xn}>'}.
         """
         idents = [v._identifier for v in self.subvariables()]
         idents.sort()
-        return '?' + '='.join(idents)
+        return '?<' + '='.join(idents) + '>'
     
     def __cmp__(self):
         if not isinstance(other, FeatureStructureVariable): return -1
@@ -406,6 +423,9 @@ class FeatureStructure:
         return self._features.keys()
 
     def deepcopy(self, memo=None):
+        """
+        @return: a new copy of this feature structure.
+        """
         if memo is None: memo = {}
         memocopy = memo.get(id(self))
         if memocopy is not None: return memocopy
@@ -420,6 +440,15 @@ class FeatureStructure:
         return newcopy
 
     def apply_bindings(self, bindings):
+        """
+        Replace any variables bound by C{bindings} with their values.
+        
+        If C{self} contains a merged variable that is partially bound
+        by C{bindings}, then that variable's unbound subvariables will
+        be bound to its value.  E.g., if the bindings C{<?x=1>} are
+        applied to the feature structure C{[A = ?<x=y>]}, then the
+        bindings will be updated to C{<?x=1,?y=1>}.
+        """
         selfcopy = copy.deepcopy(self)
         selfcopy._apply_bindings(bindings, {})
         return selfcopy
@@ -455,8 +484,6 @@ class FeatureStructure:
             If C{bindings} is unspecified, then all variables are
             assumed to be unbound.
         """
-        if trace: print # [XX]
-        
         # If bindings are unspecified, use an empty set of bindings.
         if bindings is None: bindings = FeatureStructureVariableBinding()
 
@@ -658,10 +685,10 @@ class FeatureStructure:
                      # never fall through to comparing values.
         for (fname, fval) in items:
             if not isinstance(fval, FeatureStructure):
-                segments.append('%s=%s' % (fname, fval))
+                segments.append('%s=%r' % (fname, fval))
             elif reentrance_ids.has_key(id(fval)):
                 segments.append('%s->(%s)' % (fname,
-                                                reentrance_ids[id(fval)]))
+                                              reentrance_ids[id(fval)]))
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
                 segments.append('%s=%s' % (fname, fval_repr))
@@ -709,7 +736,7 @@ class FeatureStructure:
         for (fname, fval) in items:
             if not isinstance(fval, FeatureStructure):
                 # It's not a nested feature structure -- just print it.
-                lines.append('%s = %s' % (fname.ljust(maxfnamelen), fval))
+                lines.append('%s = %r' % (fname.ljust(maxfnamelen), fval))
 
             elif reentrance_ids.has_key(id(fval)):
                 # It's a feature structure we've seen before -- print
@@ -786,42 +813,186 @@ class FeatureStructure:
     ## Parsing
     #################################################################
 
-    # [XX] This won't read in reentrant structures.
-    # [XX] Audit this code to make sure the call to eval is secure.
-    def parse(str):
-        # Get rid of any newlines, etc.
-        str = ' '.join(str.split())
-
-        # Backslash any quote marks or backslashes in the string.
-        str = re.sub(r'([\\"\'])', r'\\\1', str)
-        
-        # Add quote marks and commas around words.
-        str = re.sub('([^\[\] ,=]+)', r'"\1"', str)
-
-        # Replace '=' with ':'
-        str = str.replace('=', ':')
-
-        # Change close brackets.
-        str = str.replace(r']', '})')
-        
-        # Add calls to the FeatureStructure constructor.
-        str = str.replace(r'[', 'FeatureStructure(**{')
-
-        # Add calls to the FeatureStructureVariable constructor.
-        str = re.sub(r'"\?(\w+)"', r'FeatureStructureVariable("\1")', str)
-        
-        # Strip whitespace and get rid of the comma after the last ')' 
-        str = str.strip()
-        
-        # Use "eval" to convert the string
+    def parse(s):
+        """
+        Convert a string representation of a feature structure (as
+        displayed by repr) into a C{FeatureStructure}.  This parse
+        imposes the following restrictions on the string
+        representation:
+          - Feature names cannot contain any of the following:
+            whitespace, parenthases, quote marks, equals signs,
+            dashes, and square brackets.
+          - Only the following basic feature value are supported:
+            strings, integers, variables, C{None}, and unquoted
+            alphanumeric strings.
+          - For reentrant values, the first mention must specify
+            a reentrance identifier and a value; and any subsequent
+            mentions must use arrows (C{'->'}) to reference the
+            reentrance identifier.
+        """
         try:
-            result = eval(str)
-            return result
-        except:
-            raise ValueError('Bad FeatureStructure string')
+            value, position = FeatureStructure._parse(s, 0, {})
+        except ValueError, e:
+            estr = ('Error parsing field structure\n\n    ' +
+                    s + '\n    ' + ' '*e.args[1] + '^ ' +
+                    'Expected %s\n' % e.args[0])
+            raise ValueError, estr
+        if position != len(s): raise ValueError()
+        return value
 
+    # Regular expressions for parsing.
+    _PARSE_RE = {'name': re.compile(r'\s*([^\s\("\'-=\[\]]+)\s*'),
+                 'ident': re.compile(r'\s*\((\d+)\)\s*'),
+                 'reentrance': re.compile(r'\s*->\s*'),
+                 'assign': re.compile(r'\s*=\s*'),
+                 'bracket': re.compile(r'\s*]\s*'),
+                 'comma': re.compile(r'\s*,\s*'),
+                 'none': re.compile(r'None(?=\s|\]|,)'),
+                 'int': re.compile(r'-?\d+(?=\s|\]|,)'),
+                 'var': re.compile(r'\?\w+'+'|'+'\?<\w+(=\w+)*>'),
+                 'symbol': re.compile(r'\w+'),
+                 'stringmarker': re.compile("['\"\\\\]")}
+
+    def _parse(s, position=0, reentrances=None):
+        """
+        Helper function that parses a feature structure.
+        @param s: The string to parse.
+        @param position: The position in the string to start parsing.
+        @param reentrances: A dictionary from reentrance ids to values.
+        @return: A tuple (val, pos) of the feature structure created
+            by parsing and the position where the parsed feature
+            structure ends.
+        """
+        # A set of useful regular expressions (precompiled)
+        _PARSE_RE = FeatureStructure._PARSE_RE
+
+        # Check that the string starts with an open bracket.
+        if s[position] != '[': raise ValueError('open bracket', position)
+        position += 1
+
+        # If it's immediately followed by a close bracket, then just
+        # return an empty feature structure.
+        match = _PARSE_RE['bracket'].match(s, position)
+        if match is not None: return FeatureStructure(), match.end()
+
+        # Build a list of the features defined by the structure.
+        # Each feature has one of the three following forms:
+        #     name = value
+        #     name (id) = value
+        #     name -> (target)
+        features = {}
+        while position < len(s):
+            # Use these variables to hold info about the feature:
+            name = id = target = val = None
+            
+            # Find the next feature's name.
+            match = _PARSE_RE['name'].match(s, position)
+            if match is None: raise ValueError('feature name', position)
+            name = match.group(1)
+            position = match.end()
+
+            # Check for a reentrance link ("-> (target)")
+            match = _PARSE_RE['reentrance'].match(s, position)
+            if match is not None:
+                position = match.end()
+                match = _PARSE_RE['ident'].match(s, position)
+                if match is None: raise ValueError('identifier', position)
+                target = match.group(1)
+                position = match.end()
+                try: features[name] = reentrances[target]
+                except: raise ValueError('bound identifier', position)
+
+            # If it's not a reentrance link, it must be an assignment.
+            else:
+                match = _PARSE_RE['assign'].match(s, position)
+                if match is None: raise ValueError('equals sign', position)
+                position = match.end()
+
+                # Find the feature's id (if specified)
+                match = _PARSE_RE['ident'].match(s, position)
+                if match is not None:
+                    id = match.group(1)
+                    position = match.end()
+                
+                val, position = FeatureStructure._parseval(s, position,
+                                                           reentrances)
+                features[name] = val
+                if id is not None: reentrances[id] = val
+
+            # Check for a close bracket
+            match = _PARSE_RE['bracket'].match(s, position)
+            if match is not None:
+                return FeatureStructure(**features), match.end()
+
+            # Otherwise, there should be a comma
+            match = _PARSE_RE['comma'].match(s, position)
+            if match is None: raise ValueError('comma', position)
+            position = match.end()
+
+        # We never saw a close bracket.
+        raise ValueError('close bracket', position)
+
+    def _parseval(s, position, reentrances):
+        """
+        Helper function that parses a feature value.  Currently
+        supports: None, integers, variables, strings, nested feature
+        structures.
+        @param s: The string to parse.
+        @param position: The position in the string to start parsing.
+        @param reentrances: A dictionary from reentrance ids to values.
+        @return: A tuple (val, pos) of the value created by parsing
+            and the position where the parsed value ends.
+        """
+        # A set of useful regular expressions (precompiled)
+        _PARSE_RE = FeatureStructure._PARSE_RE
+
+        # End of string (error)
+        if position == len(s): raise ValueError('value', position)
+        
+        # String value
+        if s[position] in "'\"":
+            start = position
+            quotemark = s[position:position+1]
+            position += 1
+            while 1:
+                match = _PARSE_RE['stringmarker'].search(s, position)
+                if not match: raise ValueError('close quote', position)
+                position = match.end()
+                if match.group() == '\\': position += 1
+                elif match.group() == quotemark:
+                    return eval(s[start:position]), position
+
+        # Nested feature structure
+        if s[position] == '[':
+            return FeatureStructure._parse(s, position, reentrances)
+
+        # Variable
+        match = _PARSE_RE['var'].match(s, position)
+        if match is not None:
+            return FeatureStructureVariable.parse(match.group()), match.end()
+
+        # None
+        match = _PARSE_RE['none'].match(s, position)
+        if match is not None:
+            return None, match.end()
+
+        # Integer value
+        match = _PARSE_RE['int'].match(s, position)
+        if match is not None:
+            return int(match.group()), match.end()
+
+        # Alphanumeric symbol (must be checked after integer)
+        match = _PARSE_RE['symbol'].match(s, position)
+        if match is not None:
+            return match.group(), match.end()
+
+        # We don't know how to parse this value.
+        raise ValueError('value', position)
+
+    _parseval=staticmethod(_parseval)
+    _parse=staticmethod(_parse)
     parse=staticmethod(parse)
-
+    
 
 #//////////////////////////////////////////////////////////////////////
 # TESTING...
@@ -841,39 +1012,39 @@ class FeatureStructureTestCase(unittest.TestCase):
         # Copying from self to other.
         fs1 = FeatureStructure(number='singular')
         fs2 = fs1.unify(FeatureStructure())
-        self.failUnlessEqual(repr(fs2), '[number=singular]')
+        self.failUnlessEqual(repr(fs2), "[number='singular']")
 
         # Copying from other to self
         fs1 = FeatureStructure()
         fs2 = fs1.unify(FeatureStructure(number='singular'))
-        self.failUnlessEqual(repr(fs2), '[number=singular]')
+        self.failUnlessEqual(repr(fs2), "[number='singular']")
 
         # Cross copying
         fs1 = FeatureStructure(number='singular')
-        fs2 = fs1.unify(FeatureStructure(person='3rd'))
-        self.failUnlessEqual(repr(fs2), '[number=singular, person=3rd]')
+        fs2 = fs1.unify(FeatureStructure(person=3))
+        self.failUnlessEqual(repr(fs2), "[number='singular', person=3]")
 
         # Merging a nested structure
         fs1 = FeatureStructure(A=FeatureStructure(B='b'))
         fs2 = FeatureStructure(A=FeatureStructure(C='c'))
         fs3 = fs1.unify(fs2)
-        self.failUnlessEqual(repr(fs3), '[A=[B=b, C=c]]')
+        self.failUnlessEqual(repr(fs3), "[A=[B='b', C='c']]")
 
     def testReentrantUnification(self):
         'Reentrant unification tests'
         # A basic case of reentrant unification
         fs1 = FeatureStructure(B='b')
         fs2 = FeatureStructure(A=fs1, E=FeatureStructure(F=fs1))
-        fs3 = FeatureStructure.parse('[A=[C=c], E=[F=[D=d]]]')
+        fs3 = FeatureStructure.parse("[A=[C='c'], E=[F=[D='d']]]")
         fs4 = fs2.unify(fs3)
-        fs4repr = '[A=(1)[B=b, C=c, D=d], E=[F->(1)]]'
+        fs4repr = "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
         self.failUnlessEqual(repr(fs4), fs4repr)
         fs5 = fs3.unify(fs2)
-        fs5repr = '[A=(1)[B=b, C=c, D=d], E=[F->(1)]]'
+        fs5repr = "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
         self.failUnlessEqual(repr(fs5), fs5repr)
 
         # More than 2 paths to a value
-        fs1 = FeatureStructure.parse('[a=[],b=[],c=[],d=[]]')
+        fs1 = FeatureStructure.parse("[a=[],b=[],c=[],d=[]]")
         fs2 = FeatureStructure()
         fs3 = FeatureStructure(a=fs2, b=fs2, c=fs2, d=fs2)
         fs4 = fs1.unify(fs3)
@@ -891,7 +1062,7 @@ class FeatureStructureTestCase(unittest.TestCase):
         fs2 = FeatureStructure(A=fs2y, B=fs2z, C=fs2y, D=fs2z)
 
         fs3 = fs1.unify(fs2)
-        fs3repr = ('[A=(1)[X=x, Y=y, Z=z], B->(1), C->(1), D->(1)]')
+        fs3repr = ("[A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]")
         self.failUnlessEqual(repr(fs3), fs3repr)
 
     def testCyclicStructures(self):
@@ -929,17 +1100,17 @@ class FeatureStructureTestCase(unittest.TestCase):
     def testVariablesPreserveReentrance(self):
         'Variable bindings should preserve reentrance.'
         bindings = FeatureStructureVariableBinding()
-        fs1 = FeatureStructure.parse('[a=?x]')
-        fs2 = fs1.unify(FeatureStructure.parse('[a=[]]'), bindings)
-        fs3 = fs2.unify(FeatureStructure.parse('[b=?x]'), bindings)
+        fs1 = FeatureStructure.parse("[a=?x]")
+        fs2 = fs1.unify(FeatureStructure.parse("[a=[]]"), bindings)
+        fs3 = fs2.unify(FeatureStructure.parse("[b=?x]"), bindings)
         self.failUnlessEqual(repr(fs3), '[a=(1)[], b->(1)]')
 
     def testVariableMerging(self):
         'Merged variable tests'
-        fs1 = FeatureStructure.parse('[a=?x, b=?x]')
-        fs2 = fs1.unify(FeatureStructure.parse('[b=?y, c=?y]'))
-        self.failUnlessEqual(repr(fs2), '[a=?x, b=?x=y, c=?y]')
-        fs3 = fs2.unify(FeatureStructure.parse('[a=1]'))
+        fs1 = FeatureStructure.parse("[a=?x, b=?x]")
+        fs2 = fs1.unify(FeatureStructure.parse("[b=?y, c=?y]"))
+        self.failUnlessEqual(repr(fs2), '[a=?x, b=?<x=y>, c=?y]')
+        fs3 = fs2.unify(FeatureStructure.parse("[a=1]"))
         self.failUnlessEqual(repr(fs3), '[a=1, b=1, c=1]')
 
 def testsuite():
@@ -950,6 +1121,86 @@ def test(verbosity):
     runner = unittest.TextTestRunner(verbosity=verbosity)
     runner.run(testsuite())
 
+#//////////////////////////////////////////////////////////////////////
+# Demo..
+#//////////////////////////////////////////////////////////////////////
+
+def display_unification(fs1, fs2, bindings, indent='  '):
+    result = fs1.unify(fs2, bindings)
+
+    # Print the two input feature structures, side by side.
+    fs1_lines = str(fs1).split('\n')
+    fs2_lines = str(fs2).split('\n')
+    if len(fs1_lines) > len(fs2_lines):
+        blankline = '['+' '*(len(fs2_lines[0])-2)+']'
+        fs2_lines += [blankline]*len(fs1_lines)
+    else:
+        blankline = '['+' '*(len(fs1_lines[0])-2)+']'
+        fs1_lines += [blankline]*len(fs2_lines)
+    for (fs1_line, fs2_line) in zip(fs1_lines, fs2_lines):
+        print indent + fs1_line + '   ' + fs2_line
+    print indent+'-'*len(fs1_lines[0])+'   '+'-'*len(fs2_lines[0])
+
+    linelen = len(fs1_lines[0])*2+3
+    print indent+'|               |'.center(linelen)
+    print indent+'+-----UNIFY-----+'.center(linelen)
+    print indent+'|'.center(linelen)
+    print indent+'V'.center(linelen)
+    if result is None:
+        print indent+'(FAILED)'.center(linelen)
+    else:
+        print '\n'.join([indent+l.center(linelen)
+                         for l in str(result).split('\n')])
+        if len(bindings.bound_variables()) > 0:
+            print repr(bindings).center(linelen)
+    return result
+
+def demo():
+    fstruct_strings = [
+        '[agr=[number=sing, gender=masc]]',
+        '[agr=[gender=masc, person=3rd]]',
+        '[agr=[gender=fem, person=3rd]]',
+        '[subj=[agr=(1)[]], agr->(1)]',
+        '[obj=?x]',
+        '[subj=?x]',
+        ]
+    
+    fstructs = [FeatureStructure.parse(s) for s in fstruct_strings]
+    bindings = FeatureStructureVariableBinding()
+    
+    while 1:
+        print '\n'+'_'*75
+        print 'Choose two feature structures to unify:'
+        for i in range(len(fstructs)):
+            print
+            lines = str(fstructs[i]).split('\n')
+            print '%3d: %s' % (i+1, lines[0])
+            for line in lines[1:]: print '     '+line
+
+        selected = [None,None]
+
+        for (nth,i) in (('First',0), ('Second',1)):
+            print ('\n%s feature structure (1-%d or q)? '
+                   % (nth, len(fstructs))),
+            try:
+                input = sys.stdin.readline().strip()
+                if input in ('q', 'Q', 'x', 'X', ''): return
+                num = int(input)-1
+                selected[i] = fstructs[num]
+            except:
+                print 'Bad sentence number'
+                continue
+
+        print
+        result = display_unification(selected[0], selected[1], bindings)
+        if result is not None:
+            for fstruct in fstructs:
+                if `result` == `fstruct`: break
+            else:
+                fstructs.append(result)
+
+
 if __name__ == '__main__':
-    test(2)
+    #test(verbosity=2)
+    demo()
 
