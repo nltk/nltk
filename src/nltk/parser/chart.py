@@ -701,7 +701,7 @@ class SteppingChartParser(ChartParser):
         Return the parses that are currently contained in the parser's
         chart.
         """
-        if chart is None:
+        if self._chart is None:
             raise ValueError('You must initialize the parser first.')
         return self._chart.parses(self._grammar.start())
 
@@ -727,7 +727,7 @@ class SteppingChartParser(ChartParser):
         @return: if an edge was added to the chart, then return the
             new edge; otherwise, return C{None}.
         """
-        if chart is None:
+        if self._chart is None:
             raise ValueError('You must initialize the parser before stepping.')
         
         if kwarg.has_key('strategy'): self.set_strategy(kwarg['strategy'])
