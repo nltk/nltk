@@ -49,6 +49,8 @@ Different tokenizers may split the text up differently.
 from chktype import chktype as _chktype 
 from chktype import chkclass as _chkclass
 
+import re
+
 from types import IntType as _IntType
 from types import StringType as _StringType
 from types import NoneType as _NoneType
@@ -630,5 +632,42 @@ class WSTokenizer(TokenizerI):
         for i in range(len(words)):
             tokens.append(Token(words[i], Location(i, unit='w',
                                                    source=source)))
+        return tokens
+
+class RETokenizer(TokenizerI):
+    """
+    
+    A tokenizer that separates a string of text into words, based on a
+    regular expression.  The list of tokens returned includes all
+    substrings that match the given regular expression.  Each word
+    is encoded as a C{Token} whose type is a C{string}.  Location
+    indices start at zero, and have a unit of C{'word'}.
+    """
+    def __init__(self, regexp):
+        """
+        @type regexp: string
+        """
+        _chktype("RETokenizer", 1, regexp, (_StringType, ))
+        self._regexp = re.compile('('+regexp+')')
+        
+    def tokenize(self, str, source=None):
+        # Inherit docs from TokenizerI
+        _chktype("RETokenizer.tokenize", 1, str, (_StringType,))
+
+        if '\0' in str or '\1' in str:
+            raise ValueError("RETokenizer can't handle "+
+                             "strings containing '\\0' or '\\1'")
+
+        str = re.sub(self._regexp, '\0\\1\1', str)
+        str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)', '\0', str)
+        words = str.split('\0')
+        
+        tokens = []
+        loc = 0
+        for i in range(len(words)):
+            if words[i] == '': continue
+            tokens.append(Token(words[i], Location(loc, unit='w',
+                                                   source=source)))
+            loc += 1
         return tokens
 
