@@ -669,7 +669,7 @@ if __name__ == '__main__':
     def fill(cw):
         cw['fill'] = '#%06d' % random.randint(0,999999)
     
-    cf = CanvasFrame(width=600, height=400, closeenough=2)
+    cf = CanvasFrame(width=550, height=450, closeenough=2)
     
     tree = Tree('S', Tree('NP', 'the', 'very', 'big', 'cat'),
                 Tree('VP', Tree('Adv', 'sorta'), Tree('V', 'saw'),
@@ -681,7 +681,7 @@ if __name__ == '__main__':
                     leaf_font=('helvetica', -12, 'italic'),
                     roof_fill='white', roof_color='black',
                     leaf_color='green4', node_color='blue2')
-    cf.add_widget(tc, 10, 10)
+    cf.add_widget(tc,10,10)
     
     def boxit(canvas, text):
         big = ('helvetica', -16, 'bold')
@@ -710,7 +710,7 @@ if __name__ == '__main__':
     tc2.expanded_tree().bind_click(color2, 3)
 
     paren = ParenWidget(cf.canvas(), tc2)
-    cf.add_widget(paren, 300, 10)
+    cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
     tree3 = Tree('S', Tree('NP', 'this' ,'tree'),
                  Tree('AUX', 'was'),
@@ -721,30 +721,17 @@ if __name__ == '__main__':
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
                               tree_xspace=2, tree_width=2)
     tc3['draggable'] = 1
-    cf.add_widget(tc3, 20, 220)
+    cf.add_widget(tc3, 10, tc.bbox()[3]+10)
 
     def orientswitch(treewidget):
         if treewidget['orientation'] == 'horizontal':
             treewidget.expanded_tree(1,1).subtrees()[0].set_text('vertical')
-            treewidget.collapsed_tree(1,1).subtrees()[0].set_text('vertical')
+            #treewidget.collapsed_tree(1,1).subtrees()[0].set_text('vertical')
             treewidget['orientation'] = 'vertical'
         else:
             treewidget.expanded_tree(1,1).subtrees()[0].set_text('horizontal')
-            treewidget.collapsed_tree(1,1).subtrees()[0].set_text('horizontal')
+            #treewidget.collapsed_tree(1,1).subtrees()[0].set_text('horizontal')
             treewidget['orientation'] = 'horizontal'
-
-    tree4 = Tree('S', Tree('NP', 'this', 'tree'),
-                 Tree('VP', Tree('V', 'is'), Tree('Adj',
-                                                  'horizontal')))
-    tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
-                     line_color='brown2', roof_color='brown2',
-                     node_font=('helvetica', -12, 'bold'),
-                     node_color='brown4', orientation='horizontal')
-                     
-    tc4.manage()
-    cf.add_widget(tc4, 220, 150)
-    tc4.bind_click(orientswitch)
-    tc4.bind_click_trees(tc4.toggle_collapsed, 3)
 
     text = """
 Try clicking, right clicking, and dragging
@@ -757,4 +744,15 @@ and OvalWidget).  The bottom-left tree is
 built from tree_to_treesegment."""
     twidget = TextWidget(cf.canvas(), text.strip())
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
-    cf.add_widget(textbox, 300, 260)
+    cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
+                     
+    tree4 = Tree('S', Tree('NP', 'this', 'tree'),
+                 Tree('VP', Tree('V', 'is'), Tree('Adj', 'horizontal')))
+    tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
+                     line_color='brown2', roof_color='brown2',
+                     node_font=('helvetica', -12, 'bold'),
+                     node_color='brown4', orientation='horizontal')
+    tc4.manage()
+    cf.add_widget(tc4, tc3.bbox()[2]+10, textbox.bbox()[3]+10)
+    tc4.bind_click(orientswitch)
+    tc4.bind_click_trees(tc4.toggle_collapsed, 3)
