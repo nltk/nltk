@@ -66,7 +66,7 @@ __all__ = ['Plot']
 from types import *
 from math import log, log10, ceil, floor
 import Tkinter, sys, time
-from nltk.draw import ShowText
+from nltk.draw import ShowText, in_idle
 
 class PlotFrameI:
     """
@@ -225,6 +225,7 @@ class CanvasPlotFrame(PlotFrameI):
             x = (i-self._imin) * self._dx
             y = self._ymax-((j-self._jmin) * self._dy)
             line.append( (x,y) )
+        if len(line) == 1: line.append(line[0])
         self._canvas.create_line(line, fill='black')
 
     def config_axes(self, xlog, ylog):
@@ -243,8 +244,14 @@ class CanvasPlotFrame(PlotFrameI):
             
         self._imin = min(self._rng)
         self._imax = max(self._rng)
+        if self._imax == self._imin:
+            self._imin -= 1
+            self._imax += 1
         self._jmin = min(self._vals)
         self._jmax = max(self._vals)
+        if self._jmax == self._jmin:
+            self._jmin -= 1
+            self._jmax += 1
 
         if zoomed:
             self.zoom(i1, j1, i2, j2)
@@ -302,8 +309,14 @@ class BLTPlotFrame(PlotFrameI):
         # Find ranges
         self._imin = min(rng)
         self._imax = max(rng)
+        if self._imax == self._imin:
+            self._imin -= 1
+            self._imax += 1
         self._jmin = min(vals)
         self._jmax = max(vals)
+        if self._jmax == self._jmin:
+            self._jmin -= 1
+            self._jmax += 1
 
         # Create top-level frame.
         self._root = root
@@ -525,6 +538,10 @@ class Plot:
         else:
             raise TypeError, 'Bad range type: %s' % type(rng)
 
+        # Check that we have something to plot
+        if len(vals) == 0:
+            raise ValueError, 'Nothing to plot!'
+
         # Set _rng/_vals
         self._rng = rng
         self._vals = vals
@@ -532,8 +549,14 @@ class Plot:
         # Find max/min's.
         self._imin = min(rng)
         self._imax = max(rng)
+        if self._imax == self._imin:
+            self._imin -= 1
+            self._imax += 1
         self._jmin = min(vals)
         self._jmax = max(vals)
+        if self._jmax == self._jmin:
+            self._jmin -= 1
+            self._jmax += 1
         
         # Do some basic error checking.
         if len(self._rng) != len(self._vals):
@@ -699,6 +722,10 @@ class Plot:
         if j2 > self._jmax:
             j1 = max(self._jmin, j1 - (j2 - self._jmax))
             j2 = self._jmax
+
+        # Range size checking:
+        if i1 == i2: i2 += 1
+        if j1 == j2: j2 += 1
 
         if self._ilog.get(): i1 = max(1e-100, i1)
         if self._jlog.get(): j1 = max(1e-100, j1)
