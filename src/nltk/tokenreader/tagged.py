@@ -41,7 +41,7 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         CONTEXT = self.property('CONTEXT')
         subtoks = []
         for w in s.split():
-            slash = w.find('/')
+            slash = w.rfind('/')
             if slash >= 0:
                 subtoks.append(Token(**{TEXT: w[:slash], TAG: w[slash+1:]}))
             else:
@@ -122,7 +122,7 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             elif text[0] == ']':
                 stack.pop()
             else:
-                slash = text.find('/')
+                slash = text.rfind('/')
                 if slash >= 0:
                     tok = Token(**{TEXT: text[:slash], TAG: text[slash+1:]})
                 else:
