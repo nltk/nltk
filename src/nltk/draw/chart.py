@@ -1264,7 +1264,7 @@ class ChartDemo:
         root.option_add("*Font", self._sysfont)
         
         # TWhat's our font size (default=same as sysfont)
-        self._size = Tkinter.IntVar(self._root)
+        self._size = Tkinter.IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
         self._boldfont = tkFont.Font(family='helvetica', weight='bold',
@@ -1629,7 +1629,7 @@ class ChartDemo:
         if self._results: self._results.set_grammar(grammar)
 
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok.type() for tok in self._token])
+        sentence = ' '.join([tok['text'] for tok in self._token['subtokens']])
         title = 'Edit Text'
         EntryDialog(self._root, sentence, self.set_sentence, title)
 
