@@ -1220,7 +1220,7 @@ def demo():
     sent = 'I saw a man in the park'
 
     # tokenize the sentence
-    from nltk.token import WSTokenizer
+    from nltk.tokenizer import WSTokenizer
     tok_sent = WSTokenizer().tokenize(sent)
 
     parsers = [ShiftReduceParser(grammar),

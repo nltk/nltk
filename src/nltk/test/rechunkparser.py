@@ -14,7 +14,7 @@ functions and classes.
 
 from nltk.parser.chunk import *
 from nltk.tagger import TaggedTokenizer
-from nltk.token import LineTokenizer
+from nltk.tokenizer import LineTokenizer
 
 import unittest
 

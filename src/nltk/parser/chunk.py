@@ -161,7 +161,8 @@ REChunkParser
 
 from nltk.parser import ParserI
 from nltk.tree import TreeToken, AbstractTree
-from nltk.token import TokenizerI, Token, Location, LineTokenizer
+from nltk.tokenizer import TokenizerI, LineTokenizer
+from nltk.token import Token, Location
 from nltk.tagger import parse_tagged_type
 from nltk.chktype import chktype as _chktype
 from nltk.set import Set
