@@ -1,0 +1,19 @@
+WORDLIST CORPUS
+
+This is a collection of wordlists and affix lists for the following
+languages:
+
+* Czech
+* German
+* English (British)
+* English (US)
+* French
+* Hungarian
+* Italian
+* Dutch
+* Slovak
+
+They come from OpenOffice.org (distributed under LGPL license) and
+the unix wordlist (/usr/dict/words).
+
+
