@@ -1,0 +1,65 @@
+Installation
+~~~~~~~~~~~~
+In Brief
+========
+- Put the \*.py files where Python can see them.
+- Download the WordNet database files from
+  http://www.cogsci.princeton.edu/~wn/.
+- Do one of:
+    - Set the WNHOME environment variable to the pathname of WordNet's
+      "Dictionary" or "dict" directory.
+    - Set the WNSEARCHDIR environment variable to the pathname of the
+      directory that _contains_ this directory.
+    - Place an alias to WordNet's "Dictionary" (Mac) or "dict" (UNIX
+      or PC) directory in Python's home directory (and name the alias
+      "Dictionary" or "dict", respectively);
+
+Specific Platforms
+==================
+MacOS
+-----
+Download and decompress the zip file from http://sourceforge.net/projects/pywordnet, and copy the \*.py files to your Python
+path.
+
+Make an alias to ``<var>{Wordnet}</var>:Database`` (name the
+alias "``Database``"), and place it in your
+MacPython folder.&nbsp; (There are additional requirements for
+getting PyWordNet to work with the UNIX download of wn1.7.&nbsp;
+If you're trying to do this and have trouble, send me at
+steele@cs.brandeis.edu.)
+
+UNIX
+----
+Set the ``WNHOME`` environment variable to the location of
+the WordNet installation (the directory that contains ``dict`` as a
+subdirectory).
+
+Download the \*.tar.gz file from http://sourceforge.net/projects/pywordnet, and install it::
+
+  prompt> tar xfz pywordnet-1.2.1.tar.gz
+  prompt> cd pywordnet-1.2.1
+  prompt> python setup.py install
+
+If you don't have permission to install the files, you can instead
+add the name of the directory they're in to your Python path, or
+copy the \*.py files to your working directory.
+
+Windows
+-------
+Download and execute the \*.exe file from
+http://sourceforge.net/projects/pywordnet to install the Python files.
+
+Set the ``WNHOME`` environment variable to the location of
+the WordNet installation (the directory that contains ``dict`` as a
+subdirectory).
+
+Testing
+=======
+Launch Python, and test the system::
+
+  import wordnet
+  wordnet._test()
+
+Try it out by executing ``N['dog']`` to retrieve the entry for
+"dog". See the `Example Session`_ or the file documentation for a
+longer list of examples.

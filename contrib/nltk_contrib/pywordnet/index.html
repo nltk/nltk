@@ -1,0 +1,130 @@
+<HTML><HEADER><TITLE>PyWordNet - A Python Interface to WordNet</TITLE></HEADER><BODY>
+<H1>PyWordNet - A Python Interface to WordNet</H1><H2>Overview</H2><P>PyWordNet is a <A HREF="http://www.python.org/">Python</A> interface to the <A HREF="http://www.cogsci.princeton.edu/~wn/">WordNet</A> database of word
+meanings and lexical relationships.&nbsp; (A lexical relationship is a
+relationship between words, such as <STRONG>synonym</STRONG>, <STRONG>antonym</STRONG>,
+<STRONG>hypernym</STRONG> (<CODE>"poodle"</CODE> -> <CODE>"dog"</CODE>), and <STRONG>hyponym</STRONG>
+(<CODE>"poodle"</CODE> -> <CODE>"dog"</CODE>).</P><P>PyWordNet presents a concise interface to WordNet, that allows the
+user to type expressions such as <CODE>N['dog']</CODE>,
+<CODE>hyponyms(N['dog'][0])</CODE>, and <CODE>closure(ADJ['red'], SYNONYM)</CODE> to
+query the database.</P><P>If Python is already installed at your site, download PyWordNet from
+the project home page, at
+<A HREF="http://sourceforge.net/projects/pywordnet">http://sourceforge.net/projects/pywordnet</A>. For more information, read
+the documentation at the top of the source file, or skip to the
+example session <A HREF="">Example Session</A> below.</P><P>PyWordNet is hosted on <A HREF="http://sourceforge.net">SourceForge</A> <IMG
+src="http://sourceforge.net/sflogo.php?group_id=27422" width="88"
+height="31" border="0" alt="SourceForge Logo"></A></P><P>Copyright (c) 1998-2001 by Oliver Steele. Use is permitted under the
+<A HREF="http://www.opensource.org/licenses/artistic-license.html">Artistic License</A>.</P><H2>Requirements</H2><P>Python 1.5 or later, available from <A HREF="http://www.python.org/download/">http://www.python.org/download/</A>.
+(For the MacOS, you can use MacPython, at <A HREF="http://www.python.org/download/download_mac.html">http://www.python.org/download/download_mac.html</A>.)</P><P>WordNet 1.6 or 1.7, available from
+<A HREF="http://www.cogsci.princeton.edu/~wn/">http://www.cogsci.princeton.edu/~wn/</A>. (PyWordNet only uses the data
+files.)</P><H2>Other Links</H2><UL><LI><A HREF="changes.html">Change History</A></LI><LI><A HREF="install.html">Installation Instructions</A></LI></UL><H2>Example Session</H2><P><CODE>wordnet.py</CODE> contains the core database access functions.
+<CODE>wntools.py</CODE> contains the utility functions such as <CODE>hyponyms</CODE>,
+<CODE>meet</CODE>, <CODE>morphy</CODE>, <CODE>closure</CODE>, etc.  Importing <CODE>wntools</CODE> imports
+all the public functions from both modules:</P><P><PRE>>>> from wntools import *</PRE></P><P>Retrieve a Word from the Noun database:</P><P><PRE>>>> N['dog']
+dog(n.)</PRE></P><P>"Dog" has six senses:</P><P><PRE>>>> N['dog'].getSenses()
+('dog' in {noun: dog, domestic dog, Canis familiaris},
+ 'dog' in {noun: frump, dog}, 'dog' in {noun: dog},
+ 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel},
+ 'dog' in {noun: pawl, detent, click, dog},
+ 'dog' in {noun: andiron, firedog, dog, dogiron})</PRE></P><P>Bind the first-listed sense to a variable, for easier access.
+(<CODE>word[0]</CODE> is shorthand for <CODE>word.getSenses()[0]</CODE>.)</P><P><PRE>>>> dog = N['dog'][0]
+>>> dog
+'dog' in {noun: dog, domestic dog, Canis familiaris}</PRE></P><P>Retrieve all the relations, of any kind, that have this sense of "dog"
+as the source.  (<CODE>dog.getPointers(HYPONYM)</CODE> would retrieve the
+hyponyms, or names of subcategories of this sense of "dog".)</P><P><PRE>>>> dog.getPointers()
+(hypernym -> {noun: canine, canid},
+ member meronym -> {noun: Canis, genus Canis},
+ member meronym -> {noun: pack},
+ hyponym -> {noun: pooch, doggie, doggy, bow-wow},
+ hyponym -> {noun: cur, mongrel, mutt},
+ hyponym -> {noun: lapdog},
+ hyponym -> {noun: toy dog, toy},
+ hyponym -> {noun: hunting dog},
+ hyponym -> {noun: working dog},
+ hyponym -> {noun: dalmatian, coach dog, carriage dog},
+ hyponym -> {noun: basenji},
+ hyponym -> {noun: pug, pug-dog},
+ hyponym -> {noun: Newfoundland},
+ hyponym -> {noun: Great Pyrenees},
+ hyponym -> {noun: spitz},
+ hyponym -> {noun: griffon, Brussels griffon, Belgian griffon},
+ hyponym -> {noun: corgi, Welsh corgi},
+ hyponym -> {noun: poodle, poodle dog},
+ hyponym -> {noun: Mexican hairless},
+ part holonym -> {noun: flag})</PRE><PRE>>>> dog.pointerTargets(MEMBER_MERONYM)
+[{noun: Canis, genus Canis}, {noun: pack}]</PRE></P><P>Hypernyms of "dog", and their hypernyms, and so on until the links
+peter out.  (<CODE>hypernyms(dog)</CODE> is a shortcut for the closure of this
+particular relationship.)</P><P><PRE>>>> closure(dog, HYPERNYM)
+['dog' in {noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid},
+ {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian
+  mammal}, {noun: mammal}, {noun: vertebrate, craniate}, {noun: chordate},
+ {noun: animal, animate being, beast, brute, creature, fauna}, {noun: life form,
+  organism, being, living thing}, {noun: entity, something}]
+>>> cat = N['cat']</PRE></P><P>The <CODE>meet</CODE> of two items is their most subordinate common concept:</P><P><PRE>>>> meet(dog, cat[0])
+{noun: carnivore}
+>>> meet(dog, N['person'][0])
+{noun: life form, organism, being, living thing}
+>>> meet(N['thought'][0], N['belief'][0])
+{noun: content, cognitive content, mental object}</PRE></P><P>Hyponyms of "dog" (n.) that are homophonous with verbs:</P><P><PRE>>>> filter(lambda sense:V.get(sense.form),
+                   flatten1(map(lambda e:e.senses(), hyponyms(N['dog'][0]))))
+['dog' in {noun: dog, domestic dog, Canis familiaris}, 'pooch' in {noun: pooch,
+  doggie, doggy, bow-wow}, 'toy' in {noun: toy dog, toy}, 'hound' in
+ {noun: hound, hound dog}, 'basset' in {noun: basset, basset hound}, 'cocker' in
+ {noun: cocker spaniel, English cocker spaniel, cocker}, 'bulldog' in {noun:
+  bulldog, English bulldog}]</PRE></P><P>The first five adjectives that are transitively SIMILAR to red (there
+are 71 in all):</P><P><PRE>>>> closure(ADJ['red'][0], SIMILAR)
+['red' in {adjective: red, reddish, ruddy, blood-red, carmine, cerise, cherry, cherry-red, crimson, ruby, ruby-red, scarlet}, {adjective: chromatic}, {adjective: amber, brownish-yellow, yellow-brown}, {adjective: amethyst}, {adjective: aureate, gilded, gilt, gold, golden}]</PRE></P><P>Trace the senses of dog to the top concepts, and display the results
+in a readable form:</P><P><PRE>>>> from pprint import pprint
+>>> pprint(tree(N['dog'], HYPERNYM))
+[['dog' in {noun: dog, domestic dog, Canis familiaris},
+  [{noun: canine, canid},
+   [{noun: carnivore},
+        [{noun: placental, placental mammal, eutherian, eutherian mammal},
+         [{noun: mammal},
+          [{noun: vertebrate, craniate},
+           [{noun: chordate},
+                [{noun: animal, animate being, beast, brute, creature, fauna},
+                 [{noun: life form, organism, being, living thing},
+                  [{noun: entity, something}]]]]]]]]]],
+ ['dog' in {noun: frump, dog},
+  [{noun: unpleasant woman, disagreeable woman},
+   [{noun: unpleasant person, disagreeable person},
+        [{noun: unwelcome person, persona non grata},
+         [{noun: person, individual, someone, somebody, mortal, human, soul},
+          [{noun: life form, organism, being, living thing},
+           [{noun: entity, something}]],
+          [{noun: causal agent, cause, causal agency},
+           [{noun: entity, something}]]]]]]],
+ ['dog' in {noun: dog},
+  [{noun: chap, fellow, lad, gent, fella, blighter, cuss},
+   [{noun: male, male person},
+        [{noun: person, individual, someone, somebody, mortal, human, soul},
+         [{noun: life form, organism, being, living thing},
+          [{noun: entity, something}]],
+         [{noun: causal agent, cause, causal agency},
+          [{noun: entity, something}]]]]]],
+ ['dog' in {noun: cad, bounder, blackguard, dog, hound, heel},
+  [{noun: villain, scoundrel},
+   [{noun: unwelcome person, persona non grata},
+        [{noun: person, individual, someone, somebody, mortal, human, soul},
+         [{noun: life form, organism, being, living thing},
+          [{noun: entity, something}]],
+         [{noun: causal agent, cause, causal agency},
+          [{noun: entity, something}]]]]]],
+ ['dog' in {noun: pawl, detent, click, dog},
+  [{noun: catch, stop},
+   [{noun: restraint, constraint},
+        [{noun: device},
+         [{noun: instrumentality, instrumentation},
+          [{noun: artifact, artefact},
+           [{noun: object, physical object}, [{noun: entity, something}]]]]]]]],
+ ['dog' in {noun: andiron, firedog, dog, dogiron},
+  [{noun: support},
+   [{noun: device},
+        [{noun: instrumentality, instrumentation},
+         [{noun: artifact, artefact},
+          [{noun: object, physical object}, [{noun: entity, something}]]]]]]]]</PRE></P><P><hr>
+<address>
+<a href="http://www.cs.brandeis.edu/~steele/">Oliver Steele</a><br>
+Modified 9/21/2001
+</address></P></BODY></HTML>
+

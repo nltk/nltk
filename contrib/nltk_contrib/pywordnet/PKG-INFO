@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: pywordnet
+Version: 1.4
+Summary: An interface to the WordNet database.
+Home-page: http://pywordnet.sourceforge.net
+Author: Oliver Steele
+Author-email: steele@cs.brandeis.edu
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN

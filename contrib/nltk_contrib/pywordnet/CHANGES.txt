@@ -1,0 +1,94 @@
+PyWordNet Change History
+~~~~~~~~~~~~~~~~~~~~~~~~
+Version 1.4
+===========
+New Features
+------------
+- Incorporated Klaus Reis <reis@cs.cmu.edu>'s implementation of
+  Lexname (not yet documented).
+
+API Changes
+-----------
+- Added ``Word.getSenses()``, which will replace the deprecated
+  ``Word.sense()``.  (It wasn't clear under the old naming scheme which
+  were data fields and which were methods.)  Other new methods:
+  ``Word.getAdjectivePositions``, ``Synset.getSenses``,
+  ``Synset.getPointers``, ``Synset.getPointerTargets``,
+  ``Sense.getPointers``, ``Sense.getPointerTargets``, ``Sense.getSenses``,
+  ``Sense.getWord``, ``Pointer.getSource``, ``Pointer.getTarget``.
+- Remove ``Word.string``, ``Sense.string``, and ``Synset.string``. (Use
+  ``object.form`` instead.)
+- Added ``Word.getPointers`` and ``Word.getPointerTargets``, that raise an
+  error and direct the user to the corresponding methods on sense and
+  synset.
+
+Bug fixes
+---------
+- ``morphy('hardrock', 'adv')`` no longer goes into an infinite loop.
+  (This was caused by a bug in ``binarySearchFile`` where the search
+  position was at the end of the file.)
+
+Other Changes
+-------------
+- Updated doctest examples to wn1.7 database. (``wordnet._test()`` is
+  therefore no longer useful with a wn1.6 database, since their are
+  more synsets and they're in a different order, and so on.)
+- Updated comments.  ``help(wordnet)`` is now useful.
+
+Version 1.3 (8/5/2001)
+======================
+- The windows version looks for unix-style names too, so that it will
+  work with wn1.7
+- Moved project page to http://www.sourceforge.net/projects/pywordnet
+- Changed to the Artistic License
+  <www.opensource.org/licenses/artistic-license.html>.
+- Reformat to Python source conventions, and wrap long comments
+- Move release notes to a separate file
+- Package with distutils
+
+Version 1.2	(4/15/1999)
+=======================
+- public release
+- moved nonessential utility functions to wntools
+- renamed private functions to begin with _
+- closure (now in wntools) unions, rather than concatenating
+- fixed searchBinaryFile to find the first line
+
+Version 1.1.2	(4/24/1999)
+===========================
+- fixed for Windows (added workaround for Python file.seek() bug)
+- first public release of wntools.py; includes morphy and getindex
+
+Version 1.1.1	(4/21/1999)
+===========================
+- fixed len(Dictionary); fixed doctest comments
+- moved string, sequence, tree utility functions to wntools.py (not
+  yet released)
+
+Version 1.1		(4/14/1999)
+===========================
+- more doctest comments
+- added 'form' attribute as a synonym for 'string'
+- extend closure and its derivatives to work on Words
+
+Version 1.1d3	(3/18/1999)
+===========================
+- added test code and doctest comments
+
+Version 1.1d2	(3/8/1999)
+==========================
+- added verb frames
+
+Version 1.1d1	(2/27/1999)
+===========================
+- simplified copyright notice (it's still free)
+- added cache (buildIndexCaches)
+- make Dictionary print as the variable that's bound to it
+- added method Dictionary.keys(), that returns strings for that part of speech
+- added method Dictionary.has_key()
+- more efficient (don't reopen same pathname)
+- reorganized code: move Cache later, broke _IndexFile out of Dictionary
+
+Version 1.0	(11/13/1998)
+========================
+- initial public release
