@@ -227,6 +227,7 @@ class Location:
         Given the list over which this location is defined, return the
         list of elements specified by the location.  In other words,
         return C{lst[self.start():self.end()]}.
+        
         @param lst: The list of elements over which this location is
             defined.
         @type lst: C{list}

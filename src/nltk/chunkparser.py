@@ -154,9 +154,9 @@ class ChunkScore:
         F Measure: 0.823
 
     @type _correct: C{Set} of chunk token.
-    @param _correct: The known-correct (gold standard) chunks
+    @ivar _correct: The known-correct (gold standard) chunks
     @type _guessed: C{Set} of chunk token.
-    @param _guessed: The guessed chunks
+    @ivar _guessed: The guessed chunks
     """
     def __init__(self):
         self._correct = Set()
