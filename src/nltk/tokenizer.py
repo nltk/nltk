@@ -143,9 +143,6 @@ class AbstractTokenizer(TokenizerI):
     implement C{tokenize} based on C{raw_tokenize}; and
     L{_xtokenize_from_raw}, which can be used to implement
     X{xtokenize} based on X{raw_xtokenize}.
-    
-    C{tokenize} is the only method a subclass is required to
-    implement.
     """
     def __init__(self, addlocs=True):
         """
