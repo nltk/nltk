@@ -42,26 +42,6 @@ from nltk.probability import FreqDist, ConditionalFreqDist
 ##//////////////////////////////////////////////////////
 ##  Parsing and Tokenizing TaggedTypes
 ##//////////////////////////////////////////////////////
-def parse_tagged_type(string):
-    """
-    Parse a string into a C{TaggedType}.  The C{TaggedType}'s base
-    type will be the substring preceeding the first '/', and the
-    C{TaggedType}'s tag will be the substring following the first
-    '/'.  If the input string contains no '/', then the base type will
-    be the input string and the tag will be C{None}.
-
-    @param string: The string to parse
-    @type string: {string}
-    @return: The C{TaggedType} represented by C{string}
-    @rtype: C{TaggedType}
-    """
-    assert chktype(1, string, types.StringType)
-    elts = string.split('/')
-    if len(elts) > 1:
-        return TaggedType('/'.join(elts[:-1]), elts[-1].upper())
-    else:
-        return TaggedType(string, None)
-
 class TaggedTokenizer(AbstractTokenizer):
     """
     A tokenizer that divides a string of tagged words into subtokens.
