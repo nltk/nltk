@@ -427,9 +427,11 @@ def fsawindow(fsa):
 
     nodes = {}
     for state in fsa.states():
+        if state in fsa.finals(): color = 'red3'
+        else: color='green3'
         nodes[state] = StackWidget(c, TextWidget(c, `state`),
                                    OvalWidget(c, SpaceWidget(c, 12, 12),
-                                              fill='green3', margin=0))
+                                              fill=color, margin=0))
 
     edges = []
     for (s1, tlabels, s2) in fsa.transitions():
@@ -473,27 +475,28 @@ def demo():
     dfa.prune()
     nodemap, graph = fsawindow(dfa)
 
-    # Now, step through a text.
-    text = []
-    state = [dfa.start()]
-    def reset(widget, text=text, state=state, dfa=dfa, nodemap=nodemap):
-        nodemap[state[0]].child_widgets()[1]['fill'] = 'green3'
-        text[:] = list('abcababc')
-        text.reverse()
-        state[0] = dfa.start()
-        nodemap[state[0]].child_widgets()[1]['fill'] = 'red'
+    if 0:
+        # Now, step through a text.
+        text = []
+        state = [dfa.start()]
+        def reset(widget, text=text, state=state, dfa=dfa, nodemap=nodemap):
+            nodemap[state[0]].child_widgets()[1]['fill'] = 'green3'
+            text[:] = list('abcababc')
+            text.reverse()
+            state[0] = dfa.start()
+            nodemap[state[0]].child_widgets()[1]['fill'] = 'red'
+            
+        def step(widget, text=text, dfa=dfa, state=state, nodemap=nodemap):
+            nodemap[state[0]].child_widgets()[1]['fill'] = 'green3'
+            if len(text) == 0: return
+            nextstates = dfa.next(state[0], text.pop())
+            if not nextstates: return
+            state[0] = nextstates[0]
+            nodemap[state[0]].child_widgets()[1]['fill'] = 'red'
 
-    def step(widget, text=text, dfa=dfa, state=state, nodemap=nodemap):
-        nodemap[state[0]].child_widgets()[1]['fill'] = 'green3'
-        if len(text) == 0: return
-        nextstates = dfa.next(state[0], text.pop())
-        if not nextstates: return
-        state[0] = nextstates[0]
-        nodemap[state[0]].child_widgets()[1]['fill'] = 'red'
-
-    reset(0)
-    #graph.bind_click(step)
-    graph.bind_click(reset, 3)
+        reset(0)
+        graph.bind_click(step)
+        graph.bind_click(reset, 3)
 
 if __name__ == '__main__':
     demo()
