@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Taggers
+# Natural Language Toolkit: A Chunk Parser
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
