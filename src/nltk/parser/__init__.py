@@ -92,7 +92,7 @@ class ParserI:
         """
         Construct a new C{Parser}.
         """
-        assert 0, "ParserI is an abstract interface"
+        raise AssertionError("ParserI is an abstract interface")
 
     def parse(self, text):
         """
@@ -108,7 +108,7 @@ class ParserI:
             of a list of C{Tokens}, ordered by their C{Location}.
         @type text: C{list} of C{Token}
         """
-        assert 0, "ParserI is an abstract interface"
+        raise AssertionError("ParserI is an abstract interface")
 
     def parse_n(self, text, n=None):
         """
@@ -130,7 +130,7 @@ class ParserI:
             of a list of C{Tokens}, ordered by their C{Location}.
         @type text: C{list} of C{Token}
         """
-        assert 0, "ParserI is an abstract interface"
+        raise AssertionError("ParserI is an abstract interface")
 
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
