@@ -175,6 +175,21 @@ class Location:
         @rtype: (any)
         """
         return self._source
+
+    def union(self, other):
+        _chktype('union', 1, other, (Location,))
+        if self._unit != other._unit:
+            raise ValueError('Locations have incompatible units')
+        if self._source != other._source:
+            raise ValueError('Locations have incompatible sources')
+        if self._end == other._start:
+            return Location(self._start, other._end, unit=self._unit,
+                            source=self._source)
+        elif self._start == other._end:
+            return Location(other._start, self._end, unit=self._unit,
+                            source=self._source)
+        else:
+            raise ValueError('Locations are not contiguous')
     
     def unit(self):
         """
