@@ -161,7 +161,7 @@ REChunkParser
 
 from nltk.parser import ParserI
 from nltk.tree import TreeToken, AbstractTree
-from nltk.tokenizer import TokenizerI, LineTokenizer
+from nltk.tokenizer import TokenizerI, LineTokenizer, RETokenizer
 from nltk.token import Token, Location
 from nltk.tagger import parse_tagged_type, TaggedType
 from nltk.chktype import chktype as _chktype
@@ -414,6 +414,97 @@ class ConllChunkedTokenizer(TokenizerI):
         # sentence ended inside a chunk so add those tokens
         if subsequence:
             chunks.append(TreeToken(chunktype, *subsequence))
+
+        return chunks
+
+class IeerChunkedTokenizer(TokenizerI):
+    """
+    A tokenizer that splits a string of chunked tagged text in the
+    IEER named entity format into tokens and chunks.  Each token is
+    encoded as a C{Token} whose type is C{String}; and each chunk
+    is encoded as a C{TreeToken} containing C{Token}s with
+    C{String} types.
+
+    The input string is in the form of a document (the IEER corpus
+    reader returns a list of such documents).  Chunks are of several
+    types, LOCATION, ORGANIZATION, PERSON, DURATION, DATE, CARDINAL,
+    PERCENT, MONEY, and MEASURE.
+
+      >>> docs = ieer.tokenize('NYT_19980315')
+      >>> ieerct = IeerChunkedTokenizer(['LOCATION', 'PERSON'])
+      >>> [Tree('DOC', *ieerct.tokenize(doc.type())) for doc in docs]
+
+    [('DOC':
+      '<DOCNO>'@[0w]
+      'NYT19980315.0063'@[1w]
+      '</DOCNO>'@[2w]
+      ...
+      'in'@[35w]
+      '1979'@[37w]
+      ','@[39w]
+      ('PERSON': 'Bob' 'Edwards')@[41w:43w]
+      'has'@[44w]
+      'presided'@[45w]
+      ...
+      'story'@[176w]
+      'from'@[177w]
+      ('LOCATION': 'Iowa')@[179w]
+      '.'@[181w]
+    """
+
+    def __init__(self, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', \
+            'DURATION', 'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE']):
+        """
+        Create a new C{IeerChunkedTokenizer}.
+        
+        @type chunk_types: C{string}
+        @param chunk_types: A list of the node types to be extracted
+            from the input.  Possible node types are
+            C{"LOCATION"}, C{"ORGANIZATION"}, C{"PERSON"},
+            C{"DURATION"}, C{"DATE"}, C{"CARDINAL"}, C{"PERCENT"},
+            C{"MONEY"}, C{"MEASURE"}
+        """
+        self._chunk_types = chunk_types
+        
+    def tokenize(self, str, source=None):
+
+        # Tokenizer that returns SGML tags and attributes as a single
+        # token, elsewhere tokenizing on whitespace
+        SGMLTokenizer = RETokenizer("<[^>]*>|[^<>\s]+")
+        tokens = SGMLTokenizer.tokenize(str)
+
+        in_chunk = 0        # currently inside a chunk?
+        chunktype = ''      # inside which type (LOCATION, ORGANIZATION, ...)?
+        chunks = []         # accumulated chunks
+        subsequence = []    # accumulated tokens inside next chunk
+
+        for token in tokens:
+            if not in_chunk:
+                m = re.match(r'<b_[a-z]+ type="([A-Z]+)"[^>]*>', token.type())
+
+                # starting new chunk
+                if m:
+                    if m.group(1) in self._chunk_types:
+                        chunktype = m.group(1)
+                        in_chunk = 1
+
+                # continuing outside chunk
+                elif token.type()[0:3] != "<e_":
+                    chunks.append(token)
+
+            # inside a chunk
+            else:
+                m = re.match(r'<e_[a-z]+>', token.type())
+                # ending chunk
+                if m:
+                    chunks.append(TreeToken(chunktype, *subsequence))
+                    subsequence = []
+                    in_chunk = 0
+                    chunktype = ''
+
+                # continuing inside chunk
+                else:
+                    subsequence.append(token)
 
         return chunks
 
