@@ -107,10 +107,18 @@ __maintainer__ = "Edward Loper"
 __maintainer_email__ = "edloper@gradient.cis.upenn.edu"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
-__contributors__ = """
+__developers__ = """
 Edward Loper <edloper@gradient.cis.upenn.edu>
-Steven Bird <sb@cs.mu.oz.au>
-Ewan Klein <ehk@users.sourceforge.net>
-Scott Cotton <sfscott@users.sourceforge.net>
-Salim Zayat <zayats@users.sourceforge.net>
+Steven Bird <sb@cs.mu.oz.au>,
+Ewan Klein <ewan@inf.ed.ac.uk>
+"""
+__contributors__ = """
+Chen-Fu Chiang,
+Jinyoung Choi,
+Trevor Cohn,
+Nikhil Dinesh,
+Brent Gray,
+Yurie Hara,
+Christopher Maloof,
+David Zhang.
 """
