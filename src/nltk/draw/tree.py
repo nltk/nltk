@@ -826,11 +826,11 @@ if __name__ == '__main__':
     def ovalit(canvas, text):
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
+
+    from nltk.tree import TreebankTokenizer
     
-    treetok = TreeToken('S', TreeToken('NP', Token('this',0),
-                                       Token('tree',1)),
-                 TreeToken('VP', TreeToken('V', Token('is',2)),
-                      TreeToken('AdjP', Token('shapeable', 3, 5))))
+    treetok = TreebankTokenizer().tokenize('(S (NP this tree) (VP '+
+                                           '(V is) (AdjP shapeable)))')[0]
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
