@@ -7,12 +7,16 @@
 # $Id$
 #
 
+# Open questions:
+#     Should "tree" and "treetoken" be "ttree" and "ttreetoken" or
+#     "treettoken" or even "ttreettoken"? :)
+
 # To do:
-#   - Define __eq__!!!
 #   - add x-to-y methods for treebank, etc.
 #   - traces!! Whee.
 
 import token
+import re
 from chktype import chktype as _chktype
 from types import SliceType as _SliceType
 from types import IntType as _IntType
@@ -140,7 +144,7 @@ class Tree:
         if type(index) == _SliceType:
             return self._children[index.start:index.stop]
         else:
-            return self._children(index)
+            return self._children[index]
         print dir(index)
 
     def __len__(self):
@@ -234,7 +238,8 @@ class Tree:
         """
         No ordering relationship is defined over C{Tokens}; raise an
         exception.
-        @raise NotImplementedError: 
+
+        @raise NotImplementedError:
         """
         raise NotImplementedError("Ordering relations are not "+
                                   "defined over Trees")
@@ -373,7 +378,7 @@ class TreeToken(token.Token):
         if type(index) == _SliceType:
             return self._children[index.start:index.stop]
         else:
-            return self._children(index)
+            return self._children[index]
         print dir(index)
 
     def __len__(self): 
@@ -493,10 +498,50 @@ class TreeToken(token.Token):
         """
         No ordering relationship is defined over C{Tokens}; raise an
         exception.
+        
         @raise NotImplementedError: 
         """
         raise NotImplementedError("Ordering relations are not "+
                                   "defined over TreeTokens")
+
+##//////////////////////////////////////////////////////
+##  Conversion Routines
+##//////////////////////////////////////////////////////
+
+def parse_treebank(str):
+    """
+    Given a string containing a Treebank-style representation of a
+    syntax tree, return a C{Tree} representing that syntax tree.
+    """
+    _chktype("parse_treebank", 1, str, (_StringType,))
+    
+    # Rather than trying to parse the string ourselves, we will rely
+    # on the Python parser.  This procedure isn't immediately easy to
+    # understand, but if you add a "print str" after each call to
+    # re.sub, and try it out on an example, you should be able to
+    # figure out what's going on.
+
+    # Backslash any quote marks or backslashes in the string.
+    str = re.sub(r'([\\"\'])', r'\\\1', str)
+
+    # Add quote marks and commas around words.
+    str = re.sub('([^() ]+)', r'"\1",', str)
+
+    # Add commas after close parenthases.
+    str = re.sub(r'\)', '),', str)
+    
+    # Add calls to the Tree constructor.
+    str = re.sub(r'\(', 'Tree(', str)
+
+    # Strip whitespace and get rid of the comma after the last ')' 
+    str = str.strip()[:-1]
+
+    # Use "eval" to convert the string (is this safe?)
+    try:
+        result = eval(str)
+        return result[0]
+    except:
+        raise ValueError('Bad Treebank-style string')
 
 ##//////////////////////////////////////////////////////
 ##  Test Code
@@ -542,5 +587,8 @@ def test():
     print t3.nodes()
     print t3.location()
 
+    t4 = parse_treebank('(ip (dp (d a) (n cat)) (vp (v saw)))')
+    print t4
+    
 if __name__ == '__main__':
     test()
