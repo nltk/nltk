@@ -127,8 +127,8 @@ class SenseLabeledText(nltk.classifier.LabeledText):
         @type sense: (any), usually a C{String}
         @param headIndex: The index of the head word
         @type headIndex: C{Integer}
-        @param: The lemma (uninflected form) of the head word
-        @type: C{String}
+        @param lemma: The lemma (uninflected form) of the head word
+        @type lemma: C{String}
         """
         nltk.classifier.LabeledText.__init__(self, text, sense)
         self._headIndex = headIndex
