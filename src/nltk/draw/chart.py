@@ -97,25 +97,20 @@ class SmallChartMatrixView:
     """
     A view of a chart that displays the contents of the corresponding matrix.
     """
-    def __init__(self, chart, source, root=None):
+    def __init__(self, parent, chart, source):
         self._chart = chart
         self._source = source
-        
-        # If they didn't provide a main window, then set one up.
-        if root is None:
-            top = Tkinter.Tk()
-            top.title('Chart Matrix')
-            def destroy1(e, top=top): top.destroy()
-            def destroy2(top=top): top.destroy()
-            top.bind('q', destroy1)
-            b = Tkinter.Button(top, text='Done', command=destroy2)
-            b.pack(side='bottom')
-            self._root = top
-        else:
-            self._root = root
+
+        self._root = Tkinter.Toplevel(parent)
+        self._root.title('Chart Matrix')
+#        def destroy1(e, top=self._root): top.destroy()
+#        def destroy2(top=self._root): top.destroy()
+#        self._root.bind('q', destroy1)
+#        b = Tkinter.Button(self._root, text='Close', command=destroy2)
+#        b.pack(side='bottom')
 
         self._init_locmap()
-        self._canvas = Tkinter.Canvas(self._root, width=100, height=100,
+        self._canvas = Tkinter.Canvas(self._root, width=200, height=200,
                                       background='white')
         self._canvas.pack(expand=1, fill='both')
         self._init_locmap()
@@ -131,7 +126,13 @@ class SmallChartMatrixView:
         for i in self._index2loc:
             self._loc2index[self._index2loc[i]] = i
 
-    def update(self):
+    def update(self, chart, source=None):
+        self._chart = chart
+        if source is not None:
+            self._source = source
+            self._init_locmap()
+            self.draw()
+            
         # Gray out everything:
         N = len(self._source)+1
         for i in range(N):
@@ -139,14 +140,21 @@ class SmallChartMatrixView:
                 self._canvas.itemconfig(self._cells[i][j], fill='gray20')
         
         for edge in self._chart.edges():
+            self.color_edge(edge, 'blue4')
             i = self._loc2index[edge.loc().start()]
             j = self._loc2index[edge.loc().end()]
             self._canvas.itemconfig(self._cells[i][j], fill='blue2')
+
+    def color_edge(self, edge, color):
+        i = self._loc2index[edge.loc().start()]
+        j = self._loc2index[edge.loc().end()]
+        self._canvas.itemconfig(self._cells[i][j], fill=color)
 
     def draw(self):
         LEFT_MARGIN = BOT_MARGIN = 15
         TOP_MARGIN = 5
         c = self._canvas
+        c.delete('all')
         N = len(self._source)+1
         dx = (int(c['width'])-LEFT_MARGIN)/N
         dy = (int(c['height'])-TOP_MARGIN-BOT_MARGIN)/N
@@ -179,7 +187,7 @@ class SmallChartMatrixView:
                                        fill='gray20')
                 self._cells[-1].append(t)
 
-        self.update()
+        self.update(self._chart)
 
 #//////////////////////////////////////////////////////////////////////
 # Chart View
@@ -311,6 +319,10 @@ class ChartView:
         else:
             self._tree_canvas = None
 
+        # Add an (optional?) view of the chart as a matrix.
+        self._smallmatrix = SmallChartMatrixView(self._root, self._chart,
+                                                 self._source)
+        
         # Do some analysis to figure out how big the window should be
         self._analyze()
         self.draw()     # ***** why do I need this draw?
@@ -320,7 +332,7 @@ class ChartView:
         # Set up the configure callback, which will be called whenever
         # the window is resized.
         self._chart_canvas.bind('<Configure>', self._configure)
-        
+
     def _sb_canvas(self, root, expand='y', 
                    fill='both', side='bottom'):
         """
@@ -363,10 +375,10 @@ class ChartView:
                     (loc.end() - loc.start())
                     * self._unitsize +
                     ChartView._MARGIN * 2 )
-        self._chart_canvas['width'] = width
+        width = int(self._chart_canvas['width'])
+        #self._chart_canvas['width'] = width # broken??
         unitwidth = loc.end() - loc.start()
-        self._unitsize = ((width - 2*ChartView._MARGIN) /
-                          unitwidth)
+        self._unitsize = (width - 2*ChartView._MARGIN) / unitwidth
 
         # Reset the height for the source window.
         if self._source_canvas is not None:
@@ -389,7 +401,8 @@ class ChartView:
         canvas.
         """
         # This breaks things, but I still don't have this quite right:
-        #self._chart_canvas['width'] = e.width
+        if abs(int(self._chart_canvas['width'])-e.width) > 5:
+            self._chart_canvas['width'] = e.width
         loc = self._chart.loc()
         unitwidth = loc.end() - loc.start()
         self._unitsize = (e.width - 2*ChartView._MARGIN) / unitwidth
@@ -408,12 +421,13 @@ class ChartView:
         if chart is not None:
             if source is not None: self._source = source
             self._chart = chart
+            self._smallmatrix.update(self._chart, source)
             self._edgelevels = []
             self._edgeselection = None
             self._analyze()
             self._grow()
             self.draw()
-            self._resize()
+            self._resize() 
         else:
             edges = self._chart.edges()
             edges.sort()
@@ -421,6 +435,7 @@ class ChartView:
                 if not self._edgetags.has_key(edge):
                     self._add_edge(edge)
             self._resize()
+
 
     def _edge_conflict(self, edge, lvl):
         """
@@ -592,6 +607,8 @@ class ChartView:
         c = self._chart_canvas
 
         if linecolor is not None and textcolor is not None:
+            if self._marks.has_key(edge):
+                linecolor = self._marks[edge]
             tags = self._edgetags[edge]
             c.itemconfig(tags[0], fill=linecolor)
             c.itemconfig(tags[1], fill=textcolor)
@@ -599,19 +616,19 @@ class ChartView:
                          outline=textcolor)
             c.itemconfig(tags[3], fill=textcolor)
             c.itemconfig(tags[4], fill=textcolor)
+            self._smallmatrix.color_edge(edge, linecolor)
             return
         else:
             if edge is self._edgeselection:
                 self._color_edge(edge, '#f00', '#800')
-            elif self._marks.has_key(edge):
-                color = self._marks[edge]
-                self._color_edge(edge, color, color)
             elif (edge.complete() and edge.loc() == self._chart.loc()):
                 self._color_edge(edge, '#084', '#042')
+            elif isinstance(edge, TokenEdge):
+                self._color_edge(edge, '#48c', '#246')
             else:
                 self._color_edge(edge, '#00f', '#008')
 
-    def mark_edge(self, edge, mark='cyan4'):
+    def mark_edge(self, edge, mark='#0df'):
         """
         Mark an edge
         """
@@ -968,8 +985,9 @@ class ChartDemo:
     
     def __init__(self, grammar, text, title='Chart Parsing Demo'):
 
-        self.root = None
+        self._root = None
         try:
+            self._lexiconview = self._grammarview = None
             # Create the root window.
             self._root = Tkinter.Tk()
             self._root.title(title)
@@ -979,7 +997,6 @@ class ChartDemo:
             buttons1 = Tkinter.Frame(self._root)
             buttons1.pack(side='bottom', fill='x')
 
-            self._lexiconview = self._grammarview = None
     
             self._grammar = grammar
             self._tok_sent = text
@@ -1042,7 +1059,7 @@ class ChartDemo:
             self._init_bindings()
 
             # Enter mainloop.
-            Tkinter.mainloop()
+            #Tkinter.mainloop()
         except:
             print 'Error creating Tree View'
             self.destroy()
@@ -1136,7 +1153,7 @@ class ChartDemo:
         menubar.add_cascade(label="Animate", underline=1, menu=animatemenu)
         
         zoommenu = Tkinter.Menu(menubar, tearoff=0)
-        self._size = Tkinter.IntVar(self.root)
+        self._size = Tkinter.IntVar(self._root)
         self._size.set(self._cv.get_font_size())
         zoommenu.add_radiobutton(label='Tiny', variable=self._size,
                                  underline=0, value=10, command=self.resize)
@@ -1306,7 +1323,7 @@ class ChartDemo:
     def top_down_init(self, *e):
         self.apply_strategy(ChartDemo._TOP_DOWN_INIT, None)
 
-    _TOP_DOWN_S = [TopDownInitRule(), TopDownRule(), FundamentalRule()]
+    _TOP_DOWN_S = [TopDownRule(), FundamentalRule(), TopDownInitRule()]
     def top_down_strategy(self, *e):
         self.apply_strategy(ChartDemo._TOP_DOWN_S, TopDownEdgeRule)
 
@@ -1322,7 +1339,7 @@ class ChartDemo:
     def bottom_up_init(self, *e):
         self.apply_strategy(ChartDemo._BOTTOM_UP_INIT, BottomUpEdgeRule)
 
-    _BOTTOM_UP_S = [BottomUpRule(), FundamentalRule()]
+    _BOTTOM_UP_S = [FundamentalRule(), BottomUpRule()]
     def bottom_up_strategy(self, *e):
         self.apply_strategy(ChartDemo._BOTTOM_UP_S, BottomUpEdgeRule)
         
@@ -1339,20 +1356,16 @@ def test():
                                            for s in nonterminals.split()]
     
     grammar_rules1 = [
-        CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
-        CFGProduction(NP, 'John'), #CFGProduction(NP, 'I'), 
-        CFGProduction(Det, 'the'), #CFGProduction(Det, 'my'),
-        #CFGProduction(N, 'dog'),
-        CFGProduction(N, 'cookie'),
-        CFGProduction(N, 'table'),
-
-        CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
+        CFGProduction(NP, Det, N),  CFGProduction(NP, NP, PP),
+        CFGProduction(NP, 'John'),  CFGProduction(NP, 'I'), 
+        CFGProduction(Det, 'the'),  CFGProduction(Det, 'my'),
+        CFGProduction(N, 'dog'),    CFGProduction(Det, 'a'),
+        CFGProduction(N, 'cookie'), CFGProduction(N, 'table'),
+        CFGProduction(VP, VP, PP),  CFGProduction(VP, V, NP),
+        CFGProduction(V, 'ate'),    CFGProduction(V, 'saw'),
+        CFGProduction(S, NP, VP),   CFGProduction(PP, P, NP),
+        CFGProduction(P, 'on'),     CFGProduction(P, 'under'),
         CFGProduction(VP, V),
-
-        CFGProduction(V, 'ate'),  #CFGProduction(V, 'saw'),
-
-        CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
-        CFGProduction(P, 'on'), #CFGProduction(P, 'under')
         ]
 
     grammar = CFG(S, grammar_rules1)
