@@ -11,8 +11,8 @@ all: documentation test distributions
 
 usage: help
 help:
-	# Usage:
-	#     make [all | documentation | distributions | test | clean | help]
+	@echo "Usage:"
+	@echo "     make [all | documentation | distributions | test | clean | help]"
 
 documentation:
 	$(MAKE) -C doc
