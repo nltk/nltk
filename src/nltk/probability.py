@@ -7,7 +7,7 @@
 #
 # $Id$
 
-from chktype import chktype as _chktype
+from nltk.chktype import chktype as _chktype
 
 ##//////////////////////////////////////////////////////
 ##  Sample
@@ -73,10 +73,10 @@ class EventI:
             contained in this event.
         @rtype: boolean
         """
-        return self.__contains__(sample) # Is this ok?????
+        raise AssertionError('Internal Error: Class failed to define contains')
     
     def __contains__(self, sample):
-        raise AssertionError()
+        return self.contains(sample)
     __contains__.__doc__ = contains.__doc__
     
     def equals(self, other):
@@ -125,7 +125,7 @@ class EventI:
         
         @param other: The object to compare this event to.
         @type other: Event
-        @return: true if this event is a superset of the given event.
+        @return: true if this event is a proper superset of the given event.
         @rtype: boolean
         @raise NotImplementedError: If this method is not implemented
                by this Event class.
@@ -135,28 +135,58 @@ class EventI:
         raise NotImplementedError()
     
     def __lt__(self, other):
-        try:
-            return other.superset(self)
-        except NotImplementedError:
-            return self.subset(other)
-    __lt__.__doc__ = subset.__doc__
+        """
+        Return true if this event is a proper subset of the given 
+        event.  Formally, return true if and only if every sample
+        contained by this event is contained by C{other}, and C{other} 
+        contains at least one sample not contained by this event.
+        
+        @param other: The object to compare this event to.
+        @type other: Event
+        @return: true if this event is a proper subset of the given event.
+        @rtype: boolean
+        @raise NotImplementedError: If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError: If C{other} is not a
+               supported Event type.
+        """
+        return (self <= other) and (self != other)
 
     def __gt__(self, other):
-        try:
-            return other.subset(self)
-        except NotImplementedError:
-            return self.superset(other)
-    __gt__.__doc__ = superset.__doc__
+        """
+        Return true if this event is a proper superset of the given 
+        event.  Formally, return true if and only if every sample
+        contained by C{other} is contained by this event, and this
+        event contains at least one sample not contained by C{other}.
+        
+        @param other: The object to compare this event to.
+        @type other: Event
+        @return: true if this event is a superset of the given event.
+        @rtype: boolean
+        @raise NotImplementedError: If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError: If C{other} is not a
+               supported Event type.
+        """
+        return (self >= other) and (self != other)
 
     def __eq__(self, other):
         return self.equals(other)
     __eq__.__doc__ = equals.__doc__
 
     def __ge__(self, other):
-        return (self > other) or (self == other)
+        try:
+            return self.superset(other)
+        except NotImplementedError:
+            return other.subset(self)
+    __ge__.__doc__ = superset.__doc__
     
     def __le__(self, other):
-        return (self < other) or (self == other)
+        try:
+            return self.subset(other)
+        except NotImplementedError:
+            return other.superset(self)
+    __le__.__doc__ = subset.__doc__
     
     def samples(self):
         """
@@ -260,9 +290,9 @@ class EventI:
         return self.intersection(other)
     __and__.__doc__ = intersection.__doc__
     
-    def __minus__(self, other):
+    def __sub__(self, other):
         return self.difference(other)
-    __minus__.__doc__ = difference.__doc__
+    __sub__.__doc__ = difference.__doc__
 
 class SampleEvent(EventI):
     """
@@ -295,18 +325,19 @@ class SampleEvent(EventI):
                    (len(other) == 1 and self._sample in other)
         else:
             raise NotImplementedError()
-    def union(self, other): 
+    def toSetEvent(self):
+        """
+        Convert this SampleEvent to a SetEvent.
+        """
+    def union(self, other):
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a or x in b))
-        return PredEvent(f)
+        return self.toSetEvent.union(other)
     def intersection(self, other):
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a and x in b))
-        return PredEvent(f)
+        return self.toSetEvent.intersection(other)
     def difference(self, other):
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a and x not in b))
-        return PredEvent(f)
+        return self.toSetEvent.difference(other)
     def samples(self):
         # Inherit docs from EventI
         return Set(self._sample)
@@ -358,16 +389,31 @@ class SetEvent(EventI):
             raise NotImplementedError()
     def union(self, other): 
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a and x in b))
-        return PredEvent(f)
+        try:
+            return SetEvent(self._set.union(other.samples()))
+        except NotImplementedError:
+            newset = Set()
+            for elt in self._set.elements():
+                if elt in other:
+                    newset.insert(elt)
+            return SetEvent(newset)
     def intersection(self, other):
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a or x in b))
-        return PredEvent(f)
+        try:
+            return SetEvent(self._set.intersection(other.samples()))
+        except NotImplementedError:
+            f = (lambda x, a=self, b=other:(x in a or x in b))
+            return PredEvent(f)
     def difference(self, other):
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a and x not in b))
-        return PredEvent(f)
+        try:
+            return SetEvent(self._set.difference(other.samples()))
+        except NotImplementedError:
+            newset = Set()
+            for elt in self._set.elements():
+                if elt not in other:
+                    newset.insert(elt)
+            return SetEvent(newset)
     def samples(self):
         # Inherit docs from EventI
         # Make a copy -- it's safer.
@@ -384,6 +430,12 @@ class SetEvent(EventI):
             return str[:-2]+'}'
         else:
             return str+'...}'
+    def __str__(self):
+        if len(self._set) == 0: return '{Event}'
+        str = '{Event '
+        for elt in self._set.elements():
+            str += repr(elt)+', '
+        return str[:-2]+'}'
 
 class PredEvent(EventI):
     """
@@ -441,8 +493,11 @@ class PredEvent(EventI):
             raise NotImplementedError()
     def union(self, other): 
         # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a and x in b))
-        return PredEvent(f)
+        try:
+            return SetEvent(other.samples()).union(self)
+        except NotImplementedError:
+            f = (lambda x, a=self, b=other:(x in a and x in b))
+            return PredEvent(f)
     def intersection(self, other):
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a or x in b))
@@ -466,7 +521,7 @@ class PredEvent(EventI):
         """
         raise NotImplementedError()
     def __repr__(self):
-        return '{Event x:%s(x)}' % self._func.__name__
+        return '{Event x: %s(x)}' % self._func.__name__
 
 class NullEvent(EventI):
     """
@@ -567,7 +622,25 @@ class FreqDistI:
     def N(self):
         """
         @return: The total number of sample outcomes that have been
-          recorded by this C{FreqDist}.
+          recorded by this C{FreqDist}.  For the number of unique 
+          I{samples} (or bins), see C{FreqDistI.B()}.
+        @rtype: int
+        """
+        raise AssertionError()
+
+    def B(self):
+        """
+        @return: The total number of samples that have been recorded
+          as outcomes by this this frequency distribution.  I.e.,
+          return the number of X{bins} in this frequency
+          distribution. 
+        @rtype: int
+        """
+        raise AssertionError()
+
+    def Nr(self, r):
+        """
+        @return: The number of samples with frequency r.
         @rtype: int
         """
         raise AssertionError()
@@ -711,9 +784,11 @@ class SimpleFreqDist(FreqDistI):
         """
         self._dict = {}
         self._N = 0
+        self._Nr_cache = None
 
     def inc(self, sample):
         # Inherit docs from FreqDistI
+        self._Nr_cache = None
         self._N += 1
         if self._dict.has_key(sample):
             self._dict[sample] += 1
@@ -723,6 +798,24 @@ class SimpleFreqDist(FreqDistI):
     def N(self):
         # Inherit docs from FreqDistI
         return self._N
+
+    def B(self):
+        # Inherit docs from FreqDistI
+        return len(self._dict)
+
+    def Nr(self, r):
+        # Inherit docs from FreqDistI
+        # We have to do a full search.  That's slow.  If they
+        # ask for one Nr, they'll probably ask for others, so cache
+        # the results.
+        if self._Nr_cache == None: 
+            nr = []
+            for (key, c) in self._dict.items():
+                if c > len(nr):
+                    nr.append([0]*(c-len(nr)))
+                nr[c-1] += 1
+            self._Nr_cache = nr
+        return self._Nr_cache[r]
 
     def count(self, sample_or_event):
         # Inherit docs from FreqDistI
@@ -780,7 +873,7 @@ class SimpleFreqDist(FreqDistI):
                 max_freq = freq
         return max_sample
 
-    def __str__(self):
+    def __repr__(self):
         """
         Return the informal string representation of this
         C{SimpleFreqDist}.  The informal representation of a
@@ -847,10 +940,10 @@ class CFSample:
         """
         return self._feature
     
-    def __str__(self):
+    def __repr__(self):
         """
-        Return the informal string representation of this
-        C{CFSample}.  The informal representation of a
+        Return the string representation of this
+        C{CFSample}.  The representation of a
         C{CFSample} has the form
         C{(I{context}, I{feature})}
         
@@ -858,22 +951,8 @@ class CFSample:
             C{CFSample}.
         @rtype: string
         """
-        return '('+str(self._context)+', '+str(self._feature)+')'
-    
-    def __repr__(self):
-        """
-        Return the formal string representation of this
-        C{CFSample}.  The formal representation of a
-        C{CFSample} has the form
-        C{CFSample(I{context}, I{feature})}
-        
-        @return: The formal string representation of this
-            C{CFSample}.
-        @rtype: string
-        """
-        return 'CFSample('+repr(self._context)+', '+\
-               repr(self._feature)+')'
-    
+        return '<CFSample '+repr(self._context)+', '+repr(self._feature)+'>'
+
     def __cmp__(self, other):
         """
         Return 0 if the given object is equal to this
@@ -939,6 +1018,54 @@ class ContextEvent(EventI):
         @rtype: any
         """
         return self._context
+    
+    def equals(self, other):
+        # Inherit docs from EventI
+        if isinstance(other, ContextEvent):
+            return self._context == other._context
+        else:
+            raise NotImplementedError()
+    
+    def subset(self, other):
+        # Inherit docs from EventI
+        return self.equals(other)
+    
+    def superset(self, other):
+        # Inherit docs from EventI
+        return self.equals(other)
+
+    def union(self, other): 
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x in b))
+        return PredEvent(f)
+    def intersection(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a or x in b))
+        return PredEvent(f)
+    def difference(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x not in b))
+        return PredEvent(f)
+    def samples(self):
+        """
+        B{Not implemented by this Event class.}
+        
+        @param other: -
+        @type other: -
+        @rtype: None
+        """
+        raise NotImplementedError()
+    def len(self):
+        """
+        B{Not implemented by this Event class.}
+        
+        @param other: -
+        @type other: -
+        @rtype: None
+        """
+        raise NotImplementedError()
+    def __repr__(self):
+        return '{Event <CFSample '+repr(self._context)+', x>}'
   
 class CFFreqDist(FreqDistI):
     """
@@ -973,6 +1100,9 @@ class CFFreqDist(FreqDistI):
     The C{CFFreqDist} also uses auxilliary variables to
     record the total number of samples, and the number of samples that 
     have a given condition, for each condition.
+
+    @type _dict: C{dictionary} from context to C{dictionary} from
+        feature to C{int}.
     """
     def __init__(self):
         """
@@ -999,6 +1129,13 @@ class CFFreqDist(FreqDistI):
     def N(self):
         # Inherit docs from FreqDistI
         return self._N
+
+    def B(self):
+        # Inherit docs from FreqDistI
+        b = 0
+        for dict in self._dict.values():
+            b += len(dict)
+        return b
 
     def count(self, sample_or_event):
         # Inherit docs from FreqDistI
@@ -1182,4 +1319,108 @@ class ProbDistI:
                or event types. 
         """
         raise AssertionError()
-  
+
+class MLEProbDist(ProbDistI):
+    def __init__(self, freqdist):
+        self._freqdist = freqdist
+
+    def prob(self, sample_or_event):
+        return self._freqdist.freq(sample_or_event)
+    def max(self):
+        return self._freqdist.max()
+    def cond_prob(self, sample_or_event, condition):
+        return self._freqdist.cond_freq(sample_or_event, condition)
+    def cond_max(self, condition):
+        return self._freqdist.cond_max(condition)
+
+class LidstoneProbDist(ProbDistI):
+    def __init__(self, freqdist, l, bins=None):
+        self._freqdist = freqdist
+        self._bins = bins
+        self._l = l
+
+    def _estimate(self, freq):
+        N = self._freqdist.N()
+        c = freq*N
+        l = self._l
+        if self._bins == None:
+            B = self._freqdist.bins()
+        else:
+            B = self._bins
+        return (c+l) / (N+B*l)
+
+    def prob(self, sample_or_event):
+        f = self._freqdist.freq(sample_or_event)
+        return self._estimate(f)
+    def cond_prob(self, sample_or_event, condition):
+        f = self._freqdist.cond_freq(sample_or_event, condition)
+        return self._estimate(f)
+    def cond_max(self, condition):
+        return self._freqdist.cond_max(condition)
+    def max(self):
+        return self._freqdist.max()
+
+class LaplaceProbDist(LidstoneProbDist):
+    def __init__(self, freqdist, bins=None):
+        self._freqdist = freqdist
+        self._bins = bins
+        self._l = 1
+        
+class MLEProbDist(LidstoneProbDist):
+    def __init__(self, freqdist, bins=None):
+        self._freqdist = freqdist
+        self._bins = bins
+        self._l = 0.5
+
+class HeldOutProbDist(ProbDistI):
+    """
+    Base probability estimates on held-out data.
+    """
+    def prob(self, training_dist, held_out_dist):
+        self._training = training_dist
+        self._heldout = held_out_dist
+        
+        
+        
+    
+##//////////////////////////////////////////////////////
+##  Probablistic Mix-in
+##//////////////////////////////////////////////////////
+
+class ProbablisticMixIn:
+    """
+    A mix-in class to associate probabilities with other classes
+    (tokens, trees, rules, etc.).  To use the C{ProbablisticMixIn}
+    class, define a new class that derives from an existing class and
+    from ProbablisticMixIn.  You will need to define a new constructor 
+    for the new class, which explicitly calls the constructors of both
+    its parent classes.  For example:
+
+        >>> class A:
+        ...     def __init__(self, x): self.x = x
+        ... 
+        >>> class ProbablisticA(A, ProbablisticMixIn):
+        ...     def __init__(self, x, p):
+        ...         A.__init__(self, x)
+        ...         ProbablisticMixIn.__init__(self, p)
+    
+    """
+    def __init__(self, p):
+        self.__p = p
+
+    def p(self):
+        return self.__p
+
+# import random
+# f = SimpleFreqDist()
+# for i in range(100):
+#     x = random.randint(0,50)
+#     f.inc(x)
+
+# mle = MLEProbDist(f)
+# laplace = LaplaceProbDist(f)
+# for x in range(50):
+#     print f.freq(x), mle.prob(x), laplace.prob(x)
+    
+               
+
