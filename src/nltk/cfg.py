@@ -221,7 +221,7 @@ class CFGProduction:
     @ivar _rhs: The right-hand side of the production.
     """
 
-    def __init__(self, lhs, *rhs):
+    def __init__(self, lhs, rhs):
         """
         Construct a new C{CFGProduction}.
 
@@ -316,7 +316,7 @@ class CFGProduction:
                 rhsides[-1].append(piece[1:-1])        # Terminal
             else:
                 rhsides[-1].append(Nonterminal(piece)) # Nonterminal
-        return [CFGProduction(lhside, *rhside) for rhside in rhsides]
+        return [CFGProduction(lhside, rhside) for rhside in rhsides]
     parse = staticmethod(parse)
 
 class CFG:
@@ -381,8 +381,8 @@ class CFG:
 # PCFGs and PCFG productions
 #################################################################
 
-from nltk.probability import ProbabilisticMixIn
-class PCFGProduction(CFGProduction, ProbabilisticMixIn):
+from nltk.probability import ImmutableProbabilisticMixIn
+class PCFGProduction(CFGProduction, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
     C{PCFGProduction}s are essentially just C{CFGProduction}s that
@@ -394,7 +394,7 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
 
     @see: L{CFGProduction}
     """
-    def __init__(self, prob, lhs, *rhs):
+    def __init__(self, lhs, rhs, **prob_kwarg):
         """
         Construct a new C{PCFGProduction}.
 
@@ -404,20 +404,20 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
         @param rhs: The right-hand side of the new C{PCFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
-        ProbabilisticMixIn.__init__(self, prob)
-        CFGProduction.__init__(self, lhs, *rhs)
+        ImmutableProbabilisticMixIn.__init__(self, **prob_kwarg)
+        CFGProduction.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return CFGProduction.__str__(self) + ' (p=%s)' % self._prob
+        return CFGProduction.__str__(self) + ' (p=%s)' % self.prob()
 
     def __eq__(self, other):
         return (_classeq(self, other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
-                self._prob == other._prob)
+                self.prob() == other.prob())
 
     def __hash__(self):
-        return hash((self._lhs, self._rhs, self._prob))
+        return hash((self._lhs, self._rhs, self.prob()))
 
 class PCFG(CFG):
     """
@@ -484,13 +484,13 @@ def demo():
     print
 
     # Create some CFG Productions
-    prods = [CFGProduction(S, NP, VP), CFGProduction(PP, P, NP),
-             CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
-             CFGProduction(VP, V, NP), CFGProduction(VP, VP, PP),
-             CFGProduction(Det, 'a'), CFGProduction(Det, 'the'),
-             CFGProduction(N, 'dog'), CFGProduction(N, 'cat'), 
-             CFGProduction(V, 'chased'), CFGProduction(V, 'sat'),
-             CFGProduction(P, 'on'), CFGProduction(P, 'in')]
+    prods = [CFGProduction(S, [NP, VP]), CFGProduction(PP, [P, NP]),
+             CFGProduction(NP, [Det, N]), CFGProduction(NP, [NP, PP]),
+             CFGProduction(VP, [V, NP]), CFGProduction(VP, [VP, PP]),
+             CFGProduction(Det, ['a']), CFGProduction(Det, ['the']),
+             CFGProduction(N, ['dog']), CFGProduction(N, ['cat']), 
+             CFGProduction(V, ['chased']), CFGProduction(V, ['sat']),
+             CFGProduction(P, ['on']), CFGProduction(P, ['in'])]
 
     prod = prods[2]
     print 'A CFG production:', `prod`
@@ -509,13 +509,13 @@ def demo():
 
     # Create some probabilistic CFG Productions
     A, B, C = nonterminals('A, B, C')
-    pcfg_prods = [PCFGProduction(0.3, A, B, B),
-                  PCFGProduction(0.7, A, C, B, C),
-                  PCFGProduction(0.5, B, B, 'b'),
-                  PCFGProduction(0.5, B, C),
-                  PCFGProduction(0.1, C, 'a'),
-                  PCFGProduction(0.9, C, 'b')] 
-
+    pcfg_prods = [PCFGProduction(A, [B, B], prob=0.3),
+                  PCFGProduction(A, [C, B, C], prob=0.7),
+                  PCFGProduction(B, [B, 'b'], prob=0.5),
+                  PCFGProduction(B, [C], prob=0.5),
+                  PCFGProduction(C, ['a'], prob=0.1),
+                  PCFGProduction(C, ['b'], prob=0.9)] 
+    
     pcfg_prod = pcfg_prods[2]
     print 'A PCFG production:', `pcfg_prod`
     print '    pcfg_prod.lhs()  =>', `pcfg_prod.lhs()`
