@@ -178,15 +178,16 @@ class TreebankCorpusReader(CorpusReaderI):
         if group is None: return self._items
         else: return tuple(self._group_items.get(group)) or ()
 
-    def read(self, item):
+    def read(self, item, *reader_args, **reader_kwargs):
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
         reader = self._token_reader(item)
-        return reader.read_token(text, source=source)
+        return reader.read_token(text, source=source,
+                                 *reader_args, **reader_kwargs)
 
-    def xread(self, item):
+    def xread(self, item, *reader_args, **reader_kwargs):
         # Default: no iterators.
-        return self.read(item)
+        return self.read(item, *reader_args, **reader_kwargs)
 
     def path(self, item):
         self._initialize()
