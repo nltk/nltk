@@ -101,6 +101,7 @@ class Info:
         self.deadline = ''
         self.abstract = ''
         self.sequence_id = ''
+        self.external_urls = []
 
         dict = {}
         key = None
@@ -126,6 +127,7 @@ class Info:
             elif key == 'deadline': self.deadline = val
             elif key == 'abstract': self.abstract = val
             elif key == 'id': self.sequence_id = val
+            elif key == 'exturl': self.external_urls = val.split()
             else: self.error('Unknown key: '+key)
 
         # Build a sorting identifier.
@@ -133,6 +135,8 @@ class Info:
             self._sid = (0, int(self.sequence_id), self.name)
         elif re.match('\w+', self.sequence_id):
             self._sid = (1, self.sequence_id, self.name)
+        elif re.match('-\d+', self.sequence_id):
+            self._sid = (3, int(self.sequence_id), self.name)
         else:
             self._sid = (2, self.name)
 
@@ -190,19 +194,21 @@ def techtable(reports):
         basename = report.basename
         status = report.status or '&nbsp;'
         deadline = report.deadline or '&nbsp;'
-        if os.path.isfile(os.path.join(report.path, basename+".pdf")):
-            pdf = '<a href="%s.pdf">pdf</a>' % basename
-        else:
-            pdf = '&nbsp;'
-        if os.path.isfile(os.path.join(report.path, basename+".ps")):
-            ps = '<a href="%s.ps">ps</a>' % basename
-        else:
-            ps = '&nbsp;'
+        
+        files = []
+        for ext in 'pdf ps mov mp3'.split():
+            if os.path.isfile(os.path.join(report.path,
+                                           '%s.%s' % (basename, ext))):
+                files.append('<a href="%s.%s">%s</a>' %
+                             (basename, ext, ext))
+        for url in report.external_urls:
+            ext = url.split('.')[-1]
+            files.append('<a href="%s">%s</a>' % (url, ext))
         
         str += '      <tr>\n'
         str += '        <td class="tech">%s</td>\n' % name
-        str += ('        <td class="tech" align="center">[%s|%s]</td>\n' %
-                (ps, pdf))
+        str += ('        <td class="tech" align="center">[%s]</td>\n' %
+                '|'.join(files))
         str += '        <td class="tech">%s</td>\n' % status
         str += '        <td class="tech">%s</td>\n' % deadline
         str += '      </tr>\n'
