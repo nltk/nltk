@@ -58,6 +58,9 @@ class TokenizerBasedTokenReader(TokenReaderI):
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
         tok = Token(**{TEXT: s})
+        if 'source' in tokenizer_kwargs:
+            tok['LOC'] = tokenizer_kwargs['source']
+            del tokenizer_kwargs['source']
         self._tokenizer.tokenize(tok, *tokenizer_args, **tokenizer_kwargs)
         del tok[TEXT]
         return tok
