@@ -43,6 +43,12 @@ In addition, the token module defines the C{TokenizerI} interface, as
 well as several implementations of that interface.  A X{tokenizer} is
 a class which converts a string of text into its constituent tokens.
 Different tokenizers may split the text up differently.
+
+@group Data Types: Location, Token
+@group Tokenizers: TokenizerI, WSTokenizer, RETokenizer, CharTokenizer,
+    LineTokenizer, _XTokenTuple
+@sort: Location, Token, TokenizerI, WSTokenizer, RETokenizer, CharTokenizer,
+    LineTokenizer, _XTokenTuple
 """
 
 import re, sys, types
@@ -106,6 +112,13 @@ class Location:
         @param source: The source of the text that contains this
             location.
         @unit source: (any)
+
+        @group Accessors: start, end, unit, source, length, __len__
+        @sort: start, end, unit, source, length, __len__
+        @group Comparison: __eq__, __ne__, prec, succ,
+            overlaps, __cmp__, __hash__
+        @group String Representation: __repr__, __str__
+        @group Misc: union, __add__, start_loc, end_loc, select
         """
         # Check types
         assert _chktype(1, start, types.IntType, types.LongType,
