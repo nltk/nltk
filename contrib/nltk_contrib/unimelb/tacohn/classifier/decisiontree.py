@@ -17,16 +17,16 @@ created. This method could probably benefit from pruning with held-out test
 data.
 
 [1] Brown 1991: Brown, Peter F., Pietra, Stephen A. Della, Pietra, Vincent
-J.  Della, and Mercer, Robert L., "Word-Sense Disambiguation Using
-Statistical Methods," in: Proceedings of the 29th Conference of the
-Association for Computational Linguistics, pp. 264-270, Berkeley, CA, June
-1991.  http://citeseer.nj.nec.com/brown91wordsense.html
+    J.  Della, and Mercer, Robert L., "Word-Sense Disambiguation Using
+    Statistical Methods," in: Proceedings of the 29th Conference of the
+    Association for Computational Linguistics, pp. 264-270, Berkeley, CA,
+    June 1991.  http://citeseer.nj.nec.com/brown91wordsense.html
 
 [2] Arthur Nadas, David Nahamoo, Michael A. Picheny, and Jeffrey Powell. An
-iterative "flip-flop" approximation of the most informative split in the
-construction of decision trees. In Proceedings of the IEEE International
-Conference on Acoustics, Speech and Signal Processing, Toronto, Canada, May
-1991.
+    iterative "flip-flop" approximation of the most informative split in
+    the construction of decision trees. In Proceedings of the IEEE
+    International Conference on Acoustics, Speech and Signal Processing,
+    Toronto, Canada, May 1991.
 """
 
 import math, random, operator
@@ -243,9 +243,17 @@ class DecisionTreeClassifierTrainer(ClassifierTrainerI):
     are no features left, a leaf node is created. This method could probably
     benefit from pruning with held-out test data.
     
-    [1] 'Word-Sense Disambiguation using Statistical Methods', Brown et al 
-    [2] 'An iterative "Flip-Flop" approximation of the most informatve split
-    in the construction of Decision Trees', Nadas et al.
+    [1] Brown 1991: Brown, Peter F., Pietra, Stephen A. Della, Pietra, Vincent
+        J.  Della, and Mercer, Robert L., "Word-Sense Disambiguation Using
+        Statistical Methods," in: Proceedings of the 29th Conference of the
+        Association for Computational Linguistics, pp. 264-270, Berkeley, CA,
+        June 1991.  http://citeseer.nj.nec.com/brown91wordsense.html
+
+    [2] Arthur Nadas, David Nahamoo, Michael A. Picheny, and Jeffrey Powell. An
+        iterative "flip-flop" approximation of the most informative split in
+        the construction of decision trees. In Proceedings of the IEEE
+        International Conference on Acoustics, Speech and Signal Processing,
+        Toronto, Canada, May 1991.
     """
     def __init__(self, fd_list, trace=False):
         """
