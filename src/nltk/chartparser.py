@@ -19,13 +19,6 @@ def edgecmp(e1,e2):
     return cmp((e1.loc().length(), e1.loc(), e1.dr()),
                (e2.loc().length(), e2.loc(), e2.dr()))
 
-# Edward: please add members of Location to do this
-def start_loc(l):
-    return Location(l.start(), l.start(), unit=l.unit(), source=l.source())
-def end_loc(l):
-    return Location(l.end(), l.end(), unit=l.unit(), source=l.source())
-
-
 class Edge:
     """
     An edge of a chart.    Edges are represented using C{Token}s, since
@@ -73,17 +66,17 @@ class Edge:
 
     def self_loop_start(self, rule):
         # change to use future methods Location.startLoc() ...
-        loc = start_loc(self.loc())
+        loc = self.loc().start_loc()
         dr = rule.dotted()
         return Edge(dr, (), loc)
 
     def self_loop_end(self, rule):
         # change to use future methods Location.startLoc() ...
-        loc = end_loc(self.loc())
+        loc = self.loc().end_loc()
         dr = rule.dotted()
         return Edge(dr, (), loc)
 
-    def fundamental(self, edge):
+    def FR(self, edge):
         loc = self.loc().union(edge.loc())
         dr = self.dr().shift()
         children = self.children() + edge.children()
@@ -100,7 +93,6 @@ class Chart:
     @type _loc: C{Location}
     @ivar _loc: The span of the chart, the C{Location} of a complete edge
     """
-
     def __init__(self, loc):
         self._chart = {}
         self._loc = loc
@@ -112,15 +104,21 @@ class Chart:
         return self._chart.keys()
     def size(self):
         return len(self.edges())
-    def final_edges(self):
+    def complete_edges(self):
         return [e for e in self.edges() if e.complete()]
-    def nonfinal_edges(self):
+    def incomplete_edges(self):
         return [e for e in self.edges() if not e.complete()]
+    def copy(self):
+        # make a copy of the chart
+        chart = Chart(self.loc())
+        for edge in self.edges():
+            chart.add_edge(edge)
+        return chart
     def add_edge(self,edge):
         if self._chart.has_key(edge):
-            return 0
+            return []
         self._chart[edge] = 1
-        return 1
+        return [edge]
     def parses(self, node):
         parses = []
         for edge in self.edges():
@@ -129,7 +127,7 @@ class Chart:
         return parses
             
     #draw (replace with tkinter version)
-    def draw(self, width=8):
+    def draw(self, width=7):
         print "="*75
         edges = self.edges()
         edges.sort(edgecmp)
@@ -171,149 +169,326 @@ class ChartParser(ParserI):
             self._callback = kwargs['callback']
         if kwargs.has_key('trace'):
             self._trace = kwargs['trace']
-        self._functions = self._edgetrigger = None
+        self._functions = self._edgetrigger = ()
+        self._chart = None
 
-    # set up the rule invocation strategy, a second initializer (?!)
-    def strategy(self, functions, edgetrigger):
-        self._functions = functions
-        self._edgetrigger = edgetrigger
+    def chart(self):
+        return self._chart
 
-    def strategy_test(self):
-        if self._functions:
-            return 1
-        else:
-            raise ValueError('No chart parser strategy was specified')
-
-    def add_edge(self, chart, edge):
-        added = 0
-        added += chart.add_edge(edge)
-        if added:
-            if self._trace:
-                print edge
-            if self._callback:
-                self._callback(chart, edge)
-        for func in self._edgetrigger:
-            added += func(chart, edge)
-        return added
-
-    def load_sentence(self, tok_sent):
+    # set up the rule invocation strategy and the sentence to parse
+    def load(self, strategy, tok_sent):
+        (self._functions, self._edgetrigger) = strategy
         loc = _sentence_loc(tok_sent)
-        chart = Chart(loc)
+        self._chart = Chart(loc)
 
+        added = []
         for word in tok_sent:
             for rule in self._lexicon:
                 if word.type() == rule[0]:
                     dr = DottedRule(rule.lhs(), rule[:], 1)
                     tree = Tree(rule.lhs(), *rule[:])
                     edge = Edge(dr, (tree,), word.loc())
-                    self.add_edge(chart, edge)
+                    added += self.add_edge(edge)
         if self._trace:
-            chart.draw()
-        return chart
+            self._chart.draw()
+        return added
 
-    def top_down_init(self, chart):
-        loc = start_loc(chart.loc())
+    def load_test(self):
+        if self._functions:
+            return 1
+        else:
+            raise ValueError('Attempt to use chart parser before loading it')
+
+    def add_edge(self, edge):
+        added = self._chart.add_edge(edge)
+        if added:
+            if self._trace:
+                print edge
+            if self._callback:
+                self._callback(self._chart, edge)
+        for func in self._edgetrigger:
+            added += func(edge)
+        return added
+
+    def TD_init(self):
+        added = []
+        loc = self._chart.loc().start_loc()
         for rule in self._grammar:
             if rule.lhs() == self._basecat:
                 dr = rule.dotted()
                 new_edge = Edge(dr, (), loc)
-                self.add_edge(chart, new_edge)
+                added += self.add_edge(new_edge)
         if self._trace:
-            chart.draw()
-        return chart
+            self._chart.draw()
+        return added
 
-    def top_down_step(self, chart, edge):
-        added = 0
+    def TD_edge(self, edge):
+        added = []
         for rule in self._grammar:
             if not edge.complete() and rule.lhs() == edge.next():
                 new_edge = edge.self_loop_end(rule)
-                added += self.add_edge(chart, new_edge)
+                added += self.add_edge(new_edge)
         return added
 
-    def bottom_up_init(self, chart):
-        added = 1
-        while added > 0:
-            added = 0
-            for edge in chart.edges():
-                for rule in self._grammar:
-                    if edge.lhs() == rule[0]:
-                        new_edge = edge.self_loop_start(rule)
-                        added += self.add_edge(chart, new_edge)
+    def BU_init_edge(self, edge):
+        added = []
+        for rule in self._grammar:
+            if edge.lhs() == rule[0]:
+                new_edge = edge.self_loop_start(rule)
+                added += self.add_edge(new_edge)
+        return added
+
+    def BU_init(self):
+        added = []
+        found = 1 # gets us past the loop test
+        while found:
+            found = []
+            for edge in self._chart.edges():
+                found += self.BU_init_edge(edge)
+            added += found
         if self._trace:
-            chart.draw()
+            self._chart.draw()
+        return added
+
+    def FR_edge(self, edge):
+        added = []
+        if not edge.complete():
+            for edge2 in self._chart.complete_edges():
+                if edge.next() == edge2.lhs() and edge.end() == edge2.start():
+                    new_edge = edge.FR(edge2)
+                    added += self.add_edge(new_edge)
         return added
 
     # fundamental rule
-    def fundamental(self, chart):
-        added = 1
-        while added > 0:
-            added = 0
-            for edge1 in chart.nonfinal_edges():
-                for edge2 in chart.final_edges():
-                    if edge1.next() == edge2.lhs() and edge1.end() == edge2.start():
-                        new_edge = edge1.fundamental(edge2)
-                        added += self.add_edge(chart, new_edge)
+    def FR(self):
+        added = []
+        found = 1
+        while found:
+            found = []
+            for edge in self._chart.edges():
+                found += self.FR_edge(edge)
+            added += found
         if self._trace:
-            chart.draw()
+            self._chart.draw()
         return added
 
     # rule-invocation strategies
     def td_strategy(self):
-        self.strategy((self.top_down_init, self.fundamental), (self.top_down_step,))
+        return ((self.TD_init, self.FR), (self.TD_edge,))
     def bu_strategy(self):
-        self.strategy((self.bottom_up_init, self.fundamental), ())
+        return ((self.BU_init, self.FR), ())
+
+    def parses(self):
+        return self._chart.parses(self._basecat)
 
     def parse(self, tok_sent):
-        self.strategy_test()
-        chart = self.load_sentence(tok_sent)
+        self.load_test()
         for func in self._functions:
-            func(chart)
-        return chart.parses(self._basecat)
+            func()
+        return self.parses()
+
+class SteppingChartParser(ChartParser):
+    def __init__(self, grammar, lexicon, basecat, **kwargs):
+        ChartParser.__init__(self, grammar, lexicon, basecat, **kwargs)
+        self._queue = []
+        self._action = ()
+        self._stepping_chart = None
+    def load(self, strategy, tok_sent):
+        added = ChartParser.load(self, strategy, tok_sent)
+        self._stepping_chart = self._chart.copy()
+        return self._stepping_chart.edges()
+
+    def update_chart(self):
+        self._chart = self._stepping_chart.copy()
+    def update_stepping_chart(self):
+        self._stepping_chart = self._chart.copy()
+    def stepping_chart(self):
+        return self._stepping_chart
+    def clear(self):
+        self._queue = []
+    def empty(self):
+        return self._queue == []
+    def dequeue(self):
+        if self._queue == []:
+            return None
+        front = self._queue[0]
+        self._queue = self._queue[1:]
+        return front
+    def next(self):
+        added = []
+        while added == [] and not self.empty():
+            next_edge = self.dequeue()
+            added = self._stepping_chart.add_edge(next_edge)
+        if added == []:
+            return None
+        else:
+            return added[0]
+
+    def FR_step(self, edge):
+        if self._action != ("FR", edge) or self.empty():
+            self._queue = self.FR_edge(edge)
+        self._action = ("FR", edge)
+        return self.next()
+
+    def TD_step(self, edge):
+        if self._action != ("TD", edge) or self.empty():
+            self._queue = self.TD_edge(edge)
+        self._action = ("TD", edge)
+        return self.next()
+
+    def TD_init_step(self):
+        if self._action != "TDI" or self.empty():
+            self._queue = self.TD_init()
+        self._action = "TDI"
+        return self.next()
+
+    def BU_init_step(self, edge):
+        if self._action != ("BUI", edge) or self.empty():
+            self._queue = self.BU_init_edge(edge)
+        self._action = ("BUI", edge)
+        return self.next()
 
 edgenum = 0
 def xyzzy(chart, edge):
     global edgenum
     edgenum += 1
     print edgenum, edge
-    print chart.size()
     return 0
 
-def demo():
-    grammar = (
-        Rule('S',('NP','VP')),
-        Rule('NP',('Det','N')),
-        Rule('NP',('Det','N', 'PP')),
-        Rule('VP',('V','NP')),
-        Rule('VP',('V','PP')),
-        Rule('VP',('V','NP', 'PP')),
-        Rule('VP',('V','NP', 'PP', 'PP')),
-        Rule('PP',('P','NP'))
-    )
+# DEMONSTRATION CODE
 
-    lexicon = (
-        Rule('NP',('I',)),
-        Rule('Det',('the',)),
-        Rule('Det',('a',)),
-        Rule('N',('man',)),
-        Rule('V',('saw',)),
-        Rule('P',('in',)),
-        Rule('P',('with',)),
-        Rule('N',('park',)),
-        Rule('N',('telescope',))
-    )
+grammar = (
+    Rule('S',('NP','VP')),
+    Rule('NP',('Det','N')),
+    Rule('NP',('Det','N', 'PP')),
+    Rule('VP',('V','NP')),
+    Rule('VP',('V','PP')),
+    Rule('VP',('V','NP', 'PP')),
+    Rule('VP',('V','NP', 'PP', 'PP')),
+    Rule('PP',('P','NP'))
+)
 
+lexicon = (
+    Rule('NP',('I',)),
+    Rule('Det',('the',)),
+    Rule('Det',('a',)),
+    Rule('N',('man',)),
+    Rule('V',('saw',)),
+    Rule('P',('in',)),
+    Rule('P',('with',)),
+    Rule('N',('park',)),
+    Rule('N',('telescope',))
+)
+
+def demo2():
+    global grammar, lexicon
+    
     sent = 'I saw a man in the park with a telescope'
     print "Sentence:\n", sent
 
+    # tokenize the sentence
+    tok_sent = WSTokenizer().tokenize(sent)
+
     # initialize the chartparser
     cp = ChartParser(grammar, lexicon, 'S', callback=xyzzy, trace=0)
-#    cp.td_strategy() # top-down
-    cp.bu_strategy() # bottom-up
+    cp.load(cp.bu_strategy(), tok_sent)
 
-    # tokenize the sentence then parse it
-    tok_sent = WSTokenizer().tokenize(sent)
+    # run the parser
     parses = cp.parse(tok_sent)
 
     print "Parse(s):"
     for parse in parses:
+        print parse.pp()
+
+def demo():
+    global grammar, lexicon
+    
+    sent = 'I saw a man in the park with a telescope'
+    print "Sentence:\n", sent
+
+    # tokenize the sentence
+    tok_sent = WSTokenizer().tokenize(sent)
+
+    # initialize the chartparser
+    cp = SteppingChartParser(grammar, lexicon, 'S')
+    cp.load(cp.bu_strategy(), tok_sent)
+
+    print "THE INITIAL CHART:"
+    cp.stepping_chart().draw() # NB cp.chart() is ahead of us
+
+    for x in range(2):
+        next = cp.TD_init_step()
+        print "TD_INIT:", next
+
+    for e in range(3,8):
+        edge = cp.chart().edges()[e]
+        print "USER PICKED EDGE:", edge
+        for x in range(1):
+            next = cp.BU_init_step(edge)
+            print "BU_INIT:", next
+
+    edge = cp.chart().edges()[2]
+    print "USER PICKED EDGE:", edge
+    next = cp.FR_step(edge)
+    print "FUNDAMENTAL:", next
+    if next:
+        next = cp.FR_step(next)
+        print "FUNDAMENTAL:", next
+
+    edge = cp.chart().edges()[11]
+    print "USER PICKED EDGE:", edge
+    next = cp.FR_step(edge)
+    print "FUNDAMENTAL:", next
+    if next:
+        next = cp.FR_step(next)
+        print "FUNDAMENTAL:", next
+
+    edge = cp.chart().edges()[10]
+    print "USER PICKED EDGE:", edge
+
+    for x in range(4):
+        next = cp.TD_step(edge)
+        print "TD_STEP:", next
+
+    edge = cp.chart().edges()[3]
+    print "USER PICKED EDGE:", edge
+
+    for x in range(4):
+        next = cp.BU_init_step(edge)
+        print "BU_INIT:", next
+
+    cp.stepping_chart().draw()
+
+    print "ALRIGHT, LET'S APPLY THE BU_INIT RULE MAXIMALLY"
+
+    cp.update_chart() # start using chart instead of stepping chart
+
+    edges = cp.BU_init()
+
+    print "ADDED:"
+    print edges
+
+    cp.chart().draw()
+
+    cp.update_stepping_chart() # use stepping chart again
+
+    edge = cp.chart().edges()[12]
+    print "USER PICKED EDGE:", edge
+    next = cp.FR_step(edge)
+    print "FUNDAMENTAL:", next
+    if next:
+        next = cp.FR_step(next)
+        print "FUNDAMENTAL:", next
+
+    print "NOW LET'S APPLY THE FR MAXIMALLY"
+    cp.update_chart() # switch back to the chart
+    edges = cp.FR()
+
+    print "ADDED:"
+    print edges
+
+    cp.chart().draw()
+
+    print "Parse(s):"
+    for parse in cp.parses():
         print parse.pp()
