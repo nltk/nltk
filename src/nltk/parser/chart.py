@@ -1208,10 +1208,13 @@ def demo():
     """
     A demonstration of the chart parsers.
     """
-    nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
-                                           for s in nonterminals.split()]
+    import sys, time
     
+    # Define some nonterminals
+    S, VP, NP, PP = nonterminals('S, VP, NP, PP')
+    V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
+
+    # Define a gramar.
     productions = [
         CFGProduction(NP, 'John'), CFGProduction(NP, 'I'), 
         CFGProduction(Det, 'the'), CFGProduction(Det, 'my'),
@@ -1219,59 +1222,86 @@ def demo():
         CFGProduction(N, 'dog'),   CFGProduction(N, 'cookie'),
         CFGProduction(V, 'ate'),  CFGProduction(V, 'saw'),
         CFGProduction(P, 'with'), CFGProduction(P, 'under'),
-
         CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
         CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
         CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
         CFGProduction(VP, V),
         ]
-
     grammar = CFG(S, productions)
 
+    # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-
-    # tokenize the sentence
     from nltk.tokenizer import WSTokenizer
     tok_sent = WSTokenizer().tokenize(sent)
 
-    # Which tests?
-    BU = TD = STEP = INCR = 1
+    # Ask the user which parser to test
+    print '  1: Top-down chart parser'
+    print '  2: Bottom-up chart parser'
+    print '  3: Incremental chart parsers'
+    print '  4: Stepping chart parser (alternating top-down & bottom-up)'
+    print '  5: All parsers'
+    print '\nWhich parser (1-5)? ',
+    choice = sys.stdin.readline().strip()
+    if choice not in '12345':
+        print 'Bad parser number'
+        return
 
-    tr = 2
-    import time
-    if INCR:
+    # Keep track of how long each parser takes.
+    times = {}
+
+    # Run the top-down parser, if requested.
+    if choice in ('1', '5'):
+        cp = ChartParser(grammar, TD_STRATEGY, trace=2)
         t = time.time()
-        cp = IncrementalChartParser(grammar, INCREMENTAL_BU_STRATEGY, trace=tr)
-        for parse in cp.parse_n(tok_sent): print parse
-        print 'incremental bottom up', (time.time()-t), '\n'
+        parses = cp.parse_n(tok_sent)
+        times['top down'] = time.time()-t
+        for parse in parses: print parse
+
+    # Run the bottom-up parser, if requested.
+    if choice in ('2', '5'):
+        cp = ChartParser(grammar, BU_STRATEGY, trace=2)
         t = time.time()
-        cp = IncrementalChartParser(grammar, INCREMENTAL_TD_STRATEGY, trace=tr)
-        for parse in cp.parse_n(tok_sent): print parse
-        print 'incremental top down ', (time.time()-t), '\n'
-    if BU:
+        parses = cp.parse_n(tok_sent)
+        times['bottom up'] = time.time()-t
+        for parse in parses: print parse
+
+    # Run the incremental parsers, if requested.
+    if choice in ('3', '5'):
+        cp = IncrementalChartParser(grammar, INCREMENTAL_TD_STRATEGY, trace=2)
         t = time.time()
-        cp = ChartParser(grammar, BU_STRATEGY, trace=tr)
-        for parse in cp.parse_n(tok_sent): print parse
-        print 'global bottom up     ', (time.time()-t), '\n'
-    if TD:
+        parses = cp.parse_n(tok_sent)
+        times['incremental top down'] = time.time()-t
+        for parse in parses: print parse
         t = time.time()
-        cp = ChartParser(grammar, TD_STRATEGY, trace=tr)
-        for parse in cp.parse_n(tok_sent): print parse
-        print 'global top down      ', (time.time()-t), '\n'
-    if STEP:
-        cp = SteppingChartParser(grammar, trace=tr)
+        cp = IncrementalChartParser(grammar, INCREMENTAL_BU_STRATEGY, trace=2)
+        parses = cp.parse_n(tok_sent)
+        times['incremental bottom up'] = time.time()-t
+        for parse in parses: print parse
+
+    # Run the stepping parser, if requested.
+    if choice in ('4', '5'):
+        t = time.time()
+        cp = SteppingChartParser(grammar, trace=2)
         cp.initialize(tok_sent)
-        for i in range(5):
-            print 'TOP DOWN'
+        for i in range(4):
+            print '*** SWITCH TO TOP DOWN'
             cp.set_strategy(TD_STRATEGY)
             for j in range(20):
                 if not cp.step(): break
-            print 'BOTTOM UP'
+            print '*** SWITCH TO BOTTOM UP'
             cp.set_strategy(BU_STRATEGY)
             for k in range(20):
                 if not cp.step(): break
-            print 'CHART SIZE:', len(cp.chart())
+        times['stepping'] = time.time()-t
         for parse in cp.parses(): print parse
+
+    # Print the times of all parsers:
+    maxlen = max([len(key) for key in times.keys()])
+    format = '%' + `maxlen` + 's parser: %6.3fsec'
+    times_items = times.items()
+    times_items.sort(lambda a,b:cmp(a[1], b[1]))
+    for (parser, t) in times_items:
+        print format % (parser, t)
             
 if __name__ == '__main__': demo()
