@@ -657,7 +657,7 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
         
         # Initialize the chart.
         for e in bu_init.apply_iter(chart, grammar):
-            if self._trace>1: chart.pp_edge(e)
+            if self._trace>1: chart.pp_edge(e,width=2)
             queue.append(e)
 
         while len(queue) > 0:
@@ -666,7 +666,9 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
 
             # Get the best edge.
             edge = queue.pop()
-            if self._trace>0: print chart.pp_edge(edge,width=3)
+            if self._trace>0:
+                print '  %-50s prob=%s' % (chart.pp_edge(edge,width=2),
+                                           edge.prob())
             
             # Apply BU & FR to it.
             queue.extend(bu.apply(chart, grammar, edge))
@@ -857,7 +859,7 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
             split = len(queue)-self._beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print '  %-60s [DISCARDED]' % chart.pp_edge(edge,2)
+                    print '  %-50s [DISCARDED]' % chart.pp_edge(edge,2)
             queue[:] = queue[split:]
 
 ##//////////////////////////////////////////////////////
