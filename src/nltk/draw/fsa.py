@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Finite Statue Automota Visualization
+# Natural Language Toolkit: Finite State Automota Visualization
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
