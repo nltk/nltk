@@ -8,43 +8,34 @@ class Category(FeatureStruct, Nonterminal):
 
 	A C{Category} differs from a C{FeatureStructure} in these ways:
 		- Categories may not be re-entrant.
+		
 		- Categories use value-based equality, while FeatureStructures use
 		  identity-based equality.
-		- Categories may contain a list of I{required features}, which are
-		  names of features whose value is None if unspecified. A Category
-		  lacking a feature that is required in it will not unify with any
-		  Category that has that feature. If a required feature's value is
+		  
+		- Categories have one feature marked as the 'head', which prints
+		  differently than other features if it has a value. For example,
+		  in the repr() representation of a Category, the head goes to the
+		  left, on the outside of the brackets. Subclasses of Category
+		  may change the feature name that is designated as the head, which is
+		  _head by default.
+
+		- Subclasses of Category may contain a list of I{required features},
+		  which are names of features whose value is None if unspecified. A
+		  Category lacking a feature that is required in it will not unify with
+		  any Category that has that feature. If a required feature's value is
 		  None, it is considered to be not present.
+		  
 		- True and False are allowed as values. A feature named 'foo' with a
 		  value of True is simply expressed as C{+foo}. Similarly, if it is
 		  False, it is expressed as C{-foo}.
 	"""
 	
-	requiredFeatures = ['/']
+	headname = '_head'
+	requiredFeatures = []
 	
-	def requireFeature(name): # static
-		"""
-		Designates a feature name as a required feature. All Categories
-		constructed after this will include that name as a required feature.
-		Existing Categories are unaffected.
-		"""
-		if name not in Category.requiredFeatures:
-			Category.requiredFeatures.append(name)
-	requireFeature = staticmethod(requireFeature)
-	
-	def unrequireFeature(name): # static
-		"""
-		Indicates that a feature name should no longer be required. All
-		Categories constructed after this will not include that name as a
-		required feature. Existing Categories are unaffected.
-		"""
-		if name in Category.requiredFeatures:
-			Category.requiredFeatures.remove(name)
-	unrequireFeature = staticmethod(unrequireFeature)
-
 	def __init__(self, **features):
 		self._features = features
-		self._required = Category.requiredFeatures
+		self._required = self.__class__.requiredFeatures
 		for name in self._required:
 			if not self._features.has_key(name):
 				self._features[name] = None
@@ -52,7 +43,7 @@ class Category(FeatureStruct, Nonterminal):
 		items.sort()
 		self._hash = hash(tuple(items))
 		self._memorepr = None
-				
+
 	def required_features(self):
 		"A list of the names of all required features."
 		return self._required
@@ -64,7 +55,7 @@ class Category(FeatureStruct, Nonterminal):
 		temp = self.deepcopy()
 		dict = temp._features
 		dict['/'] = other
-		return Category(**dict)
+		return self.__class__(**dict)
 
 	def __eq__(self, other):
 		"""
@@ -77,7 +68,7 @@ class Category(FeatureStruct, Nonterminal):
 		
 		# Get the result of equal_values, and make it a real boolean while
 		# we're at it.
-		if not isinstance(other, Category): return False
+		if not other.__class__ == self.__class__: return False
 		if hash(self) != hash(other): return False
 		return (self.equal_values(other) == True)
 
@@ -88,10 +79,13 @@ class Category(FeatureStruct, Nonterminal):
 		return self._hash
 
 	def symbol(self):
-		return self._features.get('symbol')
+		return self._features.get(self.__class__.headname)
+
+	def head(self):
+		return self.symbol()
 	
 	def deepcopy(self, memo=None):
-		newcopy = Category()
+		newcopy = self.__class__()
 		features = newcopy._features
 
 		# Fill out the features.
@@ -142,7 +136,7 @@ class Category(FeatureStruct, Nonterminal):
 		items.sort() # sorting note: keys are unique strings, so we'll
 					 # never fall through to comparing values.
 		for fname in items:
-			if fname == 'symbol': continue
+			if fname == self.__class__.headname: continue
 			fval = self[fname]
 			if isinstance(fval, bool):
 				if fval: segments.append('+%s' % fname)
@@ -153,9 +147,9 @@ class Category(FeatureStruct, Nonterminal):
 				fval_repr = fval._repr(reentrances, reentrance_ids)
 				segments.append('%s=%s' % (fname, fval_repr))
 
-		symbol = self._features.get('symbol')
-		if symbol is None: symbol = ''
-		return '%s[%s]' % (symbol, ', '.join(segments))
+		head = self._features.get(self.__class__.headname)
+		if head is None: head = ''
+		return '%s[%s]' % (head, ', '.join(segments))
 
 	def _str(self, reentrances, reentrance_ids):
 		"""
@@ -174,8 +168,8 @@ class Category(FeatureStruct, Nonterminal):
 		# Special case:
 		if len(self.feature_names()) == 0:
 			return ['[]']
-		if self.feature_names() == ['symbol']:
-			return ['%s[]' % self['symbol']]
+		if self.feature_names() == [self.__class__.headname]:
+			return ['%s[]' % self[self.__class__.headname]]
 		
 		
 		# What's the longest feature name?	Use this to align names.
@@ -185,11 +179,12 @@ class Category(FeatureStruct, Nonterminal):
 		items = self.feature_names()
 		items.sort() # sorting note: keys are unique strings, so we'll
 					 # never fall through to comparing values.
-		if 'symbol' in items:
-			items.remove('symbol')
-			items.insert(0, 'symbol')
+		if self.__class__.headname in items:
+			items.remove(self.__class__.headname)
+			# items.insert(0, self.__class__.headname)
 		for fname in items:
 			fval = self[fname]
+				
 			if not isinstance(fval, FeatureStruct):
 				# It's not a nested feature structure -- just print it.
 				lines.append('%s = %r' % (fname.ljust(maxfnamelen), fval))
@@ -222,8 +217,17 @@ class Category(FeatureStruct, Nonterminal):
 		if lines[-1] == '': lines = lines[:-1]
 		
 		# Add brackets around everything.
+		headline = (len(lines) - 1)/2
+		if self.has_feature(self.__class__.headname):
+			head = self[self.__class__.headname]
+		else: head = ''
 		maxlen = max([len(line) for line in lines])
-		lines = ['[ %s%s ]' % (line, ' '*(maxlen-len(line))) for line in lines]
+		for l in range(len(lines)):
+			line = lines[l]
+			if l == headline:
+				lines[l] = ('%s[ %s%s ]' % (head, line, ' '*(maxlen-len(line))))
+			else:
+				lines[l] = ('%s[ %s%s ]' % (' '*len(head), line, ' '*(maxlen-len(line))))
 
 		return lines
 
@@ -244,7 +248,7 @@ class Category(FeatureStruct, Nonterminal):
 				 'symbol': re.compile(r'\w+'),
 				 'stringmarker': re.compile("['\"\\\\]")}
 	
-	def parse(s):
+	def parse(cls, s):
 		"""
 		Convert a string representation of a feature structure (as
 		displayed by repr) into a C{Category}.	This parse
@@ -258,7 +262,7 @@ class Category(FeatureStruct, Nonterminal):
 			alphanumeric strings.
 		"""
 		try:
-			value, position = Category._parse(s, 0, {})
+			value, position = cls._parse(s, 0, {})
 		except ValueError, e:
 			estr = ('Error parsing field structure\n\n\t' +
 					s + '\n\t' + ' '*e.args[1] + '^ ' +
@@ -267,7 +271,7 @@ class Category(FeatureStruct, Nonterminal):
 		if position != len(s): raise ValueError()
 		return value
 	
-	def _parse(s, position=0, reentrances=None):
+	def _parse(cls, s, position=0, reentrances=None):
 		"""
 		Helper function that parses a Category.
 		@param s: The string to parse.
@@ -278,14 +282,14 @@ class Category(FeatureStruct, Nonterminal):
 			structure ends.
 		"""
 		# A set of useful regular expressions (precompiled)
-		_PARSE_RE = Category._PARSE_RE
+		_PARSE_RE = cls._PARSE_RE
 
-		# Find the symbol, if there is one.
+		# Find the head, if there is one.
 		match = _PARSE_RE['name'].match(s, position)
 		if match is not None:
-			symbol = match.group(1)
+			head = match.group(1)
 			position = match.end()
-		else: symbol = None
+		else: head = None
 		
 		# Check that the name is followed by an open bracket.
 		if s[position] != '[': raise ValueError('open bracket', position)
@@ -295,8 +299,8 @@ class Category(FeatureStruct, Nonterminal):
 		# return an empty feature structure.
 		match = _PARSE_RE['bracket'].match(s, position)
 		if match is not None:
-			if symbol is None: return Category(), match.end()
-			else: return Category(symbol=symbol), match.end()
+			if head is None: return cls(), match.end()
+			else: return cls(**{self.__class__.headname: head}), match.end()
 
 		# Build a list of the features defined by the structure.
 		# Each feature has one of the three following forms:
@@ -304,7 +308,7 @@ class Category(FeatureStruct, Nonterminal):
 		#	  +name
 		#	  -name
 		features = {}
-		if symbol is not None: features['symbol'] = symbol
+		if head is not None: features[cls.headname] = head
 		while position < len(s):
 			# Use these variables to hold info about the feature:
 			name = target = val = None
@@ -328,13 +332,13 @@ class Category(FeatureStruct, Nonterminal):
 				if match is None: raise ValueError('equals sign', position)
 				position = match.end()
 
-				val, position = Category._parseval(s, position, reentrances)
+				val, position = cls._parseval(s, position, reentrances)
 			features[name] = val
 					
 			# Check for a close bracket
 			match = _PARSE_RE['bracket'].match(s, position)
 			if match is not None:
-				return Category(**features), match.end()
+				return cls(**features), match.end()
 				
 			# Otherwise, there should be a comma
 			match = _PARSE_RE['comma'].match(s, position)
@@ -344,7 +348,7 @@ class Category(FeatureStruct, Nonterminal):
 		# We never saw a close bracket.
 		raise ValueError('close bracket', position)
 
-	def _parseval(s, position, reentrances):
+	def _parseval(cls, s, position, reentrances):
 		"""
 		Helper function that parses a feature value.  Currently
 		supports: None, integers, variables, strings, nested feature
@@ -356,7 +360,7 @@ class Category(FeatureStruct, Nonterminal):
 			and the position where the parsed value ends.
 		"""
 		# A set of useful regular expressions (precompiled)
-		_PARSE_RE = Category._PARSE_RE
+		_PARSE_RE = cls._PARSE_RE
 		
 		# End of string (error)
 		if position == len(s): raise ValueError('value', position)
@@ -376,7 +380,7 @@ class Category(FeatureStruct, Nonterminal):
 
 		# Nested category
 		if _PARSE_RE['categorystart'].match(s, position) is not None:
-			return Category._parse(s, position, reentrances)
+			return cls._parse(s, position, reentrances)
 
 		# Variable
 		match = _PARSE_RE['var'].match(s, position)
@@ -396,13 +400,16 @@ class Category(FeatureStruct, Nonterminal):
 		# Alphanumeric symbol (must be checked after integer)
 		match = _PARSE_RE['symbol'].match(s, position)
 		if match is not None:
-			return Category(symbol=match.group()), match.end()
+			return cls(**{cls.headname: match.group()}), match.end()
 
 		# We don't know how to parse this value.
 		raise ValueError('value', position)
 
-	_parseval=staticmethod(_parseval)
-	_parse=staticmethod(_parse)
-	parse=staticmethod(parse)
+	_parseval=classmethod(_parseval)
+	_parse=classmethod(_parse)
+	parse=classmethod(parse)
 
+class SyntaxCategory(Category):
+	headname = 'pos'
+	requiredFeatures = ['/']
 
