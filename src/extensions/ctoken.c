@@ -658,7 +658,7 @@ static PyTypeObject nltkLocationType = {
 static PyTypeObject nltkLen1LocationType = {
     PyObject_HEAD_INIT(NULL)
     0,                                         /* ob_size */
-    "Location",                                /* tp_name */
+    "Len1Location",                            /* tp_name */
     sizeof(nltkLen1Location),                  /* tp_basicsize */
     0,                                         /* tp_itemsize */
     (destructor)nltkLocation__del__,           /* tp_dealloc */
