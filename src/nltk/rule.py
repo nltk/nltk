@@ -135,6 +135,8 @@ class DottedRule(Rule):
     """
     A dotted context-free grammar rule.
 
+    This will eventually be replaced by nltk.chart.DottedCFGRule
+
     The "dot" is a distinguished position at the boundary of any
     element on the right-hand side of the rule.
 
@@ -284,7 +286,7 @@ class Nonterminal:
         @return: This non-terminal's symbol.
         @rtype: (any)
         """
-        return symbol
+        return self._symbol
 
     def __eq__(self, other):
         """
@@ -315,12 +317,12 @@ class Nonterminal:
         return hash(self._symbol)
 
     def __repr__(self):
-        return 'Nonterminal(%r)' % self._symbol
+        return '<%s>' % self._symbol
 
     def __str__(self):
         return str(self._symbol)
 
-class CFGRule:
+class CFG_Rule:
     """
     A context-free grammar rule.  Each grammar rule expands a single
     C{Nonterminal} (the X{left-hand side}) to a sequence of terminals
@@ -343,11 +345,11 @@ class CFGRule:
 
     def __init__(self, lhs, *rhs):
         """
-        Construct a new C{CFGRule}.
+        Construct a new C{CFG_Rule}.
 
-        @param lhs: The left-hand side of the new C{CFGRule}.
+        @param lhs: The left-hand side of the new C{CFG_Rule}.
         @type lhs: C{Nonterminal}
-        @param rhs: The right-hand side of the new C{CFGRule}.
+        @param rhs: The right-hand side of the new C{CFG_Rule}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         self._lhs = lhs
@@ -355,14 +357,14 @@ class CFGRule:
 
     def lhs(self):
         """
-        @return: the left-hand side of this C{CFGRule}.
+        @return: the left-hand side of this C{CFG_Rule}.
         @rtype: C{Nonterminal}
         """
         return self._lhs
 
     def rhs(self):
         """
-        @return: the right-hand side of this C{CFGRule}.
+        @return: the right-hand side of this C{CFG_Rule}.
         @rtype: sequence of (C{Nonterminal} and (terminal))
         """
         return self._rhs
@@ -372,9 +374,9 @@ class CFGRule:
         @return: A verbose string representation of the C{Rule}.
         @rtype: C{string}
         """
-        str = '%s ->' % self._lhs
+        str = '<%s> ->' % self._lhs
         for elt in self._rhs:
-            if isinstance(elt, Nonterminal): str += ' %s' % elt
+            if isinstance(elt, Nonterminal): str += ' <%s>' % elt
             else: str += ' %r' % elt
         return str
 
@@ -390,7 +392,7 @@ class CFGRule:
         @return: true if this C{Rule} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (isinstance(other, CFGRule) and
+        return (isinstance(other, CFG_Rule) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
@@ -405,69 +407,53 @@ class CFGRule:
         return hash((self._lhs, self._rhs))
 
 from nltk.probability import ProbablisticMixIn
-class PCFGRule(CFGRule, ProbablisticMixIn):
+class PCFG_Rule(CFG_Rule, ProbablisticMixIn):
     """
-    A probablistic context free grammar rule.  C{PCFGRule}s are
-    essentially just C{CFGRule}s that have probabilities associated
+    A probablistic context free grammar rule.  C{PCFG_Rule}s are
+    essentially just C{CFG_Rule}s that have probabilities associated
     with them.  These probabilities are used to record how likely it
     is that a given rule will be used.  In particular, the probability
-    of a C{PCFGRule} records the likelihood that its right-hand side
+    of a C{PCFG_Rule} records the likelihood that its right-hand side
     is the correct instantiation for any given occurance of its
     left-hand side.
 
-    @see: C{CFGRule}
+    @see: C{CFG_Rule}
     """
     def __init__(self, p, lhs, *rhs):
         """
-        Construct a new C{PCFGRule}.
+        Construct a new C{PCFG_Rule}.
 
-        @param p: The probability of the new C{PCFGRule}.
-        @param lhs: The left-hand side of the new C{PCFGRule}.
+        @param p: The probability of the new C{PCFG_Rule}.
+        @param lhs: The left-hand side of the new C{PCFG_Rule}.
         @type lhs: C{Nonterminal}
-        @param rhs: The right-hand side of the new C{PCFGRule}.
+        @param rhs: The right-hand side of the new C{PCFG_Rule}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         ProbablisticMixIn.__init__(self, p)
-        CFGRule.__init__(self, lhs, *rhs)
+        CFG_Rule.__init__(self, lhs, *rhs)
 
     def __str__(self):
-        """
-        @return: A verbose string representation of the C{Rule}.
-        @rtype: C{string}
-        """
-        str = '%s ->' % self._lhs
-        for elt in self._rhs:
-            if isinstance(elt, Nonterminal): str += ' %s' % elt
-            else: str += ' %r' % elt
-        return str + ' (p=%s)' % self._p
+        return CFG_Rule.__str__(self) + ' (p=%s)' % self._p
 
     def __eq__(self, other):
-        """
-        @return: true if this C{Rule} is equal to C{other}.
-        @rtype: C{boolean}
-        """
-        return (isinstance(other, PCFGRule) and
+        return (isinstance(other, PCFG_Rule) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self._p == other._p)
 
     def __hash__(self):
-        """
-        @return: A hash value for the C{Rule}.
-        @rtype: C{int}
-        """
         return hash((self._lhs, self._rhs, self._p))
 
 # Run some quick-and-dirty tests to make sure everything's working
 # right.  Eventually we need unit testing..
 if __name__ == '__main__':
     (S, VP, NP, PP) = [Nonterminal(s) for s in ('S', 'VP', 'NP', 'PP')]
-    rules = [CFGRule(S, VP, NP),
-             CFGRule(VP, 'saw', NP),
-             CFGRule(VP, 'ate'),
-             CFGRule(NP, 'the', 'boy'),
-             CFGRule(PP, 'under', NP),
-             CFGRule(VP, VP, PP)]
+    rules = [CFG_Rule(S, VP, NP),
+             CFG_Rule(VP, 'saw', NP),
+             CFG_Rule(VP, 'ate'),
+             CFG_Rule(NP, 'the', 'boy'),
+             CFG_Rule(PP, 'under', NP),
+             CFG_Rule(VP, VP, PP)]
 
     for rule in rules:
         print '%-18s %r' % (rule,rule)
@@ -480,13 +466,13 @@ if __name__ == '__main__':
         if A == B: print '%3s == %-3s' % (A,B)
         else: print '%3s != %-3s' % (A,B)
              
-    prules = [PCFGRule(1, S, VP, NP),
-              PCFGRule(0.4, VP, 'saw', NP),
-              PCFGRule(0.4, VP, 'ate'),
-              PCFGRule(0.2, VP, VP, PP),
-              PCFGRule(0.8, NP, 'the', 'boy'),
-              PCFGRule(0.2, NP, 'Jack'),
-              PCFGRule(1.0, PP, 'under', NP)]
+    prules = [PCFG_Rule(1, S, VP, NP),
+              PCFG_Rule(0.4, VP, 'saw', NP),
+              PCFG_Rule(0.4, VP, 'ate'),
+              PCFG_Rule(0.2, VP, VP, PP),
+              PCFG_Rule(0.8, NP, 'the', 'boy'),
+              PCFG_Rule(0.2, NP, 'Jack'),
+              PCFG_Rule(1.0, PP, 'under', NP)]
 
     for rule in prules:
         print '%-30s %r' % (rule,rule)
