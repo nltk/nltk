@@ -62,9 +62,14 @@ class Set:
 
         @param elt: The element to insert into the Set.
         @type elt: Any
-        @rtype: None
+        @rtype: C{boolean}
+        @return: C{true} if the C{insert} operation added an element
+            to the set; false if C{elt} was already present in the
+            set. 
         """
+        if self._dict.has_key(elt): return 0
         self._dict[elt] = 1
+        return 1
 
     def union(self, other):
         """
