@@ -136,7 +136,7 @@ class TreeView:
         # Draw the new before we delete the old; this sometimes
         # prevents blinking..
         old = self._canvas.find(ALL)
-        width = self._draw_tree(self._tree, TreeView._X_SPACING, 0)
+        (width, _) = self._draw_tree(self._tree, TreeView._X_SPACING, 0)
         width += TreeView._X_SPACING
         height = self._canvas_height(self._tree)
         self._canvas['scrollregion'] = (0, -5, width, height)
@@ -177,8 +177,8 @@ class TreeView:
         @param depth: The depth in self._tree of given tree.
         @type depth: C{int}
         @return: The x position of the right edge of the drawn
-            children.
-        @rtype: C{int}
+            children, and the location of the "node_x"
+        @rtype: pair of C{int}
         """
         c = self._canvas
 
@@ -198,7 +198,7 @@ class TreeView:
         cb = lambda e, self=self, tree=tree: self._toggle(tree)
         c.tag_bind(tag, '<Button-1>', cb)
 
-        return right
+        return (right, node_x)
         
     def _draw_expanded_children(self, tree, left, depth):
         """
@@ -213,8 +213,8 @@ class TreeView:
         @param depth: The depth in self._tree of given tree.
         @type depth: C{int}
         @return: The x position of the right edge of the drawn
-            children.
-        @rtype: C{int}
+            children, and the location of the "node_x"
+        @rtype: pair of C{int}
         """
         c = self._canvas
         left += (TreeView._X_SPACING/2)
@@ -224,22 +224,28 @@ class TreeView:
         x = new_x = left
         for child in tree:
             if isinstance(child, Tree) or isinstance(child, TreeToken):
-                new_x = self._draw_tree(child, x, depth+1)
+                (new_x, center) = self._draw_tree(child, x, depth+1)
+                child_centers.append(center)
             else:
                 new_x = self._draw_leaf(str(child), x, depth+1)
-            child_centers.append((x+new_x)/2)
+                child_centers.append((x+new_x)/2)
             x = new_x + TreeView._X_SPACING
         right = new_x
             
         # Draw lines to the child.
         node_y = ((self._textheight + TreeView._Y_SPACING) * depth +
                   self._textheight)
-        node_x = (left+right)/2
+        if child_centers:
+            node_x = (reduce(lambda a,b:a+b, child_centers, 0) /
+                      len(child_centers))
+        else:
+            node_x = (right + left)/2
         child_y = node_y + TreeView._Y_SPACING
         for child_x in child_centers:
             c.create_line(node_x, node_y, child_x, child_y)
-                          
-        return right + (TreeView._X_SPACING/2)
+
+        right = right + (TreeView._X_SPACING/2)
+        return (right, node_x)
         
     def _draw_tree(self, tree, left, depth):
         """
@@ -255,20 +261,19 @@ class TreeView:
         @type depth: C{int}
         @return: The x position of the right edge of the drawn
             tree.
-        @rtype: C{int}
+        @rtype: pair of C{int}..
         """
         # Returns right edge...
         c = self._canvas
         
         # Draw children
         if self._collapsed[tree]:
-            x = self._draw_collapsed_children(tree, left, depth)
+            (x,node_x) = self._draw_collapsed_children(tree, left, depth)
         else:
-            x = self._draw_expanded_children(tree, left, depth)
+            (x,node_x) = self._draw_expanded_children(tree, left, depth)
             
         # Draw node value.
         y = (self._textheight + TreeView._Y_SPACING) * depth
-        node_x = (left+x)/2
         tag = c.create_text(node_x, y, text=str(tree.node()),
                             anchor='n', justify='center',
                             font=('helvetica', self._points, 'bold'))
@@ -287,8 +292,9 @@ class TreeView:
             for tag in tags:
                 c.move(tag, dx, 0)
             x = node_right+dx
+            node_x += dx
 
-        return x
+        return (x, node_x)
 
     def _draw_leaf(self, text, x, depth):
         """
@@ -387,9 +393,9 @@ class TreeView:
         """
         (x0, y0, w, h) = self._canvas['scrollregion'].split()
         self._canvas.postscript(file=filename,
-                                width=int(w)+10, height=int(h)+10)
+                                width=int(w)+2, height=int(h)+2)
 
-def print_tree(tree, filename):
+def print_tree(tree, filename, textsize=None):
     """
     Print the given tree to the given filename.  This uses a TreeView
     to display the tree, but hopefully will never actually open a
@@ -400,6 +406,7 @@ def print_tree(tree, filename):
     top = Tk()
     treeview = TreeView(tree, top)
     top.mainloop(1)
+    if textsize: treeview.set_text_size(textsize)
     treeview.print_to_file(filename)
     top.destroy()
         
@@ -428,7 +435,7 @@ if __name__ == '__main__':
                 left = children[-1].loc().end()
             return TreeToken('Node %d' % randint(0,10000), *children)
 
-    if randint(1,1) ==0:
+    if randint(0,1) ==0:
         t = randomtree()
         while not (5 < len(t.leaves()) < 25):
             t = randomtree()
