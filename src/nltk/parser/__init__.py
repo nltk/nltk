@@ -454,7 +454,7 @@ class RecursiveDescentParser(ParserI):
 
     @see: C{nltk.cfg}
     """
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, **propnames):
         """
         Create a new C{RecursiveDescentParser}, that uses C{grammar}
         to parse texts.
@@ -466,11 +466,16 @@ class RecursiveDescentParser(ParserI):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
         """
         assert _chktype(1, grammar, CFG)
         assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
+        self._propnames = propnames
 
     def grammar(self):
         """
@@ -489,31 +494,40 @@ class RecursiveDescentParser(ParserI):
         assert _chktype(1, grammar, CFG)
         self._grammar = grammar
 
-    def parse(self, text):
-        # Inherit docs from ParserI; and delegate to parse_n
-        assert _chktype(1, text, [Token], (Token))
-        final_trees = self.parse_n(text, 1)
-        if len(final_trees) == 0: return None
-        else: return final_trees[0]
+    def parse(self, token):
+        # Delegate to parse_n
+        trees_prop = self._propnames.get('trees', 'trees')
+        tree_prop = self._propnames.get('tree', 'tree')
+        
+        self.parse_n(token)
 
-    def parse_n(self, text, n=None):
+        if len(token[trees_prop]) == 0: token[tree_prop] = None
+        else: token[tree_prop] = token[trees_prop][0]
+        del token[trees_prop]
+
+    def parse_n(self, token, n=None):
         # Inherit docs from ParserI
-        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(1, token, Token)
         assert _chktype(2, n, types.IntType, types.NoneType)
         node_prop = self._propnames.get('node', 'node')
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        trees_prop = self._propnames.get('trees', 'trees')
 
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
         start = self._grammar.start().symbol()
         initial_treetok = TreeToken(**{node_prop:start, 'children':()})
         frontier = [()]
+        text = token[subtokens_prop]
         if self._trace:
             self._trace_start(initial_treetok, frontier, text)
         parses = self._parse(text, initial_treetok, frontier)
 
         # Return the requested number of parses.
-        if n is None: return parses
-        else: return parses[:n]
+        if n is None:
+            token[trees_prop] = parses
+        else:
+            token[trees_prop] = parses[:n]
 
     def _parse(self, remaining_text, treetok, frontier):
         """
@@ -553,7 +567,7 @@ class RecursiveDescentParser(ParserI):
             return []
 
         # If the next element on the frontier is a tree, expand it.
-        elif isinstance(treetok[frontier[0]], TreeToken):
+        elif isinstance(treetok.get_child(frontier[0]), TreeToken):
             return self._expand(remaining_text, treetok, frontier)
 
         # If the next element on the frontier is a token, match it.
@@ -588,11 +602,13 @@ class RecursiveDescentParser(ParserI):
             leaves that have not yet been matched.
         """
         leaf_prop = self._propnames.get('leaf', 'leaf')
-        
-        if (len(rtext) > 0 and treetok[frontier[0]][leaf_prop] == rtext[0][leaf_prop]):
+
+        treetok_leaf = treetok.get_child(frontier[0])[leaf_prop]
+        if (len(rtext) > 0 and treetok_leaf == rtext[0][leaf_prop]):
             # If it's a terminal that matches text[0], then substitute
             # in the token, and continue parsing.
-            newtreetok = treetok.with_substitution(frontier[0], rtext[0])
+            newtreetok = treetok.copy(deep=True)
+            newtreetok.replace_child(frontier[0], rtext[0])
             if self._trace:
                 self._trace_match(newtreetok, frontier[1:], rtext[0])
             return self._parse(rtext[1:], newtreetok, frontier[1:])
@@ -641,9 +657,14 @@ class RecursiveDescentParser(ParserI):
         
         parses = []
         for production in productions:
-            if production.lhs().symbol() == treetok[frontier[0]][node_prop]:
+            lhs = production.lhs().symbol()
+            if lhs == treetok.get_child(frontier[0])[node_prop]:
                 subtree = self._production_to_treetok(production)
-                newtreetok = treetok.with_substitution(frontier[0], subtree)
+                if frontier[0] == ():
+                    newtreetok = subtree
+                else:
+                    newtreetok = treetok.copy(deep=True)
+                    newtreetok.replace_child(frontier[0], subtree)
                 new_frontier = [frontier[0]+(i,) for i in
                                 range(len(production.rhs()))]
                 if self._trace:
@@ -672,14 +693,15 @@ class RecursiveDescentParser(ParserI):
         @type production: C{CFGProduction}
         """
         node_prop = self._propnames.get('node', 'node')
+        leaf_prop = self._propnames.get('leaf', 'leaf')
         children = []
         for elt in production.rhs():
             if isinstance(elt, Nonterminal):
                 children.append(TreeToken(**{node_prop:elt.symbol(),
                                              'children': ()}))
             else:
-                # New token's location = None
-                children.append(Token(elt))
+                # This will be matched.
+                children.append(Token(**{leaf_prop: elt}))
         return TreeToken(**{node_prop:production.lhs().symbol(),
                             'children': children})
     
@@ -710,7 +732,7 @@ class RecursiveDescentParser(ParserI):
         
         if treeloc == (): print "*",
         if isinstance(treetok, TreeToken):
-            children = treetok.children()
+            children = treetok['children']
             if len(children) == 0: print `Nonterminal(treetok[node_prop])`,
             for i in range(len(children)):
                 if treeloc is not None and i == treeloc[0]:
@@ -718,7 +740,7 @@ class RecursiveDescentParser(ParserI):
                 else:
                     self._trace_fringe(children[i])
         else:
-            print `treetok[leaf_prop]`,
+            print `treetok`,
 
     def _trace_treetok(self, treetok, frontier, operation):
         """
@@ -735,9 +757,11 @@ class RecursiveDescentParser(ParserI):
         print ']'
 
     def _trace_start(self, treetok, frontier, text):
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         leaf_prop = self._propnames.get('leaf', 'leaf')
         
         print 'Parsing %r' % ' '.join([tok[leaf_prop] for tok in text])
+                                       
         if self._trace > 2: print 'Start:'
         if self._trace > 1: self._trace_treetok(treetok, frontier, ' ')
         
@@ -780,23 +804,26 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         history is used to implement the C{undo} operation.
     @see: C{nltk.cfg}
     """
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, **propnames):
         assert _chktype(1, grammar, CFG)
         assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
+        self._propnames = propnames
         self._stack = None
         self._remaining_text = None
         self._history = []
 
-    def parse(self, text):
-        # Inherit docs
-        assert _chktype(1, text, [Token], (Token))
-        self.initialize(text)
+    def parse(self, token):
+        assert _chktype(1, token, Token)
+        tree_prop = self._propnames.get('tree', 'tree')
+        
+        self.initialize(token)
         while self.step(): pass
+        
         parses = self.parses()
-        if len(parses) == 0: return None
-        else: return parses[0]
+        if len(parses) == 0: token[tree_prop] = None
+        else: token[tree_prop] = parses[0]
 
     def stack(self):
         """
@@ -813,7 +840,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         """
         return self._remaining_text
         
-    def initialize(self, text):
+    def initialize(self, token):
         """
         Start parsing a given text.  This sets the parser's stack to
         C{[]} and sets its remaining text to C{text}.
@@ -821,9 +848,10 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         @param text: The text to start parsing.
         @type text: C{list} of C{Token}
         """
-        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(1, token, Token)
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         self._stack = []
-        self._remaining_text = text[:]
+        self._remaining_text = token[subtokens_prop][:]
         self._history = []
 
     def step(self):
@@ -944,11 +972,12 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         or not to match a token.
     @see: C{nltk.cfg}
     """
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, **propnames):
         assert _chktype(1, grammar, CFG)
         assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
+        self._propnames = propnames
         self._rtext = None
         self._treetok = None
         self._frontier = [()]
@@ -957,15 +986,18 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._history = []
         self._parses = []
     
-    def parse_n(self, text, n=None):
-        assert _chktype(1, text, [Token], (Token))
+    def parse_n(self, token, n=None):
+        assert _chktype(1, token, Token)
         assert _chktype(2, n, types.IntType, types.NoneType)
-        self.initialize(text)
-        while self.step(): pass
-        if n is None: return self.parses()
-        else: return self.parses()[:n]
+        trees_prop = self._propnames.get('trees', 'trees')
         
-    def initialize(self, text):
+        self.initialize(token)
+        while self.step(): pass
+
+        if n is None: token[trees_prop] = self.parses()
+        else: token[trees_prop] = self.parses()[:n]
+        
+    def initialize(self, token):
         """
         Start parsing a given text.  This sets the parser's tree to
         the start symbol, its frontier to the root node, and its
@@ -974,9 +1006,11 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         @param text: The text to start parsing.
         @type text: C{list} of C{Token}
         """
+        assert _chktype(1, token, Token)
         node_prop = self._propnames.get('node', 'node')
-        assert _chktype(1, text, [Token], (Token))
-        self._rtext = text
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        
+        self._rtext = token[subtokens_prop]
         start = self._grammar.start().symbol()
         self._treetok = TreeToken(**{node_prop:start, 'children':()})
         self._frontier = [()]
@@ -985,7 +1019,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._history = []
         self._parses = []
         if self._trace:
-            self._trace_start(self._treetok, self._frontier, text)
+            self._trace_start(self._treetok, self._frontier, self._rtext)
     
     def remaining_text(self):
         """
@@ -1063,8 +1097,10 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         
         assert _chktype(1, production, CFGProduction, types.NoneType)
         # Make sure we *can* expand.
-        if (len(self._frontier) == 0 or
-            not isinstance(self._treetok[self._frontier[0]], TreeToken)):
+        if len(self._frontier) == 0:
+            return None
+        if not isinstance(self._treetok.get_child(self._frontier[0]),
+                          TreeToken):
             return None
 
         # If they didn't specify a production, check all untried ones.
@@ -1075,7 +1111,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         parses = []
         for prod in productions:
             # Record that we've tried this production now.
-            self._tried_e.setdefault(self._treetok[leaf_prop], []).append(prod)
+            self._tried_e.setdefault(self._treetok.freeze(), []).append(prod)
 
             # Try expanding.
             if self._expand(self._rtext, self._treetok, self._frontier, prod):
@@ -1098,11 +1134,12 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         
         # Record that we've tried matching this token.
         tok = self._rtext[0]
-        self._tried_m.setdefault(self._treetok[leaf_prop], []).append(tok)
+        self._tried_m.setdefault(self._treetok.freeze(), []).append(tok)
 
         # Make sure we *can* match.
-        if (len(self._frontier) == 0 or
-            isinstance(self._treetok[self._frontier[0]], TreeToken)):
+        if len(self._frontier) == 0:
+            return None
+        if isinstance(self._treetok.get_child(self._frontier[0]), TreeToken):
             return None
 
         if self._match(self._rtext, self._treetok, self._frontier):
@@ -1135,12 +1172,14 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         node_prop = self._propnames.get('node', 'node')
         
         # Make sure we *can* expand.
+        if len(self._frontier) == 0: return
+        frontier_child = self._treetok.get_child(self._frontier[0])
         if (len(self._frontier) == 0 or
-            not isinstance(self._treetok[self._frontier[0]], TreeToken)):
+            not isinstance(frontier_child, TreeToken)):
             return []
 
         return [p for p in self._grammar.productions()
-                if p.lhs().symbol() == self._treetok[self._frontier[0]][node_prop]]
+                if p.lhs().symbol() == frontier_child[node_prop]]
 
     def untried_expandable_productions(self):
         """
@@ -1150,7 +1189,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         leaf_prop = self._propnames.get('leaf', 'leaf')
         
-        tried_expansions = self._tried_e.get(self._treetok[leaf_prop], [])
+        tried_expansions = self._tried_e.get(self._treetok.freeze(), [])
         return [p for p in self.expandable_productions()
                 if p not in tried_expansions]
 
@@ -1163,7 +1202,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         leaf_prop = self._propnames.get('leaf', 'leaf')
         
         if len(self._rtext) == 0: return 0
-        tried_matches = self._tried_m.get(self._treetok[leaf_prop], [])
+        f = self._treetok.freeze()
+        tried_matches = self._tried_m.get(self._treetok.freeze(), [])
         return (self._rtext[0] not in tried_matches)
 
     def currently_complete(self):
@@ -1249,9 +1289,9 @@ def demo():
 
     # Define a list of parsers.
     parsers = [ShiftReduceParser(grammar, leaf='text'),
-               RecursiveDescentParser(grammar),
-               SteppingShiftReduceParser(grammar),
-               SteppingRecursiveDescentParser(grammar)]
+               RecursiveDescentParser(grammar, leaf='text'),
+               SteppingShiftReduceParser(grammar, leaf='text'),
+               SteppingRecursiveDescentParser(grammar, leaf='text')]
 
     # Ask the user to choose a parser.
     import sys
@@ -1259,9 +1299,8 @@ def demo():
     for i in range(len(parsers)):
         print '  %d. %s' % (i+1, parsers[i].__class__.__name__)
     print '=> ',
-    parser = parsers[0]
-    #try: parser = parsers[int(sys.stdin.readline())-1]
-    #except: print 'Bad input'; return
+    try: parser = parsers[int(sys.stdin.readline())-1]
+    except: print 'Bad input'; return
 
     # Run the parser.
     parser.trace()
