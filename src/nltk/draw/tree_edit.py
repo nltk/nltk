@@ -1,4 +1,14 @@
 """
+I may want to get rid of the interactive scrollregion.
+I like the way it just keeps 0,0 as the left boundary.  Otherwise,
+it looks a little choppy
+
+NOTE: FIX DESTROY AND QUIT
+
+"""
+
+
+"""
 Tree.py is a simple tree-drawing program.  The tree must be in
 Tree (label, child1, child2, ...) form, for this to work.
 """
@@ -26,6 +36,16 @@ from tkFileDialog import *
 import string
 
 
+HIGHLIGHT = '#CCCCFF'
+HIGHLIGHT2 = '#FFFF99'
+
+X_SPACING = 10
+Y_SPACING = 50
+FONT_SIZE = 10 # default value
+
+
+RATIO = 1.0
+
 class Text:
     """
     Text class:  The Text class is little more than a slightly more complicated
@@ -38,23 +58,43 @@ class Text:
     distance on the canvas.
     """
     
-    def __init__(self, canvas, xloc, yloc, **attr):
+    def __init__(self, canvas, xloc, yloc, font_dict, **attr):
         text = attr['text']
         color= attr['fill']
+        style = attr['style']
+
+        size = font_dict['size']
+        if 'size' in attr.keys():
+            size = attr['size']
+        #print size
+        family = font_dict['family']
+        
+        
         # create the text at the xloc(ation) and yloc(ation)
-        self.tag = tag = canvas.create_text(xloc, yloc, text=text, fill=color)
+        self.tag = tag = canvas.create_text(xloc, yloc,
+                                            text=text,
+                                            fill=color,
+                                            font = (family,
+                                                    size,
+                                                    style))
 
         # since we are highlighting only the area around the text, first
         # determine what that area is with canvas.bbox(item)
         bbox = canvas.bbox(self.tag)
 
+        self.height = bbox[3]-bbox[1]
+        self.width = bbox[2]-bbox[0]
+        
         # set that area to rectangle and lower it behind the text
         self.rectangle = rectangle = canvas.create_rectangle(bbox, outline='')
         canvas.lower(self.rectangle)
-
+        
         # highlight/unhighlight changes the fill color of the rectangle
-        def highlight(event, canvas=canvas, rectangle=rectangle):
-            canvas.itemconfig(rectangle, fill='lightblue')
+        def highlight(event, self=self, canvas=canvas, rectangle=rectangle, style=style):
+            if style is 'normal':
+                canvas.itemconfig(rectangle, fill='light grey')
+            else:
+                canvas.itemconfig(rectangle, fill=HIGHLIGHT)
         def unhighlight(event, canvas=canvas, rectangle=rectangle):
             canvas.itemconfig(rectangle, fill='')
 
@@ -65,9 +105,19 @@ class Text:
         canvas.tag_bind(rectangle, '<Leave>', unhighlight)
         canvas.tag_bind(tag, '<Leave>', unhighlight)
 
+        def print_tag(event, tag=tag, rectangle=rectangle):
+            print tag,rectangle
+
+        canvas.tag_bind(rectangle, '<Button-3>', print_tag)
+        canvas.tag_bind(tag, '<Button-3>', print_tag)
+
     def move(self, canvas, dx, dy):
         canvas.move(self.tag, dx, dy)
         canvas.move(self.rectangle, dx, dy)
+
+    def delete(self, canvas):
+        canvas.delete(self.tag)
+        canvas.delete(self.rectangle)
     
 class Draw_Node:
     """
@@ -159,81 +209,104 @@ class Draw_Node:
         string = string[:-1]  #to get rid of that last whitespace
         return string
 
-    def display_collapsed(self, canvas, dict):
+    def display_collapsed(self, canvas, x, depth, font_dict, app_dict):
         """
         draws the collapsed version of the node to the canvas
         """
         
         # get the attributes of the collapsed node
-        text_color = dict['text']
-        line_color = dict['lines']
-        triangle_color = dict['shapes']
+        text_color = app_dict['text']
+        line_color = app_dict['lines']
+        triangle_color = app_dict['shapes']
+
+        shift = int(Y_SPACING*font_dict['ratio'])
+        
+        ghost = Text(canvas, 0, 0,
+                     font_dict,
+                     text='Al^|qp',
+                     fill=app_dict['bg'], style='bold')
+        height = ghost.height
+        ghost.delete(canvas)
 
         # if your node is of type Tree originally, all you need to draw
         # is the label of the node (i.e. 'ip', 'np', etc.), the triangle below
         # it, and the collapsed string below that
         if self.type == 'Normal':
-            self.label = label = Text(canvas, self.xloc, self.yloc,
+            self.label = label = Text(canvas, x, depth*shift,
+                                      font_dict,
                                       text=self.node,
-                                      fill=text_color)
-            self.collapsed_string = Text(canvas, self.xloc, self.yloc+50,
+                                      fill=text_color,
+                                      style='bold')
+            self.collapsed_string = Text(canvas, x, (depth+1)*shift,
+                                         font_dict,
                                          text=self.string(),
-                                         fill=text_color)
+                                         fill=text_color,
+                                         style='normal')
 
             # get the bbox of the collapsed string so we know how wide
             # to draw the base of the triangle
             bbox = canvas.bbox(self.collapsed_string.tag)
-            self.triangle = canvas.create_polygon(self.xloc, self.yloc+10,
-                                                  bbox[0], bbox[1]-10,
-                                                  bbox[2], bbox[1]-10,
+            self.triangle = canvas.create_polygon(x, (depth*shift)+height,
+                                                  bbox[0], bbox[1]-(height/2),
+                                                  bbox[2], bbox[1]-(height/2),
                                                   outline=line_color,
                                                   fill=triangle_color)
-
+            
         # if the node is of type Tree_Token, you need to draw the label, the
         # triangle below it, the collapsed string below that, and the span of
         # the node, in total (for a description of span, see the Tree_Token
         # class)
         else:
-            self.label = label = Text(canvas, self.xloc, self.yloc,
+            self.label = label = Text(canvas, x, depth*shift,
+                                      font_dict,
                                       text=self.node,
-                                      fill=text_color)
-            self.collapsed_string = Text(canvas, self.xloc, self.yloc+50,
+                                      fill=text_color,
+                                      style='bold')
+            self.collapsed_string = Text(canvas, x, (depth+1)*shift,
+                                         font_dict,
                                          text=self.string(),
-                                         fill=text_color)
+                                         fill=text_color,
+                                         style='normal')
             if self.loc is None:
-                self.span = Text(canvas, self.xloc, self.yloc+65,
+                self.span = Text(canvas, x, ((depth+1)*shift)+height,
+                                 font_dict,
                                  text='None',
-                                 fill=text_color)
+                                 fill=text_color,
+                                 style='normal')
             else:
                 text = '['+str(self.loc.start())+','+str(self.loc.end())+']'
-                self.span = Text(canvas, self.xloc, self.yloc+65, 
+                self.span = Text(canvas, x, ((depth+1)*shift)+height,
+                                 font_dict,
                                  text=text,
-                                 fill=text_color)
+                                 fill=text_color,
+                                 style='normal')
 
             # since we do not know which is wider, the collapsed string or
             # the span, we get the bbox of both at the same time
             bbox = canvas.bbox(self.collapsed_string.tag, self.span.tag)
-            self.triangle = canvas.create_polygon(self.xloc, self.yloc+10,
-                                                  bbox[0], bbox[1]-10,
-                                                  bbox[2], bbox[1]-10,
+            self.triangle = canvas.create_polygon(x, (depth*shift)+height,
+                                                  bbox[0], bbox[1]-(height/2),
+                                                  bbox[2], bbox[1]-(height/2),
                                                   outline=line_color,
                                                   fill=triangle_color)
 
-        """
-        # width basically determines the width of the uncollapsed node by
-        # taking the bbox of the node label and all of the descendants of that
-        # node
-        def width(self=self, canvas=canvas):
-            bbox = canvas.bbox(self.label.tag, self.dependancies())
-            return bbox[2]-bbox[0]
-        """
+        def highlight_triangle (event, self=self, canvas=canvas):
+            canvas.itemconfig(self.triangle, fill=HIGHLIGHT2)
 
+        def unhighlight_triangle(event, self=self, canvas=canvas):
+            canvas.itemconfig(self.triangle, fill=HIGHLIGHT)
+
+        canvas.tag_bind(self.triangle, '<Enter>', highlight_triangle)
+        canvas.tag_bind(self.triangle, '<Leave>', unhighlight_triangle)
+
+        self.xloc = x
+        self.yloc = depth*shift
         return {'label':self.label,
                 'new_x':self.xloc+(self.width/2),
                 'triangle':self.triangle}
     
         
-    def display_node(self, canvas, x, depth, dict):
+    def display_node(self, canvas, x, depth, font_dict, app_dict):
         """
         draws the node to the canvas.  Basically this can be done in one of two
         senarios.  If we already have the xloc and yloc of the node (i.e. it
@@ -244,23 +317,31 @@ class Draw_Node:
         to what level in the tree it is at)
         """
         
-        text_color = dict['text']
+        text_color = app_dict['text']
 
-        if self.xloc:
+        if 1 < 0:
             self.label = label = Text(canvas, self.xloc, self.yloc,
+                                      font_dict,
                                       text=self.node,
-                                      fill=text_color)
+                                      fill=text_color,
+                                      style='bold')
         else:
-            self.label = label = Text(canvas, x, depth*50,
+            shift = int(Y_SPACING*font_dict['ratio'])
+            self.label = label = Text(canvas, x, depth*shift,
+                                      font_dict,
                                       text=self.node,
-                                      fill=text_color)
+                                      fill=text_color,
+                                      style='bold')
             # now that it has been drawn, save the xloc and yloc
             self.xloc = x
-            self.yloc = depth*50
+            self.yloc = depth*shift
 
+        """    
         if not self.width:
-            bbox = canvas.bbox(label.tag, self.dependancies)
+            bbox = canvas.bbox(label.tag, self.dependancies())
             self.width = bbox[2]-bbox[0]
+        """
+        
         return label
 
     def move(self, canvas, dx, dy):
@@ -303,9 +384,18 @@ class Draw_Node:
                 list.append(child.label.tag)
             else:
                 list.append(child.label.tag)
-                if instance(child, Draw_Token):
+                if isinstance(child, Draw_Token):
                     list.append(child.span.tag)
         return list
+
+    def depth(self):
+        d = 0
+        for child in self.children:
+            x = child.depth()+1
+            if x > d:
+                d = x
+        return d
+   
 
 class Draw_Leaf:
     """
@@ -326,22 +416,27 @@ class Draw_Leaf:
         self.yloc = None
         
 
-    def display(self, canvas, x, depth, dict):
+    def display(self, canvas, x, depth, font_dict, app_dict):
         """
         draws the leaf to the canvas.  Like Draw_Node, if it already has an
         xloc (and hence a yloc) then it will be drawn there.  Otherwise draw
         it at the x distance and 50*depth
         """
 
-        text_color = dict['text']
-        if self.xloc:
+        text_color = app_dict['text']
+        if 1 < 0:
             self.label = label = Text(canvas, self.xloc, self.yloc,
+                                      font_dict,
                                       text=self.data,
-                                      fill=text_color)
+                                      fill=text_color,
+                                      style='normal')
         else:
-            self.label = label = Text(canvas, x, depth*50,
+            shift = int(Y_SPACING * font_dict['ratio'])
+            self.label = label = Text(canvas, x, depth*shift,
+                                      font_dict,
                                       text=self.data,
-                                      fill=text_color)
+                                      fill=text_color,
+                                      style='normal')
 
             # now that it is drawn, see whether the text itself breaches the
             # leftmost boundary that it is given (the vertical line at x).
@@ -362,6 +457,8 @@ class Draw_Leaf:
         self.xloc += dx
         self.yloc += dy
 
+    def depth(self):
+        return 1
 
 class Draw_Token:
     """
@@ -391,34 +488,52 @@ class Draw_Token:
         self.yloc = 0
         
 
-    def display(self, canvas, x, depth, dict):
+    def display(self, canvas, x, depth, font_dict, app_dict):
         """
         display will actually print out the token to the provided canvas.
         """
         
-        text_color = dict['text']
+        text_color = app_dict['text']
         
-        if self.xloc:
+        if 1 < 0:
             self.label = label = Text(canvas, self.xloc, self.yloc,
+                                      font_dict,
                                       text=self.data,
-                                      fill=text_color)
+                                      fill=text_color,
+                                      style='normal')
             self.span = span = Text(canvas, self.xloc, self.yloc+15,
+                                    font_dict,
                                     text=self.loc,
-                                    fill=text_color)
+                                    fill=text_color,
+                                    style='normal')
         else:
-            self.label = label = Text(canvas, x, depth*50,
+            ghost_text = Text(canvas, 0, 0,
+                              font_dict,
+                              text='Al^|qp',
+                              fill=app_dict['bg'],
+                              style='bold',
+                              size=font_dict['size'])
+            text_height = ghost_text.height
+            ghost_text.delete(canvas)
+            
+            shift = int (Y_SPACING * font_dict['ratio'])
+            self.label = label = Text(canvas, x, depth*shift,
+                                      font_dict,
                                       text=self.data,
-                                      fill=text_color)
-            self.span = span = Text(canvas, x, (depth*50)+15,
+                                      fill=text_color,
+                                      style='normal')
+            self.span = span = Text(canvas, x, (depth*shift)+text_height,
+                                    font_dict,
                                     text=self.loc,
-                                    fill=text_color)
+                                    fill=text_color,
+                                    style='normal')
             
             # now that it is drawn, see whether the text itself breaches the
             # leftmost boundary that it is given (the vertical line at x).
             # if so, move it over until it does not
             bbox = canvas.bbox(label.tag, span.tag)
             self.xloc = x
-            self.yloc = depth*50
+            self.yloc = depth*shift
             if bbox[0] < x:       # bbox[0] is the left boundary of the text
                 self.move(canvas, x-bbox[0], 0)
         return {'label':self.label, 'span':self.span}
@@ -427,33 +542,14 @@ class Draw_Token:
 
 
 
-        """
-        if self.
-        self.tag = tag = Text(canvas, x, depth*50, text=self.data)
-        self.span = span = canvas.create_text(x, (depth*50)+15, text=self.loc)
-        
-        bbox = canvas.bbox(tag,span)
-        j = bbox[2]
-        
-        if bbox[0] < x :
-            diff = x - bbox[0]
-            canvas.move(tag, diff, 0)
-            canvas.move(span, diff, 0)
-            j += diff
-        self.xloc = (j+x)/2
-        self.yloc = depth*50
-        #return tag
-        return {'tag':self.tag, 'span':self.span, 'new_x':j}
-        """
     def move(self, canvas, dx, dy):
         self.label.move(canvas, dx, dy)
         self.span.move(canvas, dx, dy)
         self.xloc += dx
         self.yloc += dy
 
-
-
-
+    def depth (self):
+        return 1
 
 class Window:
     """
@@ -482,9 +578,14 @@ class Window:
         self.appearance_dict = {'text':'black',
                                 'bg':'white',
                                 'lines':'black',
-                                'shapes':'lightblue'}
+                                'shapes':HIGHLIGHT}
+        self.font_dict = {'size':10,
+                          'family':'helvetica',
+                          'ratio':1.0
+                          }
         
         self.top = top = Tk()
+
         self.bottom = bottom = Frame(top) # will hold the shortcut buttons
         self.window = window = Frame(top) # will hold the canvas and the scrollbars
         bottom.pack(fill=X, side=BOTTOM)
@@ -502,9 +603,7 @@ class Window:
         self.c = c = Canvas(self.topleft, height=300, width=200,
                             bg=self.appearance_dict['bg'])
         c.pack(fill=BOTH, expand=YES)
-        #self.c.bind('<Configure>', self.reconfigure)
-
-
+                
         self.v_scroll= Scrollbar(self.right)
         self.v_scroll.pack(expand=Y, fill=Y)
         self.v_scroll.config(command = self.c.yview)
@@ -532,20 +631,30 @@ class Window:
             foo = asksaveasfilename(filetypes=self.ftypes,
                                     defaultextension='.ps')
             if foo:
-                self.c.postscript(foo)
-
+                self.c.postscript(file=foo)
+                
+            
         # worthless function which just prints the x and y coordinate of the button click
         def myprint(event, self=self):
             print event.x, event.y
 
         c.bind('<Button-2>', myprint)
-        Button(bottom, text='Save PS', command=onSavePS).pack(side=LEFT)
-        Button(bottom, text='Expand All',
-               command=expand).pack(side=LEFT)
-        Button(bottom, text='Quit',
+        Button(bottom, text='+', command=self.zoom_in).pack(side=LEFT)
+        Button(bottom, text='-', command=self.zoom_out).pack(side=LEFT)
+        
+        Button(bottom, text='Done',
                command=quit).pack(side=RIGHT)
-
-
+        Button(bottom, text='PS', command=onSavePS).pack(side=RIGHT)
+        Button(bottom, text='Expand All',
+               command=expand).pack()
+        
+        def destroy(event, self=self):
+            if self.top:
+                self.top.destroy()
+                self.top = None
+                
+        self.top.bind('q', destroy)
+        
         # make the menu bar at the top.  It should have the structure:
         #  -File            -Functions         -Appearance
         # ------------------------------------------------
@@ -561,8 +670,8 @@ class Window:
 
         funcmenu = Menu(menubar, tearoff=0)
         funcmenu.add_command(label='Expand All', command=expand)
-        funcmenu.add_command(label='Zoom-In') # these two not implemented yet
-        funcmenu.add_command(label='Zoom-Out')
+        funcmenu.add_command(label='Zoom-In', command=self.zoom_in)
+        funcmenu.add_command(label='Zoom-Out', command=self.zoom_out)
         menubar.add_cascade(label='Functions', menu=funcmenu)
 
 
@@ -577,6 +686,9 @@ class Window:
                                          y.change_bg(x)))
         bgcolorlist.add_command(label='Grey',
                                 command=(lambda x='grey', y=self:
+                                         y.change_bg(x)))
+        bgcolorlist.add_command(label='Black',
+                                command=(lambda x='black', y=self:
                                          y.change_bg(x)))
 
 
@@ -594,14 +706,14 @@ class Window:
         
         linecolorlist = Menu(colormenu, tearoff=0)
         linecolorlist.add_command(label='Black',
-                                  command=(lambda x='black', y='lightblue', z=self:
-                                         z.change_line(x,y)))
+                                  command=(lambda x='black', y=self:
+                                           y.change_line(x)))
         linecolorlist.add_command(label='Green',
-                                  command=(lambda x='green', y='#00FFCC', z=self:
-                                           z.change_line(x,y)))
+                                  command=(lambda x='green', y=self:
+                                           y.change_line(x)))
         linecolorlist.add_command(label='White',
-                                  command=(lambda x='white', y='grey', z=self:
-                                         z.change_line(x,y)))
+                                  command=(lambda x='white', y=self:
+                                           y.change_line(x)))
         
         colormenu.add_cascade(label='BG color', menu=bgcolorlist)
         colormenu.add_cascade(label='Text color', menu=textcolorlist)
@@ -617,7 +729,16 @@ class Window:
         self.tree = convert_tree(tree)
         self.width = 0
 
-
+        ### NEW STUFF ###
+        self.altered = 0
+        self.c.bind('<Button-3>', self.set_point)
+        
+        
+        ########################################################
+        
+        self.display()
+        self.top.mainloop()
+        
     # The following three methods are pretty self-explanatory
     
     def change_bg(self, color):
@@ -628,9 +749,8 @@ class Window:
         self.appearance_dict['text'] = color
         self.display()
         
-    def change_line(self, line_color, triangle_color):
+    def change_line(self, line_color):
         self.appearance_dict['lines'] = line_color
-        self.appearance_dict['shapes'] = triangle_color
         self.display()
 
 
@@ -644,8 +764,13 @@ class Window:
 
         # call drawtree on the root of the tree
         right = self.drawtree(self.tree, PADDING)
+
         bbox = self.c.bbox(ALL)
-        self.c['scrollregion']=(0,0,bbox[2]+PADDING, bbox[3]+50)
+        print bbox
+        self.c['scrollregion']=(bbox[0]-PADDING, bbox[1]-50,
+                                bbox[2]+PADDING, bbox[3]+50)
+        self.c['width'] = min(bbox[2]-bbox[0]+(2*PADDING), 800)
+        self.c['height'] = min(bbox[3]-bbox[1], 300)
         
     def drawtree(self, node, left=0, depth=1):
         """
@@ -688,7 +813,7 @@ class Window:
         It draws the node such that the text never an imaginary rectangle surrounding everything
         on the same level or below to the left of it.
 
-        draw_tree works under one key assumption--that a collapsed node is never wider than an
+        drawtree works under one key assumption--that a collapsed node is never wider than an
         uncollaped one.  This is not such a bad assumtion, given that in an uncollapsed one, there
         is a distance between each leaf that is wider than the spaces between the words in the
         collapsed node.
@@ -705,8 +830,11 @@ class Window:
 
         if node.collapsed == 1:
             # Draw a collapsed node
+            parentx = x + (node.width/2)
             
-            result = node.display_collapsed(self.c, self.appearance_dict)
+            result = node.display_collapsed(self.c, parentx, depth,
+                                            self.font_dict,
+                                            self.appearance_dict)
 
             # you use these tags here in order to apply the expand/collapse method toggle to the
             # label and to the triangle drawn
@@ -731,6 +859,7 @@ class Window:
                         # draw the leaf node.
                         text = child.display(self.c,
                                              x, depth+1,
+                                             self.font_dict,
                                              self.appearance_dict)
                         bbox = self.c.bbox(text.tag)
                         x = bbox[2]      # bbox[2] returns the farthest right boundary
@@ -738,6 +867,7 @@ class Window:
                     else :
                         result = child.display(self.c,
                                                x, depth+1,
+                                               self.font_dict,
                                                self.appearance_dict)
                         label = result['label']
                         span = result['span']
@@ -762,13 +892,16 @@ class Window:
             # draw the node and bind the text to the callback function
             text = node.display_node(self.c,
                                      parentx, depth,
+                                     self.font_dict,
                                      self.appearance_dict)
             self.c.tag_bind(text.tag, '<Button-1>', cb)
 
             # go through all the children, drawing arrows from the parent to the children
+            text_height = self._get_text_height(self.font_dict['size'])
+            
             for child in node.children:
-                arrow =  self.c.create_line(node.xloc, node.yloc+10,
-                                            child.xloc, child.yloc-10,
+                arrow =  self.c.create_line(node.xloc, node.yloc+(text_height/2),
+                                            child.xloc, child.yloc-(text_height/2),
                                             fill=self.appearance_dict['lines'])
                 node.arrow_list.append(arrow)
                 
@@ -781,8 +914,11 @@ class Window:
                 diff = left-bbox[0]
                 node.move(self.c, diff, 0)
                 x += diff
+                
+            node.width=x - left
 
-        return x + 8 # for padding
+        #print "for node %s, x is %d" % (node.node, x)
+        return x + int (X_SPACING*self.font_dict['ratio']) # for padding
 
 
     def toggle(self, node):
@@ -791,8 +927,10 @@ class Window:
         window to redraw the whole thing
         """
 
-        # what this checks is that if you only have one child, collapsing the node is worthless
-        if len(node.children) == 1:
+        # what this checks is that if you only have one child and a depth of 1 or less, then
+        # collapsing the node is worthless
+        
+        if len(node.children) == 1 and node.depth() <= 1:
             pass
         else:
             node.collapsed = not node.collapsed
@@ -812,6 +950,55 @@ class Window:
         else:
             pass
 
+
+    def _get_text_height(self, size):
+        t = Text(self.c, 0, 0,
+                 self.font_dict,
+                 text='Al^|qp',
+                 fill=self.appearance_dict['bg'],
+                 style='bold',
+                 size=size)
+        height = t.height
+        t.delete(self.c)
+        #self.c.delete(t.tag)
+        return height
+    
+    def zoom_in(self):
+        old_size = self.font_dict['size']
+        old = self._get_text_height(old_size)
+        new_size = old_size
+        new = self._get_text_height(new_size)
+        
+        while new == old:
+            new_size += 2
+            new = self._get_text_height(new_size)
+        self.c.delete(ALL)
+        self.font_dict['size']=new_size
+        self.font_dict['ratio'] = float(new)/float(self._get_text_height(FONT_SIZE))
+        print self.font_dict['ratio']
+        self.display()
+
+    def zoom_out(self):
+        old_size = self.font_dict['size']
+        if old_size == 6 : return
+        else :
+            old = self._get_text_height(old_size)
+            new_size = old_size
+            new = self._get_text_height(new_size)
+        
+            while new == old and new_size > 6:
+                new_size -= 2
+                new = self._get_text_height(new_size)
+            self.c.delete(ALL)
+            self.font_dict['size']=new_size
+            self.font_dict['ratio'] = float(new)/float(self._get_text_height(FONT_SIZE))
+            print self.font_dict['ratio']
+            self.display()
+ 
+    def make_new_tree(self):
+        self.altered = 1
+        
+    
 PADDING = 20
 MAXWIDTH = 600
 MAXHEIGHT = 600
@@ -838,50 +1025,57 @@ def drawtree(tree):
     """
     
     w = Window(tree)
-    w.display()
-
+    
 def drawtreetoken(tree):
     """
     display the given tree_token tree
     """
     
     w = Window(tree)
-    w.display()
-
+    
 
 
 if __name__ == '__main__':
 
-    t=Tree('ip',
-           Tree('dnfgojrhslkjghrlkjghdrlghp',
-                Tree('d', 'a'),
-                Tree('n', 'cat')),
-           Tree('vbeqkjhfdkjahdkjwa',
-                Tree('v', 'saw'),
-                Tree('dp',
-                     Tree('dp',
-                          Tree('srghldsgldrkjgldksjgd', 'a'),
-                          Tree('adj', 'blue'),
-                          Tree('akj', 'convicted'),
-                          ),
-                     Tree('n', 'dog')
-                     )
-                )
-           )
 
-    d = TreeToken('ip',Token('a',1),Token('cat',2))
+    from random import randint
+    def randomtree(depth=0, bf=None):
+        if bf == None: bf = randint(1,2)
+        if randint(0,7-depth) == 0 and depth>1:
+            return 'L%d' % randint(0, 10)
+        else:
+            numchildren = randint(1,bf)
+            children = [randomtree(depth+1, bf) for x in range(numchildren)]
+            return Tree('Node %d' % randint(0,10000), *children)
 
-    d2=TreeToken('ip',
-                 TreeToken('dp',
-                           TreeToken('d', Token('a',1)),
-                           TreeToken('n', Token('cat',2))),
-                 TreeToken('vp',
-                           TreeToken('v', Token('saw',3)),
-                           TreeToken('dp',
-                                     TreeToken('d', Token('a',4)),
-                                     TreeToken('n', Token('dog',5)))))
+    def randomtreetok(depth=0, left=0, bf=None):
+        if bf == None: bf = randint(1,2)
+        if randint(0,7-depth) == 0 and depth>1:
+            len = randint(1,5)
+            return Token('L%d' % randint(0, 10), left, left+len)
+        else:
+            numchildren = randint(1,bf)
+            children = []
+            for x in range(numchildren):
+                children.append(randomtreetok(depth+1, left, bf))
+                left = children[-1].loc().end()
+            return TreeToken('Node %d' % randint(0,10000), *children)
 
-    d3 = TreeToken('ip', Token('a'), Token('cat'))
-    #drawtree(t)
-    w = Window(d2)
+    if randint(1,1) ==0:
+        t = randomtree()
+        while not (5 < len(t.leaves()) < 25):
+            t = randomtree()
+    else:
+        t = randomtreetok()
+        while not (5 < len(t.leaves()) < 25):
+            t = randomtreetok()
+
+
+
+
+
+
+
+    w = Window(t)
     w.display()
+
