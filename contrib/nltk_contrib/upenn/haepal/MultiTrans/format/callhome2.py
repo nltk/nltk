@@ -11,6 +11,7 @@ from qt import QObject, PYSIGNAL
 
 __all__ = ["Callhome", "Annotation"]
 
+encoder, decoder, reader, writer = codecs.lookup("utf-8")
 
 class Callhome(list,AnnotationQuery):
     def __init__(self):
@@ -19,7 +20,6 @@ class Callhome(list,AnnotationQuery):
         self.emitter = QObject()
         
     def load(self, filename):
-        encoder, decoder, reader, writer = codecs.lookup("utf-8")
         file = reader(open(filename))
         for i,l in enumerate(file):
             a = l.split()
@@ -52,7 +52,7 @@ class Callhome(list,AnnotationQuery):
         if filename is not None:
             self._filename = filename
         if self._filename is not None:
-            f = file(self._filename, "w")
+            f = writer(file(self._filename, "w"))
             for i,seg in enumerate(self):
                 print >> f
                 print >> f, seg.start, seg.end, seg['SPKR']+':', seg['TEXT']

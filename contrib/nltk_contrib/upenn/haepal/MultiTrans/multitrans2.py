@@ -230,7 +230,7 @@ class MultiTrans(QMainWindow):
     
     def _fileMenu_SaveTransAs(self):
         utf = QFileDialog.getSaveFileName()
-        if utf is not None:
+        if utf:
             self._data.save(utf.ascii())
     
     def _fileMenu_Exit(self):
