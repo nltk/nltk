@@ -24,7 +24,7 @@
  *     3. Module Definition
  *
  * Property names are interned, for speed.
- * Units should get interned, too.  (But they're not currently)
+ * Units are interned, too.
  */
 
 /*********************************************************************
@@ -577,15 +577,13 @@ static nltkLocation *nltkLocation__add__(nltkLocation *self,
     }
 }
 
-/* This is used by __getattr__ */
-static PyMethodDef nltkLocation_methods[];
-
-static PyObject *nltkLocation__getattr__(nltkLocation *self, char *name) {
-    if (strcmp(name, "start") == 0)
+static PyObject *nltkLocation__getattro__(nltkLocation *self,
+                                          PyObject *name) {
+    if (strcmp(PyString_AS_STRING(name), "start") == 0)
         return PyInt_FromLong(self->start);
-    if (strcmp(name, "end") == 0)
+    if (strcmp(PyString_AS_STRING(name), "end") == 0)
         return PyInt_FromLong(nltkLocation_END(self));
-    if (strcmp(name, "unit") == 0) {
+    if (strcmp(PyString_AS_STRING(name), "unit") == 0) {
         if (self->context == NULL) {
             Py_INCREF(Py_None);
             return Py_None;
@@ -594,7 +592,7 @@ static PyObject *nltkLocation__getattr__(nltkLocation *self, char *name) {
             return self->context->unit;
         }
     }
-    if (strcmp(name, "source") == 0) {
+    if (strcmp(PyString_AS_STRING(name), "source") == 0) {
         if (self->context == NULL) {
             Py_INCREF(Py_None);
             return Py_None;
@@ -604,8 +602,9 @@ static PyObject *nltkLocation__getattr__(nltkLocation *self, char *name) {
         }
     }
 
-    return PyObject_GenericGetAttr((PyObject *)self,
-                                   PyString_FromString(name));
+    /* It wasn't a special attribute; Use the generic version of
+     * getattr */
+    return PyObject_GenericGetAttr((PyObject *)self, name);
 }
 
 /* =================== Location Type Definition ==================== */
@@ -613,7 +612,7 @@ static PyObject *nltkLocation__getattr__(nltkLocation *self, char *name) {
 /* Location attributes.  These are used by PyObject_GenericGetAttr to
  * generate attributes.  However, note that "unit" and "source" are
  * not directly stored in the object; we handle them manually in
- * __getattr__.  So we give a dummy value (-1) for the offset of the
+ * __getattro__.  So we give a dummy value (-1) for the offset of the
  * value in the object struct.
  */
 struct PyMemberDef nltkLocation_members[] = {
@@ -664,7 +663,7 @@ static PyTypeObject nltkLocationType = {
     0,                                         /* tp_itemsize */
     (destructor)nltkLocation__del__,           /* tp_dealloc */
     0,                                         /* tp_print */
-    (getattrfunc)nltkLocation__getattr__,      /* tp_getattr */
+    0,                                         /* tp_getattr */
     0,                                         /* tp_setattr */
     (cmpfunc)nltkLocation__cmp__,              /* tp_compare */
     (reprfunc)nltkLocation__repr__,            /* tp_repr */
@@ -674,7 +673,7 @@ static PyTypeObject nltkLocationType = {
     (hashfunc)nltkLocation__hash__,            /* tp_hash  */
     0,                                         /* tp_call */
     (reprfunc)nltkLocation__str__,             /* tp_str */
-    0,                                         /* tp_getattro */
+    (getattrofunc)nltkLocation__getattro__,    /* tp_getattro */
     0,                                         /* tp_setattro */
     0,                                         /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT,                        /* tp_flags */
@@ -708,7 +707,7 @@ static PyTypeObject nltkLen1LocationType = {
     0,                                         /* tp_itemsize */
     (destructor)nltkLocation__del__,           /* tp_dealloc */
     0,                                         /* tp_print */
-    (getattrfunc)nltkLocation__getattr__,      /* tp_getattr */
+    0,                                         /* tp_getattr */
     0,                                         /* tp_setattr */
     (cmpfunc)nltkLocation__cmp__,              /* tp_compare */
     (reprfunc)nltkLocation__repr__,            /* tp_repr */
@@ -718,7 +717,7 @@ static PyTypeObject nltkLen1LocationType = {
     (hashfunc)nltkLocation__hash__,            /* tp_hash  */
     0,                                         /* tp_call */
     (reprfunc)nltkLocation__str__,             /* tp_str */
-    0,                                         /* tp_getattro */
+    (getattrofunc)nltkLocation__getattro__,    /* tp_getattro */
     0,                                         /* tp_setattro */
     0,                                         /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT,                        /* tp_flags */
@@ -747,6 +746,7 @@ static PyTypeObject nltkLen1LocationType = {
  *********************************************************************/
 /* Check immutability?? */
 
+
 /* ================== Constructor and Destructor =================== */
 
 /* Type.__new__(type) */
@@ -755,13 +755,42 @@ static PyTypeObject nltkLen1LocationType = {
 static PyObject*
 nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
 {
-    /* Allocate space for the new object. */
-    nltkType *self = (nltkType*)type->tp_alloc(type, 0);
-    if (self == NULL) return NULL;
+    PyObject *name, *value;
+    nltkType *self;
+    int size;
+    int pos = 0;
+    int i;
+    
+    /* Check that there are no positional arguments. */
+    if (PyObject_Length(args) != 0) {
+        PyErr_SetString(PyExc_TypeError, TYPE_ERROR_001);
+        return NULL;
+    }
 
-    /* Start with no properties. */
-    self->num_props = 0;
-    self->properties = NULL;
+    /* Special case: no keyword arguments */
+    if (keywords == NULL) {
+        if ((self = (nltkType*)type->tp_alloc(type, 0)) == NULL)
+            return NULL;
+        self->ob_size = 0;
+        return (PyObject *)self;
+    }
+
+    /* Check the number of keyword arguments. */
+    size = PyDict_Size(keywords);
+
+    /* Allocate space for the new object. */
+    if ((self = (nltkType*)type->tp_alloc(type, size)) == NULL)
+        return NULL;
+    self->ob_size = size;
+
+    /* Initialize the properties */
+    for (i=0; PyDict_Next(keywords, &pos, &name, &value); i++) {
+        Py_INCREF(name);
+        Py_INCREF(value);
+        PyString_InternInPlace(&name);
+        nltkType_PROP_NAME(self, i) = name;
+        nltkType_PROP_VALUE(self, i) = value;
+    }
 
     /* Return the new object. */
     return (PyObject *)self;
@@ -785,8 +814,8 @@ nltkType__init__(nltkType *self, PyObject *args, PyObject *keywords)
         int size, i, pos = 0;
 
         /* Allocate space for prop_names & prop_values */
-        self->num_props = size = PyDict_Size(keywords);
-        self->properties = PyMem_Malloc(2*size*sizeof(PyObject *));
+        self->ob_size = size = PyDict_Size(keywords);
+        //self->properties = PyMem_Malloc(2*size*sizeof(PyObject *));
 
         /* Initialize the properties */
         for (i=0; PyDict_Next(keywords, &pos, &name, &value); i++) {
@@ -809,14 +838,11 @@ nltkType__del__(nltkType *self)
     int i;
     
     /* Delete references to property names & values */
-    for (i=0; i<self->num_props; i++) {
+    for (i=0; i<self->ob_size; i++) {
         Py_DECREF(nltkType_PROP_NAME(self, i));
         Py_DECREF(nltkType_PROP_VALUE(self, i));
     }
     
-    /* Deallocate space for properties. */
-    if (self->properties != NULL) PyMem_Free(self->properties);
-
     /* Free self. */
     self->ob_type->tp_free((PyObject*)self);
 }
@@ -835,7 +861,7 @@ static PyObject *nltkType_get(nltkType *self, PyObject *args)
     PyString_InternInPlace(&property);
 
     /* Look up the value */
-    for (i=0; i<self->num_props; i++)
+    for (i=0; i<self->ob_size; i++)
         if (property == nltkType_PROP_NAME(self, i)) {
             Py_INCREF(nltkType_PROP_VALUE(self, i));
             return nltkType_PROP_VALUE(self, i);
@@ -858,7 +884,7 @@ static PyObject *nltkType_has(nltkType *self, PyObject *args)
     PyString_InternInPlace(&property);
 
     /* Look up the value */
-    for (i=0; i<self->num_props; i++)
+    for (i=0; i<self->ob_size; i++)
         if (property == nltkType_PROP_NAME(self, i)) {
             Py_INCREF(nltkType_PROP_VALUE(self, i));
             return PyInt_FromLong(1);
@@ -874,9 +900,9 @@ static PyObject *nltkType_properties(nltkType *self, PyObject *args)
     PyObject *list;
     int i;
 
-    if ((list = PyList_New(self->num_props)) == NULL) return NULL;
+    if ((list = PyList_New(self->ob_size)) == NULL) return NULL;
 
-    for (i=0; i<self->num_props; i++) {
+    for (i=0; i<self->ob_size; i++) {
         Py_INCREF(nltkType_PROP_NAME(self, i));
         PyList_SET_ITEM(list, i, nltkType_PROP_NAME(self, i));
     }
@@ -891,7 +917,9 @@ nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords)
     PyTypeObject *type = self->ob_type;
     nltkType *newobj;
     PyObject *name, *value;
-    int size, i, j, pos = 0;
+    int size, i, j;
+    static char static_dupcheck[256];
+    char *dupcheck;
     
     /* Check that there are no positional arguments. */
     if (PyObject_Length(args) != 0) {
@@ -904,49 +932,63 @@ nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords)
         Py_INCREF(self);
         return self;
     }
-    
-    /* Allocate space for the new object. */
-    newobj = (nltkType*)type->tp_alloc(type, 0);
-    if (newobj == NULL) return NULL;
 
-    /* Allocate space for prop_names & prop_values */
-    size = self->num_props + PyDict_Size(keywords);
-    newobj->num_props = size;
-    newobj->properties = PyMem_Malloc(2*size*sizeof(PyObject *));
+    /* Get space for the duplicate property check.  If there are fewer
+     * than 256 properties (the common case), then use the static
+     * array; otherwise, we need to dynamically allocate one. */
+    if (self->ob_size < 256)
+        dupcheck = static_dupcheck;
+    else
+        dupcheck = PyMem_Malloc((self->ob_size)*sizeof(char));
 
-    /* Copy the properties from keyword arguments */
-    for (i=0; PyDict_Next(keywords, &pos, &name, &value); i++) {
-        Py_INCREF(name);
-        Py_INCREF(value);
-        PyString_InternInPlace(&name);
-        nltkType_PROP_NAME(newobj, i) = name;
-        nltkType_PROP_VALUE(newobj, i) = value;
+    /* Calculate the space needed, and scan for duplicates.
+     * dupcheck[i] is true iff i is a duplicate property. */
+    size = self->ob_size + PyDict_Size(keywords);
+    for (i=0; i<self->ob_size; i++) {
+        name = nltkType_PROP_NAME(self, i);
+        dupcheck[i] = (PyDict_GetItem(keywords, name) != NULL);
+        if (dupcheck[i]) size -= 1;
     }
 
-    /* Copy the properties from self. */
-    for (j=0; j<self->num_props; j++) {
-        name = nltkType_PROP_NAME(self, j);
-        value = nltkType_PROP_VALUE(self, j);
+    /* Allocate space for the new object. */
+    newobj = (nltkType*)type->tp_alloc(type, size);
+    if (newobj == NULL) return NULL;
+    newobj->ob_size = size;
 
-        /* Don't copy properties that are already defined. */
-        if (PyDict_GetItem(keywords, name) == NULL) {
+    /* Copy the properties from self.  "i" is the index into
+     * self->properties, and "j" is the index into
+     * outobj->properties. */
+    for (i=0,j=0; i<self->ob_size; i++) {
+        name = nltkType_PROP_NAME(self, i);
+        value = nltkType_PROP_VALUE(self, i);
+
+        /* Don't copy properties that are overridden. */
+        if (!dupcheck[i]) {
             Py_INCREF(name);
             Py_INCREF(value);
             PyString_InternInPlace(&name);
-            nltkType_PROP_NAME(newobj, i) = name;
-            nltkType_PROP_VALUE(newobj, i) = value;
-            i++;
+            nltkType_PROP_NAME(newobj, j) = name;
+            nltkType_PROP_VALUE(newobj, j) = value;
+            j++;
         }
     }
 
-    /* If any properties were redefined, then i will be smaller than
-     * size; if this is the case, then shrink the new Type object down
-     * to the appropriate size. */
-    if (i<size) {
-        newobj->num_props = i;
-        newobj->properties = PyMem_Realloc(newobj->properties,
-                                           2*i*sizeof(PyObject *));
+    /* Copy the properties from the keyword arguments.  "i" is the
+     * positional index used to cycle through the dictionary; "j" is
+     * the index into outobj->properties. */
+    for (i=0; PyDict_Next(keywords, &i, &name, &value); j++) {
+        Py_INCREF(name);
+        Py_INCREF(value);
+        PyString_InternInPlace(&name);
+        nltkType_PROP_NAME(newobj, j) = name;
+        nltkType_PROP_VALUE(newobj, j) = value;
     }
+
+    /* Free the duplication check array, if we allocated it. */
+    if (self->ob_size >= 256)
+        PyMem_Free(dupcheck);
+
+    assert(j==size);
 
     /* Return the new object. */
     return newobj;
@@ -959,7 +1001,8 @@ nltkType_select(nltkType *self, PyObject *properties)
     PyTypeObject *type = self->ob_type;
     nltkType *newobj;
     int size = PyTuple_GET_SIZE(properties);
-    int n, i, j;
+    int i, j, n;
+    static char static_dupcheck[256];
     char *dupcheck;
 
     /* If properties==(), then just return ourself */
@@ -968,29 +1011,31 @@ nltkType_select(nltkType *self, PyObject *properties)
         return self;
     }
 
+    /* Get space for the duplicate property check.  If there are fewer
+     * than 256 properties (the common case), then use the static
+     * array; otherwise, we need to dynamically allocate one. */
+    if (self->ob_size < 256)
+        dupcheck = static_dupcheck;
+    else
+        dupcheck = PyMem_Malloc((self->ob_size)*sizeof(char));
+
+    /* Zero-out the duplicate check list */
+    bzero(dupcheck, self->ob_size);
+
     /* Allocate space for the new object. */
-    newobj = (nltkType*)type->tp_alloc(type, 0);
+    newobj = (nltkType*)type->tp_alloc(type, size);
+    newobj->ob_size = size;
     if (newobj == NULL) return NULL;
 
-    /* Allocate space for prop_names & prop_values.  Assume that
-     * properties contains no duplicates (it won't hurt much, it'll
-     * just result in a less efficient object). */
-    newobj->num_props = size;
-    newobj->properties = PyMem_Malloc(2*size*sizeof(PyObject *));
-
-    /* Keep track of duplicates. */
-    dupcheck = PyMem_Malloc((self->num_props)*sizeof(char));
-    bzero(dupcheck, self->num_props);
-
-    /* Fill in values.  "n" is the next index to fill-in for newobj;
-     * "i" is the next index to read from properties; and "j" is the
-     * index we're checking in self.  If properties contains no
-     * duplicates, then "i" will be equal to "n". */
+    /* Fill in newobj's properties.  "n" is the next index to fill-in
+     * for newobj; "i" is the next index to read from properties; and
+     * "j" is the index we're checking in self.  If properties
+     * contains no duplicates, then "i" will be equal to "n". */
     n=0;
     for (i=0; i<size; i++) {
         PyObject *property = PyTuple_GET_ITEM(properties, i);
         PyString_InternInPlace(&property);
-        for (j=0; j<self->num_props; j++) {
+        for (j=0; j<self->ob_size; j++) {
             if (property == nltkType_PROP_NAME(self, j)) {
                 if (!dupcheck[j]) { /* ignore duplicates. */
                     PyObject *prop_name = nltkType_PROP_NAME(self, j);
@@ -1005,7 +1050,7 @@ nltkType_select(nltkType *self, PyObject *properties)
                 break;
             }
         }
-        if (j == self->num_props) {
+        if (j == self->ob_size) {
             /* We didn't find the property.  We have to undo all the
              * INCREFs that we've done so far. */
             PyErr_SetString(PyExc_KeyError, TYPE_ERROR_004);
@@ -1017,16 +1062,16 @@ nltkType_select(nltkType *self, PyObject *properties)
         }
     }
 
-    /* Free the duplicate-checking array. */
-    PyMem_Free(dupcheck);
+    /* Free the duplication check array, if we allocated it. */
+    if (self->ob_size >= 256)
+        PyMem_Free(dupcheck);
 
-    /* If there were duplicates, then shrink the new Type object down
-     * to the appropriate size. */
-    if (n<size) {
-        newobj->num_props = n;
-        newobj->properties = PyMem_Realloc(newobj->properties,
-                                           2*n*sizeof(PyObject *));
-    }
+    /* If there were duplicates, then adjust the size of newobj down.
+     * This wastes some space, but otherwise won't hurt anything.  But
+     * we don't care too much about the wasted space, because it
+     * should be fairly unusual for there to be any duplicates in the
+     * given list of properties. */
+    if (n<size) newobj->ob_size = n;
 
     return newobj;
 }
@@ -1038,7 +1083,7 @@ static PyObject *nltkType__repr__(nltkType *self)
 {
     PyObject *s;
     int i;
-    int size = self->num_props;
+    int size = self->ob_size;
 
     /* Construct the initial string. */
     if ((s = PyString_FromString("<")) == NULL) return NULL;
@@ -1062,34 +1107,25 @@ static PyObject *nltkType__repr__(nltkType *self)
     return s;
 }
 
-/* This is used by nltkType__getattr__; so declare it. */
-static PyMethodDef nltkType_methods[];
-
 /* getattr(self, name) */
 static PyObject *nltkType__getattro__(nltkType *self, PyObject *name)
 {
-    PyObject *val;
     int i;
 
     /* Intern the property name. */
     PyString_InternInPlace(&name);
 
     /* Look up the name as a property. */
-    for (i=0; i<self->num_props; i++)
+    for (i=0; i<self->ob_size; i++)
         /* Should I bother with hashes here? */
         if (name == nltkType_PROP_NAME(self, i)) {
             Py_INCREF(nltkType_PROP_VALUE(self, i));
             return nltkType_PROP_VALUE(self, i);
         }
 
-    /* Look up the name as a method. */
-    val = Py_FindMethod(nltkType_methods, (PyObject*)self,
-                        PyString_AS_STRING(name));
-    if (val != NULL) return val;
-
-    /* We couldn't find it. */
-    PyErr_SetString(PyExc_KeyError, TYPE_ERROR_004);
-    return NULL;
+    /* It wasn't a special attribute; Use the generic version of
+     * getattr */
+    return PyObject_GenericGetAttr((PyObject *)self, name);
 }
 
 /* cmp(self, other) */
@@ -1110,7 +1146,7 @@ static int nltkType__cmp__(nltkType *self, nltkType *other)
 static long nltkType__hash__(nltkType *self)
 {
     /* Hash=0 for empty properties. */
-    if (self->num_props == 0) return 0;
+    if (self->ob_size == 0) return 0;
 
     /* Hash off the first property value (typically "text") */
     return PyObject_Hash(nltkType_PROP_VALUE(self, 0));
@@ -1133,7 +1169,7 @@ static PyTypeObject nltkTypeType = {
     0,                                         /* ob_size */
     "Type",                                    /* tp_name */
     sizeof(nltkType),                          /* tp_basicsize */
-    0,                                         /* tp_itemsize */
+    2 * sizeof(PyObject*),                     /* tp_itemsize */
     (destructor)nltkType__del__,               /* tp_dealloc */
     0,                                         /* tp_print */
     0,                                         /* tp_getattr */
@@ -1176,30 +1212,31 @@ static PyTypeObject nltkTypeType = {
 
 /* ================== Constructor and Destructor =================== */
 
-/* 1. we ignore type, and pick our own implementation.
- * 2. but, we save type in self->real_type.
- * 3. for getattr, we consult self->real_type???
- */
+/* Token.__new__(token) */
+/* Create a new Token object, and initialize its members to default
+ * values.  The properties dictionary is set to None. */
 static PyObject*
-nltkToken__new__(PyTypeObject* type, PyObject *args,
-                         PyObject *keywords)
+nltkToken__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
 {
     /* Allocate space for the new object. */
-    nltkType *self = (nltkType*)type->tp_alloc(type, 0);
+    nltkToken *self = (nltkToken*)type->tp_alloc(type, 0);
     if (self == NULL) return NULL;
 
     /* Start with no properties. */
-    self->num_props = 0;
+    //self->ob_size = 0;
     self->properties = NULL;
-    /* Set the start & end to zero. */
+
+    /* Start with no location. */
+    self->loc = NULL;
 
     /* Return the new object. */
     return (PyObject *)self;
 }
 
-/* Token.__init__(self, type, loc) */
+/* Token.__init__(self, start, end=None, unit=None, source=None) */
+/* Initialize the properties dictionary for the given Token object. */
 static int
-nltkToken__init__(nltkType *self, PyObject *args, PyObject *keywords)
+nltkToken__init__(nltkToken *self, PyObject *args, PyObject *keywords)
 {
     PyObject *type = NULL;
     PyObject *loc = NULL;
@@ -1211,16 +1248,28 @@ nltkToken__init__(nltkType *self, PyObject *args, PyObject *keywords)
                                      &type, &loc))
         return -1;
 
-    /* Location of none????? */
+    /* Store the location. */
+    Py_XDECREF(self->loc);
+    if (loc == NULL)
+        self->loc = Py_None;
+    else
+        self->loc = loc;
+    Py_INCREF(self->loc);
+        
+    /* Copy the properties from the type.  [XXXXX] */
+    
     return 0;
 }
 
-
-/* Type.__del__(self) */
-/* Deallocate all space associated with this Type. */
+/* Token.__del__(self) */
+/* Deallocate all space associated with this Token. */
 static void
-nltkToken__del__(PyObject *self)
+nltkToken__del__(nltkToken *self)
 {
+    Py_XDECREF(self->loc);
+    /* [XXXXX] */
+
+    /* Free self. */
     self->ob_type->tp_free((PyObject*)self);
 }
 
