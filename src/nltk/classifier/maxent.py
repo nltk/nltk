@@ -70,7 +70,6 @@ from nltk.classifier.featureselection import *
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, WSTokenizer
 from nltk.chktype import chktype as _chktype
-from nltk.chktype import classeq as _classeq
 import time, types
 
 # Don't use from .. imports, because math and Numeric provide
