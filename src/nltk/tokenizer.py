@@ -2,7 +2,8 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@ldc.upenn.edu> (minor additions)
+#         Steven Bird <sb@ldc.upenn.edu> (additions)
+#         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
