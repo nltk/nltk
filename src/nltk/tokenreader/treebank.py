@@ -133,9 +133,7 @@ class TreebankFileTokenReader(TokenReaderI):
         return [self.read_token(s, source)]
     
 class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
-    # [XX] This comment is out-of-date!!
     """
-
     A token reader that reas the treebank tagged-file format into a
     token.  In this format:
 
@@ -169,14 +167,15 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             chunker as part of the PARTS preprocessor, and \"are best
             ignored.\"
     """
-    def __init__(self, locs=False, contexts=False, **property_names):
+    def __init__(self, add_locs=False, add_contexts=False,
+                 **property_names):
         PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._locs = locs
-        self._contexts = contexts
+        self._add_locs = add_locs
+        self._add_contexts = add_contexts
 
         # A token reader for processing sentences.
         self._sent_reader = ChunkedTaggedTokenReader(
-            locs, contexts, top_node='S', chunk_node='NP_CHUNK',
+            add_locs, add_contexts, top_node='S', chunk_node='NP_CHUNK',
             **property_names)
 
     def read_token(self, s, source=None):
@@ -208,14 +207,14 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                 sent_tok = self._sent_reader.read_token(sentence, sent_loc)
                 sent_toks.append(sent_tok)
             para_toks.append(Token(**{SENTS: sent_toks}))
-            if self._locs:
+            if self._add_locs:
                 para_toks[-1][LOC] = para_loc
 
         # Create a token for the document
         tok = Token(**{PARAS: para_toks})
 
         # Add context pointers, if requested
-        if self._contexts:
+        if self._add_contexts:
             for para_num, para_tok in enumerate(tok[PARAS]):
                 para_tok[CONTEXT] = SubtokenContextPointer(tok, PARAS,
                                                            para_num)

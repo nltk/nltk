@@ -183,7 +183,7 @@ def demo():
     print 'reading data...'
     toks = []
     for item in nltk.corpus.brown.items()[:30]:
-        text = nltk.corpus.brown.tokenize(item, addcontexts=True)
+        text = nltk.corpus.brown.tokenize(item, add_contexts=True)
         toks += text['SUBTOKENS']
     toks = toks
     split = len(toks)-20

@@ -33,8 +33,8 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     def __init__(self, **property_names):
         PropertyIndirectionMixIn.__init__(self, **property_names)
 
-    # [XX] source is ignored!
-    def read_token(self, s, source=None, addlocs=False, addcontexts=False):
+    # [XX] source and add_locs are ignored!
+    def read_token(self, s, source=None, add_locs=False, add_contexts=False):
         TAG = self.property('TAG')
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
@@ -47,7 +47,7 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             else:
                 subtoks.append(Token(**{TEXT: w, TAG: None}))
         tok = Token(**{SUBTOKENS: subtoks})
-        if addcontexts:
+        if add_contexts:
             for i, subtok in enumerate(subtoks):
                 subtok[CONTEXT] = SubtokenContextPointer(tok, SUBTOKENS, i)
         return tok
@@ -59,9 +59,10 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
 class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
     A token reader that divides a string of chunked tagged text into
-    chunks and unchunked tokens.  Each chunk is encoded as a C{Tree}
-    whose children are tagged word tokens.  Each unchunked token is
-    encoded as a tagged word token.
+    chunks and unchunked tokens.  The returned token defines the
+    C{TREE} property, containing the chunk structure, and the
+    C{SUBTOKENS} property, containing a list of words.  Each word
+    defines the C{TEXT} property and the C{TAG} property.
 
     Chunks are marked by square brackets (C{[...]}).  Words are
     deliniated by whitespace, and each word should have the form
@@ -70,26 +71,17 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     Words that do not contain a slash are assigned a C{tag} of
     C{None}.
 
-      >>> ctt = ChunkedTaggedTokenizer('NP', SUBTOKENS='WORDS')
-      >>> tok = Token(TEXT='[The/DT dog/NN] saw/VBD [him/PRP]')
-      >>> ctt.tokenize(tok)
+      >>> ctt = ChunkedTaggedReader(chunk_node='NP', SUBTOKENS='WORDS')
+      >>> tok = ctt.read_token('[The/DT dog/NN] saw/VBD [him/PRP]')
       >>> print tok['WORDS']
       [(NP: <The/DT> <dog/NN>), <saw/VBD>, (NP: <him/PRP>)]
     
-    The C{Tree} constructor can be used to group this list of
-    tokens and chunks into a single chunk structure:
-
-      >>> chunkstruct = Tree('S', tok['WORDS'])
-      (S: (NP: <The/DT> <dog/NN>) <saw/VBD> (NP: <him/PRP>))
-        
-    @inprop: C{TEXT}: The input token's text content.
-    @inprop: C{LOC}: The input token's location.  I{(optional)}
     @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
     @outprop: C{TEXT}: The subtokens' text contents.
     @outprop: C{TAG}: The subtokens' tags.
     @outprop: C{LOC}: The subtokens' locations.
     """
-    def __init__(self, locs=False, contexts=False,
+    def __init__(self, add_locs=False, add_contexts=False,
                  top_node='S', chunk_node='CHUNK', **property_names):
         """
         @include: AbstractTokenizer.__init__
@@ -100,8 +92,8 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             such as C{"NP"} for base noun phrases.
         """
         PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._locs = locs
-        self._contexts = contexts
+        self._add_locs = add_locs
+        self._add_contexts = add_contexts
         self._chunk_node = chunk_node
         self._top_node = top_node
 
@@ -136,7 +128,7 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                     tok = Token(**{TEXT: text[:slash], TAG: text[slash+1:]})
                 else:
                     tok = Token(**{TEXT: text, TAG: None})
-                if self._locs:
+                if self._add_locs:
                     start, end = match.span()
                     if slash >= 0: end = start+slash
                     tok[LOC] = CharSpanLocation(start, end, source)
@@ -147,7 +139,7 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         # Add the SUBTOKENS property (from the tree's leaves)
         tok[SUBTOKENS] = leaves = tok[TREE].leaves()
         # Add context pointers.
-        if self._contexts:
+        if self._add_contexts:
             for i, subtok in enumerate(leaves):
                 subtok[CONTEXT] = SubtokenContextPointer(tok, SUBTOKENS, i)
         return tok

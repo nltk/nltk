@@ -893,7 +893,7 @@ def demo():
     print 'reading data...'
     toks = []
     for item in nltk.corpus.brown.items()[:2]:
-        text = nltk.corpus.brown.read(item, addcontexts=True)
+        text = nltk.corpus.brown.read(item, add_contexts=True)
         toks += text['WORDS']
     
     toks = toks
