@@ -440,8 +440,8 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
         ProbabilisticMixIn.__init__(self, p)
         Tree.__init__(self, node, *children)
-    def pp(self):
-        return Tree.pp(self) + (' (p=%s)' % self._p)
+    def pp(self, margin=70, indent=0):
+        return Tree.pp(self, margin, indent) + (' (p=%s)' % self._p)
     def __repr__(self):
         return Tree.__repr__(self) + (' (p=%s)' % self._p)
     def __str__(self):
@@ -664,7 +664,7 @@ class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
         ProbabilisticMixIn.__init__(self, p)
         TreeToken.__init__(self, node, *children)
-    def pp(self):
+    def pp(self, margin=70, indent=0):
         return TreeToken.pp(self) + (' (p=%s)' % self._p)
     def __repr__(self):
         return TreeToken.__repr__(self) + (' (p=%s)' % self._p)
