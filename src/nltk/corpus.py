@@ -203,7 +203,7 @@ class CorpusReaderI:
         @return: The name of this C{CorpusReader}'s corpus.
         @rtype: C{string}
         """
-        raise AssertionError, 'CorpusReaderI is an abstract class'
+        raise AssertionError, 'CorpusReaderI is an abstract interface'
 
     def description(self):
         """
@@ -229,6 +229,13 @@ class CorpusReaderI:
         """
         return 'Unknown'
 
+    def installed(self):
+        """
+        @return: True if this corpus is installed.
+        @rtype: C{boolean}
+        """
+        raise AssertionError, 'CorpusReaderI is an abstract interface'
+
     #////////////////////////////////////////////////////////////
     #// Data access (items)
     #////////////////////////////////////////////////////////////
@@ -238,7 +245,7 @@ class CorpusReaderI:
             this C{CorpusReader}'s corpus.
         @rtype: C{list} of C{string}
         """
-        raise AssertionError, 'CorpusReaderI is an abstract class'
+        raise AssertionError, 'CorpusReaderI is an abstract interface'
 
     def path(self, item):
         """
@@ -293,7 +300,7 @@ class CorpusReaderI:
             C{CorpusReader}'s corpus.
         @rtype: C{list} of L{string}
         """
-        raise AssertionError, 'CorpusReaderI is an abstract class'
+        raise AssertionError, 'CorpusReaderI is an abstract interface'
 
     #////////////////////////////////////////////////////////////
     #// Printing
@@ -470,10 +477,11 @@ class SimpleCorpusReader(CorpusReaderI):
         if self._basedir == get_basedir(): return
 
         # Make sure the corpus is installed.
-        self._basedir = get_basedir()
-        self._rootdir = os.path.join(get_basedir(), self._original_rootdir)
-        if not os.path.isdir(self._rootdir):
+        basedir = get_basedir()
+        if not os.path.isdir(os.path.join(basedir, self._original_rootdir)):
             raise IOError('%s is not installed' % self._name)
+        self._basedir = basedir
+        self._rootdir = os.path.join(basedir, self._original_rootdir)
 
         # Build a filelist for the corpus
         filelist = self._find_files(self._rootdir)
@@ -529,6 +537,11 @@ class SimpleCorpusReader(CorpusReaderI):
     def copyright(self):
         self._initialize()
         return self._copyright
+
+    def installed(self):
+        try: self._initialize()
+        except IOError: return 0
+        return 1
 
     #////////////////////////////////////////////////////////////
     #// Data access (items)
@@ -611,10 +624,11 @@ class RogetCorpusReader(CorpusReaderI):
         if self._basedir == get_basedir(): return
 
         # Make sure the corpus is installed.
-        self._basedir = get_basedir()
-        self._rootdir = os.path.join(get_basedir(), self._original_rootdir)
-        if not os.path.isdir(self._rootdir):
+        basedir = get_basedir()
+        if not os.path.isdir(os.path.join(basedir, self._original_rootdir)):
             raise IOError('%s is not installed' % self._name)
+        self._basedir = basedir
+        self._rootdir = os.path.join(basedir, self._original_rootdir)
 
         # Read in the data file.
         datapath = os.path.join(self._rootdir, self._data_file)
@@ -661,6 +675,11 @@ class RogetCorpusReader(CorpusReaderI):
     def copyright(self):
         self._initialize()
         return self._copyright
+
+    def installed(self):
+        try: self._initialize()
+        except IOError: return 0
+        return 1
 
     #////////////////////////////////////////////////////////////
     #// Data access (items)
@@ -737,10 +756,11 @@ class TreebankCorpusReader(CorpusReaderI):
         if self._basedir == get_basedir(): return
 
         # Make sure the corpus is installed.
-        self._basedir = get_basedir()
-        self._rootdir = os.path.join(get_basedir(), self._original_rootdir)
-        if not os.path.isdir(self._rootdir):
+        basedir = get_basedir()
+        if not os.path.isdir(os.path.join(basedir, self._original_rootdir)):
             raise IOError('%s is not installed' % self._name)
+        self._basedir = basedir
+        self._rootdir = os.path.join(basedir, self._original_rootdir)
 
         # Get the list of items in each group.
         self._group_items = {}
@@ -801,6 +821,11 @@ class TreebankCorpusReader(CorpusReaderI):
     def copyright(self):
         self._initialize()
         return self._copyright
+
+    def installed(self):
+        try: self._initialize()
+        except IOError: return 0
+        return 1
 
     def rootdir(self):
         """
