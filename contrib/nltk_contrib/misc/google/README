@@ -1,0 +1,23 @@
+This directory contains a demonstration of how to access the
+Google API, derived from [1].  Use it to query Google and get
+results back in XML.
+
+In order to use this you must:
+
+1. Register for a Google license key and insert it in demo.py
+   http://www.google.com/apis/
+
+2. Install PyXML
+   http://pyxml.sourceforge.net/
+
+3. Install Fpconst
+   http://www.analytics.washington.edu/statcomp/projects/rzope/fpconst/
+
+4. Install Python Web Services
+   http://pywebsvcs.sourceforge.net/
+
+
+[1] The Python Web services developer
+    Scott Archer and Uche Ogbuji
+    http://www-106.ibm.com/developerworks/webservices/library/ws-pyth14/
+
