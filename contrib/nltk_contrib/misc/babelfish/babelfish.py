@@ -45,14 +45,18 @@ __where = [ re.compile(r'name=\"q\">([^<]*)'),
 __languages = { 'english'   : 'en',
                 'french'    : 'fr',
                 'spanish'   : 'es',
+                'dutch'     : 'nl',
                 'german'    : 'de',
                 'italian'   : 'it',
+                'greek'     : 'el',
                 'portuguese': 'pt',
                 'chinese'   : 'zh',
+                'chinese-trad'   : 'zt',
                 'japanese'  : 'ja',
                 'korean'    : 'ko',
                 'russian'   : 'ru'
               }
+
 
 """
   All of the available language names.
@@ -99,10 +103,10 @@ def translate(phrase, from_lang, to_lang):
 
     params = urllib.urlencode( { 'doit' : 'done',
                                  'tt' : 'urltext',
-                                 'urltext' : phrase,
+                                 'trtext' : phrase,
                                  'lp' : from_code + '_' + to_code } )
     try:
-        response = urllib.urlopen('http://babelfish.altavista.com/babelfish/tr', params)
+        response = urllib.urlopen('http://babelfish.altavista.com/tr', params)
 
     except IOError, what:
         raise BabelizerIOError("Couldn't talk to server: %s" % what)
