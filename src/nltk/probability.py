@@ -1265,14 +1265,16 @@ class ProbabilisticMixIn:
             the object.
         @type logrpob: C{float}
         """
-        # Make sure they gave one or the other (but not both)
-        if ('prob' in kwargs) == ('logprob' in kwargs):
-            raise TypeError, 'Must specify either prob or logprob'
-        
         if 'prob' in kwargs:
-            ProbabilisticMixIn.set_prob(self, kwargs['prob'])
-        else:
+            if 'logprob' in kwargs:
+                raise TypeError('Must specify either prob or logprob '
+                                '(not both)')
+            else:
+                ProbabilisticMixIn.set_prob(self, kwargs['prob'])
+        elif 'logprob' in kwargs:
             ProbabilisticMixIn.set_logprob(self, kwargs['logprob'])
+        else:
+            self.__prob = self.__logprob = None
             
     def set_prob(self, prob):
         """
@@ -1301,7 +1303,9 @@ class ProbabilisticMixIn:
         @return: The probability associated with this object.
         @rtype: C{float}
         """
-        if self.__prob is None: self.__prob = math.exp(self.__logprob)
+        if self.__prob is None:
+            if self.__logprob is None: return None
+            self.__prob = math.exp(self.__logprob)
         return self.__prob
 
     def logprob(self):
@@ -1311,8 +1315,10 @@ class ProbabilisticMixIn:
         
         @rtype: C{float}
         """
-        if self.__prob is None: self.__prob = math.exp(self.__logprob)
-        return self.__prob
+        if self.__logprob is None:
+            if self.__prob is None: return None
+            self.__logprob = math.log(self.__prob)
+        return self.__logprob
 
 class ImmutableProbabilisticMixIn(ProbabilisticMixIn):
     def set_prob(self, prob):
