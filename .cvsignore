@@ -1,7 +1,8 @@
 *.aux
 *.dvi
 *.log
-*.pyc
 *.pdf
 *.ps
+*.pyc
 attic
+docs
