@@ -39,7 +39,7 @@ class Edge:
         self._edge = Token((dotted_rule, children), loc)
     def dotted_rule(self):
         return self._edge.type()[0]
-    def children(self):
+    def tree(self):
         return self._edge.type()[1]
     def lhs(self):
         return self.dotted_rule().lhs()
@@ -55,29 +55,28 @@ class Edge:
         return self.loc().end()
     def __repr__(self):
         return repr(self.dotted_rule())\
-               + repr(self.children()) + repr(self.loc())
+               + repr(self.tree()) + repr(self.loc())
     def __eq__(self, other):
         return (self._edge == other._edge)
     def __hash__(self):
-        return hash((self.dotted_rule(), self.children(), self.loc()))
+        return hash((self.dotted_rule(), self.tree(), self.loc()))
 
     def self_loop_start(self, rule):
         loc = self.loc().start_loc()
         dotted_rule = rule.dotted()
-        return Edge(dotted_rule, (), loc)
+        return Edge(dotted_rule, Tree(dotted_rule.lhs()), loc)
 
     def self_loop_end(self, rule):
         loc = self.loc().end_loc()
         dotted_rule = rule.dotted()
-        return Edge(dotted_rule, (), loc)
+        return Edge(dotted_rule, Tree(dotted_rule.lhs()), loc)
 
     def FR(self, edge):
         loc = self.loc().union(edge.loc())
         dotted_rule = self.dotted_rule().shift()
-        children = self.children() + edge.children()
-        if dotted_rule.complete():
-            children = (TreeToken(dotted_rule.lhs(), *children),)
-        return Edge(dotted_rule,children,loc)
+        tree = TreeToken(self.tree().node(),
+                         *(self.tree().children() + (edge.tree(),)))
+        return Edge(dotted_rule, tree, loc)
 
 class Chart:
     """
@@ -121,10 +120,10 @@ class Chart:
         """
         return self._edgeset.elements()
     
-    def size(self):
+    def __len__(self):
         """
         @return: The number of edges contained in this chart.
-        @rtype: int
+        @rtype: C{int}
         """
         return len(self._edgeset)
 
@@ -175,7 +174,7 @@ class Chart:
         Return the set of complete parses encoded by this chart, whose
         root node value is C{node}.
         """
-        return [edge.children()[0] for edge in self.edges() if
+        return [edge.tree() for edge in self.edges() if
                 edge.loc() == self._loc and edge.lhs() == node]
 
     def contains(self, edge):
@@ -493,7 +492,7 @@ class ChartParser(ParserI):
                     # We found an edge for this word.
                     dotted_rule = DottedRule(rule.lhs(), rule.rhs(), 1)
                     tree = TreeToken(rule.lhs(), word)
-                    edge = Edge(dotted_rule, (tree,), word.loc())
+                    edge = Edge(dotted_rule, tree, word.loc())
                     added += self._chart.insert(edge)
 
         # If we're tracing the output, print the newly initialized chart.
@@ -589,7 +588,7 @@ def TD_init(chart, grammar, basecat):
     for rule in grammar:
         if rule.lhs() == basecat:
             dotted_rule = rule.dotted()
-            new_edge = Edge(dotted_rule, (), loc)
+            new_edge = Edge(dotted_rule, Tree(dotted_rule.lhs()), loc)
             added += [new_edge]
     return added
 
@@ -641,8 +640,9 @@ def FR(chart, grammar, basecat):
 ## STRATEGIES
 
 # Define some useful rule invocation strategies.
-TD_STRATEGY = ChartParserStrategy([TD_init, FR], [TD_edge,])
-BU_STRATEGY = ChartParserStrategy([BU_init], [])
+TD_STRATEGY = ChartParserStrategy([TD_init, FR], [TD_edge])
+BUINIT_STRATEGY = ChartParserStrategy([BU_init], [])
+BU_STRATEGY = ChartParserStrategy([BU_init, FR], [])
 TDINIT_STRATEGY = ChartParserStrategy([TD_init], [])
 FR_STRATEGY = ChartParserStrategy([FR], [])
 def bu_edge_strategy(edge):
