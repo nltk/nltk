@@ -27,6 +27,7 @@ from types import IntType as _IntType
 from types import FloatType as _FloatType
 from math import log, log10, ceil, floor
 import Tkinter, sys, time
+from nltk.draw import ShowText
 
 class PlotFrameI:
     """
