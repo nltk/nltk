@@ -8,11 +8,11 @@
 # $Id$
 
 """
-Graphically display a C{Tree} or C{TreeToken}.
+Graphically display a C{TreeToken}.
 """
 from Tkinter import *
-from nltk.tree import Tree, TreeToken
-from nltk.token import Token, Location
+from nltk.tree import TreeToken
+from nltk.token import Token
 from nltk.draw import *
 
 ##//////////////////////////////////////////////////////
@@ -197,6 +197,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def _update(self, child):
         if len(self._subtrees) == 0: return
+        if self._node.bbox() is None: return # [XX] ???
 
         # Update the polygon.
         (nodex, nodey) = self._node_bottom()
@@ -283,34 +284,35 @@ class TreeSegmentWidget(CanvasWidget):
         return '[TreeSeg %s: %s]' % (self._node, self._subtrees)
 
 def _tree_to_treeseg(canvas, tree, make_node, make_leaf,
-                         tree_attribs, node_attribs,
-                         leaf_attribs, loc_attribs):
-    if isinstance(tree, Tree) or isinstance(tree, TreeToken):
-        node = make_node(canvas, tree.node(), **node_attribs)
+                     tree_attribs, node_attribs,
+                     leaf_attribs, loc_attribs,
+                     propnames={'leaf':'text'}):
+    node_prop = propnames.get('node', 'node')
+    leaf_prop = propnames.get('leaf', 'leaf')
+    if isinstance(tree, TreeToken):
+        node = make_node(canvas, tree[node_prop], **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf, 
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
-                    for child in tree.children()]
+                    for child in tree['children']]
         return TreeSegmentWidget(canvas, node, subtrees, **tree_attribs)
     elif isinstance(tree, Token):
-        leaf = make_leaf(canvas, tree.type(), **leaf_attribs)
-        loc = TextWidget(canvas, str(tree.loc()), **loc_attribs)
-        return StackWidget(canvas, leaf, loc, align='center')
+        return make_leaf(canvas, tree[leaf_prop], **leaf_attribs)
     else:
         return make_leaf(canvas, tree, **leaf_attribs)
 
 def tree_to_treesegment(canvas, tree, make_node=TextWidget,
                         make_leaf=TextWidget, **attribs):
     """
-    Convert a C{Tree} or a C{TreeToken} into a C{TreeSegmentWidget}.
+    Convert a C{TreeToken} into a C{TreeSegmentWidget}.
 
     @param make_node: A C{CanvasWidget} constructor or a function that
         creates C{CanvasWidgets}.  C{make_node} is used to convert
-        the C{Tree}'s nodes into C{CanvasWidgets}.  If no constructor
+        the C{TreeToken}'s nodes into C{CanvasWidgets}.  If no constructor
         is specified, then C{TextWidget} will be used.
     @param make_leaf: A C{CanvasWidget} constructor or a function that
         creates C{CanvasWidgets}.  C{make_leaf} is used to convert
-        the C{Tree}'s leafs into C{CanvasWidgets}.  If no constructor
+        the C{TreeToken}'s leafs into C{CanvasWidgets}.  If no constructor
         is specified, then C{TextWidget} will be used.
     @param attribs: Attributes for the canvas widgets that make up the
         returned C{TreeSegmentWidget}.  Any attribute beginning with
@@ -343,9 +345,9 @@ def tree_to_treesegment(canvas, tree, make_node=TextWidget,
 
 class TreeWidget(CanvasWidget):
     """
-    A canvas widget that displays a single C{Tree} or C{TreeToken}.
+    A canvas widget that displays a single C{TreeToken}.
     C{TreeWidget} manages a group of C{TreeSegmentWidget}s that are
-    used to display a C{Tree} or a C{TreeToken}.
+    used to display a C{TreeToken}.
 
     Attributes:
     
@@ -383,11 +385,15 @@ class TreeWidget(CanvasWidget):
       - C{draggable}: whether the widget can be dragged by the user.
     """
     def __init__(self, canvas, tree, make_node=TextWidget,
-                 make_leaf=TextWidget, **attribs):
+                 make_leaf=TextWidget, propnames={'leaf':'text'},
+                 **attribs):
         # Node & leaf canvas widget constructors
         self._make_node = make_node
         self._make_leaf = make_leaf
         self._tree = tree
+
+        # Property names
+        self._propnames = propnames
         
         # Attributes.
         self._nodeattribs = {}
@@ -408,7 +414,7 @@ class TreeWidget(CanvasWidget):
         self._collapsed_trees = {}
         self._nodes = []
         self._leaves = []
-        self._locs = []
+        #self._locs = []
         self._make_collapsed_trees(canvas, tree, ())
         self._treeseg = self._make_expanded_tree(canvas, tree, ())
         self._add_child_widget(self._treeseg)
@@ -435,7 +441,7 @@ class TreeWidget(CanvasWidget):
             C{tree.children()[i1].children()[i2]....children()[in]}.
             For the root, the path is C{()}.
         """
-        return self._expanded_trees[path_to_tree]
+        return self._collapsed_trees[path_to_tree]
 
     def bind_click_trees(self, callback, button=1):
         """
@@ -483,50 +489,23 @@ class TreeWidget(CanvasWidget):
         for node in self._nodes: node.bind_drag(callback, button)
         for node in self._nodes: node.bind_drag(callback, button)
             
-    def bind_click_locs(self, callback, button=1):
-        """
-        Add a binding to all locs.
-        """
-        for node in self._locs: node.bind_click(callback, button)
-        for node in self._locs: node.bind_click(callback, button)
-            
-    def bind_drag_locs(self, callback, button=1):
-        """
-        Add a binding to all locs.
-        """
-        for node in self._locs: node.bind_drag(callback, button)
-        for node in self._locs: node.bind_drag(callback, button)
-            
     def _make_collapsed_trees(self, canvas, tree, key):
-        if not (isinstance(tree, Tree) or isinstance(tree, TreeToken)):
-            return
+        node_prop = self._propnames.get('node', 'node')
+        leaf_prop = self._propnames.get('leaf', 'leaf')
+        
+        if not isinstance(tree, TreeToken): return
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        if isinstance(tree, Tree):
-            node = make_node(canvas, tree.node(), **self._nodeattribs)
-            self._nodes.append(node)
-            leaves = [make_leaf(canvas, l, **self._leafattribs)
-                      for l in tree.leaves()]
-            self._leaves += leaves
-            treeseg = TreeSegmentWidget(canvas, node, leaves, roof=1,
-                                        color=self._roof_color,
-                                        fill=self._roof_fill,
-                                        width=self._line_width)
-        else:
-            node = make_node(canvas, tree.node(), **self._nodeattribs)
-            self._nodes.append(node)
-            leaves = [make_leaf(canvas, l.type(), **self._leafattribs)
-                      for l in tree.leaves()]
-            self._leaves += leaves
-            loc = TextWidget(canvas, str(tree.loc()), **self._locattribs)
-            self._locs.append(loc)
-            leaves_seq = SequenceWidget(canvas, align='top', *leaves)
-            leaves_stack = StackWidget(canvas, leaves_seq, loc)
-            treeseg = TreeSegmentWidget(canvas, node, [leaves_stack], 
-                                        roof=1, color=self._roof_color,
-                                        fill=self._roof_fill,
-                                        width=self._line_width)
+        node = make_node(canvas, tree[node_prop], **self._nodeattribs)
+        self._nodes.append(node)
+        leaves = [make_leaf(canvas, l[leaf_prop], **self._leafattribs)
+                  for l in tree.leaves()]
+        self._leaves += leaves
+        treeseg = TreeSegmentWidget(canvas, node, leaves, roof=1,
+                                    color=self._roof_color,
+                                    fill=self._roof_fill,
+                                    width=self._line_width)
 
         self._collapsed_trees[key] = treeseg
         self._keys[treeseg] = key
@@ -534,18 +513,21 @@ class TreeWidget(CanvasWidget):
         treeseg.hide()
 
         # Build trees for children.
-        for i in range(len(tree.children())):
-            child = tree.children()[i]
+        for i in range(len(tree['children'])):
+            child = tree['children'][i]
             self._make_collapsed_trees(canvas, child, key + (i,))
 
     def _make_expanded_tree(self, canvas, tree, key):
+        node_prop = self._propnames.get('node', 'node')
+        leaf_prop = self._propnames.get('leaf', 'leaf')
+        
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        if isinstance(tree, Tree) or isinstance(tree, TreeToken):
-            node = make_node(canvas, tree.node(), **self._nodeattribs)
+        if isinstance(tree, TreeToken):
+            node = make_node(canvas, tree[node_prop], **self._nodeattribs)
             self._nodes.append(node)
-            children = tree.children()
+            children = tree['children']
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
                         for i in range(len(children))]
             treeseg = TreeSegmentWidget(canvas, node, subtrees,
@@ -555,11 +537,9 @@ class TreeWidget(CanvasWidget):
             self._keys[treeseg] = key
             return treeseg
         elif isinstance(tree, Token):
-            leaf = make_leaf(canvas, tree.type(), **self._leafattribs)
+            leaf = make_leaf(canvas, tree[leaf_prop], **self._leafattribs)
             self._leaves.append(leaf)
-            loc = TextWidget(canvas, str(tree.loc()), **self._locattribs)
-            self._locs.append(loc)
-            return StackWidget(canvas, leaf, loc, align='center')
+            return leaf
         else:
             leaf = make_leaf(canvas, tree, **self._leafattribs)
             self._leaves.append(leaf)
@@ -570,8 +550,8 @@ class TreeWidget(CanvasWidget):
             for node in self._nodes: node[attr[5:]] = value
         elif attr[:5] == 'leaf_':
             for leaf in self._leaves: leaf[attr[5:]] = value
-        elif attr[:4] == 'loc_':
-            for loc in self._locs: loc[attr[4:]] = value
+#        elif attr[:4] == 'loc_':
+#            for loc in self._locs: loc[attr[4:]] = value
         elif attr == 'line_color':
             self._line_color = value
             for tseg in self._expanded_trees.values(): tseg['color'] = value
@@ -592,7 +572,7 @@ class TreeWidget(CanvasWidget):
             for tseg in self._collapsed_trees.values():
                 tseg['draggable'] = value
             for leaf in self._leaves: leaf['draggable'] = value
-            for loc in self._locs: loc['draggable'] = value
+#            for loc in self._locs: loc['draggable'] = value
         elif attr == 'xspace':
             self._xspace = value
             for tseg in self._expanded_trees.values():
@@ -806,11 +786,11 @@ if __name__ == '__main__':
         cw['fill'] = '#%06d' % random.randint(0,999999)
     
     cf = CanvasFrame(width=550, height=450, closeenough=2)
-    
-    tree = Tree('S', Tree('NP', 'the', 'very', 'big', 'cat'),
-                Tree('VP', Tree('Adv', 'sorta'), Tree('V', 'saw'),
-                     Tree('NP', Tree('Det', 'the'),
-                          Tree('N', 'dog'))))
+
+    tree = TreeToken.parse('''
+    (S (NP the very big cat)
+       (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))
+    ''')
                 
     tc = TreeWidget(cf.canvas(), tree, draggable=1, 
                     node_font=('helvetica', -14, 'bold'),
@@ -829,8 +809,9 @@ if __name__ == '__main__':
 
     from nltk.tree import TreebankTokenizer
     
-    treetok = TreebankTokenizer().tokenize('(S (NP this tree) (VP '+
-                                           '(V is) (AdjP shapeable)))')[0]
+    treetok = TreeToken.parse('''
+    (S (NP this tree) (VP (V is) (AdjP shapeable)))
+    ''')
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
@@ -848,12 +829,10 @@ if __name__ == '__main__':
     paren = ParenWidget(cf.canvas(), tc2)
     cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
-    tree3 = Tree('S', Tree('NP', 'this' ,'tree'),
-                 Tree('AUX', 'was'),
-                Tree('VP', Tree('V', 'built'),
-                     Tree('PP', Tree('P', 'with'),
-                          Tree('NP', (Tree('N',
-                            'tree_to_treesegment'))))))
+    tree3 = TreeToken.parse('''
+    (S (NP this tree) (AUX was)
+       (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))
+       ''')
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
                               tree_xspace=2, tree_width=2)
     tc3['draggable'] = 1
@@ -862,11 +841,15 @@ if __name__ == '__main__':
     def orientswitch(treewidget):
         if treewidget['orientation'] == 'horizontal':
             treewidget.expanded_tree(1,1).subtrees()[0].set_text('vertical')
-            #treewidget.collapsed_tree(1,1).subtrees()[0].set_text('vertical')
+            treewidget.collapsed_tree(1,1).subtrees()[0].set_text('vertical')
+            treewidget.collapsed_tree(1).subtrees()[1].set_text('vertical')
+            treewidget.collapsed_tree().subtrees()[3].set_text('vertical')
             treewidget['orientation'] = 'vertical'
         else:
             treewidget.expanded_tree(1,1).subtrees()[0].set_text('horizontal')
-            #treewidget.collapsed_tree(1,1).subtrees()[0].set_text('horizontal')
+            treewidget.collapsed_tree(1,1).subtrees()[0].set_text('horizontal')
+            treewidget.collapsed_tree(1).subtrees()[1].set_text('horizontal')
+            treewidget.collapsed_tree().subtrees()[3].set_text('horizontal')
             treewidget['orientation'] = 'horizontal'
 
     text = """
@@ -881,9 +864,10 @@ built from tree_to_treesegment."""
     twidget = TextWidget(cf.canvas(), text.strip())
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
-                     
-    tree4 = Tree('S', Tree('NP', 'this', 'tree'),
-                 Tree('VP', Tree('V', 'is'), Tree('Adj', 'horizontal')))
+
+    tree4 = TreeToken.parse('''
+    (S (NP this tree) (VP (V is) (Adj horizontal)))
+    ''')
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),
