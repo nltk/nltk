@@ -1636,7 +1636,7 @@ def demo():
     sent = Token(TEXT='I saw John with a dog with my cookie')
     print "Sentence:\n", sent
     from nltk.tokenizer import WhitespaceTokenizer
-    WhitespaceTokenizer().tokenize(sent)
+    WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(sent)
 
     # Ask the user which parser to test
     print '  1: Top-down chart parser'
@@ -1656,7 +1656,7 @@ def demo():
 
     # Run the top-down parser, if requested.
     if choice in ('1', '5'):
-        cp = ChartParser(grammar, TD_STRATEGY, LEAF='TEXT', trace=2)
+        cp = ChartParser(grammar, TD_STRATEGY, LEAF='TEXT', SUBTOKENS='WORDS', trace=2)
         t = time.time()
         cp.parse_n(sent)
         times['top down'] = time.time()-t
@@ -1665,7 +1665,7 @@ def demo():
 
     # Run the bottom-up parser, if requested.
     if choice in ('2', '5'):
-        cp = ChartParser(grammar, BU_STRATEGY, LEAF='TEXT', trace=2)
+        cp = ChartParser(grammar, BU_STRATEGY, LEAF='TEXT', SUBTOKENS='WORDS', trace=2)
         t = time.time()
         cp.parse_n(sent)
         times['bottom up'] = time.time()-t
@@ -1675,7 +1675,7 @@ def demo():
     # Run the earley, if requested.
     if choice in ('3', '5'):
         cp = EarleyChartParser(earley_grammar, earley_lexicon,
-                               LEAF='TEXT', trace=1)
+                               LEAF='TEXT', SUBTOKENS='WORDS', trace=1)
         t = time.time()
         cp.parse_n(sent)
         times['Earley parser'] = time.time()-t
@@ -1685,7 +1685,7 @@ def demo():
     # Run the stepping parser, if requested.
     if choice in ('4', '5'):
         t = time.time()
-        cp = SteppingChartParser(grammar, LEAF='TEXT', trace=1)
+        cp = SteppingChartParser(grammar, LEAF='TEXT', SUBTOKENS='WORDS', trace=1)
         cp.initialize(sent)
         for i in range(4):
             print '*** SWITCH TO TOP DOWN'

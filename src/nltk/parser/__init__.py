@@ -1312,13 +1312,13 @@ def demo():
     # Tokenize a sample sentence.
     sent = Token(TEXT='I saw a man in the park')
     from nltk.tokenizer import WhitespaceTokenizer
-    WhitespaceTokenizer().tokenize(sent)
+    WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(sent)
 
     # Define a list of parsers.
-    parsers = [ShiftReduceParser(grammar, LEAF='TEXT'),
-               RecursiveDescentParser(grammar, LEAF='TEXT'),
-               SteppingShiftReduceParser(grammar, LEAF='TEXT'),
-               SteppingRecursiveDescentParser(grammar, LEAF='TEXT')]
+    parsers = [ShiftReduceParser(grammar, LEAF='TEXT', SUBTOKENS='WORDS'),
+               RecursiveDescentParser(grammar, LEAF='TEXT', SUBTOKENS='WORDS'),
+               SteppingShiftReduceParser(grammar, LEAF='TEXT', SUBTOKENS='WORDS'),
+               SteppingRecursiveDescentParser(grammar, LEAF='TEXT', SUBTOKENS='WORDS')]
 
     # Ask the user to choose a parser.
     import sys

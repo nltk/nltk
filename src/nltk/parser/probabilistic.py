@@ -943,7 +943,7 @@ def demo():
 
     # Tokenize the sentence.
     token = Token(TEXT=s)
-    WhitespaceTokenizer().tokenize(token, addlocs=True)
+    WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(token, addlocs=True)
 
     # Ask the user how many parses to find.
     print '\nNumber of parses to find (1+; default=all): ',
@@ -958,12 +958,12 @@ def demo():
         
     # Define a list of parsers.  We'll use all parsers.
     parsers = [
-        ViterbiPCFGParser(pcfg, LEAF='TEXT'),
-        InsidePCFGParser(pcfg, LEAF='TEXT'), 
-        RandomPCFGParser(pcfg, LEAF='TEXT'),
-        UnsortedPCFGParser(pcfg, LEAF='TEXT'),
-        LongestPCFGParser(pcfg, LEAF='TEXT'),
-        BeamPCFGParser(len(token['SUBTOKENS'])+1, pcfg, LEAF='TEXT')
+        ViterbiPCFGParser(pcfg, LEAF='TEXT', SUBTOKENS='WORDS'),
+        InsidePCFGParser(pcfg, LEAF='TEXT', SUBTOKENS='WORDS'), 
+        RandomPCFGParser(pcfg, LEAF='TEXT', SUBTOKENS='WORDS'),
+        UnsortedPCFGParser(pcfg, LEAF='TEXT', SUBTOKENS='WORDS'),
+        LongestPCFGParser(pcfg, LEAF='TEXT', SUBTOKENS='WORDS'),
+        BeamPCFGParser(len(token['WORDS'])+1, pcfg, LEAF='TEXT', SUBTOKENS='WORDS')
         ]
 
     # Run the parsers on the tokenized sentence.
