@@ -236,12 +236,15 @@ class CFGProduction:
             C{CFGProduction}.
         @rtype: C{string}
         """
-        str = '%s ->' % self._lhs.symbol()
+        if isinstance(self._lhs, Nonterminal):
+            str = '%s ->' % (self._lhs.symbol(),)
+        else:
+            str = '%r ->' % (self._lhs,)
         for elt in self._rhs:
             if isinstance(elt, Nonterminal):
-                str += ' %s' % elt.symbol()
+                str += ' %s' % (elt.symbol(),)
             else:
-                str += ' %r' % elt
+                str += ' %r' % (elt,)
         return str
 
     def __repr__(self):
