@@ -348,6 +348,8 @@ class WhitespaceTokenizer(AbstractTokenizer):
                                                     addcontexts)
 
     def _subtoken_generator(self, token, addlocs, addcontexts):
+        SUBTOKENS = self.property('SUBTOKENS')
+        CONTEXT = self.property('CONTEXT')
         TEXT = self.property('TEXT')
         LOC = self.property('LOC')
 
