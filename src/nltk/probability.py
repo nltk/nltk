@@ -398,12 +398,23 @@ class DictionaryProbDist(ProbDistI):
         if normalize:
             if log:
                 norm_factor = sum_logs(self._prob_dict.values())
-                for (x, p) in self._prob_dict.items():
-                    self._prob_dict[x] -= norm_factor
+                if value_sum <= -1e1000:
+                    logp = math.log(1.0/len(prob_dict.keys()))
+                    for x in prob_dict.keys():
+                        self._prob_dict[x] = logp
+                else:
+                    for (x, p) in self._prob_dict.items():
+                        self._prob_dict[x] -= norm_factor
             else:
-                norm_factor = 1.0/sum(self._prob_dict.values())
-                for (x, p) in self._prob_dict.items():
-                    self._prob_dict[x] *= norm_factor
+                value_sum = sum(self._prob_dict.values())
+                if value_sum == 0:
+                    p = 1.0/len(prob_dict.keys())
+                    for x in prob_dict.keys():
+                        self._prob_dict[x] = p
+                else:
+                    norm_factor = 1.0/value_sum
+                    for (x, p) in self._prob_dict.items():
+                        self._prob_dict[x] *= norm_factor
                     
     def prob(self, sample):
         if self._log:
