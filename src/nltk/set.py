@@ -270,6 +270,21 @@ class Set:
         found = len(self.intersection(other))
         return float(found)/to_find
 
+    def f_measure(self, other, alpha=0.5):
+        """
+        Treating self as the gold standard, compute the F measure
+        (the weighted harmonic mean) of other with respect to self.
+        Larger alpha biases the score towards the precision value,
+        while smaller alpha biases the score towards the recall value.
+
+        @return: A score in the range [0,1]
+        @rtype: C{float}
+        """
+
+        p = self.precision(other)
+        r = self.recall(other)
+        return 1/(alpha/p + (1-alpha)/r)
+
     def __repr__(self):
         """
         Return the string representation of this Set.  Sets
