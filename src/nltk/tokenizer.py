@@ -211,8 +211,12 @@ class AbstractTokenizer(TokenizerI):
         locs = []
         if addlocs:
             if token.has(LOC):
-                source = token[LOC].source()
-                end = token[LOC].start()
+                if isinstance(token[LOC], CharSpanLocation):
+                    source = token[LOC].source()
+                    end = token[LOC].start()
+                else:
+                    source = token[LOC]
+                    end = 0
             else:
                 source = None
                 end = 0
