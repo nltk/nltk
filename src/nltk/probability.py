@@ -583,7 +583,7 @@ class PredEvent(EventI):
     def predicate(self):
         """
         @return: The predicate that this event is based on.
-        @type predicate: C{Function} or C{BuiltinFunction}
+        @rtype: C{Function} or C{BuiltinFunction}
         """
         return self._predicate
         
@@ -1206,6 +1206,7 @@ class CFFreqDist(FreqDistI):
     number of occurances of the sample C{CFSample(I{context},
     I{feature})}.
 
+    @ivar _dict: Internal representation of the frequency distribution. 
     @type _dict: C{dictionary} from context to C{dictionary} from
         feature to C{int}.
     """
