@@ -156,7 +156,7 @@ class Token(dict):
         @return: True if this token defines the given property.
         @rtype: C{bool}
         """
-        return self.has_attr(property)
+        return self.has_key(property)
 
     #/////////////////////////////////////////////////////////////////
     # Transformations
@@ -294,38 +294,42 @@ class Token(dict):
     # Basic operators
     #/////////////////////////////////////////////////////////////////
 
-    def __repr__(self):
+    # [XX] registry of repr funcs
+    _repr_funcs = {}
+    def register_repr(props, repr):
         """
-        @return: A condensed string representation of this C{Type}.
-            Any feature values whose string representations are longer
-            than 30 characters will be abbreviated.
-        @rtype: C{string}
-        """
-        # Abbreviate any values that are longer than 30 characters.
-        # [XX] does this look good in practice?  What should MAXLEN be?
-        MAXLEN = 30
-        items = self.items()
-        for i in range(len(items)):
-            items[i] = (str(items[i][0]), repr(items[i][1]))
-            if len(items[i][1]) > MAXLEN:
-                items[i] = (items[i][0],
-                            items[i][1][:MAXLEN-6]+'...'+items[i][1][-3:])
-        # Convert each property (except loc) to a string.
-        items = ', '.join(['%s=%s' % (p,v)
-                           for (p,v) in items
-                           if p != 'loc'])
-        # If there are no properties, use "<empty>" instead.
-        if len(items) == 0: items = 'empty'
-        # If there's a location, then add it to the end.
-        if self.has_key('loc'):
-            if not isinstance(self['loc'], LocationI):
-                raise AssertionError("self['loc'] is not a location!")
-            locstr = '@%r' % self['loc']
-        else: locstr = ''
-        # Assemble & return the final string.
-        return '<%s>%s' % (items, locstr)
+        Register a string-representation for tokens.  Any tokens that
+        contain the specified set of properties will be printed with
+        the given representation.  If a representation is already
+        registered for the given set of properties, then the old
+        representation will be silently discarded.
 
-    def __str__(self):
+        @type props: C{list} of C{string}
+        @param props: The set of property names for which this
+            representation should be used.  The order of C{props} is
+            not significant.
+        @type repr: C{string} or C{function}
+        @param repr: The representation that should be used for tokens
+            with the given properties.  C{repr} may be either a string
+            or a function.  If C{repr} is a string, then it specifies
+            the representation C{repr%self}.  If it is a function,
+            then it specifies the representation C{repr(self)}.
+        """
+        props = list(props)
+        props.sort()
+        Token._repr_funcs[tuple(props)] = func
+    register_repr = staticmethod(register_repr)
+
+    def __repr__(self):
+        props = self.keys()
+        props.sort()
+        repr = self._repr_funcs.get(tuple(props), Token._default_repr)
+        if isinstance(repr, str):
+            return repr % self
+        else:
+            return repr(self)
+
+    def _default_repr(self):
         """
         @return: A full string representation of this C{Type}.
         @rtype: C{string}
@@ -354,6 +358,21 @@ class Token(dict):
         raise TypeError('%s objects are unhashable' %
                         self.__class__.__name__)
 
+# Register some specialized string representations for common
+# sets of properties.
+register = Token.register_repr
+register(['text'],                     '<%(text)r>')
+register(['loc', 'text'],              '<%(text)r@%(loc)r>')
+register(['text', 'tag'],              '<%(text)r/%(tag)r>')
+register(['text', 'tag', 'loc'],       '<%(text)r/%(tag)r>@%(loc)r')
+register(['text', 'pos'],              '<%(text)r/%(pos)r>')
+register(['text', 'pos', 'loc'],       '<%(text)r/%(pos)r>@%(loc)r')
+register(['subtokens'],                '<%(subtokens)r>')
+register(['text', 'subtokens'],        '<%(subtokens)r>')
+register(['text', 'subtokens', 'loc'], '<%(subtokens)r>')
+register(['subtokens', 'loc'],         '<%(subtokens)r>')
+del register
+        
 ######################################################################
 ## Frozen Token
 ######################################################################
@@ -613,6 +632,17 @@ class SpanLocation(LocationI):
     @ivar _source: The name of the document containing this location.
     """
     __slots__ = ('_start', '_end', '_source')
+
+    class _Infinity:
+        def __init__(self, dir): self._dir=dir
+        def __repr__(self):
+            if self._dir<0: return '-INF'
+            else: return '+INF'
+        def __cmp__(self, other):
+            if self is other: return 0
+            else: return self._dir
+    MIN = _Infinity(-1)
+    MAX = _Infinity(+1)
     
     def __init__(self, start, end, source):
         """
@@ -653,7 +683,6 @@ class SpanLocation(LocationI):
         """
         @return: the length of this C{Location}.  I.e., return
             C{self.end()-self.start()}.
-        @rtype: int
         """
         return self._end - self._start
 
@@ -763,10 +792,14 @@ class SpanLocation(LocationI):
         return hash((self._start, self._end, self._source))
 
     def __repr__(self):
-        return '[%r:%r]' % (self._start, self._end)
+        if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
+        else: unit = ''
+        return '[%s:%s%s]' % (self._start, self._end, unit)
 
     def __str__(self):
-        return '[%r:%r]@%r' % (self._start, self._end, self._source)
+        if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
+        else: unit = ''
+        return '[%s:%s]%s@%r' % (self._start, self._end, unit, self._source)
 
 class CharSpanLocation(SpanLocation):
     """
@@ -783,6 +816,8 @@ class CharSpanLocation(SpanLocation):
     from.
     """
     __slots__ = ()
+    UNIT = 'c'
+    
     def select(self, text):
         """
         Given the text string over which this location is defined,
@@ -842,9 +877,9 @@ def demo():
 
     # Show what tokens can do.
     print '_'*70
-    print "tok  = Token(Type(text='flattening', pos='VBG'), loc)"
+    print "tok  = Token(text='flattening', pos='VBG', loc=loc)"
     tok = Token(text='flattening', pos='VBG', loc=loc)
-    print "tok2 = Token(Type(size=12, weight=83), loc2)"
+    print "tok2 = Token(size=12, weight=83, loc=loc2)"
     tok2 = Token(size=12, weight=83, loc=loc2)
     print
     print "print tok                      =>", tok
