@@ -876,10 +876,7 @@ class SimpleFreqDist(FreqDistI):
         
         # If it's a sample, the answer is easy.
         if not isinstance(sample_or_event, EventI):
-            if self._dict.has_key(sample_or_event):
-                return self._dict[sample_or_event]
-            else:
-                return 0
+            return self._dict.get(sample_or_event, 0)
 
         # If it's a full-fledged event, do a search..  This is slow.
         count = 0
@@ -937,7 +934,22 @@ class SimpleFreqDist(FreqDistI):
             C{SimpleFreqDist}.
         @rtype: string
         """
-        return '{SimpleFreqDist: '+str(self._dict)[1:]
+        str = '{SimpleFreqDist '
+        for sample in self.samples():
+            str += "%r:%r, " % (sample, self.count(sample))
+        return str[:-2]+'}'
+    
+    def __str__(self):
+        str = '{SimpleFreqDist\n    '
+        x = 4
+        for sample in self.samples():
+            substr = "%r: %r, " % (sample, self.count(sample))
+            if len(substr) + x > 75:
+                str += "\n    "
+                x = 4
+            x += len(substr)
+            str += substr
+        return str[:-2]+'}'
 
   
 ##//////////////////////////////////////////////////////
@@ -1154,22 +1166,27 @@ class CFFreqDist(FreqDistI):
     @type _dict: C{dictionary} from context to C{dictionary} from
         feature to C{int}.
     """
-    def __init__(self):
+    def __init__(self, bins=0):
         """
         Construct a new, empty, C{CFFreqDist}.
         """
         self._context_fdists = {}
         self._N = 0
         self._Nr_cache = None
+        self._bins = bins
 
     def inc(self, sample):
         # Inherit docs from FreqDistI
         _chktype("CFFreqDist.inc", 1, sample, (CFSample,))
         self._Nr_cache = None
         self._N += 1
-        if not self._context_fdists.has_key(sample.context()):
-            self._context_fdists[sample.context()] = SimpleFreqDist()
-        self._context_fdists[sample.context()].inc(sample.feature())
+        (context, feature) = (sample.context(), sample.feature())
+        if (not self._context_fdists.has_key(context)):
+            self._context_fdists[context] = SimpleFreqDist()
+            self._bins += 1
+        elif self._context_fdists[context].freq(feature) == 0:
+            self._bins += 1
+        self._context_fdists[context].inc(feature)
 
     def N(self):
         # Inherit docs from FreqDistI
@@ -1177,10 +1194,7 @@ class CFFreqDist(FreqDistI):
 
     def B(self):
         # Inherit docs from FreqDistI
-        b = 0
-        for context_fdist in self._context_fdists.values():
-            b += context_fdist.B()
-        return b
+        return self._bins
 
     def samples(self):
         # Inherit docs from FreqDistI
@@ -1290,7 +1304,10 @@ class CFFreqDist(FreqDistI):
             C{CFFreqDist}.
         @rtype: string
         """
-        return '{CFFreqDist: '+str(self._context_fdists)[1:]
+        str = '{CFFreqDist '
+        for sample in self.samples():
+            str += "%r:%r, " % (sample, self.count(sample))
+        return str[:-1]+'}'
 
     def __str__(self):
         """
@@ -1317,17 +1334,18 @@ class CFFreqDist(FreqDistI):
         clen = max(*[len(`c`) for c in contexts])+1
         flen = max(*[len(`f`) for f in features])+1
         flen = max(flen, 6)
-        clen = max(clen, 7)
+        clen = max(clen, 7) + 2
 
         # Header lines.
-        str += '\nContext'+' '*(clen-7)+'|'
+        str += ' '*(clen)+'|'
         str += (' '* (((flen * len(features) - 7) / 2)))
         str += "Feature\n"
         str += ' '*clen + '|'
         for f in features:
             str += ("%"+`flen`+"s") % `f`
-        str += '\n' + ' '*(clen)+'+'
-        str += ('-'*(flen*len(features))) + '\n'
+        str += '\n'
+        str += '  Context'+' '*(clen-9)+'+'
+        str += ('-'*(flen*len(features))) + '-+\n'
 
         # Data lines.
         for c in contexts:
@@ -1337,7 +1355,7 @@ class CFFreqDist(FreqDistI):
                 str += ("%"+`flen`+".2f") % freq
 
             # Row total.
-            str += ("%"+`flen`+".2f") % self.freq(ContextEvent(c))
+            str += (" |%"+`flen`+".2f") % self.freq(ContextEvent(c))
                     
             str += '\n'
         return str
@@ -1479,7 +1497,7 @@ class LidstoneProbDist(ProbDistI):
         c = freq*N
         l = self._l
         if self._bins == None:
-            B = self._freqdist.bins()
+            B = self._freqdist.B()
         else:
             B = self._bins
         return (c+l) / (N+B*l)
@@ -1497,15 +1515,11 @@ class LidstoneProbDist(ProbDistI):
 
 class LaplaceProbDist(LidstoneProbDist):
     def __init__(self, freqdist, bins=None):
-        self._freqdist = freqdist
-        self._bins = bins
-        self._l = 1
+        LidstoneProbDist.__init__(self, freqdist, 1, bins)
         
-class MLEProbDist(LidstoneProbDist):
+class ELEProbDist(LidstoneProbDist):
     def __init__(self, freqdist, bins=None):
-        self._freqdist = freqdist
-        self._bins = bins
-        self._l = 0.5
+        LidstoneProbDist.__init__(self, freqdist, 0.5, bins)
 
 class HeldOutProbDist(ProbDistI):
     """
@@ -1735,16 +1749,17 @@ def testXVal():
 def testCFFreqDist():
     import random
     fdist = CFFreqDist()
-    print fdist
+    X=10
+    Y=10
     # Contexts are ints, features are strings (just for fun)
     for x in range(100):
-        context = random.randint(1,3)
-        feature = str(random.randint(1,4))
+        context = random.randint(1,X-1)
+        feature = str(random.randint(1,Y-1))
         fdist.inc(CFSample(context, feature))
     print fdist
         
-    for context in range(1, 4):
-        for feature in range(1, 5):
+    for context in range(1, X):
+        for feature in range(1, Y):
             s=CFSample(context, str(feature))
             e=ContextEvent(context)
             print '    P('+`s`+'|'+`e`+') =', str(fdist.cond_freq(s,e))
