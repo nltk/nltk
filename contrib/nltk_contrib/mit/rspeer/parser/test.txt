@@ -1,0 +1,6 @@
+Start -> S
+S -> Foo Bar
+Foo -> Tok e
+Bar -> e Tok
+e ->
+blah Tok
