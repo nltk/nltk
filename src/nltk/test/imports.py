@@ -34,10 +34,12 @@ C{nltk.token} and C{nltk.speech.token}).
 
 import unittest, re, os.path
 
-class ImportTestCase(unittest.TestCase):    
+class ImportTestCase(unittest.TestCase):
+    VERBOSE = 0
     def testAbsoluteImportNames(self):
         'Check that all imports use absolute names.'
         self._failures = []
+        self._import_count = 0
         self._find_nltk_modules()
         for path in self._paths:
             contents = open(path).read()
@@ -50,11 +52,16 @@ class ImportTestCase(unittest.TestCase):
                 msg += '\n  - %s\n        >>> import %s' % failure
             self.fail(msg)
 
+        if self.VERBOSE:
+            print 'Checked %d modules (%d imports)' % (len(self._paths),
+                                                       self._import_count)
+
     # A regular expression that searches for import statements:
     _IMPORT_RE = re.compile(r'\bfrom\s+([\w.]+)\s+import' + '|' +
                             r'\bimport\s+([^;\n]*)')
     
     def _check_import(self, match):
+        self._import_count += 1
         str = match.group(1) or match.group(2)
         str = re.sub(r'as\s+[\w.]+', '', str)
         modules = str.replace(',', ' ').split()
