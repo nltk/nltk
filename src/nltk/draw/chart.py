@@ -1075,6 +1075,7 @@ class ChartView:
             self._analyze()
             self._grow()
             self.draw()
+            self.erase_tree()
             self._resize()
         else:
             for edge in self._chart:
@@ -1767,8 +1768,15 @@ class ChartDemo:
     def _init_buttons(self, parent):
         frame1 = Tkinter.Frame(parent)
         frame2 = Tkinter.Frame(parent)
-        frame1.pack(side='bottom', fill='none')
+        frame1.pack(side='bottom', fill='x')
         frame2.pack(side='top', fill='none')
+
+        Tkinter.Button(frame1, text='Reset\nParser',
+                       background='#90c0d0', foreground='black',
+                       command=self.reset).pack(side='right')
+        #Tkinter.Button(frame1, text='Pause',
+        #               background='#90c0d0', foreground='black',
+        #               command=self.pause).pack(side='left')
         
         Tkinter.Button(frame1, text='Top Down\nStrategy',
                        background='#90c0d0', foreground='black',
@@ -1944,6 +1952,8 @@ class ChartDemo:
         else:
             # Repeated clicks on one edge cycle its trees.
             self._cv.cycle_tree()
+            # [XX] this can get confused if animation is running
+            # faster than the callbacks...
 
     def _select_matrix_edge(self, edge):
         self._select_edge(edge)
