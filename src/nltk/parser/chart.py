@@ -754,7 +754,7 @@ class Chart:
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         LEAF = self._property_names.get('LEAF', 'LEAF')
         
-        if self._token and width>1:
+        if self._token is not None and width>1:
             header = '|.'
             for tok in self._token[SUBTOKENS]:
                 header += tok[LEAF][:width-1].center(width-1)+'.'
