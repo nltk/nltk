@@ -7,7 +7,16 @@
 #
 # $Id$
 
+# Epydoc executable
+EPYDOC = epydoc
+
 all: distributions
+
+usage:
+	@echo make distributions
+	@echo make test
+	@echo make checkdocs
+	@echo make clean
 
 # Tests.
 test: 
@@ -51,3 +60,6 @@ rpmdist:
 # Produce dist/$(NAME)-$(VERSION).win32.exe
 windist:
 	python setup.py -q bdist --format=wininst
+
+checkdocs:
+	$(EPYDOC) -v --check */*.py */*/*.py
