@@ -1,6 +1,6 @@
 # Natural Language Toolkit
 #
-# Copyright (C) 2001 University of Pennsylvania
+# Copyright (C) 2003 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -132,7 +132,7 @@ to currently implemented interfaces and classes.
 """
 
 ##//////////////////////////////////////////////////////
-##  Meta-Data
+##  Metadata
 ##//////////////////////////////////////////////////////
 
 # Version.  For each new release, the version number should be updated
@@ -141,14 +141,13 @@ __version__ = "1.0"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001 University of Pennsylvania.
+Copyright (C) 2003 University of Pennsylvania.
 
-Distributed and Licensed under provisions of the IBM Common Public
-License (Version 0.5), which is included by reference.  The IBM
-Common Public License can be found in the file LICENSE.TXT in the
-distribution."""
+Distributed and Licensed under provisions of the GNU Public
+License, which is included by reference.
+"""
 
-__licence__ = "IBM Common Public License (Version 0.5)"
+__licence__ = "GNU Public License"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Langauge Toolkit is a Python package that simplifies
@@ -168,8 +167,7 @@ __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 __contributors__ = """\
 Edward Loper <edloper@gradient.cis.upenn.edu>
-Steven Bird <sb@unagi.cis.upenn.edu>
-Salim Zayats <szayats@seas.upenn.edu>
+Steven Bird <sb@cs.mu.oz.au>
 """
 
 # Used for epydoc sorting.  Also used for "from nltk import *"
