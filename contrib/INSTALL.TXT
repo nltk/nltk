@@ -48,3 +48,26 @@ Unix and Macintosch (OS X) Installation
         cd nltk_contrib-??.??
         python setup.py install
 
+Alternate Install Locations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    If you are unable to install the NLTK contributions package on
+    your system (e.g., because you are not a system administrator),
+    then you can install it to an alternate location, and use your
+    PYTHONPATH to let Python know where to find it.  To install to an
+    alternate location, use the "--home" argument to setup.py:
+
+        python setup.py install --home=<dir>
+
+    Once you have installed it, you will need to adjust your
+    PYTHONPATH to point to the install directory:
+
+        export PYTHONPATH=$PYTHONPATH:<dir>     # for sh or bash
+        setenv PYTHONPATH $PYTHONPATH:<dir>     # for csh or tcsh
+
+    (For Windows, use "My Computer -> Advanced -> Environment
+    Variables -> New User Variable.")
+
+    For more information on installing to an alternate location, see
+    the distutils manual:
+
+      <http://www.python.org/doc/current/inst/alt-install-windows.html>
