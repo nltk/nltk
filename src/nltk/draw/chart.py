@@ -9,17 +9,64 @@
 Drawing charts, etc.
 """
 
-#temporary
-import nltk.chartparser; reload(nltk.chartparser)
-import time
-
 import Tkinter
-#import math
-from nltk.chartparser import Chart, edgecmp
+import math
+import nltk.chartparser; reload(nltk.chartparser)
+from nltk.chartparser import *
+from nltk.token import WSTokenizer
 from nltk.token import Token, Location
+
+# Help text for ChartDemo
+HELP_TEXT = """\
+
+
+"""
+
+class RuleView:
+    """
+    View a list of rules.  This can be used for the lexicon or for the
+    grammar.
+    """
+    def __init__(self, rules, title='Rule List'):
+        self._rules = rules
+
+        self._top = Tkinter.Tk()
+        self._top.title(title)
+
+        # Add a button list.
+        buttons = Tkinter.Frame(self._top)
+        buttons.pack(side='bottom')
+        Tkinter.Button(buttons, text='Done', command=self.destroy).pack(side='right')
+
+        # Create the list.
+        listframe = Tkinter.Frame(self._top)
+        listframe.pack(fill='both', expand='y')
+        listscroll = Tkinter.Scrollbar(listframe, orient='vertical')
+        self._listbox = listbox = Tkinter.Listbox(listframe)
+        listbox.config(yscrollcommand = listscroll.set)
+        listscroll.config(command=listbox.yview)
+        listscroll.pack(side='right', fill='y')
+        listbox.pack(side='left', fill='both', expand=1)
+
+        # Add the rules.  We'll assume the rule list is immutable..
+        for rule in self._rules:
+            listbox.insert('end', rule)
+
+        # Add some keyboard bindings.
+        #listbox.bind("<Double-Button-1>", self._ok)
+        listbox.bind("q", self.destroy)
+
+    def destroy(self, *args):
+        if self._top == None: return
+        self._top.destroy()
+        
 
 class ChartView:
     """
+    A component for viewing charts.  This is used by C{ChartDemo} to
+    allow students to interactively experiment with various chart
+    parsing techniques.
+    
     @ivar _root: The root window.
     @ivar _chart_canvas: The canvas we're drawing on.
     @ivar _tree_canvas: The canvas we're drawing on.
@@ -35,7 +82,7 @@ class ChartView:
     
     _TOK_SPACING = 10
     _MARGIN = 10
-    _TREE_LEVEL_SIZE = 50
+    _TREE_LEVEL_SIZE = 15
     _CHART_LEVEL_SIZE = 40
     
     def __init__(self, root, chart, source=None):
@@ -58,24 +105,32 @@ class ChartView:
         # Keep track of a single "selected" edge
         self._edgeselection = None
 
+        # Keep track of the tags used to draw the tree
+        self._tree_tags = []
+
         # Create the chart window.
         self._root = root
-        self._tree_canvas = self._sb_canvas(root, 'n', 'x')
-        cframe = Tkinter.Frame(self._root, relief='sunk', border=2)
-        cframe.pack(fill='both')
-        self._source_canvas = Tkinter.Canvas(cframe, width=600,
-                                             height=50)
-        self._source_canvas.pack(fill='both')
+        
         self._chart_canvas = self._sb_canvas(root)
         self._chart_canvas['height'] = 400
         self._chart_canvas['closeenough'] = 15
+        
+        cframe = Tkinter.Frame(self._root, relief='sunk', border=2)
+        cframe.pack(fill='both', side='bottom')
+        self._source_canvas = Tkinter.Canvas(cframe, width=600,
+                                             height=50)
+        self._source_canvas.pack(fill='both')
+        
+        self._tree_canvas = self._sb_canvas(root, 'n', 'x')
+        self._tree_canvas['height'] = 200
+
 
         self._analyze()
         self._chart_canvas.bind('<Configure>', self._configure)
 
-    def _sb_canvas(self, root, expand='y', fill='both'):
+    def _sb_canvas(self, root, expand='y', fill='both', side='bottom'):
         cframe =Tkinter.Frame(root, relief='sunk', border=2)
-        cframe.pack(fill=fill, expand=expand)
+        cframe.pack(fill=fill, expand=expand, side=side)
         canvas = Tkinter.Canvas(cframe)
         
         # Give the canvas a scrollbar.
@@ -101,10 +156,14 @@ class ChartView:
         """
         if chart is not None:
             self._chart = chart
-        for edge in self._chart.edges():
-            if not self._edgetags.has_key(edge):
-                self._add_edge(edge)
-        self._resize()
+            self._edgelevels = []
+            self.draw()
+            self._edgeselection = None
+        else:
+            for edge in self._chart.edges():
+                if not self._edgetags.has_key(edge):
+                    self._add_edge(edge)
+            self._resize()
 
     def _edge_conflict(self, edge, lvl):
         """
@@ -209,16 +268,23 @@ class ChartView:
             c.itemconfig(rhstag2, fill='#800')
 
     def select_edge(self, edge, state=None):
+        """
+        Select a specific edge of the chart.
+        """
         c = self._chart_canvas
-        if self._edgeselection != None:
+        if self._edgeselection is not None:
             # Unselect the old edge.
+            if not self._edgetags.has_key(self._edgeselection):
+                self._edgeselection = None
+                return
             oldtags = self._edgetags[self._edgeselection]
             c.itemconfig(oldtags[0], fill='#00f')
             c.itemconfig(oldtags[1], fill='#008')
             c.itemconfig(oldtags[2], fill='#008',
                                     outline='#008')
             c.itemconfig(oldtags[3], fill='#008')
-            if self._edgeselection == edge and state is None:
+            if (edge is None or
+                (self._edgeselection == edge and state is None)):
                 self._edgeselection = None
                 return
             
@@ -235,6 +301,8 @@ class ChartView:
             c.itemconfig(tags[2], fill='#800', outline='#800')
             c.itemconfig(tags[3], fill='#800')
             self._edgeselection = edge
+
+        self._draw_tree()
             
     def _analyze(self):
         """
@@ -265,9 +333,9 @@ class ChartView:
         for edge in self._chart.edges():
             self._analyze_edge(edge)
 
-        # Figure out the tree height.  Assume no unary productions??
-        maxdepth = 3#math.log(len(self._source))/math.log(2)
-        self._tree_height = maxdepth * ChartView._TREE_LEVEL_SIZE
+        # Default tree size..
+        self._tree_height = (3 * (ChartView._TREE_LEVEL_SIZE +
+                                  self._text_height))
         self._chart_height = 0
         self._resize()
 
@@ -286,11 +354,11 @@ class ChartView:
         height = self._chart_height
         c['scrollregion']=(0,0,width,height)
 
-        # Reset the height for the tree window.
+        ## Reset the height for the tree window.
         self._tree_canvas['scrollregion'] = (0, 0, width,
                                              self._tree_height)
-        if int(self._tree_canvas['height']) > self._tree_height:
-            self._tree_canvas['height'] = self._tree_height
+        #if int(self._tree_canvas['height']) > self._tree_height:
+        #    self._tree_canvas['height'] = self._tree_height
 
         # Reset the height for the source window.
         self._source_canvas['height'] = self._source_height
@@ -309,7 +377,7 @@ class ChartView:
                        self._chart._loc.end()+1):
             x = i*self._unitsize + margin
             
-            t1=c1.create_line(x, 0, x, self._tree_height)
+            t1=c1.create_line(x, 0, x, 5000)
             c1.tag_lower(t1)
             t2=c2.create_line(x, 0, x, self._source_height)
             c2.tag_lower(t2)
@@ -331,6 +399,7 @@ class ChartView:
                 c3.itemconfig(t3, fill='gray70')
 
     def selected_edge(self):
+        """Return the currently selected edge."""
         return self._edgeselection
 
     def _draw_source(self):
@@ -351,7 +420,45 @@ class ChartView:
                                   x2-2, bbox[3]+(ChartView._TOK_SPACING/2),
                                   fill='white', outline='white')
             c.tag_lower(rt)
-        
+
+    def _draw_tree(self):
+        """Draw the syntax tree for the selected edge"""
+        for tag in self._tree_tags:
+            self._tree_canvas.delete(tag)
+        if not self._edgeselection: return
+        if not self._edgeselection.children(): return
+        tree = self._edgeselection.children()[0]
+        self._draw_treetok(tree, 0)
+        self._tree_height = ((tree.height()-1) *
+                             (ChartView._TREE_LEVEL_SIZE +
+                              self._text_height))
+        self._resize()
+
+    def _draw_treetok(self, treetok, depth):
+        c = self._tree_canvas
+        margin = ChartView._MARGIN
+        x1 = treetok.loc().start() * self._unitsize + margin
+        x2 = treetok.loc().end() * self._unitsize + margin
+        x = (x1+x2)/2
+        y = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
+        tag = c.create_text(x, y, anchor='n', justify='center',
+                            text=str(treetok.node()),
+                            font=('helvetica', 12, 'bold'),
+                            fill='#042')
+        self._tree_tags.append(tag)
+        for child in treetok:
+            if isinstance(child, TreeToken):
+                childx = self._draw_treetok(child, depth+1)
+                tag = c.create_line(x, y + self._text_height, childx,
+                                    y + ChartView._TREE_LEVEL_SIZE +
+                                    self._text_height, width=2,
+                                    fill='#084')
+            else:
+                tag = c.create_line(x, y + self._text_height, x, 5000,
+                                    width=2, fill='#084')
+            self._tree_tags.append(tag)
+        return x
+            
     def draw(self):
         """
         Draw everything (from scratch).
@@ -375,123 +482,139 @@ class ChartView:
         for edge in edges:
             self._add_edge(edge)
 
+        # Draw the tree.
+        self._draw_tree()
+
         # Grow, if need-be
         self._resize()
         self._draw_loclines()
 
-from nltk.chartparser import Rule, ChartParser, SteppingChartParser
-from nltk.token import WSTokenizer
 
-class Demo:
-    def __init__(self):
-        # Create the root window.
-        self._root = Tkinter.Tk()
-        self._root.bind('q', self.destroy)
-        buttons = Tkinter.Frame(self._root)
-        buttons.pack(side='bottom')
+    
 
-        grammar = (
-            Rule('S',('NP','VP')),
-            Rule('NP',('Det','N')),
-            Rule('NP',('NP','PP')),
-            Rule('VP',('V','PP')),
-            Rule('PP',('P','NP'))
-            )
+
+class ChartDemo:
+    def __init__(self, grammar, lexicon, tok_sent):
+
+        self.root = None
+        try:
+    
+            # Create the root window.
+            self._root = Tkinter.Tk()
+            self._root.title('Chart Parsing Demo')
+            self._root.bind('q', self.destroy)
+            buttons2 = Tkinter.Frame(self._root)
+            buttons2.pack(side='bottom', fill='x')
+            buttons1 = Tkinter.Frame(self._root)
+            buttons1.pack(side='bottom', fill='x')
+
+            self._lexiconview = self._grammarview = None
+    
+            self._grammar = grammar
+            self._lexicon = lexicon
+            self._tok_sent = tok_sent
+            self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
+            self._cp.initialize(self._tok_sent, strategy=TD_STRATEGY)
+            
+            self._chart = self._cp.chart()
+            self._cv = ChartView(self._root, self._chart, self._tok_sent)
+            
+            Tkinter.Button(buttons1, text='Top down',
+                           command=self.top_down).pack(side='left')
+            Tkinter.Button(buttons1, text='Top down init',
+                           command=self.top_down_init).pack(side='left')
+            Tkinter.Button(buttons1, text='Bottom Up',
+                           command=self.bottom_up).pack(side='left')
+            Tkinter.Button(buttons1, text='Fundamental',
+                           command=self.fundamental).pack(side='left')
+            Tkinter.Button(buttons2, text='Reset Chart',
+                           command=self.reset).pack(side='left')
+
+            Tkinter.Button(buttons2, text='View Grammar',
+                           command=self.view_grammar).pack(side='left')
+            Tkinter.Button(buttons2, text='View Lexicon',
+                           command=self.view_lexicon).pack(side='left')
+    
+            Tkinter.Button(buttons2, text='Done',
+                           command=self.destroy).pack(side='right')
+    
+            # Set up a button to control stepping (default on)
+            self._step = Tkinter.IntVar()
+            step = Tkinter.Checkbutton(buttons1, text="Step", 
+                                       variable=self._step)
+            step.pack(side='right')
+            step.select()
+            Tkinter.mainloop()
+        except:
+            print 'Error creating Tree View'
+            self.destroy()
+            raise
+
+    def view_lexicon(self):
+        self._lexiconview = RuleView(self._lexicon, 'Lexicon')
+
+    def view_grammar(self):
+        self._grammarview = RuleView(self._grammar, 'Grammar')
         
-        lexicon = (
-            Rule('Det',('the',)),
-            Rule('N',('cat',)),
-            Rule('V',('sat',)),
-            Rule('P',('on',)),
-            Rule('N',('mat',))
-            )
-        
-        sent = 'the cat sat on the mat on the mat'
-
-        self._grammar = grammar
-        self._lexicon = lexicon
-        self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
-        self._tok_sent = WSTokenizer().tokenize(sent)
-        self._cp.load(self._cp.bu_strategy(), self._tok_sent)
-        self._chart = self._cp.chart()
-        self._cv = ChartView(self._root, self._chart, self._tok_sent)
-        
-        Tkinter.Button(buttons, text='Top down',
-                       command=self.top_down).pack(side='left')
-        Tkinter.Button(buttons, text='Top down init',
-                       command=self.top_down_init).pack(side='left')
-        Tkinter.Button(buttons, text='Bottom Up',
-                       command=self.bottom_up).pack(side='left')
-        Tkinter.Button(buttons, text='Fundamental',
-                       command=self.fundamental).pack(side='left')
-        Tkinter.Button(buttons, text='Reset Chart',
-                       command=self.reset).pack(side='left')
-
-        # Set up a button to control stepping (default on)
-        self._step = Tkinter.IntVar()
-        step = Tkinter.Checkbutton(buttons, text="Step", 
-                                   variable=self._step)
-        step.var = self._step
-        step.select()
-        step.pack(side='left')
-
     def reset(self):
         self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
-        self._cp.load(self._cp.bu_strategy(), self._tok_sent)
+        self._cp.initialize(self._tok_sent, strategy=TD_STRATEGY)
         self._chart = self._cp.chart()
-        self._cv.draw()
-        
-    def top_down_init(self):
+        self._cv.update(self._chart)
+
+    def apply_strategy(self, strategy, edge_strategy):
         if self._step.get():
-            self._cp.TD_init_step()
+            edge = self._cv.selected_edge()
+            if (edge is not None) and (edge_strategy is not None):
+                # Select the new edge (or nonthing if there was new edge)
+                new_edge = self._cp.step(strategy=edge_strategy(edge))
+                self._cv.update()
+                self._cv.select_edge(new_edge)
+                return
+            else:
+                self._cp.step(strategy=strategy)
         else:
-            self._cp.TD_init()
-        self._cv.update(self._cp.chart())
+            while self._cp.step(strategy=strategy): pass
+        self._cv.update()
+
+    def top_down_init(self):
+        self.apply_strategy(TDINIT_STRATEGY, None)
         
     def top_down(self):
-        # FIX ME
-        if self._step.get():
-            edge = self._cv.selected_edge()
-            if edge is not None:
-                self._cp.TD_step(edge)
-        else:
-            print 'ouch'
-        self._cv.update(self._cp.chart())
-        
-    def bottom_up(self):
-        if self._step.get():
-            edge = self._cv.selected_edge()
-            if edge is not None:
-                if not self._cp.BU_init_edge_step(edge):
-                    self._cv.select_edge(edge, 0)
-                    new_edge = self._cp.BU_init_step()
-                    if new_edge:
-                        self._cv.update(self._cp.chart())
-                        self._cv.select_edge(new_edge)
-            else:
-                self._cp.BU_init_step()
-        else:
-            self._cp.BU_init()
-        self._cv.update(self._cp.chart())
+        self.apply_strategy(TD_STRATEGY, td_edge_strategy)
         
     def fundamental(self):
-        if self._step.get():
-            edge = self._cv.selected_edge()
-            if edge is not None:
-                self._cp.FR_step(edge)
-        else:
-            self._cp.FR()
-        self._cv.update(self._cp.chart())
-        return
-
-
+        self.apply_strategy(FR_STRATEGY, fr_edge_strategy)
+    
+    def bottom_up(self):
+        self.apply_strategy(BU_STRATEGY, bu_edge_strategy)
+        
     def destroy(self, *args):
+        if self._lexiconview: self._lexiconview.destroy()
+        if self._grammarview: self._grammarview.destroy()
         if self._root is None: return
         self._root.destroy()
         self._root = None
 
 if __name__ == '__main__':
-    Demo()    
-
-        
+    grammar = (
+        Rule('S',('NP','VP')),
+        Rule('NP',('Det','N')),
+        Rule('NP',('NP','PP')),
+        Rule('VP',('V','PP')),
+        Rule('PP',('P','NP'))
+        )
+    
+    lexicon = (
+        Rule('Det',('the',)),
+        Rule('N',('cat',)),
+        Rule('V',('sat',)),
+        Rule('P',('on',)),
+        Rule('N',('mat',))
+        )
+    
+    sent = 'the cat sat on the mat'
+    tok_sent = WSTokenizer().tokenize(sent)
+    
+    ChartDemo(grammar, lexicon, tok_sent)
 
