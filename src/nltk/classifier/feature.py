@@ -303,7 +303,8 @@ class ArrayFeatureValueList(FeatureValueListI):
             value are encoded.
         @type default: (immutable)
         """
-        self._values = array(values)
+        import Numeric
+        self._values = Numeric.array(values)
         self._default = default
 
     def __getitem__(self, feature_id):
@@ -855,7 +856,7 @@ class BagOfWordsFDList(AbstractFDList):
     they will typically be strings.
     """
     # The feature id for a pair (w, l) is:
-    #    _wmap[w] + _lmap[l]*_num_words
+    #    _wmap[w] + _lmap[l]*_num_values
     def __init__(self, words, labels):
         """
         Construct a new C{BagOfWordsFDList}.  This feature
@@ -884,11 +885,11 @@ class BagOfWordsFDList(AbstractFDList):
                              'be used if labels contains None')
         
         self._wmap = {}
-        self._num_words = 0
+        self._num_values = 0
         for word in words:
             if not self._wmap.has_key(word):
-                self._wmap[word] = self._num_words
-                self._num_words += 1
+                self._wmap[word] = self._num_values
+                self._num_values += 1
 
         self._lmap = {}
         self._num_labels = 0
@@ -906,17 +907,50 @@ class BagOfWordsFDList(AbstractFDList):
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
         lnum = self._lmap.get(labeled_text.label(), None)
-        if lnum is None: return EmptyFeatureValueList()
+        if lnum is None: return EmptyFeatureValueList(self._N)
         offset = lnum*self._num_values
 
-        assignments = []
+        assignments = {}
         for word in labeled_text.text():
             wnum = self._wmap.get(word)
             if wnum is not None:
-                assignments.append((wnum+offset, 1))
+                assignments[wnum+offset] = 1
 
-        return SimpleFeatureValueList(assignments, self._N)
+        return SimpleFeatureValueList(assignments.items(), self._N)
 
+class MultiBagOfWordsFDList(BagOfWordsFDList):
+    """
+    An integer-valued feature detector list constructed from a set of
+    words and a set of labels.  This feature detector list contains
+    one feature detector for each M{(word,label)} pair.  When the
+    feature detector corresponding to M{(word, label)} is applied to a
+    labeled text M{ltext}, it will return:
+
+        - The number of times C{M{word}} appears in C{M{ltext}.text()}
+                  if C{M{ltext}.label()==M{label}}
+        - 0, otherwise
+
+    This feature detector assumes that it is applied to texts
+    consisting of lists of words.  Words can be any immutable object;
+    they will typically be strings.
+    """
+    # Inherit constructor and __len__ from BagOfWordFDList
+
+    def detect(self, labeled_text):
+        # Inherit docs from FeatureDetectorListI
+        lnum = self._lmap.get(labeled_text.label(), None)
+        if lnum is None: return EmptyFeatureValueList()
+        offset = lnum*self._num_values
+
+        assignments = {}
+        for word in labeled_text.text():
+            wnum = self._wmap.get(word)
+            if wnum is not None:
+                assignments[wnum+offset] = assignments.get(wnum+offset,0)+1
+
+        return SimpleFeatureValueList(assignments.items(), self._N)
+
+    
 class MemoizedFDList(AbstractFDList):
     """
     A feature detector list that always returns the same
@@ -1023,7 +1057,7 @@ class AbstractFeatureClassifier(ClassifierI):
         """
         Initialize the feature detector list and label list for this
         classifier.  This constructor should be called by subclasses,
-        using the statement:
+        using the statement::
 
             AbstractFeatureClassifier.__init__(self, fdlist, labels)
             
