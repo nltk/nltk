@@ -218,8 +218,8 @@ class Edge:
 
     def __cmp__(self, other):
         if self == other: return 0
-        return cmp((e1.loc().length(), e1.loc(), e1.prod()),
-                   (e2.loc().length(), e2.loc(), e2.prod()))
+        return cmp((self.loc().length(), self.loc(), self.prod()),
+                   (other.loc().length(), other.loc(), other.prod()))
 
     def __hash__(self):
         """
