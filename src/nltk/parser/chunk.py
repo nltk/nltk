@@ -152,7 +152,7 @@ REChunkParser
 from nltk.parser import ParserI
 from nltk.tree import TreeToken, AbstractTree
 from nltk.token import TokenizerI, Token, Location, LineTokenizer
-from nltk.tagger import parseTaggedType
+from nltk.tagger import parse_tagged_type
 from nltk.chktype import chktype as _chktype
 import types, re
 
@@ -286,7 +286,7 @@ class ChunkedTaggedTokenizer(TokenizerI):
         for piece in pieces:
             # Convert the piece to a list of tokens.
             subsequence = []
-            ttypes = [parseTaggedType(s) for s in piece.split()]
+            ttypes = [parse_tagged_type(s) for s in piece.split()]
             for ttype in ttypes:
                 loc = Location(index, unit='w', source=source)
                 subsequence.append(Token(ttype, loc))
