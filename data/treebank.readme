@@ -1,4 +1,4 @@
-Penn Treebank 
+Penn Treebank Sample
 http://www.cis.upenn.edu/~treebank/home.html
 
 This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
@@ -6,8 +6,11 @@ available under fair use for the purposes of illustrating NLTK tools
 for tokenizing, tagging, chunking and parsing.  This data is for
 non-commercial use only.
 
-Contents: raw, tagged and parsed data from Wall Street Journal for
-1650 sentences (99 treebank files wsj_0001 .. wsj_0099), e.g.:
+Contents: raw, tagged, parsed and combined data from Wall Street
+Journal for 1650 sentences (99 treebank files wsj_0001 .. wsj_0099).
+For details about each of the four types, please see the other README
+files included in the treebank sample directory.  Examples of the four
+types are shown below:
 
 ----raw----
 Pierre Vinken, 61 years old, will join the board as a nonexecutive
@@ -34,4 +37,20 @@ as/IN
 		     (NP a nonexecutive director))
 	     (NP-TMP Nov. 29)))
      .))
+----combined----
+( (S 
+    (NP-SBJ 
+      (NP (NNP Pierre) (NNP Vinken) )
+      (, ,) 
+      (ADJP 
+        (NP (CD 61) (NNS years) )
+        (JJ old) )
+      (, ,) )
+    (VP (MD will) 
+      (VP (VB join) 
+        (NP (DT the) (NN board) )
+        (PP-CLR (IN as) 
+          (NP (DT a) (JJ nonexecutive) (NN director) ))
+        (NP-TMP (NNP Nov.) (CD 29) )))
+    (. .) ))
 --------
