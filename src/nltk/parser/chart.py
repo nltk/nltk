@@ -338,7 +338,7 @@ class ProductionEdge(EdgeI):
 
     def __cmp__(self, other):
         if self == other: return 0
-        if isinstance(other, TokenEdge): return -1
+        if isinstance(other, TokenEdge): return 1
         val = cmp([self._loc.length(), self._loc.start()],
                   [other._loc.length(), other._loc.start()])
         if val == 0: return 1
@@ -403,7 +403,7 @@ class TokenEdge(EdgeI):
 
     def __cmp__(self, other):
         if self == other: return 0
-        if isinstance(other, ProductionEdge): return 1
+        if isinstance(other, ProductionEdge): return -1
         val = cmp(self._token.loc().length(),
                   other._token.loc().length())
         if val == 0: return 1
