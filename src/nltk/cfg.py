@@ -17,21 +17,21 @@ parse trees for any piece of a text can depend only on that piece, and
 not on the rest of the text (i.e., the piece's context).  Context free
 grammars are often used to find possible syntactic structures for
 sentences.  In this context, the leaves of a parse tree are word
-tokens; and the node values are phrasal categories, such as C{"NP"}
-and C{"VP"}.
+tokens; and the node values are phrasal categories, such as C{NP}
+and C{VP}.
 
-The C{CFG} class is used to encode context free grammars.  Each C{CFG}
+The L{CFG} class is used to encode context free grammars.  Each C{CFG}
 consists of a start symbol and a set of productions.  The X{start
 symbol} specifies the root node value for parse trees.  For example,
-the start symbol for syntactic parsing is usually C{"S"}.  Start
+the start symbol for syntactic parsing is usually C{S}.  Start
 symbols are encoded using the C{Nonterminal} class, which is discussed
 below.
 
 A CFG's X{productions} specify what parent-child relationships a parse
 tree can contain.  Each production specifies that a particular
 node can be the parent of a particular set of children.  For example,
-the production C{"<S> -> <NP> <VP>"} specifies that an C{"S"} node can
-be the parent of an C{"NP"} node and a C{"VP"} node.
+the production C{<S> -> <NP> <VP>} specifies that an C{S} node can
+be the parent of an C{NP} node and a C{VP} node.
 
 CFG productions are implemented by the C{CFGProduction} class.
 Each C{CFGProduction} consists of a left hand side and a right hand
@@ -65,6 +65,10 @@ can be produced by the following procedure:
 The operation of replacing the left hand side (M{lhs}) of a production
 with the right hand side (M{rhs}) in a tree (M{tree}) is known as
 X{expanding} M{lhs} to M{rhs} in M{tree}.
+
+@group Context Free Grammars: CFG, CFGProduction, Nonterminal
+@group Probabilistic CFGs: PCFG, PCFGProduction
+@sort: CFG, CFGProduction, Nonterminal, PCFG, PCFGProduction
 """
 
 from nltk.token import *
@@ -195,7 +199,7 @@ class CFGProduction:
     @see: L{Nonterminal}
     @type _lhs: L{Nonterminal}
     @ivar _lhs: The left-hand side of the production.
-    @type _rhs: sequence of (C{Nonterminal} and (terminal))
+    @type _rhs: C{tuple} of (C{Nonterminal} and (terminal))
     @ivar _rhs: The right-hand side of the production.
     """
 
@@ -296,7 +300,7 @@ class CFG:
         assert _chktype(1, start, Nonterminal)
         assert _chktype(2, productions, (CFGProduction,), [CFGProduction])
         self._start = start
-        self._productions = productions
+        self._productions = tuple(productions)
 
     def productions(self):
         return self._productions
@@ -358,7 +362,6 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
 
 class PCFG(CFG):
     """
-
     A probabilistic context-free grammar.  A PCFG consists of a start
     state and a set of productions.  The set of terminals and
     nonterminals is implicitly specified by the productions.
@@ -403,46 +406,3 @@ class PCFG(CFG):
             if not ((1-PCFG.EPSILON) < p < (1+PCFG.EPSILON)):
                 raise ValueError("CFGProductions for %r do not sum to 1" % lhs)
 
-#################################################################
-# Test code
-#################################################################
-
-# Run some quick-and-dirty tests to make sure everything's working
-# right.  Eventually we need unit testing..
-if __name__ == '__main__':
-    (S, VP, NP, PP, VP2, S2) = [Nonterminal(s) for s in
-                            ('S', 'VP', 'NP', 'PP', 'VP', 'S')]
-
-    for (A,B) in [(S,S), (S,NP), (PP,VP), (VP2, S), (VP2, VP), (S,S2)]:
-        if A == B: print '%3s == %-3s' % (A,B),
-        else: print '%3s != %-3s' % (A,B),
-    print
-             
-    productions = [CFGProduction(S, VP, NP),
-             CFGProduction(VP, 'saw', NP),
-             CFGProduction(VP, 'ate'),
-             CFGProduction(NP, 'the', 'boy'),
-             CFGProduction(PP, 'under', NP),
-             CFGProduction(VP, VP, PP)]
-
-    for production in productions:
-        print '%-30s %r' % (production,production)
-        hash(production)
-    print
-
-    S2 = Nonterminal('S')
-    VP2 = Nonterminal('VP')
-
-    productions = [PCFGProduction(1, S, VP, NP),
-              PCFGProduction(0.4, VP, 'saw', NP),
-              PCFGProduction(0.4, VP, 'ate'),
-              PCFGProduction(0.2, VP, VP, PP),
-              PCFGProduction(0.8, NP, 'the', 'boy'),
-              PCFGProduction(0.2, NP, 'Jack'),
-              PCFGProduction(1.0, PP, 'under', NP)]
-
-    for production in productions:
-        print '%-30s %r' % (production,production)
-        hash(production)
-
-                 
