@@ -100,30 +100,27 @@ class DottedCFG_Rule(CFG_Rule):
         """
         return DottedCFG_Rule(self._lhs, self._rhs, self._pos)
 
-    def pp(self):
-        """
-        @return: a pretty-printed version of the C{DottedCFG_Rule}.
-        @rtype: C{string}
-        """
-        return str(self._lhs) + ' -> ' +\
-               ' '.join([str(item) for item in self._rhs[:self._pos]]) +\
-               ' * ' +\
-               ' '.join([str(item) for item in self._rhs[self._pos:]])
-
     def __repr__(self):
         """
         @return: A concise string representation of the C{DottedCFG_Rule}.
         @rtype: C{string}
         """
-        return 'Rule(' + repr(self._lhs) + ', ' +\
-               repr(self._rhs) + ', ' + `self._pos` + ')'
+        return '[Rule: %s]' % self
 
     def __str__(self):
         """
         @return: A verbose string representation of the C{DottedCFG_Rule}.
         @rtype: C{string}
         """
-        return self.pp()
+        str = '%s ->' % self._lhs
+        for elt in self._rhs[:self._pos]:
+            if isinstance(elt, Nonterminal): str += ' %s' % elt.symbol()
+            else: str += ' %r' % elt
+        str += ' *'
+        for elt in self._rhs[self._pos:]:
+            if isinstance(elt, Nonterminal): str += ' %s' % elt.symbol()
+            else: str += ' %r' % elt
+        return str
 
     def __eq__(self, other):
         """
@@ -168,7 +165,7 @@ class DottedPCFG_Rule(DottedCFG_Rule, ProbablisticMixIn):
 
 class Edge:
     """
-    An edge of a chart.  An edges is a span of tokens (i.e. a
+    An edge of a chart.  An edge is a span of tokens (i.e. a
     C{Location}) with an associated C{DottedCFG_Rule} and a C{Tree}.
     The Edge class provides basic functions plus a some common
     chart-parser functions on edges.
@@ -245,10 +242,10 @@ class Edge:
         @return: A concise string representation of the C{Edge}
         @rtype: C{string}
         """
-        return repr(self._drule) + repr(self._tree) + repr(self._loc)
+        return '[Edge: %s]%s' % (self._drule, self._loc)
 
     def __str__(self):
-        return '%s%s' % (self._drule, self._loc)
+        return '[Edge: %s]%r' % (self._drule, self._loc)
 
     def __eq__(self, other):
         """
@@ -268,7 +265,7 @@ class Edge:
 
     def self_loop_start(self, rule):
         """
-        E{this will be removed}
+        B{this will be removed}
         
         @param rule: A grammar rule
         @type rule: C{Rule}
@@ -282,7 +279,7 @@ class Edge:
 
     def self_loop_end(self, rule):
         """
-        E{this will be removed}
+        B{this will be removed}
         
         @param rule: A grammar rule
         @type rule: C{Rule}
@@ -296,7 +293,7 @@ class Edge:
 
     def FR(self, edge):
         """
-        E{this will be removed}
+        B{this will be removed}
         
         @param edge: a completed edge immediately to the right
         @type edge: C{Edge}
@@ -444,7 +441,34 @@ class Chart:
         import nltk.draw.chart
         nltk.draw.chart.ChartView(self, text, **kwargs)
 
-    def pp(self, text=None):
+    def pp_edge(self, edge, width=3):
+        """
+        Return a pretty-printed representation of a given edge on this
+        chart.
+        """
+        (chart_start, chart_end) = (self._loc.start(), self._loc.end())
+        (start, end) = (edge.start(), edge.end())
+
+        str = '|' + ('.'+' '*(width-1))*(start-chart_start)
+
+        # Zero-width edges are "#" if complete, ">" if incomplete
+        if start == end:
+            if edge.complete(): str += '#'
+            else: str += '>'
+
+        # Spanning complete edges are "[===]"; Other edges are
+        # "[---]" if complete, "[--->" if incomplete
+        elif edge.complete() and edge.loc() == self._loc:
+            str += '['+('='*width)*(end-start-1) + '='*(width-1)+']'
+        elif edge.complete():
+            str += '['+('-'*width)*(end-start-1) + '-'*(width-1)+']'
+        else:
+            str += '['+('-'*width)*(end-start-1) + '-'*(width-1)+'>'
+        
+        str += (' '*(width-1)+'.')*(chart_end-end)
+        return str + '| %s ' % edge.drule()
+        
+    def pp(self, text=None, width=3):
         (chart_start, chart_end) = (self._loc.start(), self._loc.end())
         str = ''
 
@@ -465,20 +489,7 @@ class Chart:
         edges = self.edges()
         edges.sort(edgecmp)
         for edge in edges:
-            (start, end) = (edge.start(), edge.end())
-            str += '|' + '.  '*(start-chart_start)
-
-            # Zero-width edges are "#" if complete, ">" if incomplete
-            if start == end:
-                if edge.complete(): str += '#'
-                else: str += '>'
-
-            # Other edges "[---]" if complete, "[--->" if incomplete
-            elif edge.complete(): str += '['+'---'*(end-start-1) + '--]'
-            else: str += '['+'---'*(end-start-1) + '-->'
-            
-            str += '  .'*(chart_end-end)
-            str += '| %-20s ' % edge.drule() +'\n'
+            str += self.pp_edge(edge, width) + '\n'
         return str
 
 class FRChart(Chart):
@@ -501,7 +512,7 @@ class FRChart(Chart):
     @type _complete: C{list} of C{Edge}
     @ivar _incomplete: A dictionary containing all incomplete edges,
         indexed by their end position & 1st rhs elt after the dot.
-    @type _complete: C{list} of C{Edge}
+    @type _incomplete: C{list} of C{Edge}
     """
     def __init__(self, loc):
         # Inherit docs.
