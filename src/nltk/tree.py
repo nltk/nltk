@@ -409,9 +409,12 @@ class TreeToken(Token):
     def frozen_token_class(): return FrozenTreeToken
     frozen_token_class = staticmethod(frozen_token_class)
 
-# Note: order of superclasses is *very* important here:
-class FrozenTreeToken(FrozenToken, TreeToken): pass
-
+class FrozenTreeToken(TreeToken, FrozenToken):
+    "An immutable (and hashable) version of the L{TreeToken} class."
+    def __init__(self, **properties):
+        FrozenToken.__init__(self, **properties)
+        if not self.has('children'):
+            raise ValueError('TreeTokens must define the children property')
 
 class TreebankTokenizer(TokenizerI):
     def __init__(self, addlocs=True, propnames={}):
