@@ -614,7 +614,7 @@ class SimpleCorpusReader(CorpusReaderI):
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
         loc = CharSpanLocation(0, len(text), source)
-        return Token(**{TEXT: text, LOC: loc})
+        return Token({TEXT: text, LOC: loc})
 
     def xread(self, item):
         TEXT = self._props.get('text', 'text')
@@ -623,7 +623,7 @@ class SimpleCorpusReader(CorpusReaderI):
         source = '%s/%s' % (self._name, item)
         textiter = self.open(item) # <- read-mode files act as iterators.
         loc = CharSpanLocation(0, SpanLocation.MAX, source)
-        return Token(**{TEXT: textiter, LOC: loc})
+        return Token({TEXT: textiter, LOC: loc})
 
     def tokenize(self, item, tokenizer=None):
         if tokenizer is None: tokenizer = self._default_tokenizer

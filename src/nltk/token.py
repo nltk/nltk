@@ -105,7 +105,7 @@ class Token(dict):
     # Constructor
     #/////////////////////////////////////////////////////////////////
 
-    def __new__(cls, **properties):
+    def __new__(cls, propdict=None, **properties):
         """
         Create and return a new C{Token} object.  If
         L{USE_SAFE_TOKENS} is true, then the new token will be a
@@ -116,7 +116,7 @@ class Token(dict):
         else:
             return super(Token, cls).__new__(cls, **properties)
 
-    def __init__(self, **properties):
+    def __init__(self, propdict=None, **properties):
         """
         Construct a new token that defines the given set of properties.
         The properties are typically specified using keyword
@@ -136,7 +136,10 @@ class Token(dict):
             token should define.  Each element maps a property name to
             its value.
         """
-        super(Token, self).__init__(**properties)
+        if propdict is None:
+            super(Token, self).__init__(**properties)
+        else:
+            super(Token, self).__init__(propdict, **properties)
 
     #/////////////////////////////////////////////////////////////////
     # Accessors
@@ -424,7 +427,7 @@ class FrozenToken(Token):
     """
     __slots__ = ('_hash',)
     
-    def __init__(self, **properties):
+    def __init__(self, propdict=None, **properties):
         """
         Create a new frozen token that defines the given set of
         properties.
@@ -435,7 +438,7 @@ class FrozenToken(Token):
         @require: The values for the given properties must be
             immutable.
         """
-        super(FrozenToken, self).update(properties)
+        super(FrozenToken, self).update(propdict, **properties)
         self._hash = hash(sum([hash(i) for i in self.items()]))
         
     def __setitem__(self, property, value):
@@ -474,8 +477,9 @@ class SafeToken(Token):
     # Constructor
     #/////////////////////////////////////////////////////////////////
 
-    def __init__(self, **properties):
+    def __init__(self, propdict=None, **properties):
         # type checking is handled by self.update().
+        if propdict is not None: self.update(propdict)
         self.update(properties)
     
     #/////////////////////////////////////////////////////////////////
@@ -534,7 +538,7 @@ class SafeToken(Token):
         return super(SafeToken, self).setdefault(property, default)
         
     def update(self, src):
-        assert chktype(1, src, {str:self._checkval})
+        assert chktype(1, src, {str:(self._checkval,)})
         if src.has_key('loc') and not isinstance(src['loc'], LocationI):
             raise TypeError("The 'loc' property must contain a Location")
         return super(SafeToken, self).update(src)

@@ -149,8 +149,8 @@ class AbstractTagger(TaggerI):
         TEXT = self._property_names.get('text', 'text')
         TAG = self._property_names.get('tag', 'tag')
         
-        subtoks = [Token(**{TEXT:w}) for w in words]
-        token = Token(**{SUBTOKENS:subtoks})
+        subtoks = [Token({TEXT:w}) for w in words]
+        token = Token({SUBTOKENS:subtoks})
         self.tag(token)
         return [token[TAG] for token in token[SUBTOKENS]]
 

@@ -169,7 +169,7 @@ class AbstractTokenizer(TokenizerI):
         assert chktype(1, text, str)
         TEXT = self._property_names.get('text', 'text')
         SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        token = Token(**{TEXT:text})
+        token = Token({TEXT:text})
         self.tokenize(token)
         return [subtok[TEXT] for subtok in token[SUBTOKENS]]
 
@@ -177,7 +177,7 @@ class AbstractTokenizer(TokenizerI):
         assert chktype(1, text, str)
         TEXT = self._property_names.get('text', 'text')
         SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        token = Token(**{TEXT:text})
+        token = Token({TEXT:text})
         self.xtokenize(token)
         for subtok in token[SUBTOKENS]:
             yield subtok[TEXT]
@@ -218,10 +218,10 @@ class AbstractTokenizer(TokenizerI):
         
         # Create each subtoken from its text.
         if self._addlocs and token.has(LOC):
-            subtoks = [Token(**{TEXT:text, LOC:loc})
+            subtoks = [Token({TEXT:text, LOC:loc})
                        for (text,loc) in zip(subtok_texts, locs)]
         else:
-            subtoks = [Token(**{TEXT:text})
+            subtoks = [Token({TEXT:text})
                        for text in subtok_texts]
 
         # Write subtoks to the subtokens property.
@@ -273,10 +273,10 @@ class AbstractTokenizer(TokenizerI):
                 assert start>=0, 'Tokenization alignment failure'
                 end = start+len(subtok_text)
                 loc = CharSpanLocation(start,end,source)
-                yield Token(**{TEXT:subtok_text, LOC:loc})
+                yield Token({TEXT:subtok_text, LOC:loc})
         else:
             for subtok_text in subtok_iter:
-                yield Token(**{TEXT:subtok_text})
+                yield Token({TEXT:subtok_text})
 
 class WSTokenizer(AbstractTokenizer):
     """
@@ -324,10 +324,10 @@ class WSTokenizer(AbstractTokenizer):
             source = token[LOC].source()
             for (start, end, subtext) in self._xtokenize_helper(text_iter):
                 loc = CharSpanLocation(start, end, source)
-                yield Token(**{TEXT: subtext, LOC: loc})
+                yield Token({TEXT: subtext, LOC: loc})
         else:
             for (start, end, subtext) in self._xtokenize_helper(text_iter):
-                yield Token(**{TEXT: subtext})
+                yield Token({TEXT: subtext})
     
     def _xtokenize_helper(self, text):
         """
@@ -543,7 +543,7 @@ class RegexpTokenizer(AbstractTokenizer):
         for i, w in enumerate(words):
             if (i%2==0) == self._negative and w!='':
                 loc = CharSpanLocation(pos, pos+len(w), source)
-                subtoks.append(Token(**{TEXT:w, LOC:loc}))
+                subtoks.append(Token({TEXT:w, LOC:loc}))
             pos += len(w)
             
         # Write subtoks to the subtokens property.

@@ -360,7 +360,7 @@ class ShiftReduceParser(AbstractParser):
             if self._match_rhs(production.rhs(), stack[-rhslen:]):
 
                 # combine the tree to reflect the reduction
-                treetok = TreeToken(**{NODE: production.lhs().symbol(),
+                treetok = TreeToken({NODE: production.lhs().symbol(),
                                        'children': stack[-rhslen:]})
                 stack[-rhslen:] = [treetok]
 
@@ -550,7 +550,7 @@ class RecursiveDescentParser(AbstractParser):
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
         start = self._grammar.start().symbol()
-        initial_treetok = TreeToken(**{NODE:start, 'children':()})
+        initial_treetok = TreeToken({NODE:start, 'children':()})
         frontier = [()]
         text = token[SUBTOKENS]
         if self._trace:
@@ -731,12 +731,12 @@ class RecursiveDescentParser(AbstractParser):
         children = []
         for elt in production.rhs():
             if isinstance(elt, Nonterminal):
-                children.append(TreeToken(**{NODE:elt.symbol(),
+                children.append(TreeToken({NODE:elt.symbol(),
                                              'children': ()}))
             else:
                 # This will be matched.
-                children.append(Token(**{LEAF: elt}))
-        return TreeToken(**{NODE:production.lhs().symbol(),
+                children.append(Token({LEAF: elt}))
+        return TreeToken({NODE:production.lhs().symbol(),
                             'children': children})
     
     def trace(self, trace=2):
@@ -1058,7 +1058,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         
         self._rtext = token[SUBTOKENS]
         start = self._grammar.start().symbol()
-        self._treetok = TreeToken(**{NODE:start, 'children':()})
+        self._treetok = TreeToken({NODE:start, 'children':()})
         self._frontier = [()]
         self._tried_e = {}
         self._tried_m = {}

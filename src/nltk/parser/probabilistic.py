@@ -341,7 +341,7 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
                 p = reduce(lambda pr,t:pr*t[PROB],
                            children, production.prob())
                 node = production.lhs().symbol()
-                tree = TreeToken(**{NODE:node, 'children':children,
+                tree = TreeToken({NODE:node, 'children':children,
                                     PROB:p})
 
                 # If it's new a constituent, then add it to the

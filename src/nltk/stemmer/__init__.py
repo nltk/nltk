@@ -119,7 +119,7 @@ class AbstractStemmer(StemmerI):
     def raw_stem(self, text):
         TEXT = self._property_names.get('text', 'text')
         STEM = self._property_names.get('stem', 'stem')
-        token = Token(**{TEXT:text})
+        token = Token({TEXT:text})
         self.stem(token)
         return token[STEM]
 
@@ -136,7 +136,7 @@ class AbstractStemmer(StemmerI):
     def raw_stem_n(self, text, n=None):
         TEXT = self._property_names.get('text', 'text')
         STEM = self._property_names.get('stem', 'stem')
-        token = Token(**{TEXT:text})
+        token = Token({TEXT:text})
         self.stem_n(token, n)
         return token[STEM]
 

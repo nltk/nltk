@@ -108,6 +108,7 @@ class SemcorTokenizer(AbstractTokenizer):
 
     def _map_paragraph(self, node, source):
         SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        LOC = self._property_names.get('loc', 'loc')
         pnum = int(node.getAttribute('pnum'))
         ploc = ParaIndexLocation(pnum, source)
         sentences = node.getElementsByTagName('s')
@@ -119,12 +120,13 @@ class SemcorTokenizer(AbstractTokenizer):
             else:
                 out.extend(item)
         if self._unit == self.UNIT_PARAGRAPH:
-            return Token(**{SUBTOKENS:out, 'loc':ploc})
+            return Token({SUBTOKENS:out, LOC:ploc})
         else:
             return out
 
     def _map_sentence(self, node, source):
         SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        LOC = self._property_names.get('loc', 'loc')
         snum = int(node.getAttribute('snum'))
         sloc = SentIndexLocation(snum, source)
         out = []
@@ -136,7 +138,7 @@ class SemcorTokenizer(AbstractTokenizer):
                 index += 1
                 out.append(item)
         if self._unit != self.UNIT_WORD:
-            return Token(**{subtokens:out, loc:sloc})
+            return Token({SUBTOKENS:out, LOC:sloc})
         else:
             return out
 
@@ -299,7 +301,7 @@ class DOMSensevalTokenizer(AbstractTokenizer):
             tokens, head = self._map_context(context, loc)
             lemma = _to_ascii(lexelt.getAttribute('item'))
             
-            yield Token(**{SUBTOKENS:tokens, 'senses':tuple(sense),
+            yield Token({SUBTOKENS:tokens, 'senses':tuple(sense),
                            'head':head, 'lemma':lemma})
         doc.unlink()
 
@@ -421,7 +423,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
             self._wnum += 1
             self._data = ''
         elif tag == 'context':
-            self._instances.append(Token(**{SUBTOKENS:self._tokens,
+            self._instances.append(Token({SUBTOKENS:self._tokens,
                                             'senses':tuple(self._senses),
                                             'head':self._head,
                                             'lemma':self._lemma}))

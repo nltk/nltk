@@ -932,7 +932,7 @@ class ChunkString:
 
             # Add this list of tokens to our chunkstruct.
             if piece_in_chunk:
-                chunkstruct.append(TreeToken(**{NODE: chunk_node,
+                chunkstruct.append(TreeToken({NODE: chunk_node,
                                                 'children': subsequence}))
             else:
                 chunkstruct += subsequence
@@ -941,7 +941,7 @@ class ChunkString:
             index += length
             piece_in_chunk = not piece_in_chunk
 
-        return TreeToken(**{NODE: top_node, 'children': chunkstruct})
+        return TreeToken({NODE: top_node, 'children': chunkstruct})
                 
     def xform(self, regexp, repl):
         """

@@ -670,13 +670,13 @@ class Chart:
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
-                trees.append(TreeToken(**{NODE:lhs,
+                trees.append(TreeToken({NODE:lhs,
                                           'children':children}))
 
         # If the edge is incomplete, then extend it with "partial
         # trees":
         if edge.is_incomplete():
-            unexpanded = [TreeToken(**{NODE:elt, 'children':()})
+            unexpanded = [TreeToken({NODE:elt, 'children':()})
                           for elt in edge.rhs()[edge.dot():]]
             for tree in trees:
                 tree['children'].extend(unexpanded)
