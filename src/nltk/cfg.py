@@ -124,7 +124,7 @@ class Nonterminal:
             symbol.
         @rtype: C{boolean}
         """
-        return (_classeq(self, other) and
+        return (self is other or _classeq(self, other) and
                 self._symbol == other._symbol)
 
     def __ne__(self, other):
