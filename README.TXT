@@ -130,3 +130,18 @@ Makefiles
 
     In addition, the Makefiles in the doc, psets, and src directories
     can be used to perform other tasks.
+
+
+Problem Sets
+~~~~~~~~~~~~
+    The structure of the problem set directory has not yet been
+    decided.  The two options under consideration are:
+
+        - Store each problem set or exercise set in its own directory, 
+          along with the corresponding solutions.
+        - Store all problem sets, sample exercises, and solutions in a 
+          single directory.
+
+    The naming conventions for problem sets have also not yet been
+    decided. 
+
