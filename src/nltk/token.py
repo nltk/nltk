@@ -41,8 +41,10 @@ a class which converts a string of text into its constituant tokens.
 Different tokenizers may split the text up differently.
 """
 
-from chktype import chktype as _chktype
+from chktype import chktype as _chktype 
 from chktype import chkclass as _chkclass
+
+
 from types import IntType as _IntType
 from types import StringType as _StringType
 from types import NoneType as _NoneType
@@ -489,19 +491,20 @@ class WSTokenizer(TokenizerI):
 ##//////////////////////////////////////////////////////
 ## This is some simple test code for now..
 ## More extensive unit testing will follow..
-    
-if __name__ == '__main__':
-    text1="""this is a test document.  It contains several words
-    and some are   separated by more spaces than  others.. Whee."""
 
-    text2="""Here/x 's/y another/z test/nn document/nn."""
+#if __name__ == '__main__':
+#    text1="""this is a test document.  It contains several words
+#    and some are   separated by more spaces than  others.. Whee."""
+
+#    text2="""Here/x 's/y another/z test/nn document/nn."""
     
-    t1=Token('asdf', Location(1,2))
-    t2=Token('wer')
-    t3=Token('hi there', Location(1,3, source='foo.txt', unit='word'))
-    print (t1, t2, t3)
-    print t1, t2, t3
-    print WSTokenizer().tokenize(text1);print
-    print WSTokenizer().tokenize(text2);print
-    print TaggedTokenizer().tokenize(text1);print
-    ts=TaggedTokenizer().tokenize(text2, 'text2');print ts;print
+#    t1=Token('asdf', Location(1,2))
+#    t2=Token('wer')
+#    t3=Token('hi there', Location(1,3, source='foo.txt', unit='word'))
+#    print (t1, t2, t3)
+#    print t1, t2, t3
+#    print WSTokenizer().tokenize(text1);print
+#    print WSTokenizer().tokenize(text2);print
+#    print TaggedTokenizer().tokenize(text1);print
+#    ts=TaggedTokenizer().tokenize(text2, 'text2');print ts;print
+

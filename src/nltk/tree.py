@@ -16,6 +16,9 @@
 #   - traces!! Whee.
 
 import token
+
+from token import Token
+from token import Location
 import re
 from chktype import chktype as _chktype
 from types import SliceType as _SliceType
@@ -601,6 +604,8 @@ def test():
                            TreeToken('dp',
                                      TreeToken('d', Token('a')),
                                      TreeToken('n', Token('dog')))))
+
+
     print t
     print t.leaves()
     print t.nodes()
@@ -617,6 +622,29 @@ def test():
 
     t4 = parse_treebank('(ip (dp (d a) (n cat)) (vp (v saw)))')
     print t4
-    
+
+
 if __name__ == '__main__':
-    test()
+    #test()
+    t=Tree('ip', Tree('dp', Tree('d', 'a'), Tree('n', 'cat')),
+           Tree('vp', Tree('v', 'saw'),
+                Tree('dp', Tree('d', 'a'), Tree('n', 'dog'))))
+
+    t2=TreeToken('ip',
+                 TreeToken('dp',
+                           TreeToken('d', Token('a',1)),
+                           TreeToken('n', Token('cat',2))),
+                 TreeToken('vp',
+                           TreeToken('v', Token('saw',3)),
+                           TreeToken('dp',
+                                     TreeToken('d', Token('a',4)),
+                                     TreeToken('n', Token('dog',5)))))
+    t3=TreeToken('ip',
+                 TreeToken('dp',
+                           TreeToken('d', Token('a')),
+                           TreeToken('n', Token('cat'))),
+                 TreeToken('vp',
+                           TreeToken('v', Token('saw')),
+                           TreeToken('dp',
+                                     TreeToken('d', Token('a')),
+                                     TreeToken('n', Token('dog')))))
