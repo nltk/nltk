@@ -648,6 +648,15 @@ class FreqDistI:
         """
         raise AssertionError()
     
+    def cond_samples(self, condition):
+        """
+        @return: a list of all samples that have been recorded as
+            outcomes by this frequency distribution and that 
+            are contained by the given condition.
+        @rtype: C{list}
+        """
+        raise AssertionError()
+    
     def N(self):
         """
         @return: The total number of sample outcomes that have been
@@ -729,7 +738,7 @@ class FreqDistI:
         @rtype: any
         """
         raise AssertionError()
-    
+
     def cond_max(self, condition):
         """
         Of the samples contained in the given condition, return the
@@ -836,6 +845,11 @@ class SimpleFreqDist(FreqDistI):
         # Inherit docs from FreqDistI
         return self._dict.keys()
 
+    def cond_samples(self, condition):
+        # Inherit docs from FreqDistI
+        _chktype("SimpleFreqDist.cond_samples", 1, condition, (EventI,))
+        return [sample for sample in self.samples() if (sample in condition)]
+        
     def Nr(self, r):
         # Inherit docs from FreqDistI
         # We have to do a full search.  That's slow.  If they
@@ -844,11 +858,13 @@ class SimpleFreqDist(FreqDistI):
         _chktype("SimpleFreqDist.Nr", 1, r, (_IntType,))
         if self._Nr_cache == None: 
             nr = []
-            for c in self.samples:
-                if c > len(nr):
-                    nr.append([0]*(c-len(nr)))
-                nr[c-1] += 1
+            for sample in self.samples():
+                c = self.count(sample)
+                if c >= len(nr):
+                    nr += [0]*(c+1-len(nr))
+                nr[c] += 1
             self._Nr_cache = nr
+        if r >= len(self._Nr_cache): return 0
         return self._Nr_cache[r]
 
     def count(self, sample_or_event):
@@ -901,10 +917,9 @@ class SimpleFreqDist(FreqDistI):
         max_freq = -1
         max_sample = None
         for sample in self._dict.keys():
-            freq = self.cond_freq(sample, condition)
-            if freq > max_freq:
+            if (sample in condition) and (self.count(sample) > max_freq):
                 max_sample = sample
-                max_freq = freq
+                max_freq = self.count(sample)
         return max_sample
 
     def __repr__(self):
@@ -1084,8 +1099,6 @@ class ContextEvent(EventI):
         """
         B{Not implemented by this Event class.}
         
-        @param other: -
-        @type other: -
         @rtype: None
         """
         raise NotImplementedError()
@@ -1093,13 +1106,11 @@ class ContextEvent(EventI):
         """
         B{Not implemented by this Event class.}
         
-        @param other: -
-        @type other: -
         @rtype: None
         """
         raise NotImplementedError()
     def __repr__(self):
-        return '{Event <CFSample '+repr(self._context)+', x>}'
+        return '{Event x: <CFSample '+repr(self._context)+', x>}'
   
 class CFFreqDist(FreqDistI):
     """
@@ -1126,14 +1137,15 @@ class CFFreqDist(FreqDistI):
           context_event = ContextEvent(context)
           print freqDist.cond_max(context_event).feature()
 
-    A C{CFFreqDist} is implemented as a two-level
-    dictionary.  The dictionaries are structured such that
-    C{dict[I{context}][I{feature}]} gives the number
-    of occurances of the sample
-    C{CFSample(I{context}, I{feature})}.
-    The C{CFFreqDist} also uses auxilliary variables to
-    record the total number of samples, and the number of samples that 
-    have a given condition, for each condition.
+    Internal Implementation
+    =======================
+    A C{CFFreqDist} is implemented as a dictionary mapping contexts to
+    C{SimpleFreqDist}s.  Each of these C{SimpleFreqDist}s maps
+    features to counts.  Thus, if C{I{context_fdists}} is the internal
+    dictionary representation then
+    C{I{context_fdists}[I{context}].count(I{feature})} gives the
+    number of occurances of the sample C{CFSample(I{context},
+    I{feature})}.
 
     @type _dict: C{dictionary} from context to C{dictionary} from
         feature to C{int}.
@@ -1142,9 +1154,8 @@ class CFFreqDist(FreqDistI):
         """
         Construct a new, empty, C{CFFreqDist}.
         """
-        self._dict = {}
+        self._context_fdists = {}
         self._N = 0
-        self._cond_N = {}
         self._Nr_cache = None
 
     def inc(self, sample):
@@ -1152,15 +1163,9 @@ class CFFreqDist(FreqDistI):
         _chktype("CFFreqDist.inc", 1, sample, (CFSample,))
         self._Nr_cache = None
         self._N += 1
-        if self._dict.has_key(sample.context()):
-            self._cond_N[sample.context()] += 1
-            if self._dict[sample.context()].has_key(sample.feature()):
-                self._dict[sample.context()][sample.feature()] += 1
-            else:
-                self._dict[sample.context()][sample.feature()] = 1
-        else:
-            self._cond_N[sample.context()] = 1
-            self._dict[sample.context()] = {sample.feature():1}
+        if not self._context_fdists.has_key(sample.context()):
+            self._context_fdists[sample.context()] = SimpleFreqDist()
+        self._context_fdists[sample.context()].inc(sample.feature())
 
     def N(self):
         # Inherit docs from FreqDistI
@@ -1169,30 +1174,41 @@ class CFFreqDist(FreqDistI):
     def B(self):
         # Inherit docs from FreqDistI
         b = 0
-        for dict in self._dict.values():
-            b += len(dict)
+        for context_fdist in self._context_fdists.values():
+            b += context_fdist.B()
         return b
 
     def samples(self):
         # Inherit docs from FreqDistI
         samples = []
-        for dict in self._dict.values():
-            samples += dict.keys()
+        for (context, context_fdist) in self._context_fdists.items():
+            samples += [CFSample(context, feature) for feature
+                        in context_fdist.samples()] 
         return samples
 
+    def cond_samples(self, condition):
+        # Inherit docs from FreqDistI
+        _chktype("CFFreqDist.cond_samples", 1, condition, (EventI,))
+        if isinstance(event, ContextEvent):
+            return self._context_fdists[condition.context()].samples()
+        else:
+            return [sample for sample in self.samples() if (sample in condition)]
+        
     def Nr(self, r):
         # Inherit docs from FreqDistI
         # We have to do a full search.  That's slow.  If they
         # ask for one Nr, they'll probably ask for others, so cache
         # the results.
-        _chktype("SimpleFreqDist.Nr", 1, r, (_IntType,))
+        _chktype("CFFreqDist.Nr", 1, r, (_IntType,))
         if self._Nr_cache == None: 
             nr = []
-            for (key, c) in self.samples():
-                if c > len(nr):
-                    nr.append([0]*(c-len(nr)))
-                nr[c-1] += 1
+            for sample in self.samples():
+                c = self.count(sample)
+                if c >= len(nr):
+                    nr += [0]*(c+1-len(nr))
+                nr[c] += 1
             self._Nr_cache = nr
+        if r >= len(self._Nr_cache): return 0
         return self._Nr_cache[r]
 
     def count(self, sample_or_event):
@@ -1200,16 +1216,20 @@ class CFFreqDist(FreqDistI):
         event = sample_or_event
         _chktype("CFFreqDist.count", 1, event, (CFSample, ContextEvent))
         if isinstance(event, CFSample):
-            if self._dict.has_key(event.context()) and \
-               self._dict[event.context()].has_key(event.feature()):
-                return self._dict[event.context()][event.feature()]
-            else:
+            # CFSample
+            if not self._context_fdists.has_key(event.context()):
                 return 0
+            return self._context_fdists[event.context()].count(event.feature())
         else:
-            if self._cond_N.has_key(event.context()):
-                return self._cond_N[event.context()]
-            else:
+            # ContextEvent
+            if not self._context_fdists.has_key(event.context()):
                 return 0
+            else:
+                return self._context_fdists[event.context()].N()
+
+    def freq(self, sample_or_event):
+        # Inherit docs from FreqDistI
+        return float(self.count(sample_or_event))/self.N()
 
     def cond_freq(self, sample_or_event, condition):
         # Inherit docs from FreqDistI, for now.  Eventually replace
@@ -1220,18 +1240,20 @@ class CFFreqDist(FreqDistI):
         _chktype("CFFreqDist.cond_freq", 2, condition, (ContextEvent,))
         feature = sample.feature()
         context = condition.context()
-        if not self._dict.has_key(context) or \
-           not self._dict[context].has_key(feature):
-            return 0.0
-        return float(self._dict[context][feature]) / self._cond_N[context]
+        if not self._context_fdists.has_key(context):
+            return 0
+        feature_count = self._context_fdists[context].count(feature)
+        context_count = self._context_fdists[context].N()
+        return float(feature_count)/context_count
 
     def max(self):
         # Inherit docs from FreqDistI
         if self._N == 0: return None
         max = -1
         max_feature = max_context = None
-        for (context, feature_dict) in self._dict.items():
-            for (feature, n) in feature_dict.items():
+        for (context, context_fdist) in self._context_fdists.items():
+            for feature in context_fdist.samples():
+                n = context_fdist.count(feature)
                 if n > max:
                     max = n
                     max_feature = feature
@@ -1242,13 +1264,14 @@ class CFFreqDist(FreqDistI):
         # Inherit docs from FreqDistI
         _chktype("CFFreqDist.cond_max", 1, condition, (ContextEvent,))
         context = condition.context()
-        if not self._dict.has_key(context): return None
-        max_freq = -1
+        if not self._context_fdists.has_key(context): return None
+        max_count = -1
         max_feature = None
-        for (feature, freq) in self._dict[context].items():
-            if freq > max_freq:
+        for feature in self._context_fdists[context].samples():
+            count = self._context_fdists[context].count(feature)
+            if count > max_count:
                 max_feature = feature
-                max_freq = freq
+                max_count = count
         if max_feature == None: return None
         else: return CFSample(context, max_feature)
 
@@ -1263,7 +1286,7 @@ class CFFreqDist(FreqDistI):
             C{CFFreqDist}.
         @rtype: string
         """
-        return repr(self._dict)
+        return repr(self._context_fdists)
         
 ##//////////////////////////////////////////////////////
 ##  Probability Distribution
@@ -1434,10 +1457,31 @@ class HeldOutProbDist(ProbDistI):
     """
     Base probability estimates on held-out data.
     """
-    def prob(self, training_dist, held_out_dist):
+    def __init__(self, training_dist, held_out_dist):
         self._training = training_dist
         self._heldout = held_out_dist
-        
+
+        # Calculate Tr
+        self._Tr = [0]*self._training.B()
+        for sample in self._training.samples():
+            tr_count = self._training.count(sample)
+            ho_count = self._heldout.count(sample)
+            self._Tr[tr_count] += ho_count
+
+    def prob(self, sample_or_event):
+        r = self._training.count(sample)
+        return Tr[r]/(self._training.Nr(r)*self._training.N())
+    
+    def cond_prob(self, sample_or_event, condition):
+        f = self._freqdist.cond_freq(sample_or_event, condition)
+        r = f * self._freqdist.N()
+        return Tr[r]/(self._training.Nr(r)*self._training.N())
+    
+    def cond_max(self, condition):
+        return self._freqdist.cond_max(condition)
+    
+    def max(self):
+        return self._freqdist.max()
         
         
     
@@ -1480,5 +1524,27 @@ class ProbablisticMixIn:
 # for x in range(50):
 #     print f.freq(x), mle.prob(x), laplace.prob(x)
     
-               
+if __name__ == '__main__':
+    import random
+    fdist = CFFreqDist()
+    print fdist
+    for x in range(100):
+        context = random.randint(1,3)
+        feature = str(random.randint(1,3))
+        fdist.inc(CFSample(context, feature))
+        
+    for sample in fdist.samples():
+        print sample, fdist.count(sample), fdist.freq(sample)
 
+    for context in range(1, 4):
+        for feature in range(1, 4):
+            s=CFSample(context, str(feature))
+            e=ContextEvent(context)
+            print '    P('+`s`+'|'+`e`+') =', str(fdist.cond_freq(s,e))
+        print '  max: ', fdist.cond_max(ContextEvent(context))
+    print 'max:', fdist.max()
+    print 'N:', fdist.N()
+    print 'B:', fdist.B()
+    print 'Nr:',
+    for r in range(20):
+        print fdist.Nr(r),
