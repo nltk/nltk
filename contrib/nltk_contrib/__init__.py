@@ -54,8 +54,3 @@ __contributors__ = """\
 Edward Loper <edloper@gradient.cis.upenn.edu>
 Steven Bird <sb@cs.mu.oz.au>
 """
-
-# Used for epydoc sorting.  Also used for "from nltk_contrib import *"
-__all__ = [
-    'eliza',
-    ]
