@@ -1,0 +1,50 @@
+###############################################################
+###      NLTK Contributions: Installation Instructions      ###
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
+### Copyright (C) 2001 University of Pennsylvania           ###
+### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
+### URL: <http://nltk.sf.net>                               ###
+### For license information, see LICENSE.TXT                ###
+###############################################################
+
+Windows Installation
+~~~~~~~~~~~~~~~~~~~~
+    Download and run the nltk_contrib installation program
+    (nltk_contrib-??.??.win32.exe).  The installation wizard will
+    guide you through the installation process.
+
+    Upgrading
+    ~~~~~~~~~
+    When upgrading the version of nltk_contrib you are using, the
+    installation wizard will ask you if you wish to overwrite the
+    old files.  Answer "yes."
+
+RPM Installation
+~~~~~~~~~~~~~~~~
+    If you are running RedHat 7.1 (or a compatible system), you can
+    install the NLTK contributions package from the RPM:
+
+        % rpm -i nltk_contrib-??.??-1.noarch.rpm
+
+    If you wish to build an RPM for the NLTK contributions package on
+    a system other than RedHat 7.1, you can use the SRPM:
+
+        % rpm --rebuild nltk_contrib-??.??-1.noarch.rpm
+
+Unix and Macintosch (OS X) Installation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    You can manually install the NLTK contributions package from the
+    .tar.gz file:
+
+        gunzip nltk_contrib-??.??.tar.gz 
+        tar -xvf nltk_contrib-??.??.tar
+        cd nltk_contrib-??.??
+        python setup.py install
+
+    You can also manually install the NLTK contributions package from
+    the .zip file:
+
+        unzip nltk_contrib-??.??.zip
+        cd nltk_contrib-??.??
+        python setup.py install
+
