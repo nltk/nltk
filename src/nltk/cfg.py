@@ -172,7 +172,7 @@ class Nonterminal:
             of the new nonterminal.
         @type rhs: L{Nonterminal}
         """
-        _chktype(1, rhs, Nonterminal)
+        assert _chktype(1, rhs, Nonterminal)
         return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
 
 def nonterminals(symbols):
