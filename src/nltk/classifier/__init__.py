@@ -48,6 +48,9 @@ Random Picture
 
 """
 
+# Note: there is inconsistancy in docstrings between whether label is
+# a string or just any immutable object.  That needs to be cleared up.
+
 ##//////////////////////////////////////////////////////
 ##  Contents
 ##//////////////////////////////////////////////////////
@@ -140,7 +143,7 @@ class LabeledText:
             C{LabeledText} with.
         @type other: C{LabeledText}
         """
-        if not isinstance(other, LabeledType):
+        if not isinstance(other, LabeledText):
             return 0
         return (self._text == other._text and
                 self._label == other._label)
@@ -571,8 +574,8 @@ class FunctionFeatureDetectorList(AbstractFeatureDetectorList):
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
         feature = self._map.get(self._function(labeled_text), None)
-        if feature is None: assignments = ()
-        else: assignments = ((feature, 1),)
+        if feature is None: assignments = []
+        else: assignments = [(feature, 1),]
         return SimpleFeatureValueList(assignments, self._N)
 
 class ValueFeatureDetectorList(FunctionFeatureDetectorList):
