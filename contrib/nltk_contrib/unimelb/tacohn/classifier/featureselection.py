@@ -32,8 +32,8 @@ interface.
 @group Feature Detector Lists: SelectedFDList
 """
 
-from nltk_contrib.mu.tacohn.classifier import *
-from nltk_contrib.mu.tacohn.classifier.feature import *
+from nltk_contrib.unimelb.tacohn.classifier import *
+from nltk_contrib.unimelb.tacohn.classifier.feature import *
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq
 import types
