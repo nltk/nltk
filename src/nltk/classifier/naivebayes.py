@@ -43,6 +43,7 @@ from nltk.classifier.feature import *
 from nltk.probability import *
 from nltk.token import Token
 from nltk.tokenizer import WSTokenizer
+from nltk.corpus import brown
 from nltk.chktype import chktype as _chktype
 import types
 
@@ -485,7 +486,7 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
 
     return time.time()-t
         
-def _get_toks(file='/cdrom/data/brown/ca01', debug=0):
+def _get_toks(file='ca01', debug=0):
     """
     Load tokens from the given file.  
     """
@@ -493,11 +494,10 @@ def _get_toks(file='/cdrom/data/brown/ca01', debug=0):
     assert _chktype(2, debug, types.IntType)
     
     _resettime()
-    from nltk.tagger import TaggedTokenizer
-    text = open(file).read()
+    if debug: print _timestamp(), 'tokenizing', file
 
-    if debug: print _timestamp(), 'tokenizing %d chars' % len(text)
-    ttoks = TaggedTokenizer().tokenize(text)
+    ttoks = brown.tokenize(file)
+
     labeled_tokens = [Token(LabeledText(tok.type().base().lower(),
                                            tok.type().tag()),
                                tok.loc())
@@ -505,8 +505,6 @@ def _get_toks(file='/cdrom/data/brown/ca01', debug=0):
     if debug: print _timestamp(), '  done tokenizing'
     return labeled_tokens
     
-    
-
 if __name__ == '__main__':
     n_words = 7
     toks = _get_toks()
