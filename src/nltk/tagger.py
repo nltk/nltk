@@ -230,11 +230,11 @@ class SequentialTagger(TaggerI):
 
     def tag(self, tokens):
         # Inherit documentation
-        assert _chktype(1, text, [Token], (Token,))
+        assert _chktype(1, tokens, [Token], (Token,))
 
         # Tag each token, in sequential order.
         tagged_text = []
-        for token in text:
+        for token in tokens:
             # Get the tag for the next token.
             tag = self.next_tag(tagged_text, token)
 
@@ -452,20 +452,18 @@ def accuracy(orig, test):
         if orig[i] == test[i]: correct += 1
     return float(correct)/len(orig)
 
-def demo():
+def demo(tagged_text_str):
     """
-    A simple test function for the C{Tagger} classes.  It
-    constructs a C{BackoffTagger} using a 1st order
-    C{NthOrderTagger}, a 0th order
-    C{NthOrderTagger}, and an C{NN_CD_Tagger}.  It 
-    trains the tagger using the contents of the file "foo.test," and 
-    then tags the contents of that file.
+    A simple test function for the C{Tagger} classes.  It constructs a
+    C{BackoffTagger} using a 1st order C{NthOrderTagger}, a 0th order
+    C{NthOrderTagger}, and an C{NN_CD_Tagger}.  It trains the tagger
+    using the contents C{tagged_text_str}, and then tags the contents
+    of that file.
     
     @returntype: None
     """
     print 'tokenizing...'
-    textstr = open('/home/edloper/tmp/foo.text', 'r').read()
-    tokens = TaggedTokenizer().tokenize(textstr)
+    tokens = TaggedTokenizer().tokenize(tagged_text_str)
     train_tokens = tokens[200:]
     test_tokens = tokens[:280]
 
@@ -489,4 +487,5 @@ def demo():
 
     print 'Accuracy: %.5f' % accuracy(test_tokens, result)
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    demo(open('/home/edloper/tmp/foo.text', 'r').read())
