@@ -138,7 +138,7 @@ class TaggedTokenizer(TokenizerI):
     A tokenizer that splits a string of tagged text into words, based
     on whitespace.  Each tagged word is encoded as a C{Token} whose
     type is a C{TaggedType}.  Location indices start at zero, and have
-    a unit of C{'word'}.
+    a unit of C{'w'}.
     """
     def __init__(self): pass
     def tokenize(self, str, source=None):
@@ -148,7 +148,7 @@ class TaggedTokenizer(TokenizerI):
         tokens = []
         for i in range(len(words)):
             ttype = parseTaggedType(words[i])
-            tokens.append(Token(ttype, Location(i, unit='word',
+            tokens.append(Token(ttype, Location(i, unit='w',
                                                 source=source)))
         return tokens
 
@@ -176,10 +176,10 @@ class ChunkedTaggedTokenizer(TaggedTokenizer):
             else:
                 ttype = parseTaggedType(words[i])
                 if inchunk:
-                    tokens[-1].append(Token(ttype, Location(i, unit='word',
+                    tokens[-1].append(Token(ttype, Location(i, unit='w',
                                                             source=source)))
                 else:
-                    tokens.append(Token(ttype, Location(i, unit='word',
+                    tokens.append(Token(ttype, Location(i, unit='w',
                                                         source=source)))
         return tokens
 
