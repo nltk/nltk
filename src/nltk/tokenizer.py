@@ -156,6 +156,7 @@ class AbstractTokenizer(TokenizerI):
         self._propnames = propnames
 
     def xtokenize(self, token):
+        assert chktype(1, token, Token)
         text_prop = self._propnames.get('text', 'text')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         token[text_prop] = ''.join(token[text_prop])
@@ -163,6 +164,7 @@ class AbstractTokenizer(TokenizerI):
         token[subtokens_prop] = iter(token[subtokens_prop])
 
     def raw_tokenize(self, text):
+        assert chktype(1, text, str)
         text_prop = self._propnames.get('text', 'text')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         token = Token(**{text_prop:text})
@@ -170,6 +172,7 @@ class AbstractTokenizer(TokenizerI):
         return [subtok[text_prop] for subtok in token[subtokens_prop]]
 
     def raw_xtokenize(self, text):
+        assert chktype(1, text, str)
         text_prop = self._propnames.get('text', 'text')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         token = Token(**{text_prop:text})
@@ -191,6 +194,7 @@ class AbstractTokenizer(TokenizerI):
         This method is intended to be used by subclasses that wish to
         implement the C{tokenize} method based on C{raw_tokenize}.
         """
+        assert chktype(1, token, Token)
         text_prop = self._propnames.get('text', 'text')
         loc_prop = self._propnames.get('loc', 'loc')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
@@ -235,6 +239,7 @@ class AbstractTokenizer(TokenizerI):
         This method is intended to be used by subclasses that wish to
         implement the C{xtokenize} method based on C{raw_xtokenize}.
         """
+        assert chktype(1, token, Token)
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         iter = self._xtokenize_from_raw_helper(token, **self._propnames)
         token[subtokens_prop] = iter
@@ -243,6 +248,7 @@ class AbstractTokenizer(TokenizerI):
         """
         A helper function for L{xtokenize_from_raw}.
         """
+        assert chktype(1, token, Token)
         text_prop = self._propnames.get('text', 'text')
         loc_prop = self._propnames.get('loc', 'loc')
 
@@ -292,6 +298,7 @@ class WSTokenizer(AbstractTokenizer):
 
     def tokenize(self, token):
         # Delegate to self.raw_tokenize()
+        assert chktype(1, token, Token)
         self._tokenize_from_raw(token)
 
     #////////////////////////////////////////////////////////////
@@ -387,6 +394,7 @@ class LineTokenizer(AbstractTokenizer):
 
     def tokenize(self, token):
         # Delegate to self.raw_tokenize()
+        assert chktype(1, token, Token)
         self._tokenize_from_raw(token)
         
 def _remove_group_identifiers(parsed_re):
