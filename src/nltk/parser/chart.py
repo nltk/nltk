@@ -62,7 +62,7 @@ from nltk.parser import ParserI
 from nltk.token import Token, Location
 from nltk.tree import TreeToken
 from nltk.set import MutableSet
-from nltk.cfg import CFG, CFGProduction, Nonterminal
+from nltk.cfg import CFG, CFGProduction, Nonterminal, nonterminals
 
 from nltk.chktype import chktype as _chktype 
 from nltk.chktype import classeq as _classeq
