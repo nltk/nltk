@@ -387,19 +387,33 @@ class Token(dict):
 
 # Register some specialized string representations for common
 # sets of properties.
-register = Token.register_repr
-register(['text'],                     '<%(text)s>')
-register(['loc', 'text'],              '<%(text)s>@%(loc)r')
-register(['text', 'tag'],              '<%(text)s/%(tag)s>')
-register(['text', 'tag', 'loc'],       '<%(text)s/%(tag)s>@%(loc)r')
-register(['text', 'pos'],              '<%(text)s/%(pos)s>')
-register(['text', 'pos', 'loc'],       '<%(text)r/%(pos)s>@%(loc)r')
-register(['subtokens'],                '<%(subtokens)r>')
-register(['text', 'subtokens'],        '<%(subtokens)r>')
-register(['text', 'subtokens', 'loc'], '<%(subtokens)r>')
-register(['subtokens', 'loc'],         '<%(subtokens)r>')
-del register
-        
+Token.register_repr(('text',),
+                    lambda t: ('<%s>' %
+                               (`t['text']`[1:-1],)))
+Token.register_repr(('text', 'loc'),
+                    lambda t: ('<%s>@%r' %
+                               (`t['text']`[1:-1], t['loc'])))
+Token.register_repr(('text', 'tag'),
+                    lambda t: ('<%s/%s>' %
+                               (`t['text']`[1:-1], t['tag'])))
+Token.register_repr(('text', 'tag', 'loc'),
+                    lambda t: ('<%s/%s>@%r' %
+                               (`t['text']`[1:-1], t['tag'], t['loc'])))
+Token.register_repr(('text', 'pos'),
+                    lambda t: ('<%s/%s>' %
+                               (`t['text']`[1:-1], t['pos'])))
+Token.register_repr(('text', 'pos', 'loc'),
+                    lambda t: ('<%s/%s>@%r' %
+                               (`t['text']`[1:-1], t['pos'], t['loc'])))
+Token.register_repr(('subtokens',),
+                    '<%(subtokens)r>')
+Token.register_repr(('text', 'subtokens'),
+                    '<%(subtokens)r>')
+Token.register_repr(('text', 'subtokens', 'loc'),
+                    '<%(subtokens)r>')
+Token.register_repr(('subtokens', 'loc'),
+                    '<%(subtokens)r>')
+
 ######################################################################
 ## Frozen Token
 ######################################################################
