@@ -9,6 +9,7 @@
 
 from nltk.chktype import chktype as _chktype
 from types import IntType as _IntType
+from nltk.set import Set
 
 ##//////////////////////////////////////////////////////
 ##  Sample
@@ -87,7 +88,7 @@ class EventI:
         return 1 if and only if every sample contained by this event
         is also contained by C{other}, and every sample
         contained by C{other} is contained by this event.
-        Otherwise, return some nonzero number.
+        Otherwise, return zero.
         
         @param other: The object to compare this event to.
         @type other: Event
@@ -174,6 +175,24 @@ class EventI:
     def __eq__(self, other):
         return self.equals(other)
     __eq__.__doc__ = equals.__doc__
+
+    def __ne__(self, other):
+        """
+        Return 1 if the given object is not equal to the event.
+        Formally, return 1 if and only if C{self} contains a sample
+        not contained in C{other}, or C{other} contains a sample not
+        contained in C{self}.  Otherwise, return zero.
+        
+        @param other: The object to compare this event to.
+        @type other: Event
+        @return: 1 if the given object is equal to this event.
+        @rtype: int
+        @raise NotImplementedError: If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError: If C{other} is not an
+               Event, or is not a supported Event type.
+        """
+        return not self.equals(other)
 
     def __ge__(self, other):
         try:
@@ -575,20 +594,20 @@ class FreqDistI:
     A frequency distribution for the outcomes of an experiment.  A
     frequency distribution records the number of times each outcome of
     an experiment has occured.  For example, a frequency distribution
-    could be used to record the frequency of each token in a document.
-    Formally, a frequency distribution can be defined as a function
-    mapping from samples to the number of times that sample occured as
-    an outcome.
+    could be used to record the frequency of each word type in a
+    document.  Formally, a frequency distribution can be defined as a
+    function mapping from samples to the number of times that sample
+    occured as an outcome.
 
     Frequency distributions are generally constructed by running a
     number of experiments, and incrementing the count for a sample
     every time it is an outcome of an experiment.  For example, the
     following code will produce a frequency distribution that encodes
-    how often each word occurs in a text::
+    how often each word type occurs in a text::
     
       freqDist = SimpleFreqDist()
-      for word in document:
-          freqDist.inc(word)
+      for token in document:
+          freqDist.inc(token.type())
 
     Classes implementing the C{FreqDistI} interface may
     choose to only support certain classes of samples or events.  If a
@@ -815,7 +834,7 @@ class SimpleFreqDist(FreqDistI):
 
     def samples(self):
         # Inherit docs from FreqDistI
-        return self._dict.values()
+        return self._dict.keys()
 
     def Nr(self, r):
         # Inherit docs from FreqDistI
