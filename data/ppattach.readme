@@ -1,0 +1,26 @@
+PP ATTACHMENT CORPUS
+
+Adwait Ratnaparkhi
+
+ftp://ftp.cis.upenn.edu/pub/adwait/PPattachData/
+
+This directory contains the data used for the model described in:
+
+Ratnaparkhi, Adwait (1994). A Maximum Entropy Model for Prepositional
+Phrase Attachment.  Proceedings of the ARPA Human Language Technology
+Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
+
+CONTENTS
+
+training:   training data
+devset:     development test set,
+            used for debugging and algorithm development.
+test:       used to report results
+bitstrings: word classes derived from Mutual Information
+            Clustering for the Wall Street Journal.
+
+training, devset, and test are in the format:
+  <source sentence#> V N1 P N2 <attachment>
+
+Distributed with NLTK with the permission of the author.
+
