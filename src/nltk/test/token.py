@@ -334,8 +334,8 @@ class RETokenizerTestCase(unittest.TestCase):
     Unit test cases for L{nltk.token.WSTokenizer}
     """
     def setUp(self):
-        self.tokenizers = [RETokenizer('\s+'),
-                           RETokenizer('\w+', positive=1)]
+        self.tokenizers = [RETokenizer('\s+', negative=1),
+                           RETokenizer('\w+')]
 
     def testTokenize(self):
         "nltk.token.RETokenizer: tokenize method tests"
