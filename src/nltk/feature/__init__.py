@@ -24,9 +24,10 @@ boolean list), suitable for use with other processing tasks.
     *FeatureEncoder
 """
 
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.token import *
 from nltk.util import *
-from nltk import TaskI, PropertyIndirectionMixIn
+from sets import *
 
 ######################################################################
 ## Feature Detection
@@ -140,25 +141,6 @@ class PropertyFeatureDetector(AbstractFeatureDetector):
     
     def raw_detect_features(self, token):
         return dict([(p,token[p]) for p in self._properties])
-
-# Bag-of-words:
-class BagOfWordsFeatureDetector(AbstractFeatureDetector):
-    def __init__(self, window=5, **property_names):
-        """
-        @param window: The number of words in the context to add to
-            the bag of words.
-        """
-        AbstractFeatureDetector.__init__(self, **property_names)
-        self._window = window
-        
-    def raw_detect_features(self, token):
-        bow = [tok['TEXT'] for tok in
-               token['CONTEXT'].getrange(-self._window, 0)+
-               token['CONTEXT'].getrange(1, 1+self._window)]
-        return {'BOW': bow}
-    
-    def features(self):
-        return ['BOW']
 
 ######################################################################
 ## Feature Encoding
@@ -451,6 +433,7 @@ def demo():
     train, test = toks[:split], toks[split:]
 
     # Create the feature detector.
+    from nltk.feature.word import BagOfWordsFeatureDetector
     detector = MergedFeatureDetector(
         PropertyFeatureDetector('TEXT'),
         PropertyFeatureDetector('TAG'),
@@ -464,7 +447,7 @@ def demo():
     encoder = learn_encoder(train, unseen_cutoff=0, bag=True)
 
     # Run the feature encoder on the test data.
-    for tok in test[40:50]:
+    for tok in test[:10]:
         print 'Input token:   ', tok.exclude('CONTEXT')
         detector.detect_features(tok)
         items = tok['FEATURES'].items()
@@ -478,7 +461,5 @@ def demo():
         print ', '.join(['v[%d]=%d' % (index, val)
                          for index, val in assignments])
         print
-        
-if __name__ == '__main__': demo()
 
-        
+if __name__ == '__main__': demo()
