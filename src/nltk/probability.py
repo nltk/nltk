@@ -1159,7 +1159,8 @@ class ConditionalProbDist(ConditionalProbDistI):
         >>> print cpdist['run'].prob('NN')
         0.0813
     """
-    def __init__(self, cfdist, probdist_factory, *factory_args):
+    def __init__(self, cfdist, probdist_factory,
+                 supply_condition=False, *factory_args):
         """
         Construct a new conditional probability distribution, based on
         the given conditional frequency distribution and C{ProbDist}
@@ -1172,8 +1173,12 @@ class ConditionalProbDist(ConditionalProbDistI):
         @param probdist_factory: The function or class that maps
             a condition's frequency distribution to its probability
             distribution.  The function is called with the frequency
-            distribution as its first argument, and C{factory_args} as
-            its remaining arguments.
+            distribution as its first argument, the condition as its
+            second argument (only if C{supply_condition=True}), and
+            C{factory_args} as its remaining arguments.
+        @type supply_condition: C{bool}
+        @param supply_condition: If true, then pass the condition as
+            the second argument to C{probdist_factory}.
         @type factory_args: (any)
         @param factory_args: Extra arguments for C{probdist_factory}.
             These arguments are usually used to specify extra
@@ -1184,14 +1189,19 @@ class ConditionalProbDist(ConditionalProbDistI):
         assert _chktype(2, probdist_factory, types.FunctionType,
                         types.BuiltinFunctionType, types.MethodType,
                         types.ClassType)
+        assert _chktype(3, supply_condition, bool)
         self._probdist_factory = probdist_factory
         self._cfdist = cfdist
+        self._supply_condition = supply_condition
         self._factory_args = factory_args
         
         self._pdists = {}
-        for condition in cfdist.conditions():
-            self._pdists[condition] = probdist_factory(cfdist[condition],
-                                                       *factory_args)
+        for c in cfdist.conditions():
+            if supply_condition:
+                pdist = probdist_factory(cfdist[c], c, *factory_args)
+            else:
+                pdist = probdist_factory(cfdist[c], *factory_args)
+            self._pdists[c] = pdist
 
     def __getitem__(self, condition):
         if not self._pdists.has_key(condition):
