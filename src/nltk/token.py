@@ -715,6 +715,21 @@ class WSTokenizer(TokenizerI):
         _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
         return _XTokenTuple(str.split(), source=source, unit='w')
 
+class CharTokenizer(TokenizerI):
+    """
+    A tokenizer that returns each non-whitespace character as a token.
+    Each character is encoded as a C{Token} whose type is a C{string}.
+    Location indices start at zero, and have a unit of C{'c'}.
+    """
+    def __init__(self): pass
+    def tokenize(self, str, source=None):
+        # Inherit docs from TokenizerI
+        _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
+        chars = [c for c in str]
+        return [Token(chars[i], Location(i, unit='c', source=source))
+                for i in range(len(chars))
+                if chars[i] not in ' \t\n\r\v']
+
 class LineTokenizer(TokenizerI):
     """
     A tokenizer that separates a string of text into sentences, based
