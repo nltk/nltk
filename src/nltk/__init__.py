@@ -47,7 +47,7 @@ toolkit.
 
 Interfaces
 ----------
-Natural language processing task (such as parsing or classifying
+Natural language processing tasks (such as parsing or classifying
 texts) are defined by interfaces.  An X{interface} is a special type
 of base class that specifies a set of methods that must be supported.
 For example, the L{ParserI<nltk.parser.ParserI>} interface specifies
@@ -61,7 +61,7 @@ L{RecursiveDescentParser<nltk.parser.RecursiveDescentParser>}, and
 L{ChartParser<nltk.parser.chart.ChartParser>} are all implementations
 of the C{ParserI} interface.
 
-@author: L{Edward Loper<edloper@gradient.cis.upenn.edu>}
+@author: L{Edward Loper<mailto:edloper@gradient.cis.upenn.edu>}
 @version: 1.0
 
 @contributor: Steven Bird
