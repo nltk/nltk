@@ -146,7 +146,7 @@ class CFGEditor:
     _ARROW_RE = re.compile("\s*(->|("+ARROW+"))\s*")
     _PRODUCTION_RE = re.compile(r"(^\s*\w+\s*)" +              # LHS
                                 "(->|("+ARROW+"))\s*" +        # arrow
-                                r"((\w+|'[\w ]*'|\"[\w ]*\")\s*)*$") # RHS
+                                r"((\w+|'[\w ]*'|\"[\w ]*\"|\|)\s*)*$") # RHS
     _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|("+ARROW+")")
     _BOLD = ('helvetica', -12, 'bold')
     
@@ -249,10 +249,53 @@ class CFGEditor:
             textwidget.tk_focusNext().focus()
         self._textwidget.bind('<Tab>', cycle)
 
-        # Add the producitons to the text widget, and colorize them.
-        for production in self._cfg.productions():
-            self._textwidget.insert('end', '%s\n' % production)
+        prod_tuples = [(p.lhs(),[p.rhs()]) for p in self._cfg.productions()]
+        for i in range(len(prod_tuples)-1,0,-1):
+            if (prod_tuples[i][0] == prod_tuples[i-1][0]):
+                if () in prod_tuples[i][1]: continue
+                if () in prod_tuples[i-1][1]: continue
+                print prod_tuples[i-1][1]
+                print prod_tuples[i][1]
+                prod_tuples[i-1][1].extend(prod_tuples[i][1])
+                del prod_tuples[i]
+
+        for lhs, rhss in prod_tuples:
+            print lhs, rhss
+            s = '%s ->' % lhs
+            for rhs in rhss:
+                for elt in rhs:
+                    if isinstance(elt, Nonterminal): s += ' %s' % elt
+                    else: s += ' %r' % elt
+                s += ' |'
+            s = s[:-2] + '\n'
+            self._textwidget.insert('end', s)
+                       
         self._analyze()
+            
+#         # Add the producitons to the text widget, and colorize them.
+#         prod_by_lhs = {}
+#         for prod in self._cfg.productions():
+#             if len(prod.rhs()) > 0:
+#                 prod_by_lhs.setdefault(prod.lhs(),[]).append(prod)
+#         for (lhs, prods) in prod_by_lhs.items():
+#             self._textwidget.insert('end', '%s ->' % lhs)
+#             self._textwidget.insert('end', self._rhs(prods[0]))
+#             for prod in prods[1:]:
+#                 print '\t|'+self._rhs(prod),
+#                 self._textwidget.insert('end', '\t|'+self._rhs(prod))
+#             print
+#             self._textwidget.insert('end', '\n')
+#         for prod in self._cfg.productions():
+#             if len(prod.rhs()) == 0:
+#                 self._textwidget.insert('end', '%s' % prod)
+#         self._analyze()
+
+#     def _rhs(self, prod):
+#         s = ''
+#         for elt in prod.rhs():
+#             if isinstance(elt, Nonterminal): s += ' %s' % elt.symbol()
+#             else: s += ' %r' % elt
+#         return s
 
     def _clear_tags(self, linenum):
         """
@@ -402,21 +445,24 @@ class CFGEditor:
 
         # Convert each line to a CFG production
         for line in lines:
-            if line.strip() == '': continue
-            if not CFGEditor._PRODUCTION_RE.match(line):
-                raise ValueError('Bad production string %r' % line)
-
-            (lhs_str, rhs_str) = line.split('->')
-            lhs = Nonterminal(lhs_str.strip())
-            rhs = []
-            def parse_token(match, rhs=rhs):
-                token = match.group()
-                if token[0] in "'\"": rhs.append(token[1:-1])
-                else: rhs.append(Nonterminal(token))
-                return ''
-            CFGEditor._TOKEN_RE.sub(parse_token, rhs_str)
-
-            productions.append(CFGProduction(lhs, *rhs))
+            line = line.strip()
+            if line=='': continue
+            productions += CFGProduction.parse(line)
+            #if line.strip() == '': continue
+            #if not CFGEditor._PRODUCTION_RE.match(line):
+            #    raise ValueError('Bad production string %r' % line)
+            #
+            #(lhs_str, rhs_str) = line.split('->')
+            #lhs = Nonterminal(lhs_str.strip())
+            #rhs = []
+            #def parse_token(match, rhs=rhs):
+            #    token = match.group()
+            #    if token[0] in "'\"": rhs.append(token[1:-1])
+            #    else: rhs.append(Nonterminal(token))
+            #    return ''
+            #CFGEditor._TOKEN_RE.sub(parse_token, rhs_str)
+            #
+            #productions.append(CFGProduction(lhs, *rhs))
 
         return productions
 
@@ -686,6 +732,7 @@ def demo():
     def cb(cfg): print cfg
     top = Tk()
     editor = CFGEditor(top, grammar, cb)
+    Label(top, text='\nTesting CFG Editor\n').pack()
     Button(top, text='Quit', command=top.destroy).pack()
     top.mainloop()
 
@@ -726,4 +773,4 @@ def demo3():
     p.mark(productions[2])
     p.mark(productions[8])
 
-if __name__ == '__main__': demo3()
+if __name__ == '__main__': demo()
