@@ -21,5 +21,4 @@ setup(name="nltk",
       version=nltk.__version__,
       author=nltk.__author__,
       url=nltk.__url__,
-      packages=['nltk'])
-
+      packages=['nltk', 'nltk.test', 'nltk.draw'])
