@@ -7,6 +7,11 @@
 #
 # $Id$
 
+"""
+Unit testing for L{nltk.parser.chunk.REChunkParser} and associated
+functions and classes.
+"""
+
 from nltk.parser.chunk import *
 from nltk.tagger import TaggedTokenizer
 from nltk.token import LineTokenizer
@@ -14,9 +19,7 @@ from nltk.token import LineTokenizer
 import unittest
 
 class ChunkStringTestCase(unittest.TestCase):
-    """
-    Unit test cases for C{nltk.rechunkparser.ChunkString}
-    """
+    "Unit test cases for L{nltk.parser.chunk.ChunkString}"
     def setUp(self): pass
 
     def _tok(self, str):
@@ -26,7 +29,7 @@ class ChunkStringTestCase(unittest.TestCase):
         return TreeToken('TEXT', *ChunkedTaggedTokenizer().tokenize(str))
 
     def testToChunkStruct(self):
-        "nltk.rechunkparser.ChunkString.to_chunkstruct tests"
+        "nltk.parser.chunk.ChunkString.to_chunkstruct tests"
         toks = [self._tok(s) for s in
                 ["A/A B/B C/C D/D",
                  "",
@@ -40,7 +43,7 @@ class ChunkStringTestCase(unittest.TestCase):
                                  ChunkString(tok).to_chunkstruct())
 
     def testXform(self):
-        "nltk.rechunkparser.ChunkString.xform tests"
+        "nltk.parser.chunk.ChunkString.xform tests"
         # We could use more tests.  What's a more principled approach
         # to this?
         toks = self._tok("A/1 B/2 C/3 D/4 E/5 F/6 G/7 H/8 I/9 J/0")
@@ -62,7 +65,7 @@ class ChunkStringTestCase(unittest.TestCase):
         self.failUnlessEqual(ctoks, cs.to_chunkstruct())
 
     def testVerify1(self):
-        "nltk.rechunkparser.ChunkString._verify tests: debug levels"
+        "nltk.parser.chunk.ChunkString._verify tests: debug levels"
 
         # No debugging.
         cs = ChunkString(self._tok("A/1 B/2 C/3 D/4 E/5 F/6"), 0)
@@ -98,7 +101,7 @@ class ChunkStringTestCase(unittest.TestCase):
                               lambda cs=cs: cs.to_chunkstruct())
 
     def testVerify2(self):
-        "nltk.rechunkparser.ChunkString._verify tests: bad xforms"
+        "nltk.parser.chunk.ChunkString._verify tests: bad xforms"
 
         # Test various types of bad xformation
         cs = ChunkString(self._tok("A/1 B/2 C/3 D/4 E/5 F/6"), 2)
@@ -120,26 +123,22 @@ class ChunkStringTestCase(unittest.TestCase):
                               cs.xform(r"<2><3><4>", r"}<2>{<3>}<4>{"))
 
 class Tag2ReTestCase(unittest.TestCase):
-    """
-    Unit test cases for C{nltk.rechunkparser.tag_pattern2re_pattern}
-    """
-    def setUp(self): pass
-
+    "Unit test cases for L{nltk.parser.chunk.tag_pattern2re_pattern}"
     def testSpace(self):
-        "nltk.rechunkparser.tag_pattern2re_pattern: space stripping test"
+        "nltk.parser.chunk.tag_pattern2re_pattern: space stripping test"
         tag2re = tag_pattern2re_pattern
         self.failUnlessEqual(tag2re("a b c"), "abc")
         self.failUnlessEqual(tag2re(" a b c "), "abc")
         self.failUnlessEqual(tag2re(" a   b\n\t  c  \n"), "abc")
 
     def testAngleParen(self):
-        "nltk.rechunkparser.tag_pattern2re_pattern: <> paren tests"
+        "nltk.parser.chunk.tag_pattern2re_pattern: <> paren tests"
         tag2re = tag_pattern2re_pattern
         self.failUnlessEqual(tag2re("<><><>"), "(<()>)(<()>)(<()>)")
         self.failUnlessEqual(tag2re("<x>+<y>"), "(<(x)>)+(<(y)>)")
 
     def testDot(self):
-        "nltk.rechunkparser.tag_pattern2re_pattern: . repl tests"
+        "nltk.parser.chunk.tag_pattern2re_pattern: . repl tests"
         tag2re = tag_pattern2re_pattern
         self.failUnlessEqual(tag2re(r"a.b"), r'a[^\{\}<>]b')
         self.failUnlessEqual(tag2re(r".."), r'[^\{\}<>][^\{\}<>]')
@@ -150,7 +149,7 @@ class Tag2ReTestCase(unittest.TestCase):
 
 class REChunkParserTestCase(unittest.TestCase):
     """
-    Unit test cases for C{nltk.rechunkparser.REChunkParser} and
+    Unit test cases for L{nltk.parser.chunk.REChunkParser} and
     associated rules.
     """
     def _eval(self, chunkparser): 
@@ -171,7 +170,7 @@ class REChunkParserTestCase(unittest.TestCase):
         return chunkscore
 
     def testChunkRule(self):
-        "nltk.rechunkparser.ChunkRule tests"
+        "nltk.parser.chunk.ChunkRule tests"
         rule1 = ChunkRule('<NN>', 'Chunk NPs')
         score = self._eval(REChunkParser([rule1]))
         self.failUnlessEqual(int(1000*score.f_measure()), 166)
@@ -203,7 +202,7 @@ class REChunkParserTestCase(unittest.TestCase):
         self.failUnlessEqual(int(1000*score.f_measure()), 1000)
 
     def testChinkRule(self):
-        "nltk.rechunkparser.ChinkRule tests"
+        "nltk.parser.chunk.ChinkRule tests"
         rule1 = ChunkRule('<.*>*', 'Chunk Everything')
         rule2 = ChinkRule('<IN|VB.*>', 'Chink')
         score = self._eval(REChunkParser([rule1, rule2]))
@@ -235,7 +234,7 @@ class REChunkParserTestCase(unittest.TestCase):
         self.failUnlessEqual(int(1000*score.f_measure()), 1000)
 
     def testUnChunkRule(self):
-        "nltk.rechunkparser.UnChunkRule tests"
+        "nltk.parser.chunk.UnChunkRule tests"
         rule1 = ChunkRule('<.*>', 'Chunk Every token')
         rule2 = UnChunkRule('<IN|VB.*>', 'Unchunk')
         score = self._eval(REChunkParser([rule1, rule2]))
@@ -247,7 +246,7 @@ class REChunkParserTestCase(unittest.TestCase):
         self.failUnlessEqual(int(1000*score.f_measure()), 200)
 
     def testMergeRule(self):
-        "nltk.rechunkparser.UnChunkRule tests"
+        "nltk.parser.chunk.MergeRule tests"
         rule1 = ChunkRule('<.*>', 'Chunk Every token')
         rule2 = UnChunkRule('<IN|VB.*|\.>', 'Unchunk')
         rule3 = MergeRule('<DT>', '<NN.*>', 'Merge')
@@ -268,14 +267,14 @@ class REChunkParserTestCase(unittest.TestCase):
         self.failUnlessEqual(int(1000*score.f_measure()), 1000)
 
     def testSplitRule(self):
-        "nltk.rechunkparser.split tests"
+        "nltk.parser.chunk.SplitRule tests"
         rule1 = ChunkRule('<.*>*', 'Chunk Everything')
         rule2 = ChinkRule('<IN|VB.*|\.>+', 'Chink')
         rule3 = SplitRule('', '<DT>', 'Split')
         score = self._eval(REChunkParser([rule1, rule2, rule3]))
         self.failUnlessEqual(int(1000*score.f_measure()), 1000)
 
-        "nltk.rechunkparser.split tests"
+        "nltk.parser.chunk.SplitRule tests"
         rule1 = ChunkRule('<.*>*', 'Chunk Everything')
         rule2 = SplitRule('<NN>', '<VBD>', 'Split')
         rule3 = SplitRule('<IN>', '<DT>', 'Split')
@@ -287,14 +286,11 @@ def testsuite():
     """
     Return a PyUnit testsuite for the token module.
     """
-    
-    tests = unittest.TestSuite((
+    return unittest.TestSuite((
         unittest.makeSuite(ChunkStringTestCase, 'test'),
         unittest.makeSuite(Tag2ReTestCase, 'test'),
         unittest.makeSuite(REChunkParserTestCase, 'test'),
         ))
-
-    return tests
 
 def test():
     import unittest
