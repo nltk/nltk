@@ -8,18 +8,14 @@
 # $Id$
 
 """
-A text classifier model based on the naive bayes assumption.  
-In particular, this classifier assumes that each feature is
-independant.  This assumption allows us to construct reliable
-estimates of the probability that a given text has a given label.
+A text classifier model based on the naive Bayes assumption.  In
+particular, this classifier assumes that each feature is independant.
+This assumption allows us to construct reliable estimates of the
+probability that a given text has a given label.  See C{NBClassifier}
+for more information on the approximation algorithms used by the
+classifier.
 
-See C{NBClassifier} for more information on the approximation
-algorithms used by the classifier.
-
-The Naive Bayes Classifier Model
-================================
-
-C{NBClassifier} is a naive bayes classifier model.  This model is
+C{NBClassifier} is a naive Bayes classifier model.  This model is
 based on a C{ProbDist} whose samples are C{FeatureValueList}s.  It
 uses this probability distribution to estimate the probability that a
 given text should be classified with a label::
@@ -33,32 +29,18 @@ feature-value assignments::
 
 It uses C{AssignmentEvent}s to encode the event that a feature has a
 given value.  An C{AssignmentEvent} is an event consisting of all
-C{FeatureValueList}s that contain a given assignment.  The probability
-distribution used to define a C{NBClassifier} should therefore be
-capable of efficiently calculating the probability of
+C{FeatureValueList}s that contain a given feature-value assignment.
+The probability distribution used to define a C{NBClassifier} should
+therefore be capable of efficiently calculating the probability of
 C{AssignmentEvent}s.
 
----- cut here ----
-
-The Naive Bayes Classifier Frequency Distribution
-=================================================
 This module defines a frequency distribution, C{NBClassifierFreqDist},
-which is designed to efficiently find the frequencies corresponding to
-these probabilities.  In particular, it can efficiently calculate::
+which is designed to efficiently find the frequencies of
+C{AssignmentEvent}s.  This frequency distribution can be used to build
+an efficient C{ProbDist} for C{NBClassifier}.
 
-    fdist.freq(LabelEvent(...))
-    fdist.cond_frob(AssignmentEvent(...), LabelEvent(...))
-
-See C{NBClassifierFreqDist} for more information.
-
-The Naive Bayes Classifier Trainer
-==================================
-C{NBClassifierTrainer} uses training data to construct a new
-C{NBClassifier}.  From the training data, it builds a
-C{NBClassifierFreqDist}.  This frequency distribution is used as the
-basis for a probability distribution, which is used to construct the
-C{NBClassifier}.
-
+C{NBClassifier}s can be built from training data with the
+C{NBClassifierTrainer} class.
 """
 
 from nltk.classifier import *
@@ -78,7 +60,7 @@ class AssignmentEvent(EventI):
     """
     An event containing all C{FeatureValueList}s that contain a given
     assignment.  An assignment is an (id, value) pair which gives a
-    feature identifier and the value of that feature.
+    feature id and the value of that feature.
     """
     def __init__(self, assignment):
         """
@@ -86,9 +68,8 @@ class AssignmentEvent(EventI):
         C{FeatureValueList}s that contain C{assignment}.
 
         @param assignment: The assignment to check for.  This (id,
-            value) pair specifies a feature's identifier and a value
-            for that feature.  For Naive Bayes classifiers, values are
-            treated as boolean values.
+            value) pair specifies a feature's id and a value
+            for that feature.
         @type assignment: C{tuple} of C{int} and (immutable)
         """
         self._assignment = assignment
@@ -96,23 +77,32 @@ class AssignmentEvent(EventI):
     def assignment(self):
         """
         @return: the assignment that defines this C{AssignmentEvent}.
-            This (id, value) pair specifies a feature's identifier and
-            a value for that feature.  For Naive Bayes classifiers,
-            values are treated as boolean values.
+            This (id, value) pair specifies a feature's id and
+            a value for that feature.  
         @rtype: C{tuple} of C{int} and (immutable)
         """
         return self._assignment
-    def contains(self, sample):
+
+    def contains(self, fvlist):
         """
-        @type sample: C{FeatureValueList}
+        @return: C{true} iff the given feature value list contains
+            this C{AssignmentEvent}'s assignment.  In particular,
+            if C{(id, val)} is this C{AssignmentEvent}'s assignment,
+            then return true iff C{fvlist[id]==val}.
+        @type fvlist: C{FeatureValueList}
         """
-        # !!! This needs a real definition !!!
         (id, val) = self._assignment
-        return (sample[id] == val)
+        return (fvlist[id] == val)
     
     def __repr__(self):
-        return ('{Event x: x=FeatureValueList' +
-                ' with assignment %r}' % self._assignment)
+        """
+        @rtype: C{string}
+        @return: A C{string} representation of this
+            C{AssignmentEvent}, of the form::
+
+                {Event fvlist: fvlist[12]=1}
+        """
+        return '{Event fvlist: fvlist[%r]=%r}' % self._assignment
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -120,7 +110,6 @@ class AssignmentEvent(EventI):
 
 class NBClassifier(ClassifierI):
     """
-
     A text classifier model based on the Naive Bayes assumption.  In
     particular, we assume that the feature value assignments of a
     given text are mutually independant.  This assumption justifies
@@ -130,8 +119,8 @@ class NBClassifier(ClassifierI):
       P(labeled_text) = P(f1=v1, f2=v2, ..., fn=vn)
                       = P(f1=v1) * P(f2=v2) * ... * P(fn=vn)
 
-    Where C{fi=vi} are the feature values assignments for a given
-    labeled text.  This approximation helps solve the sparse data
+    Where C{fi=vi} are the feature values assignments for
+    C{labeled_text}.  This approximation helps solve the sparse data
     problem, since our estimates for the probabilities of individual
     features (C{P(fi=vi)}) are much more reliable than our joint
     estimates for all features (C{P(f1=v1, f2=v2, ..., fn=vn)}).
@@ -150,6 +139,15 @@ class NBClassifier(ClassifierI):
                                       P(text, label=l)
       P(label=l|text) = ---------------------------------------------
                          P(text, label=l1) + ... + P(text, label=lm)
+
+    Feature Requirements
+    ====================
+
+    The naive bayes classifier model does not place any restrictions
+    on feature value type beyond those caused by the underlying
+    probability distribution.  Note, however, that the estimates of
+    C{P(fi=vi)} may be unreliable for certain types feature value
+    (e.g., real values).
    
     Optimizations
     =============
@@ -161,17 +159,17 @@ class NBClassifier(ClassifierI):
     value lists are sparse, we can improve performance by finding
     P(labeled_text) with the following equivalant formulation::
 
-      P(f1=0, f2=0, ..., fn=0) = P(f1=0) * ... * P(fn=0)
+      P(labeled_text) = P(f1=0, f2=0, ..., fn=0) * P(Fi=1)/P(Fi=0)
 
-      P(text, label) = P(f1=0, f2=0, ..., fn=0) * P(Fi=1)/P(Fi=0)
+      P(f1=0, f2=0, ..., fn=0) = P(f1=0) * ... * P(fn=0)
 
     Where C{Fi} are the set of features whose value is 1.  This
     reformulation is useful because C{P(f1=0, f2=0, ..., fn=0)} does
     not depend on the text in any way.  
 
-    Note also that since C{P(f1=0, f2=0, ..., fn=0)} does not depend
-    on the text in any way, we don't need to calculate it at all if we
-    want to find the most likely label for a given text::
+    Since C{P(f1=0, f2=0, ..., fn=0)} does not depend on the text in
+    any way, we don't need to calculate it at all if we want to find
+    the most likely label for a given text::
 
       ARGMAX[label] P(label|text)
               = ARGMAX[label] P(labeled_text)
@@ -186,88 +184,140 @@ class NBClassifier(ClassifierI):
       P(label=l|text) = ---------------------------------------------
                          P(text, label=l1) + ... + P(text, label=lm)
 
-    Thus, we never actually need to find C{P(f1=0, f2=0, ..., fn=0)}. 
+    Thus, we never actually need to evaluate
+    C{P(f1=0, f2=0, ..., fn=0)}.  
     """
-    def __init__(self, featuredetectors, labels, pdist):
+    def __init__(self, fdlist, labels, prob_dist):
         """
         Construct a new Naive Bayes classifier model.  Typically, new
         classifier models are created by C{ClassifierTrainer}s.
 
-        @type featuredetectors: C{FeatureDetectorListI}
-        @param featuredetectors: The feature detector list defining
+        @type fdlist: C{FeatureDetectorListI}
+        @param fdlist: The feature detector list defining
             the features that are used by the C{NBClassifier}.  This
             should be the same feature detector list that was used to
             construct the feature value lists that are the samples of
-            C{pdist}.
+            C{prob_dist}.
         @type labels: C{list} of (immutable)
         @param labels: A list of the labels that should be considered
             by this C{NBClassifier}.  Typically, labels are C{string}s
             or C{int}s.
-        @type pdist: C{ProbDistI}
-        @param pdist: A probability distribution whose samples are
+        @type prob_dist: C{ProbDistI}
+        @param prob_dist: A probability distribution whose samples are
             C{FeatureValueList}s.  This probability distribution is
             used to estimate the probabilities of labels for texts.
-            C{pdist.prob()} must support C{AssignmentEvent}s.  If the
-            C{NBClassifier} is to be efficient, then C{pdist.prob()}
+            C{prob_dist.prob()} must support C{AssignmentEvent}s.  If the
+            C{NBClassifier} is to be efficient, then C{prob_dist.prob()}
             should be capable of efficiently finding the probability
             of C{AssignmentEvent}s.
         """
-        self._featuredetectors = featuredetectors
+        self._fdlist = fdlist
         self._labels = labels
-        self._pdist = pdist
+        self._prob_dist = prob_dist
 
-    def _estimate(self, labeled_text, min_p=0.0):
-        """
-        Give a non-normalized estimate for P(label, text).  If the
-        probability gets below min_p, then abort and return 0.
-        """
-        # Find the feature values for this text.
-        featurevalues = self._featuredetectors.detect(labeled_text)
-
-        # Estimate P(label, text) (not normalized)
-        p = 1.0
-        for assignment in featurevalues.assignments():
-            prob = self._pdist.prob(AssignmentEvent(assignment))
-            if prob != 1:
-                p *= prob / (1-prob)
-            if p <= min_p:
-                return 0.0
-        return p
-
-    def distribution(self, token):
-        # Inherit docs.
+    def distribution_list(self, unlabeled_token):
+        # Inherit docs from ClassifierI
         total_p = 0.0
-        dist = {}
+        text = unlabeled_token.type()
 
-        # Find the non-normalized probability estimates
+        # Construct a list containing the probability of each label.
+        # Estimate the probability of a label by combining probability
+        # estimates for the assignments of the corresponding labeled
+        # text. 
+        dist_list = []
         for label in self._labels:
-            p = self._estimate(LabeledText(token.type(), label))
-            dist[label] = p
+            # Estimate the probability of LabeledText(text, label)
+            p = 1.0
+            fvlist = self._fdlist.detect(LabeledText(text, label))
+            for assignment in fvlist.assignments():
+                prob = self._prob_dist.prob(AssignmentEvent(assignment))
+                if prob != 1:
+                    p *= prob / (1-prob)
+                
+            # Record the probability estimate.
+            dist_list.append(p)
             total_p += p
 
-        # What should we do if nothing is possible?
-        if total_p == 0: return {}
+        # If p=0 for all samples, return a uniform distribution.
+        if total_p == 0:
+            return [1.0/len(self._labels) for l in self._labels]
 
-        # Normalize our probability estimates
-        for (label, p) in dist.items():
-            dist[label] = p / total_p
+        # Normalize the probability estimates.
+        dist_list = [p/total_p for p in dist_list]
 
-        return dist
+        return dist_list
 
-    def classify(self, token):
-        # Inherit docs
-        max_p = -1
-        max_label = None
+    def distribution_dictionary(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        dist_dict = {}
+        dist_list = self.distribution_list(unlabeled_token)
+        for labelnum in range(len(self._labels)):
+            dist_dict[self._labels[labelnum]] = dist_list[labelnum]
+        return dist_dict
+
+    def distribution(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        return DictionaryProbDist(dist_dict)
+
+    def classify(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        text = unlabeled_token.type()
+        
+        # (label, probability) pair that maximizes probability
+        max = (None, 0)
 
         # Find the label that maximizes the non-normalized probability
         # estimates.
         for label in self._labels:
-            p = self._estimate(LabeledText(token.type(), label), max_p)
-            if p > max_p:
-                max_p = p
-                max_label = label
+            # Estimate the probability of LabeledText(text, label)
+            p = 1.0
+            fvlist = self._fdlist.detect(LabeledText(text, label))
+            for assignment in fvlist.assignments():
+                prob = self._prob_dist.prob(AssignmentEvent(assignment))
+                if prob != 1:
+                    p *= prob / (1-prob)
+                if p <= max[1]: break
                 
-        return max_label
+            # Record the probability estimate.
+            if p > max[1]: max = (label, p)
+                
+        return max[0]
+
+    def prob(self, labeled_token):
+        # Inherit docs from ClassifierI
+        text = labeled_token.type().text()
+        label = labeled_token.type().label()
+        return distribution_dictionary(text)[label]
+
+    def labels(self):
+        # Inherit docs from ClassifierI
+        return self._labels
+
+    def prob_dist(self):
+        """
+        @rtype: C{ProbDistI}
+        @return: The probability distribution that this
+            C{NBClassifier} uses to estimate the probabilities for
+            text labels. 
+        """
+        return self._prob_dist
+
+    def fdlist(self):
+        """
+        @rtype: C{FeatureDetectorListI}
+        @return: The feature detector list defining the features that
+            are used by the C{NBClassifier}.
+        """
+        return self._fdlist
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this Naive Bayes
+            classifier.  
+        """
+        return ('<NBClassifier: %d labels, %d features>' %
+                (len(self._labels), len(self._fdlist)))
 
 ##//////////////////////////////////////////////////////
 ##  Specialized frequency distribution.
@@ -281,189 +331,254 @@ class NBClassifierFreqDist(FreqDistI):
     whose samples are C{FeatureValueList}s; and which is specialized
     for finding the frequencies of C{AssignmentEvent}s.
 
-    Currently, C{NBClassifierFreqDist} only supports the following
-    methods:
-
+    Some C{NBClassifierFreqDist} methods can only be used with certain
+    types of arguments.  In particular, C{NBClassifierFreqDist} only
+    supports the following methods:
       - C{inc(FeatureValueListI)}
       - C{freq(AssignmentEvent)}
       - C{count(AssignmentEvent)}
       - C{N()}
-      - C{B()}
-      - C{bins(AssignmentEvent)}
+
+    C{NBClassifierFreqDist} requires that all sample
+    C{FeatureValueList}s be binary valued, and have a default value of
+    C{0}.
+
+    @ivar _fcounts: An array recording the number of times each
+        feature has occured.
+    @ivar _N: The total number of samples recorded.
+    @ivar _ffreqs: A cached value for _fcounts/_N.
     """
-    def __init__(self, labels, features):
-        self._features = features
-        self._num_features = len(features)
-        
-        self._fcounts = zeros(self._num_features)
+    def __init__(self, fvlist_size):
+        """
+        Construct a new, empty C{NBClassifierFreqDist}.  The samples
+        in this new frequency distribution must be
+        C{FeatureValueList}s with C{fvlist_size} feature values.
+        Usually, all of the C{FeatureValueList} samples are generated
+        by the same C{FeatureDetectorList}.
+
+        @type fvlist_size: C{int}
+        @param fvlist_size: The number of features values contained in
+            the C{FeatureValueList} samples.
+        """
+        self._fcounts = zeros(fvlist_size)
         self._N = 0.0
 
-        # Cache values to avoid re-computing them.
-        self._ffreqs = None
-        self._B = (2L**self._num_features)
-
-    def B(self):
-        return self._B
-
-    def bins(self, event):
-        _chktype('NBClassifierFreqDist.bins', 1, event, (AssignmentEvent,))
-        # Is this right?!?
-        return self._B/2
-        
     def N(self):
+        # Inherit docs from FreqDistI
         return self._N
 
     def inc(self, sample):
+        # Inherit docs from FreqDistI
         _chktype('NBClassifierFreqDist.inc', 1, sample,
-                 (FeatureValueListI,)) 
+        #         (FeatureValueListI,)) 
 
         # Increment the total count.
         self._N += 1
 
         # Increment the feature count array
-        for (feature_id,val) in sample.assignments():
-            self._fcounts[feature_id] += 1
+        for (fid,val) in sample.assignments():
+            self._fcounts[fid] += 1
 
     def freq(self, event):
+        # Inherit docs from FreqDistI
         _chktype('NBClassifierFreqDist.freq', 1, event, (AssignmentEvent,))
-        (feature_id, value) = event.assignment()
+        (fid, value) = event.assignment()
         if value:
-            return (self._fcounts[feature_id] / self._N)
+            return (self._fcounts[fid] / self._N)
         else:
-            return 1 - (self._fcounts[feature_id] / self._N)
+            return 1 - (self._fcounts[fid] / self._N)
 
     def count(self, event):
+        # Inherit docs from FreqDistI
         _chktype('NBClassifierFreqDist.count', 1, event, (AssignmentEvent,))
-        (feature_id, value) = event.assignment()
+        (fid, value) = event.assignment()
         if value:
-            return self._fcounts[feature_id]
+            return self._fcounts[fid]
         else:
-            return self._N - self._fcounts[feature_id]
+            return self._N - self._fcounts[fid]
 
-    def max(self):
-        # !! HACK !!
-        return AssignmentEvent((argmax(self._fcounts), 1))
-
+    def fvlist_size(self):
+        """
+        The samples of this frequency distribution are
+        C{FeatureValueList}s of a constant size.  This method returns
+        this size.
+        
+        @return: the number of features values contained in
+            this frequency distribution's C{FeatureValueList}
+            samples.
+        @rtype: C{int}
+        """
+        return len(self._fcounts)
 
 class NBClassifierLidstoneProbDist(ProbDistI):
-    def __init__(self, freqdist, bins, l):
+    """
+    A simple implementation of a Lidstone probability distribution,
+    specialized for C{NBClassifierFreqDist}.  This is intended as a
+    temporary solution until we re-design the general-purpose
+    probability distributions to correctly perform smoothing over
+    events (rather than just over samples).
+
+    C{NBClassifierLidstoneProbDist} only implements one method:
+    C{prob}, which requires that its argument be an
+    C{AssignmentEvent}. 
+    """
+    def __init__(self, freqdist, l):
+        """
+        @param l: The lambda-value for the lidstone probability
+            distribution.  C{l=0} gives Maximum Likelihood Estimation
+            smoothing; C{l=1} gives Laplace smoothing; and C{l=0.5}
+            gives Expected Likelihood Estimation smoothing.
+        """
+        _chktype('NBClassifierLidstoneProbDist',
+        #         1, freqdist, (NBClassifierFreqDist,))
         self._freqdist = freqdist
         self._l = l
-        self._bins = bins
+        self._bins = freqdist.fvlist_size()
 
     def prob(self, event):
         _chktype('NBClassifierLidstoneProbDist.prob',
-                 1, event, (AssignmentEvent,))
+        #         1, event, (AssignmentEvent,))
         c = self._freqdist.count(event)
-        return (c + self._l) / self._bins
+        return float(c + self._l) / self._bins
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier Trainer
 ##//////////////////////////////////////////////////////
 
 class NBClassifierTrainer(ClassifierTrainerI):
-    def __init__(self, features, labels=None):
-        self._features = features
-        self._labels = labels
+    """
+    A factory class that builds naive bayes classifiers from training
+    data.  C{NBClassifierTrainer} uses the training data to produce
+    estimates of the probability for each feature value assignment;
+    and uses these estimates to construct a new C{NBClassifier}.
 
-    def _find_labels(self, labeled_tokens):
-        labelmap = {}
-        for token in labeled_tokens:
-            labelmap[token.type().label()] = 1
-        return labelmap.keys()
+    C{NBClassifierTrainer} estimates the probability of a feature
+    value assignment by examining the frequency with which it appears
+    in the training data.  In the simplest case, the probability of a
+    feature value assignment is estimated to be the number of training
+    tokens with that feature value assignment divided by the total
+    number of trainin tokens.
 
-    def train(self, labeled_tokens):
-        if self._labels is None:
-            labels = self._find_labels(labeled_tokens)
-        else:
-            labels = self._labels
-        features = self._features
+    However, a variety of smoothing algorithms can be specified, which
+    can improve these probability estimates.  For information about
+    which smoothing algorithms are available, see C{train()}.
 
-        N = len(labeled_tokens)*2/3
-        traindata = labeled_tokens[:N]
-        hodata = labeled_tokens[N:]
-        
-        train_fdist = NBClassifierFreqDist(labels, features)
-        for labeled_token in traindata:
-            labeled_type = labeled_token.type()
-            feature_values = features.detect(labeled_type)
-            train_fdist.inc(feature_values)
-            
-        ho_fdist = NBClassifierFreqDist(labels, features)
-        for labeled_token in hodata:
-            labeled_type = labeled_token.type()
-            feature_values = features.detect(labeled_type)
-            ho_fdist.inc(feature_values)
+    The current implementation of C{NBClassifierTrainer} requires that
+    all feature detectors produce binary feature values; and use a
+    default of C{0}.
+    """
+    def __init__(self, fdlist):
+        """
+        Construct a new classifier trainer, using the given feature
+        detector list.
 
-        return HeldOutProbDist(train_fdist, ho_fdist)
+        @type fdlist: C{FeatureDetectorListI}
+        @param fdlist: A feature detector llist defining
+            the features that are used by the C{NBClassifier}s
+            generated by this C{NBClassifierTrainer}.
+        """
+        self._fdlist = fdlist
 
-    def _train(self, labeled_tokens):
-        if self._labels is None:
-            labels = self._find_labels(labeled_tokens)
-        else:
-            labels = self._labels
-        features = self._features
-        
-        fdist = NBClassifierFreqDist(labels, features)
-        
+    def train(self, labeled_tokens, **kwargs):
+        """
+        Build a new C{NBClassifier} from the given training data.
+
+        @type labeled_tokens: C{list} of (C{Token} with type C{LabeledText})
+        @param labeled_tokens: A list of correctly labeled texts.
+            These texts will be used as training samples to construct
+            new classifiers.
+        @param kwargs: Keyword arguments.
+            - C{labels}: The set of possible labels.  If none is
+              given, then the set of all labels attested in the
+              training data will be used instead.  (type=C{list} of
+              (immutable)).
+            - C{smoothing}: The smoothing algorithm that should be
+              applied to the probability estimates for feature value
+              assignments.  Currently, the possible values are:
+                - C{'MLE'}: The maximum likelihood estimation.  This
+                  does not apply any smoothing.  This is the default
+                  value. 
+                - C{'Laplace'}: The Laplace estimation.
+                - C{'ELE'}: The expected likelihood estimation.
+                - C{('Lidstone', lambda)}: The Lidstone estimation.
+                  Lambda is a parameter to that estimation; it is a
+                  positive float, typically between 0 and 1.
+        @return: A new classifier, trained from the given labeled
+            tokens.
+        @rtype: C{ClassifierI}
+        """
+        # Process the keyword arguments
+        smoothing = 'MLE'
+        labels = None
+        for (key, val) in kwargs.items():
+            if key == 'smoothing': smoothing = val
+            elif key == 'labels': labels = val
+            else: raise TypeError('Unknown keyword arg %s' % key)
+        if labels is None:
+            labels = find_labels(labeled_tokens)
+                
+        # Construct a frequency distribution from the training data
+        freqdist = NBClassifierFreqDist(len(self._fdlist))
         for labeled_token in labeled_tokens:
             labeled_type = labeled_token.type()
-            feature_values = features.detect(labeled_type)
-            fdist.inc(feature_values)
+            fvlist = self._fdlist.detect(labeled_type)
+            freqdist.inc(fvlist)
 
-        #pdist = LidstoneProbDist(fdist, 0.0**len(features))
-        #nf = len(self._features)
-        #pdist = NBClassifierLidstoneProbDist(fdist, nf, 0.5)
-        #pdist = MLEProbDist(fdist)
-        return NBClassifier(features, labels, pdist)
+        # Construct a probability distribution from the freq dist
+        if type(smoothing) != type(""):
+            if smoothing[0].lower() == 'lidstone':
+                l = smoothing[1]
+                probdist = NBClassifierLidstoneProbDist(freqdist, l)
+        elif smoothing.lower() == 'mle':
+            probdist = MLEProbDist(freqdist)
+        elif smoothing.lower() == 'laplace':
+            probdist = NBClassifierLidstoneProbDist(freqdist, 1.0)
+        elif smoothing.lower() == 'ele':
+            probdist = NBClassifierLidstoneProbDist(freqdist, 0.5)
+        else:
+            raise ValueError('Unknown smoothing type %r' % smoothing)
+        
+        return NBClassifier(self._fdlist, labels, probdist)
             
 ##//////////////////////////////////////////////////////
 ##  Test code
 ##//////////////////////////////////////////////////////
 
 t0=0
-def resettime():
+def _resettime():
     global t0
     t0 = time.time()
-def timestamp():
+def _timestamp():
     return '%8.2fs ' % (time.time()-t0)
 
 def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
-    resettime()
+    _resettime()
     
-    if debug: print timestamp(), 'getting a list of labels...'
+    if debug: print _timestamp(), 'getting a list of labels...'
     labelmap = {}
     for ltok in labeled_tokens:
         labelmap[ltok.type().label()] = 1
     labels = labelmap.keys()
-    if debug: print timestamp(), '  got %d labels.' % len(labels)
+    if debug: print _timestamp(), '  got %d labels.' % len(labels)
     
-    if debug: print timestamp(), 'constructing feature list...'
-    features = AlwaysFeatureDetectorList()
-    f_range = [(chr(i),l)
-             for i in (range(ord('a'), ord('z'))+[ord("'")])
-             for l in labels]
-    func = lambda w:(w.text()[0:1], w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
-    func = lambda w:(w.text()[-1:], w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
-    func = lambda w:(w.text()[-2:-1], w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
-    f_vals = [LabeledText("Atlanta's", l) for l in labels]
-    features += ValueFeatureDetectorList(f_vals)
-    f_range = [(n, l) for n in range(n_lens) for l in labels]
-    func = lambda w:(len(w.text()), w.label())
-    features += ValueFeatureDetectorList(f_vals)
+    if debug: print _timestamp(), 'constructing feature list...'
+    fdlist = AlwaysOnFDList()
+    f_range = [chr(i) for i in (range(ord('a'), ord('z'))+[ord("'")])]
+    fdlist += TextFunctionFDList(lambda w:w[0:1], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w[-1:], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w[-2:-1], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w, ["atlanta's"], labels)
+    fdlist += TextFunctionFDList(lambda w:len(w), range(n_lens), labels)
 
-    if debug: print timestamp(), '  got %d features' % len(features)
+    if debug: print _timestamp(), '  got %d features' % len(fdlist)
 
-    if debug: print timestamp(), 'training on %d samples...' % len(labeled_tokens)
-    trainer = NBClassifierTrainer(features)
-    classifier = trainer.train(labeled_tokens)
-    if debug: print timestamp(), '  done training'
+    if debug: print _timestamp(), 'training on %d samples...' % len(labeled_tokens)
+    trainer = NBClassifierTrainer(fdlist)
+    classifier = trainer.train(labeled_tokens, smoothing='ELE')
+    if debug: print _timestamp(), '  done training'
     
-    if debug: print timestamp(), ('%d tokens, %d labels' % (len(labeled_tokens), 
-                                     len(classifier._labels)))
+    if debug: print _timestamp(), ('%d tokens, %d labels' % (len(labeled_tokens), 
+                                     len(classifier.labels())))
     toks = WSTokenizer().tokenize("jury the reports aweerdr "+
                                   "atlanta's atlanta_s moowerp's")
     
@@ -471,44 +586,46 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
     #for i in range(20):
     #    for word in toks:
     #        classifier.classify(word)
-    #if debug: print timestamp(), '100 classifications: %0.4f secs' % (time.time()-t)
+    #if debug: print _timestamp(), '100 classifications: %0.4f secs' % (time.time()-t)
 
     toks = toks * (1+((n_words-1)/len(toks)))
-    if debug:print timestamp(), 'Testing on %d tokens' % len(toks)
+    if debug:print _timestamp(), 'Testing on %d tokens' % len(toks)
     t = time.time()
     for word in toks:
-        if debug: print timestamp(), word
-        if 1:
-            items = classifier.distribution(word).items()
+        if debug: print _timestamp(), word
+        if 0:
+            items = classifier.distribution_dictionary(word).items()
             items.sort(lambda x,y:cmp(y[1], x[1]))
             for (label,p) in items:
                 if p > 0.01:
-                    print timestamp(), '    %3.5f %s' % (p, label)
+                    print _timestamp(), '    %3.5f %s' % (p, label)
         label = classifier.classify(word)
-        if debug: print timestamp(), '  =>', label
+        if debug: print _timestamp(), '  =>', label
 
     return time.time()-t
         
-def get_toks(debug=0):
-    resettime()
+def _get_toks(file='/mnt/cdrom2/data/brown/ca01', debug=0):
+    """
+    Load tokens from the given file.  
+    """
+    _resettime()
     from nltk.tagger import TaggedTokenizer
-    file = '/mnt/cdrom2/data/brown/ca01'
-    text = open(file).read()[:10000]
+    text = open(file).read()
 
-    if debug: print timestamp(), 'tokenizing %d chars' % len(text)
+    if debug: print _timestamp(), 'tokenizing %d chars' % len(text)
     ttoks = TaggedTokenizer().tokenize(text)
     labeled_tokens = [Token(LabeledText(tok.type().base().lower(),
                                            tok.type().tag()),
                                tok.loc())
                          for tok in ttoks]
-    if debug: print timestamp(), '  done tokenizing'
+    if debug: print _timestamp(), '  done tokenizing'
     return labeled_tokens
     
     
 
 if __name__ == '__main__':
     n_words = 7
-    toks = get_toks(1)
+    toks = _get_toks()
     print
     t1 = demo(toks, n_words, 15)
     print
