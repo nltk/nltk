@@ -14,6 +14,15 @@ developers and to people teaching NLP using Python.
 
 @author: Steven Bird
 @version: 1.1a
+@newfield contributor: Contributor, Contributors, short
+@contributor: Chen-Fu Chiang
+@contributor: Jinyoung Choi
+@contributor: Trevor Cohn
+@contributor: Nikhil Dinesh
+@contributor: Brent Gray
+@contributor: Yurie Hara
+@contributor: Christopher Maloof
+@contributor: David Zhang
 """
 
 ##//////////////////////////////////////////////////////
@@ -79,7 +88,3 @@ __maintainer__ = "Edward Loper"
 __maintainer_email__ = "edloper@gradient.cis.upenn.edu"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
-__contributors__ = """\
-Edward Loper <edloper@gradient.cis.upenn.edu>
-Steven Bird <sb@cs.mu.oz.au>
-"""
