@@ -21,11 +21,10 @@ include:
   - C{SENSE}: The token's word sense.
   - C{LOC}: The token's location in its containing text.
 
-The C{LOC} property, which is defined by most tokens, uses a
-L{Location<LocationI>} to specify the position of the token in its
-containing text.  This location can be used to distinguish two tokens
-whose properties are otherwise equal (e.g., two occurences of the same
-word in a text).
+The C{LOC} property uses a L{Location<LocationI>} to specify the
+position of the token in its containing text.  This location can be
+used to distinguish two tokens whose properties are otherwise equal
+(e.g., two occurences of the same word in a text).
   
 @group Tokens: Token, FrozenToken, SafeToken, ProbabilisticToken
 @group Locations: LocationI, SpanLocation, CharSpanLocation,
@@ -94,7 +93,11 @@ class Token(dict):
         on all operations, and so is significantly slower.
 
     @group Transformations: exclude, project, freeze, copy
-    @group Accessors: properties, has
+    @group Property Access: properties, has, get, __getitem__, 
+        __setitem__, __delitem__
+    @group Dictionary Methods: clear, fromkeys, get, has_key, items,
+        iteritems, iterkeys, itervalues, keys, pop, popitem,
+        setdefault, update, values
     @group Operators: __*__, __len__
     """
     # Don't allocate any extra space for instance variables:
@@ -919,7 +922,7 @@ class ParaIndexLocation(IndexLocation):
 
 def demo():
     """
-    A demonstration showing how L{Location}s and L{Token}s can be
+    A demonstration showing how locations and tokens can be
     used.  This demonstration simply creates two locations and
     two tokens, and shows the results of calling several of their
     methods.
