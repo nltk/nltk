@@ -12,80 +12,88 @@ components.
 import aglite
 
 
-class Annotation(aglite.Annotation, object):
+class Annotation(aglite.Annotation):
 
-    __slots__ = ()
+    __slots__ = ('_changeHook', '_changeHook2')
 
-    def __init__(self, propdict=None, start=None, end=None, **kw):
-        aglite.Annotation.__init__(self, propdict, start, end, **kw)
+    def __init__(self, *args, **kw):
+        aglite.Annotation.__init__(self, *args, **kw)
+        self._changeHook = None
+        self._changeHook2 = None
 
     def __setitem__(self, k, v):
+        if self._changeHook: self._changeHook(self, "feature", k, v)
         aglite.Annotation.__setitem__(self, k, v)
-        if Annotation.changeCallback:
-            Annotation.changeCallback.__call__(self)
+        if self._changeHook2: self._changeHook2(self, "feature", k, v)
         
     def setStart(self, v):
+        if self._changeHook: self._changeHook(self, "start", v)
         aglite.Annotation.setStart(self, v)
-        if Annotation.changeCallback:
-            Annotation.changeCallback.__call__(self)
+        if self._changeHook2: self._changeHook2(self, "start", v)
 
     def setEnd(self, v):
+        if self._changeHook: self._changeHook(self, "end", v)
         aglite.Annotation.setEnd(self, v)
-        if Annotation.changeCallback:
-            Annotation.changeCallback.__call__(self)
+        if self._changeHook2: self._changeHook2(self, "end", v)
 
-    def setCallback(f=None):
-        Annotation.changeCallback = f
-    setCallback = staticmethod(setCallback)
+    def setCallback(self, f):
+        self._changeHook = f
+    
+    def setCallback2(self, f):
+        self._changeHook2 = f
     
     start = property(aglite.Annotation.getStart, setStart)
     end = property(aglite.Annotation.getEnd, setEnd)
-    changeCallback = None
 
 
 class AnnotationSet(aglite.AnnotationSet):
 
-    __slots__ = ()
+    __slots__ = ('_addHook','_delHook')
+
+    def __init__(self, *args):
+        aglite.AnnotationSet.__init__(self, *args)
+        self._addHook = None
+        self._delHook = None
+        self._changeHook = None
+        self._addHook2 = None
+        self._delHook2 = None
+        self._changeHook2 = None
+
 
     def add(self, ann):
+        if self._addHook: self._addHook(ann)
         r = aglite.AnnotationSet.add(self, ann)
-        if AnnotationSet.addCallback:
-            AnnotationSet.addCallback.__call__(ann)
+        ann.setCallback(self._changeHook)
+        ann.setCallback2(self._changeHook2)
+        if self._addHook2: self._addHook2(ann)
         return r
 
     def remove(self, ann):
+        if self._delHook: self._delHook(ann)
         r = aglite.AnnotationSet.remove(self, ann)
-        if AnnotationSet.removeCallback:
-            AnnotationSet.removeCallback.__call__(r)
+        if self._delHook2: self._delHook2(ann)
         return r
         
-    def setCallback(addf=None, remf=None):
-        """
-        addf - called when adding annotation
-        remf - called when deleting annotation
-        """
-        AnnotationSet.addCallback = addf
-        AnnotationSet.removeCallback = remf
-    setCallback = staticmethod(setCallback)
+    def setAddCallback(self, f):
+        self._addHook = f
 
-    addCallback = None
-    removeCallback = None
+    def setRemoveCallback(self, f):
+        self._delHook = f
+
+    def setChangeCallback(self, f):
+        self._changeHook = f
+
+    def setAddCallback2(self, f):
+        self._addHook2 = f
+
+    def setRemoveCallback2(self, f):
+        self._delHook2 = f
+
+    def setChangeCallback2(self, f):
+        self._changeHook2 = f
+
+
 
     
 if __name__ == "__main__":
-    def callback(x):
-        print x
-
-    Annotation.setCallback(callback)
-    a = Annotation()
-    a['text'] = 'bar'
-    a.start, a.end = 1.0, 2.0
-    print a
-
-    AnnotationSet.setCallback(callback, callback)
-    annset = AnnotationSet()
-    print "***"
-    id = annset.add(a)
-    print annset
-    annset.remove(id)
-    print annset
+    a = AnnotationSet()
