@@ -102,8 +102,8 @@ class ParserI:
             parses. 
         @type n: C{int}
         
-        @param tokens: The list of tokens to be parsed.
-        @type tokens: C{list} of C{Token}
+        @param types: The list of tokens to be parsed.
+        @type types: C{list} of C{Token}
         """
         # Convert the list of types to a list of tokens.  Use
         # arbitrary locations.  Unit is 't' for 'token'
