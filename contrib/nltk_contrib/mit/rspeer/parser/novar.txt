@@ -1,0 +1,24 @@
+---- Rules -----
+Start -> S
+S -> NP VP
+NP -> N
+NP -> Det N
+VP -> V
+VP -> V NP
+VP -> V NP PP
+PP -> P NP
+NP -> Det N PP
+---- Lexicon -----
+Poirot N
+sent V
+the Det
+solutions N
+with P
+a Det
+guy N
+telescope N
+saw V
+on P
+hill N
+
+
