@@ -883,141 +883,6 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 ##  Demonstration
 ##//////////////////////////////////////////////////////
 
-def simple_test(trainer_class):
-    """
-    Train the given maxent classifier on a task with a known solution;
-    and test the classifier's results for that task.  Print a
-    diagnostic message indicating whether the classifier produced the
-    correct result.
-    """
-    return # [XX] 
-    assert _chktype(1, trainer_class, types.ClassType)
-    classes = "dans en a au pendant".split()
-    toks = []
-    i = 0
-    for cls in "dans en en a a a a a au au".split():
-        toks.append(Token(TEXT='to', CLASS=cls))
-        i += 1
-
-    func1 = lambda w:(w.label() in ('dans', 'en'))
-    fd_list = LabeledTextFunctionFDList(func1, (1,))
-
-    trainer = trainer_class(fd_list)
-
-    classifier = trainer.train(toks, classes=classes, iter=15)
-    dist = classifier.distribution_dictionary(Token('to'))
-    print 'Simple test:'
-    for label in classes:
-        print '  P(%s) = %8.6f' % (label, dist[label])
-    error = (abs(3.0/20 - dist['dans']) +
-              abs(3.0/20 - dist['en']) +
-              abs(7.0/30 - dist['a']) +
-              abs(7.0/30 - dist['au']) +
-              abs(7.0/30 - dist['pendant']))
-        
-    if (error) > 1e-5:
-        print 'WARNING: BROKEN MAXENT IMPLEMENTATION', trainer
-        print '  Error: %10.5e' % error
-        return 0
-    else:
-        print 'simple_test passed for', trainer
-        return 1
-
-def demonstrate_trainer(trainer_class, n_features=10000, n_words=7, debug=5):
-    """
-    Demonstrate the use of the given classifier trainer
-    (C{IISMaxentClassifierTrainer} or C{GISMaxentClassifierTrainer}).
-    """
-    assert _chktype(1, trainer_class, types.ClassType)
-    assert _chktype(2, n_features, types.IntType)
-    assert _chktype(3, n_words, types.IntType)
-    assert _chktype(4, debug, types.IntType)
-    t = time.time()
-    def _timestamp(t):
-        return '%8.2fs ' % (time.time()-t)
-
-    # Read in some POS-tagged tokens from the brown corpus.
-    from nltk.corpus import brown
-    ttoks = brown.tokenize(brown.items()[0])[:100]
-
-    
-
-    # Convert the tagged tokens to labeled tokens.
-    train_toks = [Token(LabeledText(tok.type().base().lower(),
-                                        tok.type().tag()),
-                            tok.loc())
-                      for tok in ttoks]
-
-    if debug: print _timestamp(t), 'Getting a list of classes...'
-    labelmap = {}
-    for ltok in train_toks:
-        labelmap[ltok.type().label()] = 1
-    classes = labelmap.keys()
-    
-    if debug: print _timestamp(t), 'Constructing feature list...'
-    f_range = [chr(i) for i in (range(ord('a'), ord('z'))+[ord("'")])]
-    fd_list = TextFunctionFDList(lambda w:w[0:1], f_range, classes)
-    fd_list += TextFunctionFDList(lambda w:w[-1:], f_range, classes)
-    fd_list += TextFunctionFDList(lambda w:w[-2:-1], f_range, classes)
-    fd_list += TextFunctionFDList(lambda w:w, ["atlanta's"], classes)
-    n_lens = (n_features - len(fd_list))/len(classes)
-    fd_list += TextFunctionFDList(lambda w:len(w), range(n_lens), classes)
-
-    # Only use the features that are attested.
-    fdselector = AttestedFeatureSelector(train_toks,
-                                         min_count=2)
-    fd_list = fdselector.select(fd_list)
-
-    trainer = trainer_class(fd_list)
-    if debug:
-        print _timestamp(t), 'Training', trainer
-        print _timestamp(t), '  %d samples' % len(train_toks)
-        print _timestamp(t), '  %d features' % len(fd_list)
-        print _timestamp(t), '  %d classes' % len(classes)
-
-    # If it's GIS, specify C.
-    if trainer_class == GISMaxentClassifierTrainer:
-        classifier = trainer.train(train_toks, iter=5,
-                                   debug=debug, C=5)
-    else:
-        classifier = trainer.train(train_toks, iter=5,
-                                   debug=debug)
-    if debug: print _timestamp(t), '  done training'
-
-    # A few test words...
-    toks = WhitespaceTokenizer().tokenize("jury the reports aweerdr "+
-                                  "atlanta's atlanta_s moowerp's")
-
-    toks = toks * (1+((n_words-1)/len(toks)))
-    if debug:print _timestamp(t), 'Testing on %d tokens' % len(toks)
-    t = time.time()
-    for word in toks:
-        if debug: print _timestamp(t), word
-        if 1:
-            items = classifier.distribution_dictionary(word).items()
-            items.sort(lambda x,y:cmp(y[1], x[1]))
-            for (label,p) in items[:2]:
-                if p > 0.01:
-                    print _timestamp(t), '    %3.5f %s' % (p, label)
-
-    return classifier
-
-def demo():
-    """
-    A demonstration of the classifier trainers
-    C{IISMaxentClassifierTrainer} and C{GISMaxentClassifierTrainer}.
-    """
-    if simple_test(GISMaxentClassifierTrainer):
-        demonstrate_trainer(GISMaxentClassifierTrainer)
-        print
-    if simple_test(IISMaxentClassifierTrainer):
-        demonstrate_trainer(IISMaxentClassifierTrainer)
-        print
-
-##//////////////////////////////////////////////////////
-##  Test code
-##//////////////////////////////////////////////////////
-
 from nltk.feature import *
 from nltk.feature.word import *
 
@@ -1028,8 +893,8 @@ def demo():
     print 'reading data...'
     toks = []
     for item in nltk.corpus.brown.items()[:2]:
-        text = nltk.corpus.brown.tokenize(item, addcontexts=True)
-        toks += text['SUBTOKENS']
+        text = nltk.corpus.brown.read(item, addcontexts=True)
+        toks += text['WORDS']
     
     toks = toks
     split = len(toks)-30
@@ -1061,7 +926,7 @@ def demo():
     # Train a new classifier
     print 'training...'
     global classifier
-    classifier = IISMaxentClassifierTrainer().train(train, debug=5)
+    classifier = IISMaxentClassifierTrainer().train(train, debug=0)
 
     # Use it to classify the test words.
     print 'classifying...'
