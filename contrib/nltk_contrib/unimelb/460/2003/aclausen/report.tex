@@ -1,0 +1,273 @@
+\documentclass[a4]{article}
+%\usepackage{a4}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\author{Andrew Clausen and Catherine Lai}
+\title{Text Classification}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Text classification is the process of classifying documents.  Applications
+including informational retrieval, automated metadata generation and spam
+filtering.  Traditionally `experts' such as curators at research institutions
+manually classify documents.  Automated classification promises to save us the
+effort.  More tantalizingly, perhaps automated classifiers can read more into
+what we write and say than we can.
+
+%\subsubsection{Aim: Text Classification of Email}
+We chose to focus on classifying emails.  Language from emails is interesting
+because it is less formal than most other written language.  Moreover, it is
+readily available in electronic forums such as newsgroups, and therefore
+provides us with a new convenient way to understand informal language.
+
+We wanted to see how far text classification can be pushed.
+Our primary goal was to determine an author's gender by the contents of
+his/her email.  We didn't think we had much prospect for success, so we
+also attempted to classify by newsgroup for a more realistic benchmark.
+
+We wanted to experiment with elegant methods that require little pragmatic
+parameterization and few simplifying assumptions.  We thought $n$-gram backoff
+models with smoothing would fit this.  Other approaches that we didn't
+experiment with were feature-based Bayesian methods and unparameterized
+clustering methods.
+
+We implemented two information theoretic methods for comparision.  Both
+techniques construct models (probability distributions) over emails for the
+respective categories.  These models were constructed from training over the
+20 newsgroup corpus.  The Minimum Information method computes the probability
+of an email occuring under each model.  The Relative entropy method constructs
+a model out of the email to be classified, and compares this model with a
+standard information-theoretic model comparison function.
+
+\section{Minimum Information Text Classification}
+Our minimum information method computes the probability of an email occurring
+given a model (such as `spam').  A model that gives a high probability for
+an email is a good match.
+
+We constructed our models with the Prediction by Partial Matching (PPM)
+algorithm from data compression, which is a type of $n$-gram model.  PPM only
+allows a long context to be used if a shorter sub-context has appeared before.
+This is a pragmatic decision to reduce memory consumption.
+
+Since the probabilities are very small, they are computed on a $\log_2$
+scale.  This is equivalent to computing the information content - the
+number of bits required to compress the email (using arithmetic coding).
+
+Multiplying probabilities (as in $n$-gram modelling) is the same as adding
+logs.  So, we can compute the cost/length/probability of an email by summing
+the cost of each token in the email.
+\begin{align}
+I(\text{email}) = \log_2 P(\text{email}) \
+		&= \log_2 [P(t_1) P(t_2) \dots P(t_n)] \\
+	&= \sum_{t \in \text{email}} I(t)
+\end{align}
+
+We used Method X smoothing to compute the probability of unseen tokens.
+This gives a probability of about $0.1$ for each letter in the token,
+multiplied by the probability of an unseen symbol occuring given the
+prior context.
+ 
+\section{Relative Entropy} 
+
+Relative entropy is a way of comparing probability distributions.
+Consider two random variables $X$ and $Y$, which share the same alphabet.
+Let $P_X(x)$, $P_Y(x)$ denote their respective probability distributions.
+The relative entropy, or divergence, of two random variables is defined as:   
+\begin{align}
+H(X||Y) &= E_X(I_Y(X) - I_X(X)) \\
+	&= \sum_{x \in \mathcal{X}} P_X(x) \
+		\left\{ [-\log_2(P_Y(x)] - [-\log_2 P_X(x)] \right\} \\
+	&= \sum_{x \in \mathcal{X}} P_X(x) \
+		\left\{ \log_2 P_X(x) - \log_2 P_Y(x) \right\}
+\end{align}
+
+We can use this to classify text by building an empirical model of
+the text and then measuring the relative entropy with respect to 
+the models from training. We classify the text to the group that
+produces the smallest relative entropy with the text model.       
+
+We built $n$-gram models for the classification groups and the input text.
+These were simply frequency distributions of observed $n$-grams (without back
+off). Both models need to be valid over the same set of $n$-grams so we must
+deal the possibility of unseen $n$-grams.  This is dealt with in the same way
+as the minimum information approach.     
+ 
+\section{Data}
+We used data from the Twenty Newsgroups corpus. Email headers provided group
+labelling information while only email bodies were used for training and
+testing.  This provided a very convenient way to label data belonging to a
+particular newsgroup. 
+
+We labelled data sets for gender classification by comparing the first name of
+author of the email to lists of male and female names.  This was extractable
+from the 'From' field of the emails header.  We disregarded emails when either
+the name appeared on male and female name lists or when there was no name
+mentioned.
+
+These labelled data sets can also be used to make more complex classifications
+such as combinations of gender and newsgroup.
+
+\subsection{Data Censorship} 
+
+The first form of censorship we implemented replaces quoted text with 
+the symbolic token \texttt{[quote]}. This was done to prevent text other
+than the author's from having an impact.
+
+Newsgroups are often dominated by a small set of email
+authors.  In effect we end up with language models for particular authors
+rather than, say, a gender.  While this sort of classifier has its own uses, it
+is not the classifier we set out to create! We implemented 
+data censorship measures to prevent this sort of overtraining.
+
+This censorship basically involved anything that might identify the author of
+the email (ie signature material). This included  email addresses, URLS, phone
+numbers, and tokens found in the address fields of the mail.  For example,
+'cat@mat.org' is replaced by \texttt{[email]}. This meant that some about the
+token information is retained. 
+
+This also helps with the sparse data problem... we have a chance of
+learning how different authors place email addresses, etc.
+
+Here is an example of censored tokens:
+
+\begin{verbatim}
+In article [email] , [email] ( [name] [name] Daley ) writes :
+[quote] [quote] [quote] Anything that does not bring me closer
+to God is a sin . ( If you think this is too strict , just
+consider how
+\end{verbatim}
+
+\subsection{Corpus Implementation Details}
+We found the \text{classifier} module in nltk was inadequate at dealing with a
+large corpus.  It requires the entire corpus be loaded into memory.  Moreover,
+it doesn't provide any pre-processing facilities.  We implemented our own
+class heirarchy for processing corpora, and automatically building classifiers
+from them.  We realized afterwards that we reimplemented Relational Algebra in
+the process!  We had to implement a select-like operation to select which
+items we wanted to train.  We had to implement a group-by operation to merge
+composite classifications (like $(gender, newsgroup)$) into a single
+classification.  It would be interesting to see how useful databases with an
+SQL interfaces would be for building classifiers.
+
+\section{Results}
+Unfortunately, there were only 456 emails that we could conclusively
+label as female in the twenty newsgroups corpus.
+
+In these tables, rows refer to the real classification, and columns
+the computer generated classification.
+
+Relative Entropy, zero order:
+\begin{center}
+\begin{tabular}{|r|r|r|} \hline
+		& sci.crypt	& sci.med \\ \hline
+sci.crypt	& 84 		& 7 \\ \hline
+sci.med		& 2		& 88 \\ \hline
+\end{tabular}
+\end{center}
+
+Relative Entropy, first order:
+\begin{center}
+\begin{tabular}{|r|r|r|} \hline
+		& sci.crypt	& sci.med \\ \hline
+sci.crypt	& 83 		& 7 \\ \hline
+sci.med		& 2		& 88 \\ \hline
+\end{tabular}
+\end{center}
+
+Minimum Information, second order:
+\begin{center}
+\begin{tabular}{|r|r|r|} \hline
+			& sci.med & soc.religion.christian \\ \hline
+sci.med			& 44      & 6 \\ \hline
+soc.religion.christian	& 1	  & 49 \\ \hline
+\end{tabular}
+\end{center}
+
+These results give a small indication about the performance, but we didn't
+have time to explore them enough.  [Our computers were too slow, bugs
+were caught late, etc.  Python is a nightmare!]
+
+Male/female was no better than random.
+
+\section{Discussion}
+On the face of it, both relative entropy and minimum information methods
+are useful techniques.
+
+\section{User Guide}
+There are three programs.  You can run each with no arguments to get a
+help summary.
+\begin{itemize}
+\item \texttt{train}: for building a classifier.  A representation of the
+classifier is written to disk.
+
+\item \texttt{classify}: for using a classifier previously trained with
+\texttt{train}.
+
+\item \texttt{accuracy}: for evaluating the accuracy of a classifier
+previously trained with \texttt{train}.
+\end{itemize}
+
+In this following example, a classifier is trained on three newsgroups, using
+each group as a category.  Then, the classifier is tested on an article from
+\texttt{sci.space}.  The numbers are the compressed size under each of the
+models.  Lower numbers indicate a better match.
+
+\begin{verbatim}
+$ ./train save/classifier sci.med soc.religion.christian comp.graphics
+comp.graphics 973
+sci.med 990
+soc.religion.christian 997
+training sci.med: 100.0% (ETA 0:00:00)
+training soc.religion.christian: 100.0% (ETA 0:00:00)
+training comp.graphics: 100.0% (ETA 0:00:00)
+$ ./classify save/classifier data/sci.space/59848
+loading classifier...
+data/sci.space/59848:
+        sci.med:        28069.76
+        soc.religion.christian: 29806.18
+        comp.graphics:  28536.37
+\end{verbatim}
+
+In the above example the classifier is trained on the entire newsgroup.  It is
+Bad to test on training data.  We can limit the training data by using the
+\texttt{--corpus-size} option, and ask \texttt{accuracy} to test on the
+remaining unseen data: (training data can be included with
+\texttt{--test-training})
+
+\begin{verbatim}
+$ ./train --corpus-size 700 save/classifier sci.med soc.religion.christian
+sci.med 990
+soc.religion.christian 997
+training sci.med: 100.0% (ETA 0:00:00)
+training soc.religion.christian: 100.0% (ETA 0:00:00)
+$ ./accuracy save/classifier sci.med soc.religion.christian
+loading classifier...
+testing: 100.0% (ETA 0:00:00)
+(soc.med, soc.med) 269
+(soc.med, soc.religion.christian) 21
+(soc.religion.christian, soc.med) 12
+(soc.religian.chrisitan, soc.religion.christian) 285
+\end{verbatim}
+
+The second output row means that 21 \texttt{soc.med} emails were
+misclassified as \texttt{soc.religion.christian}.
+
+All of the remaining parameters are for \texttt{train}:
+\begin{itemize}
+\item \texttt{--context n} use a maximum context of size $n$.  (default 3)
+\item \texttt{--corpus-size n} limit training to $n$ items from each group.
+\item \texttt{--male-female} build a male-female classifier by using the
+names corpus to construct training data.
+\item \texttt{--relative-entropy} build a relative entropy rather
+than a PPM minimum information classifier.
+\item \texttt{--top n} allow the $n$ most common words to appear in a context.
+(default 500)
+\end{itemize}
+
+
+\end{document}

@@ -1,0 +1,50 @@
+README for 460 Project (Catherine Lai & Andrew Clausen)
+-------------------------------------------------------
+
+SETTING UP
+----------
+Before starting, we recommend adding some directories and symlinks:
+
+	mkdir save
+	ln [nltk-data-dir] data
+
+
+TESTING/USING
+-------------
+See the instructions at the end of the report.
+
+Here are the example commands from the report:
+
+	./train save/classifier sci.med soc.religion.christian comp.graphics
+	./classify save/classifier data/sci.space/59848
+	./train --corpus-size 700 save/classifier sci.med soc.religion.christian
+	./accuracy save/classifier sci.med soc.religion.christian
+
+Here are the help screens for train, classify and accuracy:
+
+        use: train [<options>] <output-classifier> { <group> }+
+        options:
+        -c n, --context n      maximum context size (default 3)
+        -t n, --top n          top n words allowed context (default 500)
+        -n n, --corpus-size n  maxmimum number of items to use from corpus
+        -m, --male-female      build a male/female classifier
+        -r, --rel-entropy      use relative entropy for classification
+        -i, --min-info         use min. information for classification
+
+        use: classify <classifier> { <email> }+
+
+        use: accuracy [<options>] <classifier> { <group> }+
+        options:
+        -a, --avoid-training   don't test on training data
+        -n n, --corpus-size n  maxmimum number of items to use from corpus
+        -t, --test-training    test on training data
+
+
+NOTES
+-----
+[1] Classifier files are of the order of 10 Mb.  It can take a minute to
+read/write them over NFS!
+
+[2] It usually takes about 10 minutes to train a classifier on the CS machines.
+The progress meter is usually accurate.
+
