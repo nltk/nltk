@@ -110,7 +110,7 @@ __longdescr__ = """\
 The Natural Langauge Toolkit is a Python package that simplifies
 the construction of programs that process natural language; and
 defines standard interfaces between the different components of
-an NLP system.  NLTK requires Python 2.1 or higher."""
+an NLP system.  NLTK requires Python 2.3 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
