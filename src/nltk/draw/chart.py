@@ -1670,7 +1670,8 @@ class ChartDemo:
     def edit_sentence(self, *e):
         sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
         title = 'Edit Text'
-        EntryDialog(self._root, sentence, self.set_sentence, title)
+        instr = 'Enter a new sentence to parse.'
+        EntryDialog(self._root, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
         self._token = Token(TEXT=sentence)
