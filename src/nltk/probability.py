@@ -53,7 +53,7 @@ C{Tree}).
 from nltk.chktype import chktype as _chktype
 from sets import Set
 from nltk.util import sum_logs
-import types, math, Numeric
+import types, math, numarray
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -1028,7 +1028,7 @@ class MutableProbDist(ProbDistI):
         """
         self._samples = samples
         self._sample_dict = dict([(samples[i], i) for i in range(len(samples))])
-        self._data = Numeric.zeros(len(samples), Numeric.Float64)
+        self._data = numarray.zeros(len(samples), numarray.Float64)
         for i in range(len(samples)):
             if store_logs:
                 self._data[i] = prob_dist.logprob(samples[i])
