@@ -360,9 +360,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
         token['subtokens'] = self._tokengen(token['text'], buffer_size)
         
     def _tokengen(self, text, buffer_size):
-        print 'start fix xml'
         fixed = _fixXML(text)
-        print 'end fix xml'
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         current = 0
