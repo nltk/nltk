@@ -237,7 +237,46 @@ class SequentialTagger(TaggerI):
     each token, and uses the return values to construct the tagged
     text.
     """
-    def next_tag(self, tagged_tokens, next_token):
+    def __init__(self, lookbehind_window = 0, lookahead_window = 0):
+        """
+        Construct a C{SequentialTagger}. The two parameters constrain the
+        size of the look behind and look ahead windows. Only the tokens
+        that fit within this window of the current token to tag are
+        supplied to the C{next_tag} function. All tokens in the look
+        behind window will contain a C{TaggedType}, and all tokens in the
+        look ahead window will not.
+        
+        @type lookbehind_window: C{int}
+        @param lookbehind_window: The number of tagged tokens to provide
+            as look-behind context to the C{next_tag} function.  Must be
+            a positive number.
+        @type lookahead_window: C{int}
+        @param lookahead_window: The number of tokens to provide
+            as look-ahead context to the C{next_tag} function. Must be a
+            positive number.
+        """
+        assert _chktype(1, lookbehind_window, types.IntType)
+        assert lookbehind_window >= 0, 'window size must be positive'
+        assert _chktype(2, lookahead_window, types.IntType)
+        assert lookahead_window >= 0, 'window size must be positive'
+        self._lookbehind_window = lookbehind_window
+        self._lookahead_window = lookahead_window
+
+    def lookbehind_window(self):
+        """
+        @rtype: C{int}
+        @return: The size of the look-behind window.
+        """
+        return self._lookbehind_window
+
+    def lookahead_window(self):
+        """
+        @rtype: C{int}
+        @return: The size of the look-ahead window.
+        """
+        return self._lookahead_window
+    
+    def next_tag(self, tagged_tokens, next_tokens):
         """
         Decide which tag to assign a token, given the list of tagged
         tokens that preceeds it.
@@ -246,18 +285,22 @@ class SequentialTagger(TaggerI):
         @param tagged_tokens: A list of the tagged tokens that preceed
             C{token}.  The tokens' base types are taken from the text
             being tagged, and their tags are prediced by previous
-            calls to C{next_tag}.  In particular, the I{n}th element
+            calls to C{next_tag}. This list is trimmed to the size of the
+            look-behind window, such that the I{n}th element
             of C{tagged_tokens} is a tagged token whose base type is
-            equal to the type of the I{n}th element of the text; whose
-            location is equal to the location of the I{n}th element of
-            the text; and whose tag is a predicted tag returned by a
-            previous call to C{next_tag}.
-        @type next_token: C{Token}
-        @param next_token: The (untagged) token for which to assign a
-            tag. 
+            equal to the type of the I{n}th element within the window;
+            whose location is equal to the location of the I{n}th element
+            within the window; and whose tag is a predicted tag returned
+            by a previous call to C{next_tag}.
+        @type next_tokens: C{list} of C{Token}
+        @param next_tokens: The (untagged) tokens, the first for which to
+            assign a tag. The remaining tokens form the look-ahead
+            window -- the following I{n} tokens in the text.
         @rtype: tag
-        @return: the most likely tag for C{token}, given that it is
-            preceeded by C{tagged_tokens}.
+        @return: the most likely tag for the first token in
+            C{next_tokens}, given that it is preceeded by
+            C{tagged_tokens} and followed by the remainder of
+            C{next_tokens}.
         """
         assert 0, "next_tag not defined by SequentialTagger subclass"
 
@@ -266,15 +309,26 @@ class SequentialTagger(TaggerI):
         assert _chktype(1, tokens, [Token], (Token,))
 
         # Tag each token, in sequential order.
+        rear_window = []
+        front_window = tokens[:self._lookahead_window + 1]
         tagged_text = []
-        for token in tokens:
+        for index in xrange(len(tokens)):
+            token = tokens[index]
+
             # Get the tag for the next token.
-            tag = self.next_tag(tagged_text, token)
+            if self._lookbehind_window > 0:
+                rear_window = tagged_text[-self._lookbehind_window:]
+            tag = self.next_tag(rear_window, front_window)
 
             # Construct a tagged token with the given tag, and add it
-            # to the end of tagged_text.
+            # to the end of rear_window.
             tagged_token = Token(TaggedType(token.type(), tag), token.loc())
             tagged_text.append(tagged_token)
+
+            # maintain front_window
+            del front_window[0]
+            if index + self._lookahead_window + 1 < len(tokens):
+                front_window.append(tokens[index + self._lookahead_window + 1])
 
         return tagged_text
 
@@ -284,14 +338,15 @@ class NN_CD_Tagger(SequentialTagger):
     and C{"NN"} to anything else.  This tagger expects token types to
     be C{strings}s.
     """
-    def __init__(self): pass
+    def __init__(self): 
+        SequentialTagger.__init__(self, 0, 0) # window of (0, 0)
 
-    def next_tag(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_tokens):
         # Inherit docs from SequentialTagger
         assert _chktype(1, tagged_tokens, [Token], (Token,))
-        assert _chktype(2, next_token, Token)
+        assert _chktype(2, next_tokens, [Token], (Token,))
         
-        if re.match(r'^[0-9]+(.[0-9]+)?$', next_token.type()):
+        if re.match(r'^[0-9]+(.[0-9]+)?$', next_tokens[0].type()):
             return 'CD'
         else:
             return 'NN'
@@ -307,6 +362,7 @@ class UnigramTagger(SequentialTagger):
     tag C{None}.
     """
     def __init__(self):
+        SequentialTagger.__init__(self, 0, 0) # window of (0, 0)
         self._freqdist = ConditionalFreqDist()
     
     def train(self, tagged_tokens):
@@ -325,13 +381,13 @@ class UnigramTagger(SequentialTagger):
             feature = token.type().tag()
             self._freqdist[context].inc(feature)
 
-    def next_tag(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_tokens):
         # Inherit docs from SequentialTagger
         assert _chktype(1, tagged_tokens, [Token], (Token,))
-        assert _chktype(2, next_token, Token)
+        assert _chktype(2, next_tokens, [Token], (Token,))
 
         # Find the most likely tag for the token's type.
-        context = next_token.type()
+        context = next_tokens[0].type()
         return self._freqdist[context].max()
     
 class NthOrderTagger(SequentialTagger):
@@ -358,6 +414,7 @@ class NthOrderTagger(SequentialTagger):
         """
         assert _chktype(1, n, types.IntType)
         if n < 0: raise ValueError('n must be non-negative')
+        SequentialTagger.__init__(self, n, 0) # window of (n, 0)
         self._n = n
         self._freqdist = ConditionalFreqDist()
 
@@ -385,10 +442,10 @@ class NthOrderTagger(SequentialTagger):
             if len(prev_tags) == (self._n+1):
                 del prev_tags[0]
 
-    def next_tag(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_tokens):
         # Inherit docs from SequentialTagger
         assert _chktype(1, tagged_tokens, [Token], (Token,))
-        assert _chktype(2, next_token, Token)
+        assert _chktype(2, next_tokens, [Token], (Token,))
 
         # Find the tags of the n previous tokens.
         prev_tags = []
@@ -397,7 +454,7 @@ class NthOrderTagger(SequentialTagger):
             prev_tags.append(token.type().tag())
 
         # Return the most likely tag for the token's context.
-        context = tuple(prev_tags + [next_token.type()])
+        context = tuple(prev_tags + [next_tokens[0].type()])
         return self._freqdist[context].max()
 
 class BackoffTagger(SequentialTagger):
@@ -429,13 +486,21 @@ class BackoffTagger(SequentialTagger):
         assert _chktype(1, subtaggers, (SequentialTagger,), [SequentialTagger])
         self._subtaggers = subtaggers
 
-    def next_tag(self, tagged_tokens, next_token):
+        # calculate the look-behind & look-ahead windows
+        max_lookbehind = 0
+        max_lookahead = 0
+        for subtagger in self._subtaggers:
+            max_lookbehind = max(max_lookbehind, subtagger.lookbehind_window())
+            max_lookahead = max(max_lookahead, subtagger.lookahead_window())
+        SequentialTagger.__init__(self, max_lookbehind, max_lookahead)
+
+    def next_tag(self, tagged_tokens, next_tokens):
         # Inherit docs from SequentialTagger
         assert _chktype(1, tagged_tokens, [Token], (Token,))
-        assert _chktype(2, next_token, Token)
+        assert _chktype(2, next_tokens, [Token], (Token,))
 
         for subtagger in self._subtaggers:
-            tag = subtagger.next_tag(tagged_tokens, next_token)
+            tag = subtagger.next_tag(tagged_tokens, next_tokens)
             if tag is not None:
                 return tag
 
@@ -558,6 +623,7 @@ def demo(num_files=20):
     # None, then they will generate an output of None, and so all
     # words will get tagged a None.
     print 'running the taggers...'
+    print 'Correct tagger results:  ' + `test_tokens`[:48] + '...'
     result = default_tagger.tag(untag(test_tokens))
     print 'Default tagger results:  ' + `result`[:48] + '...'
     print 'Default tagger accuracy: %.5f' % accuracy(test_tokens, result)
