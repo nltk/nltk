@@ -767,7 +767,7 @@ class SymbolWidget(TextWidget):
                 'forall': '\042', 'exists': '\044',
                 'subseteq': '\315', 'subset': '\314',
                 'notsubset': '\313', 'emptyset': '\306',
-                'imp': '\336', 'rightarrow': '\256',
+                'imp': '\336', 'rightarrow': '\xde', #'\256',
                 'equal': '\75', 'notequal': '\271',
                 'epsilon': 'e'}
     
