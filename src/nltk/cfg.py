@@ -426,3 +426,72 @@ class PCFG(CFG):
             if not ((1-PCFG.EPSILON) < p < (1+PCFG.EPSILON)):
                 raise ValueError("CFGProductions for %r do not sum to 1" % lhs)
 
+#################################################################
+# Demonstration
+#################################################################
+
+def demo():
+    """
+    A demonstration showing how C{CFG}s and C{PCFG}s can be
+    created and used.
+    """
+    # Create some nonterminals
+    S, NP, VP, PP = nonterminals('S, NP, VP, PP')
+    N, V, P, Det = nonterminals('N, V, P, Det')
+    VP_slash_NP = VP/NP
+
+    print 'Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP]
+    print '    S.symbol() =>', `S.symbol()`
+    print
+
+    # Create some CFG Productions
+    prods = [CFGProduction(S, NP, VP), CFGProduction(PP, P, NP),
+             CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
+             CFGProduction(VP, V, NP), CFGProduction(VP, VP, PP),
+             CFGProduction(Det, 'a'), CFGProduction(Det, 'the'),
+             CFGProduction(N, 'dog'), CFGProduction(N, 'cat'), 
+             CFGProduction(V, 'chased'), CFGProduction(V, 'sat'),
+             CFGProduction(P, 'on'), CFGProduction(P, 'in')]
+
+    prod = prods[2]
+    print 'A CFG production:', `prod`
+    print '    prod.lhs() =>', `prod.lhs()`
+    print '    prod.rhs() =>', `prod.rhs()`
+    print
+
+    # Create and print a CFG
+    cfg = CFG(S, prods)
+    print 'A CFG grammar:', `cfg`
+    print '    cfg.start()       =>', `cfg.start()`
+    print '    cfg.productions() =>',
+    # Use string.replace(...) is to line-wrap the output.
+    print `cfg.productions()`.replace(',', ',\n'+' '*25)
+    print
+
+    # Create some probabilistic CFG Productions
+    A, B, C = nonterminals('A, B, C')
+    pcfg_prods = [PCFGProduction(0.3, A, B, B),
+                  PCFGProduction(0.7, A, C, B, C),
+                  PCFGProduction(0.5, B, B, 'b'),
+                  PCFGProduction(0.5, B, C),
+                  PCFGProduction(0.1, C, 'a'),
+                  PCFGProduction(0.9, C, 'b')] 
+
+    pcfg_prod = pcfg_prods[2]
+    print 'A PCFG production:', `pcfg_prod`
+    print '    pcfg_prod.lhs()  =>', `pcfg_prod.lhs()`
+    print '    pcfg_prod.rhs()  =>', `pcfg_prod.rhs()`
+    print '    pcfg_prod.prob() =>', `pcfg_prod.prob()`
+    print
+
+    # Create and print a PCFG
+    pcfg = PCFG(S, pcfg_prods)
+    print 'A PCFG grammar:', `pcfg`
+    print '    pcfg.start()       =>', `pcfg.start()`
+    print '    pcfg.productions() =>',
+    # Use string.replace(...) is to line-wrap the output.
+    print `pcfg.productions()`.replace(',', ',\n'+' '*26)
+    print
+
+if __name__ == '__main__':
+    demo()
