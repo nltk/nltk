@@ -80,7 +80,7 @@ class ParserI(TaskI):
     def parse(self, token):
         """
         Derive a parse tree that represents the structure of the given
-        token's C{subtokens}, and output it to the token's C{TREE}
+        token's C{SUBTOKENS}, and output it to the token's C{TREE}
         property.  If no parse are found, then output C{None}.  If
         multiple parses are found, then output the best parse.
 
@@ -93,22 +93,49 @@ class ParserI(TaskI):
         """
         raise NotImplementedError()
 
-    def parse_n(self, token, n=None):
+    def get_parse(self, token):
         """
-        Find a list of the C{n} most likely parse trees for the given
-        token, and output it to the token's C{TREES} property.  If the
-        given token has fewer than C{n} parses, then find all parses.
-        The parses should be sorted in descending order of estimated
-        likelihood.
+        @return: A parse tree that represents the structure of the
+        given token's C{SUBTOKENS}.  If no parse is found, then return
+        C{None}.
 
-        @type n: C{int}
-        @param n: The number of parses to generate.  At most C{n}
-            parses will be found.  If C{n} is not specified, then find
-            all parses.
-        @type token: L{Token}
+        @rtype: L{Tree}
         @param token: The token whose subtokens should be parsed.
+        @type token: L{Token}
         """
-        raise NotImplementedError()
+
+    def get_parse_list(self, token):
+        """
+        @return: A list of the parse trees that could represent the
+        structure of the given token's C{SUBTOKENS}.  When possible,
+        this list should be sorted from most likely to least likely.
+
+        @rtype: C{list} of L{Tree}
+        @param token: The token whose subtokens should be parsed.
+        @type token: L{Token}
+        """
+
+    def get_parse_probs(self, token):
+        """
+        @return: A probability distribution over the parse trees that
+        could represent the structure of the given token's
+        C{SUBTOKENS}.
+
+        @rtype: L{ProbDistI}
+        @param token: The token whose subtokens should be parsed.
+        @type token: L{Token}
+        """
+
+    def get_parse_list(self, token):
+        """
+        @return: A dictioanry mapping from parse trees that could
+        represent the structure of the given token's C{SUBTOKENS} to
+        numeric scores.
+
+        @rtype: C{dict}
+        @param token: The token whose subtokens should be parsed.
+        @type token: L{Token}
+        """
 
 ##//////////////////////////////////////////////////////
 ##  Abstract Base Class for Parsers
@@ -116,10 +143,14 @@ class ParserI(TaskI):
 class AbstractParser(ParserI, PropertyIndirectionMixIn):
     """
     An abstract base class for parsers.  C{AbstractParser} provides
-    a default implementation for L{parse_n} (based on C{parse}).
-    
-    It also provides L{_parse_from_parse_n}, which can be used to
-    implement C{parse} based on C{parse_n}.
+    a default implementation for:
+
+      - L{parse} (based on C{get_parse})
+      - L{get_parse_list} (based on C{get_parse})
+      - L{get_parse} (based on C{get_parse_list})
+
+    Note that subclasses must override either C{get_parse} or
+    C{get_parse_list} (or both), to avoid infinite recursion.
     """
     def __init__(self, **property_names):
         """
@@ -135,26 +166,20 @@ class AbstractParser(ParserI, PropertyIndirectionMixIn):
             raise AssertionError, "Abstract classes can't be instantiated"
         PropertyIndirectionMixIn.__init__(self, **property_names)
 
-    def parse_n(self, token, n=None):
-        TREES = self.property('TREES')
+    def parse(self, token):
         TREE = self.property('TREE')
-        if n == 0:
-            token[TREES] = []   # (pathological case)
-        else:
-            self.parse(token)
-            token[TREES] = [token[TREE]]
-        del token[TREE]
+        token[TREE] = self.get_parse(token)
 
-    def _parse_from_parse_n(self, token):
-        TREES = self.property('TREES')
-        TREE = self.property('TREE')
-        self.parse_n(token)
-        if token[TREES] == []:
-            token[TREE] = None
-        else:
-            token[TREE] = token[TREES][0]
-        del token[TREES]
+    def get_parse(self, token):
+        trees = self.get_parse_list(token)
+        if len(trees) == 0: return None
+        else: return trees[0]
     
+    def get_parse_list(self, token):
+        tree = self.get_parse(token)
+        if tree is None: return []
+        else: return [tree]
+
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
 ##//////////////////////////////////////////////////////
@@ -245,11 +270,10 @@ class ShiftReduceParser(AbstractParser):
         assert chktype(1, grammar, CFG)
         self._grammar = grammar
     
-    def parse(self, token):
+    def get_parse(self, token):
         assert chktype(1, token, [Token], (Token))
         SUBTOKENS = self.property('SUBTOKENS')
         LEAF = self.property('LEAF')
-        TREE = self.property('TREE')
 
         # initialize the stack.
         stack = []
@@ -275,7 +299,7 @@ class ShiftReduceParser(AbstractParser):
             return None
         
         # We parsed successfully!
-        token[TREE] = stack[0]
+        return stack[0]
 
     def _shift(self, stack, remaining_text):
         """
@@ -528,16 +552,10 @@ class RecursiveDescentParser(AbstractParser):
         assert chktype(1, grammar, CFG)
         self._grammar = grammar
 
-    def parse(self, token):
-        # Delegate to parse_n
-        self._parse_from_parse_n(token)
-
-    def parse_n(self, token, n=None):
+    def get_parse_list(self, token):
         # Inherit docs from ParserI
         assert chktype(1, token, Token)
-        assert chktype(2, n, types.IntType, types.NoneType)
         SUBTOKENS = self.property('SUBTOKENS')
-        TREES = self.property('TREES')
 
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
@@ -549,11 +567,8 @@ class RecursiveDescentParser(AbstractParser):
             self._trace_start(initial_tree, frontier, text)
         parses = self._parse(text, initial_tree, frontier)
 
-        # Return the requested number of parses.
-        if n is None:
-            token[TREES] = parses
-        else:
-            token[TREES] = parses[:n]
+        # Return the parses.
+        return parses
 
     def _parse(self, remaining_text, tree, frontier):
         """
@@ -839,16 +854,13 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._history = []
         AbstractParser.__init__(self, **property_names)
 
-    def parse(self, token):
+    def get_parse_list(self, token):
         assert chktype(1, token, Token)
-        TREE = self.property('TREE')
         
         self.initialize(token)
         while self.step(): pass
         
-        parses = self.parses()
-        if len(parses) == 0: token[TREE] = None
-        else: token[TREE] = parses[0]
+        return self.parses()
 
     def stack(self):
         """
@@ -1020,16 +1032,14 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         return ImmutableTree.convert(c)
     
     
-    def parse_n(self, token, n=None):
+    def get_parse_list(self, token):
         assert chktype(1, token, Token)
-        assert chktype(2, n, types.IntType, types.NoneType)
         TREES = self.property('TREES')
         
         self.initialize(token)
         while self.step() is not None: pass
 
-        if n is None: token[TREES] = self.parses()
-        else: token[TREES] = self.parses()[:n]
+        return self.parses()
         
     def initialize(self, token):
         """
@@ -1331,7 +1341,7 @@ def demo():
 
     # Run the parser.
     parser.trace()
-    parser.parse_n(sent)
-    for p in sent['TREES']: print p
+    for p in parser.get_parse_list(sent):
+        print p
 
 if __name__ == '__main__': demo()
