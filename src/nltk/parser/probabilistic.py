@@ -943,8 +943,8 @@ def demo():
         return
 
     # Tokenize the sentence.
-    token = Token(TEXT=s, LOC=CharSpanLocation(0, len(s), 'demo'))
-    WSTokenizer().tokenize(token)
+    token = Token(TEXT=s)
+    WSTokenizer().tokenize(token, addlocs=True)
 
     # Ask the user how many parses to find.
     print '\nNumber of parses to find (1+; default=all): ',
