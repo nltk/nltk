@@ -320,6 +320,30 @@ class Location:
         return (self._start >= other._end and
                 self._end > other._start)
 
+    def overlaps(self, other):
+        """
+        @return: true if this C{Location} overlaps C{other}.  In
+            particular: 
+                - Raise an exception if this C{Location}'s source or
+                  unit are not equal to C{other}'s 
+                - Return true if ..?
+                - Return false otherwise.
+        @rtype: C{boolean}
+        @raise TypeError: if C{other} is not a C{Location}.
+        @raise ValueError: If this C{Location}'s source is not equal
+            to C{other}'s source.
+        @raise ValueError: If this C{Location}'s unit is not equal
+            to C{other}'s unit.
+        """
+        _chkclass(self, other)
+        if self._unit != other._unit:
+            raise ValueError('Locations have incompatible units')
+        if self._source != other._source:
+            raise ValueError('Locations have incompatible sources')
+        (s1,e1) = (self._start, self._end)
+        (s2,e2) = (other._start, other._end)
+        return (s1<e2 and e1>s2) or (s2<e1 and e2>s1)
+
     def __cmp__(self, other):
         """
         Compare two locations, based on their start locations and end
