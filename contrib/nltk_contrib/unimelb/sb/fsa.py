@@ -12,9 +12,8 @@ FSA class - deliberately simple so that the operations are easily understood.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
+from nltk.tokenizer import RegexpTokenizer
 from nltk.parser.probabilistic import InsidePCFGParser
-from nltk.tokenizer import CharTokenizer
-from nltk.set import *
 from nltk.cfg import *
 from nltk.tree import *
 
@@ -27,9 +26,9 @@ def _hashed_set_insert(hash, key, item):
     if hash.has_key(key):
         hash[key].insert(item)
     else:
-        hash[key] = MutableSet(item)
+        hash[key] = set([item])
 def _hashed_set_delete(hash, key, item):
-    new = hash[key].difference(MutableSet(item))
+    new = hash[key].difference(set([item]))
     if len(new) > 0:
         hash[key] = new
     else:
@@ -46,14 +45,14 @@ class FSA:
         self._forward = {}  # forward transitions
         self._reverse = {}  # reverse transitions
         self._labels = {}
-        self._finals = MutableSet()
+        self._finals = set()
         self._sigma = sigma
         
     # the fsa accepts the empty string
     # only call this right after initializing
     def empty(self):
         self._num = 0
-        self._finals = MutableSet(0)
+        self._finals = set([0])
         
     def sigma(self):
         return self._sigma
@@ -79,11 +78,11 @@ class FSA:
         self._finals.insert(state)
 
     def delete_final(self, state):
-        self._finals = self._finals.difference(MutableSet(state))
+        self._finals = self._finals.difference(set([state]))
 #        del self._finals[state]
 
     def set_final(self, states):
-        self._finals = MutableSet(*states)
+        self._finals = set(states)
 
     def in_finals(self, list):
         return [state for state in list
@@ -95,11 +94,6 @@ class FSA:
         _hashed_set_insert(self._reverse, s2, s1)
         _hashed_set_insert(self._labels, (s1,s2), label)
         
-#        if self._table.has_key((s1,label)):
-#            self._table[(s1,label)].insert(s2)
-#        else:
-#            self._table[(s1,label)] = MutableSet(s2)
-
     def inserts(self, state_set, label, s2):
         for s1 in state_set.elements():
             self.insert(s1, label, s2)
@@ -199,13 +193,13 @@ class FSA:
 
     # mark accessible nodes
     def accessible(self):
-        acc = MutableSet()
+        acc = set()
         for final in self.finals():
-            reverse_acc = MutableSet(final)
+            reverse_acc = set([final])
             self.reverse_accessible(final, reverse_acc)
             acc = acc.union(reverse_acc)
 
-        forward_acc = MutableSet(self.start())
+        forward_acc = set([self.start()])
         self.forward_accessible(self.start(), forward_acc)
 
         acc = acc.intersection(forward_acc)
@@ -306,32 +300,33 @@ class FSA:
 
 def grammar(terminals):
     (S, Star, Plus, Qmk, Paren) = [Nonterminal(s) for s in 'S*+?(']
-    rules = [PCFGProduction(0.2, S, Star),
-             PCFGProduction(0.2, S, Plus),
-             PCFGProduction(0.2, S, Qmk),
-             PCFGProduction(0.2, S, Paren),
-             PCFGProduction(0.1, S, S, S),
-             PCFGProduction(1, Star, S, '*'),
-             PCFGProduction(1, Plus, S, '+'),
-             PCFGProduction(1, Qmk, S, '?'),
-             PCFGProduction(1, Paren, '(', S, ')')]
+    rules = [PCFGProduction(S, [Star], prob=0.2),
+             PCFGProduction(S, [Plus], prob=0.2),
+             PCFGProduction(S, [Qmk], prob=0.2),
+             PCFGProduction(S, [Paren], prob=0.2),
+             PCFGProduction(S, [S, S], prob=0.1),
+             PCFGProduction(Star, [S, '*'], prob=1),
+             PCFGProduction(Plus, [S, '+'], prob=1),
+             PCFGProduction(Qmk, [S, '?'], prob=1),
+             PCFGProduction(Paren, ['(', S, ')'], prob=1)]
 
-    prob = 0.1/len(terminals) # divide remaining pr. mass
+    prob_term = 0.1/len(terminals) # divide remaining pr. mass
     for terminal in terminals:
-        rules.append(PCFGProduction(prob, S, terminal))
+        rules.append(PCFGProduction(S, [terminal], prob=prob_term))
 
     return PCFG(S, rules)
 
-_parser = InsidePCFGParser(grammar('abcde'))
-_tokenizer = CharTokenizer()
+_parser = InsidePCFGParser(grammar('abcde'), LEAF='TEXT')
+_tokenizer = RegexpTokenizer(r'.')
 
 # create NFA from regexp (Thompson's construction)
 # assumes unique start and final states
 
 def re2nfa(fsa, re):
-    re_list = _tokenizer.tokenize(re)
-    treetok = _parser.parse(re_list)
-    if treetok is None: raise ValueError('Bad Regexp')
+    tok = Token(TEXT=re)
+    _tokenizer.tokenize(tok)
+    _parser.parse(tok)
+    if tok['TREE'] is None: raise ValueError('Bad Regexp')
     state = re2nfa_build(fsa, fsa.start(), treetok.type())
     fsa.set_final([state])
 #        fsa.minimize()
