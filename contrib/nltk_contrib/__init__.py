@@ -21,13 +21,16 @@ statements:
 
 @version: 1.2
 @newfield contributor: Contributor, Contributors, short
+@contributor: Robert Berwick
 @contributor: Chen-Fu Chiang
 @contributor: Jinyoung Choi
 @contributor: Trevor Cohn
 @contributor: Nikhil Dinesh
 @contributor: Brent Gray
 @contributor: Yurie Hara
+@contributor: Edward Ivanovic
 @contributor: Christopher Maloof
+@contributor: Rob Speer
 @contributor: Oliver Steele
 @contributor: David Zhang
 """
