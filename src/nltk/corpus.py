@@ -59,6 +59,9 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     contains some non-English words that occur frequently in English
     text.
   
+  - L{chunking}: A collection of 11,000 chunked, tagged sentences from
+    the CoNLL 2000 chunking evaluation.
+  
   - L{ppattatch}: Information about approximately 30,000 instances
     of potentially ambigous prepositional phrase attatchments.  For
     each instance, the corpus specifies the verb and noun that the
@@ -1106,7 +1109,7 @@ chunking = SimpleCorpusReader(
     default_tokenizer=RETokenizer(r'\n\s*?\n', negative=1, unit='p'))
     # ideally use parser.chunk.ConllChunkedTokenizer() on each paragraph:
     # paras = chunking.tokenize('test.txt')
-    # cct = ConllChunkedTokenizer(('NP'))
+    # cct = ConllChunkedTokenizer(['NP'])
     # [Tree('S', *cct.tokenize(para.type())) for para in paras]
 
 ###################################################
