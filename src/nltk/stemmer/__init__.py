@@ -33,12 +33,12 @@ class StemmerI:
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
     
-    @outprop: C{stem}: The token's morphological stem.
+    @outprop: C{STEM}: The token's morphological stem.
     """
     def stem(self, token):
         """
-        Remove morphological affixes from given token's C{text}
-        property, and output the remaining stem to the C{stem}
+        Remove morphological affixes from given token's C{TEXT}
+        property, and output the remaining stem to the C{STEM}
         property.
 
         @param token: The word token that should be stemmed.
@@ -60,7 +60,7 @@ class StemmerI:
     def stem_n(self, token, n=None):
         """
         Find a list of the C{n} most likely stems for the given token,
-        and output it to the C{stems} property.  If the given token
+        and output it to the C{STEMS} property.  If the given token
         has fewer than C{n} possible stems, then find all possible
         stems.  The stems should be sorted in descending order of
         estimated likelihood.
@@ -99,15 +99,15 @@ class AbstractStemmer(StemmerI):
     C{stem} based on C{raw_stem}; and L{stem_n_from_raw}, which can be
     used to implement C{stem_n} based on C{raw_stem_n}.
     
-    @inprop: C{stem}: The token's text content.
-    @outprop: C{stem}: The token's morphological stem.
+    @inprop: C{STEM}: The token's text content.
+    @outprop: C{STEM}: The token's morphological stem.
     """
     def __init__(self, **property_names):
         """
         Create a new stemmer.
         
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -117,15 +117,15 @@ class AbstractStemmer(StemmerI):
         self._property_names = property_names
 
     def raw_stem(self, text):
-        TEXT = self._property_names.get('text', 'text')
-        STEM = self._property_names.get('stem', 'stem')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        STEM = self._property_names.get('STEM', 'STEM')
         token = Token({TEXT:text})
         self.stem(token)
         return token[STEM]
 
     def stem_n(self, token, n=None):
-        STEMS = self._property_names.get('stems', 'stems')
-        STEM = self._property_names.get('stem', 'stem')
+        STEMS = self._property_names.get('STEMS', 'STEMS')
+        STEM = self._property_names.get('STEM', 'STEM')
         if n == 0:
             token[STEMS] = []   # (pathological case)
         else:
@@ -134,20 +134,20 @@ class AbstractStemmer(StemmerI):
         del token[STEM]
 
     def raw_stem_n(self, text, n=None):
-        TEXT = self._property_names.get('text', 'text')
-        STEM = self._property_names.get('stem', 'stem')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        STEM = self._property_names.get('STEM', 'STEM')
         token = Token({TEXT:text})
         self.stem_n(token, n)
         return token[STEM]
 
     def _stem_from_raw(self, token):
-        TEXT = self._property_names.get('text', 'text')
-        STEM = self._property_names.get('stem', 'stem')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        STEM = self._property_names.get('STEM', 'STEM')
         token[STEM] = self.raw_stem(token[TEXT])
 
     def _stem_n_from_raw(self, token):
-        TEXT = self._property_names.get('text', 'text')
-        STEMS = self._property_names.get('stems', 'stems')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        STEMS = self._property_names.get('STEMS', 'STEMS')
         token[STEMS] = self.raw_stem_n(token[TEXT])
 
 class RegexpStemmer(AbstractStemmer):
@@ -156,8 +156,8 @@ class RegexpStemmer(AbstractStemmer):
     affixes.  Any substrings that matches the regular expressions will
     be removed.
     
-    @inprop: C{stem}: The token's text content.
-    @outprop: C{stem}: The token's morphological stem.
+    @inprop: C{STEM}: The token's text content.
+    @outprop: C{STEM}: The token's morphological stem.
     """
     def __init__(self, regexp, **property_names):
         """
@@ -166,8 +166,8 @@ class RegexpStemmer(AbstractStemmer):
         @type regexp: C{string} or C{regexp}
         @param regexp: The regular expression that should be used to
             identify morphological affixes.
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -198,7 +198,7 @@ def _demo_stemmer(stemmer):
     # Print the results.
     print stemmer
     for word in text['subtokens']:
-        print '%20s => %s' % (word['text'], word['stem'])
+        print '%20s => %s' % (word['TEXT'], word['stem'])
     print
         
 def demo():

@@ -107,7 +107,7 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
     """
 
     ## --NLTK--
-    ## Add property_names parameter.
+    ## ADD property_names parameter.
     def __init__(self, **property_names):
         """The main part of the stemming algorithm starts here.
         b is a buffer holding a word to be stemmed. The letters are in b[k0],
@@ -595,8 +595,8 @@ def demo():
 
     # Remove any formatting tokens.
     text = [tok for tok in text['subtokens']
-            if tok['text'] != '.START' and
-            not tok['text'].startswith('======')]
+            if tok['TEXT'] != '.START' and
+            not tok['TEXT'].startswith('======')]
 
     # Create a porter stemmer, and run it over the text.
     stemmer = PorterStemmer()
@@ -607,7 +607,7 @@ def demo():
     results = re.sub(r"(.{,70})\s", r'\1\n', results+' ').rstrip()
 
     # Convert the original to a string, and word wrap it.
-    original = ' '.join([tok['text'] for tok in text])
+    original = ' '.join([tok['TEXT'] for tok in text])
     original = re.sub(r"(.{,70})\s", r'\1\n', original+' ').rstrip()
 
     # Print the results.

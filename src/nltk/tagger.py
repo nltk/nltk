@@ -47,15 +47,15 @@ class TaggedTokenizer(AbstractTokenizer):
     A tokenizer that divides a string of tagged words into subtokens.
     Words should be separated by whitespace, and each word should have
     the form C{I{text}/I{tag}}, where C{I{text}} specifies the word's
-    C{text} property, and C{I{tag}} specifies its C{tag} property.
+    C{TEXT} property, and C{I{tag}} specifies its C{TAG} property.
     Words that do not contain a slash are assigned a C{tag} of C{None}.
     
-    @inprop: C{text}: The input token's text content.
-    @inprop: C{loc}: The input token's location.  I{(optional)}
-    @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{text}: The subtokens' text contents.
-    @outprop: C{tag}: The subtokens' tags.
-    @outprop: C{loc}: The subtokens' locations.
+    @inprop: C{TEXT}: The input token's text content.
+    @inprop: C{LOC}: The input token's location.  I{(optional)}
+    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{TEXT}: The subtokens' text contents.
+    @outprop: C{TAG}: The subtokens' tags.
+    @outprop: C{LOC}: The subtokens' locations.
     """
     def __init__(self, addlocs=True, **property_names):
         self._wstokenizer = WSTokenizer(addlocs=addlocs, **property_names)
@@ -63,9 +63,9 @@ class TaggedTokenizer(AbstractTokenizer):
     
     def tokenize(self, token):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
-        TAG = self._property_names.get('tag', 'tag')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TAG = self._property_names.get('TAG', 'TAG')
 
         # First, use WSTokenizer to divide on whitespace.
         self._wstokenizer.tokenize(token)
@@ -96,9 +96,9 @@ class TaggerI:
         """
         Assign a tag to each subtoken in C{token['subtokens']}, and
         write those tags to the subtokens' C{tag} properties.
-        @inprop: C{subtokens}: The list of subtokens to tag.
-        @inprop: C{text}: The text content of the subtokens.
-        @outprop: C{tag}: The property where each subtoken's
+        @inprop: C{SUBTOKENS}: The list of subtokens to tag.
+        @inprop: C{TEXT}: The text content of the subtokens.
+        @outprop: C{TAG}: The property where each subtoken's
             tag should be stored.
         """
         raise NotImplementedError()
@@ -134,8 +134,8 @@ class AbstractTagger(TaggerI):
         """
         Construct a new tagger.
         
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -145,9 +145,9 @@ class AbstractTagger(TaggerI):
         self._property_names = property_names
 
     def raw_tag(self, words):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
-        TAG = self._property_names.get('tag', 'tag')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TAG = self._property_names.get('TAG', 'TAG')
         
         subtoks = [Token({TEXT:w}) for w in words]
         token = Token({SUBTOKENS:subtoks})
@@ -155,9 +155,9 @@ class AbstractTagger(TaggerI):
         return [token[TAG] for token in token[SUBTOKENS]]
 
     def _tag_from_raw(self, token):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
-        TAG = self._property_names.get('tag', 'tag')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TAG = self._property_names.get('TAG', 'TAG')
         
         words = [subtok[TEXT] for sutbok in token[SUBTOKENS]]
         tags = self.raw_tag(words)
@@ -177,7 +177,7 @@ class SequentialTagger(TaggerI):
     Each C{SequentialTagger} subclass must define the C{tag_subtoken}
     method, which returns the tag that should be assigned to a given
     subtoken.  The C{tag} method calls C{tag_subtoken} once for each
-    token, and assigns the returned value to the token's C{tag}
+    token, and assigns the returned value to the token's C{TAG}
     property.
     """
     def __init__(self, reverse=False, **property_names):
@@ -186,8 +186,8 @@ class SequentialTagger(TaggerI):
         
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -210,8 +210,8 @@ class SequentialTagger(TaggerI):
 
     def tag(self, token):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TAG = self._property_names.get('tag', 'tag')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TAG = self._property_names.get('TAG', 'TAG')
 
         # Tag each token, in sequential order.
         subtokens = token[SUBTOKENS]
@@ -231,8 +231,8 @@ class DefaultTagger(SequentialTagger):
         @param tag: The tag that should be assigned to every token.
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -261,8 +261,8 @@ class RegexpTagger(SequentialTagger):
             assigned the tag C{None}.
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -270,7 +270,7 @@ class RegexpTagger(SequentialTagger):
         self._regexps = regexps
 
     def tag_subtoken(self, subtokens, i):
-        TEXT = self._property_names.get('text', 'text')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
         text = subtokens[i][TEXT]
         for regexp, tag in self._regexps:
             if re.match(regexp, text):
@@ -298,8 +298,8 @@ class UnigramTagger(SequentialTagger):
         
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from last to first).
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -319,9 +319,9 @@ class UnigramTagger(SequentialTagger):
         @type self._property_names: C{dict}
         """
         assert chktype(1, tagged_token, Token)
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
-        TAG = self._property_names.get('tag', 'tag')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TAG = self._property_names.get('TAG', 'TAG')
 
         # Record each text/tag pair in the frequency distribution.
         for subtok in tagged_token[SUBTOKENS]:
@@ -330,7 +330,7 @@ class UnigramTagger(SequentialTagger):
             self._freqdist[word].inc(tag)
 
     def tag_subtoken(self, subtokens, i):
-        TEXT = self._property_names.get('text', 'text')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
         
         # Find the most likely tag, given the subtoken's text.
         context = subtokens[i][TEXT]
@@ -377,8 +377,8 @@ class NthOrderTagger(SequentialTagger):
             distribution.  If the tagger saw fewer than
             C{cutoff} examples of a given context in training,
             then it will return a tag of C{None} for that context.
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -411,9 +411,9 @@ class NthOrderTagger(SequentialTagger):
         @type self._property_names: C{dict}
         """
         assert chktype(1, tagged_token, Token)
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
-        TAG = self._property_names.get('tag', 'tag')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TAG = self._property_names.get('TAG', 'TAG')
         left, right = self._left, self._right
         
         # Extract the list of subtokens & list of tags.
@@ -431,8 +431,8 @@ class NthOrderTagger(SequentialTagger):
             self._freqdist[context].inc(tag)
 
     def tag_subtoken(self, subtokens, i):
-        TEXT = self._property_names.get('text', 'text')
-        TAG = self._property_names.get('tag', 'tag')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        TAG = self._property_names.get('TAG', 'TAG')
         left, right = self._left, self._right
         if i+left<0: return None
 
@@ -487,8 +487,8 @@ class BackoffTagger(SequentialTagger):
                consulted in the order in which they appear in the
                list.
         @type subtaggers: list of SequentialTagger
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """

@@ -512,7 +512,7 @@ class SimpleCorpusReader(CorpusReaderI):
         self._copyright = None
         self._copyright_file = copyright_file
         self._default_tokenizer = default_tokenizer
-        self._props = property_names
+        self._property_names = property_names
 
         # Postpone actual initialization until the corpus is accessed;
         # this gives the user a chance to call set_basedir(), and
@@ -608,8 +608,8 @@ class SimpleCorpusReader(CorpusReaderI):
         else: return tuple(self._groups.get(group)) or ()
 
     def read(self, item):
-        TEXT = self._props.get('text', 'text')
-        LOC = self._props.get('loc', 'loc')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
         
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
@@ -617,8 +617,8 @@ class SimpleCorpusReader(CorpusReaderI):
         return Token({TEXT: text, LOC: loc})
 
     def xread(self, item):
-        TEXT = self._props.get('text', 'text')
-        LOC = self._props.get('loc', 'loc')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
         
         source = '%s/%s' % (self._name, item)
         textiter = self.open(item) # <- read-mode files act as iterators.
@@ -786,7 +786,7 @@ class RogetCorpusReader(CorpusReaderI):
     def xread(self, item):
         # Read the token & wrap its text in an iterator
         item_token = self.read(item)
-        item_token['text'] = iter([item_token['text']])
+        item_token['TEXT'] = iter([item_token['TEXT']])
         return item_token
 
     def tokenize(self, item, tokenizer=None):
@@ -974,7 +974,7 @@ class TreebankCorpusReader(CorpusReaderI):
     def xread(self, item):
         # Read the token & wrap its text in an iterator
         item_token = self.read(item)
-        item_token['text'] = iter([item_token['text']])
+        item_token['TEXT'] = iter([item_token['TEXT']])
         return item_token
 
     def tokenize(self, item, tokenizer=None):

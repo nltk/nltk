@@ -399,15 +399,15 @@ class TreeSegmentWidget(CanvasWidget):
 def _tree_to_treeseg(canvas, tree, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs,
-                     property_names={'leaf':'text'}):
-    NODE = property_names.get('node', 'node')
-    LEAF = property_names.get('leaf', 'leaf')
+                     property_names={'leaf':'TEXT'}):
+    NODE = property_names.get('NODE', 'NODE')
+    LEAF = property_names.get('LEAF', 'LEAF')
     if isinstance(tree, TreeToken):
         node = make_node(canvas, tree[NODE], **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf, 
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
-                    for child in tree['children']]
+                    for child in tree['CHILDREN']]
         return TreeSegmentWidget(canvas, node, subtrees, **tree_attribs)
     elif isinstance(tree, Token):
         return make_leaf(canvas, tree[LEAF], **leaf_attribs)
@@ -492,13 +492,13 @@ class TreeWidget(CanvasWidget):
         branch downwards).
         
       - C{shapeable}: whether the subtrees can be independantly
-        dragged by the user.  This property simply sets the
-        C{draggable} property on all of the C{TreeWidget}'s tree
+        dragged by the user.  THIS property simply sets the
+        C{DRAGGABLE} property on all of the C{TreeWidget}'s tree
         segments. 
       - C{draggable}: whether the widget can be dragged by the user.
     """
     def __init__(self, canvas, tree, make_node=TextWidget,
-                 make_leaf=TextWidget, property_names={'leaf':'text'},
+                 make_leaf=TextWidget, property_names={'leaf':'TEXT'},
                  **attribs):
         # Node & leaf canvas widget constructors
         self._make_node = make_node
@@ -604,8 +604,8 @@ class TreeWidget(CanvasWidget):
         for node in self._nodes: node.bind_drag(callback, button)
             
     def _make_collapsed_trees(self, canvas, tree, key):
-        NODE = self._property_names.get('node', 'node')
-        LEAF = self._property_names.get('leaf', 'leaf')
+        NODE = self._property_names.get('NODE', 'NODE')
+        LEAF = self._property_names.get('LEAF', 'LEAF')
         
         if not isinstance(tree, TreeToken): return
         make_node = self._make_node
@@ -627,13 +627,13 @@ class TreeWidget(CanvasWidget):
         treeseg.hide()
 
         # Build trees for children.
-        for i in range(len(tree['children'])):
-            child = tree['children'][i]
+        for i in range(len(tree['CHILDREN'])):
+            child = tree['CHILDREN'][i]
             self._make_collapsed_trees(canvas, child, key + (i,))
 
     def _make_expanded_tree(self, canvas, tree, key):
-        NODE = self._property_names.get('node', 'node')
-        LEAF = self._property_names.get('leaf', 'leaf')
+        NODE = self._property_names.get('NODE', 'NODE')
+        LEAF = self._property_names.get('LEAF', 'LEAF')
         
         make_node = self._make_node
         make_leaf = self._make_leaf
@@ -641,7 +641,7 @@ class TreeWidget(CanvasWidget):
         if isinstance(tree, TreeToken):
             node = make_node(canvas, tree[NODE], **self._nodeattribs)
             self._nodes.append(node)
-            children = tree['children']
+            children = tree['CHILDREN']
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
                         for i in range(len(children))]
             treeseg = TreeSegmentWidget(canvas, node, subtrees,

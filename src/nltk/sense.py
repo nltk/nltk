@@ -84,8 +84,8 @@ class SemcorTokenizer(AbstractTokenizer):
         AbstractTokenizer.__init__(self, **property_names)
 
     def tokenize(self, token):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
         
         text = token[TEXT]
         
@@ -107,8 +107,8 @@ class SemcorTokenizer(AbstractTokenizer):
         token[SUBTOKENS] = output
 
     def _map_paragraph(self, node, source):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        LOC = self._property_names.get('loc', 'loc')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        LOC = self._property_names.get('LOC', 'LOC')
         pnum = int(node.getAttribute('pnum'))
         ploc = ParaIndexLocation(pnum, source)
         sentences = node.getElementsByTagName('s')
@@ -125,8 +125,8 @@ class SemcorTokenizer(AbstractTokenizer):
             return out
 
     def _map_sentence(self, node, source):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        LOC = self._property_names.get('loc', 'loc')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        LOC = self._property_names.get('LOC', 'LOC')
         snum = int(node.getAttribute('snum'))
         sloc = SentIndexLocation(snum, source)
         out = []
@@ -268,20 +268,20 @@ class DOMSensevalTokenizer(AbstractTokenizer):
         return tokens, head
     
     def tokenize(self, token):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         self.xtokenize(token)
         token[SUBTOKENS] = list(token[SUBTOKENS])
 
     def xtokenize(self, token):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
         token[SUBTOKENS] = self._tokengen(text)
 
     def _tokengen(self, text):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         # inherit docs
         fixed = _fixXML(text)
         doc = xml.dom.minidom.parseString(fixed)
@@ -362,8 +362,8 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
         AbstractTokenizer.__init__(self, **property_names)
 
     def tokenize(self, token):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         fixed =  _fixXML(token[TEXT])
@@ -372,8 +372,8 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
         token[SUBTOKENS] = self._instances
 
     def xtokenize(self, token, buffer_size=1024):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        TEXT = self._property_names.get('text', 'text')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
@@ -414,7 +414,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
             self._head = self._wnum - 1
         
     def endElement(self, tag):
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         if tag == 'wf':
             text = self._data.strip()
             pos = self._pos

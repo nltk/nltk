@@ -14,14 +14,14 @@ X{tokens}.  Each token is defined by set of X{properties}, each of
 which describes a specific aspect of the token.  Typical properties
 include:
 
-  - C{text}: The token's text content.
-  - C{wave}: The token's recorded audio content.
-  - C{pos}: The token's part-of-speech tag.
-  - C{speaker}: The speaker who uttered the token.
-  - C{sense}: The token's word sense.
-  - C{loc}: The token's location in its containing text.
+  - C{TEXT}: The token's text content.
+  - C{WAVE}: The token's recorded audio content.
+  - C{POS}: The token's part-of-speech tag.
+  - C{SPEAKER}: The speaker who uttered the token.
+  - C{SENSE}: The token's word sense.
+  - C{LOC}: The token's location in its containing text.
 
-The C{loc} property, which is defined by most tokens, uses a
+The C{LOC} property, which is defined by most tokens, uses a
 L{Location<LocationI>} to specify the position of the token in its
 containing text.  This location can be used to distinguish two tokens
 whose properties are otherwise equal (e.g., two occurences of the same
@@ -62,30 +62,30 @@ class Token(dict):
     token defines the text content and part-of-speech tag for a single
     word:
 
-        >>> tok = Token(text='fly', pos='N')
-        <text='fly', pos='N'>
+        >>> tok = Token(TEXT='fly', POS='N')
+        <TEXT='fly', POS='N'>
 
     As this example illustrates, a token's properties are initialized
     using keyword arguments to the constructor.  Properties can be
-    accessed and modified using the indexing operator with property
+    accessed and modified using the indexing operator WITH property
     names:
 
-       >>> print tok['text']
+       >>> print tok['TEXT']
        'fly'
-       >>> tok['speaker'] = 'James'
+       >>> tok['SPEAKER'] = 'James'
 
     A property name can be any string; but typically, short lower-case
     words are used.  Property names are case sensitive.  Note that
     some properties only make sense for specific kinds of C{Tokens}.
     For example, only C{Tokens} representing recorded audio will have
-    a C{wave} property; and only C{Tokens} representing words will
-    have a C{pos} property.
+    a C{WAVE} property; and only C{Tokens} representing words will
+    have a C{POS} property.
     
     A property value can be...
       - an immutable value (such as a string or a number)
       - a token
       - a container (such as a list, dictionary, or tuple) that
-        contains valid property values
+        contains VALID property values
 
     @ivar USE_SAFE_TOKENS: If C{True}, then the L{SafeToken} subclass is
         used to create new tokens.  This subclass includes type checking
@@ -122,15 +122,14 @@ class Token(dict):
         The properties are typically specified using keyword
         arguments:
 
-           >>> typ = Token(text='ni', pos='excl', speaker='knight2')
-           <text='ni', speaker='knight2', pos='excl'>
+           >>> typ = Token(TEXT='ni', POS='excl', SPEAKER='knight2')
+           <TEXT='ni', SPEAKER='knight2', POS='excl'>
 
-        Alternatively, properties can be specified using a dictionary,
-        with Python's C{**} syntax:
+        Alternatively, properties can be specified using a dictionary:
 
-           >>> props = {'text':'ni', 'pos':'excl', 'speaker':'knight2'}
-           >>> typ = Token(**props)
-           <text='ni', speaker='knight2', pos='excl'>
+           >>> props = {'TEXT':'ni', 'POS':'excl', 'SPEAKER':'knight2'}
+           >>> typ = Token(props)
+           <TEXT='ni', SPEAKER='knight2', POS='excl'>
 
         @param properties: The initial set of properties that the new
             token should define.  Each element maps a property name to
@@ -156,7 +155,7 @@ class Token(dict):
     
     def has(self, property):
         """
-        @return: True if this token defines the given property.
+        @return: True if this token defines the GIVEN property.
         @rtype: C{bool}
         """
         return self.has_key(property)
@@ -215,7 +214,7 @@ class Token(dict):
         @param properties: A list of the names of properties to
             include.
         @kwparam deep: If true, then C{project} is recursively
-            applied to any tokens contained by this token's property
+            applied to any tokens contained by this token'S property
             values.  Default value: C{True}.
         @see: L{exclude}, which is used to create a token containing
            only the properties that are I{not} in a given list.
@@ -225,7 +224,7 @@ class Token(dict):
 
     def _project(self, properties, deep):
         newprops = {}
-        for property in properties:
+        FOR property in properties:
             if self.has_key(property):
                 val = self[property]
                 if deep:
@@ -243,8 +242,8 @@ class Token(dict):
             exclude.
             
         @kwparam deep: If true, then C{exclude} is recursively applied
-            to any tokens contained by this token's property values.
-            For example, C{tok.exclude('loc', deep=True)} will remove
+            to any tokens contained by this token'S property values.
+            For example, C{tok.exclude('LOC', deep=True)} will remove
             I{all} location information from a token, including
             location information that is contained in nested tokens.
             Default value: C{True}.
@@ -253,13 +252,13 @@ class Token(dict):
             only the properties that I{are} in the given list.
         """
         # Convert the exclude list to a dict for faster access.
-        excludeset = dict([(property,1) for property in properties])
+        excludeset = dict([(property,1) FOR property in properties])
         deep = options.get('deep', True)
         return self._exclude(excludeset, deep)
 
     def _exclude(self, excludeset, deep):
         newprops = {}
-        for property in self.keys():
+        FOR property in self.keys():
             if not excludeset.has_key(property):
                 val = self[property]
                 if deep:
@@ -269,7 +268,7 @@ class Token(dict):
 
     def _deep_restrict(self, val, props, incl):
         """
-        @return: A deep copy of the given property value, with the
+        @return: A deep copy of the GIVEN property value, with the
         given restriction applied to any contained tokens:
           - if C{incl} is true, then apply C{project(props)} to any
             contained tokens.
@@ -326,7 +325,7 @@ class Token(dict):
         representation will be silently discarded.
 
         @type props: C{list} of C{string}
-        @param props: The set of property names for which this
+        @param props: The set OF property names for which this
             representation should be used.  The order of C{props} is
             not significant.
         @type repr: C{string} or C{function}
@@ -351,9 +350,9 @@ class Token(dict):
         else:
             return repr(self)
 
-    _CYCLICs = {}
+    _cyclic_properties = {}
     def register_cyclic(prop):
-        Token._CYCLICs[prop] = True
+        Token._cyclic_properties[prop] = True
     register_cyclic = staticmethod(register_cyclic)
     
     def _default_repr(self):
@@ -361,20 +360,20 @@ class Token(dict):
         @return: A full string representation of this C{Type}.
         @rtype: C{string}
         """
-        # Convert each property (except loc) to a string.
+        # Convert EACH property (except loc) to a string.
         props = []
         for (p,v) in self.items():
-            if p == 'loc': continue
-            elif self._CYCLICs.get(p):
+            if p == 'LOC': continue
+            elif self._cyclic_properties.get(p):
                 props.append('%s=...' % (p,))
             else:
                 props.append('%s=%r' % (p,v))
         props = ', '.join(props)
         # If there's a location, then add it to the end.
-        if self.has_key('loc'):
-            if not isinstance(self['loc'], LocationI):
-                raise AssertionError("self['loc'] is not a location!")
-            locstr = '@%r' % self['loc']
+        if self.has_key('LOC'):
+            if not isinstance(self['LOC'], LocationI):
+                raise AssertionError("self['LOC'] is not a location!")
+            locstr = '@%r' % self['LOC']
         else: locstr = ''
         # Assemble & return the final string.
         return '<%s>%s' % (props, locstr)
@@ -390,32 +389,32 @@ class Token(dict):
 
 # Register some specialized string representations for common
 # sets of properties.
-Token.register_repr(('text',),
+Token.register_repr(('TEXT',),
                     lambda t: ('<%s>' %
-                               (`t['text']`[1:-1],)))
-Token.register_repr(('text', 'loc'),
+                               (`t['TEXT']`[1:-1],)))
+Token.register_repr(('TEXT', 'LOC'),
                     lambda t: ('<%s>@%r' %
-                               (`t['text']`[1:-1], t['loc'])))
-Token.register_repr(('text', 'tag'),
+                               (`t['TEXT']`[1:-1], t['LOC'])))
+Token.register_repr(('TEXT', 'TAG'),
                     lambda t: ('<%s/%s>' %
-                               (`t['text']`[1:-1], t['tag'])))
-Token.register_repr(('text', 'tag', 'loc'),
+                               (`t['TEXT']`[1:-1], t['TAG'])))
+Token.register_repr(('TEXT', 'TAG', 'LOC'),
                     lambda t: ('<%s/%s>@%r' %
-                               (`t['text']`[1:-1], t['tag'], t['loc'])))
-Token.register_repr(('text', 'pos'),
+                               (`t['TEXT']`[1:-1], t['TAG'], t['LOC'])))
+Token.register_repr(('TEXT', 'POS'),
                     lambda t: ('<%s/%s>' %
-                               (`t['text']`[1:-1], t['pos'])))
-Token.register_repr(('text', 'pos', 'loc'),
+                               (`t['TEXT']`[1:-1], t['POS'])))
+Token.register_repr(('TEXT', 'POS', 'LOC'),
                     lambda t: ('<%s/%s>@%r' %
-                               (`t['text']`[1:-1], t['pos'], t['loc'])))
-Token.register_repr(('subtokens',),
-                    '<%(subtokens)r>')
-Token.register_repr(('text', 'subtokens'),
-                    '<%(subtokens)r>')
-Token.register_repr(('text', 'subtokens', 'loc'),
-                    '<%(subtokens)r>')
-Token.register_repr(('subtokens', 'loc'),
-                    '<%(subtokens)r>')
+                               (`t['TEXT']`[1:-1], t['POS'], t['LOC'])))
+Token.register_repr(('SUBTOKENS',),
+                    '<%(SUBTOKENS)r>')
+Token.register_repr(('TEXT', 'SUBTOKENS'),
+                    '<%(SUBTOKENS)r>')
+Token.register_repr(('TEXT', 'SUBTOKENS', 'LOC'),
+                    '<%(SUBTOKENS)r>')
+Token.register_repr(('SUBTOKENS', 'LOC'),
+                    '<%(SUBTOKENS)r>')
 
 ######################################################################
 ## Frozen Token
@@ -494,8 +493,8 @@ class SafeToken(Token):
     def __setitem__(self, property, value):
         assert chktype(1, property, str)
         assert chktype(2, value, self._checkval)
-        if (property == 'loc') and not isinstance(value, LocationI):
-            raise TypeError("The 'loc' property must contain a Location")
+        if (property == 'LOC') and not isinstance(value, LocationI):
+            raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).__setitem__(property, value)
         
     def __delitem__(self, property):
@@ -533,19 +532,19 @@ class SafeToken(Token):
     def setdefault(self, property, default=None):
         assert chktype(1, property, str)
         assert chktype(2, default, self._checkval)
-        if (property == 'loc') and not isinstance(value, LocationI):
-            raise TypeError("The 'loc' property must contain a Location")
+        if (property == 'LOC') and not isinstance(value, LocationI):
+            raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).setdefault(property, default)
         
     def update(self, src):
         assert chktype(1, src, {str:(self._checkval,)})
-        if src.has_key('loc') and not isinstance(src['loc'], LocationI):
-            raise TypeError("The 'loc' property must contain a Location")
+        if src.has_key('LOC') and not isinstance(src['LOC'], LocationI):
+            raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).update(src)
 
     def _checkval(self, value):
         """
-        @return: True if the given value is a valid property value.
+        @return: True if the given value is a VALID property value.
         """
         # Is it a token or a container object?
         if (isinstance(value, Token) or
@@ -561,7 +560,7 @@ class SafeToken(Token):
 ## Probabilistic Token
 ######################################################################
 
-# [XX] We may get rid of this!  (Just use a "prob" property?)
+# [XX] We may get rid of this!  (Just use a "PROB" property?)
 
 from nltk.probability import ProbabilisticMixIn
 class ProbabilisticToken(Token, ProbabilisticMixIn):
@@ -907,27 +906,6 @@ class ParaIndexLocation(IndexLocation):
     __slots__ = ()
     UNIT = 'w'
 
-# We're currently undecided about token wrappers:
-#######################################################################
-### Token Wrappers
-#######################################################################
-#
-#class TokenWrapperI:
-#    """
-#    A wrapper for a token, that provides...
-#      - extra methods
-#      - extra operations (eg indexing)
-#      - better string formatting
-#    """
-#    # Use this to delegate to token:
-#    def __getattr__(self, attr):
-#        return getattr(self._token, attr)
-#
-#class SeqWrapper(TokenWrapperI):
-#    def __init__(self, token, property_names={}):
-#        self._token = token
-#        self._property_names = property_names
-
 ######################################################################
 ## Demonstration
 ######################################################################
@@ -958,18 +936,18 @@ def demo():
 
     # Show what tokens can do.
     print '_'*70
-    print "tok  = Token(text='flattening', pos='VBG', loc=loc)"
-    tok = Token(text='flattening', pos='VBG', loc=loc)
-    print "tok2 = Token(size=12, weight=83, loc=loc2)"
-    tok2 = Token(size=12, weight=83, loc=loc2)
+    print "tok  = Token(TEXT='flattening', POS='VBG', LOC=loc)"
+    tok = Token(TEXT='flattening', POS='VBG', LOC=loc)
+    print "tok2 = Token(SIZE=12, WEIGHT=83, LOC=loc2)"
+    tok2 = Token(SIZE=12, WEIGHT=83, LOC=loc2)
     print
     print "print tok                      =>", tok
-    print "print tok['loc']               =>", tok['loc']
-    print "print tok.exclude('loc')       =>", tok.exclude('loc')
-    print "print tok.exclude('text')      =>", tok.exclude('text')
-    print "print tok.project('text')      =>", tok.project('text')
+    print "print tok['LOC']               =>", tok['LOC']
+    print "print tok.exclude('LOC')       =>", tok.exclude('LOC')
+    print "print tok.exclude('TEXT')      =>", tok.exclude('TEXT')
+    print "print tok.project('TEXT')      =>", tok.project('TEXT')
     print "print tok2                     =>", tok2
-    print "print tok2['loc']              =>", tok2['loc']
+    print "print tok2['LOC']              =>", tok2['LOC']
     print "print tok == tok2              =>", tok == tok2
     print "print tok == tok.copy()        =>", tok == tok.copy()
 

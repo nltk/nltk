@@ -325,7 +325,7 @@ class LeafEdge(EdgeI):
     a word in the sentence.  A leaf edge consists of:
 
       - An X{index}, indicating the position of the word.
-      - A X{leaf}, specifying the word's leaf property.
+      - A X{leaf}, specifying the word's LEAF property.
 
     A leaf edge's left-hand side is its leaf value, and its right hand
     side is C{()}.  Its span is C{[index, index+1]}, and its dot
@@ -335,7 +335,7 @@ class LeafEdge(EdgeI):
         """
         Construct a new C{LeafEdge}.
 
-        @param leaf: The new edge's leaf value, specifying the leaf
+        @param leaf: The new edge's leaf value, specifying the LEAF
             property of the word that is recorded by this edge.
         @param index: The new edge's index, specifying the position of
             the word that is recorded by this edge.
@@ -392,9 +392,9 @@ class Chart:
     A X{child pointer list} is a list of the edges that license an
     edge's right-hand side.
 
-    @inprop: C{subtokens}: The list of subtokens to be parsed.
-    @inprop: C{leaf}: The string content of the subtokens.
-    @outprop: C{node}: The subtrees' constituent label.
+    @inprop: C{SUBTOKENS}: The list of subtokens to be parsed.
+    @inprop: C{LEAF}: The string content of the subtokens.
+    @outprop: C{NODE}: The subtrees' constituent label.
     
     @ivar _token: The sentence that the chart covers.
     @ivar _num_leaves: The number of subtokens in L{_token}.
@@ -414,12 +414,12 @@ class Chart:
         @type token: L{Token}
         @ivar token: The sentence that this chart will be used to
             parse.
-        @param property_names: A dictionary that can be used to override
+        @PARAM property_names: A dictionary that can be used to override
             the default property names used by the chart.  Each entry
             maps from a default property name to a new property name.
         """
         assert chktype(1, token, Token)
-        SUBTOKENS = property_names.get('subtokens', 'subtokens')
+        SUBTOKENS = property_names.get('SUBTOKENS', 'SUBTOKENS')
 
         # Record the sentence token and the sentence length.
         self._token = token
@@ -454,8 +454,8 @@ class Chart:
         @return: The leaf value of the word at the given index.
         @rtype: C{string}
         """
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        LEAF = self._property_names.get('leaf', 'leaf')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        LEAF = self._property_names.get('LEAF', 'LEAF')
         return self._token[SUBTOKENS][index][LEAF]
 
     def leaves(self):
@@ -464,8 +464,8 @@ class Chart:
             chart's sentence.
         @rtype: C{list} of C{string}
         """
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        LEAF = self._property_names.get('leaf', 'leaf')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        LEAF = self._property_names.get('LEAF', 'LEAF')
         return [tok[LEAF] for tok in self._token[SUBTOKENS]]
 
     #////////////////////////////////////////////////////////////
@@ -642,8 +642,8 @@ class Chart:
         # If we've seen this edge before, then reuse our old answer.
         if memo.has_key(edge): return memo[edge]
 
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        NODE = self._property_names.get('node', 'node')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        NODE = self._property_names.get('NODE', 'NODE')
         trees = []
 
         # Until we're done computing the trees for edge, set
@@ -671,15 +671,15 @@ class Chart:
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
                 trees.append(TreeToken({NODE:lhs,
-                                          'children':children}))
+                                          'CHILDREN':children}))
 
         # If the edge is incomplete, then extend it with "partial
         # trees":
         if edge.is_incomplete():
-            unexpanded = [TreeToken({NODE:elt, 'children':()})
+            unexpanded = [TreeToken({NODE:elt, 'CHILDREN':()})
                           for elt in edge.rhs()[edge.dot():]]
             for tree in trees:
-                tree['children'].extend(unexpanded)
+                tree['CHILDREN'].extend(unexpanded)
 
         # Update the memoization dictionary.
         memo[edge] = trees
@@ -751,8 +751,8 @@ class Chart:
             chart's leaves.  This string can be used as a header
             for calls to L{pp_edge}.
         """
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
-        LEAF = self._property_names.get('leaf', 'leaf')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        LEAF = self._property_names.get('LEAF', 'LEAF')
         
         if self._token and width>1:
             header = '|.'
@@ -1247,8 +1247,8 @@ class EarleyChartParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -1258,7 +1258,7 @@ class EarleyChartParser(AbstractParser):
         AbstractParser.__init__(self, **property_names)
 
     def parse_n(self, token):
-        TREES = self._property_names.get('trees', 'trees')
+        TREES = self._property_names.get('TREES', 'TREES')
         chart = Chart(token, **self._property_names)
         grammar = self._grammar
 
@@ -1335,8 +1335,8 @@ class ChartParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -1346,7 +1346,7 @@ class ChartParser(AbstractParser):
         AbstractParser.__init__(self, **property_names)
 
     def parse_n(self, token):
-        TREES = self._property_names.get('trees', 'trees')
+        TREES = self._property_names.get('TREES', 'TREES')
         chart = Chart(token, **self._property_names)
         grammar = self._grammar
 
@@ -1521,7 +1521,7 @@ class SteppingChartParser(ChartParser):
     #////////////////////////////////////////////////////////////
 
     def parse_n(self, token):
-        TREES = self._property_names.get('trees', 'trees')
+        TREES = self._property_names.get('TREES', 'TREES')
 
         # Initialize ourselves.
         self.initialize(token)
@@ -1599,7 +1599,7 @@ def demo():
 
     # Run the top-down parser, if requested.
     if choice in ('1', '5'):
-        cp = ChartParser(grammar, TD_STRATEGY, leaf='text', trace=2)
+        cp = ChartParser(grammar, TD_STRATEGY, leaf='TEXT', trace=2)
         t = time.time()
         cp.parse_n(sent)
         times['top down'] = time.time()-t
@@ -1608,7 +1608,7 @@ def demo():
 
     # Run the bottom-up parser, if requested.
     if choice in ('2', '5'):
-        cp = ChartParser(grammar, BU_STRATEGY, leaf='text', trace=2)
+        cp = ChartParser(grammar, BU_STRATEGY, leaf='TEXT', trace=2)
         t = time.time()
         cp.parse_n(sent)
         times['bottom up'] = time.time()-t
@@ -1618,7 +1618,7 @@ def demo():
     # Run the earley, if requested.
     if choice in ('3', '5'):
         cp = EarleyChartParser(earley_grammar, earley_lexicon,
-                               leaf='text', trace=1)
+                               leaf='TEXT', trace=1)
         t = time.time()
         cp.parse_n(sent)
         times['Earley parser'] = time.time()-t
@@ -1628,7 +1628,7 @@ def demo():
     # Run the stepping parser, if requested.
     if choice in ('4', '5'):
         t = time.time()
-        cp = SteppingChartParser(grammar, leaf='text', trace=1)
+        cp = SteppingChartParser(grammar, leaf='TEXT', trace=1)
         cp.initialize(sent)
         for i in range(4):
             print '*** SWITCH TO TOP DOWN'

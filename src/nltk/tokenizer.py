@@ -48,20 +48,20 @@ class TokenizerI:
     @group Accessors: unit
     @sort: tokenize, xtokenize, raw_tokenize, raw_xtokenize
     
-    @inprop: C{loc}: The input token's location.  I{(optional)}
-    @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{loc}: The subtokens' locations.
+    @inprop: C{LOC}: The input token's location.  I{(optional)}
+    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{LOC}: The subtokens' locations.
     """
     def tokenize(self, token):
         """
-        Divide the given token's C{text} property into a list of
-        subtokens, and output that list to the C{subtokens} property.
-        Each subtoken defines a C{text} property, containing its
-        text; and a C{loc} property, containing its location.  The
+        Divide the given token's C{TEXT} property into a list of
+        subtokens, and output that list to the C{SUBTOKENS} property.
+        Each subtoken defines a C{TEXT} property, containing its
+        text; and a C{LOC} property, containing its location.  The
         locations are properly ordered; i.e., for any i and j such
         that i<j::
 
-           subtokens[i]['loc'].end() <= subtokens[j]['loc'].start()
+           subtokens[i]['LOC'].end() <= subtokens[j]['LOC'].start()
         
         @type token: L{Token}
         @param token: The token whose text should be tokenized.
@@ -70,19 +70,19 @@ class TokenizerI:
 
     def xtokenize(self, token):
         """
-        Divide the given token's C{text} property into a list of
+        Divide the given token's C{TEXT} property into a list of
         subtokens, and output an iterator over that list to the
-        C{subtokens} property.  Each subtoken defines a C{text}
-        property, containing its text; and a C{'loc'} property,
+        C{SUBTOKENS} property.  Each subtoken defines a C{TEXT}
+        property, containing its text; and a C{LOC} property,
         containing its location.  The locations are properly ordered;
         i.e., for any i and j such that i<j::
 
-           subtokens[i]['loc'].end() <= subtokens[j]['loc'].start()
+           subtokens[i]['LOC'].end() <= subtokens[j]['LOC'].start()
         
-        The token's C{text} property may contain an iterator over
+        The token's C{TEXT} property may contain an iterator over
         strings, in which case the text content is taken to be the
         concatenation of the substrings returned by the iterator
-        (i.e., C{''.join(token['text'])}).
+        (i.e., C{''.join(token['TEXT'])}).
 
         @type token: L{Token}
         @param token: The token whose text should be tokenized.
@@ -130,11 +130,11 @@ class AbstractTokenizer(TokenizerI):
     L{_xtokenize_from_raw}, which can be used to implement
     X{xtokenize} based on X{raw_xtokenize}.
 
-    @inprop: C{text}: The input token's text content.
-    @inprop: C{loc}: The input token's location.  I{(optional)}
-    @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{text}: The subtokens' text content.
-    @outprop: C{loc}: The subtokens' locations.
+    @inprop: C{TEXT}: The input token's text content.
+    @inprop: C{LOC}: The input token's location.  I{(optional)}
+    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{TEXT}: The subtokens' text content.
+    @outprop: C{LOC}: The subtokens' locations.
     """
     def __init__(self, addlocs=True, **property_names):
         """
@@ -143,10 +143,10 @@ class AbstractTokenizer(TokenizerI):
         @type addlocs: C{boolean}
         @param addlocs: If true, then add a location to each generated
             subtoken, based on the input token's location.  If false,
-            or if the input token does not define the C{loc} property,
+            or if the input token does not define the C{LOC} property,
             then do not add locations.
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -157,8 +157,8 @@ class AbstractTokenizer(TokenizerI):
 
     def xtokenize(self, token):
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('text', 'text')
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             token[TEXT] = ''.join(text)
@@ -167,16 +167,16 @@ class AbstractTokenizer(TokenizerI):
 
     def raw_tokenize(self, text):
         assert chktype(1, text, str)
-        TEXT = self._property_names.get('text', 'text')
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         token = Token({TEXT:text})
         self.tokenize(token)
         return [subtok[TEXT] for subtok in token[SUBTOKENS]]
 
     def raw_xtokenize(self, text):
         assert chktype(1, text, str)
-        TEXT = self._property_names.get('text', 'text')
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         token = Token({TEXT:text})
         self.xtokenize(token)
         for subtok in token[SUBTOKENS]:
@@ -197,9 +197,9 @@ class AbstractTokenizer(TokenizerI):
         implement the C{tokenize} method based on C{raw_tokenize}.
         """
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('text', 'text')
-        LOC = self._property_names.get('loc', 'loc')
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
 
         # Use raw_tokenize to get a list of subtoken texts.
         text = token[TEXT]
@@ -224,7 +224,7 @@ class AbstractTokenizer(TokenizerI):
             subtoks = [Token({TEXT:text})
                        for text in subtok_texts]
 
-        # Write subtoks to the subtokens property.
+        # Write subtoks to the SUBTOKENS property.
         token[SUBTOKENS] = subtoks
 
     def _xtokenize_from_raw(self, token):
@@ -242,7 +242,7 @@ class AbstractTokenizer(TokenizerI):
         implement the C{xtokenize} method based on C{raw_xtokenize}.
         """
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         iter = self._xtokenize_from_raw_helper(token, **self._property_names)
         token[SUBTOKENS] = iter
         
@@ -251,8 +251,8 @@ class AbstractTokenizer(TokenizerI):
         A helper function for L{xtokenize_from_raw}.
         """
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('text', 'text')
-        LOC = self._property_names.get('loc', 'loc')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
 
         # Get the token's text.  If it's an iterator, then collapse
         # it into a single string.
@@ -285,11 +285,11 @@ class WSTokenizer(AbstractTokenizer):
     whitespace-delimited substring in the input text.  Leading and
     trailing whitespace are ignored.
     
-    @inprop: C{text}: The input token's text content.
-    @inprop: C{loc}: The input token's location.  I{(optional)}
-    @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{text}: The subtokens' text content.
-    @outprop: C{loc}: The subtokens' locations.
+    @inprop: C{TEXT}: The input token's text content.
+    @inprop: C{LOC}: The input token's location.  I{(optional)}
+    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{TEXT}: The subtokens' text content.
+    @outprop: C{LOC}: The subtokens' locations.
     """ 
     #////////////////////////////////////////////////////////////
     # Basic tokenization
@@ -312,12 +312,12 @@ class WSTokenizer(AbstractTokenizer):
 
     def xtokenize(self, token):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         token[SUBTOKENS] = self._subtoken_generator(token)
 
     def _subtoken_generator(self, token):
-        TEXT = self._property_names.get('text', 'text')
-        LOC = self._property_names.get('loc', 'loc')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
 
         text_iter = token[TEXT]
         if self._addlocs and token.has(LOC):
@@ -384,11 +384,11 @@ class LineTokenizer(AbstractTokenizer):
     each newline-delimited substring in the input text.  Blank lines
     are ignored.
     
-    @inprop: C{text}: The input token's text content.
-    @inprop: C{loc}: The input token's location.  I{(optional)}
-    @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{text}: The subtokens' text content.
-    @outprop: C{loc}: The subtokens' locations.
+    @inprop: C{TEXT}: The input token's text content.
+    @inprop: C{LOC}: The input token's location.  I{(optional)}
+    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{TEXT}: The subtokens' text content.
+    @outprop: C{LOC}: The subtokens' locations.
     """
     def raw_tokenize(self, text):
         assert chktype(1, text, str)
@@ -454,11 +454,11 @@ class RegexpTokenizer(AbstractTokenizer):
     Each word is encoded as a C{Token} whose type is a C{string}.
     Location indices start at zero, and have a unit of C{'word'}.
     
-    @inprop: C{text}: The input token's text content.
-    @inprop: C{loc}: The input token's location.  I{(optional)}
-    @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{text}: The subtokens' text content.
-    @outprop: C{loc}: The subtokens' locations.
+    @inprop: C{TEXT}: The input token's text content.
+    @inprop: C{LOC}: The input token's location.  I{(optional)}
+    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{TEXT}: The subtokens' text content.
+    @outprop: C{LOC}: The subtokens' locations.
     """
     def __init__(self, regexp, negative=False, addlocs=True,
                  **property_names):
@@ -481,10 +481,10 @@ class RegexpTokenizer(AbstractTokenizer):
         @type addlocs: C{boolean}
         @param addlocs: If true, then add a location to each generated
             subtoken, based on the input token's location.  If false,
-            or if the input token does not define the C{loc} property,
+            or if the input token does not define the C{LOC} property,
             then do not add locations.
-        @type property_names: C{dict}
-        @param property_names: A dictionary that can be used to override
+        @TYPE property_names: C{dict}
+        @PARAM property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -519,9 +519,9 @@ class RegexpTokenizer(AbstractTokenizer):
 
     def tokenize(self, token):
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('text', 'text')
-        LOC = self._property_names.get('loc', 'loc')
-        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
 
         # If we're not adding locations, then just delegate to
         # raw_tokenize.
@@ -546,7 +546,7 @@ class RegexpTokenizer(AbstractTokenizer):
                 subtoks.append(Token({TEXT:w, LOC:loc}))
             pos += len(w)
             
-        # Write subtoks to the subtokens property.
+        # Write subtoks to the SUBTOKENS property.
         token[SUBTOKENS] = subtoks
 
     def raw_tokenize(self, text):

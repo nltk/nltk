@@ -20,15 +20,15 @@ properties.  Different tree token implementations associate different
 meanings to these properties.  Three tree token implementations are
 currently available:
 
-  - L{TreeToken}s use the C{children} property to record the
+  - L{TreeToken}s use the C{CHILDREN} property to record the
     hierarchical content of a tree.
 
-  - L{ParentedTreeToken}s use the C{children} property to record
-    the hierarchical content of a tree; and the C{parent} property
+  - L{ParentedTreeToken}s use the C{CHILDREN} property to record
+    the hierarchical content of a tree; and the C{PARENT} property
     to record the tree's unique parent.
 
-  - L{MultiParentedTreeToken}s use the C{children} property to
-    record the hierarchical content of a tree; and the C{parents}
+  - L{MultiParentedTreeToken}s use the C{CHILDREN} property to
+    record the hierarchical content of a tree; and the C{PARENTS}
     property to record a list of the tree's parents.
 
 For most purposes, the C{TreeToken} implementation is sufficient.  But
@@ -49,10 +49,10 @@ from nltk.chktype import classeq as _classeq
 import types
 
 # Register some information about properties used by tree tokens.
-Token.register_cyclic('parent')
-Token.register_cyclic('parents')
-Token.register_repr(['text','parent'], '<%(text)r>')
-Token.register_repr(['text','parents'], '<%(text)r>')
+Token.register_cyclic('PARENT')
+Token.register_cyclic('PARENTS')
+Token.register_repr(['TEXT','PARENT'], '<%(text)r>')
+Token.register_repr(['TEXT','PARENTS'], '<%(text)r>')
 
 ######################################################################
 ## Tree Token
@@ -66,7 +66,7 @@ class TreeToken(Token):
     leaves and subtrees.  For example, each constituent in a syntax
     tree is represented by a single C{TreeToken}.
 
-    The C{children} property is used to record a C{TreeToken}'s
+    The C{CHILDREN} property is used to record a C{TreeToken}'s
     hierarchical contents.  These contents are encoded as a C{list} of
     leaves and subtrees, where a X{leaf} is a basic (non-tree) token;
     and a X{subtree} is a nested C{TreeToken}.
@@ -74,7 +74,7 @@ class TreeToken(Token):
     Any other properties that a C{TreeToken} defines are known as
     X{node properties}, and are used to add information about
     individual hierarchical groupings.  For eample, syntax trees use a
-    node property to label syntactic constituents with phrase tags,
+    NODE property to label syntactic constituents with phrase tags,
     such as \"NP\" and\"VP\".
 
     Several C{TreeToken} methods use X{tree positions} to specify
@@ -97,15 +97,15 @@ class TreeToken(Token):
 
         @param properties: The initial set of properties that the new
             token should define.  Each element maps a property name to
-            its value.  C{properties} must include the C{children}
+            its value.  C{properties} must include the C{CHILDREN}
             property, which should contain a list of C{Token}s and
             C{TreeToken}s.
         """
         super(TreeToken, self).__init__(**properties)
-        if not self.has('children'):
-            raise ValueError('TreeTokens must define the children property')
-        if type(self['children']) is not list:
-            self['children'] = list(self['children'])
+        if not self.has('CHILDREN'):
+            raise ValueError('TreeTokens must define the CHILDREN property')
+        if type(self['CHILDREN']) is not list:
+            self['CHILDREN'] = list(self['CHILDREN'])
 
     #////////////////////////////////////////////////////////////
     # Basic tree operations
@@ -119,7 +119,7 @@ class TreeToken(Token):
         @rtype: C{list} of L{Token}
         """
         leaves = []
-        for child in self['children']:
+        for child in self['CHILDREN']:
             if isinstance(child, TreeToken):
                 leaves.extend(child.leaves())
             else:
@@ -136,7 +136,7 @@ class TreeToken(Token):
         @rtype: C{int}
         """
         max_child_height = 0
-        for child in self['children']:
+        for child in self['CHILDREN']:
             if isinstance(child, TreeToken):
                 max_child_height = max(max_child_height, child.height())
             else:
@@ -160,11 +160,11 @@ class TreeToken(Token):
         
         # If it's an index, then return it directly.
         if type(treepos) is int:
-            return self['children'][treepos]
+            return self['CHILDREN'][treepos]
 
         # If it's a path, then follow it.
         return_value = self
-        for i in treepos: return_value = return_value['children'][i]
+        for i in treepos: return_value = return_value['CHILDREN'][i]
         return return_value
 
     def replace_child(self, treepos, new_value):
@@ -182,7 +182,7 @@ class TreeToken(Token):
 
         # If it's an index, then set it directly.
         if type(treepos) is int:
-            self['children'][treepos] = new_value
+            self['CHILDREN'][treepos] = new_value
 
         # If it's the empty path, then fail (can't modify self!)
         if len(treepos) == 0:
@@ -192,8 +192,8 @@ class TreeToken(Token):
         # If it's a path, then follow it to the penultimate subtree;
         # and then replace that subtree's child.
         parent = self
-        for i in treepos[:-1]: parent = parent['children'][i]
-        parent['children'][treepos[-1]] = new_value
+        for i in treepos[:-1]: parent = parent['CHILDREN'][i]
+        parent['CHILDREN'][treepos[-1]] = new_value
 
     def remove_child(self, treepos):
         """
@@ -208,7 +208,7 @@ class TreeToken(Token):
 
         # If it's an index, then remove it directly.
         if type(treepos) is int:
-            del self['children'][treepos]
+            del self['CHILDREN'][treepos]
 
         # If it's the empty path, then fail (can't modify self!)
         if len(treepos) == 0:
@@ -218,8 +218,8 @@ class TreeToken(Token):
         # If it's a path, then follow it to the penultimate subtree;
         # and then remove that subtree's child.
         parent = self
-        for i in treepos[:-1]: parent = parent['children'][i]
-        del parent['children'][treepos[-1]]
+        for i in treepos[:-1]: parent = parent['CHILDREN'][i]
+        del parent['CHILDREN'][treepos[-1]]
 
     #////////////////////////////////////////////////////////////
     # Convert
@@ -240,28 +240,28 @@ class TreeToken(Token):
         @type token: L{Token}
         @param token: The token that should be converted to a tree
             token.  C{token} can be any token that defines the
-            C{children} property.  Note that C{token} may be a tree
+            C{CHILDREN} property.  Note that C{token} may be a tree
             token (to convert between different tree token
             implementations), or a non-tree token.
         @return: The new C{TreeToken}.
         @raise ValueError: If C{token} does not define the
-            C{children} property.
+            C{CHILDREN} property.
         """
         # Make a copy of the token's properties (in a dictionary)
         props = dict(token)
 
         # Remove the parent pointer, if it's defined.
-        if props.has_key('parent'): del props['parent']
-        if props.has_key('parents'): del props['parents']
+        if props.has_key('PARENT'): del props['PARENT']
+        if props.has_key('PARENTS'): del props['PARENTS']
 
         # Convert subtrees & remove parent pointers from leaves.
-        props['children'] = []
-        for child in token['children']:
-            if child.has('children'):
-                props['children'].append(cls.convert(child))
+        props['CHILDREN'] = []
+        for child in token['CHILDREN']:
+            if child.has('CHILDREN'):
+                props['CHILDREN'].append(cls.convert(child))
             else:
-                child = child.exclude('parent', 'parents', deep=False)
-                props['children'].append(child)
+                child = child.exclude('PARENT', 'PARENTS', deep=False)
+                props['CHILDREN'].append(child)
 
         # Create a new tree token with the given properties.
         return cls(**props)
@@ -279,7 +279,7 @@ class TreeToken(Token):
         draw_trees(self)
 
     def __repr__(self):
-        childstr = ' '.join([repr(c) for c in self['children']])
+        childstr = ' '.join([repr(c) for c in self['CHILDREN']])
         return '(%s: %s)' % (self._noderepr(), childstr)
 
     def __str__(self):
@@ -290,8 +290,8 @@ class TreeToken(Token):
         if len(self) == 2 and self.has('node'): return self['node']
 
         # Remove children & parent pointers.
-        return repr(Token(**self).exclude('children', 'parent',
-                                          'parents', deep=False))
+        return repr(Token(**self).exclude('CHILDREN', 'PARENT',
+                                          'PARENTS', deep=False))
 
     def pp(self, margin=70, indent=0):
         """
@@ -313,7 +313,7 @@ class TreeToken(Token):
             return rep
         
         str = '('+self._noderepr()+':'
-        for child in self['children']:
+        for child in self['CHILDREN']:
             if isinstance(child, TreeToken):
                 str += '\n'+' '*(indent+2)+child.pp(margin, indent+2)
             else:
@@ -346,7 +346,7 @@ class TreeToken(Token):
         if first:
             str = r'\Tree '
         str += '[.' + self._noderepr() + ' ' 
-        for child in self['children']:
+        for child in self['CHILDREN']:
             if isinstance(child, TreeToken):
                 str += child.latex_qtree(False) + ' '
             else:
@@ -390,7 +390,7 @@ class TreeToken(Token):
             elif s[pos] == ')':
                 pos = SPACE.match(s, pos+1).end()
                 if len(stack) == 1: return stack[0], pos
-                stack[-2]['children'].append(stack[-1])
+                stack[-2]['CHILDREN'].append(stack[-1])
                 stack.pop()
 
             # Leaf token.
@@ -400,7 +400,7 @@ class TreeToken(Token):
                 if addlocs:
                     leaf['loc'] = CharSpanLocation(pos, match.end(),
                                                    source)
-                stack[-1]['children'].append(leaf)
+                stack[-1]['CHILDREN'].append(leaf)
                 pos = match.end()
 
         raise ValueError, 'mismatched parens'
@@ -413,8 +413,8 @@ class FrozenTreeToken(TreeToken, FrozenToken):
     "An immutable (and hashable) version of the L{TreeToken} class."
     def __init__(self, **properties):
         FrozenToken.__init__(self, **properties)
-        if not self.has('children'):
-            raise ValueError('TreeTokens must define the children property')
+        if not self.has('CHILDREN'):
+            raise ValueError('TreeTokens must define the CHILDREN property')
 
 class TreebankTokenizer(TokenizerI):
     def __init__(self, addlocs=True, property_names={}):
@@ -422,14 +422,14 @@ class TreebankTokenizer(TokenizerI):
         self._props = property_names
 
     def _subtoken_generator(self, token):
-        TEXT = self._props.get('text', 'text')
+        TEXT = self._props.get('TEXT', 'TEXT')
         LOC = self._props.get('loc', 'loc')
 
         # [XX] currently these are ignored:
         SUBTOKENS_LOC = self._props.get('subtokens.loc', 'loc')
         TREE = self._props.get('subtokens.tree', 'tree')
         NODE = self._props.get('subtokens.tree.node', 'tree')
-        LEAF = self._props.get('subtokens.tree.leaf.text', 'text')
+        LEAF = self._props.get('subtokens.tree.leaf.text', 'TEXT')
 
         # Extract the token's text.
         text = token[TEXT]
@@ -573,11 +573,11 @@ class _ParentedChildList(_AbstractChildList):
         #if not isinstance(child, TreeToken): return
         
         # Sanity check: child's parent should be self._parent
-        assert child.get('parent') == self._parent
+        assert child.get('PARENT') == self._parent
         
         # Delete child's parent pointer.
-        dict.__setitem__(child, 'parent', None)
-        #child['parent'] = None
+        dict.__setitem__(child, 'PARENT', None)
+        #child['PARENT'] = None
 
     def _setparent(self, child):
         ## Ignore leaves.
@@ -590,12 +590,12 @@ class _ParentedChildList(_AbstractChildList):
                              'into a parented tree')
 
         # If child already has a parent, complain.
-        if child.get('parent') is not None:
+        if child.get('PARENT') is not None:
             raise ValueError, 'redefining parent for %r' % child
 
         # Set child's parent pointer.
-        dict.__setitem__(child, 'parent', self._parent)
-        #child['parent'] = self._parent
+        dict.__setitem__(child, 'PARENT', self._parent)
+        #child['PARENT'] = self._parent
         
 class _MultiParentedChildList(_AbstractChildList):
     """
@@ -608,10 +608,10 @@ class _MultiParentedChildList(_AbstractChildList):
         #if not isinstance(child, TreeToken): return
         
         # Sanity check: one of child's parents should be self._parent
-        assert self._parent in child['parents']
+        assert self._parent in child['PARENTS']
         
         ## Delete one copy of child's parent pointer to self._parent
-        #child['parents'].remove(self._parent)
+        #child['PARENTS'].remove(self._parent)
 
     def _setparent(self, child):
         # Ignore leaves.
@@ -624,13 +624,13 @@ class _MultiParentedChildList(_AbstractChildList):
                              'into a multi-parented tree')
 
         # Add self._parent as a parent pointer.
-        child.setdefault('parents',[]).append(self._parent)
+        child.setdefault('PARENTS',[]).append(self._parent)
     
 class ParentedTreeToken(TreeToken):
     """
-    A specialized version of C{TreeToken} that uses the C{parent}
+    A specialized version of C{TreeToken} that uses the C{PARENT}
     property to point a unique parent.  For C{ParentedTreeTokens} with
-    no parent, the C{parent} property's value is C{None}.
+    no parent, the C{PARENT} property's value is C{None}.
 
     Each C{ParentedTreeToken} may have at most one parent.  In
     particular, subtrees may not be shared.  Any attempt to reuse a
@@ -638,7 +638,7 @@ class ParentedTreeToken(TreeToken):
     as multiple children of the same parent) will cause a
     C{ValueError} exception to be raised.
     
-    The C{parent} property is maintained automatically.  Any attempt
+    The C{PARENT} property is maintained automatically.  Any attempt
     to directly modify or delete it will result in a C{ValueError}
     exception.
 
@@ -647,41 +647,41 @@ class ParentedTreeToken(TreeToken):
     implementations may result in incorrect parent pointers and in
     C{ValueError} exceptions.
     """
-    # The parent pointer is stored in the 'parent' property
+    # The parent pointer is stored in the 'PARENT' property
     def __init__(self, **properties):
-        dict.__setitem__(self, 'parent', None)
-        dict.__setitem__(self, 'children', []) # Placeholder
+        dict.__setitem__(self, 'PARENT', None)
+        dict.__setitem__(self, 'CHILDREN', []) # Placeholder
         super(ParentedTreeToken, self).__init__(**properties)
-        dict.__setitem__(self, 'children', 
-                         _ParentedChildList(self, properties['children']))
+        dict.__setitem__(self, 'CHILDREN', 
+                         _ParentedChildList(self, properties['CHILDREN']))
         
     #////////////////////////////////////////////////////////////
     # Preserve the "parent" and "children" properties.
     #////////////////////////////////////////////////////////////
     def __setitem__(self, property, value):
-        if property in ('parent', 'children'):
-            raise ValueError('%r property may not be modified by hand' %
+        if property in ('PARENT', 'CHILDREN'):
+            raise ValueError('%R property may not be modified by hand' %
                              property)
         super(ParentedTreeToken, self).__setitem__(property, value)
 
     def __delitem__(self, property):
-        if property in ('parent', 'children'):
-            raise ValueError('%r property may not be deleted' % property)
+        if property in ('PARENT', 'CHILDREN'):
+            raise ValueError('%R property may not be deleted' % property)
         super(ParentedTreeToken, self).__delitem__(property)
 
     def copy(self):
-        if self['parent'] is not None:
+        if self['PARENT'] is not None:
             raise ValueError('Only root trees may be copied.')
 
     def clear(self):
-        p,c = self['parent'], self['children']
+        p,c = self['PARENT'], self['CHILDREN']
         super(ParentedTreeToken, self).clear()
-        dict.__setitem__(self, 'parent', p)
-        dict.__setitem__(self, 'children', c)
+        dict.__setitem__(self, 'PARENT', p)
+        dict.__setitem__(self, 'CHILDREN', c)
 
     def pop(self, property, default=None):
-        if property in ('parent', 'children'):
-            raise ValueError('%r property may not be deleted' % property)
+        if property in ('PARENT', 'CHILDREN'):
+            raise ValueError('%R property may not be deleted' % property)
         return super(ParentedTreeToken, self).pop(property, default)
 
     def popitem(self):
@@ -689,33 +689,33 @@ class ParentedTreeToken(TreeToken):
             # [XX] Should we raise ValueError or KeyError here??
             raise ValueError('"children" and "parent" properties may '+
                              'not be deleted')
-        p,c = self['parent'], self['children']
-        del self['parent'], self['children']
+        p,c = self['PARENT'], self['CHILDREN']
+        del self['PARENT'], self['CHILDREN']
         item = super(ParentedTreeToken, self).popitem()
-        dict.__setitem__(self, 'parent', p)
-        dict.__setitem__(self, 'children', c)
+        dict.__setitem__(self, 'PARENT', p)
+        dict.__setitem__(self, 'CHILDREN', c)
         return item
 
     def update(self, src):
-        p,c = self['parent'], self['children']
+        p,c = self['PARENT'], self['CHILDREN']
         super(ParentedTreeToken, self).update(src)
-        dict.__setitem__(self, 'parent', p)
-        dict.__setitem__(self, 'children', c)
+        dict.__setitem__(self, 'PARENT', p)
+        dict.__setitem__(self, 'CHILDREN', c)
 
 class MultiParentedTreeToken(TreeToken):
     """
-    A specialized version of C{TreeToken} that uses the C{parents}
+    A specialized version of C{TreeToken} that uses the C{PARENTS}
     property to store a list of pointers to its parents.  For
-    C{ParentedTreeTokens} with no parent, the C{parents} property's
+    C{ParentedTreeTokens} with no parent, the C{PARENTS} property's
     value is C{[]}.
 
     Each C{MultiParentedTreeToken} may have zero or more parents.  In
     particular, subtrees may be shared.  If a single
     C{MultiParentedTreeToken} is used as multiple children of the same
     parent, then that parent will appear multiple times in its
-    C{parents} property.
+    C{PARENTS} property.
     
-    The C{parents} property is maintained automatically, and should
+    The C{PARENTS} property is maintained automatically, and should
     never be directly modified.  
 
     C{MultiParentedTreeTokens} should never be used in the same tree
@@ -724,39 +724,39 @@ class MultiParentedTreeToken(TreeToken):
     C{ValueError} exceptions.
     """
     def __init__(self, **properties):
-        dict.__setitem__(self, 'parents', [])
-        dict.__setitem__(self, 'children', []) # place-holder.
+        dict.__setitem__(self, 'PARENTS', [])
+        dict.__setitem__(self, 'CHILDREN', []) # place-holder.
         super(MultiParentedTreeToken, self).__init__(**properties)
-        dict.__setitem__(self, 'children', 
-                   _MultiParentedChildList(self, properties['children']))
+        dict.__setitem__(self, 'CHILDREN', 
+                   _MultiParentedChildList(self, properties['CHILDREN']))
         
     #////////////////////////////////////////////////////////////
     # Preserve the "parents" and "children" properties.
     #////////////////////////////////////////////////////////////
     def __setitem__(self, property, value):
-        if property in ('parents', 'children'):
-            raise ValueError('%r property may not be modified by hand' %
+        if property in ('PARENTS', 'CHILDREN'):
+            raise ValueError('%R property may not be modified by hand' %
                              property)
         super(MultiParentedTreeToken, self).__setitem__(property, value)
 
     def __delitem__(self, property):
-        if property in ('parents', 'children'):
-            raise ValueError('%r property may not be deleted' % property)
+        if property in ('PARENTS', 'CHILDREN'):
+            raise ValueError('%R property may not be deleted' % property)
         super(MultiParentedTreeToken, self).__delitem__(property)
 
     def copy(self):
-        if self['parents'] is not []:
+        if self['PARENTS'] is not []:
             raise ValueError('Only root trees may be copied.')
 
     def clear(self):
-        p,c = self['parents'], self['children']
+        p,c = self['PARENTS'], self['CHILDREN']
         super(MultiParentedTreeToken, self).clear()
-        dict.__setitem__(self, 'parents', p)
-        dict.__setitem__(self, 'children', c)
+        dict.__setitem__(self, 'PARENTS', p)
+        dict.__setitem__(self, 'CHILDREN', c)
 
     def pop(self, property, default=None):
-        if property in ('parents', 'children'):
-            raise ValueError('%r property may not be deleted' % property)
+        if property in ('PARENTS', 'CHILDREN'):
+            raise ValueError('%R property may not be deleted' % property)
         return super(MultiParentedTreeToken, self).pop(property, default)
 
     def popitem(self):
@@ -764,18 +764,18 @@ class MultiParentedTreeToken(TreeToken):
             # [XX] Should we raise ValueError or KeyError here??
             raise ValueError('"children" and "parent" properties may '+
                              'not be deleted')
-        p,c = self['parents'], self['children']
-        del self['parents'], self['children']
+        p,c = self['PARENTS'], self['CHILDREN']
+        del self['PARENTS'], self['CHILDREN']
         item = super(MultiParentedTreeToken, self).popitem()
-        dict.__setitem__(self, 'parents', p)
-        dict.__setitem__(self, 'children', c)
+        dict.__setitem__(self, 'PARENTS', p)
+        dict.__setitem__(self, 'CHILDREN', c)
         return item
 
     def update(self, src):
-        p,c = self['parents'], self['children']
+        p,c = self['PARENTS'], self['CHILDREN']
         super(MultiParentedTreeToken, self).update(src)
-        dict.__setitem__(self, 'parents', p)
-        dict.__setitem__(self, 'children', c)
+        dict.__setitem__(self, 'PARENTS', p)
+        dict.__setitem__(self, 'CHILDREN', c)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
@@ -802,8 +802,8 @@ def demo():
 
     # Demonstrate basic tree accessors.
     d("print tree['node']                    # tree's constituant type")
-    d("print tree['children'][0]             # tree's first child")
-    d("print tree['children'][1]             # tree's second child")
+    d("print tree['CHILDREN'][0]             # tree's first child")
+    d("print tree['CHILDREN'][1]             # tree's second child")
     d("print tree.height()")
     d("print tree.leaves()")
     d("print tree.get_child([1])")
@@ -813,7 +813,7 @@ def demo():
 
     # Demonstrate tree modification.
     d("the_cat = tree.get_child(0)")
-    d("the_cat['children'].insert(1, TreeToken.parse('(JJ big)'))")
+    d("the_cat['CHILDREN'].insert(1, TreeToken.parse('(JJ big)'))")
     d("print tree")
     d("tree.replace_child([1,1,1], TreeToken.parse('(NN cake)'))")
     d("print tree")
@@ -823,11 +823,11 @@ def demo():
     d("tree = ParentedTreeToken.convert(tree)   # Add parent pointers")
     d("cake = tree.get_child([1,1,0])")
     d("print cake")
-    d("# The parent property holds a parent pointer:")
-    d("print cake['parent']")
-    d("print cake['parent']['parent']['parent']")
+    d("# The PARENT property holds a parent pointer:")
+    d("print cake['PARENT']")
+    d("print cake['PARENT']['PARENT']['PARENT']")
     d("# A root tree's parent is None:")
-    d("print tree['parent']")
+    d("print tree['PARENT']")
     d.end()
 
 if __name__ == '__main__':
