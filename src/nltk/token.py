@@ -24,7 +24,7 @@ include:
 The C{loc} property, which is defined by most tokens, uses a
 L{Location<LocationI>} to specify the position of the token in its
 containing text.  This location can be used to distinguish two tokens
-whose properties are otherwise equal (e.g., two occurances of the same
+whose properties are otherwise equal (e.g., two occurences of the same
 word in a text).
   
 @group Tokens: Token, FrozenToken, SafeToken, ProbabilisticToken
@@ -546,7 +546,7 @@ class SafeToken(Token):
 from nltk.probability import ProbabilisticMixIn
 class ProbabilisticToken(Token, ProbabilisticMixIn):
     """
-    A single occurance of a unit of text that has a probability
+    A single occurence of a unit of text that has a probability
     associated with it.  This probability can represent a variety of
     different likelihoods, such as:
 
@@ -580,7 +580,7 @@ class LocationI(object):
 
     Locations are often used as unique identifiers for C{Tokens}.  In
     particular, locations can be used to distinguish two tokens whose
-    properties are otherwise equal (e.g., two occurances of the same
+    properties are otherwise equal (e.g., two occurences of the same
     word in a text).
 
     Locations are immutable and hashable.
@@ -596,7 +596,7 @@ class LocationI(object):
         """
         raise NotImplementedError
 
-    # Locations must be comperable:
+    # Locations must be comparable:
     def __cmp__(self):
         raise NotImplementedError()
 
@@ -629,7 +629,7 @@ class SpanLocation(LocationI):
     MIN = _Infinity(-1)
     MAX = _Infinity(+1)
     
-    def __init__(self, start, end, source):
+    def __init__(self, start, end, source=None):
         """
         Create a new location that specifies the text beginning at
         C{start} and ending just before C{end}.
@@ -784,7 +784,9 @@ class SpanLocation(LocationI):
     def __str__(self):
         if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
         else: unit = ''
-        return '[%s:%s]%s@%r' % (self._start, self._end, unit, self._source)
+        if self._source is None: source = ''
+        else: source = repr(self._source)
+        return '[%s:%s]%s@%r' % (self._start, self._end, unit, source)
 
 class CharSpanLocation(SpanLocation):
     """
