@@ -778,8 +778,8 @@ def demo():
     C{TreeToken} from the L{treebank<nltk.corpus.treebank>} corpus,
     and shows the results of calling several of their methods.
     """
-    from nltk import _DemoEvalLoop
-    d = _DemoEvalLoop()
+    from nltk.util import DemoInterpreter
+    d = DemoInterpreter()
     d.title('Tree Token Demo')
     d.silent("from nltk.tree import *")
     
