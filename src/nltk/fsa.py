@@ -12,7 +12,7 @@ FSA class - deliberately simple so that the operations are easily understood.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
-from nltk.srparser import *
+from nltk.parser import ShiftReduceParser
 from nltk.token import CharTokenizer
 from nltk.set import *
 from nltk.cfg import *
@@ -334,7 +334,7 @@ def grammar(terminals):
 
     return CFG(S, rules)
 
-_parser = SRParser(grammar('abcde'))
+_parser = ShiftReduceParser(grammar('abcde'))
 _tokenizer = CharTokenizer()
 
 def re2nfa(fsa, re):
