@@ -111,20 +111,6 @@ class TaggerI:
         """
         raise NotImplementedError()
 
-    def accuracy(self, gold_standard):
-        """
-        Score the accuracy of the tagger against the gold standard.
-        Strip the tags from the gold standard text, retag it using
-        the tagger, then check the level of agreement between the
-        two versions.  Return a score between zero and one.
-
-        @type gold_standard: C{list} of C{Token}
-        @param gold_standard: The list of tagged tokens to score
-          the tagger on.
-        @rtype: C{float}
-        """
-        raise NotImplementedError()
-
     # [XX] add tag_n -- but encoded how??
     # [XX] add raw_tag_n
 
@@ -228,23 +214,6 @@ class SequentialTagger(TaggerI):
         for i, subtoken in enumerate(subtokens):
             tag = self.tag_subtoken(subtokens, i)
             subtoken[TAG] = tag
-
-    def accuracy(self, gold_standard):
-        assert chktype(1, gold_standard, (Token,), [Token])
-        correct = total = 0
-        for gold_doc in gold_standard:
-            # Remove tags to create the test document
-            test_doc = gold_doc.exclude('TAG')
-
-            # Now tag the test document
-            self.tag(test_doc)
-
-            # Evaluate performance vs the gold documents.
-            for (t,g) in zip(test_doc['SUBTOKENS'], gold_doc['SUBTOKENS']):
-                total += 1
-                if t==g: correct += 1
-
-        return 1.0 * correct / total
 
 class DefaultTagger(SequentialTagger):
     """
@@ -549,12 +518,43 @@ class BackoffTagger(SequentialTagger):
     def __repr__(self):
         return '<BackoffTagger: %s>' % self._subtaggers
     
+from nltk.eval import accuracy
+def tagger_accuracy(tagger, gold_standard):
+    """
+    Score the accuracy of the tagger against the gold standard.
+    Strip the tags from the gold standard text, retag it using
+    the tagger, then compute the accuracy score.
+
+    @type tagger: C{Tagger}
+    @param tagger: The tagger being evaluated.
+    @type gold_standard: C{list} of C{Token}
+    @param gold_standard: The list of tagged tokens to score
+      the tagger on; each must have the 'SUBTOKENS' attribute.
+    @rtype: C{float}
+    """
+
+    # NB: replace tagger._property_names with tagger.property_names()?
+
+    assert chktype(1, tagger, TaggerI)
+    assert chktype(2, gold_standard, (Token,), [Token])
+    TAG = tagger._property_names.get('TAG', 'TAG')
+    SUBTOKENS = tagger._property_names.get('SUBTOKENS', 'SUBTOKENS')
+
+    gold_toks = []
+    test_toks = []
+    for gold_doc in gold_standard:
+        test_doc = gold_doc.exclude(TAG)
+        tagger.tag(test_doc)
+        gold_toks += gold_doc[SUBTOKENS]
+        test_toks += test_doc[SUBTOKENS]
+    return accuracy(gold_toks, test_toks)
+
 ##//////////////////////////////////////////////////////
 ##  Demonstration
 ##//////////////////////////////////////////////////////
 
 def _demo_tagger(gold_documents, tagger):
-    acc = tagger.accuracy(gold_documents)
+    acc = tagger_accuracy(tagger, gold_documents)
     print 'Accuracy = %4.1f%%' % (100.0 * acc)
 
 def demo(num_files=20):
