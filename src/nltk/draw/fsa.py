@@ -10,14 +10,35 @@ Draw a finite state automoton
 
 import Tkinter, random, math, nltk.fsa
 
+# What's the radius of a node?
+NODE_RADIUS = 8
+
 # How much extra space should we add around the FSA, to make it
 # viewable.  If this were zero, then all nodes at the edges would be
 # only half-visible.
-VIEWBORDER = 70
+VIEWBORDER = 50 + NODE_RADIUS
 
 # How much extra scroll-space should we provide, to let the user move
-# nodes around?  This is in addition to the view border. 
-SCROLLBORDER = 50
+# nodes around?  This also gives a little extra room, in case some of
+# the edges curve way out away from the nodes.  This is in addition to
+# the view border.
+SCROLLBORDER = 20
+
+# What's the spacing between nodes, for the level-based layout?
+XSPACING = NODE_RADIUS * 5 + 50
+YSPACING = NODE_RADIUS * 5 + 50
+
+# Should nodes labels be ABOVE or CENTERED?
+NODE_LABEL_POSITION = 'CENTERED'
+DEFAULT_NODE_TEXTCOLOR = 'blue4'
+DEFAULT_NODECOLOR = 'black'
+DEFAULT_EDGE_TEXTCOLOR = 'blue4'
+DEFAULT_EDGECOLOR = 'black'
+
+# What algorithm should we use to arrange nodes into layers?  Current
+# options are dfs and bfs.  I find dfs easier to read, but it can get
+# long-and-narrow; bfs will tend to give shallower trees.
+DEFAULT_ARRANGE = 'bfs'
 
 class CanvasNode:
     def __init__(self, x, y, label, canvas):
@@ -28,17 +49,26 @@ class CanvasNode:
         self._incoming = []
         self._outgoing = []
         self._tags = None
-        self._nodecolor = self._textcolor = 'black'
+        self._nodecolor = DEFAULT_NODECOLOR
+        self._textcolor = DEFAULT_NODE_TEXTCOLOR
 
     def draw(self):
         if self._tags is not None: return
         
         # Draw the node
         (x, y) = (self._x, self._y)
-        tag1 = self._canvas.create_oval(x-5, y-5, x+5, y+5, fill=self._nodecolor)
-        tag2 = self._canvas.create_text(x, y-5, text=self._label, anchor='s',
-                                        font=('helvetica', 10, 'bold'),
-                                        fill=self._textcolor)
+        tag1 = self._canvas.create_oval(x-NODE_RADIUS, y-NODE_RADIUS,
+                                        x+NODE_RADIUS, y+NODE_RADIUS, fill=self._nodecolor)
+
+        # Draw the label.
+        if NODE_LABEL_POSITION == 'CENTERED':
+            tag2 = self._canvas.create_text(x, y, text=self._label, anchor='c',
+                                            font=('helvetica', 10, 'bold'),
+                                            fill=self._textcolor)
+        else:
+            tag2 = self._canvas.create_text(x, y-NODE_RADIUS, text=self._label, anchor='s',
+                                            font=('helvetica', 10, 'bold'),
+                                            fill=self._textcolor)
         self._tags = [tag1, tag2]
 
         # Set up a movement callback
@@ -49,7 +79,7 @@ class CanvasNode:
         if self._tags is None: return
         self._canvas.destroy(*self._tags)
 
-    def color(self, nodecolor, textcolor='black'):
+    def color(self, nodecolor, textcolor=DEFAULT_NODE_TEXTCOLOR):
         if self._tags is not None:
             self._canvas.itemconfig(self._tags[0], fill=nodecolor)
             self._canvas.itemconfig(self._tags[1], fill=textcolor)
@@ -75,22 +105,34 @@ class CanvasNode:
     def _press_cb(self, event):
         self._mcb_id = self._canvas.bind('<Motion>', self._motion_cb)
         self._rcb_id = self._canvas.bind('<ButtonRelease-1>', self._release_cb)
-        self._scrollregion = [int(n) for n in self._canvas['scrollregion'].split()]
 
+        # Use the node oval's width to indicate which node we're dragging.
+        self._canvas.itemconfig(self._tags[0], width=2)
+        
     def _motion_cb(self, event):
         x = self._canvas.canvasx(event.x)
         y = self._canvas.canvasy(event.y)
-
-        # Bounds checking:
-        x = max(self._scrollregion[0], min(self._scrollregion[2], x))
-        y = max(self._scrollregion[1], min(self._scrollregion[3], y))
-        
         self.move(x, y)
 
     def _release_cb(self, event):
         self._canvas.unbind('<Motion>', self._mcb_id)
         self._canvas.unbind('<Motion>', self._rcb_id)
 
+        # Restore the node's oval width.
+        self._canvas.itemconfig(self._tags[0], width=1)
+        
+        # Bounds checking: adjust the scroll-region if they dragged
+        # the node outside of the current scroll-region.
+        x = self._canvas.canvasx(event.x)
+        y = self._canvas.canvasy(event.y)
+        self.move(x, y)
+        scrollregion = [int(n) for n in self._canvas['scrollregion'].split()]
+        if x < (scrollregion[0]): scrollregion[0] = x-VIEWBORDER
+        if x > (scrollregion[2]): scrollregion[2] = x+VIEWBORDER
+        if y < (scrollregion[1]): scrollregion[1] = y-VIEWBORDER
+        if y > (scrollregion[3]): scrollregion[3] = y+VIEWBORDER
+        self._canvas['scrollregion']='%d %d %d %d' % tuple(scrollregion)
+        
     def __repr__(self):
         return '<Node %s @%sx%s>' % (self._label, self._x, self._y)
     def __str__(self):
@@ -103,7 +145,8 @@ class CanvasEdge:
         self._label = label
         self._canvas = canvas
         self._tags = None
-        self._linecolor = self._textcolor = 'black'
+        self._linecolor = DEFAULT_EDGECOLOR
+        self._textcolor = DEFAULT_EDGE_TEXTCOLOR
         self._font = None
         self._collapse_edges = 0
 
@@ -133,7 +176,7 @@ class CanvasEdge:
         if self._tags is None: return
         self._canvas.destroy(*self._tags)
 
-    def color(self, linecolor, textcolor='black'):
+    def color(self, linecolor, textcolor=DEFAULT_EDGE_TEXTCOLOR):
         if self._tags is not None: 
             self._canvas.itemconfig(self._tags[0], fill=linecolor)
             self._canvas.itemconfig(self._tags[1], fill=textcolor)
@@ -152,12 +195,13 @@ class CanvasEdge:
         y2 = self._node2.y()
         if self._node1 is self._node2:
             # Self-loops.
-            return (x1, y1+150*self._curve)
+            return (x1, y1+150*self._curve+NODE_RADIUS)
         else:
             # Normal edges.
             r = max(math.sqrt((x1-x2)**2 + (y1-y2)**2), 1)
-            textx = (x1+x2)*0.5 + (y2-y1)*(self._curve/2) + (y2-y1) * 8 / r
-            texty = (y1+y2)*0.5 - (x2-x1)*(self._curve/2) - (x2-x1) * 8 / r
+            textx = (x1+x2)*0.5 + (y2-y1)*(self._curve/2 + 8/r)
+            texty = (y1+y2)*0.5 - (x2-x1)*(self._curve/2 + 8/r)
+                     
             return (textx, texty)
     
     def _line_coords(self):
@@ -168,12 +212,12 @@ class CanvasEdge:
         
         if self._node1 is self._node2:
             # Self-loops
-            x3 = x1 - 70*self._curve
-            y3 = y1 + 70*self._curve
+            x3 = x1 - 70*self._curve - NODE_RADIUS
+            y3 = y1 + 70*self._curve + NODE_RADIUS
             x4 = x1
-            y4 = y1 + 140*self._curve
-            x5 = x1 + 70*self._curve
-            y5 = y1 + 70*self._curve
+            y4 = y1 + 140*self._curve + NODE_RADIUS
+            x5 = x1 + 70*self._curve + NODE_RADIUS
+            y5 = y1 + 70*self._curve + NODE_RADIUS
             return (x1, y1, x3, y3, x4, y4, x5, y5, x2, y2)
         else:
             # Normal edges.
@@ -181,10 +225,10 @@ class CanvasEdge:
             y3 = (y1+y2)*0.5 - (x2-x1)*self._curve
             # Adjust endpoints so they end at the node parimeter.
             r = max(math.sqrt((x1-x2)**2 + (y1-y2)**2), 1)
-            x2 -= (x2-x1) * 5 / r
-            y2 -= (y2-y1) * 5 / r
-            x1 -= (x1-x2) * 5 / r
-            y1 -= (y1-y2) * 5 / r
+            x2 -= (x2-x1) * NODE_RADIUS / r
+            y2 -= (y2-y1) * NODE_RADIUS / r
+            x1 -= (x1-x2) * NODE_RADIUS / r
+            y1 -= (y1-y2) * NODE_RADIUS / r
             return (x1, y1, x3, y3, x2, y2)
 
     def from_node(self): return self._node1
@@ -204,33 +248,23 @@ class CanvasEdge:
         return '%s-->%s' % (self._node1, self._node2)
 
 class CanvasFSA:
-    def __init__(self, fsa, canvas, collapse_edges = 1):
+    def __init__(self, fsa, canvas, collapse_edges = 1,
+                 arrange=DEFAULT_ARRANGE):
+        """
+        @param collapse_edges: Should multiple edges between the same
+            2 nodes be displayed as a single comma-separated edge?
+        @param arrange: What arrangement algorithm should we use?
+            Current options are 'dfs' and 'bfs'.
+        """
         self._fsa = fsa
         self._canvas = canvas
         self._collapse_edges = collapse_edges
+        self._arrange = arrange.lower()
 
         nodes = self._nodes = {}
         edges = self._edges = []
 
         self._add_fsa(fsa)
-
-        # Adjust the canvas size...
-        minx = miny = maxx = maxy = 0
-        for node in self._nodes.values():
-            (x, y) = (node.x(), node.y())
-            minx = min(x, minx)
-            miny = min(y, miny)
-            maxx = max(x, maxx)
-            maxy = max(y, maxy)
-
-        minx -= VIEWBORDER
-        miny -= VIEWBORDER
-        maxx += VIEWBORDER
-        maxy += VIEWBORDER
-        canvas['scrollregion'] = (minx-SCROLLBORDER, miny-SCROLLBORDER,
-                                  maxx+SCROLLBORDER, maxy+SCROLLBORDER)
-        canvas.xview('moveto', (SCROLLBORDER / (2.0 * SCROLLBORDER + maxx-minx)))
-        canvas.yview('moveto', (SCROLLBORDER / (2.0 * SCROLLBORDER + maxy-miny)))
 
     def _add_fsa(self, fsa):
         nodes = self._nodes
@@ -282,21 +316,48 @@ class CanvasFSA:
             edge.font(('symbol', 12))
             edge.color('gray50', 'gray40')
         return edge
-    
-    def arrange(self):
+
+    def _resize_canvas(self):
+        # Adjust the canvas size...
+        minx = miny = maxx = maxy = 0
+        for node in self._nodes.values():
+            (x, y) = (node.x(), node.y())
+            minx = min(x, minx)
+            miny = min(y, miny)
+            maxx = max(x, maxx)
+            maxy = max(y, maxy)
+
+        minx -= VIEWBORDER
+        miny -= VIEWBORDER
+        maxx += VIEWBORDER
+        maxy += VIEWBORDER
+        canvas = self._canvas
+        canvas['scrollregion'] = (minx-SCROLLBORDER, miny-SCROLLBORDER,
+                                  maxx+SCROLLBORDER, maxy+SCROLLBORDER)
+        canvas.xview('moveto', (SCROLLBORDER / (2.0 * SCROLLBORDER +
+                                                maxx-minx)))
+        canvas.yview('moveto', (SCROLLBORDER / (2.0 * SCROLLBORDER +
+                                                maxy-miny)))
+        
+    def arrange(self, arrange_algorithm=None):
         """
         Set the node positions.  This routine should attempt to
         minimize the number of crossing edges, in order to make the
         graph easier to read.
         """
+        if arrange_algorithm is not None:
+            self._arrange = arrange_algorithm
+            
         self._arrange_into_levels()
-
         self._arrange_levels()
 
         # Now we want to minimize crossing edges.. how, again? :)
         for i in range(len(self._levels)):
             for j in range(len(self._levels[i])):
-                self._levels[i][j].move(i*80, j*70)
+                self._levels[i][j].move(i*XSPACING, j*YSPACING)
+
+        # Finally, set the canvas size appropriately
+        self._resize_canvas()
 
     def _arrange_levels(self):
         """
@@ -366,7 +427,13 @@ class CanvasFSA:
         Add all the descendants of the nodes in the list parent_level
         to the structures self._level and self._nodelevel.
         """
-        self._add_descendants_dfs(parent_level, levelnum)
+        if self._arrange == 'bfs':
+            self._add_descendants_bfs(parent_level, levelnum)
+        elif self._arrange == 'dfs':
+            self._add_descendants_dfs(parent_level, levelnum)
+        else:
+            # Default to dfs
+            self._add_descendants_dfs(parent_level, levelnum)
 
     def _add_descendants_dfs(self, parent_level, levelnum):
         if levelnum >= len(self._levels): self._levels.append([])
@@ -386,7 +453,6 @@ class CanvasFSA:
         all_child_nodes = []
         if levelnum >= len(self._levels): self._levels.append([])
         for parent_node in parent_level:
-            print ('  '*levelnum), parent_node
             child_nodes = [edge.to_node() for edge in parent_node.outgoing()
                            if not self._nodelevel.has_key(edge.to_node())]
             for node in child_nodes:
@@ -419,8 +485,13 @@ class FSAFrame:
         canvas.pack(expand=1, fill='both', side='left')
         yscrollbar.pack(fill='y', side='right')
         xscrollbar.pack(fill='x', side='bottom')
-        
-        self._canvas_fsa = CanvasFSA(fsa, canvas)
+
+        # Try using dfs; if its' big, try using bfs instead.
+        import time
+        self._canvas_fsa = CanvasFSA(fsa, canvas, 1, 'dfs')
+        (x1,y1,x2,y2) = [int(n) for n in canvas['scrollregion'].split()]
+        if x2-x1 > FSAFrame.MAXX:
+            self._canvas_fsa.arrange('bfs')
 
     def pack(self, cnf={}, **kw):
         self._frame.pack(cnf, **kw)
@@ -449,35 +520,45 @@ class FSAWindow:
         fsaframe.pack(side='bottom', expand=1, fill='both')
 
     def destroy(self, *e):
-        if self._top is not None: self._top.destroy()
+        if self._top is None: return
+        self._top.destroy()
         self._top = None
 
     def mainloop(self, n=0):
+        if self._top is None: return
         self._top.mainloop(n)
 
-def show_fsa(fsa):
-    top = Tkinter.Tk()
-    def destroy(e, top=top): top.destroy()
-    top.bind('q', destroy)
-    c = Tkinter.Canvas(top, closeenough='10.0', width=500, height=300)
-    c.pack()
-    f = CanvasFSA(fsa, c)
-    top.mainloop()
-                
+    def title(self, title):
+        if self._top is None: return
+        self._top.title(title)
+
 # Test
 if __name__ == '__main__':
-    from nltk.set import Set
-    #re = 'ab'
-    #re = '(ab(c*)c)*dea(b*)'
-    re = '(ab(c*)c)*'
-    fsa = nltk.fsa.FSA("abcde")
-    nltk.fsa.re2nfa(fsa, re)
-    fsa = fsa.dfa()
-    fsa.prune()
-    #fsa.insert_transition(3,'hi',0)
-    #fsa.delete_transition(0, nltk.fsa.epsilon, Set(1))
-    w = FSAWindow(fsa)
+    import time
+    t = time.time()
+    regexps = ['(ab(c*)c)*dea(b+)e',
+               '((ab(c*))?(edc))*dea(b*)e',
+               '((ab(c*))?(edc))*dea(b*)eabcdef',
+               '(ab(c*)c)*']
+
+    # Pick a random regexp, and draw it.
+    regexp = random.choice(regexps)
+    fsa = nltk.fsa.FSA("abcdef")
+    fsa.empty()
+    nltk.fsa.re2nfa(fsa, regexp)
+
+    # Show the NFA's FSA.
+    w1 = FSAWindow(fsa)
+    w1.title("FSA for: %s" % regexp)
+
+    # Show the DFA
+    dfa = fsa.dfa()
+    #w2 = FSAWindow(dfa)
+    #w2.title("Unpruned DFA for: %s" % regexp)
+    dfa.prune()
+    w3 = FSAWindow(dfa)
+    w3.title("Pruned DFA for: %s" % regexp)
 
     # n.b., this is optional, as long as you're running this from an
     # interactive Python shell..
-    #w.mainloop()
+    Tkinter.mainloop()
