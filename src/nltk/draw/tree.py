@@ -75,7 +75,7 @@ class TreeSegmentWidget(CanvasWidget):
         self._roof = 0
         self._xspace = 10
         self._yspace = 15
-        self._ordered = True
+        self._ordered = False
 
         # Create canvas objects.
         self._lines = [canvas.create_line(0,0,0,0, fill='#006060')
