@@ -1031,7 +1031,8 @@ groups = [('press: reportage', r'ca\d\d'), ('press: editorial', r'cb\d\d'),
           ('fiction: adventure', r'cn\d\d'), ('fiction: romance', r'cp\d\d'),
           ('humor', r'cr\d\d')]
 brown = SimpleCorpusReader(
-    'brown', 'brown/', r'c\w\d\d', groups, description_file='README')
+    'brown', 'brown/', r'c\w\d\d', groups, description_file='README',
+    default_tokenizer=TaggedTokenizer())
 del groups # delete temporary variable
  
 ###################################################
