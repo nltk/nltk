@@ -30,9 +30,9 @@ chunk structure's L{leaves<TreeToken.leaves>} method.
 The C{parser.chunk} module defines L{ChunkParserI}, a standard
 interface for chunking texts; and L{REChunkParser}, a
 regular-expression based implementation of that interface.  It also
-defines the L{ChunkedTaggedTokenizer} class, which tokenizes strings
-containing chunked and tagged texts; and L{ChunkScore}, a utility
-class for scoring chunk parsers.
+defines the L{ChunkedTaggedTokenizer} and L{ConllChunkedTokenizer}
+classes, which tokenize strings containing chunked and tagged texts;
+and L{ChunkScore}, a utility class for scoring chunk parsers.
 
 REChunkParser
 =============
@@ -314,7 +314,7 @@ class ConllChunkedTokenizer(TokenizerI):
     a new chunk, or inside an existing chunk.
 
       >>> cct = ConllChunkedTokenizer()
-      >>> toks = cct.tokenize(\"\"\"
+      >>> toks = cct.tokenize('''
       he PRP B-NP
       accepted VBD B-VP
       the DT B-NP
@@ -331,7 +331,7 @@ class ConllChunkedTokenizer(TokenizerI):
       banking NN I-NP
       concern NN I-NP
       . . O
-      \"\"\")
+      ''')
       [('NP': 'he'/'PRP')@[0l],
       ('VP': 'accepted'/'VBD')@[1l],
       ('NP': 'the'/'DT' 'position'/'NN')@[2l:4l],
