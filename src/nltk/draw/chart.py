@@ -14,7 +14,7 @@ Drawing charts, etc.
 import Tkinter
 import math
 
-from nltk.chartparser import *
+from nltk.parser.chart import *
 from nltk.token import WSTokenizer
 from nltk.token import Token, Location
 from nltk.tree import TreeToken
