@@ -225,22 +225,22 @@ class ConditionalExponentialClassifier(ClassifierI, PropertyIndirectionMixIn):
         """
         return self._weights
 
+    def get_class_list(self, token):
+        pdist = self.get_class_probs(token)
+        temp = [(-pdist.prob(c), c) for c in pdist.samples()]
+        temp.sort()
+        return [c for (_,c) in temp]
+
     def classify(self, token):
-        # Inherit docstring from ClassifierI
-        probs = self.raw_classify_dist(token[self.property('FEATURE_VECTOR')])
-        token[self.property('CLASS_PROBS')] = probs
-        token[self.property('CLASS')] = probs.max()
+        CLASS = self.property('CLASS')
+        token[CLASS] = self.get_class(token)
 
-    def raw_classify_dist(self, feature_vector):
-        """
-        Return a probability distribution mapping each class to the
-        probability that the given feature vector has that class.
+    def get_class(self, token):
+        return self.get_class_probs(token).max()
 
-        @type feature_vector: C{SparseList}
-        @param feature_vector: The feature vector whose class
-            probability distribution should be returned.
-        @rtype: L{ProbDistI}
-        """
+    def get_class_probs(self, token):
+        feature_vector = token[self.property('FEATURE_VECTOR')]
+        
         if len(feature_vector)*len(self._classes) != len(self._weights):
             raise ValueError, 'Bad feature vector length'
             
@@ -348,8 +348,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         fcount = Numeric.zeros(self._weight_vector_len, 'd')
 
         for tok in train_toks:
-            feature_vector = tok['FEATURE_VECTOR']
-            dist = classifier.raw_classify_dist(feature_vector)
+            dist = classifier.get_class_probs(tok)
             for cls, offset in self._offsets.items():
                 prob = dist.prob(cls)
                 for (index, val) in feature_vector.assignments():
@@ -668,11 +667,11 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         A = Numeric.zeros((len(nfmap), self._weight_vector_len), 'd')
 
         for i, tok in enumerate(train_toks):
-            feature_vector = tok['FEATURE_VECTOR']
-            assignments = feature_vector.assignments()
-            dist = classifier.raw_classify_dist(feature_vector)
+            dist = classifier.get_class_probs(tok)
 
             # Find the number of active features.
+            feature_vector = tok['FEATURE_VECTOR']
+            assignments = feature_vector.assignments()
             nf = sum([val for (id, val) in assignments])
 
             # Update the A matrix
@@ -838,7 +837,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             if debug > 2:
                 print ('     %9d    %14.5f    %9.3f' %
                        (iternum, classifier_log_likelihood(classifier, train_toks),
-                        accuracy(classifier, train_toks)))
+                        classifier_accuracy(classifier, train_toks)))
 
             # Calculate the deltas for this iteration, using Newton's method.
             deltas = self._deltas(train_toks, classifier, unattested,
@@ -860,7 +859,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 
             # Check accuracy cutoffs.
             if acc_cutoff is not None or accdelta_cutoff is not None:
-                acc = accuracy(classifier, train_toks)
+                acc = classifier_accuracy(classifier, train_toks)
                 if acc_cutoff is not None and acc < acc_cutoff: break
                 if accdelta_cutoff is not None:
                     if (acc_old - acc) < accdelta_cutoff: break
@@ -869,7 +868,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         if debug > 2:
             print ('     %9d    %14.5f    %9.3f' %
                    (iternum+1, classifier_log_likelihood(classifier, train_toks),
-                    accuracy(classifier, train_toks)))
+                    classifier_accuracy(classifier, train_toks)))
             print
                    
         # Return the classifier.
@@ -886,13 +885,13 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 from nltk.feature import *
 from nltk.feature.word import *
 
-def demo():
+def demo(items=30):
     import nltk.corpus
     
     # Load the training data, and split it into test & train.
     print 'reading data...'
     toks = []
-    for item in nltk.corpus.brown.items()[:2]:
+    for item in nltk.corpus.brown.items()[:items]:
         text = nltk.corpus.brown.read(item, add_contexts=True)
         toks += text['WORDS']
     
@@ -926,7 +925,7 @@ def demo():
     # Train a new classifier
     print 'training...'
     global classifier
-    classifier = IISMaxentClassifierTrainer().train(train, debug=0)
+    classifier = IISMaxentClassifierTrainer().train(train, debug=3)
 
     # Use it to classify the test words.
     print 'classifying...'
@@ -939,6 +938,7 @@ def demo():
         detector.detect_features(tok)
         encoder.encode_features(tok)
         classifier.classify(tok)
+        tok['CLASS_PROBS'] = classifier.get_class_probs(tok)
         if c == tok['CLASS']: s = '   '+s
         else: s = '[X]' + s
         s += ' %-4s  ' % tok['CLASS']
@@ -950,4 +950,4 @@ def demo():
             s += '%5s=%.3f' % (val,prob)
         print s + ' ...'
     
-if __name__ == '__main__': demo()
+if __name__ == '__main__': demo(30)
