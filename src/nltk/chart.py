@@ -106,9 +106,9 @@ class DottedCFG_Rule(CFG_Rule):
         @rtype: C{string}
         """
         return str(self._lhs) + ' -> ' +\
-               join([str(item) for item in self._rhs[:self._pos]]) +\
+               ' '.join([str(item) for item in self._rhs[:self._pos]]) +\
                ' * ' +\
-               join([str(item) for item in self._rhs[self._pos:]])
+               ' '.join([str(item) for item in self._rhs[self._pos:]])
 
     def __repr__(self):
         """
@@ -168,9 +168,10 @@ class DottedPCFG_Rule(DottedCFG_Rule, ProbablisticMixIn):
 
 class Edge:
     """
-    An edge of a chart.    An edges is a span of tokens (i.e. a C{Location})
-    with an associated C{DottedCFG_Rule} and a C{Tree}.  The Edge class provides
-    basic functions plus a some common chart-parser functions on edges.
+    An edge of a chart.  An edges is a span of tokens (i.e. a
+    C{Location}) with an associated C{DottedCFG_Rule} and a C{Tree}.
+    The Edge class provides basic functions plus a some common
+    chart-parser functions on edges.
 
     @type _drule: C{DottedCFG_Rule}
     @ivar _drule: The dotted rule of the edge.
@@ -267,6 +268,8 @@ class Edge:
 
     def self_loop_start(self, rule):
         """
+        E{this will be removed}
+        
         @param rule: A grammar rule
         @type rule: C{Rule}
         @return: a zero-width self-loop edge at the start of this edge,
@@ -279,6 +282,8 @@ class Edge:
 
     def self_loop_end(self, rule):
         """
+        E{this will be removed}
+        
         @param rule: A grammar rule
         @type rule: C{Rule}
         @return: a zero-width self-loop edge at the end of this edge,
@@ -291,9 +296,12 @@ class Edge:
 
     def FR(self, edge):
         """
+        E{this will be removed}
+        
         @param edge: a completed edge immediately to the right
         @type edge: C{Edge}
-        @return: a new edge resulting from the application of the fundamental rule of chart parsing
+        @return: a new edge resulting from the application of the
+            fundamental rule of chart parsing
         @rtype: C{Edge}
         """
         loc = self._loc.union(edge.loc())
@@ -308,7 +316,7 @@ class Edge:
 
 class Chart:
     """
-    A chart: a blackboard for hypotheses about syntactic constituents.
+    A blackboard for hypotheses about syntactic constituents.
 
     @type _chart: C{Set} of C{Edge}s
     @ivar _chart: The set of C{Edge}s, keys of the hash array
@@ -421,7 +429,7 @@ class Chart:
         return edge in self._edgeset
             
     #draw (NB, there is also a tkinter version nltk.draw.chart)
-    def draw(self, width=7):
+    def old_draw(self, width=7):
         print "="*75
         edges = self.edges()
         edges.sort(edgecmp)
@@ -432,23 +440,133 @@ class Chart:
             print indent, edge.drule()
             print indent + "|" + "-"*(width*(end-start)-1) + "|"
 
-    def draw2(self, trees=0):
+    def draw(self, text=None, **kwargs):
+        import nltk.draw.chart
+        nltk.draw.chart.ChartView(self, text, **kwargs)
+
+    def pp(self, text=None):
         (chart_start, chart_end) = (self._loc.start(), self._loc.end())
+        str = ''
+
+        # Draw a header.  Header line shows what words correspond to
+        # each position.
+        if text:
+            str += '| '
+            pos = chart_start
+            for tok in text:
+                str += (tok.loc().start() - pos) * '   '
+                len = 3*(tok.loc().end() - tok.loc().start())
+                type = ('%s' % tok.type())[:len-1]
+                str += ('%-'+`len`+'s') % type
+                pos = tok.loc().end()
+            str += '   '*(chart_end - text[-1].loc().end()) + '|\n'
+
+        # Draw each edge on a separate line.
         edges = self.edges()
         edges.sort(edgecmp)
         for edge in edges:
             (start, end) = (edge.start(), edge.end())
-            str = '[' + '.  '*(start-chart_start)
-            if start == end:
-                if edge.complete(): str += '='
-                else: str += '>'
-            elif edge.complete(): str += '='+'==='*(end-start-1) + '==.'
-            else: str += '|'+'---'*(end-start-1) + '-->'
-            str += '  .'*(chart_end-end)
-            str += '] %-20s ' % edge.drule()
-            if trees:
-                treestr = `edge.tree()`
-                if len(treestr) < 20 or trees>1: str += treestr
-                else: str += treestr[:17]+'...'
-            print str
+            str += '|' + '.  '*(start-chart_start)
 
+            # Zero-width edges are "#" if complete, ">" if incomplete
+            if start == end:
+                if edge.complete(): str += '#'
+                else: str += '>'
+
+            # Other edges "[---]" if complete, "[--->" if incomplete
+            elif edge.complete(): str += '['+'---'*(end-start-1) + '--]'
+            else: str += '['+'---'*(end-start-1) + '-->'
+            
+            str += '  .'*(chart_end-end)
+            str += '| %-20s ' % edge.drule() +'\n'
+        return str
+
+class FRChart(Chart):
+    """
+    A specialized chart that can efficiently find the set of edges
+    that could combine with a given edge by the fundamental rule.  The
+    fundamental rule can combine two edges C{M{e1}} and C{M{e2}} if
+    C{M{e1}.end()==M{e2}.start()} and
+    C{M{e1}.drule().next()==M{e2}.drule().lhs()}.
+
+    C{FRChart} indexes the set of complete edges in the chart by their
+    start location and their dotted rule's left hand side; and indexes
+    the set of incomplete edges in the chart by their end location and
+    the element of their dotted rule's right hand side following its
+    dot.  To access edges using these indices, use the optional
+    arguments for C{complete_edges} and C{incomplete_edges}.
+    """
+    def __init__(self, loc):
+        """
+        @param _complete: A dictionary containing all complete edges,
+            indexed by their start position & lhs nonterminal
+        @param _incomplete: A dictionary containing all incomplete
+            edges, indexed by their end position & 1st rhs elt after
+            the dot.
+        """
+        Chart.__init__(self, loc)
+        self._complete = {}
+        self._incomplete = {}
+
+    def insert(self, edge):
+        # Inherit docs.
+        return_value = Chart.insert(self, edge)
+        if return_value:
+            if edge.complete():
+                key = (edge.start(), edge.drule().lhs())
+                self._complete.setdefault(key, []).append(edge)
+            else:
+                key = (edge.end(), edge.drule().next())
+                self._incomplete.setdefault(key, []).append(edge)
+        return return_value
+
+    def complete_edges(self, start=None, lhs=None):
+        """
+        @return: A list of complete edges contained in this chart.
+            A complete edge is an edge whose dotted rule has its dot
+            in the final position.  If C{start} and C{lhs} are 
+            specified, then return all edges that begin at C{start}
+            and whose dotted rules have a left hand side C{lhs}.
+            Otherwise, return all complete edges contained in this
+            chart. 
+        @rtype: C{sequence} of C{Edge}
+        """
+        if start is None or lhs is None:
+            return Chart.complete_edges(self)
+        return self._complete.get((start, lhs), [])
+
+    def incomplete_edges(self, end=None, next=None):
+        """
+        @return: A list of all incomplete edges contained in this chart.
+            An incomplete edge is an edge whose dotted rule has its dot
+            in a nonfinal position.  If C{end} and C{next} are 
+            specified, then return all edges that end at C{end}
+            and that have dotted rules whose first element after the
+            dot is C{next}.  Otherwise, return all complete edges
+            contained in this chart.
+        @rtype: C{sequence} of C{Edge}
+        """
+        if start is None or lhs is None:
+            return Chart.complete_edges(self)
+        return self._incomplete.get((end, next), [])
+
+    def fr_with(self, edge):
+        """
+        @return: a list of the edges that can be combined with C{edge}
+            by the fundamental rule.  If C{edge} is a complete edge,
+            then this is a list of incomplete edges that could be
+            expanded with C{edge}.  If C{edge} is an incomplete edge,
+            then this is a list of complete edges that can be used to
+            expand C{edge}.
+        @rtype: C{list} of C{Edge}
+
+        @param edge: An edge (not necessarily in this chart), for which
+            to find the set of edges in this chart that could be
+            combined with the fundamental rule.
+        @type edge: C{Edge}
+        """
+        drule = edge.drule()
+        if edge.complete():
+            return self._incomplete.get((edge.start(), drule.lhs()),[])
+        else:
+            return self._complete.get((edge.end(), drule.next()),[])
