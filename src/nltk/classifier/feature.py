@@ -112,9 +112,9 @@ from nltk.token import Token
 ##//////////////////////////////////////////////////////
 # Feature id: fid
 # Feature value: fval
-# Feature detector list: fdlist
-# Feature value list: fvlist
-# Labeled feature value list: labeled_fvlist or lfvlist
+# Feature detector list: fd_list
+# Feature value list: fv_list
+# Labeled feature value list: labeled_fv_list or lfv_list
 # Assignments: assignments
 
 ##//////////////////////////////////////////////////////
@@ -596,41 +596,41 @@ class MergedFDList(AbstractFDList):
     the sublists generate feature value lists with the same default
     value.
 
-    @type _sub_fdlists: C{list} of C{FeatureDetectorListI}
-    @ivar _sub_fdlists: The feature detector lists contained by this
+    @type _sub_fd_lists: C{list} of C{FeatureDetectorListI}
+    @ivar _sub_fd_lists: The feature detector lists contained by this
         C{MergedFDList}.
     @type _offsets: C{list} of C{int}
     @ivar _offsets: The offset at which each feature detector list
         begins.
     @type _N: C{int}
     @ivar _N: The length of this feature detector list.  This should
-        be equal to C{_offsets[-1]+len(_sub_fdlists[-1])} (unless
+        be equal to C{_offsets[-1]+len(_sub_fd_lists[-1])} (unless
         C{len(_offsets)==0}, in which case C{_N=0}).
     """
-    def __init__(self, *sub_fdlists):
+    def __init__(self, *sub_fd_lists):
         """
         Construct a new feature detector list, containing the features
-        from each of the feature detector lists in C{sub_fdlists}.
+        from each of the feature detector lists in C{sub_fd_lists}.
 
         If M{N[i]} is the length of the M{i}th feature detector list,
-        then feature id M{j} in C{sub_fdlist[M{i}]} corresponds to
+        then feature id M{j} in C{sub_fd_list[M{i}]} corresponds to
         feature id M{N[0]+N[1]+...+N[i-1]+j} in the merged feature
         detector list.
 
-        @param sub_fdlists: The feature detector lists to combine.
-        @type sub_fdlists: C{list} of C{FeatureDetectorListI}
+        @param sub_fd_lists: The feature detector lists to combine.
+        @type sub_fd_lists: C{list} of C{FeatureDetectorListI}
         """
-        self._sub_fdlists = []
+        self._sub_fd_lists = []
         self._offsets = []
         offset = 0
-        for sublist in sub_fdlists:
+        for sublist in sub_fd_lists:
             if isinstance(sublist, MergedFDList):
                 # Create a single flat merged feature detector list, 
                 # rather than a tree of them.
-                self._sub_fdlists += sublist._sub_fdlists
+                self._sub_fd_lists += sublist._sub_fd_lists
                 self._offsets += [x+offset for x in sublist._offsets]
             else:
-                self._sub_fdlists.append(sublist)
+                self._sub_fd_lists.append(sublist)
                 self._offsets.append(offset)
             offset += len(sublist)
 
@@ -647,18 +647,18 @@ class MergedFDList(AbstractFDList):
         # Inherit docs from FeatureDetectorListI
         assignments = []
         default = None
-        for i in range(len(self._sub_fdlists)):
+        for i in range(len(self._sub_fd_lists)):
             offset = self._offsets[i]
-            fvlist = self._sub_fdlists[i].detect(labeled_text)
-            if default != fvlist.default():
+            fv_list = self._sub_fd_lists[i].detect(labeled_text)
+            if default != fv_list.default():
                 if default is None:
-                    default = fvlist.default()
+                    default = fv_list.default()
                 else:
                     raise ValueError('MergedFDList can '+
                                      'not merge feature value lists '+
                                      'with different default values.')
             assignments += [(fnum+offset, val) for (fnum, val)
-                            in fvlist.assignments()]
+                            in fv_list.assignments()]
             
         return SimpleFeatureValueList(assignments, self._N, default)
 
@@ -970,7 +970,7 @@ class MemoizedFDList(AbstractFDList):
     labels used.  When memory is limited, it may be better not to use
     C{MemoizedFDlist}.
     """
-    def __init__(self, base_fdlist, texts, labels):
+    def __init__(self, base_fd_list, texts, labels):
         """
         Construct a new C{MemoizedFDList}.  Pre-compute the
         C{FeatureValueList} for each C{LabeledText(M{t}, M{l})} where
@@ -979,10 +979,10 @@ class MemoizedFDList(AbstractFDList):
         returned whenever C{detect} is called with the corresponding
         labeled text.
 
-        @param base_fdlist: The base C{FeatureDetectorList}.  This
+        @param base_fd_list: The base C{FeatureDetectorList}.  This
             C{MemoizedFDList} always returns the same
-            C{FeatureValueList} that C{base_fdlist} would.
-        @type base_fdlist: C{FeatureDetectorListI}
+            C{FeatureValueList} that C{base_fd_list} would.
+        @type base_fd_list: C{FeatureDetectorListI}
         @param texts: The list of texts for which C{FeatureValueList}s
             should be pre-computed.
         @type texts: (immutable)
@@ -991,23 +991,23 @@ class MemoizedFDList(AbstractFDList):
         @type labels: (immutable)
         """
         self._cache = {}
-        self._base_fdlist = base_fdlist
+        self._base_fd_list = base_fd_list
         for text in texts:
             for label in labels:
                 ltext = LabeledText(text, label)
-                self._cache[ltext] = base_fdlist.detect(ltext)
+                self._cache[ltext] = base_fd_list.detect(ltext)
 
     def detect(self, labeled_text):
         # Inherit docs
-        fvlist = self._cache.get(labeled_text, None)
-        if fvlist is not None:
-            return fvlist
+        fv_list = self._cache.get(labeled_text, None)
+        if fv_list is not None:
+            return fv_list
         else:
-            return self._base_fdlist.detect(labeled_text)
+            return self._base_fd_list.detect(labeled_text)
 
     def __len__(self):
         # Inherit docs
-        return len(self._base_fdlist)
+        return len(self._base_fd_list)
     
 ##//////////////////////////////////////////////////////
 ##  Abstract Feature Classifier
@@ -1029,60 +1029,60 @@ class AbstractFeatureClassifier(ClassifierI):
     """
     An abstraract base class that provides default definitions for all
     of the C{ClassifierI} methods.  The only method that subclasses
-    need to implement is C{fvlist_likelihood}.  This method returns a
+    need to implement is C{fv_list_likelihood}.  This method returns a
     float indicating the likelihood of a given feature value list.
 
     Subclasses may override the method C{zero_distribution_list}.
     This method determines what probability distribution should be
-    returned if C{fvlist_likelihood} returns zero for every label.
+    returned if C{fv_list_likelihood} returns zero for every label.
     Its default implementation returns a uniform distribution.
 
-    Subclass constructors should have C{fdlist} and C{labels} as their
+    Subclass constructors should have C{fd_list} and C{labels} as their
     first two arguments; and should use them to call the
     C{AbstractFeatureClassifier} constructor.
 
     In addition to providing default definitions for the methods
     defined by C{Classifier}, C{AbstractFeatureClassifier} implements
-    the method C{fdlist}, which returns the C{FeatureDetectorList}
+    the method C{fd_list}, which returns the C{FeatureDetectorList}
     used by this classifier.
 
-    @type _fdlist: C{FeatureDetectorListI}
-    @ivar _fdlist: The feature detector list defining the features
+    @type _fd_list: C{FeatureDetectorListI}
+    @ivar _fd_list: The feature detector list defining the features
         that are used by this classifier.
     @type _labels: C{list} of (immutable)
     @ivar _labels: A list of the labels that should be considered by
         this classifier.
     """
-    def __init__(self, fdlist, labels):
+    def __init__(self, fd_list, labels):
         """
         Initialize the feature detector list and label list for this
         classifier.  This constructor should be called by subclasses,
         using the statement::
 
-            AbstractFeatureClassifier.__init__(self, fdlist, labels)
+            AbstractFeatureClassifier.__init__(self, fd_list, labels)
             
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The feature detector list defining
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The feature detector list defining
             the features that are used by the C{Classifier}.
         @type labels: C{list} of (immutable)
         @param labels: A list of the labels that should be considered
             by this C{NBClassifier}.  Typically, labels are C{string}s
             or C{int}s.
         """
-        self._fdlist = fdlist
+        self._fd_list = fd_list
         self._labels = labels
     
-    def fvlist_likelihood(self, fvlist, label):
+    def fv_list_likelihood(self, fv_list, label):
         """
         @rtype: C{float}
         @return: a likelihood estimate for the given feature value
-            list.  This estimate should equal M{Z*P(C{fvlist})} for
+            list.  This estimate should equal M{Z*P(C{fv_list})} for
             some positive normalization constant Z that does not
-            depend on the label used to generate C{fvlist}.  The
+            depend on the label used to generate C{fv_list}.  The
             estimate must be positive.
-        @param fvlist: The feature value list whose likelihood should
+        @param fv_list: The feature value list whose likelihood should
             be estimated.
-        @type fvlist: C{FeatureValueListI}
+        @type fv_list: C{FeatureValueListI}
         """
         raise AssertionError()
 
@@ -1090,13 +1090,13 @@ class AbstractFeatureClassifier(ClassifierI):
         """
         Return a list indicating the likelihood that
         C{unlabeled_token} is a member of each category.  This method
-        is called whenever C{fvlist_likelihood} returns zero for every
+        is called whenever C{fv_list_likelihood} returns zero for every
         C{LabeledText} whose text is C{unlabled_token.type()}.  Its
         default behavior is to return a uniform distribution; however,
         it can be overridden to provide a different behavior.
         Reasonable alternatives might include:
             - Return zero for each label.
-            - Use a modified C{fvlist_likelihood} that allows zeros to
+            - Use a modified C{fv_list_likelihood} that allows zeros to
               "cancel out" between different label values.
         
         @return: a list of probabilities.  The M{i}th element of the
@@ -1116,8 +1116,8 @@ class AbstractFeatureClassifier(ClassifierI):
         # Construct a list containing the probability of each label.
         dist_list = []
         for label in self._labels:
-            fvlist = self._fdlist.detect(LabeledText(text, label))
-            p = self.fvlist_likelihood(fvlist, label)
+            fv_list = self._fd_list.detect(LabeledText(text, label))
+            p = self.fv_list_likelihood(fv_list, label)
             dist_list.append(p)
             total_p += p
 
@@ -1125,7 +1125,7 @@ class AbstractFeatureClassifier(ClassifierI):
         if total_p == 0:
             return self.zero_distribution_list(unlabeled_token)
 
-        # Normalize the probability fvlist_likelihoods.
+        # Normalize the probability fv_list_likelihoods.
         return [p/total_p for p in dist_list]
 
     def distribution_dictionary(self, unlabeled_token):
@@ -1150,10 +1150,10 @@ class AbstractFeatureClassifier(ClassifierI):
         max = (None, 0)
 
         # Find the label that maximizes the non-normalized probability
-        # fvlist_likelihoods.
+        # fv_list_likelihoods.
         for label in self._labels:
-            fvlist = self._fdlist.detect(LabeledText(text, label))
-            p = self.fvlist_likelihood(fvlist, label)
+            fv_list = self._fd_list.detect(LabeledText(text, label))
+            p = self.fv_list_likelihood(fv_list, label)
             if p > max[1]: max = (label, p)
 
         return Token(LabeledText(text, max[0]), unlabeled_token.loc())
@@ -1168,13 +1168,13 @@ class AbstractFeatureClassifier(ClassifierI):
         # Inherit docs from ClassifierI
         return self._labels
 
-    def fdlist(self):
+    def fd_list(self):
         """
         @rtype: C{FeatureDetectorListI}
         @return: The feature detector list defining the features that
             are used by the C{NBClassifier}.
         """
-        return self._fdlist
+        return self._fd_list
 
     def __repr__(self):
         """
@@ -1183,7 +1183,7 @@ class AbstractFeatureClassifier(ClassifierI):
             classifier.  
         """
         return ('<Classifier: %d labels, %d features>' %
-                (len(self.labels()), len(self.fdlist())))
+                (len(self.labels()), len(self.fd_list())))
 
 ##//////////////////////////////////////////////////////
 ##  Test

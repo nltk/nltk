@@ -35,24 +35,24 @@ class FeatureSelectorI:
     that implements the features from the given C{FeatureDetectorList}
     that are relevant to the classificaiton task.
     """
-    def select(self, fdlist):
+    def select(self, fd_list):
         """
         Decide which features are relevant for classification; and
         return a new C{FeatureDetectorList} implementing those
-        features.  All features must be selected from C{fdlist}.  In
-        particular, if M{new_fdlist} is the C{FeatureDetectorList}
+        features.  All features must be selected from C{fd_list}.  In
+        particular, if M{new_fd_list} is the C{FeatureDetectorList}
         returned by C{select}, then the following must be true for all
         labeled texts M{lt} and feature ids M{id}, and for some
         function M{f()}::
 
-            new_fdlist[id].detect(lt) = fdlist[f(id)].detect(lt)
+            new_fd_list[id].detect(lt) = fd_list[f(id)].detect(lt)
         
         @return: a C{FeatureDetectorList} that implements the features
-            from C{fdlist} that are relevant.
+            from C{fd_list} that are relevant.
         @rtype: C{FeatureDetectorListI}
-        @param fdlist: The C{FeatureDetectorList} from which features
+        @param fd_list: The C{FeatureDetectorList} from which features
             detectors should be chosen.
-        @type fdlist: C{FeatureDetectorListI}
+        @type fd_list: C{FeatureDetectorListI}
         """
         raise AssertionError()
 
@@ -63,17 +63,17 @@ class SelectedFDList(AbstractFDList):
     used by C{FeatureSelector}s to select the set of features that are
     relevant for a given classification task.
     """
-    def __init__(self, sub_fdlist, selected_ids):
+    def __init__(self, sub_fd_list, selected_ids):
         """
         Construct a new C{SelectedFDList}.  This feature detector list
-        implements the features from C{sub_fdlist} that are indicated
+        implements the features from C{sub_fd_list} that are indicated
         by C{selected_ids}.  In particular, the following is true for
         all feature ids M{0<=id<len(self)} and C{LabeledText}s M{lt}::
 
-          self[id].detect(lt) = sub_fdlist[selected_ids.index(id)].detect(lt)
+          self[id].detect(lt) = sub_fd_list[selected_ids.index(id)].detect(lt)
 
-        @type sub_fdlist: C{FeatureDetectorListI}
-        @param sub_fdlist: The C{FeatureDetectorList} that this
+        @type sub_fd_list: C{FeatureDetectorListI}
+        @param sub_fd_list: The C{FeatureDetectorList} that this
             C{SelectedFDList} is based on.
         @type selected_ids: C{sequence} of C{int}
         @param selected_ids: The feature ids for the feature detectors
@@ -89,7 +89,7 @@ class SelectedFDList(AbstractFDList):
                 
         self._N = N
         self._idmap = idmap
-        self._sub_fdlist = sub_fdlist
+        self._sub_fd_list = sub_fd_list
             
     def __len__(self):
         # Inherit docs from AbstractFDList
@@ -97,12 +97,12 @@ class SelectedFDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from AbstractFDList
-        fvlist = self._sub_fdlist.detect(labeled_text)
+        fv_list = self._sub_fd_list.detect(labeled_text)
         assignments = [(self._idmap.get(id), val) for (id, val)
-                       in fvlist.assignments()
+                       in fv_list.assignments()
                        if self._idmap.has_key(id)]
         return SimpleFeatureValueList(assignments, self._N,
-                                      fvlist.default())
+                                      fv_list.default())
 
 class AttestedFeatureSelector(FeatureSelectorI):
     """
@@ -114,10 +114,10 @@ class AttestedFeatureSelector(FeatureSelectorI):
     def __init__(self, training_data, **kwargs):
         """
         Construct a new C{AttestedFeatureSelector}.  Given a
-        C{FeatureDetectorList} M{fdlist}, this feature selector will
+        C{FeatureDetectorList} M{fd_list}, this feature selector will
         select any feature with id M{id} such that::
 
-            fdlist[id].detect(LabeledText(l, t)) != (default)
+            fd_list[id].detect(LabeledText(l, t)) != (default)
 
         For any text M{t} from training_data, and any label M{l}.
         
@@ -148,15 +148,15 @@ class AttestedFeatureSelector(FeatureSelectorI):
         if self._labels is None:
             self._labels = find_labels(training_data)
 
-    def select(self, fdlist):
+    def select(self, fd_list):
         # Count the number of times each feature is attested.
         attested = {}
         for labeled_token in self._training_data:
             text = labeled_token.type().text()
             for label in self._labels:
-                fvlist = fdlist.detect(LabeledText(text, label))
-                default = fvlist.default()
-                for (id, val) in fvlist.assignments():
+                fv_list = fd_list.detect(LabeledText(text, label))
+                default = fv_list.default()
+                for (id, val) in fv_list.assignments():
                     if val != default:
                         attested[id] = attested.get(id, 0) + 1
 
@@ -172,4 +172,4 @@ class AttestedFeatureSelector(FeatureSelectorI):
                     selected_ids.append(id)
 
         # Return the selected feature detector list.
-        return SelectedFDList(fdlist, selected_ids)
+        return SelectedFDList(fd_list, selected_ids)

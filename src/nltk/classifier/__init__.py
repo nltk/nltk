@@ -8,7 +8,7 @@
 # $Id$
 
 # To do:
-#   - make sure variable names are used consistantly (fdlist, etc.)
+#   - make sure variable names are used consistantly (fd_list, etc.)
 #   - remove any confusions about the type of labels (string vs
 #      immutable) 
 
