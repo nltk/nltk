@@ -30,15 +30,21 @@ class BrillTagger(nltk.tagger.TaggerI):
         self._templates = templates
         self._rules = []
 
-    # requires a list of Token with type TaggedType
-    def train (self, correctTokens, maxRules = 200, minScore=2):
+        # kludge
+        self._property_names = {}
+        self._property_names['TEXT'] = 'TEXT'
+        self._property_names['TAG'] = 'TAG'
+        self._property_names['SUBTOKENS'] = 'SUBTOKENS'
+
+    # requires a Token with subtokens
+    def train (self, correctToken, maxRules = 200, minScore=2):
         """
-        Trains the BrillTagger on the corpus C{correctTokens}, producing at
+        Trains the BrillTagger on the corpus C{correctToken}, producing at
         most C{maxRules} transformations, each of which reduces the net number
         of errors in the corpus by at least C{minScore}.
         
-        @param correctTokens: The corpus of tagged C{Tokens}
-        @type correctTokens: list of Token
+        @param correctToken: The tokenized corpus, a C{Token}
+        @type correctTokens: Token
         @param maxRules: The maximum number of transformations to be created
         @type maxRules: int
         @param minScore: The minimum acceptable net error reduction that each
@@ -52,28 +58,29 @@ class BrillTagger(nltk.tagger.TaggerI):
         print("Checking tagged tokens")
         # Intern all tags for performance
         k=0
-        for token in correctTokens:
-            if not token.type().tag(): # the corpus isn't quite perfect...
-                correctTokens.remove(token)
+        for token in correctToken['SUBTOKENS']:
+            if not token['TAG']: # the corpus isn't quite perfect...
+                #correctToken['SUBTOKENS'].remove(token)
+                token['TAG'] = 'UNK'
                 k += 1
             else:
-                intern(token.type().tag())
+                intern(token['TAG'])
         #print("Found %i untagged tokens out of %i" %(k, len(correctTokens)+k))
         print("Doing initial tagging...")
         # Do the initial tagging of the training tokens
-        tokens = nltk.tagger.untag(correctTokens)
-        tokens = self._initialTagger.tag(tokens)
+        myToken = correctToken.exclude('TAG')
+        self._initialTagger.tag(myToken)
         print("Initial tagging done.")
 
         # loop and create list of rules here
         self._rules = []
         while len(self._rules) < maxRules:
-            (rule, score) = self._bestRule(tokens, correctTokens)
+            (rule, score) = self._bestRule(myToken, correctToken)
             # We should eventually run out of useful rules
             if rule != None and score >= minScore:
                 self._rules.append(rule)
                 print "Applying rule..."
-                k = rule.applyTo(tokens)  # not optimized (see tag())
+                k = rule.applyTo(myToken)  # not optimized (see tag())
                 print "Rule changed %i locations." %len(k)
             else:
                 break
@@ -109,25 +116,25 @@ class BrillTagger(nltk.tagger.TaggerI):
         """
         self._rules = pickle.load(file(filename, 'r'))
 
-    def tag (self, tokens):
+    def tag (self, token):
         # Inherit documentation from TaggerI
         if not self._rules:
             raise UntrainedError("This BrillTagger has not been trained.")
 
-        tokens = self._initialTagger.tag(tokens)
+        self._initialTagger.tag(token)
 
         positionDict = {}
 
         # Organize positions by tag 
-        for i in range(len(tokens)):
-            if not positionDict.has_key(tokens[i].type().tag()):
-                positionDict[tokens[i].type().tag()] = {}
-            positionDict[tokens[i].type().tag()][i] = None
+        for i in range(len(token['SUBTOKENS'])):
+            if not positionDict.has_key(token['SUBTOKENS'][i]['TAG']):
+                positionDict[token['SUBTOKENS'][i]['TAG']] = {}
+            positionDict[token['SUBTOKENS'][i]['TAG']][i] = None
 
         # Apply rule only at the positions that have its "original" tag
         for rule in self._rules:
             if positionDict.has_key(rule.getOriginal()):
-                changed = rule.applyAt(tokens, positionDict[rule.getOriginal()])
+                changed = rule.applyAt(token, positionDict[rule.getOriginal()])
                 # Immediately update positions of tags
                 for i in changed:
                     del positionDict[rule.getOriginal()][i]
@@ -135,14 +142,13 @@ class BrillTagger(nltk.tagger.TaggerI):
                         positionDict[rule.getReplacement()] = {}
                     positionDict[rule.getReplacement()][i] = None
 
-        return tokens
-
     # Finds the rule that makes the biggest net improvement in the corpus.
     # Returns a (rule, score) pair.
-    def _bestRule (self, tokens, correctTokens):
+    def _bestRule (self, myToken, correctToken):
         best = (0, None)
+        myTokenLen = len(myToken['SUBTOKENS'])
         print("\nFinding rule %i for %i tokens..."
-              %(len(self._rules)+1, len(tokens)))
+              %(len(self._rules)+1, len(myToken['SUBTOKENS'])))
         print("  Organizing corpus...")
 
         errorIndices = [] #_errorPositions(tokens, correctTokens)
@@ -150,9 +156,9 @@ class BrillTagger(nltk.tagger.TaggerI):
         # Collect lists of indices that are correct, sorted by their tags
         correctIndices = {}
         
-        for i in range(len(tokens)):
-            tag = tokens[i].type().tag()
-            if tag == correctTokens[i].type().tag():
+        for i in range(myTokenLen):
+            tag = myToken['SUBTOKENS'][i]['TAG']
+            if tag == correctToken['SUBTOKENS'][i]['TAG']:
                 if not correctIndices.has_key(tag):
                     correctIndices[tag] = []
                 correctIndices[tag].append(i)
@@ -170,8 +176,8 @@ class BrillTagger(nltk.tagger.TaggerI):
                 # ALERT: This is not quite right.  If one or more templates
                 # return identical rules, they should only be counted once.
                 # Maybe we could put all rules in a set, then increment goodRules.
-                for rule in template.makeApplicableRules(tokens, i,
-                                                    correctTokens[i].type().tag()):
+                for rule in template.makeApplicableRules(myToken, i,
+                                                    correctToken['SUBTOKENS'][i]['TAG']):
                     if goodRules.has_key(rule):
                         goodRules[rule] += 1
                     else:
@@ -220,7 +226,7 @@ class BrillTagger(nltk.tagger.TaggerI):
                 # to the next score level.  Then try the next rule at the higher
                 # level.  Start searching at the index kept with each rule.
                 for i in correctIndices[rule.getOriginal()]: # the long part
-                    if rule.applies(tokens, i):
+                    if rule.applies(myToken, i):
                         s -= 1
                         if s <= best[1]: # not gonna help
                             break
@@ -239,7 +245,7 @@ class TemplateI:
     def __init__(self):
         assert False, "TemplateI is an abstract interface"
 
-    def makeApplicableRules(self, tokens, index, correctTag):
+    def makeApplicableRules(self, token, index, correctTag):
         """
         Constructs a list of zero or more transformations that would change
         the tag of C{tokens[index]} to C{correctTag}, given
@@ -248,8 +254,8 @@ class TemplateI:
         (If the tags are already identical, returns
         the empty list.)
 
-        @param tokens: A corpus of tagged C{Token}s
-        @type tokens: list of Token
+        @param token: A corpus represented as a C{Token} with tagged SUBTOKENS
+        @type token: Token
         @param index: The index of C{tokens} to be corrected by returned rules
         @type index: int
         @param correctTag: The correct tag for C{tokens[index]}
@@ -311,15 +317,17 @@ class ProximateTokensTemplateI(TemplateI):
     # Returns a list of Rules that would make the right correction at
     # the indicated site.
     # All lists should be unique if the tuples in _boundaryList are unique.
-    def makeApplicableRules (self, tokens, index, correctTag):
+    def makeApplicableRules (self, token, index, correctTag):
         """
         See L{TemplateI} for full specifications.
 
         @rtype: list of ProximateTokensRuleI
         """
-        if tokens[index].type().tag() == correctTag:
+        if token['SUBTOKENS'][index]['TAG'] == correctTag:
             return []
         
+        tokenLen = len(token['SUBTOKENS'])
+
         subruleSets = []
         for (start, end) in self._boundaryList:
             # Each Rule may have multiple subrule conditions for its application, each
@@ -328,9 +336,9 @@ class ProximateTokensTemplateI(TemplateI):
             # (start,end) subrule.  (Not a list; we don't want repeats.)
             subrules = {}
             # A match anywhere in this range will suffice for this condition.
-            for j in range(max(0, index+start), min(index+end+1, len(tokens))):
+            for j in range(max(0, index+start), min(index+end+1, tokenLen)):
                 subrules[ (start, end,
-                           self.extractProperty(tokens[j])) ] = None
+                           self.extractProperty(token['SUBTOKENS'][j])) ] = None
 
             subruleSets.append(subrules)
 
@@ -344,7 +352,7 @@ class ProximateTokensTemplateI(TemplateI):
             tupleLists = [[r] for r in subruleSets[0].keys()]
             
         # Finally, translate the tuples into rules and return them.
-        return [ self._proximateRuleType(x, tokens[index].type().tag(), correctTag)
+        return [ self._proximateRuleType(x, token['SUBTOKENS'][index]['TAG'], correctTag)
                  for x in tupleLists ]
     
     # extractProperty is a function on tagged tokens that returns a value.
@@ -385,26 +393,26 @@ class RuleI:
     def __init__(self):
         assert False, "RuleI is an abstract interface"
     
-    def applyTo(self, tokens):
+    def applyTo(self, token):
         """
         Applies the rule to the corpus.
 
-        @param tokens: The tagged corpus
-        @type tokens: list of Token
+        @param token: The tagged corpus
+        @type token: Token
         @return: The indices of tokens whose tags were changed by this rule
         @rtype: list of int
         """
-        return self.applyAt(tokens, range(len(tokens)))
+        return self.applyAt(token, range(len(token['SUBTOKENS'])))
 
     # Applies this rule at the given positions in the corpus
     # Returns the positions affected by the application
-    def applyAt(self, tokens, positions):
+    def applyAt(self, token, positions):
         """
         Applies the rule to the indicated indices of the corpus.  (The rule's
         conditions are still tested.)
 
-        @param tokens: The tagged corpus
-        @type tokens: list of Token
+        @param token: The tagged corpus
+        @type token: Token
         @param positions: The positions where the transformation is to be tried
         @return: The indices of tokens whose tags were changed by this rule
         @rtype: list of int
@@ -412,12 +420,12 @@ class RuleI:
         assert False, "RuleI is an abstract interface"
 
     # Returns 1 if the rule would apply at the given index in tokens
-    def applies(self, tokens, index):
+    def applies(self, token, index):
         """
         Indicates whether this rule would make a change at C{tokens[index]}.
 
-        @param tokens: A tagged corpus
-        @type tokens: list of Token
+        @param token: A tagged corpus
+        @type token: Token
         @param index: The index to check
         @type index: int
         @return: True if the rule would change the tag of C{tokens[index]},
@@ -510,33 +518,33 @@ class ProximateTokensRuleI (RuleI):
         """
         assert False, "ProximateTokensRuleI is an abstract interface"
 
-    def applyAt(self, tokens, positions):
+    def applyAt(self, token, positions):
         # Inherit docs from RuleI
         change = []
         for i in positions:
-            if self.applies(tokens, i):
+            if self.applies(token, i):
                 change.append(i)
 
         for i in change:
             # replace the token with a similar one, except retagged
-            tokens[i] = nltk.token.Token(
-                    nltk.tagger.TaggedType(tokens[i].type().base(), self._replacement),
-                    tokens[i].loc())
-        
+            token['SUBTOKENS'][i]['TAG'] = self._replacement
+
         return change
 
-    def applies(self, tokens, index):
+    def applies(self, token, index):
         # Inherit docs from RuleI
         # Does the target tag match this rule?
-        if tokens[index].type().tag() != self._original:
+        if token['SUBTOKENS'][index]['TAG'] != self._original:
             return False
         
+        tokenLen = len(token['SUBTOKENS'])
+
         # Otherwise, check each condition separately
         for (start, end, T) in self._conditionList:
             conditionOK = False
             # Check each token that could satisfy the condition
-            for j in range(max(0, index+start), min(index+end+1, len(tokens))):
-                if self.extractProperty(tokens[j]) == T:
+            for j in range(max(0, index+start), min(index+end+1, tokenLen)):
+                if self.extractProperty(token['SUBTOKENS'][j]) == T:
                     conditionOK = True
                     break
             if not conditionOK:  # all conditions must hold
@@ -587,7 +595,7 @@ class ProximateTagsTemplate(ProximateTokensTemplateI):
         @return: The tag
         @rtype: any
         """
-        return token.type().tag()
+        return token['TAG']
 
 class ProximateTagsRule (ProximateTokensRuleI):
     """
@@ -606,7 +614,7 @@ class ProximateTagsRule (ProximateTokensRuleI):
         @return: The tag
         @rtype: any
         """
-        return token.type().tag()
+        return token['TAG']
 
     def __str__(self):
         return "Replace %s with %s if %s" %(self._original, self._replacement,
@@ -636,7 +644,7 @@ class ProximateWordsTemplate(ProximateTokensTemplateI):
         @return: The base type
         @rtype: any
         """
-        return token.type().base()
+        return token['TEXT']
 
 # a lexical rule
 class ProximateWordsRule (ProximateTokensRuleI):
@@ -657,7 +665,7 @@ class ProximateWordsRule (ProximateTokensRuleI):
         @return: The base type
         @rtype: any
         """
-        return token.type().base()
+        return token['TEXT']
 
     def __str__(self):
         return "Replace %s with %s if %s" %(self._original, self._replacement,
@@ -741,46 +749,47 @@ class SymmetricProximateTokensTemplate(TemplateI):
                                                   for (a,b) in boundaryList])
 
     # Generates lists of a subtype of ProximateTokensRuleI.
-    def makeApplicableRules(self, tokens, index, correctTag):
+    def makeApplicableRules(self, token, index, correctTag):
         """
         See L{TemplateI} for full specifications.
 
         @rtype: list of ProximateTokensRuleI
         """
-        return self._ppt1.makeApplicableRules(tokens, index, correctTag) \
-               + self._ppt2.makeApplicableRules(tokens, index, correctTag)
+        return self._ppt1.makeApplicableRules(token, index, correctTag) \
+               + self._ppt2.makeApplicableRules(token, index, correctTag)
 
 
-def _errorPositions (tokens, correctTokens):
-    return [i for i in range(len(tokens)) \
-            if tokens[i].type().tag() != correctTokens[i].type().tag() ]
+def _errorPositions (correctToken, token):
+    return [i for i in range(len(token['SUBTOKENS'])) \
+            if token['SUBTOKENS'][i]['TAG'] != correctToken['SUBTOKENS'][i]['TAG'] ]
 
 
 # returns a list of errors in string format
-def errorList (tokens, correctTokens, radius=2):
+def errorList (correctToken, token, radius=2):
     """
     Returns a list of human-readable strings indicating the errors in the
     given tagging of the corpus.
 
+    @param correctToken: The correct tagging of the corpus
+    @type correctToken: Token
     @param tokens: The tagged corpus
     @type tokens: list of Token
-    @param correctTokens: The correct tagging of the corpus
-    @type correctTokens: list of Token
     @param radius: How many tokens on either side of a wrongly-tagged token
         to include in the error string.  For example, if C{radius}=2, each error
         string will show the incorrect token plus two tokens on either side.
     @type radius: int
     """
     errors = []
-    indices = _errorPositions(tokens, correctTokens)
+    indices = _errorPositions(correctToken, token)
+    tokenLen = len(token['SUBTOKENS'])
     for i in indices:
-        ei = tokens[i].type().tag().rjust(3) + " <- " \
-             + correctTokens[i].type().tag().rjust(3) + ":  "
-        for j in range( max(i-radius, 0), min(i+radius+1, len(tokens)) ):
-            if tokens[j].type().base() == tokens[j].type().tag():
-                s = tokens[j].type().base() # don't print punctuation tags
+        ei = token['SUBTOKENS'][i]['TAG'].rjust(3) + " <- " \
+             + correctToken['SUBTOKENS'][i]['TAG'].rjust(3) + ":  "
+        for j in range( max(i-radius, 0), min(i+radius+1, tokenLen) ):
+            if token['SUBTOKENS'][j]['TEXT'] == token['SUBTOKENS'][j]['TAG']:
+                s = token['SUBTOKENS'][j]['TEXT'] # don't print punctuation tags
             else:
-                s = tokens[j].type().base() + "/" + tokens[j].type().tag()
+                s = token['SUBTOKENS'][j]['TEXT'] + "/" + token['SUBTOKENS'][j]['TAG']
                 
             if j == i:
                 ei += "**"+s+"** "
@@ -815,16 +824,16 @@ def tokenizeTaggedFile (taggedFile, tokenizer):
                 # The tokenizer thinks 4/CD is the tag part (a "slashed type").
                 # We need to make the base 3\/4 and the tag CD.
                 # Also, a few words/symbols are not tagged at all.  Drop these.
-                for token in tokenizer.tokenize(s.strip()):
-                    tag = token.type().tag()
+                line_token = nltk.token.Token(TEXT=s.strip())
+                tokenizer.tokenize(line_token)
+                for token in line_token['SUBTOKENS']:
+                    tag = token['TAG']
                     if not tag:
                         continue
                     elif tag.count('/') > 0:
                         lastSlash = tag.rfind('/')
-                        base = token.type().base() + '/' + tag[:lastSlash]
-                        token = nltk.token.Token(
-                            nltk.tagger.TaggedType(base, tag[lastSlash+1:]),
-                                                 token.loc())
+                        token['TEXT'] += '/' + tag[:lastSlash]
+                        token['TAG'] = ag[lastSlash+1:]
                     taggedTokens.append(token)
                 #taggedTokens += tokenizer.tokenize(s.strip())
 
@@ -852,15 +861,15 @@ def getTaggedFilenames (n, randomize = False):
     if n == 0:
         return []
 
-    entries = nltk.corpus.brown.entries()
+    items = nltk.corpus.brown.items()
     if randomize:
-        random.shuffle(entries)
+        random.shuffle(items)
         
-    if len(entries) < n:
-        print("Returning all %i files." %len(entries))
-    entries = entries[:n] # no error, even if n is large
+    if len(items) < n:
+        print("Returning all %i files." %len(items))
+    items = items[:n] # no error, even if n is large
 
-    return [nltk.corpus.brown.path(e) for e in entries]
+    return [nltk.corpus.brown.path(e) for e in items]
     
 #     nltk.corpus.brown
 #     location = "/mnt/unagi/nldb2/cdrom-12-92/tagged/tagged/"
@@ -919,19 +928,28 @@ def test(numFiles=3, maxRules=200, minScore=2, ruleFile="dump.rules",
          errorOutput = "errors.out", ruleOutput="rules.out",
          randomize=False, train=.8):
 
+    NN_CD_tagger = nltk.tagger.RegexpTagger([(r'^[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
+
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
 
     taggedData = getTaggedTokens(numFiles, randomize)
 
     trainCutoff = int(len(taggedData)*train)
-    trainingData = taggedData[0:trainCutoff]
-    testingData = taggedData[trainCutoff:]
+    trainingData = nltk.token.Token(SUBTOKENS=taggedData[0:trainCutoff])
+    goldData = nltk.token.Token(SUBTOKENS=taggedData[trainCutoff:])
+    testingData = goldData.exclude('TAG')
+
+    # Unigram tagger
 
     print("Training unigram tagger...")
     u = nltk.tagger.UnigramTagger()
     u.train(trainingData)
-    backoff = nltk.tagger.BackoffTagger([u, nltk.tagger.NN_CD_Tagger()])
+    backoff = nltk.tagger.BackoffTagger([u, NN_CD_tagger])
+    print("\nUnigram accuracy: %f"
+          %nltk.tagger.tagger_accuracy(backoff, [testingData]))
+
+    # Brill tagger
 
     templates = [ \
                   SymmetricProximateTokensTemplate((1,1), ProximateTagsTemplate),
@@ -948,13 +966,8 @@ def test(numFiles=3, maxRules=200, minScore=2, ruleFile="dump.rules",
     
     b = BrillTagger(backoff, templates) # use backoff for the initial tagging
     b.train(trainingData, maxRules, minScore)
+    print("Brill accuracy: %f" %nltk.tagger.tagger_accuracy(b, [testingData]))
 
-    testTokens = nltk.tagger.untag(testingData)
-
-    print("\nUnigram accuracy: %f"
-          %nltk.tagger.accuracy(testingData, backoff.tag(testTokens)))
-    btagged = b.tag(testTokens)
-    print("Brill accuracy: %f" %nltk.tagger.accuracy(testingData, btagged))
     print("\nRules: ")
     printRules = file(ruleOutput, 'w')
     for rule in b.getRules():
@@ -962,7 +975,8 @@ def test(numFiles=3, maxRules=200, minScore=2, ruleFile="dump.rules",
         printRules.write(str(rule)+"\n\n")
     b.saveRules(ruleFile)
 
-    el = errorList(btagged, testingData)
+    b.tag(testingData)
+    el = errorList(goldData, testingData)
     errorFile = file(errorOutput, 'w')
 
     for e in el:
