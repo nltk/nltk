@@ -45,7 +45,7 @@ tag sequence can be calculated for a given sequence of word forms. This differs
 from other tagging techniques which often tag each word individually, seeking
 to optimise each individual tagging greedily without regard to the optimal
 combination of tags for a larger unit, such as a sentence. The HMM does this
-with the Viterbi algorithm, which efficiently computing the optimal path
+with the Viterbi algorithm, which efficiently computes the optimal path
 through the graph given the sequence of words forms.
 
 In POS tagging the states usually have a 1:1 correspondence with the tag
@@ -208,6 +208,8 @@ class HMMTrainer:
         probability of the data sequence. This is a variant of the EM
         algorithm, and is unsupervised in that it doesn't need the state
         sequences for the symbols.
+
+        FIXME - IMPLEMENTATION UNFINISHED
         """
 
         N = len(self._states)
@@ -353,7 +355,7 @@ def demo():
 
 def _split_tagged_tokens(tagged_tokens):
     from nltk.set import MutableSet
-    from nltk.stemmer.porter import *
+    from nltk.stemmer.porter import PorterStemmer
     words = []
     ws = []
     word_set = MutableSet()
@@ -362,29 +364,31 @@ def _split_tagged_tokens(tagged_tokens):
     tag_set = MutableSet()
     stemmer = PorterStemmer()
     for token in tagged_tokens:
-        w = token.type().base().lower() # make them lower case
-        #w = stemmer.stem_word(w) # oh, and stem them too
-        #w = token.type().base()
-        t = token.type().tag()
-        word_set.insert(w)
-        tag_set.insert(t)
-        ws.append(w)
-        ts.append(t)
-        if t == '.':
-            words.append(ws)
-            ws = []
-            tags.append(ts)
-            ts = []
+        for sub_token in token['SUBTOKENS']:
+            w = sub_token['TEXT'].lower() # make them lower case
+            #w = stemmer.stem_word(w) # oh, and stem them too
+            #w = token.type().base()
+            t = sub_token['TAG']
+            word_set.insert(w)
+            tag_set.insert(t)
+            ws.append(w)
+            ts.append(t)
+            if t == '.':
+                words.append(ws)
+                ws = []
+                tags.append(ts)
+                ts = []
 
     return words, word_set.elements(), tags, tag_set.elements()
 
 def demo_pos_supervised():
     from nltk.corpus import brown
     from nltk.tagger import TaggedTokenizer
+    from sys import stdout
     print 'Loading data from Brown corpus...'
     tagged_tokens = []
     for item in brown.items()[:5]:
-        tagged_tokens.extend(brown.tokenize(item))
+        tagged_tokens.append(brown.tokenize(item))
         
     words, word_set, tags, tag_set = _split_tagged_tokens(tagged_tokens)
 
@@ -417,6 +421,7 @@ def demo_pos_supervised():
     count = correct = 0
     for ws, ts in zip(words[:100], tags[:100]):
         print '.',
+        stdout.flush()
         pts = hmm.best_path(ws)
         for t, pt in zip(ts, pts):
             count += 1
