@@ -19,6 +19,9 @@ M{t1...tn} are tokens, and M{[t1,...,tn]} is the input to a chunk
 parser which identified M{tj...tk} as a chunk, the resulting chunk
 structure would be M{[t1,...,tj-1,[tj,...tk],tk+1,tn]}.
 
+B{Currently, ChunkParserI is not a subinterface of ParserI (it returns
+chunk structures, not tree tokens).  This will change soon.}
+
 Helper Functions
 ================
 
@@ -36,6 +39,109 @@ functions:
       chunk parser that operates one sentence at a time.
     - C{unchunk} converts a chunk structure to a list of tagged
       tokens, by removing all chunking.
+
+REChunkParser
+=============
+
+C{REChunkParser} is a regular-expression based implementation of the
+chunk parser interface.  Its C{parse} method first constructs a
+C{ChunkString}, which encodes a particular chunking of the input text.
+Initially, nothing is chunked.  C{REChunkParser} then applies a
+sequence of C{REChunkParserRule}s to the C{ChunkString}, each of which
+modifies the chunking that it encodes.  Finally, the C{ChunkString} is
+used to construct a chunk structure, which is returned.
+
+REChunkParserRules
+------------------
+
+C{REChunkParserRule}s define the C{apply} method, which modifies the
+chunking encoded by a C{ChunkString}.  The C{REChunkParserRule} class
+itself can be used to implement any transformational rule based on
+regular expressions.  There are also a number of subclasses, which can
+be used to implement simpler types of rules:
+
+  - C{ChunkRule} chunks anything that matches a given regular
+    expression.
+  - C{ChinkRule} chinks anything that matches a given regular
+    expression.
+  - C{UnChunkRule} will un-chunk any chunk that matches a given
+    regular expression.
+  - C{MergeRule} can be used to merge two contiguous chunks.
+  - C{SplitRule} can be used to split a single chunk into two smaller
+    chunks. 
+
+Tag Patterns
+~~~~~~~~~~~~
+
+C{REChunkParserRule}s use a modified version of regular expression
+patterns, called X{tag patterns}.  Tag patterns are used to match
+sequences of tags.  Examples of tag patterns are::
+
+    r'(<DT>|<JJ>|<NN>)+'
+    r'<NN>+'
+    r'<NN.*>'
+
+The differences between regular expression patterns and tag patterns
+are:
+
+    - In tag patterns, C{'<'} and C{'>'} act as parenthases; so
+      C{'<NN>+'} matches one or more repetitions of C{'<NN>'}, not
+      C{'<NN'} followed by one or more repetitions of C{'>'}.
+    - Whitespace in tag patterns is ignored.  So
+      C{'<DT> | <NN>'} is equivalant to C{'<DT>|<NN>'}
+    - In tag patterns, C{'.'} is equivalant to C{'[^{}<>]'}; so
+      C{'<NN.*>'} matches any single tag starting with C{'NN'}.
+
+Efficiency
+----------
+
+Preliminary tests indicate that C{REChunkParser} can chunk at a rate
+of about 300 tokens/second, with a moderately complex rule set.
+
+There may be problems if C{REChunkParser} is used with more than 5,000
+tokens at a time.  In particular, evaluation of some regular
+expressions may cause the Python regular expression engine to exceed
+its maximum recursion depth.  We have attempted to minimize these
+problems, but it is impossible to avoid them completely.  We therefore
+recommend that you apply the chunk parser to a single sentence at a
+time.
+
+Emacs Tip
+---------
+
+If you evaluate the following, it will colorize tags and
+bracketing when you use an interactive python shell with emacs or
+xemacs ("C-c !")::
+
+   (let ()
+     (defconst comint-mode-font-lock-keywords 
+       '(("<[^>]+>" 0 'font-lock-reference-face)
+         ("[{}]" 0 'font-lock-function-name-face)))
+     (add-hook 'comint-mode-hook (lambda () (turn-on-font-lock))))
+
+You can evaluate this code by copying it to a temporary buffer,
+placing the cursor after the last close parenthasis, and typing "C-x
+C-e".  You should evaluate it before running the interactive session.
+The change will last until you close emacs.
+
+Unresolved Issues
+-----------------
+
+If we use the C{re} module for regular expressions, Python's regular
+expression engine generates "maximum recursion depth exceeded" errors
+when processing very large texts, even for regular expressions that
+should not require any recursion.  We therefore use the C{pre} module
+instead.  But note that C{pre} does not include Unicode support, so
+this module will not work with unicode strings.  Note also that C{pre}
+regular expressions are not quite as advanced as C{re} ones (e.g., no
+leftward zero-length assertions).
+
+@type _VALID_CHUNK_STRING: C{regexp}
+@var _VALID_CHUNK_STRING: A regular expression to test whether a chunk
+     string is valid.
+@type _VALID_TAG_PATTERN: C{regexp}
+@var _VALID_TAG_PATTERN: A regular expression to test whether a tag
+     pattern is valid.
 """
 
 from nltk.token import TokenizerI, Token, Location, LineTokenizer
@@ -43,6 +149,71 @@ from nltk.tagger import parseTaggedType
 from nltk.chktype import chktype as _chktype
 from types import StringType as _StringType
 import re
+
+# Used for sorting by epydoc; and for "import *"
+__all__ = [
+    'ChunkParserI',
+    'REChunkParser',
+    'REChunkParserRule',
+    'ChunkRule',
+    'ChinkRule',
+    'MergeRule',
+    'SplitRule',
+    'UnChunkRule',
+    'ChunkString',
+    'ChunkScore',
+    'ChunkedTaggedTokenizer',
+    ]
+    
+##//////////////////////////////////////////////////////
+##  Thoughts/comments
+##//////////////////////////////////////////////////////
+
+"""
+Issues:
+  - maximum recursion depth issues! grr...
+  - generalize ChunkString constructor to accept a chunk struct
+    instead of a tagged text?
+  - Add more comments/docs, explaining precompiled regexps.
+  - In order to conform to interfaces, we might eventually want to
+    change reps: 
+    - chunkparser output as a tree
+    - chunkedtaggedtokenizer should produce a list of tokens
+  - Efficiency issues? (currently we do ~500-1500 tokens/sec; faster
+    when we chunk more text at a time)
+
+Questions:
+  - Should ChunkString be made immutable?
+
+Indication of current efficiency::
+
+  TIMING TEST (3 rules: chunk/unchunk/merge)
+  1 x 10008 words:
+      Time = 15.36 seconds
+  8 x 1260 words:
+      Time = 10.01 seconds
+  27 x 372 words:
+      Time = 9.678 seconds
+  64 x 168 words:
+      Time = 10.19 seconds
+  125 x 84 words:
+      Time = 10.11 seconds
+  216 x 48 words:
+      Time = 10.53 seconds
+  343 x 36 words:
+      Time = 12.95 seconds
+  512 x 24 words:
+      Time = 13.65 seconds
+  729 x 24 words:
+      Time = 19.47 seconds
+  1000 x 12 words:
+      Time = 16.01 seconds
+
+"""
+
+##//////////////////////////////////////////////////////
+##  Chunk Parser Interface & Helpers
+##//////////////////////////////////////////////////////
 
 class ChunkParserI:
     """
@@ -378,176 +549,6 @@ class ChunkScore:
             if type(piece) == type([]):
                 toks.append(self._chunk_tok(piece))
         return toks
-
-
-
-"""
-A regular-expression based chunk parser, and several supporting
-classes and functions.  The chunk parser itself is implemented by the
-C{REChunkParser} class, which implements the C{ChunkParserI}
-interface.  See the reference documentation in the C{nltk.chunkparser}
-module for more information about the C{ChunkParserI} interface.
-
-C{REChunkParser} defines the C{parse} method.  This method identifies
-linguistic groups in a text, such as noun phrases.  Its input is a
-list of tokens.  Its output is a X{chunk structure} that encodes the
-linguistic groups.  A chunk structure is a list containing tagged
-tokens and sublists of tagged tokens.  For example, the following
-chunk structure encodes the noun phrases in a simple sentence::
-
-    [['the'/'DT'@[0w], 'little'/'JJ'@[1w], 'cat'/'NN'@[2w]],
-     'sat'/'VBD'@[3w], 'on'/'IN'@[4w],
-     ['the'/'DT'@[5w], 'mat'/'NN'@[6w]]]
-
-Parsing
-=======
-
-The C{parse} method first constructs a C{ChunkString}, which encodes a
-particular chunking of the input text.  Initially, nothing is chunked.
-The C{REChunkParser} then applies a sequence of C{REChunkParserRule}s
-to the C{ChunkString}, each of which modifies the chunking that it
-encodes.  Finally, the C{ChunkString} is used to construct a chunk
-structure, which is returned.
-
-REChunkParserRules
-------------------
-
-C{REChunkParserRule}s define the C{apply} method, which modifies the
-chunking encoded by a C{ChunkString}.  The C{REChunkParserRule} class
-itself can be used to implement any transformational rule based on
-regular expressions.  There are also a number of subclasses, which can
-be used to implement simpler types of rules:
-
-  - C{ChunkRule} chunks anything that matches a given regular
-    expression.
-  - C{ChinkRule} chinks anything that matches a given regular
-    expression.
-  - C{UnChunkRule} will un-chunk any chunk that matches a given
-    regular expression.
-  - C{MergeRule} can be used to merge two contiguous chunks.
-  - C{SplitRule} can be used to split a single chunk into two smaller
-    chunks. 
-
-Tag Patterns
-~~~~~~~~~~~~
-
-C{REChunkParserRule}s use a modified version of regular expression
-patterns, called X{tag patterns}.  Tag patterns are used to match
-sequences of tags.  Examples of tag patterns are::
-
-    r'(<DT>|<JJ>|<NN>)+'
-    r'<NN>+'
-    r'<NN.*>'
-
-The differences between regular expression patterns and tag patterns
-are:
-
-    - In tag patterns, C{'<'} and C{'>'} act as parenthases; so
-      C{'<NN>+'} matches one or more repetitions of C{'<NN>'}, not
-      C{'<NN'} followed by one or more repetitions of C{'>'}.
-    - Whitespace in tag patterns is ignored.  So
-      C{'<DT> | <NN>'} is equivalant to C{'<DT>|<NN>'}
-    - In tag patterns, C{'.'} is equivalant to C{'[^{}<>]'}; so
-      C{'<NN.*>'} matches any single tag starting with C{'NN'}.
-
-Efficiency
-==========
-
-Preliminary tests indicate that C{REChunkParser} can chunk at a rate
-of about 300 tokens/second, with a moderately complex rule set.
-
-There may be problems if C{REChunkParser} is used with more than 5,000
-tokens at a time.  In particular, evaluation of some regular
-expressions may cause the Python regular expression engine to exceed
-its maximum recursion depth.  We have attempted to minimize these
-problems, but it is impossible to avoid them completely.  We therefore
-recommend that you apply the chunk parser to a single sentence at a
-time.
-
-Emacs Tip
-=========
-
-If you evaluate the following, it will colorize tags and
-bracketing when you use an interactive python shell with emacs or
-xemacs ("C-c !")::
-
-   (let ()
-     (defconst comint-mode-font-lock-keywords 
-       '(("<[^>]+>" 0 'font-lock-reference-face)
-         ("[{}]" 0 'font-lock-function-name-face)))
-     (add-hook 'comint-mode-hook (lambda () (turn-on-font-lock))))
-
-You can evaluate this code by copying it to a temporary buffer,
-placing the cursor after the last close parenthasis, and typing "C-x
-C-e".  You should evaluate it before running the interactive session.
-The change will last until you close emacs.
-
-Unresolved Issues
-=================
-
-If we use the C{re} module for regular expressions, Python's regular
-expression engine generates "maximum recursion depth exceeded" errors
-when processing very large texts, even for regular expressions that
-should not require any recursion.  We therefore use the C{pre} module
-instead.  But note that C{pre} does not include Unicode support, so
-this module will not work with unicode strings.  Note also that C{pre}
-regular expressions are not quite as advanced as C{re} ones (e.g., no
-leftward zero-length assertions).
-
-@type _VALID_CHUNK_STRING: C{regexp}
-@var _VALID_CHUNK_STRING: A regular expression to test whether a chunk
-     string is valid.
-@type _VALID_TAG_PATTERN: C{regexp}
-@var _VALID_TAG_PATTERN: A regular expression to test whether a tag
-     pattern is valid.
-"""
-
-
-##//////////////////////////////////////////////////////
-##  Thoughts/comments
-##//////////////////////////////////////////////////////
-
-"""
-Issues:
-  - maximum recursion depth issues! grr...
-  - generalize ChunkString constructor to accept a chunk struct
-    instead of a tagged text?
-  - Add more comments/docs, explaining precompiled regexps.
-  - In order to conform to interfaces, we might eventually want to
-    change reps: 
-    - chunkparser output as a tree
-    - chunkedtaggedtokenizer should produce a list of tokens
-  - Efficiency issues? (currently we do ~500-1500 tokens/sec; faster
-    when we chunk more text at a time)
-
-Questions:
-  - Should ChunkString be made immutable?
-
-Indication of current efficiency::
-
-  TIMING TEST (3 rules: chunk/unchunk/merge)
-  1 x 10008 words:
-      Time = 15.36 seconds
-  8 x 1260 words:
-      Time = 10.01 seconds
-  27 x 372 words:
-      Time = 9.678 seconds
-  64 x 168 words:
-      Time = 10.19 seconds
-  125 x 84 words:
-      Time = 10.11 seconds
-  216 x 48 words:
-      Time = 10.53 seconds
-  343 x 36 words:
-      Time = 12.95 seconds
-  512 x 24 words:
-      Time = 13.65 seconds
-  729 x 24 words:
-      Time = 19.47 seconds
-  1000 x 12 words:
-      Time = 16.01 seconds
-
-"""
 
 ##//////////////////////////////////////////////////////
 ##  Precompiled regular expressions
