@@ -34,11 +34,17 @@ throughout the toolkit.
   individual elements of text, such as words or sentences.
 
   - The L{tree} module defines data structures for representing tree
-  structures over text, such as syntax trees and morphological trees.
+    structures, such as syntax trees and morphological trees.
 
-  - TThe L{probability} module implements classes that encode
-  frequency distributions and probability distributions, including a
-  variety of statistical smoothing techniques.
+  - The L{probability} module implements classes that encode
+    frequency distributions and probability distributions, including a
+    variety of statistical smoothing techniques.
+
+  - The L{eval} module defines basic metrics for evaluating
+    performance.
+
+  - The L{util} module defines a variety of utility classes and
+    functions that are used throughout the toolkit.
 
 The remaining modules define data structures and interfaces for
 performing specific natural language processing tasks.  This list of
@@ -132,9 +138,9 @@ class TaskI:
     A standard NLTK language processing task.
     
     Individual processing tasks are defined as subclasses of C{TaskI}.
-    Each processing task defines an X{action method}, which takes a
-    single token, and performs the task's action on the token by
-    updating its properties (or the properties of contained tokens).
+    Each processing task defines an X{action method}, which takes one
+    or more tokens, and performs the task's action on the tokens by
+    updating their properties (or the properties of contained tokens).
     Action methods are generally named after the tasks; for example,
     the action method for the C{ParserI} task is C{parse()}.
 
@@ -156,6 +162,21 @@ class TaskI:
     L{property()} method, which returns the specific property name
     corresponding to a given generic property name.
 
+    Pipeline Action Methods
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    Each interface also defines a number of optional X{pipleine action
+    methods}, which take one or more tokens, performs the task's
+    action, and return the newly generated information (I{without}
+    updating the tokens' properties).  Pipeline action methods are
+    especially useful in cases where the task's action can generate
+    multiple possible solutions.  In this case, different pipeline
+    action methods can return different collections of possible
+    solutions (such as lists of solutions, or probability
+    distributions over solutions).  Pipeline action methods are given
+    names like C{get_I{result}}, C{get_I{result}_probs},
+    C{get_I{result}_scores}, and C{get_I{result}_list}.  E.g.,
+    C{get_classification_probs}.
+
     Raw Action Methods
     ~~~~~~~~~~~~~~~~~~
     Each processing task may optionally define a X{raw action method},
@@ -165,22 +186,30 @@ class TaskI:
     named C{raw_I{act}}, where C{I{act}} is the name of the action
     method.
     """
-# [XX] this gets precedence over the mixin, which break things. :-/
-#     def property(self, prop):
-#         """
-#         @return: The specific property name that corresponds to the
-#         given generic property name.  If no specific property name was
-#         provided for C{generic_name}, then return C{generic_name}.
-#         @rtype: C{string}
-#         """
-#         raise NotImplementedError
 
-class PropertyIndirectionMixIn:
+class PropertyIndirectionI:
     """
     A mix-in base clase that provides property indirection support.
     Property indirection is required by the L{TaskI} interface; see
     L{TaskI} for more information about property indireciton.
     """
+    def property(self, generic_name):
+        """
+        @return: The specific property name that corresponds to the
+        given generic property name.  If no specific property name was
+        provided for C{generic_name}, then return C{generic_name}.
+        @rtype: C{string}
+        """
+        raise NotImplementedError
+
+    def property_names(self):
+        """
+        @return: The property names dictionary.
+        @rtype: C{dict}
+        """
+        raise NotImplementedError
+
+class PropertyIndirectionMixIn(PropertyIndirectionI):
     def __init__(self, **property_names):
         """
         Initialize the task's property indirection mapping with
@@ -193,19 +222,9 @@ class PropertyIndirectionMixIn:
         """
         self.__property_names = property_names
 
-    # Note: docstring copied from TaskI.property().
     def property(self, generic_name):
-        """
-        @return: The specific property name that corresponds to the
-        given generic property name.  If no specific property name was
-        provided for C{generic_name}, then return C{generic_name}.
-        @rtype: C{string}
-        """
         return self.__property_names.get(generic_name, generic_name)
 
     def property_names(self):
-        """
-        @return: The property names dictionary.
-        @rtype: C{dict}
-        """
         return self.__property_names
+
