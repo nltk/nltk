@@ -113,8 +113,8 @@ class Location:
             specifies the unit of the C{Location}'s indices.
         """
         # Set the start and end locations
-        _chktype("Location", 1, start, (_IntType,))
-        _chktype("Location", 2, end, (_IntType, _NoneType))
+        _chktype(1, start, _IntType)
+        _chktype(2, end, _IntType, _NoneType)
         self._start = start
         if end is not None: self._end = end
         else: self._end = self._start+1
@@ -181,7 +181,7 @@ class Location:
         return self._source
 
     def union(self, other):
-        _chktype('union', 1, other, (Location,))
+        _chktype(1, other, Location)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
         if self._source != other._source:
@@ -487,9 +487,8 @@ class Token:
             when C{location_or_start} gives the start index of the new
             token's location.            
         """
-        _chktype("Token", 2, location_or_start,
-                 (_IntType, Location, _NoneType))
-        _chktype("Token", 3, end, (_IntType, _NoneType))
+        _chktype(2, location_or_start, _IntType, Location, _NoneType)
+        _chktype(3, end, _IntType, _NoneType)
         self._type = type
         if isinstance(location_or_start, Location):
             self._location = location_or_start
@@ -713,14 +712,14 @@ class WSTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType)
         words = str.split()
         return [Token(words[i], Location(i, unit='w', source=source))
                 for i in range(len(words))]
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType,)
         return _XTokenTuple(str.split(), source=source, unit='w')
 
 class CharTokenizer(TokenizerI):
@@ -732,7 +731,7 @@ class CharTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType)
         chars = [c for c in str]
         return [Token(chars[i], Location(i, unit='c', source=source))
                 for i in range(len(chars))
@@ -748,7 +747,7 @@ class LineTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType)
         tokens = []
         i = 0
         for sent in str.split('\n'):
@@ -760,7 +759,7 @@ class LineTokenizer(TokenizerI):
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType)
         return _XTokenTuple([s for s in str.split('\n')
                              if s.strip() != ''],
                             source=source, unit='s') 
@@ -778,13 +777,13 @@ class RETokenizer(TokenizerI):
         """
         @type regexp: string
         """
-        _chktype("RETokenizer", 1, regexp, (_StringType, ))
+        _chktype(1, regexp, _StringType)
         self._regexp = re.compile('('+regexp+')')
         self._positive = positive
         
     def tokenize(self, str, **kwargs):
         # Inherit docs from TokenizerI
-        _chktype("RETokenizer.tokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType)
 
         if '\0' in str or '\1' in str:
             raise ValueError("RETokenizer can't handle "+
@@ -814,7 +813,7 @@ class RETokenizer(TokenizerI):
     # Does not handle self._positive!!
     def xtokenize(self, str, **kwargs):
         # Inherit docs from TokenizerI
-        _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
+        _chktype(1, str, _StringType)
 
         if '\0' in str or '\1' in str:
             raise ValueError("RETokenizer can't handle "+
