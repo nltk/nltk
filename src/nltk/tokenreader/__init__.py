@@ -29,13 +29,13 @@ class TokenReaderI(TaskI):
     different representations.  I.e., different token readers will
     return tokens that define different properties.
     """
-    def read_token(s, source=None):
+    def read_token(s):
         """
         @return: The token encoded by the string C{s}.
         @rtype: L{Token}
         """
         raise NotImplementedError
-    def read_tokens(s, source=None):
+    def read_tokens(s):
         """
         @return: A list of the tokens encoded by the string C{s}.
         @rtype: C{list} of L{Token}
@@ -50,17 +50,24 @@ class TokenizerBasedTokenReader(TokenReaderI):
     def __init__(self, tokenizer):
         self._tokenizer = tokenizer
 
-    # [XX] Source is ignored!!
-    def read_token(self, s, source=None):
+    def read_token(self, s, *tokenizer_args, **tokenizer_kwargs):
+        """
+        @param tokenizer_args, tokenizer_kwargs: Arguments that are
+        passed on to the tokenizer's C{tokenize} method.
+        """
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
         tok = Token(**{TEXT: s})
-        self._tokenizer.tokenize(tok)
+        self._tokenizer.tokenize(tok, *tokenizer_args, **tokenizer_kwargs)
         del tok[TEXT]
         return tok
                          
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
+    def read_tokens(self, s, *tokenizer_args, **tokenizer_kwargs):
+        """
+        @param tokenizer_args, tokenizer_kwargs: Arguments that are
+        passed on to the tokenizer's C{tokenize} method.
+        """
+        return [self.read_token(s, *tokenizer_args, **tokenizer_kwargs)]
 
     def property(self, property):
         return self._tokenizer.property(property)
@@ -110,7 +117,7 @@ from nltk.tokenreader.ieer import *
 def demo():
     print 'Whitespace separated token reader:'
     reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
-    print reader.read_tokens('tokens separated by spaces')
+    print reader.read_tokens('tokens separated by spaces', addlocs=True)
 
     print 'Newline separated token reader:'
     reader = NewlineSeparatedTokenReader(SUBTOKENS='WORDS')
