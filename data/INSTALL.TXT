@@ -1,5 +1,5 @@
 ###############################################################
-###             NLTK: Data Installation Instructions        ###
+###           NLTK: Corpus Installation Instructions        ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
 ### Copyright (C) 2003 University of Pennsylvania           ###
 ### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
@@ -8,37 +8,102 @@
 ### For license information, see LICENSE.TXT                ###
 ###############################################################
 
+This directory contains the standard corpus set for NLTK 1.1.  Each
+corpus or corpus sample is contained in a single zip archive
+(e.g. "brown.zip") that unzips to a subdirectory of the same name
+(e.g. "brown/").  Each corpus is accompanied by a readme file (e.g.,
+"brown.readme") that describes the corpus's contents, copyright, and
+license.
+
 Unix Installation
 ~~~~~~~~~~~~~~~~~
-    The default location for NLTK data is the top-level nltk/data
-    directory.  Each corpus sample comes as a zip archive <corpus.zip>
-    with an associated readme file <corpus.readme>.  Each <corpus.zip>
-    archive unzips to a directory <corpus>.
+    1. Create a directory to hold the NLTK corpus set.  Common paths
+       for this directory are /usr/lib/nltk; /usr/local/lib/nltk;
+       and /usr/share/nltk.  If you are not a system administrator,
+       you can put this directory in your home (e.g. ~/nltk_corpora).
 
-    To unzip a corpus sample that you want to use, do:
+           mkdir /usr/lib/nltk
 
-        unzip corpus.zip
+    2. Uncompress each corpus that you'd like to use to into the
+       NLTK corpus directory that you created.
 
-    To unzip a corpus sample to another location, such as
-    /usr/share/data do:
+           unzip <corpus>.zip -d /usr/lib/nltk
 
-        mkdir /usr/share/data
-        unzip corpus.zip -d /usr/share/data
+    3. If the NLTK corpus directory that you created is not in
+       /usr/lib/nltk, /usr/local/lib/nltk, or /usr/share/nltk, then
+       you will need to tell NLTK where to find the corpora.  You can
+       do this by setting the NLTK_CORPORA environment variable:
 
-    In order to use the nltk.corpus module to access these corpora
-    it is necessary to set the NLTK_CORPORA environment variable, e.g.
+           export NLTK_CORPORA=/usr/lib/nltk_corpora  # for sh or bash
+           setenv NLTK_CORPORA /usr/lib/nltk_corpora  # for csh or tcsh
 
-        export NLTK_CORPORA=/usr/share/data     (bash)
-        setenv NLTK_CORPORA /usr/share/data     (csh)
+       Alternatively, you can also use the function set_basedir() in
+       the module nltk.corpus:
 
+           >>> from nltk.corpus import set_basedir
+           >>> set_basedir('/usr/lib/nltk_corpora')
 
 Windows Installation
 ~~~~~~~~~~~~~~~~~~~~
 
-    To be written
+    1. Create a folder to hold the NLTK corpus set.  Common names
+       for this folder are C:\Program Files\Python2.2\nltk; and
+       C:\Program Files\Python2.2\lib\nltk.
+
+    2. Uncompress each corpus that you'd like to use to into the
+       NLTK corpus directory that you created.  Typically, this
+       is done by copying <corpus>.zip into the NLTK corpus folder
+       that you created; and double-clicking on <corpus>.zip.
+       However, depending on what tool you use to unzip files,
+       the procedure might be slightly different.  If you don't
+       already have a tool to unzip files, you can use the WinZip
+       <http://www.winzip.com> evaluation version.
+
+    3. If the NLTK corpus folder that you created is not in
+       <path-to-python>\nltk or <path-to-python>\lib\nltk, then you
+       will need to tell NLTK where to find the corpora.  You can do
+       this by setting the NLTK_CORPORA environment variable.  For
+       most versions of Windows, this enviroment variable can be set
+       with the following procedure:
+
+           1. Right click on "My Computer".
+           2. Select the "Advanced" tab.
+           3. Click on "Environment Variables"
+           4. Under "User Variables," click "New..."
+           5. Type "NLTK_CORPORA" into the "Variable Name" field;
+              and type the path to the NLTK corpus folder that you
+              created into the "Variable Value" field.
+           5. Hit "Ok" (3 times) to close the dialog windows.
+
+Macintosh Installation (OS X)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    1. Create a directory to hold the NLTK corpus set.  A common path
+       for this directory is /usr/share/nltk.  If you are not a system
+       administrator, you can put this directory in your home
+       (e.g. ~/nltk_corpora).
+
+           mkdir /usr/share/nltk
+
+    2. Uncompress each corpus that you'd like to use to into the
+       NLTK corpus directory that you created.
+
+           unzip <corpus>.zip -d /usr/share/nltk
+
+    3. If the NLTK corpus directory that you created is not in
+       /usr/lib/nltk, /usr/local/lib/nltk, or /usr/share/nltk, then
+       you will need to tell NLTK where to find the corpora.  You can
+       do this by setting the NLTK_CORPORA environment variable:
+
+           export NLTK_CORPORA=/home/me/nltk  # for sh or bash
+           setenv NLTK_CORPORA /home/me/nltk  # for csh or tcsh
+
+       Alternatively, you can also use the function set_basedir() in
+       the module nltk.corpus:
+
+           >>> from nltk.corpus import set_basedir
+           >>> set_basedir('/home/me/nltk')
 
 
-Macintosh Installation
-~~~~~~~~~~~~~~~~~~~~~~
-
+Macintosh Installation (OS 9)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     To be written
