@@ -15,14 +15,13 @@
 #    - unit testing
 
 """
-This module defines several classes which are useful for processing
-individual elements of text, such as words or sentences.  These
-elements of text are known as X{text types}, or X{types} for short.
-Occurances of types are known as X{text tokens}, or X{tokens} for
-short.  Note that several tokens may have the same type.  For example,
-multiple occurances of the same word in a text will constitute
-multiple tokens, but only one type.  Tokens are distinguished based on
-their X{location} within the source text.
+Basic classes useful for processing individual elements of text, such
+as words or sentences.  These elements of text are known as X{text
+types}, or X{types} for short.  Occurances of types are known as
+X{text tokens}, or X{tokens} for short.  Note that several tokens may
+have the same type.  For example, multiple occurances of the same word
+in a text will constitute multiple tokens, but only one type.  Tokens
+are distinguished based on their X{location} within the source text.
 
 The token module defines the C{Token} class to represent tokens, and
 the C{Location} class to represent their locations.  The token module
@@ -74,6 +73,21 @@ class Location:
         @[word 5:word 10]@'example.txt'
 
     C{Location}s are immutable.
+
+    @type _start: C{int}
+    @ivar _start: The index at which this C{Location} begins.  The
+          C{Location} identifies the text beginning at (and including)
+          this value.
+    @type _end: C{int}
+    @ivar _end: The index at which this C{Location ends.  The
+          C{Location} identifies the text up to (but not including)
+          this value.
+    @type _source: (any)
+    @ivar _source: An identifier naming the text over which this
+          location is defined.
+    @type _unit: C{string}
+    @ivar _unit: The index unit used by this C{Location}.  Typical
+          units are 'character' and 'word'.
     """
     def __init__(self, start, end=None, **kwargs):
         """
@@ -183,6 +197,7 @@ class Location:
             unit, start, and end values are equal to C{other}'s;
             raise an exception iff this C{Location}'s source or unit
             are not equal to C{other}'s; return false otherwise.
+        @rtype: C{boolean}
         @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
@@ -206,6 +221,7 @@ class Location:
                 - Raise an exception iff this C{Location}'s source or
                   unit are not equal to C{other}'s 
                 - Return false otherwise.
+        @rtype: C{boolean}
         @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
@@ -229,6 +245,7 @@ class Location:
                 - Raise an exception iff this C{Location}'s source or
                   unit are not equal to C{other}'s 
                 - Return false otherwise.
+        @rtype: C{boolean}
         @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
@@ -245,17 +262,21 @@ class Location:
 
     def __le__(self, other):
         """
-        Raise an AssertionError: <= is not defined for Locations
+        @raise AssertionError: <= is not defined for Locations
         """
         assert 0, '<= is not defined over Locations'
 
     def __ge__(self, other):
         """
-        Raise an AssertionError: >= is not defined for Locations
+        @raise AssertionError: <= is not defined for Locations
         """
         assert 0, '>= is not defined over Locations'
 
     def __hash__(self):
+        """
+        @return: A hash value for this C{Location}.
+        @rtype: C{int}
+        """
         return hash( (self._start, self._end) )
 
 ##//////////////////////////////////////////////////////
@@ -281,7 +302,14 @@ class Token:
     A token's location may have the special value C{None}, which
     specifies that the token's location is unknown or unimportant.  A
     token with a location of C{None} is not equal to any other token,
-    even if their types are equal.  
+    even if their types are equal.
+
+    @type _type: (any)
+    @ivar _type: The unit of text of which this token is an
+            occurance.
+    @type _location: C{Location}
+    @ivar _location: The unit of text of which this token is an
+            occurance.
     """
     # Classes that inherit from Token should generally redefine:
     #    - type()
@@ -343,14 +371,12 @@ class Token:
     
     def location(self):
         """
-        Return the position at which this token occured in the
-        original text.  A token's location may have the special value
-        C{None}, which specifies that the token's location is unknown
-        or unimportant.  A token with a location of C{None} is not
-        equal to any other token, even if their types are equal.
-    
         @return: the position at which this token occured in the
-            original text.
+            original text.  A token's location may have the special
+            value C{None}, which specifies that the token's location
+            is unknown or unimportant.  A token with a location of
+            C{None} is not equal to any other token, even if their
+            types are equal.
         @returntype: C{Location} or C{None}
         """
         return self._location
@@ -371,13 +397,10 @@ class Token:
 
     def __cmp__(self, other):
         """
-        No ordering relationship is defined over C{Tokens}; raise an
-        exception.
-        
-        @raise NotImplementedError:
+        @raise AssertionError: no ordering relationship is defined
+        for Tokens. 
         """
-        raise NotImplementedError("Ordering relations are not "+
-                                  "defined over Tokens")
+        assert 0, ' no ordering relationship is defined over Tokens'
 
     def __repr__(self):
         """
@@ -410,90 +433,6 @@ class Token:
             not hashable.
         """
         return hash( (self._type, self._location) )
-
-##//////////////////////////////////////////////////////
-##  Type classes
-##//////////////////////////////////////////////////////
-class TaggedType:
-    """
-    An element of text that consists of a base type and a tag.  A
-    typical example would be a part-of-speech tagged word, such as
-    C{'bank'/'NN'}.  The base type and the tag are typically strings,
-    but may be any immutable hashable objects.  Note that string base
-    types and tags are case sensitive.
-
-    @see: parseTaggedType
-    """
-    def __init__(self, base, tag):
-        """
-        Construct a new C{TaggedType}
-
-        @param base: The new C{TaggedType}'s base type.
-        @param tag: The new C{TaggedType}'s tag.
-        """
-        self._base = base
-        self._tag = tag
-        
-    def base(self):
-        """
-        @return: this C{TaggedType}'s base type.
-        @rtype: (any)
-        """
-        return self.base
-    
-    def tag(self):
-        """
-        @return: this C{TaggedType}'s tag.
-        @rtype: (any)
-        """
-        return self.tag
-    
-    def __eq__(self, other):
-        """
-        @return: true if this C{TaggedType} is equal to C{other}.  In
-            particular, return true iff C{self.base()==other.base()}
-            and C{self.tag()==other.tag()}.
-        @raise TypeError: if C{other} is not a C{TaggedType}
-        """
-        if not isinstance(other, TaggedType):
-            raise TypeError("TaggedType compared for equality "+
-                            "with a non-TaggedType.")
-        return (self.base == other.base and
-                self.tag == other.tag)
-    
-    def __hash__(self):
-        return hash( (self.base, self.tag) )
-    
-    def __repr__(self):
-        """
-        @return: a concise representation of this C{TaggedType}.
-        @rtype: string
-        """
-        return repr(self._base)+'/'+repr(self._tag)
-
-def parseTaggedType(string, unknownTag='UNK'):
-    """
-    Parse a string into a C{TaggedType}.  The C{TaggedType}'s base
-    type will be the substring preceeding the first '/', and the
-    C{TaggedType}'s tag will be the substring following the first
-    '/'.  If the input string contains no '/', then the base type will
-    be the input string and the tag will be C{unknownTag}.
-
-    @param string: The string to parse
-    @type string: {string}
-    @param unknownTag: A default tag to use if C{string} does not
-        contain a tag.
-    @type unknownTag: string
-    @return: The C{TaggedType} represented by C{string}
-    @rtype: C{TaggedType}
-    """
-    _chktype("parseTaggedType", 1, string, (_StringType,))
-    _chktype("parseTaggedType", 2, unknownTag, (_StringType,))
-    elts = string.split('/', 1)
-    if len(elts) > 1:
-        return TaggedType('/'.join(elts[:-1]), elts[-1])
-    else:
-        return TaggedType(string, unknownTag)
     
 ##//////////////////////////////////////////////////////
 ##  Tokenizers
@@ -510,7 +449,6 @@ class TokenizerI:
         """
         Construct a new C{Tokenizer}.
         """
-        raise NotImplementedError()
     
     def tokenize(self, str):
         """
@@ -521,7 +459,7 @@ class TokenizerI:
             tokenize(str)[i].location() < tokenize(str)[j].location()
         
         @param str: The string of text to tokenize.
-        @type str: string
+        @type str: C{string}
         @return: A list containing the C{Token}s
             that are contained in C{str}.
         @rtype: C{list} of C{Token}
@@ -546,25 +484,6 @@ class WSTokenizer(TokenizerI):
                                                    source=source)))
         return tokens
 
-class TaggedTokenizer(TokenizerI):
-    """
-    A tokenizer that splits a string of tagged text into words, based
-    on whitespace.  Each tagged word is encoded as a C{Token} whose
-    type is a C{TaggedType}.  Location indices start at zero, and have
-    a unit of C{'word'}.
-    """
-    def __init__(self): pass
-    def tokenize(self, str, source=None):
-        # Inherit docs from TokenizerI
-        _chktype("TaggedTokenizer.tokenize", 1, str, (_StringType,))
-        words = str.split()
-        tokens = []
-        for i in range(len(words)):
-            ttype = parseTaggedType(words[i])
-            tokens.append(Token(ttype, Location(i, unit='word',
-                                                source=source)))
-        return tokens
-  
 ##//////////////////////////////////////////////////////
 ##  Test code
 ##//////////////////////////////////////////////////////
