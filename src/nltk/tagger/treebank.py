@@ -60,7 +60,7 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             chunker as part of the PARTS preprocessor, and \"are best
             ignored.\"
     """
-    def __init__(self, locs=True, contexts=True, **property_names):
+    def __init__(self, locs=False, contexts=False, **property_names):
         PropertyIndirectionMixIn.__init__(self, **property_names)
         self._locs = locs
         self._contexts = contexts
@@ -98,8 +98,6 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                 sent_loc = SentIndexLocation(sent_num, para_loc)
                 sent_tok = self._sent_reader.read_token(sentence, sent_loc)
                 sent_toks.append(sent_tok)
-                print sent_tok
-                print
             para_toks.append(Token(**{SENTS: sent_toks}))
             if self._locs:
                 para_toks[-1][LOC] = para_loc
