@@ -157,8 +157,8 @@ class WordNetDictionary(DictionaryI):
         if tokenizer:
             self._tokenizer = tokenizer
         else:
-            self._tokenizer = RETokenizer('\w+')
-        self._stopwords = Set(*stopwords)
+            self._tokenizer = RegexpTokenizer('\w+')
+        self._stopwords = Set(stopwords)
 
     def _lookup(self, synset_string):
         pos, offset = synset_string.split('/')
@@ -244,7 +244,7 @@ class RogetDictionary(DictionaryI):
              [clergymen's residence] parsonage, rectory, ...; bishop's palace; Lambeth.
              ...
              Adj. claustral, cloistered; monastic, monasterial; conventual.
-             Phr. ne vile fano[It]; "there's nothing ill can dwell in such a temple" [tempest].
+             Phr. ne vile fano[It]; \"there's nothing ill can dwell in such a temple\" [tempest].
 
     There are part-of-speech indicators (N, Adj), sets of words separated
     by commas and semi-colons, definitions inside brackets, examples in
@@ -263,9 +263,9 @@ class RogetDictionary(DictionaryI):
         @type stemmer:    C{StemmerI}
         """
         self._corpus = roget
-        self._tokenizer = RETokenizer('\w+')
+        self._tokenizer = RegexpTokenizer('\w+')
         # common words are 'obs3', 'N', 'Adj', ... may want to add these
-        self._stopwords = Set(*stopwords)
+        self._stopwords = Set(stopwords)
         # preprocess to create a dictionary
         self._lookup_dict = {}
         for item in self._corpus.items():
@@ -622,8 +622,8 @@ def freqdist_overlap(fdist1, fdist2):
     @type fdist1: C{FreqDist}
     @type fdist2: C{FreqDist}
     """
-    set1 = Set(*fdist1.samples())
-    set2 = Set(*fdist2.samples())
+    set1 = Set(fdist1.samples())
+    set2 = Set(fdist2.samples())
     intersection = set1.intersection(set2)
     return reduce(operator.add, [fdist1.count(s) + fdist2.count(s)
         for s in intersection.elements()], 0)
@@ -716,7 +716,7 @@ def pretty_print(tagged_tokens, dictionary, out_stream = sys.stdout):
 #    return counts
 #
 #def pickle_wordnet():
-#    tokenizer = RETokenizer('\w+')
+#    tokenizer = RegexpTokenizer('\w+')
 #
 #    # first pickle the bags
 #    bags_dict = {}
@@ -746,18 +746,19 @@ def pretty_print(tagged_tokens, dictionary, out_stream = sys.stdout):
 #    return bags_dict, df_dict
 
 def _unwrap_tokens(tokens):
-    return [token.type() for token in tokens]
+    return [token['TEXT'] for token in tokens]
 
 def demo():
     from pprint import pprint
 
     # load stoplist
-    stoplist = _unwrap_tokens(stopwords.tokenize('english'))
+    stoplist = _unwrap_tokens(stopwords.read('english')['WORDS'])
 
     # load a bit of the brown corpus
     items = brown.items('humor')
-    tagged_tokens = brown.tokenize(items[0])
-    time_flies = TaggedTokenizer().tokenize(
+    tagged_tokens = brown.read(items[0])
+    from nltk.tokenreader import TaggedTokenReader
+    time_flies = TaggedTokenReader().read_token(
         'Time/NN fly/VB like/IN an/DT arrow/NN')
 
     # create the tagger, using WordNet
