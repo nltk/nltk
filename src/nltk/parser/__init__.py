@@ -44,6 +44,12 @@ three sub-modules for specialized kinds of parsing:
   - C{nltk.parser.probabilistic} defines probabilistic parsing, which
     associates a probability with each parse.
 
+@group Interfaces: ParserI
+@group Parsers: ShiftReduceParser, SteppingShiftReduceParser,
+       RecursiveDescentParser, SteppingRecursiveDescentParser
+@sort: ParserI, ShiftReduceParser, SteppingShiftReduceParser,
+       RecursiveDescentParser, SteppingRecursiveDescentParser, 
+       demo, chart, chunk, probabilistic
 @see: C{nltk.cfg}
 """
 
@@ -52,14 +58,6 @@ from nltk.token import Token
 from nltk.cfg import Nonterminal, CFG, CFGProduction
 from nltk.chktype import chktype as _chktype
 import types
-
-__all__ = (
-    'ParserI',
-    'ShiftReduceParser', 'SteppingShiftReduceParser',
-    'RecursiveDescentParser', 'SteppingRecursiveDescentParser',
-    'demo',
-    'chart', 'chunk', 'probabilistic',
-    )
 
 ##//////////////////////////////////////////////////////
 ##  Parser Interface
@@ -1191,6 +1189,11 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
 ##//////////////////////////////////////////////////////
 
 def demo():
+    """
+    A demonstration of the parsers defined by nltk.parser.  The user
+    is prompted to select which parser to run, and that parser is run
+    on an example sentence with a simple grammar.
+    """
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
