@@ -165,14 +165,15 @@ class TaskI:
     named C{raw_I{act}}, where C{I{act}} is the name of the action
     method.
     """
-    def property(self, prop):
-        """
-        @return: The specific property name that corresponds to the
-        given generic property name.  If no specific property name was
-        provided for C{generic_name}, then return C{generic_name}.
-        @rtype: C{string}
-        """
-        raise NotImplementedError
+# [XX] this gets precedence over the mixin, which break things. :-/
+#     def property(self, prop):
+#         """
+#         @return: The specific property name that corresponds to the
+#         given generic property name.  If no specific property name was
+#         provided for C{generic_name}, then return C{generic_name}.
+#         @rtype: C{string}
+#         """
+#         raise NotImplementedError
 
 class PropertyIndirectionMixIn:
     """
