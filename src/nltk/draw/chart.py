@@ -94,6 +94,7 @@ class ChartMatrixView:
     def __init__(self, parent, chart):
         self._chart = chart
         self._cells = []
+        self._marks = []
         
         self._selected_cell = None
 
@@ -107,6 +108,8 @@ class ChartMatrixView:
 
         self._callbacks = {}
         
+        self._num_edges = 0
+
         self.draw()
 
     def _init_quit(self, root):
@@ -116,11 +119,11 @@ class ChartMatrixView:
     def _init_matrix(self, root):
         self._canvas = Tkinter.Canvas(root, width=200, height=200,
                                       background='white')
-        self._canvas.pack(expand=1, fill='both')
+        self._canvas.pack(expand=0, fill='none')
 
     def _init_list(self, root):
         self._list = EdgeList(root, [], width=20, height=5)
-        self._list.pack(side='bottom', expand=1, fill='x')
+        self._list.pack(side='bottom', expand=1, fill='both')
         def cb(edge, self=self): self._fire_callbacks('select', edge)
         self._list.add_callback('select', cb)
         self._list.focus()
@@ -134,24 +137,43 @@ class ChartMatrixView:
     def set_chart(self, chart):
         if chart is not self._chart:
             self._chart = chart
+            self._num_edges = 0
             self.draw()
 
     def update(self):
         if self._root is None: return
-        # Gray out every cell in the matrix
-        for row in self._cells:
-            for cell_tag in row:
-                self._canvas.itemconfig(cell_tag, fill='gray20')
 
-        # Color every cell that contains an edge.
+        # Count the edges in each cell
+        N = len(self._cells)
+        cell_edges = [[0 for i in range(N)] for j in range(N)]
         for edge in self._chart:
-            i,j = edge.span()
-            self._canvas.itemconfig(self._cells[i][j], fill='blue2')
+            cell_edges[edge.start()][edge.end()] += 1
 
-        # Color every marked cell.
-        if self._selected_cell is not None:
-            (i,j) = self._selected_cell
-            self._canvas.itemconfig(self._cells[i][j], fill='#00ffff')
+        # Color the cells correspondingly.
+        for i in range(N):
+            for j in range(i, N):
+                if cell_edges[i][j] == 0:
+                    color = 'gray20'
+                else:
+                    color = ('#00%02x%02x' %
+                             (min(255, 50+128*cell_edges[i][j]/10),
+                              max(0, 128-128*cell_edges[i][j]/10)))
+                cell_tag = self._cells[i][j]
+                self._canvas.itemconfig(cell_tag, fill=color)
+                if (i,j) == self._selected_cell:
+                    self._canvas.itemconfig(cell_tag, outline='#00ffff',
+                                            width=3)
+                    self._canvas.tag_raise(cell_tag)
+                else:
+                    self._canvas.itemconfig(cell_tag, outline='black',
+                                            width=1)
+
+        # Update the edge list.
+        edges = list(self._chart.select(span=self._selected_cell))
+        self._list.set(edges)
+
+        # Update our edge count.
+        self._num_edges = self._chart.num_edges()
 
     def add_callback(self, event, func):
         self._callbacks.setdefault(event,{})[func] = 1
@@ -168,20 +190,30 @@ class ChartMatrixView:
 
     def select_cell(self, i, j):
         if self._root is None: return
+
+        # If the cell is already selected (and the chart contents
+        # haven't changed), then do nothing.
+        if ((i,j) == self._selected_cell and
+            self._chart.num_edges() == self._num_edges): return
+        
         self._selected_cell = (i,j)
-        edges = list(self._chart.select(span=self._selected_cell))
-        self._list.set(edges)
+        self.update()
 
     def deselect_cell(self):
         if self._root is None: return
         self._selected_cell = None
         self._list.set([])
+        self.update()
         
     def _click_cell(self, i, j):
         if self._selected_cell == (i,j):
             self.deselect_cell()
         else:
             self.select_cell(i, j)
+
+    def view_edge(self, edge):
+        self.select_cell(*edge.span())
+        self._list.view(edge)
 
     def mark_edge(self, edge):
         if self._root is None: return
@@ -225,15 +257,15 @@ class ChartMatrixView:
                            LEFT_MARGIN+dx*N, dy*N+TOP_MARGIN,
                            width=2)
 
-        self._cells = []
+        # Cells
+        self._cells = [[None for i in range(N)] for j in range(N)]
         for i in range(N):
-            self._cells.append([None]*i) # Extra padding
             for j in range(i, N):
                 t = c.create_rectangle(j*dx+LEFT_MARGIN, i*dy+TOP_MARGIN,
                                        (j+1)*dx+LEFT_MARGIN,
                                        (i+1)*dy+TOP_MARGIN,
                                        fill='gray20')
-                self._cells[-1].append(t)
+                self._cells[i][j] = t
                 def cb(event, self=self, i=i, j=j): self._click_cell(i,j)
                 c.tag_bind(t, '<Button-1>', cb)
 
@@ -1287,7 +1319,7 @@ class ChartDemo:
     def _init_chartview(self, parent):
         self._cv = ChartView(self._chart, parent,
                              draw_tree=1, draw_sentence=1)
-        self._cv.add_callback('select', self._click_edge)
+        self._cv.add_callback('select', self._click_cv_edge)
 
     def _init_rulelabel(self, parent):
         ruletxt = 'Last edge generated by:'
@@ -1476,7 +1508,7 @@ class ChartDemo:
     # Selection Handling
     #////////////////////////////////////////////////////////////
 
-    def _click_edge(self, edge):
+    def _click_cv_edge(self, edge):
         if edge != self._selection:
             # Clicking on a new edge selects it.
             self._select_edge(edge)
@@ -1484,14 +1516,18 @@ class ChartDemo:
             # Repeated clicks on one edge cycle its trees.
             self._cv.cycle_tree()
 
+    def _select_matrix_edge(self, edge):
+        self._select_edge(edge)
+        self._cv.view_edge(edge)
+
     def _select_edge(self, edge):
         self._selection = edge
         # Update the chart view.
         self._cv.markonly_edge(edge, '#f00')
         self._cv.draw_tree(edge)
-        self._cv.view_edge(edge)
         # Update the matrix view.
         if self._matrix: self._matrix.markonly_edge(edge)
+        if self._matrix: self._matrix.view_edge(edge)
         
     def _deselect_edge(self):
         self._selection = None
@@ -1511,6 +1547,7 @@ class ChartDemo:
         # Update the matrix view.
         if self._matrix: self._matrix.update()
         if self._matrix: self._matrix.markonly_edge(edge)
+        if self._matrix: self._matrix.view_edge(edge)
         # Update the results view.
         if self._results: self._results.update(edge)
 
@@ -1554,6 +1591,7 @@ class ChartDemo:
             self._chart = chart
             self._cv.update(chart)
             if self._matrix: self._matrix.set_chart(chart)
+            if self._matrix: self._matrix.deselect_cell()
             if self._results: self._results.set_chart(chart)
             self._cp.set_chart(chart)
         except Exception, e:
@@ -1613,6 +1651,7 @@ class ChartDemo:
         self._chart = self._cp.chart()
         self._cv.update(self._chart)
         if self._matrix: self._matrix.set_chart(self._chart)
+        if self._matrix: self._matrix.deselect_cell()
         if self._results: self._results.set_chart(self._chart)
         self._cpstep = self._cp.step()
 
@@ -1645,7 +1684,7 @@ class ChartDemo:
     def view_matrix(self, *e):
         if self._matrix is not None: self._matrix.destroy()
         self._matrix = ChartMatrixView(self._root, self._chart)
-        self._matrix.add_callback('select', self._select_edge)
+        self._matrix.add_callback('select', self._select_matrix_edge)
 
     def view_results(self, *e):
         if self._results is not None: self._results.destroy()
