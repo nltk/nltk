@@ -1549,6 +1549,9 @@ class CanvasFrame:
         self._parent.destroy()
         self._parent = None
 
+    def mainloop(self, *args, **kwargs):
+        self._parent.mainloop(*args, **kwargs)
+
 class ShowText:
     """
     A C{Tkinter} window used to display a text.  C{ShowText} is
