@@ -171,7 +171,7 @@ class Plot:
         self._c.create_line(line)
 
 
-        
-Plot(lambda x:x*x*x, range(-30,30))
+if __name__ == '__main__':        
+    Plot(lambda x:x*x*x, range(-30,30))
 
     
