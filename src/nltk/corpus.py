@@ -1278,24 +1278,24 @@ treebank = TreebankCorpusReader('treebank', 'treebank/',
 
 ###################################################
 ## Semcor corpus
-#from nltk.sense import SemcorTokenizer
-#
-#description = """
-#WordNet semantic concordance data. This is comprised of extracts from the
-#Brown corpus, with each word tagged with its WordNet 1.7 tag.
-#"""
-#
-#semcor = SimpleCorpusReader(
-#    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
-#    default_tokenizer = SemcorTokenizer())
-#    
-####################################################
-### Senseval corpus
-#from nltk.sense import SensevalTokenizer
-#
-#senseval = SimpleCorpusReader(
-#    'senseval', 'senseval/', r'.*\.pos', description_file='README',
-#    default_tokenizer = SensevalTokenizer())
+from nltk.sense import SemcorTokenizer
+
+description = """
+WordNet semantic concordance data. This is comprised of extracts from the
+Brown corpus, with each word tagged with its WordNet 1.7 tag.
+"""
+
+semcor = SimpleCorpusReader(
+    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
+    default_tokenizer = SemcorTokenizer())
+    
+###################################################
+## Senseval corpus
+from nltk.sense import SensevalTokenizer
+
+senseval = SimpleCorpusReader(
+    'senseval', 'senseval/', r'.*\.pos', description_file='README',
+    default_tokenizer = SensevalTokenizer())
 
 ###################################################
 ## Names corpus
@@ -1390,8 +1390,8 @@ def demo():
     _test_corpus(gutenberg)
     _test_corpus(roget)
     _test_corpus(words)
-    #_test_corpus(semcor)
-    #_test_corpus(senseval)
+    _test_corpus(semcor)
+    _test_corpus(senseval)
     _test_treebank()
     print '='*70
     
