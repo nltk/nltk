@@ -1,11 +1,11 @@
-##////////////////////////////////////////////////////////////////////////
-##  Natural Language Toolkit: Installation Instructions
-##  
-##  Copyright (C) 2001 University of Pennsylvania
-##  Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-##  URL: <http://nltk.sf.net>
-##  For license information, see LICENSE.TXT
-##////////////////////////////////////////////////////////////////////////
+###############################################################
+###             NLTK: Installation Instructions             ###
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
+### Copyright (C) 2001 University of Pennsylvania           ###
+### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
+### URL: <http://nltk.sf.net>                               ###
+### For license information, see LICENSE.TXT                ###
+###############################################################
 
 Requirements
 ~~~~~~~~~~~~
