@@ -16,10 +16,11 @@ Draw a finite state automoton
   - CanvasFSA: an FSA, displayed on a canvas.
   - FSAView: A widget showing an FSA
 
+Note: this module has not yet been converted to use the new canvas
+widget definition.
 """
 
 import Tkinter, math, nltk.fsa
-from nltk.draw import CanvasWidgetI, adjust_scrollregion, merge_bbox
 
 ##//////////////////////////////////////////////////////
 ##  Configuration constants
@@ -50,14 +51,45 @@ DEFAULT_ARRANGE = 'bfs'
 ORIENTATION = 'HORIZONTAL'
 
 
-    
+##//////////////////////////////////////////////////////
+##  Helpers.
+##//////////////////////////////////////////////////////
+
+def merge_bbox(bbox1, bbox2):
+    """
+    Given two bounding boxes, of the form C{(xmin, ymin, xmax, ymax)},
+    return a new bounding box which encloses both bounding boxes.
+
+    @return: a new bounding box that encloses C{bbox1} and C{bbox2}.
+    @rtype: C{4-tuple} of C{int}
+    """
+    return (min(int(bbox1[0]), int(bbox2[0])),
+            min(int(bbox1[1]), int(bbox2[1])),
+            max(int(bbox1[2]), int(bbox2[2])),
+            max(int(bbox1[3]), int(bbox2[3])))
+
+def adjust_scrollregion(canvas, bbox):
+    """
+    Given a canvas and a bounding box, adjust the scrollregion of the
+    canvas to include the bounding box.
+    """
+    scrollregion = [int(n) for n in canvas['scrollregion'].split()]
+    if len(scrollregion) != 4: return
+    if (bbox[0] < scrollregion[0] or bbox[1] < scrollregion[1] or
+        bbox[2] > scrollregion[2] or bbox[3] > scrollregion[3]):
+        scrollregion = ('%d %d %d %d' % 
+                        (min(bbox[0], scrollregion[0]),
+                         min(bbox[1], scrollregion[1]),
+                         max(bbox[2], scrollregion[2]),
+                         max(bbox[3], scrollregion[3])))
+        canvas['scrollregion'] = scrollregion
 
 ##//////////////////////////////////////////////////////
 ##  CanvasNode & CanvasEdge
 ##//////////////////////////////////////////////////////
 # Note: CanvasNode and CanvasEdge are currently circularly dependant.
 
-class CanvasNode(CanvasWidgetI):
+class CanvasNode:
     """
     A canvas widget for displaying a node in a graph.  A C{CanvasNode}
     is drawn as a labeled circle.  Each C{CanvasNode} has a location,
@@ -255,7 +287,7 @@ class CanvasNode(CanvasWidgetI):
     def __str__(self):
         return '<Node %s>' % (self._label)
 
-class CanvasEdge(CanvasWidgetI):
+class CanvasEdge:
     """
     Attributes:
       - C{curvature}
