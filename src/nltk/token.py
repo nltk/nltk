@@ -46,8 +46,8 @@ a class which converts a string of text into its constituant tokens.
 Different tokenizers may split the text up differently.
 """
 
-from chktype import chktype as _chktype 
-from chktype import chkclass as _chkclass
+from nltk.chktype import chktype as _chktype 
+from nltk.chktype import chkclass as _chkclass
 
 import re, sys
 

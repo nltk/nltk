@@ -31,11 +31,11 @@ the tokenizer C{TaggedTokenizer}, for reading tagged tokens from
 strings. 
 """
 
-from chktype import chktype as _chktype
-from types import StringType as _StringType
-from token import Token, TokenizerI, Location
+from nltk.chktype import chktype as _chktype
+from nltk.token import Token, TokenizerI, Location
 import re
 import probability
+from types import StringType as _StringType
 
 ##//////////////////////////////////////////////////////
 ##  TaggedType

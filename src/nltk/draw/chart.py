@@ -13,7 +13,7 @@ Drawing charts, etc.
 
 import Tkinter
 import math
-import nltk.chartparser; reload(nltk.chartparser)
+
 from nltk.chartparser import *
 from nltk.token import WSTokenizer
 from nltk.token import Token, Location

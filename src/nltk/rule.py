@@ -14,7 +14,7 @@ rewriting rules, and the C{DottedRule} class to represented "dotted"
 rules used by chart parsers.  Both kinds of rule are immutable.
 """
 
-from token import *
+from nltk.token import *
 from chktype import chktype as _chktype
 from chktype import chkclass as _chkclass
 from types import SliceType as _SliceType
