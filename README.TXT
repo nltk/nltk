@@ -14,8 +14,8 @@ nltk
   |    +-- nltk    .......... Source code for the toolkit itself.
   |    |
   |    |
-  |    +-- demo    .......... Source code for demonstration and example
-  |                           programs.
+  |    +-- [demo]  .......... Source code for demonstration and example
+  |                           programs. (not yet created)
   |
   +-- doc      .............. Documentation
   |    |
