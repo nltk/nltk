@@ -257,7 +257,7 @@ class Set:
         @return: A score in the range [0,1]
         @rtype: C{float}
         """
-        
+        assert _chktype(1, other, Set)
         guessed = len(other)
         if guessed == 0:
             return None
@@ -272,7 +272,7 @@ class Set:
         @return: A score in the range [0,1]
         @rtype: C{float}
         """
-        
+        assert _chktype(1, other, Set)
         to_find = len(self)
         if to_find == 0:
             return None
@@ -289,7 +289,7 @@ class Set:
         @return: A score in the range [0,1]
         @rtype: C{float}
         """
-
+        assert _chktype(1, other, Set)
         p = self.precision(other)
         r = self.recall(other)
         if p is None or r is None:
