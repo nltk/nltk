@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@ldc.upenn.edu> (minor additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -191,6 +192,9 @@ class Location:
         else:
             raise ValueError('Locations are not contiguous')
     
+    def __add__(self, other):
+        return self.union(other)
+
     def unit(self):
         """
         @return: the index unit used by this C{Location}.  Typical
