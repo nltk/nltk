@@ -478,6 +478,11 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         
         treetoks = []
         for tree in Tree.parse_iter(s, leafparser=self._leafparser):
+            # If the tree has an extra level with node='', then get
+            # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
+            if len(tree) == 1 and tree.node == '':
+                tree = tree[0]
+            
             # Create a token, and add it to the list.
             treetok = Token(**{TREE: tree})
             treetoks.append(treetok)
@@ -511,6 +516,23 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             val[CONTEXT] = TreeContextPointer(container, TREE, path)
         else:
             assert 0, 'Unexpected object type in tree'
+
+class TreebankFileTokenReader(TokenReaderI):
+    def __init__(self, add_locs=False, add_contexts=False, 
+                 add_subtoks=True, **property_names):
+        self._tb_reader = TreebankTokenReader(
+            add_locs=add_locs, add_contexts=add_contexts,
+            add_subtoks=add_subtoks, **property_names)
+
+    def property(self, name):
+        return self._tb_reader.property(name)
+
+    def read_token(self, s, source=None):
+        treetoks = self._tb_reader.read_tokens(s, source)
+        return Token(**{self.property('SUBTOKENS'): treetoks})
+
+    def read_tokens(self, s, source=None):
+        return [self.read_token(s, source)]
 
 ######################################################################
 ## Parented Trees & Multi-Parented Trees
