@@ -338,15 +338,48 @@ class UniformProbDist(ProbDistI):
                              'have at least one sample.')
         self._samples = samples
         self._sampleset = Set(*samples)
-        self._p = 1.0/len(self._sampleset)
+        self._prob = 1.0/len(self._sampleset)
 
     def prob(self, sample):
-        if sample in self._sampleset: return self._p
+        if sample in self._sampleset: return self._prob
         else: return 0
     def max(self): return self._samples[0]
     def samples(self): return self._samples
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._samples)
+
+class DictionaryProbDist(ProbDistI):
+    """
+    A probability distribution whose probabilities are directly
+    specified by a given dictionary.  The given dictionary maps
+    samples to probabilities; and all p
+    """
+    def __init__(self, prob_dict):
+        """
+        Construct a new probability distribution from C{prob_dict},
+        where P(M{x}) = C{prob_dict.get(M{x}, 0)}.  I.e., if M{x} is a
+        key in the given dictionary, then its probability is the
+        corresponding value; otherwise, its probability is 1.  It is
+        the user's responsibility to ensure that the probabilities sum
+        to 1, if desired.
+        """
+        assert _chktype(1, prob_dict, {})
+        self._prob_dict = prob_dict
+
+    def prob(self, sample):
+        return self._prob_dict.get(sample, 0)
+    def max(self):
+        if not hasattr(self, '_max'):
+            max_p = -1
+            max = None
+            for (v, p) in  self._prob_dict.items():
+                if p > max_p: max = v
+            self._max = max
+        return self._max
+    def samples(self):
+        return self._prob_dict.keys()
+    def __repr__(self):
+        return '<ProbDist with %d samples>' % len(self._prob_dict)
         
 class MLEProbDist(ProbDistI):
     """
@@ -999,7 +1032,7 @@ class ProbabilisticMixIn:
         ...         A.__init__(self, x, y)
         ...         ProbabilisticMixIn.__init__(self, p)
 
-    We suggest that you make C{p} the first argument for the new
+    We suggest that you make C{prob} the first argument for the new
     probabilistic class, and keep all other arguments the same as they
     were.  This ensures that there will be no problems with
     constructors that expect varargs parameters.
@@ -1007,25 +1040,25 @@ class ProbabilisticMixIn:
     You should generally also redefine the string representation
     methods, the comparison methods, and the hashing method.
     """
-    def __init__(self, p):
+    def __init__(self, prob):
         """
         Initialize this object's probability.  This initializer should
-        be called by subclass constructors.  C{p} should generally be
+        be called by subclass constructors.  C{prob} should generally be
         the first argument for those constructors.
 
         @param p: The probability associated with the object.
         @type p: C{float}
         """
-        assert _chktype(1, p, types.IntType, types.FloatType)
-        if not 0 <= p <= 1: raise ValueError('Bad probability: %s' % p)
-        self._p = p
+        assert _chktype(1, prob, types.IntType, types.FloatType)
+        if not 0 <= prob <= 1: raise ValueError('Bad probability: %s' % prob)
+        self._prob = prob
 
-    def p(self):
+    def prob(self):
         """
         @return: the probability associated with this object.
         @rtype: C{float}
         """
-        return self._p
+        return self._prob
     
 ##//////////////////////////////////////////////////////
 ##  Test Code
