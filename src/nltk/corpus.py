@@ -1158,6 +1158,15 @@ senseval = SimpleCorpusReader(
     default_tokenizer = SensevalTokenizer())
 
 ###################################################
+## Names corpus
+                                                                                
+from nltk.tokenizer import LineTokenizer
+                                                                                
+names = SimpleCorpusReader(
+    'names', 'names/', r'.*\.txt', description_file='README',
+    default_tokenizer = LineTokenizer())
+
+###################################################
 ## Reuters corpus
 
 reuters = '''\
