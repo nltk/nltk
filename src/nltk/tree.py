@@ -580,6 +580,9 @@ class TreeToken(token.Token):
                 max_child_height = 1
         return 1 + max_child_height
 
+    def __hash__(self):
+        return hash((self._node, self._children))
+
     def __eq__(self, other):
         """
         @return: true if this C{TreeToken} is equal to C{other}.  In
