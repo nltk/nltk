@@ -17,11 +17,13 @@ import sys, os, re
 
 CVSCOMMAND = 'cvs log "-r%s:" 2>/dev/null'
 
+BIGDIV = '='*77
+SMALLDIV = '-'*28
 def filter_log(log):
     log = re.sub(r'^(\? .*\n)*', '', log).strip()
 
     # Split into entries.
-    entries = log.split('='*77)
+    entries = log.split(BIGDIV)
 
     # Strip whitespace
     entries = [entry.strip()+'\n' for entry in entries]
@@ -31,9 +33,14 @@ def filter_log(log):
     entries = [entry for entry in entries if not regexp.match(entry)]
 
     # Get rid of any entries that have only one revision; they're the
-    # borderline cases.
-    regexp = re.compile('(.*\n)+?' + '-'*28 + '\n(.*\n)+?' + '-'*28 + '\n')
-    entries = [entry for entry in entries if regexp.match(entry)]
+    # borderline cases. (UNLESS IT'S A NEW FILE?!)
+    #regexp = re.compile('(.*\n)+?' + SMALLDIV + '\n(.*\n)+?' + SMALLDIV + '\n')
+    #entries = [entry for entry in entries if regexp.match(entry)]
+
+    # Get rid of the last revision in each entry; they're the
+    # borderline cases. (UNLESS IT'S A NEW FILE?!)
+    #entries = [SMALLDIV.join(entry.split(SMALLDIV)[:-1])
+    #           for entry in entries]
 
     # Get rid of head, branch, locks, etc.
     regexp = re.compile(r'Working file:\s+(.*)\n(.*\n)+?total revisions:.*')
@@ -56,12 +63,12 @@ def filter_log(log):
 #                 '', log)
 
     # Join the entries back together.
-    log = ('='*77+'\n').join(entries)
+    log = (BIGDIV+'\n').join(entries)
     
     # Get rid of multiple consecutive empty lines
     log = re.sub('\n\n\n+', '\n\n', log)
 
-    return log + '='*77 + '\n'
+    return log + BIGDIV + '\n'
 
 def usage(exitval=-1):
     try: print 'Usage: %s <release> <outfile>' % sys.argv[0]
@@ -85,7 +92,7 @@ def main():
 
     print 'Writing output to %s...' % filename
     out = open(filename, 'w')
-    header = ('='*77 + '\nParsed CVS log\n%s\n' + '='*77 + '\n\n')
+    header = (BIGDIV + '\nParsed CVS log\n%s\n' + BIGDIV + '\n\n')
     header = header % os.path.abspath(os.curdir)
     out.write(header + log)
 
