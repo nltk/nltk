@@ -185,7 +185,7 @@ class ChunkParserI(ParserI):
         """
         assert 0, "ChunkParserI is an abstract interface"
 
-    def parse(self, tokens):
+    def parse(self, text):
         """
         Return the best chunk structure for the given text.
         
@@ -194,9 +194,9 @@ class ChunkParserI(ParserI):
             highest quality, then choose one arbitrarily.  If no chunk
             structure is available for the given text, return C{None}.
         @rtype: C{TreeToken}
-        @param tokens: The text to be chunked.  This text consists
+        @param text: The text to be chunked.  This text consists
             of a list of C{Tokens}, ordered by their C{Location}.
-        @type tokens: C{list} of C{Token}
+        @type text: C{list} of C{Token}
         """
         assert 0, "ChunkParserI is an abstract interface"
 
@@ -1324,7 +1324,7 @@ class REChunkParser(ChunkParserI):
         for rule in self._rules:
             rule.apply(chunkstr)
         
-    def parse(self, tokens, trace=None):
+    def parse(self, text, trace=None):
         """
         @rtype: chunk structure
         @return: a chunk structure that encodes the chunks in a given
@@ -1340,9 +1340,9 @@ class REChunkParser(ChunkParserI):
             overrides the trace level value that was given to the
             constructor. 
         """
-        assert _chktype(1, tokens, [Token], (Token,))
+        assert _chktype(1, text, [Token], (Token,))
         assert _chktype(2, trace, types.NoneType, types.IntType)
-        if len(tokens) == 0:
+        if len(text) == 0:
             print 'Warning: parsing empty text'
             return []
         
@@ -1350,7 +1350,7 @@ class REChunkParser(ChunkParserI):
         if trace == None: trace = self._trace
 
         # Create the chunkstring.
-        chunkstr = ChunkString(tokens)
+        chunkstr = ChunkString(text)
 
         # Apply the sequence of rules to the chunkstring.
         if trace:
