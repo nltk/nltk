@@ -12,19 +12,16 @@ path = '/pkg/p/Python-2.1.1/lib/python2.1/site-packages/Numeric'
 
 version = sys.version.split()
 v = version[0]
-
 if (v == '2.1.1') or (v == '2.1'):
-    pass
-
-else:
+    pass 
+ 
+else: 
     if not path in sys.path:
         sys.path.append(path)
         import Numeric
         from Scientific.TkWidgets.TkPlotCanvas import *
     else:
         pass
-
-    
 
 from Scientific.TkWidgets.TkPlotCanvas import *
 import Numeric
@@ -532,7 +529,6 @@ def plot(*list):
     color = ['red', 'blue', 'lightblue', 'green', 'yellow', 'grey', 'black']
     marker = ['circle', 'dot', 'square', 'triangle',
               'triangle_down', 'cross', 'plus']
-
     # quick method to see whether i or j are still within the bounds of
     # their requisite lists, and if not, to return the index of the first
     # member
@@ -545,6 +541,7 @@ def plot(*list):
 
     i = 0      #keeps track of colors
     j = 0      #keeps track of markers
+
     for item in list:
         i = checkNumber(i, color)
         j = checkNumber(j, marker)
@@ -565,6 +562,9 @@ def plot(*list):
     object = PlotGraphics(list)
     w = Window(object)
     w.c.draw(w.object, 'automatic', 'automatic')
+    w.root.mainloop()    
+    w.c.draw(w.object, 'automatic', 'automatic') 
+
     # Necessary for non-interactive sessions:
     mainloop()
 
@@ -584,10 +584,11 @@ if __name__ == '__main__':
     
     """
 
-    plot([Line(points),
+    plot(Line(points),
           #False(points),
           Function(lambda x:math.sin(x), [0., 2.*pi], (pi/8.)),
           #Function(lambda x:math.cosh(x), [-10., 10.], 1),
           Marker(points)
-          ])
+          )
+    
     
