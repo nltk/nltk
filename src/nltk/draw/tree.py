@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Graphical Representations for Trees
 #
 # Copyright (C) 2001 University of Pennsylvania
-# Author: Steven Bird <sb@ldc.upenn.edu>
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -12,448 +12,505 @@ Graphically display a C{Tree} or C{TreeToken}.
 """
 
 from Tkinter import *
-from tkFileDialog import asksaveasfilename
-
 from nltk.tree import Tree, TreeToken
 from nltk.token import Token, Location
+from nltk.draw import *
 
-class TreeView:
-
-    _X_SPACING = 5
-    _Y_SPACING = 20
-
-    def __init__(self, tree, root=None):
+class TreeSegmentWidget(CanvasWidget):
+    """
+    A canvas widget that displays a single segment of a hierarchical tree.
+    """
+    def __init__(self, canvas, node, subtrees, **attribs):
         """
-        Construct a new view of a Tree or a TreeToken.
+        @type node: 
+        @type subtrees: C{list} of C{CanvasWidgetI}
         """
-        self._tree = tree
+        self._node = node
+        self._subtrees = subtrees
         
-        # If we were not given a root window, then create one.
-        # Include buttons for performing common functions.
-        if root is None:
-            self._top = top = Tk()
-            top.title('Tree Display')
-            self._top.bind('q', self.destroy)
+        self._roof = 0
+        self._color = 'black'
+        self._fill = ''
+        self._xspace = 10
+        self._yspace = 15
+        self._width = 1
 
-            # Create the button frame.
-            self._buttons = buttons = Frame(top)
-            Button(buttons, text='Done',
-                   command=self.destroy).pack(side='right')
-            Button(buttons, text='Zoom in',
-                   command=self._font_grow).pack(side='left')
-            Button(buttons, text='Zoom out',
-                   command=self._font_shrink).pack(side='left')
-            Button(buttons, text='Print',
-                   command=self._to_postscript).pack(side='left')
-            Button(buttons, text='Expand All',
-                   command=self._expand_all).pack(side='left')
-            buttons.pack(side='bottom', fill='both')
-        else:
-            self._top = top = root
-        
-        # Create the canvas view.
-        self._view = view = Frame(top, relief='sunk', border=2)
-        self._v_scroll = v_scroll= Scrollbar(view)
-        v_scroll.pack(side=RIGHT, fill=Y)
-        self._h_scroll= h_scroll = Scrollbar(view, orient='horizontal')
-        h_scroll.pack(side=BOTTOM, fill=X)
-        self._canvas = c = Canvas(view, width=400, height=300,
-                                  yscrollcommand=v_scroll.set,
-                                  xscrollcommand=h_scroll.set,
-                                  closeenough=5)
-        c.pack(side=LEFT, expand='yes', fill='both')
-        v_scroll.config (command=c.yview)
-        h_scroll.config (command=c.xview)
-        self._view.pack(expand='yes', fill='both')
+        self._lines = [canvas.create_line(0,0,0,0) for c in subtrees]
+        self._polygon = canvas.create_polygon(0,0,0,0,0,0, fill='',
+                                              outline='')
+        CanvasWidget.__init__(self, canvas, **attribs)
+        self._add_child_widget(node)
+        for subtree in subtrees:
+            self._add_child_widget(subtree)
 
-        # Keep track of which nodes are collapsed
-        self._collapsed = {}
-        self._expand_all(tree)
-
-        self._points = 12
-        self._find_textheight()
-
-        self._tree_height = tree.height()
-
-        # Should leaves all be at the bottom?
-        self._leaves_at_bottom = 1
-
-        self._redraw()
-        cregion = self._canvas['scrollregion'].split()
-        width = min(int(cregion[2])-int(cregion[0]), 800)
-        height = min(int(cregion[3])-int(cregion[1]), 300)
-        self._canvas['width'] = width
-        self._canvas['height'] = height
-
-        # Enter main loop???
-        #if root is None:
-        #    mainloop()
-
-    # ////////////////////////////////////
-    # //  Private methods
-    # ////////////////////////////////////
-    
-    def _find_textheight(self):
-        """
-        Determine the value of _textheight.  This instance variable
-        records the maximum height of a letter, and is used when
-        deciding how much space to leave for the text at trees' nodes
-        and leaves.  It should be called whenever the font size
-        (_points) is changed.
-
-        @rtype: C{None}
-        """
-        c = self._canvas
-        tag = c.create_text(0, 0, text='Al^|qp', anchor='se',
-                            font=('helvetica', self._points, 'bold'))
-        bbox = c.bbox(tag)
-        self._textheight = bbox[3]-bbox[1]
-        c.delete(tag)
-
-    def _font_grow(self): self.set_text_size(self._points+2)
-    def _font_shrink(self): self.set_text_size(self._points-2)
-
-    def _expand_all(self, tree=None):
-        """
-        Un-collapse the given tree and all of its descendants.  If no
-        tree is given, then the top-level tree will be un-collapsed.
-        If the given tree is not shown, then this will have no effect.
-
-        This does I{not} redraw the tree.
-
-        @param tree: The tree to expand.
-        @type tree: C{Tree}
-        """
-        if tree is None: tree = self._tree
-        
-        self._collapsed[tree] = 0
-        for child in tree:
-            if isinstance(child, Tree) or isinstance(child, TreeToken):
-                self._expand_all(child)
-
-    def _redraw(self):
-        """
-        Redraw the tree.  This includes resetting the canvas region. 
-
-        @rtype: C{None}
-        """
-        # Draw the new before we delete the old; this sometimes
-        # prevents blinking..
-        old = self._canvas.find(ALL)
-        (width, _) = self._draw_tree(self._tree, TreeView._X_SPACING, 0)
-        width += TreeView._X_SPACING
-        height = self._canvas_height(self._tree)
-        self._canvas['scrollregion'] = (0, -5, width, height)
-        self._canvas.delete(*old)
-
-    def _canvas_height(self, tree):
-        """
-        @rtype: C{int}
-        @return: the height needed to display the given tree, taking
-            collapsed nodes into account.
-        @type tree: C{Tree}
-        @param tree: The tree for which to display the needed height.
-        """
-        if self._collapsed[tree]:
-            return 3*self._textheight + TreeView._Y_SPACING
-        else:
-            height = 0
-            for child in tree:
-                if isinstance(child, Tree) or isinstance(child, TreeToken):
-                    height = max(height, self._canvas_height(child))
-                else:
-                    height = max(height, 2*self._textheight)
-
-            return height + (self._textheight + TreeView._Y_SPACING)
-                
-    def _draw_collapsed_children(self, tree, left, depth):
-        """
-        Draw the children of a collapsed node.  All children are drawn
-        on a single line, separated by space characters.  A callback
-        is added to the triangle over the children, which will expand
-        them.
-
-        @param tree: The tree whose children should be displayed
-        @type tree: C{Tree}
-        @param left: The x position of the left edge at which the
-            children should be drawn.
-        @type left: C{int}
-        @param depth: The depth in self._tree of given tree.
-        @type depth: C{int}
-        @return: The x position of the right edge of the drawn
-            children, and the location of the "node_x"
-        @rtype: pair of C{int}
-        """
-        c = self._canvas
-
-        # Draw children.
-        if isinstance(tree, Tree):
-            children = ' '.join([str(t) for t in tree.leaves()])
-        else:
-            children = (' '.join([str(t.type()) for t in tree.leaves()])+
-                        '\n'+str(tree.loc()))
-        right = self._draw_leaf(str(children), left, depth+1)
-
-        # Draw triangle
-        node_y = (self._textheight + TreeView._Y_SPACING) * depth
-        node_x = (left+right)/2
-        triangle_bottom = node_y+self._textheight+TreeView._Y_SPACING
-        tag = c.create_polygon(node_x, node_y+self._textheight,
-                               left, triangle_bottom, right, triangle_bottom,
-                               outline='black', fill='gray')
-
-        # Set up a callback.
-        cb = lambda e, self=self, tree=tree: self._toggle(tree)
-        c.tag_bind(tag, '<Button-1>', cb)
-
-        return (right, node_x)
-        
-    def _draw_expanded_children(self, tree, left, depth):
-        """
-        Draw the children of an un-collapsed node, including lines to
-        the child.
-
-        @param tree: The tree whose children should be displayed
-        @type tree: C{Tree}
-        @param left: The x position of the left edge at which the
-            children should be drawn.
-        @type left: C{int}
-        @param depth: The depth in self._tree of given tree.
-        @type depth: C{int}
-        @return: The x position of the right edge of the drawn
-            children, and the location of the "node_x"
-        @rtype: pair of C{int}
-        """
-        c = self._canvas
-        left += (TreeView._X_SPACING/2)
-
-        # Recurse to draw the children.
-        child_centers = []
-        x = new_x = left
-        for child in tree:
-            if isinstance(child, Tree) or isinstance(child, TreeToken):
-                (new_x, center) = self._draw_tree(child, x, depth+1)
-                child_centers.append(center)
+    def __setitem__(self, attr, value):
+        if attr == 'width':
+            self._width = value
+            self.canvas().itemconfig(self._polygon, width=value)
+            for l in self._lines: self.canvas().itemconfig(l, width=value)
+        elif attr in ('roof', 'color', 'fill'):
+            if attr == 'roof': self._roof = value
+            elif attr == 'color': self._color = value
+            elif attr == 'fill': self._fill = value
+            
+            if self._roof:
+                for l in self._lines: self.canvas().itemconfig(l, fill='')
+                self.canvas().itemconfig(self._polygon, fill=self._fill,
+                                         outline=self._color)
             else:
-                if isinstance(child, Token):
-                    text = str(child.type())+'\n'+`child.loc()`
-                else:
-                    text = str(child)
-                new_x = self._draw_leaf(text, x, depth+1)
-                child_centers.append((x+new_x)/2)
-            x = new_x + TreeView._X_SPACING
-        right = new_x
+                for line in self._lines:
+                    self.canvas().itemconfig(line, fill=self._color)
+                self.canvas().itemconfig(self._polygon, outline='', fill='')
+        elif attr in ('xspace', 'yspace'):
+            if attr == 'xspace': self._xspace = value
+            elif attr == 'yspace': self._yspace = value
+            self.update(self._node)
+        else:
+            CanvasWidget.__setitem__(self, attr, value)
+
+    def __getitem__(self, attr):
+        if attr == 'roof': return self._roof
+        elif attr == 'color': return self._color
+        elif attr == 'fill' : return self._fill
+        elif attr == 'xspace': return self._xspace
+        elif attr == 'yspace': return self._yspace
+        elif attr == 'yspace': return self._width
+        else:
+            return CanvasWidget.__getitem__(self, attr)
+        
+    def node(self):
+        return self._node
+
+    def subtrees(self):
+        return self._subtrees
+
+    def set_node(self, node):
+        """
+        Set the node to C{node}.
+        """
+        self._remove_child_widget(self._node)
+        self._add_child_widget(node)
+        self._node = node
+        self.update(self._node)
+
+    def replace_child(self, oldchild, newchild):
+        """
+        Replace the child C{oldchild} with C{newchild}.
+        """
+        index = self._subtrees.index(oldchild)
+        self._subtrees[index] = newchild
+        self._remove_child_widget(oldchild)
+        self._add_child_widget(newchild)
+        self.update(newchild)
+
+    def remove_child(self, child):
+        index = self._subtrees.index(child)
+        del self._subtrees[index]
+        self._remove_child_widget(child)
+        self.update(self._node)
+
+    def insert_child(self, index, child):
+        self._subtrees.insert(index, child)
+        self._add_child_widget(child)
+
+    def _tags(self):
+        return self._lines + [self._polygon]
+
+    def _top(self, child):
+        if isinstance(child, TreeSegmentWidget):
+            bbox = child.node().bbox()
+        else:
+            bbox = child.bbox()
+        return ((bbox[2]+bbox[0])/2.0, bbox[1])
+
+    def _update(self, child):
+        # Update the polygon.
+        (nodex1, nodey1, nodex2, nodey2) = self._node.bbox()
+        nodecenter = (nodex1+nodex2)/2.0
+
+        (xmin, ymin, xmax, ymax) = self._subtrees[0].bbox()
+        for subtree in self._subtrees[1:]:
+            bbox = subtree.bbox()
+            xmin = min(xmin, bbox[0])
+            ymin = min(ymin, bbox[1])
+            xmax = max(xmax, bbox[2])
+
+        self.canvas().coords(self._polygon, nodecenter, nodey2, xmin, 
+                             ymin, xmax, ymin, nodecenter, nodey2)
+        
+        # Redraw the lines that touch child.
+        if child is self._node:
+            # The node changed; redraw all lines.
+            for subtree in self._subtrees:
+                self._update(subtree)
+            return
+        else:
+            # A subtree changed; redraw its line.
+            node_bbox = self._node.bbox()
+            nodex = (node_bbox[2]+node_bbox[0])/2.0
+            nodey = node_bbox[3]
+
+            line = self._lines[self._subtrees.index(child)]
             
-        # Draw lines to the child.
-        node_y = ((self._textheight + TreeView._Y_SPACING) * depth +
-                  self._textheight)
-        if child_centers:
-            node_x = (reduce(lambda a,b:a+b, child_centers, 0) /
-                      len(child_centers))
-        else:
-            node_x = (right + left)/2
-        child_y = node_y + TreeView._Y_SPACING
-        for child_x in child_centers:
-            c.create_line(node_x, node_y, child_x, child_y)
+            (childx, childy) = self._top(child)
+            self.canvas().coords(line, nodex, nodey, childx, childy-3)
 
-        right = right + (TreeView._X_SPACING/2)
-        return (right, node_x)
+    def _manage(self):
+        # Position the children.
+        if len(self._subtrees) == 0: return
         
-    def _draw_tree(self, tree, left, depth):
-        """
-        Draw the given tree.  Set up a callback on each node, which
-        expands/collapses the node.
+        node_bbox = self._node.bbox()
+        nodex = (node_bbox[2]+node_bbox[0])/2.0
+        nodey = node_bbox[3]
 
-        @param tree: The tree that should be displayed.
-        @type tree: C{Tree}
-        @param left: The x position of the left edge at which the
-            tree should be drawn.
-        @type left: C{int}
-        @param depth: The depth in self._tree of given tree.
-        @type depth: C{int}
-        @return: The x position of the right edge of the drawn
-            tree.
-        @rtype: pair of C{int}..
-        """
-        # Returns right edge...
-        c = self._canvas
-        
-        # Draw children
-        if self._collapsed[tree]:
-            (x,node_x) = self._draw_collapsed_children(tree, left, depth)
-        else:
-            (x,node_x) = self._draw_expanded_children(tree, left, depth)
-            
-        # Draw node value.
-        y = (self._textheight + TreeView._Y_SPACING) * depth
-        tag = c.create_text(node_x, y, text=str(tree.node()),
-                            anchor='n', justify='center',
-                            font=('helvetica', self._points, 'bold'))
-        node_right = c.bbox(tag)[2] + (TreeView._X_SPACING/2)
+        # Put the subtrees in a line.
+        x = 0
+        for subtree in self._subtrees:
+            subtree_bbox = subtree.bbox()
+            dy = nodey - subtree_bbox[1] + self._yspace
+            dx = x - subtree_bbox[0]
+            subtree.move(dx, dy)
+            x += subtree_bbox[2] - subtree_bbox[0] + self._xspace
 
-        # Set up a callback.
-        if len(tree) > 1 or tree.height() > 2:
-            cb = lambda e, self=self, tree=tree: self._toggle(tree)
-            c.tag_bind(tag, '<Button-1>', cb)
+        # Find the center of their tops.
+        center = 0
+        for subtree in self._subtrees:
+            center += self._top(subtree)[0]
+        center /= len(self._subtrees)
 
-        # If the node value was wider than its children, then we have
-        # to shift everything over to the right.
-        if node_right > x:
-            dx = (left - c.bbox(tag)[0]) + (TreeView._X_SPACING/2)
-            tags = c.find_overlapping(left, y+5, x, 10000)
-            for tag in tags:
-                c.move(tag, dx, 0)
-            x = node_right+dx
-            node_x += dx
+        # Center the subtrees with the node.
+        for subtree in self._subtrees:
+            subtree.move(nodex-center, 0)
 
-        return (x, node_x)
+        # Update lines to subtrees.
+        for subtree in self._subtrees:
+            self._update(subtree)
 
-    def _draw_leaf(self, text, x, depth):
-        """
-        Draw an individual leaf.
-        """
-        y = (self._textheight + TreeView._Y_SPACING) * depth
-        tag = self._canvas.create_text(x, y, text=text,
-                                       anchor='nw', justify='center',
-                                       font=('helvetica', self._points))
-        return self._canvas.bbox(tag)[2]
+    def __repr__(self):
+        return '[TreeSeg %s: %s]' % (self._node, self._subtrees)
 
-    def _toggle(self, tree):
-        """
-        Collapse/expand the given tree.
-        """
-        self._collapsed[tree] = not self._collapsed[tree]
-        self._redraw()
-
-    def _to_postscript(self):
-        ftypes = [('Postscript files', '.ps'),
-                  ('All files', '*')]
-        filename = asksaveasfilename(filetypes=ftypes,
-                                     defaultextension='.ps')
-        if filename:
-            self.print_to_file(filename)
-
-    # ////////////////////////////////////
-    # //  Public methods
-    # ////////////////////////////////////
-
-    def set_text_size(self, points):
-        """
-        Set the size of the text used to render nodes and leaves.
-
-        @type points: C{int}
-        @param points: The desired font size, in points.  This should
-            typically be a number between 6 and 30; if a size smaller
-            than 4 points is given, 4 will be used.
-        @rtype: C{None}
-        """
-        if points < 4: points = 4
-        self._points = points
-        self._find_textheight()
-        self._redraw()
-
-    def destroy(self, *args):
-        """
-        Destroy the root window.
-        
-        @rtype: C{None}
-        """
-        if self._top is None: return
-        self._top.destroy()
-        self._top = None
-
-    def expand(self, tree=None):
-        """
-        Expand the given tree.  If no tree is given, then all trees
-        will be expanded.
-
-        @param tree: The tree to expand.
-        @type tree: C{Tree}
-        @rtype: C{None}
-        """
-        if tree is None:
-            self._expand_all()
-        else:
-            if not self._collapsed.has_key(tree):
-                raise ValueError('The given tree is not displayed')
-            self._collapsed[tree] = 0
-            self._redraw()
-
-    def collapse(self, tree=None):
-        """
-        Collapse the given tree.  If no tree is given, then the top-
-        level tree will be collapsed.
-
-        @param tree: The tree to collapse.
-        @type tree: C{Tree}
-        @rtype: C{None}
-        """
-        if tree is None:
-            tree = self._tree
-        if not self._collapsed.has_key(tree):
-            raise ValueError('The given tree is not displayed')
-        self._collapsed[tree] = 0
-        self._redraw()
-
-    def print_to_file(self, filename):
-        """
-        Print this tree to the given file.
-
-        @param filename: The name of the file to print the tree to.
-        @type filename: C{string}
-        @rtype: C{None}
-        """
-        (x0, y0, w, h) = self._canvas['scrollregion'].split()
-        self._canvas.postscript(file=filename,
-                                width=int(w)+2, height=int(h)+2)
-
-def print_tree(tree, filename, textsize=None):
-    """
-    Print the given tree to the given filename.  This uses a TreeView
-    to display the tree, but hopefully will never actually open a
-    window.
-
-    @rtype: C{None}
-    """
-    top = Tk()
-    treeview = TreeView(tree, top)
-    top.mainloop(1)
-    if textsize: treeview.set_text_size(textsize)
-    treeview.print_to_file(filename)
-    top.destroy()
-        
-# Temporary test code.
-if __name__ == '__main__':
-    from random import randint
-    def randomtree(depth=0, bf=None):
-        if bf is None: bf = randint(1,2)
-        if randint(0,7-depth) == 0 and depth>1:
-            return 'L%d' % randint(0, 10)
-        else:
-            numchildren = randint(1,bf)
-            children = [randomtree(depth+1, bf) for x in range(numchildren)]
-            return Tree('Node %d' % randint(0,10000), *children)
-
-    def randomtreetok(depth=0, left=0, bf=None):
-        if bf is None: bf = randint(1,2)
-        if randint(0,7-depth) == 0 and depth>1:
-            len = randint(1,5)
-            return Token('L%d' % randint(0, 10), left, left+len)
-        else:
-            numchildren = randint(1,bf)
-            children = []
-            for x in range(numchildren):
-                children.append(randomtreetok(depth+1, left, bf))
-                left = children[-1].loc().end()
-            return TreeToken('N%d' % randint(0,10000), *children)
-
-    if randint(0,1) ==0:
-        t = randomtree()
-        while not (5 < len(t.leaves()) < 25):
-            t = randomtree()
+def _tree_to_treeseg(canvas, tree, make_node, make_leaf,
+                         tree_attribs, node_attribs,
+                         leaf_attribs, loc_attribs):
+    if isinstance(tree, Tree) or isinstance(tree, TreeToken):
+        node = make_node(canvas, tree.node(), **node_attribs)
+        subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf, 
+                                     tree_attribs, node_attribs,
+                                     leaf_attribs, loc_attribs)
+                    for child in tree.children()]
+        return TreeSegmentWidget(canvas, node, subtrees, **tree_attribs)
+    elif isinstance(tree, Token):
+        leaf = make_leaf(canvas, tree.type(), **leaf_attribs)
+        loc = TextWidget(canvas, str(tree.loc()), **loc_attribs)
+        return StackWidget(canvas, leaf, loc, align='center')
     else:
-        t = randomtreetok()
-        while not (5 < len(t.leaves()) < 25):
-            t = randomtreetok()
+        return make_leaf(canvas, tree, **leaf_attribs)
 
-    TreeView(t)
+def tree_to_treesegment(canvas, tree, make_node=TextWidget,
+                        make_leaf=TextWidget, **attribs):
+    """
+    Convert a C{Tree} or a C{TreeToken} into a C{TreeSegmentWidget}.
+
+    @param make_node: A C{CanvasWidget} constructor or a function that
+        creates C{CanvasWidgets}.  C{make_node} is used to convert
+        the C{Tree}'s nodes into C{CanvasWidgets}.  If no constructor
+        is specified, then C{TextWidget} will be used.
+    @param make_leaf: A C{CanvasWidget} constructor or a function that
+        creates C{CanvasWidgets}.  C{make_leaf} is used to convert
+        the C{Tree}'s leafs into C{CanvasWidgets}.  If no constructor
+        is specified, then C{TextWidget} will be used.
+    @param attribs: Attributes for the canvas widgets that make up the
+        returned C{TreeSegmentWidget}.  Any attribute beginning with
+        C{'tree_'} will be passed to all C{TreeSegmentWidget}s (with
+        the C{'tree_'} prefix removed.  Any attribute beginning with
+        C{'node_'} will be passed to all nodes.  Any attribute
+        beginning with C{'leaf_'} will be passed to all leaves.  And
+        any attribute beginning with C{'loc_'} will be passed to all
+        text locations (for C{TreeToken}s).
+    """
+    # Process attribs.
+    tree_attribs = {}
+    node_attribs = {}
+    leaf_attribs = {}
+    loc_attribs = {}
+
+    for (key, value) in attribs.items():
+        if key[:5] == 'tree_': tree_attribs[key[5:]] = value
+        elif key[:5] == 'node_': node_attribs[key[5:]] = value
+        elif key[:5] == 'leaf_': leaf_attribs[key[5:]] = value
+        elif key[:4] == 'loc_': loc_attribs[key[4:]] = value
+        else: raise ValueError('Bad attribute: %s' % key)
+    return _tree_to_treeseg(canvas, tree, make_node, make_leaf,
+                                tree_attribs, node_attribs,
+                                leaf_attribs, loc_attribs)
+
+class TreeWidget(CanvasWidget):
+    """
+    This class will likely be restructured or deleted.
+    
+    Display a tree; keep a 2-way map from TreeSegmentWidget to Tree.
+
+    collapse() and expand() and toggle_collapsed().
+
+    User interface should use *trees only*; and whatever CanvasWidgets
+    they specified for nodes & leaves.  It should *not* include
+    TreeSegmentWidgets.  Actually, it shouldn't even include node/leaf
+    widgets, since I keep destroying & recreating them.
+
+    Add callbacks:
+      - C{bind_subtree_click}
+      - C{bind_subtree_drag} [turns on shapeable]
+      - C{bind_node_click}
+      - C{bind_leaf_click}
+      - C{bind_leaf_drag} [turns on shapeable]
+      - C{bind_loc_click}
+
+    Attributes:
+      - node_*
+      - leaf_*
+      - loc_*
+      - roof_color
+      - roof_fill
+      - line_color
+      - shapeable
+      - draggable
+      - xspace
+      - yspace
+    """
+    def __init__(self, canvas, tree, make_node=TextWidget,
+                 make_leaf=TextWidget, **attribs):
+        self._widget = {} # Tree -> widget
+        self._tree = {} # widget -> Tree
+        self._collapsed = {}
+
+        # Attributes.
+        self._nodeattribs = {}
+        self._leafattribs = {}
+        self._locattribs = {'color': '#008000'}
+        self._line_color = '#008080'
+        self._roof_color = '#008080'
+        self._roof_fill = '#c0c0c0'
+        self._shapeable = 0
+        self._xspace = 10
+        self._yspace = 10
+
+        # Node & leaf canvas widget constructors
+        self._make_node = make_node
+        self._make_leaf = make_leaf
+
+        self._top_treeseg = None
+        self._top_tree = None
+        CanvasWidget.__init__(self, canvas, **attribs)
+        self._set_tree(tree)
+
+    def _set_tree(self, tree):
+        self._top_tree = tree
+        self._widget = {} # Tree -> widget
+        self._tree = {} # widget -> Tree
+        oldseg = self._top_treeseg
+
+        # Create the new tree segment.
+        self._top_treeseg = self._make_treeseg(tree)
+
+        # Remove the old segemnt and add the new one.
+        if oldseg is not None: self._remove_child_widget(oldseg)
+        self._add_child_widget(self._top_treeseg)
+
+        # Put the new segment where the old one was.
+        if oldseg is not None:
+            (oldx1, oldy1, oldx2, oldy2) = oldseg.node().bbox()
+            (newx1, newy1, newx2, newy2) = self._top_treeseg.node().bbox()
+            self._top_treeseg.move((oldx1+oldx2-newx1-newx2)/2.0, oldy1-newy1)
+        
+    def __setitem__(self, attr, value):
+        if attr[:5] == 'node_': self._nodeattribs[attr[5:]] = value
+        elif attr[:5] == 'leaf_': self._leafattribs[attr[5:]] = value
+        elif attr[:4] == 'loc_': self._locattribs[attr[4:]] = value
+        elif attr == 'line_color': self._line_color = value
+        elif attr == 'roof_color': self._roof_color = value
+        elif attr == 'roof_fill': self._roof_fill = value
+        elif attr == 'shapeable': self._shapeable = value
+        elif attr == 'xspace': self._xspace = value
+        elif attr == 'yspace': self._yspace = value
+        else:
+            CanvasWidget.__setitem__(self, attr, value)
+            return
+
+        # Redraw the tree.
+        if self._top_treeseg:
+            old_treeseg = self._top_treeseg
+            self._set_tree(self._top_tree)
+            old_treeseg.destroy()
+
+    def __getitem__(self, attr):
+        if attr[:5] == 'node_':
+            return self._nodeattribs.get(attr[5:], None)
+        elif attr[:5] == 'leaf_':
+            return self._leafattribs.get(attr[5:], None)
+        elif attr[:4] == 'loc_':
+            return self._locattribs.get(attr[4:], None)
+        elif attr == 'line_color': return self._line_color
+        elif attr == 'roof_color': return self._roof_color
+        elif attr == 'roof_fill': return self._roof_fill
+        elif attr == 'shapeable': return self._shapeable
+        elif attr == 'xspace': return self._xspace
+        elif attr == 'yspace': return self._yspace
+        else: return CanvasWidget.__getitem__(self, attr)
+        
+    def _tags(self): return []
+
+    def toggle_collapsed(self, treeseg):
+        """
+        """
+        tree = self._tree[treeseg]
+        self._remove_tree(treeseg)
+        
+        if treeseg['roof']:
+            self._collapsed[tree] = 0
+            newseg = self._make_treeseg(tree)
+        else:
+            self._collapsed[tree] = 1
+            newseg = self._make_treeseg(tree)
+        
+        # Put the new segment where the old one was.
+        (oldx1, oldy1, oldx2, oldy2) = treeseg.node().bbox()
+        (newx1, newy1, newx2, newy2) = newseg.node().bbox()
+        newseg.move((oldx1+oldx2-newx1-newx2)/2.0, oldy1-newy1)
+
+        if treeseg.parent() is self:
+            self._top_treeseg = newseg
+            self._remove_child_widget(treeseg)
+            self._add_child_widget(newseg)
+        elif isinstance(treeseg.parent(), TreeSegmentWidget):
+            treeseg.parent().replace_child(treeseg, newseg)
+        else:
+            treeseg.parent().replace_child(treeseg, newseg)
+        treeseg.destroy()
+
+        # We could call self.manage here; but we shouldn't have to
+
+    def collapsed(self, tree):
+        """
+        @return: 1 if the specified tree is collapsed.
+        """
+        return self._collapsed.get(tree, 0)
+    
+    def expand(self, treeseg):
+        if treeseg['roof']: self.toggle_collapsed(treeseg)
+    def collapse(self, treeseg):
+        if not treeseg['roof']: self.toggle_collapsed(treeseg)
+
+    def _remove_tree(self, treeseg):
+        """
+        Remove all entries in _tree and _widget that have to do with
+        C{tree}. 
+        """
+        if isinstance(treeseg, TreeSegmentWidget):
+            del self._widget[self._tree[treeseg]]
+            del self._tree[treeseg]
+            for subtree in treeseg.subtrees(): self._remove_tree(subtree)
+
+    def _make_treeseg(self, tree):
+        """
+        Create a new tree segment from C{tree}.
+        """
+        make_node = self._make_node
+        make_leaf = self._make_leaf
+        collapsed = self._collapsed.get(tree, 0)
+
+        # Convert a tree or treetoken.
+        if isinstance(tree, Tree) or isinstance(tree, TreeToken):
+            # Create the node canvas widget
+            node = make_node(self.canvas(), tree.node(),
+                             **self._nodeattribs)
+
+            # Create the subtree canvas widgets.
+            if collapsed and isinstance(tree, Tree):
+                leaves = [self._make_treeseg(l) for l in tree.leaves()]
+                seq = SequenceWidget(self.canvas(), align='top',
+                                 space=self._xspace, *leaves)
+                subtrees = [seq]
+            elif collapsed and isinstance(tree, TreeToken):
+                leaves = [self._make_treeseg(l.type()) for
+                          l in tree.leaves()]
+                seq = SequenceWidget(self.canvas(), align='top',
+                                 space=self._xspace, *leaves)
+                loc = TextWidget(self.canvas(), str(tree.loc()),
+                             **self._locattribs)
+                stack = StackWidget(self.canvas(), seq, loc, align='center')
+                stack['draggable'] = self._shapeable
+                subtrees = [stack]
+            else: 
+                subtrees = [self._make_treeseg(c) for c in tree.children()]
+
+            # Create the tree segment.
+            if collapsed:
+                treeseg = TreeSegmentWidget(self.canvas(), node, subtrees,
+                                        roof=1, fill=self._roof_fill,
+                                        color=self._roof_color,
+                                        xspace=self._xspace,
+                                        yspace=self._yspace)
+            else:
+                treeseg = TreeSegmentWidget(self.canvas(), node, subtrees,
+                                        color=self._line_color,
+                                        xspace=self._xspace,
+                                        yspace=self._yspace)
+
+            treeseg['draggable'] = self._shapeable
+            treeseg.bind_click(self.toggle_collapsed)
+            
+            self._widget[tree] = treeseg
+            self._tree[treeseg] = tree
+            return treeseg
+        elif isinstance(tree, Token):
+            leaf = make_leaf(self.canvas(), tree.type(), **self._leafattribs)
+            loc = TextWidget(self.canvas(), str(tree.loc()), **self._locattribs)
+            stack = StackWidget(self.canvas(), leaf, loc, align='center')
+            stack['draggable'] = self._shapeable
+            return stack
+        else:
+            leaf = make_leaf(self.canvas(), tree, **self._leafattribs)
+            leaf['draggable'] = self._shapeable
+            return leaf
+
+import random
+if __name__ == '__main__':
+    def fill(cw):
+        cw['fill'] = '#%06d' % random.randint(0,999999)
+    
+    cf = CanvasFrame(width=600, closeenough=2)
+    
+    tree = Tree('S', Tree('NP', 'the', 'very', 'big', 'cat'),
+                Tree('VP', Tree('Adv', 'sorta'), Tree('V', 'saw'),
+                     Tree('NP', Tree('Det', 'the'),
+                          Tree('N', 'dog'))))
+    tc = TreeWidget(cf.canvas(), tree, draggable=1,
+                node_font=('helvetica', 14, 'bold'),
+                leaf_font=('helvetica', 12, 'italic'),
+                leaf_color='orange4', node_color='blue')
+    cf.add_widget(tc, 10, 10)
+
+    def boxit(canvas, text):
+        return BoxWidget(canvas, TextWidget(canvas, text))
+
+    treetok = TreeToken('S', TreeToken('NP', Token('the',0),
+                                       Token('cat',1)),
+                TreeToken('VP', TreeToken('V', Token('saw',2)),
+                     TreeToken('NP', TreeToken('Det', Token('the',3)),
+                          TreeToken('N', Token('dog',4)))))
+    tc2 = TreeWidget(cf.canvas(), treetok, TextWidget, boxit, shapeable=1)
+
+    #def color(cw, tc2=tc2):
+    #    tree = tc2.tree(cw)
+    #    tc2.toggle_collapsed(cw)
+    #    widget = tc2.treesegment(tree)
+    #    widget['color'] = '#%06d' % random.randint(0,999999)
+    #    
+    #tc2.treesegment(treetok.children()[1]).bind_click(color)
+
+    cf.add_widget(tc2, 300, 10)
+
+    tc3 = tree_to_treesegment(cf.canvas(), treetok, tree_color='green4')
+    tc3['draggable'] = 1
+    cf.add_widget(tc3, 200, 100)
+
