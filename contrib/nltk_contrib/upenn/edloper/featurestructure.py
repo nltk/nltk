@@ -2,12 +2,39 @@
 A preliminary feature structure module.
 
 Based loosely on C{feature.py} by Rob Speer.
+
+Should there be a feature object?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The current implementation doesn't actually include an object to
+encode a "feature" (i.e., a name/value pair).  This makes the code
+simpler -- one less class to deal with, and you can directly query for
+feature values, rather than going through a feature structure.  But
+there might be use cases for adding a Feature object.  E.g., if we
+wanted to assign properties (like is_required) to features.  But I'd
+like to see some compelling use cases before we add it.
+
+NullCategory and StarCategory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Rob's code included 2 special feature values: star and null.  Star
+unifies with everything, and null unifies with (almost) nothing.  In
+Rob's code, null does unify with star and with itself; although I'm
+not sure what the justification for that is.
+
+This version doesn't include anything like the star & null values; and
+I'm not convinced that we need them.  In particular, a feature with a
+value of star acts just like an unspecified feature.  And I'm not sure
+what the use cases for the Null value are.  It's possible that the
+star value would be more meaningful if we also implemented
+feature.is_required.  But for both values, I'd like to see some use
+cases before we decide whether and how to add them.
 """
 
 import re, copy
 
 # This class doesn't actually do anything; all the work is done
-# by FeatureVariableBinding, and during unification.
+# by FeatureVariableBinding, and during unification.  All that
+# matters is that 2 FeatureVariables with the same identifier
+# should compare equal.
 class FeatureVariable:
     """
     A variable that can stand for a single feature value in a feature
@@ -48,9 +75,14 @@ class FeatureVariableBinding:
     Feature variable bindings are monotonic: once a value is bound, it
     cannot be unbound or rebound.
     """
-    def __init__(self):
-        self._bindings = {}
+    def __init__(self, **initial_bindings):
+        # [XX] check for variables that are bound together and
+        # merge them instead of putting them in bindings??
+        self._bindings = initial_bindings
         self._merged_vars = {}
+
+    def bound_variables(self):
+        return self._bindings.keys()
 
     def is_bound(self, variable):
         return self._bindings.has_key(variable)
@@ -113,10 +145,19 @@ class FeatureStructure:
     @note: Should I present them as DAGs instead?  That would make it
         easier to explain reentrancy.
     @ivar _features: A dictionary mapping from feature names to values.
-    @ivar _forward: This variable is used during unification to record
-        the 'cannonical' copy of a feature structure.  This is
-        necessary to maintain reentrance links.  Initially, C{_forward}
-        is set to C{None}.
+
+    @ivar _forward: A pointer to another feature structure that
+        replaced this feature structure.  This is used during the
+        unification process to preserve reentrance.  In particular, if
+        we're unifying feature structures A and B, where:
+
+          - x and y are feature paths.
+          - A contains a feature structure A[x]
+          - B contains a reentrant feature structure B[x]=B[y]
+
+        Then we need to ensure that in the unified structure C,
+        C[x]=C[y].  (Here the equals sign is used to denote the object
+        identity relation, i.e., C{is}.)
     """
     def __init__(self, **features):
         self._features = features
@@ -146,28 +187,64 @@ class FeatureStructure:
     #      them.
     #   2. Make a pass through the unified structure to make sure
     #      that we preserved reentrancy.
-    def unify(self, other, apply_bindings=1):
-        """
-        @param apply_bindings: As the two feature structures get
-            unified, we construct a set of variable bindings.
-            If C{apply_bindings} is true, then any bound variables
-            are replaced by their values.  In the future, we
-            probably want some way to I{return} the bindings.
-        """
+    def unify(self, other):
         try:
+            # Make copies of self & other (since unification is
+            # destructive). 
             selfcopy = copy.deepcopy(self)
             othercopy = copy.deepcopy(other)
-            bindings = FeatureVariableBinding()
             
-            selfcopy._destructively_unify(othercopy, bindings)
+            # Create an empty set of variable bindings.
+            bindings = FeatureVariableBinding()
 
-            # Do bindings before forwards??
-            if apply_bindings:
-                selfcopy._apply_bindings(bindings, {})
+            # Do the unification.
+            selfcopy._destructively_unify(othercopy, bindings)
             selfcopy._cleanup_forwards({})
-                
+
+            # Clean up any forwards in the bindings.
+            selfcopy._cleanup_binding_forwards(bindings)
+
+            # Apply the variable bindings.
+            selfcopy._apply_bindings(bindings, {})
+
+            # Return the result.
             return selfcopy
         except FeatureStructure._UnificationFailureError: return None
+
+    # [XX] This cheats (breaks abstraction barrier)
+    def _cleanup_binding_forwards(self, bindings):
+        for var in bindings._bindings.keys():
+            if isinstance(bindings._bindings[var], FeatureStructure):
+                while bindings._bindings[var]._forward is not None:
+                    bindings._bindings[var] = bindings._bindings[var]._forward
+
+    def unify_with_bindings(self, other, initial_bindings=None):
+        """
+        Unify self with other, and return both the unified structure
+        and the variable bindings necessary for unification.
+
+        @rtype: C{(L{FeatureStructure}, L{FeatureVariableBinding})}
+        """
+        if initial_bindings is None:
+            initial_bindings = FeatureVariableBinding()
+
+        try:
+            # Make copies of self & other (since unification is
+            # destructive).
+            selfcopy = copy.deepcopy(self)
+            othercopy = copy.deepcopy(other)
+
+            # Do the unification.
+            selfcopy._destructively_unify(othercopy, bindings)
+            selfcopy._cleanup_forwards({})
+
+            # Clean up any forwards in the bindings.
+            selfcopy._cleanup_binding_forwards(bindings)
+
+            # Return the unified value and the bindings
+            return selfcopy, bindings
+        except FeatureStructure._UnificationFailureError: return None
+            
 
     def _apply_bindings(self, bindings, visited):
         # Only visit each node once:
@@ -422,7 +499,7 @@ class FeatureStructure:
             reentrances[id(fval)] = reentrances.has_key(id(fval))
             # Recurse to contained feature structures.
             if isinstance(fval, FeatureStructure):
-                fval._find_reentrances(reentrances)
+                fval._find_reentrances(reentrances, visited)
 
         return reentrances
 
@@ -524,6 +601,22 @@ class FeatureStructureTestCase(unittest.TestCase):
         fs5repr = '[A = (1) [B = b, C = c, D = d], E = [F -> (1)]]'
         self.failUnlessEqual(repr(fs5), fs5repr)
 
+    def testVariableForwarding(self):
+        'Test that bound variable values get forwarded appropriately'
+        cvar = FeatureVariable('cvar')
+        dvar = FeatureVariable('dvar')
+        fs1x = FeatureStructure(X='x')
+        fs1 = FeatureStructure(A=fs1x, B=fs1x, C=cvar, D=dvar)
+
+        fs2y = FeatureStructure(Y='y')
+        fs2z = FeatureStructure(Z='z')
+        fs2 = FeatureStructure(A=fs2y, B=fs2z, C=fs2y, D=fs2z)
+
+        fs3 = fs1.unify(fs2)
+        fs3repr = ('[A = (1) [X = x, Y = y, Z = z], '+
+                   'B -> (1), C -> (1), D -> (1)]')
+        self.failUnlessEqual(repr(fs3), fs3repr)
+
     def testCyclicUnification(self):
         'Create a cyclic structure via unification'
         # Create the following cyclic feature structure:
@@ -569,4 +662,7 @@ def test():
 
 if __name__ == '__main__':
     test()
+
+    
+        
     
