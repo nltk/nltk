@@ -273,7 +273,7 @@ class ProximateTokensRule(BrillRuleI):
         # step from finding applicable locations, since we don't want
         # the rule to interact with itself.
         for i in change:
-            tokens[i]['TAG'] = self._replacement
+            tokens[i]['POS'] = self._replacement
         
         return change
 
@@ -281,7 +281,7 @@ class ProximateTokensRule(BrillRuleI):
         # Inherit docs from BrillRuleI
         
         # Does the given token have this rule's "original tag"?
-        if tokens[index]['TAG'] != self._original:
+        if tokens[index]['POS'] != self._original:
             return False
         
         # Check to make sure that every condition holds.
@@ -376,8 +376,8 @@ class ProximateTagsRule(ProximateTokensRule):
     """
     PROPERTY_NAME = 'tag' # for printing.
     def extract_property(token): # [staticmethod]
-        """@return: The given token's C{TAG} property."""
-        return token['TAG']
+        """@return: The given token's C{POS} property."""
+        return token['POS']
     extract_property = staticmethod(extract_property)
 
 class ProximateWordsRule(ProximateTokensRule):
@@ -481,7 +481,7 @@ class ProximateTokensTemplate(BrillTemplateI):
                                  ((s,e),))
 
     def applicable_rules(self, tokens, index, correct_tag):
-        if tokens[index]['TAG'] == correct_tag:
+        if tokens[index]['POS'] == correct_tag:
             return []
 
         # For each of this template's boundaries, Find the conditions
@@ -500,7 +500,7 @@ class ProximateTokensTemplate(BrillTemplateI):
                                 for new_condition in conditions]
 
         # Translate the condition sets into rules.
-        return [self._rule_class(tokens[index]['TAG'], correct_tag, *conds)
+        return [self._rule_class(tokens[index]['POS'], correct_tag, *conds)
                 for conds in condition_combos]
 
     def _applicable_conditions(self, tokens, index, start, end):
@@ -601,6 +601,7 @@ class BrillTaggerTrainer(PropertyIndirectionMixIn):
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
+        self._property_names = property_names
         PropertyIndirectionMixIn.__init__(self, **property_names)
 
     #////////////////////////////////////////////////////////////
@@ -661,7 +662,8 @@ class BrillTaggerTrainer(PropertyIndirectionMixIn):
         except KeyboardInterrupt: pass
 
         # Create and return a tagger from the rules we found.
-        return BrillTagger(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules,
+                           **self._property_names)
 
     #////////////////////////////////////////////////////////////
     # Finding the best rule
@@ -806,6 +808,7 @@ class FastBrillTaggerTrainer(PropertyIndirectionMixIn):
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
+        self._property_names = property_names
         PropertyIndirectionMixIn.__init__(self, **property_names)
 
     #////////////////////////////////////////////////////////////
@@ -1047,7 +1050,8 @@ class FastBrillTaggerTrainer(PropertyIndirectionMixIn):
         rules_by_position = [{} for tok in train_token[SUBTOKENS]]
 
         # Create and return a tagger from the rules we found.
-        return BrillTagger(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules, 
+                           **self._property_names)
 
 ######################################################################
 ## Testing
@@ -1055,8 +1059,8 @@ class FastBrillTaggerTrainer(PropertyIndirectionMixIn):
 
 def _errorPositions (train_token, token):
     return [i for i in range(len(token['SUBTOKENS'])) 
-            if token['SUBTOKENS'][i]['TAG'] !=
-            train_token['SUBTOKENS'][i]['TAG'] ]
+            if token['SUBTOKENS'][i]['POS'] !=
+            train_token['SUBTOKENS'][i]['POS'] ]
 
 # returns a list of errors in string format
 def errorList (train_token, token, radius=2):
@@ -1077,13 +1081,13 @@ def errorList (train_token, token, radius=2):
     indices = _errorPositions(train_token, token)
     tokenLen = len(token['SUBTOKENS'])
     for i in indices:
-        ei = token['SUBTOKENS'][i]['TAG'].rjust(3) + " -> " \
-             + train_token['SUBTOKENS'][i]['TAG'].rjust(3) + ":  "
+        ei = token['SUBTOKENS'][i]['POS'].rjust(3) + " -> " \
+             + train_token['SUBTOKENS'][i]['POS'].rjust(3) + ":  "
         for j in range( max(i-radius, 0), min(i+radius+1, tokenLen) ):
-            if token['SUBTOKENS'][j]['TEXT'] == token['SUBTOKENS'][j]['TAG']:
+            if token['SUBTOKENS'][j]['TEXT'] == token['SUBTOKENS'][j]['POS']:
                 s = token['SUBTOKENS'][j]['TEXT'] # don't print punctuation tags
             else:
-                s = token['SUBTOKENS'][j]['TEXT'] + "/" + token['SUBTOKENS'][j]['TAG']
+                s = token['SUBTOKENS'][j]['TEXT'] + "/" + token['SUBTOKENS'][j]['POS']
                 
             if j == i:
                 ei += "**"+s+"** "
@@ -1115,9 +1119,8 @@ def getWSJTokens (n, randomize = False):
         random.shuffle(items)
     for item in items[:n]:
         item = treebank.read(item)
-        for para in item['PARAS']:
-            for sent in para['SENTS']:
-                taggedData += sent['WORDS']
+        for sent in item['SENTS']:
+            taggedData += sent['WORDS']
     taggedData = [taggedData[i] for i in range(len(taggedData))
                   if taggedData[i]['TEXT'][0] not in "[]="]
     return taggedData
@@ -1127,7 +1130,7 @@ def test(numFiles=100, max_rules=200, min_score=2, ruleFile="dump.rules",
          randomize=False, train=.8, trace=3):
 
     NN_CD_tagger = RegexpTagger([(r'^[0-9]+(.[0-9]+)?$', 'CD'),
-                                             (r'.*', 'NN')])
+                                             (r'.*', 'NN')], TAG='POS')
 
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
@@ -1138,14 +1141,14 @@ def test(numFiles=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     trainCutoff = int(len(taggedData)*train)
     trainingData = Token(SUBTOKENS=taggedData[0:trainCutoff])
     goldData = Token(SUBTOKENS=taggedData[trainCutoff:])
-    testingData = goldData.exclude('TAG')
+    testingData = goldData.exclude('POS')
 
     # Unigram tagger
 
     print "Training unigram tagger:",
-    u = UnigramTagger()
+    u = UnigramTagger(TAG='POS')
     u.train(trainingData)
-    backoff = BackoffTagger([u, NN_CD_tagger])
+    backoff = BackoffTagger([u, NN_CD_tagger], TAG='POS')
     print("[accuracy: %f]"
           %tagger_accuracy(backoff, [goldData]))
 
@@ -1164,7 +1167,8 @@ def test(numFiles=100, max_rules=200, min_score=2, ruleFile="dump.rules",
         ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
         ]
 
-    trainer = FastBrillTaggerTrainer(backoff, templates, trace)
+    #trainer = FastBrillTaggerTrainer(backoff, templates, trace, TAG='POS')
+    trainer = BrillTaggerTrainer(backoff, templates, trace, TAG='POS')
     b = trainer.train(trainingData, max_rules, min_score)
 
     print
