@@ -32,10 +32,10 @@ class EventI:
       {x:x>0}
 
     The only method that events are required to implement is
-    C{__contains__()}, which tests whether a sample is a
+    C{contains()}, which tests whether a sample is a
     contained by the event.  However, when possible, events should
     also define the following methods:
-        - C{__cmp__()}, which tests whether this event is
+        - C{equals()}, which tests whether this event is
            equal to another event.
         - C{subset()}, which tests whether this event is a
            subset of another event.
@@ -49,7 +49,7 @@ class EventI:
         - C{samples()}, which returns a C{Set}
            containing all of the samples that are contained by this
            event. 
-        - C{__len__()}, which returns the number of samples 
+        - C{len()}, which returns the number of samples 
            contained by this event.
     
     Classes implementing the C{EventI} interface may choose
@@ -61,7 +61,7 @@ class EventI:
     NotImplementedError.  (?? is this the right exception? use
     NotSupportedError? ValueError? ??)
     """
-    def __contains__(self, sample):
+    def contains(self, sample):
         """
         Return true if and only if the given sample is contained in
         this event.  Return false if C{sample} is not a
@@ -73,34 +73,24 @@ class EventI:
             contained in this event.
         @rtype: boolean
         """
-        raise AssertionError()
-    
-    def contains(self, sample):
-        """
-        Return true if and only if the given sample is contained in
-        this event.  Return false if C{sample} is not a
-        supported type of sample for this C{Event} class.
-        
-        @param sample: The sample whose membership we are testing.
-        @type sample: any
-        @return: A true value if and only if the given sample is
-            contained in this event.
-        @rtype: boolean
-        """
         return self.__contains__(sample) # Is this ok?????
     
-    def __cmp__(self, other):
+    def __contains__(self, sample):
+        raise AssertionError()
+    __contains__.__doc__ = contains.__doc__
+    
+    def equals(self, other):
         # ok not to implement!
         """
-        Return 0 if the given object is equal to the event.  Formally, 
-        return 0 if and only if every sample contained by this event
+        Return 1 if the given object is equal to the event.  Formally, 
+        return 1 if and only if every sample contained by this event
         is also contained by C{other}, and every sample
         contained by C{other} is contained by this event.
         Otherwise, return some nonzero number.
         
         @param other: The object to compare this event to.
         @type other: Event
-        @return: 0 if the given object is equal to this event.
+        @return: 1 if the given object is equal to this event.
         @rtype: int
         @raise NotImplementedError: If this method is not implemented
                by this Event class.
@@ -142,8 +132,31 @@ class EventI:
         @raise NotImplementedError: If C{other} is not a
                supported Event type.
         """
-        # ok not to implement!
         raise NotImplementedError()
+    
+    def __lt__(self, other):
+        try:
+            return other.superset(self)
+        except NotImplementedError:
+            return self.subset(other)
+    __lt__.__doc__ = subset.__doc__
+
+    def __gt__(self, other):
+        try:
+            return other.subset(self)
+        except NotImplementedError:
+            return self.superset(other)
+    __gt__.__doc__ = superset.__doc__
+
+    def __eq__(self, other):
+        return self.equals(other)
+    __eq__.__doc__ = equals.__doc__
+
+    def __ge__(self, other):
+        return (self > other) or (self == other)
+    
+    def __le__(self, other):
+        return (self < other) or (self == other)
     
     def samples(self):
         """
@@ -161,7 +174,7 @@ class EventI:
         # ok not to implement!
         raise NotImplementedError()
 
-    def __len__(self):
+    def len(self):
         """
         Return the number of samples contained by this event.  If this 
         event contains an infinite number of samples, return None.  If 
@@ -173,6 +186,12 @@ class EventI:
         @raise NotImplementedError: If this method is not implemented
                by this Event class.
         """
+        raise NotImplementedError()
+        
+    def __len__(self):
+        return self.len()
+    __len__.__doc__ = len.__doc__
+        
     def union(self, other):
         """
         Return an event containing the union of this event's samples
@@ -212,7 +231,38 @@ class EventI:
                supported Event type.
         """
         raise NotImplementedError()
+
+    def difference(self, other):
+        """
+        Return an event containing the difference between this event's
+        samples and another event's samples.  Formally, return an
+        event that contains a sample if and only if it is contained in
+        self, but not in other.
+
+        @param other: The C{Event} which should be subtracted from
+               this C{Event}.
+        @type other: Event
+        @return: An event containing the difference between this
+                event's samples and another event's samples.
+        @rtype: Event
+        @raise NotImplementedError: If this method is not implemented
+               by this Event class.
+        @raise NotImplementedError: If C{other} is not a
+               supported Event type.
+        """
+        raise NotImplementedError()
     
+    def __or__(self, other):
+        return self.union(other)
+    __or__.__doc__ = union.__doc__
+    
+    def __and__(self, other):
+        return self.intersection(other)
+    __and__.__doc__ = intersection.__doc__
+    
+    def __minus__(self, other):
+        return self.difference(other)
+    __minus__.__doc__ = difference.__doc__
 
 class SampleEvent(EventI):
     """
@@ -227,13 +277,10 @@ class SampleEvent(EventI):
         @type sample: any
         """
         self._sample = sample
-    def __contains__(self, sample):
-        # Inherit docs from EventI
-        return sample == self._sample
     def contains(self, sample):
         # Inherit docs from EventI
         return sample == self._sample
-    def __cmp__(self, other):
+    def equals(self, other):
         # Inherit docs from EventI
         return self.samples() == other.samples()
     def subset(self, other):
@@ -251,15 +298,19 @@ class SampleEvent(EventI):
     def union(self, other): 
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a or x in b))
-        return FuncEvent(f)
+        return PredEvent(f)
     def intersection(self, other):
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a and x in b))
-        return FuncEvent(f)
+        return PredEvent(f)
+    def difference(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x not in b))
+        return PredEvent(f)
     def samples(self):
         # Inherit docs from EventI
         return Set(self._sample)
-    def __len__(self):
+    def len(self):
         # Inherit docs from EventI
         return 1
     def sample(self):
@@ -269,6 +320,8 @@ class SampleEvent(EventI):
         @rtype: any
         """
         return self._sample
+    def __repr__(self):
+        return '{Event: '+repr(self._sample)+'}'
   
 class SetEvent(EventI):
     """
@@ -284,13 +337,10 @@ class SetEvent(EventI):
         @type set: Set
         """
         self._set = set
-    def __contains__(self, sample):
-        # Inherit docs from EventI
-        return sample in self._set
     def contains(self, sample):
         # Inherit docs from EventI
         return sample in self._set
-    def __cmp__(self, other):
+    def equals(self, other):
         # Inherit docs from EventI
         return self.samples() == other.samples()
     def subset(self, other):
@@ -309,34 +359,47 @@ class SetEvent(EventI):
     def union(self, other): 
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a and x in b))
-        return FuncEvent(f)
+        return PredEvent(f)
     def intersection(self, other):
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a or x in b))
-        return FuncEvent(f)
+        return PredEvent(f)
+    def difference(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x not in b))
+        return PredEvent(f)
     def samples(self):
         # Inherit docs from EventI
         # Make a copy -- it's safer.
         return self._set.copy()
-    def __len__(self):
+    def len(self):
         # Inherit docs from EventI
         return len(self._set)
+    def __repr__(self):
+        if len(self._set) == 0: return '{Event}'
+        str = '{Event '
+        for elt in self._set.elements()[:5]:
+            str += repr(elt)+', '
+        if len(self._set) <= 5:
+            return str[:-2]+'}'
+        else:
+            return str+'...}'
 
-class FuncEvent(EventI):
+class PredEvent(EventI):
     """
     An C{Event} whose samples are defined by a function.
     This function should return 1 for any samples contained in the
     C{Event}, and 0 for any samples not contained in the
-    C{Event}.  C{FuncEvent}s are often created
+    C{Event}.  C{PredEvent}s are often created
     using C{lambda} expressions.  Examples, with their
     corresponding sets, are::
 
-      e1 = FuncEvent(lambda x:x>3)            {x:x>3}
-      e2 = FuncEvent(lambda x:x[0:2]=='hi')   {x:x[0:2]=='hi'}
+      e1 = PredEvent(lambda x:x>3)            {x:x>3}
+      e2 = PredEvent(lambda x:x[0:2]=='hi')   {x:x[0:2]=='hi'}
     """
     def __init__(self, func):
         """
-        Construct a new C{FuncEvent} from the given
+        Construct a new C{PredEvent} from the given
         function.  The function should return 1 for any samples
         contained in the C{Event}, and 0 for any samples not 
         contained in the C{Event}.
@@ -346,11 +409,9 @@ class FuncEvent(EventI):
         @type func: Function or BuiltinFunction
         """
         self._func = func
-    def __contains__(self, sample):
-        return self._func(sample) != 0
     def contains(self, sample):
         return self._func(sample) != 0
-    def __cmp__(self, other):
+    def equals(self, other):
         """
         B{Not implemented by this Event class.}
         
@@ -381,11 +442,15 @@ class FuncEvent(EventI):
     def union(self, other): 
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a and x in b))
-        return FuncEvent(f)
+        return PredEvent(f)
     def intersection(self, other):
         # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a or x in b))
-        return FuncEvent(f)
+        return PredEvent(f)
+    def difference(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, a=self, b=other:(x in a and x not in b))
+        return PredEvent(f)
     def samples(self):
         """
         B{Not implemented by this Event class.}
@@ -393,41 +458,48 @@ class FuncEvent(EventI):
         @rtype: None
         """
         raise NotImplementedError()
-    def __len__(self): 
+    def len(self): 
         """
         B{Not implemented by this Event class.}
         
         @rtype: None
         """
         raise NotImplementedError()
+    def __repr__(self):
+        return '{Event x:%s(x)}' % self._func.__name__
 
 class NullEvent(EventI):
     """
     An event that contains no samples.
     """
-    def __contains__(self, sample): return 0
     def contains(self, sample): return 0
-    def __cmp__(self, other): return len(other)==0
+    def equals(self, other): return len(other)==0
     def subset(self, other): return 1
     def superset(self, other): return len(other)==0
     def union(self, other): return other
     def intersection(self, other): return self
+    def difference(self, other): return self
     def samples(self): return Set()
-    def __len__(self): return 0
+    def len(self): return 0
+    def __repr__(self): return '{Event}'
 
 class UniversalEvent(EventI):
     """
     An event that contains every sample.
     """
-    def __contains__(self, sample): return 1
     def contains(self, sample): return 1
-    def __cmp__(self, other):
+    def equals(self, other):
         if isinstance(other, UniversalEvent): return 1
         else: raise NotImplementedError()
     def subset(self, other): return self==other
     def superset(self, other): return 1
     def union(self, other): return self
     def intersection(self, other): return other
+    def difference(self, other):
+        # Inherit docs from EventI
+        f = (lambda x, b=other:(x not in b))
+        return PredEvent(f)
+        
     def samples(self): 
         """
         B{Not implemented by this Event class.}
@@ -435,7 +507,8 @@ class UniversalEvent(EventI):
         @rtype: None
         """
         raise NotImplementedError()
-    def __len__(self): return None
+    def len(self): return None
+    def __repr__(self): return '{Event x}'
         
 ##//////////////////////////////////////////////////////
 ##  Frequency Distribution
@@ -850,11 +923,6 @@ class ContextEvent(EventI):
         """
         self._context = context
         
-    def __contains__(self, sample):
-        # Inherit docs from EventI
-        if not isinstance(sample, CFSample): return 0
-        return sample.context() == self._context
-    
     def contains(self, sample):
         # Inherit docs from EventI
         if not isinstance(sample, CFSample): return 0
