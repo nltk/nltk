@@ -24,211 +24,208 @@ from chktype import chktype as _chktype
 ##//////////////////////////////////////////////////////
 
 class EventI:
-    """##
+    """
     A subset of the samples that compose some sample space.  Note that 
     this subset need not be finite.  Events are typically written as
     the set of samples they contain, or as a function in first order
-    logic.  Examples are:
-    <PRE>
+    logic.  Examples are::
       {1,2,3}
       {x:x>0}
-    </PRE>
 
     The only method that events are required to implement is
-    <CODE>__contains__()</CODE>, which tests whether a sample is a
+    C{__contains__()}, which tests whether a sample is a
     contained by the event.  However, when possible, events should
     also define the following methods:
-    <UL>
-      <LI> <CODE>__cmp__()</CODE>, which tests whether this event is
+        - C{__cmp__()}, which tests whether this event is
            equal to another event.
-      <LI> <CODE>subset()</CODE>, which tests whether this event is a
+        - C{subset()}, which tests whether this event is a
            subset of another event.
-      <LI> <CODE>superset()</CODE>, which tests whether this event is
+        - C{superset()}, which tests whether this event is
            a superset of another event.
-      <LI> <CODE>union()</CODE>, which returns an event containing the
+        - C{union()}, which returns an event containing the
            union of this event's samples and another event's samples.
-      <LI> <CODE>intersection()</CODE>, which returns an event
+        - C{intersection()}, which returns an event
            containing the intersection of this event's samples and
            another event's samples.
-      <LI> <CODE>samples()</CODE>, which returns a <CODE>Set</CODE>
+        - C{samples()}, which returns a C{Set}
            containing all of the samples that are contained by this
            event. 
-      <LI> <CODE>__len__()</CODE>, which returns the number of samples 
+        - C{__len__()}, which returns the number of samples 
            contained by this event.
-    </UL>
     
-    Classes implementing the <CODE>EventI</CODE> interface may choose
+    Classes implementing the C{EventI} interface may choose
     to only support certain classes of samples, or may choose to only
     support certain types of events as arguments to the optional
-    methods (<CODE>__cmp__</CODE>, <CODE>subset</CODE>, etc.).  If a
+    methods (C{__cmp__}, C{subset}, etc.).  If a
     method is unable to return a correct result because it is given an 
     unsupported type of sample or event, it should raise a
     NotImplementedError.  (?? is this the right exception? use
     NotSupportedError? ValueError? ??)
     """
     def __contains__(self, sample):
-        """##
+        """
         Return true if and only if the given sample is contained in
-        this event.  Return false if <CODE>sample</CODE> is not a
-        supported type of sample for this <CODE>Event</CODE> class.
+        this event.  Return false if C{sample} is not a
+        supported type of sample for this C{Event} class.
 
-        @param sample The sample whose membership we are testing.
-        @type sample any
-        @return A true value if and only if the given sample is
-        contained in this event.
-        @returntype boolean
+        @param sample: The sample whose membership we are testing.
+        @type sample: any
+        @return: A true value if and only if the given sample is
+            contained in this event.
+        @rtype: boolean
         """
         raise AssertionError()
     
     def contains(self, sample):
-        """##
+        """
         Return true if and only if the given sample is contained in
-        this event.  Return false if <CODE>sample</CODE> is not a
-        supported type of sample for this <CODE>Event</CODE> class.
+        this event.  Return false if C{sample} is not a
+        supported type of sample for this C{Event} class.
         
-        @param sample The sample whose membership we are testing.
-        @type sample any
-        @return A true value if and only if the given sample is
-        contained in this event.
-        @returntype boolean
+        @param sample: The sample whose membership we are testing.
+        @type sample: any
+        @return: A true value if and only if the given sample is
+            contained in this event.
+        @rtype: boolean
         """
         return self.__contains__(sample) # Is this ok?????
     
     def __cmp__(self, other):
         # ok not to implement!
-        """##
+        """
         Return 0 if the given object is equal to the event.  Formally, 
         return 0 if and only if every sample contained by this event
-        is also contained by <CODE>other</CODE>, and every sample
-        contained by <CODE>other</CODE> is contained by this event.
+        is also contained by C{other}, and every sample
+        contained by C{other} is contained by this event.
         Otherwise, return some nonzero number.
         
-        @param other The object to compare this event to.
-        @type other Event
-        @return 0 if the given object is equal to this event.
-        @returntype int
-        @raise NotImplementedError If this method is not implemented
+        @param other: The object to compare this event to.
+        @type other: Event
+        @return: 0 if the given object is equal to this event.
+        @rtype: int
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
-        @raise NotImplementedError If <CODE>other</CODE> is not an
+        @raise NotImplementedError: If C{other} is not an
                Event, or is not a supported Event type.
         """
         raise NotImplementedError()
     
     def subset(self, other):
-        """##
+        """
         Return true if this event is a subset of the given 
         event.  Formally, return true if and only if every sample
-        contained by this event is contained by <CODE>other</CODE>.
+        contained by this event is contained by C{other}.
         
-        @param other The object to compare this event to.
-        @type other Event
-        @return true if this event is a subset of the given event.
-        @returntype boolean
-        @raise NotImplementedError If this method is not implemented
+        @param other: The object to compare this event to.
+        @type other: Event
+        @return: true if this event is a subset of the given event.
+        @rtype: boolean
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
-        @raise NotImplementedError If <CODE>other</CODE> is not a
+        @raise NotImplementedError: If C{other} is not a
                supported Event type.
         """
         # ok not to implement!
         raise NotImplementedError()
     
     def superset(self, other):
-        """##
+        """
         Return true if this event is a superset of the given 
         event.  Formally, return true if and only if every sample
-        contained by <CODE>other</CODE> is contained by this event.
+        contained by C{other} is contained by this event.
         
-        @param other The object to compare this event to.
-        @type other Event
-        @return true if this event is a superset of the given event.
-        @returntype boolean
-        @raise NotImplementedError If this method is not implemented
+        @param other: The object to compare this event to.
+        @type other: Event
+        @return: true if this event is a superset of the given event.
+        @rtype: boolean
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
-        @raise NotImplementedError If <CODE>other</CODE> is not a
+        @raise NotImplementedError: If C{other} is not a
                supported Event type.
         """
         # ok not to implement!
         raise NotImplementedError()
     
     def samples(self):
-        """##
-        Return a <CODE>Set</CODE> containing all of the samples
+        """
+        Return a C{Set} containing all of the samples
         contained by this event.  The effects of changes to this
-        <CODE>Set</CODE> on the <CODE>Event</CODE> are undefined.  The 
-        effects of changes to the <CODE>Event</CODE> on this
-        <CODE>Set</CODE> are also undefined.
+        C{Set} on the C{Event} are undefined.  The 
+        effects of changes to the C{Event} on this
+        C{Set} are also undefined.
         
-        @return The set of samples contained in this event.
-        @returntype Set
-        @raise NotImplementedError If this method is not implemented
+        @return: The set of samples contained in this event.
+        @rtype: Set
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
         """
         # ok not to implement!
         raise NotImplementedError()
 
     def __len__(self):
-        """##
+        """
         Return the number of samples contained by this event.  If this 
         event contains an infinite number of samples, return None.  If 
         this event is unable to determine how many samples are
         contained, raise NotImplementedError.
 
-        @return The number of samples contained by this event.
-        @returntype int
-        @raise NotImplementedError If this method is not implemented
+        @return: The number of samples contained by this event.
+        @rtype: int
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
         """
     def union(self, other):
-        """##
+        """
         Return an event containing the union of this event's samples
         and another event's samples.  Formally, return an event that
         contains a sample if and only if either self or other contains 
         that sample.
 
-        @param other The <CODE>Event</CODE> with which to union this
-               <CODE>Event</CODE>.
-        @type other Event
-        @return An event containing the union of this event's samples
+        @param other: The C{Event} with which to union this
+               C{Event}.
+        @type other: Event
+        @return: An event containing the union of this event's samples
                 and another event's samples.
-        @returntype Event
-        @raise NotImplementedError If this method is not implemented
+        @rtype: Event
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
-        @raise NotImplementedError If <CODE>other</CODE> is not a
+        @raise NotImplementedError: If C{other} is not a
                supported Event type.
         """
         raise NotImplementedError()
     
     def intersection(self, other):
-        """##
+        """
         Return an event containing the intersection of this event's
         samples and another event's samples.  Formally, return an
         event that contains a sample if and only if both self and
         other contains that sample.
 
-        @param other The <CODE>Event</CODE> with which to intersection
-               this <CODE>Event</CODE>.               
-        @type other Event
-        @return An event containing the intersection of this event's
+        @param other: The C{Event} with which to intersection
+               this C{Event}.               
+        @type other: Event
+        @return: An event containing the intersection of this event's
                 samples and another event's samples.
-        @returntype Event
-        @raise NotImplementedError If this method is not implemented
+        @rtype: Event
+        @raise NotImplementedError: If this method is not implemented
                by this Event class.
-        @raise NotImplementedError If <CODE>other</CODE> is not a
+        @raise NotImplementedError: If C{other} is not a
                supported Event type.
         """
         raise NotImplementedError()
     
 
 class SampleEvent(EventI):
-    """##
-    An <CODE>Event</CODE> containing a single sample.
+    """
+    An C{Event} containing a single sample.
     """
     def __init__(self, sample):
-        """##
-        Construct a new <CODE>SampleEvent</CODE>, containing only the
+        """
+        Construct a new C{SampleEvent}, containing only the
         given sample.
-        @param sample The sample that the new event should contain.
-        @type sample any
+        
+        @param sample: The sample that the new event should contain.
+        @type sample: any
         """
         self._sample = sample
     def __contains__(self, sample):
@@ -267,26 +264,25 @@ class SampleEvent(EventI):
         # Inherit docs from EventI
         return 1
     def sample(self):
-        """##
-        Return the single sample contained by this
-        <CODE>SampleEvent</CODE>.
-        @return The single sample contained by this
-        <CODE>SampleEvent</CODE>.
-        @returntype any
+        """
+        @return: The single sample contained by this
+            C{SampleEvent}.
+        @rtype: any
         """
         return self._sample
   
 class SetEvent(EventI):
-    """##
-    An <CODE>Event</CODE> whose samples are defined by a Set.
+    """
+    An C{Event} whose samples are defined by a Set.
     """
     def __init__(self, set):
-        """##
-        Construct a new <CODE>SetEvent</CODE>, whose samples are the
+        """
+        Construct a new C{SetEvent}, whose samples are the
         elements of the given set.
-        @param set The set of samples that the new event should
+        
+        @param set: The set of samples that the new event should
                contain.
-        @type set Set
+        @type set: Set
         """
         self._set = set
     def __contains__(self, sample):
@@ -328,27 +324,27 @@ class SetEvent(EventI):
         return len(self._set)
 
 class FuncEvent(EventI):
-    """##
-    An <CODE>Event</CODE> whose samples are defined by a function.
+    """
+    An C{Event} whose samples are defined by a function.
     This function should return 1 for any samples contained in the
-    <CODE>Event</CODE>, and 0 for any samples not contained in the
-    <CODE>Event</CODE>.  <CODE>FuncEvent</CODE>s are often created
-    using <CODE>lambda</CODE> expressions.  Examples, with their
-    corresponding sets, are:
-    <PRE>
-    e1 = FuncEvent(lambda x:x>3)            <I>{x:x>3}</I>
-    e2 = FuncEvent(lambda x:x[0:2]=='hi')   <I>{x:x[0:2]=='hi'}</I>
-    </PRE>
+    C{Event}, and 0 for any samples not contained in the
+    C{Event}.  C{FuncEvent}s are often created
+    using C{lambda} expressions.  Examples, with their
+    corresponding sets, are::
+
+      e1 = FuncEvent(lambda x:x>3)            {x:x>3}
+      e2 = FuncEvent(lambda x:x[0:2]=='hi')   {x:x[0:2]=='hi'}
     """
     def __init__(self, func):
-        """##
-        Construct a new <CODE>FuncEvent</CODE> from the given
+        """
+        Construct a new C{FuncEvent} from the given
         function.  The function should return 1 for any samples
-        contained in the <CODE>Event</CODE>, and 0 for any samples not 
-        contained in the <CODE>Event</CODE>.
-        @param func A function specifying what samples are in this
-               <CODE>Event</CODE>.
-        @type func Function or BuiltinFunction
+        contained in the C{Event}, and 0 for any samples not 
+        contained in the C{Event}.
+        
+        @param func: A function specifying what samples are in this
+               C{Event}.
+        @type func: Function or BuiltinFunction
         """
         self._func = func
     def __contains__(self, sample):
@@ -356,17 +352,21 @@ class FuncEvent(EventI):
     def contains(self, sample):
         return self._func(sample) != 0
     def __cmp__(self, other):
-        """## <B>Not implemented by this Event class.</B>
-        @param other -
-        @type other -
-        @returnType None
+        """
+        B{Not implemented by this Event class.}
+        
+        @param other: -
+        @type other: -
+        @rtype: None
         """
         raise NotImplementedError()
     def subset(self, other): 
-        """## <B>Not implemented by this Event class.</B>
-        @param other -
-        @type other -
-        @returnType None
+        """
+        B{Not implemented by this Event class.}
+        
+        @param other: -
+        @type other: -
+        @rtype: None
         """
         raise NotImplementedError()
     def superset(self, other):
@@ -388,18 +388,22 @@ class FuncEvent(EventI):
         f = (lambda x, a=self, b=other:(x in a or x in b))
         return FuncEvent(f)
     def samples(self):
-        """## <B>Not implemented by this Event class.</B>
-        @returnType None
+        """
+        B{Not implemented by this Event class.}
+        
+        @rtype: None
         """
         raise NotImplementedError()
     def __len__(self): 
-        """## <B>Not implemented by this Event class.</B>
-        @returnType None
+        """
+        B{Not implemented by this Event class.}
+        
+        @rtype: None
         """
         raise NotImplementedError()
 
 class NullEvent(EventI):
-    """##
+    """
     An event that contains no samples.
     """
     def __contains__(self, sample): return 0
@@ -413,7 +417,7 @@ class NullEvent(EventI):
     def __len__(self): return 0
 
 class UniversalEvent(EventI):
-    """##
+    """
     An event that contains every sample.
     """
     def __contains__(self, sample): return 1
@@ -426,8 +430,10 @@ class UniversalEvent(EventI):
     def union(self, other): return self
     def intersection(self, other): return other
     def samples(self): 
-        """## <B>Not implemented by this Event class.</B>
-        @returnType None
+        """
+        B{Not implemented by this Event class.}
+        
+        @rtype: None
         """
         raise NotImplementedError()
     def __len__(self): return None
@@ -437,208 +443,200 @@ class UniversalEvent(EventI):
 ##//////////////////////////////////////////////////////
 
 class FreqDistI:
-    """##
+    """
     A frequency distribution for the outcomes of an experiment.  A
     frequency distribution records the number of times each outcome of
     an experiment has occured.  For example, a frequency distribution
     could be used to record the frequency of each token in a document.
     Formally, a frequency distribution can be defined as a function
     mapping from samples to the number of times that sample occured as
-    an outcome. <P>
+    an outcome.
 
     Frequency distributions are generally constructed by running a
     number of experiments, and incrementing the count for a sample
     every time it is an outcome of an experiment.  For example, the
     following code will produce a frequency distribution that encodes
-    how often each word occurs in a text:
+    how often each word occurs in a text::
     
-    <PRE>
-    freqDist = SimpleFreqDist()
-    for word in document:
-        freqDist.inc(word)
-    </PRE>
+      freqDist = SimpleFreqDist()
+      for word in document:
+          freqDist.inc(word)
 
-    Classes implementing the <CODE>FreqDistI</CODE> interface may
+    Classes implementing the C{FreqDistI} interface may
     choose to only support certain classes of samples or events.  If a
     method is unable to return a correct result because it is given an
     unsupported type of sample or event, it should raise a
     NotImplementedError.  (?? is this the right exception? use
-    NotSupportedError? ValueError? ??) <P>
+    NotSupportedError? ValueError? ??)
 
-    Since several methods defined by <CODE>FreqDistI</CODE> can accept
+    Since several methods defined by C{FreqDistI} can accept
     either events or samples, classes that implement the EventI
     interface should never be used as samples for a frequency
-    distribution. <P>
+    distribution.
 
     Frequency distributions are required to implement the methods
-    <CODE>inc()</CODE>, <CODE>N()</CODE>, <CODE>count()</CODE>,
-    <CODE>freq()</CODE>, <CODE>cond_freq()</CODE>, <CODE>max()</CODE>,
-    and <CODE>cond_max()</CODE>.  In the future, this list may be
+    C{inc()}, C{N()}, C{count()},
+    C{freq()}, C{cond_freq()}, C{max()},
+    and C{cond_max()}.  In the future, this list may be
     exapanded, and optional methods may be added.
     """
     def inc(self, sample):
-        """##
-        Increment this <CODE>FreqDist</CODE>'s count for the given
+        """
+        Increment this C{FreqDist}'s count for the given
         sample.
         
-        @param sample The sample whose count should be incremented.
-        @type sample any
-        @returntype None
-        @raise NotImplementedError If <CODE>sample</CODE> is not a
+        @param sample: The sample whose count should be incremented.
+        @type sample: any
+        @rtype: None
+        @raise NotImplementedError: If C{sample} is not a
                supported sample type.
         """
         raise AssertionError()
     
     def N(self):
-        """##
-        Return the total number of sample outcomes that have been
-        recorded by this <CODE>FreqDist</CODE>.
-        
-        @return The total number of sample outcomes that have been
-        recorded by this <CODE>FreqDist</CODE>.
-        @returntype int
+        """
+        @return: The total number of sample outcomes that have been
+          recorded by this C{FreqDist}.
+        @rtype: int
         """
         raise AssertionError()
     
     def freq(self, sample_or_event):
-        """##
+        """
         Return the frequency of a given sample or event.  The
         frequency of an event or a sample is defined as the count of
         that event or sample divided by the total number of sample
         outcomes that have been recorded by this
-        <CODE>FreqDist</CODE>.  The count of a sample is defined as
+        C{FreqDist}.  The count of a sample is defined as
         the number of times that sample outcome was recorded by this
-        <CODE>FreqDist</CODE>.  The count of an event is the number of 
+        C{FreqDist}.  The count of an event is the number of 
         times that a sample outcome contained by the given event was
-        recorded by this <CODE>FreqDist</CODE>.  Frequencies are
+        recorded by this C{FreqDist}.  Frequencies are
         always real numbers in the range [0, 1].
         
-        @return The frequency of a given sample or event.
-        @returntype float
-        @param sample_or_event the sample or event whose frequency
+        @return: The frequency of a given sample or event.
+        @rtype: float
+        @param sample_or_event: the sample or event whose frequency
                should be returned.
-        @type sample_or_event EventI or any.
-        @raise NotImplementedError If <CODE>sample_or_event</CODE> is
+        @type sample_or_event: EventI or any.
+        @raise NotImplementedError: If C{sample_or_event} is
                not a supported sample type or event type.
         """
         raise AssertionError()
     
     def count(self, sample_or_event):
-        """##
+        """
         Return the count of a given sample or event.  The count of a
         sample is defined as the number of times that sample outcome
-        was recorded by this <CODE>FreqDist</CODE>.  The count of an
+        was recorded by this C{FreqDist}.  The count of an
         event is the number of times that a sample outcome contained
-        by the given event was recorded by this <CODE>FreqDist</CODE>.
+        by the given event was recorded by this C{FreqDist}.
         Counts are non-negative integers.
         
-        @return The count of a given sample or event.
-        @returntype int
-        @param sample_or_event the sample or event whose count
+        @return: The count of a given sample or event.
+        @rtype: int
+        @param sample_or_event: the sample or event whose count
                should be returned.
-        @type sample_or_event EventI or any.
-        @raise NotImplementedError If <CODE>sample_or_event</CODE> is
+        @type sample_or_event: EventI or any.
+        @raise NotImplementedError: If C{sample_or_event} is
                not a supported sample type or event type.
         """
         raise AssertionError()
 
     def max(self):
-        """##
+        """
         Return the sample with the greatest number of outcomes in this
         frequency distribution.  If two or more samples have the same
         number of outcomes, return one of them; which sample is
         returned is undefined.  If no outcomes have occured in this
-        frequency distribution, return <CODE>None</CODE>.
+        frequency distribution, return C{None}.
 
-        @return The sample with the maximum number of outcomes in this
+        @return: The sample with the maximum number of outcomes in this
                 frequency distribution.
-        @returntype any
+        @rtype: any
         """
         raise AssertionError()
     
     def cond_max(self, condition):
-        """##
+        """
         Of the samples contained in the given condition, return the
         sample with the greatest number of outcomes in this frequency
         distribution.  If two or more samples have the same number of
         outcomes, return one of them; which sample is returned is
         undefined.  If no outcomes contained in the given condition
         have occured in this frequency distribution, return
-        <CODE>None</CODE>.
+        C{None}.
 
-        @param condition The condition within which to find the
+        @param condition: The condition within which to find the
                maximum frequency sample.
-        @type condition EventI
-        @return The sample with the maximum number of outcomes in this
+        @type condition: EventI
+        @return: The sample with the maximum number of outcomes in this
                 frequency distribution, of the samples contained in
-                <CODE>condition</CODE>. 
-        @returntype any
-        @raise NotImplementedError If <CODE>condition</CODE> is
+                C{condition}. 
+        @rtype: any
+        @raise NotImplementedError: If C{condition} is
                not a supported event type.
         """
         raise AssertionError()
     
     def cond_freq(self, sample_or_event, condition):
-        """##
+        """
         Find the conditional frequency of the specified sample or
         event, given the specified condition.  The conditional
         frequency is defined as the number of times that a sample
         outcome is contained by both the event and the condition,
         divided by the number of times that a sample outcome is
         contained by the condition.  Assuming the condition event
-        defines the <CODE>union</CODE> member, then this definition
-        can be written as:
+        defines the C{union} member, then this definition
+        can be written as::
 
-        <PRE>
-        fd.cond_freq(e, c) == fd.count(c.union(e)) / fd.count(c)
-        </PRE>
+          fd.cond_freq(e, c) == fd.count(c.union(e)) / fd.count(c)
 
         As a special case, if no sample outcome is contained by the
         condition, then the conditional frequency is defined as
-        <CODE>None</CODE>.  Conditional frequencies are
+        C{None}.  Conditional frequencies are
         always either real numbers in the range [0, 1] or the special
-        value <CODE>None</CODE>. <P>
+        value C{None}.
         
-        Both <CODE>sample_or_event</CODE> and <CODE>condition</CODE>
+        Both C{sample_or_event} and C{condition}
         may be either samples or events.  
         
-        @return The conditional frequency of <CODE>event</CODE> given
-                <CODE>condition</CODE>.
-        @returntype float or None
-        @param sample_or_event The event
-        @type sample_or_event EventI or any
-        @param condition The condition
-        @type condition EventI or any
-        @raise NotImplementedError If <CODE>sample_or_event</CODE> or
-               <CODE>condition</CODE> are not a supported sample types
+        @return: The conditional frequency of C{event} given
+                C{condition}.
+        @rtype: float or None
+        @param sample_or_event: The event
+        @type sample_or_event: EventI or any
+        @param condition: The condition
+        @type condition: EventI or any
+        @raise NotImplementedError: If C{sample_or_event} or
+               C{condition} are not a supported sample types
                or event types. 
         """
         raise AssertionError()
 
 class SimpleFreqDist(FreqDistI):
-    """##
+    """
     A simple dictionary-based implementation of the
-    <CODE>FreqDist</CODE> interface.  A <CODE>SimpleFreqDist</CODE>
+    C{FreqDist} interface.  A C{SimpleFreqDist}
     simply maintains a dictionary mapping samples to numbers of
-    occurances.  <CODE>SimpleFreqDist</CODE> supports all types of
-    samples and events. <P>
+    occurances.  C{SimpleFreqDist} supports all types of
+    samples and events.
 
     Although this implementation allows for a full implementation of
-    the <CODE>FreqDist</CODE> interface, it can be quite inefficient
-    when used to find frequencies of complex events, or to find
-    conditional frequencies.  In particular, finding conditional
-    frequencies can take O(<I>s</I>*<I>e</I>*<I>c</I>), where <I>s</I>
-    is the number of samples in the <CODE>FreqDist</CODE>, <I>e</I> is
-    the number of samples in the event, and c is the number of samples
-    in the condition.  If you plan to perform a large number of
-    conditional searches, you may want to consider using the
-    <CODE>CFFreqDist</CODE> class instead.
+    the C{FreqDist} interface, it can be quite inefficient when used
+    to find frequencies of complex events, or to find conditional
+    frequencies.  In particular, finding conditional frequencies can
+    take M{O(s*e*c)}, where M{s} is the number of samples in the
+    C{FreqDist}, M{e} is the number of samples in the event, and M{c}
+    is the number of samples in the condition.  If you plan to perform
+    a large number of conditional searches, you may want to consider
+    using the C{CFFreqDist} class instead.
 
-    @see nltk.CFFreqDist CFFreqDist
+    @see: nltk.CFFreqDist CFFreqDist
     """
     def __init__(self):
-        """##
-        Construct a new, empty, <CODE>SimpleFreqDist</CODE>.
+        """
+        Construct a new, empty, C{SimpleFreqDist}.
         """
         self._dict = {}
         self._N = 0
@@ -712,15 +710,15 @@ class SimpleFreqDist(FreqDistI):
         return max_sample
 
     def __str__(self):
-        """##
+        """
         Return the informal string representation of this
-        <CODE>SimpleFreqDist</CODE>.  The informal representation of a
-        <CODE>SimpleFreqDist</CODE> is the informal
+        C{SimpleFreqDist}.  The informal representation of a
+        C{SimpleFreqDist} is the informal
         representation of its dictionary.
         
-        @return The informal string representation of this
-        <CODE>SimpleFreqDist</CODE>.
-        @returntype string
+        @return: The informal string representation of this
+            C{SimpleFreqDist}.
+        @rtype: string
         """
         return str(self._dict)
 
@@ -730,97 +728,95 @@ class SimpleFreqDist(FreqDistI):
 ##//////////////////////////////////////////////////////
 
 class CFSample:
-    """##
+    """
     A sample consisting of a context and a feature.
-    <CODE>CFSample</CODE>s are intended to be used as samples
-    for <CODE>FreqDist</CODE>s.  The following code shows how
-    <CODE>CFSample</CODE>s could be used to train a frequency
+    C{CFSample}s are intended to be used as samples
+    for C{FreqDist}s.  The following code shows how
+    C{CFSample}s could be used to train a frequency
     distribution, and then use that frequency distribution to tag new
-    data: 
+    data::
 
-    <PRE>
-    for (context, feature) in traing_samples:        <I># Train</I>
-        freqDist.inc( CFSample(context, feature) )
-    for context in new_contexts:                     <I># Tag new data</I>
-        context_event = ContextEvent(context)
-        print freqDist.cond_max(context_event).feature()
-    </PRE>
+      for (context, feature) in traing_samples:        # Train
+          freqDist.inc( CFSample(context, feature) )
+      for context in new_contexts:                     # Tag new data
+          context_event = ContextEvent(context)
+          print freqDist.cond_max(context_event).feature()
 
-    @see nltk.CFFreqDist CFFreqDist
-    @see nltk.ContextEvent ContextEvent
+    @see: nltk.CFFreqDist CFFreqDist
+    @see: nltk.ContextEvent ContextEvent
     """
     def __init__(self, context, feature):
-        """##
-        Construct a new <CODE>CFSample</CODE> with the given context
+        """
+        Construct a new C{CFSample} with the given context
         and feature.
         
-        @param context The new <CODE>CFSample</CODE>'s context.
-        @type context any
-        @param feature The new <CODE>CFSample</CODE>'s feature.
-        @type feature any
+        @param context: The new C{CFSample}'s context.
+        @type context: any
+        @param feature: The new C{CFSample}'s feature.
+        @type feature: any
         """
         self._context = context
         self._feature = feature
         
     def context(self):
-        """##
-        Return this <CODE>CFSample</CODE>'s context.
+        """
+        Return this C{CFSample}'s context.
         
-        @return This <CODE>CFSample</CODE>'s context.
-        @returntype any
+        @return: This C{CFSample}'s context.
+        @rtype: any
         """
         return self._context
 
     def feature(self):
-        """##
-        Return this <CODE>CFSample</CODE>'s feature.
+        """
+        Return this C{CFSample}'s feature.
         
-        @return This <CODE>CFSample</CODE>'s feature.
-        @returntype any
+        @return: This C{CFSample}'s feature.
+        @rtype: any
         """
         return self._feature
     
     def __str__(self):
-        """##
+        """
         Return the informal string representation of this
-        <CODE>CFSample</CODE>.  The informal representation of a
-        <CODE>CFSample</CODE> has the form
-        <CODE>(<I>context</I>, <I>feature</I>)</CODE>
+        C{CFSample}.  The informal representation of a
+        C{CFSample} has the form
+        C{(I{context}, I{feature})}
         
-        @return The informal string representation of this
-        <CODE>CFSample</CODE>.
-        @returntype string
+        @return: The informal string representation of this
+            C{CFSample}.
+        @rtype: string
         """
         return '('+str(self._context)+', '+str(self._feature)+')'
     
     def __repr__(self):
-        """##
+        """
         Return the formal string representation of this
-        <CODE>CFSample</CODE>.  The formal representation of a
-        <CODE>CFSample</CODE> has the form
-        <CODE>CFSample(<I>context</I>, <I>feature</I>)</CODE>
+        C{CFSample}.  The formal representation of a
+        C{CFSample} has the form
+        C{CFSample(I{context}, I{feature})}
         
-        @return The formal string representation of this
-        <CODE>CFSample</CODE>.
-        @returntype string
+        @return: The formal string representation of this
+            C{CFSample}.
+        @rtype: string
         """
         return 'CFSample('+repr(self._context)+', '+\
                repr(self._feature)+')'
     
     def __cmp__(self, other):
-        """##
+        """
         Return 0 if the given object is equal to this
-        <CODE>CFSample</CODE>.  Formally, return 0 if and only if
-        <CODE>self._context==other._context</CODE> and
-        <CODE>self._feature==other._feature</CODE>.  Otherwise, return 
+        C{CFSample}.  Formally, return 0 if and only if
+        C{self._context==other._context} and
+        C{self._feature==other._feature}.  Otherwise, return 
         some nonzero number.
         
-        @param other The object to compare this <CODE>CFSample</CODE>
+        @param other: The object to compare this C{CFSample}
                to. 
-        @type other any
-        @return 0 if the given object is equal to this
-                <CODE>CFSample</CODE>. 
-        @returntype int
+        @type other: any
+        @return: 0 if the given object is equal to this
+                C{CFSample}. 
+        @rtype: int
         """
         if not isinstance(other, CFSample): return -1000
         c = cmp(self._context, other._context)
@@ -828,31 +824,31 @@ class CFSample:
         else: return cmp(self._feature, other._feature)
 
     def __hash__(self):
-        """##
-        Compute a hash value for this <CODE>CFSample</CODE>.  
+        """
+        Compute a hash value for this C{CFSample}.  
         
-        @return The hash value for this <CODE>CFSample</CODE>.
-        @returntype int
+        @return: The hash value for this C{CFSample}.
+        @rtype: int
         """
         return hash(self._context)/2+hash(self._feature)/2
   
 class ContextEvent(EventI):
-    """##
-    The event containing all <CODE>CFSample</CODE>s whose context
-    has a given value.  <CODE>ContextEvent</CODE>s do not implement
-    any of the optional <CODE>Event</CODE> methods.
+    """
+    The event containing all C{CFSample}s whose context
+    has a given value.  C{ContextEvent}s do not implement
+    any of the optional C{Event} methods.
     
-    @see nltk.CFSample CFSample
+    @see: nltk.CFSample CFSample
     """
     def __init__(self, context):
-        """##
-        Construct a new <CODE>ContextEvent</CODE>, containing all
+        """
+        Construct a new C{ContextEvent}, containing all
         samples whose context has the specified value.
         
-        @param context The context value for which this
-               <CODE>ContextEvent</CODE> contains all
-               <CODE>CFSample</CODE>s.
-        @type context any
+        @param context: The context value for which this
+               C{ContextEvent} contains all
+               C{CFSample}s.
+        @type context: any
         """
         self._context = context
         
@@ -867,56 +863,54 @@ class ContextEvent(EventI):
         return sample.context() == self._context
     
     def context(self):
-        """##
-        Return the context on which this <CODE>ContextEvent</CODE> is
-        based.  This <CODE>ContextEvent</CODE> contains all
-        <CODE>CFSample</CODE>s whose contexts are equal to this value.
+        """
+        Return the context on which this C{ContextEvent} is
+        based.  This C{ContextEvent} contains all
+        C{CFSample}s whose contexts are equal to this value.
 
-        @return The context on which this <CODE>ContextEvent</CODE> is
+        @return: The context on which this C{ContextEvent} is
                  based.
-        @returntype any
+        @rtype: any
         """
         return self._context
   
 class CFFreqDist(FreqDistI):
-    """##
-    An implementation of the <CODE>FreqDist</CODE> interface that is
+    """
+    An implementation of the C{FreqDist} interface that is
     optimized for finding conditional frequencies.  In particular, a
-    <CODE>CFFreqDist</CODE> can efficiently find the conditional
+    C{CFFreqDist} can efficiently find the conditional
     frequency for a feature, given a context.  This can be useful for
     the task of predicting unknown feature values (also known as
     \"tagging\").
 
-    The <CODE>CFFreqDist</CODE> class requires that all of its samples
-    be <CODE>CFSample</CODE>.  A <CODE>CFSample</CODE> is essentially
-    (<I>context</I>, <I>feature</I>) pair.  Furthermore, the only
-    event supported by the <CODE>CFFreqDist</CODE> class is 
-    <CODE>ContextEvent</CODE>, which tests whether a
-    <CODE>CFSample</CODE>'s context has a given value. <P>
+    The C{CFFreqDist} class requires that all of its samples
+    be C{CFSample}.  A C{CFSample} is essentially
+    (I{context}, I{feature}) pair.  Furthermore, the only
+    event supported by the C{CFFreqDist} class is 
+    C{ContextEvent}, which tests whether a
+    C{CFSample}'s context has a given value.
     
-    The following code shows how a <CODE>CFFreqDist</CODE>s could be
-    used to efficiently tag new data, given a training set:
+    The following code shows how a C{CFFreqDist}s could be
+    used to efficiently tag new data, given a training set::
 
-    <PRE>
-    for (context, feature) in traing_samples:        <I># Train</I>
-        freqDist.inc( CFSample(context, feature) )
-    for context in new_contexts:                     <I># Tag new data</I>
-        context_event = ContextEvent(context)
-        print freqDist.cond_max(context_event).feature()
-    </PRE>
+      for (context, feature) in traing_samples:        # Train
+          freqDist.inc( CFSample(context, feature) )
+      for context in new_contexts:                     # Tag new data
+          context_event = ContextEvent(context)
+          print freqDist.cond_max(context_event).feature()
 
-    A <CODE>CFFreqDist</CODE> is implemented as a two-level
+    A C{CFFreqDist} is implemented as a two-level
     dictionary.  The dictionaries are structured such that
-    <CODE>dict[<I>context</I>][<I>feature</I>]</CODE> gives the number
+    C{dict[I{context}][I{feature}]} gives the number
     of occurances of the sample
-    <CODE>CFSample(<I>context</I>, <I>feature</I>)</CODE>.
-    The <CODE>CFFreqDist</CODE> also uses auxilliary variables to
+    C{CFSample(I{context}, I{feature})}.
+    The C{CFFreqDist} also uses auxilliary variables to
     record the total number of samples, and the number of samples that 
     have a given condition, for each condition.
     """
     def __init__(self):
-        """##
-        Construct a new, empty, <CODE>CFFreqDist</CODE>.
+        """
+        Construct a new, empty, C{CFFreqDist}.
         """
         self._dict = {}
         self._N = 0
@@ -998,15 +992,15 @@ class CFFreqDist(FreqDistI):
         else: return CFSample(context, max_feature)
 
     def __str__(self):
-        """##
+        """
         Return the informal string representation of this
-        <CODE>CFFreqDist</CODE>.  The informal representation of a
-        <CODE>CFFreqDist</CODE> has the form
-        <CODE>(<I>context</I>, <I>feature</I>)</CODE>
+        C{CFFreqDist}.  The informal representation of a
+        C{CFFreqDist} has the form
+        C{(I{context}, I{feature})}
         
-        @return The informal string representation of this
-        <CODE>CFFreqDist</CODE>.
-        @returntype string
+        @return: The informal string representation of this
+            C{CFFreqDist}.
+        @rtype: string
         """
         return repr(self._dict)
         
@@ -1015,7 +1009,7 @@ class CFFreqDist(FreqDistI):
 ##//////////////////////////////////////////////////////
 
 class ProbDistI:
-    """##
+    """
     A probability distribution for the outcomes of an experiment.  A
     probability distribution specifies how likely it is that an
     experiment will have any given outcome.  For example, a
@@ -1023,104 +1017,102 @@ class ProbDistI:
     that a given word will appear in a given context.  Formally, a
     probability distribution can be defined as a function mapping from
     samples to nonnegative real numbers, such that the sum of every
-    number in the function's range is 1.0.  <CODE>ProbDist</CODE>s are
+    number in the function's range is 1.0.  C{ProbDist}s are
     often used to model the probability distribution underlying a
-    frequency distribution.  <P>
+    frequency distribution.
 
-    Classes implementing the <CODE>ProbDistI</CODE> interface may
+    Classes implementing the C{ProbDistI} interface may
     choose to only support certain classes of samples or events.  If a
     method is unable to return a correct result because it is given an
     unsupported type of sample or event, it should raise a
     NotImplementedError.  (?? is this the right exception? use
-    NotSupportedError? ValueError? ??) <P>
+    NotSupportedError? ValueError? ??)
 
-    Since several methods defined by <CODE>ProbDistI</CODE> can accept
+    Since several methods defined by C{ProbDistI} can accept
     either events or samples, classes that implement the EventI
     interface should never be used as samples for a probability
-    distribution. <P>
+    distribution.
 
     Probability distributions are required to implement the methods
-    <CODE>prob()</CODE> and <CODE>cond_prob()</CODE>,
-    <CODE>max()</CODE>, and <CODE>cond_max()</CODE>.  In the future,
+    C{prob()} and C{cond_prob()},
+    C{max()}, and C{cond_max()}.  In the future,
     this list may be exapanded, and optional methods may be added.
     """
     def prob(self, sample_or_event):
-        """##
+        """
         Return the probability for a given sample or event.
         Probabilities are always real numbers in the range [0, 1]. 
         
-        @return The probability of a given sample or event.
-        @returntype float
-        @param sample_or_event the sample or event whose probability
+        @return: The probability of a given sample or event.
+        @rtype: float
+        @param sample_or_event: the sample or event whose probability
                should be returned.
-        @type sample_or_event EventI or any.
-        @raise NotImplementedError If <CODE>sample_or_event</CODE> is
+        @type sample_or_event: EventI or any.
+        @raise NotImplementedError: If C{sample_or_event} is
                not a supported sample type or event type.
         """
         raise AssertionError()
 
     def max(self):
-        """##
+        """
         Return the sample with the greatest probability.  If two or
         more samples have the same probability, return one of them;
         which sample is returned is undefined.
 
-        @return The sample with the greatest probability.
-        @returntype any
+        @return: The sample with the greatest probability.
+        @rtype: any
         """
         raise AssertionError()
     
     def cond_max(self, condition):
-        """##        
+        """        
         Of the samples contained in the given condition, return the
         sample with the greatest probability.  If two or more samples
         have the same probability, return one of them; which sample
         is returned is undefined.  If all samples in the given
-        condition have probability 0, return <CODE>None</CODE>.
+        condition have probability 0, return C{None}.
 
-        @param condition The condition within which to find the
+        @param condition: The condition within which to find the
                maximum probability sample.
-        @type condition EventI
-        @return The sample with the maximum probability, out of all
-                the samples contained in <CODE>condition</CODE>. 
-        @returntype any
-        @raise NotImplementedError If <CODE>condition</CODE> is
+        @type condition: EventI
+        @return: The sample with the maximum probability, out of all
+                the samples contained in C{condition}. 
+        @rtype: any
+        @raise NotImplementedError: If C{condition} is
                not a supported event type.
         """
         raise AssertionError()
     
     def cond_prob(self, sample_or_event, condition):
-        """##
+        """
         Find the conditional probability of the specified sample or
         event, given the specified condition.  The conditional
         probability is defined as the probability that a sample will
-        be in <CODE>sample_or_event</CODE>, given the information that
-        the sample is in <CODE>condition</CODE>.  Assuming the
-        condition event defines the <CODE>union</CODE> member, then
-        this definition can be written as:
+        be in C{sample_or_event}, given the information that
+        the sample is in C{condition}.  Assuming the
+        condition event defines the C{union} member, then
+        this definition can be written as::
 
-        <PRE>
-        fd.cond_prob(e, c) == fd.prob(c.union(e)) / fd.prob(c)
-        </PRE>
+          fd.cond_prob(e, c) == fd.prob(c.union(e)) / fd.prob(c)
 
         As a special case, if all samples in the given condition have
         probability 0, the conditional probability is defined as
-        <CODE>None</CODE>.  Conditional probabilities are always
+        C{None}.  Conditional probabilities are always
         either real numbers in the range [0, 1] or the special value
-        <CODE>None</CODE>. 
+        C{None}. 
         
-        Both <CODE>sample_or_event</CODE> and <CODE>condition</CODE>
+        Both C{sample_or_event} and C{condition}
         may be either samples or events.  
         
-        @return The conditional probability of <CODE>event</CODE> given
-                <CODE>condition</CODE>.
-        @returntype float or None
-        @param sample_or_event The event
-        @type sample_or_event EventI or any
-        @param condition The condition
-        @type condition EventI or any
-        @raise NotImplementedError If <CODE>sample_or_event</CODE> or
-               <CODE>condition</CODE> are not a supported sample types
+        @return: The conditional probability of C{event} given
+                C{condition}.
+        @rtype: float or None
+        @param sample_or_event: The event
+        @type sample_or_event: EventI or any
+        @param condition: The condition
+        @type condition: EventI or any
+        @raise NotImplementedError: If C{sample_or_event} or
+               C{condition} are not a supported sample types
                or event types. 
         """
         raise AssertionError()

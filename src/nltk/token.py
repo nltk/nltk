@@ -79,12 +79,12 @@ class Location:
         """
         Construct a new C{Location}.
 
-        @ivar start: The start index of the new C{Location}.
+        @param start: The start index of the new C{Location}.
         @type start: C{int}
-        @ivar end: The end index of the new C{Location}.  If not
+        @param end: The end index of the new C{Location}.  If not
             specified, the end index defaults to C{start+1}
         @type end: C{int}
-        @ivar kwargs: Keyword arguments.  Legal keywords are
+        @param kwargs: Keyword arguments.  Legal keywords are
             \"source\", which specifies the text over which the
             C{Location}'s is defined; and the \"unit\", which
             specifies the unit of the C{Location}'s indices.
@@ -292,6 +292,7 @@ class Token:
         """
         Construct a new Token, with the given type and location.  The
         location may be specified in one of three ways:
+        
             - If no location is specified, the token's location
               defaults to C{None}.
             - A location may be given as the second argument to the
@@ -372,7 +373,8 @@ class Token:
         """
         No ordering relationship is defined over C{Tokens}; raise an
         exception.
-        @raise NotImplementedError: 
+        
+        @raise NotImplementedError:
         """
         raise NotImplementedError("Ordering relations are not "+
                                   "defined over Tokens")
@@ -400,11 +402,11 @@ class Token:
     def __hash__(self):
         """
         @return: the hash value for this Token.  If two Tokens are equal,
-        they are guaranteed to have the same hash value.  However, two 
-        Tokens may have the same hash value and still not be equal.
+          they are guaranteed to have the same hash value.  However, two 
+          Tokens may have the same hash value and still not be equal.
         @rtype: int
 
-        @raise TypeError: if the <CODE>Token</CODE>'s type is
+        @raise TypeError: if the C{Token}'s type is
             not hashable.
         """
         return hash( (self._type, self._location) )
