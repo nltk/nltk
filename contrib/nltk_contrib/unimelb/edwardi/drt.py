@@ -1,6 +1,7 @@
 # Discourse Representation Theory Implementation
 # Author: Edward Ivanovic
 # Date: 2004/1/2
+# Broken
 
 from nltk.parser import *
 from nltk.cfg import *
@@ -9,8 +10,9 @@ from nltk.tokenizer import WhitespaceTokenizer
 import random
 from nltk.corpus import gutenberg
 from nltk.probability import *
-from nltk_contrib.mit.rspeer.parser import parser
-from nltk_contrib.mit.rspeer.parser.feature import *
+from nltk_contrib.mit.rspeer.parser.readfile import GrammarFile
+from nltk_contrib.mit.rspeer.parser.featurechart import *
+
 
 # Define some global nonterminals.
 # These are used to build the trigger trees. The string names here
@@ -89,19 +91,20 @@ class Operation:
         if isinstance(subtree, Referent):
             return isinstance(tree.type(), Referent)
 
-        if not isinstance(tree, AbstractTree):
+        if not isinstance(tree, Tree):
             return tree.type() == subtree   # string == string
 
         if not isinstance(subtree, Nonterminal):
-            toMatch = subtree.node().symbol()
+            toMatch = subtree.node.symbol()
         else:   # this must be a leaf, not a node. do the comparison & return
             toMatch = subtree.symbol()
-            if tree.node().symbol() == toMatch:
+            if tree.node.symbol() == toMatch:
                 return True
             elif not isRoot:
                 return False
 
-        if(isRoot and tree.node().symbol() != toMatch):
+#        if (isRoot and tree.node.symbol() != toMatch):
+        if (isRoot):
             # recurse through the children until we find a match
             # for the root node...
             for i in range(0, len(tree)):
@@ -113,7 +116,7 @@ class Operation:
 
             return False    # no matches
 
-        elif(tree.node().symbol() == toMatch):
+        elif (tree.node.symbol() == toMatch):
             # compare the children
             if len(tree) == len(subtree):
                 for i in range (0, len(subtree)):
@@ -162,7 +165,7 @@ class OperID(Operation):
         Operation.__init__(self, "CR.ID")
 
     def getTargetTree(self):
-        tree = Tree(NP, Det, N)
+        tree = Tree(NP, [Det, N])
         return tree
 
     def getTriggerTrees(self):
@@ -177,7 +180,7 @@ class OperID(Operation):
         newTree = tree
         if treePath != None:    # treePath should never be None by here...but check anyway
             npNode = self.getSubtree(tree, treePath)    # the target tree w/ tree's continuing nodes & leaves
-            newRef = drs.introduceReferent(npNode[1].node())
+            newRef = drs.introduceReferent(npNode[1].node)
             newTree = tree.with_substitution(treePath, Token(newRef))   # reduce tree here
             npNode.draw()       # some FYIs for interest
             newTree.draw()
@@ -205,7 +208,7 @@ class OperPRO(Operation):
         Operation.__init__(self, "CR.PRO")
 
     def getTargetTree(self):
-        tree = Tree(NP, Pro)
+        tree = Tree(NP, [Pro])
         return tree
 
     def getTriggerTrees(self):
@@ -222,7 +225,7 @@ class OperPRO(Operation):
         newTree = tree
         if treePath != None:
             targetTree = self.getSubtree(tree, treePath)
-            newRef = drs.introduceReferent(targetTree[0].node())
+            newRef = drs.introduceReferent(targetTree[0].node)
             newTree = tree.with_substitution(treePath, Token(newRef))    # delete the NP node
 
             # add a new equality condition - match it with a 'suitable' referent
@@ -265,7 +268,7 @@ class OperPN(Operation):
         Operation.__init__(self, "CR.PN")
 
     def getTargetTree(self):
-        tree = Tree(NP, Name)
+        tree = Tree(NP, [Name])
         return tree
 
     def getTriggerTrees(self):
@@ -288,7 +291,7 @@ class OperPN(Operation):
             else:
                 thisDrs = drs
 
-            newRef = thisDrs.introduceReferent(targetTree[0].node())
+            newRef = thisDrs.introduceReferent(targetTree[0].node)
             newTree = tree.with_substitution(treePath, Token(newRef))    # delete the PN node
             cond = Condition(targetTree.leaves()[0].type())   # get the first leaf - must be the name
             cond.addReferent(newRef)
@@ -310,7 +313,7 @@ class OperNEG(Operation):
 
     def getTriggerTrees(self):
         target = self.getTargetTree()
-        tree = Tree(S, Referent('?', None), Tree(VP1, Aux, 'not', target))
+        tree = Tree(S, [Referent('?', None), Tree(VP1, Aux, 'not', target)])
         return [tree]
 
     def reduce(self, tree, drs):
@@ -347,7 +350,7 @@ class OperCOND(Operation):
         easy to reduce...
         """
         target = self.getTargetTree()
-        tree = Tree(S, 'if', target, 'then', target)
+        tree = Tree(S, ['if', target, 'then', target])
         return [tree]
 
     def reduce(self, tree, drs):
@@ -583,23 +586,23 @@ class DRS:
 
 
     def parse(self, sent):
-        # Get the grammar and parse the sentence into a tree. Then pass it to
+        # Get the grammar and parse the sentence, then pass it to
         # parseTree for DRS analysis and reduction.
 
-		filename = 'grammar.txt'
-		grammar = parser.parseFile(filename)
+	gfile = GrammarFile.read_file('grammar.cfg')
+        ep = gfile.earley_parser()
 
         # tokenize the sentence
-		tok_sent = WhitespaceTokenizer().tokenize(sent)
+	tok_sent = Token(TEXT=sent)
+	WhitespaceTokenizer().tokenize(tok_sent)
 
-		ep = parser.IncrementalEarleyParser(grammar, parser.earleyStrategy)
+	ep.parse_n(tok_sent)
 
-		tree = ep.parse_n(tok_sent, 1)
-
-		if len(tree) > 0:
-		    self.parseTree(tree[0])
-		else:
-		    print 'No parses found for', sent
+        trees = tok_sent['TREES']
+        if len(trees) > 0:
+            self.parseTree(trees[0])
+        else:
+            print 'No parses found for', sent
 
 
     def __str__(self):
@@ -624,10 +627,10 @@ class DRS:
 
 if __name__ == '__main__':
     #sentences = ["Jones does not own Ulysses", "he likes it"]
-    #sentences = ["Jones does not own a Porsche", "he likes it"]
+    sentences = ["Jones does not own a Porsche", "he likes it"]
     #sentences = ["Jones owns a Porsche", "it fascinates him"]
     #sentences = ["Jones owns a Porsche", "he does not like it"]
-    sentences = ["if Jones owns a Porsche then he likes it"]
+    #sentences = ["if Jones owns a Porsche then he likes it"]
     #sentences = ["a woman snorts", "she collapses"]
     drs = DRS()
     for sentence in sentences:
