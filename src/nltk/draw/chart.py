@@ -119,7 +119,7 @@ class ChartView:
     _TREE_LEVEL_SIZE = 15
     _CHART_LEVEL_SIZE = 45#40
     
-    def __init__(self, chart, source, root=None, **kw):
+    def __init__(self, chart, source=None, root=None, **kw):
         """
         Construct a new C{Chart} display.
         
@@ -129,7 +129,12 @@ class ChartView:
         # Process keyword args.
         draw_tree = kw.get('draw_tree', 0)
         draw_source = kw.get('draw_source', 1)
+        self._fontsize = kw.get('fontsize', 12)
         
+        if source is None:
+            source = []
+            draw_source = 0
+
         self._chart = chart
         self._source = source
 
@@ -145,9 +150,6 @@ class ChartView:
 
         # Keep track of the tags used to draw the tree
         self._tree_tags = []
-
-        # What size font should we use?
-        self._fontsize = 12
 
         # If they didn't provide a main window, then set one up.
         if root is None:
@@ -300,7 +302,7 @@ class ChartView:
         """
         c = self._chart_canvas
 
-        for str in (' '.join([repr(t) for t in edge.drule()]),
+        for str in (' '.join([repr(t) for t in edge.drule().rhs()]),
                     edge.drule().lhs()):
             tag = c.create_text(0,0, text=str,
                                 font=('helvetica', self._fontsize, 'bold'),
@@ -375,7 +377,7 @@ class ChartView:
                                 
 
         # Draw a label for the edge.
-        rhs = [repr(t) for t in edge.drule()]
+        rhs = [repr(t) for t in edge.drule().rhs()]
         pos = edge.drule().pos()
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
