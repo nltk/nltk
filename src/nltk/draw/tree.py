@@ -29,13 +29,14 @@ class TreeSegmentWidget(CanvasWidget):
         self._subtrees = subtrees
         
         self._roof = 0
-        self._color = 'black'
+        self._color = '#006060'
         self._fill = ''
         self._xspace = 10
         self._yspace = 15
         self._width = 1
 
-        self._lines = [canvas.create_line(0,0,0,0) for c in subtrees]
+        self._lines = [canvas.create_line(0,0,0,0, fill=self._color)
+                       for c in subtrees]
         self._polygon = canvas.create_polygon(0,0,0,0,0,0, fill='',
                                               outline='')
         CanvasWidget.__init__(self, canvas, **attribs)
