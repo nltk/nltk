@@ -46,7 +46,7 @@ __all__ = (
     'SequenceWidget', 'StackWidget', 'SpaceWidget',
     'ScrollWatcherWidget', 'AbstractContainerWidget',
     
-    'ShowText')
+    'ShowText', 'EntryDialog')
 
 # Including these causes circular dependancy trouble???
 #    'tree', 'chart', 'fas', 'srparser', 'plot',
@@ -1517,7 +1517,9 @@ class CanvasFrame:
         if parent is None:
             self._parent = Tk()
             self._parent.title('NLTK')
-            self._parent.bind('q', self.destroy)
+            self._parent.bind('<Control-p>', self.print_to_file)
+            self._parent.bind('<Control-x>', self.destroy)
+            self._parent.bind('<Control-q>', self.destroy)
         else:
             self._parent = parent
 
@@ -1540,20 +1542,22 @@ class CanvasFrame:
         
         self._scrollwatcher = ScrollWatcherWidget(canvas)
 
-        # If no parent was given, pack the frame.
+        # If no parent was given, pack the frame, and add a menu.
         if parent is None:
             self.pack(expand=1, fill='both')
+            self._init_menubar()
 
-            # Done button.
-            buttonframe = Frame(self._parent)
-            buttonframe.pack(fill='x', side='bottom')
-            ok = Button(buttonframe, text='Done', command=self.destroy)
-            ok.pack(side='right')
-            ps = Button(buttonframe, text='Print',
-                        command=self.print_to_file)
-            ps.pack(side='left')
-            #help = Button(buttonframe, text='Help')
-            #help.pack(side='right')
+    def _init_menubar(self):
+        menubar = Menu(self._parent)
+
+        filemenu = Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Print to Postscript', underline=0,
+                             command=self.print_to_file, accelerator='Ctrl-p')
+        filemenu.add_command(label='Exit', underline=1,
+                             command=self.destroy, accelerator='Ctrl-x')
+        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+
+        self._parent.config(menu=menubar)
 
     def print_to_file(self, filename=None):
         """
@@ -1644,9 +1648,12 @@ class CanvasFrame:
         Remove a canvas widget from this C{CanvasFrame}.  This
         deregisters the canvas widget, and destroys it.
         """
+        self.remove_widget(canvaswidget)
+        canvaswidget.destroy()
+
+    def remove_widget(self, canvaswidget):
         # Deregister with scrollwatcher.
         self._scrollwatcher.remove_child(canvaswidget)
-        canvaswidget.destroy()
         
     def pack(self, cnf={}, **kw):
         """
@@ -1667,6 +1674,10 @@ class CanvasFrame:
 
     def mainloop(self, *args, **kwargs):
         self._parent.mainloop(*args, **kwargs)
+
+##//////////////////////////////////////////////////////
+##  Text display
+##//////////////////////////////////////////////////////
 
 class ShowText:
     """
@@ -1736,6 +1747,66 @@ class ShowText:
 
     def mainloop(self):
         self._top.mainloop()
+
+##//////////////////////////////////////////////////////
+##  Entry dialog
+##//////////////////////////////////////////////////////
+
+class EntryDialog:
+    """
+    A dialog box for entering 
+    """
+    def __init__(self, parent, text='', set_callback=None, title=None):
+        self._parent = parent
+        self._original_text = text
+        self._set_callback = set_callback
+
+        width = min(20, len(text)*3/2)
+        self._top = Toplevel(parent)
+        self._entry = Entry(self._top, width=width)
+        self._entry.pack(expand=1, fill='x')
+        self._entry.insert(0, text)
+
+        if title: self._top.title(title)
+        
+        buttons = Frame(self._top)
+        buttons.pack(expand=0, fill='x')
+        b = Button(buttons, text='Cancel', command=self._cancel)
+        b.pack(side='right')
+        b = Button(buttons, text='Ok', command=self._ok)
+        b.pack(side='left')
+        b = Button(buttons, text='Apply', command=self._apply)
+        b.pack(side='left')
+        
+        self._top.bind('<Return>', self._ok)
+        self._top.bind('<Control-q>', self._cancel)
+        self._top.bind('<Escape>', self._cancel)
+
+        self._entry.focus()
+
+    def _reset(self, *e):
+        self._entry.delete(0,'end')
+        self._entry.insert(0, self._original_text)
+        if self._set_callback:
+            self._set_callback(self._original_text)
+        
+    def _cancel(self, *e):
+        try: self._reset()
+        except: pass
+        self._destroy()
+
+    def _ok(self, *e):
+        self._apply()
+        self._destroy()
+
+    def _apply(self, *e):
+        if self._set_callback:
+            self._set_callback(self._entry.get())
+        
+    def _destroy(self, *e):
+        if self._top is None: return
+        self._top.destroy()
+        self._top = None
 
 ##//////////////////////////////////////////////////////
 ##  Test code.
