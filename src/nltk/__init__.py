@@ -80,6 +80,17 @@ of the C{ParserI} interface.
 @sort: classifier, parser, speech, stemmer, tagger
 """
 
+# Define some nltk-specific docstring fields:
+#   - @inprop:  Specifies a property name that is used as input
+#               by a processing class.
+#   - @outprop: Specifies a property name that is used as output
+#               by a processing class.
+__extra_epydoc_fields__ = [
+    ('inprop',  None,  'Input Properties'),
+    ('outprop', None, 'Output Properties'),
+    ]
+
+
 ##//////////////////////////////////////////////////////
 ##  Metadata
 ##//////////////////////////////////////////////////////
