@@ -662,10 +662,10 @@ class RogetCorpusReader(CorpusReaderI):
         return self._entrylist
 
     def path(self, entry):
-        raise NotImplementedError, 'rogets does not implement path()'
+        raise NotImplementedError, 'roget does not implement path()'
     
     def open(self, entry):
-        raise NotImplementedError, 'rogets does not implement open()'
+        raise NotImplementedError, 'roget does not implement open()'
 
     def read(self, entry):
         return self._entries[entry]
@@ -1042,7 +1042,7 @@ gutenberg = SimpleCorpusReader(
 ###################################################
 ## Roget
 
-roget = RogetCorpusReader('roget', 'roget15a', 'roget15a.txt')
+roget = RogetCorpusReader('roget', 'roget15a/', 'roget15a.txt')
 
 ###################################################
 ## Words corpus (just English at this point)
