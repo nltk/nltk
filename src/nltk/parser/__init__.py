@@ -645,7 +645,7 @@ class RecursiveDescentParser(AbstractParser):
         LEAF = self.property('LEAF')
 
         tree_leaf = tree[frontier[0]][LEAF]
-        if (len(rtext) > 0 and tree_leaf == rtext[0][LEAF]):
+        if (len(rtext) > 0 and tree_leaf == rtext[0]['TEXT']):
             # If it's a terminal that matches text[0], then substitute
             # in the token, and continue parsing.
             newtree = tree.copy(deep=True)
@@ -792,11 +792,7 @@ class RecursiveDescentParser(AbstractParser):
         print ']'
 
     def _trace_start(self, tree, frontier, text):
-        SUBTOKENS = self.property('SUBTOKENS')
-        LEAF = self.property('LEAF')
-        
-        print 'Parsing %r' % ' '.join([tok[LEAF] for tok in text])
-                                       
+        print 'Parsing %r' % ' '.join([tok['TEXT'] for tok in text])
         if self._trace > 2: print 'Start:'
         if self._trace > 1: self._trace_tree(tree, frontier, ' ')
         
