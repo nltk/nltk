@@ -73,7 +73,7 @@ Windows Installation
            5. Type "NLTK_CORPORA" into the "Variable Name" field;
               and type the path to the NLTK corpus folder that you
               created into the "Variable Value" field.
-           5. Hit "Ok" (3 times) to close the dialog windows.
+           6. Hit "Ok" (3 times) to close the dialog windows.
 
 Macintosh Installation (OS X)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
