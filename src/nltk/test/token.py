@@ -285,6 +285,26 @@ Frozen tokens are immutable, and can not be modified:
       [...]
     TypeError: FrozenToken objects are immutable
 
+Any contained objects are also frozen.  Lists are automatically
+converted to tuples, and dicts to FrozenDicts.
+
+    >>> Token(A=Token(B=12)).freeze()
+    <A=<B=12>>
+    >>> Token(A=[1, Token(B=12)]).freeze()
+    <A=(1, <B=12>)>
+    >>> Token(A=(1, Token(B=12))).freeze()
+    <A=(1, <B=12>)>
+    >>> Token(A={1: Token(B=12)}).freeze()
+    <A={1: <B=12>}>
+    >>> type(Token(A={1: Token(B=12)}).freeze()['A'])
+    <class 'nltk.util.FrozenDict'>
+
+Iterators are automatically converted to tuples:
+
+    >>> tokiter = iter([1, Token(B='x', C='y')])
+    >>> Token(A=tokiter).freeze()
+    <A=(1, <B='x', C='y'>)>
+
 Cyclic tokens can be frozen:
 
     >>> tok1, tok2 = Token(), Token()
@@ -340,6 +360,24 @@ any contained subtokens:
     >>> print tok.project('A', 'C', 'D')
     <A=<C=<D='d'>>>
 
+This includes subtokens included in lists, tuples, and dictionaries:
+
+    >>> Token(A=[1, Token(B='x', C='y')]).exclude('B')
+    <A=[1, <C='y'>]>
+    >>> Token(A=(1, Token(B='x', C='y'))).exclude('B')
+    <A=(1, <C='y'>)>
+    >>> Token(A={1: Token(B='x', C='y')}).exclude('B')
+    <A={1: <C='y'>}>
+
+It also includes iterators:
+
+    >>> tokiter = iter([1, Token(B='x', C='y')])
+    >>> tok = Token(A=tokiter).exclude('B')
+    >>> for elt in tok['A']:
+    ...     print elt
+    1
+    <C='y'>
+    
 C{exclude} and C{project} both work with cyclic tokens:
 
     >>> tok1, tok2 = Token(), Token()
@@ -350,6 +388,18 @@ C{exclude} and C{project} both work with cyclic tokens:
     <A=<B=..., C=...>>
     >>> print tok1.exclude('B')
     <A=<C=...>>
+"""
+
+def test_TokenReprLocError(): """
+Currently, the generic repr function checks that the C{LOC} property
+is actually a location:
+
+    >>> Token.USE_SAFE_TOKEN = False
+    >>> print Token(A='x', LOC='y')
+    Traceback (most recent call last):
+      [...]
+    AssertionError: self['LOC'] is not a location!
+
 """
 
 def test_FrozenToken(): """
@@ -456,6 +506,23 @@ instantiated directly:
     Traceback (most recent call last):
       [...]
     AssertionError: Interfaces can't be instantiated
+
+It declares 3 methods, which must be implemented by base classes:
+
+    >>> class BrokenLocation(LocationI):
+    ...     pass
+    >>> BrokenLocation().source()
+    Traceback (most recent call last):
+      [...]
+    NotImplementedError
+    >>> cmp(BrokenLocation(), 1)
+    Traceback (most recent call last):
+      [...]
+    NotImplementedError
+    >>> hash(BrokenLocation())
+    Traceback (most recent call last):
+      [...]
+    NotImplementedError
 
 C{SpanLocation} is an abstract base class for locations that are based
 on spans.  It can't be instantiated directly:
@@ -592,6 +659,40 @@ true:
   - C{loc1.succeeds(loc2)}
   - C{loc1.overlaps(loc2)}
 
+To compare locations with precedes, succeeds, and overlaps, they must
+have compatible sources and location types:
+
+    >>> loc1 = CharSpanLocation(8,12, source='foo.txt')
+    >>> loc2 = CharSpanLocation(8,12, source='bar.txt')
+    >>> loc3 = WordIndexLocation(1, source='foo.txt')
+   
+    >>> loc1.precedes(loc2)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible sources
+    >>> loc1.precedes(loc3)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible types
+
+    >>> loc1.succeeds(loc2)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible sources
+    >>> loc1.succeeds(loc3)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible types
+
+    >>> loc1.overlaps(loc2)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible sources
+    >>> loc1.overlaps(loc3)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible types
+
 Contiguous Locations & Union
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Two locations are contiguous if they share a common boundary:
@@ -626,10 +727,45 @@ which returns a new location spanning both of them:
     >>> loc2 = CharSpanLocation(12,14)
     >>> print loc1.union(loc2)
     [8:14c]
+    >>> print loc2.union(loc1)
+    [8:14c]
 
     # Union can also be written as addition
     >>> print loc1 + loc2
     [8:14c]
+
+If the locations are not contiguous, they cannot be joined:
+
+    >>> loc1 = CharSpanLocation(8,12)
+    >>> loc2 = CharSpanLocation(13,14)
+    >>> loc1.union(loc2)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations are not contiguous
+    
+To compare locations with contiguous(), or to take their union, they
+must have compatible sources and location types:
+
+    >>> loc1 = CharSpanLocation(8,12, source='foo.txt')
+    >>> loc2 = CharSpanLocation(8,12, source='bar.txt')
+    >>> loc3 = WordIndexLocation(1, source='foo.txt')
+   
+    >>> loc1.contiguous(loc2)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible sources
+    >>> loc1.contiguous(loc3)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible types
+    >>> loc1.union(loc2)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible sources
+    >>> loc1.union(loc3)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Locations have incompatible types
 
 Infinity
 ~~~~~~~~
@@ -647,6 +783,16 @@ C{SpanLocation.MIN} and C{SpanLocation.MAX}:
     True True
     >>> print loc1+loc2+loc3
     [-INF:+INFc]
+
+Select
+~~~~~~
+L{SpanLocation.select} can be used to select the text specified by a
+location:
+
+    >>> text = 'a small frog is sleeping'
+    >>> loc = CharSpanLocation(8, 12)
+    >>> loc.select(text)
+    'frog'
 
 IndexLocations
 ==============
@@ -667,6 +813,9 @@ C{ParaIndexLocation}:
     >>> print loc1, loc2, loc3
     [1w] [2s] [3p]
 
+    >>> print loc1.index(), loc2.index(), loc3.index()
+    1 2 3
+
 Index locations can have sources:
 
     >>> loc1 = WordIndexLocation(1, 'foo.txt')
@@ -674,6 +823,8 @@ Index locations can have sources:
     >>> loc3 = ParaIndexLocation(3, 'baz.txt')
     >>> print loc1, loc2, loc3
     [1w]@foo.txt [2s]@bar.txt [3p]@baz.txt
+    >>> loc1.source()
+    'foo.txt'
 
 Sometimes it can be useful to use index locations as sources for other
 index locations, to provide hierarchical location specifications:
@@ -684,8 +835,29 @@ index locations, to provide hierarchical location specifications:
     >>> print loc3
     [5w]@[3s]@[8p]@foo.txt
 
+Index locations are hashable, and so can be used as dictionary keys:
+
+    >>> {WordIndexLocation(3): 1}
+    {[3w]: 1}
+
+Index locations are ordered, and can be compared with cmp:
+
+    >>> loc1 = WordIndexLocation(3)
+    >>> loc2 = WordIndexLocation(5)
+    >>> loc1 < loc2
+    True
 
 """
+
+def test_ProbabilisticToken(): """
+
+Probablistic tokens will probably be deprecated.  But in the mean
+time, this covers the code in ProbabilisticToken:
+
+    >>> ProbabilisticToken(0.25, TEXT='dog')
+    <dog> (p=0.25)
+"""
+    
 
 def test_demo():
     r"""
