@@ -9,11 +9,42 @@
 
 # Open questions:
 #     Should "tree" and "treetoken" be "ttree" and "ttreetoken" or
-#     "treettoken" or even "ttreettoken"? :)
+#       "treettoken" or even "ttreettoken"? :)
+#     Should TreeToken.nodes() return a Tree or a TreeToken?
 
 # To do:
 #   - add x-to-y methods for treebank, etc.
 #   - traces!! Whee.
+
+"""
+
+Classes for representing text-trees.  A X{text-tree type} is a
+hierarchical data structures over a text, such as syntax tree.
+Individual occurances of text-tree types are known as X{text-tree
+tokens}.  Note that several different text-tree tokens might all have
+the same text-tree type.  For example, if the sentence \"the dog
+chased the cat\" occurs three times in a document, each occurance of
+the sentence will have a different text-tree token; but all three
+text-tree tokens will have the same text-tree type.
+
+The tree module defines the C{Tree} class to represent text-tree
+types, and the C{TreeToken} class to represent text-tree tokens.
+C{TreeToken} is a subclass of C{Token}; thus, C{TreeToken}s have
+locations, which can be used to distinguish different C{TreeToken}s
+with the same text-tree type.  See the documentation for the C{Tree}
+and C{TreeToken} classes for more information on how text-tree types
+and tokens are represented.
+
+Text-tree types can be constructed from strings using any one of a
+number of X{parsing functions}.  These function differ in that they
+read different formats; and they produce text-tree types with
+different kinds of nodes and leaves.  Currently, the following parsing 
+functions are defined:
+
+    - C{parse_treebank()}: Parses treebank-style syntax trees.
+
+@see: nltk.token
+"""
 
 import token
 
@@ -21,6 +52,7 @@ from token import Token
 from token import Location
 import re
 from chktype import chktype as _chktype
+from chktype import chkclass as _chkclass
 from types import SliceType as _SliceType
 from types import IntType as _IntType
 from types import StringType as _StringType
@@ -47,8 +79,8 @@ def _pytype(obj):
 ##//////////////////////////////////////////////////////
 class Tree:
     """
-    A homogenous hierarchical structure over text types.  A C{Tree}
-    consists of a X{node value} and zero or more X{children}.
+    A homogenous hierarchical structure spanning text types.  A
+    C{Tree} consists of a X{node value} and zero or more X{children}.
 
     The node value associates information with the entire C{Tree}.
     For example, node values might be used to label syntactic
@@ -111,15 +143,15 @@ class Tree:
             else:
                 c_nodetype = None
                 c_leaftype = _pytype(child)
-            if (c_nodetype != None and
+            if (c_nodetype is not None and
                 self._nodetype != c_nodetype):
                 raise TypeError("All nodes in a Tree must have the "+
                                 "same Python type.")
-            if (self._leaftype != None and c_leaftype != None and
+            if (self._leaftype is not None and c_leaftype is not None and
                 self._leaftype != c_leaftype):
                 raise TypeError("All leaves in a Tree must have the "+
                                 "same Python type.")
-            if (self._leaftype == None and c_leaftype != None):
+            if (self._leaftype == None and c_leaftype is not None):
                 self._leaftype = c_leaftype
 
     def node(self):
@@ -148,7 +180,6 @@ class Tree:
             return self._children[index.start:index.stop]
         else:
             return self._children[index]
-        print dir(index)
 
     def __len__(self):
         """
@@ -225,6 +256,23 @@ class Tree:
                 newchildren.append(child.nodes())
         return Tree(self.node(), *newchildren)
 
+    def height(self):
+        """
+        @return: The height of this C{Tree}.  The height of a C{Tree}
+            containing no children is 1; the height of a C{Tree}
+            containing only leaves is 2; and the height of any other
+            C{Tree} is one plus the maximum of its children's
+            heights.
+        @rtype: C{int}
+        """
+        max_child_height = 0
+        for child in self._children:
+            if isinstance(child, Tree):
+                max_child_height = max(max_child_height, child.height())
+            else:
+                max_child_height = 1
+        return 1 + max_child_height
+
     def __eq__(self, other):
         """
         @return: true if this C{Tree} is equal to C{other}.  In
@@ -233,24 +281,35 @@ class Tree:
             all i, 0 <= i < self.len()
         @rtype: C{boolean}
         """
-        chkclass(self, other)
+        _chkclass(self, other)
         return (self._node == other._node and
                 self._children == other._children)
+
+    def __ne__(self, other):
+        """
+        @return: true if this C{Tree} is not equal to C{other}.  In
+            particular, return false if C{self.node()==other.node()},
+            C{self.len()==other.len()}, and C{self[i]==other[i]} for
+            all i, 0 <= i < self.len()
+        @rtype: C{boolean}
+        """
+        return not (self == other)
 
     def __cmp__(self, other):
         """
         No ordering relationship is defined over C{Tokens}; raise an
         exception.
 
-        @raise NotImplementedError:
+        @raise AssertionError:
         """
-        raise NotImplementedError("Ordering relations are not "+
-                                  "defined over Trees")
+        raise AssertionError("Ordering relations are not "+
+                             "defined over Trees")
 
     def draw(self):
         """
         Open a graphical window containing a diagram of the text
         tree.
+        
         @rtype: None
         """
         # Note: this method introduces a circular dependancy between
@@ -294,7 +353,7 @@ class TreeToken(token.Token):
         (Used to enforce consistancy conditions).
     @type _leaftype: C{type} or C{class}
     @ivar _loc: The location of this TreeToken.  Computed to enforce
-        consistancy conditions; also used by the location() method.
+        consistancy conditions; also used by the loc() method.
     @type _loc: C{Location}
     """
     def __init__(self, node, *children):
@@ -334,15 +393,15 @@ class TreeToken(token.Token):
             else:
                 c_nodetype = None
                 c_leaftype = _pytype(child.type())
-            if (c_nodetype != None and
+            if (c_nodetype is not None and
                 self._nodetype != c_nodetype):
                 raise TypeError("All nodes in a TreeToken must "+
                                 "have the same Python type.")
-            if (self._leaftype != None and c_leaftype != None and
+            if (self._leaftype is not None and c_leaftype is not None and
                 self._leaftype != c_leaftype):
                 raise TypeError("All leaves in a TreeToken must "+
                                 "have the same Python type.")
-            if (self._leaftype == None and c_leaftype != None):
+            if (self._leaftype == None and c_leaftype is not None):
                 self._leaftype = c_leaftype
 
         # Find/check our location.
@@ -350,18 +409,21 @@ class TreeToken(token.Token):
         end = None
         prevloc = None
         try:
+            ordered = 1
             for child in children:
-                loc = child.location()
+                loc = child.loc()
                 if loc is None: continue
                 if start is None: start = loc.start()
                 end = loc.end()
-                if prevloc != None and not (prevloc < loc):
-                    raise ValueError("The leaves of a TreeToken "+ 
-                                     "must be properly ordered.")
+                if prevloc is not None and not (prevloc < loc):
+                    ordered = 0
                 prevloc = loc
         except ValueError:
             raise ValueError("The leaves of a TreeToken must have "+
                              "compatible units and sources.")
+        if not ordered:
+            raise ValueError("The leaves of a TreeToken "+ 
+                             "must be properly ordered.")
         if prevloc is None:
             self._location = None
         else:
@@ -396,7 +458,6 @@ class TreeToken(token.Token):
             return self._children[index.start:index.stop]
         else:
             return self._children[index]
-        print dir(index)
 
     def __len__(self): 
         """
@@ -451,8 +512,8 @@ class TreeToken(token.Token):
         """
         _chktype("TreeToken.pp", 1, margin, (_IntType,))
         _chktype("TreeToken.pp", 2, indent, (_IntType,))
-        if self.location() is None: locstr = '@[?]'
-        else: locstr = repr(self.location())
+        if self.loc() is None: locstr = '@[?]'
+        else: locstr = repr(self.loc())
         return self.type().pp(margin-len(locstr), indent)+locstr
 
     def __repr__(self):
@@ -460,10 +521,10 @@ class TreeToken(token.Token):
         @return: A concise string representation of this C{TreeToken}.
         @rtype: C{string}
         """
-        if self.location() is None:
+        if self.loc() is None:
             return repr(self.type())+'@[?]'
         else:
-            return repr(self.type())+repr(self.location())
+            return repr(self.type())+repr(self.loc())
         
     def __str__(self):
         """
@@ -497,7 +558,24 @@ class TreeToken(token.Token):
         for child in self._children:
             if isinstance(child, TreeToken):
                 newchildren.append(child.nodes())
-        return Tree(self.node(), *newchildren)
+        return TreeToken(self.node(), *newchildren)
+
+    def height(self):
+        """
+        @return: The height of this C{TreeToken}.  The height of a
+            C{TreeToken} containing no children is 1; the height of a
+            C{TreeToken} containing only leaves is 2; and the height
+            of any other C{TreeToken} is one plus the maximum of its
+            children's heights.
+        @rtype: C{int}
+        """
+        max_child_height = 0
+        for child in self._children:
+            if isinstance(child, TreeToken):
+                max_child_height = max(max_child_height, child.height())
+            else:
+                max_child_height = 1
+        return 1 + max_child_height
 
     def __eq__(self, other):
         """
@@ -507,24 +585,35 @@ class TreeToken(token.Token):
             all i, 0 <= i < self.len()
         @rtype: C{boolean}
         """
-        chkclass(self, other)
+        _chkclass(self, other)
         return (self._node == other._node and
                 self._children == other._children)
+
+    def __ne__(self, other):
+        """
+        @return: true if this C{TreeToken} is not equal to C{other}.
+            In particular, return false if
+            C{self.node()==other.node()}, C{self.len()==other.len()},
+            and C{self[i]==other[i]} for all i, 0 <= i < self.len()
+        @rtype: C{boolean}
+        """
+        return not (self == other)
 
     def __cmp__(self, other):
         """
         No ordering relationship is defined over C{Tokens}; raise an
         exception.
         
-        @raise NotImplementedError: 
+        @raise AssertionError: 
         """
-        raise NotImplementedError("Ordering relations are not "+
-                                  "defined over TreeTokens")
+        raise AssertionError("Ordering relations are not "+
+                             "defined over TreeTokens")
 
     def draw(self):
         """
         Open a graphical window containing a diagram of the text
         tree token.
+
         @rtype: None
         """
         # Note: this method introduces a circular dependancy between
@@ -573,78 +662,3 @@ def parse_treebank(str):
         return result[0]
     except:
         raise ValueError('Bad Treebank-style string')
-
-##//////////////////////////////////////////////////////
-##  Test Code
-##//////////////////////////////////////////////////////
-## This is some simple test code for now..
-## More extensive unit testing will follow..
-    
-def test():
-    from token import Token
-    t=Tree('ip', Tree('dp', Tree('d', 'a'), Tree('n', 'cat')),
-           Tree('vp', Tree('v', 'saw'),
-                Tree('dp', Tree('d', 'a'), Tree('n', 'dog'))))
-
-    t2=TreeToken('ip',
-                 TreeToken('dp',
-                           TreeToken('d', Token('a',1)),
-                           TreeToken('n', Token('cat',2))),
-                 TreeToken('vp',
-                           TreeToken('v', Token('saw',3)),
-                           TreeToken('dp',
-                                     TreeToken('d', Token('a',4)),
-                                     TreeToken('n', Token('dog',5)))))
-    t3=TreeToken('ip',
-                 TreeToken('dp',
-                           TreeToken('d', Token('a')),
-                           TreeToken('n', Token('cat'))),
-                 TreeToken('vp',
-                           TreeToken('v', Token('saw')),
-                           TreeToken('dp',
-                                     TreeToken('d', Token('a')),
-                                     TreeToken('n', Token('dog')))))
-
-
-    print t
-    print t.leaves()
-    print t.nodes()
-    print
-    print t2
-    print t2.leaves()
-    print t2.nodes()
-    print t2.location()
-    print
-    print t3
-    print t3.leaves()
-    print t3.nodes()
-    print t3.location()
-
-    t4 = parse_treebank('(ip (dp (d a) (n cat)) (vp (v saw)))')
-    print t4
-
-
-if __name__ == '__main__':
-    #test()
-    t=Tree('ip', Tree('dp', Tree('d', 'a'), Tree('n', 'cat')),
-           Tree('vp', Tree('v', 'saw'),
-                Tree('dp', Tree('d', 'a'), Tree('n', 'dog'))))
-
-    t2=TreeToken('ip',
-                 TreeToken('dp',
-                           TreeToken('d', Token('a',1)),
-                           TreeToken('n', Token('cat',2))),
-                 TreeToken('vp',
-                           TreeToken('v', Token('saw',3)),
-                           TreeToken('dp',
-                                     TreeToken('d', Token('a',4)),
-                                     TreeToken('n', Token('dog',5)))))
-    t3=TreeToken('ip',
-                 TreeToken('dp',
-                           TreeToken('d', Token('a')),
-                           TreeToken('n', Token('cat'))),
-                 TreeToken('vp',
-                           TreeToken('v', Token('saw')),
-                           TreeToken('dp',
-                                     TreeToken('d', Token('a')),
-                                     TreeToken('n', Token('dog')))))
