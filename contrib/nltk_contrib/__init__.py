@@ -39,7 +39,7 @@ def _add_subdirectories_to_package(package_path_list):
     pkgpath = package_path_list[0]
     for file in os.listdir(pkgpath):
         path = os.path.join(pkgpath, file)
-        if os.path.isdir(path):
+        if os.path.isdir(path) and file != 'CVS':
             if not os.path.isfile(os.path.join(path, '__init__.py')):
                 package_path_list.append(path)
 
