@@ -1172,7 +1172,7 @@ class CompleterRule(AbstractChartRule):
             for e in fr.apply_iter(chart, grammar, left_edge, right_edge):
                 yield e
 
-    def __str__(self): return 'Completer Rule (aka Fundamental Rule)'
+    def __str__(self): return 'Completer Rule'
     
 class ScannerRule(AbstractChartRule):
     """
