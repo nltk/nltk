@@ -152,7 +152,7 @@ class ChartView:
         # Process keyword args.
         draw_tree = kw.get('draw_tree', 0)
         draw_source = kw.get('draw_source', 1)
-        self._fontsize = kw.get('fontsize', 10)
+        self._fontsize = kw.get('fontsize', -12)
         
         if source is None:
             source = []
@@ -259,13 +259,13 @@ class ChartView:
             self._source_canvas['height'] = self._source_height
         
     def set_font_size(self, size):
-        self._fontsize = size
+        self._fontsize = -abs(size)
         self._analyze()
         self.draw()
         self._grow()
             
     def get_font_size(self):
-        return self._fontsize
+        return abs(self._fontsize)
             
     def _configure(self, e):
         """
