@@ -46,9 +46,11 @@ The following subclasses will be added in the near future:
 
 from nltk.parser import ParserI
 from nltk.cfg import PCFG, PCFGProduction, Nonterminal
-from nltk.token import ProbabilisticToken, Location
+from nltk.token import ProbabilisticToken, Location, Token
 from nltk.tree import ProbabilisticTreeToken
 from nltk.parser.chart import Chart, FRChart, TokenEdge, ProductionEdge
+from nltk.chktype import chktype as _chktype
+import types
 
 # Used for sorting by epydoc; and for "import *"
 __all__ = [
