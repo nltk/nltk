@@ -1,3 +1,12 @@
+# Natural Language Toolkit: Graphical Representations for Trees
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Steven Bird <sb@ldc.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
 from Tkinter import *
 
 from nltk.tree import Tree, TreeToken

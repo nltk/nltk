@@ -4,6 +4,8 @@
 # Author: Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+#
+# $Id$
 
 """
 A chunk parser is a kind of robust parser which identifies

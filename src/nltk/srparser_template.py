@@ -4,6 +4,8 @@
 # Author: Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+#
+# $Id$
 
 """
 A shift-reduce parser is a simple kind of bottom-up parser which

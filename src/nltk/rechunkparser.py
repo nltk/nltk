@@ -5,6 +5,8 @@
 # Major Revisions: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+#
+# $Id$
 
 """
 Defines a regular-expression based chunk parser, and several

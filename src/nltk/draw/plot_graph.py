@@ -1,3 +1,12 @@
+# Natural Language Toolkit: A Graph Plotter
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Steven Bird <sb@ldc.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
 import sys
 from Tkinter import *
 from tkFileDialog import *
