@@ -66,8 +66,8 @@ def testsuite(module_names=DEFAULT_MODULES, verbose=0):
     if verbose:
         print 'Testing modules:'
         for module in modules:
-            print '   ' + module.__name__
-            print '     ('+module.__file__+')'
+            print '  - %s' % module.__name__
+            #print '     ('+module.__file__+')'
     
     return unittest.TestSuite([m.testsuite() for m in modules]) 
 
