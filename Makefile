@@ -32,6 +32,8 @@ documentation:
 	$(MAKE) -C doc
 	$(MAKE) -C psets
 
+web: webpage
+html: webpage
 webpage:
 	$(MAKE) -C doc webpage
 
