@@ -380,21 +380,40 @@ def re2nfa_star(fsa, node, tree):
     fsa.insert(node2, epsilon, node3)
     return node3
 
+#################################################################
+# Demonstration
+#################################################################
+
 def demo():
+    """
+    A demonstration showing how FSAs can be created and used.
+    """
+    # Define an alphabet.
     alphabet = "ab"
+
+    # Create a new FSA.
+    fsa = FSA(alphabet)
+    
+    # Use a regular expression to initialize the FSA.
     re = 'ab*'
     print 'Regular Expression:', re
-    fsa = FSA(alphabet)
     fsa.empty()
     re2nfa(fsa, re)
     print "NFA:"
     fsa.pp()
+
+    # Convert the (nondeterministic) FSA to a deterministic FSA.
     dfa = fsa.dfa()
     print "DFA:"
     dfa.pp()
+
+    # Prune the DFA
     dfa.prune()
     print "PRUNED DFA:"
     dfa.pp()
-#    fsa.generate(10)
+
+    # Use the FSA to generate all strings of length less than 3
+    # (broken)
+    #fsa.generate(3)
 
 if __name__ == '__main__': demo()
