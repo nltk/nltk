@@ -714,7 +714,6 @@ def timetest():
 
         times.append([name, aspd, gspd, cspd, espd])
 
-if 1:
     # Print speeds
     print 'Combination      ASpeed  GSpeed  CSpeed  ESpeed'
     print '-----------------------------------------------'
@@ -729,7 +728,7 @@ if 1:
             #print ('%-15s %7.1f %7.1f %7.1f %7.1f' %
             print ('%-15s %7d %7d %7d %7d' %
                    (name, aspd*norm, gspd*norm, cspd*norm, espd*norm))
-    #return times
+    return times
             
 #if __name__ == '__main__':
 #    demotest()
