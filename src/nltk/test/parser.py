@@ -519,14 +519,14 @@ import sys, os, os.path
 if __name__ == '__main__': sys.path[0] = None
 import unittest, doctest, trace
 
-def testsuite():
+def testsuite(reload_module=False):
     import doctest, nltk.test.parser
-    reload(nltk.test.parser)
+    if reload_module: reload(nltk.test.parser)
     return doctest.DocTestSuite(nltk.test.parser)
 
-def test(verbosity=2):
+def test(verbosity=2, reload_module=False):
     runner = unittest.TextTestRunner(verbosity=verbosity)
-    runner.run(testsuite())
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
