@@ -3,6 +3,7 @@
 # Copyright (C) 2002 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Scott Currie <sccurrie@seas.upenn.edu>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -182,7 +183,7 @@ def demo():
     parser = SRParser(cfg)
 
     # Run the parse on the token stream
-    parser.trace(3)
+    parser.trace()
     parses = parser.parse(tok_sent)
 
     # Display the results in text (and graphically)
