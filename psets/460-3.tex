@@ -11,6 +11,8 @@ A left-corner parser is a top-down parser with bottom-up filtering
 (inheriting from
 \texttt{ParserI}) which implements a left-corner parser.  Write a
 function \texttt{p1a()} to apply your parser to three sentences.
+Suggestion: use the grammar contained in the demonstration code
+of the parser package (\texttt{parser/\_\_init\_\_.py}).
 
 Next, compare the performance of this parser with
 \texttt{ShiftReduceParser()} and \texttt{RecursiveDescentParser()},
@@ -46,16 +48,15 @@ work using inline comments (marked clearly as question 2).
 
 \section{Grammar Development}
 
-Pick some of the syntactic constructions described in J\&M \S 10
-and create a set of 30 sentences.  Ten sentences should be unambiguous (have
-a unique parse), ten should be ambiguous, and a further ten should be
-ungrammatical.  Develop a grammar which accounts for this data,
-providing trees for the grammatical ones and rejecting the ungrammatical ones,
-refining your test set as needed to test the grammar.  Write
-a function \texttt{p3()} to demonstrate your grammar on three sentences:
-(i) a sentence having exactly one parse;
-(ii) a sentence having more than one parse;
-(iii) a sentence having no parses.
+Pick some of the syntactic constructions described in J\&M \S 10 and
+create a set of 30 sentences.  Ten sentences should be unambiguous
+(have a unique parse), ten should be ambiguous, and a further ten
+should be ungrammatical.  Develop a small grammar, consisting of about
+ten syntactic productions, which accounts for this data.  Refining
+your set of sentences as needed to test and demonstrate the grammar.
+Write a function \texttt{p3()} to demonstrate your grammar on three
+sentences: (i) a sentence having exactly one parse; (ii) a sentence
+having more than one parse; (iii) a sentence having no parses.
 
 Next, create a list \texttt{words} of all the words in your lexicon, and use
 \texttt{random.choice(words)} to generate sequences of 6-12 randomly
