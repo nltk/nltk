@@ -241,8 +241,8 @@ class CanvasEdge:
         Respond to node movement.
         """
         if self._tags is not None:
-            self._canvas.coords(self._tags[0], self._line_coords())
-            self._canvas.coords(self._tags[1], self._text_coords())
+            self._canvas.coords(self._tags[0], *self._line_coords())
+            self._canvas.coords(self._tags[1], *self._text_coords())
 
     def __repr__(self):
         return '%s-->%s' % (self._node1, self._node2)
@@ -269,8 +269,8 @@ class CanvasFSA:
     def _add_fsa(self, fsa):
         nodes = self._nodes
         edges = self._edges
-        for (s1, label, s2s) in fsa.transitions():
-            for s2 in s2s.elements():
+        for (s1, labels, s2) in fsa.transitions():
+            for label in labels.elements():
                 # Add nodes..
                 if not nodes.has_key(s1): nodes[s1] = self._make_node(s1)
                 if not nodes.has_key(s2): nodes[s2] = self._make_node(s2)
