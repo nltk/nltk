@@ -683,6 +683,6 @@ def parse_treebank(str):
     # Use "eval" to convert the string (is this safe?)
     try:
         result = eval(str)
-        return result[0]
+        return result
     except:
         raise ValueError('Bad Treebank-style string')
