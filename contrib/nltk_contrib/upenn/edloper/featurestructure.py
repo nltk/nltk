@@ -31,30 +31,45 @@ cases before we decide whether and how to add them.
 
 import re, copy
 
+#//////////////////////////////////////////////////////////////////////
+# Variables and variable bindings
+#//////////////////////////////////////////////////////////////////////
+
 # This class doesn't actually do anything; all the work is done
-# by FeatureVariableBinding, and during unification.  All that
-# matters is that 2 FeatureVariables with the same identifier
+# by FeatureStructureVariableBinding, and during unification.  All that
+# matters is that 2 FeatureStructureVariables with the same identifier
 # should compare equal.
-class FeatureVariable:
+class FeatureStructureVariable:
     """
     A variable that can stand for a single feature value in a feature
     structure.  A feature value can either be a base value (immutable
-    and hashable) or a C{FeatureStructure}.
+    and hashable) or a C{FeatureStructure}.  Each variable is uniquely
+    identified by a case sensitive identifier.  Any two
+    C{FeatureStructureVariable} objects with the same identifier are
+    treated as the same variable.
     """
-    _next_autoid = 0
-
-    def __init__(self, identifier=None):
-        # Generate an automatic identifier, if none was specified.
-        if identifier==None:
-            id = str(FeatureVariable._next_autoid)
-            FeatureVariable._next_autoid += 1
+    def __init__(self, identifier):
+        """
+        Construct a new feature structure variable.
+        @type identifier: C{string}
+        @param identifier: A unique identifier for this variable.
+            Any two C{FeatureStructureVariable} objects with the
+            same identifier are treated as the same variable.
+        """
         self._identifier = identifier
+
+    def identifier(self):
+        """
+        @return: This variable's unique identifier.
+        @rtype: C{string}
+        """
+        return self._identifier
 
     def __repr__(self):
         return '?%s' % self._identifier
 
     def __cmp__(self, other):
-        if not isinstance(other, FeatureVariable): return -1
+        if not isinstance(other, FeatureStructureVariable): return -1
         return cmp(self._identifier, other._identifier)
 
     def __hash__(self):
@@ -64,37 +79,82 @@ class FeatureVariable:
 # get away with just using a dictionary, because we might want to
 # "merge" unbound variables together (see docstring), and that's not
 # convenient to represent in a dictionary.
-class FeatureVariableBinding:
+class FeatureStructureVariableBinding:
     """
-    A set of bindings for feature variables.  Each variable is either
-    bound to a value, or unbound.  Two or more unbound variables can
-    be set equal by X{merging} them together.  When an unbound
-    variable is bound to a value, any variables that have been merged
-    with it will also be bound to that value.
+    A set of bindings for feature structure variables.  Each variable
+    is either bound to a value, or unbound.  Two or more unbound
+    variables can be set equal by X{merging} them together.  When an
+    unbound variable is bound to a value, any variables that have been
+    merged with it will also be bound to that value.
 
-    Feature variable bindings are monotonic: once a value is bound, it
-    cannot be unbound or rebound.
+    Feature structure variable bindings are monotonic: once a value is
+    bound, it cannot be unbound or rebound.
+
+    @note: There is one exception to the rule that bindings are
+    monotonic: when unifying a bound variable with another value, the
+    variable's value might be replaced by an equal value, to preserve
+    reentrancy.
     """
     def __init__(self, **initial_bindings):
-        # [XX] check for variables that are bound together and
-        # merge them instead of putting them in bindings??
-        self._bindings = initial_bindings
+        """
+        Construct a new set of bindings for feature structure
+        variables.
+        @param initial_bindings: The initial set of bindings and
+            merged variables.  This dictionary should map
+            variables to either values or other variables.  If a
+            variable maps to a value, it will be bound to that
+            value.  If a variable maps to another variable, then
+            the two variables will be merged.
+        """
+        self._bindings = {}
         self._merged_vars = {}
 
+        # Register all the bindings and merged variables listed in
+        # initial_bindings.
+        for (src, dst) in initial_bindings.items():
+            if isinstance(dst, FeatureStructureVariable):
+                self.merge(src, dst)
+        for (src, dst) in initial_bindings.items():
+            if not isinstance(dst, FeatureStructureVariable):
+                self.bind(src, dst)
+
     def bound_variables(self):
+        """
+        @return: A list of all variables that have been bound to
+            values.
+        @rtype: C{list} of L{FeatureStructureVariable}
+        """
+        return self._bindings.keys()
+
+    def merged_variables(self):
+        """
+        @return: A list of all variables that have been merged
+            with other variables.
+        @rtype: C{list} of L{FeatureStructureVariable}
+        """
         return self._bindings.keys()
 
     def is_bound(self, variable):
+        """
+        @return: true if the given variable is bound to a value.
+        @rtype: C{bool}
+        """
         return self._bindings.has_key(variable)
 
     def lookup(self, variable):
         """
-        return the value it's bound to; or the variable itself if it's
-        not bound.
+        @return: The value that the given variable is bound to; or
+            the variable itself, if it's not bound.
         """
         return self._bindings.get(variable, variable)
     
     def merge(self, var1, var2):
+        """
+        Merge two unbound variables together.  After C{var1} and
+        C{var2} have been merged, binding either variable to a value
+        will cause the other variable to be bound to the same value.
+        @raise ValueError: if C{var1} or C{var2} is bound.
+        """
         if self._bindings.has_key(var1) or self._bindings.has_key(var2):
             raise ValueError('Only unbound variables may be merged')
         varlist = (self._merged_vars.get(var1,[var1]) +
@@ -103,10 +163,32 @@ class FeatureVariableBinding:
         self._merged_vars[var2] = varlist
 
     def bind(self, var, value):
+        """
+        Bind an unbound variable to a value.
+        @raise ValueError: If C{var} is already bound.
+        @raise ValueError: If C{value} is a variable.  (Variables
+            cannot be bound to other variables; use L{merge()}
+            instead.)
+        """
+        if isinstance(value, FeatureVariableBinding):
+            raise ValueError('Variables cannot be bound to other '+
+                             'variables; use merge() instead.')
         if self._bindings.has_key(var):
             raise ValueError('Bound variables may not be rebound')
         for var in self._merged_vars.get(var,[var]):
             self._bindings[var] = value
+
+    def _rebind(self, var, new_value):
+        """
+        Replace the value that a variable is bound to with an equal
+        value.  This is used by L{FeatureStructure.
+        _cleanup_binding_forwards} to preserve reentrance when
+        unifying feature structures.
+        @precondition: The old binding for C{var} is equal to
+            C{new_value}.
+        @precondition: C{var} is bound.
+        """
+        self._bindings[var] = new_value
 
     def __repr__(self):
         return '<Bindings: %s; Merged=%s>' % (self._bindings,
@@ -178,6 +260,10 @@ class FeatureStructure:
     def feature_names(self):
         return self._features.keys()
 
+    def __cmp__(self, other):
+        if self==other: return 0
+        else: return -1
+
     #################################################################
     ## Unification
     #################################################################
@@ -195,7 +281,7 @@ class FeatureStructure:
             othercopy = copy.deepcopy(other)
             
             # Create an empty set of variable bindings.
-            bindings = FeatureVariableBinding()
+            bindings = FeatureStructureVariableBinding()
 
             # Do the unification.
             selfcopy._destructively_unify(othercopy, bindings)
@@ -211,22 +297,18 @@ class FeatureStructure:
             return selfcopy
         except FeatureStructure._UnificationFailureError: return None
 
-    # [XX] This cheats (breaks abstraction barrier)
-    def _cleanup_binding_forwards(self, bindings):
-        for var in bindings._bindings.keys():
-            if isinstance(bindings._bindings[var], FeatureStructure):
-                while bindings._bindings[var]._forward is not None:
-                    bindings._bindings[var] = bindings._bindings[var]._forward
-
     def unify_with_bindings(self, other, initial_bindings=None):
         """
         Unify self with other, and return both the unified structure
         and the variable bindings necessary for unification.
 
-        @rtype: C{(L{FeatureStructure}, L{FeatureVariableBinding})}
+        @rtype: C{(L{FeatureStructure}, L{FeatureStructureVariableBinding})}
         """
-        if initial_bindings is None:
-            initial_bindings = FeatureVariableBinding()
+        # Set up the initial bindings.
+        if initial_bindings is not None:
+            bindings = initial_bindings
+        else:
+            bindings = FeatureStructureVariableBinding()
 
         try:
             # Make copies of self & other (since unification is
@@ -241,9 +323,10 @@ class FeatureStructure:
             # Clean up any forwards in the bindings.
             selfcopy._cleanup_binding_forwards(bindings)
 
-            # Return the unified value and the bindings
-            return selfcopy, bindings
-        except FeatureStructure._UnificationFailureError: return None
+            # Return the unified value and [XX] not the bindings
+            return selfcopy
+        except FeatureStructure._UnificationFailureError:
+            return None
             
 
     def _apply_bindings(self, bindings, visited):
@@ -252,7 +335,7 @@ class FeatureStructure:
         visited[id(self)] = 1
     
         for (fname, fval) in self._features.items():
-            if (isinstance(fval, FeatureVariable) and
+            if (isinstance(fval, FeatureStructureVariable) and
                 bindings.is_bound(fval)):
                 self._features[fname] = bindings.lookup(fval)
             if isinstance(fval, FeatureStructure):
@@ -286,9 +369,9 @@ class FeatureStructure:
 
                 # If selfval or otherval is a bound variable, then
                 # replace it by the variable's bound value.
-                if isinstance(selfval, FeatureVariable):
+                if isinstance(selfval, FeatureStructureVariable):
                     selfval = bindings.lookup(selfval)
-                if isinstance(otherval, FeatureVariable):
+                if isinstance(otherval, FeatureStructureVariable):
                     otherval = bindings.lookup(otherval)
                 
                 # Case 1: unify 2 feature structures (recursive case)
@@ -297,14 +380,14 @@ class FeatureStructure:
                     selfval._destructively_unify(otherval, bindings)
                     
                 # Case 2: unify 2 variables
-                elif (isinstance(selfval, FeatureVariable) and
-                    isinstance(otherval, FeatureVariable)):
+                elif (isinstance(selfval, FeatureStructureVariable) and
+                    isinstance(otherval, FeatureStructureVariable)):
                     bindings.merge(selfval, otherval)
                 
                 # Case 3: unify a variable with a value
-                elif isinstance(selfval, FeatureVariable):
+                elif isinstance(selfval, FeatureStructureVariable):
                     bindings.bind(selfval, otherval)
-                elif isinstance(otherval, FeatureVariable):
+                elif isinstance(otherval, FeatureStructureVariable):
                     bindings.bind(otherval, selfval)
                     
                 # Case 4: unify 2 non-equal values (failure case)
@@ -331,6 +414,15 @@ class FeatureStructure:
                     self._features[fname] = fval._forward
                 fval._cleanup_forwards(visited)
     
+    def _cleanup_binding_forwards(self, bindings):
+        for var in bindings._bindings.keys():
+            value = bindings.lookup(var)
+            if (isinstance(value, FeatureStructure) and
+                value._forward is not None):
+                while value._forward is not None:
+                    value = value._forward
+                bindings._rebind(var, value)
+
     #################################################################
     ## String Represenations
     #################################################################
@@ -528,8 +620,8 @@ class FeatureStructure:
         # Add calls to the FeatureStructure constructor.
         str = str.replace(r'[', 'FeatureStructure(**{')
 
-        # Add calls to the FeatureVariable constructor.
-        str = re.sub(r'"\?(\w+)"', r'FeatureVariable("\1")', str)
+        # Add calls to the FeatureStructureVariable constructor.
+        str = re.sub(r'"\?(\w+)"', r'FeatureStructureVariable("\1")', str)
         
         # Strip whitespace and get rid of the comma after the last ')' 
         str = str.strip()
@@ -602,8 +694,8 @@ class FeatureStructureTestCase(unittest.TestCase):
 
     def testVariableForwarding(self):
         'Test that bound variable values get forwarded appropriately'
-        cvar = FeatureVariable('cvar')
-        dvar = FeatureVariable('dvar')
+        cvar = FeatureStructureVariable('cvar')
+        dvar = FeatureStructureVariable('dvar')
         fs1x = FeatureStructure(X='x')
         fs1 = FeatureStructure(A=fs1x, B=fs1x, C=cvar, D=dvar)
 
@@ -638,7 +730,7 @@ class FeatureStructureTestCase(unittest.TestCase):
 
     def testCyclicUnificationFromBinding(self):
         'create a cyclic structure via variables'
-        x = FeatureVariable('x')
+        x = FeatureStructureVariable('x')
         fs1 = FeatureStructure(F=FeatureStructure(H=x))
         fs2 = FeatureStructure(F=x)
         fs3 = fs1.unify(fs2)
@@ -662,6 +754,3 @@ def test():
 if __name__ == '__main__':
     test()
 
-    
-        
-    
