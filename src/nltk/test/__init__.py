@@ -59,7 +59,6 @@ def testsuite():
 def test(verbosity=0):
     """
     Run unit tests for the NLP toolkit; print results to stdout/stderr.
-    @param module_names: A list of filenames of test modules.
     """
     # Ensure that the type safety level is set to full.
     import nltk.chktype

@@ -883,10 +883,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     def initialize(self, token):
         """
         Start parsing a given text.  This sets the parser's stack to
-        C{[]} and sets its remaining text to C{text}.
-
-        @param text: The text to start parsing.
-        @type text: C{list} of C{Token}
+        C{[]} and sets its remaining text to C{token['SUBTOKENS']}.
         """
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
@@ -1047,10 +1044,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         Start parsing a given text.  This sets the parser's tree to
         the start symbol, its frontier to the root node, and its
-        remaining text to C{text}.
-
-        @param text: The text to start parsing.
-        @type text: C{list} of C{Token}
+        remaining text to C{token['SUBTOKENS']}.
         """
         assert chktype(1, token, Token)
         NODE = self._property_names.get('NODE', 'NODE')

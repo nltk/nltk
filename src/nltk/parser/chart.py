@@ -402,7 +402,7 @@ class Chart:
         Construct a new empty chart.
 
         @type token: L{Token}
-        @ivar token: The sentence that this chart will be used to
+        @param token: The sentence that this chart will be used to
             parse.
         @param property_names: A dictionary that can be used to override
             the default property names used by the chart.  Each entry
@@ -1175,9 +1175,9 @@ class BottomUpPredictRule(AbstractChartRule):
     A rule licensing any edge corresponding to a production whose
     right-hand side begins with a complete edge's left-hand side.  In
     particular, this rule specifies that:
-        - AS{->}S{alpha}*}
+        - [AS{->}S{alpha}*]
     licenses the edge:
-        - BS{->}*AS{beta}}
+        - [BS{->}*AS{beta}]
     for each grammar production C{BS{->}AS{beta}}
     """
     NUM_EDGES=1
@@ -1226,7 +1226,7 @@ class ScannerRule(AbstractChartRule):
     A rule licensing a leaf edge corresponding to a part-of-speech
     terminal following an incomplete edge's dot.  In particular, this
     rule specifies that:
-        - [AS{->}S{alpha}*P{beta}]@[i:j]
+        - [AS{->}S{alpha}*PS{beta}]@[i:j]
     licenses the edges:
         - [PS{->}w*]@[j:j+1]
         - [wS{->}*]@[j:j+1]
