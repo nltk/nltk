@@ -48,7 +48,7 @@ from nltk.parser import ParserI
 from nltk.cfg import PCFG, PCFGProduction, Nonterminal
 from nltk.token import ProbabilisticToken, Location
 from nltk.tree import ProbabilisticTreeToken
-from nltk.parser.chart import Chart, FRChart, Edge
+from nltk.parser.chart import Chart, FRChart, TokenEdge, ProductionEdge
 
 # Used for sorting by epydoc; and for "import *"
 __all__ = [
@@ -561,12 +561,12 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             self._add_edge(edge, chart, edge_queue)
             if self._trace > 1:
                 print '  %-60s %10.12f' % (chart.pp_edge(edge,2),
-                                           edge.tree().p())
+                                           edge.structure().p())
 
             # Check if the edge is a complete parse.
             if (edge.loc() == chart.loc() and
-                edge.prod().lhs() == self._grammar.start()):
-                parses.append(edge.tree())
+                edge.lhs() == self._grammar.start()):
+                parses.append(edge.structure())
                 if len(parses) == n: break
 
         if self._trace:
@@ -613,11 +613,8 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         edge_queue = []
         for tok in text:
-# SB: should this be PCFGProduction?
-# also, the signature is wrong...
-            prod = PCFGProduction(1, tok.type())
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
-            edge_queue.append(Edge(prod, probtok, tok.loc()))
+            edge_queue.append(TokenEdge(probtok))
 
         # This is purely aesthetic: put the first word at the
         # beginning of the queue, not the last word.
@@ -644,12 +641,13 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         # If the edge is already in the chart, then do nothing.
         if not chart.insert(edge): return
         
-        # If the dot is in the zero-position, then apply the bottom-up
+        # If this is a token edge, or if it's a production edge with a
+        # dot in the zero position, then apply the bottom-up
         # initialization rule.
-        if edge.dotpos() == 0:
+        if (isinstance(edge, TokenEdge) or edge.dotpos() == 0):
             edge_queue += [self._self_loop_edge(production, edge.loc())
                            for production in self._grammar.productions()
-                           if production.rhs()[0] == edge.prod().lhs()]
+                           if production.rhs()[0] == edge.lhs()]
 
         # Find any new places where we can apply the fundamental
         # rule. 
@@ -678,7 +676,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         node = production.lhs().symbol()
         tree = ProbabilisticTreeToken(production.p(), node)
-        return Edge(production, tree, loc.start_loc())
+        return ProductionEdge(production, tree, loc.start_loc())
 
     def _fr(self, e1, e2):
         """
@@ -702,11 +700,11 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         @param e2: The complete edge that should be combined with 
             C{e1} by the fundamental rule.
         """
-        p = e1.tree().p() * e2.tree().p()
-        children = e1.tree().children() + (e2.tree(),)
-        tree = ProbabilisticTreeToken(p, e1.tree().node(), *children)
+        p = e1.structure().p() * e2.structure().p()
+        children = e1.structure().children() + (e2.structure(),)
+        tree = ProbabilisticTreeToken(p, e1.structure().node(), *children)
         loc = e1.loc().union(e2.loc())
-        return Edge(e1.prod(), tree, loc, e1.dotpos()+1)
+        return ProductionEdge(e1.prod(), tree, loc, e1.dotpos()+1)
 
     def __repr__(self):
         # Use __class__.__name__ to get the name of the class, since
@@ -745,7 +743,7 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
         @type chart: C{Chart}
         @rtype: C{None}
         """
-        queue.sort(lambda e1,e2:cmp(e1.tree().p(), e2.tree().p()))
+        queue.sort(lambda e1,e2:cmp(e1.structure().p(), e2.structure().p()))
 
 # Eventually, this will become some sort of inside-outside parser:
 # class InsideOutsideParser(BottomUpPCFGChartParser):
@@ -769,8 +767,8 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
 #         for (k,v) in self._bestp.items(): print k,v
 #
 #     def _cmp(self, e1, e2):
-#         return cmp(e1.tree().p()*self._bestp[e1.prod().lhs()],
-#                    e2.tree().p()*self._bestp[e2.prod().lhs()])
+#         return cmp(e1.structure().p()*self._bestp[e1.lhs()],
+#                    e2.structure().p()*self._bestp[e2.lhs()])
 #        
 #     def sort_queue(self, queue, chart):
 #         queue.sort(self._cmp)
@@ -820,7 +818,7 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
         self._beam_size = beam_size
         
     def sort_queue(self, queue, chart):
-        queue.sort(lambda e1,e2:cmp(e1.tree().p(), e2.tree().p()))
+        queue.sort(lambda e1,e2:cmp(e1.structure().p(), e2.structure().p()))
         if len(queue) > self._beam_size:
             split = len(queue)-self._beam_size
             if self._trace > 2:
@@ -880,6 +878,7 @@ if __name__ == '__main__':
         PCFGProduction(1.0, S, NP, VP),  PCFGProduction(1.0, PP, P, NP),
         PCFGProduction(0.61, P, 'with'), PCFGProduction(0.39, P, 'under')]
 
+    # Default to (2)
     print 'Grammar 1 or 2? ',
     if sys.stdin.readline().strip() == '1':
         pcfg = PCFG(S, grammar_productions1)
@@ -898,13 +897,17 @@ if __name__ == '__main__':
                RandomPCFGParser(pcfg), LongestPCFGParser(pcfg),
                BeamPCFGParser(len(text)+1, pcfg)]
 
+    # Default to (all parsers)
     print '\nChoose a parser:'
     for i in range(len(parsers)):
         print (i+1), parsers[i]
     try:
+        print (len(parsers)+1), '(all parsers)'
         print '=> ',
         parsers = [parsers[int(sys.stdin.readline().strip())-1]]
-    except:
+    except ValueError:
+        parsers = parsers
+    except IndexError:
         parsers = parsers
 
     for parser in parsers:
