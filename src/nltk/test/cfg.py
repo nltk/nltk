@@ -95,51 +95,51 @@ A CFG production is constructed from a left-hand side element and
 zero or more right-hand side elements:
 
     >>> S,NP,VP,PP,P,N,V = nonterminals('S,NP,VP,PP,P,N,V')
-    >>> CFGProduction(S)
+    >>> CFGProduction(S, [])
     [Production: S ->]
-    >>> CFGProduction(S, NP)
+    >>> CFGProduction(S, [NP])
     [Production: S -> NP]
-    >>> CFGProduction(S, NP, VP)
+    >>> CFGProduction(S, [NP, VP])
     [Production: S -> NP VP]
-    >>> CFGProduction(S, NP, VP, PP)
+    >>> CFGProduction(S, [NP, VP, PP])
     [Production: S -> NP VP PP]
-    >>> CFGProduction(N, 'dog')
+    >>> CFGProduction(N, ['dog'])
     [Production: N -> 'dog']
-    >>> CFGProduction(PP, 'in', NP)
+    >>> CFGProduction(PP, ['in', NP])
     [Production: PP -> 'in' NP]
 
 The left-hand side and right-hand side are accessed with lhs() and
 rhs(), repsectively:
 
-    >>> prod = CFGProduction(S, NP, VP)
+    >>> prod = CFGProduction(S, [NP, VP])
     >>> print '%r %r' % (prod.lhs(), prod.rhs())
     <S> (<NP>, <VP>)
     
 str() representation is like repr() representation, but without the
 surrounding [Production:].
 
-    >>> str(CFGProduction(S))
+    >>> str(CFGProduction(S, []))
     'S ->'
-    >>> str(CFGProduction(S, NP))
+    >>> str(CFGProduction(S, [NP]))
     'S -> NP'
-    >>> str(CFGProduction(PP, 'in', NP))
+    >>> str(CFGProduction(PP, ['in', NP]))
     \"PP -> 'in' NP\"
 
 Two productions are equal if their LHS and RHS are equal:
 
-    >>> CFGProduction(S, NP) == CFGProduction(S, NP)
+    >>> CFGProduction(S, [NP]) == CFGProduction(S, [NP])
     True
-    >>> CFGProduction(S, NP) == CFGProduction(VP, NP)
+    >>> CFGProduction(S, [NP]) == CFGProduction(VP, [NP])
     False
-    >>> CFGProduction(S, NP) == CFGProduction(S, VP)
+    >>> CFGProduction(S, [NP]) == CFGProduction(S, [VP])
     False
-    >>> CFGProduction(S, NP) != CFGProduction(S, NP)
+    >>> CFGProduction(S, [NP]) != CFGProduction(S, [NP])
     False
-    >>> CFGProduction(S, NP) != CFGProduction(S, VP)
+    >>> CFGProduction(S, [NP]) != CFGProduction(S, [VP])
     True
-    >>> CFGProduction(S) != CFGProduction(S, NP)
+    >>> CFGProduction(S, []) != CFGProduction(S, [NP])
     True
-    >>> prod1, prod2 = CFGProduction(S, NP), CFGProduction(S, VP)
+    >>> prod1, prod2 = CFGProduction(S, [NP]), CFGProduction(S, [VP])
     >>> prod1 < prod1 or prod1 > prod1
     False
     >>> prod1 < prod2 or prod1 > prod2
@@ -158,9 +158,9 @@ A context free grammar is constructed from a start symbol and a list
 of productions:
 
     >>> S,NP,VP,PP,P,N,V = nonterminals('S,NP,VP,PP,P,N,V')
-    >>> prods = [CFGProduction(S), CFGProduction(S, NP),
-    ...          CFGProduction(S, NP, VP), CFGProduction(S, NP, VP, PP),
-    ...          CFGProduction(N, 'dog'), CFGProduction(PP, 'in', NP)]
+    >>> prods = [CFGProduction(S, []), CFGProduction(S, [NP]),
+    ...          CFGProduction(S, [NP, VP]), CFGProduction(S, [NP, VP, PP]),
+    ...          CFGProduction(N, ['dog']), CFGProduction(PP, ['in', NP])]
     >>> cfg = CFG(S, prods)
     >>> print cfg
     CFG with 6 productions (start state = S)
@@ -239,15 +239,15 @@ Unit tests for L{PCFGProduction}.
 PCFGProduction is a probabilistic version of CFGProduction:
 
     >>> S,NP,VP,PP,P,N,V = nonterminals('S,NP,VP,PP,P,N,V')
-    >>> PCFGProduction(0.1, S)
+    >>> PCFGProduction(S, [], prob=0.1)
     [Production: S -> (p=0.1)]
-    >>> PCFGProduction(0.8, S, NP, VP)
+    >>> PCFGProduction(S, [NP, VP], prob=0.8)
     [Production: S -> NP VP (p=0.8)]
 
 It is hashable and comparable:
 
-    >>> prod1 = PCFGProduction(0.1, S)
-    >>> prod2 = PCFGProduction(0.2, S)
+    >>> prod1 = PCFGProduction(S, [], prob=0.1)
+    >>> prod2 = PCFGProduction(S, [], prob=0.2)
     >>> prod1 == prod2
     False
     >>> {prod1: 1}
@@ -261,12 +261,12 @@ PCFG is a probabilistic version of CFG.  It uses PCFGProductions
 instead of CFGProductions.
 
     >>> S,NP,VP,PP,P,N,V = nonterminals('S,NP,VP,PP,P,N,V')
-    >>> prods = [PCFGProduction(0.1, S),
-    ...          PCFGProduction(0.2, S, NP),
-    ...          PCFGProduction(0.3, S, NP, VP),
-    ...          PCFGProduction(0.4, S, NP, VP, PP),
-    ...          PCFGProduction(1.0, N, 'dog'),
-    ...          PCFGProduction(1.0, PP, 'in', NP)]
+    >>> prods = [PCFGProduction(S, [], prob=0.1),
+    ...          PCFGProduction(S, [NP], prob=0.2),
+    ...          PCFGProduction(S, [NP, VP], prob=0.3),
+    ...          PCFGProduction(S, [NP, VP, PP], prob=0.4),
+    ...          PCFGProduction(N, ['dog'], prob=1.0),
+    ...          PCFGProduction(PP, ['in', NP], prob=1.0)]
     >>> cfg = PCFG(S, prods)
     >>> print cfg
     CFG with 6 productions (start state = S)
@@ -281,7 +281,7 @@ The probability distribution defined by a PCFG is required to be
 well-defined.  I.e., the probabilities of the productions with a given
 LHS must sum to 1.
 
-    >>> prods[0] = PCFGProduction(0.5, S)
+    >>> prods[0] = PCFGProduction(S, [], prob=0.5)
     >>> PCFG(S, prods)
     Traceback (most recent call last):
       [...]
@@ -340,14 +340,14 @@ import sys, os, os.path
 if __name__ == '__main__': sys.path[0] = None
 import unittest, doctest, trace
 
-def testsuite():
+def testsuite(reload_module=False):
     import doctest, nltk.test.cfg
-    reload(nltk.test.cfg)
+    if reload_module: reload(nltk.test.cfg)
     return doctest.DocTestSuite(nltk.test.cfg)
 
-def test(verbosity=2):
+def test(verbosity=2, reload_module=False):
     runner = unittest.TextTestRunner(verbosity=verbosity)
-    runner.run(testsuite())
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
