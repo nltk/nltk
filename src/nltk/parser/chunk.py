@@ -517,7 +517,7 @@ class ChunkString(PropertyIndirectionMixIn):
             probably use level 3 if you use any non-standard
             subclasses of C{RegexpChunkParserRule}.
         """
-        assert chktype(1, tagged_tokens, [Token, Tree], (Token, Tree))
+        assert chktype(1, tagged_tokens, [Token, Tree], (Token, Tree), Tree)
         assert chktype(2, debug_level, types.IntType)
         PropertyIndirectionMixIn.__init__(self, **property_names)
         self._ttoks = tagged_tokens
