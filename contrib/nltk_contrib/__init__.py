@@ -87,7 +87,7 @@ __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
                 'natural language']
-__url__ = "http://nltk.sf.net/"
+__url__ = "http://nltk.sourceforge.net/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "Edward Loper"
