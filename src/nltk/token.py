@@ -124,7 +124,8 @@ class Location:
             elif key == 'unit':
                 if type(val) not in (types.StringType, types.NoneType):
                     raise TypeError("Unit must have type string")
-                self._unit = val
+                if val is not None:
+                    self._unit = val.lower()
             else:
                 assert 0, "Invalid keyword argument: "+key
 
