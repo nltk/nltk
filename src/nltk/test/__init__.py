@@ -13,16 +13,6 @@ Unit tests for the NLTK modules.
 
 import unittest, sys
 
-DEFAULT_MODULES = [
-    'nltk/test/__init__.py',
-    'nltk/test/probability.py',
-    'nltk/test/rechunkparser.py',
-    'nltk/test/set.py',
-    'nltk/test/token.py',
-    'nltk/test/tree.py',
-    'nltk/test/chktype.py',
-    ]
-
 def _file_to_module(filename):
     """
     Convert a filename to a module name.  Warning: this may not be
@@ -36,7 +26,7 @@ def _file_to_module(filename):
         base = base[:-9]
     return '.'.join(base.split('/'))
 
-def _load_modules(module_filenames, verbose=0):
+def _load_modules(module_filenames, verbosity=0):
     """
     Given a list of module filenames, load the corresponding modules,
     and return a list of those modules.
@@ -46,9 +36,10 @@ def _load_modules(module_filenames, verbose=0):
               if name[-16:] != 'test/__init__.py']
 
     modules = []
+    if verbosity>0: print 'Importing modules:'
     for mname in mnames:
         if mname == None: continue
-        if verbose: print 'Importing', mname
+        if verbosity>0: print '  - %s' % mname
         try:
             exec('import '+mname)
             exec('modules.append('+mname+')')
@@ -57,21 +48,21 @@ def _load_modules(module_filenames, verbose=0):
 
     return modules
 
-def testsuite(module_names=DEFAULT_MODULES, verbose=0):
+def testsuite(module_names, verbosity=0):
     """
     Return a PyUnit testsuite for the NLP toolkit
     """
-    modules = _load_modules(module_names, verbose-1)
+    modules = _load_modules(module_names, verbosity-1)
 
-    if verbose:
+    if verbosity>0:
         print 'Testing modules:'
         for module in modules:
             print '  - %s' % module.__name__
-            #print '     ('+module.__file__+')'
+            if verbosity>1: print '     ('+module.__file__+')'
     
     return unittest.TestSuite([m.testsuite() for m in modules]) 
 
-def test(module_names=DEFAULT_MODULES, verbose=0):
+def test(module_names, verbosity=0):
     """
     Run unit tests for the NLP toolkit; print results to stdout/stderr
     """
@@ -80,8 +71,8 @@ def test(module_names=DEFAULT_MODULES, verbose=0):
     nltk.chktype.type_safety_level(1000)
     
     import unittest
-    runner = unittest.TextTestRunner()
-    success = runner.run(testsuite(module_names, verbose)).wasSuccessful()
+    runner = unittest.TextTestRunner(verbosity=verbosity)
+    success = runner.run(testsuite(module_names, verbosity)).wasSuccessful()
 
     if not success:
         sys.exit(1)
@@ -95,17 +86,17 @@ def usage(name):
 
 if __name__ == '__main__':
     files = []
-    verbose = 0
+    verbosity = 0
 
     for arg in sys.argv[1:]:
         if arg[:1] == '-':
             if arg[1:] in ('v', 'V', 'verbose', 'Verbose', 'VERBOSE'):
-                verbose += 1
+                verbosity += 1
             else:
                 sys.exit(usage(sys.argv[0]))
         else:
             files.append(arg)
     if files:
-        test(files, verbose)
+        test(files, verbosity)
     else:
-        test(DEFAULT_MODULES, verbose)
+        usage(sys.argv[0])
