@@ -536,7 +536,6 @@ class FeatureStructure:
         
         # Use "eval" to convert the string
         try:
-            print str
             result = eval(str)
             return result
         except:
