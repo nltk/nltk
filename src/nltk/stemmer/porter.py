@@ -563,3 +563,45 @@ class PorterStemmer(nltk.stemmer.StemmerI):
 #                    break
 #                w = w[:-1]
 #                print p.stem(w)
+
+##--NLTK--
+## Added a demo() function
+def demo():
+    """
+    A demonstration of the porter stemmer on a sample taken randomly
+    from from the Penn Treebank corpus.
+    """
+    # Pick a file from the brown corpus, and tokenize it.
+    # Keep at most 100 tokens.
+    import random
+    from nltk.corpus import treebank
+    item = random.choice(treebank.items('raw'))
+    text = treebank.tokenize(item)[:100]
+
+    # Remove any formatting tokens.
+    text = [tok for tok in text
+            if tok.type() != '.START' and
+            not tok.type().startswith('======')]
+
+    # Create a porter stemmer, and run it over the text.
+    stemmer = PorterStemmer()
+    stemmed = [stemmer.stem(tok) for tok in text]
+
+    # Convert the results to a string, and word-wrap them.
+    results = ' '.join([tok.type() for tok in stemmed])
+    results = re.sub(r"(.{,70})\s", r'\1\n', results+' ').rstrip()
+
+    # Convert the original to a string, and word wrap it.
+    original = ' '.join([tok.type() for tok in text])
+    original = re.sub(r"(.{,70})\s", r'\1\n', original+' ').rstrip()
+
+    # Print the results.
+    print '-Original-'.center(70).replace(' ', '*').replace('-', ' ')
+    print original
+    print '-Results-'.center(70).replace(' ', '*').replace('-', ' ')
+    print results
+    print '*'*70
+
+##--NLTK--
+## Call demo() if we're invoked directly.
+if __name__ == '__main__': demo()
