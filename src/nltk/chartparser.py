@@ -25,7 +25,6 @@ about, e.g., BU strategy.  Hrm..
 
 from nltk.parser import *
 from nltk.token import *
-from nltk.rule import *
 from nltk.tree import *
 from nltk.set import *
 from nltk.chart import *
@@ -467,7 +466,7 @@ def demo():
 
     # Which tests?
     BU = TD = STEP = INCR = 0
-    TD = BU = 1
+    INCR = TD = BU = 1
 
     tr = 1
     import time
