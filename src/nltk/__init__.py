@@ -14,7 +14,7 @@ used as a teaching tool, not as a basis for building production
 systems.
 
 @author: Edward Loper
-@version: 0.6
+@version: 0.7
 """
 
 # Leave this out for now... It's out of date.
@@ -100,7 +100,7 @@ cluster, the interfaces contained in that cluster are given.
     a text.
 
 @author: Edward Loper
-@version: 0.6
+@version: 0.7
 """
 
 """
@@ -137,7 +137,7 @@ to currently implemented interfaces and classes.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.6"
+__version__ = "0.7"
 
 # Copyright notice
 __copyright__ = """\
