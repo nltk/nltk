@@ -20,24 +20,24 @@ Details
 =======
 
 This is intended as a Tree Adjoining Grammar tool. It provides two
-utilities in terms of classes that can be used :
+utilities in terms of classes that can be used:
 
-1. Definition of Tree Adjoining Grammars (the Tag class)
-2. A TAG parser which extends the ParserI interface. In addition to the
-   parse method which returns a list of parse trees there is a
-   print_derivations method which gives a step by step derivation of the
-   parse tree. The derivation output is textual. (the TagParser class)
+  1. Definition of Tree Adjoining Grammars (the Tag class)
+  2. A TAG parser which extends the ParserI interface. In addition to the
+     parse method which returns a list of parse trees there is a
+     print_derivations method which gives a step by step derivation of the
+     parse tree. The derivation output is textual. (the TagParser class)
 
 Terminology
 ===========
 
 I hope that anyone using this tool will have some idea of what a TAG is.
 You should know what is/are:
-a. An initial tree
-b. An auxiliary tree
-c. A frontier node
-d. A foot node
-e. The operations of substitution and adjoining.
+  1. An initial tree
+  2. An auxiliary tree
+  3. A frontier node
+  4. A foot node
+  5. The operations of substitution and adjoining.
 
 If you don't and want to use this tool (and understand it), it might be
 a good idea to read a paper on Tag. Google should help you.
@@ -91,25 +91,29 @@ class DottedRule(Rule):
 ######################################################################
 
 class Tag:
-    
     """
-      This class defines Tree Adjoining Grammars and their substitution and
-      adjoining operations
-      Definition:
-           The position of a node in a tree is represented by a list as
-           follows:
-           1.[0] root node
-           2.[0,a,b,c,d...] where a is the ath child of the root,
-                            b is the bth child of a ...and so on
+    This class defines Tree Adjoining Grammars and their substitution and
+    adjoining operations.
+      
+    Definition
+    ==========
+      The position of a node in a tree is represented by a list as
+      follows:
+        
+        1. [0] root node
+        2. [0,a,b,c,d...] where a is the ath child of the root,
+           b is the bth child of a ...and so on
 
-       Specification:
-             The terminals should be on the frontier of the trees because
-       all interior nodes are considered non terminals. The nonterminals on the
-       frontier of the tree should be trees with only the node and no children.
-       
-             The foot node of auxiliary trees should have a '*' appended to
-       it's label. This is to distinguish it from other nodes on the
-       frontier with the same label.
+    Specification
+    =============
+      The terminals should be on the frontier of the trees because
+      all interior nodes are considered non terminals. The
+      nonterminals on the frontier of the tree should be trees with
+      only the node and no children.
+      
+      The foot node of auxiliary trees should have a '*' appended to
+      it's label. This is to distinguish it from other nodes on the
+      frontier with the same label.
     """
     
     def __init__(self,initialtrees,auxiliarytrees):
@@ -256,35 +260,34 @@ class Tag:
 class ParsingStructure:
     """
       The state of a particular parse which is represented by:
-      1.The stack set - which is a set of stacks. In the simplified
-        version of the BEPDA here a single list (not stack) would have
-        sufficed. But to keep some semblance with the formalism I have
-        used the term stack set. It might be easier to just think of it
-        as a stack.
+        1. The stack set - which is a set of stacks. In the simplified
+           version of the BEPDA here a single list (not stack) would have
+           sufficed. But to keep some semblance with the formalism I have
+           used the term stack set. It might be easier to just think of it
+           as a stack.
         
-      2 and 3. The tree stack and queue. These structures used together
-               by the methods of the BEPDA ensure that:
-               a. The tree being traversed is on top of the stack
-               b. Substitution uses the first two elements of the stack
-               c. Adjoining uses the first element of the stack and the
+        2. and 3. The tree stack and queue. These structures used together
+           by the methods of the BEPDA ensure that:
+               1. The tree being traversed is on top of the stack
+               2. Substitution uses the first two elements of the stack
+               3. Adjoining uses the first element of the stack and the
                   last element of the queue.
-
-               Just to draw the parse trees. The final tree will be available
-               on the top of the stack.
+           Just to draw the parse trees. The final tree will be
+           available on the top of the stack.
                
-      4.The pending adjunctions stack
+        4. The pending adjunctions stack
       
-      5.The unconsumed input
+        5. The unconsumed input
       
-      6.The unconsumed frontier nodes ( which gives us an idea whether
-        or not a particular tree could be added to the derivation at this
-        state because each unconsumed node will  consume atleast one
-        lexical item. That together with the unconsumed input and the
-        number of frontier nodes on a tree tells us whether it is worth
-        our while to use the tree. Basically reduces the number of
-        redundant parses)
+        6. The unconsumed frontier nodes ( which gives us an idea whether
+           or not a particular tree could be added to the derivation at this
+           state because each unconsumed node will  consume atleast one
+           lexical item. That together with the unconsumed input and the
+           number of frontier nodes on a tree tells us whether it is worth
+           our while to use the tree. Basically reduces the number of
+           redundant parses)
       
-      7.The operations done so that the steps can be shown.
+        7. The operations done so that the steps can be shown.
     """
                                         
     def __init__(self,stackset,ts,tq,pas,ip,ut,op):
@@ -485,16 +488,21 @@ class Bepda:
        adjunctions takes place. The last adjunction is done first and the
        result of this is passed to the previous tree waiting for adjunction.
 
-       Compiling TAG into BEPDA:
-                         Each tree is represented by a set of ordered
-       context free productions a follows:
-       Node -> Child1 Child2...Childn
-       Frontier Node -> Leaf (Remember that fr. nodes are of two types.
-                              Trees without children for non terminals and
-                              strings for children. This property is used to
-                              determine whether a node is a candidate for 
-                              substitution or adjoining or comparison with an
-                              input symbol.
+       Compiling TAG into BEPDA
+       ========================
+       
+       Each tree is represented by a set of ordered context free
+       productions a follows::
+       
+           Node -> Child1 Child2...Childn
+           Frontier Node -> Leaf (Remember that fr. nodes are of two
+                                  types.  Trees without children for
+                                  non terminals and strings for
+                                  children. This property is used to
+                                  determine whether a node is a
+                                  candidate for substitution or
+                                  adjoining or comparison with an
+                                  input symbol.
 
        if each tree has a list of context free productions and the index for
        this list is specified in the same manner as the positions for
