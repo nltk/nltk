@@ -36,7 +36,7 @@ the L{TaggerI} interface.
 
 import types, re
 from nltk.chktype import chktype
-from nltk.tokenizer import Token, TokenizerI, WSTokenizer
+from nltk.tokenizer import Token, AbstractTokenizer, WSTokenizer
 from nltk.probability import FreqDist, ConditionalFreqDist
 
 
@@ -64,7 +64,7 @@ def parse_tagged_type(string):
     else:
         return TaggedType(string, None)
 
-class TaggedTokenizer(TokenizerI):
+class TaggedTokenizer(AbstractTokenizer):
     """
     A tokenizer that divides a string of tagged words into subtokens.
     Words should be separated by whitespace, and each word should have
@@ -102,17 +102,6 @@ class TaggedTokenizer(TokenizerI):
                 subtok['text'] = subtok['text'][:split]
             else:
                 subtok['tag'] = None
-
-    def xtokenize(self, token):
-        "Not implemented for this tokenizer"
-        raise NotImplementedError()
-
-    def raw_tokenize(self, text):
-        "Not implemented for this tokenizer"
-        raise NotImplementedError()
-    def raw_xtokenize(self, text):
-        "Not implemented for this tokenizer"
-        raise NotImplementedError()
 
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
@@ -168,6 +157,9 @@ class TaggerI:
         @rtype: C{list} of C{string}
         """
         raise NotImplementedError()
+
+    # [XX] add tag_n
+    # [XX] add raw_tag_n
 
 ##//////////////////////////////////////////////////////
 ##  Taggers
