@@ -565,9 +565,8 @@ class ChunkString(PropertyIndirectionMixIn):
 
         if verify_tags<=0: return
         
-        TAG = self.property('TAG')
         tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
-        tags2 = [tok[TAG] for tok in self._ttoks]
+        tags2 = [self._tag(tok) for tok in self._ttoks]
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid chunkstring')
 
