@@ -261,7 +261,7 @@ class ShiftReduceParser(ParserI):
         
         if self._trace: self._trace_shift(stack, remaining_text)
 
-    def _match(self, rhs, rightmost_stack):
+    def _match_rhs(self, rhs, rightmost_stack):
         """
         @rtype: C{boolean}
         @return: true if the right hand side of a CFG production
@@ -317,7 +317,7 @@ class ShiftReduceParser(ParserI):
             rhslen = len(production.rhs())
                 
             # check if the RHS of a production matches the top of the stack
-            if self._match(production.rhs(), stack[-rhslen:]):
+            if self._match_rhs(production.rhs(), stack[-rhslen:]):
 
                 # combine the tree to reflect the reduction
                 treetok = TreeToken(production.lhs().symbol(),
@@ -561,8 +561,8 @@ class RecursiveDescentParser(ParserI):
             currently being parsed.  The elements of C{treetok}
             that are specified by C{frontier} have not yet been
             expanded or matched.
-        @type remaining_text: C{list} of C{Token}s
-        @param remaining_text: The portion of the text that is not yet
+        @type rtext: C{list} of C{Token}s
+        @param rtext: The portion of the text that is not yet
             covered by C{treetok}.
         @type frontier: C{list} of C{tuple} of C{int}
         @param frontier: A list of the locations within C{treetok} of
