@@ -45,7 +45,11 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     is approximately 2000 words long.  The experts are grouped into 15
     topical categories that cover a wide range of genres and styles.
   
-  - L{gutenberg}: A collection fourteen public-domain English etexts
+  - L{genesis}: A collection of six translations of the book of Genesis.
+    The texts are taken from several different languages,
+    and range from 1,500 words to 4,000 words each.
+  
+  - L{gutenberg}: A collection of fourteen public-domain English etexts
     from Project Gutenberg.  The texts are taken from seven different
     authors, and range from 7,500 words to 800,000 words.
   
@@ -1262,6 +1266,11 @@ brown = SimpleCorpusReader(
     default_tokenizer=TaggedTokenizer())
 del groups # delete temporary variable
  
+###################################################
+## Genesis
+genesis = SimpleCorpusReader(
+    'genesis', 'genesis/', r'.*\.txt', description_file='README')
+
 ###################################################
 ## Gutenberg
 groups = [('austen', 'austen-.*'), ('bible', 'bible-.*'),
