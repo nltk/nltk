@@ -10,7 +10,7 @@
 DISTRIBUTIONS = distributions
 
 # What's the version of the corpora?
-CORPORA_VERSION = 0.2
+CORPORA_VERSION = 0.3
 
 # Get the current version of NLTK
 NLTK_VERSION=$(shell export PYTHONPATH=src; \
