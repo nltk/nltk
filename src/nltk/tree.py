@@ -328,8 +328,14 @@ class Tree:
         # convenience.  In particular, we believe that it is more
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
-        import nltk.draw.tree
-        nltk.draw.tree.TreeView(self)
+        from nltk.draw import CanvasFrame
+        from nltk.draw.tree import tree_to_treesegment
+        cf = CanvasFrame()
+        bold = ('helvetica', 12, 'bold')
+        seg = tree_to_treesegment(cf.canvas(), self, node_font=bold)
+        seg['draggable'] = 1
+        cf.add_widget(seg)
+        
 
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
@@ -644,8 +650,13 @@ class TreeToken(Token):
         # convenience.  In particular, we believe that it is more
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
-        import nltk.draw.tree
-        nltk.draw.tree.TreeView(self)
+        from nltk.draw import CanvasFrame
+        from nltk.draw.tree import tree_to_treesegment
+        cf = CanvasFrame()
+        bold = ('helvetica', 12, 'bold')
+        seg = tree_to_treesegment(cf.canvas(), self, node_font=bold)
+        seg['draggable'] = 1
+        cf.add_widget(seg)
 
 class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
