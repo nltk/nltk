@@ -30,9 +30,9 @@ operations:
     elements into a single tree token.
 
 You can control the parser's operation by using the "shift" and
-"reduce" button; or you can use the "step" button to let the parser
-automatically decide which operation to apply.  The shift reduce
-parser uses the following rules to decide which operation to use:
+"reduce" buttons; or you can use the "step" button to let the parser
+automatically decide which operation to apply.  The parser uses the
+following rules to decide which operation to apply:
 
   - Only shift if no reductions are available.
   - If multiple reductions are available, then apply the reduction
@@ -42,9 +42,9 @@ The "reduce" button applies the reduction whose CFG production is
 listed earliest in the grammar.  There are two ways to manually choose
 which reduction to apply:
 
-  - Select a production from the list of available reductions.  The
-    reduction based on that production will be applied to the top of
-    the stack.
+  - Select a CFG production from the list of available reductions, on
+    the left side of the main window.  The reduction based on that
+    production will be applied to the top of the stack.
   - Click on one of the stack elements.  A popup window will appear, 
     containing all available reductions.  Select one, and it will be
     applied to the top of the stack.
@@ -55,6 +55,7 @@ Keyboard Shortcuts::
       [Space]\t Perform the next shift or reduce operation
       [s]\t Perform a shift operation
       [r]\t Perform a reduction operation
+      [Ctrl-z]\t Undo most recent operation
       [Delete]\t Reset the parser
       [g]\t Show/hide available production list
       [Ctrl-a]\t Toggle animations
@@ -65,11 +66,6 @@ Keyboard Shortcuts::
 
 """
 Possible future improvements:
-  - undo (shortcut=backspace).  Simplest implentation: keep a list of
-    the stack/remaining text after each operation; and roll-back by
-    setting to the old one.  This should probably be implemented in
-    the stepping parser, not in thte demo.  (i.e., stepping srparser
-    would have an undo() method).
   - button/window to change and/or select text.  Just pop up a window
     with an entry, and let them modify the text; and then retokenize
     it?  Maybe give a warning if it contains tokens whose types are
@@ -101,7 +97,7 @@ class ShiftReduceParserDemo:
         # Animations.  animating_lock is a lock to prevent the demo
         # from performing new operations while it's animating.
         self._animate = 1
-        self._num_animation_frames = 5
+        self._num_animation_frames = 10
         self._animating_lock = 0
 
         # Set up the main window.
@@ -130,6 +126,7 @@ class ShiftReduceParserDemo:
 
     def _init_grammar(self, parent):
         # Grammar view.
+        self._show_grammar = 1
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
         Label(self._prodframe, text='Available Reductions',
@@ -154,10 +151,15 @@ class ShiftReduceParserDemo:
             self._prodlist.config(yscrollcommand = listscroll.set)
             listscroll.config(command=self._prodlist.yview)
             listscroll.pack(side='left', fill='y')
-            
-        self._show_grammar = 1
+
+        # If they select a production, apply it.
         self._prodlist.bind('<<ListboxSelect>>', self._prodlist_select)
-        
+
+        # When they hover over a production, highlight it.
+        self._hover = -1
+        self._prodlist.bind('<Motion>', self._highlight_hover)
+        self._prodlist.bind('<Leave>', self._clear_hover)
+
     def _init_bindings(self):
         # Key bindings are a good thing.
         self._top.bind('<q>', self.destroy)
@@ -170,6 +172,11 @@ class ShiftReduceParserDemo:
         self._top.bind('<Alt-r>', self.reduce)
         self._top.bind('<Control-r>', self.reduce)
         self._top.bind('<Delete>', self.reset)
+        self._top.bind('<u>', self.undo)
+        self._top.bind('<Alt-u>', self.undo)
+        self._top.bind('<Control-u>', self.undo)
+        self._top.bind('<Control-z>', self.undo)
+        self._top.bind('<BackSpace>', self.undo)
         self._top.bind('<p>', self.postscript)
         self._top.bind('<Alt-p>', self.postscript)
         self._top.bind('<Control-p>', self.postscript)
@@ -198,6 +205,8 @@ class ShiftReduceParserDemo:
                command=self.shift).pack(side='left')
         Button(buttonframe, text='Reduce', underline=0,
                command=self.reduce).pack(side='left')
+        Button(buttonframe, text='Undo', underline=0,
+               command=self.undo).pack(side='left')
         Button(buttonframe, text='Reset', 
                command=self.reset).pack(side='left')
 
@@ -215,7 +224,7 @@ class ShiftReduceParserDemo:
 
     def _init_canvas(self, parent):
         self._cframe = CanvasFrame(parent, background='white', 
-                                   width=550, closeenough=10,
+                                   width=525, closeenough=10,
                                    border=2, relief='sunken')
         self._cframe.pack(expand=1, fill='both', side='top', pady=2)
         canvas = self._canvas = self._cframe.canvas()
@@ -228,8 +237,9 @@ class ShiftReduceParserDemo:
         self._stacktop = canvas.create_line(0,0,0,0, fill='#408080')
         self._stacklabel = TextWidget(canvas, 'Stack', color='#004040',
                                   font=('helvetica', 16, 'bold'))
-        self._rtextlabel = TextWidget(canvas, 'Remaining Text', color='#004040',
-                                  font=('helvetica', 16, 'bold'))
+        self._rtextlabel = TextWidget(canvas, 'Remaining Text',
+                                      color='#004040',
+                                      font=('helvetica', 16, 'bold'))
         self._cframe.add_widget(self._stacklabel)
         self._cframe.add_widget(self._rtextlabel)
 
@@ -286,8 +296,12 @@ class ShiftReduceParserDemo:
             widget = TextWidget(self._canvas, tok.type(), color='#000000')
             self._rtextwidgets.append(widget)
             self._cframe.add_widget(widget, rtextwidth, y)
-            rtextwidth = widget.bbox()[2] + 5
+            rtextwidth = widget.bbox()[2] + 4
 
+        # Allow enough room to shift the next token (for animations)
+        if len(self._rtextwidgets) > 0:
+            stackx += self._rtextwidgets[0].width()
+               
         # Move the remaining text to the correct location (keep it
         # right-justified, when possible); and move the remaining text
         # label, if necessary.
@@ -296,7 +310,7 @@ class ShiftReduceParserDemo:
         if stackx >= cx2-max(rtextwidth, rlabelwidth):
             cx2 = stackx + max(rtextwidth, rlabelwidth)
         for rtextwidget in self._rtextwidgets:
-            rtextwidget.move(5+cx2-rtextwidth, 0)
+            rtextwidget.move(4+cx2-rtextwidth, 0)
         self._rtextlabel.move(cx2-self._rtextlabel.bbox()[2]-5, 0)
 
         # Draw the stack top.
@@ -369,6 +383,11 @@ class ShiftReduceParserDemo:
                 self._redraw()
         return production
 
+    def undo(self, *e):
+        if self._animating_lock: return
+        if self._parser.undo():
+            self._redraw()
+
     def help(self, *e):
         # The default font's not very legible; try using 'fixed' instead. 
         try:
@@ -435,11 +454,22 @@ class ShiftReduceParserDemo:
     #########################################
 
     def toggle_animations(self, *e):
-        self._animate = not self._animate
         if self._animate:
-            self._lastoper1['text'] = 'Animations On'
+            if self._num_animation_frames > 10:
+                self._animate = 1
+                self._num_animation_frames = 10
+                self._lastoper1['text'] = 'Normal Animations'
+            elif self._num_animation_frames > 4:
+                self._animate = 1
+                self._num_animation_frames = 4
+                self._lastoper1['text'] = 'Fast Animations'
+            else:
+                self._animate = 0
+                self._lastoper1['text'] = 'Animations Off'
         else:
-            self._lastoper1['text'] = 'Animations Off'
+            self._animate = 1
+            self._num_animation_frames = 20
+            self._lastoper1['text'] = 'Slow Animations'
         self._lastoper2['text'] = ''
 
     def _animate_shift(self):
@@ -479,8 +509,8 @@ class ShiftReduceParserDemo:
             ydist = 15 + widgets[0].height()
 
         # Start animating.
-        dy = ydist*1.0/self._num_animation_frames
-        self._animate_reduce_frame(self._num_animation_frames,
+        dy = ydist*2.0/self._num_animation_frames
+        self._animate_reduce_frame(self._num_animation_frames/2,
                                    widgets, dy)
 
     def _animate_reduce_frame(self, frame, widgets, dy):
@@ -492,6 +522,43 @@ class ShiftReduceParserDemo:
         else:
             self._redraw()
             self._animating_lock = 0
+
+    #########################################
+    ##  Hovering.
+    #########################################
+
+    def _highlight_hover(self, event):
+        # What production are we hovering over?
+        index = self._prodlist.nearest(event.y)
+        if self._hover == index: return
+
+        # Clear any previous hover highlighting.
+        self._clear_hover()
+
+        # If the production corresponds to an available reduction,
+        # highlight the stack.
+        selection = [int(s) for s in self._prodlist.curselection()]
+        if index in selection:
+            rhslen = len(self._productions[index].rhs())
+            for stackwidget in self._stackwidgets[-rhslen:]:
+                if isinstance(stackwidget, TreeSegmentWidget):
+                    stackwidget.node()['color'] = '#0000ff'
+                else:
+                    stackwidget['color'] = '#0000ff'
+
+        # Remember what production we're hovering over.
+        self._hover = index
+                    
+    def _clear_hover(self, *event):
+        # Clear any previous hover highlighting.
+        if self._hover == -1: return
+        self._hover = -1
+        for stackwidget in self._stackwidgets:
+            if isinstance(stackwidget, TreeSegmentWidget):
+                stackwidget.node()['color'] = 'black'
+            else:
+                stackwidget['color'] = 'black'
+        
     
 def demo():
     """
@@ -510,6 +577,7 @@ def demo():
         CFGProduction(NP, Det, N),
         CFGProduction(NP, NP, PP),
         CFGProduction(VP, VP, PP),
+        CFGProduction(VP, V, NP, PP),
         CFGProduction(VP, V, NP),
         CFGProduction(PP, P, NP),
 
@@ -518,14 +586,14 @@ def demo():
         CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
         CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
         CFGProduction(P, 'with'), CFGProduction(N, 'park'),
-        CFGProduction(N, 'dog'),  CFGProduction(N, 'telescope'),
+        CFGProduction(N, 'dog'),  CFGProduction(N, 'statue'),
         CFGProduction(Det, 'my'),
         )
 
     grammar = CFG(S, productions)
 
     # tokenize the sentence
-    sent = 'my dog saw a man in the park with a telescope'
+    sent = 'my dog saw a man in the park with a statue'
     from nltk.token import WSTokenizer
     text = WSTokenizer().tokenize(sent)
 
