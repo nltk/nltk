@@ -32,22 +32,6 @@ class TreeTestCase(unittest.TestCase):
         self.failUnlessEqual(Tree(1, 2, Tree(3), 4, Tree(5, 6)),
                              Tree(1, 2, Tree(3), 4, Tree(5, 6)))
 
-        # Node pytypes must match
-        self.failUnlessRaises(TypeError, Tree, Tree(1), Tree('a'))
-
-        # Leaf pytypes must match
-        self.failUnlessRaises(TypeError, Tree, Tree(1,1), Tree(1,'a'))
-        self.failUnlessRaises(TypeError, lambda :
-                              Tree(Tree(1, Tree(2, Tree(3, 4)),
-                                        Tree(5, Tree(6, 7))),
-                                   Tree(1, Tree(2, Tree(3, 4)),
-                                        Tree(5, Tree(6, 7)), 'a')))
-        self.failUnlessRaises(TypeError, lambda :
-                              Tree(Tree(1, Tree(2, Tree(3, 4)),
-                                        Tree(5, Tree(6, 7))),
-                                   Tree(1, Tree(2, Tree(3, 4)),
-                                        Tree(5, Tree(6, 'a')), 7)))
-
     def testNode(self):
         "nltk.tree.Tree: node accessor tests"
         self.failUnlessEqual(self.tree.node(), 's')
@@ -156,24 +140,6 @@ class TreeTokenTestCase(unittest.TestCase):
         # We can mix nodes and leaves on one level.
         TreeToken(1, Token(2), TreeToken(3),
                   Token(4), TreeToken(5, Token(6)))
-
-        # Node pytypes must match
-        self.failUnlessRaises(TypeError, TreeToken, TreeToken(1), TreeToken('a'))
-
-        self.failUnlessRaises(TypeError, lambda :
-                              TreeToken(TreeToken(1, TreeToken(2, TreeToken(3, Token(4))),
-                                        TreeToken(5, TreeToken(6, Token(7)))),
-                                   TreeToken(1, TreeToken(2, TreeToken(3, Token(4))),
-                                        TreeToken(5, TreeToken(6, Token(7))), Token('a'))))
-
-        # Leaf pytypes must match
-        self.failUnlessRaises(TypeError, TreeToken,
-                              TreeToken(1,Token(1)), TreeToken(1,Token('a')))
-        self.failUnlessRaises(TypeError, lambda :
-                              TreeToken(TreeToken(1, TreeToken(2, TreeToken(3, 4)),
-                                        TreeToken(5, TreeToken(6, 7))),
-                                   TreeToken(1, TreeToken(2, TreeToken(3, 4)),
-                                        TreeToken(5, TreeToken(6, 'a')), 7)))
 
         def token(type,start): return Token(type, Location(start))
         # Locations must be properly ordered.
