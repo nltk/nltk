@@ -1,0 +1,56 @@
+# Natural Language Toolkit: contributions Makefile
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
+# Epydoc executable
+EPYDOC = epydoc
+
+all: distributions
+
+usage:
+	@echo "make distributions -- Build distributions (output to dist/)"
+	@echo "make checkdocs -- Check docstrings for completeness"
+	@echo "make clean -- Remove temporary and built files"
+
+# Clean.  
+#    - Erase any pyc and pyo files.
+#    - Get rid of build/dist directories
+#    - Erase the MANIFEST file (it's generated from MANIFEST.in)
+clean:
+	rm -f `find . -name '*.pyc'`
+	rm -f `find . -name '*.pyo'`
+	rm -rf build dist MANIFEST
+
+# Distributions. Build all from scratch.
+distributions: clean sdist bdist
+
+# Source distributions
+sdist: gztardist zipdist
+
+# Built distributions
+bdist: rpmdist windist
+
+# Produce dist/$(NAME)-$(VERSION).tar.gz
+gztardist:
+	python setup.py -q sdist --format=gztar
+
+# Produce dist/$(NAME)-$(VERSION).tar.gz
+zipdist:
+	python setup.py -q sdist --format=zip
+
+# Produce dist/$(NAME)-$(VERSION)-1.noarch.rpm
+# Produce dist/$(NAME)-$(VERSION)-1.src.rpm
+rpmdist:
+	python setup.py -q bdist --format=rpm
+
+# Produce dist/$(NAME)-$(VERSION).win32.exe
+windist:
+	python setup.py -q bdist --format=wininst
+
+checkdocs:
+	$(EPYDOC) -v --check nltk_contrib
