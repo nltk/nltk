@@ -14,6 +14,8 @@ C{nltk.set} module defines two container classes:
 
   - L{Set} is used to encode immutable sets.
   - L{MutableSet} is used to encode mutable sets.
+
+@group Data Types: Set, MutableSet
 """
 
 from nltk.chktype import chktype as _chktype
