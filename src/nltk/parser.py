@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Taggers
+# Natural Language Toolkit: Parsers
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
