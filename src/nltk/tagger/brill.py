@@ -1114,7 +1114,10 @@ def getWSJTokens (n, randomize = False):
         random.seed(len(items))
         random.shuffle(items)
     for item in items[:n]:
-        taggedData += treebank.tokenize(item)['SUBTOKENS']
+        item = treebank.read(item)
+        for para in item['PARAS']:
+            for sent in para['SENTS']:
+                taggedData += sent['WORDS']
     taggedData = [taggedData[i] for i in range(len(taggedData))
                   if taggedData[i]['TEXT'][0] not in "[]="]
     return taggedData
@@ -1184,10 +1187,12 @@ def test(numFiles=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     print("Done.")
 
 # TESTING
-#sys.argv = ['', '50', '0', '200', '1']
     
 if __name__ == '__main__':
-    args = sys.argv[1:]
+    if sys.argv == ['']:
+        args = ['50', '0', '200', '1']
+    else:
+        args = sys.argv[1:]
 
     if len(args) == 0 or len(args) > 4:
         print "Usage: python brill.py n [randomize [max_rules [min_score]]]\n \
