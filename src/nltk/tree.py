@@ -780,7 +780,7 @@ def demo():
     """
     from nltk.util import DemoInterpreter
     d = DemoInterpreter()
-    d.title('Tree Token Demo')
+    d.start('Tree Token Demo')
     d.silent("from nltk.tree import *")
     
     # Demonstrate tree parsing.
@@ -818,7 +818,7 @@ def demo():
     d("print cake['parent']['parent']['parent']")
     d("# A root tree's parent is None:")
     d("print tree['parent']")
-    d.hline("=")
+    d.end()
 
 if __name__ == '__main__':
     demo()

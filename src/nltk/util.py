@@ -12,7 +12,7 @@ A collection of basic utility classes and functions that are used
 by the toolkit.
 """
 
-import itertools
+import itertools, sys
 
 ######################################################################
 ## Frozen Dictionary
@@ -299,11 +299,35 @@ class DemoInterpreter:
     A simple eval-print loop, that can be useful for creating quick
     demonstrations.
     """
+    class _OutWrapper:
+        def __init__(self, out, indent):
+            self._out = out
+            self._indent = indent
+            
+        def write(self, str):
+            str = str.replace('\n', '\n'+self._indent)
+            self._out.write(str)
+            
+        #def writelines(self, lines):
+        #    lines = [self._indent+line for line in lines]
+        #    self._out.writelines(lines)
+            
+        def __getattr__(self, attr):
+            return getattr(self._out, attr)
+
+    _out = _OutWrapper(sys.stdout, '* ')
+    
     def __init__(self):
         self._locals = {}
 
-    def title(self, s):
-        print '='*(37-len(s)/2), s, '='*(36-(len(s)+1)/2)
+    def start(self, s):
+        sys.stdout = self._out
+        print '*'*(38-len(s)/2), s, '*'*(37-(len(s)+1)/2)
+
+    def end(self):
+        sys.stdout = sys.__stdout__
+        print
+        print '*'*75
 
     def hline(self, char='-'):
         print char*75
