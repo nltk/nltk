@@ -67,10 +67,10 @@ class DecisionListClassifier(AbstractFeatureClassifier):
         @param fd_list: The feature detector list.
         @type fd_list: C{FDList}
         @param labels: The set of possible labels.
-        @type fd_list: C{sequence} of any
+        @type labels: (sequence) of (any)
         @param default: The default label to use. Must be a member of
             C{labels}.
-        @type fd_list: any
+        @type default: (any)
         """
         AbstractFeatureClassifier.__init__(self, fd_list, labels)
         self._default = default

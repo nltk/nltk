@@ -16,13 +16,13 @@ instances have only one label or there are no features left, a leaf node is
 created. This method could probably benefit from pruning with held-out test
 data.
 
-[1] Brown 1991: Brown, Peter F., Pietra, Stephen A. Della, Pietra, Vincent
+ 1. Brown 1991: Brown, Peter F., Pietra, Stephen A. Della, Pietra, Vincent
     J.  Della, and Mercer, Robert L., "Word-Sense Disambiguation Using
     Statistical Methods," in: Proceedings of the 29th Conference of the
     Association for Computational Linguistics, pp. 264-270, Berkeley, CA,
     June 1991.  http://citeseer.nj.nec.com/brown91wordsense.html
 
-[2] Arthur Nadas, David Nahamoo, Michael A. Picheny, and Jeffrey Powell. An
+ 2. Arthur Nadas, David Nahamoo, Michael A. Picheny, and Jeffrey Powell. An
     iterative "flip-flop" approximation of the most informative split in
     the construction of decision trees. In Proceedings of the IEEE
     International Conference on Acoustics, Speech and Signal Processing,
@@ -243,13 +243,13 @@ class DecisionTreeClassifierTrainer(ClassifierTrainerI):
     are no features left, a leaf node is created. This method could probably
     benefit from pruning with held-out test data.
     
-    [1] Brown 1991: Brown, Peter F., Pietra, Stephen A. Della, Pietra, Vincent
+     1. Brown 1991: Brown, Peter F., Pietra, Stephen A. Della, Pietra, Vincent
         J.  Della, and Mercer, Robert L., "Word-Sense Disambiguation Using
         Statistical Methods," in: Proceedings of the 29th Conference of the
         Association for Computational Linguistics, pp. 264-270, Berkeley, CA,
         June 1991.  http://citeseer.nj.nec.com/brown91wordsense.html
 
-    [2] Arthur Nadas, David Nahamoo, Michael A. Picheny, and Jeffrey Powell. An
+     2. Arthur Nadas, David Nahamoo, Michael A. Picheny, and Jeffrey Powell. An
         iterative "flip-flop" approximation of the most informative split in
         the construction of decision trees. In Proceedings of the IEEE
         International Conference on Acoustics, Speech and Signal Processing,
@@ -259,31 +259,43 @@ class DecisionTreeClassifierTrainer(ClassifierTrainerI):
         """
         Create the trainer using the feature detector list and trace
         parameter.
+        @param fd_list: The set of features to use. These shouldn't just be
+            binary valued functions - normally, would expect the feature
+            values to be words (or word pairs) at certain offsets, or such.
+        @type fd_list: C{FDList}
+        @param trace: Debug flag.
+        @type trace: boolean
         """
         self._fd_list = fd_list
         self._trace = trace
 
     def train(self, training_tokens):
         """
-        Train the decision tree. The algorithm is as follows:
+        Train the decision tree. The algorithm is as follows::
 
-        a) create fv_lists for all instances -> V = [(fv_list, label)]
-        b) push (V, P, F) onto the stack
-           (F = set of distinct features, P = placeholder parent node)
-        c) while stack is not empty, pop V, P, F:
-            if all v in V share common label or F is empty:
-                create leaf node(label) as child of P
-            else:
-                find optimal partition, (L, R) using f in F
-                F = F \ f
-                VL = v in V where f(v) in L
-                VR = v in V where f(v) in R
-                N = node(f, L, R)
-                push (F, N, VL) onto stack
-                push (F, N, VR) onto stack
-        d) done - tree is in P
+         a) create fv_lists for all instances -> V = [(fv_list, label)]
+         b) push (V, P, F) onto the stack
+            (F = set of distinct features, P = placeholder parent node)
+         c) while stack is not empty, pop V, P, F:
+             if all v in V share common label or F is empty:
+                 create leaf node(label) as child of P
+             else:
+                 find optimal partition, (L, R) using f in F
+                 F = F \ f
+                 VL = v in V where f(v) in L
+                 VR = v in V where f(v) in R
+                 N = node(f, L, R)
+                 push (F, N, VL) onto stack
+                 push (F, N, VR) onto stack
+         d) done - tree is in P
 
         The optimal partitioning is done with the flip-flop algorithm.
+
+        @param training_tokens: The set of labeled texts on which to induce
+            the decision tree classifier.
+        @type training_tokens: (sequence) of C{Token}
+        @returns: The induced classifier.
+        @rtype: C{DecisionTreeClassifier}
         """
         
         # step A

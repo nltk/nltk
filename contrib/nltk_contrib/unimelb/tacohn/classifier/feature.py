@@ -178,9 +178,8 @@ class FeatureDetectorI:
         @return: this feature detector's value for the given labeled
             text.
         @rtype: (immutable)
-        @param labeled_text: the labeled text whose feature value
-            should be detected.
-        @type labeled_text: C{LabeledText}
+        @param text: the text whose feature value should be detected.
+        @type text: (any)
         """
         raise AssertionError()
 
@@ -493,7 +492,7 @@ class FeatureDetectorListI:
     """
     A list of the C{FeatureDetector}s that correspond to a particular
     set of features.  C{FeatureDetector}s are used to find the value
-    of a feature for a given C{LabeledText}.
+    of a feature for a given text.
 
     A feature detector's position in the feature detector list is
     given by its feature's id.  In other words, if M{f} is a feature
@@ -511,11 +510,10 @@ class FeatureDetectorListI:
     ids from different feature detector lists.
     
     Feature detector lists can be used to detect the feature values of
-    each feature for a given C{LabeledText}; the resulting feature
-    values are returned as a C{FeatureValueList}.  This can be
-    signifigantly more efficient than individually applying each
-    feature detector, since many feature detectors are closely related
-    to each other.
+    each feature for a given text; the resulting feature values are
+    returned as a C{FeatureValueList}.  This can be signifigantly more
+    efficient than individually applying each feature detector, since
+    many feature detectors are closely related to each other.
     
     Feature detector lists can be combined using the addition
     operator.
@@ -800,7 +798,7 @@ class TextFunctionFDList(AbstractFDList):
         a text M{text}, the feature detector corresponding to the
         pair M{value} will return:
 
-            - 1, if C{function(M{text})=M{value}
+            - 1, if C{function(M{text})}=M{value}
             - 0, otherwise
 
         @type function: (immutable) -> (immutable)
@@ -1151,12 +1149,12 @@ class AbstractFeatureClassifier(ClassifierI):
 
     def zero_distribution_list(self, unlabeled_token):
         """
-        Return a list indicating the likelihood that
-        C{unlabeled_token} is a member of each category.  This method
-        is called whenever C{fv_list_likelihood} returns zero for every
-        C{LabeledText} whose text is C{unlabled_token.type()}.  Its
-        default behavior is to return a uniform distribution; however,
-        it can be overridden to provide a different behavior.
+        Return a list indicating the likelihood that C{unlabeled_token}
+        is a member of each category.  This method is called whenever
+        C{fv_list_likelihood} returns zero for every text whose text is
+        C{unlabled_token.type()}.  Its default behavior is to return a
+        uniform distribution; however, it can be overridden to provide a
+        different behavior.
         Reasonable alternatives might include:
             - Return zero for each label.
             - Use a modified C{fv_list_likelihood} that allows zeros to
@@ -1219,8 +1217,8 @@ class AbstractFeatureClassifier(ClassifierI):
 
         # Find the label that maximizes the non-normalized probability
         # fv_list_likelihoods.
+        fv_list = self._fd_list.detect(text)
         for label in self._labels:
-            fv_list = self._fd_list.detect(LabeledText(text, label))
             p = self.fv_list_likelihood(fv_list, label)
             if p > max[1]: max = (label, p)
 
@@ -1231,7 +1229,8 @@ class AbstractFeatureClassifier(ClassifierI):
         assert _chktype(1, labeled_token, Token)
         text = labeled_token.type().text()
         label = labeled_token.type().label()
-        return self.distribution_dictionary(text)[label]
+        dd = self.distribution_dictionary(Token(text, labeled_token.loc()))
+        return dd.get(label, 0.0)
 
     def labels(self):
         # Inherit docs from ClassifierI
