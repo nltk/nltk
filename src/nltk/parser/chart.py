@@ -458,6 +458,16 @@ class Chart:
         leaf_prop = self._propnames.get('leaf', 'leaf')
         return self._token[subtokens_prop][index][leaf_prop]
 
+    def leaves(self):
+        """
+        @return: A list of the leaf values of each word in the
+            chart's sentence.
+        @rtype: C{list} of C{string}
+        """
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        leaf_prop = self._propnames.get('leaf', 'leaf')
+        return [tok[leaf_prop] for tok in self._token[subtokens_prop]]
+
     #////////////////////////////////////////////////////////////
     # Edge access
     #////////////////////////////////////////////////////////////
@@ -767,8 +777,9 @@ class Chart:
         edges.sort()
         edges = [e for (_,_,e) in edges]
         
-        return self.pp_leaves(width) + '\n'.join([self.pp_edge(edge, width)
-                                                  for edge in edges])
+        return (self.pp_leaves(width) + '\n' +
+                '\n'.join([self.pp_edge(edge, width) for edge in edges]))
+                
 
 ########################################################################
 ##  Chart Rules
@@ -876,25 +887,25 @@ class AbstractChartRule:
     # self.apply() for each set of edges.
     def apply_everywhere_iter(self, chart, grammar):
         if self.NUM_EDGES == 0:
-            for new_edge in self.apply(chart, grammar):
+            for new_edge in self.apply_iter(chart, grammar):
                 yield new_edge
 
         elif self.NUM_EDGES == 1:
             for e1 in chart:
-                for new_edge in self.apply(chart, grammar, e1):
+                for new_edge in self.apply_iter(chart, grammar, e1):
                     yield new_edge
 
         elif self.NUM_EDGES == 2:
             for e1 in chart:
                 for e2 in chart:
-                    for new_edge in self.apply(chart, grammar, e1, e2):
+                    for new_edge in self.apply_iter(chart, grammar, e1, e2):
                         yield new_edge
 
         elif self.NUM_EDGES == 3:
             for e1 in chart:
                 for e2 in chart:
                     for e3 in chart:
-                        for new_edge in self.apply(chart,grammar,e1,e2,e3):
+                        for new_edge in self.apply_iter(chart,grammar,e1,e2,e3):
                             yield new_edge
 
         else:
@@ -1436,6 +1447,8 @@ class SteppingChartParser(ChartParser):
         edges.  Instead, it yields C{None} when no more edges can be
         added with the current strategy and grammar.
         """
+        if self._chart is None:
+            raise ValueError, 'Parser must be initialized first'
         while 1:
             self._restart = False
             w = 50/(self._chart.num_leaves()+1)
@@ -1454,12 +1467,14 @@ class SteppingChartParser(ChartParser):
         L{step} iterates through this generator, and restarts it
         whenever the parser's strategy, grammar, or chart is modified.
         """
+        chart = self._chart
+        grammar = self._grammar
         edges_added = 1
         while edges_added > 0:
             edges_added = 0
             for rule in self._strategy:
                 self._current_chartrule = rule
-                for e in rule.apply_everywhere(self._chart, self._grammar):
+                for e in rule.apply_everywhere_iter(chart, grammar):
                     edges_added += 1
                     yield e
 
