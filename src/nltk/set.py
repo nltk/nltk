@@ -16,7 +16,7 @@ An unordered container class that contains no duplicate elements.
 """
 
 from nltk.chktype import chktype as _chktype
-from nltk.chktype import chkclass as _chkclass
+from nltk.chktype import classeq as _classeq
 
 class Set:
     """
@@ -50,9 +50,10 @@ class Set:
         Construct a new Set, containing the elements in
         C{lst}.  If C{lst} contains any duplicate
         elements, only one of the elements will be included.  Example
-        usage::
+        usage:
 
-          set = Set('apple', 'orange', 'pear')
+            >>> Set('apple', 'orange', 'pear')
+            {'apple', 'pear', 'orange'}
 
         @param lst: The elements that will be contained by the new Set.
         @type lst: Any
@@ -100,7 +101,7 @@ class Set:
         @return: The union of C{self} and C{other}. 
         @rtype: Set
         """
-        _chktype("union", 1, other, (Set,))
+        assert _chktype(1, other, Set)
         newSet = self.copy()
         newSet._dict.update(other._dict)
         return newSet
@@ -118,7 +119,7 @@ class Set:
                 C{other}. 
         @rtype: Set
         """
-        _chktype("intersection", 1, other, (Set,))
+        assert _chktype(1, other, Set)
         newSet = self.copy()
         for elt in self._dict.keys():
             if not other._dict.has_key(elt):
@@ -137,7 +138,7 @@ class Set:
         @return: The difference between this Set and another Set.
         @rtype: Set
         """
-        _chktype("difference", 1, other, (Set,))
+        assert _chktype(1, other, Set)
         newSet = self.copy()
         for elt in self._dict.keys():
             if other._dict.has_key(elt):
@@ -344,13 +345,12 @@ class Set:
         C{other}, and every member of C{other} is
         contained in this Set.  Otherwise, return 0.
         
-        @raise TypeError: if C{other} is not a C{Set}.
         @param other: The object to compare this Set to.
         @type other: any
         @return: 1 if the given object is equal to this Set.
         @rtype: int
         """
-        _chkclass(self, other)
+        if not _classeq(self, other): return 0
         return self._dict == other._dict
 
     def elements(self):
