@@ -139,31 +139,9 @@ class Category(FeatureStruct, Nonterminal):
 		and C{other} are undefined.
 		"""
 		if trace:
-			# apply_forwards to get reentrancy links right:
-			self._apply_forwards({})
-			other._apply_forwards({})
 			print '  '+'|   '*depth+' /'+`self`
 			print '  '+'|   '*depth+'|\\'+ `other`
 		
-		# Look up the "cannonical" copy of other.
-		while hasattr(other, '_forward'): other = other._forward
-
-		# If self is already identical to other, we're done.
-		# Note: this, together with the forward pointers, ensures
-		# that unification will terminate even for cyclic structures.
-		# [XX] Verify/prove this?
-		if self is other:
-			if trace:
-				print '  '+'|   '*depth+'|'
-				print '  '+'|   '*depth+'| (identical objects)'
-				print '  '+'|   '*depth+'|'
-				print '  '+'|   '*depth+'+-->'+`self`
-			return
-
-		# Set other's forward pointer to point to self; this makes us
-		# into the cannonical copy of other.
-		other._forward = self
-
 		for (fname, otherval) in other._features.items():
 			if trace:
 				trace_otherval = otherval
@@ -227,13 +205,10 @@ class Category(FeatureStruct, Nonterminal):
 				self._features[fname] = otherval
 
 		if trace:
-			# apply_forwards to get reentrancy links right:
-			self._apply_forwards({})
 			print '  '+'|   '*depth+'|'
 			print '  '+'|   '*depth+'+-->'+`self`
 			if len(bindings.bound_variables()) > 0:
 				print '  '+'|   '*depth+'    '+`bindings`
- 
 	
 	def __repr__(self):
 		if self._memorepr is None:
@@ -534,13 +509,25 @@ class Category(FeatureStruct, Nonterminal):
 	def parse_rule(cls, s):
 		_PARSE_RE = cls._PARSE_RE
 		position = 0
-		lhs, position = cls._parse(s, position)
+		try:
+			lhs, position = cls._parse(s, position)
+		except ValueError, e:
+			estr = ('Error parsing field structure\n\n\t' +
+					s + '\n\t' + ' '*e.args[1] + '^ ' +
+					'Expected %s\n' % e.args[0])
+			raise ValueError, estr
 		match = _PARSE_RE['arrow'].match(s, position)
 		if match is None: raise ValueError('arrow', position)
 		else: position = match.end()
 		rhs = []
 		while position < len(s):
-			val, position = cls._parseval(s, position)
+			try:
+				val, position = cls._parseval(s, position)
+			except ValueError, e:
+				estr = ('Error parsing field structure\n\n\t' +
+						s + '\n\t' + ' '*e.args[1] + '^ ' +
+						'Expected %s\n' % e.args[0])
+				raise ValueError, estr
 			position = _PARSE_RE['whitespace'].match(s, position).end()
 			rhs.append(val)
 		return CFGProduction(lhs, *rhs)
@@ -548,7 +535,14 @@ class Category(FeatureStruct, Nonterminal):
 	def parse_rules(cls, s):
 		_PARSE_RE = cls._PARSE_RE
 		position = 0
-		lhs, position = cls._parse(s, position)
+		try:
+			lhs, position = cls._parse(s, position)
+		except ValueError, e:
+			estr = ('Error parsing field structure\n\n\t' +
+					s + '\n\t' + ' '*e.args[1] + '^ ' +
+					'Expected %s\n' % e.args[0])
+			raise ValueError, estr
+
 		match = _PARSE_RE['arrow'].match(s, position)
 		if match is None: raise ValueError('arrow', position)
 		else: position = match.end()
@@ -557,7 +551,13 @@ class Category(FeatureStruct, Nonterminal):
 			rhs = []
 			while position < len(s) and _PARSE_RE['disjunct'].match(s,
 			position) is None:
-				val, position = cls._parseval(s, position, {})
+				try:
+					val, position = cls._parseval(s, position, {})
+				except ValueError, e:
+					estr = ('Error parsing field structure\n\n\t' +
+						s + '\n\t' + ' '*e.args[1] + '^ ' +
+						'Expected %s\n' % e.args[0])
+					raise ValueError, estr
 				rhs.append(val)
 				position = _PARSE_RE['whitespace'].match(s, position).end()
 			rules.append(CFGProduction(lhs, *rhs))
@@ -565,6 +565,10 @@ class Category(FeatureStruct, Nonterminal):
 			if position < len(s):
 				match = _PARSE_RE['disjunct'].match(s, position)
 				position = match.end()
+		
+		# Special case: if there's nothing after the arrow, it is one rule with
+		# an empty RHS, instead of no rules.
+		if len(rules) == 0: rules = [CFGProduction(lhs)]
 		return rules
 
 	_parseval=classmethod(_parseval)
@@ -573,7 +577,7 @@ class Category(FeatureStruct, Nonterminal):
 	parse_rule=classmethod(parse_rule)
 	parse_rules=classmethod(parse_rules)
 
-class SyntaxCategory(Category):
+class GrammarCategory(Category):
 	headname = 'pos'
 	requiredFeatures = ['/']
 	
@@ -675,6 +679,13 @@ class SyntaxCategory(Category):
 				# Use these variables to hold info about the feature:
 				name = target = val = None
 				
+				# Check for a close bracket at the beginning
+				match = _PARSE_RE['bracket'].match(s, position)
+				if match is not None:
+					position = match.end()
+					# Get out and check for a slash value.
+					break	
+					
 				# Is this a shorthand boolean value?
 				match = _PARSE_RE['bool'].match(s, position)
 				if match is not None:

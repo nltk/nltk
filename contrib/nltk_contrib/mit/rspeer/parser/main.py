@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from readfile import GrammarFile
-from featurechart import *
+from mit.rspeer.parser.readfile import GrammarFile
+from mit.rspeer.parser.featurechart import *
 from nltk.tokenizer import WhitespaceTokenizer
 
 NAME = '6.863 Earley Parser'
@@ -12,13 +12,14 @@ NLTK_VERSION = 1.4
 def demo():
 	gfile = GrammarFile.read_file('test.cfg')
 	cp = gfile.earley_parser()
-	sent = Token(TEXT='Poirot sent the solutions')
+	sent = Token(TEXT='the police read the solutions that Poirot sent')
 	WhitespaceTokenizer().tokenize(sent)
 	cp.parse_n(sent)
 	for tree in sent['TREES']: print tree
 
 def text_parse(grammar, sentence, trace=2, drawtrees=False, latex=False):
 	parser = grammar.earley_parser(trace=trace)
+	print parser._grammar
 	sent = Token(TEXT=sentence)
 	WhitespaceTokenizer().tokenize(sent)
 	parser.parse_n(sent)
