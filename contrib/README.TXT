@@ -29,7 +29,7 @@ Contributions Package
     packages.  For a description of the packages and modules included
     in the contributions package, see its reference documentation:
 
-        <http://nltk.sourceforge.net/contrib-1.1>
+        <http://nltk.sourceforge.net/contrib>
 
 Documentation
 ~~~~~~~~~~~~~
