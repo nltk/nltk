@@ -52,6 +52,7 @@ from nltk.cfg import CFG, CFGProduction, Nonterminal
 
 from nltk.chktype import chktype as _chktype 
 from nltk.chktype import classeq as _classeq
+import types
 
 # Used for sorting by epydoc; and for "import *"
 __epydoc_sort__ = [
@@ -135,12 +136,12 @@ class EdgeI:
     def lhs(self):
         """
         @return: this edge's left-hand side.  The left-hand side is a
-            nonterminal or text token specifying what kind of
+            nonterminal or text type specifying what kind of
             structure this edge contains:
                 - A nonterminal specifies a C{TreeToken} whose node
                   type is the nonterminal's symbol.
                 - A text type specifies a C{Token} with that type.
-        @rtype: C{Nonterminal} or text token
+        @rtype: C{Nonterminal} or text type
         """
         raise AssertionError('EdgeI is an abstract interface')
 
@@ -257,7 +258,10 @@ class ProductionEdge(EdgeI):
             production's right hand that is consistant with the text.
         @type dotpos: C{int}
         """
-        if not isinstance(prod, CFGProduction): raise ValueError
+        assert _chktype(1, prod, CFGProduction)
+        assert _chktype(2, structure, TreeToken)
+        assert _chktype(3, loc, Location)
+        assert _chktype(4, dotpos, types.IntType)
         self._prod = prod
         self._structure = structure
         self._loc = loc
@@ -366,7 +370,9 @@ class TokenEdge(EdgeI):
     def __init__(self, token):
         """
         Construct a new C{TokenEdge}.
+        @type token: C{Token}
         """
+        assert _chktype(1, token, Token)
         self._token = token
 
     # Accessors -- inherit docs from EdgeI
@@ -437,6 +443,7 @@ class Chart:
             edge indices in the chart will fall within this location.
         @type loc: C{Location}
         """
+        assert _chktype(1, loc, Location)
         self._edgeset = Set()
         self._loc = loc
         
@@ -493,6 +500,7 @@ class Chart:
         already present, return []; otherwise, return a list
         containing the inserted edge.
         """
+        assert _chktype(1, edge, EdgeI)
         if self._edgeset.insert(edge):
             return [edge]
         else:
@@ -503,7 +511,10 @@ class Chart:
         Return the set of complete parses encoded by this chart, whose
         root node value is C{node}.  Use self._loc to test if the edge
         spans the entire chart.
+
+        @type node: C{Nonterminal}
         """
+        assert _chktype(1, node, Nonterminal)
         return [edge.structure() for edge in self.edges() if
                 edge.loc() == self._loc and edge.lhs() == node]
 
@@ -512,6 +523,7 @@ class Chart:
         @return: true iff this C{Chart} contains the specified edge.
         @rtype: C{boolean}
         """
+        assert _chktype(1, edge, EdgeI)
         return edge in self._edgeset
         
     def __contains__(self, edge):
@@ -519,9 +531,11 @@ class Chart:
         @return: true iff this C{Chart} contains the specified edge.
         @rtype: C{boolean}
         """
+        assert _chktype(1, edge, EdgeI)
         return edge in self._edgeset
             
     def draw(self, text=None, **kwargs):
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
         import nltk.draw.chart
         nltk.draw.chart.ChartView(self, text, **kwargs)
 
@@ -530,6 +544,8 @@ class Chart:
         Return a pretty-printed representation of a given edge on this
         chart.
         """
+        assert _chktype(1, edge, EdgeI)
+        assert _chktype(2, width, types.IntType)
         (chart_start, chart_end) = (self._loc.start(), self._loc.end())
         (start, end) = (edge.start(), edge.end())
 
@@ -553,6 +569,8 @@ class Chart:
         return str + '| %s ' % edge #FIXME
         
     def pp(self, text=None, width=3):
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
+        assert _chktype(2, width, types.IntType)
         (chart_start, chart_end) = (self._loc.start(), self._loc.end())
         str = ''
 
@@ -600,12 +618,14 @@ class FRChart(Chart):
     """
     def __init__(self, loc):
         # Inherit docs.
+        assert _chktype(1, loc, Location)
         Chart.__init__(self, loc)
         self._complete = {}
         self._incomplete = {}
 
     def insert(self, edge):
         # Inherit docs.
+        assert _chktype(1, edge, EdgeI)
         return_value = Chart.insert(self, edge)
         if return_value:
             if edge.complete():
@@ -627,6 +647,7 @@ class FRChart(Chart):
             chart. 
         @rtype: C{sequence} of C{Edge}
         """
+        assert _chktype(1, start, types.NoneType, types.IntType)
         if start is None or lhs is None:
             return Chart.complete_edges(self)
         return self._complete.get((start, lhs), [])
@@ -642,6 +663,7 @@ class FRChart(Chart):
             contained in this chart.
         @rtype: C{sequence} of C{Edge}
         """
+        assert _chktype(1, end, types.NoneType, types.intType)
         if start is None or lhs is None:
             return Chart.complete_edges(self)
         return self._incomplete.get((end, next), [])
@@ -661,6 +683,7 @@ class FRChart(Chart):
             combined with the fundamental rule.
         @type edge: C{Edge}
         """
+        assert _chktype(1, edge, EdgeI)
         if edge.complete():
             return self._incomplete.get((edge.start(), edge.lhs()),[])
         else:
@@ -695,6 +718,8 @@ class ChartParser(ParserI):
     # Initialization
     ##############################################
     def __init__(self, grammar, strategy, **kwargs):
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(2, strategy, (ChartRuleI), [ChartRuleI])
         self._grammar = grammar
         self._strategy = strategy
         self._trace = kwargs.get('trace', 0)
@@ -716,7 +741,8 @@ class ChartParser(ParserI):
         @param grammar: The new grammar.
         @type grammar: C{CFG}
         """
-        return self._grammar
+        assert _chktype(1, grammar, CFG)
+        self._grammar = grammar
     
     ##############################################
     # Parsing
@@ -727,6 +753,8 @@ class ChartParser(ParserI):
         @param text: The text to be parsed
         @rtype: C{Chart}
         """
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
+        
         # Construct a new (empty) chart that spans the given
         # sentence.
         loc = Location(text[0].loc().start(), text[-1].loc().end(),
@@ -748,6 +776,8 @@ class ChartParser(ParserI):
 
     def parse_n(self, text, n=None):
         # Inherit documentation from ParserI
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
+        assert _chktype(2, n, types.IntType, types.NoneType)
 
         # Create a new chart.
         chart = self._create_chart(text)
@@ -768,7 +798,8 @@ class ChartParser(ParserI):
                                                              len(chart))
                 return chart.parses(self._grammar.start())
 
-    def parse(self, text, n=None):
+    def parse(self, text):
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
         # Inherit docs from ProbabilisticParserI; and delegate to parse_n
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
@@ -786,6 +817,8 @@ def self_loop_edge(production, loc):
     Return an edge formed from production and loc.  Its dot is at the
     leftmost position, and it has no children.
     """
+    assert _chktype(1, production, CFGProduction)
+    assert _chktype(2, loc, Location)
     treetok = TreeToken(production.lhs().symbol())
     return ProductionEdge(production, treetok, loc)
 
@@ -793,6 +826,8 @@ def fr_edge(edge1, edge2):
     """
     Return a fundamental-rule edge.
     """
+    assert _chktype(1, edge1, EdgeI)
+    assert _chktype(2, edge2, EdgeI)
     loc = edge1.loc().union(edge2.loc())
     children = edge1.structure().children() + (edge2.structure(),)
     treetok = TreeToken(edge1.structure().node(), *children)
@@ -800,6 +835,8 @@ def fr_edge(edge1, edge2):
     
 class TopDownInitRule(ChartRuleI):
     def apply(self, chart, grammar):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
         edges = []
         for production in grammar.productions():
             if production.lhs() == grammar.start():
@@ -810,6 +847,8 @@ class TopDownInitRule(ChartRuleI):
     
 class TopDownRule(ChartRuleI):
     def apply(self, chart, grammar):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
         edges = []
         for production in grammar.productions():
             for edge in chart.incomplete_edges():
@@ -821,6 +860,8 @@ class TopDownRule(ChartRuleI):
 
 class BottomUpRule(ChartRuleI):
     def apply(self, chart, grammar):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
         edges = []
         for production in grammar.productions():
             for edge in chart.edges():
@@ -832,6 +873,8 @@ class BottomUpRule(ChartRuleI):
 
 class FundamentalRule(ChartRuleI):
     def apply(self, chart, grammar):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
         edges = []
         for edge in chart.incomplete_edges():
             for edge2 in chart.complete_edges():
@@ -866,6 +909,9 @@ class SteppingChartParser(ChartParser):
     parses that has been found by the chart parser.
     """
     def __init__(self, grammar, strategy=None, **kwargs):
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(2, strategy, (ChartRuleI), [ChartRuleI],
+                        types.NoneType)
         if strategy is None: strategy = []
         ChartParser.__init__(self, grammar, strategy, **kwargs)
 
@@ -880,6 +926,7 @@ class SteppingChartParser(ChartParser):
         For now, just take a text.. eventually we want to be able to
         take a chart, if the user wants to supply one.
         """
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
         self._chart = self._create_chart(text)
         self._edge_queue = []
         self._current_chartrule = None
@@ -889,6 +936,7 @@ class SteppingChartParser(ChartParser):
         Change the startegy that the parser uses to decide which edges
         to add to the chart.
         """
+        assert _chktype(1, strategy, (ChartRuleI), [ChartRuleI])
         if strategy != self._strategy:
             self._strategy = strategy
             self._edge_queue = []
@@ -917,6 +965,7 @@ class SteppingChartParser(ChartParser):
         @type chart: C{Chart}
         @rtype: C{none}
         """
+        assert _chktype(1, chart, Chart)
         self._chart = chart
         self._edge_queue = []
         self._current_chartrule = None
@@ -970,6 +1019,8 @@ class SteppingChartParser(ChartParser):
 
     def parse_n(self, text, n=None):
         # Inherit documentation from ParserI
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
+        assert _chktype(2, n, types.IntType, types.NoneType)
 
         self.initialize(text)
         while self.step(): pass
@@ -1000,6 +1051,9 @@ class IncrementalChartParser:
     A more efficient chart parser implementation.
     """
     def __init__(self, grammar, strategy, **kwargs):
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(1, strategy, (IncrementalChartRuleI),
+                        [IncrementalChartRuleI])
         self._grammar = grammar
         self._strategy = strategy
         self._trace = kwargs.get('trace', 0)
@@ -1016,6 +1070,7 @@ class IncrementalChartParser:
         @param text: The text to be parsed
         @rtype: C{Chart}
         """
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
         # Construct a new (empty) chart that spans the given
         # sentence.
         loc = Location(text[0].loc().start(), text[-1].loc().end(),
@@ -1035,6 +1090,8 @@ class IncrementalChartParser:
 
     def parse_n(self, text, n=None):
         # Inherit documentation from ParserI
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
+        assert _chktype(2, n, types.IntType, types.NoneType)
 
         # Create a new chart.
         chart = self._create_chart(text)
@@ -1072,14 +1129,19 @@ class IncrementalChartParser:
         for chartrule in self._strategy:
             edge_queue += chartrule.apply(chart, self._grammar, edge)
 
-    def parse(self, text, n=None):
+    def parse(self, text):
         # Inherit docs from ProbabilisticParserI; and delegate to parse_n
+        assert _chktype(1, text, [Token], (Token), types.NoneType)
+
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
 
 class IncrementalTopDownInitRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
+        assert _chktype(3, edge, EdgeI)
         if isinstance(edge.structure(), TreeToken): return []
         return [self_loop_edge(production, chart.loc().start_loc())
                 for production in grammar.productions()
@@ -1087,6 +1149,9 @@ class IncrementalTopDownInitRule(IncrementalChartRuleI):
 
 class IncrementalTopDownRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
+        assert _chktype(3, edge, EdgeI)
         if edge.complete(): return []
         return [self_loop_edge(production, edge.loc().end_loc())
                 for production in grammar.productions()
@@ -1094,12 +1159,18 @@ class IncrementalTopDownRule(IncrementalChartRuleI):
 
 class IncrementalBottomUpRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
+        assert _chktype(3, edge, EdgeI)
         return [self_loop_edge(production, edge.loc().start_loc())
                 for production in grammar.productions()
                 if edge.lhs() == production.rhs()[0]]
 
 class IncrementalFundamentalRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
+        assert _chktype(1, chart, Chart)
+        assert _chktype(2, grammar, CFG)
+        assert _chktype(3, edge, EdgeI)
         if edge.complete():
             return [fr_edge(edge2, edge)
                     for edge2 in chart.incomplete_edges()
