@@ -270,6 +270,17 @@ class AbstractTree:
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
+    # These are necessary to allow pickling.  The reason is that we're
+    # keeping a type inside AbstractTree (in _nodetype and
+    # _leaftype)..  Which can't be pickled; we may decide to stop
+    # enforcing consistancy among node & leaf types, in which case we
+    # could get rid of this.
+    def __getstate__(self):
+        return [self._node, self._children]
+    def __setstate__(self, state):
+        [node, children] = state
+        self.__init__(node, *children)
+
 ##//////////////////////////////////////////////////////
 ##  Text Trees (Type)
 ##//////////////////////////////////////////////////////
