@@ -280,21 +280,25 @@ class CorpusReaderI:
         """
         raise NotImplementedError, 'This corpus does not implement read()'
 
-    def tokenize(self, item, tokenizer=None):
+    def tokenize(self, item, tokenizer=None, addlocs=False):
         """
         @return: A token containing the contents of the given item,
             tokenized with the default tokenizer.
         @param item: The name of the item to read.
         @rtype: L{Token<nltk.token.Token>}
+        @type addlocs: C{boolean}
+        @param addlocs: If true, then add a location to each subtoken.
         """
         raise NotImplementedError, 'This corpus does not implement tokenize()'
 
-    def xtokenize(self, item, tokenizer=None):
+    def xtokenize(self, item, tokenizer=None, addlocs=False):
         """
         @return: A token containing the contents of the given item,
             xtokenized with the default tokenizer.
         @param item: The name of the item to read.
         @rtype: L{Token<nltk.token.Token>}
+        @type addlocs: C{boolean}
+        @param addlocs: If true, then add a location to each subtoken.
         """
         raise NotImplementedError, 'This corpus does not implement tokenize()'
 
@@ -625,16 +629,16 @@ class SimpleCorpusReader(CorpusReaderI):
         loc = CharSpanLocation(0, SpanLocation.MAX, source)
         return Token({TEXT: textiter, LOC: loc})
 
-    def tokenize(self, item, tokenizer=None):
+    def tokenize(self, item, tokenizer=None, addlocs=False):
         if tokenizer is None: tokenizer = self._default_tokenizer
         item_token = self.read(item)
-        tokenizer.tokenize(item_token)
+        tokenizer.tokenize(item_token, addlocs=addlocs)
         return item_token
 
-    def xtokenize(self, item, tokenizer=None):
+    def xtokenize(self, item, tokenizer=None, addlocs=False):
         if tokenizer is None: tokenizer = self._default_tokenizer
         item_token = self.xread(item)
-        tokenizer.xtokenize(item_token)
+        tokenizer.xtokenize(item_token, addlocs=addlocs)
         return item_token
 
     def path(self, item):
@@ -789,16 +793,16 @@ class RogetCorpusReader(CorpusReaderI):
         item_token['TEXT'] = iter([item_token['TEXT']])
         return item_token
 
-    def tokenize(self, item, tokenizer=None):
+    def tokenize(self, item, tokenizer=None, addlocs=False):
         if tokenizer is None: tokenizer = self._default_tokenizer
         item_token = self.read(item)
-        tokenizer.tokenize(item_token)
+        tokenizer.tokenize(item_token, addlocs=addlocs)
         return item_token
 
-    def xtokenize(self, item, tokenizer=None):
+    def xtokenize(self, item, tokenizer=None, addlocs=False):
         if tokenizer is None: tokenizer = self._default_tokenizer
         item_token = self.xread(item)
-        tokenizer.xtokenize(item_token)
+        tokenizer.xtokenize(item_token, addlocs=addlocs)
         return item_token
 
     def path(self, item):
@@ -977,18 +981,18 @@ class TreebankCorpusReader(CorpusReaderI):
         item_token['TEXT'] = iter([item_token['TEXT']])
         return item_token
 
-    def tokenize(self, item, tokenizer=None):
+    def tokenize(self, item, tokenizer=None, addlocs=False):
         if tokenizer is None:
             tokenizer = self._tokenizer(item)
         item_token = self.read(item)
-        tokenizer.tokenize(item_token)
+        tokenizer.tokenize(item_token, addlocs=addlocs)
         return item_token
 
-    def xtokenize(self, item, tokenizer=None):
+    def xtokenize(self, item, tokenizer=None, addlocs=False):
         if tokenizer is None:
             tokenizer = self._tokenizer(item)
         item_token = self.xread(item)
-        tokenizer.xtokenize(item_token)
+        tokenizer.xtokenize(item_token, addlocs=addlocs)
         return item_token
 
     def path(self, item):
