@@ -615,7 +615,8 @@ def _display(token, tokenizer, addlocs, addcontexts):
     """
     token = token.copy() # Make a new copy.
     tokenizer.tokenize(token, addlocs=addlocs, addcontexts=addcontexts)
-    tokens = token['SUBTOKENS']
+    SUBTOKENS = tokenizer.property('SUBTOKENS')
+    tokens = token[SUBTOKENS]
     
     # Get the string representation:
     str = '    '+`tokens`+' '
@@ -641,23 +642,23 @@ def demo(addlocs=False, addcontexts=False):
     print `s`
     print
     print 'Tokenize using whitespace:'
-    _display(tok, WhitespaceTokenizer(), addlocs, addcontexts)
+    _display(tok, WhitespaceTokenizer(SUBTOKENS='WORDS'), addlocs, addcontexts)
     print
     print 'Tokenize sequences of alphanumeric characters:'
-    _display(tok, RegexpTokenizer(r'\w+', ), addlocs, addcontexts)
+    _display(tok, RegexpTokenizer(r'\w+', SUBTOKENS='WORDS'), addlocs, addcontexts)
     print
     print 'Tokenize sequences of letters and sequences of nonletters:'
-    _display(tok, RegexpTokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+'), addlocs,
+    _display(tok, RegexpTokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+', SUBTOKENS='WORDS'), addlocs,
              addcontexts)
                                   
     print
     print 'A simple sentence tokenizer:'
-    _display(tok, RegexpTokenizer(r'\.(\s+|$)', negative=True), addlocs,
+    _display(tok, RegexpTokenizer(r'\.(\s+|$)', negative=True, SUBTOKENS='SENTENCES'), addlocs,
              addcontexts)
                                   
     print
     print 'Tokenize by lines:'
-    _display(tok, LineTokenizer(), addlocs, addcontexts)
+    _display(tok, LineTokenizer(SUBTOKENS='LINES'), addlocs, addcontexts)
     print
     
 if __name__ == '__main__':
