@@ -167,3 +167,28 @@ Edward Loper <edloper@gradient.cis.upenn.edu>
 Steven Bird <sb@unagi.cis.upenn.edu>
 Salim Zayats <szayats@seas.upenn.edu>
 """
+
+# Used for epydoc sorting.  Also used for "from nltk import *"
+__all__ = [
+    # Base modules
+    'token',
+    'probability',
+    'set',
+
+    # Data types
+    'tree',
+    'cfg',
+    'fsa',
+
+    # Tasks
+    'tagger',
+    'parser',
+    'classifier',
+
+    # Visualization
+    'draw',
+
+    # Debugging/testing
+    'chktype',
+    'test',
+    ]
