@@ -8,7 +8,6 @@
 # $Id$
 
 """
-
 Parsers for probablistic context free grammars (C{PCFGs}).
 C{nltk.pcfgparser} currently defines two basic types of
 C{ProbablisticParser}: C{ViterbiPCFGParser} and
@@ -21,13 +20,16 @@ most likely parse for a given text.
 C{BottomUpPCFGChartParser} is an abstract class that implements a
 bottom-up chart parser for C{PCFG}s.  It maintains a queue of edges,
 and adds them to the chart one at a time.  The ordering of this queue
-is based on the probabilities of the edges' dotted rules, allowing the
+is based on the probabilities associated with the edges, allowing the
 parser to expand more likely edges before less likely ones.  Each
 subclass implements a different queue ordering, producing different
 search strategies.  Currently the following subclasses are defined:
 
-  - C{InsidePCFGParser} searches edges using uniform-cost search.
-  - C{RandomPCFGParser} searches edges using random search.
+  - C{InsidePCFGParser} searches edges edges in decreasing order of
+    their trees' inside probabilities.
+  - C{RandomPCFGParser} searches edges in random order.
+  - C{LongestPCFGParser} searches edges in decreasing order of their
+    location's length.
   
 The following subclasses will be added in the near future:
 
@@ -58,7 +60,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
     likely subtree that spans from the start index to the end index,
     and has the given node value.
 
-    C{ViterbiPCFParser} fills in this table incrementally.  It starts
+    C{ViterbiPCFGParser} fills in this table incrementally.  It starts
     by filling in all entries for constituants that span one element
     of text (i.e., entries where the end index is one greater than the
     start index).  After it has filled in all table entries for
@@ -98,11 +100,11 @@ class ViterbiPCFGParser(ProbablisticParserI):
                     = M{new_tree}
       - Return M{MLC}[0, len(M{text}), M{start_symbol}]
                 
-    @ivar _grammar: The grammar used to parse sentences.
     @type _grammar: C{PCFG}
-    @ivar _trace: Whether to produce trace output; and if so, what
-        verbosity of trace output to produce.
+    @ivar _grammar: The grammar used to parse sentences.
     @type _trace: C{int}
+    @ivar _trace: The level of tracing output that should be generated
+        when parsing a text.
     """
     def __init__(self, grammar, trace=0):
         """
@@ -120,6 +122,19 @@ class ViterbiPCFGParser(ProbablisticParserI):
         self._grammar = grammar
         self._trace = trace
 
+    def trace(self, trace=2):
+        """
+        Set the level of tracing output that should be generated when
+        parsing a text.
+
+        @type trace: C{int}
+        @param trace: The trace level.  A trace level of C{0} will
+            generate no tracing output; and higher trace levels will
+            produce more verbose tracing output.
+        @rtype: C{None}
+        """
+        self._trace = trace
+
     def parse(self, text):
         # Inherit docs from ProbablisticParserI; and delegate to parse_n
         final_trees = self.parse_n(text, 1)
@@ -129,9 +144,6 @@ class ViterbiPCFGParser(ProbablisticParserI):
     def parse_n(self, text, n=None):
         # Inherit docs from ProbablisticParserI
 
-        # The width of the text (used for trace output)
-        w = len(text)
-        
         # The most likely consituant table.  This table specifies the
         # most likely constituant for a given span and type.
         # Constituants can be either TreeTokens or Tokens.  For
@@ -143,22 +155,25 @@ class ViterbiPCFGParser(ProbablisticParserI):
         
         # Initialize the constituants dictionary with the words from
         # the text.
+        if self._trace: print ('Inserting tokens into the most likely'+
+                               ' constituants table...')
         for index in range(len(text)):
             tok = text[index]
             probtok = ProbablisticToken(1, tok.type(), tok.loc())
             constituants[index,index+1,tok.type()] = probtok
+            if self._trace > 1: self._trace_lexical_insertion(tok, text)
 
         # Consider each span of length 1, 2, ..., n; and add any trees
         # that might cover that span to the constituants dictionary.
         for length in range(1, len(text)+1):
             if self._trace:
                 if self._trace > 1: print
-                print ('Finding most likely constituants'+
+                print ('Finding the most likely constituants'+
                        ' spanning %d text elements...' % length)
             #print constituants
             for start in range(len(text)-length+1):
                 span = (start, start+length)
-                self._add_constituants_spanning(span, constituants, w)
+                self._add_constituants_spanning(span, constituants, text)
 
         # Find all trees that span the entire text & have the right cat
         trees = [constituants.get((0, len(text),
@@ -169,7 +184,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
         if n is None: return trees
         else: return trees[:n]
 
-    def _add_constituants_spanning(self, span, constituants, w):
+    def _add_constituants_spanning(self, span, constituants, text):
         """
         Find any constituants that might cover C{span}, and add them
         to the most likely constituants table.
@@ -200,8 +215,9 @@ class ViterbiPCFGParser(ProbablisticParserI):
             should contain all possible constituants that are shorter
             than C{span}.
             
-        @type w: C{int}
-        @param w: The width of the text.  This is used for trace output. 
+        @type text: C{list} of C{Token}
+        @param text: The text we are parsing.  This is only used for
+            trace output.  
         """
         # Since some of the grammar rules may be unary, we need to
         # repeatedly try all of the rules until none of them add any
@@ -209,7 +225,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
         changed = 1
         while changed:
             changed = 0
-
+            
             # Find all ways instantiations of the grammar rules that
             # cover the span.
             instantiations = self._find_instantiations(span, constituants)
@@ -223,11 +239,15 @@ class ViterbiPCFGParser(ProbablisticParserI):
                 node = rule.lhs().symbol()
                 tree = ProbablisticTreeToken(p, node, *children)
 
-                # If it's new constituant, then add it to the
+                # If it's new a constituant, then add it to the
                 # constituants dictionary.
                 c = constituants.get((span[0], span[1], rule.lhs()), None)
+                if self._trace > 1:
+                    if c is None or c != tree:
+                        if c is None or c.p() < tree.p(): print '   Insert:',
+                        else: print '  Discard:',
+                        self._trace_rule(rule, tree, text, p)
                 if c is None or c.p() < tree.p():
-                    if self._trace > 1: self._trace_rule(span, rule, w, p)
                     constituants[span[0], span[1], rule.lhs()] = tree
                     changed = 1
 
@@ -259,10 +279,10 @@ class ViterbiPCFGParser(ProbablisticParserI):
         """
         rv = []
         for rule in self._grammar.rules():
-            childrens = self._match_rhs(rule.rhs(), span, constituants)
+            childlists = self._match_rhs(rule.rhs(), span, constituants)
                                         
-            for children in childrens:
-                rv.append( (rule, children) )
+            for childlist in childlists:
+                rv.append( (rule, childlist) )
         return rv
 
     def _match_rhs(self, rhs, span, constituants):
@@ -310,26 +330,47 @@ class ViterbiPCFGParser(ProbablisticParserI):
 
         return childlists
 
-    def _trace_rule(self, span, rule, w, p):
+    def _trace_rule(self, rule, tree, text, p):
         """
         Print trace output indicating that a given rule has been
         applied at a given location.
 
-        @param span: The span covered by the rule.
-        @type span: C{(int, int)}
         @param rule: The rule that has been applied
         @type rule: C{PCFG_Rule}
-        @param w: The number of tokens in the text being parsed.
-        @type w: C{int}
+        @type text: C{list} of C{Token}
+        @param text: The text we are parsing.  This is only used for
+            trace output.  
         @param p: The probability of the tree produced by the rule.
         @type p: C{float}
         @rtype: C{None}
         """
-        str = '  [' + ' '*span[0] + '.'*(span[1]-span[0])
-        str += ' '*(w-span[1]) + '] '
-        str += '%-30s' % rule
-        if self._trace > 2: str += '%e ' % p
+        start = tree.loc().start()
+        
+        str = '|' + '. '*(start-text[0].loc().start())
+        
+        pos = start
+        for child in tree.children():
+            if pos == start: str += '[='
+            else: str += '|='
+            str += ('=='*(child.loc().end()-pos-1))
+            pos = child.loc().end()
+        str = str + ']'
+
+        str += ' .'*(text[-1].loc().end()-pos) + '| '
+        str += '%s' % rule
+        if self._trace > 2: str = '%-40s %12.10f ' % (str, p)
+
         print str
+
+    def _trace_lexical_insertion(self, tok, text):
+        start = tok.loc().start()
+        str = '   Insert: |' + '. '*(start-text[0].loc().start())
+        str += '[=]' + ' .'*(text[-1].loc().end()-start-1) + '| '
+        str += '%s' % (tok.type(),)
+        print str
+
+    def __repr__(self):
+        return '<ViterbiPCFGParser for %r>' % self._grammar
 
 ##//////////////////////////////////////////////////////
 ##  Bottom-Up PCFG Chart Parser
@@ -352,8 +393,14 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
     The sorting order for the queue is not specified by
     C{BottomUpPCFGChartParser}.  Different sorting orders will result
     in different search strategies.  The sorting order for the queue
-    is defined by the method C{_sort_queue}; subclasses are required
+    is defined by the method C{sort_queue}; subclasses are required
     to provide a definition for this method.
+
+    @type _grammar: C{PCFG}
+    @ivar _grammar: The grammar used to parse sentences.
+    @type _trace: C{int}
+    @ivar _trace: The level of tracing output that should be generated
+        when parsing a text.
     """
     def __init__(self, grammar, trace=0):
         """
@@ -369,6 +416,19 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
             output.
         """
         self._grammar = grammar
+        self._trace = trace
+
+    def trace(self, trace=2):
+        """
+        Set the level of tracing output that should be generated when
+        parsing a text.
+
+        @type trace: C{int}
+        @param trace: The trace level.  A trace level of C{0} will
+            generate no tracing output; and higher trace levels will
+            produce more verbose tracing output.
+        @rtype: C{None}
+        """
         self._trace = trace
 
     def parse(self, text):
@@ -395,26 +455,25 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         parses = []
         while edge_queue:
             # Handle the most likely edge
-            self._sort_queue(edge_queue, chart)
+            self.sort_queue(edge_queue, chart)
             edge = edge_queue.pop()
-            if self._add_edge(edge, chart, edge_queue):
-                if self._trace > 1:
-                    print '  %-60s %10.12f' % (chart.pp_edge(edge,2),
-                                               edge.tree().p())
-                
+            self._add_edge(edge, chart, edge_queue)
+            if self._trace > 1:
+                print '  %-60s %10.12f' % (chart.pp_edge(edge,2),
+                                           edge.tree().p())
 
-                # Check if the edge is a complete parse.
-                if (edge.loc() == chart.loc() and
-                    edge.drule().lhs() == self._grammar.start()):
-                    parses.append(edge.tree())
-                    if len(parses) == n: break
+            # Check if the edge is a complete parse.
+            if (edge.loc() == chart.loc() and
+                edge.drule().lhs() == self._grammar.start()):
+                parses.append(edge.tree())
+                if len(parses) == n: break
 
         if self._trace:
             print 'Found %d parses with %d edges' % (len(parses), len(chart))
                                                      
         return parses
 
-    def _sort_queue(self, queue, chart):
+    def sort_queue(self, queue, chart):
         """
         Sort the given queue of C{Edge}s, placing the edge that should
         be tried first at the beginning of the queue.  This method
@@ -450,9 +509,14 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         """
         edge_queue = []
         for tok in text:
-            drule = DottedPCFG_Rule(1, tok.type(), ())
+            drule = DottedCFG_Rule(tok.type(), ())
             probtok = ProbablisticToken(1, tok.type(), tok.loc())
             edge_queue.append(Edge(drule, probtok, tok.loc()))
+
+        # This is purely aesthetic: put the first word at the
+        # beginning of the queue, not the last word.
+        edge_queue.reverse()
+        
         return edge_queue
 
     def _add_edge(self, edge, chart, edge_queue):
@@ -469,13 +533,10 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
             chart.  C{_add_edge} will add any new edges that can be
             generated with C{edge} in the chart to the end of
             C{edge_queue}. 
-        @return: true iff C{edge} is not already in the chart.  If
-            C{edge} is already in the chart, C{_add_edge} will not
-            change C{chart} or C{edge_queue}.
-        @rtype: C{boolean}
+        @rtype: C{None}
         """
-        # If the edge is already in the chart, then return 0.
-        if not chart.insert(edge): return 0
+        # If the edge is already in the chart, then do nothing.
+        if not chart.insert(edge): return
         
         # If the dot is in the zero-position, then apply the bottom-up
         # initialization rule.
@@ -492,9 +553,6 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
             edge_queue += [self._fr(e2,edge) for e2 in chart.fr_with(edge)]
         else:
             edge_queue += [self._fr(edge,e2) for e2 in chart.fr_with(edge)]
-
-        # The edge was not already in the chart, so return 1.
-        return 1
 
     def _self_loop_edge(self, rule, loc):
         """
@@ -516,8 +574,7 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         """
         node = rule.lhs().symbol()
         tree = ProbablisticTreeToken(rule.p(), node)
-        drule = DottedPCFG_Rule(rule.p(), rule.lhs(),
-                                rule.rhs(), 0)
+        drule = DottedCFG_Rule(rule.lhs(), rule.rhs(), 0)
         return Edge(drule, tree, loc.start_loc())
 
     def _fr(self, e1, e2):
@@ -543,13 +600,17 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
             C{e1} by the fundamental rule.
         """
         loc = e1.loc().union(e2.loc())
-        drule = DottedPCFG_Rule(e1.drule().p(), e1.drule().lhs(),
-                                e1.drule().rhs(), e1.drule().pos()+1)
+        drule = DottedCFG_Rule(e1.drule().lhs(), e1.drule().rhs(),
+                               e1.drule().pos()+1)
         
         children = e1.tree().children() + (e2.tree(),)
         p = e1.tree().p() * e2.tree().p()
         tree = ProbablisticTreeToken(p, e1.tree().node(), *children)
         return Edge(drule, tree, loc)
+
+    def __repr__(self):
+        return '<BottomUpPCFGChartParser for %r>' % self._grammar
+
 
 class InsidePCFGParser(BottomUpPCFGChartParser):
     """
@@ -561,10 +622,11 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
     M{r} with children M{c[1]}, M{c[2]}, ..., M{c[n]} is
     M{r}*M{c[1]}*M{c[2]}*M{...}*M{c[n]}.
 
-    This sorting order implements a uniform-cost search strategy.
+    This sorting order results in a type of lowest-cost-first search
+    strategy.
     """
     # Inherit constructor.
-    def _sort_queue(self, queue, chart):
+    def sort_queue(self, queue, chart):
         """
         Sort the given queue of edges, in descending order of the
         inside probabilities of the edges' trees.
@@ -606,19 +668,42 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
 #         return cmp(e1.tree().p()*self._bestp[e1.drule().lhs()],
 #                    e2.tree().p()*self._bestp[e2.drule().lhs()])
 #        
-#     def _sort_queue(self, queue, chart):
+#     def sort_queue(self, queue, chart):
 #         queue.sort(self._cmp)
 
 import random
 class RandomPCFGParser(BottomUpPCFGChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in random order.
-    This sorting order implements a random search strategy.
+    This sorting order results in a random search strategy.
     """
     # Inherit constructor
-    def _sort_queue(self, queue, chart):
+    def sort_queue(self, queue, chart):
         i = random.randint(0, len(queue)-1)
         (queue[0], queue[i]) = (queue[i], queue[0])
+
+class LongestPCFGParser(BottomUpPCFGChartParser):
+    """
+    A bottom-up parser for C{PCFG}s that tries longer edges before
+    shorter ones.  This sorting order results in a type of best-first
+    search strategy.
+    """
+    # Inherit constructor
+    def sort_queue(self, queue, chart):
+        queue.sort(lambda e1,e2: cmp(len(e1.loc()), len(e2.loc())))
+
+class BeamPCFGParser(BottomUpPCFGChartParser):
+    """
+    Only keep some edges...
+    """
+    # Inherit constructor
+    def sort_queue(self, queue, chart):
+        RATIO = 0.05
+        queue.sort(lambda e1,e2:cmp(e1.tree().p(), e2.tree().p()))
+        best_p = queue[-1].tree().p()
+        new_queue = [edge for edge in queue
+                    if edge.tree().p() >= (best_p * RATIO)]
+        queue[:] = new_queue
 
 ##//////////////////////////////////////////////////////
 ##  Test Code
@@ -630,9 +715,9 @@ if __name__ == '__main__':
                                            for s in nonterminals.split()]
     lexicon = [PCFG_Rule(0.21, V, 'saw'),
                PCFG_Rule(0.51, V, 'ate'),
-               PCFG_Rule(0.29, V, 'ran'),
+               PCFG_Rule(0.28, V, 'ran'),
                PCFG_Rule(0.11, N, 'boy'),
-               PCFG_Rule(0.12, N, 'man'),
+               PCFG_Rule(0.12, N, 'cookie'),
                PCFG_Rule(0.13, N, 'table'),
                PCFG_Rule(0.14, N, 'telescope'),
                PCFG_Rule(0.50, N, 'hill'),
@@ -640,8 +725,9 @@ if __name__ == '__main__':
                PCFG_Rule(0.48, Name, 'Bob'),
                PCFG_Rule(0.61, P, 'with'),
                PCFG_Rule(0.39, P, 'under'),
-               PCFG_Rule(0.71, Det, 'the'),
-               PCFG_Rule(0.29, Det, 'a'),
+               PCFG_Rule(0.41, Det, 'the'),
+               PCFG_Rule(0.31, Det, 'a'),
+               PCFG_Rule(0.28, Det, 'my'),
                ]
 
     grammar = [
@@ -705,38 +791,72 @@ if __name__ == '__main__':
          for r in lexicon]
         )
 
-    pcfg = PCFG(S, grammar+lexicon)
+    grammar2 = [
+        PCFG_Rule(0.5, NP, Det, N), PCFG_Rule(0.25, NP, NP, PP),
+        PCFG_Rule(0.1, NP, 'John'), PCFG_Rule(0.15, NP, 'I'), 
+        PCFG_Rule(0.8, Det, 'the'), PCFG_Rule(0.2, Det, 'my'),
+        PCFG_Rule(0.5, N, 'dog'),   PCFG_Rule(0.5, N, 'cookie'),
+
+        PCFG_Rule(0.4, VP, VP, PP), PCFG_Rule(0.5, VP, V, NP),
+        PCFG_Rule(0.1, VP, V),
+        
+        PCFG_Rule(0.35, V, 'ate'),  PCFG_Rule(0.65, V, 'saw'),
+
+        PCFG_Rule(1.0, S, NP, VP),  PCFG_Rule(1.0, PP, P, NP),
+        PCFG_Rule(0.61, P, 'with'), PCFG_Rule(0.39, P, 'under')]
+
+    #pcfg = PCFG(S, grammar+lexicon)
+    pcfg = PCFG(S, grammar2)
     #pcfg = PCFG(S, lexicalized_grammar)
     
     from nltk.token import WSTokenizer
-    s = 'the boy saw Jack with Bob under the table with a telescope'
+    #s = 'the boy saw Jack with Bob under the table with a telescope'
+    #s = 'Jack saw the boy with a telescope'
     #s = 'the boy saw Jack'
+    s = 'I saw John with my cookie'
+    #s = 'the dog ate my cookie'
     text = WSTokenizer().tokenize(s)
     
-    parser1 = InsidePCFGParser(pcfg,1)
-    parser2 = ViterbiPCFGParser(pcfg,0)
-    parser3 = RandomPCFGParser(pcfg,1)
+    parser1 = InsidePCFGParser(pcfg)
+    parser2 = ViterbiPCFGParser(pcfg)
+    parser3 = RandomPCFGParser(pcfg)
+    parser4 = LongestPCFGParser(pcfg)
+    parser5 = BeamPCFGParser(pcfg)
 
-    if 0:
-        print '\nInside PCFG Parser'
-        parser1.parse_n(text)
-
+    N = 5
     if 1:
         print '\nRandom PCFG Parser'
-        parser3.parse_n(text, 3)
+        parser3.trace(1)
+        parses = parser3.parse_n(text, N)
+        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
 
-    if 1:
+        print '\nLongest PCFG Parser'
+        parser4.trace(1)
+        parses = parser4.parse_n(text, N)
+        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+
         print '\nInside PCFG Parser'
-        parser1.parse_n(text, 3)
+        parser1.trace(1)
+        parses = parser1.parse_n(text, N)
+        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+
+        print '\nBeam PCFG Parser'
+        parser5.trace(3)
+        parses = parser5.parse_n(text, N)
+        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
 
     if 0:
         print '\nViterbi PCFG Parser'
+        parser2.trace(3)
         print parser2.parse(text)
+        print parser2
 
     if 0:
         import time
         N = 10
         t = time.time()
+        print 'Timing for inside parser'
+        parser1.trace(0)
         for i in range(N): parser1.parse_n(text, 1)
         print 'Parse  1:', (time.time()-t)/N
         t = time.time()
