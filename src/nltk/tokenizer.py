@@ -163,7 +163,7 @@ class WSTokenizer(TokenizerI):
             tokens created by the tokenizer.  If no unit is specified,
             then the default unit C{'w'} will be used.
         """
-        self._unit = 'w'
+        self._unit = unit
         
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
@@ -184,7 +184,7 @@ class CharTokenizer(TokenizerI):
     Each character is encoded as a C{Token} whose type is a C{string}.
     Location indices start at zero, and have a default unit of C{'c'}.
     """
-    def __init__(self, unit='w'):
+    def __init__(self, unit='c'):
         """
         Construct a new tokenizer.
 
@@ -193,7 +193,7 @@ class CharTokenizer(TokenizerI):
             tokens created by the tokenizer.  If no unit is specified,
             then the default unit C{'c'} will be used.
         """
-        self._unit = 'c'
+        self._unit = unit
         
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
@@ -209,7 +209,7 @@ class LineTokenizer(TokenizerI):
     encoded as a C{Token} whose type is a C{string}.  Location indices
     start at zero, and have a default unit of C{'l'}.
     """
-    def __init__(self, unit='w'):
+    def __init__(self, unit='l'):
         """
         Construct a new tokenizer.
 
@@ -218,7 +218,7 @@ class LineTokenizer(TokenizerI):
             tokens created by the tokenizer.  If no unit is specified,
             then the default unit C{'l'} will be used.
         """
-        self._unit = 'l'
+        self._unit = unit
         
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
