@@ -223,7 +223,7 @@ class FSADraw:
 
     def _make_edge(self, node1, node2, label):
         # Handle epsilon transitions
-        if label == nltk.fsa.epsilon:
+        if label != nltk.fsa.epsilon:
             edge = _Edge(node1, node2, label, self._canvas)
         else:
             edge = _Edge(node1, node2, 'e', self._canvas)
