@@ -63,6 +63,12 @@ of the C{ParserI} interface.
 
 @version: 1.1a
 
+@newfield developer: Developer, Developers, short
+@developer: L{Edward Loper<edloper@gradient.cis.upenn.edu>}
+@developer: L{Steven Bird <sb@cs.mu.oz.au>}
+@developer: L{Ewan Klein <ewan@inf.ed.ac.uk>}
+@developer: L{Trevor Cohn <tacohn@cs.mu.oz.au>}
+
 @group Core Modules: token, tree, corpus, probability
 @group Data Modules: set, cfg, fsa
 @group Task Modules: classifier, parser, speech, stemmer, tagger
@@ -107,18 +113,3 @@ __maintainer__ = "Edward Loper"
 __maintainer_email__ = "edloper@gradient.cis.upenn.edu"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
-__developers__ = """
-Edward Loper <edloper@gradient.cis.upenn.edu>
-Steven Bird <sb@cs.mu.oz.au>,
-Ewan Klein <ewan@inf.ed.ac.uk>
-"""
-__contributors__ = """
-Chen-Fu Chiang,
-Jinyoung Choi,
-Trevor Cohn,
-Nikhil Dinesh,
-Brent Gray,
-Yurie Hara,
-Christopher Maloof,
-David Zhang.
-"""
