@@ -193,6 +193,7 @@ Releases
            currently listed/referenced in the following files:
              - Makefile (CORPORA_VERSION)
              - doc/webpage/index.html
+             - doc/webpage/docs.html
              - src/nltk/__init__.py
              - contrib/nltk_contrib/__init__.py
         2. Make sure all changes are committed.
