@@ -230,8 +230,18 @@ C{Token.copy} creates a new copy of an existing token:
     >>> print tok1, tok2
     <boat/NN> <car/NN>
 
-By default, a deep copy is made.  To make a shallow copy, use
-C{deep=False}:
+By default, a deep copy is made:
+
+    >>> tok1 = Token(A=[1,2,3], B=Token(C=12))
+    >>> tok2 = tok1.copy()
+    >>> tok1 is tok2
+    False
+    >>> tok1['A'] is tok2['A']
+    False
+    >>> tok1['B'] is tok2['B']
+    False
+
+To make a shallow copy, use C{deep=False}:
 
     >>> tok1 = Token(A=[1,2,3], B=Token(C=12))
     >>> tok2 = tok1.copy(deep=False)
@@ -267,8 +277,7 @@ Frozen tokens are immutable, and can not be modified:
       [...]
     TypeError: FrozenToken objects are immutable
 
-Freezing a cyclic token is currently BROKEN!  I.e., the following code
-will I{not} work:
+Cyclic tokens can be frozen:
 
     >>> tok1, tok2 = Token(), Token()
     >>> tok1['A'] = tok2
@@ -323,8 +332,7 @@ any contained subtokens:
     >>> print tok.project('A', 'C', 'D')
     <A=<C=<D='d'>>>
 
-C{exclude} and C{project} should both work with cyclic properties; but
-currently, they do I{NOT}.
+C{exclude} and C{project} both work with cyclic tokens:
 
     >>> tok1, tok2 = Token(), Token()
     >>> tok1['A'] = tok2
