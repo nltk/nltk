@@ -254,7 +254,7 @@ class Location:
         """
         return not (self == other)
         
-    def __lt__(self, other):
+    def prec(self, other):
         """
         @return: true if this C{Location} occurs entirely before
             C{other}.  In particular:
@@ -278,7 +278,7 @@ class Location:
         return (self._end <= other._start and
                 self._start < other._end)
     
-    def __gt__(self, other):
+    def succ(self, other):
         """
         @return: true if this C{Location} occurs entirely before
             C{other}.  In particular:
@@ -302,24 +302,17 @@ class Location:
         return (self._start >= other._end and
                 self._end > other._start)
 
-    def __le__(self, other):
-        """
-        @raise AssertionError: <= is not defined for Locations
-        """
-        assert 0, '<= is not defined over Locations'
-
-    def __ge__(self, other):
-        """
-        @raise AssertionError: <= is not defined for Locations
-        """
-        assert 0, '>= is not defined over Locations'
-
     def __cmp__(self, other):
         """
-        @raise AssertionError: General comperison is not defined for
-            Locations.
+        Compare self and other by start/end location.. 
         """
-        assert 0, 'general comparison is not defined over Locations'
+        print 'hi', self, other
+        _chkclass(self, other)
+        if self._unit != other._unit:
+            raise ValueError('Locations have incompatible units')
+        if self._source != other._source:
+            raise ValueError('Locations have incompatible sources')
+        return cmp( (self._start, self._end), (other._start, other._end) )
 
     def __hash__(self):
         """
