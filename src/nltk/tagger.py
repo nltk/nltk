@@ -178,7 +178,7 @@ class TaggedTokenizer(TokenizerI):
         return tokens
 
 ##//////////////////////////////////////////////////////
-##  Parsing and Tokenizing TaggedTypes
+##  Tagger Interface
 ##//////////////////////////////////////////////////////
 class TaggerI:
     """
@@ -216,6 +216,9 @@ class TaggerI:
         """
         assert 0, "TaggerI is an abstract interface"
 
+##//////////////////////////////////////////////////////
+##  Taggers
+##//////////////////////////////////////////////////////
 class SequentialTagger(TaggerI):
     """
     An abstract base class for taggers that assign tags to tokens in
@@ -371,7 +374,7 @@ class NthOrderTagger(SequentialTagger):
         assert _chktype(1, tagged_tokens, [Token], (Token,))
         # prev_tags is a list of the previous n tags that we've assigned.
         prev_tags = []
-        
+
         for token in tagged_tokens:
             context = tuple(prev_tags + [token.type().base()])
             feature = token.type().tag()
@@ -399,7 +402,6 @@ class NthOrderTagger(SequentialTagger):
 
 class BackoffTagger(SequentialTagger):
     """
-
     A C{Tagger} that tags tokens using a basic backoff model.  Each
     C{BackoffTagger} is paramatrised by an ordered list sub-taggers.
     In order to assign a tag to a token, each of these sub-taggers is
@@ -440,6 +442,9 @@ class BackoffTagger(SequentialTagger):
         # Default to None if all subtaggers return None.
         return None
 
+##//////////////////////////////////////////////////////
+##  Evaluation
+##//////////////////////////////////////////////////////
 def untag(tagged_tokens):
     """
     Given a list of tagged tokens, return a list of tokens constructed
@@ -482,12 +487,17 @@ def accuracy(orig, test):
         if orig[i] == test[i]: correct += 1
     return float(correct)/len(orig)
 
-def demo(num_files=100):
+##//////////////////////////////////////////////////////
+##  Demonstration
+##//////////////////////////////////////////////////////
+
+def demo(num_files=20):
     """
     A simple demonstration function for the C{Tagger} classes.  It
-    constructs a C{BackoffTagger} using a 1st order C{NthOrderTagger},
-    a 0th order C{NthOrderTagger}, and an C{NN_CD_Tagger}.  It trains
-    and tests the tagger using the brown corpus.
+    constructs a C{BackoffTagger} using a 2nd order C{NthOrderTagger},
+    a 1st order C{NthOrderTagger}, a 0th order C{NthOrderTagger}, and
+    an C{NN_CD_Tagger}.  It trains and tests the tagger using the
+    brown corpus.
 
     @type num_files: C{int}
     @param num_files: The number of files that should be used for
@@ -499,25 +509,22 @@ def demo(num_files=100):
     """
     from nltk.corpus import brown
     import sys, random
+    num_files = max(min(num_files, 500), 3)
 
-    print 'Reading testing & training data...',
     # Get a randomly sorted list of files in the brown corpus.
     items = list(brown.items())
     random.shuffle(items)
 
-    # Select the training files, and tokenize them.
+    # Tokenize the training files.
+    sys.stdout.write('Reading training data'); sys.stdout.flush()
     train_tokens = []
-    for item in items[:num_files/2]:
+    for item in items[:num_files*2/3]:
+        sys.stdout.write('.'); sys.stdout.flush()
         train_tokens += brown.tokenize(item)
+    print '\nRead in %s training tokens' % len(train_tokens)
 
-    # Select the test files, and tokenize them.
-    test_tokens = []
-    for item in items[num_files/2:num_files]:
-        test_tokens += brown.tokenize(item)
-
-    # Report on how many tokens we read.
-    print ('\nRead in %s training tokens and %s testing tokens' %
-           (len(train_tokens), len(test_tokens)))
+    # Create a default tagger
+    default_tagger = NN_CD_Tagger()
 
     print 'training unigram tagger...'
     t0 = UnigramTagger()
@@ -532,19 +539,35 @@ def demo(num_files=100):
     t2.train(train_tokens)
 
     print 'creating combined backoff tagger...'
-    bt = BackoffTagger( (t2, t1, t0, NN_CD_Tagger()) )
+    bt = BackoffTagger( [t2, t1, t0, default_tagger] )
+
+    # Delete train_tokens, because it takes up lots of memory.
+    del train_tokens
     
+    # Tokenize the testing files
+    test_tokens = []
+    sys.stdout.write('Reading testing data'); sys.stdout.flush()
+    for item in items[num_files*2/3:num_files]:
+        sys.stdout.write('.'); sys.stdout.flush()
+        test_tokens += brown.tokenize(item)
+    print '\nRead in %s testing tokens' % len(test_tokens)
+
+    # Run the taggers.  For t0, t1, and t2, back-off to NN_CD_Tagger.
+    # This is especially important for t1 and t2, which count on
+    # having known tags as contexts; if they get a context containing
+    # None, then they will generate an output of None, and so all
+    # words will get tagged a None.
     print 'running the taggers...'
-    result = NN_CD_Tagger().tag(untag(test_tokens))
+    result = default_tagger.tag(untag(test_tokens))
     print 'Default tagger results:  ' + `result`[:48] + '...'
     print 'Default tagger accuracy: %.5f' % accuracy(test_tokens, result)
-    result = t0.tag(untag(test_tokens))
+    result = BackoffTagger([t0, default_tagger]).tag(untag(test_tokens))
     print 'Unigram tagger results:  ' + `result`[:48] + '...'
     print 'Unigram tagger accuracy: %.5f' % accuracy(test_tokens, result)
-    result = t1.tag(untag(test_tokens))
+    result = BackoffTagger([t1, default_tagger]).tag(untag(test_tokens))
     print 'Bigram tagger results:   ' + `result`[:48] + '...'
     print 'Bigram tagger accuracy:  %.5f' % accuracy(test_tokens, result)
-    result = t2.tag(untag(test_tokens))
+    result = BackoffTagger([t2, default_tagger]).tag(untag(test_tokens))
     print 'Trigram tagger results:  ' + `result`[:48] + '...'
     print 'Trigram tagger accuracy: %.5f' % accuracy(test_tokens, result)
     result = bt.tag(untag(test_tokens))
