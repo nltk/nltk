@@ -417,11 +417,10 @@ class FrozenTreeToken(TreeToken, FrozenToken):
             raise ValueError('TreeTokens must define the CHILDREN property')
 
 class TreebankTokenizer(TokenizerI):
-    def __init__(self, addlocs=True, property_names={}):
-        self._addlocs = addlocs
+    def __init__(self, **property_names):
         self._property_names = property_names
 
-    def _subtoken_generator(self, token):
+    def _subtoken_generator(self, token, addlocs):
         TEXT = self._property_names.get('TEXT', 'TEXT')
         LOC = self._property_names.get('LOC', 'LOC')
 
@@ -437,25 +436,23 @@ class TreebankTokenizer(TokenizerI):
         # Parse trees until we reach the end of the string
         trees = []
         while pos < len(text):
-            tree, pos = TreeToken._parse(text, source, pos)
+            tree, pos = TreeToken._parse(text, addlocs, source, pos)
             yield tree
 
-        # Add the trees to token.
-        token[SUBTOKENS] = trees
-
-    def xtokenize(self, token):
+    def xtokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        token[SUBTOKENS] = self._subtoken_generator(token)
+        token[SUBTOKENS] = self._subtoken_generator(token, addlocs)
         
-    def tokenize(self, token):
+    def tokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        token[SUBTOKENS] = list(self._subtoken_generator(token))
+        treeiter = self._subtoken_generator(token, addlocs)
+        token[SUBTOKENS] = list(treeiter)
 
-    def raw_tokenize(self, token):
+    def raw_tokenize(self, text):
         "Not implemented by TreebankTokenizer"
         raise NotImplementedError, "Not implemented by TreebankTokenizer"
     
-    def raw_xtokenize(self, token):
+    def raw_xtokenize(self, text):
         "Not implemented by TreebankTokenizer"
         raise NotImplementedError, "Not implemented by TreebankTokenizer"
         
