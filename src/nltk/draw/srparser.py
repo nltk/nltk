@@ -411,11 +411,10 @@ class ShiftReduceParserDemo:
             rtextwidget.move(4+cx2-rtextwidth, 0)
         self._rtextlabel.move(cx2-self._rtextlabel.bbox()[2]-5, 0)
 
-        # Draw the stack top.
         midx = (stackx + cx2-max(rtextwidth, rlabelwidth))/2
         self._canvas.coords(self._stacktop, midx, 0, midx, 5000)
         (x1, y1, x2, y2) = self._stacklabel.bbox()
-
+        
         # Set up binding to allow them to shift a token by dragging it.
         if len(self._rtextwidgets) > 0:
             def drag_shift(widget, midx=midx, self=self):
@@ -424,6 +423,15 @@ class ShiftReduceParserDemo:
             self._rtextwidgets[0].bind_drag(drag_shift)
             self._rtextwidgets[0].bind_click(self.shift)
 
+        # Draw the stack top.
+        self._highlight_productions()
+
+    def _draw_stack_top(self, widget):
+        # hack..
+        midx = widget.bbox()[2]+50
+        self._canvas.coords(self._stacktop, midx, 0, midx, 5000)
+
+    def _highlight_productions(self):
         # Highlight the productions that can be reduced.
         self._prodlist.selection_clear(0, 'end')
         for prod in self._parser.reducible_productions():
@@ -630,6 +638,10 @@ class ShiftReduceParserDemo:
             self._stackwidgets.append(widget)
             self._animating_lock = 0
 
+            # Display the available productions.
+            self._draw_stack_top(widget)
+            self._highlight_productions()
+
     def _animate_reduce(self):
         # What widgets are we shifting?
         numwidgets = len(self._parser.stack()[-1].children())
@@ -668,6 +680,10 @@ class ShiftReduceParserDemo:
             else: x = self._stackwidgets[-1].bbox()[2] + 10
             self._cframe.add_widget(widget, x, y)
             self._stackwidgets.append(widget)
+
+            # Display the available productions.
+            self._draw_stack_top(widget)
+            self._highlight_productions()
 
 #             # Delete the old widgets..
 #             del self._stackwidgets[-len(widgets):]
