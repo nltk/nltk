@@ -36,6 +36,27 @@ efficiency.
 type_safety_level=4
     
 from types import ListType, TupleType, ClassType, DictType, TypeType
+from types import InstanceType
+
+def chkclass(self, other):
+    """
+    Check that C{other} has the same class as C{self}
+    
+    @raise TypeError: if other is not an instance, or if other does
+        not have the same class as self.
+    """
+    if (type(other) != InstanceType or
+        other.__class__ != self.__class__):
+        raise TypeError("Class mismatch: expected an object of "+\
+                        "type "+self.__class__.__name__)
+
+def classeq(instance1, instance2):
+    """
+    Return true iff the given objects are classes of the same instance.
+    """
+    if not isinstance(instance1, instance2): return 0
+    if not isinstance(instance2, instance1): return 0
+    return 1
 
 def _typemsg(types):
     """##
