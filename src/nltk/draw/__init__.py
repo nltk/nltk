@@ -1668,6 +1668,13 @@ class CanvasFrame:
         self._parent = None
 
     def mainloop(self, *args, **kwargs):
+        """
+        Enter the Tkinter mainloop.  This function must be called if
+        this frame is created from a non-interactive program (e.g.
+        from a secript); otherwise, the frame will close as soon as
+        the script completes.
+        """
+        if in_idle(): return
         self._parent.mainloop(*args, **kwargs)
 
 ##//////////////////////////////////////////////////////
@@ -1740,8 +1747,15 @@ class ShowText:
         self._top.destroy()
         self._top = None
 
-    def mainloop(self):
-        self._top.mainloop()
+    def mainloop(self, *args, **kwargs):
+        """
+        Enter the Tkinter mainloop.  This function must be called if
+        this window is created from a non-interactive program (e.g.
+        from a secript); otherwise, the window will close as soon as
+        the script completes.
+        """
+        if in_idle(): return
+        self._top.mainloop(*args, **kwargs)
 
 ##//////////////////////////////////////////////////////
 ##  Entry dialog
@@ -1802,6 +1816,25 @@ class EntryDialog:
         if self._top is None: return
         self._top.destroy()
         self._top = None
+
+##//////////////////////////////////////////////////////
+##  Helpers
+##//////////////////////////////////////////////////////
+
+def in_idle():
+    """
+    @rtype: C{boolean}
+    @return: true if this function is run within idle.  Tkinter
+    programs that are run in idle should never call L{Tk.mainloop}; so
+    this function should be used to gate all calls to C{Tk.mainloop}.
+
+    @warning: This function works by checking C{sys.stdin}.  If the
+    user has modified C{sys.stdin}, then it may return incorrect
+    results.
+    """
+    import sys, types
+    return (type(sys.stdin) == types.InstanceType and \
+            sys.stdin.__class__.__name__ == 'PyShell')
 
 ##//////////////////////////////////////////////////////
 ##  Test code.
