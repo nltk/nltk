@@ -37,6 +37,7 @@ from nltk.classifier.feature import *
 from nltk.probability import *
 from nltk.token import Token, WSTokenizer
 from nltk.chktype import chktype as _chktype
+import types
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -157,7 +158,7 @@ class NBClassifier(AbstractFeatureClassifier):
             feature value M{fval} to the feature whose id is M{fid}. 
         """
         assert _chktype(1, fd_list, FeatureDetectorListI)
-        assert _chktype(2, labels, [])
+        assert _chktype(2, labels, [], ())
         assert _chktype(3, label_probdist, ProbDistI)
         assert _chktype(4, fval_probdist, ConditionalProbDist)
                         
@@ -167,6 +168,7 @@ class NBClassifier(AbstractFeatureClassifier):
 
     def fv_list_likelihood(self, fv_list, label):
         # Inherit docs from AbstractFeatureClassifier
+        assert _chktype(1, fv_list, FeatureValueListI)
         p = self._label_probdist.prob(label)
         #DEBUG = '%20s' % label
         for fid in range(len(fv_list)):
@@ -275,7 +277,7 @@ class NBClassifierTrainer(ClassifierTrainerI):
             tokens.
         @rtype: C{ClassifierI}
         """
-        assert _chktype(1, labeled_tokens, [Token])
+        assert _chktype(1, labeled_tokens, [Token], (Token,))
         
         # Process the keyword arguments
         estimator = 'ELE'
@@ -408,6 +410,10 @@ def _timestamp():
     return '%8.2fs ' % (time.time()-_t0)
 
 def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
+    assert _chktype(1, labeled_tokens, [Token], (Token,))
+    assert _chktype(2, n_words, types.IntType)
+    assert _chktype(3, n_lens, types.IntType)
+    assert _chktype(4, debug, types.IntType)
     _resettime()
     
     if debug: print _timestamp(), 'getting a list of labels...'
@@ -472,10 +478,13 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
 
     return time.time()-t
         
-def _get_toks(file='/mnt/cdrom2/data/brown/ca01', debug=0):
+def _get_toks(file='/cdrom/data/brown/ca01', debug=0):
     """
     Load tokens from the given file.  
     """
+    assert _chktype(1, file, types.StringType)
+    assert _chktype(2, debug, types.IntType)
+    
     _resettime()
     from nltk.tagger import TaggedTokenizer
     text = open(file).read()
