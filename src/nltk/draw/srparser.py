@@ -81,6 +81,7 @@ from nltk.parser import *
 from nltk.draw.cfg import CFGEditor
 from nltk.tokenizer import WSTokenizer
 from Tkinter import *
+import tkFont
         
 class ShiftReduceParserDemo:
     """
@@ -92,9 +93,9 @@ class ShiftReduceParserDemo:
     the parsing process, performing the operations that
     C{ShiftReduceParser} would use.
     """
-    def __init__(self, grammar, text, trace=0):
-        self._text = text
-        self._parser = SteppingShiftReduceParser(grammar, trace)
+    def __init__(self, grammar, token, trace=0):
+        self._token = token
+        self._parser = SteppingShiftReduceParser(grammar, trace, LEAF='TEXT')
 
         # Set up the main window.
         self._top = Tk()
@@ -110,9 +111,8 @@ class ShiftReduceParserDemo:
         self._show_grammar = IntVar(self._top)
         self._show_grammar.set(1)
 
-        # Base font size
-        self._size = IntVar(self._top)
-        self._size.set(12) # = medium
+        # Initialize fonts.
+        self._init_fonts(self._top)
 
         # Set up key bindings.
         self._init_bindings()
@@ -135,18 +135,32 @@ class ShiftReduceParserDemo:
     ##  Initialization Helpers
     #########################################
 
+    def _init_fonts(self, root):
+        # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
+        self._sysfont = tkFont.Font(font=Tkinter.Button()["font"])
+        root.option_add("*Font", self._sysfont)
+        
+        # TWhat's our font size (default=same as sysfont)
+        self._size = Tkinter.IntVar(root)
+        self._size.set(self._sysfont.cget('size'))
+
+        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+                                    size=self._size.get())
+        self._font = tkFont.Font(family='helvetica',
+                                    size=self._size.get())
+
     def _init_grammar(self, parent):
         # Grammar view.
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
-        helv = ('helvetica', -self._size.get())
-        bold = ('helvetica', -self._size.get()-2, 'bold')
-        self._prodlist_label = Label(self._prodframe, font=bold, 
+        self._prodlist_label = Label(self._prodframe,
+                                     font=self._boldfont, 
                                      text='Available Reductions')
         self._prodlist_label.pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
                                  relief='groove', background='white',
-                                 foreground='#909090', font=helv,
+                                 foreground='#909090',
+                                 font=self._font,
                                  selectforeground='#004040',
                                  selectbackground='#c0f0c0')
 
@@ -303,16 +317,15 @@ class ShiftReduceParserDemo:
         self._feedbackframe = feedbackframe = Frame(parent)
         feedbackframe.pack(fill='x', side='bottom', padx=3, pady=3)
         self._lastoper_label = Label(feedbackframe, text='Last Operation:',
-                                     font=('helvetica', -self._size.get()))
+                                     font=self._font)
         self._lastoper_label.pack(side='left')
         lastoperframe = Frame(feedbackframe, relief='sunken', border=1)
         lastoperframe.pack(fill='x', side='right', expand=1, padx=5)
-        helv = ('helvetica', -self._size.get())
         self._lastoper1 = Label(lastoperframe, foreground='#007070',
-                                background='#f0f0f0', font=helv)
+                                background='#f0f0f0', font=self._font)
         self._lastoper2 = Label(lastoperframe, anchor='w', width=30,
                                 foreground='#004040', background='#f0f0f0',
-                                font=helv)
+                                font=self._font)
         self._lastoper1.pack(side='left')
         self._lastoper2.pack(side='left', fill='x', expand=1)
 
@@ -331,10 +344,9 @@ class ShiftReduceParserDemo:
         self._stacktop = canvas.create_line(0,0,0,0, fill='#408080')
         size = self._size.get()+4
         self._stacklabel = TextWidget(canvas, 'Stack', color='#004040',
-                                  font=('helvetica', -size, 'bold'))
+                                      font=self._boldfont)
         self._rtextlabel = TextWidget(canvas, 'Remaining Text',
-                                      color='#004040',
-                                      font=('helvetica', -size, 'bold'))
+                                      color='#004040', font=self._boldfont)
         self._cframe.add_widget(self._stacklabel)
         self._cframe.add_widget(self._rtextlabel)
 
@@ -368,19 +380,18 @@ class ShiftReduceParserDemo:
 
         # Draw the stack.
         stackx = 5
-        helv = ('helvetica', -self._size.get())
-        bold = ('helvetica', -self._size.get(), 'bold')
         for tok in self._parser.stack():
             if isinstance(tok, TreeToken):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
-                           'node_font': bold, 'node_color': '#006060',
-                           'leaf_color': '#006060', 'leaf_font':helv}
-                widget = tree_to_treesegment(self._canvas, tok.type(),
+                           'node_font': self._boldfont,
+                           'node_color': '#006060',
+                           'leaf_color': '#006060', 'leaf_font':self._font}
+                widget = tree_to_treesegment(self._canvas, tok,
                                              **attribs)
                 widget.node()['color'] = '#000000'
             else:
-                widget = TextWidget(self._canvas, tok.type(),
-                                    color='#000000', font=helv)
+                widget = TextWidget(self._canvas, tok['TEXT'],
+                                    color='#000000', font=self._font)
             widget.bind_click(self._popup_reduce)
             self._stackwidgets.append(widget)
             self._cframe.add_widget(widget, stackx, y)
@@ -388,10 +399,9 @@ class ShiftReduceParserDemo:
 
         # Draw the remaining text.
         rtextwidth = 0
-        helv = ('helvetica', -self._size.get())
         for tok in self._parser.remaining_text():
-            widget = TextWidget(self._canvas, tok.type(),
-                                color='#000000', font=helv)
+            widget = TextWidget(self._canvas, tok['TEXT'],
+                                color='#000000', font=self._font)
             self._rtextwidgets.append(widget)
             self._cframe.add_widget(widget, rtextwidth, y)
             rtextwidth = widget.bbox()[2] + 4
@@ -448,7 +458,7 @@ class ShiftReduceParserDemo:
         self._top = None
 
     def reset(self, *e):
-        self._parser.initialize(self._text)
+        self._parser.initialize(self._token)
         self._lastoper1['text'] = 'Reset Demo'
         self._lastoper2['text'] = ''
         self._redraw()
@@ -469,7 +479,7 @@ class ShiftReduceParserDemo:
         if self._parser.shift():
             tok = self._parser.stack()[-1]
             self._lastoper1['text'] = 'Shift:'
-            self._lastoper2['text'] = '%r' % tok.type()
+            self._lastoper2['text'] = '%r' % tok['TEXT']
             if self._animate.get():
                 self._animate_shift()
             else:
@@ -514,13 +524,17 @@ class ShiftReduceParserDemo:
     def resize(self, size=None):
         if size is not None: self._size.set(size)
         size = self._size.get()
-        self._stacklabel['font'] = ('helvetica', -size-4, 'bold')
-        self._rtextlabel['font'] = ('helvetica', -size-4, 'bold')
-        self._lastoper_label['font'] = ('helvetica', -size)
-        self._lastoper1['font'] = ('helvetica', -size)
-        self._lastoper2['font'] = ('helvetica', -size)
-        self._prodlist['font'] = ('helvetica', -size)
-        self._prodlist_label['font'] = ('helvetica', -size-2, 'bold')
+        self._font.configure(size=-(abs(size)))
+        self._boldfont.configure(size=-(abs(size)))
+        self._sysfont.configure(size=-(abs(size)))
+        
+        #self._stacklabel['font'] = ('helvetica', -size-4, 'bold')
+        #self._rtextlabel['font'] = ('helvetica', -size-4, 'bold')
+        #self._lastoper_label['font'] = ('helvetica', -size)
+        #self._lastoper1['font'] = ('helvetica', -size)
+        #self._lastoper2['font'] = ('helvetica', -size)
+        #self._prodlist['font'] = ('helvetica', -size)
+        #self._prodlist_label['font'] = ('helvetica', -size-2, 'bold')
         self._redraw()
 
     def help(self, *e):
@@ -553,12 +567,13 @@ class ShiftReduceParserDemo:
             self._prodlist.insert('end', (' %s' % production))
         
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok.type() for tok in self._text])
+        sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
         title = 'Edit Text'
         EntryDialog(self._top, sentence, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._text = WSTokenizer().tokenize(sentence)
+        self._token = Token(TEXT=sentence)
+        WSTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
     #########################################
@@ -644,7 +659,7 @@ class ShiftReduceParserDemo:
 
     def _animate_reduce(self):
         # What widgets are we shifting?
-        numwidgets = len(self._parser.stack()[-1].children())
+        numwidgets = len(self._parser.stack()[-1]['CHILDREN'])
         widgets = self._stackwidgets[-numwidgets:]
 
         # How far are we moving?
@@ -670,8 +685,8 @@ class ShiftReduceParserDemo:
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
             if not isinstance(tok, TreeToken): raise ValueError()
-            label = TextWidget(self._canvas, str(tok.node()), color='#006060',
-                               font=('helvetica', -self._size.get(), 'bold'))
+            label = TextWidget(self._canvas, str(tok['NODE']), color='#006060',
+                               font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
             (x1, y1, x2, y2) = self._stacklabel.bbox()
@@ -692,18 +707,16 @@ class ShiftReduceParserDemo:
 #
 #             # Make a new one.
 #             tok = self._parser.stack()[-1]
-#             helv = ('helvetica', -self._size.get())
-#             bold = ('helvetica', -self._size.get(), 'bold')
 #             if isinstance(tok, TreeToken):
 #                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
 #                            'node_font': bold, 'node_color': '#006060',
-#                            'leaf_color': '#006060', 'leaf_font':helv}
+#                            'leaf_color': '#006060', 'leaf_font':self._font}
 #                 widget = tree_to_treesegment(self._canvas, tok.type(),
 #                                              **attribs)
 #                 widget.node()['color'] = '#000000'
 #             else:
 #                 widget = TextWidget(self._canvas, tok.type(),
-#                                     color='#000000', font=helv)
+#                                     color='#000000', font=self._font)
 #             widget.bind_click(self._popup_reduce)
 #             (x1, y1, x2, y2) = self._stacklabel.bbox()
 #             y = y2-y1+10
@@ -785,10 +798,10 @@ def demo():
     grammar = CFG(S, productions)
 
     # tokenize the sentence
-    sent = 'my dog saw a man in the park with a statue'
-    text = WSTokenizer().tokenize(sent)
+    sent = Token(TEXT='my dog saw a man in the park with a statue')
+    WSTokenizer().tokenize(sent)
 
-    ShiftReduceParserDemo(grammar, text).mainloop()
+    ShiftReduceParserDemo(grammar, sent).mainloop()
 
 if __name__ == '__main__': demo()
         

@@ -53,6 +53,18 @@ evaluating the performance of a classifier.
 @sort: ClassifierI, ClassifierTrainerI
 """
 
+ERROR = """
+======================================================================
+ The nltk.classifier module is undergoing significant renovations.
+ Unfortunately, those renovations are not yet complete.  But rather
+ than delay nltk 1.3, we decided to release it without the classifier
+ module.  If you need nltk.classifier, then please use nltk 1.2.
+ (The renovations will be complete in nltk 1.4, which should be
+ finished by the end of April.)  Thanks for your understanding!
+======================================================================
+"""
+raise AssertionError, (ERROR)
+
 from nltk.token import Token
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq

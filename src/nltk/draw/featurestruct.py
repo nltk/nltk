@@ -189,5 +189,6 @@ def demo():
     cf.add_widget(graph)
     
     cf.mainloop()
-    
-demo()    
+
+if __name__ == '__main__':
+    demo()

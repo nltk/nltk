@@ -12,9 +12,6 @@ Visualization tools for CFGs.
 
 """
 
-# Testing
-import nltk.draw.tree; reload(nltk.draw.tree)
-
 """
 Idea for a nice demo:
   - 3 panes: grammar, treelet, working area
@@ -60,160 +57,30 @@ from Tkinter import *
 from nltk.tree import *
 from nltk.draw.tree import *
 
-ARROW = SymbolWidget.SYMBOLS['rightarrow']
 
 ######################################################################
 # Production List
 ######################################################################
 
-class ProductionList:
-    """
-    Display a colorized list of productions.  The program can
-    highlight a subset of the productions, and the user can select
-    productions (with mouse or keyboard).
-
-    Take a select callback.  Use highlight() to set highlight...
-    """
-    def __init__(self, parent, cfg, **options):
-        self._parent = parent
-        self._callbacks = {}
-
-        # Which production is selected? (index)
-        self._selected = None
-
-        # Initialize the Tkinter frames.
-        self._init_prodframe(options.copy())
-
-        # Set up key & mouse bindings.
-        self._textwidget.bind('<KeyPress>', self._keypress)
-        self._textwidget.bind('<ButtonPress>', self._buttonpress)
-
-        # Fill in the given CFG's productions.
-        self.set_cfg(cfg)
-
-    def _init_prodframe(self, options):
-        self._prodframe = Frame(self._parent)
-
-        # Create the basic Text widget & scrollbar.
-        options.setdefault('background', '#e0e0e0')
-        self._textwidget = Text(self._prodframe, **options)
-        self._textscroll = Scrollbar(self._prodframe, takefocus=0,
-                                     orient='vertical')
-        self._textwidget.config(yscrollcommand = self._textscroll.set)
-        self._textscroll.config(command=self._textwidget.yview)
-        self._textscroll.pack(side='right', fill='y')
-        self._textwidget.pack(expand=1, fill='both', side='left')
-        
-        # Initialize the colorization tags
-        self._textwidget.tag_config('terminal', foreground='#006000')
-        self._textwidget.tag_config('arrow', font='symbol', underline='0')
-        self._textwidget.tag_config('nonterminal', foreground='blue',
-                                    font=('helvetica', -12, 'bold'))
-        self._textwidget.tag_config('highlight', background='#e0ffff',
-                                    border='1', relief='raised')
-
-        # How do I want to mark keyboard selection?
-        self._textwidget.tag_config('sel', foreground='')
-        self._textwidget.tag_config('sel', foreground='', background='',
-                                    border='', underline=1)
-        self._textwidget.tag_lower('highlight', 'sel')
-
-    def set_cfg(self, cfg):
-        self._productions = cfg.productions()
-        
-        self._textwidget['state'] = 'normal'
-        self._textwidget.delete('1.0', 'end')
-        for production in cfg.productions():
-            self._textwidget.insert('end', '%s\t' % production.lhs(),
-                                    'nonterminal')
-            self._textwidget.insert('end', ARROW, 'arrow')
-            
-            for elt in production.rhs():
-                if isinstance(elt, Nonterminal):
-                    self._textwidget.insert('end', ' %s' % elt.symbol(),
-                                            'nonterminal')
-                else:
-                    self._textwidget.insert('end', ' %r' % elt,
-                                            'terminal')
-            self._textwidget.insert('end', '\n')
-        # Remove the final newline
-        self._textwidget.delete('end-1char', 'end')
-        self._textwidget.mark_set('insert', '1.0')
-        self._textwidget['state'] = 'disabled'
-
-    def add_callback(self, event, func):
-        """
-        @param event: One of: click1, click2, click3, space, return,
-            select, up, down, next, prior
-        """
-        if event == 'select': events = ['click1', 'space', 'return']
-        elif event == 'move': events = ['up', 'down', 'next', 'prior']
-        else: events = [event]
-
-        for e in events:
-            self._callbacks.setdefault(e,{})[func] = 1
-
-    def remove_callback(self, event, func):
-        if event is None: events = self._callbacks.keys()
-        else: events = [event]
-
-        for e in events:
-            try: del self._callbacks[e][func]
-            except: pass
-
-    def _fire_callback(self, event, production):
-        if not self._callbacks.has_key(event): return
-        for cb_func in self._callbacks[event].keys():
-            cb_func(production)
-
-    def _buttonpress(self, event):
-        clickloc = '@%d,%d' % (event.x,event.y)
-        insert_point = self._textwidget.index(clickloc)
-        prodnum = int(insert_point.split('.')[0])-1
-        prod = self._productions[prodnum]
-        self._fire_callback('click%d' % event.num, prod)
-        
-    def _keypress(self, event):
-        if event.keysym == 'Return' or event.keysym == 'space':
-            insert_point = self._textwidget.index('insert')
-            prodnum = int(insert_point.split('.')[0])-1
-            prod = self._productions[prodnum]
-            self._fire_callback(event.keysym.lower(), prod)
-            return
-        elif event.keysym == 'Down': delta='+1line'
-        elif event.keysym == 'Up': delta='-1line'
-        elif event.keysym == 'Next': delta='+10lines'
-        elif event.keysym == 'Prior': delta='-10lines'
-        else: return 'continue'
-        
-        self._textwidget.mark_set('insert', 'insert'+delta)
-        self._textwidget.see('insert')
-        self._textwidget.tag_remove('sel', '1.0', 'end+1char')
-        self._textwidget.tag_add('sel', 'insert linestart', 'insert lineend')
-
-        insert_point = self._textwidget.index('insert')
-        prodnum = int(insert_point.split('.')[0])-1
-        prod = self._productions[prodnum]
-        self._fire_callback(event.keysym.lower(), prod)
-        
-        return 'break'
+class ProductionList(ColorizedList):
+    ARROW = SymbolWidget.SYMBOLS['rightarrow']
     
-    def highlight(self, *productions):
-        self._textwidget.tag_remove('highlight', '1.0', 'end+1char')
-        for production in productions:
-            index = list(self._productions).index(production)
-            (start, end) = ('%d.0' % (index+1), '%d.0' % (index+2))
-            self._textwidget.tag_add('highlight', start, end)
+    def _init_colortags(self, textwidget, options):
+        textwidget.tag_config('terminal', foreground='#006000')
+        textwidget.tag_config('arrow', font='symbol', underline='0')
+        textwidget.tag_config('nonterminal', foreground='blue',
+                              font=('helvetica', -12, 'bold'))
 
-    def pack(self, *args, **kwargs):
-        self._prodframe.pack(*args, **kwargs)
-        
-    def grid(self, *args, **kwargs):
-        self._prodframe.grid(*args, **kwargs)
-        
-    def focus(self, *args, **kwargs):
-        self._textwidget.focus(*args, **kwargs)
-        
+    def _item_repr(self, item):
+        contents = []
+        contents.append(('%s\t' % item.lhs(), 'nonterminal'))
+        contents.append((self.ARROW, 'arrow'))
+        for elt in item.rhs():
+            if isinstance(elt, Nonterminal):
+                contents.append((' %s' % elt.symbol(), 'nonterminal'))
+            else:
+                contents.append((' %r' % elt, 'terminal'))
+        return contents
 
 ######################################################################
 # CFG Editor
@@ -274,6 +141,7 @@ class CFGEditor:
     """
     # Regular expressions used by _analyze_line.  Precompile them, so
     # we can process the text faster.
+    ARROW = SymbolWidget.SYMBOLS['rightarrow']
     _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|("+ARROW+"))")
     _ARROW_RE = re.compile("\s*(->|("+ARROW+"))\s*")
     _PRODUCTION_RE = re.compile(r"(^\s*\w+\s*)" +              # LHS
@@ -420,12 +288,12 @@ class CFGEditor:
             arrow = self._textwidget.search('->', arrow, 'end+1char')
             if arrow == '': break
             self._textwidget.delete(arrow, arrow+'+2char')
-            self._textwidget.insert(arrow, ARROW, 'arrow')
+            self._textwidget.insert(arrow, self.ARROW, 'arrow')
             self._textwidget.insert(arrow, '\t')
 
         arrow = '1.0'
         while 1:
-            arrow = self._textwidget.search(ARROW, arrow+'+1char',
+            arrow = self._textwidget.search(self.ARROW, arrow+'+1char',
                                             'end+1char')
             if arrow == '': break
             self._textwidget.tag_add('arrow', arrow, arrow+'+1char')
@@ -439,7 +307,7 @@ class CFGEditor:
         """
         # What type of token is it?
         if match.group()[0] in "'\"": tag = 'terminal'
-        elif match.group() in ('->', ARROW): tag = 'arrow'
+        elif match.group() in ('->', self.ARROW): tag = 'arrow'
         else:
             # If it's a nonterminal, then set up new bindings, so we
             # can highlight all instances of that nonterminal when we
@@ -528,7 +396,7 @@ class CFGEditor:
 
         # Get the text, normalize it, and split it into lines.
         text = self._textwidget.get('1.0', 'end')
-        text = re.sub(ARROW, '->', text)
+        text = re.sub(self.ARROW, '->', text)
         text = re.sub('\t', ' ', text)
         lines = text.split('\n')
 
@@ -821,13 +689,41 @@ def demo():
     Button(top, text='Quit', command=top.destroy).pack()
     top.mainloop()
 
-if 0:
+def demo3():
+    (S, VP, NP, PP, P, N, Name, V, Det) = \
+        nonterminals('S, VP, NP, PP, P, N, Name, V, Det')
+    
+    productions = (
+        # Syntactic Productions
+        CFGProduction(S, NP, VP),
+        CFGProduction(NP, Det, N),
+        CFGProduction(NP, NP, PP),
+        CFGProduction(VP, VP, PP),
+        CFGProduction(VP, V, NP, PP),
+        CFGProduction(VP, V, NP),
+        CFGProduction(PP, P, NP),
+        CFGProduction(PP),
+
+        CFGProduction(PP, 'up', 'over', NP),
+        
+        # Lexical Productions
+        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
+        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
+        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
+        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
+        CFGProduction(N, 'dog'),  CFGProduction(N, 'statue'),
+        CFGProduction(Det, 'my'),
+        )
+    
     t = Tk()
     def destroy(e, t=t): t.destroy()
     t.bind('q', destroy)
-    p = ProductionList(t, grammar)
+    p = ProductionList(t, productions)
     p.pack(expand=1, fill='both')
+    p.add_callback('select', p.markonly)
+    p.add_callback('move', p.markonly)
     p.focus()
-    p.highlight([productions[2], productions[8]])
+    p.mark(productions[2])
+    p.mark(productions[8])
 
-if __name__ == '__main__': demo2()
+if __name__ == '__main__': demo3()
