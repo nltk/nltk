@@ -252,7 +252,7 @@ class ProximateTokensRule(BrillRuleI):
 
         Each implentation of this method should correspond to an
         implementation of the method with the same name in a subclass
-        of L{C{ProximateTokensTemplate}}.
+        of L{ProximateTokensTemplate}.
 
         @param token: The token
         @type token: Token
@@ -373,7 +373,7 @@ class ProximateTokensRule(BrillRuleI):
 class ProximateTagsRule(ProximateTokensRule):
     """
     A rule which examines the tags of nearby tokens.
-    @see: superclass L{C{ProximateTokensRule}} for details.
+    @see: superclass L{ProximateTokensRule} for details.
     @see: L{ProximateTagsTemplate}, which generates these rules.
     """
     PROPERTY_NAME = 'tag' # for printing.
@@ -385,7 +385,7 @@ class ProximateTagsRule(ProximateTokensRule):
 class ProximateWordsRule(ProximateTokensRule):
     """
     A rule which examines the base types of nearby tokens.
-    @see: L{C{ProximateTokensRule}} for details.
+    @see: L{ProximateTokensRule} for details.
     @see: L{ProximateWordsTemplate}, which generates these rules.
     """
     PROPERTY_NAME = 'text' # for printing.
@@ -441,8 +441,8 @@ class BrillTemplateI:
 
         @param token: The token whose subtokens are being tagged.
         @type token: L{Token}
-        @param i: The index whose neighborhood should be returned.
-        @type i: C{int}
+        @param index: The index whose neighborhood should be returned.
+        @type index: C{int}
         @rtype: C{Set}
         """
         raise AssertionError, "BrillTemplateI is an abstract interface"
@@ -761,7 +761,7 @@ class BrillTaggerTrainer:
 
     def _find_rules_at(self, test_subtoks, train_subtoks, i):
         """
-        @type: C{list} of C{Set}
+        @rtype: C{Set}
         @return: the set of all rules (based on the templates) that
         correct token C{i}'s tag in C{test_subtoks}.
         """
@@ -1074,8 +1074,8 @@ def errorList (train_token, token, radius=2):
 
     @param train_token: The correct tagging of the corpus
     @type train_token: Token
-    @param tokens: The tagged corpus
-    @type tokens: list of Token
+    @param token: The tagged corpus
+    @type token: list of Token
     @param radius: How many tokens on either side of a wrongly-tagged token
         to include in the error string.  For example, if C{radius}=2, each error
         string will show the incorrect token plus two tokens on either side.
