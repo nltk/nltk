@@ -52,6 +52,7 @@ C{Tree}).
 
 from nltk.chktype import chktype as _chktype
 from nltk.set import Set
+from nltk.util import sum_logs
 import types, math
 
 ##//////////////////////////////////////////////////////
@@ -379,32 +380,46 @@ class DictionaryProbDist(ProbDistI):
     """
     A probability distribution whose probabilities are directly
     specified by a given dictionary.  The given dictionary maps
-    samples to probabilities; and all p
+    samples to probabilities.
     """
-    def __init__(self, prob_dict, normalize=False):
+    def __init__(self, prob_dict=None, log=False, normalize=False):
         """
-        Construct a new probability distribution from C{prob_dict},
-        where P(M{x}) = C{prob_dict.get(M{x}, 0)}.  I.e., if M{x} is a
-        key in the given dictionary, then its probability is the
-        corresponding value; otherwise, its probability is 0.  
+        Construct a new probability distribution from the given
+        dictionary, which maps values to probabilities (or to log
+        probabilities, if C{log} is true).  If C{normalize} is
+        true, then the probability values are scaled by a constant
+        factor such that they sum to 1.
         """
         assert _chktype(1, prob_dict, {})
         self._prob_dict = prob_dict.copy()
-        if normalize:
-            norm_factor = 1.0/sum(self._prob_dict.values())
-            for (x, p) in self._prob_dict.items():
-                self._prob_dict[x] *= norm_factor
-            
+        self._log = log
 
+        # Normalize the distribution, if requested.
+        if normalize:
+            if log:
+                norm_factor = sum_logs(self._prob_dict.values())
+                for (x, p) in self._prob_dict.items():
+                    self._prob_dict[x] -= norm_factor
+            else:
+                norm_factor = 1.0/sum(self._prob_dict.values())
+                for (x, p) in self._prob_dict.items():
+                    self._prob_dict[x] *= norm_factor
+                    
     def prob(self, sample):
-        return self._prob_dict.get(sample, 0)
+        if self._log:
+            return math.exp(self._prob_dict.get(sample, 0))
+        else:
+            return self._prob_dict.get(sample, 0)
+
+    def logprob(self, sample):
+        if self._log:
+            return self._prob_dict.get(sample, 0)
+        else:
+            return math.log(self._prob_dict.get(sample, 0))
+
     def max(self):
         if not hasattr(self, '_max'):
-            max = (None, None)
-            for (v, p) in self._prob_dict.items():
-                if p > max[0]:
-                    max = (p, v)
-            self._max = max[1]
+            self._max = max([(p,v) for (v,p) in self._prob_dict.items()])[1]
         return self._max
     def samples(self):
         return self._prob_dict.keys()
@@ -1351,5 +1366,3 @@ def demo(numsamples=6, numoutcomes=500):
 if __name__ == '__main__':
     demo(6, 10)
     demo(5, 5000)
-
-
