@@ -1263,7 +1263,7 @@ regexp = r'<IEER[^>]*>\n<DOC>\n|</DOC>\n<DOC>\n|</DOC>\n</IEER_DOC>\n'
 
 ieer = SimpleCorpusReader(
     'ieer', 'ieer/', r'(APW|NYT)_\d+', groups, description_file='README',
-    default_tokenizer=RETokenizer(regexp, negative=1, unit='d'))
+    default_tokenizer=RegexpTokenizer(regexp, negative=1, unit='d'))
 
     # ideally use parser.chunk.IeerChunkedTokenizer() on each document
     # docs = ieer.tokenize('APW_19980314')
