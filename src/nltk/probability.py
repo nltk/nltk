@@ -681,6 +681,7 @@ class FreqDistI:
         @return: The number of samples with frequency r.
         @rtype: int
         """
+        # What should we do for r=0??
         raise AssertionError()
     
     def freq(self, sample_or_event):
@@ -816,13 +817,14 @@ class SimpleFreqDist(FreqDistI):
 
     @see: nltk.CFFreqDist CFFreqDist
     """
-    def __init__(self):
+    def __init__(self, bins=None):
         """
         Construct a new, empty, C{SimpleFreqDist}.
         """
         self._dict = {}
         self._N = 0
         self._Nr_cache = None
+        self._bins = bins
 
     def inc(self, sample):
         # Inherit docs from FreqDistI
@@ -839,7 +841,8 @@ class SimpleFreqDist(FreqDistI):
 
     def B(self):
         # Inherit docs from FreqDistI
-        return len(self._dict)
+        if self._bins is not None: return self._bins
+        else: return len(self._dict)
 
     def samples(self):
         # Inherit docs from FreqDistI
@@ -857,12 +860,13 @@ class SimpleFreqDist(FreqDistI):
         # the results.
         _chktype("SimpleFreqDist.Nr", 1, r, (_IntType,))
         if self._Nr_cache == None: 
-            nr = []
+            nr = [self.B()]
             for sample in self.samples():
                 c = self.count(sample)
                 if c >= len(nr):
                     nr += [0]*(c+1-len(nr))
                 nr[c] += 1
+                nr[0] -= 1
             self._Nr_cache = nr
         if r >= len(self._Nr_cache): return 0
         return self._Nr_cache[r]
@@ -1287,6 +1291,56 @@ class CFFreqDist(FreqDistI):
         @rtype: string
         """
         return '{CFFreqDist: '+str(self._context_fdists)[1:]
+
+    def __str__(self):
+        """
+        Return a verbose string rep.
+        """
+        str = 'CFFreqDist:\n'
+
+        # Find the list of known contexts.
+        contexts = self._context_fdists.keys()
+
+        # Find the list of known features.
+        features = Set()
+        for fdist in self._context_fdists.values():
+            features = features.union(Set(*fdist.samples()))
+        features = features.elements()
+
+        # Sort!
+        contexts.sort(lambda a,b: cmp(`a`, `b`))
+        features.sort(lambda a,b: cmp(`a`, `b`))
+
+        if not contexts or not features:
+            return str + "   (no samples)\n"
+
+        clen = max(*[len(`c`) for c in contexts])+1
+        flen = max(*[len(`f`) for f in features])+1
+        flen = max(flen, 6)
+        clen = max(clen, 7)
+
+        # Header lines.
+        str += '\nContext'+' '*(clen-7)+'|'
+        str += (' '* (((flen * len(features) - 7) / 2)))
+        str += "Feature\n"
+        str += ' '*clen + '|'
+        for f in features:
+            str += ("%"+`flen`+"s") % `f`
+        str += '\n' + ' '*(clen)+'+'
+        str += ('-'*(flen*len(features))) + '\n'
+
+        # Data lines.
+        for c in contexts:
+            str += ("%"+`clen`+"s|") % `c`
+            for f in features:
+                freq = self.freq(CFSample(c, f))
+                str += ("%"+`flen`+".2f") % freq
+
+            # Row total.
+            str += ("%"+`flen`+".2f") % self.freq(ContextEvent(c))
+                    
+            str += '\n'
+        return str
         
 ##//////////////////////////////////////////////////////
 ##  Probability Distribution
@@ -1456,33 +1510,107 @@ class MLEProbDist(LidstoneProbDist):
 class HeldOutProbDist(ProbDistI):
     """
     Base probability estimates on held-out data.
+    Warning: don't modify the freq dists after you construct the
+    probability distribution.
+
+    Currently, assumes that the number of bins for the training data
+    is set manually & correctly.
     """
     def __init__(self, training_dist, held_out_dist):
         self._training = training_dist
         self._heldout = held_out_dist
 
         # Calculate Tr
-        self._Tr = [0]*self._training.B()
-        for sample in self._training.samples():
+        self._Tr = [0]*(self._training.count(self._training.max())+1)
+        samples = Set(*self._training.samples())
+        samples = samples.union(Set(*self._heldout.samples()))
+        for sample in samples.elements():
             tr_count = self._training.count(sample)
             ho_count = self._heldout.count(sample)
             self._Tr[tr_count] += ho_count
 
+    def Tr(self, r):
+        if 0 <= r < len(self._Tr): return self._Tr[r]
+        else: return 0
+
+    # Should N here be from heldout or training?  I assume heldout
+    # because the P sums to one, but I should check that...
     def prob(self, sample_or_event):
-        r = self._training.count(sample)
-        return Tr[r]/(self._training.Nr(r)*self._training.N())
-    
+        r = self._training.count(sample_or_event)
+        if self._training.Nr(r) == 0: return 0
+        return float(self._Tr[r])/(self._training.Nr(r)*self._heldout.N())
+
     def cond_prob(self, sample_or_event, condition):
         f = self._freqdist.cond_freq(sample_or_event, condition)
         r = f * self._freqdist.N()
-        return Tr[r]/(self._training.Nr(r)*self._training.N())
+        if self._training.Nr(r) == 0: return 0
+        return float(self._Tr[r])/(self._training.Nr(r)*self._heldout.N())
     
     def cond_max(self, condition):
         return self._freqdist.cond_max(condition)
     
     def max(self):
         return self._freqdist.max()
+
+class CrossValidationProbDist(ProbDistI):
+    """
+    Use cross-validation.  Currently, assumes that the number of bins
+    for each freqdist is set manually & correctly.
+    """
+    def __init__(self, *training_data):
+        self._training = training_data
+        way = len(self._training)
+
+        # Create an empty array of (way x way) entries.
+        self._Tr = [[None for i in range(way)] for j in range(way)]
+        self._N = 0
+        for i in range(way):
+            self._N += self._training[i].N()
+            for j in range(way):
+                if i == j: continue
+                self._Tr[i][j] = self._find_Tr(i,j)
+
+    def _find_Tr(self, i, j):
+        """
+        Find Tr with training set i and held out set j
+        """
+        training = self._training[i]
+        heldout = self._training[j]
         
+        Tr = [0]*(training.count(training.max())+1)
+        samples = Set(*training.samples())
+        samples = samples.union(Set(*heldout.samples()))
+        for sample in samples.elements():
+            tr_count = training.count(sample)
+            ho_count = heldout.count(sample)
+            Tr[tr_count] += ho_count
+            
+        return Tr
+
+    def Tr(self, r):
+        # Hack..
+        return self._Tr[0][1][r]
+
+    def prob(self, sample_or_event):
+        top = 0
+        bot = 0
+        way = len(self._training)
+        
+        for i in range(way):
+            r = self._training[i].count(sample_or_event)
+            for j in range(0,way):
+
+                if i == j: continue
+                top += self._Tr[i][j][r]
+            bot += (self._training[i].Nr(r) *
+                    (self._N - self._training[i].N()))
+        return float(top)/float(bot)
+
+class GoodTuringProbDist(ProbDistI):
+    """
+    Use Good-Turing estimation for the probabilities.
+    """
+    pass
         
     
 ##//////////////////////////////////////////////////////
@@ -1499,13 +1627,17 @@ class ProbablisticMixIn:
     its parent classes.  For example:
 
         >>> class A:
-        ...     def __init__(self, x): self.x = x
+        ...     def __init__(self, x, y): self.data = (x,y)
         ... 
         >>> class ProbablisticA(A, ProbablisticMixIn):
-        ...     def __init__(self, x, p):
-        ...         A.__init__(self, x)
+        ...     def __init__(self, p, x, y):
+        ...         A.__init__(self, x, y)
         ...         ProbablisticMixIn.__init__(self, p)
-    
+
+    We suggest that you make C{p} the first argument for the new
+    probablistic class, and keep all other arguments the same as they
+    were.  This ensures that there will be no problems with
+    constructors that expect varargs parameters.
     """
     def __init__(self, p):
         self.__p = p
@@ -1523,21 +1655,96 @@ class ProbablisticMixIn:
 # laplace = LaplaceProbDist(f)
 # for x in range(50):
 #     print f.freq(x), mle.prob(x), laplace.prob(x)
-    
-if __name__ == '__main__':
+
+def rand_fdist(numsamples, numoutcomes, bins=None):
+    import random
+    from math import sqrt
+    fdist = SimpleFreqDist(bins)
+    for x in range(numoutcomes):
+        y = int(sqrt(random.randint(1, numsamples**2)))
+        fdist.inc(y)
+    return fdist
+
+def testHeldOut():
+    fdist1 = rand_fdist(10, 20, 11)
+    fdist2 = rand_fdist(11, 10, 11)
+
+    print
+    print 'fdist1, fdist2'
+    pdist = HeldOutProbDist(fdist1, fdist2)
+    print 'Tr:', pdist._Tr
+    print 'Sample  cnt1   cnt2   Tr  / ( Nr * N ) = P'
+    p = 0
+    for s in range(1,12):
+        print "%4s %6d %6d %6.2f  %6.2f  %d     %s" % (
+            s, fdist1.count(s), fdist2.count(s), 
+            pdist.Tr(fdist1.count(s)),
+            fdist1.Nr(fdist1.count(s)),
+            fdist1.N(), pdist.prob(s))
+        p += pdist.prob(s)
+    print 'p total =', p
+            
+
+    print
+    print 'fdist1, fdist1'
+    pdist = HeldOutProbDist(fdist1, fdist1)
+    print 'Tr:', pdist._Tr
+    print 'Sample  cnt1   cnt2   Tr  / ( Nr * N ) = P'
+    p = 0
+    for s in range(1,12):
+        print "%4s %6d %6d %6.2f  %6.2f  %d     %s" % (
+            s, fdist1.count(s), fdist1.count(s), 
+            pdist.Tr(fdist1.count(s)),
+            fdist1.Nr(fdist1.count(s)),
+            fdist1.N(), pdist.prob(s))
+        p += pdist.prob(s)
+    print 'p total =', p
+
+def testXVal():
+    fdist1 = rand_fdist(10, 20, 11)
+    fdist2 = rand_fdist(11, 5, 11)
+    fdist3 = rand_fdist(5, 10, 11)
+
+    print
+    print 'fdist1, fdist2, fdist3'
+    pdist = CrossValidationProbDist(fdist1, fdist2, fdist3)
+    print 'Tr:', pdist._Tr
+    print 'Sample  cnt1   cnt2   cnt3   P'
+    p = 0
+    for s in range(1,12):
+        print "%4s %6d %6d %6d   %s" % (
+            s, fdist1.count(s), fdist2.count(s), fdist3.count(s),
+            pdist.prob(s))
+            
+        p += pdist.prob(s)
+    print 'p total =', p
+            
+
+    print
+    print 'fdist1, fdist1'
+    pdist = CrossValidationProbDist(fdist1, fdist1)
+    print 'Tr:', pdist._Tr
+    print 'Sample  cnt1   cnt2   P'
+    p = 0
+    for s in range(1,12):
+        print "%4s %6d %6d   %s" % (
+            s, fdist1.count(s), fdist1.count(s), pdist.prob(s))
+        p += pdist.prob(s)
+    print 'p total =', p
+
+def testCFFreqDist():
     import random
     fdist = CFFreqDist()
     print fdist
+    # Contexts are ints, features are strings (just for fun)
     for x in range(100):
         context = random.randint(1,3)
-        feature = str(random.randint(1,3))
+        feature = str(random.randint(1,4))
         fdist.inc(CFSample(context, feature))
+    print fdist
         
-    for sample in fdist.samples():
-        print sample, fdist.count(sample), fdist.freq(sample)
-
     for context in range(1, 4):
-        for feature in range(1, 4):
+        for feature in range(1, 5):
             s=CFSample(context, str(feature))
             e=ContextEvent(context)
             print '    P('+`s`+'|'+`e`+') =', str(fdist.cond_freq(s,e))
@@ -1548,3 +1755,7 @@ if __name__ == '__main__':
     print 'Nr:',
     for r in range(20):
         print fdist.Nr(r),
+        
+if __name__ == '__main__':
+    testCFFreqDist()
+    #testXVal()
