@@ -178,10 +178,11 @@ class ClassifierI:
 
     Classifiers are required to implement two methods:
 
+      - C{classify}: determines which label is most appropriate for a
+        given text token, and returns a labeled text token with that
+        label.
       - C{labels}: returns the list of category labels that are used
         by this classifier.
-      - C{classify}: returns the label which is most appropriate for
-        a given text token.
 
     Classifiers are also encouranged to implement the following
     methods:
@@ -190,6 +191,11 @@ class ClassifierI:
         specifies M{P(label|text)} for a given text token.
       - C{prob}: returns M{P(label|text)} for a given labeled text
         token. 
+      - C{distribution_dictionary}: Return a dictionary that maps from
+        labels to probabilities.
+      - C{distribution_list}: Return a sequence, specifying the
+        probability of each label.
+
     
     Classes implementing the ClassifierI interface may choose to only
     support certain classes of tokens for input.  If a method is
@@ -201,14 +207,6 @@ class ClassifierI:
     but do not include the algorithms for training the classifiers.
     Instead, C{ClassifierTrainer}s are used to generate classifiers
     from training data.
-
-    For efficiency reasons, classifiers may also wish to support the
-    following methods:
-
-      - C{distribution_dictionary}: Return a dictionary that maps from
-        labels to probabilities.
-      - C{distribution_list}: Return a sequence, specifying the
-        probability of each label.
 
     @see: C{ClassifierTrainerI}
     """
@@ -242,15 +240,25 @@ class ClassifierI:
         
         @return: a probability distribution whose samples are
             tokens derived from C{unlabeled_token}.  The samples
-            should be C{LabeledText} tokens whose text is
+            are C{LabeledText} tokens whose text is
             C{unlabeled_token}'s text; and whose location is
             C{unlabeled_token}'s location.  The probability of each
             sample indicates the likelihood that the unlabeled token
-            should be assigned a given label.
-            
+            belongs to each label's category.
         @rtype: C{ProbDistI}
         @param unlabeled_token: The text to be classified.
         @type unlabeled_token: C{Token}
+        """
+        raise NotImplementedError()
+
+    def prob(self, labeled_token):
+        """
+        @return: The probability that C{labeled_token}'s text belongs
+           to the category indicated by C{labeled_token}'s label.
+        @rtype: C{float}
+        @param labeled_token: The labeled token for which to generate
+            a probability estimate.
+        @type labeled_token: C{Token} with type C{LabeledText}
         """
         raise NotImplementedError()
 
@@ -299,7 +307,7 @@ class ClassifierTrainerI:
         @type labeled_tokens: C{list} of (C{Token} with type C{LabeledText})
         @param labeled_tokens: A list of correctly labeled texts.
             These texts will be used as training samples to construct
-            a new classifier.
+            new classifiers.
         @param kwargs: Keyword arguments.
             - C{labels}: The set of possible labels.  If none is
               given, then the set of all labels attested in the
@@ -310,4 +318,18 @@ class ClassifierTrainerI:
         @rtype: C{ClassifierI}
         """
         raise AssertionError()
+
+def find_labels(labeled_tokens):
+    """
+    @return: A list of all labels that are attested in the given list
+        of labeled tokens.
+    @rtype: C{list} of (immutable)
+    @param labeled_tokens: The list of labeled tokens from which to
+        extract labels.
+    @type labeled_tokens: C{list} of (C{Token} with type C{LabeledText})
+    """
+    labelmap = {}
+    for token in labeled_tokens:
+        labelmap[token.type().label()] = 1
+    return labelmap.keys()
 
