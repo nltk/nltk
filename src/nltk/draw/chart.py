@@ -427,7 +427,9 @@ class ChartView:
             self._analyze()
             self._grow()
             self.draw()
-            self._resize() 
+            self._resize()
+            # Update the matrix rep.
+            self._smallmatrix.update(self._chart)
         else:
             edges = self._chart.edges()
             edges.sort()
@@ -1409,3 +1411,4 @@ def demo2():
 
 if __name__ == '__main__':
     demo()
+
