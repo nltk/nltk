@@ -22,7 +22,7 @@
 ##
 
 
-import numbers, html
+import nltk.speech.numbers, nltk.speech.html
 
 # Returns a list with the original string as its only element
 def identity(s):
