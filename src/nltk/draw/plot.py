@@ -192,6 +192,12 @@ class CanvasPlotFrame(PlotFrameI):
         self._canvas.create_line(line, fill='black')
 
     def config_axes(self, xlog, ylog):
+        if hasattr(self, '_rng'):
+            (i1, j1, i2, j2) = self.visible_area()
+            zoomed=1
+        else:
+            zoomed=0
+            
         self._xlog = xlog
         self._ylog = ylog
         if xlog: self._rng = [log10(x) for x in self._original_rng]
@@ -203,7 +209,11 @@ class CanvasPlotFrame(PlotFrameI):
         self._imax = max(self._rng)
         self._jmin = min(self._vals)
         self._jmax = max(self._vals)
-        self.zoom(self._imin, self._jmin, self._imax, self._jmax)
+
+        if zoomed:
+            self.zoom(i1, j1, i2, j2)
+        else:
+            self.zoom(self._imin, self._jmin, self._imax, self._jmax)
 
     def invtransform(self, x, y):
         x = self._canvas.canvasx(x)
