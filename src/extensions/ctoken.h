@@ -164,9 +164,8 @@ static nltkLocation *
 
 /* The struct that is used to encode Type instances. */
 typedef struct {
-    PyObject_HEAD            /* Object head: refcount & type */
-    int num_props;           /* num properties defined by this token */
-    PyObject **properties;   /* alternating list of (value/name) */
+    PyObject_VAR_HEAD        /* Object head: refcount & type & size */
+    PyObject *properties[1];  /* alternating list of (value/name) */
 } nltkType;
 
 /* Use these macros to access nltkType.properties. */
@@ -225,17 +224,14 @@ typedef struct {
     PyObject_HEAD            /* Object head: refcount & type */
     int num_props;           /* num properties defined by this token */
     PyObject **properties;   /* alternating list of (value/name) */
-    long int start;          /* location's start index */
-    long int end;            /* location's end index */
-    PyObject *unit;          /* location's unit */
-    PyObject *source;        /* location's source */
+    PyObject *loc;           /* Location */
 } nltkToken;
 
 /* Use these macros to access nltkToken.properties. */
 #define nltkToken_PROP_NAME(ob, n) ((ob)->properties[(n)*2])
 #define nltkToken_PROP_VALUE(ob, n) ((ob)->properties[(n)*2+1])
 
-/* The Location type. */
+/* The Token type. */
 static PyTypeObject nltkTokenType;
 
 /*********************************************************************
