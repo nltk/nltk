@@ -96,14 +96,6 @@ X{default value} (usually, zero).  Feature value lists provide a
 method that can be used to retrieve all of the non-default feature
 value assignments.  This can decrease the time that it takes to
 process the feature value list considerably.
-
-Labeled Feature Value Lists
-===========================
-Often, it is useful to associate a label with a feature value list.
-The C{LabeledFeatureValueList} class can be used for this purpose.
-Typically, each C{LabeledFeatureValueList} corresponds to a text,
-where the labels are identical, and the feature value list is obtained
-by applying some feature detector list to the text.
 """
 
 from nltk.classifier import ClassifierI, LabeledText
@@ -984,58 +976,6 @@ class MemoizedFDList(AbstractFDList):
         return len(self._base_fdlist)
     
 ##//////////////////////////////////////////////////////
-##  Labeled FeatureValueList
-##//////////////////////////////////////////////////////
-
-class LabeledFeatureValueList:
-    """
-    The label and feature values that correspond to a C{LabeledText}.
-    This class encapsulates all of the information about a
-    C{LabeledText} that a feature-based classifier can use.
-    """
-    def __init__(self, fvlist, label):
-        """
-        Construct a new C{LabeledFeatureValueList}.
-        C{LabeledFeatureValueList}s are typically constructed from
-        C{LabeledText}s.  For example, the following code constructs a
-        new labeled feature value list for C{labeled_text}.  It uses
-        C{feature_detector_list} to produce the feature value list::
-
-            >>> fvlist = feature_detector_list.detect(labeled_text)
-            >>> label = labeled_text.label()
-            >>> lfvlist = LabeledFeatureValueList(fvlist, label)
-        
-        @param fvlist: The feature value list
-        @type fvlist: C{FeatureValueList}
-        @param label: The label
-        @type label: C{string}
-        """
-        self._fvlist = fvlist
-        self._label = label
-        
-    def feature_values(self):
-        """
-        @return: this C{LabeledFeatureValueList}'s feature value list.
-        @rtype: C{FeatureValueList}
-        """
-        return self._fvlist
-    
-    def label(self):
-        """
-        @return: this C{LabeledFeatureValueList}'s label.
-        @rtype: C{string}
-        """
-        return self._label
-    
-    def __repr__(self):
-        """
-        @return: a string representation of this
-            C{LabeledFeatureValueList}.
-        @rtype: C{string}
-        """
-        return '%r/%r' % (self._fvlist, self._label) 
-
-##//////////////////////////////////////////////////////
 ##  Abstract Feature Classifier
 ##//////////////////////////////////////////////////////
 class _AbstractFeatureClassifierProbDist(ProbDistI):
@@ -1210,10 +1150,6 @@ class AbstractFeatureClassifier(ClassifierI):
         """
         return ('<Classifier: %d labels, %d features>' %
                 (len(self.labels()), len(self.fdlist())))
-    
-##//////////////////////////////////////////////////////
-##  Feature Selection
-##//////////////////////////////////////////////////////
 
 ##//////////////////////////////////////////////////////
 ##  Test
