@@ -288,6 +288,10 @@ def chktype(n, arg, *types):
                 # If all of the dict's items were ok, then return 1. 
                 if type_ok: return 1
 
+        # The type spec is a function: use it to check the argument.
+        elif type(t) in (FunctionType, MethodType):
+            if t(arg): return 1
+
         # They gave us a bad type specification; complain.
         else:
             raise AssertionError("Invalid type specification")
