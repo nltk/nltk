@@ -39,6 +39,8 @@ C{Tree}).
 @sort: FreqDist, ProbDistI, MLEProbDist, LidstoneProbDist, LaplaceProbDist, 
     ELEProbDist, HeldoutProbDist, CrossValidationProbDist, UniformProbDist,
     ConditionalFreqDist, ConditionalProbDistI, ConditionalProbDist,
+
+@todo: Better handling of log probabilities.
 """
 
 from nltk.chktype import chktype as _chktype
@@ -93,6 +95,7 @@ class FreqDist:
                supported sample type.
         """
         assert _chktype(2, count, types.IntType)
+        if count == 0: return
         
         self._N += count
         self._count[sample] = self._count.get(sample,0) + count
@@ -143,6 +146,7 @@ class FreqDist:
         """
         assert _chktype(1, r, types.IntType)
         assert _chktype(2, bins, types.IntType, types.NoneType)
+        if r < 0: raise IndexError, 'FreqDist.Nr(): r must be non-negative'
         
         # Special case for Nr(0):
         if r == 0:
@@ -196,7 +200,7 @@ class FreqDist:
         @rtype: float
         @param sample: the sample whose frequency
                should be returned.
-        @type sample: any.
+        @type sample: any
         """
         if self._N is 0: return 0
         return float(self._count.get(sample, 0)) / self._N
@@ -236,6 +240,16 @@ class FreqDist:
         @rtype: string
         """
         return '<FreqDist: ' + `self._count`[1:-1] + '>'
+
+    def __contains__(self, sample):
+        """
+        @return: True if the given sample occurs one or more times in
+            this frequency distribution.
+        @rtype: C{boolean}
+        @param sample: The sample to search for.
+        @type sample: any
+        """
+        return self._count.has_key(sample)
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distributions
@@ -312,12 +326,13 @@ class UniformProbDist(ProbDistI):
         @type samples: C{list}
         @raise ValueError: If C{samples} is empty.
         """
+        assert _chktype(1, samples, [], ())
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
                              'have at least one sample.')
         self._samples = samples
-        self._p = 1.0/len(samples)
         self._sampleset = Set(*samples)
+        self._p = 1.0/len(self._sampleset)
 
     def prob(self, sample):
         if sample in self._sampleset: return self._p
@@ -327,7 +342,6 @@ class UniformProbDist(ProbDistI):
     def __repr__(self):
         return '<UniformProbDist with %d samples>' % len(self._samples)
         
-
 class MLEProbDist(ProbDistI):
     """
     The maximum likelihood estimate for the probability distribution
@@ -346,6 +360,10 @@ class MLEProbDist(ProbDistI):
             probability estimates should be based on.
         """
         assert _chktype(1, freqdist, FreqDist)
+        if freqdist.N() == 0:
+            raise ValueError('An MLE probability distribution must '+
+                             'have at least one sample.')
+        
         self._freqdist = freqdist
         
     def freqdist(self):
@@ -408,6 +426,15 @@ class LidstoneProbDist(ProbDistI):
         assert _chktype(1, freqdist, FreqDist)
         assert _chktype(2, gamma, types.FloatType, types.IntType)
         assert _chktype(3, bins, types.IntType, types.NoneType)
+        if (bins == 0) or (bins is None and freqdist.N() == 0):
+            name = self.__class__.__name__[:-8]
+            raise ValueError('A %s probability distribution ' % name +
+                             'must have at least one bin.')
+        if (bins is not None) and (bins < freqdist.B()):
+            name = self.__class__.__name__[:-8]
+            raise ValueError('\nThe number of bins in a %s must be ' % name +
+                             'greater than or equal to\nthe number of '+
+                             'bins in the FreqDist used to create it.')
         
         self._freqdist = freqdist
         self._gamma = float(gamma)
