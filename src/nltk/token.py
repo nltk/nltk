@@ -49,11 +49,12 @@ Different tokenizers may split the text up differently.
 from chktype import chktype as _chktype 
 from chktype import chkclass as _chkclass
 
-import re
+import re, sys
 
 from types import IntType as _IntType
 from types import StringType as _StringType
 from types import NoneType as _NoneType
+from types import SliceType as _SliceType
 
 ##//////////////////////////////////////////////////////
 ##  Locations
@@ -616,6 +617,77 @@ class TokenizerI:
         """
         raise NotImplementedError()
 
+    def xtokenize(self, str):
+        """
+        Separate the given string of text into a list of C{Token}s.
+        The tuple of C{Token}s returned by tokenizing will be properly
+        ordered; i.e., for any i and j such that i<j::
+
+            tokenize(str)[i].loc() < tokenize(str)[j].loc()
+
+        Like C{xrange} and C{file.xreadlines}, C{xtokenize} will
+        return a structure that emulates a tuple, without actually
+        keeping all of the tokens in memory.  The details of what
+        structure is used are left to the individual tokenizers; but
+        it is guaranteed that the value returned by xtokenize will
+        emulate a tuple of tokens.
+        
+        @param str: The string of text to tokenize.
+        @type str: C{string}
+        @return: A tuple-equivalant structure containing the C{Token}s
+            that are contained in C{str}.
+        @rtype: C{tuple} of C{Token} (or equiv.)
+        """
+        # By default, call tokenize.
+        self.tokenize(str)
+
+class _XTokenTuple:
+    """
+    An internal class used to implement the C{xtokenize} method of
+    several tokenizers.  C{_XTokenTuple} essentially emulates a list
+    tuple of tokens; however, instead of explicitly storing the
+    tokens, they are generated on the fly as they are asked for.  This
+    seriously decreases the memory requirements for processing large
+    texts.
+
+    Internally, C{_XTokenTuple} just maintains a list of types; the
+    location of each type should be its offset.  Thus, _XTokenTuple
+    only supports token tuples where the location of the M{n}th token
+    is @[M{n}].
+    """
+    def __init__(self, typelist, **kws):
+        self._typelist = tuple(typelist)
+        self._kws = kws
+
+    def __getitem__(self, index):
+        if type(index) == _SliceType:
+            if index.stop == sys.maxint:
+                return tuple([Token(self._typelist[i], i, **self._kws) for i in
+                              range(index.start, len(self))])
+            else:
+                return tuple([Token(self._typelist[i], i, **self._kws) for i in
+                              range(index.start, index.stop)])
+        else:
+            return Token(self._typelist[index], index, **self._kws)
+
+    def __len__(self):
+        return len(self._typelist)
+
+    def __in__(self, token):
+        if not isinstance(token, Token): return 0
+        loc = token.loc()
+        if loc == None:
+            return 0
+        start = loc.start()
+        if Location(start, **self._kws) != loc:
+            return 0
+        if start<0 or start>=len(self._typelist):
+            return 0
+        return self._typelist[start] == token.type()
+
+    def __repr__(self):
+        return repr(self[0:len(self)])
+    
 class WSTokenizer(TokenizerI):
     """
     A tokenizer that separates a string of text into words, based on
@@ -633,6 +705,11 @@ class WSTokenizer(TokenizerI):
             tokens.append(Token(words[i], Location(i, unit='w',
                                                    source=source)))
         return tokens
+
+    def xtokenize(self, str, source=None):
+        # Inherit docs from TokenizerI
+        _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
+        return _XTokenTuple(str.split())
 
 class RETokenizer(TokenizerI):
     """
@@ -670,4 +747,26 @@ class RETokenizer(TokenizerI):
                                                    source=source)))
             loc += 1
         return tokens
+
+    def xtokenize(self, str, source=None):
+        # Inherit docs from TokenizerI
+        _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
+
+        if '\0' in str or '\1' in str:
+            raise ValueError("RETokenizer can't handle "+
+                             "strings containing '\\0' or '\\1'")
+
+        import time
+        t=time.time()
+        print 'sub1'
+        str = re.sub(self._regexp, '\0\\1\1', str)
+        print time.time()-t; t = time.time()
+        print 'sub2'
+        str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)', '\0', str)
+        print time.time()-t; t = time.time()
+        print 'filter'
+        words = [w for w in str.split('\0') if w != '']
+        print time.time()-t; t = time.time()
+        print 'xtokentuple'
+        return _XTokenTuple(words)
 
