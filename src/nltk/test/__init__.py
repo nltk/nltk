@@ -24,13 +24,7 @@ following syntax::
 This command is called by the \"C{test}\" target in the NLTK Makefile.
 """
 
-# Import required packages.  Unfortunately, there's a naming conflict
-# between nltk.token and the stdlib module 'token', which means we
-# have to do some path shuffling to successfully import 'doctest'.
-import sys, os, os.path
-if __name__ == '__main__': del sys.path[0]
-
-import doctest, unittest, trace, StringIO, re
+import sys, os, os.path, unittest, trace, StringIO, re
 
 #######################################################################
 # Test runner
@@ -45,15 +39,10 @@ def testsuite():
         if file.startswith('__init__'): continue
         try: exec('import nltk.test.%s as m' % file[:-3])
         except: print 'Error importing %s' % file
-
         # Add unittest tests.
-        #if hasattr(m, 'testsuite'):
-        #    testsuites.append(m.testsuite())
+        if hasattr(m, 'testsuite'):
+            testsuites.append(m.testsuite())
 
-        # Add doctest tests.
-        try: testsuites.append(doctest.DocTestSuite(m))
-        except ValueError: pass
-        
     return unittest.TestSuite(testsuites)
 
 def test(verbosity=0):
