@@ -105,7 +105,9 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
     PorterStemmer requires that all tokens have string types.
     """
 
-    def __init__(self):
+    ## --NLTK--
+    ## Add propnames parameter.
+    def __init__(self, **propnames):
         """The main part of the stemming algorithm starts here.
         b is a buffer holding a word to be stemmed. The letters are in b[k0],
         b[k0+1] ... ending at b[k]. In fact k0 = 0 in this demo program. k is
@@ -115,6 +117,10 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
         Note that only lower case sequences are stemmed. Forcing to lower case
         should be done before stem(...) is called.
         """
+        ## --NLTK--
+        ## Call the base class constructor.
+        nltk.stemmer.AbstractStemmer.__init__(self, **propnames)
+        
         self.b = ""  # buffer for word to be stemmed 
         self.k = 0
         self.k0 = 0
@@ -544,9 +550,9 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
 
     ## --NLTK--
     ## Define a stem() method that implements the StemmerI interface.
-    def stem(self, token, **propnames):
+    def stem(self, token):
         # Delegate to self.raw_stem()
-        return self._stem_from_raw(token, **propnames)
+        return self._stem_from_raw(token)
 
     def raw_stem(self, word):
         stem = self.stem_word(string.lower(word), 0, len(word) - 1)

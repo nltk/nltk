@@ -32,8 +32,10 @@ class StemmerI:
     """
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
+    
+    @outprop: C{stem}: The token's morphological stem.
     """
-    def stem(self, token, **propnames):
+    def stem(self, token):
         """
         Remove morphological affixes from given token's C{text}
         property, and output the remaining stem to the C{stem}
@@ -41,13 +43,6 @@ class StemmerI:
 
         @param token: The word token that should be stemmed.
         @type token: L{Token}
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
-            the default property names.  Each entry maps from a
-            default property name to a new property name.
-        @inprop: C{text}: The text content of the word to be stemmed.
-        @outprop: C{stem}: The property where the stem should be
-                  stored.
         """
         raise NotImplementedError()
 
@@ -62,7 +57,7 @@ class StemmerI:
         """
         raise NotImplementedError()
 
-    def stem_n(self, token, n=None, **propnames):
+    def stem_n(self, token, n=None):
         """
         Find a list of the C{n} most likely stems for the given token,
         and output it to the C{stems} property.  If the given token
@@ -74,12 +69,6 @@ class StemmerI:
         @type token: L{Token}
         @param n: The maximum number of stems to generate.  If C{n}
             is C{None}, then generate all possible stems.
-        @param propnames: A dictionary that can be used to override
-            the default property names.  Each entry maps from a
-            default property name to a new property name.
-        @inprop: C{text}: The text content of the word to be stemmed.
-        @outprop: C{stems}: The property where the list of stems
-                  should be stored.
         """
         raise NotImplementedError()
 
@@ -109,19 +98,31 @@ class AbstractStemmer(StemmerI):
     It also provides L{_stem_from_raw}, which can be used to implement
     C{stem} based on C{raw_stem}; and L{stem_n_from_raw}, which can be
     used to implement C{stem_n} based on C{raw_stem_n}.
+    
+    @inprop: C{stem}: The token's text content.
+    @outprop: C{stem}: The token's morphological stem.
     """
-    def __init__(self):
+    def __init__(self, **propnames):
+        """
+        Create a new stemmer.
+        
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractStemmer:
             raise AssertionError, "Abstract classes can't be instantiated"
+        self._propnames = propnames
 
     def raw_stem(self, text):
       token = Token(text=text)
       self.stem(token)
       return token['stem']
 
-    def stem_n(self, token, n=None, **propnames):
-      stems_prop = propnames.get('stem', 'stem')
+    def stem_n(self, token, n=None):
+      stems_prop = self._propnames.get('stem', 'stem')
       if n == 0:
           token[stems_prop] = []   # (pathological case)
       else:
@@ -134,14 +135,14 @@ class AbstractStemmer(StemmerI):
         self.stem_n(token, n)
         return token['stems']
 
-    def _stem_from_raw(self, token, **propnames):
-        text_prop = propnames.get('text', 'text')
-        stem_prop = propnames.get('stem', 'stem')
+    def _stem_from_raw(self, token):
+        text_prop = self._propnames.get('text', 'text')
+        stem_prop = self._propnames.get('stem', 'stem')
         token[stem_prop] = self.raw_stem(token[text_prop])
 
-    def _stem_n_from_raw(self, token, **propnames):
-        text_prop = propnames.get('text', 'text')
-        stems_prop = propnames.get('stems', 'stems')
+    def _stem_n_from_raw(self, token):
+        text_prop = self._propnames.get('text', 'text')
+        stems_prop = self._propnames.get('stems', 'stems')
         token[stems_prop] = self.raw_stem_n(token[text_prop])
 
 class RegexpStemmer(AbstractStemmer):
@@ -149,19 +150,33 @@ class RegexpStemmer(AbstractStemmer):
     A stemmer that uses regular expressions to identify morphological
     affixes.  Any substrings that matches the regular expressions will
     be removed.
+    
+    @inprop: C{stem}: The token's text content.
+    @outprop: C{stem}: The token's morphological stem.
     """
-    def __init__(self, regexp):
-        assert chktype(1, regexp, str)
+    def __init__(self, regexp, **propnames):
+        """
+        Create a new regexp stemmer.
+
+        @type regexp: C{string} or C{regexp}
+        @param regexp: The regular expression that should be used to
+            identify morphological affixes.
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
         if not hasattr(regexp, 'pattern'):
             regexp = re.compile(regexp)
         self._regexp = regexp
+        AbstractStemmer.__init__(self, **propnames)
 
     def raw_stem(self, word):
         return self._regexp.sub('', word)
 
-    def stem(self, token, **propnames):
+    def stem(self, token):
         # Delegate to self.raw_stem()
-        return self._stem_from_raw(token, **propnames)
+        return self._stem_from_raw(token)
 
     def __repr__(self):
         return '<RegexpStemmer: %r>' % self._regexp.pattern
