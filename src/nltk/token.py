@@ -176,7 +176,18 @@ class Token(dict):
         frozen_properties = {}
         for (key, val) in self.items():
             frozen_properties[key] = self._freezeval(val)
-        return FrozenToken(**frozen_properties)
+            
+        frozen_token_class = self.frozen_token_class()
+        return frozen_token_class(**frozen_properties)
+
+    def frozen_token_class():
+        """
+        @rtype: C{class}
+        @return: The class that should be used to freeze instances of
+            this class.
+        """
+        return FrozenToken
+    frozen_token_class = staticmethod(frozen_token_class)
 
     def copy(self, deep=True):
         """
@@ -356,8 +367,6 @@ class Token(dict):
             else:
                 props.append('%s=%r' % (p,v))
         props = ', '.join(props)
-        # If there are no properties, use "<empty>" instead.
-        if len(props) == 0: props = 'empty'
         # If there's a location, then add it to the end.
         if self.has_key('loc'):
             if not isinstance(self['loc'], LocationI):
