@@ -17,7 +17,7 @@
 #  2. we want corpus access to be consistant (each corpus is accessed
 #     using the same basic system).
 #
-#  3. we want corpus access to be portable (eg not dependant on where
+#  3. we want corpus access to be portable (eg not dependent on where
 #     files are installed).
 #
 #  4. we want to make it easy to tell NLTK about new corpera
@@ -1133,6 +1133,22 @@ chunking = SimpleCorpusReader(
     # paras = chunking.tokenize('test.txt')
     # cct = ConllChunkedTokenizer(['NP'])
     # [Tree('S', *cct.tokenize(para.type())) for para in paras]
+
+#################################################################
+## IEER Named Entity data
+#################################################################
+
+groups = [('APW', 'APW_\d*'), ('NYT', 'NYT_\d*')]
+regexp = r'<IEER[^>]*>\n<DOC>\n|</DOC>\n<DOC>\n|</DOC>\n</IEER_DOC>\n'
+
+ieer = SimpleCorpusReader(
+    'ieer', 'ieer/', r'(APW|NYT)_\d+', groups, description_file='README',
+    default_tokenizer=RETokenizer(regexp, negative=1, unit='d'))
+
+    # ideally use parser.chunk.IeerChunkedTokenizer() on each document
+    # docs = ieer.tokenize('APW_19980314')
+    # ieerct = IeerChunkedTokenizer(['LOCATION', 'ORGANIZATION'])
+    # [Tree('DOC', *ieerct.tokenize(doc.type())) for doc in docs]
 
 ###################################################
 ## Treebank (fragment distributed with NLTK)
