@@ -164,7 +164,7 @@ from nltk.parser import ParserI, AbstractParser
 from nltk.tree import Tree
 from nltk.tokenizer import TokenizerI, AbstractTokenizer
 from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WhitespaceTokenizer
-from nltk.token import Token, CharSpanLocation, SubtokenContextPointer
+from nltk.token import Token, FrozenToken, CharSpanLocation, SubtokenContextPointer
 from nltk.chktype import chktype
 from sets import Set
 import types, re
@@ -291,7 +291,7 @@ class ChunkScore:
         self._fn_num = 0
 
     def _childtuple(self, t):
-        return tuple([c.freeze() for c in t])
+        return tuple(t.freeze(FrozenToken))
 
     def score(self, correct, guessed):
         """
@@ -310,7 +310,7 @@ class ChunkScore:
         """
         assert chktype(1, correct, Tree)
         assert chktype(2, guessed, Tree)
-
+	
         self._correct |= Set([self._childtuple(t) for t in correct
                                if isinstance(t, Tree)])
         self._guessed |= Set([self._childtuple(t) for t in guessed
