@@ -29,7 +29,7 @@ which a text can be ambiguous:
     - There is not enough information to decide which of several
       candidate parses is correct.
 
-However, the parser module does E{not} distinguish these two types of
+However, the parser module does I{not} distinguish these two types of
 ambiguity.
 """
 
