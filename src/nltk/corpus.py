@@ -87,6 +87,10 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     in which a specific ambiguous word appears. Each instance is tagged
     with a sense identifier. The ambiguous words used are line/N,
     interest/N, hard/A and serve/V.
+
+  - L{levin}: The index from Beth Levin's verb classification text,
+    indicating in which sections a given verb appears. The sectioning of
+    her text corresponds to different generalisations over verbs.
   
 @group Corpus Readers: twenty_newsgroups, treebank, words, reuters,
      ppatttach, brown, gutenberg
@@ -107,6 +111,8 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
 @var semcor: A corpus of 200,000 words, each tagged with its WordNet sense.
 @var senseval: A collection of texts, each consisting of a set of instances
      of a given ambiguous word, along tagged with its correct sense.
+@var levin: The index from Beth Levin's verb classification text,
+    indicating in which sections a given verb appears. 
       
 @todo: Add default basedir for OS-X?
 
@@ -119,7 +125,7 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
 """
 
 import sys, os.path, re
-from nltk.tokenizer import WSTokenizer, RegexpTokenizer
+from nltk.tokenizer import WSTokenizer, RegexpTokenizer, TokenizerI
 from nltk.token import Token, CharSpanLocation, SpanLocation
 from nltk.tagger import TaggedTokenizer
 from nltk.tree import TreebankTokenizer
@@ -845,16 +851,28 @@ class TreebankCorpusReader(CorpusReaderI):
     _tb_tokenizer = TreebankTokenizer()
     _tag_tokenizer = TaggedTokenizer()
     
-    def __init__(self, name, rootdir, description_file=None,
-                 license_file=None, copyright_file=None):
+    def __init__(self, name, rootdir, treebank_2=False,
+                 description_file=None, license_file=None,
+                 copyright_file=None):
         self._name = name
         self._original_rootdir = rootdir
         self._description_file = description_file
         self._license_file = license_file
         self._copyright_file = copyright_file
 
-        # 4 groups:
-        self._groups = ('raw', 'tagged', 'parsed', 'merged')
+        if treebank_2:
+            # 3 groups:
+            self._groups = ('tagged', 'parsed', 'merged')
+            self._group_directory = { 
+                'tagged':'tagged/pos', 'parsed':'parsed/prd',
+                'merged':'parsed/mrg' }
+            self._group_mask = { 'tagged':r'.*\.pos',
+                'parsed':r'.*\.prd', 'merged':'.*\.mrg' }
+        else:
+            # 4 groups:
+            self._groups = ('raw', 'tagged', 'parsed', 'merged')
+            self._group_directory = dict([(g, g) for g in self._groups])
+            self._group_mask = dict([(g, r'.*') for g in self._groups])
 
         # Are the merged items "virtual" (i.e., constructed on the
         # fly from the parsed & tagged items)?  This is true iff the
@@ -872,6 +890,7 @@ class TreebankCorpusReader(CorpusReaderI):
         self._copyright = None
         self._items = None
         self._group_items = None
+        self._initialized = False
 
     #////////////////////////////////////////////////////////////
     #// Initialization
@@ -879,14 +898,20 @@ class TreebankCorpusReader(CorpusReaderI):
     def _initialize(self):
         "Make sure that we're initialized."
         # If we're already initialized, then do nothing.
-        if self._basedir == get_basedir(): return
+        if self._initialized: return
 
         # Make sure the corpus is installed.
         basedir = get_basedir()
-        if not os.path.isdir(os.path.join(basedir, self._original_rootdir)):
-            raise IOError('%s is not installed' % self._name)
-        self._basedir = basedir
-        self._rootdir = os.path.join(basedir, self._original_rootdir)
+        if not os.path.isabs(self._original_rootdir):
+            if not os.path.isdir(os.path.join(basedir, self._original_rootdir)):
+                raise IOError('%s is not installed' % self._name)
+            self._basedir = basedir
+            self._rootdir = os.path.join(basedir, self._original_rootdir)
+        else:
+            if not os.path.isdir(self._original_rootdir):
+                raise IOError('%s is not installed' % self._name)
+            self._basedir = '' # empty
+            self._rootdir = self._original_rootdir
 
         # Get the list of items in each group.
         self._group_items = {}
@@ -912,11 +937,20 @@ class TreebankCorpusReader(CorpusReaderI):
             path = os.path.join(self._rootdir, self._copyright_file)
             self._copyright = open(path).read()
 
+        self._initialized = True
+
     def _find_items(self, group):
-        path = os.path.join(self._rootdir, group)
-        if os.path.isdir(path):
-            self._group_items[group] = [os.path.join(group, f)
-                                          for f in os.listdir(path)]
+        directory = self._group_directory.get(group)
+        mask = self._group_mask.get(group)
+        if directory:
+            self._group_items[group] = []
+            path = os.path.join(self._rootdir, directory)
+            for dir_path, dir_names, file_names in os.walk(path):
+                for file_name in file_names:
+                    if re.match(mask + r'$', file_name) and \
+                       not file_name.startswith('readme'):
+                        self._group_items[group].append(
+                            os.path.join(dir_path, file_name))
 
     def _find_virtual_merged_items(self):
         # Check to make sure we have both the .tagged and the .parsed files.
@@ -1026,13 +1060,14 @@ class TreebankCorpusReader(CorpusReaderI):
         yield tokenizer.raw_tokenize(self.raw_read(item))
     
     def _tokenizer(self, item):
-        if item.startswith('merged'):
+        self._initialize()
+        if item in self._group_items['merged']:
             return self._tb_tokenizer
-        elif item.startswith('tagged'):
+        elif item in self._group_items['tagged']:
             return self._tag_tokenizer
-        elif item.startswith('parsed'):
+        elif item in self._group_items['parsed']:
             return self._tb_tokenizer
-        elif item.startswith('raw'):
+        elif item in self._group_items['raw']:
             return self._ws_tokenizer
 
     #////////////////////////////////////////////////////////////
@@ -1277,7 +1312,7 @@ ieer = SimpleCorpusReader(
 ###################################################
 ## Treebank (fragment distributed with NLTK)
 
-treebank = TreebankCorpusReader('treebank', 'treebank/',
+treebank = TreebankCorpusReader('treebank', 'treebank/', False,
                                 description_file='README')
 
 ###################################################
@@ -1320,6 +1355,23 @@ Reuters newswire in 1987.  The documents were assembled and indexed
 with categories by Reuters.'''
 
 # Not supported yet
+
+###################################################
+## Levin corpus
+
+class _LevinTokenizer(TokenizerI):
+    def tokenize(self, token, addlocs=False):
+        token['VERB_DICT'] = {}
+        for line in token['TEXT'].split('\n'):
+            items = line.split(':')
+            if len(items) == 2:
+                verb, indices = items
+                indices = filter(lambda x: x, re.split(r'[,\s]*', indices))
+                token['VERB_DICT'][verb.strip()] = indices
+
+levin = SimpleCorpusReader(
+    'levin', 'levin/', 'verbs', description_file='README',
+    default_tokenizer = _LevinTokenizer())
 
 #################################################################
 # Demonstration
