@@ -27,11 +27,15 @@ clean:
 	rm -rf webpage
 
 ##############################################
-##  Config
+##  Configuration for web page transfer
+##
+## CAUTION: Setting these incorrectly could cause large
+## amounts of data to be inadvertantly erased!!
 
 HOST = gradient.cis.upenn.edu
-HOSTWWW = ~/public_html/nltk2
-HOSTFILE = webpage
+HOSTLOC = ~/public_html
+HOSTDIR = nltk2
+HOSTFILE = tmp/webpage
 
 ##############################################
 ##  Internal makefile rules
@@ -58,15 +62,17 @@ webpage.tgz: _webpage
 
 # Transfer the web page to host.
 # ssh .identity must be set up correctly for this to work.
+# Note that the use of rm -rf is potentially very dangerous -- use
+# with great care.
 xfer: webpage.tgz
 	scp webpage.tgz $(HOST):$(HOSTFILE).tgz
 	ssh $(HOST) \
             "(rm -f $(HOSTFILE).tar && \
              gunzip $(HOSTFILE).tgz && \
+             rm -rf $(HOSTLOC)/$(HOSTDIR) && \
              tar -xvf $(HOSTFILE).tar && \
-             (mv -f $(HOSTWWW) $(HOSTWWW).backup || true) && \
-             mv webpage $(HOSTWWW)) && \
-             rm $(HOSTFILE).tar"
+             mv webpage $(HOSTLOC)/$(HOSTDIR) && \
+             rm -f $(HOSTFILE).tar)"
 
 # Construct the web page for the toolkit.
 _webpage: _doc _pset _html _src
