@@ -1682,8 +1682,8 @@ def demo_eval(chunkparser, text):
     chunkscore = ChunkScore()
 
     token = Token(TEXT=text)
-    LineTokenizer().tokenize(token, addlocs=True)
-    sentences = token['SUBTOKENS']
+    LineTokenizer(SUBTOKENS='LINES').tokenize(token, addlocs=True)
+    sentences = token['LINES']
     ctt = ChunkedTaggedTokenizer('NP')
     for sentence in sentences:
         ctt.tokenize(sentence)
