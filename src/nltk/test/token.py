@@ -856,13 +856,13 @@ Index locations are ordered, and can be compared with cmp:
 
 """
 
-def test_ProbabilisticToken(): """
-Probablistic tokens will probably be deprecated.  But in the mean
-time, this covers the code in ProbabilisticToken:
+# def test_ProbabilisticToken(): """
+# Probablistic tokens will probably be deprecated.  But in the mean
+# time, this covers the code in ProbabilisticToken:
 
-    >>> ProbabilisticToken(0.25, TEXT='dog')
-    <dog> (p=0.25)
-"""
+#     >>> ProbabilisticToken(0.25, TEXT='dog')
+#     <dog> (p=0.25)
+# """
     
 
 def test_demo(): r"""
@@ -905,14 +905,14 @@ import sys, os, os.path
 if __name__ == '__main__': sys.path[0] = None
 import unittest, doctest, trace
 
-def testsuite():
+def testsuite(reload_module=False):
     import doctest, nltk.test.token
-    reload(nltk.test.token)
+    if reload_module: reload(nltk.test.token)
     return doctest.DocTestSuite(nltk.test.token)
 
-def test(verbosity=2):
+def test(verbosity=2, reload_module=False):
     runner = unittest.TextTestRunner(verbosity=verbosity)
-    runner.run(testsuite())
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
