@@ -105,7 +105,7 @@ class FreqDist:
         @return: The number of samples with count r.
         @rtype: C{int}
         @type r: C{int}
-        @param n: A sample count.
+        @param r: A sample count.
         @type bins: C{int}
         @param bins: The number of possible sample outcomes.  C{bins}
             is used to calculate Nr(0).  In particular, Nr(0) is
