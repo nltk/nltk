@@ -462,9 +462,6 @@ class ChartView:
     def __init__(self, chart, root=None, **kw):
         """
         Construct a new C{Chart} display.
-        
-        @type sentence: C{list} of C{Token}
-        @param sentence: The list of Tokens that the chart spans.
         """
         # Process keyword args.
         draw_tree = kw.get('draw_tree', 0)

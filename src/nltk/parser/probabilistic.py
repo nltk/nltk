@@ -315,8 +315,8 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
             should contain all possible constituents that are shorter
             than C{span}.
             
-        @type text: C{list} of C{Token}
-        @param text: The text we are parsing.  This is only used for
+        @type subtokens: C{list} of C{Token}
+        @param subtokens: The text we are parsing.  This is only used for
             trace output.  
         """
         NODE = self._property_names.get('NODE', 'NODE')
@@ -452,8 +452,8 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
 
         @param production: The production that has been applied
         @type production: C{PCFGProduction}
-        @type text: C{list} of C{Token}
-        @param text: The text we are parsing.  This is only used for
+        @type subtokens: C{list} of C{Token}
+        @param subtokens: The text we are parsing.  This is only used for
             trace output.  
         @param p: The probability of the tree produced by the
             production.  

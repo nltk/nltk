@@ -814,15 +814,15 @@ class WittenBellProbDist(ProbDistI):
     number of events that have only been seen once. The probability mass
     reserved for unseen events is equal to:
 
-        M{T / (N + T)}
+        - M{T / (N + T)}
 
     where M{T} is the number of observed event types and M{N} is the total
     number of observed events. This equates to the maximum likelihood estimate
     of a new type event occuring. The remaining probability mass is discounted
     such that all probability estimates sum to one, yielding:
 
-        M{p = T / Z (N + T)}, if count = 0
-        M{p = c / (N + T)}, otherwise
+        - M{p = T / Z (N + T)}, if count = 0
+        - M{p = c / (N + T)}, otherwise
     """
 
     def __init__(self, freqdist, bins=None):
@@ -832,7 +832,7 @@ class WittenBellProbDist(ProbDistI):
         events by using the number of events that have only been seen once.
         The probability mass reserved for unseen events is equal to:
 
-            M{T / (N + T)}
+            - M{T / (N + T)}
 
         where M{T} is the number of observed event types and M{N} is the total
         number of observed events. This equates to the maximum likelihood
@@ -840,8 +840,8 @@ class WittenBellProbDist(ProbDistI):
         is discounted such that all probability estimates sum to one,
         yielding:
 
-            M{p = T / Z (N + T)}, if count = 0
-            M{p = c / (N + T)}, otherwise
+            - M{p = T / Z (N + T)}, if count = 0
+            - M{p = c / (N + T)}, otherwise
 
         The parameters M{T} and M{N} are taken from the C{freqdist} parameter
         (the C{B()} and C{N()} values). The normalising factor M{Z} is
@@ -889,7 +889,7 @@ class GoodTuringProbDist(ProbDistI):
     counts based on the number of events with higher counts. It does so by
     using the smoothed count M{c*}:
 
-        M{c* = (c + 1) N(c + 1) / N(c)}
+        - M{c* = (c + 1) N(c + 1) / N(c)}
 
     where M{c} is the original count, M{N(i)} is the number of event types
     observed with count M{i}. These smoothed counts are then normalised to
@@ -905,7 +905,7 @@ class GoodTuringProbDist(ProbDistI):
         counts based on the number of events with higher counts. It does so by
         using the smoothed count M{c*}:
 
-            M{c* = (c + 1) N(c + 1) / N(c)}
+            - M{c* = (c + 1) N(c + 1) / N(c)}
 
         where M{c} is the original count, M{N(i)} is the number of event types
         observed with count M{i}. These smoothed counts are then normalised to
