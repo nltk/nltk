@@ -7,6 +7,22 @@
 #
 # $Id$
 
+"""
+Classes and interfaces used to select which features are relevant for
+a given classification task.
+
+  - C{FeatureSelectorI} defines a standard interface for selecting
+    which features from a given C{FeatureDetectorList} are relevant to
+    a classification problem.
+
+  - C{SelectedFDList} provides feature selectors with a convenient
+    means of building C{FeatureSelectorList}s containing the feature
+    detectors for the relevant features.
+
+This module also defines classes implementing the C{FeatureSelectorI}
+interface.
+"""
+
 from nltk.classifier import *
 from nltk.classifier.feature import *
 
