@@ -87,8 +87,7 @@ Create a sample sentence:
 Create a shift-reduce parser and parse the sentence.
 
     >>> parser = ShiftReduceParser(cfg1, LEAF='TEXT')
-    >>> parser.parse_n(sent)
-    >>> for tree in sent['TREES']:
+    >>> for tree in parser.get_parse_list(sent):
     ...     print tree
     (S:
       (NP: <I>)
@@ -100,8 +99,7 @@ Create a shift-reduce parser and parse the sentence.
 Create a shift-reduce parser and parse the sentence.
 
     >>> parser = RecursiveDescentParser(cfg2, LEAF='TEXT')
-    >>> parser.parse_n(sent)
-    >>> for tree in sent['TREES']:
+    >>> for tree in parser.get_parse_list(sent):
     ...     print tree
     (S:
       (NP: <I>)
@@ -132,8 +130,7 @@ Create a sample sentence:
 Top down parser:
 
     >>> parser = ChartParser(cfg2, TD_STRATEGY, LEAF='TEXT')
-    >>> parser.parse_n(sent)
-    >>> for tree in sent['TREES']:
+    >>> for tree in parser.get_parse_list(sent):
     ...     print tree
     (S:
       (NP: <I>)
@@ -154,8 +151,7 @@ Bottom-up parser:
 
     >>> from nltk.parser.chart import *
     >>> parser = ChartParser(cfg2, BU_STRATEGY, LEAF='TEXT')
-    >>> parser.parse_n(sent)
-    >>> for tree in sent['TREES']:
+    >>> for tree in parser.get_parse_list(sent):
     ...     print tree
     (S:
       (NP: <I>)
@@ -188,8 +184,7 @@ Parse it:
 
     >>> from nltk.parser.probabilistic import *
     >>> parser = InsidePCFGParser(pcfg1, LEAF='TEXT')
-    >>> parser.parse_n(sent)
-    >>> for tree in sent['TREES']:
+    >>> for tree in parser.get_parse_list(sent):
     ...     print tree
     (S:
       (NP: <I>)
@@ -206,8 +201,7 @@ Parse it:
 
     >>> from nltk.parser.probabilistic import *
     >>> parser = ViterbiPCFGParser(pcfg1, LEAF='TEXT')
-    >>> parser.parse_n(sent)
-    >>> for tree in sent['TREES']:
+    >>> for tree in parser.get_parse_list(sent):
     ...     print tree
     (S:
       (NP: <I>)
@@ -342,7 +336,7 @@ Create a shift-reduce parser and parse the sentence.
 
     >>> parser = RecursiveDescentParser(cfg2, LEAF='TEXT')
     >>> parser.trace(2)
-    >>> parser.parse_n(sent)
+    >>> parser.parse(sent)
     Parsing 'I saw a man in the park'
         [ * <S> ]
       E [ * <NP> <VP> ]
