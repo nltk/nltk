@@ -70,7 +70,7 @@ class AbstractTree:
     a tuple of the children, respectively.
 
     @ivar _node: The node value for this tree.
-    @ivar _node: any
+    @type _node: any
     @ivar _children: A list of this tree's children.
     @type _children: C{list}
     """
@@ -241,6 +241,9 @@ class AbstractTree:
         No ordering relationship is defined over C{Tokens}; raise an
         exception.
 
+        @todo: Define this to do something more useful.  It gets
+           called wheter you like it or not for some situations
+           (eg sort?).  (but is that bad?)
         @raise AssertionError:
         """
         raise AssertionError("Ordering relations are not "+
