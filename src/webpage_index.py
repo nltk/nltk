@@ -314,7 +314,7 @@ def main():
         dir = os.path.join(sys.argv[2], name)
         if not os.path.isdir(dir): continue
         if not os.path.exists(os.path.join(dir, name+'.info')):
-            print 'WARNING: no info file for report %r' %  name
+            print '    WARNING: no info file for report %r' %  name
             continue
         reports.append(Info(name, dir))
 
