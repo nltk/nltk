@@ -58,47 +58,55 @@ class StemmerI(TaskI):
         """
         raise NotImplementedError()
 
-    def stem_n(self, token, n=None):
+    def get_stem(self, token):
         """
-        Find a list of the C{n} most likely stems for the given token,
-        and output it to the C{STEMS} property.  If the given token
-        has fewer than C{n} possible stems, then find all possible
-        stems.  The stems should be sorted in descending order of
-        estimated likelihood.
-
+        @return: the morphological stem for the given token.
+        
+        @rtype: C{string}
         @param token: The word token that should be stemmed.
         @type token: L{Token}
-        @param n: The maximum number of stems to generate.  If C{n}
-            is C{None}, then generate all possible stems.
         """
-        raise NotImplementedError()
-
-    def raw_stem_n(self, word, n=None):
+        
+    def get_stem_probs(self, token):
         """
-        @return: A list of the C{n} most likely stems for the given
-        word string.  If the given word string has fewer than C{n}
-        possible stems, then return all possible stems.  The stems
-        should be sorted in descending order of estimated likelihood.
-
-        @param word: The word to be stemmed.
-        @type word: C{string}
-        @param n: The maximum number of stems to generate.  If C{n}
-            is C{None}, then generate all possible stems.
+        @return: a probability distribution over the possible
+        morphological stems for the given token.
+        
+        @rtype: C{string}
+        @param token: The word token that should be stemmed.
+        @type token: L{Token}
         """
-        raise NotImplementedError()
-
+        
+    def get_stem_list(self, token):
+        """
+        @return: a list of the possible morphological stems for the
+        given token.  When possible, the list should be sorted from
+        the most likely stem to the least likely stem.
+        
+        @rtype: C{string}
+        @param token: The word token that should be stemmed.
+        @type token: L{Token}
+        """
+        
+    def get_stem_scores(self, token):
+        """
+        @return: a dictioanry mapping possible morphological stems for
+        the given token to numeric scores.
+        
+        @rtype: C{string}
+        @param token: The word token that should be stemmed.
+        @type token: L{Token}
+        """
+        
 class AbstractStemmer(StemmerI, PropertyIndirectionMixIn):
     """
     An abstract base class for stemmers.  C{AbstractStemmer} provides
     a default implementations for:
 
       - L{raw_stem} (based on C{stem})
-      - L{stem_n} (based on C{stem})
-      - L{raw_stem_n} (based on C{stem_n})
 
     It also provides L{_stem_from_raw}, which can be used to implement
-    C{stem} based on C{raw_stem}; and L{stem_n_from_raw}, which can be
-    used to implement C{stem_n} based on C{raw_stem_n}.
+    C{stem} based on C{raw_stem}.
     
     @inprop: C{STEM}: The token's text content.
     @outprop: C{STEM}: The token's morphological stem.
@@ -124,32 +132,10 @@ class AbstractStemmer(StemmerI, PropertyIndirectionMixIn):
         self.stem(token)
         return token[STEM]
 
-    def stem_n(self, token, n=None):
-        STEMS = self.property('STEMS')
-        STEM = self.property('STEM')
-        if n == 0:
-            token[STEMS] = []   # (pathological case)
-        else:
-            self.stem(token)
-            token[STEMS] = [token[STEM]]
-        del token[STEM]
-
-    def raw_stem_n(self, text, n=None):
-        TEXT = self.property('TEXT')
-        STEM = self.property('STEM')
-        token = Token({TEXT:text})
-        self.stem_n(token, n)
-        return token[STEM]
-
     def _stem_from_raw(self, token):
         TEXT = self.property('TEXT')
         STEM = self.property('STEM')
         token[STEM] = self.raw_stem(token[TEXT])
-
-    def _stem_n_from_raw(self, token):
-        TEXT = self.property('TEXT')
-        STEMS = self.property('STEMS')
-        token[STEMS] = self.raw_stem_n(token[TEXT])
 
 class RegexpStemmer(AbstractStemmer):
     """
