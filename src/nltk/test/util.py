@@ -14,7 +14,6 @@ Unit testing for L{nltk.util}.
 """
 
 import sys
-import nltk.util; reload(nltk.util)
 from nltk.util import *
 
 def test_SparseListRepr(): """
