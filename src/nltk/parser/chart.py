@@ -458,6 +458,21 @@ class Chart:
         LEAF = self._property_names.get('LEAF', 'LEAF')
         return [tok[LEAF] for tok in self._token[SUBTOKENS]]
 
+    def token(self):
+        """
+        @rtype: L{Token}
+        @return: The sentence that this chart is used to parse.
+        """
+        return self._token
+
+    def property_names(self):
+        """
+        @rtype: C{dict}
+        @return: The property names dictionary, as given in the
+            constructor.
+        """
+        return self._property_names
+
     #////////////////////////////////////////////////////////////
     # Edge access
     #////////////////////////////////////////////////////////////
