@@ -9,54 +9,24 @@
 
 Summary:
 
-    import babelizer
-   
-	print ' '.join(babelizer.available_languages)
+  >>> import babelizer
+  >>> print ' '.join(babelizer.available_languages)
+  >>> print babelizer.translate( 'How much is that doggie in the window?',
+                                 'English', 'French' )
+  >>> def babel_callback(phrase):
+         print phrase
+         sys.stdout.flush()
+  >>> babelizer.babelize( 'I love a reigning knight.',
+                          'English', 'German',
+                          callback = babel_callback )
 
-    print babelizer.translate( 'How much is that doggie in the window?',
-		                       'English', 'French' )
-
-    def babel_callback(phrase):
-		print phrase
-		sys.stdout.flush()
-		
-	babelizer.babelize( 'I love a reigning knight.',
-						'English', 'German',
-						callback = babel_callback )
-
-available_languages
+@group Helper Functions: clean
+@sort: BabelizerError, LanguageNotAvailableError, 
+       BabelfishChangedError, BabelizerIOError
+@var available_languages:
     A list of languages available for use with babelfish.
-
-translate( phrase, from_lang, to_lang )
-    Uses babelfish to translate phrase from from_lang to to_lang.
-
-babelize(phrase, from_lang, through_lang, limit = 12, callback = None)
-    Uses babelfish to translate back and forth between from_lang and
-    through_lang until either no more changes occur in translation or
-    limit iterations have been reached, whichever comes first.  Takes
-    an optional callback function which should receive a single
-    parameter, being the next translation.  Without the callback
-    returns a list of successive translations.
-
-It's only guaranteed to work if 'english' is one of the two languages
-given to either of the translation methods.
-
-Both translation methods throw exceptions which are all subclasses of
-BabelizerError.  They include
-
-LanguageNotAvailableError
-    Thrown on an attempt to use an unknown language.
-
-BabelfishChangedError
-    Thrown when babelfish.altavista.com changes some detail of their
-    layout, and babelizer can no longer parse the results or submit
-    the correct form (a not infrequent occurance).
-
-BabelizerIOError
-    Thrown for various networking and IO errors.
-
-Version: $Id$
-Author: Jonathan Feinberg <jdf@pobox.com>
+@version: $Id$
+@author: Jonathan Feinberg <jdf@pobox.com>
 """
 import re, string, urllib
 
@@ -89,23 +59,36 @@ __languages = { 'english'   : 'en',
 """
 available_languages = [ x.title() for x in __languages.keys() ]
 
-"""
-  Calling translate() or babelize() can raise a BabelizerError
-"""
 class BabelizerError(Exception):
-    pass
-
+    """
+    Calling translate() or babelize() can raise a BabelizerError
+    """
 class LanguageNotAvailableError(BabelizerError):
-    pass
+    """
+    Thrown on an attempt to use an unknown language.
+    """
 class BabelfishChangedError(BabelizerError):
-    pass
+    """
+    Thrown when babelfish.altavista.com changes some detail of their
+    layout, and babelizer can no longer parse the results or submit
+    the correct form (a not infrequent occurance).
+    """
 class BabelizerIOError(BabelizerError):
-    pass
+    """
+    Thrown for various networking and IO errors.
+    """
 
 def clean(text):
     return ' '.join(string.replace(text.strip(), "\n", ' ').split())
 
 def translate(phrase, from_lang, to_lang):
+    """
+    Use babelfish to translate phrase from from_lang to to_lang.  It's
+    only guaranteed to work if 'english' is one of the two languages.
+    
+    @raise BabelizeError: If an error is encountered.
+    """
+
     phrase = clean(phrase)
     try:
         from_code = __languages[from_lang.lower()]
@@ -134,6 +117,19 @@ def translate(phrase, from_lang, to_lang):
     return clean(match.group(1))
 
 def babelize(phrase, from_language, through_language, limit = 12, callback = None):
+    """
+    Uses babelfish to translate back and forth between from_lang and
+    through_lang until either no more changes occur in translation or
+    limit iterations have been reached, whichever comes first.  Takes
+    an optional callback function which should receive a single
+    parameter, being the next translation.  Without the callback
+    returns a list of successive translations.
+
+    It's only guaranteed to work if 'english' is one of the two
+    languages.
+
+    @raise BabelizeError: If an error is encountered.
+    """
     phrase = clean(phrase)
     seen = { phrase: 1 }
     if callback:
