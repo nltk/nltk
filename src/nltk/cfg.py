@@ -410,11 +410,12 @@ class PCFG(CFG):
 # Run some quick-and-dirty tests to make sure everything's working
 # right.  Eventually we need unit testing..
 if __name__ == '__main__':
-    (S, VP, NP, PP) = [Nonterminal(s) for s in ('S', 'VP', 'NP', 'PP')]
+    (S, VP, NP, PP, VP2, S2) = [Nonterminal(s) for s in
+                            ('S', 'VP', 'NP', 'PP', 'VP', 'S')]
 
     for (A,B) in [(S,S), (S,NP), (PP,VP), (VP2, S), (VP2, VP), (S,S2)]:
         if A == B: print '%3s == %-3s' % (A,B),
-        else: print '%3s != %-3s' % (A,B)
+        else: print '%3s != %-3s' % (A,B),
     print
              
     productions = [CFGProduction(S, VP, NP),
