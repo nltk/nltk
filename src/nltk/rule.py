@@ -112,6 +112,15 @@ class Rule:
         """
         return hash((self._lhs, self._rhs))
 
+    def dotted(self):
+        """
+        @return: A C{DottedRule} corresponding to the C{Rule}, with
+          the dot in the leftmost position
+        @rtype: C{int}
+        """
+        return DottedRule(self.lhs(), self[:])
+
+
 class DottedRule(Rule):
     """
     A dotted context-free grammar rule.
