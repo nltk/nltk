@@ -42,8 +42,8 @@ The "reduce" button applies the reduction whose CFG production is
 listed earliest in the grammar.  There are two ways to manually choose
 which reduction to apply:
 
-  - Select a CFG production from the list of available reductions, on
-    the left side of the main window.  The reduction based on that
+  - Click on a CFG production from the list of available reductions,
+    on the left side of the main window.  The reduction based on that
     production will be applied to the top of the stack.
   - Click on one of the stack elements.  A popup window will appear, 
     containing all available reductions.  Select one, and it will be
@@ -60,7 +60,7 @@ Keyboard Shortcuts::
       [g]\t Show/hide available production list
       [Ctrl-a]\t Toggle animations
       [h]\t Help
-      [p]\t Print
+      [Ctrl-p]\t Print
       [q]\t Quit
 """
 
@@ -177,8 +177,6 @@ class ShiftReduceParserDemo:
         self._top.bind('<Control-u>', self.undo)
         self._top.bind('<Control-z>', self.undo)
         self._top.bind('<BackSpace>', self.undo)
-        self._top.bind('<p>', self.postscript)
-        self._top.bind('<Alt-p>', self.postscript)
         self._top.bind('<Control-p>', self.postscript)
         self._top.bind('<h>', self.help)
         self._top.bind('<Alt-h>', self.help)
