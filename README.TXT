@@ -221,9 +221,8 @@ Releases
            to the "incoming" directory of "upload.sf.net"
        10. Add the new release to sourceforge, using the release admin
            page.
-       11. Update versions to the new alpha version, and commit:
-             - Makefile (CORPORA_VERSION)
-             - doc/webpage/index.html
+       11. Update the version number to <m>.<n+1>alpha, and commit.
+           The version is listed in the following files:
              - doc/webpage/docs.html
              - src/nltk/__init__.py
              - contrib/nltk_contrib/__init__.py
