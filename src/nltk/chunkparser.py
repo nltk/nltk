@@ -268,10 +268,9 @@ class ChunkScore:
             This representation includes the precision, recall, and
             f-measure scores.  For other information about the score,
             use the accessor methods (e.g., C{missed()} and
-            C{incorrect()}. 
+            C{incorrect()}). 
         """
-        return (("ChunkParser score (%d correct chunks):\n" %
-                 len(self._correct))+
+        return ("ChunkParser score:\n" +
                 ("    Precision: %5.1f%%\n" % (self.precision()*100)) +
                 ("    Recall:    %5.1f%%\n" % (self.recall()*100))+
                 ("    F-Measure: %5.1f%%\n" % (self.f_measure()*100)))
