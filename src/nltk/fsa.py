@@ -7,23 +7,7 @@ from nltk.srparser import *
 from nltk.token import CharTokenizer
 from nltk.set import *
 
-_grammar = (
-    Rule('S', ('S', '*')),
-    Rule('S', ('S', '+')),
-    Rule('S', ('S', '?')),
-    Rule('S', ('S', 'S')),
-    Rule('S', ('(', 'S', ')')),
-    Rule('S',('a')),
-    Rule('S',('b')),
-    Rule('S',('c')),
-    Rule('S',('d')),
-    Rule('S',('e'))
-)
-
-_parser = SRParser(_grammar, 'S')
-_tokenizer = CharTokenizer()
-
-epsilon = 0
+epsilon = "0"
 
 # TODO - check that parse was complete, and report error otherwise
 # TODO - change parser to limit scope of unary operators
@@ -31,11 +15,18 @@ epsilon = 0
 # TODO - code up minimization algorithm from ASU
 
 class FSA:
+    # default fsa accepts the empty language
     def __init__(self, sigma):
+        self._num = -1
+        self._table = {}
+        self._finals = Set()
+        self._sigma = sigma
+        
+    # the fsa accepts the empty string
+    def empty(self):
         self._num = 0
         self._table = {}
         self._finals = Set(0)
-        self._sigma = sigma
         
     def sigma(self):
         return self._sigma
@@ -57,13 +48,15 @@ class FSA:
         self._finals.insert(state)
 
     def set_final(self, states):
-        self._finals = states
+        self._finals = Set(*states)
 
     def finals_intersect(self, list):
         return [state for state in list
                 if state in self.finals()]
 
     def insert_transition(self, s1, label, s2):
+        if label not in self._sigma:
+            print "Warning: edge label not in alphabet"
         if self._table.has_key((s1,label)):
             self._table[(s1,label)].insert(s2)
         else:
@@ -104,9 +97,31 @@ class FSA:
                 for (s1, label, s2) in self.transitions()
                 if label == epsilon]
 
-    # delete nodes and transitions are not on a path to a final state
+    # delete inaccessible nodes and unused transitions
     def prune(self):
-        pass
+        a1 = Set(0) # nodes reachable from the start state
+        a2 = Set() # reachable nodes from which a final state is reachable
+        if self.accessible(0, a1, a2):
+            a2.insert(0)
+        for (s1, label, states) in self.transitions():
+            if not s1 in a2:
+                self.delete_transition(s1, label, states)
+            else:
+                for s2 in states.elements():
+                    if not s2 in a2:
+                        self.delete_transition(s1, label, Set(s2))
+
+    # mark accessible nodes
+    def accessible(self, state, a1, a2):
+        accessible = 0 # flag whether we can see final state from here
+        for (s1, label, states) in self.outgoing_transitions(state):
+            for s2 in states.elements():
+                if not s2 in a1:  # visited?
+                    a1.insert(s2)
+                    if s2 in self.finals() or self.accessible(s2, a1, a2):
+                        accessible = 1
+                        a2.insert(s2)
+        return accessible
 
     # From ASU page 119
     def epsilon_closure(self, states):
@@ -123,7 +138,7 @@ class FSA:
     # return the corresponding DFA using subset construction (ASU p118)
     def dfa(self):
         dfa = FSA(self.sigma())
-        dfa_initial = dfa.start()
+        dfa_initial = dfa.new_state()
         nfa_initial = self.epsilon_closure([self.start()])
         map = {}
         map[dfa_initial] = nfa_initial
@@ -180,7 +195,7 @@ class FSA:
 #        fsa.add(self._count) # relabel states for uniqueness
 #
 #        # TODO - add epsilon transition from finals to initials
-#        for final in self._finalss:
+#        for final in self._finals:
 #            self.insert_transition(final, epsilon, self._count)
 #        self._table.extend(fsa._table)
 
@@ -200,12 +215,26 @@ class FSA:
             print s1, ':', label, '->', s2
         print "Final:", self._finals
 
-    # TODO - epsilon removal, minimization
-
 ### FUNCTIONS TO BUILD FSA FROM REGEXP
 
 # create NFA from regexp (Thompson's construction)
 # assumes unique start and final states
+
+_grammar = (
+    Rule('S', ('S', '*')),
+    Rule('S', ('S', '+')),
+    Rule('S', ('S', '?')),
+    Rule('S', ('S', 'S')),
+    Rule('S', ('(', 'S', ')')),
+    Rule('S',('a')),
+    Rule('S',('b')),
+    Rule('S',('c')),
+    Rule('S',('d')),
+    Rule('S',('e'))
+)
+
+_parser = SRParser(_grammar, 'S')
+_tokenizer = CharTokenizer()
 
 _STAR = Tree('*')
 _PLUS = Tree('+')
@@ -217,7 +246,7 @@ def re2nfa(fsa, re):
     re_list = _tokenizer.tokenize(re)
     tree = _parser.parse(re_list)
     state = re2nfa_build(fsa, fsa.start(), tree)
-    fsa.set_final(Set(state))
+    fsa.set_final([state])
 #        fsa.minimize()
 
 def re2nfa_build(fsa, node, tree):
@@ -264,14 +293,20 @@ def re2nfa_star(fsa, node, tree):
     return node3
 
 def demo():
-    re = 'a'
+    alphabet = "abc"
+    re = 'a(b+)c'
     print 'Regular Expression:', re
-    fsa = FSA("ab")
+    fsa = FSA(alphabet)
+    fsa.empty()
     re2nfa(fsa, re)
+    print "NFA:"
     fsa.pp()
     dfa = fsa.dfa()
+    print "DFA:"
     dfa.pp()
     dfa.prune()
+    print "PRUNED DFA:"
+    dfa.pp()
 #    fsa.generate(10)
 
 if __name__ == '__main__': demo()
