@@ -88,6 +88,9 @@ class TreeSegmentWidget(CanvasWidget):
         for subtree in subtrees:
             self._add_child_widget(subtree)
 
+        # Are we currently managing?
+        self._managing = False
+
         CanvasWidget.__init__(self, canvas, **attribs)
 
     def __setitem__(self, attr, value):
@@ -122,7 +125,7 @@ class TreeSegmentWidget(CanvasWidget):
             elif attr == 'yspace': self._yspace = value
             self.update(self._node)
         elif attr == 'ordered':
-            self._ordered = 1
+            self._ordered = value
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
@@ -216,7 +219,7 @@ class TreeSegmentWidget(CanvasWidget):
         if child is self._node: need_update = self._subtrees
         else: need_update = [child]
 
-        if self._ordered:
+        if self._ordered and not self._managing:
             need_update = self._maintain_order(child)
 
         # Update the polygon.
@@ -244,10 +247,16 @@ class TreeSegmentWidget(CanvasWidget):
             self.canvas().coords(line, nodex, nodey, subtreex, subtreey)
 
     def _maintain_order(self, child):
+        if self._horizontal:
+            return self._maintain_order_horizontal(child)
+        else:
+            return self._maintain_order_vertical(child)
+
+    def _maintain_order_vertical(self, child):
+        (left, top, right, bot) = child.bbox()
+
         if child is self._node:
             # Check all the leaves
-            (left, top, right, bot) = child.bbox()
-
             for subtree in self._subtrees:
                 (x1, y1, x2, y2) = subtree.bbox()
                 if bot+self._yspace > y1:
@@ -256,8 +265,6 @@ class TreeSegmentWidget(CanvasWidget):
             return self._subtrees
         else:
             moved = [child]
-            
-            (left, top, right, bot) = child.bbox()
             index = self._subtrees.index(child)
 
             # Check leaves to our right.
@@ -281,13 +288,53 @@ class TreeSegmentWidget(CanvasWidget):
             # Check the node
             (x1, y1, x2, y2) = self._node.bbox()
             if y2 > top-self._yspace:
-                self._node.move(0,top-self._yspace-y2)
+                self._node.move(0, top-self._yspace-y2)
                 moved = self._subtrees
 
         # Return a list of the nodes we moved
         return moved
-                
-            
+    
+    def _maintain_order_horizontal(self, child):
+        (left, top, right, bot) = child.bbox()
+        
+        if child is self._node:
+            # Check all the leaves
+            for subtree in self._subtrees:
+                (x1, y1, x2, y2) = subtree.bbox()
+                if right+self._xspace > x1:
+                    subtree.move(right+self._xspace-x1)
+
+            return self._subtrees
+        else:
+            moved = [child]
+            index = self._subtrees.index(child)
+
+            # Check leaves below us.
+            y = bot + self._yspace
+            for i in range(index+1, len(self._subtrees)):
+                (x1, y1, x2, y2) = self._subtrees[i].bbox()
+                if y > y1:
+                    self._subtrees[i].move(0, y-y1)
+                    y += y2-y1 + self._yspace
+                    moved.append(self._subtrees[i])
+
+            # Check leaves above us
+            y = top - self._yspace
+            for i in range(index-1, -1, -1):
+                (x1, y1, x2, y2) = self._subtrees[i].bbox()
+                if y < y2:
+                    self._subtrees[i].move(0, y-y2)
+                    y -= y2-y1 + self._yspace
+                    moved.append(self._subtrees[i])
+
+            # Check the node
+            (x1, y1, x2, y2) = self._node.bbox()
+            if x2 > left-self._xspace:
+                self._node.move(left-self._xspace-x2, 0)
+                moved = self._subtrees
+
+        # Return a list of the nodes we moved
+        return moved
 
     def _manage_horizontal(self):
         (nodex, nodey) = self._node_bottom()
@@ -333,6 +380,8 @@ class TreeSegmentWidget(CanvasWidget):
             subtree.move(nodex-center, 0)
 
     def _manage(self):
+        self._managing = True
+        (nodex, nodey) = self._node_bottom()
         if len(self._subtrees) == 0: return
         
         if self._horizontal: self._manage_horizontal()
@@ -341,6 +390,8 @@ class TreeSegmentWidget(CanvasWidget):
         # Update lines to subtrees.
         for subtree in self._subtrees:
             self._update(subtree)
+            
+        self._managing = False
 
     def __repr__(self):
         return '[TreeSeg %s: %s]' % (self._node, self._subtrees)
@@ -465,10 +516,11 @@ class TreeWidget(CanvasWidget):
         self._line_width = 1
         self._roof_color = '#008080'
         self._roof_fill = '#c0c0c0'
-        self._shapeable = 0
+        self._shapeable = False
         self._xspace = 10
         self._yspace = 10
         self._orientation = 'vertical'
+        self._ordered = False
 
         # Build trees.
         self._keys = {} # treeseg -> key
@@ -612,8 +664,6 @@ class TreeWidget(CanvasWidget):
             for node in self._nodes: node[attr[5:]] = value
         elif attr[:5] == 'leaf_':
             for leaf in self._leaves: leaf[attr[5:]] = value
-#        elif attr[:4] == 'loc_':
-#            for loc in self._locs: loc[attr[4:]] = value
         elif attr == 'line_color':
             self._line_color = value
             for tseg in self._expanded_trees.values(): tseg['color'] = value
@@ -634,7 +684,6 @@ class TreeWidget(CanvasWidget):
             for tseg in self._collapsed_trees.values():
                 tseg['draggable'] = value
             for leaf in self._leaves: leaf['draggable'] = value
-#            for loc in self._locs: loc['draggable'] = value
         elif attr == 'xspace':
             self._xspace = value
             for tseg in self._expanded_trees.values():
@@ -656,6 +705,12 @@ class TreeWidget(CanvasWidget):
             for tseg in self._collapsed_trees.values():
                 tseg['orientation'] = value
             self.manage()
+        elif attr == 'ordered':
+            self._ordered = value
+            for tseg in self._expanded_trees.values():
+                tseg['ordered'] = value
+            for tseg in self._collapsed_trees.values():
+                tseg['ordered'] = value
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
