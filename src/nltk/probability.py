@@ -48,6 +48,7 @@ class FreqDist:
         self._count = {}
         self._N = 0
         self._Nr_cache = None
+        self._max_cache = None
 
     def inc(self, sample):
         """
@@ -63,8 +64,9 @@ class FreqDist:
         self._N += 1
         self._count[sample] = self._count.get(sample,0) + 1
 
-        # Invalidate the Nr cache.
+        # Invalidate the Nr cache and max cache.
         self._Nr_cache = None
+        self._max_cache = None
 
     def N(self):
         """
@@ -98,6 +100,8 @@ class FreqDist:
         """
         @return: The number of samples with count r.
         @rtype: C{int}
+        @type r: C{int}
+        @param n: A sample count.
         @type bins: C{int}
         @param bins: The number of possible sample outcomes.  C{bins}
             is used to calculate Nr(0).  In particular, Nr(0) is
@@ -115,7 +119,7 @@ class FreqDist:
         # We have to search the entire distribution to find Nr.  Since
         # this is an expensive operation, and is likely to be used
         # repeatedly, cache the results.
-        if self._Nr_cache == None:
+        if self._Nr_cache is None:
             self._cache_Nr_values()
             
         if r >= len(self._Nr_cache): return 0
@@ -175,13 +179,15 @@ class FreqDist:
                 frequency distribution.
         @rtype: any or C{None}
         """
-        best_sample = None
-        best_count = -1
-        for sample in self._count.keys():
-            if self._count[sample] > best_count:
-                best_sample = sample
-                best_count = self._count[sample]
-        return best_sample
+        if self._max_cache is None:
+            best_sample = None
+            best_count = -1
+            for sample in self._count.keys():
+                if self._count[sample] > best_count:
+                    best_sample = sample
+                    best_count = self._count[sample]
+            self._max_cache = best_sample
+        return self._max_cache
 
     def __repr__(self):
         """
@@ -536,7 +542,7 @@ class HeldoutProbDist(ProbDistI):
         @param Tr: the list M{Tr}, where M{Tr[r]} is the total count in
             the heldout distribution for all samples that occur M{r}
             times in base distribution.
-        @type Tr: C{list} of C{float}
+        @type Nr: C{list} of C{float}
         @param Nr: The list M{Nr}, where M{Nr[r]} is the number of
             samples that occur M{r} times in the base distribution.
         @type N: C{int}
@@ -625,7 +631,7 @@ class CrossValidationProbDist(ProbDistI):
         """
         @rtype: C{list} of C{FreqDist}
         @return: The list of frequency distributions that this
-        C{ProbDist} is based on.
+            C{ProbDist} is based on.
         """
         return self._freqdists
 
@@ -729,6 +735,15 @@ class ConditionalFreqDist:
         @rtype: C{list}
         """
         return self._fdists.keys()
+
+    def __repr__(self):
+        """
+        @return: A string representation of this
+            C{ConditionalFreqDist}.
+        @rtype: C{string}
+        """
+        n = len(self._fdists)
+        return '<ConditionalFreqDist with %d conditions>' % n
 
 class ConditionalProbDist:
     """
@@ -849,7 +864,16 @@ def _create_rand_fdist(numsamples, numoutcomes):
 def demo(numsamples=6, numoutcomes=500):
     """
     A demonstration of frequency distributions and probability
-    distributions. 
+    distributions.
+
+    @type numsamples: C{int}
+    @param numsamples: The number of samples to use in each demo
+        frequency distributions.
+    @type numoutcomes: C{int}
+    @param numoutcomes: The total number of outcomes for each
+        demo frequency distribution.  These outcomes are divided into
+        C{numsamples} bins.
+    @rtype: C{None}
     """
     import random
 
