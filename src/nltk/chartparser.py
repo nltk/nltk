@@ -25,10 +25,9 @@ class Edge:
     """
     An edge of a chart.    Edges are represented using C{Token}s, since
     an edge is just a piece of linguistic information at a
-    C{Location}.    Edges also contain a C{DottedRule} and a
-    possibly-empty tuple of children (C{Tree}s).    This class mainly
-    provides a convenient wrapper around C{Token} with a suitable
-    initializer and accessor functions.    Additionally, it provides
+    C{Location}.    Edges also contain a C{DottedRule} and a C{Tree}.
+    This class mainly provides a convenient wrapper around C{Token} with
+    a suitable initializer and accessor functions.    Additionally, it provides
     functions to perform common chart-parser functions on edges.
 
     @type _edge: C{Token}
@@ -172,7 +171,8 @@ class Chart:
     def parses(self, node):
         """
         Return the set of complete parses encoded by this chart, whose
-        root node value is C{node}.
+        root node value is C{node}.  Use self._loc to test if the edge
+        spans the entire chart.
         """
         return [edge.tree() for edge in self.edges() if
                 edge.loc() == self._loc and edge.lhs() == node]
@@ -191,7 +191,7 @@ class Chart:
         """
         return edge in self._edgeset
             
-    #draw (replace with tkinter version)
+    #draw (NB, there is also a tkinter version nltk.draw.chart)
     def draw(self, width=7):
         print "="*75
         edges = self.edges()
@@ -666,13 +666,8 @@ class SteppingChartParser(ChartParser):
     """
     A C{ChartParser} that allows you to step through the parsing
     process, adding a single edge at a time.  It also allows you to
-    change the strategy you are 
+    change the strategy you are using.
     
-    A chart parser for doing chart parsing one step at a time.
-    
-        - allows you to add edges one at a time
-        - allows you to change the strategy at any time
-
     It defines one new method: C{step}
 
     Internally, keep track of two queues:
@@ -705,19 +700,19 @@ class SteppingChartParser(ChartParser):
         # currently working on.
         self._function_index = 0
 
-        # Remeber what strategy we started out using.
+        # Remember what strategy we started out using.
         self._current_strategy = self._strategy
         
         # We have successfully initialized.
         self._initialized = 1
 
         # Did we just change strategies?  This is useful to know,
-        # because if we did, we need to check to make sure we dont' #
+        # because if we did, we need to check to make sure we don't
         # skip any edge-triggered rules.
         self._just_changed_strategy = 0
 
     ##############################################
-    # Queuing
+    # Queueing
     ##############################################
     
     def _insert(self, edge):
@@ -748,7 +743,7 @@ class SteppingChartParser(ChartParser):
         more closely, then we should enqueue those at the beginning of
         the queue.
         
-        This funciton assumes that self._queue is non-empty; it will
+        This function assumes that self._queue is non-empty; it will
         raise an exception otherwise.
         """
         edge = self._queue[0]
@@ -822,72 +817,6 @@ class SteppingChartParser(ChartParser):
         else:
             return self.parses()[:n]
 
-
-
-############################################
-## Stepping Chart Parser
-
-class SteppingChartParser2(ChartParser):
-    """
-    A chart parser for doing chart parsing one step at a time.
-    
-        - allows you to add edges one at a time
-        - allows you to change the strategy at any time
-
-    This chart parser repeatedly changes its underlying chart, making
-    it difficult to use with ChartView.  
-    """
-    def __init__(self, grammar, lexicon, basecat, **kwargs):
-        ChartParser.__init__(self, grammar, lexicon, basecat, **kwargs)
-        self._queue = []
-        self._action = ()
-
-    def clear(self):
-        self._queue = []
-    def empty(self):
-        return self._queue == []
-    def dequeue(self):
-        if self._queue == []:
-            return None
-        front = self._queue[0]
-        self._queue = self._queue[1:]
-        return front
-    def next(self):
-        added = []
-        while added == [] and not self.empty():
-            next_edge = self.dequeue()
-            added = self._chart.insert(next_edge)
-        if added == []:
-            return None
-        else:
-            return added[0]
-
-    def _step(self, edge, function, action):
-        if self._action != action or self.empty():
-            tmp_chart = self._chart.copy()
-            if edge:
-                self._queue = function(edge)
-            else:
-                self._queue = function()
-            self._chart = tmp_chart
-        self._action = action
-        return self.next()
-
-    def FR_step(self, edge):
-        return self._step(edge, self.FR_edge, (edge, self.FR_edge))
-
-    def TD_step(self, edge):
-        return self._step(edge, self.TD_edge, (edge, self.TD_edge))
-
-    def BU_init_edge_step(self, edge):
-        return self._step(edge, self.BU_init_edge, (edge, self.BU_init_edge))
-
-    def BU_init_step(self):
-        return self._step(None, self.BU_init, self.BU_init)
-
-    def TD_init_step(self):
-        return self._step(None, self.TD_init, self.TD_init)
-
 edgenum = 0
 def xyzzy(chart, edge):
     global edgenum
@@ -951,77 +880,12 @@ def demo():
 
     # initialize the chartparser
     cp = SteppingChartParser(grammar, lexicon, 'S')
-    cp.set_strategy(bu_strategy())
-
-    print "THE INITIAL CHART:"
-    cp.chart().draw() # NB cp.chart() is ahead of us
-
-    for x in range(2):
-        next = cp.TD_init_step()
-        print "TD_INIT:", next
-
-    for e in range(3,8):
-        edge = cp.chart().edges()[e]
-        print "USER PICKED EDGE:", edge
-        for x in range(1):
-            next = cp.BU_init_edge_step(edge)
-            print "BU_INIT:", next
-
-    edge = cp.chart().edges()[2]
-    print "USER PICKED EDGE:", edge
-    next = cp.FR_step(edge)
-    print "FUNDAMENTAL:", next
-    if next:
-        next = cp.FR_step(next)
-        print "FUNDAMENTAL:", next
-
-    edge = cp.chart().edges()[11]
-    print "USER PICKED EDGE:", edge
-    next = cp.FR_step(edge)
-    print "FUNDAMENTAL:", next
-    if next:
-        next = cp.FR_step(next)
-        print "FUNDAMENTAL:", next
-
-    edge = cp.chart().edges()[10]
-    print "USER PICKED EDGE:", edge
-
-    for x in range(4):
-        next = cp.TD_step(edge)
-        print "TD_STEP:", next
-
-    edge = cp.chart().edges()[3]
-    print "USER PICKED EDGE:", edge
-
-    for x in range(4):
-        next = cp.BU_init_edge_step(edge)
-        print "BU_INIT:", next
-
+    cp.initialize(tok_sent, strategy = BUINIT_STRATEGY)
+    while cp.step(): pass
     cp.chart().draw()
-
-    print "ALRIGHT, LET'S APPLY THE BU_INIT RULE MAXIMALLY"
-
-    edges = cp.BU_init()
-
-    print "ADDED:"
-    print edges
-
-    cp.chart().draw()
-
-    edge = cp.chart().edges()[12]
-    print "USER PICKED EDGE:", edge
-    next = cp.FR_step(edge)
-    print "FUNDAMENTAL:", next
-    if next:
-        next = cp.FR_step(next)
-        print "FUNDAMENTAL:", next
 
     print "NOW LET'S APPLY THE FR MAXIMALLY"
-    edges = cp.FR()
-
-    print "ADDED:"
-    print edges
-
+    while cp.step(strategy = FR_STRATEGY): pass
     cp.chart().draw()
 
     print "Parse(s):"
