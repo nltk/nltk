@@ -311,6 +311,9 @@ def chktype(n, arg, *types):
         raise TypeError(errstr)
 
 def demo():
+    """
+    A demonstration of the C{chktype} type-checking function.
+    """
     old_type_safety_level = type_safety_level()
     type_safety_level(4)
     
