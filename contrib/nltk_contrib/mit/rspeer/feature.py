@@ -7,10 +7,10 @@ class Category(FeatureStructure, Nonterminal):
     A C{Category} is a specialized feature structure, intended for use in
     parsing.  It can act as a C{Nonterminal}.
 
-    A C{Category} differs from a C{FeatureStructureure} in these ways:
+    A C{Category} differs from a C{FeatureStructure} in these ways:
         - Categories may not be re-entrant.
         
-        - Categories use value-based equality, while FeatureStructureures use
+        - Categories use value-based equality, while FeatureStructures use
           identity-based equality.
 
         - Strings in Categories are compared case-insensitively.
@@ -583,7 +583,7 @@ class Category(FeatureStructure, Nonterminal):
                 if isinstance(val, Category): val.freeze()
                 rhs.append(val)
                 position = _PARSE_RE['whitespace'].match(s, position).end()
-            rules.append(CFGProduction(lhs, *rhs))
+            rules.append(CFGProduction(lhs, rhs))
             
             if position < len(s):
                 match = _PARSE_RE['disjunct'].match(s, position)
@@ -591,7 +591,7 @@ class Category(FeatureStructure, Nonterminal):
         
         # Special case: if there's nothing after the arrow, it is one rule with
         # an empty RHS, instead of no rules.
-        if len(rules) == 0: rules = [CFGProduction(lhs)]
+        if len(rules) == 0: rules = [CFGProduction(lhs, ())]
         return rules
 
     _parseval=classmethod(_parseval)

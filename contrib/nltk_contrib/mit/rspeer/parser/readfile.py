@@ -1,11 +1,13 @@
 from nltk_contrib.mit.rspeer.feature import *
 from featurechart import *
 
+"""A module to read a grammar from a *.cfg file."""
+
 class GrammarFile(object):
 	def __init__(self):
 		self.grammatical_productions = []
 		self.lexical_productions = []
-		self.kimmo = None
+		self.kimmo = None	# for future use
 		self.start = GrammarCategory(pos='Start').freeze()
 		self.leaf = 'TEXT'
 		
