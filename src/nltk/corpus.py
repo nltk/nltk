@@ -1035,7 +1035,7 @@ class TreebankCorpusReader(CorpusReaderI):
 
 
 #################################################################
-# Corpus Implementation for the PP Attatchment Corpus
+# Corpus Implementation for the PP Attachment Corpus
 #################################################################
 
 # Not implemented yet    
@@ -1091,15 +1091,15 @@ gutenberg = SimpleCorpusReader(
 del groups # delete temporary variable
 
 ###################################################
-## PP Attatchment
+## PP Attachment
 
-ppattatch = '''\
+ppattach = '''\
 [CORPUS READER NOT IMPLEMENTED YET]
 
 Information about approximately 30,000 instances of potentially
-ambigous prepositional phrase attatchments.  For each instance, the
+ambigous prepositional phrase attachments.  For each instance, the
 corpus specifies the verb and noun that the prepositional phrase might
-potentially attatch to; and the preposition and head noun of the
+potentially attach to; and the preposition and head noun of the
 prepositional phrase.'''
 
 # Not supported yet
@@ -1115,6 +1115,12 @@ roget = RogetCorpusReader('roget', 'roget/', 'roget15a.txt')
 words = SimpleCorpusReader(
     'words', 'words/', r'words') #, description_file='README')
 
+
+###################################################
+## Stopwords corpus
+
+stopwords = SimpleCorpusReader(
+    'stopwords', 'stopwords/', r'[a-z]+', description_file='README')
 
 #################################################################
 ## CONLL 2000 Chunking data
