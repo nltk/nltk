@@ -148,20 +148,6 @@ class LocationTestCase(unittest.TestCase):
         loc4 = Location(0, 15, unit='c', source='foo.txt')
         loc5 = Location(10, 20)
 
-        def t1(l1=loc1, l2=loc2): l1==l2
-        def t2(l1=loc1, l3=loc3): l1==l3
-        def t3(l1=loc1, l4=loc4): l1==l4
-        def t4(l2=loc2, l3=loc3): l2==l3
-        def t5(l2=loc2, l4=loc4): l2==l4
-        def t6(l3=loc3, l4=loc4): l3==l4
-        
-        self.failUnlessRaises(ValueError, t1)
-        self.failUnlessRaises(ValueError, t2)
-        self.failUnlessRaises(ValueError, t3)
-        self.failUnlessRaises(ValueError, t4)
-        self.failUnlessRaises(ValueError, t5)
-        self.failUnlessRaises(ValueError, t6)
-
         def t1(l1=loc1, l2=loc2): l1<l2
         def t2(l1=loc1, l3=loc3): l1>l3
         def t3(l1=loc1, l4=loc4): l1<=l4
@@ -196,7 +182,7 @@ class TokenTestCase(unittest.TestCase):
         
     def testHash(self):
         "nltk.token.Token: hash function test"
-        token2 = Token('dog', 0, 10)
+        token2 = Token('dog', Location(0, 10))
         self.failUnlessEqual(hash(self.token), hash(token2))
         
     def testRepr(self):
@@ -218,8 +204,8 @@ class TokenTestCase(unittest.TestCase):
     def testStr(self):
         "nltk.token.Token: str output tests"
         t1=Token('dog')
-        t2=Token('dog', 0, 5)
-        t3=Token('dog', 0, 5, unit='c', source='foo.txt')
+        t2=Token('dog', Location(0, 5))
+        t3=Token('dog', Location(0, 5, unit='c', source='foo.txt'))
 
         self.failUnlessEqual(str(t1), "'dog'@[?]")
         self.failUnlessEqual(str(t2), "'dog'@[0:5]")
@@ -227,20 +213,16 @@ class TokenTestCase(unittest.TestCase):
 
     def testCmp(self):
         "nltk.token.Token: comparison tests (==, !=, <, >, <=, >=)"
+        l1 = Location(1)
+        l2 = Location(1,7)
         self.failIf(Token('dog', None) == Token('dog', None))
         self.failUnless(Token('dog', None) != Token('dog', None))
-        self.failUnless(Token('dog', None) != Token('dog', 1))
-        self.failUnless(Token('dog', 1) != Token('dog', None))
+        self.failUnless(Token('dog', None) != Token('dog', l1))
+        self.failUnless(Token('dog', l1) != Token('dog', None))
+        self.failUnless(Token('dog', l1) == Token('dog', l1))
+        self.failUnless(Token('dog', l2) == Token('dog', l2))
 
-        self.failUnless(Token('dog', 1) == Token('dog', 1))
-        self.failUnless(Token('dog', 1,7) == Token('dog', 1,7))
-
-        def t1(): Token('dog', 1, unit='c') == Token('dog', 1, unit='s')
-        def t2(): (Token('dog', 1, source='foo.txt') ==
-                   Token('dog', 1, source='bar.txt'))
-        self.failUnlessRaises(ValueError, t1)
-        self.failUnlessRaises(ValueError, t2)
-
+        # Ordering comparisons aren't allowed on tokens.
         t1=Token('dog')
         self.failUnlessRaises(AssertionError, lambda t1=t1: t1<t1)
         self.failUnlessRaises(AssertionError, lambda t1=t1: t1>t1)
@@ -249,32 +231,13 @@ class TokenTestCase(unittest.TestCase):
 
     def testConstructor(self):
         "nltk.token.Token: constructor tests"
-        t1=Token('dog')
-        t2=Token('dog', 0)
-        t3=Token('dog', 0, 5)
-        t4=Token('dog', 0, 5, unit='c', source='foo.txt')
-        t5=Token('dog', Location(0, 5))
+        loc = Location(0, 5, unit='c', source='foo.txt')
+        t1=Token('dog', loc)
 
         self.failUnlessEqual(t1.type(), 'dog')
-        self.failUnlessEqual(t2.type(), 'dog')
-        self.failUnlessEqual(t3.type(), 'dog')
-        self.failUnlessEqual(t4.type(), 'dog')
-        self.failUnlessEqual(t5.type(), 'dog')
-        self.failUnless(t1.loc() == None)
-        self.failUnless(t2.loc() == Location(0))
-        self.failUnless(t3.loc() == Location(0,5))
-        self.failUnless(t4.loc() ==
-                        Location(0, 5, unit='c', source='foo.txt'))
-        self.failUnless(t5.loc() == Location(0, 5))
+        self.failUnless(t1.loc() == loc)
 
-        self.failUnlessRaises(TypeError, Token, 'dog',
-                              Location(0), 5)
-        self.failUnlessRaises(TypeError, Token, 'dog',
-                              Location(0), unit='c')
-        self.failUnlessRaises(TypeError, Token, 'dog',
-                              None, 5)
-        self.failUnlessRaises(TypeError, Token, 'dog',
-                              None, unit='c')
+        self.failUnlessRaises(TypeError, Token, 'dog', 0)
             
 class WSTokenizerTestCase(unittest.TestCase):
     """
@@ -286,39 +249,97 @@ class WSTokenizerTestCase(unittest.TestCase):
     def testTokenize(self):
         "nltk.token.WSTokenizer: tokenize method tests"
         ts1 = self.tokenizer.tokenize("this is a test")
-        ts2 = [Token('this', 0, unit='w'), Token('is', 1, unit='w'),
-               Token('a', 2, unit='w'), Token('test', 3, unit='w')]
+        ts2 = [Token('this', Location(0, unit='w')),
+               Token('is', Location(1, unit='w')),
+               Token('a', Location(2, unit='w')),
+               Token('test', Location(3, unit='w'))]
         self.failUnlessEqual(ts1, ts2)
 
         ts1 = self.tokenizer.tokenize("this is a test", source='foo.txt')
-        ts2 = [Token('this', 0, unit='w', source='foo.txt'),
-               Token('is', 1, unit='w', source='foo.txt'),
-               Token('a', 2, unit='w', source='foo.txt'),
-               Token('test', 3, unit='w', source='foo.txt')]
+        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
+               Token('is', Location(1, unit='w', source='foo.txt')),
+               Token('a', Location(2, unit='w', source='foo.txt')),
+               Token('test', Location(3, unit='w', source='foo.txt'))]
         self.failUnlessEqual(ts1, ts2)
     
         ts1 = self.tokenizer.tokenize("   this  is a   test ")
-        ts2 = [Token('this', 0, unit='w'), Token('is', 1, unit='w'),
-               Token('a', 2, unit='w'), Token('test', 3, unit='w')]
+        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
+               Token('is', Location(1, unit='w', source='foo.txt')),
+               Token('a', Location(2, unit='w', source='foo.txt')),
+               Token('test', Location(3, unit='w', source='foo.txt'))]
         self.failUnlessEqual(ts1, ts2)
 
+class WSTokenizerTestCase(unittest.TestCase):
+    """
+    Unit test cases for C{token.WSTokenizer}
+    """
+    def setUp(self):
+        self.tokenizer = WSTokenizer()
+
+    def testTokenize(self):
+        "nltk.token.WSTokenizer: tokenize method tests"
+        ts1 = self.tokenizer.tokenize("this is a test")
+        ts2 = [Token('this', Location(0, unit='w')),
+               Token('is', Location(1, unit='w')),
+               Token('a', Location(2, unit='w')),
+               Token('test', Location(3, unit='w'))]
+        self.failUnlessEqual(ts1, ts2)
+
+        ts1 = self.tokenizer.tokenize("this is a test", source='foo.txt')
+        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
+               Token('is', Location(1, unit='w', source='foo.txt')),
+               Token('a', Location(2, unit='w', source='foo.txt')),
+               Token('test', Location(3, unit='w', source='foo.txt'))]
+        self.failUnlessEqual(ts1, ts2)
+    
+        ts1 = self.tokenizer.tokenize("   this  is a   test ")
+        ts2 = [Token('this', Location(0, unit='w')),
+               Token('is', Location(1, unit='w')),
+               Token('a', Location(2, unit='w')),
+               Token('test', Location(3, unit='w'))]
+        self.failUnlessEqual(ts1, ts2)
+
+class RETokenizerTestCase(unittest.TestCase):
+    """
+    Unit test cases for C{token.WSTokenizer}
+    """
+    def setUp(self):
+        self.tokenizers = [RETokenizer('\s+'),
+                           RETokenizer('\w+', positive=1)]
+
+    def testTokenize(self):
+        "nltk.token.WSTokenizer: tokenize method tests"
+        for tokenizer in self.tokenizers:
+            ts1 = tokenizer.tokenize("this is a test")
+            ts2 = [Token('this', Location(0, unit='w')),
+                   Token('is', Location(1, unit='w')),
+                   Token('a', Location(2, unit='w')),
+                   Token('test', Location(3, unit='w'))]
+            self.failUnlessEqual(ts1, ts2)
+    
+            ts1 = tokenizer.tokenize("this is a test", source='foo.txt')
+            ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
+                   Token('is', Location(1, unit='w', source='foo.txt')),
+                   Token('a', Location(2, unit='w', source='foo.txt')),
+                   Token('test', Location(3, unit='w', source='foo.txt'))]
+            self.failUnlessEqual(ts1, ts2)
+        
+            ts1 = tokenizer.tokenize("   this  is a   test ")
+            ts2 = [Token('this', Location(0, unit='w')),
+                   Token('is', Location(1, unit='w')),
+                   Token('a', Location(2, unit='w')),
+                   Token('test', Location(3, unit='w'))]
+            self.failUnlessEqual(ts1, ts2)
+    
 def testsuite():
     """
     Return a PyUnit testsuite for the token module.
     """
-    
-    tests = unittest.TestSuite()
-
-    loctests = unittest.makeSuite(LocationTestCase, 'test')
-    tests = unittest.TestSuite( (tests, loctests) )
-
-    toktests = unittest.makeSuite(TokenTestCase, 'test')
-    tests = unittest.TestSuite( (tests, toktests) )
-
-    tokenizertests = unittest.makeSuite(WSTokenizerTestCase, 'test')
-    tests = unittest.TestSuite( (tests, tokenizertests) )
-
-    return tests
+    t1 = unittest.makeSuite(LocationTestCase, 'test')
+    t2 = unittest.makeSuite(TokenTestCase, 'test')
+    t3 = unittest.makeSuite(WSTokenizerTestCase, 'test')
+    t4 = unittest.makeSuite(RETokenizerTestCase, 'test')
+    return unittest.TestSuite( (t1, t2, t3, t4) )
 
 def test():
     import unittest
