@@ -39,8 +39,6 @@ from nltk.chktype import chktype
 from nltk.tokenizer import Token, AbstractTokenizer, WSTokenizer, TokenizerI
 from nltk.probability import FreqDist, ConditionalFreqDist
 
-
-
 ##//////////////////////////////////////////////////////
 ##  Parsing and Tokenizing TaggedTypes
 ##//////////////////////////////////////////////////////
@@ -71,19 +69,21 @@ class TaggedTokenizer(AbstractTokenizer):
     the form C{I{text}/I{tag}}, where C{I{text}} specifies the word's
     C{text} property, and C{I{tag}} specifies its C{tag} property.
     Words that do not contain a slash are assigned a C{tag} of C{None}.
+    
+    @inprop: C{text}: The input token's text content.
+    @inprop: C{loc}: The input token's location.  I{(optional)}
+    @outprop: C{subtokens}: The list of tokenized subtokens.
+    @outprop: C{text}: The subtokens' text content.
+    @outprop: C{tag}: The subtoken's tag.
+    @outprop: C{loc}: The subtokens' locations.
     """
     _wstokenizer = WSTokenizer()
     
-    def tokenize(self, token, **propnames):
-        """
-        @include: TokenizerI.tokenize
-        @outprop: C{tag}: The property where the subtokens' tags
-                  should be stored.
-        """
+    def tokenize(self, token):
         assert chktype(1, token, Token)
-        subtokens_prop = propnames.get('subtokens', 'subtokens')
-        text_prop = propnames.get('text', 'text')
-        tag_prop = propnames.get('tag', 'tag')
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        text_prop = self._propnames.get('text', 'text')
+        tag_prop = self._propnames.get('tag', 'tag')
 
         # First, use WSTokenizer to divide on whitespace.
         self._wstokenizer.tokenize(token)
@@ -97,13 +97,8 @@ class TaggedTokenizer(AbstractTokenizer):
             else:
                 subtok[tag_prop] = None
 
-    def xtokenize(self, token, **propnames):
-        """
-        @include: TokenizerI.xtokenize
-        @outprop: C{tag}: The property where the subtokens' tags
-                  should be stored.
-        """
-        AbstractTokenizer.xtokenize(self, token, **propnames)
+    def xtokenize(self, token):
+        AbstractTokenizer.xtokenize(self, token)
 
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
@@ -115,17 +110,12 @@ class TaggerI:
     identify some aspect each subtoken, such as its part of speech or
     its word sense.
     """
-    def tag(self, token, **propnames):
+    def tag(self, token):
         """
         Assign a tag to each subtoken in C{token['subtokens']}, and
         write those tags to the subtokens' C{tag} properties.
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
-            the default property names.  Each entry maps from a
-            default property name to a new property name.
         @inprop: C{subtokens}: The list of subtokens to tag.
-        @inprop: C{text}: The text content of the tokens to
-            be tagged.
+        @inprop: C{text}: The text content of the subtokens.
         @outprop: C{tag}: The property where each subtoken's
             tag should be stored.
         """
@@ -158,20 +148,29 @@ class AbstractTagger(TaggerI):
     It also provides L{_tag_from_raw}, which can be used to implement
     C{tag} based on C{raw_tag}.
     """
-    def __init__(self):
+    def __init__(self, **propnames):
+        """
+        Construct a new tagger.
+        
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractTagger:
             raise AssertionError, "Abstract classes can't be instantiated"
+        self._propnames = propnames
 
     def raw_tag(self, words):
         tokens = [Token(text=w) for w in words]
         self.tag(tokens)
         return [token['tag'] for token in tokens]
 
-    def _tag_from_raw(self, token, **propnames):
-        subtokens_prop = propnames.get('subtokens', 'subtokens')
-        text_prop = propnames.get('text', 'text')
-        tag_prop = propnames.get('tag', 'tag')
+    def _tag_from_raw(self, token):
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        text_prop = self._propnames.get('text', 'text')
+        tag_prop = self._propnames.get('tag', 'tag')
         
         words = [subtok[text_prop] for sutbok in token['subtokens']]
         tags = self.raw_tag(words)
@@ -194,16 +193,21 @@ class SequentialTagger(TaggerI):
     token, and assigns the returned value to the token's C{tag}
     property.
     """
-    def __init__(self, reverse=False):
+    def __init__(self, reverse=False, **propnames):
         """
         Construct a new sequential tagger.
         
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
         """
         self._reverse = reverse
+        self._propnames = propnames
 
-    def tag_subtoken(self, subtokens, i, **propnames):
+    def tag_subtoken(self, subtokens, i):
         """
         @rtype: C{string}
         @return: The tag that should be assigned to token
@@ -214,39 +218,80 @@ class SequentialTagger(TaggerI):
         @type i: C{int}
         @param i: The index of the subtoken whose tag should be
             returned.
+        """
+        raise AssertionError()
+
+    def tag(self, token):
+        assert chktype(1, token, Token)
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        tag_prop = self._propnames.get('tag', 'tag')
+
+        # Tag each token, in sequential order.
+        subtokens = token[subtokens_prop]
+        for i, subtoken in enumerate(subtokens):
+            tag = self.tag_subtoken(subtokens, i)
+            subtoken[tag_prop] = tag
+
+class DefaultTagger(SequentialTagger):
+    """
+    A tagger that assigns the same tag to every token.
+    """
+    def __init__(self, tag, reverse=False, **propnames):
+        """
+        Construct a new default tagger.
+
+        @type tag: C{string}
+        @param tag: The tag that should be assigned to every token.
+        @param reverse: If true, then assign tags to subtokens in
+            reverse sequential order (i.e., from right to left).
         @type propnames: C{dict}
         @param propnames: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
-        raise AssertionError()
-
-    def tag(self, token, **propnames):
-        assert chktype(1, token, Token)
-        subtokens_prop = propnames.get('subtokens', 'subtokens')
-        tag_prop = propnames.get('tag', 'tag')
-
-        # Tag each token, in sequential order.
-        subtokens = token[subtokens_prop]
-        for i, subtoken in enumerate(subtokens):
-            tag = self.tag_subtoken(subtokens, i, **propnames)
-            subtoken[tag_prop] = tag
-                                      
-class NN_CD_Tagger(SequentialTagger):
-    """
-    A "default" tagger, which will assign the tag C{"CD"} to numbers,
-    and C{"NN"} to anything else.
-    """
-    def tag_subtoken(self, subtokens, i, **propnames):
-        text_prop = propnames.get('text', 'text')
-        text = subtokens[i][text_prop]
-        if re.match(r'^[0-9]+(.[0-9]+)?$', text):
-            return 'CD'
-        else:
-            return 'NN'
-
+        SequentialTagger.__init__(self, reverse, **propnames)
+        self._tag = tag
+        
+    def tag_subtoken(self, subtokens, i):
+        return self._tag
+    
     def __repr__(self):
-        return '<NN_CD_Tagger>'
+        return '<DefaultTagger: %s>' % self._tag
+
+class RegexpTagger(SequentialTagger):
+    """
+    A tagger that assigns tags to words based on regular expressions.
+    """
+    def __init__(self, regexps, reverse=False, **propnames):
+        """
+        Construct a new regexp tagger.
+
+        @type regexp: C{list} of C{(string,string)}
+        @param regexps: A list of C{(regexp,tag)} pairs, each of
+            which indicates that a word matching C{regexp} should
+            be tagged with C{tag}.  The pairs will be evalutated in
+            order.  If none of the regexps match a word, then it is
+            assigned the tag C{None}.
+        @param reverse: If true, then assign tags to subtokens in
+            reverse sequential order (i.e., from right to left).
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
+        SequentialTagger.__init__(self, reverse, **propnames)
+        self._regexps = regexps
+
+    def tag_subtoken(self, subtokens, i):
+        text_prop = self._propnames.get('text', 'text')
+        text = subtokens[i][text_prop]
+        for regexp, tag in self._regexps:
+            if re.match(regexp, text):
+                return tag
+        return None
+                                      
+    def __repr__(self):
+        return '<RegexprTagger: %d regexps>' % len(self._regexps)
 
 class UnigramTagger(SequentialTagger):
     """
@@ -258,7 +303,7 @@ class UnigramTagger(SequentialTagger):
     word which it has no data, it will assign it the
     tag C{None}.
     """
-    def __init__(self, reverse=False):
+    def __init__(self, reverse=False, **propnames):
         """
         Construct a new unigram stochastic tagger.  The new tagger
         should be trained, using the L{train()} method, before it is
@@ -266,11 +311,15 @@ class UnigramTagger(SequentialTagger):
         
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from last to first).
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
         """
-        SequentialTagger.__init__(self, reverse)
+        SequentialTagger.__init__(self, reverse, **propnames)
         self._freqdist = ConditionalFreqDist()
 
-    def train(self, tagged_token, **propnames):
+    def train(self, tagged_token):
         """
         Train this C{UnigramTagger} using the given training data.  If
         this method is called multiple times, then the training data
@@ -280,16 +329,12 @@ class UnigramTagger(SequentialTagger):
             C{tagged_token} should define the C{text} and C{tag}
             properties.
         @type tagged_token: L{Token}
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
-            the default property names.  Each entry maps from a
-            default property name to a new property name.
-        @rtype: None
+        @type self._propnames: C{dict}
         """
         assert chktype(1, tagged_token, Token)
-        subtokens_prop = propnames.get('subtokens', 'subtokens')
-        text_prop = propnames.get('text', 'text')
-        tag_prop = propnames.get('tag', 'tag')
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        text_prop = self._propnames.get('text', 'text')
+        tag_prop = self._propnames.get('tag', 'tag')
 
         # Record each text/tag pair in the frequency distribution.
         for subtok in tagged_token[subtokens_prop]:
@@ -297,8 +342,8 @@ class UnigramTagger(SequentialTagger):
             tag = subtok[tag_prop]
             self._freqdist[word].inc(tag)
 
-    def tag_subtoken(self, subtokens, i, **propnames):
-        text_prop = propnames.get('text', 'text')
+    def tag_subtoken(self, subtokens, i):
+        text_prop = self._propnames.get('text', 'text')
         
         # Find the most likely tag, given the subtoken's text.
         context = subtokens[i][text_prop]
@@ -330,7 +375,7 @@ class NthOrderTagger(SequentialTagger):
     @param _right: The end index of the context window for tags,
         expressed as an offset from the current subtoken's index.
     """
-    def __init__(self, n, reverse=False, cutoff=0):
+    def __init__(self, n, reverse=False, cutoff=0, **propnames):
         """
         Construct a new I{n}-th order stochastic tagger.  The new
         tagger should be trained, using the L{train()} method, before
@@ -345,10 +390,14 @@ class NthOrderTagger(SequentialTagger):
             distribution.  If the tagger saw fewer than
             C{cutoff} examples of a given context in training,
             then it will return a tag of C{None} for that context.
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
         """
         assert chktype(1, n, types.IntType)
         if n < 0: raise ValueError('n must be non-negative')
-        SequentialTagger.__init__(self, reverse)
+        SequentialTagger.__init__(self, reverse, **propnames)
         self._freqdist = ConditionalFreqDist()
         self._n = n
         self._cutoff = cutoff
@@ -362,7 +411,7 @@ class NthOrderTagger(SequentialTagger):
             self._left = -n
             self._right = 0
         
-    def train(self, tagged_token, **propnames):
+    def train(self, tagged_token):
         """
         Train this C{NthOrderTagger} using the given training data.
         If this method is called multiple times, then the training
@@ -372,16 +421,12 @@ class NthOrderTagger(SequentialTagger):
             C{tagged_token} should define the C{text} and C{tag}
             properties.
         @type tagged_token: L{Token}
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
-            the default property names.  Each entry maps from a
-            default property name to a new property name.
-        @rtype: None
+        @type self._propnames: C{dict}
         """
         assert chktype(1, tagged_token, Token)
-        subtokens_prop = propnames.get('subtokens', 'subtokens')
-        text_prop = propnames.get('text', 'text')
-        tag_prop = propnames.get('tag', 'tag')
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        text_prop = self._propnames.get('text', 'text')
+        tag_prop = self._propnames.get('tag', 'tag')
         left, right = self._left, self._right
         
         # Extract the list of subtokens & list of tags.
@@ -398,9 +443,9 @@ class NthOrderTagger(SequentialTagger):
             tag = subtok[tag_prop]
             self._freqdist[context].inc(tag)
 
-    def tag_subtoken(self, subtokens, i, **propnames):
-        text_prop = propnames.get('text', 'text')
-        tag_prop = propnames.get('tag', 'tag')
+    def tag_subtoken(self, subtokens, i):
+        text_prop = self._propnames.get('text', 'text')
+        tag_prop = self._propnames.get('tag', 'tag')
         left, right = self._left, self._right
         if i+left<0: return None
 
@@ -450,7 +495,7 @@ class BackoffTagger(SequentialTagger):
     sub-tagger should accept a list a list of C{Token}s as its input,
     and should generate a list of C{TaggedToken}s as its output.
     """
-    def __init__(self, subtaggers, reverse=False):
+    def __init__(self, subtaggers, reverse=False, **propnames):
         """
         Construct a new C{BackoffTagger}, from the given
         list of sub-taggers.
@@ -460,10 +505,14 @@ class BackoffTagger(SequentialTagger):
                consulted in the order in which they appear in the
                list.
         @type subtaggers: list of SequentialTagger
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
         """
         assert chktype(1, subtaggers, (SequentialTagger,), [SequentialTagger])
         self._subtaggers = subtaggers
-        SequentialTagger.__init__(self, reverse)
+        SequentialTagger.__init__(self, reverse, **propnames)
 
         # Maintain a record of how often each subtagger was used
         self._subtagger_count = {}
@@ -471,10 +520,10 @@ class BackoffTagger(SequentialTagger):
             self._subtagger_count[subtagger] = 0
         self._total_count = 0
 
-    def tag_subtoken(self, subtokens, i, **propnames):
+    def tag_subtoken(self, subtokens, i):
         self._total_count += 1
         for subtagger in self._subtaggers:
-            tag = subtagger.tag_subtoken(subtokens, i, **propnames)
+            tag = subtagger.tag_subtoken(subtokens, i)
             if tag is not None:
                 self._subtagger_count[subtagger] += 1
                 return tag
@@ -484,11 +533,11 @@ class BackoffTagger(SequentialTagger):
 
     def print_usage_stats(self):
         total = self._total_count
-        print '%20s | %s' % ('Subtagger', 'Words Tagged')
-        print '-'*21+'|'+'-'*17
+        print '  %20s | %s' % ('Subtagger', 'Words Tagged')
+        print '  '+'-'*21+'|'+'-'*17
         for subtagger in self._subtaggers:
             count = self._subtagger_count[subtagger]
-            print '%20s | %4.1f%%' % (subtagger, 100.0*count/total)
+            print '  %20s |    %4.1f%%' % (subtagger, 100.0*count/total)
 
     def __repr__(self):
         return '<BackoffTagger: %s>' % self._subtaggers
@@ -513,14 +562,14 @@ def _demo_tagger(gold_documents, tagger):
             total += 1
             if t==g: correct += 1
 
-    print '    Accuracy = %4.1f%%' % (100.0*correct/total)
+    print 'Accuracy = %4.1f%%' % (100.0*correct/total)
 
 def demo(num_files=20):
     """
     A simple demonstration function for the C{Tagger} classes.  It
     constructs a C{BackoffTagger} using a 2nd order C{NthOrderTagger},
     a 1st order C{NthOrderTagger}, a 0th order C{NthOrderTagger}, and
-    an C{NN_CD_Tagger}.  It trains and tests the tagger using the
+    an C{DefaultTagger}.  It trains and tests the tagger using the
     brown corpus.
 
     @type num_files: C{int}
@@ -540,6 +589,7 @@ def demo(num_files=20):
     random.shuffle(items)
 
     # Tokenize the training files.
+    print '='*75
     sys.stdout.write('Reading training data'); sys.stdout.flush()
     train_tokens = []
     num_words = 0
@@ -547,20 +597,22 @@ def demo(num_files=20):
         sys.stdout.write('.'); sys.stdout.flush()
         train_tokens.append(brown.tokenize(item))
         num_words += len(train_tokens[-1]['subtokens'])
-    print '\nRead in %d words for training' % num_words
+    print '\n  Read in %d words for training' % num_words
+
+    print 'Training taggers.'
 
     # Create a default tagger
-    default_tagger = NN_CD_Tagger()
+    default_tagger = DefaultTagger('nn')
 
-    print 'training unigram tagger...'
+    print '  Training unigram tagger...'
     t0 = UnigramTagger()
     for tok in train_tokens: t0.train(tok)
         
-    print 'training bigram tagger...'
+    print '  Training bigram tagger...'
     t1 = NthOrderTagger(1)
     for tok in train_tokens: t1.train(tok)
 
-    print 'training trigram tagger...'
+    print '  Training trigram tagger...'
     t2 = NthOrderTagger(2)
     for tok in train_tokens: t2.train(tok)
 
@@ -576,29 +628,34 @@ def demo(num_files=20):
         test_tok = brown.tokenize(item)
         num_words += len(test_tok['subtokens'])
         test_tokens.append(test_tok)
-    print '\nRead in %d words for testing' % num_words
+    print '\n  Read in %d words for testing' % num_words
 
-    # Run the taggers.  For t0, t1, and t2, back-off to NN_CD_Tagger.
+    # Run the taggers.  For t0, t1, and t2, back-off to DefaultTagger.
     # This is especially important for t1 and t2, which count on
     # having known tags as contexts; if they get a context containing
     # None, then they will generate an output of None, and so all
     # words will get tagged a None.
-    print 'running the taggers...'
-    print '-'*75
-    print 'Default (NN/CD) tagger:'
+    print '='*75
+    print 'Running the taggers on test data...'
+    print '  Default (nn) tagger: ',
+    sys.stdout.flush()
     _demo_tagger(test_tokens, default_tagger)
-    print '\nUnigram tagger:'
+    print '  Unigram tagger:      ',
+    sys.stdout.flush()
     _demo_tagger(test_tokens, BackoffTagger([t0, default_tagger]))
-    print '\nBigram tagger:'
+    print '  Bigram tagger:       ',
+    sys.stdout.flush()
     _demo_tagger(test_tokens, BackoffTagger([t1, t0, default_tagger]))
-    print '\nTrigram tagger:'
+    print '  Trigram tagger:      ',
+    sys.stdout.flush()
     trigram = BackoffTagger([t2, t1, t0, default_tagger])
     _demo_tagger(test_tokens, trigram)
 
-    print '\nUsage statistics for the trigram tagger:'
+    print '\nUsage statistics for the trigram tagger:\n'
     trigram.print_usage_stats()
+    print '='*75
 
 if __name__ == '__main__':
     # Standard boilerpate.  (See note in <http://?>)
     #from nltk.tagger import *
-    demo()
+    demo(1)
