@@ -101,7 +101,7 @@ class Info:
         self.deadline = ''
         self.abstract = ''
         self.sequence_id = ''
-        self.external_urls = []
+        self.externals = []
 
         dict = {}
         key = None
@@ -127,7 +127,10 @@ class Info:
             elif key == 'deadline': self.deadline = val
             elif key == 'abstract': self.abstract = val
             elif key == 'id': self.sequence_id = val
-            elif key == 'exturl': self.external_urls = val.split()
+            elif key.startswith('external.'):
+                title = key[9:]
+                urls = val.split()
+                self.externals.append([title, urls])
             else: self.error('Unknown key: '+key)
 
         # Build a sorting identifier.
@@ -180,7 +183,7 @@ TECH_TABLE_HEADER = '''\
     <table class="tech" border="1" cellpadding="3" cellspacing="0">
       <tr>
         <th class="tech" width="45%">Report</th>
-        <th class="tech">&nbsp;</th>
+        <th class="tech">Download</th>
         <th class="tech">Status</th>
         <th class="tech">Est.&nbsp;Completion</th></tr>
 '''
@@ -191,6 +194,7 @@ def techtable(reports):
     reports.sort()
     for report in reports:
         name = report.name
+        abstract = report.abstract.replace('"', "'").strip()
         basename = report.basename
         status = report.status or '&nbsp;'
         deadline = report.deadline or '&nbsp;'
@@ -201,16 +205,27 @@ def techtable(reports):
                                            '%s.%s' % (basename, ext))):
                 files.append('<a href="%s.%s">%s</a>' %
                              (basename, ext, ext))
-        for url in report.external_urls:
-            ext = url.split('.')[-1]
-            files.append('<a href="%s">%s</a>' % (url, ext))
+
+        #for url in report.external_urls:
+        #    ext = url.split('.')[-1]
+        #    files.append('<a href="%s">%s</a>' % (url, ext))
         
         str += '      <tr>\n'
-        str += '        <td class="tech">%s</td>\n' % name
-        str += ('        <td class="tech" align="center">[%s]</td>\n' %
-                '|'.join(files))
-        str += '        <td class="tech">%s</td>\n' % status
-        str += '        <td class="tech">%s</td>\n' % deadline
+        str += '        <td class="tech">'
+        str += '<span title="%s">%s' % (abstract, name)
+        for title,urls in report.externals:
+            str += '<br />\n        '+'&nbsp;'*4+'<i>%s</i>' % title.title()
+        str += '</span></td>\n'
+        str += ('       <td class="tech" align="center">%s' %
+                ', '.join(files))
+        for title,urls in report.externals:
+            links = ['<a href="http://%s">%s</a>' %
+                     (url, url.split('.')[-1])
+                     for url in urls]
+            str += '<br />\n%s' % ', '.join(links)
+        str += '</td>\n'
+        str += '        <td class="tech" valign="top">%s</td>\n' % status
+        str += '        <td class="tech" valign="top">%s</td>\n' % deadline
         str += '      </tr>\n'
 
     str = str + "    </table>\n"
