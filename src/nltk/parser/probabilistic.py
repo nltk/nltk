@@ -613,6 +613,8 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         edge_queue = []
         for tok in text:
+# SB: should this be PCFGProduction?
+# also, the signature is wrong...
             prod = CFGProduction(tok.type())
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
             edge_queue.append(Edge(prod, probtok, tok.loc()))
