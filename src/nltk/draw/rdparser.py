@@ -72,6 +72,8 @@ from nltk.parser import *
 from nltk.tokenizer import *
 from nltk.draw.cfg import *
 from nltk.draw.cfg import CFGEditor
+import tkFont
+from Tkinter import *
         
 class RecursiveDescentParserDemo:
     """
@@ -83,9 +85,10 @@ class RecursiveDescentParserDemo:
     through the parsing process, performing the operations that
     C{RecursiveDescentParser} would use.
     """
-    def __init__(self, grammar, text, trace=0):
-        self._text = text
-        self._parser = SteppingRecursiveDescentParser(grammar, trace)
+    def __init__(self, grammar, token, trace=0):
+        self._token = token
+        self._parser = SteppingRecursiveDescentParser(grammar, trace,
+                                                      LEAF='TEXT')
 
         # Set up the main window.
         self._top = Tk()
@@ -94,9 +97,8 @@ class RecursiveDescentParserDemo:
         # Set up key bindings.
         self._init_bindings()
 
-        # Base font size
-        self._size = IntVar(self._top)
-        self._size.set(12) # = medium
+        # Initialize the fonts.
+        self._init_fonts(self._top)
 
         # Animations.  animating_lock is a lock to prevent the demo
         # from performing new operations while it's animating.
@@ -117,7 +119,7 @@ class RecursiveDescentParserDemo:
         self._init_canvas(self._top)
 
         # Initialize the parser.
-        self._parser.initialize(self._text)
+        self._parser.initialize(self._token)
 
         # Resize callback
         self._canvas.bind('<Configure>', self._configure)
@@ -126,18 +128,34 @@ class RecursiveDescentParserDemo:
     ##  Initialization Helpers
     #########################################
         
+    def _init_fonts(self, root):
+        # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
+        self._sysfont = tkFont.Font(font=Button()["font"])
+        root.option_add("*Font", self._sysfont)
+        
+        # TWhat's our font size (default=same as sysfont)
+        self._size = IntVar(root)
+        self._size.set(self._sysfont.cget('size'))
+
+        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+                                    size=self._size.get())
+        self._font = tkFont.Font(family='helvetica',
+                                    size=self._size.get())
+        if self._size.get() < 0: big = self._size.get()-2
+        else: big = self._size.get()+2
+        self._bigfont = tkFont.Font(family='helvetica', weight='bold',
+                                    size=big)
+
     def _init_grammar(self, parent):
         # Grammar view.
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
-        helv = ('helvetica', -self._size.get())
-        bold = ('helvetica', -self._size.get()-2, 'bold')
-        self._prodlist_label = Label(self._prodframe, font=bold, 
+        self._prodlist_label = Label(self._prodframe, font=self._boldfont, 
                                      text='Available Expansions')
         self._prodlist_label.pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
                                  relief='groove', background='white',
-                                 foreground='#909090', font=helv,
+                                 foreground='#909090', font=self._font,
                                  selectforeground='#004040',
                                  selectbackground='#c0f0c0')
 
@@ -161,20 +179,21 @@ class RecursiveDescentParserDemo:
 
     def _init_bindings(self):
         # Key bindings are a good thing.
-        self._top.bind('<q>', self.destroy)
+        self._top.bind('<Control-q>', self.destroy)
+        self._top.bind('<Control-x>', self.destroy)
         self._top.bind('<Escape>', self.destroy)       
-        #self._top.bind('<e>', self.expand)
+        self._top.bind('e', self.expand)
         #self._top.bind('<Alt-e>', self.expand)
         #self._top.bind('<Control-e>', self.expand)
-        self._top.bind('<m>', self.match)
+        self._top.bind('m', self.match)
         self._top.bind('<Alt-m>', self.match)
         self._top.bind('<Control-m>', self.match)
-        self._top.bind('<b>', self.backtrack)
+        self._top.bind('b', self.backtrack)
         self._top.bind('<Alt-b>', self.backtrack)
         self._top.bind('<Control-b>', self.backtrack)
         self._top.bind('<Control-z>', self.backtrack)
         self._top.bind('<BackSpace>', self.backtrack)
-        #self._top.bind('<a>', self.autostep)
+        self._top.bind('a', self.autostep)
         #self._top.bind('<Control-a>', self.autostep)
         self._top.bind('<Control-space>', self.autostep)
         self._top.bind('<Control-c>', self.cancel_autostep)
@@ -183,7 +202,7 @@ class RecursiveDescentParserDemo:
         self._top.bind('<Control-p>', self.postscript)
         #self._top.bind('<h>', self.help)
         #self._top.bind('<Alt-h>', self.help)
-        #self._top.bind('<Control-h>', self.help)
+        self._top.bind('<Control-h>', self.help)
         self._top.bind('<F1>', self.help)
         #self._top.bind('<g>', self.toggle_grammar)
         #self._top.bind('<Alt-g>', self.toggle_grammar)
@@ -226,16 +245,15 @@ class RecursiveDescentParserDemo:
         self._feedbackframe = feedbackframe = Frame(parent)
         feedbackframe.pack(fill='x', side='bottom', padx=3, pady=3)
         self._lastoper_label = Label(feedbackframe, text='Last Operation:',
-                                     font=('helvetica', -self._size.get()))
+                                     font=self._font)
         self._lastoper_label.pack(side='left')
         lastoperframe = Frame(feedbackframe, relief='sunken', border=1)
         lastoperframe.pack(fill='x', side='right', expand=1, padx=5)
-        helv = ('helvetica', -self._size.get())
         self._lastoper1 = Label(lastoperframe, foreground='#007070',
-                                background='#f0f0f0', font=helv)
+                                background='#f0f0f0', font=self._font)
         self._lastoper2 = Label(lastoperframe, anchor='w', width=30,
                                 foreground='#004040', background='#f0f0f0',
-                                font=helv)
+                                font=self._font)
         self._lastoper1.pack(side='left')
         self._lastoper2.pack(side='left', fill='x', expand=1)
 
@@ -358,15 +376,16 @@ class RecursiveDescentParserDemo:
         bold = ('helvetica', -self._size.get(), 'bold')
         attribs = {'tree_color': '#000000', 'tree_width': 2,
                    'node_font': bold, 'leaf_font': helv,}
-        tree = self._parser.tree().type()
+        tree = self._parser.tree()
         self._tree = tree_to_treesegment(canvas, tree, **attribs)
         self._cframe.add_widget(self._tree, 30, 5)
 
         # Draw the text.
         helv = ('helvetica', -self._size.get())
         bottom = y = self._cframe.scrollregion()[3]
-        self._textwidgets = [TextWidget(canvas, tok.type(), font=helv)
-                             for tok in self._text]
+        text = [tok['TEXT'] for tok in self._token['SUBTOKENS']]
+        self._textwidgets = [TextWidget(canvas, word, font=self._font)
+                             for word in text]
         for twidget in self._textwidgets:
             self._cframe.add_widget(twidget, 0, 0)
             twidget.move(0, bottom-twidget.bbox()[3]-5)
@@ -420,7 +439,8 @@ class RecursiveDescentParserDemo:
     def _position_text(self):
 
         # Line up the text widgets that are matched against the tree
-        num_matched = len(self._text) - len(self._parser.remaining_text())
+        numwords = len(self._token['SUBTOKENS'])
+        num_matched = numwords - len(self._parser.remaining_text())
         leaves = self._tree_leaves()[:num_matched]
         xmax = self._tree.bbox()[0]
         for i in range(0, len(leaves)):
@@ -432,7 +452,7 @@ class RecursiveDescentParserDemo:
             xmax = widget.bbox()[2] + 10
 
         # Line up the text widgets that are not matched against the tree.
-        for i in range(len(leaves), len(self._text)):
+        for i in range(len(leaves), numwords):
             widget = self._textwidgets[i]
             widget['color'] = '#a0a0a0'
             widget.move(xmax - widget.bbox()[0], 0)
@@ -472,7 +492,7 @@ class RecursiveDescentParserDemo:
 
     def reset(self, *e):
         self._autostep = 0
-        self._parser.initialize(self._text)
+        self._parser.initialize(self._token)
         self._lastoper1['text'] = 'Reset Demo'
         self._lastoper2['text'] = ''
         self._redraw()
@@ -548,7 +568,8 @@ class RecursiveDescentParserDemo:
         if self._animating_lock: return
         if self._parser.backtrack():
             elt = self._parser.tree()
-            for i in self._parser.frontier()[0]: elt = elt[i]
+            for i in self._parser.frontier()[0]:
+                elt = elt.get_child(i)
             self._lastoper1['text'] = 'Backtrack'
             self._lastoper2['text'] = ''
             if isinstance(elt, TreeToken):
@@ -599,11 +620,10 @@ class RecursiveDescentParserDemo:
     def resize(self, size=None):
         if size is not None: self._size.set(size)
         size = self._size.get()
-        self._lastoper_label['font'] = ('helvetica', -size)
-        self._lastoper1['font'] = ('helvetica', -size)
-        self._lastoper2['font'] = ('helvetica', -size)
-        self._prodlist['font'] = ('helvetica', -size)
-        self._prodlist_label['font'] = ('helvetica', -size-2, 'bold')
+        self._font.configure(size=-(abs(size)))
+        self._boldfont.configure(size=-(abs(size)))
+        self._sysfont.configure(size=-(abs(size)))
+        self._bigfont.configure(size=-(abs(size+2)))
         self._redraw()
 
     #########################################
@@ -662,14 +682,14 @@ class RecursiveDescentParserDemo:
 
         tree = self._parser.tree()
         for i in treeloc:
-            tree = tree.children()[i]
+            tree = tree.get_child(i)
 
-        helv = ('helvetica', -self._size.get())
-        bold = ('helvetica', -self._size.get(), 'bold')
-        widget = tree_to_treesegment(self._canvas, tree.type(),
-                                     node_font=bold, leaf_color='white',
+        widget = tree_to_treesegment(self._canvas, tree,
+                                     node_font=self._boldfont,
+                                     leaf_color='white',
                                      tree_width=2, tree_color='white',
-                                     node_color='white', leaf_font=helv)
+                                     node_color='white',
+                                     leaf_font=self._font)
         widget.node()['color'] = '#20a050'
                                      
         (oldx, oldy) = oldtree.node().bbox()[:2]
@@ -836,12 +856,13 @@ class RecursiveDescentParserDemo:
             self._prodlist.insert('end', (' %s' % production))
         
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok.type() for tok in self._text])
+        sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
         title = 'Edit Text'
         EntryDialog(self._top, sentence, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._text = WSTokenizer().tokenize(sentence)
+        self._token = Token(TEXT=sentence)
+        WSTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
 def demo():
@@ -875,10 +896,10 @@ def demo():
 
     grammar = CFG(S, productions)
 
-    sent = 'the dog saw a man in the park'
-    text = WSTokenizer().tokenize(sent)
+    sent = Token(TEXT='the dog saw a man in the park')
+    WSTokenizer().tokenize(sent)
 
-    RecursiveDescentParserDemo(grammar, text).mainloop()
+    RecursiveDescentParserDemo(grammar, sent).mainloop()
 
 if __name__ == '__main__': demo()
         

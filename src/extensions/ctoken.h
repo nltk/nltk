@@ -193,19 +193,20 @@ list[self.start:self.end]"
 
 #define LOC_ERROR_001 "A location's start index must be less than \
 or equal to its end index."
-#define LOC_ERROR_002 "Locations can only be added to Locations"
-#define LOC_ERROR_003 "Locations have incompatible units"
-#define LOC_ERROR_004 "Locations have incompatible sources"
-#define LOC_ERROR_005 "Locations are not contiguous"
+#define LOC_ERROR_002 "Locations can only be added to Locations (not %ss)"
+#define LOC_ERROR_003 "Locations have incompatible units: %s and %s"
+#define LOC_ERROR_004 "Locations have incompatible sources: %s and %s"
+#define LOC_ERROR_005 "Locations %s and %s are not contiguous"
 
 /* ============================= Type ============================== */
 #define TYPE_DOC "A unit of language, such as a word or sentence."
 #define TYPE_ERROR_001 "The Type constructor only accepts keyword arguments"
-#define TYPE_ERROR_002 "Property is not defined for this Type"
+#define TYPE_ERROR_002 "Property %s is not defined for this Type"
 #define TYPE_ERROR_003 "Type.extend only accepts keyword arguments"
 #define TYPE_ERROR_004 "Type does not define selected property"
 #define TYPE_ERROR_005 "Types are immutable objects"
-#define TYPE_ERROR_006 "Type.select requires string arguments"
+#define TYPE_ERROR_006 "Type.select requires string arguments (got a %s)"
+#define TYPE_ERROR_007 "Property %s not found in Type.select"
 
 /* ============================ Token ============================== */
 #define TOKEN_DOC "An occurance of a type"

@@ -130,7 +130,8 @@ def _typemsg(types):
                     typestr += 'from ' + _typemsg((key,))
                     typestr += ' to ' + _typemsg(val) + ' or '
                 typestr = typestr[:-4] + ') or '
-                    
+        elif type(typ) in (FunctionType, MethodType):
+            typestr += '<%s> or ' % typ.__name__
         else:
             raise AssertionError('Bad arg to typemsg')
     if len(types) > 1: return '(%s)' % typestr[:-4]
@@ -212,7 +213,7 @@ def chktype(n, arg, *types):
     for t in types:
         # The type spec is a type; return 1 if the arg's type matches.
         if type(t) == TypeType:
-            if type(arg) == t: return 1
+            if isinstance(arg, t): return 1
 
         # The type spec is a class; return 1 if the arg's class matches.
         elif type(t) == ClassType:

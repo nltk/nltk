@@ -74,6 +74,7 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 from nltk.token import *
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq
+import re
 
 #################################################################
 # Nonterminal
@@ -124,7 +125,7 @@ class Nonterminal:
             symbol.
         @rtype: C{boolean}
         """
-        return (_classeq(self, other) and
+        return (self is other or _classeq(self, other) and
                 self._symbol == other._symbol)
 
     def __ne__(self, other):
@@ -151,6 +152,7 @@ class Nonterminal:
             symbol is C{M{s}} is C{<M{s}>}.
         @rtype: C{string}
         """
+        # [XX] not a good repr!  Token uses this now!!
         return '<%s>' % (self._symbol,)
 
     def __str__(self):
@@ -294,6 +296,32 @@ class CFGProduction:
         """
         return hash((self._lhs, self._rhs))
 
+    _PARSE_RE = re.compile(r'^(\w+)\s*' + r'(?:-+>|=+>)\s*' + 
+                           r'(?:("[\w ]+"|\'[\w ]+\'|\w+|\|)\s*)*$')
+    _SPLIT_RE = re.compile(r'(\w+|-+>|=+>|"[\w ]+"|\'[\w ]+\'|\|)')
+
+    def parse(s):
+        """
+        Returns a list of productions!
+        """
+        # Use _PARSE_RE to check that it's valid.
+        if not CFGProduction._PARSE_RE.match(s):
+            raise ValueError, 'Bad production string'
+        # Use _SPLIT_RE to process it.
+        pieces = CFGProduction._SPLIT_RE.split(s)
+        pieces = [p for i,p in enumerate(pieces) if i%2==1]
+        lhside = Nonterminal(pieces[0])
+        rhsides = [[]]
+        for piece in pieces[2:]:
+            if piece == '|':
+                rhsides.append([])                     # Vertical bar
+            elif piece[0] in ('"', "'"):
+                rhsides[-1].append(piece[1:-1])        # Terminal
+            else:
+                rhsides[-1].append(Nonterminal(piece)) # Nonterminal
+        return [CFGProduction(lhside, *rhside) for rhside in rhsides]
+    parse = staticmethod(parse)
+
 class CFG:
     """
     A context-free grammar.  A CFG consists of a start state and a set
@@ -337,6 +365,20 @@ class CFG:
         for production in self._productions:
             str += '\n    %s' % production
         return str
+
+    def parse(s):
+        productions = []
+        for linenum, line in enumerate(s.split('\n')):
+            line = line.strip()
+            if line.startswith('#') or line=='': continue
+            try: productions += CFGProduction.parse(line)
+            except ValueError:
+                raise ValueError, 'Unable to parse line %s' % linenum
+        if len(productions) == 0:
+            raise ValueError, 'No productions found!'
+        start = productions[0].lhs()
+        return CFG(start, productions)
+    parse = staticmethod(parse)
 
 #################################################################
 # PCFGs and PCFG productions
