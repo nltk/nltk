@@ -363,10 +363,8 @@ class NthOrderTagger(SequentialTagger):
         for token in tagged_tokens[start:]:
             prev_tags.append(token.type().tag())
 
-        # Construct the relevant context event.
+        # Return the most likely tag for the token's context.
         context = tuple(prev_tags + [next_token.type()])
-
-        # Find the most likely tag for this context, and return it.
         return self._freqdist[context].max()
 
 class BackoffTagger(SequentialTagger):
