@@ -516,7 +516,8 @@ class Chart:
         """
         assert _chktype(1, node, Nonterminal)
         return [edge.structure() for edge in self.edges() if
-                edge.loc() == self._loc and edge.lhs() == node]
+                edge.loc() == self._loc and edge.lhs() == node and
+                edge.complete()]
 
     def contains(self, edge):
         """
@@ -696,7 +697,15 @@ class FRChart(Chart):
 class ChartRuleI:
     def apply(self, chart, grammar):
         """
-        Apply this rule to the given chart, with the given CFG grammar.
+        @return: a new edge that can be added to C{chart} by this
+            rule, assuming the given grammar; or C{None} if no new
+            edges can be added.
+        @rtype: L{EdgeI} or C{None}
+        @param chart: The chart in which the rule should be applied.
+        @type chart: L{Chart}
+        @param grammar: The grammar that is being used to parse
+            C{chart}.
+        @type grammar: L{CFG}
         """
         raise AssertionError, "abstract class"
     def __repr__(self):
@@ -873,6 +882,7 @@ class BottomUpRule(ChartRuleI):
                 if edge.lhs() == production.rhs()[0]:
                     loc = edge.loc().start_loc()
                     edges.append(self_loop_edge(production, loc))
+        edges.reverse()
         return edges
     def __str__(self): return 'Bottom Up Rule'
 
@@ -889,6 +899,7 @@ class FundamentalRule(ChartRuleI):
                 if (edge.next() == edge2.lhs() and
                     edge.end() == edge2.start()):
                     edges.append(fr_edge(edge, edge2))
+        edges.reverse()
         return edges
     def __str__(self): return 'Fundamental Rule'
 
@@ -1123,7 +1134,7 @@ class IncrementalChartParser:
             self._add_edge(edge, chart, edge_queue)
             
             # Check if the edge is a complete parse.
-            if (edge.loc() == chart.loc() and
+            if (edge.loc() == chart.loc() and edge.complete() and 
                 edge.lhs() == self._grammar.start()):
                 parses.append(edge.structure())
                 if len(parses) == n: break
@@ -1178,7 +1189,7 @@ class IncrementalBottomUpRule(IncrementalChartRuleI):
         assert _chktype(3, edge, EdgeI)
         return [self_loop_edge(production, edge.loc().start_loc())
                 for production in grammar.productions()
-                if edge.lhs() == production.rhs()[0]]
+                if edge.lhs() == production.rhs()[0] and edge.complete()]
 
 class IncrementalFundamentalRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
