@@ -191,7 +191,7 @@ class AbstractTree:
         @type substitution: I{tree} or I{leaftype}
         """
         assert _chktype(1, treepos, (types.IntType,), [types.IntType])
-        if treepos == ():
+        if not treepos:
             return substitution
         else:
             if not (0 <= treepos[0] < len(self._children)):
@@ -785,3 +785,75 @@ class TreebankTokenizer(TokenizerI):
                     raise ValueError('Bad Treebank-style string')
 
         return trees
+
+
+def demo():
+    """
+    A demonstration showing how C{Tree}s and C{TreeToken}s can be
+    used.  This demonstration creates a C{Tree}, and loads a
+    C{TreeToken} from the L{treebank<nltk.corpus.treebank>} corpus,
+    and shows the results of calling several of their methods.
+    """
+    # Create a syntax tree for a simple sentence.
+    print '-Tree-'.center(75).replace(' ', '*').replace('-', ' ')
+    tree = Tree('S', Tree('NP', Tree('DT', 'the'),
+                                Tree('NN', 'cat')),
+                     Tree('VP', Tree('VBD', 'chased'),
+                                Tree('NP', Tree('DT', 'a'),
+                                           Tree('NN', 'dog'))))
+
+    # Show what you can do with a tree type.
+    print 'tree = ' + tree.pp(indent=7)
+    print
+    print 'tree.node()     =>', tree.node()
+    print 'tree.children() =>', `tree.children()`[:53]+'...'
+    print 'tree.leaves()   =>', tree.leaves()
+    print 'len(tree)       =>', len(tree)
+    print 'tree[0]         =>', tree[0]
+    print 'tree[1,1]       =>', tree[1,1]
+    print 'tree[1,1,0]     =>', tree[1,1,0]
+    print 'tree.height()   =>', tree.height()
+    print 'tree.nodes()    =>', `tree.nodes()`[:53]+'...'
+    print
+    print "tree.with_substitution([1,1,1], Tree('NN', 'bear') =>"
+    tree2 = tree.with_substitution([1,1,1], Tree('NN', 'bear'))
+    print '    ' + tree2.pp(indent=4)
+
+    # Read a TreeToken from the Penn Treebank corpus.
+    print '-TreeToken-'.center(75).replace(' ', '*').replace('-', ' ')
+    from nltk.corpus import treebank
+    if not treebank.installed():
+        print 'Treebank not installed; skipping demos for TreeToken'
+        print '*'*75
+        return
+
+    # Read and tokenize the first file in the treebank.
+    treetoks = treebank.tokenize(treebank.items('parsed')[0])
+    treetok = treetoks[0]
+    
+    # Show what you can do with a tree token.
+    print 'treetok = ' + `treetok`[:62]+'...'
+    print
+    print 'treetok.node()     =>', treetok.node()
+    print 'treetok.children() =>', `treetok.children()`[:50]+'...'
+    print 'treetok.leaves()   =>', `treetok.leaves()`[:50]+'...'
+    print 'len(treetok)       =>', len(treetok)
+    print 'treetok[0]         =>', `treetok[0]`[:50]+'...'
+    print 'treetok[1,1]       =>', `treetok[1,1]`[:50]+'...'
+    print 'treetok[1,1,0]     =>', treetok[1,1,0]
+    print 'treetok.height()   =>', treetok.height()
+    print 'treetok.nodes()    =>', `treetok.nodes()`[:50]+'...'
+    print
+    print "smith_tok = Token('Smith', Location(1, unit='w'))"
+    print "treetok.with_substitution([0,0,1], smith_tok) =>"
+    smith_tok = Token('Smith', Location(1, unit='w'))
+    treetok2 = treetok.with_substitution([0,0,1], smith_tok)
+    print '    ' + `treetok2`[:68]+'...'
+    print
+    print 'treetok.type()     =>', `treetok.nodes()`[:50]+'...'
+    print 'treetok.loc()      =>', `treetok.nodes()`[:50]+'...'
+    print '*'*75
+
+if __name__ == '__main__':
+    demo()
+    
