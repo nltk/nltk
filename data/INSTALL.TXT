@@ -1,0 +1,44 @@
+###############################################################
+###             NLTK: Data Installation Instructions        ###
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
+### Copyright (C) 2003 University of Pennsylvania           ###
+### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
+###         Steven Bird <sb@cs.mu.oz.au>                    ###
+### URL: <http://nltk.sf.net>                               ###
+### For license information, see LICENSE.TXT                ###
+###############################################################
+
+Unix Installation
+~~~~~~~~~~~~~~~~~
+    The default location for NLTK data is the top-level nltk/data
+    directory.  Each corpus sample comes as a zip archive <corpus.zip>
+    with an associated readme file <corpus.readme>.  Each <corpus.zip>
+    archive unzips to a directory <corpus>.
+
+    To unzip a corpus sample that you want to use, do:
+
+        unzip corpus.zip
+
+    To unzip a corpus sample to another location, such as
+    /usr/share/data do:
+
+        mkdir /usr/share/data
+        unzip corpus.zip -d /usr/share/data
+
+    In order to use the nltk.corpus module to access these corpora
+    it is necessary to set the NLTK_CORPORA environment variable, e.g.
+
+        export NLTK_CORPORA=/usr/share/data     (bash)
+        setenv NLTK_CORPORA /usr/share/data     (csh)
+
+
+Windows Installation
+~~~~~~~~~~~~~~~~~~~~
+
+    To be written
+
+
+Macintosh Installation
+~~~~~~~~~~~~~~~~~~~~~~
+
+    To be written
