@@ -189,10 +189,13 @@ Releases
 
     The procedure for making a new release is:
 
-        1. Update the version number in src/nltk/__init__.py (in 2
-           places: the docstring comment; and the __version__
-           variable).  Also, update the version number in 
-           doc/Makefile (for epydoc documentation).
+        1. Update the version number.  The version number is
+           currently listed/referenced in the following files:
+             - Makefile
+             - doc/Makefile
+             - doc/webpage/index.html
+             - src/nltk/__init__.py
+             - contrib/nltk_contrib/__init__.py
         2. Make sure all changes are committed.
         3. Generate a CVS log of all the changes since the previous
            release (note quote marks):
