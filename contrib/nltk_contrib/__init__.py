@@ -22,6 +22,7 @@ statements:
 @version: 1.4
 @newfield contributor: Contributor, Contributors, short
 @contributor: Robert Berwick
+@contributor: Steve Cassidy
 @contributor: Chen-Fu Chiang
 @contributor: Jinyoung Choi
 @contributor: Trevor Cohn
@@ -29,7 +30,9 @@ statements:
 @contributor: Brent Gray
 @contributor: Yurie Hara
 @contributor: Edward Ivanovic
+@contributor: Haejoong Lee
 @contributor: Christopher Maloof
+@contributor: Carl de Marcken
 @contributor: Rob Speer
 @contributor: Oliver Steele
 @contributor: David Zhang
