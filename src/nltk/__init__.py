@@ -61,12 +61,7 @@ L{RecursiveDescentParser<nltk.parser.RecursiveDescentParser>}, and
 L{ChartParser<nltk.parser.chart.ChartParser>} are all implementations
 of the C{ParserI} interface.
 
-@author: U{Edward Loper<mailto:edloper@gradient.cis.upenn.edu>}
 @version: 1.1a
-
-@newfield contributor: Contributor, Contributors
-@contributor: Steven Bird
-@contributor: Edward Loper
 
 @group Core Modules: token, tree, corpus, probability
 @group Data Modules: set, cfg, fsa
@@ -112,7 +107,10 @@ __maintainer__ = "Edward Loper"
 __maintainer_email__ = "edloper@gradient.cis.upenn.edu"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
-__contributors__ = """\
+__contributors__ = """
 Edward Loper <edloper@gradient.cis.upenn.edu>
 Steven Bird <sb@cs.mu.oz.au>
+Ewan Klein <ehk@users.sourceforge.net>
+Scott Cotton <sfscott@users.sourceforge.net>
+Salim Zayat <zayats@users.sourceforge.net>
 """
