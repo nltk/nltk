@@ -12,7 +12,13 @@ wide variety of natural language processing tasks.  While they are not
 integrated into NLTK (yet), these programs may be of interest to NLTK
 developers and to people teaching NLP using Python.
 
-@author: Steven Bird
+B{Tip:} To avoid using long fully qualified names, C{nltk_contrib}
+modules are typically imported with C{from I{pkg} import I{module}}
+statements:
+
+    >>> from nltk_contrib.upenn.cis530.fall2001 import tag
+    >>> tag.demo()
+
 @version: 1.1a
 @newfield contributor: Contributor, Contributors, short
 @contributor: Chen-Fu Chiang
