@@ -134,12 +134,12 @@ class AbstractStemmer(StemmerI):
         self.stem_n(token, n)
         return token['stems']
 
-    def _stem_from_raw(self, token, *propnames):
+    def _stem_from_raw(self, token, **propnames):
         text_prop = propnames.get('text', 'text')
         stem_prop = propnames.get('stem', 'stem')
         token[stem_prop] = self.raw_stem(token[text_prop])
 
-    def _stem_n_from_raw(self, token, *propnames):
+    def _stem_n_from_raw(self, token, **propnames):
         text_prop = propnames.get('text', 'text')
         stems_prop = propnames.get('stems', 'stems')
         token[stems_prop] = self.raw_stem_n(token[text_prop])
