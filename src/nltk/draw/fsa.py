@@ -140,7 +140,7 @@ class GraphWidget(CanvasWidget):
     """
     def __init__(self, canvas, nodes, edges, **attrs):
         """
-        @type edge: C{dictionary} from (node, node) to label.
+        @type edges: C{dictionary} from (node, node) to label.
         """
         self._nodes = nodes
         self._edges = edges

@@ -62,8 +62,8 @@ Keyboard Shortcuts::
       [Delete]\t Reset the parser
       [g]\t Show/hide available expansions list
       [h]\t Help
-      [Ctrl-p] Print
-      [q] Quit
+      [Ctrl-p]\t Print
+      [q]\t Quit
 """
 
 from nltk.draw.tree import *
