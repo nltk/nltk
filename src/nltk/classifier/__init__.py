@@ -40,9 +40,13 @@ a label and a text.
 
 C{ClassifierTrainerI} is a general interface for classes that build
 classifiers from training data.
+
+C{accuracy} and C{log_likelihood} provide simple metrics for
+evaluating the performance of a classifier.
 """
 
-from Numeric import array
+from nltk.token import Token
+import math, Numeric
 
 ##//////////////////////////////////////////////////////
 ##  Texts and Labels
@@ -348,3 +352,57 @@ def label_tokens(unlabeled_tokens, label):
     """
     return [Token(LabeledText(tok.type(), label), tok.loc())
             for tok in unlabeled_tokens]
+
+##//////////////////////////////////////////////////////
+##  Evaluation Metrics
+##//////////////////////////////////////////////////////
+
+def accuracy(classifier, labeled_tokens):
+    """
+    @rtype: C{float}
+    @return: the given classifier model's accuracy on the given list
+        of labeled tokens.  This float between zero and one indicates
+        what proportion of the tokens the model would label correctly.
+    
+    @param labeled_tokens: The tokens for which the model's
+        accuracy should be computed.
+    @type labeled_tokens: C{list} of (C{Token} with type
+        C{LabeledText}) 
+    """
+    total = 0
+    correct = 0
+    for ltok in labeled_tokens:
+        utok = Token(ltok.type().text(), ltok.loc())
+        if classifier.classify(utok) == ltok:
+            correct += 1
+        total += 1
+    return float(correct)/total            
+
+def log_likelihood(classifier, labeled_tokens):
+    """
+    Evaluate the log likelihood of the given list of labeled
+    tokens for the given classifier model.  This nonpositive float
+    gives an indication of how well the classifier models the
+    data.  Values closer to zero indicate that it models it more
+    accurately.
+
+    @rtype: C{float}
+    @return: The log likelihood of C{labeled_tokens} for the given
+        classifier model.
+    @param labeled_tokens: The tokens whose log likelihood should
+        be computed.
+    @type labeled_tokens: C{list} of (C{Token} with type
+        C{LabeledText}) 
+    """
+    likelihood = 0.0
+    for ltok in labeled_tokens:
+        utok = Token(ltok.type().text(), ltok.loc())
+        label = ltok.type().label()
+        dist = classifier.distribution_dictionary(utok)
+        if dist[label] == 0:
+            # Python intermrets 1e1000 as inf.
+            likelihood -= 1e1000
+        else:
+            likelihood += math.log(dist[label])
+    return likelihood
+    
