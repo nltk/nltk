@@ -27,9 +27,9 @@ def _hashed_set_insert(hash, key, item):
     if hash.has_key(key):
         hash[key].insert(item)
     else:
-        hash[key] = Set(item)
+        hash[key] = MutableSet(item)
 def _hashed_set_delete(hash, key, item):
-    new = hash[key].difference(Set(item))
+    new = hash[key].difference(MutableSet(item))
     if len(new) > 0:
         hash[key] = new
     else:
@@ -46,14 +46,14 @@ class FSA:
         self._forward = {}  # forward transitions
         self._reverse = {}  # reverse transitions
         self._labels = {}
-        self._finals = Set()
+        self._finals = MutableSet()
         self._sigma = sigma
         
     # the fsa accepts the empty string
     # only call this right after initializing
     def empty(self):
         self._num = 0
-        self._finals = Set(0)
+        self._finals = MutableSet(0)
         
     def sigma(self):
         return self._sigma
@@ -79,11 +79,11 @@ class FSA:
         self._finals.insert(state)
 
     def delete_final(self, state):
-        self._finals = self._finals.difference(Set(state))
+        self._finals = self._finals.difference(MutableSet(state))
 #        del self._finals[state]
 
     def set_final(self, states):
-        self._finals = Set(*states)
+        self._finals = MutableSet(*states)
 
     def in_finals(self, list):
         return [state for state in list
@@ -98,7 +98,7 @@ class FSA:
 #        if self._table.has_key((s1,label)):
 #            self._table[(s1,label)].insert(s2)
 #        else:
-#            self._table[(s1,label)] = Set(s2)
+#            self._table[(s1,label)] = MutableSet(s2)
 
     def inserts(self, state_set, label, s2):
         for s1 in state_set.elements():
@@ -199,13 +199,13 @@ class FSA:
 
     # mark accessible nodes
     def accessible(self):
-        acc = Set()
+        acc = MutableSet()
         for final in self.finals():
-            reverse_acc = Set(final)
+            reverse_acc = MutableSet(final)
             self.reverse_accessible(final, reverse_acc)
             acc = acc.union(reverse_acc)
 
-        forward_acc = Set(self.start())
+        forward_acc = MutableSet(self.start())
         self.forward_accessible(self.start(), forward_acc)
 
         acc = acc.intersection(forward_acc)
