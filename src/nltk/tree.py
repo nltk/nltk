@@ -48,6 +48,12 @@ from nltk.chktype import chktype
 from nltk.chktype import classeq as _classeq
 import types
 
+# Register some information about properties used by tree tokens.
+Token.register_cyclic('parent')
+Token.register_cyclic('parents')
+Token.register_repr(['text','parent'], '<%(text)r>')
+Token.register_repr(['text','parents'], '<%(text)r>')
+
 ######################################################################
 ## Tree Token
 ######################################################################
@@ -314,6 +320,7 @@ class TreeToken(Token):
                 str += '\n'+' '*(indent+2)+repr(child)
         return str+')'
 
+    # [XX] rename to print* or something
     # Contributed by trevorcohn1@users.sf.net
     def latex_qtree(self, first=True):
         r"""
@@ -347,6 +354,13 @@ class TreeToken(Token):
         str += ']'
         return str
 
+    # [XX] add output-to-treebank method.
+
+    #////////////////////////////////////////////////////////////
+    # Parsing
+    #////////////////////////////////////////////////////////////
+    
+    # [XX] rename to parse_treebank!
     def parse(s, addlocs=False, source=None, startpos=0):
         try:
             treetok, pos = TreeToken._parse(s, addlocs, source, startpos)
@@ -391,13 +405,57 @@ class TreeToken(Token):
 
         raise ValueError, 'mismatched parens'
     _parse = staticmethod(_parse)
-        
-# ouchies..
-Token.register_cyclic('parent')
-Token.register_cyclic('parents')
-Token.register_repr(['text','parent'], '<%(text)r>')
-Token.register_repr(['text','parents'], '<%(text)r>')
 
+class TreebankTokenizer(TokenizerI):
+    def __init__(self, addlocs=True, propnames={}):
+        self._addlocs = addlocs
+        self._props = propnames
+
+    def _subtoken_generator(self, token):
+        text_prop = self._props.get('text', 'text')
+        loc_prop = self._props.get('loc', 'loc')
+
+        # [XX] currently these are ignored:
+        subtokens_loc_prop = self._props.get('subtokens.loc', 'loc')
+        tree_prop = self._props.get('subtokens.tree', 'tree')
+        node_prop = self._props.get('subtokens.tree.node', 'tree')
+        leaf_prop = self._props.get('subtokens.tree.leaf.text', 'text')
+
+        # Extract the token's text.
+        text = token[text_prop]
+        if not isinstance(text, str): text = ''.join(text)
+        text = text.strip()
+
+        # Get the token's source & start position.
+        source = token[loc_prop].source()
+        pos = token[loc_prop].start()
+
+        # Parse trees until we reach the end of the string
+        trees = []
+        while pos < len(text):
+            tree, pos = TreeToken._parse(text, source, pos)
+            yield tree
+
+        # Add the trees to token.
+        token[subtokens_prop] = trees
+
+    def xtokenize(self, token):
+        subtokens_prop = self._props.get('subtokens', 'subtokens')
+        token[subtokens_prop] = self._subtoken_generator(token)
+        
+    def tokenize(self, token):
+        subtokens_prop = self._props.get('subtokens', 'subtokens')
+        token[subtokens_prop] = list(self._subtoken_generator(token))
+
+    def raw_tokenize(self, token):
+        "Not implemented by TreebankTokenizer"
+        raise NotImplementedError, "Not implemented by TreebankTokenizer"
+    
+    def raw_xtokenize(self, token):
+        "Not implemented by TreebankTokenizer"
+        raise NotImplementedError, "Not implemented by TreebankTokenizer"
+        
+        
 ######################################################################
 ## Parented Tree Token & Multi-Parented Tree Token
 ######################################################################
