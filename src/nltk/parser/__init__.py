@@ -56,7 +56,7 @@ three sub-modules for specialized kinds of parsing:
 from nltk.tree import TreeToken
 from nltk.token import Token
 from nltk.cfg import Nonterminal, CFG, CFGProduction, nonterminals
-from nltk.chktype import chktype as _chktype
+from nltk.chktype import chktype
 import types
 
 ##//////////////////////////////////////////////////////
@@ -176,8 +176,8 @@ class ShiftReduceParser(ParserI):
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
-        assert _chktype(1, grammar, CFG)
-        assert _chktype(2, trace, types.IntType)
+        assert chktype(1, grammar, CFG)
+        assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._propnames = propnames
@@ -197,12 +197,12 @@ class ShiftReduceParser(ParserI):
         @param grammar: The new grammar.
         @type grammar: C{CFG}
         """
-        assert _chktype(1, grammar, CFG)
+        assert chktype(1, grammar, CFG)
         self._grammar = grammar
     
     def parse_n(self, token, n=None):
-        assert _chktype(1, token, [Token], (Token))
-        assert _chktype(2, n, types.IntType, types.NoneType)
+        assert chktype(1, token, Token)
+        assert chktype(2, n, types.IntType, types.NoneType)
         trees_prop = self._propnames.get('trees', 'trees')
         tree_prop = self._propnames.get('tree', 'tree')
         
@@ -215,7 +215,7 @@ class ShiftReduceParser(ParserI):
         del token[tree_prop]
 
     def parse(self, token):
-        assert _chktype(1, token, [Token], (Token))
+        assert chktype(1, token, [Token], (Token))
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         leaf_prop = self._propnames.get('leaf', 'leaf')
         tree_prop = self._propnames.get('tree', 'tree')
@@ -352,7 +352,7 @@ class ShiftReduceParser(ParserI):
             produce more verbose tracing output.
         @rtype: C{None}
         """
-        assert _chktype(1, trace, types.IntType)
+        assert chktype(1, trace, types.IntType)
         # 1: just show shifts.
         # 2: show shifts & reduces
         # 3: display which tokens & productions are shifed/reduced
@@ -481,8 +481,8 @@ class RecursiveDescentParser(ParserI):
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
-        assert _chktype(1, grammar, CFG)
-        assert _chktype(2, trace, types.IntType)
+        assert chktype(1, grammar, CFG)
+        assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._propnames = propnames
@@ -501,7 +501,7 @@ class RecursiveDescentParser(ParserI):
         @param grammar: The new grammar.
         @type grammar: C{CFG}
         """
-        assert _chktype(1, grammar, CFG)
+        assert chktype(1, grammar, CFG)
         self._grammar = grammar
 
     def parse(self, token):
@@ -517,8 +517,8 @@ class RecursiveDescentParser(ParserI):
 
     def parse_n(self, token, n=None):
         # Inherit docs from ParserI
-        assert _chktype(1, token, Token)
-        assert _chktype(2, n, types.IntType, types.NoneType)
+        assert chktype(1, token, Token)
+        assert chktype(2, n, types.IntType, types.NoneType)
         node_prop = self._propnames.get('node', 'node')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         trees_prop = self._propnames.get('trees', 'trees')
@@ -726,7 +726,7 @@ class RecursiveDescentParser(ParserI):
             produce more verbose tracing output.
         @rtype: C{None}
         """
-        assert _chktype(1, trace, types.IntType)
+        assert chktype(1, trace, types.IntType)
         self._trace = trace
 
     def _trace_fringe(self, treetok, treeloc=None):
@@ -821,8 +821,8 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     @outprop: C{node}: The subtrees' constituent label.
     """
     def __init__(self, grammar, trace=0, **propnames):
-        assert _chktype(1, grammar, CFG)
-        assert _chktype(2, trace, types.IntType)
+        assert chktype(1, grammar, CFG)
+        assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._propnames = propnames
@@ -831,7 +831,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._history = []
 
     def parse(self, token):
-        assert _chktype(1, token, Token)
+        assert chktype(1, token, Token)
         tree_prop = self._propnames.get('tree', 'tree')
         
         self.initialize(token)
@@ -864,7 +864,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         @param text: The text to start parsing.
         @type text: C{list} of C{Token}
         """
-        assert _chktype(1, token, Token)
+        assert chktype(1, token, Token)
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         self._stack = []
         self._remaining_text = token[subtokens_prop][:]
@@ -911,7 +911,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         
         @rtype: C{CFGProduction} or C{None}
         """
-        assert _chktype(1, production, CFGProduction, types.NoneType)
+        assert chktype(1, production, CFGProduction, types.NoneType)
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         return_val = self._reduce(self._stack, self._remaining_text,
                                   production)
@@ -995,8 +995,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     @outprop: C{node}: The subtrees' constituent label.
     """
     def __init__(self, grammar, trace=0, **propnames):
-        assert _chktype(1, grammar, CFG)
-        assert _chktype(2, trace, types.IntType)
+        assert chktype(1, grammar, CFG)
+        assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._propnames = propnames
@@ -1009,8 +1009,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._parses = []
     
     def parse_n(self, token, n=None):
-        assert _chktype(1, token, Token)
-        assert _chktype(2, n, types.IntType, types.NoneType)
+        assert chktype(1, token, Token)
+        assert chktype(2, n, types.IntType, types.NoneType)
         trees_prop = self._propnames.get('trees', 'trees')
         
         self.initialize(token)
@@ -1028,7 +1028,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         @param text: The text to start parsing.
         @type text: C{list} of C{Token}
         """
-        assert _chktype(1, token, Token)
+        assert chktype(1, token, Token)
         node_prop = self._propnames.get('node', 'node')
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         
@@ -1117,7 +1117,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         leaf_prop = self._propnames.get('leaf', 'leaf')
         
-        assert _chktype(1, production, CFGProduction, types.NoneType)
+        assert chktype(1, production, CFGProduction, types.NoneType)
         # Make sure we *can* expand.
         if len(self._frontier) == 0:
             return None
