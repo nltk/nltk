@@ -321,7 +321,6 @@ class Location:
         """
         Compare self and other by start/end location.. 
         """
-        print 'hi', self, other
         _chkclass(self, other)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
