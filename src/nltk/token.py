@@ -10,13 +10,6 @@
 
 # Open questions:
 #    Should "type" and "token" be replaced with "ttype" and "ttoken"?
-#    Should representations be modified?
-#    What should comparisons do when given bad types??? e.g., != with
-#        None? 
-
-# To do:
-#    - unit testing
-#    - Am I happy with current str/repr???
 
 """
 Basic classes for processing individual elements of text, such
@@ -39,6 +32,11 @@ be used as text types.  Currently, the following classes are defined:
     - C{TaggedType}: A type consisting of a base type and a tag.  For
       example, this class could be used to represent part-of-speech
       tagged words.
+    - C{LabeledType}: A type consisting of a text and a label.  This
+      class is used by the text classification package to assign
+      categories to texts.
+    - C{Tree}: A type representing a homogenous hierarchical structure.
+      For example, this class could be used to represent syntax trees.
 
 In addition, the token module defines the C{TokenizerI} interface, as
 well as several implementations of that interface.  A X{tokenizer} is
@@ -46,15 +44,9 @@ a class which converts a string of text into its constituent tokens.
 Different tokenizers may split the text up differently.
 """
 
+import re, sys, types
 from nltk.chktype import chktype as _chktype 
-from nltk.chktype import chkclass as _chkclass
-
-import re, sys
-
-from types import IntType as _IntType
-from types import StringType as _StringType
-from types import NoneType as _NoneType
-from types import SliceType as _SliceType
+from nltk.chktype import classeq as _classeq
 
 ##//////////////////////////////////////////////////////
 ##  Locations
@@ -113,8 +105,10 @@ class Location:
             specifies the unit of the C{Location}'s indices.
         """
         # Set the start and end locations
-        _chktype(1, start, _IntType)
-        _chktype(2, end, _IntType, _NoneType)
+        assert _chktype(1, start, types.IntType, types.LongType,
+                        types.FloatType)
+        assert _chktype(2, end, types.IntType, types.LongType,
+                        types.FloatType, types.NoneType)
         self._start = start
         if end is not None: self._end = end
         else: self._end = self._start+1
@@ -128,7 +122,7 @@ class Location:
             if key == 'source':
                 self._source = val
             elif key == 'unit':
-                if type(val) not in (_StringType, _NoneType):
+                if type(val) not in (types.StringType, types.NoneType):
                     raise TypeError("Unit must have type string")
                 self._unit = val
             else:
@@ -181,7 +175,7 @@ class Location:
         return self._source
 
     def union(self, other):
-        _chktype(1, other, Location)
+        assert _chktype(1, other, Location)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
         if self._source != other._source:
@@ -234,6 +228,7 @@ class Location:
         @return: C{lst[self.start():self.end()]}
         @rtype: C{list}
         """
+        assert _chktype(1, lst, [])
         return lst[self.start():self.end()]
 
     def __repr__(self):
@@ -245,9 +240,9 @@ class Location:
         else: unit = ''
         
         if self._end != self._start+1:
-            str = '@[%d%s:%d%s]' % (self._start, unit, self._end, unit)
+            str = '@[%s%s:%s%s]' % (self._start, unit, self._end, unit)
         else:
-            str = '@[%d%s]' % (self._start, unit)
+            str = '@[%s%s]' % (self._start, unit)
 
         return str
 
@@ -256,12 +251,12 @@ class Location:
         @return: A verbose string representation of this C{Location}.
         @rtype: string
         """
-        s = '@[%d' % self._start
+        s = '@[%s' % self._start
         
         if self._unit is not None: s += self._unit
 
         if self._end != self._start+1:
-            s += ':%d' % self._end
+            s += ':%s' % self._end
             if self._unit is not None: s += self._unit
 
         s += ']'
@@ -282,19 +277,12 @@ class Location:
             raise an exception iff this C{Location}'s source or unit
             are not equal to C{other}'s; return false otherwise.
         @rtype: C{boolean}
-        @raise TypeError: if C{other} is not a C{Location}.
-        @raise ValueError: If this C{Location}'s source is not equal
-            to C{other}'s source.
-        @raise ValueError: If this C{Location}'s unit is not equal
-            to C{other}'s unit.
         """
-        _chkclass(self, other)
-        if self._unit != other._unit:
-            raise ValueError('Locations have incompatible units')
-        if self._source != other._source:
-            raise ValueError('Locations have incompatible sources')
-        return (self._start == other._start and
-                self._end == other._end)
+        return (_classeq(self, other) and
+                self._start == other._start and
+                self._end == other._end and
+                self._unit == other._unit and
+                self._source == other._source)
     
     def __ne__(self, other):
         """
@@ -304,7 +292,6 @@ class Location:
             raise an exception iff this C{Location}'s source or unit
             are not equal to C{other}'s; return false otherwise.
         @rtype: C{boolean}
-        @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
         @raise ValueError: If this C{Location}'s unit is not equal
@@ -328,7 +315,7 @@ class Location:
         @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
-        _chkclass(self, other)
+        assert _chktype(1, other, Location)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
         if self._source != other._source:
@@ -352,7 +339,7 @@ class Location:
         @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
-        _chkclass(self, other)
+        assert _chktype(1, other, Location)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
         if self._source != other._source:
@@ -366,7 +353,9 @@ class Location:
             particular: 
                 - Raise an exception if this C{Location}'s source or
                   unit are not equal to C{other}'s 
-                - Return true if ..?
+                - Return true if C{self}'s start falls in the range
+                  [C{other}.start, C{other}.end); or if C{other}'s
+                  start falls in the range [C{self}.start, C{self}.end).
                 - Return false otherwise.
         @rtype: C{boolean}
         @raise TypeError: if C{other} is not a C{Location}.
@@ -375,14 +364,14 @@ class Location:
         @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
-        _chkclass(self, other)
+        assert _chktype(1, other, Location)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
         if self._source != other._source:
             raise ValueError('Locations have incompatible sources')
         (s1,e1) = (self._start, self._end)
         (s2,e2) = (other._start, other._end)
-        return (s1<e2 and e1>s2) or (s2<e1 and e2>s1)
+        return (s1 <= s2 < e1) or (s2 <= s1 < e2)
 
     def __cmp__(self, other):
         """
@@ -409,7 +398,7 @@ class Location:
         @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
-        _chkclass(self, other)
+        assert _chktype(1, other, Location)
         if self._unit != other._unit:
             raise ValueError('Locations have incompatible units')
         if self._source != other._source:
@@ -472,6 +461,15 @@ class Token:
             - The start, end, source, and unit may be specified
               directly, using the second and third arguments, and the
               keyword arguments.
+
+        Examples of each way of specifying the location are:
+
+            >>> Token('run')
+            'run'@[?]
+            >>> Token('run', Location(6, 9, unit='c'))
+            'run'@[6c:9c]
+            >>> Token('run', 6, 9, unit='c')
+            'run'@[6c:9c]
         
         @param type: The type for the new Token.
         @type type: (any)
@@ -487,8 +485,11 @@ class Token:
             when C{location_or_start} gives the start index of the new
             token's location.            
         """
-        _chktype(2, location_or_start, _IntType, Location, _NoneType)
-        _chktype(3, end, _IntType, _NoneType)
+        assert _chktype(2, location_or_start, types.IntType,
+                        types.LongType, types.FloatType,
+                        Location, types.NoneType)
+        assert _chktype(3, end, types.IntType, types.LongType,
+                        types.FloatType, types.NoneType)
         self._type = type
         if isinstance(location_or_start, Location):
             self._location = location_or_start
@@ -533,7 +534,7 @@ class Token:
         @raise TypeError: if C{other} is not a C{Token} or subclass of
             C{Token}.
         """
-        _chkclass(self, other)
+        if not _classeq(self, other): return 0
         if self.loc() is None or other.loc() is None: return 0
         return (self._location == other._location and
                 self._type == other._type)
@@ -674,7 +675,7 @@ class _XTokenTuple:
         self._kws = kws
 
     def __getitem__(self, index):
-        if type(index) == _SliceType:
+        if type(index) == types.SliceType:
             if index.stop == sys.maxint:
                 return tuple([Token(self._typelist[i], i, **self._kws) for i in
                               range(index.start, len(self))])
@@ -712,14 +713,14 @@ class WSTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
         words = str.split()
         return [Token(words[i], Location(i, unit='w', source=source))
                 for i in range(len(words))]
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType,)
+        assert _chktype(1, str, types.StringType,)
         return _XTokenTuple(str.split(), source=source, unit='w')
 
 class CharTokenizer(TokenizerI):
@@ -731,7 +732,7 @@ class CharTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
         chars = [c for c in str]
         return [Token(chars[i], Location(i, unit='c', source=source))
                 for i in range(len(chars))
@@ -747,7 +748,7 @@ class LineTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
         tokens = []
         i = 0
         for sent in str.split('\n'):
@@ -759,14 +760,13 @@ class LineTokenizer(TokenizerI):
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
         return _XTokenTuple([s for s in str.split('\n')
                              if s.strip() != ''],
                             source=source, unit='s') 
 
 class RETokenizer(TokenizerI):
     """
-    
     A tokenizer that separates a string of text into words, based on a
     regular expression.  The list of tokens returned includes all
     substrings that match the given regular expression.  Each word
@@ -777,13 +777,13 @@ class RETokenizer(TokenizerI):
         """
         @type regexp: string
         """
-        _chktype(1, regexp, _StringType)
+        assert _chktype(1, regexp, types.StringType)
         self._regexp = re.compile('('+regexp+')')
         self._positive = positive
         
     def tokenize(self, str, **kwargs):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
 
         if '\0' in str or '\1' in str:
             raise ValueError("RETokenizer can't handle "+
@@ -813,7 +813,7 @@ class RETokenizer(TokenizerI):
     # Does not handle self._positive!!
     def xtokenize(self, str, **kwargs):
         # Inherit docs from TokenizerI
-        _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
 
         if '\0' in str or '\1' in str:
             raise ValueError("RETokenizer can't handle "+
