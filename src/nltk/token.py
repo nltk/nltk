@@ -373,7 +373,7 @@ class Token(dict):
 
     # [XX] registry of repr funcs
     _repr_registry = {}
-    def register_repr(props, repr):
+    def register_repr(props, repr, optional_props=[]):
         """
         Register a string-representation for tokens.  Any tokens that
         contain the specified set of properties will be printed with
@@ -382,7 +382,7 @@ class Token(dict):
         representation will be silently discarded.
 
         @type props: C{list} of C{string}
-        @param props: The set OF property names for which this
+        @param props: The set of property names for which this
             representation should be used.  The order of C{props} is
             not significant.
         @type repr: C{string} or C{function}
@@ -391,7 +391,16 @@ class Token(dict):
             or a function.  If C{repr} is a string, then it specifies
             the representation C{repr%self}.  If it is a function,
             then it specifies the representation C{repr(self)}.
+        @param optional_props: A list of property names that should
+            be ignored if the token has the properties listed in
+            C{props}.
         """
+        if optional_props:
+            Token.register_repr(props, repr, optional_props[1:])
+            Token.register_repr(list(props)+[optional_props[0]],
+                                repr, optional_props[1:])
+            return
+        
         props = list(props)
         props.sort()
         if repr is None: del Token._repr_registry[tuple(props)]
@@ -486,16 +495,20 @@ class Token(dict):
 # sets of properties.
 Token.register_repr(('TEXT',),
                     lambda t: ('<%s>' %
-                               (`t['TEXT']`[1:-1],)))
+                               (`t['TEXT']`[1:-1],)),
+                    optional_props=('CONTEXT',))
 Token.register_repr(('TEXT', 'LOC'),
                     lambda t: ('<%s>@%r' %
-                               (`t['TEXT']`[1:-1], t['LOC'])))
+                               (`t['TEXT']`[1:-1], t['LOC'])),
+                    optional_props=('CONTEXT',))
 Token.register_repr(('TEXT', 'TAG'),
                     lambda t: ('<%s/%s>' %
-                               (`t['TEXT']`[1:-1], t['TAG'])))
+                               (`t['TEXT']`[1:-1], t['TAG'])),
+                    optional_props=('CONTEXT',))
 Token.register_repr(('TEXT', 'TAG', 'LOC'),
                     lambda t: ('<%s/%s>@%r' %
-                               (`t['TEXT']`[1:-1], t['TAG'], t['LOC'])))
+                               (`t['TEXT']`[1:-1], t['TAG'], t['LOC'])),
+                    optional_props=('CONTEXT',))
 Token.register_repr(('SUBTOKENS',),
                     '<%(SUBTOKENS)r>')
 Token.register_repr(('TEXT', 'SUBTOKENS'),
@@ -999,6 +1012,115 @@ class ParaIndexLocation(IndexLocation):
     __slots__ = ()
     UNIT = 'p'
 
+######################################################################
+## Context Pointers
+######################################################################
+
+class SubtokenContextPointer:
+    """
+    A pointer that records a subtoken's position within a container
+    token.  Each subtoken context pointer consists of a pointer to the
+    container token, the property within the container token that
+    contains the subtoken, and the index of the subtoken within that
+    property.
+
+    Subtoken context pointers can be used to access the tokens in a
+    subtoken's context.  For example, if C{context} is the subtoken
+    context pointer for a token, then C{context[-1]} is the preceding
+    token; and C{context[-3:3]} is the seven subtokens centered on the
+    token.
+    """
+    def __init__(self, container, property, index):
+        """
+        Create a new subtoken context pointer.
+
+        @type container: L{Token}
+        @param container: The token that contains the subtoken.
+        @type property: C{string}
+        @param property: The property within the container token
+            that contains the subtoken.
+        @type index: C{int}
+        @param index: The index of the subtoken within the property.
+        """
+        self._container = container
+        self._property = property
+        self._index = index
+        try: self._subtokens = container[property]
+        except: self._subtokens = None
+
+    def container(self):
+        """
+        @return: The token that contains this subtoken.
+        @rtype: L{Token}
+        """
+        return self._container
+
+    def property(self):
+        """
+        @return: The property within the container token
+                 that contains the subtoken.
+        @rtype: C{string}
+        """
+        return self._property
+
+    def index(self):
+        """
+        @return: The index of the subtoken within the container
+                 token's property.
+        @rtype index: C{int}
+        """
+        return self._index
+
+    def __getitem__(self, delta_i):
+        """
+        @return: The token whose index in this subtoken's context is
+        C{delta_i} more than the index of the subtoken.  For example,
+        if C{context} is the subtoken context pointer for a token,
+        then C{context[-1]} returns the preceding token.
+        
+        @rtype: L{Token}
+        @raise IndexError: If C{i+delta_i} is outside the range
+            of the subtoken's context, where C{i} is the index
+            of the subtoken.
+        """
+        if self._subtokens is None:
+            self._subtokens = container[property]            
+        i = self._index + delta_i
+        if i < 0: raise IndexError, 'list index out of range'
+        return self._subtokens[i]
+
+    def __getslice__(self, delta_start, delta_end):
+        """
+        @return: A list containing the tokens whose indices in this
+        subtoken's context fall in the range [C{i+delta_start},
+        C{i+delta_end}), where C{i} is the index of the subtoken.  If
+        C{i+delta_start} or C{i+delta_end} fall outside the range of
+        the subtoken's context, then they are truncated to the ends of
+        the context.  For example, if C{context} is the subtoken
+        context pointer for a token, then C{context[-3:3]} returns the
+        seven subtokens centered on the token.
+        
+        @rtype: L{Token}
+        """
+        if self._subtokens is None:
+            self._subtokens = container[property]            
+        start = max(0, self._index + delta_start)
+        end = max(0, self._index + delta_end)
+        return self._subtokens[start:end]
+
+    def __repr__(self):
+        return ('<SubtokenContextPointer: %s[%s][%s]>' %
+                (self._container, self._property, self._index))
+
+    def __cmp__(self, other):
+        if not isinstance(other, SubtokenContextPointer):
+            return -1
+        return cmp((id(self._container), self._property, self._index),
+                   (id(other._container), other._property, other._index))
+
+    def __hash__(self):
+        return hash( (id(self._container), self._property, self._index) )
+        
 ######################################################################
 ## Demonstration
 ######################################################################
