@@ -123,17 +123,19 @@ class DottedRule(Rule):
     @ivar _pos: The position of the dot.
     """
 
-    def __init__(self, rule, pos=0):
+    def __init__(self, lhs, rhs, pos=0):
         """
-        Construct a new C{DottedRule} from a C{Rule}.
+        Construct a new C{DottedRule}.
 
-        @param rule: The C{Rule} on which the C{DottedRule} is based.
-        @type rule: C{Rule}
+        @param lhs: The left-hand side of the new C{Rule}.
+        @type lhs: C{string}
+        @param rhs: The right-hand side of the new C{Rule}.
+        @type rhs: C{tuple}
         @param pos: The position of the dot (defaults to zero).
         @type pos: C{int}
         """
-        self._lhs = rule.lhs()
-        self._rhs = rule.rhs()
+        self._lhs = lhs
+        self._rhs = rhs
         self._pos = pos
 
     def pos(self):
@@ -174,7 +176,7 @@ class DottedRule(Rule):
         @return: a copy of the dotted rule
         @rtype: C{DottedRule}
         """
-        return DottedRule(Rule(self._lhs, self._rhs), self._pos)
+        return DottedRule(self._lhs, self._rhs, self._pos)
 
     def pp(self):
         """
@@ -189,7 +191,7 @@ class DottedRule(Rule):
         @return: A concise string representation of the C{DottedRule}.
         @rtype: C{string}
         """
-        return Rule.__repr__(self) + ' [' + `self._pos` + ']'
+        return Rule.__repr__(self) + '[' + `self._pos` + ']'
 
     def __str__(self):
         """
