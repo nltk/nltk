@@ -36,7 +36,7 @@ from nltk.chktype import classeq as _classeq
 import types
 from nltk.token import Token, TokenizerI, Location
 import re
-from nltk.probability import ContextEvent, CFFreqDist, CFSample
+from nltk.probability import FreqDist, ConditionalFreqDist
 
 ##//////////////////////////////////////////////////////
 ##  TaggedType
@@ -274,7 +274,7 @@ class UnigramTagger(SequentialTagger):
     tag C{None}.
     """
     def __init__(self):
-        self._freqdist = CFFreqDist()
+        self._freqdist = ConditionalFreqDist()
     
     def train(self, tagged_tokens):
         """
@@ -290,7 +290,7 @@ class UnigramTagger(SequentialTagger):
         for token in tagged_tokens:
             context = token.type().base()
             feature = token.type().tag()
-            self._freqdist.inc( CFSample(context, feature) )
+            self._freqdist[context].inc(feature)
 
     def next_tag(self, tagged_tokens, next_token):
         # Inherit docs from SequentialTagger
@@ -298,14 +298,8 @@ class UnigramTagger(SequentialTagger):
         assert _chktype(2, next_token, Token)
 
         # Find the most likely tag for the token's type.
-        context_event = ContextEvent(next_token.type())
-        sample = self._freqdist.cond_max(context_event)
-
-        # If we found a tag, return it; otherwise, return None.
-        if sample:
-            return sample.feature()
-        else:
-            return None
+        context = next_token.type()
+        return self._freqdist[context].max()
     
 class NthOrderTagger(SequentialTagger):
     """
@@ -332,7 +326,7 @@ class NthOrderTagger(SequentialTagger):
         assert _chktype(1, n, types.IntType)
         if n < 0: raise ValueError('n must be non-negative')
         self._n = n
-        self._freqdist = CFFreqDist()
+        self._freqdist = ConditionalFreqDist()
 
     def train(self, tagged_tokens):
         """
@@ -351,7 +345,7 @@ class NthOrderTagger(SequentialTagger):
         for token in tagged_tokens:
             context = tuple(prev_tags + [token.type().base()])
             feature = token.type().tag()
-            self._freqdist.inc( CFSample(context, feature) )
+            self._freqdist[context].inc(feature)
 
             # Update prev_tags
             prev_tags.append(token.type().tag())
@@ -371,12 +365,9 @@ class NthOrderTagger(SequentialTagger):
 
         # Construct the relevant context event.
         context = tuple(prev_tags + [next_token.type()])
-        context_event = ContextEvent(context)
 
         # Find the most likely tag for this context, and return it.
-        sample = self._freqdist.cond_max(context_event)
-        if sample: return sample.feature()
-        else: return None
+        return self._freqdist[context].max()
 
 class BackoffTagger(SequentialTagger):
     """
@@ -488,10 +479,16 @@ def demo():
     t1 = NthOrderTagger(1)                
     t1.train(train_tokens)
 
+    print 'training 2nd order tagger (%d tokens)...' % len(train_tokens)
+    t2 = NthOrderTagger(2) 
+    t2.train(train_tokens)
+
+    print 'creating combined backoff tagger...'
+    ft = BackoffTagger( (t2, t1, t0, NN_CD_Tagger()) )
+    
     print 'running the tagger... (%d tokens)...' % len(test_tokens)
-    ft = BackoffTagger( (t1, t0, NN_CD_Tagger()) )
     result = ft.tag(untag(test_tokens))
 
-    print 'Accuracy: ', accuracy(test_tokens, result)
+    print 'Accuracy: %.5f' % accuracy(test_tokens, result)
 
 if __name__ == '__main__': demo()
