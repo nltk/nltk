@@ -73,11 +73,13 @@ class TaggedTokenizer(AbstractTokenizer):
     @inprop: C{text}: The input token's text content.
     @inprop: C{loc}: The input token's location.  I{(optional)}
     @outprop: C{subtokens}: The list of tokenized subtokens.
-    @outprop: C{text}: The subtokens' text content.
-    @outprop: C{tag}: The subtoken's tag.
+    @outprop: C{text}: The subtokens' text contents.
+    @outprop: C{tag}: The subtokens' tags.
     @outprop: C{loc}: The subtokens' locations.
     """
-    _wstokenizer = WSTokenizer()
+    def __init__(self, addlocs=True, **propnames):
+        _wstokenizer = WSTokenizer(addlocs=addlocs, **propnames)
+        AbstractTokenizer.__init__(self, addlocs, **propnames)
     
     def tokenize(self, token):
         assert chktype(1, token, Token)
