@@ -81,19 +81,19 @@ The following table summarizes some of the differences between the
 alternatives, in terms of functionality, complexity, and speed::
 
   ===================================================================
-  |            | Function. |  Complexity   |        Speed           |
+  |            | Function. |  Complexity   |    Speed (in usecs.)   |
   +------------+-----------+---------------+------------------------+
   |   System     Attr  Fwd   Lines  Tricks   t(a)  t(g)  t(c)  t(e) |
   -------------------------------------------------------------------
-   Token1+Type1    -    -      24      0      N/A   1.5   1.0   2.2
-   Token2+Type1    -    -      26      1      N/A   1.1   2.1   2.1
-   Token2+Type2    +    -      31      1      9.5   1.1   2.2   2.2
-   Token2+Type3    +    -      33      2      1.2   1.1   1.5   1.7
-   Token3+Type1    -    +      31      1      N/A   2.0   1.9   2.3
-   Token4+Type2    +    +      40      2     12.3   1.6   2.2   2.3
-   Token4+Type3    +    +      42      3     12.3   1.6   1.5   2.0
-   Token5+Type2    +    +      56      4      1.0   1.0   1.2   1.0
-   Token5+Type3    +    +      58      4      1.0   1.0   1.0   1.0
+   Token1+Type1    -    -      24      0      N/A    24   225   470
+   Token2+Type1    -    -      26      1      N/A    17   465   463
+   Token2+Type2    +    -      31      1       44    17   479   472
+   Token2+Type3    +    -      33      2        5    17   332   359
+   Token3+Type1    -    +      31      1      N/A    31   415   510
+   Token4+Type2    +    +      40      2       58    25   473   503
+   Token4+Type3    +    +      42      3       58    24   332   436
+   Token5+Type2    +    +      56      4        4    16   252   220
+   Token5+Type3    +    +      58      4        4    15   218   217
   ===================================================================
 
   Key:
@@ -105,8 +105,6 @@ alternatives, in terms of functionality, complexity, and speed::
     - t(g): Avg. time to access a property, using get().
     - t(c): Avg. time to create a new token.
     - t(e): Avg. time to extend a token with a new property.
-    
-  Speeds are normalized with respect to the Token5+Type3 system.
 
 Note that the implementations are not totally comple; e.g., they don't
 define equality operators or hash operators.  These will need to be
@@ -716,24 +714,23 @@ def timetest():
 
         times.append([name, aspd, gspd, cspd, espd])
 
+if 1:
     # Print speeds
     print 'Combination      ASpeed  GSpeed  CSpeed  ESpeed'
     print '-----------------------------------------------'
-    aspd_norm = times[-1][1]
-    gspd_norm = times[-1][2]
-    cspd_norm = times[-1][3]
-    espd_norm = times[-1][4]
+    norm = float(1000*1000)/N
     for (name, aspd, gspd, cspd, espd) in times:
         name = Token.__name__+'+'+Type.__name__
         if aspd == 0:
-            print ('%-15s %7s %7.1f %7.1f %7.1f' %
-                   (name, 'N/A', gspd/gspd_norm,
-                    cspd/cspd_norm, espd/espd_norm))
+            #print ('%-15s %7s %7.1f %7.1f %7.1f' %
+            print ('%-15s %7s %7d %7d %7d' %
+                   (name, 'N/A', gspd*norm, cspd*norm, espd*norm))
         else:
-            print ('%-15s %7.1f %7.1f %7.1f %7.1f' %
-                   (name, aspd/aspd_norm, gspd/gspd_norm,
-                    cspd/cspd_norm, espd/espd_norm))
+            #print ('%-15s %7.1f %7.1f %7.1f %7.1f' %
+            print ('%-15s %7d %7d %7d %7d' %
+                   (name, aspd*norm, gspd*norm, cspd*norm, espd*norm))
+    #return times
             
-if __name__ == '__main__':
-    demotest()
-    timetest()
+#if __name__ == '__main__':
+#    demotest()
+#    times = timetest()
