@@ -7,6 +7,28 @@
 #
 # $Id$
 
+"""
+A text classifier model based on the naive bayes assumption.  
+In particular, this classifier assumes that the probability of each
+feature occuring is independant, given the label.  This allows us to
+estimate the probability that a given text has a given label as
+follows::
+
+      P(label|text) = P(text,label) / P(text)
+
+      P(text, label) = P(label) * P(fi|label) * (1-P(fj|label))
+
+Where C{text} is the text we are classifiying; C{label} is a potential
+label; C{f1}, C{f2}, ..., C{fi}, ..., C{fN} are the 
+
+blah blah..
+
+Approach:
+  - define useful events
+  - NBClassifier gets a single PDF over LabeledFeatureValueLists.
+
+"""
+
 from nltk.classifier import *
 from nltk.probability import FreqDistI
 from nltk.probability import SimpleFreqDist
@@ -20,21 +42,14 @@ import time
 from Numeric import zeros
 
 ##//////////////////////////////////////////////////////
-##  Labeled FeatureValueList & Events
+##  Events for LabeledFeatureValueList
 ##//////////////////////////////////////////////////////
 
-class LabeledFeatureValueList:
-    def __init__(self, fvl, label):
-        self._fvl = fvl
-        self._label = label
-    def feature_values(self):
-        return self._fvl
-    def label(self):
-        return self._label
-    def __repr__(self):
-        return '<LabeledFeatureValueList %r %r>' % (self._label, self._fvl) 
-
 class LabelEvent(EventI):
+    """
+    An event defined over C{LabeledFeatureValueList}s which is true
+    when the C{LabeledFeatureValueList}'s label has a given value.
+    """
     def __init__(self, label):
         self._label = label
     def contains(self, sample):
@@ -46,8 +61,26 @@ class LabelEvent(EventI):
                 ' with label %r}' % self._label)
 
 class AssignmentEvent(EventI):
+    """
+    An event defined over C{LabeledFeatureValueList}s which is true
+    when the C{LabeledFeatureValueList}'s feature value list contains
+    a given assignment.  An assignment is an (id, value) pair which
+    gives a feature identifier and the value of that feature.
+    """
     def __init__(self, assignment):
+        """
+        Construct a new C{AssignmentEvent}, which is true for any
+        C{LabeledFeatureValueList} whose feature value list contains
+        the given assignment.
+
+        @param assignment: The assignment to check for.  This (id,
+            value) pair specifies a feature's identifier and a value
+            for that feature.  For Naive Bayes classifiers, values are
+            treated as binary values.
+        @type assignment: C{tuple} of C{int} and (immutable)
+        """
         self._assignment = assignment
+        
     def assignment(self):
         return self._assignment
     def contains(self, sample):
@@ -184,11 +217,8 @@ class NBClassifier(ClassifierI):
 
     Model parameters:
       - FeatureDetectorList
+      - A list of labels
       - A PDF whose samples are C{LabeledFeatureValueList}s
-      - PDF for feature|label
-
-    Hm.. So maybe have a different NBProbDist for each label..
-    
     """
     def __init__(self, featuredetectors, labels, pdist):
         self._featuredetectors = featuredetectors
