@@ -59,6 +59,29 @@ class MultinomialHMM(HiddenMarkovModel):
 
 class MultiVariateBernoulliHMM(HiddenMarkovModel):
     def __init__(self, symbols, states, transitions, outputs, priors):
+        """
+        @param  symbols:        sets of output symbols (alphabets) for
+                                each observation feature. Therefore the 
+                                dimension of the observations equals
+                                len(symbols)
+        @type   symbols:        (seq) of (seq) of any
+        @param  states:         a set of states representing state space
+        @type   states:         seq of any
+        @param  transitions:    transition probabilities; Pr(s_i | s_j)
+                                is the probability of transition from state i
+                                given the model is in state_j
+        @type   transitions:    C{ConditionalProbDistI}
+        @param  outputs:        output probabilities; Pr(o_k | s_i) is the
+                                probability of emitting symbol k when entering
+                                state i
+        @type   outputs:        C{ConditionalProbDistI}
+        @param  priors:         initial state distribution; Pr(s_i) is the
+                                probability of starting in state i
+        @type   priors:         C{ProbDistI}
+        @param  properties:     property names: TAG, TEXT, and SUBTOKENS are
+                                used and may be overridden
+        @type   properties:     C{dict}
+        """
         HiddenMarkovModel.__init__(self, symbols, states, transitions, outputs, priors)
         self._compile_logprobs()
 
@@ -92,13 +115,41 @@ class MultiVariateBernoulliHMM(HiddenMarkovModel):
 
 class MultiOutputHMMTrainer(HiddenMarkovModelTrainer):
     def __init__(self, states=None, symbols=None, **properties):
-        HiddenMarkovModelTrainer.__init__(self, states, symbols, **properties)
+        """
+        Creates an HMM trainer to induce an HMM with the given states and
+        output symbol alphabet. Only a supervised training method may be used.
+        """
+        assert chktype(1,symbols,types.TupleType,types.ListType,types.NoneType)
+        assert chktype(2,states,types.TupleType,types.ListType,types.NoneType)
+        if states:
+            self._states = states
+        else:
+            self._states = []
+        if symbols:
+            self._symbols = symbols
+        else:
+            self._symbols = []
+        self._properties = properties
+
+    def train(self, labelled_sequences=None, unlabelled_sequences=None,
+              **kwargs):
+        raise NotImplementedError()
 
     def train_unsupervised(self, unlabelled_sequences, **kwargs):
         raise NotImplementedError()
 
     def train_supervised(self, labelled_sequences, **kwargs):
-        # inherit doco
+        """
+        Supervised training maximising the joint probability of the symbol and
+        state sequences. This is done via collecting frequencies of
+        transitions between states, symbol observations while within each
+        state and which states start a sentence. These frequency distributions
+        are then normalised into probability estimates, which can be
+        smoothed if desired.
+
+        @type estimator: function taking a C{FreqDist} and a number of bins
+                         and returning a C{ProbDistI}
+        """
         assert chktype(1, labelled_sequences, Token)
 
         # grab the property names used
