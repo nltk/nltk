@@ -9,12 +9,11 @@
 # $Id$
 
 """
-Defines a regular-expression based chunk parser, and several
-supporting classes and functions.  The chunk parser itself is
-implemented by the C{REChunkParser} class, which implements the
-C{ChunkParserI} interface.  See the reference documentation in the
-C{nltk.chunkparser} module for more information about the
-C{ChunkParserI} interface.
+A regular-expression based chunk parser, and several supporting
+classes and functions.  The chunk parser itself is implemented by the
+C{REChunkParser} class, which implements the C{ChunkParserI}
+interface.  See the reference documentation in the C{nltk.chunkparser}
+module for more information about the C{ChunkParserI} interface.
 
 C{REChunkParser} defines the C{parse} method.  This method identifies
 linguistic groups in a text, such as noun phrases.  Its input is a
