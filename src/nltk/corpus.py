@@ -1020,7 +1020,7 @@ class TreebankCorpusReader(CorpusReaderI):
         if tokenizer is None: tokenizer = self._tokenizer(item)
         yield tokenizer.raw_tokenize(self.raw_read(item))
     
-    def _tokenizer(item):
+    def _tokenizer(self, item):
         if item.startswith('merged'):
             return self._tb_tokenizer
         elif item.startswith('tagged'):
