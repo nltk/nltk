@@ -30,7 +30,7 @@ Random Picture
       unlabeled_text --> ClassifierI --> labeled_text
                              ^
                              |
-    labeled_text[] --> ClassifierFactoryI
+    labeled_text[] --> ClassifierTrainerI
                              ^
                              |
                         FeatureListI    
@@ -57,6 +57,8 @@ Random Picture
 #     - Feature Value Lists
 #
 # Feature Selection
+
+from Numeric import array
 
 ##//////////////////////////////////////////////////////
 ##  Texts and Labels
@@ -183,10 +185,10 @@ class ClassifierI:
 
     Typically, classifiers encode specific classifier models; but do
     not include the algorithms for training the classifiers.  Instead,
-    C{ClassifierFactory}s are used to generate classifiers from
+    C{ClassifierTrainer}s are used to generate classifiers from
     training data.
 
-    @see: C{ClassifierFactoryI}
+    @see: C{ClassifierTrainerI}
     """
     
     def classify(unlabeled_token):
@@ -220,7 +222,7 @@ class ClassifierI:
         """
         raise NotImplementedError()
 
-class ClassifierFactoryI:
+class ClassifierTrainerI:
     """
     A processing interface for constructing new C{Classifier}s, using
     training data.
@@ -228,6 +230,15 @@ class ClassifierFactoryI:
     def train(labeled_tokens):
         """
         Train a new classifier, using the given training samples.
+
+        @type labeled_tokens: C{list} of (C{Token} with type C{LabeledText})
+        @param labeled_tokens: A list of correctly labeled texts.
+            These texts will be used as training samples to construct
+            a new classifier.
+
+        @return: A new classifier, trained from the given labeled
+            tokens.
+        @rtype: C{ClassifierI}
         """
 
 ##//////////////////////////////////////////////////////
@@ -663,6 +674,26 @@ class FeatureValueListI:
         @rtype: sequence of (tuple of C{int} and (immutable))
         """
         raise NotImplementedError()
+
+class ArrayFeatureValueList(FeatureValueListI):
+    """
+    An array-bsed implementation of C{FeatureValueListI}
+    """
+    def __init__(self, values, default=0):
+        self._values = array(values)
+        self._default = default
+
+    def __getitem__(self, feature_id):
+        return self._values[feature_id]
+
+    def default(self):
+        return default
+
+    def __len__(self):
+        return len(self._values)
+
+    def assignments(self):
+        return [(i, self._values[i]) for i in range(len(self._values))]
 
 class SimpleFeatureValueList(FeatureValueListI):
     """
