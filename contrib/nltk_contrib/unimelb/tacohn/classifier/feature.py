@@ -118,7 +118,7 @@ takes to process the feature value list.
 @group Probability Distributions: _AbstractFeatureClassifierProbDist
 """
 
-from nltk_contrib.mu.tacohn.classifier import ClassifierI, LabeledText
+from nltk_contrib.unimelb.tacohn.classifier import ClassifierI, LabeledText
 from nltk.probability import ProbDistI
 from nltk.token import Token
 from nltk.chktype import chktype as _chktype
@@ -716,7 +716,7 @@ class MergedFDList(AbstractFDList):
         offset = 0
         fd_list_index = 0
         for i in range(len(self._offsets)):
-            if fnum <= self._offsets[i]:
+            if fnum >= self._offsets[i]:
                 offset = self._offsets[i]
                 fd_list_index = i
             else:
@@ -873,11 +873,12 @@ class BagOfWordsFDList(AbstractFDList):
         
         self._wmap = {}
         self._num_values = 0
+        self._words = []
         for word in words:
             if not self._wmap.has_key(word):
                 self._wmap[word] = self._num_values
                 self._num_values += 1
-
+                self._words.append(word)
         self._N = self._num_values
 
     def __len__(self):
@@ -893,6 +894,9 @@ class BagOfWordsFDList(AbstractFDList):
                 assignments[wnum] = 1
 
         return SimpleFeatureValueList(assignments.items(), self._N)
+
+    def describe(self, index):
+        return self._words[index]
 
 class MultiBagOfWordsFDList(BagOfWordsFDList):
     """
@@ -1045,9 +1049,10 @@ class CompositeFilter:
         return seq
 
 class FilteredFDList(AbstractFDList):
-    def __init__(self, filter_function, fd_list):
+    def __init__(self, filter_function, fd_list, description = None):
         self._filter_function = filter_function
         self._fd_list = fd_list
+        self._description = description
 
     def detect(self, text):
         # Inherit docs
@@ -1057,6 +1062,11 @@ class FilteredFDList(AbstractFDList):
     def __len__(self):
         return len(self._fd_list)
 
+    def describe(self, index):
+        if self._description:
+            return self._description + ' ' + self._fd_list.describe(index)
+        else:
+            return 'filtered ' + self._fd_list.describe(index)
 
 ##//////////////////////////////////////////////////////
 ##  Abstract Feature Classifier
@@ -1170,8 +1180,8 @@ class AbstractFeatureClassifier(ClassifierI):
 
         # Construct a list containing the probability of each label.
         dist_list = []
+        fv_list = self._fd_list.detect(text)
         for label in self._labels:
-            fv_list = self._fd_list.detect(LabeledText(text, label))
             p = self.fv_list_likelihood(fv_list, label)
             dist_list.append(p)
             total_p += p
