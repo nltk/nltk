@@ -1,5 +1,6 @@
 """
 FSA class - deliberately simple so that the operations are easily understood.
+Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
 from nltk.srparser import *
@@ -22,55 +23,83 @@ _grammar = (
 _parser = SRParser(_grammar, 'S')
 _tokenizer = CharTokenizer()
 
+_STAR = Tree('*')
+_PLUS = Tree('+')
+_QMK = Tree('?')
+_OPAREN = Tree('(')
+_CPAREN = Tree(')')
+
 epsilon = 0
 
 # TODO - check that parse was complete, and report error otherwise
 # TODO - change parser to limit scope of unary operators
 # to the most recent symbol
+# TODO - code up minimization algorithm from ASU
 
 class FSA:
     def __init__(self, re):
         self._num = 0
-        self._finals = Set(0)
         self._table = {}
         re_list = _tokenizer.tokenize(re)
         tree = _parser.parse(re_list)
-        self._build(tree)
-        self.remove_epsilons()
-        self.minimize()
+        node = self._build(self._num, tree)
+        self._finals = Set(node)
+#        self.minimize()
 
     def _new_state(self):
         self._num += 1
         return self._num
 
-    def _build(self, tree):
+    # create NFA from regexp (Thompson's construction)
+    # assumes unique start and final states
+    def _build(self, node, tree):
         if len(tree) == 0:
-            self.concat_char(tree.node())
+            return self._build_char(node, tree.node())
         elif len(tree) == 1:
-            self._build(tree[0])
-        elif tree[0] == Tree('(') and tree[2] == Tree(')'):
-            self._build(tree[1])
-        elif tree[1] == Tree('*'):
-            start_states = self._finals
-            self._build(tree[0])
-            self.kleene_star(start_states)
-        elif tree[1] == Tree('+'):
-            start_states = self._finals
-            self._build(tree[0])
-            self.kleene_plus(start_states)
-        elif tree[1] == Tree('?'):
-            start = self._finals
-            self._build(tree[0])
-            self.optional(start_states)
+            return self._build(node, tree[0])
+        elif tree[0] == _OPAREN and tree[2] == _CPAREN:
+            return self._build(node, tree[1])
+        elif tree[1] == _STAR: return self._build_star(node, tree[0])
+        elif tree[1] == _PLUS: return self._build_plus(node, tree[0])
+        elif tree[1] == _QMK:  return self._build_qmk(node, tree[0])
         else:
-            self._build(tree[0])
-            self._build(tree[1])
+            node = self._build(node, tree[0])
+            return self._build(node, tree[1])
         
+    def _build_char(self, node, char):
+        new = self._new_state()
+        self.insert_transition(node, char, new)
+        return new
+        
+    def _build_qmk(self, node, tree):
+        node1 = self._new_state()
+        node2 = self._build(node1, tree)
+        node3 = self._new_state()
+        self.insert_transition(node, epsilon, node1)
+        self.insert_transition(node, epsilon, node3)
+        self.insert_transition(node2, epsilon, node3)
+        return node3
+
+    def _build_plus(self, node, tree):
+        node1 = self._build(node, tree[0])
+        self.insert_transition(node1, epsilon, node)
+        return node1
+
+    def _build_star(self, node, tree):
+        node1 = self._new_state()
+        node2 = self._build(node1, tree)
+        node3 = self._new_state()
+        self.insert_transition(node, epsilon, node1)
+        self.insert_transition(node, epsilon, node3)
+        self.insert_transition(node2, epsilon, node1)
+        self.insert_transition(node2, epsilon, node3)
+        return node3
+
     def insert_transition(self, s1, label, s2):
         if self._table.has_key((s1,label)):
-            self._table[(s1,label)].union(s2)
+            self._table[(s1,label)].insert(s2)
         else:
-            self._table[(s1,label)] = s2
+            self._table[(s1,label)] = Set(s2)
 
     def insert_transitions(self, state_set, label, s2):
         for s1 in state_set.elements():
@@ -101,12 +130,6 @@ class FSA:
                 for (s1, label, s2) in self.transitions()
                 if s1 == node]
 
-    def concat_char(self, char):
-        new_final = Set(self._new_state())
-        for state in self._finals.elements():
-            self.insert_transition(state, char, new_final)
-        self._finals = new_final
-        
     def optional(self, start = Set(0)):
 #        self._finals = self._finals.intersection(start)
         self.insert_transitions(start, epsilon, self._finals)
@@ -134,7 +157,8 @@ class FSA:
 #        self._table.extend(fsa._table)
 
     # this algorithm breaks when there are two epsilons in a row
-    def remove_epsilons(self):
+    # replace with the ASU algorithm
+    def minimize(self):
         while self.epsilon_transitions() != []:
             for (s1, label1, s2) in self.epsilon_transitions():
                 if self._finals.intersection(s2):
@@ -144,9 +168,6 @@ class FSA:
                         self.insert_transition(s1, label2, s4)
                 self.delete_transition(s1, label1, s2)
     
-    def minimize(self):
-        pass
-
     # generate all strings in the language up to length maxlen
     def generate(self, maxlen, state=0, prefix=""):
         if maxlen > 0:
@@ -166,10 +187,10 @@ class FSA:
     # TODO - epsilon removal, minimization
 
 def demo():
-    re = 'a(b+)(c+)d'
+    re = 'a(b*)c'
     print 'Regular Expression:', re
     fsa = FSA(re)
     fsa.pp()
-    fsa.generate(10)
+#    fsa.generate(10)
 
 if __name__ == '__main__': demo()
