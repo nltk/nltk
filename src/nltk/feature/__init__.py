@@ -241,6 +241,8 @@ class FeatureStringFeatureExtractor(AbstractFeatureExtractor):
         self._frozen = False
 
     def register_features(self, token):
+        if self._frozen:
+            raise ValueError('Already frozen!')
         for feature in self.extract_feature_strings(token):
             self._featurestring_set.add(feature)
 
