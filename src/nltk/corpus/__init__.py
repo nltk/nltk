@@ -723,7 +723,7 @@ del groups # delete temporary variable
 ###################################################
 ## Treebank (fragment distributed with NLTK)
 
-from nltk.corpus.treebank import TreebankCorpusReader
+from nltk.corpus.tree import TreebankCorpusReader
 treebank = TreebankCorpusReader('treebank', 'treebank/', False,
                                 description_file='README')
 
