@@ -1031,7 +1031,7 @@ class ChartView:
 
         # Draw the children
         child_xs = []
-        for child in treetok['children']:
+        for child in treetok['CHILDREN']:
             if isinstance(child, TreeToken):
                 child_x, index = self._draw_treetok(child, index, depth+1)
                 child_xs.append(child_x)
@@ -1057,13 +1057,13 @@ class ChartView:
 
         # Draw lines to the children.
         childy = nodey + ChartView._TREE_LEVEL_SIZE + self._text_height
-        for childx, child in zip(child_xs, treetok['children']):
-            if isinstance(child, TreeToken) and child['children']:
+        for childx, child in zip(child_xs, treetok['CHILDREN']):
+            if isinstance(child, TreeToken) and child['CHILDREN']:
                 # A "real" tree token:
                 tag = c.create_line(nodex, nodey + self._text_height,
                                     childx, childy, width=2, fill='#084')
                 self._tree_tags.append(tag)
-            if isinstance(child, TreeToken) and not child['children']:
+            if isinstance(child, TreeToken) and not child['CHILDREN']:
                 # An unexpanded tree token:
                 tag = c.create_line(nodex, nodey + self._text_height,
                                     childx, childy, width=2,
@@ -1248,7 +1248,7 @@ class ChartDemo:
     def _init_parser(self, grammar, token):
         self._grammar = grammar
         self._token = token
-        self._cp = SteppingChartParser(self._grammar, leaf='text')
+        self._cp = SteppingChartParser(self._grammar, leaf='TEXT')
         self._cp.initialize(self._token)
         self._chart = self._cp.chart()
 
@@ -1608,7 +1608,7 @@ class ChartDemo:
             
     def reset(self, *args):
         self._animating = 0
-        self._cp = SteppingChartParser(self._grammar, leaf='text')
+        self._cp = SteppingChartParser(self._grammar, leaf='TEXT')
         self._cp.initialize(self._token)
         self._chart = self._cp.chart()
         self._cv.update(self._chart)
@@ -1629,7 +1629,7 @@ class ChartDemo:
         if self._results: self._results.set_grammar(grammar)
 
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok['text'] for tok in self._token['subtokens']])
+        sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
         title = 'Edit Text'
         EntryDialog(self._root, sentence, self.set_sentence, title)
 

@@ -94,7 +94,7 @@ class TaggerI:
     """
     def tag(self, token):
         """
-        Assign a tag to each subtoken in C{token['subtokens']}, and
+        Assign a tag to each subtoken in C{token['SUBTOKENS']}, and
         write those tags to the subtokens' C{tag} properties.
         @inprop: C{SUBTOKENS}: The list of subtokens to tag.
         @inprop: C{TEXT}: The text content of the subtokens.
@@ -539,7 +539,7 @@ def _demo_tagger(gold_documents, tagger):
 
     # Evaluate performance vs the gold documents.
     for (test_doc, gold_doc) in zip(test_documents, gold_documents):
-        for (t,g) in zip(test_doc['subtokens'], gold_doc['subtokens']):
+        for (t,g) in zip(test_doc['SUBTOKENS'], gold_doc['SUBTOKENS']):
             #print t==g, t,g
             total += 1
             if t==g: correct += 1
@@ -578,7 +578,7 @@ def demo(num_files=20):
     for item in items[:num_files*2/3]:
         sys.stdout.write('.'); sys.stdout.flush()
         train_tokens.append(brown.tokenize(item))
-        num_words += len(train_tokens[-1]['subtokens'])
+        num_words += len(train_tokens[-1]['SUBTOKENS'])
     print '\n  Read in %d words for training' % num_words
 
     print 'Training taggers.'
@@ -608,7 +608,7 @@ def demo(num_files=20):
     for item in items[num_files*2/3:num_files]:
         sys.stdout.write('.'); sys.stdout.flush()
         test_tok = brown.tokenize(item)
-        num_words += len(test_tok['subtokens'])
+        num_words += len(test_tok['SUBTOKENS'])
         test_tokens.append(test_tok)
     print '\n  Read in %d words for testing' % num_words
 

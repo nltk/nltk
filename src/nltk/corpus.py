@@ -781,7 +781,7 @@ class RogetCorpusReader(CorpusReaderI):
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
         loc = CharSpanLocation(0, len(text), source)
-        return Token(text=text, loc=loc)
+        return Token(TEXT=text, LOC=loc)
 
     def xread(self, item):
         # Read the token & wrap its text in an iterator
@@ -969,7 +969,7 @@ class TreebankCorpusReader(CorpusReaderI):
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
         loc = CharSpanLocation(0, len(text), source)
-        return Token(text=text, loc=loc)
+        return Token(TEXT=text, LOC=loc)
 
     def xread(self, item):
         # Read the token & wrap its text in an iterator
@@ -1332,7 +1332,7 @@ def _truncate_repr(obj, width, indent, lines=1):
 def _xtokenize_repr(token, width, indent, lines=1):
     n = width-indent
     s = '<'+'['
-    for subtok in token['subtokens']:
+    for subtok in token['SUBTOKENS']:
         s += '%r, ' % subtok
         if len(s) > n*lines:
             s = s[:n*lines-3]+'...'
@@ -1374,11 +1374,11 @@ def _test_treebank():
         print 'read(%s)       => %s' % (name, _truncate_repr(contents, 70,17))
         try:
             tok = treebank.xtokenize(item)
-            tokrepr = _xtokenize_repr(tok.exclude('loc'), 70,17,2)
+            tokrepr = _xtokenize_repr(tok.exclude('LOC'), 70,17,2)
             print 'xtokenize(%s)  => %s' % (name, tokrepr)
         except NotImplementedError:
             tok = treebank.tokenize(item)
-            tokrepr = _truncate_repr(tok.exclude('loc'), 70,17,2)
+            tokrepr = _truncate_repr(tok.exclude('LOC'), 70,17,2)
             print 'tokenize(%s)   => %s' % (name, tokrepr)
 
 def demo():

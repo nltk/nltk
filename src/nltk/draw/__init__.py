@@ -729,7 +729,7 @@ class TextWidget(CanvasWidget):
         @return: The text displayed by this text widget.
         @rtype: C{string}
         """
-        return self.canvas().itemcget(self._tag, 'text')
+        return self.canvas().itemcget(self._tag, 'TEXT')
     
     def set_text(self, text):
         """

@@ -88,7 +88,7 @@ class RecursiveDescentParserDemo:
     def __init__(self, grammar, token, trace=0):
         self._token = token
         self._parser = SteppingRecursiveDescentParser(grammar, trace,
-                                                      leaf='text')
+                                                      leaf='TEXT')
 
         # Set up the main window.
         self._top = Tk()
@@ -383,7 +383,7 @@ class RecursiveDescentParserDemo:
         # Draw the text.
         helv = ('helvetica', -self._size.get())
         bottom = y = self._cframe.scrollregion()[3]
-        text = [tok['text'] for tok in self._token['subtokens']]
+        text = [tok['TEXT'] for tok in self._token['SUBTOKENS']]
         self._textwidgets = [TextWidget(canvas, word, font=self._font)
                              for word in text]
         for twidget in self._textwidgets:
@@ -439,7 +439,7 @@ class RecursiveDescentParserDemo:
     def _position_text(self):
 
         # Line up the text widgets that are matched against the tree
-        numwords = len(self._token['subtokens'])
+        numwords = len(self._token['SUBTOKENS'])
         num_matched = numwords - len(self._parser.remaining_text())
         leaves = self._tree_leaves()[:num_matched]
         xmax = self._tree.bbox()[0]
@@ -856,7 +856,7 @@ class RecursiveDescentParserDemo:
             self._prodlist.insert('end', (' %s' % production))
         
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok['text'] for tok in self._token['subtokens']])
+        sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
         title = 'Edit Text'
         EntryDialog(self._top, sentence, self.set_sentence, title)
 

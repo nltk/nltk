@@ -382,8 +382,8 @@ class TreeToken(Token):
             # Beginning of a tree/subtree.
             if s[pos] == '(':
                 match = WORD.match(s, pos+1)
-                stack.append(TreeToken(node=match.group(1),
-                                       children=[]))
+                stack.append(TreeToken(NODE=match.group(1),
+                                       CHILDREN=[]))
                 pos = match.end()
 
             # End of a tree/subtree.
@@ -398,7 +398,7 @@ class TreeToken(Token):
                 match = WORD.match(s, pos)
                 leaf = Token(text=match.group(1))
                 if addlocs:
-                    leaf['loc'] = CharSpanLocation(pos, match.end(),
+                    leaf['LOC'] = CharSpanLocation(pos, match.end(),
                                                    source)
                 stack[-1]['CHILDREN'].append(leaf)
                 pos = match.end()
@@ -419,17 +419,11 @@ class FrozenTreeToken(TreeToken, FrozenToken):
 class TreebankTokenizer(TokenizerI):
     def __init__(self, addlocs=True, property_names={}):
         self._addlocs = addlocs
-        self._props = property_names
+        self._property_names = property_names
 
     def _subtoken_generator(self, token):
-        TEXT = self._props.get('TEXT', 'TEXT')
-        LOC = self._props.get('loc', 'loc')
-
-        # [XX] currently these are ignored:
-        SUBTOKENS_LOC = self._props.get('subtokens.loc', 'loc')
-        TREE = self._props.get('subtokens.tree', 'tree')
-        NODE = self._props.get('subtokens.tree.node', 'tree')
-        LEAF = self._props.get('subtokens.tree.leaf.text', 'TEXT')
+        TEXT = self._property_names.get('TEXT', 'TEXT')
+        LOC = self._property_names.get('LOC', 'LOC')
 
         # Extract the token's text.
         text = token[TEXT]
@@ -450,11 +444,11 @@ class TreebankTokenizer(TokenizerI):
         token[SUBTOKENS] = trees
 
     def xtokenize(self, token):
-        SUBTOKENS = self._props.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         token[SUBTOKENS] = self._subtoken_generator(token)
         
     def tokenize(self, token):
-        SUBTOKENS = self._props.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         token[SUBTOKENS] = list(self._subtoken_generator(token))
 
     def raw_tokenize(self, token):

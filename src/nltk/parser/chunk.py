@@ -235,13 +235,13 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
       >>> ctt = ChunkedTaggedTokenizer('NP')
       >>> tok = Token(text='[The/DT dog/NN] saw/VBD [him/PRP]')
       >>> ctt.tokenize(tok)
-      >>> print tok['subtokens']
+      >>> print tok['SUBTOKENS']
       [(NP: <The/DT> <dog/NN>), <saw/VBD>, (NP: <him/PRP>)]
     
     The C{TreeToken} constructor can be used to group this list of
     tokens and chunks into a single chunk structure:
 
-      >>> chunkstruct = TreeToken(node='S', children=tok['subtokens'])
+      >>> chunkstruct = TreeToken(node='S', children=tok['SUBTOKENS'])
       (S: (NP: <The/DT> <dog/NN>) <saw/VBD> (NP: <him/PRP>))
         
     @inprop: C{TEXT}: The input token's text content.
@@ -1681,12 +1681,12 @@ def demo_eval(chunkparser, text):
 
     token = Token(text=text, loc=CharSpanLocation(0, len(text), 'demo'))
     LineTokenizer().tokenize(token)
-    sentences = token['subtokens']
+    sentences = token['SUBTOKENS']
     ctt = ChunkedTaggedTokenizer('NP')
     for sentence in sentences:
         ctt.tokenize(sentence)
-        gold = TreeToken(node='S', children=sentence['subtokens'])
-        test = Token(subtokens=gold.leaves(), loc=sentence['loc'])
+        gold = TreeToken(node='S', children=sentence['SUBTOKENS'])
+        test = Token(subtokens=gold.leaves(), loc=sentence['LOC'])
         chunkparser.parse(test)
         chunkscore.score(gold, test['tree'])
 
@@ -1708,7 +1708,7 @@ def demo_eval(chunkparser, text):
     if chunkscore.missed():
         print 'Missed:'
         for chunk in chunkscore.missed()[:10]:
-            print '  ', chunk.exclude('loc')
+            print '  ', chunk.exclude('LOC')
         if len(chunkscore.missed()) > 10:
                print '  ...'
 
@@ -1716,7 +1716,7 @@ def demo_eval(chunkparser, text):
     if chunkscore.incorrect():
         print 'Incorrect:'
         for chunk in chunkscore.incorrect()[:10]:
-            print '  ', chunk.exclude('loc')
+            print '  ', chunk.exclude('LOC')
         if len(chunkscore.incorrect()) > 10:
                print '  ...'
     

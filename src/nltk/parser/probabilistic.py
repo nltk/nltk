@@ -441,9 +441,9 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
     def _span(self, tree):
         if isinstance(tree, TreeToken):
             leaves = tree.leaves()
-            return [leaves[0]['loc'].start(), leaves[-1]['loc'].end()]
+            return [leaves[0]['LOC'].start(), leaves[-1]['LOC'].end()]
         else:
-            return tree['loc'].start(), tree['loc'].end()
+            return tree['LOC'].start(), tree['LOC'].end()
 
     def _trace_production(self, production, tree, subtokens, p):
         """
@@ -964,7 +964,7 @@ def demo():
         RandomPCFGParser(pcfg, leaf='TEXT'),
         UnsortedPCFGParser(pcfg, leaf='TEXT'),
         LongestPCFGParser(pcfg, leaf='TEXT'),
-        BeamPCFGParser(len(token['subtokens'])+1, pcfg, leaf='TEXT')
+        BeamPCFGParser(len(token['SUBTOKENS'])+1, pcfg, leaf='TEXT')
         ]
 
     # Run the parsers on the tokenized sentence.
@@ -1011,7 +1011,7 @@ def demo():
     print 'Print parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
         for parse in parses:
-            print parse.exclude('prob', 'loc')
+            print parse.exclude('prob', 'LOC')
 
 if __name__ == '__main__':
     demo()

@@ -591,10 +591,10 @@ def demo():
     from nltk.corpus import treebank
     item = random.choice(treebank.items('raw'))
     text = treebank.tokenize(item)
-    text['subtokens'] = text['subtokens'][:100]
+    text['SUBTOKENS'] = text['SUBTOKENS'][:100]
 
     # Remove any formatting tokens.
-    text = [tok for tok in text['subtokens']
+    text = [tok for tok in text['SUBTOKENS']
             if tok['TEXT'] != '.START' and
             not tok['TEXT'].startswith('======')]
 

@@ -95,7 +95,7 @@ class ShiftReduceParserDemo:
     """
     def __init__(self, grammar, token, trace=0):
         self._token = token
-        self._parser = SteppingShiftReduceParser(grammar, trace, leaf='text')
+        self._parser = SteppingShiftReduceParser(grammar, trace, leaf='TEXT')
 
         # Set up the main window.
         self._top = Tk()
@@ -390,7 +390,7 @@ class ShiftReduceParserDemo:
                                              **attribs)
                 widget.node()['color'] = '#000000'
             else:
-                widget = TextWidget(self._canvas, tok['text'],
+                widget = TextWidget(self._canvas, tok['TEXT'],
                                     color='#000000', font=self._font)
             widget.bind_click(self._popup_reduce)
             self._stackwidgets.append(widget)
@@ -400,7 +400,7 @@ class ShiftReduceParserDemo:
         # Draw the remaining text.
         rtextwidth = 0
         for tok in self._parser.remaining_text():
-            widget = TextWidget(self._canvas, tok['text'],
+            widget = TextWidget(self._canvas, tok['TEXT'],
                                 color='#000000', font=self._font)
             self._rtextwidgets.append(widget)
             self._cframe.add_widget(widget, rtextwidth, y)
@@ -479,7 +479,7 @@ class ShiftReduceParserDemo:
         if self._parser.shift():
             tok = self._parser.stack()[-1]
             self._lastoper1['text'] = 'Shift:'
-            self._lastoper2['text'] = '%r' % tok['text']
+            self._lastoper2['text'] = '%r' % tok['TEXT']
             if self._animate.get():
                 self._animate_shift()
             else:
@@ -567,7 +567,7 @@ class ShiftReduceParserDemo:
             self._prodlist.insert('end', (' %s' % production))
         
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok['text'] for tok in self._token['subtokens']])
+        sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
         title = 'Edit Text'
         EntryDialog(self._top, sentence, self.set_sentence, title)
 
@@ -659,7 +659,7 @@ class ShiftReduceParserDemo:
 
     def _animate_reduce(self):
         # What widgets are we shifting?
-        numwidgets = len(self._parser.stack()[-1]['children'])
+        numwidgets = len(self._parser.stack()[-1]['CHILDREN'])
         widgets = self._stackwidgets[-numwidgets:]
 
         # How far are we moving?

@@ -193,11 +193,11 @@ def _demo_stemmer(stemmer):
     WSTokenizer(addlocs=False).tokenize(text)
 
     # Use the stemmer to stem it.
-    for word in text['subtokens']: stemmer.stem(word)
+    for word in text['SUBTOKENS']: stemmer.stem(word)
 
     # Print the results.
     print stemmer
-    for word in text['subtokens']:
+    for word in text['SUBTOKENS']:
         print '%20s => %s' % (word['TEXT'], word['stem'])
     print
         

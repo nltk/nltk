@@ -456,7 +456,7 @@ def _demo_semcor_tokenizer(type, files):
         try:
             tok = Token(text=open(file).read())
             r.tokenize(tok)
-            for item in tok['subtokens']:
+            for item in tok['SUBTOKENS']:
                 pprint.pprint(item)
         except:
             print >>sys.stderr, 'Error parsing file:', file
@@ -470,7 +470,7 @@ def _demo_senseval_tokenizer(files):
         print '=' * 75
         tok = Token(text=open(file).read())
         tk.xtokenize(tok)
-        for token in tok['subtokens']:
+        for token in tok['SUBTOKENS']:
             print token
 
 if __name__ == '__main__':
