@@ -554,6 +554,11 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
         stem = self.stem_word(string.lower(word), 0, len(word) - 1)
         return self.adjust_case(word, stem)
 
+    ## --NLTK--
+    ## Add a string representation function
+    def __repr__(self):
+        return '<PorterStemmer>'
+
 ## --NLTK--
 ## This test procedure isn't applicable.
 #if __name__ == '__main__':
@@ -583,7 +588,7 @@ def demo():
     #text = treebank.tokenize(item)[:100]
 
     # [XX] temmporary fix, until nltk.corpus is updated:
-    from nltk.tokenizer import *
+    from nltk.tokenizer import WSTokenizer
     text = Token(text='stemming can be fun and exciting')
     WSTokenizer().tokenize(text)
 
