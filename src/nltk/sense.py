@@ -83,8 +83,8 @@ class SemcorTokenizer(AbstractTokenizer):
         #self._parse_method = xml.dom.minidom.parseString
         AbstractTokenizer.__init__(self, **property_names)
 
-    # [XX] addlocs is ignored.
-    def tokenize(self, token, addlocs=False):
+    # [XX] addlocs and addcontexts are ignored.
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         
@@ -268,22 +268,23 @@ class DOMSensevalTokenizer(AbstractTokenizer):
                 tokens.append(Token(text=text, pos=pos, loc=loc))
         return tokens, head
 
-    # [XX] addlocs is ignored.
-    def tokenize(self, token, addlocs=False):
+    # [XX] addlocs and addcontexts are ignored.
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        self.xtokenize(token)
+        self.xtokenize(token, addlocs, addcontexts)
         token[SUBTOKENS] = list(token[SUBTOKENS])
 
-    # [XX] addlocs is ignored.
-    def xtokenize(self, token, addlocs=False):
+    # [XX] addlocs and addcontexts are ignored.
+    def xtokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
-        token[SUBTOKENS] = self._tokengen(text)
+        token[SUBTOKENS] = self._tokengen(text, addlocs, addcontexts)
 
-    def _tokengen(self, text):
+    # [XX] addlocs and addcontexts are ignored.
+    def _tokengen(self, text, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         # inherit docs
         fixed = _fixXML(text)
@@ -365,8 +366,8 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
         self.reset()
         AbstractTokenizer.__init__(self, **property_names)
 
-    # [XX] addlocs is ignored.
-    def tokenize(self, token, addlocs=False):
+    # [XX] addlocs and addcontexts are ignored.
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         parser = xml.sax.make_parser()
@@ -376,8 +377,8 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
         parser.close()
         token[SUBTOKENS] = self._instances
 
-    # [XX] addlocs is ignored.
-    def xtokenize(self, token, addlocs=False):
+    # [XX] addlocs and addcontexts are ignored.
+    def xtokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         text = token[TEXT]
