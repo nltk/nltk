@@ -46,7 +46,9 @@ evaluating the performance of a classifier.
 """
 
 from nltk.token import Token
-import math, Numeric
+from nltk.chktype import chktype as _chktype
+from nltk.chktype import classeq as _classeq
+import math, Numeric, types
 
 ##//////////////////////////////////////////////////////
 ##  Texts and Labels
@@ -151,8 +153,7 @@ class LabeledText:
             C{LabeledText} with.
         @type other: C{LabeledText}
         """
-        if not isinstance(other, LabeledText):
-            return 0
+        if not _classeq(self, other): return 0
         return not (self._text == other._text and
                     self._label == other._label)
 
@@ -334,6 +335,7 @@ def find_labels(labeled_tokens):
         extract labels.
     @type labeled_tokens: C{list} of (C{Token} with type C{LabeledText})
     """
+    assert _chktype(1, labeled_tokens, [Token], (Token,))
     labelmap = {}
     for token in labeled_tokens:
         labelmap[token.type().label()] = 1
@@ -352,6 +354,7 @@ def label_tokens(unlabeled_tokens, label):
     @param label: The label for the new labeled tokens.
     @type label: (immutable)
     """
+    assert _chktype(1, unlabeled_tokens, [Token], (Token,))
     return [Token(LabeledText(tok.type(), label), tok.loc())
             for tok in unlabeled_tokens]
 
@@ -371,6 +374,8 @@ def accuracy(classifier, labeled_tokens):
     @type labeled_tokens: C{list} of (C{Token} with type
         C{LabeledText}) 
     """
+    assert _chktype(1, classifier, ClassifierI)
+    assert _chktype(2, labeled_tokens, [Token], (Token,))
     total = 0
     correct = 0
     for ltok in labeled_tokens:
@@ -396,6 +401,8 @@ def log_likelihood(classifier, labeled_tokens):
     @type labeled_tokens: C{list} of (C{Token} with type
         C{LabeledText}) 
     """
+    assert _chktype(1, classifier, ClassifierI)
+    assert _chktype(2, labeled_tokens, [Token], (Token,))
     likelihood = 0.0
     for ltok in labeled_tokens:
         utok = Token(ltok.type().text(), ltok.loc())
@@ -416,6 +423,8 @@ class ConfusionMatrix:
         Entry conf[i][j] is the number of times a document with label i
         was given label j.
         """
+        assert _chktype(1, classifier, ClassifierI)
+        assert _chktype(2, labeled_tokens, [Token], (Token,))
         try: import Numeric
         except: raise ImportError('ConfusionMatrix requires Numeric')
         
@@ -440,6 +449,7 @@ class ConfusionMatrix:
         self._max_conf = max(Numeric.resize(confusion, (len(labels)**2,)))
 
     def __getitem__(self, index):
+        assert _chktype(1, index, types.IntType)
         return self._confusion[index[0], index[1]]
 
     def __str__(self):

@@ -25,6 +25,9 @@ interface.
 
 from nltk.classifier import *
 from nltk.classifier.feature import *
+from nltk.chktype import chktype as _chktype
+from nltk.chktype import classeq as _classeq
+import types
 
 class FeatureSelectorI:
     """
@@ -80,6 +83,8 @@ class SelectedFDList(AbstractFDList):
             that should be included in the C{SelectedFDList}.  This
             list should not contain duplicate feature ids.
         """
+        assert _chktype(1, sub_fd_list, FeatureDetectorListI)
+        assert _chktype(2, selected_ids, [types.IntType], (types.IntType,))
         N = 0
         idmap = {}
         for id in selected_ids:
@@ -97,6 +102,7 @@ class SelectedFDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from AbstractFDList
+        assert _chktype(1, labeled_text, LabeledText)
         fv_list = self._sub_fd_list.detect(labeled_text)
         assignments = [(self._idmap.get(id), val) for (id, val)
                        in fv_list.assignments()
@@ -131,6 +137,7 @@ class AttestedFeatureSelector(FeatureSelectorI):
             which a feature must apply, in order to be included in the
             feature value list.  Default=1.  (type=C{int})
         """
+        assert _chktype(1, training_data, [Token], (Token,))
         self._training_data = training_data
         
         # Process the keyword arguments.
@@ -150,6 +157,7 @@ class AttestedFeatureSelector(FeatureSelectorI):
 
     def select(self, fd_list):
         # Count the number of times each feature is attested.
+        assert _chktype(1, fd_list, FeatureDetectorListI)
         attested = {}
         for labeled_token in self._training_data:
             text = labeled_token.type().text()
