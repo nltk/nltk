@@ -481,7 +481,7 @@ def errorList (correctToken, token, radius=2):
     indices = _errorPositions(correctToken, token)
     tokenLen = len(token['SUBTOKENS'])
     for i in indices:
-        ei = token['SUBTOKENS'][i]['TAG'].rjust(3) + " <- " \
+        ei = token['SUBTOKENS'][i]['TAG'].rjust(3) + " -> " \
              + correctToken['SUBTOKENS'][i]['TAG'].rjust(3) + ":  "
         for j in range( max(i-radius, 0), min(i+radius+1, tokenLen) ):
             if token['SUBTOKENS'][j]['TEXT'] == token['SUBTOKENS'][j]['TAG']:
