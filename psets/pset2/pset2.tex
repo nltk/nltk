@@ -1,0 +1,82 @@
+% Natural Language Toolkit Problem Set
+% Problem Set 2: Using NLTK
+%
+% Copyright (C) 2001 University of Pennsylvania
+% Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+% URL: <http://nltk.sf.net>
+% For license information, see LICENSE.TXT
+%
+% $Id$
+
+\documentclass{article}
+\usepackage{fullpage}
+
+\begin{document}
+\title{Problem Set 2: Introduction to NLTK}
+\subtitle{Due: sometime}
+\maketitle
+
+% Add comment here about how code should be pretty
+
+\section{Regular Expressions}
+
+Describe the class of strings matched by the following regular expressions:
+\begin{enumerate}
+    \item \texttt{[a-zA-Z]+}
+    \item \texttt{[A-Z][a-z]*}
+    \item \texttt{\\d+(\\.\\d+)?}
+    \item \texttt{([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*}
+    \item \texttt{\\w+|[\^\\w\\s]+}
+\end{enumerate}
+
+Write a regular expression to match the following classes of strings:
+
+\begin{enumerate}
+    \item A single determiner (assume that ``a,'' ``an,'' and ``the''
+    are the only determiners).  
+    \item An arithmatic expression using integers, addition, and
+    multiplication, such as $2*3+8$.
+\end{enumerate}
+
+\section{Tokens and Locations}
+
+\begin{enumerate}
+    \item Write an expression that constructs 
+\end{enumerate}
+
+\section{Zipf's Law}
+
+Zipf's Law relates a word type's frequency to its rank (the
+\emph{rank} of the $r$ most common word type is $r$).  In particular,
+it states that the frequency $f$ of a word type is inversely
+proportional to its rank $r$.  In other words, $f$*$r$=$k$, for some
+constant $k$.  For example, the 50th most common word type should
+occur three times as frequently as the 150th most common word type.
+See \emph{Foundations of Statistical Natural Language Processing}
+(Manning & Schutze), pp. 23-24, for more information on Zipf's Law.
+
+Write a Python program to demonstrate Zipf's law.
+
+\section{Sentence Level Tokenization}
+
+\section{The Switchboard Corpus}
+
+Listen to one of the recorded telephone conversations on the
+Switchboard CD-ROM (also on
+\texttt{unagi:/spd25/cis530/cdrom/switchboard/speech-pc/}).  Identify an
+utterance which is not grammatical, standard English.  Transcribe the
+utterance and describe the way(s) in which it is ungrammatical or
+non-standard.
+
+\end{document}
+
+
+  1. some regexp problems (what does xyz match?  write a regexp to match xyz?)
+  2. basic nltk usage (construct locations/tokens.  what happens when you
+     compare locations?  overlapping locations?  locations with different
+     sources?  etc.)
+  3. zipf problem: demonstrate zipf by plotting freq vs. rank.  Print out
+     a log/log version of the output (still not sure how I want them to
+     turn it in.. I'll figure that out soon)
+  4. sentence tokenization: use RETokenizer to do good sentence tokenization
+  5. your switchboard question
