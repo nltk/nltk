@@ -55,7 +55,7 @@ Finite State Automata:
   - Added FSA visualization tool (nltk.draw.fsa).
 
 Classifiers:
-  - Added a CunfusionMatrix class, which encodes and displays the
+  - Added a ConfusionMatrix class, which encodes and displays the
     confusion matrix for a classifier on a given task.
   - Added MultiBagOfWordsFDList, an integer-valued feature detector
     list constructed from a set of + words and a set of labels.
