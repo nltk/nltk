@@ -129,7 +129,7 @@ class ChartView:
         # Process keyword args.
         draw_tree = kw.get('draw_tree', 0)
         draw_source = kw.get('draw_source', 1)
-        self._fontsize = kw.get('fontsize', 12)
+        self._fontsize = kw.get('fontsize', 10)
         
         if source is None:
             source = []
@@ -736,20 +736,16 @@ class ChartView:
         self._draw_loclines()
 
 class ChartDemo:
-    RULENAME = {'TD_init': 'Top-down Initialization',
-                'FR': 'Fundamental Rule',
-                'FR_edge_rule': 'Fundamental Rule',
-                'FR_edge': 'Fundamental Rule',
-                'TD_edge': 'Top-down Edge-Triggered',
-                'BU_init': 'Bottom-up Initialization',
-                'BU_edge_rule': 'Bottom-up Initialization',
-                'TD_edge_rule': 'Top-down Edge-Triggered'}
+    RULENAME = {'FR': 'Fundamental Rule',
+                'TD_init': 'Top-down Initialization',
+                'TD': 'Top-down Rule',
+                'BU': 'Bottom-up Rule',
+                }
     
-    def __init__(self, grammar, lexicon, tok_sent, title='Chart Parsing Demo'):
+    def __init__(self, grammar, text, title='Chart Parsing Demo'):
 
         self.root = None
         try:
-    
             # Create the root window.
             self._root = Tkinter.Tk()
             self._root.title(title)
@@ -764,10 +760,9 @@ class ChartDemo:
             self._lexiconview = self._grammarview = None
     
             self._grammar = grammar
-            self._lexicon = lexicon
-            self._tok_sent = tok_sent
-            self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
-            self._cp.initialize(self._tok_sent, strategy=TD_STRATEGY)
+            self._tok_sent = text
+            self._cp = SteppingChartParser(self._grammar)
+            self._cp.initialize(self._tok_sent)
             
             self._chart = self._cp.chart()
             self._cv = ChartView(self._chart, self._tok_sent,
@@ -848,7 +843,7 @@ class ChartDemo:
         if rule == None:
             self._rulelabel['text'] = ''
         else:
-            name = ChartDemo.RULENAME.get(rule.__name__, rule.__name__)
+            name = ChartDemo.RULENAME.get(rule.__class__.__name__, rule.__class__.__name__)
             self._rulelabel['text'] = name
             size = self._cv.get_font_size()
             self._rulelabel['font'] = ('helvetica', size, 'bold')
@@ -859,7 +854,8 @@ class ChartDemo:
         if self._step.get():
             edge = self._cv.selected_edge()
             if (edge is not None) and (edge_strategy is not None):
-                self._apply_edge_strategy(edge, edge_strategy)
+                print 'hm, not yet'
+                #self._apply_strategy(edge_strategy(edge))
             else:
                 self._apply_strategy(strategy)
         else:
@@ -867,43 +863,30 @@ class ChartDemo:
                 self._cv.update()
 
     def _apply_strategy(self, strategy):
-        result = self._cp.step(strategy=strategy,
-                               getrule=1)
-        if result is not None:
-            (new_edge, rule) = result
-            self.display_rule(rule)
+        new_edge = self._cp.step(strategy=strategy)
+                               
+        if new_edge is not None:
+            self.display_rule(self._cp.current_rule())
             self._cv.update()
             self._cv.mark_edge(new_edge)
             self._cv.view_edge(new_edge)
-        return result
-
-    def _apply_edge_strategy(self, edge, edge_strategy):
-        # Select the new edge (or nonthing if there was new edge)
-        result = self._cp.step(strategy=edge_strategy(edge),
-                               getrule=1)
-        if result is not None:
-            (new_edge, rule) = result
-            self.display_rule(rule)
-            self._cv.update()
-            self._cv.select_edge(new_edge)
-            self._cv.view_edge(new_edge)
-        else:
-            self._cv.select_edge(None)
+        return new_edge
     
     def top_down_init(self):
-        self.apply_strategy(TDINIT_STRATEGY, None)
+        self.apply_strategy([TopDownInitRule()], None)
         
     def top_down(self):
-        self.apply_strategy(TD_STRATEGY, td_edge_strategy)
+        self.apply_strategy([TopDownInitRule(), TopDownRule(),
+                             FundamentalRule()], None)
         
     def fundamental(self):
-        self.apply_strategy(FR_STRATEGY, fr_edge_strategy)
+        self.apply_strategy([FundamentalRule()], None)
     
     def bottom_up_init(self):
-        self.apply_strategy(BUINIT_STRATEGY, bu_edge_strategy)
+        self.apply_strategy([BottomUpRule()], None)
         
     def bottom_up(self):
-        self.apply_strategy(BU_STRATEGY, bu_edge_strategy)
+        self.apply_strategy([BottomUpRule(), FundamentalRule()], None)
         
     def destroy(self, *args):
         if self._lexiconview: self._lexiconview.destroy()
@@ -913,45 +896,35 @@ class ChartDemo:
         self._root = None
 
 def test():
-    grammar = (
-        Rule('S',('NP','VP')),
-        Rule('NP',('Det','N')),
-        Rule('NP',('NP','PP')),
-        Rule('VP',('VP','PP')),
-        Rule('VP',('VP','PP', 'PP')),
-        Rule('VP',('V','NP')),
-        Rule('PP',('P','NP')),
-        )
+    nonterminals = 'S VP NP PP P N Name V Det'
+    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+                                           for s in nonterminals.split()]
     
-    lexicon = (
-        Rule('Det',('the',)),
-        Rule('NP',('I',)),
-        Rule('N',('hill',)),
-        Rule('N',('man',)),
-        Rule('N',('telescope',)),
-        Rule('N',('cat',)),
-        Rule('N',('mat',)),
-        Rule('V',('saw',)),
-        Rule('V',('sat',)),
-        Rule('P',('with',)),
-        Rule('P',('on',)),
-        )
-    
-    sent = 'the cat sat on the mat'
-    sent = 'I saw the man on the hill with the telescope'
+    grammar_rules1 = [
+        CFG_Rule(NP, Det, N), CFG_Rule(NP, NP, PP),
+        CFG_Rule(NP, 'John'), CFG_Rule(NP, 'I'), 
+        CFG_Rule(Det, 'the'), CFG_Rule(Det, 'my'),
+        CFG_Rule(N, 'dog'),   CFG_Rule(N, 'cookie'),
+
+        CFG_Rule(VP, VP, PP), CFG_Rule(VP, V, NP),
+        CFG_Rule(VP, V),
+        
+        CFG_Rule(V, 'ate'),  CFG_Rule(V, 'saw'),
+
+        CFG_Rule(S, NP, VP),  CFG_Rule(PP, P, NP),
+        CFG_Rule(P, 'with'), CFG_Rule(P, 'under')]
+
+    grammar = CFG(S, grammar_rules1)
+    sent = 'I saw the dog with John with my cookie'
     tok_sent = WSTokenizer().tokenize(sent)
 
-    print 'lexicon = ('
-    for rule in lexicon:
-        print '    ', repr(rule)+','
-    print ')'
     print 'grammar= ('
-    for rule in grammar:
+    for rule in grammar.rules():
         print '    ', repr(rule)+','
     print ')'
-    print 'sentence=', sent
-    print 'Calling "ChartDemo(grammar, lexicon, tok_sent)"...'
-    ChartDemo(grammar, lexicon, tok_sent)
+    print 'sentence = %r' % sent
+    print 'Calling "ChartDemo(grammar, tok_sent)"...'
+    ChartDemo(grammar, tok_sent)
 
 def test2():
     tok_sent = [Token('the', 0), Token('park', 1)]
