@@ -71,8 +71,8 @@ class Token(dict):
     accessed and modified using the indexing operator with property
     names:
 
-       >>> print tok['TEXT']
-       'fly'
+       >>> tok['TEXT']
+       fly
        >>> tok['SPEAKER'] = 'James'
 
     A property name can be any string; but typically, short upper-case
@@ -96,7 +96,7 @@ class Token(dict):
         __setitem__, __delitem__
     @group Transformations: exclude, project, freeze, copy
     @group String Representation: __str__, __repr__,
-        register_repr, register_cyclic
+        register_repr
     @undocumented: clear, fromkeys, has_key, items, iteritems,
         iterkeys, itervalues, keys, pop, popitem, setdefault, update,
         values
@@ -107,7 +107,7 @@ class Token(dict):
     @undocumented: frozen_token_class
     """
     # Don't allocate any extra space for instance variables:
-    __slots__ = ()
+    __slots__ = ('__repr_cyclecheck',)
 
     # Should we use the type-safe version of tokens?
     USE_SAFE_TOKENS = True
@@ -123,9 +123,11 @@ class Token(dict):
         L{SafeToken}; otherwise, it will be a L{Token}.
         """
         if cls is Token and Token.USE_SAFE_TOKENS:
-            return super(Token, cls).__new__(SafeToken, **properties)
+            tok = super(Token, cls).__new__(SafeToken, **properties)
         else:
-            return super(Token, cls).__new__(cls, **properties)
+            tok = super(Token, cls).__new__(cls, **properties)
+        tok.__repr_cyclecheck = False
+        return tok
 
     def __init__(self, propdict=None, **properties):
         """
@@ -166,7 +168,7 @@ class Token(dict):
     
     def has(self, property):
         """
-        @return: True if this token defines the GIVEN property.
+        @return: True if this token defines the given property.
         @rtype: C{bool}
         """
         return self.has_key(property)
@@ -186,12 +188,34 @@ class Token(dict):
             after the frozen copy is generated will not be propagated
             to the frozen copy.
         """
+        return self._freeze({})
+
+    def _freeze(self, memo):
+        """
+        A helper function that implements L{freeze}.
+
+        @param memo: The memoization dicationary, which is used to
+            re-use the same FrozenToken for a given Token.  This lets
+            C{freeze} deal with cyclic tokens.  C{memo} maps from the
+            C{id} of an input Token to the FrozenToken object that
+            will replace it.
+        """
+        if id(self) in memo: return memo[id(self)]
+        frozen_token_class = self.frozen_token_class()
+        frozen_val = frozen_token_class()
+        memo[id(self)] = frozen_val
+        
         frozen_properties = {}
         for (key, val) in self.items():
-            frozen_properties[key] = self._freezeval(val)
-            
-        frozen_token_class = self.frozen_token_class()
-        return frozen_token_class(**frozen_properties)
+            if id(val) in memo:
+                frozen_properties[key] = memo[id(val)]
+            else:
+                frozenval = self._freezeval(val, memo)
+                memo[id(val)] = frozenval
+                frozen_properties[key] = frozenval
+
+        frozen_val.__init__(frozen_properties)
+        return frozen_val
 
     def frozen_token_class():
         """
@@ -231,17 +255,22 @@ class Token(dict):
            only the properties that are I{not} in a given list.
         """
         deep = options.get('deep', True)
-        return self._project(properties, deep)
+        return self._project(properties, deep, {})
 
-    def _project(self, properties, deep):
+    def _project(self, properties, deep, memo):
+        if id(self) in memo: return memo[id(self)]
+        projected_val = self.__class__()
+        memo[id(self)] = projected_val
+        
         newprops = {}
         for property in properties:
             if self.has_key(property):
                 val = self[property]
                 if deep:
-                    val = self._deep_restrict(val, properties, incl=True)
+                    val = self._deep_restrict(val, properties, True, memo)
                 newprops[property] = val
-        return self.__class__(**newprops)
+        projected_val.__init__(newprops)
+        return projected_val
 
     def exclude(self, *properties, **options):
         """
@@ -265,19 +294,24 @@ class Token(dict):
         # Convert the exclude list to a dict for faster access.
         excludeset = dict([(property,1) for property in properties])
         deep = options.get('deep', True)
-        return self._exclude(excludeset, deep)
+        return self._exclude(excludeset, deep, {})
 
-    def _exclude(self, excludeset, deep):
+    def _exclude(self, excludeset, deep, memo):
+        if id(self) in memo: return memo[id(self)]
+        excluded_val = self.__class__()
+        memo[id(self)] = excluded_val
+        
         newprops = {}
         for property in self.keys():
             if not excludeset.has_key(property):
                 val = self[property]
                 if deep:
-                    val = self._deep_restrict(val, excludeset, incl=False)
+                    val = self._deep_restrict(val, excludeset, False, memo)
                 newprops[property] = val
-        return self.__class__(**newprops)
+        excluded_val.__init__(newprops)
+        return excluded_val
 
-    def _deep_restrict(self, val, props, incl):
+    def _deep_restrict(self, val, props, incl, memo):
         """
         @return: A deep copy of the GIVEN property value, with the
         given restriction applied to any contained tokens:
@@ -285,10 +319,16 @@ class Token(dict):
             contained tokens.
           - if C{incl} is false, then apply C{exclude(props)} to any
             contained tokens.
+
+        @param memo: The memoization dicationary, which is used to
+            re-use the same output for a given input This lets
+            C{_deep_restrict} deal with cyclic tokens.  C{memo} maps
+            from the C{id} of an input Token to the output Token that
+            will replace it.
         """
         if isinstance(val, Token):
-            if incl: return val._project(props, True)
-            else: return val._exclude(props, True)
+            if incl: return val._project(props, True, memo)
+            else: return val._exclude(props, True, memo)
         elif isinstance(val, list):
             restrict = self._deep_restrict
             return [restrict(v, props, incl) for v in val]
@@ -307,9 +347,14 @@ class Token(dict):
         for item in val:
             yield self._deep_restrict(item, props, incl)
 
-    def _freezeval(self, val):
+    def _freezeval(self, val, memo):
+        """
+        A helper for L{_freeze}.
+        @param memo: The memoization dicationary.  (See L{_freeze}
+            for more info).
+        """
         if isinstance(val, Token):
-            return val.freeze()
+            return val._freeze(memo)
         elif isinstance(val, list) or isinstance(val, tuple):
             freezeval = self._freezeval
             return tuple([freezeval(v) for v in val])
@@ -352,20 +397,30 @@ class Token(dict):
         else: Token._repr_registry[tuple(props)] = repr
     register_repr = staticmethod(register_repr)
 
+    # Note: the use of __repr_cyclecheck is not threadsafe; but making
+    # it threadsafe would be difficult, given that we allow the user to
+    # register arbirary repr functions.
     def __repr__(self):
+        """
+        @return: A string representation of this C{Token}.
+        @rtype: C{string}
+        @warning: C{__repr__} is I{not} thread-safe.  In particular,
+            it uses an instance variable on each token to handle
+            printing of cyclic structures.
+        """
+        if self.__repr_cyclecheck: return '...'
+        self.__repr_cyclecheck = True
+        
         props = self.keys()
         props.sort()
         repr = self._repr_registry.get(tuple(props), Token._default_repr)
         if isinstance(repr, str):
-            return repr % self
+            s = repr % self
         else:
-            return repr(self)
+            s = repr(self)
+        self.__repr_cyclecheck = False
+        return s
 
-    _cyclic_properties = {}
-    def register_cyclic(prop):
-        Token._cyclic_properties[prop] = True
-    register_cyclic = staticmethod(register_cyclic)
-    
     def _default_repr(self):
         """
         @return: A full string representation of this C{Type}.
@@ -373,12 +428,11 @@ class Token(dict):
         """
         # Convert EACH property (except loc) to a string.
         props = []
-        for (p,v) in self.items():
+        items = self.items()
+        items.sort()
+        for (p,v) in items:
             if p == 'LOC': continue
-            elif self._cyclic_properties.get(p):
-                props.append('%s=...' % (p,))
-            else:
-                props.append('%s=%r' % (p,v))
+            else: props.append('%s=%r' % (p,v))
         props = ', '.join(props)
         # If there's a location, then add it to the end.
         if self.has_key('LOC'):
@@ -448,8 +502,6 @@ class FrozenToken(Token):
     """
     An immutable (and hashable) version of the L{Token} class.
     """
-    __slots__ = ('_hash',)
-    
     def __init__(self, propdict=None, **properties):
         """
         Create a new frozen token that defines the given set of
@@ -551,9 +603,13 @@ class SafeToken(Token):
         assert chktype('vararg', properties, (self._checkval,))
         return super(SafeToken, self).project(*properties, **options)
 
-    def pop(self, property, default=None):
+    _pop_sentinel = object()
+    def pop(self, property, default=_pop_sentinel):
         assert chktype(1, property, str)
-        return super(SafeToken, self).pop(property, default=None)
+        if default is SafeToken._pop_sentinel:
+            return super(SafeToken, self).pop(property)
+        else:
+            return super(SafeToken, self).pop(property, default)
         
     def setdefault(self, property, default=None):
         assert chktype(1, property, str)
