@@ -35,9 +35,26 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     @outprop: C{TREE}: The token's tree structure.
     @outprop: C{SUBTOKENS}: A list of the tree's leaves.
     @outprop: C{TEXT}: The text of the tree's subtokens.
+    @outprop: C{TAG}: The tag of the tree's subtokens.  This is
+        only used if the C{preterminal_tags} parameter to the
+        constructor is set to C{True}.
     """
-    def __init__(self, **property_names):
+    def __init__(self, preterminal_tags=False, **property_names):
         """
+        @param preterminal_tags: If true, then treat preterminal
+            nodes as tags.
+        @type preterminal_tags: C{boolean}
+        """
+        PropertyIndirectionMixIn.__init__(self, **property_names)
+        self._preterminal_tags = preterminal_tags
+        self._source = None # <- not thread-safe.
+
+    def read_token(self, s, add_contexts=False, add_subtoks=True,
+                   add_locs=False, source=None):
+        """
+        @return: A token containing the treebank tree encoded by
+            the string C{s}.
+        @rtype: L{Token}
         @type add_locs: C{bool}
         @param add_locs: Should this token reader add the C{LOC}
             property to each subtoken?  If true, then this property
@@ -53,11 +70,6 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             property to the returned token?  If true, the C{SUBTOKENS}
             will contain a list of the trees leaves.
         """
-        PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._source = None # <- not thread-safe.
-
-    def read_token(self, s, add_contexts=False, add_subtoks=True,
-                   add_locs=False, source=None):
         treetoks = self.read_tokens(s, add_contexts, add_subtoks,
                                     add_locs, source)
         if len(treetoks) == 0:
@@ -69,6 +81,25 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
 
     def read_tokens(self, s, add_contexts=False, add_subtoks=True,
                    add_locs=False, source=None):
+        """
+        @return: A list of tokens containing the treebank trees
+            encoded by the string C{s}.
+        @rtype: L{Token}
+        @type add_locs: C{bool}
+        @param add_locs: Should this token reader add the C{LOC}
+            property to each subtoken?  If true, then this property
+            will map to a L{CharSpanLocation} object, whose character
+            indices are defined over the input string.
+        @type add_contexts: C{bool}
+        @param add_contexts: Should this token reader add the
+            C{CONTEXT} property to each subtoken?  If true, then this
+            property will map to a L{TreeContextPointer} object for
+            the subtoken.
+        @type add_subtoks: C{bool}
+        @param add_subtoks: Should this token reader add the C{SUBTOKENS}
+            property to the returned token?  If true, the C{SUBTOKENS}
+            will contain a list of the trees leaves.
+        """
         TREE = self.property('TREE')
         SUBTOKENS = self.property('SUBTOKENS')
         self._source = source
@@ -97,8 +128,24 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             if add_subtoks:
                 treetoks[-1][SUBTOKENS] = tree.leaves()
 
+            # Convert preterminals into tags, if requested.
+            if self._preterminal_tags:
+                self._convert_preterminals_to_tags(tree)
+
         # Return the list
         return treetoks
+
+    def _convert_preterminals_to_tags(self, tree):
+        TAG = self.property('TAG')
+        for i, child in enumerate(tree):
+            if isinstance(child, Tree):
+                # If it's a preterminal, convert it.
+                if len(child) == 1 and isinstance(child[0], Token):
+                    child[0][TAG] = child.node
+                    tree[i] = child[0]
+                # Otherwise, recurse.
+                else:
+                    self._convert_preterminals_to_tags(child)
 
     def _locs_leafparser(self, text, (start, end)):
         TEXT = self.property('TEXT')
@@ -125,8 +172,9 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             assert 0, 'Unexpected object type in tree'
 
 class TreebankFileTokenReader(TokenReaderI):
-    def __init__(self,  **property_names):
-        self._tb_reader = TreebankTokenReader(**property_names)
+    def __init__(self, preterminal_tags=False,  **property_names):
+        self._tb_reader = TreebankTokenReader(preterminal_tags,
+                                              **property_names)
 
     def property(self, name):
         return self._tb_reader.property(name)
@@ -135,7 +183,7 @@ class TreebankFileTokenReader(TokenReaderI):
                    add_locs=False, source=None):
         treetoks = self._tb_reader.read_tokens(s, add_contexts, add_subtoks,
                                                add_locs, source)
-        return Token(**{self.property('SUBTOKENS'): treetoks})
+        return Token(**{self.property('SENTS'): treetoks})
 
     def read_tokens(self, s, add_contexts=False, add_subtoks=True,
                    add_locs=False, source=None):
