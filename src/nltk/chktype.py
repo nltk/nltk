@@ -212,7 +212,7 @@ def chktype(n, arg, *types):
     for t in types:
         # The type spec is a type; return 1 if the arg's type matches.
         if type(t) == TypeType:
-            if type(arg) == t: return 1
+            if isinstance(arg, t): return 1
 
         # The type spec is a class; return 1 if the arg's class matches.
         elif type(t) == ClassType:
