@@ -29,7 +29,7 @@ import re
 # objects before being stored into the internal rules list.
 ##
 
-import nltk.speech.rules
+import nltk.speech.rules as rules
 class SpeechTokenizer(TokenizerI):
 
 	##
