@@ -1,9 +1,10 @@
 ###############################################################
 ###             Natural Language Toolkit (NLTK)             ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-### Copyright (C) 2001 University of Pennsylvania           ###
+### Copyright (C) 2004 University of Pennsylvania           ###
 ### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
-### URL: <http://nltk.sf.net>                               ###
+###         Steven Bird <sb@csse.unimelb.edu.au>            ###
+### URL: <http://nltk.sourceforge.net>                      ###
 ### For license information, see LICENSE.TXT                ###
 ###############################################################
 
@@ -22,7 +23,7 @@ Documentation
     A substantial amount of documentation about how to use NLTK is
     available from the nltk home page:
 
-        <http://nltk.sf.net>
+        <http://nltk.sourceforge.net>
 
     In particular, the NLTK home page contains three types of
     documentation:
@@ -30,13 +31,13 @@ Documentation
       - Tutorials teach students how to use the toolkit, in the
         context of performing specific tasks. They are appropriate for
         anyone who wishes to learn how to use the toolkit.
-        <http://nltk.sf.net/tutorial/>
+        <http://nltk.sourceforge.net/tutorial/>
 
       - The toolkit's reference documentation describes every module,
         interface, class, method, function, and variable in the
         toolkit. This documentation should be useful to both users and
         developers.  
-        <http://nltk.sf.net/ref/nltk.html>
+        <http://nltk.sourceforge.net/ref/nltk.html>
 
       - A number of technical reports are available. These reports
         explain and justify the toolkit's design and
@@ -45,7 +46,7 @@ Documentation
         consult these reports if they would like further information
         about how the toolkit is designed and why it is designed that
         way.  
-        <http://nltk.sf.net/tech/>
+        <http://nltk.sourceforge.net/tech/>
 
 
 Mailing Lists
@@ -71,4 +72,4 @@ Contributing
 ~~~~~~~~~~~~
     If you are interested in contributing to NLTK, please email Edward
     Loper and Steven Bird at <edloper@gradient.cis.upenn.edu> and
-    <sb@cs.mu.oz.au>.
+    <sb@csse.unimelb.edu.au>.
