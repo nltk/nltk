@@ -8,9 +8,7 @@
 # $Id$
 
 """
-
 Classes for representing and processing probabilistic information.
-
 """
 
 from nltk.chktype import chktype as _chktype
@@ -750,9 +748,8 @@ class ConditionalFreqDist:
         n = len(self._fdists)
         return '<ConditionalFreqDist with %d conditions>' % n
 
-class ConditionalProbDist:
+class ConditionalProbDistI:
     """
-
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability
     distributions are used to estimate the likelihood of each sample,
@@ -763,40 +760,118 @@ class ConditionalProbDist:
     distribution can be defined as a function that maps from each
     condition to the C{ProbDist} for the experiment under that
     condition.
+    """
+    def __init__(self):
+        raise AssertionError, 'ConditionalProbDistI is an interface'
+    
+    def __getitem__(self, condition):
+        """
+        @return: The probability distribution for the experiment run
+            under the given condition.
+        @rtype: C{ProbDistI}
+        @param condition: The condition whose probability distribution
+            should be returned.
+        @type condition: any
+        """
+        raise AssertionError
 
-    A conditional probability distribution is constructed using
-    a X{C{ProbDist} factory functions}, which take a C{FreqDist} and
-    returns the corresponding C{ProbDist}. ??
+    def conditions(self):
+        """
+        @return: A list of the conditions that are represented by
+            this C{ConditionalProbDist}.  Use the indexing operator to
+            access the probability distribution for a given condition.
+        @rtype: C{list}
+        """
+        raise AssertionError
 
-        >>> def factory(fdist): return ELEProbDist(fdist, 10)
-        >>> cpdist = ConditionalProbDist(cfdist, factory)
+# For now, this is the only implementation of ConditionalProbDistI;
+# but we would want a different implementation if we wanted to build a
+# conditional probability distribution analytically (e.g., a gaussian
+# distribution), rather than basing it on an underlying frequency
+# distribution.
+class ConditionalProbDist(ConditionalProbDistI):
+    """
+    A conditional probability distribution modelling the experiments
+    that were used to generate a conditional frequency distribution.
+    A C{ConditoinalProbDist} is constructed from a
+    C{ConditionalFreqDist} and a X{C{ProbDist} factory}:
+
+      - The B{C{ConditionalFreqDist}} specifies the frequency
+        distribution for each condition.
+      - The B{C{ProbDist} factory} is a function that takes a
+        condition's frequency distribution, and returns its
+        probability distribution.  A C{ProbDist} class's name (such as
+        C{MLEProbDist} or C{HeldoutProbDist}) can be used to specify
+        that class's constructor.
+
+    The first argument to the C{ProbDist} factory is the frequency
+    distribution that it should model; and the remaining arguments are
+    specified by the C{factory_args} parameter to the
+    C{ConditionalProbDist} constructor.  For example, the following
+    code constructs a C{ConditionalProbDist}, where the probability
+    distribution for each condition is an C{ELEProbDist} with 10 bins:
+
+        >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
         >>> print cpdist['run'].max()
         'NN'
         >>> print cpdist['run'].prob('NN')
         0.0813
-        
     """
-    def __init__(self, cfdist, pdist_factory):
+    def __init__(self, cfdist, probdist_factory, *factory_args):
         """
-        @param pdist_factory: a function from FreqDist to ProbDist.
+        Construct a new conditional probability distribution, based on
+        the given conditional frequency distribution and C{ProbDist}
+        factory.
+
+        @type cfdist: L{ConditionalFreqDist}
+        @param cfdist: The C{ConditionalFreqDist} specifying the
+            frequency distribution for each condition.
+        @type probdist_factory: C{class} or C{function}
+        @param probdist_factory: The function or class that maps
+            a condition's frequency distribution to its probability
+            distribution.  The function is called with the frequency
+            distribution as its first argument, and C{factory_args} as
+            its remaining arguments.
+        @type factory_args: (any)
+        @param factory_args: Extra arguments for C{probdist_factory}.
+            These arguments are usually used to specify extra
+            properties for the probability distributions of individual
+            conditions, such as the number of bins they contain.
         """
+        assert _chktype(1, cfdist, ConditionalFreqDist)
+        assert _chktype(2, probdist_factory, types.FunctionType,
+                        types.BuiltinFunctionType, types.MethodType,
+                        types.ClassType)
+        self._probdist_factory = probdist_factory
         self._cfdist = cfdist
+        self._factory_args = factory_args
         
-        # Do the estimation.
         self._pdists = {}
         for condition in cfdist.conditions():
-            self._pdists[condition] = pdist_factory(cfdist[condition])
+            self._pdists[condition] = probdist_factory(cfdist[condition],
+                                                       *factory_args)
 
     def __getitem__(self, condition):
-        # If the pdist doesn't exist, return uniform (???).
         if not self._pdists.has_key(condition):
-            return MLEProbDist(FreqDist()) #ZeroProbDist(self._cfdist.bins())
-            self._fdists[condition] = FreqDist(self._bins)
+            # If it's a condition we haven't seen, create a new prob
+            # dist from the empty freq dist.  Typically, this will
+            # give a uniform prob dist.
+            pdist = self._probdist_factory(FreqDist(), *self._factory_args)
+            self._pdists[condition] = pdist
             
         return self._pdists[condition]
 
     def conditions(self):
-        return self._cfdist.conditions()
+        return self._pdists.keys()
+
+    def __repr__(self):
+        """
+        @return: A string representation of this
+            C{ConditionalProbDist}.
+        @rtype: C{string}
+        """
+        n = len(self._pdists)
+        return '<ConditionalProbDist with %d conditions>' % n
 
 ##//////////////////////////////////////////////////////
 ##  Probabilistic Mix-in
@@ -826,7 +901,6 @@ class ProbabilisticMixIn:
 
     You should generally also redefine the string representation
     methods, the comparison methods, and the hashing method.
-    (Others??)
     """
     def __init__(self, p):
         """
@@ -837,6 +911,7 @@ class ProbabilisticMixIn:
         @param p: The probability associated with the object.
         @type p: C{float}
         """
+        assert _chktype(1, p, types.IntType, types.FloatType)
         if not 0 <= p <= 1: raise ValueError('Bad probability: %s' % p)
         self._p = p
 
@@ -866,6 +941,17 @@ def _create_rand_fdist(numsamples, numoutcomes):
         fdist.inc(y)
     return fdist
 
+def _create_sum_pdist(numsamples):
+    """
+    Return the true probability distribution for the experiment
+    C{_create_rand_fdist(numsamples, x)}.
+    """
+    fdist = FreqDist()
+    for x in range(1, (1+numsamples)/2+1):
+        for y in range(0, numsamples/2+1):
+            fdist.inc(x+y)
+    return MLEProbDist(fdist)
+
 def demo(numsamples=6, numoutcomes=500):
     """
     A demonstration of frequency distributions and probability
@@ -880,7 +966,8 @@ def demo(numsamples=6, numoutcomes=500):
         C{numsamples} bins.
     @rtype: C{None}
     """
-    import random
+    _chktype(1, numsamples, types.IntType)
+    _chktype(2, numoutcomes, types.IntType)
 
     # Create some random distributions.
     fdist1 = _create_rand_fdist(numsamples, numoutcomes)
@@ -894,6 +981,7 @@ def demo(numsamples=6, numoutcomes=500):
         HeldoutProbDist(fdist1, fdist2, numsamples),
         HeldoutProbDist(fdist2, fdist1, numsamples),
         CrossValidationProbDist([fdist1, fdist2, fdist3], numsamples),
+        _create_sum_pdist(numsamples),
         ]
 
     # Run probability distributions on each sample.
@@ -904,10 +992,10 @@ def demo(numsamples=6, numoutcomes=500):
 
     # Print results.
     print '='*9*(len(pdists)+2)
-    FORMATSTR = '      FreqDist '+ '%8s '*len(pdists)
-    print FORMATSTR % tuple([`pdist`[1:9] for pdist in pdists])
+    FORMATSTR = '      FreqDist '+ '%8s '*(len(pdists)-1) + '|  Actual'
+    print FORMATSTR % tuple([`pdist`[1:9] for pdist in pdists[:-1]])
     print '-'*9*(len(pdists)+2)
-    FORMATSTR = '%3d   %8.6f ' + '%8.6f '*len(pdists)
+    FORMATSTR = '%3d   %8.6f ' + '%8.6f '*(len(pdists)-1) + '| %8.6f'
     for val in vals:
         print FORMATSTR % val
     
@@ -916,7 +1004,7 @@ def demo(numsamples=6, numoutcomes=500):
     def sum(lst): return reduce(lambda x,y:x+y, lst, 0)
     sums = [sum(val) for val in zvals[1:]]
     print '-'*9*(len(pdists)+2)
-    FORMATSTR = 'Total ' + '%8.6f '*(len(pdists)+1)
+    FORMATSTR = 'Total ' + '%8.6f '*(len(pdists)) + '| %8.6f'
     print  FORMATSTR % tuple(sums)
     print '='*9*(len(pdists)+2)
     
@@ -924,9 +1012,10 @@ def demo(numsamples=6, numoutcomes=500):
     print '  fdist1:', str(fdist1)
     print '  fdist2:', str(fdist2)
     print '  fdist3:', str(fdist3)
-
     print
 
 if __name__ == '__main__':
     demo(6, 10)
-    demo(5, 500)
+    demo(5, 5000)
+
+
