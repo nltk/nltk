@@ -370,9 +370,9 @@ class DictionaryProbDist(ProbDistI):
         return self._prob_dict.get(sample, 0)
     def max(self):
         if not hasattr(self, '_max'):
-            max = None
-            for (v, p) in  self._prob_dict.items():
-                if not max or p > max[0]:
+            max = (None, None)
+            for (v, p) in self._prob_dict.items():
+                if p > max[0]:
                     max = (p, v)
             self._max = max[1]
         return self._max
