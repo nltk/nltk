@@ -384,13 +384,14 @@ class WSTokenizer(AbstractTokenizer):
                     leftover = ''
                 else:
                     leftover = substring[position:]
+                    break
 
             # Update the offset
             offset += position
 
         # If the last string had leftover, then return it.
         if leftover:
-            yield offest-len(leftover), offset, leftover
+            yield offset-len(leftover), offset, leftover
             
 class LineTokenizer(AbstractTokenizer):
     """
