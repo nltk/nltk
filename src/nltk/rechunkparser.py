@@ -36,7 +36,7 @@ We don't throw away the word and the location, since these strings are later
 used to build a "chunk structure", a list of lists with the original tokens:
 
 [ [ 'the'/'DT'@[1], 'cat'/'NN'@[2] ], 'sat'/'VBD'@[3], 'on'/'IN'@[4],
-  [ 'the'/'DT'@[5], <mat/NN@[6] ] ]
+  [ 'the'/'DT'@[5], 'mat'/'NN'@[6] ] ]
 
 To make life easier, the AbstractChunkRule class lets programmers
 focus on the tags alone, ignoring the words and locations.  Using this
@@ -232,8 +232,9 @@ class REChunkParser(ChunkParserI):
     @ivar _rulelist: The cascade of chunk rules to be applied.
     """
 
-    def __init__(self, rulelist):
+    def __init__(self, rulelist, debug=0):
         self._rulelist = rulelist
+        self._debug = debug
 
     def _diagnostic(self, rule, str, result):
         print
@@ -245,7 +246,8 @@ class REChunkParser(ChunkParserI):
         action = rule.action()
         pattern = rule.pattern()
         result = sub(pattern, action, str)
-#        self._diagnostic(rule, str, result)
+        if self._debug:
+            self._diagnostic(rule, str, result)
         return result
 
     def parse(self, tagged_sent):
@@ -275,7 +277,7 @@ def _chunk_locs(chunked_sent):
     return locs
 
 # unchunk a chunked sentence
-def _unchunk(chunked_sent):
+def unchunk(chunked_sent):
     unchunked_sent = []
     for token in chunked_sent:
         if _pytype(token) == _pytype([]):
@@ -310,7 +312,7 @@ def demo():
     correct_chunked_sent = ctt.tokenize(correct_sent)
 
     # get an unchunked version of the sentence
-    unchunked_sent = _unchunk(correct_chunked_sent)
+    unchunked_sent = unchunk(correct_chunked_sent)
 
     r1 = AbstractChunkRule(r'(<DT><JJ>*<NN>)', r'{\1}', doc="chunking <DT><JJ>*<NN>")
     cp = REChunkParser([r1])
