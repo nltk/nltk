@@ -226,7 +226,7 @@ def tutorialsublist(reports):
         if report.sequence_id: id = str(report.sequence_id)+': '
         else: id = ''
 
-        s = s + (('      <DT> <B>%s%s</B> (<A HREF="%s/t1.html">html</A>, '+
+        s = s + (('      <DT> <B>%s%s</B> (<A HREF="%s/index.html">html</A>, '+
                   '<A HREF="%s.pdf">pdf</A>, '+
                   '<A HREF="%s/nochunks.html">one-page html</A>)%s\n') %
                  (id, report.name, report.basename,
