@@ -1500,6 +1500,11 @@ static int nltkToken__cmp__(nltkToken *self, nltkToken *other)
     /* Check type(other) */
     if (!nltkToken_Check(other)) return -1;
 
+    /* A token with a location of None is not equal to any other
+     * token, even iftheir types are equal. */
+    if (self->loc == Py_None)
+        return -1;
+
     /* Compare based on location */
     if (PyObject_Cmp(self->loc, other->loc, &result) == -1)
         return -1;
