@@ -53,11 +53,7 @@ types of information about variables:
     value, any variables that it has been merged with will be bound to
     the same value.
 
-@todo: hashing
-@todo: equality testing
 @todo: more test cases
-@todo: finish cleaning up docstrings
-@todo: better parsing
 """
 
 # Open question: should there be a "feature" object?
@@ -342,9 +338,15 @@ class FeatureStructureVariableBinding:
         else:
             self._bindings[variable] = value
 
+    def copy(self):
+        """
+        @return: a copy of this set of bindings.
+        """
+        return FeatureStructureVariableBindings(**self._bindings)
+
     def __repr__(self):
         """
-        Return a string representation of this set of bindings.
+        @return: a string representation of this set of bindings.
         """
         if self._bindings:
             bindings = ['%r=%r' % (k,v) for (k,v) in self._bindings.items()]
@@ -420,15 +422,60 @@ class FeatureStructure:
             raise IndexError('Bad feature path')
 
     def feature_names(self):
+        """
+        @return: A list of the names of the features whose values are
+            defined by this feature structure.
+        @rtype: C{list} of C{string}
+        """
         return self._features.keys()
+
+    def equal_values(self, other, check_reentrance=False):
+        """
+        @return: True if C{self} and C{other} assign the same value to
+        to every feature.  In particular, return true if
+        C{self[M{p}]==other[M{p}]} for every feature path M{p} such
+        that C{self[M{p}]} or C{other[M{p}]} is a base value (i.e.,
+        not a nested feature structure).
+
+        Note that this is a weaker equality test than L{==<__eq__>},
+        which tests for equal identity.
+
+        @param check_reentrance: If true, then any difference in the
+            reentrance relations between C{self} and C{other} will
+            cause C{equal_values} to return false.
+        """
+        if not isinstance(other, FeatureStructure): return 0
+        if check_reentrances: return `self` == `other`
+        if len(self._features) != len(other._features): return 0
+        for (fname, selfval) in self._features.items():
+            otherval = other._features[fname]
+            if isinstance(selfval, FeatureStructure):
+                if not selfval.equal_values(otherval): return 0
+            else:
+                if selfval != otherval: return 0
+        return 1
+
+    def __eq__(self, other):
+        """
+        @return: True if C{self} is the same object as C{other}.  This
+        very strict equality test is necessary because object identity
+        is used to distinguish reentrant objects from non-reentrant
+        ones.
+        """
+        return self is other
+
+    def __hash__(self):
+        return id(self)
 
     def deepcopy(self, memo=None):
         """
         @return: a new copy of this feature structure.
+        @param memo: The memoization dicationary, which should
+            typically be left unspecified.
         """
         if memo is None: memo = {}
-        memocopy = memo.get(id(self))
-        if memocopy is not None: return memocopy
+        memo_copy = memo.get(id(self))
+        if memo_copy is not None: return memo_copy
         features = {}
         for (fname, fval) in self._features.items():
             if isinstance(fval, FeatureStructure):
@@ -473,8 +520,9 @@ class FeatureStructure:
           - preserves all reentrance properties of C{self} and
             C{other}.
 
-        If no such feature structure exists, then unification fails,
-        and C{unify} returns C{None}.
+        If no such feature structure exists (because C{self} and
+        C{other} specify incompatible values for some feature), then
+        unification fails, and C{unify} returns C{None}.
 
         @param bindings: A set of variable bindings to be used and
             updated during unification.  Bound variables are
@@ -536,7 +584,6 @@ class FeatureStructure:
         if trace:
             print '|   '*depth+' /'+`self`
             print '|   '*depth+'|\\'+ `other`
-            print '|   '*(depth+1)
         
         # Look up the "cannonical" copy of other.
         while hasattr(other, '_forward'): other = other._forward
@@ -544,11 +591,22 @@ class FeatureStructure:
         # Set other's forward pointer to point to self; this makes us
         # into the cannonical copy of other.
         other._forward = self
+
+        ## This is only needed to make the trace output easier to read:
+        #if trace:
+        #    for (fname, selfval) in self._features.items():
+        #        if not other._features.has_key(fname):
+        #            print '|   '*(depth+1)
+        #            print '%s|-Unify %s:' % ('|   '*(depth),fname)
+        #            print 
         
         for (fname, otherval) in other._features.items():
+            if trace:
+                trace_otherval = otherval
+                trace_selfval_defined = self._features.has_key(fname)
+                trace_selfval = self._features.get(fname)
             if self._features.has_key(fname):
                 selfval = self._features[fname]
-
                 # If selfval or otherval is a bound variable, then
                 # replace it by the variable's bound value.
                 if isinstance(selfval, FeatureStructureVariable):
@@ -559,16 +617,13 @@ class FeatureStructure:
                 # Case 1: unify 2 feature structures (recursive case)
                 if (isinstance(selfval, FeatureStructure) and
                     isinstance(otherval, FeatureStructure)):
-                    if trace:
-                        print '%s| Unify %s:' % ('|   '*(depth), fname)
                     selfval._destructively_unify(otherval, bindings,
                                                  trace, depth+1)
-                    
+
                 # Case 2: unify 2 variables
                 elif (isinstance(selfval, FeatureStructureVariable) and
-                    isinstance(otherval, FeatureStructureVariable)):
+                      isinstance(otherval, FeatureStructureVariable)):
                     self._features[fname] = selfval.merge(otherval)
-                    #bindings.merge(selfval, otherval)
                 
                 # Case 3: unify a variable with a value
                 elif isinstance(selfval, FeatureStructureVariable):
@@ -578,17 +633,30 @@ class FeatureStructure:
                     
                 # Case 4: unify 2 non-equal values (failure case)
                 elif selfval != otherval:
+                    if trace: print '|   '*depth + 'X <-- FAIL'
                     raise FeatureStructure._UnificationFailureError()
-                
+
+                # Case 5: unify 2 equal values
+                else: pass
+
+                if trace:
+                    print '|   '*(depth+1)
+                    print '%s|-Unify %s:' % ('|   '*(depth), fname)
+                    print '%s|    /%r' % ('|   '*(depth), trace_selfval)
+                    print '%s|   |\\%r' % ('|   '*(depth), trace_otherval)
+                    print '%s|   +-->%r' % ('|   '*(depth),
+                                            self._features[fname])
+                    
             # Case 5: copy from other
             else:
                 self._features[fname] = otherval
 
+                
         if trace:
+            print '|   '*depth+'|'
             print '|   '*depth+'+-->'+`self`
             if len(bindings.bound_variables()) > 0:
                 print '|   '*depth+'    '+`bindings`
-            print '|   '*depth
         
     def _apply_forwards_to_bindings(self, bindings):
         """
@@ -1155,7 +1223,15 @@ def display_unification(fs1, fs2, bindings, indent='  '):
             print repr(bindings).center(linelen)
     return result
 
-def demo():
+def demo(trace=False):
+
+    HELP = '''
+    1-%d: Select the corresponding feature structure
+    q: Quit
+    t: Turn tracing on or off
+    ?: Help
+    '''
+    
     fstruct_strings = [
         '[agr=[number=sing, gender=masc]]',
         '[agr=[gender=masc, person=3rd]]',
@@ -1176,23 +1252,31 @@ def demo():
             lines = str(fstructs[i]).split('\n')
             print '%3d: %s' % (i+1, lines[0])
             for line in lines[1:]: print '     '+line
+        print
 
         selected = [None,None]
-
         for (nth,i) in (('First',0), ('Second',1)):
-            print ('\n%s feature structure (1-%d or q)? '
+            print ('%s feature structure (1-%d,q,t,?): '
                    % (nth, len(fstructs))),
-            try:
-                input = sys.stdin.readline().strip()
-                if input in ('q', 'Q', 'x', 'X', ''): return
-                num = int(input)-1
-                selected[i] = fstructs[num]
-            except:
-                print 'Bad sentence number'
-                continue
+            while selected[i] is None:
+                try:
+                    input = sys.stdin.readline().strip()
+                    if input in ('q', 'Q', 'x', 'X', ''): return
+                    if input in ('t', 'T'):
+                        trace = not trace; continue
+                    if input in ('h', 'H', '?'):
+                        print HELP % len(fstructs); continue
+                    num = int(input)-1
+                    selected[i] = fstructs[num]
+                    print
+                except:
+                    print 'Bad sentence number'
+                    continue
 
-        print
-        result = display_unification(selected[0], selected[1], bindings)
+        if trace:
+            result = selected[0].unify(selected[1], bindings, trace=1)
+        else:
+            result = display_unification(selected[0], selected[1], bindings)
         if result is not None:
             for fstruct in fstructs:
                 if `result` == `fstruct`: break
@@ -1203,4 +1287,3 @@ def demo():
 if __name__ == '__main__':
     #test(verbosity=2)
     demo()
-
