@@ -163,6 +163,8 @@ __all__ = [
     'ChunkString',
     'ChunkScore',
     'ChunkedTaggedTokenizer',
+    'unchunk',
+    'tag_pattern2re_pattern',
     ]
     
 ##//////////////////////////////////////////////////////
