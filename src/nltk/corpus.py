@@ -30,7 +30,7 @@
 #     (eg standoff annotation). 
 
 """
-Access to NLTK's standard distribution of corpora.  Each of corpus is
+Access to NLTK's standard distribution of corpora.  Each corpus is
 encoded as an instance of the C{Corpus} class.  For information about
 using these corpora, see the reference documentation for L{CorpusI}.
 The following corpora are currently defined:
@@ -391,7 +391,7 @@ class SimpleCorpus(CorpusI):
             name of a group; and C{M{regexp}} is a regular expression
             over paths that defines the set of files that should be
             listed as entities for that group.  The paths that these
-            regular expressionsd are tested against are all relative
+            regular expressions are tested against are all relative
             to the corpus's root directory.  Use the forward-slash
             character (C{'/'} to delimit subdirectories;
             C{SimpleCorpus} will automatically convert this to the
@@ -712,10 +712,11 @@ gutenberg = SimpleCorpus(
 roget = RogetCorpus('roget', 'roget15a', 'roget15a.txt')
 
 ###################################################
-## Wordlist corpus
+## Words corpus (just English at this point)
 
-wordlist = SimpleCorpus(
-    'wordlist', 'wordlist/', r'words') #, description_file='README')
+words = SimpleCorpus(
+    'words', 'words/', r'words') #, description_file='README')
+
 
 ###################################################
 ## Treebank (not distributed with NLTK)
