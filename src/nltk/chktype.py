@@ -227,8 +227,14 @@ def chktype(name, n, arg, types):
     errstr = "\n  Argument " + `n` + " to " + name + "() must " +\
              "have type: "
     typestr = _typemsg(types)
-    if len(typestr) + len(errstr) <= 75:
-        raise TypeError(errstr+typestr)
+    if type(arg) == _InstanceType:
+        typestr += ' (not %s)' % arg.__class__.__name__
     else:
-        raise TypeError(errstr+'\n      '+typestr)
+        typestr += ' (not %s)' % type(arg).__name__
+    if len(typestr) + len(errstr) <= 75:
+        errstr = errstr+typestr
+        raise TypeError(errstr)
+    else:
+        errstr = errstr+'\n      '+typestr
+        raise TypeError(errstr)
 
