@@ -7,6 +7,9 @@
 #
 # $Id$
 
+# To do:
+#    - Add more mutation methods.
+
 from chktype import chktype as _chktype
 from chktype import chkclass as _chkclass
 
@@ -52,6 +55,15 @@ class Set:
         self._dict = {}
         for elt in lst:
             self._dict[elt] = 1
+
+    def elements(self):
+        """
+        @return: a list of the elements contained in this Set.  The
+            elements will be listed in arbitrary order, with each
+            element appearing exactly once.
+        @rtype: C{list}
+        """
+        return self._dict.keys()
 
     def insert(self, elt):
         """
@@ -166,7 +178,7 @@ class Set:
         """
         return self.union(other)
 
-    def __minus__(self, other):
+    def __sub__(self, other):
         """
         Return the difference between this Set and another Set.
         Formally, construct and return a new Set containing an element
@@ -224,10 +236,6 @@ class Set:
         to the copy's elements M{will} be reflected in the
         original, and vice versa.
 
-        Currently, Sets are immutable, so this method has little use.
-        However, the Set class may eventually be extended to make Sets 
-        mutable.
-        
         @return: A copy of this set.
         @rtype: Set.
         """
@@ -299,15 +307,16 @@ class Set:
         # We have to make a copy of the list.
         return self._dict.keys()
 
-    def __hash__(self):
-        """
-        Return the hash value for this Set.  If two Sets are equal,
-        they are guaranteed to have the same hash value.  However, two 
-        Sets may have the same hash value and still not be equal.
-
-        @raise TypeError: if some element of the set is not a hashable
-               type. 
-        @return: The hash value for this Set.
-        @rtype: int
-        """
-        return hash(self._dict)
+#     ## IS THIS A GOOD THING!?!??!?
+#     def __hash__(self):
+#         """
+#         Return the hash value for this Set.  If two Sets are equal,
+#         they are guaranteed to have the same hash value.  However, two 
+#         Sets may have the same hash value and still not be equal.
+#        
+#         @raise TypeError: if some element of the set is not a hashable
+#         type. 
+#         @return: The hash value for this Set.
+#         @rtype: int
+#         """
+#         return hash(tuple(self._dict.keys()))
