@@ -168,7 +168,8 @@ class Corpus:
             if os.path.isfile(p):
                 self._filenames.append(f)
             elif os.path.isdir(p):
-                self._subcorpora.append(Corpus(f, p, descr))
+                tok = self._default_tokenizer
+                self._subcorpora.append(Corpus(f, p, descr, tok))
 
     #////////////////////////////////////////////////////////////
     #// Subcorpus access function
@@ -295,7 +296,7 @@ from nltk.tree import TreebankTokenizer
 
 twenty_newsgroups = Corpus('20 Newsgroups', '20_newsgroups')
 treebank = Corpus('Treebank', 'treebank',
-                  default_tokenizer=TreebankTokenizer)
+                  default_tokenizer=TreebankTokenizer())
 wordlist = Corpus('Wordlist', 'wordlist')
 reuters = Corpus('Reuters-21578', 'reuters-21578')
 
