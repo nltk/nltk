@@ -571,6 +571,7 @@ class SimpleCorpusReader(CorpusReaderI):
         return os.path.join(self._rootdir, item)
 
     def open(self, item):
+        self._initialize()
         return open(self.path(item))
 
     def read(self, item):
@@ -710,12 +711,15 @@ class RogetCorpusReader(CorpusReaderI):
         raise NotImplementedError, 'roget does not implement open()'
 
     def read(self, item):
+        self._initialize()
         return self._items[item]
 
     def readlines(self, item):
+        self._initialize()
         return self._items[item].splitlines()
 
     def tokenize(self, item, tokenizer=WSTokenizer()):
+        self._initialize()
         source = '%s/%s' % (self._name, item)
         return tokenizer.tokenize(self.read(item), source=source)
 
