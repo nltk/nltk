@@ -73,7 +73,8 @@ class Function(PolyLine):
 class Line(PolyLine):
     def __init__(self, points, **attr):
         #self.name = name
-        PolyPoints.__init__(self, points, attr)
+        points = [(float(x), float(y)) for (x,y) in points]
+        PolyLine.__init__(self, points, **attr)
     _attributes = {'color': 'black',
                    'width': 1,
                    'stipple': None}
@@ -81,6 +82,10 @@ class Line(PolyLine):
         return copy.deepcopy(self)
 
 class Marker(PolyMarker):
+
+    def __init__(self, points, **attr):
+        points = [(float(x), float(y)) for (x,y) in points]
+        PolyMarker.__init__(self, points, **attr)
 
     def my_copy(self):
         return copy.deepcopy(self)
