@@ -20,6 +20,9 @@ C{StemmerI} defines an interface to which all stemmers must
 adhere. This interface provides simple methods for stemming words.
 """
 
+from nltk.token import Token
+from nltk_contrib.pywordnet.tools import morphy
+
 ##//////////////////////////////////////////////////////
 ##  Stemmer Interface
 ##//////////////////////////////////////////////////////
@@ -57,3 +60,34 @@ class StemmerI:
 #        @rtype: any
 #        """
 #        raise AssertionError, 'StemmerI is an abstract interface'
+
+##//////////////////////////////////////////////////////
+##  WordNet Stemmer
+##//////////////////////////////////////////////////////
+
+class WordNetStemmer(StemmerI):
+    """
+    A class for stemming strings using the pywordnet package. The C{morphy}
+    function is used which reduces the given word form into a word which
+    exists in the WordNet database, if possible. Note that morphological
+    affixes often remain after stemming, as WordNet contains quite a number of
+    entries for inflectional forms. This stemmer is not as powerful as the one
+    contained in the C{wnb} binary distributed with WordNet 1.7 - there are
+    plans to improve this in the near future.
+    """
+
+    def stem(self, token):
+        # inherit docs from StemmerI
+        stemmed = morphy(token.type().lower())
+        if stemmed:
+            # restore the case
+            new_string = ''
+            for index in range(min(len(token.type()), len(stemmed))):
+                if token.type()[index].isupper():
+                    new_string += stemmed[index].upper()
+                else:
+                    new_string += stemmed[index]
+            return Token(new_string, token.loc())
+        else:
+            return token
+
