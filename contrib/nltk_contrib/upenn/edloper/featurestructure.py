@@ -133,6 +133,13 @@ class FeatureStructureVariableBinding:
     monotonic: when unifying a bound variable with another value, the
     variable's value might be replaced by an equal value, to preserve
     reentrancy.
+
+    @group Variable Binding: bind, bound_variables, lookup, is_bound
+    @group Variable Merging: merge, merged_variables, synonyms
+    @param _bindings: A dictionary mapping from bound variables
+        to their values.
+    @param _synonyms: A dictionary mapping from unbound variables
+        to other variables that they have been merged with.
     """
     def __init__(self, **initial_bindings):
         """
@@ -146,7 +153,7 @@ class FeatureStructureVariableBinding:
             the two variables will be merged.
         """
         self._bindings = {}
-        self._merges = {}
+        self._synonyms = {}
 
         # Look for variables to merge.
         for (src, dst) in initial_bindings.items():
@@ -165,7 +172,7 @@ class FeatureStructureVariableBinding:
             to other values or merged with other variables.
         @rtype: C{list} of L{FeatureStructureVariable}
         """
-        return self._bindings.keys() + self._merges.keys()
+        return self._bindings.keys() + self._synonyms.keys()
 
     def bound_variables(self):
         """
@@ -181,7 +188,17 @@ class FeatureStructureVariableBinding:
             with other variables.
         @rtype: C{list} of L{FeatureStructureVariable}
         """
-        return self._merges.keys()
+        return self._synonyms.keys()
+
+    def synonyms(self, variable):
+        """
+        @return: A list of the variables that C{variable} has been
+        merged with.
+        """
+        assert _chktype(1, variable, FeatureStructureVariable)
+        if self._bindings.has_key(variable):
+            raise ValueError('Only unbound variables can have synonyms')
+        return self._synonyms.get(variable, {variable:1}).keys()
 
     def is_bound(self, variable):
         """
@@ -208,10 +225,12 @@ class FeatureStructureVariableBinding:
         assert _chktype(1, var2, FeatureStructureVariable)
         if self._bindings.has_key(var1) or self._bindings.has_key(var2):
             raise ValueError('Only unbound variables may be merged')
-        varlist = (self._merges.get(var1,[var1]) +
-                   self._merges.get(var2,[var2]))
-        self._merges[var1] = varlist
-        self._merges[var2] = varlist
+        # If var1 isn't listed in self._synonyms, add it:
+        self._synonyms.setdefault(var1, {var1:1})
+        # Combine the merge lists for var1 and var2 into var1.
+        self._synonyms[var1].update(self._synonyms.get(var2, {var2:1}))
+        # Copy the new merge list into var2.
+        self._synonyms[var2] = self._synonyms[var1]
 
     def bind(self, variable, value):
         """
@@ -227,7 +246,7 @@ class FeatureStructureVariableBinding:
                              'variables; use merge() instead.')
         if self._bindings.has_key(variable):
             raise ValueError('Bound variables may not be rebound')
-        for variable in self._merges.get(variable,[variable]):
+        for variable in self._synonyms.get(variable,{variable:1}).keys():
             self._bindings[variable] = value
 
     def _rebind(self, variable, new_value):
@@ -251,11 +270,9 @@ class FeatureStructureVariableBinding:
 
     def __cmp__(self, other):
         if not isinstance(other, FeatureStructureVariable): return -1
-        return cmp((self._bindings, self._merges),
-                   (other._bindings, other._merges))
+        return cmp((self._bindings, self._synonyms),
+                   (other._bindings, other._synonyms))
         
-
-# This corresponds to "Category" in Rob Speer's code.
 class FeatureStructure:
     """
     A structured set of features.  These features are represented as a
@@ -334,73 +351,50 @@ class FeatureStructure:
     #      them.
     #   2. Make a pass through the unified structure to make sure
     #      that we preserved reentrancy.
-    def unify(self, other):
-        try:
-            # Make copies of self & other (since unification is
-            # destructive). 
-            selfcopy = copy.deepcopy(self)
-            othercopy = copy.deepcopy(other)
-            
-            # Create an empty set of variable bindings.
+    def unify(self, other, bindings=None):
+        """
+        @param bindings: Modified during unification.
+        """
+        # If no bindings initial were specified, then everything
+        # starts out unbound.
+        apply_bindings = (bindings is None)
+        if bindings is None:
             bindings = FeatureStructureVariableBinding()
 
-            # Do the unification.
-            selfcopy._destructively_unify(othercopy, bindings)
-            selfcopy._cleanup_forwards({})
-
-            # Clean up any forwards in the bindings.
-            selfcopy._cleanup_binding_forwards(bindings)
-
-            # Apply the variable bindings.
-            selfcopy._apply_bindings(bindings, {})
-
-            # Return the result.
-            return selfcopy
+        # Make copies of self & other (since the unification algorithm
+        # is destructive).
+        selfcopy = copy.deepcopy(self)
+        othercopy = copy.deepcopy(other)
+        
+        # Do the unification.
+        try: selfcopy._destructively_unify(othercopy, bindings)
         except FeatureStructure._UnificationFailureError: return None
 
-    def unify_with_bindings(self, other, initial_bindings=None):
-        """
-        Unify self with other, and return both the unified structure
-        and the variable bindings necessary for unification.
+        # Clean up any forwards.
+        selfcopy._cleanup_forwards({})
+        selfcopy._cleanup_binding_forwards(bindings)
+        
+        # Apply the variable bindings.
+        if apply_bindings:
+            selfcopy._apply_and_normalize_bindings(bindings, {})
+        
+        # Return the result.
+        return selfcopy
 
-        @rtype: C{(L{FeatureStructure}, L{FeatureStructureVariableBinding})}
-        """
-        # Set up the initial bindings.
-        if initial_bindings is not None:
-            bindings = initial_bindings
-        else:
-            bindings = FeatureStructureVariableBinding()
-
-        try:
-            # Make copies of self & other (since unification is
-            # destructive).
-            selfcopy = copy.deepcopy(self)
-            othercopy = copy.deepcopy(other)
-
-            # Do the unification.
-            selfcopy._destructively_unify(othercopy, bindings)
-            selfcopy._cleanup_forwards({})
-
-            # Clean up any forwards in the bindings.
-            selfcopy._cleanup_binding_forwards(bindings)
-
-            # Return the unified value and [XX] not the bindings
-            return selfcopy
-        except FeatureStructure._UnificationFailureError:
-            return None
-            
-
-    def _apply_bindings(self, bindings, visited):
+    def _apply_and_normalize_bindings(self, bindings, visited):
         # Only visit each node once:
         if visited.has_key(id(self)): return
         visited[id(self)] = 1
     
         for (fname, fval) in self._features.items():
-            if (isinstance(fval, FeatureStructureVariable) and
-                bindings.is_bound(fval)):
-                self._features[fname] = bindings.lookup(fval)
-            if isinstance(fval, FeatureStructure):
-                fval._apply_bindings(bindings, visited)
+            if isinstance(fval, FeatureStructureVariable):
+                if bindings.is_bound(fval):
+                    self._features[fname] = bindings.lookup(fval)
+                else:
+                    pass
+                    #self._features[fname] = bindings.normalize(fval)
+            elif isinstance(fval, FeatureStructure):
+                fval._apply_and_normalize_bindings(bindings, visited)
 
     class _UnificationFailureError(Exception):
         """
