@@ -4,8 +4,8 @@ from mit.rspeer.parser.featurechart import *
 from nltk.tokenizer import WhitespaceTokenizer
 
 NAME = '6.863 Earley Parser'
-DATE = 'June 3, 2004'
-__version__ = '2.0pre'
+DATE = 'July 13, 2004'
+__version__ = '2.0'
 __license__ = 'GNU General Public License 2'
 NLTK_VERSION = 1.4
 
@@ -23,7 +23,13 @@ def text_parse(grammar, sentence, trace=2, drawtrees=False, latex=False):
 	sent = Token(TEXT=sentence)
 	WhitespaceTokenizer().tokenize(sent)
 	parser.parse_n(sent)
-	for tree in sent['TREES']: print tree
+	if drawtrees:
+		from treeview import TreeView
+		TreeView(sent['TREES'])
+	else:
+		for tree in sent['TREES']:
+			if latex: print tree.latex_qtree()
+			else: print tree
 
 def main():
 	import sys

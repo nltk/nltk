@@ -1,6 +1,10 @@
 from nltk.parser.chart import *
 from mit.rspeer.feature import *
 
+def apply(obj, vars):
+	if isinstance(obj, Category): return obj.apply_bindings(vars)
+	else: return obj
+
 class FeatureTreeEdge(TreeEdge):
 	def __init__(self, span, lhs, rhs, dot=0, vars=None):
 		TreeEdge.__init__(self, span, lhs, rhs, dot)
@@ -26,7 +30,7 @@ class FeatureTreeEdge(TreeEdge):
 	def orig_lhs(self):
 		return TreeEdge.lhs(self)
 	def rhs(self):
-		return tuple([x.apply_bindings(self._vars) for x in TreeEdge.rhs(self)])
+		return tuple([apply(x, self._vars) for x in TreeEdge.rhs(self)])
 	def orig_rhs(self):
 		return TreeEdge.rhs(self)
 	def __str__(self):
@@ -34,19 +38,20 @@ class FeatureTreeEdge(TreeEdge):
 
 		for i in range(len(self._rhs)):
 			if i == self._dot: str += ' *'
-			str += ' %r' % (self._rhs[i],)
+			str += ' %r' % (self.rhs()[i],)
 		if len(self._rhs) == self._dot: str += ' *'
 		return str
 	def __cmp__(self, other):
 		if not isinstance(other, FeatureTreeEdge): return -1
-		return cmp((self._span, self.lhs(), self._rhs, self._dot),
-				   (other._span, other.lhs(), other._rhs, other._dot))
+		return cmp((self._span, self.lhs(), self.rhs(), self._dot),
+				   (other._span, other.lhs(), other.rhs(), other._dot))
+	def __hash__(self):
+		return hash((self._span, self.lhs(), self.rhs(), self._dot))
 
 class FeatureFundamentalRule(FundamentalRule):
 	NUM_EDGES=2
 	def apply_iter(self, chart, grammar, left_edge, right_edge):
 		# Make sure the rule is applicable.
-
 		if not (left_edge.end() == right_edge.start() and
 				left_edge.is_incomplete() and right_edge.is_complete() and
 				isinstance(left_edge, FeatureTreeEdge) and
@@ -54,14 +59,14 @@ class FeatureFundamentalRule(FundamentalRule):
 			   ):
 			return
 		bindings = left_edge.vars()
-		unify = left_edge.next().unify(right_edge.lhs(), bindings)
+		unify = left_edge.next().unify(right_edge.lhs().remove_unbound_vars(), bindings)
 		if unify is None: return
 
 		# Construct the new edge.
 		new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
 							lhs=left_edge.lhs(), rhs=left_edge.rhs(),
 							dot=left_edge.dot()+1, vars=bindings)
-
+		
 		# Add it to the chart, with appropraite child pointers.
 		changed_chart = False
 		for cpl1 in chart.child_pointer_lists(left_edge):
@@ -146,11 +151,12 @@ class FeatureEarleyChartParser(EarleyChartParser):
 			default property name to a new property name.
 		"""
 		self._grammar = grammar
-		self._lexicon = lexicon
-		## Build a case-insensitive lexicon.
-		#self._lexicon = {}
-		#for (name, value) in lexicon.items():
-		#	self._lexicon[name.upper()] = value
+		#self._lexicon = lexicon
+		
+		# Build a case-insensitive lexicon.
+		self._lexicon = {}
+		for (name, value) in lexicon.items():
+			self._lexicon[name.upper()] = value
 		self._trace = trace
 		AbstractParser.__init__(self, **property_names)
 
@@ -181,7 +187,7 @@ class FeatureEarleyChartParser(EarleyChartParser):
 			# Scanner thing:
 			if end > 0 and end-1 < chart.num_leaves():
 				leaf = chart.leaf(end-1)
-				for pos in self._lexicon.get(leaf, []):
+				for pos in self._lexicon.get(leaf.upper(), []):
 					newedge = FeatureTreeEdge((end-1, end), pos, [leaf], 1,
 					FeatureBindings())
 					leafedge = LeafEdge(leaf, end-1)
@@ -249,7 +255,7 @@ def demo():
 	earley_grammar = CFG(S, grammatical_productions)
 	earley_lexicon = {}
 	for prod in lexical_productions:
-		earley_lexicon.setdefault(prod.rhs()[0], []).append(prod.lhs())
+		earley_lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
 
 	sent = Token(TEXT='I saw John with a dog with my cookie')
 	print "Sentence:\n", sent
