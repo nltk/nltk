@@ -15,6 +15,7 @@
 
 \title{CIS-530 Computational Linguistics}
 \def\num#1{\author{Assignment #1}}
+\def\other#1{\author{#1}}
 \def\due#1{\date{Due #1}}
 
 \endinput
