@@ -114,24 +114,26 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
     model that is emperically consistant and maximizes entropy.
 
     The feature weights can be informally thought of as the
-    "importance" of a feature.  If a weight is zero, then the
+    "importance" of a feature.  If a weight is one, then the
     corresponding feature has no effect on classification decisions.
-    If the weight is positive, then the feature will increase the
-    probability estimates for labels that cause the feature to fire.
-    If the weight is negative, then the feature will decrease the 
-    probability estimates for labels that cause the feature to fire.
+    If the weight is greater that one, then the feature will increase
+    the probability estimates for labels that cause the feature to
+    fire.  If the weight is less than one, then the feature will
+    decrease the probability estimates for labels that cause the
+    feature to fire.
 
     This model is sometimes written using the following equivalant
     formulation::
 
-        P(l|t) = 1/Z(t) * (e ** (l[0]*fd[0](LabeledText(t,l)) +
-                                 l[1]*fd[1](LabeledText(t,l)) +
+        P(l|t) = 1/Z(t) * (e ** (lambda[0]*fd[0](LabeledText(t,l)) +
+                                 lambda[1]*fd[1](LabeledText(t,l)) +
                                  ... +
-                                 l[n]*fd[n](LabeledText(t,l))))
+                                 lambda[n]*fd[n](LabeledText(t,l))))
 
-    where M{l[i] = log(w[i])}.  We use the formulation with weights
-    M{w[i]} instead of the M{l[i]} formulation because there is no
-    obvious value of M{l[i]} corresponding to M{w[i]=0}.
+    where M{lambda[i] = log(w[i])}.  We use the formulation with
+    weights M{w[i]} instead of the M{lambda[i]} formulation because
+    there is no obvious value of M{lambda[i]} corresponding to
+    M{w[i]=0}.
     """
     def __init__(self, fdlist, labels, weights, **kwargs):
         """
@@ -157,10 +159,9 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
         # Make sure the weights are an array of floats.
         if type(weights) != Numeric.ArrayType or weights.typecode() != 'd':
             weights = array(weights)
-
-        self._fdlist = fdlist
-        self._labels = labels
         self._weights = weights
+        
+        AbstractFeatureClassifier.__init__(self, fdlist, labels)
 
     def fvlist_likelihood(self, fvlist):
         # Inherit docs from AbstractFeatureClassifier
