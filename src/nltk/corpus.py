@@ -1248,7 +1248,7 @@ stopwords = SimpleCorpusReader(
 
 chunking = SimpleCorpusReader(
     'chunking', 'chunking/', r'.*\.txt', None, description_file='README',
-    default_tokenizer=RegexpTokenizer(r'\n\s*?\n', negative=1, unit='p'))
+    default_tokenizer=RegexpTokenizer(r'\n\s*?\n', negative=1))
     # ideally use parser.chunk.ConllChunkedTokenizer() on each paragraph:
     # paras = chunking.tokenize('test.txt')
     # cct = ConllChunkedTokenizer(['NP'])
@@ -1271,7 +1271,7 @@ treebank = TreebankCorpusReader('treebank', 'treebank/',
 #
 #semcor = SimpleCorpusReader(
 #    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
-#    default_tokenizer = SemcorTokenizer(unit='word'))
+#    default_tokenizer = SemcorTokenizer())
 #    
 ####################################################
 ### Senseval corpus
@@ -1359,7 +1359,7 @@ def _test_treebank():
         try:
             tok = treebank.xtokenize(item)
             tokrepr = _xtokenize_repr(tok.exclude('loc'), 70,17,2)
-            print 'tokenize(%s)   => %s' % (name, tokrepr)
+            print 'xtokenize(%s)  => %s' % (name, tokrepr)
         except NotImplementedError:
             tok = treebank.tokenize(item)
             tokrepr = _truncate_repr(tok.exclude('loc'), 70,17,2)
