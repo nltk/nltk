@@ -31,6 +31,12 @@ class Rule:
     @ivar _rhs: The right-hand side of the rule, a list of terminals
           and non-terminals.
     """
+    # [edloper 8/14/01] Do we want to require that lhs is a string?
+    # Should rhs be a tuple of strings, or what?  At the very least,
+    # we should require that terminals and nonterminals be immutable
+    # values.  But it might make sense to have generic Types as
+    # terminals, not just strings.  Also, how do we distinguish
+    # terminals from non-terminals, esp if the terminals *are* strings?
     def __init__(self, lhs, rhs):
         """
         Construct a new C{Rule}.
@@ -44,6 +50,10 @@ class Rule:
         self._lhs = lhs
         self._rhs = rhs
 
+    # [edloper 8/14/01] It might be intuitive to add a rhs function
+    # (for symmetry).  Also, note that calling self[:] makes an
+    # unnecessary copy, where a rhs() method wouldn't..  But that's
+    # just a minor efficiency thing.
     def lhs(self):
         """
         @return: the left-hand side of the C{Rule}.
@@ -78,6 +88,8 @@ class Rule:
         @return: a pretty-printed version of the C{Rule}.
         @rtype: C{string}
         """
+        # [edloper 8/14/01] Are we assuming that terminals and
+        # nonterminals are all strings?
         return self._lhs + ' -> ' + join(self._rhs)
 
     def __repr__(self):
@@ -112,6 +124,8 @@ class Rule:
         """
         return hash((self._lhs, self._rhs))
 
+    # [edloper 8/14/01] This is a circular reference, but I guess it's
+    # ok.  :)  Otherwise, you could define an external function..
     def dotted(self):
         """
         @return: A C{DottedRule} corresponding to the C{Rule}, with
@@ -136,7 +150,13 @@ class DottedRule(Rule):
     @type _pos: C{int}
     @ivar _pos: The position of the dot.
     """
-
+    # [edloper 8/14/01] Note that DottedRules are mutable.  Thus,
+    # avoid using them as keys.  If we implement Sets with
+    # dictionaries, avoid putting them in Sets, too.  (The semantics
+    # of putting mutable objects in a Set is shady at best, anyway).
+    # Alternatively, incr could be redefined to return a new dotted
+    # rule, and dotted rules could be declared immutable.  You seem to
+    # always do a copy and then an incr, anyway.
     def __init__(self, lhs, rhs, pos=0):
         """
         Construct a new C{DottedRule}.
@@ -166,6 +186,8 @@ class DottedRule(Rule):
         """
         return self[self._pos]
 
+    # [edloper 8/14/01] Would "shift" or some other name be more
+    # intuitive?
     def incr(self):
         """
         Move the dot one position to the right.
@@ -177,6 +199,8 @@ class DottedRule(Rule):
         else:
             raise IndexError('Attempt to move dot position past end of rule')
 
+    # [edloper 8/14/01] This method could also use a more intuitive
+    # name. 
     def final(self):
         """
         @return: true if the dot is in the final position on the
@@ -192,6 +216,8 @@ class DottedRule(Rule):
         """
         return DottedRule(self._lhs, self._rhs, self._pos)
 
+    # [edloper 8/14/01] Again, are we assuming that all
+    # terminals/nonterminals are strings?
     def pp(self):
         """
         @return: a pretty-printed version of the C{DottedRule}.
@@ -222,6 +248,10 @@ class DottedRule(Rule):
         return (Rule.__eq__(self, other) and
                 self._pos == other._pos)
 
+    # [edloper 8/14/01] Mutable data structures shouldn't have hash
+    # functions; it's misleading.  If you don't define it, it won't
+    # let you put them in dictionaries etc (which is a good thing for
+    # mutable datatypes).
     def __hash__(self):
         """
         @return: A hash value for the C{DottedRule}.
