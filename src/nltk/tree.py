@@ -166,6 +166,15 @@ class Tree:
         """
         return self._node
 
+    def children(self):
+        """
+        Return this C{Tree}'s children.
+
+        @return: this C{Tree}'s children.
+        @rtype: C{tuple}
+        """
+        return self._children
+
     def __getitem__(self, index):
         """
         @return: the specified child or children.
@@ -445,6 +454,15 @@ class TreeToken(token.Token):
         @rtype: (nodetype)
         """
         return self._node
+
+    def children(self):
+        """
+        Return this C{TreeToken}'s children.
+
+        @return: this C{TreeToken}'s children.
+        @rtype: C{tuple}
+        """
+        return self._children
 
     def __getitem__(self, index):
         """
