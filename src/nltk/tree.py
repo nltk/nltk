@@ -419,9 +419,10 @@ class TreebankTokenizer(TokenizerI):
     def __init__(self, **property_names):
         self._property_names = property_names
 
-    def _subtoken_generator(self, token, addlocs):
+    def _subtoken_generator(self, token, addlocs, addcontexts):
         TEXT = self._property_names.get('TEXT', 'TEXT')
         LOC = self._property_names.get('LOC', 'LOC')
+        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
 
         # Extract the token's text.
         text = token[TEXT]
@@ -434,17 +435,23 @@ class TreebankTokenizer(TokenizerI):
 
         # Parse trees until we reach the end of the string
         trees = []
+        i = 0
         while pos < len(text):
             tree, pos = TreeToken._parse(text, addlocs, source, pos)
+            if addcontexts:
+                context = SubtokenContextPointer(token, SUBTOKENS, i)
+                tree[CONTEXT] = context
             yield tree
+            i += 1
 
-    def xtokenize(self, token, addlocs=False):
+    def xtokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        token[SUBTOKENS] = self._subtoken_generator(token, addlocs)
+        token[SUBTOKENS] = self._subtoken_generator(token, addlocs,
+                                                    addcontexts)
         
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        treeiter = self._subtoken_generator(token, addlocs)
+        treeiter = self._subtoken_generator(token, addlocs, addcontexts)
         token[SUBTOKENS] = list(treeiter)
 
     def raw_tokenize(self, text):

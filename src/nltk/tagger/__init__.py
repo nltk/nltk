@@ -60,14 +60,14 @@ class TaggedTokenizer(AbstractTokenizer):
         self._wstokenizer = WSTokenizer(**property_names)
         AbstractTokenizer.__init__(self, **property_names)
     
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         TAG = self._property_names.get('TAG', 'TAG')
 
         # First, use WSTokenizer to divide on whitespace.
-        self._wstokenizer.tokenize(token, addlocs)
+        self._wstokenizer.tokenize(token, addlocs, addcontexts)
 
         # Then, split each subtoken's text into a text and a tag.
         for subtok in token[SUBTOKENS]:
