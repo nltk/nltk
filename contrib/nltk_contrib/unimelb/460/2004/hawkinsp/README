@@ -1,0 +1,107 @@
+433-460 Human Language Technology Project
+Author: Peter Hawkins, University of Melbourne
+
+A simple isolated-word speech recogniser based on Hidden Markov Models
+----------------------------------------------------------------------
+
+This code is actually in three different languages --- mainly Python, with
+a little C++ and Java as well. The C++ is used both for a Python interface
+to code that extracts MFCC coefficients from a waveform file, as well as
+for an optimized implementation of a vector quantizer. The Java code is
+used to learn HMMs to recognise a set of training data, the details of
+which are then emitted as Python code. Most of the actual guts of the project
+are in Python.
+
+To build the C++ and Java code, simply run 'make' in the top-level directory
+of the project. You may need to change the location of the Python header files
+in the Makefile.
+You may also need to add a -I directive to the CXXFLAGS to specify the location
+of the python numeric extension header files (arrayobject.h).
+
+Inside the project there are several executable files you might wish to run:
+
+extract_mfcc.py:
+    Given a list of .WAV files with a particular format (11025hz 16-bit Mono),
+    produce MFCC coefficients for each of the files to standard output. This is
+    simply a Python wrapper around the MFCC extraction code in SpeechProc.cpp
+    which is MFCC extraction code taken off the internet.
+
+vecquant/vecquant.py:
+    Given a set of MFCC coefficients from a set of speech files, perform a
+    vector quantization procedure to produce a codebook of 'representative'
+    vectors. This allows us to use a discrete HMMs to model our speech.
+    Vector quantization is an optional step -- the code here also supports
+    continuous probability distributions through the use of multi-variate
+    Gaussian distribution HMMs.
+    There are two implementations of this code - vecquant.py is a (slow) Python
+    implementation, and vecquant.cpp is a substantially faster C++
+    implementation.
+
+make_vecs.sh:
+    Given a codebook produced by vecquant and a set of training .WAV files,
+    convert the .WAV files into lists of quantized MFCC vectors. Then, 
+    using the Java code in java/QuantizedLearner.java, use this training
+    data to learn discrete-output HMMs to recognise the training data.
+    The parameters of the resulting HMMs are output into a file
+    qXX_data.py, where XX is the codebook size.
+
+recog.py:
+    Assuming HMM parameters have already been determined using the training 
+    procedure above, attempt to classify a list of .WAV files using the HMMs.
+    The result is printed to standard output.
+
+Examples of usage:
+
+The results of training continuous density HMMs and codebook size 32 discrete
+HMMs are included in the archive, so you can skip straight to section about
+using the recogniser below. Several processed .WAV files from the test section
+of the corpus are also included for this purpose.
+
+Suppose that the ti20 part of the TI 46-Word isolated word speech recognition
+corpus is in the directory ti20/
+
+
+Firstly, each data file needs to be downsampled to 11025hz from 12500hz and
+the NIST SPHERE encoding removed. This can be performed using the 'sox' tool
+in UNIX (assuming an appropriate directory structure exists under resampled/):
+
+    for I in `find ti20/ -name *.wav`; do
+        sox $I -r 11025 resampled/$I resample -q
+    done
+
+Next, HMMs need to be trained to recognise this data.
+For continuous density HMMS:
+    
+    ./make_continous_hmms.sh
+
+For discrete HMMS, we must first construct a codebook:
+    
+    # Extract MFCC coefficients from every file in the training corpus
+    find resampled/ti20/train -name *.wav | xargs python extract_mfcc.py > mfcc.txt
+
+    # Perform vector quantization, where 32 is the codebook size
+    ./vecquant 32 < mfcc.txt > code32.txt
+
+    # Learn HMMs from the training data and the codebook
+    ./make_quantized_hmms.sh 32
+
+
+Having learnt our HMMs, we can then use our recogniser:
+    
+    Continuous:
+    python recog.py resampled/ti20/test/m1/07m1s7t0.wav
+        ...
+        Input file data/ti20-pwav/test/m1/07m1s7t0.wav is most probably a '07' with log probability -2373.64
+
+    Discrete:
+    python recog.py -q 32 resampled/ti20/test/m1/07m1s7t0.wav
+        ...
+        Input file data/ti20-pwav/test/m1/07m1s7t0.wav is most probably a '07' with log probability -206.28
+
+    
+
+    
+
+
+
+
