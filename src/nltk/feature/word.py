@@ -5,10 +5,9 @@ Feature extractors for tokens that encode single words.
 from nltk.feature import *
 
 class TextFeatureExtractor(FeatureStringFeatureExtractor):
-    def __init__(self, words, count=False, **property_names):
-        StringFeatureExtractor.__init__(self, words, count,
-                                        **property_names)
-
+    """
+    A binary feature for each word text.
+    """
     def extract_feature_strings(self, token):
         TEXT = self.property_name('TEXT')
         return token[TEXT]
@@ -17,10 +16,9 @@ class TextFeatureExtractor(FeatureStringFeatureExtractor):
         return 'Word is %r' % self.fid2string(fid)
 
 class StemFeatureExtractor(FeatureStringFeatureExtractor):
-    def __init__(self, stems, count=False, **property_names):
-        StringFeatureExtractor.__init__(self, stems, count,
-                                        **property_names)
-
+    """
+    A binary feature for each stem.
+    """
     def extract_feature_strings(self, token):
         STEM = self.property_name('STEM')
         return token[STEM]
