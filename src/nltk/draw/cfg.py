@@ -8,43 +8,7 @@
 # $Id$
 
 """
-Visualization tools for CFGs
-
-listbox of productions..
-  - edit in place?
-  - hmm..
-  - color code terminals/nonterminals
-  - draw terminals as C{'foo'} (i.e., with quotes)
-  - click on a rule to edit it.
-
-Can I do this with listbox? might have to use a canvas.. :-/
-
-1. canvas displaying rules; click to select
-2. entry for editing selected production
-3. 'set' button, or some such
-4. (optional) picture of corresponding partial tree
-# +-----------------+------------------+
-# | S  -> NP VP    ^|                  |
-# | NP -> Det N    #|       VP         |
-# |[VP -> V PP    ]:|      / \         |
-# | N  -> 'dog'    v|     V   PP       |
-# +-----------------+                  |
-# |[VP -> V PP][Set]|                  |
-# +-----------------+------------------+
-
-# +-----------------+------------------+
-# | S  -> NP VP    ^|                  |
-# | NP -> Det N    #|       VP         |
-# |[VP -> V PP    ]:|      / \         |
-# | N  -> 'dog'    v|     V   PP       |
-# +-----------------+------------------|
-# |[VP -> V PP]                  [set] |
-# +------------------------------------+
-# |[foo] [save] [etc]                  |
-# +------------------------------------+
-
-
-
+Visualization tools for CFGs.
 
 """
 
