@@ -1,0 +1,312 @@
+\def\bs{$\backslash$}
+
+\documentclass{worksheet}
+\usepackage{url}
+\title{Practical NLP using Python: Worksheet 1}
+\heading{Trevor Cohn \& Steven Bird}{ALTA Summer School 2003}
+
+\begin{document}
+\maketitle
+
+Python and the Natural Language Toolkit (NLTK) are installed on
+the workstations in the UG10 laboratory.  Log in to the guest
+account (username=pcguest, password=ALTss\&w3, logon-to=CSSE).  Start
+IDLE, the Python interpreter, from the Start menu, Programs submenu,
+Python 2.3 submenu.
+
+If you wish to install Python and NLTK on your own machine, you will
+find distributions on the ALTA CD. These may also be downloaded from
+\texttt{http://www.python.org} and
+\texttt{http://nltk.sourceforge.net}.
+
+\section*{Basic Python}
+
+Introductory material on Python is available at
+\url{http://www.python.org/doc/Intros.html}.
+
+The following examples concern lists and strings.  Please try them
+out, and experiment with variations.  You will need to do this from inside IDLE:
+
+\begin{verbatim}
+>>> a = ['colourless', 'green', 'ideas']
+>>> a
+['colourless', 'green', 'ideas']
+>>> len(a)
+3
+>>> a[1]
+'green'
+>>> a[1:]
+['green', 'ideas']
+>>> b = a + ['sleep', 'furiously']
+>>> b
+['colourless', 'green', 'ideas', 'sleep', 'furiously']
+>>> b[-1]
+'furiously'
+>>> b.sort()
+>>> b
+['colourless', 'furiously', 'green', 'ideas', 'sleep']
+>>> b.reverse()
+>>> b
+['sleep', 'ideas', 'green', 'furiously', 'colourless']
+>>> b[2] + b[1]
+'greenideas'
+>>> for w in b:
+...     print w[0]
+... 
+'s'
+'i'
+'g'
+'f'
+'c'
+>>> b[2][1]
+'r'
+>>> b.index('green')
+2
+>>> b[5]
+IndexError: list index out of range
+>>> b[0] * 3
+'sleepsleepsleep'
+>>> c = ' '.join(b)
+>>> c
+'sleep ideas green furiously colourless'
+>>> c.split('r')
+['sleep ideas g', 'een fu', 'iously colou', 'less']
+>>> map(lambda x: len(x), b)
+[5, 5, 5, 9, 10]
+>>> [(x, len(x)) for x in b]
+[('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
+\end{verbatim}
+
+Experiment further with lists and strings until you are comfortable with using them.
+Next we'll take a look at Python ``dictionaries'' (or associative arrays).
+
+\begin{verbatim}
+>>> d = {}
+>>> d['colourless'] = 'adj'
+>>> d['furiously'] = 'adv'
+>>> d['ideas'] = 'n'
+>>> d.keys()
+['colourless', 'furiously', 'ideas']
+>>> d.values()
+['adv', 'adj', 'n']
+>>> d
+{'furiously': 'adv', 'colourless': 'adj', 'ideas': 'n'}
+>>> d.has_key('ideas')
+1
+>>> for w in d.keys():
+...     print "%s [%s]," % (w, d[w]),
+...
+furiously [adv], colourless [adj], ideas [n],
+>>> 
+\end{verbatim}
+
+Finally, try out Python's regular expression module, for substituting and searching within
+strings.
+
+\begin{verbatim}
+>>> import re
+>>> s = "colourless green ideas sleep furiously"
+>>> re.sub('l', 's', s)
+'cosoursess green ideas sseep furioussy'
+>>> re.sub('green', 'red', s)
+'colourless red ideas sleep furiously'
+>>> re.findall('[^aeiou][aeiou]', s)
+['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
+>>> re.findall('([^aeiou])([aeiou])', s)
+[('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'),
+('l', 'e'), ('f', 'u'), ('r', 'i')]
+>>> re.findall('(.).\bs 1', s)
+['o', 's']
+>>> 
+\end{verbatim}
+
+Please see the NLTK regular expression tutorial, or the
+Python documentation, for further information on regular expressions:\\
+\url{http://nltk.sf.net/tutorial/regexps/}\\
+\url{http://www.python.org/doc/current/lib/module-re.html}.
+
+\pagebreak
+
+\section*{Using NLTK}
+
+NLTK is installed on the workstations and accessible from IDLE.
+During these exercises you may find it helpful to consult online
+documentation at \url{http://nltk.sf.net/docs.html}.
+
+In order to use the NLTK, you will need to import the appropriate
+symbols.  For these problems, the following commands (in IDLE) will
+suffice:
+
+\begin{verbatim}
+>>> from nltk.tokenizer import * 
+>>> from nltk.tagger import * 
+>>> from nltk.corpus import * 
+>>> from nltk.probability import *
+\end{verbatim}
+
+\section*{Tokenization}
+
+NLTK Tokenizers convert a string into a list of \texttt{Token}s.
+
+\begin{enumerate}
+\item Try creating some tokens using the built-in whitespace tokenizer:
+\begin{verbatim}
+>>> ws = WSTokenizer()
+>>> tokens = ws.tokenize('My dog likes your dog')
+>>> tokens
+['My'@[0w], 'dog'@[1w], 'likes'@[2w], 'your'@[3w], 'dog'@[4w]]
+\end{verbatim}
+Extract the third token's type and location using the
+\texttt{type()} and \texttt{loc} methods.
+
+\item Next, use the corpus module to extract some tokenized data.
+\begin{verbatim}
+>>> gutenberg.items()
+['austen-emma.txt', 'bible-kjv.txt', ..., 'chesterton-thursday.txt', ...]
+>>> ttext = gutenberg.tokenize('chesterton-thursday.txt')
+\end{verbatim}
+The ttext variable contains the entire novel as a list of tokens.
+Extract tokens 2631-2643.
+
+\item The regular expression tokenizer \texttt{RETokenizer()} was
+discussed in the lecture.  Provide a regular expression to match `words'
+containing punctuation.
+\begin{verbatim}
+>>> t = RETokenizer('your regular expression goes here')
+>>> t.tokenize('OK, we'll email $20.95 payment to Amazon.com.')
+\end{verbatim}
+
+\item Try out your tokenizer on the header of a Gutenberg corpus file,
+which contains a lot of punctuation.  How many tokens are there?  Is it
+the same as what other people get?
+\begin{verbatim}
+>>> text = gutenberg.read('chesterton-thursday.txt')[:1200]
+>>> ttext = t.tokenize(text)
+>>> len(ttext)
+\end{verbatim}
+
+\end{enumerate}
+
+\section*{Part-of-speech tagging}
+
+Tokens are often ``tagged'' with additional information, such as their
+part-of-speech. The \texttt{TaggedToken} class is used to associate tags with
+word types. 
+
+\begin{enumerate}
+\item Try creating a few tagged types, and embedding them inside tokens:
+\begin{verbatim}
+>>> chair_type = TaggedType('chair', 'NN') 
+>>> chair_type 
+'chair'/'NN' 
+>>> chair_token = Token(chair_type, Location(1, unit='w')) 
+>>> chair_token 
+'chair'/'NN'@[1w]
+\end{verbatim}
+Extract the token's type and the type's tag and base using token's 
+\texttt{type()} method and tagged type's \texttt{tag()} and
+\texttt{base()} methods.
+
+
+\item Use the \texttt{TaggedTokenizer} to tokenize a tagged sentence into a
+list of tagged tokens. The input is a string of the form:
+\begin{verbatim}
+>>> input = 'I/NP saw/VB a/DT man/NN'
+\end{verbatim}
+You will need to use the tokenizer's \texttt{tokenize} method.
+
+
+\item Use the corpus module to extract some tagged data. Both the Brown and
+Penn Treebank corpora contain tagged text. These corpora can be accessed
+using \texttt{brown} and \texttt{treebank}. Each corpus is divided into
+groups and items. Items are the logical units, usually files, into which
+the corpus has been split. Groups are logical groupings or subdivisions of
+the corpus corresponding to different sources, genre or markup for
+instance. The items may be listed exhaustively, or limited to only those
+beloning to a given group:
+\begin{verbatim}
+>>> brown 
+<Corpus: brown (contains 500 items; 15 groups)> 
+>>> brown.groups() 
+['skill and hobbies', 'humor', 'popular lore', 'fiction: mystery',
+'belles-lettres', ... 
+>>> brown.items('popular lore') 
+('cf01', 'cf02', 'cf03', 'cf04', 'cf05', 'cf06', 'cf07', 'cf08',
+'cf09', 'cf10', ... 
+>>> brown.read('cf04') 
+'{\bs}n{\bs}n{\bs}t``/`` The/at food/nn is/bez wonderful/jj and/cc
+it/pps ... 
+>>> brown.tokenize('cf04')[:10] 
+['``'/'``'@[0w], 'The'/'AT'@[1w], 'food'/'NN'@[2w], 'is'/'BEZ'@[3w],
+...
+\end{verbatim}
+Try extracting some tagged text from other items and groups of the Brown
+corpus and the Penn Treebank. You will need to use the \texttt{'tagged'}
+group of the Treebank. The tag sets used differs between the two
+corpora. See
+\texttt{http://www.scs.leeds.ac.uk/amalgam/tagsets/brown.html} and
+\texttt{http://www.scs.leeds.ac.uk/amalgam/tagsets/upenn.html} for
+descriptions of the tag sets.
+
+
+\item Use the \texttt{NN\_CD\_Tagger} to tag a sequence of tokens. First
+extract some tagged text, remove all tags using the \texttt{untag()}
+methods then apply the tagger. Tagging accuracy can be measured using
+the \texttt{accuracy()} method:
+\begin{verbatim}
+tagged_tokens = brown.tokenize('cf04')
+untagged_tokens = untag(tagged_tokens)
+nn_cd_tagger = NN_CD_Tagger()
+tagged_tokens[205:209]
+['home'/'NN'@[205w], 'to'/'IN'@[206w], '60'/'CD'@[207w], 'children'/'NNS'@[208w]]
+nn_cd_tagger.tag(untagged_tokens[205:209])
+['home'/'NN'@[205w], 'to'/'NN'@[206w], '60'/'CD'@[207w], 'children'/'NN'@[208w]]
+retagged_tokens = nn_cd_tagger.tag(untagged_tokens)
+accuracy(tagged_tokens, retagged_tokens)
+0.17139061116031887
+\end{verbatim}
+Inspect the output (\texttt{retagged\_tokens}) by hand, comparing it to
+the original in order to see what kind of errors were made.
+
+\item Use the \texttt{UnigramTagger} and \texttt{NthOrderTagger} with varying
+order (2 or more) on the same data. These taggers need to be trained in
+order to initialise their probability estimates. It is best to train on
+different data to that tested, hence we'll use a different item:
+\begin{verbatim}
+>>> training_tokens = brown.tokenize('cf01') 
+>>> unigram = UnigramTagger() 
+>>> unigram.train(training_tokens) 
+>>> retagged_tokens = unigram.tag(untagged_tokens)
+\end{verbatim}
+This tagger doesn't perform very well as it hasn't seen much training data
+and thus its probability estimates are quite biased. See if and how much
+the accuracy can be improved by increasing the amount of training data
+(while ensuring that you're not using the training data for testing). 
+
+\item You may have noticed that the \texttt{NthOrderTagger} failed miserably
+for high orders, where the \texttt{UnigramTagger} was quite robust. Why do
+you think this happens?
+
+Use a \texttt{BackoffTagger} with a unigram and nn cd tagger as shown
+below. Add some higher order taggers (eg. second, third order) to the
+start of the list of taggers. Does performance improve?
+\begin{verbatim}
+>>> backoff = BackoffTagger([unigram, nn_cd_tagger])
+>>> retagged = backoff.tag(untagged_tokens)
+\end{verbatim}
+
+\item Find the 10 most common tags in a group of items of the Brown corpus.
+Use the \texttt{FreqDist} class to count the number of instances of each
+tag, using the \texttt{inc()} method for the tag of each token as they are
+processed. You may need to refer to the lecture slides and NLTK
+documentation on the \texttt{FreqDist} class.
+
+\end{enumerate}
+
+Note: NLTK is installed in the subdirectories
+\texttt{C:{\bs}python23{\bs}site-packages{\bs}nltk} and
+\texttt{C:{\bs}python23{\bs}nltk}. The first contains the source code
+to NLTK, and the later contains the corpus data and documentation.
+
+\end{document}
+
