@@ -19,7 +19,7 @@ statements:
     >>> from nltk_contrib.upenn.cis530.fall2001 import tag
     >>> tag.demo()
 
-@version: 1.2
+@version: 1.4
 @newfield contributor: Contributor, Contributors, short
 @contributor: Robert Berwick
 @contributor: Chen-Fu Chiang
@@ -69,7 +69,7 @@ def _add_subdirectories_to_package(package_path_list):
 # Version.  This version number is independant of nltk's version
 # number, but parallels it.  (I.e., we release nltk version x.y and
 # nltk_contrib version x.y at the same time.)
-__version__ = "1.2"
+__version__ = "1.4"
 
 # Copyright notice
 __copyright__ = """\
