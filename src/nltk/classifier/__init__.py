@@ -49,7 +49,7 @@ new classifiers from a given set of training data.
 from nltk.token import Token
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq
-import math, Numeric, types, sets
+import math, types, sets
 
 ##//////////////////////////////////////////////////////
 ##  Classifier Interfaces
