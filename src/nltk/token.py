@@ -16,7 +16,7 @@ include:
 
   - C{TEXT}: The token's text content.
   - C{WAVE}: The token's recorded audio content.
-  - C{POS}: The token's part-of-speech tag.
+  - C{TAG}: The token's part-of-speech tag.
   - C{SPEAKER}: The speaker who uttered the token.
   - C{SENSE}: The token's word sense.
   - C{LOC}: The token's location in its containing text.
@@ -62,8 +62,8 @@ class Token(dict):
     token defines the text content and part-of-speech tag for a single
     word:
 
-        >>> tok = Token(TEXT='fly', POS='N')
-        <TEXT='fly', POS='N'>
+        >>> tok = Token(TEXT='fly', TAG='N')
+        <TEXT='fly', TAG='N'>
 
     As this example illustrates, a token's properties are initialized
     using keyword arguments to the constructor.  Properties can be
@@ -79,7 +79,7 @@ class Token(dict):
     some properties only make sense for specific kinds of C{Tokens}.
     For example, only C{Tokens} representing recorded audio will have
     a C{WAVE} property; and only C{Tokens} representing words will
-    have a C{POS} property.
+    have a C{TAG} property.
     
     A property value can be...
       - an immutable value (such as a string or a number)
@@ -122,14 +122,14 @@ class Token(dict):
         The properties are typically specified using keyword
         arguments:
 
-           >>> typ = Token(TEXT='ni', POS='excl', SPEAKER='knight2')
-           <TEXT='ni', SPEAKER='knight2', POS='excl'>
+           >>> typ = Token(TEXT='ni', TAG='excl', SPEAKER='knight2')
+           <TEXT='ni', SPEAKER='knight2', TAG='excl'>
 
         Alternatively, properties can be specified using a dictionary:
 
-           >>> props = {'TEXT':'ni', 'POS':'excl', 'SPEAKER':'knight2'}
+           >>> props = {'TEXT':'ni', 'TAG':'excl', 'SPEAKER':'knight2'}
            >>> typ = Token(props)
-           <TEXT='ni', SPEAKER='knight2', POS='excl'>
+           <TEXT='ni', SPEAKER='knight2', TAG='excl'>
 
         @param properties: The initial set of properties that the new
             token should define.  Each element maps a property name to
@@ -401,12 +401,6 @@ Token.register_repr(('TEXT', 'TAG'),
 Token.register_repr(('TEXT', 'TAG', 'LOC'),
                     lambda t: ('<%s/%s>@%r' %
                                (`t['TEXT']`[1:-1], t['TAG'], t['LOC'])))
-Token.register_repr(('TEXT', 'POS'),
-                    lambda t: ('<%s/%s>' %
-                               (`t['TEXT']`[1:-1], t['POS'])))
-Token.register_repr(('TEXT', 'POS', 'LOC'),
-                    lambda t: ('<%s/%s>@%r' %
-                               (`t['TEXT']`[1:-1], t['POS'], t['LOC'])))
 Token.register_repr(('SUBTOKENS',),
                     '<%(SUBTOKENS)r>')
 Token.register_repr(('TEXT', 'SUBTOKENS'),
@@ -937,8 +931,8 @@ def demo():
 
     # Show what tokens can do.
     print '_'*70
-    print "tok  = Token(TEXT='flattening', POS='VBG', LOC=loc)"
-    tok = Token(TEXT='flattening', POS='VBG', LOC=loc)
+    print "tok  = Token(TEXT='flattening', TAG='VBG', LOC=loc)"
+    tok = Token(TEXT='flattening', TAG='VBG', LOC=loc)
     print "tok2 = Token(SIZE=12, WEIGHT=83, LOC=loc2)"
     tok2 = Token(SIZE=12, WEIGHT=83, LOC=loc2)
     print
