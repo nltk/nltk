@@ -47,7 +47,7 @@ class TreebankTaggedTokenizer(TaggedTokenizer):
     def __init__(self, **property_names):
         TaggedTokenizer.__init__(self, **property_names)
 
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         # inherit doco
         assert chktype(1, token, Token)
 
@@ -91,7 +91,8 @@ class TreebankTaggedTokenizer(TaggedTokenizer):
                         if addlocs:
                             s_token[LOC] = sent_loc
                         # tokenize
-                        TaggedTokenizer.tokenize(self, s_token, addlocs)
+                        TaggedTokenizer.tokenize(self, s_token,
+                                                 addlocs, addcontexts)
                         token[SUBTOKENS].extend(s_token[SUBTOKENS])
                         # update sentence locations
                         if addlocs:
