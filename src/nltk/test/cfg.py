@@ -103,9 +103,9 @@ class CFGProductionTestCase(unittest.TestCase):
              CFGProduction(A, A, 'x')]
         for i in range(len(p)):
             self.failUnless(p[i].lhs() == A)
-        self.failUnlessRaises(TypeError, lambda: CFGProduction('x'))
-        self.failUnlessRaises(TypeError, lambda: CFGProduction('x', A))
-        self.failUnlessRaises(TypeError, lambda: CFGProduction('x', 'x'))
+        self.failUnlessRaises(TypeError, CFGProduction, 'x')
+        self.failUnlessRaises(TypeError, CFGProduction, 'x', A)
+        self.failUnlessRaises(TypeError, CFGProduction, 'x', 'x')
 
     def testRHS(self):
         "nltk.cfg.CFGProduction: test rhs()"
@@ -180,10 +180,10 @@ class CFGTestCase(unittest.TestCase):
         self.failUnless(cfg.productions() == ())
         cfg = CFG(B, ())
         self.failUnless(cfg.productions() == ())
-        self.failUnlessRaises(TypeError, lambda: CFG(0, []))
-        self.failUnlessRaises(TypeError, lambda: CFG(A, [0]))
-        self.failUnlessRaises(TypeError, lambda: CFG(A, A))
-        self.failUnlessRaises(TypeError, lambda: CFG(A, [A]))
+        self.failUnlessRaises(TypeError, CFG, 0, [])
+        self.failUnlessRaises(TypeError, CFG, A, [0])
+        self.failUnlessRaises(TypeError, CFG, A, A)
+        self.failUnlessRaises(TypeError, CFG, A, [A])
 
 class PCFGTestCase(unittest.TestCase):
     "Test cases for L{nltk.cfg.PCFG}"
@@ -203,12 +203,12 @@ class PCFGTestCase(unittest.TestCase):
         self.failUnless(pcfg.productions() == ())
         pcfg = PCFG(B, ())
         self.failUnless(pcfg.productions() == ())
-        self.failUnlessRaises(TypeError, lambda: PCFG(0, []))
-        self.failUnlessRaises(TypeError, lambda: PCFG(A, [0]))
-        self.failUnlessRaises(TypeError, lambda: PCFG(A, A))
-        self.failUnlessRaises(TypeError, lambda: PCFG(A, [A]))
+        self.failUnlessRaises(TypeError, PCFG, 0, [])
+        self.failUnlessRaises(TypeError, PCFG, A, [0])
+        self.failUnlessRaises(TypeError, PCFG, A, A)
+        self.failUnlessRaises(TypeError, PCFG, A, [A])
         p.append(PCFGProduction(0.1, B, B))
-        self.failUnlessRaises(ValueError, lambda: PCFG(A, p))
+        self.failUnlessRaises(ValueError, PCFG, A, p)
         
 def testsuite():
     t1 = unittest.makeSuite(NonterminalTestCase, 'test')

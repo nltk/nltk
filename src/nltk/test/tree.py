@@ -24,6 +24,7 @@ from nltk.tokenizer import WSTokenizer
 
 import unittest
 
+def _token(type,start): return Token(type, Location(start))
 class TreeTestCase(unittest.TestCase):
     """
     Unit test cases for C{tree.Tree}
@@ -173,28 +174,27 @@ class TreeTokenTestCase(unittest.TestCase):
         TreeToken(1, Token(2), TreeToken(3),
                   Token(4), TreeToken(5, Token(6)))
 
-        def token(type,start): return Token(type, Location(start))
         # Locations must be properly ordered.
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', token(1,5)),
-                                        token(1,1),
-                                        TreeToken('n', token(1,2)),
-                                        token(1,3)))
+                              TreeToken('n', TreeToken('n', _token(1,5)),
+                                        _token(1,1),
+                                        TreeToken('n', _token(1,2)),
+                                        _token(1,3)))
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', token(1,0)),
-                                        token(1,1),
-                                        TreeToken('n', token(1,2)),
-                                        token(1,0)))
+                              TreeToken('n', TreeToken('n', _token(1,0)),
+                                        _token(1,1),
+                                        TreeToken('n', _token(1,2)),
+                                        _token(1,0)))
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', token(1,0)),
-                                        token(1,5),
-                                        TreeToken('n', token(1,3)),
-                                        token(1,7)))
+                              TreeToken('n', TreeToken('n', _token(1,0)),
+                                        _token(1,5),
+                                        TreeToken('n', _token(1,3)),
+                                        _token(1,7)))
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', token(1,0)),
-                                        token(1,5),
+                              TreeToken('n', TreeToken('n', _token(1,0)),
+                                        _token(1,5),
                                         TreeToken('n', Token(1,None)),
-                                        token(1,3)))
+                                        _token(1,3)))
                                          
                                          
         
