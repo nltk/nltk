@@ -236,6 +236,16 @@ def tutorialsublist(reports):
         
     return s + '</DL></DD></DT></DL>\n'
 
+TERM_INDEX = '''
+  <dl><dt><b>Term Index</b> (<a href="tutorial_index.html">html</a>)
+
+  </dt><dd><i>Definitions of technical terms that are discussed in the
+  NLTK tutorials.  Each individual tutorial also has its own index,
+  which lists only the terms discussed in that tutorial.  These
+  individual indices can be found at the end of each tutorial.
+  </i></dd></dl>    
+'''
+
 def tutoriallist(reports):
     numbered_reports = [p for p in reports
                         if re.match('\d+', p.sequence_id)]
@@ -250,12 +260,14 @@ def tutoriallist(reports):
     str = tutorialsublist(numbered_reports)
 
     if lettered_reports:
-        str += '  <h3> Additional Tutorials </h3>'
+        str += '  <h3> Additional Tutorials </h3>\n'
         str += tutorialsublist(lettered_reports)
 
     if other_reports:
-        str += '  <h3> Un-Filed Tutorials </h3>'
+        str += '  <h3> Un-Filed Tutorials </h3>\n'
         str += tutorialsublist(other_reports)
+
+    str += TERM_INDEX
 
     return str
 
