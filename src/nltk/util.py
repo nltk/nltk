@@ -30,7 +30,7 @@ class FrozenDict(dict):
             on to the C{dict} constructor.
         """
         super(FrozenDict, self).__init__(*args, **kwargs)
-        self._hash = sum([hash(i) for i in self.items()])        
+        self._hash = hash(sum([hash(i) for i in self.items()]))
     def __setitem__(self, key, value):
         "Raise TypeError (FrozenDict objects are immutable)"
         raise TypeError('FrozenDict objects are immutable')
