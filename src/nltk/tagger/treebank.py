@@ -52,9 +52,9 @@ class TreebankTaggedTokenizer(TaggedTokenizer):
         assert chktype(1, token, Token)
 
         # useful property names
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
+        LOC = self.property('LOC')
 
         # get the token's initial location
         if addlocs:
