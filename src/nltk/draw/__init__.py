@@ -18,39 +18,35 @@ display a complex object on a Tkinter C{Canvas}.  For example, NLTK
 defines canvas widgets for displaying trees and directed graphs, as
 well as a number of simpler widgets.  These canvas widgets make it
 easier to build new graphical tools and demos.  See the class
-documentation for C{CanvasWidget} for more information.
+documentation for L{CanvasWidget} for more information.
 
 The C{nltk.draw} module defines the abstract C{CanvasWidget} base
 class, and a number of simple canvas widgets.  The remaining canvas
-widgets are defined by submodules, such as C{nltk.draw.tree}.
+widgets are defined by submodules, such as L{nltk.draw.tree}.
 
-The C{nltk.draw} module also defines C{CanvasFrame}, which
+The C{nltk.draw} module also defines L{CanvasFrame}, which
 encapsulates a C{Canvas} and its scrollbars.  It uses a
-C{ScrollWatcherWidget} to ensure that all canvas widgets contained on
+L{ScrollWatcherWidget} to ensure that all canvas widgets contained on
 its canvas are within the scroll region.
 
 Acknowledgements: Many of the ideas behind the canvas widget system
 are derived from C{CLIG}, a Tk-based grapher for linguistic data
-structures.  For more information, see the CLIG homepage at::
+structures.  For more information, see U{the CLIG
+homepage<http://www.ags.uni-sb.de/~konrad/clig.html>}.
 
-    http://www.ags.uni-sb.de/~konrad/clig.html
-
+@group Graphical Demonstrations: rdparser, srparser, chart
+@group Widgets: tree, cfg, fsa, plot, tree_edit
+@group Abstract Widget Superclasses: CanvasWidget, AbstractContainerWidget
+@sort: CanvasWidget, AbstractContainerWidget
+@group Canvas Widgets: BoxWidget, BracketWidget, OvalWidget, ParenWidget,
+    ScrollWatcherWidget, SequenceWidget, SpaceWidget, StackWidget,
+    SymbolWidget, TextWidget
+@sort: TextWidget, SymbolWidget, BoxWidget, OvalWidget, ParenWidget,
+    BracketWidget, SequenceWidget, StackWidget, SpaceWidget,
+    ScrollWatcherWidget
+@group Tkinter Widgets: CanvasFrame, EntryDialog, ShowText
 """
-
 from Tkinter import *
-
-# __all__ = (
-#     'CanvasFrame', 'CanvasWidget',
-#     'TextWidget', 'SymbolWidget',
-#     'BoxWidget', 'OvalWidget', 'ParenWidget', 'BracketWidget',
-#     'SequenceWidget', 'StackWidget', 'SpaceWidget',
-#     'ScrollWatcherWidget', 'AbstractContainerWidget',
-#     'ShowText', 'EntryDialog')
-
-# Including these causes circular dependancy trouble???
-#    'tree', 'chart', 'fas', 'srparser', 'plot',
-#    'plot_graph', 'tree_edit'
-#    )
 
 ##//////////////////////////////////////////////////////
 ##  CanvasWidget
