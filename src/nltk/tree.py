@@ -53,6 +53,7 @@ import re
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import chkclass as _chkclass
 from types import SliceType as _SliceType
+from types import TupleType as _TupleType
 from types import IntType as _IntType
 from types import StringType as _StringType
 from types import NoneType as _NoneType
@@ -178,16 +179,23 @@ class Tree:
         """
         @return: the specified child or children.
         @rtype: C{Tree} or (leaftype); or C{list} of (C{Tree} or (leaftype))
-        @param index: An integer or slice indicating which children to 
-            return.
-        @type index: C{int} or C{slice}
+        @param index: An integer, slice, or tree location indicating
+            which children to return.
+        @type index: C{int} or C{slice} or (C{list} of C{int})
         @raise IndexError: If the specified child does not exist.
         """
-        _chktype("Tree.__getitem__", 1, index, (_IntType, _SliceType))
+        _chktype("Tree.__getitem__", 1, index, (_IntType, _SliceType,
+                                                _TupleType))
         if type(index) == _SliceType:
             return self._children[index.start:index.stop]
-        else:
+        elif type(index) == _IntType:
             return self._children[index]
+        elif len(index) == 0:
+            return self
+        elif len(index) == 1:
+            return self._children[index[0]]
+        else:
+            return self._children[index[0]][index[1:]]
 
     def __len__(self):
         """
@@ -281,6 +289,40 @@ class Tree:
                 max_child_height = 1
         return 1 + max_child_height
 
+    def with_substitution(self, treepos, substitution):
+        """
+        @return: A new C{Tree} that is equal to this
+            C{Tree}, except that the subtree or leaf identified
+            by C{treepos} is replaced by C{substitution}.
+        @rtype: C{Tree}
+        @param treepos: A list of child indices specifying the path
+            from the root of the tree to the subtree or a leaf that
+            should be replaced.
+        @type treepos: C{list} of C{int}
+        @param substitution: The new subtree or leaf that should be
+            substituted in to this C{Tree}.
+        @type substitution: C{Tree} or (leaftype)
+        """
+        if treepos == ():
+            return substitution
+        else:
+            if not (0 <= treepos[0] < len(self._children)):
+                raise IndexError('Bad tree position')
+            
+            # Find the new child list.
+            new_children = list(self._children)
+            child = self._children[treepos[0]]
+            if isinstance(child, Tree):
+                newchild = child.with_substitution(treepos[1:], substitution)
+                new_children[treepos[0]] = newchild
+            elif len(treepos) == 1:
+                new_children[treepos[0]] = substitution
+            else:
+                raise IndexError('Bad tree position')
+
+            # Return a tree with the new child list.
+            return Tree(self._node, *new_children)
+    
     def __eq__(self, other):
         """
         @return: true if this C{Tree} is equal to C{other}.  In
@@ -329,13 +371,15 @@ class Tree:
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
         from nltk.draw import CanvasFrame
-        from nltk.draw.tree import tree_to_treesegment
+        from nltk.draw.tree import TreeWidget
         cf = CanvasFrame()
         bold = ('helvetica', 12, 'bold')
-        seg = tree_to_treesegment(cf.canvas(), self, node_font=bold)
-        seg['draggable'] = 1
-        cf.add_widget(seg)
-        
+        widget = TreeWidget(cf.canvas(), self, node_font=bold,
+                            leaf_color='#008040', node_color='#004080',
+                            roof_color='#004040', roof_fill='white',
+                            line_color='#004040', draggable=1)
+        widget.bind_click_trees(widget.toggle_collapsed)
+        cf.add_widget(widget)
 
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
@@ -389,10 +433,10 @@ class TreeToken(Token):
             >>> TreeToken('np', *children)
             ('np': 'the' 'cat')@[0:2]
 
-        @param node: The new C{Tree}'s node value.
+        @param node: The new C{TreeToken}'s node value.
         @type node: (nodetype)
-        @param children: The new C{Tree}'s children.
-        @type children: C{Tree} or C{Token}
+        @param children: The new C{TreeToken}'s children.
+        @type children: C{TreeToken} or C{Token}
         """
         _chktype("TreeToken", -1, children, ( (Token, TreeToken),) )
         self._node = node
@@ -474,17 +518,24 @@ class TreeToken(Token):
         @return: the specified child or children.
         @rtype: C{TreeToken} or C{Token};
             or C{list} of (C{TreeToken} or C{Token})
-        @param index: An integer or slice indicating which children to 
-            return.
-        @type index: C{int} or C{slice}
+        @param index: An integer, slice, or tree location indicating
+            which children to return.
+        @type index: C{int} or C{slice} or (C{list} of C{int})
         @raise IndexError: If the specified child does not exist.
         """
-        _chktype("Tree.__getitem__", 1, index, (_IntType, _SliceType))
+        _chktype("TreeToken.__getitem__", 1, index, (_IntType, _SliceType,
+                                                     _TupleType))
         if type(index) == _SliceType:
             return self._children[index.start:index.stop]
-        else:
+        elif type(index) == _IntType:
             return self._children[index]
-
+        elif len(index) == 0:
+            return self
+        elif len(index) == 1:
+            return self._children[index[0]]
+        else:
+            return self._children[index[0]][index[1:]]
+            
     def __len__(self): 
         """
         @return: The number of children this C{TreeToken} has.
@@ -603,6 +654,40 @@ class TreeToken(Token):
                 max_child_height = 1
         return 1 + max_child_height
 
+    def with_substitution(self, treepos, substitution):
+        """
+        @return: A new C{TreeToken} that is equal to this
+            C{TreeToken}, except that the subtree or leaf identified
+            by C{treepos} is replaced by C{substitution}.
+        @rtype: C{TreeToken}
+        @param treepos: A list of child indices specifying the path
+            from the root of the tree to the subtree or a leaf that
+            should be replaced.
+        @type treepos: C{list} of C{int}
+        @param substitution: The new subtree or leaf that should be
+            substituted in to this C{TreeToken}.
+        @type substitution: C{TreeToken} or C{Token}
+        """
+        if treepos == ():
+            return substitution
+        else:
+            if not (0 <= treepos[0] < len(self._children)):
+                raise IndexError('Bad tree position')
+            
+            # Find the new child list.
+            new_children = list(self._children)
+            child = self._children[treepos[0]]
+            if isinstance(child, TreeToken):
+                newchild = child.with_substitution(treepos[1:], substitution)
+                new_children[treepos[0]] = newchild
+            elif len(treepos) == 1:
+                new_children[treepos[0]] = substitution
+            else:
+                raise IndexError('Bad tree position')
+
+            # Return a tree token with the new child list.
+            return TreeToken(self._node, *new_children)
+    
     def __hash__(self):
         return hash((self._node, self._children))
 
@@ -651,12 +736,16 @@ class TreeToken(Token):
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
         from nltk.draw import CanvasFrame
-        from nltk.draw.tree import tree_to_treesegment
+        from nltk.draw.tree import TreeWidget
         cf = CanvasFrame()
         bold = ('helvetica', 12, 'bold')
-        seg = tree_to_treesegment(cf.canvas(), self, node_font=bold)
-        seg['draggable'] = 1
-        cf.add_widget(seg)
+        widget = TreeWidget(cf.canvas(), self, node_font=bold,
+                            leaf_color='#008040', node_color='#004080',
+                            roof_color='#004040', roof_fill='white',
+                            loc_color='#604000', line_color='#004040',
+                            draggable=1)
+        widget.bind_click_trees(widget.toggle_collapsed)
+        cf.add_widget(widget)
 
 class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
