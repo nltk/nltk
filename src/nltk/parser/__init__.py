@@ -110,7 +110,7 @@ class ParserI:
 
     def parse_n(self, text, n=None):
         """
-        @return: a list of the C{n} best parses for the given text,
+        @return: A list of the C{n} best parses for the given text,
             sorted in descending order of quality (or all parses, if
             the text has less than C{n} parses).  The order among
             parses with the same quality is undefined.  In other
@@ -174,7 +174,7 @@ class ShiftReduceParser(ParserI):
     """
     def __init__(self, grammar, trace=0):
         """
-        Create a new C{ShiftReduceParser}, that uses {grammar} to
+        Create a new C{ShiftReduceParser}, that uses C{grammar} to
         parse texts.
 
         @type grammar: C{CFG}
@@ -205,8 +205,9 @@ class ShiftReduceParser(ParserI):
         """
         return self._grammar
     
-    def parse_n(self, text):
+    def parse_n(self, text, n=None):
         # Inherit documentation from ParserI; delegate to parse.
+        if n == 0: return []
         treetok = self.parse(text)
         if treetok is None: return []
         else: return [treetok]
