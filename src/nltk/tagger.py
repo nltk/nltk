@@ -476,11 +476,6 @@ class BackoffTagger(SequentialTagger):
     for the given token, it should use assign the special tag C{None}.
     Each token is assigned the first non-C{None} tag returned by a
     sub-tagger.
-
-    This tagger expects a list of C{Token}s as its input, and
-    generates a list of C{TaggedToken}s as its output.  Each
-    sub-tagger should accept a list a list of C{Token}s as its input,
-    and should generate a list of C{TaggedToken}s as its output.
     """
     def __init__(self, subtaggers, reverse=False, **propnames):
         """
