@@ -785,8 +785,8 @@ class SpanLocation(LocationI):
         if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
         else: unit = ''
         if self._source is None: source = ''
-        else: source = repr(self._source)
-        return '[%s:%s]%s@%r' % (self._start, self._end, unit, source)
+        else: source = str(self._source)
+        return '[%s:%s%s]@%s' % (self._start, self._end, unit, source)
 
 class CharSpanLocation(SpanLocation):
     """
