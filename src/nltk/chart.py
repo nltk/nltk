@@ -13,7 +13,7 @@ Chart parsing data types.
 
 from nltk.parser import *
 from nltk.token import *
-from nltk.rule import *
+from nltk.cfg import *
 from nltk.tree import *
 from nltk.set import *
 
@@ -25,7 +25,7 @@ def edgecmp(e1,e2):
 ##  Dotted Rules
 ##//////////////////////////////////////////////////////
 
-class DottedCFG_Rule(Rule):
+class DottedCFG_Rule(CFG_Rule):
     """
     A dotted context-free grammar rule.
 
@@ -47,9 +47,9 @@ class DottedCFG_Rule(Rule):
         """
         Construct a new C{DottedCFG_Rule}.
 
-        @param lhs: The left-hand side of the new C{Rule}.
+        @param lhs: The left-hand side of the new C{CFG_Rule}.
         @type lhs: C{object}
-        @param rhs: The right-hand side of the new C{Rule}.
+        @param rhs: The right-hand side of the new C{CFG_Rule}.
         @type rhs: C{tuple} of C{objects}s
         @param pos: The position of the dot (defaults to zero).
         @type pos: C{int}
@@ -70,7 +70,7 @@ class DottedCFG_Rule(Rule):
         @return: the next element on the right-hand side following the dot.
         @rtype: C{object}
         """
-        return self[self._pos]
+        return self.rhs()[self._pos]
 
     def shift(self):
         """
@@ -80,7 +80,7 @@ class DottedCFG_Rule(Rule):
         @raise IndexError: If the dot position is beyond the end of
             the rule.
         """
-        if self._pos < len(self):
+        if self._pos < len(self.rhs()):
             return DottedCFG_Rule(self._lhs, self._rhs, self._pos + 1)
         else:
             raise IndexError('Attempt to move dot position past end of rule')
@@ -91,7 +91,7 @@ class DottedCFG_Rule(Rule):
             right-hand side.
         @rtype: C{boolean}
         """
-        return self._pos == len(self)
+        return self._pos == len(self.rhs())
 
     def copy(self):
         """
@@ -130,7 +130,7 @@ class DottedCFG_Rule(Rule):
         @return: true if this C{DottedCFG_Rule} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (Rule.__eq__(self, other) and
+        return (CFG_Rule.__eq__(self, other) and
                 self._pos == other._pos)
 
     def __ne__(self, other):
@@ -144,23 +144,23 @@ class DottedCFG_Rule(Rule):
         return hash((self._lhs, self._rhs, self._pos))
 
 # !! document this.
-class DottedPCFG_Rule(DottedRule, ProbablisticMixIn):
+class DottedPCFG_Rule(DottedCFG_Rule, ProbablisticMixIn):
     def __init__(self, p, lhs, rhs, pos=0):
         ProbablisticMixIn.__init__(self, p)
-        DottedRule.__init__(self, lhs, rhs, pos)
+        DottedCFG_Rule.__init__(self, lhs, rhs, pos)
 
     def shift(self):
         # Shifting a DottedPCFG_Rule should return a DottedPCFG_Rule.
-        if self._pos < len(self):
+        if self._pos < len(self.rhs()):
             return DottedPCFG_Rule(self._p, self._lhs,
                                    self._rhs, self._pos + 1)
         else:
             raise IndexError('Attempt to move dot position past end of rule')
 
     def __str__(self):
-        return DottedRule.__str__(self)+' (p=%s)' % self._p
+        return DottedCFG_Rule.__str__(self)+' (p=%s)' % self._p
     def __repr__(self):
-        return DottedRule.__repr__(self)+' (p=%s)' % self._p
+        return DottedCFG_Rule.__repr__(self)+' (p=%s)' % self._p
 
 ##//////////////////////////////////////////////////////
 ##  Edge
@@ -169,10 +169,10 @@ class DottedPCFG_Rule(DottedRule, ProbablisticMixIn):
 class Edge:
     """
     An edge of a chart.    An edges is a span of tokens (i.e. a C{Location})
-    with an associated C{DottedRule} and a C{Tree}.  The Edge class provides
+    with an associated C{DottedCFG_Rule} and a C{Tree}.  The Edge class provides
     basic functions plus a some common chart-parser functions on edges.
 
-    @type _drule: C{DottedRule}
+    @type _drule: C{DottedCFG_Rule}
     @ivar _drule: The dotted rule of the edge.
     @type _tree: C{TreeToken}
     @ivar _tree: The current parse tree of the edge.
@@ -185,7 +185,7 @@ class Edge:
         Construct a new C{Edge}.
 
         @param drule: The dotted rule associated with the edge.
-        @type drule: C{DottedRule}
+        @type drule: C{DottedCFG_Rule}
         @param tree: The (partial) parse tree so far constructed for the edge.
         @type tree: C{TreeToken}
         @param loc: The location spanned by the edge.
@@ -198,7 +198,7 @@ class Edge:
     def drule(self):
         """
         @return: the dotted rule of the edge.
-        @rtype: C{DottedRule}
+        @rtype: C{DottedCFG_Rule}
         """
         return self._drule
 
@@ -212,7 +212,7 @@ class Edge:
     # a complete edge is one whose dotted rule is complete
     def complete(self):
         """
-        @return: true if the C{DottedRule} of this edge is complete
+        @return: true if the C{DottedCFG_Rule} of this edge is complete
         @rtype: C{boolean}
         """
         return self._drule.complete()
