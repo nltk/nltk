@@ -9,6 +9,8 @@
 #
 
 """
+(Under construction.)
+
 Grouping of tools relating to Word Sense Disambiguation (WSD).
 Currently, this module is comprised of the C{SenseTaggedType} and
 C{SemcorTokenizer} classes. It is intended to grow as more general
@@ -25,9 +27,6 @@ tagging of other data sources (eg. SENSEVAL) as parsers are developed.
 The C{SemcorTokenizer} parses Semcor 1.7 data, as used in the C{corpus}
 module. This data is sourced from C{http://engr.smu.edu/~rada/semcor/}.
 """
-
-# [XX] This should be moved into nltk.corpora (either as-is, or
-# turn nltk.corpora into a package and make this a submodule).
 
 from __future__ import generators
 import re
