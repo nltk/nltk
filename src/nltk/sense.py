@@ -34,129 +34,16 @@ import xml.sax
 import nltk.classifier
 import nltk.tagger
 import nltk.token
-import nltk.tokenizer
+from nltk.tokenizer import AbstractTokenizer
+from nltk.token import *
 
-class SenseTaggedType(nltk.tagger.TaggedType):
-    """
-    Extends C{TaggedType} to include sense identifying data. These
-    include:
-    
-        - The C{lemma} - the uninflected form of the type, as used in
-          dictionary lookup.
-
-        - The C{sense_id} - the identifier of the relevant sense given
-          the C{lemma}. This is usually a number.
-
-        - The C{global_id} - an optional identifier of the lemma and
-          sense.
-    """
-
-    def __init__(self, base, pos, lemma, sense_id, global_id = None):
-        """
-        Construct a new SenseTaggedType.
-
-        @type base: (any)
-        @param base: The base form of the type.
-        @type pos: C{string}
-        @param pos: The part-of-speech tag.
-        @type lemma: C{string}
-        @param lemma: The uninflected form of the type.
-        @type sense_id: (any)
-        @param sense_id: The identifier of the sense definition
-            given the lemma.
-        @type global_id: (any)
-        @param global_id: The global identifier of the sense definition.
-        """
-        nltk.tagger.TaggedType.__init__(self, base, pos)
-        self._sense_id = sense_id
-        self._lemma = lemma
-        self._global_id = global_id
-
-    def lemma(self):
-        """
-        @return: The uninflected form of the type.
-        @returntype: C{String}
-        """
-        return self._lemma
-
-    def sense_id(self):
-        """
-        @return: The identifier of the sense given the lemma.
-        @returntype: (any)
-        """
-        return self._sense_id
-
-    def global_id(self):
-        """
-        @return: The global identifier of the sense.
-        @returntype: (any)
-        """
-        return self._global_id
-
-    def __eq__(self, other):
-        return nltk.tagger.TaggedType.__eq__(self, other) \
-            and self._lemma == other._lemma \
-            and self._sense_id == other._sense_id
-
-    def __hash__(self):
-        return hash( (self._base, self._tag, self._lemma, self._sense_id) )
-
-    def __repr__(self):
-        if self._lemma:
-            return nltk.tagger.TaggedType.__repr__(self) + '/' \
-                + '<%s,%s>' % (self._lemma, self._sense_id)
-        else:
-            return nltk.tagger.TaggedType.__repr__(self) 
-
-class SenseLabeledText(nltk.classifier.LabeledText):
-    """
-    A labeled text supplementeed with the index of the head word. This
-    structure is intended to encapsulate an instance of a single ambiguous
-    word, as used in WSD evaluation. A small number of words or sentences
-    are included on either side of the head word. Each instance is tagged
-    with the sense of the head word.
-    """
-
-    def __init__(self, text, sense, headIndex, lemma):
-        """
-        Create a sense labeled text.
-
-        @param text: The text
-        @type text: (any), usually a list of C{Token}s
-        @param sense: The sense of the head word
-        @type sense: (any), usually a C{String}
-        @param headIndex: The index of the head word
-        @type headIndex: C{Integer}
-        @param lemma: The lemma (uninflected form) of the head word
-        @type lemma: C{String}
-        """
-        nltk.classifier.LabeledText.__init__(self, text, sense)
-        self._headIndex = headIndex
-        self._lemma = lemma
-
-    def headIndex(self):
-        """
-        @return: The index of the head word
-        @returntype: C{Integer}
-        """
-        return self._headIndex
-
-    def lemma(self):
-        """
-        @return: The lemma (uninflected form) of the head word
-        @returntype: C{String}
-        """
-        return self._lemma
-
-    def __repr__(self):
-        return nltk.classifier.LabeledText.__repr__(self) + \
-            '[head=%d]' % self._headIndex
+# [XX] Register reprs for these?
 
 ############################################################
 # Semcor
 ############################################################
 
-class SemcorTokenizer(nltk.tokenizer.TokenizerI):
+class SemcorTokenizer(AbstractTokenizer):
     """
     Tokenizer for Semcor 1.7 files. These files are encoded in SGML,
     hierarchically organised into paragraphs, sentences and individual
@@ -195,17 +82,9 @@ class SemcorTokenizer(nltk.tokenizer.TokenizerI):
         # if it were valid XML, we could use this:
         #self._parse_method = xml.dom.minidom.parseString
 
-    def tokenize(self, text, source=None):
-        """
-        Tokenizes the given text.
-
-        @param text: The text to tokenize
-        @type text: C{String}
-        @param source: Ignored. Exists for compatibility reasons.
-        @type source: (any)
-        @return: a list of tokens (the token's type is unit dependent)
-        @returntype: C{list} of C{Token}
-        """
+    def tokenize(self, token):
+        text = token['text']
+        
         output = []
         dom = self._parse_method(text)
         files = dom.getElementsByTagName('contextfile')
@@ -221,11 +100,11 @@ class SemcorTokenizer(nltk.tokenizer.TokenizerI):
                         output.append(item)
                     else:
                         output.extend(item)
-        return output
+        token['subtokens'] = output
 
     def _map_paragraph(self, node, source):
         pnum = int(node.getAttribute('pnum'))
-        ploc = nltk.token.Location(pnum, unit='p', source=source)
+        ploc = ParaIndexLocation(pnum, source)
         sentences = node.getElementsByTagName('s')
         out = []
         for sentence in sentences:
@@ -235,23 +114,23 @@ class SemcorTokenizer(nltk.tokenizer.TokenizerI):
             else:
                 out.extend(item)
         if self._unit == self.UNIT_PARAGRAPH:
-            return nltk.token.Token(out, ploc)
+            return Token(subtokens=out, loc=ploc)
         else:
             return out
 
     def _map_sentence(self, node, source):
         snum = int(node.getAttribute('snum'))
-        sloc = nltk.token.Location(snum, unit='s', source=source)
+        sloc = SentIndexLocation(snum, source)
         out = []
         index = 0
         for word in node.childNodes:
-            wloc = nltk.token.Location(index, unit='w', source=sloc)
+            wloc = WordIndexLocation(index, sloc)
             item = self._map_word(word, wloc)
             if item:
                 index += 1
                 out.append(item)
         if self._unit != self.UNIT_WORD:
-            return nltk.token.Token(out, sloc)
+            return Token(subtokens=out, loc=sloc)
         else:
             return out
 
@@ -265,12 +144,13 @@ class SemcorTokenizer(nltk.tokenizer.TokenizerI):
             if not lemma or not wnsn or not lexsn:
                 lemma = wnsn = lexsn = None
 
-            newtype = SenseTaggedType(text, pos, lemma, wnsn, lexsn)
-            return nltk.token.Token(newtype, loc)
+            return Token(text=text, pos=pos, lemma=lemma,
+                         wnsn=wnsn, lexsn=lexsn, loc=loc)
+                         
         elif node.localName == 'punc':
             text = _to_ascii(node.childNodes[0].data)
-            newtype = SenseTaggedType(text, text, None, None, None)
-            return nltk.token.Token(newtype, loc)
+            return Token(text=text, pos=text, lemma=None,
+                         wnsn=None, lexsn=None, loc=loc)
         else:
             return None
 
@@ -367,47 +247,28 @@ class DOMSensevalTokenizer(nltk.tokenizer.TokenizerI):
 
     def _map_context(self, node, source):
         head = None
-        index = 0
         tokens = []
-        for child in node.childNodes:
+        for index, child in enumerate(node.childNodes):
             if child.localName == 'head':
                 head = index
                 child = child.getElementsByTagName('wf')[0]
             if child.localName == 'wf':
                 pos = _to_ascii(child.getAttribute('pos'))
                 text = _to_ascii(child.firstChild.data)
-                tokens.append(nltk.token.Token(
-                    nltk.tagger.TaggedType(text, pos),
-                    nltk.token.Location(index, unit='w', source=source)))
-                index += 1
+                loc = WordIndexLocation(index, source)
+                tokens.append(Token(text=text, pos=pos, loc=loc))
         return tokens, head
     
-    def tokenize(self, str, source=None):
-        # inherit docs
-        fixed = _fixXML(str)
-        doc = xml.dom.minidom.parseString(fixed)
-        out = []
-        instances = doc.getElementsByTagName('instance')
-        for instance in instances:
-            lexelt = instance.getElementsByTagName('lexelt')[0]
-            context = instance.getElementsByTagName('context')[0]
-            answers = instance.getElementsByTagName('answer')
-            senses = []
-            for answer in answers:
-                senses.append(_to_ascii(answer.getAttribute('senseid')))
-            loc = nltk.token.Location(0,
-                source=_to_ascii(answer.getAttribute('instance')))
-            tokens, head = self._map_context(context, loc)
-            lt = SenseLabeledText(tokens, tuple(senses), head,
-                _to_ascii(lexelt.getAttribute('item')))
-            token = nltk.token.Token(lt, loc)
-            out.append(token)
-        doc.unlink()
-        return out
+    def tokenize(self, token):
+        self.xtokenize(token)
+        token['subtokens'] = list(token['subtokens'])
 
-    def xtokenize(self, str, source=None):
+    def xtokenize(self, token):
+        token['subtokens'] = self._tokengen(token['text'])
+
+    def _tokengen(self, text):
         # inherit docs
-        fixed = _fixXML(str)
+        fixed = _fixXML(text)
         doc = xml.dom.minidom.parseString(fixed)
         # this takes up a HUGE amount of memory
         instances = doc.getElementsByTagName('instance')
@@ -418,13 +279,15 @@ class DOMSensevalTokenizer(nltk.tokenizer.TokenizerI):
             senses = []
             for answer in answers:
                 senses.append(_to_ascii(answer.getAttribute('senseid')))
-            loc = nltk.token.Location(0,
-                source=_to_ascii(answer.getAttribute('instance')))
+
+            # [XX] ??
+            loc = _to_ascii(answer.getAttribute('instance'))
+
             tokens, head = self._map_context(context, loc)
-            lt = SenseLabeledText(tokens, tuple(senses), head,
-                _to_ascii(lexelt.getAttribute('item')))
-            token = nltk.token.Token(lt, loc)
-            yield token
+            lemma = _to_ascii(lexelt.getAttribute('item'))
+            
+            yield Token(subtokens=tokens, senses=tuple(sense),
+                        head=head, lemma=lemma)
         doc.unlink()
 
 def _fixXML(text):
@@ -479,22 +342,26 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
 
     def __init__(self):
         xml.sax.ContentHandler.__init__(self)
-        nltk.tokenizer.TokenizerI.__init__(self)
         self._lemma = ''
         self.reset()
 
-    def tokenize(self, str, source=None):
+    def tokenize(self, token):
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
-        fixed =  _fixXML(str)
+        fixed =  _fixXML(token['text'])
         parser.feed(fixed)
         parser.close()
-        return self._instances
+        token['subtokens'] = self._instances
 
-    def xtokenize(self, str, source=None, buffer_size=1024):
+    def xtokenize(self, token, buffer_size=1024):
+        token['subtokens'] = self._tokengen(token['text'], buffer_size)
+        
+    def _tokengen(self, text, buffer_size):
+        print 'start fix xml'
+        fixed = _fixXML(text)
+        print 'end fix xml'
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
-        fixed = _fixXML(str)
         current = 0
         while current < len(fixed):
             buffer = fixed[current : current + buffer_size]
@@ -514,7 +381,10 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
         elif tag == 'answer':
             instance_id = _to_ascii(attr.getValueByQName('instance'))
             self._senses.append(_to_ascii(attr.getValueByQName('senseid')))
-            self._iloc = nltk.token.Location(0, source=instance_id)
+
+            # [XX] ???
+            self._iloc = instance_id
+            
         elif tag == 'context':
             self._data = ''
         elif tag == 'lexelt':
@@ -524,16 +394,17 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
         
     def endElement(self, tag):
         if tag == 'wf':
-            self._tokens.append(nltk.token.Token(
-                nltk.tagger.TaggedType(self._data.strip(), self._pos),
-                nltk.token.Location(self._wnum, unit='w', source=self._iloc)))
+            text = self._data.strip()
+            pos = self._pos
+            loc = WordIndexLocation(self._wnum, self._iloc)
+            self._tokens.append(Token(text=text, pos=pos, loc=loc))
             self._wnum += 1
             self._data = ''
         elif tag == 'context':
-            lt = SenseLabeledText(self._tokens, tuple(self._senses),
-                                  self._head, self._lemma)
-            token = nltk.token.Token(lt, self._iloc)
-            self._instances.append(token)
+            self._instances.append(Token(subtokens=self._tokens,
+                                         senses=tuple(self._senses),
+                                         head=self._head,
+                                         lemma=self._lemma))
             self.reset(False)
 
     def instances(self):
@@ -551,6 +422,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
             self._tokens = []
             self._pos = None
 
+#SensevalTokenizer = DOMSensevalTokenizer
 SensevalTokenizer = SAXSensevalTokenizer
 
 def _demo_semcor_tokenizer(type, files):
@@ -558,9 +430,11 @@ def _demo_semcor_tokenizer(type, files):
     r = SemcorTokenizer(type)
     for file in files:
         print 'Parsing', file, '...'
-        print '=' * 80
+        print '=' * 75
         try:
-            for item in r.tokenize(open(file).read()):
+            tok = Token(text=open(file).read())
+            r.tokenize(tok)
+            for item in tok['subtokens']:
                 pprint.pprint(item)
         except:
             print >>sys.stderr, 'Error parsing file:', file
@@ -569,15 +443,21 @@ def _demo_semcor_tokenizer(type, files):
 def _demo_senseval_tokenizer(files):
     tk = SensevalTokenizer()
     for file in files:
-        print '=' * 80
+        print '=' * 75
         print file
-        print '=' * 80
-        for token in tk.xtokenize(open(file).read()):
+        print '=' * 75
+        tok = Token(text=open(file).read())
+        tk.xtokenize(tok)
+        for token in tok['subtokens']:
             print token
 
 if __name__ == '__main__':
-    path = '/home/tacohn/lt/nltk/nltk/data/senseval/'
-    files = map(lambda x, p=path: p + x, ['line.pos', 'serve.pos', 'hard.pos', 'interest.pos'])
+    #path = '/usr/share/nltk/semcor1.7/brown1/tagfiles'
+    #files = ['%s/br-%s' % (path,x) for x in 'a01 a02 a11 k29'.split()]
+    #_demo_semcor_tokenizer('sentence', files)
+    path = '/usr/share/nltk/senseval/'
+    files = ['%s/%s.pos' % (path,x)
+             for x in 'line serve hard interest'.split()]
     _demo_senseval_tokenizer(files)
 
 
