@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@ldc.upenn.edu> (minor additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -242,6 +243,32 @@ class Set:
         s=Set()
         s._dict.update(self._dict)
         return s
+
+    def precision(self, other):
+        """
+        Treating self as the gold standard, compute the precision
+        of other with respect to self.
+
+        @return: A score in the range [0,1]
+        @rtype: C{float}
+        """
+        
+        guessed = len(other)
+        found = len(self.intersection(other))
+        return float(found)/guessed
+
+    def recall(self, other):
+        """
+        Treating self as the gold standard, compute the recall
+        of other with respect to self.
+
+        @return: A score in the range [0,1]
+        @rtype: C{float}
+        """
+        
+        to_find = len(self)
+        found = len(self.intersection(other))
+        return float(found)/to_find
 
     def __repr__(self):
         """
