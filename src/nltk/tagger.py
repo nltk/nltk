@@ -163,16 +163,21 @@ class AbstractTagger(TaggerI):
         self._propnames = propnames
 
     def raw_tag(self, words):
-        tokens = [Token(text=w) for w in words]
-        self.tag(tokens)
-        return [token['tag'] for token in tokens]
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        text_prop = self._propnames.get('text', 'text')
+        tag_prop = self._propnames.get('tag', 'tag')
+        
+        subtoks = [Token(**{text_prop:w}) for w in words]
+        token = Token(**{subtokens_prop:subtoks})
+        self.tag(token)
+        return [token[tag_prop] for token in token[subtokens_prop]]
 
     def _tag_from_raw(self, token):
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
         text_prop = self._propnames.get('text', 'text')
         tag_prop = self._propnames.get('tag', 'tag')
         
-        words = [subtok[text_prop] for sutbok in token['subtokens']]
+        words = [subtok[text_prop] for sutbok in token[subtokens_prop]]
         tags = self.raw_tag(words)
         for subtok, tag in zip(tokens, tags):
             subtok[tag_prop] = tag

@@ -117,23 +117,28 @@ class AbstractStemmer(StemmerI):
         self._propnames = propnames
 
     def raw_stem(self, text):
-      token = Token(text=text)
-      self.stem(token)
-      return token['stem']
+        text_prop = self._propnames.get('text', 'text')
+        stem_prop = self._propnames.get('stem', 'stem')
+        token = Token(**{text_prop:text})
+        self.stem(token)
+        return token[stem_prop]
 
     def stem_n(self, token, n=None):
-      stems_prop = self._propnames.get('stem', 'stem')
-      if n == 0:
-          token[stems_prop] = []   # (pathological case)
-      else:
-          self.stem(token)
-          token[stems_prop] = [token['stem']]
-      del token['stem']
+        stems_prop = self._propnames.get('stems', 'stems')
+        stem_prop = self._propnames.get('stem', 'stem')
+        if n == 0:
+            token[stems_prop] = []   # (pathological case)
+        else:
+            self.stem(token)
+            token[stems_prop] = [token[stem_prop]]
+        del token[stem_prop]
 
     def raw_stem_n(self, text, n=None):
-        token = Token(text=text)
+        text_prop = self._propnames.get('text', 'text')
+        stem_prop = self._propnames.get('stem', 'stem')
+        token = Token(**{text_prop:text})
         self.stem_n(token, n)
-        return token['stems']
+        return token[stem_prop]
 
     def _stem_from_raw(self, token):
         text_prop = self._propnames.get('text', 'text')

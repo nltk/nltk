@@ -163,15 +163,19 @@ class AbstractTokenizer(TokenizerI):
         token[subtokens_prop] = iter(token[subtokens_prop])
 
     def raw_tokenize(self, text):
-        token = Token(text=text)
+        text_prop = self._propnames.get('text', 'text')
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        token = Token(**{text_prop:text})
         self.tokenize(token)
-        return [subtok['text'] for subtok in token[subtokens_prop]]
+        return [subtok[text_prop] for subtok in token[subtokens_prop]]
 
     def raw_xtokenize(self, text):
-        token = Token(text=text)
+        text_prop = self._propnames.get('text', 'text')
+        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        token = Token(**{text_prop:text})
         self.xtokenize(token)
         for subtok in token[subtokens_prop]:
-            yield subtok['text']
+            yield subtok[text_prop]
 
     def _tokenize_from_raw(self, token, **propnames):
         """
