@@ -460,7 +460,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         return MaxentClassifier(filtered_fdlist, labels,
                                 classifier.weights())
 
-   def __repr__(self):
+    def __repr__(self):
         return '<GISMaxentClassifierTrainer: %d features>' % len(self._fdlist)
 
 ##//////////////////////////////////////////////////////
@@ -762,7 +762,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         return MaxentClassifier(filtered_fdlist, labels,
                                 classifier.weights())
 
-   def __repr__(self):
+    def __repr__(self):
         return '<IISMaxentClassifierTrainer: %d features>' % len(self._fdlist)
         
 
