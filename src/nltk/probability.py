@@ -875,6 +875,15 @@ class WittenBellProbDist(ProbDistI):
         else:
             return c / float(self._N + self._T)
 
+    def max(self):
+        return self._freqdist.max()
+    
+    def samples(self):
+        return self._freqdist.samples()
+
+    def freqdist(self):
+        return self._freqdist
+
     def __repr__(self):
         """
         @rtype: C{string}
@@ -937,6 +946,15 @@ class GoodTuringProbDist(ProbDistI):
         nc = self._freqdist.Nr(c, self._bins)
         ncn = self._freqdist.Nr(c + 1, self._bins)
         return float(c + 1) * ncn / (nc * self._freqdist.N())
+
+    def max(self):
+        return self._freqdist.max()
+    
+    def samples(self):
+        return self._freqdist.samples()
+
+    def freqdist(self):
+        return self._freqdist
 
     def __repr__(self):
         """
