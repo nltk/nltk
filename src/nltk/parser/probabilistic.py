@@ -8,10 +8,13 @@
 # $Id$
 
 """
-Parsers for probabilistic context free grammars (C{PCFGs}).
-C{nltk.pcfgparser} currently defines two basic types of
-C{ProbabilisticParser}: C{ViterbiPCFGParser} and
-C{BottomUpPCFGChartParser}.
+Classes and interfaces for associating probabilities with tree
+structures that represent the internal organziation of a text.  The
+probabilistic parser module defines C{ProbabilisticParserI}, a
+standard interface for associating probabilities with parses for a
+text.  It also defines two implementations of the
+C{ProbablisticParserI} interface, C{ViterbiPCFGParser} and
+C{BottomUpPCFGParser}.
 
 C{ViterbiPCFGParser} is a C{PCFG} parser based on a Viterbi-sytle
 algorithm.  It uses dynamic programming to efficiently find the single
@@ -25,12 +28,16 @@ parser to expand more likely edges before less likely ones.  Each
 subclass implements a different queue ordering, producing different
 search strategies.  Currently the following subclasses are defined:
 
-  - C{InsidePCFGParser} searches edges edges in decreasing order of
+  - C{InsidePCFGParser} searches edges in decreasing order of
     their trees' inside probabilities.
   - C{RandomPCFGParser} searches edges in random order.
   - C{LongestPCFGParser} searches edges in decreasing order of their
     location's length.
-  
+  - C{BeamPCFGParser} limits the number of edges in the queue, and
+    searches edges in decreasing order of their trees' inside
+    probabilities.
+"""
+"""
 The following subclasses will be added in the near future:
 
   - C{OutsidePCFGParser} searches edges using best-first search.
@@ -41,7 +48,20 @@ from nltk.parser import ParserI
 from nltk.cfg import PCFG, PCFGProduction, Nonterminal
 from nltk.token import ProbabilisticToken, Location
 from nltk.tree import ProbabilisticTreeToken
-from nltk.parser.chart import Chart, FRChart, Edge, DottedCFGProduction
+from nltk.parser.chart import Chart, FRChart, Edge
+
+# Used for sorting by epydoc; and for "import *"
+__all__ = [
+    'ProbabilisticParserI',
+    
+    'ViterbiPCFGParser',
+    
+    'BottomUpPCFGParser',
+    'InsidePCFGParser',
+    'RandomPCFGParser',
+    'LongestPCFGParser',
+    'BeamPCFGParser',
+    ]
 
 ##//////////////////////////////////////////////////////
 ##  Probabilistic Parser Interface
@@ -545,7 +565,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
 
             # Check if the edge is a complete parse.
             if (edge.loc() == chart.loc() and
-                edge.dprod().lhs() == self._grammar.start()):
+                edge.prod().lhs() == self._grammar.start()):
                 parses.append(edge.tree())
                 if len(parses) == n: break
 
@@ -578,9 +598,9 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         Initialize the edge queue with an edge for each token in the
         text.  For each token M{tok} with type M{typ} and location
-        M{loc}, return a new edge with dotted production
-        C{[Production: M{typ} -> *]}, location M{loc}, and tree
-        C{tok}.
+        M{loc}, return a new edge with production
+        C{[Production: M{typ} -> ]}, location M{loc}, tree
+        C{tok}, and dot position 0.
 
         @param text: The text to be parsed.  This text consists
             of a list of C{Tokens}, ordered by their C{Location}.
@@ -593,9 +613,9 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         edge_queue = []
         for tok in text:
-            dprod = DottedCFGProduction(tok.type(), ())
+            prod = CFGProduction(tok.type())
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
-            edge_queue.append(Edge(dprod, probtok, tok.loc()))
+            edge_queue.append(Edge(prod, probtok, tok.loc()))
 
         # This is purely aesthetic: put the first word at the
         # beginning of the queue, not the last word.
@@ -624,15 +644,13 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         
         # If the dot is in the zero-position, then apply the bottom-up
         # initialization rule.
-        dprod = edge.dprod()
-        if dprod.pos() == 0:
+        if edge.dotpos() == 0:
             edge_queue += [self._self_loop_edge(production, edge.loc())
                            for production in self._grammar.productions()
-                           if production.rhs()[0] == dprod.lhs()]
+                           if production.rhs()[0] == edge.prod().lhs()]
 
         # Find any new places where we can apply the fundamental
         # rule. 
-        dprod = edge.dprod()
         if edge.complete():
             edge_queue += [self._fr(e2,edge) for e2 in chart.fr_with(edge)]
         else:
@@ -640,11 +658,9 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
 
     def _self_loop_edge(self, production, loc):
         """
-
         @return: a zero-width edge formed from C{production}, starting
-            at the beginning of C{loc}.  The new edge's dotted
-            production has the same left hand side and right hand side
-            as C{production}, and has its dot at position 0.  The new
+            at the beginning of C{loc}.  The new edge's production is
+            C{production}, and its dot position is C{0}.  The new
             edge's tree has a node value equal to C{production}'s left
             hand side, and no children.  Its probability is equal to
             C{production}'s probability.
@@ -652,7 +668,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
 
         @type production: C{PCFGProduction}
         @param production: The production to base the self-loop edge
-            on.  The new edge's dotted production and tree are based
+            on.  The new edge's production and tree are based
             on this production.
         @type loc: C{Location}
         @param loc: A location whose start will be the beginning of
@@ -660,8 +676,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         node = production.lhs().symbol()
         tree = ProbabilisticTreeToken(production.p(), node)
-        dprod = DottedCFGProduction(production.lhs(), production.rhs(), 0)
-        return Edge(dprod, tree, loc.start_loc())
+        return Edge(production, tree, loc.start_loc())
 
     def _fr(self, e1, e2):
         """
@@ -685,14 +700,11 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         @param e2: The complete edge that should be combined with 
             C{e1} by the fundamental rule.
         """
-        loc = e1.loc().union(e2.loc())
-        dprod = DottedCFGProduction(e1.dprod().lhs(), e1.dprod().rhs(),
-                               e1.dprod().pos()+1)
-        
-        children = e1.tree().children() + (e2.tree(),)
         p = e1.tree().p() * e2.tree().p()
+        children = e1.tree().children() + (e2.tree(),)
         tree = ProbabilisticTreeToken(p, e1.tree().node(), *children)
-        return Edge(dprod, tree, loc)
+        loc = e1.loc().union(e2.loc())
+        return Edge(e1.prod(), tree, loc, e1.dotpos()+1)
 
     def __repr__(self):
         # Use __class__.__name__ to get the name of the class, since
@@ -753,8 +765,8 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
 #         for (k,v) in self._bestp.items(): print k,v
 #
 #     def _cmp(self, e1, e2):
-#         return cmp(e1.tree().p()*self._bestp[e1.dprod().lhs()],
-#                    e2.tree().p()*self._bestp[e2.dprod().lhs()])
+#         return cmp(e1.tree().p()*self._bestp[e1.prod().lhs()],
+#                    e2.tree().p()*self._bestp[e2.prod().lhs()])
 #        
 #     def sort_queue(self, queue, chart):
 #         queue.sort(self._cmp)
