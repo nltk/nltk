@@ -673,11 +673,11 @@ class Plot:
     def mainloop(self, *varargs, **kwargs):
         """
         Enter the mainloop for the window.  This method must be called
-        (with no arguments) if a Plot is constructed from a
-        non-interactive Python program (e.g., from a script); otherwise,
-        the script will continue executing, and the plot window will
-        close as soon se the script completes.
+        if a Plot is constructed from a non-interactive Python program
+        (e.g., from a script); otherwise, the plot window will close
+        as soon se the script completes.
         """
+        if in_idle(): return
         self._root.mainloop(*varargs, **kwargs)
 
     def _zoom(self, i1, j1, i2, j2):

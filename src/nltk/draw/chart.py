@@ -1060,8 +1060,6 @@ class ChartDemo:
             # Set up keyboard bindings.
             self._init_bindings()
 
-            # Enter mainloop.
-            #Tkinter.mainloop()
         except:
             print 'Error creating Tree View'
             self.destroy()
@@ -1352,6 +1350,16 @@ class ChartDemo:
         self._root.destroy()
         self._root = None
 
+    def mainloop(self, *args, **kwargs):
+        """
+        Enter the Tkinter mainloop.  This function must be called if
+        this demo is created from a non-interactive program (e.g.
+        from a secript); otherwise, the demo will close as soon as
+        the script completes.
+        """
+        if in_idle(): return
+        self._root.mainloop(*args, **kwargs)
+        
 def demo():
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
@@ -1380,7 +1388,7 @@ def demo():
     print ')'
     print 'sentence = %r' % sent
     print 'Calling "ChartDemo(grammar, tok_sent)"...'
-    ChartDemo(grammar, tok_sent)
+    ChartDemo(grammar, tok_sent).mainloop()
 
 def demo2():
     nonterminals = 'NP Det N'
