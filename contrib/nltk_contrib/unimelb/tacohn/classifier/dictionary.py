@@ -37,6 +37,7 @@ from nltk.stemmer.porter import PorterStemmer
 from nltk.tagger import *
 from nltk.tokenizer import *
 from cPickle import load, dump
+import random
 
 ##//////////////////////////////////////////////////
 ## Dictionary Interface
@@ -193,7 +194,7 @@ class WordNetDictionary(DictionaryI):
         synset = self._lookup(entry)
         forms = [sense.form for sense in synset.senses()]
         gloss = synset.gloss
-        return '%s -- (%s)' % (forms.join(', '), synset.gloss)
+        return '%s: %s -- (%s)' % (synset.pos, ', '.join(forms), synset.gloss)
 
     def bag_of_words(self, entry):
         # inherit docs from DictionaryI
@@ -319,7 +320,6 @@ class LeskWordSenseTagger:
     to Tell a Pine Cone from an Ice Cream Cone," in Proceedings of the
     SIGDOC Conference
     """
-
     def __init__(self, window, dictionary, stemmer=None, has_pos=True,
                  style='bag'):
         """
@@ -479,25 +479,128 @@ class LeskWordSenseTagger:
             return words
 
 ##////////////////////////////////////////////////////////////
+## Simulated annealing variant
+##////////////////////////////////////////////////////////////
+
+class SimulatedAnnealingWordSenseTagger(LeskWordSenseTagger):
+    """
+    Variant of Lesk tagger, using simulated annealing to find the optimal
+    combination of tags for each sentence. The optimality criterion is in
+    terms of maximal overlap between words in chosen sense definitions.
+
+    This is a WORK IN PROGRESS.
+    """
+    def __init__(self, dictionary, annealing_schedule, 
+                 stemmer=None, has_pos=True, style='bag', seed=None):
+        LeskWordSenseTagger.__init__(self, 0, dictionary,
+                                     stemmer, has_pos, style)
+        self._annealing_schedule = annealing_schedule
+        self._random = random.Random(seed)
+
+    def tag(self, tokens):
+        # split into tokens into sentences
+        tagged_tokens = []
+        sentence = []
+        for index in xrange(len(tokens)):
+            sentence.append(tokens[index])
+            if tokens[index].type().base() == '.' or index == (len(tokens) - 1):
+                # assign tagging to sentence
+                word_entries = []
+                chosen = []
+                locations = []
+                for token in sentence:
+                    we = self._token_to_word_entries(token)
+                    if len(we) > 1:
+                        word_entries.append(we)
+                        chosen.append(self._random.randrange(len(we)))
+                        locations.append(token.loc())
+
+                N = len(word_entries)
+                if N > 0:
+                    items = range(N)
+
+                    # anneal away!
+                    for temperature in self._annealing_schedule:
+                        to_change = self._random.choice(items)
+                        new_index = \
+                            self._random.randrange(len(word_entries[to_change]))
+                        invariant = [ word_entries[i][chosen[i]][1]
+                                      for i in items if i != to_change]
+                        new_bag = word_entries[to_change][new_index][1]
+                        old_bag = word_entries[to_change][chosen[to_change]][1]
+                        df = self._change_in_goodness(invariant,
+                                old_bag, new_bag)
+                        if df >= 0:
+                            chosen[to_change] = new_index
+                        else:
+                            p = math.exp(-df / float(temperature))
+                            if self._random.random() < p:
+                                chosen[to_change] = new_index
+
+                    # finished, put back together
+                    new_sentence = []
+                    item = 0
+                    for token in sentence:
+                        if item >= len(chosen) or token.loc() < locations[item]:
+                            new_sentence.append(token)
+                        elif token.loc() == locations[item]:
+                            tag = word_entries[item][chosen[item]][0]
+                            new_sentence.append(Token(
+                                TaggedType(token.type().base(), tag),
+                                token.loc()))
+                            item += 1
+                    tagged_tokens.extend(new_sentence)
+                else:
+                    tagged_tokens.extend(sentence)
+
+        return tagged_tokens
+
+    def _token_to_word_entries(self, token):
+        # find the set of entries
+        tagged = self._stem_tagged_token(token)
+        entries = self._dictionary.entries(tagged.base().lower(), tagged.tag())
+
+        if self._style == 'bag':
+            return [(entry, self._dictionary.bag_of_words(entry))
+                    for entry in entries] 
+        else:
+            return [(entry, self._dictionary.set_of_words(entry))
+                    for entry in entries]
+
+    def _change_in_goodness(self, invariant, old, new):
+        if self._style == 'bag':
+            ifd = merge_freqdists(*invariant)
+            return freqdist_overlap(ifd, new) - freqdist_overlap(ifd, old)
+        else:
+            iset = union_sets(*invariant)
+            return len(iset.intersection(new)) - len(iset.intersection(new))
+
+##////////////////////////////////////////////////////////////
 ## Helper methods (belong in nltk.probability and nltk.set)
 ##////////////////////////////////////////////////////////////
 
 def merge_freqdists(*fds):
     """
-    Combines two frequency distributions, such that the count for each sample
-    from the union of samples over all fds is equal to the sum of that
-    sample's count over all fds.
+    Combines frequency distributions, such that the count for each sample from
+    the union of samples over all fds is equal to the sum of that sample's
+    count over all fds.
 
     @return:    The resulting frequency distribution
     @rtype:     C{FreqDist}
     @param fds: The frequency distributions to merge
-    @type fds:  C{FreqDist}
+    @type fds:  sequence of C{FreqDist}
     """
     new_fd = FreqDist()
     for fd in fds:
         for s in fd.samples():
             new_fd.inc(s, fd.count(s))
     return new_fd
+
+def union_sets(*sets):
+    new_set = MutableSet()
+    for set in sets:
+        new_set = new_set.union(set)
+    return new_set
 
 def freqdist_overlap(fdist1, fdist2):
     """
@@ -521,9 +624,9 @@ def freqdist_overlap(fdist1, fdist2):
 ##////////////////////////////////////////////////////////////
 
 # taken from Manning & Shuetze, Table 4.5
-brown_adjs = 'JJ OD JJR JJT JJS CD'.split()
+brown_adjs = 'JJ OD JJR JJT JJS CD JJ-TL'.split()
 brown_advs = 'RB * RBR RBT RP WRB WQL QL QLP RN'.split()
-brown_nouns = ('NN NNS NP NPS NR NRS NP$ ' +
+brown_nouns = ('NN NNS NP NPS NR NRS NP$ NN-TL' +
                'PN PPSS PPS PPO PPL PPLS WPS WPO EX').split()
 brown_verbs = ('VB VBD VBG VBN VBZ DO DOD DOZ HV HVD HVG HVN HVZ BE BED ' +
                'BEDZ BEG BEN BEZ BEM BER MD').split()
@@ -618,6 +721,8 @@ def demo():
     # load a bit of the brown corpus
     items = brown.items('humor')
     tagged_tokens = brown.tokenize(items[0])
+    time_flies = TaggedTokenizer().tokenize(
+        'Time/NN fly/VB like/IN an/DT arrow/NN')
 
     # create the tagger, using WordNet
     dictionary = WordNetDictionary(stoplist, None, brown_nouns,
@@ -625,13 +730,18 @@ def demo():
 
     # window of -+ 5 words
     tagger = LeskWordSenseTagger(5, dictionary, WordNetStemmer(), True, 'bag')
-    
+    #tagger = SimulatedAnnealingWordSenseTagger(dictionary, [100, 90, 80,
+    #            50, 40, 30, 10, 5, 4, 3, 2, 1, 0.5, 0.1, 0.01, 0.001],
+    #            WordNetStemmer(), True, 'bag')
+
     print 'Running with 5 word window, bag of words, WordNet'
+    pprint(tagger.tag(time_flies))
     pprint(tagger.tag(tagged_tokens[:200]))
 
     # now change to set of words
     tagger = LeskWordSenseTagger(5, dictionary, WordNetStemmer(), True, 'set')
     print 'Running with 5 word window, set of words, WordNet'
+    pprint(tagger.tag(time_flies))
     pprint(tagger.tag(tagged_tokens[:200]))
 
     # create the tagger, using roget
@@ -640,6 +750,7 @@ def demo():
     dictionary = RogetDictionary(stoplist, stemmer)
     tagger = LeskWordSenseTagger(5, dictionary, stemmer, True, 'set')
     print 'Running with 5 word window, set of words, Roget'
+    pprint(tagger.tag(time_flies))
     pprint(tagger.tag(tagged_tokens[:200]))
 
 if __name__ == '__main__':
