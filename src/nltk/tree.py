@@ -262,7 +262,7 @@ class AbstractTree:
         
         @rtype: None
         """
-        # Note: this method introduces a circular dependancy between
+        # Note: this method introduces a circular dependency between
         # modules.  However, this circularity is only a matter of
         # convenience.  In particular, we believe that it is more
         # intuitive for students to run "mytree.draw()" than
@@ -418,6 +418,39 @@ class Tree(AbstractTree):
             else:
                 str += '\n'+' '*(indent+2)+repr(child)
         return str+')'
+
+    # Contributed by trevorcohn1@users.sf.net
+    def latex_qtree(self, first=True):
+        """
+        Returns a representation of the tree token compatible with the LaTeX
+        qtree package. This consists of the string C{\\Tree} followed by
+        the parse tree represented in bracketed notation.
+
+        For example, the following result was generated from a parse tree of
+        the sentence C{The announcement astounded us}:
+
+        \Tree [.I'' [.N'' [.D The ] [.N' [.N announcement ] ] ]
+            [.I' [.V'' [.V' [.V astounded ] [.N'' [.N' [.N us ] ] ] ] ] ] ]
+
+        See C{http://www.ling.upenn.edu/advice/latex.html} for the LaTeX=
+        style file for the qtree package.
+
+        @return: A latex qtree representation of this tree.
+        @rtype: C{string}
+        @param first: Internal flag used in recursive call.
+        @type first: boolean
+        """
+        str = ''
+        if first:
+            str = '\\Tree '
+        str += '[.' + repr(self._node) + ' ' 
+        for child in self._children:
+            if isinstance(child, AbstractTree):
+                str += child.latex_qtree(False) + ' '
+            else:
+                str += repr(child) + ' '
+        str += ']'
+        return str
 
     def __repr__(self):
         """
@@ -643,6 +676,9 @@ class TreeToken(AbstractTree, Token):
         else: locstr = repr(self.loc())
         return self.type().pp(margin-len(locstr), indent)+locstr
 
+    def latex_qtree(self):
+        return self.type().latex_qtree()
+
     def __repr__(self):
         """
         @return: A concise string representation of this C{TreeToken}.
@@ -711,7 +747,9 @@ def parse_treebank(str):
 
     # Use "eval" to convert the string (is this safe?)
     try:
+        print str;
         result = eval(str)
         return result
     except:
         raise ValueError('Bad Treebank-style string')
+
