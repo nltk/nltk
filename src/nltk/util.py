@@ -377,7 +377,7 @@ def capture_stdout(func, *args, **kwargs):
     return out
 
 def mark_stdout_newlines(func, *args, **kwargs):
-    """
+    r"""
     Call C{func} with the given arguments, and replace any blank lines
     that it writes to standard output with the string
     C{'<--BLANKLINE-->'}.  This is used in DocTest suites, since
