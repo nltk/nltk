@@ -1267,8 +1267,8 @@ class RegexpChunkParser(ChunkParserI, AbstractParser):
         # Use the default trace value?
         if trace == None: trace = self._trace
 
-        # Create the chunkstring.
-        chunkstr = ChunkString(token[SUBTOKENS])
+        # Create the chunkstring, using the same properties as the parser
+        chunkstr = ChunkString(token[SUBTOKENS], **self.property_names())
 
         # Apply the sequence of rules to the chunkstring.
         if trace:
