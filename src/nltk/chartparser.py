@@ -13,7 +13,7 @@ classes, C{Edge} and C{Chart}.
 from parser import *
 from token import *
 from rule import *
-from tree2 import *
+from tree import *
 
 def edgesort(e1,e2):
   return cmp((e1.loc().length(), e1.loc(), e1.dr()),
