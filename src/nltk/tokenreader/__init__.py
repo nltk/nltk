@@ -11,14 +11,14 @@
 Classes for reading string representations of tokens.
 """
 
-from nltk import TaskI
-from nltk.token import *
-
 ######################################################################
 ## Token Reader Interface
 ######################################################################
 
-class TokenReaderI(TaskI):
+# Note that this is not a subclass of TaskI: It takes strings as
+# inputs, not tokens; and it's just doing deterministic parsing, not a
+# real natural language processing task.
+class TokenReaderI:
     # [XX] This docstring isn't as clear as I'd like:
     """
     An interface for parsing string representations of tokens.
@@ -28,6 +28,13 @@ class TokenReaderI(TaskI):
     representation; but this information may be different for
     different representations.  I.e., different token readers will
     return tokens that define different properties.
+
+    Many token readers define additional arguments to C{read_token}
+    and C{read_tokens}, such as C{add_locs}, C{add_context},
+    C{add_subtoks}, and C{add_text}, which control exactly which
+    properties are recorded when the token is read.  See each
+    individual token reader's C{read_token} documentation for
+    information about any additional arguments it supports.
     """
     def read_token(s):
         """
@@ -43,71 +50,10 @@ class TokenReaderI(TaskI):
         raise NotImplementedError
 
 ######################################################################
-## Tokenzier-based token readers
+## Import token reader implementations.
 ######################################################################
 
-class TokenizerBasedTokenReader(TokenReaderI):
-    def __init__(self, tokenizer):
-        self._tokenizer = tokenizer
-
-    def read_token(self, s, *tokenizer_args, **tokenizer_kwargs):
-        """
-        @param tokenizer_args, tokenizer_kwargs: Arguments that are
-        passed on to the tokenizer's C{tokenize} method.
-        """
-        TEXT = self.property('TEXT')
-        SUBTOKENS = self.property('SUBTOKENS')
-        tok = Token(**{TEXT: s})
-        if 'source' in tokenizer_kwargs:
-            tok['LOC'] = tokenizer_kwargs['source']
-            del tokenizer_kwargs['source']
-        self._tokenizer.tokenize(tok, *tokenizer_args, **tokenizer_kwargs)
-        del tok[TEXT]
-        return tok
-                         
-    def read_tokens(self, s, *tokenizer_args, **tokenizer_kwargs):
-        """
-        @param tokenizer_args, tokenizer_kwargs: Arguments that are
-        passed on to the tokenizer's C{tokenize} method.
-        """
-        return [self.read_token(s, *tokenizer_args, **tokenizer_kwargs)]
-
-    def property(self, property):
-        return self._tokenizer.property(property)
-
-class WhitespaceSeparatedTokenReader(TokenizerBasedTokenReader):
-    """
-    A token reader that reads in tokens that are stored as simple
-    strings, separated by whitespace.  Individual tokens may not
-    contain internal whitespace.
-
-        >>> reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
-        >>> print reader.read_tokens('tokens separated by spaces')
-        [<tokens>, <separated>, <by>, <spaces>]
-    """
-    def __init__(self, **property_names):
-        from nltk.tokenizer import WhitespaceTokenizer
-        tokenizer = WhitespaceTokenizer(**property_names)
-        TokenizerBasedTokenReader.__init__(self, tokenizer)
-        
-class NewlineSeparatedTokenReader(TokenizerBasedTokenReader):
-    """
-    A token reader that reads in tokens that are stored as simple
-    strings, separated by newlines.  Blank lines are ignored.
-
-        >>> reader = NewlineSeparatedTokenReader(SUBTOKENS='WORDS')
-        >>> print reader.read_tokens('tokens\nseparated\nby\n\nnewlines')
-        [<tokens>, <separated>, <by>, <newlines>]
-    """
-    def __init__(self, **property_names):
-        from nltk.tokenizer import LineTokenizer
-        tokenizer = LineTokenizer(**property_names)
-        TokenizerBasedTokenReader.__init__(self, tokenizer)
-        
-######################################################################
-## Import other token readers
-######################################################################
-
+from nltk.tokenreader.tokenizerbased import *
 from nltk.tokenreader.treebank import *
 from nltk.tokenreader.tagged import *
 from nltk.tokenreader.conll import *
@@ -120,11 +66,15 @@ from nltk.tokenreader.ieer import *
 def demo():
     print 'Whitespace separated token reader:'
     reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
-    print reader.read_tokens('tokens separated by spaces', add_locs=True)
+    print reader.read_token('tokens separated by spaces', add_locs=True)
 
     print 'Newline separated token reader:'
     reader = NewlineSeparatedTokenReader(SUBTOKENS='WORDS')
-    print reader.read_tokens('tokens\nseparated\nby\n\nnewlines')
+    print reader.read_token('tokens\nseparated\nby\n\nnewlines')
+
+    print 'Treebank token reader:'
+    reader = TreebankTokenReader(SUBTOKENS='WORDS', add_subtoks=False)
+    print reader.read_token('(DP (DET a) (NP (NN Treebank) (NN Tree)))')
 
 if __name__ == '__main__':
     demo()
