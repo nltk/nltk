@@ -570,7 +570,8 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                     num_features[i, j] += val
 
         # Build the classifier.  Start with weight=0 for each feature.
-        weights = zeros(len(memoized_fdlist), 'd')
+        # Build the classifier.  Start with weight=1 for each feature??
+        weights = ones(len(memoized_fdlist), 'd') * 1
         classifier = MaxentClassifier(memoized_fdlist, 
                                       labels, weights)
 
@@ -656,7 +657,6 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                            sum(abs(deltas)))
                 if n_error < NEWTON_CONVERGE:
                     break
-                print '      error', n_error
 
             # Use the deltas to update our weights.
             weights += deltas
@@ -710,7 +710,7 @@ def simple_test():
     features += AlwaysFeatureDetectorList()
 
     trainer = IISMaxentClassifierTrainer(features)
-    classifier = trainer.train(toks, labels=labels, debug=100,
+    classifier = trainer.train(toks, labels=labels, debug=5,
                                C=1, iter=10)
     dist = classifier.distribution('to')
     error1 = (abs(3.0/20 - dist['dans']) +
@@ -718,6 +718,7 @@ def simple_test():
               abs(7.0/30 - dist['a']) +
               abs(7.0/30 - dist['au']) +
               abs(7.0/30 - dist['pendant']))
+    print error1; return
     
     classifier = trainer.train(toks, labels=labels,
                                C=5, iter=100)
@@ -896,8 +897,7 @@ def test(classifier, labeled_tokens):
     print 'Accuracy:', float(correct)/total
     
 if __name__ == '__main__':
-    #simple_test()
-    toks = get_toks(1)[:200]
-    #print
-    demo(toks, 5)
+    simple_test()
+    #toks = get_toks(1)[:200]
+    #demo(toks, 5)
     #foo(toks, 5, 10)
