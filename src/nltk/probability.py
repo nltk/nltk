@@ -1718,11 +1718,28 @@ class ProbablisticMixIn:
     probablistic class, and keep all other arguments the same as they
     were.  This ensures that there will be no problems with
     constructors that expect varargs parameters.
+
+    You should generally also redefine the string representation
+    methods, the comparison methods, and the hashing method.
+    (Others??)
     """
     def __init__(self, p):
+        """
+        Initialize this object's probability.  This initializer should
+        be called by subclass constructors.  C{p} should generally be
+        the first argument for those constructors.
+
+        @param p: The probability associated with the object.
+        @type p: C{float}
+        """
+        if not 0 <= p <= 1: raise ValueError('Bad probability: %s' % p)
         self._p = p
 
     def p(self):
+        """
+        @return: the probability associated with this object.
+        @rtype: C{float}
+        """
         return self._p
 
 # import random
