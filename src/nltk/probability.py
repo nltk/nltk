@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -232,6 +233,21 @@ class FreqDist:
                     best_count = self._count[sample]
             self._max_cache = best_sample
         return self._max_cache
+
+    def sorted_samples(self):
+        """
+        Return the samples sorted in decreasing order of frequency.  Instances
+        with the same count will be arbitrarily ordered.  Instances with a
+        count of zero will be omitted. This method is C{O(N^2)}, where C{N} is
+        the number of samples, but will complete in a shorter time on average.
+
+        @return: The set of samples in sorted order.
+        @rtype: sequence of any
+        """
+        items = map(lambda (s, c): (c, s), self._count.items())
+        items.sort()
+        items.reverse()
+        return map(lambda (c, s): s, items)
 
     def __repr__(self):
         """
@@ -790,6 +806,145 @@ class CrossValidationProbDist(ProbDistI):
         @return: A string representation of this C{ProbDist}.
         """
         return '<CrossValidationProbDist: %d-way>' % len(self._freqdists)
+
+class WittenBellProbDist(ProbDistI):
+    """
+    The Witten-Bell estimate of a probability distribution. This distribution
+    allocates uniform probability mass to as yet unseen events by using the
+    number of events that have only been seen once. The probability mass
+    reserved for unseen events is equal to:
+
+        M{T / (N + T)}
+
+    where M{T} is the number of observed event types and M{N} is the total
+    number of observed events. This equates to the maximum likelihood estimate
+    of a new type event occuring. The remaining probability mass is discounted
+    such that all probability estimates sum to one, yielding:
+
+        M{p = T / Z (N + T)}, if count = 0
+        M{p = c / (N + T)}, otherwise
+    """
+
+    def __init__(self, freqdist, bins=None):
+        """
+        Creates a distribution of Witten-Bell probability estimates.  This
+        distribution allocates uniform probability mass to as yet unseen
+        events by using the number of events that have only been seen once.
+        The probability mass reserved for unseen events is equal to:
+
+            M{T / (N + T)}
+
+        where M{T} is the number of observed event types and M{N} is the total
+        number of observed events. This equates to the maximum likelihood
+        estimate of a new type event occuring. The remaining probability mass
+        is discounted such that all probability estimates sum to one,
+        yielding:
+
+            M{p = T / Z (N + T)}, if count = 0
+            M{p = c / (N + T)}, otherwise
+
+        The parameters M{T} and M{N} are taken from the C{freqdist} parameter
+        (the C{B()} and C{N()} values). The normalising factor M{Z} is
+        calculated using these values along with the C{bins} parameter.
+
+        @param freqdist:    The frequency counts upon which to base the
+                            estimation.
+        @type  freqdist:    C{FreqDist}
+        @param bins:        The number of possible event types. This must be
+                            at least as large as the number of bins in the
+                            C{freqdist}. If C{None}, then it's assumed to be
+                            equal to that of the C{freqdist}
+        @type  bins:        C{Int}
+        """
+        assert _chktype(1, freqdist, FreqDist)
+        assert _chktype(2, bins, types.IntType, types.NoneType)
+        assert bins == None or bins >= freqdist.B(),\
+            'Bins parameter must not be less than freqdist.B()'
+        if bins == None:
+            bins = freqdist.B()
+        self._freqdist = freqdist
+        self._T = self._freqdist.B()
+        self._Z = bins - self._freqdist.B()
+        self._N = self._freqdist.N()
+
+    def prob(self, sample):
+        # inherit docs from ProbDistI
+        c = self._freqdist.count(sample)
+        if c == 0:
+            return self._T / float(self._Z * (self._N + self._T))
+        else:
+            return c / float(self._N + self._T)
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this C{ProbDist}.
+        """
+        return '<WittenBellProbDist based on %d samples>' % self._freqdist.N()
+
+class GoodTuringProbDist(ProbDistI):
+    """
+    The Good-Turing estimate of a probability distribution. This method
+    calculates the probability mass to assign to events with zero or low
+    counts based on the number of events with higher counts. It does so by
+    using the smoothed count M{c*}:
+
+        M{c* = (c + 1) N(c + 1) / N(c)}
+
+    where M{c} is the original count, M{N(i)} is the number of event types
+    observed with count M{i}. These smoothed counts are then normalised to
+    yield a probability distribution.
+    """
+    # TODO - add a cut-off parameter, above which the counts are unmodified
+    # (see J&M p216)
+
+    def __init__(self, freqdist, bins):
+        """
+        Creates a Good-Turing probability distribution estimate.  This method
+        calculates the probability mass to assign to events with zero or low
+        counts based on the number of events with higher counts. It does so by
+        using the smoothed count M{c*}:
+
+            M{c* = (c + 1) N(c + 1) / N(c)}
+
+        where M{c} is the original count, M{N(i)} is the number of event types
+        observed with count M{i}. These smoothed counts are then normalised to
+        yield a probability distribution.
+
+        The C{bins} parameter allows C{N(0)} to be estimated.
+
+        @param freqdist:    The frequency counts upon which to base the
+                            estimation.
+        @type  freqdist:    C{FreqDist}
+        @param bins:        The number of possible event types. This must be
+                            at least as large as the number of bins in the
+                            C{freqdist}. If C{None}, then it's taken to be
+                            equal to C{freqdist.B()}.
+        @type  bins:        C{Int}
+        """
+        assert _chktype(1, freqdist, FreqDist)
+        assert _chktype(2, bins, types.IntType, types.NoneType)
+        assert bins == None or bins >= freqdist.B(),\
+            'Bins parameter must not be less than freqdist.B()'
+        if bins == None:
+            bins = freqdist.B()
+        self._freqdist = freqdist
+        self._bins = bins
+
+    def prob(self, sample):
+        # inherit docs from FreqDist
+        c = self._freqdist.count(sample)
+        nc = self._freqdist.Nr(c, self._bins)
+        ncn = self._freqdist.Nr(c + 1, self._bins)
+        return float(c + 1) * ncn / (nc * self._freqdist.N())
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this C{ProbDist}.
+        """
+        return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N()
+
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
