@@ -1710,4 +1710,4 @@ def demo():
     for (parser, t) in times_items:
         print format % (parser, t)
             
-#if __name__ == '__main__': demo()
+if __name__ == '__main__': demo()
