@@ -10,8 +10,12 @@
 # Epydoc executable
 EPYDOC = epydoc
 
+# Python executable
+PYTHON = python2.3
+
 # Get the version of nltk
 NLTK_VERSION=$(shell python -c 'import nltk; print nltk.__version__')
+
 
 all: distributions
 
@@ -23,7 +27,7 @@ usage:
 
 # Tests.
 test: 
-	python nltk/test/__init__.py -v -c coverage
+	$(PYTHON) runtests.py -v -c coverage
 
 # Clean.  
 #    - Erase any pyc and pyo files.
