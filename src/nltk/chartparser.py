@@ -14,10 +14,11 @@ from parser import *
 from token import *
 from rule import *
 from tree import *
+from set import *
 
 def edgecmp(e1,e2):
-    return cmp((e1.loc().length(), e1.loc(), e1.dr()),
-               (e2.loc().length(), e2.loc(), e2.dr()))
+    return cmp((e1.loc().length(), e1.loc(), e1.dotted_rule()),
+               (e2.loc().length(), e2.loc(), e2.dotted_rule()))
 
 class Edge:
     """
@@ -33,18 +34,18 @@ class Edge:
     @ivar _edge: The edge data structure, a C{Token} with a complex type
     """
     
-    def __init__(self, dr, children, loc):
-        self._edge = Token((dr, children), loc)
-    def dr(self):
+    def __init__(self, dotted_rule, children, loc):
+        self._edge = Token((dotted_rule, children), loc)
+    def dotted_rule(self):
         return self._edge.type()[0]
     def children(self):
         return self._edge.type()[1]
     def lhs(self):
-        return self.dr().lhs()
+        return self.dotted_rule().lhs()
     def next(self):
-        return self.dr().next()
+        return self.dotted_rule().next()
     def complete(self):
-        return self.dr().complete()
+        return self.dotted_rule().complete()
     def loc(self):
         return self._edge.loc()
     def start(self):
@@ -52,29 +53,30 @@ class Edge:
     def end(self):
         return self.loc().end()
     def __repr__(self):
-        return DottedRule.__repr__(self.dr()) + repr(self.children()) + Location.__repr__(self.loc())
+        return DottedRule.__repr__(self.dotted_rule())\
+               + repr(self.children()) + Location.__repr__(self.loc())
     def __eq__(self, other):
         return (self._edge == other._edge)
     def __hash__(self):
-        return hash((self.dr(), self.children(), self.loc()))
+        return hash((self.dotted_rule(), self.children(), self.loc()))
 
     def self_loop_start(self, rule):
         loc = self.loc().start_loc()
-        dr = rule.dotted()
-        return Edge(dr, (), loc)
+        dotted_rule = rule.dotted()
+        return Edge(dotted_rule, (), loc)
 
     def self_loop_end(self, rule):
         loc = self.loc().end_loc()
-        dr = rule.dotted()
-        return Edge(dr, (), loc)
+        dotted_rule = rule.dotted()
+        return Edge(dotted_rule, (), loc)
 
     def FR(self, edge):
         loc = self.loc().union(edge.loc())
-        dr = self.dr().shift()
+        dotted_rule = self.dotted_rule().shift()
         children = self.children() + edge.children()
-        if dr.complete():
-            children = (TreeToken(dr.lhs(), *children),)
-        return Edge(dr,children,loc)
+        if dotted_rule.complete():
+            children = (TreeToken(dotted_rule.lhs(), *children),)
+        return Edge(dotted_rule,children,loc)
 
 class Chart:
     """
@@ -86,31 +88,29 @@ class Chart:
     @ivar _loc: The span of the chart, the C{Location} of a complete edge
     """
     def __init__(self, loc):
-        self._chart = {}
+        self._edgeset = Set()
         self._loc = loc
-    def chart(self):
-        return self._chart
     def loc(self):
         return self._loc
+    def edgeset(self):
+        return self._edgeset
     def edges(self):
-        return self._chart.keys()
+        return self._edgeset.elements()
     def size(self):
-        return len(self.edges())
+        return len(self._edgeset)
     def complete_edges(self):
         return [e for e in self.edges() if e.complete()]
     def incomplete_edges(self):
         return [e for e in self.edges() if not e.complete()]
     def copy(self):
-        # make a copy of the chart
         chart = Chart(self.loc())
-        for edge in self.edges():
-            chart.add_edge(edge)
+        chart._edgeset = self._edgeset.copy()
         return chart
-    def add_edge(self,edge):
-        if self._chart.has_key(edge):
+    def insert(self,edge):
+        if self._edgeset.insert(edge):
+            return [edge]
+        else:
             return []
-        self._chart[edge] = 1
-        return [edge]
     def parses(self, node):
         parses = []
         for edge in self.edges():
@@ -127,7 +127,7 @@ class Chart:
             start = edge.start()
             end = edge.end()
             indent = " " * width * start
-            print indent, edge.dr()
+            print indent, edge.dotted_rule()
             print indent + "|" + "-"*(width*(end-start)-1) + "|"
 
 # get the location of a tokenized sentence
@@ -158,6 +158,20 @@ class ChartParser(ParserI):
         self._functions = self._edgetrigger = ()
         self._chart = None
 
+    def grammar(self):
+        return self._grammar
+    def lexicon(self):
+        return self._lexicon
+    def basecat(self):
+        return self._basecat
+    def callback(self):
+        return self._callback
+    def trace(self):
+        return self._trace
+    def functions(self):
+        return self._functions
+    def edgetrigger(self):
+        return self._edgetrigger
     def chart(self):
         return self._chart
 
@@ -171,10 +185,10 @@ class ChartParser(ParserI):
         for word in tok_sent:
             for rule in self._lexicon:
                 if word.type() == rule[0]:
-                    dr = DottedRule(rule.lhs(), rule[:], 1)
+                    dotted_rule = DottedRule(rule.lhs(), rule[:], 1)
                     tree = TreeToken(rule.lhs(), word)
-                    edge = Edge(dr, (tree,), word.loc())
-                    added += self.add_edge(edge)
+                    edge = Edge(dotted_rule, (tree,), word.loc())
+                    added += self.insert(edge)
         if self._trace:
             self._chart.draw()
         return added
@@ -185,8 +199,8 @@ class ChartParser(ParserI):
         else:
             raise ValueError('Attempt to use chart parser before loading it')
 
-    def add_edge(self, edge):
-        added = self._chart.add_edge(edge)
+    def insert(self, edge):
+        added = self._chart.insert(edge)
         if added:
             if self._trace:
                 print edge
@@ -201,9 +215,9 @@ class ChartParser(ParserI):
         loc = self._chart.loc().start_loc()
         for rule in self._grammar:
             if rule.lhs() == self._basecat:
-                dr = rule.dotted()
-                new_edge = Edge(dr, (), loc)
-                added += self.add_edge(new_edge)
+                dotted_rule = rule.dotted()
+                new_edge = Edge(dotted_rule, (), loc)
+                added += self.insert(new_edge)
         if self._trace:
             self._chart.draw()
         return added
@@ -213,7 +227,7 @@ class ChartParser(ParserI):
         for rule in self._grammar:
             if not edge.complete() and rule.lhs() == edge.next():
                 new_edge = edge.self_loop_end(rule)
-                added += self.add_edge(new_edge)
+                added += self.insert(new_edge)
         return added
 
     def BU_init_edge(self, edge):
@@ -221,7 +235,7 @@ class ChartParser(ParserI):
         for rule in self._grammar:
             if edge.lhs() == rule[0]:
                 new_edge = edge.self_loop_start(rule)
-                added += self.add_edge(new_edge)
+                added += self.insert(new_edge)
         return added
 
     def BU_init(self):
@@ -242,7 +256,7 @@ class ChartParser(ParserI):
             for edge2 in self._chart.complete_edges():
                 if edge.next() == edge2.lhs() and edge.end() == edge2.start():
                     new_edge = edge.FR(edge2)
-                    added += self.add_edge(new_edge)
+                    added += self.insert(new_edge)
         return added
 
     # fundamental rule
@@ -293,7 +307,7 @@ class SteppingChartParser(ChartParser):
         added = []
         while added == [] and not self.empty():
             next_edge = self.dequeue()
-            added = self._chart.add_edge(next_edge)
+            added = self._chart.insert(next_edge)
         if added == []:
             return None
         else:
