@@ -696,15 +696,15 @@ class LocationI(object):
         @rtype: C{string}
         @return: The name of the document containing this location.
         """
-        raise NotImplementedError
+        raise AssertionError()
 
     # Locations must be comparable:
     def __cmp__(self, other):
-        raise NotImplementedError()
+        raise AssertionError()
 
     # Locations must be hashable:
     def __hash__(self):
-        raise NotImplementedError()
+        raise AssertionError()
 
 class SpanLocation(LocationI):
     """

@@ -507,22 +507,22 @@ instantiated directly:
       [...]
     AssertionError: Interfaces can't be instantiated
 
-It declares 3 methods, which must be implemented by base classes:
+It declares 3 methods, which must be implemented by derived classes:
 
     >>> class BrokenLocation(LocationI):
     ...     pass
     >>> BrokenLocation().source()
     Traceback (most recent call last):
       [...]
-    NotImplementedError
+    AssertionError
     >>> cmp(BrokenLocation(), 1)
     Traceback (most recent call last):
       [...]
-    NotImplementedError
+    AssertionError
     >>> hash(BrokenLocation())
     Traceback (most recent call last):
       [...]
-    NotImplementedError
+    AssertionError
 
 C{SpanLocation} is an abstract base class for locations that are based
 on spans.  It can't be instantiated directly:
