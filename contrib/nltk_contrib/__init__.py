@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Third-Party Contributions
 #
-# Copyright (C) 2003 The original contributors
+# Copyright (C) 2003-2005 The original contributors
 # URL: <http://nltk.sf.net>
 #
 # $Id$
@@ -19,7 +19,7 @@ statements:
     >>> from nltk_contrib.upenn.cis530.fall2001 import tag
     >>> tag.demo()
 
-@version: 1.4.2
+@version: 1.4.3
 @newfield contributor: Contributor, Contributors, short
 @contributor: Robert Berwick
 @contributor: Steve Cassidy
@@ -35,6 +35,7 @@ statements:
 @contributor: Carl de Marcken
 @contributor: Rob Speer
 @contributor: Oliver Steele
+@contributor: Beracah Yankama
 @contributor: David Zhang
 """
 
@@ -72,11 +73,11 @@ def _add_subdirectories_to_package(package_path_list):
 # Version.  This version number is independant of nltk's version
 # number, but parallels it.  (I.e., we release nltk version x.y and
 # nltk_contrib version x.y at the same time.)
-__version__ = "1.4.2"
+__version__ = "1.4.3"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2004 The individual authors.
+Copyright (C) 2003-2005 The individual authors.
 
 Unless otherwise stated, these programs are Distributed and Licensed
 under provisions of the GNU Public License, which is included by
