@@ -6,14 +6,6 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.token import Token
-from nltk.tree import TreeToken
-from nltk.chunkparser import ChunkParserI, ChunkedTaggedTokenizer
-from nltk.set import Set
-
-import re
-import string
-
 """
 Defines a regular-expression based chunk parser, and several
 supporting classes and functions.  The chunk parser itself is
@@ -115,6 +107,14 @@ interactive python shell with emacs ("C-C !")::
 @var _VALID_TAG_PATTERN: A regular expression to test whether a tag
      pattern is valid.
 """
+
+from nltk.token import Token
+from nltk.tree import TreeToken
+from nltk.chunkparser import ChunkParserI, ChunkedTaggedTokenizer
+from nltk.set import Set
+
+import re
+import string
 
 ##//////////////////////////////////////////////////////
 ##  Thoughts/comments
