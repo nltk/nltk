@@ -1292,19 +1292,19 @@ def demo():
     # Define a grammar.
     productions = (
         # Syntactic Productions
-        CFGProduction(S, NP, 'saw', NP),
-        CFGProduction(S, NP, VP),
-        CFGProduction(NP, Det, N),
-        CFGProduction(VP, V, NP, PP),
-        CFGProduction(NP, Det, N, PP),
-        CFGProduction(PP, P, NP),
+        CFGProduction(S, [NP, 'saw', NP]),
+        CFGProduction(S, [NP, VP]),
+        CFGProduction(NP, [Det, N]),
+        CFGProduction(VP, [V, NP, PP]),
+        CFGProduction(NP, [Det, N, PP]),
+        CFGProduction(PP, [P, NP]),
 
         # Lexical Productions
-        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
-        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
-        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
-        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
-        CFGProduction(N, 'dog'),   CFGProduction(N, 'telescope')
+        CFGProduction(NP, ['I']),   CFGProduction(Det, ['the']),
+        CFGProduction(Det, ['a']),  CFGProduction(N, ['man']),
+        CFGProduction(V, ['saw']),  CFGProduction(P, ['in']),
+        CFGProduction(P, ['with']), CFGProduction(N, ['park']),
+        CFGProduction(N, ['dog']),  CFGProduction(N, ['telescope'])
         )
     grammar = CFG(S, productions)
 
