@@ -7,16 +7,36 @@
 #
 # $Id$
 
-all: documentation test distributions
+.PHONY: all usage help doc documentation webpage test
+.PHONY: distributions clean
 
 usage: help
 help:
 	@echo "Usage:"
-	@echo "     make [all | documentation | distributions | test | clean | help]"
+	@echo "    make all            -- Build documentation and"\
+                                          "distributions; and run test cases"
+	@echo "    make clean          -- Remove all built files"
+	@echo "    make documentation  -- Build all documentation"
+	@echo "    make distributions  -- Build source and binary"\
+	                                 "distributions"
+	@echo "    make test           -- Run test cases"
+	@echo "    make webpage        -- Build the web page"
+	@echo "    make xfer           -- Build and upload the web page"
+	@echo
 
+all: documentation test distributions
+
+doc: documentation
+docs: documentation
 documentation:
 	$(MAKE) -C doc
 	$(MAKE) -C psets
+
+webpage:
+	$(MAKE) -C doc webpage
+
+xfer:
+	$(MAKE) -C doc xfer
 
 test:
 	$(MAKE) -C src test
