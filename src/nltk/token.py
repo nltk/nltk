@@ -488,7 +488,8 @@ class SafeToken(Token):
     def __setitem__(self, property, value):
         assert chktype(1, property, str)
         assert chktype(2, value, self._checkval)
-        if (property == 'LOC') and not isinstance(value, LocationI):
+        if ((property == 'LOC') and not isinstance(value, LocationI)
+            and value is not None):
             raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).__setitem__(property, value)
         
@@ -527,13 +528,15 @@ class SafeToken(Token):
     def setdefault(self, property, default=None):
         assert chktype(1, property, str)
         assert chktype(2, default, self._checkval)
-        if (property == 'LOC') and not isinstance(value, LocationI):
+        if ((property == 'LOC') and not isinstance(value, LocationI)
+            and value is not None):
             raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).setdefault(property, default)
         
     def update(self, src):
         assert chktype(1, src, {str:(self._checkval,)})
-        if src.has_key('LOC') and not isinstance(src['LOC'], LocationI):
+        if (src.has_key('LOC') and not isinstance(src['LOC'], LocationI)
+            and src['LOC'] is not None):
             raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).update(src)
 

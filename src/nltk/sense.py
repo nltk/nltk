@@ -83,7 +83,8 @@ class SemcorTokenizer(AbstractTokenizer):
         #self._parse_method = xml.dom.minidom.parseString
         AbstractTokenizer.__init__(self, **property_names)
 
-    def tokenize(self, token):
+    # [XX] addlocs is ignored.
+    def tokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         
@@ -266,13 +267,15 @@ class DOMSensevalTokenizer(AbstractTokenizer):
                 loc = WordIndexLocation(index, source)
                 tokens.append(Token(text=text, pos=pos, loc=loc))
         return tokens, head
-    
-    def tokenize(self, token):
+
+    # [XX] addlocs is ignored.
+    def tokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         self.xtokenize(token)
         token[SUBTOKENS] = list(token[SUBTOKENS])
 
-    def xtokenize(self, token):
+    # [XX] addlocs is ignored.
+    def xtokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         text = token[TEXT]
@@ -355,13 +358,15 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
     The XML is first cleaned up before being processed. 
     """
 
-    def __init__(self, **property_names):
+    def __init__(self, buffer_size=1024, **property_names):
         xml.sax.ContentHandler.__init__(self)
         self._lemma = ''
+        self._buffer_size = buffer_size
         self.reset()
         AbstractTokenizer.__init__(self, **property_names)
 
-    def tokenize(self, token):
+    # [XX] addlocs is ignored.
+    def tokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         parser = xml.sax.make_parser()
@@ -371,26 +376,27 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
         parser.close()
         token[SUBTOKENS] = self._instances
 
-    def xtokenize(self, token, buffer_size=1024):
+    # [XX] addlocs is ignored.
+    def xtokenize(self, token, addlocs=False):
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
-        token[SUBTOKENS] = self._tokengen(text, buffer_size)
+        token[SUBTOKENS] = self._tokengen(text)
         
-    def _tokengen(self, text, buffer_size):
+    def _tokengen(self, text):
         fixed = _fixXML(text)
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         current = 0
         while current < len(fixed):
-            buffer = fixed[current : current + buffer_size]
+            buffer = fixed[current : current + self._buffer_size]
             parser.feed(buffer)
             for instance in self._instances:
                 yield instance
                 self.reset(True, False)
-            current += buffer_size
+            current += self._buffer_size
         parser.close()
 
     def characters(self, ch):

@@ -57,18 +57,18 @@ class TaggedTokenizer(AbstractTokenizer):
     @outprop: C{TAG}: The subtokens' tags.
     @outprop: C{LOC}: The subtokens' locations.
     """
-    def __init__(self, addlocs=True, **property_names):
-        self._wstokenizer = WSTokenizer(addlocs=addlocs, **property_names)
-        AbstractTokenizer.__init__(self, addlocs, **property_names)
+    def __init__(self, **property_names):
+        self._wstokenizer = WSTokenizer(**property_names)
+        AbstractTokenizer.__init__(self, **property_names)
     
-    def tokenize(self, token):
+    def tokenize(self, token, addlocs=False):
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         TAG = self._property_names.get('TAG', 'TAG')
 
         # First, use WSTokenizer to divide on whitespace.
-        self._wstokenizer.tokenize(token)
+        self._wstokenizer.tokenize(token, addlocs)
 
         # Then, split each subtoken's text into a text and a tag.
         for subtok in token[SUBTOKENS]:
@@ -78,9 +78,6 @@ class TaggedTokenizer(AbstractTokenizer):
                 subtok[TEXT] = subtok[TEXT][:split]
             else:
                 subtok[TAG] = None
-
-    def xtokenize(self, token):
-        AbstractTokenizer.xtokenize(self, token)
 
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
