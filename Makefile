@@ -52,13 +52,14 @@ _html:
 
 # Make the source distributions
 _src:
+	$(MAKE) -C src dist
 
 ##############################################
 ##  Web page rules
 
 # Construct a tarball from the webpage
 webpage.tgz: _webpage
-	tar -cvzf webpage.tgz webpage
+	tar -czf webpage.tgz webpage
 
 # Transfer the web page to host.
 # ssh .identity must be set up correctly for this to work.
@@ -96,10 +97,10 @@ _webpage: _doc _pset _html _src
 
 	mkdir webpage/src
 	cp html/src/*.html webpage/src 2>/dev/null || true
-	cp src/nltk.tgz webpage/src 2>/dev/null || true
-	cp src/nltk.zip webpage/src 2>/dev/null || true
-	cp src/nltk.exe webpage/src 2>/dev/null || true
-	cp src/nltk.rpm webpage/src 2>/dev/null || true
+	cp src/dist/nltk.tgz webpage/src 2>/dev/null || true
+	cp src/dist/nltk.zip webpage/src 2>/dev/null || true
+	cp src/dist/nltk.exe webpage/src 2>/dev/null || true
+	cp src/dist/nltk.rpm webpage/src 2>/dev/null || true
 
 	mkdir webpage/ref
 	cp html/ref/*.html webpage/ref 2>/dev/null || true
