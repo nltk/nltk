@@ -705,10 +705,71 @@ class TextWidget(CanvasWidget):
         @rtype: C{None}
         """
         self.canvas().itemconfig(self._tag, text=text)
-        self.parent().update(self)
+        if self.parent() is not None:
+            self.parent().update(self)
 
     def __repr__(self):
         return '[Text: %r]' % self._text
+
+class SymbolWidget(TextWidget):
+    """
+    A canvas widget that displays special symbols, such as the
+    negation sign and the exists operator.  Symbols are specified by
+    name.  Currently, the following symbol names are defined: C{neg},
+    C{disj}, C{conj}, C{lambda}, C{merge}, C{forall}, C{exists},
+    C{subseteq}, C{subset}, C{notsubset}, C{emptyset}, C{imp},
+    C{rightarrow}, C{equal}, C{notequal}.
+        
+    Attributes:
+      - C{color}: the color of the text.
+      - C{draggable}: whether the text can be dragged by the user.
+      
+    @cvar _SYMBOLS: A dictionary mapping from symbols to the character
+        in the C{symbol} font used to render them.
+    """
+    _SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',  
+               'lambda': '\154', 'merge': '\304',
+               'forall': '\042', 'exists': '\044',
+               'subseteq': '\315', 'subset': '\314',
+               'notsubset': '\313', 'emptyset': '\306',
+               'imp': '\336', 'rightarrow': '\256',
+               'equal': '\75', 'notequal': '\271'}
+    
+    def __init__(self, canvas, symbol, **attribs):
+        """
+        Create a new symbol widget.
+
+        @type canvas: C{Tkinter.Canvas}
+        @param canvas: This canvas widget's canvas.
+        @type symbol: C{string}
+        @param symbol: The name of the symbol to display.
+        @param attribs: The new canvas widget's attributes.
+        """
+        attribs['font'] = 'symbol'
+        TextWidget.__init__(self, canvas, '', **attribs)
+        self.set_symbol(symbol)
+
+    def symbol(self):
+        """
+        @return: the name of the symbol that is displayed by this
+            symbol widget.
+        @rtype: C{string}
+        """
+        return self._symbol
+
+    def set_symbol(self, symbol):
+        """
+        Change the symbol that is displayed by this symbol widget.
+        @type symbol: C{string}
+        @param symbol: The name of the symbol to display.
+        """
+        if not SymbolWidget._SYMBOLS.has_key(symbol):
+            raise ValueError('Unknown symbol: %s' % symbol)
+        self._symbol = symbol
+        self.set_text(SymbolWidget._SYMBOLS[symbol])
+
+    def __repr__(self):
+        return '[Symbol: %r]' % self._symbol
 
 class AbstractContainerWidget(CanvasWidget):
     """
@@ -1489,21 +1550,24 @@ def demo():
         cw['color'] = '#ff%04d' % randint(0,9999)
     
     cf = CanvasFrame(closeenough=10, width=300, height=300)
-    ct3 = TextWidget(cf.canvas(), 'hiya there', draggable=1)
-    ct2 = TextWidget(cf.canvas(), 'o  o\n||\n___\n|   |',
-                 draggable=1, justify='center')
-    co = OvalWidget(cf.canvas(), ct2, outline='red')
-    ct = TextWidget(cf.canvas(), 'o  o\n||\n\\___/',
-                draggable=1, justify='center')
-    cp = ParenWidget(cf.canvas(), ct, color='red')
-    cb = BoxWidget(cf.canvas(), cp, fill='cyan', draggable=1,
-               width=3, margin=10)
-    space = SpaceWidget(cf.canvas(), 0, 30)
-    cstack = StackWidget(cf.canvas(), cb, space, co, ct3, align='center')
-    foo = TextWidget(cf.canvas(), 'try clicking\nand dragging',
+    c = cf.canvas()
+    ct3 = TextWidget(c, 'hiya there', draggable=1)
+    ct2 = TextWidget(c, 'o  o\n||\n___\n  U', draggable=1, justify='center')
+    co = OvalWidget(c, ct2, outline='red')
+    ct = TextWidget(c, 'o  o\n||\n\\___/', draggable=1, justify='center')
+    cp = ParenWidget(c, ct, color='red')
+    cb = BoxWidget(c, cp, fill='cyan', draggable=1, width=3, margin=10)
+    equation = SequenceWidget(c,
+                              SymbolWidget(c, 'forall'), TextWidget(c, 'x'),
+                              SymbolWidget(c, 'exists'), TextWidget(c, 'y: '),
+                              TextWidget(c, 'x'), SymbolWidget(c, 'notequal'),
+                              TextWidget(c, 'y'))
+    space = SpaceWidget(c, 0, 30)
+    cstack = StackWidget(c, cb, ct3, space, co, equation, align='center')
+    foo = TextWidget(c, 'try clicking\nand dragging',
                      draggable=1, justify='center')
-    cs = SequenceWidget(cf.canvas(), cstack, foo)
-    zz = BracketWidget(cf.canvas(), cs, color='green4', width=3)
+    cs = SequenceWidget(c, cstack, foo)
+    zz = BracketWidget(c, cs, color='green4', width=3)
     cf.add_widget(zz, 60, 30)
 
     cb.bind_click(fill)
