@@ -516,11 +516,20 @@ class ChartParser(ParserI):
     ##############################################
     def grammar(self):
         """
-        @return: The grammar used by the parser.
+        @return: The grammar used to parse texts.
         @rtype: C{CFG}
         """
         return self._grammar
 
+    def set_grammar(self, grammar):
+        """
+        Change the grammar used to parse texts.
+        
+        @param grammar: The new grammar.
+        @type grammar: C{CFG}
+        """
+        return self._grammar
+    
     ##############################################
     # Parsing
     ##############################################
@@ -661,7 +670,8 @@ class SteppingChartParser(ChartParser):
     """
     A C{ChartParser} that allows you to step through the parsing
     process, adding a single edge at a time.  It also allows you to
-    change the parser's strategy midway through parsing a text.
+    change the parser's strategy or grammar midway through parsing a
+    text.
 
     The C{initialize} method is used to start parsing a text.  C{step}
     adds a single edge to the chart.  C{set_strategy} changes the
