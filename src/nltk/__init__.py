@@ -1,7 +1,8 @@
 # Natural Language Toolkit
 #
-# Copyright (C) 2003 University of Pennsylvania
+# Copyright (C) 2005 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -67,7 +68,7 @@ L{RecursiveDescentParser<nltk.parser.RecursiveDescentParser>}, and
 L{ChartParser<nltk.parser.chart.ChartParser>} are all implementations
 of the C{ParserI} interface.
 
-@version: 1.4.1
+@version: 1.4.3
 
 @newfield developer: Developer, Developers, short
 @developer: U{Edward Loper<edloper@gradient.cis.upenn.edu>}
@@ -100,11 +101,11 @@ __extra_epydoc_fields__ = [
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "1.4.1"
+__version__ = "1.4.3"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2004 University of Pennsylvania.
+Copyright (C) 2005 University of Pennsylvania.
 
 Distributed and Licensed under provisions of the GNU Public
 License, which is included by reference.
