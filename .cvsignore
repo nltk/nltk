@@ -6,4 +6,5 @@
 *.pyc
 *.toc
 attic
-docs
+webpage
+webpage.tgz
