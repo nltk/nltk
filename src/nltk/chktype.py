@@ -307,11 +307,12 @@ def chktype(n, arg, *types):
     if type(n) == type('') and n[:1].lower() == 'k':
         errstr = '\n\n  Keyword argument to %s() must have type: ' % name
     typestr = _typemsg(types)
+    gotstr = '\n      (got a %s)' % type(arg).__name__
     if len(typestr) + len(errstr) <= 75:
-        errstr = errstr+typestr
+        errstr = errstr+typestr+gotstr
         raise TypeError(errstr)
     else:
-        errstr = errstr+'\n      '+typestr
+        errstr = errstr+'\n      '+typestr+gotstr
         raise TypeError(errstr)
 
 def demo():
