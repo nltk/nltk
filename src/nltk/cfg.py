@@ -47,7 +47,7 @@ values.  This prevents the grammar from accidentally using a leaf
 value (such as the English word "A") as the node of a subtree.  Within
 a C{CFG}, all node values are wrapped in the C{Nonterminal} class.
 Note, however, that the trees that are specified by the grammar do
-E{not} include these C{Nonterminal} wrappers.
+B{not} include these C{Nonterminal} wrappers.
 
 CFGs can also be given a more procedural interpretation.  According to
 this interpretation, a CFG specifies any tree structure M{tree} that
@@ -166,13 +166,13 @@ class Nonterminal:
             symbol is C{M{s}} is C{<M{s}>}.
         @rtype: C{string}
         """
-        return '<%s>' % self._symbol
+        return '<%s>' % (self._symbol,)
 
     def __str__(self):
         """
         TEMPORARY
         """
-        return '%s' % self._symbol
+        return '%s' % (self._symbol,)
 
 #################################################################
 # CFGRule and CFG
@@ -230,10 +230,12 @@ class CFG_Rule:
         @return: A verbose string representation of the C{Rule}.
         @rtype: C{string}
         """
-        str = '%r ->' % self._lhs
+        str = '%s ->' % self._lhs.symbol()
         for elt in self._rhs:
-            if isinstance(elt, Nonterminal): str += ' %r' % elt
-            else: str += ' %r' % elt
+            if isinstance(elt, Nonterminal):
+                str += ' %s' % elt.symbol()
+            else:
+                str += ' %r' % elt
         return str
 
     def __repr__(self):
@@ -273,6 +275,9 @@ class CFG:
     """
     def __init__(self, start, rules):
         """
+        Create a new context-free grammar, from the given start state
+        and set of C{CFG_Rule}s.
+        
         @param start: The start symbol
         @type start: C{Nonterminal}
         @param rules: The list of rules that defines the grammar
@@ -341,16 +346,36 @@ class PCFG:
 
     If you need efficient key-based access to rules, you can use a
     subclass to implement it.
+
+    @cvar EPSILON: The acceptable margin of error for checking that
+        rules with a given left-hand side have probabilities that sum
+        to 1.
     """
+    EPSILON = 0.01
+    
     def __init__(self, start, rules):
         """
+        Create a new context-free grammar, from the given start state
+        and set of C{CFG_Rule}s.
+        
         @param start: The start symbol
         @type start: C{Nonterminal}
         @param rules: The list of rules that defines the grammar
         @type rules: C{list} of C{PCFG_Rule}
+        @raise ValueError: if the set of rules with any left-hand-side
+            do not have probabilities that sum to a value within
+            PCFG.EPSILON of 1.
         """
         self._start = start
         self._rules = rules
+
+        # Make sure that the probabilities sum to one.
+        probs = {}
+        for rule in rules:
+            probs[rule.lhs()] = probs.get(rule.lhs(), 0)+rule.p()
+        for (lhs, p) in probs.items():
+            if not ((1-PCFG.EPSILON) < p < (1+PCFG.EPSILON)):
+                raise ValueError("Rules for %r do not sum to 1" % lhs)
 
     def rules(self):
         return self._rules
