@@ -37,13 +37,16 @@ class WeightedVoteClassifier(ClassifierI):
             total += (sum + 1) / 2.0
         return val / total
 
-    def fv_list_probdist(self, fv_list):
+    def distribution_dictionary(self, unlabeled_token):
         total = 0
         counts = {}
         for j in range(len(self._labels)):
+            labeled_token = Token(
+                LabeledText(unlabeled_token.type(), 'positive'),
+                unlabeled_token.loc())
             sum = 0
             for classifier, weight in zip(self._classifiers, self._weights):
-                p = classifier[j].fv_list_prob(fv_list, 'positive')
+                p = classifier[j].prob(labeled_token)
                 sum += p * weight
             total += sum
             counts[self._labels[j]] = sum
@@ -51,7 +54,7 @@ class WeightedVoteClassifier(ClassifierI):
         for label in self.labels():
             counts[label] /= float(total)
 
-        return DictionaryProbDist(counts)
+        return counts
 
     def classify(self, unlabeled_token):
         old_tsl = type_safety_level(0)
@@ -101,13 +104,9 @@ class AdaBoostClassifierTrainer(ClassifierTrainerI):
         self._trace = trace
 
     def train(self, labeled_tokens):
-        fv_lists = map(lambda t: self._inducer._fd_list.detect(t.type().text()),
-                       labeled_tokens)
-        labels = map(lambda t: t.type().label(), labeled_tokens)
-        return self.train_fv_lists(fv_lists, labels)
+        labels = [t.type().label() for t in labeled_tokens]
 
-    def train_fv_lists(self, fv_lists, labels):
-        m = len(fv_lists)
+        m = len(labeled_tokens)
         label_set = {}
         for ls in labels:
             for l in ls:
@@ -133,7 +132,7 @@ class AdaBoostClassifierTrainer(ClassifierTrainerI):
                 print 'ABC iteration', t, '- inducing classifier'
 
             classifier, predictions = self._train_and_test_classifier(D,
-                zip(fv_lists, labels), label_set)
+                labeled_tokens, label_set)
             hs.append(classifier)
             if self._trace:
                 print 'ABC - h', classifier
@@ -169,28 +168,29 @@ class AdaBoostClassifierTrainer(ClassifierTrainerI):
 
         return WeightedVoteClassifier(label_set, hs, as)
 
-    def _train_and_test_classifier(self, D, instances, labels):
+    def _train_and_test_classifier(self, D, labeled_tokens, labels):
         cs = []
-        ps = zeros((len(instances), len(labels)), 'd')
+        ps = zeros((len(labeled_tokens), len(labels)), 'd')
         for j in range(len(labels)):
-            fvls, ls = self._filter_tokens(instances, labels[j])
-            classifier = self._inducer.train_fv_lists_weights(fvls, ls, D[:, j])
-            for i in range(len(instances)):
-                p = classifier.fv_list_prob(fvls[i], 'positive')
+            labeled_texts = self._filter_tokens(labeled_tokens, labels[j])
+            classifier = self._inducer.train(labeled_texts, weights = D[:, j])
+            for i in range(len(labeled_texts)):
+                p = classifier.prob(Token(
+                        LabeledText(labeled_texts[i].type().text(), 'positive'),
+                        labeled_texts[i].loc()))
                 ps[i, j] = p * 2.0 - 1.0 # normalise between -1 and +1
             cs.append(classifier)
         return cs, ps
 
-    def _filter_tokens(self, instances, label):
-        fvls = []
-        labels = []
-        for fv_list, ls in instances:
-            fvls.append(fv_list)
-            if label in ls:
-                labels.append('positive')
-            else:
-                labels.append('negative')
-        return fvls, labels
+    def _filter_tokens(self, labeled_tokens, label):
+        labeled_texts = []
+        for token in labeled_tokens:
+            l = 'negative'
+            if label in token.type().label():
+                l = 'positive'
+            labeled_texts.append(
+                Token(LabeledText(token.type().text(), l), token.loc()))
+        return labeled_texts
 
 def demo_nb(W, N):
     print 'Loading SENSEVAL interest corpus'
@@ -210,38 +210,46 @@ def demo_nb(W, N):
                                   token.loc()))
 
             for word_token in trimmed:
-                words[word_token.type()] = 1
+                words[word_token.type().base()] = 1
 
     words = words.keys()
     #words = words.keys()[:200] # otherwise a bit over 8000
 
+    training = filtered[100:]
+    testing = filtered[:100]
+
     print 'Creating NB trainer, with %d words' % len(words)
-    fd_list = FilteredFDList(
-                ArrayFunctionFilter(lambda tk: tk.type().base()),
-                BagOfWordsFDList(words))
+    ffd_list = FilteredFDList(ArrayFunctionFilter(lambda tk: tk.type().base()),
+                              BagOfWordsFDList(words))
+    fd_list = MemoizedFDList(ffd_list, [tk.type().text() for tk in training])
+
     nbt = NBClassifierTrainer(fd_list, estimator=('Lidstone', 0.0001))
 
     print 'Training AdaBoost with %d iterations' % N
     abt = AdaBoostClassifierTrainer(nbt, N, trace=True)
-    classifier = abt.train(filtered[100:])
+    classifier = abt.train(training)
 
     print 'Testing'
-    test_multi_label(classifier, filtered[:100], fd_list)
+    test_multi_label(classifier, testing)
 
     print 'NB - benchmark'
-    test_multi_label(nbt.train(filtered[100:]), filtered[:100], fd_list)
+    test_multi_label(nbt.train(training), testing)
 
-def test_multi_label(classifier, tests, fd_list):
+def test_multi_label(classifier, tests):
     correct = 0
     for i in range(len(tests)):
         test = tests[i]
-        pdist = classifier.fv_list_probdist(fd_list.detect(test.type()))
-        #pred = classifier.classify(Token(test.type().text(), test.loc()))
-        pred = pdist.max()
+        dd = classifier.distribution_dictionary(
+            Token(test.type().text(), test.loc()))
+        pred = None
+        for label, prob in dd.items():
+            if not pred or prob > pred[0]:
+                pred = (prob, label)
+        pred = pred[1]
         #print 'test', i, 'pred', pred.type().label(), 'actual', test.type().label()
         print 'test', i, 'pred', pred, 'actual', test.type().label()
-        for l in pdist.samples():
-            print '%s/%f' % (l, pdist.prob(l)),
+        for label, prob in dd.items():
+            print '%s/%f' % (label, prob),
         print 
         if pred == test.type().label() or pred == test.type().label()[0]:
             correct += 1
@@ -278,5 +286,3 @@ if __name__ == '__main__':
         print >>sys.stderr, 'Must supply <window size> and <iterations>'
         sys.exit()
     demo_nb(int(sys.argv[1]), int(sys.argv[2]))
-    #words, tokens = load_senseval()
-    #demo_singlefeature(words, tokens)

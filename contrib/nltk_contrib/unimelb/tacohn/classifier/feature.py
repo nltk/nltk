@@ -963,11 +963,11 @@ class MemoizedFDList(AbstractFDList):
         self._cache = {}
         self._base_fd_list = base_fd_list
         for text in texts:
-            self._cache[text] = base_fd_list.detect(text)
+            self._cache[tuple(text)] = base_fd_list.detect(text)
 
     def detect(self, text):
         # Inherit docs
-        fv_list = self._cache.get(text, None)
+        fv_list = self._cache.get(tuple(text), None)
         if fv_list is not None:
             return fv_list
         else:
@@ -1083,6 +1083,15 @@ class _AbstractFeatureClassifierProbDist(ProbDistI):
         if sample.type().text() != self._tok.type().text():
             return 0
         return self._dist_dict.get(sample.type().label(), 0)
+    def max(self):
+        max = None
+        for label, value in self._dist_dict.items():
+            if not max or value > max[0]:
+                max = (value, label)
+        if max:
+            return max[1]
+        else:
+            return None
 
 class AbstractFeatureClassifier(ClassifierI):
     """

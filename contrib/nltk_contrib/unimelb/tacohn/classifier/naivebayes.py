@@ -273,7 +273,7 @@ class NBClassifierTrainer(ClassifierTrainerI):
         self._fd_list = fd_list
         self._kwargs = kwargs
 
-    def train(self, labeled_tokens): 
+    def train(self, labeled_tokens, **kwargs): 
         """
         Build a new C{NBClassifier} from the given training data.
 
@@ -291,7 +291,9 @@ class NBClassifierTrainer(ClassifierTrainerI):
         estimator = 'ELE'
         labels = None
         weights = [1 for tk in labeled_tokens]
-        for key, val in self._kwargs.items():
+        all_kwargs = dict(self._kwargs)
+        all_kwargs.update(kwargs)
+        for key, val in all_kwargs.items():
             if key == 'estimator': estimator = val
             elif key == 'labels': labels = val
             elif key == 'weights': weights = val
