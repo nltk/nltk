@@ -78,6 +78,8 @@ Possible future improvements:
 from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
+from nltk.draw.cfg import CFGEditor
+from nltk.token import WSTokenizer
 from Tkinter import *
         
 class ShiftReduceParserDemo:
@@ -94,20 +96,29 @@ class ShiftReduceParserDemo:
         self._text = text
         self._parser = SteppingShiftReduceParser(grammar, trace)
 
-        # Animations.  animating_lock is a lock to prevent the demo
-        # from performing new operations while it's animating.
-        self._animate = 1
-        self._num_animation_frames = 10
-        self._animating_lock = 0
-
         # Set up the main window.
         self._top = Tk()
         self._top.title('Shift Reduce Parser Demo')
+
+        # Animations.  animating_lock is a lock to prevent the demo
+        # from performing new operations while it's animating.
+        self._animating_lock = 0
+        self._animate = IntVar(self._top)
+        self._animate.set(10) # = medium
+
+        # The user can hide the grammar.
+        self._show_grammar = IntVar(self._top)
+        self._show_grammar.set(1)
+
+        # Base font size
+        self._size = IntVar(self._top)
+        self._size.set(12) # = medium
 
         # Set up key bindings.
         self._init_bindings()
 
         # Create the basic frames.
+        self._init_menubar(self._top)
         self._init_buttons(self._top)
         self._init_feedback(self._top)
         self._init_grammar(self._top)
@@ -126,14 +137,16 @@ class ShiftReduceParserDemo:
 
     def _init_grammar(self, parent):
         # Grammar view.
-        self._show_grammar = 1
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
-        Label(self._prodframe, text='Available Reductions',
-              font=('helvetica', -14, 'bold')).pack()
+        helv = ('helvetica', -self._size.get())
+        bold = ('helvetica', -self._size.get()-2, 'bold')
+        self._prodlist_label = Label(self._prodframe, font=bold, 
+                                     text='Available Reductions')
+        self._prodlist_label.pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
                                  relief='groove', background='white',
-                                 foreground='#909090',
+                                 foreground='#909090', font=helv,
                                  selectforeground='#004040',
                                  selectbackground='#c0f0c0')
 
@@ -145,7 +158,7 @@ class ShiftReduceParserDemo:
         self._prodlist.config(height=min(len(self._productions), 25))
 
         # Add a scrollbar if there are more than 25 productions.
-        if len(self._productions) > 25:
+        if 1:#len(self._productions) > 25:
             listscroll = Scrollbar(self._prodframe,
                                    orient='vertical')
             self._prodlist.config(yscrollcommand = listscroll.set)
@@ -161,11 +174,13 @@ class ShiftReduceParserDemo:
         self._prodlist.bind('<Leave>', self._clear_hover)
 
     def _init_bindings(self):
-        # Key bindings are a good thing.
+        # Quit
         self._top.bind('<Control-q>', self.destroy)
         self._top.bind('<Control-x>', self.destroy)
         self._top.bind('<Alt-q>', self.destroy)
         self._top.bind('<Alt-x>', self.destroy)
+
+        # Ops (step, shift, reduce, undo)
         self._top.bind('<space>', self.step)
         self._top.bind('<s>', self.shift)
         self._top.bind('<Alt-s>', self.shift)
@@ -179,56 +194,125 @@ class ShiftReduceParserDemo:
         self._top.bind('<Control-u>', self.undo)
         self._top.bind('<Control-z>', self.undo)
         self._top.bind('<BackSpace>', self.undo)
+
+        # Misc
         self._top.bind('<Control-p>', self.postscript)
-        self._top.bind('<h>', self.help)
-        self._top.bind('<Alt-h>', self.help)
         self._top.bind('<Control-h>', self.help)
         self._top.bind('<F1>', self.help)
-        self._top.bind('<Control-a>', self.toggle_animations)
-        self._top.bind('<g>', self.toggle_grammar)
-        self._top.bind('<Alt-g>', self.toggle_grammar)
-        self._top.bind('<Control-g>', self.toggle_grammar)
+        self._top.bind('<Control-g>', self.edit_grammar)
+        self._top.bind('<Control-t>', self.edit_sentence)
+
+        # Animation speed control
+        self._top.bind('-', lambda e,a=self._animate:a.set(20))
+        self._top.bind('=', lambda e,a=self._animate:a.set(10))
+        self._top.bind('+', lambda e,a=self._animate:a.set(4))
 
     def _init_buttons(self, parent):
         # Set up the frames.
         self._buttonframe = buttonframe = Frame(parent)
-        buttonframe.pack(fill='x', side='bottom')
-        Button(buttonframe, text='Quit', underline=0,
-               command=self.destroy).pack(side='right')
-        Button(buttonframe, text='Print', underline=0,
-               command=self.postscript).pack(side='right')
-        Button(buttonframe, text='Help', underline=0,
-               command=self.help).pack(side='right')
+        buttonframe.pack(fill='none', side='bottom')
         Button(buttonframe, text='Step', 
+               background='#90c0d0', foreground='black',
                command=self.step,).pack(side='left')
         Button(buttonframe, text='Shift', underline=0,
+               background='#90f090', foreground='black',
                command=self.shift).pack(side='left')
         Button(buttonframe, text='Reduce', underline=0,
+               background='#90f090', foreground='black',
                command=self.reduce).pack(side='left')
         Button(buttonframe, text='Undo', underline=0,
+               background='#f0a0a0', foreground='black',
                command=self.undo).pack(side='left')
-        Button(buttonframe, text='Reset',
-               command=self.reset).pack(side='left')
 
     def _init_menubar(self, parent):
         menubar = Menu(parent)
 
         filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label='Reset', underline=0,
+        filemenu.add_command(label='Reset Parser', underline=0,
                              command=self.reset, accelerator='Del')
+        filemenu.add_command(label='Print to Postscript', underline=0,
+                             command=self.postscript, accelerator='Ctrl-p')
         filemenu.add_command(label='Exit', underline=1,
                              command=self.destroy, accelerator='Ctrl-x')
+        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+
+        editmenu = Menu(menubar, tearoff=0)
+        editmenu.add_command(label='Edit Grammar', underline=5,
+                             command=self.edit_grammar,
+                             accelerator='Ctrl-g')
+        editmenu.add_command(label='Edit Text', underline=5,
+                             command=self.edit_sentence,
+                             accelerator='Ctrl-t')
+        menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
+
+        rulemenu = Menu(menubar, tearoff=0)
+        rulemenu.add_command(label='Step', underline=1,
+                             command=self.step, accelerator='Space')
+        rulemenu.add_separator()
+        rulemenu.add_command(label='Shift', underline=0,
+                             command=self.shift, accelerator='Ctrl-s')
+        rulemenu.add_command(label='Reduce', underline=0,
+                             command=self.reduce, accelerator='Ctrl-r')
+        rulemenu.add_separator()
+        rulemenu.add_command(label='Undo', underline=0,
+                             command=self.undo, accelerator='Ctrl-u')
+        menubar.add_cascade(label='Apply', underline=0, menu=rulemenu)
+
+        viewmenu = Menu(menubar, tearoff=0)
+        viewmenu.add_checkbutton(label="Show Grammar", underline=0,
+                                 variable=self._show_grammar,
+                                 command=self._toggle_grammar)
+        viewmenu.add_separator()
+        viewmenu.add_radiobutton(label='Tiny', variable=self._size,
+                                 underline=0, value=10, command=self.resize)
+        viewmenu.add_radiobutton(label='Small', variable=self._size,
+                                 underline=0, value=12, command=self.resize)
+        viewmenu.add_radiobutton(label='Medium', variable=self._size,
+                                 underline=0, value=14, command=self.resize)
+        viewmenu.add_radiobutton(label='Large', variable=self._size,
+                                 underline=0, value=18, command=self.resize)
+        viewmenu.add_radiobutton(label='Huge', variable=self._size,
+                                 underline=0, value=24, command=self.resize)
+        menubar.add_cascade(label='View', underline=0, menu=viewmenu)
+
+        animatemenu = Menu(menubar, tearoff=0)
+        animatemenu.add_radiobutton(label="No Animation", underline=0,
+                                    variable=self._animate, value=0)
+        animatemenu.add_radiobutton(label="Slow Animation", underline=0,
+                                    variable=self._animate, value=20,
+                                    accelerator='-')
+        animatemenu.add_radiobutton(label="Normal Animation", underline=0,
+                                    variable=self._animate, value=10,
+                                    accelerator='=')
+        animatemenu.add_radiobutton(label="Fast Animation", underline=0,
+                                    variable=self._animate, value=4,
+                                    accelerator='+')
+        menubar.add_cascade(label="Animate", underline=1, menu=animatemenu)
+
+
+        helpmenu = Menu(menubar, tearoff=0)
+        helpmenu.add_command(label='About', underline=0,
+                             command=self.about)
+        helpmenu.add_command(label='Instructions', underline=0,
+                             command=self.help, accelerator='F1')
+        menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
+        
+        parent.config(menu=menubar)
 
     def _init_feedback(self, parent):
         self._feedbackframe = feedbackframe = Frame(parent)
         feedbackframe.pack(fill='x', side='bottom', padx=3, pady=3)
-        Label(feedbackframe, text='Last Operation:').pack(side='left')
+        self._lastoper_label = Label(feedbackframe, text='Last Operation:',
+                                     font=('helvetica', -self._size.get()))
+        self._lastoper_label.pack(side='left')
         lastoperframe = Frame(feedbackframe, relief='sunken', border=1)
         lastoperframe.pack(fill='x', side='right', expand=1, padx=5)
+        helv = ('helvetica', -self._size.get())
         self._lastoper1 = Label(lastoperframe, foreground='#007070',
-                                background='#f0f0f0')
+                                background='#f0f0f0', font=helv)
         self._lastoper2 = Label(lastoperframe, anchor='w', width=30,
-                                foreground='#004040', background='#f0f0f0')
+                                foreground='#004040', background='#f0f0f0',
+                                font=helv)
         self._lastoper1.pack(side='left')
         self._lastoper2.pack(side='left', fill='x', expand=1)
 
@@ -245,11 +329,12 @@ class ShiftReduceParserDemo:
                                                  outline='black')
         self._exprline = canvas.create_line(0,0,0,0, dash='.')
         self._stacktop = canvas.create_line(0,0,0,0, fill='#408080')
+        size = self._size.get()+4
         self._stacklabel = TextWidget(canvas, 'Stack', color='#004040',
-                                  font=('helvetica', -16, 'bold'))
+                                  font=('helvetica', -size, 'bold'))
         self._rtextlabel = TextWidget(canvas, 'Remaining Text',
                                       color='#004040',
-                                      font=('helvetica', -16, 'bold'))
+                                      font=('helvetica', -size, 'bold'))
         self._cframe.add_widget(self._stacklabel)
         self._cframe.add_widget(self._rtextlabel)
 
@@ -283,18 +368,19 @@ class ShiftReduceParserDemo:
 
         # Draw the stack.
         stackx = 5
-        bold = ('helvetica', -12, 'bold')
+        helv = ('helvetica', -self._size.get())
+        bold = ('helvetica', -self._size.get(), 'bold')
         for tok in self._parser.stack():
             if isinstance(tok, TreeToken):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
                            'node_font': bold, 'node_color': '#006060',
-                           'leaf_color': '#006060'}
+                           'leaf_color': '#006060', 'leaf_font':helv}
                 widget = tree_to_treesegment(self._canvas, tok.type(),
                                              **attribs)
                 widget.node()['color'] = '#000000'
             else:
-                widget = TextWidget(self._canvas, tok.type())
-                widget['color'] = '#000000'
+                widget = TextWidget(self._canvas, tok.type(),
+                                    color='#000000', font=helv)
             widget.bind_click(self._popup_reduce)
             self._stackwidgets.append(widget)
             self._cframe.add_widget(widget, stackx, y)
@@ -302,8 +388,10 @@ class ShiftReduceParserDemo:
 
         # Draw the remaining text.
         rtextwidth = 0
+        helv = ('helvetica', -self._size.get())
         for tok in self._parser.remaining_text():
-            widget = TextWidget(self._canvas, tok.type(), color='#000000')
+            widget = TextWidget(self._canvas, tok.type(),
+                                color='#000000', font=helv)
             self._rtextwidgets.append(widget)
             self._cframe.add_widget(widget, rtextwidth, y)
             rtextwidth = widget.bbox()[2] + 4
@@ -374,7 +462,7 @@ class ShiftReduceParserDemo:
             tok = self._parser.stack()[-1]
             self._lastoper1['text'] = 'Shift:'
             self._lastoper2['text'] = '%r' % tok.type()
-            if self._animate:
+            if self._animate.get():
                 self._animate_shift()
             else:
                 self._redraw()
@@ -387,7 +475,7 @@ class ShiftReduceParserDemo:
         if production:
             self._lastoper1['text'] = 'Reduce:'
             self._lastoper2['text'] = '%s' % production
-            if self._animate:
+            if self._animate.get():
                 self._animate_reduce()
             else:
                 self._redraw()
@@ -398,15 +486,6 @@ class ShiftReduceParserDemo:
         if self._parser.undo():
             self._redraw()
 
-    def help(self, *e):
-        # The default font's not very legible; try using 'fixed' instead. 
-        try:
-            ShowText(self._top, 'Help: Shift Reduce Parser Demo',
-                     (__doc__).strip(), width=75, font='fixed')
-        except:
-            ShowText(self._top, 'Help: Shift Reduce Parser Demo',
-                     (__doc__).strip(), width=75)
-
     def postscript(self, *e):
         self._cframe.print_to_file()
 
@@ -414,13 +493,66 @@ class ShiftReduceParserDemo:
         self._top.mainloop(*args, **varargs)
 
     #########################################
+    ##  Menubar callbacks
+    #########################################
+
+    def resize(self, size=None):
+        if size is not None: self._size.set(size)
+        size = self._size.get()
+        self._stacklabel['font'] = ('helvetica', -size-4, 'bold')
+        self._rtextlabel['font'] = ('helvetica', -size-4, 'bold')
+        self._lastoper_label['font'] = ('helvetica', -size)
+        self._lastoper1['font'] = ('helvetica', -size)
+        self._lastoper2['font'] = ('helvetica', -size)
+        self._prodlist['font'] = ('helvetica', -size)
+        self._prodlist_label['font'] = ('helvetica', -size-2, 'bold')
+        self._redraw()
+
+    def help(self, *e):
+        # The default font's not very legible; try using 'fixed' instead. 
+        try:
+            ShowText(self._top, 'Help: Chart Parser Demo',
+                     (__doc__).strip(), width=75, font='fixed')
+        except:
+            ShowText(self._top, 'Help: Chart Parser Demo',
+                     (__doc__).strip(), width=75)
+
+    def about(self, *e):
+        ABOUT = ("NLTK Shift-Reduce Parser Demo\n"+
+                 "Written by Edward Loper")
+        TITLE = 'About: Shift-Reduce Parser Demo'
+        try:
+            from tkMessageBox import Message
+            Message(message=ABOUT, title=TITLE).show()
+        except:
+            ShowText(self._top, TITLE, ABOUT)
+            
+    def edit_grammar(self, *e):
+        CFGEditor(self._top, self._parser.grammar(), self.set_grammar)
+
+    def set_grammar(self, grammar):
+        self._parser.set_grammar(grammar)
+        self._productions = list(grammar.productions())
+        self._prodlist.delete(0, 'end')
+        for production in self._productions:
+            self._prodlist.insert('end', (' %s' % production))
+        
+    def edit_sentence(self, *e):
+        sentence = ' '.join([tok.type() for tok in self._text])
+        title = 'Edit Text'
+        EntryDialog(self._top, sentence, self.set_sentence, title)
+
+    def set_sentence(self, sentence):
+        self._text = WSTokenizer().tokenize(sentence)
+        self.reset()
+
+    #########################################
     ##  Reduce Production Selection
     #########################################
 
-    def toggle_grammar(self, *e):
-        self._show_grammar = not self._show_grammar
-        if self._show_grammar:
-            self._prodframe.pack(fill='both', expand='y', side='left',
+    def _toggle_grammar(self, *e):
+        if self._show_grammar.get():
+            self._prodframe.pack(fill='both', side='left', padx=2,
                                  after=self._feedbackframe)
             self._lastoper1['text'] = 'Show Grammar'
         else:
@@ -436,7 +568,7 @@ class ShiftReduceParserDemo:
         if production:
             self._lastoper1['text'] = 'Reduce:'
             self._lastoper2['text'] = '%s' % production
-            if self._animate:
+            if self._animate.get():
                 self._animate_reduce()
             else:
                 self._redraw()
@@ -463,25 +595,6 @@ class ShiftReduceParserDemo:
     ##  Animations
     #########################################
 
-    def toggle_animations(self, *e):
-        if self._animate:
-            if self._num_animation_frames > 10:
-                self._animate = 1
-                self._num_animation_frames = 10
-                self._lastoper1['text'] = 'Normal Animations'
-            elif self._num_animation_frames > 4:
-                self._animate = 1
-                self._num_animation_frames = 4
-                self._lastoper1['text'] = 'Fast Animations'
-            else:
-                self._animate = 0
-                self._lastoper1['text'] = 'Animations Off'
-        else:
-            self._animate = 1
-            self._num_animation_frames = 20
-            self._lastoper1['text'] = 'Slow Animations'
-        self._lastoper2['text'] = ''
-
     def _animate_shift(self):
         # What widget are we shifting?
         widget = self._rtextwidgets[0]
@@ -492,10 +605,9 @@ class ShiftReduceParserDemo:
         else: left = self._stackwidgets[-1].bbox()[2]+10
 
         # Start animating.
-        dx = (left-right)*1.0/self._num_animation_frames
-        frame = self._num_animation_frames
-        self._animate_shift_frame(self._num_animation_frames,
-                                  widget, dx)
+        dt = self._animate.get()
+        dx = (left-right)*1.0/dt
+        self._animate_shift_frame(dt, widget, dx)
 
     def _animate_shift_frame(self, frame, widget, dx):
         if frame > 0:
@@ -504,7 +616,11 @@ class ShiftReduceParserDemo:
             self._top.after(10, self._animate_shift_frame,
                             frame-1, widget, dx)
         else:
-            self._redraw()
+            # but: stacktop??
+            
+            # Shift the widget to the stack.
+            del self._rtextwidgets[0]
+            self._stackwidgets.append(widget)
             self._animating_lock = 0
 
     def _animate_reduce(self):
@@ -519,9 +635,9 @@ class ShiftReduceParserDemo:
             ydist = 15 + widgets[0].height()
 
         # Start animating.
-        dy = ydist*2.0/self._num_animation_frames
-        self._animate_reduce_frame(self._num_animation_frames/2,
-                                   widgets, dy)
+        dt = self._animate.get()
+        dy = ydist*2.0/dt
+        self._animate_reduce_frame(dt/2, widgets, dy)
 
     def _animate_reduce_frame(self, frame, widgets, dy):
         if frame > 0:
@@ -530,7 +646,50 @@ class ShiftReduceParserDemo:
             self._top.after(10, self._animate_reduce_frame,
                             frame-1, widgets, dy)
         else:
-            self._redraw()
+            del self._stackwidgets[-len(widgets):]
+            for widget in widgets:
+                self._cframe.remove_widget(widget)
+            tok = self._parser.stack()[-1]
+            if not isinstance(tok, TreeToken): raise ValueError()
+            label = TextWidget(self._canvas, str(tok.node()), color='#006060',
+                               font=('helvetica', -self._size.get(), 'bold'))
+            widget = TreeSegmentWidget(self._canvas, label, widgets,
+                                       width=2)
+            (x1, y1, x2, y2) = self._stacklabel.bbox()
+            y = y2-y1+10
+            if not self._stackwidgets: x = 5
+            else: x = self._stackwidgets[-1].bbox()[2] + 10
+            self._cframe.add_widget(widget, x, y)
+            self._stackwidgets.append(widget)
+
+#             # Delete the old widgets..
+#             del self._stackwidgets[-len(widgets):]
+#             for widget in widgets:
+#                 self._cframe.destroy_widget(widget)
+#
+#             # Make a new one.
+#             tok = self._parser.stack()[-1]
+#             helv = ('helvetica', -self._size.get())
+#             bold = ('helvetica', -self._size.get(), 'bold')
+#             if isinstance(tok, TreeToken):
+#                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
+#                            'node_font': bold, 'node_color': '#006060',
+#                            'leaf_color': '#006060', 'leaf_font':helv}
+#                 widget = tree_to_treesegment(self._canvas, tok.type(),
+#                                              **attribs)
+#                 widget.node()['color'] = '#000000'
+#             else:
+#                 widget = TextWidget(self._canvas, tok.type(),
+#                                     color='#000000', font=helv)
+#             widget.bind_click(self._popup_reduce)
+#             (x1, y1, x2, y2) = self._stacklabel.bbox()
+#             y = y2-y1+10
+#             if not self._stackwidgets: x = 5
+#             else: x = self._stackwidgets[-1].bbox()[2] + 10
+#             self._cframe.add_widget(widget, x, y)
+#             self._stackwidgets.append(widget)
+
+            #self._redraw()
             self._animating_lock = 0
 
     #########################################
