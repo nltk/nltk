@@ -665,7 +665,7 @@ class MergedFDList(AbstractFDList):
             
         return SimpleFeatureValueList(assignments, self._N, default)
 
-class SimpleFDList(AbstractFDList):
+class SimpleFDList:
     """
     A feature detector list constructed from a C{list} of
     C{FeatureDetector}s.
@@ -681,6 +681,14 @@ class SimpleFDList(AbstractFDList):
         @type feature_detectors: C{sequence} of C{FeatureDetectorI}
         """
         self._feature_detectors = feature_detectors
+    def __getitem__(self, feature_id):
+        # Inherit docs from FeatureDetectorListI
+        if feature_id >= len(self) or feature_id < 0:
+            raise IndexError('FeatureDetectorList index out of range')
+        return self._feature_detectors[feature_id]
+    def __add__(self, other):
+        # Inherit docs from FeatureDetectorListI
+        return MergedFDList(self, other)
     def __len__(self):
         # Inherit docs from FeatureDetectorListI
         return len(self._feature_detectors)
