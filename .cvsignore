@@ -4,5 +4,6 @@
 *.pdf
 *.ps
 *.pyc
+*.toc
 attic
 docs
