@@ -1133,16 +1133,23 @@ class SequenceWidget(CanvasWidget):
 
     def _tags(self): return []
 
-    def _manage(self):
-        if len(self._children) == 0: return
-        self._update(self._children[0])
-
     def _yalign(self, top, bot):
         if self._align == 'top': return top
         if self._align == 'bottom': return bot
         if self._align == 'center': return (top+bot)/2
 
     def _update(self, child):
+        # Align all children with child.
+        (left, top, right, bot) = child.bbox()
+        y = self._yalign(top, bot)
+        for child in self._children:
+            (x1, y1, x2, y2) = child.bbox()
+            child.move(0, y-self._yalign(y1,y2))
+
+    def _manage(self):
+        if len(self._children) == 0: return
+        child = self._children[0]
+
         # Align all children with child.
         (left, top, right, bot) = child.bbox()
         y = self._yalign(top, bot)
@@ -1165,6 +1172,57 @@ class SequenceWidget(CanvasWidget):
         
     def __repr__(self):
         return '[Sequence: ' + `self._children`[1:-1]+']'
+
+    # Provide an alias for the child_widgets() member.
+    children = CanvasWidget.child_widgets
+    
+    def replace_child(self, oldchild, newchild):
+        """
+        Replace the child canvas widget C{oldchild} with C{newchild}.
+        C{newchild} must not have a parent.  C{oldchild}'s parent will
+        be set to C{None}.
+
+        @type oldchild: C{CanvasWidget}
+        @param oldchild: The child canvas widget to remove.
+        @type newchild: C{CanvasWidget}
+        @param newchild: The canvas widget that should replace
+            C{oldchild}.
+        """
+        index = self._children.index(oldchild)
+        self._children[index] = newchild
+        self._remove_child_widget(oldchild)
+        self._add_child_widget(newchild)
+        self.update(newchild)
+
+    def remove_child(self, child):
+        """
+        Remove the given child canvas widget.  C{child}'s parent will
+        be set ot None.
+
+        @type child: C{CanvasWidget}
+        @param child: The child canvas widget to remove.
+        """
+        index = self._children.index(child)
+        del self._children[index]
+        self._remove_child_widget(child)
+        if len(self._children) > 0:
+            self.update(self._children[0])
+
+    def insert_child(self, index, child):
+        """
+        Insert a child canvas widget before a given index.
+
+        @type child: C{CanvasWidget}
+        @param child: The canvas widget that should be inserted.
+        @type index: C{int}
+        @param index: The index where the child widget should be
+            inserted.  In particular, the index of C{child} will be
+            C{index}; and the index of any children whose indices were
+            greater than equal to C{index} before C{child} was
+            inserted will be incremented by one.
+        """
+        self._children.insert(index, child)
+        self._add_child_widget(child)
     
 class StackWidget(CanvasWidget):
     """
@@ -1210,16 +1268,23 @@ class StackWidget(CanvasWidget):
 
     def _tags(self): return []
 
-    def _manage(self):
-        if len(self._children) == 0: return
-        self._update(self._children[0])
-
     def _xalign(self, left, right):
         if self._align == 'left': return left
         if self._align == 'right': return right
         if self._align == 'center': return (left+right)/2
 
     def _update(self, child):
+        # Align all children with child.
+        (left, top, right, bot) = child.bbox()
+        x = self._xalign(left, right)
+        for child in self._children:
+            (x1, y1, x2, y2) = child.bbox()
+            child.move(x-self._xalign(x1,x2), 0)
+
+    def _manage(self):
+        if len(self._children) == 0: return
+        child = self._children[0]
+        
         # Align all children with child.
         (left, top, right, bot) = child.bbox()
         x = self._xalign(left, right)
@@ -1242,6 +1307,57 @@ class StackWidget(CanvasWidget):
 
     def __repr__(self):
         return '[Stack: ' + `self._children`[1:-1]+']'
+
+    # Provide an alias for the child_widgets() member.
+    children = CanvasWidget.child_widgets
+    
+    def replace_child(self, oldchild, newchild):
+        """
+        Replace the child canvas widget C{oldchild} with C{newchild}.
+        C{newchild} must not have a parent.  C{oldchild}'s parent will
+        be set to C{None}.
+
+        @type oldchild: C{CanvasWidget}
+        @param oldchild: The child canvas widget to remove.
+        @type newchild: C{CanvasWidget}
+        @param newchild: The canvas widget that should replace
+            C{oldchild}.
+        """
+        index = self._children.index(oldchild)
+        self._children[index] = newchild
+        self._remove_child_widget(oldchild)
+        self._add_child_widget(newchild)
+        self.update(newchild)
+
+    def remove_child(self, child):
+        """
+        Remove the given child canvas widget.  C{child}'s parent will
+        be set ot None.
+
+        @type child: C{CanvasWidget}
+        @param child: The child canvas widget to remove.
+        """
+        index = self._children.index(child)
+        del self._children[index]
+        self._remove_child_widget(child)
+        if len(self._children) > 0:
+            self.update(self._children[0])
+
+    def insert_child(self, index, child):
+        """
+        Insert a child canvas widget before a given index.
+
+        @type child: C{CanvasWidget}
+        @param child: The canvas widget that should be inserted.
+        @type index: C{int}
+        @param index: The index where the child widget should be
+            inserted.  In particular, the index of C{child} will be
+            C{index}; and the index of any children whose indices were
+            greater than equal to C{index} before C{child} was
+            inserted will be incremented by one.
+        """
+        self._children.insert(index, child)
+        self._add_child_widget(child)
     
 class SpaceWidget(CanvasWidget):
     """
