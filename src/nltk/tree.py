@@ -49,8 +49,6 @@ from nltk.chktype import classeq as _classeq
 import types
 
 # Register some information about properties used by tree tokens.
-Token.register_cyclic('PARENT')
-Token.register_cyclic('PARENTS')
 Token.register_repr(['TEXT','PARENT'], '<%(text)r>')
 Token.register_repr(['TEXT','PARENTS'], '<%(text)r>')
 
