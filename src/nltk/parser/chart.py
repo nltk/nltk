@@ -9,40 +9,37 @@
 # $Id$
 
 """
-Data classes and C{ParserI} implementations for "chart parsers," which
+Data classes and parser implementations for \"chart parsers\", which
 use dynamic programming to efficiently parse a text.  A X{chart
-parser} derives parse trees for a text by iteratively adding "edges"
-to a "chart."  Each X{edge} represents a hypothesis about the tree
+parser} derives parse trees for a text by iteratively adding \"edges\"
+to a \"chart.\"  Each X{edge} represents a hypothesis about the tree
 structure for a subsequence of the text.  The X{chart} is a
-"blackboard" for composing and combining these hypotheses.
+\"blackboard\" for composing and combining these hypotheses.
 
 When a chart parser begins parsing a text, it creates a new (empty)
 chart, spanning the text.  It then incrementally adds new edges to the
 chart.  A set of X{chart rules} specifies the conditions under which
-new edges should be added to the chart.
+new edges should be added to the chart.  Once the chart reaches a
+stage where none of the chart rules adds any new edges, parsing is
+complete.
 
-Once the chart reaches a stage where none of the chart rules adds any
-new edges, parsing is complete.
-          
-The set of chart rules used by a chart parser is known as its
-X{strategy}.  Several standard strategies, such as X{top-down parsing}
-and X{bottom-up parsing}, are already defined by the
-C{nltk.chartparser} module; however, you can easily create your own
-rules and strategies, as well.
+Charts are encoded with the L{Chart} class, and edges are encoded with
+the L{TreeEdge} and L{LeafEdge} classes.  The chart parser module
+defines three chart parsers:
 
-Edges are encoded with the C{Edge} class, and charts are encoded with
-the C{Chart} class or one of its specailized subclasses.  The chart
-parser module includes definitions for three chart parsers:
+  - C{ChartParser} is a simple and flexible chart parser.  Given a
+    set of chart rules, it will apply those rules to the chart until
+    no more edges are added.
 
-  - C{ChartParser} is a simple and flexible chart parser.  Its chart rules
-    must implement the C{ChartRuleI} interface.
-  - C{SteppingChartParser} is a subclass of C{ChartParser} that can be
-    used to step through the parsing process.
-  - C{IncrementalChartParser} is a more efficient chart parser
-    implementation.  Its chart rules implement the
-    C{IncrementalChartRule} interface, which returns only the edges
-    that can be produced from a given edge.
+  - C{SteppingChartParser} is a subclass of C{ChartParser} that can
+    be used to step through the parsing process.
 
+  - C{EarleyParser} is an implementation of the Earley chart parsing
+    algorithm.  It makes a single left-to-right pass through the
+    chart, and applies one of three rules (predictor, scanner, and
+    completer) to each edge it encounters.
+"""
+"""
 @group Data Types: Chart, EdgeI, ProductionEdge, TokenEdge, FRChart
 @group Chart Parsers: ChartParser, SteppingChartParser,
     IncrementalChartParser
@@ -357,14 +354,7 @@ class Chart:
     A blackboard for hypotheses about the syntactic constituents of a
     sentence.  A chart contains a set of edges, where each edge
     encodes a single hypothesis about the structure of some portion of
-    the sentence.  For easy access, these edges are indexed by several
-    different keys:
-    
-      - The edge's start index (C{edge.start()})
-      - The edge's end index (C{edge.end()})
-      - The edge's left hand side (C{edge.lhs()}
-      - The element immediately following the edge's dot (C{edge.next()})
-      - The edge's span (C{edge.span()})
+    the sentence.
 
     In order to reconstruct the trees that are associated with an
     edge, the chart associates each edge with a set of child pointer
@@ -372,6 +362,13 @@ class Chart:
     used to form each edge.  These lists can be used used to
     reconstruct the trees (or partial trees) that are associated with
     each edge.
+
+    The L{select} method can be used to select a specific collection
+    of edges.  For example C{chart.select(is_complete=True, start=0)}
+    yields all complete edges whose start indices are 0.  To ensure
+    the efficiency of these selection operations, C{Chart} dynamically
+    creates and maintains an index for each set of attributes that
+    have been selected on.
     """
     def __init__(self, token):
         """
@@ -380,20 +377,15 @@ class Chart:
         """
         self._length = len(token['subtokens'])
         self._token = token
+
+        # A list of edges contained in this chart.
+        self._edges = []
         
         # The child pointer list associated with each edge.
         self._edge_to_cpls = {}
 
-        # The edge indexes.
-        self._start_to_edge = {}
-        self._end_to_edge = {}
-        self._lhs_to_edge = {}
-        self._next_to_edge = {}
-        self._span_to_edge = {}
-
-        ## Insert an edge for each subtoken. [??]
-        #for i, subtoken in enumerate(token['subtokens']):
-        #    self.insert(LeafEdge(subtoken['text'], i), ())
+        # The edge indexes, used by
+        self._indexes = {}
 
     #////////////////////////////////////////////////////////////
     # Sentence Access
@@ -411,58 +403,77 @@ class Chart:
 
     def edges(self):
         """
-        @return: A list of the edges that this chart contains.
+        @return: A list of all edges in this chart.
+        @rtype: C{list} of L{EdgeI}
         """
-        return self._edge_to_cpls.keys()
+        return self._edges[:]
 
     def iteredges(self):
         """
         @return: An iterator over the edges in this chart.
+        @rtype: C{iter} of L{EdgeI}
         """
-        return self._edge_to_cpls.iterkeys()
+        return iter(self._edges)
 
     # Iterating over the chart gives the edges.
     __iter__ = iteredges
 
-    def edges_starting_at(self, start):
-        """
-        @rtype: C{list} of C{Edge}
-        @return: A list of the edges whose start index is C{start}.
-        """
-        return self._start_to_edge.get(start, [])
-
-    def edges_ending_at(self, end):
-        """
-        @rtype: C{list} of C{Edge}
-        @return: A list of the edges whose end index is C{end}.
-        """
-        return self._end_to_edge.get(end, [])
-
-    def edges_with_lhs(self, lhs):
-        """
-        @rtype: C{list} of C{Edge}
-        @return: A list of the edges whose left hand side nonterminal
-        is C{lhs}.
-        """
-        return self._lhs_to_edge.get(lhs, [])
-
-    def edges_expecting(self, next):
-        """
-        @rtype: C{list} of C{Edge}
-        @return: A list of the edges whose element immediately
-        following their dot is C{next}.
-        """
-        return self._next_to_edge.get(lhs, [])
-
-    def edges_spanning(self, span):
-        """
-        @rtype: C{list} of C{Edge}
-        @return: A list of the edges whose span is C{span}.
-        """
-        return self._span_to_edge.get(span, [])
-
     def num_edges(self):
+        """
+        @return: The number of edges contained in this chart.
+        @rtype: C{int}
+        """
         return len(self._edge_to_cpls)
+
+    def select(self, **restrictions):
+        """
+        @return: An iterator over the edges in this chart.  Any
+            new edges that are added to the chart before the iterator
+            is exahusted will also be generated.
+        @rtype: C{iter} of L{EdgeI}
+
+        @kwarg span: Only generate edges C{e} where C{e.span()==span}
+        @kwarg start: Only generate edges C{e} where C{e.start()==start}
+        @kwarg end: Only generate edges C{e} where C{e.end()==end}
+        @kwarg length: Only generate edges C{e} where C{e.length()==length}
+        @kwarg lhs: Only generate edges C{e} where C{e.lhs()==lhs}
+        @kwarg rhs: Only generate edges C{e} where C{e.rhs()==rhs}
+        @kwarg next: Only generate edges C{e} where C{e.next()==next}
+        @kwarg dot: Only generate edges C{e} where C{e.dot()==dot}
+        @kwarg is_complete: Only generate edges C{e} where
+            C{e.is_complete()==is_complete}
+        @kwarg is_incomplete: Only generate edges C{e} where
+            C{e.is_incomplete()==is_incomplete}
+        """
+        # If there are no restrictions, then return all edges.
+        if restrictions=={}: return iter(self._edges)
+            
+        # Find the index corresponding to the given restrictions.
+        restr_keys = restrictions.keys()
+        restr_keys.sort()
+        restr_keys = tuple(restr_keys)
+
+        # If it doesn't exist, then create it.
+        if not self._indexes.has_key(restr_keys):
+            self._add_index(restr_keys)
+                
+        vals = [restrictions[k] for k in restr_keys]
+        return iter(self._indexes[restr_keys].get(tuple(vals), []))
+
+    def _add_index(self, restr_keys):
+        # Make sure it's a valid index.
+        for k in restr_keys:
+            if not hasattr(EdgeI, k):
+                raise ValueError, 'Bad restriction: %s' % k
+
+        # Create the index.
+        self._indexes[restr_keys] = {}
+
+        # Add all existing edges to the index.
+        for edge in self._edges:
+            vals = [getattr(edge, k)() for k in restr_keys]
+            index = self._indexes[restr_keys]
+            index.setdefault(tuple(vals),[]).append(edge)
 
     #////////////////////////////////////////////////////////////
     # Edge Insertion
@@ -479,16 +490,18 @@ class Chart:
             form this edge.  This list is used to reconstruct the trees
             (or partial trees) that are associated with C{edge}.
         """
-        child_pointer_list = tuple(child_pointer_list)
-        
-        # Register the edge with different indexes
+        # Is it a new edge?
         if not self._edge_to_cpls.has_key(edge):
-            self._start_to_edge.setdefault(edge.start(), []).append(edge)
-            self._end_to_edge.setdefault(edge.end(), []).append(edge)
-            self._lhs_to_edge.setdefault(edge.lhs(), []).append(edge)
-            self._next_to_edge.setdefault(edge.next(), []).append(edge)
-            self._span_to_edge.setdefault(edge.span(), []).append(edge)
+            # Add it to the list of edges.
+            self._edges.append(edge)
+
+            # Register with any generic indices
+            for (restr_keys, index) in self._indexes.items():
+                vals = [getattr(edge, k)() for k in restr_keys]
+                index = self._indexes[restr_keys]
+                index.setdefault(tuple(vals),[]).append(edge)
             
+        child_pointer_list = tuple(child_pointer_list)
         self._edge_to_cpls.setdefault(edge,{})[child_pointer_list] = 1
 
 
@@ -687,6 +700,22 @@ class FundamentalRule(ChartRuleI):
                 left_edge.is_incomplete() and right_edge.is_complete())
     
     def __str__(self): return 'Fundamental Rule'
+
+class FR2(ChartRuleI):
+    EDGES=1
+    def apply(self, chart, grammar, edge1):
+        fr = FundamentalRule()
+        if edge1.is_incomplete():
+            for edge2 in chart.select(start=edge1.end(), is_complete=True,
+                                     lhs=edge1.next()):
+                for new_edge in fr.apply(chart, grammar, edge1, edge2):
+                    yield new_edge
+        else:
+            for edge2 in chart.select(end=edge1.start(), is_complete=False,
+                                     next=edge1.lhs()):
+                for new_edge in fr.apply(chart, grammar, edge2, edge1):
+                    yield new_edge
+    def applicable(self, chart, grammar, edge1): return True
     
 #////////////////////////////////////////////////////////////
 # Top-Down Parsing
@@ -741,6 +770,30 @@ class TopDownMatchRule(ChartRuleI):
         return edge.is_incomplete() and edge.end()<chart.length()
     def __str__(self): return 'Top Down Match Rule'
 
+# Add a cache, to prevent recalculating.
+class CachedTopDownInitRule(TopDownInitRule):
+    def __init__(self):
+        ChartRuleI.__init__(self)
+        self._seen = False
+
+    def apply(self, chart, grammar):
+        if self._seen: return
+        self._seen = True
+        for e in TopDownInitRule.apply(self, chart, grammar):
+            yield e
+
+class CachedTopDownExpandRule(TopDownExpandRule):
+    def __init__(self):
+        ChartRuleI.__init__(self)
+        self._seen = {}
+        
+    def apply(self, chart, grammar, edge):
+        if self._seen.has_key((edge.next(), edge.end())): return
+        self._seen[edge.next(), edge.end()] = 1
+        for e in TopDownExpandRule.apply(self, chart, grammar, edge):
+            yield e
+    
+
 #////////////////////////////////////////////////////////////
 # Bottom-Up Parsing
 #////////////////////////////////////////////////////////////
@@ -784,7 +837,9 @@ class CompleterRule(ChartRuleI):
     EDGES=1
     def apply(self, chart, grammar, right_edge):
         fr = FundamentalRule()
-        for left_edge in chart.edges_ending_at(right_edge.start()):
+        for left_edge in chart.select(end=right_edge.start(),
+                                     is_complete=False,
+                                     next=right_edge.lhs()):
             for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
                 yield new_edge
     def applicable(self, chart, grammar, right_edge):
@@ -830,15 +885,13 @@ class EarleyChartParser(ParserI):
             print tree
     
     def _parse(self, chart, grammar):
-
         root = Nonterminal('-ROOT-')
         edge = TreeEdge((0,0), root, (self._root_node,))
+        chart.insert(edge, ())
 
         predictor = PredictorRule()
         completer = CompleterRule()
         scanner = ScannerRule(self._lexicon)
-        
-        chart.insert(edge, ())
         
         for end in range(chart.length()+1):
             # Deep trickiness going on here:
@@ -857,7 +910,7 @@ class EarleyChartParser(ParserI):
 ########################################################################
 # Apply rules until nothing else gets added.
 
-TD_STRATEGY = [TopDownInitRule(), TopDownExpandRule(), 
+TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(), 
                TopDownMatchRule(), CompleterRule()]
 BU_STRATEGY = [BottomUpInitRule(), BottomUpRule(), CompleterRule()]
 
@@ -886,8 +939,7 @@ class ChartParser(ParserI):
         edgelists = [()]
         for i in range(rule.EDGES):
             edgelists = [(edge,)+edgelist
-                         for edgelist in edgelists
-                         for edge in chart.edges()]
+                         for edgelist in edgelists for edge in chart]
         for edgelist in edgelists:
             if rule.applicable(chart, grammar, *edgelist):
                 for e in rule.apply(chart, grammar, *edgelist): 
@@ -904,7 +956,7 @@ class QueueChartParser(ParserI):
 ##  Demo Code
 ########################################################################
 
-if 1:
+def demo():
     # Define some nonterminals
     S, VP, NP, PP = nonterminals('S, VP, NP, PP')
     V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
@@ -932,6 +984,9 @@ if 1:
     tok = Token(text='John saw the dog with a cookie with a dog')
     #tok = Token(text='John saw')
     WSTokenizer().tokenize(tok)
-    parser = EarleyChartParser(grammar, S, PretendLexicon())
-    #parser = ChartParser(grammar, S, TD_STRATEGY)
+    #parser = EarleyChartParser(grammar, S, PretendLexicon())
+    parser = ChartParser(grammar, S, TD_STRATEGY)
     parser.parse(tok)
+
+import profile
+profile.run('demo()')
