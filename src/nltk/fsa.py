@@ -15,6 +15,8 @@ Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 from nltk.srparser import *
 from nltk.token import CharTokenizer
 from nltk.set import *
+from nltk.cfg import *
+from nltk.tree import *
 
 epsilon = None
 
@@ -315,45 +317,45 @@ class FSA:
 # create NFA from regexp (Thompson's construction)
 # assumes unique start and final states
 
-_grammar = (
-    Rule('S', ('S', '*')),
-    Rule('S', ('S', '+')),
-    Rule('S', ('S', '?')),
-    Rule('S', ('S', 'S')),
-    Rule('S', ('(', 'S', ')')),
-    Rule('S',('a')),
-    Rule('S',('b')),
-    Rule('S',('c')),
-    Rule('S',('d')),
-    Rule('S',('e'))
-)
+def grammar(terminals):
+    (S, Star, Plus, Qmk, Paren) = [Nonterminal(s) for s in 'S*+?(']
+    rules = [CFG_Rule(S, Star),
+             CFG_Rule(S, Plus),
+             CFG_Rule(S, Qmk),
+             CFG_Rule(S, Paren),
+             CFG_Rule(S, S, S),
+             CFG_Rule(Star, S, '*'),
+             CFG_Rule(Plus, S, '+'),
+             CFG_Rule(Qmk, S, '?'),
+             CFG_Rule(Paren, '(', S, ')')]
 
-_parser = SRParser(_grammar, 'S')
+    for terminal in terminals:
+        rules.append(CFG_Rule(S, terminal))
+
+    return CFG(S, rules)
+
+_parser = SRParser(grammar('abcde'))
 _tokenizer = CharTokenizer()
-
-_STAR = Tree('*')
-_PLUS = Tree('+')
-_QMK = Tree('?')
-_OPAREN = Tree('(')
-_CPAREN = Tree(')')
 
 def re2nfa(fsa, re):
     re_list = _tokenizer.tokenize(re)
-    tree = _parser.parse(re_list)
-    state = re2nfa_build(fsa, fsa.start(), tree)
+    treetok = _parser.parse(re_list)
+    if treetok is None: raise ValueError('Bad Regexp')
+    state = re2nfa_build(fsa, fsa.start(), treetok.type())
     fsa.set_final([state])
 #        fsa.minimize()
 
 def re2nfa_build(fsa, node, tree):
-    if len(tree) == 0:
-        return re2nfa_char(fsa, node, tree.node())
+    # Terminals.
+    if not isinstance(tree, Tree):
+        return re2nfa_char(fsa, node, tree)
     elif len(tree) == 1:
         return re2nfa_build(fsa, node, tree[0])
-    elif tree[0] == _OPAREN and tree[2] == _CPAREN:
+    elif tree.node() == '(':
         return re2nfa_build(fsa, node, tree[1])
-    elif tree[1] == _STAR: return re2nfa_star(fsa, node, tree[0])
-    elif tree[1] == _PLUS: return re2nfa_plus(fsa, node, tree[0])
-    elif tree[1] == _QMK:  return re2nfa_qmk(fsa, node, tree[0])
+    elif tree.node() == '*': return re2nfa_star(fsa, node, tree[0])
+    elif tree.node() == '+': return re2nfa_plus(fsa, node, tree[0])
+    elif tree.node() == '?': return re2nfa_qmk(fsa, node, tree[0])
     else:
         node = re2nfa_build(fsa, node, tree[0])
         return re2nfa_build(fsa, node, tree[1])
