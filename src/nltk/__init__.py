@@ -13,8 +13,7 @@ task of programming natural language systems.  It is intended to be
 used as a teaching tool, not as a basis for building production
 systems.
 
-This is a prototype implementation for the natural language toolkit.
-The natural language toolkit is still under development.
+The natural language toolkit is under active development.
 
 Interfaces
 ==========
@@ -38,8 +37,7 @@ Interface and Class Hierarchy
 
 The classes defined by the Natural Language Toolkit can be divided
 into two basic categories: Data classes; and Processing (or
-Task-Oriented) Classes.  The Natural Language Toolkit is still under
-development, and any definitions are subject to change.
+Task-Oriented) Classes. 
 
 Data Classes
 ------------
@@ -55,13 +53,14 @@ top-level classes and interfaces contained in that cluster are given.
     - Set: A finite set.
     
   - B{Tokens}: Encodes units of text such as words.
-    - TokenTypeI: A unit of text.
-    - TextLocationI: A location within a text.
-    - Token: An occurance of a unit of text.
-      Consists of a TokenType and a TextLocation.
+      - Location: A span over indices in a text
+      - Type: A unit of text.  This is actually not implemented as a
+        class or an interface -- (almost) anything can be a Type.
+      - Token: An occurance of a unit of text.
          
-  - B{Syntax Trees}: Encodes syntax trees.  Not fully designed 
-    yet.
+  - B{Syntax Trees}: Encodes syntax trees.
+      - Tree: A hierarchical structure spanning a text.
+      - TreeToken: An occurance of a Tree.
         
   - B{Probability}: Encodes data structures associated with
     the mathmatical notion of probability, such as events and
@@ -91,9 +90,14 @@ cluster, the interfaces contained in that cluster are given.
        - TokenizerI
   - B{Taggers}: Assign tags to each Token in a list of Tokens.
        - TaggerI
-  - B{Language Model}: (not yet designed/implemented)
-  - B{Parser}: (not yet designed/implemented)
+  - B{Parser}: Produce Trees that represent the internal structure of
+    a text.
 
+@author: Edward Loper
+@version: 0.1
+"""
+
+"""
 Open Questions
 ==============
 
@@ -105,11 +109,6 @@ to currently implemented interfaces and classes.
          that they are similar to StringType, IntType, etc. when they
          are very different.  I could use \"TokenTyp\" to distinguish, 
          but this also seems somewhat confusing to the uninitiated.
-    - What name can be used for the \"word content\" of a token
-         type?  Currently, C{name} is used, but that's not a 
-         very intuitive name.  C{word} might be used,
-         although often times the string is not a word (e.g., \".\").
-    - Better name than \"SimpleTagger\"?
   - Is the token/token type/text location system too complex?
        Often, one only cares about the token type.  E.g., a tokenizer
        could be defined as mapping string to list of TokenType, and a
@@ -117,20 +116,12 @@ to currently implemented interfaces and classes.
        But sometimes we really need to be able to distinguish tokens,
        not just token types.. e.g., to test the chunk parser from the
        chunk parsing problem set.
-  - How should text locations be represented?  character index?
-       token index?  To some extent, it dosen't matter, as long as
-       __cmp__ is properly defined.  Should text locations have ranges 
-       or just starting points?  etc.
   - Should FreqDist.max() and FreqDist.cond_max() be merged, with
        the condition as an optional argument?  Same for
        FreqDist.freq() and FreqDist.cond_freq().
   - Should I implement cross-toolkit policies on how to use __str__ 
        and __repr__?  If so, what should they be?
-  - How should I split the toolkit into modules?  Should I use a
-       multi-layer structure (e.g., C{nltk.probability})?
 
-@author: Edward Loper
-@version: 0.1
 """
 
 # Define some useful meta-data.
@@ -142,7 +133,7 @@ Distributed and Licensed under provisions of the IBM Common Public
 License (Version 0.5), which is included by reference.  The IBM Common 
 Public License can be found in the file LICENSE.TXT in the
 distribution."""
-__version__ = "0.1"
+__version__ = "0.2"
 __url__ = "http://nltk.sf.net/"
 
 
