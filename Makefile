@@ -8,8 +8,13 @@
 # $Id$
 
 DISTRIBUTIONS = distributions
-NLTK_VERSION = 1.1
+
+# What's the version of the corpora?
 CORPORA_VERSION = 0.1
+
+# Get the current version of NLTK
+NLTK_VERSION=$(shell export PYTHONPATH=src; \
+	       python -c 'import nltk; print nltk.__version__')
 
 .PHONY: all usage help doc documentation webpage test
 .PHONY: distributions clean
