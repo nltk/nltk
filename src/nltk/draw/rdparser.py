@@ -72,7 +72,7 @@ from nltk.parser import *
         
 class RecursiveDescentParserDemo:
     """
-    A graphical tool for exploring the shift/reduce parser.  The tool
+    A graphical tool for exploring the recursive descent parser.  The tool
     displays the parser's tree and the remaining text, and allows the
     user to control the parser's operation.  In particular, the user
     can expand subtrees on the frontier, match tokens on the frontier
