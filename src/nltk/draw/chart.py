@@ -40,6 +40,7 @@ import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
 import Tkinter, tkFont, tkMessageBox
 import math
+import os.path
 
 from nltk.parser.chart import *
 from nltk.cfg import *
@@ -47,6 +48,7 @@ from nltk.tokenizer import WSTokenizer
 from nltk.token import Token
 from nltk.tree import TreeToken
 from nltk.draw import ShowText, EntryDialog, in_idle
+from nltk.draw import MutableOptionMenu
 from nltk.draw import ColorizedList, SymbolWidget, CanvasFrame
 from nltk.draw.cfg import CFGEditor
 from nltk.draw.tree import tree_to_treesegment, TreeSegmentWidget
@@ -91,20 +93,28 @@ class ChartMatrixView:
     """
     A view of a chart that displays the contents of the corresponding matrix.
     """
-    def __init__(self, parent, chart):
+    def __init__(self, parent, chart, toplevel=True, title='Chart Matrix',
+                 show_numedges=False):
         self._chart = chart
         self._cells = []
         self._marks = []
         
         self._selected_cell = None
 
-        self._root = Tkinter.Toplevel(parent)
-        self._root.title('Chart Matrix')
-        self._root.bind('<Control-q>', self.destroy)
+        if toplevel:
+            self._root = Tkinter.Toplevel(parent)
+            self._root.title(title)
+            self._root.bind('<Control-q>', self.destroy)
+            self._init_quit(self._root)
+        else:
+            self._root = Tkinter.Frame(parent)
 
-        self._init_quit(self._root)
         self._init_matrix(self._root)
         self._init_list(self._root)
+        if show_numedges:
+            self._init_numedges(self._root)
+        else:
+            self._numedges_label = None
 
         self._callbacks = {}
         
@@ -117,13 +127,19 @@ class ChartMatrixView:
         quit.pack(side='bottom', expand=0, fill='none')
 
     def _init_matrix(self, root):
-        self._canvas = Tkinter.Canvas(root, width=200, height=200,
+        cframe = Tkinter.Frame(root, border=2, relief='sunken')
+        cframe.pack(expand=0, fill='none', padx=1, pady=3, side='top')
+        self._canvas = Tkinter.Canvas(cframe, width=200, height=200,
                                       background='white')
         self._canvas.pack(expand=0, fill='none')
 
+    def _init_numedges(self, root):
+        self._numedges_label = Tkinter.Label(root, text='0 edges')
+        self._numedges_label.pack(expand=0, fill='none', side='top')
+
     def _init_list(self, root):
         self._list = EdgeList(root, [], width=20, height=5)
-        self._list.pack(side='bottom', expand=1, fill='both')
+        self._list.pack(side='top', expand=1, fill='both', pady=3)
         def cb(edge, self=self): self._fire_callbacks('select', edge)
         self._list.add_callback('select', cb)
         self._list.focus()
@@ -174,6 +190,16 @@ class ChartMatrixView:
 
         # Update our edge count.
         self._num_edges = self._chart.num_edges()
+        if self._numedges_label is not None:
+            self._numedges_label['text'] = '%d edges' % self._num_edges
+
+    def activate(self):
+        self._canvas.itemconfig('inactivebox', state='hidden')
+        self.update()
+
+    def inactivate(self):
+        self._canvas.itemconfig('inactivebox', state='normal')
+        self.update()
 
     def add_callback(self, event, func):
         self._callbacks.setdefault(event,{})[func] = 1
@@ -199,6 +225,9 @@ class ChartMatrixView:
         self._selected_cell = (i,j)
         self.update()
 
+        # Fire the callback.
+        self._fire_callbacks('select_cell', i, j)
+
     def deselect_cell(self):
         if self._root is None: return
         self._selected_cell = None
@@ -220,7 +249,7 @@ class ChartMatrixView:
         self.select_cell(*edge.span())
         self._list.mark(edge)
 
-    def unmark_edge(self, edge):
+    def unmark_edge(self, edge=None):
         if self._root is None: return
         self._list.unmark(edge)
 
@@ -269,14 +298,25 @@ class ChartMatrixView:
                 def cb(event, self=self, i=i, j=j): self._click_cell(i,j)
                 c.tag_bind(t, '<Button-1>', cb)
 
+        # Inactive box
+        xmax, ymax = int(c['width']), int(c['height'])
+        t = c.create_rectangle(-100, -100, xmax+100, ymax+100, 
+                               fill='gray50', state='hidden',
+                               tag='inactivebox')
+        c.tag_lower(t)
+
+        # Update the cells.
         self.update()
 
+    def pack(self, *args, **kwargs):
+        self._root.pack(*args, **kwargs)
+        
 #######################################################################
 # Chart Results View
 #######################################################################
 
 class ChartResultsView:
-    def __init__(self, parent, chart, grammar):
+    def __init__(self, parent, chart, grammar, toplevel=True):
         self._chart = chart
         self._grammar = grammar
         self._trees = []
@@ -284,20 +324,24 @@ class ChartResultsView:
         self._treewidgets = []
         self._selection = None
         self._selectbox = None
-        
-        self._root = Tkinter.Toplevel(parent)
-        self._root.title('Chart Parsing Demo: Results')
-        self._root.bind('<Control-q>', self.destroy)
+
+        if toplevel:
+            self._root = Tkinter.Toplevel(parent)
+            self._root.title('Chart Parsing Demo: Results')
+            self._root.bind('<Control-q>', self.destroy)
+        else:
+            self._root = Tkinter.Frame(parent)
 
         # Buttons
-        buttons = Tkinter.Frame(self._root)
-        buttons.pack(side='bottom', expand=0, fill='x')
-        Tkinter.Button(buttons, text='Quit',
-                       command=self.destroy).pack(side='right')
-        Tkinter.Button(buttons, text='Print All',
-                       command=self.print_all).pack(side='left')
-        Tkinter.Button(buttons, text='Print Selection',
-                       command=self.print_selection).pack(side='left')
+        if toplevel:
+            buttons = Tkinter.Frame(self._root)
+            buttons.pack(side='bottom', expand=0, fill='x')
+            Tkinter.Button(buttons, text='Quit',
+                           command=self.destroy).pack(side='right')
+            Tkinter.Button(buttons, text='Print All',
+                           command=self.print_all).pack(side='left')
+            Tkinter.Button(buttons, text='Print Selection',
+                           command=self.print_selection).pack(side='left')
 
         # Canvas frame.
         self._cframe = CanvasFrame(self._root, closeenough=20)
@@ -402,6 +446,394 @@ class ChartResultsView:
         try: self._root.destroy()
         except: pass
         self._root = None
+
+    def pack(self, *args, **kwargs):
+        self._root.pack(*args, **kwargs)
+
+#######################################################################
+# Chart Comparer
+#######################################################################
+
+class ChartComparer:
+    """
+
+    @ivar _root: The root window
+
+    @ivar _charts: A dictionary mapping names to charts.  When 
+        charts are loaded, they are added to this dictionary.
+    
+    @ivar _left_chart: The left L{Chart}.
+    @ivar _left_name: The name C{_left_chart} (derived from filename)
+    @ivar _left_matrix: The L{ChartMatrixView} for C{_left_chart}
+    @ivar _left_selector: The drop-down L{MutableOptionsMenu} used
+          to select C{_left_chart}.
+    
+    @ivar _right_chart: The right L{Chart}.
+    @ivar _right_name: The name C{_right_chart} (derived from filename)
+    @ivar _right_matrix: The L{ChartMatrixView} for C{_right_chart}
+    @ivar _right_selector: The drop-down L{MutableOptionsMenu} used
+          to select C{_right_chart}.
+    
+    @ivar _out_chart: The out L{Chart}.
+    @ivar _out_name: The name C{_out_chart} (derived from filename)
+    @ivar _out_matrix: The L{ChartMatrixView} for C{_out_chart}
+    @ivar _out_label: The label for C{_out_chart}.
+
+    @ivar _op_label: A Label containing the most recent operation.
+    """
+
+    _OPSYMBOL = {'-': '-',
+                 'and': SymbolWidget.SYMBOLS['intersection'],
+                 'or': SymbolWidget.SYMBOLS['union']}
+    
+    def __init__(self, *chart_filenames):
+        # This chart is displayed when we don't have a value (eg
+        # before any chart is loaded).
+        faketok = Token(SUBTOKENS=[Token(LEAF='') for i in range(8)])
+        self._emptychart = Chart(faketok)
+
+        # The left & right charts start out empty.
+        self._left_name = 'None'
+        self._right_name = 'None'
+        self._left_chart = self._emptychart
+        self._right_chart = self._emptychart
+            
+        # The charts that have been loaded.
+        self._charts = {'None': self._emptychart}
+
+        # The output chart.
+        self._out_chart = self._emptychart
+
+        # The most recent operation
+        self._operator = None
+
+        # Set up the root window.
+        self._root = Tkinter.Tk()
+        self._root.title('Chart Comparison')
+        self._root.bind('<Control-q>', self.destroy)
+        self._root.bind('<Control-x>', self.destroy)
+
+        # Initialize all widgets, etc.
+        self._init_menubar(self._root)
+        self._init_chartviews(self._root)
+        self._init_divider(self._root)
+        self._init_buttons(self._root)
+        self._init_bindings(self._root)
+
+        # Load any specified charts.
+        for filename in chart_filenames:
+            self.load_chart(filename)
+
+    def destroy(self, *e):
+        if self._root is None: return
+        try: self._root.destroy()
+        except: pass
+        self._root = None
+
+    def mainloop(self, *args, **kwargs):
+        return
+        self._root.mainloop(*args, **kwargs)
+
+    #////////////////////////////////////////////////////////////
+    # Initialization
+    #////////////////////////////////////////////////////////////
+
+    def _init_menubar(self, root):
+        menubar = Tkinter.Menu(root)
+
+        # File menu
+        filemenu = Tkinter.Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Load Chart', accelerator='Ctrl-o',
+                             underline=0, command=self.load_chart_dialog)
+        filemenu.add_command(label='Save Output', accelerator='Ctrl-s',
+                             underline=0, command=self.save_chart_dialog)
+        filemenu.add_separator()
+        filemenu.add_command(label='Exit', underline=1,
+                             command=self.destroy, accelerator='Ctrl-x')
+        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+
+        # Compare menu
+        opmenu = Tkinter.Menu(menubar, tearoff=0)
+        opmenu.add_command(label='Intersection',
+                           command=self._intersection,
+                           accelerator='+')
+        opmenu.add_command(label='Union',
+                           command=self._union,
+                           accelerator='*')
+        opmenu.add_command(label='Difference',
+                           command=self._difference,
+                           accelerator='-')
+        opmenu.add_separator()
+        opmenu.add_command(label='Swap Charts',
+                           command=self._swapcharts)
+        menubar.add_cascade(label='Compare', underline=0, menu=opmenu)
+
+        # Add the menu
+        self._root.config(menu=menubar)
+
+    def _init_divider(self, root):
+        divider = Tkinter.Frame(root, border=2, relief='sunken')
+        divider.pack(side='top', fill='x', ipady=2)
+        
+    def _init_chartviews(self, root):
+        opfont=('symbol', -36) # Font for operator.
+        eqfont=('helvetica', -36) # Font for equals sign.
+        
+        frame = Tkinter.Frame(root, background='#c0c0c0')
+        frame.pack(side='top', expand=1, fill='both')
+
+        # The left matrix.
+        cv1_frame = Tkinter.Frame(frame, border=3, relief='groove')
+        cv1_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
+        self._left_selector = MutableOptionMenu(
+            cv1_frame, self._charts.keys(), command=self._select_left)
+        self._left_selector.pack(side='top', pady=5, fill='x')
+        self._left_matrix = ChartMatrixView(cv1_frame, self._emptychart,
+                                            toplevel=False,
+                                            show_numedges=True)
+        self._left_matrix.pack(side='bottom', padx=5, pady=5,
+                               expand=1, fill='both')
+        self._left_matrix.add_callback('select', self.select_edge)
+        self._left_matrix.add_callback('select_cell', self.select_cell)
+        self._left_matrix.inactivate()
+
+        # The operator.
+        self._op_label = Tkinter.Label(frame, text=' ', width=3,
+                                       background='#c0c0c0', font=opfont)
+        self._op_label.pack(side='left', padx=5, pady=5)
+
+        # The right matrix.
+        cv2_frame = Tkinter.Frame(frame, border=3, relief='groove')
+        cv2_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
+        self._right_selector = MutableOptionMenu(
+            cv2_frame, self._charts.keys(), command=self._select_right)
+        self._right_selector.pack(side='top', pady=5, fill='x')
+        self._right_matrix = ChartMatrixView(cv2_frame, self._emptychart,
+                                            toplevel=False,
+                                            show_numedges=True)
+        self._right_matrix.pack(side='bottom', padx=5, pady=5,
+                               expand=1, fill='both')
+        self._right_matrix.add_callback('select', self.select_edge)
+        self._right_matrix.add_callback('select_cell', self.select_cell)
+        self._right_matrix.inactivate()
+
+        # The equals sign
+        Tkinter.Label(frame, text='=', width=3, background='#c0c0c0',
+                      font=eqfont).pack(side='left', padx=5, pady=5)
+                                        
+        # The output matrix.
+        out_frame = Tkinter.Frame(frame, border=3, relief='groove')
+        out_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
+        self._out_label = Tkinter.Label(out_frame, text='Output')
+        self._out_label.pack(side='top', pady=9)
+        self._out_matrix = ChartMatrixView(out_frame, self._emptychart,
+                                            toplevel=False,
+                                            show_numedges=True)
+        self._out_matrix.pack(side='bottom', padx=5, pady=5,
+                                 expand=1, fill='both')
+        self._out_matrix.add_callback('select', self.select_edge)
+        self._out_matrix.add_callback('select_cell', self.select_cell)
+        self._out_matrix.inactivate()
+                                      
+    def _init_buttons(self, root):
+        buttons = Tkinter.Frame(root)
+        buttons.pack(side='bottom', pady=5, fill='x', expand=0)
+        Tkinter.Button(buttons, text='Intersection',
+                       command=self._intersection).pack(side='left')
+        Tkinter.Button(buttons, text='Union',
+                       command=self._union).pack(side='left')
+        Tkinter.Button(buttons, text='Difference',
+                       command=self._difference).pack(side='left')
+        Tkinter.Frame(buttons, width=20).pack(side='left')
+        Tkinter.Button(buttons, text='Swap Charts',
+                       command=self._swapcharts).pack(side='left')
+
+        Tkinter.Button(buttons, text='Detatch Output',
+                       command=self._detatch_out).pack(side='right')
+        
+    def _init_bindings(self, root):
+        #root.bind('<Control-s>', self.save_chart)
+        root.bind('<Control-o>', self.load_chart_dialog)
+        #root.bind('<Control-r>', self.reset)
+
+    #////////////////////////////////////////////////////////////
+    # Input Handling
+    #////////////////////////////////////////////////////////////
+
+    def _select_left(self, name):
+        self._left_name = name
+        self._left_chart = self._charts[name]
+        self._left_matrix.set_chart(self._left_chart)
+        if name == 'None': self._left_matrix.inactivate()
+        self._apply_op()
+
+    def _select_right(self, name):
+        self._right_name = name
+        self._right_chart = self._charts[name]
+        self._right_matrix.set_chart(self._right_chart)
+        if name == 'None': self._right_matrix.inactivate()
+        self._apply_op()
+
+    def _apply_op(self):
+        if self._operator == '-': self._difference()
+        elif self._operator == 'or': self._union()
+        elif self._operator == 'and': self._intersection()
+        
+
+    #////////////////////////////////////////////////////////////
+    # File
+    #////////////////////////////////////////////////////////////
+    CHART_FILE_TYPES = [('Pickle file', '.pickle'),
+                        ('All files', '*')]
+
+    def save_chart_dialog(self, *args):
+        filename = asksaveasfilename(filetypes=self.CHART_FILE_TYPES,
+                                     defaultextension='.pickle')
+        if not filename: return
+        try: pickle.dump((self._out_chart), open(filename, 'w'))
+        except Exception, e:
+            tkMessageBox.showerror('Error Saving Chart', 
+                                   'Unable to open file: %r\n%s' %
+                                   (filename, e))
+    
+    def load_chart_dialog(self, *args):
+        filename = askopenfilename(filetypes=self.CHART_FILE_TYPES,
+                                   defaultextension='.pickle')
+        if not filename: return
+        try: self.load_chart(filename)
+        except Exception, e:
+            tkMessageBox.showerror('Error Loading Chart',
+                                   'Unable to open file: %r\n%s' %
+                                   (filename, e))
+
+    def load_chart(self, filename):
+        chart = pickle.load(open(filename, 'r'))
+        name = os.path.basename(filename)
+        if name.endswith('.pickle'): name = name[:-7]
+        if name.endswith('.chart'): name = name[:-6]
+        self._charts[name] = chart
+        self._left_selector.add(name)
+        self._right_selector.add(name)
+
+        # If either left_matrix or right_matrix is empty, then
+        # display the new chart.
+        if self._left_chart is self._emptychart:
+            self._left_selector.set(name)
+        elif self._right_chart is self._emptychart:
+            self._right_selector.set(name)
+        
+    def _update_chartviews(self):
+        self._left_matrix.update()
+        self._right_matrix.update()
+        self._out_matrix.update()
+        
+    #////////////////////////////////////////////////////////////
+    # Selection
+    #////////////////////////////////////////////////////////////
+
+    def select_edge(self, edge):
+        if edge in self._left_chart:
+            self._left_matrix.markonly_edge(edge)
+        else:
+            self._left_matrix.unmark_edge()
+        if edge in self._right_chart:
+            self._right_matrix.markonly_edge(edge)
+        else:
+            self._right_matrix.unmark_edge()
+        if edge in self._out_chart:
+            self._out_matrix.markonly_edge(edge)
+        else:
+            self._out_matrix.unmark_edge()
+
+    def select_cell(self, i, j):
+        self._left_matrix.select_cell(i, j)
+        self._right_matrix.select_cell(i, j)
+        self._out_matrix.select_cell(i, j)
+
+    #////////////////////////////////////////////////////////////
+    # Operations
+    #////////////////////////////////////////////////////////////
+
+    def _difference(self):
+        if not self._checkcompat(): return
+
+        out_chart = Chart(self._left_chart.token(),
+                               **self._left_chart.property_names())
+        for edge in self._left_chart:
+            if edge not in self._right_chart:
+                out_chart.insert(edge, [])
+
+        self._update('-', out_chart)
+
+    def _intersection(self):
+        if not self._checkcompat(): return
+
+        out_chart = Chart(self._left_chart.token(),
+                               **self._left_chart.property_names())
+        for edge in self._left_chart:
+            if edge in self._right_chart:
+                out_chart.insert(edge, [])
+                    
+        self._update('and', out_chart)
+
+    def _union(self):
+        if not self._checkcompat(): return
+
+        out_chart = Chart(self._left_chart.token(),
+                               **self._left_chart.property_names())
+        for edge in self._left_chart:
+            out_chart.insert(edge, [])
+        for edge in self._right_chart:
+            out_chart.insert(edge, [])
+    
+        self._update('or', out_chart)
+
+    def _swapcharts(self):
+        left, right = self._left_name, self._right_name
+        self._left_selector.set(right)
+        self._right_selector.set(left)
+
+    def _checkcompat(self):
+        if (self._left_chart.token() != self._right_chart.token() or
+            self._left_chart.property_names() !=
+            self._right_chart.property_names() or
+            self._left_chart == self._emptychart or
+            self._right_chart == self._emptychart):
+            # Clear & inactivate the output chart.
+            self._out_chart = self._emptychart
+            self._out_matrix.set_chart(self._out_chart)
+            self._out_matrix.inactivate()
+            self._out_label['text'] = 'Output'
+            # Issue some other warning?
+            return False
+        else:
+            return True
+
+    def _update(self, operator, out_chart):
+        self._operator = operator
+        self._op_label['text'] = self._OPSYMBOL[operator]
+        self._out_chart = out_chart
+        self._out_matrix.set_chart(out_chart)
+        self._out_label['text'] = '%s %s %s' % (self._left_name,
+                                                self._operator,
+                                                self._right_name)
+            
+    def _clear_out_chart(self):
+        self._out_chart = self._emptychart
+        self._out_matrix.set_chart(self._out_chart)
+        self._op_label['text'] = ' '
+        self._out_matrix.inactivate()
+
+    def _detatch_out(self):
+        ChartMatrixView(self._root, self._out_chart,
+                        title=self._out_label['text'])
+
+                
+        
+
+            
+
+
 
 #######################################################################
 # Chart View
@@ -1583,8 +2015,7 @@ class ChartDemo:
                                    defaultextension='.pickle')
         if not filename: return
         try:
-            open(filename, 'r')
-            chart, token = pickle.load()
+            chart = pickle.load(open(filename, 'r'))
             self._chart = chart
             self._cv.update(chart)
             if self._matrix: self._matrix.set_chart(chart)
@@ -1592,9 +2023,9 @@ class ChartDemo:
             if self._results: self._results.set_chart(chart)
             self._cp.set_chart(chart)
         except Exception, e:
+            raise
             tkMessageBox.showerror('Error Loading Chart',
                                    'Unable to open file: %r' % filename)
-                                  
 
     def save_chart(self, *args):
         "Save a chart to a pickle file"
@@ -1602,8 +2033,9 @@ class ChartDemo:
                                      defaultextension='.pickle')
         if not filename: return
         try:
-            pickle.dump((self._chart, self._token), open(filename, 'w'))
+            pickle.dump(self._chart, open(filename, 'w'))
         except Exception, e:
+            raise
             tkMessageBox.showerror('Error Saving Chart', 
                                    'Unable to open file: %r' % filename)
 
@@ -1846,9 +2278,16 @@ def demo():
     print 'sentence = %r' % sent
     print 'Calling "ChartDemo(grammar, sent)"...'
     ChartDemo(grammar, sent).mainloop()
-
+        
 if __name__ == '__main__':
     demo()
+
+    # Chart comparer:
+    #charts = ['/tmp/earley.pickle',
+    #          '/tmp/topdown.pickle',
+    #          '/tmp/bottomup.pickle']
+    #ChartComparer(*charts).mainloop()
+    
     #import profile
     #profile.run('demo2()', '/tmp/profile.out')
     #import pstats
