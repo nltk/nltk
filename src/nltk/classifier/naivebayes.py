@@ -19,7 +19,6 @@ from nltk.classifier import *
 from nltk.feature import *
 from nltk.probability import *
 from nltk.token import Token
-from nltk.tokenizer import WhitespaceTokenizer
 from nltk.corpus import brown
 from nltk.chktype import chktype as _chktype
 import types
