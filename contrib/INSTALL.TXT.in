@@ -64,8 +64,8 @@ Alternate Install Locations
         export PYTHONPATH=$PYTHONPATH:<dir>     # for sh or bash
         setenv PYTHONPATH $PYTHONPATH:<dir>     # for csh or tcsh
 
-    (For Windows, use "My Computer -> Advanced -> Environment
-    Variables -> New User Variable.")
+    (For Windows, right click on "My Computer" and select "Properties
+    -> Advanced -> Environment Variables -> New User Variable.")
 
     For more information on installing to an alternate location, see
     the distutils manual:
