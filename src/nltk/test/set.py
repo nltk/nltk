@@ -36,29 +36,6 @@ class SetTestCase(unittest.TestCase):
         self.failIf(1 in s3 or 2 in s3 or 3 in s3)
         self.failUnless( (1,2,3) in s3)
 
-    def testInsert(self):
-        "nltk.set.Set: insertion tests"
-        s1 = Set(5,7)
-        self.failUnlessEqual(s1.insert(3), 1)
-        self.failUnlessEqual(s1.insert(5), 0)
-        self.failUnlessEqual(s1.insert(3), 0)
-        self.failUnlessEqual(s1.insert(5), 0)
-        self.failUnlessEqual(s1.insert(8), 1)
-        self.failUnlessEqual(s1.insert(7), 0)
-        self.failUnless(s1 == Set(3,5,8,7))
-
-        s2 = Set('a', 'z', 'abcd', (1,2), 3)
-        self.failUnlessEqual(s2.insert(1), 1)
-        self.failUnlessEqual(s2.insert((1,2)), 0)
-        self.failUnlessEqual(s2.insert('b'), 1)
-        self.failUnlessEqual(s2.insert('abc'), 1)
-        self.failUnlessEqual(s2.insert('a'), 0)
-        self.failUnlessEqual(s2.insert('abcd'), 0)
-        self.failUnlessEqual(s2.insert('abc'), 0)
-        self.failUnlessEqual(s2.insert((1,2)), 0)
-        self.failUnless(s2 == Set('a', 'z', 'abcd', (1,2), 3,
-                                  1, 'b', 'a', 'abc'))
-
     def testUnion(self):
         "nltk.set.Set: union tests"
         s1 = Set(1,3,5,7,9,11,13,15,17,19,21,23,25)
@@ -187,13 +164,9 @@ class SetTestCase(unittest.TestCase):
     def testCopy(self):
         "nltk.set.Set: copy tests"
         s1 = Set(1,2,3)
-
         s2 = s1.copy()
-        s1.insert(4)
-        s2.insert(5)
-
-        self.failUnless(s1 == Set(1,2,3,4))
-        self.failUnless(s2 == Set(1,2,3,5))
+        self.failUnless(s1 == Set(1,2,3))
+        self.failUnless(s2 == Set(1,2,3))
 
     def testRepr(self):
         "nltk.set.Set: representation tests (glass-box)."
@@ -227,11 +200,11 @@ class SetTestCase(unittest.TestCase):
         s2 = Set(2, (3, 5))
 
         self.failIf(s1 == s2)
-        s2.insert(1)
+        s2 = s2.union(Set(1))
         self.failUnless(s1 == s2)
-        s1.insert((1,7))
+        s1 = s1.union(Set((1,7)))
         self.failIf(s1 == s2)
-        s2.insert((1,7))
+        s2 = s2.union(Set((1,7)))
         self.failUnless(s1 == s2)
         self.failUnless(Set() == Set())
 
@@ -248,18 +221,62 @@ class SetTestCase(unittest.TestCase):
             s_elts.sort()
             self.failUnlessEqual(elts, s_elts)
                         
-        
+class MutableSetTestCase(SetTestCase):
+    def testInsert(self):
+        "nltk.set.Set: insertion tests"
+        s1 = MutableSet(5,7)
+        self.failUnlessEqual(s1.insert(3), 1)
+        self.failUnlessEqual(s1.insert(5), 0)
+        self.failUnlessEqual(s1.insert(3), 0)
+        self.failUnlessEqual(s1.insert(5), 0)
+        self.failUnlessEqual(s1.insert(8), 1)
+        self.failUnlessEqual(s1.insert(7), 0)
+        self.failUnlessEqual(s1, Set(3,5,8,7))
+
+        s2 = MutableSet('a', 'z', 'abcd', (1,2), 3)
+        self.failUnlessEqual(s2.insert(1), 1)
+        self.failUnlessEqual(s2.insert((1,2)), 0)
+        self.failUnlessEqual(s2.insert('b'), 1)
+        self.failUnlessEqual(s2.insert('abc'), 1)
+        self.failUnlessEqual(s2.insert('a'), 0)
+        self.failUnlessEqual(s2.insert('abcd'), 0)
+        self.failUnlessEqual(s2.insert('abc'), 0)
+        self.failUnlessEqual(s2.insert((1,2)), 0)
+        self.failUnlessEqual(s2, Set('a', 'z', 'abcd', (1,2), 3,
+                                     1, 'b', 'a', 'abc'))
+
+    def testCopy(self):
+        "nltk.set.Set: copy tests"
+        s1 = MutableSet(1,2,3)
+
+        s2 = s1.copy()
+        s1.insert(4)
+        s2.insert(5)
+
+        self.failUnless(s1 == MutableSet(1,2,3,4))
+        self.failUnless(s2 == MutableSet(1,2,3,5))
+
+    def testEqual(self):
+        "nltk.set.Set: equality comparison test"
+        s1 = MutableSet(1, 2, (3, 5))
+        s2 = MutableSet(2, (3, 5))
+
+        self.failIf(s1 == s2)
+        s2.insert(1)
+        self.failUnless(s1 == s2)
+        s1.insert((1,7))
+        self.failIf(s1 == s2)
+        s2.insert((1,7))
+        self.failUnless(s1 == s2)
+        self.failUnless(MutableSet() == MutableSet())
+
 def testsuite():
     """
     Return a PyUnit testsuite for the set module.
     """
-    
-    tests = unittest.TestSuite()
-
-    settests = unittest.makeSuite(SetTestCase, 'test')
-    tests = unittest.TestSuite( (tests, settests) )
-
-    return tests
+    t1 = unittest.makeSuite(SetTestCase, 'test')
+    t2 = unittest.makeSuite(MutableSetTestCase, 'test')
+    return unittest.TestSuite( (t1, t2) )
 
 def test():
     import unittest
