@@ -135,7 +135,7 @@ class SemcorTokenizer(AbstractTokenizer):
         for word in node.childNodes:
             wloc = WordIndexLocation(index, sloc)
             item = self._map_word(word, wloc)
-            if item:
+            if item <> None:
                 index += 1
                 out.append(item)
         if self._unit != self.UNIT_WORD:
