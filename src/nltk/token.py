@@ -583,12 +583,17 @@ class SeqWrapper(TokenWrapperI):
 ## Location
 ######################################################################
 
+# [XX] locations are identifiers; *not* unique identifiers
 class LocationI(object):
     """
-    The position of a token within its containing text.  Locations
-    serve two functions:
+
+    The position of a 
+    
+    The position of a text fragment within its containing text.
+    Locations serve two functions:
 
       1. They uniquely identify a single token.
+      
       2. They provide access to that token's context.
 
     Each implementation of the location interface provides a different
@@ -596,10 +601,10 @@ class LocationI(object):
     implementation is L{SpanLocation}, which represents a token's
     position as a span over indices in its containing text.
 
-    Since locations are used as unique identifiers for tokens, every
-    implementation of the location interface must support equality
-    testing and hashing.  Each implementation should also provide some
-    mechanism to access the given token's context, if possible.
+    Since locations are used as identifiers for tokens, every
+    implementation of C{LocationI} must support equality testing and
+    hashing.  Each implementation should also provide some mechanism
+    to access the given token's context, if possible.
     """
     # Locations must be comperable:
     def __cmp__(self):
@@ -610,17 +615,82 @@ class LocationI(object):
         raise NotImplementedError()
 
 class BaseLocation(LocationI):
-    def __init__(self, stringid):
-        self._stringid = stringid
+    """
+    The location of a X{base token} (i.e., a token that is not
+    contained in a larger text).  A base token's location is specified
+    by string identifier that names the token's source.  This
+    identifier is typically the filename from which the token's text
+    was read.
+    """
+    def __init__(self, identifier):
+        """
+        Create a new base location based on the given identifier.
+        
+        @param identifier: An identifier that specifies the source of
+            a location's text.
+        @type identifier: C{string}
+        """
+        self._identifier = identifier
 
     def __cmp__(self, other):
         if not isinstance(other, BaseLocation): return -1
-        return cmp(self._stringid, other._stringid)
+        return cmp(self._identifier, other._identifier)
 
     def __hash__(self):
-        return hash(self._stringid)
+        return hash(self._identifier)
+
+class OffsetLocation(LocationI):
+    """
+
+    The location of a token, encoded as an offset from the beginning
+    of the containing token's text.
+
+    """
     
 class SpanLocation(LocationI):
+    """
+    The location of a token, encoded as a span within the text of the
+    containing token.
+
+    The extent of this span is represented by a X{start index} and an
+    X{end index}.  In particular, a C{SpanLocation} identifies the
+    text beginning at its start index, and including everything up to
+    (but not including) the text at its end index.  I.e., if
+    C{M{text}} is the containing text of a C{SpanLocation}, then the
+    C{SpanLocation} specifies C{M{text}[M{start}:M{end}]}.
+
+    The text of the containing token is specified by a X{source
+    pointer} and a X{source property}.  The source pointer points to
+    the containing token; and the X{source property} names the
+    containing token's property that contains the token.
+
+
+    loc.source()[loc.sourceprop()]
+
+
+    property within that containing token.
+
+    C{SpanLocation}'s X{source} is a pointer to the containing
+    token.  The C{SpanLocation}'s X{propname} 
+    
+
+
+    The unit of the indices in the text is specified by the
+    C{Location}'s X{unit}.  Typical units are \"w\" (for words) and
+    \"c\" (for characters).  The text over which the location is
+    defined is identified by the C{Location}'s X{source}.  A typical
+    value for a C{Location}'s source would be the name of the file
+    containing the text.  A C{Location}'s unit and source fields are
+    optional; if not specified, they will default to C{None}.
+
+    A location with a start index M{i}, an end index M{j}, a unit
+    M{u}, and a source M{s}, is written
+    \"C{@[M{i}M{u}:M{j}M{u}]@M{s}}\".  For locations with a length of
+    one, this can be shortened to \"C{@[M{i}M{u}]@M{s}}\".  For
+    brevity, the source is sometimes also omitted: \"C{@[M{i}M{u}]}\".
+
+    """
+    
     def __init__(self, start, end, source, context_propname):
         """
         @param start: the start index
