@@ -13,12 +13,27 @@
 from distutils.core import setup
 import nltk
 
-# to do: add more fields! copyright, license, etc.
+setup(
 
-setup(name="nltk",
-      description="Natural Language Processing Toolkit",
-      author_email="ed@loper.org",
-      version=nltk.__version__,
-      author=nltk.__author__,
-      url=nltk.__url__,
-      packages=['nltk', 'nltk.test', 'nltk.draw'])
+    #############################################
+    ## Distribution Metadata
+    name = "nltk",
+    description = "Natural Language Toolkit",
+    
+    version = nltk.__version__,
+    url = nltk.__url__,
+    license = nltk.__copyright__,
+    long_description = nltk.__longdescr__,
+    keywords = nltk.__keywords__,
+    maintainer = nltk.__maintainer__,
+    maintainer_email = nltk.__maintainer_email__,
+    author = nltk.__author__,
+    author_email = nltk.__author__,
+    # platforms = <platforms>,
+      
+    
+    #############################################
+    ## Package List
+    packages = ['nltk', 'nltk.test', 'nltk.draw']
+    
+    )
