@@ -63,7 +63,7 @@ parameters or unsupervised learning using the Baum-Welch algorithm, a variant
 of EM.
 """
 
-#from nltk.probability import *
+from nltk.probability import *
 from Numeric import *
 
 class HMM:
@@ -71,42 +71,32 @@ class HMM:
     Based on HMM description in Chapter 8, Huang, Acero and Hon, Spoken
     Language Processing.
     """
-    def __init__(self, states, transitions, symbols, outputs, priors):
+    def __init__(self, symbols, states, transitions, outputs, priors):
         """
         Creates a hidden markov model parametised by the the states,
         transition probabilities, output probabilities and priors.
 
-        @param  states:         a set of states representing state space
-        @type   states:         seq of any
-        @param  transitions:    transition probability matrix; entry (i, j)
-                                is the probability of transition from state i
-                                to state j for all i, j in C{range(len(states))}
-        @type   transitions:    C{array}
         @param  symbols:        the set of output symbols (alphabet)
         @type   symbols:        (seq) of any
-        @param  outputs:        output probability matrix; entry (i, k) is the
+        @param  states:         a set of states representing state space
+        @type   states:         seq of any
+        @param  transitions:    transition probabilities; Pr(s_i | s_j)
+                                is the probability of transition from state i
+                                given the model is in state_j
+        @type   transitions:    C{ConditionalProbDistI}
+        @param  outputs:        output probabilities; Pr(o_k | s_i) is the
                                 probability of emitting symbol k when entering
-                                state i for all i in C{range(len(states))} and
-                                k in C{range(len(symbols))}
-        @type   outputs:        C{array}
-        @param  priors:         initial state distribution; entry i is the
+                                state i
+        @type   outputs:        C{ConditionalProbDistI}
+        @param  priors:         initial state distribution; Pr(s_i) is the
                                 probability of starting in state i
-        @type   priors:         C{array}
+        @type   priors:         C{ProbDistI}
         """
         self._states = states
         self._transitions = transitions
         self._symbols = symbols
         self._outputs = outputs
         self._priors = priors
-        self._symbol_map = {}
-        N = 0
-        for symbol in symbols:
-            if not self._symbol_map.has_key(symbol):
-                self._symbol_map[symbol] = N
-                N += 1
-
-        # TODO - allow for some of these parameters to be None, instead
-        # assuming uniform probabilities
 
     def probability(self, symbols):
         """
@@ -119,15 +109,19 @@ class HMM:
 
         for t in range(T):
             symbol = symbols[t]
-            b = self._symbol_map[symbol] # what if unseen?
             if t == 0:
                 for i in range(N):
-                    alpha[t, i] = self._priors[i] * self._outputs[i, b]
+                    state = self._states[i]
+                    alpha[t, i] = self._priors.prob(state) * \
+                                  self._outputs[state].prob(symbol)
             else:
                 for i in range(N):
+                    si = self._states[i]
                     for j in range(N):
-                        alpha[t, i] += alpha[t-1, j] * self._transitions[i, j]
-                    alpha[t, i] *= self._outputs[i, b]
+                        sj = self._states[j]
+                        alpha[t, i] += alpha[t-1, j] * \
+                                       self._transitions[si].prob(sj)
+                    alpha[t, i] *= self._outputs[si].prob(symbol)
 
         p = 0
         for i in range(N):
@@ -143,24 +137,28 @@ class HMM:
         T = len(symbols)
         N = len(self._states)
         V = zeros((T, N), Float64)
-        B = zeros((T, N), Int)
+        #B = zeros((T, N), Int)
+        B = {}
 
         for t in range(T):
             symbol = symbols[t]
-            b = self._symbol_map[symbol] # what if unseen?
             if t == 0:
                 for i in range(N):
-                    V[t, i] = self._priors[i] * self._outputs[i, b]
-                    B[t, i] = -1
+                    state = self._states[i]
+                    V[t, i] = self._priors.prob(state) * \
+                              self._outputs[state].prob(symbol)
+                    B[t, state] = None
             else:
                 for j in range(N):
+                    sj = self._states[j]
                     best = None
                     for i in range(N):
-                        va = V[t-1, i] * self._transitions[i, j]
+                        si = self._states[i]
+                        va = V[t-1, i] * self._transitions[si].prob(sj)
                         if not best or va > best[0]:
-                            best = (va, i)
-                    V[t, j] = best[0] * self._outputs[j, b]
-                    B[t, j] = best[1]
+                            best = (va, si)
+                    V[t, j] = best[0] * self._outputs[sj].prob(symbol)
+                    B[t, sj] = best[1]
 
         #print 'V', V
         #print 'B', B
@@ -169,7 +167,7 @@ class HMM:
         for i in range(N):
             val = V[T-1, i]
             if not best or val > best[0]:
-                best = (val, i)
+                best = (val, self._states[i])
 
         #print 'best', best
 
@@ -181,9 +179,7 @@ class HMM:
             current = last
 
         sequence.reverse()
-        #print 'sequence', sequence
-        states = map(lambda s, mapping=self._states: mapping[s], sequence)
-        return states
+        return sequence
 
     def __repr__(self):
         return '<HMM %d states and %d output symbols>' \
@@ -199,11 +195,6 @@ class HMMTrainer:
         self._states = states
         self._symbols = symbols
         self._symbol_map = {}
-        N = 0
-        for symbol in symbols:
-            if not self._symbol_map.has_key(symbol):
-                self._symbol_map[symbol] = N
-                N += 1
         self._state_map = {}
         N = 0
         for state in states:
@@ -279,82 +270,81 @@ class HMMTrainer:
 
             # M-step - compute new A, B, pi values
 
-    def train_supervised(self, symbol_sequences, state_sequences, smoothing=1):
+    def train_supervised(self, symbol_sequences, state_sequences,
+                         estimator=None):
         """
         Supervised training maximising the joint probability of the symbol and
-        state sequences. This is done with the MLE for the transition,
-        emission and prior probability matrices.
+        state sequences. This is done via collecting frequencies of
+        transitions between states, symbol observations while within each
+        state and which states start a sentence. These frequency distributions
+        are then normalised into probability estimates, which can be
+        smoothed if desired.
+
+        @type estimator: function taking a C{FreqDist} and a number of bins
+                         and returning a C{ProbDistI}
         """
 
-        # Think that this is broken - see the demo. FIXME
+        # default to the MLE estimate
+        if estimator == None:
+            estimator = lambda fdist, bins: MLEProbDist(fdist)
 
-        N = len(self._states)
-        M = len(self._symbols)
-        starting = zeros(N, Int) + smoothing
-        transitions = zeros((N, N), Int) + smoothing
-        outputs = zeros((N, M), Int) + smoothing
-
+        # count occurences of starting states, transitions out of each state
+        # and output symbols observed in each state
+        starting = FreqDist()
+        transitions = ConditionalFreqDist()
+        outputs = ConditionalFreqDist()
         for symbols, states in zip(symbol_sequences, state_sequences):
             T = len(symbols)
-            lasts = -1
-            for i in range(T):
-                b = self._symbol_map[symbols[i]] # if unseen?
-                s = self._state_map[states[i]]   # ditto
-                if i == 0:
-                    starting[s] += 1
+            lasts = None
+            for symbol, state in zip(symbols, states):
+                if lasts == None:
+                    starting.inc(state)
                 else:
-                    transitions[lasts, s] += 1
+                    transitions[lasts].inc(state)
+                outputs[state].inc(symbol)
+                lasts = state
 
-                outputs[s, b] += 1
-                lasts = s
+        # create probability distributions (with smoothing)
+        N = len(self._states)
+        pi = estimator(starting, N)
+        A = ConditionalProbDist(transitions, estimator, N)
+        B = ConditionalProbDist(outputs, estimator, len(self._symbols))
+                               
+        return HMM(self._symbols, self._states, A, B, pi)
 
-        # normalise
-        pi = starting / float(add.reduce(starting))
-        A = zeros((N, N), Float64)
-        B = zeros((N, M), Float64)
-
-        for i in range(N):
-            sum = 0
-            for j in range(N):
-                sum += transitions[i, j]
-            for j in range(N):
-                if sum != 0:
-                    A[i, j] = transitions[i, j] / float(sum)
-                else:
-                    A[i, j] = 1.0 / N
-
-            sum = 0
-            for k in range(M):
-                sum += outputs[i, k]
-            for k in range(M):
-                if sum != 0:
-                    B[i, k] = outputs[i, k] / float(sum)
-                else:
-                    B[i, k] = 1.0 / M
-
-        #print 'output alphabet'
-        #print self._symbols
-        #print 'states (tags)'
-        #print self._states
-        #print 'priors'
-        #print pi
-        #print 'transitions'
-        #print A
-        #print 'output probabilities'
-        #print B
-
-        return HMM(self._states, A, self._symbols, B, pi)
+class DictionaryConditionalProbDist(ConditionalProbDistI):
+    def __init__(self, dict):
+        self._dict = dict
+    def __getitem__(self, condition):
+        return self._dict[condition]
+    def conditions(self):
+        return self._dict.samples()
 
 def demo():
     # example taken from page 381, Huang et al
-    omega = [1, 2, 3]
-    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], Float64)
-    #B = array([[1.0, 0, 0], [0, 1, 0], [0, 0, 1]], Float64)
-    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], Float64)
-    pi = array([0.5, 0.2, 0.3], Float64)
     O = ['up', 'down', 'unchanged']
+    omega = ['bull', 'bear', 'static']
 
-    model = HMM(states=omega, transitions=A, outputs=B, symbols=O, priors=pi)
+    def pd(values, samples):
+        d = {}
+        for value, item in zip(values, samples):
+            d[item] = value
+        return DictionaryProbDist(d)
+
+    def cpd(array, conditions, samples):
+        d = {}
+        for values, condition in zip(array, conditions):
+            d[condition] = pd(values, samples)
+        return DictionaryConditionalProbDist(d)
+
+    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], Float64)
+    A = cpd(A, omega, omega)
+    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], Float64)
+    B = cpd(B, omega, O)
+    pi = array([0.5, 0.2, 0.3], Float64)
+    pi = pd(pi, omega)
+
+    model = HMM(symbols=O, states=omega, transitions=A, outputs=B, priors=pi)
 
     for test in [['up'] * 2, ['up'] * 5, ['up', 'down', 'up'], ['down'] * 5, 
                 ['unchanged'] * 5 + ['up']]:
@@ -373,7 +363,7 @@ def _split_tagged_tokens(tagged_tokens):
     stemmer = PorterStemmer()
     for token in tagged_tokens:
         w = token.type().base().lower() # make them lower case
-        w = stemmer.stem_word(w) # oh, and stem them too
+        #w = stemmer.stem_word(w) # oh, and stem them too
         #w = token.type().base()
         t = token.type().tag()
         word_set.insert(w)
@@ -410,7 +400,8 @@ def demo_pos_supervised():
     #print zip(words[1:], tags[1:])
 
     trainer = HMMTrainer(tag_set, word_set)
-    hmm = trainer.train_supervised(words[100:], tags[100:], 0.1)
+    hmm = trainer.train_supervised(words[100:], tags[100:],
+                    lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
 
     print hmm
     print 'Testing...'
@@ -437,4 +428,5 @@ def demo_pos_supervised():
 if __name__ == '__main__':
     #demo()
     demo_pos_supervised()
+
 
