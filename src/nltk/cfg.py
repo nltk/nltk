@@ -355,30 +355,30 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
 
     @see: L{CFGProduction}
     """
-    def __init__(self, p, lhs, *rhs):
+    def __init__(self, prob, lhs, *rhs):
         """
         Construct a new C{PCFGProduction}.
 
-        @param p: The probability of the new C{PCFGProduction}.
+        @param prob: The probability of the new C{PCFGProduction}.
         @param lhs: The left-hand side of the new C{PCFGProduction}.
         @type lhs: L{Nonterminal}
         @param rhs: The right-hand side of the new C{PCFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
-        ProbabilisticMixIn.__init__(self, p)
+        ProbabilisticMixIn.__init__(self, prob)
         CFGProduction.__init__(self, lhs, *rhs)
 
     def __str__(self):
-        return CFGProduction.__str__(self) + ' (p=%s)' % self._p
+        return CFGProduction.__str__(self) + ' (p=%s)' % self._prob
 
     def __eq__(self, other):
         return (_classeq(self, other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
-                self._p == other._p)
+                self._prob == other._prob)
 
     def __hash__(self):
-        return hash((self._lhs, self._rhs, self._p))
+        return hash((self._lhs, self._rhs, self._prob))
 
 class PCFG(CFG):
     """
@@ -421,7 +421,7 @@ class PCFG(CFG):
         probs = {}
         for production in productions:
             probs[production.lhs()] = (probs.get(production.lhs(), 0) +
-                                       production.p())
+                                       production.prob())
         for (lhs, p) in probs.items():
             if not ((1-PCFG.EPSILON) < p < (1+PCFG.EPSILON)):
                 raise ValueError("CFGProductions for %r do not sum to 1" % lhs)
