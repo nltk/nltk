@@ -81,6 +81,7 @@ from nltk.parser import *
 from nltk.draw.cfg import CFGEditor
 from nltk.tokenizer import WSTokenizer
 from Tkinter import *
+import tkFont
         
 class ShiftReduceParserDemo:
     """
