@@ -13,6 +13,7 @@
 
 # To do:
 #    - unit testing
+#    - Am I happy with current str/repr???
 
 """
 Basic classes useful for processing individual elements of text, such
@@ -43,7 +44,6 @@ Different tokenizers may split the text up differently.
 
 from chktype import chktype as _chktype 
 from chktype import chkclass as _chkclass
-
 
 from types import IntType as _IntType
 from types import StringType as _StringType
@@ -182,11 +182,16 @@ class Location:
         @return: A verbose string representation of this C{Location}.
         @rtype: string
         """
-        if self._end != self._start+1:
-            str = '@[%d:%d]' % (self._start, self._end)
-        else:
-            str = '@[%d]' % self._start
+        str = '@[%d' % self._start
+        
+        if self._unit != None: str += self._unit
 
+        if self._end != self._start+1:
+            str += ':%d' % self._end
+            if self._unit != None: str += self._unit
+
+        str += ']'
+            
         if self._source != None:
             str += '@'+`self._source`
 
@@ -274,6 +279,13 @@ class Location:
         """
         assert 0, '>= is not defined over Locations'
 
+    def __cmp__(self, other):
+        """
+        @raise AssertionError: General comperison is not defined for
+        Locations.
+        """
+        assert 0, 'general comparison is not defined over Locations'
+
     def __hash__(self):
         """
         @return: A hash value for this C{Location}.
@@ -360,7 +372,7 @@ class Token:
                 raise TypeError("end and keyword arguments may not "+
                                 "be specified for a location of None.")
         else:
-            self._location = Location(location_or_start, end)
+            self._location = Location(location_or_start, end, **kwargs)
 
     def type(self):
         """
@@ -392,10 +404,21 @@ class Token:
         @raise TypeError: if C{other} is not a C{Token} or subclass of
             C{Token}.
         """
-        chkclass(self, other)
-        if self.location() == None or other.location() == None: return 0
-        return (self._location == other.location and
+        _chkclass(self, other)
+        if self.location() is None or other.location() is None: return 0
+        return (self._location == other._location and
                 self._type == other._type)
+
+    def __ne__(self, other):
+        """
+        @return: true if this C{Token} is not equal to the given
+            C{Token}.  In particular, return false iff this C{Token}'s
+            type and location are equal to C{other}'s type and location.
+        @rtype: C{boolean}
+        @raise TypeError: if C{other} is not a C{Token} or subclass of
+            C{Token}.
+        """
+        return not (self == other)
 
     def __cmp__(self, other):
         """
@@ -485,26 +508,4 @@ class WSTokenizer(TokenizerI):
             tokens.append(Token(words[i], Location(i, unit='word',
                                                    source=source)))
         return tokens
-
-##//////////////////////////////////////////////////////
-##  Test code
-##//////////////////////////////////////////////////////
-## This is some simple test code for now..
-## More extensive unit testing will follow..
-
-#if __name__ == '__main__':
-#    text1="""this is a test document.  It contains several words
-#    and some are   separated by more spaces than  others.. Whee."""
-
-#    text2="""Here/x 's/y another/z test/nn document/nn."""
-    
-#    t1=Token('asdf', Location(1,2))
-#    t2=Token('wer')
-#    t3=Token('hi there', Location(1,3, source='foo.txt', unit='word'))
-#    print (t1, t2, t3)
-#    print t1, t2, t3
-#    print WSTokenizer().tokenize(text1);print
-#    print WSTokenizer().tokenize(text2);print
-#    print TaggedTokenizer().tokenize(text1);print
-#    ts=TaggedTokenizer().tokenize(text2, 'text2');print ts;print
 
