@@ -478,7 +478,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __repr__(self):
         return Tree.__repr__(self) + (' (p=%s)' % self._p)
     def __str__(self):
-        return Tree.__str__(self) + (' (p=%s)' % self._p)
+        return self.pp()
         
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
@@ -705,7 +705,7 @@ class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __repr__(self):
         return TreeToken.__repr__(self) + (' (p=%s)' % self._p)
     def __str__(self):
-        return TreeToken.__str__(self) + (' (p=%s)' % self._p)
+        return self.pp()
         
 ##//////////////////////////////////////////////////////
 ##  Conversion Routines
