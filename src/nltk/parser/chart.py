@@ -398,7 +398,7 @@ class Chart:
     
     @ivar _token: The sentence that the chart covers.
     @ivar _num_leaves: The number of subtokens in L{_token}.
-    @ivar _propnames: The property names that should be used to
+    @ivar _property_names: The property names that should be used to
         access L{_token}.
     @ivar _edges: A list of the edges in the chart
     @ivar _edge_to_cpls: A dictionary mapping each edge to a set
@@ -407,26 +407,26 @@ class Chart:
         to indices, where each index maps the corresponding edge
         attribute values to lists of edges.
     """
-    def __init__(self, token, **propnames):
+    def __init__(self, token, **property_names):
         """
         Construct a new empty chart.
 
         @type token: L{Token}
         @ivar token: The sentence that this chart will be used to
             parse.
-        @param propnames: A dictionary that can be used to override
+        @param property_names: A dictionary that can be used to override
             the default property names used by the chart.  Each entry
             maps from a default property name to a new property name.
         """
         assert chktype(1, token, Token)
-        subtokens_prop = propnames.get('subtokens', 'subtokens')
+        SUBTOKENS = property_names.get('subtokens', 'subtokens')
 
         # Record the sentence token and the sentence length.
         self._token = token
-        self._num_leaves = len(token[subtokens_prop])
+        self._num_leaves = len(token[SUBTOKENS])
 
         # Property names, used to access self._token.
-        self._propnames = propnames
+        self._property_names = property_names
         
         # A list of edges contained in this chart.
         self._edges = []
@@ -454,9 +454,9 @@ class Chart:
         @return: The leaf value of the word at the given index.
         @rtype: C{string}
         """
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        leaf_prop = self._propnames.get('leaf', 'leaf')
-        return self._token[subtokens_prop][index][leaf_prop]
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        LEAF = self._property_names.get('leaf', 'leaf')
+        return self._token[SUBTOKENS][index][LEAF]
 
     def leaves(self):
         """
@@ -464,9 +464,9 @@ class Chart:
             chart's sentence.
         @rtype: C{list} of C{string}
         """
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        leaf_prop = self._propnames.get('leaf', 'leaf')
-        return [tok[leaf_prop] for tok in self._token[subtokens_prop]]
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        LEAF = self._property_names.get('leaf', 'leaf')
+        return [tok[LEAF] for tok in self._token[SUBTOKENS]]
 
     #////////////////////////////////////////////////////////////
     # Edge access
@@ -642,8 +642,8 @@ class Chart:
         # If we've seen this edge before, then reuse our old answer.
         if memo.has_key(edge): return memo[edge]
 
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        node_prop = self._propnames.get('node', 'node')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        NODE = self._property_names.get('node', 'node')
         trees = []
 
         # Until we're done computing the trees for edge, set
@@ -656,7 +656,7 @@ class Chart:
         
         # Leaf edges.
         if isinstance(edge, LeafEdge):
-            leaf = self._token[subtokens_prop][edge.start()]
+            leaf = self._token[SUBTOKENS][edge.start()]
             memo[edge] = leaf
             return [leaf]
         
@@ -670,13 +670,13 @@ class Chart:
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
-                trees.append(TreeToken(**{node_prop:lhs,
+                trees.append(TreeToken(**{NODE:lhs,
                                           'children':children}))
 
         # If the edge is incomplete, then extend it with "partial
         # trees":
         if edge.is_incomplete():
-            unexpanded = [TreeToken(**{node_prop:elt, 'children':()})
+            unexpanded = [TreeToken(**{NODE:elt, 'children':()})
                           for elt in edge.rhs()[edge.dot():]]
             for tree in trees:
                 tree['children'].extend(unexpanded)
@@ -751,13 +751,13 @@ class Chart:
             chart's leaves.  This string can be used as a header
             for calls to L{pp_edge}.
         """
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        leaf_prop = self._propnames.get('leaf', 'leaf')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        LEAF = self._property_names.get('leaf', 'leaf')
         
         if self._token and width>1:
             header = '|.'
-            for tok in self._token[subtokens_prop]:
-                header += tok[leaf_prop][:width-1].center(width-1)+'.'
+            for tok in self._token[SUBTOKENS]:
+                header += tok[LEAF][:width-1].center(width-1)+'.'
             header += '|'
         else:
             header = ''
@@ -1231,7 +1231,7 @@ class EarleyChartParser(AbstractParser):
     dictionary that maps each word to a list of parts of speech that
     word can have.
     """
-    def __init__(self, grammar, lexicon, trace=0, **propnames):
+    def __init__(self, grammar, lexicon, trace=0, **property_names):
         """
         Create a new Earley chart parser, that uses C{grammar} to
         parse texts.
@@ -1247,19 +1247,19 @@ class EarleyChartParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
         self._grammar = grammar
         self._lexicon = lexicon
         self._trace = trace
-        AbstractParser.__init__(self, **propnames)
+        AbstractParser.__init__(self, **property_names)
 
     def parse_n(self, token):
-        trees_prop = self._propnames.get('trees', 'trees')
-        chart = Chart(token, **self._propnames)
+        TREES = self._property_names.get('trees', 'trees')
+        chart = Chart(token, **self._property_names)
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1293,7 +1293,7 @@ class EarleyChartParser(AbstractParser):
                             print 'Completer', chart.pp_edge(e,w)
 
         # Output a list of complete parses.
-        token[trees_prop] = chart.parses(grammar.start())
+        token[TREES] = chart.parses(grammar.start())
             
     def parse(self, token):
         # Delegate to parse_n
@@ -1320,7 +1320,7 @@ class ChartParser(AbstractParser):
             - Apply I{rule} to any applicable edges in the chart.
         - Return any complete parses in the chart
     """
-    def __init__(self, grammar, strategy, trace=0, **propnames):
+    def __init__(self, grammar, strategy, trace=0, **property_names):
         """
         Create a new chart parser, that uses C{grammar} to parse
         texts.
@@ -1335,19 +1335,19 @@ class ChartParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
-        AbstractParser.__init__(self, **propnames)
+        AbstractParser.__init__(self, **property_names)
 
     def parse_n(self, token):
-        trees_prop = self._propnames.get('trees', 'trees')
-        chart = Chart(token, **self._propnames)
+        TREES = self._property_names.get('trees', 'trees')
+        chart = Chart(token, **self._property_names)
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1369,7 +1369,7 @@ class ChartParser(AbstractParser):
                 edges_added += edges_added_by_rule
         
         # Output a list of complete parses.
-        token[trees_prop] = chart.parses(grammar.start())
+        token[TREES] = chart.parses(grammar.start())
         
     def parse(self, token):
         # Delegate to parse_n
@@ -1395,14 +1395,14 @@ class SteppingChartParser(ChartParser):
         or chart has been changed.  If so, then L{step} must restart
         the parsing algorithm.
     """
-    def __init__(self, grammar, strategy=None, trace=0, **propnames):
+    def __init__(self, grammar, strategy=None, trace=0, **property_names):
         self._grammar = grammar
         self._strategy = strategy or []
         self._trace = trace
         self._chart = None
         self._current_chartrule = None
         self._restart = False
-        ChartParser.__init__(self, **propnames)
+        ChartParser.__init__(self, **property_names)
 
     #////////////////////////////////////////////////////////////
     # Initialization
@@ -1410,7 +1410,7 @@ class SteppingChartParser(ChartParser):
 
     def initialize(self, token):
         "Begin parsing the given token."
-        self._chart = Chart(token, **self._propnames)
+        self._chart = Chart(token, **self._property_names)
         self._restart = True
 
     #////////////////////////////////////////////////////////////
@@ -1521,7 +1521,7 @@ class SteppingChartParser(ChartParser):
     #////////////////////////////////////////////////////////////
 
     def parse_n(self, token):
-        trees_prop = self._propnames.get('trees', 'trees')
+        TREES = self._property_names.get('trees', 'trees')
 
         # Initialize ourselves.
         self.initialize(token)
@@ -1531,7 +1531,7 @@ class SteppingChartParser(ChartParser):
             if e is None: break
             
         # Output a list of complete parses.
-        token[trees_prop] = self.parses()
+        token[TREES] = self.parses()
 
 ########################################################################
 ##  Demo Code

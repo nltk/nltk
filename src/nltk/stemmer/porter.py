@@ -107,8 +107,8 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
     """
 
     ## --NLTK--
-    ## Add propnames parameter.
-    def __init__(self, **propnames):
+    ## Add property_names parameter.
+    def __init__(self, **property_names):
         """The main part of the stemming algorithm starts here.
         b is a buffer holding a word to be stemmed. The letters are in b[k0],
         b[k0+1] ... ending at b[k]. In fact k0 = 0 in this demo program. k is
@@ -120,7 +120,7 @@ class PorterStemmer(nltk.stemmer.AbstractStemmer):
         """
         ## --NLTK--
         ## Call the base class constructor.
-        nltk.stemmer.AbstractStemmer.__init__(self, **propnames)
+        nltk.stemmer.AbstractStemmer.__init__(self, **property_names)
         
         self.b = ""  # buffer for word to be stemmed 
         self.k = 0

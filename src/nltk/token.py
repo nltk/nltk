@@ -173,12 +173,12 @@ class Token(dict):
             after the frozen copy is generated will not be propagated
             to the frozen copy.
         """
-        frozen_properties = {}
+        FROZENerties = {}
         for (key, val) in self.items():
-            frozen_properties[key] = self._freezeval(val)
+            FROZENerties[key] = self._freezeval(val)
             
         frozen_token_class = self.frozen_token_class()
-        return frozen_token_class(**frozen_properties)
+        return frozen_token_class(**FROZENerties)
 
     def frozen_token_class():
         """
@@ -348,9 +348,9 @@ class Token(dict):
         else:
             return repr(self)
 
-    _cyclic_props = {}
+    _CYCLICs = {}
     def register_cyclic(prop):
-        Token._cyclic_props[prop] = True
+        Token._CYCLICs[prop] = True
     register_cyclic = staticmethod(register_cyclic)
     
     def _default_repr(self):
@@ -362,7 +362,7 @@ class Token(dict):
         props = []
         for (p,v) in self.items():
             if p == 'loc': continue
-            elif self._cyclic_props.get(p):
+            elif self._CYCLICs.get(p):
                 props.append('%s=...' % (p,))
             else:
                 props.append('%s=%r' % (p,v))
@@ -920,9 +920,9 @@ class ParaIndexLocation(IndexLocation):
 #        return getattr(self._token, attr)
 #
 #class SeqWrapper(TokenWrapperI):
-#    def __init__(self, token, propnames={}):
+#    def __init__(self, token, property_names={}):
 #        self._token = token
-#        self._propnames = propnames
+#        self._property_names = property_names
 
 ######################################################################
 ## Demonstration

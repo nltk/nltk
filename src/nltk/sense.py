@@ -66,7 +66,7 @@ class SemcorTokenizer(AbstractTokenizer):
     UNIT_SENTENCE   = 'sentence'
     UNIT_PARAGRAPH  = 'paragraph'
 
-    def __init__(self, unit=UNIT_WORD, **propnames):
+    def __init__(self, unit=UNIT_WORD, **property_names):
         """
         Creates a SemcorTokenizer.
 
@@ -81,13 +81,13 @@ class SemcorTokenizer(AbstractTokenizer):
         self._parse_method = _parseSGMLString
         # if it were valid XML, we could use this:
         #self._parse_method = xml.dom.minidom.parseString
-        AbstractTokenizer.__init__(self, **propnames)
+        AbstractTokenizer.__init__(self, **property_names)
 
     def tokenize(self, token):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        text_prop = self._propnames.get('text', 'text')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('text', 'text')
         
-        text = token[text_prop]
+        text = token[TEXT]
         
         output = []
         dom = self._parse_method(text)
@@ -104,10 +104,10 @@ class SemcorTokenizer(AbstractTokenizer):
                         output.append(item)
                     else:
                         output.extend(item)
-        token[subtokens_prop] = output
+        token[SUBTOKENS] = output
 
     def _map_paragraph(self, node, source):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
         pnum = int(node.getAttribute('pnum'))
         ploc = ParaIndexLocation(pnum, source)
         sentences = node.getElementsByTagName('s')
@@ -119,12 +119,12 @@ class SemcorTokenizer(AbstractTokenizer):
             else:
                 out.extend(item)
         if self._unit == self.UNIT_PARAGRAPH:
-            return Token(**{subtokens_prop:out, 'loc':ploc})
+            return Token(**{SUBTOKENS:out, 'loc':ploc})
         else:
             return out
 
     def _map_sentence(self, node, source):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
         snum = int(node.getAttribute('snum'))
         sloc = SentIndexLocation(snum, source)
         out = []
@@ -248,8 +248,8 @@ class DOMSensevalTokenizer(AbstractTokenizer):
     readable C{SensevalTokenizer} is
     """
 
-    def __init__(self, **propnames):
-        AbstractTokenizer.__init__(self, **propnames)
+    def __init__(self, **property_names):
+        AbstractTokenizer.__init__(self, **property_names)
 
     def _map_context(self, node, source):
         head = None
@@ -266,20 +266,20 @@ class DOMSensevalTokenizer(AbstractTokenizer):
         return tokens, head
     
     def tokenize(self, token):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
         self.xtokenize(token)
-        token[subtokens_prop] = list(token[subtokens_prop])
+        token[SUBTOKENS] = list(token[SUBTOKENS])
 
     def xtokenize(self, token):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        text_prop = self._propnames.get('text', 'text')
-        text = token[text_prop]
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('text', 'text')
+        text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
-        token[subtokens_prop] = self._tokengen(text)
+        token[SUBTOKENS] = self._tokengen(text)
 
     def _tokengen(self, text):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
         # inherit docs
         fixed = _fixXML(text)
         doc = xml.dom.minidom.parseString(fixed)
@@ -299,7 +299,7 @@ class DOMSensevalTokenizer(AbstractTokenizer):
             tokens, head = self._map_context(context, loc)
             lemma = _to_ascii(lexelt.getAttribute('item'))
             
-            yield Token(**{subtokens_prop:tokens, 'senses':tuple(sense),
+            yield Token(**{SUBTOKENS:tokens, 'senses':tuple(sense),
                            'head':head, 'lemma':lemma})
         doc.unlink()
 
@@ -353,29 +353,29 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
     The XML is first cleaned up before being processed. 
     """
 
-    def __init__(self, **propnames):
+    def __init__(self, **property_names):
         xml.sax.ContentHandler.__init__(self)
         self._lemma = ''
         self.reset()
-        AbstractTokenizer.__init__(self, **propnames)
+        AbstractTokenizer.__init__(self, **property_names)
 
     def tokenize(self, token):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        text_prop = self._propnames.get('text', 'text')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('text', 'text')
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
-        fixed =  _fixXML(token[text_prop])
+        fixed =  _fixXML(token[TEXT])
         parser.feed(fixed)
         parser.close()
-        token[subtokens_prop] = self._instances
+        token[SUBTOKENS] = self._instances
 
     def xtokenize(self, token, buffer_size=1024):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        text_prop = self._propnames.get('text', 'text')
-        text = token[text_prop]
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TEXT = self._property_names.get('text', 'text')
+        text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
-        token[subtokens_prop] = self._tokengen(text, buffer_size)
+        token[SUBTOKENS] = self._tokengen(text, buffer_size)
         
     def _tokengen(self, text, buffer_size):
         fixed = _fixXML(text)
@@ -412,7 +412,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
             self._head = self._wnum - 1
         
     def endElement(self, tag):
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
         if tag == 'wf':
             text = self._data.strip()
             pos = self._pos
@@ -421,7 +421,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
             self._wnum += 1
             self._data = ''
         elif tag == 'context':
-            self._instances.append(Token(**{subtokens_prop:self._tokens,
+            self._instances.append(Token(**{SUBTOKENS:self._tokens,
                                             'senses':tuple(self._senses),
                                             'head':self._head,
                                             'lemma':self._lemma}))

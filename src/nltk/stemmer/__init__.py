@@ -102,53 +102,53 @@ class AbstractStemmer(StemmerI):
     @inprop: C{stem}: The token's text content.
     @outprop: C{stem}: The token's morphological stem.
     """
-    def __init__(self, **propnames):
+    def __init__(self, **property_names):
         """
         Create a new stemmer.
         
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractStemmer:
             raise AssertionError, "Abstract classes can't be instantiated"
-        self._propnames = propnames
+        self._property_names = property_names
 
     def raw_stem(self, text):
-        text_prop = self._propnames.get('text', 'text')
-        stem_prop = self._propnames.get('stem', 'stem')
-        token = Token(**{text_prop:text})
+        TEXT = self._property_names.get('text', 'text')
+        STEM = self._property_names.get('stem', 'stem')
+        token = Token(**{TEXT:text})
         self.stem(token)
-        return token[stem_prop]
+        return token[STEM]
 
     def stem_n(self, token, n=None):
-        stems_prop = self._propnames.get('stems', 'stems')
-        stem_prop = self._propnames.get('stem', 'stem')
+        STEMS = self._property_names.get('stems', 'stems')
+        STEM = self._property_names.get('stem', 'stem')
         if n == 0:
-            token[stems_prop] = []   # (pathological case)
+            token[STEMS] = []   # (pathological case)
         else:
             self.stem(token)
-            token[stems_prop] = [token[stem_prop]]
-        del token[stem_prop]
+            token[STEMS] = [token[STEM]]
+        del token[STEM]
 
     def raw_stem_n(self, text, n=None):
-        text_prop = self._propnames.get('text', 'text')
-        stem_prop = self._propnames.get('stem', 'stem')
-        token = Token(**{text_prop:text})
+        TEXT = self._property_names.get('text', 'text')
+        STEM = self._property_names.get('stem', 'stem')
+        token = Token(**{TEXT:text})
         self.stem_n(token, n)
-        return token[stem_prop]
+        return token[STEM]
 
     def _stem_from_raw(self, token):
-        text_prop = self._propnames.get('text', 'text')
-        stem_prop = self._propnames.get('stem', 'stem')
-        token[stem_prop] = self.raw_stem(token[text_prop])
+        TEXT = self._property_names.get('text', 'text')
+        STEM = self._property_names.get('stem', 'stem')
+        token[STEM] = self.raw_stem(token[TEXT])
 
     def _stem_n_from_raw(self, token):
-        text_prop = self._propnames.get('text', 'text')
-        stems_prop = self._propnames.get('stems', 'stems')
-        token[stems_prop] = self.raw_stem_n(token[text_prop])
+        TEXT = self._property_names.get('text', 'text')
+        STEMS = self._property_names.get('stems', 'stems')
+        token[STEMS] = self.raw_stem_n(token[TEXT])
 
 class RegexpStemmer(AbstractStemmer):
     """
@@ -159,22 +159,22 @@ class RegexpStemmer(AbstractStemmer):
     @inprop: C{stem}: The token's text content.
     @outprop: C{stem}: The token's morphological stem.
     """
-    def __init__(self, regexp, **propnames):
+    def __init__(self, regexp, **property_names):
         """
         Create a new regexp stemmer.
 
         @type regexp: C{string} or C{regexp}
         @param regexp: The regular expression that should be used to
             identify morphological affixes.
-        @type propnames: C{dict}
-        @param propnames: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
         if not hasattr(regexp, 'pattern'):
             regexp = re.compile(regexp)
         self._regexp = regexp
-        AbstractStemmer.__init__(self, **propnames)
+        AbstractStemmer.__init__(self, **property_names)
 
     def raw_stem(self, word):
         return self._regexp.sub('', word)

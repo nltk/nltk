@@ -417,28 +417,28 @@ class FrozenTreeToken(TreeToken, FrozenToken):
             raise ValueError('TreeTokens must define the children property')
 
 class TreebankTokenizer(TokenizerI):
-    def __init__(self, addlocs=True, propnames={}):
+    def __init__(self, addlocs=True, property_names={}):
         self._addlocs = addlocs
-        self._props = propnames
+        self._props = property_names
 
     def _subtoken_generator(self, token):
-        text_prop = self._props.get('text', 'text')
-        loc_prop = self._props.get('loc', 'loc')
+        TEXT = self._props.get('text', 'text')
+        LOC = self._props.get('loc', 'loc')
 
         # [XX] currently these are ignored:
-        subtokens_loc_prop = self._props.get('subtokens.loc', 'loc')
-        tree_prop = self._props.get('subtokens.tree', 'tree')
-        node_prop = self._props.get('subtokens.tree.node', 'tree')
-        leaf_prop = self._props.get('subtokens.tree.leaf.text', 'text')
+        SUBTOKENS_LOC = self._props.get('subtokens.loc', 'loc')
+        TREE = self._props.get('subtokens.tree', 'tree')
+        NODE = self._props.get('subtokens.tree.node', 'tree')
+        LEAF = self._props.get('subtokens.tree.leaf.text', 'text')
 
         # Extract the token's text.
-        text = token[text_prop]
+        text = token[TEXT]
         if not isinstance(text, str): text = ''.join(text)
         text = text.strip()
 
         # Get the token's source & start position.
-        source = token[loc_prop].source()
-        pos = token[loc_prop].start()
+        source = token[LOC].source()
+        pos = token[LOC].start()
 
         # Parse trees until we reach the end of the string
         trees = []
@@ -447,15 +447,15 @@ class TreebankTokenizer(TokenizerI):
             yield tree
 
         # Add the trees to token.
-        token[subtokens_prop] = trees
+        token[SUBTOKENS] = trees
 
     def xtokenize(self, token):
-        subtokens_prop = self._props.get('subtokens', 'subtokens')
-        token[subtokens_prop] = self._subtoken_generator(token)
+        SUBTOKENS = self._props.get('subtokens', 'subtokens')
+        token[SUBTOKENS] = self._subtoken_generator(token)
         
     def tokenize(self, token):
-        subtokens_prop = self._props.get('subtokens', 'subtokens')
-        token[subtokens_prop] = list(self._subtoken_generator(token))
+        SUBTOKENS = self._props.get('subtokens', 'subtokens')
+        token[SUBTOKENS] = list(self._subtoken_generator(token))
 
     def raw_tokenize(self, token):
         "Not implemented by TreebankTokenizer"

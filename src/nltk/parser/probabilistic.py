@@ -119,18 +119,18 @@ class AbstractProbabilisticParser(ProbabilisticParserI, AbstractParser):
     based on C{parse_dist}.
     """
     def parse_dist(self, token):
-        treedist_prop = self._propnames.get('treedist', 'treedist')
-        trees_prop = self._propnames.get('trees', 'trees')
+        TREEDIST = self._property_names.get('treedist', 'treedist')
+        TREES = self._property_names.get('trees', 'trees')
         self.parse_n(token)
-        token[treedist_prop] = DictionaryProbDist(token[trees_prop])
-        del token[trees_prop]
+        token[TREEDIST] = DictionaryProbDist(token[TREES])
+        del token[TREES]
         
     def _parse_from_parse_dist(self, token):
-        treedist_prop = self._propnames.get('treedist', 'treedist')
-        tree_prop = self._propnames.get('tree', 'tree')
+        TREEDIST = self._property_names.get('treedist', 'treedist')
+        TREE = self._property_names.get('tree', 'tree')
         self.parse(token)
-        token[tree_prop] = token[treedist_prop].max()
-        del token[treedist_prop]
+        token[TREE] = token[TREEDIST].max()
+        del token[TREEDIST]
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -193,7 +193,7 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
     @ivar _trace: The level of tracing output that should be generated
         when parsing a text.
     """
-    def __init__(self, grammar, trace=0, **propnames):
+    def __init__(self, grammar, trace=0, **property_names):
         """
         Create a new C{ViterbiPCFGParser}, that uses {grammar} to
         parse texts.
@@ -210,7 +210,7 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
-        AbstractProbabilisticParser.__init__(self, **propnames)
+        AbstractProbabilisticParser.__init__(self, **property_names)
 
     def trace(self, trace=2):
         """
@@ -234,12 +234,12 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         # Inherit docs from ProbabilisticParserI
         assert _chktype(1, token, Token)
         assert _chktype(2, n, types.IntType, types.NoneType)
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        leaf_prop = self._propnames.get('leaf', 'leaf')
-        prob_prop = self._propnames.get('prob', 'prob')
-        trees_prop = self._propnames.get('trees', 'trees')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        LEAF = self._property_names.get('leaf', 'leaf')
+        PROB = self._property_names.get('prob', 'prob')
+        TREES = self._property_names.get('trees', 'trees')
 
-        subtokens = token[subtokens_prop]
+        subtokens = token[SUBTOKENS]
 
         # The most likely consituant table.  This table specifies the
         # most likely constituent for a given span and type.
@@ -257,8 +257,8 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         for index in range(len(subtokens)):
             tok = subtokens[index]
             probtok = tok.copy()
-            probtok[prob_prop] = 1
-            constituents[index,index+1,tok[leaf_prop]] = probtok
+            probtok[PROB] = 1
+            constituents[index,index+1,tok[LEAF]] = probtok
             if self._trace > 1:
                 self._trace_lexical_insertion(tok, subtokens)
 
@@ -280,9 +280,9 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
                                    self._grammar.start()), [])]
 
         # Sort the trees, and return the requested number of them.
-        trees.sort(lambda t1,t2: cmp(t2[prob_prop], t1[prob_prop]))
-        if n is None: token[trees_prop] = trees
-        else: token[trees_prop] = trees[:n]
+        trees.sort(lambda t1,t2: cmp(t2[PROB], t1[PROB]))
+        if n is None: token[TREES] = trees
+        else: token[TREES] = trees[:n]
 
     def _add_constituents_spanning(self, span, constituents, subtokens):
         """
@@ -319,8 +319,8 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         @param text: The text we are parsing.  This is only used for
             trace output.  
         """
-        node_prop = self._propnames.get('node', 'node')
-        prob_prop = self._propnames.get('prob', 'prob')
+        NODE = self._property_names.get('node', 'node')
+        PROB = self._property_names.get('prob', 'prob')
         
         # Since some of the grammar productions may be unary, we need to
         # repeatedly try all of the productions until none of them add any
@@ -338,11 +338,11 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
             # of the childrens' probabilities and the production's
             # probability.
             for (production, children) in instantiations:
-                p = reduce(lambda pr,t:pr*t[prob_prop],
+                p = reduce(lambda pr,t:pr*t[PROB],
                            children, production.prob())
                 node = production.lhs().symbol()
-                tree = TreeToken(**{node_prop:node, 'children':children,
-                                    prob_prop:p})
+                tree = TreeToken(**{NODE:node, 'children':children,
+                                    PROB:p})
 
                 # If it's new a constituent, then add it to the
                 # constituents dictionary.
@@ -350,12 +350,12 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
                                      None)
                 if self._trace > 1:
                     if c is None or c != tree:
-                        if c is None or c[prob_prop] < tree[prob_prop]:
+                        if c is None or c[PROB] < tree[PROB]:
                             print '   Insert:',
                         else:
                             print '  Discard:',
                         self._trace_production(production, tree, subtokens, p)
-                if c is None or c[prob_prop] < tree[prob_prop]:
+                if c is None or c[PROB] < tree[PROB]:
                     constituents[span[0], span[1], production.lhs()] = tree
                     changed = 1
 
@@ -479,14 +479,14 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         print str
 
     def _trace_lexical_insertion(self, tok, subtokens):
-        leaf_prop = self._propnames.get('leaf', 'leaf')
+        LEAF = self._property_names.get('leaf', 'leaf')
         start = self._span(tok)[0]
         str = '   Insert: |' + '.'*(start-self._span(subtokens[0])[0])
         s,e =self._span(tok)
         str += '[' + '='*(e-s-1) + ']'
         str += '.'*(self._span(subtokens[-1])[1]-start-1-(e-s-1))
         str += '| '
-        str += '%s' % (tok[leaf_prop],)
+        str += '%s' % (tok[LEAF],)
         print str
 
     def __repr__(self):
@@ -608,7 +608,7 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
     @ivar _trace: The level of tracing output that should be generated
         when parsing a text.
     """
-    def __init__(self, grammar, trace=0, **propnames):
+    def __init__(self, grammar, trace=0, **property_names):
         """
         Create a new C{BottomUpPCFGChartParser}, that uses C{grammar}
         to parse texts.
@@ -625,7 +625,7 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
         assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
-        AbstractParser.__init__(self, **propnames)
+        AbstractParser.__init__(self, **property_names)
 
     def trace(self, trace=2):
         """
@@ -641,10 +641,10 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
         self._trace = trace
         
     def parse_n(self, token, n=None):
-        trees_prop = self._propnames.get('trees', 'trees')
-        prob_prop = self._propnames.get('prob', 'prob')
+        TREES = self._property_names.get('trees', 'trees')
+        PROB = self._property_names.get('prob', 'prob')
         
-        chart = Chart(token, **self._propnames)
+        chart = Chart(token, **self._property_names)
         grammar = self._grammar
 
         # Chart parser rules.
@@ -683,35 +683,35 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
             self._setprob(parse, prod_probs)
 
         # Sort by probability
-        parses.sort(lambda a,b: cmp(b[prob_prop], a[prob_prop]))
+        parses.sort(lambda a,b: cmp(b[PROB], a[PROB]))
         
         if n is not None: parses = parses[:n]
-        token[trees_prop] = parses
+        token[TREES] = parses
 
     def _setprob(self, tree, prod_probs):
-        node_prop = self._propnames.get('node', 'node')
-        leaf_prop = self._propnames.get('leaf', 'leaf')
-        prob_prop = self._propnames.get('prob', 'prob')
+        NODE = self._property_names.get('node', 'node')
+        LEAF = self._property_names.get('leaf', 'leaf')
+        PROB = self._property_names.get('prob', 'prob')
 
-        if tree.has(prob_prop): return tree[prob_prop]
+        if tree.has(PROB): return tree[PROB]
         
         # Get the prob of the CFG production.
-        lhs = Nonterminal(tree[node_prop])
+        lhs = Nonterminal(tree[NODE])
         rhs = []
         for child in tree['children']:
             if isinstance(child, TreeToken):
-                rhs.append(Nonterminal(child[node_prop]))
+                rhs.append(Nonterminal(child[NODE]))
             else:
-                rhs.append(child[leaf_prop])
+                rhs.append(child[LEAF])
         prob = prod_probs[lhs, tuple(rhs)]
         
         # Get the probs of children.
         for child in tree['children']:
             if isinstance(child, TreeToken):
                 self._setprob(child, prod_probs)
-                prob *= child[prob_prop]
+                prob *= child[PROB]
 
-        tree[prob_prop] = prob
+        tree[PROB] = prob
         
     def parse(self, token):
         # Delegate to parse_n
@@ -790,8 +790,8 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
 #         for (k,v) in self._bestp.items(): print k,v
 #
 #     def _cmp(self, e1, e2):
-#         return cmp(e1.structure()[prob_prop]*self._bestp[e1.lhs()],
-#                    e2.structure()[prob_prop]*self._bestp[e2.lhs()])
+#         return cmp(e1.structure()[PROB]*self._bestp[e1.lhs()],
+#                    e2.structure()[PROB]*self._bestp[e2.lhs()])
 #        
 #     def sort_queue(self, queue, chart):
 #         queue.sort(self._cmp)
@@ -829,7 +829,7 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
     A bottom-up parser for C{PCFG}s that limits the number of edges in
     its edge queue.
     """
-    def __init__(self, beam_size, grammar, trace=0, **propnames):
+    def __init__(self, beam_size, grammar, trace=0, **property_names):
         """
         Create a new C{BottomUpPCFGChartParser}, that uses C{grammar}
         to parse texts.
@@ -847,7 +847,8 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
         assert _chktype(1, beam_size, types.IntType)
         assert _chktype(2, grammar, PCFG)
         assert _chktype(3, trace, types.IntType)
-        BottomUpPCFGChartParser.__init__(self, grammar, trace, **propnames)
+        BottomUpPCFGChartParser.__init__(self, grammar, trace,
+                                         **property_names)
         self._beam_size = beam_size
         
     def sort_queue(self, queue, chart):

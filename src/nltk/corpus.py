@@ -425,7 +425,7 @@ class SimpleCorpusReader(CorpusReaderI):
                  copyright_file=None,
                  # Formatting meta-data
                  default_tokenizer=WSTokenizer(),
-                 propnames={}):
+                 property_names={}):
         """
         Construct a new corpus reader.  The parameters C{description},
         C{description_file}, C{license_file}, and C{copyright_file}
@@ -512,7 +512,7 @@ class SimpleCorpusReader(CorpusReaderI):
         self._copyright = None
         self._copyright_file = copyright_file
         self._default_tokenizer = default_tokenizer
-        self._props = propnames
+        self._props = property_names
 
         # Postpone actual initialization until the corpus is accessed;
         # this gives the user a chance to call set_basedir(), and
@@ -608,22 +608,22 @@ class SimpleCorpusReader(CorpusReaderI):
         else: return tuple(self._groups.get(group)) or ()
 
     def read(self, item):
-        text_prop = self._props.get('text', 'text')
-        loc_prop = self._props.get('loc', 'loc')
+        TEXT = self._props.get('text', 'text')
+        LOC = self._props.get('loc', 'loc')
         
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
         loc = CharSpanLocation(0, len(text), source)
-        return Token(**{text_prop: text, loc_prop: loc})
+        return Token(**{TEXT: text, LOC: loc})
 
     def xread(self, item):
-        text_prop = self._props.get('text', 'text')
-        loc_prop = self._props.get('loc', 'loc')
+        TEXT = self._props.get('text', 'text')
+        LOC = self._props.get('loc', 'loc')
         
         source = '%s/%s' % (self._name, item)
         textiter = self.open(item) # <- read-mode files act as iterators.
         loc = CharSpanLocation(0, SpanLocation.MAX, source)
-        return Token(**{text_prop: textiter, loc_prop: loc})
+        return Token(**{TEXT: textiter, LOC: loc})
 
     def tokenize(self, item, tokenizer=None):
         if tokenizer is None: tokenizer = self._default_tokenizer

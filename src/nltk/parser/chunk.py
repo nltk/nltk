@@ -255,7 +255,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     _initial_tokenizer = RegexpTokenizer('(%s|%s|%s)' %
                                          (r'\[', r'\]', r'[^\[\]\s]'))
     
-    def __init__(self, chunk_node='CHUNK', addlocs=True, **propnames):
+    def __init__(self, chunk_node='CHUNK', addlocs=True, **property_names):
         """
         @include: AbstractTokenizer.__init__
         @type chunk_node: C{string}
@@ -264,38 +264,38 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
             describing the type of information contained by the chunk,
             such as C{"NP"} for base noun phrases.
         """
-        AbstractTokenizer.__init__(self, addlocs, **propnames)
+        AbstractTokenizer.__init__(self, addlocs, **property_names)
         self._chunk_node = chunk_node
 
         # This tokenizer divides the text into chunks and words:
         CHUNK = r'\[[^\[\]]+\]'
         WORD = r'[^\[\]\s]+'
         self._tok1 = RegexpTokenizer('%s|%s' % (CHUNK, WORD),
-                                     addlocs=addlocs, **propnames)
+                                     addlocs=addlocs, **property_names)
 
         # This tokenizer divides a chunk into words:
-        self._tok2 = RegexpTokenizer(WORD, addlocs=addlocs, **propnames)
+        self._tok2 = RegexpTokenizer(WORD, addlocs=addlocs, **property_names)
 
     def _split_text_and_tag(self, subtok):
-        text_prop = self._propnames.get('text', 'text')
-        tag_prop = self._propnames.get('tag', 'tag')
-        split = subtok[text_prop].find('/')
+        TEXT = self._property_names.get('text', 'text')
+        TAG = self._property_names.get('tag', 'tag')
+        split = subtok[TEXT].find('/')
         if split >= 0:
-            subtok[tag_prop] = subtok[text_prop][split+1:]
-            subtok[text_prop] = subtok[text_prop][:split]
+            subtok[TAG] = subtok[TEXT][split+1:]
+            subtok[TEXT] = subtok[TEXT][:split]
         else:
-            subtok[tag_prop] = None
+            subtok[TAG] = None
         
     def tokenize(self, token):
         assert chktype(1, token, Token)
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        node_prop = self._propnames.get('node', 'node')
-        text_prop = self._propnames.get('text', 'text')
-        tag_prop = self._propnames.get('tag', 'tag')
-        loc_prop = self._propnames.get('loc', 'loc')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        NODE = self._property_names.get('node', 'node')
+        TEXT = self._property_names.get('text', 'text')
+        TAG = self._property_names.get('tag', 'tag')
+        LOC = self._property_names.get('loc', 'loc')
 
         # check that brackets are balanced and not nested
-        brackets = re.sub(r'[^\[\]]', '', token[text_prop])
+        brackets = re.sub(r'[^\[\]]', '', token[TEXT])
         if not re.match(r'(\[\])*', brackets):
             print "ERROR: unbalanced or nested brackets"
 
@@ -303,19 +303,19 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
         self._tok1.tokenize(token)
 
         # Process each one:
-        subtoks = token[subtokens_prop]
+        subtoks = token[SUBTOKENS]
         for i, subtok in enumerate(subtoks):
-            if subtok[text_prop][0] == '[':
+            if subtok[TEXT][0] == '[':
                 # It's a chunk.  Find the words it contains.
                 self._tok2.tokenize(subtok)
                 # Divide each word into text & tag:
-                for subsubtok in subtok[subtokens_prop]:
+                for subsubtok in subtok[SUBTOKENS]:
                     self._split_text_and_tag(subsubtok)
                 # Convert it to a TreeToken.
-                subtok[node_prop] = self._chunk_node
-                subtok['children'] = subtok[subtokens_prop]
-                del subtok[subtokens_prop], subtok[text_prop]
-                if subtok.has(loc_prop): del subtok[loc_prop]
+                subtok[NODE] = self._chunk_node
+                subtok['children'] = subtok[SUBTOKENS]
+                del subtok[SUBTOKENS], subtok[TEXT]
+                if subtok.has(LOC): del subtok[LOC]
                 subtok = subtoks[i] = TreeToken.convert(subtok)
             else:
                 # It's an unchunked token.  Divid its text & tag
@@ -835,7 +835,7 @@ class ChunkString:
     _BRACKETS = re.compile('[^\{\}]+')
     _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
     
-    def __init__(self, tagged_tokens, debug_level=3, **propnames):
+    def __init__(self, tagged_tokens, debug_level=3, **property_names):
         """
         Construct a new C{ChunkString} that encodes the chunking of
         the text C{tagged_tokens}.
@@ -859,10 +859,10 @@ class ChunkString:
         """
         assert chktype(1, tagged_tokens, [Token], (Token,))
         assert chktype(2, debug_level, types.IntType)
-        self._propnames = propnames
-        tag_prop = self._propnames.get('tag', 'tag')
+        self._property_names = property_names
+        TAG = self._property_names.get('tag', 'tag')
         self._ttoks = tagged_tokens
-        tags = [tok[tag_prop] for tok in tagged_tokens]
+        tags = [tok[TAG] for tok in tagged_tokens]
         self._str = '<' + '><'.join(tags) + '>'
         self._debug = debug_level
 
@@ -898,9 +898,9 @@ class ChunkString:
 
         if verify_tags<=0: return
         
-        tag_prop = self._propnames.get('tag', 'tag')
+        TAG = self._property_names.get('tag', 'tag')
         tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
-        tags2 = [tok[tag_prop] for tok in self._ttoks]
+        tags2 = [tok[TAG] for tok in self._ttoks]
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid chunkstring')
 
@@ -914,7 +914,7 @@ class ChunkString:
         @raise ValueError: If a transformation has generated an
             invalid chunkstring.
         """
-        node_prop = self._propnames.get('node', 'node')
+        NODE = self._property_names.get('node', 'node')
         if self._debug > 0: self._verify(1)
             
         # Extract a list of alternating chinks & chunks
@@ -932,7 +932,7 @@ class ChunkString:
 
             # Add this list of tokens to our chunkstruct.
             if piece_in_chunk:
-                chunkstruct.append(TreeToken(**{node_prop: chunk_node,
+                chunkstruct.append(TreeToken(**{NODE: chunk_node,
                                                 'children': subsequence}))
             else:
                 chunkstruct += subsequence
@@ -941,7 +941,7 @@ class ChunkString:
             index += length
             piece_in_chunk = not piece_in_chunk
 
-        return TreeToken(**{node_prop: top_node, 'children': chunkstruct})
+        return TreeToken(**{NODE: top_node, 'children': chunkstruct})
                 
     def xform(self, regexp, repl):
         """
@@ -1506,7 +1506,7 @@ class REChunkParser(ChunkParserI, AbstractParser):
     @outprop: C{node}: The subtrees' chunk label.
     """
     def __init__(self, rules, chunk_node='CHUNK', top_node='TEXT',
-                 trace=0, **propnames):
+                 trace=0, **property_names):
         """
         Construct a new C{REChunkParser}.
         
@@ -1533,7 +1533,7 @@ class REChunkParser(ChunkParserI, AbstractParser):
         self._trace = trace
         self._chunk_node = chunk_node
         self._top_node = top_node
-        AbstractParser.__init__(self, **propnames)
+        AbstractParser.__init__(self, **property_names)
 
     def _trace_apply(self, chunkstr, verbose):
         """
@@ -1593,19 +1593,19 @@ class REChunkParser(ChunkParserI, AbstractParser):
         """
         assert chktype(1, token, Token)
         assert chktype(2, trace, types.NoneType, types.IntType)
-        subtokens_prop = self._propnames.get('subtokens', 'subtokens')
-        tree_prop = self._propnames.get('tree', 'tree')
+        SUBTOKENS = self._property_names.get('subtokens', 'subtokens')
+        TREE = self._property_names.get('tree', 'tree')
 
-        if len(token[subtokens_prop]) == 0:
+        if len(token[SUBTOKENS]) == 0:
             print 'Warning: parsing empty text'
-            token[tree_prop] = TreeToken(node=self._top_node, children=())
+            token[TREE] = TreeToken(node=self._top_node, children=())
             return
         
         # Use the default trace value?
         if trace == None: trace = self._trace
 
         # Create the chunkstring.
-        chunkstr = ChunkString(token[subtokens_prop])
+        chunkstr = ChunkString(token[SUBTOKENS])
 
         # Apply the sequence of rules to the chunkstring.
         if trace:
@@ -1616,7 +1616,7 @@ class REChunkParser(ChunkParserI, AbstractParser):
 
         # Use the chunkstring to create a chunk structure.
         tree = chunkstr.to_chunkstruct(self._chunk_node, self._top_node)
-        token[tree_prop] = tree
+        token[TREE] = tree
 
     def rules(self):
         """
