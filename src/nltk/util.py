@@ -480,12 +480,6 @@ class SparseList:
         end = min(max(end, 0), self._len)
         return [self[i] for i in range(start, end)]
 
-    def __hash__(self):
-        # Must hash equal to an equal list, so this is slow.
-        # [XX] - should we support this, as lists are inherently unhashable
-        # due to their being mutable?
-        return hash(tuple(self))
-
     def __iadd__(self, other):
         self.extend(other)
         return self
