@@ -8,7 +8,7 @@
 # $Id$
 
 """
-Manual type checking for the parameters of functions and methods.  The 
+Type checking for the parameters of functions and methods.  The
 primary function defined by this module is C{chktype}, which checks
 the type of a parameter against a type specification.  The amount of
 type-checking performed by C{chktype} is dependant on the variable
