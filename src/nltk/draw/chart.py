@@ -401,7 +401,7 @@ class ChartView:
         canvas.
         """
         # This breaks things, but I still don't have this quite right:
-        if abs(int(self._chart_canvas['width'])-e.width) > 5:
+        if abs(int(self._chart_canvas['width'])-e.width) > 15:
             self._chart_canvas['width'] = e.width
         loc = self._chart.loc()
         unitwidth = loc.end() - loc.start()
@@ -448,6 +448,7 @@ class ChartView:
         loc = edge.loc()
         for otheredge in self._edgelevels[lvl]:
             otherloc = otheredge.loc()
+            # WHAT COUNTS AS OVERLAP?
             if loc.overlaps(otherloc):
                 return 1
             if ((len(loc) == 0 or len(otherloc)==0) and
@@ -534,7 +535,6 @@ class ChartView:
                 level = i
                 break
         if level == None: return
-        
         # Try to view the new edge..
         y = (level+1) * self._chart_level_size
         dy = self._text_height + 10
@@ -1276,9 +1276,18 @@ class ChartDemo:
         if self._step.get():
             edge = self._cv.selected_edge()
             if (edge is not None) and (edge_strategy is not None):
-                if self._apply_strategy([edge_strategy(edge)]) is None:
+                newedge = self._apply_strategy([edge_strategy(edge)])
+                
+                # [XX] START HACK
+                if newedge is None:
+                    self._cv.select_edge(edge)
+                    newedge = self._apply_strategy(strategy)
+                # [XX] END HACK
+                    
+                if newedge is None:
                     # Unselect it (select_edge toggles selection)
                     self._cv.select_edge(edge)
+                #self._cv.select(newedge)
             else:
                 self._apply_strategy(strategy)
         else:
@@ -1311,12 +1320,14 @@ class ChartDemo:
         
     def _apply_strategy(self, strategy):
         new_edge = self._cp.step(strategy=strategy)
-                               
+
         if new_edge is not None:
             self.display_rule(self._cp.current_chartrule())
             self._cv.update()
             self._cv.mark_edge(new_edge)
             self._cv.view_edge(new_edge)
+            # [XXXXX]
+            self._cv.select_edge(new_edge)
         return new_edge
 
     _TOP_DOWN_INIT = [TopDownInitRule()]
