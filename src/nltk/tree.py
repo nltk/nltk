@@ -46,10 +46,9 @@ functions are defined:
 @see: nltk.token
 """
 
-import nltk.token as token
-
 from nltk.token import Token
 from nltk.token import Location
+from nltk.probability import ProbablisticMixIn
 import re
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import chkclass as _chkclass
@@ -335,7 +334,7 @@ class Tree:
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
 ##//////////////////////////////////////////////////////
-class TreeToken(token.Token):
+class TreeToken(Token):
     """
     A homogenous hierarchical structure spanning text tokens.  I.e., a
     single occurance of a C{Tree}.  A C{TreeToken} consists of a
@@ -389,7 +388,7 @@ class TreeToken(token.Token):
         @param children: The new C{Tree}'s children.
         @type children: C{Tree} or C{Token}
         """
-        _chktype("TreeToken", -1, children, ( (token.Token, TreeToken),) )
+        _chktype("TreeToken", -1, children, ( (Token, TreeToken),) )
         self._node = node
         self._children = children
 
@@ -439,9 +438,9 @@ class TreeToken(token.Token):
         if prevloc is None:
             self._location = None
         else:
-            self._location = token.Location(start, end,
-                                            unit=prevloc.unit(),
-                                            source=prevloc.source())
+            self._location = Location(start, end,
+                                      unit=prevloc.unit(),
+                                      source=prevloc.source())
 
     def node(self):
         """
@@ -648,6 +647,15 @@ class TreeToken(token.Token):
         import nltk.draw.tree
         nltk.draw.tree.TreeView(self)
 
+class ProbablisticTreeToken(TreeToken, ProbablisticMixIn):
+    def __init__(self, p, node, *children):
+        ProbablisticMixIn.__init__(self, p)
+        TreeToken.__init__(self, node, *children)
+    def __repr__(self):
+        return TreeToken.__repr__(self) + (' (p=%s)' % self._p)
+    def __str__(self):
+        return TreeToken.__str__(self) + (' (p=%s)' % self._p)
+        
 ##//////////////////////////////////////////////////////
 ##  Conversion Routines
 ##//////////////////////////////////////////////////////
