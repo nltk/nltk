@@ -8,7 +8,20 @@
 # $Id$
 
 """
-Unit tests for the NLTK modules.
+Unit tests for the NLTK modules.  These tests are intented to ensure
+that changes that we make to NLTK's code don't accidentally introduce
+bugs.
+
+Each module in this package tests a specific aspect of NLTK.  Modules
+are typically named for the module or class that they test (e.g.,
+L{nltk.test.token} performs tests on the L{nltk.token} module).
+
+This package can be run as a script from the command line, with the
+following syntax::
+
+    python nltk/test/__init__.py -v nltk/test/*.py
+
+This command is called by the \"C{test}\" target in the NLTK Makefile.
 """
 
 import unittest, sys
@@ -48,7 +61,7 @@ def _load_modules(module_filenames, verbosity=0):
 
     return modules
 
-def testsuite(module_names, verbosity=0):
+def _testsuite(module_names, verbosity=0):
     """
     Return a PyUnit testsuite for the NLP toolkit
     """
@@ -62,9 +75,10 @@ def testsuite(module_names, verbosity=0):
     
     return unittest.TestSuite([m.testsuite() for m in modules]) 
 
-def test(module_names, verbosity=0):
+def _test(module_names, verbosity=0):
     """
-    Run unit tests for the NLP toolkit; print results to stdout/stderr
+    Run unit tests for the NLP toolkit; print results to stdout/stderr.
+    @param module_names: A list of filenames of test modules.
     """
     # Ensure that the type safety level is set to full.
     import nltk.chktype
@@ -72,19 +86,24 @@ def test(module_names, verbosity=0):
     
     import unittest
     runner = unittest.TextTestRunner(verbosity=verbosity)
-    success = runner.run(testsuite(module_names, verbosity)).wasSuccessful()
+    success = runner.run(_testsuite(module_names, verbosity)).wasSuccessful()
 
     if not success:
         sys.exit(1)
         
 
-def usage(name):
+def _usage(name):
     print """
     Usage: %s [-v] files...
     """ % name
     return 0
 
-if __name__ == '__main__':
+def cli():
+    """
+    The command line interface for the NLP test suite.  Usage::
+
+        python nltk/test/__init__.py -v nltk/test/*.py
+    """
     files = []
     verbosity = 0
 
@@ -93,10 +112,13 @@ if __name__ == '__main__':
             if arg[1:] in ('v', 'V', 'verbose', 'Verbose', 'VERBOSE'):
                 verbosity += 1
             else:
-                sys.exit(usage(sys.argv[0]))
+                sys.exit(_usage(sys.argv[0]))
         else:
             files.append(arg)
     if files:
-        test(files, verbosity)
+        _test(files, verbosity)
     else:
-        usage(sys.argv[0])
+        _usage(sys.argv[0])
+
+if __name__ == '__main__':
+    cli()
