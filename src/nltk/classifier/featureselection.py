@@ -16,7 +16,7 @@ a given classification task.
     a classification problem.
 
   - C{SelectedFDList} provides feature selectors with a convenient
-    means of building C{FeatureSelectorList}s containing the feature
+    means of building C{FeatureDetectorList}s containing the feature
     detectors for the relevant features.
 
 This module also defines classes implementing the C{FeatureSelectorI}

@@ -94,8 +94,8 @@ efficient.  For many classification tasks, feature value lists are
 very sparse; in other words, most of the feature values have some
 X{default value} (usually, zero).  Feature value lists provide a
 method that can be used to retrieve all of the non-default feature
-value assignments.  This can decrease the time that it takes to
-process the feature value list considerably.
+value assignments.  This can considerably decrease the time that it
+takes to process the feature value list.
 """
 
 from nltk.classifier import ClassifierI, LabeledText
