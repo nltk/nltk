@@ -1,5 +1,21 @@
 #! /usr/bin/env python
 
+# Word Frequency Counter for LDC Gigaword English Corpora
+#
+# Requires: NLTK v1.3
+# 
+# Configuration: Users will need to set the environment variable LDC_GIGAWORD
+# eg export LDC_GIGAWORD=/path/to/corpus
+#
+# Assumed File Structure: Gigaword corpus structure is in compressed format
+#
+# Assumed Directory Structure:
+# $LDC_GIGAWORD/{afe,apw,nyt,xie}/{afe,apw,nyt,xie}YYYYMM.gz
+#
+# This script is not known to work on Win32 platforms since it requires
+# some Unix-ish Python modules. It _may_ work under a full installation
+# of Cygwin.
+
 import sys
 import fcntl
 import marshal
