@@ -539,6 +539,9 @@ class NBClassifierTrainer(ClassifierTrainerI):
             raise ValueError('Unknown smoothing type %r' % smoothing)
         
         return NBClassifier(self._fdlist, labels, probdist)
+
+    def __repr__(self):
+        return '<NBClassifierTrainer: %d features>' % len(self._fdlist)
             
 ##//////////////////////////////////////////////////////
 ##  Test code
