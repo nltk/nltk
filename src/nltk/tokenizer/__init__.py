@@ -27,6 +27,7 @@ tokenizers, see the reference documentation for L{TokenizerI}.
                    AbstractTokenizer
 """
 
+from nltk import TaskI, PropertyIndirectionMixIn
 import re, sre_parse, sre_constants, sre_compile
 from nltk.chktype import chktype
 from nltk.token import *
@@ -34,7 +35,7 @@ from nltk.token import *
 ##//////////////////////////////////////////////////////
 ##  Tokenizers
 ##//////////////////////////////////////////////////////
-class TokenizerI:
+class TokenizerI(TaskI):
     """
     A processing class for dividing a token's content into a list of
     subtokens.  Particular implementations of the tokenizer interface
@@ -132,7 +133,7 @@ class TokenizerI:
         """
         raise NotImplementedError()
 
-class AbstractTokenizer(TokenizerI):
+class AbstractTokenizer(TokenizerI, PropertyIndirectionMixIn):
     """
     An abstract base class for tokenizers.  C{AbstractTokenizer}
     provides default implementations for:
@@ -163,12 +164,12 @@ class AbstractTokenizer(TokenizerI):
         """
         if self.__class__ == AbstractTokenizer:
             raise AssertionError, "Abstract classes can't be instantiated"
-        self._property_names = property_names
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
     def xtokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             token[TEXT] = ''.join(text)
@@ -177,16 +178,16 @@ class AbstractTokenizer(TokenizerI):
 
     def raw_tokenize(self, text):
         assert chktype(1, text, str)
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
         token = Token({TEXT:text})
         self.tokenize(token)
         return [subtok[TEXT] for subtok in token[SUBTOKENS]]
 
     def raw_xtokenize(self, text):
         assert chktype(1, text, str)
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
         token = Token({TEXT:text})
         self.xtokenize(token)
         for subtok in token[SUBTOKENS]:
@@ -207,10 +208,10 @@ class AbstractTokenizer(TokenizerI):
         implement the C{tokenize} method based on C{raw_tokenize}.
         """
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
+        TEXT = self.property('TEXT')
+        LOC = self.property('LOC')
+        SUBTOKENS = self.property('SUBTOKENS')
+        CONTEXT = self.property('CONTEXT')
 
         # Use raw_tokenize to get a list of subtoken texts.
         text = token[TEXT]
@@ -243,7 +244,7 @@ class AbstractTokenizer(TokenizerI):
         source and initial character index that should be used for
         subtoken locations.
         """
-        LOC = self._property_names.get('LOC', 'LOC')
+        LOC = self.property('LOC')
         if token.has(LOC):
             return (token[LOC], 0)
         else:
@@ -264,7 +265,7 @@ class AbstractTokenizer(TokenizerI):
         implement the C{xtokenize} method based on C{raw_xtokenize}.
         """
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
         iter = self._xtokenize_from_raw_helper(token, addlocs, addcontexts)
         token[SUBTOKENS] = iter
         
@@ -273,9 +274,9 @@ class AbstractTokenizer(TokenizerI):
         A helper function for L{xtokenize_from_raw}.
         """
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
-        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
+        TEXT = self.property('TEXT')
+        LOC = self.property('LOC')
+        CONTEXT = self.property('CONTEXT')
 
         # Get the token's text.  If it's an iterator, then collapse
         # it into a single string.
@@ -342,13 +343,13 @@ class WhitespaceTokenizer(AbstractTokenizer):
 
     def xtokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
         token[SUBTOKENS] = self._subtoken_generator(token, addlocs,
                                                     addcontexts)
 
     def _subtoken_generator(self, token, addlocs, addcontexts):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
+        TEXT = self.property('TEXT')
+        LOC = self.property('LOC')
 
         text_iter = token[TEXT]
 
@@ -555,9 +556,9 @@ class RegexpTokenizer(AbstractTokenizer):
 
     def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        TEXT = self.property('TEXT')
+        LOC = self.property('LOC')
+        SUBTOKENS = self.property('SUBTOKENS')
 
         # If we're not adding locations, then just delegate to
         # raw_tokenize.
