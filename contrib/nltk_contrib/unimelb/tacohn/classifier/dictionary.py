@@ -8,7 +8,20 @@
 # $Id$
 
 """
-Lesk's dictionary based disambiguator.
+Lesk's dictionary based disambiguator [1], and supporting dictionary
+interface. The dictionary interface supports both WordNet and Roget's
+thesaurus, as well as allowing others in the future.
+
+This word sense tagger uses a machine readable dictionary. This simply
+choses the sense for each word based on the overlap between the words
+using in the definition of each sense in the dictionary and the words
+uses in the defintions of every sense for every other collocate.
+Collocates are simply words that appear within a window of the current
+word. 
+
+[1] Lesk, Michael. 1986. "Automatic Sense Disambiguation: How to Tell a
+Pine Cone from an Ice Cream Cone," in Proceedings of the SIGDOC
+Conference
 """
 
 from nltk_contrib.unimelb.tacohn.classifier import *
@@ -20,6 +33,7 @@ from nltk.corpus import *
 from nltk.probability import *
 from nltk.set import *
 from nltk.stemmer import WordNetStemmer
+from nltk.stemmer.porter import PorterStemmer
 from nltk.tagger import *
 from nltk.tokenizer import *
 from cPickle import load, dump
@@ -53,6 +67,14 @@ class DictionaryI:
         """
         raise AssertionError()
 
+    def definition(self, entry):
+        """
+        @return:        a textual rendering of the given entry in the
+                        dictionary, designed for human consumption.
+        @rtype:         C{string}
+        """
+        raise AssertionError()
+
     def bag_of_words(self, entry):
         """
         Find the bag of words contained in the dictionary definition of the
@@ -61,7 +83,7 @@ class DictionaryI:
         and examples, where possible.  A bag of words means the unordered set
         of words each with a frequency count.
 
-        @param entry:   An entry, as returned from the C{entries} method
+        @param entry:   an entry, as returned from the C{entries} method
         @type entry:    C{string}
         @return:        A bag of words
         @returntype:    C{FreqDist}
@@ -76,7 +98,7 @@ class DictionaryI:
         and examples, where possible. A set of words means the unordered set
         of words, with no frequency information.
 
-        @param entry:   An entry, as returned from the C{entries} method
+        @param entry:   an entry, as returned from the C{entries} method
         @type entry:    C{string}
         @return:        A set of words
         @returntype:    C{Set}
@@ -166,6 +188,13 @@ class WordNetDictionary(DictionaryI):
 
         return synsets
 
+    def definition(self, entry):
+        # inherit docs from DictionaryI
+        synset = self._lookup(entry)
+        forms = [sense.form for sense in synset.senses()]
+        gloss = synset.gloss
+        return '%s -- (%s)' % (forms.join(', '), synset.gloss)
+
     def bag_of_words(self, entry):
         # inherit docs from DictionaryI
         synset = self._lookup(entry)
@@ -195,7 +224,7 @@ class WordNetDictionary(DictionaryI):
 # speech. Looks like they also have a list of comma separated synonyms
 # followed by some descriptive text. Quite a loose structure though - looks
 # like a bit of effort to process further.
-class RogetDictionary:
+class RogetDictionary(DictionaryI):
     """
     Dictionary interface to Roget's thesaurus, as contained in the
     C{nltk.corpus} module. Every word form found in an entry in the
@@ -222,12 +251,15 @@ class RogetDictionary:
     on the same line. Improving the parsing is on my to-do list...
     """
     
-    def __init__(self, stopwords=[]):
+    def __init__(self, stopwords=[], stemmer=None):
         """
         Creates a Roget dictionary.
-        @param stopwords: An optional list of stop-words - usually common
+        @param stopwords: optional list of stop-words - usually common
                           words that should be excluded from the analysis
         @type stopwords:  sequence of C{string}
+        @param stemmer:   optional stemmer to use in pruning
+                          morphological affixes from dictionary keys
+        @type stemmer:    C{StemmerI}
         """
         self._corpus = roget
         self._tokenizer = RETokenizer('\w+')
@@ -239,6 +271,8 @@ class RogetDictionary:
             for token in self._corpus.tokenize(item, self._tokenizer):
                 form = token.type().lower()
                 if form not in self._stopwords:
+                    if stemmer:
+                        form = stemmer.stem(Token(form, None)).type()
                     self._lookup_dict.setdefault(form, [])
                     self._lookup_dict[form].append(item)
 
@@ -246,6 +280,10 @@ class RogetDictionary:
         # inherit docs from DictionaryI
         # ignore pos_tag
         return self._lookup_dict.get(form, [])
+
+    def definition(self, entry):
+        # inherit docs from DictionaryI
+        return self._corpus.read(entry)
 
     def bag_of_words(self, entry):
         # inherit docs from DictionaryI
@@ -363,10 +401,10 @@ class LeskWordSenseTagger:
                         best = (ol, entry)
 
                 # wrap up in a tagged type
-                tt = head
+                tt = head_token.type()
                 if best and best[0] > 0:
                     # or could nest TaggedTypes
-                    tt = TaggedType(head.base(), best[1])
+                    tt = TaggedType(head_token.type().base(), best[1])
 
                 output_tokens.append(Token(tt, head_token.loc()))
             else:
@@ -397,12 +435,18 @@ class LeskWordSenseTagger:
         @rtype: C{TaggedType}
         """
         if self._has_pos:
-            tk = Token(token.type().base(), None)
-            stemmed = self._stemmer.stem(tk).type()
-            return TaggedType(stemmed, token.type().tag())
+            if self._stemmer:
+                tk = Token(token.type().base(), None)
+                stemmed = self._stemmer.stem(tk).type()
+                return TaggedType(stemmed, token.type().tag())
+            else:
+                return token.type()
         else:
-            stemmed = self._stemmer.stem(token).type()
-            return TaggedType(stemmed, None)
+            if self._stemmer:
+                stemmed = self._stemmer.stem(token).type()
+                return TaggedType(stemmed, None)
+            else:
+                return TaggedType(token.type(), None)
 
     def _tokens_to_words(self, tokens):
         """
@@ -562,14 +606,14 @@ brown_verbs = ('VB VBD VBG VBN VBZ DO DOD DOZ HV HVD HVG HVN HVZ BE BED ' +
 #
 #    return bags_dict, df_dict
 
-def unwrap_tokens(tokens):
+def _unwrap_tokens(tokens):
     return [token.type() for token in tokens]
 
 def demo():
     from pprint import pprint
 
     # load stoplist
-    stoplist = unwrap_tokens(stopwords.tokenize('english'))
+    stoplist = _unwrap_tokens(stopwords.tokenize('english'))
 
     # load a bit of the brown corpus
     items = brown.items('humor')
@@ -592,8 +636,9 @@ def demo():
 
     # create the tagger, using roget
     print 'Creating Roget dictionary (may take a while)...'
-    dictionary = RogetDictionary(stoplist)
-    tagger = LeskWordSenseTagger(5, dictionary, WordNetStemmer(), True, 'set')
+    stemmer = PorterStemmer()
+    dictionary = RogetDictionary(stoplist, stemmer)
+    tagger = LeskWordSenseTagger(5, dictionary, stemmer, True, 'set')
     print 'Running with 5 word window, set of words, Roget'
     pprint(tagger.tag(tagged_tokens[:200]))
 
