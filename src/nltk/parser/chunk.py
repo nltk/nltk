@@ -1463,34 +1463,39 @@ def demo_eval(chunkparser, text):
 
 def demo():
     """
-    Demonstrate the C{REChunkParser}.
+    A demonstration for the C{REChunkParser} class.  A single text is
+    parsed with four different chunk parsers, using a variety of rules
+    and strategies.
     """
-    text = """
+    text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
     [ The/DT cats/NNS ] ./.
-    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
-    """
+    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./."""
 
-    print 'SOURCE STRING:'
+    print '*'*75
+    print 'Evaluation text:'
     print text
-    print
-    
+    print '*'*75
+
+    # Use a simple regexp to define regular expressions.
     r1 = ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
     cp = REChunkParser([r1], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
 
+    # Use a chink rule to remove everything that's *not* an NP
     r1 = ChunkRule(r'<.*>+', 'Chunk everything')
     r2 = ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
     cp = REChunkParser([r1, r2], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
 
+    # Unchunk non-NP words, and then merge consecutive NPs
     r1 = ChunkRule(r'(<.*>)', 'Chunk each tag')
     r2 = UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
     r3 = MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
     cp = REChunkParser([r1,r2,r3], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
 
-    
+    # Chunk sequences of NP words, and split them at determiners
     r1 = ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
     r2 = SplitRule('', r'<DT>', 'Split before DT')
     cp = REChunkParser([r1,r2], chunk_node='NP', top_node='S', trace=1)
