@@ -13,6 +13,7 @@ Temporary(?) resting place for the WordNet based stemmer.
 
 from nltk.stemmer import StemmerI
 from nltk.token import Token
+from nltk_contrib.pywordnet import *
 from nltk_contrib.pywordnet.tools import morphy
 
 ##//////////////////////////////////////////////////////
@@ -32,16 +33,21 @@ class WordNetStemmer(StemmerI):
 
     def stem(self, token):
         # inherit docs from StemmerI
-        stemmed = morphy(token.type().lower())
-        if stemmed:
-            # restore the case
-            new_string = ''
-            for index in range(min(len(token.type()), len(stemmed))):
-                if token.type()[index].isupper():
-                    new_string += stemmed[index].upper()
-                else:
-                    new_string += stemmed[index]
-            return Token(new_string, token.loc())
-        else:
-            return token
+        # TODO - when the new token comes out, use it to get the
+        # part-of-speech, thus narrowing the search (and getting eg.
+        # fly/verb for the query flies, rather than the plural noun).
+        # This will only match the first POS from the list below...
+        for pos in [NOUN, VERB, ADJECTIVE, ADVERB]:
+            stemmed = morphy(token.type().lower(), pos)
+            if stemmed:
+                # restore the case
+                new_string = ''
+                for index in range(min(len(token.type()), len(stemmed))):
+                    if token.type()[index].isupper():
+                        new_string += stemmed[index].upper()
+                    else:
+                        new_string += stemmed[index]
+                return Token(new_string, token.loc())
+
+        return token
 
