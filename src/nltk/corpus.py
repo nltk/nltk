@@ -51,8 +51,8 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     authors, and range from 7,500 words to 800,000 words.
   
   - L{roget}: The 11th edition of Roget's Thesaurus of English Words
-    and Phrases, from Project Guttenberg.  Each entry in this corpus
-    corresponds to a single thesaurus entries from Roget's thesaurus.
+    and Phrases, from Project Guttenberg.  Each item in this corpus
+    corresponds to a single thesaurus entry from Roget's thesaurus.
   
   - L{words}: A list of about 45,000 unique words and word forms.
     The word list contains mostly English words and names, but also
@@ -149,38 +149,38 @@ else:
 class CorpusReaderI:
     """
     An accessor for a collection of natural language data.  This
-    collection is organized as a set of named X{entries}.  Typically,
-    each entry corresponds to a single file, and contains a single
-    coherent text; but some corpora are divided into entries along
+    collection is organized as a set of named X{items}.  Typically,
+    each item corresponds to a single file, and contains a single
+    coherent text; but some corpora are divided into items along
     different lines.
 
     A corpus can optionally contain a set of X{groups}, or collections
-    of related entries.  The entries within a single group all have
+    of related items.  The items within a single group all have
     the same format; but different groups may have different formats.
     The set of a corpus's groups are often (but not always) mutually
     exclusive.  For a description of the groups that are available for
     a specific corpus, use the L{description()} method.
 
     The L{groups} method returns a list of the groups that are defined
-    for a C{CorpusReader}'s corpus.  The L{entries()} method returns a
-    list of the names of the entries in a group or corpus.  The
-    X{entry reader} methods (listed below) are used to read the
-    contents of individual entries.  The following example
+    for a C{CorpusReader}'s corpus.  The L{items()} method returns a
+    list of the names of the items in a group or corpus.  The
+    X{item reader} methods (listed below) are used to read the
+    contents of individual items.  The following example
     demonstrates the use of a C{Corpus}:
 
         >>> for newsgroup in twenty_newsgroups.groups():
-        ...    for entry in twenty_newsgroup.entries(newsgroup):
-        ...        do_something(newsgroup.tokenize(entry), newsgroup)
+        ...    for item in twenty_newsgroup.items(newsgroup):
+        ...        do_something(newsgroup.tokenize(item), newsgroup)
 
-    Some corpora do not implement all of the entry reader methods; if
-    a corpus doesn't implement an entry reader method, then that
+    Some corpora do not implement all of the item reader methods; if
+    a corpus doesn't implement an item reader method, then that
     method will raise a C{NotImplementedError}.  Some corpora define
-    new entry reader methods, for reading their contents in specific
+    new item reader methods, for reading their contents in specific
     formats; see the documentation for individual implementations of
-    the C{CorpusReaderI} interface for information about new entry reader
+    the C{CorpusReaderI} interface for information about new item reader
     methods.
 
-    @group Entry Access: open, read, readlines, tokenize
+    @group Item Access: open, read, readlines, tokenize
     @group Subcorpus Access: subcorpora
     @group Metadata: name, description, licence, copyright,
         __str__, __repr__
@@ -223,55 +223,55 @@ class CorpusReaderI:
         return 'Unknown'
 
     #////////////////////////////////////////////////////////////
-    #// Data access (entries)
+    #// Data access (items)
     #////////////////////////////////////////////////////////////
-    def entries(self):
+    def items(self):
         """
-        @return: A list containing the names of the entries contained in
+        @return: A list containing the names of the items contained in
             this C{CorpusReader}'s corpus.
         @rtype: C{list} of C{string}
         """
         raise AssertionError, 'CorpusReaderI is an abstract class'
 
-    def path(self, entry):
+    def path(self, item):
         """
-        @return: The path of a file containing the given entry.
-        @param entry: The name of the requested entry
+        @return: The path of a file containing the given item.
+        @param item: The name of the requested item
         @rtype: C{string}
         """
         raise NotImplementedError, 'This corpus does not implement path()'
 
-    def open(self, entry):
+    def open(self, item):
         """
-        @return: A read-mode C{file} object for the given entry.
-        @param entry: The name of the entry to read.
+        @return: A read-mode C{file} object for the given item.
+        @param item: The name of the item to read.
         @rtype: C{file}
         """
         raise NotImplementedError, 'This corpus does not implement open()'
 
-    def read(self, entry):
+    def read(self, item):
         """
-        @return: A string containing the contents of the given entry.
-        @param entry: The name of the entry to read.
+        @return: A string containing the contents of the given item.
+        @param item: The name of the item to read.
         @rtype: C{string}
         """
         raise NotImplementedError, 'This corpus does not implement read()'
 
-    def readlines(self, entry):
+    def readlines(self, item):
         """
         @return: A list of the contents of each line in the given
-            entry.  Trailing newlines are included.
-        @param entry: The name of the entry to read.
+            item.  Trailing newlines are included.
+        @param item: The name of the item to read.
         @rtype: C{list} of C{string}
         """
         raise NotImplementedError, 'This corpus does not implement readlines()'
 
-    def tokenize(self, entry, tokenizer=None):
+    def tokenize(self, item, tokenizer=None):
         """
-        @return: A list of the tokens in the given entry.
-        @param entry: The name of the entry to read.
+        @return: A list of the tokens in the given item.
+        @param item: The name of the item to read.
         @param tokenizer: The tokenizer that should be used to
-            tokenize the entry.  If no tokenizer is specified, then the
+            tokenize the item.  If no tokenizer is specified, then the
             default tokenizer for this corpus is used.
         @rtype: C{list} of L{Token<nltk.token.Token>}
         """
@@ -297,14 +297,14 @@ class CorpusReaderI:
         """
         str = self._name
         try:
-            entries = self.entries()
+            items = self.items()
             groups = self.groups()
-            if entries:
+            if items:
                 if groups:
-                    str += (' (contains %d entries; %d groups)' %
-                            (len(entries), len(groups)))
+                    str += (' (contains %d items; %d groups)' %
+                            (len(items), len(groups)))
                 else:
-                    str += ' (contains %d entries)' % len(entries)
+                    str += ' (contains %d items)' % len(items)
             elif groups:
                 str += ' (contains %d groups)' % len(groups)
         except IOError:
@@ -329,16 +329,16 @@ class CorpusReaderI:
 class SimpleCorpusReader(CorpusReaderI):
     """
     A general-purpose implementation of the C{CorpusReader} interface
-    that defines the set of entries and the contents of groups with
+    that defines the set of items and the contents of groups with
     regular expressions over filenames.  The C{SimpleCorpusReader}
     implementation is suitable for defining corpus readers for corpora
     where:
     
-        - Each entry consists of the text in a single file.
-        - Every entry has the same format.
-        - The filenames of entries can be distinguished from the
+        - Each item consists of the text in a single file.
+        - Every item has the same format.
+        - The filenames of items can be distinguished from the
           filenames of metadata files with a regular expression.
-        - The set entries in each group can be distinguished with
+        - The set items in each group can be distinguished with
           a single regular expression.
 
     For the purposes of defining regular expressions over path names,
@@ -348,7 +348,7 @@ class SimpleCorpusReader(CorpusReaderI):
     """
     def __init__(self,
                  # Basic Information
-                 name, rootdir, entries_regexp,
+                 name, rootdir, items_regexp,
                  # Grouping
                  groups=None,
                  # Meta-data
@@ -364,7 +364,7 @@ class SimpleCorpusReader(CorpusReaderI):
         description, you should use C{description} or
         C{description_file}, but not both.
 
-        @group Basic Information: name, rootdir, entries_regexp
+        @group Basic Information: name, rootdir, items_regexp
         @group Grouping: groups
         @group Meta-data: description, license, copyright,
             description_file, license_file, copyright_file
@@ -380,8 +380,8 @@ class SimpleCorpusReader(CorpusReaderI):
             corpus.  If C{rootdir} is a relative path, then it is
             interpreted relative to the C{nltk.corpus} base directory
             (as returned by L{nltk.corpus.get_basedir()}).
-        @type entries_regexp: C{regexp} or C{string}
-        @param entries_regexp: A regular expression over paths that
+        @type items_regexp: C{regexp} or C{string}
+        @param items_regexp: A regular expression over paths that
             defines the set of files that should be listed as
             entities for the corpus.  The paths that this is tested
             against are all relative to the corpus's root directory.
@@ -423,8 +423,8 @@ class SimpleCorpusReader(CorpusReaderI):
             used for the corpus reader's L{tokenize} method.
         """
         # Compile regular expressions.
-        if isinstance(entries_regexp, type('')):
-            entries_regexp = re.compile(entries_regexp)
+        if isinstance(items_regexp, type('')):
+            items_regexp = re.compile(items_regexp)
         if groups is None: groups = []
         else: groups = groups[:]
         for i in range(len(groups)):
@@ -434,7 +434,7 @@ class SimpleCorpusReader(CorpusReaderI):
         # Save parameters
         self._name = name
         self._original_rootdir = rootdir
-        self._entries_regexp = entries_regexp
+        self._items_regexp = items_regexp
         self._grouplists = groups
         self._description = description
         self._description_file = description_file
@@ -451,7 +451,7 @@ class SimpleCorpusReader(CorpusReaderI):
         # ever changes.
         self._basedir = None
         self._rootdir = None
-        self._entries = None
+        self._items = None
         self._groups = None
 
     #////////////////////////////////////////////////////////////
@@ -473,9 +473,9 @@ class SimpleCorpusReader(CorpusReaderI):
         filelist = [os.path.join(*(file.split('/')))
                     for file in filelist]
 
-        # Find the files that are entries
-        self._entries = [f for f in filelist
-                         if self._entries_regexp.match(f)]
+        # Find the files that are items
+        self._items = [f for f in filelist
+                         if self._items_regexp.match(f)]
 
         # Find the files for each group.
         self._groups = {}
@@ -524,30 +524,30 @@ class SimpleCorpusReader(CorpusReaderI):
         return self._copyright
 
     #////////////////////////////////////////////////////////////
-    #// Data access (entries)
+    #// Data access (items)
     #////////////////////////////////////////////////////////////
-    def entries(self, group=None):
+    def items(self, group=None):
         self._initialize()
-        if group is None: return self._entries
+        if group is None: return self._items
         else: return self._groups.get(group) or []
 
-    def path(self, entry):
+    def path(self, item):
         self._initialize()
-        return os.path.join(self._rootdir, entry)
+        return os.path.join(self._rootdir, item)
 
-    def open(self, entry):
-        return open(self.path(entry))
+    def open(self, item):
+        return open(self.path(item))
 
-    def read(self, entry):
-        return self.open(entry).read()
+    def read(self, item):
+        return self.open(item).read()
 
-    def readlines(self, entry):
-        return self.open(entry).readlines()
+    def readlines(self, item):
+        return self.open(item).readlines()
 
-    def tokenize(self, entry, tokenizer=None):
+    def tokenize(self, item, tokenizer=None):
         if tokenizer is None: tokenizer = self._default_tokenizer
-        source = '%s/%s' % (self._name, entry)
-        return tokenizer.tokenize(self.read(entry), source=source)
+        source = '%s/%s' % (self._name, item)
+        return tokenizer.tokenize(self.read(item), source=source)
 
     #////////////////////////////////////////////////////////////
     #// Structure access (groups)
@@ -564,8 +564,8 @@ class SimpleCorpusReader(CorpusReaderI):
 class RogetCorpusReader(CorpusReaderI):
     """
     A C{CorpusReader} implementation for Roget's Thesaurus.  Each
-    corpus entry corresponds to a single thesaurus entry.  These
-    entries are all read from a single thesaurus file.
+    corpus item corresponds to a single thesaurus item.  These
+    items are all read from a single thesaurus file.
     """
     def __init__(self, name, rootdir, data_file):
         self._name = name
@@ -578,7 +578,7 @@ class RogetCorpusReader(CorpusReaderI):
         # We'll also want to re-initialize the corpus if basedir
         # ever changes.
         self._basedir = None
-        self._entries = None
+        self._items = None
         self._rootdir = None
         self._groups = None
         self._description = None
@@ -595,7 +595,7 @@ class RogetCorpusReader(CorpusReaderI):
     DESCRIPTION_RE = re.compile('(' + r'\*'*60 + r'.*?' +
                                 r'='*60+'\s+-->)', re.DOTALL)
 
-    ENTRY_RE = re.compile(r'^     #(\w+)\.\s+(' + #r'(([^-]*)\s--' +
+    ITEM_RE = re.compile(r'^     #(\w+)\.\s+(' + #r'(([^-]*)\s--' +
                           r'.*?\n)',
                           re.DOTALL | re.MULTILINE)
     
@@ -624,16 +624,16 @@ class RogetCorpusReader(CorpusReaderI):
         #p\.\s+\d+\s+-->', '', data)
         #data = re.sub(r'<--\s+p\.\s+\d+\s+-->', '', data)
 
-        # Divide the thesaurus into entries.
-        entries = re.split('\n     #', data)
+        # Divide the thesaurus into items.
+        items = re.split('\n     #', data)
 
-        self._entrylist = []
-        self._entries = {}
-        for entry in entries[1:]:
-            (key, contents) = entry.split('--', 1)
+        self._itemlist = []
+        self._items = {}
+        for item in items[1:]:
+            (key, contents) = item.split('--', 1)
             key = ' '.join(key.split()) # Normalize the key.
-            self._entrylist.append(key)
-            self._entries[key] = contents.strip()
+            self._itemlist.append(key)
+            self._items[key] = contents.strip()
 
     #////////////////////////////////////////////////////////////
     #// Corpus Information/Metadata
@@ -655,27 +655,27 @@ class RogetCorpusReader(CorpusReaderI):
         return self._copyright
 
     #////////////////////////////////////////////////////////////
-    #// Data access (entries)
+    #// Data access (items)
     #////////////////////////////////////////////////////////////
-    def entries(self, group=None):
+    def items(self, group=None):
         self._initialize()
-        return self._entrylist
+        return self._itemlist
 
-    def path(self, entry):
+    def path(self, item):
         raise NotImplementedError, 'roget does not implement path()'
     
-    def open(self, entry):
+    def open(self, item):
         raise NotImplementedError, 'roget does not implement open()'
 
-    def read(self, entry):
-        return self._entries[entry]
+    def read(self, item):
+        return self._items[item]
 
-    def readlines(self, entry):
-        return self._entries[entry].splitlines()
+    def readlines(self, item):
+        return self._items[item].splitlines()
 
-    def tokenize(self, entry, tokenizer=WSTokenizer()):
-        source = '%s/%s' % (self._name, entry)
-        return tokenizer.tokenize(self.read(entry), source=source)
+    def tokenize(self, item, tokenizer=WSTokenizer()):
+        source = '%s/%s' % (self._name, item)
+        return tokenizer.tokenize(self.read(item), source=source)
 
     #////////////////////////////////////////////////////////////
     #// Structure access (groups)
@@ -703,8 +703,8 @@ class TreebankCorpusReader(CorpusReaderI):
         # 4 groups:
         self._groups = ('raw', 'tagged', 'parsed', 'merged')
 
-        # Are the merged entries "virtual" (i.e., constructed on the
-        # fly from the parsed & tagged entries)?  This is true iff the
+        # Are the merged items "virtual" (i.e., constructed on the
+        # fly from the parsed & tagged items)?  This is true iff the
         # treebank corpus doesn't contain a "merged" subdirectory.
         self._virtual_merged = 0
         
@@ -717,8 +717,8 @@ class TreebankCorpusReader(CorpusReaderI):
         self._description = None
         self._license = None
         self._copyright = None
-        self._entries = None
-        self._group_entries = None
+        self._items = None
+        self._group_items = None
 
     #////////////////////////////////////////////////////////////
     #// Initialization
@@ -734,18 +734,18 @@ class TreebankCorpusReader(CorpusReaderI):
         if not os.path.isdir(self._rootdir):
             raise IOError('%s is not installed' % self._name)
 
-        # Get the list of entries in each group.
-        self._group_entries = {}
+        # Get the list of items in each group.
+        self._group_items = {}
         for group in self._groups:
-            self._find_entries(group)
-        if not self._group_entries.has_key('merged'):
+            self._find_items(group)
+        if not self._group_items.has_key('merged'):
             self._virtual_merged = 1
-            self._find_virtual_merged_entries()
+            self._find_virtual_merged_items()
 
-        # Get the overall list of entries
-        self._entries = []
-        for entries in self._group_entries.values():
-            self._entries += entries
+        # Get the overall list of items
+        self._items = []
+        for items in self._group_items.values():
+            self._items += items
 
         # Read metadata from files
         if self._description is None and self._description_file is not None:
@@ -758,21 +758,21 @@ class TreebankCorpusReader(CorpusReaderI):
             path = os.path.join(self._rootdir, self._copyright_file)
             self._copyright = open(path).read()
 
-    def _find_entries(self, group):
+    def _find_items(self, group):
         path = os.path.join(self._rootdir, group)
         if os.path.isdir(path):
-            self._group_entries[group] = [os.path.join(group, f)
+            self._group_items[group] = [os.path.join(group, f)
                                           for f in os.listdir(path)]
 
-    def _find_virtual_merged_entries(self):
+    def _find_virtual_merged_items(self):
         # Check to make sure we have both the .tagged and the .parsed files.
-        self._group_entries['merged'] = merged = []
+        self._group_items['merged'] = merged = []
         is_tagged = {}
-        for entry in self._group_entries.get('tagged', []):
-            basename = os.path.basename(entry).split('.')[0]
+        for item in self._group_items.get('tagged', []):
+            basename = os.path.basename(item).split('.')[0]
             is_tagged[basename] = 1
-        for entry in self._group_entries.get('parsed', []):
-            basename = os.path.basename(entry).split('.')[0]
+        for item in self._group_items.get('parsed', []):
+            basename = os.path.basename(item).split('.')[0]
             if is_tagged.get(basename):
                 merged.append(os.path.join('merged', '%s.mrg' % basename))
 
@@ -803,60 +803,60 @@ class TreebankCorpusReader(CorpusReaderI):
         return self._rootdir
 
     #////////////////////////////////////////////////////////////
-    #// Data access (entries)
+    #// Data access (items)
     #////////////////////////////////////////////////////////////
-    def entries(self, group=None):
+    def items(self, group=None):
         self._initialize()
-        if group is None: return self._entries
-        else: return self._group_entries.get(group) or []
+        if group is None: return self._items
+        else: return self._group_items.get(group) or []
 
-    def path(self, entry):
+    def path(self, item):
         self._initialize()
-        if self._virtual_merged and entry.startswith('merged'):
-            estr = 'The given entry is virtual; it has no path'
+        if self._virtual_merged and item.startswith('merged'):
+            estr = 'The given item is virtual; it has no path'
             raise NotImplementedError, estr
         else:
-            return os.path.join(self._rootdir, entry)
+            return os.path.join(self._rootdir, item)
 
-    def open(self, entry):
-        return open(self.path(entry))
+    def open(self, item):
+        return open(self.path(item))
 
-    def read(self, entry):
-        if self._virtual_merged and entry.startswith('merged'):
-            basename = os.path.basename(entry).split('.')[0]
-            tagged_entry = os.path.join('tagged', '%s.pos' % basename)
-            parsed_entry = os.path.join('parsed', '%s.prd' % basename)
-            tagged = self.read(tagged_entry)
-            parsed = self.read(parsed_entry)
+    def read(self, item):
+        if self._virtual_merged and item.startswith('merged'):
+            basename = os.path.basename(item).split('.')[0]
+            tagged_item = os.path.join('tagged', '%s.pos' % basename)
+            parsed_item = os.path.join('parsed', '%s.prd' % basename)
+            tagged = self.read(tagged_item)
+            parsed = self.read(parsed_item)
             return self.merge(tagged, parsed)
         else:
-            return self.open(entry).read()
+            return self.open(item).read()
 
-    def readlines(self, entry):
-        if self._virtual_merged and entry.startswith('merged'):
-            contents = self.read(entry)
+    def readlines(self, item):
+        if self._virtual_merged and item.startswith('merged'):
+            contents = self.read(item)
             return [line+'\n' for line in contents.split('\n')]
         else:
-            return self.open(entry).readlines()
+            return self.open(item).readlines()
 
     # Default tokenizers.
     _ws_tokenizer = WSTokenizer()
     _tb_tokenizer = TreebankTokenizer()
     _tag_tokenizer = TaggedTokenizer()
     
-    def tokenize(self, entry, tokenizer=None):
+    def tokenize(self, item, tokenizer=None):
         if tokenizer is None:
-            if entry.startswith('merged'):
+            if item.startswith('merged'):
                 tokenizer = self._tb_tokenizer
-            elif entry.startswith('tagged'):
+            elif item.startswith('tagged'):
                 tokenizer = self._tag_tokenizer
-            elif entry.startswith('parsed'):
+            elif item.startswith('parsed'):
                 tokenizer = self._tb_tokenizer
-            elif entry.startswith('raw'):
+            elif item.startswith('raw'):
                 tokenizer = self._ws_tokenizer
 
         # Read in the contents of the file.
-        return tokenizer.tokenize(self.read(entry))
+        return tokenizer.tokenize(self.read(item))
 
     #////////////////////////////////////////////////////////////
     #// Parsed/Tagged Merging
@@ -1094,24 +1094,24 @@ def _test_corpus(corpus):
     print 'description() = ' + _truncate_repr(corpus.description(), 70-16)
     print 'license()     = ' + _truncate_repr(corpus.license(), 70-16)
     print 'copyright()   = ' + _truncate_repr(corpus.copyright(), 70-16)
-    print 'entries()     = ' + _truncate_repr(corpus.entries(), 70-16)
+    print 'items()       = ' + _truncate_repr(corpus.items(), 70-16)
     print 'groups()      = ' + _truncate_repr(corpus.groups(), 70-16)
-    entry = corpus.entries()[0]
-    contents = corpus.read(entry)
+    item = corpus.items()[0]
+    contents = corpus.read(item)
     print 'read(e0)      = ' + _truncate_repr(contents, 70-16)
     if len(contents) > 50000: return
-    print 'tokenize(e0)  = ' + _truncate_repr(corpus.tokenize(entry), 70-16)
+    print 'tokenize(e0)  = ' + _truncate_repr(corpus.tokenize(item), 70-16)
 
 def _test_treebank():
     _test_corpus(treebank)
     print 'er, et, ep, em = raw, tagged, parsed, merged'
-    er = treebank.entries('raw')[0]
-    et = treebank.entries('tagged')[0]
-    ep = treebank.entries('parsed')[0]
-    em = treebank.entries('merged')[0]
-    for (name, entry) in zip('er et ep em'.split(), (er, et, ep, em)):
-        contents = treebank.read(entry)
-        tokenized = treebank.tokenize(entry)
+    er = treebank.items('raw')[0]
+    et = treebank.items('tagged')[0]
+    ep = treebank.items('parsed')[0]
+    em = treebank.items('merged')[0]
+    for (name, item) in zip('er et ep em'.split(), (er, et, ep, em)):
+        contents = treebank.read(item)
+        tokenized = treebank.tokenize(item)
         print 'read(%s)      = %s' % (name, _truncate_repr(contents, 70-16))
         print 'tokenize(%s)  = %s' % (name, _truncate_repr(tokenized, 70-16))
 
