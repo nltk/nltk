@@ -99,6 +99,23 @@ class AbstractFeatureDetector(FeatureDetectorI, PropertyIndirectionMixIn):
         features = self.raw_detect_features(token)
         token[FEATURES].update(features)
 
+class MergedFeatureDetector(AbstractFeatureDetector):
+    def __init__(self, *detectors, **property_names):
+        AbstractFeatureDetector.__init__(self, **property_names)
+        self._detectors = detectors
+
+    def features(self):
+        feature_names = Set()
+        for detector in self._detectors:
+            feature_names.update(detector.features())
+        return list(feature_names)
+
+    def raw_detect_features(self, token):
+        features = {}
+        for detector in self._detectors:
+            features.update(detector.raw_detect_features(token))
+        return features
+
 class PropertyFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that copies one or more of a token's properties
@@ -123,6 +140,25 @@ class PropertyFeatureDetector(AbstractFeatureDetector):
     
     def raw_detect_features(self, token):
         return dict([(p,token[p]) for p in self._properties])
+
+# Bag-of-words:
+class BagOfWordsFeatureDetector(AbstractFeatureDetector):
+    def __init__(self, window=5, **property_names):
+        """
+        @param window: The number of words in the context to add to
+            the bag of words.
+        """
+        AbstractFeatureDetector.__init__(self, **property_names)
+        self._window = window
+        
+    def raw_detect_features(self, token):
+        bow = [tok['TEXT'] for tok in
+               token['CONTEXT'].getrange(-self._window, 0)+
+               token['CONTEXT'].getrange(1, 1+self._window)]
+        return {'BOW': bow}
+    
+    def features(self):
+        return ['BOW']
 
 ######################################################################
 ## Feature Encoding
@@ -192,10 +228,10 @@ class MergedFeatureEncoder(FeatureEncoderI, PropertyIndirectionMixIn):
         FEATURE_VECTOR = self.property('FEATURE_VECTOR')
         token[FEATURE_VECTOR] = self.raw_encode_features(token[FEATURES])
 
-    def raw_encode_features(self, token):
-        encoded_fvlist = self._encoders[0].raw_encode_features(token)
+    def raw_encode_features(self, features):
+        encoded_fvlist = self._encoders[0].raw_encode_features(features)
         for encoder in self._encoders[1:]:
-            encoded_fvlist += encoder.raw_encode_features(token)
+            encoded_fvlist += encoder.raw_encode_features(features)
         return encoded_fvlist
 
     def description(self, index):
@@ -250,7 +286,10 @@ class AbstractFeatureEncoder(FeatureEncoderI, PropertyIndirectionMixIn):
         self._val_to_index = dict([(v,i+1) for (i,v) in enumerate(values)])
 
     def description(self, index):
-        return '%s=%s' % (self._feature_name, self._index_to_val[index])
+        if index == 0:
+            return '%s=<unknown>' % self._feature_name
+        else:
+            return '%s=%r' % (self._feature_name, self._index_to_val[index])
 
     def num_features(self):
         return len(self._index_to_val)
@@ -260,7 +299,10 @@ class AbstractFeatureEncoder(FeatureEncoderI, PropertyIndirectionMixIn):
         FEATURE_VECTOR = self.property('FEATURE_VECTOR')
         token[FEATURE_VECTOR] = self.raw_encode_features(token[FEATURES])
 
-class BooleanFeatureEncoder(AbstractFeatureEncoder):
+    def __repr__(self):
+        return '<%s for %s>' % (self.__class__.__name__, self._feature_name)
+
+class BasicValuedFeatureEncoder(AbstractFeatureEncoder):
     """
     A feature encoder for simple-valued features, that encodes the
     feature as a boolean L{SparseList}.  Each index in this list
@@ -270,14 +312,16 @@ class BooleanFeatureEncoder(AbstractFeatureEncoder):
     not correspond to any other index.
     """
     def raw_encode_features(self, features):
+        # If the feature isn't defined, return an empty feature vector.
         if self._feature_name not in features:
-            index = 0
-        else:
-            feature_value = features[self._feature_name]
-            index = self._val_to_index.get(feature_value, 0)
+            return SparseList({}, self.num_features(), 0)
+
+        # Find the index corresponding to the feature value.
+        feature_value = features[self._feature_name]
+        index = self._val_to_index.get(feature_value, 0) # 0 = unseen
         return SparseList({index:True}, self.num_features(), False)
     
-class BooleanSetFeatureEncoder(AbstractFeatureEncoder):
+class SetValuedFeatureEncoder(AbstractFeatureEncoder):
     """
     A feature encoder for collection-valued features, that encodes the
     feature as a boolean L{SparseList}.  Each index in this list
@@ -295,11 +339,11 @@ class BooleanSetFeatureEncoder(AbstractFeatureEncoder):
         # to True.
         assigns = {}
         for basic_value in features[self._feature_name]:
-            index = self._val_to_index.get(basic_value, 0)
+            index = self._val_to_index.get(basic_value, 0) # 0 = unseen
             assigns[index] = True
         return SparseList(assigns, self.num_features(), False)
 
-class CountSetFeatureEncoder(AbstractFeatureEncoder):
+class BagValuedFeatureEncoder(AbstractFeatureEncoder):
     """
     A feature encoder for collection-valued features, that encodes the
     feature as an integer L{SparseList}.  Each index in this list
@@ -312,53 +356,86 @@ class CountSetFeatureEncoder(AbstractFeatureEncoder):
     def raw_encode_features(self, features):
         # If the feature isn't defined, return an empty feature vector.
         if self._feature_name not in features:
-            return SparseList({0:True}, self.num_features(), False)
+            return SparseList({}, self.num_features(), 0)
         
         # For each value in the set, increment the corresponding vector.
         assigns = {}
         for basic_value in features[self._feature_name]:
-            index = self._val_to_index.get(basic_value, 0)
+            index = self._val_to_index.get(basic_value, 0) # 0 = unseen
             assigns[index] = assigns.get(index,0) + 1
         return SparseList(assigns, self.num_features(), 0)
 
-class BooleanFeatureEncoderTrainer(PropertyIndirectionMixIn):
+def _get_val_type(val):
+    if isinstance(val, (str, int)):
+        return 'basic'
+    else:
+        # It's a container; make sure it only contains basic values.
+        for subval in val:
+            if _get_val_type(subval) != 'basic':
+                raise ValueError
+        # Check what type of container it is.
+        if isinstance(val, tuple):
+            return 'basic'
+        elif isinstance(val, BaseSet):
+            return 'set'
+        elif isinstance(val, (list, SparseList)):
+            return 'bag'
+        else:
+            raise ValueError
+        
+def learn_encoder(tokens, unseen_cutoff=0, **property_names):
+    """
+    A helper function that automatically creates a feature detector
+    from a list of example tokens.
+
+    list -> BagValued
+    set -> SetValued
+    basic -> BasicValued
     
-    def train(self, tokens, unseen_cutoff=0):
-        FEATURES = self.property('FEATURES')
+    """
+    FEATURES = property_names.get('FEATURES', 'FEATURES')
 
-        # Count the number of times each feature value occurs for
-        # each feature name.
-        fval_counts = {} # fname -> fval -> count
-        for token in tokens:
-            for (fname, fval) in token[FEATURES].items():
-                # Get the counts for this feature.
-                counts = fval_counts.setdefault(fname, {})
-                
-                if isinstance(fval, (str, int, tuple)):
-                    counts[fval] = counts.get(fval,0) + 1
-                elif isinstance(fval, (list, Set)):
-                    for subval in fval:
-                        counts[subval] = counts.get(subval,0) + 1
-                else:
-                    raise ValueError('Unsupported feature value type %s' %
-                                     type(fval).__name__)
+    # Count the number of times each feature value occurs for
+    # each feature name.
+    fval_counts = {} # fname -> fval -> count
+    fval_types = {} # fname -> ('basic' or 'set' or 'bag')
+    for token in tokens:
+        for (fname, fval) in token[FEATURES].items():
+            # Check the feature's value type.  
+            try: fval_type = _get_val_type(fval)
+            except ValueError:
+                raise ValueError('Unsupported value type for '+fname)
+            if (fval_types.setdefault(fname, fval_type) != fval_type):
+                raise ValueError('Inconsistant value types for '+fname)
 
-        # Create an encoder for each feature name.
-        encoders = []
-        for (fname, counts) in fval_counts.items():
-            # Extract the list of values whose counts are high enough.
-            fvals = [fval for (fval, count) in counts.items()
-                     if count > unseen_cutoff]
-            # If no values are left, then ignore this feature.
-            if not fvals: continue
-            # Create the feature encoder
-            if isinstance(fvals[0], (str, int, tuple)):
-                enc = BooleanFeatureEncoder(fname, fvals)
+            # Update the counts of the basic values
+            counts = fval_counts.setdefault(fname, {})
+            if fval_type == 'basic':
+                counts[fval] = counts.get(fval,0) + 1
             else:
-                enc = BooleanSetFeatureEncoder(fname, fvals)
-            encoders.append(enc)
-        # [XX] property name indirection??
-        return MergedFeatureEncoder(encoders)
+                for subval in fval:
+                    counts[subval] = counts.get(subval,0) + 1
+
+    # Create an encoder for each feature name.
+    encoders = []
+    for (fname, counts) in fval_counts.items():
+        # Extract the list of values whose counts are high enough.
+        fvals = [fval for (fval, count) in counts.items()
+                 if count > unseen_cutoff]
+        # If no values are left, then ignore this feature.
+        if not fvals: continue
+        # Create the feature encoder
+        if fval_types[fname] == 'basic':
+            enc = BasicValuedFeatureEncoder(fname, fvals)
+        elif fval_types[fname] == 'set':
+            enc = SetValuedFeatureEncoder(fname, fvals)
+        elif fval_types[fname] == 'bag':
+            enc = BagValuedFeatureEncoder(fname, fvals)
+        else:
+            assert False, 'Bad feature value type'
+        encoders.append(enc)
+    # [XX] property name indirection??
+    return MergedFeatureEncoder(encoders, **property_names)
 
 ######################################################################
 ## Demo
@@ -366,32 +443,42 @@ class BooleanFeatureEncoderTrainer(PropertyIndirectionMixIn):
 
 def demo():
     import nltk.corpus
-    text = nltk.corpus.brown.tokenize('cr01')
+
+    # Load the training data, and split it into test & train.
+    text = nltk.corpus.brown.tokenize('cr01', addcontexts=True)
     toks = text['SUBTOKENS']
     split = len(toks) * 3/4
     train, test = toks[:split], toks[split:]
-    
-    detectors = [PropertyFeatureDetector('TEXT'),
-                 PropertyFeatureDetector('TAG')]
+
+    # Create the feature detector.
+    detector = MergedFeatureDetector(
+        PropertyFeatureDetector('TEXT'),
+        PropertyFeatureDetector('TAG'),
+        BagOfWordsFeatureDetector(window=2))
+
+    # Run feature detection on the training data.
     for tok in train:
-        for detector in detectors:
-            detector.detect_features(tok)
+        detector.detect_features(tok)
 
-    encoder = BooleanFeatureEncoderTrainer().train(train, unseen_cutoff=0)
-    
-    for tok in test[40:70]:
-        for detector in detectors:
-            detector.detect_features(tok)
-        fvals = encoder.raw_encode_features(tok)
-        #print tok
-        #print ' '.join([`index`
-        #                for index, fval in fvals.assignments()])
-        print ' '.join([encoder.description(index)
-                        for index, fval in fvals.assignments()])
-        #print [1*v for v in fvals]
-        #print ''.join(['%8s' % s for s in fvals])
+    # Build a feature encoder, based on the training data.
+    encoder = learn_encoder(train, unseen_cutoff=0, bag=True)
+
+    # Run the feature encoder on the test data.
+    for tok in test[40:50]:
+        print 'Input token:   ', tok.exclude('CONTEXT')
+        detector.detect_features(tok)
+        items = tok['FEATURES'].items()
+        print ('Feature dict: {' + 
+               (',\n'+16*' ').join(['%r: %r' % i for i in items]) +
+               ' }')
+        encoder.encode_features(tok)
+        print 'Feature vector:',
+        assignments = tok['FEATURE_VECTOR'].assignments()
+        assignments.sort()
+        print ', '.join(['v[%d]=%d' % (index, val)
+                         for index, val in assignments])
+        print
         
-
 if __name__ == '__main__': demo()
 
         
