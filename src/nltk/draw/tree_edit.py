@@ -443,7 +443,7 @@ class Draw_Leaf:
             # if so, move it over until it does not
             bbox = canvas.bbox(label.tag)
             self.xloc = x
-            self.yloc = depth*50
+            self.yloc = depth*shift
             if bbox[0] < x:       # bbox[0] is the left boundary of the text
                 self.move(canvas, x-bbox[0], 0)
         return label
@@ -616,8 +616,10 @@ class Window:
 
 
         # quit destroys the window
-        def quit(self=self):self.top.destroy() 
-
+        def quit(self=self):
+            self.top.quit()
+            #self.destroy() 
+            
         # expand all the nodes, delete the tree, then draw it
         def expand(self=self):
             self.expand_all(self.tree)
@@ -737,7 +739,7 @@ class Window:
         ########################################################
         
         self.display()
-        self.top.mainloop()
+        #self.top.mainloop()
         
     # The following three methods are pretty self-explanatory
     
@@ -862,8 +864,7 @@ class Window:
                                              self.font_dict,
                                              self.appearance_dict)
                         bbox = self.c.bbox(text.tag)
-                        x = bbox[2]      # bbox[2] returns the farthest right boundary
-                                         # of the canvas text
+                        #x = bbox[2]
                     else :
                         result = child.display(self.c,
                                                x, depth+1,
@@ -872,7 +873,7 @@ class Window:
                         label = result['label']
                         span = result['span']
                         bbox = self.c.bbox(label.tag, span.tag)
-                        x = bbox[2]
+                    x = bbox[2]+int (X_SPACING*self.font_dict['ratio'])
 
             # Now, you can draw the parent.  Note that we couldn't calculate parentx until
             # now, since we didn't know how big the children were going to be.
@@ -1074,7 +1075,7 @@ if __name__ == '__main__':
 
 
 
-
+    d = Tree('ip', 'none','foo')
 
     w = Window(t)
     w.display()
