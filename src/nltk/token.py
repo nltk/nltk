@@ -1,11 +1,11 @@
+# Natural Language Toolkit: Tokens and Tokenizers
 #
-# Natural Language Toolkit:
-# Tokens and Tokenizers
-# Edward Loper
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 #
-# Created [03/16/01 05:30 PM]
 # $Id$
-#
 
 # Open questions:
 #    Should "type" and "token" be replaced with "ttype" and "ttoken"?

@@ -1,26 +1,31 @@
-THE NLTK CVS REPOSITORY
+###############################################################
+###                 THE NLTK CVS REPOSITORY                 ###
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
+### Copyright (C) 2001 University of Pennsylvania           ###
+### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
+### URL: <http://nltk.sf.net>                               ###
+### For license information, see LICENSE.TXT                ###
+###############################################################
 
-nltk is a Python package that simplifies the construction of programs
-that process natural language; and defines standard interfaces between
-the different components of an NLP system.
+Introduction
+~~~~~~~~~~~~
+    nltk is a Python package that simplifies the construction of
+    programs that process natural language; and defines standard
+    interfaces between the different components of an NLP system.
 
-=========================================================================
-                          REPOSITORY STRUCTURE
--------------------------------------------------------------------------
+
+Repository Structure
+~~~~~~~~~~~~~~~~~~~~
+
 nltk
   |
-  |
-  +-- src      .............. Python source code.  Includes misc non-
-  |    |                      toolkit code (e.g., setup.py).
+  +-- src      .............. Python source code.
   |    |
   |    +-- nltk    .......... Source code for the toolkit itself.
   |    |
-  |    |
-  |    +-- [demo]  .......... Source code for demonstration and example
-  |                           programs. (not yet created)
+  |    +-- [demo]  .......... Source code for demo programs
   |
   +-- doc      .............. Documentation
-  |    |
   |    |
   |    +-- technical ........ Technical reports (LaTeX)
   |    |    |
@@ -30,7 +35,7 @@ nltk
   |    |    |
   |    |    +-- etc.
   |    |
-  |    +-- tutorial ......... Tutorial-style documentation (Docbook?)
+  |    +-- tutorial ......... Tutorial-style documentation (Docbook)
   |    |    |
   |    |    +-- introduction
   |    |    |
@@ -38,13 +43,11 @@ nltk
   |    |
   |    +-- misc ............. Assorted short-term and meta documentation
   |
-  |
   +-- psets    .............. Problem sets and sample exercise sets
 
-=========================================================================
 
 Documentation
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
     Documentation is split into four sets:
 
         - Tutorial documentation: describes how to use the toolkit.
@@ -58,7 +61,7 @@ Documentation
           toolkit, and intended future additions).
 
     Tutorial Documentation
-    ^^^^^^^^^^^^^^^^^^^^^^
+    ~~~~~~~~~~~~~~~~~~~~~~
         Each tutorial document is given a short descriptive name
         (typically 5-15 characters, consisting of lower case
         letters).  A tutorial document whose name is <name> is stored
@@ -79,7 +82,7 @@ Documentation
                               document on the webpage.
 
     Technical Reports
-    ^^^^^^^^^^^^^^^^^
+    ~~~~~~~~~~~~~~~~~
         Each technical report is given a short descriptive name
         (typically 5-15 characters, consisting of lower case
         letters).  A technical report whose name is <name> is stored
@@ -100,19 +103,20 @@ Documentation
                               report on the webpage.
 
     Reference Documentation
-    ^^^^^^^^^^^^^^^^^^^^^^^
+    ~~~~~~~~~~~~~~~~~~~~~~~
         The reference documentation is generated automatically from
         the Python source code; it is not included in the CVS
         repository.
 
     Miscellaneous Documentation
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
         The miscellaneous documentation is maintained in a single
         directory (doc/misc).  It consists primarily of plaintext and
         LaTeX files.
 
+
 Makefiles
-^^^^^^^^^
+~~~~~~~~~
     The main Makefile can be used to perform the following tasks:
 
         make documentation: Convert all documentation and problem sets

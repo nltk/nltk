@@ -1,12 +1,11 @@
+# Natural Language Toolkit: Probability and Statistics
 #
-# Natural Language Toolkit for Python:
-# Probability and Statistics
-# Edward Loper
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 #
-# Created [03/16/01 05:31 PM]
-# (extracted from nltk.py, created [02/26/01 11:24 PM])
 # $Id$
-#
 
 from chktype import chktype as _chktype
 
