@@ -1360,15 +1360,15 @@ class ChartDemo:
         Tkinter.Button(frame2, text='Top Down Match\nRule',
                        background='#90f090', foreground='black',
                        command=self.top_down_match).pack(side='left')
-        Tkinter.Frame(frame2, width=10).pack(side='left')
+        Tkinter.Frame(frame2, width=20).pack(side='left')
         
         Tkinter.Button(frame2, text='Bottom Up Init\nRule',
                        background='#90f090', foreground='black',
                        command=self.bottom_up_init).pack(side='left')
-        Tkinter.Button(frame2, text='Bottom Up \nRule',
+        Tkinter.Button(frame2, text='Bottom Up Predict\nRule',
                        background='#90f090', foreground='black',
                        command=self.bottom_up).pack(side='left')
-        Tkinter.Frame(frame2, width=10).pack(side='left')
+        Tkinter.Frame(frame2, width=20).pack(side='left')
         
         Tkinter.Button(frame2, text='Fundamental\nRule',
                        background='#90f090', foreground='black',
