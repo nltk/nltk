@@ -1,8 +1,0 @@
-Start -> Foo
-Foo -> Bar
-Foo -> Foo Foo
-
-I Bar
-am Bar
-cow Bar
-
