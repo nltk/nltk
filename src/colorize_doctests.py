@@ -54,7 +54,7 @@ u?r?(?:            # Single-quote ['] strings
 )'''
 
 # Commands get marked with <command>...</command>
-COMMAND = re.compile(r'([\t\ ]*)(&gt;&gt;&gt;|\.\.\.)'+
+COMMAND = re.compile(r'^([\t\ ]*)(&gt;&gt;&gt;|\.\.\.)'+
                      r'([\t\ ]*)(.*?)[\t\ ]*$', re.MULTILINE)
 
 # Comments get marked with <emphasis>...<emphasis>
