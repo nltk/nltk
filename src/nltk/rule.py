@@ -178,6 +178,7 @@ class DottedRule(Rule):
         """
         Shift the dot one position to the right (returns a new
         DottedRule).
+        
         @raise IndexError: If the dot position is beyond the end of
             the rule.
         """

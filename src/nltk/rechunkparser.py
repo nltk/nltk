@@ -257,10 +257,10 @@ class ChunkString:
         the text C{tagged_tokens}.
 
         @type tagged_tokens: C{list} of C{Token} with C{TaggedType}s
-        @ivar tagged_tokens: The text whose chunking is encoded by
+        @param tagged_tokens: The text whose chunking is encoded by
             this C{ChunkString}.  
         @type debug_level: int
-        @var debug_level: The level of debugging which should be
+        @param debug_level: The level of debugging which should be
             applied to transformations on the C{ChunkString}.  The
             valid levels are:
                 0. no checks

@@ -174,7 +174,7 @@ class Chart:
         """
         Construct a new Chart.
         
-        @loc: The span of text that it covered by this chart.  All
+        @param loc: The span of text that it covered by this chart.  All
             edge indices in the chart will fall within this location.
         @type loc: C{Location}
         """
