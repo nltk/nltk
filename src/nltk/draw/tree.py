@@ -67,6 +67,9 @@ class TreeView:
         self._canvas['width'] = width
         self._canvas['height'] = height
 
+        # Enter main loop
+        mainloop()
+
     def _find_textheight(self):
         # Find the height of text.
         c = self._canvas
