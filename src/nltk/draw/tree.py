@@ -777,6 +777,13 @@ class TreeView:
         self._top = None
 
     def mainloop(self, *args, **kwargs):
+        """
+        Enter the Tkinter mainloop.  This function must be called if
+        this demo is created from a non-interactive program (e.g.
+        from a secript); otherwise, the demo will close as soon as
+        the script completes.
+        """
+        if in_idle(): return
         self._top.mainloop(*args, **kwargs)
 
 def draw_trees(*trees):
@@ -885,3 +892,6 @@ built from tree_to_treesegment."""
     cf.add_widget(tc4, tc3.bbox()[2]+10, textbox.bbox()[3]+10)
     tc4.bind_click(orientswitch)
     tc4.bind_click_trees(tc4.toggle_collapsed, 3)
+
+    # Run mainloop
+    cf.mainloop()
