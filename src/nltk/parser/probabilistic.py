@@ -244,6 +244,13 @@ class ViterbiPCFGParser(ProbabilisticParserI):
         if len(final_trees) == 0: return None
         else: return final_trees[0]
         
+    def parse_dist(self, text):
+        # Inherit docs from ProbabilisticParserI; and delegate to parse_n
+        prob_dict = {}
+        for parse in self.parse_n(text):
+            prob_dict[parse] = parse.p()
+        return DictionaryProbDist(prob_dict)
+
     def parse_n(self, text, n=None):
         # Inherit docs from ProbabilisticParserI
         assert _chktype(1, text, [Token], (Token))
@@ -285,7 +292,7 @@ class ViterbiPCFGParser(ProbabilisticParserI):
                                    self._grammar.start()), [])]
 
         # Sort the trees, and return the requested number of them.
-        trees.sort(lambda t1,t2: cmp(t2.p(), t1.p()))
+        trees.sort(lambda t1,t2: cmp(t2.prob(), t1.prob()))
         if n is None: return trees
         else: return trees[:n]
 
@@ -340,7 +347,8 @@ class ViterbiPCFGParser(ProbabilisticParserI):
             # of the childrens' probabilities and the production's
             # probability.
             for (production, children) in instantiations:
-                p = reduce(lambda pr,t:pr*t.p(), children, production.p())
+                p = reduce(lambda pr,t:pr*t.prob(),
+                           children, production.prob())
                 node = production.lhs().symbol()
                 tree = ProbabilisticTreeToken(p, node, *children)
 
@@ -350,10 +358,12 @@ class ViterbiPCFGParser(ProbabilisticParserI):
                                      None)
                 if self._trace > 1:
                     if c is None or c != tree:
-                        if c is None or c.p() < tree.p(): print '   Insert:',
-                        else: print '  Discard:',
+                        if c is None or c.prob() < tree.prob():
+                            print '   Insert:',
+                        else:
+                            print '  Discard:',
                         self._trace_production(production, tree, text, p)
-                if c is None or c.p() < tree.p():
+                if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
                     changed = 1
 
@@ -557,6 +567,13 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         if len(final_trees) == 0: return None
         else: return final_trees[0]
         
+    def parse_dist(self, text):
+        # Inherit docs from ProbabilisticParserI; and delegate to parse_n
+        prob_dict = {}
+        for parse in self.parse_n(text):
+            prob_dict[parse] = parse.p()
+        return DictionaryProbDist(prob_dict)
+
     def parse_n(self, text, n=None):
         # Inherit docs from ProbabilisticParserI
         assert _chktype(1, text, [Token], (Token))
@@ -583,7 +600,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             self._add_edge(edge, chart, edge_queue)
             if self._trace > 1:
                 print '  %-60s %10.12f' % (chart.pp_edge(edge,2),
-                                           edge.structure().p())
+                                           edge.structure().prob())
 
             # Check if the edge is a complete parse.
             if (edge.loc() == chart.loc() and
@@ -596,7 +613,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             if edge_queue: print '  (Edge queue not empty)'
 
         # Sort the parses by decreasing likelihood, and return them
-        parses.sort(lambda p1,p2: -cmp(p1.p(),p2.p()))
+        parses.sort(lambda p1,p2: -cmp(p1.prob(),p2.prob()))
         return parses
 
     def sort_queue(self, queue, chart):
@@ -700,7 +717,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             the edge's (zero-width) location.
         """
         node = production.lhs().symbol()
-        tree = ProbabilisticTreeToken(production.p(), node)
+        tree = ProbabilisticTreeToken(production.prob(), node)
         return ProductionEdge(production, tree, loc.start_loc())
 
     def _fr(self, e1, e2):
@@ -725,7 +742,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         @param e2: The complete edge that should be combined with 
             C{e1} by the fundamental rule.
         """
-        p = e1.structure().p() * e2.structure().p()
+        p = e1.structure().prob() * e2.structure().prob()
         children = e1.structure().children() + (e2.structure(),)
         tree = ProbabilisticTreeToken(p, e1.structure().node(), *children)
         loc = e1.loc().union(e2.loc())
@@ -768,7 +785,8 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
         @type chart: C{Chart}
         @rtype: C{None}
         """
-        queue.sort(lambda e1,e2:cmp(e1.structure().p(), e2.structure().p()))
+        queue.sort(lambda e1,e2:cmp(e1.structure().prob(),
+                                    e2.structure().prob()))
 
 # Eventually, this will become some sort of inside-outside parser:
 # class InsideOutsideParser(BottomUpPCFGChartParser):
@@ -785,15 +803,15 @@ class InsidePCFGParser(BottomUpPCFGChartParser):
 #             for production in grammar.productions():
 #                 lhs = production.lhs()
 #                 for elt in production.rhs():
-#                     bestp[elt] = max(bestp[lhs]*production.p(),
+#                     bestp[elt] = max(bestp[lhs]*production.prob(),
 #                                      bestp.get(elt,0))
 #
 #         self._bestp = bestp
 #         for (k,v) in self._bestp.items(): print k,v
 #
 #     def _cmp(self, e1, e2):
-#         return cmp(e1.structure().p()*self._bestp[e1.lhs()],
-#                    e2.structure().p()*self._bestp[e2.lhs()])
+#         return cmp(e1.structure().prob()*self._bestp[e1.lhs()],
+#                    e2.structure().prob()*self._bestp[e2.lhs()])
 #        
 #     def sort_queue(self, queue, chart):
 #         queue.sort(self._cmp)
@@ -853,7 +871,8 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
         self._beam_size = beam_size
         
     def sort_queue(self, queue, chart):
-        queue.sort(lambda e1,e2:cmp(e1.structure().p(), e2.structure().p()))
+        queue.sort(lambda e1,e2:cmp(e1.structure().prob(),
+                                    e2.structure().prob()))
         if len(queue) > self._beam_size:
             split = len(queue)-self._beam_size
             if self._trace > 2:
@@ -978,7 +997,7 @@ def demo():
         t = time.time()
         parses = parser.parse_n(text, max_parses)
         times.append(time.time()-t)
-        if parses: p = reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+        if parses: p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
         else: p = 0
         average_p.append(p)
         num_parses.append(len(parses))
@@ -994,7 +1013,7 @@ def demo():
                                          times[i],num_parses[i],average_p[i])
 
     parses = all_parses.keys()
-    if parses: p = reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+    if parses: p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
     else: p = 0
     print '-------------------+------------------------------------------'
     print '%18s |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
