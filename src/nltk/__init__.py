@@ -12,9 +12,12 @@ The Natural Language Toolkit is a package intended to simplify the
 task of programming natural language systems.  It is intended to be
 used as a teaching tool, not as a basis for building production
 systems.
+
+@author: Edward Loper
+@version: 0.6
 """
 
-# Leave this out for now...
+# Leave this out for now... It's out of date.
 """
 The natural language toolkit is under active development.
 
@@ -97,7 +100,7 @@ cluster, the interfaces contained in that cluster are given.
     a text.
 
 @author: Edward Loper
-@version: 0.5
+@version: 0.6
 """
 
 """
@@ -134,7 +137,7 @@ to currently implemented interfaces and classes.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.5"
+__version__ = "0.6"
 
 # Copyright notice
 __copyright__ = """\
