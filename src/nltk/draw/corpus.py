@@ -127,7 +127,7 @@ class CorpusFrame:
 	    # Repopulate
 	    self._raw_text.insert(Tkinter.END, self._corpus.read(item))
 	    if not self._token_cache.has_key(item):
-		self._token_cache[item] = `self._corpus.tokenize(item)`
+		self._token_cache[item] = `self._corpus.read(item)`
 	    self._tokenized_text.insert(Tkinter.END, self._token_cache[item])
 
     def _raw_text_view(self, *args):
