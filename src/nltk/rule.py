@@ -27,7 +27,7 @@ class Rule:
 
     @type _lhs: C{string}
     @ivar _lhs: The left-hand side of the rule, a non-terminal
-    @type _rhs: C{tuple}
+    @type _rhs: C{tuple} of C{string}s
     @ivar _rhs: The right-hand side of the rule, a list of terminals
           and non-terminals.
     """
@@ -44,7 +44,7 @@ class Rule:
         @param lhs: The left-hand side of the new C{Rule}.
         @type lhs: C{string}
         @param rhs: The right-hand side of the new C{Rule}.
-        @type rhs: C{tuple}
+        @type rhs: C{tuple} of C{string}s
         """
         # add type checks
         self._lhs = lhs
@@ -54,6 +54,7 @@ class Rule:
     # (for symmetry).  Also, note that calling self[:] makes an
     # unnecessary copy, where a rhs() method wouldn't..  But that's
     # just a minor efficiency thing.
+    # SB: DONE
     def lhs(self):
         """
         @return: the left-hand side of the C{Rule}.
@@ -61,10 +62,17 @@ class Rule:
         """
         return self._lhs
 
+    def rhs(self):
+        """
+        @return: the right-hand side of the C{Rule}.
+        @rtype: C{string}
+        """
+        return self._rhs
+
     def __getitem__(self, index):
         """
         @return: the specified rhs element (or the whole rhs).
-        @rtype: C{string} or C{tuple}
+        @rtype: C{string} or C{tuple} of C{string}s
         @param index: An integer or slice indicating which elements to 
             return.
         @type index: C{int} or C{slice}
@@ -126,6 +134,9 @@ class Rule:
 
     # [edloper 8/14/01] This is a circular reference, but I guess it's
     # ok.  :)  Otherwise, you could define an external function..
+    # [sb 8/14/01] Nothing wrong with the circular dependency, though
+    # I'd actually prefer this to be a second initializer in
+    # DottedRule - i.e. initializing a DottedRule from a Rule.
     def dotted(self):
         """
         @return: A C{DottedRule} corresponding to the C{Rule}, with
@@ -144,7 +155,7 @@ class DottedRule(Rule):
 
     @type _lhs: C{string}
     @ivar _lhs: The left-hand side of the rule, a non-terminal
-    @type _rhs: C{tuple}
+    @type _rhs: C{tuple} of C{string}s
     @ivar _rhs: The right-hand side of the rule, a list of terminals
           and non-terminals.
     @type _pos: C{int}
@@ -164,7 +175,7 @@ class DottedRule(Rule):
         @param lhs: The left-hand side of the new C{Rule}.
         @type lhs: C{string}
         @param rhs: The right-hand side of the new C{Rule}.
-        @type rhs: C{tuple}
+        @type rhs: C{tuple} of C{string}s
         @param pos: The position of the dot (defaults to zero).
         @type pos: C{int}
         """
@@ -186,22 +197,18 @@ class DottedRule(Rule):
         """
         return self[self._pos]
 
-    # [edloper 8/14/01] Would "shift" or some other name be more
-    # intuitive?
-    def incr(self):
+    def shift(self):
         """
-        Move the dot one position to the right.
+        Shift the dot one position to the right.
         @raise IndexError: If the dot position is beyond the end of
             the rule.
         """
         if self._pos < len(self):
-            self._pos += 1
+            return DottedRule(self._lhs, self._rhs, self._pos + 1)
         else:
             raise IndexError('Attempt to move dot position past end of rule')
 
-    # [edloper 8/14/01] This method could also use a more intuitive
-    # name. 
-    def final(self):
+    def complete(self):
         """
         @return: true if the dot is in the final position on the
             right-hand side.
