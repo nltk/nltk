@@ -104,25 +104,22 @@ class ConllTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                 chunk_type not in self._chunk_types):
                 state = 'O'
 
-            # For "Begin"/"Outside", finish any completed chunks.
-            if state in 'BO':
+            # For "Begin"/"Outside", finish any completed chunks -
+	    # also do so for "Inside" which don't match the previous token.
+	    mismatch_I = state == 'I' and chunk_type != stack[-1].node
+            if state in 'BO' or mismatch_I:
                 if len(stack) == 2: stack.pop()
 
             # For "Begin", start a new chunk.
-            if state == 'B':
+            if state == 'B' or mismatch_I:
                 chunk = Tree(chunk_type, [])
                 stack[-1].append(chunk)
                 stack.append(chunk)
 
-            # For "Inside", perform a sanity check.
-            if state == 'I':
-                if len(stack) != 2 or chunk_type != stack[-1].node:
-                    raise ValueError, 'Error on line %d' % lineno
-                
             # Add the new word token.
             word = Token(TEXT=word, TAG=tag)
             stack[-1].append(word)
 
         # Create and return the sentence token
-        tree = stack[-1]
+        tree = stack[0]
         return Token(TREE=tree, WORDS=tree.leaves())
