@@ -76,6 +76,8 @@ class Tree(list):
         """
         Construct a new tree.
         """
+        if isinstance(children, str):
+            raise TypeError, 'children should be a list, not a string'
         list.__init__(self, children)
         self.node = node
 
@@ -169,9 +171,9 @@ class Tree(list):
             if len(index) == 0:
                 return self
             elif len(index) == 1:
-                return self[index[0]]
+                return self[int(index[0])]
             else:
-                return self[index[0]][index[1:]]
+                return self[int(index[0])][index[1:]]
     
     def __setitem__(self, index, value):
         if isinstance(index, int):
