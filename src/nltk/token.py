@@ -204,10 +204,13 @@ class Location:
         @return: A concise string representation of this C{Location}.
         @rtype: string
         """
+        if self._unit != None: unit = self._unit
+        else: unit = ''
+        
         if self._end != self._start+1:
-            str = '@[%d:%d]' % (self._start, self._end)
+            str = '@[%d%s:%d%s]' % (self._start, unit, self._end, unit)
         else:
-            str = '@[%d]' % self._start
+            str = '@[%d%s]' % (self._start, unit)
 
         return str
 
@@ -273,10 +276,10 @@ class Location:
         """
         @return: true if this C{Location} occurs entirely before
             C{other}.  In particular:
-                - Return true iff this C{Location}'s end is less than
-                  or equal to C{other}'s start, and C{self!=other}
-                - Raise an exception iff this C{Location}'s source or
+                - Raise an exception if this C{Location}'s source or
                   unit are not equal to C{other}'s 
+                - Return true if this C{Location}'s end is less than
+                  or equal to C{other}'s start, and C{self!=other}
                 - Return false otherwise.
         @rtype: C{boolean}
         @raise TypeError: if C{other} is not a C{Location}.
@@ -297,10 +300,10 @@ class Location:
         """
         @return: true if this C{Location} occurs entirely before
             C{other}.  In particular:
-                - Return true iff this C{Location}'s start is greater
-                  than or equal to C{other}'s end, and C{self!=other}
-                - Raise an exception iff this C{Location}'s source or
+                - Raise an exception if this C{Location}'s source or
                   unit are not equal to C{other}'s 
+                - Return true if this C{Location}'s start is greater
+                  than or equal to C{other}'s end, and C{self!=other}
                 - Return false otherwise.
         @rtype: C{boolean}
         @raise TypeError: if C{other} is not a C{Location}.
@@ -319,7 +322,28 @@ class Location:
 
     def __cmp__(self, other):
         """
-        Compare self and other by start/end location.. 
+        Compare two locations, based on their start locations and end
+        locations.  In particular:
+
+            - Raise an exception if C{self}'s source or
+              unit are not equal to C{other}'s.
+            - First, compare based on the start locations.  I.e., if
+              C{self.start<other.start}, then C{self<other}; and if 
+              C{self.start>other.start}, then C{self>other}.
+            - If C{self.start=other.start}, then compare based on the
+              end locations.   I.e., if C{self.end<other.end}, then
+              C{self<other}; and if C{self.end>other.end}, then
+              C{self>other}.
+            - If both the start locations and the end locations are
+              equal, then C{self==other}.
+
+        @return: -1 if C{self<other}; +1 if C{self>other}; and 0 if
+                 C{self==other}. 
+        @raise TypeError: if C{other} is not a C{Location}.
+        @raise ValueError: If this C{Location}'s source is not equal
+            to C{other}'s source.
+        @raise ValueError: If this C{Location}'s unit is not equal
+            to C{other}'s unit.
         """
         _chkclass(self, other)
         if self._unit != other._unit:
