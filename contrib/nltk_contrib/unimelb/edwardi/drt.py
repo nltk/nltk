@@ -5,7 +5,7 @@
 from nltk.parser import *
 from nltk.cfg import *
 from nltk.tree import *
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 import random
 from nltk.corpus import gutenberg
 from nltk.probability import *
@@ -590,7 +590,7 @@ class DRS:
 		grammar = parser.parseFile(filename)
 
         # tokenize the sentence
-		tok_sent = WSTokenizer().tokenize(sent)
+		tok_sent = WhitespaceTokenizer().tokenize(sent)
 
 		ep = parser.IncrementalEarleyParser(grammar, parser.earleyStrategy)
 

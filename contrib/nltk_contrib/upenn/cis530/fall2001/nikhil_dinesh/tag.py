@@ -48,7 +48,7 @@ Thats about it. Please let me know if there are any bugs.
 from nltk.tree import *
 from nltk.cfg import *
 from nltk.parser import ParserI
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 import time
 from nltk.chktype import chktype
 
@@ -1173,7 +1173,7 @@ def demo():
       sent = 'I had a map on my desk'
       
      
-      tok_sent = WSTokenizer().tokenize(sent)
+      tok_sent = WhitespaceTokenizer().tokenize(sent)
       
 
       #Parse and print derivations.

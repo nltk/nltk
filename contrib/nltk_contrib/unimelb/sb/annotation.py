@@ -48,7 +48,7 @@ class AnnotationSet(dict):
 ########################################################################3
 
 text = Token(TEXT="I live in twit village")
-WSTokenizer().tokenize(text)
+WhitespaceTokenizer().tokenize(text)
 print text
 
 loc1 = TokenSpanLocation(0,2)
@@ -92,7 +92,7 @@ loc2 = TokenSpanLocation(15,40)
 loc3 = TokenSpanLocation(40,48)
 
 token = Token(TEXT=transcript)
-WSTokenizer().tokenize(token)
+WhitespaceTokenizer().tokenize(token)
 
 # hmm, not sure where these belong!
 signal_loc1 = SignalLocation(16.35, 19.59)
