@@ -15,7 +15,7 @@ def score(l1, l2):
             correct += 1
         total += 1
     #print total, correct, correct * 100.0 / total
-    print correct * 100.0 / total
+    sys.stderr.write(correct * 100.0 / total)
 
 
 class MyBrown:
@@ -70,7 +70,7 @@ class MyNthOrderTagger(nltk.tagger.NthOrderTagger):
             tagger = trainer
             if self == tagger or self._n != tagger._n:
                 return
-            print "training"
+            sys.stderr.write("training")
             for c, fd in tagger._freqdist._fdists.items():
                 for k, v in fd._count.items():
                     self._freqdist[c].inc(k,v)
@@ -137,45 +137,45 @@ class MyTagger(nltk.tagger.BackoffTagger):
     
     def train(self, trainer):
         if isinstance(trainer, nltk.token.Token):
-            print "training with token"
+            sys.stderr.write("training with token")
             for n,tagger in self._taggerByOrder.items():
                 if n == -1: continue
                 tagger.train(trainer)
         elif isinstance(trainer, nltk.tagger.TaggerI):
-            print "training with tagger"
+            sys.stderr.write("training with tagger")
             try:
                 self._taggerByOrder[trainer._n].train(trainer)
             except KeyError:
                 return
         elif type(trainer) == list or type(trainer) == tuple:
-            print "training with list of trainer"
+            sys.stderr.write("training with list of trainer")
             for t in trainer:
                 self.train(t)
         elif isinstance(trainer, MyTagger):
-            print "training with MyTagger"
+            sys.stderr.write("training with MyTagger")
             for t in trainer.taggers():
                 self.train(t)
         elif isinstance(trainer, TaggerGut):
-            print "training with TaggerGut"
+            sys.stderr.write("training with TaggerGut")
             n = trainer.order()
             if n == -1: return
             try:
                 self._taggerByOrder[n].train(trainer)
             except KeyError:
-                print "WARNING: i don't have %d-th order tagger"
-                print "WARNING:   skipping training"
+                sys.stderr.write("WARNING: i don't have %d-th order tagger")
+                sys.stderr.write("WARNING:   skipping training")
                 return
         elif isinstance(trainer, ComplexTaggerGut):
-            print "training with ComplexTaggerGut"
+            sys.stderr.write("training with ComplexTaggerGut")
             for t in trainer:
                 self.train(t)
         else:
-            print "WARINIG: unsupported trainer type %s" % str(type(trainer))
-            print "WARINIG:     training aborted"
+            sys.stderr.write("WARINIG: unsupported trainer type %s" % str(type(trainer)))
+            sys.stderr.write("WARINIG:     training aborted")
 
 
     def loadGut(self, gut):
-        print "building tagger from ComplexTaggerGut"
+        sys.stderr.write("building tagger from ComplexTaggerGut")
         self._build([t.order() for t in gut])
         for t in gut:
             self.train(t)
@@ -295,6 +295,8 @@ class ComplexTaggerGut(list):
 
     save = Callable(save)
     load = Callable(load)
+
+
     
 def test():
 
@@ -416,7 +418,7 @@ if __name__ == "__main__":
             try:
                 bitems.index(item)
             except ValueError:
-                print "WARNING: training item %s doesn't exist. skipping" % item
+                sys.stderr.write("WARNING: training item %s doesn't exist. skipping" % item)
             items.append(item)
 
     guts = []
@@ -429,7 +431,7 @@ if __name__ == "__main__":
             if os.path.exists(item):
                 guts.append(item)
             else:
-                print "WARNING: saved training file %s doesn't exist. skipping" % item
+                sys.stderr.write("WARNING: saved training file %s doesn't exist. skipping" % item)
 
 
     tests = []
@@ -440,7 +442,7 @@ if __name__ == "__main__":
             try:
                 bitems.index(item)
             except IndexError:
-                print "WARNING: test item %s doesn't exist. skipping" % item
+                sys.stderr.write("WARNING: test item %s doesn't exist. skipping" % item)
             tests.append(item)
 
     tagger = apply(MyTagger, orders)
