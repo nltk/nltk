@@ -99,7 +99,7 @@ class AssignmentEvent(EventI):
             This (id, value) pair specifies a feature's identifier and
             a value for that feature.  For Naive Bayes classifiers,
             values are treated as boolean values.
-        @rtype assignment: C{tuple} of C{int} and (immutable)
+        @rtype: C{tuple} of C{int} and (immutable)
         """
         return self._assignment
     def contains(self, sample):
@@ -125,7 +125,7 @@ class NBClassifier(ClassifierI):
     particular, we assume that the feature value assignments of a
     given text are mutually independant.  This assumption justifies
     the following approximation for the probabilitiy of a labeled
-    text:
+    text::
 
       P(labeled_text) = P(f1=v1, f2=v2, ..., fn=vn)
                       = P(f1=v1) * P(f2=v2) * ... * P(fn=vn)
@@ -180,7 +180,7 @@ class NBClassifier(ClassifierI):
 
     Also, since we are normalizing C{P(label=l|text)} by summing over
     all values of l, we don't need to find C{P(f1=0, f2=0, ..., fn=0)}
-    to calculate C{P(label|text)}:
+    to calculate C{P(label|text)}::
 
                                       P(text, label=l)
       P(label=l|text) = ---------------------------------------------
