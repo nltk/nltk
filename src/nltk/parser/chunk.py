@@ -517,15 +517,22 @@ class ChunkString(PropertyIndirectionMixIn):
             probably use level 3 if you use any non-standard
             subclasses of C{RegexpChunkParserRule}.
         """
-        assert chktype(1, tagged_tokens, [Token], (Token,))
+        assert chktype(1, tagged_tokens, [Token, Tree], (Token, Tree))
         assert chktype(2, debug_level, types.IntType)
         PropertyIndirectionMixIn.__init__(self, **property_names)
-        TAG = self.property('TAG')
         self._ttoks = tagged_tokens
-        tags = [tok[TAG] for tok in tagged_tokens]
+        tags = [self._tag(tok) for tok in tagged_tokens]
         self._str = '<' + '><'.join(tags) + '>'
         self._debug = debug_level
 
+    def _tag(self, tok):
+        if isinstance(tok, Token):
+            return tok[self.property('TAG')]
+        elif isinstance(tok, Tree):
+            return tok.node
+        else:
+            raise ValueError, 'tagged_tokens must contain tokens and trees'
+                      
     def _verify(self, verify_tags):
         """
         Check to make sure that C{_str} still corresponds to some chunked
