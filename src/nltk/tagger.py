@@ -139,7 +139,7 @@ def parse_tagged_type(string):
     @rtype: C{TaggedType}
     """
     assert _chktype(1, string, types.StringType)
-    elts = string.split('/', 1)
+    elts = string.split('/')
     if len(elts) > 1:
         return TaggedType('/'.join(elts[:-1]), elts[-1].upper())
     else:
@@ -155,7 +155,7 @@ class TaggedTokenizer(TokenizerI):
     The string is split into words using whitespace, and each word
     should have the form C{I{type}/I{tag}}, where C{I{type}} is the
     base type for the token, and C{I{tag}} is the tag for the token.
-    Words that do not contain a slash are treated as C{I{type}/None}
+    Words that do not contain a slash are ignored.
 
       >>> tt = TaggedTokenizer()
       >>> tt.tokenize('The/DT dog/NN saw/VBD him/PRP')
@@ -168,10 +168,13 @@ class TaggedTokenizer(TokenizerI):
         assert _chktype(1, str, types.StringType)
         words = str.split()
         tokens = []
-        for i in range(len(words)):
-            toktype = parse_tagged_type(words[i])
-            tokloc = Location(i, unit=unit, source=source)
-            tokens.append(Token(toktype, tokloc))
+        index = 0
+        for word in words:
+            toktype = parse_tagged_type(word)
+            if toktype.tag() is not None:
+                tokloc = Location(index, unit=unit, source=source)
+                tokens.append(Token(toktype, tokloc))
+                index += 1
         return tokens
 
 ##//////////////////////////////////////////////////////
