@@ -8,7 +8,21 @@
 # $Id$
 
 """
-Probablistic CFG Parsers
+
+Parsers for probablistic context free grammars (C{PCFGs}).
+C{pcfgparser} currently defines two C{ProbablisticParser}s:
+
+    - C{ViterbiPCFGParser} is a parser based on the Viterbi algorithm.
+      It efficiently finds the single most likely parse for a given
+      text.  
+    - C{InsidePCFGParser} is a bottom-up chart-based parser for
+      C{PCFG}s.  It maintains a sorted queue of edges, and expands
+      them one at a time.  The ordering of this queue is based on the
+      probabilities of the edges' dotted rules, allowing the parser to
+      expand more likely edges before less likely ones.
+      C{InsidePCFGParser} tries edges in best-first order; but
+      subclasses can easily redefine the queue sorting algorithm, to
+      implement other seach strategies (such as A*).
 """
 
 from nltk.parser import *
@@ -190,42 +204,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
 ##  Bottom-Up PCFG Chart Parser
 ##//////////////////////////////////////////////////////
 
-class BUChart(Chart):
-    """
-    A specialized chart that supports efficient access for bottom-up
-    chart parsign.
-    """
-    def __init__(self, loc):
-        """
-        @param _complete: A dictionary containing all complete edges,
-            indexed by their start position & lhs nonterminal
-        @param _incomplete: A dictionary containing all incomplete
-            edges, indexed by their end position & 1st rhs elt after
-            the dot.
-        """
-        Chart.__init__(self, loc)
-        self._complete = {}
-        self._incomplete = {}
-
-    def insert(self, edge):
-        rv = Chart.insert(self, edge)
-        if rv:
-            if edge.complete():
-                key = (edge.start(), edge.drule().lhs())
-                self._complete.setdefault(key, []).append(edge)
-            else:
-                key = (edge.end(), edge.drule().next())
-                self._incomplete.setdefault(key, []).append(edge)
-        return rv
-
-    def complete(self, start, lhs):
-        return self._complete.get((start, lhs), [])
-
-    def incomplete(self, end, next):
-        return self._incomplete.get((end, next), [])
-
-# This name may change later.
-class PCFG_ChartParser(ProbablisticParserI):
+class InsidePCFGParser(ProbablisticParserI):
     def __init__(self, grammar, basecat):
         self._grammar = grammar
         self._basecat = basecat
@@ -242,7 +221,7 @@ class PCFG_ChartParser(ProbablisticParserI):
         loc = Location(text[0].loc().start(), text[-1].loc().end(),
                        unit=text[0].loc().unit(),
                        source=text[0].loc().source())
-        chart = BUChart(loc)
+        chart = FRChart(loc)
 
         self._add_lexical_edges(text, chart)
         self._bottom_up_init(chart)
@@ -308,13 +287,9 @@ class PCFG_ChartParser(ProbablisticParserI):
         # Find any new places where we can apply the FR
         drule = edge.drule()
         if edge.complete():
-            for e2 in chart.incomplete(edge.start(), drule.lhs()):
-                new_edge = self._fr(e2,edge)
-                edge_queue.append(new_edge)
+            edge_queue += [self._fr(e2,edge) for e2 in chart.fr_with(edge)]
         else:
-            for e2 in chart.complete(edge.end(), drule.next()):
-                new_edge = self._fr(edge,e2)
-                edge_queue.append(new_edge)
+            edge_queue += [self._fr(edge,e2) for e2 in chart.fr_with(edge)]
 
         # Check if the edge is a complete parse.
         if (edge.loc() == chart.loc() and drule.lhs() == self._basecat):
@@ -375,7 +350,7 @@ if __name__ == '__main__':
     #s = 'the boy saw Jack'
     text = WSTokenizer().tokenize(s)
     
-    parser1 = PCFG_ChartParser(g, S)
+    parser1 = InsidePCFGParser(g, S)
     parser2 = ViterbiPCFGParser(g, S)
 
     for p in parser1.parse_n(text, 3): print p
