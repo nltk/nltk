@@ -9,7 +9,6 @@
 # $Id$
 
 """
-
 Classes and interfaces used to tag each token of a document with
 supplementary information, such as its part of speech or its WordNet
 synset tag.  Tagged tokens are represented by C{Token} objects whose
@@ -28,7 +27,22 @@ providing a variety ways to tag documents.
 
 The tagger module also defines the function C{parseTaggedType()} and
 the tokenizer C{TaggedTokenizer}, for reading tagged tokens from
-strings. 
+strings.
+
+@group Tagged Type: TaggedType, TaggedTokenizer, parseTaggedType
+@group Taggers: TaggerI, SequentialTagger, NN_CD_Tagger, UnigramTagger,
+    NthOrderTagger, BackoffTagger
+@group Evaluation: untag, accuracy
+@sort: TaggedType, TaggedTokenizer, parseTaggedType, TaggerI, 
+    SequentialTagger, NN_CD_Tagger, UnigramTagger, NthOrderTagger, 
+    BackoffTagger, untag, accuracy
+
+@todo 2.0: Add a Viterbi Tagger.
+@todo 2.0: Rename
+    C{SequentialTagger} to C{GreedySequentialTagger};
+    C{UnigramTagger} to C{GreedyUnigramTagger}; 
+    C{NthOrderTagger} to C{GreedyNthOrderTagger}; and 
+    C{BackoffTagger} to C{GreedyBackoffTagger}.
 """
 
 from nltk.chktype import chktype as _chktype
@@ -108,7 +122,7 @@ class TaggedType:
 ##//////////////////////////////////////////////////////
 ##  Parsing and Tokenizing TaggedTypes
 ##//////////////////////////////////////////////////////
-def parseTaggedType(string):
+def parse_tagged_type(string):
     """
     Parse a string into a C{TaggedType}.  The C{TaggedType}'s base
     type will be the substring preceeding the first '/', and the
@@ -132,8 +146,8 @@ class TaggedTokenizer(TokenizerI):
     """
     A tokenizer that splits a string of tagged text into tokens.  Each
     tagged token is encoded as a C{Token} whose type is a
-    C{TaggedType}.  Location indices start at zero, and have a unit of
-    C{'w'}.
+    C{TaggedType}.  Location indices start at zero, and have a default
+    unit of C{'w'}.
 
     The string is split into words using whitespace, and each word
     should have the form C{I{type}/I{tag}}, where C{I{type}} is the
@@ -146,14 +160,14 @@ class TaggedTokenizer(TokenizerI):
        'saw'/'VBD'@[2w], 'him'/'PRP'@[3w]]
     """
     def __init__(self): pass
-    def tokenize(self, str, source=None):
+    def tokenize(self, str, unit='w', source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
         words = str.split()
         tokens = []
         for i in range(len(words)):
-            toktype = parseTaggedType(words[i])
-            tokloc = Location(i, unit='w', source=source)
+            toktype = parse_tagged_type(words[i])
+            tokloc = Location(i, unit=unit, source=source)
             tokens.append(Token(toktype, tokloc))
         return tokens
 
