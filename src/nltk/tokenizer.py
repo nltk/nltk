@@ -23,36 +23,22 @@ L{nltk.tagger.TaggedTokenizer}.  For a complete list of available
 tokenizers, see the reference documentation for L{TokenizerI}.
 
 @group Interfaces: TokenizerI
-@group Tokenizers: WSTokenizer, RegexpTokenizer, LineTokenizer
-@sort: TokenizerI, WSTokenizer, RegexpTokenizer, LineTokenizer
+@group Tokenizers: WSTokenizer, RegexpTokenizer, LineTokenizer,
+                   AbstractTokenizer
 """
 
 import re, sre_parse, sre_constants, sre_compile
 from nltk.chktype import chktype
 from nltk.token import *
 
-"""
-QUESTIONS
-  - should tokenizers be defined over strings or content?
-  - how does abstract tokenizer get locs?
-  
-"""
-
 ##//////////////////////////////////////////////////////
 ##  Tokenizers
 ##//////////////////////////////////////////////////////
 class TokenizerI:
     """
-    A processing class for dividing a token's content into a list
-    of subtokens.
-
-    By default, the subtokens will be given unique location
-    identifiers, based on the location of the input token.  But if the
-    input token's location is unspecified, or the C{addlocs} paramater
-    to the constructor is false, then locations will not be added.
-    
-    Particular implementations of the tokenizer interface vary in
-    two ways:
+    A processing class for dividing a token's content into a list of
+    subtokens.  Particular implementations of the tokenizer interface
+    vary in two ways:
     
       - They may split the token's content at different points
       - They may operate over different kinds of content (e.g., text
@@ -62,20 +48,6 @@ class TokenizerI:
     @group Accessors: unit
     @sort: tokenize, xtokenize, raw_tokenize, raw_xtokenize
     """
-    
-    def __init__(self, addlocs=True):
-        """
-        Construct a new tokenizer.
-
-        @type addlocs: C{boolean}
-        @param addlocs: If true, then add a location to each generated
-            subtoken, based on the input token's location.  If false,
-            or if the input token does not define the C{loc} property,
-            then do not add locations.
-        """
-        if self.__class__ == TokenizerI:
-            raise AssertionError, "Interfaces can't be instantiated"
-
     def tokenize(self, token, **propnames):
         """
         Divide the given token's C{text} property into a list of
@@ -85,7 +57,7 @@ class TokenizerI:
         locations are properly ordered; i.e., for any i and j such
         that i<j::
 
-            subtokens[i]['loc'] < subtokens[j]['loc']
+           subtokens[i]['loc'].end() <= subtokens[j]['loc'].start()
         
         @param token: The token whose text should be tokenized.
         @type token: C{Token}
@@ -110,7 +82,7 @@ class TokenizerI:
         containing its location.  The locations are properly ordered;
         i.e., for any i and j such that i<j::
 
-            subtokens[i]['loc'] < subtokens[j]['loc']
+           subtokens[i]['loc'].end() <= subtokens[j]['loc'].start()
         
         The token's C{text} property may contain an iterator over
         strings, in which case the text content is taken to be the
@@ -160,8 +132,8 @@ class TokenizerI:
 
 class AbstractTokenizer(TokenizerI):
     """
-    An abstract base class for tokenizers that provides default
-    implementations for:
+    An abstract base class for tokenizers.  C{AbstractTokenizer}
+    provides default implementations for:
     
       - L{xtokenize} (based on C{tokenize})
       - L{raw_tokenize} (based on C{tokenize})
@@ -176,9 +148,18 @@ class AbstractTokenizer(TokenizerI):
     implement.
     """
     def __init__(self, addlocs=True):
-        self._addlocs = addlocs
+        """
+        Construct a new tokenizer.
+
+        @type addlocs: C{boolean}
+        @param addlocs: If true, then add a location to each generated
+            subtoken, based on the input token's location.  If false,
+            or if the input token does not define the C{loc} property,
+            then do not add locations.
+        """
         if self.__class__ == AbstractTokenizer:
             raise AssertionError, "Abstract classes can't be instantiated"
+        self._addlocs = addlocs
 
     def xtokenize(self, token, **propnames):
         text_prop = propnames.get('text', 'text')
