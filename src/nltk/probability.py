@@ -1061,7 +1061,7 @@ class ProbabilisticMixIn:
         return self._prob
     
 ##//////////////////////////////////////////////////////
-##  Test Code
+##  Demonstration
 ##//////////////////////////////////////////////////////
 
 def _create_rand_fdist(numsamples, numoutcomes):
@@ -1093,7 +1093,13 @@ def _create_sum_pdist(numsamples):
 def demo(numsamples=6, numoutcomes=500):
     """
     A demonstration of frequency distributions and probability
-    distributions.
+    distributions.  This demonstration creates three frequency
+    distributions with, and uses them to sample a random process with
+    C{numsamples} samples.  Each frequency distribution is sampled
+    C{numoutcomes} times.  These three frequency distributions are
+    then used to build six probability distributions.  Finally, the
+    probability estimates of these distributions are compared to the
+    actual probability of each sample.
 
     @type numsamples: C{int}
     @param numsamples: The number of samples to use in each demo
@@ -1107,12 +1113,12 @@ def demo(numsamples=6, numoutcomes=500):
     _chktype(1, numsamples, types.IntType)
     _chktype(2, numoutcomes, types.IntType)
 
-    # Create some random distributions.
+    # Randomly sample a stochastic process three times.
     fdist1 = _create_rand_fdist(numsamples, numoutcomes)
     fdist2 = _create_rand_fdist(numsamples, numoutcomes)
     fdist3 = _create_rand_fdist(numsamples, numoutcomes)
 
-    # Create probability distributions.
+    # Use our samples to create probability distributions.
     pdists = [
         MLEProbDist(fdist1),
         LidstoneProbDist(fdist1, 0.5, numsamples),
@@ -1122,13 +1128,15 @@ def demo(numsamples=6, numoutcomes=500):
         _create_sum_pdist(numsamples),
         ]
 
-    # Run probability distributions on each sample.
+    # Find the probability of each sample.
     vals = []
     for n in range(1,numsamples+1):
         vals.append(tuple([n, fdist1.freq(n)] +
                           [pdist.prob(n) for pdist in pdists]))
 
-    # Print results.
+    # Print the results in a formatted table.
+    print ('%d samples (1-%d); %d outcomes were sampled for each FreqDist' %
+           (numsamples, numsamples, numoutcomes))
     print '='*9*(len(pdists)+2)
     FORMATSTR = '      FreqDist '+ '%8s '*(len(pdists)-1) + '|  Actual'
     print FORMATSTR % tuple([`pdist`[1:9] for pdist in pdists[:-1]])
@@ -1137,7 +1145,7 @@ def demo(numsamples=6, numoutcomes=500):
     for val in vals:
         print FORMATSTR % val
     
-    # Print the sums.
+    # Print the totals for each column (should all be 1.0)
     zvals = zip(*vals)
     def sum(lst): return reduce(lambda x,y:x+y, lst, 0)
     sums = [sum(val) for val in zvals[1:]]
@@ -1146,10 +1154,11 @@ def demo(numsamples=6, numoutcomes=500):
     print  FORMATSTR % tuple(sums)
     print '='*9*(len(pdists)+2)
     
-    # Display the distributions
-    print '  fdist1:', str(fdist1)
-    print '  fdist2:', str(fdist2)
-    print '  fdist3:', str(fdist3)
+    # Display the distributions themselves, if they're short enough.
+    if len(`str(fdist1)`) < 70:
+        print '  fdist1:', str(fdist1)
+        print '  fdist2:', str(fdist2)
+        print '  fdist3:', str(fdist3)
     print
 
 if __name__ == '__main__':
