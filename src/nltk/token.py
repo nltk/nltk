@@ -15,11 +15,15 @@ which describes a specific aspect of the token.  Typical properties
 include:
 
   - C{TEXT}: The token's text content.
-  - C{WAVE}: The token's recorded audio content.
   - C{TAG}: The token's part-of-speech tag.
+  - C{WORDS}: The list of words contained in a multi-word token
+    (such as a sentence token).
+  - C{TREE}: The token's tree structure.
+  - C{WAVE}: The token's recorded audio content.
   - C{SPEAKER}: The speaker who uttered the token.
   - C{SENSE}: The token's word sense.
   - C{LOC}: The token's location in its containing text.
+  - C{CONTEXT}: A pointer to the token's context.
 
 The C{LOC} property uses a L{Location<LocationI>} to specify the
 position of the token in its containing text.  This location can be
@@ -66,8 +70,8 @@ class Token(dict):
     token defines the text content and part-of-speech tag for a single
     word:
 
-        >>> tok = Token(TEXT='fly', TAG='N')
-        <TEXT='fly', TAG='N'>
+        >>> tok = Token(TEXT='fly', POS='N')
+        <TEXT='fly', POS='N'>
 
     As this example illustrates, a token's properties are initialized
     using keyword arguments to the constructor.  Properties can be
@@ -83,13 +87,13 @@ class Token(dict):
     some properties only make sense for specific kinds of C{Tokens}.
     For example, only C{Tokens} representing recorded audio will have
     a C{WAVE} property; and only C{Tokens} representing words will
-    have a C{TAG} property.
+    have a C{POS} property.
     
     A property value can be...
       - an immutable value (such as a string or a number)
       - a token
-      - a container (such as a list, dictionary, or tuple) that
-        contains valid property values
+      - a container (such as a list, dictionary, tuple, or L{Tree})
+        that contains valid property values
 
     @ivar USE_SAFE_TOKENS: If C{True}, then the L{SafeToken} subclass is
         used to create new tokens.  This subclass includes type checking
@@ -110,7 +114,7 @@ class Token(dict):
     @undocumented: frozen_token_class
     """
     # Don't allocate any extra space for instance variables:
-    __slots__ = ('__repr_cyclecheck',)
+    __slots__ = ()
 
     # Should we use the type-safe version of tokens?
     USE_SAFE_TOKENS = False
@@ -129,7 +133,6 @@ class Token(dict):
             tok = super(Token, cls).__new__(SafeToken, **properties)
         else:
             tok = super(Token, cls).__new__(cls, **properties)
-        tok.__repr_cyclecheck = False
         return tok
 
     def __init__(self, propdict=None, **properties):
@@ -138,14 +141,14 @@ class Token(dict):
         The properties are typically specified using keyword
         arguments:
 
-           >>> typ = Token(TEXT='ni', TAG='excl', SPEAKER='knight2')
-           <TEXT='ni', SPEAKER='knight2', TAG='excl'>
+           >>> typ = Token(TEXT='ni', POS='excl', SPEAKER='knight2')
+           <TEXT='ni', SPEAKER='knight2', POS='excl'>
 
         Alternatively, properties can be specified using a dictionary:
 
-           >>> props = {'TEXT':'ni', 'TAG':'excl', 'SPEAKER':'knight2'}
+           >>> props = {'TEXT':'ni', 'POS':'excl', 'SPEAKER':'knight2'}
            >>> typ = Token(props)
-           <TEXT='ni', SPEAKER='knight2', TAG='excl'>
+           <TEXT='ni', SPEAKER='knight2', POS='excl'>
 
         @param properties: The initial set of properties that the new
             token should define.  Each element maps a property name to
@@ -412,6 +415,7 @@ class Token(dict):
     # Note: the use of __repr_cyclecheck is not threadsafe; but making
     # it threadsafe would be difficult, given that we allow the user to
     # register arbirary repr functions.
+    __repr_cyclecheck = Set()
     def __repr__(self):
         """
         @return: A string representation of this C{Token}.
@@ -420,8 +424,8 @@ class Token(dict):
             it uses an instance variable on each token to handle
             printing of cyclic structures.
         """
-        if self.__repr_cyclecheck: return '<...>'
-        self.__repr_cyclecheck = True
+        if id(self) in self.__repr_cyclecheck: return '<...>'
+        self.__repr_cyclecheck.add(id(self))
         
         props = self.keys()
         props.sort()
@@ -430,7 +434,7 @@ class Token(dict):
             s = repr % self
         else:
             s = repr(self)
-        self.__repr_cyclecheck = False
+        self.__repr_cyclecheck.remove(id(self))
         return s
 
     def _default_repr(self):
@@ -482,16 +486,6 @@ class Token(dict):
         """
         raise TypeError('%s objects cannot be used as booleans' %
                         self.__class__.__name__)
-
-    #/////////////////////////////////////////////////////////////////
-    # Pickling & Copying
-    #/////////////////////////////////////////////////////////////////
-
-    def __getstate__(self):
-        return dict(self)
-    def __setstate__(self, state):
-        dict.update(self, state)
-        self.__repr_cyclecheck = False
 
 #/////////////////////////////////////////////////////////////////
 # Standard Token Representations
