@@ -33,10 +33,10 @@ strings.
 
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq
+import types
 from nltk.token import Token, TokenizerI, Location
 import re
 from nltk.probability import ContextEvent, CFFreqDist, CFSample
-from types import StringType as _StringType
 
 ##//////////////////////////////////////////////////////
 ##  TaggedType
@@ -121,7 +121,7 @@ def parseTaggedType(string):
     @return: The C{TaggedType} represented by C{string}
     @rtype: C{TaggedType}
     """
-    assert _chktype(1, string, _StringType)
+    assert _chktype(1, string, types.StringType)
     elts = string.split('/', 1)
     if len(elts) > 1:
         return TaggedType('/'.join(elts[:-1]), elts[-1].upper())
@@ -138,7 +138,7 @@ class TaggedTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, _StringType)
+        assert _chktype(1, str, types.StringType)
         words = str.split()
         tokens = []
         for i in range(len(words)):
@@ -198,13 +198,13 @@ class SequentialTagger(TaggerI):
           token, the tokens that preceed it, and the predicted tags of
           the tokens that preceed it.
 
-    Each C{SequentialTagger} subclass defines the C{tag_next} method,
+    Each C{SequentialTagger} subclass defines the C{next_tag} method,
     which returns the tag for a token, given the list of tagged tokens
-    that preceeds it.  The C{tag} method calls C{tag_next} once for
+    that preceeds it.  The C{tag} method calls C{next_tag} once for
     each token, and uses the return values to construct the tagged
     text.
     """
-    def tag_next(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_token):
         """
         Decide which tag to assign a token, given the list of tagged
         tokens that preceeds it.
@@ -213,12 +213,12 @@ class SequentialTagger(TaggerI):
         @param tagged_tokens: A list of the tagged tokens that preceed
             C{token}.  The tokens' base types are taken from the text
             being tagged, and their tags are prediced by previous
-            calls to C{tag_next}.  In particular, the I{n}th element
+            calls to C{next_tag}.  In particular, the I{n}th element
             of C{tagged_tokens} is a tagged token whose base type is
             equal to the type of the I{n}th element of the text; whose
             location is equal to the location of the I{n}th element of
             the text; and whose tag is a predicted tag returned by a
-            previous call to C{tag_next}.
+            previous call to C{next_tag}.
         @type next_token: C{Token}
         @param next_token: The (untagged) token for which to assign a
             tag. 
@@ -226,7 +226,7 @@ class SequentialTagger(TaggerI):
         @return: the most likely tag for C{token}, given that it is
             preceeded by C{tagged_tokens}.
         """
-        assert 0, "tag_next not defined by SequentialTagger subclass"
+        assert 0, "next_tag not defined by SequentialTagger subclass"
 
     def tag(self, text):
         # Inherit documentation
@@ -236,7 +236,7 @@ class SequentialTagger(TaggerI):
         tagged_text = []
         for token in text:
             # Get the tag for the next token.
-            tag = self.tag_next(tagged_text, token)
+            tag = self.next_tag(tagged_text, token)
 
             # Construct a tagged token with the given tag, and add it
             # to the end of tagged_text.
@@ -253,10 +253,10 @@ class NN_CD_Tagger(SequentialTagger):
     """
     def __init__(self): pass
 
-    def tag_next(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_token):
         # Inherit docs from SequentialTagger
-        _chktype(1, tagged_tokens, [Token])
-        _chktype(2, next_token, Token)
+        assert _chktype(1, tagged_tokens, [Token], (Token,))
+        assert _chktype(2, next_token, Token)
         
         if re.match(r'^[0-9]+(.[0-9]+)?$', next_token.type()):
             return 'CD'
@@ -286,24 +286,26 @@ class UnigramTagger(SequentialTagger):
         @type tagged_tokens: list of TaggedToken
         @returntype: None
         """
-        #assert _chktype(1, tagged_tokens, [Token], (Token,))
+        assert _chktype(1, tagged_tokens, [Token], (Token,))
         for token in tagged_tokens:
             context = token.type().base()
             feature = token.type().tag()
             self._freqdist.inc( CFSample(context, feature) )
 
-    def tag_next(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_token):
         # Inherit docs from SequentialTagger
-        _chktype(1, tagged_tokens, [Token])
-        _chktype(2, next_token, Token)
-        
-        context = next_token.type()
-        context_event = ContextEvent(context)
+        assert _chktype(1, tagged_tokens, [Token], (Token,))
+        assert _chktype(2, next_token, Token)
+
+        # Find the most likely tag for the token's type.
+        context_event = ContextEvent(next_token.type())
         sample = self._freqdist.cond_max(context_event)
-        if sample == None:
-            return None
-        else:
+
+        # If we found a tag, return it; otherwise, return None.
+        if sample:
             return sample.feature()
+        else:
+            return None
     
 class NthOrderTagger(SequentialTagger):
     """
@@ -327,6 +329,7 @@ class NthOrderTagger(SequentialTagger):
         @param n: The order of the new C{NthOrderTagger}.
         @type n: int
         """
+        assert _chktype(1, n, types.IntType)
         if n < 0: raise ValueError('n must be non-negative')
         self._n = n
         self._freqdist = CFFreqDist()
@@ -355,10 +358,10 @@ class NthOrderTagger(SequentialTagger):
             if len(prev_tags) == (self._n+1):
                 del prev_tags[0]
 
-    def tag_next(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_token):
         # Inherit docs from SequentialTagger
-        _chktype(1, tagged_tokens, [Token])
-        _chktype(2, next_token, Token)
+        assert _chktype(1, tagged_tokens, [Token], (Token,))
+        assert _chktype(2, next_token, Token)
 
         # Find the tags of the n previous tokens.
         prev_tags = []
@@ -372,13 +375,12 @@ class NthOrderTagger(SequentialTagger):
 
         # Find the most likely tag for this context, and return it.
         sample = self._freqdist.cond_max(context_event)
-        if sample == None:
-            return None
-        else:
-            return sample.feature()
+        if sample: return sample.feature()
+        else: return None
 
 class BackoffTagger(SequentialTagger):
     """
+
     A C{Tagger} that tags tokens using a basic backoff model.  Each
     C{BackoffTagger} is paramatrised by an ordered list sub-taggers.
     In order to assign a tag to a token, each of these sub-taggers is
@@ -406,15 +408,18 @@ class BackoffTagger(SequentialTagger):
         assert _chktype(1, subtaggers, (SequentialTagger,), [SequentialTagger])
         self._subtaggers = subtaggers
 
-    def tag_next(self, tagged_tokens, next_token):
+    def next_tag(self, tagged_tokens, next_token):
         # Inherit docs from SequentialTagger
-        _chktype(1, tagged_tokens, [Token])
-        _chktype(2, next_token, Token)
-        
+        assert _chktype(1, tagged_tokens, [Token], (Token,))
+        assert _chktype(2, next_token, Token)
+
         for subtagger in self._subtaggers:
-            tag = subtagger.tag_next(tagged_tokens, next_token)
+            tag = subtagger.next_tag(tagged_tokens, next_token)
             if tag is not None:
                 return tag
+
+        # Default to None if all subtaggers return None.
+        return None
 
 def untag(tagged_tokens):
     """
