@@ -495,15 +495,16 @@ class FRChart(Chart):
     the element of their dotted rule's right hand side following its
     dot.  To access edges using these indices, use the optional
     arguments for C{complete_edges} and C{incomplete_edges}.
+
+    @ivar _complete: A dictionary containing all complete edges,
+        indexed by their start position & lhs nonterminal
+    @type _complete: C{list} of C{Edge}
+    @ivar _incomplete: A dictionary containing all incomplete edges,
+        indexed by their end position & 1st rhs elt after the dot.
+    @type _complete: C{list} of C{Edge}
     """
     def __init__(self, loc):
-        """
-        @param _complete: A dictionary containing all complete edges,
-            indexed by their start position & lhs nonterminal
-        @param _incomplete: A dictionary containing all incomplete
-            edges, indexed by their end position & 1st rhs elt after
-            the dot.
-        """
+        # Inherit docs.
         Chart.__init__(self, loc)
         self._complete = {}
         self._incomplete = {}
