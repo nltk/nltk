@@ -17,7 +17,9 @@ class TreebankCorpusReader(CorpusReaderI):
     """
     # Default token readers.
     _ws_reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
-    _tb_reader = TreebankFileTokenReader(SUBTOKENS='WORDS')
+    _prd_reader = TreebankFileTokenReader(SUBTOKENS='WORDS')
+    _mrg_reader = TreebankFileTokenReader(SUBTOKENS='WORDS',
+                                          preterminal_tags=True)
     _tag_reader = TreebankTaggedTokenReader(SUBTOKENS='WORDS')
     
     def __init__(self, name, rootdir, treebank_2=False,
@@ -214,11 +216,11 @@ class TreebankCorpusReader(CorpusReaderI):
     def _token_reader(self, item):
         self._initialize()
         if item in self._group_items['merged']:
-            return self._tb_reader
+            return self._mrg_reader
         elif item in self._group_items['tagged']:
             return self._tag_reader
         elif item in self._group_items['parsed']:
-            return self._tb_reader
+            return self._prd_reader
         elif item in self._group_items['raw']:
             return self._ws_reader
         else:
