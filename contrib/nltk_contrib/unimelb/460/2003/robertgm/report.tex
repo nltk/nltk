@@ -1,0 +1,153 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage{palatino,url}
+\author{Robert Marshall (103010)}
+\title{Bayesian Document Summarization}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Given a document, we define a summary as another document, shorter than the original, which attempts to convey as much of the information from the original as possible. A summary may be an abstract, which contains new content not found in the original, or an extract, which consists solely of material taken from the original document.
+
+A summary can be very helpful in determining whether a document is useful or not, as an alternative to reading it in its entirety. Kupiec {\it et al} cite a result claiming that a summary 20\% of the length of a document can be as informative as the original. The author's experience using lecture notes and (or instead of) textbooks would seem to support this.
+
+We present a automatic document summarizer, using Bayesian principles to choose which sentences to extract, based on various features of the sentences. This work is largely based on a paper by Kupiec {\it et al} \cite{kupiec95trainable}, which attempted the same task.
+
+\section{Method}
+The general problem of summarization corresponds to the problem of creating an abstract. This is very difficult, because it requires us to represent the content of the document, and posssibly also general knowledge about the domain, and generate the output text \cite{hovy02, Mani}. All of these tasks are very hard NLP problems. For this reason, we focus on the easier subproblem of creating an extract. We use sentences as the unit of extracts. This avoids all of these problems, merely requiring that we find some method of determining which sentences should be in the summary.
+
+\subsection{Training Data}
+We used the CMP-LG corpus \cite{CMP-LG}, which contains 183 documents on computational linguistics in XML format, with corresponding abstracts; we were unable to acquire a corpus of documents with corresponding extracts. This presents a problem, as only 29 (of 928) sentences exactly matched between the documents and abstracts. However, many more sentences were similar, so we required a form of inexact sentence matching.
+
+\subsubsection{Inexact Sentence Matching}
+Ideally, we would like to have some method of representing the meaning of a sentence, and a distance metric for any two meanings. Using these, we could compare any two sentences, and use this to determine similar sentences. However, this requires us to discern and represent the meaning of the text. These are exactly the problems we are trying to avoid by using extracts, so we are forced to use a less elegant method. 
+
+The tf.idf (term frequency by inverse document frequency) measure is one such method \cite[pp. 651-654]{JM}. In order to compare two documents, we measure the term frequency - the number of times a word occurs in the second document - for each word in the first document. We also measure the document frequency, which is the number of documents a sentence occurs in. This means that words which occur regularly in a document are scored highly in the term frequency, while words which occur in a small number documents are scored highly for the inverse document frequency.
+
+The term frequencies are weighted by the inverse document frequency and then added together to give a score for the similarity between the documents. The higher the score, the greater the similarity. In our case, we consider sentences to be ``documents'', in conflict to the terminology we use elsewhere in this paper. This unfortunate ambiguity arises because the tf.idf measure is usually used in the context of document retrieval, on entire documents.
+
+We also maintain a list of ``stop words'', which are not counted at all in the tf.idf measure \footnote{This idea is courtesy of Diego Molla Aliod and Fuchung Peng; see \url{www.hit.uib.no/corpora/2002-2/0244.html}}. These are words such as ``and'', ``the'' and ``in'', which we consider to be of much less relevance to the meaning of a sentence than nouns and verbs, for example. This list is generated from the Brown corpus, by looking for all words with certain tags, such as DT and CC (determiners and conjunctions).
+
+We consider a sentence to be sufficiently similar to a sentence from the abstract if their tf.idf measure is at least 75\% of the tf.idf measure of the abstract sentence with itself. If no such sentence exists, we ignore the abstract sentence. Using this measure, we can determine a sentence from within the document for each sentence in the abstract, thereby converting the abstract into an extract. This gives us 169 sentences in our extracts.
+
+\subsection{Scoring Sentences}
+We associate a score with each sentence, quantifying its suitability inclusion in the extract. In order to do this, we measure several features of a sentence which we expect to differ between extracted and normal sentences. This approach was pioneered by Edmunson \cite{edmunson69abstracting}, who used trial and error to attach weights to the features, and used more recently by Kupiec \cite{kupiec95trainable}, who used a Bayesian classifier with these features.
+
+\subsubsection{Sentence Length}
+In general, we would expect longer sentences to be more useful for extracting. We therefore measure sentence length as one of our features. Because we are using a Bayesian classifier, we cannot use numerical values for our features. Therefore, in keeping with Kupiec {\it et al}, we define a sentence of less than 6 words as ``short'', and ``long'' otherwise.
+
+\subsubsection{Fixed-Phrase}
+Kupiec {\it et al} and Edmunson both describe key-phrase metrics. These look for certain phrases which apparently occur more often in summary sentences, such as ``In conclusion'', or ``In this paper''. However, neither of them give an exhaustive list of the phrases which they use. Therefore, we used a function to count the frequency of N-grams in the abstracts, and chose a few N-grams which looked useful: ``this paper describes'', ``we present'', and ``the performance of''. By contrast, Kupiec {\it et al} use a list of 26 key phrases.
+
+This will confound our results to some degree, as we are choosing key-phrases from the same training set that we are testing on. However, given the lack of appropriate data from elsewhere, we feel that it is justified.
+
+The Bayesian classifier does not readily allow us to acknowledge the occurrence of multiple key-phrases in the one sentence. We could represent each key-phrase as a unique binary feature, but this would increase the complexity considerably, particularly if we used a larger list of key-phrases. In addition, this situation would be quite rare in practise. Therefore, if multiple key-phrases are detected, we simply use the one occurring higher on the list.
+
+\subsubsection{Sentence Position}
+Often, the first and last sentences in a paragraph summarize the contents of that paragraph. Therefore, we would expect these sentences to be more useful in an extract. We mark sentences as initial, medial and final sentences in their paragraphs. We only calculate this feature for the first 10 and last 5 sentences in the document, in line with Kupiec. This results in better performance than if we calculate the feature on the whole document.
+
+\subsubsection{Uppercase Words}
+Uppercase words often abbreviate important terms, and we might expect them to occur more often in an extract. We only consider a word in this category if it is at least 2 characters long (thus eliminating ``A'' at the start of a sentence).
+
+\subsection{Bayesian Classification}
+Given a sentence $s$ with a set $F$ of $n$ individual features $F_i$, where
+\begin{equation} F = \bigcup_{i=1}^n F_i \end{equation}
+let $S$ be the event that $s$ is in the summary. Then, by Bayes' Theorem:
+\begin{equation} P(S|F) = \frac{P(F|S)P(S)}{P(F)} \end{equation}
+We assume that each feature is independent, so we have
+\begin{equation} P(F) = P \left( \bigcup_{i=1}^n F_i \right) = \prod_{i=1}^n P(F_i) \end{equation}
+\begin{equation} P(F|S) = P \left( \bigcup_{i=1}^n F_i \right) = \prod_{i=1}^n P(F_i|S) \end{equation}
+
+We can estimate the individual probabilities $P(F_i)$ and $P(F_i|S)$ by counting their occurrences in the training set. $P(S)$ is constant for all sentences in a given summary, and can therefore be ignored when comparing these sentences. Thus we can calculate a value proportional $P(S|F)$ for each sentence in our document. This value can be used as a score for the extract-worthiness of the sentence $S$. We can then choose the $N$ sentences with the highest scores, where $N$ is the desired number of sentences in the extract.
+
+\section{Using the system}
+To load the system, simply load the \verb|summarizer.py| module.
+
+\subsection{Preprocessing}
+Before we can attempt to train or use the Bayesian classifier, we need to convert the abstracts into extracts, using the tf.idf method described above. This process is very time-consuming (around 3 hours on a Celeron 1700 with 256 MB RAM), so we cache the results. In order to perform this task, use the \verb|cache| function. It takes one parameter, a list of files within the \verb|cmp-lg| directory to be cached. If the parameter is not specified, then all the XML files in the directory will be cached.
+
+\subsection{Summarization}
+To train the system, use the \verb|train| function. This function takes two parameters - a list of measures to be used (defaulting to sentence length, fixed-phrase and paragraph), and a list of files, defaulting to all XML files in the \verb|cmp-lg| directory. It will return a tuple containg the training data, which is simply the counts for each measure, on the extracted sentences and then on the document as a whole. For example, to train using only the file \verb|9504027.xml| and the sentence length and position measures, type:
+\begin{verbatim} 
+data = train([SentenceLength(), Paragraph()], 
+             '9504027.xml') \end{verbatim}
+
+To summarize a document, use the \verb|summarize| function. It takes 4 parameters - the document (given as a list of paragraphs tokens, which contain their location and a list of sentence tokens, which also contain their location), the length of summary desired, the list of measures, and the training data. For example, if we have a document loaded in the variable \verb|document|, and training data in the \verb|data|, we can summarize it using the command
+\begin{verbatim} 
+summarize(document, 10, [SentenceLength(), FixedPhrase(), 
+                         Paragraph()], data) \end{verbatim}
+
+The \verb|cross_validate| function takes the same parameters, with the same defaults, as the \verb|train| function ,and an \verb|n_folds| parameter (defaulting to 10), specifying the number of folds to use for the cross-validation. It will perform cross-validation on the specified files and report the precision. To use 10-fold cross-validation the system on the entire training set, with the best-performing set of measures, simply type:
+\begin{verbatim} cross_validate() \end{verbatim}
+
+\subsection{Utilities}
+The \verb|common_phrases| function takes a list of files (defaulting to all .xml files in the \verb|cmp-lg| directory), and returns a list of the 20 most common n-grams in their abstracts, where n ranges from 2 to 4.
+
+The \verb|exact_matches| function takes a list of files, again defaulting to all the XML files, and returns a list of all the sentences longer than 2 words which exactly match between the abstracts and main documents.
+
+The \verb|read_file| function takes a filename as input. Assuming the file is text, with two newlines between each paragraph, it will return a list of the paragraphs in a suitable form for summarization.
+
+\section{Results}
+The quality of a summarization can be measured using the standard notions of precision and recall, where 
+\begin{equation} precision=\frac{correct}{correct+incorrect} \end{equation}
+\begin{equation} recall=\frac{correct}{correct+missed} \end{equation}
+However, in our case we know beforehand how many sentences should be in the summary, and always choose that many sentences. Hence, the number of incorrect and missed sentences will always be equal; thus also the precision and recall measures will be equal. Therefore, we only use the precision metric.
+
+We use 10-fold cross-validation. This involves dividing the data set at random, using two-thirds for training and the rest for testing. 
+We perform this operation 10 times, and report the overall result. We measure using each feature individually, and then measure them cumulatively with those listed before it.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|c|c|}        \hline
+{\em Feature} & {\em Individual} & {\em Cumulative}
+\\ & {\em Performance} & {\em Performance}
+\\ \hline
+Paragraph & 0.17 & 0.17
+\\
+Fixed-Phrase  & 0.09 & 0.14
+\\
+Sentence Length & 0.11 & 0.19
+\\
+Uppercase & 0.05 & 0.11
+\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+By comparison, Kupiec {\it et al} achieve a maxmimum precision of 0.44, using the paragraph, fixed-phrase and sentence length cut-off.
+
+We also present an example of an actual extract:
+
+\begin{quote}
+We address the problem of automatically acquiring case frame patterns (selectional patterns) from large corpus data. We view the problem of learning case frame patterns as that of learning a multi-dimensional discrete joint distribution, where random variables represent case slots. We then formalize the dependencies between case slots as the probabilistic dependencies between these random variables. Since the number of parameters in a multi-dimensional joint distribution is exponential in general, it is infeasible to accurately estimate them in practice. Our experimental results indicate that for certain classes of verbs, the accuracy achieved in a disambiguation experiment is improved by using the acquired knowledge of dependencies.
+\end{quote}
+
+and an automatically generated extract from the same document:
+\begin{quote}
+In this paper, we propose a method of learning dependencies between case frame slots. We address the problem of automatically acquiring case frame patterns (selectional patterns) from large corpus data. The knowledge of such dependencies is useful in various tasks in natural language processing, especially in analysis of sentences involving multiple prepositional phrases, such as.  Real World Computing Partnership. One may argue that `fly' has different word senses in these sentences and for each of these word senses there is no dependency. between the case frame slots. Note in the above example that the slot of `from' and that of `to' should be considered dependent and the attachment site of one of the prepositional phrases (case slots) can be determined by that of the other with high accuracy and confidence.
+\end{quote}
+
+Note that we have reordered the sentences in the generated extract for readability. It would be desirable to reorder the extracted sentences to the same order in which they are found in the document, but this was not possible due to time constraints.
+
+We also present an automatically generated 10-sentence extract from this report:
+\begin{quote}
+We present a automatic document summarizer, using Bayesian principles to choose which sentences to extract, based on various features of the sentences. Therefore, we used a function to count the frequency of N-grams in the abstracts, and chose a few N-grams which looked useful: ``this paper describes'', ``we present'', and ``the performance of''. Automated document summarization is a worthwhile task, with potentially useful applications. The term frequencies are weighted by the inverse document frequency and then added together to give a score for the similarity between the documents. We also maintain a list of ``stop words'', which are not counted at all in the tf. Given a document, we define a summary as another document, shorter than the original, which attempts to convey as much of the information from the original as possible. We consider a sentence to be sufficiently similar to a sentence from the abstract if their tf. A summary can be very helpful in determining whether a document is useful or not, as an alternative to reading it in its entirety. The general problem of summarization corresponds to the problem of creating an abstract. The quality of a summary is rather subjective.
+\end{quote}
+Observe that the term ``tf.idf'' was not properly processed by the tokenizer.
+
+\section{Evaluation}
+The quality of a summary is rather subjective. The goal of a summary is to inform one of the topic, not to match a certain set of sentences exactly. Kupiec {\it et al} cite some figures claiming that extracts by four human judges will only overlap in 25\% of their sentences, and one judge will overlap by 55\% over time. Therefore, the actual precision measurements are perhaps not as important as the readability of the extracts. Unfortunately, our generated extracts are not of particularly high quality either.
+
+There are a few possible reasons why our results are considerably worse than those given by Kupiec {\it et al}. Firstly, we have a very small fixed-phrase list. Our training set was very small after the abstracts had been converted to extracts. This also made the model less accurate. There were also some problems tokenizing the documents into sentences. We regarded all full stops as ending a sentence, unless they were in the middle of a number. This was adequate for most purposes, but failed in circumstances like ``[Jurafsky and Martin p.100]''. In addition, the XML tags caused some problems. We ignored all tags except <P> and <ABSTRACT>, but the documents contained others, indicating things like equations and tables. Thus some of the ``sentences'' we trained on were not sentences at all. 
+
+Finally, it would appear that our documents are longer than theirs in relation to our summary size. In both cases, the sentence length measure on its own would simply choose sentences longer than 5 words. They report a precision of 24\% in that case, whereas we only get 11\%. This would seem to indicate that our sentences are simply less likely to be found in the summary. We suspect that this is because many ``extracts'' in our case contain only one sentence, as only one sentence from the abstract was sufficiently close to a document sentences to be used. Thus the number of sentences in the document is very large compared to the number of sentences in the extract, making the process of finding (or guessing) an extracted sentence much more difficult.
+
+If we measure performance relative to the baseline, we achieve an improvement of 72\% using the paragraph, fixed-phrase and sentence length features, while Kupiec {\it et al} record a 79\% improvement.
+
+\section{Conclusion}
+Automated document summarization is a worthwhile task, with potentially useful applications. In order to avoid several very difficult NLP problems, it is desirable to create extracts in order to summarize documents. We created a summarizer using Bayesian principles. The quality of the output was rather poor. However, we believe that this is largely due to difficulties with the training data, and if a more suitable corpus could be found, then this system could perform much better.
+
+\bibliographystyle{unsrt}
+\bibliography{bibliography}
+
+\end{document}
