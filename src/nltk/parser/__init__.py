@@ -208,7 +208,7 @@ class ShiftReduceParser(ParserI):
         @type grammar: C{CFG}
         """
         assert _chktype(1, grammar, CFG)
-        return self._grammar
+        self._grammar = grammar
     
     def parse_n(self, text, n=None):
         # Inherit documentation from ParserI; delegate to parse.
@@ -487,7 +487,7 @@ class RecursiveDescentParser(ParserI):
         @type grammar: C{CFG}
         """
         assert _chktype(1, grammar, CFG)
-        return self._grammar
+        self._grammar = grammar
 
     def parse(self, text):
         # Inherit docs from ParserI; and delegate to parse_n
