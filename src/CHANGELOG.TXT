@@ -1,4 +1,57 @@
 ##////////////////////////////////////////////////////////////////////////
+##  Version 1.3
+##////////////////////////////////////////////////////////////////////////
+Sat Mar 20 11:12:44 EST 2004
+
+We made some significant changes to NLTK's basic architecture.  These
+changes make the basic processing tasks easier to use; and make it
+easier to combine different processing tasks into a single system.
+Under the new architecture:
+  - Tokens are encoded as mutable mappings from properties to values
+  - Tokens are used to encode all units of language (words, sentences,
+    syntax trees, documents, etc).
+  - Tokens can can contain other tokens (e.g. a document token's SUBTOKENS
+    property might contain a list of the document's words); or pointers
+    to other tokens (e.g., a parse constituent's PARENT property might
+    contain a pointer to the constituent's parent).
+  - Processing tasks (parsing, tokenizing, tagging, etc) work by
+    adding new information to existing tokens (e.g., a new TREE property
+    or a new SUBTOKENS property).
+  - "Property indirection" can be used to control which properties a
+    given processing task uses for input and output (e.g., whether a
+    parser uses the words' TEXT or TAG as the LEAF property.
+  - Locations (such as character spans) can be added to each token, to
+    provide unique identifiers.
+  - Specialized token subclasses provide extra methods.  For example,
+    TreeToken defines methods like height() and leaves().
+
+Additions:
+  - Added Witten-Bell and Good-Turing smoothing for probability
+    distributions
+  - Added a regular expression based tagger
+  - Added a regular expression based stemmer
+  - Added an implementation of the earley parser
+  - Added feature structures, including unification with variables and
+    reentrance.
+  - Added support for parsing CFGs and CFG productions
+  - Added support for trees that automatically maintain parent
+    pointers.
+
+Improvements:
+  - Redesigned the chart parser system to improve flexibility and
+    efficiency.  (Chart parsers now run 10-20x faster!)
+
+Graphical Demonstrations:
+  - Improved the chart parser demo:
+    - Runs 5-10x faster
+    - Improved matrix window
+    - Added an optional "results" window
+  - Added a corpus viewer, which can be used to browse corpora and
+    select items within each corpus.
+  - Added support for drawing feature structures
+  - Improved font support in the graphical demos.
+
+##////////////////////////////////////////////////////////////////////////
 ##  Version 1.2
 ##////////////////////////////////////////////////////////////////////////
 Tue Nov  4 23:52:30 EST 2003
