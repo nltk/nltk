@@ -41,14 +41,7 @@ objects have the same class: C{chkclass} and C{classeq}.
 """
 
 import traceback
-from types import IntType as _IntType
-from types import ListType as _ListType
-from types import TupleType as _TupleType
-from types import ClassType as _ClassType
-from types import TypeType as _TypeType
-from types import DictType as _DictType
-from types import InstanceType as _InstanceType
-from types import NoneType as _NoneType
+from types import *
 
 ##//////////////////////////////////////////////////////
 ##  Type-checking
@@ -80,7 +73,7 @@ def type_safety_level(level=None):
         level, if C{level} is not specified.
     @rtype: C{int}
     """
-    assert chktype(1, level, _IntType, _NoneType)
+    assert chktype(1, level, IntType, NoneType)
     global _type_safety_level
     old_type_safety_level = _type_safety_level
     if level is not None:
@@ -93,8 +86,8 @@ def classeq(instance1, instance2):
         class.
     @rtype: C{bool}
     """
-    return (type(instance1) == _InstanceType and
-            type(instance2) == _InstanceType and
+    return (type(instance1) == InstanceType and
+            type(instance2) == InstanceType and
             instance1.__class__ == instance2.__class__)
 
 def _typemsg(types):
@@ -112,23 +105,23 @@ def _typemsg(types):
     """
     typestr = ''
     for typ in types:
-        if type(typ) in (_TypeType, _ClassType):
+        if type(typ) in (TypeType, ClassType):
             if ' ' in typ.__name__: typestr += '%r or ' % typ.__name__
             else: typestr += '%s or ' % typ.__name__
                 
-        elif type(typ) == _ListType:
+        elif type(typ) == ListType:
             if typ == []:
                 typestr += 'list or '
             else:
                 typestr += '(list of '
                 typestr += _typemsg(typ)+') or '
-        elif type(typ) == _TupleType:
+        elif type(typ) == TupleType:
             if typ == ():
                 typestr += 'tuple or '
             else:
                 typestr += '(tuple of '
                 typestr += _typemsg(typ)+') or '
-        elif type(typ) == _DictType:
+        elif type(typ) == DictType:
             if typ == {}:
                 typestr += 'dictionary or '
             else:
@@ -218,18 +211,18 @@ def chktype(n, arg, *types):
     # tuple; a dictionary; or some other object.
     for t in types:
         # The type spec is a type; return 1 if the arg's type matches.
-        if type(t) == _TypeType:
+        if type(t) == TypeType:
             if type(arg) == t: return 1
 
         # The type spec is a class; return 1 if the arg's class matches.
-        elif type(t) == _ClassType:
+        elif type(t) == ClassType:
             if _type_safety_level <= 1: return 1
             if isinstance(arg, t): return 1
 
         # The type spec is a list; check that the arg is a list.  If
         # type safety level > 2, check each element of the list.
-        elif type(t) == _ListType:
-            if type(arg) == _ListType:
+        elif type(t) == ListType:
+            if type(arg) == ListType:
                 if _type_safety_level <= 2: return 1
                 if len(t) == 0: return 1
                 type_ok = 1
@@ -240,8 +233,8 @@ def chktype(n, arg, *types):
                 
         # The type spec is a tuple; check that the arg is a tuple.  If
         # type safety level > 2, check each element of the tuple.
-        elif type(t) == _TupleType:
-            if type(arg) == _TupleType:
+        elif type(t) == TupleType:
+            if type(arg) == TupleType:
                 if _type_safety_level <= 2: return 1
                 if len(t) == 0: return 1
                 type_ok = 1
@@ -253,8 +246,8 @@ def chktype(n, arg, *types):
         # The type spec is a dictionary; check that the arg is a
         # dictionary.  If type safety level > 3, check each key/value
         # pair in the dictionary.
-        elif type(t) == _DictType:
-            if type(arg) == _DictType:
+        elif type(t) == DictType:
+            if type(arg) == DictType:
                 if _type_safety_level <= 3: return 1
                 if len(t) == 0: return 1
                 type_ok = 1
@@ -264,10 +257,10 @@ def chktype(n, arg, *types):
                     # item's key.  This can be a type or a class.  Get
                     # the corresponding value typespec.
                     val_typespec = t.get(type(key), None)
-                    if val_typespec is None and isinstance(key, _InstanceType):
+                    if val_typespec is None and isinstance(key, InstanceType):
                         val_typespec = t.get(key.__class_, None)
                     if val_typespec is not None:
-                        if type(val_typespec) not in (_ListType, _TupleType):
+                        if type(val_typespec) not in (ListType, TupleType):
                             raise AssertionError('Invalid type specification')
                         try: chktype(n, arg[key], *val_typespec)
                         except: type_ok = 0
@@ -277,10 +270,10 @@ def chktype(n, arg, *types):
                     # key that's a tuple, and use it to match.  Note
                     # that we don't have to check dicts/lists, because
                     # they're not hashable.
-                    elif type(key) == _TupleType:
+                    elif type(key) == TupleType:
                         type_ok_2 = 0
                         for (key_typespec, val_typespec) in t.items():
-                            if type(key_typespec) == _TupleType:
+                            if type(key_typespec) == TupleType:
                                 try:
                                     chktype(n, key, key_typespec)
                                     chktype(n, val, *val_typespec)
@@ -322,8 +315,8 @@ def demo():
     type_safety_level(4)
     
     demofunc = """def typechk_demo(intparam, listparam, dictparam):
-    assert chktype(1, intparam, _IntType)
-    assert chktype(2, listparam, [_IntType, _ListType])
+    assert chktype(1, intparam, IntType)
+    assert chktype(2, listparam, [IntType, ListType])
     assert chktype(3, dictparam, {})\n"""
 
     print
