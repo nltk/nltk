@@ -35,6 +35,14 @@ def add_logs(logx, logy):
     base = min(logx, logy)
     return base + math.log(math.exp(logx-base) + math.exp(logy-base))
 
+def sum_logs(logs):
+    if len(logs) == 0:
+        # Use some approximation to infinity.  What this does
+        # depends on your system's float implementation.
+        return -1e1000
+    else:
+        return reduce(add_logs, logs[1:], logs[0])
+
 ######################################################################
 ## Frozen Dictionary
 ######################################################################
