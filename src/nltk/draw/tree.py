@@ -661,6 +661,43 @@ class TreeWidget(CanvasWidget):
         new_treeseg.parent().update(new_treeseg)
         
 ##//////////////////////////////////////////////////////
+##  draw_trees
+##//////////////////////////////////////////////////////
+
+def draw_trees(*trees):
+    """
+    Open a new window containing a graphical diagram of the given
+    trees.
+        
+    @rtype: None
+    """
+    from nltk.draw import CanvasFrame
+    from math import sqrt
+
+    # Lay the trees out in a square.
+    width = int(sqrt(len(trees)))
+    i = x = y = ymax = 0
+
+    cf = CanvasFrame()
+    bold = ('helvetica', 12, 'bold')
+
+    for i in range(len(trees)):
+        widget = TreeWidget(cf.canvas(), trees[i], node_font=bold,
+                            leaf_color='#008040', node_color='#004080',
+                            roof_color='#004040', roof_fill='white',
+                            line_color='#004040', draggable=1)
+        widget.bind_click_trees(widget.toggle_collapsed)
+        
+        if i % width == 0:
+            y = ymax
+            x = 0
+        cf.add_widget(widget, x, y)
+        x = widget.bbox()[2]
+        ymax = max(ymax, widget.bbox()[3])
+        
+    cf.mainloop()
+
+##//////////////////////////////////////////////////////
 ##  Demo Code
 ##//////////////////////////////////////////////////////
 
