@@ -32,6 +32,7 @@ strings.
 """
 
 from nltk.chktype import chktype as _chktype
+from nltk.chktype import classeq as _classeq
 from nltk.token import Token, TokenizerI, Location
 import re
 from nltk.probability import ContextEvent, CFFreqDist, CFSample
@@ -87,10 +88,8 @@ class TaggedType:
             and C{self.tag()==other.tag()}.
         @raise TypeError: if C{other} is not a C{TaggedType}
         """
-        if not isinstance(other, TaggedType):
-            raise TypeError("TaggedType compared for equality "+
-                            "with a non-TaggedType.")
-        return (self._base == other._base and
+        return (_classeq(self, other) and
+                self._base == other._base and
                 self._tag == other._tag)
 
     def __ne__(self, other):
@@ -109,29 +108,25 @@ class TaggedType:
 ##//////////////////////////////////////////////////////
 ##  Parsing and Tokenizing TaggedTypes
 ##//////////////////////////////////////////////////////
-def parseTaggedType(string, unknownTag='UNK'):
+def parseTaggedType(string):
     """
     Parse a string into a C{TaggedType}.  The C{TaggedType}'s base
     type will be the substring preceeding the first '/', and the
     C{TaggedType}'s tag will be the substring following the first
     '/'.  If the input string contains no '/', then the base type will
-    be the input string and the tag will be C{unknownTag}.
+    be the input string and the tag will be C{None}.
 
     @param string: The string to parse
     @type string: {string}
-    @param unknownTag: A default tag to use if C{string} does not
-        contain a tag.
-    @type unknownTag: string
     @return: The C{TaggedType} represented by C{string}
     @rtype: C{TaggedType}
     """
-    _chktype("parseTaggedType", 1, string, (_StringType,))
-    _chktype("parseTaggedType", 2, unknownTag, (_StringType,))
+    assert _chktype(1, string, _StringType)
     elts = string.split('/', 1)
     if len(elts) > 1:
         return TaggedType('/'.join(elts[:-1]), elts[-1].upper())
     else:
-        return TaggedType(string, unknownTag)
+        return TaggedType(string, None)
 
 class TaggedTokenizer(TokenizerI):
     """
@@ -143,13 +138,13 @@ class TaggedTokenizer(TokenizerI):
     def __init__(self): pass
     def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        _chktype("TaggedTokenizer.tokenize", 1, str, (_StringType,))
+        assert _chktype(1, str, _StringType)
         words = str.split()
         tokens = []
         for i in range(len(words)):
-            ttype = parseTaggedType(words[i])
-            tokens.append(Token(ttype, Location(i, unit='w',
-                                                source=source)))
+            toktype = parseTaggedType(words[i])
+            tokloc = Location(i, unit='w', source=source)
+            tokens.append(Token(toktype, tokloc))
         return tokens
 
 ##//////////////////////////////////////////////////////
@@ -171,6 +166,7 @@ class TaggerI:
         """
         Construct a new C{Tagger}.
         """
+        assert 0, "TaggerI is an abstract interface"
         
     def tag(self, tokens):
         """
@@ -190,27 +186,84 @@ class TaggerI:
         """
         assert 0, "TaggerI is an abstract interface"
 
-class NN_CD_Tagger(TaggerI):
+class SequentialTagger(TaggerI):
     """
-    A \"default\" tagger, which will assign the tag C{CD} to numbers,
-    and C{NN} to anything else.  This tagger expects a list of
-    C{strings}s as its inputs.
+    An abstract base class for taggers that assign tags to tokens in
+    sequential order.  In particular, X{sequential taggers} are
+    taggers that:
+
+        - Assign tags to one token at a time, starting with the first
+          token of the text, and proceeding in sequential order.
+        - Decide which tag to assign a token on the basis of that
+          token, the tokens that preceed it, and the predicted tags of
+          the tokens that preceed it.
+
+    Each C{SequentialTagger} subclass defines the C{tag_next} method,
+    which returns the tag for a token, given the list of tagged tokens
+    that preceeds it.  The C{tag} method calls C{tag_next} once for
+    each token, and uses the return values to construct the tagged
+    text.
+    """
+    def tag_next(self, tagged_tokens, next_token):
+        """
+        Decide which tag to assign a token, given the list of tagged
+        tokens that preceeds it.
+
+        @type tagged_tokens: C{list} of tagged C{Token}
+        @param tagged_tokens: A list of the tagged tokens that preceed
+            C{token}.  The tokens' base types are taken from the text
+            being tagged, and their tags are prediced by previous
+            calls to C{tag_next}.  In particular, the I{n}th element
+            of C{tagged_tokens} is a tagged token whose base type is
+            equal to the type of the I{n}th element of the text; whose
+            location is equal to the location of the I{n}th element of
+            the text; and whose tag is a predicted tag returned by a
+            previous call to C{tag_next}.
+        @type next_token: C{Token}
+        @param next_token: The (untagged) token for which to assign a
+            tag. 
+        @rtype: tag
+        @return: the most likely tag for C{token}, given that it is
+            preceeded by C{tagged_tokens}.
+        """
+        assert 0, "tag_next not defined by SequentialTagger subclass"
+
+    def tag(self, text):
+        # Inherit documentation
+        assert _chktype(1, text, [Token], (Token,))
+
+        # Tag each token, in sequential order.
+        tagged_text = []
+        for token in text:
+            # Get the tag for the next token.
+            tag = self.tag_next(tagged_text, token)
+
+            # Construct a tagged token with the given tag, and add it
+            # to the end of tagged_text.
+            tagged_token = Token(TaggedType(token.type(), tag), token.loc())
+            tagged_text.append(tagged_token)
+
+        return tagged_text
+
+class NN_CD_Tagger(SequentialTagger):
+    """
+    A "default" tagger, which will assign the tag C{"CD"} to numbers,
+    and C{"NN"} to anything else.  This tagger expects token types to
+    be C{strings}s.
     """
     def __init__(self): pass
-    
-    def tag(self, tokens):
-        # Inherit docs from TaggerI
-        tagged_tokens = []
-        for token in tokens:
-            base_type = token.type()
-            if re.match(r'^[0-9]+(.[0-9]+)?$', base_type):
-                tag = TaggedType(base_type, 'CD')
-            else:
-                tag = TaggedType(base_type, 'NN')
-            tagged_tokens.append(Token(tag, token.loc()))
-        return tagged_tokens
 
-class UnigramTagger(TaggerI):
+    def tag_next(self, tagged_tokens, next_token):
+        # Inherit docs from SequentialTagger
+        _chktype(1, tagged_tokens, [Token])
+        _chktype(2, next_token, Token)
+        
+        if re.match(r'^[0-9]+(.[0-9]+)?$', next_token.type()):
+            return 'CD'
+        else:
+            return 'NN'
+
+class UnigramTagger(SequentialTagger):
     """
     A unigram stochastic tagger.  Before a C{UnigramTagger} can be
     used, it should be trained on a list of C{TaggedToken}s.  Using
@@ -218,65 +271,52 @@ class UnigramTagger(TaggerI):
     type.  It will then use this information to assign the most
     frequent tag to each word.  If the C{NthOrderTagger} encounters a
     word in a context for which it has no data, it will assign it the
-    tag \"UNK\".
-    
-    This tagger expects a list of C{Token}s as its
-    input, and generates a list of C{TaggedToken}s as its
-    output.
+    tag C{None}.
     """
     def __init__(self):
         self._freqdist = CFFreqDist()
     
     def train(self, tagged_tokens):
         """
-        Train this C{UnigramTagger} using the given
-        training data.  If this method is called multiple times, then
-        the training data from every call will be used.
+        Train this C{UnigramTagger} using the given training data.  If
+        this method is called multiple times, then the training data
+        will be combined.
         
         @param tagged_tokens: The training data.
         @type tagged_tokens: list of TaggedToken
         @returntype: None
         """
+        #assert _chktype(1, tagged_tokens, [Token], (Token,))
         for token in tagged_tokens:
             context = token.type().base()
             feature = token.type().tag()
             self._freqdist.inc( CFSample(context, feature) )
 
-    def tag(self, tokens):
-        # Inherit docs from TaggerI
-        tagged_tokens = []
-      
-        for token in tokens:
-            # Predict the next tag
-            context = token.type()
-            context_event = ContextEvent(context)
-            sample = self._freqdist.cond_max(context_event)
-            if sample: tag = sample.feature()
-            else: tag = 'UNK'
-
-            # Add the newly tagged token to tagged_tokens
-            token_type = TaggedType(token.type(), tag)
-            tagged_tokens.append(Token(token_type, token.loc()))
-
-        return tagged_tokens
+    def tag_next(self, tagged_tokens, next_token):
+        # Inherit docs from SequentialTagger
+        _chktype(1, tagged_tokens, [Token])
+        _chktype(2, next_token, Token)
+        
+        context = next_token.type()
+        context_event = ContextEvent(context)
+        sample = self._freqdist.cond_max(context_event)
+        if sample == None:
+            return None
+        else:
+            return sample.feature()
     
-class NthOrderTagger(TaggerI):
+class NthOrderTagger(SequentialTagger):
     """
-    An I{n}-th order stochastic tagger.  Before an
-    C{NthOrderTagger} can be used, it should be trained on a 
-    list of C{TaggedToken}s.  Using this list, it will
-    construct a frequency distribution describing the frequencies with 
-    each word is tagged in different contexts.  The context considered 
-    consists of the word to be tagged and the I{n} previous words' 
-    tags.  Once it has constructed this frequency distribution, it
-    uses it to tag words by assigning each word the tag with the
-    maximum frequency given its context.  If the
-    C{NthOrderTagger} encounters a word in a context for
-    which it has no data, it will assign it the tag \"UNK\".
-
-    This tagger expects a list of C{Token}s as its
-    input, and generates a list of C{TaggedToken}s as its
-    output.
+    An I{n}-th order stochastic tagger.  Before an C{NthOrderTagger}
+    can be used, it should be trained on a list of C{TaggedToken}s.
+    Using this list, it will construct a frequency distribution
+    describing the frequencies with each word is tagged in different
+    contexts.  The context considered consists of the word to be
+    tagged and the I{n} previous words' tags.  Once it has constructed
+    this frequency distribution, it uses it to tag words by assigning
+    each word the tag with the maximum frequency given its context.
+    If the C{NthOrderTagger} encounters a word in a context for which
+    it has no data, it will assign it the tag C{None}.
     """
     def __init__(self, n):
         """
@@ -287,125 +327,94 @@ class NthOrderTagger(TaggerI):
         @param n: The order of the new C{NthOrderTagger}.
         @type n: int
         """
+        if n < 0: raise ValueError('n must be non-negative')
         self._n = n
         self._freqdist = CFFreqDist()
 
     def train(self, tagged_tokens):
         """
-        Train this C{NthOrderTagger} using the given
-        training data.  If this method is called multiple times, then
-        the training data from every call will be used.
+        Train this C{NthOrderTagger} using the given training data.
+        If this method is called multiple times, then the training
+        data will be combined.
         
         @param tagged_tokens: The training data.
         @type tagged_tokens: list of TaggedToken
         @returntype: None
         """
+        assert _chktype(1, tagged_tokens, [Token], (Token,))
         # prev_tags is a list of the previous n tags that we've assigned.
-        prev_tags = ['UNK'] * self._n
-      
+        prev_tags = []
+        
         for token in tagged_tokens:
-            context = tuple(prev_tags+[token.type().base()])
+            context = tuple(prev_tags + [token.type().base()])
             feature = token.type().tag()
             self._freqdist.inc( CFSample(context, feature) )
 
             # Update prev_tags
-            if len(prev_tags) > 0:
+            prev_tags.append(token.type().tag())
+            if len(prev_tags) == (self._n+1):
                 del prev_tags[0]
-                prev_tags.append(token.type().tag())
 
-    def tag(self, tokens):
-        # Inherit docs from TaggerI
-        tagged_tokens = []
-      
-        prev_tags = ['UNK'] * self._n
-        for token in tokens:
-            # Predict the next tag
-            context = tuple(prev_tags+[token.type()])
-            context_event = ContextEvent(context)
-            sample = self._freqdist.cond_max(context_event)
-            if sample: tag = sample.feature()
-            else: tag = 'UNK'
+    def tag_next(self, tagged_tokens, next_token):
+        # Inherit docs from SequentialTagger
+        _chktype(1, tagged_tokens, [Token])
+        _chktype(2, next_token, Token)
 
-            # Add the newly tagged token to tagged_tokens
-            token_type = TaggedType(token.type(), tag)
-            tagged_tokens.append(Token(token_type, token.loc()))
+        # Find the tags of the n previous tokens.
+        prev_tags = []
+        start = max(len(tagged_tokens) - self._n, 0)
+        for token in tagged_tokens[start:]:
+            prev_tags.append(token.type().tag())
 
-            # Update prev_tags
-            if len(prev_tags) > 0:
-                del prev_tags[0]
-                prev_tags.append(tag)
+        # Construct the relevant context event.
+        context = tuple(prev_tags + [next_token.type()])
+        context_event = ContextEvent(context)
 
-        return tagged_tokens
+        # Find the most likely tag for this context, and return it.
+        sample = self._freqdist.cond_max(context_event)
+        if sample == None:
+            return None
+        else:
+            return sample.feature()
 
-class BackoffTagger(TaggerI):
+class BackoffTagger(SequentialTagger):
     """
-    A C{Tagger} that tags tokens using a basic backoff
-    model.  Each C{BackoffTagger} is paramatrised by an
-    ordered list sub-taggers.  In order to assign a tag to a token,
-    each of these sub-taggers is consulted in order.  If a sub-tagger
-    is unable to determine a tag for the given token, it should use a
-    special \"unknown tag.\"  The first tag returned by a sub-tagger,
-    other than the unknown tag, is used for each Token.
+    A C{Tagger} that tags tokens using a basic backoff model.  Each
+    C{BackoffTagger} is paramatrised by an ordered list sub-taggers.
+    In order to assign a tag to a token, each of these sub-taggers is
+    consulted in order.  If a sub-tagger is unable to determine a tag
+    for the given token, it should use assign the special tag C{None}.
+    Each token is assigned the first non-C{None} tag returned by a
+    sub-tagger.
 
-    This tagger expects a list of C{Token}s as its
-    input, and generates a list of C{TaggedToken}s as its
-    output.  Each sub-tagger should accept a list a list of
-    C{Token}s as its input, and should generate a list
-    of C{TaggedToken}s as its output.
+    This tagger expects a list of C{Token}s as its input, and
+    generates a list of C{TaggedToken}s as its output.  Each
+    sub-tagger should accept a list a list of C{Token}s as its input,
+    and should generate a list of C{TaggedToken}s as its output.
     """
-    def __init__(self, subtaggers, unknown_tag='UNK'):
+    def __init__(self, subtaggers):
         """
         Construct a new C{BackoffTagger}, from the given
-        list of sub-taggers.  The unknown tag specifies which tag
-        should be treated as an indication that a sub-tagger cannot
-        successfully tag a C{Token}.
+        list of sub-taggers.
         
         @param subtaggers: The list of sub-taggers used by this
                C{BackoffTagger}.  These sub-taggers will be
                consulted in the order in which they appear in the
                list.
-        @type subtaggers: list of TaggerI
-        @param unknown_tag: The tag which indicates that a sub-tagger
-               is unable to tag a C{Token}.
-        @type unknown_tag: sting.
+        @type subtaggers: list of SequentialTagger
         """
-        self._unk = unknown_tag
+        assert _chktype(1, subtaggers, (SequentialTagger,), [SequentialTagger])
         self._subtaggers = subtaggers
 
-    def tag(self, tokens):
-        # Inherit docs from TaggerI
-
-        # Find the output of all the taggers.
-        tagger_outputs = []
-        for tagger in self._subtaggers:
-            out = tagger.tag(tokens)
-            tagger_outputs.append(out)
-
-        # Check for consistancy
-        length = len(tokens)
-        for tagger_output in tagger_outputs:
-            if len(tagger_output) != length:
-                raise ValueError('Broken tagger!')
-          
-        # For each word, find the first tagged output value whose
-        # tag is not "unknown."
-        num_tokenizers = len(self._subtaggers)
-        tagged_tokens = []
-        for i_token in range(len(tokens)):
-            for i_tagger in range(num_tokenizers):
-
-                # Did this tagger successfully tag this token?
-                token = tagger_outputs[i_tagger][i_token]
-                if token.type().tag() != self._unk:
-                    tagged_tokens.append(token)
-                    break # out of "for i_tagger in ..."
-
-                # If this is the last tokenizer, use its result, even
-                # if its tag is "unkonwn."
-                if i_tagger == num_tokenizers-1:
-                    tagged_tokens.append(token)
-                    
-        return tagged_tokens
+    def tag_next(self, tagged_tokens, next_token):
+        # Inherit docs from SequentialTagger
+        _chktype(1, tagged_tokens, [Token])
+        _chktype(2, next_token, Token)
+        
+        for subtagger in self._subtaggers:
+            tag = subtagger.tag_next(tagged_tokens, next_token)
+            if tag is not None:
+                return tag
 
 def untag(tagged_tokens):
     """
@@ -421,6 +430,7 @@ def untag(tagged_tokens):
         base types and locations.
     @rtype: C{list} of C{Token}
     """
+    assert _chktype(1, tagged_tokens, [Token], (Token,))
     return [Token(t.type().base(), t.loc()) for t in tagged_tokens]
 
 def accuracy(orig, test):
@@ -433,11 +443,13 @@ def accuracy(orig, test):
     C{orig}.
 
     @param orig: The original (correctly-tagged) text.  This is the
-        \"gold standard\" against which C{test} is compared.
+        "gold standard" against which C{test} is compared.
     @type orig: C{list} of C{TaggedToken}
     @param test: The tagging whose accuracy you wish to test.
     @type test: C{list} of C{TaggedToken}
     """
+    assert _chktype(1, test, [Token], (Token,))
+    assert _chktype(2, orig, [Token], (Token,))
     if len(orig) != len(test):
         raise ValueError('Invalid Tagging')
 
@@ -446,34 +458,35 @@ def accuracy(orig, test):
         if orig[i] == test[i]: correct += 1
     return float(correct)/len(orig)
 
-def test_tagger():
+def demo():
     """
     A simple test function for the C{Tagger} classes.  It
     constructs a C{BackoffTagger} using a 1st order
     C{NthOrderTagger}, a 0th order
     C{NthOrderTagger}, and an C{NN_CD_Tagger}.  It 
-    trains the tagger using the contents of the file \"foo.test,\" and 
+    trains the tagger using the contents of the file "foo.test," and 
     then tags the contents of that file.
     
     @returntype: None
     """
-    tokens=TaggedTokenizer().tokenize(open('/home/edloper/tmp/foo.text', 'r').read())
+    print 'tokenizing...'
+    textstr = open('/home/edloper/tmp/foo.text', 'r').read()
+    tokens = TaggedTokenizer().tokenize(textstr)
+    train_tokens = tokens[200:]
+    test_tokens = tokens[:280]
 
-    t0 = NthOrderTagger(0)
-    t0.train(tokens[100:])
+    print 'training unigram tagger (%d tokens)...' % len(train_tokens)
+    t0 = UnigramTagger()
+    t0.train(train_tokens)
 
+    print 'training 1st order tagger (%d tokens)...' % len(train_tokens)
     t1 = NthOrderTagger(1)                
-    t1.train(tokens[100:])
+    t1.train(train_tokens)
 
-    ft = BackoffTagger( (t1, t0, NN_CD_Tagger()), 'UNK')
-    result = ft.tag(untag(tokens)[:100])
-    print 'Original:  ',
-    for t in tokens[:100]: print t.type(),
-    print ; print
-    print 'Result:  ',
-    for t in result[:100]: print t.type(),
-    print ; print
-    print 'Accuracy', accuracy(tokens[:100], result)
-    print ; print
+    print 'running the tagger... (%d tokens)...' % len(test_tokens)
+    ft = BackoffTagger( (t1, t0, NN_CD_Tagger()) )
+    result = ft.tag(untag(test_tokens))
 
-if __name__ == '__main__': test_tagger()
+    print 'Accuracy: ', accuracy(test_tokens, result)
+
+if __name__ == '__main__': demo()
