@@ -375,17 +375,20 @@ class DictionaryProbDist(ProbDistI):
     specified by a given dictionary.  The given dictionary maps
     samples to probabilities; and all p
     """
-    def __init__(self, prob_dict):
+    def __init__(self, prob_dict, normalize=False):
         """
         Construct a new probability distribution from C{prob_dict},
         where P(M{x}) = C{prob_dict.get(M{x}, 0)}.  I.e., if M{x} is a
         key in the given dictionary, then its probability is the
-        corresponding value; otherwise, its probability is 1.  It is
-        the user's responsibility to ensure that the probabilities sum
-        to 1, if desired.
+        corresponding value; otherwise, its probability is 0.  
         """
         assert _chktype(1, prob_dict, {})
         self._prob_dict = prob_dict.copy()
+        if normalize:
+            norm_factor = 1.0/sum(self._prob_dict.values())
+            for (x, p) in self._prob_dict.items():
+                self._prob_dict[x] *= norm_factor
+            
 
     def prob(self, sample):
         return self._prob_dict.get(sample, 0)
