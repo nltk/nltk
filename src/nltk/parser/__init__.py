@@ -1194,12 +1194,13 @@ def demo():
     is prompted to select which parser to run, and that parser is run
     on an example sentence with a simple grammar.
     """
-    nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
-                                           for s in nonterminals.split()]
-    
+    # Define some nonterminals
+    S, VP, NP, PP = nonterminals('S, VP, NP, PP')
+    V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
+
+    # Define a grammar.
     productions = (
-        # Syntactic Rules
+        # Syntactic Productions
         CFGProduction(S, NP, 'saw', NP),
         CFGProduction(S, NP, VP),
         CFGProduction(NP, Det, N),
@@ -1207,27 +1208,27 @@ def demo():
         CFGProduction(NP, Det, N, PP),
         CFGProduction(PP, P, NP),
 
-        # Lexical Rules
+        # Lexical Productions
         CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
         CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
         CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
         CFGProduction(P, 'with'), CFGProduction(N, 'park'),
         CFGProduction(N, 'dog'),   CFGProduction(N, 'telescope')
         )
-
     grammar = CFG(S, productions)
 
+    # Tokenize a sample sentence.
     sent = 'I saw a man in the park'
-
-    # tokenize the sentence
     from nltk.tokenizer import WSTokenizer
     tok_sent = WSTokenizer().tokenize(sent)
 
+    # Define a list of parsers.
     parsers = [ShiftReduceParser(grammar),
                RecursiveDescentParser(grammar),
                SteppingShiftReduceParser(grammar),
                SteppingRecursiveDescentParser(grammar)]
 
+    # Ask the user to choose a parser.
     import sys
     print 'Choose a parser:'
     for i in range(len(parsers)):
@@ -1235,7 +1236,8 @@ def demo():
     print '=> ',
     try: parser = parsers[int(sys.stdin.readline())-1]
     except: print 'Bad input'; return
-        
+
+    # Run the parser.
     parser.trace()
     for p in parser.parse_n(tok_sent): print p
 
