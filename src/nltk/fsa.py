@@ -18,7 +18,7 @@ def _hashed_set_insert(hash, key, item):
     else:
         hash[key] = Set(item)
 def _hashed_set_delete(hash, key, item):
-    new = hash[key].difference(item)
+    new = hash[key].difference(Set(item))
     if len(new) > 0:
         hash[key] = new
     else:
@@ -67,6 +67,10 @@ class FSA:
     def add_final(self, state):
         self._finals.insert(state)
 
+    def delete_final(self, state):
+        self._finals = self._finals.difference(Set(state))
+#        del self._finals[state]
+
     def set_final(self, states):
         self._finals = Set(*states)
 
@@ -99,14 +103,35 @@ class FSA:
         _hashed_set_delete(self._reverse, s2, s1)
         del self._labels[(s1,s2)]
 
-#        if self._table.has_key((s1,label)):
-#            new = self._table[(s1,label)].difference(s2)
-#            if len(new) > 0:
-#                self._table[(s1,label)] = new
-#            else:
-#                del self._table[(s1,label)]
-#        else:
-#            print "Error: attempt to delete non-existent transition"
+    def delete_state(self, state):
+        for (s1,label,s2) in self.incident_transitions(state):
+            self.delete_all(s1, s2)
+        self._relabel_state(self._num, state)
+        self._num -= 1
+
+    def _relabel_state(self, orig, new):
+        for forward in self.forward_traverse(orig):
+            _hashed_set_delete(self._forward, orig, forward)
+            _hashed_set_insert(self._forward, new, forward)
+            _hashed_set_delete(self._reverse, forward, orig)
+            _hashed_set_insert(self._reverse, forward, new)
+            self._labels[(new,forward)] = self._labels[(orig,forward)]
+            del self._labels[(orig,forward)]
+        for reverse in self.reverse_traverse(orig):
+            _hashed_set_delete(self._reverse, orig, reverse)
+            _hashed_set_insert(self._reverse, new, reverse)
+            _hashed_set_delete(self._forward, reverse, orig)
+            _hashed_set_insert(self._forward, reverse, new)
+            self._labels[(reverse,new)] = self._labels[(reverse,orig)]
+            del self._labels[(reverse,orig)]
+        if orig in self.finals():
+            self.delete_final(orig)
+            self.add_final(new)
+
+    def incident_transitions(self, state):
+        return [(s1,label,s2)
+                for (s1,label,s2) in self.transitions()
+                if s1 == state or s2 == state]
 
     def transitions(self):
         return [(s1,label,s2)
@@ -157,19 +182,22 @@ class FSA:
     # delete inaccessible nodes and unused transitions
     def prune(self):
         acc = self.accessible()
-        for (s1, labels, s2) in self.transitions():
-            if not (s1 in acc and s2 in acc):
-                self.delete_all(s1, s2)
+        for state in self.states():
+           if state not in acc:
+               self.delete_state(state)
 
     # mark accessible nodes
     def accessible(self):
-        acc = Set(self.start())
-        self.forward_accessible(self.start(), acc)
-
+        acc = Set()
         for final in self.finals():
             reverse_acc = Set(final)
             self.reverse_accessible(final, reverse_acc)
-            acc.union(reverse_acc)
+            acc = acc.union(reverse_acc)
+
+        forward_acc = Set(self.start())
+        self.forward_accessible(self.start(), forward_acc)
+
+        acc = acc.intersection(forward_acc)
         return tuple(acc.elements())
 
     def forward_accessible(self, s1, visited):
