@@ -48,11 +48,11 @@ class TaggedType:
     types and tags are case sensitive.
 
     @see: parseTaggedType
-    @type: _base: (any)
-    @ivar: _base: The base type of the C{TaggedType}.  This represents
+    @type _base: (any)
+    @ivar _base: The base type of the C{TaggedType}.  This represents
         the type that is tagged.
-    @type: _tag: (any)
-    @ivar: _tag: The base type's tag.  This provides information about
+    @type _tag: (any)
+    @ivar _tag: The base type's tag.  This provides information about
         the base type, such as its part-of-speech.
     """
     def __init__(self, base, tag):
