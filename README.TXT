@@ -141,3 +141,33 @@ Problem Sets
     The naming conventions for problem sets have also not yet been
     decided. 
 
+Releases
+~~~~~~~~
+
+    Releases are available on SourceForge; and are tagged in the
+    repository (starting with release 0.4) with tags of the form
+    "release-<m>-<n>", where <m> is the major number, and <n> is the
+    minor number (e.g., for release 2.18, <m>=2; and <n>=18).
+
+    The procedure for making a new release is:
+
+        1. Update the version number in src/nltk/__init__.py (in 2
+           places: the docstring comment; and the __version__
+           variable).
+        2. Make sure all changes are committed.
+        3. Generate a CVS log of all the changes since the previous
+           release (note quote marks):
+
+               cvs log "-r release<m>-<n-1>:" >changes.cvslog
+
+        4. Examine the cvs log, and use it to add a new section to 
+           src/CHANGES.TXT; commit the changes to src/CHANGES.TXT
+        5. Tag the new release:
+
+               cvs tag "release-<m>-<n>"
+
+        6. Run "make distributions"
+        7. FTP src/dist/nltk-<m>.<n>* to the "incoming" directory of
+           "upload.sf.net"
+        8. Add the new release to sourceforge, using the release admin
+           page.
