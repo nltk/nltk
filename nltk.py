@@ -12,6 +12,9 @@ task of programming natural language systems.  It is intended to be
 used as a teaching tool, not as a basis for building production
 systems. <P>
 
+This is a prototype implementation for the natural language toolkit.
+The natural language toolkit is still under development.
+
 <H1> Interfaces </H1>
 
 The Natural Language Toolkit is implemented as a set of interfaces and
@@ -1633,13 +1636,13 @@ class UniversalEvent(EventI):
 
 class FreqDistI:
     """##
-    A frequency distribution for the outcomes of some set of
-    experiments.  A frequency distribution records the number of times
-    each outcome of an experiment has occured.  For example, a
-    frequency distribution could be used to record the frequency of
-    each token in a document.  Formally, a frequency distribution can
-    be defined as a function mapping from samples to the number of
-    times that sample occured as an outcome. <P>
+    A frequency distribution for the outcomes of an experiment.  A
+    frequency distribution records the number of times each outcome of
+    an experiment has occured.  For example, a frequency distribution
+    could be used to record the frequency of each token in a document.
+    Formally, a frequency distribution can be defined as a function
+    mapping from samples to the number of times that sample occured as
+    an outcome. <P>
 
     Frequency distributions are generally constructed by running a
     number of experiments, and incrementing the count for a sample
@@ -1739,8 +1742,10 @@ class FreqDistI:
 
     def max(self):
         """##
-        Return the sample with the maximum number of outcomes in this
-        frequency distribution.  If no outcomes have occured in this
+        Return the sample with the greatest number of outcomes in this
+        frequency distribution.  If two or more samples have the same
+        number of outcomes, return one of them; which sample is
+        returned is undefined.  If no outcomes have occured in this
         frequency distribution, return <CODE>None</CODE>.
 
         @return The sample with the maximum number of outcomes in this
@@ -1752,8 +1757,10 @@ class FreqDistI:
     def cond_max(self, condition):
         """##
         Of the samples contained in the given condition, return the
-        sample with the maximum number of outcomes in this frequency
-        distribution.  If no outcomes contained in the given condition
+        sample with the greatest number of outcomes in this frequency
+        distribution.  If two or more samples have the same number of
+        outcomes, return one of them; which sample is returned is
+        undefined.  If no outcomes contained in the given condition
         have occured in this frequency distribution, return
         <CODE>None</CODE>.
 
@@ -1915,7 +1922,6 @@ class SimpleFreqDist(FreqDistI):
         """
         return str(self._dict)
 
-  
   
 ##//////////////////////////////////////////////////////
 ##  Context-Feature Samples
@@ -2202,6 +2208,121 @@ class CFFreqDist(FreqDistI):
         """
         return repr(self._dict)
         
+##//////////////////////////////////////////////////////
+##  Probability Distribution
+##//////////////////////////////////////////////////////
+
+class ProbDistI:
+    """##
+    A probability distribution for the outcomes of an experiment.  A
+    probability distribution specifies how likely it is that an
+    experiment will have any given outcome.  For example, a
+    probability distribution could be used to predict the probability
+    that a given word will appear in a given context.  Formally, a
+    probability distribution can be defined as a function mapping from
+    samples to nonnegative real numbers, such that the sum of every
+    number in the function's range is 1.0.  <CODE>ProbDist</CODE>s are
+    often used to model the probability distribution underlying a
+    frequency distribution.  <P>
+
+    Classes implementing the <CODE>ProbDistI</CODE> interface may
+    choose to only support certain classes of samples or events.  If a
+    method is unable to return a correct result because it is given an
+    unsupported type of sample or event, it should raise a
+    NotImplementedError.  (?? is this the right exception? use
+    NotSupportedError? ValueError? ??) <P>
+
+    Since several methods defined by <CODE>ProbDistI</CODE> can accept
+    either events or samples, classes that implement the EventI
+    interface should never be used as samples for a probability
+    distribution. <P>
+
+    Probability distributions are required to implement the methods
+    <CODE>prob()</CODE> and <CODE>cond_prob()</CODE>,
+    <CODE>max()</CODE>, and <CODE>cond_max()</CODE>.  In the future,
+    this list may be exapanded, and optional methods may be added.
+    """
+    def prob(self, sample_or_event):
+        """##
+        Return the probability for a given sample or event.
+        Probabilities are always real numbers in the range [0, 1]. 
+        
+        @return The probability of a given sample or event.
+        @returntype float
+        @param sample_or_event the sample or event whose probability
+               should be returned.
+        @type sample_or_event EventI or any.
+        @raise NotImplementedError If <CODE>sample_or_event</CODE> is
+               not a supported sample type or event type.
+        """
+        raise AssertionError()
+
+    def max(self):
+        """##
+        Return the sample with the greatest probability.  If two or
+        more samples have the same probability, return one of them;
+        which sample is returned is undefined.
+
+        @return The sample with the greatest probability.
+        @returntype any
+        """
+        raise AssertionError()
+    
+    def cond_max(self, condition):
+        """##        
+        Of the samples contained in the given condition, return the
+        sample with the greatest probability.  If two or more samples
+        have the same probability, return one of them; which sample
+        is returned is undefined.  If all samples in the given
+        condition have probability 0, return <CODE>None</CODE>.
+
+        @param condition The condition within which to find the
+               maximum probability sample.
+        @type condition EventI
+        @return The sample with the maximum probability, out of all
+                the samples contained in <CODE>condition</CODE>. 
+        @returntype any
+        @raise NotImplementedError If <CODE>condition</CODE> is
+               not a supported event type.
+        """
+        raise AssertionError()
+    
+    def cond_prob(self, sample_or_event, condition):
+        """##
+        Find the conditional probability of the specified sample or
+        event, given the specified condition.  The conditional
+        probability is defined as the probability that a sample will
+        be in <CODE>sample_or_event</CODE>, given the information that
+        the sample is in <CODE>condition</CODE>.  Assuming the
+        condition event defines the <CODE>union</CODE> member, then
+        this definition can be written as:
+
+        <PRE>
+        fd.cond_prob(e, c) == fd.prob(c.union(e)) / fd.prob(c)
+        </PRE>
+
+        As a special case, if all samples in the given condition have
+        probability 0, the conditional probability is defined as
+        <CODE>None</CODE>.  Conditional probabilities are always
+        either real numbers in the range [0, 1] or the special value
+        <CODE>None</CODE>. 
+        
+        Both <CODE>sample_or_event</CODE> and <CODE>condition</CODE>
+        may be either samples or events.  
+        
+        @return The conditional probability of <CODE>event</CODE> given
+                <CODE>condition</CODE>.
+        @returntype float or None
+        @param sample_or_event The event
+        @type sample_or_event EventI or any
+        @param condition The condition
+        @type condition EventI or any
+        @raise NotImplementedError If <CODE>sample_or_event</CODE> or
+               <CODE>condition</CODE> are not a supported sample types
+               or event types. 
+        """
+        raise AssertionError()
+  
 #################################################################
 ##  Taggers
 #################################################################
