@@ -71,6 +71,11 @@ def test(verbosity=0):
 def test_coverage(verbosity, coverdir):
     tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix,],
                          trace=0, count=1)
+
+    # This is something of a hack, so trace.Trace can get at test().
+    import __main__
+    __main__.test = test
+    
     tracer.run('test(%d)' % verbosity)
     r = tracer.results()
 
