@@ -68,7 +68,7 @@ class Token(dict):
 
     As this example illustrates, a token's properties are initialized
     using keyword arguments to the constructor.  Properties can be
-    accessed and modified using the indexing operator WITH property
+    accessed and modified using the indexing operator with property
     names:
 
        >>> print tok['TEXT']
@@ -86,19 +86,25 @@ class Token(dict):
       - an immutable value (such as a string or a number)
       - a token
       - a container (such as a list, dictionary, or tuple) that
-        contains VALID property values
+        contains valid property values
 
     @ivar USE_SAFE_TOKENS: If C{True}, then the L{SafeToken} subclass is
         used to create new tokens.  This subclass includes type checking
         on all operations, and so is significantly slower.
 
-    @group Transformations: exclude, project, freeze, copy
     @group Property Access: properties, has, get, __getitem__, 
         __setitem__, __delitem__
-    @group Dictionary Methods: clear, fromkeys, get, has_key, items,
-        iteritems, iterkeys, itervalues, keys, pop, popitem,
-        setdefault, update, values
-    @group Operators: __*__, __len__
+    @group Transformations: exclude, project, freeze, copy
+    @group String Representation: __str__, __repr__,
+        register_repr, register_cyclic
+    @undocumented: clear, fromkeys, has_key, items, iteritems,
+        iterkeys, itervalues, keys, pop, popitem, setdefault, update,
+        values
+    @undocumented: __class__, __cmp__, __contains__, __delattr__,
+        __eq__, __ge__, __getattribute__, __gt__, __hash__, __iter__,
+        __le__, __len__, __lt__, __ne__, __new__, __reduce__,
+        __reduce_ex__, __setattr__
+    @undocumented: frozen_token_class
     """
     # Don't allocate any extra space for instance variables:
     __slots__ = ()

@@ -932,10 +932,10 @@ class FundamentalRule(AbstractChartRule):
     A rule that joins two adjacent edges to form a single combined
     edge.  In particular, this rule specifies that any pair of edges:
     
-        - C{[A->E{alpha}*BE{beta}]@[i:j]
-        - C{[B->E{gamma}*]@[j:k]
+        - [AS{->}S{alpha}*BS{beta}]@[i:j]
+        - [BS{->}S{gamma}*]@[j:k]
     licenses the edge:
-        - C{[A->E{alpha}B*E{beta}]@[i:j]
+        - [AS{->}S{alpha}B*S{beta}]@[i:j]
     """
     NUM_EDGES=2
     def apply_iter(self, chart, grammar, left_edge, right_edge):
@@ -964,10 +964,10 @@ class SingleEdgeFundamentalRule(AbstractChartRule):
     A rule that joins a given edge with adjacent edges in the chart,
     to form combined edges.  In particular, this rule specifies that
     either of the edges:
-        - C{[A->E{alpha}*BE{beta}]@[i:j]
-        - C{[B->E{gamma}*]@[j:k]
+        - [AS{->}S{alpha}*BS{beta}]@[i:j]
+        - [BS{->}S{gamma}*]@[j:k]
     licenses the edge:
-        - C{[A->E{alpha}B*E{beta}]@[i:j]
+        - [AS{->}S{alpha}B*S{beta}]@[i:j]
     if the other edge is already in the chart.
     @note: This is basically L{FundamentalRule}, with one edge is left
         unspecified.
@@ -1000,8 +1000,8 @@ class TopDownInitRule(AbstractChartRule):
     """
     A rule licensing edges corresponding to the grammar productions for
     the grammar's start symbol.  In particular, this rule specifies that:
-        - C{[S->*E{alpha}]@[0:i]}
-    is licensed for each grammar production C{S->E{alpha}}, where
+        - [SS{->}*S{alpha}]@[0:i]
+    is licensed for each grammar production C{SS{->}S{alpha}}, where
     C{S} is the grammar's start symbol.
     """
     NUM_EDGES=0
@@ -1017,10 +1017,10 @@ class TopDownExpandRule(AbstractChartRule):
     A rule licensing edges corresponding to the grammar productions
     for the nonterminal following an incomplete edge's dot.  In
     particular, this rule specifies that:
-        - C{[A->E{alpha}*BE{beta}]@[i:j]}
+        - [AS{->}S{alpha}*BS{beta}]@[i:j]
     licenses the edge:
-        - C{[B->*E{gamma}]@[j:j]}
-    for each grammar production C{B->E{gamma}}.
+        - [BS{->}*S{gamma}]@[j:j]
+    for each grammar production C{BS{->}S{gamma}}.
     """
     NUM_EDGES=1
     def apply_iter(self, chart, grammar, edge):
@@ -1035,9 +1035,9 @@ class TopDownMatchRule(AbstractChartRule):
     """
     A rule licensing an edge corresponding to a terminal following an
     incomplete edge's dot.  In particular, this rule specifies that:
-        - C{[A->E{alpha}*w{beta}]@[i:j]
+        - [AS{->}S{alpha}*w{beta}]@[i:j]
     licenses the leaf edge:
-        - C{[w->*]@[j:j+1]}
+        - [wS{->}*]@[j:j+1]
     if the C{j}th word in the text is C{w}.
     """
     NUM_EDGES = 1
@@ -1113,7 +1113,7 @@ class BottomUpInitRule(AbstractChartRule):
     """
     A rule licensing any edges corresponding to terminals in the
     text.  In particular, this rule licenses the leaf edge:
-        - C{[w->*]@[i:i+1]}
+        - [wS{->}*]@[i:i+1]
     for C{w} is a word in the text, where C{i} is C{w}'s index.
     """
     NUM_EDGES=0
@@ -1128,10 +1128,10 @@ class BottomUpRule(AbstractChartRule):
     A rule licensing any edge corresponding to a production whose
     right-hand side begins with a complete edge's left-hand side.  In
     particular, this rule specifies that:
-        - C{A->E{alpha}*}
+        - AS{->}S{alpha}*}
     licenses the edge:
-        - C{B->*AE{beta}}
-    for each grammar production C{B->AE{beta}}
+        - BS{->}*AS{beta}}
+    for each grammar production C{BS{->}AS{beta}}
     """
     NUM_EDGES=1
     def apply_iter(self, chart, grammar, edge):
@@ -1151,11 +1151,11 @@ class CompleterRule(AbstractChartRule):
     A rule that joins a given complete edge with adjacent incomplete
     edges in the chart, to form combined edges.  In particular, this
     rule specifies that:
-        - C{[B->E{gamma}*]@[j:k]
+        - [BS{->}S{gamma}*]@[j:k]
     licenses the edge:
-        - C{[A->E{alpha}B*E{beta}]@[i:j]
+        - [AS{->}S{alpha}B*S{beta}]@[i:j]
     given that the chart contains:
-        - C{[A->E{alpha}*BE{beta}]@[i:j]
+        - [AS{->}S{alpha}*BS{beta}]@[i:j]
     @note: This is basically L{FundamentalRule}, with the left edge
         left unspecified.
     """
@@ -1179,10 +1179,10 @@ class ScannerRule(AbstractChartRule):
     A rule licensing a leaf edge corresponding to a part-of-speech
     terminal following an incomplete edge's dot.  In particular, this
     rule specifies that:
-        - C{[A->E{alpha}*P{beta}]@[i:j]
+        - [AS{->}S{alpha}*P{beta}]@[i:j]
     licenses the edges:
-        - C{[P->w*]@[j:j+1]}
-        - C{[w->*]@[j:j+1]}
+        - [PS{->}w*]@[j:j+1]
+        - [wS{->}*]@[j:j+1]
     if the C{j}th word in the text is C{w}; and C{P} is a valid part
     of speech for C{w}.
     """
