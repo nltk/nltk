@@ -47,7 +47,7 @@ parser module includes definitions for three chart parsers:
 from nltk.parser import ParserI
 from nltk.token import Token, Location
 from nltk.tree import TreeToken
-from nltk.set import Set
+from nltk.set import MutableSet
 from nltk.cfg import CFG, CFGProduction, Nonterminal
 
 from nltk.chktype import chktype as _chktype 
@@ -430,7 +430,7 @@ class Chart:
     """
     A blackboard for hypotheses about syntactic constituents.
 
-    @type _chart: C{Set} of C{Edge}s
+    @type _chart: C{MutableSet} of C{Edge}s
     @ivar _chart: The set of C{Edge}s, keys of the hash array
     @type _loc: C{Location}
     @ivar _loc: The span of the chart, the C{Location} of a complete edge
@@ -444,7 +444,7 @@ class Chart:
         @type loc: C{Location}
         """
         assert _chktype(1, loc, Location)
-        self._edgeset = Set()
+        self._edgeset = MutableSet()
         self._loc = loc
         
     def loc(self):
