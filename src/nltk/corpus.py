@@ -110,8 +110,8 @@ def set_basedir(path):
     """
     Set the path to the directory where NLTK looks for corpora.
     
-    @type dir: C{string}
-    @param dir: The path to the directory where NLTK should look for
+    @type path: C{string}
+    @param path: The path to the directory where NLTK should look for
         corpora.
     """
     global _BASEDIR
@@ -375,12 +375,12 @@ class SimpleCorpusReader(CorpusReaderI):
             printing the corpus reader, and for constructing
             locations.  It should usually be identical to the name of
             the variable that holds the corpus reader.
-        @type name: C{string}
+        @type rootdir: C{string}
         @param rootdir: The path to the root directory for the
             corpus.  If C{rootdir} is a relative path, then it is
             interpreted relative to the C{nltk.corpus} base directory
             (as returned by L{nltk.corpus.basedir()}).
-        @type name: C{regexp} or C{string}
+        @type entries_regexp: C{regexp} or C{string}
         @param entries_regexp: A regular expression over paths that
             defines the set of files that should be listed as
             entities for the corpus.  The paths that this is tested

@@ -185,9 +185,12 @@ class GraphWidget(CanvasWidget):
     def add_edge(self, start, end, edgewidget):
         """
         Add a new edge to the graph.
-        @param edges: A tuple (n1, n2, e), where n1 is a
-            CanvasWidget in C{nodes}; n2 is a CanvasWidget in
-            C{nodes}; and e is a GraphEdgeWidget.
+        @param start: The start node
+        @type start: C{CanvasWidget}
+        @param end: The end node
+        @type end: C{CanvasWidget}
+        @param edgewidget: The edge
+        @type edgewidget: C{GraphEdgeWidget}
         """
         curve = 0.2 * (1+len(self._edgewidgets.get( (start, end), [])))
         edgewidget['curve'] = curve
