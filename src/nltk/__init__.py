@@ -61,7 +61,7 @@ L{RecursiveDescentParser<nltk.parser.RecursiveDescentParser>}, and
 L{ChartParser<nltk.parser.chart.ChartParser>} are all implementations
 of the C{ParserI} interface.
 
-@version: 1.1
+@version: 1.2
 
 @newfield developer: Developer, Developers, short
 @developer: U{Edward Loper<edloper@gradient.cis.upenn.edu>}
@@ -86,7 +86,7 @@ of the C{ParserI} interface.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "1.1"
+__version__ = "1.2"
 
 # Copyright notice
 __copyright__ = """\
