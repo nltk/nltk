@@ -1042,7 +1042,7 @@ gutenberg = SimpleCorpusReader(
 ###################################################
 ## Roget
 
-roget = RogetCorpusReader('roget', 'roget15a/', 'roget15a.txt')
+roget = RogetCorpusReader('roget', 'roget/', 'roget15a.txt')
 
 ###################################################
 ## Words corpus (just English at this point)
