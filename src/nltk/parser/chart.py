@@ -716,7 +716,7 @@ class Chart:
     #////////////////////////////////////////////////////////////
     # Display
     #////////////////////////////////////////////////////////////
-    def pp_edge(self, edge, width=5):
+    def pp_edge(self, edge, width=None):
         """
         @return: A pretty-printed string representation of a given edge
             in this chart.
@@ -724,6 +724,7 @@ class Chart:
         @param width: The number of characters allotted to each
             index in the sentence.
         """
+        if width is None: width = 50/(self.num_leaves()+1)
         (start, end) = (edge.start(), edge.end())
 
         str = '|' + ('.'+' '*(width-1))*start
@@ -745,12 +746,13 @@ class Chart:
         str += (' '*(width-1)+'.')*(self._num_leaves-end)
         return str + '| %s ' % edge
 
-    def pp_leaves(self, width=5):
+    def pp_leaves(self, width=None):
         """
         @return: A pretty-printed string representation of this
             chart's leaves.  This string can be used as a header
             for calls to L{pp_edge}.
         """
+        if width is None: width = 50/(self.num_leaves()+1)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         LEAF = self._property_names.get('LEAF', 'LEAF')
         
@@ -764,13 +766,14 @@ class Chart:
 
         return header
 
-    def pp(self, width=5):
+    def pp(self, width=None):
         """
         @return: A pretty-printed string representation of this chart.
         @rtype: C{string}
         @param width: The number of characters allotted to each
             index in the sentence.
         """
+        if width is None: width = 50/(self.num_leaves()+1)
         # sort edges: primary key=length, secondary key=start index.
         # (and filter out the token edges)
         edges = [(e.length(), e.start(), e) for e in self]
