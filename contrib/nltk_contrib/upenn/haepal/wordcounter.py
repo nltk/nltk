@@ -36,11 +36,11 @@ class BrownCounter:
             # it's already been calculated
             # or it's being calculated
             fcntl.lockf(f.fileno(),fcntl.LOCK_UN)
-            f.close()
             while lock[grp] is None:
                 time.sleep(5)
-                f.seek(0)      ### SB: I/O operation on closed file
+                f.seek(0)
                 lock = marshal.load(f)
+            f.close()
             f = open(resfile, 'rb')
             h = marshal.load(f)
             f.close()
