@@ -9,7 +9,11 @@
 # $Id$
 
 # To do:
-#    - Add more mutation methods.
+#    - Add more mutation methods?
+
+"""
+An unordered container class that contains no duplicate elements.
+"""
 
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import chkclass as _chkclass
