@@ -525,7 +525,7 @@ class BottomUpInitRule(AbstractChartRule):
             if chart.insert(new_edge, ()):
                 yield new_edge
 
-class BottomUpRule(AbstractChartRule):
+class BottomUpPredictRule(AbstractChartRule):
     NUM_EDGES=1
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete(): return
@@ -649,7 +649,7 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
 
         # Chart parser rules.
         bu_init = BottomUpInitRule()
-        bu = BottomUpRule()
+        bu = BottomUpPredictRule()
         fr = SingleEdgeFundamentalRule()
 
         # Our queue!

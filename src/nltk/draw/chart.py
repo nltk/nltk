@@ -1211,7 +1211,7 @@ class EdgeRule:
 
 class TopDownExpandEdgeRule(EdgeRule, TopDownExpandRule): pass
 class TopDownMatchEdgeRule(EdgeRule, TopDownMatchRule): pass
-class BottomUpEdgeRule(EdgeRule, BottomUpRule): pass
+class BottomUpEdgeRule(EdgeRule, BottomUpPredictRule): pass
 class BottomUpInitEdgeRule(EdgeRule, BottomUpInitRule): pass
 class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule): pass
 class PseudoEarleyEdgeRule(EdgeRule, PseudoEarleyRule): pass
@@ -1789,7 +1789,7 @@ class ChartDemo:
     _TD_EXPAND   = [TopDownExpandRule()]
     _TD_MATCH    = [TopDownMatchRule()]
     _BU_INIT     = [BottomUpInitRule()]
-    _BU_RULE     = [BottomUpRule()]
+    _BU_RULE     = [BottomUpPredictRule()]
     _FUNDAMENTAL = [SingleEdgeFundamentalRule()]
     _EARLEY      = [PseudoEarleyRule()]
     _EARLEY_INIT = [PseudoEarleyInitRule()]
