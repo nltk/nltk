@@ -7,12 +7,11 @@ from nltk.srparser import *
 from nltk.token import CharTokenizer
 from nltk.set import *
 
-epsilon = "0"
+epsilon = None
 
 # TODO - check that parse was complete, and report error otherwise
 # TODO - change parser to limit scope of unary operators
 # to the most recent symbol
-# TODO - code up minimization algorithm from ASU
 
 class FSA:
     # default fsa accepts the empty language
@@ -50,21 +49,21 @@ class FSA:
     def set_final(self, states):
         self._finals = Set(*states)
 
-    def finals_intersect(self, list):
+    def in_finals(self, list):
         return [state for state in list
-                if state in self.finals()]
+                if state in self.finals()] != []
 
-    def insert_transition(self, s1, label, s2):
-        if label not in self._sigma:
+    def insert(self, s1, label, s2):
+        if label and label not in self._sigma:
             print "Warning: edge label not in alphabet"
         if self._table.has_key((s1,label)):
             self._table[(s1,label)].insert(s2)
         else:
             self._table[(s1,label)] = Set(s2)
 
-    def insert_transitions(self, state_set, label, s2):
+    def inserts(self, state_set, label, s2):
         for s1 in state_set.elements():
-            self.insert_transition(s1, label, s2)
+            self.insert(s1, label, s2)
 
     def delete_transition(self, s1, label, s2):
         if self._table.has_key((s1,label)):
@@ -82,15 +81,15 @@ class FSA:
 
     def next(self, state, label):
         if self._table.has_key((state, label)):
-            return self._table[(state, label)].elements()
+            return tuple(self._table[(state, label)].elements())
         else:
-            return []
+            return ()
 
     def move(self, states, label):
         moves = []
         for state in states:
             moves.extend(self.next(state, label))
-        return moves
+        return tuple(moves)
 
     def epsilon_transitions(self):
         return [(s1,label,s2)
@@ -118,15 +117,18 @@ class FSA:
             for s2 in states.elements():
                 if not s2 in a1:  # visited?
                     a1.insert(s2)
-                    if s2 in self.finals() or self.accessible(s2, a1, a2):
+                    s2_accessible = self.accessible(s2, a1, a2)
+                    if s2_accessible or s2 in self.finals():
                         accessible = 1
                         a2.insert(s2)
+                elif s2 in a2:
+                    accessible = 1
         return accessible
 
     # From ASU page 119
-    def epsilon_closure(self, states):
-        stack = states
-        closure = states[:]
+    def e_closure(self, states):
+        stack = list(states)
+        closure = list(states)
         while stack:
             s1 = stack.pop()
             for s2 in self.next(s1, epsilon):
@@ -136,10 +138,11 @@ class FSA:
         return tuple(closure)
 
     # return the corresponding DFA using subset construction (ASU p118)
+    # NB representation of (a*) still isn't minimal; should have 1 state not 2
     def dfa(self):
         dfa = FSA(self.sigma())
         dfa_initial = dfa.new_state()
-        nfa_initial = self.epsilon_closure([self.start()])
+        nfa_initial = self.e_closure((self.start(),))
         map = {}
         map[dfa_initial] = nfa_initial
         map[nfa_initial] = dfa_initial
@@ -150,18 +153,21 @@ class FSA:
         while unmarked:
             dfa_state = unmarked.pop()
             marked.append(dfa_state)
+            # is a final state accessible via epsilon transitions?
+            if self.in_finals(self.e_closure(map[dfa_state])):
+                dfa.add_final(dfa_state)
             for label in self.sigma():
-                nfa_next = self.epsilon_closure(self.move(map[dfa_state], label))
+                nfa_next = self.e_closure(self.move(map[dfa_state], label))
                 if map.has_key(nfa_next):
                     dfa_next = map[nfa_next]
                 else:
                     dfa_next = dfa.new_state()
                     map[dfa_next] = nfa_next
                     map[nfa_next] = dfa_next
-                    if self.finals_intersect(nfa_next):
+                    if self.in_finals(nfa_next):
                         dfa.add_final(dfa_next)
                     unmarked.append(dfa_next)
-                dfa.insert_transition(dfa_state, label, dfa_next)
+                dfa.insert(dfa_state, label, dfa_next)
         return dfa
         
     # CONSIDER CHANGING DATA STRUCTURE SO THAT THIS IS EFFICIENT
@@ -173,11 +179,11 @@ class FSA:
     # STALE
     def optional(self, start = Set(0)):
 #        self._finals = self._finals.intersection(start)
-        self.insert_transitions(start, epsilon, self._finals)
+        self.inserts(start, epsilon, self._finals)
 
     # STALE
     def kleene_plus(self, start = Set(0)):
-        self.insert_transitions(self._finals, epsilon, start)
+        self.inserts(self._finals, epsilon, start)
 
     # STALE
     def kleene_star(self, start = Set(0)):
@@ -196,7 +202,7 @@ class FSA:
 #
 #        # TODO - add epsilon transition from finals to initials
 #        for final in self._finals:
-#            self.insert_transition(final, epsilon, self._count)
+#            self.insert(final, epsilon, self._count)
 #        self._table.extend(fsa._table)
 
     # generate all strings in the language up to length maxlen
@@ -265,36 +271,36 @@ def re2nfa_build(fsa, node, tree):
 
 def re2nfa_char(fsa, node, char):
     new = fsa.new_state()
-    fsa.insert_transition(node, char, new)
+    fsa.insert(node, char, new)
     return new
 
 def re2nfa_qmk(fsa, node, tree):
     node1 = fsa.new_state()
     node2 = re2nfa_build(fsa, node1, tree)
     node3 = fsa.new_state()
-    fsa.insert_transition(node, epsilon, node1)
-    fsa.insert_transition(node, epsilon, node3)
-    fsa.insert_transition(node2, epsilon, node3)
+    fsa.insert(node, epsilon, node1)
+    fsa.insert(node, epsilon, node3)
+    fsa.insert(node2, epsilon, node3)
     return node3
 
 def re2nfa_plus(fsa, node, tree):
     node1 = re2nfa_build(fsa, node, tree[0])
-    fsa.insert_transition(node1, epsilon, node)
+    fsa.insert(node1, epsilon, node)
     return node1
 
 def re2nfa_star(fsa, node, tree):
     node1 = fsa.new_state()
     node2 = re2nfa_build(fsa, node1, tree)
     node3 = fsa.new_state()
-    fsa.insert_transition(node, epsilon, node1)
-    fsa.insert_transition(node, epsilon, node3)
-    fsa.insert_transition(node2, epsilon, node1)
-    fsa.insert_transition(node2, epsilon, node3)
+    fsa.insert(node, epsilon, node1)
+    fsa.insert(node, epsilon, node3)
+    fsa.insert(node2, epsilon, node1)
+    fsa.insert(node2, epsilon, node3)
     return node3
 
 def demo():
     alphabet = "abc"
-    re = 'a(b+)c'
+    re = 'ab*'
     print 'Regular Expression:', re
     fsa = FSA(alphabet)
     fsa.empty()
