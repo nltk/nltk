@@ -508,6 +508,14 @@ Token.register_repr(('TEXT', 'TAG', 'LOC'),
                     lambda t: ('<%s/%s>@%r' %
                                (`t['TEXT']`[1:-1], t['TAG'], t['LOC'])),
                     optional_props=('CONTEXT',))
+Token.register_repr(('TEXT', 'POS'),
+                    lambda t: ('<%s/%s>' %
+                               (`t['TEXT']`[1:-1], t['POS'])),
+                    optional_props=('CONTEXT',))
+Token.register_repr(('TEXT', 'POS', 'LOC'),
+                    lambda t: ('<%s/%s>@%r' %
+                               (`t['TEXT']`[1:-1], t['POS'], t['LOC'])),
+                    optional_props=('CONTEXT',))
 Token.register_repr(('SUBTOKENS',),
                     '<%(SUBTOKENS)r>')
 Token.register_repr(('TEXT', 'SUBTOKENS'),
