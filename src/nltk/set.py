@@ -8,10 +8,10 @@
 # $Id$
 
 from chktype import chktype as _chktype
+from chktype import chkclass as _chkclass
 
 class Set:
     """
-    
     An unordered container class that contains no duplicate elements.
     In particular, a set contains no elements M{e1} and M{e2} such
     that M{e1=e2}.  Currently, the C{Set} class is given a fairly
@@ -27,8 +27,8 @@ class Set:
            the case as long as the elements in the C{Set} use
            well-defined comparison functions.  An example where it
            would not be the case would be if M{ei} defined
-           C{__cmp__}() to always return 0, and M{ej} defined
-           C{__cmp__}() to always return -1.
+           C{__eq__}() to always return 0, and M{ej} defined
+           C{__eq__}() to always return 1.
            
          - Mutable elements inserted in the C{Set} are not
            modified after they are inserted.
@@ -49,9 +49,9 @@ class Set:
         @param lst: The elements that will be contained by the new Set.
         @type lst: Any
         """
-        self._lst = []
+        self._dict = {}
         for elt in lst:
-            self.insert(elt)
+            self._dict[elt] = 1
 
     def insert(self, elt):
         """
@@ -64,8 +64,7 @@ class Set:
         @type elt: Any
         @rtype: None
         """
-        if elt not in self._lst:
-            self._lst.append(elt)
+        self._dict[elt] = 1
 
     def union(self, other):
         """
@@ -80,9 +79,8 @@ class Set:
         @rtype: Set
         """
         _chktype("union", 1, other, (Set,))
-        newSet = apply(Set, self)
-        for elt in other._lst:
-            newSet.insert(elt)
+        newSet = self.copy()
+        newSet._dict.update(other._dict)
         return newSet
 
     def intersection(self, other):
@@ -99,10 +97,29 @@ class Set:
         @rtype: Set
         """
         _chktype("intersection", 1, other, (Set,))
-        newSet = apply(Set, self)
-        for elt in self._lst:
-            if elt not in other._lst:
-                newSet._lst.remove(elt)
+        newSet = self.copy()
+        for elt in self._dict.keys():
+            if not other._dict.has_key(elt):
+                del newSet._dict[elt]
+        return newSet
+
+    def difference(self, other):
+        """
+        Return the difference between this Set and another Set.
+        Formally, construct and return a new Set containing an element
+        M{e} if and only if C{self} contains M{e} and C{other} does
+        not contain M{e}.
+
+        @param other: The set to subtract from this set.
+        @type other: Set
+        @return: The difference between this Set and another Set.
+        @rtype: Set
+        """
+        _chktype("difference", 1, other, (Set,))
+        newSet = self.copy()
+        for elt in self._dict.keys():
+            if other._dict.has_key(elt):
+                del newSet._dict[elt]
         return newSet
 
     # set1 & set2
@@ -123,7 +140,7 @@ class Set:
                 C{other}. 
         @rtype: Set
         """
-        return intersection(self, other)
+        return self.intersection(other)
 
     # set1 | set2
     def __or__(self, other):
@@ -142,7 +159,25 @@ class Set:
         @return: The union of C{self} and C{other}. 
         @rtype: Set
         """
-        return union(self, other)
+        return self.union(other)
+
+    def __minus__(self, other):
+        """
+        Return the difference between this Set and another Set.
+        Formally, construct and return a new Set containing an element
+        M{e} if and only if C{self} contains M{e} and C{other} does
+        not contain M{e}.
+
+        This method is invoked for expressions of the form::
+        
+          set1 - set2
+        
+        @param other: The set to subtract from this set.
+        @type other: Set
+        @return: The difference between this Set and another Set.
+        @rtype: Set
+        """
+        return self.difference(other)
 
     def contains(self, elt):
         """
@@ -156,7 +191,7 @@ class Set:
         @return: True if this set contains the given element.
         @rtype: boolean
         """
-        return elt in self._lst
+        return self._dict.has_key(elt)
 
     # elt in set
     def __contains__(self, elt):
@@ -192,66 +227,56 @@ class Set:
         @rtype: Set.
         """
         s=Set()
-        s._lst = self._lst[:]
+        s._dict.update(self._dict)
         return s
 
     def __repr__(self):
         """
-        Return the formal string representation of this Set.  Sets
-        are formally represented by strings of the form:
-        C{Set(elt1, elt2, elt3)}
-
-        @return: The formal string representation of this Set.
-        @rtype: string
-        """
-        return 'Set'+`tuple(self._lst)`
-
-    def __str__(self):
-        """
-        Return the informal string representation of this Set.  Sets
-        are informally represented by strings of the form::
+        Return the string representation of this Set.  Sets
+        are represented by strings of the form::
 
           {elt1, elt2, ..., eltn}
 
-        For example, the informal string representation of
+        For example, the string representation of
         C{Set('apple', 'orange', 'pear')} is::
 
           {'apple', 'orange', 'pear'}
 
-        @return: The informal string representation of this Set.
+        @return: The string representation of this Set.
         @rtype: string
         """
-        return '{'+str(self._lst)[1:-1]+'}'
+        return '{'+str(self._dict.keys())[1:-1]+'}'
     
     def __len__(self):
         """
         @return: The number of elements contained in this Set.
         @rtype: int
         """
-        return len(self._lst)
+        return len(self._dict)
     
     def count(self):
         """
         @return: The number of elements contained in this Set.
         @rtype: int
         """
-        return len(self._lst)
+        return len(self._dict)
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         """
-        Return 0 if the given object is equal to this Set.  In
-        particular, return 0 if and only if C{other} is a
+        Return 1 if the given object is equal to this Set.  In
+        particular, return 1 if and only if C{other} is a
         Set, every member of this set is contained in
         C{other}, and every member of C{other} is
-        contained in this Set.  Otherwise, return a non-zero number.
+        contained in this Set.  Otherwise, return 0.
         
+        @raise TypeError: if C{other} is not a C{Set}.
         @param other: The object to compare this Set to.
         @type other: any
-        @return: 0 if the given object is equal to this Set.
+        @return: 1 if the given object is equal to this Set.
         @rtype: int
         """
-        if not isinstance(other, Set): return -1000
-        return cmp(self._lst, other._lst)
+        _chkclass(self, other)
+        return self._dict == other._dict
 
     def elements(self):
         """
@@ -267,7 +292,7 @@ class Set:
             C{Set}.
         """
         # We have to make a copy of the list.
-        return self._lst[:]
+        return self._dict.keys()
 
     def __hash__(self):
         """
@@ -280,7 +305,4 @@ class Set:
         @return: The hash value for this Set.
         @rtype: int
         """
-        h = 0
-        for elt in self._lst:
-            h = hash(elt)/2 + h/2
-        return h
+        return hash(self._dict)
