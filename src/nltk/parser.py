@@ -79,14 +79,14 @@ class ParserI:
         """
         assert 0, "ParserI is an abstract interface"
 
-    def parseTypes(self, types, n=None):
+    def parse_types(self, types, n=None):
         """
         Parse the piece of text contained in the given list of
         types.  Return the C{n} best parses for the text (or all
         parses, if the number of parses is less than C{n})).
 
         This method does not need to be overridden by implementations: 
-        it has a default implementation using parse().
+        it has a default implementation, which delegates to parse().
         
         @return: A list of the C{n} best parses for the given text,
             sorted in descending order of quality.  In other words,
