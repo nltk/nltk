@@ -19,7 +19,12 @@
 #
 # This software is maintained by Vivake (vivakeATomniscia.org) and is available at:
 #     http://www.omniscia.org/~vivake/python/PorterStemmer.py
-
+#
+# Additional modifications were made to incorperate this module into
+# nltk.  All such modifications are marked with "--NLTK--".  The nltk
+# version of this module is maintained by the NLTK development staff,
+# and is available from the NLTK webpage:
+#     <http://nltk.sourceforge.net>
 
 """Porter Stemming Algorithm
 
@@ -61,15 +66,44 @@ Later additions:
 
    Invariants proceed, succeed, exceed. Also suggested by Hiranmay Ghosh.
 
+Additional modifications were made to incorperate this module into
+nltk.  All such modifications are marked with \"--NLTK--\".  The nltk
+version of this module is maintained by the NLTK development staff,
+and is available from the NLTK webpage:
+     <http://nltk.sourceforge.net>
 """
+
+## --NLTK--
+## Declare this module's documentation format.
 __docformat__ = 'plaintext'
 
 import sys
 import re
 import string
-import nltk.stemmer
 
+## --NLTK--
+## Import the nltk.stemmer module, which defines the stemmer interface;
+## and nltk.token, which defines the Token data type.
+import nltk.stemmer, nltk.token
+
+## --NLTK--
+## Use the stemmer interface as a base class.
 class PorterStemmer(nltk.stemmer.StemmerI):
+
+    ## --NLTK--
+    ## Add a module docstring
+    """
+    A word stemmer based on the Porter stemming algorithm.
+    
+        Porter, M. \"An algorithm for suffix stripping.\"
+        Program 14.3 (1980): 130-137.
+
+    A few minor modifications have been made to Porter's basic
+    algorithm.  See the source code of this module for more
+    information.
+
+    PorterStemmer requires that all tokens have string types.
+    """
 
     def __init__(self):
         """The main part of the stemming algorithm starts here.
@@ -438,7 +472,7 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         if self.b[self.k] == 'l' and self.doublec(self.k) and self.m() > 1:
             self.k = self.k -1
 
-    def stem_word_index(self, p, i, j):
+    def stem_word(self, p, i, j):
         """In stem(p,i,j), p is a char pointer, and the string to be stemmed
         is from p[i] to p[j] inclusive. Typically i is zero and j is the
         offset to the last character of a string, (p[j+1] == '\0'). The
@@ -447,6 +481,10 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         i <= k <= j. To turn the stemmer into a module, declare 'stem' as
         extern, and delete the remainder of this file.
         """
+        ## --NLTK--
+        ## Don't print results as we go (commented out the next line)
+        #print p[i:j+1]
+        
         # copy the parameters into statics
         self.b = p
         self.k = j
@@ -471,14 +509,6 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         self.step5()
         return self.b[self.k0:self.k+1]
 
-    def stem_word(self, word):
-        """ 
-        Stems the given word, preserving the case of the word for those
-        unmodified characters.
-        """
-        stem = self.stem_word_index(string.lower(word), 0, len(word) - 1)
-        return self.adjust_case(word, stem)
-
     def adjust_case(self, word, stem):
         lower = string.lower(word)
 
@@ -492,28 +522,44 @@ class PorterStemmer(nltk.stemmer.StemmerI):
 
         return ret
 
-    def stem_text(self, text):
-        parts = re.split("(\W+)", text)
-        numWords = (len(parts) + 1)/2
-        
-        ret = ""
-        for i in xrange(numWords):
-            word = parts[2 * i]
-            separator = ""
-            if ((2 * i) + 1) < len(parts):
-                separator = parts[(2 * i) + 1]
+    ## --NLTK--
+    ## Don't use this procedure; we want to work with tokens, instead.
+    ## (commented out the following procedure)
+    #def stem(self, text):
+    #    parts = re.split("(\W+)", text)
+    #    numWords = (len(parts) + 1)/2
+    #    
+    #    ret = ""
+    #    for i in xrange(numWords):
+    #        word = parts[2 * i]
+    #        separator = ""
+    #        if ((2 * i) + 1) < len(parts):
+    #            separator = parts[(2 * i) + 1]
+    #
+    #        stem = self.stem_word(string.lower(word), 0, len(word) - 1)
+    #        ret = ret + self.adjust_case(word, stem)
+    #        ret = ret + separator
+    #    return ret
 
-            ret += self.stem_word(word) + separator
-        return ret
-            
-if __name__ == '__main__':
-    p = PorterStemmer()
-    if len(sys.argv) > 1:
-        for f in sys.argv[1:]:
-            infile = open(f, 'r')
-            while 1:
-                w = infile.readline()
-                if w == '':
-                    break
-                w = w[:-1]
-                print p.stem_text(w)
+    ## --NLTK--
+    ## Define a stem() method that implements the StemmerI interface.
+    def stem(self, token):
+        # Inherit documentation
+        word = token.type()
+        stem = self.stem_word(string.lower(word), 0, len(word) - 1)
+        stem = self.adjust_case(word, stem)
+        return nltk.token.Token(stem, token.loc())
+
+## --NLTK--
+## This test procedure isn't applicable.
+#if __name__ == '__main__':
+#    p = PorterStemmer()
+#    if len(sys.argv) > 1:
+#        for f in sys.argv[1:]:
+#            infile = open(f, 'r')
+#            while 1:
+#                w = infile.readline()
+#                if w == '':
+#                    break
+#                w = w[:-1]
+#                print p.stem(w)
