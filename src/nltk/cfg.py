@@ -59,12 +59,14 @@ can be produced by the following procedure:
         nonterminal in M{tree}.
       - Replace one occurance of M{lhs} with a subtree, whose node
         value is the value wrapped by the nonterminal M{lhs}, and
-        whose children are the right hand side of {rule}.
+        whose children are the right hand side of M{rule}.
 
 The operation of replacing the left hand side (M{lhs}) of a rule with
 the right hand side (M{rhs}) in a tree (M{tree}) is known as
-X{expanding} M{lhs} to M{rhs} in {tree}.
+X{expanding} M{lhs} to M{rhs} in M{tree}.
+"""
 
+"""
 Probablistic CFGs
 =================
 
@@ -78,12 +80,12 @@ C{CFG_Rule} that specifies that a tree with node value C{"NP"} can
 have children that are subtrees with node values C{"Det"} and C{"N"}
 is written::
 
-    <NP> -> Det N
+    NP -> Det N
 
 And the rule that specifies that a tree with node value C{"N"} can
 have a leaf with text type C{"dog"} is::
 
-    <N> -> 'dog'
+    N -> 'dog'
 
 """
 
@@ -292,6 +294,16 @@ class CFG:
     def start(self):
         return self._start
 
+    def __repr__(self):
+        return '<CFG with %d rules>' % len(self._rules)
+
+    def __str__(self):
+        str = 'CFG with %d rules' % len(self._rules)
+        str += ' (start state = %s)' % self._start
+        for rule in self._rules:
+            str += '\n    %s' % rule
+        return str
+
 #################################################################
 # PCFGs and PCFG rules
 #################################################################
@@ -334,7 +346,7 @@ class PCFG_Rule(CFG_Rule, ProbablisticMixIn):
     def __hash__(self):
         return hash((self._lhs, self._rhs, self._p))
 
-class PCFG:
+class PCFG(CFG):
     """
     A probablistic context-free grammar.  A PCFG consists of a start
     state and a set of rules.  The set of terminals and nonterminals
@@ -347,6 +359,7 @@ class PCFG:
     If you need efficient key-based access to rules, you can use a
     subclass to implement it.
 
+    @type EPSILON: C{float}
     @cvar EPSILON: The acceptable margin of error for checking that
         rules with a given left-hand side have probabilities that sum
         to 1.
@@ -366,8 +379,7 @@ class PCFG:
             do not have probabilities that sum to a value within
             PCFG.EPSILON of 1.
         """
-        self._start = start
-        self._rules = rules
+        CFG.__init__(self, start, rules)
 
         # Make sure that the probabilities sum to one.
         probs = {}
@@ -376,12 +388,6 @@ class PCFG:
         for (lhs, p) in probs.items():
             if not ((1-PCFG.EPSILON) < p < (1+PCFG.EPSILON)):
                 raise ValueError("Rules for %r do not sum to 1" % lhs)
-
-    def rules(self):
-        return self._rules
-
-    def start(self):
-        return self._start
 
 #################################################################
 # Test code
