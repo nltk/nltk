@@ -13,8 +13,7 @@
 #     Should TreeToken.nodes() return a Tree or a TreeToken?
 
 # To do:
-#   - add x-to-y methods for treebank, etc.
-#   - traces!! Whee.
+#   - How should we handle traces and/or movement?
 
 """
 Classes for representing hierarchical structures over text.  These
@@ -53,14 +52,8 @@ from nltk.token import Location
 from nltk.probability import ProbabilisticMixIn
 import re
 from nltk.chktype import chktype as _chktype
-from nltk.chktype import chkclass as _chkclass
-from types import SliceType as _SliceType
-from types import TupleType as _TupleType
-from types import IntType as _IntType
-from types import StringType as _StringType
-from types import NoneType as _NoneType
-from types import ListType as _ListType
-from types import InstanceType as _InstanceType
+from nltk.chktype import classeq as _classeq
+import types
 
 def _pytype(obj):
     """
@@ -71,7 +64,7 @@ def _pytype(obj):
     @param obj: The object whose pytype should be returned.
     @type obj: (any)
     """
-    if type(obj) == _InstanceType:
+    if type(obj) == types.InstanceType:
         return obj.__class__
     else:
         return type(obj)
@@ -126,18 +119,20 @@ class AbstractTree:
         @type index: C{int} or C{slice} or (C{list} of C{int})
         @raise IndexError: If the specified child does not exist.
         """
-        _chktype("AbstractTree.__getitem__",
-                 1, index, (_IntType, _SliceType, _TupleType))
-        if type(index) == _IntType:
+        assert _chktype(1, index, types.IntType,
+                        types.SliceType, types.TupleType)
+        if type(index) == types.IntType:
             return self._children[index]
-        elif type(index) == _SliceType:
+        elif type(index) == types.SliceType:
             return self._children[index.start:index.stop]
         elif len(index) == 0:
             return self
         elif len(index) == 1:
             return self._children[index[0]]
-        else:
+        elif isinstance(self._children[index[0]], AbstractTree):
             return self._children[index[0]][index[1:]]
+        else:
+            raise IndexError('Bad tree position')
 
     def __len__(self):
         """
@@ -167,7 +162,7 @@ class AbstractTree:
             nodes, but no leaves.
         @rtype: I{tree}
         """
-        newchildren = [c for c in self._children
+        newchildren = [c.nodes() for c in self._children
                        if isinstance(c, AbstractTree)]
         # Return a new tree containing only the nodes.
         # "self.__class__" is the constructor for this class.
@@ -204,6 +199,7 @@ class AbstractTree:
             substituted in to this tree.
         @type substitution: I{tree} or I{leaftype}
         """
+        assert _chktype(1, treepos, (types.IntType,), [types.IntType])
         if treepos == ():
             return substitution
         else:
@@ -233,8 +229,8 @@ class AbstractTree:
             all i, 0 <= i < self.len()
         @rtype: C{boolean}
         """
-        _chkclass(self, other)
-        return (self._node == other._node and
+        return (_classeq(self, other) and
+                self._node == other._node and
                 self._children == other._children)
 
     def __hash__(self):
@@ -271,16 +267,8 @@ class AbstractTree:
         # convenience.  In particular, we believe that it is more
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
-        from nltk.draw import CanvasFrame
-        from nltk.draw.tree import TreeWidget
-        cf = CanvasFrame()
-        bold = ('helvetica', 12, 'bold')
-        widget = TreeWidget(cf.canvas(), self, node_font=bold,
-                            leaf_color='#008040', node_color='#004080',
-                            roof_color='#004040', roof_fill='white',
-                            line_color='#004040', draggable=1)
-        widget.bind_click_trees(widget.toggle_collapsed)
-        cf.add_widget(widget)
+        from nltk.draw.tree import draw_trees
+        draw_trees(self)
 
 ##//////////////////////////////////////////////////////
 ##  Text Trees (Type)
@@ -407,8 +395,8 @@ class Tree(AbstractTree):
             subsequent lines.
         @type indent: C{int}
         """
-        _chktype("AbstractTree.pp", 1, margin, (_IntType,))
-        _chktype("AbstractTree.pp", 2, indent, (_IntType,))
+        assert _chktype(1, margin, types.IntType)
+        assert _chktype(2, indent, types.IntType)
         rep = repr(self)
         if len(rep)+indent < margin:
             return rep
@@ -437,6 +425,17 @@ class Tree(AbstractTree):
         """
         return self.pp()
 
+class ProbabilisticTree(Tree, ProbabilisticMixIn):
+    def __init__(self, p, node, *children):
+        ProbabilisticMixIn.__init__(self, p)
+        Tree.__init__(self, node, *children)
+    def pp(self):
+        return Tree.pp(self) + (' (p=%s)' % self._p)
+    def __repr__(self):
+        return Tree.__repr__(self) + (' (p=%s)' % self._p)
+    def __str__(self):
+        return Tree.__str__(self) + (' (p=%s)' % self._p)
+        
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
 ##//////////////////////////////////////////////////////
@@ -529,7 +528,7 @@ class TreeToken(AbstractTree, Token):
         @param children: The new C{TreeToken}'s children.
         @type children: C{TreeToken} or C{Token}
         """
-        _chktype("TreeToken", -1, children, ( (Token, TreeToken),) )
+        assert _chktype('vararg', children, (Token, TreeToken))
         self._node = node
         self._children = children
 
@@ -627,8 +626,8 @@ class TreeToken(AbstractTree, Token):
             subsequent lnes.
         @type indent: C{int}
         """
-        _chktype("TreeToken.pp", 1, margin, (_IntType,))
-        _chktype("TreeToken.pp", 2, indent, (_IntType,))
+        assert _chktype(1, margin, types.IntType)
+        assert _chktype(2, indent, types.IntType)
         if self.loc() is None: locstr = '@[?]'
         else: locstr = repr(self.loc())
         return self.type().pp(margin-len(locstr), indent)+locstr
@@ -654,6 +653,8 @@ class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
         ProbabilisticMixIn.__init__(self, p)
         TreeToken.__init__(self, node, *children)
+    def pp(self):
+        return TreeToken.pp(self) + (' (p=%s)' % self._p)
     def __repr__(self):
         return TreeToken.__repr__(self) + (' (p=%s)' % self._p)
     def __str__(self):
@@ -668,7 +669,7 @@ def parse_treebank(str):
     Given a string containing a Treebank-style representation of a
     syntax tree, return a C{Tree} representing that syntax tree.
     """
-    _chktype("parse_treebank", 1, str, (_StringType,))
+    assert _chktype(1, str, types.StringType)
     
     # Rather than trying to parse the string ourselves, we will rely
     # on the Python parser.  This procedure isn't immediately easy to
