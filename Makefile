@@ -72,28 +72,30 @@ distributions.nltk:
 	$(MAKE) -C src distributions
 	cp src/dist/* $(DISTRIBUTIONS)
 
+NLTK_DATA = nltk-data-$(NLTK_VERSION)
 distributions.corpora:
 	@echo "Building nltk_corpora distributions..."
-	rm -f nltk_corpora
-	ln -s data nltk_corpora
-	tar -cvzhf $(DISTRIBUTIONS)/nltk_corpora-$(NLTK_VERSION).tgz \
-	    nltk_corpora/*.readme nltk_corpora/*.zip
-	zip -rq $(DISTRIBUTIONS)/nltk_corpora-$(NLTK_VERSION).zip nltk_corpora
-	rm -f nltk_corpora
+	rm -f $(NLTK_DATA)
+	ln -s data $(NLTK_DATA)
+	tar -cvzhf $(DISTRIBUTIONS)/nltk-data-$(NLTK_VERSION).tgz \
+	    $(NLTK_DATA)/*.readme $(NLTK_DATA)/*.zip
+	zip -rq $(DISTRIBUTIONS)/nltk-data-$(NLTK_VERSION).zip $(NLTK_DATA)
+	rm -f $(NLTK_DATA)
 
 distributions.contrib:
 	@echo "Building nltk_contrib distributions..."
 	$(MAKE) -C contrib distributions
 	cp contrib/dist/* $(DISTRIBUTIONS)
 
+NLTK_DOCS = nltk-docs-$(VERSION)
 distributions.webpage:
 	@echo "Packaging nltk webpage..."
 	$(MAKE) -C doc webpage
-	rm -f nltk_docs
-	ln -s doc/built_webpage nltk_docs
-	tar -czhf $(DISTRIBUTIONS)/nltk-$(NLTK_VERSION)-docs.tgz nltk_docs
-	zip -rq $(DISTRIBUTIONS)/nltk-$(NLTK_VERSION)-docs.zip nltk_docs
-	rm -f nltk_docs
+	rm -f $(NLTK_DOCS)
+	ln -s doc/built_webpage $(NLTK_DOCS)
+	tar -czhf $(DISTRIBUTIONS)/nltk-$(NLTK_VERSION)-docs.tgz $(NLTK_DOCS)
+	zip -rq $(DISTRIBUTIONS)/nltk-$(NLTK_VERSION)-docs.zip $(NLTK_DOCS)
+	rm -f $(NLTK_DOCS)
 
 clean:
 	$(MAKE) -C doc clean
