@@ -1,0 +1,101 @@
+\documentclass[a4paper,12pt]{460}
+\num{1}\due{11am Monday 18 August 2003}
+
+\begin{document}
+\maketitle
+
+Please read the tutorial on NLTK basics.
+Using the Python interpreter in interactive mode, experiment
+with words, texts, tokens, locations and tokenizers, and satisfy
+yourself that you understand all the examples in the tutorial.
+Now complete the following questions.
+You can use the lab sessions to work on this assignment
+
+\section*{Lab exercises -- not for submission}
+
+\begin{enumerate}
+\item
+Describe the class of strings matched by the following regular expressions:
+
+\begin{enumerate}
+    \item \verb@[a-zA-Z]+@
+    \item \verb@[A-Z][a-z]*@
+    \item \verb@\d+(\.\d+)?@
+    \item \verb@([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*@
+    \item \verb@\w+|[^\w\s]+@
+\end{enumerate}
+
+\item
+Write regular expressions to match the following classes of strings:
+
+\begin{enumerate}
+    \item A single determiner (assume that ``a,'' ``an,'' and ``the''
+    are the only determiners).  
+    \item An arithmetic expression using integers, addition, and
+    multiplication, such as $2*3+8$.
+\end{enumerate}
+
+\item
+Write Python code which evaluates and prints:
+
+\begin{enumerate}
+    \item a location beginning at position 5 and ending at position 6,
+      having the unit \texttt{w} (word)
+    \item a token ``parrot'' at this location
+    \item the type of this token
+    \item the location of this token
+\end{enumerate}
+\end{enumerate}
+
+\pagebreak
+
+\section{Word Level Tokenization}
+
+Choose a text (e.g. from Project Gutenberg)
+and save it to a local file called \texttt{corpus.txt}.  (There is no need
+to submit this data file).
+
+\begin{enumerate}
+    \item Define a function \texttt{p1a()} which reads the file into a
+      string, tokenizes the string using \texttt{WSTokenizer},
+      and prints the tokens, one per line.
+    \item Using \texttt{RETokenizer}, create a tokenizer \texttt{p1b()}
+      which does a better
+      job at handling punctuation than the one given in the tutorial, and
+      explain your improvements in the inline documentation.
+\end{enumerate}
+
+\section{Zipf's Law}
+
+Let $f(w)$ be the frequency of a word $w$ in free text.  Suppose that
+all the words of a text are ranked according to their frequency, with
+the most frequent word first.
+Zipf's law states that the frequency of a word type is inversely
+proportional to its rank (i.e. $f$*$r$=$k$, for some constant $k$).
+For example, the 50th most common word type should
+occur three times as frequently as the 150th most common word type.
+
+Write a Python function \texttt{p2()}
+to process a large text and plot word frequency
+against word rank using the \texttt{nltk.draw.plot} module.
+Do you confirm Zipf's law?  (Hint: it helps to
+set the axes to log-log.)
+
+\section*{Important Notes}
+
+{\bf Accessing NLTK.}
+Ensure you have your \texttt{PYTHONPATH} environment variable
+set to \url{/home/subjects/460/local/nltk/}.
+
+{\bf Marking.}  Points will be awarded for well-structured and
+well-documented code.  Points will be deducted for late submissions
+(20\% per day or part thereof).  Assignments must be strictly original
+work.
+
+{\bf Submission.}
+Submission will be in the form of a single Python program,
+submitted using the department's submit system
+(instructions to follow).
+
+\end{document}
+
