@@ -1,5 +1,6 @@
 from nltk.featurestruct import *
-from nltk.cfg import Nonterminal
+from nltk.cfg import Nonterminal, CFGProduction
+import string
 
 class Category(FeatureStruct, Nonterminal):
 	"""
@@ -79,10 +80,10 @@ class Category(FeatureStruct, Nonterminal):
 		return self._hash
 
 	def symbol(self):
-		return self._features.get(self.__class__.headname)
+		return repr(self)
 
 	def head(self):
-		return self.symbol()
+		return self._features.get(self.__class__.headname)
 	
 	def deepcopy(self, memo=None):
 		newcopy = self.__class__()
@@ -236,7 +237,7 @@ class Category(FeatureStruct, Nonterminal):
 				 'categorystart': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]]*)\s*\['),
 				 'bool': re.compile(r'\s*([-\+])'),
 				 'ident': re.compile(r'\s*\((\d+)\)\s*'),
-				 'reentrance': re.compile(r'\s*->\s*'),
+				 'arrow': re.compile(r'\s*->\s*'),
 				 'assign': re.compile(r'\s*=\s*'),
 				 'bracket': re.compile(r'\s*]\s*'),
 				 'comma': re.compile(r'\s*,\s*'),
@@ -292,7 +293,8 @@ class Category(FeatureStruct, Nonterminal):
 		else: head = None
 		
 		# Check that the name is followed by an open bracket.
-		if s[position] != '[': raise ValueError('open bracket', position)
+		if position >= len(s) or s[position] != '[':
+			return cls(**{cls.headname: head}), position
 		position += 1
 
 		# If it's immediately followed by a close bracket, then just
@@ -300,7 +302,7 @@ class Category(FeatureStruct, Nonterminal):
 		match = _PARSE_RE['bracket'].match(s, position)
 		if match is not None:
 			if head is None: return cls(), match.end()
-			else: return cls(**{self.__class__.headname: head}), match.end()
+			else: return cls(**{cls.headname: head}), match.end()
 
 		# Build a list of the features defined by the structure.
 		# Each feature has one of the three following forms:
@@ -404,10 +406,24 @@ class Category(FeatureStruct, Nonterminal):
 
 		# We don't know how to parse this value.
 		raise ValueError('value', position)
+	
+	def parse_rule(cls, s):
+		_PARSE_RE = cls._PARSE_RE
+		position = 0
+		lhs, position = cls._parse(s, position)
+		match = _PARSE_RE['arrow'].match(s, position)
+		if match is None: raise ValueError('arrow', position)
+		else: position = match.end()
+		rhs = []
+		while position < len(s):
+			val, position = cls._parse(s, position)
+			rhs.append(val)
+		return CFGProduction(lhs, *rhs)
 
 	_parseval=classmethod(_parseval)
 	_parse=classmethod(_parse)
 	parse=classmethod(parse)
+	parse_rule=classmethod(parse_rule)
 
 class SyntaxCategory(Category):
 	headname = 'pos'
