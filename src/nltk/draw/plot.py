@@ -12,8 +12,8 @@ A simple tool for plotting functions.  Each new C{Plot} object opens a
 new window, containing the plot for a sinlge function.  See the
 documentation for L{Plot} for information about creating new plots.
 
-Sample plots
-============
+Example plots
+=============
 Plot sin(x) from -10 to 10, with a step of 0.1:
     >>> Plot(math.sin)
 
@@ -41,8 +41,8 @@ Plot the same function with semi-logarithmic axes.
 
 BLT
 ===
-If L{BLT<http://incrtcl.sourceforge.net/blt/>} and
-L{PMW<http://pmw.sourceforge.net/>} are both installed, then BLT is
+If U{BLT<http://incrtcl.sourceforge.net/blt/>} and
+U{PMW<http://pmw.sourceforge.net/>} are both installed, then BLT is
 used to plot graphs.  Otherwise, a simple Tkinter-based implementation
 is used.  The Tkinter-based implementation does I{not} display axis
 values.
@@ -436,35 +436,34 @@ class Plot:
     object opens a new window, containing the plot for a sinlge
     function.  Multiple plots in the same window are not (yet)
     supported.  The C{Plot} constructor supports several mechanisms
-    for defining the set of points to plot.  A few examples of plots
-    are:
-    
-        >>> import math
+    for defining the set of points to plot.
 
-        # Plot the math.sin function over the range [-10:10:.1]
+    Example plots
+    =============
+    Plot the math.sin function over the range [-10:10:.1]:
+        >>> import math
         >>> Plot(math.sin)
 
-        # Plot the math.sin function over the range [0:1:.001]
+    Plot the math.sin function over the range [0:1:.001]:
         >>> Plot(math.sin, slice(0, 1, .001))
 
-        # Plot a list of points
+    Plot a list of points:
         >>> points = ([1,1], [3,8], [5,3], [6,12], [1,24])
         >>> Plot(points)
 
-        # Plot a list of values, at x=0, x=1, x=2, ..., x=n
+    Plot a list of values, at x=0, x=1, x=2, ..., x=n:
         >>> Plot([x**2 for x in range(20)])
     """
     def __init__(self, vals, rng=None, **kwargs):
         """
         Create a new C{Plot}.
 
-        @vals: The set of values to plot.  C{vals} can be a list of
-            y-values; a list of points; or a function.
-        @rng: The range over which to plot.  C{rng} can be a list
-            of x-values, or a slice object.  If no range is
-            specified, a default range will be used.  Note that
-            C{rng} may I{not} be specified if C{vals} is a list
-            of points.
+        @param vals: The set of values to plot.  C{vals} can be a list
+            of y-values; a list of points; or a function.
+        @param rng: The range over which to plot.  C{rng} can be a
+            list of x-values, or a slice object.  If no range is
+            specified, a default range will be used.  Note that C{rng}
+            may I{not} be specified if C{vals} is a list of points.
         @keyword scale: The scales that should be used for the axes.
             Possible values are:
               - C{'linear'}: both axes are linear.
