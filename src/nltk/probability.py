@@ -317,7 +317,13 @@ class ProbDistI:
         @type sample: any
         """
         # Default definition, in terms of prob()
-        return math.log(self.prob(sample))
+        p = self.prob(sample)
+        if p == 0:
+            # Use some approximation to infinity.  What this does
+            # depends on your system's float implementation.
+            return -1e1000
+        else:
+            return math.log(p)
 
     def max(self):
         """
