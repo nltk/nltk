@@ -49,7 +49,7 @@ import re
 from nltk.chktype import chktype
 from nltk.token import Token
 from nltk.parser import ParserI, AbstractParser
-from nltk.tree import TreeToken
+from nltk.tree import Tree
 from nltk.cfg import CFG, CFGProduction, Nonterminal, nonterminals
 
 ########################################################################
@@ -384,7 +384,6 @@ class Chart:
 
     @inprop: C{SUBTOKENS}: The list of subtokens to be parsed.
     @inprop: C{LEAF}: The string content of the subtokens.
-    @outprop: C{NODE}: The subtrees' constituent label.
     
     @ivar _token: The sentence that the chart covers.
     @ivar _num_leaves: The number of subtokens in L{_token}.
@@ -629,9 +628,9 @@ class Chart:
         encoded as childless subtrees, whose node value is the
         corresponding terminal or nonterminal.
             
-        @rtype: C{list} of L{TreeToken}
+        @rtype: C{list} of L{Tree}
         @note: If two trees share a common subtree, then the same
-            C{TreeToken} may be used to encode that subtree in
+            C{Tree} may be used to encode that subtree in
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
@@ -648,7 +647,6 @@ class Chart:
         if memo.has_key(edge): return memo[edge]
 
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        NODE = self._property_names.get('NODE', 'NODE')
         trees = []
 
         # Until we're done computing the trees for edge, set
@@ -675,16 +673,14 @@ class Chart:
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
-                trees.append(TreeToken({NODE:lhs,
-                                          'CHILDREN':children}))
+                trees.append(Tree(lhs, *children))
 
         # If the edge is incomplete, then extend it with "partial
         # trees":
         if edge.is_incomplete():
-            unexpanded = [TreeToken({NODE:elt, 'CHILDREN':()})
-                          for elt in edge.rhs()[edge.dot():]]
+            unexpanded = [Tree(elt) for elt in edge.rhs()[edge.dot():]]
             for tree in trees:
-                tree['CHILDREN'].extend(unexpanded)
+                tree.extend(unexpanded)
 
         # Update the memoization dictionary.
         memo[edge] = trees
