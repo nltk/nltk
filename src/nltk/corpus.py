@@ -30,7 +30,7 @@ using these corpora, see the reference documentation for L{Corpus}.
 
 @variable _BASEDIR: The base directory for NLTK's standard distribution
     of corpora.  This is read from the environment variable
-    C{NLTK_CORPERA}, if it exists; otherwise, it is given a
+    C{NLTK_CORPORA}, if it exists; otherwise, it is given a
     system-dependant default value.  C{_BASEDIR}'s value can be changed
     with the L{set_basedir()} function.
 @type _BASEDIR: C{string}
@@ -51,8 +51,8 @@ def set_basedir(dir):
     _BASEDIR = dir
 
 # Find the base directory.
-if os.environ.has_key('NLTK_CORPERA'):
-    set_basedir(os.environ['NLTK_CORPERA'])
+if os.environ.has_key('NLTK_CORPORA'):
+    set_basedir(os.environ['NLTK_CORPORA'])
 elif sys.platform.startswith('win'):
     if os.path.isdir(os.path.join(sys.prefix, 'nltk')):
         set_basedir(os.path.join(sys.prefix, 'nltk'))
