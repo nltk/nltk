@@ -54,6 +54,7 @@ types of information about variables:
     the same value.
 
 @todo: more test cases
+@todo: s/merged/aliased
 @sort: FeatureStruct, FeatureVariable, MergedFeatureVariable,
        FeatureBindings
 @group Feature Structures: FeatureStruct
@@ -505,18 +506,35 @@ class FeatureStruct:
         @param memo: The memoization dicationary, which should
             typically be left unspecified.
         """
+        # Check the memoization dictionary.
         if memo is None: memo = {}
         memo_copy = memo.get(id(self))
         if memo_copy is not None: return memo_copy
-        features = {}
+
+        # Create a new copy.  Do this *before* we fill out its
+        # features, in case of cycles.
+        newcopy = FeatureStruct()
+        memo[id(self)] = newcopy
+        features = newcopy._features
+
+        # Fill out the features.
         for (fname, fval) in self._features.items():
             if isinstance(fval, FeatureStruct):
                 features[fname] = fval.deepcopy(memo)
             else:
                 features[fname] = fval
-        newcopy = FeatureStruct(**features)
-        memo[id(self)] = newcopy
+
         return newcopy
+
+    def reentrances(self):
+        """
+        @return: A list of all feature structures that can be reached
+            from C{self} by multiple feature paths.
+        @rtype: C{list} of L{FeatureStructure}
+        """
+        reentrance_dict = self._find_reentrances({})
+        return [struct for (struct, reentrant) in reentrance_dict.items()
+                if reentrant]
 
     #################################################################
     ## Variables
@@ -608,6 +626,8 @@ class FeatureStruct:
             If C{bindings} is unspecified, then all variables are
             assumed to be unbound.
         """
+        if trace: print '\nUnification trace:'
+        
         # If bindings are unspecified, use an empty set of bindings.
         if bindings is None: bindings = FeatureBindings()
 
@@ -648,6 +668,7 @@ class FeatureStruct:
         """ An exception that is used by C{_destructively_unify} to
         abort unification when a failure is encountered.  """
 
+    # unify a cyclic self with another structure???
     def _destructively_unify(self, other, bindings, trace=False, depth=0):
         """
         Attempt to unify C{self} and C{other} by modifying them
@@ -658,14 +679,26 @@ class FeatureStruct:
         and C{other} are undefined.
         """
         if trace:
-            print '|   '*depth+' /'+`self`
-            print '|   '*depth+'|\\'+ `other`
+            # apply_forwards to get reentrancy links right:
+            self._apply_forwards({})
+            other._apply_forwards({})
+            print '  '+'|   '*depth+' /'+`self`
+            print '  '+'|   '*depth+'|\\'+ `other`
         
         # Look up the "cannonical" copy of other.
         while hasattr(other, '_forward'): other = other._forward
 
         # If self is already identical to other, we're done.
-        if self is other: return
+        # Note: this, together with the forward pointers, ensures
+        # that unification will terminate even for cyclic structures.
+        # [XX] Verify/prove this?
+        if self is other:
+            if trace:
+                print '  '+'|   '*depth+'|'
+                print '  '+'|   '*depth+'| (identical objects)'
+                print '  '+'|   '*depth+'|'
+                print '  '+'|   '*depth+'+-->'+`self`
+            return
 
         # Set other's forward pointer to point to self; this makes us
         # into the cannonical copy of other.
@@ -685,6 +718,10 @@ class FeatureStruct:
                 if isinstance(otherval, FeatureVariable):
                     otherval = bindings.lookup(otherval)
                 
+                if trace:
+                    print '  '+'|   '*(depth+1)
+                    print '  '+'%s| Unify %s feature:'%('|   '*(depth),fname)
+                    
                 # Case 1: unify 2 feature structures (recursive case)
                 if (isinstance(selfval, FeatureStruct) and
                     isinstance(otherval, FeatureStruct)):
@@ -704,18 +741,21 @@ class FeatureStruct:
                     
                 # Case 4: unify 2 non-equal values (failure case)
                 elif selfval != otherval:
-                    if trace: print '|   '*depth + 'X <-- FAIL'
+                    if trace: print '  '+'|   '*depth + 'X <-- FAIL'
                     raise FeatureStruct._UnificationFailureError()
 
                 # Case 5: unify 2 equal values
                 else: pass
 
-                if trace:
-                    print '|   '*(depth+1)
-                    print '%s|-Unify %s:' % ('|   '*(depth), fname)
-                    print '%s|    /%r' % ('|   '*(depth), trace_selfval)
-                    print '%s|   |\\%r' % ('|   '*(depth), trace_otherval)
-                    print '%s|   +-->%r' % ('|   '*(depth),
+                if trace and not isinstance(selfval, FeatureStruct):
+                    # apply_forwards to get reentrancy links right:
+                    if isinstance(trace_selfval, FeatureStruct):
+                        trace_selfval._apply_forwards({})
+                    if isinstance(trace_otherval, FeatureStruct):
+                        trace_otherval._apply_forwards({})
+                    print '  '+'%s|    /%r' % ('|   '*(depth), trace_selfval)
+                    print '  '+'%s|   |\\%r' % ('|   '*(depth), trace_otherval)
+                    print '  '+'%s|   +-->%r' % ('|   '*(depth),
                                             self._features[fname])
                     
             # Case 5: copy from other
@@ -723,10 +763,12 @@ class FeatureStruct:
                 self._features[fname] = otherval
 
         if trace:
-            print '|   '*depth+'|'
-            print '|   '*depth+'+-->'+`self`
+            # apply_forwards to get reentrancy links right:
+            self._apply_forwards({})
+            print '  '+'|   '*depth+'|'
+            print '  '+'|   '*depth+'+-->'+`self`
             if len(bindings.bound_variables()) > 0:
-                print '|   '*depth+'    '+`bindings`
+                print '  '+'|   '*depth+'    '+`bindings`
         
     def _apply_forwards_to_bindings(self, bindings):
         """
@@ -1225,6 +1267,18 @@ class FeatureStructTestCase(unittest.TestCase):
         self.failUnless(fs3['F'] is fs3['F','H','H'])
         self.failUnless(fs3['F'] is fs3[('F',)+(('H',)*10)])
 
+        # Cyclic structure as LHS
+        fs4 = FeatureStruct.parse('[F=[H=[H=[H=(1)[]]]], K->(1)]')
+        fs5 = fs3.unify(fs4)
+        self.failUnlessEqual(repr(fs5), '[F=(1)[H->(1)], K->(1)]')
+
+        # Cyclic structure as RHS
+        fs6 = fs4.unify(fs3)
+        self.failUnlessEqual(repr(fs6), '[F=(1)[H->(1)], K->(1)]')
+
+        # LHS and RHS both cyclic
+        fs7 = fs3.unify(fs3.deepcopy())
+
     def testVariablesPreserveReentrance(self):
         'Variable bindings should preserve reentrance.'
         bindings = FeatureBindings()
@@ -1240,6 +1294,11 @@ class FeatureStructTestCase(unittest.TestCase):
         self.failUnlessEqual(repr(fs2), '[a=?x, b=?<x=y>, c=?y]')
         fs3 = fs2.unify(FeatureStruct.parse("[a=1]"))
         self.failUnlessEqual(repr(fs3), '[a=1, b=1, c=1]')
+
+        fs1 = FeatureStruct.parse("[a=1]")
+        fs2 = FeatureStruct.parse("[a=?x, b=?x]")
+        fs3 = fs2.unify(fs1)
+        self.failUnlessEqual(repr(fs3), '[a=1, b=1]')
 
 def testsuite():
     t1 = unittest.makeSuite(FeatureStructTestCase)
@@ -1274,6 +1333,7 @@ def display_unification(fs1, fs2, indent='  '):
     print indent+'V'.center(linelen)
 
     bindings = FeatureBindings()
+
     result = fs1.unify(fs2, bindings)
     if result is None:
         print indent+'(FAILED)'.center(linelen)
@@ -1349,7 +1409,7 @@ def demo(trace=False):
         for (nth,i) in (('First',0), ('Second',1)):
             while selected[i] is None:
                 print ('%s feature structure (1-%d,q,t,l,?): '
-                       % (nth, len(fstructs))),
+                       % (nth, len(all_fstructs))),
                 try:
                     input = sys.stdin.readline().strip()
                     if input in ('q', 'Q', 'x', 'X'): return
@@ -1385,4 +1445,4 @@ def demo(trace=False):
 
 if __name__ == '__main__':
     test(verbosity=0)
-    #demo()
+    demo()
