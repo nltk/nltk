@@ -19,7 +19,9 @@
 ##
 
 # speech modules
-import nltk.speech.tts, nltk.speech.token, nltk.speech.rules
+import nltk.speech.tts as tts
+import nltk.speech.token as token
+import nltk.speech.rules as rules
 import urllib
 
 ##
