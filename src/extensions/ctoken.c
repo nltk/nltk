@@ -13,182 +13,36 @@
 #include <structmember.h>
 #include "ctoken.h"
 
-/* Table of contents:
- *     1. Docstrings & Error Messages
- *     2. Forward Declarations
- *     3. Location Context
- *     4. Location
- *         4.1. Helper Functions
- *         4.2. Constructor & Destructor
- *         4.3. Methods
- *         4.4. Operators
- *         4.5. Type Definition
- *     5. Type
- *         5.1. Helper Functions
- *         5.2. Constructor & Destructor
- *         5.3. Methods
- *         5.4. Operators
- *         5.5. Type Definition
- *     6. Token
- *         6.1. Helper Functions
- *         6.2. Constructor & Destructor
- *         6.3. Methods
- *         6.4. Operators
- *         6.5. Type Definition
- *     7. Module Definition
- *
- * Property names are interned, for speed.
- * Units are interned, too.
- */
-
 /*********************************************************************
- *  DOCSTRINGS & ERROR MESSAGES
+ * TABLE OF CONTENTS
+ *********************************************************************
+ * 1. Location
+ *    - Helper Functions
+ *    - Constructor & Destructor
+ *    - Methods
+ *    - Operators
+ *    - Type Definition
+ * 2. Type
+ *    - Helper Functions
+ *    - Constructor & Destructor
+ *    - Methods
+ *    - Operators
+ *    - Type Definition
+ * 3. Token
+ *    - Helper Functions
+ *    - Constructor & Destructor
+ *    - Methods
+ *    - Operators
+ *    - Type Definition
+ * 4. Module Definition
+ *    - Module initializer
  *********************************************************************/
 
-#define MODULE_DOC "The token module (c implementation)."
-
-/* =========================== Location =========================== */
-#define LOCATION_DOC "A span over indices in text."
-#define LOCATION_START_DOC "The index at which this Token begins."
-#define LOCATION_END_DOC "The index at which this Token ends."
-#define LOCATION_UNIT_DOC "The index unit used by this location."
-#define LOCATION_SOURCE_DOC "An identifier naming the text over which \
-this location is defined."
-#define LOCATION_LENGTH_DOC "Location.length(self) -> int\n\
-Return the length of this Location."
-#define LOCATION_START_LOC_DOC "Location.start_loc(self) -> Location\n\
-Return a zero-length location at the start offset of this location."
-#define LOCATION_END_LOC_DOC "Location.end_loc(self) -> Location\n\
-Return a zero-length location at the end offset of this location."
-#define LOCATION_UNION_DOC "Location.union(self, other) -> Location\n\
-If self and other are contiguous, then return a new location \n\
-spanning both self and other; otherwise, raise an exception."
-#define LOCATION_PREC_DOC "Location.prec(self, other) -> boolean\n\
-@return: True if self occurs entirely before other.  In particular,\n\
-return true iff self.end <= other.start, and self!=other."
-#define LOCATION_SUCC_DOC "Location.succ(self, other) -> boolean\n\
-@return: True if self occurs entirely after other.  In particular,\n\
-return true iff other.end <= self.start, and self!=other."
-#define LOCATION_OVERLAPS_DOC "Location.overlaps(self, other) -> boolean\n\
-@return: True if self overlaps other.  In particular, return true\n\
-iff self.start <= other.start < self.end; or \n\
-other.start <= self.start < other.end."
-#define LOCATION_SELECT_DOC "Location.select(self, list) -> list\n\
-@return The sublist specified by this location.  I.e., return \n\
-list[self.start:self.end]"
-
-#define LOC_ERROR_001 "A location's start index must be less than \
-or equal to its end index."
-#define LOC_ERROR_002 "Locations can only be added to Locations"
-#define LOC_ERROR_003 "Locations have incompatible units"
-#define LOC_ERROR_004 "Locations have incompatible sources"
-#define LOC_ERROR_005 "Locations are not contiguous"
-
-/* ============================= Type ============================== */
-#define TYPE_DOC "A unit of language, such as a word or sentence."
-#define TYPE_ERROR_001 "The Type constructor only accepts keyword arguments"
-#define TYPE_ERROR_002 "Property is not defined for this Type"
-#define TYPE_ERROR_003 "Type.extend only accepts keyword arguments"
-#define TYPE_ERROR_004 "Type does not define selected property"
-#define TYPE_ERROR_005 "Types are immutable objects"
-
-/* ============================ Token ============================== */
-#define TOKEN_DOC "An occurance of a type"
-#define TOKEN_ERROR_001 "Bad Token: Token.__init__ was never called."
-#define TOKEN_ERROR_002 "Tokens are immutable objects"
-
 /*********************************************************************
- *  FORWARD DECLARATIONS
+ *  LOCATION
  *********************************************************************/
 
-static nltkLocation *
-nltkLocation__add__(nltkLocation *self, nltkLocation *other);
-
-/*********************************************************************
- *  LOCATION CONTEXT
- *********************************************************************/
-
-/* The cache for location contexts */
-static nltkLocationContext *lc_cache[LC_CACHE_SIZE];
-
-/* Return a LocationContext structure that points at the given unit
- * and source.  A small cache allows LocationContexts for common
- * (unit,source) pairs to be reused.
- *
- * The reference count for the unit & source will be incremented by
- * one when a new LocationContext is constructed to point at them.
- *
- * The given unit is case-normalized (to lower case).  Note that this
- * means that the unit pointed to by the location context might not be
- * the same unit that was provided. */
-nltkLocationContext *getLocationContext(PyObject *unit, PyObject *source) {
-    static int next_cell = -1;
-    int result, i;
-    
-    /* Cache initialization */
-    if (next_cell < 0) {
-        for (i=0; i<LC_CACHE_SIZE; i++) {
-            lc_cache[i] = NULL;
-        }
-        next_cell = 0;
-    }
-
-    /* Downcase the unit. */
-    unit = normalizeUnitCase(unit);
-    
-    /* Intern the unit, so we can do faster compares. */
-    if (unit != NULL && unit != Py_None)
-        PyString_InternInPlace(&unit);
-
-    /* Search for the given unit/source pair in the cache. 
-     * Check cache entries in most-recently-cached order. */
-    for (i = (next_cell+LC_CACHE_SIZE-1)%LC_CACHE_SIZE;
-                 i != next_cell;
-                 i = (i+LC_CACHE_SIZE-1)%LC_CACHE_SIZE)
-        if (lc_cache[i] != NULL) {
-            if (unit == lc_cache[i]->unit) {
-                if (PyObject_Cmp(source, lc_cache[i]->source, &result) == -1)
-                    return NULL;
-                else if (result == 0) {
-                    /* We found a match!  Note that we must decrease
-                     * the reference count of the unit string, since
-                     * normalizing its case produced a new reference. */
-                    Py_DECREF(unit);
-                    lc_cache[i]->refcount += 1;
-                    return lc_cache[i];
-                }
-            }
-        }
-
-    /* We didn't find a match; so pick a cell to replace, and build a
-     * new location context there.  This should be fairly infrequent,
-     * so it would be possible to put a smarter algorithm here (e.g.,
-     * one that sorts the location contexts by refcount, starting at
-     * index 1, and puts the new lc at index 0). */
-
-    /* Reuse empty cells when possible. */
-    for (i=0; i<LC_CACHE_SIZE; i++)
-        if (lc_cache[i] == NULL) {
-            next_cell = i;
-            break;
-        }
-
-    /* Build the new location context.  We must increment the ref
-     * count for source, but not for unit (normalizeUnitCase already
-     * generated a new reference). */
-    i = next_cell;
-    lc_cache[i] = PyMem_Malloc(sizeof(nltkLocationContext));
-    lc_cache[i]->refcount = 1;
-    lc_cache[i]->unit = unit;
-    lc_cache[i]->source = source;
-    Py_INCREF(source);
-
-    /* Update the next_cell pointer. */
-    next_cell = (next_cell+1)%LC_CACHE_SIZE;
-
-    /* Return the newly cached location context */
-    return lc_cache[i];
-}
+/* =================== Location Helper Functions =================== */
 
 /* If the given string is in lower case, then return it; otherwise,
  * construct a new string that is the downcased version of s.  The
@@ -217,7 +71,8 @@ PyObject *normalizeUnitCase(PyObject *string)
     }
     
     /* Otherwise, downcase it. */
-    buffer = PyMem_Malloc((size+1)*sizeof(char));
+    if ((buffer = PyMem_Malloc((size+1)*sizeof(char)))==NULL)
+        return PyErr_NoMemory();
     if (buffer == NULL) return NULL;
     s2 = buffer;
     buffer[size] = 0;
@@ -229,15 +84,97 @@ PyObject *normalizeUnitCase(PyObject *string)
     return string;
 }
 
+/* A "Location Context" is a (unit, source) tuple.  Since we're often
+ * dealing with many tokens that all have the same unit and source, we
+ * can save 1 word/location by havinglocations point to a shared
+ * location context.  Location contexts are entirely internal
+ * to the ctoken implementation; they should never be visible from the
+ * python interface.  */
+#define GET_LC_UNIT(lc) PyTuple_GET_ITEM((lc), 0)
+#define GET_LC_SOURCE(lc) PyTuple_GET_ITEM((lc), 1)
+#define SET_LC_UNIT(lc, v) PyTuple_SET_ITEM((lc), 0, (v))
+#define SET_LC_SOURCE(lc, v) PyTuple_SET_ITEM((lc), 1, (v))
+
+/* Maintain a cache of the most recently used location contexts, which
+ * allows us to reuse them when new locations are defined.  Use
+ * getLocationContext to get a new location context for a location. */
+static PyObject *lc_cache[LC_CACHE_SIZE];
+
+/* Return a new reference to a location context tuple that points at
+ * the given unit and source (the unit is case-normalized).  A small
+ * cache allows location contexts for common (unit,source) pairs to be
+ * reused. */
+PyObject *getLocationContext(PyObject *unit, PyObject *source) {
+    static int next_cell = -1;
+    int result, i;
+    
+    /* Cache initialization */
+    if (next_cell < 0) {
+        for (i=0; i<LC_CACHE_SIZE; i++) {
+            lc_cache[i] = NULL;
+        }
+        next_cell = 0;
+    }
+
+    /* Downcase the unit.  Note that this produces a new reference
+     * (so we can use PyString_InternInPlace). */
+    unit = normalizeUnitCase(unit);
+    
+    /* Intern the unit, so we can do faster compares. */
+    if (unit != NULL && unit != Py_None)
+        PyString_InternInPlace(&unit);
+
+    /* Search for the given unit/source pair in the cache. 
+     * Check cache entries in most-recently-cached order. */
+    for (i = (next_cell+LC_CACHE_SIZE-1)%LC_CACHE_SIZE;
+                 i != next_cell;
+                 i = (i+LC_CACHE_SIZE-1)%LC_CACHE_SIZE)
+        if (lc_cache[i] != NULL) {
+            if (unit == GET_LC_UNIT(lc_cache[i])) {
+                if (PyObject_Cmp(source, GET_LC_SOURCE(lc_cache[i]),
+                                 &result) == -1)
+                    return NULL;
+                else if (result == 0) {
+                    /* We found a match!  Note that we must decrease
+                     * the reference count of the unit string, since
+                     * normalizing its case produced a new reference. */
+                    Py_DECREF(unit);
+                    Py_INCREF(lc_cache[i]);
+                    return lc_cache[i];
+                }
+            }
+        }
+
+    /* We didn't find a match; so pick a cell to replace, and build a
+     * new location context there.  This should be fairly infrequent,
+     * so it would be possible to put a smarter algorithm here (e.g.,
+     * one that sorts the location contexts by refcount, starting at
+     * index 1, and puts the new lc at index 0). */
+
+    /* Build the new location context.  We must increment the ref
+     * count for source, but not for unit (normalizeUnitCase already
+     * generated a new reference). */
+    i = next_cell;
+    if ((lc_cache[i] = PyTuple_New(2)) == NULL) return NULL;
+    SET_LC_UNIT(lc_cache[i], unit);
+    SET_LC_SOURCE(lc_cache[i], source);
+    Py_INCREF(source);
+
+    /* Update the next_cell pointer. */
+    next_cell = (next_cell+1)%LC_CACHE_SIZE;
+
+    /* Return the newly cached location context */
+    return lc_cache[i];
+}
+
 /* Return true iff the units & source of the given location context
  * are equal.  Otherwise, set an appropriate exception and return
  * 0. */
-int check_location_contexts_eq(nltkLocationContext *c1,
-                            nltkLocationContext *c2) {
+int check_location_contexts_eq(PyObject *c1, PyObject *c2) {
     int result = 0;
     
     /* Check that the units match */
-    if (PyObject_Cmp(c1->unit, c2->unit, &result) == -1)
+    if (PyObject_Cmp(GET_LC_UNIT(c1), GET_LC_UNIT(c2), &result) == -1)
         return 0;
     if (result != 0) {
         PyErr_SetString(PyExc_ValueError, LOC_ERROR_003);
@@ -245,7 +182,7 @@ int check_location_contexts_eq(nltkLocationContext *c1,
     }
 
     /* Check that the sources match */
-    if (PyObject_Cmp(c1->source, c2->source, &result) == -1)
+    if (PyObject_Cmp(GET_LC_SOURCE(c1), GET_LC_SOURCE(c2), &result) == -1)
         return 0;
     if (result != 0) {
         PyErr_SetString(PyExc_ValueError, LOC_ERROR_004);
@@ -255,27 +192,12 @@ int check_location_contexts_eq(nltkLocationContext *c1,
     return 1;
 }
 
-/* Deallocate the space associated with the given location context. */
-int destroy_location_context(nltkLocationContext *lc) {
-    int i;
-    
-    /* If this lc is in the cache, then remove it. */
-    for (i=0; i<LC_CACHE_SIZE; i++)
-        if (lc_cache[i] == lc)
-            lc_cache[i] = NULL;
-    
-    /* Free any memory associated with this location context. */
-    Py_XDECREF(lc->unit);
-    Py_XDECREF(lc->source);
-    PyMem_Free(lc);
-    return 1;
-}
-
-/*********************************************************************
- *  LOCATION
- *********************************************************************/
-
-/* =================== Location Helper Functions =================== */
+/* A faster version of check_location_contexts_eq, that first checks if
+ * c1==c2.  This should actually be the case most of the time, because
+ * the location context cache lets us reuse location context
+ * objects. */
+#define CHECK_LOCATION_CONTEXTS_EQ(c1, c2) \
+      (((c1)==(c2)) || check_location_contexts_eq((c1), (c2)))
 
 /* Return a copy of the given location */
 nltkLocation *nltkLocation_copy(nltkLocation* original)
@@ -291,7 +213,7 @@ nltkLocation *nltkLocation_copy(nltkLocation* original)
     loc->end = nltkLocation_END(original);
 
     /* Fill in unit & source values. */
-    locationContext_INCREF(original->context);
+    Py_INCREF(original->context);
     loc->context = original->context;
 
     return loc;
@@ -365,7 +287,7 @@ nltkLocation__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
 static void
 nltkLocation__del__(nltkLocation* self)
 {
-    locationContext_DECREF(self->context);
+    Py_DECREF(self->context);
     self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -409,6 +331,10 @@ static nltkLocation *nltkLocation_end_loc(nltkLocation* self, PyObject *args)
         return loc;
     }
 }
+
+/* Forward declaration. */
+static nltkLocation *nltkLocation__add__(nltkLocation *self,
+                                         nltkLocation *other);
 
 /* Location.union(self, other) */
 /* If self and other are contiguous, then return a new location
@@ -499,35 +425,35 @@ static PyObject *nltkLocation_select(nltkLocation* self, PyObject *args)
 static PyObject *nltkLocation__repr__(nltkLocation *self)
 {
     if (nltkLocation_END(self) == self->start+1) {
-        if (self->context == NULL || self->context->unit == Py_None)
+        if (self->context == NULL || nltkLocation_UNIT(self) == Py_None)
             return PyString_FromFormat("@[%ld]", self->start);
         else
             return PyString_FromFormat("@[%ld%s]", self->start,
-                                   PyString_AS_STRING(self->context->unit));
+                              PyString_AS_STRING(nltkLocation_UNIT(self)));
     }
-    else if (self->context == NULL || self->context->unit == Py_None)
+    else if (self->context == NULL || nltkLocation_UNIT(self) == Py_None)
         return PyString_FromFormat("@[%ld:%ld]", self->start,
                                    nltkLocation_END(self));
     else
         return PyString_FromFormat("@[%ld%s:%ld%s]", self->start,
-                                   PyString_AS_STRING(self->context->unit),
-                                   nltkLocation_END(self),
-                                   PyString_AS_STRING(self->context->unit));
+                              PyString_AS_STRING(nltkLocation_UNIT(self)),
+                              nltkLocation_END(self),
+                              PyString_AS_STRING(nltkLocation_UNIT(self)));
 }
 
 /* str(self) */
 static PyObject *nltkLocation__str__(nltkLocation *self)
 {
-    if (self->context == NULL || self->context->source == Py_None)
+    if (self->context == NULL || nltkLocation_SOURCE(self) == Py_None)
         return nltkLocation__repr__(self);
-    else if (nltkLocation_Check(self->context->source))
+    else if (nltkLocation_Check(nltkLocation_SOURCE(self)))
         return PyString_FromFormat("%s%s",
-                   PyString_AS_STRING(nltkLocation__repr__(self)),
-                   PyString_AS_STRING(PyObject_Str(self->context->source)));
+              PyString_AS_STRING(nltkLocation__repr__(self)),
+              PyString_AS_STRING(PyObject_Str(nltkLocation_SOURCE(self))));
     else
         return PyString_FromFormat("%s@%s",
-                   PyString_AS_STRING(nltkLocation__repr__(self)),
-                   PyString_AS_STRING(PyObject_Repr(self->context->source)));
+              PyString_AS_STRING(nltkLocation__repr__(self)),
+              PyString_AS_STRING(PyObject_Repr(nltkLocation_SOURCE(self))));
 }
 
 /* len(self) */
@@ -600,6 +526,13 @@ static nltkLocation *nltkLocation__add__(nltkLocation *self,
     }
 }
 
+/* getattr(self, name) */
+/* We need to define this ourselves (rather than using the default
+ * definition & tp_members) for two reasons: (i) if self is an
+ * nltkLen1Location, then we have to "fake" the end attribute; and
+ * (ii) if name is "unit" or "source" then we have to get the value
+ * indirectly, via the location cotnext.  But we use the generic
+ * version of getattr as a fallback. */
 static PyObject *nltkLocation__getattro__(nltkLocation *self,
                                           PyObject *name) {
     if (strcmp(PyString_AS_STRING(name), "start") == 0)
@@ -611,8 +544,8 @@ static PyObject *nltkLocation__getattro__(nltkLocation *self,
             Py_INCREF(Py_None);
             return Py_None;
         } else {
-            Py_INCREF(self->context->unit);
-            return self->context->unit;
+            Py_INCREF(nltkLocation_UNIT(self));
+            return nltkLocation_UNIT(self);
         }
     }
     if (strcmp(PyString_AS_STRING(name), "source") == 0) {
@@ -620,8 +553,8 @@ static PyObject *nltkLocation__getattro__(nltkLocation *self,
             Py_INCREF(Py_None);
             return Py_None;
         } else {
-            Py_INCREF(self->context->source);
-            return self->context->source;
+            Py_INCREF(nltkLocation_SOURCE(self));
+            return nltkLocation_SOURCE(self);
         }
     }
 
@@ -672,7 +605,7 @@ static PyMethodDef nltkLocation_methods[] = {
 };
 
 /* Location operators. */
-/* Use the tp_as_sequence protocol to implement len, concat, etc. */
+/* Use the tp_as_sequence protocol to implement len & concat. */
 static PySequenceMethods nltkLocation_as_sequence = {
     (inquiry)nltkLocation__len__,      /* sq_length */
     (binaryfunc)nltkLocation__add__,   /* sq_concat */
@@ -765,49 +698,97 @@ static PyTypeObject nltkLen1LocationType = {
 };
 
 /*********************************************************************
- *  PROPERTY NAME LISTS
+ *  TYPE
  *********************************************************************/
+/* Check immutability of property values? */
 
-#define PNL_CACHE_SIZE 20
-static PyListObject *pnl_cache[PNL_CACHE_SIZE];
+/* ===================== Type Helper Functions ===================== */
 
-static PyListObject *getPropertyNameListFromDict(PyObject *properties) {
+/* The current type implementation makes use of "property arrays",
+ * which are arrays of alternating property names & values:
+ *
+ *    {name[0], val[0], name[1], val[1], ..., name[n-1], val[n-1]}
+ *
+ * These arrays are used as intermediates for creating new nltkType
+ * objects.  In particular, nltkTypeFromPropArray() takes a property
+ * array, and uses it to create a new nltkType.
+ *
+ * The following macros can be used to access elements in a property
+ * array.  Note that they can be used as LHS values.
+ */
+#define PropArray_NAME(prop_array, i) ((prop_array)[2*(i)])
+#define PropArray_VALUE(prop_array, i) ((prop_array)[2*(i)+1])
+
+/* A "property name list" is a PyList containing a list of property
+ * names.  Since we're often dealing with many tokens that have the
+ * same set of properties, we can save 1 word/token/property by having
+ * types point to a shared property name list.  To make property name
+ * lists easier to compare, we always keep them in sorted order.  We
+ * intern the property names, so each string has a unique id, and use
+ * those ids as keys to sort the list of names.  Property name lists
+ * are entirely internal to the ctoken implementation; they should
+ * never be visible from the python interface. */
+ static PyObject *pnl_cache[PNL_CACHE_SIZE];
+
+/* Return a new reference to a property name list containing the
+ * property names from the given property array.  The property array
+ * must be sorted, and all of the property names that it contains must
+ * be interned.
+ *
+ * This function steals one reference from each property name in the
+ * property array.  This is done for convenience, since we previously
+ * had to increase all the property name reference counts (to prevent
+ * PyString_InternInPlace from decreasing the reference count of a
+ * borrowed oject.
+ */
+static PyObject *getPropertyNameList(PyObject *prop_array[], int size) {
     static int next_cell = -1;
     int i, j;
-    int size = PyDict_Size(properties);
-    
+
     /* Cache initialization */
     if (next_cell < 0) {
-        for (i=0; i<PNL_CACHE_SIZE; i++) {
+        for (i=0; i<PNL_CACHE_SIZE; i++)
             pnl_cache[i] = NULL;
-        }
         next_cell = 0;
     }
 
-    /* Search for the given set of properties.
+    /* Check the cache for the property name list. 
      * Check cache entries in MRU order. */
-    for (i = (next_cell+PNL_CACHE_SIZE-1)%PNL_CACHE_SIZE;
-                 i != next_cell;
-                 i = (i+PNL_CACHE_SIZE-1)%PNL_CACHE_SIZE)
-        if (pnl_cache[i] != NULL)
-            if (PyList_GET_SIZE(pnl_cache[i]) == size) {
-                for (j=0; j<size; j++) {
-                    PyObject *pname = PyList_GET_ITEM(pnl_cache[i], j);
-                    if (PyDict_GetItem(properties, pname) == NULL)
-                        j = size+10; /* Mismatch. */
-                }
-                if (j == size) {
-                    /* Match. */
-                    Py_INCREF(pnl_cache[i]);
-                    return pnl_cache[i];
-                }
+    for (i=(next_cell+PNL_CACHE_SIZE-1)%PNL_CACHE_SIZE;
+         i != next_cell;
+         i = (i+PNL_CACHE_SIZE-1)%PNL_CACHE_SIZE)
+        if ((pnl_cache[i] != NULL) &&
+            (PyList_GET_SIZE(pnl_cache[i]) == size)) {
+            for (j=0; j<size; j++)
+                if (PyList_GET_ITEM(pnl_cache[i], j) !=
+                    PropArray_NAME(prop_array,j))
+                    j = size+1; /* Mismatch; go to the next cache cell */
+            if (j == size) {
+                /* This cache cell matches prop_array, so return it.
+                 * But first, we have to make sure the reference
+                 * counts are correct.  Add a reference count for the
+                 * cache entry, and remove one for each property name
+                 * (since we're supposed to steal property name
+                 * references). */
+                Py_INCREF(pnl_cache[i]);
+                for (j=0; j<size; j++)
+                    Py_DECREF(PropArray_NAME(prop_array,j));
+                return pnl_cache[i];
             }
+        }
 
-    /* It wasn't present in the cache; evict something and add it to
-     * the cache. */
+    /* The given set of properties wasn't present in the cache; evict
+     * something and add it to the cache.  Note that we have to incref
+     * the new list twice: once for the cache entry, and once for the
+     * return value. */
     i = next_cell;
     Py_XDECREF(pnl_cache[i]);
-    pnl_cache[i] = PyDict_Keys(properties);
+    if ((pnl_cache[i] = PyList_New(size))==NULL) return NULL;
+    Py_INCREF(pnl_cache[i]);
+    for (j=0; j<size; j++) {
+        Py_INCREF(PropArray_NAME(prop_array,j));
+        PyList_SET_ITEM(pnl_cache[i], j, PropArray_NAME(prop_array,j));
+    }
 
     /* Update the next_cell pointer. */
     next_cell = (next_cell+1)%PNL_CACHE_SIZE;
@@ -815,13 +796,6 @@ static PyListObject *getPropertyNameListFromDict(PyObject *properties) {
     /* Return the new list. */
     return pnl_cache[i];
 }
-
-/*********************************************************************
- *  TYPE
- *********************************************************************/
-/* Check immutability?? */
-
-/* ===================== Type Helper Functions ===================== */
 
 #undef DEBUG_SORT_PROPERTY_ARRAY
 /* Sort the given array of properties, using the pointers for the
@@ -834,47 +808,92 @@ static PyListObject *getPropertyNameListFromDict(PyObject *properties) {
  * sort).  This algorithm is good for inserting new items to a
  * sorted list, too (e.g., for nltkType_extend).
  */
-void sortPropertyArray(PyObject *properties[], int size) {
+void sortPropertyArray(PyObject *prop_array[], int size) {
     int i;             /* The index of the property we're inserting. */
     int j;             /* The index we're checking for insertion. */
     PyObject *cur_key; /* The property that we're currently inserting */
     PyObject *cur_val; /*     (cur_key = name; cur_val = value). */
 
-    /* At the start of each iteration, properties [0:i] are sorted. */
+    /* At the start of each iteration, prop_array [0:i] are sorted. */
     for (i=1; i<size; i++) {
 
         /* Short-circuit for already-sorted list items */
-        if (properties[i*2-2] <= properties[i*2]) continue;
+        if (PropArray_NAME(prop_array,i-1) <=
+            PropArray_NAME(prop_array, i)) continue;
         
         /* Store property[i] as cur_key and cur_val. */
-        cur_key = properties[i*2];
-        cur_val = properties[i*2+1];
+        cur_key = PropArray_NAME(prop_array, i);
+        cur_val = PropArray_VALUE(prop_array, i);
 
         /* Move backwards through the sorted sublist, moving
          * properties forwards by one, until we find the proper place
          * to insert the "current" property. */
-        for (j=i; (properties[j*2-2] > cur_key) && (j>0); j--) {
+        for (j=i; (PropArray_NAME(prop_array,j-1) > cur_key) && (j>0); j--) {
             /* Replace entry j with entry j-1 */
-            properties[j*2] = properties[j*2-2];
-            properties[j*2+1] = properties[j*2-2+1];
+            PropArray_NAME(prop_array, j) = PropArray_NAME(prop_array, j-1);
+            PropArray_VALUE(prop_array, j) = PropArray_VALUE(prop_array, j-1);
         }
 
         /* Insert the current key at j. */
-        properties[j*2] = cur_key;
-        properties[j*2+1] = cur_val;
+        PropArray_NAME(prop_array, j) = cur_key;
+        PropArray_VALUE(prop_array, j) = cur_val;
     }
 
 #ifdef DEBUG_SORT_PROPERTY_ARRAY
-    for (i=1; i<size; i++)
-        if (properties[i*2-2] > properties[i*2]) {
+    i=0;
+    for (i=1; i<size; i++) {
+        if (PropArray_NAME(prop_array,i-1) > PropArray_NAME(prop_array, i)) {
             printf("ERROR: sortPropertyArray() failed!\n");
             exit(-1);
         }
-        else if (properties[i*2-2] == properties[i*2]) {
+        else if (PropArray_NAME(prop_array, i-1) ==
+                 PropArray_NAME(prop_array, i)) {
             printf("ERROR: duplicate definitions for a property!\n");
             exit(-1);
-        }    
+        }
+    }
 #endif
+}
+
+/* Construct and return a new nltkType object, given a subtype of
+ * nltkTypeType and a property array.  The type is used to create the
+ * object, and the property array is used to fill in its property
+ * names and values.
+ * 
+ * This function steals one reference from each property name in the
+ * property array.  This is done for convenience, since we previously
+ * had to increase all the property name reference counts (to prevent
+ * PyString_InternInPlace from decreasing the reference count of a
+ * borrowed oject.
+ */
+nltkType *
+nltkTypeFromPropArray(PyTypeObject* type, PyObject *prop_array[], int size)
+{
+    nltkType *self;
+    int i;
+
+    /* Sort the property array. */
+    sortPropertyArray(prop_array, size);
+
+    /* Allocate space for the new object. */
+    if ((self = (nltkType*)type->tp_alloc(type, size)) == NULL)
+        return NULL;
+    self->ob_size = size;
+
+    /* Extract the property names from prop_array.  Note that this
+    * steals our owned references to the names. */
+    self->prop_names = getPropertyNameList(prop_array, size);
+    if (self->prop_names == NULL) {
+        Py_DECREF(self);
+        return NULL;
+    }
+
+    /* Extract the property values from prop_array. */
+    for (i=0; i<size; i++)
+        self->prop_vals[i] = PropArray_VALUE(prop_array, i);
+
+    /* Return the new object. */
+    return self;
 }
 
 /* ================== Constructor and Destructor =================== */
@@ -883,14 +902,13 @@ void sortPropertyArray(PyObject *properties[], int size) {
 /* Create a new Type object, and initialize its properties array.  We
  * need to initialize the property array here (and not in __init__)
  * because we need to know how big to make the new object. */
-static PyObject*
+static nltkType*
 nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
 {
     PyObject *name, *value;
+    int size, i, pos;
+    PyObject **prop_array;
     nltkType *self;
-    int size;
-    int pos = 0;
-    int i;
     
     /* Check that there are no positional arguments. */
     if (PyObject_Length(args) != 0) {
@@ -902,29 +920,32 @@ nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
     if (keywords == NULL) {
         if ((self = (nltkType*)type->tp_alloc(type, 0)) == NULL)
             return NULL;
+        self->prop_names = PyList_New(0);
         self->ob_size = 0;
-        return (PyObject *)self;
+        return self;
     }
-
+    
     /* Check the number of keyword arguments. */
     size = PyDict_Size(keywords);
 
-    /* Allocate space for the new object. */
-    if ((self = (nltkType*)type->tp_alloc(type, size)) == NULL)
-        return NULL;
-    self->ob_size = size;
+    /* Create the property array.  This is an array of alternating
+     * names & values. */
+    if ((prop_array = PyMem_Malloc(2*size*sizeof(PyObject*)))==NULL)
+        return (nltkType*) PyErr_NoMemory();
 
-    /* Initialize the properties */
-    for (i=0; PyDict_Next(keywords, &pos, &name, &value); i++) {
-        Py_INCREF(name);
+    /* Copy the keyword arguments into prop_array. */
+    for (i=0,pos=0; PyDict_Next(keywords, &pos, &name, &value); i++) {
         Py_INCREF(value);
+        Py_INCREF(name);
         PyString_InternInPlace(&name);
-        nltkType_PROP_NAME(self, i) = name;
-        nltkType_PROP_VALUE(self, i) = value;
+        PropArray_NAME(prop_array, i) = name;
+        PropArray_VALUE(prop_array, i) = value;
     }
 
-    /* Return the new object. */
-    return (PyObject *)self;
+    /* Free the property array and return the new object. */
+    self = nltkTypeFromPropArray(type, prop_array, size);
+    PyMem_Free(prop_array);
+    return self;
 }
 
 /* Type.__del__(self) */
@@ -935,10 +956,9 @@ nltkType__del__(nltkType *self)
     int i;
     
     /* Delete references to property names & values */
-    for (i=0; i<self->ob_size; i++) {
-        Py_DECREF(nltkType_PROP_NAME(self, i));
+    Py_DECREF(self->prop_names);
+    for (i=0; i<self->ob_size; i++)
         Py_DECREF(nltkType_PROP_VALUE(self, i));
-    }
     
     /* Free self. */
     self->ob_type->tp_free((PyObject*)self);
@@ -955,17 +975,23 @@ static PyObject *nltkType_get(nltkType *self, PyObject *args)
     /* Parse the arguments. */
     if (!PyArg_ParseTuple(args, "S:Type.get", &property))
         return NULL;
+
+    /* Intern the property name.  We need to incref first, because we
+     * don't want to accidentally decref a borrowed reference. */
+    Py_INCREF(property);
     PyString_InternInPlace(&property);
 
     /* Look up the value */
     for (i=0; i<self->ob_size; i++)
         if (property == nltkType_PROP_NAME(self, i)) {
             Py_INCREF(nltkType_PROP_VALUE(self, i));
+            Py_DECREF(property);
             return nltkType_PROP_VALUE(self, i);
         }
 
     /* We couldn't find it. */
     PyErr_SetString(PyExc_KeyError, TYPE_ERROR_002);
+    Py_DECREF(property);
     return NULL;
 }
 
@@ -978,16 +1004,22 @@ static PyObject *nltkType_has(nltkType *self, PyObject *args)
     /* Parse the arguments. */
     if (!PyArg_ParseTuple(args, "S:Type.get", &property))
         return NULL;
+    
+    /* Intern the property name.  We need to incref first, because we
+     * don't want to accidentally decref a borrowed reference. */
+    Py_INCREF(property);
     PyString_InternInPlace(&property);
 
     /* Look up the value */
     for (i=0; i<self->ob_size; i++)
         if (property == nltkType_PROP_NAME(self, i)) {
             Py_INCREF(nltkType_PROP_VALUE(self, i));
+            Py_DECREF(property);
             return PyInt_FromLong(1);
         }
 
     /* We couldn't find it. */
+    Py_DECREF(property);
     return PyInt_FromLong(0);
 }
 
@@ -1011,12 +1043,10 @@ static PyObject *nltkType_properties(nltkType *self, PyObject *args)
 static nltkType*
 nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords)
 {
-    PyTypeObject *type = self->ob_type;
-    nltkType *newobj;
     PyObject *name, *value;
-    int size, i, j;
-    static char static_dupcheck[256];
-    char *dupcheck;
+    int size, i, n;
+    PyObject **prop_array;
+    nltkType *newobj;
     
     /* Check that there are no positional arguments. */
     if (PyObject_Length(args) != 0) {
@@ -1030,147 +1060,110 @@ nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords)
         return self;
     }
 
-    /* Get space for the duplicate property check.  If there are fewer
-     * than 256 properties (the common case), then use the static
-     * array; otherwise, we need to dynamically allocate one. */
-    if (self->ob_size < 256)
-        dupcheck = static_dupcheck;
-    else
-        dupcheck = PyMem_Malloc((self->ob_size)*sizeof(char));
-
-    /* Calculate the space needed, and scan for duplicates.
-     * dupcheck[i] is true iff i is a duplicate property. */
+    /* Create the property array.  This is an array of alternating
+     * names & values. */
     size = self->ob_size + PyDict_Size(keywords);
-    for (i=0; i<self->ob_size; i++) {
-        name = nltkType_PROP_NAME(self, i);
-        dupcheck[i] = (PyDict_GetItem(keywords, name) != NULL);
-        if (dupcheck[i]) size -= 1;
-    }
+    if ((prop_array = PyMem_Malloc(2*size*sizeof(PyObject*)))==NULL)
+        return (nltkType*) PyErr_NoMemory();
 
-    /* Allocate space for the new object. */
-    newobj = (nltkType*)type->tp_alloc(type, size);
-    if (newobj == NULL) return NULL;
-    newobj->ob_size = size;
-
-    /* Copy the properties from self.  "i" is the index into
-     * self->properties, and "j" is the index into
-     * outobj->properties. */
-    for (i=0,j=0; i<self->ob_size; i++) {
+    /* Copy the properties from self into prop_array.  "i" is the
+     * index into self->properties, and "n" is the index into
+     * prop_array. */
+    for (i=0,n=0; i<self->ob_size; i++) {
         name = nltkType_PROP_NAME(self, i);
         value = nltkType_PROP_VALUE(self, i);
 
-        /* Don't copy properties that are overridden. */
-        if (!dupcheck[i]) {
+        /* If the property isn't overridden, then copy it. */
+        if (PyDict_GetItem(keywords, name) == NULL) {
             Py_INCREF(name);
             Py_INCREF(value);
-            PyString_InternInPlace(&name);
-            nltkType_PROP_NAME(newobj, j) = name;
-            nltkType_PROP_VALUE(newobj, j) = value;
-            j++;
+            PropArray_NAME(prop_array, n) = name;
+            PropArray_VALUE(prop_array, n) = value;
+            n++;
         }
     }
 
-    /* Copy the properties from the keyword arguments.  "i" is the
-     * positional index used to cycle through the dictionary; "j" is
-     * the index into outobj->properties. */
-    for (i=0; PyDict_Next(keywords, &i, &name, &value); j++) {
+    /* Copy the properties from the keyword arguments inot prop_array.
+     * "i" is the positional index used to cycle through the
+     * dictionary; "n" is the index into prop_array. */
+    for (i=0; PyDict_Next(keywords, &i, &name, &value); n++) {
         Py_INCREF(name);
         Py_INCREF(value);
         PyString_InternInPlace(&name);
-        nltkType_PROP_NAME(newobj, j) = name;
-        nltkType_PROP_VALUE(newobj, j) = value;
+        PropArray_NAME(prop_array, n) = name;
+        PropArray_VALUE(prop_array, n) = value;
     }
 
-    /* Free the duplication check array, if we allocated it. */
-    if (self->ob_size >= 256)
-        PyMem_Free(dupcheck);
-
-    assert(j==size);
-
-    /* Return the new object. */
+    /* Free the property array and return the new object.  Note that
+     * we use "n" for the property array size, not "size".  (n>size
+     * iff any properties were redefined.) */
+    newobj = nltkTypeFromPropArray(self->ob_type, prop_array, n);
+    PyMem_Free(prop_array);
     return newobj;
 }
 
 /* Type.select(self, *properties) */
 static nltkType*
-nltkType_select(nltkType *self, PyObject *properties)
+nltkType_select(nltkType *self, PyObject *args)
 {
-    PyTypeObject *type = self->ob_type;
     nltkType *newobj;
-    int size = PyTuple_GET_SIZE(properties);
+    int size = PyTuple_GET_SIZE(args);
     int i, j, n;
-    static char static_dupcheck[256];
-    char *dupcheck;
+    PyObject **prop_array;
+    PyObject *prop_name, *prop_value;
 
-    /* If properties==(), then just return ourself */
+    /* If args==(), then just return ourself */
     if (size == 0) {
         Py_INCREF(self);
         return self;
     }
 
-    /* Get space for the duplicate property check.  If there are fewer
-     * than 256 properties (the common case), then use the static
-     * array; otherwise, we need to dynamically allocate one. */
-    if (self->ob_size < 256)
-        dupcheck = static_dupcheck;
-    else
-        dupcheck = PyMem_Malloc((self->ob_size)*sizeof(char));
+    /* Intern the given property names.  This is somewhat underhanded,
+     * because we're actually modifying the args tuple that we were
+     * passed.  But the changes shouldn't be noticible (except by ids
+     * of the names in the tuple).  We also use this loop to check
+     * that the arguments are all strings. */
+    for (i=0; i<size; i++)
+        if (PyString_Check(PyTuple_GET_ITEM(args, i)))
+            PyString_InternInPlace(&PyTuple_GET_ITEM(args, i));
+        else {
+            PyErr_SetString(PyExc_TypeError, TYPE_ERROR_006);
+            return NULL;
+        }
 
-    /* Zero-out the duplicate check list */
-    bzero(dupcheck, self->ob_size);
+    /* Create the property array.  This is an array of alternating
+     * names & values. */
+    size = PyTuple_GET_SIZE(args);
+    if ((prop_array = PyMem_Malloc(2*size*sizeof(PyObject*)))==NULL)
+        return (nltkType*) PyErr_NoMemory();
 
-    /* Allocate space for the new object. */
-    newobj = (nltkType*)type->tp_alloc(type, size);
-    newobj->ob_size = size;
-    if (newobj == NULL) return NULL;
-
-    /* Fill in newobj's properties.  "n" is the next index to fill-in
-     * for newobj; "i" is the next index to read from properties; and
-     * "j" is the index we're checking in self.  If properties
-     * contains no duplicates, then "i" will be equal to "n". */
-    n=0;
-    for (i=0; i<size; i++) {
-        PyObject *property = PyTuple_GET_ITEM(properties, i);
-        PyString_InternInPlace(&property);
-        for (j=0; j<self->ob_size; j++) {
-            if (property == nltkType_PROP_NAME(self, j)) {
-                if (!dupcheck[j]) { /* ignore duplicates. */
-                    PyObject *prop_name = nltkType_PROP_NAME(self, j);
-                    PyObject *prop_value = nltkType_PROP_VALUE(self, j);
-                    Py_INCREF(prop_name);
-                    Py_INCREF(prop_value);
-                    nltkType_PROP_NAME(newobj, n) = prop_name;
-                    nltkType_PROP_VALUE(newobj, n) = prop_value;
-                    dupcheck[j] = 1;
-                    n++;
-                }
+    /* Fill in the property array.  "n" is the next index to fill-in
+     * for prop_array; "i" is the index we're checking in self; and
+     * "j" is the next index to read from args. */
+    for (n=0,i=0; i<self->ob_size; i++) {
+        prop_name = nltkType_PROP_NAME(self, i);
+        for (j=0; j<size; j++) {
+            if (prop_name == PyTuple_GET_ITEM(args, j)) {
+                prop_value = nltkType_PROP_VALUE(self, i);
+                Py_INCREF(prop_name);
+                Py_INCREF(prop_value);
+                PropArray_NAME(prop_array, n) = prop_name;
+                PropArray_VALUE(prop_array, n) = prop_value;
+                n++;
                 break;
             }
         }
-        if (j == self->ob_size) {
-            /* We didn't find the property.  We have to undo all the
-             * INCREFs that we've done so far. */
-            PyErr_SetString(PyExc_KeyError, TYPE_ERROR_004);
-            for (i--; i>=0; i--) {
-                Py_DECREF(nltkType_PROP_NAME(newobj, i));
-                Py_DECREF(nltkType_PROP_VALUE(newobj, i));
-            }
-            return NULL;
-        }
     }
 
-    /* Free the duplication check array, if we allocated it. */
-    if (self->ob_size >= 256)
-        PyMem_Free(dupcheck);
+    /* NOTE: THIS CURRENTLY IGNORES EXTRA PROPERTIES.  IS THAT OK? */
 
-    /* If there were duplicates, then adjust the size of newobj down.
-     * This wastes some space, but otherwise won't hurt anything.  But
-     * we don't care too much about the wasted space, because it
-     * should be fairly unusual for there to be any duplicates in the
-     * given list of properties. */
-    if (n<size) newobj->ob_size = n;
-
+    /* Free the property array and return the new object.  Note that
+     * we use "n" for the property array size, not "size".  (n>size
+     * iff any properties were redefined.) */
+    newobj = nltkTypeFromPropArray(self->ob_type, prop_array, n);
+    PyMem_Free(prop_array);
     return newobj;
+    
 }
 
 /* ======================== Type Operators ========================= */
@@ -1209,18 +1202,23 @@ static PyObject *nltkType__getattro__(nltkType *self, PyObject *name)
 {
     int i;
 
-    /* Intern the property name. */
+    /* Intern the property name.  We need to incref first, because we
+     * don't want to accidentally decref a borrowed reference. */
+    Py_INCREF(name);
     PyString_InternInPlace(&name);
 
     /* Look up the name as a property. */
-    for (i=0; i<self->ob_size; i++)
+    for (i=0; i<self->ob_size; i++) {
         if (name == nltkType_PROP_NAME(self, i)) {
             Py_INCREF(nltkType_PROP_VALUE(self, i));
+            Py_DECREF(name);
             return nltkType_PROP_VALUE(self, i);
         }
+    }
 
     /* It wasn't a special attribute; Use the generic version of
      * getattr */
+    Py_DECREF(name);
     return PyObject_GenericGetAttr((PyObject *)self, name);
 }
 
@@ -1244,13 +1242,9 @@ static int nltkType__cmp__(nltkType *self, nltkType *other)
     if (self->ob_size != other->ob_size)
         return (self->ob_size<other->ob_size) ? -1 : 1;
 
-    /* Sort the properties in each type.  This will make it easier to
-     * compare them.  Note that sortPropertyArray() is fairly fast if
-     * the type properties are already sorted. */
-    sortPropertyArray(self->properties, self->ob_size);
-    sortPropertyArray(other->properties, other->ob_size);
-
-    /* Compare the property names and values. */
+    /* Compare the property names and values.  Note that all property
+     * name lists are kept in sorted order, so we can just do pairwise
+     * comparisons for each index. */
     for (i=0; i<self->ob_size; i++) {
         /* Compare the property name. */
         if (nltkType_PROP_NAME(self, i) != nltkType_PROP_NAME(other, i)) {
@@ -1297,7 +1291,7 @@ static PyTypeObject nltkTypeType = {
     0,                                         /* ob_size */
     "Type",                                    /* tp_name */
     sizeof(nltkType),                          /* tp_basicsize */
-    2 * sizeof(PyObject*),                     /* tp_itemsize */
+    sizeof(PyObject*),                         /* tp_itemsize */
     (destructor)nltkType__del__,               /* tp_dealloc */
     0,                                         /* tp_print */
     0,                                         /* tp_getattr */
@@ -1349,7 +1343,8 @@ nltkToken__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
     nltkToken *self;
     
     /* Use this as the default type for tokens.  This lets us avoid
-     * several sanity checks later on. */
+     * several sanity checks later on.  (We can use a single Type
+     * object because Types are immutable. */
     static nltkType *default_type = NULL;
 
     /* Initialize default_type.
@@ -1384,13 +1379,11 @@ nltkToken__init__(nltkToken *self, PyObject *args, PyObject *keywords)
     static char *kwlist[] = {"type", "loc", NULL};
 
     /* Parse the arguments. */
-    if (!PyArg_ParseTupleAndKeywords(args, keywords, "O|O",
-                                     kwlist,
-                                     &type, &loc))
+    if (!PyArg_ParseTupleAndKeywords(args, keywords, "O!|O", kwlist, 
+                                     &nltkTypeType, &type, &loc))
         return -1;
 
     /* Store the type. */
-    /* [XXXX Check that it's a Type object] */
     Py_XDECREF(self->type);
     self->type = (nltkType *)type;
     Py_INCREF(self->type);
@@ -1535,18 +1528,23 @@ static PyObject *nltkToken__getattro__(nltkToken *self, PyObject *name)
     int i;
     nltkType *typ = self->type;
 
-    /* Intern the property name. */
+    /* Intern the property name.  We need to incref first, because we
+     * don't want to accidentally decref a borrowed reference. */
+    Py_INCREF(name);
     PyString_InternInPlace(&name);
 
     /* Look up the name as a property in our type. */
-    for (i=0; i<typ->ob_size; i++)
+    for (i=0; i<typ->ob_size; i++) {
         if (name == nltkType_PROP_NAME(typ, i)) {
             Py_INCREF(nltkType_PROP_VALUE(typ, i));
+            Py_DECREF(name);
             return nltkType_PROP_VALUE(typ, i);
         }
+    }
 
     /* It wasn't a special attribute; Use the generic version of
      * getattr */
+    Py_DECREF(name);
     return PyObject_GenericGetAttr((PyObject *)self, name);
 }
 
