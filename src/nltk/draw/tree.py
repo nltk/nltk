@@ -183,8 +183,12 @@ class TreeView:
         c = self._canvas
 
         # Draw children.
-        children = ' '.join([str(t) for t in tree.leaves()])
-        right = self._draw_leaf(children, left, depth+1)
+        if isinstance(tree, Tree):
+            children = ' '.join([str(t) for t in tree.leaves()])
+        else:
+            children = Token([str(t.type()) for t in tree.leaves()],
+                              tree.loc())
+        right = self._draw_leaf(str(children), left, depth+1)
 
         # Draw triangle
         node_y = (self._textheight + TreeView._Y_SPACING) * depth
@@ -433,7 +437,7 @@ if __name__ == '__main__':
             for x in range(numchildren):
                 children.append(randomtreetok(depth+1, left, bf))
                 left = children[-1].loc().end()
-            return TreeToken('Node %d' % randint(0,10000), *children)
+            return TreeToken('N%d' % randint(0,10000), *children)
 
     if randint(0,1) ==0:
         t = randomtree()
