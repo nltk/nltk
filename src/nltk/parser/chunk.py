@@ -164,6 +164,7 @@ from nltk.tree import TreeToken, AbstractTree
 from nltk.token import TokenizerI, Token, Location, LineTokenizer
 from nltk.tagger import parse_tagged_type
 from nltk.chktype import chktype as _chktype
+from nltk.set import Set
 import types, re
 
 ##//////////////////////////////////////////////////////
@@ -357,15 +358,17 @@ class ChunkScore:
     @ivar _fn_num: Number of false negatives.
     """
     def __init__(self, **kwargs):
-        self._tp = []
-        self._tp_num = 0
-        self._fp = []
-        self._fp_num = 0
-        self._fn = []
-        self._fn_num = 0
+        self._correct = Set()
+        self._guessed = Set()
+        self._tp = Set()
+        self._fp = Set()
+        self._fn = Set()
         self._max_tp = kwargs.get('max_tp_examples', 100)
         self._max_fp = kwargs.get('max_fp_examples', 100)
         self._max_fn = kwargs.get('max_fn_examples', 100)
+        self._tp_num = 0
+        self._fp_num = 0
+        self._fn_num = 0
 
     def score(self, correct, guessed):
         """
@@ -384,7 +387,17 @@ class ChunkScore:
         """
         assert _chktype(1, correct, TreeToken)
         assert _chktype(2, guessed, TreeToken)
-        
+
+        self._correct |= Set(*[t for t in correct if isinstance(t, TreeToken)])
+        self._guessed |= Set(*[t for t in guessed if isinstance(t, TreeToken)])
+        self._tp = self._guessed & self._correct
+        self._fn = self._correct - self._guessed
+        self._fp = self._guessed - self._correct
+        self._tp_num = len(self._tp)
+        self._fp_num = len(self._fp)
+        self._fn_num = len(self._fn)
+
+    def _old_score(self, correct, guessed):
         correct = self._chunk_toks(correct)
         guessed = self._chunk_toks(guessed)
         while correct and guessed:
@@ -459,7 +472,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the missed chunks.
         """
-        return self._fn
+        return self._fn.elements()
     
     def incorrect(self):
         """
@@ -470,7 +483,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the incorrect chunks.
         """
-        return self._fp
+        return self._fp.elements()
     
     def correct(self):
         """
@@ -480,7 +493,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the correct chunks.
         """
-        return self._tp + self._fn
+        return self._correct.elements()
 
     def guessed(self):
         """
@@ -490,7 +503,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the guessed chunks.
         """
-        return self._tp + self._fp
+        return self._guessed.elements()
 
     def __len__(self):
         return self._tp_num + self._fn_num
