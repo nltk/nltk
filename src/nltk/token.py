@@ -10,6 +10,8 @@
 # Open questions:
 #    Should "type" and "token" be replaced with "ttype" and "ttoken"?
 #    Should representations be modified?
+#    What should comparisons do when given bad types??? e.g., != with
+#        None? 
 
 # To do:
 #    - unit testing
@@ -18,11 +20,12 @@
 """
 Basic classes useful for processing individual elements of text, such
 as words or sentences.  These elements of text are known as X{text
-types}, or X{types} for short.  Occurances of types are known as
-X{text tokens}, or X{tokens} for short.  Note that several tokens may
-have the same type.  For example, multiple occurances of the same word
-in a text will constitute multiple tokens, but only one type.  Tokens
-are distinguished based on their X{location} within the source text.
+types}, or X{types} for short.  Individual occurances of types are
+known as X{text tokens}, or X{tokens} for short.  Note that several
+different tokens may have the same type.  For example, multiple
+occurances of the same word in a text will constitute multiple tokens,
+but only one type.  Tokens are distinguished based on their
+X{location} within the source text.
 
 The token module defines the C{Token} class to represent tokens, and
 the C{Location} class to represent their locations.  The token module
@@ -144,6 +147,22 @@ class Location:
         @rtype: C{int}
         """
         return self._end
+
+    def length(self):
+        """
+        @return: the length of this C{Location}.  In particular,
+            for a location M{@[a:b]}, return M{b-a}.
+        @rtype: int
+        """
+        return self._end - self._start
+    
+    def __len__(self):
+        """
+        @return: the length of this C{Location}.  In particular,
+            for a location M{@[a:b]}, return M{b-a}.
+        @rtype: int
+        """
+        return self._end - self._start
     
     def source(self):
         """
@@ -208,7 +227,7 @@ class Location:
         @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
-        @raise ValueError: If this C{Location}'s unitis not equal
+        @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
         _chkclass(self, other)
@@ -219,6 +238,22 @@ class Location:
         return (self._start == other._start and
                 self._end == other._end)
     
+    def __ne__(self, other):
+        """
+        @return: true if this C{Location} is not equal to C{other}.  In
+            particular, return false iff this C{Location}'s source,
+            unit, start, and end values are equal to C{other}'s;
+            raise an exception iff this C{Location}'s source or unit
+            are not equal to C{other}'s; return false otherwise.
+        @rtype: C{boolean}
+        @raise TypeError: if C{other} is not a C{Location}.
+        @raise ValueError: If this C{Location}'s source is not equal
+            to C{other}'s source.
+        @raise ValueError: If this C{Location}'s unit is not equal
+            to C{other}'s unit.
+        """
+        return not (self == other)
+        
     def __lt__(self, other):
         """
         @return: true if this C{Location} occurs entirely before
@@ -232,7 +267,7 @@ class Location:
         @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
-        @raise ValueError: If this C{Location}'s unitis not equal
+        @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
         _chkclass(self, other)
@@ -256,7 +291,7 @@ class Location:
         @raise TypeError: if C{other} is not a C{Location}.
         @raise ValueError: If this C{Location}'s source is not equal
             to C{other}'s source.
-        @raise ValueError: If this C{Location}'s unitis not equal
+        @raise ValueError: If this C{Location}'s unit is not equal
             to C{other}'s unit.
         """
         _chkclass(self, other)
@@ -282,7 +317,7 @@ class Location:
     def __cmp__(self, other):
         """
         @raise AssertionError: General comperison is not defined for
-        Locations.
+            Locations.
         """
         assert 0, 'general comparison is not defined over Locations'
 
@@ -327,7 +362,7 @@ class Token:
     """
     # Classes that inherit from Token should generally redefine:
     #    - type()
-    #    - location()
+    #    - loc()
     #    - __eq__()
     #    - __hash__()
     def __init__(self, type, location_or_start=None, end=None, **kwargs):
@@ -383,7 +418,7 @@ class Token:
         """
         return self._type
     
-    def location(self):
+    def loc(self):
         """
         @return: the position at which this token occured in the
             original text.  A token's location may have the special
@@ -405,7 +440,7 @@ class Token:
             C{Token}.
         """
         _chkclass(self, other)
-        if self.location() is None or other.location() is None: return 0
+        if self.loc() is None or other.loc() is None: return 0
         return (self._location == other._location and
                 self._type == other._type)
 
@@ -432,20 +467,20 @@ class Token:
         @return: a concise string representation of this C{Token}
         @rtype: string
         """
-        if self.location() is None:
+        if self.loc() is None:
             return repr(self.type())+'@[?]'
         else:
-            return repr(self.type())+repr(self.location())
+            return repr(self.type())+repr(self.loc())
 
     def __str__(self):
         """
         @return: a verbose string representation of this C{Token}
         @rtype: string
         """
-        if self.location() is None:
+        if self.loc() is None:
             return repr(self.type())+'@[?]'
         else:
-            return repr(self.type())+str(self.location())
+            return repr(self.type())+str(self.loc())
 
     def __hash__(self):
         """
@@ -481,7 +516,7 @@ class TokenizerI:
         The list of C{Token}s returned by tokenizing will be properly
         ordered; i.e., for any i and j such that i<j::
 
-            tokenize(str)[i].location() < tokenize(str)[j].location()
+            tokenize(str)[i].loc() < tokenize(str)[j].loc()
         
         @param str: The string of text to tokenize.
         @type str: C{string}
@@ -505,7 +540,7 @@ class WSTokenizer(TokenizerI):
         words = str.split()
         tokens = []
         for i in range(len(words)):
-            tokens.append(Token(words[i], Location(i, unit='word',
+            tokens.append(Token(words[i], Location(i, unit='w',
                                                    source=source)))
         return tokens
 
