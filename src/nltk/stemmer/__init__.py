@@ -97,6 +97,9 @@ class AbstractStemmer(StemmerI):
     implementations for:
       - L{propnames}
       - L{stem} (based on C{raw_stem})
+      
+    @ivar _propnames: A dictionary from property specifications to
+        property names, indicating which property names to use.
     """
     __doc__ += StemmerI._STANDARD_PROPERTIES
     
