@@ -343,8 +343,8 @@ class ProductionEdge(EdgeI):
     def __cmp__(self, other):
         if self == other: return 0
         if isinstance(other, TokenEdge): return 1
-        val = cmp([self._loc.length(), self._loc.start()],
-                  [other._loc.length(), other._loc.start()])
+        val = cmp([self._loc.start(), self._loc.length()],
+                  [other._loc.start(), other._loc.length()])
         if val == 0: return 1
         else: return val
 
@@ -410,8 +410,8 @@ class TokenEdge(EdgeI):
     def __cmp__(self, other):
         if self == other: return 0
         if isinstance(other, ProductionEdge): return -1
-        val = cmp(self._token.loc().length(),
-                  other._token.loc().length())
+        val = cmp(self._token.loc().start(),
+                  other._token.loc().start())
         if val == 0: return 1
         else: return val
 
@@ -849,9 +849,12 @@ class TopDownRule(ChartRuleI):
     def apply(self, chart, grammar):
         assert _chktype(1, chart, Chart)
         assert _chktype(2, grammar, CFG)
+        # Sort to give the same behavior as Earley
+        incomplete = chart.incomplete_edges()
+        incomplete.sort()
         edges = []
         for production in grammar.productions():
-            for edge in chart.incomplete_edges():
+            for edge in incomplete:
                 if production.lhs() == edge.next():
                     loc = edge.loc().end_loc()
                     edges.append(self_loop_edge(production, loc))
@@ -863,8 +866,10 @@ class BottomUpRule(ChartRuleI):
         assert _chktype(1, chart, Chart)
         assert _chktype(2, grammar, CFG)
         edges = []
-        for production in grammar.productions():
-            for edge in chart.edges():
+        complete = chart.complete_edges()
+        complete.sort()
+        for edge in complete:
+            for production in grammar.productions():
                 if edge.lhs() == production.rhs()[0]:
                     loc = edge.loc().start_loc()
                     edges.append(self_loop_edge(production, loc))
@@ -875,8 +880,11 @@ class FundamentalRule(ChartRuleI):
     def apply(self, chart, grammar):
         assert _chktype(1, chart, Chart)
         assert _chktype(2, grammar, CFG)
+        # Sort to give the same behavior as Earley
+        incomplete = chart.incomplete_edges()
+        incomplete.sort()
         edges = []
-        for edge in chart.incomplete_edges():
+        for edge in incomplete:
             for edge2 in chart.complete_edges():
                 if (edge.next() == edge2.lhs() and
                     edge.end() == edge2.start()):
@@ -889,7 +897,7 @@ class FundamentalRule(ChartRuleI):
 ##//////////////////////////////////////////////////////
 
 # Define some useful rule invocation strategies.
-TD_STRATEGY = [TopDownInitRule(), TopDownRule(), FundamentalRule()]
+TD_STRATEGY = [TopDownRule(), FundamentalRule(), TopDownInitRule()]
 BU_STRATEGY = [BottomUpRule(), FundamentalRule()]
 
 ##//////////////////////////////////////////////////////
@@ -1001,9 +1009,15 @@ class SteppingChartParser(ChartParser):
                                         self._chart.pp_edge(edge))
                 return edge
 
+        strategy = self._strategy
+        if self.current_chartrule() is not None:
+            strategy.insert(0, self.current_chartrule())
+            
         # If there are no new edges, try generating some.
-        for chartrule in self._strategy:
-            self._edge_queue += chartrule.apply(self._chart, self._grammar)
+        for chartrule in strategy:
+            new_edges = chartrule.apply(self._chart, self._grammar)
+            new_edges.reverse()
+            self._edge_queue += new_edges
             self._current_chartrule = chartrule
             while self._edge_queue:
                 edge = self._edge_queue.pop()
@@ -1221,7 +1235,8 @@ def demo():
     tok_sent = WSTokenizer().tokenize(sent)
 
     # Which tests?
-    BU = TD = STEP = INCR = 1
+    BU = TD = STEP = INCR = 0
+    TD = 1
 
     tr = 2
     import time
