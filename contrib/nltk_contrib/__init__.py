@@ -22,19 +22,24 @@ statements:
 @version: 1.4.3
 @newfield contributor: Contributor, Contributors, short
 @contributor: Robert Berwick
+@contributor: Seh Ying Boo
+@contributor: Alice Boxhall
 @contributor: Steve Cassidy
 @contributor: Chen-Fu Chiang
 @contributor: Jinyoung Choi
 @contributor: Trevor Cohn
 @contributor: Nikhil Dinesh
+@contributor: Rebecca Dridan
 @contributor: Brent Gray
 @contributor: Yurie Hara
+@contributor: Peter Hawkins
 @contributor: Edward Ivanovic
 @contributor: Haejoong Lee
 @contributor: Christopher Maloof
 @contributor: Carl de Marcken
 @contributor: Rob Speer
 @contributor: Oliver Steele
+@contributor: Jason Yang
 @contributor: Beracah Yankama
 @contributor: David Zhang
 """
