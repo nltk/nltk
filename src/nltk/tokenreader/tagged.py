@@ -33,11 +33,12 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     def __init__(self, **property_names):
         PropertyIndirectionMixIn.__init__(self, **property_names)
 
-    # [XX] sourceis ignored!
-    def read_token(self, s, source=None):
+    # [XX] source is ignored!
+    def read_token(self, s, source=None, addlocs=False, addcontexts=False):
         TAG = self.property('TAG')
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
+        CONTEXT = self.property('CONTEXT')
         subtoks = []
         for w in s.split():
             slash = w.find('/')
@@ -45,7 +46,11 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                 subtoks.append(Token(**{TEXT: w[:slash], TAG: w[slash+1:]}))
             else:
                 subtoks.append(Token(**{TEXT: w, TAG: None}))
-        return Token(**{SUBTOKENS: subtoks})
+        tok = Token(**{SUBTOKENS: subtoks})
+        if addcontexts:
+            for i, subtok in enumerate(subtoks):
+                subtok[CONTEXT] = SubtokenContextPointer(tok, SUBTOKENS, i)
+        return tok
 
     def read_tokens(self, s, source=None):
         return [self.read_token(s, source)]
