@@ -1,3 +1,12 @@
+# Natural Language Toolkit: Feature Extraction for Words
+#
+# Copyright (C) 2004 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
 """
 Feature extractors for tokens that encode single words.
 """
@@ -49,7 +58,7 @@ class BagOfWordsFeatureDetector(AbstractFeatureDetector):
 class SetOfWordsFeatureDetector(AbstractFeatureDetector):
     """
     A feature detector that extracts the text of the words in a
-    token's context, preserving duplicates, and stores it in the
+    token's context, discarding duplicates, and stores it in the
     C{SOW} feature.  In particular, C{SOW} is mapped to a set
     containing the C{TEXT} feature of each word in a fixed-size window
     centered on the token.
@@ -63,10 +72,10 @@ class SetOfWordsFeatureDetector(AbstractFeatureDetector):
         self._window = window
         
     def raw_detect_features(self, token):
-        bow = [tok['TEXT'] for tok in
-               token['CONTEXT'].getrange(-self._window, 0)+
-               token['CONTEXT'].getrange(1, 1+self._window)]
-        return {'SOW': bow}
+        sow = Set([tok['TEXT'] for tok in
+                   token['CONTEXT'].getrange(-self._window, 0)+
+                   token['CONTEXT'].getrange(1, 1+self._window)])
+        return {'SOW': sow}
     
     def features(self):
         return ['SOW']
