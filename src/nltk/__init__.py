@@ -62,19 +62,20 @@ L{ChartParser<nltk.parser.chart.ChartParser>} are all implementations
 of the C{ParserI} interface.
 
 @author: U{Edward Loper<mailto:edloper@gradient.cis.upenn.edu>}
-@version: 1.0
+@version: 1.1a
 
-@newfield contributor: Contributor Contributors
+@newfield contributor: Contributor, Contributors
 @contributor: Steven Bird
 @contributor: Edward Loper
 
-@group Core Modules: token, tree, probability
+@group Core Modules: token, tree, corpora, probability
 @group Data Modules: set, cfg, fsa
 @group Task Modules: classifier, parser, speech, stemmer, tagger
 @group Visualization: draw
 @group Debugging: chktype, test
-@sort: token, tree, probability, set, cfg, fsa, classifier, parser,
-       speech, stemmer, tagger
+@sort: token, tree, corpora, probability
+@sort: set, cfg, fsa
+@sort: classifier, parser, speech, stemmer, tagger
 """
 
 ##//////////////////////////////////////////////////////
@@ -83,7 +84,7 @@ of the C{ParserI} interface.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "1.0"
+__version__ = "1.1a"
 
 # Copyright notice
 __copyright__ = """\
