@@ -62,6 +62,12 @@ representation (chunk structures) was also a more natural thing for a
 chunking version of the TaggedTokenizer to return.)
 """
 
+# To do:
+# experiment with syntactic sugar for <> (using space)
+# test that no tokens were deleted in applying a chunking rule
+# rule initializer should compile the final regexp for efficient runtime execution
+# tokenizer to return a list of sentence tokens?  or ./EOS ??
+
 # this type stuff should be pulled in from somewhere else
 # rather than being defined here...
 from types import InstanceType as _InstanceType
@@ -82,6 +88,12 @@ def _pytype(obj):
 ##//////////////////////////////////////////////////////
 ##  Chunk Rules
 ##//////////////////////////////////////////////////////
+
+# functions for zero-width assertions
+def lookbehind(str):
+    return '(?<='+str+')'
+def lookahead(str):
+    return '(?='+str+')'
 
 # A chunk rule matches a target string and performs an action
 # on it, usually adding or removing {}, the chunk delimiters.
@@ -114,23 +126,21 @@ class ChunkRule:
             self._left = kwargs['left']
         if kwargs.has_key('right'):
             self._right = kwargs['right']
+        self._pattern = re.compile(
+            lookbehind(self._left) + self._target + lookahead(self._right))
         if kwargs.has_key('doc'):
             self._doc = kwargs['doc']
-    def target(self):
-        return self._target
+    def pattern(self):
+        return self._pattern
     def action(self):
         return self._action
-    def left(self):
-        return self._left
-    def right(self):
-        return self._right
     def doc(self):
         return self._doc
     def __str__(self):
         return self.doc() + ":\n"\
-               + "left:   " + self.left() + "\n"\
-               + "target: " + self.target() + "\n"\
-               + "right:  " + self.right() + "\n"\
+               + "left:   " + self._left + "\n"\
+               + "target: " + self._target + "\n"\
+               + "right:  " + self._right + "\n"\
                + "action: " + self.action()
 
 ##//////////////////////////////////////////////////////
@@ -159,18 +169,14 @@ class AbstractChunkRule(ChunkRule):
             self._left = expand(kwargs['left'])
         if kwargs.has_key('right'):
             self._right = expand(kwargs['right'])
+        self._pattern = re.compile(
+            lookbehind(self._left) + self._target + lookahead(self._right))
         if kwargs.has_key('doc'):
             self._doc = kwargs['doc']
 
 ##//////////////////////////////////////////////////////
 ##  Chunk Parser
 ##//////////////////////////////////////////////////////
-
-# functions for zero-width assertions
-def lookbehind(str):
-    return '(?<='+str+')'
-def lookahead(str):
-    return '(?='+str+')'
 
 # Format a string of tokens for display.
 # Spacing around <>{} will show the insertion/deletion of chunk boundaries
@@ -196,13 +202,23 @@ def tag2str(tagged_sent):
 # convert a string to a chunk structure
 # "{<the/DT@[1]><cat/NN@[2]>}<sat/VBD@[3]>" becomes
 # [ [ 'the'/'DT'@[1], 'cat'/'NN'@[2] ], 'sat'/'VBD'@[3] ]
+# first define some regexps for efficiency
+
+_re_braces = re.compile(r'[^{}]')
+_re_matching_braces = re.compile(r'(\{\})*')
+_re_punct_boundary = re.compile(r'([>}])(?=[<{])')
+_re_token_rep = re.compile(r'<([^>]*)/([^>]*)@(\d+)>')
+_re_chunks = re.compile(r'{([^}]*)}')
 def str2chunks(str):
-    braces = sub(r'[^{}]', '', str)
-    if not match(r'(\{\})*', braces):
+    braces = sub(_re_braces, '', str)
+    if not match(_re_matching_braces, braces):
         print "ERROR: unbalanced or nested braces"
-    str = sub(r'([>}])(?=[<{])', r'\1, ', str)
-    str = sub(r'<([^>]*)/([^>]*)@(\d+)>', r'Token(TaggedType("\1", "\2"), Location(\3, unit="word"))', str)
-    str = sub(r'{([^}]*)}', r'[\1]', str)
+    # insert commas between closing and opening punctuation
+    str = sub(_re_punct_boundary, r'\1, ', str)
+    # generate code to build a token from the string representation of the token
+    str = sub(_re_token_rep, r'Token(TaggedType("\1", "\2"), Location(\3, unit="word"))', str)
+    # replace {} chunk syntax with [] list syntax
+    str = sub(_re_chunks, r'[\1]', str)
     str = '[' + str + ']'
     return eval(str)
 
@@ -227,11 +243,9 @@ class REChunkParser(ChunkParserI):
 
     def _apply(self, rule, str):
         action = rule.action()
-        pattern = lookbehind(rule.left())\
-                  + rule.target()\
-                  + lookahead(rule.right())
+        pattern = rule.pattern()
         result = sub(pattern, action, str)
-        self._diagnostic(rule, str, result)
+#        self._diagnostic(rule, str, result)
         return result
 
     def parse(self, tagged_sent):
@@ -315,3 +329,4 @@ def demo():
     cp = REChunkParser([r1,r2,r3])
     chunked_sent = cp.parse(unchunked_sent)
     score(correct_chunked_sent, chunked_sent)
+
