@@ -9,21 +9,20 @@
 #
 
 """
-Access to NLTK's standard distribution of corpora.  The following
-corpora are currently defined:
+Access to NLTK's standard distribution of corpora.  Each of corpus is
+encoded as an instance of the C{Corpus} class.  For information about
+using these corpora, see the reference documentation for L{Corpus}.
 
-    - L{twenty_newsgroups}: A collection of approximately 20,000
-      newsgroup documents, partitioned (nearly) evenly across 20
-      different newsgroups.
-    - L{treebank}: A collection of hand-annotated parse trees for
-      english text.
-    - L{wordlist}: A list of English words.
-    - L{reuters}: A collection of documents that appeared on Reuters
-      newswire in 1987.
-
-Each of these corpora is encoded as an instance of the C{Corpus}
-class.  For information about using these corpora, see the reference
-documentation for L{Corpus}.
+@group Data Types: Corpus
+@group Corpora: twenty_newsgroups, treebank, wordlist, reuters
+@var twenty_newsgroups: A collection of approximately 20,000
+     newsgroup documents, partitioned (nearly) evenly across 20
+     different newsgroups.
+@var treebank: A collection of hand-annotated parse trees for
+     english text.
+@var wordlist: A list of English words.
+@var reuters: A collection of documents that appeared on Reuters
+     newswire in 1987.
       
 @todo: Add more corpora.
 @todo: Set the default tokenizer for the treebank corpus.
