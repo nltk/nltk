@@ -12,141 +12,181 @@ A shift-reduce parser is a simple kind of bottom-up parser which
 returns a single tree.
 """
 
-from nltk.tree import *
-from nltk.rule import *
 from nltk.parser import ParserI
-from nltk.token import WSTokenizer
+from nltk.cfg import *
+from nltk.tree import TreeToken
 from nltk.token import Token
 
 class SRParser(ParserI):
     """
+    Shift-reduce parser.
+
+    Maintain two stacks: one for tokens, one for types/Nonterminals.
+    Match the Nonterminals/types stack against the RHS of rules when
+    trying to reduce.  Use the token stack to record the structures
+    we've built so far.
     """
-    def __init__(self, rules, basecat):
+    def __init__(self, grammar, trace=0):
         """
         Construct a new C{SRParser}.
         """
+        self._grammar = grammar
+        self._trace = trace
+        self.check_grammar()
 
-        self._rules = rules      # the grammar and lexical rules
-        self._basecat = basecat  # the base category of the grammar
+    def _shift(self, token, stack, tokstack, remaining_text):
+        """
+        Push the next token onto the stack.
+        """
+        stack.append(token.type())
+        tokstack.append(token)
+        if self._trace: self._trace_shift(stack, remaining_text)
 
-    # THE SHIFT RULE:
-    # push the next token onto the stack
-    # also maintain a another structure for the treetokens
-    # (e.g. push the corresponding Tree onto another stack)
-    def _shift(self, token):
-        self._stack.append(token)
-        self._tree.append(Tree(token))
+    def _reduce(self, stack, tokstack, remaining_text):
+        # scan through the rule set
+        for rule in self._grammar.rules():
+            rhslen = len(rule.rhs())
+                
+            # check if the RHS of a rule matches the top of the stack
+            if tuple(stack[-rhslen:]) == rule.rhs():
 
-    # THE REDUCE RULE:
-    # check to see if any rule rhs matches the top n elements of
-    # the stack.  For example, if the stack was [man, Det] then
-    # the rule N->man would match, and we would replace the matching
-    # material with the lhs of the rule to get [N, Det].  This would
-    # then match NP->Det N and would be reduced to [NP].  Maintain another
-    # structure containing the TreeTokens which have been created.
-    # Note that a rule rhs matches the stack elements in reverse order
-    # (unless the top of stack is changed to be the right end of the list).
-    # Note that applying a grammar rule may create the context in which
-    # some other grammar rule now applies.
-    def _reduce(self):
-        modified = 1
-        while(modified):
-            modified = 0
-            # scan through the rule set
-            for rule in self._rules:
-                # check if the RHS of a rule matches the top of the stack
-                if (self._stack[-len(rule.rhs()):] == list(rule.rhs())):
-                    # replace the top of the stack with the LHS of the rule
-                    self._stack[-len(rule.rhs()):] = [rule.lhs()]
-                    # combine the tree to reflect the reduction
-                    self._tree[-len(rule.rhs()):] = [  Tree( rule.lhs(), *self._tree[-len(rule.rhs()):] )  ]
-                    # indicate that a modification has taken place and start over
-                    modified = 1
-                    break
+                # replace the top of the stack with the LHS of the rule
+                stack[-rhslen:] = [rule.lhs()]
 
-    # THE PARSER
-    def parse(self, tokens):
-        # initialization
-        self._stack = []
-        # initialize a structure for keeping track of the tree fragments
-        self._tree = []
+                # combine the tree to reflect the reduction
+                treetok = TreeToken(rule.lhs().symbol(), *tokstack[-rhslen:])
+                tokstack[-rhslen:] = [treetok]
 
-        # iterate through the tokens, pushing the token's type onto
+                # We reduced something
+                if self._trace:
+                    self._trace_reduce(stack, rule, remaining_text)
+                return rule
+
+        # We didn't reduce anything
+        return 0
+
+    def parse(self, text):
+        # Inherit documentation from ParserI.
+
+        # initialize the stacks.
+        stack = []
+        tokstack = []
+
+        # Trace output.
+        remaining_text = text
+        if self._trace: self._trace_stack(stack, remaining_text)
+
+        # iterate through the text, pushing the token's type onto
         # the stack, then reducing the stack.
-        for token in tokens:
-             self._shift(token.type())
-             self._reduce()
+        for token in text:
+            remaining_text = remaining_text[1:]
+            self._shift(token, stack, tokstack, remaining_text)
+            while self._reduce(stack, tokstack, remaining_text): pass
 
-        # return a list consisting of a single TreeToken
-        # does it have a root labelled self._basecat?
-        # does it account for all the tokens in the sentence?
-        return self._tree[0]
+        # Did we reduce everything?
+        if len(stack) != 1: return None
 
+        # Did we end up with the right category?
+        if stack[0] != self._grammar.start(): return None
+        
+        # We parsed successfully!
+        return tokstack[0]
+
+    def _trace_stack(self, stack, remaining_text, marker=' '):
+        print ('  '+marker+' [' + ' '.join([`s` for s in stack])+' * '+
+               ' '.join([`s.type()` for s in remaining_text]) + ']')
+
+    def _trace_shift(self, stack, remaining_text):
+        if self._trace > 2: print 'Shift %r:' % stack[0]
+        if self._trace == 2: self._trace_stack(stack, remaining_text, 'S')
+        elif self._trace > 0: self._trace_stack(stack, remaining_text)
+
+    def _trace_reduce(self, stack, rule, remaining_text):
+        if self._trace > 2:
+            print 'Reduce %r <- %s' % (rule.lhs(),
+                                       ' '.join([`s` for s in rule.rhs()]))
+        if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
+        elif self._trace > 1: self._trace_stack(stack, remaining_text)
+
+    # Delegate to parse
+    def parse_n(self, text):
+        # Inherit documentation from ParserI; delegate to parse.
+        treetok = self.parse(text)
+        if treetok is None: return []
+        else: return [treetok]
+
+    def trace(self, trace=2):
+        """
+        Set the level of tracing output that should be generated when
+        parsing a text.
+
+        @type trace: C{int}
+        @param trace: The trace level.  A trace level of C{0} will
+            generate no tracing output; and higher trace levels will
+            produce more verbose tracing output.
+        @rtype: C{None}
+        """
+        self._trace = trace
+
+    def check_grammar(self):
+        """
+        Check that all the rules in the grammar are useful.
+        """
+        rules = self._grammar.rules()
+
+        # Any rule whose RHS is an extension of another rule's RHS
+        # will never be used. 
+        for i in range(len(rules)):
+            for j in range(i+1, len(rules)):
+                rhs1 = rules[i].rhs()
+                rhs2 = rules[j].rhs()
+                if rhs1[:len(rhs2)] == rhs2:
+                    print 'Warning: %r will never be used' % rules[i]
 
 # DEMONSTRATION CODE
 def demo():
-    # Syntactic Rules
-    grammar = (
-        Rule('S',('NP','VP')),
-        Rule('NP',('Det','N', 'PP')),
-        Rule('NP',('Det','N')),
-        Rule('VP',('V','NP', 'PP', 'PP')),
-        Rule('VP',('V','PP')),
-        Rule('PP',('P','NP'))
-        )
+    nonterminals = 'S VP NP PP P N Name V Det'
+    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+                                           for s in nonterminals.split()]
 
-    # Lexical Rules
-    lexicon = (
-        Rule('NP',('I',)),
-        Rule('Det',('the',)),
-        Rule('Det',('a',)),
-        Rule('N',('man',)),
-        Rule('V',('saw',)),
-        Rule('P',('in',)),
-        Rule('P',('with',)),
-        Rule('N',('park',)),
-        Rule('N',('telescope',))
+    rules = (
+        # Syntactic Rules
+        CFG_Rule(S, NP, VP),
+        CFG_Rule(NP, Det, N),
+        CFG_Rule(VP, V, NP, PP),
+        CFG_Rule(PP, P, NP),
+
+        CFG_Rule(VP, V, PP),
+
+        # Lexical Rules
+        CFG_Rule(NP, 'I'),
+        CFG_Rule(Det, 'the'),
+        CFG_Rule(Det, 'a'),
+        CFG_Rule(N, 'man'),
+        CFG_Rule(V, 'saw'),
+        CFG_Rule(P, 'in'),
+        CFG_Rule(P, 'with'),
+        CFG_Rule(N, 'park'),
+        CFG_Rule(N, 'telescope')
         )
+    cfg = CFG(S, rules)
 
     # Sample Sentence
-    sent = 'I saw a man in the park with a telescope'
+    sent = 'I saw a man in the park'
 
     # Tokenize the sentence
+    from nltk.token import WSTokenizer
     tok_sent = WSTokenizer().tokenize(sent)
 
     # Initialize the SR Parser
-    parser = SRParser(grammar + lexicon, 'S')
+    parser = SRParser(cfg)
 
     # Run the parse on the token stream
+    parser.trace(3)
     parses = parser.parse(tok_sent)
 
-    # Display the results in text and graphically
+    # Display the results in text (and graphically)
     print parses
-    parses[0].draw()
-
-# Syntactic Rules
-grammar = (
-        Rule('S',('NP','VP')),
-        Rule('NP',('Det','N', 'PP')),
-        Rule('NP',('Det','N')),
-        Rule('VP',('V','NP', 'PP')),
-        Rule('VP',('V','NP')),
-        Rule('VP',('V','PP')),
-        Rule('VP',('V','NP', 'PP', 'PP')),
-        Rule('PP',('P','NP'))
-)
-
-# Lexical Rules
-lexicon = (
-        Rule('NP',('I',)),
-        Rule('Det',('the',)),
-        Rule('Det',('a',)),
-        Rule('N',('man',)),
-        Rule('V',('saw',)),
-        Rule('P',('in',)),
-        Rule('P',('with',)),
-        Rule('N',('park',)),
-        Rule('N',('telescope',))
-)
+    #parses[0].draw()
 
 if __name__ == '__main__': demo()
