@@ -54,9 +54,9 @@ Alternate Install Locations
     your system (e.g., because you are not a system administrator),
     then you can install it to an alternate location, and use your
     PYTHONPATH to let Python know where to find it.  To install to an
-    alternate location, use the "--home" argument to setup.py:
+    alternate location, use the "--prefix" argument to setup.py:
 
-        python setup.py install --home=<dir>
+        python setup.py install --prefix=<dir>
 
     Once you have installed it, you will need to adjust your
     PYTHONPATH to point to the install directory:
