@@ -422,3 +422,38 @@ class MutableSet(Set):
         @rtype: None
         """
         del self._dict[element]
+
+##//////////////////////////////////////////////////////
+##  Demonstration
+##//////////////////////////////////////////////////////
+
+def demo():
+    """
+    A demonstration of the use of the C{Set} class.
+    """
+    set1 = Set(-5, 0, 5, 10, 20)
+    set2 = Set(*range(10))
+
+    print 'set1 =', set1
+    print 'set2 =', set2
+    print
+    print 'set1.elements()         =>', set1.elements()
+    print 'set2.elements()         =>', set2.elements()
+    print
+    print 'set1.contains(-3)       =>', set1.contains(-3)
+    print '-3 in set1              =>', -3 in set1
+    print
+    print 'set1.union(set2)        =>', set1.union(set2)
+    print 'set1 | set2             =>', set1 | set2
+    print
+    print 'set1.intersection(set2) =>', set1.intersection(set2)
+    print 'set1 & set2             =>', set1 & set2
+    print
+    print 'set1.difference(set2)   =>', set1.difference(set2)
+    print 'set1 - set2             =>', set1 - set2
+    print
+    print 'set1.precision(set2)   =>', set1.precision(set2)
+    print 'set1.recall(set2)      =>', set1.recall(set2)
+    print 'set1.f_measure(set2)   =>', set1.f_measure(set2)
+
+if __name__ == '__main__': demo()
