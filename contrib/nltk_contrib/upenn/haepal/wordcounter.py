@@ -6,7 +6,7 @@ import marshal
 import nltk.corpus
 import os.path
 import string
-
+import time             ### ADDED BY SB
 
 class BrownCounter:
     
@@ -39,7 +39,7 @@ class BrownCounter:
             f.close()
             while lock[grp] is None:
                 time.sleep(5)
-                f.seek(0)
+                f.seek(0)      ### SB: I/O operation on closed file
                 lock = marshal.load(f)
             f = open(resfile, 'rb')
             h = marshal.load(f)
@@ -59,7 +59,7 @@ class BrownCounter:
             for item in  nltk.corpus.brown.items(grp):
                 toks = nltk.corpus.brown.tokenize(item)
                 for t in toks:
-                    w = t.type().base().lower()
+                    w = t['TEXT'].lower()  ### SB: fixed for NLTK 1.3
                     try:
                         h[w] += 1
                     except KeyError:
