@@ -15,6 +15,7 @@ import Tkinter
 import math
 
 from nltk.parser.chart import *
+from nltk.cfg import *
 from nltk.token import WSTokenizer
 from nltk.token import Token, Location
 from nltk.tree import TreeToken
