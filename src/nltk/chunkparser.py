@@ -193,20 +193,20 @@ class ChunkScore:
     @type _fn: C{list} of C{Token}
     @ivar _fn: List of false negatives
     
-    @type _tplen: C{int}
-    @ivar _tplen: Number of true positives
-    @type _fplen: C{int}
-    @ivar _fplen: Number of false positives
-    @type _fnlen: C{int}
-    @ivar _fnlen: Number of false negatives.
+    @type _tp_num: C{int}
+    @ivar _tp_num: Number of true positives
+    @type _fp_num: C{int}
+    @ivar _fp_num: Number of false positives
+    @type _fn_num: C{int}
+    @ivar _fn_num: Number of false negatives.
     """
     def __init__(self, **kwargs):
         self._tp = []
-        self._tplen = 0
+        self._tp_num = 0
         self._fp = []
-        self._fplen = 0
+        self._fp_num = 0
         self._fn = []
-        self._fnlen = 0
+        self._fn_num = 0
         self._max_tp = kwargs.get('max_tp_examples', 100)
         self._max_fp = kwargs.get('max_fp_examples', 100)
         self._max_fn = kwargs.get('max_fn_examples', 100)
@@ -230,23 +230,27 @@ class ChunkScore:
         guessed = self._chunk_toks(guessed)
         while correct and guessed:
             if correct[-1].loc() == guessed[-1].loc():
-                self._tplen += 1
+                self._tp_num += 1
                 if len(self._tp) < self._max_tp:
                     self._tp.append(correct[-1])
                 correct.pop()
                 guessed.pop()
-            elif correct[-1].loc().start() >= guessed[-1].loc().end():
-                self._fnlen += 1
+            elif correct[-1].loc().end() >= guessed[-1].loc().end():
+                self._fn_num += 1
                 if len(self._fn) < self._max_fn:
                     self._fn.append(correct[-1])
                 correct.pop()
             else:
-                # If a guess is not equal to a correct chunk, but
-                # overlaps it in any way, then it must be wrong.
-                self._fplen += 1
+                self._fp_num += 1
                 if len(self._fp) < self._max_fp:
                     self._fp.append(guessed[-1])
                 guessed.pop()
+        if correct:
+            self._fn += correct
+            self._fn_num += len(correct)
+        if guessed:
+            self._fp += guessed
+            self._fp_num += len(guessed)
 
     def precision(self):
         """
@@ -254,9 +258,9 @@ class ChunkScore:
             scored by this C{ChunkScore}.
         @rtype: C{float}
         """
-        div = self._tplen + self._fplen
-        if div == 0: return None
-        else: return float(self._tplen) / div
+        div = self._tp_num + self._fp_num
+        if div == 0: return 0
+        else: return float(self._tp_num) / div
     
     def recall(self):
         """
@@ -264,9 +268,9 @@ class ChunkScore:
             scored by this C{ChunkScore}.
         @rtype: C{float}
         """
-        div = self._tplen + self._fnlen
-        if div == 0: return None
-        else: return float(self._tplen) / div
+        div = self._tp_num + self._fn_num
+        if div == 0: return 0
+        else: return float(self._tp_num) / div
     
     def f_measure(self, alpha=0.5):
         """
@@ -282,8 +286,6 @@ class ChunkScore:
         """
         p = self.precision()
         r = self.recall()
-        if p is None or r is None:
-            return None
         if p == 0 or r == 0:    # what if alpha is 0 or 1?
             return 0
         return 1/(alpha/p + (1-alpha)/r)
@@ -329,13 +331,16 @@ class ChunkScore:
             examine the guessed chunks.
         """
         return self._tp + self._fp
+
+    def __len__(self):
+        return self._tp_num + self._fn_num
     
     def __repr__(self):
         """
         @rtype: C{String}
         @return: a concise representation of this C{ChunkScoring}.
         """
-        return '<ChunkScoring of '+`self._len`+' tokens>'
+        return '<ChunkScoring of '+`len(self)`+' chunks>'
 
     def __str__(self):
         """
@@ -358,8 +363,7 @@ class ChunkScore:
         chunks were missed or were generated incorrectly.
         """
         # Calculate the type
-        words = [tok.type().base() for tok in chunk]
-        chunktype = ' '.join(words)
+        chunktype = [tok.type() for tok in chunk]
 
         # Calculate the location
         loc0 = chunk[0].loc()
