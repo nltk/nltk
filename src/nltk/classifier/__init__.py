@@ -410,3 +410,65 @@ def log_likelihood(classifier, labeled_tokens):
 
     return likelihood / len(labeled_tokens)
     
+class ConfusionMatrix:
+    def __init__(self, classifier, labeled_tokens):
+        """
+        Entry conf[i][j] is the number of times a document with label i
+        was given label j.
+        """
+        try: import Numeric
+        except: raise ImportError('ConfusionMatrix requires Numeric')
+        
+        # Extract the labels.
+        ldict = {}
+        for ltok in labeled_tokens: ldict[ltok.type().label()] = 1
+        labels = ldict.keys()
+
+        # Construct a label->index dictionary
+        indices = {}
+        for i in range(len(labels)): indices[labels[i]] = i
+        
+        confusion = Numeric.zeros( (len(labels), len(labels)) )
+        for ltok in labeled_tokens:
+            utok = Token(ltok.type().text(), ltok.loc())
+            ctok = classifier.classify(utok)
+            confusion[indices[ltok.type().label()],
+                      indices[ctok.type().label()]] += 1
+
+        self._labels = labels
+        self._confusion = confusion
+        self._max_conf = max(Numeric.resize(confusion, (len(labels)**2,)))
+
+    def __getitem__(self, index):
+        return self._confusion[index[0], index[1]]
+
+    def __str__(self):
+        confusion = self._confusion
+        labels = self._labels
+        
+        indexlen = len(`len(labels)`)
+        entrylen = max(indexlen, len(`self._max_conf`))
+        index_format = '%' + `indexlen` + 'd | '
+        entry_format = '%' + `entrylen` + 'd '
+        str = (' '*(indexlen)) + ' | '
+        for j in range(len(labels)):
+            str += (entry_format % j)
+        str += '\n'
+        str += ('-' * ((entrylen+1) * len(labels) + indexlen + 2)) + '\n'
+        for i in range(len(labels)):
+            str += index_format % i
+            for j in range(len(labels)):
+                str += entry_format % confusion[i,j]
+            str += '\n'
+        return str
+
+    def key(self):
+        labels = self._labels
+        str = 'Label key: (row = true label; col = classifier label)\n'
+        indexlen = len(`len(labels)`)
+        key_format = '    %'+`indexlen`+'d: %s\n'
+        for i in range(len(labels)):
+            str += key_format % (i, labels[i])
+
+        return str
+
