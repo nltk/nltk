@@ -46,8 +46,12 @@ __all__ = (
     'SequenceWidget', 'StackWidget', 'SpaceWidget',
     'ScrollWatcherWidget', 'AbstractContainerWidget',
     
-    'ShowText'
-    )
+    'ShowText')
+
+# Including these causes circular dependancy trouble???
+#    'tree', 'chart', 'fas', 'srparser', 'plot',
+#    'plot_graph', 'tree_edit'
+#    )
 
 ##//////////////////////////////////////////////////////
 ##  CanvasWidget
@@ -192,6 +196,8 @@ class CanvasWidget:
         self.__parent = parent
         if not hasattr(self, '_CanvasWidget__children'): self.__children = []
 
+        self.__hidden = 0
+
         # Update control (prevents infinite loops)
         self.__updating = 0
 
@@ -230,6 +236,7 @@ class CanvasWidget:
             space.
         @rtype: C{4-tuple} of C{int}s    
         """
+        if self.__hidden: return (0,0,0,0)
         if len(self.tags()) == 0: raise ValueError('No tags')
         return self.__canvas.bbox(*self.tags())
 
@@ -332,6 +339,7 @@ class CanvasWidget:
         @param child: The child widget that changed.
         @type child: C{CanvasWidget}
         """
+        if self.__hidden or child.__hidden: return
         # If we're already updating, then do nothing.  This prevents
         # infinite loops when _update modifies its children.
         if self.__updating: return
@@ -352,6 +360,7 @@ class CanvasWidget:
         
         @rtype: C{None}
         """
+        if self.__hidden: return
         for child in self.__children: child.manage()
         self._manage()
 
@@ -408,17 +417,26 @@ class CanvasWidget:
 
         @rtype: C{None}
         """
+        self.__hidden = 1
         for tag in self.tags():
             self.__canvas.itemconfig(tag, state='hidden')
 
-    def hide(self):
+    def show(self):
         """
         Show a hidden canvas widget.
 
         @rtype: C{None}
         """
+        self.__hidden = 0
         for tag in self.tags():
             self.__canvas.itemconfig(tag, state='normal')
+
+    def hidden(self):
+        """
+        @return: True if this canvas widget is hidden.
+        @rtype: C{boolean}
+        """
+        return self.__hidden
 
     ##//////////////////////////////////////////////////////
     ##  Callback interface
@@ -1437,10 +1455,19 @@ class CanvasFrame:
             filename = asksaveasfilename(filetypes=ftypes,
                                          defaultextension='.ps')
             if not filename: return
-        (x0, y0, w, h) = self._canvas['scrollregion'].split()
+        (x0, y0, w, h) = self.scrollregion()
         self._canvas.postscript(file=filename, x=x0, y=y0,
-                                width=int(w)+2, height=int(h)+2)
+                                width=w+2, height=h+2)
 
+    def scrollregion(self):
+        """
+        @return: The current scroll region for the canvas managed by
+            this C{CanvasFrame}.
+        @rtype: 4-tuple of C{int}
+        """
+        (x1, y1, x2, y2) = self._canvas['scrollregion'].split()
+        return (int(x1), int(y1), int(x2), int(y2))
+        
     def canvas(self):
         """
         @return: The canvas managed by this C{CanvasFrame}.
@@ -1448,11 +1475,13 @@ class CanvasFrame:
         """
         return self._canvas
 
-    def add_widget(self, canvaswidget, x=0, y=0):
+    def add_widget(self, canvaswidget, x=None, y=None):
         """
         Register a canvas widget with this C{CanvasFrame}.  The
         C{CanvasFrame} will ensure that this canvas widget is always
-        within the C{Canvas}'s scrollregion.
+        within the C{Canvas}'s scrollregion.  If no coordinates are
+        given for the canvas widget, then the C{CanvasFrame} will
+        attempt to find a clear area of the canvas for it.
 
         @type canvaswidget: C{CanvasWidget}
         @param canvaswidget: The new canvas widget.  C{canvaswidget}
@@ -1466,12 +1495,33 @@ class CanvasFrame:
             corner of C{canvaswidget}, in the canvas's coordinate
             space. 
         """
+        if x is None or y is None:
+            (x, y) = self._find_room(canvaswidget)
+        
         # Move to (x,y)
         (x1,y1,x2,y2) = canvaswidget.bbox()
         canvaswidget.move(x-x1,y-y1)
 
         # Register with scrollwatcher.
         self._scrollwatcher.add_child(canvaswidget)
+
+    def _find_room(self, widget):
+        """
+        Try to find a space for a given widget.
+        """
+        (left, top, right, bot) = self.scrollregion()
+        w = widget.width()
+        h = widget.height()
+
+        # Move the widget out of the way, for now.
+        (x1,y1,x2,y2) = widget.bbox()
+        widget.move(left-x2-50, top-y2-50)
+
+        for y in range(top, bot-h, (bot-top-h)/10):
+            for x in range(left, right-w, (right-left-w)/10):
+                if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
+                    return (x,y)
+        return (0,0)
         
     def destroy_widget(self, canvaswidget):
         """
