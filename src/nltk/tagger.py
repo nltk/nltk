@@ -58,7 +58,7 @@ class TaggedTokenizer(AbstractTokenizer):
     @outprop: C{loc}: The subtokens' locations.
     """
     def __init__(self, addlocs=True, **propnames):
-        _wstokenizer = WSTokenizer(addlocs=addlocs, **propnames)
+        self._wstokenizer = WSTokenizer(addlocs=addlocs, **propnames)
         AbstractTokenizer.__init__(self, addlocs, **propnames)
     
     def tokenize(self, token):
