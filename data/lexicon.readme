@@ -1,0 +1,10 @@
+Lexicons
+
+Brown Lexicon: a lexicon created from the Brown Corpus.
+- each line consists of three '/'-separated fields:
+  word/tag/frequency
+
+Wall Street Journal Lexicon: a lexicon created from the
+  WSJ section of the Penn Treebank
+- each line consists of three '/'-separated fields:
+  word/tag/frequency
