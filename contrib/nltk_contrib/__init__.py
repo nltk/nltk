@@ -28,6 +28,7 @@ statements:
 @contributor: Brent Gray
 @contributor: Yurie Hara
 @contributor: Christopher Maloof
+@contributor: Oliver Steele
 @contributor: David Zhang
 """
 
