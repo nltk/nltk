@@ -41,7 +41,8 @@ C{NBClassifierTrainer} class.
 from nltk.classifier import *
 from nltk.classifier.feature import *
 from nltk.probability import *
-from nltk.token import Token, WSTokenizer
+from nltk.token import Token
+from nltk.tokenizer import WSTokenizer
 from nltk.chktype import chktype as _chktype
 import types
 

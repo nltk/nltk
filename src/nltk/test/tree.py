@@ -16,7 +16,7 @@ Unit testing for L{nltk.tree}.
 """
 
 from nltk.tree import *
-from nltk.token import WSTokenizer
+from nltk.tokenizer import WSTokenizer
 
 ##//////////////////////////////////////////////////////
 ##  Test code

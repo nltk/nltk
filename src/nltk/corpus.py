@@ -37,7 +37,7 @@ using these corpora, see the reference documentation for L{Corpus}.
 """
 
 import sys, os.path
-from nltk.token import WSTokenizer
+from nltk.tokenizer import WSTokenizer
 
 #################################################################
 # Base Directory for Corpora
@@ -118,7 +118,7 @@ class Corpus:
             for subcorpora.  If no description is given, then the
             file C{I{directory}/I{name}.readme} will be checked for
             a description.
-        @type default_tokenizer: L{TokenizierI<nltk.token.TokenizerI>}
+        @type default_tokenizer: L{TokenizierI<nltk.tokenizer.TokenizerI>}
         @param default_tokenizer: The default tokenizer for the
             L{tokenize()} file access method.
         """

@@ -1232,7 +1232,7 @@ def demo():
     print "Sentence:\n", sent
 
     # tokenize the sentence
-    from nltk.token import WSTokenizer
+    from nltk.tokenizer import WSTokenizer
     tok_sent = WSTokenizer().tokenize(sent)
 
     # Which tests?

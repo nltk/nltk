@@ -892,7 +892,7 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk.token import WSTokenizer
+    from nltk.tokenizer import WSTokenizer
     
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
