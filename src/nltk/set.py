@@ -312,6 +312,17 @@ class Set:
         """
         return len(self._dict)
 
+    def __cmp__(self, other):
+        """
+        @rtype: C{int}
+        @return: -1 if C{self<other}; 0 if C{self==other}; or 1 if
+        C{self>other}.
+        @param other: The object to compare this Set to.
+        @type other: any
+        """
+        if not _classeq(self, other): return -1
+        return cmp(self._dict, other._dict)
+
     def __eq__(self, other):
         """
         Return 1 if the given object is equal to this Set.  In
