@@ -136,7 +136,7 @@ from nltk.chunkparser import unchunk, ChunkScore
 from nltk.set import Set
 from nltk.chktype import chktype as _chktype
 
-import pre
+import re
 import string
 
 ##//////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ Indication of current efficiency::
 
 _TAGCHAR = r'[^\{\}<>]'
 _TAG = r'(<%s+?>)' % _TAGCHAR
-_VALID_TAG_PATTERN = pre.compile(r'^((%s|<%s>)*)$' %
+_VALID_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
                                 ('[^\{\}<>]+',
                                  '[^\{\}<>]+'))
 
@@ -243,9 +243,9 @@ class ChunkString:
     # These are used by _verify
     _CHUNK = r'(\{%s+?\})+?' % _TAG
     _CHINK = r'(%s+?)+?' % _TAG
-    _VALID = pre.compile(r'(\{?%s\}?)*?' % _TAG)
-    _BRACKETS = pre.compile('[^\{\}]+')
-    _BALANCED_BRACKETS = pre.compile(r'(\{\})*$')
+    _VALID = re.compile(r'(\{?%s\}?)*?' % _TAG)
+    _BRACKETS = re.compile('[^\{\}]+')
+    _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
     
     def __init__(self, tagged_tokens, debug_level=3):
         """
@@ -308,7 +308,7 @@ class ChunkString:
 
         if verify_tags<=0: return
         
-        tags1 = (pre.split(r'[\{\}<>]+', self._str))[1:-1]
+        tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
         tags2 = [tok.type().tag() for tok in self._ttoks]
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid chunkstring')
@@ -326,7 +326,7 @@ class ChunkString:
         if self._debug > 0: self._verify(1)
             
         # Extract a list of alternating chinks & chunks
-        pieces = pre.split('[{}]', self._str)
+        pieces = re.split('[{}]', self._str)
 
         # Use this alternating list to create the chunkstruct.
         chunkstruct = []
@@ -376,12 +376,12 @@ class ChunkString:
             invalid chunkstring.
         """
         # Do the actual substitution
-        self._str = pre.sub(regexp, repl, self._str)
+        self._str = re.sub(regexp, repl, self._str)
 
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
-        self._str = pre.sub('\{\}', '', self._str)
+        self._str = re.sub('\{\}', '', self._str)
 
         # Make sure that the transformation was legal.
         if self._debug > 1: self._verify(self._debug-2)
@@ -463,8 +463,8 @@ class ChunkString:
             regardless of the chunking.
         """
         # Add spaces to make everything line up.
-        str = pre.sub(r'>(?!\})', r'> ', self._str)
-        str = pre.sub(r'([^\{])<', r'\1 <', str)
+        str = re.sub(r'>(?!\})', r'> ', self._str)
+        str = re.sub(r'([^\{])<', r'\1 <', str)
         if str[0] == '<': str = ' ' + str
         return str
 
@@ -509,9 +509,9 @@ def tag_pattern2re_pattern(tag_pattern):
         C{tag_pattern}. 
     """
     # Clean up the regular expression
-    tag_pattern = pre.sub(r'\s', '', tag_pattern)
-    tag_pattern = pre.sub(r'<', '(<(', tag_pattern)
-    tag_pattern = pre.sub(r'>', ')>)', tag_pattern)
+    tag_pattern = re.sub(r'\s', '', tag_pattern)
+    tag_pattern = re.sub(r'<', '(<(', tag_pattern)
+    tag_pattern = re.sub(r'>', ')>)', tag_pattern)
 
     # Check the regular expression
     if not _VALID_TAG_PATTERN.match(tag_pattern):
@@ -529,7 +529,7 @@ def tag_pattern2re_pattern(tag_pattern):
         return ''.join(lst)
     tc_rev = reverse_str(_TAGCHAR)
     reversed = reverse_str(tag_pattern)
-    reversed = pre.sub(r'\.(?!\\(\\\\)*($|[^\\]))', tc_rev, reversed)
+    reversed = re.sub(r'\.(?!\\(\\\\)*($|[^\\]))', tc_rev, reversed)
     tag_pattern = reverse_str(reversed)
 
     return tag_pattern
@@ -583,7 +583,7 @@ class REChunkParserRule:
         self._repl = repl
         self._descr = descr
         if type(regexp) == type(''):
-            self._regexp = pre.compile(regexp)
+            self._regexp = re.compile(regexp)
         else:
             self._regexp = regexp
 
@@ -651,7 +651,7 @@ class ChunkRule(REChunkParserRule):
         _chktype("ChunkRule", 1, tag_pattern, (type(''),))
         _chktype("ChunkRule", 2, descr, (type(''),))
         self._pattern = tag_pattern
-        regexp = pre.compile('(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')'+
+        regexp = re.compile('(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')'+
                             ChunkString.IN_CHINK_PATTERN)
         REChunkParserRule.__init__(self, regexp, '{\g<chunk>}', descr)
 
@@ -694,7 +694,7 @@ class ChinkRule(REChunkParserRule):
         _chktype("ChinkRule", 1, tag_pattern, (type(''),))
         _chktype("ChinkRule", 2, descr, (type(''),))
         self._pattern = tag_pattern
-        regexp = pre.compile('(?P<chink>'+tag_pattern2re_pattern(tag_pattern)+')'+
+        regexp = re.compile('(?P<chink>'+tag_pattern2re_pattern(tag_pattern)+')'+
                             ChunkString.IN_CHUNK_PATTERN)
         REChunkParserRule.__init__(self, regexp, '}\g<chink>{', descr)
 
@@ -735,7 +735,7 @@ class UnChunkRule(REChunkParserRule):
         _chktype("UnChunkRule", 1, tag_pattern, (type(''),))
         _chktype("UnChunkRule", 2, descr, (type(''),))
         self._pattern = tag_pattern
-        regexp = pre.compile('\{(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')\}')
+        regexp = re.compile('\{(?P<chunk>'+tag_pattern2re_pattern(tag_pattern)+')\}')
         REChunkParserRule.__init__(self, regexp, '\g<chunk>', descr)
 
     def __repr__(self):
@@ -789,7 +789,7 @@ class MergeRule(REChunkParserRule):
         _chktype("MergeRule", 3, descr, (type(''),))
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = pre.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
+        regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
                             '}{(?='+tag_pattern2re_pattern(right_tag_pattern)+')')
         REChunkParserRule.__init__(self, regexp, '\g<left>', descr)
 
@@ -844,7 +844,7 @@ class SplitRule(REChunkParserRule):
         _chktype("SplitRule", 3, descr, (type(''),))
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = pre.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
+        regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
                             '(?='+tag_pattern2re_pattern(right_tag_pattern)+')')
         REChunkParserRule.__init__(self, regexp, r'\g<left>}{', descr)
 
