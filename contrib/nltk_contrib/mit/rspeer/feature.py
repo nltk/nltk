@@ -1,16 +1,16 @@
-from nltk.featurestruct import *
+from nltk.featurestructure import *
 from nltk.cfg import Nonterminal, CFGProduction
 import string
 
-class Category(FeatureStruct, Nonterminal):
+class Category(FeatureStructure, Nonterminal):
     """
     A C{Category} is a specialized feature structure, intended for use in
     parsing.  It can act as a C{Nonterminal}.
 
-    A C{Category} differs from a C{FeatureStructure} in these ways:
+    A C{Category} differs from a C{FeatureStructureure} in these ways:
         - Categories may not be re-entrant.
         
-        - Categories use value-based equality, while FeatureStructures use
+        - Categories use value-based equality, while FeatureStructureures use
           identity-based equality.
 
         - Strings in Categories are compared case-insensitively.
@@ -145,7 +145,7 @@ class Category(FeatureStruct, Nonterminal):
 
         # Fill out the features.
         for (fname, fval) in self._features.items():
-            if isinstance(fval, FeatureStruct):
+            if isinstance(fval, FeatureStructure):
                 features[fname] = fval.deepcopy()
             else:
                 features[fname] = fval
@@ -217,8 +217,8 @@ class Category(FeatureStruct, Nonterminal):
                     print '  '+'%s| Unify %s feature:'%('|   '*(depth),fname)
                     
                 # Case 1: unify 2 feature structures (recursive case)
-                if (isinstance(selfval, FeatureStruct) and
-                    isinstance(otherval, FeatureStruct)):
+                if (isinstance(selfval, FeatureStructure) and
+                    isinstance(otherval, FeatureStructure)):
                     selfval._destructively_unify(otherval, bindings,
                                                  trace, depth+1)
 
@@ -240,16 +240,16 @@ class Category(FeatureStruct, Nonterminal):
                 # Case 4: unify 2 non-equal values (failure case)
                 elif selfval != otherval:
                     if trace: print '  '+'|   '*depth + 'X <-- FAIL'
-                    raise FeatureStruct._UnificationFailureError()
+                    raise FeatureStructure._UnificationFailureError()
 
                 # Case 5: unify 2 equal values
                 else: pass
 
-                if trace and not isinstance(selfval, FeatureStruct):
+                if trace and not isinstance(selfval, FeatureStructure):
                     # apply_forwards to get reentrancy links right:
-                    if isinstance(trace_selfval, FeatureStruct):
+                    if isinstance(trace_selfval, FeatureStructure):
                         trace_selfval._apply_forwards({})
-                    if isinstance(trace_otherval, FeatureStruct):
+                    if isinstance(trace_otherval, FeatureStructure):
                         trace_otherval._apply_forwards({})
                     print '  '+'%s|    /%r' % ('|   '*(depth), trace_selfval)
                     print '  '+'%s|   |\\%r' % ('|   '*(depth), trace_otherval)
@@ -318,7 +318,7 @@ class Category(FeatureStruct, Nonterminal):
         for fname in items:
             fval = self[fname]
                 
-            if not isinstance(fval, FeatureStruct):
+            if not isinstance(fval, FeatureStructure):
                 # It's not a nested feature structure -- just print it.
                 lines.append('%s = %r' % (fname.ljust(maxfnamelen), fval))
 
@@ -343,7 +343,7 @@ class Category(FeatureStruct, Nonterminal):
                 # Add the feature structure to the output.
                 lines += fval_lines
                             
-                # Separate FeatureStructs by a blank line.
+                # Separate FeatureStructures by a blank line.
                 lines.append('')
 
         # Get rid of any excess blank lines.
@@ -572,8 +572,7 @@ class Category(FeatureStruct, Nonterminal):
         rules = []
         while position < len(s):
             rhs = []
-            while position < len(s) and _PARSE_RE['disjunct'].match(s,
-            position) is None:
+            while position < len(s) and _PARSE_RE['disjunct'].match(s, position) is None:
                 try:
                     val, position = cls._parseval(s, position, {})
                 except ValueError, e:

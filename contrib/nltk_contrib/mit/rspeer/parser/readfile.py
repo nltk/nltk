@@ -1,4 +1,4 @@
-from mit.rspeer.feature import *
+from nltk_contrib.mit.rspeer.feature import *
 from featurechart import *
 
 class GrammarFile(object):
