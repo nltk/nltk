@@ -302,7 +302,7 @@ class ProductionEdge(EdgeI):
             is based on.
         @rtype: C{list} of (C{Nonterminal} and terminal)
         """
-        return self._prod.lhs()
+        return self._prod.rhs()
         
     def complete(self):
         # Docs inherited from EdgeI
