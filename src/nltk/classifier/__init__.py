@@ -242,3 +242,19 @@ def attested_classes(tokens):
     assert _chktype(1, tokens, [Token], (Token,))
     return list(sets.Set([token['CLASS'] for token in tokens]))
 
+def classifier_log_likelihood(classifier, gold):
+    ll = 0.0
+    for gold_tok in gold:
+        test_tok = gold_tok.copy() # OUCH!
+        classifier.classify(test_tok)
+        ll += test_tok['CLASS_PROBS'].prob(gold_tok['CLASS'])
+
+def classifier_accuracy(classifier, gold):
+    correct = 0
+    for gold_tok in gold:
+        test_tok = gold_tok.copy() # OUCH!
+        classifier.classify(test_tok)
+        if test_tok['CLASS'] == gold_tok['CLASS']:
+            correct += 1
+    return float(correct) / len(gold)
+
