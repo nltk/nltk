@@ -177,7 +177,7 @@ class TaggerI:
             - C{len(tokens)} = C{len(out)}
             - C{out[i].type} = C{TaggedType(tokens[i].type, M{tag})}
                 for some C{M{tag}}.
-            - C{out[i].location()} = C{tokens[i].location()}
+            - C{out[i].loc()} = C{tokens[i].loc()}
 
         @param tokens: The list of tokens to be tagged.
         @type tokens: C{list} of C{Token}
@@ -201,7 +201,7 @@ class NN_CD_Tagger(TaggerI):
                 token_type = TaggedType(word, 'CD')
             else:
                 token_type = TaggedType(word, 'NN')
-            tagged_tokens.append(Token(token_type, token.location()))
+            tagged_tokens.append(Token(token_type, token.loc()))
         return tagged_tokens
 
 class NthOrderTagger(TaggerI):
@@ -272,7 +272,7 @@ class NthOrderTagger(TaggerI):
 
             # Update words
             token_type = TaggedType(token.type(), tag)
-            tagged_tokens.append(Token(token_type, token.location()))
+            tagged_tokens.append(Token(token_type, token.loc()))
 
             # Update prev_tags
             if len(prev_tags) > 0:
@@ -344,7 +344,7 @@ class BackoffTagger(TaggerI):
         return tagged_tokens
 
 def untag(tokens):
-    return [Token(t.type().base(), t.location()) for t in tokens]
+    return [Token(t.type().base(), t.loc()) for t in tokens]
   
 def test_tagger():
     """
