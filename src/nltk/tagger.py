@@ -227,16 +227,18 @@ class NN_CD_Tagger(TaggerI):
     and C{NN} to anything else.  This tagger expects a list of
     C{strings}s as its inputs.
     """
+    def __init__(self): pass
+    
     def tag(self, tokens):
         # Inherit docs from TaggerI
         tagged_tokens = []
         for token in tokens:
-            word = token.type()
-            if re.match('^[0-9]+(.[0-9]+)?$', word):
-                token_type = TaggedType(word, 'CD')
+            base_type = token.type()
+            if re.match(r'^[0-9]+(.[0-9]+)?$', base_type):
+                tag = TaggedType(base_type, 'CD')
             else:
-                token_type = TaggedType(word, 'NN')
-            tagged_tokens.append(Token(token_type, token.loc()))
+                tag = TaggedType(base_type, 'NN')
+            tagged_tokens.append(Token(tag, token.loc()))
         return tagged_tokens
 
 class UnigramTagger(TaggerI):
@@ -249,12 +251,12 @@ class UnigramTagger(TaggerI):
     word in a context for which it has no data, it will assign it the
     tag \"UNK\".
     
-    This tagger expects a list of C{SimpleToken}s as its
+    This tagger expects a list of C{Token}s as its
     input, and generates a list of C{TaggedToken}s as its
     output.
     """
     def __init__(self):
-        self._freqDist = probability.CFFreqDist()
+        self._freqdist = probability.CFFreqDist()
     
     def train(self, tagged_tokens):
         """
@@ -269,7 +271,7 @@ class UnigramTagger(TaggerI):
         for token in tagged_tokens:
             context = token.type().base()
             feature = token.type().tag()
-            self._freqDist.inc( probability.CFSample(context, feature) )
+            self._freqdist.inc( probability.CFSample(context, feature) )
 
     def tag(self, tokens):
         # Inherit docs from TaggerI
@@ -279,11 +281,11 @@ class UnigramTagger(TaggerI):
             # Predict the next tag
             context = token.type()
             context_event = probability.ContextEvent(context)
-            sample = self._freqDist.cond_max(context_event)
+            sample = self._freqdist.cond_max(context_event)
             if sample: tag = sample.feature()
             else: tag = 'UNK'
 
-            # Update words
+            # Add the newly tagged token to tagged_tokens
             token_type = TaggedType(token.type(), tag)
             tagged_tokens.append(Token(token_type, token.loc()))
 
@@ -303,7 +305,7 @@ class NthOrderTagger(TaggerI):
     C{NthOrderTagger} encounters a word in a context for
     which it has no data, it will assign it the tag \"UNK\".
 
-    This tagger expects a list of C{SimpleToken}s as its
+    This tagger expects a list of C{Token}s as its
     input, and generates a list of C{TaggedToken}s as its
     output.
     """
@@ -317,7 +319,7 @@ class NthOrderTagger(TaggerI):
         @type n: int
         """
         self._n = n
-        self._freqDist = probability.CFFreqDist()
+        self._freqdist = probability.CFFreqDist()
 
     def train(self, tagged_tokens):
         """
@@ -330,12 +332,12 @@ class NthOrderTagger(TaggerI):
         @returntype: None
         """
         # prev_tags is a list of the previous n tags that we've assigned.
-        prev_tags = ['UNK' for x in range(self._n)]
+        prev_tags = ['UNK'] * self._n
       
         for token in tagged_tokens:
             context = tuple(prev_tags+[token.type().base()])
             feature = token.type().tag()
-            self._freqDist.inc( probability.CFSample(context, feature) )
+            self._freqdist.inc( probability.CFSample(context, feature) )
 
             # Update prev_tags
             if len(prev_tags) > 0:
@@ -346,16 +348,16 @@ class NthOrderTagger(TaggerI):
         # Inherit docs from TaggerI
         tagged_tokens = []
       
-        prev_tags = ['UNK' for x in range(self._n)]
+        prev_tags = ['UNK'] * self._n
         for token in tokens:
             # Predict the next tag
             context = tuple(prev_tags+[token.type()])
             context_event = probability.ContextEvent(context)
-            sample = self._freqDist.cond_max(context_event)
+            sample = self._freqdist.cond_max(context_event)
             if sample: tag = sample.feature()
             else: tag = 'UNK'
 
-            # Update words
+            # Add the newly tagged token to tagged_tokens
             token_type = TaggedType(token.type(), tag)
             tagged_tokens.append(Token(token_type, token.loc()))
 
@@ -376,10 +378,10 @@ class BackoffTagger(TaggerI):
     special \"unknown tag.\"  The first tag returned by a sub-tagger,
     other than the unknown tag, is used for each Token.
 
-    This tagger expects a list of C{SimpleToken}s as its
+    This tagger expects a list of C{Token}s as its
     input, and generates a list of C{TaggedToken}s as its
     output.  Each sub-tagger should accept a list a list of
-    C{SimpleToken}s as its input, and should generate a list
+    C{Token}s as its input, and should generate a list
     of C{TaggedToken}s as its output.
     """
     def __init__(self, subtaggers, unknown_tag='UNK'):
