@@ -31,7 +31,7 @@ Requirements
     source Python packages.  These packages are not required to use
     much of Python's core functionality.  However, without them you
     won't be able to use some features (such as visualization).  The
-    following packages are currently used by the natural langauge
+    following packages are currently used by the natural language
     toolkit:
 
         - Tkinter ("Tk interface"): the standard Python interface to
@@ -53,7 +53,7 @@ Requirements
     future:
 
         - PyWordNet: a python interface to WordNet.  Wordnet is a
-          lexcial databse, developed at Princeton University.
+          lexical database, developed at Princeton University.
             <http://pywordnet.sf.net>
             <http://sourceforge.net/project/showfiles.php?group_id=27422>
           The WordNet database files can be downloaded from:
@@ -102,16 +102,18 @@ Macintosh Installation
 ~~~~~~~~~~~~~~~~~~~~~~
     I have not tested nltk on a Macintosh; but I've been told that it
     works.  I do not know the details of installing packages on
-    Macintoshes.  However, I belive that the procedure would be
+    Macintoshes.  However, I believe that the procedure would be
     similar to the unix installation procedure (i.e., call setup.py
     with the "install" argument)
 
 Corpora
 ~~~~~~~
     When learning how to process text, it is very useful to have some
-    test corpera to play with.  The following list gives the locations
+    test corpora to play with.  The following list gives the locations
     where some text copora can be found:
 
     - The Brown Corpus      <http://www.hit.uib.no/icame/newcd.htm>
     - Penn Treebank Corpus  <http://www.cis.upenn.edu/~treebank/>
-    - Project Gutenburg     <http://promo.net/pg/>
+    - Project Gutenberg     <http://promo.net/pg/>
+ LocalWords:  Tkinter RedHat PyWordNet Wordnet SRPM gz gunzip xvf cd unix
+ LocalWords:  Macintoshes Treebank
