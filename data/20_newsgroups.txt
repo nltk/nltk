@@ -1,0 +1,29 @@
+20 Newsgroups, by Ken Lang and Jason Rennie
+http://www.ai.mit.edu/~jrennie/20Newsgroups/
+
+The 20 Newsgroups data set is a collection of approximately 20,000
+newsgroup documents, partitioned (nearly) evenly across 20 different
+newsgroups [1].  The 20 newsgroups collection has become a popular
+data set for experiments in text applications of machine learning
+techniques, such as text classification and text clustering.
+
+The data is organized into 20 different newsgroups.  Some are closely
+related, while others are completely unrelated.  Here is a list of the
+newsgroups:
+
+comp.graphics, comp.os.ms-windows.misc, comp.sys.ibm.pc.hardware,
+comp.sys.mac.hardware, comp.windows.x, rec.autos, rec.motorcycles,
+rec.sport.baseball, rec.sport.hockey, sci.crypt, sci.electronics,
+sci.med, sci.space, misc.forsale, talk.politics.misc,
+talk.politics.guns, talk.politics.mideast, talk.religion.misc,
+alt.atheism, soc.religion.christian
+
+The version of the dataset distributed here is Jason Rennie's, which
+has duplicates and headers removed.  It was originally distributed as
+a gzipped a tar file: "20news-18828.tar.gz", but is repackaged using
+zip for wider accessiblity.  For more information, please see
+http://www.ai.mit.edu/~jrennie/20Newsgroups/
+
+[1] Ken Lang (1995) Newsweeder: Learning to filter netnews.
+    International Conference on Machine Learning, pp 331-339.
+
