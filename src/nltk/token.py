@@ -317,7 +317,7 @@ class Token(dict):
         """
         props = list(props)
         props.sort()
-        Token._repr_funcs[tuple(props)] = func
+        Token._repr_funcs[tuple(props)] = repr
     register_repr = staticmethod(register_repr)
 
     def __repr__(self):
