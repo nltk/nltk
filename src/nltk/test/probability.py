@@ -86,16 +86,116 @@ class SampleEventTestCase(unittest.TestCase):
         self.failUnless(b != y)
         self.failUnless(b != a)
 
+class CFFreqDistTestCase(unittest.TestCase):
+    """
+    Unit test cases for C{nltk.probability.CFFreqDist}.
+    These tests are nondeterministic, and assume that
+    nltk.probability.SimpleFreqDist is working correctly.
+    """
+    seed = 12347
+    
+    def __init__(self, *args, **kwargs):
+        # Call parent constructor.
+        unittest.TestCase.__init__(self, *args, **kwargs)
+        
+        # Build frequency distributions; we'll copy them for each
+        # test.
+        import random
+
+        random.seed(CFFreqDistTestCase.seed)
+        CFFreqDistTestCase.seed += 2343
+        
+        self._NUM_CONTEXTS = 5
+        self._NUM_FEATURES = 5
+
+        self._freqdist1 = CFFreqDist()
+        self._freqdist2 = SimpleFreqDist()
+
+        for x in range(100):
+            context = random.randint(1,self._NUM_CONTEXTS)
+            feature = str(random.randint(1,self._NUM_FEATURES))
+            sample = CFSample(context, feature)
+            self._freqdist1.inc(sample)
+            self._freqdist2.inc(sample)
+        print self._freqdist1
+    
+    def setUp(self):
+        import copy
+        self._fdist1 = copy.deepcopy(self._freqdist1)
+        self._fdist2 = copy.deepcopy(self._freqdist2)
+        
+    def testSamples(self):
+        "nltk.probability.CFFreqDist.samples() test"
+        samples1 = self._fdist1.samples()[:]
+        samples2 = self._fdist2.samples()[:]
+        samples1.sort()
+        samples2.sort()
+        self.failUnlessEqual(samples1, samples2)
+
+    def testCount(self):
+        "nltk.probability.CFFreqDist.count() test"
+        for sample in self._fdist1.samples():
+            self.failUnlessEqual(self._fdist1.count(sample),
+                                 self._fdist2.count(sample))
+
+    def testFreq(self):
+        "nltk.probability.CFFreqDist.freq() test"
+        for sample in self._fdist1.samples():
+            self.failUnlessEqual(self._fdist1.freq(sample),
+                                 self._fdist2.freq(sample))
+        
+    def testCondFreq(self):
+        "nltk.probability.CFFreqDist.cond_freq() test"
+        for context in range(1, self._NUM_CONTEXTS+1):
+            e=ContextEvent(context)
+            for feature in range(1, self._NUM_FEATURES+1):
+                s=CFSample(context, str(feature))
+                self.failUnlessEqual(self._fdist1.cond_freq(s,e),
+                                     self._fdist2.cond_freq(s,e))
+
+    def testCondMax(self):
+        "nltk.probability.CFFreqDist.cond_max() test"
+        for context in range(1, self._NUM_CONTEXTS+1):
+            e=ContextEvent(context)
+            max1 = self._fdist1.cond_max(e)
+            max2 = self._fdist2.cond_max(e)
+            self.failUnlessEqual(self._fdist2.freq(max1),
+                                 self._fdist2.freq(max2))
+
+    def testMax(self):
+        "nltk.probability.CFFreqDist.max() test"
+        max1 = self._fdist1.max()
+        max2 = self._fdist2.max()
+        self.failUnlessEqual(self._fdist2.freq(max1),
+                             self._fdist2.freq(max2))
+        
+    def testN(self):
+        "nltk.probability.CFFreqDist.N() test"
+        self.failUnlessEqual(self._fdist1.N(), self._fdist2.N())
+        
+    def testB(self):
+        "nltk.probability.CFFreqDist.B() test"
+        self.failUnlessEqual(self._fdist1.B(), self._fdist2.B())
+        
+    def testNr(self):
+        "nltk.probability.CFFreqDist.Nr() test"
+        for r in range(20):
+            self.failUnlessEqual(self._fdist1.Nr(r), self._fdist2.Nr(r))
 
 def testsuite():
     """
     Return a PyUnit testsuite for the probability module.
     """
     
-    tests = unittest.TestSuite()
+    tests = unittest.TestSuite((
+        unittest.makeSuite(SampleEventTestCase, 'test'),
 
-    eventtests = unittest.makeSuite(SampleEventTestCase, 'test')
-    tests = unittest.TestSuite( (tests, eventtests) )
+        # Include CFFreqDist 3 times, since it uses nondeterministic
+        # tests.
+        unittest.makeSuite(CFFreqDistTestCase, 'test'),
+        unittest.makeSuite(CFFreqDistTestCase, 'test'),
+        unittest.makeSuite(CFFreqDistTestCase, 'test'),
+        ))
 
     return tests
 
