@@ -576,13 +576,13 @@ class ProbabilisticToken(Token, ProbabilisticMixIn):
       - The likelihood that this token will be generated in a
         specific context.
     """
-    def __init__(self, p, type, location):
-        ProbabilisticMixIn.__init__(self, p)
+    def __init__(self, prob, type, location):
+        ProbabilisticMixIn.__init__(self, prob)
         Token.__init__(self, type, location)
     def __repr__(self):
-        return Token.__repr__(self)+' (p=%s)' % self._p
+        return Token.__repr__(self)+' (p=%s)' % self._prob
     def __str__(self):
-        return Token.__str__(self)+' (p=%s)' % self._p
+        return Token.__str__(self)+' (p=%s)' % self._prob
 
 ##//////////////////////////////////////////////////////
 ##  Tokenizers
