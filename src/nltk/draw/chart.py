@@ -232,7 +232,8 @@ class ChartView:
                           unitwidth)
 
         # Reset the height for the source window.
-        self._source_canvas['height'] = self._source_height
+        if self._source_canvas is not None:
+            self._source_canvas['height'] = self._source_height
         
     def set_font_size(self, size):
         self._fontsize = size
