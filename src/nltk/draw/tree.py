@@ -399,7 +399,7 @@ class TreeSegmentWidget(CanvasWidget):
 def _tree_to_treeseg(canvas, tree, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs,
-                     property_names={'leaf':'TEXT'}):
+                     property_names={'LEAF':'TEXT'}):
     NODE = property_names.get('NODE', 'NODE')
     LEAF = property_names.get('LEAF', 'LEAF')
     if isinstance(tree, TreeToken):
@@ -498,7 +498,7 @@ class TreeWidget(CanvasWidget):
       - C{draggable}: whether the widget can be dragged by the user.
     """
     def __init__(self, canvas, tree, make_node=TextWidget,
-                 make_leaf=TextWidget, property_names={'leaf':'TEXT'},
+                 make_leaf=TextWidget, property_names={'LEAF':'TEXT'},
                  **attribs):
         # Node & leaf canvas widget constructors
         self._make_node = make_node

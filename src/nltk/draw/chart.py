@@ -1051,7 +1051,7 @@ class ChartView:
         # Draw the node
         nodey = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         tag = c.create_text(nodex, nodey, anchor='n', justify='center',
-                            text=str(treetok['node']), fill='#042',
+                            text=str(treetok['NODE']), fill='#042',
                             font=self._boldfont)
         self._tree_tags.append(tag)
 
@@ -1248,7 +1248,7 @@ class ChartDemo:
     def _init_parser(self, grammar, token):
         self._grammar = grammar
         self._token = token
-        self._cp = SteppingChartParser(self._grammar, leaf='TEXT')
+        self._cp = SteppingChartParser(self._grammar, LEAF='TEXT')
         self._cp.initialize(self._token)
         self._chart = self._cp.chart()
 
@@ -1608,7 +1608,7 @@ class ChartDemo:
             
     def reset(self, *args):
         self._animating = 0
-        self._cp = SteppingChartParser(self._grammar, leaf='TEXT')
+        self._cp = SteppingChartParser(self._grammar, LEAF='TEXT')
         self._cp.initialize(self._token)
         self._chart = self._cp.chart()
         self._cv.update(self._chart)
@@ -1634,7 +1634,7 @@ class ChartDemo:
         EntryDialog(self._root, sentence, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._token = Token(text=sentence)
+        self._token = Token(TEXT=sentence)
         WSTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
@@ -1798,8 +1798,8 @@ def demo():
         P -> 'on' | 'under' | 'with'
     """)
     
-    sent = Token(text='John ate the cake on the table with a fork')
-    sent = Token(text='John ate the cake on the table')
+    sent = Token(TEXT='John ate the cake on the table with a fork')
+    sent = Token(TEXT='John ate the cake on the table')
     WSTokenizer().tokenize(sent)
 
     print 'grammar= ('

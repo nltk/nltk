@@ -88,7 +88,7 @@ class RecursiveDescentParserDemo:
     def __init__(self, grammar, token, trace=0):
         self._token = token
         self._parser = SteppingRecursiveDescentParser(grammar, trace,
-                                                      leaf='TEXT')
+                                                      LEAF='TEXT')
 
         # Set up the main window.
         self._top = Tk()
@@ -861,7 +861,7 @@ class RecursiveDescentParserDemo:
         EntryDialog(self._top, sentence, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._token = Token(text=sentence)
+        self._token = Token(TEXT=sentence)
         WSTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
@@ -896,7 +896,7 @@ def demo():
 
     grammar = CFG(S, productions)
 
-    sent = Token(text='the dog saw a man in the park')
+    sent = Token(TEXT='the dog saw a man in the park')
     WSTokenizer().tokenize(sent)
 
     RecursiveDescentParserDemo(grammar, sent).mainloop()

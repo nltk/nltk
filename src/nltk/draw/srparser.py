@@ -95,7 +95,7 @@ class ShiftReduceParserDemo:
     """
     def __init__(self, grammar, token, trace=0):
         self._token = token
-        self._parser = SteppingShiftReduceParser(grammar, trace, leaf='TEXT')
+        self._parser = SteppingShiftReduceParser(grammar, trace, LEAF='TEXT')
 
         # Set up the main window.
         self._top = Tk()
@@ -572,7 +572,7 @@ class ShiftReduceParserDemo:
         EntryDialog(self._top, sentence, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._token = Token(text=sentence)
+        self._token = Token(TEXT=sentence)
         WSTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
@@ -685,7 +685,7 @@ class ShiftReduceParserDemo:
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
             if not isinstance(tok, TreeToken): raise ValueError()
-            label = TextWidget(self._canvas, str(tok['node']), color='#006060',
+            label = TextWidget(self._canvas, str(tok['NODE']), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
@@ -798,7 +798,7 @@ def demo():
     grammar = CFG(S, productions)
 
     # tokenize the sentence
-    sent = Token(text='my dog saw a man in the park with a statue')
+    sent = Token(TEXT='my dog saw a man in the park with a statue')
     WSTokenizer().tokenize(sent)
 
     ShiftReduceParserDemo(grammar, sent).mainloop()
