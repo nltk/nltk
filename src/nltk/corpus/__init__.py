@@ -458,7 +458,7 @@ class SimpleCorpusReader(CorpusReaderI):
             copyright notice for the corpus.  If this is a relative
             path, then it is interpreted relative to the corpus's root
             directory.
-        @type token_reader: L{TokenReaderI<nltk.token.TokenReaderI>}
+        @type token_reader: L{TokenReaderI}
         @param token_reader: The default token_reader that should be
             used for the corpus reader's L{read_token} method.
         @type token_reader_expects_source: C{bool}
@@ -709,8 +709,7 @@ stopwords = SimpleCorpusReader(
 
 chunking = SimpleCorpusReader(
     'chunking', 'chunking/', r'.*\.txt', None, description_file='README',
-    token_reader=TokenizerBasedTokenReader(
-                             RegexpTokenizer(r'\n\s*?\n', negative=1)))
+    token_reader=ConllTokenReader())
 
 ###################################################
 ## IEER Named Entity data corpus
@@ -867,6 +866,7 @@ def demo():
     _test_corpus(words)
     _test_corpus(semcor)
     _test_corpus(senseval)
+    _test_corpus(chunking)
     _test_treebank()
     print '='*70
     
