@@ -274,9 +274,15 @@ class Token(dict):
             return tuple([restrict(v, props, incl) for v in val])
         elif isinstance(val, dict):
             return dict(self._deep_restrict(val.items(), props, incl))
+        elif hasattr(val, '__iter__') and hasattr(val, 'next'):
+            return self._deep_restrict_iter(val, props, incl)
         else:
             hash(val) # Make sure it's immutable (or at least hashable).
             return val
+
+    def _deep_restrict_iter(self, val, props, incl):
+        for item in val:
+            yield self._deep_restrict(item, props, incl)
 
     def _freezeval(self, val):
         if isinstance(val, Token):
@@ -286,6 +292,8 @@ class Token(dict):
             return tuple([freezeval(v) for v in val])
         elif isinstance(val, dict):
             return FrozenDict(self._freezeval(val.items()))
+        elif hasattr(val, '__iter__') and hasattr(val, 'next'):
+            return tuple([freezeval(v) for v in val])
         else:
             hash(val) # Make sure it's immutable (or at least hashable).
             return val
