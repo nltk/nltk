@@ -12,7 +12,7 @@ FSA class - deliberately simple so that the operations are easily understood.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
-from nltk.parser import ShiftReduceParser
+from nltk.parser.probabilistic import InsidePCFGParser
 from nltk.token import CharTokenizer
 from nltk.set import *
 from nltk.cfg import *
@@ -267,20 +267,6 @@ class FSA:
                 dfa.insert(dfa_state, label, dfa_next)
         return dfa
         
-    # STALE
-    def optional(self, start = Set(0)):
-#        self._finals = self._finals.intersection(start)
-        self.inserts(start, epsilon, self._finals)
-
-    # STALE
-    def kleene_plus(self, start = Set(0)):
-        self.inserts(self._finals, epsilon, start)
-
-    # STALE
-    def kleene_star(self, start = Set(0)):
-        self.kleene_plus(start)
-        self.optional(start)
-
 #    # add num to every state identifier
 #    def add(self, num):
 #        newtable = {}
@@ -314,28 +300,33 @@ class FSA:
 
 ### FUNCTIONS TO BUILD FSA FROM REGEXP
 
-# create NFA from regexp (Thompson's construction)
-# assumes unique start and final states
+# the grammar of regular expressions
+# (probabilities ensure that unary operators
+# have stronger associativity than juxtaposition)
 
 def grammar(terminals):
     (S, Star, Plus, Qmk, Paren) = [Nonterminal(s) for s in 'S*+?(']
-    rules = [CFGProduction(S, Star),
-             CFGProduction(S, Plus),
-             CFGProduction(S, Qmk),
-             CFGProduction(S, Paren),
-             CFGProduction(S, S, S),
-             CFGProduction(Star, S, '*'),
-             CFGProduction(Plus, S, '+'),
-             CFGProduction(Qmk, S, '?'),
-             CFGProduction(Paren, '(', S, ')')]
+    rules = [PCFGProduction(0.2, S, Star),
+             PCFGProduction(0.2, S, Plus),
+             PCFGProduction(0.2, S, Qmk),
+             PCFGProduction(0.2, S, Paren),
+             PCFGProduction(0.1, S, S, S),
+             PCFGProduction(1, Star, S, '*'),
+             PCFGProduction(1, Plus, S, '+'),
+             PCFGProduction(1, Qmk, S, '?'),
+             PCFGProduction(1, Paren, '(', S, ')')]
 
+    prob = 0.1/len(terminals) # divide remaining pr. mass
     for terminal in terminals:
-        rules.append(CFGProduction(S, terminal))
+        rules.append(PCFGProduction(prob, S, terminal))
 
-    return CFG(S, rules)
+    return PCFG(S, rules)
 
-_parser = ShiftReduceParser(grammar('abcde'))
+_parser = InsidePCFGParser(grammar('abcde'))
 _tokenizer = CharTokenizer()
+
+# create NFA from regexp (Thompson's construction)
+# assumes unique start and final states
 
 def re2nfa(fsa, re):
     re_list = _tokenizer.tokenize(re)
