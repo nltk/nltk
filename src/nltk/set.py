@@ -324,13 +324,13 @@ class Set:
         """
         return len(self._dict)
 
-    def __del__(self, element):
-        """
-	Delete the element from the set.
-
-        @rtype: None
-        """
-        del self._dict[element]
+#    def __del__(self, element):
+#        """
+#	Delete the element from the set.
+#
+#        @rtype: None
+#        """
+#        del self._dict[element]
 
     def __eq__(self, other):
         """
