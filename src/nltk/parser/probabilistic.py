@@ -1000,10 +1000,15 @@ def demo():
     print '%18s |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
 
     print
-    print 'Display parses (y/n)? ',
+    print 'Draw parses (y/n)? ',
+    if sys.stdin.readline().strip().lower().startswith('y'):
+        import nltk.draw.tree
+        nltk.draw.tree.draw_trees(*parses)
+    print
+    print 'Print parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
         for parse in parses:
             print parse
-        
+
 if __name__ == '__main__':
     demo()
