@@ -258,7 +258,7 @@ class ViterbiPCFGParser(ProbabilisticParserI):
             containing a rule and a list of children, where the rule's
             right hand side matches the list of children; and the
             children cover C{span}.
-        @rtype: C{list} of C{pair} of C{PCFG_Rule}, (C{list} of
+        @rtype: C{list} of C{pair} of C{PCFGProduction}, (C{list} of
             (C{ProbabilisticTreeToken} or C{Token})
 
         @type span: C{(int, int)}
@@ -336,7 +336,7 @@ class ViterbiPCFGParser(ProbabilisticParserI):
         applied at a given location.
 
         @param rule: The rule that has been applied
-        @type rule: C{PCFG_Rule}
+        @type rule: C{PCFGProduction}
         @type text: C{list} of C{Token}
         @param text: The text we are parsing.  This is only used for
             trace output.  
@@ -511,7 +511,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         edge_queue = []
         for tok in text:
-            drule = DottedCFG_Rule(tok.type(), ())
+            drule = DottedCFGProduction(tok.type(), ())
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
             edge_queue.append(Edge(drule, probtok, tok.loc()))
 
@@ -567,7 +567,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             probability.
         @rtype: C{Edge}
 
-        @type rule: C{PCFG_Rule}
+        @type rule: C{PCFGProduction}
         @param rule: The rule to base the self-loop edge on.  The new
             edge's dotted rule and tree are based on this rule.
         @type loc: C{Location}
@@ -576,7 +576,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         """
         node = rule.lhs().symbol()
         tree = ProbabilisticTreeToken(rule.p(), node)
-        drule = DottedCFG_Rule(rule.lhs(), rule.rhs(), 0)
+        drule = DottedCFGProduction(rule.lhs(), rule.rhs(), 0)
         return Edge(drule, tree, loc.start_loc())
 
     def _fr(self, e1, e2):
@@ -602,7 +602,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             C{e1} by the fundamental rule.
         """
         loc = e1.loc().union(e2.loc())
-        drule = DottedCFG_Rule(e1.drule().lhs(), e1.drule().rhs(),
+        drule = DottedCFGProduction(e1.drule().lhs(), e1.drule().rhs(),
                                e1.drule().pos()+1)
         
         children = e1.tree().children() + (e2.tree(),)
@@ -738,47 +738,47 @@ if __name__ == '__main__':
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
-    lexicon = [PCFG_Rule(0.21, V, 'saw'),
-               PCFG_Rule(0.51, V, 'ate'),
-               PCFG_Rule(0.28, V, 'ran'),
-               PCFG_Rule(0.11, N, 'boy'),
-               PCFG_Rule(0.12, N, 'cookie'),
-               PCFG_Rule(0.13, N, 'table'),
-               PCFG_Rule(0.14, N, 'telescope'),
-               PCFG_Rule(0.50, N, 'hill'),
-               PCFG_Rule(0.52, Name, 'Jack'),
-               PCFG_Rule(0.48, Name, 'Bob'),
-               PCFG_Rule(0.61, P, 'with'),
-               PCFG_Rule(0.39, P, 'under'),
-               PCFG_Rule(0.41, Det, 'the'),
-               PCFG_Rule(0.31, Det, 'a'),
-               PCFG_Rule(0.28, Det, 'my'),
+    lexicon = [PCFGProduction(0.21, V, 'saw'),
+               PCFGProduction(0.51, V, 'ate'),
+               PCFGProduction(0.28, V, 'ran'),
+               PCFGProduction(0.11, N, 'boy'),
+               PCFGProduction(0.12, N, 'cookie'),
+               PCFGProduction(0.13, N, 'table'),
+               PCFGProduction(0.14, N, 'telescope'),
+               PCFGProduction(0.50, N, 'hill'),
+               PCFGProduction(0.52, Name, 'Jack'),
+               PCFGProduction(0.48, Name, 'Bob'),
+               PCFGProduction(0.61, P, 'with'),
+               PCFGProduction(0.39, P, 'under'),
+               PCFGProduction(0.41, Det, 'the'),
+               PCFGProduction(0.31, Det, 'a'),
+               PCFGProduction(0.28, Det, 'my'),
                ]
 
     grammar_rules2 = lexicon + [
-        PCFG_Rule(1.00, S, NP, VP),
-        PCFG_Rule(0.59, VP, V, NP),
-        PCFG_Rule(0.40, VP, V),
-        PCFG_Rule(0.01, VP, VP, PP),
-        PCFG_Rule(0.41, NP, Det, N),
-        PCFG_Rule(0.28, NP, Name),
-        PCFG_Rule(0.31, NP, NP, PP),
-        PCFG_Rule(1.00, PP, P, NP),
+        PCFGProduction(1.00, S, NP, VP),
+        PCFGProduction(0.59, VP, V, NP),
+        PCFGProduction(0.40, VP, V),
+        PCFGProduction(0.01, VP, VP, PP),
+        PCFGProduction(0.41, NP, Det, N),
+        PCFGProduction(0.28, NP, Name),
+        PCFGProduction(0.31, NP, NP, PP),
+        PCFGProduction(1.00, PP, P, NP),
                ]
 
     grammar_rules1 = [
-        PCFG_Rule(0.5, NP, Det, N), PCFG_Rule(0.25, NP, NP, PP),
-        PCFG_Rule(0.1, NP, 'John'), PCFG_Rule(0.15, NP, 'I'), 
-        PCFG_Rule(0.8, Det, 'the'), PCFG_Rule(0.2, Det, 'my'),
-        PCFG_Rule(0.5, N, 'dog'),   PCFG_Rule(0.5, N, 'cookie'),
+        PCFGProduction(0.5, NP, Det, N), PCFGProduction(0.25, NP, NP, PP),
+        PCFGProduction(0.1, NP, 'John'), PCFGProduction(0.15, NP, 'I'), 
+        PCFGProduction(0.8, Det, 'the'), PCFGProduction(0.2, Det, 'my'),
+        PCFGProduction(0.5, N, 'dog'),   PCFGProduction(0.5, N, 'cookie'),
 
-        PCFG_Rule(0.1, VP, VP, PP), PCFG_Rule(0.7, VP, V, NP),
-        PCFG_Rule(0.2, VP, V),
+        PCFGProduction(0.1, VP, VP, PP), PCFGProduction(0.7, VP, V, NP),
+        PCFGProduction(0.2, VP, V),
         
-        PCFG_Rule(0.35, V, 'ate'),  PCFG_Rule(0.65, V, 'saw'),
+        PCFGProduction(0.35, V, 'ate'),  PCFGProduction(0.65, V, 'saw'),
 
-        PCFG_Rule(1.0, S, NP, VP),  PCFG_Rule(1.0, PP, P, NP),
-        PCFG_Rule(0.61, P, 'with'), PCFG_Rule(0.39, P, 'under')]
+        PCFGProduction(1.0, S, NP, VP),  PCFGProduction(1.0, PP, P, NP),
+        PCFGProduction(0.61, P, 'with'), PCFGProduction(0.39, P, 'under')]
 
     print 'Grammar 1 or 2? ',
     if sys.stdin.readline().strip() == '1':
