@@ -14,7 +14,7 @@ Unit testing for L{nltk.parser}.
 from nltk.parser import *
 from nltk.cfg import *
 from nltk.tokenizer import WhitespaceTokenizer
-from nltk.tagger import TaggedTokenizer
+from nltk.tokenreader import TaggedTokenReader
 from nltk.token import *
 
 # Build some shared grammars, etc.
@@ -229,13 +229,13 @@ Create a sample sentence:
     ... the/DT little/JJ cat/NN sat/VBD on/IN the/DT mat/NN ./.
     ... The/DT cats/NNS ./.
     ... John/NNP saw/VBD the/DT cat/NN the/DT dog/NN liked/VBD ./.'''
-    >>> sent = Token(TEXT=text)
-    >>> TaggedTokenizer().tokenize(sent)
+    >>> sent = TaggedTokenReader(SUBTOKENS='WORDS').read_token(text)
 
 Do NP chunking with various rules:
 
     >>> r1 = ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
-    >>> cp = RegexpChunkParser([r1], chunk_node='NP', top_node='S')
+    >>> cp = RegexpChunkParser([r1], chunk_node='NP', top_node='S',
+    ...                        SUBTOKENS='WORDS')
     >>> cp.parse(sent)
     >>> print sent['TREE']
     (S:
@@ -255,7 +255,8 @@ Do NP chunking with various rules:
 
     >>> r1 = ChunkRule(r'<.*>+', 'Chunk everything')
     >>> r2 = ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
-    >>> cp = RegexpChunkParser([r1, r2], chunk_node='NP', top_node='S')
+    >>> cp = RegexpChunkParser([r1, r2], chunk_node='NP', top_node='S',
+    ...                        SUBTOKENS='WORDS')
     >>> cp.parse(sent)
     >>> print sent['TREE']
     (S:
@@ -274,7 +275,8 @@ Do NP chunking with various rules:
 
     >>> r1 = ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
     >>> r2 = SplitRule('', r'<DT>', 'Split before DT')
-    >>> cp = RegexpChunkParser([r1,r2], chunk_node='NP', top_node='S')
+    >>> cp = RegexpChunkParser([r1,r2], chunk_node='NP', top_node='S',
+    ...                        SUBTOKENS='WORDS')
     >>> cp.parse(sent)
     >>> print sent['TREE']
     (S:

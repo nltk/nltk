@@ -13,8 +13,7 @@ functions and classes.
 """
 
 from nltk.parser.chunk import *
-from nltk.tagger import TaggedTokenizer
-from nltk.tokenizer import LineTokenizer
+from nltk.tokenreader import TaggedTokenReader
 
 import unittest
 
@@ -24,8 +23,8 @@ Unit test cases for L{nltk.parser.chunk.ChunkString}.
 A chunk string is a string-based encoding of a chunking of a text.
 Chunk strings are constructed from lists of tagged tokens.
 
-    >>> tok = Token(TEXT='A/x B/y C/z')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
+    >>> reader = TaggedTokenReader(SUBTOKENS='WORDS')
+    >>> tok = reader.read_token('A/x B/y C/z')
     >>> ChunkString(tok['WORDS'])
     <ChunkString: '<x><y><z>'>
 
@@ -36,8 +35,7 @@ The chunk string records:
 The subtokens' tags may contain a variety characters, including
 punctuation:
 
-    >>> tok = Token(TEXT='A/. B/$ C/@ D/# E/! F/% G/^ H/& I/* J/( K/)')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
+    >>> tok = reader.read_token('A/. B/$ C/@ D/# E/! F/% G/^ H/& I/* J/( K/)')
     >>> ChunkString(tok['WORDS'])
     <ChunkString: '<.><$><@><#><!><%><^><&><*><(><)>'>
 
@@ -45,15 +43,13 @@ The subtokens' tags should I{not} contain angle brackets ('C{<}' and
 'C{>}') or curly brackets ('C{E{lb}}' and 'C{E{rb}}'); but this isn't
 currently checked:
 
-    >>> tok = Token(TEXT='A/< B/> C/{ D/}')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
+    >>> tok = reader.read_token('A/< B/> C/{ D/}')
     >>> ChunkString(tok['WORDS'])
     <ChunkString: '<<><>><{><}>'>
     
 The subtokens' texts are ignored, so can contain anything:
 
-    >>> tok = Token(TEXT='./A $/B @/C #/D !/E %/F ^/G &/H */I (/J )/K')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
+    >>> tok = reader.read_token('./A $/B @/C #/D !/E %/F ^/G &/H */I (/J )/K')
     >>> ChunkString(tok['WORDS'])
     <ChunkString: '<A><B><C><D><E><F><G><H><I><J><K>'>
     
@@ -64,8 +60,7 @@ Chunk strings may be empty:
 
 Regular-expression transformations can be applied to chunk strings:
 
-    >>> tok = Token(TEXT='A/1 B/2 C/3 D/4 E/5 F/6 G/7 H/8 I/9 J/0')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
+    >>> tok = reader.read_token('A/1 B/2 C/3 D/4 E/5 F/6 G/7 H/8 I/9 J/0')
     >>> cs = ChunkString(tok['WORDS'])
     >>> cs
     <ChunkString: '<1><2><3><4><5><6><7><8><9><0>'>
@@ -100,8 +95,7 @@ the corresponding chunk structure:
 
 Transformations can be limited to only chunks or only chinks:
       
-    >>> tok = Token(TEXT='A/1 B/2 C/3 D/4 E/5 F/1 G/2 H/4 I/3 J/3')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
+    >>> tok = reader.read_token('A/1 B/2 C/3 D/4 E/5 F/1 G/2 H/4 I/3 J/3')
     >>> cs = ChunkString(tok['WORDS'])
     >>> cs
     <ChunkString: '<1><2><3><4><5><1><2><4><3><3>'>
@@ -122,9 +116,7 @@ With the default debugging level, the chunk string is checked for
 validity on each transformation, and on conversion to a chunk
 structure:
 
-    >>> tok = Token(TEXT='A/1 B/2 C/3 D/4 E/5 F/1 G/2 H/4 I/3 J/3')
-    >>> TaggedTokenizer(SUBTOKENS='WORDS').tokenize(tok)
-    
+    >>> tok = reader.read_token('A/1 B/2 C/3 D/4 E/5 F/1 G/2 H/4 I/3 J/3')
     >>> cs = ChunkString(tok['WORDS'])
     >>> cs.xform(r'<2>', r'{<2>')
     Traceback (most recent call last):
@@ -219,15 +211,13 @@ Set up a test sample.
     ... [ dog/NN ] ./.
     ... [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
     ... '''
-    >>> tok = Token(TEXT=text)
-    >>> TaggedTokenizer().tokenize(tok)
 
 Now test some chunk parsers.
 
 Chunk Rule
 ==========
     >>> rule1 = ChunkRule('<NN>', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -245,9 +235,9 @@ Chunk Rule
        (<cat/NN>,)
        (<mat/NN>,)
     \===========================================================================/
-        
+
     >>> rule1 = ChunkRule('<NN>', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -267,7 +257,7 @@ Chunk Rule
     \===========================================================================/
             
     >>> rule1 = ChunkRule('<NN|DT>', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -289,7 +279,7 @@ Chunk Rule
     \===========================================================================/
             
     >>> rule1 = ChunkRule('<NN|DT>+', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -310,7 +300,7 @@ Chunk Rule
     \===========================================================================/
             
     >>> rule1 = ChunkRule('<NN|DT|JJ>+', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -328,7 +318,7 @@ Chunk Rule
     \===========================================================================/
             
     >>> rule1 = ChunkRule('<DT>?<JJ>*<NN>+', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -341,7 +331,7 @@ Chunk Rule
     \===========================================================================/
             
     >>> rule1 = ChunkRule('<DT>?<JJ>*<NN.*>', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1])
+    >>> parser = RegexpChunkParser([rule1], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 1 rules:
@@ -354,7 +344,7 @@ Make sure we don't allow overlaps:
             
     >>> rule1 = ChunkRule('<DT>?<JJ>*<NN.*>', 'Chunk NPs')
     >>> rule2 = ChunkRule('<NN><.*>', 'Chunk NPs')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -368,7 +358,7 @@ Chink Rule
 ==========
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN|VB.*>', 'Chink')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -392,7 +382,7 @@ Chink Rule
             
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN|VB.*>+', 'Chink')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -416,7 +406,7 @@ Chink Rule
             
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN>|<VB.*>', 'Chink')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -440,7 +430,7 @@ Chink Rule
             
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN|VB.*|\.>', 'Chink')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -457,7 +447,7 @@ Chink Rule
             
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN|VB.*|\.>+', 'Chink')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -474,7 +464,7 @@ Chink Rule
             
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN|VB.*|\.>|(?=<DT>)', 'Chink')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -488,7 +478,7 @@ UnChunk Rule
 ============
     >>> rule1 = ChunkRule('<.*>', 'Chunk Every token')
     >>> rule2 = UnChunkRule('<IN|VB.*>', 'Unchunk')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -514,7 +504,7 @@ UnChunk Rule
             
     >>> rule1 = ChunkRule('<.*>', 'Chunk Every token')
     >>> rule2 = UnChunkRule('<IN|VB.*|\.>', 'Unchunk')
-    >>> parser = RegexpChunkParser([rule1, rule2])
+    >>> parser = RegexpChunkParser([rule1, rule2], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 2 rules:
@@ -542,7 +532,7 @@ Merge Rule
     >>> rule1 = ChunkRule('<.*>', 'Chunk Every token')
     >>> rule2 = UnChunkRule('<IN|VB.*|\.>', 'Unchunk')
     >>> rule3 = MergeRule('<DT>', '<NN.*>', 'Merge')
-    >>> parser = RegexpChunkParser([rule1, rule2, rule3])
+    >>> parser = RegexpChunkParser([rule1, rule2, rule3], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 3 rules:
@@ -562,7 +552,7 @@ Merge Rule
     >>> rule1 = ChunkRule('<.*>', 'Chunk Every token')
     >>> rule2 = UnChunkRule('<IN|VB.*|\.>', 'Unchunk')
     >>> rule3 = MergeRule('<DT|JJ>', '<NN.*>', 'Merge')
-    >>> parser = RegexpChunkParser([rule1, rule2, rule3])
+    >>> parser = RegexpChunkParser([rule1, rule2, rule3], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 3 rules:
@@ -582,7 +572,7 @@ Merge Rule
     >>> rule2 = UnChunkRule('<IN|VB.*|\.>', 'Unchunk')
     >>> rule3 = MergeRule('<DT|JJ>', '<NN.*>', 'Merge')
     >>> rule4 = MergeRule('<DT>', '<JJ.*>', 'Merge')
-    >>> parser = RegexpChunkParser([rule1, rule2, rule3, rule4])
+    >>> parser = RegexpChunkParser([rule1, rule2, rule3, rule4], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 4 rules:
@@ -599,7 +589,7 @@ Split Rule
     >>> rule1 = ChunkRule('<.*>*', 'Chunk Everything')
     >>> rule2 = ChinkRule('<IN|VB.*|\.>+', 'Chink')
     >>> rule3 = SplitRule('', '<DT>', 'Split')
-    >>> parser = RegexpChunkParser([rule1, rule2, rule3])
+    >>> parser = RegexpChunkParser([rule1, rule2, rule3], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 3 rules:
@@ -614,7 +604,7 @@ Split Rule
     >>> rule2 = SplitRule('<NN>', '<VBD>', 'Split')
     >>> rule3 = SplitRule('<IN>', '<DT>', 'Split')
     >>> rule4 = SplitRule('', '<\.>', 'Split')
-    >>> parser = RegexpChunkParser([rule1, rule2, rule3, rule4])
+    >>> parser = RegexpChunkParser([rule1, rule2, rule3, rule4], SUBTOKENS='WORDS')
     >>> demo_eval(parser, text)
     /===========================================================================\
     Scoring RegexpChunkParser with 4 rules:
