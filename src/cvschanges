@@ -69,12 +69,12 @@ def usage(exitval=-1):
     sys.exit(exitval)
 
 def main():
-    if len(sys.argv) > 3: usage()
-
     if len(sys.argv) == 3:
         filename = sys.argv[2]
-    else:
+    if len(sys.argv) == 2:
         filename = '/tmp/changes.cvslog'
+    else:
+        usage()
         
     command = CVSCOMMAND % sys.argv[1]
     print 'Getting the cvs log...\n    %s' % command
