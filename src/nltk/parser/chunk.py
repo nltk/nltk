@@ -152,7 +152,7 @@ REChunkParser
 @group Chunk Parser Rules: REChunkParserRule, ChunkRule,
     ChinkRule, MergeRule, SplitRule, UnChunkRule, ChunkString
 @group Evaluation: ChunkScore
-@group Tokenization: ChunkedTaggedTokenizer
+@group Tokenizers: ChunkedTaggedTokenizer
 @sort: ChunkParserI, REChunkParser, REChunkParserRule, ChunkRule,
     ChinkRule, MergeRule, SplitRule, UnChunkRule, ChunkString,
     ChunkScore, ChunkedTaggedTokenizer, demo, demo_eval,

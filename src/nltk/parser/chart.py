@@ -43,9 +43,9 @@ parser module includes definitions for three chart parsers:
     C{IncrementalChartRule} interface, which returns only the edges
     that can be produced from a given edge.
 
+@group Data Types: Chart, EdgeI, ProductionEdge, TokenEdge, FRChart
 @group Chart Parsers: ChartParser, SteppingChartParser,
     IncrementalChartParser
-@group Data Types: Chart, EdgeI, ProductionEdge, TokenEdge, FRChart
 @group Chart Rules: ChartRuleI, BottomUpRule, FundamentalRule,
     TopDownRule, TopDownInitRule, IncrementalChartRuleI,
     IncrementalBottomUpRule, IncrementalFundamentalRule,
