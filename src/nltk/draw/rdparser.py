@@ -812,6 +812,7 @@ class RecursiveDescentParserDemo:
         else:
             widget.parent().remove_child(widget)
             widget.destroy()
+            self._animating_lock = 0
 
     def edit_grammar(self, *e):
         CFGEditor(self._top, self._parser.grammar(), self.set_grammar)
@@ -845,8 +846,8 @@ def demo():
     productions = (
         # Syntactic Rules
         CFGProduction(S, NP, VP),
-        CFGProduction(NP, Det, N),
         CFGProduction(NP, Det, N, PP),
+        CFGProduction(NP, Det, N),
         CFGProduction(VP, V, NP, PP),
         CFGProduction(VP, V, NP),
         CFGProduction(VP, V),
