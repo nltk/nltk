@@ -36,48 +36,44 @@ the L{TaggerI} interface.
 import types, re
 from nltk.chktype import chktype
 from nltk import TaskI, PropertyIndirectionMixIn
-from nltk.tokenizer import Token, AbstractTokenizer, WhitespaceTokenizer, TokenizerI
+from nltk.token import Token, TokenReaderI
 from nltk.probability import FreqDist, ConditionalFreqDist
 
 ##//////////////////////////////////////////////////////
 ##  Parsing and Tokenizing TaggedTypes
 ##//////////////////////////////////////////////////////
-class TaggedTokenizer(AbstractTokenizer):
+class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
-    A tokenizer that divides a string of tagged words into subtokens.
-    Words should be separated by whitespace, and each word should have
-    the form C{I{text}/I{tag}}, where C{I{text}} specifies the word's
-    C{TEXT} property, and C{I{tag}} specifies its C{TAG} property.
-    Words that do not contain a slash are assigned a C{tag} of C{None}.
+    A token reader that divides a string of tagged words into
+    subtokens.  Words should be separated by whitespace, and each word
+    should have the form C{I{text}/I{tag}}, where C{I{text}} specifies
+    the word's C{TEXT} property, and C{I{tag}} specifies its C{TAG}
+    property.  Words that do not contain a slash are assigned a C{tag}
+    of C{None}.
     
-    @inprop: C{TEXT}: The input token's text content.
-    @inprop: C{LOC}: The input token's location.  I{(optional)}
-    @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
+    @outprop: C{SUBTOKENS}: The list of subtokens.
     @outprop: C{TEXT}: The subtokens' text contents.
     @outprop: C{TAG}: The subtokens' tags.
-    @outprop: C{LOC}: The subtokens' locations.
     """
     def __init__(self, **property_names):
-        self._wstokenizer = WhitespaceTokenizer(**property_names)
-        AbstractTokenizer.__init__(self, **property_names)
-    
-    def tokenize(self, token, addlocs=False, addcontexts=False):
-        assert chktype(1, token, Token)
-        SUBTOKENS = self.property('SUBTOKENS')
-        TEXT = self.property('TEXT')
+        PropertyIndirectionMixIn.__init__(self, **property_names)
+
+    # [XX] sourceis ignored!
+    def read_token(self, s, source=None):
         TAG = self.property('TAG')
-
-        # First, use WhitespaceTokenizer to divide on whitespace.
-        self._wstokenizer.tokenize(token, addlocs, addcontexts)
-
-        # Then, split each subtoken's text into a text and a tag.
-        for subtok in token[SUBTOKENS]:
-            split = subtok[TEXT].find('/')
-            if split >= 0:
-                subtok[TAG] = subtok[TEXT][split+1:]
-                subtok[TEXT] = subtok[TEXT][:split]
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
+        subtoks = []
+        for w in s.split():
+            slash = w.find('/')
+            if slash >= 0:
+                subtoks.append(Token(**{TEXT: w[:slash], TAG: w[slash+1:]}))
             else:
-                subtok[TAG] = None
+                subtoks.append(Token(**{TEXT: w, TAG: None}))
+        return Token(**{SUBTOKENS: subtoks})
+
+    def read_tokens(self, s, source=None):
+        return [self.read_token(s, source)]
 
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
@@ -590,25 +586,25 @@ def demo(num_files=20):
     num_words = 0
     for item in items[:num_files*2/3]:
         sys.stdout.write('.'); sys.stdout.flush()
-        train_tokens.append(brown.tokenize(item))
-        num_words += len(train_tokens[-1]['SUBTOKENS'])
+        train_tokens.append(brown.read(item))
+        num_words += len(train_tokens[-1]['WORDS'])
     print '\n  Read in %d words for training' % num_words
 
     print 'Training taggers.'
 
     # Create a default tagger
-    default_tagger = DefaultTagger('nn')
+    default_tagger = DefaultTagger('nn', SUBTOKENS='WORDS')
 
     print '  Training unigram tagger...'
-    t0 = UnigramTagger()
+    t0 = UnigramTagger(SUBTOKENS='WORDS')
     for tok in train_tokens: t0.train(tok)
         
     print '  Training bigram tagger...'
-    t1 = NthOrderTagger(1)
+    t1 = NthOrderTagger(1, SUBTOKENS='WORDS')
     for tok in train_tokens: t1.train(tok)
 
     print '  Training trigram tagger...'
-    t2 = NthOrderTagger(2)
+    t2 = NthOrderTagger(2, SUBTOKENS='WORDS')
     for tok in train_tokens: t2.train(tok)
 
     # Delete train_tokens, because it takes up lots of memory.
@@ -620,8 +616,8 @@ def demo(num_files=20):
     sys.stdout.write('Reading testing data'); sys.stdout.flush()
     for item in items[num_files*2/3:num_files]:
         sys.stdout.write('.'); sys.stdout.flush()
-        test_tok = brown.tokenize(item)
-        num_words += len(test_tok['SUBTOKENS'])
+        test_tok = brown.read(item)
+        num_words += len(test_tok['WORDS'])
         test_tokens.append(test_tok)
     print '\n  Read in %d words for testing' % num_words
 
@@ -637,13 +633,13 @@ def demo(num_files=20):
     _demo_tagger(test_tokens, default_tagger)
     print '  Unigram tagger:      ',
     sys.stdout.flush()
-    _demo_tagger(test_tokens, BackoffTagger([t0, default_tagger]))
+    _demo_tagger(test_tokens, BackoffTagger([t0, default_tagger], SUBTOKENS='WORDS'))
     print '  Bigram tagger:       ',
     sys.stdout.flush()
-    _demo_tagger(test_tokens, BackoffTagger([t1, t0, default_tagger]))
+    _demo_tagger(test_tokens, BackoffTagger([t1, t0, default_tagger], SUBTOKENS='WORDS'))
     print '  Trigram tagger:      ',
     sys.stdout.flush()
-    trigram = BackoffTagger([t2, t1, t0, default_tagger])
+    trigram = BackoffTagger([t2, t1, t0, default_tagger], SUBTOKENS='WORDS')
     _demo_tagger(test_tokens, trigram)
 
     print '\nUsage statistics for the trigram tagger:\n'
@@ -653,4 +649,5 @@ def demo(num_files=20):
 if __name__ == '__main__':
     # Standard boilerpate.  (See note in <http://?>)
     #from nltk.tagger import *
-    demo(1)
+    demo()
+
