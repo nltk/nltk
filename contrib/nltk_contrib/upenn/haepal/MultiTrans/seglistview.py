@@ -9,14 +9,14 @@ import speakercode
 Design overview
 ---------------
 
-                    AnnotationSet
-
-                         | ^
-              'Changed'  | | 3 editing operations (insert, delete, set)
-                 signal  | |   plus querying operations
-                         v |
-
-                        Views (bulletted text view,
+       ,--------->  AnnotationSet
+       |
+       | user            | 
+       | modified        |  3 editing operations (insert, delete, set)
+       | something       |    plus querying operations
+       | on disp.        v 
+       |
+       `--------------  Views (bulletted text view,
                                horizontal box (sinc'ed with QWave) view, etc.)
 
                          ^^^
@@ -45,6 +45,17 @@ class Segment(Annotation):
         Annotation.__init__(self, *args, **kw)
         self.flagIgnoreCallback = False
         
+    def setStart(self, t):
+        print t
+        Annotation.setStart(self, t)
+
+    def setEnd(self, t):
+        print t
+        Annotation.setEnd(self, t)
+        
+    start = property(Annotation.getStart, setStart)
+    end = property(Annotation.getEnd, setEnd)
+
 class Seglist(Callhome, AnnotationSet):
     __slots__ = ()
 
@@ -53,13 +64,20 @@ class Seglist(Callhome, AnnotationSet):
         self.Annotation = Segment
         self.AnnotationSet = AnnotationSet
 
+    def add(self, seg):
+        ch = seg['SPKR']
+        for ann in self:
+            if ann['SPKR']==ch and seg.overlaps(ann):
+                raise ValueError("can't add overlapping segment: " + str(seg))
+        self.AnnotationSet.add(self, seg)
 
-class SeglistText(QMultiLineEdit):
+class SeglistText(QTextEdit):
     def __init__(self, annSet=None, parent=None, name=None):
-        QMultiLineEdit.__init__(self, parent, name)
+        QTextEdit.__init__(self, parent, name)
 
         self.clear()
         self.anns = []
+        self._seglock = None
 
         if annSet is None:
             self.annSet = Seglist()
@@ -75,29 +93,56 @@ class SeglistText(QMultiLineEdit):
 
         self.connect(self, SIGNAL("clicked(int,int)"), self._clicked)
 
+
+    def _empty(self):
+        return self.anns == []
+
+    def eventFilter(self, obj, e):
+        """
+        Eat any mouse event if a segment is locked.
+        """
+        if self._seglock is not None and \
+           (e.type() == QEvent.MouseButtonPress or \
+            e.type() == QEvent.MouseButtonRelease):
+            return True
+        else:
+            return QTextEdit.eventFilter(self, obj, e)
+        
     def keyPressEvent(self, e):
+        if self._empty(): return
+        
         k = e.key()
 
+        p,c = self.getCursorPosition()
+
+        if k == Qt.Key_Down and p == len(self.anns)-1:
+            return
+
+        if k == Qt.Key_Return:
+            if self._seglock:
+                self._seglock = None
+            else:
+                self._seglock = p
+            return
+
+        if self._seglock: return
+        
         if k == Qt.Key_Up or k == Qt.Key_Down:
-            QMultiLineEdit.keyPressEvent(self, e)
+            QTextEdit.keyPressEvent(self, e)
             p,c = self.getCursorPosition()
             self.emit(PYSIGNAL("currentParagraphRegion(int,int,int)"),
                       (self.anns[p].start, self.anns[p].end,
                        self.anns[p]['CHANNEL']))
             return
-        elif k == Qt.Key_Return:
-            print "return"
-            return
 
-        p,c = self.getCursorPosition()
         def propagateChanges():
             h0 = self.paragraphRect(p).height()
 
-            QMultiLineEdit.keyPressEvent(self, e)
+            QTextEdit.keyPressEvent(self, e)
 
             # don't update gui yet
             self.anns[p].flagIgnoreCallback = True
-            self.anns[p]['TEXT'] = self.textLine(p)
+            self.anns[p]['TEXT'] = self.text(p)
             self.anns[p].flagIgnoreCallback = False
 
             # update gui if necessary
@@ -118,19 +163,25 @@ class SeglistText(QMultiLineEdit):
 
 
     def _clicked(self, p, c):
+        if self._empty(): return
+        if p >= len(self.anns):
+            p = len(self.anns) - 1
+            self.setCursorPosition(p, self.paragraphLength(p))
+        
         self.emit(PYSIGNAL("currentParagraphRegion(int,int,int)"),
                   (self.anns[p].start, self.anns[p].end,
                    self.anns[p]['CHANNEL']))
         
         
     
-    ###############################
+
     def getSortedAnnotationSet(self):
         anns = self.annSet.getAnnotationSet(TYPE='segment')
         anns.sort(lambda a,b:cmp(a.start,b.start))
         return anns
 
-    ###############################
+    def getAnnotationSet(self):
+        return self.annSet
 
     
     def appendSegment(self, seg):
@@ -146,13 +197,8 @@ class SeglistText(QMultiLineEdit):
             return
         anns = self.getSortedAnnotationSet()
         i = anns.index(seg)
-        if i == self.numLines():
-            # this prevents an empty line being added at the end
-            self.append(seg['TEXT'])
-            #anns.append(seg)
-        else:
-            self.insertLine(seg['TEXT'], i)
-            #anns.insert(i, seg)
+        text = seg['TEXT']
+        self.insertParagraph(text, i)
         self.anns = anns
         self.emit(PYSIGNAL("segmentAdded()"),())        # ... to the display
     
@@ -188,8 +234,20 @@ class SeglistText(QMultiLineEdit):
                 self.setSelection(i,0,i,self.paragraphLength(i))
                 self.removeSelectedText()
                 self.insertAt(seg["TEXT"], i, 0)
+        elif args[0] == "start":
+            i = self.anns.index(seg)
+            anns = self.getSortedAnnotationSet()
+            j = anns.index(seg)
+            if i != j:
+                self.removeParagraph(i)
+                self.insert(seg["TEXT"], j)
+                self.anns = anns
 
-
+    def getCurrentSegment(self):
+        if self._seglock is not None:
+            return self.anns[self._seglock]
+        else:
+            return None
 
 class SeglistTextBulletBoard(QCanvasView):
     def __init__(self, seglistText, parent=None, name=None):
@@ -263,23 +321,37 @@ class SeglistView(QWidget):
 
         self._layout = QGridLayout(self)
         
-        # speaker code
-        self._spkrCode = speakercode.SpeakerCode()
+        self._side = None
+        self._text = None
 
-        # initialize text widget
+    def castCurrentParagraphRegion(self, a, b, c):
+        self.emit(PYSIGNAL("currentParagraphRegion(int,int,int)"), (a,b,c))
+
+    def setCurrentAnnotationSpan(self, a, b, c):
+        seg = self._text.getCurrentSegment()
+        if seg is None: return
+        #seg.flagIgnoreCallback = True
+        seg.start, seg.end = a, b
+
+
+
+    def setAnnotationSet(self, annSet):
+        self._layout.remove(self._side)
+        self._layout.remove(self._text)
         self._text = SeglistText(annSet, self)
-
-        # bullet board
         self._side = SeglistTextBulletBoard(self._text, self)
-        
         self._layout.addWidget(self._side, 0,0)
         self._layout.addWidget(self._text, 0,1)
-
         self.connect(self._text, PYSIGNAL("currentParagraphRegion(int,int,int)"),
-                     self.emitCurrentParagraphRegion)
+                     self.castCurrentParagraphRegion)
+        self._text.show()
+        self._side.show()
 
-    def emitCurrentParagraphRegion(self, a, b, c):
-        self.emit(PYSIGNAL("currentParagraphRegion(int,int,int)"), (a,b,c))
+    def getAnnotationSet(self):
+        if self._text is None:
+            return None
+        else:
+            return self._text.getAnnotationSet()
 
 if __name__ == "__main__":
     import sys
@@ -287,7 +359,7 @@ if __name__ == "__main__":
 
     annset = Seglist()
     annset.load(sys.argv[1])
-    s = SeglistView(annset)
+    s = SeglistView()
     
 
     ###

@@ -29,6 +29,9 @@ class Callhome:
                                      TEXT=text))
         file.close()
 
+    def save(self, filename):
+        print "saving", filename
+        
     def add(self, seg):
         ch = seg['SPKR']
         for ann in self:
