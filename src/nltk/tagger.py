@@ -131,8 +131,8 @@ class AbstractTagger(TaggerI):
         """
         Construct a new tagger.
         
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -183,8 +183,8 @@ class SequentialTagger(TaggerI):
         
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -228,8 +228,8 @@ class DefaultTagger(SequentialTagger):
         @param tag: The tag that should be assigned to every token.
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -250,7 +250,7 @@ class RegexpTagger(SequentialTagger):
         """
         Construct a new regexp tagger.
 
-        @type regexp: C{list} of C{(string,string)}
+        @type regexps: C{list} of C{(string,string)}
         @param regexps: A list of C{(regexp,tag)} pairs, each of
             which indicates that a word matching C{regexp} should
             be tagged with C{tag}.  The pairs will be evalutated in
@@ -258,8 +258,8 @@ class RegexpTagger(SequentialTagger):
             assigned the tag C{None}.
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from right to left).
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -295,8 +295,8 @@ class UnigramTagger(SequentialTagger):
         
         @param reverse: If true, then assign tags to subtokens in
             reverse sequential order (i.e., from last to first).
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -313,7 +313,6 @@ class UnigramTagger(SequentialTagger):
             C{tagged_token} should define the C{text} and C{tag}
             properties.
         @type tagged_token: L{Token}
-        @type self._property_names: C{dict}
         """
         assert chktype(1, tagged_token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
@@ -354,9 +353,9 @@ class NthOrderTagger(SequentialTagger):
     context.  If the C{NthOrderTagger} encounters a word in a context
     for which it has no data, it will assign it the tag C{None}.
 
-    @param _left: The start index of the context window for tags,
+    @ivar _left: The start index of the context window for tags,
         expressed as an offset from the current subtoken's index.
-    @param _right: The end index of the context window for tags,
+    @ivar _right: The end index of the context window for tags,
         expressed as an offset from the current subtoken's index.
     """
     def __init__(self, n, reverse=False, cutoff=0, **property_names):
@@ -374,8 +373,8 @@ class NthOrderTagger(SequentialTagger):
             distribution.  If the tagger saw fewer than
             C{cutoff} examples of a given context in training,
             then it will return a tag of C{None} for that context.
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -405,7 +404,6 @@ class NthOrderTagger(SequentialTagger):
             C{tagged_token} should define the C{text} and C{tag}
             properties.
         @type tagged_token: L{Token}
-        @type self._property_names: C{dict}
         """
         assert chktype(1, tagged_token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
@@ -484,8 +482,8 @@ class BackoffTagger(SequentialTagger):
                consulted in the order in which they appear in the
                list.
         @type subtaggers: list of SequentialTagger
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """

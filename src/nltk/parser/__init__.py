@@ -124,8 +124,8 @@ class AbstractParser(ParserI):
         """
         Construct a new parser.
         
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -216,8 +216,8 @@ class ShiftReduceParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -507,8 +507,8 @@ class RecursiveDescentParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """

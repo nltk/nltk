@@ -69,15 +69,12 @@ of the C{ParserI} interface.
 @developer: U{Ewan Klein <ewan@inf.ed.ac.uk>}
 @developer: U{Trevor Cohn <tacohn@cs.mu.oz.au>}
 
-@group Core Modules: token, tree, corpus, probability
-@group Data Modules: set, cfg, fsa
+@group Core Modules: token, tree, corpus, probability, util
+@group Data Modules: set, cfg, fsa, featurestruct, sense
 @group Task Modules: classifier, parser, speech, stemmer, tagger,
     tokenizer
 @group Visualization: draw
 @group Debugging: chktype, test
-@sort: token, tree, corpora, probability
-@sort: set, cfg, fsa
-@sort: classifier, parser, speech, stemmer, tagger
 """
 
 # Define some nltk-specific docstring fields:

@@ -106,8 +106,8 @@ class AbstractStemmer(StemmerI):
         """
         Create a new stemmer.
         
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -166,8 +166,8 @@ class RegexpStemmer(AbstractStemmer):
         @type regexp: C{string} or C{regexp}
         @param regexp: The regular expression that should be used to
             identify morphological affixes.
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """

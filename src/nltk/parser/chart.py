@@ -414,7 +414,7 @@ class Chart:
         @type token: L{Token}
         @ivar token: The sentence that this chart will be used to
             parse.
-        @PARAM property_names: A dictionary that can be used to override
+        @param property_names: A dictionary that can be used to override
             the default property names used by the chart.  Each entry
             maps from a default property name to a new property name.
         """
@@ -1247,8 +1247,8 @@ class EarleyChartParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """
@@ -1335,8 +1335,8 @@ class ChartParser(AbstractParser):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        @TYPE property_names: C{dict}
-        @PARAM property_names: A dictionary that can be used to override
+        @type property_names: C{dict}
+        @param property_names: A dictionary that can be used to override
             the default property names.  Each entry maps from a
             default property name to a new property name.
         """

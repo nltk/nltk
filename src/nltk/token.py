@@ -28,7 +28,9 @@ whose properties are otherwise equal (e.g., two occurences of the same
 word in a text).
   
 @group Tokens: Token, FrozenToken, SafeToken, ProbabilisticToken
-@group Locations: LocationI, SpanLocation, CharSpanLocation
+@group Locations: LocationI, SpanLocation, CharSpanLocation,
+    IndexLocation, WordIndexLocation, SentIndexLocation,
+    ParaIndexLocation
 @group Auxilliary Data Types: FrozenDict
 @sort: Token, FrozenToken, SafeToken, ProbabilisticToken,
        LocationI, SpanLocation, CharSpanLocation
@@ -730,7 +732,7 @@ class SpanLocation(LocationI):
         @rtype: C{boolean}
         @raise ValueError: If C{other} is not a compatible span
             location with the same source as C{self}.
-        @seealso: L{precedes, succeeds}
+        @seealso: L{precedes}, L{succeeds}
         """
         if self.__class__ != other.__class__:
             raise ValueError('Locations have incompatible types')
