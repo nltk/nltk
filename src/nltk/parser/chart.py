@@ -48,6 +48,7 @@ defines three chart parsers:
 import re
 from nltk.chktype import chktype
 from nltk.token import Token
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.parser import ParserI, AbstractParser
 from nltk.tree import Tree
 from nltk.cfg import CFG, CFGProduction, Nonterminal, nonterminals
@@ -363,7 +364,7 @@ class LeafEdge(EdgeI):
 ##  Chart
 ########################################################################
 
-class Chart:
+class Chart(PropertyIndirectionMixIn):
     """
     A blackboard for hypotheses about the syntactic constituents of a
     sentence.  A chart contains a set of edges, and each edge encodes
@@ -387,8 +388,6 @@ class Chart:
     
     @ivar _token: The sentence that the chart covers.
     @ivar _num_leaves: The number of subtokens in L{_token}.
-    @ivar _property_names: The property names that should be used to
-        access L{_token}.
     @ivar _edges: A list of the edges in the chart
     @ivar _edge_to_cpls: A dictionary mapping each edge to a set
         of child pointer lists that are associated with that edge.
@@ -408,15 +407,16 @@ class Chart:
             maps from a default property name to a new property name.
         """
         assert chktype(1, token, Token)
-        SUBTOKENS = property_names.get('SUBTOKENS', 'SUBTOKENS')
+
+        # Property names, used to access self._token.
+        PropertyIndirectionMixIn.__init__(self, **property_names)
+        
+        SUBTOKENS = self.property('SUBTOKENS')
 
         # Record the sentence token and the sentence length.
         self._token = token
         self._num_leaves = len(token[SUBTOKENS])
 
-        # Property names, used to access self._token.
-        self._property_names = property_names
-        
         # A list of edges contained in this chart.
         self._edges = []
         
@@ -443,8 +443,8 @@ class Chart:
         @return: The leaf value of the word at the given index.
         @rtype: C{string}
         """
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        SUBTOKENS = self.property('SUBTOKENS')
+        LEAF = self.property('LEAF')
         return self._token[SUBTOKENS][index][LEAF]
 
     def leaves(self):
@@ -453,8 +453,8 @@ class Chart:
             chart's sentence.
         @rtype: C{list} of C{string}
         """
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        SUBTOKENS = self.property('SUBTOKENS')
+        LEAF = self.property('LEAF')
         return [tok[LEAF] for tok in self._token[SUBTOKENS]]
 
     def token(self):
@@ -470,7 +470,7 @@ class Chart:
         @return: The property names dictionary, as given in the
             constructor.
         """
-        return self._property_names
+        return self.property_names()
 
     #////////////////////////////////////////////////////////////
     # Edge access
@@ -646,7 +646,7 @@ class Chart:
         # If we've seen this edge before, then reuse our old answer.
         if memo.has_key(edge): return memo[edge]
 
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
         trees = []
 
         # Until we're done computing the trees for edge, set
@@ -756,8 +756,8 @@ class Chart:
             for calls to L{pp_edge}.
         """
         if width is None: width = 50/(self.num_leaves()+1)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        SUBTOKENS = self.property('SUBTOKENS')
+        LEAF = self.property('LEAF')
         
         if self._token is not None and width>1:
             header = '|.'
@@ -1318,8 +1318,8 @@ class EarleyChartParser(AbstractParser):
         AbstractParser.__init__(self, **property_names)
 
     def parse_n(self, token):
-        TREES = self._property_names.get('TREES', 'TREES')
-        chart = Chart(token, **self._property_names)
+        TREES = self.property('TREES')
+        chart = Chart(token, **self.property_names())
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1406,8 +1406,8 @@ class ChartParser(AbstractParser):
         AbstractParser.__init__(self, **property_names)
 
     def parse_n(self, token):
-        TREES = self._property_names.get('TREES', 'TREES')
-        chart = Chart(token, **self._property_names)
+        TREES = self.property('TREES')
+        chart = Chart(token, **self.property_names())
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1467,7 +1467,7 @@ class SteppingChartParser(ChartParser):
 
     def initialize(self, token):
         "Begin parsing the given token."
-        self._chart = Chart(token, **self._property_names)
+        self._chart = Chart(token, **self.property_names())
         self._restart = True
 
     #////////////////////////////////////////////////////////////
@@ -1578,7 +1578,7 @@ class SteppingChartParser(ChartParser):
     #////////////////////////////////////////////////////////////
 
     def parse_n(self, token):
-        TREES = self._property_names.get('TREES', 'TREES')
+        TREES = self.property('TREES')
 
         # Initialize ourselves.
         self.initialize(token)
@@ -1606,19 +1606,19 @@ def demo():
 
     # Define some grammatical productions.
     grammatical_productions = [
-        CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
-        CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
-        CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
-        CFGProduction(VP, V),]
+        CFGProduction(S, [NP, VP]),  CFGProduction(PP, [P, NP]),
+        CFGProduction(NP, [Det, N]), CFGProduction(NP, [NP, PP]),
+        CFGProduction(VP, [VP, PP]), CFGProduction(VP, [V, NP]),
+        CFGProduction(VP, [V]),]
 
     # Define some lexical productions.
     lexical_productions = [
-        CFGProduction(NP, 'John'), CFGProduction(NP, 'I'), 
-        CFGProduction(Det, 'the'), CFGProduction(Det, 'my'),
-        CFGProduction(Det, 'a'),
-        CFGProduction(N, 'dog'),   CFGProduction(N, 'cookie'),
-        CFGProduction(V, 'ate'),  CFGProduction(V, 'saw'),
-        CFGProduction(P, 'with'), CFGProduction(P, 'under'),
+        CFGProduction(NP, ['John']), CFGProduction(NP, ['I']), 
+        CFGProduction(Det, ['the']), CFGProduction(Det, ['my']),
+        CFGProduction(Det, ['a']),
+        CFGProduction(N, ['dog']),   CFGProduction(N, ['cookie']),
+        CFGProduction(V, ['ate']),  CFGProduction(V, ['saw']),
+        CFGProduction(P, ['with']), CFGProduction(P, ['under']),
         ]
 
     # Convert the grammar productions to an earley-style lexicon.

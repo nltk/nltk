@@ -55,6 +55,7 @@ search strategies.  Currently the following subclasses are defined:
       all parses.
 """
 
+from nltk import TaskI, PropertyIndirectionMixIn
 from nltk.parser import ParserI, AbstractParser
 from nltk.cfg import PCFG, PCFGProduction, Nonterminal, nonterminals
 from nltk.token import Token, CharSpanLocation #ProbabilisticToken, Token
@@ -119,15 +120,15 @@ class AbstractProbabilisticParser(ProbabilisticParserI, AbstractParser):
     based on C{parse_dist}.
     """
     def parse_dist(self, token):
-        TREEDIST = self._property_names.get('TREEDIST', 'TREEDIST')
-        TREES = self._property_names.get('TREES', 'TREES')
+        TREEDIST = self.property('TREEDIST')
+        TREES = self.property('TREES')
         self.parse_n(token)
         token[TREEDIST] = DictionaryProbDist(token[TREES])
         del token[TREES]
         
     def _parse_from_parse_dist(self, token):
-        TREEDIST = self._property_names.get('TREEDIST', 'TREEDIST')
-        TREE = self._property_names.get('TREE', 'TREE')
+        TREEDIST = self.property('TREEDIST')
+        TREE = self.property('TREE')
         self.parse(token)
         token[TREE] = token[TREEDIST].max()
         del token[TREEDIST]
@@ -234,9 +235,9 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         # Inherit docs from ProbabilisticParserI
         assert _chktype(1, token, Token)
         assert _chktype(2, n, types.IntType, types.NoneType)
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LEAF = self._property_names.get('LEAF', 'LEAF')
-        TREES = self._property_names.get('TREES', 'TREES')
+        SUBTOKENS = self.property('SUBTOKENS')
+        LEAF = self.property('LEAF')
+        TREES = self.property('TREES')
 
         subtokens = token[SUBTOKENS]
 
@@ -474,7 +475,7 @@ class ViterbiPCFGParser(AbstractProbabilisticParser):
         print str
 
     def _trace_lexical_insertion(self, tok, subtokens):
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         start = self._span(tok)[0]
         str = '   Insert: |' + '.'*(start-self._span(subtokens[0])[0])
         s,e =self._span(tok)
@@ -636,9 +637,9 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
         self._trace = trace
         
     def parse_n(self, token, n=None):
-        TREES = self._property_names.get('TREES', 'TREES')
+        TREES = self.property('TREES')
         
-        chart = Chart(token, **self._property_names)
+        chart = Chart(token, **self.property_names())
         grammar = self._grammar
 
         # Chart parser rules.
@@ -685,7 +686,7 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
         token[TREES] = parses
 
     def _setprob(self, tree, prod_probs):
-        LEAF = self._property_names.get('LEAF', 'LEAF')
+        LEAF = self.property('LEAF')
         if tree.prob() is not None: return
         
         # Get the prob of the CFG production.
