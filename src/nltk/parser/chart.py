@@ -1282,7 +1282,7 @@ class EarleyChartParser(ParserI):
                             print 'Completer', chart.pp_edge(e,w)
 
         # Output a list of complete parses.
-        token[trees_prop] = chart.parses(self._root_node)
+        token[trees_prop] = chart.parses(grammar.start())
             
     def parse(self, token):
         # Delegate to parse_n
@@ -1534,60 +1534,117 @@ class SteppingChartParser(ChartParser):
 ########################################################################
 
 def demo():
+    """
+    A demonstration of the chart parsers.
+    """
+    import sys, time
+    
     # Define some nonterminals
     S, VP, NP, PP = nonterminals('S, VP, NP, PP')
     V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
 
-    # Define a gramar.
-    lex_productions = [
+    # Define some grammatical productions.
+    grammatical_productions = [
+        CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
+        CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
+        CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
+        CFGProduction(VP, V),]
+
+    # Define some lexical productions.
+    lexical_productions = [
         CFGProduction(NP, 'John'), CFGProduction(NP, 'I'), 
         CFGProduction(Det, 'the'), CFGProduction(Det, 'my'),
         CFGProduction(Det, 'a'),
         CFGProduction(N, 'dog'),   CFGProduction(N, 'cookie'),
         CFGProduction(V, 'ate'),  CFGProduction(V, 'saw'),
-        CFGProduction(P, 'with'), CFGProduction(P, 'under'),]
-
-    gram_productions = [
-        CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
-        CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
-        CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
-        CFGProduction(VP, V),# CFGProduction(NP, NP),
+        CFGProduction(P, 'with'), CFGProduction(P, 'under'),
         ]
-    grammar1 = CFG(S, gram_productions)
-    grammar2 = CFG(S, gram_productions+lex_productions)
 
-    lexicon = {'John': [NP], 'I': [NP],
-               'the': [Det], 'my': [Det], 'a': [Det],
-               'dog': [N], 'cookie': [N],
-               'ate': [V], 'saw': [V],
-               'with': [P], 'under': [P]}
+    # Convert the grammar productions to an earley-style lexicon.
+    earley_lexicon = {}
+    for prod in lexical_productions:
+        earley_lexicon.setdefault(prod.rhs()[0], []).append(prod.lhs())
 
-    class PretendLexicon:
-        def __getitem__(self, item):
-            return [item]
+    # The grammar for ChartParser and SteppingChartParser:
+    grammar = CFG(S, grammatical_productions+lexical_productions)
 
+    # The grammar for EarleyChartParser:
+    earley_grammar = CFG(S, grammatical_productions)
+
+    # Tokenize a sample sentence.
+    sent = Token(text='I saw John with a dog with my cookie')
+    print "Sentence:\n", sent
     from nltk.tokenizer import WSTokenizer
-    tok = Token(text='John saw the dog with a cookie with a dog')
-    #tok = Token(text='John saw')
-    WSTokenizer().tokenize(tok)
+    WSTokenizer().tokenize(sent)
 
-    #parser = EarleyChartParser(grammar1, S, lexicon, leaf='text', trace=1)
-    #parser.parse_n(tok)
-    #for tree in tok['trees']: print tree
+    # Ask the user which parser to test
+    print '  1: Top-down chart parser'
+    print '  2: Bottom-up chart parser'
+    print '  3: Earley parser'
+    print '  4: Stepping chart parser (alternating top-down & bottom-up)'
+    print '  5: All parsers'
+    print '\nWhich parser (1-5)? ',
+    choice = sys.stdin.readline().strip()
+    print
+    if choice not in '12345':
+        print 'Bad parser number'
+        return
 
-    #parser = ChartParser(grammar2, BU_STRATEGY, leaf='text', trace=2)
-    #parser.parse_n(tok)
-    #for tree in tok['trees']: print tree
+    # Keep track of how long each parser takes.
+    times = {}
 
-    #parser = ChartParser(grammar2, TD_STRATEGY, leaf='text')
-    #parser.parse_n(tok)
-    #for tree in tok['trees']: print tree
+    # Run the top-down parser, if requested.
+    if choice in ('1', '5'):
+        cp = ChartParser(grammar, TD_STRATEGY, leaf='text', trace=2)
+        t = time.time()
+        cp.parse_n(sent)
+        times['top down'] = time.time()-t
+        assert len(sent['trees'])==5, 'Not all parses found'
+        for tree in sent['trees']: print tree
 
-    parser = SteppingChartParser(grammar2, BU_STRATEGY, leaf='text', trace=1)
-    parser.parse_n(tok)
-    for tree in tok['trees']: print tree
-    
+    # Run the bottom-up parser, if requested.
+    if choice in ('2', '5'):
+        cp = ChartParser(grammar, BU_STRATEGY, leaf='text', trace=2)
+        t = time.time()
+        cp.parse_n(sent)
+        times['bottom up'] = time.time()-t
+        assert len(sent['trees'])==5, 'Not all parses found'
+        for tree in sent['trees']: print tree
 
-import profile
-#profile.run('demo()')
-demo()
+    # Run the earley, if requested.
+    if choice in ('3', '5'):
+        cp = EarleyChartParser(earley_grammar, earley_lexicon,
+                               leaf='text', trace=1)
+        t = time.time()
+        cp.parse_n(sent)
+        times['Earley parser'] = time.time()-t
+        assert len(sent['trees'])==5, 'Not all parses found'
+        for tree in sent['trees']: print tree
+
+    # Run the stepping parser, if requested.
+    if choice in ('4', '5'):
+        t = time.time()
+        cp = SteppingChartParser(grammar, leaf='text', trace=1)
+        cp.initialize(sent)
+        for i in range(4):
+            print '*** SWITCH TO TOP DOWN'
+            cp.set_strategy(TD_STRATEGY)
+            for j, e in enumerate(cp.step()):
+                if j>20 or e is None: break
+            print '*** SWITCH TO BOTTOM UP'
+            cp.set_strategy(BU_STRATEGY)
+            for j, e in enumerate(cp.step()):
+                if j>20 or e is None: break
+        times['stepping'] = time.time()-t
+        assert len(cp.parses())==5, 'Not all parses found'
+        for parse in cp.parses(): print parse
+
+    # Print the times of all parsers:
+    maxlen = max([len(key) for key in times.keys()])
+    format = '%' + `maxlen` + 's parser: %6.3fsec'
+    times_items = times.items()
+    times_items.sort(lambda a,b:cmp(a[1], b[1]))
+    for (parser, t) in times_items:
+        print format % (parser, t)
+            
+if __name__ == '__main__': demo()
