@@ -395,6 +395,7 @@ class SimpleCorpusReader(CorpusReaderI):
                  copyright_file=None,
                  # Formatting meta-data
                  token_reader=None,
+                 token_reader_expects_source=True,
                  property_names={}):
         """
         Construct a new corpus reader.  The parameters C{description},
@@ -460,6 +461,9 @@ class SimpleCorpusReader(CorpusReaderI):
         @type token_reader: L{TokenReaderI<nltk.token.TokenReaderI>}
         @param token_reader: The default token_reader that should be
             used for the corpus reader's L{read_token} method.
+        @type token_reader_expects_source: C{bool}
+        @param token_reader_expects_source: If true, then pass a source
+            argument to the token reader's C{read_token} method.
         """
         if token_reader is None:
             token_reader = WhitespaceSeparatedTokenReader(
@@ -485,6 +489,7 @@ class SimpleCorpusReader(CorpusReaderI):
         self._copyright = None
         self._copyright_file = copyright_file
         self._token_reader = token_reader
+        self._token_reader_expects_source = token_reader_expects_source
         self._property_names = property_names
 
         # Postpone actual initialization until the corpus is accessed;
@@ -583,14 +588,23 @@ class SimpleCorpusReader(CorpusReaderI):
         if group is None: return self._items
         else: return tuple(self._groups.get(group)) or ()
 
-    def read(self, item):
-        source = '%s/%s' % (self._name, item)
+    def read(self, item, *reader_args, **reader_kwargs):
+        """
+        @param reader_args, reader_kwargs: Arguments that are passed on
+            to the corpus reader's C{TokenReader}.
+        """
         text = self.raw_read(item)
-        return self._token_reader.read_token(text, source=source)
-
-    def xread(self, item):
+        if self._token_reader_expects_source:
+            source = '%s/%s' % (self._name, item)
+            return self._token_reader.read_token(text, source=source,
+                                                 *reader_args, **reader_kwargs)
+        else:
+            return self._token_reader.read_token(text, *reader_args,
+                                                 **reader_kwargs)
+        
+    def xread(self, item, *reader_args, **reader_kwargs):
         # Default: no iterators.
-        return self.read(item)
+        return self.read(item, *reader_args, **reader_kwargs)
 
     def path(self, item):
         self._initialize()
