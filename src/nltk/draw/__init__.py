@@ -1932,6 +1932,7 @@ class ColorizedList:
         self._textwidget.bind('<ButtonPress>', self._buttonpress)
 
         # Fill in the given CFG's items.
+        self._items = None
         self.set(items)
 
     #////////////////////////////////////////////////////////////
@@ -1959,16 +1960,21 @@ class ColorizedList:
     # Item Access
     #////////////////////////////////////////////////////////////
 
-    def get(self):
+    def get(self, index=None):
         """
         @return: A list of the items contained by this list.
         """
-        return self._items[:]
+        if index is None:
+            return self._items[:]
+        else:
+            return self._items[index]
 
     def set(self, items):
         """
         Modify the list of items contained by this list.
         """
+        items = list(items)
+        if self._items == items: return
         self._items = list(items)
         
         self._textwidget['state'] = 'normal'
@@ -2018,6 +2024,14 @@ class ColorizedList:
         """
         self.unmark()
         self.mark(item)
+
+    def view(self, item):
+        """
+        Adjust the view such that the given item is visible.  If
+        the item is already visible, then do nothing.
+        """
+        index = self._items.index(item)
+        self._textwidget.see('%d.0' % (index+1))
 
     #////////////////////////////////////////////////////////////
     # Callbacks
