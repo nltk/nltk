@@ -166,7 +166,7 @@ from nltk.tokenizer import TokenizerI, AbstractTokenizer
 from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WhitespaceTokenizer
 from nltk.token import Token, CharSpanLocation
 from nltk.chktype import chktype
-from nltk.set import Set
+from sets import Set
 import types, re
 
 ##//////////////////////////////////////////////////////
@@ -629,9 +629,9 @@ class ChunkScore:
         assert chktype(1, correct, Tree)
         assert chktype(2, guessed, Tree)
 
-        self._correct |= Set(*[self._childtuple(t) for t in correct
+        self._correct |= Set([self._childtuple(t) for t in correct
                                if isinstance(t, Tree)])
-        self._guessed |= Set(*[self._childtuple(t) for t in guessed
+        self._guessed |= Set([self._childtuple(t) for t in guessed
                                if isinstance(t, Tree)])
         self._tp = self._guessed & self._correct
         self._fn = self._correct - self._guessed
@@ -639,33 +639,6 @@ class ChunkScore:
         self._tp_num = len(self._tp)
         self._fp_num = len(self._fp)
         self._fn_num = len(self._fn)
-
-    def _old_score(self, correct, guessed):
-        correct = self._chunk_toks(correct)
-        guessed = self._chunk_toks(guessed)
-        while correct and guessed:
-            if correct == guessed:
-                self._tp_num += 1
-                if len(self._tp) < self._max_tp:
-                    self._tp.append(correct[-1])
-                correct.pop()
-                guessed.pop()
-            elif correct[-1].loc().end() >= guessed[-1].loc().end():
-                self._fn_num += 1
-                if len(self._fn) < self._max_fn:
-                    self._fn.append(correct[-1])
-                correct.pop()
-            else:
-                self._fp_num += 1
-                if len(self._fp) < self._max_fp:
-                    self._fp.append(guessed[-1])
-                guessed.pop()
-        if correct:
-            self._fn += correct
-            self._fn_num += len(correct)
-        if guessed:
-            self._fp += guessed
-            self._fp_num += len(guessed)
 
     def precision(self):
         """
@@ -715,7 +688,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the missed chunks.
         """
-        return self._fn.elements()
+        return list(self._fn)
     
     def incorrect(self):
         """
@@ -726,7 +699,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the incorrect chunks.
         """
-        return self._fp.elements()
+        return list(self._fp)
     
     def correct(self):
         """
@@ -736,7 +709,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the correct chunks.
         """
-        return self._correct.elements()
+        return list(self._correct)
 
     def guessed(self):
         """
@@ -746,7 +719,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the guessed chunks.
         """
-        return self._guessed.elements()
+        return list(self._guessed)
 
     def __len__(self):
         return self._tp_num + self._fn_num
@@ -1691,7 +1664,6 @@ def demo_eval(chunkparser, text):
         test = Token(SUBTOKENS=gold.leaves(), LOC=sentence['LOC'])
         chunkparser.parse(test)
         chunkscore.score(gold, test['TREE'])
-
         #correct_toks = ctt.tokenize(sentence.type(), source=sentence.loc())
         #correct = Tree('S', correct_toks)
         #unchunked = correct.leaves()
@@ -1709,7 +1681,10 @@ def demo_eval(chunkparser, text):
     # Missed chunks.
     if chunkscore.missed():
         print 'Missed:'
-        for chunk in chunkscore.missed()[:10]:
+        missed = chunkscore.missed()
+        # sort, so they'll always be listed in the same order.
+        missed.sort()
+        for chunk in missed[:10]:
             print '  ', chunk
         if len(chunkscore.missed()) > 10:
                print '  ...'
@@ -1717,13 +1692,14 @@ def demo_eval(chunkparser, text):
     # Incorrect chunks.
     if chunkscore.incorrect():
         print 'Incorrect:'
-        for chunk in chunkscore.incorrect()[:10]:
+        incorrect = chunkscore.incorrect()
+        incorrect.sort() # sort, so they'll always be listed in the same order.
+        for chunk in incorrect[:10]:
             print '  ', chunk
         if len(chunkscore.incorrect()) > 10:
                print '  ...'
     
     print '\\'+('='*75)+'/'
-    print
 
 def demo():
     """
@@ -1745,12 +1721,14 @@ def demo():
     r1 = ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
     cp = RegexpChunkParser([r1], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
+    print
 
     # Use a chink rule to remove everything that's *not* an NP
     r1 = ChunkRule(r'<.*>+', 'Chunk everything')
     r2 = ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
     cp = RegexpChunkParser([r1, r2], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
+    print
 
     # Unchunk non-NP words, and then merge consecutive NPs
     r1 = ChunkRule(r'(<.*>)', 'Chunk each tag')
@@ -1758,12 +1736,14 @@ def demo():
     r3 = MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
     cp = RegexpChunkParser([r1,r2,r3], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
+    print
 
     # Chunk sequences of NP words, and split them at determiners
     r1 = ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
     r2 = SplitRule('', r'<DT>', 'Split before DT')
     cp = RegexpChunkParser([r1,r2], chunk_node='NP', top_node='S', trace=1)
     demo_eval(cp, text)
+    print
 
 if __name__ == '__main__':
     demo()
