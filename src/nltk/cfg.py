@@ -38,7 +38,7 @@ Each C{CFGProduction} consists of a left hand side and a right hand
 side.  The X{left hand side} is a C{Nonterminal} that specifies the
 node type for a potential parent; and the X{right hand side} is a list
 that specifies allowable children for that parent.  This lists
-consists of C{Nonterminals} and text tokens: each C{Nonterminal}
+consists of C{Nonterminals} and text types: each C{Nonterminal}
 indicates that the corresponding child may be a C{TreeToken} with the
 specified node type; and each text type indicates that the
 corresponding child may be a C{Token} with the with that type.
@@ -88,6 +88,8 @@ class Nonterminal:
     hashable.  Two C{Nonterminal}s are considered equal if their
     symbols are equal.
 
+    @see: L{CFG}
+    @see: L{CFGProduction}
     @type _symbol: (any)
     @ivar _symbol: The node value corresponding to this
         C{Nonterminal}.  This value must be immutable and hashable. 
@@ -156,6 +158,20 @@ class Nonterminal:
         """
         return '%s' % (self._symbol,)
 
+    def __div__(self, rhs):
+        """
+        @return: A new nonterminal whose symbol is C{M{A}/M{B}}, where
+            C{M{A}} is the symbol for this nonterminal, and C{M{B}}
+            is the symbol for rhs.
+        @rtype: L{Nonterminal}
+        @param rhs: The nonterminal used to form the right hand side
+            of the new nonterminal.
+        @type rhs: L{Nonterminal}
+        """
+        _chktype(1, rhs, Nonterminal)
+        return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
+
+
 #################################################################
 # CFGProduction and CFG
 #################################################################
@@ -175,7 +191,9 @@ class CFGProduction:
     instantiation should not depend on the context of the left-hand
     side or of the right-hand side.
 
-    @type _lhs: C{Nonterminal}
+    @see: L{CFG}
+    @see: L{Nonterminal}
+    @type _lhs: L{Nonterminal}
     @ivar _lhs: The left-hand side of the production.
     @type _rhs: sequence of (C{Nonterminal} and (terminal))
     @ivar _rhs: The right-hand side of the production.
@@ -186,7 +204,7 @@ class CFGProduction:
         Construct a new C{CFGProduction}.
 
         @param lhs: The left-hand side of the new C{CFGProduction}.
-        @type lhs: C{Nonterminal}
+        @type lhs: L{Nonterminal}
         @param rhs: The right-hand side of the new C{CFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
@@ -197,7 +215,7 @@ class CFGProduction:
     def lhs(self):
         """
         @return: the left-hand side of this C{CFGProduction}.
-        @rtype: C{Nonterminal}
+        @rtype: L{Nonterminal}
         """
         return self._lhs
 
@@ -260,6 +278,10 @@ class CFG:
 
     If you need efficient key-based access to productions, you
     can use a subclass to implement it.
+
+    @see: L{CFGProduction}
+    @see: L{Nonterminal}
+    @see: L{nltk.parser}
     """
     def __init__(self, start, productions):
         """
@@ -267,9 +289,9 @@ class CFG:
         and set of C{CFGProduction}s.
         
         @param start: The start symbol
-        @type start: C{Nonterminal}
+        @type start: L{Nonterminal}
         @param productions: The list of productions that defines the grammar
-        @type productions: C{list} of C{CFGProduction}
+        @type productions: C{list} of L{CFGProduction}
         """
         assert _chktype(1, start, Nonterminal)
         assert _chktype(2, productions, (CFGProduction,), [CFGProduction])
@@ -307,7 +329,7 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
     records the likelihood that its right-hand side is the correct
     instantiation for any given occurance of its left-hand side.
 
-    @see: C{CFGProduction}
+    @see: L{CFGProduction}
     """
     def __init__(self, p, lhs, *rhs):
         """
@@ -315,7 +337,7 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
 
         @param p: The probability of the new C{PCFGProduction}.
         @param lhs: The left-hand side of the new C{PCFGProduction}.
-        @type lhs: C{Nonterminal}
+        @type lhs: L{Nonterminal}
         @param rhs: The right-hand side of the new C{PCFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
@@ -361,7 +383,7 @@ class PCFG(CFG):
         and set of C{CFGProduction}s.
         
         @param start: The start symbol
-        @type start: C{Nonterminal}
+        @type start: L{Nonterminal}
         @param productions: The list of productions that defines the grammar
         @type productions: C{list} of C{PCFGProduction}
         @raise ValueError: if the set of productions with any left-hand-side
