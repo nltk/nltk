@@ -20,6 +20,10 @@ def edgecmp(e1,e2):
     return cmp((e1.loc().length(), e1.loc(), e1.drule()),
                (e2.loc().length(), e2.loc(), e2.drule()))
 
+##//////////////////////////////////////////////////////
+##  Edge
+##//////////////////////////////////////////////////////
+
 class Edge:
     """
     An edge of a chart.    An edges is a span of tokens (i.e. a C{Location})
@@ -35,48 +39,127 @@ class Edge:
     """
     
     def __init__(self, drule, tree, loc):
+        """
+        Construct a new C{Edge}.
+
+        @param drule: The dotted rule associated with the edge.
+        @type drule: C{DottedRule}
+        @param tree: The (partial) parse tree so far constructed for the edge.
+        @type tree: C{TreeToken}
+        @param loc: The location spanned by the edge.
+        @type loc: C{Location}
+        """
         self._drule = drule
         self._tree = tree
         self._loc = loc
+
     def drule(self):
+        """
+        @return: the dotted rule of the edge.
+        @rtype: C{DottedRule}
+        """
         return self._drule
+
     def tree(self):
+        """
+        @return: the parse tree of the edge.
+        @rtype: C{TreeToken}
+        """
         return self._tree
+    
     # a complete edge is one whose dotted rule is complete
     def complete(self):
+        """
+        @return: true if the C{DottedRule} of this edge is complete
+        @rtype: C{boolean}
+        """
         return self._drule.complete()
+
     def loc(self):
+        """
+        @return: the location spanned by this edge
+        @rtype: C{Location}
+        """
         return self._loc
+
     # the start/end of an edge is the start/end of the edge's location
     def start(self):
+        """
+        @return: the start index of the edge's location
+        @rtype: C{Location}
+        """
         return self._loc.start()
+
     def end(self):
+        """
+        @return: the end index of the edge's location
+        @rtype: C{Location}
+        """
         return self._loc.end()
+
     def __repr__(self):
+        """
+        @return: A concise string representation of the C{Edge}
+        @rtype: C{string}
+        """
         return repr(self._drule) + repr(self._tree) + repr(self._loc)
+
     def __eq__(self, other):
+        """
+        @return: true if this C{Edge} is equal to C{other}.
+        @rtype: C{boolean}
+        """
         return (self._drule == other._drule and
                 self._tree == other._tree and
                 self._loc == other._loc)
+
     def __hash__(self):
+        """
+        @return: A hash value for the C{Edge}.
+        @rtype: C{int}
+        """
         return hash((self._drule, self._tree, self._loc))
 
     def self_loop_start(self, rule):
+        """
+        @param rule: A grammar rule
+        @type rule: C{Rule}
+        @return: a zero-width self-loop edge at the start of this edge,
+            with a dotted rule initialized from this rule
+        @rtype: C{Edge}
+        """
         loc = self.loc().start_loc()
         dr = rule.drule()
-        return Edge(dr, Tree(dr.lhs()), loc)
+        return Edge(dr, TreeToken(dr.lhs()), loc)
 
     def self_loop_end(self, rule):
+        """
+        @param rule: A grammar rule
+        @type rule: C{Rule}
+        @return: a zero-width self-loop edge at the end of this edge,
+            with a dotted rule initialized from this rule
+        @rtype: C{Edge}
+        """
         loc = self._loc.end_loc()
         dr = rule.drule()
-        return Edge(dr, Tree(dr.lhs()), loc)
+        return Edge(dr, TreeToken(dr.lhs()), loc)
 
     def FR(self, edge):
+        """
+        @param edge: a completed edge immediately to the right
+        @type edge: C{Edge}
+        @return: a new edge resulting from the application of the fundamental rule of chart parsing
+        @rtype: C{Edge}
+        """
         loc = self._loc.union(edge.loc())
         dr = self._drule.shift()
         tree = TreeToken(self._tree.node(),
                          *(self._tree.children() + (edge.tree(),)))
         return Edge(dr, tree, loc)
+
+##//////////////////////////////////////////////////////
+##  Chart
+##//////////////////////////////////////////////////////
 
 class Chart:
     """
@@ -158,7 +241,7 @@ class Chart:
         chart._edgeset = self._edgeset.copy()
         return chart
     
-    def insert(self,edge):
+    def insert(self, edge):
         """
         Attempt to insert a new edge into this chart.  If the edge is
         already present, return []; otherwise, return a list
@@ -204,11 +287,16 @@ class Chart:
             print indent, edge.drule()
             print indent + "|" + "-"*(width*(end-start)-1) + "|"
 
+# this code should be replaced with a more transparent version
 def _seq_loc(tok_sent):
     """
     Return the location that spans a given sequence of tokens.
     """
     return TreeToken('', *tok_sent).loc()
+
+##//////////////////////////////////////////////////////
+##  ChartParserStrategy
+##//////////////////////////////////////////////////////
 
 class ChartParserStrategy:
     # A couple of paragraphs here are identical to paragraphs from the
@@ -219,27 +307,27 @@ class ChartParserStrategy:
     which new edges should be added to the chart.  There are two kinds
     of chart rules:
 
-        - X{Explicit Rules} search the chart for specific contexts
+        - X{Static Rules} search the chart for specific contexts
           where edges should be added.  The C{parse} method will
-          repeatedly invoke each explicit rule, until it produces no
+          repeatedly invoke each static rule, until it produces no
           new edges.
         - X{Edge Triggerd Rules} add new edges to the chart whenever
           certain kinds of edges are added by any chart rule.
 
-    A C{ChartParserStrategy} consists of a list of explicit rules and
+    A C{ChartParserStrategy} consists of a list of static rules and
     a list of edge triggered rules.
           
     Chart rules are defined using functions, which return a list of
     new edges to add to a chart.  These functions should I{not}
     directly modify the chart (e.g., do not add the edges to the chart
-    yourself; C{ChartParser} will add them for you).  Explicit rules
+    yourself; C{ChartParser} will add them for you).  Static rules
     are defined with functions of the form::
 
-        def explicit_rule(chart, grammar, basecat):
+        def static_rule(chart, grammar, basecat):
             ...   # Decide which edges to add (if any)
             return edges
 
-    Where C{chart} is the chart that the explicit rule should act
+    Where C{chart} is the chart that the static rule should act
     upon; C{grammar} is the grammar used by the chart parser; and
     C{basecat} is the top-level category of the grammar (e.g. 'S').
     The function should return a C{list} of C{Edge}s.  These edges
@@ -251,38 +339,38 @@ class ChartParserStrategy:
             ...   # Decide which edges to add (if any)
             return edges
 
-    Where C{chart} is the chart that the explicit rule should act
+    Where C{chart} is the chart that the static rule should act
     upon; C{grammar} is the grammar used by the chart parser;
     C{basecat} is the top-level category of the grammar (e.g. 'S');
     and C{edge} is the edge that triggered this rule.  The function
     should return a C{list} of C{Edge}s.  These edges will be added to
     the chart by the chart parser.
     """
-    def __init__(self, explicit, edgetriggered):
+    def __init__(self, static, edgetriggered):
         """
         Construct a new C{ChartParserStrategy} containing the given
-        lists of explicit rules and edge triggered rules.  See the
+        lists of static rules and edge triggered rules.  See the
         reference documentation for the C{ChartParserStrategy} class
         for more information on what values should be used for
-        explicit chart rules and edge triggered chart rules.
+        static chart rules and edge triggered chart rules.
         
-        @type explicit: C{list} of C{function}s
-        @param explicit: The ordered list of explicit rules that
+        @type static: C{list} of C{function}s
+        @param static: The ordered list of static rules that
             should be used by a C{ChartParser}.
         @type edgetriggered: C{list} of C{function}s
         @param edgetriggered: The ordered list of edge triggered rules
             that should be used by a C{ChartParser}.
         """
-        self._explicit = explicit
+        self._static = static
         self._edgetriggered = edgetriggered
 
-    def explicit(self):
+    def static(self):
         """
-        @return: the ordered list of explicit rules that
+        @return: the ordered list of static rules that
             should be used by a C{ChartParser}.
         @rtype: C{list} of C{function}s
         """
-        return self._explicit
+        return self._static
         
     def edgetriggered(self):
         """
@@ -292,9 +380,13 @@ class ChartParserStrategy:
         """
         return self._edgetriggered
 
+##//////////////////////////////////////////////////////
+##  ChartParser
+##//////////////////////////////////////////////////////
+
 class ChartParser(ParserI):
     # [edloper 9/27/01]: "Standard rules" *really* needs a different
-    #     name.  -- changed to "Explicit" for now, still not happy
+    #     name.  -- changed to "Static" for now, still not happy
     #     with that name..
     # [edloper 9/27/01]: We are using "rule" with two different
     #     meanings: a CFG rule (as in the Rule class); and a
@@ -315,13 +407,13 @@ class ChartParser(ParserI):
     conditions under which new edges should be added to the chart.
     There are two kinds of chart rules:
 
-        - X{Explicit Rules} search the chart for specific contexts where
+        - X{Static Rules} search the chart for specific contexts where
           edges should be added.  The C{parse} method will repeatedly
-          invoke each explicit rule, until it produces no new edges.
+          invoke each static rule, until it produces no new edges.
         - X{Edge Triggerd Rules} add new edges to the chart whenever
           certain kinds of edges are added by any chart rule.
 
-    Once the chart reaches a stage where none of the explicit rules
+    Once the chart reaches a stage where none of the static rules
     adds any new edges, parsing is complete.
           
     The set of chart rules used by a chart parser is known as its
@@ -547,7 +639,7 @@ class ChartParser(ParserI):
         # Initialize the chart with the new sentence.
         self._initialize_chart(tok_sent)
 
-        # Run the explicit rules.  Run each rule until it generates no
+        # Run the static rules.  Run each rule until it generates no
         # new edges.  Use the variable "added" to keep track
         # of what edges we've added (so we'll know whether to keep
         # running the rule or not).
@@ -555,7 +647,7 @@ class ChartParser(ParserI):
         grammar = self._grammar
         basecat = self._basecat
 
-        for func in self._strategy.explicit():
+        for func in self._strategy.static():
             while 1:
                 added = []
                 new_edges = func(chart, grammar, basecat)
@@ -571,21 +663,22 @@ class ChartParser(ParserI):
         else:
             return self.parses()[:n]
 
-############################################
-## CHART RULES
+##//////////////////////////////////////////////////////
+##  Chart Rules
+##//////////////////////////////////////////////////////
 #
 # See the docstring for ChartParser for a discussion of the
 # different types of chart rules.
 
 def TD_init(chart, grammar, basecat):
-    "Top-down init (explicit rule)"
+    "Top-down init (static rule)"
     added = []
 
     loc = chart.loc().start_loc()
     for rule in grammar:
         if rule.lhs() == basecat:
             drule = rule.drule()
-            new_edge = Edge(drule, Tree(drule.lhs()), loc)
+            new_edge = Edge(drule, TreeToken(drule.lhs()), loc)
             added += [new_edge]
     return added
 
@@ -599,7 +692,7 @@ def TD_edge(chart, grammar, basecat, edge):
     return added
 
 def BU_init_edge(chart, grammar, basecat, edge):
-    "Bottom-up init (explicit rule helper) (NOT A RULE)"
+    "Bottom-up init (static rule helper) (NOT A RULE)"
     added = []
     for rule in grammar:
         if edge.drule().lhs() == rule[0]:
@@ -608,7 +701,7 @@ def BU_init_edge(chart, grammar, basecat, edge):
     return added
 
 def BU_init(chart, grammar, basecat):
-    "Bottom-up init (explicit rule)"
+    "Bottom-up init (static rule)"
     added = []
     for edge in chart.edges():
         added += BU_init_edge(chart, grammar, basecat, edge)
@@ -616,7 +709,7 @@ def BU_init(chart, grammar, basecat):
 
 # Fundamental rule edge
 def FR_edge(chart, grammar, basecat, edge):
-    "Fundamental rule (explicit rule helper) (NOT A RULE)"
+    "Fundamental rule (static rule helper) (NOT A RULE)"
     added = []
     if not edge.complete():
         for edge2 in chart.complete_edges():
@@ -628,14 +721,15 @@ def FR_edge(chart, grammar, basecat, edge):
 
 # fundamental rule
 def FR(chart, grammar, basecat):
-    "Fundamental rule (explicit rule)"
+    "Fundamental rule (static rule)"
     added = []
     for edge in chart.edges():
         added += FR_edge(chart, grammar, basecat, edge)
     return added
 
-############################################
-## STRATEGIES
+##//////////////////////////////////////////////////////
+##  Strategies
+##//////////////////////////////////////////////////////
 
 # Define some useful rule invocation strategies.
 TD_STRATEGY = ChartParserStrategy([TD_init, FR], [TD_edge])
@@ -657,8 +751,9 @@ def td_edge_strategy(edge):
     return ChartParserStrategy([TD_edge_rule], [])
 
 
-############################################
-## Stepping Chart Parser
+##//////////////////////////////////////////////////////
+##  SteppingChartParser
+##//////////////////////////////////////////////////////
 
 class SteppingChartParser(ChartParser):
     """
@@ -687,14 +782,14 @@ class SteppingChartParser(ChartParser):
         # Make sure we have a valid strategy.
         if kwargs.has_key('strategy'):
             self._strategy = kwargs['strategy']
-        if not self._strategy.explicit():
+        if not self._strategy.static():
             raise ValueError('You must define a strategy before '+
                              'you can parse')
 
         # Initialize the chart with the new sentence.
         self._initialize_chart(tok_sent)
 
-        # We need to keep track of which explicit function we're
+        # We need to keep track of which static function we're
         # currently working on.
         self._function_index = 0
 
@@ -783,16 +878,16 @@ class SteppingChartParser(ChartParser):
             chart = self._chart
             grammar = self._grammar
             basecat = self._basecat
-            while self._function_index < len(self._strategy.explicit()):
-                # Run this explicit function, and add any new edges to
+            while self._function_index < len(self._strategy.static()):
+                # Run this static function, and add any new edges to
                 # the queue.
-                func = self._strategy.explicit()[self._function_index]
+                func = self._strategy.static()[self._function_index]
                 new_edges = func(chart, grammar, basecat)
                 for edge in new_edges:
                     self._insert(edge)
 
                 # If we found any new edges, then add the first one.
-                # Otherwise, we're done with this explicit function,
+                # Otherwise, we're done with this static function,
                 # so move on to the next one.
                 if self._queue:
                     return self._dequeue()
@@ -822,54 +917,34 @@ def xyzzy(chart, edge):
     print edgenum, edge
     return 0
 
-# DEMONSTRATION CODE
-
-grammar = (
-    Rule('S',('NP','VP')),
-    Rule('NP',('Det','N')),
-    Rule('NP',('Det','N', 'PP')),
-    Rule('VP',('V','NP')),
-    Rule('VP',('V','PP')),
-    Rule('VP',('V','NP', 'PP')),
-    Rule('VP',('V','NP', 'PP', 'PP')),
-    Rule('PP',('P','NP'))
-)
-
-lexicon = (
-    Rule('NP',('I',)),
-    Rule('Det',('the',)),
-    Rule('Det',('a',)),
-    Rule('N',('man',)),
-    Rule('V',('saw',)),
-    Rule('P',('in',)),
-    Rule('P',('with',)),
-    Rule('N',('park',)),
-    Rule('N',('telescope',))
-)
-
-def demo2():
-    global grammar, lexicon
-    
-    sent = 'I saw a man in the park with a telescope'
-    print "Sentence:\n", sent
-
-    # tokenize the sentence
-    tok_sent = WSTokenizer().tokenize(sent)
-
-    # initialize the chartparser
-    cp = SteppingChartParser(grammar, lexicon, 'S', callback=xyzzy, trace=0)
-    cp.set_strategy(td_strategy())
-
-    # run the parser
-    parses = cp.parse(tok_sent)
-
-    print "Parse(s):"
-    for parse in parses:
-        print parse.pp()
+##//////////////////////////////////////////////////////
+##  Demonstration Code
+##//////////////////////////////////////////////////////
 
 def demo():
-    global grammar, lexicon
-    
+    grammar = (
+        Rule('S',('NP','VP')),
+        Rule('NP',('Det','N')),
+        Rule('NP',('Det','N', 'PP')),
+        Rule('VP',('V','NP')),
+        Rule('VP',('V','PP')),
+        Rule('VP',('V','NP', 'PP')),
+        Rule('VP',('V','NP', 'PP', 'PP')),
+        Rule('PP',('P','NP'))
+    )
+
+    lexicon = (
+        Rule('NP',('I',)),
+        Rule('Det',('the',)),
+        Rule('Det',('a',)),
+        Rule('N',('man',)),
+        Rule('V',('saw',)),
+        Rule('P',('in',)),
+        Rule('P',('with',)),
+        Rule('N',('park',)),
+        Rule('N',('telescope',))
+    )
+
     sent = 'I saw a man in the park with a telescope'
     print "Sentence:\n", sent
 
@@ -877,17 +952,22 @@ def demo():
     tok_sent = WSTokenizer().tokenize(sent)
 
     # initialize the chartparser
-    cp = SteppingChartParser(grammar, lexicon, 'S')
-    cp.initialize(tok_sent, strategy = BUINIT_STRATEGY)
-    while cp.step(): pass
-    cp.chart().draw()
+    # cp = ChartParser(grammar, lexicon, 'S', strategy = TD_STRATEGY)
+    cp = ChartParser(grammar, lexicon, 'S', strategy = BU_STRATEGY)
+    cp.parse(tok_sent)
 
-    print "NOW LET'S APPLY THE FR MAXIMALLY"
-    while cp.step(strategy = FR_STRATEGY): pass
-    cp.chart().draw()
+    # play with the stepping chart parser
+    # cp = SteppingChartParser(grammar, lexicon, 'S')
+    # cp.initialize(tok_sent, strategy = BUINIT_STRATEGY)
+    # while cp.step(): pass
+    # while cp.step(strategy = FR_STRATEGY): pass
+    # cp.chart().draw()
 
     print "Parse(s):"
     for parse in cp.parses():
         print parse.pp()
+
+    print "Chart Size:", len(cp.chart())
+    # cp.chart().draw()
 
 if __name__ == '__main__': demo()
