@@ -133,6 +133,13 @@ def unchunk(chunked_sent):
             unchunked_sent.extend(token)
     return unchunked_sent
 
+"""
+Re-impl of chunkscore..
+  1. keep running counts of: tp, fp, tn
+  2. These can be used to generate most statistics
+  3. keep list of tp, fp, tn??  tp+fn = correct; tp+fp = guessed
+"""
+
 class ChunkScore:
     """
     A utility class for scoring chunk parsers.  C{ChunkScore} can
@@ -155,15 +162,54 @@ class ChunkScore:
         >>> print 'F Measure:', chunkscore.f_measure()
         F Measure: 0.823
 
-    @type _correct: C{Set} of chunk token.
-    @ivar _correct: The known-correct (gold standard) chunks
-    @type _guessed: C{Set} of chunk token.
-    @ivar _guessed: The guessed chunks
+    @ivar kwargs: Keyword arguments:
+
+        - max_tp_examples: The maximum number actual examples of true
+          positives to record.  This affects the C{correct} member
+          function: C{correct} will not return more than this number
+          of true positive examples.  This does *not* affect any of
+          the numerical metrics (precision, recall, or f-measure)
+
+        - max_fp_examples: The maximum number actual examples of false
+          positives to record.  This affects the C{incorrect} member
+          function and the C{guessed} member function: C{incorrect}
+          will not return more than this number of examples, and
+          C{guessed} will not return more than this number of true
+          positive examples.  This does *not* affect any of the
+          numerical metrics (precision, recall, or f-measure)
+        
+        - max_fn_examples: The maximum number actual examples of false
+          negatives to record.  This affects the C{missed} member
+          function and the C{correct} member function: C{missed}
+          will not return more than this number of examples, and
+          C{correct} will not return more than this number of true
+          negative examples.  This does *not* affect any of the
+          numerical metrics (precision, recall, or f-measure)
+        
+    @type _tp: C{list} of C{Token}
+    @ivar _tp: List of true positives
+    @type _fp: C{list} of C{Token}
+    @ivar _fp: List of false positives
+    @type _fn: C{list} of C{Token}
+    @ivar _fn: List of false negatives
+    
+    @type _tplen: C{int}
+    @ivar _tplen: Number of true positives
+    @type _fplen: C{int}
+    @ivar _fplen: Number of false positives
+    @type _fnlen: C{int}
+    @ivar _fnlen: Number of false negatives.
     """
-    def __init__(self):
-        self._correct = Set()
-        self._guessed = Set()
-        self._len = 0
+    def __init__(self, **kwargs):
+        self._tp = []
+        self._tplen = 0
+        self._fp = []
+        self._fplen = 0
+        self._fn = []
+        self._fnlen = 0
+        self._max_tp = kwargs.get('max_tp_examples', 100)
+        self._max_fp = kwargs.get('max_fp_examples', 100)
+        self._max_fn = kwargs.get('max_fn_examples', 100)
 
     def score(self, correct, guessed):
         """
@@ -180,9 +226,27 @@ class ChunkScore:
         @type guessed: chunk structure
         @param guessed: The chunked sentence to be scored.
         """
-        self._correct = self._correct.union(self._chunk_locs(correct))
-        self._guessed = self._guessed.union(self._chunk_locs(guessed))
-        self._len += len(unchunk(correct))
+        correct = self._chunk_toks(correct)
+        guessed = self._chunk_toks(guessed)
+        while correct and guessed:
+            if correct[-1].loc() == guessed[-1].loc():
+                self._tplen += 1
+                if len(self._tp) < self._max_tp:
+                    self._tp.append(correct[-1])
+                correct.pop()
+                guessed.pop()
+            elif correct[-1].loc().start() >= guessed[-1].loc().end():
+                self._fnlen += 1
+                if len(self._fn) < self._max_fn:
+                    self._fn.append(correct[-1])
+                correct.pop()
+            else:
+                # If a guess is not equal to a correct chunk, but
+                # overlaps it in any way, then it must be wrong.
+                self._fplen += 1
+                if len(self._fp) < self._max_fp:
+                    self._fp.append(guessed[-1])
+                guessed.pop()
 
     def precision(self):
         """
@@ -190,7 +254,9 @@ class ChunkScore:
             scored by this C{ChunkScore}.
         @rtype: C{float}
         """
-        return self._correct.precision(self._guessed)
+        div = self._tplen + self._fplen
+        if div == 0: return None
+        else: return float(self._tplen) / div
     
     def recall(self):
         """
@@ -198,7 +264,9 @@ class ChunkScore:
             scored by this C{ChunkScore}.
         @rtype: C{float}
         """
-        return self._correct.recall(self._guessed)
+        div = self._tplen + self._fnlen
+        if div == 0: return None
+        else: return float(self._tplen) / div
     
     def f_measure(self, alpha=0.5):
         """
@@ -212,7 +280,13 @@ class ChunkScore:
             value.  C{alpha} should have a value in the range [0,1].
         @type alpha: C{float}
         """
-        return self._correct.f_measure(self._guessed, alpha)
+        p = self.precision()
+        r = self.recall()
+        if p is None or r is None:
+            return None
+        if p == 0 or r == 0:    # what if alpha is 0 or 1?
+            return 0
+        return 1/(alpha/p + (1-alpha)/r)
     
     def missed(self):
         """
@@ -223,7 +297,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the missed chunks.
         """
-        return self._correct - self._guessed
+        return self._fn
     
     def incorrect(self):
         """
@@ -234,7 +308,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the incorrect chunks.
         """
-        return self._guessed - self._correct
+        return self._fp
     
     def correct(self):
         """
@@ -244,7 +318,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the correct chunks.
         """
-        return self._correct
+        return self._tp + self._fn
 
     def guessed(self):
         """
@@ -254,7 +328,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the guessed chunks.
         """
-        return self._guessed
+        return self._tp + self._fp
     
     def __repr__(self):
         """
@@ -277,30 +351,28 @@ class ChunkScore:
                 ("    Recall:    %5.1f%%\n" % (self.recall()*100))+
                 ("    F-Measure: %5.1f%%\n" % (self.f_measure()*100)))
         
-    def _seq_loc(self, tok_sent):
-        """
-        Return the location spanning a tokenized sentence
-        """
-        loc0 = tok_sent[0].loc()
-        locn = tok_sent[-1].loc()
-        return Location(loc0.start(), locn.end(),
-                        unit=loc0.unit(), source=loc0.source()) 
-
-    def _unify(self, tok_sent):
+    def _chunk_tok(self, chunk):
         """
         Construct a unified "chunk token" containing the merged
         contents of a chunk.  This makes it much easier to tell what
         chunks were missed or were generated incorrectly.
         """
-        words = [tok.type().base() for tok in tok_sent]
-        str = ' '.join(words)
-        return Token(str, self._seq_loc(tok_sent))
+        # Calculate the type
+        words = [tok.type().base() for tok in chunk]
+        chunktype = ' '.join(words)
 
-    # get the locations of chunks in a chunked sentence
-    def _chunk_locs(self, chunked_sent):
-        locs = []
+        # Calculate the location
+        loc0 = chunk[0].loc()
+        locn = chunk[-1].loc()
+        chunkloc = Location(loc0.start(), locn.end(),
+                            unit=loc0.unit(), source=loc0.source())
+
+        # Return the token.
+        return Token(chunktype, chunkloc)
+
+    def _chunk_toks(self, chunked_sent):
+        toks = []
         for piece in chunked_sent:
             if type(piece) == type([]):
-                locs.append(self._unify(piece))
-                #locs.append(_seq_loc(piece))
-        return Set(*locs)
+                toks.append(self._chunk_tok(piece))
+        return toks
