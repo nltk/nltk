@@ -9,7 +9,7 @@
 all: dist
 
 clean:
-	rm -rf build dist
+	rm -rf build dist MANIFEST
 
 # Should these generate ref docs or something??
 pdf:
