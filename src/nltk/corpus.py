@@ -77,15 +77,22 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     corpus set.  However, the C{treebank} object will provide access
     to this corpus, if it is installed.}
   
-@group Corpus Readers: twenty_newsgroups, treebank, words, reuters
+@group Corpus Readers: twenty_newsgroups, treebank, words, reuters,
+     ppatttach, brown, gutenberg
 @var twenty_newsgroups: A collection of approximately 20,000
      Usenet newsgroup documents, partitioned (nearly) evenly across 20
      different newsgroups.
 @var treebank: A collection of hand-annotated parse trees for
      english text.
-@var words: A list of English words.
+@var words: A list of English words and word forms.
 @var reuters: A collection of documents that appeared on Reuters
      newswire in 1987.
+@var ppattach: Information about potentially ambiguous prepositional
+     phrase attatchments.
+@var brown: Approximately 1,000,000 words of part-of-speech tagged
+     text.
+@var gutenberg: A collection fourteen public-domain English etexts
+     from Project Gutenberg.
       
 @todo: Add default basedir for OS-X?
 
@@ -1010,6 +1017,7 @@ groups = [(ng, ng+'/.*') for ng in '''
 twenty_newsgroups = SimpleCorpusReader(
     '20_newsgroups', '20_newsgroups/', '.*/.*', groups,
     description_file='../20_newsgroups.readme')
+del groups # delete temporary variable
 
 ###################################################
 ## Brown
@@ -1024,6 +1032,7 @@ groups = [('press: reportage', r'ca\d\d'), ('press: editorial', r'cb\d\d'),
           ('humor', r'cr\d\d')]
 brown = SimpleCorpusReader(
     'brown', 'brown/', r'c\w\d\d', groups, description_file='README')
+del groups # delete temporary variable
  
 ###################################################
 ## Gutenberg
@@ -1033,6 +1042,7 @@ groups = [('austen', 'austen-.*'), ('bible', 'bible-.*'),
           ('whitman', 'whitman-.*')]
 gutenberg = SimpleCorpusReader(
     'gutenberg', 'gutenberg/', r'.*\.txt', groups, description_file='README')
+del groups # delete temporary variable
 
 ###################################################
 ## PP Attatchment
@@ -1116,6 +1126,9 @@ def _test_treebank():
         print 'tokenize(%s)  = %s' % (name, _truncate_repr(tokenized, 70-16))
 
 def demo():
+    """
+    Demonstrate corpus access for each of the defined corpora.
+    """
     _test_corpus(twenty_newsgroups)
     _test_corpus(brown)
     _test_corpus(gutenberg)
