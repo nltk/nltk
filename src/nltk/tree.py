@@ -17,15 +17,14 @@
 #   - traces!! Whee.
 
 """
-
-Classes for representing text-trees.  A X{text-tree type} is a
-hierarchical data structures over a text, such as syntax tree.
-Individual occurances of text-tree types are known as X{text-tree
-tokens}.  Note that several different text-tree tokens might all have
-the same text-tree type.  For example, if the sentence \"the dog
-chased the cat\" occurs three times in a document, each occurance of
-the sentence will have a different text-tree token; but all three
-text-tree tokens will have the same text-tree type.
+Classes for representing hierarchical structures over text.  These
+structures are called X{text-tree type}s, and individual occurances of
+text-tree types are known as X{text-tree tokens}.  Note that several
+different text-tree tokens might all have the same text-tree type.
+For example, if the sentence \"the dog chased the cat\" occurs three
+times in a document, each occurance of the sentence will have a
+different text-tree token; but all three text-tree tokens will have
+the same text-tree type.
 
 The tree module defines the C{Tree} class to represent text-tree
 types, and the C{TreeToken} class to represent text-tree tokens.

@@ -19,7 +19,7 @@
 #    - Am I happy with current str/repr???
 
 """
-Basic classes useful for processing individual elements of text, such
+Basic classes for processing individual elements of text, such
 as words or sentences.  These elements of text are known as X{text
 types}, or X{types} for short.  Individual occurances of types are
 known as X{text tokens}, or X{tokens} for short.  Note that several
