@@ -62,6 +62,7 @@ Later additions:
    Invariants proceed, succeed, exceed. Also suggested by Hiranmay Ghosh.
 
 """
+__docformat__ = 'plaintext'
 
 import sys
 import re
