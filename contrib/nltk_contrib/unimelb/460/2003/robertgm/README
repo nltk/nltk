@@ -1,0 +1,59 @@
+Summarization System - Robert Marshall
+--------------------------------------
+
+README
+To load the system, simply load the summarizer.py module.
+
+Preprocessing
+
+Before we can attempt to train or use the Bayesian classifier, we need
+to convert the abstracts into extracts, using the tf.idf method
+described above. This process is very time-consuming (around 3 hours
+on a Celeron 1700 with 256 MB RAM), so we cache the results. In order
+to perform this task, use the cache function. It takes one parameter,
+a list of files within the cmp-lg directory to be cached. If the
+parameter is not specified, then all the XML files in the directory
+will be cached.
+
+Summarization
+
+To train the system, use the train function. This function takes two
+parameters - a list of measures to be used (defaulting to sentence
+length, fixed-phrase and paragraph), and a list of files, defaulting
+to all XML files in the cmp-lg directory. It will return a tuple
+containg the training data, which is simply the counts for each
+measure, on the extracted sentences and then on the document as a
+whole. For example, to train using only the file 9504027.xml and the
+sentence length and position measures, type:
+data = train([SentenceLength(), Paragraph()], '9504027.xml')
+
+To summarize a document, use the summarize function. It takes 4
+parameters - the document (given as a list of paragraphs tokens, which
+contain their location and a list of sentence tokens, which also
+contain their location), the length of summary desired, the list of
+measures, and the training data. For example, if we have a document
+loaded in the variable document, and training data in the data, we can
+summarize it using the command:
+summarize(document, 10, [SentenceLength(), FixedPhrase(), Paragraph()], data)
+
+The cross_validate function takes the same parameters, with the same
+defaults, as the train function ,and an n_folds parameter (defaulting
+to 10), specifying the number of folds to use for the
+cross-validation. It will perform cross-validation on the specified
+files and report the precision. To use 10-fold cross-validation the
+system on the entire training set, with the best-performing set of
+measures, simply type: cross_validate()
+
+Utilities
+
+The common_phrases function takes a list of files (defaulting to all
+.xml files in the cmp-lg directory), and returns a list of the 20 most
+common n-grams in their abstracts, where n ranges from 2 to 4.
+
+The exact_matches function takes a list of files, again defaulting to
+all the XML files, and returns a list of all the sentences longer than
+2 words which exactly match between the abstracts and main documents.
+
+The read_file function takes a filename as input. Assuming the file is
+text, with two newlines between each paragraph, it will return a list
+of the paragraphs in a suitable form for summarization.
