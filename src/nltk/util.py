@@ -388,6 +388,7 @@ def mark_stdout_newlines(func, *args, **kwargs):
         first line
         <--BLANKLINE-->
         third line
+    
     """
     print re.sub(r'\n[ \t]*\n', '\n<--BLANKLINE-->\n',
                  capture_stdout(func, *args, **kwargs)).rstrip()
