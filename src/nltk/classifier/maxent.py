@@ -52,6 +52,14 @@ C{ConditionalExponentialClassifiers}.  Both trainers find the
 emperically consistant model which maximizes entropy.
 C{GISMaxentClassifierTrainer} uses Generalized Iterative Scaling; and
 C{IISMaxentClassifierTrainer} uses Improved Iterative Scaling.
+
+@warning: We plan to significantly refactor the nltk.classifier
+    package for the next release of nltk.
+
+@group Classifiers: ConditionalExponentialClassifier
+@group Classifier Trainers: GISMaxentClassifierTrainer,
+       IISMaxentClassifierTrainer
+@group Feature Detector Lists: GIS_FDList
 """
 
 # NOTES TO SELF:

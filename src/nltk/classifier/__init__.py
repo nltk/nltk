@@ -43,6 +43,14 @@ classifiers from training data.
 
 C{accuracy} and C{log_likelihood} provide simple metrics for
 evaluating the performance of a classifier.
+
+@warning: We plan to significantly refactor the nltk.classifier
+    package for the next release of nltk.
+
+@group Data Types: LabeledText
+@group Interfaces: ClassifierI, ClassifierTrainerI
+@group Evaulation: accuracy, log_likelihood, ConfusionMatrix
+@sort: ClassifierI, ClassifierTrainerI
 """
 
 from nltk.token import Token
