@@ -67,7 +67,7 @@ of EM.
 from nltk.chktype import chktype
 from nltk.probability import *
 from nltk.token import Token
-from Numeric import *
+from numarray import *
 import re
 
 _NINF = float('-inf')
