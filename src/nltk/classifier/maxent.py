@@ -65,9 +65,9 @@ C{IISMaxentClassifierTrainer} uses Improved Iterative Scaling.
 
 from nltk.classifier import *
 from nltk.classifier.feature import *
+from nltk.classifier.featureselection import *
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, WSTokenizer
-from nltk.classifier.featureselection import FilteredFDList
 
 # Don't use from .. imports, because math and Numeric provide
 # different definitions for useful functions (exp, log, etc.)
@@ -87,10 +87,10 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
     predicts the probability of a label for a given text using the
     formula::
 
-        P(l|t) = 1/Z(t) * exp(w[0]*fd[0](LabeledText(t,l)) +
-                              w[1]*fd[1](LabeledText(t,l)) +
-                              ... +
-                              w[n]*fd[n](LabeledText(t,l)))
+        P(l|t) = 1/Z(t) * (w[0] ** fd[0](LabeledText(t,l))) *
+                          (w[1] ** fd[1](LabeledText(t,l))) *
+                          ...
+                          (w[n] ** fd[n](LabeledText(t,l)))
 
     Where:
         - M{t} is a text.
@@ -102,10 +102,10 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
 
     Similarly, it classifies texts using the formula::
     
-        classify(t) = ARGMAX[l] exp(w[0]*fd[0](LabeledText(t,l)) +
-                                    w[1]*fd[1](LabeledText(t,l)) +
-                                    ... +
-                                    w[n]*fd[n](LabeledText(t,l)))
+        classify(t) = ARGMAX[l] ((w[0] ** fd[0](LabeledText(t,l))) *
+                                 (w[1] ** fd[1](LabeledText(t,l))) *
+                                 ...
+                                 (w[n] ** fd[n](LabeledText(t,l))))
 
     This model is theoretically significant because it is the only
     model that is emperically consistant and maximizes entropy.
@@ -117,6 +117,18 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
     probability estimates for labels that cause the feature to fire.
     If the weight is negative, then the feature will decrease the 
     probability estimates for labels that cause the feature to fire.
+
+    This model is sometimes written using the following equivalant
+    formulation::
+
+        P(l|t) = 1/Z(t) * (e ** (l[0]*fd[0](LabeledText(t,l)) +
+                                 l[1]*fd[1](LabeledText(t,l)) +
+                                 ... +
+                                 l[n]*fd[n](LabeledText(t,l))))
+
+    where M{l[i] = log(w[i])}.  We use the formulation with weights
+    M{w[i]} instead of the M{l[i]} formulation because there is no
+    obvious value of M{l[i]} corresponding to M{w[i]=0}.
     """
     def __init__(self, fdlist, labels, weights, **kwargs):
         """
@@ -149,10 +161,10 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
 
     def fvlist_likelihood(self, fvlist):
         # Inherit docs from AbstractFeatureClassifier
-        sum = 0.0
+        prod = 1.0
         for (id, val) in fvlist.assignments():
-            sum += self._weights[id] * val
-        return math.exp(sum)
+            prod *= (self._weights[id] ** val)
+        return prod
 
     def weights(self):
         """
@@ -289,7 +301,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
     initially sets all weights to zero; it then iteratively updates
     the weights using the formula::
 
-      w[i] := w[i] + (1/C) * log(fcount_emperical[i]/fcount_estimated[i])
+      w[i] := w[i] * (fcount_emperical[i]/fcount_estimated[i]) ** (1/C)
 
     Where:
     
@@ -454,27 +466,29 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         corrected_fdlist = GIS_FDList(self._fdlist, C)
         Cinv = 1.0 / corrected_fdlist.C()
 
-        # Filter out all of the features for which we have absolutely
-        # no information.  These would cause 0/0, which causes Numeric
-        # to raise an OverflowError.
-        filtered_fdlist = FilteredFDList(corrected_fdlist,
-                                         labeled_tokens,
-                                         labels)
-
         # Memoize the feature value lists for training data; this
         # improves speed.
         if debug > 0: print '  ==> Memoizing feature value lists'
         texts = [ltok.type().text() for ltok in labeled_tokens]
-        memoized_fdlist = MemoizedFDList(filtered_fdlist,
+        memoized_fdlist = MemoizedFDList(corrected_fdlist,
                                          texts, labels)
 
-        # Count how many times each feature occurs in the training
-        # data.
+        # Count how many times each feature occurs in the training data.
         fcount_emperical = self._fcount_emperical(memoized_fdlist,
                                                   labeled_tokens)
+        
+        # An array that is 1 whenever fcount_emperical is zero.  In
+        # other words, it is one for any feature that's not attested
+        # in the data.  This is used to avoid division by zero.
+        unattested = Numeric.zeros(len(memoized_fdlist))
+        for i in range(len(fcount_emperical)):
+            if fcount_emperical[i] == 0: unattested[i] = 1
 
-        # Build the classifier.  Start with weight=0 for each feature.
-        weights = Numeric.zeros(len(memoized_fdlist), 'd')
+        # Build the classifier.  Start with weight=1 for each feature,
+        # except for the unattested features.  Start those out at
+        # zero, since we know that's the correct value.
+        weights = Numeric.ones(len(memoized_fdlist), 'd')
+        weights -= unattested
         classifier = ConditionalExponentialClassifier(memoized_fdlist, 
                                                       labels, weights)
 
@@ -487,7 +501,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         # Train for a fixed number of iterations.
         for iternum in range(iter):
             if debug > 2:
-                print ('     %9d    %14.3f    %9.3f' %
+                print ('     %9d    %14.5f    %9.3f' %
                        (iternum, log_likelihood(classifier, labeled_tokens),
                         accuracy(classifier, labeled_tokens)))
             
@@ -497,22 +511,23 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
                                                       memoized_fdlist,
                                                       labeled_tokens,
                                                       labels)
-                    
+            
+            # Avoid division by zero.
+            fcount_estimated += unattested
+            
             # Update the classifier weights
             weights = classifier.weights()
-            weights += Cinv * Numeric.log(fcount_emperical /
-                                          fcount_estimated)
+            weights *= (fcount_emperical / fcount_estimated) ** Cinv
             classifier.set_weights(weights)
 
         if debug > 2:
-            print ('     %9d    %14.3f    %9.3f' %
+            print ('     %9d    %14.5f    %9.3f' %
                    (iternum+1, log_likelihood(classifier, labeled_tokens),
                     accuracy(classifier, labeled_tokens)))
             print
-                
-        # Make sure to use the un-memoized features for the classifier
-        # we return.
-        return ConditionalExponentialClassifier(filtered_fdlist, labels,
+
+        # Don't use the memoized features.
+        return ConditionalExponentialClassifier(corrected_fdlist, labels,
                                                 classifier.weights())
 
     def __repr__(self):
@@ -536,17 +551,17 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
     initially sets all weights to zero; it then iteratively updates
     the weights using the formula::
 
-      w[i] := w[i] + delta[i]
+      w[i] := w[i] + (e ** delta[i])
 
     Where M{delta[i]} is the solution to::
 
-      fcount_emperical[i] = SUM[t,l] (P(l|t) *
+      ffreq_emperical[i] = SUM[t,l] (P(l|t) *
                                       fd[i](LabeledText(l,t)) *
                                       exp(delta[i] *
                                           nf(LabeledText(l,t)))
 
     Where:
-        - C{fcount_emperical}[M{i}] is the sum of the feature values
+        - C{ffreq_emperical}[M{i}] is the average feature value
           for the M{i}th feature over training texts.
         - M{t} is a text from the training data.
         - M{l} is a label.
@@ -653,14 +668,14 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         return nfmap
 
     def _deltas(self, fdlist, labeled_tokens, labels,
-                classifier, ffreq_emperical, nfmap, nfarray,
-                nftranspose):
+                classifier, unattested, ffreq_emperical, nfmap,
+                nfarray, nftranspose):
         """
         Calculate the update values for the classifier weights for
         this iteration of IIS.  These update weights are the value of
         C{delta} that solves the equation::
         
-          fcount_emperical[i]
+          ffreq_emperical[i]
                  =
           SUM[t,l] (classifier.prob(LabeledText(t,l)) *
                     fdlist.detect(LabeledText(t,l))[i] *
@@ -711,6 +726,11 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             frequency for each feature.  The M{i}th element of this
             array is the emperical frequency for feature M{i}.
         @type ffreq_emperical: C{sequence} of C{float}
+        @param unattested: An array that is 1 for features that are
+            not attested in the training data; and 0 for features that
+            are attested.  In other words, C{unattested[i]==0} iff
+            C{ffreq_emperical[i]==0}. 
+        @type unattested: C{sequence} of C{int}
         @param nfmap: A map that can be used to compress C{nf} to a dense
             vector.
         @type nfmap: C{dictionary} from C{int} to C{int}
@@ -767,6 +787,9 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             sum1 = Numeric.sum(exp_nf_delta * A) 
             sum2 = Numeric.sum(nf_exp_nf_delta * A)
 
+            # Avoid division by zero.
+            sum2 += unattested
+
             # Update the deltas.
             deltas -= (ffreq_emperical - sum1) / -sum2
 
@@ -815,17 +838,11 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         if labels is None:
             labels = find_labels(labeled_tokens)
 
-        # Filter out all of the features for which we have absolutely
-        # no information.  These would cause 0/0, which causes Numeric
-        # to raise an OverflowError.
-        filtered_fdlist = FilteredFDList(self._fdlist,
-                                         labeled_tokens, labels)
-
         # Memoize the feature value lists for training data; this
         # improves speed.
         if debug > 0: print '  ==> Memoizing training results'
         texts = [ltok.type().text() for ltok in labeled_tokens]
-        memoized_fdlist = MemoizedFDList(filtered_fdlist,
+        memoized_fdlist = MemoizedFDList(self._fdlist,
                                          texts, labels)
 
         # Find the frequency with which each feature occurs in the
@@ -844,11 +861,21 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         nfarray = Numeric.array([nf for (nf, i) in nfs], 'd')
         nftranspose = Numeric.reshape(nfarray, (len(nfarray), 1))
 
-        # Build the classifier.  Start with weight=0 for each feature.
-        weights = Numeric.zeros(len(memoized_fdlist), 'd')
+        # An array that is 1 whenever ffreq_emperical is zero.  In
+        # other words, it is one for any feature that's not attested
+        # in the data.  This is used to avoid division by zero.
+        unattested = Numeric.zeros(len(memoized_fdlist))
+        for i in range(len(unattested)):
+            if ffreq_emperical[i] == 0: unattested[i] = 1
+
+        # Build the classifier.  Start with weight=1 for each feature,
+        # except for the unattested features.  Start those out at
+        # zero, since we know that's the correct value.
+        weights = Numeric.ones(len(memoized_fdlist), 'd')
+        weights -= unattested
         classifier = ConditionalExponentialClassifier(memoized_fdlist, 
                                                       labels, weights)
-
+                
         if debug > 0: print '  ==> Training (%d iterations)' % iter
         if debug > 2:
             print
@@ -858,31 +885,29 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         # Train for a fixed number of iterations.
         for iternum in range(iter):
             if debug > 2:
-                print ('     %9d    %14.3f    %9.3f' %
+                print ('     %9d    %14.5f    %9.3f' %
                        (iternum, log_likelihood(classifier, labeled_tokens),
                         accuracy(classifier, labeled_tokens)))
 
             # Calculate the deltas for this iteration, using Newton's method.
             deltas = self._deltas(memoized_fdlist, labeled_tokens,
-                                  labels, classifier, 
+                                  labels, classifier, unattested,
                                   ffreq_emperical, nfmap, nfarray,
                                   nftranspose)
 
-
             # Use the deltas to update our weights.
             weights = classifier.weights()
-            weights += deltas
+            weights *= Numeric.exp(deltas)
             classifier.set_weights(weights)
                         
         if debug > 2:
-            print ('     %9d    %14.3f    %9.3f' %
+            print ('     %9d    %14.5f    %9.3f' %
                    (iternum+1, log_likelihood(classifier, labeled_tokens),
                     accuracy(classifier, labeled_tokens)))
             print
                    
-        # Make sure to use the un-memoized features for the classifier
-        # we return.
-        return ConditionalExponentialClassifier(filtered_fdlist, labels,
+        # Don't use memoized features.
+        return ConditionalExponentialClassifier(self._fdlist, labels,
                                                 classifier.weights())
 
     def __repr__(self):
@@ -902,8 +927,10 @@ def simple_test(trainer_class):
     """
     labels = "dans en a au pendant".split()
     toks = []
-    for tag in "dans en en a a a a au au au".split():
-        toks.append(Token(LabeledText('to', tag)))
+    i = 0
+    for tag in "dans en en a a a a a au au".split():
+        toks.append(Token(LabeledText('to', tag), i))
+        i += 1
 
     func1 = lambda w:(w.label() in ('dans', 'en'))
     fdlist = LabeledTextFunctionFDList(func1, (1,))
@@ -912,6 +939,7 @@ def simple_test(trainer_class):
 
     classifier = trainer.train(toks, labels=labels, iter=15)
     dist = classifier.distribution_dictionary(Token('to'))
+    print dist
     error = (abs(3.0/20 - dist['dans']) +
               abs(3.0/20 - dist['en']) +
               abs(7.0/30 - dist['a']) +
@@ -947,6 +975,11 @@ def demo(labeled_tokens, trainer_class,
     n_lens = (n_features - len(fdlist))/len(labels)
     fdlist += TextFunctionFDList(lambda w:len(w), range(n_lens), labels)
 
+    # Only use the features that are attested.
+    fdselector = AttestedFeatureSelector(labeled_tokens,
+                                         min_count=2)
+    fdlist = fdselector.select(fdlist)
+
     trainer = trainer_class(fdlist)
     if debug:
         print _timestamp(t), 'Training', trainer
@@ -956,12 +989,14 @@ def demo(labeled_tokens, trainer_class,
 
     # If it's GIS, specify C.
     if trainer_class == GISMaxentClassifierTrainer:
-        classifier = trainer.train(labeled_tokens, iter=20,
+        classifier = trainer.train(labeled_tokens, iter=5,
                                    debug=debug, C=5)
     else:
-        classifier = trainer.train(labeled_tokens, iter=20,
+        classifier = trainer.train(labeled_tokens, iter=5,
                                    debug=debug)
     if debug: print _timestamp(t), '  done training'
+
+    return
 
     # A few test words...
     toks = WSTokenizer().tokenize("jury the reports aweerdr "+
@@ -996,7 +1031,7 @@ def get_toks(debug=0):
     return labeled_tokens
 
 def main():
-    toks = get_toks(1)[:200]
+    toks = get_toks(1)[:100]
     
     # Do some simple tests.
     if simple_test(GISMaxentClassifierTrainer):
