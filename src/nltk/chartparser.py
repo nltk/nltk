@@ -330,8 +330,11 @@ class SteppingChartParser(ChartParser):
     def TD_step(self, edge):
         return self._step(edge, self.TD_edge, (edge, self.TD_edge))
 
-    def BU_init_step(self, edge):
+    def BU_init_edge_step(self, edge):
         return self._step(edge, self.BU_init_edge, (edge, self.BU_init_edge))
+
+    def BU_init_step(self):
+        return self._step(None, self.BU_init, self.BU_init)
 
     def TD_init_step(self):
         return self._step(None, self.TD_init, self.TD_init)
