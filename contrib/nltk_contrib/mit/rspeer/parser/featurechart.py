@@ -37,7 +37,10 @@ class FeatureTreeEdge(TreeEdge):
 			str += ' %r' % (self._rhs[i],)
 		if len(self._rhs) == self._dot: str += ' *'
 		return str
-	
+	def __cmp__(self, other):
+		if not isinstance(other, FeatureTreeEdge): return -1
+		return cmp((self._span, self.lhs(), self._rhs, self._dot),
+				   (other._span, other.lhs(), other._rhs, other._dot))
 
 class FeatureFundamentalRule(FundamentalRule):
 	NUM_EDGES=2
@@ -50,11 +53,7 @@ class FeatureFundamentalRule(FundamentalRule):
 				isinstance(right_edge, FeatureTreeEdge)
 			   ):
 			return
-		try:
-			bindings = left_edge.vars()
-		except:
-			print left_edge
-			raise
+		bindings = left_edge.vars()
 		unify = left_edge.next().unify(right_edge.lhs(), bindings)
 		if unify is None: return
 
@@ -148,6 +147,10 @@ class FeatureEarleyChartParser(EarleyChartParser):
 		"""
 		self._grammar = grammar
 		self._lexicon = lexicon
+		## Build a case-insensitive lexicon.
+		#self._lexicon = {}
+		#for (name, value) in lexicon.items():
+		#	self._lexicon[name.upper()] = value
 		self._trace = trace
 		AbstractParser.__init__(self, **property_names)
 
@@ -162,7 +165,7 @@ class FeatureEarleyChartParser(EarleyChartParser):
 		if self._trace > 0: print ' '*9, chart.pp_leaves(w)
 
 		# Initialize the chart with a special "starter" edge.
-		root = SyntaxCategory(pos='[INIT]')
+		root = GrammarCategory(pos='[INIT]')
 		edge = FeatureTreeEdge((0,0), root, (grammar.start(),), 0,
 		FeatureBindings())
 		chart.insert(edge, ())
@@ -211,19 +214,19 @@ class FeatureEarleyChartParser(EarleyChartParser):
 def demo():
 	import sys, time
 
-	S = SyntaxCategory.parse('S')
-	VP = SyntaxCategory.parse('VP')
-	NP = SyntaxCategory.parse('NP')
-	PP = SyntaxCategory.parse('PP')
-	V = SyntaxCategory.parse('V')
-	N = SyntaxCategory.parse('N')
-	P = SyntaxCategory.parse('P')
-	Name = SyntaxCategory.parse('Name')
-	Det = SyntaxCategory.parse('Det')
-	DetSg = SyntaxCategory.parse('Det[-pl]')
-	DetPl = SyntaxCategory.parse('Det[+pl]')
-	NSg = SyntaxCategory.parse('N[-pl]')
-	NPl = SyntaxCategory.parse('N[+pl]')
+	S = GrammarCategory.parse('S')
+	VP = GrammarCategory.parse('VP')
+	NP = GrammarCategory.parse('NP')
+	PP = GrammarCategory.parse('PP')
+	V = GrammarCategory.parse('V')
+	N = GrammarCategory.parse('N')
+	P = GrammarCategory.parse('P')
+	Name = GrammarCategory.parse('Name')
+	Det = GrammarCategory.parse('Det')
+	DetSg = GrammarCategory.parse('Det[-pl]')
+	DetPl = GrammarCategory.parse('Det[+pl]')
+	NSg = GrammarCategory.parse('N[-pl]')
+	NPl = GrammarCategory.parse('N[+pl]')
 
 	# Define some grammatical productions.
 	grammatical_productions = [

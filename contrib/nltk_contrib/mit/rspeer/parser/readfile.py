@@ -6,7 +6,7 @@ class GrammarFile(object):
 		self.grammatical_productions = []
 		self.lexical_productions = []
 		self.kimmo = None
-		self.start = SyntaxCategory(pos='Start')
+		self.start = GrammarCategory(pos='Start')
 		self.leaf = 'TEXT'
 		
 	def grammar(self):
@@ -36,12 +36,12 @@ class GrammarFile(object):
 				directive = parts[0]
 				args = " ".join(parts[1:])
 				if directive == 'start':
-					self.start = SyntaxCategory.parse(args)
+					self.start = GrammarCategory.parse(args)
 				elif directive == 'include':
 					filename = args.strip('"')
 					self.apply_file(filename)
 			else:
-				rules = SyntaxCategory.parse_rules(line)
+				rules = GrammarCategory.parse_rules(line)
 				for rule in rules:
 					if len(rule.rhs()) == 1 and isinstance(rule.rhs()[0], str):
 						self.lexical_productions.append(rule)
