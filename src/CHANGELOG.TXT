@@ -16,8 +16,8 @@ Additions to the main nltk package:
   - Added a demo() function to every module defined by the toolkit.
     These demo functions can be imported and called; or they can be
     run by running the individual module as a script.
-  - Added a stemmer interface, and an implementation of the porter
-    stemmer.
+  - Added a stemmer interface, and an implementation of the Porter
+    Stemmer.
 
 Graphical Demonstration Improvements:
   - Added a colorized grammar editor (nltk.draw.cfg), that is used
@@ -49,11 +49,11 @@ Minor improvements:
   - Added logprob() methods, for reading probabilities in log space.
   - Added nltk.set.MutableSet, for encoding mutable sets.
   - TaggedTokenizer and ChunkedTaggedTokenizers now ignore untagged
-    words (rather than assignining them tags of None).
+    words (rather than assigning them tags of None).
   - Simplified the Location & Token constructors
   - Added "source" optional parameter to TokenizerI.tokenize; and
     "unit" optional parameter TokenizerI's constructor.
-  - Removed type consistancy checks from nltk.tree
+  - Removed type consistency checks from nltk.tree
 
 Testing & bug fixes, etc
   - Assorted bug fixes in nltk.cfg, nltk.probability, nltk.set,
@@ -84,7 +84,7 @@ Sat Jul  6 06:52:19 EDT 2002
 - Replaced chart edge class with an interface & two implementations:
   TokenEdge and ProductionEdge.  A TokenEdge records that a token
   occurs in the text; a ProductionEdge records that a tree has been
-  found to be (partially) consistant with the text.
+  found to be (partially) consistent with the text.
 - New regular expressions tutorial
 - Updated tagging tutorial, probability tutorial, and introduction
   tutorial with new material
@@ -170,7 +170,7 @@ Parsers:
       - nltk.parser.probabilistic defines ProbabilisticParserI, and two
         basic probabilistic parser implementations (ViterbiPCFGParser
         and BottomUpPCFGChartParser).
-  - ParserI interface redefined, in accordance with multivalue techincal
+  - ParserI interface redefined, in accordance with multivalue technical
     report.
   - Major reorganization of the chart parser classes:
     - Merged DottedRule and Edge into a single class (Edge)
@@ -216,7 +216,7 @@ Other:
 ##////////////////////////////////////////////////////////////////////////
 Thu Dec 13 13:07:54 EST 2001
 
-- Implemented a text classification packae.  This package includes
+- Implemented a text classification package.  This package includes
   data structures & interfaces for text classification, classifier
   training, feature-based text classification, feature selection; 
   a Naive Bayes classifier, and a maximum entropy classifier.
@@ -255,7 +255,7 @@ Sat Oct 14 06:00:00 EDT 2001
 - Removed nltk.draw_tree & nltk.draw_treetoken (they are obsolete)
 - Minor reference documentation fixes
 - Moved ChunkedTaggedTokenizer from tagger to chunkparser.py;
-  updated the implementaiton of ChunkedTaggedTokenizer to eliminate
+  updated the implementation of ChunkedTaggedTokenizer to eliminate
   a bug (index was incremented for [ and ])
 - Moved unchunk to chunkparser.py
 - Moved chunk scoring code to chunkparser.py.  Converted scoring
@@ -287,7 +287,7 @@ Sat Oct 14 06:00:00 EDT 2001
 
 - Added a copy of the IBM CPL in LICENSE.TXT
 - Major reorganization to the chart parser: 
-    - added a new StrategyClass, which enocdes a strategy
+    - added a new StrategyClass, which encodes a strategy
     - formalized the notions of chart rule & strategy in the
       comments/documentation.
     - Divided rules into "static" rules and "edge-triggered" (or
@@ -300,13 +300,13 @@ Sat Oct 14 06:00:00 EDT 2001
     - Added a length operator definition for Chart
     - cleaned up the edge class
 - Renamed ParserI.parseTypes to ParserI.parse_types (to be
-  consistant with our naming conventions)
+  consistent with our naming conventions)
 - Changed printed representations of frequency distributions to
   make it more likely that students won't confuse them with
   dictionaries.
-- Renamed Rule.dotted to Rule.drule (for consistancy with
+- Renamed Rule.dotted to Rule.drule (for consistency with
   ChartParser)
-- Impoved printed repr functions for Rule
+- Improved printed repr functions for Rule
 - Minor docstring/comment fixes
 - Added a template for a shift-reduce parser
 - Renamed TreeToken.location() to TreeToken.loc()
@@ -340,13 +340,13 @@ Sat Oct 14 06:00:00 EDT 2001
 - Changed parseTaggedType to convert tags to upper case.
 - Added xtokenize() methods to WSTokenizer and RETokenizer (and
   associated class _XTokenTuple, which is the actual return type of
-  the xtokenize methods).  This method is analagous to xrange() or
+  the xtokenize methods).  This method is analogous to xrange() or
   xreadlines() -- it only constructs tokens as they are requested.
   This can result in much more memory-efficient use of tokenized
   texts. 
 - Fixed minor bugs in Location.__str__ that was causing it to not print
   sources-of-sources 
-- Fixed bug in Token repre function, that used != instead of "is not"
+- Fixed bug in Token repr function, that used != instead of "is not"
   to compare to None.
 - Fixed minor bug in RETokenizer caused unwanted behavior if the
   regexp didn't match anything in the text at all.
