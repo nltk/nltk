@@ -56,7 +56,7 @@ search strategies.  Currently the following subclasses are defined:
 """
 
 from nltk.parser import ParserI
-from nltk.cfg import PCFG, PCFGProduction, Nonterminal
+from nltk.cfg import PCFG, PCFGProduction, Nonterminal, nonterminals
 from nltk.token import ProbabilisticToken, Location, Token
 from nltk.tree import ProbabilisticTreeToken
 from nltk.parser.chart import Chart, FRChart, TokenEdge, ProductionEdge
@@ -893,10 +893,28 @@ def demo():
     """
     import sys, time
     from nltk.tokenizer import WSTokenizer
-    
-    nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
-                                           for s in nonterminals.split()]
+
+    # Define some nonterminals
+    S, VP, NP, PP = nonterminals('S, VP, NP, PP')
+    V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
+
+    # Define a PCFG
+    grammar_productions1 = [
+        PCFGProduction(0.5, NP, Det, N), PCFGProduction(0.25, NP, NP, PP),
+        PCFGProduction(0.1, NP, 'John'), PCFGProduction(0.15, NP, 'I'), 
+        PCFGProduction(0.8, Det, 'the'), PCFGProduction(0.2, Det, 'my'),
+        PCFGProduction(0.5, N, 'dog'),   PCFGProduction(0.5, N, 'cookie'),
+
+        PCFGProduction(0.1, VP, VP, PP), PCFGProduction(0.7, VP, V, NP),
+        PCFGProduction(0.2, VP, V),
+        
+        PCFGProduction(0.35, V, 'ate'),  PCFGProduction(0.65, V, 'saw'),
+
+        PCFGProduction(1.0, S, NP, VP),  PCFGProduction(1.0, PP, P, NP),
+        PCFGProduction(0.61, P, 'with'), PCFGProduction(0.39, P, 'under')]
+    pcfg1 = PCFG(S, grammar_productions1)
+
+    # Define a second, more extensive, grammar.
     lexicon = [PCFGProduction(0.21, V, 'saw'),
                PCFGProduction(0.51, V, 'ate'),
                PCFGProduction(0.28, V, 'ran'),
@@ -913,7 +931,6 @@ def demo():
                PCFGProduction(0.31, Det, 'a'),
                PCFGProduction(0.28, Det, 'my'),
                ]
-
     grammar_productions2 = lexicon + [
         PCFGProduction(1.00, S, NP, VP),
         PCFGProduction(0.59, VP, V, NP),
@@ -924,32 +941,19 @@ def demo():
         PCFGProduction(0.31, NP, NP, PP),
         PCFGProduction(1.00, PP, P, NP),
                ]
+    pcfg2 = PCFG(S, grammar_productions2)
 
-    grammar_productions1 = [
-        PCFGProduction(0.5, NP, Det, N), PCFGProduction(0.25, NP, NP, PP),
-        PCFGProduction(0.1, NP, 'John'), PCFGProduction(0.15, NP, 'I'), 
-        PCFGProduction(0.8, Det, 'the'), PCFGProduction(0.2, Det, 'my'),
-        PCFGProduction(0.5, N, 'dog'),   PCFGProduction(0.5, N, 'cookie'),
-
-        PCFGProduction(0.1, VP, VP, PP), PCFGProduction(0.7, VP, V, NP),
-        PCFGProduction(0.2, VP, V),
-        
-        PCFGProduction(0.35, V, 'ate'),  PCFGProduction(0.65, V, 'saw'),
-
-        PCFGProduction(1.0, S, NP, VP),  PCFGProduction(1.0, PP, P, NP),
-        PCFGProduction(0.61, P, 'with'), PCFGProduction(0.39, P, 'under')]
-
-    # Default to (2)
-    demos = [('I saw John with my cookie', PCFG(S, grammar_productions1)),
+    # Define two demos.  Each demo has a sentence and a grammar.
+    demos = [('I saw John with my cookie', pcfg1),
              ('the boy saw Jack with Bob under the table with a telescope',
-              PCFG(S, grammar_productions2))]
+              pcfg2)]
 
+    # Ask the user which demo they want to use.
     print
     for i in range(len(demos)):
         print '%3s: %s' % (i+1, demos[i][0])
         print '     %r' % demos[i][1]
         print
-    
     print 'Which demo (%d-%d)? ' % (1, len(demos)),
     try:
         snum = int(sys.stdin.readline().strip())-1
@@ -957,36 +961,27 @@ def demo():
     except:
         print 'Bad sentence number'
         return
-    
+
+    # Tokenize the sentence.
     text = WSTokenizer().tokenize(s)
-    
+
+    # Ask the user how many parses to find.
+    print '\nNumber of parses to find (1+; default=all): ',
+    try:
+        input = sys.stdin.readline().strip()
+        if not input: max_parses = None
+        else: max_parses = max(1, int(input))
+    except:
+        print 'Bad number of parses'
+        return
+        
+    # Define a list of parsers.  We'll use all parsers.
     parsers = [ViterbiPCFGParser(pcfg), InsidePCFGParser(pcfg), 
                RandomPCFGParser(pcfg), UnsortedPCFGParser(pcfg),
                LongestPCFGParser(pcfg),
                BeamPCFGParser(len(text)+1, pcfg)]
 
-    print '\nNumber of parses to find (1+): ',
-    try:
-        max_parses = max(1, int(sys.stdin.readline().strip()))
-    except:
-        print 'Bad number of parses; finding all parses'
-        max_parses = None
-        
-#     # Default to (all parsers)
-#     print '\nChoose a parser:'
-#     for i in range(len(parsers)):
-#         print '%3d: %s' % (i+1, parsers[i].__class__.__name__)
-#     try:
-#         print '%3d: %s' % (len(parsers)+1, '(all parsers)')
-#         print '=> ',
-#         pnum = int(sys.stdin.readline().strip())-1
-#         if pnum != len(parsers):
-#             parsers = [parsers[pnum]]
-#     except:
-#         print 'Bad parser number'
-#         return
-
-    # Run the parser(s)
+    # Run the parsers on the tokenized sentence.
     times = []
     average_p = []
     num_parses = []
@@ -1007,22 +1002,24 @@ def demo():
     print
     print '       Parser      | Time (secs)   # Parses   Average P(parse)'
     print '-------------------+------------------------------------------'
-
     for i in range(len(parsers)):
         print '%18s |%11.4f%11d%19.14f' % (parsers[i].__class__.__name__,
                                          times[i],num_parses[i],average_p[i])
-
     parses = all_parses.keys()
     if parses: p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
     else: p = 0
     print '-------------------+------------------------------------------'
     print '%18s |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
 
+    # Ask the user if we should draw the parses.
     print
     print 'Draw parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
         import nltk.draw.tree
+        print '  please wait...'
         nltk.draw.tree.draw_trees(*parses)
+
+    # Ask the user if we should print the parses.
     print
     print 'Print parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
