@@ -1637,8 +1637,8 @@ def demo():
     # Tokenize a sample sentence.
     sent = Token(TEXT='I saw John with a dog with my cookie')
     print "Sentence:\n", sent
-    from nltk.tokenizer import WSTokenizer
-    WSTokenizer().tokenize(sent)
+    from nltk.tokenizer import WhitespaceTokenizer
+    WhitespaceTokenizer().tokenize(sent)
 
     # Ask the user which parser to test
     print '  1: Top-down chart parser'

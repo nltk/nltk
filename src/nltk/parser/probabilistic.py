@@ -874,7 +874,7 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk.tokenizer import WSTokenizer
+    from nltk.tokenizer import WhitespaceTokenizer
 
     # Define some nonterminals
     S, VP, NP, PP = nonterminals('S, VP, NP, PP')
@@ -946,7 +946,7 @@ def demo():
 
     # Tokenize the sentence.
     token = Token(TEXT=s)
-    WSTokenizer().tokenize(token, addlocs=True)
+    WhitespaceTokenizer().tokenize(token, addlocs=True)
 
     # Ask the user how many parses to find.
     print '\nNumber of parses to find (1+; default=all): ',

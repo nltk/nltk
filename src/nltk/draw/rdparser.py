@@ -863,7 +863,7 @@ class RecursiveDescentParserDemo:
 
     def set_sentence(self, sentence):
         self._token = Token(TEXT=sentence)
-        WSTokenizer().tokenize(self._token) #[XX] use tagged?
+        WhitespaceTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
 def demo():
@@ -898,7 +898,7 @@ def demo():
     grammar = CFG(S, productions)
 
     sent = Token(TEXT='the dog saw a man in the park')
-    WSTokenizer().tokenize(sent)
+    WhitespaceTokenizer().tokenize(sent)
 
     RecursiveDescentParserDemo(grammar, sent).mainloop()
 

@@ -162,7 +162,7 @@ RegexpChunkParser
 from nltk.parser import ParserI, AbstractParser
 from nltk.tree import TreeToken
 from nltk.tokenizer import TokenizerI, AbstractTokenizer
-from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WSTokenizer
+from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WhitespaceTokenizer
 from nltk.token import Token, CharSpanLocation
 from nltk.chktype import chktype
 from nltk.set import Set
