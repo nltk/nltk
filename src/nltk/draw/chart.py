@@ -143,8 +143,8 @@ class ChartView:
     
     _TOK_SPACING = 10
     _MARGIN = 10
-    _TREE_LEVEL_SIZE = 15
-    _CHART_LEVEL_SIZE = 45#40
+    _TREE_LEVEL_SIZE = 12
+    _CHART_LEVEL_SIZE = 40
     
     def __init__(self, chart, source=None, root=None, **kw):
         """
@@ -254,6 +254,12 @@ class ChartView:
     def scroll_down(self, *e):
         self._chart_canvas.yview('scroll', 1, 'units')
 
+    def page_up(self, *e):
+        self._chart_canvas.yview('scroll', -1, 'pages')
+
+    def page_down(self, *e):
+        self._chart_canvas.yview('scroll', 1, 'pages')
+
     def _grow(self):
         """
         Grow the window, if necessary
@@ -308,9 +314,10 @@ class ChartView:
             self._edgelevels = []
             self._edgeselection = None
             self.draw()
+            self._resize()
         else:
             edges = self._chart.edges()
-            edges.sort(lambda e1,e2:cmp(e2,e1))
+            edges.sort()
             for edge in edges:
                 if not self._edgetags.has_key(edge):
                     self._add_edge(edge)
@@ -791,7 +798,7 @@ class ChartView:
 
         # Add any new edges
         edges = self._chart.edges()
-        edges.sort(lambda e1,e2:cmp(e2,e1))
+        edges.sort()
         for edge in edges:
             self._add_edge(edge)
 
@@ -943,6 +950,8 @@ class ChartDemo:
     def _init_bindings(self):
         self._root.bind('<Up>', self._cv.scroll_up)
         self._root.bind('<Down>', self._cv.scroll_down)
+        self._root.bind('<Prior>', self._cv.page_up)
+        self._root.bind('<Next>', self._cv.page_down)
         self._root.bind('q', self.destroy)
         self._root.bind('x', self.destroy)
         self._root.bind('<F1>', self.help)
@@ -1203,20 +1212,23 @@ def test():
     
     grammar_rules1 = [
         CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
-        CFGProduction(NP, 'John'), CFGProduction(NP, 'I'), 
-        CFGProduction(Det, 'the'), CFGProduction(Det, 'my'),
-        CFGProduction(N, 'dog'),   CFGProduction(N, 'cookie'),
+        CFGProduction(NP, 'John'), #CFGProduction(NP, 'I'), 
+        CFGProduction(Det, 'the'), #CFGProduction(Det, 'my'),
+        #CFGProduction(N, 'dog'),
+        CFGProduction(N, 'cookie'),
+        CFGProduction(N, 'table'),
 
         CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
         CFGProduction(VP, V),
 
-        CFGProduction(V, 'ate'),  CFGProduction(V, 'saw'),
+        CFGProduction(V, 'ate'),  #CFGProduction(V, 'saw'),
 
         CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
-        CFGProduction(P, 'with'), CFGProduction(P, 'under')]
+        CFGProduction(P, 'on'), #CFGProduction(P, 'under')
+        ]
 
     grammar = CFG(S, grammar_rules1)
-    sent = 'I saw the dog with John with my cookie'
+    sent = 'John ate the cookie on the table'
     tok_sent = WSTokenizer().tokenize(sent)
 
     print 'grammar= ('
