@@ -52,6 +52,7 @@ import types, copy
 from sets import Set
 from nltk.chktype import chktype
 from nltk.util import FrozenDict
+from nltk import TaskI
 
 ######################################################################
 ## Token
@@ -680,7 +681,7 @@ class SafeToken(Token):
 ## Token Reader
 ######################################################################
 
-class TokenReaderI:
+class TokenReaderI(TaskI):
     # [XX] This docstring isn't as clear as I'd like:
     """
     An interface for parsing string representations of tokens.
@@ -691,13 +692,13 @@ class TokenReaderI:
     different representations.  I.e., different token readers will
     return tokens that define different properties.
     """
-    def read_token(s):
+    def read_token(s, source=None):
         """
         @return: The token encoded by the string C{s}.
         @rtype: L{Token}
         """
         raise NotImplementedError
-    def read_tokens(s):
+    def read_tokens(s, source=None):
         """
         @return: A list of the tokens encoded by the string C{s}.
         @rtype: C{list} of L{Token}
@@ -708,7 +709,8 @@ class TokenizerBasedTokenReader(TokenReaderI):
     def __init__(self, tokenizer):
         self._tokenizer = tokenizer
 
-    def read_token(self, s):
+    # [XX] Source is ignored!!
+    def read_token(self, s, source=None):
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
         tok = Token(**{TEXT: s})
@@ -716,8 +718,11 @@ class TokenizerBasedTokenReader(TokenReaderI):
         del tok[TEXT]
         return tok
                          
-    def read_tokens(self, s):
-        return [self.read_token(s)]
+    def read_tokens(self, s, source=None):
+        return [self.read_token(s, source)]
+
+    def property(self, property):
+        return self._tokenizer.property(property)
 
 class WhitespaceSeparatedTokenReader(TokenizerBasedTokenReader):
     """
@@ -730,6 +735,7 @@ class WhitespaceSeparatedTokenReader(TokenizerBasedTokenReader):
         [<tokens>, <separated>, <by>, <spaces>]
     """
     def __init__(self, **property_names):
+        from nltk.tokenizer import WhitespaceTokenizer
         tokenizer = WhitespaceTokenizer(**property_names)
         TokenizerBasedTokenReader.__init__(self, tokenizer)
         
@@ -743,6 +749,7 @@ class NewlineSeparatedTokenReader(TokenizerBasedTokenReader):
         [<tokens>, <separated>, <by>, <newlines>]
     """
     def __init__(self, **property_names):
+        from nltk.tokenizer import LineTokenizer
         tokenizer = LineTokenizer(**property_names)
         TokenizerBasedTokenReader.__init__(self, tokenizer)
         
