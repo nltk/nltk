@@ -1,5 +1,5 @@
 \documentclass{460}
-\num{2}\due{11am Monday 1 September 2003}
+\assignment{2}{Tagging \& Chunking}{11am Monday 1 September 2003}
 \usepackage{url}
 
 \begin{document}
@@ -7,6 +7,7 @@
 
 \section{Rule-Based Tagging}
 
+Please read the tagging tutorial.
 NLTK defines the \texttt{NN\_CD\_Tagger}, which is typically used as a
 ``fall-back'' tagger for unknown words.  It tags tokens as either
 numbers (``CD'') or nouns (``NN''), by checking whether their type
@@ -41,10 +42,11 @@ def p1():
     tokens = []
     for text in brown.items('fiction: romance'): # or some other group from Brown
         tokens += brown.tokenize(text)
+        # add some sentence-boundary tags?
     tagger = MyTagger()
     tagger.train(tokens[100:])
-    result = tagger.tag(untag(tokens[100:]))
-    print 'Accuracy', accuracy(tokens[100:], result)
+    result = tagger.tag(untag(tokens[:100]))
+    print 'Accuracy', accuracy(tokens[:100], result)
 \end{verbatim}
 
 Use inline documentation to describe your method and list its advantages
@@ -56,44 +58,41 @@ NLTK defines the \texttt{NthOrderTagger}, which uses a token's base
 type and the predicted tags of the previous $n$ tokens to help predict
 each new tag.  In other words, it uses the following context to
 predict the tag for token $t_i$:
-$\langle t_i.basetype, t_{i-1}.tag, \ldots, t_{i-n}.tag\rangle$
-
+$\langle t_i.basetype, t_{i-1}.tag, \ldots, t_{i-n}.tag\rangle$.
 Using this context, \texttt{NthOrderTagger} can tag texts with
 relatively high accuracy.  However, it is possible to define taggers
 that use many other contexts.  Some examples of alternative contexts
 which might yield good results are:
 $\langle t_i.basetype, t_{i-1}.basetype\rangle$,
 $\langle t_i.basetype, t_{i+1}.basetype\rangle$,
-$\langle t_i.basetype, t_{i-1}.basetype, t_{i-1}.tag\rangle$
+$\langle t_i.basetype, t_{i-1}.basetype, t_{i-1}.tag\rangle$,
 $\langle Set(t_{i-2}.basetype, \ldots, t_{i+2}.basetype)\rangle$.
 
 Choose one of these contexts, or come up with your own, and use it to
 write a probabilistic tagger named \texttt{MyPrTagger}, including
 \texttt{train()} and \texttt{tag()} methods.
-
-As before, Use \texttt{nltk.tagger.accuracy()} to report the
-performance of your new tagger.  Use inline documentation to describe
+Write a function \texttt{p2()} to run your tagger and
+report its performance.  Use inline documentation to describe
 your method and list its advantages and disadvantages.
 
 \section{Backoff Taggers}
 
-Try combining your tagger with other taggers, using
+Experiment with combining your tagger with other taggers, using
 \textit{BackoffTagger}.  Try to find a combination of taggers that
-maximizes your tagging accuracy.  As before, write a function
-\texttt{p3()} to report the accuracy, and use inline documentation to
-discuss your work.
+maximizes accuracy.  Write a function \texttt{p3()} to report
+accuracy, and use inline documentation to discuss your work.
 
 \section{Chunking}
 
-Please review the Chunking tutorial.
+Please review the chunking tutorial.
 Develop a noun phrase chunker for the chunking corpus
-\url{nltk/data/chunking} using the regular-expression
+(\url{nltk/data/chunking}) using the regular-expression
 chunk parser \texttt{REChunkParser}.  Use any
 combination of rules (\texttt{ChunkRule}, \texttt{ChinkRule},
 \texttt{UnChunkRule}, \texttt{MergeRule}, \texttt{SplitRule}, and
 \texttt{REChunkParserRule}).
-Define a function \texttt{p4()}, which reports the performance of
-your chunker on a substantial dataset (at least 100 sentences),
+Define a function \texttt{p4()}, which reports the precision,
+recall and F-measure for your chunker applied to 100 sentences,
 and use inline documentation to discuss your work.
 
 Load a sample of the CoNNL data using the following code:
@@ -134,17 +133,16 @@ chunkers in two ways.  First, you can use the \texttt{trace=1}
 optional argument of the \texttt{REChunkParser.parse()} method to
 show the chunks after each rule has been applied.  Second, you can use
 the \texttt{chunkscore.incorrect()} and \texttt{chunkscore.missed()}
-methods to report the false positive and false negative chunks
+methods to report any false positive and false negative chunks
 (see the chunking tutorial for more details).
 
 \section*{Submission}
 
-Submission will be in the form of a single Python program,
-submitted using the department's submit system
-(\texttt{submit 460 2 username.py}).
+Submission will be in the form of a single Python program and submit
+it using \texttt{submit 460 2 username.py}.
 Points will be awarded for well-structured and
-well-documented code.  Points will be deducted for late submissions
-(20\% per day or part thereof).  Assignments must be strictly original
-work.
+well-documented code, and insightful discussion.  Points will be
+deducted for late submissions (20\% per day or part thereof).
+Assignments must be strictly original work.
 
 \end{document}
