@@ -731,7 +731,7 @@ class Window:
 
         ### NEW STUFF ###
         self.altered = 0
-        self.c.bind('<Button-3>', self.set_point)
+        #self.c.bind('<Button-3>', self.set_point)
         
         
         ########################################################
