@@ -33,6 +33,6 @@ setup(
     
     #############################################
     ## Package List
-    packages = ['nltk', 'nltk.test', 'nltk.draw']
+    packages = ['nltk', 'nltk.test', 'nltk.draw', 'nltk.classifier']
     
     )
