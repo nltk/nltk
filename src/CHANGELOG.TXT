@@ -1,4 +1,16 @@
 ##////////////////////////////////////////////////////////////////////////
+##  Version 0.7.1
+##////////////////////////////////////////////////////////////////////////
+Sat Jun  8 21:10:35 EDT 2002
+
+- Fixed broken "view grammar," "view lexicon," and "reset" buttons on
+  the chart parser demo.
+- Added a "help" button for the chart parser demo
+- Fixed font sizes for chart parser demo, recursive descent parser
+  demo, and shift/reduce parser demo.
+- Fixed name change bug in stepping shift/reduce parser
+
+##////////////////////////////////////////////////////////////////////////
 ##  Version 0.7
 ##////////////////////////////////////////////////////////////////////////
 Fri Jun  7 10:57:40 EDT 2002
