@@ -70,16 +70,14 @@ Documentation
 
             - <name>.xml .... The tutorial document, written using the 
                               Docbook DTD.
-            - abstract.txt .. A one-paragraph plaintext description
-                              of the document.  This file is used when
-                              generating the description of the
-                              document on the webpage.
-            - status.txt .... A short (2-3 word) plaintext description 
-                              of the current status of the document
-                              (e.g., "early draft," "complete," or
-                              "not started").  This file is used when
-                              generating the description of the
-                              document on the webpage.
+            - <name>.info ... A file used to store meta-information
+                              about the tutorial documents.  It
+                              consists of keys/value pairs, separated
+                              by ":"s.  Values may span multiple
+                              lines.  Currently recognized keys are:
+                              name, abstract, status, deadline.  This
+                              file is used to construct the tutorial
+                              documentation webpage.
 
     Technical Reports
     ~~~~~~~~~~~~~~~~~
@@ -91,16 +89,14 @@ Documentation
 
             - <name>.tex .... The techical report, written using 
                               LaTeX.
-            - abstract.txt .. A one-paragraph plaintext description
-                              of the report.  This file is used when
-                              generating the description of the
-                              report on the webpage.
-            - status.txt .... A short (2-3 word) plaintext description 
-                              of the current status of the report
-                              (e.g., "early draft," "complete," or
-                              "not started").  This file is used when
-                              generating the description of the
-                              report on the webpage.
+            - <name>.info ... A file used to store meta-information
+                              about the technical reports.  It
+                              consists of keys/value pairs, separated
+                              by ":"s.  Values may span multiple
+                              lines.  Currently recognized keys are:
+                              name, abstract, status, deadline.  This
+                              file is used to construct the technical
+                              reports webpage.
 
     Reference Documentation
     ~~~~~~~~~~~~~~~~~~~~~~~
