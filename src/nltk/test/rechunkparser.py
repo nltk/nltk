@@ -13,12 +13,6 @@ from nltk.token import LineTokenizer
 
 import unittest
 
-TEXT = """
- [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
- [ The/DT cats/NNS ] ./.
- [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
-"""
-
 class ChunkStringTestCase(unittest.TestCase):
     """
     Unit test cases for C{nltk.rechunkparser.ChunkString}
@@ -29,7 +23,7 @@ class ChunkStringTestCase(unittest.TestCase):
         return TaggedTokenizer().tokenize(str)
 
     def _ctok(self, str):
-        return ChunkedTaggedTokenizer().tokenize(str)
+        return TreeToken('TEXT', *ChunkedTaggedTokenizer().tokenize(str))
 
     def testToChunkStruct(self):
         "nltk.rechunkparser.ChunkString.to_chunkstruct tests"
@@ -42,7 +36,8 @@ class ChunkStringTestCase(unittest.TestCase):
                  "1/A 2/B 3/C 4/D 5/E 6/F 7/G 8/H 9/I 0/J",
                  "this/is a/_test_"]]
         for tok in toks:
-            self.failUnlessEqual(tok, ChunkString(tok).to_chunkstruct())
+            self.failUnlessEqual(TreeToken('TEXT', *tok),
+                                 ChunkString(tok).to_chunkstruct())
 
     def testXform(self):
         "nltk.rechunkparser.ChunkString.xform tests"
@@ -167,13 +162,12 @@ class REChunkParserTestCase(unittest.TestCase):
         """
         chunkscore = ChunkScore()
         
-        sentences = LineTokenizer().xtokenize(text)
         ctt = ChunkedTaggedTokenizer()
-        for sentence in sentences:
-            correct = ctt.tokenize(sentence.type(), source=sentence.loc())
-            unchunked = unchunk(correct)
-            guess = chunkparser.parse(unchunked)
-            chunkscore.score(correct, guess)
+        for line in LineTokenizer().xtokenize(text):
+            sentence = TreeToken('TEXT', *ctt.tokenize(line.type(),
+                                                       source=line.loc()))
+            guess = chunkparser.parse(sentence.leaves())
+            chunkscore.score(sentence, guess)
         return chunkscore
 
     def testChunkRule(self):
