@@ -599,9 +599,9 @@ class SparseList:
         # combine the assignments & lengths.
         if (isinstance(iterable, SparseList) and
             iterable._default == self._default):
-            self._len += iterable._len
             for (index, val) in iterable._assignments.items():
                 self._assignments[index+self._len] = val
+            self._len += iterable._len
         else:
             # Otherwise, do it the hard way.
             for value in iterable:
