@@ -359,65 +359,63 @@ class ConllChunkedTokenizer(TokenizerI):
         ','/','
         ('NP': 'a'/'DT' 'merchant'/'NN' 'banking'/'NN' 'concern'/'NN')
         '.'/'.')@[0l:16l]
+
+    Obtain source data for this tokenizer using
+    C{nltk.corpus.chunking.tokenize()}.
     """
-    def __init__(self, chunktypes = ('NP', 'VP', 'PP')):
+
+    def __init__(self, chunk_types = ('NP', 'VP', 'PP')):
         """
         Create a new C{ConllChunkedTokenizer}.
-        """
-        self._chunktypes = chunktypes
         
-    def _check(self, chunktag):
-        return chunktag[2:4] in self._chunktypes
-
+        @type chunk_types: C{string}
+        @param chunk_types: A tuple listing the node types to be extracted
+            from the input.  Possible node types are
+            C{"NP"}, C{"VP"}, and C{"PP"}.
+        """
+        self._chunk_types = chunk_types
+        
     def tokenize(self, str, source=None):
         # grab lines
         lines = LineTokenizer().tokenize(str)
 
-        in_chunk = 0
-        chunktype = ''
-        children = []
-        subsequence = []
+        in_chunk = 0        # currently inside a chunk?
+        chunktype = ''      # inside which type (NP, VP, PP)?
+        chunks = []         # accumulated chunks
+        subsequence = []    # accumulated tokens inside next chunk
+
         for line in lines:
             (word, tag, chunktag) = line.type().split()
+
+            # if we're ignoring this type of chunk,
+            # flag it as outside (O) the chunks
+            if chunktag[2:4] not in self._chunk_types:
+                chunktag = 'O'
             token = Token(TaggedType(word, tag), line.loc())
 
             # finishing the subsequence because we've found something outside
             # a chunk or because we're beginning a new chunk
-            if in_chunk:
-                if chunktag[0] == 'O' or \
-                       (chunktag[0] == 'B' and self._check(chunktag)):
-                    children.append(TreeToken(chunktype, *subsequence))
-                    subsequence = []
-                    in_chunk = 0
+            if in_chunk and chunktag[0] in 'OB':
+                chunks.append(TreeToken(chunktype, *subsequence))
+                subsequence = []
+                in_chunk = 0
+                chunktype = ''
 
-            # starting or continuing a subsequence
-            if chunktag[0] in 'IB' and self._check(chunktag):
+            # beginning (B) or inside (I) subsequence
+            if chunktag[0] in 'IB':
                 chunktype = chunktag[2:4]
                 subsequence.append(token)
                 in_chunk = 1
 
             # continuing outside subsequence
             else:
-                children.append(token)
-                chunktype = ''
-                subsequence = []
-                in_chunk = 0
+                chunks.append(token)
 
         # sentence ended inside a chunk so add those tokens
         if subsequence:
-            children.append(TreeToken(chunktype, *subsequence))
+            chunks.append(TreeToken(chunktype, *subsequence))
 
-        return children
-
-# above is broken still
-# test code:
-# from nltk.corpus import chunking
-# from nltk.tree import *
-# from nltk.parser.chunk import *
-# paras = chunking.tokenize('test.txt')
-# cct = ConllChunkedTokenizer(['NP'])
-# t = Tree('S', *cct.tokenize(paras[0].type()))
-# t.draw()
+        return chunks
 
 class ChunkScore:
     """
