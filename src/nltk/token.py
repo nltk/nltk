@@ -302,7 +302,7 @@ class Token(dict):
     #/////////////////////////////////////////////////////////////////
 
     # [XX] registry of repr funcs
-    _repr_funcs = {}
+    _repr_registry = {}
     def register_repr(props, repr):
         """
         Register a string-representation for tokens.  Any tokens that
@@ -324,14 +324,14 @@ class Token(dict):
         """
         props = list(props)
         props.sort()
-        if repr is None: del Token._repr_funcs[tuple(props)]
-        else: Token._repr_funcs[tuple(props)] = repr
+        if repr is None: del Token._repr_registry[tuple(props)]
+        else: Token._repr_registry[tuple(props)] = repr
     register_repr = staticmethod(register_repr)
 
     def __repr__(self):
         props = self.keys()
         props.sort()
-        repr = self._repr_funcs.get(tuple(props), Token._default_repr)
+        repr = self._repr_registry.get(tuple(props), Token._default_repr)
         if isinstance(repr, str):
             return repr % self
         else:
@@ -379,12 +379,12 @@ class Token(dict):
 # Register some specialized string representations for common
 # sets of properties.
 register = Token.register_repr
-register(['text'],                     '<%(text)r>')
-register(['loc', 'text'],              '<%(text)r@%(loc)r>')
-register(['text', 'tag'],              '<%(text)r/%(tag)r>')
-register(['text', 'tag', 'loc'],       '<%(text)r/%(tag)r>@%(loc)r')
-register(['text', 'pos'],              '<%(text)r/%(pos)r>')
-register(['text', 'pos', 'loc'],       '<%(text)r/%(pos)r>@%(loc)r')
+register(['text'],                     '<%(text)s>')
+register(['loc', 'text'],              '<%(text)s>@%(loc)r')
+register(['text', 'tag'],              '<%(text)s/%(tag)s>')
+register(['text', 'tag', 'loc'],       '<%(text)s/%(tag)s>@%(loc)r')
+register(['text', 'pos'],              '<%(text)s/%(pos)s>')
+register(['text', 'pos', 'loc'],       '<%(text)r/%(pos)s>@%(loc)r')
 register(['subtokens'],                '<%(subtokens)r>')
 register(['text', 'subtokens'],        '<%(subtokens)r>')
 register(['text', 'subtokens', 'loc'], '<%(subtokens)r>')
