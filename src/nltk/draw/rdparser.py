@@ -428,7 +428,7 @@ class RecursiveDescentParserDemo:
             widget.move(leaf.bbox()[0] - widget.bbox()[0], 0)
             xmax = widget.bbox()[2] + 10
 
-        # Line up the text widgets taht are not matched against the tree.
+        # Line up the text widgets that are not matched against the tree.
         for i in range(len(leaves), len(self._text)):
             widget = self._textwidgets[i]
             widget['color'] = '#a0a0a0'
