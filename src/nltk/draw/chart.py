@@ -17,6 +17,7 @@ import math
 from nltk.chartparser import *
 from nltk.token import WSTokenizer
 from nltk.token import Token, Location
+from nltk.tree import TreeToken
 
 # Help text for ChartDemo
 CHART_DEMO_HELP_TEXT = """\
@@ -125,13 +126,9 @@ class ChartView:
         @type source: C{list} of C{Token}
         @param source: The list of Tokens that the chart spans.
         """
-        # Process keyword args.  Defaults?
-        draw_tree = 0
-        draw_source = 1
-        for (key, val) in kw.items():
-            if key == 'draw_tree': draw_tree = val
-            elif key == 'draw_source': draw_source = val
-            else: raise ValueError('Unknown keyword argument '+key)
+        # Process keyword args.
+        draw_tree = kw.get('draw_tree', 0)
+        draw_source = kw.get('draw_source', 1)
         
         self._chart = chart
         self._source = source
@@ -166,7 +163,7 @@ class ChartView:
             self._root = root
 
         # Create the chart canvas.
-        self._chart_canvas = self._sb_canvas(root)
+        self._chart_canvas = self._sb_canvas(self._root)
         self._chart_canvas['height'] = 400
         self._chart_canvas['closeenough'] = 15
 
@@ -182,7 +179,7 @@ class ChartView:
 
         # Create the tree canvas.
         if draw_tree:
-            self._tree_canvas = self._sb_canvas(root, 'n', 'x')
+            self._tree_canvas = self._sb_canvas(self._root, 'n', 'x')
             self._tree_canvas['height'] = 200
         else:
             self._tree_canvas = None
@@ -625,7 +622,7 @@ class ChartView:
         """
         Edit the given tree to include nodes for the right hand side
         of its rules.  For each unexpanded node (i.e., elt to the
-        right of the dot), att a new child whose token type is the
+        right of the dot), add a new child whose token type is the
         empty string.
         """
         tree = edge.tree()
@@ -653,6 +650,7 @@ class ChartView:
             self._tree_canvas.delete(tag)
         if not self._edgeselection: return
         if self._edgeselection.tree() is None: return
+        if not isinstance(self._edgeselection.tree(), TreeToken): return
         treetok = self._add_rhs(self._edgeselection)
         
         self._draw_treetok(treetok, 0)
@@ -680,10 +678,9 @@ class ChartView:
 
         # If we're unexpanded, return a negative x.
         if (len(treetok.type()) == 1 and
-            isinstance(treetok[0], Token) and
+            not isinstance(treetok[0], TreeToken) and
             treetok[0].type() == ''):
             c.itemconfig(tag, fill='#024')
-            print 'hiya', treetok, x
             return -x
 
         for child in treetok:
