@@ -1248,7 +1248,6 @@ class EarleyChartParser(ParserI):
 
     def parse_n(self, token):
         trees_prop = self._propnames.get('trees', 'trees')
-        trees_prop = self._propnames.get('trees', 'trees')
         chart = Chart(token, **self._propnames)
         grammar = self._grammar
 
@@ -1344,7 +1343,6 @@ class ChartParser(ParserI):
 
     def parse_n(self, token):
         trees_prop = self._propnames.get('trees', 'trees')
-        trees_prop = self._propnames.get('trees', 'trees')
         chart = Chart(token, **self._propnames)
         grammar = self._grammar
 
@@ -1396,12 +1394,81 @@ class SteppingChartParser(ChartParser):
     strategy used by the chart parser.  C{parses} returns the set of
     parses that has been found by the chart parser.
     """
-
-    def __init__(self, **propnames):
+    def __init__(self, grammar, strategy=None, trace=0, **propnames):
+        self._grammar = grammar
+        self._strategy = strategy or []
+        self._trace = trace
         self._propnames = propnames
+        self._chart = None
+        self._current_chartrule = None
+        self._edgeiter = None
 
-    def initialize(self, grammar, strategy):
-        pass
+    def initialize(self, token):
+        self._chart = Chart(token, **self._propnames)
+
+    def set_strategy(self, strategy):
+        if strategy != self._strategy:
+            self._strategy = strategy
+            self._edgeiter = None
+
+    def parses(self):
+        return self._chart.parses(self._grammar.start())
+
+    def chart(self):
+        return self._chart
+
+    def set_chart(self):
+        self._chart = chart
+
+    def current_chartrule(self):
+        return self._current_chartrule
+
+    def parse_n(self, token):
+        trees_prop = self._propnames.get('trees', 'trees')
+
+        # Initialize ourselves.
+        self.initialize(token)
+
+        # Step until no more edges are generated.
+        for e in self.step(token):
+            print self.current_chartrule()
+            if e is None: break
+            
+        # Output a list of complete parses.
+        token[trees_prop] = self.parses()
+    
+    def step(self, token):
+        chart = Chart(token, **self._propnames)
+
+        while 1:
+            # Keep track of what strategy & grammar we're using.
+            strategy = self._strategy
+            grammar = self._grammar
+            
+            for e in self._step():
+                yield e
+
+                # If the strategy or grammar was changed, then 
+                # start over.
+                if strategy != self._strategy: break
+                if grammar != self._grammar: break
+            else:
+                yield None # No more edges.
+
+    def _step(self):
+        chart = self._chart
+        grammar = self._grammar
+        
+        edges_added = 1
+        while edges_added > 0:
+            edges_added = 0
+            for rule in self._strategy:
+                self._current_chartrule = rule
+                for e in rule.apply_everywhere(chart, grammar):
+                    edges_added += 1
+                    yield e
+
+        
 
 ########################################################################
 ##  Demo Code
@@ -1444,15 +1511,23 @@ def demo():
     tok = Token(text='John saw the dog with a cookie with a dog')
     #tok = Token(text='John saw')
     WSTokenizer().tokenize(tok)
+
     #parser = EarleyChartParser(grammar1, S, lexicon, leaf='text', trace=1)
     #parser.parse_n(tok)
     #for tree in tok['trees']: print tree
-    parser = ChartParser(grammar2, BU_STRATEGY, leaf='text', trace=2)
-    parser.parse_n(tok)
-    for tree in tok['trees']: print tree
+
+    #parser = ChartParser(grammar2, BU_STRATEGY, leaf='text', trace=2)
+    #parser.parse_n(tok)
+    #for tree in tok['trees']: print tree
+
     #parser = ChartParser(grammar2, TD_STRATEGY, leaf='text')
     #parser.parse_n(tok)
     #for tree in tok['trees']: print tree
+
+    parser = SteppingChartParser(grammar2, BU_STRATEGY, leaf='text')
+    parser.parse_n(tok)
+    for tree in tok['trees']: print tree
+    
 
 import profile
 #profile.run('demo()')
