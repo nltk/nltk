@@ -723,8 +723,9 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
         queue.sort(lambda e1,e2:cmp(e1.tree().p(), e2.tree().p()))
         if len(queue) > self._beam_size:
             split = len(queue)-self._beam_size
-            for edge in queue[:split]:
-                print '  %-60s [DISCARDED]' % chart.pp_edge(edge,2)
+            if self._trace > 2:
+                for edge in queue[:split]:
+                    print '  %-60s [DISCARDED]' % chart.pp_edge(edge,2)
             queue[:] = queue[split:]
 
 ##//////////////////////////////////////////////////////
@@ -732,6 +733,8 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
 ##//////////////////////////////////////////////////////
 
 if __name__ == '__main__':
+    import sys
+    
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -752,7 +755,7 @@ if __name__ == '__main__':
                PCFG_Rule(0.28, Det, 'my'),
                ]
 
-    grammar = [
+    grammar_rules2 = lexicon + [
         PCFG_Rule(1.00, S, NP, VP),
         PCFG_Rule(0.59, VP, V, NP),
         PCFG_Rule(0.40, VP, V),
@@ -763,57 +766,7 @@ if __name__ == '__main__':
         PCFG_Rule(1.00, PP, P, NP),
                ]
 
-    lexicalized_grammar = (
-        # S
-        [PCFG_Rule(1, Nonterminal('S'), Nonterminal(('S',v)))
-         for v in 'saw ate ran'.split()] +
-        [PCFG_Rule(1, Nonterminal(('S', v)),
-                   Nonterminal('NP'), Nonterminal(('VP', v)))
-         for v in 'saw ate ran'.split()] +
-
-        # VP
-        [PCFG_Rule(0.59, Nonterminal(('VP', v)),
-                   Nonterminal(('V', v)), Nonterminal('NP'))
-         for v in 'saw ate ran'.split()] +
-        [PCFG_Rule(0.4, Nonterminal(('VP', v)),
-                   Nonterminal(('V', v)))
-         for v in 'saw ate ran'.split()] +
-        [PCFG_Rule(0.01, Nonterminal(('VP', v)),
-                   Nonterminal(('V', v)), Nonterminal('PP'))
-         for v in 'saw ate ran'.split()] +
-
-        # NP
-        [PCFG_Rule(1, Nonterminal('NP'), Nonterminal(('NP',n)))
-         for n in 'man table boy telescope hill Jack Bob'.split()] +
-        [PCFG_Rule(0.4, Nonterminal(('NP', n)),
-                   Nonterminal('Det'), Nonterminal(('N',n)))
-         for n in 'boy man table telescope hill'.split()] +
-        [PCFG_Rule(0.3, Nonterminal(('NP', n)),
-                   Nonterminal(('Name',n)))
-         for n in 'Jack Bob'.split()] +
-        [PCFG_Rule(0.3, Nonterminal(('NP', n)),
-                   Nonterminal(('NP',n)), Nonterminal('PP'))
-         for n in 'man table boy telescope hill Jack Bob'.split()] +
-        
-        # PP
-        [PCFG_Rule(1, Nonterminal('PP'), Nonterminal(('PP',p)))
-         for p in 'with under'.split()] +
-        [PCFG_Rule(1.0, Nonterminal(('PP', p)),
-                   Nonterminal(('P',p)), Nonterminal('NP'))
-         for p in 'with under'.split()] +
-
-        # Det
-        [PCFG_Rule(1, Nonterminal('Det'), Nonterminal(('Det',d)))
-         for d in 'the a'.split()] + 
-
-        # Lexicon
-        [PCFG_Rule(r.p(),
-                   Nonterminal((r.lhs().symbol(), r.rhs()[0])),
-                   r.rhs()[0])
-         for r in lexicon]
-        )
-
-    grammar2 = [
+    grammar_rules1 = [
         PCFG_Rule(0.5, NP, Det, N), PCFG_Rule(0.25, NP, NP, PP),
         PCFG_Rule(0.1, NP, 'John'), PCFG_Rule(0.15, NP, 'I'), 
         PCFG_Rule(0.8, Det, 'the'), PCFG_Rule(0.2, Det, 'my'),
@@ -827,67 +780,35 @@ if __name__ == '__main__':
         PCFG_Rule(1.0, S, NP, VP),  PCFG_Rule(1.0, PP, P, NP),
         PCFG_Rule(0.61, P, 'with'), PCFG_Rule(0.39, P, 'under')]
 
-    #pcfg = PCFG(S, grammar+lexicon)
-    pcfg = PCFG(S, grammar2)
-    #pcfg = PCFG(S, lexicalized_grammar)
+    print 'Grammar 1 or 2? ',
+    if sys.stdin.readline().strip() == '1':
+        pcfg = PCFG(S, grammar_rules1)
+        s = 'I saw John with my cookie'
+        #s = 'the boy saw Jack'
+        #s = 'the dog ate my cookie'
+    else:
+        pcfg = PCFG(S, grammar_rules2)
+        s = 'the boy saw Jack with Bob under the table with a telescope'
+        #s = 'Jack saw the boy with a telescope'
     
     from nltk.token import WSTokenizer
-    #s = 'the boy saw Jack with Bob under the table with a telescope'
-    #s = 'Jack saw the boy with a telescope'
-    #s = 'the boy saw Jack'
-    s = 'I saw John with my cookie'
-    #s = 'the dog ate my cookie'
     text = WSTokenizer().tokenize(s)
     
-    parser1 = InsidePCFGParser(pcfg)
-    parser2 = ViterbiPCFGParser(pcfg)
-    parser3 = RandomPCFGParser(pcfg)
-    parser4 = LongestPCFGParser(pcfg)
-    parser5 = BeamPCFGParser(7, pcfg)
+    parsers = [ViterbiPCFGParser(pcfg), InsidePCFGParser(pcfg), 
+               RandomPCFGParser(pcfg), LongestPCFGParser(pcfg),
+               BeamPCFGParser(7, pcfg)]
 
-    N = 2
-    if 1:
-        print '\nRandom PCFG Parser'
-        parser3.trace(1)
-        parses = parser3.parse_n(text, N)
+    print '\nChoose a parser:'
+    for i in range(len(parsers)):
+        print (i+1), parsers[i]
+    try:
+        print '>> ',
+        parser = parsers[int(sys.stdin.readline().strip())-1]
+    except:
+        parser = parsers[0]
+
+    print '\ns: %s\nparser: %s\ngrammar: %s' % (s,parser,pcfg)
+    parser.trace(3)
+    parses = parser.parse_n(text, 2)
+    if parses:
         print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
-
-        print '\nLongest PCFG Parser'
-        parser4.trace(1)
-        parses = parser4.parse_n(text, N)
-        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
-
-        print '\nInside PCFG Parser'
-        parser1.trace(5)
-        parses = parser1.parse_n(text, N)
-        print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
-        
-        print '\nBeam PCFG Parser'
-        parser5.trace(1)
-        parses = parser5.parse_n(text, N)
-        if parses:
-            print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
-
-    if 0:
-        print '\nViterbi PCFG Parser'
-        parser2.trace(3)
-        print parser2.parse(text)
-        print parser2
-
-    if 0:
-        import time
-        N = 10
-        t = time.time()
-        print 'Timing for inside parser'
-        parser1.trace(0)
-        for i in range(N): parser1.parse_n(text, 1)
-        print 'Parse  1:', (time.time()-t)/N
-        t = time.time()
-        for i in range(N): parser1.parse_n(text, 4)
-        print 'Parse  4:', (time.time()-t)/N
-        t = time.time()
-        for i in range(N): ps=parser1.parse_n(text)
-        print 'Parse %2d:' % len(ps), (time.time()-t)/N
-    
-    
-
