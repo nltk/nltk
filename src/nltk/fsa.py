@@ -50,6 +50,9 @@ class FSA:
     def finals(self):
         return self._finals.elements()
 
+    def states(self):
+        return range(self._num+1)
+
     def add_final(self, state):
         self._finals.insert(state)
 
@@ -86,40 +89,45 @@ class FSA:
 
     def next(self, state, label):
         if self._table.has_key((state, label)):
-            return self._table[(state, label)]
+            return self._table[(state, label)].elements()
         else:
             return []
 
     def move(self, states, label):
-        next = []
+        moves = []
         for state in states:
-            next.extend(self.next(state, label))
-        return next
+            moves.extend(self.next(state, label))
+        return moves
 
     def epsilon_transitions(self):
         return [(s1,label,s2)
                 for (s1, label, s2) in self.transitions()
                 if label == epsilon]
 
+    # delete nodes and transitions are not on a path to a final state
+    def prune(self):
+        pass
+
     # From ASU page 119
     def epsilon_closure(self, states):
         stack = states
-        closure = states
+        closure = states[:]
         while stack:
             s1 = stack.pop()
             for s2 in self.next(s1, epsilon):
                 if s2 not in closure:
                     closure.append(s2)
                     stack.append(s2)
-        return closure
+        return tuple(closure)
 
     # return the corresponding DFA using subset construction (ASU p118)
     def dfa(self):
         dfa = FSA(self.sigma())
-        dfa_initial = dfa.new_state()
+        dfa_initial = dfa.start()
         nfa_initial = self.epsilon_closure([self.start()])
         map = {}
         map[dfa_initial] = nfa_initial
+        map[nfa_initial] = dfa_initial
         if nfa_initial in self.finals():
             dfa.add_final(dfa_initial)
         unmarked = [dfa_initial]
@@ -129,11 +137,15 @@ class FSA:
             marked.append(dfa_state)
             for label in self.sigma():
                 nfa_next = self.epsilon_closure(self.move(map[dfa_state], label))
-                if nfa_next not in map.keys():
+                if map.has_key(nfa_next):
+                    dfa_next = map[nfa_next]
+                else:
                     dfa_next = dfa.new_state()
                     map[dfa_next] = nfa_next
+                    map[nfa_next] = dfa_next
                     if self.finals_intersect(nfa_next):
                         dfa.add_final(dfa_next)
+                    unmarked.append(dfa_next)
                 dfa.insert_transition(dfa_state, label, dfa_next)
         return dfa
         
@@ -251,15 +263,15 @@ def re2nfa_star(fsa, node, tree):
     fsa.insert_transition(node2, epsilon, node3)
     return node3
 
-
 def demo():
-    re = 'a(b*)c'
+    re = 'a'
     print 'Regular Expression:', re
-    fsa = FSA("abc")
+    fsa = FSA("ab")
     re2nfa(fsa, re)
     fsa.pp()
     dfa = fsa.dfa()
     dfa.pp()
+    dfa.prune()
 #    fsa.generate(10)
 
 if __name__ == '__main__': demo()
