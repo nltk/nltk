@@ -76,7 +76,7 @@ from nltk.classifier import *
 from nltk.classifier.feature import *
 from nltk.classifier.featureselection import *
 from nltk.chktype import chktype as _chktype
-from nltk.token import Token
+from nltk.token import Token, Location
 from nltk.tokenizer import WSTokenizer
 from nltk.chktype import chktype as _chktype
 import time, types
@@ -1072,7 +1072,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         
 
 ##//////////////////////////////////////////////////////
-##  Test code
+##  Demonstration
 ##//////////////////////////////////////////////////////
 
 def simple_test(trainer_class):
@@ -1087,7 +1087,7 @@ def simple_test(trainer_class):
     toks = []
     i = 0
     for tag in "dans en en a a a a a au au".split():
-        toks.append(Token(LabeledText('to', tag), i))
+        toks.append(Token(LabeledText('to', tag), Location(i)))
         i += 1
 
     func1 = lambda w:(w.label() in ('dans', 'en'))
@@ -1097,7 +1097,9 @@ def simple_test(trainer_class):
 
     classifier = trainer.train(toks, labels=labels, iter=15)
     dist = classifier.distribution_dictionary(Token('to'))
-    print dist
+    print 'Simple test:'
+    for label in labels:
+        print '  P(%s) = %8.6f' % (label, dist[label])
     error = (abs(3.0/20 - dist['dans']) +
               abs(3.0/20 - dist['en']) +
               abs(7.0/30 - dist['a']) +
@@ -1112,16 +1114,28 @@ def simple_test(trainer_class):
         print 'simple_test passed for', trainer
         return 1
 
-def demo(labeled_tokens, trainer_class,
-         n_features=10000, n_words=7, debug=5):
-    assert _chktype(1, labeled_tokens, [Token], (Token,))
-    assert _chktype(2, trainer_class, types.ClassType)
-    assert _chktype(3, n_features, types.IntType)
-    assert _chktype(4, n_words, types.IntType)
-    assert _chktype(5, debug, types.IntType)
+def demonstrate_trainer(trainer_class, n_features=10000, n_words=7, debug=5):
+    """
+    Demonstrate the use of the given classifier trainer
+    (C{IISMaxentClassifierTrainer} or C{GISMaxentClassifierTrainer}).
+    """
+    assert _chktype(1, trainer_class, types.ClassType)
+    assert _chktype(2, n_features, types.IntType)
+    assert _chktype(3, n_words, types.IntType)
+    assert _chktype(4, debug, types.IntType)
     t = time.time()
     def _timestamp(t):
         return '%8.2fs ' % (time.time()-t)
+
+    # Read in some POS-tagged tokens from the brown corpus.
+    from nltk.corpus import brown
+    ttoks = brown.tokenize(brown.items()[0])[:100]
+
+    # Convert the tagged tokens to labeled tokens.
+    labeled_tokens = [Token(LabeledText(tok.type().base().lower(),
+                                        tok.type().tag()),
+                            tok.loc())
+                      for tok in ttoks]
 
     if debug: print _timestamp(t), 'Getting a list of labels...'
     labelmap = {}
@@ -1159,8 +1173,6 @@ def demo(labeled_tokens, trainer_class,
                                    debug=debug)
     if debug: print _timestamp(t), '  done training'
 
-    return
-
     # A few test words...
     toks = WSTokenizer().tokenize("jury the reports aweerdr "+
                                   "atlanta's atlanta_s moowerp's")
@@ -1179,31 +1191,16 @@ def demo(labeled_tokens, trainer_class,
 
     return classifier
 
-def get_toks(debug=0):
-    assert _chktype(1, debug, types.IntType)
-    from nltk.tagger import TaggedTokenizer
-    file = '/cdrom/data/brown/ca01'
-    text = open(file).read()
-
-    if debug: print 'tokenizing %d chars' % len(text)
-    ttoks = TaggedTokenizer().tokenize(text)
-    labeled_tokens = [Token(LabeledText(tok.type().base().lower(),
-                                           tok.type().tag()),
-                               tok.loc())
-                         for tok in ttoks]
-    if debug: print '  done tokenizing'
-    return labeled_tokens
-
-def main():
-    toks = get_toks(1)[:100]
-    
-    # Do some simple tests.
+def demo():
+    """
+    A demonstration of the classifier trainers
+    C{IISMaxentClassifierTrainer} and C{GISMaxentClassifierTrainer}.
+    """
     if simple_test(GISMaxentClassifierTrainer):
-        demo(toks, GISMaxentClassifierTrainer)
+        demonstrate_trainer(GISMaxentClassifierTrainer)
         print
     if simple_test(IISMaxentClassifierTrainer):
-        demo(toks, IISMaxentClassifierTrainer)
+        demonstrate_trainer(IISMaxentClassifierTrainer)
         print
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__main__': demo()
