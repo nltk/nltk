@@ -23,7 +23,7 @@ tokenizers, see the reference documentation for L{TokenizerI}.
 
 @group Interfaces: TokenizerI
 @group Tokenizers: WSTokenizer, RETokenizer, CharTokenizer,
-    LineTokenizer, _XTokenTuple
+    LineTokenizer
 @sort: Location, Token, TokenizerI, WSTokenizer, RETokenizer, CharTokenizer,
     LineTokenizer, _XTokenTuple
 """
@@ -43,12 +43,18 @@ class TokenizerI:
     the string of text.  Particular C{Tokenizer}s may split the text
     at different points, or may produce Tokens with different types.
     """
-    def __init__(self):
+    def __init__(self, unit=None):
         """
-        Construct a new C{Tokenizer}.
+        Construct a new tokenizer.
+
+        @type unit: C{string}
+        @param unit: The unit that should be used for the locations of
+            tokens created by the tokenizer.  If no unit is specified,
+            then a default unit will be used.
         """
+        raise AssertionError, 'TokenizerI is an abstract interface'
     
-    def tokenize(self, str):
+    def tokenize(self, str, source=None):
         """
         Separate the given string of text into a list of C{Token}s.
         The list of C{Token}s returned by tokenizing will be properly
@@ -58,6 +64,9 @@ class TokenizerI:
         
         @param str: The string of text to tokenize.
         @type str: C{string}
+        @param source: The source of the string to tokenize.  This
+            will be used as the source for each token's location.
+        @type source: any
         @return: A list containing the C{Token}s
             that are contained in C{str}.
         @rtype: C{list} of C{Token}
@@ -145,18 +154,28 @@ class WSTokenizer(TokenizerI):
     C{string}.  Location indices start at zero, and have a default
     unit of C{'w'}.
     """
-    def __init__(self): pass
-    def tokenize(self, str, unit='w', source=None):
+    def __init__(self, unit='w'):
+        """
+        Construct a new tokenizer.
+
+        @type unit: C{string}
+        @param unit: The unit that should be used for the locations of
+            tokens created by the tokenizer.  If no unit is specified,
+            then the default unit C{'w'} will be used.
+        """
+        self._unit = 'w'
+        
+    def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
         words = str.split()
-        return [Token(words[i], Location(i, unit=unit, source=source))
+        return [Token(words[i], Location(i, unit=self._unit, source=source))
                 for i in range(len(words))]
 
-    def xtokenize(self, str, unit='w', source=None):
+    def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
-        return _XTokenTuple(str.split(), unit='w', source=source)
+        return _XTokenTuple(str.split(), unit=self._unit, source=source)
 
 # Do we really want this tokenizer to ignore whitespace characters?
 class CharTokenizer(TokenizerI):
@@ -165,13 +184,23 @@ class CharTokenizer(TokenizerI):
     Each character is encoded as a C{Token} whose type is a C{string}.
     Location indices start at zero, and have a default unit of C{'c'}.
     """
-    def __init__(self): pass
-    def tokenize(self, str, unit='c', source=None):
+    def __init__(self, unit='w'):
+        """
+        Construct a new tokenizer.
+
+        @type unit: C{string}
+        @param unit: The unit that should be used for the locations of
+            tokens created by the tokenizer.  If no unit is specified,
+            then the default unit C{'c'} will be used.
+        """
+        self._unit = 'c'
+        
+    def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
-        return [Token(str[i], Location(i, unit=unit, source=source))
+        return [Token(str[i], Location(i, unit=self._unit, source=source))
                 for i in range(len(str))
-                if str[i] not in ' \t\n\r\v']
+                if not str[i].isspace()]
 
 class LineTokenizer(TokenizerI):
     """
@@ -180,19 +209,29 @@ class LineTokenizer(TokenizerI):
     encoded as a C{Token} whose type is a C{string}.  Location indices
     start at zero, and have a default unit of C{'l'}.
     """
-    def __init__(self): pass
-    def tokenize(self, str, unit='l', source=None):
+    def __init__(self, unit='w'):
+        """
+        Construct a new tokenizer.
+
+        @type unit: C{string}
+        @param unit: The unit that should be used for the locations of
+            tokens created by the tokenizer.  If no unit is specified,
+            then the default unit C{'l'} will be used.
+        """
+        self._unit = 'l'
+        
+    def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
         lines = [s for s in str.split('\n') if s.strip() != '']
-        return [Token(lines[i], Location(i, unit=unit, source=source))
+        return [Token(lines[i], Location(i, unit=self._unit, source=source))
                 for i in range(len(lines))]
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
         lines = [s for s in str.split('\n') if s.strip() != '']
-        return _XTokenTuple(lines, source=source, unit='l') 
+        return _XTokenTuple(lines, self._unit, source)
 
 class RETokenizer(TokenizerI):
     """
@@ -209,7 +248,7 @@ class RETokenizer(TokenizerI):
     Each word is encoded as a C{Token} whose type is a C{string}.
     Location indices start at zero, and have a unit of C{'word'}.
     """
-    def __init__(self, regexp, negative=0):
+    def __init__(self, regexp, negative=0, unit='w'):
         """
         Create a new C{RETokenizer} from a given regular expression.
         
@@ -226,10 +265,15 @@ class RETokenizer(TokenizerI):
             separators (and not word types); so the list of tokens
             generated by tokenization includes all substrings that
             occur I{between} matches of the regular expression.
+        @type unit: C{string}
+        @param unit: The unit that should be used for the locations of
+            tokens created by the tokenizer.  If no unit is specified,
+            then the default unit C{'w'} will be used.
         """
         if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
         assert _chktype(1, regexp, types.StringType)
         self._negative = negative
+        self._unit = unit
         
         # Replace any grouping parenthases with non-grouping ones.  We
         # need to do this, because the list returned by re.sub will
@@ -241,7 +285,7 @@ class RETokenizer(TokenizerI):
         # us to access the material that was split on.
         self._regexp = re.compile('('+regexp+')', re.UNICODE)
         
-    def tokenize(self, str, unit='w', source=None):
+    def tokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
 
@@ -257,10 +301,10 @@ class RETokenizer(TokenizerI):
             words = [words[i] for i in range(len(words))
                      if i%2==1 and words[i] != '']
             
-        return [Token(words[i], Location(i, unit=unit, source=source))
+        return [Token(words[i], Location(i, unit=self._unit, source=source))
                 for i in range(len(words))]
 
-    def xtokenize(self, str, unit='w', source=None):
+    def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
         assert _chktype(1, str, types.StringType)
 
@@ -276,63 +320,56 @@ class RETokenizer(TokenizerI):
             words = [words[i] for i in range(len(words))
                      if i%2==1 and words[i] != '']
 
-        return _XTokenTuple(words, unit, source)
+        return _XTokenTuple(words, self._unit, source)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
 ##//////////////////////////////////////////////////////
+
+def _display(tokens):
+    """
+    A helper function for L{demo} that displays a list of tokens.
+    """
+    # Get the string representation:
+    str = '    '+`tokens`+' '
+    
+    # Word wrap the string at 70 characters:
+    str = re.sub(r"(.{,70})\s", r'\1\n     ', str).rstrip()
+
+    # Truncate the string at 3 lines:
+    str = re.sub(r'(.+\n.+\n.+)\s\S+\n[\s\S]+(?!$)', r'\1 ...]', str)
+
+    # Print the string
+    print str
 
 def demo():
     """
     A demonstration function, showing the output of several different
     tokenizers on the same string.
     """
-    # Set up the test data.
-    s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them. "
-    tokenizers = [
-        [r"WSTokenizer()                     # Simple word tokenizer"],
-        [r"RETokenizer(r'\w+')               # Only keep alphanumerics"],
-        [r"RETokenizer(r'\w+|[^a-zA-Z\s]+')  # Group non-alpha characters"],
-        [r"RETokenizer(r'\.\s+', negative=1) # Simple sentence tokenizer",
-         's'], # unit for tokenize()
-        [r"LineTokenizer()                   # Tokenize into lines"],
-        [r"CharTokenizer()                   # Tokenize into characters"],
-        ]
-                  
-    def wordwrap(tokens):
-        str = '['
-        index = 0
-        lines = 0
-        for tok in tokens:
-            tokrepr = `tok`
-            index += len(tokrepr)+2
-            if index >= 75:
-                str += '\n '
-                index = len(tokrepr)+3
-                lines += 1
-            if lines > 2:
-                str += '..., '
-                break
-            str += '%s, ' % tokrepr
-        str = str[:-2] + ']'
-        return str
-    
-    print '='*75
+    # Define the test string.
+    s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them."
     print 'Test string:'
-    print "'''%s'''" % s
-    for elt in tokenizers:
-        print '_'*75
-        descr = elt[0]
-        tokenizer = eval(descr.split('#')[0])
-        print 'tokenizer = %s' % descr
-        if len(elt) == 1:
-            print 'tokenizer.tokenize(s)'
-            print wordwrap(tokenizer.tokenize(s))
-        else:
-            print 'tokenizer.tokenize(s, unit="%s")' % elt[1]
-            print wordwrap(tokenizer.tokenize(s, unit=elt[1]))
+    print `s`
 
-    print '='*75
+    print 'Tokenize using whitespace:'
+    _display(WSTokenizer().tokenize(s))
+    
+    print 'Tokenize sequences of alphanumeric characters:'
+    _display(RETokenizer(r'\w+').tokenize(s))
+
+    print 'Tokenize sequences of letters and sequences of nonletters:'
+    _display(RETokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+').tokenize(s))
+
+    print 'A simple sentence tokenizer:'
+    _display(RETokenizer(r'\.(\s+|$)', negative=1, unit='s').tokenize(s))
+
+    print 'Tokenize by lines:'
+    _display(LineTokenizer().tokenize(s))
+
+    print 'Tokenize by (non-whitespace) characters:'
+    _display(CharTokenizer().tokenize(s))
+    return
     
 if __name__ == '__main__':
     demo()
