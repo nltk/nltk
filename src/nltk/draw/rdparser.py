@@ -537,7 +537,7 @@ class RecursiveDescentParserDemo:
         if self._animating_lock: return
         old_frontier = self._parser.frontier()
         rv = self._parser.expand()
-        if rv:
+        if rv is not None:
             self._lastoper1['text'] = 'Expand:'
             self._lastoper2['text'] = rv
             self._prodlist.selection_clear(0, 'end')
@@ -554,7 +554,7 @@ class RecursiveDescentParserDemo:
         if self._animating_lock: return
         old_frontier = self._parser.frontier()
         rv = self._parser.match()
-        if rv:
+        if rv is not None:
             self._lastoper1['text'] = 'Match:'
             self._lastoper2['text'] = rv
             self._animate_match(old_frontier[0])
@@ -569,10 +569,10 @@ class RecursiveDescentParserDemo:
         if self._parser.backtrack():
             elt = self._parser.tree()
             for i in self._parser.frontier()[0]:
-                elt = elt.get_child(i)
+                elt = elt[i]
             self._lastoper1['text'] = 'Backtrack'
             self._lastoper2['text'] = ''
-            if isinstance(elt, TreeToken):
+            if isinstance(elt, Tree):
                 self._animate_backtrack(self._parser.frontier()[0])
             else:
                 self._animate_match_backtrack(self._parser.frontier()[0])
@@ -682,7 +682,7 @@ class RecursiveDescentParserDemo:
 
         tree = self._parser.tree()
         for i in treeloc:
-            tree = tree.get_child(i)
+            tree = tree[i]
 
         widget = tree_to_treesegment(self._canvas, tree,
                                      node_font=self._boldfont,
@@ -871,31 +871,20 @@ def demo():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """    
-    from nltk.cfg import Nonterminal, CFGProduction, CFG
-    nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
-                                           for s in nonterminals.split()]
-    
-    productions = (
-        # Syntactic Rules
-        CFGProduction(S, NP, VP),
-        CFGProduction(NP, Det, N, PP),
-        CFGProduction(NP, Det, N),
-        CFGProduction(VP, V, NP, PP),
-        CFGProduction(VP, V, NP),
-        CFGProduction(VP, V),
-        CFGProduction(PP, P, NP),
-        # CFGProduction(PP), # Try an epsilon rule?
-
-        # Lexical Rules
-        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
-        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
-        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
-        CFGProduction(N, 'park'), CFGProduction(P, 'with'),
-        CFGProduction(N, 'dog'),  CFGProduction(N, 'telescope'),
-        )
-
-    grammar = CFG(S, productions)
+    from nltk.cfg import CFG
+    grammar = CFG.parse("""
+    # Grammatical productions.
+        S -> NP VP
+        NP -> Det N PP | Det N
+        VP -> V NP PP | V NP | V
+        PP -> P NP
+    # Lexical productions.
+        NP -> 'I'
+        Det -> 'the' | 'a'
+        N -> 'man' | 'park' | 'dog' | 'telescope'
+        V -> 'ate' | 'saw'
+        P -> 'in' | 'under' | 'with'
+    """)
 
     sent = Token(TEXT='the dog saw a man in the park')
     WhitespaceTokenizer().tokenize(sent)
