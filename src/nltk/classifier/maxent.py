@@ -14,20 +14,33 @@ This framework considers all of the probability distributions that are
 emperically consistant with the training data; and chooses the
 distribution with the highest entropy.  A probability distribution is
 X{emperically consistant} with a set of training data if its estimated
-frequency for each pair M{(c, f[i])} is equal to the pair's actual
-frequency in the data, where M{c} is a class and M{f[i]} is the M{i}th
-feature vector element.
+frequency with which a class and a feature vector value co-occur is
+equal to the actual frequency in the data.
 
-                 SUM[t|c[t]=c0] f[i][t]
-freq(c0, f[i]) = -----------------------
-                    SUM[t] f[i][t]
+for each pair M{(c, f[i])} is equal to the pair's actual
+frequency in the data, where M{c} is a class and M{f[i]} is a value
+for the M{i}th feature vector element.
+
+"""
+
+# This needs to be updated/fixed:!!
+"""
+                     SUM[t|t[CLASS]=c] t[FEATURE_VECTOR][i]
+actual freq(c, i) = ----------------------------------------
+                          SUM[t] t[FEATURE_VECTOR][i]
 
 
-                 SUM[t] SUM[c] P(c[t]=c0) f[i][t]
-prob(c0, f[i]) = ---------------------------------
-                 
-c[t]
-f[i][t]
+                  SUM[t] P(t[CLASS]=c) t[FEATURE_VECTOR][i]
+est freq(c, i) = -------------------------------------------
+
+
+                         P(t[c]=c0) t[f][i]
+prob(c0, f[i]) = SUM[t] ---------------------------
+                          SUM[c]
+
+- C{t}: A token
+- C{t[CLASS]}: Token C{t}'s class
+- C{t[FEATURE_VECTOR]}: Token C{t}'s feature vector
 
 
 the frequency of each (class, 
@@ -111,9 +124,9 @@ from nltk.chktype import chktype as _chktype
 from nltk import TaskI, PropertyIndirectionMixIn
 import time, types
 
-# Don't use from .. imports, because math and Numeric provide
+# Don't use from .. imports, because math and numarray provide
 # different definitions for useful functions (exp, log, etc.)
-import math, Numeric
+import math, numarray
 
 ##//////////////////////////////////////////////////////
 ##  Maxent Classifier
@@ -333,7 +346,7 @@ class GISFeatureEncoder(FeatureEncoderI, PropertyIndirectionMixIn):
 # [XX] requires: features must be encoded with a GISFeatureEncoder!
 class GISMaxentClassifierTrainer(ClassifierTrainerI):
     def _fcount_emperical(self, train_toks):
-        fcount = Numeric.zeros(self._weight_vector_len, 'd')
+        fcount = numarray.zeros(self._weight_vector_len, 'd')
 
         for tok in train_toks:
             feature_vector = tok['FEATURE_VECTOR']
@@ -345,7 +358,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         return fcount
 
     def _fcount_estimated(self, classifier, train_toks):
-        fcount = Numeric.zeros(self._weight_vector_len, 'd')
+        fcount = numarray.zeros(self._weight_vector_len, 'd')
 
         for tok in train_toks:
             dist = classifier.get_class_probs(tok)
@@ -410,14 +423,14 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         # An array that is 1 whenever fcount_emperical is zero.  In
         # other words, it is one for any feature that's not attested
         # in the training data.  This is used to avoid division by zero.
-        unattested = Numeric.zeros(len(fcount_emperical))
+        unattested = numarray.zeros(len(fcount_emperical))
         for i in range(len(fcount_emperical)):
             if fcount_emperical[i] == 0: unattested[i] = 1
 
         # Build the classifier.  Start with weight=1 for each feature,
         # except for the unattested features.  Start those out at
         # zero, since we know that's the correct value.
-        weights = Numeric.ones(len(fcount_emperical), 'd')
+        weights = numarray.ones(len(fcount_emperical), 'd')
         weights -= unattested
         classifier = ConditionalExponentialClassifier(classes, weights)
 
@@ -540,7 +553,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             emperical frequency for feature M{i}.
         @rtype: C{array} of C{float}
         """
-        fcount = Numeric.zeros(self._weight_vector_len, 'd')
+        fcount = numarray.zeros(self._weight_vector_len, 'd')
 
         for tok in train_toks:
             feature_vector = tok['FEATURE_VECTOR']
@@ -659,12 +672,12 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         NEWTON_CONVERGE = 1e-12
         MAX_NEWTON = 30
         
-        deltas = Numeric.ones(self._weight_vector_len, 'd')
+        deltas = numarray.ones(self._weight_vector_len, 'd')
 
         # Precompute the A matrix:
         # A[nf][id] = sum ( p(text) * p(label|text) * f(text,label) )
         # over all label,text s.t. num_features[label,text]=nf
-        A = Numeric.zeros((len(nfmap), self._weight_vector_len), 'd')
+        A = numarray.zeros((len(nfmap), self._weight_vector_len), 'd')
 
         for i, tok in enumerate(train_toks):
             dist = classifier.get_class_probs(tok)
@@ -689,11 +702,11 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         #   - sum2[i][nf] = sum p(text)p(label|text)f[i](label,text)
         #                       nf exp(delta[i]nf)
         for rangenum in range(MAX_NEWTON):
-            nf_delta = Numeric.outerproduct(nfarray, deltas)
-            exp_nf_delta = Numeric.exp(nf_delta)
+            nf_delta = numarray.outerproduct(nfarray, deltas)
+            exp_nf_delta = numarray.exp(nf_delta)
             nf_exp_nf_delta = nftranspose * exp_nf_delta
-            sum1 = Numeric.sum(exp_nf_delta * A) 
-            sum2 = Numeric.sum(nf_exp_nf_delta * A)
+            sum1 = numarray.sum(exp_nf_delta * A) 
+            sum2 = numarray.sum(nf_exp_nf_delta * A)
 
             # Avoid division by zero.
             sum2 += unattested
@@ -702,8 +715,8 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             deltas -= (ffreq_emperical - sum1) / -sum2
 
             # We can stop once we converge.
-            n_error = (Numeric.sum(abs((ffreq_emperical-sum1)))/
-                       Numeric.sum(abs(deltas)))
+            n_error = (numarray.sum(abs((ffreq_emperical-sum1)))/
+                       numarray.sum(abs(deltas)))
             if n_error < NEWTON_CONVERGE:
                 return deltas
 
@@ -809,20 +822,20 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         nfmap = self._nfmap(train_toks)
         nfs = nfmap.items()
         nfs.sort(lambda x,y:cmp(x[1],y[1]))
-        nfarray = Numeric.array([nf for (nf, i) in nfs], 'd')
-        nftranspose = Numeric.reshape(nfarray, (len(nfarray), 1))
+        nfarray = numarray.array([nf for (nf, i) in nfs], 'd')
+        nftranspose = numarray.reshape(nfarray, (len(nfarray), 1))
 
         # An array that is 1 whenever ffreq_emperical is zero.  In
         # other words, it is one for any feature that's not attested
         # in the data.  This is used to avoid division by zero.
-        unattested = Numeric.zeros(self._weight_vector_len, 'd')
+        unattested = numarray.zeros(self._weight_vector_len, 'd')
         for i in range(len(unattested)):
             if ffreq_emperical[i] == 0: unattested[i] = 1
 
         # Build the classifier.  Start with weight=1 for each feature,
         # except for the unattested features.  Start those out at
         # zero, since we know that's the correct value.
-        weights = Numeric.ones(self._weight_vector_len, 'd')
+        weights = numarray.ones(self._weight_vector_len, 'd')
         weights -= unattested
         classifier = ConditionalExponentialClassifier(classes, weights)
                 
@@ -846,7 +859,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 
             # Use the deltas to update our weights.
             weights = classifier.weights()
-            weights *= Numeric.exp(deltas)
+            weights *= numarray.exp(deltas)
             classifier.set_weights(weights)
                         
             # Check log-likelihood cutoffs.
@@ -950,4 +963,4 @@ def demo(items=30):
             s += '%5s=%.3f' % (val,prob)
         print s + ' ...'
     
-if __name__ == '__main__': demo(30)
+if __name__ == '__main__': demo(1)
