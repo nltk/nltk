@@ -11,7 +11,7 @@
 """
 The rule module defines the C{Rule} class to represent simple
 rewriting rules, and the C{DottedRule} class to represented "dotted"
-rules.
+rules used by chart parsers.
 """
 
 from token import *
@@ -181,7 +181,8 @@ class DottedRule(Rule):
         @return: a pretty-printed version of the C{DottedRule}.
         @rtype: C{string}
         """
-        return Rule.pp(self) + ' [' + `self._pos` + ']'
+        drhs = self._rhs[:self._pos] + ('*',) + self._rhs[self._pos:]
+        return self._lhs + ' -> ' + join(drhs)
 
     def __repr__(self):
         """
