@@ -63,21 +63,21 @@ first d dimensions. Normalisation ensures that vectors fall in the unit
 hypersphere.
 
 Usage example (see also demo())::
-    tokens = [Token(FEATURES=Numeric.array([3, 3])),
-              Token(FEATURES=Numeric.array([1, 2])),
-              Token(FEATURES=Numeric.array([4, 2])),
-              Token(FEATURES=Numeric.array([4, 0]))]
+    tokens = [Token(FEATURES=numarray.array([3, 3])),
+              Token(FEATURES=numarray.array([1, 2])),
+              Token(FEATURES=numarray.array([4, 2])),
+              Token(FEATURES=numarray.array([4, 0]))]
     
     # initialise the clusterer (will also assign the tokens to clusters)
     clusterer = KMeansClusterer(2, euclidean_distance)
     clusterer.cluster(tokens, True)
 
     # classify a new token
-    token = Token(FEATURES=Numeric.array([3, 3]))
+    token = Token(FEATURES=numarray.array([3, 3]))
     clusterer.classify(token)
     print token
 
-Note that the tokens must have FEATURE attributes with Numeric array-like
+Note that the tokens must have FEATURE attributes with numarray array-like
 objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for efficiency
 when required.
 """
@@ -85,11 +85,11 @@ when required.
 from nltk.chktype import chktype
 from nltk.probability import DictionaryProbDist
 from nltk.token import Token
-import copy, LinearAlgebra, Numeric, math, random, sys, types
+import copy, numarray, math, random, sys, types
 
 # Common functions
 
-_dot = Numeric.dot
+_dot = numarray.dot
 # _dot = nltk_contrib.unimelb.tacohn.sparsearray.dot
 
 #======================================================================
@@ -204,14 +204,14 @@ class VectorSpaceClusterer(ClustererI):
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
-            [u, d, vt] = LinearAlgebra.singular_value_decomposition(
-                            Numeric.transpose(Numeric.array(vectors)))
+            [u, d, vt] = linear_algebra.singular_value_decomposition(
+                            numarray.transpose(numarray.array(vectors)))
             S = d[:self._svd_dimensions] * \
-                Numeric.identity(self._svd_dimensions, Numeric.Float64)
+                numarray.identity(self._svd_dimensions, numarray.Float64)
             T = u[:,:self._svd_dimensions]
             Dt = vt[:self._svd_dimensions,:]
-            vectors = Numeric.transpose(Numeric.matrixmultiply(S, Dt))
-            self._Tt = Numeric.transpose(T)
+            vectors = numarray.transpose(numarray.matrixmultiply(S, Dt))
+            self._Tt = numarray.transpose(T)
             
         # call abstract method to cluster the vectors
         self.cluster_vectorspace(vectors, trace)
@@ -230,11 +230,11 @@ class VectorSpaceClusterer(ClustererI):
     def classify(self, token):
         assert chktype(1, token, Token)
         vector = token['FEATURES']
-        #assert chktype('features', vector, Numeric.array([]), SparseArray)
+        #assert chktype('features', vector, numarray.array([]), SparseArray)
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt != None:
-            vector = Numeric.matrixmultiply(self._Tt, vector)
+            vector = numarray.matrixmultiply(self._Tt, vector)
         cluster = self.classify_vectorspace(vector)
         token['CLUSTER'] = self.cluster_name(cluster)
 
@@ -247,18 +247,18 @@ class VectorSpaceClusterer(ClustererI):
     def likelihood(self, labelled_token):
         assert chktype(1, labelled_token, Token)
         vector = labelled_token['FEATURES']
-        #assert chktype('features', vector, Numeric.array([]), SparseArray)
+        #assert chktype('features', vector, numarray.array([]), SparseArray)
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt != None:
-            vector = Numeric.matrixmultiply(self._Tt, vector)
+            vector = numarray.matrixmultiply(self._Tt, vector)
         return self.likelihood_vectorspace(vector, labelled_token['CLUSTER'])
 
     def likelihood_vectorspace(self, vector, cluster):
         """
         Returns the likelihood of the vector belonging to the cluster.
         """
-        #assert chktype(1, vector, Numeric.array([]), SparseArray)
+        #assert chktype(1, vector, numarray.array([]), SparseArray)
         predicted = self.classify_vectorspace(vector)
         if cluster == predicted: return 1.0
         else:                    return 0.0
@@ -270,18 +270,18 @@ class VectorSpaceClusterer(ClustererI):
         """
         assert chktype(1, token, Token)
         vector = token['FEATURES']
-        #assert chktype('features', vector, Numeric.array([]), SparseArray)
+        #assert chktype('features', vector, numarray.array([]), SparseArray)
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt != None:
-            vector = Numeric.matrixmultiply(self._Tt, vector)
+            vector = numarray.matrixmultiply(self._Tt, vector)
         return vector
 
     def _normalise(self, vector):
         """
         Normalises the vector to unit length.
         """
-        #assert chktype(1, vector, Numeric.array([]), SparseArray)
+        #assert chktype(1, vector, numarray.array([]), SparseArray)
         return vector / math.sqrt(_dot(vector, vector))
 
 #======================================================================
@@ -327,7 +327,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         #assert chktype(2, distance, ...)
         assert chktype(3, repeats, int)
         assert chktype(4, conv_test, int, float)
-        #assert chktype(5, initial_means, [Numeric.array([])], [SparseArray])
+        #assert chktype(5, initial_means, [numarray.array([])], [SparseArray])
         assert chktype(6, normalise, bool)
         assert chktype(7, svd_dimensions, int, types.NoneType)
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
@@ -359,6 +359,20 @@ class KMeansClusterer(VectorSpaceClusterer):
             # effect the distance comparison)
             for means in meanss:
                 means.sort()
+
+# NOTE TO TREVOR:
+# Traceback (most recent call last):
+#   File "__init__.py", line 994, in ?
+#     demo()
+#   File "__init__.py", line 905, in demo
+#     clusterer.cluster(tokens, True)
+#   File "__init__.py", line 217, in cluster
+#     self.cluster_vectorspace(vectors, trace)
+#   File "__init__.py", line 361, in cluster_vectorspace
+#     means.sort()
+#   File "/usr/local/lib/python2.4/site-packages/numarray/generic.py", line 477, in __nonzero__
+#     raise RuntimeError("An array doesn't make sense as a truth value.  Use sometrue(a) or alltrue(a).")
+# RuntimeError: An array doesn't make sense as a truth value.  Use sometrue(a) or alltrue(a).
 
             # find the set of means that's minimally different from the others
             min_difference = min_means = None
@@ -627,8 +641,8 @@ class GroupAverageAgglomerativeClusterer(VectorSpaceClusterer):
 
     def cluster(self, tokens, assign_clusters=False, trace=False):
         # stores the merge order
-        self._dendogram = Dendogram([Numeric.array(tk['FEATURES'],
-        Numeric.Float64) for tk in tokens])
+        self._dendogram = Dendogram([numarray.array(tk['FEATURES'],
+        numarray.Float64) for tk in tokens])
             
         return VectorSpaceClusterer.cluster(self, tokens,
                                             assign_clusters, trace)
@@ -674,7 +688,7 @@ class GroupAverageAgglomerativeClusterer(VectorSpaceClusterer):
             if self._should_normalise:
                 centroid = self._normalise(cluster[0])
             else:
-                centroid = Numeric.array(cluster[0])
+                centroid = numarray.array(cluster[0])
             for vector in cluster[1:]:
                 if self._should_normalise:
                     centroid += self._normalise(vector)
@@ -734,11 +748,11 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
         convergence threshold and vector mangling parameters.
 
         @param  initial_means: the means of the gaussian cluster centers
-        @type   initial_means: [seq of] Numeric array or seq of SparseArray
+        @type   initial_means: [seq of] numarray array or seq of SparseArray
         @param  priors: the prior probability for each cluster
-        @type   priors: Numeric array or seq of float
+        @type   priors: numarray array or seq of float
         @param  covariance_matrices: the covariance matrix for each cluster
-        @type   covariance_matrices: [seq of] Numeric array 
+        @type   covariance_matrices: [seq of] numarray array 
         @param  conv_threshold: maximum change in likelihood before deemed
                     convergent
         @type   conv_threshold: int or float
@@ -758,7 +772,7 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
         assert chktype(6, normalise, bool)
         assert chktype(7, svd_dimensions, int, types.NoneType)
         VectorSpaceClusterer.__init__(self, normalise, svd_dimensions)
-        self._means = Numeric.array(initial_means, Numeric.Float64)
+        self._means = numarray.array(initial_means, numarray.Float64)
         self._num_clusters = len(initial_means)
         self._conv_threshold = conv_threshold
         self._covariance_matrices = covariance_matrices
@@ -776,12 +790,12 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
         means = self._means
         priors = self._priors
         if not priors:
-            priors = self._priors = Numeric.ones(self._num_clusters,
-                                        Numeric.Float64) / self._num_clusters
+            priors = self._priors = numarray.ones(self._num_clusters,
+                                        numarray.Float64) / self._num_clusters
         covariances = self._covariance_matrices 
         if not covariances:
             covariances = self._covariance_matrices = \
-                [ Numeric.identity(dimensions, Numeric.Float64) 
+                [ numarray.identity(dimensions, numarray.Float64) 
                   for i in range(self._num_clusters) ]
             
         # do the E and M steps until the likelihood plateaus
@@ -791,8 +805,8 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
         while not converged:
             if trace: print 'iteration; loglikelihood', lastl
             # E-step, calculate hidden variables, h[i,j]
-            h = Numeric.zeros((len(vectors), self._num_clusters),
-                Numeric.Float64)
+            h = numarray.zeros((len(vectors), self._num_clusters),
+                numarray.Float64)
             for i in range(len(vectors)):
                 for j in range(self._num_clusters):
                     h[i,j] = priors[j] * self._gaussian(means[j],
@@ -802,14 +816,14 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
             # M-step, update parameters - cvm, p, mean
             for j in range(self._num_clusters):
                 covariance_before = covariances[j]
-                new_covariance = Numeric.zeros((dimensions, dimensions),
-                            Numeric.Float64)
-                new_mean = Numeric.zeros(dimensions, Numeric.Float64)
+                new_covariance = numarray.zeros((dimensions, dimensions),
+                            numarray.Float64)
+                new_mean = numarray.zeros(dimensions, numarray.Float64)
                 sum_hj = 0.0
                 for i in range(len(vectors)):
                     delta = vectors[i] - means[j]
                     new_covariance += h[i,j] * \
-                        Numeric.multiply.outer(delta, delta)
+                        numarray.multiply.outer(delta, delta)
                     sum_hj += h[i,j]
                     new_mean += h[i,j] * vectors[i]
                 covariances[j] = new_covariance / sum_hj
@@ -818,7 +832,7 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
 
                 # bias term to stop covariance matrix being singular
                 covariances[j] += self._bias * \
-                    Numeric.identity(dimensions, Numeric.Float64)
+                    numarray.identity(dimensions, numarray.Float64)
 
             # calculate likelihood - FIXME: may be broken
             l = self._loglikelihood(vectors, priors, means, covariances)
@@ -847,13 +861,13 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
         assert cvm.shape == (m, m), \
             'bad sized covariance matrix, %s' % str(cvm.shape)
         try:
-            det = LinearAlgebra.determinant(cvm)
-            inv = LinearAlgebra.inverse(cvm)
-            a = det ** -0.5 * (2 * Numeric.pi) ** (-m / 2.0) 
+            det = linear_algebra.determinant(cvm)
+            inv = linear_algebra.inverse(cvm)
+            a = det ** -0.5 * (2 * numarray.pi) ** (-m / 2.0) 
             dx = x - mean
-            b = -0.5 * Numeric.matrixmultiply( \
-                    Numeric.matrixmultiply(dx, inv), dx)
-            return a * Numeric.exp(b) 
+            b = -0.5 * numarray.matrixmultiply( \
+                    numarray.matrixmultiply(dx, inv), dx)
+            return a * numarray.exp(b) 
         except OverflowError:
             # happens when the exponent is negative infinity - i.e. b = 0
             # i.e. the inverse of cvm is huge (cvm is almost zero)
@@ -866,7 +880,7 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
             for j in range(len(priors)):
                 p += priors[j] * \
                          self._gaussian(means[j], covariances[j], vector)
-            llh += Numeric.log(p)
+            llh += numarray.log(p)
         return llh
 
     def __repr__(self):
@@ -892,12 +906,12 @@ def demo():
     Non-interactive demonstration of the clusterers with simple 2-D data.
     """
     # use a set of tokens with 2D indices
-    tokens = [Token(FEATURES=Numeric.array([3, 3])),
-              Token(FEATURES=Numeric.array([1, 2])),
-              Token(FEATURES=Numeric.array([4, 2])),
-              Token(FEATURES=Numeric.array([4, 0])),
-              Token(FEATURES=Numeric.array([2, 3])),
-              Token(FEATURES=Numeric.array([3, 1]))]
+    tokens = [Token(FEATURES=numarray.array([3, 3])),
+              Token(FEATURES=numarray.array([1, 2])),
+              Token(FEATURES=numarray.array([4, 2])),
+              Token(FEATURES=numarray.array([4, 0])),
+              Token(FEATURES=numarray.array([2, 3])),
+              Token(FEATURES=numarray.array([3, 1]))]
     
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds
@@ -906,7 +920,7 @@ def demo():
     print 'using clusterer', clusterer
     print 'clustered', str(tokens)[:60], '...'
     # classify a new token
-    token = Token(FEATURES=Numeric.array([3, 3]))
+    token = Token(FEATURES=numarray.array([3, 3]))
     print 'classify(%s)' % token,
     clusterer.classify(token)
     print token
@@ -920,7 +934,7 @@ def demo():
     # show the dendogram
     clusterer.dendogram().show()
     # classify a new token
-    token = Token(FEATURES=Numeric.array([3, 3]))
+    token = Token(FEATURES=numarray.array([3, 3]))
     print 'classify(%s)' % token,
     clusterer.classify(token)
     print token
@@ -936,12 +950,12 @@ def demo():
     print 'using clusterer', clusterer
     print 'clustered', str(tokens)[:60], '...'
     # classify a new token
-    token = Token(FEATURES=Numeric.array([3, 3]))
+    token = Token(FEATURES=numarray.array([3, 3]))
     print 'classify(%s)' % token,
     clusterer.classify(token)
     print token
     # show the classification probabilities
-    token = Token(FEATURES=Numeric.array([2.2, 2]))
+    token = Token(FEATURES=numarray.array([2.2, 2]))
     print 'classification_probdist(%s)' % token
     clusterer.classification_probdist(token)
     for sample in token['CLUSTER_PROBDIST'].samples():
@@ -950,7 +964,7 @@ def demo():
 
 def demo_kmeans():
     # example from figure 14.9, page 517, Manning and Schutze
-    tokens = [Token(FEATURES=Numeric.array(f))
+    tokens = [Token(FEATURES=numarray.array(f))
               for f in [[2, 1], [1, 3], [4, 7], [6, 7]]]
     means = [[4, 3], [5, 5]]
 
@@ -962,7 +976,7 @@ def demo_kmeans():
 
 def demo_em():
     # example from figure 14.10, page 519, Manning and Schutze
-    tokens = [Token(FEATURES=Numeric.array(f))
+    tokens = [Token(FEATURES=numarray.array(f))
               for f in [[0.5, 0.5], [1.5, 0.5], [1, 3]]]
     means = [[4, 2], [4, 2.01]]
 
@@ -977,13 +991,13 @@ def demo_em():
         print 'covar', clusterer._covariance_matrices[c]
 
     # classify a new token
-    token = Token(FEATURES=Numeric.array([2, 2]))
+    token = Token(FEATURES=numarray.array([2, 2]))
     print 'classify(%s)' % token,
     clusterer.classify(token)
     print token
 
     # show the classification probabilities
-    token = Token(FEATURES=Numeric.array([2, 2]))
+    token = Token(FEATURES=numarray.array([2, 2]))
     print 'classification_probdist(%s)' % token
     clusterer.classification_probdist(token)
     for sample in token['CLUSTER_PROBDIST'].samples():
