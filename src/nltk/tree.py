@@ -244,6 +244,20 @@ class Tree:
         raise NotImplementedError("Ordering relations are not "+
                                   "defined over Trees")
 
+    def draw(self):
+        """
+        Open a graphical window containing a diagram of the text
+        tree.
+        @rtype: None
+        """
+        # Note: this method introduces a circular dependancy between
+        # modules.  However, this circularity is only a matter of
+        # convenience.  In particular, we believe that it is more
+        # intuitive for students to run "mytree.draw()" than
+        # "draw.tree.drawtree(mytree)".
+        import draw.tree
+        draw.tree.drawtree(self)
+
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
 ##//////////////////////////////////////////////////////
@@ -503,6 +517,20 @@ class TreeToken(token.Token):
         """
         raise NotImplementedError("Ordering relations are not "+
                                   "defined over TreeTokens")
+
+    def draw(self):
+        """
+        Open a graphical window containing a diagram of the text
+        tree token.
+        @rtype: None
+        """
+        # Note: this method introduces a circular dependancy between
+        # modules.  However, this circularity is only a matter of
+        # convenience.  In particular, we believe that it is more
+        # intuitive for students to run "mytree.draw()" than
+        # "draw.tree.drawtree(mytree)".
+        import draw.tree
+        draw.tree.drawtreetoken()
 
 ##//////////////////////////////////////////////////////
 ##  Conversion Routines
