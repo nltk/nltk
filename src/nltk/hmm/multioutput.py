@@ -25,13 +25,12 @@ from sys import *
 # NLTK
 from nltk.chktype import chktype
 from nltk.probability import *
-from nltk.set import MutableSet
 from nltk.hmm import HiddenMarkovModel 
 from nltk.hmm import HiddenMarkovModelTrainer 
 from nltk.token import Token
 
 # Python
-from Numeric import *
+from numarray import *
 import re
 
 class MultinomialHMM(HiddenMarkovModel):
@@ -206,11 +205,10 @@ class MultiOutputHMMTrainer(HiddenMarkovModelTrainer):
 
 def load_pos():
     from nltk.corpus import brown
-    from nltk.tagger import TaggedTokenizer
 
     tagged_tokens = []
     for item in brown.items()[:5]:
-        tagged_tokens.append(brown.tokenize(item))
+        tagged_tokens.append(brown.read(item))
 
     tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
         'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',
@@ -228,7 +226,7 @@ def load_pos():
     for token in tagged_tokens:
         # the multi-output allows us to treat each word as a
         # tuple of features
-        for sub_token in token['SUBTOKENS']:
+        for sub_token in token['WORDS']:
             sequence.append(sub_token)
             # a feature for words as lower case
             features = [sub_token['TEXT'].lower()]
