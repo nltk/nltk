@@ -28,10 +28,8 @@ Please email your completed assignment as a
 \vspace{2ex}
 
 %% Notes:
-%% - We should adjust the ``95%'' figure to something that is not trivial but
-%%   that shouldn't take more than 15-20 minutes to find.
-%% - Replace n with an appropriate value in ``pn''
-%% - Rewrite ``contest'' section, depending on what we want to do.
+%% - The ``85%'' figure is fairly corpus-dependant.  It should be 
+%%    adjusted if this problem is used with a different corpus.
 
 \section{Chunk Parsing}
   % This problem is intended to reinforce the concepts behind
@@ -43,10 +41,10 @@ Please email your completed assignment as a
   % students some incentive to go beyond the basics, and really get
   % some experience as to what works and what doesn't.
 
-  The chunking tutorial contains example code for a simple NP
-  chunk parser.
-  Create and test a more advanced \texttt{REChunkParser} instance
-  to find NP chunks.
+  The chunking tutorial contains example code for creating and testing
+  a simple NP chunk parser (in the section ``Evaluating Chunk
+  Parser'').  Create and test a more advanced \texttt{REChunkParser}
+  instance to find NP chunks.
 
   Use data from the WSJ corpus on the resources CDROM, or on
   unagi (\texttt{/spd25/cis530/cdrom/resources/data/wsj/tagged/}).
@@ -61,7 +59,12 @@ Please email your completed assignment as a
   \texttt{UnChunkRule}, \texttt{MergeRule}, \texttt{SplitRule}, and
   \texttt{REChunkParserRule}).
 
-  Define a function \textit{pn}, which returns your parser.
+  Define a function \textit{p1}, which returns your parser.
+
+  \textbf{Note:} \textit{Chunk parsing the entire corpus can take 1-5
+  minutes (depending on the speed of your computer).  Therefore,
+  during development, you may wish to run tests using only a subset of
+  the corpus.}
 
 \section{Contest (Optional)}
 
