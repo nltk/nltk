@@ -108,19 +108,19 @@ class Tree(list):
     convert = classmethod(convert)
 
     def copy(self, deep=False):
-        if not deep:
-            return self.__class__(self.node, *self)
-        else:
-            return self.__class__.convert(self)
+        if not deep: return self.__class__(self.node, self)
+        else: return self.__class__.convert(self)
 
+    def _frozen_class(self): return ImmutableTree
     def freeze(self, leaf_freezer=None):
+        frozen_class = self._frozen_class()
         if leaf_freezer is None:
-            newcopy = ImmutableTree.convert(self)
+            newcopy = frozen_class.convert(self)
         else:
             newcopy = self.copy(deep=True)
             for pos in newcopy.treepositions('leaves'):
                 newcopy[pos] = leaf_freezer(newcopy[pos])
-            newcopy = ImmutableTree.convert(newcopy)
+            newcopy = frozen_class.convert(newcopy)
         hash(newcopy) # Make sure the leaves are hashable.
         return newcopy
 
@@ -135,7 +135,7 @@ class Tree(list):
     def __eq__(self, other):
         return self.node == other.node and list.__eq__(self, other)
     def __ne__(self, other):
-        return self.node != other.node or list.__ne__(self, other)
+        return not (self == other)
     def __lt__(self, other):
         return cmp(self, other) < 0
     def __le__(self, other):
@@ -663,24 +663,66 @@ class MultiParentedTree(AbstractParentedTree):
 ## Probabilistic trees
 ######################################################################
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
-    def __init__(self, prob, node, children):
-        ProbabilisticMixIn.__init__(self, prob)
+    def __init__(self, node, children, **prob_kwargs):
+        ProbabilisticMixIn.__init__(self, **prob_kwargs)
         Tree.__init__(self, node, children)
 
+    # We have to patch up these methods to make them work right:
+    def _frozen_class(self): return ImmutableProbabilisticTree
+    def __repr__(self):
+        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
+    def __str__(self):
+        return '%s (p=%s)' % (self.pp(margin=60), self.prob())
+    def __cmp__(self, other):
+        c = Tree.__cmp__(self, other)
+        if c != 0: return c
+        return cmp(self.prob(), other.prob())
+    def __eq__(self, other):
+        return Tree.__eq__(self, other) and self.prob()==other.prob()
     def copy(self, deep=False):
-        t = Tree.copy(self)
-        t.prob = self.prob
-        return t
+        if not deep: return self.__class__(self.node, self, prob=self.prob())
+        else: return self.__class__.convert(self)
+    def convert(cls, val):
+        if isinstance(val, Tree):
+            children = [cls.convert(child) for child in val]
+            if isinstance(val, ProbabilisticMixIn):
+                return cls(val.node, children, prob=val.prob())
+            else:
+                return cls(val.node, children, prob=1.0)
+        else:
+            return val
+    convert = classmethod(convert)
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
-    def __init__(self, node, children):
-        self.prob = 0
+    def __init__(self, node, children, **prob_kwargs):
+        ProbabilisticMixIn.__init__(self, **prob_kwargs)
         ImmutableTree.__init__(self, node, children)
 
+    # We have to patch up these methods to make them work right:
+    def _frozen_class(self): return ImmutableProbabilisticTree
+    def __repr__(self):
+        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
+    def __str__(self):
+        return '%s (p=%s)' % (self.pp(margin=60), self.prob())
+    def __cmp__(self, other):
+        c = Tree.__cmp__(self, other)
+        if c != 0: return c
+        return cmp(self.prob(), other.prob())
+    def __eq__(self, other):
+        return Tree.__eq__(self, other) and self.prob()==other.prob()
     def copy(self, deep=False):
-        t = Tree.copy(self)
-        t.prob = self.prob
-        return t
+        if not deep: return self.__class__(self.node, self, prob=self.prob())
+        else: return self.__class__.convert(self)
+    def convert(cls, val):
+        if isinstance(val, Tree):
+            children = [cls.convert(child) for child in val]
+            if isinstance(val, ProbabilisticMixIn):
+                return cls(val.node, children, prob=val.prob())
+            else:
+                return cls(val.node, children, prob=1)
+        else:
+            return val
+    convert = classmethod(convert)
 
 ######################################################################
 ## Demonstration
@@ -734,6 +776,8 @@ def demo():
     d("print cake.parent().parent().parent()")
     d("# A root tree's parent is None:")
     d("print tree.parent()")
+    d("t = ProbabilisticTree.convert(tree)")
+    d("print t; print t.__class__")
     d.end()
 
 if __name__ == '__main__':
