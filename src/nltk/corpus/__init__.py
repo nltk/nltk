@@ -774,8 +774,8 @@ with categories by Reuters.'''
 
 levin = None
 # class _LevinTokenizer(TokenizerI):
-#     # [XX] addlocs & addcontexts are ignored!
-#     def tokenize(self, token, addlocs=False, addcontexts=False):
+#     # [XX] add_locs & add_contexts are ignored!
+#     def tokenize(self, token, add_locs=False, add_contexts=False):
 #         token['VERB_DICT'] = {}
 #         for line in token['TEXT'].split('\n'):
 #             items = line.split(':')

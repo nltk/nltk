@@ -427,7 +427,7 @@ def demo():
     import nltk.corpus
 
     # Load the training data, and split it into test & train.
-    text = nltk.corpus.brown.tokenize('cr01', addcontexts=True)
+    text = nltk.corpus.brown.tokenize('cr01', add_contexts=True)
     toks = text['SUBTOKENS']
     split = len(toks) * 3/4
     train, test = toks[:split], toks[split:]

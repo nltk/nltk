@@ -117,7 +117,7 @@ from nltk.tokenreader.ieer import *
 def demo():
     print 'Whitespace separated token reader:'
     reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
-    print reader.read_tokens('tokens separated by spaces', addlocs=True)
+    print reader.read_tokens('tokens separated by spaces', add_locs=True)
 
     print 'Newline separated token reader:'
     reader = NewlineSeparatedTokenReader(SUBTOKENS='WORDS')

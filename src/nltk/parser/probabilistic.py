@@ -943,7 +943,7 @@ def demo():
 
     # Tokenize the sentence.
     token = Token(TEXT=s)
-    WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(token, addlocs=True)
+    WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(token, add_locs=True)
 
     # Ask the user how many parses to find.
     print '\nNumber of parses to find (1+; default=all): ',

@@ -41,17 +41,17 @@ Leading and trailing whitespace are ignored:
     >>> print tok
     <[<this>, <is>, <a>, <test>]>
 
-The addlocs flag can be used to add locations:
+The add_locs flag can be used to add locations:
 
     >>> tok = Token(TEXT='this is a test')
-    >>> tokenizer.tokenize(tok, addlocs=1)
+    >>> tokenizer.tokenize(tok, add_locs=1)
     >>> print tok
     <[<this>@[0:4c], <is>@[5:7c], <a>@[8:9c], <test>@[10:14c]]>
 
-The addcontexts flag can be used to add context pointers:
+The add_contexts flag can be used to add context pointers:
 
     >>> tok = Token(TEXT='this is a test')
-    >>> tokenizer.tokenize(tok, addcontexts=1)
+    >>> tokenizer.tokenize(tok, add_contexts=1)
     >>> print tok
     <[<this>, <is>, <a>, <test>]>
     >>> print tok['WORDS'][1]['CONTEXT'].getrange(-1, 2)
@@ -71,7 +71,7 @@ between words, and leading and trailing whitespace are ignored:
 
 The C{xtokenize} method generates an iterator instead of a list:
 
-    >>> tokenizer.xtokenize(tok, addcontexts=1)
+    >>> tokenizer.xtokenize(tok, add_contexts=1)
     >>> print [w for w in tok['WORDS']]
     [<this>, <is>, <a>, <test>]
     >>> print [w for w in tok['WORDS']] # generator is exhausted!
