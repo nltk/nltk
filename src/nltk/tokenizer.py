@@ -70,13 +70,13 @@ class TokenizerI:
             subtokens created by the tokenizer.  If no unit is
             specified, then a tokenizer-specific default unit will be
             used.
+        @type propnames: C{dict}
         @param propnames: The names of the properties that are used by
             this tokenizer.  These names are encoded as a dictionary
             that maps from abstract \"property specifications\" to
             concrete property names.  For a list of the property
             property specifications used by a particular tokenizer,
             see its class docstring.
-        @type propnames: C{dict}
         """
         if self.__class__ == TokenizerI:
             raise AssertionError, "Interfaces can't be instantiated"
@@ -177,6 +177,7 @@ class AbstractTokenizer(TokenizerI):
     An abstract base class for tokenizers that provides default
     implementations for:
       - L{unit}
+      - L{propnames}
       - L{tokenize} (based on L{raw_tokenize})
       - L{xtokenize} (based on L{raw_xtokenize})
       - L{raw_xtokenize} (based on L{raw_tokenize})
@@ -475,9 +476,6 @@ def _display(token, tokenizer):
 
     # Print the string
     print str
-
-# tempyhack:
-Token = dict
 
 def demo():
     """
