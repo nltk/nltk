@@ -393,3 +393,22 @@ def mark_stdout_newlines(func, *args, **kwargs):
     print re.sub(r'\n[ \t]*\n', '\n<--BLANKLINE-->\n',
                  capture_stdout(func, *args, **kwargs)).rstrip()
     
+
+######################################################################
+## Regexp display (thanks to David Mertz)
+######################################################################
+
+import re
+def re_show(regexp, string):
+    """
+
+    Search C{string} for substrings matching C{regexp} and wrap
+    the matches with braces.  This is convenient for learning about
+    regular expressions.
+
+    @param regexp: The regular expression.
+    @param string: The string being matched.
+    @rtype: C{string}
+    @return: A string with braces surrounding the matched substrings.
+    """
+    print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip()),'\n'
