@@ -10,6 +10,17 @@
 """
 Classification is the task of assigning a label to a given text token.
 
+Maybe split up as follows:
+  Basics:
+    __init__ -> LabeledText, ClassifierI, ClassifierTrainerI
+    feature  -> FeatureValueList, FeatureDetectorList, etc.
+    feature_selection -> feature selection (change name?)
+  Models:
+    naivebayes (paramaterized by a p. dist)
+    maxent (paramaterized by a sequence of lambda's)
+  Trainers:
+    foo.. :)
+
 Labeled Texts
 =============
 
@@ -700,7 +711,7 @@ class SimpleFeatureValueList(FeatureValueListI):
     A simple list-based implementation of the C{FeatureValueListI}
     interface.
 
-    @type _assignments: list of (tuple of C{int} and (immutable))
+    @type _assignments: C{list} of (C{tuple} of C{int} and (immutable))
     @ivar _assignments: A list of (id, value) pairs.
     @type _len: C{int}
     @ivar _len: The number of features whose values are specified by
@@ -712,7 +723,7 @@ class SimpleFeatureValueList(FeatureValueListI):
         """
         Construct a new C{SimpleFeatureValueList}.
 
-        @type assignments: list of (tuple of C{int} and (immutable))
+        @type assignments: C{list} of (C{tuple} of C{int} and (immutable))
         @param assignments: A list of the feature value assignments for
             each feature in this feature value list whose value is not
             the default value.  These assignments are specified as a
@@ -758,7 +769,63 @@ class SimpleFeatureValueList(FeatureValueListI):
         return "<FeatureValueList with %d features>" % len(self)
 
 ##//////////////////////////////////////////////////////
+##  Labeled FeatureValueList
+##//////////////////////////////////////////////////////
+
+class LabeledFeatureValueList:
+    """
+    The label and feature values that correspond to a C{LabeledText}.
+    This class encapsulates all of the information about a
+    C{LabeledText} that a feature-driven classifier can use.
+    """
+    def __init__(self, fvl, label):
+        """
+        Construct a new C{LabeledFeatureValueList}.
+        C{LabeledFeatureValueList}s are typically constructed from
+        C{LabeledText}s.  For example, the following code constructs a
+        new labeled feature value list for C{labeled_text}.  It uses
+        C{feature_detector_list} to produce the feature value list::
+
+            >>> fvl = feature_detector_list.detect(labeled_text)
+            >>> label = labeled_text.label()
+            >>> lfvl = LabeledFeatureValueList(lfvl, label)
+        
+        @param fvl: The feature value list
+        @type fvl: C{FeatureValueList}
+        @param label: The label
+        @type label: C{string}
+        """
+        self._fvl = fvl
+        self._label = label
+        
+    def feature_values(self):
+        """
+        @return: this C{LabeledFeatureValueList}'s feature value list.
+        @rtype: C{FeatureValueList}
+        """
+        return self._fvl
+    
+    def label(self):
+        """
+        @return: this C{LabeledFeatureValueList}'s label.
+        @rtype: C{string}
+        """
+        return self._label
+    
+    def __repr__(self):
+        """
+        @return: a string representation of this
+            C{LabeledFeatureValueList}.
+        @rtype: C{string}
+        """
+        return '<LabeledFeatureValueList %r %r>' % (self._label, self._fvl) 
+
+##//////////////////////////////////////////////////////
 ##  Feature Selection
+##//////////////////////////////////////////////////////
+
+##//////////////////////////////////////////////////////
+##  Test
 ##//////////////////////////////////////////////////////
 
 if __name__ == '__main__':
