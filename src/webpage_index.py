@@ -33,6 +33,7 @@ HEADER = '''\
 <body>
 
 <table width="100%%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr><th class="navtitle" colspan="6">Natural Language Toolkit</th></tr>
   <tr>
   <td align="center" width="16.6%%" class="navbutton">
     <a class="nav" href="../index.html">Home</a></td>
