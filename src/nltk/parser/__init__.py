@@ -600,7 +600,8 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     found by the parser.
     """
     def __init__(self, grammar, trace=0):
-        ShiftReduceParser.__init__(self, grammar, trace)
+        self._grammar = grammar
+        self._trace = trace
         self._stack = None
         self._remaining_text = None
 
@@ -635,8 +636,8 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         Perform a single parsing operation.  If a reduction is
         possible, then perform that reduction, and return the
         production that it is based on.  Otherwise, if a shift is
-        possible, then perform it, and return 1.  Otherwise, return
-        0. 
+        possible, then perform it, and return 1.  Otherwise,
+        return 0. 
 
         @return: 0 if no operation was performed; 1 if a shift was
             performed; and the CFG production used to reduce if a
@@ -656,8 +657,30 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._shift(self._stack, self._remaining_text)
         return 1
         
-    def reduce(self):
-        return self._reduce(self._stack, self._remaining_text)
+    def reduce(self, production=None):
+        if production is None:
+            return self._reduce(self._stack, self._remaining_text)
+        else:
+            # This isn't the best way to implement the productions
+            # parameter, but it works.
+            grammar = self._grammar
+            self._grammar = CFG(self._grammar.start(), [production])
+            return_val = self._reduce(self._stack, self._remaining_text)
+            self._grammar = grammar
+            return return_val
+
+    def reducible_productions(self):
+        """
+        @return: A list of the productions for which reductions are
+            available.
+        @rtype: C{list} of C{CFGProduction}
+        """
+        productions = []
+        for production in self._grammar.productions():
+            rhslen = len(production.rhs())
+            if self._match(production.rhs(), self._stack[-rhslen:]):
+                productions.append(production)
+        return productions
 
     def parses(self):
         if len(self._remaining_text) != 0: return []
