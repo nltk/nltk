@@ -40,7 +40,7 @@ is appropriate when a single subtree can be shared by multiple
 parents.
 """
 
-from nltk.token import Token, CharSpanLocation
+from nltk.token import Token, CharSpanLocation, FrozenToken
 from nltk.tokenizer import TokenizerI
 from nltk.probability import ProbabilisticMixIn
 import re
@@ -405,6 +405,13 @@ class TreeToken(Token):
 
         raise ValueError, 'mismatched parens'
     _parse = staticmethod(_parse)
+
+    def frozen_token_class(): return FrozenTreeToken
+    frozen_token_class = staticmethod(frozen_token_class)
+
+# Note: order of superclasses is *very* important here:
+class FrozenTreeToken(FrozenToken, TreeToken): pass
+
 
 class TreebankTokenizer(TokenizerI):
     def __init__(self, addlocs=True, propnames={}):
