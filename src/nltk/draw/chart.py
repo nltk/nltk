@@ -688,6 +688,8 @@ class ChartView:
 class ChartDemo:
     RULENAME = {'TD_init': 'Top-down Initialization',
                 'FR': 'Fundamental Rule',
+                'FR_edge_rule': 'Fundamental Rule',
+                'FR_edge': 'Fundamental Rule',
                 'TD_edge': 'Top-down Edge-Triggered',
                 'BU_init': 'Bottom-up Initialization',
                 'BU_edge_rule': 'Bottom-up Initialization',
