@@ -7,8 +7,7 @@
 #
 # $Id$
 
-from nltk.rechunkparser import *
-from nltk.chunkparser import ChunkedTaggedTokenizer, ChunkScore
+from nltk.parser.chunk import *
 from nltk.tagger import TaggedTokenizer
 
 import unittest
