@@ -702,11 +702,10 @@ def demo():
 
 def load_pos():
     from nltk.corpus import brown
-    from nltk.tagger import TaggedTokenizer
 
     tagged_tokens = []
     for item in brown.items()[:5]:
-        tagged_tokens.append(brown.tokenize(item))
+        tagged_tokens.append(brown.read(item))
 
     tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
         'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',
@@ -720,12 +719,14 @@ def load_pos():
         
     sequences = []
     sequence = []
+    symbols = {}
     start_re = re.compile(r'[^-*+]*')
     for token in tagged_tokens:
-        for sub_token in token['SUBTOKENS']:
+        for sub_token in token['WORDS']:
             sequence.append(sub_token)
             # make words lower case
             sub_token['TEXT'] = sub_token['TEXT'].lower()
+            symbols[sub_token['TEXT']] = 1 
             m = start_re.match(sub_token['TAG'])
             # cleanup the tag
             tag = m.group(0)
@@ -738,7 +739,7 @@ def load_pos():
                 sequences.append(Token(SUBTOKENS=sequence))
                 sequence = []
 
-    return sequences, tag_set
+    return sequences, tag_set, symbols.keys()
 
 def test_pos(model, labelled_sequences, display=False):
     from sys import stdout
@@ -765,8 +766,8 @@ def demo_pos():
     # demonstrates POS tagging using supervised training
 
     print 'Training HMM...'
-    labelled_sequences, tag_set = load_pos()
-    trainer = HiddenMarkovModelTrainer(tag_set)
+    labelled_sequences, tag_set, symbols = load_pos()
+    trainer = HiddenMarkovModelTrainer(tag_set, symbols)
     hmm = trainer.train_supervised(Token(SUBTOKENS=labelled_sequences[100:]),
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
 
