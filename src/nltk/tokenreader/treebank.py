@@ -206,10 +206,8 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     In the returned token:
     
       - The returned token describes a single document.
-      - The document's C{PARAS} property contains a list of paragraph
-        tokens.
-        - Each paragraph token's C{SENTS} property contains a list of
-          sentence tokens.
+      - The document's C{SENTS} property contains a list of
+        sentence tokens.
           - Each sentence token's C{WORDS} property contains a list of
             word tokens.
             - Each word token's C{TEXT} property contains the word's
@@ -230,7 +228,7 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
 
         # A token reader for processing sentences.
         self._sent_reader = ChunkedTaggedTokenReader(
-            top_node='S', chunk_node='NP_CHUNK', **property_names)
+            top_node='S', chunk_node='NP', **property_names)
             
 
     def read_token(self, s, add_contexts=False, add_locs=False, 
@@ -241,44 +239,22 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         LOC = self.property('LOC')
         CONTEXT = self.property('CONTEXT')
         SENTS = self.property('SENTS')
-        PARAS = self.property('PARAS')
         TREE = self.property('TREE')
 
-        # Split into paragraphs.
-        paragraphs = re.split(r'(?m)^={10,}$', s)
-        # Strip whitespace, and discard empty paras.
-        paragraphs = [para.strip() for para in paragraphs]
-        paragraphs = [para for para in paragraphs if para]
-
-        # Process each paragraph.
-        para_toks = []
-        for para_num, para_text in enumerate(paragraphs):
-            # Create a location for this paragraph
-            para_loc = ParaIndexLocation(para_num, source)
-            # Split the paragraph into sentences.
-            sentences = re.findall('(?s)\S.*?/\.', para_text)
-            sent_toks = []
-            for sent_num, sentence in enumerate(sentences):
-                sent_loc = SentIndexLocation(sent_num, para_loc)
-                sent_tok = self._sent_reader.read_token(
-                    sentence, add_contexts=add_contexts,
-                    add_locs=add_locs, source=sent_loc)
-                sent_toks.append(sent_tok)
-            para_toks.append(Token(**{SENTS: sent_toks}))
-            if add_locs:
-                para_toks[-1][LOC] = para_loc
-
-        # Create a token for the document
-        tok = Token(**{PARAS: para_toks})
+        sentences = re.findall('(?s)\S.*?/\.', s)
+        sent_toks = []
+        for sent_num, sentence in enumerate(sentences):
+            sent_loc = SentIndexLocation(sent_num, source)
+            sent_tok = self._sent_reader.read_token(
+                sentence, add_contexts=add_contexts,
+                add_locs=add_locs, source=sent_loc)
+            sent_toks.append(sent_tok)
+        tok = Token(**{SENTS: sent_toks})
 
         # Add context pointers, if requested
         if add_contexts:
-            for para_num, para_tok in enumerate(tok[PARAS]):
-                para_tok[CONTEXT] = SubtokenContextPointer(tok, PARAS,
-                                                           para_num)
-                for sent_num, sent_tok in enumerate(para_tok[SENTS]):
-                    sent_tok[CONTEXT] = SubtokenContextPointer(tok, SENTS,
-                                                               sent_num)
+            for i, sent_tok in enumerate(tok[SENTS]):
+                sent_tok[CONTEXT] = SubtokenContextPointer(tok, SENTS, i)
 
         # Return the finished token.
         return tok
