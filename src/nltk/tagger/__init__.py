@@ -36,44 +36,8 @@ the L{TaggerI} interface.
 import types, re
 from nltk.chktype import chktype
 from nltk import TaskI, PropertyIndirectionMixIn
-from nltk.token import Token, TokenReaderI
+from nltk.token import Token
 from nltk.probability import FreqDist, ConditionalFreqDist
-
-##//////////////////////////////////////////////////////
-##  Parsing and Tokenizing TaggedTypes
-##//////////////////////////////////////////////////////
-class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
-    """
-    A token reader that divides a string of tagged words into
-    subtokens.  Words should be separated by whitespace, and each word
-    should have the form C{I{text}/I{tag}}, where C{I{text}} specifies
-    the word's C{TEXT} property, and C{I{tag}} specifies its C{TAG}
-    property.  Words that do not contain a slash are assigned a C{tag}
-    of C{None}.
-    
-    @outprop: C{SUBTOKENS}: The list of subtokens.
-    @outprop: C{TEXT}: The subtokens' text contents.
-    @outprop: C{TAG}: The subtokens' tags.
-    """
-    def __init__(self, **property_names):
-        PropertyIndirectionMixIn.__init__(self, **property_names)
-
-    # [XX] sourceis ignored!
-    def read_token(self, s, source=None):
-        TAG = self.property('TAG')
-        TEXT = self.property('TEXT')
-        SUBTOKENS = self.property('SUBTOKENS')
-        subtoks = []
-        for w in s.split():
-            slash = w.find('/')
-            if slash >= 0:
-                subtoks.append(Token(**{TEXT: w[:slash], TAG: w[slash+1:]}))
-            else:
-                subtoks.append(Token(**{TEXT: w, TAG: None}))
-        return Token(**{SUBTOKENS: subtoks})
-
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
 
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
