@@ -673,12 +673,12 @@ class Chart:
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
-                trees.append(Tree(lhs, *children))
+                trees.append(Tree(lhs, children))
 
         # If the edge is incomplete, then extend it with "partial
         # trees":
         if edge.is_incomplete():
-            unexpanded = [Tree(elt) for elt in edge.rhs()[edge.dot():]]
+            unexpanded = [Tree(elt,[]) for elt in edge.rhs()[edge.dot():]]
             for tree in trees:
                 tree.extend(unexpanded)
 
