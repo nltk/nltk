@@ -413,7 +413,7 @@ class CanvasFSA:
     def __init__(self, canvas, fsa, collapsed_edges = 0,
                  arrange=DEFAULT_ARRANGE):
         """
-        @param collapse_edges: Should multiple edges between the same
+        @param collapsed_edges: Should multiple edges between the same
             2 nodes be displayed as a single comma-separated edge?
         @param arrange: What arrangement algorithm should we use?
             Current options are 'dfs' and 'bfs'.
