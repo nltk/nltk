@@ -69,12 +69,13 @@ from nltk.classifier.feature import *
 from nltk.classifier.featureselection import *
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, WSTokenizer
+from nltk.chktype import chktype as _chktype
+from nltk.chktype import classeq as _classeq
+import time, types
 
 # Don't use from .. imports, because math and Numeric provide
 # different definitions for useful functions (exp, log, etc.)
-import math
-import Numeric
-import time
+import math, Numeric
 
 ##//////////////////////////////////////////////////////
 ##  Maxent Classifier
@@ -156,6 +157,11 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
             classifier.  These weights indicate the "importance" of
             each feature for classification.
         """
+        assert _chktype(1, fd_list, FeatureDetectorListI)
+        assert _chktype(2, labels, [], ())
+        assert _chktype(3, weights, [types.FloatType],
+                        (types.FloatType,), Numeric.arraytype)
+        
         # Make sure the weights are an array of floats.
         if type(weights) != Numeric.ArrayType or weights.typecode() != 'd':
             weights = array(weights)
@@ -165,6 +171,7 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
 
     def fv_list_likelihood(self, fv_list, label):
         # Inherit docs from AbstractFeatureClassifier
+        assert _chktype(1, fv_list, FeatureValueListI)
         prod = 1.0
         for (id, val) in fv_list.assignments():
             prod *= (self._weights[id] ** val)
@@ -187,6 +194,8 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
         @param weights: The new weight values.
         @type weights: C{sequence} of C{float}
         """
+        assert _chktype(1, weights, [types.FloatType],
+                        (types.FloatType,), Numeric.arraytype)
         self._weights = weights
 
     def __repr__(self):
@@ -237,6 +246,8 @@ class GIS_FDList(AbstractFDList):
             conservative, and usually leads to poor performance.
         @type C: C{int}
         """
+        assert _chktype(1, base_fd_list, FeatureDetectorListI)
+        assert _chktype(2, C, types.NoneType, types.IntType)
         self._base_fd_list = base_fd_list
         if C == None: C = len(self._base_fd_list)
         self._C = C
@@ -247,6 +258,7 @@ class GIS_FDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         values = self._base_fd_list.detect(labeled_text)
         assignments = list(values.assignments())
 
@@ -339,6 +351,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             values must sum to the same non-negative number for every
             C{LabeledText}
         """
+        assert _chktype(1, fd_list, FeatureDetectorListI)
         self._fd_list = fd_list
 
     def _fcount_emperical(self, fd_list, labeled_tokens):
@@ -366,6 +379,8 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             emperical count for feature M{i}.
         @rtype: C{array} of C{float}
         """
+        assert _chktype(1, fd_list, FeatureDetectorListI)
+        assert _chktype(2, labeled_tokens, [Token], (Token,))
         fcount = Numeric.zeros(len(fd_list), 'd')
         
         for labeled_token in labeled_tokens:
@@ -410,6 +425,10 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             estimated count for feature M{i}.
         @rtype: C{array} of C{float}
         """
+        assert _chktype(1, classifier, ClassifierI)
+        assert _chktype(2, fd_list, FeatureDetectorListI)
+        assert _chktype(3, labeled_tokens, [Token], (Token,))
+        assert _chktype(4, labels, [], ())
         fcount = Numeric.zeros(len(fd_list), 'd')
         for tok in labeled_tokens:
             text = tok.type().text()
@@ -485,6 +504,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             value is C{None}, which indicates that no
             log-likelihood-change cutoff should be used.  (type=C{float})
         """
+        assert _chktype(1, labeled_tokens, [Token], (Token,))
         # Process the keyword arguments.
         iter = 20
         debug = 0
@@ -653,6 +673,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         @param fd_list: The C{FeatureDetectorList} that should be
             used by this classifier.
         """
+        assert _chktype(1, fd_list, FeatureDetectorListI)
         self._fd_list = fd_list
 
     def _ffreq_emperical(self, fd_list, labeled_tokens):
@@ -680,6 +701,8 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             emperical frequency for feature M{i}.
         @rtype: C{array} of C{float}
         """
+        assert _chktype(1, fd_list, FeatureDetectorListI)
+        assert _chktype(2, labeled_tokens, [Token], (Token,))
         fcount = Numeric.zeros(len(fd_list), 'd')
         
         for labeled_token in labeled_tokens:
@@ -921,6 +944,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             value is C{None}, which indicates that no
             log-likelihood-change cutoff should be used.  (type=C{float})
         """
+        assert _chktype(1, labeled_tokens, [Token], (Token,))
         # Process the keyword arguments.
         iter = 20
         debug = 0
@@ -1050,6 +1074,7 @@ def simple_test(trainer_class):
     diagnostic message indicating whether the classifier produced the
     correct result.
     """
+    assert _chktype(1, trainer_class, types.ClassType)
     labels = "dans en a au pendant".split()
     toks = []
     i = 0
@@ -1081,6 +1106,11 @@ def simple_test(trainer_class):
 
 def demo(labeled_tokens, trainer_class,
          n_features=10000, n_words=7, debug=5):
+    assert _chktype(1, labeled_tokens, [Token], (Token,))
+    assert _chktype(2, trainer_class, types.ClassType)
+    assert _chktype(3, n_features, types.IntType)
+    assert _chktype(4, n_words, types.IntType)
+    assert _chktype(5, debug, types.IntType)
     t = time.time()
     def _timestamp(t):
         return '%8.2fs ' % (time.time()-t)
@@ -1142,8 +1172,9 @@ def demo(labeled_tokens, trainer_class,
     return classifier
 
 def get_toks(debug=0):
+    assert _chktype(1, debug, types.IntType)
     from nltk.tagger import TaggedTokenizer
-    file = '/mnt/cdrom2/data/brown/ca01'
+    file = '/cdrom/data/brown/ca01'
     text = open(file).read()
 
     if debug: print 'tokenizing %d chars' % len(text)
