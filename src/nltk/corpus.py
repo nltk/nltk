@@ -105,10 +105,10 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
 """
 
 import sys, os.path, re
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WSTokenizer, RETokenizer
 from nltk.tree import TreebankTokenizer
 from nltk.tagger import TaggedTokenizer
-from nltk.parser.chunk import ChunkedTaggedTokenizer
+from nltk.parser.chunk import ChunkedTaggedTokenizer, ConllChunkedTokenizer
 
 #################################################################
 # Base Directory for Corpora
@@ -1096,6 +1096,18 @@ roget = RogetCorpusReader('roget', 'roget/', 'roget15a.txt')
 words = SimpleCorpusReader(
     'words', 'words/', r'words') #, description_file='README')
 
+
+#################################################################
+## CONLL 2000 Chunking data
+#################################################################
+
+chunking = SimpleCorpusReader(
+    'chunking', 'chunking/', r'.*\.txt', None, description_file='README',
+    default_tokenizer=RETokenizer(r'\n\s*?\n', negative=1, unit='p'))
+    # ideally use parser.chunk.ConllChunkedTokenizer() on each paragraph:
+    # paras = chunking.tokenize('test.txt')
+    # cct = ConllChunkedTokenizer(('NP'))
+    # [Tree('S', *cct.tokenize(para.type())) for para in paras]
 
 ###################################################
 ## Treebank (fragment distributed with NLTK)
