@@ -79,6 +79,7 @@ def test_coverage(verbosity, coverdir):
     tracer.run('test(%d)' % verbosity)
     r = tracer.results()
 
+    print 'Writing coverage results...'
     sys.stdout = StringIO.StringIO()
     r.write_results(show_missing=True, summary=True,
                     coverdir=coverdir)
@@ -86,18 +87,28 @@ def test_coverage(verbosity, coverdir):
     # Hack the summary output to look nicer.
     summary = sys.stdout.getvalue()
     sys.stdout = sys.__stdout__
+    pp_summary(summary)
+
+def pp_summary(summary):
+    lines = []
     def subfunc(m):
-        module_name = os.path.abspath(m.group(2))
+        numlines = int(m.group(1))
+        percent = int(m.group(2))
+        module_name = os.path.abspath(m.group(3))
         module_name = module_name.replace('\\', '/')
         module_name = re.sub('.*/nltk/', 'nltk.', module_name)
         module_name = module_name.replace('/__init__.py', '')
         module_name = module_name.replace('/','.')
         module_name = module_name.replace('.py', '')
         if module_name.startswith('nltk.test'): return ''
-        return m.group(1)+module_name+'\n'
-    summary = re.sub('( +\S+ +\S+ +)\S+ +\((\S*nltk\S+)\)\n',
-                     subfunc, summary)
-    print summary
+        lines.append([percent, numlines, module_name])
+    re.sub(' +(\S+) +(\S+)% +\S+ +\((\S*nltk\S+)\)\n', subfunc, summary)
+    lines.sort()
+    print
+    print 'Coverage  Lines  Module'
+    print '------------------------------------'
+    for percent, numlines, module_name in lines:
+        print '%5s%%   %5s   %s' % (percent, numlines, module_name)
 
 def usage(name):
     print """
