@@ -146,7 +146,7 @@ class NBClassifier(AbstractFeatureClassifier):
         @param label_probdist: A probability distribution that
             specifies the probability that a randomly chosen text will
             have each label.  In particular,
-            C{label_probdist.prob(M{l}) is the probability that a text
+            C{label_probdist.prob(M{l})} is the probability that a text
             has label M{l}.
         @type fval_probdist: C{ConditionalProbDist}
         @param fval_probdist: A conditional probability distribution
@@ -182,7 +182,7 @@ class NBClassifier(AbstractFeatureClassifier):
         @return: The probability distribution that this
             C{NBClassifier} uses to estimate the probability that a
             randomly chosen text will have each label.  In particular,
-            C{label_probdist.prob(M{l}) is the probability that a text
+            C{label_probdist.prob(M{l})} is the probability that a text
             has label M{l}.
         """
         return self._label_probdist
