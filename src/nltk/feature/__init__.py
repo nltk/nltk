@@ -67,7 +67,7 @@ class FeatureDetectorI(TaskI):
         """
         raise NotImplementedError
 
-    def raw_detect_features(self, token):
+    def get_features(self, token):
         """
         Find the values of this detector's features for C{token}, and
         return them as a dictionary from feature names to feature
@@ -83,7 +83,7 @@ class AbstractFeatureDetector(FeatureDetectorI, PropertyIndirectionMixIn):
     """
     An abstract base class for feature detectors.
     C{AbstractFeatureDetector} provides a default implementation for
-    L{detect_features} (based on C{raw_detect_features}).
+    L{detect_features} (based on C{get_features}).
     """
     def __init__(self, **property_names):
         PropertyIndirectionMixIn.__init__(self, **property_names)
@@ -96,8 +96,8 @@ class AbstractFeatureDetector(FeatureDetectorI, PropertyIndirectionMixIn):
             token[FEATURES] = {}
 
         # Update FEATURES with the token's features (as given by
-        # raw_detect_features).
-        features = self.raw_detect_features(token)
+        # get_features).
+        features = self.get_features(token)
         token[FEATURES].update(features)
 
 class MergedFeatureDetector(AbstractFeatureDetector):
@@ -111,10 +111,10 @@ class MergedFeatureDetector(AbstractFeatureDetector):
             feature_names.update(detector.features())
         return list(feature_names)
 
-    def raw_detect_features(self, token):
+    def get_features(self, token):
         features = {}
         for detector in self._detectors:
-            features.update(detector.raw_detect_features(token))
+            features.update(detector.get_features(token))
         return features
 
 class PropertyFeatureDetector(AbstractFeatureDetector):
@@ -139,7 +139,7 @@ class PropertyFeatureDetector(AbstractFeatureDetector):
     def features(self):
         return self._properties
     
-    def raw_detect_features(self, token):
+    def get_features(self, token):
         return dict([(p,token[p]) for p in self._properties])
 
 ######################################################################
