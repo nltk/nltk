@@ -64,10 +64,11 @@ of the C{ParserI} interface.
 @author: U{Edward Loper<mailto:edloper@gradient.cis.upenn.edu>}
 @version: 1.0
 
+@newfield contributor: Contributor Contributors
 @contributor: Steven Bird
 @contributor: Edward Loper
 
-@gropu Core Modules: token, tree, probability
+@group Core Modules: token, tree, probability
 @group Data Modules: set, cfg, fsa
 @group Task Modules: classifier, parser, speech, stemmer, tagger
 @group Visualization: draw
