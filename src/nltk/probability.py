@@ -24,6 +24,12 @@ experiment.  There are two types of probability distribution:
   - X{analytic probability distributions} are created directly from
     parameters (such as variance).
 
+The L{ConditionalFreqDist} class and L{ConditionalProbDistI} interface
+are used to encode conditional distributions.  Conditional probability
+distributions can be derived or analytic; but currently the only
+implementation of the C{CondtionalProbDistI} interface is
+L{ConditionalProbDist}, a derived distribution.
+
 The L{ProbabilisticMixIn} class is a mix-in class that can be used to
 associate probabilities with data classes (such as C{Token} or
 C{Tree}).
