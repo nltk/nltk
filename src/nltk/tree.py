@@ -287,7 +287,8 @@ class TreeToken(Token):
 
     def _noderepr(self):
         # This is a bit of a hack. :-/
-        if len(self) == 2 and self.has('NODE'): return self['NODE']
+        if len(self.properties()) == 2 and self.has('NODE'):
+            return self['NODE']
 
         # Remove children & parent pointers.
         return repr(Token(**self).exclude('CHILDREN', 'PARENT',
