@@ -122,10 +122,6 @@ this module will not work with unicode strings.  Note also that C{pre}
 regular expressions are not quite as advanced as C{re} ones (e.g., no
 leftward zero-length assertions).
 
-C{tag_pattern2re_pattern} does not currently handle the substring
-"\\\\." correctly.  But tags should not include backslashes, anyway,
-so it shouldn't be much of a problem.
-
 @type _VALID_CHUNK_STRING: C{regexp}
 @var _VALID_CHUNK_STRING: A regular expression to test whether a chunk
      string is valid.
@@ -150,7 +146,6 @@ import string
 """
 Issues:
   - maximum recursion depth issues! grr...
-  - Fix tag_pattern2re_pattern to deal with '\\\\.' correctly?
   - generalize ChunkString constructor to accept a chunk struct
     instead of a tagged text?
   - Add more comments/docs, explaining precompiled regexps.
@@ -248,7 +243,7 @@ class ChunkString:
     # These are used by _verify
     _CHUNK = r'(\{%s+?\})+?' % _TAG
     _CHINK = r'(%s+?)+?' % _TAG
-    _VALID = pre.compile(r'(\{?%s\}?)+?' % _TAG)
+    _VALID = pre.compile(r'(\{?%s\}?)*?' % _TAG)
     _BRACKETS = pre.compile('[^\{\}]+')
     _BALANCED_BRACKETS = pre.compile(r'(\{\})*$')
     
@@ -522,9 +517,21 @@ def tag_pattern2re_pattern(tag_pattern):
     if not _VALID_TAG_PATTERN.match(tag_pattern):
         raise ValueError('Bad tag pattern: %s' % tag_pattern)
 
-    # We have to do this after, since it adds {}[]<>s
-    # n.b.: THIS BREAKS if they use \\!!
-    tag_pattern = pre.sub(r'([^\\])\.', r'\1'+_TAGCHAR, tag_pattern)
+    # Replace "." with _TAGCHAR.
+    # We have to do this after, since it adds {}[]<>s, which would
+    # confuse _VALID_TAG_PATTERN.
+    # PRE doesn't have lookback assertions, so reverse twice, and do
+    # the pattern backwards (with lookahead assertions).  This can be
+    # made much cleaner once we can switch back to SRE.
+    def reverse_str(str):
+        lst = list(str)
+        lst.reverse()
+        return ''.join(lst)
+    tc_rev = reverse_str(_TAGCHAR)
+    reversed = reverse_str(tag_pattern)
+    reversed = pre.sub(r'\.(?!\\(\\\\)*($|[^\\]))', tc_rev, reversed)
+    tag_pattern = reverse_str(reversed)
+
     return tag_pattern
 
 class REChunkParserRule:
