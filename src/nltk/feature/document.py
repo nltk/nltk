@@ -1,18 +1,47 @@
+# Natural Language Toolkit: Feature Extraction for Documents
+#
+# Copyright (C) 2004 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
 """
 Feature extractors for tokens that encode documents.
 """
 
 from nltk.feature import *
 
-class BagOfWordsFeatureExtractor(FeatureStringFeatureExtractor):
-    def __init__(self, words, count=False, **property_names):
-        StringFeatureExtractor.__init__(self, words, count,
-                                        **property_names)
+class BagOfWordsFeatureDetector(AbstractFeatureDetector):
+    """
+    A feature detector that extracts the C{TEXT} of each subtoken in a
+    document, and stores them (preserving duplicates) in the C{BOW}
+    feature.
+    """
+    def __init__(self, **property_names):
+        AbstractFeatureDetector.__init__(self, **property_names)
+        self._window = window
+        
+    def raw_detect_features(self, token):
+        return {'BOW': [tok['TEXT'] for tok in token['SUBTOKENS']]}
+    
+    def features(self):
+        return ['BOW']
 
-    def extract_feature_strings(self, token):
-        SUBTOKENS = self.property_name('SUBTOKENS')
-        TEXT = self.property_name('TEXT')
-        return [subtok[TEXT] for subtok in token[SUBTOKENS]]
+class SetOfWordsFeatureDetector(AbstractFeatureDetector):
+    """
+    A feature detector that extracts the C{TEXT} of each subtoken in a
+    document, and stores them (discarding duplicates) in the C{SOW}
+    feature.
+    """
+    def __init__(self, **property_names):
+        AbstractFeatureDetector.__init__(self, **property_names)
+        self._window = window
+        
+    def raw_detect_features(self, token):
+        return {'SOW': Set([tok['TEXT'] for tok in token['SUBTOKENS']])}
+    
+    def features(self):
+        return ['SOW']
 
-    def feature_description(self, fid):
-        return 'Contains word %r' % self.fid2string(fid)
