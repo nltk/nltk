@@ -370,7 +370,7 @@ class NBClassifierFreqDist(FreqDistI):
     def inc(self, sample):
         # Inherit docs from FreqDistI
         _chktype('NBClassifierFreqDist.inc', 1, sample,
-        #         (FeatureValueListI,)) 
+                 (FeatureValueListI,)) 
 
         # Increment the total count.
         self._N += 1
@@ -430,14 +430,14 @@ class NBClassifierLidstoneProbDist(ProbDistI):
             gives Expected Likelihood Estimation smoothing.
         """
         _chktype('NBClassifierLidstoneProbDist',
-        #         1, freqdist, (NBClassifierFreqDist,))
+                 1, freqdist, (NBClassifierFreqDist,))
         self._freqdist = freqdist
         self._l = l
         self._bins = freqdist.fvlist_size()
 
     def prob(self, event):
         _chktype('NBClassifierLidstoneProbDist.prob',
-        #         1, event, (AssignmentEvent,))
+                 1, event, (AssignmentEvent,))
         c = self._freqdist.count(event)
         return float(c + self._l) / self._bins
 
