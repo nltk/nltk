@@ -125,7 +125,7 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
 """
 
 import sys, os.path, re
-from nltk.tokenizer import WSTokenizer, RegexpTokenizer, TokenizerI
+from nltk.tokenizer import WhitespaceTokenizer, RegexpTokenizer, TokenizerI
 from nltk.token import Token, CharSpanLocation, SpanLocation
 from nltk.tagger import TaggedTokenizer
 from nltk.tree import TreebankTokenizer
@@ -434,7 +434,7 @@ class SimpleCorpusReader(CorpusReaderI):
                  license_file=None,
                  copyright_file=None,
                  # Formatting meta-data
-                 default_tokenizer=WSTokenizer(),
+                 default_tokenizer=WhitespaceTokenizer(),
                  property_names={}):
         """
         Construct a new corpus reader.  The parameters C{description},
@@ -689,7 +689,7 @@ class RogetCorpusReader(CorpusReaderI):
         self._name = name
         self._original_rootdir = rootdir
         self._data_file = data_file
-        self._default_tokenizer = WSTokenizer()
+        self._default_tokenizer = WhitespaceTokenizer()
 
         # Postpone actual initialization until the corpus is accessed;
         # this gives the user a chance to call set_basedir(), and
@@ -847,7 +847,7 @@ class TreebankCorpusReader(CorpusReaderI):
     A corpus reader implementation for the Treebank.
     """
     # Default tokenizers.
-    _ws_tokenizer = WSTokenizer()
+    _ws_tokenizer = WhitespaceTokenizer()
     _tb_tokenizer = TreebankTokenizer()
     _tag_tokenizer = TaggedTokenizer()
     
