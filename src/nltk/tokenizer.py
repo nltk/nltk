@@ -52,7 +52,7 @@ class TokenizerI:
     @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
     @outprop: C{LOC}: The subtokens' locations.
     """
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         """
         Divide the given token's C{TEXT} property into a list of
         subtokens, and output that list to the C{SUBTOKENS} property.
@@ -69,10 +69,14 @@ class TokenizerI:
         @param addlocs: If true, then add a location to each generated
             subtoken, based on the input token's location.  If false,
             then do not add locations.
+        @type addcontexts: C{boolean}
+        @param addcontexts: If true, then add a 
+            L{SubtokenContextPointer} to each generated subtoken,
+            pointing to its context within the list of subtokens.
         """
         raise NotImplementedError()
 
-    def xtokenize(self, token, addlocs=False):
+    def xtokenize(self, token, addlocs=False, addcontexts=False):
         """
         Divide the given token's C{TEXT} property into a list of
         subtokens, and output an iterator over that list to the
@@ -94,6 +98,10 @@ class TokenizerI:
         @param addlocs: If true, then add a location to each generated
             subtoken, based on the input token's location.  If false,
             then do not add locations.
+        @type addcontexts: C{boolean}
+        @param addcontexts: If true, then add a 
+            L{SubtokenContextPointer} to each generated subtoken,
+            pointing to its context within the list of subtokens.
         """
         # By default, call tokenize.
         raise NotImplementedError()
@@ -157,14 +165,14 @@ class AbstractTokenizer(TokenizerI):
             raise AssertionError, "Abstract classes can't be instantiated"
         self._property_names = property_names
 
-    def xtokenize(self, token, addlocs=False):
+    def xtokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
         TEXT = self._property_names.get('TEXT', 'TEXT')
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             token[TEXT] = ''.join(text)
-        self.tokenize(token, addlocs)
+        self.tokenize(token, addlocs, addcontexts)
         token[SUBTOKENS] = iter(token[SUBTOKENS])
 
     def raw_tokenize(self, text):
@@ -184,7 +192,7 @@ class AbstractTokenizer(TokenizerI):
         for subtok in token[SUBTOKENS]:
             yield subtok[TEXT]
 
-    def _tokenize_from_raw(self, token, addlocs):
+    def _tokenize_from_raw(self, token, addlocs, addcontexts):
         """
         Tokenize the given token by using C{self.raw_tokenize} to
         tokenize its text string.  Locations are reconstructed by
@@ -202,42 +210,46 @@ class AbstractTokenizer(TokenizerI):
         TEXT = self._property_names.get('TEXT', 'TEXT')
         LOC = self._property_names.get('LOC', 'LOC')
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
 
         # Use raw_tokenize to get a list of subtoken texts.
         text = token[TEXT]
         subtok_texts = self.raw_tokenize(text)
 
-        # Find the subtokens' locations (if requested)
-        locs = []
-        if addlocs:
-            if token.has(LOC):
-                if isinstance(token[LOC], CharSpanLocation):
-                    source = token[LOC].source()
-                    end = token[LOC].start()
-                else:
-                    source = token[LOC]
-                    end = 0
-            else:
-                source = None
-                end = 0
-            for subtok_text in subtok_texts:
-                start = text.find(subtok_text, end)
-                assert start>=0, 'Tokenization alignment failure'
-                end = start+len(subtok_text)
-                locs.append(CharSpanLocation(start,end,source))
-        
-        # Create each subtoken from its text.
-        if addlocs:
-            subtoks = [Token({TEXT:text, LOC:loc})
-                       for (text,loc) in zip(subtok_texts, locs)]
-        else:
-            subtoks = [Token({TEXT:text})
-                       for text in subtok_texts]
+        # Create the list of subtokens
+        subtoks = [Token({TEXT:t}) for t in subtok_texts]
 
+        # Add locations (if requested)
+        if addlocs:
+            source, end = self._get_initial_loc(token)
+            for subtok in subtoks:
+                start = text.find(subtok[TEXT], end)
+                assert start>=0, 'Tokenization alignment failure'
+                end = start+len(subtok[TEXT])
+                subtok[LOC] = CharSpanLocation(start,end,source)
+
+        # Add subtoken context pointers (if requested)
+        if addcontexts:
+            for i, subtok in enumerate(subtoks):
+                context = SubtokenContextPointer(token, SUBTOKENS, i)
+                subtok[CONTEXT] = context
+        
         # Write subtoks to the SUBTOKENS property.
         token[SUBTOKENS] = subtoks
 
-    def _xtokenize_from_raw(self, token, addlocs):
+    def _get_initial_loc(self, token):
+        """
+        @return: A tuple C{(source, start)}, which specifies the
+        source and initial character index that should be used for
+        subtoken locations.
+        """
+        LOC = self._property_names.get('LOC', 'LOC')
+        if token.has(LOC):
+            return (token[LOC], 0)
+        else:
+            return (None, 0)
+
+    def _xtokenize_from_raw(self, token, addlocs, addcontexts):
         """
         XTokenize the given token by using C{self.raw_xtokenize} to
         tokenize its text string.  Locations are reconstructed by
@@ -253,16 +265,17 @@ class AbstractTokenizer(TokenizerI):
         """
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        iter = self._xtokenize_from_raw_helper(token, addlocs)
+        iter = self._xtokenize_from_raw_helper(token, addlocs, addcontexts)
         token[SUBTOKENS] = iter
         
-    def _xtokenize_from_raw_helper(token, addlocs):
+    def _xtokenize_from_raw_helper(token, addlocs, addcontexts):
         """
         A helper function for L{xtokenize_from_raw}.
         """
         assert chktype(1, token, Token)
         TEXT = self._property_names.get('TEXT', 'TEXT')
         LOC = self._property_names.get('LOC', 'LOC')
+        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
 
         # Get the token's text.  If it's an iterator, then collapse
         # it into a single string.
@@ -271,26 +284,29 @@ class AbstractTokenizer(TokenizerI):
             text = ''.join(text)
             
         # Use raw_xtokenize to get an iterator of subtoken texts.
-        subtok_textiter = self.raw_xtokenize(text)
+        subtok_text_iter = self.raw_xtokenize(text)
 
-        # Find the subtokens' locations (if requested)
-        locs = []
-        if addlocs:
-            if token.has(LOC):
-                source = token[LOC].source()
-                end = token[LOC].start()
-            else:
-                source = None
-                end = 0
-            for subtok_text in subtok_textiter:
+        # These are used if we're generating locations for subtokens:
+        source, end = self._get_initial_loc(token)
+
+        for i, subtok_text in enumerate(subtok_text_iter):
+            # Create the token
+            subtok = Token({TEXT: subtok_text})
+
+            # Add a location (if requested)
+            if addlocs:
                 start = text.find(subtok_text, end)
                 assert start>=0, 'Tokenization alignment failure'
                 end = start+len(subtok_text)
-                loc = CharSpanLocation(start,end,source)
-                yield Token({TEXT:subtok_text, LOC:loc})
-        else:
-            for subtok_text in subtok_iter:
-                yield Token({TEXT:subtok_text})
+                subtok[LOC] = CharSpanLocation(start,end,source)
+
+            # Add a context pointer (if requested)
+            if addcontexts:
+                context = SubtokenContextPointer(token, SUBTOKENS, i)
+                subtok[CONTEXT] = context
+
+            # Yield the subtoken
+            yield subtok
 
 class WSTokenizer(AbstractTokenizer):
     """
@@ -312,10 +328,10 @@ class WSTokenizer(AbstractTokenizer):
         assert chktype(1, text, str)
         return text.split()
 
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         # Delegate to self.raw_tokenize()
         assert chktype(1, token, Token)
-        self._tokenize_from_raw(token, addlocs)
+        self._tokenize_from_raw(token, addlocs, addcontexts)
 
     #////////////////////////////////////////////////////////////
     # Iterated tokenization
@@ -324,36 +340,39 @@ class WSTokenizer(AbstractTokenizer):
         for (start, end, subtext) in self._xtokenize_helper(text):
             yield subtext
 
-    def xtokenize(self, token, addlocs=False):
+    def xtokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        token[SUBTOKENS] = self._subtoken_generator(token, addlocs)
+        token[SUBTOKENS] = self._subtoken_generator(token, addlocs,
+                                                    addcontexts)
 
-    def _subtoken_generator(self, token, addlocs):
+    def _subtoken_generator(self, token, addlocs, addcontexts):
         TEXT = self._property_names.get('TEXT', 'TEXT')
         LOC = self._property_names.get('LOC', 'LOC')
 
         text_iter = token[TEXT]
-        if addlocs:
-            if token.has(LOC):
-                source = token[LOC].source()
-                offset = token[LOC].start()
-            else:
-                source = None
-                offset = 0
-            for (start, end, subtext) in self._xtokenize_helper(text_iter):
+
+        # These are used if we're generating locations for subtokens:
+        source, offset = self._get_initial_loc(token)            
+
+        
+        for (i, start, end, subtext) in self._xtokenize_helper(text_iter):
+            subtok = Token({TEXT: subtext})
+            if addlocs:
                 loc = CharSpanLocation(start+offset, end+offset, source)
-                yield Token({TEXT: subtext, LOC: loc})
-        else:
-            for (start, end, subtext) in self._xtokenize_helper(text_iter):
-                yield Token({TEXT: subtext})
+                subtok[LOC] = loc
+            if addcontexts:
+                context = SubtokenContextPointer(token, SUBTOKENS, i)
+                subtok[CONTEXT] = context
+            yield subtok
+                
     
     def _xtokenize_helper(self, text):
         """
-        @return: An iterator that generates a tripple (M{start},
+        @return: An iterator that generates a 4-tuple (M{i}, M{start},
         M{end}, M{word}) for each whitespace-separated token, where
-        M{start} is the start position; M{end} is the end position;
-        and M{word} is C{text[M{start}:M{end}]}
+        M{i} is the list index; M{start} is the start position; M{end}
+        is the end position; and M{word} is C{text[M{start}:M{end}]}
         """
         whitespace = re.compile('\s+')
 
@@ -366,6 +385,7 @@ class WSTokenizer(AbstractTokenizer):
         # move on to a new substring.
         leftover = ''
         offset = 0
+        i = 0
         for substring in text:
             position = 0  # The position within the substring
             
@@ -374,7 +394,8 @@ class WSTokenizer(AbstractTokenizer):
             if match:
                 if leftover:
                     end = offset+match.start()
-                    yield end-len(leftover), end, leftover
+                    yield i, end-len(leftover), end, leftover
+                    i += 1
                     leftover = ''
                 position = match.end()
 
@@ -382,8 +403,9 @@ class WSTokenizer(AbstractTokenizer):
             while position < len(substring):
                 match = whitespace.search(substring, position)
                 if match:
-                    yield (offset+position, offset+match.start(),
+                    yield (i, offset+position, offset+match.start(),
                            leftover+substring[position:match.start()])
+                    i += 1
                     position = match.end()
                     leftover = ''
                 else:
@@ -395,7 +417,7 @@ class WSTokenizer(AbstractTokenizer):
 
         # If the last string had leftover, then return it.
         if leftover:
-            yield offset-len(leftover), offset, leftover
+            yield i, offset-len(leftover), offset, leftover
             
 class LineTokenizer(AbstractTokenizer):
     """
@@ -414,10 +436,10 @@ class LineTokenizer(AbstractTokenizer):
         assert chktype(1, text, str)
         return [s for s in text.split('\n') if s.strip() != '']
 
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         # Delegate to self.raw_tokenize()
         assert chktype(1, token, Token)
-        self._tokenize_from_raw(token, addlocs)
+        self._tokenize_from_raw(token, addlocs, addcontexts)
         
 def _remove_group_identifiers(parsed_re):
     """
@@ -531,7 +553,7 @@ class RegexpTokenizer(AbstractTokenizer):
 
         self._regexp = sre_compile.compile(grouped, re.UNICODE)
 
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
         TEXT = self._property_names.get('TEXT', 'TEXT')
         LOC = self._property_names.get('LOC', 'LOC')
@@ -540,7 +562,7 @@ class RegexpTokenizer(AbstractTokenizer):
         # If we're not adding locations, then just delegate to
         # raw_tokenize.
         if not addlocs:
-            self._tokenize_from_raw(token, addlocs)
+            self._tokenize_from_raw(token, addlocs, addcontexts)
             return
 
         # This split will return a list of alternating matches and
@@ -586,12 +608,12 @@ class RegexpTokenizer(AbstractTokenizer):
 ##  Demonstration
 ##//////////////////////////////////////////////////////
 
-def _display(token, tokenizer, addlocs):
+def _display(token, tokenizer, addlocs, addcontexts):
     """
     A helper function for L{demo} that displays a list of tokens.
     """
     token = token.copy() # Make a new copy.
-    tokenizer.tokenize(token, addlocs=addlocs)
+    tokenizer.tokenize(token, addlocs=addlocs, addcontexts=addcontexts)
     tokens = token['SUBTOKENS']
     
     # Get the string representation:
@@ -606,7 +628,7 @@ def _display(token, tokenizer, addlocs):
     # Print the string
     print str
 
-def demo(addlocs=False):
+def demo(addlocs=False, addcontexts=False):
     """
     A demonstration that shows the output of several different
     tokenizers on the same string.
@@ -618,33 +640,41 @@ def demo(addlocs=False):
     print `s`
     print
     print 'Tokenize using whitespace:'
-    _display(tok, WSTokenizer(), addlocs)
+    _display(tok, WSTokenizer(), addlocs, addcontexts)
     print
     print 'Tokenize sequences of alphanumeric characters:'
-    _display(tok, RegexpTokenizer(r'\w+', ), addlocs)
+    _display(tok, RegexpTokenizer(r'\w+', ), addlocs, addcontexts)
     print
     print 'Tokenize sequences of letters and sequences of nonletters:'
-    _display(tok, RegexpTokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+'), addlocs)
+    _display(tok, RegexpTokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+'), addlocs,
+             addcontexts)
                                   
     print
     print 'A simple sentence tokenizer:'
-    _display(tok, RegexpTokenizer(r'\.(\s+|$)', negative=True), addlocs)
+    _display(tok, RegexpTokenizer(r'\.(\s+|$)', negative=True), addlocs,
+             addcontexts)
                                   
     print
     print 'Tokenize by lines:'
-    _display(tok, LineTokenizer(), addlocs)
+    _display(tok, LineTokenizer(), addlocs, addcontexts)
     print
     
 if __name__ == '__main__':
     print '#'*70
     print '##'+'nltk.tokenizer Demonstration'.center(66)+'##'
-    print '##'+'(addlocs = True)'.center(66)+'##'
+    print '##'+'(addlocs = True; addcontexts=False)'.center(66)+'##'
     print '#'*70
-    demo(True)
+    demo(True, False)
     
     print '#'*70
     print '##'+'nltk.tokenizer Demonstration'.center(66)+'##'
-    print '##'+'(addlocs = False)'.center(66)+'##'
+    print '##'+'(addlocs = False; addcontexts=False)'.center(66)+'##'
     print '#'*70
     demo(False)
+    
+    print '#'*70
+    print '##'+'nltk.tokenizer Demonstration'.center(66)+'##'
+    print '##'+'(addlocs = False; addcontexts=True)'.center(66)+'##'
+    print '#'*70
+    demo(False, True)
     
