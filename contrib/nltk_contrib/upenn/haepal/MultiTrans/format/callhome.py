@@ -25,6 +25,7 @@ class Callhome:
             self.add(self.Annotation(start=st, end=et,
                                      TYPE='segment',
                                      SPKR=ch[:-1],
+                                     CHANNEL=ord(ch[0])-ord('A'),
                                      TEXT=text))
         file.close()
 
