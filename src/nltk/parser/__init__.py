@@ -147,7 +147,7 @@ class AbstractParser(ParserI):
     def _parse_from_parse_n(self, token):
         TREES = self._property_names.get('TREES', 'TREES')
         TREE = self._property_names.get('TREE', 'TREE')
-        self.parse(token)
+        self.parse_n(token)
         if token[TREES] == []:
             token[TREE] = None
         else:
