@@ -12,7 +12,10 @@ The Natural Language Toolkit is a package intended to simplify the
 task of programming natural language systems.  It is intended to be
 used as a teaching tool, not as a basis for building production
 systems.
+"""
 
+# Leave this out for now...
+"""
 The natural language toolkit is under active development.
 
 Interfaces
