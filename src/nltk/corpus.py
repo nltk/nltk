@@ -536,7 +536,7 @@ class SimpleCorpusReader(CorpusReaderI):
     def items(self, group=None):
         self._initialize()
         if group is None: return self._items
-        else: return self._groups.get(group) or []
+        else: return tuple(self._groups.get(group)) or ()
 
     def path(self, item):
         self._initialize()
@@ -641,6 +641,7 @@ class RogetCorpusReader(CorpusReaderI):
             key = ' '.join(key.split()) # Normalize the key.
             self._itemlist.append(key)
             self._items[key] = contents.strip()
+        self._itemlist = tuple(self._itemlist)
 
     #////////////////////////////////////////////////////////////
     #// Corpus Information/Metadata
@@ -815,7 +816,7 @@ class TreebankCorpusReader(CorpusReaderI):
     def items(self, group=None):
         self._initialize()
         if group is None: return self._items
-        else: return self._group_items.get(group) or []
+        else: return tuple(self._group_items.get(group)) or ()
 
     def path(self, item):
         self._initialize()
