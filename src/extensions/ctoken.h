@@ -31,63 +31,83 @@
  *********************************************************************/
 
 /* The struct that is used to encode Location instances. */
-typedef struct LocObjectStruct {
+typedef struct {
     PyObject_HEAD      /* Object head: refcount & type */
     long int start;    /* The start index */
     long int end;      /* The end index */
     PyObject *unit;    /* The unit */
     PyObject *source;  /* The source */
-} locationObject;
+} nltkLocation;
 
 /* The Location type. */
-staticforward PyTypeObject locationType;
+static PyTypeObject nltkLocationType;
 
 /* A macro to test if something's a Location. */
-#define is_location(v) ((v)->ob_type == &locationType)
+#define is_nltkLocation(v) ((v)->ob_type == &nltkLocationType)
 
 /* Location Constructor & Destructor */
 static PyObject *
-  location_new(PyTypeObject* type, PyObject *args, PyObject *keywords);
+  nltkLocation__new__(PyTypeObject* type, PyObject *args, PyObject *keywords);
 static int
-  location_init(locationObject* self, PyObject *args, PyObject *keywords);
+  nltkLocation__init__(nltkLocation* self, PyObject *args, PyObject *keywords);
 static void
-  location_dealloc(locationObject* self);
+  nltkLocation_dealloc(nltkLocation* self);
 
 /* Location Methods */
 static PyObject *
-  location_length(locationObject* self, PyObject *args);
-static locationObject *
-  location_start_loc(locationObject* self, PyObject *args);
-static locationObject *
-  location_end_loc(locationObject* self, PyObject *args);
-static locationObject *
-  location_union(locationObject* self, PyObject *args);
+  nltkLocation_length(nltkLocation* self, PyObject *args);
+static nltkLocation *
+  nltkLocation_start_loc(nltkLocation* self, PyObject *args);
+static nltkLocation *
+  nltkLocation_end_loc(nltkLocation* self, PyObject *args);
+static nltkLocation *
+  nltkLocation_union(nltkLocation* self, PyObject *args);
 static PyObject *
-  location_prec(locationObject* self, PyObject *args);
+  nltkLocation_prec(nltkLocation* self, PyObject *args);
 static PyObject *
-  location_succ(locationObject* self, PyObject *args);
+  nltkLocation_succ(nltkLocation* self, PyObject *args);
 static PyObject *
-  location_overlaps(locationObject* self, PyObject *args);
+  nltkLocation_overlaps(nltkLocation* self, PyObject *args);
 static PyObject *
-  location_select(locationObject* self, PyObject *args);
+  nltkLocation_select(nltkLocation* self, PyObject *args);
 
 /* Location operators */
 static PyObject *
-  location__repr__(locationObject *self);
+  nltkLocation__repr__(nltkLocation *self);
 static PyObject *
-  location__str__(locationObject *self);
+  nltkLocation__str__(nltkLocation *self);
 static int
-  location__len__(locationObject *self);
+  nltkLocation__len__(nltkLocation *self);
 static int
-  location__cmp__(locationObject *self, locationObject *other);
+  nltkLocation__cmp__(nltkLocation *self, nltkLocation *other);
 static long
-  location__hash__(locationObject *self);
-static locationObject *
-  location__add__(locationObject *self, locationObject *other);
+  nltkLocation__hash__(nltkLocation *self);
+static nltkLocation *
+  nltkLocation__add__(nltkLocation *self, nltkLocation *other);
 
 /*********************************************************************
  *  Type
  *********************************************************************/
+
+/* The struct that is used to encode Type instances. */
+typedef struct {
+    PyObject_HEAD          /* Object head: refcount & type */
+    PyObject *properties;  /* The type's property dictionary */
+} nltkType;
+
+/* The Type type. */
+static PyTypeObject nltkTypeType;
+
+/* A macro to test if something's a Type. */
+#define is_nltkType(v) PyType_IsSubtype(&nltkTypeType, (v)->ob_type)
+
+/* Type Constructor & Destructor */
+static PyObject *
+  nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords);
+static int
+  nltkType__init__(nltkType* self, PyObject *args, PyObject *keywords);
+static void
+  nltkType_dealloc(nltkType* self);
 
 /*********************************************************************
  *  Token
