@@ -850,7 +850,6 @@ Index locations are ordered, and can be compared with cmp:
 """
 
 def test_ProbabilisticToken(): """
-
 Probablistic tokens will probably be deprecated.  But in the mean
 time, this covers the code in ProbabilisticToken:
 
@@ -859,8 +858,9 @@ time, this covers the code in ProbabilisticToken:
 """
     
 
-def test_demo():
-    r"""
+def test_demo(): r"""
+Unit tests for L{nltk.token.demo}.
+    
     >>> mark_stdout_newlines(demo)
     ______________________________________________________________________
     loc  = CharSpanLocation(3, 13, source='corpus.txt')
@@ -888,7 +888,7 @@ def test_demo():
     print tok2['LOC']              => [20:25c]@corpus.txt
     print tok == tok2              => False
     print tok == tok.copy()        => True
-    """
+"""
 
 #######################################################################
 # Test Runner
