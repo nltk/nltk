@@ -229,7 +229,7 @@ class Location:
         @return: C{lst[self.start():self.end()]}
         @rtype: C{list}
         """
-        assert _chktype(1, lst, [])
+        assert _chktype(1, lst, [], ())
         return lst[self.start():self.end()]
 
     def __repr__(self):
@@ -721,7 +721,7 @@ class WSTokenizer(TokenizerI):
 
     def xtokenize(self, str, source=None):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType,)
+        assert _chktype(1, str, types.StringType)
         return _XTokenTuple(str.split(), source=source, unit='w')
 
 class CharTokenizer(TokenizerI):
@@ -778,6 +778,7 @@ class RETokenizer(TokenizerI):
         """
         @type regexp: string
         """
+        if type(regexp).__name__ = 'SRE_Pattern': regexp = regexp.pattern
         assert _chktype(1, regexp, types.StringType)
         self._regexp = re.compile('('+regexp+')')
         self._positive = positive
