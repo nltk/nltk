@@ -241,9 +241,6 @@ class Location:
         @return: A concise string representation of this C{Location}.
         @rtype: string
         """
-        ###### TEMPORARY
-        return self.__str__()
-    
         if self._unit is not None: unit = self._unit
         else: unit = ''
         
@@ -599,9 +596,9 @@ class ProbablisticToken(Token, ProbablisticMixIn):
         ProbablisticMixIn.__init__(self, p)
         Token.__init__(self, type, location_or_start, end, **kwargs)
     def __repr__(self):
-        return Token.__repr__(self)+' (p=%s)' % p
+        return Token.__repr__(self)+' (p=%s)' % self._p
     def __str__(self):
-        return Token.__str__(self)+' (p=%s)' % p
+        return Token.__str__(self)+' (p=%s)' % self._p
 
 ##//////////////////////////////////////////////////////
 ##  Tokenizers
