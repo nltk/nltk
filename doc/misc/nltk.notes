@@ -1,0 +1,140 @@
+*
+* Natural Language Toolkit
+*
+
+> Design
+>> Data Classes
+  - Set
+  - FreqDist
+  - Word (words can be tagged, analyzed, etc.)
+  - SyntaxTree
+  - FreqDist
+  - ProbDist
+
+>> Processing Classes
+  - Tokenizer: string \to [Word].  
+      - TaggedTokenizer deals with the/DT, etc.
+      - ChunkTokenizer?  Doesn't return [Word!!]
+        Maybe use a ChunkReader?
+  - Parser: string \to [SyntaxTree]
+      - ChunkParser: returns 1-layer NP trees
+      - ChartParser
+  - Tagger: [Word] \to [(tag, Word)]?
+    or [Word] \to [TaggedWord]
+    or [Word] \to [Word] with some words as TaggedWord.
+      - Tagger using FreqDist or ProbDist?
+  - LanguageModel: train on data, can generate or 
+
+>> Questions
+  - how do I maintain a notion of original source?  e.g., where
+    different chunks came from.  Have foo.source attribute?  Like
+    word.source?  What would be stored in source?  character index in
+    original string?  pointer to that string?  name of the file it
+    came from?
+
+>> Pset correlation
+Pset 1
+
+Pset 2
+  - TaggedTokenizer
+  - FreqDistTagger
+    - FreqDist
+  - FallbackTagger: takes multiple taggers as args
+  - TaggedChunkTokenizer
+  - RegexChunker
+Pset 3
+
+Pset 4
+
+
+> Ramblings\ldots
+
+>> Design
+>>> Goals
+  - simple
+  - easy to use
+
+
+>>> Conventions
+  - InterfacesI
+  - class names start with captial letter
+
+>>> Structure
+  1. Data Classes
+    - Set
+    - Syntax Tree
+    - Word
+    - FreqDist
+    - ProbDist
+  2. Processing Classes
+
+>> Random Notes
+
+Design & implement a natural language toolkit in python for steven's
+class..  Use epydoc, interfaces.  Interface class is a class all of
+whose members raise NotImplementedError.  E.g.:
+
+# class TokenizerI:
+#     def tokenize(words):
+#         """## epydoc string... """
+#         raise NotImplementedError("Interface method not implemented")
+
+Interface hierarchies define interfaces..  Classes are subclassed from
+their interfaces or from other classes.  The interfaces are just a way
+to formalize what we expect; also allows us to inherit epydoc strings.
+
+Components:
+  - tokenizer (impl space tokenizer, maybe 1 other, let them implement
+               a better tokenizer?  e.g., one that splits 's off, etc.)
+  - parser
+  - language modler -- can generate, etc.
+
+Data Structures
+  - word.. string?  
+  - list of words, set of words, etc?
+  - set
+  - syntax tree?  a list with an id?
+  - frequency chart -- basically like a dict, but default 0 values,
+    and you can ask for relative freq, etc..  freq['a']+=1, 
+    freq['b']/freq.N..
+
+Utilities
+  - list pretty-printing.
+  - 
+
+Issues:
+  - what programming methods/styles should I use/not use?  What would
+    be harder to learn.  e.g., learning curve for list comprehensions,
+    exceptions, classes.
+
+Proposal:
+  1. structure
+  2. design goals
+  3. timetable
+  4. (preliminary) design overview
+  5. bibliography
+  6. purpose
+
+>> Tokens, Types, and Sources..
+
+We'd like to remember where tokens come from.
+Does it make sense to define a Token as a TokenType+Source?
+
+Token defines:
+  - token.type()
+  - token.source()
+  - testing for equality (==source and ==type)
+
+TokenType defines:
+  - testing for equality
+
+Source defines:
+  - testing for equality
+
+What gets tags?  Tokens or TokenTypes??
+Probably TokenTypes: "bank/NP" is a different type than "bank/VP"
+
+What does a Source consist of?  typically an index into a string?
+Maybe a pointer to that string?
+
+Maybe sources just define comparison.
