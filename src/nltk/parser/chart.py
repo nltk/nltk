@@ -79,24 +79,24 @@ class EdgeI:
     consistent with the text.  Every edge contains:
 
         - A C{Location}, indicating what subsequence of the text is
-          consistant with the structure.
+          consistent with the structure.
 
         - A X{left-hand side}, specifying what kind of structure is
-          consistant with the subsequence.  The left-hand side can be
+          consistent with the subsequence.  The left-hand side can be
           either a nonterminal or a text type:
               - A nonterminal specifies a C{TreeToken} whose node type
                 is the nonterminal's symbol.
               - A text type specifies a C{Token} with that type.
 
         - A C{Token}, recording the actual structure that is
-          consistant with the text.  This value is not used during
+          consistent with the text.  This value is not used during
           chart parsing; but it provides convenient access to complete
           parses once the chart parsing algorithm terminates.
 
     In addition, every edge is either "complete" or "incomplete."  An
     edge is X{complete} if its structure has been found to be fully
     consistent with the text.  An edge is X{incomplete} if its
-    structure is partially consistant with the text.  In particular,
+    structure is partially consistent with the text.  In particular,
     if an edge is incomplete, then the subsequence of the text
     specified by its location is a possible prefix for its structure.
 
@@ -106,7 +106,7 @@ class EdgeI:
           C{TokenEdge}s are always complete.
 
         - C{ProductionEdge}s record which trees have been found to be
-          (partially) consistant with the text.  In addition to the
+          (partially) consistent with the text.  In addition to the
           fields discussed above, each C{ProductionEdge} contains a
           X{right-hand side}, specifying what kind of children the
           tree structure has.
@@ -173,23 +173,23 @@ class EdgeI:
 class ProductionEdge(EdgeI):
     """
     A X{production edge} specifies that a tree licensed by a
-    C{CFGProduction} is partially consistant with the text.  In
+    C{CFGProduction} is partially consistent with the text.  In
     particular, it indicates that a prefix of the production's right
-    hand side is consistant with a subsequence of the text.  Each
+    hand side is consistent with a subsequence of the text.  Each
     C{ProductionEdge} contains:
 
         - The CFG production licensing the tree that is partially
-          consistant with the text.
+          consistent with the text.
 
         - The X{dot position}, which specifies what prefix of the
-          production's right hand side is consistant with the text.
+          production's right hand side is consistent with the text.
           In particular, if C{M{prod}} is the production, then the dot
           position C{M{d}} specifies that C{M{prod}.rhs()[:M{d}]} is
-          the prefix of the production's right hand that is consistant
+          the prefix of the production's right hand that is consistent
           with the text.
           
         - A C{Location} specifying the span of the text that is
-          consistant with the prefix of the production's right hand
+          consistent with the prefix of the production's right hand
           side.
 
     For example, the production edge based on the production
@@ -198,8 +198,8 @@ class ProductionEdge(EdgeI):
 
         [VP: [V: ...] [NP: ...] [PP: ...]]
 
-    is partially consistant with the text.  In particular, it
-    specifies that the first two children of the tree are consistant
+    is partially consistent with the text.  In particular, it
+    specifies that the first two children of the tree are consistent
     with the text spanning from the third word to the seventh word.
 
     A C{ProductionEdge} with production C{[Production: A -> B C D]},
@@ -222,7 +222,7 @@ class ProductionEdge(EdgeI):
 
         @param prod: The CFG production that the edge is based on.
         @type prod: C{CFGProduction}
-        @param structure: The (partial) parse tree that is consistant
+        @param structure: The (partial) parse tree that is consistent
             with a subsequence of the text.  This tree's node value
             should be based on the production's left-hand side.  It
             should have C{dotpos} children, corresponding to the first
@@ -234,15 +234,15 @@ class ProductionEdge(EdgeI):
             equal to the terminal.
         @type structure: C{TreeToken}
         @param loc: The location spanned by the edge.  This location
-            specifies the span of the text that is consistant with
+            specifies the span of the text that is consistent with
             a prefix of the production's right hand side.
         @type loc: C{Location}
         @param dotpos: The position of the edge's dot.  This position
             specifies what prefix of the production's right hand side
-            is consistant with the text.  In particular, if C{M{prod}}
+            is consistent with the text.  In particular, if C{M{prod}}
             is the production, then the dot position C{M{d}} specifies
             that C{M{prod}.rhs()[:M{d}]} is the prefix of the
-            production's right hand that is consistant with the text.
+            production's right hand that is consistent with the text.
         @type dotpos: C{int}
         """
         assert _chktype(1, prod, CFGProduction)
@@ -385,7 +385,7 @@ class TokenEdge(EdgeI):
         @return: A verbose string representation of the C{Edge}
         @rtype: C{string}
         """
-        return '%r -> *' % self._token
+        return '%r.' % self._token.type()
 
     def __eq__(self, other):
         """
