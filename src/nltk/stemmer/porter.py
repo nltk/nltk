@@ -588,14 +588,10 @@ def demo():
     # Pick a file from the brown corpus, and tokenize it.
     # Keep at most 100 tokens.
     import random
-    #from nltk.corpus import treebank
-    #item = random.choice(treebank.items('raw'))
-    #text = treebank.tokenize(item)[:100]
-
-    # [XX] temporary fix, until nltk.corpus is updated:
-    from nltk.tokenizer import WSTokenizer
-    text = Token(text='stemming can be fun and exciting')
-    WSTokenizer().tokenize(text)
+    from nltk.corpus import treebank
+    item = random.choice(treebank.items('raw'))
+    text = treebank.tokenize(item)
+    text['subtokens'] = text['subtokens'][:100]
 
     # Remove any formatting tokens.
     text = [tok for tok in text['subtokens']
