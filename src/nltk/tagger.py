@@ -438,16 +438,43 @@ class BackoffTagger(TaggerI):
                     
         return tagged_tokens
 
-def untag(tokens):
-    return [Token(t.type().base(), t.loc()) for t in tokens]
+def untag(tagged_tokens):
+    """
+    Given a list of tagged tokens, return a list of tokens constructed
+    from the tagged tokens' base types and locations.  In particular,
+    if C{tagged_tokens} = [I{ttok_1}, ..., I{ttok_n}], return a
+    list of tokens [I{tok_1}, ..., I{tok_n}], where I{tok_i}.loc() ==
+    I{ttok_i}.loc() and I{tok_i}.type() == I{ttok_i}.type.base().
+
+    @param tagged_tokens: The list of tokens to transform.
+    @type tagged_tokens: C{list} of C{TaggedToken}
+    @return: A list of tokens constructed from the C{tagged_tokens}'
+        base types and locations.
+    @rtype: C{list} of C{Token}
+    """
+    return [Token(t.type().base(), t.loc()) for t in tagged_tokens]
 
 def accuracy(orig, test):
+    """
+    Test the accuracy of a tagged text, with respect the correct
+    tagging.  This accuracy is defined as the percentage of tokens
+    tagged correctly.  Note that C{orig} and C{test} should be the
+    same length, and should contain tokens with corresponding base
+    types and locations; otherwise, C{test} is not a valid tagging of
+    C{orig}.
+
+    @param orig: The original (correctly-tagged) text.  This is the
+        \"gold standard\" against which C{test} is compared.
+    @type orig: C{list} of C{TaggedToken}
+    @param test: The tagging whose accuracy you wish to test.
+    @type test: C{list} of C{TaggedToken}
+    """
     if len(orig) != len(test):
-        print "OUCH! Bad lengths!!!"
+        raise ValueError('Invalid Tagging')
 
     correct = 0
-    for (o,t) in zip(orig, test):
-        if o == t: correct += 1
+    for i in range(len(orig)):
+        if orig[i] == test[i]: correct += 1
     return float(correct)/len(orig)
 
 def test_tagger():
