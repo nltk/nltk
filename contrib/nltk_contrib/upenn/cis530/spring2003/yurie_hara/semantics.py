@@ -14,6 +14,8 @@ Example: The denotation of "John saw Mary" is::
 
     saw('Mary')('John') == saw(John, Mary) 
 """
+__docformat__ = 'plaintext'
+
 from nltk.cfg import CFG, CFGProduction, Nonterminal
 from nltk.parser.chart import *
 from nltk.tokenizer import WSTokenizer
