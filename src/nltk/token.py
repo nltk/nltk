@@ -263,7 +263,7 @@ class Location:
 ##//////////////////////////////////////////////////////
 class Token:
     """
-    An occurance of a single unit of text, such as a word, a
+    A single occurance of a unit of text, such as a word, a
     punctuation mark, or a sentence.  A token consists of a X{type}
     and a X{location}.  The type is the unit of text (e.g., a specific
     word).  The location is the position at which this token occured
@@ -342,9 +342,15 @@ class Token:
     
     def location(self):
         """
+        Return the position at which this token occured in the
+        original text.  A token's location may have the special value
+        C{None}, which specifies that the token's location is unknown
+        or unimportant.  A token with a location of C{None} is not
+        equal to any other token, even if their types are equal.
+    
         @return: the position at which this token occured in the
             original text.
-        @returntype: Location
+        @returntype: C{Location} or C{None}
         """
         return self._location
 
@@ -357,11 +363,19 @@ class Token:
         @raise TypeError: if C{other} is not a C{Token} or subclass of
             C{Token}.
         """
-        if not isinstance(other, Token):
-            raise TypeError("Token compared for equality with a non-Token.")
+        chkclass(self, other)
         if self.location() == None or other.location() == None: return 0
         return (self._location == other.location and
                 self._type == other._type)
+
+    def __cmp__(self, other):
+        """
+        No ordering relationship is defined over C{Tokens}; raise an
+        exception.
+        @raise NotImplementedError: 
+        """
+        raise NotImplementedError("Ordering relations are not "+
+                                  "defined over Tokens")
 
     def __repr__(self):
         """
@@ -369,7 +383,7 @@ class Token:
         @rtype: string
         """
         if self.location() is None:
-            return repr(self.type())+'@?'
+            return repr(self.type())+'@[?]'
         else:
             return repr(self.type())+repr(self.location())
 
@@ -379,7 +393,7 @@ class Token:
         @rtype: string
         """
         if self.location() is None:
-            return repr(self.type())+'@?'
+            return repr(self.type())+'@[?]'
         else:
             return repr(self.type())+str(self.location())
 
