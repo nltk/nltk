@@ -302,7 +302,9 @@ class ClassifierI:
 class ClassifierTrainerI:
     """
     A processing interface for constructing new classifiers, using
-    training data.
+    training data.  Classifier trainers must implement one method,
+    C{train}, which generates a new classifier from a list of training
+    samples.
     """
     def train(self, labeled_tokens, **kwargs):
         """
@@ -400,9 +402,11 @@ def log_likelihood(classifier, labeled_tokens):
         label = ltok.type().label()
         dist = classifier.distribution_dictionary(utok)
         if dist[label] == 0:
-            # Python intermrets 1e1000 as inf.
+            # Use some approximation to infinity.  What this does
+            # depends on your system's float implementation.
             likelihood -= 1e1000
         else:
             likelihood += math.log(dist[label])
-    return likelihood
+
+    return likelihood / len(labeled_tokens)
     
