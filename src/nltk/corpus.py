@@ -64,12 +64,12 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     each instance, the corpus specifies the verb and noun that the
     prepositional phrase might potentially attatch to; and the
     preposition and head noun of the prepositional phrase.  I{The
-    interface to this corpus is not implemented yet.}
+    reader for this corpus is not implemented yet.}
 
   - L{reuters}: A collection of approximately 21,500 documents that
     appeared on the Reuters newswire in 1987.  The documents were
-    assembled and indexed with categories by Reuters.  I{The interface
-    to this corpus is corpus is not implemented yet.}
+    assembled and indexed with categories by Reuters.  I{The reader
+    for this corpus is corpus is not implemented yet.}
 
   - L{treebank}: A collection of hand-annotated parse trees for
     Englsih text.  I{This corpus can only be distributed through
@@ -379,7 +379,7 @@ class SimpleCorpusReader(CorpusReaderI):
         @param rootdir: The path to the root directory for the
             corpus.  If C{rootdir} is a relative path, then it is
             interpreted relative to the C{nltk.corpus} base directory
-            (as returned by L{nltk.corpus.basedir()}).
+            (as returned by L{nltk.corpus.get_basedir()}).
         @type entries_regexp: C{regexp} or C{string}
         @param entries_regexp: A regular expression over paths that
             defines the set of files that should be listed as
@@ -418,7 +418,7 @@ class SimpleCorpusReader(CorpusReaderI):
             copyright notice for the corpus.  If this is a relative
             path, then it is interpreted relative to the corpus's root
             directory.
-        @type default_tokenizer: L{TokenizerI}
+        @type default_tokenizer: L{TokenizerI<nltk.tokenizer.TokenizerI>}
         @param default_tokenizer: The default tokenizer that should be
             used for the corpus reader's L{tokenize} method.
         """
@@ -1037,6 +1037,15 @@ gutenberg = SimpleCorpusReader(
 ###################################################
 ## PP Attatchment
 
+ppattatch = '''\
+[CORPUS READER NOT IMPLEMENTED YET]
+
+Information about approximately 30,000 instances of potentially
+ambigous prepositional phrase attatchments.  For each instance, the
+corpus specifies the verb and noun that the prepositional phrase might
+potentially attatch to; and the preposition and head noun of the
+prepositional phrase.'''
+
 # Not supported yet
 
 ###################################################
@@ -1059,6 +1068,13 @@ treebank = TreebankCorpusReader('treebank', 'treebank/',
 
 ###################################################
 ## Reuters corpus
+
+reuters = '''\
+[CORPUS READER NOT IMPLEMENTED YET]
+
+A collection of approximately 21,500 documents that appeared on the
+Reuters newswire in 1987.  The documents were assembled and indexed
+with categories by Reuters.'''
 
 # Not supported yet
 
