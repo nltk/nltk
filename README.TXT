@@ -169,5 +169,7 @@ Releases
         6. Run "make distributions"
         7. FTP src/dist/nltk-<m>.<n>* to the "incoming" directory of
            "upload.sf.net"
-        8. Add the new release to sourceforge, using the release admin
+        8. Make documentation tarball & FTP it to the "incoming" 
+           directory of "upload.sf.net"
+        9. Add the new release to sourceforge, using the release admin
            page.
