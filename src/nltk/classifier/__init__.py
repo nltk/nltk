@@ -8,28 +8,23 @@
 # $Id$
 
 """
+Classification is the task of assigning a label to a given text token.
+
+Labeled Texts
+=============
+
+Classifiers
+===========
+
+Features
+========
+
+Feature Selection
+-----------------
 
 
-  - Feature
-
-Classes and interfaces used to classify texts into categories.
-
-  - A category is typicaly a string or an integer
-  - A categorized document is represented with a TaggedType.  The base
-    type is the text, and the tag is the category.
-
-Classes/Interfaces:
-  - FeatureListI: abstract specification of a list of features
-  - ClassifierI: abstract specification of a classifier
-    - NBClassifier: naive bayes classifier
-    - MaxentClassifier: maxent classifier
-  - ClassifierFactory: constructs a classifier
-
-Sub-modules:
-  - naivebayes
-  - maxent
-
-Picture::
+Random Picture
+==============
 
 
       unlabeled_text --> ClassifierI --> labeled_text
@@ -50,6 +45,10 @@ Picture::
 #     - Texts and Labels
 #     - LabeledText
 #
+# Classifiers
+#     - Classifiers
+#     - Classifier Factories
+#
 # Features
 #     - Features: Terminology Notess
 #     - Feature Values
@@ -57,14 +56,7 @@ Picture::
 #     - Feature Detector Lists
 #     - Feature Value Lists
 #
-# Classifiers
-#     - Classifiers
-#     - Classifier Factories
-#
 # Feature Selection
-
-# note to self: move classifiers above features at some point?  The
-# classifier interfaces don't depend on features.
 
 ##//////////////////////////////////////////////////////
 ##  Texts and Labels
@@ -158,16 +150,92 @@ class LabeledText:
     
     def __repr__(self):
         """
-        @return: A string representation of this labeled text.
+        @return: a string representation of this labeled text.
         @rtype: C{string}
         """
         return "%r/%r" % (self._text, self._label)
 
 
+##//////////////////////////////////////////////////////
+##  Classiifers & Classifier Factories
+##//////////////////////////////////////////////////////
+
+class ClassifierI:
+    """
+    A processing interface for assigning a label to a text.
+    Classifiers are required to define one method, C{classify}, which
+    determines which label is most appropriate for a given text
+    token.
+
+    Classifiers are also encouranged to implement the following
+    methods:
+
+      - C{distribution}: Returns a probability distribution over
+        labeled tokens.
+      - C{prob}: Returns the probability that a token has a given
+        label. 
+
+    Classes implementing the ClassifierI interface may choose to only
+    support certain classes of tokens for input.  If a method is
+    unable to return a correct result because it is given an
+    unsupported class of token, then it should raise a
+    NotImplementedError.
+
+    Typically, classifiers encode specific classifier models; but do
+    not include the algorithms for training the classifiers.  Instead,
+    C{ClassifierFactory}s are used to generate classifiers from
+    training data.
+
+    @see: C{ClassifierFactoryI}
+    """
+    
+    def classify(unlabeled_token):
+        """
+        Determine which label is most appropriate for the given text
+        token, and return a C{LabeledText} token constructed from the
+        given text token and the chosen label.
+        
+        @return: a C{LabeledText} token whose label is the most
+            appropriate label for the given token; whose text is the
+            given token's text; and whose location is the given
+            token's location.
+        @rtype: C{Token} with type C{LabeledText}
+        @param unlabeled_token: The text to be classified.
+        @type unlabeled_token: (immutable)
+        """
+        raise NotImplementedError()
+
+    def distribution(unlabeled_token):
+        """
+        @return: a probability distribution whose samples are labeled
+            tokens derived from C{unlabeled_token}.  In particular,
+            the samples should be C{LabeledText} tokens whose text is
+            C{unlabeled_token}'s text; and whose location is 
+            C{unlabeled_token}'s location.  The probability of each
+            sample indicates the likelihood that the unlabeled token
+            should be assigned a given label.
+        @rtype: C{ProbDistI}
+        @param unlabeled_token: The text to be classified.
+        @type unlabeled_token: (immutable)
+        """
+        raise NotImplementedError()
+
+class ClassifierFactoryI:
+    """
+    A processing interface for constructing new C{Classifier}s, using
+    training data.
+    """
+    def train(labeled_tokens):
+        """
+        Train a new classifier, using the given training samples.
+        """
 
 ##//////////////////////////////////////////////////////
 ##  Features: Terminology notes.
 ##//////////////////////////////////////////////////////
+
+# Many (but not necessarily all) classifiers are based on the
+# following general feature framework...
 
 # To make my terminology precise, I'll give tentative definitions
 # here:
@@ -375,7 +443,7 @@ class AbstractFeatureDetectorList(FeatureDetectorListI):
 
     def __repr__(self):
         """
-        @return: A string representation of this feature detector
+        @return: a string representation of this feature detector
             list, of the form::
 
                 <FeatureDetectorList with 72 features>
@@ -594,6 +662,7 @@ class FeatureValueListI:
 
         @rtype: sequence of (tuple of C{int} and (immutable))
         """
+        raise NotImplementedError()
 
 class SimpleFeatureValueList(FeatureValueListI):
     """
@@ -648,7 +717,7 @@ class SimpleFeatureValueList(FeatureValueListI):
 
     def __repr__(self):
         """
-        @return: A string representation of this feature value
+        @return: a string representation of this feature value
             list, of the form::
 
                 <FeatureValueList with 72 features>
@@ -658,19 +727,8 @@ class SimpleFeatureValueList(FeatureValueListI):
         return "<FeatureValueList with %d features>" % len(self)
 
 ##//////////////////////////////////////////////////////
-##  ClassiiferI
+##  Feature Selection
 ##//////////////////////////////////////////////////////
-
-class ClassifierI:
-    def classify(labeled_text):
-        """
-        Classify an labeled_text.
-        
-        @rtype: (ProbDist of)? (label | LabeledType)
-        """
-
-class ClassifierFactoryI:
-    "???"
 
 if __name__ == '__main__':
     features = (
