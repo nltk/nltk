@@ -780,7 +780,7 @@ class RETokenizer(TokenizerI):
         """
         if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
         assert _chktype(1, regexp, types.StringType)
-        self._regexp = re.compile('('+regexp+')')
+        self._regexp = re.compile('('+regexp+')', re.UNICODE)
         self._positive = positive
         
     def tokenize(self, str, **kwargs):
