@@ -21,6 +21,13 @@ a given classification task.
 
 This module also defines classes implementing the C{FeatureSelectorI}
 interface.
+
+@warning: We plan to significantly refactor the nltk.classifier
+    package for the next release of nltk.
+
+@group Interfaces: FeatureSelectorI
+@group Feature Selectors: AttestedFeatureSelector
+@group Feature Detector Lists: SelectedFDList
 """
 
 from nltk.classifier import *

@@ -96,6 +96,22 @@ X{default value} (usually, zero).  Feature value lists provide a
 method that can be used to retrieve all of the non-default feature
 value assignments.  This can considerably decrease the time that it
 takes to process the feature value list.
+
+@warning: We plan to significantly refactor the nltk.classifier
+    package for the next release of nltk.
+
+@group Interfaces: FeatureDetectorI, FeatureValueListI,
+    FeatureDetectorListI
+@sort: FeatureDetectorI, FeatureValueListI, FeatureDetectorListI
+@group Feature Detectors: FunctionFeatureDetector
+@group Feature Value Lists: ArrayFeatureValueList, EmptyFeatureValueList,
+    SimpleFeatureValueList
+@group Feature Deteector Lists: AbstractFDList, MergedFDList,
+    SimpleFDList, AlwaysOnFDList, LabeledTextFunctionFDList,
+    TextFunctionFDList, BagOfWordsFDList, MultiBagOfWordsFDList,
+    MemoizedFDList
+@group Classifiers: AbstractFeatureClassifier
+@group Probability Distributions: _AbstractFeatureClassifierProbDist
 """
 
 from nltk.classifier import ClassifierI, LabeledText
