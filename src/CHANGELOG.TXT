@@ -1,4 +1,44 @@
 ##////////////////////////////////////////////////////////////////////////
+##  Version 1.2
+##////////////////////////////////////////////////////////////////////////
+Tue Nov  4 23:52:30 EST 2003
+
+Additions:
+  - New corpus readers (for the names corpus, the stopwords corpus,
+    the Semcor corpus, and the WordNet corpus).
+  - Added nltk.sense, which tokenizes semcor (nb that nltk.sense
+    does *not* define an interface for sense tagging; sense
+    tagging is just a special case of classification (or perhaps
+    tagging).
+  - Added a look-ahead window for sequential tagging.
+  - Added Bob Berwick's version of the chart parser demo.
+  - New corpora:
+    - Added a corpus of male & female names.
+    - Added a corpus of stopwords.
+    - Added the semcor corpus.
+    - Added WordNet 1.7 data files.
+  - New modules in nltk-contrib:
+    - Added a restructured version of the token module.  Some version
+      of this module is likely to replace nltk.token eventually.
+    - Added Trevor's restructuring of the classifier package, including
+      a boosting classifier, a decision list, and a decision tree.
+    - Added a full implementation of Lesk's dictionary based
+      tagger, including an easy interface to plug in new dictionaries.
+      Currently supports Roget's and WordNet.
+    - Added a simulated annealing tagger.
+    - Added pywordnet.
+    - Added a wordnet stemmer.
+    - Added a stub implementation of annotation graphs.
+    - Added an interface to Babelfish (http://babelfish.altavista.com).
+
+Changes:
+  - Split nltk.token into two modules:
+    - The new nltk.token just defines Token and Location
+    - The new nltk.tokenizer defines all tokenizers
+  - Moved nltk.fsa to nltk_contrib
+  - Various bug fixes
+
+##////////////////////////////////////////////////////////////////////////
 ##  Version 1.1
 ##////////////////////////////////////////////////////////////////////////
 Mon Aug 18 22:51:26 EDT 2003
