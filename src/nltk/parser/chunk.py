@@ -17,12 +17,12 @@ containing tokens and chunks, where each chunk is a subtree containing
 only tokens.  For example, the chunk structure for base noun phrase
 chunks in the sentence "I saw the big dog on the hill" is::
 
-  ('SENTENCE':
-    ('NP': 'I')
-    'saw'
-    ('NP': 'the' 'big' 'dog')
-    'on'
-    ('NP': 'the' 'hill'))@[0:8]
+  (SENTENCE:
+    (NP: <I>)
+    <saw>
+    (NP: <the> <big> <dog>)
+    <on>
+    (NP: <the> <hill>))
 
 To convert a chunk structure back to a list of tokens, simply use the
 chunk structure's L{leaves<TreeToken.leaves>} method.
@@ -220,7 +220,6 @@ class ChunkParserI(ParserI):
 
 class ChunkedTaggedTokenizer(AbstractTokenizer):
     """
-
     A tokenizer that divides a string of chunked tagged text into
     chunks and unchunked tokens.  Each chunk is encoded as a
     C{TreeToken} whose children are tagged word tokens.  Each
@@ -234,19 +233,16 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     C{None}.
 
       >>> ctt = ChunkedTaggedTokenizer('NP')
-      >>> toks = ctt.tokenize('[The/DT dog/NN] saw/VBD [him/PRP]')
-      [('NP': 'The'/'DT' 'dog'/'NN')@[0w:2w],
-       'saw'/'VBD'@[2w],
-       ('NP': 'him'/'PRP')@[3w]]
+      >>> tok = Token(text='[The/DT dog/NN] saw/VBD [him/PRP]')
+      >>> ctt.tokenize(tok)
+      >>> print tok['subtokens']
+      [(NP: <The/DT> <dog/NN>), <saw/VBD>, (NP: <him/PRP>)]
     
     The C{TreeToken} constructor can be used to group this list of
     tokens and chunks into a single chunk structure:
 
-      >>> chunkstruct = TreeToken(node='S', children=toks)
-      ('S':
-        ('NP': 'The'/'DT' 'dog'/'NN')
-        'saw'/'VBD'
-        ('NP': 'him'/'PRP'))@[0w:4w]
+      >>> chunkstruct = TreeToken(node='S', children=tok['subtokens'])
+      (S: (NP: <The/DT> <dog/NN>) <saw/VBD> (NP: <him/PRP>))
         
     @inprop: C{text}: The input token's text content.
     @inprop: C{loc}: The input token's location.  I{(optional)}
