@@ -51,6 +51,7 @@ from nltk.chktype import chktype as _chktype
 
 import time
 from Numeric import zeros, product, nonzero, take, argmax
+from math import exp
 
 ##//////////////////////////////////////////////////////
 ##  AssignmentEvent
@@ -108,7 +109,7 @@ class AssignmentEvent(EventI):
 ##  Naive Bayes Classifier
 ##//////////////////////////////////////////////////////
 
-class NBClassifier(ClassifierI):
+class NBClassifier(AbstractFeatureClassifier):
     """
     A text classifier model based on the Naive Bayes assumption.  In
     particular, we assume that the feature value assignments of a
@@ -211,92 +212,19 @@ class NBClassifier(ClassifierI):
             should be capable of efficiently finding the probability
             of C{AssignmentEvent}s.
         """
-        self._fdlist = fdlist
-        self._labels = labels
         self._prob_dist = prob_dist
+        AbstractFeatureClassifier.__init__(self, fdlist, labels)
 
-    def distribution_list(self, unlabeled_token):
-        # Inherit docs from ClassifierI
-        total_p = 0.0
-        text = unlabeled_token.type()
-
-        # Construct a list containing the probability of each label.
-        # Estimate the probability of a label by combining probability
-        # estimates for the assignments of the corresponding labeled
-        # text. 
-        dist_list = []
-        for label in self._labels:
-            # Estimate the probability of LabeledText(text, label)
-            p = 1.0
-            fvlist = self._fdlist.detect(LabeledText(text, label))
-            default = fvlist.default()
-            for (fid, val) in fvlist.assignments():
-                p1 = self._prob_dist.prob(AssignmentEvent((fid, val)))
-                p2 = self._prob_dist.prob(AssignmentEvent((fid, default)))
-                if p2 != 0:
-                    p *= p1 / p2
-                
-            # Record the probability estimate.
-            dist_list.append(p)
-            total_p += p
-
-        # If p=0 for all samples, return a uniform distribution.
-        if total_p == 0:
-            return [1.0/len(self._labels) for l in self._labels]
-
-        # Normalize the probability estimates.
-        return [p/total_p for p in dist_list]
-
-        return dist_list
-
-    def distribution_dictionary(self, unlabeled_token):
-        # Inherit docs from ClassifierI
-        dist_dict = {}
-        dist_list = self.distribution_list(unlabeled_token)
-        for labelnum in range(len(self._labels)):
-            dist_dict[self._labels[labelnum]] = dist_list[labelnum]
-        return dist_dict
-
-    def distribution(self, unlabeled_token):
-        # Inherit docs from ClassifierI
-        dist_dict = self.distribution_dictionary(unlabeled_token)
-        return DictionaryProbDist(dist_dict)
-
-    def classify(self, unlabeled_token):
-        # Inherit docs from ClassifierI
-        text = unlabeled_token.type()
-        
-        # (label, probability) pair that maximizes probability
-        max = (None, 0)
-
-        # Find the label that maximizes the non-normalized probability
-        # estimates.
-        for label in self._labels:
-            # Estimate the probability of LabeledText(text, label)
-            p = 1.0
-            fvlist = self._fdlist.detect(LabeledText(text, label))
-            default = fvlist.default()
-            for (fid, val) in fvlist.assignments():
-                p1 = self._prob_dist.prob(AssignmentEvent((fid, val)))
-                p2 = self._prob_dist.prob(AssignmentEvent((fid, default)))
-                if p2 != 0:
-                    p *= p1 / p2
-                if p <= max[1]: break
-                
-            # Record the probability estimate.
-            if p > max[1]: max = (label, p)
-                
-        return max[0]
-
-    def prob(self, labeled_token):
-        # Inherit docs from ClassifierI
-        text = labeled_token.type().text()
-        label = labeled_token.type().label()
-        return distribution_dictionary(text)[label]
-
-    def labels(self):
-        # Inherit docs from ClassifierI
-        return self._labels
+    def fvlist_likelihood(self, fvlist):
+        # Inherit docs from AbstractFeatureClassifier
+        p = 1.0
+        default = fvlist.default()
+        for (fid, val) in fvlist.assignments():
+            p1 = self._prob_dist.prob(AssignmentEvent((fid, val)))
+            p2 = self._prob_dist.prob(AssignmentEvent((fid, default)))
+            if p2 != 0:
+                p *= p1 / p2
+        return p
 
     def prob_dist(self):
         """
@@ -307,14 +235,6 @@ class NBClassifier(ClassifierI):
         """
         return self._prob_dist
 
-    def fdlist(self):
-        """
-        @rtype: C{FeatureDetectorListI}
-        @return: The feature detector list defining the features that
-            are used by the C{NBClassifier}.
-        """
-        return self._fdlist
-
     def __repr__(self):
         """
         @rtype: C{string}
@@ -322,7 +242,7 @@ class NBClassifier(ClassifierI):
             classifier.  
         """
         return ('<NBClassifier: %d labels, %d features>' %
-                (len(self._labels), len(self._fdlist)))
+                (len(self.labels()), len(self.fdlist())))
 
 ##//////////////////////////////////////////////////////
 ##  Specialized frequency distribution.
@@ -382,7 +302,8 @@ class NBClassifierFreqDist(FreqDistI):
 
         # Increment the feature count array
         for (fid,val) in sample.assignments():
-            self._fcounts[fid] += 1
+            if val != 0:
+                self._fcounts[fid] += 1
 
     def freq(self, event):
         # Inherit docs from FreqDistI
@@ -549,6 +470,74 @@ class NBClassifierTrainer(ClassifierTrainerI):
         return '<NBClassifierTrainer: %d features>' % len(self._fdlist)
             
 ##//////////////////////////////////////////////////////
+##  Multinomial play
+##//////////////////////////////////////////////////////
+
+# Features can fire multiple times.  Probability that a feature fires
+# n times is p^n, where p is the probability that it fires once.  So
+# we already know E(u)/n.  That's the freq dist we made.  Well,
+# kinda...  Not really.  But to do that, we just need to inc by val,
+# not by 1, in NBClassifierFreqDist.
+
+# So then we have E(fid)/n.  That is, p(fid).  So when we're asked to
+# estimate P(id=val), take P(id=1)^val...
+
+# Doing this to the freq-dist streight is playing a little fast &
+# loose, though..  But doing it in a wrapper pdf seems fine.
+# Hm.. still might be tricky, though.  I'll have to think about it.
+
+class MultinomialNBClassifierProbDist(ProbDistI):
+    """
+    This is a dirty trick: we're not a real prob dist!!
+    """
+    def __init__(self, fdlist, labeled_tokens, l=0.5):
+        fcounts = zeros(len(fdlist), 'd')
+        self._N = 0
+        fcounts += l
+        self._N += l*len(fcounts)
+
+        for tok in labeled_tokens:
+            self._N += 1
+            for (fid, val) in fdlist.detect(tok.type()).assignments():
+                fcounts[fid] += val
+
+        # Expected value for each feature
+        self._exp = fcounts / self._N
+
+    def prob(self, event):
+        # Inherit docs from FreqDistI
+        _chktype('NBClassifierFreqDist.freq', 1, event, (AssignmentEvent,))
+        (fid, value) = event.assignment()
+
+        # valfact = value!
+        valfact = reduce( lambda x,y:x*y, range(2,value+1), 1.0 )
+
+        multinomial = ((self._exp[fid] ** value) / valfact)
+        poisson = ((self._exp[fid] ** value) * exp(-self._exp[fid]) /
+                   valfact)
+        return poisson
+
+class MultinomialNBClassifierTrainer(ClassifierTrainerI):
+    def __init__(self, fdlist):
+        self._fdlist = fdlist
+
+    def train(self, labeled_tokens, **kwargs):
+        labels = None
+        for (key, val) in kwargs.items():
+            if key == 'labels': labels = val
+            else: raise TypeError('Unknown keyword arg %s' % key)
+        if labels is None:
+            labels = find_labels(labeled_tokens)
+                
+        probdist = MultinomialNBClassifierProbDist(self._fdlist,
+                                                   labeled_tokens)
+        return NBClassifier(self._fdlist, labels, probdist)
+
+    def __repr__(self):
+        return '<NBClassifierTrainer: %d features>' % len(self._fdlist)
+            
+
+##//////////////////////////////////////////////////////
 ##  Test code
 ##//////////////////////////////////////////////////////
 
@@ -581,8 +570,13 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
     if debug: print _timestamp(), '  got %d features' % len(fdlist)
 
     if debug: print _timestamp(), 'training on %d samples...' % len(labeled_tokens)
+
     trainer = NBClassifierTrainer(fdlist)
     classifier = trainer.train(labeled_tokens, estimator='ELE')
+
+    #trainer = MultinomialNBClassifierTrainer(fdlist)
+    #classifier = trainer.train(labeled_tokens)
+    
     if debug: print _timestamp(), '  done training'
     
     if debug: print _timestamp(), ('%d tokens, %d labels' % (len(labeled_tokens), 
