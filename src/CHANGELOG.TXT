@@ -1,4 +1,78 @@
 ##////////////////////////////////////////////////////////////////////////
+##  Version 0.6
+##////////////////////////////////////////////////////////////////////////
+Fri May 31 03:15:47 EDT 2002
+
+Grammars:
+  - Added nltk.cfg, which defines context gree grammars (and
+    probablistic CFGs).  This module replaces nltk.rule.  (The old "Rule"
+    class is replaced by the Production class.)
+
+Parsers:
+  - Added probabilistic parser interface with two basic implementations,
+    and a tutorial. 
+  - Added a recursive descent top-down parser.
+  - Major reorganization of the parser modules (nltk.parser,
+    nltk.srparser, nltk.chartparser, nltk.chunkparser,
+    nltk.rechunkparser, nltk.srparser_template).  They have been
+    collected into a single package with 3 sub-modules:
+      - nltk.parser defines ParserI and 2 simple parser implementations
+        (ShiftReduceParser and RecursiveDescentParser)
+      - nltk.parser.chart defines chart parsing data classes, and 3
+        chart parser implementations (ChartParser, SteppingChartParser,
+        and IncrementalChartParser)
+      - nltk.parser.chunk defines ChunkParserI and the regexp-based
+        chunk parser REChunkParser.  (n.b., as of version 0.6, chunk
+        parsers are still not technically parsers, since they return
+        chunk structures, not trees.  This will change in version 0.7).
+      - nltk.parser.probabilistic defines ProbabilisticParserI, and two
+        basic probabilistic parser implementations (ViterbiPCFGParser
+        and BottomUpPCFGChartParser).
+  - ParserI interface redefined, in accordance with multivalue techincal
+    report.
+  - Major reorganization of the chart parser classes:
+    - Merged DottedRule and Edge into a single class (Edge)
+    - Removed several Edge methods (self_loop_end, fr, etc).
+    - Got rid of the static/edge triggered rule distinction.  
+    - Replaced Strategy class with a simple list of ChartRules.
+    - Replaced old ChartParser with 2 new implementations:
+      - (the new) ChartParser uses rules that implement ChartRuleI
+        (similar to the old static rules).  It is simpler, but less
+        efficient.  
+      - IncrementalChartParser uses rules that implement
+        IncrementalChartRuleI (similar to the old edge triggered
+        rules).  It is slightly more complex, but more efficient.
+    - Updated SteppingChartParser to derive from the new ChartParser
+      class, and cleaned it up.
+  - Improved trace output for parsers
+  - Simplified the algorithm used by ShiftReduceParser (was SRParser).
+  - Several improvements and bug fixes for the chart parser demo tool
+    (nltk.draw.chart)
+
+Finite State Automata:  
+  - Added nltk.fsa, which defines finite state automata, and a function
+    to convert regular expressions to FSAs.
+  - Added FSA visualization tool (nltk.draw.fsa).
+
+Classifiers:
+  - Added a CunfusionMatrix class, which encodes and displays the
+    confusion matrix for a classifier on a given task.
+  - Added MultiBagOfWordsFDList, an integer-valued feature detector
+    list constructed from a set of + words and a set of labels.
+  - Changed GIS_FDList to work with non-binary features.
+
+Other:
+  - Added CharTokenizer, a character tokenizer that skips whitespace.
+  - Added several probabilistic mixin classes (ProbabilisticToken, 
+    ProbabilisticTreeToken, etc.)
+  - Several minor bug fixes
+  - Improved/added a number of docstrings
+  - Changed nltk.draw.tree to produce more attractive trees.
+
+- acl02.tex??
+
+
+##////////////////////////////////////////////////////////////////////////
 ##  Version 0.5
 ##////////////////////////////////////////////////////////////////////////
 Thu Dec 13 13:07:54 EST 2001
