@@ -275,16 +275,26 @@ class RETokenizer(TokenizerI):
         self._negative = negative
         self._unit = unit
         
-        # Replace any grouping parenthases with non-grouping ones.  We
+        # Replace any grouping parentheses with non-grouping ones.  We
         # need to do this, because the list returned by re.sub will
         # contain an element corresponding to every set of grouping
-        # parenthases.
-        regexp = re.sub(r'((^|[^\\])(\\\\)*)' + # even num of parens
-                        r'\(' +                 # An open paren
-                        r'(?!\?)',              # Not a question mark
-                        r'\1(?:', regexp)
+        # parentheses.  We must not touch escaped parentheses, and
+        # need to handle the case of escaped escapes (e.g. "\\(").
+        # We also need to handle nested parentheses, which means our
+        # regexp contexts must be zero-width.  We operate on a reversed
+        # version of the string to get around the problem that lookbehind
+        # assertions are required to be fixed-width.
 
-        # Add grouping parenthases around the regexp; this will allow
+        a = list(regexp); a.reverse(); regexp = ''.join(a)
+        
+        regexp = re.sub(r'(?<!\?)' +             # Not a question mark
+                        r'\(' +                  # An open paren
+                        r'(?=(\\\\)*([^\\]|$))', # even backslashes
+                        r':?(', regexp)          # reversed (?:
+
+        a = list(regexp); a.reverse(); regexp = ''.join(a)
+
+        # Add grouping parentheses around the regexp; this will allow
         # us to access the material that was split on.
         self._regexp = re.compile('('+regexp+')', re.UNICODE)
         
@@ -372,16 +382,6 @@ def demo():
 
     print 'Tokenize by (non-whitespace) characters:'
     _display(CharTokenizer().tokenize(s))
-
-    print 'Tokenize with nasty parenthesis:'
-    _display(RETokenizer(r'\\(a)', negative=1, unit='s').tokenize(r'a\asdf\asdfwer\asdf\wer(ahello'))
-
-    print 'Tokenize with nasty parenthesis II:'
-    _display(RETokenizer(r'\(a', negative=1, unit='s').tokenize(r'a\asdf\asdfwer\asdf\wer(ahello'))
-
-    print 'Tokenize with nasty parenthesis III:'
-    _display(RETokenizer(r'[(a)]', negative=0, unit='s').tokenize(r'a\asdf\asdfw?r\asdf\wer(ah)l?o'))
-    
     return
     
 if __name__ == '__main__':
