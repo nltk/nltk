@@ -67,7 +67,7 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
 """
-Probablistic CFGs
+Probabilistic CFGs
 =================
 
 
@@ -308,10 +308,10 @@ class CFG:
 # PCFGs and PCFG rules
 #################################################################
 
-from nltk.probability import ProbablisticMixIn
-class PCFG_Rule(CFG_Rule, ProbablisticMixIn):
+from nltk.probability import ProbabilisticMixIn
+class PCFG_Rule(CFG_Rule, ProbabilisticMixIn):
     """
-    A probablistic context free grammar rule.  C{PCFG_Rule}s are
+    A probabilistic context free grammar rule.  C{PCFG_Rule}s are
     essentially just C{CFG_Rule}s that have probabilities associated
     with them.  These probabilities are used to record how likely it
     is that a given rule will be used.  In particular, the probability
@@ -331,7 +331,7 @@ class PCFG_Rule(CFG_Rule, ProbablisticMixIn):
         @param rhs: The right-hand side of the new C{PCFG_Rule}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
-        ProbablisticMixIn.__init__(self, p)
+        ProbabilisticMixIn.__init__(self, p)
         CFG_Rule.__init__(self, lhs, *rhs)
 
     def __str__(self):
@@ -348,7 +348,7 @@ class PCFG_Rule(CFG_Rule, ProbablisticMixIn):
 
 class PCFG(CFG):
     """
-    A probablistic context-free grammar.  A PCFG consists of a start
+    A probabilistic context-free grammar.  A PCFG consists of a start
     state and a set of rules.  The set of terminals and nonterminals
     is implicitly specified by the rules.
 

@@ -48,7 +48,7 @@ functions are defined:
 
 from nltk.token import Token
 from nltk.token import Location
-from nltk.probability import ProbablisticMixIn
+from nltk.probability import ProbabilisticMixIn
 import re
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import chkclass as _chkclass
@@ -647,9 +647,9 @@ class TreeToken(Token):
         import nltk.draw.tree
         nltk.draw.tree.TreeView(self)
 
-class ProbablisticTreeToken(TreeToken, ProbablisticMixIn):
+class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
-        ProbablisticMixIn.__init__(self, p)
+        ProbabilisticMixIn.__init__(self, p)
         TreeToken.__init__(self, node, *children)
     def __repr__(self):
         return TreeToken.__repr__(self) + (' (p=%s)' % self._p)

@@ -590,10 +590,10 @@ class Token:
         return hash( (self._type, self._location) )
 
 # !! This needs proper documentation
-from nltk.probability import ProbablisticMixIn
-class ProbablisticToken(Token, ProbablisticMixIn):
+from nltk.probability import ProbabilisticMixIn
+class ProbabilisticToken(Token, ProbabilisticMixIn):
     def __init__(self, p, type, location_or_start=None, end=None, **kwargs):
-        ProbablisticMixIn.__init__(self, p)
+        ProbabilisticMixIn.__init__(self, p)
         Token.__init__(self, type, location_or_start, end, **kwargs)
     def __repr__(self):
         return Token.__repr__(self)+' (p=%s)' % self._p

@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Probablistic CFG Parsers
+# Natural Language Toolkit: Probabilistic CFG Parsers
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
@@ -8,9 +8,9 @@
 # $Id$
 
 """
-Parsers for probablistic context free grammars (C{PCFGs}).
+Parsers for probabilistic context free grammars (C{PCFGs}).
 C{nltk.pcfgparser} currently defines two basic types of
-C{ProbablisticParser}: C{ViterbiPCFGParser} and
+C{ProbabilisticParser}: C{ViterbiPCFGParser} and
 C{BottomUpPCFGChartParser}.
 
 C{ViterbiPCFGParser} is a C{PCFG} parser based on a Viterbi-sytle
@@ -49,7 +49,7 @@ from nltk.chart import *
 ##  Viterbi PCFG Parser
 ##//////////////////////////////////////////////////////
 
-class ViterbiPCFGParser(ProbablisticParserI):
+class ViterbiPCFGParser(ProbabilisticParserI):
     """
     A bottom-up C{PCFG} parser that uses dynamic programming to find
     the single most likely parse for a text.  C{ViterbiPCFGParser}
@@ -136,13 +136,13 @@ class ViterbiPCFGParser(ProbablisticParserI):
         self._trace = trace
 
     def parse(self, text):
-        # Inherit docs from ProbablisticParserI; and delegate to parse_n
+        # Inherit docs from ProbabilisticParserI; and delegate to parse_n
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
         
     def parse_n(self, text, n=None):
-        # Inherit docs from ProbablisticParserI
+        # Inherit docs from ProbabilisticParserI
 
         # The most likely consituant table.  This table specifies the
         # most likely constituant for a given span and type.
@@ -159,7 +159,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
                                ' constituants table...')
         for index in range(len(text)):
             tok = text[index]
-            probtok = ProbablisticToken(1, tok.type(), tok.loc())
+            probtok = ProbabilisticToken(1, tok.type(), tok.loc())
             constituants[index,index+1,tok.type()] = probtok
             if self._trace > 1: self._trace_lexical_insertion(tok, text)
 
@@ -202,13 +202,13 @@ class ViterbiPCFGParser(ProbablisticParserI):
             that we are parsing.
 
         @type constituants: C{dictionary} from
-            C{(int,int,Nonterminal)} to (C{ProbablisticToken} or
-            C{ProbablisticTreeToken}).
+            C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
+            C{ProbabilisticTreeToken}).
         @param constituants: The most likely constituants table.  This
             table records the most probable tree representation for
             any given span and node value.  In particular,
             C{constituants(M{s},M{e},M{nv})} is the most likely
-            C{ProbablisticTreeToken} that covers C{M{text}[M{s}:M{e}]}
+            C{ProbabilisticTreeToken} that covers C{M{text}[M{s}:M{e}]}
             and has a node value C{M{nv}.symbol()}, where C{M{text}}
             is the text that we are parsing.  When
             C{_add_constituants_spanning} is called, C{constituants}
@@ -231,13 +231,13 @@ class ViterbiPCFGParser(ProbablisticParserI):
             instantiations = self._find_instantiations(span, constituants)
 
             # For each rule instantiation, add a new
-            # ProbablisticTreeToken whose probability is the product
+            # ProbabilisticTreeToken whose probability is the product
             # of the childrens' probabilities and the rule's
             # probability.
             for (rule, children) in instantiations:
                 p = reduce(lambda pr,t:pr*t.p(), children, rule.p())
                 node = rule.lhs().symbol()
-                tree = ProbablisticTreeToken(p, node, *children)
+                tree = ProbabilisticTreeToken(p, node, *children)
 
                 # If it's new a constituant, then add it to the
                 # constituants dictionary.
@@ -259,7 +259,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
             right hand side matches the list of children; and the
             children cover C{span}.
         @rtype: C{list} of C{pair} of C{PCFG_Rule}, (C{list} of
-            (C{ProbablisticTreeToken} or C{Token})
+            (C{ProbabilisticTreeToken} or C{Token})
 
         @type span: C{(int, int)}
         @param span: The section of the text for which we are
@@ -270,8 +270,8 @@ class ViterbiPCFGParser(ProbablisticParserI):
             index of the first token that should not be covered by the
             rule instantiation.
         @type constituants: C{dictionary} from
-            C{(int,int,Nonterminal)} to (C{ProbablisticToken} or
-            C{ProbablisticTreeToken}).
+            C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
+            C{ProbabilisticTreeToken}).
         @param constituants: The most likely constituants table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
@@ -289,7 +289,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
         """
         @return: a set of all the lists of children that cover C{span}
             and that match C{rhs}.
-        @rtype: C{list} of (C{list} of C{ProbablisticTreeToken} or
+        @rtype: C{list} of (C{list} of C{ProbabilisticTreeToken} or
             C{Token}) 
 
         @type rhs: C{list} of C{Nonterminal} or (any)
@@ -307,8 +307,8 @@ class ViterbiPCFGParser(ProbablisticParserI):
             and the second integer is the index of the first token
             that should not be covered by the child list.
         @type constituants: C{dictionary} from
-            C{(int,int,Nonterminal)} to (C{ProbablisticToken} or
-            C{ProbablisticTreeToken}).
+            C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
+            C{ProbabilisticTreeToken}).
         @param constituants: The most likely constituants table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
@@ -376,7 +376,7 @@ class ViterbiPCFGParser(ProbablisticParserI):
 ##  Bottom-Up PCFG Chart Parser
 ##//////////////////////////////////////////////////////
 
-class BottomUpPCFGChartParser(ProbablisticParserI):
+class BottomUpPCFGChartParser(ProbabilisticParserI):
     """
     An abstract bottom-up parser for C{PCFG}s that uses a C{Chart} to
     record partial results.  C{BottomUpPCFGChartParser} maintains a
@@ -432,13 +432,13 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         self._trace = trace
 
     def parse(self, text):
-        # Inherit docs from ProbablisticParserI; and delegate to parse_n
+        # Inherit docs from ProbabilisticParserI; and delegate to parse_n
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
         
     def parse_n(self, text, n=None):
-        # Inherit docs from ProbablisticParserI
+        # Inherit docs from ProbabilisticParserI
         loc = Location(text[0].loc().start(), text[-1].loc().end(),
                        unit=text[0].loc().unit(),
                        source=text[0].loc().source())
@@ -512,7 +512,7 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         edge_queue = []
         for tok in text:
             drule = DottedCFG_Rule(tok.type(), ())
-            probtok = ProbablisticToken(1, tok.type(), tok.loc())
+            probtok = ProbabilisticToken(1, tok.type(), tok.loc())
             edge_queue.append(Edge(drule, probtok, tok.loc()))
 
         # This is purely aesthetic: put the first word at the
@@ -575,7 +575,7 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
             the edge's (zero-width) location.
         """
         node = rule.lhs().symbol()
-        tree = ProbablisticTreeToken(rule.p(), node)
+        tree = ProbabilisticTreeToken(rule.p(), node)
         drule = DottedCFG_Rule(rule.lhs(), rule.rhs(), 0)
         return Edge(drule, tree, loc.start_loc())
 
@@ -607,7 +607,7 @@ class BottomUpPCFGChartParser(ProbablisticParserI):
         
         children = e1.tree().children() + (e2.tree(),)
         p = e1.tree().p() * e2.tree().p()
-        tree = ProbablisticTreeToken(p, e1.tree().node(), *children)
+        tree = ProbabilisticTreeToken(p, e1.tree().node(), *children)
         return Edge(drule, tree, loc)
 
     def __repr__(self):
