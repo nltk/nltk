@@ -12,6 +12,26 @@ from tagger import *
 from re import *
 from string import *
 
+# this type stuff should be pulled in from somewhere else
+# rather than being defined here...
+from types import InstanceType as _InstanceType
+def _pytype(obj):
+    """
+    @return: the pytype of C{obj}.  For class instances, this is
+        their class; for all other objects, it is their type, as
+        returned by type().
+    @rtype: C{type} or C{class}
+    @param obj: The object whose pytype should be returned.
+    @type obj: (any)
+    """
+    if type(obj) == _InstanceType:
+        return obj.__class__
+    else:
+        return type(obj)
+
+# A chunk rule matches a target string and performs an action
+# on it, usually adding or removing {}, the chunk delimiters.
+# Keyword arguments handle context using zero-width assertions.
 class ChunkRule:
     def __init__(self, target, action, **kwargs):
         self._target = target
@@ -45,7 +65,7 @@ class ChunkRule:
 # (e.g. <JJ>*)
 
 def expand(str):
-    return sub(r'<([^>]+)>', r'(?:<(?:\1)@\d+>)', str)
+    return sub(r'<([^>]+)>', r'(?:<[^>]*?_(?:\1)@\d+>)', str)
 
 class AbstractChunkRule(ChunkRule):
     def __init__(self, target, action, **kwargs):
@@ -72,64 +92,59 @@ def pad(str):
     str = sub(r'> }', '>}', str)
     str = sub(r'{ <', '{<', str)
     return str
+
 # assumes tags are strings and locations are unary
+# ignores the source and unit (bug)
 def tag2str(tagged_sent):
     str = ''
     for tok in tagged_sent:
-        str += '<' + tok.type().tag() + '@' + `tok.loc().start()` + '>'
+        str += '<' + tok.type().base() + '_' + tok.type().tag() + '@' + `tok.loc().start()` + '>'
     return str
 
-# take a chunked string and return the chunk locations
-def chunks2locs(str):
+# take a chunked string and return a tree
+def chunks2tree(tagged_sent, str):
     braces = sub(r'[^{}]', '', str)
     if not match(r'(\{\})*', braces):
-        print "ERROR"
-    spaced = sub(r'([<>{}])(?=[<>{}])', r'\1 ', str)
-    list = split(spaced)
-    newlist = []
-    prev = 0
-    building = 0
-    for elt in list:
-        if elt == '{':
-            building = 1
-            prev = 0
-        elif elt == '}':
-            building = 0
-        elif building:
-            x = re.match(r'<.*?@(\d+)>', elt)
-            if x:
-                loc = Location(int(x.group(1)))
-                if prev:
-                    newlist[-1] += loc
-                else:
-                    newlist.append(loc)
-                    prev = 1
-            else:
-                prev = 0
-    return newlist
+        print "ERROR: mismatched or nested braces"
+    str = sub(r'([>}])(?=[<{])', r'\1, ', str)
+    str = sub(r'<(.*?)_(.*?)@(\d+)>', r'Token(TaggedType("\1", "\2"), Location(\3))', str)
+    str = sub(r'{(.*?)}', r'TreeToken("chunk", \1)', str)
+    str = 'TreeToken("sent", ' + str + ')'
+    print str
+    return eval(str)
 
+def tree2locs(tree):
+    print "tree2locs:", tree
+    locs = []
+    for child in tree[:]:
+        if _pytype(child) == TreeToken and child.node() == 'chunk':
+            print child
+            locs.append(child.location())
+    return locs
 
 class ChunkParser(ParserI):
     def __init__(self, tagger, rulelist):
         self._tagger = tagger
         self._rulelist = rulelist
 
-    def _diagnostic(self, pattern, action, str, result, doc):
-        print "\n%s: %s -> %s" % (doc, pattern, action)
-        print "    ", pad(str)
-        print " -> ", pad(result)
+    def _diagnostic(self, rule, str, result):
+        print "\n%s:" % rule.doc()
+        print "left:  ", rule.left()
+        print "target:", rule.target()
+        print "right: ", rule.right()
+        print "action:", rule.action()
+        print "input: ", pad(str)
+        print "   ->  ", pad(result)
 
     def _apply(self, rule, str):
         action = rule.action()
-        doc = rule.doc()
         pattern = lookbehind(rule.left())\
                   + rule.target()\
                   + lookahead(rule.right())
         result = sub(pattern, action, str)
-        self._diagnostic(pattern, action, str, result, doc)
+        self._diagnostic(rule, str, result)
         return result
 
-    # needs to return a tree, not locations
     def parse(self, tok_sent):
         print tok_sent
         tagged_sent = self._tagger.tag(tok_sent)
@@ -137,8 +152,7 @@ class ChunkParser(ParserI):
         for rule in self._rulelist:
             print rule
             str = self._apply(rule, str)
-        locs = chunks2locs(str)
-        return locs
+        return chunks2tree(tagged_sent, str)
 
 ### DEMO CODE ###
 
@@ -176,20 +190,26 @@ def demo():
 
     tagged_sent = MyTagger().tag(sent)
 
-    from re import *
-    from string import *
+    from re import sub
 
     r1 = AbstractChunkRule(r'(<DT><JJ>*<NN>)', r'{\1}', doc="chunking <DT><JJ>*<NN>")
     cp = ChunkParser(MyTagger(), [r1])
-    locs = cp.parse(sent)
+    chunks = cp.parse(sent)
+    locs = tree2locs(chunks)
+    print locs
     score(correct, locs)
 
     r1 = AbstractChunkRule(r'(<.*?>)', r'{\1}', doc="chunking every tag")
 
     DT_JJ_NNX = r'<DT|JJ|NN.*?>'
+#    DT_JJ_NNX = r'<DT>'
     r2 = AbstractChunkRule('('+DT_JJ_NNX+')}{', r'\1', right=DT_JJ_NNX,
                 doc="chunk any groups of <DT> <JJ> and <NNX>")
 
     cp = ChunkParser(MyTagger(), [r1,r2])
-    locs = cp.parse(sent)
+    chunks = cp.parse(sent)
+    locs = tree2locs(chunks)
+    print locs
     score(correct, locs)
+
+    
