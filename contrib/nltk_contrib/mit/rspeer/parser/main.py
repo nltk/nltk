@@ -3,6 +3,16 @@ from nltk_contrib.mit.rspeer.parser.readfile import GrammarFile
 from nltk_contrib.mit.rspeer.parser.featurechart import *
 from nltk.tokenizer import WhitespaceTokenizer
 
+"""
+An interactive interface to the feature-based parser. Run "main.py -h" for
+command-line options.
+
+This interface will read a grammar from a *.cfg file, in the format of
+test.cfg. It will prompt for a filename for the grammar (unless one is given on
+the command line) and for a sentence to parse, then display the edges being
+generated and any resulting parse trees.
+"""
+
 NAME = '6.863 Earley Parser'
 DATE = 'July 13, 2004'
 __version__ = '2.0'
