@@ -228,7 +228,7 @@ class SequentialTagger(TaggerI):
         """
         assert 0, "next_tag not defined by SequentialTagger subclass"
 
-    def tag(self, text):
+    def tag(self, tokens):
         # Inherit documentation
         assert _chktype(1, text, [Token], (Token,))
 
