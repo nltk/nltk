@@ -322,7 +322,7 @@ class Token(dict):
             return val
 
     #/////////////////////////////////////////////////////////////////
-    # Basic operators
+    # String representation
     #/////////////////////////////////////////////////////////////////
 
     # [XX] registry of repr funcs
@@ -389,6 +389,10 @@ class Token(dict):
         # Assemble & return the final string.
         return '<%s>%s' % (props, locstr)
 
+    #/////////////////////////////////////////////////////////////////
+    # Operators
+    #/////////////////////////////////////////////////////////////////
+
     # The superclass already raises TypeError here; but its error
     # message ("dict objects are unhashable") might be confusing.
     def __hash__(self):
@@ -403,6 +407,14 @@ class Token(dict):
         Raise C{TypeError}, since C{Token} objects are unsized.
         """
         raise TypeError('len() of unsized %s object' %
+                        self.__class__.__name__)
+
+    def __nonzero__(self):
+        """
+        Raise C{TypeError}, since C{Token} objects cannot used as
+        booleans.
+        """
+        raise TypeError('%s objects cannot be used as booleans' %
                         self.__class__.__name__)
 
 # Register some specialized string representations for common
