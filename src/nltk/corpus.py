@@ -236,7 +236,7 @@ class CorpusI:
         @param entry: The name of the entry to read.
         @rtype: C{entry}
         """
-        raise AssertionError, 'CorpusI is an abstract class'
+        raise NotImplementedError, 'This corpus does not implement open()'
 
     def read(self, entry):
         """
@@ -244,7 +244,7 @@ class CorpusI:
         @param entry: The name of the entry to read.
         @rtype: C{string}
         """
-        raise AssertionError, 'CorpusI is an abstract class'
+        raise NotImplementedError, 'This corpus does not implement read()'
 
     def readlines(self, entry):
         """
@@ -253,7 +253,7 @@ class CorpusI:
         @param entry: The name of the entry to read.
         @rtype: C{list} of C{string}
         """
-        raise AssertionError, 'CorpusI is an abstract class'
+        raise NotImplementedError, 'This corpus does not implement readlines()'
 
     def tokenize(self, entry, tokenizer=None):
         """
@@ -264,7 +264,7 @@ class CorpusI:
             default tokenizer for this corpus is used.
         @rtype: C{list} of L{Token<nltk.token.Token>}
         """
-        raise AssertionError, 'CorpusI is an abstract class'
+        raise NotImplementedError, 'This corpus does not implement tokenize()'
                           
     #////////////////////////////////////////////////////////////
     #// Structure access (groups)
