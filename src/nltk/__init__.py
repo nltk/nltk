@@ -64,14 +64,15 @@ of the C{ParserI} interface.
 @version: 1.1a
 
 @newfield developer: Developer, Developers, short
-@developer: L{Edward Loper<edloper@gradient.cis.upenn.edu>}
-@developer: L{Steven Bird <sb@cs.mu.oz.au>}
-@developer: L{Ewan Klein <ewan@inf.ed.ac.uk>}
-@developer: L{Trevor Cohn <tacohn@cs.mu.oz.au>}
+@developer: U{Edward Loper<edloper@gradient.cis.upenn.edu>}
+@developer: U{Steven Bird <sb@cs.mu.oz.au>}
+@developer: U{Ewan Klein <ewan@inf.ed.ac.uk>}
+@developer: U{Trevor Cohn <tacohn@cs.mu.oz.au>}
 
 @group Core Modules: token, tree, corpus, probability
 @group Data Modules: set, cfg, fsa
-@group Task Modules: classifier, parser, speech, stemmer, tagger
+@group Task Modules: classifier, parser, speech, stemmer, tagger,
+    tokenizer
 @group Visualization: draw
 @group Debugging: chktype, test
 @sort: token, tree, corpora, probability
