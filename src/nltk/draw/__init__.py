@@ -1405,6 +1405,74 @@ class CanvasFrame:
         self._parent.destroy()
         self._parent = None
 
+class ShowText:
+    """
+    A C{Tkinter} window used to display a text.  C{ShowText} is
+    typically used by graphical tools to display help text, or similar
+    information.
+    """
+    def __init__(self, root, title, text, width=None, height=None):
+        if width is None or height is None:
+            (width, height) = self.find_dimentions(text, width, height)
+        
+        # Create the main window.
+        if root is None:
+            self._top = top = Tk()
+        else:
+            self._top = top = Toplevel(root)
+        top.title(title)
+
+        b = Button(top, text='Ok', command=self.destroy)
+        b.pack(side='bottom')
+
+        tbf = Frame(top)
+        tbf.pack(expand=1, fill='both')
+        scrollbar = Scrollbar(tbf, orient='vertical')
+        scrollbar.pack(side='right', fill='y')
+        textbox = Text(tbf, wrap='word',
+                               width=width, height=height)
+        textbox.insert('end', text)
+        textbox['state'] = 'disabled'
+        textbox.pack(side='left', expand=1, fill='both')
+        scrollbar['command'] = textbox.yview
+        textbox['yscrollcommand'] = scrollbar.set
+
+        # Make it easy to close the window.
+        top.bind('q', self.destroy)
+        top.bind('x', self.destroy)
+        top.bind('c', self.destroy)
+        top.bind('<Return>', self.destroy)
+        top.bind('<Escape>', self.destroy)
+
+        # Focus the scrollbar, so they can use up/down, etc.
+        scrollbar.focus()
+
+    def find_dimentions(self, text, width, height):
+        lines = text.split('\n')
+        if width is None:
+            maxwidth = max([len(line) for line in lines])
+            width = min(maxwidth, 80)
+
+        # Now, find height.
+        height = 0
+        for line in lines:
+            while len(line) > width:
+                brk = line[:width].rfind(' ')
+                line = line[brk:]
+                height += 1
+            height += 1
+        height = min(height, 25)
+
+        return (width, height)
+
+    def destroy(self, *e):
+        if self._top is None: return
+        self._top.destroy()
+        self._top = None
+
+    def mainloop(self):
+        self._top.mainloop()
+
 ##//////////////////////////////////////////////////////
 ##  Test code.
 ##//////////////////////////////////////////////////////
@@ -1443,6 +1511,8 @@ def demo():
     co.bind_click(fill)
     ct2.bind_click(color)
     ct3.bind_click(color)
+
+    #ShowText(None, 'title', ((('this is text'*150)+'\n')*5))
 
 if __name__ == '__main__':
     demo()
