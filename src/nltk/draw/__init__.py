@@ -2064,15 +2064,15 @@ class ColorizedList:
     #////////////////////////////////////////////////////////////
 
     def pack(self, cnf={}, **kw):
-        "@inherit: Tkinter.Pack.pack"
+        "@include: Tkinter.Pack.pack"
         self._itemframe.pack(cnf, **kw)
         
     def grid(self, cnf={}, **kw):
-        "@inherit: Tkinter.Grid.grid"
+        "@include: Tkinter.Grid.grid"
         self._itemframe.grid(cnf, *kw)
         
     def focus(self):
-        "@inherit: Tkinter.Widget.focus"
+        "@include: Tkinter.Widget.focus"
         self._textwidget.focus()
         
     #////////////////////////////////////////////////////////////
