@@ -126,10 +126,13 @@ def _typemsg(types):
                 typestr += 'dictionary or '
             else:
                 typestr += '(dictionary '
+                pieces = []
                 for (key, val) in typ.items():
-                    typestr += 'from ' + _typemsg((key,))
-                    typestr += ' to ' + _typemsg(val) + ' or '
-                typestr = typestr[:-4] + ') or '
+                    pieces.append('from ' + _typemsg((key,)) +
+                                  ' to ' + _typemsg(val))
+                pieces.sort() # for consistancy.
+                typestr += ' or '.join(pieces)
+                typestr = typestr + ') or '
         elif type(typ) in (FunctionType, MethodType):
             typestr += '<%s> or ' % typ.__name__
         else:
