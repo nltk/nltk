@@ -463,10 +463,10 @@ class _DendogramNode:
 
 class Dendogram:
     """
-    Represents a dedogram, a binary tree with a speficied branching order.
-    This must be initialised with the leaf items, then iteratively call merge
-    for each branch. This class constructs a tree representing the order of
-    calls to the merge function.
+    Represents a dendogram, a tree with a speficied branching order.  This
+    must be initialised with the leaf items, then iteratively call merge for
+    each branch. This class constructs a tree representing the order of calls
+    to the merge function.
     """
 
     def __init__(self, items=[]):
@@ -479,22 +479,22 @@ class Dendogram:
         self._original_items = copy.copy(self._items)
         self._merge = 1
 
-    def merge(self, i, j):
+    def merge(self, *indices):
         """
-        Merges nodes i and j in the dendogram. The nodes will be combined and
-        replaces the previous node at i. Node j will be removed.
+        Merges nodes at given indices in the dendogram. The nodes will be
+        combined which then replaces the first node specified. All other nodes
+        involved in the merge will be removed.
 
-        @param  i: index of the first item
-        @type   i: int
-        @param  j: index of the second item
-        @type   j: int
+        @param  indices: indices of the items to merge (at least two)
+        @type   indices: seq of int
         """
-        assert chktype(1, i, int)
-        assert chktype(2, j, int)
-        node = _DendogramNode(self._merge, self._items[i], self._items[j])
+        assert chktype(1, indices, [int], (int,))
+        assert len(indices) >= 2
+        node = _DendogramNode(self._merge, *[self._items[i] for i in indices])
         self._merge += 1
-        self._items[i] = node
-        del self._items[j]
+        self._items[indices[0]] = node
+        for i in indices[1:]:
+            del self._items[i]
 
     def groups(self, n):
         """
