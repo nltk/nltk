@@ -267,6 +267,10 @@ class CFGProduction:
     def __ne__(self, other):
         return not (self == other)
 
+    def __cmp__(self, other):
+        if not _classeq(self, other): return -1
+        return cmp((self._lhs, self._rhs), (other._lhs, other._rhs))
+
     def __hash__(self):
         """
         @return: A hash value for the C{CFGProduction}.
