@@ -112,7 +112,7 @@ class Location:
         @type unit: C{string}
         @param source: The source of the text that contains this
             location.
-        @unit source: (any)
+        @type source: (any)
 
         @group Accessors: start, end, unit, source, length, __len__
         @sort: start, end, unit, source, length, __len__
