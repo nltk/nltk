@@ -11,7 +11,6 @@
 #   - How should we handle traces and/or movement?
 
 """
-
 Classes for representing hierarchical language structures, such as
 syntax trees and morphological trees.  A single tree is represented by
 a nested structure of X{tree segments}, where each tree segment
@@ -27,7 +26,8 @@ single subtree can be shared by multiple parents.  Different tree
 classes should never be mixed within a single tree.
 """
 
-from nltk.token import Token, CharSpanLocation, FrozenToken, TreeContextPointer
+from nltk.token import Token, CharSpanLocation, FrozenToken
+from nltk.token import TreeContextPointer
 from nltk.tokenizer import TokenizerI
 from nltk import PropertyIndirectionMixIn
 from nltk.probability import ProbabilisticMixIn, ImmutableProbabilisticMixIn
