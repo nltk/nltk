@@ -16,6 +16,10 @@ rules used by chart parsers.
 
 from token import *
 from string import join
+from chktype import chktype as _chktype
+from chktype import chkclass as _chkclass
+from types import SliceType as _SliceType
+from types import IntType as _IntType
 
 class Rule:
     """
@@ -47,19 +51,20 @@ class Rule:
         """
         return self._lhs
 
-    def rhs(self, pos=-1):
+    def __getitem__(self, index):
         """
-        @return: the right-hand side of the C{Rule}.  With the
-          optional argument, return the nth item on the right-hand side.
-        @rtype: C{tuple} or C{string}
+        @return: the specified rhs element (or the whole rhs).
+        @rtype: C{string} or C{tuple}
+        @param index: An integer or slice indicating which elements to 
+            return.
+        @type index: C{int} or C{slice}
+        @raise IndexError: If the specified element does not exist.
         """
-        if pos == -1:
-            return self._rhs
+        _chktype("Rule.__getitem__", 1, index, (_IntType, _SliceType))
+        if type(index) == _SliceType:
+            return self._rhs[index.start:index.stop]
         else:
-            if pos < len(self):
-                return self._rhs[pos]
-            else:
-                raise IndexError('The specified position does not exist')
+            return self._rhs[index]
 
     def __len__(self):
         """
@@ -150,7 +155,7 @@ class DottedRule(Rule):
         @return: the next element on the right-hand side following the dot.
         @rtype: C{string}
         """
-        return Rule.rhs(self,self._pos)
+        return self[self._pos]
 
     def incr(self):
         """
