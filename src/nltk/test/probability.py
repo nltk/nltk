@@ -17,7 +17,6 @@ Unit testing for L{nltk.probability}.
 from nltk.probability import *
 from nltk.util import mark_stdout_newlines
 import random
-from nltk.set import Set
 
 def test_FreqDist(): """
 Unit tests for L{FreqDist}
@@ -459,14 +458,14 @@ import sys, os, os.path
 if __name__ == '__main__': sys.path[0] = None
 import unittest, doctest, trace
 
-def testsuite():
+def testsuite(reload_module=False):
     import doctest, nltk.test.probability
-    reload(nltk.test.probability)
+    if reload_module: reload(nltk.test.probability)
     return doctest.DocTestSuite(nltk.test.probability)
 
-def test(verbosity=2):
+def test(verbosity=2, reload_module=False):
     runner = unittest.TextTestRunner(verbosity=verbosity)
-    runner.run(testsuite())
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
