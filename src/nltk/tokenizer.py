@@ -372,6 +372,16 @@ def demo():
 
     print 'Tokenize by (non-whitespace) characters:'
     _display(CharTokenizer().tokenize(s))
+
+    print 'Tokenize with nasty parenthesis:'
+    _display(RETokenizer(r'\\(a)', negative=1, unit='s').tokenize(r'a\asdf\asdfwer\asdf\wer(ahello'))
+
+    print 'Tokenize with nasty parenthesis II:'
+    _display(RETokenizer(r'\(a', negative=1, unit='s').tokenize(r'a\asdf\asdfwer\asdf\wer(ahello'))
+
+    print 'Tokenize with nasty parenthesis III:'
+    _display(RETokenizer(r'[(a)]', negative=0, unit='s').tokenize(r'a\asdf\asdfw?r\asdf\wer(ah)l?o'))
+    
     return
     
 if __name__ == '__main__':
