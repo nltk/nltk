@@ -49,9 +49,13 @@ from types import IntType, ListType, StringType, TupleType
 # Configuration variables
 #
 
-WNHOME = environ.get('WNHOME', {'mac': ":", 'dos': "C:\wn16", 'nt': "C:\wn16"}.get(os.name, "/usr/local/wordnet1.6"))
+#WNHOME = environ.get('WNHOME', {'mac': ":", 'dos': "C:\wn16", 'nt': "C:\wn16"}.get(os.name, "/usr/local/wordnet1.6"))
 
-WNSEARCHDIR = environ.get('WNSEARCHDIR', os.path.join(WNHOME, {'mac': "Database"}.get(os.name, "dict")))
+#WNSEARCHDIR = environ.get('WNSEARCHDIR', os.path.join(WNHOME, {'mac': "Database"}.get(os.name, "dict")))
+
+# NLTK has the data files living in the data (corpus) directory
+import nltk.corpus
+WNSEARCHDIR = os.path.join(nltk.corpus.get_basedir(), 'wordnet')
 
 ReadableRepresentations = 1
 """If true, repr(word), repr(sense), and repr(synset) return
