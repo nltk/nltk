@@ -7,7 +7,6 @@
 #
 # $Id$
 
-import nltk.rechunkparser; reload(nltk.rechunkparser)
 from nltk.rechunkparser import *
 from nltk.chunkparser import ChunkedTaggedTokenizer, ChunkScore
 from nltk.tagger import TaggedTokenizer

@@ -46,13 +46,13 @@ functions are defined:
 @see: nltk.token
 """
 
-import token
+import nltk.token as token
 
-from token import Token
-from token import Location
+from nltk.token import Token
+from nltk.token import Location
 import re
-from chktype import chktype as _chktype
-from chktype import chkclass as _chkclass
+from nltk.chktype import chktype as _chktype
+from nltk.chktype import chkclass as _chkclass
 from types import SliceType as _SliceType
 from types import IntType as _IntType
 from types import StringType as _StringType

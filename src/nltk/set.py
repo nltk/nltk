@@ -11,8 +11,8 @@
 # To do:
 #    - Add more mutation methods.
 
-from chktype import chktype as _chktype
-from chktype import chkclass as _chkclass
+from nltk.chktype import chktype as _chktype
+from nltk.chktype import chkclass as _chkclass
 
 class Set:
     """

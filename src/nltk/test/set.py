@@ -7,9 +7,6 @@
 #
 # $Id$
 
-#Temporary:
-import nltk.set;reload (nltk.set)
-
 from nltk.set import *
 
 ##//////////////////////////////////////////////////////
