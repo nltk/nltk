@@ -303,13 +303,6 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
 
         """
         self._fdlist = fdlist
-        self._labels = None
-
-    def _find_labels(self, labeled_tokens):
-        labelmap = {}
-        for token in labeled_tokens:
-            labelmap[token.type().label()] = 1
-        return labelmap.keys()
 
     def _fcount_emperical(self, fdlist, labeled_tokens):
         """
@@ -342,7 +335,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
 
     def train(self, labeled_tokens, **kwargs):
         """
-        @param kwargs:
+        @param kwargs: Keyword arguments.
           - C{iterations}: The maximum number of times GIS should
             iterate.  If GIS converges before this number of
             iterations, it may terminate.  Default=C{5}.
@@ -370,22 +363,15 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         iter = 5
         debug = 0
         C = len(self._fdlist)
-        labels = self._labels
+        labels = None
         for (key, val) in kwargs.items():
-            if key in ('iterations', 'iter'):
-                iter = val
-            elif key == 'debug':
-                debug = val
-            elif key == 'labels':
-                labels = val
-            elif key in ('c', 'C'):
-                C = val
-            else:
-                raise TypeError('Unknown keyword arg %s' % key)
-        
-        # Find the labels, if necessary.
+            if key in ('iterations', 'iter'): iter = val
+            elif key == 'debug': debug = val
+            elif key == 'labels': labels = val
+            elif key in ('c', 'C'): C = val
+            else: raise TypeError('Unknown keyword arg %s' % key)
         if labels is None:
-            labels = self._find_labels(labeled_tokens)
+            labels = find_labels(labeled_tokens)
 
         # Build the corrected feature detector list
         corrected_fdlist = GIS_FDList(self._fdlist, C)
@@ -480,14 +466,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 
         """
         self._fdlist = fdlist
-        self._labels = None
 
-    def _find_labels(self, labeled_tokens):
-        labelmap = {}
-        for token in labeled_tokens:
-            labelmap[token.type().label()] = 1
-        return labelmap.keys()
-    
     def _ffreq_emperical(self, fdlist, labeled_tokens):
         """
         Find the frequency of each feature..
@@ -636,7 +615,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                 
     def train(self, labeled_tokens, **kwargs):
         """
-        @param kwargs:
+        @param kwargs: Keyword arguments.
           - C{iterations}: The maximum number of times GIS should
             iterate.  If GIS converges before this number of
             iterations, it may terminate.  Default=C{5}.
@@ -650,7 +629,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         # Process the keyword arguments.
         iter = 5
         debug = 0
-        labels = self._labels
+        labels = None
         for (key, val) in kwargs.items():
             if key in ('iterations', 'iter'):
                 iter = val
@@ -665,7 +644,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             
         # Find the labels, if necessary.
         if labels is None:
-            labels = self._find_labels(labeled_tokens)
+            labels = find_labels(labeled_tokens)
 
         # Select out the features that actually mean anything.
         if debug > 0: print '  ==> Filtering training results'
