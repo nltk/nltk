@@ -1720,10 +1720,10 @@ class ProbablisticMixIn:
     constructors that expect varargs parameters.
     """
     def __init__(self, p):
-        self.__p = p
+        self._p = p
 
     def p(self):
-        return self.__p
+        return self._p
 
 # import random
 # f = SimpleFreqDist()
