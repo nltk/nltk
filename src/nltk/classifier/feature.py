@@ -21,11 +21,11 @@ relevant to deciding how likely that C{LabeledText} is to occur.
 These features can then be used to examine how likely different labels
 are for a given text.  A typical example of a feature is:
 
-    - Whether a C{LabeledText} contains the word C{\"ball\"} and has
+    - Whether a document contains the word C{\"ball\"} and has
       the label C{\"sports\"}.
 
 Abstractly, features can be thought of as functions mapping from
-C{LabeledText}s to values.  For example, the feature function
+C{LabeledText}s to values.  For example, the X{feature function}
 corresponding to the typical feature given above is::
 
     f(ltext)  =  1  if ((\"ball\" in ltext.text) and
@@ -48,7 +48,7 @@ Abstractly, each feature consists of:
 
    - A unique X{feature id}, which is used to distinguish the
      feature.  Feature ids are bounded non-negative integers.
-     
+
    - A X{feature detector}, which encapsulates the feature's
      function.  Feature detectors are implemented using the
      C{FeatureDetectorI} interface.
@@ -67,8 +67,8 @@ Abstractly, each feature consists of:
 Features are not explicitly represented by any object; instead, they
 are indirectly represented using feature detectors.
 
-FeatureDetectorLists
-====================
+Feature Detector Lists
+======================
 X{Feature detector lists} provide a way of grouping feature detectors
 together.  Abstractly, a feature detector list can be thought of as a
 C{list} of feature detectors.  The M{i}th element of this list is the
@@ -114,7 +114,7 @@ by applying some feature detector list to the text.
 ##//////////////////////////////////////////////////////
 ##  Preferred Variable Names
 ##//////////////////////////////////////////////////////
-# Feature identifier: fid
+# Feature id: fid
 # Feature value: fval
 # Feature detector list: fdlist
 # Feature value list: fvlist
@@ -739,13 +739,6 @@ class LabeledTextFunctionFDList(AbstractFDList):
         @type range: C{list} of (immutable)
         @param range: The range of C{function}.  
         """
-        # Should I get rid of this limitation?  It would mean a slight
-        # performance hit (two dictionary lookups in detect() instead
-        # of one).
-        if None in range:
-            raise ValueError('LabeledTextFunctionFDList can not '+
-                             'be used if range contains None.')
-        
         self._func = function
 
         self._map = {}
@@ -808,13 +801,6 @@ class TextFunctionFDList(AbstractFDList):
         @param labels: The set of labels used by this
             C{TextFunctionFDList}. 
         """
-        if None in range:
-            raise ValueError('TextFunctionFDList can not '+
-                             'be used if range contains None')
-        if None in labels:
-            raise ValueError('TextFunctionFDList can not '+
-                             'be used if labels contains None')
-        
         self._func = function
         self._labels = labels
 
@@ -842,7 +828,7 @@ class TextFunctionFDList(AbstractFDList):
         # Inherit docs from FeatureDetectorListI
         lnum = self._lmap.get(labeled_text.label(), None)
         vnum = self._vmap.get(self._func(labeled_text.text()), None)
-        if (lnum == 0) or (vnum == 0):
+        if (lnum == None) or (vnum == None):
             return EmptyFeatureValueList(self._N)
         else:
             fid = vnum + lnum*self._num_values
@@ -935,9 +921,9 @@ class LabeledFeatureValueList:
     """
     The label and feature values that correspond to a C{LabeledText}.
     This class encapsulates all of the information about a
-    C{LabeledText} that a feature-driven classifier can use.
+    C{LabeledText} that a feature-based classifier can use.
     """
-    def __init__(self, fvl, label):
+    def __init__(self, fvlist, label):
         """
         Construct a new C{LabeledFeatureValueList}.
         C{LabeledFeatureValueList}s are typically constructed from
@@ -954,7 +940,7 @@ class LabeledFeatureValueList:
         @param label: The label
         @type label: C{string}
         """
-        self._fvl = fvl
+        self._fvlist = fvlist
         self._label = label
         
     def feature_values(self):
@@ -962,7 +948,7 @@ class LabeledFeatureValueList:
         @return: this C{LabeledFeatureValueList}'s feature value list.
         @rtype: C{FeatureValueList}
         """
-        return self._fvl
+        return self._fvlist
     
     def label(self):
         """
@@ -977,7 +963,7 @@ class LabeledFeatureValueList:
             C{LabeledFeatureValueList}.
         @rtype: C{string}
         """
-        return '<LabeledFeatureValueList %r %r>' % (self._label, self._fvl) 
+        return '%r/%r' % (self._fvlist, self._label) 
 
 ##//////////////////////////////////////////////////////
 ##  Feature Selection
