@@ -8,11 +8,12 @@
 #
 # $Id$
 
-# To do:
-#    - Add more mutation methods?
-
 """
-An unordered container class that contains no duplicate elements.
+Unordered container class that contains no duplicate elements.  The
+C{nltk.set} module defines two container classes:
+
+  - L{Set} is used to encode immutable sets.
+  - L{MutableSet} is used to encode mutable sets.
 """
 
 from nltk.chktype import chktype as _chktype
@@ -20,30 +21,28 @@ from nltk.chktype import classeq as _classeq
 
 class Set:
     """
-    An unordered container class that contains no duplicate elements.
-    In particular, a set contains no elements M{e1} and M{e2} such
-    that M{e1=e2}.  Currently, the C{Set} class is given a fairly
-    minimal implementation.  However, more members (e.g., to iterate
-    over a set) may be defined in the future.
+    An immutable unordered container class that contains no duplicate
+    elements.  In particular, a C{Set} contains no elements M{e1} and
+    M{e2} such that M{e1=e2}.  Since C{Set}s are immutable, they can
+    be used as keys in dictionaries.
 
-    Although the C{Set} class attempts to ensure that it
-    contains no duplicate elements, it can only do so under the
-    following circumstances:
+    The elements of a set are required to be hashable.
+
+    Although the C{Set} class attempts to ensure that sets contains no
+    duplicate elements, it can only do so under the following
+    conditions:
     
-         - For all elements M{ei}, M{ej} added to the C{Set},
-           M{ei=ej} if and only if M{ej=ei}.  This should always be
-           the case as long as the elements in the C{Set} use
-           well-defined comparison functions.  An example where it
-           would not be the case would be if M{ei} defined
-           C{__eq__}() to always return 0, and M{ej} defined
-           C{__eq__}() to always return 1.
-           
-         - Mutable elements inserted in the C{Set} are not
-           modified after they are inserted.
+        - For all elements M{ei}, M{ej} in the C{Set},
+          M{ei=ej} if and only if M{ej=ei}.  This should always be
+          the case as long as the elements in the C{Set} use
+          well-defined comparison functions.  
+          
+        - Mutable elements inserted in the C{Set} are not modified
+          after they are inserted.
 
-    If these circumstances are not met, the C{Set} will
-    continue to function, but it will no longer guarantee that it
-    contains no duplicate elements.
+    If these conditions are not met, the C{Set} will continue to
+    function, but it will no longer guarantee that each set contains
+    no duplicate elements.
     """
     def __init__(self, *lst):
         """
@@ -70,24 +69,6 @@ class Set:
         @rtype: C{list}
         """
         return self._dict.keys()
-
-    def insert(self, elt):
-        """
-        Adds the specified element to this Set if it is not already
-        present.  Formally, add C{elt} to this Set if and
-        only if this set contains no element M{ei} such that
-        C{elt}=M{e}.
-
-        @param elt: The element to insert into the Set.
-        @type elt: Any
-        @rtype: C{boolean}
-        @return: C{true} if the C{insert} operation added an element
-            to the set; false if C{elt} was already present in the
-            set. 
-        """
-        if self._dict.has_key(elt): return 0
-        self._dict[elt] = 1
-        return 1
 
     def union(self, other):
         """
@@ -184,6 +165,7 @@ class Set:
         """
         return self.union(other)
 
+    # set1 - set1
     def __sub__(self, other):
         """
         Return the difference between this Set and another Set.
@@ -233,7 +215,7 @@ class Set:
         @return: True if this set contains the given element.
         @rtype: boolean
         """
-        return self.contains(elt)
+        return self._dict.has_key(elt)
 
     def copy(self):
         """
@@ -329,14 +311,6 @@ class Set:
         """
         return len(self._dict)
 
-#    def __del__(self, element):
-#        """
-#	Delete the element from the set.
-#
-#        @rtype: None
-#        """
-#        del self._dict[element]
-
     def __eq__(self, other):
         """
         Return 1 if the given object is equal to this Set.  In
@@ -369,16 +343,74 @@ class Set:
         # We have to make a copy of the list.
         return self._dict.keys()
 
-#     ## IS THIS A GOOD THING!?!??!?
-#     def __hash__(self):
-#         """
-#         Return the hash value for this Set.  If two Sets are equal,
-#         they are guaranteed to have the same hash value.  However, two 
-#         Sets may have the same hash value and still not be equal.
-#        
-#         @raise TypeError: if some element of the set is not a hashable
-#         type. 
-#         @return: The hash value for this Set.
-#         @rtype: int
-#         """
-#         return hash(tuple(self._dict.keys()))
+    def __hash__(self):
+        """
+        Return the hash value for this Set.  If two Sets are equal,
+        they are guaranteed to have the same hash value.  However, two 
+        Sets may have the same hash value and still not be equal.
+       
+        @raise TypeError: if some element of the set is not a hashable
+        type. 
+        @return: The hash value for this Set.
+        @rtype: int
+        """
+        return hash(tuple(self._dict.keys()))
+
+class MutableSet(Set):
+    """
+    A mutable unordered container class that contains no duplicate
+    elements.  In particular, a C{MutableSet} contains no elements
+    M{e1} and M{e2} such that M{e1=e2}.  Since C{MutableSet}s are
+    mutable, they can not be used as keys in dictionaries.
+
+    The elements of a set are required to be hashable.
+
+    Although the C{MutableSet} class attempts to ensure that sets
+    contains no duplicate elements, it can only do so under the
+    following conditions:
+    
+        - For all elements M{ei}, M{ej} in the C{MutableSet},
+          M{ei=ej} if and only if M{ej=ei}.  This should always be the
+          case as long as the elements in the C{MutableSet} use
+          well-defined comparison functions.
+          
+        - Mutable elements inserted in the C{MutableSet} are not
+          modified after they are inserted.
+
+    If these conditions are not met, the C{MutableSet} will continue
+    to function, but it will no longer guarantee that each set
+    contains no duplicate elements.
+    """
+    def insert(self, elt):
+        """
+        Adds the specified element to this Set, if it is not already
+        present.  Formally, add C{elt} to this Set if and
+        only if this set contains no element M{ei} such that
+        C{elt}=M{e}.
+
+        @param elt: The element to insert into the Set.
+        @type elt: Any
+        @rtype: C{boolean}
+        @return: C{true} if the C{insert} operation added an element
+            to the set; false if C{elt} was already present in the
+            set. 
+        """
+        if self._dict.has_key(elt): return 0
+        self._dict[elt] = 1
+        return 1
+
+    def copy(self):
+        # Inherit docs from Set.
+        s=MutableSet()
+        s._dict.update(self._dict)
+        return s
+    
+    def __hash__(self):
+        raise TypeError, 'unhashable instance'
+
+    def __delitem__(self, element):
+        """
+        Delete the element from the set.
+        @rtype: None
+        """
+        del self._dict[element]
