@@ -173,43 +173,43 @@ class AliasedFeatureVariable(FeatureVariable):
     A set of variables that are constrained to be equal.  An aliased
     variable can be used in place of a simple variable.  In
     particular, an aliased variable stands for a single feature value,
-    and requires that each its subvariables are bound to that same
+    and requires that each its aliases are bound to that same
     value.  Aliased variables can be categorized according to their
     values in a set of bindings:
     
-      - An aliased variable is X{unbound} if none of its subvariables
+      - An aliased variable is X{unbound} if none of its aliases
         is assigned a value.
         
       - An aliased variable is X{bound} if at least one of its
-        subvariables is bound, and all of its bound subvariables are
-        assigned the same value.  (If at least one subvariable is
-        unbound, then the merved variable is said to be X{partially
+        aliases is bound, and all of its bound aliases are
+        assigned the same value.  (If at least one alias is
+        unbound, then the aliased variable is said to be X{partially
         bound}.)
         
       - An aliased variable is X{inconsistant} if two or more
-        subvariables are bound to different values.
+        aliases are bound to different values.
 
-    @ivar _subvariables: The set of subvariables contained by
+    @ivar _aliases: The set of aliases contained by
         this aliased variable.  This set is encoded as a dictionary
         whose keys are variables.
     """
-    def __init__(self, *subvariables):
+    def __init__(self, *aliases):
         """
         Construct a new feature structure variable that contains the
-        given subvariables.  If C{subvariables} contains aliased
+        given aliases.  If C{aliases} contains aliased
         variables, then they are replaced by their lists of
-        subvariables.
-        @raise ValueError: If no subvariables are specified.
+        aliases.
+        @raise ValueError: If no aliases are specified.
         """
-        if len(subvariables) == 0:
-            raise ValueError('Expected at least one subvariable')
-        assert _chktype(1, subvariables, (FeatureVariable,))
-        self._subvariables = {}
-        for subvar in subvariables:
+        if len(aliases) == 0:
+            raise ValueError('Expected at least one alias')
+        assert _chktype(1, aliases, (FeatureVariable,))
+        self._aliases = {}
+        for subvar in aliases:
             if isinstance(subvar, AliasedFeatureVariable):
-                self._subvariables.update(subvar._subvariables)
+                self._aliases.update(subvar._aliases)
             else:
-                self._subvariables[subvar] = 1
+                self._aliases[subvar] = 1
 
     def identifier(self):
         """
@@ -218,12 +218,12 @@ class AliasedFeatureVariable(FeatureVariable):
         """
         raise ValueError('Aliased variables do not have identifiers')
     
-    def subvariables(self):
+    def aliases(self):
         """
         @return: A list of the variables that are constrained to be
             equal by this aliased variable.
         """
-        return self._subvariables.keys()
+        return self._aliases.keys()
     
     def __repr__(self):
         """
@@ -232,16 +232,16 @@ class AliasedFeatureVariable(FeatureVariable):
            C{I{X1}, I{X2}, ..., I{Xn}} is represented as
            C{'?<I{X1}=I{X2}=...=I{Xn}>'}.
         """
-        idents = [v._identifier for v in self.subvariables()]
+        idents = [v._identifier for v in self.aliases()]
         idents.sort()
         return '?<' + '='.join(idents) + '>'
     
     def __cmp__(self):
         if not isinstance(other, FeatureVariable): return -1
-        return cmp(self._subvariables, other._identifier)
+        return cmp(self._aliases, other._identifier)
     
     def __hash__(self):
-        return self._subvariables.__hash__()
+        return self._aliases.__hash__()
 
 class FeatureBindings:
     """
@@ -282,8 +282,8 @@ class FeatureBindings:
         """
         @return: True if the given variable is bound.  A simple
         variable is bound if it has been assigned a value.  An aliased
-        variable is bound if at least one of its subvariables is bound
-        and all of its bound subvariables are assigned the same value.
+        variable is bound if at least one of its aliases is bound
+        and all of its bound aliases are assigned the same value.
         
         @rtype: C{bool}
         """
@@ -291,7 +291,7 @@ class FeatureBindings:
 
         if isinstance(variable, AliasedFeatureVariable):
             bindings = [self._bindings.get(v)
-                        for v in variable.subvariables()
+                        for v in variable.aliases()
                         if self._bindings.has_key(v)]
             if len(bindings) == 0: return 0
             inconsistant = [val for val in bindings if val != bindings[0]]
@@ -305,25 +305,25 @@ class FeatureBindings:
         @return: The value that it assigned to the given variable, if
         it's bound; or the variable itself if it's unbound.  The value
         assigned to an aliased variable is defined as the value that's
-        assigned to its bound subvariables.
+        assigned to its bound aliases.
 
         @param update_aliased_bindings: If true, then looking up a
-            bound aliased variable will cause any unbound subvariables
+            bound aliased variable will cause any unbound aliases
             it has to be bound to its value.  E.g., if C{?x} is bound
             to C{1} and C{?y} is unbound, then looking up C{?x=y} will
             cause C{?y} to be bound to C{1}.
         @raise ValueError: If C{variable} is an aliased variable with an
             inconsistant value (i.e., if two or more of its bound
-            subvariables are assigned different values).
+            aliases are assigned different values).
         """
         assert _chktype(1, variable, FeatureVariable)
 
         # If it's an aliased variable, then we need to check that the
-        # bindings of all of its subvariables are consistant.
+        # bindings of all of its aliases are consistant.
         if isinstance(variable, AliasedFeatureVariable):
             # Get a list of all bindings.
             bindings = [self._bindings.get(v)
-                        for v in variable.subvariables()
+                        for v in variable.aliases()
                         if self._bindings.has_key(v)]
             # If it's unbound, return the (aliased) variable.
             if len(bindings) == 0: return variable
@@ -332,9 +332,9 @@ class FeatureBindings:
             for binding in bindings[1:]:
                 if binding != val:
                     raise ValueError('inconsistant value')
-            # Set any unbound subvariables, if requested
+            # Set any unbound aliases, if requested
             if update_aliased_bindings:
-                for subvar in variable.subvariables():
+                for subvar in variable.aliases():
                     self._bindings[subvar] = val
             # Return the value.
             return val
@@ -345,7 +345,7 @@ class FeatureBindings:
         """
         Assign a value to a variable.  If C{variable} is an aliased
         variable, then the value is assigned to all of its
-        subvariables.  Variables can only be bound to values; they may
+        aliases.  Variables can only be bound to values; they may
         not be bound to other variables.
         
         @raise ValueError: If C{value} is a variable.
@@ -355,7 +355,7 @@ class FeatureBindings:
             raise ValueError('Variables cannot be bound to other variables')
         
         if isinstance(variable, AliasedFeatureVariable):
-            for subvar in variable.subvariables():
+            for subvar in variable.aliases():
                 self._bindings[subvar] = value
         else:
             self._bindings[variable] = value
@@ -534,7 +534,7 @@ class FeatureStruct:
         @return: The feature structure that is obtained by replacing
         each variable bound by C{bindings} with its values.  If
         C{self} contains an aliased variable that is partially bound by
-        C{bindings}, then that variable's unbound subvariables will be
+        C{bindings}, then that variable's unbound aliases will be
         bound to its value.  E.g., if the bindings C{<?x=1>} are
         applied to the feature structure C{[A = ?<x=y>]}, then the
         bindings will be updated to C{<?x=1,?y=1>}.
@@ -668,7 +668,7 @@ class FeatureStruct:
         selfcopy._apply_forwards(visited={})
 
         # Find any partially bound aliased variables, and bind their
-        # unbound subvariables.
+        # unbound aliases.
         selfcopy._rebind_aliased_variables(bindings, visited={})
 
         # Replace bound vars with values.
