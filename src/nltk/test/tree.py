@@ -261,12 +261,13 @@ can be told not to include the WORDS property:
 
     >>> treetok = TreebankTokenReader(add_subtoks=False).read_token(s)
     >>> print treetok.properties()
-    ['TREE']
+    ['TREE', 'SUBTOKENS']
 
 Another optional argument (C{add_locs}), can be used to tell the token
 reader constructor to add LOC properties to each leaf:
-    
-    >>> treetok = TreebankTokenReader(add_locs=True, SUBTOKENS='WORDS').read_token(s)
+
+    >>> tb_reader = TreebankTokenReader(SUBTOKENS='WORDS')
+    >>> treetok = tb_reader.read_token(s, add_locs=True)
     >>> print treetok['TREE']
     (S:
       (NP: <I>@[7:8c])
