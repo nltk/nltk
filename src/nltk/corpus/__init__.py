@@ -704,7 +704,7 @@ chunking = SimpleCorpusReader(
 groups = [('APW', 'APW_\d*'), ('NYT', 'NYT_\d*')]
 ieer = SimpleCorpusReader(
     'ieer', 'ieer/', r'(APW|NYT)_\d+', groups, description_file='README',
-    token_reader=IeerChunkedTokenReader())
+    token_reader=IeerTokenReader())
 del groups # delete temporary variable
 
 ###################################################
