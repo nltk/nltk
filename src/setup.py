@@ -10,11 +10,22 @@
 #
 # $Id$
 
-from distutils.core import setup
+from distutils.core import setup, Extension
 import nltk
 
-setup(
+# Should we include the C/C++ extensions?
+USE_EXTENSIONS = 0
 
+#############################################
+## Extension modules
+EXTENSIONS = [
+    Extension('nltk._ctoken',
+              sources=['extensions/ctoken.c',
+                       'extensions/location_object.c']),
+    ]
+if not USE_EXTENSIONS: EXTENSIONS = None
+
+setup(
     #############################################
     ## Distribution Metadata
     name = "nltk",
@@ -34,6 +45,10 @@ setup(
     #############################################
     ## Package List
     packages = ['nltk', 'nltk.test', 'nltk.draw', 'nltk.classifier',
-                'nltk.parser', 'nltk.stemmer']
+                'nltk.parser', 'nltk.stemmer'],
+    
+    #############################################
+    ## Extension Modules
+    ext_modules = EXTENSIONS,
     
     )
