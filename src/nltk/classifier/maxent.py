@@ -250,7 +250,8 @@ class GIS_FDList(AbstractFDList):
         values = self._base_fdlist.detect(labeled_text)
         assignments = list(values.assignments())
 
-        # Add the correction feature
+        # Add the correction feature (NOTE: we assume binary features
+        # here!  Is that save? 
         correction = self._C - len(assignments)
         assignments.append( (len(self._base_fdlist)+1, correction) )
         if correction < 0:
@@ -432,11 +433,14 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             iterate.  If GIS converges before this number of
             iterations, it may terminate.  Default=C{20}.
             (type=C{int})
+            
           - C{debug}: The debugging level.  Higher values will cause
             more verbose output.  Default=C{0}.  (type=C{int})
+            
           - C{labels}: The set of possible labels.  If none is given,
             then the set of all labels attested in the training data
             will be used instead.  (type=C{list} of (immutable)).
+            
           - C{C}: The correction constant.  This constant is
             required by generalized iterative scaling.  It must be
             greater or equal than the maximum number of features that
@@ -450,16 +454,53 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             produce incorrect results.  Therefore, you should choose
             the lowest value that you are sure obeys the above
             constraint.  Default=C{len(fdlist)}.  (type=C{int})
+            
+          - C{accuracy_cutoff}: The accuracy value that indicates
+            convergence.  If the accuracy becomes closer to one
+            than the specified value, then GIS will terminate.  The
+            default value is None, which indicates that no accuracy
+            cutoff should be used. (type=C{float})
+
+          - C{delta_accuracy_cutoff}: The change in accuracy should be
+            taken to indicate convergence.  If the accuracy changes by
+            less than this value in a single iteration, then GIS will
+            terminate.  The default value is C{None}, which indicates
+            that no accuracy-change cutoff should be
+            used. (type=C{float})
+
+          - C{log_likelihood_cutoff}: specifies what log-likelihood
+            value should be taken to indicate convergence.  If the
+            log-likelihod becomes closer to zero than the specified
+            value, then GIS will terminate.  The default value is
+            C{None}, which indicates that no log-likelihood cutoff
+            should be used. (type=C{float})
+
+          - C{delta_log_likelihood_cutoff}: specifies what change in
+            log-likelihood should be taken to indicate convergence.
+            If the log-likelihood changes by less than this value in a
+            single iteration, then GIS will terminate.  The default
+            value is C{None}, which indicates that no
+            log-likelihood-change cutoff should be used.  (type=C{float})
         """
         # Process the keyword arguments.
         iter = 20
         debug = 0
         C = len(self._fdlist)
         labels = None
+        ll_cutoff = lldelta_cutoff = None
+        acc_cutoff = accdelta_cutoff = None
         for (key, val) in kwargs.items():
             if key in ('iterations', 'iter'): iter = val
             elif key == 'debug': debug = val
             elif key == 'labels': labels = val
+            elif key == 'log_likelihood_cutoff':
+                ll_cutoff = abs(val)
+            elif key == 'delta_log_likelihood_cutoff':
+                lldelta_cutoff = abs(val)
+            elif key == 'accuracy_cutoff': 
+                acc_cutoff = abs(val)
+            elif key == 'delta_accuracy_cutoff':
+                accdelta_cutoff = abs(val)
             elif key in ('c', 'C'): C = val
             else: raise TypeError('Unknown keyword arg %s' % key)
         if labels is None:
@@ -496,12 +537,17 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         classifier = ConditionalExponentialClassifier(memoized_fdlist, 
                                                       labels, weights)
 
+        # Old log-likelihood and accuracy; used to check if the change
+        # in log-likelihood or accuracy is sufficient to indicate convergence.
+        ll_old = None
+        acc_old = None
+            
         if debug > 0: print '  ==> Training (%d iterations)' % iter
         if debug > 2:
             print
             print '      Iteration    Log Likelihood    Accuracy'
             print '      ---------------------------------------'
-            
+
         # Train for a fixed number of iterations.
         for iternum in range(iter):
             if debug > 2:
@@ -523,6 +569,23 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             weights = classifier.weights()
             weights *= (fcount_emperical / fcount_estimated) ** Cinv
             classifier.set_weights(weights)
+
+            # Check log-likelihood cutoffs.
+            if ll_cutoff is not None or lldelta_cutoff is not None:
+                ll = log_likelihood(classifier, labeled_tokens)
+                if ll_cutoff is not None and ll > -ll_cutoff: break
+                if lldelta_cutoff is not None:
+                    if (ll - ll_old) < lldelta_cutoff: break
+                    ll_old = ll
+
+            # Check accuracy cutoffs.
+            if acc_cutoff is not None or accdelta_cutoff is not None:
+                acc = accuracy(classifier, labeled_tokens)
+                if acc_cutoff is not None and acc < acc_cutoff: break
+                if accdelta_cutoff is not None:
+                    if (acc_old - acc) < accdelta_cutoff: break
+                    acc_old = acc
+
 
         if debug > 2:
             print ('     %9d    %14.5f    %9.3f' %
@@ -555,7 +618,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
     initially sets all weights to zero; it then iteratively updates
     the weights using the formula::
 
-      w[i] := w[i] + (e ** delta[i])
+      w[i] := w[i] * (e ** delta[i])
 
     Where M{delta[i]} is the solution to::
 
@@ -818,25 +881,62 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             iterate.  If IIS converges before this number of
             iterations, it may terminate.  Default=C{20}.
             (type=C{int})
+            
           - C{debug}: The debugging level.  Higher values will cause
             more verbose output.  Default=C{0}.  (type=C{int})
+            
           - C{labels}: The set of possible labels.  If none is given,
             then the set of all labels attested in the training data
             will be used instead.  (type=C{list} of (immutable)).
+            
+          - C{accuracy_cutoff}: The accuracy value that indicates
+            convergence.  If the accuracy becomes closer to one
+            than the specified value, then IIS will terminate.  The
+            default value is None, which indicates that no accuracy
+            cutoff should be used. (type=C{float})
+
+          - C{delta_accuracy_cutoff}: The change in accuracy should be
+            taken to indicate convergence.  If the accuracy changes by
+            less than this value in a single iteration, then IIS will
+            terminate.  The default value is C{None}, which indicates
+            that no accuracy-change cutoff should be
+            used. (type=C{float})
+
+          - C{log_likelihood_cutoff}: specifies what log-likelihood
+            value should be taken to indicate convergence.  If the
+            log-likelihod becomes closer to zero than the specified
+            value, then IIS will terminate.  The default value is
+            C{None}, which indicates that no log-likelihood cutoff
+            should be used. (type=C{float})
+
+          - C{delta_log_likelihood_cutoff}: specifies what change in
+            log-likelihood should be taken to indicate convergence.
+            If the log-likelihood changes by less than this value in a
+            single iteration, then IIS will terminate.  The default
+            value is C{None}, which indicates that no
+            log-likelihood-change cutoff should be used.  (type=C{float})
         """
         # Process the keyword arguments.
         iter = 20
         debug = 0
         labels = None
+        ll_cutoff = lldelta_cutoff = None
+        acc_cutoff = accdelta_cutoff = None
         for (key, val) in kwargs.items():
-            if key in ('iterations', 'iter'):
-                iter = val
-            elif key == 'debug':
-                debug = val
-            elif key == 'labels':
-                labels = val
-            else:
-                raise TypeError('Unknown keyword arg %s' % key)
+            if key in ('iterations', 'iter'): iter = val
+            elif key == 'debug': debug = val
+            elif key == 'labels': labels = val
+            elif key == 'log_likelihood_cutoff':
+                ll_cutoff = abs(val)
+            elif key == 'delta_log_likelihood_cutoff':
+                lldelta_cutoff = abs(val)
+            elif key == 'accuracy_cutoff': 
+                acc_cutoff = abs(val)
+            elif key == 'delta_accuracy_cutoff':
+                accdelta_cutoff = abs(val)
+            else: raise TypeError('Unknown keyword arg %s' % key)
+        if labels is None:
+            labels = find_labels(labeled_tokens)
             
         # Find the labels, if necessary.
         if labels is None:
@@ -904,6 +1004,22 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             weights *= Numeric.exp(deltas)
             classifier.set_weights(weights)
                         
+            # Check log-likelihood cutoffs.
+            if ll_cutoff is not None or lldelta_cutoff is not None:
+                ll = log_likelihood(classifier, labeled_tokens)
+                if ll_cutoff is not None and ll > -ll_cutoff: break
+                if lldelta_cutoff is not None:
+                    if (ll - ll_old) < lldelta_cutoff: break
+                    ll_old = ll
+
+            # Check accuracy cutoffs.
+            if acc_cutoff is not None or accdelta_cutoff is not None:
+                acc = accuracy(classifier, labeled_tokens)
+                if acc_cutoff is not None and acc < acc_cutoff: break
+                if accdelta_cutoff is not None:
+                    if (acc_old - acc) < accdelta_cutoff: break
+                    acc_old = acc
+
         if debug > 2:
             print ('     %9d    %14.5f    %9.3f' %
                    (iternum+1, log_likelihood(classifier, labeled_tokens),
