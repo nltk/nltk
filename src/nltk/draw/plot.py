@@ -25,7 +25,7 @@ from types import MethodType as _MethodType
 from types import BuiltinFunctionType as _BuiltinFunctionType
 from types import IntType as _IntType
 from types import FloatType as _FloatType
-from math import log
+from math import log, log10, ceil, floor
 import Tkinter, sys, time
 
 class PlotFrameI:
@@ -74,11 +74,11 @@ class CanvasPlotFrame(PlotFrameI):
         self._original_rng = rng
         self._original_vals = vals
         
-        self._frame = Frame(root)
+        self._frame = Tkinter.Frame(root)
         self._frame.pack(expand=1, fill='both')
 
         # Set up the canvas
-        self._canvas = Canvas(self._frame)
+        self._canvas = Tkinter.Canvas(self._frame, background='white')
         self._canvas['scrollregion'] = (0,0,200,200)
 
         # Give the canvas scrollbars.
@@ -86,7 +86,7 @@ class CanvasPlotFrame(PlotFrameI):
         sb1.pack(side='right', fill='y')
         sb2 = Tkinter.Scrollbar(self._frame, orient='horizontal')
         sb2.pack(side='bottom', fill='x')
-        self._canvas.pack(side='left', fill='both', expand='yes')
+        self._canvas.pack(side='left', fill='both', expand=1)
 
         # Connect the scrollbars to the canvas.
         sb1.config(command=self._canvas.yview)
@@ -94,8 +94,18 @@ class CanvasPlotFrame(PlotFrameI):
         self._canvas['yscrollcommand'] = sb1.set
         self._canvas['xscrollcommand'] = sb2.set
 
-        # Plot the graph (linear, to begin with)
-        #self.config_axes(0, 0)
+        # Start out with linear coordinates.
+        self._xlog = self._ylog = 0
+        
+        self._width = self._height = -1
+        self._canvas.bind('<Configure>', self._configure)
+
+    def _configure(self, event):
+        if self._width != event.width or self._height != event.height:
+            self._width = event.width
+            self._height = event.height
+            (i1, j1, i2, j2) = self.visible_area()
+            self.zoom(i1, j1, i2, j2)
 
     def postscript(self, filename):
         (x0, y0, w, h) = self._canvas['scrollregion'].split()
@@ -104,8 +114,9 @@ class CanvasPlotFrame(PlotFrameI):
 
     def _plot(self, *args):
         self._canvas.delete('all')
+        (i1, j1, i2, j2) = self.visible_area()
 
-        # Axes
+        # Draw the Axes
         xzero = -self._imin*self._dx
         yzero = self._ymax+self._jmin*self._dy
         neginf = min(self._imin, self._jmin, -1000)*1000
@@ -115,18 +126,76 @@ class CanvasPlotFrame(PlotFrameI):
         self._canvas.create_line(xzero,neginf,xzero,posinf,
                                  fill='gray', width=2)
 
+        # Draw the X grid.
+        if self._xlog:
+            (i1, i2) = (10**(i1), 10**(i2))
+            (imin, imax) = (10**(self._imin), 10**(self._imax))
+            # Grid step size.
+            di = (i2-i1)/1000.0
+            # round to a power of 10
+            di = 10.0**(int(log10(di)))
+            # grid start location
+            i = ceil(imin/di)*di
+            while i <= imax:
+                if i > 10*di: di *= 10
+                x = log10(i)*self._dx - log10(imin)*self._dx
+                self._canvas.create_line(x, neginf, x, posinf, fill='gray')
+                i += di
+        else:
+            # Grid step size.
+            di = max((i2-i1)/10.0, (self._imax-self._imin)/100)
+            # round to a power of 2
+            di = 2.0**(int(log(di)/log(2)))
+            # grid start location
+            i = int(self._imin/di)*di
+            # Draw the grid.
+            while i <= self._imax:
+                x = (i-self._imin)*self._dx
+                self._canvas.create_line(x, neginf, x, posinf, fill='gray')
+                i += di
+
+        # Draw the Y grid
+        if self._ylog:
+            (j1, j2) = (10**(j1), 10**(j2))
+            (jmin, jmax) = (10**(self._jmin), 10**(self._jmax))
+            # Grid step size.
+            dj = (j2-j1)/1000.0
+            # round to a power of 10
+            dj = 10.0**(int(log10(dj)))
+            # grid start locatjon
+            j = ceil(jmin/dj)*dj
+            while j <= jmax:
+                if j > 10*dj: dj *= 10
+                y = log10(jmax)*self._dy - log10(j)*self._dy
+                self._canvas.create_line(neginf, y, posinf, y, fill='gray')
+                j += dj
+        else:
+            # Grid step size.
+            dj = max((j2-j1)/10.0, (self._jmax-self._jmin)/100) 
+            # round to a power of 2
+            dj = 2.0**(int(log(dj)/log(2))) 
+            # grid start location
+            j = int(self._jmin/dj)*dj
+            # Draw the grid
+            while j <= self._jmax:
+                y = (j-self._jmin)*self._dy
+                self._canvas.create_line(neginf, y, posinf, y, fill='gray')
+                j += dj
+
         # The plot
         line = []
         for (i,j) in zip(self._rng, self._vals):
             x = (i-self._imin) * self._dx
             y = self._ymax-((j-self._jmin) * self._dy)
             line.append( (x,y) )
-        self._canvas.create_line(line)
+        self._canvas.create_line(line, fill='black')
 
     def config_axes(self, xlog, ylog):
-        if xlog: self._rng = [log(x) for x in self._original_rng]
+        self._xlog = xlog
+        self._ylog = ylog
+        if xlog: self._rng = [log10(x) for x in self._original_rng]
         else: self._rng = self._original_rng
-        if ylog: self._vals = [log(x) for x in self._original_vals]
+        if ylog: self._vals = [log10(x) for x in self._original_vals]
         else: self._vals = self._original_vals
             
         self._imin = min(self._rng)
@@ -141,8 +210,8 @@ class CanvasPlotFrame(PlotFrameI):
         return (self._imin+x/self._dx, self._jmin+(self._ymax-y)/self._dy)
 
     def zoom(self, i1, j1, i2, j2):
-        w = int(self._canvas['width'])
-        h = int(self._canvas['height'])
+        w = self._width
+        h = self._height
         self._xmax = (self._imax-self._imin)/(i2-i1) * w
         self._ymax = (self._jmax-self._jmin)/(j2-j1) * h
         self._canvas['scrollregion'] = (0, 0, self._xmax, self._ymax)
@@ -159,8 +228,8 @@ class CanvasPlotFrame(PlotFrameI):
         yview = self._canvas.yview()
         i1 = self._imin + xview[0] * (self._imax-self._imin)
         i2 = self._imin + xview[1] * (self._imax-self._imin)
-        j1 = self._jmax - yview[0] * (self._jmax-self._jmin)
-        j2 = self._jmax - yview[1] * (self._jmax-self._jmin)
+        j1 = self._jmax - yview[1] * (self._jmax-self._jmin)
+        j2 = self._jmax - yview[0] * (self._jmax-self._jmin)
         return (i1, j1, i2, j2)
 
     def create_zoom_marker(self):
@@ -179,7 +248,6 @@ class CanvasPlotFrame(PlotFrameI):
     def bind(self, *args): self._canvas.bind(*args)
     def unbind(self, *args): self._canvas.unbind(*args)
 
-
 class BLTPlotFrame(PlotFrameI):
     def __init__(self, root, vals, rng):
         #raise ImportError     # for debugging CanvasPlotFrame
@@ -192,7 +260,7 @@ class BLTPlotFrame(PlotFrameI):
 
         # Create top-level frame.
         self._root = root
-        self._frame = Frame(root)
+        self._frame = Tkinter.Frame(root)
         self._frame.pack(expand=1, fill='both')
         
         # Create the graph.
@@ -205,7 +273,6 @@ class BLTPlotFrame(PlotFrameI):
             Pmw.initialise()
             self._graph = Pmw.Blt.Graph(self._frame)
         except:
-            self._root.destroy()
             raise ImportError('Pwm not installed!')
 
         # Add scrollbars.
@@ -344,6 +411,7 @@ class Plot:
         
         # Set up the tk window
         self._root = Tkinter.Tk()
+        self._init_bindings(self._root)
 
         # Create the actual plot frame
         try:
@@ -352,8 +420,8 @@ class Plot:
             self._plot = CanvasPlotFrame(self._root, vals, rng)
 
         # Set up the axes
-        self._ilog = IntVar(self._root); self._ilog.set(0)
-        self._jlog = IntVar(self._root); self._jlog.set(0)
+        self._ilog = Tkinter.IntVar(self._root); self._ilog.set(0)
+        self._jlog = Tkinter.IntVar(self._root); self._jlog.set(0)
         scale = kwargs.get('scale', 'linear')
         if scale in ('log-linear', 'log_linear', 'log'): self._ilog.set(1)
         if scale in ('linear-log', 'linear_log', 'log'): self._jlog.set(1)
@@ -365,7 +433,6 @@ class Plot:
         self._plot.bind("<ButtonPress-2>", self.zoom_out)
         self._plot.bind("<ButtonPress-3>", self.zoom_out)
 
-        self._init_bindings(self._root)
         self._init_menubar(self._root)
 
     def _init_bindings(self, parent):
@@ -376,16 +443,16 @@ class Plot:
         self._root.bind('<F1>', self.help)
         
     def _init_menubar(self, parent):
-        menubar = Menu(parent)
+        menubar = Tkinter.Menu(parent)
 
-        filemenu = Menu(menubar, tearoff=0)
+        filemenu = Tkinter.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Print to Postscript', underline=0,
                              command=self.postscript, accelerator='Ctrl-p')
         filemenu.add_command(label='Exit', underline=1,
                              command=self.destroy, accelerator='Ctrl-x')
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
-        zoommenu = Menu(menubar, tearoff=0)
+        zoommenu = Tkinter.Menu(menubar, tearoff=0)
         zoommenu.add_command(label='Zoom in', underline=5,
                              command=self.zoom_in, accelerator='left click')
         zoommenu.add_command(label='Zoom out', underline=5,
@@ -394,7 +461,7 @@ class Plot:
                              accelerator='Ctrl-a')
         menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
 
-        axismenu = Menu(menubar, tearoff=0)
+        axismenu = Tkinter.Menu(menubar, tearoff=0)
         if self._imin > 0: xstate = 'normal'
         else: xstate = 'disabled'
         if self._jmin > 0: ystate = 'normal'
@@ -407,7 +474,7 @@ class Plot:
                                  command=self._log)
         menubar.add_cascade(label='Axes', underline=0, menu=axismenu)
 
-        helpmenu = Menu(menubar, tearoff=0)
+        helpmenu = Tkinter.Menu(menubar, tearoff=0)
         helpmenu.add_command(label='About', underline=0,
                              command=self.about)
         helpmenu.add_command(label='Instructions', underline=0,
@@ -525,8 +592,8 @@ class Plot:
 if __name__ == '__main__':
     from math import sin
     #Plot(lambda v: sin(v)**2+0.01)
-    Plot(lambda x:abs(x**2-sin(20*x**3)),
-         [0.01*x for x in range(1,100)]).mainloop()
+    Plot(lambda x:abs(x**2-sin(20*x**3))+.1,
+         [0.01*x for x in range(1,100)], scale='log').mainloop()
     
 
     
