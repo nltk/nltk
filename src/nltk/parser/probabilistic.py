@@ -36,12 +36,23 @@ search strategies.  Currently the following subclasses are defined:
   - C{BeamPCFGParser} limits the number of edges in the queue, and
     searches edges in decreasing order of their trees' inside
     probabilities.
-"""
-"""
-The following subclasses will be added in the near future:
 
-  - C{OutsidePCFGParser} searches edges using best-first search.
-  - C{InsideOutsidePCFGParser} searches edges using A* search.
+@group Interfaces: ProbabilisticParserI
+@group Viterbi Parsers: ViterbiPCFGParser
+@group Chart Parsers: BottomUpPCFGChartParser, InsidePCFGParser,
+    RandomPCFGParser, LongestPCFGParser, BeamPCFGParser,
+    UnsortedPCFGParser
+@sort: BottomUpPCFGChartParser, InsidePCFGParser,
+       RandomPCFGParser, UnsortedPCFGParser, LongestPCFGParser,
+       BeamPCFGParser
+
+@todo: Define C{OutsidePCFGParser}, which searches edges using
+       best-first search.
+@todo: Define C{InsideOutsidePCFGParser}, which searches edges using
+       A* search.
+
+@bug: The C{BottomUpPCFGParser} subclasses don't appear to generate
+      all parses.
 """
 
 from nltk.parser import ParserI
@@ -51,19 +62,6 @@ from nltk.tree import ProbabilisticTreeToken
 from nltk.parser.chart import Chart, FRChart, TokenEdge, ProductionEdge
 from nltk.chktype import chktype as _chktype
 import types
-
-# Used for sorting by epydoc; and for "import *"
-__all__ = [
-    'ProbabilisticParserI',
-    
-    'ViterbiPCFGParser',
-    
-    'BottomUpPCFGChartParser',
-    'InsidePCFGParser',
-    'RandomPCFGParser',
-    'LongestPCFGParser',
-    'BeamPCFGParser',
-    ]
 
 ##//////////////////////////////////////////////////////
 ##  Probabilistic Parser Interface
@@ -529,6 +527,15 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         self._grammar = grammar
         self._trace = trace
 
+        # Create a hash to efficiently look up the productions that
+        # start with a given nonterminal.
+        self._production_by_rhs0 = {}
+        for prod in grammar.productions():
+            rhs0 = prod.rhs()[0]
+            if not self._production_by_rhs0.has_key(rhs0):
+                self._production_by_rhs0[rhs0] = []
+            self._production_by_rhs0[rhs0].append(prod)
+
     def trace(self, trace=2):
         """
         Set the level of tracing output that should be generated when
@@ -586,6 +593,7 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
 
         if self._trace:
             print 'Found %d parses with %d edges' % (len(parses), len(chart))
+            if edge_queue: print '  (Edge queue not empty)'
 
         # Sort the parses by decreasing likelihood, and return them
         parses.sort(lambda p1,p2: -cmp(p1.p(),p2.p()))
@@ -659,10 +667,12 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
         # If this is a token edge, or if it's a production edge with a
         # dot in the zero position, then apply the bottom-up
         # initialization rule.
-        if (isinstance(edge, TokenEdge) or edge.dotpos() == 0):
+        if ((isinstance(edge, TokenEdge) or edge.dotpos() == 0) and not
+            (isinstance(edge, ProductionEdge) and len(edge.rhs()) > 0 and
+             edge.lhs() == edge.rhs()[0])):
             edge_queue += [self._self_loop_edge(production, edge.loc())
-                           for production in self._grammar.productions()
-                           if production.rhs()[0] == edge.lhs()]
+                           for production in
+                           self._production_by_rhs0.get(edge.lhs(), [])]
 
         # Find any new places where we can apply the fundamental
         # rule. 
@@ -799,6 +809,13 @@ class RandomPCFGParser(BottomUpPCFGChartParser):
         i = random.randint(0, len(queue)-1)
         (queue[-1], queue[i]) = (queue[i], queue[-1])
 
+class UnsortedPCFGParser(BottomUpPCFGChartParser):
+    """
+    A bottom-up parser for C{PCFG}s that tries edges in whatever order..
+    """
+    # Inherit constructor
+    def sort_queue(self, queue, chart): return
+
 class LongestPCFGParser(BottomUpPCFGChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries longer edges before
@@ -848,8 +865,15 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
 ##  Test Code
 ##//////////////////////////////////////////////////////
 
-if __name__ == '__main__':
-    import sys
+def demo():
+    """
+    A demonstration of the probabilistic parsers.  The user is
+    prompted to select which demo to run, and how many parses should
+    be found; and then each parser is run on the same demo, and a
+    summary of the results are displayed.
+    """
+    import sys, time
+    from nltk.token import WSTokenizer
     
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
@@ -897,41 +921,89 @@ if __name__ == '__main__':
         PCFGProduction(0.61, P, 'with'), PCFGProduction(0.39, P, 'under')]
 
     # Default to (2)
-    print 'Grammar 1 or 2? ',
-    if sys.stdin.readline().strip() == '1':
-        pcfg = PCFG(S, grammar_productions1)
-        s = 'I saw John with my cookie'
-        #s = 'the boy saw Jack'
-        #s = 'the dog ate my cookie'
-    else:
-        pcfg = PCFG(S, grammar_productions2)
-        s = 'the boy saw Jack with Bob under the table with a telescope'
-        #s = 'Jack saw the boy with a telescope'
+    demos = [('I saw John with my cookie', PCFG(S, grammar_productions1)),
+             ('the boy saw Jack with Bob under the table with a telescope',
+              PCFG(S, grammar_productions2))]
+
+    print
+    for i in range(len(demos)):
+        print '%3s: %s' % (i+1, demos[i][0])
+        print '     %r' % demos[i][1]
+        print
     
-    from nltk.token import WSTokenizer
+    print 'Which demo (%d-%d)? ' % (1, len(demos)),
+    try:
+        snum = int(sys.stdin.readline().strip())-1
+        s, pcfg = demos[snum]
+    except:
+        print 'Bad sentence number'
+        return
+    
     text = WSTokenizer().tokenize(s)
     
     parsers = [ViterbiPCFGParser(pcfg), InsidePCFGParser(pcfg), 
-               RandomPCFGParser(pcfg), LongestPCFGParser(pcfg),
+               RandomPCFGParser(pcfg), UnsortedPCFGParser(pcfg),
+               LongestPCFGParser(pcfg),
                BeamPCFGParser(len(text)+1, pcfg)]
 
-    # Default to (all parsers)
-    print '\nChoose a parser:'
-    for i in range(len(parsers)):
-        print (i+1), parsers[i]
+    print '\nNumber of parses to find (1+): ',
     try:
-        print (len(parsers)+1), '(all parsers)'
-        print '=> ',
-        parsers = [parsers[int(sys.stdin.readline().strip())-1]]
-    except ValueError:
-        parsers = parsers
-    except IndexError:
-        parsers = parsers
+        max_parses = max(1, int(sys.stdin.readline().strip()))
+    except:
+        print 'Bad number of parses; finding all parses'
+        max_parses = None
+        
+#     # Default to (all parsers)
+#     print '\nChoose a parser:'
+#     for i in range(len(parsers)):
+#         print '%3d: %s' % (i+1, parsers[i].__class__.__name__)
+#     try:
+#         print '%3d: %s' % (len(parsers)+1, '(all parsers)')
+#         print '=> ',
+#         pnum = int(sys.stdin.readline().strip())-1
+#         if pnum != len(parsers):
+#             parsers = [parsers[pnum]]
+#     except:
+#         print 'Bad parser number'
+#         return
 
+    # Run the parser(s)
+    times = []
+    average_p = []
+    num_parses = []
+    all_parses = {}
     for parser in parsers:
         print '\ns: %s\nparser: %s\ngrammar: %s' % (s,parser,pcfg)
         parser.trace(3)
-        parses = parser.parse_n(text, 2)
-        if parses:
-            print 'avg p =', reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+        t = time.time()
+        parses = parser.parse_n(text, max_parses)
+        times.append(time.time()-t)
+        if parses: p = reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+        else: p = 0
+        average_p.append(p)
+        num_parses.append(len(parses))
+        for p in parses: all_parses[p] = 1
 
+    # Print some summary statistics
+    print
+    print '       Parser      | Time (secs)   # Parses   Average P(parse)'
+    print '-------------------+------------------------------------------'
+
+    for i in range(len(parsers)):
+        print '%18s |%11.4f%11d%19.14f' % (parsers[i].__class__.__name__,
+                                         times[i],num_parses[i],average_p[i])
+
+    parses = all_parses.keys()
+    if parses: p = reduce(lambda a,b:a+b.p(), parses, 0)/len(parses)
+    else: p = 0
+    print '-------------------+------------------------------------------'
+    print '%18s |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
+
+    print
+    print 'Display parses (y/n)? ',
+    if sys.stdin.readline().strip().lower().startswith('y'):
+        for parse in parses:
+            print parse
+        
+if __name__ == '__main__':
+    demo()
