@@ -95,7 +95,7 @@ class Location:
         self._start = start
         if end != None: self._end = end
         else: self._end = self._start+1
-        if end<start:
+        if self._end<self._start:
             raise ValueError("A Location's start index must be less "+
                              "than or equal to its end index.")
 
@@ -105,7 +105,8 @@ class Location:
             if key == 'source':
                 self._source = val
             elif key == 'unit':
-                _chktype("Location", 4, val, (_StringType,))
+                if type(val) not in (_StringType, _NoneType):
+                    raise TypeError("Unit must have type string")
                 self._unit = val
             else:
                 assert 0, "Invalid keyword argument: "+key
