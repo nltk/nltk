@@ -8,6 +8,7 @@
 # $Id$
 
 from nltk.chktype import chktype as _chktype
+from types import IntType as _IntType
 
 ##//////////////////////////////////////////////////////
 ##  Sample
@@ -618,6 +619,15 @@ class FreqDistI:
                supported sample type.
         """
         raise AssertionError()
+
+    def samples(self):
+        """
+        @return: A list of all samples that have been recorded as
+            outcomes by this frequency distribution.  Use C{count()}
+            to determine the count for each sample.
+        @rtype: C{list}
+        """
+        raise AssertionError()
     
     def N(self):
         """
@@ -803,14 +813,19 @@ class SimpleFreqDist(FreqDistI):
         # Inherit docs from FreqDistI
         return len(self._dict)
 
+    def samples(self):
+        # Inherit docs from FreqDistI
+        return self._dict.values()
+
     def Nr(self, r):
         # Inherit docs from FreqDistI
         # We have to do a full search.  That's slow.  If they
         # ask for one Nr, they'll probably ask for others, so cache
         # the results.
+        _chktype("SimpleFreqDist.Nr", 1, r, (_IntType,))
         if self._Nr_cache == None: 
             nr = []
-            for (key, c) in self._dict.items():
+            for c in self.samples:
                 if c > len(nr):
                     nr.append([0]*(c-len(nr)))
                 nr[c-1] += 1
@@ -1111,10 +1126,12 @@ class CFFreqDist(FreqDistI):
         self._dict = {}
         self._N = 0
         self._cond_N = {}
+        self._Nr_cache = None
 
     def inc(self, sample):
         # Inherit docs from FreqDistI
         _chktype("CFFreqDist.inc", 1, sample, (CFSample,))
+        self._Nr_cache = None
         self._N += 1
         if self._dict.has_key(sample.context()):
             self._cond_N[sample.context()] += 1
@@ -1136,6 +1153,28 @@ class CFFreqDist(FreqDistI):
         for dict in self._dict.values():
             b += len(dict)
         return b
+
+    def samples(self):
+        # Inherit docs from FreqDistI
+        samples = []
+        for dict in self._dict.values():
+            samples += dict.keys()
+        return samples
+
+    def Nr(self, r):
+        # Inherit docs from FreqDistI
+        # We have to do a full search.  That's slow.  If they
+        # ask for one Nr, they'll probably ask for others, so cache
+        # the results.
+        _chktype("SimpleFreqDist.Nr", 1, r, (_IntType,))
+        if self._Nr_cache == None: 
+            nr = []
+            for (key, c) in self.samples():
+                if c > len(nr):
+                    nr.append([0]*(c-len(nr)))
+                nr[c-1] += 1
+            self._Nr_cache = nr
+        return self._Nr_cache[r]
 
     def count(self, sample_or_event):
         # Inherit docs from FreqDistI
