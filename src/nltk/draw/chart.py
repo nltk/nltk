@@ -1350,7 +1350,7 @@ class ChartDemo:
         self._root.destroy()
         self._root = None
 
-def test():
+def demo():
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -1380,7 +1380,7 @@ def test():
     print 'Calling "ChartDemo(grammar, tok_sent)"...'
     ChartDemo(grammar, tok_sent)
 
-def test2():
+def demo2():
     nonterminals = 'NP Det N'
     (NP, Det, N) = [Nonterminal(s) for s in nonterminals.split()]
     toks = [Token('the', 0), Token('park', 1), Token('I', 2), Token('saw', 3)]
@@ -1407,33 +1407,5 @@ def test2():
     chart.insert(edge4)
     chart.draw(toks, draw_tree=1)
 
-def testmatrix():
-    nonterminals = 'NP Det N'
-    (NP, Det, N) = [Nonterminal(s) for s in nonterminals.split()]
-    toks = [Token('the', 0), Token('park', 1), Token('I', 2), Token('saw', 3)]
-    tree = TreeToken('NP',
-                     TreeToken('Det', toks[0]),
-                     TreeToken('N', toks[1]))
-
-    edge0 = TokenEdge(toks[0])
-    edge1 = TokenEdge(toks[1])
-
-    edge2 = ProductionEdge(CFGProduction(Det, 'the'),
-                           tree[0], tree[0].loc(), 1)
-    edge3 = ProductionEdge(CFGProduction(N, 'park'),
-                           tree[1], tree[1].loc(), 1)
-
-    edge4 = ProductionEdge(CFGProduction(NP, Det, N),
-                           tree, tree.loc(), 2)
-    
-    chart = Chart(Location(0,4))#tree.loc())
-    chart.insert(edge0)
-    chart.insert(edge1)
-    chart.insert(edge2)
-    chart.insert(edge3)
-    chart.insert(edge4)
-    SmallChartMatrixView(chart, toks)
-    
 if __name__ == '__main__':
-    test()
-    #testmatrix()
+    demo()
