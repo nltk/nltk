@@ -7,6 +7,10 @@
 #
 # $Id$
 
+"""
+Graphically display a C{Tree} or C{TreeToken}.
+"""
+
 from Tkinter import *
 from tkFileDialog import asksaveasfilename
 
