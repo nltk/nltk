@@ -199,6 +199,22 @@ class Location:
         """
         return self._unit
         
+    def start_loc(self):
+        """
+        @return: a C{Location} corresponding to the start of this C{Location}.
+        @rtype: C{Location}
+        """
+        return Location(self.start(), self.start(),
+                        unit=self.unit(), source=self.source())
+
+    def end_loc(self):
+        """
+        @return: a C{Location} corresponding to the end of this C{Location}.
+        @rtype: C{Location}
+        """
+        return Location(self.end(), self.end(),
+                        unit=self.unit(), source=self.source())
+
     def __repr__(self):
         """
         @return: A concise string representation of this C{Location}.
