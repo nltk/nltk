@@ -106,8 +106,8 @@ class TreeView:
         self._textheight = bbox[3]-bbox[1]
         c.delete(tag)
 
-    def _font_grow(self): set_text_size(self._points+2)
-    def _font_shrink(self): set_text_size(self._points-2)
+    def _font_grow(self): self.set_text_size(self._points+2)
+    def _font_shrink(self): self.set_text_size(self._points-2)
 
     def _expand_all(self, tree=None):
         """
@@ -151,14 +151,14 @@ class TreeView:
         @param tree: The tree for which to display the needed height.
         """
         if self._collapsed[tree]:
-            return 2*self._textheight + TreeView._Y_SPACING
+            return 3*self._textheight + TreeView._Y_SPACING
         else:
             height = 0
             for child in tree:
                 if isinstance(child, Tree) or isinstance(child, TreeToken):
                     height = max(height, self._canvas_height(child))
                 else:
-                    height = max(height, self._textheight)
+                    height = max(height, 2*self._textheight)
 
             return height + (self._textheight + TreeView._Y_SPACING)
                 
@@ -186,8 +186,8 @@ class TreeView:
         if isinstance(tree, Tree):
             children = ' '.join([str(t) for t in tree.leaves()])
         else:
-            children = Token([str(t.type()) for t in tree.leaves()],
-                              tree.loc())
+            children = (' '.join([str(t.type()) for t in tree.leaves()])+
+                        '\n'+str(tree.loc()))
         right = self._draw_leaf(str(children), left, depth+1)
 
         # Draw triangle
@@ -231,7 +231,11 @@ class TreeView:
                 (new_x, center) = self._draw_tree(child, x, depth+1)
                 child_centers.append(center)
             else:
-                new_x = self._draw_leaf(str(child), x, depth+1)
+                if isinstance(child, Token):
+                    text = str(child.type())+'\n'+`child.loc()`
+                else:
+                    text = str(child)
+                new_x = self._draw_leaf(text, x, depth+1)
                 child_centers.append((x+new_x)/2)
             x = new_x + TreeView._X_SPACING
         right = new_x
@@ -306,7 +310,7 @@ class TreeView:
         """
         y = (self._textheight + TreeView._Y_SPACING) * depth
         tag = self._canvas.create_text(x, y, text=text,
-                                       anchor='nw', justify='left',
+                                       anchor='nw', justify='center',
                                        font=('helvetica', self._points))
         return self._canvas.bbox(tag)[2]
 
