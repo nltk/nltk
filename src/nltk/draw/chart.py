@@ -178,6 +178,9 @@ class ChartView:
         # Keep track of the tags used to draw the tree
         self._tree_tags = []
 
+        # Put multiple edges on each level?
+        self._compact = 1
+
         # If they didn't provide a main window, then set one up.
         if root is None:
             top = Tkinter.Tk()
@@ -306,7 +309,9 @@ class ChartView:
             self._edgeselection = None
             self.draw()
         else:
-            for edge in self._chart.edges():
+            edges = self._chart.edges()
+            edges.sort(lambda e1,e2:cmp(e2,e1))
+            for edge in edges:
                 if not self._edgetags.has_key(edge):
                     self._add_edge(edge)
             self._resize()
@@ -372,6 +377,13 @@ class ChartView:
         if self._edgetags.has_key(edge): return
         self._analyze_edge(edge)
         self._grow()
+
+        if not self._compact and isinstance(edge, ProductionEdge):
+            self._edgelevels.append([edge])
+            lvl = len(self._edgelevels)-1
+            self._draw_edge(edge, lvl)
+            self._chart_height = (lvl+2)*self._chart_level_size
+            return
 
         # Figure out what level to draw the edge on.
         lvl = 0
@@ -470,6 +482,7 @@ class ChartView:
         If no colors are specified, use intelligent defaults
         (dependant on selection, etc.)
         """
+        if not self._edgetags.has_key(edge): return
         c = self._chart_canvas
 
         if linecolor is not None and textcolor is not None:
@@ -778,7 +791,7 @@ class ChartView:
 
         # Add any new edges
         edges = self._chart.edges()
-        edges.sort()
+        edges.sort(lambda e1,e2:cmp(e2,e1))
         for edge in edges:
             self._add_edge(edge)
 
@@ -793,6 +806,7 @@ class ChartView:
 class TopDownEdgeRule(ChartRuleI):
     def __init__(self, edge): self._edge = edge
     def apply(self, chart, grammar):
+        if self._edge.complete(): return []
         edges = []
         for production in grammar.productions():
             if production.lhs() == self._edge.next():
@@ -855,7 +869,7 @@ class ChartDemo:
             self._root.title(title)
             self._root.bind('q', self.destroy)
             buttons2 = Tkinter.Frame(self._root)
-            buttons2.pack(side='bottom', fill='x')
+            buttons2.pack(side='bottom', fill='none')
             buttons1 = Tkinter.Frame(self._root)
             buttons1.pack(side='bottom', fill='x')
 
@@ -865,7 +879,13 @@ class ChartDemo:
             self._tok_sent = text
             self._cp = SteppingChartParser(self._grammar)
             self._cp.initialize(self._tok_sent)
-            
+
+            # Keep track of whether we're stepping & animating.
+            self._step = Tkinter.IntVar(self._root)
+            self._step.set(1)
+            self._animate = Tkinter.IntVar(self._root)
+            self._animate.set(2)
+
             self._chart = self._cp.chart()
             self._cv = ChartView(self._chart, self._tok_sent,
                                  self._root, draw_tree=1, draw_source=1)
@@ -876,6 +896,9 @@ class ChartDemo:
                                             font=('helvetica', 30, 'bold'),
                                             relief='groove', anchor='w')
             self._rulelabel.pack(side='left')
+            step = Tkinter.Checkbutton(buttons1, variable=self._step,
+                                       text='Step')
+            step.pack(side='right')
 
             ## Set up buttons for rules & strategies
             Tkinter.Button(buttons2, text='Top Down\nStrategy',
@@ -922,11 +945,15 @@ class ChartDemo:
         self._root.bind('<Down>', self._cv.scroll_down)
         self._root.bind('q', self.destroy)
         self._root.bind('x', self.destroy)
-        self._root.bind('r', self.reset)
         self._root.bind('<F1>', self.help)
+        
+        self._root.bind('<Control-s>', self.save)
+        self._root.bind('<Control-o>', self.load)
+        self._root.bind('<Control-r>', self.reset)
         
         self._root.bind('t', self.top_down_strategy)
         self._root.bind('b', self.bottom_up_strategy)
+        self._root.bind('f', self.fundamental)
 
         # Animation speed control
         self._root.bind('-', lambda e,a=self._animate:a.set(1))
@@ -940,8 +967,12 @@ class ChartDemo:
         menubar = Tkinter.Menu(self._root)
         
         filemenu = Tkinter.Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Save Chart', underline=0,
+                             command=self.save, accelerator='Ctrl-s')
+        filemenu.add_command(label='Open Chart', underline=0,
+                             command=self.load, accelerator='Ctrl-o')
         filemenu.add_command(label='Reset Chart', underline=0,
-                             command=self.reset, accelerator='r')
+                             command=self.reset, accelerator='Ctrl-r')
         filemenu.add_command(label='Exit', underline=1,
                              command=self.destroy,
                              accelerator='x')
@@ -963,14 +994,10 @@ class ChartDemo:
         rulemenu.add_command(label='Top Down Rule',
                              command=self.top_down_init)
         rulemenu.add_command(label='Fundamental Rule', underline=0,
-                             command=self.fundamental)
+                             command=self.fundamental, accelerator='f')
         menubar.add_cascade(label='Apply', underline=0,
                             menu=rulemenu)
 
-        self._step = Tkinter.IntVar(self._root)
-        self._step.set(1)
-        self._animate = Tkinter.IntVar(self._root)
-        self._animate.set(2)
         animatemenu = Tkinter.Menu(menubar, tearoff=0)
         animatemenu.add_checkbutton(label="Step", underline=0,
                                     variable=self._step,
@@ -1032,6 +1059,31 @@ class ChartDemo:
             Message(message=ABOUT, title='About: Chart Parser Demo').show()
         except:
             ShowText(self._root, 'About: Chart Parser Demo', ABOUT)
+
+    def load(self, *e):
+        "Load a chart from a pickle file"
+        import pickle
+        from tkFileDialog import askopenfilename
+        ftypes = [('Pickle file', '.pickle'),
+                  ('All files', '*')]
+        filename = askopenfilename(filetypes=ftypes,
+                                   defaultextension='.pickle')
+        if not filename: return
+        chart = pickle.load(open(filename, 'r'))
+        self._chart = chart
+        self._cv.update(chart)
+        self._cp.set_chart(chart)
+
+    def save(self, *e):
+        "Save a chart to a pickle file"
+        import pickle
+        from tkFileDialog import asksaveasfilename
+        ftypes = [('Pickle file', '.pickle'),
+                  ('All files', '*')]
+        filename = asksaveasfilename(filetypes=ftypes,
+                                     defaultextension='.pickle')
+        if not filename: return
+        pickle.dump(self._chart, open(filename, 'w'))
             
     def resize(self):
         self._animating = 0
@@ -1039,12 +1091,12 @@ class ChartDemo:
         self._cv.set_font_size(size)
         self._rulelabel['font'] = ('helvetica', -size, 'bold')
 
-    def view_grammar(self):
+    def view_grammar(self, *e):
         self._animating = 0
         self._grammarview = ProductionView(self._grammar.productions(),
                                            'Grammar')
 
-    def reset(self):
+    def reset(self, *e):
         self._animating = 0
         self._cp = SteppingChartParser(self._grammar)
         self._cp.initialize(self._tok_sent)
@@ -1091,7 +1143,7 @@ class ChartDemo:
             self.display_rule(self._cp.current_chartrule())
             self._cv.update()
             self._cv.view_edge(new_edge)
-            if self._animate.get() == 0:
+            if self._animate.get() == 0 or self._step.get() == 1:
                 return
             if self._animate.get() == 1:
                 self._cv.select_edge(new_edge)
