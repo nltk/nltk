@@ -118,7 +118,7 @@ class EdgeI:
         """
         Construct a new edge.
         """
-        assert 0, "EdgeI is an abstract interface"
+        raise AssertionError("EdgeI is an abstract interface")
 
     def lhs(self):
         """
