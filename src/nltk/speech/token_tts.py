@@ -18,7 +18,8 @@
 # any other functions are called.
 ##
 
-import tts, token, rules	# speech modules
+# speech modules
+import nltk.speech.tts, nltk.speech.token, nltk.speech.rules
 import urllib
 
 ##
