@@ -136,7 +136,7 @@ class TreeSegmentWidget(CanvasWidget):
         return self._node
 
     def subtrees(self):
-        return self._subtrees
+        return self._subtrees[:]
 
     def set_node(self, node):
         """
@@ -161,11 +161,16 @@ class TreeSegmentWidget(CanvasWidget):
         index = self._subtrees.index(child)
         del self._subtrees[index]
         self._remove_child_widget(child)
+        self.canvas().delete(self._lines.pop())
         self.update(self._node)
 
     def insert_child(self, index, child):
         self._subtrees.insert(index, child)
         self._add_child_widget(child)
+        self._lines.append(canvas.create_line(0,0,0,0, fill='#006060'))
+        self.update(self._node)
+
+    # but.. lines???
 
     def _tags(self):
         if self._roof:
@@ -389,6 +394,7 @@ class TreeWidget(CanvasWidget):
         self._leafattribs = {}
         self._locattribs = {'color': '#008000'}
         self._line_color = '#008080'
+        self._line_width = 1
         self._roof_color = '#008080'
         self._roof_fill = '#c0c0c0'
         self._shapeable = 0
@@ -505,7 +511,8 @@ class TreeWidget(CanvasWidget):
             self._leaves += leaves
             treeseg = TreeSegmentWidget(canvas, node, leaves, roof=1,
                                         color=self._roof_color,
-                                        fill=self._roof_fill)
+                                        fill=self._roof_fill,
+                                        width=self._line_width)
         else:
             node = make_node(canvas, tree.node(), **self._nodeattribs)
             self._nodes.append(node)
@@ -518,7 +525,8 @@ class TreeWidget(CanvasWidget):
             leaves_stack = StackWidget(canvas, leaves_seq, loc)
             treeseg = TreeSegmentWidget(canvas, node, [leaves_stack], 
                                         roof=1, color=self._roof_color,
-                                        fill=self._roof_fill)
+                                        fill=self._roof_fill,
+                                        width=self._line_width)
 
         self._collapsed_trees[key] = treeseg
         self._keys[treeseg] = key
@@ -541,7 +549,8 @@ class TreeWidget(CanvasWidget):
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
                         for i in range(len(children))]
             treeseg = TreeSegmentWidget(canvas, node, subtrees,
-                                        color=self._line_color)
+                                        color=self._line_color,
+                                        width=self._line_width)
             self._expanded_trees[key] = treeseg
             self._keys[treeseg] = key
             return treeseg
@@ -566,11 +575,15 @@ class TreeWidget(CanvasWidget):
         elif attr == 'line_color':
             self._line_color = value
             for tseg in self._expanded_trees.values(): tseg['color'] = value
+        elif attr == 'line_width':
+            self._line_width = value
+            for tseg in self._expanded_trees.values(): tseg['width'] = value
+            for tseg in self._collapsed_trees.values(): tseg['width'] = value
         elif attr == 'roof_color':
-            self._line_color = value
+            self._roof_color = value
             for tseg in self._collapsed_trees.values(): tseg['color'] = value
         elif attr == 'roof_fill':
-            self._line_color = value
+            self._roof_fill = value
             for tseg in self._collapsed_trees.values(): tseg['fill'] = value
         elif attr == 'shapeable':
             self._shapeable = value
@@ -611,6 +624,7 @@ class TreeWidget(CanvasWidget):
         elif attr[:4] == 'loc_':
             return self._locattribs.get(attr[4:], None)
         elif attr == 'line_color': return self._line_color
+        elif attr == 'line_width': return self._line_width
         elif attr == 'roof_color': return self._roof_color
         elif attr == 'roof_fill': return self._roof_fill
         elif attr == 'shapeable': return self._shapeable
@@ -664,6 +678,107 @@ class TreeWidget(CanvasWidget):
 ##  draw_trees
 ##//////////////////////////////////////////////////////
 
+class TreeView:
+    def __init__(self, *trees):
+        from nltk.draw import CanvasFrame
+        from math import sqrt, ceil
+    
+        self._trees = trees
+        
+        self._top = Tk()
+        self._top.title('NLTK')
+        self._top.bind('<Control-x>', self.destroy)
+        self._top.bind('<Control-q>', self.destroy)
+
+        cf = self._cframe = CanvasFrame(self._top)
+        self._top.bind('<Control-p>', self._cframe.print_to_file)
+
+        # Size is variable.
+        self._size = IntVar(self._top)
+        self._size.set(12)
+        bold = ('helvetica', -self._size.get(), 'bold')
+        helv = ('helvetica', -self._size.get())
+
+        # Lay the trees out in a square.
+        self._width = int(ceil(sqrt(len(trees))))
+        self._widgets = []
+        for i in range(len(trees)):
+            widget = TreeWidget(cf.canvas(), trees[i], node_font=bold,
+                                leaf_color='#008040', node_color='#004080',
+                                roof_color='#004040', roof_fill='white',
+                                line_color='#004040', draggable=1,
+                                leaf_font=helv)
+            widget.bind_click_trees(widget.toggle_collapsed)
+            self._widgets.append(widget)
+            cf.add_widget(widget, 0, 0)
+
+        self._layout()
+        self._cframe.pack(expand=1, fill='both')
+        self._init_menubar()
+
+    def _layout(self):
+        i = x = y = ymax = 0
+        width = self._width
+        for i in range(len(self._widgets)):
+            widget = self._widgets[i]
+            (oldx, oldy) = widget.bbox()[:2]
+            if i % width == 0:
+                y = ymax
+                x = 0
+            widget.move(x-oldx, y-oldy)
+            x = widget.bbox()[2] + 10
+            ymax = max(ymax, widget.bbox()[3] + 10)
+        
+    def _init_menubar(self):
+        menubar = Menu(self._top)
+
+        filemenu = Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Print to Postscript', underline=0,
+                             command=self._cframe.print_to_file,
+                             accelerator='Ctrl-p')
+        filemenu.add_command(label='Exit', underline=1,
+                             command=self.destroy, accelerator='Ctrl-x')
+        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+
+        zoommenu = Menu(menubar, tearoff=0)
+        zoommenu.add_radiobutton(label='Tiny', variable=self._size,
+                                 underline=0, value=10, command=self.resize)
+        zoommenu.add_radiobutton(label='Small', variable=self._size,
+                                 underline=0, value=12, command=self.resize)
+        zoommenu.add_radiobutton(label='Medium', variable=self._size,
+                                 underline=0, value=14, command=self.resize)
+        zoommenu.add_radiobutton(label='Large', variable=self._size,
+                                 underline=0, value=28, command=self.resize)
+        zoommenu.add_radiobutton(label='Huge', variable=self._size,
+                                 underline=0, value=50, command=self.resize)
+        menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
+
+        self._top.config(menu=menubar)
+
+    def resize(self, *e):
+        bold = ('helvetica', -self._size.get(), 'bold')
+        helv = ('helvetica', -self._size.get())
+        xspace = self._size.get()
+        yspace = self._size.get()
+        for widget in self._widgets:
+            widget['node_font'] = bold
+            widget['leaf_font'] = helv
+            widget['loc_font'] = helv
+            widget['xspace'] = xspace
+            widget['yspace'] = yspace
+            if self._size.get() < 20: widget['line_width'] = 1
+            elif self._size.get() < 30: widget['line_width'] = 2
+            else: widget['line_width'] = 3
+        self._layout()
+
+    def destroy(self, *e):
+        if self._top is None: return
+        self._top.destroy()
+        self._top = None
+
+    def mainloop(self, *args, **kwargs):
+        self._top.mainloop(*args, **kwargs)
+
 def draw_trees(*trees):
     """
     Open a new window containing a graphical diagram of the given
@@ -671,31 +786,8 @@ def draw_trees(*trees):
         
     @rtype: None
     """
-    from nltk.draw import CanvasFrame
-    from math import sqrt
-
-    # Lay the trees out in a square.
-    width = int(sqrt(len(trees)))
-    i = x = y = ymax = 0
-
-    cf = CanvasFrame()
-    bold = ('helvetica', 12, 'bold')
-
-    for i in range(len(trees)):
-        widget = TreeWidget(cf.canvas(), trees[i], node_font=bold,
-                            leaf_color='#008040', node_color='#004080',
-                            roof_color='#004040', roof_fill='white',
-                            line_color='#004040', draggable=1)
-        widget.bind_click_trees(widget.toggle_collapsed)
-        
-        if i % width == 0:
-            y = ymax
-            x = 0
-        cf.add_widget(widget, x, y)
-        x = widget.bbox()[2]
-        ymax = max(ymax, widget.bbox()[3])
-        
-    cf.mainloop()
+    TreeView(*trees).mainloop()
+    return
 
 ##//////////////////////////////////////////////////////
 ##  Demo Code
