@@ -9,6 +9,7 @@
 
 from nltk.parser.chunk import *
 from nltk.tagger import TaggedTokenizer
+from nltk.token import LineTokenizer
 
 import unittest
 
