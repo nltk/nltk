@@ -433,46 +433,6 @@ class FrozenToken(Token):
     def __hash__(self):
         return self._hash
 
-class FrozenDict(dict):
-    """
-    An immutable (and hashable) dictionary.
-    """
-    __slots__ = ('_hash',)
-    def __init__(self, *args, **kwargs):
-        """
-        Create a new immutable dictionary.
-        @param args, kwargs: Initialization arguments, passed
-            on to the C{dict} constructor.
-        """
-        super(FrozenDict, self).__init__(*args, **kwargs)
-        self._hash = sum([hash(i) for i in self.items()])        
-    def __setitem__(self, key, value):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def __delitem__(self, key):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def clear(self):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def pop(self, key, default=None):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def popitem(self):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def setdefault(self, key, default=None):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def update(self, src):
-        "Raise TypeError (FrozenDict objects are immutable)"
-        raise TypeError('FrozenDict objects are immutable')
-    def copy(self):
-        "Return a new copy of this FrozenDict"
-        return self.__class__(self)
-    def __hash__(self):
-        return self._hash
-        
 ######################################################################
 ## Safe Token
 ######################################################################
