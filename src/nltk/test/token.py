@@ -59,12 +59,12 @@ class LocationTestCase(unittest.TestCase):
         
         self.failUnlessEqual(repr(loc1), '@[0]')
         self.failUnlessEqual(repr(loc2), '@[0]')
-        self.failUnlessEqual(repr(loc3), '@[0]')
-        self.failUnlessEqual(repr(loc4), '@[0]')
+        self.failUnlessEqual(repr(loc3), '@[0c]')
+        self.failUnlessEqual(repr(loc4), '@[0c]')
         self.failUnlessEqual(repr(loc5), '@[0:10]')
         self.failUnlessEqual(repr(loc6), '@[0:10]')
-        self.failUnlessEqual(repr(loc7), '@[0:10]')
-        self.failUnlessEqual(repr(loc8), '@[0:10]')
+        self.failUnlessEqual(repr(loc7), '@[0c:10c]')
+        self.failUnlessEqual(repr(loc8), '@[0c:10c]')
 
     def testStr(self):
         "nltk.token.Location: str output tests"
@@ -89,6 +89,7 @@ class LocationTestCase(unittest.TestCase):
 
     def testCmp(self):
         "nltk.token.Location: comparison tests (==, <, >)"
+        # These use lexicographic order.
         loc1 = Location(0, 1)
         loc2 = Location(1, 3)
         loc3 = Location(2, 5)
@@ -101,15 +102,39 @@ class LocationTestCase(unittest.TestCase):
         self.failUnless(loc2 > loc1)
         self.failUnless(loc1 < loc3)
         self.failUnless(loc3 > loc1)
+        self.failUnless(loc2 < loc3)
+        self.failUnless(loc3 > loc2)
+        
         self.failIf(loc1 > loc2)
         self.failIf(loc2 < loc1)
         self.failIf(loc1 > loc3)
         self.failIf(loc3 < loc1)
         
-        self.failIf(loc2 < loc3)
         self.failIf(loc2 > loc3)
         self.failIf(loc3 < loc2)
-        self.failIf(loc3 > loc2)
+
+    def testCmp2(self):
+        "nltk.token.Location: comparison tests (prec, succ)"
+        loc1 = Location(0, 1)
+        loc2 = Location(1, 3)
+        loc3 = Location(2, 5)
+        loc4 = Location(0, 1)
+        loc5 = Location(2, 5)
+
+        self.failUnless(loc1.prec(loc2))
+        self.failUnless(loc2.succ(loc1))
+        self.failUnless(loc1.prec(loc3))
+        self.failUnless(loc3.succ(loc1))
+        
+        self.failIf(loc1.succ(loc2))
+        self.failIf(loc2.prec(loc1))
+        self.failIf(loc1.succ(loc3))
+        self.failIf(loc3.prec(loc1))
+        
+        self.failIf(loc2.prec(loc3))
+        self.failIf(loc2.succ(loc3))
+        self.failIf(loc3.prec(loc2))
+        self.failIf(loc3.succ(loc2))
 
     def testCmpExecptions(self):
         "nltk.token.Location: comparison exception tests (<=, >=, cmp)"
@@ -133,12 +158,20 @@ class LocationTestCase(unittest.TestCase):
         self.failUnlessRaises(ValueError, t5)
         self.failUnlessRaises(ValueError, t6)
 
-        def t7(l1=loc1, l5=loc5): l1 <= l5
-        def t8(l1=loc1, l5=loc5): l1 >= l5
-        def t9(l1=loc1, l5=loc5): cmp(l1, l5)
-        self.failUnlessRaises(AssertionError, t7)
-        self.failUnlessRaises(AssertionError, t8)
-        self.failUnlessRaises(AssertionError, t9)
+        def t1(l1=loc1, l2=loc2): l1<l2
+        def t2(l1=loc1, l3=loc3): l1>l3
+        def t3(l1=loc1, l4=loc4): l1<=l4
+        def t4(l2=loc2, l3=loc3): l2>=l3
+        def t5(l2=loc2, l4=loc4): l2.prec(l4)
+        def t6(l3=loc3, l4=loc4): l3.succ(l4)
+        
+        self.failUnlessRaises(ValueError, t1)
+        self.failUnlessRaises(ValueError, t2)
+        self.failUnlessRaises(ValueError, t3)
+        self.failUnlessRaises(ValueError, t4)
+        self.failUnlessRaises(ValueError, t5)
+        self.failUnlessRaises(ValueError, t6)
+
 
 class TokenTestCase(unittest.TestCase):
     """
@@ -170,7 +203,7 @@ class TokenTestCase(unittest.TestCase):
 
         self.failUnlessEqual(repr(t1), "'dog'@[?]")
         self.failUnlessEqual(repr(t2), "'dog'@[0:5]")
-        self.failUnlessEqual(repr(t3), "'dog'@[0:5]")
+        self.failUnlessEqual(repr(t3), "'dog'@[0c:5c]")
         
     def testStr(self):
         "nltk.token.Token: str output tests"
