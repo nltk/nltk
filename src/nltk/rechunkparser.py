@@ -2,122 +2,255 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
+# Major Revisions: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from parser import *
-from token import *
-from tree import *
-from tagger import *
-from re import *
-from string import *
-from chunkparser import *
+from nltk.token import Token
+from nltk.tree import TreeToken
+from nltk.chunkparser import ChunkParserI, ChunkedTaggedTokenizer
+from nltk.set import Set
 
-""" Classes for a regular-expression based chunk parser.  A chunk
-parser applies a cascade of regular-expression rules to the string
-representation of a tokenized sentence.  The rules insert and delete
-the chunk delimiters "{" and "}".  Chunks cannot be nested.
+import re
+import string
 
-(Note: these brace delimiters were chosen instead of the more usual
-bracket delimiters "[" and "]", since the brackets always need to be
-escaped "\[" and "\]" in regular expressions, greatly reducing the
-readability of the code.)
+"""
+Defines a regular-expression based chunk parser, and several
+supporting classes and functions.  The chunk parser itself is
+implemented by the C{REChunkParser} class, which implements the
+C{ChunkParserI} interface.  See the reference documentation for
+C{nltk.chunkparser} for more information about the C{ChunkParserI}
+interface.
 
-The string representation of a tokenized sequence uses "<" and ">" to
-delimit individual tokens (using balanced delimiters makes things
-easier than using whitespace).  Here is the string representation for
-a tokenized and tagged sentence "the cat sat on the mat", with both
-noun phrases chunked:
+C{REChunkParser} defines the C{parse} method.  This method identifies
+linguistic groups in a text.  Its input is a list of tagged tokens;
+its output is a X{chunk structure}, or a list containing tagged tokens
+and lists of tagged tokens.
 
-{<the/DT@[1]><cat/NN@[2]>}<sat/VBD@[3]><on/IN@[4]>{<the/DT@[5]><mat/NN@[6]>} 
+The C{parse} method first constructs a C{ChunkString}, which encodes a
+particular chunking of the input text.  Initially, nothing is chunked.
+The C{REChunkParser} then applies a sequence of C{REChunkParserRule}s
+to the C{ChunkString}, each of which modifies the chunking that it
+encodes.  Finally, the C{ChunkString} is used to construct a chunk
+structure, which is returned.
 
-The ChunkRule class represents regular expression rules on strings like this.
-We don't throw away the word and the location, since these strings are later
-used to build a "chunk structure", a list of lists with the original tokens:
+REChunkParserRules
+==================
 
-[ [ 'the'/'DT'@[1], 'cat'/'NN'@[2] ], 'sat'/'VBD'@[3], 'on'/'IN'@[4],
-  [ 'the'/'DT'@[5], 'mat'/'NN'@[6] ] ]
+C{REChunkParserRule}s define the C{apply} method, which modifies the
+chunking encoded by a C{ChunkString}.  For example, a
+C{REChunkParserRule} might chunk every token with a given tag.  The
+C{REChunkParserRule} class itself can be used to implement any
+transformational rule based on regular expressions.  There are also a
+number of subclasses, which can be used to implement simpler types of
+rules:
 
-To make life easier, the AbstractChunkRule class lets programmers
-focus on the tags alone, ignoring the words and locations.  Using this
-class, a programmer may write "<DT>", and this is internally
-transformed so that it will match against "<the/DT@[1]>".
-Conveniently, the angle brackets are also made to serve as parenthesis
-groups in the regular expressions.  For example, a unary operator
-after a ">" has scope over the material inside the <>, so "<JJ>*<NN>"
-will match "<JJ><JJ><NN>", not "<JJ>>><NN>".  Also, disjunction inside
-the <> has its scope bounded by the <>, so "<JJ|NN.*>" will match
-"<NNS>".  AbstractChunkRules must always use the <> brackets when
-referring to tags.
+  - C{ChunkRule} chunks anything that matches a given regular
+    expression.
+  - C{ChinkRule} chunks anything that matches a given regular
+    expression.
+  - C{UnChunkRule} will un-chunk any chunk that matches a given
+    regular expression.
+  - C{MergeRule} will merge any two contiguous chunks that match a
+    given regular expression.
+  - C{SplitRule} can be used to split a chunk in two pieces
 
-The REChunkParser class is initialized with a cascade of chunk rules.
-It has a parse method which takes a tokenized string and returns a
-chunk structure.
+Tag Patterns
+------------
 
-(A previous version returned a Tree in which chunks were represented
-using a non-terminal node called "chunk".  However, this
-representation was inconvenient for relating the output of a parse to
-the standard representation of chunked text.  The list-of-lists
-representation (chunk structures) was also a more natural thing for a
-chunking version of the TaggedTokenizer to return.)
+C{REChunkParserRule}s use a modified version of regular expression
+patterns, called X{tag patterns}.  Tag patterns are used to match
+sequences of tags.  Examples of tag patterns are::
+
+    r'(<DT>|<JJ>|<NN>)+'
+    r'<NN>+'
+    r'<NN.*>'
+
+The differences between regular expression patterns and tag patterns
+are:
+
+    - In tag patterns, C{'<'} and C{'>'} act as parenthases; so
+      C{'<NN>+'} matches one or more repetitions of C{'<NN>'}, not
+      C{'<NN'} followed by one or more repetitions of C{'>'}.
+    - Whitespace in tag patterns is ignored.  So
+      C{'<DT> | <NN>'} is equivalant to C{'<DT>|<NN>'}
+    - In tag patterns, C{'.'} is equivalant to C{'[^{}<>]'}; so
+      C{'<NN.*>'} matches any single tag starting with C{'NN'}.
+
+Helper Functions
+================
+
+The C{unchunk} method can be used to convert a chunk structure to a
+list of tagged tokens.  This is useful for testing C{REChunkParser}s.
+The C{score} method can be used to report statistics on the
+performance of a C{REChunkParser}.
+
+Efficiency
+==========
+
+Preliminary tests indicate that C{REChunkParser} can chunk at a rate
+of about 300 tokens/second, with a moderately complex rule set.
+
+There may be problems if C{REChunkParser} is used with more than
+5,000 tokens at a time.  In particular, evaluation of some regular
+expressions may cause the Python regular expression engine to exceed
+its maximum recursion depth.  We have attempted to minimize these
+problems, but it is impossible to avoid them completely.
+
+Fun with emacs
+==============
+
+The following will colorize tags and bracketing when you use an
+interactive python shell with emacs ("C-C !")::
+
+   (defconst comint-mode-font-lock-keywords 
+     '(("<[^>]+>" 0 'font-lock-reference-face)
+       ("[{}]" 0 'font-lock-function-name-face)))
+   (add-hook 'comint-mode-hook (lambda () (turn-on-font-lock)))
+
+@type _VALID_CHUNK_STRING: C{regexp}
+@var _VALID_CHUNK_STRING: A regular expression to test whether a chunk
+     string is valid.
+@type _VALID_TAG_PATTERN: C{regexp}
+@var _VALID_TAG_PATTERN: A regular expression to test whether a tag
+     pattern is valid.
 """
 
-# To do:
-# experiment with syntactic sugar for <> (using space)
-# test that no tokens were deleted in applying a chunking rule
-# rule initializer should compile the final regexp for efficient runtime execution
-# tokenizer to return a list of sentence tokens?  or ./EOS ??
-
-# this type stuff should be pulled in from somewhere else
-# rather than being defined here...
-from types import InstanceType as _InstanceType
-def _pytype(obj):
-    """
-    @return: the pytype of C{obj}.  For class instances, this is
-        their class; for all other objects, it is their type, as
-        returned by type().
-    @rtype: C{type} or C{class}
-    @param obj: The object whose pytype should be returned.
-    @type obj: (any)
-    """
-    if type(obj) == _InstanceType:
-        return obj.__class__
-    else:
-        return type(obj)
-
 ##//////////////////////////////////////////////////////
-##  Chunk Rules
+##  Thoughts/comments
 ##//////////////////////////////////////////////////////
 
-# functions for zero-width assertions
-def _lookbehind(str):
-    return '(?<='+str+')'
-def _lookahead(str):
-    return '(?='+str+')'
+"""
+Terms/representations that should be defined in module docstring:
+  - chunk = a list of tagged tokens
+  - ttoklist = a list of tagged tokens (=chunk, but used in different
+    contexts) 
+  - chunklist = a list of tagged tokens and chunks
+  - ChunkString = string rep of chunked tags
+  - tag pattern = a regexp pattern over tags.  Has slightly different
+    rules than normal regexps (since it gets translated): <> act like
+    parens, . gets \w, etc.
 
-# A chunk rule matches a target string and performs an action
-# on it, usually adding or removing {}, the chunk delimiters.
-# Keyword arguments handle context using zero-width assertions.
-class ChunkRule:
+High priority:
+  - More checking?
+      - _verify
+      - check the tag patterns
+
+Medium priority:
+  - generalize ChunkString constructor to accept a chunk list?
+  - rename ChunkString?
+  - rename "chunklist" to "chunkstruct", to better cohere with the
+    terminology used in chunkparser.py?
+  - should ChunkString have a str-ish method? (that returns its
+    internal rep)
+  - Add more documentation explaining precompiled regexps.
+  - In order to conform to interfaces, we might want to change reps:
+    - chunkparser output as a tree
+    - chunkedtaggedtokenizer should produce a list of tokens
+  - IN_CHINK_PATTERN, IN_CHUNK_PATTERN exceed maximum recursion depth
+    when we try to do chunking above the sentence level (~1000-2000
+    words).  Grr. :)  So maybe we need a sentence tokenizer?  Or
+    something?  
+
+Low priority:
+  - Efficiency issues? (currently we do ~500-1500 tokens/sec; faster
+    when we chunk more text at a time)
+
+Questions:
+  - Should ChunkString be made immutable?
+
+Indication of current efficiency::
+
+  TIMING TEST (3 rules: chunk/unchunk/merge)
+  1 x 10008 words:
+      Time = 15.3654409647
+  8 x 1260 words:
+      Time = 10.0115730762
+  27 x 372 words:
+      Time = 9.67810499668
+  64 x 168 words:
+      Time = 10.1981619596
+  125 x 84 words:
+      Time = 10.1149849892
+  216 x 48 words:
+      Time = 10.5362759829
+  343 x 36 words:
+      Time = 12.9556429386
+  512 x 24 words:
+      Time = 13.6545710564
+  729 x 24 words:
+      Time = 19.4766739607
+  1000 x 12 words:
+      Time = 16.0188289881
+
+"""
+
+##//////////////////////////////////////////////////////
+##  Precompiled regular expressions
+##//////////////////////////////////////////////////////
+
+_TAGCHAR = r'[^\{\}<>]'
+_TAG = r'(<%s+?>)' % _TAGCHAR
+_VALID_TAG_PATTERN = re.compile(r'^((%s|<%s>)+)$' %
+                                ('[^\{\}<>]+',
+                                 '[^\{\}<>]+'))
+
+##//////////////////////////////////////////////////////
+##  ChunkString
+##//////////////////////////////////////////////////////
+
+class ChunkString:
     """
-    A chunking rule.  This class contains regular expressions
-    intended for inserting and deleting the chunk delimiters {
-    and } from the string representation of a sequence of tokens.
+    A string-based encoding of a particular chunking of a text.
+    Internally, the C{ChunkString} class uses a single string to
+    encode the chunking of the input text.  This string contains a
+    sequence of angle-bracket delimited tags, with chunking indicated
+    by braces.  An example of this encoding is::
 
-    @type _target: C{string}
-    @ivar _target: The regexp describing the target of the rule.
-    @type _action: C{string}
-    @ivar _action: The regexp describing the action to be performed
-          on the target.
-    @type _left: C{string}
-    @ivar _left: A zero-width assertion about left context.
-    @type _right: C{string}
-    @ivar _right: A zero-width assertion about right context.
-    @type _doc: C{string}
-    @ivar _doc: A short human-readable string describing the function
-          of the rule.
+<<<<<<< rechunkparser.py
+        {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
+
+    C{ChunkString} are created from tagged texts (i.e., C{list}s of
+    C{tokens} whose type is C{TaggedType}).  Initially, nothing is
+    chunked.
+    
+    The chunking of a C{ChunkString} can be modified with the C{xform}
+    method, which uses a regular expression to transform the string
+    representation.  These transformations should only add and remove
+    braces; they should I{not} modify the sequence of angle-bracket
+    delimited tags.
+
+    @type _str: C{string}
+    @ivar _str: The internal string representation of the text's
+        encoding.  This string representation contains a sequence of
+        angle-bracket delimited tags, with chunking indicated by
+        braces.  An example of this encoding is::
+
+            {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
+
+    @type _ttoks: C{list} of C{Token}
+    @ivar _ttoks: The text whose chunking is encoded by this
+        C{ChunkString}.
+    @ivar _debug: The debug level.  See the constructor docs.
+               
+    @cvar IN_CHUNK_PATTERN: A zero-width regexp pattern string that
+        will only match positions that are in chunks.
+    @cvar IN_CHINK_PATTERN: A zero-width regexp pattern string that
+        will only match positions that are in chinks.
     """
+    IN_CHUNK_PATTERN = r'(?=[^\{]*\})'
+    IN_CHINK_PATTERN = r'(?=[^\}]*(\{|$))'
 
+    # These are used by _verify
+    _CHUNK = r'(\{%s+?\})+?' % _TAG
+    _CHINK = r'(%s+?)+?' % _TAG
+    _VALID = re.compile(r'(\{?%s\}?)+?' % _TAG)
+    _BRACKETS = re.compile('[^\{\}]+')
+    _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
+    
+    def __init__(self, tagged_tokens, debug_level=3):
+        """
+=======
     def __init__(self, target, action, **kwargs):
         self._target = target
         self._action = action
@@ -191,98 +324,333 @@ def _check_braces(str):
 def format(str):
     """
     Format a string of tokens for display.
+>>>>>>> 1.5
 
-    This function inserts space characters in a token string, so
-    that different chunkings of the same token string will line up
-    when displayed one underneath the other.  This is convenient for
-    diagnostics which show the progress of a chunk parser.
+        Construct a new C{ChunkString} that encodes the chunking of
+        the text C{tagged_tokens}.
 
-    @return: a formatted version of the token string for display
-    @rtype: C{string}
-    @param str: The token string to be formatted
-    @type str: C{string}
-    """
-    str = sub(r' +', '', str)
-    str = sub(r'@\d+', '', str)
-    str = sub(r'<[^/]+/', '<', str)
-    str = sub(r'<', ' <', str)
-    str = sub(r'>', '> ', str)
-    str = sub(r'> }', '>}', str)
-    str = sub(r'{ <', '{<', str)
-    return str
+        @type tagged_tokens: C{list} of C{Token} with C{TaggedType}s
+        @ivar tagged_tokens: The text whose chunking is encoded by
+            this C{ChunkString}.  
+        @type debug_level: int
+        @var debug_level: The level of debugging which should be
+            applied to transformations on the C{ChunkString}.  The
+            valid levels are:
+                0. no checks
+                1. full check on to_chunklist
+                2. full check on to_chunklist and cursory check after
+                   each transformation. 
+                3. full check on to_chunklist and full check after
+                   each transformation.
+            We recommend you use at least level 1.  You should
+            probably use level 3 if you use any non-standard
+            subclasses of C{REChunkParserRule}.
+        """
+        self._ttoks = tagged_tokens
+        tags = [tok.type().tag() for tok in tagged_tokens]
+        self._str = '<'+string.join(tags, '><')+'>'
+        self._debug = debug_level
 
-# Bugs: assumes tags are strings and locations are unary,
-# ignores the source and unit
-def tag2str(tagged_sent):
-    """
-    Convert a tokenized, tagged sentence to a token string.
+    def _verify(self, verify_tags):
+        """
+        Check to make sure that _str still corresponds to some chunked
+        version of _ttoks.
 
-    @return: the token string version of the tokenized, tagged sentence
-    @rtype: C{string}
-    @param tagged_sent: the tokenized, tagged sentence
-    @type tagged_sent: C{list} of C{TaggedToken}
-    """
+        @raise ValueError: if this C{ChunkString}'s internal string
+            representation is invalid or not consistant with _ttoks.
+        """
+        # Check overall form
+        if not ChunkString._VALID.match(self._str):
+            raise ValueError('Transformation generated invalid chunkstring')
 
-    str = ''
-    for tok in tagged_sent:
-        str += '<' + tok.type().base() + '/' + tok.type().tag() + '@' + `tok.loc().start()` + '>'
-    return str
+        # Check that parens are balanced.  If the string is long, we
+        # have to do this in pieces, to avoid a maximum recursion
+        # depth limit for regular expressions.
+        brackets = ChunkString._BRACKETS.sub('', self._str)
+        for i in range(1+len(brackets)/5000):
+            substr = brackets[i*5000:i*5000+5000]
+            if not ChunkString._BALANCED_BRACKETS.match(substr):
+                raise ValueError('Transformation generated invalid '+
+                                 'chunkstring')
 
+        if verify_tags<=0: return
+        
+        tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
+        tags2 = [tok.type().tag() for tok in self._ttoks]
+        if tags1 != tags2:
+            raise ValueError('Transformation generated invalid chunkstring')
 
-# Precompiled regular expressions used by str2chunks
+    def to_chunklist(self):
+        """
+        @return: the chunk structure encoded by this C{ChunkString}.
+        @rtype: chunk structure
+        """
+        if self._debug > 0: self._verify(1)
+            
+        # Extract a list of alternating chinks & chunks
+        pieces = re.split('[{}]', self._str)
 
+        # Use this alternating list to create the chunklist.
+        chunklist = []
+        index = 0
+        piece_in_chunk = 0
+        for piece in pieces:
+
+            # Find the list of tokens contained in this piece.
+            length = piece.count('<')
+            subsequence = self._ttoks[index:index+length]
+
+            # Add this list of tokens to our chunklist.
+            if piece_in_chunk:
+                chunklist.append(subsequence)
+            else:
+                chunklist += subsequence
+
+            # Update index, piece_in_chunk
+            index += length
+            piece_in_chunk = not piece_in_chunk
+
+        return chunklist
+                
+    def xform(self, regexp, repl):
+        """
+        Apply the given transformation to this C{ChunkString}'s string
+        encoding.  In particular, find all occurances that match
+        C{regexp}, and replace them using C{repl} (as done by
+        C{re.sub}).
+
+        This transformation should only add and remove braces; it
+        should I{not} modify the sequence of angle-bracket delimited
+        tags.  Furthermore, this transformation may not result in
+        improper bracketing.  Note, in particular, that bracketing may
+        not be nested.
+
+        @type regexp: C{string} or C{regexp}
+        @param regexp: A regular expression matching the substring
+            that should be replaced.  This will typically include a
+            named group, which can be used by C{repl}.
+        @type repl: C{string}
+        @param repl: An expression specifying what should replace the
+            matched substring.  Typically, this will include a named
+            replacement group, specified by C{regexp}.
+        @rtype: C{None}
+        """
+        # Do the actual substitution
+        self._str = re.sub(regexp, repl, self._str)
+
+<<<<<<< rechunkparser.py
+        # The substitution might have generated "empty chunks"
+        # (substrings of the form "{}").  Remove them, so they don't
+        # interfere with other transformations.
+        self._str = re.sub('\{\}', '', self._str)
+=======
 _re_punct_boundary = re.compile(r'([>}])(?=[<{])')
 _re_token_rep = re.compile(r'<([^>]*)/([^>]*)@(\d+)>')
 _re_chunks = re.compile(r'{([^}]*)}')
+>>>>>>> 1.5
 
-def str2chunks(str):
-    """
-    Convert a token string to a chunk structure.
+        # Make sure that the transformation was legal.
+        if self._debug > 1: self._verify(self._debug-2)
 
-    Take the token string, with embedded chunk delimiters, and
-    build an executable expression which returns a chunk structure.
-    E.g.: "{<the/DT@[1]><cat/NN@[2]>}<sat/VBD@[3]>"
-    becomes: [ [ 'the'/'DT'@[1], 'cat'/'NN'@[2] ], 'sat'/'VBD'@[3] ]
-
-    @return: the chunk structure for a chunked token string
-    @rtype: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
-    @param str: the token string
-    @type str: C{string}
-    """
-
-    _check_braces(str)
-
-    # insert commas between closing and opening punctuation
-    str = sub(_re_punct_boundary, r'\1, ', str)
-
-    # generate code to build a token from the string representation of the token
-    str = sub(_re_token_rep, r'Token(TaggedType("\1", "\2"), Location(\3, unit="word"))', str)
-
-    # replace {} chunk syntax with [] list syntax
-    str = sub(_re_chunks, r'[\1]', str)
-    str = '[' + str + ']'
-    return eval(str)
-
-##//////////////////////////////////////////////////////
-##  Chunk Parser
-##//////////////////////////////////////////////////////
-
-class REChunkParser(ChunkParserI):
-    """
-    A chunk parser.  It is initialized with a cascade of chunk rules, and
-    knows how to apply these rules to the string representation of a sequence
-    of tokens.
-
-    @type _rulelist: C{list} of C{ChunkRule}s.
-    @ivar _rulelist: The cascade of chunk rules to be applied.
-    @type _debug: C{int}
-    @ivar _debug: The debug flag
-    """
-
-    def __init__(self, rulelist, debug=0):
+    def xform_chunk(self, pattern, repl):
+        # Docstring adopted from xform's docstring.
         """
-        Construct a new chunk parser.
+        Apply the given transformation to the chunks in this
+        C{ChunkString}'s string encoding.  In particular, find all
+        occurances within chunks that match C{regexp}, and replace
+        them using C{repl} (as done by C{re.sub}).
 
+        This transformation should only add and remove braces; it
+        should I{not} modify the sequence of angle-bracket delimited
+        tags.  Furthermore, this transformation may not result in
+        improper bracketing.  Note, in particular, that bracketing may
+        not be nested.
+
+        @type regexp: C{string} or C{regexp}
+        @param regexp: A regular expression matching the substring
+            that should be replaced.  This will typically include a
+            named group, which can be used by C{repl}.
+        @type repl: C{string}
+        @param repl: An expression specifying what should replace the
+            matched substring.  Typically, this will include a named
+            replacement group, specified by C{regexp}.
+        @rtype: C{None}
+        """
+        self.xform(pattern+ChunkString.IN_CHUNK_PATTERN, repl)
+
+<<<<<<< rechunkparser.py
+    def xform_chink(self, pattern, repl):
+        # Docstring adopted from xform's docstring.
+        """
+        Apply the given transformation to the chinks in this
+        C{ChinkString}'s string encoding.  In particular, find all
+        occurances within chinks that match C{regexp}, and replace
+        them using C{repl} (as done by C{re.sub}).
+
+        This transformation should only add and remove braces; it
+        should I{not} modify the sequence of angle-bracket delimited
+        tags.  Furthermore, this transformation may not result in
+        improper bracketing.  Note, in particular, that bracketing may
+        not be nested.
+
+        @type regexp: C{string} or C{regexp}
+        @param regexp: A regular expression matching the substring
+            that should be replaced.  This will typically include a
+            named group, which can be used by C{repl}.
+        @type repl: C{string}
+        @param repl: An expression specifying what should replace the
+            matched substring.  Typically, this will include a named
+            replacement group, specified by C{regexp}.
+        @rtype: C{None}
+        """
+        self.xform(pattern+ChunkString.IN_CHINK_PATTERN, repl)
+=======
+    _check_braces(str)
+>>>>>>> 1.5
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this C{ChunkString}
+        """
+        return '<ChunkString: %s>' % `self._str`
+
+    def __str__(self):
+        """
+        @rtype: C{string}
+        @return: A formatted representation of this C{ChunkString}'s
+            string encoding.  This representation will include extra
+            spaces to ensure that tags will line up with the
+            representation of other C{ChunkStrings} for the same text,
+            regardless of the chunking.
+        """
+        str = re.sub(r'>(?!\})', '> ', self._str)
+        str = re.sub(r'(?<!\{)<', ' <', str)
+        if str[0] == '<': str = ' ' + str
+        return str
+
+##//////////////////////////////////////////////////////
+##  Rules
+##//////////////////////////////////////////////////////
+
+def _clean(pattern):
+    """
+    Convert a regular expression pattern over tags into its cannonical
+    form:
+
+        - Replace '.' with _TAGCHAR (so it doesn't match '[<>{}]')
+        - Remove any whitespace
+        - Add extra parens around '<' and '>', to make '<' and '>' act
+          like parenthases.  E.g., so that in '<NN>+', the '+' has scope
+          over the entire '<NN>'; and so that in '<NN|IN>', the '|' has
+          scope over 'NN' and 'IN', but not '<' or '>'.
+        - Check to make sure the resulting pattern is valid.
+    """
+    # Clean up the regular expression
+    pattern = re.sub(r'\s', '', pattern)
+    pattern = re.sub(r'<', '(<(', pattern)
+    pattern = re.sub(r'>', ')>)', pattern)
+
+    # Check the regular expression
+    if not _VALID_TAG_PATTERN.match(pattern):
+        raise ValueError('Bad pattern: %s' % pattern)
+
+    # We have to do this after, since it adds {}[]<>s
+    pattern = re.sub(r'\.', _TAGCHAR, pattern)
+    return pattern
+
+class REChunkParserRule:
+    def __init__(self, regexp, repl, descr):
+        """
+        @type regexp: C{regexp}
+        """
+        self._repl = repl
+        self._descr = descr
+        if type(self._regexp) == type(''):
+            self._regexp = re.compile(regexp)
+        else:
+            self._regexp = regexp
+
+    def apply(self, chunkstr):
+        """
+        Apply this rule to the given C{ChunkString}.
+        """
+        chunkstr.xform(self._regexp, self._repl)
+
+    def descr(self):
+        # Inherit docs from REChunkParserRule
+        return self._descr
+
+    def __repr__(self):
+        return ('<ChunkRule: '+`self._regexp.pattern`+
+                '->'+`self._repl`+'>')
+        
+class ChunkRule(REChunkParserRule):
+    def __init__(self, tag_pattern, descr):
+        self._pattern = tag_pattern
+        regexp = re.compile('(?P<chunk>'+_clean(tag_pattern)+')'+
+                            ChunkString.IN_CHINK_PATTERN)
+        REChunkParserRule.__init__(self, regexp, '{\g<chunk>}', descr)
+
+    def __repr__(self):
+        return '<ChunkRule: '+`self._pattern`+'>'
+
+class ChinkRule(REChunkParserRule):
+    def __init__(self, tag_pattern, descr):
+        self._pattern = tag_pattern
+        regexp = re.compile('(?P<chink>'+_clean(tag_pattern)+')'+
+                            ChunkString.IN_CHUNK_PATTERN)
+        REChunkParserRule.__init__(self, regexp, '}\g<chink>{', descr)
+
+    def __repr__(self):
+        return '<ChinkRule: '+`self._pattern`+'>'
+
+class UnChunkRule(REChunkParserRule):
+    def __init__(self, tag_pattern, descr):
+        self._pattern = tag_pattern
+        regexp = re.compile('\{(?P<chunk>'+_clean(tag_pattern)+')\}')
+        REChunkParserRule.__init__(self, regexp, '\g<chunk>', descr)
+
+    def __repr__(self):
+        return '<UnChunkRule: '+`self._pattern`+'>'
+
+class MergeRule(REChunkParserRule):
+    def __init__(self, left_tag_pattern, right_tag_pattern, descr):
+        self._left_tag_pattern = left_tag_pattern
+        self._right_tag_pattern = right_tag_pattern
+        regexp = re.compile('(?P<left>'+_clean(left_tag_pattern)+')'+
+                            '}{(?='+_clean(right_tag_pattern)+')')
+        REChunkParserRule.__init__(self, regexp, '\g<left>', descr)
+
+    def __repr__(self):
+        return ('<MergeRule: '+`self._left_tag_pattern`+', '+
+                `self._right_tag_pattern`+'>')
+
+class SplitRule(REChunkParserRule):
+    def __init__(self, left_tag_pattern, right_tag_pattern, descr):
+        self._left_tag_pattern = left_tag_pattern
+        self._rigthpattern = right_tag_pattern
+        regexp = re.compile('(?P<left>'+_clean(left_tag_pattern)+')'+
+                            '(?='+_clean(right_tag_pattern)+')')
+        REChunkParserRule.__init__(self, regexp, '\g<left>\}\{', descr)
+
+    def __repr__(self):
+        return ('<MergeRule: '+`self._left_tag_pattern`+', ',
+                `self._right_tag_pattern`+'>')
+
+<<<<<<< rechunkparser.py
+##//////////////////////////////////////////////////////
+##  REChunkParser
+##//////////////////////////////////////////////////////
+
+class REChunkParser:
+    def __init__(self, rules, trace=0):
+        """
+        @type rules: C{list} of C{REChunkParserRule}
+        """
+        self._rules = rules
+        self._trace = trace
+=======
         @param rulelist: The cascade of chunk rules to be applied.
         @type rulelist: C{list} of C{ChunkRule}
         @param debug: The debug flag
@@ -319,7 +687,36 @@ class REChunkParser(ChunkParserI):
         for rule in self._rulelist:
             str = self._apply(rule, str)
         return str2chunks(str)
+>>>>>>> 1.5
 
+    def _trace_apply(self, chunkstr, tagged_sentence, verbose):
+        indent = ' '*(35-len(str(chunkstr))/2)
+        
+        print '\nInput:'
+        print indent, chunkstr
+        for rule in self._rules:
+            rule.apply(chunkstr)
+            if verbose:
+                print rule.descr()+' ('+`rule`+'):'
+            else:
+                print rule.descr()+':'
+            print indent, chunkstr
+        return chunkstr.to_chunklist()
+        
+    def _notrace_apply(self, chunkstr, tagged_sentence):
+        for rule in self._rules:
+            rule.apply(chunkstr)
+        return chunkstr.to_chunklist()
+        
+    def parse(self, tagged_sentence, trace=0):
+        chunkstr = ChunkString(tagged_sentence)
+        if trace or self._trace:
+            verbose = (trace>1 or self._trace>1)
+            self._trace_apply(chunkstr, tagged_sentence, verbose)
+        else:
+            self._notrace_apply(chunkstr, tagged_sentence)
+        return chunkstr.to_chunklist()
+                             
 ##//////////////////////////////////////////////////////
 ##  Evaluation Code
 ##//////////////////////////////////////////////////////
@@ -337,13 +734,13 @@ def unchunk(chunked_sent):
     """
     unchunked_sent = []
     for token in chunked_sent:
-        if _pytype(token) == _pytype([]):
-            unchunked_sent.extend(token)
-        else:
+        if isinstance(token, Token):
             unchunked_sent.append(token)
+        else:
+            unchunked_sent.extend(token)
     return unchunked_sent
 
-def score(correct_chunks, guessed_chunks):
+def score(correct_chunks, guessed_chunks, verbosity=1):
     """
     Given a correctly chunked sentence, score another chunked sentence.
     
@@ -351,16 +748,27 @@ def score(correct_chunks, guessed_chunks):
     puts them into two sets, then reports the precision, recall and F measure.
 
     @param correct_chunks: a chunk structure
-    @type correct_chunks: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
+    @type correct_chunks: C{list} of (C{TaggedToken} or
+        (C{list} of C{TaggedToken}))
     @param guessed_chunks: a chunk structure
-    @type guessed_chunks: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
+    @type guessed_chunks: C{list} of (C{TaggedToken} or
+        (C{list} of C{TaggedToken}))
     """
     correct_locs = _chunk_locs(correct_chunks)
     guessed_locs = _chunk_locs(guessed_chunks)
     correct = Set(*correct_locs) # convert to a set
     guessed = Set(*guessed_locs)
-    print "CORRECT:   ", correct
-    print "GUESS:     ", guessed
+    missed = correct - guessed
+    wrong = guessed - correct
+    if ((len(correct) < 50 and verbosity >= 2) or (verbosity > 3)):
+        print "CORRECT:   ", correct
+    if ((len(guessed) < 50 and verbosity >= 2) or (verbosity > 3)):
+        print "GUESS:     ", guessed
+    if ((len(missed) < 50 and verbosity >= 1) or (verbosity > 2)):
+        print "MISSED:    ", missed
+    if ((len(wrong) < 50 and verbosity >= 1) or (verbosity > 2)):
+        print "INCORRECT: ", wrong
+        
     print "PRECISION: ", correct.precision(guessed)
     print "RECALL:    ", correct.recall(guessed)
     print "F MEASURE: ", correct.f_measure(guessed)
@@ -373,47 +781,65 @@ def score(correct_chunks, guessed_chunks):
 def _seq_loc(tok_sent):
     return TreeToken('xyzzy', *tok_sent).loc()
 
+def _unify(tok_sent):
+    words = [tok.type().base() for tok in tok_sent]
+    str = ' '.join(words)
+    return Token(str, _seq_loc(tok_sent))
+
 # get the locations of chunks in a chunked sentence
 def _chunk_locs(chunked_sent):
     locs = []
-    for token in chunked_sent:
-        if _pytype(token) == _pytype([]):
-            locs.append(_seq_loc(token))
+    for piece in chunked_sent:
+        if type(piece) == type([]):
+            #locs.append(_seq_loc(piece))
+            locs.append(_unify(piece))
     return locs
 
-from nltk.set import *
+NUM=1
+import time
 def demo():
 
     # the canonical sentence, as if it came from a file
     correct_sent = """
     [ the/DT little/JJ cat/NN ]
     sat/VBD on/IN
-    [ the/DT mat/NN ]
+    [ the/DT mat/NN ] ./.
+    [ the/DT cat/NN ] sat/VBD ./.
     """
 
     # process the canonical sentence to get the chunk locations
     ctt = ChunkedTaggedTokenizer()
-    correct_chunked_sent = ctt.tokenize(correct_sent)
+    correct_chunked_sent = ctt.tokenize(correct_sent)*NUM
 
     # get an unchunked version of the sentence
     unchunked_sent = unchunk(correct_chunked_sent)
 
-    r1 = AbstractChunkRule(r'(<DT><JJ>*<NN>)', r'{\1}', doc="chunking <DT><JJ>*<NN>")
+    print len(unchunked_sent), 'Words'
+    print len(unchunked_sent)/4, 'Chunks'
+    
+    t = time.time()
+    r1 = ChunkRule(r'<DT><JJ>*<NN>', 'Chunk NPs')
     cp = REChunkParser([r1])
-    chunked_sent = cp.parse(unchunked_sent)
+    chunked_sent = cp.parse(unchunked_sent, 1)
     score(correct_chunked_sent, chunked_sent)
+    print 'TIME:', time.time()-t
+    t = time.time()
 
-    r1 = AbstractChunkRule(r'(<.*>)', r'{\1}', doc="chunking every tag")
+    r1 = ChunkRule(r'<.*>+', 'Chunk everything')
+    r2 = ChinkRule(r'<VB.*>|<IN>', 'Chink VB?s and INs')
+    cp = REChunkParser([r1, r2])
+    chunked_sent = cp.parse(unchunked_sent, 1)
+    score(correct_chunked_sent, chunked_sent)
+    print 'TIME:', time.time()-t
+    t = time.time()
 
-    EXCL = r'<VB.*|IN>'
-    r2 = AbstractChunkRule('{('+EXCL+')}', r'\1', doc="chinking VB* and IN")
-
-    DT_JJ_NNX = r'<DT|JJ|NN.*>'
-    r3 = AbstractChunkRule('('+DT_JJ_NNX+')}{', r'\1', right=DT_JJ_NNX,
-                doc="chunk any groups of <DT> <JJ> and <NNX>")
-
+    r1 = ChunkRule(r'(<.*>)', 'Chunk each tag')
+    r2 = UnChunkRule(r'<VB.*>|<IN>', 'Unchunk VB? and INs')
+    r3 = MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
     cp = REChunkParser([r1,r2,r3])
-    chunked_sent = cp.parse(unchunked_sent)
+    chunked_sent = cp.parse(unchunked_sent, 1)
     score(correct_chunked_sent, chunked_sent)
+    print 'TIME:', time.time()-t
 
 if __name__ == '__main__': demo()
+
