@@ -2,5 +2,6 @@
 *.dvi
 *.log
 *.pyc
+*.pdf
+*.ps
 attic
-proposal.ps
