@@ -52,12 +52,11 @@ class NaiveBayesClassifier(ClassifierI, PropertyIndirectionMixIn):
         logprob_dict = {}
         for cls in self._classes:
             logprob_dict[cls] = self._class_probdist.logprob(cls)
-        #print logprob_dict
         for (cls, fname) in self._feature_probdist.conditions():
             probdist = self._feature_probdist[cls, fname]
+            if fname not in token[FEATURES]: continue # [XX] is this right?
             fval = token[FEATURES][fname]
             logprob_dict[cls] += probdist.logprob(token[FEATURES][fname])
-        #print logprob_dict
 
         probs = DictionaryProbDist(logprob_dict, normalize=True, log=True)
         token[CLASS_PROBS] = probs
@@ -76,17 +75,25 @@ class NaiveBayesClassifierTrainer(ClassifierTrainerI,
         
         class_freqdist = FreqDist()
         feature_freqdist = ConditionalFreqDist()
+        feature_values = {}
 
         for token in tokens:
             cls = token[CLASS]
             class_freqdist.inc(cls)
             for fname, fval in token[FEATURES].items():
+                # Recod the value in the freq(fval|cls, fname) distribution.
                 feature_freqdist[cls, fname].inc(fval)
+                # Record that fname can take the value fval.
+                if fname not in feature_values: feature_values[fname] = Set()
+                feature_values[fname].add(fval)
 
-        #print class_freqdist
+        # Create the P(cls) distribution
         class_probdist = ELEProbDist(class_freqdist)
-        feature_probdist = ConditionalProbDist(feature_freqdist,
-                                               ELEProbDist)
+
+        # Create the P(fval|cls, fname) distribution
+        def make_probdist(freqdist, (cls, fname)):
+            return ELEProbDist(freqdist, bins=len(feature_values[fname]))
+        feature_probdist = ConditionalProbDist(feature_freqdist, make_probdist, True)
 
         # [xx] property indirection?
         return NaiveBayesClassifier(class_probdist, feature_probdist)
@@ -172,19 +179,15 @@ from nltk.feature.word import *
 
 def demo():
     import nltk.corpus
-
-    #from nltk.tagger import TaggedTokenizer
-    #text = Token(TEXT='a/A b/B a/x')
-    #TaggedTokenizer().tokenize(text)
     
     # Load the training data, and split it into test & train.
     print 'reading data...'
     toks = []
-    for item in nltk.corpus.brown.items()[:4]:
+    for item in nltk.corpus.brown.items()[:30]:
         text = nltk.corpus.brown.tokenize(item, addcontexts=True)
         toks += text['SUBTOKENS']
     toks = toks
-    split = len(toks) * 3/4
+    split = len(toks)-20
     train, test = toks[:split], toks[split:]
 
     # We're using TAG as our CLASS
@@ -196,9 +199,9 @@ def demo():
 
     # Create the feature detector.
     detector = MergedFeatureDetector(
-        PropertyFeatureDetector('TEXT'),
-        ContextWordFeatureDetector(offset=-1),
-        #SetOfContextWordsFeatureDetector(window=2),
+        TextFeatureDetector(),                 # word's text
+        ContextWordFeatureDetector(offset=-1), # previous word's text
+        ContextWordFeatureDetector(offset=1),  # next word's text
         )
 
     # Run feature detection on the training data.
@@ -211,23 +214,23 @@ def demo():
 
     # Use it to classify the test words.
     print 'classifying...'
-    for tok in test[:20]:
-        print '%22s' % tok.exclude('CONTEXT', 'CLASS'),
-        c=tok['CLASS']
+    print
+    print 'correct? |     token     | cls | class distribution'
+    print '---------+---------------+-----+-------------------------------------'
+    for tok in test:
+        s = '%22s' % tok.exclude('CONTEXT', 'CLASS')
+        c = tok['CLASS']
         detector.detect_features(tok)
         classifier.classify(tok)
-        if c == tok['CLASS']:
-            print '===> %-4s  ' % tok['CLASS'],
-        else:
-            print '=X=> %-4s  ' % tok['CLASS'],
+        if c == tok['CLASS']: s = '   '+s
+        else: s = '[X]' + s
+        s += ' %-4s  ' % tok['CLASS']
         pdist = tok['CLASS_PROBS']
-        probs = [(pdist.prob(s),s) for s in pdist.samples()]
+        probs = [(pdist.prob(val),val) for val in pdist.samples()]
+        
         probs.sort(); probs.reverse()
-        for prob,s in probs[:3]:
-            print '%4s=%.3f' % (s,prob),
-        print
-        #pdist = tok['CLASS_PROBS']
-        #for sample in pdist.samples():
-        #    print '%s=%s' % (sample, pdist.prob(sample)),
+        for prob,val in probs[:3]:
+            s += '%5s=%.3f' % (val,prob)
+        print s + ' ...'
     
 if __name__ == '__main__': demo()
