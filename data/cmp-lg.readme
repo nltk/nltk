@@ -1,0 +1,21 @@
+Computation and Language (cmp-lg) corpus
+
+As part of the TIPSTER SUMMAC effort, a corpus of 183 documents from
+the Computation and Language (cmp-lg) collection has been marked up in
+xml and made available as a general resource to the information
+retrieval, extraction, and summarization communities. The documents
+are scientific papers which appeared in Association for Computational
+Linguistics (ACL) sponsored conferences. The markup is based on
+automatic conversion from latex to xml, and as a result is fairly
+minimal. (However, something is often better than nothing!) The markup
+includes tags covering core information such as title, author, date,
+etc., as well as basic structure such as abstract, body, sections,
+lists, etc. Figures, tables, equations, cross-references and
+references were all replaced with placeholder tags.
+
+The corpus was prepared by The MITRE Corporation and the University of
+Edinburgh.
+
+For more information, contact Simone Teufel Simone.Teufel@cl.cam.ac.uk
+
+http://www.itl.nist.gov/iaui/894.02/related_projects/tipster_summac/cmp_lg.html
