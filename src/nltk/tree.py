@@ -45,10 +45,13 @@ functions are defined:
     - C{parse_treebank()}: Parses treebank-style syntax trees.
 
 @see: nltk.token
+@sort: AbstractTree, Tree, TreeToken, TreebankTokenizer,
+    ProbabilisticTree, ProbabilisticTreeToken
+@group Tokenization: TreebankTokenizer
+@group Probabilistic Trees: Probabilistic*
 """
 
-from nltk.token import Token
-from nltk.token import Location
+from nltk.token import Token, Location, TokenizerI
 from nltk.probability import ProbabilisticMixIn
 import re
 from nltk.chktype import chktype as _chktype
@@ -556,15 +559,15 @@ class TreeToken(AbstractTree, Token):
         Construct a new C{TreeToken} object, with the given node value
         and children.  For example:
 
-            >>> TreeToken('np', Token('the', 0), Token('cat', 1))
+            >>> words = tokenizer.tokenize("the cat")
+            >>> TreeToken('np', words[0], words[1])
             ('np': 'the' 'cat')@[0:2]
 
         Note that the children should not be given as a single list.
         If you need to consturct a C{TreeToken} from a list of
         children, use the following syntax:
 
-            >>> children = (Token('the', 0), Token('cat', 1))
-            >>> TreeToken('np', *children)
+            >>> TreeToken('np', *words)
             ('np': 'the' 'cat')@[0:2]
 
         @param node: The new C{TreeToken}'s node value.
@@ -739,17 +742,143 @@ def parse_treebank(str):
     # Add calls to the Tree constructor.
     str = re.sub(r'\(', 'Tree(', str)
 
-    # Empty nodes?
+    # Eliminate empty nodes
     str = re.sub(r'Tree\(\)', r'Tree(" ")', str)
 
     # Strip whitespace and get rid of the comma after the last ')' 
     str = str.strip()[:-1]
 
-    # Use "eval" to convert the string (is this safe?)
+    # Use "eval" to convert the string
     try:
-        print str;
         result = eval(str)
         return result
     except:
         raise ValueError('Bad Treebank-style string')
 
+class TreebankTokenizer(TokenizerI):
+    """
+    A tokenizer that separates a string of text into C{TreeTokens}.
+    The text should consist of a sequence of Treebank-style syntax
+    trees.  Each word in the tree is encoded as a L{Token} whose type
+    is string; and each constituant is encoded as a L{TreeToken}
+    composed from its children.  Tree nodes are encoded as strings.
+    Location indices start at zero, and have a default unit of
+    C{'w'} (for \"word\").
+
+    Parenthases that do not have node value are ignored.  For example,
+    in the following call to C{tokenize()}, the outermost parenthases
+    are ignored:
+
+       >>> TreebankTokenizer().tokenize('((S (NP He) (VP (V ate))))')
+       [('S': ('NP': 'He'@[0w]) ('VP': ('V': 'ate'@[1w])))]
+    """
+    def tokenize(self, str, unit='w', source=None):
+        # Inherit docs from TokenizerI
+
+        # Remember the unit & source for tokens.
+        self._unit = unit
+        self._source = source
+
+        # This is used to keep track of word indices for creating
+        # Locations of Tokens:
+        self._wordnum = 0
+        
+        # Rather than trying to parse the string ourselves, we will
+        # rely on the Python parser.  This procedure isn't immediately
+        # easy to understand, but if you add a "print str" after each
+        # call to re.sub, and try it out on an example, you should be
+        # able to figure out what's going on.
+        trees = []
+        for treestr in self._split_into_trees(str):
+            # Get rid of any newlines, etc.
+            treestr = ' '.join(treestr.split())
+
+            # Backslash any quote marks or backslashes in the string.
+            treestr = re.sub(r'([\\"\'])', r'\\\1', treestr)
+
+            # Add quote marks and calls to Token() for words.
+            treestr = re.sub(r'(\(?[^() ]+|\(|\))', self._token_sub, treestr)
+
+            # Eliminate empty nodes (these *shouldn't* exist)
+            treestr = re.sub(r'TreeToken\(\)', r'TreeToken(" ")', treestr)
+
+            # Strip whitespace and get rid of the comma after the last ')' 
+            treestr = treestr.strip()[:-1]
+
+            # Use "eval" to convert the string
+            try:
+                trees.append(eval(treestr))
+            except:
+                raise ValueError('Bad Treebank-style string')
+        return trees
+
+    def _identity(self, x):
+        """
+        A helper function for L{_token_sub()}.
+        @return: C{x}
+        """
+        return x
+    
+    def _token_sub(self, match):
+        r"""
+        A helper function for L{tokenize}.  This is used as the
+        C{replacement} argument of a call to C{re.sub()}.  It is used
+        to perform the following transformations on a string:
+          - Replace C{'I{word}'} with C{'Token(I{word}, I{location})'}
+            (where C{I{locaiton}} is the location for I{word}).
+          - Replace C{'(I{node}'} with C{'TreeToken(I{node}, '}
+          - Replace any other C{'('} with C{'self._identity('}
+          - Replace C{')'}, with C{'),'}
+        """
+        word = match.group(1)
+        if word[:1] == ')':
+            return '),'
+        if word[:1] == '(':
+            # It's a node (=constituant)
+            if len(word) > 1:
+                return 'TreeToken(%r,' % word[1:]
+            else:
+                # Special case: ignore parens with no token??
+                return 'self._identity('
+        else:
+            # It's a leaf (=word)
+            self._wordnum += 1
+            return ('Token(%r, Location(%d, '% (word, self._wordnum-1) +
+                    'unit=self._unit, source=self._source)),')
+
+    def _split_into_trees(self, str):
+        '''
+        Given a string that contains a series of treebank trees, split
+        it into a list of substrings, where each contains a single
+        treebank tree.
+        '''
+        trees = []
+        parens = 0
+        start = pos = 0
+        PAREN_RE = re.compile('[()]')
+
+        while pos < len(str):
+            # Find the next parenthasis.
+            match = PAREN_RE.search(str, pos)
+
+            # If no parenthasis is found, we're done.
+            if match == None:
+                if str[pos:].split():
+                    raise ValueError('Bad Treebank-style string')
+                break
+
+            # Update our position.
+            pos = match.end()
+
+            # Process the parenthasis.
+            if match.group() == '(':
+                if parens == 0: start = pos-1
+                parens += 1
+            elif match.group() == ')':
+                parens -= 1
+                if parens == 0:
+                    trees.append(str[start:pos])
+                elif parens < 0:
+                    raise ValueError('Bad Treebank-style string')
+
+        return trees
