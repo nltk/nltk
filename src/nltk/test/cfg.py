@@ -152,7 +152,7 @@ Productions are hashable, and so can be used as dictionary keys:
 """
 
 def test_CFG(): """
-Unit tests for L{CFG.
+Unit tests for L{CFG}.
     
 A context free grammar is constructed from a start symbol and a list
 of productions:
