@@ -53,7 +53,7 @@ class ViterbiPCFGParser(ProbabilisticParserI):
     """
     A bottom-up C{PCFG} parser that uses dynamic programming to find
     the single most likely parse for a text.  C{ViterbiPCFGParser}
-    parses texts by filling in a X{most likely constituant table}.
+    parses texts by filling in a X{most likely constituent table}.
     This table records the most probable tree representation for any
     given span and node value.  In particular, it has an entry for
     every start index, end index, and node value, recording the most
@@ -61,18 +61,18 @@ class ViterbiPCFGParser(ProbabilisticParserI):
     and has the given node value.
 
     C{ViterbiPCFGParser} fills in this table incrementally.  It starts
-    by filling in all entries for constituants that span one element
+    by filling in all entries for constituents that span one element
     of text (i.e., entries where the end index is one greater than the
     start index).  After it has filled in all table entries for
-    constituants that span one element of text, it fills in the
+    constituents that span one element of text, it fills in the
     entries for constitutants that span two elements of text.  It
-    continues filling in the entries for constituants spanning larger
+    continues filling in the entries for constituents spanning larger
     and larger portions of the text, until the entire table has been
-    filled.  Finally, it returns the table entry for a constituant
+    filled.  Finally, it returns the table entry for a constituent
     spanning the entire text, whose node value is the grammar's start
     symbol.
 
-    In order to find the most likely constituant with a given span and
+    In order to find the most likely constituent with a given span and
     node value, C{ViterbiPCFGParser} considers all rules that could
     produce that node value.  For each rule, it finds all children
     that collectively cover the span and have the node values
@@ -84,7 +84,7 @@ class ViterbiPCFGParser(ProbabilisticParserI):
     A pseudo-code description of the algorithm used by
     C{ViterbiPCFGParser} is:
 
-      - Create an empty most likely constituant table, M{MLC}.
+      - Create an empty most likely constituent table, M{MLC}.
       - For M{width} in 1...len(M{text}):
         - For M{start} in 1...len(M{text})-M{width}:
           - For M{rule} in grammar:
@@ -145,38 +145,38 @@ class ViterbiPCFGParser(ProbabilisticParserI):
         # Inherit docs from ProbabilisticParserI
 
         # The most likely consituant table.  This table specifies the
-        # most likely constituant for a given span and type.
-        # Constituants can be either TreeTokens or Tokens.  For
+        # most likely constituent for a given span and type.
+        # Constituents can be either TreeTokens or Tokens.  For
         # TreeTokens, the "type" is the Nonterminal for the tree's
         # root node value.  For Tokens, the "type" is the token's
         # type.  The table is stored as a dictionary, since it is
         # sparse.
-        constituants = {}
+        constituents = {}
         
-        # Initialize the constituants dictionary with the words from
+        # Initialize the constituents dictionary with the words from
         # the text.
         if self._trace: print ('Inserting tokens into the most likely'+
-                               ' constituants table...')
+                               ' constituents table...')
         for index in range(len(text)):
             tok = text[index]
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
-            constituants[index,index+1,tok.type()] = probtok
+            constituents[index,index+1,tok.type()] = probtok
             if self._trace > 1: self._trace_lexical_insertion(tok, text)
 
         # Consider each span of length 1, 2, ..., n; and add any trees
-        # that might cover that span to the constituants dictionary.
+        # that might cover that span to the constituents dictionary.
         for length in range(1, len(text)+1):
             if self._trace:
                 if self._trace > 1: print
-                print ('Finding the most likely constituants'+
+                print ('Finding the most likely constituents'+
                        ' spanning %d text elements...' % length)
-            #print constituants
+            #print constituents
             for start in range(len(text)-length+1):
                 span = (start, start+length)
-                self._add_constituants_spanning(span, constituants, text)
+                self._add_constituents_spanning(span, constituents, text)
 
         # Find all trees that span the entire text & have the right cat
-        trees = [constituants.get((0, len(text),
+        trees = [constituents.get((0, len(text),
                                    self._grammar.start()), [])]
 
         # Sort the trees, and return the requested number of them.
@@ -184,35 +184,35 @@ class ViterbiPCFGParser(ProbabilisticParserI):
         if n is None: return trees
         else: return trees[:n]
 
-    def _add_constituants_spanning(self, span, constituants, text):
+    def _add_constituents_spanning(self, span, constituents, text):
         """
-        Find any constituants that might cover C{span}, and add them
-        to the most likely constituants table.
+        Find any constituents that might cover C{span}, and add them
+        to the most likely constituents table.
 
         @rtype: C{None}
         @type span: C{(int, int)}
         @param span: The section of the text for which we are
-            trying to find possible constituants.  The span is
+            trying to find possible constituents.  The span is
             specified as a pair of integers, where the first integer
             is the index of the first token that should be included in
-            the constituant; and the second integer is the index of
+            the constituent; and the second integer is the index of
             the first token that should not be included in the
-            constituant.  I.e., the constituant should cover
+            constituent.  I.e., the constituent should cover
             C{M{text}[span[0]:span[1]]}, where C{M{text}} is the text
             that we are parsing.
 
-        @type constituants: C{dictionary} from
+        @type constituents: C{dictionary} from
             C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
             C{ProbabilisticTreeToken}).
-        @param constituants: The most likely constituants table.  This
+        @param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  In particular,
-            C{constituants(M{s},M{e},M{nv})} is the most likely
+            C{constituents(M{s},M{e},M{nv})} is the most likely
             C{ProbabilisticTreeToken} that covers C{M{text}[M{s}:M{e}]}
             and has a node value C{M{nv}.symbol()}, where C{M{text}}
             is the text that we are parsing.  When
-            C{_add_constituants_spanning} is called, C{constituants}
-            should contain all possible constituants that are shorter
+            C{_add_constituents_spanning} is called, C{constituents}
+            should contain all possible constituents that are shorter
             than C{span}.
             
         @type text: C{list} of C{Token}
@@ -221,14 +221,14 @@ class ViterbiPCFGParser(ProbabilisticParserI):
         """
         # Since some of the grammar rules may be unary, we need to
         # repeatedly try all of the rules until none of them add any
-        # new constituants.
+        # new constituents.
         changed = 1
         while changed:
             changed = 0
             
             # Find all ways instantiations of the grammar rules that
             # cover the span.
-            instantiations = self._find_instantiations(span, constituants)
+            instantiations = self._find_instantiations(span, constituents)
 
             # For each rule instantiation, add a new
             # ProbabilisticTreeToken whose probability is the product
@@ -239,19 +239,19 @@ class ViterbiPCFGParser(ProbabilisticParserI):
                 node = rule.lhs().symbol()
                 tree = ProbabilisticTreeToken(p, node, *children)
 
-                # If it's new a constituant, then add it to the
-                # constituants dictionary.
-                c = constituants.get((span[0], span[1], rule.lhs()), None)
+                # If it's new a constituent, then add it to the
+                # constituents dictionary.
+                c = constituents.get((span[0], span[1], rule.lhs()), None)
                 if self._trace > 1:
                     if c is None or c != tree:
                         if c is None or c.p() < tree.p(): print '   Insert:',
                         else: print '  Discard:',
                         self._trace_rule(rule, tree, text, p)
                 if c is None or c.p() < tree.p():
-                    constituants[span[0], span[1], rule.lhs()] = tree
+                    constituents[span[0], span[1], rule.lhs()] = tree
                     changed = 1
 
-    def _find_instantiations(self, span, constituants):
+    def _find_instantiations(self, span, constituents):
         """
         @return: a list of the rule instantiations that cover a given
             span of the text.  A X{rule instantiation} is a tuple
@@ -269,23 +269,23 @@ class ViterbiPCFGParser(ProbabilisticParserI):
             the rule instantiation; and the second integer is the
             index of the first token that should not be covered by the
             rule instantiation.
-        @type constituants: C{dictionary} from
+        @type constituents: C{dictionary} from
             C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
             C{ProbabilisticTreeToken}).
-        @param constituants: The most likely constituants table.  This
+        @param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
             documentation for more information.
         """
         rv = []
         for rule in self._grammar.rules():
-            childlists = self._match_rhs(rule.rhs(), span, constituants)
+            childlists = self._match_rhs(rule.rhs(), span, constituents)
                                         
             for childlist in childlists:
                 rv.append( (rule, childlist) )
         return rv
 
-    def _match_rhs(self, rhs, span, constituants):
+    def _match_rhs(self, rhs, span, constituents):
         """
         @return: a set of all the lists of children that cover C{span}
             and that match C{rhs}.
@@ -306,10 +306,10 @@ class ViterbiPCFGParser(ProbabilisticParserI):
             the first token that should be covered by the child list;
             and the second integer is the index of the first token
             that should not be covered by the child list.
-        @type constituants: C{dictionary} from
+        @type constituents: C{dictionary} from
             C{(int,int,Nonterminal)} to (C{ProbabilisticToken} or
             C{ProbabilisticTreeToken}).
-        @param constituants: The most likely constituants table.  This
+        @param constituents: The most likely constituents table.  This
             table records the most probable tree representation for
             any given span and node value.  See the module
             documentation for more information.
@@ -323,9 +323,9 @@ class ViterbiPCFGParser(ProbabilisticParserI):
         # Find everything that matches the 1st symbol of the RHS
         childlists = []
         for split in range(start, end+1):
-            l=constituants.get((start,split,rhs[0]))
+            l=constituents.get((start,split,rhs[0]))
             if l is not None:
-                rights = self._match_rhs(rhs[1:], (split,end), constituants)
+                rights = self._match_rhs(rhs[1:], (split,end), constituents)
                 childlists += [[l]+r for r in rights]
 
         return childlists
