@@ -598,12 +598,17 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     operation if possible; otherwise, it will perform a single shift
     operation.  C{parses} returns the set of parses that have been
     found by the parser.
+
+    @ivar _history: A list of C{(stack, remaining_text)} pairs,
+        containing all of the previous states of the parser.  This
+        history is used to implement the C{undo} operation.
     """
     def __init__(self, grammar, trace=0):
         self._grammar = grammar
         self._trace = trace
         self._stack = None
         self._remaining_text = None
+        self._history = []
 
     def stack(self):
         """
@@ -630,6 +635,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         """
         self._stack = []
         self._remaining_text = text[:]
+        self._history = []
 
     def step(self):
         """
@@ -654,20 +660,40 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         @rtype: C{None}
         """
         if len(self._remaining_text) == 0: return 0
+        self._history.append( (self._stack[:], self._remaining_text[:]) )
         self._shift(self._stack, self._remaining_text)
         return 1
         
     def reduce(self, production=None):
+        self._history.append( (self._stack[:], self._remaining_text[:]) )
         if production is None:
-            return self._reduce(self._stack, self._remaining_text)
+            return_val = self._reduce(self._stack, self._remaining_text)
         else:
             # This isn't the best way to implement the productions
-            # parameter, but it works.
+            # parameter, but it works.  Doing something more elegant
+            # would require changes to ShiftReduceParser.
             grammar = self._grammar
             self._grammar = CFG(self._grammar.start(), [production])
             return_val = self._reduce(self._stack, self._remaining_text)
             self._grammar = grammar
-            return return_val
+
+        if not return_val: self._history.pop()
+        return return_val
+
+    def undo(self):
+        """
+        Return the parser to its state before the most recent
+        shift or reduce operation.  Calling C{undo} repeatedly return
+        the parser to successively earlier states.  If no shift or
+        reduce operations have been performed, C{undo} will make no
+        changes.
+
+        @return: true if an operation was successfully undone.
+        @rtype: C{boolean}
+        """
+        if len(self._history) == 0: return 0
+        (self._stack, self._remaining_text) = self._history.pop()
+        return 1
 
     def reducible_productions(self):
         """
