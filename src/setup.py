@@ -32,7 +32,7 @@ setup(
     version = nltk.__version__,
     url = nltk.__url__,
     long_description = nltk.__longdescr__,
-    licence = nltk.__licence__,
+    license = nltk.__license__,
     keywords = nltk.__keywords__,
     maintainer = nltk.__maintainer__,
     maintainer_email = nltk.__maintainer_email__,
