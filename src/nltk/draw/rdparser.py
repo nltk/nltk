@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Shift/Reduce Parser Demo
+# Natural Language Toolkit: Recursive Descent Parser Demo
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -9,14 +9,77 @@
 
 """
 A graphical tool for exploring the recursive descent parser.
+
+The recursive descent parser maintains a tree, which records the
+structure of the portion of the text that has been parsed.  It uses
+CFG productions to expand the fringe of the tree, and matches its
+leaves against the text.  Initially, the tree contains the start
+symbol ("S").  It is shown in the main canvas, to the right of the
+list of available expansions.
+
+The parser builds up a tree structure for the text using three
+operations: 
+
+  - "expand" uses a CFG production to add children to a node on the
+    fringe of the tree.
+  - "match" compares a leaf in the tree to a text token.
+  - "backtrack" returns the tree to its state before the most recent
+    expand or match operation.
+
+The parser maintains a list of tree locations called a "frontier" to
+remember which nodes have not yet been expanded and which leaves have
+not yet been matched against the text.  The leftmost frontier node is
+shown in green, and the other frontier nodes are shown in blue.  The
+parser always performs expand and match operations on the leftmost
+element of the frontier.
+
+You can control the parser's operation by using the "expand," "match,"
+and "backtrack" buttons; or you can use the "step" button to let the
+parser automatically decide which operation to apply.  The parser uses
+the following rules to decide which operation to apply:
+
+  - If the leftmost frontier element is a token, try matching it.
+  - If the leftmost frontier element is a node, try expanding it with
+    the first untried expansion.
+  - Otherwise, backtrack.
+
+The "expand" button applies the untried expansion whose CFG production
+is listed earliest in the grammar.  To manually choose which expansion
+to apply, click on a CFG production from the list of available
+expansions, on the left side of the main window.
+
+The "autostep" button will let the parser continue applying
+applications to the tree until it reaches a complete parse.  You can
+cancel an autostep in progress at any time by clicking on the
+"autostep" button again.
+
+Keyboard Shortcuts::
+      [Space]\t Perform the next expand, match, or backtrack operation
+      [a]\t Step through operations until the next complete parse
+      [e]\t Perform an expand operation
+      [m]\t Perform a match operation
+      [b]\t Perform a backtrack operation
+      [Delete]\t Reset the parser
+      [g]\t Show/hide available expansions list
+      [h]\t Help
+      [Ctrl-p] Print
+      [q] Quit
 """
 
-import nltk.parser.rdparser2; reload(nltk.parser.rdparser2)
 from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
         
 class RecursiveDescentParserDemo:
+    """
+    A graphical tool for exploring the shift/reduce parser.  The tool
+    displays the parser's tree and the remaining text, and allows the
+    user to control the parser's operation.  In particular, the user
+    can expand subtrees on the frontier, match tokens on the frontier
+    against the text, and backtrack.  A "step" button simply steps
+    through the parsing process, performing the operations that
+    C{RecursiveDescentParser} would use.
+    """
     def __init__(self, grammar, text, trace=0):
         self._text = text
         self._parser = SteppingRecursiveDescentParser(grammar, trace)
@@ -83,18 +146,24 @@ class RecursiveDescentParserDemo:
     def _init_bindings(self):
         # Key bindings are a good thing.
         self._top.bind('<q>', self.destroy)
-        self._top.bind('<Escape>', self.destroy)
+        self._top.bind('<Escape>', self.destroy)       
+        self._top.bind('<e>', self.expand)
+        self._top.bind('<Alt-e>', self.expand)
+        self._top.bind('<Control-e>', self.expand)
+        self._top.bind('<m>', self.match)
+        self._top.bind('<Alt-m>', self.match)
+        self._top.bind('<Control-m>', self.match)
+        self._top.bind('<b>', self.backtrack)
+        self._top.bind('<Alt-b>', self.backtrack)
+        self._top.bind('<Control-b>', self.backtrack)
+        self._top.bind('<Control-z>', self.backtrack)
+        self._top.bind('<BackSpace>', self.backtrack)
         self._top.bind('<a>', self.autostep)
         self._top.bind('<Control-a>', self.autostep)
         self._top.bind('<Control-space>', self.autostep)
         self._top.bind('<Control-c>', self.cancel_autostep)
         self._top.bind('<space>', self.step)
         self._top.bind('<Delete>', self.reset)
-        self._top.bind('<u>', self.backtrack)
-        self._top.bind('<Alt-b>', self.backtrack)
-        self._top.bind('<Control-b>', self.backtrack)
-        self._top.bind('<Control-z>', self.backtrack)
-        self._top.bind('<BackSpace>', self.backtrack)
         self._top.bind('<Control-p>', self.postscript)
         self._top.bind('<h>', self.help)
         self._top.bind('<Alt-h>', self.help)
@@ -357,16 +426,13 @@ class RecursiveDescentParserDemo:
         if self._parser.backtrack():
             elt = self._parser.tree()
             for i in self._parser.frontier()[0]: elt = elt[i]
+            self._lastoper1['text'] = 'Backtrack'
+            self._lastoper2['text'] = ''
             if isinstance(elt, TreeToken):
-                self._lastoper1['text'] = 'Backtrack'
-                self._lastoper2['text'] = 'Expand'
                 self._animate_backtrack(self._parser.frontier()[0])
-                return 1
             else:
-                self._lastoper1['text'] = 'Backtrack'
-                self._lastoper2['text'] = 'Match'
                 self._animate_match_backtrack(self._parser.frontier()[0])
-                return 1
+            return 1
         else:
             self._autostep = 0
             self._lastoper1['text'] = 'Finished'
@@ -578,13 +644,11 @@ class RecursiveDescentParserDemo:
             self._animating_lock = 0
             if self._autostep: self._step()
 
-
 def demo():
     """
     Create a recursive descent parser demo, using a simple grammar and
     text.
-    """
-    
+    """    
     from nltk.cfg import Nonterminal, CFGProduction, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
@@ -615,7 +679,7 @@ def demo():
     from nltk.token import WSTokenizer
     text = WSTokenizer().tokenize(sent)
 
-    RecursiveDescentParserDemo(grammar, text)#.mainloop()
+    RecursiveDescentParserDemo(grammar, text).mainloop()
 
 if __name__ == '__main__': demo()
         
