@@ -255,23 +255,23 @@ class Location:
         @return: A verbose string representation of this C{Location}.
         @rtype: string
         """
-        str = '@[%d' % self._start
+        s = '@[%d' % self._start
         
-        if self._unit is not None: str += self._unit
+        if self._unit is not None: s += self._unit
 
         if self._end != self._start+1:
-            str += ':%d' % self._end
-            if self._unit is not None: str += self._unit
+            s += ':%d' % self._end
+            if self._unit is not None: s += self._unit
 
-        str += ']'
+        s += ']'
             
         if self._source is not None:
             if isinstance(self._source, Location):
-                str += `self._source`
+                s += str(self._source)
             else:
-                str += '@'+`self._source`
+                s += '@'+`self._source`
 
-        return str
+        return s
 
     def __eq__(self, other):
         """
