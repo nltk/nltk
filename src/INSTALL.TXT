@@ -108,12 +108,9 @@ Macintosh Installation
 
 Corpora
 ~~~~~~~
-    When learning how to process text, it is very useful to have some
-    test corpora to play with.  The following list gives the locations
-    where some text copora can be found:
+    When learning NLP it is very useful to have test data to work with.
+    The NLTK data directory provides several significant corpus samples,
+    and the corpus module provides a very easy-to-use interface.
 
-    - The Brown Corpus      <http://www.hit.uib.no/icame/newcd.htm>
-    - Penn Treebank Corpus  <http://www.cis.upenn.edu/~treebank/>
-    - Project Gutenberg     <http://promo.net/pg/>
  LocalWords:  Tkinter RedHat PyWordNet Wordnet SRPM gz gunzip xvf cd unix
  LocalWords:  Macintoshes Treebank
