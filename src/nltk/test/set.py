@@ -22,17 +22,17 @@ class SetTestCase(unittest.TestCase):
     def testConstructor(self):
         "nltk.set.Set: constructor tests"
         s1 = Set(1,2,5,4,6,3)
-        self.failUnless(len(s1) == 6)
+        self.failUnlessEqual(len(s1), 6)
         self.failUnless(1 in s1 and 2 in s1 and 3 in s1 and
                         4 in s1 and 5 in s1 and 6 in s1 and
                         0 not in s1 and 7 not in s1 and
                         8 not in s1)
         s2 = Set()
-        self.failUnless(len(s2) == 0)
+        self.failUnlessEqual(len(s2), 0)
         self.failIf(-1 in s2 or 0 in s2 or 1 in s2)
 
         s3 = Set( (1,2,3) )
-        self.failUnless(len(s3) == 1)
+        self.failUnlessEqual(len(s3), 1)
         self.failIf(1 in s3 or 2 in s3 or 3 in s3)
         self.failUnless( (1,2,3) in s3)
 
@@ -46,31 +46,31 @@ class SetTestCase(unittest.TestCase):
         s2s3 = Set(2,3,4,5,7,9,11,13,16,17,19,23,25)
         s1s2s3 = s1s3
 
-        self.failUnless(s1.union(s2) == s1s2)
-        self.failUnless(s1.union(s3) == s1s3)
-        self.failUnless(s2.union(s1) == s1s2)
-        self.failUnless(s2.union(s3) == s2s3)
-        self.failUnless(s3.union(s1) == s1s3)
-        self.failUnless(s3.union(s2) == s2s3)
-        self.failUnless(s1.union(s2).union(s3) == s1s2s3)
-        self.failUnless(s1.union(s3).union(s2) == s1s2s3)
-        self.failUnless(s2.union(s1).union(s3) == s1s2s3)
-        self.failUnless(s2.union(s3).union(s1) == s1s2s3)
-        self.failUnless(s3.union(s2).union(s1) == s1s2s3)
-        self.failUnless(s3.union(s1).union(s2) == s1s2s3)
+        self.failUnlessEqual(s1.union(s2), s1s2)
+        self.failUnlessEqual(s1.union(s3), s1s3)
+        self.failUnlessEqual(s2.union(s1), s1s2)
+        self.failUnlessEqual(s2.union(s3), s2s3)
+        self.failUnlessEqual(s3.union(s1), s1s3)
+        self.failUnlessEqual(s3.union(s2), s2s3)
+        self.failUnlessEqual(s1.union(s2).union(s3), s1s2s3)
+        self.failUnlessEqual(s1.union(s3).union(s2), s1s2s3)
+        self.failUnlessEqual(s2.union(s1).union(s3), s1s2s3)
+        self.failUnlessEqual(s2.union(s3).union(s1), s1s2s3)
+        self.failUnlessEqual(s3.union(s2).union(s1), s1s2s3)
+        self.failUnlessEqual(s3.union(s1).union(s2), s1s2s3)
         
-        self.failUnless(s1 | s2 == s1s2)
-        self.failUnless(s1 | s3 == s1s3)
-        self.failUnless(s2 | s1 == s1s2)
-        self.failUnless(s2 | s3 == s2s3)
-        self.failUnless(s3 | s1 == s1s3)
-        self.failUnless(s3 | s2 == s2s3)
-        self.failUnless(s1 | s2 | s3 == s1s2s3)
-        self.failUnless(s1 | s3 | s2 == s1s2s3)
-        self.failUnless(s2 | s1 | s3 == s1s2s3)
-        self.failUnless(s2 | s3 | s1 == s1s2s3)
-        self.failUnless(s3 | s2 | s1 == s1s2s3)
-        self.failUnless(s3 | s1 | s2 == s1s2s3)
+        self.failUnlessEqual(s1 | s2, s1s2)
+        self.failUnlessEqual(s1 | s3, s1s3)
+        self.failUnlessEqual(s2 | s1, s1s2)
+        self.failUnlessEqual(s2 | s3, s2s3)
+        self.failUnlessEqual(s3 | s1, s1s3)
+        self.failUnlessEqual(s3 | s2, s2s3)
+        self.failUnlessEqual(s1 | s2 | s3, s1s2s3)
+        self.failUnlessEqual(s1 | s3 | s2, s1s2s3)
+        self.failUnlessEqual(s2 | s1 | s3, s1s2s3)
+        self.failUnlessEqual(s2 | s3 | s1, s1s2s3)
+        self.failUnlessEqual(s3 | s2 | s1, s1s2s3)
+        self.failUnlessEqual(s3 | s1 | s2, s1s2s3)
         
     def testIntersection(self):
         "nltk.set.Set: intersection tests"
@@ -82,31 +82,31 @@ class SetTestCase(unittest.TestCase):
         s2s3 = Set(2)
         s1s2s3 = Set()
 
-        self.failUnless(s1.intersection(s2) == s1s2)
-        self.failUnless(s1.intersection(s3) == s1s3)
-        self.failUnless(s2.intersection(s1) == s1s2)
-        self.failUnless(s2.intersection(s3) == s2s3)
-        self.failUnless(s3.intersection(s1) == s1s3)
-        self.failUnless(s3.intersection(s2) == s2s3)
-        self.failUnless(s1.intersection(s2).intersection(s3) == s1s2s3)
-        self.failUnless(s1.intersection(s3).intersection(s2) == s1s2s3)
-        self.failUnless(s2.intersection(s1).intersection(s3) == s1s2s3)
-        self.failUnless(s2.intersection(s3).intersection(s1) == s1s2s3)
-        self.failUnless(s3.intersection(s2).intersection(s1) == s1s2s3)
-        self.failUnless(s3.intersection(s1).intersection(s2) == s1s2s3)
+        self.failUnlessEqual(s1.intersection(s2), s1s2)
+        self.failUnlessEqual(s1.intersection(s3), s1s3)
+        self.failUnlessEqual(s2.intersection(s1), s1s2)
+        self.failUnlessEqual(s2.intersection(s3), s2s3)
+        self.failUnlessEqual(s3.intersection(s1), s1s3)
+        self.failUnlessEqual(s3.intersection(s2), s2s3)
+        self.failUnlessEqual(s1.intersection(s2).intersection(s3), s1s2s3)
+        self.failUnlessEqual(s1.intersection(s3).intersection(s2), s1s2s3)
+        self.failUnlessEqual(s2.intersection(s1).intersection(s3), s1s2s3)
+        self.failUnlessEqual(s2.intersection(s3).intersection(s1), s1s2s3)
+        self.failUnlessEqual(s3.intersection(s2).intersection(s1), s1s2s3)
+        self.failUnlessEqual(s3.intersection(s1).intersection(s2), s1s2s3)
         
-        self.failUnless(s1 & s2 == s1s2)
-        self.failUnless(s1 & s3 == s1s3)
-        self.failUnless(s2 & s1 == s1s2)
-        self.failUnless(s2 & s3 == s2s3)
-        self.failUnless(s3 & s1 == s1s3)
-        self.failUnless(s3 & s2 == s2s3)
-        self.failUnless(s1 & s2 & s3 == s1s2s3)
-        self.failUnless(s1 & s3 & s2 == s1s2s3)
-        self.failUnless(s2 & s1 & s3 == s1s2s3)
-        self.failUnless(s2 & s3 & s1 == s1s2s3)
-        self.failUnless(s3 & s2 & s1 == s1s2s3)
-        self.failUnless(s3 & s1 & s2 == s1s2s3)
+        self.failUnlessEqual(s1 & s2, s1s2)
+        self.failUnlessEqual(s1 & s3, s1s3)
+        self.failUnlessEqual(s2 & s1, s1s2)
+        self.failUnlessEqual(s2 & s3, s2s3)
+        self.failUnlessEqual(s3 & s1, s1s3)
+        self.failUnlessEqual(s3 & s2, s2s3)
+        self.failUnlessEqual(s1 & s2 & s3, s1s2s3)
+        self.failUnlessEqual(s1 & s3 & s2, s1s2s3)
+        self.failUnlessEqual(s2 & s1 & s3, s1s2s3)
+        self.failUnlessEqual(s2 & s3 & s1, s1s2s3)
+        self.failUnlessEqual(s3 & s2 & s1, s1s2s3)
+        self.failUnlessEqual(s3 & s1 & s2, s1s2s3)
         
     def testDifference(self):
         "nltk.set.Set: difference tests"
@@ -121,21 +121,21 @@ class SetTestCase(unittest.TestCase):
         s3s2 = Set(4,9,16,25)
         s1s2s3 = Set(1,15,21)
 
-        self.failUnless(s1.difference(s2) == s1s2)
-        self.failUnless(s1.difference(s3) == s1s3)
-        self.failUnless(s2.difference(s1) == s2s1)
-        self.failUnless(s2.difference(s3) == s2s3)
-        self.failUnless(s3.difference(s1) == s3s1)
-        self.failUnless(s3.difference(s2) == s3s2)
-        self.failUnless(s1.difference(s2).difference(s3) == s1s2s3)
+        self.failUnlessEqual(s1.difference(s2), s1s2)
+        self.failUnlessEqual(s1.difference(s3), s1s3)
+        self.failUnlessEqual(s2.difference(s1), s2s1)
+        self.failUnlessEqual(s2.difference(s3), s2s3)
+        self.failUnlessEqual(s3.difference(s1), s3s1)
+        self.failUnlessEqual(s3.difference(s2), s3s2)
+        self.failUnlessEqual(s1.difference(s2).difference(s3), s1s2s3)
         
-        self.failUnless(s1 - s2 == s1s2)
-        self.failUnless(s1 - s3 == s1s3)
-        self.failUnless(s2 - s1 == s2s1)
-        self.failUnless(s2 - s3 == s2s3)
-        self.failUnless(s3 - s1 == s3s1)
-        self.failUnless(s3 - s2 == s3s2)
-        self.failUnless(s1 - s2 - s3 == s1s2s3)
+        self.failUnlessEqual(s1 - s2, s1s2)
+        self.failUnlessEqual(s1 - s3, s1s3)
+        self.failUnlessEqual(s2 - s1, s2s1)
+        self.failUnlessEqual(s2 - s3, s2s3)
+        self.failUnlessEqual(s3 - s1, s3s1)
+        self.failUnlessEqual(s3 - s2, s3s2)
+        self.failUnlessEqual(s1 - s2 - s3, s1s2s3)
 
     def testContains(self):
         "nltk.set.Set: containership tests"
@@ -165,8 +165,8 @@ class SetTestCase(unittest.TestCase):
         "nltk.set.Set: copy tests"
         s1 = Set(1,2,3)
         s2 = s1.copy()
-        self.failUnless(s1 == Set(1,2,3))
-        self.failUnless(s2 == Set(1,2,3))
+        self.failUnlessEqual(s1, Set(1,2,3))
+        self.failUnlessEqual(s2, Set(1,2,3))
 
     def testRepr(self):
         "nltk.set.Set: representation tests (glass-box)."
@@ -199,14 +199,14 @@ class SetTestCase(unittest.TestCase):
         s1 = Set(1, 2, (3, 5))
         s2 = Set(2, (3, 5))
 
-        self.failIf(s1 == s2)
+        self.failIfEqual(s1, s2)
         s2 = s2.union(Set(1))
-        self.failUnless(s1 == s2)
+        self.failUnlessEqual(s1, s2)
         s1 = s1.union(Set((1,7)))
-        self.failIf(s1 == s2)
+        self.failIfEqual(s1, s2)
         s2 = s2.union(Set((1,7)))
-        self.failUnless(s1 == s2)
-        self.failUnless(Set() == Set())
+        self.failUnlessEqual(s1, s2)
+        self.failUnlessEqual(Set(), Set())
 
     def testElements(self):
         "nltk.set.Set: elements accessor tests"
@@ -253,22 +253,22 @@ class MutableSetTestCase(SetTestCase):
         s1.insert(4)
         s2.insert(5)
 
-        self.failUnless(s1 == MutableSet(1,2,3,4))
-        self.failUnless(s2 == MutableSet(1,2,3,5))
+        self.failUnlessEqual(s1, MutableSet(1,2,3,4))
+        self.failUnlessEqual(s2, MutableSet(1,2,3,5))
 
     def testEqual(self):
         "nltk.set.Set: equality comparison test"
         s1 = MutableSet(1, 2, (3, 5))
         s2 = MutableSet(2, (3, 5))
 
-        self.failIf(s1 == s2)
+        self.failIfEqual(s1, s2)
         s2.insert(1)
-        self.failUnless(s1 == s2)
+        self.failUnlessEqual(s1, s2)
         s1.insert((1,7))
-        self.failIf(s1 == s2)
+        self.failIfEqual(s1, s2)
         s2.insert((1,7))
-        self.failUnless(s1 == s2)
-        self.failUnless(MutableSet() == MutableSet())
+        self.failUnlessEqual(s1, s2)
+        self.failUnlessEqual(MutableSet(), MutableSet())
 
 def testsuite():
     """
