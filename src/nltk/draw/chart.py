@@ -182,7 +182,7 @@ class ChartView:
 
     def _analyze_edge(self, edge):
         c = self._chart_canvas
-        str = ' '.join([repr(t) for t in edge.dotted_rule()])
+        str = ' '.join([repr(t) for t in edge.drule()])
         tag = c.create_text(0,0, text=str,
                             anchor='nw', justify='left')
         bbox = c.bbox(tag)
@@ -231,8 +231,8 @@ class ChartView:
                                 width=3, fill='#00f')
 
         # Draw a label for the edge.
-        rhs = [repr(t) for t in edge.dotted_rule()]
-        pos = edge.dotted_rule().pos()
+        rhs = [repr(t) for t in edge.drule()]
+        pos = edge.drule().pos()
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
@@ -243,7 +243,7 @@ class ChartView:
                                fill='#008', outline='#008')        
         rhstag2 = c.create_text(dotx+6, y, text=rhs2,
                                 anchor='nw', fill='#008')
-        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.dotted_rule().lhs()),
+        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.drule().lhs()),
                                 anchor='s', fill='#008',
                                 font=('helvetica', 12, 'bold'))
 
