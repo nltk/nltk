@@ -797,6 +797,11 @@ class ChartDemo:
                                             relief='groove', anchor='w')
             self._rulelabel.pack(side='left')
             
+            Tkinter.Button(buttons3, text='Done',
+                           command=self.destroy).pack(side='right')
+            Tkinter.Button(buttons2, text='Help',
+                           command=self.help).pack(side='right')
+            
             Tkinter.Button(buttons2, text='Top down',
                            command=self.top_down).pack(side='left')
             Tkinter.Button(buttons2, text='Top down init',
@@ -812,12 +817,7 @@ class ChartDemo:
 
             Tkinter.Button(buttons3, text='View Grammar',
                            command=self.view_grammar).pack(side='left')
-            Tkinter.Button(buttons3, text='View Lexicon',
-                           command=self.view_lexicon).pack(side='left')
-    
             
-            Tkinter.Button(buttons3, text='Done',
-                           command=self.destroy).pack(side='right')
             Tkinter.Button(buttons3, text='Zoom out',
                            command=self.zoomout).pack(side='right')
             Tkinter.Button(buttons3, text='Zoom in',
@@ -832,32 +832,39 @@ class ChartDemo:
 
             # Initialize the rule-label font.
             size = self._cv.get_font_size()
-            self._rulelabel.configure(font=('helvetica', size, 'bold'))
+            self._rulelabel.configure(font=('helvetica', -size, 'bold'))
             Tkinter.mainloop()
         except:
             print 'Error creating Tree View'
             self.destroy()
             raise
 
+    def help(self, *e):
+        # The default font's not very legible; try using 'fixed' instead. 
+        try:
+            ShowText(self._root, 'Help: Chart Parser Demo',
+                     (__doc__).strip(), width=75, font='fixed')
+        except:
+            ShowText(self._root, 'Help: Chart Parser Demo',
+                     (__doc__).strip(), width=75)
+            
     def zoomin(self):
         size = self._cv.get_font_size()+2
         self._cv.set_font_size(size)
-        self._rulelabel['font'] = ('helvetica', size, 'bold')
+        self._rulelabel['font'] = ('helvetica', -size, 'bold')
         
     def zoomout(self):
         size = self._cv.get_font_size()-2
         if size > 6: self._cv.set_font_size(size)
-        self._rulelabel['font'] = ('helvetica', size, 'bold')
+        self._rulelabel['font'] = ('helvetica', -size, 'bold')
         
-    def view_lexicon(self):
-        self._lexiconview = ProductionView(self._lexicon, 'Lexicon')
-
     def view_grammar(self):
-        self._grammarview = ProductionView(self._grammar, 'Grammar')
+        self._grammarview = ProductionView(self._grammar.productions(),
+                                           'Grammar')
         
     def reset(self):
-        self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
-        self._cp.initialize(self._tok_sent, strategy=TD_STRATEGY)
+        self._cp = SteppingChartParser(self._grammar)
+        self._cp.initialize(self._tok_sent)
         self._chart = self._cp.chart()
         self._cv.update(self._chart)
 
@@ -868,7 +875,7 @@ class ChartDemo:
             name = ChartDemo.RULENAME.get(rule.__class__.__name__, rule.__class__.__name__)
             self._rulelabel['text'] = name
             size = self._cv.get_font_size()
-            self._rulelabel['font'] = ('helvetica', size, 'bold')
+            self._rulelabel['font'] = ('helvetica', -size, 'bold')
             
     def apply_strategy(self, strategy, edge_strategy=None):
         self.display_rule(None)
