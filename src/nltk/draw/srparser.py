@@ -542,9 +542,9 @@ class ShiftReduceParserDemo:
             rhslen = len(self._productions[index].rhs())
             for stackwidget in self._stackwidgets[-rhslen:]:
                 if isinstance(stackwidget, TreeSegmentWidget):
-                    stackwidget.node()['color'] = '#0000ff'
+                    stackwidget.node()['color'] = '#00a000'
                 else:
-                    stackwidget['color'] = '#0000ff'
+                    stackwidget['color'] = '#00a000'
 
         # Remember what production we're hovering over.
         self._hover = index
