@@ -2043,7 +2043,7 @@ class ColorizedList:
         for e in events:
             self._callbacks.setdefault(e,{})[func] = 1
 
-    def remove_callback(self, event, func):
+    def remove_callback(self, event, func=None):
         """
         Deregister a callback function.  If C{func} is none, then
         all callbacks are removed for the given event.
@@ -2054,7 +2054,7 @@ class ColorizedList:
         else: events = [event]
 
         for e in events:
-            if func is None: self._callbacks[e] = []
+            if func is None: del self._callbacks[e]
             else:
                 try: del self._callbacks[e][func]
                 except: pass
