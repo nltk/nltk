@@ -1,0 +1,282 @@
+# Natural Language Toolkit: Feature Extraction
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
+"""
+Classes and interfaces for finding a token's X{features}, or specific
+pieces of information about the token.  These features are encoded in
+a uniform representation, usually as booleans, integers, or floating
+point numbers.  This task is known as X{feature extraction} or
+X{feature detection}.
+
+A X{feature extractor} defines an ordered sequence of X{features}.
+Each feature's index in this sequence serves a unique identifier for
+that features, known as its C{feature id}.
+
+When a feature extractor is applied to a token, it creates a sequence
+of feature values corresponding to the extractor's features.  In
+particular, the M{i}th element of this feature value sequence is the
+value for the M{i}th feature.  This sequence of feature values is
+encoded using implenentaitons of L{FeatureValueListI}, which defines
+methods for both sparse and dense access to feature values.
+
+L{FeatureExtractorI} defines a standard interface for feature
+extractors.
+"""
+
+######################################################################
+## Feature Value Lists
+######################################################################
+
+class FeatureValueListI:
+    """
+    A list of the values of the features defined by a feature
+    extractor.  Feature value lists must support two types of access:
+    getitem access and sparse access.
+    """
+    def __getitem__(self, fid):
+        """
+        @return: The value of the feature whose identifier is C{fid}.
+        @rtype: (any)
+        @param fid: The feature identifier of the feature whose value
+            should be returned.
+        @type fid: C{string}
+        @raise IndexError: If C{fid<0} or C{fid>=len(self)}.
+        """
+        raise AssertionError, 'FeatureValueListI is an abstract interface'
+        
+    def __len__(self):
+        """
+        @return: The number of feature values contained in this feature
+            value list.
+        @rtype: C{int}
+        """
+        raise AssertionError, 'FeatureValueListI is an abstract interface'
+        
+    def assignments(self):
+        """
+        @return: A list of tuples C{(fid, fval)}, where the feature 
+            whose id is C{fid} has value C{fval}.  The value of any
+            feature whose C{fid} is I{not} included in this list is
+            L{self.default()}.
+        @rtype: C{list} of C{tuple}
+        """
+        raise AssertionError, 'FeatureValueListI is an abstract interface'
+        
+    def default(self):
+        """
+        @return: The default value for this feature value list.  This
+            is the feature value for any feature whose C{fid} is I{not}
+            included in the assignments returned by L{self.assignments()}.
+        @rtype: (any)
+        """
+        raise AssertionError, 'FeatureValueListI is an abstract interface'
+
+    # Used by MergedFeatureExtractor
+    def extend(self, fvlist):
+        """
+        Concatinate this feature value list with the given feature
+        value list.
+        """
+
+class SparseFeatureValueList(SparseList, FeatureValueListI):
+    """
+    An implementation of C{FeatureValueListI}, based on C{SparseList}
+    """
+
+class DenseFeatureValueList(list, FeatureValueList):
+    """
+    An implementation of C{FeatureValueListI}, based on C{list}
+    """
+    def assignments(self):
+        return enumerate(self)
+    def default(self):
+        return None
+
+######################################################################
+## Feature Value Lists
+######################################################################
+
+class FeatureExtractorI:
+    """
+    A processing class for finding the values of a fixed-length set of
+    features for a given token.  These features are uniquely
+    identified by feature identifiers ranging from C{0} to C{N}, where
+    C{N} is the number of features defined by this feature extractor.
+    """
+    
+    def extract_features(self, token):
+        """
+        Find the values of this feature extractor's features for the
+        given token, and write them to the C{FEATURES} property.
+
+        @param token: The token whose features should be extracted.
+        @type token: L{Token}
+        @outprop: C{FEATURES}: A list of feature values, encoded as
+            a subclass of L{FeatureValueListI}.
+        """
+
+    def raw_extract_features(self, token):
+        """
+        @return: a list of the values of this feature extractor's
+        features for the given token.
+            
+        @rtype: L{FeatureValueListI}
+        @param token: The token whose features should be extracted.
+        @type token: L{Token}
+        """
+
+    def num_features(self):
+        """
+        @return: The number of features defined by this feature
+            extractor.  The feature list generated by
+            L{extract_features} will have this length.
+        @rtype: C{int}
+        """
+        raise NotImplementedError
+
+    def feature_description(self, fid):
+        """
+        @return: A description of the feature with the given feature
+            id.
+        @rtype: C{string}
+        @param fid: The feature id of the feature whose description
+            should be returned.
+        @type fid: C{int}
+        @raise IndexError: if C{fid<0} or C{fid>self.num_features()}
+        """
+        raise NotImplementedError
+
+    def property_name(self, property):
+        """
+        @return: The name used for the given property.
+        @rtype: C{string}
+        """
+
+class AbstractFeatureExtractor(ExtractorI):
+    """
+    An abstract base class for feature extractors.
+    C{AbstractFeatureExtractor} provides default implementations for:
+      - L{extract_features} (based on C{raw_extract_features})
+      - L{property_name}
+    """
+    def __init__(self, **property_names):
+        self._property_names = property_names
+        
+    def property_name(self, property)
+        return self._property_names.get(property, property)
+
+    def extract_features(self, token):
+        FEATURES = self.property_name('FEATURES')
+        token[FEATURES] = self.raw_extract_features(token)
+
+class AlwaysOnFeatureExtractor(AbstractFeatureExtractor):
+    """
+    A feature extractor that defines a single feature, whose value is
+    C{True} for all tokens.
+    """
+    def raw_extract_features(self, token):
+        return DenseFeatureValueList([True])
+
+    def num_features(self):
+        return 1
+
+    def feature_description(self, fid):
+        if fid != 0:
+            raise IndexError('Feature id out-of-range')
+        return 'Always-on'
+
+class MeregedFeatureExtractor(AbstractFeatureExtractor):
+    """
+    A combined feature dextractor built from one or more base
+    feature extractors.
+    """
+    def __init__(self, *feature_extractors, **property_names):
+        if len(feature_extractors) == 0:
+            raise ValueError('At least one feature extractor required')
+        AbstractFeatureExtractor.__init__(self, **property_names)
+        self._feature_extractors = feature_extractors
+        self._len = 0
+        for extractor in feature_extractors:
+            self._len += extractor.num_features()
+
+    def raw_extract_features(self):
+        # Get the feature value list for the first extractor
+        fvlist = self._feature_extractors[0].raw_extract_features(token)
+
+        # Extend it with the feature value lists for the remaining
+        # extractors.
+        for extractor in self._feature_extractors[1:]:
+            fvlist.extend(extractor.raw_extract_features(token))
+
+        # Return the combined list
+        return fvlist
+
+    def len(self):
+        return self._len
+
+    def feature_description(self, fid):
+        for extractor in self._feature_extractors:
+            if fid < len(extractor):
+                return extractor.feature_description(fid)
+            else:
+                fid -= len(extractor)
+
+class FeatureStringFeatureExtractor(AbstractFeatureExtractor):
+    """
+    An abstract base class for feature extractors based on feature
+    strings.  A X{feature string} is a string, derived from a token,
+    that identifies some property of the string (such as the fact that
+    it contains a given word).  [etc.]
+    """
+    def __init__(self, count=False, **property_names):
+        AbstractFeatureExtractor.__init__(self, **property_names)
+        self._count = count
+        self._featurestring_set = Set()
+        self._frozen = False
+
+    def register_features(self, token):
+        for feature in self.extract_feature_strings(token):
+            self._featurestring_set.add(feature)
+
+    def freeze(self):
+        # Create a mapping from feature_strings to feature ids
+        self._feature_strings = list(self._featurestring_set)
+        self._fids = dict([(fs,i) for (i,fs) in
+                           enumerate(self._feature_strings)])
+        self._len = len(self._feature_strings)+1
+        self._frozen = True
+
+    def raw_extract_features(self, token):
+        if not self._frozen:
+            raise ValueError('not frozen yet!')
+        
+        features = SparseList({}, self._len, False)
+        for featurestring in self.extract_feature_strings(token):
+            fid = self._fid.get(featurestring, self._len-1)
+            if self._count:
+                features[fid] = features.get(fid,0)+1
+            else:
+                features[fid] = True
+        return features
+
+    def num_features(self):
+        return self._len
+
+    def featurestring2fid(self, featurestring):
+        return self._fids.get(featurestring, self._len-1)
+
+    def fid2featurestring(self, fid):
+        if fid==self._len-1:
+            return None
+        else:
+            return self._feature_strings[fid]
+
+    def extract_feature_strings(self, token):
+        raise AssertionError, 'not implemented'
+    
