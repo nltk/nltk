@@ -11,7 +11,7 @@
 Unit tests for the NLTK modules.
 """
 
-import unittest
+import unittest, sys
 
 DEFAULT_MODULES = [
     'nltk/test/__init__.py',
@@ -81,7 +81,11 @@ def test(module_names=DEFAULT_MODULES, verbose=0):
     
     import unittest
     runner = unittest.TextTestRunner()
-    runner.run(testsuite(module_names, verbose))
+    success = runner.run(testsuite(module_names, verbose)).wasSuccessful()
+
+    if not success:
+        sys.exit(1)
+        
 
 def usage(name):
     print """
@@ -90,7 +94,6 @@ def usage(name):
     return 0
 
 if __name__ == '__main__':
-    import sys
     files = []
     verbose = 0
 
