@@ -20,29 +20,40 @@ and "directory" is the location of said documents.
 
 import os, os.path, sys, string, re, time
 
+#############################################################
+##  Info file processing
+#############################################################
 class Info:
     """
     A class for extracting information from .info files.
+
+    @ivar name: The report's name
+    @ivar status: The report's status (e.g., 'complete', 'draft',
+        'partial', '80%')
+    @ivar deadline: The report's deadline (a date).
+    @ivar abstract: A (multiline) abstract for the report
+    @ivar sequence_id: The sequence identifier for a report; used to
+        order some kinds of reports on the index pages.
+    @ivar basename: The base name of the report's info file, and of
+        any content files (.pdf, .xml, .ps, etc) for the report.
+    @ivar path: The complete path to the report.
     """
-    def __init__(self, dirname, dir):
+    def __init__(self, basename, path):
         """
-        @param dirname: The name of the directory that is specific to
-            this document.
-        @param dir: The directory that contains all of the documents.
+        @param basename: The base name of the info file (without .info
+            extension)
+        @param dir: The path to the report.
         """
-        self.dirname = dirname
-        infoname = os.path.join(dir, dirname+'.info')
+        self.basename = basename
+        self.path = path
+        infoname = os.path.join(path, basename+'.info')
 
         # Default values
-        self.name = dirname
-        self.status = '&nbsp;'
-        self.deadline = '&nbsp;'
+        self.name = basename
+        self.status = ''
+        self.deadline = ''
         self.abstract = ''
         self.sequence_id = ''
-
-        if not os.path.exists(infoname):
-            self.error('Missing info file '+infoname)
-            return
 
         dict = {}
         key = None
@@ -70,11 +81,23 @@ class Info:
             elif key == 'id': self.sequence_id = val
             else: self.error('Unknown key: '+key)
 
+        # Build a sorting identifier.
+        if re.match('\d+', self.sequence_id):
+            self._sid = (0, int(self.sequence_id), self.name)
+        elif re.match('\w+', self.sequence_id):
+            self._sid = (1, self.sequence_id, self.name)
+        else:
+            self._sid = (2, self.name)
+
     def error(self, str):
-        sys.stderr.write("Warning in "+self.dirname+": "+str+"\n") 
+        sys.stderr.write("Warning in "+self.basename+": "+str+"\n")
+
+    def __cmp__(self, other):
+        return cmp(self._sid, other._sid)
 
 #############################################################
-## Technical reports
+##  Technical reports
+#############################################################
         
 TECH="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
 <html>
@@ -105,57 +128,61 @@ TECH="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
 %s
 
     <hr>
-    <address><a href='mailto:edloper@mit.edu'>Edward Loper</a></address>
+    <address><a href='mailto:edloper@gradient.cis.upenn.edu'>Edward Loper</a></address>
 Last modified: %s
   </body>
 </html>
 """
 
-def techindex(root):
-    pages = []
-    for name in os.listdir(root):
-        if (name == 'CVS'): continue
-        dir = os.path.join(root, name)
-        if not os.path.isdir(dir): continue
-        pages.append(Info(name, dir))
-    pages.sort(lambda p1,p2: cmp(p1.name, p2.name))
+def techindex(reports):
+    return TECH % (techtable(reports), techabstracts(reports), time.ctime())
 
-    return TECH % (techtable(pages), techabstracts(pages), time.ctime())
-
-def techtable(pages):
-    str = """<TABLE BORDER='1' CELLPADDING='3' 
+def techtable(reports):
+    str = """    <TABLE BORDER='1' CELLPADDING='3' 
                     CELLSPACING='0' WIDTH='100%' BGCOLOR='white'>
       <TR BGCOLOR='#70b0f0'>
-        <TD>Report</TD>
+        <TD align="center"><b>Report</b></TD>
         <TD>&nbsp;</TD><TD>&nbsp;</TD>
-        <TD>Status</TD>
-        <TD>Est. Completion</TD></TR>\n"""
+        <TD align="center"><b>Status</b></TD>
+        <TD align="center"><b>Est. Completion</b></TD></TR>\n"""
 
-    for page in pages:
-        name = page.name
-        dirname = page.dirname
-        status = page.status
-        deadline = page.deadline
-        str = str + '      <TR>\n'
-        str = str + '        <TD>%s</TD>\n' % name
-        str = str + '        <TD><a href="%s.pdf">pdf</a></TD>\n' % dirname
-        str = str + '        <TD><a href="%s.ps">ps</a></TD>\n' % dirname
-        str = str + '        <TD>%s</TD>\n' % status
-        str = str + '        <TD>%s</TD>\n' % deadline
-        str = str + '      </TR>\n'
+    reports.sort()
+    for report in reports:
+        name = report.name
+        basename = report.basename
+        status = report.status or '&nbsp;'
+        deadline = report.deadline or '&nbsp;'
+        if os.path.isfile(os.path.join(report.path, basename+".pdf")):
+            pdf = '<a href="%s.pdf">pdf</a>' % basename
+        else:
+            pdf = '&nbsp;'
+        if os.path.isfile(os.path.join(report.path, basename+".ps")):
+            ps = '<a href="%s.ps">ps</a>' % basename
+        else:
+            ps = '&nbsp;'
+        
+        str += '      <TR>\n'
+        str += '        <TD>%s</TD>\n' % name
+        str += '        <TD align="center">%s</TD>\n' % pdf
+        str += '        <TD align="center">%s</TD>\n' % ps
+        str += '        <TD>%s</TD>\n' % status
+        str += '        <TD>%s</TD>\n' % deadline
+        str += '      </TR>\n'
 
     str = str + "    </TABLE>\n"
     return str
 
-def techabstracts(pages):
+def techabstracts(reports):
     str = '\n'
-    for page in pages:
-        str = str + '    <H4>%s</H4>\n' % page.name
-        str = str + '    <P>%s</P>\n\n' % page.abstract
+    reports.sort(lambda p1,p2: cmp(p1.name.lower(), p2.name.lower()))
+    for report in reports:
+        str = str + '    <H4>%s</H4>\n' % report.name
+        str = str + '    <P>%s</P>\n\n' % report.abstract
     return str
 
 #############################################################
-## Tutorial documents
+##  Tutorial documents
+#############################################################
 
 TUTORIAL="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
 <html>
@@ -175,75 +202,67 @@ TUTORIAL="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
 %s
 
     <hr>
-    <address><a href='mailto:edloper@mit.edu'>Edward Loper</a></address>
+    <address><a href='mailto:edloper@gradient.cis.upenn.edu'>Edward Loper</a></address>
 Last modified: %s
   </body>
 </html>
 """
 
-def tutorialindex(root):
-    pages = []
-    for name in os.listdir(root):
-        if (name == 'CVS'): continue
-        dir = os.path.join(root, name)
-        if not os.path.isdir(dir): continue
-        pages.append(Info(name, dir))
-    pages.sort(lambda p1,p2: cmp(p1.name, p2.name))
+def tutorialindex(reports):
+    return TUTORIAL % (tutoriallist(reports), time.ctime())
 
-    return TUTORIAL % (tutoriallist(pages), time.ctime())
-
-def tutorialsublist(pages):
+def tutorialsublist(reports):
     s = "    <DL><DT><DD><DL>\n"
     
-    pages.sort(lambda p1,p2: cmp(p1.sequence_id, p2.sequence_id))
+    reports.sort()
     
-    for page in pages:
+    for report in reports:
         extra = ''
-        if (string.lower(page.status) not in
+        if (string.lower(report.status) not in
             ('&nbsp;', 'none', 'complete', 'completed',
              'done', 'finished')):
-            extra = ' <I>('+page.status+')</I>'
+            extra = ' <I>('+report.status+')</I>'
 
-        if page.sequence_id: id = str(page.sequence_id)+': '
+        if report.sequence_id: id = str(report.sequence_id)+': '
         else: id = ''
 
         s = s + (('      <DT> <B>%s%s</B> (<A HREF="%s/t1.html">html</A>, '+
                   '<A HREF="%s.pdf">pdf</A>, '+
                   '<A HREF="%s/nochunks.html">one-page html</A>)%s\n') %
-                 (id, page.name, page.dirname,
-                  page.dirname, page.dirname, extra))
+                 (id, report.name, report.basename,
+                  report.basename, report.basename, extra))
         s = s + ('        <DD><I>%s</I>\n      </DD></DT>' %
-                 page.abstract) 
+                 report.abstract) 
         
     return s + '</DL></DD></DT></DL>\n'
 
-def tutoriallist(pages):
-    numbered_pages = [p for p in pages
-                      if re.match('\d+', p.sequence_id)]
-    lettered_pages = [p for p in pages if (re.match('\w+', p.sequence_id)
-                                           and p not in numbered_pages)]
-    other_pages = [p for p in pages if (p not in numbered_pages and p
-                                        not in lettered_pages)]
-                                  
+def tutoriallist(reports):
+    numbered_reports = [p for p in reports
+                        if re.match('\d+', p.sequence_id)]
+    lettered_reports = [p for p in reports if (re.match('\w+', p.sequence_id)
+                                               and p not in numbered_reports)]
+    other_reports = [p for p in reports if (p not in numbered_reports and p
+                                            not in lettered_reports)]
     
-    for page in numbered_pages:
-        page.sequence_id = int(page.sequence_id)
+    for report in numbered_reports:
+        report.sequence_id = int(report.sequence_id)
 
-    str = tutorialsublist(numbered_pages)
+    str = tutorialsublist(numbered_reports)
 
-    if lettered_pages:
+    if lettered_reports:
         str += '  <h3> Additional Tutorials </h3>'
-        str += tutorialsublist(lettered_pages)
+        str += tutorialsublist(lettered_reports)
 
-    if other_pages:
+    if other_reports:
         str += '  <h3> Un-Filed Tutorials </h3>'
-        str += tutorialsublist(other_pages)
+        str += tutorialsublist(other_reports)
 
     return str
 
 
 #############################################################
-## Problem Sets
+##  Problem Sets
+#############################################################
 
 PSETS="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
 <html>
@@ -258,7 +277,7 @@ PSETS="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
     <P> (under development) </P>
 
     <hr>
-    <address><a href='mailto:edloper@mit.edu'>Edward Loper</a></address>
+    <address><a href='mailto:edloper@gradient.cis.upenn.edu'>Edward Loper</a></address>
 Last modified: %s
   </body>
 </html>
@@ -267,7 +286,8 @@ def psetsindex(root):
     return PSETS % time.ctime()
 
 #############################################################
-## Main
+##  Main
+#############################################################
         
 def usage():
     print
@@ -281,22 +301,35 @@ def usage():
     print 'is the file to which the index should be written.'
     print
     sys.exit(-1)
-    
+
 def main():
     if len(sys.argv) != 4:
         usage()
     index = sys.argv[1].strip().lower()
+
+    # Load the reports.
+    reports = []
+    for name in os.listdir(sys.argv[2]):
+        if (name == 'CVS'): continue
+        dir = os.path.join(sys.argv[2], name)
+        if not os.path.isdir(dir): continue
+        if not os.path.exists(os.path.join(dir, name+'.info')):
+            print 'WARNING: no info file for report %r' %  name
+            continue
+        reports.append(Info(name, dir))
+
+    # Print the index.
     if index.startswith('tech'):
         outfile = open(sys.argv[3], 'w')
-        print >>outfile, techindex(sys.argv[2])
+        print >>outfile, techindex(reports)
         outfile.close()
     elif index.startswith('pset'):
         outfile = open(sys.argv[3], 'w')
-        print >>outfile, psetsindex(sys.argv[2])
+        print >>outfile, psetsindex(reports)
         outfile.close()
     elif index.startswith('tut'):
         outfile = open(sys.argv[3], 'w')
-        print >>outfile, tutorialindex(sys.argv[2])
+        print >>outfile, tutorialindex(reports)
         outfile.close()
     else:
         usage()
