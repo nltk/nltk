@@ -665,6 +665,9 @@ def parse_treebank(str):
     # re.sub, and try it out on an example, you should be able to
     # figure out what's going on.
 
+    # Get rid of any newlines, etc.
+    str = ' '.join(str.split())
+
     # Backslash any quote marks or backslashes in the string.
     str = re.sub(r'([\\"\'])', r'\\\1', str)
 
