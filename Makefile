@@ -104,4 +104,4 @@ _webpage: _doc _pset _html _src
 
 	mkdir webpage/ref
 	cp html/ref/*.html webpage/ref 2>/dev/null || true
-# Make the ref docs!
+	cp doc/ref/html/*.html webpage/ref 2>/dev/null || true
