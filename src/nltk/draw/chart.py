@@ -414,7 +414,7 @@ class ChartView:
         (dependant on selection, etc.)
         """
         c = self._chart_canvas
-        
+
         if linecolor is not None and textcolor is not None:
             tags = self._edgetags[edge]
             c.itemconfig(tags[0], fill=linecolor)
@@ -801,37 +801,43 @@ class ChartDemo:
             size = self._cv.get_font_size()
             self._rulelabel['font'] = ('helvetica', size, 'bold')
             
-    def apply_strategy(self, strategy, edge_strategy):
+    def apply_strategy(self, strategy, edge_strategy=None):
         self.display_rule(None)
         self._cv.unmark()
         if self._step.get():
             edge = self._cv.selected_edge()
             if (edge is not None) and (edge_strategy is not None):
-                # Select the new edge (or nonthing if there was new edge)
-                result = self._cp.step(strategy=edge_strategy(edge),
-                                       getrule=1)
-                if result is not None:
-                    (new_edge, rule) = result
-                    self.display_rule(rule)
-                    self._cv.update()
-                    self._cv.select_edge(new_edge)
-                    self._cv.view_edge(new_edge)
-                else:
-                    self._cv.select_edge(None)
-                return
+                self._apply_edge_strategy(edge, edge_strategy)
             else:
-                result = self._cp.step(strategy=strategy,
-                                       getrule=1)
-                if result is not None:
-                    (new_edge, rule) = result
-                    self.display_rule(rule)
-                    self._cv.update()
-                    self._cv.mark_edge(new_edge)
-                    self._cv.view_edge(new_edge)
+                self._apply_strategy(strategy)
         else:
-            while self._cp.step(strategy=strategy): pass
-            self._cv.update()
+            while self._cp.step(strategy=strategy):
+                self._cv.update()
 
+    def _apply_strategy(self, strategy):
+        result = self._cp.step(strategy=strategy,
+                               getrule=1)
+        if result is not None:
+            (new_edge, rule) = result
+            self.display_rule(rule)
+            self._cv.update()
+            self._cv.mark_edge(new_edge)
+            self._cv.view_edge(new_edge)
+        return result
+
+    def _apply_edge_strategy(self, edge, edge_strategy):
+        # Select the new edge (or nonthing if there was new edge)
+        result = self._cp.step(strategy=edge_strategy(edge),
+                               getrule=1)
+        if result is not None:
+            (new_edge, rule) = result
+            self.display_rule(rule)
+            self._cv.update()
+            self._cv.select_edge(new_edge)
+            self._cv.view_edge(new_edge)
+        else:
+            self._cv.select_edge(None)
+    
     def top_down_init(self):
         self.apply_strategy(TDINIT_STRATEGY, None)
         
