@@ -1514,16 +1514,19 @@ class SteppingChartParser(ChartParser):
         @param strategy: A list of rules that should be used to decide
             what edges to add to the chart.
         """
+        if strategy == self._strategy: return
         self._strategy = strategy[:] # Make a copy.
         self._restart = True
 
     def set_grammar(self, grammar):
         "Change the grammar used by the parser."
+        if grammar is self._grammar: return
         self._grammar = grammar
         self._restart = True
 
     def set_chart(self, chart):
         "Load a given chart into the chart parser."
+        if chart is self._chart: return
         self._chart = chart
         self._restart = True
 
