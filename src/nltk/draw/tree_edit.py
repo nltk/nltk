@@ -38,7 +38,7 @@ if not twoBack in sys.path:
 
 
 
-import nltk.tree; reload(nltk.tree) 
+import nltk.tree
 from nltk.tree import Tree 
 from nltk.tree import TreeToken 
 from nltk.token import Token 
