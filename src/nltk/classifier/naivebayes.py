@@ -41,12 +41,9 @@ class NaiveBayesClassifier(ClassifierI, PropertyIndirectionMixIn):
     def classes(self):
         return self._classes
 
-    def classify(self, token):
-        # Get the token's features.
+    def get_class_probs(self, token):
         FEATURES = self.property('FEATURES')
-        CLASS_PROBS = self.property('CLASS_PROBS')
-        CLASS = self.property('CLASS')
-
+        
         # Find the log probabilty of each class, given the features.
         logprob_dict = {}
         for cls in self._classes:
@@ -57,9 +54,20 @@ class NaiveBayesClassifier(ClassifierI, PropertyIndirectionMixIn):
             fval = token[FEATURES][fname]
             logprob_dict[cls] += probdist.logprob(token[FEATURES][fname])
 
-        probs = DictionaryProbDist(logprob_dict, normalize=True, log=True)
-        token[CLASS_PROBS] = probs
-        token[CLASS] = probs.max()
+        return DictionaryProbDist(logprob_dict, normalize=True, log=True)
+
+    def get_class(self, token):
+        return self.get_class_probs(token).max()
+
+    def get_class_list(self, token):
+        pdist = self.get_class_probs(token)
+        temp = [(-pdist.prob(c), c) for c in pdist.samples()]
+        temp.sort()
+        return [c for (_,c) in temp]
+
+    def classify(self, token):
+        CLASS = self.property('CLASS')
+        token[CLASS] = self.get_class(token)
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier Trainer
@@ -176,15 +184,15 @@ class NaiveBayesClassifierTrainer(ClassifierTrainerI,
 from nltk.feature import *
 from nltk.feature.word import *
 
-def demo():
+def demo(items=30):
     import nltk.corpus
     
     # Load the training data, and split it into test & train.
     print 'reading data...'
     toks = []
-    for item in nltk.corpus.brown.items()[:30]:
-        text = nltk.corpus.brown.tokenize(item, add_contexts=True)
-        toks += text['SUBTOKENS']
+    for item in nltk.corpus.brown.items()[:items]:
+        text = nltk.corpus.brown.read(item, add_contexts=True)
+        toks += text['WORDS']
     toks = toks
     split = len(toks)-20
     train, test = toks[:split], toks[split:]
@@ -221,6 +229,7 @@ def demo():
         c = tok['CLASS']
         detector.detect_features(tok)
         classifier.classify(tok)
+        tok['CLASS_PROBS'] = classifier.get_class_probs(tok)
         if c == tok['CLASS']: s = '   '+s
         else: s = '[X]' + s
         s += ' %-4s  ' % tok['CLASS']
