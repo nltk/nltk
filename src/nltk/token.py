@@ -507,6 +507,7 @@ class Type(object):
             should define.  Each element should map a property name to
             a single immutable value.
         """
+        # Check immutability of values?
         self.__dict__.update(properties)
 
     def get(self, prop_name):
@@ -519,6 +520,7 @@ class Type(object):
         @raise KeyError: If the specified property is not defined by
             this type.
         """
+        assert chktype(1, prop_name, types.StringType)
         try:
             return self.__dict__[prop_name]
         except KeyError:
@@ -537,6 +539,7 @@ class Type(object):
         @type prop_name: C{string}
         @param prop_name: The name of the property to check for.
         """
+        assert chktype(1, prop_name, types.StringType)
         return self.__dict__.has_key(prop_name)
 
     # Should this be renamed?  Perhaps to property_names()?
@@ -562,6 +565,7 @@ class Type(object):
         @note: This method returns a new type; it does I{not}
             modify this type.
         """
+        # Check immutability of values?
         typ = Type(**self.__dict__)
         typ.__dict__.update(properties)
         return typ
@@ -582,6 +586,7 @@ class Type(object):
         @note: This method returns a new type; it does I{not}
             modify this type.
         """
+        assert chktype(1, property_names, (types.StringType,))
         properties = {}
         for property in property_names:
             properties[property] = self.__dict__[property]
@@ -692,10 +697,12 @@ class Token(object):
             is specified, the location defaults to C{None}.
         @type location: L{Location} or C{None}
         """
+        assert chktype(1, type, Type)
+        assert chktype(2, loc, Location)
         object.__setattr__(self, 'type', type)
         object.__setattr__(self, 'loc', loc)
 
-    def get(self, property):
+    def get(self, prop_name):
         """
         @return: the value of the given property in this token's type.
         @rtype: immutable
@@ -705,19 +712,21 @@ class Token(object):
         @raise KeyError: If the specified property is not defined by
             this token's type.
         """
-        return self.type.get(property)
+        assert chktype(1, prop_name, types.StringType)
+        return self.type.get(prop_name)
     
     # tok.prop is a synonym for tok.get('prop')
     __getattr__ = get
     
-    def has(self, property):
+    def has(self, prop_name):
         """
         @return: true if this token's type defines the given property.
         @rtype: C{boolean}
         @type prop_name: C{string}
         @param prop_name: The name of the property to check for.
         """
-        return self.type.has(property)
+        assert chktype(1, prop_name, types.String_Type)
+        return self.type.has(prop_name)
     
     def properties(self):
         """
@@ -763,6 +772,7 @@ class Token(object):
         @note: This method returns a new token; it does I{not}
             modify this token.
         """
+        assert chktype(1, property_names, (types.StringType,))
         return Token(self.type.select(*property_names), self.loc)
 
     def __repr__(self):
@@ -853,10 +863,10 @@ def demo():
     loc2 = Location(10, 11, unit='w', source='corpus.txt')
     
     print "tok = Token(Type(text='big'), loc2)"
-    tok = Token('big', loc2)
+    tok = Token(Type(text='big'), loc2)
     
     print "tok = Token(Type(size=12, weight=83), loc)"
-    tok2 = Token((12, 83), loc)
+    tok2 = Token(Type(size=12, weight=83), loc)
     print
     
     print "print loc                 =>", loc
