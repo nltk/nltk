@@ -55,7 +55,7 @@ three sub-modules for specialized kinds of parsing:
 
 from nltk.tree import TreeToken
 from nltk.token import Token
-from nltk.cfg import Nonterminal, CFG, CFGProduction
+from nltk.cfg import Nonterminal, CFG, CFGProduction, nonterminals
 from nltk.chktype import chktype as _chktype
 import types
 
