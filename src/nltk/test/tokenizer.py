@@ -9,171 +9,125 @@
 
 """
 Unit testing for L{nltk.tokenizer}.
-
-@todo: Test L{nltk.tokenizer.CharTokenizer}
-@todo: Test L{nltk.tokenizer.LineTokenizer}
 """
 
 from nltk.token import *
 from nltk.tokenizer import *
 
-##//////////////////////////////////////////////////////
-##  Test code
-##//////////////////////////////////////////////////////
+def test_WhitespaceTokenizer(): r"""
+Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}.
 
-import unittest
+    >>> tokenizer = WhitespaceTokenizer(SUBTOKENS='WORDS')
 
-class WhitespaceTokenizerTestCase(unittest.TestCase):
-    """
-    Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}
-    """
-    def setUp(self):
-        self.tokenizer = WhitespaceTokenizer()
-
-    def testTokenize(self):
-        "nltk.token.WhitespaceTokenizer: tokenize method tests"
-        ts1 = self.tokenizer.tokenize("this is a test")
-        ts2 = [Token('this', Location(0, unit='w')),
-               Token('is', Location(1, unit='w')),
-               Token('a', Location(2, unit='w')),
-               Token('test', Location(3, unit='w'))]
-        self.failUnlessEqual(ts1, ts2)
-
-        ts1 = self.tokenizer.tokenize("this is a test", source='foo.txt')
-        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
-               Token('is', Location(1, unit='w', source='foo.txt')),
-               Token('a', Location(2, unit='w', source='foo.txt')),
-               Token('test', Location(3, unit='w', source='foo.txt'))]
-        self.failUnlessEqual(ts1, ts2)
+The whitespace tokenizer breaks a text wherever sequences of
+whitespace occur:
     
-        ts1 = self.tokenizer.tokenize("   this  is a   test ")
-        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
-               Token('is', Location(1, unit='w', source='foo.txt')),
-               Token('a', Location(2, unit='w', source='foo.txt')),
-               Token('test', Location(3, unit='w', source='foo.txt'))]
-        self.failUnlessEqual(ts1, ts2)
+    >>> tok = Token(TEXT='this is a test')
+    >>> tokenizer.tokenize(tok)
+    >>> print tok
+    <[<this>, <is>, <a>, <test>]>
 
-class WhitespaceTokenizerTestCase(unittest.TestCase):
-    """
-    Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}
-    """
-    def setUp(self):
-        self.tokenizer = WhitespaceTokenizer()
+Words can be broken by multiple whitespace characters:
 
-    def testTokenize(self):
-        "nltk.token.WhitespaceTokenizer: tokenize method tests"
-        ts1 = self.tokenizer.tokenize("this is a test")
-        ts2 = [Token('this', Location(0, unit='w')),
-               Token('is', Location(1, unit='w')),
-               Token('a', Location(2, unit='w')),
-               Token('test', Location(3, unit='w'))]
-        self.failUnlessEqual(ts1, ts2)
+    >>> tok = Token(TEXT='this  is a \n\t\t test')
+    >>> tokenizer.tokenize(tok)
+    >>> print tok
+    <[<this>, <is>, <a>, <test>]>
 
-        ts1 = self.tokenizer.tokenize("this is a test", source='foo.txt')
-        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
-               Token('is', Location(1, unit='w', source='foo.txt')),
-               Token('a', Location(2, unit='w', source='foo.txt')),
-               Token('test', Location(3, unit='w', source='foo.txt'))]
-        self.failUnlessEqual(ts1, ts2)
+Leading and trailing whitespace are ignored:
+
+    >>> tok = Token(TEXT='   this  is a \n\t\t test  ')
+    >>> tokenizer.tokenize(tok)
+    >>> print tok
+    <[<this>, <is>, <a>, <test>]>
+
+The addlocs flag can be used to add locations:
+
+    >>> tok = Token(TEXT='this is a test')
+    >>> tokenizer.tokenize(tok, addlocs=1)
+    >>> print tok
+    <[<this>@[0:4c], <is>@[5:7c], <a>@[8:9c], <test>@[10:14c]]>
+
+The addcontexts flag can be used to add context pointers:
+
+    >>> tok = Token(TEXT='this is a test')
+    >>> tokenizer.tokenize(tok, addcontexts=1)
+    >>> print tok
+    <[<this>, <is>, <a>, <test>]>
+    >>> print tok['WORDS'][1]['CONTEXT'].getrange(-1, 2)
+    [<this>, <is>, <a>]
+
+The C{raw_tokenize} method simply breaks up a string (not using
+C{Token}s at all):
+
+    >>> tokenizer.raw_tokenize('this is a test')
+    ['this', 'is', 'a', 'test']
+
+As with the normal C{tokenize} method, multiple whitespace may appear
+between words, and leading and trailing whitespace are ignored:
+
+    >>> tokenizer.raw_tokenize('\n\t this\tis\na test   ')
+    ['this', 'is', 'a', 'test']
+
+The C{xtokenize} method generates an iterator instead of a list:
+
+    >>> tokenizer.xtokenize(tok, addcontexts=1)
+    >>> print [w for w in tok['WORDS']]
+    [<this>, <is>, <a>, <test>]
+    >>> print [w for w in tok['WORDS']] # generator is exhausted!
+    []
+"""
+
+def test_RegexpTokenizer(): r"""
+Unit test cases for L{nltk.tokenizer.RegexpTokenizer}.
+
+This tokenizer only keeps strings of word characters; everything else
+is treated as a separator:
+
+    >>> tokenizer1 = RegexpTokenizer('\w+')
+
+    >>> tok = Token(TEXT='\n this\t is\\a.:?test  ,')
+    >>> tokenizer1.tokenize(tok)
+    >>> print tok
+    <[<this>, <is>, <a>, <test>]>
+
+This tokenizer treats any sequence of whitepsace as a separator:
+
+    >>> tokenizer2 = RegexpTokenizer('\s+', negative=1)
+    >>> tok = Token(TEXT='this\t is\\a.:?test  ,')
+    >>> tokenizer2.tokenize(tok)
+    >>> print tok
+    <[<this>, <is\\a.:?test>, <,>]>
+
+Leading and trailing whitespace are ignored:
+
+    >>> tok = Token(TEXT='    test:this  \n')
+    >>> tokenizer2.tokenize(tok)
+    >>> print tok
+    <[<test:this>]>
+
+C{raw_tokenize} directly breaks up the string (with no tokens):
+
+    >>> tokenizer2.raw_tokenize('this\t is\\a.:?test  ,')
+    ['this', 'is\\a.:?test', ',']
+"""
     
-        ts1 = self.tokenizer.tokenize("   this  is a   test ")
-        ts2 = [Token('this', Location(0, unit='w')),
-               Token('is', Location(1, unit='w')),
-               Token('a', Location(2, unit='w')),
-               Token('test', Location(3, unit='w'))]
-        self.failUnlessEqual(ts1, ts2)
+#######################################################################
+# Test Runner
+#######################################################################
 
-    def testXTokenize(self):
-        "nltk.token.WhitespaceTokenizer: xtokenize method tests"
-        ts1 = self.tokenizer.xtokenize("this is a test")
-        ts2 = [Token('this', Location(0, unit='w')),
-               Token('is', Location(1, unit='w')),
-               Token('a', Location(2, unit='w')),
-               Token('test', Location(3, unit='w'))]
-        self.failUnlessEqual(list(ts1), ts2)
+import sys, os, os.path
+if __name__ == '__main__': sys.path[0] = None
+import unittest, doctest, trace
 
-        ts1 = self.tokenizer.xtokenize("this is a test", source='foo.txt')
-        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
-               Token('is', Location(1, unit='w', source='foo.txt')),
-               Token('a', Location(2, unit='w', source='foo.txt')),
-               Token('test', Location(3, unit='w', source='foo.txt'))]
-        self.failUnlessEqual(list(ts1), ts2)
-    
-        ts1 = self.tokenizer.xtokenize("   this  is a   test ")
-        ts2 = [Token('this', Location(0, unit='w')),
-               Token('is', Location(1, unit='w')),
-               Token('a', Location(2, unit='w')),
-               Token('test', Location(3, unit='w'))]
-        self.failUnlessEqual(list(ts1), ts2)
+def testsuite(reload_module=False):
+    import doctest, nltk.test.tokenizer
+    if reload_module: reload(nltk.test.tokenizer)
+    return doctest.DocTestSuite(nltk.test.tokenizer)
 
-class RETokenizerTestCase(unittest.TestCase):
-    """
-    Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}
-    """
-    def setUp(self):
-        self.tokenizers = [RETokenizer('\s+', negative=1),
-                           RETokenizer('\w+')]
-
-    def testTokenize(self):
-        "nltk.token.RETokenizer: tokenize method tests"
-        for tokenizer in self.tokenizers:
-            ts1 = tokenizer.tokenize("this is a test")
-            ts2 = [Token('this', Location(0, unit='w')),
-                   Token('is', Location(1, unit='w')),
-                   Token('a', Location(2, unit='w')),
-                   Token('test', Location(3, unit='w'))]
-            self.failUnlessEqual(ts1, ts2)
-    
-            ts1 = tokenizer.tokenize("this is a test", source='foo.txt')
-            ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
-                   Token('is', Location(1, unit='w', source='foo.txt')),
-                   Token('a', Location(2, unit='w', source='foo.txt')),
-                   Token('test', Location(3, unit='w', source='foo.txt'))]
-            self.failUnlessEqual(ts1, ts2)
-        
-            ts1 = tokenizer.tokenize("   this  is a   test ")
-            ts2 = [Token('this', Location(0, unit='w')),
-                   Token('is', Location(1, unit='w')),
-                   Token('a', Location(2, unit='w')),
-                   Token('test', Location(3, unit='w'))]
-            self.failUnlessEqual(ts1, ts2)
-    
-    def testXtokenize(self):
-        "nltk.token.RETokenizer: xtokenize method tests"
-        for tokenizer in self.tokenizers:
-            ts1 = tokenizer.xtokenize("this is a test")
-            ts2 = [Token('this', Location(0, unit='w')),
-                   Token('is', Location(1, unit='w')),
-                   Token('a', Location(2, unit='w')),
-                   Token('test', Location(3, unit='w'))]
-            self.failUnlessEqual(list(ts1), ts2)
-    
-            ts1 = tokenizer.xtokenize("this is a test", source='foo.txt')
-            ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
-                   Token('is', Location(1, unit='w', source='foo.txt')),
-                   Token('a', Location(2, unit='w', source='foo.txt')),
-                   Token('test', Location(3, unit='w', source='foo.txt'))]
-            self.failUnlessEqual(list(ts1), ts2)
-        
-            ts1 = tokenizer.xtokenize("   this  is a   test ")
-            ts2 = [Token('this', Location(0, unit='w')),
-                   Token('is', Location(1, unit='w')),
-                   Token('a', Location(2, unit='w')),
-                   Token('test', Location(3, unit='w'))]
-            self.failUnlessEqual(list(ts1), ts2)
-    
-def testsuite():
-    """
-    Return a PyUnit testsuite for the token module.
-    """
-    t1 = unittest.makeSuite(WhitespaceTokenizerTestCase, 'test')
-    t2 = unittest.makeSuite(RETokenizerTestCase, 'test')
-    return unittest.TestSuite( (t1, t2) )
-
-def test():
-    import unittest
-    runner = unittest.TextTestRunner()
-    runner.run(testsuite())
+def test(verbosity=2, reload_module=False):
+    runner = unittest.TextTestRunner(verbosity=verbosity)
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
