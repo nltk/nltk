@@ -472,7 +472,7 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         if self.b[self.k] == 'l' and self.doublec(self.k) and self.m() > 1:
             self.k = self.k -1
 
-    def stem_word(self, p, i, j):
+    def stem_word(self, p, i=0, j=None):
         """In stem(p,i,j), p is a char pointer, and the string to be stemmed
         is from p[i] to p[j] inclusive. Typically i is zero and j is the
         offset to the last character of a string, (p[j+1] == '\0'). The
@@ -484,6 +484,8 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         ## --NLTK--
         ## Don't print results as we go (commented out the next line)
         #print p[i:j+1]
+	if j == None:
+	    j = len(p) - 1
         
         # copy the parameters into statics
         self.b = p
