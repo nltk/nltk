@@ -482,40 +482,76 @@ def accuracy(orig, test):
         if orig[i] == test[i]: correct += 1
     return float(correct)/len(orig)
 
-def demo(tagged_text_str):
+def demo(num_files=100):
     """
-    A simple test function for the C{Tagger} classes.  It constructs a
-    C{BackoffTagger} using a 1st order C{NthOrderTagger}, a 0th order
-    C{NthOrderTagger}, and an C{NN_CD_Tagger}.  It trains the tagger
-    using the contents C{tagged_text_str}, and then tags the contents
-    of that file.
-    
-    @returntype: None
-    """
-    print 'tokenizing...'
-    tokens = TaggedTokenizer().tokenize(tagged_text_str)
-    train_tokens = tokens[200:]
-    test_tokens = tokens[:280]
+    A simple demonstration function for the C{Tagger} classes.  It
+    constructs a C{BackoffTagger} using a 1st order C{NthOrderTagger},
+    a 0th order C{NthOrderTagger}, and an C{NN_CD_Tagger}.  It trains
+    and tests the tagger using the brown corpus.
 
-    print 'training unigram tagger (%d tokens)...' % len(train_tokens)
+    @type num_files: C{int}
+    @param num_files: The number of files that should be used for
+        training and for testing.  Two thirds of these files will be
+        used for training.  All files are randomly selected
+        (I{without} replacement) from the brown corpus.  If
+        C{num_files>=500}, then all 500 files will be used.
+    @rtype: None
+    """
+    from nltk.corpus import brown
+    import sys, random
+
+    print 'Reading testing & training data...',
+    # Get a randomly sorted list of files in the brown corpus.
+    items = list(brown.items())
+    random.shuffle(items)
+
+    # Select the training files, and tokenize them.
+    train_tokens = []
+    for item in items[:num_files/2]:
+        train_tokens += brown.tokenize(item)
+
+    # Select the test files, and tokenize them.
+    test_tokens = []
+    for item in items[num_files/2:num_files]:
+        test_tokens += brown.tokenize(item)
+
+    # Report on how many tokens we read.
+    print ('\nRead in %s training tokens and %s testing tokens' %
+           (len(train_tokens), len(test_tokens)))
+
+    print 'training unigram tagger...'
     t0 = UnigramTagger()
     t0.train(train_tokens)
 
-    print 'training 1st order tagger (%d tokens)...' % len(train_tokens)
+    print 'training bigram tagger...'
     t1 = NthOrderTagger(1)                
     t1.train(train_tokens)
 
-    print 'training 2nd order tagger (%d tokens)...' % len(train_tokens)
+    print 'training trigram tagger...'
     t2 = NthOrderTagger(2) 
     t2.train(train_tokens)
 
     print 'creating combined backoff tagger...'
-    ft = BackoffTagger( (t2, t1, t0, NN_CD_Tagger()) )
+    bt = BackoffTagger( (t2, t1, t0, NN_CD_Tagger()) )
     
-    print 'running the tagger... (%d tokens)...' % len(test_tokens)
-    result = ft.tag(untag(test_tokens))
-
-    print 'Accuracy: %.5f' % accuracy(test_tokens, result)
+    print 'running the taggers...'
+    result = NN_CD_Tagger().tag(untag(test_tokens))
+    print 'Default tagger results:  ' + `result`[:48] + '...'
+    print 'Default tagger accuracy: %.5f' % accuracy(test_tokens, result)
+    result = t0.tag(untag(test_tokens))
+    print 'Unigram tagger results:  ' + `result`[:48] + '...'
+    print 'Unigram tagger accuracy: %.5f' % accuracy(test_tokens, result)
+    result = t1.tag(untag(test_tokens))
+    print 'Bigram tagger results:   ' + `result`[:48] + '...'
+    print 'Bigram tagger accuracy:  %.5f' % accuracy(test_tokens, result)
+    result = t2.tag(untag(test_tokens))
+    print 'Trigram tagger results:  ' + `result`[:48] + '...'
+    print 'Trigram tagger accuracy: %.5f' % accuracy(test_tokens, result)
+    result = bt.tag(untag(test_tokens))
+    print 'Backoff tagger results:  ' + `result`[:48] + '...'
+    print 'Backoff tagger accuracy: %.5f' % accuracy(test_tokens, result)
 
 if __name__ == '__main__':
-    demo(open('/home/edloper/tmp/foo.text', 'r').read())
+    # Standard boilerpate.  (See note in <http://?>)
+    from nltk.tagger import *
+    demo()
