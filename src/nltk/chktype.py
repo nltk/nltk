@@ -111,19 +111,21 @@ def _typemsg(types):
     typestr = ''
     for typ in types:
         if type(typ) in (_TypeType, _ClassType):
-            typestr += typ.__name__ + ' or '
+            if ' ' in typ.__name__: typestr += '%r or ' % typ.__name__
+            else: typestr += '%s or ' % typ.__name__
+                
         elif type(typ) == _ListType:
             if typ == []:
                 typestr += 'list or '
             else:
-                typestr += 'list of '
-                typestr += _typemsg(typ)+' or '
+                typestr += '(list of '
+                typestr += _typemsg(typ)+') or '
         elif type(typ) == _TupleType:
             if typ == ():
                 typestr += 'tuple or '
             else:
-                typestr += 'tuple of '
-                typestr += _typemsg(typ)+' or '
+                typestr += '(tuple of '
+                typestr += _typemsg(typ)+') or '
         elif type(typ) == _DictType:
             if typ == {}:
                 typestr += 'dictionary or '
