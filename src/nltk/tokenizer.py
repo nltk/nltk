@@ -52,7 +52,7 @@ class TokenizerI:
             tokens created by the tokenizer.  If no unit is specified,
             then a default unit will be used.
         """
-        raise AssertionError, 'TokenizerI is an abstract interface'
+        #raise AssertionError, 'TokenizerI is an abstract interface'
     
     def tokenize(self, str, source=None):
         """
@@ -344,7 +344,7 @@ def _display(tokens):
 
 def demo():
     """
-    A demonstration function, showing the output of several different
+    A demonstration that shows the output of several different
     tokenizers on the same string.
     """
     # Define the test string.
