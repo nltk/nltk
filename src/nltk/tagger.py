@@ -401,14 +401,14 @@ class BackoffTagger(TaggerI):
         @type unknown_tag: sting.
         """
         self._unk = unknown_tag
-        self._taggers = subtaggers
+        self._subtaggers = subtaggers
 
     def tag(self, tokens):
         # Inherit docs from TaggerI
 
         # Find the output of all the taggers.
         tagger_outputs = []
-        for tagger in self._taggers:
+        for tagger in self._subtaggers:
             out = tagger.tag(tokens)
             tagger_outputs.append(out)
 
@@ -418,16 +418,24 @@ class BackoffTagger(TaggerI):
             if len(tagger_output) != length:
                 raise ValueError('Broken tagger!')
           
-        # For each word, find the first tagged output value that is
-        # not unknown.
+        # For each word, find the first tagged output value whose
+        # tag is not "unknown."
+        num_tokenizers = len(self._subtaggers)
         tagged_tokens = []
         for i_token in range(len(tokens)):
-            tag = self._unk
-            for i_tagger in range(len(self._taggers)):
+            for i_tagger in range(num_tokenizers):
+
+                # Did this tagger successfully tag this token?
                 token = tagger_outputs[i_tagger][i_token]
                 if token.type().tag() != self._unk:
                     tagged_tokens.append(token)
-                    break # out of for i_tagger ...
+                    break # out of "for i_tagger in ..."
+
+                # If this is the last tokenizer, use its result, even
+                # if its tag is "unkonwn."
+                if i_tagger == num_tokenizers-1:
+                    tagged_tokens.append(token)
+                    
         return tagged_tokens
 
 def untag(tokens):
