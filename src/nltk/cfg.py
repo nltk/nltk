@@ -55,10 +55,10 @@ this interpretation, a CFG specifies any tree structure M{tree} that
 can be produced by the following procedure:
 
     - Set M{tree} to the start symbol
-    - Repeat until M{tree} contains no more nonterminals:
+    - Repeat until M{tree} contains no more nonterminal leaves:
       - Choose a production M{prod} with whose left hand side
-        M{lhs} is a nonterminal in M{tree}.
-      - Replace one occurance of M{lhs} with a subtree, whose node
+        M{lhs} is a nonterminal leaf of M{tree}.
+      - Replace the nonterminal leaf with a subtree, whose node
         value is the value wrapped by the nonterminal M{lhs}, and
         whose children are the right hand side of M{prod}.
 
@@ -67,34 +67,9 @@ with the right hand side (M{rhs}) in a tree (M{tree}) is known as
 X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
-"""
-Probabilistic CFGs
-=================
-
-
-String Representaitons
-======================
-A C{CFGProduction} whose left hand side is C{M{lhs}} and whose right
-hand side is C{M{rhs}} is written "C{M{lhs}->M{rhs}}".  A
-C{Nonterminal} with symbol M{s} is written "C{<M{s}>}" Thus, for
-example, the C{CFGProduction} that specifies that a tree with node
-value C{"NP"} can have children that are subtrees with node values
-C{"Det"} and C{"N"} is written::
-
-    NP -> Det N
-
-And the production that specifies that a tree with node value C{"N"}
-can have a leaf with text type C{"dog"} is::
-
-    N -> 'dog'
-
-"""
-
 from nltk.token import *
 from nltk.chktype import chktype as _chktype
-from nltk.chktype import chkclass as _chkclass
-from types import SliceType as _SliceType
-from types import IntType as _IntType
+from nltk.chktype import classeq as _classeq
 
 #################################################################
 # Nonterminal
@@ -143,7 +118,7 @@ class Nonterminal:
             symbol.
         @rtype: C{boolean}
         """
-        return (isinstance(other, Nonterminal) and
+        return (_classeq(self, other) and
                 self._symbol == other._symbol)
 
     def __ne__(self, other):
@@ -165,8 +140,8 @@ class Nonterminal:
 
     def __repr__(self):
         """
-        @return: A verbose representation for this C{Nonterminal}.
-            The verbose representation for a C{Nonterminal} whose
+        @return: A string representation for this C{Nonterminal}.
+            The string representation for a C{Nonterminal} whose
             symbol is C{M{s}} is C{<M{s}>}.
         @rtype: C{string}
         """
@@ -174,7 +149,10 @@ class Nonterminal:
 
     def __str__(self):
         """
-        TEMPORARY
+        @return: A string representation for this C{Nonterminal}.
+            The string representation for a C{Nonterminal} whose
+            symbol is C{M{s}} is C{M{s}}.
+        @rtype: C{string}
         """
         return '%s' % (self._symbol,)
 
@@ -184,7 +162,6 @@ class Nonterminal:
 
 class CFGProduction:
     """
-
     A context-free grammar production.  Each production
     expands a single C{Nonterminal} (the X{left-hand side}) to a
     sequence of terminals and C{Nonterminals} (the X{right-hand
@@ -213,6 +190,7 @@ class CFGProduction:
         @param rhs: The right-hand side of the new C{CFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
+        assert _chktype(1, lhs, Nonterminal)
         self._lhs = lhs
         self._rhs = tuple(rhs)
 
@@ -260,7 +238,7 @@ class CFGProduction:
         @return: true if this C{CFGProduction} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (isinstance(other, CFGProduction) and
+        return (_classeq(self, other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
@@ -293,6 +271,8 @@ class CFG:
         @param productions: The list of productions that defines the grammar
         @type productions: C{list} of C{CFGProduction}
         """
+        assert _chktype(1, start, Nonterminal)
+        assert _chktype(2, productions, (CFGProduction,), [CFGProduction])
         self._start = start
         self._productions = productions
 
