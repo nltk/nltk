@@ -79,7 +79,7 @@ class Location:
           C{Location} identifies the text beginning at (and including)
           this value.
     @type _end: C{int}
-    @ivar _end: The index at which this C{Location ends.  The
+    @ivar _end: The index at which this C{Location} ends.  The
           C{Location} identifies the text up to (but not including)
           this value.
     @type _source: (any)
@@ -398,7 +398,7 @@ class Token:
     def __cmp__(self, other):
         """
         @raise AssertionError: no ordering relationship is defined
-        for Tokens. 
+            for Tokens. 
         """
         assert 0, ' no ordering relationship is defined over Tokens'
 
