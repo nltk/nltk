@@ -52,58 +52,9 @@ def testsuite():
 
         # Add doctest tests.
         try: testsuites.append(doctest.DocTestSuite(m))
-        except: pass
+        except ValueError: pass
         
     return unittest.TestSuite(testsuites)
-
-# def _file_to_module(filename):
-#     """
-#     Convert a filename to a module name.  Warning: this may not be
-#     totally portable.  But it should at least work on unix/windows.
-#     """
-#     # Not portable.
-#     (base, ext) = filename.split('.')
-#     if ext != 'py': return None
-    
-#     if base[-9:] == '/__init__':
-#         base = base[:-9]
-#     return '.'.join(base.split('/'))
-
-# def _load_modules(module_filenames, verbosity=0):
-#     """
-#     Given a list of module filenames, load the corresponding modules,
-#     and return a list of those modules.
-#     """
-#     # Extract the module names.
-#     mnames = [_file_to_module(name) for name in module_filenames
-#               if name[-16:] != 'test/__init__.py']
-
-#     modules = []
-#     if verbosity>0: print 'Importing modules:'
-#     for mname in mnames:
-#         if mname == None: continue
-#         if verbosity>0: print '  - %s' % mname
-#         try:
-#             exec('import '+mname)
-#             exec('modules.append('+mname+')')
-#         except:
-#             print 'Warning: failed to import %s' % mname
-
-#     return modules
-
-# def _testsuite(module_names, verbosity=0):
-#     """
-#     Return a PyUnit testsuite for the NLP toolkit
-#     """
-#     modules = _load_modules(module_names, verbosity-1)
-
-#     if verbosity>0:
-#         print 'Testing modules:'
-#         for module in modules:
-#             print '  - %s' % module.__name__
-#             if verbosity>1: print '     ('+module.__file__+')'
-    
-#     return unittest.TestSuite([m.testsuite() for m in modules]) 
 
 def test(verbosity=0):
     """
