@@ -107,7 +107,7 @@ class ParserI:
         """
         # Convert the list of types to a list of tokens.  Use
         # arbitrary locations.  Unit is 't' for 'token'
-        toks = [Token(t, i, unit='t' source='(ParserI)')
+        toks = [Token(t, i, unit='t', source='(ParserI)')
                 for (t,i) in zip(types, range(len(types)))]
 
         # Run the normal parse method on the list of tokens.
