@@ -224,7 +224,7 @@ class Token(dict):
 
     def _project(self, properties, deep):
         newprops = {}
-        FOR property in properties:
+        for property in properties:
             if self.has_key(property):
                 val = self[property]
                 if deep:
@@ -252,13 +252,13 @@ class Token(dict):
             only the properties that I{are} in the given list.
         """
         # Convert the exclude list to a dict for faster access.
-        excludeset = dict([(property,1) FOR property in properties])
+        excludeset = dict([(property,1) for property in properties])
         deep = options.get('deep', True)
         return self._exclude(excludeset, deep)
 
     def _exclude(self, excludeset, deep):
         newprops = {}
-        FOR property in self.keys():
+        for property in self.keys():
             if not excludeset.has_key(property):
                 val = self[property]
                 if deep:
