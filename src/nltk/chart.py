@@ -112,7 +112,9 @@ class DottedCFG_Rule(CFG_Rule):
         @return: A verbose string representation of the C{DottedCFG_Rule}.
         @rtype: C{string}
         """
-        str = '%s ->' % self._lhs
+        if isinstance(self._lhs, Nonterminal): str = '%s ->' % self._lhs
+        else: str = '%r ->' % self._lhs
+            
         for elt in self._rhs[:self._pos]:
             if isinstance(elt, Nonterminal): str += ' %s' % elt.symbol()
             else: str += ' %r' % elt
@@ -139,25 +141,6 @@ class DottedCFG_Rule(CFG_Rule):
         @rtype: C{int}
         """
         return hash((self._lhs, self._rhs, self._pos))
-
-# !! document this.
-class DottedPCFG_Rule(DottedCFG_Rule, ProbablisticMixIn):
-    def __init__(self, p, lhs, rhs, pos=0):
-        ProbablisticMixIn.__init__(self, p)
-        DottedCFG_Rule.__init__(self, lhs, rhs, pos)
-
-    def shift(self):
-        # Shifting a DottedPCFG_Rule should return a DottedPCFG_Rule.
-        if self._pos < len(self.rhs()):
-            return DottedPCFG_Rule(self._p, self._lhs,
-                                   self._rhs, self._pos + 1)
-        else:
-            raise IndexError('Attempt to move dot position past end of rule')
-
-    def __str__(self):
-        return DottedCFG_Rule.__str__(self)+' (p=%s)' % self._p
-    def __repr__(self):
-        return DottedCFG_Rule.__repr__(self)+' (p=%s)' % self._p
 
 ##//////////////////////////////////////////////////////
 ##  Edge
