@@ -677,6 +677,76 @@ class SafeToken(Token):
         except TypeError: return False
 
 ######################################################################
+## Token Reader
+######################################################################
+
+class TokenReaderI:
+    # [XX] This docstring isn't as clear as I'd like:
+    """
+    An interface for parsing string representations of tokens.
+    Different token readers can be used to parse different string
+    representations.  The tokens returned by a token reader should
+    contain all of the information encoded in the string
+    representation; but this information may be different for
+    different representations.  I.e., different token readers will
+    return tokens that define different properties.
+    """
+    def read_token(s):
+        """
+        @return: The token encoded by the string C{s}.
+        @rtype: L{Token}
+        """
+        raise NotImplementedError
+    def read_tokens(s):
+        """
+        @return: A list of the tokens encoded by the string C{s}.
+        @rtype: C{list} of L{Token}
+        """
+        raise NotImplementedError
+
+class TokenizerBasedTokenReader(TokenReaderI):
+    def __init__(self, tokenizer):
+        self._tokenizer = tokenizer
+
+    def read_token(self, s):
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
+        tok = Token(**{TEXT: s})
+        self._tokenizer.tokenize(tok)
+        del tok[TEXT]
+        return tok
+                         
+    def read_tokens(self, s):
+        return [self.read_token(s)]
+
+class WhitespaceSeparatedTokenReader(TokenizerBasedTokenReader):
+    """
+    A token reader that reads in tokens that are stored as simple
+    strings, separated by whitespace.  Individual tokens may not
+    contain internal whitespace.
+
+        >>> reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
+        >>> print reader.read_tokens('tokens separated by spaces')
+        [<tokens>, <separated>, <by>, <spaces>]
+    """
+    def __init__(self, **property_names):
+        tokenizer = WhitespaceTokenizer(**property_names)
+        TokenizerBasedTokenReader.__init__(self, tokenizer)
+        
+class NewlineSeparatedTokenReader(TokenizerBasedTokenReader):
+    """
+    A token reader that reads in tokens that are stored as simple
+    strings, separated by newlines.  Blank lines are ignored.
+
+        >>> reader = NewlineSeparatedTokenReader(SUBTOKENS='WORDS')
+        >>> print reader.read_tokens('tokens\nseparated\nby\n\nnewlines')
+        [<tokens>, <separated>, <by>, <newlines>]
+    """
+    def __init__(self, **property_names):
+        tokenizer = LineTokenizer(**property_names)
+        TokenizerBasedTokenReader.__init__(self, tokenizer)
+        
+######################################################################
 ## Location
 ######################################################################
 
@@ -1013,9 +1083,9 @@ class SubtokenContextPointer:
 
     Subtoken context pointers can be used to access the tokens in a
     subtoken's context.  For example, if C{context} is the subtoken
-    context pointer for a token, then C{context[-1]} is the preceding
-    token; and C{context[-3:3]} is the seven subtokens centered on the
-    token.
+    context pointer for a token, then C{context.get(-1)} is the
+    preceding token; and C{context.getrange(-3, 3)} is the seven
+    subtokens centered on the token.
     """
     def __init__(self, container, property, index):
         """
@@ -1049,6 +1119,14 @@ class SubtokenContextPointer:
         @rtype: C{string}
         """
         return self._property
+
+    def subtokens(self):
+        """
+        @return: The list of subtokens containing this subtoken.  In 
+            particular, return C{self.container()[self.property()]}
+        @rtype: C{list}
+        """
+        return self._container[self._property]
 
     def index(self):
         """
@@ -1096,8 +1174,7 @@ class SubtokenContextPointer:
         return self._subtokens[start:end]
 
     def __repr__(self):
-        return ('<SubtokenContextPointer: %s[%s][%s]>' %
-                (self._container, self._property, self._index))
+        return ('<SubtokenContextPointer: %s>' % self._index)
 
     def __cmp__(self, other):
         if not isinstance(other, SubtokenContextPointer):
@@ -1107,6 +1184,73 @@ class SubtokenContextPointer:
 
     def __hash__(self):
         return hash( (id(self._container), self._property, self._index) )
+
+class TreeContextPointer:
+    """
+    A pointer that records a tree element's position within a
+    container token.  Each tree context pointer consists of a pointer
+    to the container token, the property within the container token
+    that contains the tree, and the tree position of the subtoken
+    within that property.
+    """
+    def __init__(self, container, property, treepos):
+        self._container = container
+        self._property = property
+        self._treepos = treepos
+
+    def container(self):
+        """
+        @return: The token that contains this tree element.
+        @rtype: L{Token}
+        """
+        return self._container
+
+    def property(self):
+        """
+        @return: The property within the container token
+                 that contains the tree that contains this
+                 tree element.
+        @rtype: C{string}
+        """
+        return self._property
+
+    def tree(self):
+        """
+        @return: The tree containing this tree element.  In
+            particular, return C{self.container()[self.property()]}
+        @rtype: L{Tree}
+        """
+        return self._container[self._property]
+
+    def treeposition(self):
+        """
+        @return: The tree position of this tree element within the
+            containing tree.
+        @rtype index: C{tuple} of C{int}
+        """
+        return self._treepos
+
+    def parent(self):
+        """
+        @return: The parent of the tree element identified by this
+            context pointer.  If the tree element identified by
+            this context pointer is the root element, then return
+            the tree element itself.
+        @rtype: L{Tree}
+        """
+        return self.tree()[self._treepos[:-1]]
+
+    def __repr__(self):
+        return ('<TreeContextPointer: %s>' % (self._treepos,))
+
+    def __cmp__(self, other):
+        if not isinstance(other, TreeContextPointer):
+            return -1
+        return cmp((id(self._container), self._property, self._treepos),
+                   (id(other._container), other._property, other._treepos))
+
+    def __hash__(self):
+        return hash( (id(self._container), self._property, self._treepos) )
 
 ######################################################################
 ## Demonstration
@@ -1153,4 +1297,5 @@ def demo():
     print "print tok == tok2              =>", tok == tok2
     print "print tok == tok.copy()        =>", tok == tok.copy()
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    demo()
