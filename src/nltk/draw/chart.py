@@ -189,6 +189,7 @@ class ChartView:
         # Do some analysis to figure out how big the window should be
         self._analyze()
         self.draw()     # ***** why do I need this draw?
+        self._resize()
         self._grow()
 
         # Set up the configure callback, which will be called whenever
@@ -377,7 +378,7 @@ class ChartView:
                                 
 
         # Draw a label for the edge.
-        rhs = [repr(t) for t in edge.drule().rhs()]
+        rhs = [str(t) for t in edge.drule().rhs()]
         pos = edge.drule().pos()
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
@@ -629,7 +630,7 @@ class ChartView:
         """
         tree = edge.tree()
         drule = edge.drule()
-        rhs = drule[:]
+        rhs = drule.rhs()
         pos = drule.pos()
 
         if tree.loc() is None:
