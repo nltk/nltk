@@ -116,7 +116,7 @@ class Location:
         _chktype("Location", 1, start, (_IntType,))
         _chktype("Location", 2, end, (_IntType, _NoneType))
         self._start = start
-        if end != None: self._end = end
+        if end is not None: self._end = end
         else: self._end = self._start+1
         if self._end<self._start:
             raise ValueError("A Location's start index must be less "+
@@ -240,7 +240,7 @@ class Location:
         @return: A concise string representation of this C{Location}.
         @rtype: string
         """
-        if self._unit != None: unit = self._unit
+        if self._unit is not None: unit = self._unit
         else: unit = ''
         
         if self._end != self._start+1:
@@ -257,16 +257,19 @@ class Location:
         """
         str = '@[%d' % self._start
         
-        if self._unit != None: str += self._unit
+        if self._unit is not None: str += self._unit
 
         if self._end != self._start+1:
             str += ':%d' % self._end
-            if self._unit != None: str += self._unit
+            if self._unit is not None: str += self._unit
 
         str += ']'
             
-        if self._source != None:
-            str += '@'+`self._source`
+        if self._source is not None:
+            if isinstance(self._source, Location):
+                str += `self._source`
+            else:
+                str += '@'+`self._source`
 
         return str
 
