@@ -464,7 +464,7 @@ class FeatureDetectorListI:
 
     A feature detector's position in the feature detector list is
     given by its feature's id.  In other words, if M{f} is a feature
-    with id {i}, then M{f}'s detector is the M{i}th element of the
+    with id M{i}, then M{f}'s detector is the M{i}th element of the
     feature detector list.
 
     If a feature detector list contains M{N} feature detectors, then
@@ -662,7 +662,7 @@ class MergedFDList(AbstractFDList):
             
         return SimpleFeatureValueList(assignments, self._N, default)
 
-class SimpleFDList:
+class SimpleFDList(FeatureDetectorListI):
     """
     A feature detector list constructed from a C{list} of
     C{FeatureDetector}s.
@@ -1072,7 +1072,7 @@ class AbstractFeatureClassifier(ClassifierI):
         self._fdlist = fdlist
         self._labels = labels
     
-    def fvlist_likelihood(self, fvlist):
+    def fvlist_likelihood(self, fvlist, label):
         """
         @rtype: C{float}
         @return: a likelihood estimate for the given feature value
@@ -1117,7 +1117,7 @@ class AbstractFeatureClassifier(ClassifierI):
         dist_list = []
         for label in self._labels:
             fvlist = self._fdlist.detect(LabeledText(text, label))
-            p = self.fvlist_likelihood(fvlist)
+            p = self.fvlist_likelihood(fvlist, label)
             dist_list.append(p)
             total_p += p
 
@@ -1153,7 +1153,7 @@ class AbstractFeatureClassifier(ClassifierI):
         # fvlist_likelihoods.
         for label in self._labels:
             fvlist = self._fdlist.detect(LabeledText(text, label))
-            p = self.fvlist_likelihood(fvlist)
+            p = self.fvlist_likelihood(fvlist, label)
             if p > max[1]: max = (label, p)
 
         return Token(LabeledText(text, max[0]), unlabeled_token.loc())
