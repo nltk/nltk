@@ -132,6 +132,8 @@ import sys, os.path, re
 from nltk.token import *
 from nltk.tokenizer import RegexpTokenizer
 from nltk.tokenreader import *
+from nltk.tokenreader import sense
+from nltk.tokenreader import tokenizerbased
 
 #################################################################
 # Base Directory for Corpora
@@ -746,9 +748,10 @@ semcor = None
 #from nltk.sense import SensevalTokenizer
 
 senseval = None
-#senseval = SimpleCorpusReader(
-#    'senseval', 'senseval/', r'.*\.pos', description_file='README',
-#    default_tokenizer = SensevalTokenizer())
+SensevalTokenReader = tokenizerbased.TokenizerBasedTokenReader(sense.SensevalTokenizer())
+senseval = SimpleCorpusReader(
+    'senseval', 'senseval/', r'.*\.pos', description_file='README',
+    token_reader = SensevalTokenReader)
 
 ###################################################
 ## Names corpus
