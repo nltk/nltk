@@ -42,6 +42,20 @@ parser module includes definitions for three chart parsers:
     implementation.  Its chart rules implement the
     C{IncrementalChartRule} interface, which returns only the edges
     that can be produced from a given edge.
+
+@group Chart Parsers: ChartParser, SteppingChartParser,
+    IncrementalChartParser
+@group Data Types: Chart, EdgeI, ProductionEdge, TokenEdge, FRChart
+@group Chart Rules: ChartRuleI, BottomUpRule, FundamentalRule,
+    TopDownRule, TopDownInitRule, IncrementalChartRuleI,
+    IncrementalBottomUpRule, IncrementalFundamentalRule,
+    IncrementalTopDownRule, IncrementalTopDownInitRule
+@sort: ChartParser, SteppingChartParser, IncrementalChartParser,
+    Chart, EdgeI, ProductionEdge, TokenEdge, FRChart,
+    ChartRuleI, BottomUpRule, FundamentalRule,
+    TopDownRule, TopDownInitRule, IncrementalChartRuleI,
+    IncrementalBottomUpRule, IncrementalFundamentalRule,
+    IncrementalTopDownRule, IncrementalTopDownInitRule, demo
 """
 
 from nltk.parser import ParserI
@@ -53,33 +67,6 @@ from nltk.cfg import CFG, CFGProduction, Nonterminal
 from nltk.chktype import chktype as _chktype 
 from nltk.chktype import classeq as _classeq
 import types
-
-# Used for sorting by epydoc; and for "import *"
-__epydoc_sort__ = [
-    # Chart Parsers
-    'ChartParser',
-    'SteppingChartParser',
-    'IncrementalChartParser',
-
-    # Basic data types.
-    'Chart',
-    'EdgeI',
-    'ProductionEdge',
-    'TokenEdge',
-    'FRChart',
-
-    # Chart Rules.
-    'ChartRuleI',
-    'BottomUpRule',
-    'FundamentalRule',
-    'TopDownRule',
-    'TopDownInitRule',
-    'IncrementalChartRuleI',
-    'IncrementalBottomUpRule',
-    'IncrementalFundamentalRule',
-    'IncrementalTopDownRule',
-    'IncrementalTopDownInitRule',
-    ]
 
 ##//////////////////////////////////////////////////////
 ##  Edge
@@ -1218,6 +1205,9 @@ INCREMENTAL_TD_STRATEGY = [IncrementalTopDownRule(),
 ##//////////////////////////////////////////////////////
 
 def demo():
+    """
+    A demonstration of the chart parsers.
+    """
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -1246,8 +1236,7 @@ def demo():
     tok_sent = WSTokenizer().tokenize(sent)
 
     # Which tests?
-    BU = TD = STEP = INCR = 0
-    TD = 1
+    BU = TD = STEP = INCR = 1
 
     tr = 2
     import time
@@ -1285,6 +1274,4 @@ def demo():
             print 'CHART SIZE:', len(cp.chart())
         for parse in cp.parses(): print parse
             
-
-
 if __name__ == '__main__': demo()
