@@ -515,6 +515,12 @@ class SimulatedAnnealingWordSenseTagger(LeskWordSenseTagger):
                         chosen.append(self._random.randrange(len(we)))
                         locations.append(token.loc())
 
+                #print sentence
+                #print 'word_entries', \
+                #   [[e[0] for e in we] for we in word_entries]
+                #print 'chosen', chosen
+                #print 'locations', locations
+
                 N = len(word_entries)
                 if N > 0:
                     items = range(N)
@@ -530,10 +536,13 @@ class SimulatedAnnealingWordSenseTagger(LeskWordSenseTagger):
                         old_bag = word_entries[to_change][chosen[to_change]][1]
                         df = self._change_in_goodness(invariant,
                                 old_bag, new_bag)
+                        #print 'change', to_change, 'from', \
+                        #   chosen[to_change], 'to', new_index
+                        #print 'df', df
                         if df >= 0:
                             chosen[to_change] = new_index
                         else:
-                            p = math.exp(-df / float(temperature))
+                            p = math.exp(df / float(temperature))
                             if self._random.random() < p:
                                 chosen[to_change] = new_index
 
@@ -730,9 +739,6 @@ def demo():
 
     # window of -+ 5 words
     tagger = LeskWordSenseTagger(5, dictionary, WordNetStemmer(), True, 'bag')
-    #tagger = SimulatedAnnealingWordSenseTagger(dictionary, [100, 90, 80,
-    #            50, 40, 30, 10, 5, 4, 3, 2, 1, 0.5, 0.1, 0.01, 0.001],
-    #            WordNetStemmer(), True, 'bag')
 
     print 'Running with 5 word window, bag of words, WordNet'
     pprint(tagger.tag(time_flies))
@@ -750,6 +756,18 @@ def demo():
     dictionary = RogetDictionary(stoplist, stemmer)
     tagger = LeskWordSenseTagger(5, dictionary, stemmer, True, 'set')
     print 'Running with 5 word window, set of words, Roget'
+    pprint(tagger.tag(time_flies))
+    pprint(tagger.tag(tagged_tokens[:200]))
+
+    # use the simulated annealing tagger, with WordNet
+    dictionary = WordNetDictionary(stoplist, None, brown_nouns,
+                                   brown_verbs, brown_adjs, brown_advs)
+
+    tagger = SimulatedAnnealingWordSenseTagger(dictionary, 
+                [20 * (0.5 ** n) for n in range(100)],
+                WordNetStemmer(), True, 'bag')
+
+    print 'Running with bag of words, WordNet, simulated annealing tagger'
     pprint(tagger.tag(time_flies))
     pprint(tagger.tag(tagged_tokens[:200]))
 
