@@ -2,7 +2,7 @@
 import sys
 import qtcanvas
 import QWave
-from seglistview import *
+from seglistview2 import *
 import os.path
 
 class Waveform(QWave.QWave):

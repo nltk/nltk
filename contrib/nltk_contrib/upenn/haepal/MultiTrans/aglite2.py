@@ -1,7 +1,6 @@
 
 from nltk.token import *
 
-AllAnnotationSet = []
 
 class Region(SpanLocation):
     __slots__ = ()
@@ -53,94 +52,17 @@ class Annotation(Token):
     end = property(getEnd, setEnd)
 
 
-class AnnotationSet(object):
+class AnnotationQuery:
     """
-    AnnotationSet manages a set of Annotations.
-    Each annotation added to the set is assigned a unique id.
-    (Why do we need id business??)
-    
+    Mixin for a list of Annotations
     """
-
-    __slots__ = ['_list','_recycle']
-
-    class Iterator:
-        def __init__(self, annset):
-            self._list = annset
-            self._next = 0
-        def __iter__(self):
-            return self
-        def next(self):
-            r = None
-            while r is None:
-                if self._next >= len(self._list):
-                    raise StopIteration()
-                r = self._list[self._next]
-                self._next += 1
-            return r
-
-
-    def __init__(self, ival=None):
-        object.__init__(self)
-        AllAnnotationSet.append(self)
-        if ival is None:
-            self._list = []
-        else:
-            self._list = ival
-        self._recycle = []
-
-
-    def __len__(self):
-        return len(self._list)
-
-    def __getitem__(self, i):
-        try:
-            return self._list[i]
-        except IndexError:
-            return None
-
-    def __str__(self):
-        return str([(i,a) for i,a in enumerate(self._list) if a is not None])
-    
-    def __iter__(self):
-        return AnnotationSet.Iterator(self)
-
-    ##############################
-    
-    def add(self, ann):
-        ann.id = len(self._list)
-        ann.parent = self
-        self._list.append(ann)
-        return ann
-    
-    def remove(self, ann):
-        if type(ann) == int:
-            try:
-                a = self._list[ann]
-            except IndexError:
-                return None
-        else:
-            try:
-                a = self._list[ann.id]
-            except ValueError:
-                return None
-            
-        self._recycle.append(a)
-        self._list[a.id] = None
-        return a
-
-    def find(self, ann):
-        try:
-            return self._list.index(ann)
-        except:
-            return None
 
     def getByFeatureName(self, name):
         """
         Retrieve annotation with the specified feature,
         no matter what the value is.
         """
-        return [ann for ann in self._list \
-                if name in ann]
+        return [ann for ann in self if name in ann]
     
     def getAnnotationSet(self, *args, **kw):
         """
@@ -151,13 +73,13 @@ class AnnotationSet(object):
         **kw  - a list of feature-value pairs
         """
         r = []
-        for ann in self._list:
-            if ann is None: continue
+        for ann in self:
             append = True
             for k,v in kw.items():
                 if k not in ann or ann[k]!=v:
                     append = False
                     break
+            if not append: continue
             for f in args:
                 if not f(ann):
                     append = False
