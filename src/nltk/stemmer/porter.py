@@ -84,7 +84,8 @@ import string
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface;
 ## and nltk.token, which defines the Token data type.
-import nltk.stemmer, nltk.token
+import nltk.stemmer
+from nltk.token import Token
 
 ## --NLTK--
 ## Use AbstractStemmer as a base class.
@@ -591,7 +592,7 @@ def demo():
     #item = random.choice(treebank.items('raw'))
     #text = treebank.tokenize(item)[:100]
 
-    # [XX] temmporary fix, until nltk.corpus is updated:
+    # [XX] temporary fix, until nltk.corpus is updated:
     from nltk.tokenizer import WSTokenizer
     text = Token(text='stemming can be fun and exciting')
     WSTokenizer().tokenize(text)
