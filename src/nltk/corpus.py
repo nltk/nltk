@@ -129,11 +129,11 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
 """
 
 import sys, os.path, re
-from nltk.tokenizer import WhitespaceTokenizer, RegexpTokenizer, TokenizerI
-from nltk.token import Token, CharSpanLocation, SpanLocation
-from nltk.tagger import TaggedTokenizer
-from nltk.tagger.treebank import TreebankTaggedTokenizer
-from nltk.tree import TreebankTokenizer
+#from nltk.tokenizer import RegexpTokenizer, TokenizerI
+from nltk.token import *
+from nltk.tagger import TaggedTokenReader
+from nltk.tagger.treebank import TreebankTaggedTokenReader
+from nltk.tree import TreebankFileTokenReader
 #from nltk.parser.chunk import ChunkedTaggedTokenizer, ConllChunkedTokenizer
 
 #################################################################
@@ -285,43 +285,11 @@ class CorpusReaderI:
     def xread(self, item):
         """
         @return: A token containing the contents of the given item,
-            stored as an iterator over lines.
+            with properties stored as iterators (where applicable).
         @param item: The name of the item to read.
         @rtype: L{Token<nltk.token.Token>}
         """
         raise NotImplementedError, 'This corpus does not implement read()'
-
-    def tokenize(self, item, tokenizer=None, addlocs=False,
-                 addcontexts=False):
-        """
-        @return: A token containing the contents of the given item,
-            tokenized with the default tokenizer.
-        @param item: The name of the item to read.
-        @rtype: L{Token<nltk.token.Token>}
-        @type addlocs: C{boolean}
-        @param addlocs: If true, then add a location to each subtoken.
-        @type addcontexts: C{boolean}
-        @param addcontexts: If true, then add a 
-            L{SubtokenContextPointer} to each generated subtoken,
-            pointing to its context within the list of subtokens.
-        """
-        raise NotImplementedError, 'This corpus does not implement tokenize()'
-
-    def xtokenize(self, item, tokenizer=None, addlocs=False,
-                  addcontexts=False):
-        """
-        @return: A token containing the contents of the given item,
-            xtokenized with the default tokenizer.
-        @param item: The name of the item to read.
-        @rtype: L{Token<nltk.token.Token>}
-        @type addlocs: C{boolean}
-        @param addlocs: If true, then add a location to each subtoken.
-        @type addcontexts: C{boolean}
-        @param addcontexts: If true, then add a 
-            L{SubtokenContextPointer} to each generated subtoken,
-            pointing to its context within the list of subtokens.
-        """
-        raise NotImplementedError, 'This corpus does not implement tokenize()'
 
     #////////////////////////////////////////////////////////////
     #// Raw Item access
@@ -349,26 +317,6 @@ class CorpusReaderI:
         @rtype: C{string}
         """
         raise NotImplementedError, 'This corpus does not implement raw_read()'
-
-    def raw_tokenize(self, item, tokenizer=None):
-        """
-        @return: A list containing the text content of each token in
-            the given item.
-        @param item: The name of the item to read.
-        @rtype: C{list} of L{string}
-        """
-        errstr = 'This corpus does not implement raw_tokenize()'
-        raise NotImplementedError, errstr
-
-    def raw_xtokenize(self, item, tokenizer=None):
-        """
-        @return: An iterator that generates the content of each token
-            from the given item.
-        @param item: The name of the item to read.
-        @rtype: C{iter}
-        """
-        errstr = 'This corpus does not implement raw_tokenize()'
-        raise NotImplementedError, errstr
 
     #////////////////////////////////////////////////////////////
     #// Structure access (groups)
@@ -449,7 +397,7 @@ class SimpleCorpusReader(CorpusReaderI):
                  license_file=None,
                  copyright_file=None,
                  # Formatting meta-data
-                 default_tokenizer=WhitespaceTokenizer(),
+                 token_reader=None,
                  property_names={}):
         """
         Construct a new corpus reader.  The parameters C{description},
@@ -462,7 +410,7 @@ class SimpleCorpusReader(CorpusReaderI):
         @group Grouping: groups
         @group Meta-data: description, license, copyright,
             description_file, license_file, copyright_file
-        @group Formatting Meta-data: default_tokenizer
+        @group Formatting Meta-data: token_reader
 
         @type name: C{string}
         @param name: The name of the corpus.  This name is used for
@@ -512,10 +460,13 @@ class SimpleCorpusReader(CorpusReaderI):
             copyright notice for the corpus.  If this is a relative
             path, then it is interpreted relative to the corpus's root
             directory.
-        @type default_tokenizer: L{TokenizerI<nltk.tokenizer.TokenizerI>}
-        @param default_tokenizer: The default tokenizer that should be
-            used for the corpus reader's L{tokenize} method.
+        @type token_reader: L{TokenReaderI<nltk.token.TokenReaderI>}
+        @param token_reader: The default token_reader that should be
+            used for the corpus reader's L{read_token} method.
         """
+        if token_reader is None:
+            token_reader = WhitespaceSeparatedTokenReader(
+                SUBTOKENS='WORDS')
         # Compile regular expressions.
         if isinstance(items_regexp, type('')):
             items_regexp = re.compile(items_regexp)
@@ -536,7 +487,7 @@ class SimpleCorpusReader(CorpusReaderI):
         self._license_file = license_file
         self._copyright = None
         self._copyright_file = copyright_file
-        self._default_tokenizer = default_tokenizer
+        self._token_reader = token_reader
         self._property_names = property_names
 
         # Postpone actual initialization until the corpus is accessed;
@@ -582,13 +533,16 @@ class SimpleCorpusReader(CorpusReaderI):
         # Read metadata from files
         if self._description is None and self._description_file is not None:
             path = os.path.join(self._rootdir, self._description_file)
-            self._description = open(path).read()
+            try: self._description = open(path).read()
+            except IOError: pass
         if self._license is None and self._license_file is not None:
             path = os.path.join(self._rootdir, self._license_file)
-            self._license = open(path).read()
+            try: self._license = open(path).read()
+            except IOError: pass
         if self._copyright is None and self._copyright_file is not None:
             path = os.path.join(self._rootdir, self._copyright_file)
-            self._copyright = open(path).read()
+            try: self._copyright = open(path).read()
+            except IOError: pass
 
     def _find_files(self, path, prefix=''):
         filelist = []
@@ -633,38 +587,13 @@ class SimpleCorpusReader(CorpusReaderI):
         else: return tuple(self._groups.get(group)) or ()
 
     def read(self, item):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
-        
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
-        loc = CharSpanLocation(0, len(text), source)
-        return Token({TEXT: text, LOC: loc})
+        return self._token_reader.read_token(text, source=source)
 
     def xread(self, item):
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        LOC = self._property_names.get('LOC', 'LOC')
-        
-        source = '%s/%s' % (self._name, item)
-        textiter = self.open(item) # <- read-mode files act as iterators.
-        loc = CharSpanLocation(0, SpanLocation.MAX, source)
-        return Token({TEXT: textiter, LOC: loc})
-
-    def tokenize(self, item, tokenizer=None, addlocs=False,
-                 addcontexts=False):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        item_token = self.read(item)
-        tokenizer.tokenize(item_token, addlocs=addlocs,
-                           addcontexts=addcontexts)
-        return item_token
-
-    def xtokenize(self, item, tokenizer=None, addlocs=False,
-                  addcontexts=False):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        item_token = self.xread(item)
-        tokenizer.xtokenize(item_token, addlocs=addlocs,
-                            addcontexts=addcontexts)
-        return item_token
+        # Default: no iterators.
+        return self.read(item)
 
     def path(self, item):
         self._initialize()
@@ -676,15 +605,6 @@ class SimpleCorpusReader(CorpusReaderI):
 
     def raw_read(self, item):
         return self.open(item).read()
-
-    def raw_tokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        return tokenizer.raw_tokenize(self.raw_read(item))
-
-    def raw_xtokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        textiter = self.open(item) # <- read-mode files act as iterators.
-        return tokenizer.raw_xtokenize(textiter)
 
     #////////////////////////////////////////////////////////////
     #// Structure access (groups)
@@ -708,8 +628,8 @@ class RogetCorpusReader(CorpusReaderI):
         self._name = name
         self._original_rootdir = rootdir
         self._data_file = data_file
-        self._default_tokenizer = WhitespaceTokenizer()
-
+        self._token_reader=WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
+ 
         # Postpone actual initialization until the corpus is accessed;
         # this gives the user a chance to call set_basedir(), and
         # prevents "import nltk.corpus" from raising an exception.
@@ -809,30 +729,11 @@ class RogetCorpusReader(CorpusReaderI):
     def read(self, item):
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
-        loc = CharSpanLocation(0, len(text), source)
-        return Token(TEXT=text, LOC=loc)
+        return self._token_reader.read_token(text, source=source)
 
     def xread(self, item):
-        # Read the token & wrap its text in an iterator
-        item_token = self.read(item)
-        item_token['TEXT'] = iter([item_token['TEXT']])
-        return item_token
-
-    def tokenize(self, item, tokenizer=None, addlocs=False,
-                 addcontexts=False):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        item_token = self.read(item)
-        tokenizer.tokenize(item_token, addlocs=addlocs,
-                           addcontexts=addcontexts)
-        return item_token
-
-    def xtokenize(self, item, tokenizer=None, addlocs=False,
-                  addcontexts=False):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        item_token = self.xread(item)
-        tokenizer.xtokenize(item_token, addlocs=addlocs,
-                            addcontexts=addcontexts)
-        return item_token
+        # Default: no iterators.
+        return self.read(item)
 
     def path(self, item):
         "Not implemented by the Roget corpus."
@@ -846,14 +747,6 @@ class RogetCorpusReader(CorpusReaderI):
         self._initialize()
         return self._items[item]
 
-    def raw_tokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        return tokenizer.raw_tokenize(self.raw_read(item))
-    
-    def raw_xtokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._default_tokenizer
-        yield tokenizer.raw_tokenize(self.raw_read(item))
-    
     #////////////////////////////////////////////////////////////
     #// Structure access (groups)
     #////////////////////////////////////////////////////////////
@@ -869,10 +762,10 @@ class TreebankCorpusReader(CorpusReaderI):
     """
     A corpus reader implementation for the Treebank.
     """
-    # Default tokenizers.
-    _ws_tokenizer = WhitespaceTokenizer()
-    _tb_tokenizer = TreebankTokenizer()
-    _tag_tokenizer = TreebankTaggedTokenizer()
+    # Default token readers.
+    _ws_reader = WhitespaceSeparatedTokenReader(SUBTOKENS='WORDS')
+    _tb_reader = TreebankFileTokenReader(SUBTOKENS='WORDS')
+    _tag_reader = TreebankTaggedTokenReader(SUBTOKENS='WORDS')
     
     def __init__(self, name, rootdir, treebank_2=False,
                  description_file=None, license_file=None,
@@ -935,6 +828,12 @@ class TreebankCorpusReader(CorpusReaderI):
                 raise IOError('%s is not installed' % self._name)
             self._basedir = '' # empty
             self._rootdir = self._original_rootdir
+
+        # Check the directory for 'merged', and change it to
+        # 'combined' if appropriate.
+        if 'merged' in self._groups:
+            if os.path.isdir(os.path.join(self._rootdir, 'combined')):
+                self._group_directory['merged'] = 'combined'
 
         # Get the list of items in each group.
         self._group_items = {}
@@ -1029,32 +928,12 @@ class TreebankCorpusReader(CorpusReaderI):
     def read(self, item):
         source = '%s/%s' % (self._name, item)
         text = self.raw_read(item)
-        loc = CharSpanLocation(0, len(text), source)
-        return Token(TEXT=text, LOC=loc)
+        reader = self._token_reader(item)
+        return reader.read_token(text, source=source)
 
     def xread(self, item):
-        # Read the token & wrap its text in an iterator
-        item_token = self.read(item)
-        item_token['TEXT'] = iter([item_token['TEXT']])
-        return item_token
-
-    def tokenize(self, item, tokenizer=None, addlocs=False,
-                 addcontexts=False):
-        if tokenizer is None:
-            tokenizer = self._tokenizer(item)
-        item_token = self.read(item)
-        tokenizer.tokenize(item_token, addlocs=addlocs,
-                           addcontexts=addcontexts)
-        return item_token
-
-    def xtokenize(self, item, tokenizer=None, addlocs=False,
-                  addcontexts=False):
-        if tokenizer is None:
-            tokenizer = self._tokenizer(item)
-        item_token = self.xread(item)
-        tokenizer.xtokenize(item_token, addlocs=addlocs,
-                            addcontexts=addcontexts)
-        return item_token
+        # Default: no iterators.
+        return self.read(item)
 
     def path(self, item):
         self._initialize()
@@ -1078,24 +957,18 @@ class TreebankCorpusReader(CorpusReaderI):
         else:
             return self.open(item).read()
 
-    def raw_tokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._tokenizer(item)
-        return tokenizer.raw_tokenize(self.raw_read(item))
-    
-    def raw_xtokenize(self, item, tokenizer=None):
-        if tokenizer is None: tokenizer = self._tokenizer(item)
-        yield tokenizer.raw_tokenize(self.raw_read(item))
-    
-    def _tokenizer(self, item):
+    def _token_reader(self, item):
         self._initialize()
         if item in self._group_items['merged']:
-            return self._tb_tokenizer
+            return self._tb_reader
         elif item in self._group_items['tagged']:
-            return self._tag_tokenizer
+            return self._tag_reader
         elif item in self._group_items['parsed']:
-            return self._tb_tokenizer
+            return self._tb_reader
         elif item in self._group_items['raw']:
-            return self._ws_tokenizer
+            return self._ws_reader
+        else:
+            raise ValueError, 'Unknown item %r' % (item,)
 
     #////////////////////////////////////////////////////////////
     #// Parsed/Tagged Merging
@@ -1264,7 +1137,7 @@ groups = [('press: reportage', r'ca\d\d'), ('press: editorial', r'cb\d\d'),
           ('humor', r'cr\d\d')]
 brown = SimpleCorpusReader(
     'brown', 'brown/', r'c\w\d\d', groups, description_file='README',
-    default_tokenizer=TaggedTokenizer())
+    token_reader=TaggedTokenReader(SUBTOKENS='WORDS'))
 del groups # delete temporary variable
  
 ###################################################
@@ -1317,9 +1190,10 @@ stopwords = SimpleCorpusReader(
 ## CONLL 2000 Chunking data
 #################################################################
 
-chunking = SimpleCorpusReader(
-    'chunking', 'chunking/', r'.*\.txt', None, description_file='README',
-    default_tokenizer=RegexpTokenizer(r'\n\s*?\n', negative=1))
+chunking = None
+#chunking = SimpleCorpusReader(
+#    'chunking', 'chunking/', r'.*\.txt', None, description_file='README',
+#    default_tokenizer=RegexpTokenizer(r'\n\s*?\n', negative=1))
     # ideally use parser.chunk.ConllChunkedTokenizer() on each paragraph:
     # paras = chunking.tokenize('test.txt')
     # cct = ConllChunkedTokenizer(['NP'])
@@ -1329,17 +1203,15 @@ chunking = SimpleCorpusReader(
 ## IEER Named Entity data
 #################################################################
 
+from nltk.parser.chunk import IeerChunkedTokenReader
+
 groups = [('APW', 'APW_\d*'), ('NYT', 'NYT_\d*')]
 regexp = r'<IEER[^>]*>\n<DOC>\n|</DOC>\n<DOC>\n|</DOC>\n</IEER_DOC>\n'
 
+ieer = None
 ieer = SimpleCorpusReader(
     'ieer', 'ieer/', r'(APW|NYT)_\d+', groups, description_file='README',
-    default_tokenizer=RegexpTokenizer(regexp, negative=1, unit='d'))
-
-    # ideally use parser.chunk.IeerChunkedTokenizer() on each document
-    # docs = ieer.tokenize('APW_19980314')
-    # ieerct = IeerChunkedTokenizer(['LOCATION', 'ORGANIZATION'])
-    # [Tree('DOC', *ieerct.tokenize(doc.type())) for doc in docs]
+    token_reader=IeerChunkedTokenReader())
 
 ###################################################
 ## Treebank (fragment distributed with NLTK)
@@ -1349,32 +1221,33 @@ treebank = TreebankCorpusReader('treebank', 'treebank/', False,
 
 ###################################################
 ## Semcor corpus
-from nltk.sense import SemcorTokenizer
+#from nltk.sense import SemcorTokenizer
 
 description = """
 WordNet semantic concordance data. This is comprised of extracts from the
 Brown corpus, with each word tagged with its WordNet 1.7 tag.
 """
 
-semcor = SimpleCorpusReader(
-    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
-    default_tokenizer = SemcorTokenizer())
+semcor = None
+#semcor = SimpleCorpusReader(
+#    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
+#    default_tokenizer = SemcorTokenizer())
     
 ###################################################
 ## Senseval corpus
-from nltk.sense import SensevalTokenizer
+#from nltk.sense import SensevalTokenizer
 
-senseval = SimpleCorpusReader(
-    'senseval', 'senseval/', r'.*\.pos', description_file='README',
-    default_tokenizer = SensevalTokenizer())
+senseval = None
+#senseval = SimpleCorpusReader(
+#    'senseval', 'senseval/', r'.*\.pos', description_file='README',
+#    default_tokenizer = SensevalTokenizer())
 
 ###################################################
 ## Names corpus
-from nltk.tokenizer import LineTokenizer
 
 names = SimpleCorpusReader(
     'names', 'names/', r'.*\.txt', description_file='README',
-    default_tokenizer = LineTokenizer())
+    token_reader = NewlineSeparatedTokenReader(SUBTOKENS='NAMES'))
 
 ###################################################
 ## Reuters corpus
@@ -1391,20 +1264,21 @@ with categories by Reuters.'''
 ###################################################
 ## Levin corpus
 
-class _LevinTokenizer(TokenizerI):
-    # [XX] addlocs & addcontexts are ignored!
-    def tokenize(self, token, addlocs=False, addcontexts=False):
-        token['VERB_DICT'] = {}
-        for line in token['TEXT'].split('\n'):
-            items = line.split(':')
-            if len(items) == 2:
-                verb, indices = items
-                indices = filter(lambda x: x, re.split(r'[,\s]*', indices))
-                token['VERB_DICT'][verb.strip()] = indices
+levin = None
+# class _LevinTokenizer(TokenizerI):
+#     # [XX] addlocs & addcontexts are ignored!
+#     def tokenize(self, token, addlocs=False, addcontexts=False):
+#         token['VERB_DICT'] = {}
+#         for line in token['TEXT'].split('\n'):
+#             items = line.split(':')
+#             if len(items) == 2:
+#                 verb, indices = items
+#                 indices = filter(lambda x: x, re.split(r'[,\s]*', indices))
+#                 token['VERB_DICT'][verb.strip()] = indices
 
-levin = SimpleCorpusReader(
-    'levin', 'levin/', 'verbs', description_file='README',
-    default_tokenizer = _LevinTokenizer())
+# levin = SimpleCorpusReader(
+#     'levin', 'levin/', 'verbs', description_file='README',
+#     default_tokenizer = _LevinTokenizer())
 
 #################################################################
 # Demonstration
@@ -1431,6 +1305,9 @@ def _xtokenize_repr(token, width, indent, lines=1):
     return s.rstrip()
 
 def _test_corpus(corpus):
+    if corpus is None:
+        print '(skipping None)'
+        return
     print '='*70
     print corpus.name().center(70)
     print '-'*70
@@ -1442,12 +1319,12 @@ def _test_corpus(corpus):
     item = corpus.items()[0]
     contents = corpus.read(item)
     print 'read(e0)      => ' + _truncate_repr(contents, 70,17)
-    try:
-        tokrepr = _xtokenize_repr(corpus.xtokenize(item), 70,17,2)
-        print 'xtokenize(e0) => ' + tokrepr
-    except NotImplementedError:
-        tokrepr = _truncate_repr(corpus.tokenize(item), 70,17,2)
-        print 'tokenize(e0)  => ' + tokrepr
+#    try:
+#        tokrepr = _xtokenize_repr(corpus.xtokenize(item), 70,17,2)
+#        print 'xtokenize(e0) => ' + tokrepr
+#    except NotImplementedError:
+#        tokrepr = _truncate_repr(corpus.tokenize(item), 70,17,2)
+#        print 'tokenize(e0)  => ' + tokrepr
 
 def _test_treebank():
     _test_corpus(treebank)
@@ -1461,14 +1338,14 @@ def _test_treebank():
     for (name, item) in zip('rtpm', (r, t, p, m)):
         contents = treebank.read(item)
         print 'read(%s)       => %s' % (name, _truncate_repr(contents, 70,17))
-        try:
-            tok = treebank.xtokenize(item)
-            tokrepr = _xtokenize_repr(tok.exclude('LOC'), 70,17,2)
-            print 'xtokenize(%s)  => %s' % (name, tokrepr)
-        except NotImplementedError:
-            tok = treebank.tokenize(item)
-            tokrepr = _truncate_repr(tok.exclude('LOC'), 70,17,2)
-            print 'tokenize(%s)   => %s' % (name, tokrepr)
+        #try:
+        #    tok = treebank.xtokenize(item)
+        #    tokrepr = _xtokenize_repr(tok.exclude('LOC'), 70,17,2)
+        #    print 'xtokenize(%s)  => %s' % (name, tokrepr)
+        #except NotImplementedError:
+        #    tok = treebank.tokenize(item)
+        #    tokrepr = _truncate_repr(tok.exclude('LOC'), 70,17,2)
+        #    print 'tokenize(%s)   => %s' % (name, tokrepr)
 
 def demo():
     """
