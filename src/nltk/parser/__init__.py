@@ -1324,8 +1324,8 @@ def demo():
 
     # Tokenize a sample sentence.
     sent = Token(TEXT='I saw a man in the park')
-    from nltk.tokenizer import WSTokenizer
-    WSTokenizer().tokenize(sent)
+    from nltk.tokenizer import WhitespaceTokenizer
+    WhitespaceTokenizer().tokenize(sent)
 
     # Define a list of parsers.
     parsers = [ShiftReduceParser(grammar, LEAF='TEXT'),

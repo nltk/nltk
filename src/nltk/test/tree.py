@@ -16,7 +16,7 @@ Unit testing for L{nltk.tree}.
 """
 
 from nltk.tree import *
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 
 ##//////////////////////////////////////////////////////
 ##  Test code
@@ -160,7 +160,7 @@ class TreeTokenTestCase(unittest.TestCase):
     """
     def setUp(self):
         text = 'the dog chased the cat'
-        self.words = WSTokenizer().tokenize(text)
+        self.words = WhitespaceTokenizer().tokenize(text)
         self.dp1 = TreeToken('dp', TreeToken('d', self.words[0]),
                              TreeToken('np', self.words[1]))
         self.dp2 = TreeToken('dp', TreeToken('d', self.words[3]),
