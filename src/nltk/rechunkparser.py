@@ -207,7 +207,6 @@ class ChunkString:
     sequence of angle-bracket delimited tags, with chunking indicated
     by braces.  An example of this encoding is::
 
-<<<<<<< rechunkparser.py
         {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
 
     C{ChunkString} are created from tagged texts (i.e., C{list}s of
@@ -250,82 +249,6 @@ class ChunkString:
     
     def __init__(self, tagged_tokens, debug_level=3):
         """
-=======
-    def __init__(self, target, action, **kwargs):
-        self._target = target
-        self._action = action
-        self._left = self._right = self._doc = ''
-        if kwargs.has_key('left'):
-            self._left = kwargs['left']
-        if kwargs.has_key('right'):
-            self._right = kwargs['right']
-        self._pattern = re.compile(
-            _lookbehind(self._left) + self._target + _lookahead(self._right))
-        if kwargs.has_key('doc'):
-            self._doc = kwargs['doc']
-    def pattern(self):
-        return self._pattern
-    def action(self):
-        return self._action
-    def doc(self):
-        return self._doc
-    def __str__(self):
-        return self.doc() + ":\n"\
-               + "left:   " + self._left + "\n"\
-               + "target: " + self._target + "\n"\
-               + "right:  " + self._right + "\n"\
-               + "action: " + self.action()
-
-##//////////////////////////////////////////////////////
-##  Abstract Chunk Rules
-##//////////////////////////////////////////////////////
-
-# A version of ChunkRule which understands a simplified regexp syntax
-# in which users don't need to know about locations, and in which <>
-# functions as anonymous brackets, both with respect to the tags
-# it contains (e.g. <DT|JJ>) and with respect to external operators
-# (e.g. <JJ>*)
-
-def expand(str):
-    str = sub(r'<([^>]+)>', r'(?:<[^/]*/(?:\1)@\d+>)', str)
-    str = sub(r'\.', r'[^>]', str)
-    return str
-
-# Calls expand on the left, target and right arguments.
-# Could this duplicate less of the ChunkRule constructor?
-# Bug: Note that the lookbehind assertion won't work since
-# Python won't allow variable width lookbehind assertions
-class AbstractChunkRule(ChunkRule):
-    def __init__(self, target, action, **kwargs):
-        self._target = expand(target)
-        self._action = action
-        self._left = self._right = self._doc = ''
-        if kwargs.has_key('left'):
-            self._left = expand(kwargs['left'])
-        if kwargs.has_key('right'):
-            self._right = expand(kwargs['right'])
-        self._pattern = re.compile(
-            _lookbehind(self._left) + self._target + _lookahead(self._right))
-        if kwargs.has_key('doc'):
-            self._doc = kwargs['doc']
-
-##//////////////////////////////////////////////////////
-##  Chunk Parser Utility Functions
-##//////////////////////////////////////////////////////
-
-_re_braces = re.compile(r'[^{}]')
-_re_matching_braces = re.compile(r'^(\{\})*$')
-
-def _check_braces(str):
-    braces = sub(_re_braces, '', str)
-    if not match(_re_matching_braces, braces):
-        raise ValueError('Unbalanced or nested chunk delimiters\n' + str)
-
-def format(str):
-    """
-    Format a string of tokens for display.
->>>>>>> 1.5
-
         Construct a new C{ChunkString} that encodes the chunking of
         the text C{tagged_tokens}.
 
@@ -438,16 +361,10 @@ def format(str):
         # Do the actual substitution
         self._str = re.sub(regexp, repl, self._str)
 
-<<<<<<< rechunkparser.py
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
         self._str = re.sub('\{\}', '', self._str)
-=======
-_re_punct_boundary = re.compile(r'([>}])(?=[<{])')
-_re_token_rep = re.compile(r'<([^>]*)/([^>]*)@(\d+)>')
-_re_chunks = re.compile(r'{([^}]*)}')
->>>>>>> 1.5
 
         # Make sure that the transformation was legal.
         if self._debug > 1: self._verify(self._debug-2)
@@ -478,7 +395,6 @@ _re_chunks = re.compile(r'{([^}]*)}')
         """
         self.xform(pattern+ChunkString.IN_CHUNK_PATTERN, repl)
 
-<<<<<<< rechunkparser.py
     def xform_chink(self, pattern, repl):
         # Docstring adopted from xform's docstring.
         """
@@ -504,9 +420,6 @@ _re_chunks = re.compile(r'{([^}]*)}')
         @rtype: C{None}
         """
         self.xform(pattern+ChunkString.IN_CHINK_PATTERN, repl)
-=======
-    _check_braces(str)
->>>>>>> 1.5
 
     def __repr__(self):
         """
@@ -566,7 +479,7 @@ class REChunkParserRule:
         """
         self._repl = repl
         self._descr = descr
-        if type(self._regexp) == type(''):
+        if type(regexp) == type(''):
             self._regexp = re.compile(regexp)
         else:
             self._regexp = regexp
@@ -638,7 +551,6 @@ class SplitRule(REChunkParserRule):
         return ('<MergeRule: '+`self._left_tag_pattern`+', ',
                 `self._right_tag_pattern`+'>')
 
-<<<<<<< rechunkparser.py
 ##//////////////////////////////////////////////////////
 ##  REChunkParser
 ##//////////////////////////////////////////////////////
@@ -650,44 +562,6 @@ class REChunkParser:
         """
         self._rules = rules
         self._trace = trace
-=======
-        @param rulelist: The cascade of chunk rules to be applied.
-        @type rulelist: C{list} of C{ChunkRule}
-        @param debug: The debug flag
-        @type debug: C{int}
-        """
-        self._rulelist = rulelist
-        self._debug = debug
-
-    def _diagnostic(self, rule, str, result):
-        print
-        print rule
-        print "input: ", format(str)
-        print "   ->  ", format(result)
-
-    def _apply(self, rule, str):
-        action = rule.action()
-        pattern = rule.pattern()
-        result = sub(pattern, action, str)
-        if self._debug:
-            self._diagnostic(rule, str, result)
-            _check_braces(result)
-        return result
-
-    def parse(self, tagged_sent):
-        """
-        Chunk parse a tagged, tokenized sentence.
-
-        @param tagged_sent: the tagged, tokenized sentence.
-        @type tagged_sent: C{list} of C{TaggedToken}
-        @return: a chunk structure
-        @rtype: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
-        """
-        str = tag2str(tagged_sent)
-        for rule in self._rulelist:
-            str = self._apply(rule, str)
-        return str2chunks(str)
->>>>>>> 1.5
 
     def _trace_apply(self, chunkstr, tagged_sentence, verbose):
         indent = ' '*(35-len(str(chunkstr))/2)
