@@ -285,6 +285,9 @@ class Tree:
         return (self._node == other._node and
                 self._children == other._children)
 
+    def __hash__(self):
+        return hash((self._node, self._children))
+
     def __ne__(self, other):
         """
         @return: true if this C{Tree} is not equal to C{other}.  In
