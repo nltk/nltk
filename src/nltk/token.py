@@ -1071,7 +1071,7 @@ class SubtokenContextPointer:
         """
         return self._index
 
-    def __getitem__(self, delta_i):
+    def get(self, delta_i):
         """
         @return: The token whose index in this subtoken's context is
         C{delta_i} more than the index of the subtoken.  For example,
@@ -1084,12 +1084,12 @@ class SubtokenContextPointer:
             of the subtoken.
         """
         if self._subtokens is None:
-            self._subtokens = container[property]            
+            self._subtokens = self._container[self._property]
         i = self._index + delta_i
         if i < 0: raise IndexError, 'list index out of range'
         return self._subtokens[i]
 
-    def __getslice__(self, delta_start, delta_end):
+    def getrange(self, delta_start, delta_end):
         """
         @return: A list containing the tokens whose indices in this
         subtoken's context fall in the range [C{i+delta_start},
@@ -1103,7 +1103,7 @@ class SubtokenContextPointer:
         @rtype: L{Token}
         """
         if self._subtokens is None:
-            self._subtokens = container[property]            
+            self._subtokens = self._container[self._property]            
         start = max(0, self._index + delta_start)
         end = max(0, self._index + delta_end)
         return self._subtokens[start:end]
@@ -1120,7 +1120,7 @@ class SubtokenContextPointer:
 
     def __hash__(self):
         return hash( (id(self._container), self._property, self._index) )
-        
+
 ######################################################################
 ## Demonstration
 ######################################################################
