@@ -279,7 +279,7 @@ class RETokenizer(TokenizerI):
         # need to do this, because the list returned by re.sub will
         # contain an element corresponding to every set of grouping
         # parenthases.
-        regexp = re.sub(r'\((?!\?)', r'(?:', regexp)
+        regexp = re.sub(r'(?<!\\)\((?!\?)', r'(?:', regexp)
 
         # Add grouping parenthases around the regexp; this will allow
         # us to access the material that was split on.
