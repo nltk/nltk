@@ -16,6 +16,7 @@ Unit testing for L{nltk.tree}.
 
 from nltk.tree import *
 from nltk.tokenizer import WhitespaceTokenizer
+from nltk.tokenreader import TreebankTokenReader
 
 ##//////////////////////////////////////////////////////
 ##  Test code
@@ -247,7 +248,7 @@ The treebank token reader reads a treebank-style tree into a single
 token, with the TREE and WORDS properties:
 
     >>> s = '(S (NP I) (VP (V enjoyed) (NP my cookie)))'
-    >>> treetok = TreebankTokenReader().read_token(s)
+    >>> treetok = TreebankTokenReader(SUBTOKENS='WORDS').read_token(s)
     >>> print treetok.properties()
     ['TREE', 'WORDS']
     >>> print treetok['TREE']
@@ -255,17 +256,17 @@ token, with the TREE and WORDS properties:
     >>> print treetok['WORDS']
     [<I>, <enjoyed>, <my>, <cookie>]
 
-With an optional argument (C{add_words}), the token reader constructor
+With an optional argument (C{add_subtoks}), the token reader constructor
 can be told not to include the WORDS property:
 
-    >>> treetok = TreebankTokenReader(add_words=False).read_token(s)
+    >>> treetok = TreebankTokenReader(add_subtoks=False).read_token(s)
     >>> print treetok.properties()
     ['TREE']
 
 Another optional argument (C{add_locs}), can be used to tell the token
 reader constructor to add LOC properties to each leaf:
     
-    >>> treetok = TreebankTokenReader(add_locs=True).read_token(s)
+    >>> treetok = TreebankTokenReader(add_locs=True, SUBTOKENS='WORDS').read_token(s)
     >>> print treetok['TREE']
     (S:
       (NP: <I>@[7:8c])
