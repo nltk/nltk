@@ -244,10 +244,9 @@ class FreqDist:
         @return: The set of samples in sorted order.
         @rtype: sequence of any
         """
-        items = map(lambda (s, c): (c, s), self._count.items())
+        items = [(-count,sample) for (sample,count) in self._count.items()]
         items.sort()
-        items.reverse()
-        return map(lambda (c, s): s, items)
+        return [sample for (neg_count,sample) in items]
 
     def __repr__(self):
         """
@@ -261,7 +260,9 @@ class FreqDist:
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        return '<FreqDist: ' + `self._count`[1:-1] + '>'
+        samples = self.sorted_samples()
+        items = ['%r: %r' % (s, self._count[s]) for s in samples]
+        return '<FreqDist: %s>' % ', '.join(items)
 
     def __contains__(self, sample):
         """
@@ -290,6 +291,10 @@ class ProbDistI:
     used to model the probability distribution of the experiment used
     to generate a frequency distribution.
     """
+    def __init__(self):
+        if self.__class__ == ProbDistI:
+            raise AssertionError, "Interfaces can't be instantiated"
+        
     def prob(self, sample):
         """
         @return: the probability for a given sample.  Probabilities
@@ -352,9 +357,9 @@ class UniformProbDist(ProbDistI):
         if len(samples) == 0:
             raise ValueError('A Uniform probability distribution must '+
                              'have at least one sample.')
-        self._samples = samples
         self._sampleset = Set(*samples)
         self._prob = 1.0/len(self._sampleset)
+        self._samples = self._sampleset.elements()
 
     def prob(self, sample):
         if sample in self._sampleset: return self._prob
@@ -380,7 +385,7 @@ class DictionaryProbDist(ProbDistI):
         to 1, if desired.
         """
         assert _chktype(1, prob_dict, {})
-        self._prob_dict = prob_dict
+        self._prob_dict = prob_dict.copy()
 
     def prob(self, sample):
         return self._prob_dict.get(sample, 0)
