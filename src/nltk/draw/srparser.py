@@ -10,11 +10,10 @@
 """
 A graphical tool for exploring the shift/reduce parser.
 
-This tool allows you to explore algorithm used by the shift/reduce
-parser.  The shift/reduce parser maintains a stack, which records the
-structure of the portion of the text that has been parsed.  The stack
-is initially empty.  Its contents are shown on the left side of the
-main canvas.
+The shift/reduce parser maintains a stack, which records the structure
+of the portion of the text that has been parsed.  The stack is
+initially empty.  Its contents are shown on the left side of the main
+canvas.
 
 On the right side of the main canvas is the remaining text.  This is
 the portion of the text which has not yet been considered by the
