@@ -51,7 +51,7 @@ static PyObject *
 static int
   nltkLocation__init__(nltkLocation* self, PyObject *args, PyObject *keywords);
 static void
-  nltkLocation_dealloc(nltkLocation* self);
+  nltkLocation__del__(nltkLocation* self);
 
 /* Location Methods */
 static PyObject *
@@ -92,7 +92,9 @@ static nltkLocation *
 /* The struct that is used to encode Type instances. */
 typedef struct {
     PyObject_HEAD          /* Object head: refcount & type */
-    PyObject *properties;  /* The type's property dictionary */
+    int num_props;         /* num properties defined by this token */
+    PyObject **prop_names;  /* names of properties */
+    PyObject **prop_values; /* values of properties */
 } nltkType;
 
 /* The Type type. */
@@ -102,16 +104,64 @@ static PyTypeObject nltkTypeType;
 #define is_nltkType(v) PyType_IsSubtype(&nltkTypeType, (v)->ob_type)
 
 /* Type Constructor & Destructor */
-static PyObject *
+static PyObject*
   nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords);
 static int
-  nltkType__init__(nltkType* self, PyObject *args, PyObject *keywords);
+  nltkType__init__(nltkType *self, PyObject *args, PyObject *keywords);
 static void
-  nltkType_dealloc(nltkType* self);
+  nltkType__del__(nltkType *self);
+
+/* Type Methods */
+static PyObject*
+  nltkType_get(nltkType *self, PyObject *args);
+static PyObject*
+  nltkType_has(nltkType *self, PyObject *args);
+static PyObject*
+  nltkType_properties(nltkType *self, PyObject *args);
+static nltkType*
+  nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords);
+static nltkType*
+  nltkType_select(nltkType *self, PyObject *args);
+
+/* Type Operators */
+static PyObject*
+  nltkType__repr__(nltkType *self);
+static PyObject*
+  nltkType__getattro__(nltkType *self, PyObject *name);
+static int
+  nltkType__cmp__(nltkType *self, nltkType *other);
+static long
+  nltkType__hash__(nltkType *self);
+
 
 /*********************************************************************
  *  Token
  *********************************************************************/
+/* Several implementations:
+ *    - nltkAbstractToken -- superclass for token implementations.
+ *    - nltkArrayToken -- array-based token.
+ *    - nltkLen1ArrayToken -- array-based token with len=1. */
+
+typedef struct {
+    PyObject_HEAD
+} nltkAbstractToken;
+
+/* The array-based implementation of tokens */
+typedef struct {
+    PyObject_HEAD          /* Object head: refcount & type */
+    int num_properties;    /* # properties defined by this token */
+    char **names;          /* names of properties */
+    PyObject *values;      /* values of properties */
+    int start;             /* location's start index */
+    int end;               /* location's end index */
+    PyObject *unit;        /* location's unit */
+    PyObject *source;      /* location's source */
+    PyTypeObject *real_type;/* Hmmm */
+} nltkArrayToken;
+
+/* The Location types. */
+static PyTypeObject nltkAbstractTokenType;
+static PyTypeObject nltkArrayTokenType;
 
 /*********************************************************************
  *  Module Initialization
