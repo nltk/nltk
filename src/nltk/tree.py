@@ -7,11 +7,6 @@
 #
 # $Id$
 
-# Open questions:
-#     Should "tree" and "treetoken" be "ttree" and "ttreetoken" or
-#       "treettoken" or even "ttreettoken"? :)
-#     Should TreeToken.nodes() return a Tree or a TreeToken?
-
 # To do:
 #   - How should we handle traces and/or movement?
 
@@ -59,20 +54,6 @@ from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq
 import types
 
-def _pytype(obj):
-    """
-    @return: the pytype of C{obj}.  For class instances, this is
-        their class; for all other objects, it is their type, as
-        returned by type().
-    @rtype: C{type} or C{class}
-    @param obj: The object whose pytype should be returned.
-    @type obj: (any)
-    """
-    if type(obj) == types.InstanceType:
-        return obj.__class__
-    else:
-        return type(obj)
-
 ##//////////////////////////////////////////////////////
 ##  Abstract Tree (base class)
 ##//////////////////////////////////////////////////////
@@ -87,6 +68,11 @@ class AbstractTree:
     C{AbstractTree} requires that its subclasses define the member
     variables C{_node} and C{_children}, containing the node value and
     a tuple of the children, respectively.
+
+    @ivar _node: The node value for this tree.
+    @ivar _node: any
+    @ivar _children: A list of this tree's children.
+    @type _children: C{list}
     """
     def __init__(self):
         raise AssertionError('AbstractTree is an abstract class')
@@ -274,17 +260,6 @@ class AbstractTree:
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
-    # These are necessary to allow pickling.  The reason is that we're
-    # keeping a type inside AbstractTree (in _nodetype and
-    # _leaftype)..  Which can't be pickled; we may decide to stop
-    # enforcing consistancy among node & leaf types, in which case we
-    # could get rid of this.
-    def __getstate__(self):
-        return [self._node, self._children]
-    def __setstate__(self, state):
-        [node, children] = state
-        self.__init__(node, *children)
-
 ##//////////////////////////////////////////////////////
 ##  Text Trees (Type)
 ##//////////////////////////////////////////////////////
@@ -334,22 +309,6 @@ class Tree(AbstractTree):
         'cat'
         >>> tree[()]
         ('S': ('NP': 'the', 'cat'), ('VP': 'ate'))
-
-    Type Checking
-    =============
-    A C{Tree}'s X{leaf set} consists of the leaf children of the
-    C{Tree} and the leaf sets of its subtrees.  All leaves in a tree's
-    leaf set must have the same pytype.  A C{Tree}'s X{node value
-    set} consists of the node value of the C{Tree} and the node value
-    sets of its subtrees.  All node values in a tree's node value set
-    must have the same pytype.
-
-    @ivar _nodetype: The pytype of this C{Tree}'s nodes.  (Used to 
-        enforce consistancy conditions).
-    @type _nodetype: C{type} or C{class}
-    @ivar _leaftype: The pytype of this C{Tree}'s leaves. (Used to
-        enforce consistancy conditions).
-    @type _leaftype: C{type} or C{class}
     """
     def __init__(self, node, *children):
         """
@@ -375,29 +334,6 @@ class Tree(AbstractTree):
         """
         self._node = node
         self._children = children
-
-        # Derive our _nodetype and _leaftype.  If there are no
-        # consistant values for _nodetype and _leaftype, raise an
-        # exception.
-        self._nodetype = _pytype(node)
-        self._leaftype = None
-        for child in children:
-            if isinstance(child, Tree):
-                c_nodetype = child._nodetype
-                c_leaftype = child._leaftype
-            else:
-                c_nodetype = None
-                c_leaftype = _pytype(child)
-            if (c_nodetype is not None and
-                self._nodetype != c_nodetype):
-                raise TypeError("All nodes in a Tree must have the "+
-                                "same Python type.")
-            if (self._leaftype is not None and c_leaftype is not None and
-                self._leaftype != c_leaftype):
-                raise TypeError("All leaves in a Tree must have the "+
-                                "same Python type.")
-            if (self._leaftype == None and c_leaftype is not None):
-                self._leaftype = c_leaftype
 
     def pp(self, margin=70, indent=0):
         """
@@ -536,21 +472,6 @@ class TreeToken(AbstractTree, Token):
         >>> treetok[()]
         ('S': ('NP': 'the', 'cat'), ('VP': 'ate'))@[0w:3w]
 
-    Type Checking
-    =============
-    A C{TreeToken}'s X{leaf set} consists of the leaf children of the
-    C{TreeToken} and the leaf sets of its subtrees.  All leaves in a tree's
-    leaf set must have text types with the same pytype.  A C{TreeToken}'s
-    X{node value set} consists of the node value of the C{TreeToken} and
-    the node value sets of its subtrees.  All node values in a tree's
-    node value set must have the same pytype.
-
-    @ivar _nodetype: The pytype of this C{TreeToken}'s nodes.  (Used to 
-        enforce consistancy conditions).
-    @type _nodetype: C{type} or C{class}
-    @ivar _leaftype: The pytype of this C{TreeToken}'s leaves' types.
-        (Used to enforce consistancy conditions).
-    @type _leaftype: C{type} or C{class}
     @ivar _loc: The location of this TreeToken.  Computed to enforce
         consistancy conditions; also used by the loc() method.
     @type _loc: C{Location}
@@ -579,29 +500,6 @@ class TreeToken(AbstractTree, Token):
         assert _chktype('vararg', children, (Token, TreeToken))
         self._node = node
         self._children = children
-
-        # Derive our _nodetype and _leaftype.  If there are no
-        # consistant values for _nodetype and _leaftype, raise an
-        # exception.
-        self._nodetype = _pytype(node)
-        self._leaftype = None
-        for child in children:
-            if isinstance(child, TreeToken):
-                c_nodetype = child._nodetype
-                c_leaftype = child._leaftype
-            else:
-                c_nodetype = None
-                c_leaftype = _pytype(child.type())
-            if (c_nodetype is not None and
-                self._nodetype != c_nodetype):
-                raise TypeError("All nodes in a TreeToken must "+
-                                "have the same Python type.")
-            if (self._leaftype is not None and c_leaftype is not None and
-                self._leaftype != c_leaftype):
-                raise TypeError("All leaves in a TreeToken must "+
-                                "have the same Python type.")
-            if (self._leaftype == None and c_leaftype is not None):
-                self._leaftype = c_leaftype
 
         # Find/check our location.
         start = None
