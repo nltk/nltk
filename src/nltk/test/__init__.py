@@ -8,7 +8,7 @@
 # $Id$
 
 """
-Unit tests for the NLP toolkit.
+Unit tests for the NLTK modules.
 """
 
 import unittest
