@@ -24,15 +24,18 @@ different text-tree tokens might all have the same text-tree type.
 For example, if the sentence \"the dog chased the cat\" occurs three
 times in a document, each occurance of the sentence will have a
 different text-tree token; but all three text-tree tokens will have
-the same text-tree type.
+the same text-tree type.  The term X{text-tree} (or X{tree} for short)
+can be used to refer to both text-tree types and text-tree tokens.
 
 The tree module defines the C{Tree} class to represent text-tree
 types, and the C{TreeToken} class to represent text-tree tokens.
 C{TreeToken} is a subclass of C{Token}; thus, C{TreeToken}s have
 locations, which can be used to distinguish different C{TreeToken}s
-with the same text-tree type.  See the documentation for the C{Tree}
-and C{TreeToken} classes for more information on how text-tree types
-and tokens are represented.
+with the same text-tree type.  C{Tree}s and C{TreeToken}s are both
+children of the abstract class C{AbstractTree}, which defines many
+procedures that the two classes have in common.  See the documentation
+for the C{Tree} and C{TreeToken} classes for more information on how
+text-tree types and tokens are represented.
 
 Text-tree types can be constructed from strings using any one of a
 number of X{parsing functions}.  These function differ in that they
@@ -74,9 +77,215 @@ def _pytype(obj):
         return type(obj)
 
 ##//////////////////////////////////////////////////////
+##  Abstract Tree (base class)
+##//////////////////////////////////////////////////////
+class AbstractTree:
+    """
+    An abstract class for homogenous hierarchical structures spanning
+    text types or tokens.  C{AbstractClass} defines many member
+    functions that are shared by C{Tree} and C{TreeToken}.
+    C{AbstractTree} is an abstract class, and it should not be
+    directly instantiated.
+
+    C{AbstractTree} requires that its subclasses define the member
+    variables C{_node} and C{_children}, containing the node value and
+    a tuple of the children, respectively.
+    """
+    def __init__(self):
+        raise AssertionError('AbstractTree is an abstract class')
+    
+    def node(self):
+        """
+        @return: this tree's node value.  The node value associates
+            information with the entire tree.  For example, node
+            values might be used to label syntactic constituents with
+            phrase tags, such as \"NP\" and\"VP\".
+        @rtype: I{nodetype}
+        """
+        return self._node
+
+    def children(self):
+        """
+        @return: this tree's children.
+        @rtype: C{tuple}
+        """
+        return self._children
+
+    def __getitem__(self, index):
+        """
+        @return: the specified child, children, or descendant.  If
+            C{index} is an integer, then return
+            C{self.children()[index]}.  If C{index} is a span
+            C{start:stop}, then return C{self.children()[start:stop]}.
+            If C{index} is a tuple C{M{i1}, M{i2}, ..., M{in}}, then
+            return C{self.children()[M{i1}][M{i2}]...[M{in}]}.            
+        @rtype: I{tree} or I{leaftype};
+            or C{list} of (I{tree} or I{leaftype})
+        @param index: An integer, slice, or tree position indicating
+            which children to return.
+        @type index: C{int} or C{slice} or (C{list} of C{int})
+        @raise IndexError: If the specified child does not exist.
+        """
+        _chktype("AbstractTree.__getitem__",
+                 1, index, (_IntType, _SliceType, _TupleType))
+        if type(index) == _IntType:
+            return self._children[index]
+        elif type(index) == _SliceType:
+            return self._children[index.start:index.stop]
+        elif len(index) == 0:
+            return self
+        elif len(index) == 1:
+            return self._children[index[0]]
+        else:
+            return self._children[index[0]][index[1:]]
+
+    def __len__(self):
+        """
+        @return: The number of children this tree has.
+        @rtype: C{int}
+        """
+        return len(self._children)
+
+    def leaves(self):
+        """
+        @return: a tuple containing this tree's leaf set.  The
+            order of leaves in the tuple reflects the order of the
+            leaves in the tree's hierarchical structure.
+        @rtype: C{tuple} of I{leaftype}
+        """
+        leaves = []
+        for child in self._children:
+            if isinstance(child, AbstractTree):
+                leaves.extend(child.leaves())
+            else:
+                leaves.append(child)
+        return tuple(leaves)
+
+    def nodes(self):
+        """
+        @return: a new tree that contains all of this tree's
+            nodes, but no leaves.
+        @rtype: I{tree}
+        """
+        newchildren = [c for c in self._children
+                       if isinstance(c, AbstractTree)]
+        # Return a new tree containing only the nodes.
+        # "self.__class__" is the constructor for this class.
+        return self.__class__(self.node(), *newchildren)
+
+    def height(self):
+        """
+        @return: The height of this tree.  The height of a tree
+            containing no children is 1; the height of a tree
+            containing only leaves is 2; and the height of any other
+            tree is one plus the maximum of its children's
+            heights.
+        @rtype: C{int}
+        """
+        max_child_height = 0
+        for child in self._children:
+            if isinstance(child, AbstractTree):
+                max_child_height = max(max_child_height, child.height())
+            else:
+                max_child_height = 1
+        return 1 + max_child_height
+
+    def with_substitution(self, treepos, substitution):
+        """
+        @return: A new tree that is equal to this
+            tree, except that the subtree or leaf identified
+            by C{treepos} is replaced by C{substitution}.
+        @rtype: I{tree}
+        @param treepos: A list of child indices specifying the path
+            from the root of the tree to the subtree or leaf that
+            should be replaced.
+        @type treepos: C{list} of C{int}
+        @param substitution: The new subtree or leaf that should be
+            substituted in to this tree.
+        @type substitution: I{tree} or I{leaftype}
+        """
+        if treepos == ():
+            return substitution
+        else:
+            if not (0 <= treepos[0] < len(self._children)):
+                raise IndexError('Bad tree position')
+            
+            # Find the new child list.
+            new_children = list(self._children)
+            child = self._children[treepos[0]]
+            if isinstance(child, AbstractTree):
+                newchild = child.with_substitution(treepos[1:], substitution)
+                new_children[treepos[0]] = newchild
+            elif len(treepos) == 1:
+                new_children[treepos[0]] = substitution
+            else:
+                raise IndexError('Bad tree position')
+
+            # Return a tree with the new child list.
+            # "self.__class__" is the constructor for this class.
+            return self.__class__(self._node, *new_children)
+    
+    def __eq__(self, other):
+        """
+        @return: true if this tree is equal to C{other}.  In
+            particular, return true if C{self.node()==other.node()},
+            C{self.len()==other.len()}, and C{self[i]==other[i]} for
+            all i, 0 <= i < self.len()
+        @rtype: C{boolean}
+        """
+        _chkclass(self, other)
+        return (self._node == other._node and
+                self._children == other._children)
+
+    def __hash__(self):
+        return hash((self._node, self._children))
+
+    def __ne__(self, other):
+        """
+        @return: true if this tree is not equal to C{other}.  In
+            particular, return false if C{self.node()==other.node()},
+            C{self.len()==other.len()}, and C{self[i]==other[i]} for
+            all i, 0 <= i < self.len()
+        @rtype: C{boolean}
+        """
+        return not (self == other)
+
+    def __cmp__(self, other):
+        """
+        No ordering relationship is defined over C{Tokens}; raise an
+        exception.
+
+        @raise AssertionError:
+        """
+        raise AssertionError("Ordering relations are not "+
+                             "defined over trees")
+
+    def draw(self):
+        """
+        Open a new window containing a graphical diagram of this tree.
+        
+        @rtype: None
+        """
+        # Note: this method introduces a circular dependancy between
+        # modules.  However, this circularity is only a matter of
+        # convenience.  In particular, we believe that it is more
+        # intuitive for students to run "mytree.draw()" than
+        # "draw.tree.drawtree(mytree)".
+        from nltk.draw import CanvasFrame
+        from nltk.draw.tree import TreeWidget
+        cf = CanvasFrame()
+        bold = ('helvetica', 12, 'bold')
+        widget = TreeWidget(cf.canvas(), self, node_font=bold,
+                            leaf_color='#008040', node_color='#004080',
+                            roof_color='#004040', roof_fill='white',
+                            line_color='#004040', draggable=1)
+        widget.bind_click_trees(widget.toggle_collapsed)
+        cf.add_widget(widget)
+
+##//////////////////////////////////////////////////////
 ##  Text Trees (Type)
 ##//////////////////////////////////////////////////////
-class Tree:
+class Tree(AbstractTree):
     """
     A homogenous hierarchical structure spanning text types.  A
     C{Tree} consists of a X{node value} and zero or more X{children}.
@@ -91,9 +300,43 @@ class Tree:
     C{Tree} objects that are used to encode the structure of the
     C{Tree}.
 
+    A tree's children can be accessed using the indexing operator:
+
+        >>> tree = Tree('S', Tree('NP', 'the', 'cat'),
+        ...                  Tree('VP', 'ate'))
+        >>> tree[0]
+        ('NP': 'the', 'cat')
+        >>> tree[1][0]
+        'ate'
+
+    A tree's children can be iterated over using C{for} expressions:
+
+        >>> for child in tree:
+        ...     print child
+        ('NP': 'the', 'cat')
+        ('VP': 'ate')
+
+    A tree's descendants can be accessed using tree positions.  A
+    X{tree position} is a tuple of child indices specifying the path
+    from a tree's root to one of its descendants.  In particular, the
+    tree position C{()} specifies the root of a tree; and if C{M{p}}
+    is the tree position of descendant M{d}, then C{M{p}+(M{i})}
+    specifies the C{M{i}}th child of M{d}.  Tree positions may be used
+    with the indexing operator to access a tree or its descendants:
+
+        >>> tree[1, 0]
+        'ate'
+        >>> pos = (0, 1)
+        >>> tree[pos]
+        'cat'
+        >>> tree[()]
+        ('S': ('NP': 'the', 'cat'), ('VP': 'ate'))
+
+    Type Checking
+    =============
     A C{Tree}'s X{leaf set} consists of the leaf children of the
     C{Tree} and the leaf sets of its subtrees.  All leaves in a tree's
-    leaf set must have the same pytype.  A C{Tree}'s X{nodes values
+    leaf set must have the same pytype.  A C{Tree}'s X{node value
     set} consists of the node value of the C{Tree} and the node value
     sets of its subtrees.  All node values in a tree's node value set
     must have the same pytype.
@@ -153,75 +396,25 @@ class Tree:
             if (self._leaftype == None and c_leaftype is not None):
                 self._leaftype = c_leaftype
 
-    def node(self):
-        """
-        Return this C{Tree}'s node value.  The node value associates
-        information with the entire C{Tree}.  For example, node values
-        might be used to label syntactic constituents with phrase
-        tags, such as \"NP\" and\"VP\".
-    
-        @return: this C{Tree}'s node value.
-        @rtype: (nodetype)
-        """
-        return self._node
-
-    def children(self):
-        """
-        Return this C{Tree}'s children.
-
-        @return: this C{Tree}'s children.
-        @rtype: C{tuple}
-        """
-        return self._children
-
-    def __getitem__(self, index):
-        """
-        @return: the specified child or children.
-        @rtype: C{Tree} or (leaftype); or C{list} of (C{Tree} or (leaftype))
-        @param index: An integer, slice, or tree location indicating
-            which children to return.
-        @type index: C{int} or C{slice} or (C{list} of C{int})
-        @raise IndexError: If the specified child does not exist.
-        """
-        _chktype("Tree.__getitem__", 1, index, (_IntType, _SliceType,
-                                                _TupleType))
-        if type(index) == _SliceType:
-            return self._children[index.start:index.stop]
-        elif type(index) == _IntType:
-            return self._children[index]
-        elif len(index) == 0:
-            return self
-        elif len(index) == 1:
-            return self._children[index[0]]
-        else:
-            return self._children[index[0]][index[1:]]
-
-    def __len__(self):
-        """
-        @return: The number of children this C{Tree} has.
-        @rtype: C{int}
-        """
-        return len(self._children)
-
     def pp(self, margin=70, indent=0):
         """
-        @return: A pretty-printed string representation of this C{Tree}.
+        @return: A pretty-printed string representation of this tree.
         @rtype: C{string}
         @param margin: The right margin at which to do line-wrapping.
         @type margin: C{int}
         @param indent: The indentation level at which printing
             begins.  This number is used to decide how far to indent
-            subsequent lnes.
+            subsequent lines.
         @type indent: C{int}
         """
-        _chktype("Tree.pp", 1, margin, (_IntType,))
-        _chktype("Tree.pp", 2, indent, (_IntType,))
+        _chktype("AbstractTree.pp", 1, margin, (_IntType,))
+        _chktype("AbstractTree.pp", 2, indent, (_IntType,))
         rep = repr(self)
         if len(rep)+indent < margin:
             return rep
         str = '('+repr(self._node)+':'
         for child in self._children:
-            if isinstance(child, Tree):
+            if isinstance(child, AbstractTree):
                 str += '\n'+' '*(indent+2)+child.pp(margin, indent+2)
             else:
                 str += '\n'+' '*(indent+2)+repr(child)
@@ -229,7 +422,7 @@ class Tree:
 
     def __repr__(self):
         """
-        @return: A concise string representation of this C{Tree}.
+        @return: A concise string representation of this tree.
         @rtype: C{string}
         """
         str = '('+repr(self._node)+':'
@@ -239,151 +432,15 @@ class Tree:
 
     def __str__(self):
         """
-        @return: A verbose string representation of this C{Tree}.
+        @return: A verbose string representation of this tree.
         @rtype: C{string}
         """
         return self.pp()
 
-    def leaves(self):
-        """
-        @return: a tuple containing this C{Tree}'s leaf set.  The
-            order of leaves in the tuple reflects the order of the
-            leaves in the C{Tree}'s hierarchical structure.
-        @rtype: C{tuple} of (leaftype)
-        """
-        leaves = []
-        for child in self._children:
-            if isinstance(child, Tree):
-                leaves.extend(child.leaves())
-            else:
-                leaves.append(child)
-        return tuple(leaves)
-
-    def nodes(self):
-        """
-        @return: a new C{Tree} that contains all of this C{Tree}'s
-            nodes, but no leaves.
-        @rtype: C{Tree}
-        """
-        newchildren = []
-        for child in self._children:
-            if isinstance(child, Tree):
-                newchildren.append(child.nodes())
-        return Tree(self.node(), *newchildren)
-
-    def height(self):
-        """
-        @return: The height of this C{Tree}.  The height of a C{Tree}
-            containing no children is 1; the height of a C{Tree}
-            containing only leaves is 2; and the height of any other
-            C{Tree} is one plus the maximum of its children's
-            heights.
-        @rtype: C{int}
-        """
-        max_child_height = 0
-        for child in self._children:
-            if isinstance(child, Tree):
-                max_child_height = max(max_child_height, child.height())
-            else:
-                max_child_height = 1
-        return 1 + max_child_height
-
-    def with_substitution(self, treepos, substitution):
-        """
-        @return: A new C{Tree} that is equal to this
-            C{Tree}, except that the subtree or leaf identified
-            by C{treepos} is replaced by C{substitution}.
-        @rtype: C{Tree}
-        @param treepos: A list of child indices specifying the path
-            from the root of the tree to the subtree or a leaf that
-            should be replaced.
-        @type treepos: C{list} of C{int}
-        @param substitution: The new subtree or leaf that should be
-            substituted in to this C{Tree}.
-        @type substitution: C{Tree} or (leaftype)
-        """
-        if treepos == ():
-            return substitution
-        else:
-            if not (0 <= treepos[0] < len(self._children)):
-                raise IndexError('Bad tree position')
-            
-            # Find the new child list.
-            new_children = list(self._children)
-            child = self._children[treepos[0]]
-            if isinstance(child, Tree):
-                newchild = child.with_substitution(treepos[1:], substitution)
-                new_children[treepos[0]] = newchild
-            elif len(treepos) == 1:
-                new_children[treepos[0]] = substitution
-            else:
-                raise IndexError('Bad tree position')
-
-            # Return a tree with the new child list.
-            return Tree(self._node, *new_children)
-    
-    def __eq__(self, other):
-        """
-        @return: true if this C{Tree} is equal to C{other}.  In
-            particular, return true if C{self.node()==other.node()},
-            C{self.len()==other.len()}, and C{self[i]==other[i]} for
-            all i, 0 <= i < self.len()
-        @rtype: C{boolean}
-        """
-        _chkclass(self, other)
-        return (self._node == other._node and
-                self._children == other._children)
-
-    def __hash__(self):
-        return hash((self._node, self._children))
-
-    def __ne__(self, other):
-        """
-        @return: true if this C{Tree} is not equal to C{other}.  In
-            particular, return false if C{self.node()==other.node()},
-            C{self.len()==other.len()}, and C{self[i]==other[i]} for
-            all i, 0 <= i < self.len()
-        @rtype: C{boolean}
-        """
-        return not (self == other)
-
-    def __cmp__(self, other):
-        """
-        No ordering relationship is defined over C{Tokens}; raise an
-        exception.
-
-        @raise AssertionError:
-        """
-        raise AssertionError("Ordering relations are not "+
-                             "defined over Trees")
-
-    def draw(self):
-        """
-        Open a graphical window containing a diagram of the text
-        tree.
-        
-        @rtype: None
-        """
-        # Note: this method introduces a circular dependancy between
-        # modules.  However, this circularity is only a matter of
-        # convenience.  In particular, we believe that it is more
-        # intuitive for students to run "mytree.draw()" than
-        # "draw.tree.drawtree(mytree)".
-        from nltk.draw import CanvasFrame
-        from nltk.draw.tree import TreeWidget
-        cf = CanvasFrame()
-        bold = ('helvetica', 12, 'bold')
-        widget = TreeWidget(cf.canvas(), self, node_font=bold,
-                            leaf_color='#008040', node_color='#004080',
-                            roof_color='#004040', roof_fill='white',
-                            line_color='#004040', draggable=1)
-        widget.bind_click_trees(widget.toggle_collapsed)
-        cf.add_widget(widget)
-
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
 ##//////////////////////////////////////////////////////
-class TreeToken(Token):
+class TreeToken(AbstractTree, Token):
     """
     A homogenous hierarchical structure spanning text tokens.  I.e., a
     single occurance of a C{Tree}.  A C{TreeToken} consists of a
@@ -399,10 +456,45 @@ class TreeToken(Token):
     C{TreeToken} objects that are used to encode the structure of the
     C{TreeToken}.
 
+    A tree's children can be accessed using the indexing operator:
+
+        >>> words = tokenizer.tokenize("the cat ate")
+        >>> treetok = TreeToken('S', TreeToken('NP', words[0], words[1]),
+        ...                          TreeToken('VP', words[2]))
+        >>> treetok[0]
+        ('NP': 'the' 'cat')@[0w:2w]
+        >>> treetok[1][0]
+        'ate'@[2w]
+
+    A tree's children can be iterated over using C{for} expressions:
+
+        >>> for child in treetok:
+        ...     print child
+        ('NP': 'the' 'cat')@[0w:2w]
+        ('VP': 'ate')@[2w]
+
+    A tree's descendants can be accessed using tree positions.  A
+    X{tree position} is a tuple of child indices specifying the path
+    from a tree's root to one of its descendants.  In particular, the
+    tree position C{()} specifies the root of a tree; and if C{M{p}}
+    is the tree position of descendant M{d}, then C{M{p}+(M{i})}
+    specifies the C{M{i}}th child of M{d}.  Tree positions may be used
+    with the indexing operator:
+
+        >>> treetok[1, 0]
+        'ate'@[2w]
+        >>> pos = (0, 1)
+        >>> treetok[pos]
+        'cat'@[1w]
+        >>> treetok[()]
+        ('S': ('NP': 'the', 'cat'), ('VP': 'ate'))@[0w:3w]
+
+    Type Checking
+    =============
     A C{TreeToken}'s X{leaf set} consists of the leaf children of the
     C{TreeToken} and the leaf sets of its subtrees.  All leaves in a tree's
     leaf set must have text types with the same pytype.  A C{TreeToken}'s
-    X{nodes values set} consists of the node value of the C{TreeToken} and
+    X{node value set} consists of the node value of the C{TreeToken} and
     the node value sets of its subtrees.  All node values in a tree's
     node value set must have the same pytype.
 
@@ -491,57 +583,6 @@ class TreeToken(Token):
                                       unit=prevloc.unit(),
                                       source=prevloc.source())
 
-    def node(self):
-        """
-        Return this C{TreeToken}'s node value.  The node value
-        associates information with the entire C{TreeToken}.  For
-        example, node values might be used to label syntactic
-        constituents with phrase tags, such as \"NP\" and\"VP\".
-    
-        @return: this C{TreeToken}'s node value.
-        @rtype: (nodetype)
-        """
-        return self._node
-
-    def children(self):
-        """
-        Return this C{TreeToken}'s children.
-
-        @return: this C{TreeToken}'s children.
-        @rtype: C{tuple}
-        """
-        return self._children
-
-    def __getitem__(self, index):
-        """
-        @return: the specified child or children.
-        @rtype: C{TreeToken} or C{Token};
-            or C{list} of (C{TreeToken} or C{Token})
-        @param index: An integer, slice, or tree location indicating
-            which children to return.
-        @type index: C{int} or C{slice} or (C{list} of C{int})
-        @raise IndexError: If the specified child does not exist.
-        """
-        _chktype("TreeToken.__getitem__", 1, index, (_IntType, _SliceType,
-                                                     _TupleType))
-        if type(index) == _SliceType:
-            return self._children[index.start:index.stop]
-        elif type(index) == _IntType:
-            return self._children[index]
-        elif len(index) == 0:
-            return self
-        elif len(index) == 1:
-            return self._children[index[0]]
-        else:
-            return self._children[index[0]][index[1:]]
-            
-    def __len__(self): 
-        """
-        @return: The number of children this C{TreeToken} has.
-        @rtype: C{int}
-        """
-        return len(self._children)
-    
     def type(self):
         """
         Return the C{Tree} of which this C{TreeToken} is an occurance.
@@ -608,143 +649,6 @@ class TreeToken(Token):
         @rtype: C{string}
         """
         return self.pp()
-
-    def leaves(self):
-        """
-        @return: a tuple containing this C{TreeToken}'s leaf set.  The
-            order of leaves in the tuple reflects the order of the
-            leaves in the C{TreeToken}'s hierarchical structure.
-        @rtype: C{tuple} of C{Token}
-        """
-        leaves = []
-        for child in self._children:
-            if isinstance(child, TreeToken):
-                leaves.extend(child.leaves())
-            else:
-                leaves.append(child)
-        return tuple(leaves)
-
-    def nodes(self):
-        """
-        @return: a new C{TreeToken} that contains all of this
-            C{TreeToken}'s nodes, but no leaves.
-        @rtype: C{TreeToken}
-        """
-        newchildren = []
-        for child in self._children:
-            if isinstance(child, TreeToken):
-                newchildren.append(child.nodes())
-        return TreeToken(self.node(), *newchildren)
-
-    def height(self):
-        """
-        @return: The height of this C{TreeToken}.  The height of a
-            C{TreeToken} containing no children is 1; the height of a
-            C{TreeToken} containing only leaves is 2; and the height
-            of any other C{TreeToken} is one plus the maximum of its
-            children's heights.
-        @rtype: C{int}
-        """
-        max_child_height = 0
-        for child in self._children:
-            if isinstance(child, TreeToken):
-                max_child_height = max(max_child_height, child.height())
-            else:
-                max_child_height = 1
-        return 1 + max_child_height
-
-    def with_substitution(self, treepos, substitution):
-        """
-        @return: A new C{TreeToken} that is equal to this
-            C{TreeToken}, except that the subtree or leaf identified
-            by C{treepos} is replaced by C{substitution}.
-        @rtype: C{TreeToken}
-        @param treepos: A list of child indices specifying the path
-            from the root of the tree to the subtree or a leaf that
-            should be replaced.
-        @type treepos: C{list} of C{int}
-        @param substitution: The new subtree or leaf that should be
-            substituted in to this C{TreeToken}.
-        @type substitution: C{TreeToken} or C{Token}
-        """
-        if treepos == ():
-            return substitution
-        else:
-            if not (0 <= treepos[0] < len(self._children)):
-                raise IndexError('Bad tree position')
-            
-            # Find the new child list.
-            new_children = list(self._children)
-            child = self._children[treepos[0]]
-            if isinstance(child, TreeToken):
-                newchild = child.with_substitution(treepos[1:], substitution)
-                new_children[treepos[0]] = newchild
-            elif len(treepos) == 1:
-                new_children[treepos[0]] = substitution
-            else:
-                raise IndexError('Bad tree position')
-
-            # Return a tree token with the new child list.
-            return TreeToken(self._node, *new_children)
-    
-    def __hash__(self):
-        return hash((self._node, self._children))
-
-    def __eq__(self, other):
-        """
-        @return: true if this C{TreeToken} is equal to C{other}.  In
-            particular, return true if C{self.node()==other.node()},
-            C{self.len()==other.len()}, and C{self[i]==other[i]} for
-            all i, 0 <= i < self.len()
-        @rtype: C{boolean}
-        """
-        _chkclass(self, other)
-        return (self._node == other._node and
-                self._children == other._children)
-
-    def __ne__(self, other):
-        """
-        @return: true if this C{TreeToken} is not equal to C{other}.
-            In particular, return false if
-            C{self.node()==other.node()}, C{self.len()==other.len()},
-            and C{self[i]==other[i]} for all i, 0 <= i < self.len()
-        @rtype: C{boolean}
-        """
-        return not (self == other)
-
-    def __cmp__(self, other):
-        """
-        No ordering relationship is defined over C{Tokens}; raise an
-        exception.
-        
-        @raise AssertionError: 
-        """
-        raise AssertionError("Ordering relations are not "+
-                             "defined over TreeTokens")
-
-    def draw(self):
-        """
-        Open a graphical window containing a diagram of the text
-        tree token.
-
-        @rtype: None
-        """
-        # Note: this method introduces a circular dependancy between
-        # modules.  However, this circularity is only a matter of
-        # convenience.  In particular, we believe that it is more
-        # intuitive for students to run "mytree.draw()" than
-        # "draw.tree.drawtree(mytree)".
-        from nltk.draw import CanvasFrame
-        from nltk.draw.tree import TreeWidget
-        cf = CanvasFrame()
-        bold = ('helvetica', 12, 'bold')
-        widget = TreeWidget(cf.canvas(), self, node_font=bold,
-                            leaf_color='#008040', node_color='#004080',
-                            roof_color='#004040', roof_fill='white',
-                            loc_color='#604000', line_color='#004040',
-                            draggable=1)
-        widget.bind_click_trees(widget.toggle_collapsed)
-        cf.add_widget(widget)
 
 class ProbabilisticTreeToken(TreeToken, ProbabilisticMixIn):
     def __init__(self, p, node, *children):
