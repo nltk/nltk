@@ -23,14 +23,28 @@
  *     >>> import nltk._ctoken
  */
 
+//
+// TO DO:
+//   - define Type.__cmp__
+//   - override __setattr__ in Type,Token
+//   - try maintaining properties in sorted order? (by id)
+
 #ifndef CTOKEN_H
 #define CTOKEN_H
 
 /*********************************************************************
- *  Location Context
+ *  Configuration Parameters
  *********************************************************************/
 
-/* This struct is used to pair together a unit and a source.  Since
+/* How large is the cache for location contexts?  Larger caches
+ * increase the chance for sharing (unit,source) pairs, but make cache
+ * lookup slower.  */
+#define LC_CACHE_SIZE 5
+
+/*********************************************************************
+ *  Location Context
+ *********************************************************************
+ * This struct is used to pair together a unit and a source.  Since
  * we're often dealing with many tokens that all have the same unit
  * and source, we can save 1 word/location by having each location
  * point to a single nltkLocationContext object.
@@ -42,6 +56,7 @@
  *
  * nltkLocationContext objects are entirely internal to the ctoken
  * implementation; they are not visible from the python interface. */
+
 typedef struct {
     int refcount;
     PyObject *unit;
@@ -79,9 +94,8 @@ PyObject *normalizeUnitCase(PyObject *string);
 
 /*********************************************************************
  *  Location
- *********************************************************************/
-
-/* We define two implementations of the Location type.  The first
+ *********************************************************************
+ * We define two implementations of the Location type.  The first
  * implementation (struct=nltkLocation, type=nltkLocationType) stores
  * both the start and the end index; and the second implementation
  * (struct=nltkLen1Location, type=nltkLen1LocationType) stores only
@@ -113,50 +127,18 @@ typedef struct {
 static PyTypeObject nltkLocationType;
 static PyTypeObject nltkLen1LocationType;
 
-/* A macro to test if something's a Location. */
-#define is_nltkLocation(v) ((v)->ob_type == &nltkLocationType)
-#define is_nltkLen1Location(v) ((v)->ob_type == &nltkLen1LocationType)
-#define nltkLocation_END(ob) (is_nltkLen1Location(ob) ? \
-                                  ((ob)->start+1) :\
-                                  ((ob)->end))
+/* Macros to test if something's a Location.  Note that we don't allow
+ * new subtypes of nltkLocation to be defined, so nltkLocation_Check
+ * can check directly. */
+#define nltkLocation_CheckExact(op) ((op)->ob_type == &nltkLocationType)
+#define nltkLen1Location_Check(op) ((op)->ob_type == &nltkLen1LocationType)
+#define nltkLocation_Check(op) (nltkLocation_CheckExact(op) || \
+                                nltkLen1Location_Check(op))
 
-/* Location Constructor & Destructor */
-static PyObject *
-  nltkLocation__new__(PyTypeObject* type, PyObject *args, PyObject *keywords);
-static void
-  nltkLocation__del__(nltkLocation* self);
-
-/* Location Methods */
-static PyObject *
-  nltkLocation_length(nltkLocation* self, PyObject *args);
-static nltkLocation *
-  nltkLocation_start_loc(nltkLocation* self, PyObject *args);
-static nltkLocation *
-  nltkLocation_end_loc(nltkLocation* self, PyObject *args);
-static nltkLocation *
-  nltkLocation_union(nltkLocation* self, PyObject *args);
-static PyObject *
-  nltkLocation_prec(nltkLocation* self, PyObject *args);
-static PyObject *
-  nltkLocation_succ(nltkLocation* self, PyObject *args);
-static PyObject *
-  nltkLocation_overlaps(nltkLocation* self, PyObject *args);
-static PyObject *
-  nltkLocation_select(nltkLocation* self, PyObject *args);
-
-/* Location operators */
-static PyObject *
-  nltkLocation__repr__(nltkLocation *self);
-static PyObject *
-  nltkLocation__str__(nltkLocation *self);
-static int
-  nltkLocation__len__(nltkLocation *self);
-static int
-  nltkLocation__cmp__(nltkLocation *self, nltkLocation *other);
-static long
-  nltkLocation__hash__(nltkLocation *self);
-static nltkLocation *
-  nltkLocation__add__(nltkLocation *self, nltkLocation *other);
+/* Get the end index of a location (works for both implementations) */
+#define nltkLocation_END(op) (nltkLen1Location_Check(op) ? \
+                                  ((op)->start+1) :\
+                                  ((op)->end))
 
 /*********************************************************************
  *  Type
@@ -164,7 +146,7 @@ static nltkLocation *
 
 /* The struct that is used to encode Type instances. */
 typedef struct {
-    PyObject_VAR_HEAD        /* Object head: refcount & type & size */
+    PyObject_VAR_HEAD         /* Object head: refcount & type & size */
     PyObject *properties[1];  /* alternating list of (value/name) */
 } nltkType;
 
@@ -176,69 +158,41 @@ typedef struct {
 static PyTypeObject nltkTypeType;
 
 /* A macro to test if something's a Type. */
-#define is_nltkType(v) PyType_IsSubtype(&nltkTypeType, (v)->ob_type)
-
-/* Type Constructor & Destructor */
-static PyObject*
-  nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords);
-static int
-  nltkType__init__(nltkType *self, PyObject *args, PyObject *keywords);
-static void
-  nltkType__del__(nltkType *self);
-
-/* Type Methods */
-static PyObject*
-  nltkType_get(nltkType *self, PyObject *args);
-static PyObject*
-  nltkType_has(nltkType *self, PyObject *args);
-static PyObject*
-  nltkType_properties(nltkType *self, PyObject *args);
-static nltkType*
-  nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords);
-static nltkType*
-  nltkType_select(nltkType *self, PyObject *args);
-
-/* Type Operators */
-static PyObject*
-  nltkType__repr__(nltkType *self);
-static PyObject*
-  nltkType__getattro__(nltkType *self, PyObject *name);
-static int
-  nltkType__cmp__(nltkType *self, nltkType *other);
-static long
-  nltkType__hash__(nltkType *self);
-
+#define nltkType_Check(v) PyType_IsSubtype(&nltkTypeType, (v)->ob_type)
 
 /*********************************************************************
  *  Token
  *********************************************************************/
-/* Several implementations:
- *    - nltkAbstractToken -- superclass for token implementations.
- *    - nltkArrayToken -- array-based token.
- *    - nltkLen1ArrayToken -- array-based token with len=1. */
 
-/* The array-based implementation of tokens.  N.b. that this is (for
- * the most part) binary-compatible with nltkType; so we can reuse
- * methods. */
+/* The struct that is used to encode Token instances. */
 typedef struct {
     PyObject_HEAD            /* Object head: refcount & type */
-    int num_props;           /* num properties defined by this token */
-    PyObject **properties;   /* alternating list of (value/name) */
-    PyObject *loc;           /* Location */
+    nltkType *type;          /* The token's type */
+    PyObject *loc;           /* The token's location */
 } nltkToken;
-
-/* Use these macros to access nltkToken.properties. */
-#define nltkToken_PROP_NAME(ob, n) ((ob)->properties[(n)*2])
-#define nltkToken_PROP_VALUE(ob, n) ((ob)->properties[(n)*2+1])
 
 /* The Token type. */
 static PyTypeObject nltkTokenType;
 
-/*********************************************************************
- *  Module Initialization
- *********************************************************************/
+/* A macro to test if something's a Token. */
+#define nltkToken_Check(v) PyType_IsSubtype(&nltkTokenType, (v)->ob_type)
 
-/* Module Initialization */
-DL_EXPORT(void) init_ctoken(void);
+/*********************************************************************
+ *  InlinedToken
+ *********************************************************************
+ * This specialized implementation of Token has less space overhead
+ * than nltkToken.  However, this smaller size comes at a cost:
+ * whenver the token's type or location is accessed, we must construct
+ * a new type or location object.
+ */
+
+/* The struct that is used to encode InlinedToken instances. */
+typedef struct {
+    PyObject_VAR_HEAD         /* Object head: refcount & type & size */
     
+    PyObject *properties[1];  /* alternating list of (value/name) */
+
+} nltkInlinedToken;
+
+
 #endif /* ifndef CTOKEN_H */
