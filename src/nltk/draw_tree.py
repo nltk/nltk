@@ -239,7 +239,7 @@ class Window:
                             xscrollcommand=h_scroll.set)
                             
 
-        c.pack(side=LEFT)
+        c.pack(side=LEFT, expand='1', fill='both')
         v_scroll.config (command=c.yview)
         h_scroll.config (command=c.xview)
 
@@ -258,12 +258,15 @@ class Window:
         w = int(self.c.cget('width'))
         right = self.drawtree(self.tree, PADDING)
         bottom = self.tree.tree_depth(0)
-        self.c['width'] = right+PADDING
+
+        self.c['scrollregion']=(0,0,right+PADDING,min(250,(bottom+2)*50))
         
-        if (bottom+2)*50 <= 250:
-            self.c['height'] = 250
-        else:
-            self.c['height'] = (bottom+2)*50
+        #self.c['width'] = right+PADDING
+        #
+        #if (bottom+2)*50 <= 250:
+        #    self.c['height'] = 250
+        #else:
+        #    self.c['height'] = (bottom+2)*50
             
 
 
