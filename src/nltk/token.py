@@ -543,6 +543,8 @@ class SafeToken(Token):
 ## Probabilistic Token
 ######################################################################
 
+# [XX] We may get rid of this!  (Just use a "prob" property?)
+
 from nltk.probability import ProbabilisticMixIn
 class ProbabilisticToken(Token, ProbabilisticMixIn):
     """
