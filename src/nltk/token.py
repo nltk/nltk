@@ -8,67 +8,55 @@
 # $Id$
 
 """
-Basic classes for processing individual elements of text, such
-as words or sentences.  These elements of text are known as X{text
-types}, or X{types} for short.  Individual occurances of types are
-known as X{text tokens}, or X{tokens} for short.  Note that several
-different tokens may have the same type.  For example, multiple
-occurances of the same word in a text will constitute multiple tokens,
-but only one type.  Tokens are distinguished based on their
-X{location} within the source text.
+Basic classes for encoding pieces of language, such as words,
+sentences, and documents.  These pieces of language are known as
+X{tokens}.  Each token is defined by set of X{properties}, each of
+which describes a specific aspect of the token.  Typical properties
+include:
 
-The token module defines classes to represent types, locations, and
-tokens:
+  - C{text}: The token's text content.
+  - C{wave}: The token's recorded audio content.
+  - C{pos}: The token's part-of-speech tag.
+  - C{speaker}: The speaker who uttered the token.
+  - C{sense}: The token's word sense.
+  - C{loc}: The token's location in its containing text.
 
-  - The L{Type} class encodes a type as a collection of X{properties}.
-    For example, the type for a word might include properties for its
-    original text, its word stem, and its part of speech.
+The C{loc} property, which is defined by most tokens, uses a
+L{Location} to specify the position of the token in its containing
+text.  This property has two important uses:
+
+  1. It serves as a unique identifier that distinguishes each token
+     from any other tokens that have the same properties (e.g., two
+     occurances of the same word).
+  2. It provides a pointer to the token's context.
+  
+See the L{Token} class for more information.
+
+@group Tokens: Token, FrozenToken, SafeToken, ProbabilisticToken
+@group Locations: Location
+@group Auxilliary Data Types: FrozenDict
+@sort: Token, FrozenToken, SafeToken, ProbabilisticToken
+
+@todo: Clean up the location class.
+@todo: Decide how we use a location to get at a token's context.
+Some ideas:
+
+  - does the location provide a "parent pointer" to the containing
+    token?  If so, then can locations still be hashable??
     
-  - The L{Location} class encodes a location as a span over indices in
-    a text.  Each C{Location} consists of a start index and an end
-    index, and optionally specifies a unit for the indices and the
-    source over which the indices are defined.
-
-  - The L{Token} class encodes a token as a C{Type} plus a
-    C{Location}.
-
-Types, locations, and tokens are all X{immutable} values: they can not
-be modified.  However, they each define methods that return I{new}
-objects that are derived from their values.  For example, the
-L{Type.extend} method returns a new type that is formed by adding
-properties to an existing type.
-
-Subclassing
-===========
-C{Type} and C{Token} may be subclassed to add new methods.  For
-example, L{TreeType<nltk.tree.TreeType>} defines methods for
-performing operations on tree-structured types.  However, these
-subclasses may only define new methods; they may not define new
-attributes.
-
-C{Location} may not be subclassed.
-
-@group Data Types: Type, Location, Token
-@sort: Type, Location, Token
+  - does the token define a "context" property that provides the
+    parent pointer?  This might look something like:
+    
+      >>> context = tok['context']
+      >>> start = tok['loc'].start()
+      >>> prevword = context[start-1]
+    
+  - or is there some other mechanism?
 """
 
 ######################################################################
-## Implementation Notes
+## Implementation Note
 ######################################################################
-# The classes defined by this module make use of three advanced Python
-# constructions, to ensure immutability:
-#
-#   1. The __getattr__ and __setattr__ methods are overridden to
-#      raise exceptions.  This causes any attempt to change or delete
-#      an instance's attributes to fail.
-#
-#   2. In the class constructors, attributes are set using
-#      "object.__setattr__(self, name, val)".  This bypasses the
-#      normal __setattr__ function (which would raise an exception).
-#
-#   3. The Type class directly modifies its instance's dictionaries,
-#      which are accessed with "self.__dict__".
-#
 # The Location and Token classes also make use of the __slots__
 # variable.  This special variable lets Python know which attributes
 # will be defined by class instances.  This is done to save space,
@@ -80,8 +68,498 @@ C{Location} may not be subclassed.
 # effects that should only be used by programmers at grandmaster and
 # wizard levels."
 
-import types
+import types, copy
 from nltk.chktype import chktype
+
+######################################################################
+## Token
+######################################################################
+
+class Token(dict):
+    """
+    A single a piece of language, such as a word, a sentence, or a
+    document.  A token is defined by a set of X{properties}, each of
+    which associates a name with a value.  For example, the following
+    token defines the text content and part-of-speech tag for a single
+    word:
+
+        >>> tok = Token(text='fly', pos='N')
+        <text='fly', pos='N'>
+
+    As this example illustrates, a token's properties are initialized
+    using keyword arguments to the constructor.  Properties can be
+    accessed and modified using the indexing operator with property
+    names:
+
+       >>> print tok['text']
+       'fly'
+       >>> tok['speaker'] = 'James'
+
+    A property name can be any string; but typically, short lower-case
+    words are used.  Property names are case sensitive.  Note that
+    some properties only make sense for specific kinds of C{Tokens}.
+    For example, only C{Tokens} representing recorded audio will have
+    a C{wave} property; and only C{Tokens} representing words will
+    have a C{pos} property.
+    
+    A property value can be...
+      - an immutable value (such as a string or a number)
+      - a token
+      - a container (such as a list, dictionary, or tuple) that
+        contains valid property values
+
+    The special property C{'loc'} is used to record a token's location
+    in its containing text.  This property has two important uses:
+    
+      - It serves as a unique identifier that distinguishes each token
+        from any other tokens that have the same properties.  For
+        example, if the word "dog" appears twice in a document, then
+        the two ocurances of the word can be distinguished based on
+        their location.
+
+      - It provides a pointer to the token's context.  (We haven't quite
+        fleshed out how this will be used yet.)
+
+    @ivar USE_SAFE_TOKENS: If C{True}, then the L{SafeToken} subclass is
+        used to create new tokens.  This subclass includes type checking
+        on all operations, and so is significantly slower.
+
+    @group Transformations: including, excluding, freeze, copy
+    @group Accessors: properties, has
+    @group Operators: __*__, __len__
+    """
+    # Don't allocate any extra space for instance variables:
+    __slots__ = ()
+
+    # Should we use the type-safe version of tokens?
+    USE_SAFE_TOKENS = True
+
+    #/////////////////////////////////////////////////////////////////
+    # Constructor
+    #/////////////////////////////////////////////////////////////////
+
+    def __new__(cls, *args, **kwargs):
+        if cls is Token and Token.USE_SAFE_TOKENS:
+            return super(Token, cls).__new__(SafeToken, *args, **kwargs)
+        else:
+            return super(Token, cls).__new__(cls, *args, **kwargs)
+
+    def __init__(self, **properties):
+        """
+        Construct a new token that defines the given set of properties.
+        The properties are typically specified using keyword
+        arguments:
+
+           >>> typ = Token(text='ni', pos='excl', speaker='knight2')
+           <text='ni', speaker='knight2', pos='excl'>
+
+        Alternatively, properties can be specified using a dictionary,
+        with Python's C{**} syntax:
+
+           >>> props = {'text':'ni', 'pos':'excl', 'speaker':'knight2'}
+           >>> typ = Token(**props)
+           <text='ni', speaker='knight2', pos='excl'>
+
+        @param properties: The initial set of properties that the new
+            token should define.  Each element maps a property name to
+            its value.
+        """
+        self.update(properties)
+
+    #/////////////////////////////////////////////////////////////////
+    # Accessors
+    #/////////////////////////////////////////////////////////////////
+    # These are basically just new names for existing methods.
+    
+
+    def properties(self):
+        """
+        @return: A list of the names of properties that are defined
+            for this token.
+        @rtype: C{list} of C{string}
+        """
+        return self.keys()
+    
+    def has(self, property):
+        """
+        @return: True if this token defines the given property.
+        @rtype: C{bool}
+        """
+        return self.has_attr(property)
+
+    #/////////////////////////////////////////////////////////////////
+    # Transformations
+    #/////////////////////////////////////////////////////////////////
+    # These return a "transformed" version of self.
+
+    def freeze(self):
+        """
+        @rtype: L{FrozenToken}
+        @return: An immutable (or "frozen") copy of this token.  The
+            frozen copy is hashable, and can therefore be used as a
+            dictionary key or a set element.  However, it cannot be
+            modified; and any modifications made to the original token
+            after the frozen copy is generated will not be propagated
+            to the frozen copy.
+        """
+        frozen_properties = {}
+        for (key, val) in self.items():
+            frozen_properties[key] = self._freezeval(val)
+        print 'new frozentok', frozen_properties
+        return FrozenToken(**frozen_properties)
+
+    def copy(self, deep=True):
+        """
+        @rtype: L{Token}
+        @return: A new copy of this token.
+        @param deep: If false, then the new token will use the same
+            objects to encode feature values that the original token
+            did.  If true, then the new token will use deep copies of
+            the original token's feature values.  The default value
+            of C{True} is almost always the correct choice.
+        """
+        assert chktype(1, deep, bool)
+        if deep: return copy.deepcopy(self)
+        else: return copy.copy(self)
+
+    def including(self, *properties, **options):
+        """
+        @rtype: L{Token}
+        @return: A new token containing only the properties that are
+            in the given list.
+        @type properties: C{list} of C{string}
+        @param properties: A list of the names of properties to
+            include.
+        @kwparam deep: If true, then C{select} is recursively applied
+            to any nested tokens included in this token's property
+            values.  For example, C{tok.select(exclude='loc',
+            deep=True)} will remove C{all} location information from a
+            token, including location information that is included in
+            nested tokens.  Default value: C{True}.
+        @see: L{excluding}, which is used to create a token containing
+           only the properties that are I{not} in a given list.
+        """
+        deep = options.get('deep', True)
+        return self._including(properties, deep)
+
+    def _including(self, properties, deep):
+        newprops = {}
+        for property in properties:
+            if self.has_key(property):
+                val = self[property]
+                if deep:
+                    val = self._deep_restrict(val, properties, incl=True)
+                newprops[property] = val
+        return self.__class__(**newprops)
+
+    def excluding(self, *properties, **options):
+        """
+        @rtype: L{Token}
+        @return: A new token containing only the properties that are
+            not in the given list.
+        @type properties: C{list} of C{string}
+        @param properties: A list of the names of properties to
+            exclude.
+        @kwparam deep: If true, then C{select} is recursively applied
+            to any nested tokens included in this token's property
+            values.  For example, C{tok.select(exclude='loc',
+            deep=True)} will remove C{all} location information from a
+            token, including location information that is included in
+            nested tokens.  Default value: C{True}.
+        @see: L{including}, which is used to create a token containing
+            only the properties that I{are} in the given list.
+        """
+        # Convert the exclude list to a dict for faster access.
+        excludeset = dict([(property,1) for property in properties])
+        deep = options.get('deep', True)
+        return self._excluding(excludeset, deep)
+
+    def _excluding(self, excludeset, deep):
+        newprops = {}
+        for property in self.keys():
+            if not excludeset.has_key(property):
+                val = self[property]
+                if deep:
+                    val = self._deep_restrict(val, excludeset, incl=False)
+                newprops[property] = val
+        return self.__class__(**newprops)
+
+    def _deep_restrict(self, val, props, incl):
+        """
+        @return: A deep copy of the given property value, with the
+        given restriction applied to any contained tokens:
+          - if C{incl} is true, then apply C{including(props)} to any
+            contained tokens.
+          - if C{incl} is false, then apply C{excluding(props)} to any
+            contained tokens.
+        """
+        if isinstance(val, Token):
+            if incl: return val._including(props, True)
+            else: return val._excluding(props, True)
+        elif isinstance(val, list):
+            restrict = self._deep_restrict
+            return [restrict(v, props, incl) for v in val]
+        elif isinstance(val, tuple):
+            restrict = self._deep_restrict
+            return tuple([restrict(v, props, incl) for v in val])
+        elif isinstance(val, dict):
+            return dict(self._deep_restrict(val.items(), props, incl))
+        else:
+            hash(val) # Make sure it's immutable (or at least hashable).
+            return val
+
+    def _freezeval(self, val):
+        if isinstance(val, Token):
+            return val.freeze()
+        elif isinstance(val, list) or isinstance(val, tuple):
+            freezeval = self._freezeval
+            return tuple([freezeval(v) for v in val])
+        elif isinstance(val, dict):
+            return FrozenDict(self._freezeval(val.items()))
+        else:
+            hash(val) # Make sure it's immutable (or at least hashable).
+            return val
+
+    #/////////////////////////////////////////////////////////////////
+    # Basic operators
+    #/////////////////////////////////////////////////////////////////
+
+    def __repr__(self):
+        """
+        @return: A condensed string representation of this C{Type}.
+            Any feature values whose string representations are longer
+            than 30 characters will be abbreviated.
+        @rtype: C{string}
+        """
+        # Abbreviate any values that are longer than 30 characters.
+        # [XX] does this look good in practice?  What should MAXLEN be?
+        MAXLEN = 30
+        items = self.items()
+        for i in range(len(items)):
+            items[i] = (str(items[i][0]), repr(items[i][1]))
+            if len(items[i][1]) > MAXLEN:
+                items[i] = (items[i][0],
+                            items[i][1][:MAXLEN-6]+'...'+items[i][1][-3:])
+        # Convert each property (except loc) to a string.
+        items = ', '.join(['%s=%s' % (p,v)
+                           for (p,v) in items
+                           if p != 'loc'])
+        # If there are no properties, use "<empty>" instead.
+        if len(items) == 0: items = 'empty'
+        # If there's a location, then add it to the end.
+        if self.has_key('loc'):
+            if not isinstance(self['loc'], Location):
+                raise AssertionError("self['loc'] is not a location!")
+            locstr = '%r' % self['loc']
+        else: locstr = ''
+        # Assemble & return the final string.
+        return '<%s>%s' % (items, locstr)
+
+    def __str__(self):
+        """
+        @return: A full string representation of this C{Type}.
+        @rtype: C{string}
+        """
+        # Convert each property (except loc) to a string.
+        items = ', '.join(['%s=%r' % (p,v)
+                           for (p,v) in self.items()
+                           if p != 'loc'])
+        # If there are no properties, use "<empty>" instead.
+        if len(items) == 0: items = 'empty'
+        # If there's a location, then add it to the end.
+        if self.has_key('loc'):
+            if not isinstance(self['loc'], Location):
+                raise AssertionError("self['loc'] is not a location!")
+            locstr = '%r' % self['loc']
+        else: locstr = ''
+        # Assemble & return the final string.
+        return '<%s>%s' % (items, locstr)
+
+    # The superclass already raises TypeError here; but its error
+    # message ("dict objects are unhashable") might be confusing.
+    def __hash__(self):
+        """
+        Raise C{TypeError}, since C{Token} obejcts are unhashable.
+        """
+        raise TypeError('%s objects are unhashable' %
+                        self.__class__.__name__)
+
+######################################################################
+## FrozenToken
+######################################################################
+
+class FrozenToken(Token):
+    """
+    An immutable (and hashable) version of the L{Token} class.
+    """
+    def __init__(self, **properties):
+        """
+        Create a new frozen token that defines the given set of
+        properties.
+        
+        @param properties: The set of properties that the new token
+            should define.  Each element maps a property name to its
+            value.
+        @require: The values for the given properties must be
+            immutable.
+        """
+        super(FrozenToken, self).update(properties)
+    
+        # Generate a hash value:
+        items = self.items()
+        items.sort()
+        self._hash = hash(tuple(items))
+        
+    def __setitem__(self, property, value):
+        raise TypeError('FrozenToken objects are immutable')
+    def __delitem__(self, property):
+        raise TypeError('FrozenToken objects are immutable')
+    def clear(self):
+        raise TypeError('FrozenToken objects are immutable')
+    def pop(self, property, default=None):
+        raise TypeError('FrozenToken objects are immutable')
+    def popitem(self):
+        raise TypeError('FrozenToken objects are immutable')
+    def setdefault(self, property, default=None):
+        raise TypeError('FrozenToken objects are immutable')
+    def update(self, src):
+        raise TypeError('FrozenToken objects are immutable')
+    def copy(self, deep=True):
+        return self.__class__(self)
+    def __hash__(self):
+        return self._hash
+
+class FrozenDict(dict):
+    """
+    An immutable (and hashable) dictionary.
+    """
+    def __init__(self, **keys):
+        super(FrozenDict, self).update(keys)
+
+        # Generate a hash value:
+        items = self.items()
+        items.sort()
+        self._hash = hash(tuple(items))
+        
+    def __setitem__(self, key, value):
+        raise TypeError('FrozenToken objects are immutable')
+    def __delitem__(self, key):
+        raise TypeError('FrozenToken objects are immutable')
+    def clear(self):
+        raise TypeError('FrozenToken objects are immutable')
+    def pop(self, key, default=None):
+        raise TypeError('FrozenToken objects are immutable')
+    def popitem(self):
+        raise TypeError('FrozenToken objects are immutable')
+    def setdefault(self, key, default=None):
+        raise TypeError('FrozenToken objects are immutable')
+    def update(self, src):
+        raise TypeError('FrozenToken objects are immutable')
+    def copy(self):
+        return self.__class__(self)
+    def __hash__(self):
+        return self._hash
+        
+######################################################################
+## SafeToken
+######################################################################
+
+class SafeToken(Token):
+    """
+    A version of the L{Token} class that adds type checking (at the
+    expense of speed).  Since all operations are type checked,
+    C{SafeToken} can be significantly slower than C{Token}.  However,
+    it can be useful for tracking down bugs.
+
+    C{SafeToken}s are not usually created directly; instead, the
+    L{Token.USE_SAFE_TOKENS} variable is used to instruct the C{Token}
+    constructor to create C{SafeToken}s instead of C{Token}s.
+    """
+    #/////////////////////////////////////////////////////////////////
+    # Constructor
+    #/////////////////////////////////////////////////////////////////
+
+    def __init__(self, **properties):
+        # type checking is handled by self.update().
+        self.update(properties)
+    
+    #/////////////////////////////////////////////////////////////////
+    # Argument checking
+    #/////////////////////////////////////////////////////////////////
+    # Make sure that we only add valid properties.
+
+    def __getitem__(self, property):
+        assert chktype(1, property, str)
+        return super(SafeToken, self).__getitem__(property)
+    
+    def __setitem__(self, property, value):
+        assert chktype(1, property, str)
+        assert chktype(2, value, self._checkval)
+        if (property == 'loc') and not isinstance(value, Location):
+            raise TypeError("The 'loc' property must contain a Location")
+        return super(SafeToken, self).__setitem__(property, value)
+        
+    def __delitem__(self, property):
+        assert chktype(1, property, str)
+        return super(SafeToken, self).__delitem__(property)
+
+    def excluding(self, *properties, **options):
+        for key in options.keys():
+            if key != 'deep': raise ValueError('Bad option %r' % key)
+        assert chktype('vararg', properties, (self._checkval,))
+        return super(SafeToken, self).excluding(*properties, **options)
+
+    def get(self, property):
+        assert chktype(1, property, str)
+        return super(SafeToken, self).get(property)
+
+    def has(self, property):
+        assert chktype(1, property, str)
+        return super(SafeToken, self).has(property)
+
+    def has_key(self, property):
+        assert chktype(1, property, str)
+        return super(SafeToken, self).has_key(property)
+
+    def including(self, *properties, **options):
+        for key in options.keys():
+            if key != 'deep': raise ValueError('Bad option %r' % key)
+        assert chktype('vararg', properties, (self._checkval,))
+        return super(SafeToken, self).including(*properties, **options)
+
+    def pop(self, property, default=None):
+        assert chktype(1, property, str)
+        return super(SafeToken, self).pop(property, default=None)
+        
+    def setdefault(self, property, default=None):
+        assert chktype(1, property, str)
+        assert chktype(2, default, self._checkval)
+        if (property == 'loc') and not isinstance(value, Location):
+            raise TypeError("The 'loc' property must contain a Location")
+        return super(SafeToken, self).setdefault(property, default=None)
+        
+    def update(self, src):
+        assert chktype(1, src, {str:self._checkval})
+        if src.has_key('loc') and not isinstance(src['loc'], Location):
+            raise TypeError("The 'loc' property must contain a Location")
+        return super(SafeToken, self).update(src)
+
+    def _checkval(self, value):
+        """
+        @return: True if the given value is a valid property value.
+        """
+        # Is it a token or a container object?
+        if (isinstance(value, Token) or
+            isinstance(value, list) or
+            isinstance(value, tuple) or
+            isinstance(value, dict)): return True
+
+        # Is it immutable (or at least hashable)?
+        try: hash(value); return True
+        except TypeError: return False
+    
+
+
 
 ######################################################################
 ## Location
@@ -108,7 +586,7 @@ class Location(object):
     M{u}, and a source M{s}, is written
     \"C{@[M{i}M{u}:M{j}M{u}]@M{s}}\".  For locations with a length of
     one, this can be shortened to \"C{@[M{i}M{u}]@M{s}}\".  For
-    brevity, the source is sometimes also omitted: \"C{@[M{i}M{u}]\".
+    brevity, the source is sometimes also omitted: \"C{@[M{i}M{u}]}\".
 
     C{Location}s are immutable.
 
@@ -412,418 +890,14 @@ class Location(object):
 
     # Locations are immutable; so disable attribute modification 
     # and deletion.
-    def __setattr__(self, property, value):
-        "Raise C{TypeError}, since locations are immutable"
-        raise TypeError('Locations are immutable')
+    #def __setattr__(self, property, value):
+    #    "Raise C{TypeError}, since locations are immutable"
+    #    raise TypeError('Locations are immutable')
     def __delattr__(self, property):
         "Raise C{TypeError}, since locations are immutable"
         raise TypeError('Locations are immutable')
 
 
-######################################################################
-## Type
-######################################################################
-
-class Type(object):
-    """
-    A unit of language, such as a word or a sentence.  Types should be
-    contrasted with L{Tokens<Token>}, which represent individual
-    occurances of types.  Types can be thought of as the units of
-    language themselves, abstracted away from their from context.
-    The precise defintion of what counts as a type can vary for
-    different analyses of the same text.  For example, in a simple
-    word counting application all occurances of the word \"fly\" could
-    be considered the same type; but for a parsing system we would
-    want to distinguish the noun \"fly\" from the verb \"fly.\"
-
-    A type is defined by a set of named X{properties}, each of which
-    associates a name with a value.  For example, the following type
-    defines the text content and part-of-speech tag for a single word:
-
-        >>> typ = Type(text='fly', pos='N')
-        <text='fly', pos='N'>
-
-    As this example illustrates, properties are defined using keyword
-    arguments to the C{Type} constructor.
-    
-    Any string can be used as a property name, but typically short
-    lower-case words are used.  Property names are case sensitive.
-    Any immutable object can be used as a property value.  Examples of
-    valid property values are strings, numbers, and tuples of
-    immutable objects.  Notable invalid property values include lists
-    and dictionaries.
-
-    Note that some properties only make sense for specific kinds of
-    C{Types}.  For example, only C{Types} representing recorded audio
-    will have a C{wave} property; and only C{Types} representing words
-    will have a C{pos} property.
-
-    C{Type}s are immutable.
-
-    Accessing Properties
-    ====================
-    There are two ways to access property values.  The C{get()} method
-    the property value corresponding to a given property name:
-
-        >>> typ.get('text')
-        'fly'
-
-    Properies whose names are valid Python identifiers can also be
-    accessed via X{attribute access}:
-
-        >>> typ.text
-        'fly'
-
-    @group Property Access: get, has, properties, __getattr__
-    @group Derived Types: extend, select
-    @group String Representation: __repr__
-    @group Immutability: __setattr__, __delattr__
-    @sort: __init__, get, has, properties, __getattr__, extend, 
-           select, __setattr__, __delattr__, __repr__
-    """
-    def __init__(self, **properties):
-        """
-        Construct a new type that defines the given set of properties.
-        The properties are typically specified using keyword
-        arguments:
-
-           >>> typ = Type(text='ni', pos='excl', speaker='knight2')
-           <text='ni', speaker='knight2', pos='excl'>
-
-        Alternatively, properties can be specified using a dictionary,
-        with Python's C{**} syntax:
-
-           >>> props = {'text':'ni', 'pos':'excl', 'speaker':'knight2'}
-           >>> typ = Type(**props)
-           <text='ni', speaker='knight2', pos='excl'>
-
-        Or a mix of the two:
-
-           >>> props = {'speaker':'knight2'}
-           >>> typ = Type(text='ni', pos='excl', **props)
-           <text='ni', speaker='knight2', pos='excl'>
-        
-        @param properties: The set of properties that the new type
-            should define.  Each element should map a property name to
-            a single immutable value.
-        """
-        # Check immutability of values?
-        self.__dict__.update(properties)
-
-    def get(self, prop_name):
-        """
-        @return: the value of the given property.
-        @rtype: immutable
-        @type prop_name: C{string}
-        @param prop_name: The name of the property whose value should
-            be returned.
-        @raise KeyError: If the specified property is not defined by
-            this type.
-        """
-        assert chktype(1, prop_name, types.StringType)
-        try:
-            return self.__dict__[prop_name]
-        except KeyError:
-            raise KeyError('The type %r does not define the %r property.' %
-                           (self, prop_name))
-
-    # tok.prop is a synonym for tok.get('prop').
-    # (Note: this does not get called for attributes that are stored
-    # directly in self.__dict__).
-    __getattr__ = get
-    
-    def has(self, prop_name):
-        """
-        @return: true if this C{Type} defines the given property.
-        @rtype: C{boolean}
-        @type prop_name: C{string}
-        @param prop_name: The name of the property to check for.
-        """
-        assert chktype(1, prop_name, types.StringType)
-        return self.__dict__.has_key(prop_name)
-
-    # Should this be renamed?  Perhaps to property_names()?
-    def properties(self):
-        """
-        @return: A list of the names of the properties that are
-            defined for this Type.
-        @rtype: C{list} of C{string}
-        """
-        return self.__dict__.keys()
-
-    def extend(self, **properties):
-        """
-        @return: A new C{Type} with all the properties defined by this
-            type, plus given set of properties.  If a property that is
-            defined by this type is also given a value by
-            C{properties}, then the value specified by C{properties}
-            will override this Type's value.
-        @rtype: L{Type}
-        @param properties: The set of additional properties that the
-            returned type should define.  Each element should map a
-            property name to a single immutable value.
-        @note: This method returns a new type; it does I{not}
-            modify this type.
-        """
-        # Check immutability of values?
-        typ = Type(**self.__dict__)
-        typ.__dict__.update(properties)
-        return typ
-
-    def select(self, *property_names):
-        """
-        @return: A new C{Type} that defines a subset of the properties
-            defined by this type.  In particular, the new type will
-            map each property name specified by C{property_names} to
-            the corresponding value in this type.
-        @rtype: C{Type}
-        @param property_names: A list of the names of the properties
-            that the returned type should define.  This list must be a
-            subset of the properties that are defined by this type.
-        @type property_names: C{list} of C{string}
-        @raise KeyError: If this type does not define one or more of
-            the given properties.
-        @note: This method returns a new type; it does I{not}
-            modify this type.
-        """
-        assert chktype(1, property_names, (types.StringType,))
-        properties = {}
-        for property in property_names:
-            properties[property] = self.__dict__[property]
-        return Type(**properties)
-
-    def __repr__(self):
-        """
-        @return: A string representation of this C{Type}.
-        @rtype: C{string}
-        """
-        if len(self.__dict__) == 0:
-            return '<Empty Type>'
-        items = ', '.join(['%s=%r' % (p,v)
-                           for (p,v) in self.__dict__.items()])
-        return '<%s>' % items
-
-    def __cmp__(self, other):
-        """
-        Compare two types.  In particular:
-            - If C{self} and C{other} define the same set of properties,
-              and assign the same values to each property, then return 0.
-            - Otherwise, return -1.
-            
-        @return: -1 if C{self<other}; +1 if C{self>other}; and 0 if
-                 C{self==other}. 
-        """
-        if not isinstance(other, Type): return -1
-        
-        # Ordering is not a well-defined notion for types; just return
-        # -1 if they're not equal.
-        if self.__dict__ == other.__dict__: return -1
-
-        return 0
-
-    def __hash__(self):
-        """
-        @return: A hash value for this C{Type}.
-        @rtype: C{int}
-        """
-        return hash(tuple(self.__dict__.values()))
-
-    # Types are immutable; so disable attribute modification and
-    # deletion.
-    def __setattr__(self, property, value):
-        "Raise C{TypeError}, since types are immutable"
-        raise TypeError('Types are immutable')
-    def __delattr__(self, property):
-        "Raise C{TypeError}, since types are immutable"
-        raise TypeError('Types are immutable')
-
-######################################################################
-## Token
-######################################################################
-
-class Token(object):
-    """
-    A single occurance of a unit of language, such as a word or a
-    sentence.  Tokens should be contrasted with L{Types<Type>}, which
-    represent the units of language themselves, abstracted away from
-    their context.
-
-    A token consists of a type, which specifies information about the
-    unit of language, and a location, which specifies which occurance
-    the token encodes.  A token's type and location can be accessed
-    directly, using the C{type} and C{loc} attributes:
-
-        >>> tok.type
-        <text='fly', pos='N'>
-        >>> tok.loc
-        @[8w]
-
-    As a convenience, the properties of the token's type can also be
-    accessed from the token.  In other words, for any property M{p},
-    C{tok.M{p} == tok.type.M{p}}.  For example, the following two
-    expressions are equivalant:
-
-        >>> tok.type.text
-        'fly'
-        >>> tok.text
-        'fly'
-    
-    A token's location may have the special value C{None}, which
-    specifies that the token's location is unknown or unimportant.  A
-    token with a location of C{None} is not equal to any other token,
-    even if their types are equal.
-
-    C{Token}s are immutable.
-        
-    @ivar type: The token's type.
-    @ivar loc: The token's location.
-    
-    @group Property Access: get, has, properties
-    @group Derived Tokens: extend, select
-    @group String Representation: __repr__
-    @group Immutability: __setattr__, __delattr__
-    @sort: __init__, get, has, properties, __getattr__, extend, 
-           select, __setattr__, __delattr__, __repr__
-    """
-    __slots__ = ['type', 'loc']
-    
-    def __init__(self, type, loc=None):
-        """
-        Construct a new token from the given type and location.
-
-        @param type: The new token's type.
-        @type type: L{Type}
-        @param location: The location of the new token.  If no value
-            is specified, the location defaults to C{None}.
-        @type location: L{Location} or C{None}
-        """
-        assert chktype(1, type, Type)
-        assert chktype(2, loc, Location)
-        object.__setattr__(self, 'type', type)
-        object.__setattr__(self, 'loc', loc)
-
-    def get(self, prop_name):
-        """
-        @return: the value of the given property in this token's type.
-        @rtype: immutable
-        @type prop_name: C{string}
-        @param prop_name: The name of the property whose value should
-            be returned.
-        @raise KeyError: If the specified property is not defined by
-            this token's type.
-        """
-        assert chktype(1, prop_name, types.StringType)
-        return self.type.get(prop_name)
-    
-    # tok.prop is a synonym for tok.get('prop')
-    __getattr__ = get
-    
-    def has(self, prop_name):
-        """
-        @return: true if this token's type defines the given property.
-        @rtype: C{boolean}
-        @type prop_name: C{string}
-        @param prop_name: The name of the property to check for.
-        """
-        assert chktype(1, prop_name, types.String_Type)
-        return self.type.has(prop_name)
-    
-    def properties(self):
-        """
-        @return: A list of the names of the properties that are
-            defined for this token's type.
-        @rtype: C{list} of C{string}
-        """
-        return self.type.properties()
-    
-    def extend(self, **properties):
-        """
-        @return: A new C{Token} whose location is equal to this
-            token's location, and whose type is formed by extending
-            this token's type with the given set of properties.  If a
-            property that is defined by this token's type is also
-            given a value by C{properties}, then the value specified
-            by C{properties} takes precedence.
-        @rtype: L{Token}
-        @param properties: The set of additional properties that the
-            returned token's type should define.  Each element should
-            map a property name to a single immutable value.
-        @note: This method returns a new token; it does I{not}
-            modify this token.
-        """
-        return Token(self.type.extend(**properties), self.loc)
-    
-    def select(self, *property_names):
-        """
-        @return: A new C{Token} whose location is equal to this
-            token's location, and whose type is formed by selecting
-            the given list of properties from this token's type.
-            In particular, the new token's type will map each property
-            name specified by C{property_names} to the corresponding
-            value in this token's type.
-        @rtype: C{Token}
-        @param property_names: A list of the names of the properties
-            that the returned token's type should define.  This list
-            must be a subset of the properties that are defined by
-            this token's type.
-        @type property_names: C{list} of C{string}
-        @raise KeyError: If this token's type does not define one or
-            more of the given properties.
-        @note: This method returns a new token; it does I{not}
-            modify this token.
-        """
-        assert chktype(1, property_names, (types.StringType,))
-        return Token(self.type.select(*property_names), self.loc)
-
-    def __repr__(self):
-        """
-        @return: A string representation of this C{Token}.
-        @rtype: C{string}
-        """
-        if self.loc is None:
-            return '%r@[?]' % self.type
-        else:
-            return '%r%r' % (self.type, self.loc)
-
-    def __cmp__(self, other):
-        """
-        Compare two tokens, based on their locations and types.  In
-        particular, return 0 iff C{self} and C{other} have equal
-        locations and equal types.  Otherwise, return -1 or 1.
-            
-        @return: -1 if C{self<other}; +1 if C{self>other}; and 0 if
-                 C{self==other}. 
-        """
-        if not isinstance(other, Token): return -1
-
-        # Compare based on locations first, since it's faster.
-        r = cmp(self.loc, other.loc)
-        if r != 0: return r
-
-        # If locations match, then compare based on types.
-        return cmp(self.type, other.type)
-
-    def __hash__(self):
-        """
-        @return: A hash value for this C{Type}.
-        @rtype: C{int}
-        """
-        # Hash based on the location (when possible), since it's
-        # usually unique to a token.
-        if self.loc is not None:
-            return hash(self.loc)
-        else:
-            return hash(self.type)
-
-    # Types are immutable; so disable attribute modification and
-    # deletion.
-    def __setattr__(self, property, value):
-        "Raise C{TypeError}, since tokens are immutable"
-        raise TypeError('Tokens are immutable')
-    def __delattr__(self, property):
-        "Raise C{TypeError}, since tokens are immutable"
-        raise TypeError('Tokens are immutable')
-    
 from nltk.probability import ProbabilisticMixIn
 class ProbabilisticToken(Token, ProbabilisticMixIn):
     """
@@ -837,17 +911,17 @@ class ProbabilisticToken(Token, ProbabilisticMixIn):
       - The likelihood that this token will be generated in a
         specific context.
     """
-    def __init__(self, prob, type, location):
+    def __init__(self, prob, **properties):
         ProbabilisticMixIn.__init__(self, prob)
-        Token.__init__(self, type, location)
+        Token.__init__(self, **properties)
     def __repr__(self):
         return Token.__repr__(self)+' (p=%s)' % self._prob
     def __str__(self):
         return Token.__str__(self)+' (p=%s)' % self._prob
 
-##//////////////////////////////////////////////////////
-##  Demonstration
-##//////////////////////////////////////////////////////
+######################################################################
+## Demonstration
+######################################################################
 
 def demo():
     """
@@ -856,35 +930,39 @@ def demo():
     two tokens, and shows the results of calling several of their
     methods.
     """
-    print "loc = Location(3, 5, unit='w', source='corpus.txt')"
+    print "loc  = Location(3, 5, unit='w', source='corpus.txt')"
     loc = Location(3, 5, unit='w', source='corpus.txt')
+    
+    print "tok  = Token(Type(text='flattening'), loc)"
+    tok = Token(text='flattening', loc=loc)
     
     print "loc2 = Location(10, 11, unit='w', source='corpus.txt')"
     loc2 = Location(10, 11, unit='w', source='corpus.txt')
     
-    print "tok = Token(Type(text='big'), loc2)"
-    tok = Token(Type(text='big'), loc2)
-    
-    print "tok = Token(Type(size=12, weight=83), loc)"
-    tok2 = Token(Type(size=12, weight=83), loc)
+    print "tok2 = Token(Type(size=12, weight=83), loc2)"
+    tok2 = Token(size=12, weight=83, loc=loc2)
     print
     
-    print "print loc                 =>", loc
-    print "print loc.start           =>", loc.start
-    print "print loc.end             =>", loc.end
-    print "print loc.length()        =>", loc.length
-    print "print loc.unit            =>", loc.unit
-    print "print loc.source          =>", loc.source
-    print "print loc2                =>", loc2
-    print "print loc.prec(loc2)      =>", loc.prec(loc2)
-    print "print loc.succ(loc2)      =>", loc.succ(loc2)
-    print "print loc.overlaps(loc2)  =>", loc.overlaps(loc2)
-    print "print tok                 =>", tok
-    print "print tok.type            =>", tok.type
-    print "print tok.loc             =>", tok.loc
-    print "print tok2                =>", tok2
-    print "print tok2.type           =>", tok2.type
-    print "print tok2.loc            =>", tok2.loc
+    print "print loc                      =>", loc
+    print "print loc.start                =>", loc.start
+    print "print loc.end                  =>", loc.end
+    print "print loc.length()             =>", loc.length()
+    print "print loc.unit                 =>", loc.unit
+    print "print loc.source               =>", loc.source
+    print "print loc2                     =>", loc2
+    print "print loc.prec(loc2)           =>", loc.prec(loc2)
+    print "print loc.succ(loc2)           =>", loc.succ(loc2)
+    print "print loc.overlaps(loc2)       =>", loc.overlaps(loc2)
+    print "print tok                      =>", tok
+    print "print tok['loc']               =>", tok['loc']
+    print "print tok.excluding('loc')     =>", tok.excluding('loc')
+    print "print tok.excluding('text')    =>", tok.excluding('text')
+    print "print tok2                     =>", tok2
+    print "print tok2['loc']              =>", tok2['loc']
+    print "print tok == tok2              =>", tok == tok2
+    print "print tok == tok.copy()        =>", tok == tok.copy()
+    print "print type(tok)                =>", type(tok)
+    print "print type(tok2)               =>", type(tok2)
 
 if __name__ == '__main__':
     demo()
