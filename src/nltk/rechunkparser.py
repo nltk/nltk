@@ -19,7 +19,7 @@ linguistic groups in a text, such as noun phrases.  Its input is a
 list of tokens.  Its output is a X{chunk structure} that encodes the
 linguistic groups.  A chunk structure is a list containing tagged
 tokens and sublists of tagged tokens.  For example, the following
-chunk structure encodes the noun phrases in a simple sentence:
+chunk structure encodes the noun phrases in a simple sentence::
 
     [['the'/'DT'@[0w], 'little'/'JJ'@[1w], 'cat'/'NN'@[2w]],
      'sat'/'VBD'@[3w], 'on'/'IN'@[4w],
@@ -36,7 +36,7 @@ encodes.  Finally, the C{ChunkString} is used to construct a chunk
 structure, which is returned.
 
 REChunkParserRules
-~~~~~~~~~~~~~~~~~~
+------------------
 
 C{REChunkParserRule}s define the C{apply} method, which modifies the
 chunking encoded by a C{ChunkString}.  The C{REChunkParserRule} class
@@ -55,7 +55,7 @@ be used to implement simpler types of rules:
     chunks. 
 
 Tag Patterns
-------------
+~~~~~~~~~~~~
 
 C{REChunkParserRule}s use a modified version of regular expression
 patterns, called X{tag patterns}.  Tag patterns are used to match
