@@ -62,15 +62,13 @@ Mailing Lists
       - <http://lists.sourceforge.net/lists/listinfo/nltk-commits>
 
     Archives:
-      - <http://www.geocrawler.com/redir-sf.php3?list=nltk-announce>
-      - <http://www.geocrawler.com/redir-sf.php3?list=nltk-devel>
-      - <http://www.geocrawler.com/redir-sf.php3?list=nltk-commits>
+      - <http://sourceforge.net/mailarchive/forum.php?forum=nltk-announce>
+      - <http://sourceforge.net/mailarchive/forum.php?forum=nltk-devel>
+      - <http://sourceforge.net/mailarchive/forum.php?forum=nltk-commits>
 
 
 Contributing
 ~~~~~~~~~~~~
-    If you are interested in contributing to NLTK, please email 
-    <edloper@gradient.cis.upenn.edu>.
-
-
-
+    If you are interested in contributing to NLTK, please email Edward
+    Loper and Steven Bird at <edloper@gradient.cis.upenn.edu> and
+    <sb@cs.mu.oz.au>.
