@@ -125,8 +125,15 @@ to currently implemented interfaces and classes.
        should there be? 
 """
 
-# Define some useful meta-data.
-__author__ = "Edward Loper <edloper@gradient.cis.upenn.edu>"
+##//////////////////////////////////////////////////////
+##  Meta-Data
+##//////////////////////////////////////////////////////
+
+# Version.  For each new release, the version number should be updated
+# here and in the Epydoc comment (above).
+__version__ = "0.4"
+
+# Copyright notice
 __copyright__ = """\
 Copyright (C) 2001 University of Pennsylvania.
 
@@ -134,7 +141,26 @@ Distributed and Licensed under provisions of the IBM Common Public
 License (Version 0.5), which is included by reference.  The IBM Common 
 Public License can be found in the file LICENSE.TXT in the
 distribution."""
-__version__ = "0.4"
+
+# Description of the toolkit, keywords, and the project's primary URL.
+__longdescr__ = """\
+The Natural Langauge Toolkit is a Python package that simplifies the
+construction of programs that process natural language; and defines
+standard interfaces between the different components of an NLP system.
+NLTK requires Python 2.1 or higher."""
+__keywords__ = ['NLP', 'CL', 'natural language processing',
+                'computational linguistics', 'parsing', 'tagging',
+                'tokenizing', 'syntax', 'linguistics', 'language',
+                'natural language']
 __url__ = "http://nltk.sf.net/"
 
-
+# Maintainer, contributors, etc.
+__maintainer__ = "Edward Loper"
+__maintainer_email__ = "edloper@gradient.cis.upenn.edu"
+__author__ = __maintainer__
+__author_email__ = __maintainer_email__
+__contributors__ = """\
+Edward Loper <edloper@gradient.cis.upenn.edu>
+Steven Bird <sb@unagi.cis.upenn.edu>
+Salim Zayats <szayats@seas.upenn.edu>
+"""
