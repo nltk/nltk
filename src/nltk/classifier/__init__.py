@@ -40,27 +40,6 @@ classifiers from training data.
 # Note: there is inconsistancy in docstrings between whether label is
 # a string or just any immutable object.  That needs to be cleared up.
 
-##//////////////////////////////////////////////////////
-##  Contents
-##//////////////////////////////////////////////////////
-
-# Labeled texts
-#     - Texts and Labels
-#     - LabeledText
-#
-# Classifiers
-#     - Classifiers
-#     - Classifier Factories
-#
-# Features
-#     - Features: Terminology Notess
-#     - Feature Values
-#     - Feature Detectors
-#     - Feature Detector Lists
-#     - Feature Value Lists
-#
-# Feature Selection
-
 from Numeric import array
 
 ##//////////////////////////////////////////////////////
@@ -158,7 +137,7 @@ class LabeledText:
 
 
 ##//////////////////////////////////////////////////////
-##  Classiifers & Classifier Factories
+##  Classiifer Interface
 ##//////////////////////////////////////////////////////
 
 class ClassifierI:
@@ -277,12 +256,16 @@ class ClassifierI:
         raise NotImplementedError()
 
 
+##//////////////////////////////////////////////////////
+##  Classiifer Trainer Interface
+##//////////////////////////////////////////////////////
+
 class ClassifierTrainerI:
     """
-    A processing interface for constructing new C{Classifier}s, using
+    A processing interface for constructing new classifiers, using
     training data.
     """
-    def train(self, labeled_tokens):
+    def train(self, labeled_tokens, **kwargs):
         """
         Train a new classifier, using the given training samples.
 
@@ -290,7 +273,11 @@ class ClassifierTrainerI:
         @param labeled_tokens: A list of correctly labeled texts.
             These texts will be used as training samples to construct
             a new classifier.
-
+        @param kwargs:
+          - C{labels}: The set of possible labels.  If none is given,
+            then the set of all labels attested in the training data
+            will be used instead.  (type=C{list} of (immutable)).
+            
         @return: A new classifier, trained from the given labeled
             tokens.
         @rtype: C{ClassifierI}
