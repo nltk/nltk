@@ -8,8 +8,17 @@
 # $Id$
 
 """
-A simple tool for plotting functions.
+A simple tool for plotting functions.  Sample use:
+
+    >>> from nltk.draw.plot import Plot
+    >>> Plot(lambda v: sin(v)**2+0.01)
+
+@group Plot Frame Implementations: PlotFrameI, CanvasPlotFrame,
+    BLTPlotFrame
 """
+
+# Used from "from nltk.draw.plot import *"
+__all__ = ['Plot']
 
 # Implementation note:
 #   For variable names, I use x,y for pixel coordinates; and i,j for
@@ -19,7 +28,6 @@ A simple tool for plotting functions.
 #   <http://sourceforge.net/projects/blt/>
 #   
 
-#from chktype import chktype as _chktype 
 from types import FunctionType as _FunctionType
 from types import MethodType as _MethodType
 from types import BuiltinFunctionType as _BuiltinFunctionType
