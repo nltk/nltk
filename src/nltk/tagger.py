@@ -152,37 +152,6 @@ class TaggedTokenizer(TokenizerI):
                                                 source=source)))
         return tokens
 
-class ChunkedTaggedTokenizer(TaggedTokenizer):
-    """
-    A tagged tokenizer that is sensitive to [] chunks, and returns
-    a list of tokens and chunks, where each chunk is a list of tokens.
-    """
-    def __init__(self): pass
-    def tokenize(self, str, source=None):
-        _chktype("ChunkedTaggedTokenizer.tokenize", 1, str, (_StringType,))
-        # check that brackets are balanced and not nested
-        brackets = re.sub(r'[^\[\]]', '', str)
-        if not re.match(r'(\[\])*', brackets):
-            print "ERROR: unbalanced or nested brackets"
-        words = str.split()
-        tokens = []
-        inchunk = 0
-        for i in range(len(words)):
-            if words[i] == '[':
-                tokens.append([])
-                inchunk = 1
-            elif words[i] == ']':
-                inchunk = 0
-            else:
-                ttype = parseTaggedType(words[i])
-                if inchunk:
-                    tokens[-1].append(Token(ttype, Location(i, unit='w',
-                                                            source=source)))
-                else:
-                    tokens.append(Token(ttype, Location(i, unit='w',
-                                                        source=source)))
-        return tokens
-
 ##//////////////////////////////////////////////////////
 ##  Parsing and Tokenizing TaggedTypes
 ##//////////////////////////////////////////////////////
