@@ -32,7 +32,8 @@ Interface classes are named with a trailing \"I\", such as
 
 The classes defined by the Natural Language Toolkit can be divided
 into two basic categories: Data classes; and Processing (or
-Task-Oriented) Classes.
+Task-Oriented) Classes.  The Natural Language Toolkit is still under
+development, and any definitions are subject to change.
 
 <H2> Data Classes </H2>
 
@@ -117,6 +118,7 @@ to currently implemented interfaces and classes.
          type?  Currently, <CODE>name</CODE> is used, but that's not a 
          very intuitive name.  <CODE>word</CODE> might be used,
          although often times the string is not a word (e.g., \".\").
+    <LI> Better name than \"SimpleTagger\"?
   </UL>
   <LI> Is the token/token type/text location system too complex?
        Often, one only cares about the token type.  E.g., a tokenizer
@@ -129,6 +131,11 @@ to currently implemented interfaces and classes.
        token index?  To some extent, it dosen't matter, as long as
        __cmp__ is properly defined.  Should text locations have ranges 
        or just starting points?  etc.
+  <LI> Should FreqDist.max() and FreqDist.cond_max() be merged, with
+       the condition as an optional argument?  Same for
+       FreqDist.freq() and FreqDist.cond_freq().
+  <LI> Should I implement cross-toolkit policies on how to use __str__ 
+       and __repr__?  If so, what should they be?
 </UL>
 
 @exclude .*(?!Token).....Type
@@ -149,7 +156,10 @@ Language Toolkit.  Currently defined values are:
        dictionary contents.
 </UL>
 Higher levels of type safety (3-4) can result in signifigant loss of
-efficiency. 
+efficiency.
+@type _type_safety_level int
+@author Edward Loper
+@version 0.1
 """
 
 from types import *
@@ -158,13 +168,13 @@ import re
 ##################################################
 ##################################################
 ##
-## The pydoc code is divided into 6 sections:
+## The nltk code is divided into 6 sections:
 ##     1. Utility Functions
 ##     2. The Set Class
 ##     3. Tokens and Tokenizers
 ##     4. Syntax Trees (commented out)
 ##     5. Events and Frequency Distributions
-##     6. Testing code: Taggers
+##     6. Taggers
 ##
 ##################################################
 ##################################################
@@ -172,9 +182,9 @@ import re
 ## Current Status of Code:
 ##     1. Commented
 ##     2. Commented
-##     3. Mainly Commented
+##     3. Commented
 ##     4. Partially Implemented, commented out.
-##     5. Partially Implemented
+##     5. Commented
 ##     6. Flux
 ##
 ##################################################
@@ -183,6 +193,7 @@ import re
 ## Conventions:
 ##     * Class names are written LikeThis
 ##     * Interface names end in "I" LikeThisI
+##     * Variables names use underscores like_this.
 ##     * private names start with "_" _like_this
 ##
 ##################################################
@@ -194,11 +205,30 @@ import re
 #################################################################
 
 def make_docs(target='/home/edloper/html/'):
+    """##
+    Use epydoc to construct the reference documentation for this
+    package, in the given directory.
+
+    @param target The directory in which to make the documentation
+    @type target string
+    @returntype None
+    """
+    print '(Re)loading pydoc and nltk...'
     import pydoc, nltk
     reload(nltk)
+    reload(pydoc)
+
+    print 'Constructing docs...'
     docs=pydoc.doc(nltk)
+
+    print 'Writing docs to HTML...'
     pydoc.HTML_Doc(docs).write(target)
     
+    print 'Checking docs...'
+    checks = pydoc.DocChecker.ALL - pydoc.DocChecker.AUTHOR - \
+             pydoc.DocChecker.VERSION
+    pydoc.DocChecker(docs).check(checks)
+
 ##//////////////////////////////////////////////////////
 ##  Type-checking
 ##//////////////////////////////////////////////////////
@@ -236,7 +266,7 @@ def _typemsg(types):
             raise AssertionError('Bad arg to typemsg')
     return typestr[:-3]
 
-def _chktype(name, n, arg, types, d=0):
+def _chktype(name, n, arg, types):
     """##
     Automated type-checking function for parameters of functions and
     methods.  This function will check to ensure that a given argument
@@ -264,7 +294,7 @@ def _chktype(name, n, arg, types, d=0):
 
     @param arg The value of the parameter whose type is being
            checked.
-    @type arg (any)
+    @type arg any
 
     @param types A list of the allowable types.  Each allowable type
            should be either a type (e.g., types.IntType); a class
@@ -292,7 +322,8 @@ def _chktype(name, n, arg, types, d=0):
                   key_t and value matches some element of value_t.
            </UL>
     @type types List or Tuple
-    @see _type_safety_level
+    @see nltk._type_safety_level _type_safety_level
+    @returntype None
     """
     # Unfortunately, this code is not really commented right now.
     # It's by far the most complex/advanced code in this module, and
@@ -300,8 +331,6 @@ def _chktype(name, n, arg, types, d=0):
     # if not easy, to figure out how it works, given its definition in 
     # the __doc__ string.  I'll comment it one day, though.
     if _type_safety_level <= 0: return
-    _DEBUG=0
-    if _DEBUG: print ' '*d, 'Check', name, n, arg, types
     if type(types) not in (ListType, TupleType):
         raise AssertionError("_chktype expected a list of types/classes")
     for t in types:
@@ -354,7 +383,6 @@ def _chktype(name, n, arg, types, d=0):
             raise AssertionError("_chktype expected a valid "+\
                                  "type specification.")
 
-    if _DEBUG: print ' '*d, 'raising on', arg
     # Type mismatch -- construct a user-readable error.
     errstr = "\n  Argument " + `n` + " to " + name + "() must " +\
              "have type: "
@@ -515,6 +543,7 @@ class Set:
         
         @param elt The element whose presence in the set is to be
                tested.
+        @type elt any
         @return True if this set contains the given element.
         @returntype boolean
         """
@@ -534,6 +563,7 @@ class Set:
         
         @param elt The element whose presence in the set is to be
                tested.
+        @type elt any
         @return True if this set contains the given element.
         @returntype boolean
         """
@@ -626,6 +656,10 @@ class Set:
         <CODE>Set</CODE> will not be reflected in this
         <CODE>list</CODE>.  This function is intended to allow
         iteration over a Set.
+
+        @returntype list
+        @return A <CODE>list</CODE> of the elements in this
+        <CODE>Set</CODE>.
         """
         # We have to make a copy of the list.
         return self._lst[:]
@@ -713,8 +747,31 @@ class Token:
         return cmp(self.type(), other.type())
 
     def __str__(self):
+        """##
+        Return the informal string representation of this
+        <CODE>Token</CODE>.  The informal representation
+        of a <CODE>Token</CODE> has the form
+        <I>type</I>@<I>source</I>. 
+        
+        @return The informal string representation of this
+                <CODE>Token</CODE>.
+        @returntype string
+        """
         return str(self._type)+'@'+str(self._source)
 
+    def __hash__(self):
+        """##
+        Return the hash value for this Token.  If two Tokens are equal,
+        they are guaranteed to have the same hash value.  However, two 
+        Tokens may have the same hash value and still not be equal.
+
+        @raise TypeError if the <CODE>Token</CODE>'s type or source is 
+               not hashable.
+        @return The hash value for this Token.
+        @returntype int
+        """
+        return hash(self._type)/2 + hash(self._source)/2
+    
 class TextLocationI:
     """##
     A location of an entity within a text.  Text locations can be
@@ -732,23 +789,68 @@ class TextLocationI:
         """
         raise AssertionError()
 
+    def __hash__(self):
+        """##
+        Return the hash value for this TextLocationI.  If two
+        TextLocationIs are equal, they are guaranteed to have the same
+        hash value.  However, two TextLocationIs may have the same
+        hash value and still not be equal.
+
+        @return The hash value for this TextLocationI.
+        @returntype int
+        """
+        raise AssertionError()
+    
 class IndexTextLocation(TextLocationI):
     """##
-    NEEDS DOCS.
-    Record the starting index.
-    Possibly optionally record a source str/source name?
-    Word number or char index or what??
+    A <CODE>TextLocation</CODE> based on an integer index.  Typically, 
+    this index will be either a token index or a character index into
+    the source text.  
     """
     def __init__(self, index):
+        """##
+        Construct a new <CODE>IndexTextLocation</CODE>, with the given 
+        index.
+
+        @param index The index of the new
+               <CODE>IndexTextLocation</CODE>.
+        @type index int
+        """
+        _chktype("IndexTextLocation", 1, index, (IntType,))
         self._index = index
+        
     def __cmp__(self, other):
+        # Inherit docs from TextLocationI.
         if not isinstance(other, IndexTextLocation): return -1000
         return cmp(self._index, other._index)
+    
     def __hash__(self):
+        # Inherit docs from TextLocationI.
         return self.index
+    
     def __str__(self):
+        """##
+        Return the informal string representation of this
+        <CODE>IndexTextLocation</CODE>.  The informal representation
+        of a <CODE>IndexTextLocation</CODE> is simply its index.
+        
+        @return The informal string representation of this
+                <CODE>IndexTextLocation</CODE>.
+        @returntype string
+        """
         return str(self._index)
+
     def __repr__(self):
+        """##
+        Return the formal string representation of this
+        <CODE>IndexTextLocation</CODE>.  The formal representation
+        of a <CODE>IndexTextLocation</CODE> has the form
+        <CODE>IndexTextLocation(<I>index</I>)</CODE>.
+        
+        @return The formal string representation of this
+                <CODE>IndexTextLocation</CODE>.
+        @returntype string
+        """
         return 'IndexTextLocation('+repr(self._index)+')'
 
 # RangeTextLocation?
@@ -781,11 +883,12 @@ class TokenTypeI:
     
     def __hash__(self):
         """##
-        Compute a hash value for this token types.  All token types
-        must implement this function.  A minimal implementation can
-        simply return 0 for all token types.
-        
-        @return The hash value for this token type.
+        Return the hash value for this TokenType.  If two
+        TokenTypes are equal, they are guaranteed to have the same
+        hash value.  However, two TokenTypes may have the same
+        hash value and still not be equal.
+
+        @return The hash value for this TokenType.
         @returntype int
         """
         raise AssertionError()
@@ -839,10 +942,11 @@ class TaggedTokenType(TokenTypeI):
     A token type represented by a name (NOTE: need better term) and a
     tag.  The token type's name is the word or punctuation which the
     token type represents (e.g., \"bird\" or \"running\").  The token
-    type's tag is a string representing the name's syntactic category,
-    such as \"NN\" or \"VBZ\".  Two <CODE>TaggedTokenType</CODE>s are
-    equal if their names are equal and their tags are equal.
-    <CODE>TaggedTokenType</CODE>s are case sensitive in their name and 
+    type's tag is a string representing the name's category.
+    Typically, tags are used to represent syntactic categories such as
+    \"NN\" or \"VBZ\".  Two <CODE>TaggedTokenType</CODE>s are equal if
+    their names are equal and their tags are equal.
+    <CODE>TaggedTokenType</CODE>s are case sensitive in their name and
     in their tag.  <P>
 
     <CODE>TaggedTokenType</CODE> values are written using the form
@@ -983,7 +1087,7 @@ class SimpleTokenizer(TokenizerI):
 class TaggedTokenizer(TokenizerI):
     """##
     A tokenizer that splits a string of tagged text into Tokens using
-    whitespace.  Each tagged word is encodeed as a <CODE>Token</CODE>
+    whitespace.  Each tagged word is encoded as a <CODE>Token</CODE>
     whose type is a <CODE>TaggedTokenType</CODE>.
     <CODE>IndexTextLocation</CODE>s are used to encode the
     <CODE>Token</CODE>s' sources.
@@ -1162,7 +1266,9 @@ class EventI:
         Return true if and only if the given sample is contained in
         this event.  Return false if <CODE>sample</CODE> is not a
         supported type of sample for this <CODE>Event</CODE> class.
-        
+
+        @param sample The sample whose membership we are testing.
+        @type sample any
         @return A true value if and only if the given sample is
         contained in this event.
         @returntype boolean
@@ -1175,6 +1281,8 @@ class EventI:
         this event.  Return false if <CODE>sample</CODE> is not a
         supported type of sample for this <CODE>Event</CODE> class.
         
+        @param sample The sample whose membership we are testing.
+        @type sample any
         @return A true value if and only if the given sample is
         contained in this event.
         @returntype boolean
@@ -1443,10 +1551,18 @@ class FuncEvent(EventI):
     def contains(self, sample):
         return self._func(sample) != 0
     def __cmp__(self, other):
-        "## Not implemented by this Event class."
+        """## <B>Not implemented by this Event class.</B>
+        @param other -
+        @type other -
+        @returnType None
+        """
         raise NotImplementedError()
     def subset(self, other): 
-        "## Not implemented by this Event class."
+        """## <B>Not implemented by this Event class.</B>
+        @param other -
+        @type other -
+        @returnType None
+        """
         raise NotImplementedError()
     def superset(self, other):
         # Inherit docs from EventI
@@ -1467,10 +1583,14 @@ class FuncEvent(EventI):
         f = (lambda x, a=self, b=other:(x in a or x in b))
         return FuncEvent(f)
     def samples(self):
-        "## Not implemented by this Event class."
+        """## <B>Not implemented by this Event class.</B>
+        @returnType None
+        """
         raise NotImplementedError()
     def __len__(self): 
-        "## Not implemented by this Event class."
+        """## <B>Not implemented by this Event class.</B>
+        @returnType None
+        """
         raise NotImplementedError()
 
 class NullEvent(EventI):
@@ -1501,7 +1621,9 @@ class UniversalEvent(EventI):
     def union(self, other): return self
     def intersection(self, other): return other
     def samples(self): 
-        "## Not implemented by this Event class."
+        """## <B>Not implemented by this Event class.</B>
+        @returnType None
+        """
         raise NotImplementedError()
     def __len__(self): return None
         
@@ -1511,55 +1633,209 @@ class UniversalEvent(EventI):
 
 class FreqDistI:
     """##
-    Interface definition for Frequency Distribution classes.  This
-    class specifies all functions that any Frequency Distribution
-    should implement.  Frequency Distribution classes should be
-    inherited from <CODE>FreqDistI</CODE>. <P>
+    A frequency distribution for the outcomes of some set of
+    experiments.  A frequency distribution records the number of times
+    each outcome of an experiment has occured.  For example, a
+    frequency distribution could be used to record the frequency of
+    each token in a document.  Formally, a frequency distribution can
+    be defined as a function mapping from samples to the number of
+    times that sample occured as an outcome. <P>
 
-    A frequency distribution is used to represent the relative
-    frequencies of a set of samples, all from the same sample space.
-    For example, it could be used to record the frequency of each word 
-    in a document.  Frequency distributions are generally constructed
-    by incrementing the count for a sample every time it is
-    encountered in some source.  For example, the following code will
-    produce a frequency distribution representing the frequency of
-    each word in a document:
+    Frequency distributions are generally constructed by running a
+    number of experiments, and incrementing the count for a sample
+    every time it is an outcome of an experiment.  For example, the
+    following code will produce a frequency distribution that encodes
+    how often each word occurs in a text:
+    
     <PRE>
-    freqDist = SomeFreqDistClass()
+    freqDist = SimpleFreqDist()
     for word in document:
         freqDist.inc(word)
     </PRE>
 
-    The Frequency Distribution interface defines a number of functions
-    for finding statistics about a frequency distribution:
-    <UL>
-      <LI> N: the total number of samples
-      <LI> count(e): the total number of samples that are in event e.
-      <LI> freq(e): count(e)/N
-      <LI> cond_freq(e, c): count(e&c)/count(c)
-    </UL>
+    Classes implementing the <CODE>FreqDistI</CODE> interface may
+    choose to only support certain classes of samples or events.  If a
+    method is unable to return a correct result because it is given an
+    unsupported type of sample or event, it should raise a
+    NotImplementedError.  (?? is this the right exception? use
+    NotSupportedError? ValueError? ??) <P>
+
+    Since several methods defined by <CODE>FreqDistI</CODE> can accept
+    either events or samples, classes that implement the EventI
+    interface should never be used as samples for a frequency
+    distribution. <P>
+
+    Frequency distributions are required to implement the methods
+    <CODE>inc()</CODE>, <CODE>N()</CODE>, <CODE>count()</CODE>,
+    <CODE>freq()</CODE>, <CODE>cond_freq()</CODE>, <CODE>max()</CODE>,
+    and <CODE>cond_max()</CODE>.  In the future, this list may be
+    exapanded, and optional methods may be added.
     """
     def inc(self, sample):
+        """##
+        Increment this <CODE>FreqDist</CODE>'s count for the given
+        sample.
+        
+        @param sample The sample whose count should be incremented.
+        @type sample any
+        @returntype None
+        @raise NotImplementedError If <CODE>sample</CODE> is not a
+               supported sample type.
+        """
         raise AssertionError()
+    
     def N(self):
+        """##
+        Return the total number of sample outcomes that have been
+        recorded by this <CODE>FreqDist</CODE>.
+        
+        @return The total number of sample outcomes that have been
+        recorded by this <CODE>FreqDist</CODE>.
+        @returntype int
+        """
         raise AssertionError()
-    def freq(self, event):
+    
+    def freq(self, sample_or_event):
+        """##
+        Return the frequency of a given sample or event.  The
+        frequency of an event or a sample is defined as the count of
+        that event or sample divided by the total number of sample
+        outcomes that have been recorded by this
+        <CODE>FreqDist</CODE>.  The count of a sample is defined as
+        the number of times that sample outcome was recorded by this
+        <CODE>FreqDist</CODE>.  The count of an event is the number of 
+        times that a sample outcome contained by the given event was
+        recorded by this <CODE>FreqDist</CODE>.  Frequencies are
+        always real numbers in the range [0, 1].
+        
+        @return The frequency of a given sample or event.
+        @returntype float
+        @param sample_or_event the sample or event whose frequency
+               should be returned.
+        @type sample_or_event EventI or any.
+        @raise NotImplementedError If <CODE>sample_or_event</CODE> is
+               not a supported sample type or event type.
+        """
         raise AssertionError()
-    def count(self, event):
-        raise AssertionError()
-    def cond_freq(self, event, condition): 
-        raise AssertionError()
-    def sampleSet(self):
-        """## Return a set containing all samples that make up this
-        FreqDist. """
+    
+    def count(self, sample_or_event):
+        """##
+        Return the count of a given sample or event.  The count of a
+        sample is defined as the number of times that sample outcome
+        was recorded by this <CODE>FreqDist</CODE>.  The count of an
+        event is the number of times that a sample outcome contained
+        by the given event was recorded by this <CODE>FreqDist</CODE>.
+        Counts are non-negative integers.
+        
+        @return The count of a given sample or event.
+        @returntype int
+        @param sample_or_event the sample or event whose count
+               should be returned.
+        @type sample_or_event EventI or any.
+        @raise NotImplementedError If <CODE>sample_or_event</CODE> is
+               not a supported sample type or event type.
+        """
         raise AssertionError()
 
-class SimpleFreqDist:
+    def max(self):
+        """##
+        Return the sample with the maximum number of outcomes in this
+        frequency distribution.  If no outcomes have occured in this
+        frequency distribution, return <CODE>None</CODE>.
+
+        @return The sample with the maximum number of outcomes in this
+                frequency distribution.
+        @returntype any
+        """
+        raise AssertionError()
+    
+    def cond_max(self, condition):
+        """##
+        Of the samples contained in the given condition, return the
+        sample with the maximum number of outcomes in this frequency
+        distribution.  If no outcomes contained in the given condition
+        have occured in this frequency distribution, return
+        <CODE>None</CODE>.
+
+        @param condition The condition within which to find the
+               maximum frequency sample.
+        @type condition EventI
+        @return The sample with the maximum number of outcomes in this
+                frequency distribution, of the samples contained in
+                <CODE>condition</CODE>. 
+        @returntype any
+        @raise NotImplementedError If <CODE>condition</CODE> is
+               not a supported event type.
+        """
+        raise AssertionError()
+    
+    def cond_freq(self, sample_or_event, condition):
+        """##
+        Find the conditional frequency of the specified sample or
+        event, given the specified condition.  The conditional
+        frequency is defined as the number of times that a sample
+        outcome is contained by both the event and the condition,
+        divided by the number of times that a sample outcome is
+        contained by the condition.  Assuming the condition event
+        defines the <CODE>union</CODE> member, then this definition
+        can be written as:
+
+        <PRE>
+        fd.cond_freq(e, c) == fd.count(c.union(e)) / fd.count(c)
+        </PRE>
+
+        As a special case, if no sample outcome is contained by the
+        condition, then the conditional frequency is defined as
+        <CODE>None</CODE>.  Conditional frequencies are
+        always either real numbers in the range [0, 1] or the special
+        value <CODE>None</CODE>. <P>
+        
+        Both <CODE>sample_or_event</CODE> and <CODE>condition</CODE>
+        may be either samples or events.  
+        
+        @return The conditional frequency of <CODE>event</CODE> given
+                <CODE>condition</CODE>.
+        @returntype float or None
+        @param sample_or_event The event
+        @type sample_or_event EventI or any
+        @param condition The condition
+        @type condition EventI or any
+        @raise NotImplementedError If <CODE>sample_or_event</CODE> or
+               <CODE>condition</CODE> are not a supported sample types
+               or event types. 
+        """
+        raise AssertionError()
+
+class SimpleFreqDist(FreqDistI):
+    """##
+    A simple dictionary-based implementation of the
+    <CODE>FreqDist</CODE> interface.  A <CODE>SimpleFreqDist</CODE>
+    simply maintains a dictionary mapping samples to numbers of
+    occurances.  <CODE>SimpleFreqDist</CODE> supports all types of
+    samples and events. <P>
+
+    Although this implementation allows for a full implementation of
+    the <CODE>FreqDist</CODE> interface, it can be quite inefficient
+    when used to find frequencies of complex events, or to find
+    conditional frequencies.  In particular, finding conditional
+    frequencies can take O(<I>s</I>*<I>e</I>*<I>c</I>), where <I>s</I>
+    is the number of samples in the <CODE>FreqDist</CODE>, <I>e</I> is
+    the number of samples in the event, and c is the number of samples
+    in the condition.  If you plan to perform a large number of
+    conditional searches, you may want to consider using the
+    <CODE>CFFreqDist</CODE> class instead.
+
+    @see nltk.CFFreqDist CFFreqDist
+    """
     def __init__(self):
+        """##
+        Construct a new, empty, <CODE>SimpleFreqDist</CODE>.
+        """
         self._dict = {}
         self._N = 0
 
     def inc(self, sample):
+        # Inherit docs from FreqDistI
         self._N += 1
         if self._dict.has_key(sample):
             self._dict[sample] += 1
@@ -1567,34 +1843,42 @@ class SimpleFreqDist:
             self._dict[sample] = 1
 
     def N(self):
+        # Inherit docs from FreqDistI
         return self._N
 
-    def count(self, event):
+    def count(self, sample_or_event):
+        # Inherit docs from FreqDistI
+        
         # If it's a sample, the answer is easy.
-        if not isinstance(event, EventI):
-            if self._dict.has_key(event):
-                return self._dict[event]
+        if not isinstance(sample_or_event, EventI):
+            if self._dict.has_key(sample_or_event):
+                return self._dict[sample_or_event]
             else:
                 return 0
 
         # If it's a full-fledged event, do a search..  This is slow.
         count = 0
         for (key, c) in self._dict.items():
-            if key in event:
+            if key in sample_or_event:
                 count += c
         return count
 
-    def freq(self, event):
-        return float(self.count(event))/self.N()
+    def freq(self, sample_or_event):
+        # Inherit docs from FreqDistI
+        return float(self.count(sample_or_event))/self.N()
 
-    def cond_freq(self, event, condition):
-        if not isinstance(event, EventI):
-            event = SampleEvent(event)
+    def cond_freq(self, sample_or_event, condition):
+        # Inherit docs from FreqDistI
+
+        # Convert samples to events.
+        if not isinstance(sample_or_event, EventI):
+            event = SampleEvent(sample_or_event)
+        else: event = sample_or_event
         if not isinstance(condition, EventI):
             condition = SampleEvent(condition)
 
-        e_count = 0
-        c_count = 0
+        e_count = 0   # self.count(c.union(e))
+        c_count = 0   # self.count(c)
         for (sample, c) in self._dict.items():
             if sample in condition:
                 c_count += c
@@ -1603,12 +1887,12 @@ class SimpleFreqDist:
         if c_count == 0: return None
         else: return float(e_count)/c_count
 
-    # Have a default of the universal set for event?
-    def max_freq_sample(self, condition):
-        """##
-        Return the sample with the highest frequency, under the given
-        condition. 
-        """
+    def max(self):
+        # Inherit docs from FreqDistI
+        return self.cond_max(UniversalEvent())
+        
+    def cond_max(self, condition):
+        # Inherit docs from FreqDistI
         max_freq = -1
         max_sample = None
         for sample in self._dict.keys():
@@ -1619,7 +1903,17 @@ class SimpleFreqDist:
         return max_sample
 
     def __str__(self):
-        return repr(self._dict)
+        """##
+        Return the informal string representation of this
+        <CODE>SimpleFreqDist</CODE>.  The informal representation of a
+        <CODE>SimpleFreqDist</CODE> is the informal
+        representation of its dictionary.
+        
+        @return The informal string representation of this
+        <CODE>SimpleFreqDist</CODE>.
+        @returntype string
+        """
+        return str(self._dict)
 
   
   
@@ -1630,51 +1924,198 @@ class SimpleFreqDist:
 class CFSample:
     """##
     A sample consisting of a context and a feature.
-    <CODE>CFSample</CODE>s are intended to be used as sample points
-    for <CODE>FreqDist</CODE>s.  For example:
+    <CODE>CFSample</CODE>s are intended to be used as samples
+    for <CODE>FreqDist</CODE>s.  The following code shows how
+    <CODE>CFSample</CODE>s could be used to train a frequency
+    distribution, and then use that frequency distribution to tag new
+    data: 
+
     <PRE>
-    for (context, feature) in samples:         # Train
+    for (context, feature) in traing_samples:        <I># Train</I>
         freqDist.inc( CFSample(context, feature) )
-    for context in contexts:                   # Tag new data
-        context_event = CFSample_context_event(context)
-        print freqDist.max_freq_sample(context_event).feature()
+    for context in new_contexts:                     <I># Tag new data</I>
+        context_event = ContextEvent(context)
+        print freqDist.cond_max(context_event).feature()
     </PRE>
-    @see(nltk.CFSample_context_event) CFSample_context_event()
+
+    @see nltk.CFFreqDist CFFreqDist
+    @see nltk.ContextEvent ContextEvent
     """
     def __init__(self, context, feature):
+        """##
+        Construct a new <CODE>CFSample</CODE> with the given context
+        and feature.
+        
+        @param context The new <CODE>CFSample</CODE>'s context.
+        @type context any
+        @param feature The new <CODE>CFSample</CODE>'s feature.
+        @type feature any
+        """
         self._context = context
         self._feature = feature
-    def context(self): return self._context
-    def feature(self): return self._feature
+        
+    def context(self):
+        """##
+        Return this <CODE>CFSample</CODE>'s context.
+        
+        @return This <CODE>CFSample</CODE>'s context.
+        @returntype any
+        """
+        return self._context
+
+    def feature(self):
+        """##
+        Return this <CODE>CFSample</CODE>'s feature.
+        
+        @return This <CODE>CFSample</CODE>'s feature.
+        @returntype any
+        """
+        return self._feature
+    
     def __str__(self):
+        """##
+        Return the informal string representation of this
+        <CODE>CFSample</CODE>.  The informal representation of a
+        <CODE>CFSample</CODE> has the form
+        <CODE>(<I>context</I>, <I>feature</I>)</CODE>
+        
+        @return The informal string representation of this
+        <CODE>CFSample</CODE>.
+        @returntype string
+        """
         return '('+str(self._context)+', '+str(self._feature)+')'
+    
     def __repr__(self):
+        """##
+        Return the formal string representation of this
+        <CODE>CFSample</CODE>.  The formal representation of a
+        <CODE>CFSample</CODE> has the form
+        <CODE>CFSample(<I>context</I>, <I>feature</I>)</CODE>
+        
+        @return The formal string representation of this
+        <CODE>CFSample</CODE>.
+        @returntype string
+        """
         return 'CFSample('+repr(self._context)+', '+\
                repr(self._feature)+')'
+    
     def __cmp__(self, other):
+        """##
+        Return 0 if the given object is equal to this
+        <CODE>CFSample</CODE>.  Formally, return 0 if and only if
+        <CODE>self._context==other._context</CODE> and
+        <CODE>self._feature==other._feature</CODE>.  Otherwise, return 
+        some nonzero number.
+        
+        @param other The object to compare this <CODE>CFSample</CODE>
+               to. 
+        @type other any
+        @return 0 if the given object is equal to this
+                <CODE>CFSample</CODE>. 
+        @returntype int
+        """
+        if not isinstance(other, CFSample): return -1000
         c = cmp(self._context, other._context)
         if c != 0: return c
         else: return cmp(self._feature, other._feature)
+
     def __hash__(self):
+        """##
+        Compute a hash value for this <CODE>CFSample</CODE>.  
+        
+        @return The hash value for this <CODE>CFSample</CODE>.
+        @returntype int
+        """
         return hash(self._context)/2+hash(self._feature)/2
   
 class ContextEvent(EventI):
+    """##
+    The event containing all <CODE>CFSample</CODE>s whose context
+    has a given value.  <CODE>ContextEvent</CODE>s do not implement
+    any of the optional <CODE>Event</CODE> methods.
+    
+    @see nltk.CFSample CFSample
+    """
     def __init__(self, context):
+        """##
+        Construct a new <CODE>ContextEvent</CODE>, containing all
+        samples whose context has the specified value.
+        
+        @param context The context value for which this
+               <CODE>ContextEvent</CODE> contains all
+               <CODE>CFSample</CODE>s.
+        @type context any
+        """
         self._context = context
+        
     def __contains__(self, sample):
+        # Inherit docs from EventI
+        if not isinstance(sample, CFSample): return 0
         return sample.context() == self._context
+    
     def contains(self, sample):
+        # Inherit docs from EventI
+        if not isinstance(sample, CFSample): return 0
         return sample.context() == self._context
+    
     def context(self):
+        """##
+        Return the context on which this <CODE>ContextEvent</CODE> is
+        based.  This <CODE>ContextEvent</CODE> contains all
+        <CODE>CFSample</CODE>s whose contexts are equal to this value.
+
+        @return The context on which this <CODE>ContextEvent</CODE> is
+                 based.
+        @returntype any
+        """
         return self._context
   
 class CFFreqDist(FreqDistI):
+    """##
+    An implementation of the <CODE>FreqDist</CODE> interface that is
+    optimized for finding conditional frequencies.  In particular, a
+    <CODE>CFFreqDist</CODE> can efficiently find the conditional
+    frequency for a feature, given a context.  This can be useful for
+    the task of predicting unknown feature values (also known as
+    \"tagging\").
+
+    The <CODE>CFFreqDist</CODE> class requires that all of its samples
+    be <CODE>CFSample</CODE>.  A <CODE>CFSample</CODE> is essentially
+    (<I>context</I>, <I>feature</I>) pair.  Furthermore, the only
+    event supported by the <CODE>CFFreqDist</CODE> class is 
+    <CODE>ContextEvent</CODE>, which tests whether a
+    <CODE>CFSample</CODE>'s context has a given value. <P>
+    
+    The following code shows how a <CODE>CFFreqDist</CODE>s could be
+    used to efficiently tag new data, given a training set:
+
+    <PRE>
+    for (context, feature) in traing_samples:        <I># Train</I>
+        freqDist.inc( CFSample(context, feature) )
+    for context in new_contexts:                     <I># Tag new data</I>
+        context_event = ContextEvent(context)
+        print freqDist.cond_max(context_event).feature()
+    </PRE>
+
+    A <CODE>CFFreqDist</CODE> is implemented as a two-level
+    dictionary.  The dictionaries are structured such that
+    <CODE>dict[<I>context</I>][<I>feature</I>]</CODE> gives the number
+    of occurances of the sample
+    <CODE>CFSample(<I>context</I>, <I>feature</I>)</CODE>.
+    The <CODE>CFFreqDist</CODE> also uses auxilliary variables to
+    record the total number of samples, and the number of samples that 
+    have a given condition, for each condition.
+    """
     def __init__(self):
+        """##
+        Construct a new, empty, <CODE>CFFreqDist</CODE>.
+        """
         self._dict = {}
         self._N = 0
         self._cond_N = {}
 
     def inc(self, sample):
+        # Inherit docs from FreqDistI
         _chktype("CFFreqDist.inc", 1, sample, (CFSample,))
         self._N += 1
         if self._dict.has_key(sample.context()):
@@ -1688,9 +2129,12 @@ class CFFreqDist(FreqDistI):
             self._dict[sample.context()] = {sample.feature():1}
 
     def N(self):
+        # Inherit docs from FreqDistI
         return self._N
 
-    def count(self, event):
+    def count(self, sample_or_event):
+        # Inherit docs from FreqDistI
+        event = sample_or_event
         _chktype("CFFreqDist.count", 1, event, (CFSample, ContextEvent))
         if type(event) == CFSample:
             if self._dict.has_key(event.context()) and \
@@ -1704,21 +2148,36 @@ class CFFreqDist(FreqDistI):
             else:
                 return 0
 
-    def cond_freq(self, event, condition):
-        """##
-        Condition must be a ContextEvent
-        """
-        _chktype("CFFreqDist.cond_freq", 1, event, (CFSample,))
+    def cond_freq(self, sample_or_event, condition):
+        # Inherit docs from FreqDistI, for now.  Eventually replace
+        # them with docs that specify that event must be a CFSample
+        # and condition must be a ContextEvent.
+        sample = sample_or_event
+        _chktype("CFFreqDist.cond_freq", 1, sample, (CFSample,))
         _chktype("CFFreqDist.cond_freq", 2, condition, (ContextEvent,))
-        feature = event.feature()
+        feature = sample.feature()
         context = condition.context()
         if not self._dict.has_key(context) or \
            not self._dict[context].has_key(feature):
             return 0.0
         return float(self._dict[context][feature]) / self._cond_N[context]
 
-    def max_freq_sample(self, condition):
-        _chktype("CFFreqDist.max_freq_sample", 1, condition, (ContextEvent,))
+    def max(self):
+        # Inherit docs from FreqDistI
+        if self._N == 0: return None
+        max = -1
+        max_feature = max_context = None
+        for (context, feature_dict) in self._dict.items():
+            for (feature, n) in feature_dict.items():
+                if n > max:
+                    max = n
+                    max_feature = feature
+                    max_context = context
+        return CFSample(max_context, max_feature)
+    
+    def cond_max(self, condition):
+        # Inherit docs from FreqDistI
+        _chktype("CFFreqDist.cond_max", 1, condition, (ContextEvent,))
         context = condition.context()
         if not self._dict.has_key(context): return None
         max_freq = -1
@@ -1731,27 +2190,83 @@ class CFFreqDist(FreqDistI):
         else: return CFSample(context, max_feature)
 
     def __str__(self):
+        """##
+        Return the informal string representation of this
+        <CODE>CFFreqDist</CODE>.  The informal representation of a
+        <CODE>CFFreqDist</CODE> has the form
+        <CODE>(<I>context</I>, <I>feature</I>)</CODE>
+        
+        @return The informal string representation of this
+        <CODE>CFFreqDist</CODE>.
+        @returntype string
+        """
         return repr(self._dict)
         
 #################################################################
-##  Trial -- stuff needed for pset 2
+##  Taggers
 #################################################################
 
 def shift_in(lst, elt):
+    """##
+    Given a list <CODE>[<I>e1</I>, <I>e2</I>, ..., <I>en</I>]</CODE>,
+    and an element <I>x</I>, return the list
+    <CODE>[<I>e2</I>, <I>e3</I>, ..., <I>x</I>]</CODE>.
+
+    This is a simple helper function used by NthOrderTagger.
+
+    @param lst The list to shift.
+    @type lst list
+    @param elt The element to shift into the list.
+    @type elt any
+    @returntype list
+    @return The shifted list.
+    """
     if len(lst) > 0:
         del lst[0]
         lst.append(elt)
   
 class TaggerI:
+    # other requirements? (e.g., in, out have same length)?
     """##
-    Interface for taggers, which map [Word] -> [TaggedWord]
+    A processing interface for assigning a tag to each token in an
+    ordered list of tokens.  Taggers are required to define one
+    function, <CODE>tag</CODE>, which takes a list of
+    <CODE>Tokens</CODE>, and returns a list of <CODE>Token</CODE>s.
+    Typically, the input tokens will be <CODE>SimpleToken</CODE>s, and
+    the output tokens will be <CODE>TaggedToken</CODE>s.  However,
+    taggers may also be written to map between other types of tokens,
+    as long as they are still performing the same conceptual task. <P> 
+
+    Classes implementing the <CODE>TaggerI</CODE> interface may choose
+    to only support certain classes of tokens.  If a method is unable
+    to return a correct result because it is given an unsupported
+    class of token, then it should raise a NotImplementedError.  (??
+    is this the right exception? use NotSupportedError? ValueError?
+    ??)
     """
-    def tag(self, tokens): 
+    def tag(self, tokens):
+        """##
+        Assign a tag to each token in an ordered list of tokens, and
+        return the resulting list of tagged tokens.
+
+        @param tokens The list of tokens to be tagged.
+        @type tokens list of TokenI
+        @return The tagged list of tokens.
+        @returntype list of TokenI
+        """
         raise AssertionError()
 
 class NN_CD_Tagger(TaggerI):
-    def __init__(self): pass
+    """##
+    A \"default\" tagger, which will assign the tag <CODE>CD</CODE> to 
+    numbers, and <CODE>NN</CODE> to anything else. <P>
+
+    This tagger expects a list of <CODE>SimpleToken</CODE>s as its
+    inputs, and generates a list of <CODE>TaggedToken</CODE>s as its
+    output.
+    """
     def tag(self, tokens):
+        # Inherit docs from TaggerI
         tagged_tokens = []
         for token in tokens:
             word = token.type().name()
@@ -1763,11 +2278,45 @@ class NN_CD_Tagger(TaggerI):
         return tagged_tokens
 
 class NthOrderTagger(TaggerI):
+    """##
+    An <I>n</I>-th order stochastic tagger.  Before an
+    <CODE>NthOrderTagger</CODE> can be used, it should be trained on a 
+    list of <CODE>TaggedToken</CODE>s.  Using this list, it will
+    construct a frequency distribution describing the frequencies with 
+    each word is tagged in different contexts.  The context considered 
+    consists of the word to be tagged and the <I>n</I> previous words' 
+    tags.  Once it has constructed this frequency distribution, it
+    uses it to tag words by assigning each word the tag with the
+    maximum frequency given its context.  If the
+    <CODE>NthOrderTagger</CODE> encounters a word in a context for
+    which it has no data, it will assign it the tag \"UNK\". <P>
+
+    This tagger expects a list of <CODE>SimpleToken</CODE>s as its
+    input, and generates a list of <CODE>TaggedToken</CODE>s as its
+    output.
+    """
     def __init__(self, n):
+        """##
+        Construct a new <I>n</I>-th order stochastic tagger.  The
+        new tagger should be trained, using the train() method, before
+        it is used to tag data.
+        
+        @param n The order of the new <CODE>NthOrderTagger</CODE>.
+        @type n int
+        """
         self._n = n
         self._freqDist = CFFreqDist()
 
     def train(self, tagged_tokens):
+        """##
+        Train this <CODE>NthOrderTagger</CODE> using the given
+        training data.  If this method is called multiple times, then
+        the training data from each call will be used.
+        
+        @param tagged_tokens The training data.
+        @type tagged_tokens list of TaggedToken
+        @returntype None
+        """
         # prev_tags is a list of the previous n tags that we've assigned.
         prev_tags = ['UNK' for x in range(self._n)]
       
@@ -1780,6 +2329,7 @@ class NthOrderTagger(TaggerI):
             shift_in(prev_tags, token.type().tag())
 
     def tag(self, tokens):
+        # Inherit docs from TaggerI
         tagged_tokens = []
       
         prev_tags = ['UNK' for x in range(self._n)]
@@ -1787,7 +2337,7 @@ class NthOrderTagger(TaggerI):
             # Predict the next tag
             context = tuple(prev_tags+[token.type().name()])
             context_event = ContextEvent(context)
-            sample = self._freqDist.max_freq_sample(context_event)
+            sample = self._freqDist.cond_max(context_event)
             if sample: tag = sample.feature()
             else: tag = 'UNK'
 
@@ -1800,12 +2350,42 @@ class NthOrderTagger(TaggerI):
 
         return tagged_tokens
 
-class FallbackTagger(TaggerI):
-    def __init__(self, taggers, unknown_tag):
+class BackoffTagger(TaggerI):
+    """##
+    A <CODE>Tagger</CODE> that tags tokens using a basic backoff
+    model.  Each <CODE>BackoffTagger</CODE> is paramatrised by an
+    ordered list sub-taggers.  In order to assign a tag to a token,
+    each of these sub-taggers is consulted in order.  If a sub-tagger
+    is unable to determine a tag for the given token, it should use a
+    special \"unknown tag.\"  The first tag returned by a sub-tagger,
+    other than the unknown tag, is used for each Token. <P>
+
+    This tagger expects a list of <CODE>SimpleToken</CODE>s as its
+    input, and generates a list of <CODE>TaggedToken</CODE>s as its
+    output.  Each sub-tagger should accept a list a list of
+    <CODE>SimpleToken</CODE>s as its input, and should generate a list
+    of <CODE>TaggedToken</CODE>s as its output.
+    """
+    def __init__(self, subtaggers, unknown_tag='UNK'):
+        """##
+        Construct a new <CODE>BackoffTagger</CODE>, from the given
+        list of sub-taggers.  The unknown tag specifies which tag
+        should be treated as an indication that a sub-tagger cannot
+        successfully tag a <CODE>Token</CODE>.
+        @param subtaggers The list of sub-taggers used by this
+               <CODE>BackoffTagger</CODE>.  These sub-taggers will be
+               consulted in the order in which they appear in the
+               list.
+        @type subtaggers list of TaggerI
+        @param unknown_tag The tag which indicates that a sub-tagger
+               is unable to tag a <CODE>Token</CODE>.
+        @type unknown_tag sting.
+        """
         self._unk = unknown_tag
-        self._taggers = taggers
+        self._taggers = subtaggers
 
     def tag(self, tokens):
+        # Inherit docs from TaggerI
 
         # Find the output of all the taggers.
         tagger_outputs = []
@@ -1832,6 +2412,15 @@ class FallbackTagger(TaggerI):
         return tagged_tokens
   
 def test_tagger():
+    """##
+    A simple test function for the <CODE>Tagger</CODE> classes.  It
+    constructs a <CODE>BackoffTagger</CODE> using a 1st order
+    <CODE>NthOrderTagger</CODE>, a 0th order
+    <CODE>NthOrderTagger</CODE>, and an <CODE>NN_CD_Tagger</CODE>.  It 
+    trains the tagger using the contents of the file \"foo.test,\" and 
+    then tags the contents of that file.
+    @returntype None
+    """
     tokens=TaggedTokenizer().tokenize(open('foo.test', 'r').read())
 
     t0 = NthOrderTagger(0)
@@ -1840,7 +2429,5 @@ def test_tagger():
     t1 = NthOrderTagger(1)                
     t1.train(tokens)
 
-    ft = FallbackTagger( (t1, t0, NN_CD_Tagger()), 'UNK')
-    s = ''
-    for t in ft.tag(tokens): s += str(t.type())
-    return s
+    ft = BackoffTagger( (t1, t0, NN_CD_Tagger()), 'UNK')
+    for t in ft.tag(tokens): print t.type(),
