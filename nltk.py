@@ -139,6 +139,8 @@ to currently implemented interfaces and classes.
        FreqDist.freq() and FreqDist.cond_freq().
   <LI> Should I implement cross-toolkit policies on how to use __str__ 
        and __repr__?  If so, what should they be?
+  <LI> How should I split the toolkit into modules?  Should I use a
+       multi-layer structure (e.g., <CODE>nltk.probability</CODE>)?
 </UL>
 
 @exclude .*(?!Token).....Type
@@ -188,7 +190,7 @@ import re
 ##     3. Commented
 ##     4. Partially Implemented, commented out.
 ##     5. Commented
-##     6. Flux
+##     6. Commented
 ##
 ##################################################
 ##################################################
@@ -225,7 +227,7 @@ def make_docs(target='/home/edloper/html/'):
     docs=pydoc.doc(nltk)
 
     print 'Writing docs to HTML...'
-    pydoc.HTML_Doc(docs).write(target)
+    pydoc.HTML_Doc(docs, 'NLP Toolkit').write(target)
     
     print 'Checking docs...'
     checks = pydoc.DocChecker.ALL - pydoc.DocChecker.AUTHOR - \
