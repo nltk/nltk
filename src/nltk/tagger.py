@@ -525,14 +525,14 @@ class BackoffTagger(SequentialTagger):
 def _demo_tagger(gold_documents, tagger):
     correct = total = 0
 
-    # Create a set of test documents (without tags)
-    test_documents = [doc.exclude('tag') for doc in gold_documents]
-    
-    # Run the tagger on the test documents.
-    for test_doc in test_documents: tagger.tag(test_doc)
+    for gold_doc in gold_documents:
+        # Remove tags to create the test document
+        test_doc = Token(SUBTOKENS=[tok.exclude('TAG') for tok in gold_doc['SUBTOKENS']])
 
-    # Evaluate performance vs the gold documents.
-    for (test_doc, gold_doc) in zip(test_documents, gold_documents):
+        # Now tag the test document
+        tagger.tag(test_doc)
+
+        # Evaluate performance vs the gold documents.
         for (t,g) in zip(test_doc['SUBTOKENS'], gold_doc['SUBTOKENS']):
             #print t==g, t,g
             total += 1
