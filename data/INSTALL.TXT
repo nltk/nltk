@@ -8,7 +8,7 @@
 ### For license information, see LICENSE.TXT                ###
 ###############################################################
 
-This directory contains the standard corpus set for NLTK 1.1.  Each
+This directory contains the standard corpus set for NLTK.  Each
 corpus or corpus sample is contained in a single zip archive
 (e.g. "brown.zip") that unzips to a subdirectory of the same name
 (e.g. "brown/").  Each corpus is accompanied by a readme file (e.g.,
