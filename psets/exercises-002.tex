@@ -1,0 +1,130 @@
+%
+% Natural Language Toolkit for Python
+% Peudo-Problem Set 2
+% Edward Loper
+% 
+% Created [03/02/01 12:02 AM]
+% $Id$
+%
+
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{boxedminipage}
+
+\begin{document}
+\title{Psuedo-Problem Set 2}
+\author{Edward Loper}
+\maketitle
+
+\section{Introduction to the NLP Toolkit}
+
+  The NLP Toolkit is a Python package which simplifies the creation of
+  natural language processing programs:
+
+  \begin{enumerate}
+
+    \item It defines data types for representing objects used by
+    natural language processing tasks, such as words, syntax trees,
+    and probability distributions.
+
+    \item It defines standard interfaces for performing natural
+    language processing tasks.  These standards ensure that all of the
+    components you write can be combined to perform larger tasks.
+
+    \item It defines several implementations for each task interface.
+    Since tasks have standard interfaces, these implementations can be
+    combined with your own components.
+
+  \end{enumerate}
+
+  An introduction to the toolkit can be read at:
+
+  \texttt{http://www.cis.upenn.edu/\~edloper/nltk/tutorial}.
+
+\subsection{Using the NLP Toolkit}
+
+  The toolkit consists of several Python \emph{modules}.  Each module
+  contains a collection of related data types and interfaces.  The
+  modules defined by the NLP toolkit are:
+
+  \begin{itemize}
+    \item \texttt{nltk.token}: Data types and interfaces for processing
+    individual elements of text, such as words or sentences.
+
+    \item \texttt{nltk.tree}: Data types and interfaces for processing
+    syntax trees.
+
+    \item \texttt{nltk.probability}: Data types for representing
+    frequency distributions and probability distributions.
+
+    \item \texttt{nltk.wordnet}: Data types for accessing the WordNet
+    lexical database.
+
+    \item[etc.] (fill in more later)
+  \end{itemize}
+
+\subsubsection{Importing}
+
+  Before you can use a module, you must import it.  The simplest way
+  to import a module is to use the syntax:
+
+  \begin{quote}
+  \texttt{>>> from} \textit{nltk.token} \texttt{import *}
+  \end{quote}
+
+  \noindent If you import a module using this syntax, then you can
+  access the objects it defines with their simple names (such as
+  \texttt{Token}).
+
+  You may also import a module using the syntax:
+
+  \begin{quote}
+  \texttt{>>> import} \textit{nltk.token}
+  \end{quote}
+
+  \noindent If you import a module with this syntax, then you must
+  access its objects with fully qualified names (such as
+  \texttt{nltk.token.Token}).
+
+\subsubsection{Reference Documenation}
+
+  To find out more about the contents of a module, refer to the
+  reference documentation:
+
+  \texttt{http://www.cis.upenn.edu/~edloper/nltk/ref}
+
+  \noindent or use the pydoc help facility:
+
+  \begin{quote}
+  \texttt{>>> from pydoc import help}\\
+  \texttt{>>> import} \textit{nltk.token}\\
+  \texttt{>>> help(}\textit{nltk.token}\texttt{)}
+  \end{quote}
+
+\section{The Token Module}
+
+  The token module defines several classes which are useful for
+  processing individual elements of text, known as \emph{text types},
+  or \emph{types} for short.  Words are the most common kind of text
+  type, but types can also be used to represent sentences, morphemes,
+  syntax trees, paragraphs, or any other element of text.
+  \emph{Types} are often encoded using Python strings:
+
+  \begin{quote}
+  \texttt{>>> wordtypes = ["the", "big", "dog"]}
+          \qquad \textit{\# Define a list of word types.}
+  \end{quote}
+
+  Occurances of types are known as \emph{text tokens}, or
+  \emph{tokens} for short.  Several tokens may have the same type.
+  For example, the following sentence contains seven word tokens, but
+  only five word types:
+
+  \begin{quote}
+  The big dog chased the small dog.
+  \end{quote}
+
+
+\end{document}
+
+
