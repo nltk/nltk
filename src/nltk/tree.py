@@ -320,8 +320,8 @@ class Tree:
         # convenience.  In particular, we believe that it is more
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
-        import draw.tree
-        draw.tree.drawtree(self)
+        import nltk.draw.tree
+        nltk.draw.tree.TreeView(self)
 
 ##//////////////////////////////////////////////////////
 ##  Text Tree Tokens
@@ -627,8 +627,8 @@ class TreeToken(token.Token):
         # convenience.  In particular, we believe that it is more
         # intuitive for students to run "mytree.draw()" than
         # "draw.tree.drawtree(mytree)".
-        import draw.tree
-        draw.tree.drawtreetoken()
+        import nltk.draw.tree
+        nltk.draw.tree.TreeView(self)
 
 ##//////////////////////////////////////////////////////
 ##  Conversion Routines
