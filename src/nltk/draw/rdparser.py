@@ -70,6 +70,7 @@ from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
 from nltk.tokenizer import *
+from nltk.draw.cfg import *
         
 class RecursiveDescentParserDemo:
     """
@@ -821,6 +822,7 @@ class RecursiveDescentParserDemo:
             widget.parent().remove_child(widget)
             widget.destroy()
             self._animating_lock = 0
+            if self._autostep: self._step()
 
     def edit_grammar(self, *e):
         CFGEditor(self._top, self._parser.grammar(), self.set_grammar)
