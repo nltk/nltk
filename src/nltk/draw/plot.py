@@ -31,14 +31,6 @@ class Plot:
               Currently, the options are C{"linear"}, C{"log"},
               C{"log-linear"}, and C{"linear-log"}.
         """
-#         # Do type checking on the arguments.
-#         _chktype('plot', 1, vals, ( [_IntType, _FloatType],
-#                                     (_IntType, _FloatType),
-#                                     _FunctionType, _BuiltinFunctionType,
-#                                     _MethodType))
-#         _chktype('plot', 2, rng, ( [_IntType, _FloatType],
-#                                    (_IntType, _FloatType) ))
-
         # Handle keyword arguments.
         self._xscale = 'linear'
         self._yscale = 'linear'
