@@ -68,21 +68,21 @@ def _typemsg(types):
     typestr = ''
     for typ in types:
         if type(typ) in (TypeType, ClassType):
-            typestr = typestr + typ.__name__ + ' or'
+            typestr = typestr + typ.__name__ + ' or '
         elif type(typ) == ListType:
             typestr = typestr + '(list whose elements are: '+ \
-                      _typemsg(typ)+') or'
+                      _typemsg(typ)+') or '
         elif type(typ) == TupleType:
             typestr = typestr + '(tuple whose elements are: '+ \
-                      _typemsg(typ)+') or'
+                      _typemsg(typ)+') or '
         elif type(typ) == DictType:
             for (key, val) in typ.items():
                 typestr = typestr + '(dictionary from ' + \
                           _typemsg((key,)) + ' to ' + _typemsg(val) + \
-                          ') or'
+                          ') or '
         else:
             raise AssertionError('Bad arg to typemsg')
-    return typestr[:-3]
+    return typestr[:-4]
 
 def chktype(name, n, arg, types):
     """##
@@ -163,7 +163,7 @@ def chktype(name, n, arg, types):
                 if type_safety_level <= 2: return
                 type_ok = 1
                 for elt in arg:
-                    try: chktype(name, n, elt, t, d+4)
+                    try: chktype(name, n, elt, t)
                     except: type_ok = 0
                 if type_ok: return
         elif type(t) == TupleType:
@@ -171,7 +171,7 @@ def chktype(name, n, arg, types):
                 if type_safety_level <= 2: return
                 type_ok = 1
                 for elt in arg:
-                    try: chktype(name, n, elt, t, d+4)
+                    try: chktype(name, n, elt, t)
                     except: type_ok = 0
                 if type_ok: return
         elif type(t) == DictType:
@@ -180,17 +180,16 @@ def chktype(name, n, arg, types):
                 type_ok = 1
                 for key in arg.keys():
                     if t.has_key(type(key)):
-                        try: chktype(name, n, arg[key], t[type(key)], 
-                                      d+4)
+                        try: chktype(name, n, arg[key], t[type(key)])
                         except: type_ok = 0
                     elif type(key) in (ListType, TupleType, DictType):
                         subtype_ok = 0
                         for t_key in t.keys():
                             if type(key) == type(t_key):
                                 try:
-                                    chktype(name, n, key, (t_key,), d+4)
+                                    chktype(name, n, key, (t_key,))
                                     chktype(name, n, arg[key],
-                                             t[t_key], d+4)
+                                             t[t_key])
                                     subtype_ok = 1
                                 except: pass
                         if not subtype_ok: type_ok = 0
