@@ -45,10 +45,11 @@ functions are defined:
     - C{parse_treebank()}: Parses treebank-style syntax trees.
 
 @see: nltk.token
-@sort: AbstractTree, Tree, TreeToken, TreebankTokenizer,
-    ProbabilisticTree, ProbabilisticTreeToken
-@group Tokenization: TreebankTokenizer
-@group Probabilistic Trees: Probabilistic*
+@sort: AbstractTree, Tree, TreeToken, ProbabilisticTree, 
+    ProbabilisticTreeToken, TreebankTokenizer
+@group Data Types: AbstractTree, Tree, TreeToken, ProbabilisticTree,
+    ProbabilisticTreeToken
+@group Tokenizers: TreebankTokenizer
 """
 
 from nltk.token import Token, Location, TokenizerI
