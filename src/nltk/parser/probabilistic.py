@@ -218,6 +218,8 @@ class ViterbiPCFGParser(ProbabilisticParserI):
             and higher numbers will produce more verbose tracing
             output.
         """
+        assert _chktype(1, grammar, PCFG)
+        assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
 
@@ -232,16 +234,20 @@ class ViterbiPCFGParser(ProbabilisticParserI):
             produce more verbose tracing output.
         @rtype: C{None}
         """
+        assert _chktype(1, trace, types.IntType)
         self._trace = trace
 
     def parse(self, text):
         # Inherit docs from ProbabilisticParserI; and delegate to parse_n
+        assert _chktype(1, text, [Token], (Token))
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
         
     def parse_n(self, text, n=None):
         # Inherit docs from ProbabilisticParserI
+        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(2, n, types.IntType, types.NoneType)
 
         # The most likely consituant table.  This table specifies the
         # most likely constituent for a given span and type.
@@ -516,6 +522,8 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             and higher numbers will produce more verbose tracing
             output.
         """
+        assert _chktype(1, grammar, PCFG)
+        assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
 
@@ -530,16 +538,21 @@ class BottomUpPCFGChartParser(ProbabilisticParserI):
             produce more verbose tracing output.
         @rtype: C{None}
         """
+        assert _chktype(1, trace, types.IntType)
         self._trace = trace
 
     def parse(self, text):
         # Inherit docs from ProbabilisticParserI; and delegate to parse_n
+        assert _chktype(1, text, [Token], (Token))
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
         
     def parse_n(self, text, n=None):
         # Inherit docs from ProbabilisticParserI
+        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(2, n, types.IntType, types.NoneType)
+        
         loc = Location(text[0].loc().start(), text[-1].loc().end(),
                        unit=text[0].loc().unit(),
                        source=text[0].loc().source())
@@ -814,6 +827,9 @@ class BeamPCFGParser(BottomUpPCFGChartParser):
             and higher numbers will produce more verbose tracing
             output.
         """
+        assert _chktype(1, beam_size, types.IntType)
+        assert _chktype(2, grammar, PCFG)
+        assert _chktype(3, trace, types.IntType)
         BottomUpPCFGChartParser.__init__(self, grammar, trace)
         self._beam_size = beam_size
         
