@@ -14,6 +14,7 @@ from Tkinter import *
 from nltk.tree import Tree, TreeToken
 from nltk.token import Token, Location
 from nltk.draw import *
+import sys
 
 ##//////////////////////////////////////////////////////
 ##  Tree Segment
@@ -74,6 +75,7 @@ class TreeSegmentWidget(CanvasWidget):
         self._roof = 0
         self._xspace = 10
         self._yspace = 15
+        self._ordered = True
 
         # Create canvas objects.
         self._lines = [canvas.create_line(0,0,0,0, fill='#006060')
@@ -106,6 +108,10 @@ class TreeSegmentWidget(CanvasWidget):
         elif attr == 'color':
             for l in self._lines: canvas.itemconfig(l, fill=value)
             canvas.itemconfig(self._polygon, outline=value)
+        elif isinstance(attr, tuple) and attr[0] == 'color':
+            # Set the color of an individual line.
+            l = self._lines[int(attr[1])]
+            canvas.itemconfig(l, fill=value)
         elif attr == 'fill':
             canvas.itemconfig(self._polygon, fill=value)
         elif attr == 'width':
@@ -115,6 +121,8 @@ class TreeSegmentWidget(CanvasWidget):
             if attr == 'xspace': self._xspace = value
             elif attr == 'yspace': self._yspace = value
             self.update(self._node)
+        elif attr == 'ordered':
+            self._ordered = 1
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
@@ -124,11 +132,16 @@ class TreeSegmentWidget(CanvasWidget):
             return self.canvas().itemcget(self._polygon, attr)
         elif attr == 'color':
             return self.canvas().itemcget(self._polygon, 'outline')
+        elif isinstance(attr, tuple) and attr[0] == 'color':
+            l = self._lines[int(attr[1])]
+            return self.canvas().itemcget(l, 'fill')
         elif attr == 'xspace': return self._xspace
         elif attr == 'yspace': return self._yspace
         elif attr == 'orientation':
             if self._horizontal: return 'horizontal'
             else: return 'vertical'
+        elif attr == 'ordered':
+            return self._ordered
         else:
             return CanvasWidget.__getitem__(self, attr)
         
@@ -198,6 +211,13 @@ class TreeSegmentWidget(CanvasWidget):
     def _update(self, child):
         if len(self._subtrees) == 0: return
 
+        # Which lines need to be redrawn?
+        if child is self._node: need_update = self._subtrees
+        else: need_update = [child]
+
+        if self._ordered:
+            need_update = self._maintain_order(child)
+
         # Update the polygon.
         (nodex, nodey) = self._node_bottom()
         (xmin, ymin, xmax, ymax) = self._subtrees[0].bbox()
@@ -215,16 +235,58 @@ class TreeSegmentWidget(CanvasWidget):
             self.canvas().coords(self._polygon, nodex, nodey, xmin, 
                                  ymin, xmax, ymin, nodex, nodey)
 
-        # Which lines need to be redrawn?
-        if child is self._node: need_update = self._subtrees
-        else: need_update = [child]
-
         # Redraw all lines that need it.
         for subtree in need_update:
             (nodex, nodey) = self._node_bottom()
             line = self._lines[self._subtrees.index(subtree)]
             (subtreex, subtreey) = self._subtree_top(subtree)
             self.canvas().coords(line, nodex, nodey, subtreex, subtreey)
+
+    def _maintain_order(self, child):
+        if child is self._node:
+            # Check all the leaves
+            (left, top, right, bot) = child.bbox()
+
+            for subtree in self._subtrees:
+                (x1, y1, x2, y2) = subtree.bbox()
+                if bot+self._yspace > y1:
+                    subtree.move(0,bot+self._yspace-y1)
+
+            return self._subtrees
+        else:
+            moved = [child]
+            
+            (left, top, right, bot) = child.bbox()
+            index = self._subtrees.index(child)
+
+            # Check leaves to our right.
+            x = right + self._xspace
+            for i in range(index+1, len(self._subtrees)):
+                (x1, y1, x2, y2) = self._subtrees[i].bbox()
+                if x > x1:
+                    self._subtrees[i].move(x-x1, 0)
+                    x += x2-x1 + self._xspace
+                    moved.append(self._subtrees[i])
+
+            # Check leaves to our left.
+            x = left - self._xspace
+            for i in range(index-1, -1, -1):
+                (x1, y1, x2, y2) = self._subtrees[i].bbox()
+                if x < x2:
+                    self._subtrees[i].move(x-x2, 0)
+                    x -= x2-x1 + self._xspace
+                    moved.append(self._subtrees[i])
+
+            # Check the node
+            (x1, y1, x2, y2) = self._node.bbox()
+            if y2 > top-self._yspace:
+                self._node.move(0,top-self._yspace-y2)
+                moved = self._subtrees
+
+        # Return a list of the nodes we moved
+        return moved
+                
+            
 
     def _manage_horizontal(self):
         (nodex, nodey) = self._node_bottom()
