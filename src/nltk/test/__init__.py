@@ -20,6 +20,7 @@ DEFAULT_MODULES = [
     'nltk/test/set.py',
     'nltk/test/token.py',
     'nltk/test/tree.py',
+    'nltk/test/chktype.py',
     ]
 
 def _file_to_module(filename):
