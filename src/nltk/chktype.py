@@ -130,7 +130,8 @@ def _typemsg(types):
                     typestr += 'from ' + _typemsg((key,))
                     typestr += ' to ' + _typemsg(val) + ' or '
                 typestr = typestr[:-4] + ') or '
-                    
+        elif type(typ) in (FunctionType, MethodType):
+            typestr += '<%s> or ' % typ.__name__
         else:
             raise AssertionError('Bad arg to typemsg')
     if len(types) > 1: return '(%s)' % typestr[:-4]
