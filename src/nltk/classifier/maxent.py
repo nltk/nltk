@@ -13,7 +13,7 @@ This framework considers all of the probability distributions that are
 emperically consistant with the training data; and chooses the
 distribution with the highest entropy.  A probability distribution is
 X{emperically consistant} with a set of training data if its estimate
-for the frequency of each feature is equal to that frequency of the
+for the frequency of each feature is equal to the frequency of the
 feature in the training data.  In other words::
 
   SUM[lt] (fd[i](lt) * P(lt)) = SUM[lt] (fd[i](lt) * freq(lt))
@@ -27,10 +27,11 @@ For all i, where:
 It can be shown that the emperically consistant distribution that
 maximizes entropy must have the form::
 
-  P(l|t) = 1/Z(t) * exp(w[0]*fd[0](LabeledText(t,l)) +
-                        w[1]*fd[1](LabeledText(t,l)) +
-                        ... +
-                        w[n]*fd[n](LabeledText(t,l)))
+
+  P(l|t) = 1/Z(t) * (w[0] ** fd[0](LabeledText(t,l))) *
+                    (w[1] ** fd[1](LabeledText(t,l))) *
+                    ...
+                    (w[n] ** fd[n](LabeledText(t,l)))
 
 Where:
   - M{t} is a text.
@@ -98,7 +99,9 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
         - M{fd[i]} is the feature detector for the M{i}th feature.
         - M{w[i]} is the weight associated with the M{i}th feature.
         - M{Z(t)} is a normalization factor, computed by summing
-          M{P(l|t)} over labels.
+          M{P(l|t)} over labels::
+
+              Z(t) = SUM[l] P(l|t)
 
     Similarly, it classifies texts using the formula::
     
