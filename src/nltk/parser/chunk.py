@@ -164,7 +164,7 @@ from nltk.parser import ParserI, AbstractParser
 from nltk.tree import Tree
 from nltk.tokenizer import TokenizerI, AbstractTokenizer
 from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WhitespaceTokenizer
-from nltk.token import Token, CharSpanLocation
+from nltk.token import Token, CharSpanLocation, TokenReaderI, SubtokenContextPointer
 from nltk.chktype import chktype
 from sets import Set
 import types, re
@@ -218,12 +218,12 @@ class ChunkParserI(ParserI):
 ##  Tokenizers
 ##//////////////////////////////////////////////////////
 
-class ChunkedTaggedTokenizer(AbstractTokenizer):
+class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
-    A tokenizer that divides a string of chunked tagged text into
-    chunks and unchunked tokens.  Each chunk is encoded as a
-    C{Tree} whose children are tagged word tokens.  Each
-    unchunked token is encoded as a tagged word token.
+    A token reader that divides a string of chunked tagged text into
+    chunks and unchunked tokens.  Each chunk is encoded as a C{Tree}
+    whose children are tagged word tokens.  Each unchunked token is
+    encoded as a tagged word token.
 
     Chunks are marked by square brackets (C{[...]}).  Words are
     deliniated by whitespace, and each word should have the form
@@ -251,7 +251,8 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     @outprop: C{TAG}: The subtokens' tags.
     @outprop: C{LOC}: The subtokens' locations.
     """
-    def __init__(self, chunk_node='CHUNK', **property_names):
+    def __init__(self, locs=False, contexts=False,
+                 top_node='S', chunk_node='CHUNK', **property_names):
         """
         @include: AbstractTokenizer.__init__
         @type chunk_node: C{string}
@@ -260,65 +261,61 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
             describing the type of information contained by the chunk,
             such as C{"NP"} for base noun phrases.
         """
-        AbstractTokenizer.__init__(self, **property_names)
+        PropertyIndirectionMixIn.__init__(self, **property_names)
+        self._locs = locs
+        self._contexts = contexts
         self._chunk_node = chunk_node
+        self._top_node = top_node
 
-        # This tokenizer divides the text into chunks and words:
-        CHUNK = r'\[[^\[\]]+\]'
-        WORD = r'[^\[\]\s]+'
-        self._tokenizer1 = RegexpTokenizer('%s|%s' % (CHUNK, WORD),
-                                           **property_names)
-
-        # This tokenizer divides a chunk into words:
-        self._tokenizer2 = RegexpTokenizer(WORD, **property_names)
-
-    def _split_text_and_tag(self, subtok):
+    _WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
+    _VALID = re.compile(r'^([^\[\]]+|\[[^\[\]]*\])*$')
+    
+    def read_token(self, s, source=None):
         TEXT = self.property('TEXT')
         TAG = self.property('TAG')
-        split = subtok[TEXT].find('/')
-        if split >= 0:
-            subtok[TAG] = subtok[TEXT][split+1:]
-            subtok[TEXT] = subtok[TEXT][:split]
-        else:
-            subtok[TAG] = None
-        
-    def tokenize(self, token, addlocs=False, addcontexts=False):
-        assert chktype(1, token, Token)
         SUBTOKENS = self.property('SUBTOKENS')
-        TEXT = self.property('TEXT')
-        TAG = self.property('TAG')
         LOC = self.property('LOC')
+        TREE = self.property('TREE')
         CONTEXT = self.property('CONTEXT')
-
-        # check that brackets are balanced and not nested
-        brackets = re.sub(r'[^\[\]]', '', token[TEXT])
-        if not re.match(r'(\[\])*', brackets):
-            print "ERROR: unbalanced or nested brackets"
-
-        # Divide the text into chunks and unchunked words:
-        self._tokenizer1.tokenize(token, addlocs=addlocs)
-
-        # Process each one:
-        subtoks = token[SUBTOKENS]
-        for i, subtok in enumerate(subtoks):
-            if subtok[TEXT][0] == '[':
-                # It's a chunk.  Find the words it contains.
-                self._tokenizer2.tokenize(subtok, addlocs=addlocs)
-                # Divide each word into text & tag:
-                for subsubtok in subtok[SUBTOKENS]:
-                    self._split_text_and_tag(subsubtok)
-                    
-                # Convert it to a Tree.
-                subtoks[i] = Tree(self._chunk_node, subtok[SUBTOKENS])
+        
+        # Check that it's valid here, so we don't have to keep
+        # checking later.
+        if not self._VALID.match(s):
+            raise ValueError, 'Invalid token string (bad brackets)'
+        
+        stack = [Tree(self._top_node, [])]
+        for match in self._WORD_OR_BRACKET.finditer(s):
+            text = match.group()
+            if text[0] == '[':
+                chunk = Tree(self._chunk_node, [])
+                stack[-1].append(chunk)
+                stack.append(chunk)
+            elif text[0] == ']':
+                stack.pop()
             else:
-                # It's an unchunked token.  Divid its text & tag
-                self._split_text_and_tag(subtok)
+                slash = text.find('/')
+                if slash >= 0:
+                    tok = Token(**{TEXT: text[:slash], TAG: text[slash+1:]})
+                else:
+                    tok = Token(**{TEXT: text, TAG: None})
+                if self._locs:
+                    start, end = match.span()
+                    if slash >= 0: end = start+slash
+                    tok[LOC] = CharSpanLocation(start, end, source)
+                stack[-1].append(tok)
 
-        # Add contexts, if requested
-        if addcontexts:
-            for i, subtok in enumerate(subtoks):
-                context = SubtokenContextPointer(token, SUBTOKENS, i)
-                subtoks[CONTEXT] = context
+        # Create the token, and add the TREE property.
+        tok = Token(**{TREE: stack[0]})
+        # Add the SUBTOKENS property (from the tree's leaves)
+        tok[SUBTOKENS] = leaves = tok[TREE].leaves()
+        # Add context pointers.
+        if self._contexts:
+            for i, subtok in enumerate(leaves):
+                subtok[CONTEXT] = SubtokenContextPointer(tok, SUBTOKENS, i)
+        return tok
+
+    def read_tokens(self, s, source=None):
+        return [self.read_token(s, source)]
 
 # [XX] THIS IS BROKEN:
 #class ConllChunkedTokenizer(TokenizerI):
@@ -438,103 +435,120 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
 #
 #        return chunks
 
-##//////////////////////////////////////////////////////
-##  Evaluation Helper
-##//////////////////////////////////////////////////////
-
-class IeerChunkedTokenizer(TokenizerI):
+class IeerChunkedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
-    A tokenizer that splits a string of chunked tagged text in the
-    IEER named entity format into tokens and chunks.  Each token is
-    encoded as a C{Token} whose type is C{String}; and each chunk
-    is encoded as a C{Tree} containing C{Token}s with
-    C{String} types.
+    
+    A token reader that splits a string of chunked tagged text in the
+    IEER named entity format into tokens and chunks.  The input string
+    is in the form of a document (the IEER corpus reader returns a
+    list of such documents).  Chunks are of several types, LOCATION,
+    ORGANIZATION, PERSON, DURATION, DATE, CARDINAL, PERCENT, MONEY,
+    and MEASURE.  Each token returned corresponds to a single
+    document, and defines the following properties:
 
-    The input string is in the form of a document (the IEER corpus
-    reader returns a list of such documents).  Chunks are of several
-    types, LOCATION, ORGANIZATION, PERSON, DURATION, DATE, CARDINAL,
-    PERCENT, MONEY, and MEASURE.
-
-      >>> docs = ieer.tokenize('NYT_19980315')
-      >>> ieerct = IeerChunkedTokenizer(['LOCATION', 'PERSON'])
-      >>> [Tree('DOC', ieerct.tokenize(doc.type())) for doc in docs]
-
-    ::
-
-        [('DOC':
-          '<DOCNO>'@[0w]
-          'NYT19980315.0063'@[1w]
-          '</DOCNO>'@[2w]
-          ...
-          'in'@[35w]
-          '1979'@[37w]
-          ','@[39w]
-          ('PERSON': 'Bob' 'Edwards')@[41w:43w]
-          'has'@[44w]
-          'presided'@[45w]
-          ...
-          'story'@[176w]
-          'from'@[177w]
-          ('LOCATION': 'Iowa')@[179w]
-          '.'@[181w]
+      - C{TREE}: The chunked tree for the document's text.  Children
+        are either word tokens or chunks.
+      - C{WORDS}: A list of the words in the document's text.  This is
+        equal to the leaves of C{TREE}.
+      - C{DOCNO}: The document number identifier for the document.
+      - C{DOCTYPE}: The document type.
+      - C{DATETIME}: The time and date of the document.
+      - C{HEADLINE}: A tokenized list of the words in the document.
     """
 
-    def __init__(self, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', \
-            'DURATION', 'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE']):
+    def __init__(self, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 
+            'DURATION', 'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
+                 **property_names):
         """
         Create a new C{IeerChunkedTokenizer}.
         
         @type chunk_types: C{string}
         @param chunk_types: A list of the node types to be extracted
             from the input.  Possible node types are
-            C{"LOCATION"}, C{"ORGANIZATION"}, C{"PERSON"},
-            C{"DURATION"}, C{"DATE"}, C{"CARDINAL"}, C{"PERCENT"},
-            C{"MONEY"}, C{"MEASURE"}
+            C{'LOCATION'}, C{'ORGANIZATION'}, C{'PERSON'},
+            C{'DURATION'}, C{'DATE'}, C{'CARDINAL'}, C{'PERCENT'},
+            C{'MONEY'}, C{'MEASURE'}
         """
+        PropertyIndirectionMixIn.__init__(self, **property_names)
         self._chunk_types = chunk_types
 
-    # [XX] addlocs and addcontexts are ignored.
-    def tokenize(self, str, addlocs=False, addcontexts=False):
+    _DOC_RE = re.compile(r'<DOC>\s*'
+                         r'(<DOCNO>\s*(?P<docno>.+?)\s*</DOCNO>\s*)?'
+                         r'(<DOCTYPE>\s*(?P<doctype>.+?)\s*</DOCTYPE>\s*)?'
+                         r'(<DATE_TIME>\s*(?P<date_time>.+?)\s*</DATE_TIME>\s*)?'
+                         r'<BODY>\s*'
+                         r'(<HEADLINE>\s*(?P<headline>.+?)\s*</HEADLINE>\s*)?'
+                         r'<TEXT>(?P<text>.*?)</TEXT>\s*'
+                         r'</BODY>\s*</DOC>\s*', re.DOTALL)
 
-        # Tokenizer that returns SGML tags and attributes as a single
-        # token, elsewhere tokenizing on whitespace
-        SGMLTokenizer = RETokenizer("<[^>]*>|[^<>\s]+")
-        tokens = SGMLTokenizer.tokenize(str)
+    _TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
 
-        in_chunk = 0        # currently inside a chunk?
-        chunktype = ''      # inside which type (LOCATION, ORGANIZATION, ...)?
-        chunks = []         # accumulated chunks
-        subsequence = []    # accumulated tokens inside next chunk
+    def read_token(self, s):
+        TREE = self.property('TREE')
+        
+        # Try looking for a single document.  If that doesn't work, then just
+        # treat everything as within the <TEXT>...</TEXT>.
+        m = self._DOC_RE.match(s)
+        if m:
+            return self._read_doc_match(m)
+        else:
+            return Token(**{TREE: self._read_text(s)})
 
-        for token in tokens:
-            if not in_chunk:
-                m = re.match(r'<b_[a-z]+ type="([A-Z]+)"[^>]*>', token.type())
+    def read_tokens(self, s):
+        TREE = self.property('TREE')
+        toks = [self._read_doc_match(m) for m in self._DOC_RE.finditer(s)]
+        # If we didn't find any docs, try treating it as a single doc,
+        # without the enclosing html headers.
+        if len(toks) > 0:
+            return toks
+        else:
+            return [Token(**{TREE: self._read_text(s)})]
 
-                # starting new chunk
-                if m:
-                    if m.group(1) in self._chunk_types:
-                        chunktype = m.group(1)
-                        in_chunk = 1
+    def _read_doc_match(self, m):
+        WORDS = self.property('WORDS')          # list of tokens
+        DOCNO = self.property('DOCNO')          # string
+        DOCTYPE = self.property('DOCTYPE')      # string
+        DATE_TIME = self.property('DATE_TIME')  # string
+        HEADLINE = self.property('HEADLINE')    # list of tokens
+        TEXT = self.property('TEXT')            # string
+        TREE = self.property('TREE')            # tree over tokens
 
-                # continuing outside chunk
-                elif token.type()[0:3] != "<e_":
-                    chunks.append(token)
+        tok = Token(**{TREE: self._read_text(m.group('text'))})
+        tok[WORDS] = tok[TREE].leaves()
+        tok[DOCNO]=m.group('docno')
+        tok[DOCTYPE]=m.group('doctype')
+        tok[DATE_TIME]=m.group('date_time')
+        tok[HEADLINE]=[Token(**{TEXT: t})
+                       for t in m.group('headline').split()]
+        return tok
 
-            # inside a chunk
-            else:
-                m = re.match(r'<e_[a-z]+>', token.type())
-                # ending chunk
-                if m:
-                    chunks.append(Tree(chunktype, subsequence))
-                    subsequence = []
-                    in_chunk = 0
-                    chunktype = ''
-
-                # continuing inside chunk
+    def _read_text(self, s):
+        stack = [Tree('TEXT', [])]
+        for piece_m in re.finditer('<[^>]+>|[^\s<]+', s):
+            piece = piece_m.group()
+            try:
+                if piece.startswith('<b_'):
+                    m = self._TYPE_RE.match(piece)
+                    if m is None: print 'XXXX', piece
+                    chunk = Tree(m.group('type'), [])
+                    stack[-1].append(chunk)
+                    stack.append(chunk)
+                elif piece.startswith('<e_'):
+                    stack.pop()
+                elif piece.startswith('<'):
+                    raise ValueError # Unexpected HTML
                 else:
-                    subsequence.append(token)
+                    stack[-1].append(Token(TEXT=piece))
+            except (IndexError, ValueError):
+                raise ValueError('Bad IEER string (error at character %d)' %
+                                 piece_m.start())
+        if len(stack) != 1:
+            raise ValueError('Bad IEER string')
+        return stack[0]
 
-        return chunks
+##//////////////////////////////////////////////////////
+##  Evaluation Helper
+##//////////////////////////////////////////////////////
 
 class ChunkScore:
     """
@@ -1654,21 +1668,13 @@ def demo_eval(chunkparser, text):
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
-    token = Token(TEXT=text)
-    LineTokenizer(SUBTOKENS='LINES').tokenize(token, addlocs=True)
-    sentences = token['LINES']
-    ctt = ChunkedTaggedTokenizer('NP')
-    for sentence in sentences:
-        ctt.tokenize(sentence)
-        gold = Tree('S', sentence['SUBTOKENS'])
-        test = Token(SUBTOKENS=gold.leaves(), LOC=sentence['LOC'])
+    ctt = ChunkedTaggedTokenReader(chunk_node='NP', SUBTOKENS='WORDS')
+    
+    for sentence in text.split('\n'):
+        gold = ctt.read_token(sentence)
+        test = Token(WORDS=gold['WORDS'])#, LOC=sentence['LOC'])
         chunkparser.parse(test)
-        chunkscore.score(gold, test['TREE'])
-        #correct_toks = ctt.tokenize(sentence.type(), source=sentence.loc())
-        #correct = Tree('S', correct_toks)
-        #unchunked = correct.leaves()
-        #guess = chunkparser.parse(unchunked)
-        #chunkscore.score(correct, guess)
+        chunkscore.score(gold['TREE'], test['TREE'])
 
     print '/'+('='*75)+'\\'
     print 'Scoring', chunkparser
@@ -1719,14 +1725,16 @@ def demo():
 
     # Use a simple regexp to define regular expressions.
     r1 = ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
-    cp = RegexpChunkParser([r1], chunk_node='NP', top_node='S', trace=1)
+    cp = RegexpChunkParser([r1], chunk_node='NP', top_node='S', trace=1,
+                           SUBTOKENS='WORDS')
     demo_eval(cp, text)
     print
 
     # Use a chink rule to remove everything that's *not* an NP
     r1 = ChunkRule(r'<.*>+', 'Chunk everything')
     r2 = ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
-    cp = RegexpChunkParser([r1, r2], chunk_node='NP', top_node='S', trace=1)
+    cp = RegexpChunkParser([r1, r2], chunk_node='NP', top_node='S', trace=1,
+                           SUBTOKENS='WORDS')
     demo_eval(cp, text)
     print
 
@@ -1734,17 +1742,21 @@ def demo():
     r1 = ChunkRule(r'(<.*>)', 'Chunk each tag')
     r2 = UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
     r3 = MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
-    cp = RegexpChunkParser([r1,r2,r3], chunk_node='NP', top_node='S', trace=1)
+    cp = RegexpChunkParser([r1,r2,r3], chunk_node='NP', top_node='S', trace=1,
+                           SUBTOKENS='WORDS')
     demo_eval(cp, text)
     print
 
     # Chunk sequences of NP words, and split them at determiners
     r1 = ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
     r2 = SplitRule('', r'<DT>', 'Split before DT')
-    cp = RegexpChunkParser([r1,r2], chunk_node='NP', top_node='S', trace=1)
+    cp = RegexpChunkParser([r1,r2], chunk_node='NP', top_node='S', trace=1,
+                           SUBTOKENS='WORDS')
     demo_eval(cp, text)
     print
 
 if __name__ == '__main__':
     demo()
+
+
 
