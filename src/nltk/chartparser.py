@@ -110,6 +110,8 @@ class Chart:
         return self._loc
     def edges(self):
         return self._chart.keys()
+    def size(self):
+        return len(self.edges())
     def final_edges(self):
         return [e for e in self.edges() if e.complete()]
     def nonfinal_edges(self):
@@ -160,13 +162,39 @@ class ChartParser(ParserI):
     @ivar _lexicon: The C{Rule}s of the lexicon;
         lexical rules are assumed to have only one rhs element
     """
-    def __init__(self, **kwargs):
-        self._grammar = kwargs['grammar']
-        self._lexicon = kwargs['lexicon']
-        self._basecat = kwargs['basecat']
-        self._trace = None
+    def __init__(self, grammar, lexicon, basecat, **kwargs):
+        self._grammar = grammar
+        self._lexicon = lexicon
+        self._basecat = basecat
+        self._callback = self._trace = None
+        if kwargs.has_key('callback'):
+            self._callback = kwargs['callback']
         if kwargs.has_key('trace'):
             self._trace = kwargs['trace']
+        self._functions = self._edgetrigger = None
+
+    # set up the rule invocation strategy, a second initializer (?!)
+    def strategy(self, functions, edgetrigger):
+        self._functions = functions
+        self._edgetrigger = edgetrigger
+
+    def strategy_test(self):
+        if self._functions:
+            return 1
+        else:
+            raise ValueError('No chart parser strategy was specified')
+
+    def add_edge(self, chart, edge):
+        added = 0
+        added += chart.add_edge(edge)
+        if added:
+            if self._trace:
+                print edge
+            if self._callback:
+                self._callback(chart, edge)
+        for func in self._edgetrigger:
+            added += func(chart, edge)
+        return added
 
     def load_sentence(self, tok_sent):
         loc = _sentence_loc(tok_sent)
@@ -178,7 +206,7 @@ class ChartParser(ParserI):
                     dr = DottedRule(rule.lhs(), rule[:], 1)
                     tree = Tree(rule.lhs(), *rule[:])
                     edge = Edge(dr, (tree,), word.loc())
-                    chart.add_edge(edge)
+                    self.add_edge(chart, edge)
         if self._trace:
             chart.draw()
         return chart
@@ -189,19 +217,20 @@ class ChartParser(ParserI):
             if rule.lhs() == self._basecat:
                 dr = rule.dotted()
                 new_edge = Edge(dr, (), loc)
-                chart.add_edge(new_edge)
+                self.add_edge(chart, new_edge)
         if self._trace:
             chart.draw()
         return chart
 
     def top_down_step(self, chart, edge):
+        added = 0
         for rule in self._grammar:
             if not edge.complete() and rule.lhs() == edge.next():
                 new_edge = edge.self_loop_end(rule)
-                chart.add_edge(new_edge)
-        return chart
+                added += self.add_edge(chart, new_edge)
+        return added
 
-    def bottom_up(self, chart):
+    def bottom_up_init(self, chart):
         added = 1
         while added > 0:
             added = 0
@@ -209,10 +238,10 @@ class ChartParser(ParserI):
                 for rule in self._grammar:
                     if edge.lhs() == rule[0]:
                         new_edge = edge.self_loop_start(rule)
-                        added += chart.add_edge(new_edge)
+                        added += self.add_edge(chart, new_edge)
         if self._trace:
             chart.draw()
-        return chart
+        return added
 
     # fundamental rule
     def fundamental(self, chart):
@@ -223,18 +252,31 @@ class ChartParser(ParserI):
                 for edge2 in chart.final_edges():
                     if edge1.next() == edge2.lhs() and edge1.end() == edge2.start():
                         new_edge = edge1.fundamental(edge2)
-                        added += chart.add_edge(new_edge)
-                        chart = self.top_down_step(chart, new_edge)
+                        added += self.add_edge(chart, new_edge)
         if self._trace:
             chart.draw()
-        return chart
+        return added
+
+    # rule-invocation strategies
+    def td_strategy(self):
+        self.strategy((self.top_down_init, self.fundamental), (self.top_down_step,))
+    def bu_strategy(self):
+        self.strategy((self.bottom_up_init, self.fundamental), ())
 
     def parse(self, tok_sent):
+        self.strategy_test()
         chart = self.load_sentence(tok_sent)
-#        chart = self.bottom_up(chart)
-        chart = self.top_down_init(chart)
-        chart = self.fundamental(chart)
+        for func in self._functions:
+            func(chart)
         return chart.parses(self._basecat)
+
+edgenum = 0
+def xyzzy(chart, edge):
+    global edgenum
+    edgenum += 1
+    print edgenum, edge
+    print chart.size()
+    return 0
 
 def demo():
     grammar = (
@@ -263,7 +305,12 @@ def demo():
     sent = 'I saw a man in the park with a telescope'
     print "Sentence:\n", sent
 
-    cp = ChartParser(grammar=grammar, lexicon=lexicon, basecat='S', trace=1)
+    # initialize the chartparser
+    cp = ChartParser(grammar, lexicon, 'S', callback=xyzzy, trace=0)
+#    cp.td_strategy() # top-down
+    cp.bu_strategy() # bottom-up
+
+    # tokenize the sentence then parse it
     tok_sent = WSTokenizer().tokenize(sent)
     parses = cp.parse(tok_sent)
 
