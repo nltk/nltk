@@ -184,6 +184,12 @@ Releases
 
                cvs log "-rrelease-<m>-<n-1>:" >changes.cvslog
 
+           Alternatively, you can use the cvschanges script in the
+           src directory, which filters a lot of useless material
+           from the log (e.g., logs for Attic files):
+
+               cvschanges release-<m>-<n-1> changes.cvslog
+
         4. Examine the cvs log, and use it to add a new section to 
            src/CHANGES.TXT; commit the changes to src/CHANGES.TXT
         5. Tag the new release:
@@ -191,9 +197,9 @@ Releases
                cvs tag "release-<m>-<n>"
 
         6. Run "make distributions"
-        7. FTP src/dist/nltk-<m>.<n>* to the "incoming" directory of
-           "upload.sf.net"
-        8. Make documentation tarball & FTP it to the "incoming" 
-           directory of "upload.sf.net"
-        9. Add the new release to sourceforge, using the release admin
+        7. Run "make webpage.tar.gz"
+        8. Rename doc/webpage.tar.gz to doc/nltk-<m>.<n>-docs.tar.gz
+        9. FTP src/dist/nltk-<m>.<n>* and doc/nltk-<m>.<n>-docs.tar.gz
+           to the "incoming" directory of "upload.sf.net"
+       10. Add the new release to sourceforge, using the release admin
            page.
