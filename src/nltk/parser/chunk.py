@@ -25,7 +25,7 @@ chunks in the sentence "I saw the big dog on the hill" is::
     (NP: <the> <hill>))
 
 To convert a chunk structure back to a list of tokens, simply use the
-chunk structure's L{leaves<TreeToken.leaves>} method.
+chunk structure's L{leaves<Tree.leaves>} method.
 
 The C{parser.chunk} module defines L{ChunkParserI}, a standard
 interface for chunking texts; and L{RegexpChunkParser}, a
@@ -160,7 +160,7 @@ RegexpChunkParser
 """
 
 from nltk.parser import ParserI, AbstractParser
-from nltk.tree import TreeToken
+from nltk.tree import Tree
 from nltk.tokenizer import TokenizerI, AbstractTokenizer
 from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WhitespaceTokenizer
 from nltk.token import Token, CharSpanLocation
@@ -221,7 +221,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     """
     A tokenizer that divides a string of chunked tagged text into
     chunks and unchunked tokens.  Each chunk is encoded as a
-    C{TreeToken} whose children are tagged word tokens.  Each
+    C{Tree} whose children are tagged word tokens.  Each
     unchunked token is encoded as a tagged word token.
 
     Chunks are marked by square brackets (C{[...]}).  Words are
@@ -231,22 +231,21 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     Words that do not contain a slash are assigned a C{tag} of
     C{None}.
 
-      >>> ctt = ChunkedTaggedTokenizer('NP')
+      >>> ctt = ChunkedTaggedTokenizer('NP', SUBTOKENS='WORDS')
       >>> tok = Token(TEXT='[The/DT dog/NN] saw/VBD [him/PRP]')
       >>> ctt.tokenize(tok)
-      >>> print tok['SUBTOKENS']
+      >>> print tok['WORDS']
       [(NP: <The/DT> <dog/NN>), <saw/VBD>, (NP: <him/PRP>)]
     
-    The C{TreeToken} constructor can be used to group this list of
+    The C{Tree} constructor can be used to group this list of
     tokens and chunks into a single chunk structure:
 
-      >>> chunkstruct = TreeToken(NODE='S', CHILDREN=tok['SUBTOKENS'])
+      >>> chunkstruct = Tree('S', *tok['WORDS'])
       (S: (NP: <The/DT> <dog/NN>) <saw/VBD> (NP: <him/PRP>))
         
     @inprop: C{TEXT}: The input token's text content.
     @inprop: C{LOC}: The input token's location.  I{(optional)}
     @outprop: C{SUBTOKENS}: The list of tokenized subtokens.
-    @outprop: C{NODE}: The chunked subtokens' node label.
     @outprop: C{TEXT}: The subtokens' text contents.
     @outprop: C{TAG}: The subtokens' tags.
     @outprop: C{LOC}: The subtokens' locations.
@@ -285,7 +284,6 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        NODE = self._property_names.get('NODE', 'NODE')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         TAG = self._property_names.get('TAG', 'TAG')
         LOC = self._property_names.get('LOC', 'LOC')
@@ -308,12 +306,9 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
                 # Divide each word into text & tag:
                 for subsubtok in subtok[SUBTOKENS]:
                     self._split_text_and_tag(subsubtok)
-                # Convert it to a TreeToken.
-                subtok[NODE] = self._chunk_node
-                subtok['CHILDREN'] = subtok[SUBTOKENS]
-                del subtok[SUBTOKENS], subtok[TEXT]
-                if subtok.has(LOC): del subtok[LOC]
-                subtok = subtoks[i] = TreeToken.convert(subtok)
+                    
+                # Convert it to a Tree.
+                subtoks[i] = Tree(self._chunk_node, *subtok[SUBTOKENS])
             else:
                 # It's an unchunked token.  Divid its text & tag
                 self._split_text_and_tag(subtok)
@@ -330,7 +325,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
 #    A tokenizer that splits a string of chunked tagged text in the
 #    CONLL 2000 chunking format into tokens and chunks.  Each token is
 #    encoded as a C{Token} whose type is C{TaggedType}; and each chunk
-#    is encoded as a C{TreeToken} containing C{Token}s with
+#    is encoded as a C{Tree} containing C{Token}s with
 #    C{TaggedType} types.
 #
 #    The input string is in the form of one tagged token per line.
@@ -369,10 +364,10 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
 #      ('NP': 'a'/'DT' 'merchant'/'NN' 'banking'/'NN' 'concern'/'NN')@[11l:15l],
 #      '.'/'.'@[15l]]
 #
-#    The C{TreeToken} constructor can be used to group this list of
+#    The C{Tree} constructor can be used to group this list of
 #    tokens and chunks into a single chunk structure:
 #
-#      >>> chunkstruct = TreeToken('S', *toks)
+#      >>> chunkstruct = Tree('S', *toks)
 #      ('S':
 #        ('NP': 'he'/'PRP')
 #        ('VP': 'accepted'/'VBD')
@@ -421,7 +416,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
 #            # finishing the subsequence because we've found something outside
 #            # a chunk or because we're beginning a new chunk
 #            if in_chunk and chunktag[0] in 'OB':
-#                chunks.append(TreeToken(chunktype, *subsequence))
+#                chunks.append(Tree(chunktype, *subsequence))
 #                subsequence = []
 #                in_chunk = 0
 #                chunktype = ''
@@ -438,7 +433,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
 #
 #        # sentence ended inside a chunk so add those tokens
 #        if subsequence:
-#            chunks.append(TreeToken(chunktype, *subsequence))
+#            chunks.append(Tree(chunktype, *subsequence))
 #
 #        return chunks
 
@@ -451,7 +446,7 @@ class IeerChunkedTokenizer(TokenizerI):
     A tokenizer that splits a string of chunked tagged text in the
     IEER named entity format into tokens and chunks.  Each token is
     encoded as a C{Token} whose type is C{String}; and each chunk
-    is encoded as a C{TreeToken} containing C{Token}s with
+    is encoded as a C{Tree} containing C{Token}s with
     C{String} types.
 
     The input string is in the form of a document (the IEER corpus
@@ -529,7 +524,7 @@ class IeerChunkedTokenizer(TokenizerI):
                 m = re.match(r'<e_[a-z]+>', token.type())
                 # ending chunk
                 if m:
-                    chunks.append(TreeToken(chunktype, *subsequence))
+                    chunks.append(Tree(chunktype, *subsequence))
                     subsequence = []
                     in_chunk = 0
                     chunktype = ''
@@ -612,6 +607,9 @@ class ChunkScore:
         self._fp_num = 0
         self._fn_num = 0
 
+    def _childtuple(self, t):
+        return tuple([c.freeze() for c in t])
+
     def score(self, correct, guessed):
         """
         Given a correctly chunked text, score another chunked text.
@@ -627,13 +625,13 @@ class ChunkScore:
         @type guessed: chunk structure
         @param guessed: The chunked sentence to be scored.
         """
-        assert chktype(1, correct, TreeToken)
-        assert chktype(2, guessed, TreeToken)
+        assert chktype(1, correct, Tree)
+        assert chktype(2, guessed, Tree)
 
-        self._correct |= Set(*[t.freeze() for t in correct['CHILDREN']
-                               if isinstance(t, TreeToken)])
-        self._guessed |= Set(*[t.freeze() for t in guessed['CHILDREN']
-                               if isinstance(t, TreeToken)])
+        self._correct |= Set(*[self._childtuple(t) for t in correct
+                               if isinstance(t, Tree)])
+        self._guessed |= Set(*[self._childtuple(t) for t in guessed
+                               if isinstance(t, Tree)])
         self._tp = self._guessed & self._correct
         self._fn = self._correct - self._guessed
         self._fp = self._guessed - self._correct
@@ -920,7 +918,6 @@ class ChunkString:
         @raise ValueError: If a transformation has generated an
             invalid chunkstring.
         """
-        NODE = self._property_names.get('NODE', 'NODE')
         if self._debug > 0: self._verify(1)
             
         # Extract a list of alternating chinks & chunks
@@ -938,8 +935,7 @@ class ChunkString:
 
             # Add this list of tokens to our chunkstruct.
             if piece_in_chunk:
-                chunkstruct.append(TreeToken({NODE: chunk_node,
-                                                'CHILDREN': subsequence}))
+                chunkstruct.append(Tree(chunk_node, *subsequence))
             else:
                 chunkstruct += subsequence
 
@@ -947,7 +943,7 @@ class ChunkString:
             index += length
             piece_in_chunk = not piece_in_chunk
 
-        return TreeToken({NODE: top_node, 'CHILDREN': chunkstruct})
+        return Tree(top_node, *chunkstruct)
                 
     def xform(self, regexp, repl):
         """
@@ -1509,7 +1505,6 @@ class RegexpChunkParser(ChunkParserI, AbstractParser):
     @outprop: C{TREE}: The chunk structure.  I{(generated by L{parse})}
     @outprop: C{TREES}: A list of possible chunk structures.
               I{(generated by L{parse_n})}
-    @outprop: C{NODE}: The subtrees' chunk label.
     """
     def __init__(self, rules, chunk_node='CHUNK', top_node='TEXT',
                  trace=0, **property_names):
@@ -1601,11 +1596,10 @@ class RegexpChunkParser(ChunkParserI, AbstractParser):
         assert chktype(2, trace, types.NoneType, types.IntType)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TREE = self._property_names.get('TREE', 'TREE')
-        NODE = self._property_names.get('NODE', 'NODE')
 
         if len(token[SUBTOKENS]) == 0:
             print 'Warning: parsing empty text'
-            token[TREE] = TreeToken({NODE:self._top_node, 'CHILDREN':()})
+            token[TREE] = Tree(self._top_node)
             return
         
         # Use the default trace value?
@@ -1692,13 +1686,13 @@ def demo_eval(chunkparser, text):
     ctt = ChunkedTaggedTokenizer('NP')
     for sentence in sentences:
         ctt.tokenize(sentence)
-        gold = TreeToken(NODE='S', CHILDREN=sentence['SUBTOKENS'])
+        gold = Tree('S', *sentence['SUBTOKENS'])
         test = Token(SUBTOKENS=gold.leaves(), LOC=sentence['LOC'])
         chunkparser.parse(test)
         chunkscore.score(gold, test['TREE'])
 
         #correct_toks = ctt.tokenize(sentence.type(), source=sentence.loc())
-        #correct = TreeToken('S', *correct_toks)
+        #correct = Tree('S', *correct_toks)
         #unchunked = correct.leaves()
         #guess = chunkparser.parse(unchunked)
         #chunkscore.score(correct, guess)
@@ -1715,7 +1709,7 @@ def demo_eval(chunkparser, text):
     if chunkscore.missed():
         print 'Missed:'
         for chunk in chunkscore.missed()[:10]:
-            print '  ', chunk.exclude('LOC')
+            print '  ', chunk
         if len(chunkscore.missed()) > 10:
                print '  ...'
 
@@ -1723,7 +1717,7 @@ def demo_eval(chunkparser, text):
     if chunkscore.incorrect():
         print 'Incorrect:'
         for chunk in chunkscore.incorrect()[:10]:
-            print '  ', chunk.exclude('LOC')
+            print '  ', chunk
         if len(chunkscore.incorrect()) > 10:
                print '  ...'
     
