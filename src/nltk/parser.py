@@ -35,6 +35,9 @@ ambiguity.
 
 class ParserI:
     """
+    B{This class is obsolete -- it will be replaced by ParserI2 once
+    we have finished migrating all of the parsers to the new interface}
+    
     A processing interface for deriving tree structures that represent
     an ordered list of tokens.  Typically, these tree structures will
     indicate the syntactic structure of sentences.
