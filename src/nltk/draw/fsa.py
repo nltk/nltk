@@ -57,6 +57,10 @@ class GraphEdgeWidget(CanvasWidget):
 
     def _tags(self): return [self._line]
 
+    def __repr__(self):
+        return '[GraphEdge: %r %r->%r]' % (self._label, self.start(),
+                                           self.end())
+
     def start(self):
         return self.canvas().coords(self._line)[:2]
     
@@ -140,10 +144,11 @@ class GraphWidget(CanvasWidget):
     """
     def __init__(self, canvas, nodes, edges, **attrs):
         """
-        @type edges: C{dictionary} from (node, node) to label.
+        @param edges: A list of tuples (n1, n2, e), where n1 is a
+            CanvasWidget in C{nodes}; n2 is a CanvasWidget in
+            C{nodes}; and e is a GraphEdgeWidget.
         """
         self._nodes = nodes
-        self._edges = edges
 
         # Management parameters.  I should add attributes for these. 
         self._arrange = 'bfs'
@@ -165,22 +170,110 @@ class GraphWidget(CanvasWidget):
         self._edgewidgets = {}
 
         for node in self._nodes:
-            self._add_child_widget(node)
-        for (start, end, edgewidget) in self._edges:
-            curve = 0.2 * (1+len(self._edgewidgets.get( (start, end), [])))
-            edgewidget['curve'] = curve
-
-            # Add the edge to the outedge & inedge dictionaries
-            self._outedges.setdefault(start, []).append(edgewidget)
-            self._inedges.setdefault(end, []).append(edgewidget)
-
-            self._startnode[edgewidget] = start
-            self._endnode[edgewidget] = end
-                
-            self._edgewidgets.setdefault((start, end),[]).append(edgewidget)
-            self._add_child_widget(edgewidget)
-
+            self.add_node(node)
+        for (start, end, edgewidget) in edges:
+            self.add_edge(start, end, edgewidget)
+            
         CanvasWidget.__init__(self, canvas, **attrs)
+
+    def add_node(self, node):
+        """
+        Add a new node to the graph.
+        """
+        self._add_child_widget(node)
+
+    def add_edge(self, start, end, edgewidget):
+        """
+        Add a new edge to the graph.
+        @param edges: A tuple (n1, n2, e), where n1 is a
+            CanvasWidget in C{nodes}; n2 is a CanvasWidget in
+            C{nodes}; and e is a GraphEdgeWidget.
+        """
+        curve = 0.2 * (1+len(self._edgewidgets.get( (start, end), [])))
+        edgewidget['curve'] = curve
+
+        # Add the edge to the outedge & inedge dictionaries
+        self._outedges.setdefault(start, []).append(edgewidget)
+        self._inedges.setdefault(end, []).append(edgewidget)
+
+        self._startnode[edgewidget] = start
+        self._endnode[edgewidget] = end
+            
+        self._edgewidgets.setdefault((start, end),[]).append(edgewidget)
+        self._add_child_widget(edgewidget)
+        
+
+    def remove_edge(self, edge):
+        """
+        Remove an edge from the graph (but don't destroy it).
+        @type edge: L{GraphEdgeWidget}
+        """
+        print 'remove', edge
+        # Get the edge's start & end nodes.
+        start, end = self._startnode[edge], self._endnode[edge]
+
+        # Remove the edge from the node->edge maps
+        self._outedges[start].remove(edge)
+        self._inedges[end].remove(edge)
+        
+        # Remove the edge from the edge->node maps.
+        del self._startnode[edge]
+        del self._endnode[edge]
+        
+        # Remove the edge from the list of edge widgets that connect 2
+        # nodes.  (Recompute curves?)
+        self._edgewidgets[start, end].remove(edge)
+
+        # Remove the edge from our list of child widgets.
+        self._remove_child_widget(edge)
+
+    def remove_node(self, node):
+        """
+        Remove a node from the graph (but don't destroy it).
+        @type node: L{CanvasWidget}
+        @return: A list of widgets that were removed from the
+            graph.  Note that this will include any edges that
+            connected to C{node}.
+        """
+        # Remove all edges that connect to this node.
+        removed_edges = []
+        for edge in self._outedges.get(node, [])[:]:
+            self.remove_edge(edge)
+            removed_edges.append(edge)
+        for edge in self._inedges.get(node, [])[:]:
+            self.remove_edge(edge)
+            removed_edges.append(edge)
+
+        # Remove the node from the node->edges map
+        try: del self._outedges[node]
+        except KeyError: pass
+        try: del self._inedges[node]
+        except KeyError: pass
+
+        # Remove the node from our list of nodes
+        self._nodes.remove(node)
+
+        # Remove the node from our list of child widgets.
+        self._remove_child_widget(node)
+
+        # Return the list of removed widgets
+        return removed_edges + [node]
+
+    def destroy_edge(self, edge):
+        """
+        Remove an edge from the graph, and destroy the edge.
+        """
+        self.remove_edge(edge)
+        edge.destroy()
+
+    def destroy_node(self, node):
+        """
+        Remove a node from the graph, and destroy the node.
+        """
+        print 'removing', node
+        for widget in self.remove_node(node):
+            print 'destroying', widget
+            widget.destroy()
 
     def _tags(self): return []
 
@@ -458,8 +551,8 @@ import nltk.fsa
 def demo():
     import time, random
     t = time.time()
-    regexps = ['(ab(c*)c)*dea(b+)e',
-               '((ab(c*))?(edc))*dea(b*)e',
+    regexps = [#'(ab(c*)c)*dea(b+)e',
+               #'((ab(c*))?(edc))*dea(b*)e',
                #'(((ab(c*))?(edc))+dea(b+)eabba)*',
                '(ab(c*)c)*']
 
