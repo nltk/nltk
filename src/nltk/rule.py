@@ -121,7 +121,7 @@ class Rule:
         """
         return hash((self._lhs, self._rhs))
 
-    def dotted(self):
+    def drule(self):
         """
         @return: A C{DottedRule} corresponding to the C{Rule}, with
           the dot in the leftmost position
