@@ -137,11 +137,11 @@ class ShiftReduceParserDemo:
 
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkFont.Font(font=Tkinter.Button()["font"])
+        self._sysfont = tkFont.Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
         
         # TWhat's our font size (default=same as sysfont)
-        self._size = Tkinter.IntVar(root)
+        self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
         self._boldfont = tkFont.Font(family='helvetica', weight='bold',
@@ -380,8 +380,9 @@ class ShiftReduceParserDemo:
 
         # Draw the stack.
         stackx = 5
+        print "***", self._parser.stack()
         for tok in self._parser.stack():
-            if isinstance(tok, TreeToken):
+            if isinstance(tok, Tree):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
                            'node_font': self._boldfont,
                            'node_color': '#006060',
@@ -660,7 +661,7 @@ class ShiftReduceParserDemo:
 
     def _animate_reduce(self):
         # What widgets are we shifting?
-        numwidgets = len(self._parser.stack()[-1]['CHILDREN'])
+        numwidgets = len(self._parser.stack()[-1]) # number of children
         widgets = self._stackwidgets[-numwidgets:]
 
         # How far are we moving?
@@ -685,8 +686,9 @@ class ShiftReduceParserDemo:
             for widget in widgets:
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
-            if not isinstance(tok, TreeToken): raise ValueError()
-            label = TextWidget(self._canvas, str(tok['NODE']), color='#006060',
+            print "***", self._parser.stack()[-1]
+            if not isinstance(tok, Tree): raise ValueError()
+            label = TextWidget(self._canvas, str(tok.node), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
@@ -779,21 +781,21 @@ def demo():
     
     productions = (
         # Syntactic Productions
-        CFGProduction(S, NP, VP),
-        CFGProduction(NP, Det, N),
-        CFGProduction(NP, NP, PP),
-        CFGProduction(VP, VP, PP),
-        CFGProduction(VP, V, NP, PP),
-        CFGProduction(VP, V, NP),
-        CFGProduction(PP, P, NP),
+        CFGProduction(S, [NP, VP]),
+        CFGProduction(NP, [Det, N]),
+        CFGProduction(NP, [NP, PP]),
+        CFGProduction(VP, [VP, PP]),
+        CFGProduction(VP, [V, NP, PP]),
+        CFGProduction(VP, [V, NP]),
+        CFGProduction(PP, [P, NP]),
 
         # Lexical Productions
-        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
-        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
-        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
-        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
-        CFGProduction(N, 'dog'),  CFGProduction(N, 'statue'),
-        CFGProduction(Det, 'my'),
+        CFGProduction(NP, ['I']),   CFGProduction(Det, ['the']),
+        CFGProduction(Det, ['a']),  CFGProduction(N, ['man']),
+        CFGProduction(V, ['saw']),  CFGProduction(P, ['in']),
+        CFGProduction(P, ['with']), CFGProduction(N, ['park']),
+        CFGProduction(N, ['dog']),  CFGProduction(N, ['statue']),
+        CFGProduction(Det, ['my']),
         )
 
     grammar = CFG(S, productions)
