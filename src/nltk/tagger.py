@@ -21,10 +21,9 @@ the L{TaggerI} interface.
     NthOrderTagger, BackoffTagger
 @group Tokenizers: TaggedTokenizer
 @group Parsing: parseTaggedType
-@group Evaluation: untag, accuracy
 @sort: TaggedType, TaggedTokenizer, parseTaggedType, TaggerI, 
     SequentialTagger, NN_CD_Tagger, UnigramTagger, NthOrderTagger, 
-    BackoffTagger, untag, accuracy
+    BackoffTagger
 
 @todo 2.0: Add a Viterbi Tagger.
 @todo 2.0: Rename
