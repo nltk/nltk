@@ -9,6 +9,7 @@
 
 DISTRIBUTIONS = distributions
 NLTK_VERSION = 1.1
+CORPORA_VERSION = 0.1
 
 .PHONY: all usage help doc documentation webpage test
 .PHONY: distributions clean
@@ -72,14 +73,14 @@ distributions.nltk:
 	$(MAKE) -C src distributions
 	cp src/dist/* $(DISTRIBUTIONS)
 
-NLTK_DATA = nltk-data-$(NLTK_VERSION)
+NLTK_DATA = nltk-data-$(CORPORA_VERSION)
 distributions.corpora:
 	@echo "Building nltk_corpora distributions..."
 	rm -f $(NLTK_DATA)
 	ln -s data $(NLTK_DATA)
-	tar -cvzhf $(DISTRIBUTIONS)/nltk-data-$(NLTK_VERSION).tgz \
+	tar -cvzhf $(DISTRIBUTIONS)/nltk-data-$(CORPORA_VERSION).tgz \
 	    $(NLTK_DATA)/*.readme $(NLTK_DATA)/*.zip
-	zip -rq $(DISTRIBUTIONS)/nltk-data-$(NLTK_VERSION).zip $(NLTK_DATA)
+	zip -rq $(DISTRIBUTIONS)/nltk-data-$(CORPORA_VERSION).zip $(NLTK_DATA)
 	rm -f $(NLTK_DATA)
 
 distributions.contrib:
@@ -87,7 +88,7 @@ distributions.contrib:
 	$(MAKE) -C contrib distributions
 	cp contrib/dist/* $(DISTRIBUTIONS)
 
-NLTK_DOCS = nltk-docs-$(VERSION)
+NLTK_DOCS = nltk-docs-$(NLTK_VERSION)
 distributions.webpage:
 	@echo "Packaging nltk webpage..."
 	$(MAKE) -C doc webpage
