@@ -254,7 +254,7 @@ class FeatureBindings:
     @ivar _bindings: A dictionary mapping from bound variables
         to their values.
     """
-    def __init__(self, **initial_bindings):
+    def __init__(self, initial_bindings=None):
         """
         Construct a new set of bindings.
         
@@ -263,6 +263,7 @@ class FeatureBindings:
             variables.
         """
         # Check that variables are not used as values.
+        if initial_bindings is None: initial_bindings = {}
         for val in initial_bindings.values():
             if isinstance(val, FeatureVariable):
                 err = 'Variables cannot be bound to other variables'
@@ -364,7 +365,7 @@ class FeatureBindings:
         """
         @return: a copy of this set of bindings.
         """
-        return FeatureBindings(**self._bindings)
+        return FeatureBindings(self._bindings)
 
     def __repr__(self):
         """
@@ -467,7 +468,7 @@ class FeatureStructure:
             cause C{equal_values} to return false.
         """
         if not isinstance(other, FeatureStructure): return 0
-        if check_reentrances: return `self` == `other`
+        if check_reentrance: return `self` == `other`
         if len(self._features) != len(other._features): return 0
         for (fname, selfval) in self._features.items():
             otherval = other._features[fname]
