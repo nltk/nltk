@@ -86,6 +86,7 @@ from nltk.chktype import chktype
 from nltk.probability import DictionaryProbDist
 from nltk.token import Token
 import copy, numarray, math, random, sys, types
+import numarray.linear_algebra
 
 # Common functions
 
@@ -204,7 +205,7 @@ class VectorSpaceClusterer(ClustererI):
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
-            [u, d, vt] = linear_algebra.singular_value_decomposition(
+            [u, d, vt] = numarray.linear_algebra.singular_value_decomposition(
                             numarray.transpose(numarray.array(vectors)))
             S = d[:self._svd_dimensions] * \
                 numarray.identity(self._svd_dimensions, numarray.Float64)
@@ -358,21 +359,7 @@ class KMeansClusterer(VectorSpaceClusterer):
             # sort the means first (so that different cluster numbering won't
             # effect the distance comparison)
             for means in meanss:
-                means.sort()
-
-# NOTE TO TREVOR:
-# Traceback (most recent call last):
-#   File "__init__.py", line 994, in ?
-#     demo()
-#   File "__init__.py", line 905, in demo
-#     clusterer.cluster(tokens, True)
-#   File "__init__.py", line 217, in cluster
-#     self.cluster_vectorspace(vectors, trace)
-#   File "__init__.py", line 361, in cluster_vectorspace
-#     means.sort()
-#   File "/usr/local/lib/python2.4/site-packages/numarray/generic.py", line 477, in __nonzero__
-#     raise RuntimeError("An array doesn't make sense as a truth value.  Use sometrue(a) or alltrue(a).")
-# RuntimeError: An array doesn't make sense as a truth value.  Use sometrue(a) or alltrue(a).
+                means.sort(cmp = _vector_compare)
 
             # find the set of means that's minimally different from the others
             min_difference = min_means = None
@@ -456,6 +443,13 @@ class KMeansClusterer(VectorSpaceClusterer):
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \
                     (self._means, self._repeats)
+
+def _vector_compare(x, y):
+    xs, ys = sum(x), sum(y)
+    if xs < ys:     return -1
+    elif xs > ys:   return 1
+    else:           return 0
+
 
 #======================================================================
 # Group average agglomerative clusterer
@@ -861,8 +855,8 @@ class ExpectationMaximizationClusterer(VectorSpaceClusterer):
         assert cvm.shape == (m, m), \
             'bad sized covariance matrix, %s' % str(cvm.shape)
         try:
-            det = linear_algebra.determinant(cvm)
-            inv = linear_algebra.inverse(cvm)
+            det = numarray.linear_algebra.determinant(cvm)
+            inv = numarray.linear_algebra.inverse(cvm)
             a = det ** -0.5 * (2 * numarray.pi) ** (-m / 2.0) 
             dx = x - mean
             b = -0.5 * numarray.matrixmultiply( \
