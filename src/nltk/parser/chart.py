@@ -1254,6 +1254,7 @@ class EarleyChartParser(ParserI):
 
         # Width, for printing trace edges.
         w = 50/(chart.num_leaves()+1)
+        if self._trace > 0: print ' ', chart.pp_leaves(w)
 
         # Initialize the chart with a special "starter" edge.
         root = Nonterminal('[INIT]')
@@ -1265,7 +1266,6 @@ class EarleyChartParser(ParserI):
         completer = CompleterRule()
         scanner = ScannerRule(self._lexicon)
 
-        if self._trace > 0: print ' ', chart.pp_leaves(w)
         for end in range(chart.num_leaves()+1):
             if self._trace > 1: print 'Processing queue %d' % end
             for edge in chart.select(end=end):
@@ -1301,8 +1301,9 @@ class EarleyChartParser(ParserI):
 ########################################################################
 
 TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(), 
-               TopDownMatchRule(), CompleterRule()]
-BU_STRATEGY = [BottomUpInitRule(), BottomUpRule(), CompleterRule()]
+               TopDownMatchRule(), SingleEdgeFundamentalRule()]
+BU_STRATEGY = [BottomUpInitRule(), BottomUpRule(),
+               SingleEdgeFundamentalRule()]
 
 class ChartParser(ParserI):
     """
@@ -1347,14 +1348,23 @@ class ChartParser(ParserI):
         chart = Chart(token, **self._propnames)
         grammar = self._grammar
 
+        # Width, for printing trace edges.
+        w = 50/(chart.num_leaves()+1)
+        if self._trace > 0: print ' ', chart.pp_leaves(w)
+        
         edges_added = 1
         while edges_added > 0:
             edges_added = 0
             for rule in self._strategy:
-                if self._trace > 0: print 'Applying', rule
+                edges_added_by_rule = 0
                 for e in rule.apply_everywhere(chart, grammar):
-                    edges_added += 1
+                    if self._trace > 0 and edges_added_by_rule == 0:
+                        print '%s:' % rule
+                    edges_added_by_rule += 1
                     if self._trace > 1: print chart.pp_edge(e,w)
+                if self._trace == 1 and edges_added_by_rule > 0:
+                    print '  - Added %d edges' % edges_added_by_rule
+                edges_added += edges_added_by_rule
         
         # Output a list of complete parses.
         token[trees_prop] = chart.parses(grammar.start())
@@ -1437,7 +1447,7 @@ def demo():
     #parser = EarleyChartParser(grammar1, S, lexicon, leaf='text', trace=1)
     #parser.parse_n(tok)
     #for tree in tok['trees']: print tree
-    parser = ChartParser(grammar2, BU_STRATEGY, leaf='text')
+    parser = ChartParser(grammar2, BU_STRATEGY, leaf='text', trace=2)
     parser.parse_n(tok)
     for tree in tok['trees']: print tree
     #parser = ChartParser(grammar2, TD_STRATEGY, leaf='text')
