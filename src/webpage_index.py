@@ -21,6 +21,52 @@ and "directory" is the location of said documents.
 import os, os.path, sys, string, re, time
 
 #############################################################
+##  Shared HTML constants
+#############################################################
+HEADER = '''\
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> 
+  <head>
+    <title>%s</title>
+    <link rel="stylesheet" href="../nltk.css" type="text/css"/>
+  </head>
+<body>
+
+<table width="100%%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr>
+  <td align="center" width="16.6%%" class="navbutton">
+    <a class="nav" href="../index.html">Home</a></td>
+  <td align="center" width="16.6%%" class="navbutton">
+    <a class="nav" href="../install.html">Installation</a></td>
+  <td align="center" width="16.6%%" class="navbutton">
+    <a class="nav" href="../docs.html">Documentation</a></td>
+  <td align="center" width="16.6%%" class="navbutton">
+    <a class="nav" href="../teach.html">Teaching</a></td>
+  <td align="center" width="16.6%%" class="navbutton">
+    <a class="nav" href="../contrib.html">Contributing</a></td>
+  <td align="center" width="16.6%%">
+    <a href="http://sourceforge.net/projects/nltk"> 
+    <img src="../sflogo.png" width="88" height="26" border="0"
+    alt="SourceForge" align="top"/></a></td>
+    </tr>
+</table>
+<div class="body">
+'''
+
+FOOTER = '''\
+</div>
+<table class="transparent" width="100%%">
+<tr><td align="left"><font size="-1">
+<!-- hhmts start -->
+Last modified: %s
+<!-- hhmts end -->
+</font></td><td align="right"><font size="-1">
+<address><a href="mailto:edloper@gradient.cis.upenn.edu,sb@cs.mu.oz.au">Edward D. Loper, Steven Bird</a></address>
+</font></td></tr></table>
+</body> </html>
+'''
+
+#############################################################
 ##  Info file processing
 #############################################################
 class Info:
@@ -99,52 +145,43 @@ class Info:
 ##  Technical reports
 #############################################################
         
-TECH="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
-<html>
-  <head>
-    <title>Technical Reports for the NLP Toolkit</title>
-  </head>
+TECH = '''\
+    <h1>NLTK Technical Reports</h1>
 
-  <body bgcolor='white' text='black' link='blue'
-        vlink='#204080' alink='#204080'>
-    <h2>Technical Reports for the NLP Toolkit</h2>
-
-    <P> Technical reports explain and justify the NLP toolkit's design
-    and implementation.  Each report addresses a specific aspect of
-    the design and/or implementation of the toolkit.  </P>
-
-    <P> Technical reports are primarily intended for developers;
-    students should not need to read the technical reports to use the
-    toolkit.  However, students can consult these reports if they
-    would like further information about how the toolkit is designed
-    and why it is designed that way. </P>
+    <p> Technical reports explain and justify NLTK\'s design and
+    implementation.  They are used by the developers of the toolkit to
+    guide and document the toolkit\'s construction.  Students can
+    consult these reports if they would like further information about
+    how the toolkit is designed and why it is designed that way.  Each
+    report addresses a specific aspect of the design and/or
+    implementation of the toolkit.  </p>
 
 <!-- ========== REPORT TABLE =========== -->
-    <h3>List of Technical Report</h3>
+    <center>
 %s
+    </center>
 
 <!-- ========== ABSTRACTS =========== -->
-    <h3>Report Abstracts</h3>
+    <h2>Report Abstracts</h2>
 %s
-
-    <hr>
-    <address><a href='mailto:edloper@gradient.cis.upenn.edu'>Edward Loper</a></address>
-Last modified: %s
-  </body>
-</html>
-"""
+'''
 
 def techindex(reports):
-    return TECH % (techtable(reports), techabstracts(reports), time.ctime())
+    return (HEADER % 'NLTK Technical Reports' +
+            TECH % (techtable(reports), techabstracts(reports)) +
+            FOOTER % time.ctime())
+
+TECH_TABLE_HEADER = '''\
+    <table class="tech" border="1" cellpadding="3" cellspacing="0">
+      <tr>
+        <th class="tech" width="45%">Report</th>
+        <th class="tech">&nbsp;</th>
+        <th class="tech">Status</th>
+        <th class="tech">Est.&nbsp;Completion</th></tr>
+'''
 
 def techtable(reports):
-    str = """    <TABLE BORDER='1' CELLPADDING='3' 
-                    CELLSPACING='0' WIDTH='100%' BGCOLOR='white'>
-      <TR BGCOLOR='#70b0f0'>
-        <TD align="center"><b>Report</b></TD>
-        <TD>&nbsp;</TD><TD>&nbsp;</TD>
-        <TD align="center"><b>Status</b></TD>
-        <TD align="center"><b>Est. Completion</b></TD></TR>\n"""
+    str = TECH_TABLE_HEADER
 
     reports.sort()
     for report in reports:
@@ -161,38 +198,30 @@ def techtable(reports):
         else:
             ps = '&nbsp;'
         
-        str += '      <TR>\n'
-        str += '        <TD>%s</TD>\n' % name
-        str += '        <TD align="center">%s</TD>\n' % pdf
-        str += '        <TD align="center">%s</TD>\n' % ps
-        str += '        <TD>%s</TD>\n' % status
-        str += '        <TD>%s</TD>\n' % deadline
-        str += '      </TR>\n'
+        str += '      <tr>\n'
+        str += '        <td class="tech">%s</td>\n' % name
+        str += ('        <td class="tech" align="center">[%s|%s]</td>\n' %
+                (ps, pdf))
+        str += '        <td class="tech">%s</td>\n' % status
+        str += '        <td class="tech">%s</td>\n' % deadline
+        str += '      </tr>\n'
 
-    str = str + "    </TABLE>\n"
+    str = str + "    </table>\n"
     return str
 
 def techabstracts(reports):
     str = '\n'
     reports.sort(lambda p1,p2: cmp(p1.name.lower(), p2.name.lower()))
     for report in reports:
-        str = str + '    <H4>%s</H4>\n' % report.name
-        str = str + '    <P>%s</P>\n\n' % report.abstract
+        str = str + '    <b>%s</b>\n' % report.name
+        str = str + '    <p>%s</p>\n\n' % report.abstract
     return str
 
 #############################################################
 ##  Tutorial documents
 #############################################################
-
-TUTORIAL="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
-<html>
-  <head>
-    <title>Tutorials for the NLP Toolkit</title>
-  </head>
-
-  <body bgcolor='white' text='black' link='blue'
-        vlink='#204080' alink='#204080'>
-    <h2>Tutorials for the NLP Toolkit</h2>
+TUTORIAL = '''\
+    <h1>NLTK Tutorials</h1>
 
     <P> Tutorials teach students how to use the toolkit, in the context
     of performing specific tasks. They are appropriate for anyone who
@@ -201,15 +230,20 @@ TUTORIAL="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
 <!-- ========== TUTORIAL LIST =========== -->
 %s
 
-    <hr>
-    <address><a href='mailto:edloper@gradient.cis.upenn.edu'>Edward Loper</a></address>
-Last modified: %s
-  </body>
-</html>
-"""
+  <h2>Term Index (<a href="tutorial_index.html">html</a>)</h2>
+
+  <dl><dt></dt>
+  <dd><i>Definitions of technical terms that are discussed in the
+  NLTK tutorials.  Each individual tutorial also has its own index,
+  which lists only the terms discussed in that tutorial.  These
+  individual indices can be found at the end of each tutorial.
+  </i></dd></dl>    
+'''
 
 def tutorialindex(reports):
-    return TUTORIAL % (tutoriallist(reports), time.ctime())
+    return (HEADER % 'NLTK Tutorials' +
+            TUTORIAL % (tutoriallist(reports)) +
+            FOOTER % time.ctime())
 
 def tutorialsublist(reports):
     s = "    <DL><DT><DD><DL>\n"
@@ -218,10 +252,11 @@ def tutorialsublist(reports):
     
     for report in reports:
         extra = ''
-        if (string.lower(report.status) not in
-            ('&nbsp;', 'none', 'complete', 'completed',
-             'done', 'finished')):
-            extra = ' <I>('+report.status+')</I>'
+        # Don't show this (for now?)
+        #if (string.lower(report.status) not in
+        #    ('&nbsp;', 'none', 'complete', 'completed',
+        #     'done', 'finished')):
+        #    extra = ' <I>('+report.status+')</I>'
 
         if report.sequence_id: id = str(report.sequence_id)+': '
         else: id = ''
@@ -235,16 +270,6 @@ def tutorialsublist(reports):
                  report.abstract) 
         
     return s + '</DL></DD></DT></DL>\n'
-
-TERM_INDEX = '''
-  <dl><dt><b>Term Index</b> (<a href="tutorial_index.html">html</a>)
-
-  </dt><dd><i>Definitions of technical terms that are discussed in the
-  NLTK tutorials.  Each individual tutorial also has its own index,
-  which lists only the terms discussed in that tutorial.  These
-  individual indices can be found at the end of each tutorial.
-  </i></dd></dl>    
-'''
 
 def tutoriallist(reports):
     numbered_reports = [p for p in reports
@@ -260,14 +285,12 @@ def tutoriallist(reports):
     str = tutorialsublist(numbered_reports)
 
     if lettered_reports:
-        str += '  <h3> Additional Tutorials </h3>\n'
+        str += '  <h2> Additional Tutorials </h2>\n'
         str += tutorialsublist(lettered_reports)
 
     if other_reports:
-        str += '  <h3> Un-Filed Tutorials </h3>\n'
+        str += '  <h2> Un-Filed Tutorials </h2>\n'
         str += tutorialsublist(other_reports)
-
-    str += TERM_INDEX
 
     return str
 
@@ -276,26 +299,16 @@ def tutoriallist(reports):
 ##  Problem Sets
 #############################################################
 
-PSETS="""<!DOCTYPE HTML PUBLIC '-//IETF//DTD HTML//EN'>
-<html>
-  <head>
-    <title>Problem Sets for the NLP Toolkit</title>
-  </head>
-
-  <body bgcolor='white' text='black' link='blue'
-        vlink='#204080' alink='#204080'>
-    <h2>Problem Sets for the NLP Toolkit</h2>
+PSETS = '''\
+    <h2>NLTK Problem Sets</h2>
 
     <P> (under development) </P>
+'''
 
-    <hr>
-    <address><a href='mailto:edloper@gradient.cis.upenn.edu'>Edward Loper</a></address>
-Last modified: %s
-  </body>
-</html>
-"""
 def psetsindex(root):
-    return PSETS % time.ctime()
+    return (HEADER % 'NLTK Problem Sets' +
+            PSETS +
+            FOOTER % time.ctime())
 
 #############################################################
 ##  Main
