@@ -131,6 +131,9 @@ class LabeledText:
             C{self.text()==other.text()}, and
             C{self.label()==other.label()}; return false otherwise.
         @rtype: C{boolean}
+        @param other: The C{LabeledText} to compare this
+            C{LabeledText} with.
+        @type other: C{LabeledText}
         """
         if not isinstance(other, LabeledType):
             return 0
@@ -144,6 +147,9 @@ class LabeledText:
             C{self.text()==other.text()}, and
             C{self.label()==other.label()}; return true otherwise.
         @rtype: C{boolean}
+        @param other: The C{LabeledText} to compare this
+            C{LabeledText} with.
+        @type other: C{LabeledText}
         """
         return not (self == other)
     
@@ -152,7 +158,8 @@ class LabeledText:
     
     def __repr__(self):
         """
-        @rtype: string
+        @return: A string representation of this labeled text.
+        @rtype: C{string}
         """
         return "%r/%r" % (self._text, self._label)
 
@@ -230,6 +237,9 @@ class FeatureDetectorI:
         """
         @return: this feature's value for the given labeled text.
         @rtype: C{any}
+        @param labeled_text: the labeled text whose feature value
+            should be detected.
+        @type labeled_text: C{LabeledText}
         """
 
 class FunctionFeatureDetector(FeatureDetectorI):
@@ -251,9 +261,13 @@ class FunctionFeatureDetector(FeatureDetectorI):
         return self._func(labeled_text)
 
     def __repr__(self):
+        """
+        @return: a string representation of this feature detector.
+        @rtype: C{string}
+        """
         if self._name is None:
-            self._name = self._func.__name__+'(lt)'
-        return "<FeatureDetector: %s>" % self._func.__name__
+            self._name = self._func.__name__+'()'
+        return "<FeatureDetector: %s>" % self._name
 
 ##//////////////////////////////////////////////////////
 ##  Feature Detector Lists
@@ -298,16 +312,23 @@ class FeatureDetectorListI:
         @return: the feature detector for the feature with the given
             id. 
         @rtype: C{FeatureDetectorI}
-        
+
+        @param feature_id: The id of the feature whose detector should
+            be returned.  This is should be an integer M{i} such that
+            M{0 <= i < N}, where M{N} is the number of features in
+            this feature detector list.
         @type feature_id: C{int}
         """
         raise NotImplementedError()
 
-    def detect(self, instance):
+    def detect(self, labeled_text):
         """
-        @return: the feature ids for the features that apply to
-            C{instance}.
+        @return: a feature value list specifying the value of each of
+            feature for the given labeled text.
         @rtype: C{FeatureValueListI}
+        @param labeled_text: the labeled text whose feature values
+            should be detected.
+        @type labeled_text: C{LabeledText}
         """
         raise NotImplementedError()
 
@@ -342,12 +363,14 @@ class AbstractFeatureDetectorList(FeatureDetectorListI):
     def __getitem__(self, feature_id):
         if feature_id >= len(self):
             raise IndexError('FeatureDetectorList index out of range')
-        def pred(instance, detect=self.detect, id=feature_id):
-            return id in detect(instance)
-        return PredEvent(pred)
+        def f(labeled_text, detect=self.detect, id=feature_id):
+            return id in detect(labeled_text)
+        return FunctionFeatureDetector(f, ('f_%d()' % feature_id))
 
     def __add__(self, other):
-        # n.b.: Slight circular dependency
+        # n.b.: Slight circular dependency (since
+        # MergedFeatureDetectorList is itself derived from
+        # AbstractFeatureDetectorList).
         return MergedFeatureDetectorList(self, other)
 
     def __repr__(self):
@@ -371,8 +394,7 @@ class MergedFeatureDetectorList(AbstractFeatureDetectorList):
 
     @type _offsets: C{list} of C{int}
     @ivar _offsets: The offset at which each feature detector list
-        begins.  The final element is the length of the complete 
-        C{MergedFeatureDetectorList}.
+        begins.
     """
     def __init__(self, *sub_fdlists):
         """
@@ -391,30 +413,36 @@ class MergedFeatureDetectorList(AbstractFeatureDetectorList):
                 self._offsets.append(offset)
             offset += len(sublist)
 
-        # Append the final offset (the length of this
-        # MergedFeatureDetectorList). 
-        self._offsets.append(offset)
+        self._N = offset
 
     def __len__(self):
         # Inherit docs from FeatureDetectorListI
-        return self._offsets[-1]
+        return self._N
 
-    # !!!!!! THIS IS BROKEN NOW !!!!!!!!
-    def detect(self, instance):
-        # Inherit docs from FeatureDetectorListI
-        fnums = []
+    # This may not be the most efficient method if we're not using
+    # feature detector lists that return SimpleFeatureValueLists.  Oh
+    # well.  I'll deal with efficiency later. :)
+    def detect(self, labeled_text):
+        assignments = []
         for i in range(len(self._sub_fdlists)):
-            fnums += [fnum+self._offsets[i] for fnum
-                      in self._sub_fdlists[i].detect(instance)]
-        return tuple(fnums)
+            offset = self._offsets[i]
+            feature_values = self._sub_fdlists[i].detect(labeled_text)
+            assignments += [(fnum+offset, val) for (fnum, val)
+                            in feature_values.assignments()]
+            
+        return SimpleFeatureValueList(assignments, self._N)
 
 class AlwaysFeatureDetectorList(AbstractFeatureDetectorList):
     """
     A feature list containing a single feature, which is always on.
     """
-    def __init__(self): pass
+    def __init__(self):
+        """
+        Construct a new C{AlwaysFeatureDetectorList}.
+        """
     def __len__(self): return 1
-    def detect(self, instance): return (0,)
+    def detect(self, labeled_text):
+        return SimpleFeatureValueList(((0,1),), 1)
 
 class FunctionFeatureDetectorList(AbstractFeatureDetectorList):
     """
@@ -450,11 +478,12 @@ class FunctionFeatureDetectorList(AbstractFeatureDetectorList):
         # Inherit docs from FeatureDetectorListI
         return self._N
 
-    def detect(self, instance):
+    def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
-        feature = self._map.get(self._function(instance), None)
-        if feature is None: return ()
-        else: return (feature,)
+        feature = self._map.get(self._function(labeled_text), None)
+        if feature is None: assignments = ()
+        else: assignments = ((feature, 1),)
+        return SimpleFeatureValueList(assignments, self._N)
 
 class ValueFeatureDetectorList(FunctionFeatureDetectorList):
     """
@@ -481,11 +510,12 @@ class ValueFeatureDetectorList(FunctionFeatureDetectorList):
         # Inherit docs from FeatureDetectorListI
         return self._N
 
-    def detect(self, instance):
+    def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
-        feature = self._map.get(instance, None)
-        if feature is None: return ()
-        else: return (feature,)
+        feature = self._map.get(labeled_text, None)
+        if feature is None: assignments = ()
+        else: assignments = ((feature, 1),)
+        return SimpleFeatureValueList(assignments, self._N)
 
 ##//////////////////////////////////////////////////////
 ##  Feature Value Lists
@@ -519,10 +549,16 @@ class FeatureValueListI:
 
     @see: C{FeatureDetectorListI}
     """
-    def __getitem__(self):
+    def __getitem__(self, feature_id):
         """
         @return: the feature value for the feature with the given id.
         @rtype: (immutable)
+        
+        @param feature_id: The id of the feature whose value should
+            be returned.  This is should be an integer M{i} such that
+            M{0 <= i < N}, where M{N} is the number of features in
+            this feature value list.
+        @type feature_id: C{int}
         """
         raise NotImplementedError()
     
@@ -538,7 +574,7 @@ class FeatureValueListI:
     def __len__(self):
         """
         @return: the number of features whose values are specified by
-            this feature detector list.  The feature ids for the
+            this feature value list.  The feature ids for the
             features in this feature value list are the integers M{i},
             where M{0 <= i < C{len(self)}}.
         @rtype: C{int}
@@ -559,18 +595,98 @@ class FeatureValueListI:
         @rtype: sequence of (tuple of C{int} and (immutable))
         """
 
+class SimpleFeatureValueList(FeatureValueListI):
+    """
+    A simple list-based implementation of the C{FeatureValueListI}
+    interface.
+
+    @type _assignments: list of (tuple of C{int} and (immutable))
+    @ivar _assignments: A list of (id, value) pairs.
+    @type _len: C{int}
+    @ivar _len: The number of features whose values are specified by
+        this feature value list.
+    @type _default: (immutable)
+    @ivar _default: The default value.
+    """
+    def __init__(self, assignments, len, default=0):
+        """
+        Construct a new C{SimpleFeatureValueList}.
+
+        @type assignments: list of (tuple of C{int} and (immutable))
+        @param assignments: A list of the feature value assignments for
+            each feature in this feature value list whose value is not
+            the default value.  These assignments are specified as a
+            list of C{(id, value)} pairs.
+        @type len: C{int}
+        @param len: The number of features whose values are specified
+            by this feature value list.
+        @type default: (immutable)
+        @param default: The default value for this feature value list.
+            If a feature's value is not specified by C{assignments},
+            then that feature's value is the default value.
+        """
+        self._assignments = assignments
+        self._len = len
+        self._default = default
+
+    def __getitem__(self, feature_id):
+        if feature_id >= self._len:
+            raise IndexError('FeatureValueList index out of range')
+        for (id, val) in self._assignments:
+            if id == feature_id:
+                return val
+        return self._default
+
+    def default(self):
+        return self._default
+
+    def __len__(self):
+        return self._len
+
+    def assignments(self):
+        return self._assignments
+
+    def __repr__(self):
+        """
+        @return: A string representation of this feature value
+            list, of the form::
+
+                <FeatureValueList with 72 features>
+            
+        @rtype: C{string}
+        """
+        return "<FeatureValueList with %d features>" % len(self)
+
 ##//////////////////////////////////////////////////////
 ##  ClassiiferI
 ##//////////////////////////////////////////////////////
 
 class ClassifierI:
-    def classify(instance):
+    def classify(labeled_text):
         """
-        Classify an instance.
+        Classify an labeled_text.
         
         @rtype: (ProbDist of)? (label | LabeledType)
         """
 
 class ClassifierFactoryI:
     "???"
+
+if __name__ == '__main__':
+    features = (
+        AlwaysFeatureDetectorList() +
+        FunctionFeatureDetectorList(lambda w:w[0],
+                           [chr(i) for i in range(ord('a'), ord('z')+1)]) +
+        FunctionFeatureDetectorList(lambda w:w[-1],
+                           [chr(i) for i in range(ord('a'), ord('z')+1)]) +
+        FunctionFeatureDetectorList(lambda w:len(w), range(15)) +
+        ValueFeatureDetectorList(("Atlanta's",))
+        )
+
+    s = "asdf"
+    print features, features.detect(s)
+    print [a for a in features.detect(s)]
+    print features.detect(s).assignments()
+    print features[0], features[12]
+    print features[0].detect(s), features[12].detect(s)
 
