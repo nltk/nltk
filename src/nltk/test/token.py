@@ -9,6 +9,12 @@
 
 """
 Unit testing for L{nltk.token}.
+
+@group Tokens: test_Token, test_SafeToken, test_SafeToken_checks,
+               test_TokenReprLocError, test_FrozenToken,
+               test_ProbabilisticToken
+@group Locations: test_Location
+@group Demo: test_demo
 """
 
 from nltk.token import *
@@ -770,7 +776,7 @@ must have compatible sources and location types:
 Infinity
 --------
 Under special circumstances, it can be useful to use -INF as a
-location's tart, or +INF as its end.  This is done with
+location's start, or +INF as its end.  This is done with
 C{SpanLocation.MIN} and C{SpanLocation.MAX}:
 
     >>> loc1 = CharSpanLocation(SpanLocation.MIN, 8)
