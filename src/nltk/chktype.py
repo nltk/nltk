@@ -8,16 +8,23 @@
 # $Id$
 
 """
-Type checking for the parameters of functions and methods.  The
-primary function defined by this module is C{chktype}, which checks
-the type of a parameter against a type specification.  The amount of
-type-checking performed by C{chktype} is dependant on the variable
-C{type_safety_level}.
+Type checking support for NLTK.
+
+Type checking for the parameters of functions and methods is performed
+using the C{chktype} function.  This function should be used in
+conjunction with an C{assert} statement:
+
+    assert chktype(...)
+
+This allows the user to bypass type-checking when efficiency is
+important, by using optimized Python modules (C{.pyo} files).  For
+more fine-grained controle over the amount of type checking performed,
+use the C{type_safety_level} function.
 
 This module also defines two utility functions for testing that two
 objects have the same class: C{chkclass} and C{classeq}.
 
-@variable type_safety_level: The level of type safety to use when
+@variable _type_safety_level: The level of type safety to use when
   checking the input parameters to methods defined by the Natural
   Language Toolkit.  Currently defined values are:
 
@@ -30,26 +37,54 @@ objects have the same class: C{chkclass} and C{classeq}.
        
   Higher levels of type safety (3-4) can result in signifigant loss of
   efficiency.
-
-@type type_safety_level: int
+@type _type_safety_level: int
 """
-##//////////////////////////////////////////////////////
-##  Type-checking
-##//////////////////////////////////////////////////////
 
-# 0 = no type checks
-# 1 = just raw types
-# 2 = types & classes
-# 3 = types, classes, lists, & tuples
-# 4 = full type safety (types, classes, lists, tuples, dictionaries)
-type_safety_level=4
+debug = 1
 
+import traceback
+from types import IntType as _IntType
 from types import ListType as _ListType
 from types import TupleType as _TupleType
 from types import ClassType as _ClassType
 from types import TypeType as _TypeType
 from types import DictType as _DictType
 from types import InstanceType as _InstanceType
+
+##//////////////////////////////////////////////////////
+##  Type-checking
+##//////////////////////////////////////////////////////
+
+_type_safety_level=4
+def type_safety_level(level=None):
+    """
+    Change the level of type safety to use when checking the input
+    parameters to methods defined by the Natural Language Toolkit.
+    Currently defined values are:
+
+        - 0: no type checking
+        - 1: check types only
+        - 2: check types and classes
+        - 3: check types, classes, list contents, and tuple contents
+        - 4: check types, classes, list contents, tuple contents, and
+          dictionary contents.
+
+    Higher levels of type safety (3-4) can result in signifigant loss
+    of efficiency.  The default type safety level is currently 4.
+
+    If C{type_safety_level} is called with no parameters, then return
+    the current type safety level.
+
+    @param level: The new type safety level.
+    @type level: C{int} or C{None}
+    @return: The new type safety level.
+    @rtype: C{int}
+    """
+    assert chktype('type_safety_level', 1, level, _IntType)
+    global _type_safety_level
+    if level is not None:
+        _type_safety_level = level
+    return _type_safety_level
 
 def chkclass(self, other):
     """
@@ -92,23 +127,35 @@ def _typemsg(types):
     typestr = ''
     for typ in types:
         if type(typ) in (_TypeType, _ClassType):
-            typestr = typestr + typ.__name__ + ' or '
+            typestr += typ.__name__ + ' or '
         elif type(typ) == _ListType:
-            typestr = typestr + '(list whose elements are: '+ \
-                      _typemsg(typ)+') or '
+            if typ == []:
+                typestr += 'list or '
+            else:
+                typestr += 'list of '
+                typestr += _typemsg(typ)+' or '
         elif type(typ) == _TupleType:
-            typestr = typestr + '(tuple whose elements are: '+ \
-                      _typemsg(typ)+') or '
+            if typ == ():
+                typestr += 'tuple or '
+            else:
+                typestr += 'tuple of '
+                typestr += _typemsg(typ)+' or '
         elif type(typ) == _DictType:
-            for (key, val) in typ.items():
-                typestr = typestr + '(dictionary from ' + \
-                          _typemsg((key,)) + ' to ' + _typemsg(val) + \
-                          ') or '
+            if typ == {}:
+                typestr += 'dictionary or '
+            else:
+                typestr += '(dictionary '
+                for (key, val) in typ.items():
+                    typestr += 'from ' + _typemsg((key,))
+                    typestr += ' to ' + _typemsg(val) + ' or '
+                typestr = typestr[:-4] + ') or '
+                    
         else:
             raise AssertionError('Bad arg to typemsg')
-    return typestr[:-4]
+    if len(types) > 1: return '(%s)' % typestr[:-4]
+    else: return typestr[:-4]
 
-def chktype(name, n, arg, types):
+def chktype(n, arg, *types):
     """
     Automated type-checking function for parameters of functions and
     methods.  This function will check to ensure that a given argument
@@ -120,13 +167,20 @@ def chktype(name, n, arg, types):
     efficient use; however, it should not necessarily be used by users 
     of the toolkit, since it is somewhat advanced. 
 
-    This method does NOT handle recursive structures well; in
+    This method does B{not} handle recursive structures well; in
     particular, recursive arguments may cause it to enter an infinite
-    loop. 
+    loop.
+    
+    The following example demonstrates how this function is typically
+    used.  Note the use of C{assert} statements, which ensures that
+    typechecking is bypassed when optimized Python modules (C{.pyo}
+    files) are used::
 
-    @param name: The name of the function or method whose parameter's
-           type is being checked.
-    @type name: string
+        d e f demo(x, f, lst, dict):
+            assert chktype(1, x, IntType)     # integer
+            assert chktype(2, f, FloatType)   # float
+            assert chktype(3, lst, [IntType]) # list of ints
+            assert chktype(4, dict, {})       # any dictionary
 
     @param n: The position of the parameter whose type is being
              checked.  If it's not a positional parameter, I'm not
@@ -136,7 +190,7 @@ def chktype(name, n, arg, types):
     @param arg: The value of the parameter whose type is being
            checked.
     @type arg: any
-
+        
     @param types: A list of the allowable types.  Each allowable type
            should be either a type (e.g., types.IntType); a class
            (e.g., Token); a list of allowable types; a tuple of
@@ -163,78 +217,139 @@ def chktype(name, n, arg, types):
                   key_t and value matches some element of value_t.
 
     @type types: C{List} or C{Tuple}
-    @see: nltk.type_safety_level
+    @see: nltk._type_safety_level
     @rtype: C{None}
     """
-    # Unfortunately, this code is not really commented right now.
-    # It's by far the most complex/advanced code in this module, and
-    # isn't really intended to be played with.  It should be possible,
-    # if not easy, to figure out how it works, given its definition in 
-    # the __doc__ string.  I'll comment it one day, though.
-    if type_safety_level <= 0: return
-    if type(types) not in (_ListType, _TupleType):
-        raise AssertionError("chktype expected a list of types/classes")
+    if debug:
+        name = traceback.extract_stack()[-2][2]
+        print 'chktype%r' % ((n,arg) + types,)
+        print '    From: %s' % name
+        print '    Type: %s' % _typemsg(types)
+    
+    if _type_safety_level <= 0: return 1
+    
+    # Check each type spec.  If any of the type specs matches, then
+    # return true.  Each type spec can be: a type; a class; a list; a
+    # tuple; a dictionary; or some other object.
     for t in types:
+        # The type spec is a type; return 1 if the arg's type matches.
         if type(t) == _TypeType:
-            if type(arg) == t: return
-        elif type_safety_level <= 1:
-            return
+            if type(arg) == t: return 1
+
+        # The type spec is a class; return 1 if the arg's class matches.
         elif type(t) == _ClassType:
-            if isinstance(arg, t): return
+            if _type_safety_level <= 1: return 1
+            if isinstance(arg, t): return 1
+
+        # The type spec is a list; check that the arg is a list.  If
+        # type safety level > 2, check each element of the list.
         elif type(t) == _ListType:
             if type(arg) == _ListType:
-                if type_safety_level <= 2: return
+                if _type_safety_level <= 2: return 1
                 type_ok = 1
                 for elt in arg:
-                    try: chktype(name, n, elt, t)
+                    try: chktype(n, elt, *t)
                     except: type_ok = 0
-                if type_ok: return
+                if type_ok: return 1
+                
+        # The type spec is a tuple; check that the arg is a tuple.  If
+        # type safety level > 2, check each element of the tuple.
         elif type(t) == _TupleType:
             if type(arg) == _TupleType:
-                if type_safety_level <= 2: return
+                if _type_safety_level <= 2: return 1
                 type_ok = 1
                 for elt in arg:
-                    try: chktype(name, n, elt, t)
+                    try: chktype(n, elt, *t)
                     except: type_ok = 0
-                if type_ok: return
+                if type_ok: return 1
+                
+        # The type spec is a dictionary; check that the arg is a
+        # dictionary.  If type safety level > 3, check each key/value
+        # pair in the dictionary.
         elif type(t) == _DictType:
             if type(arg) == _DictType:
-                if type_safety_level <= 3: return
+                if _type_safety_level <= 3: return 1
                 type_ok = 1
-                for key in arg.keys():
-                    if t.has_key(type(key)):
-                        try: chktype(name, n, arg[key], t[type(key)])
+
+                for (key,val) in arg.items():
+                    # Find a key in the typespec that matches the
+                    # item's key.  This can be a type or a class.  Get
+                    # the corresponding value typespec.
+                    val_typespec = t.get(type(key), None)
+                    if val_typespec is None and isinstance(key, _InstanceType):
+                        val_typespec = t.get(key.__class_, None)
+                    if val_typespec is not None:
+                        if type(val_typespec) not in (_ListType, _TupleType):
+                            raise AssertionError('Invalid type specification')
+                        try: chktype(n, arg[key], *val_typespec)
                         except: type_ok = 0
-                    elif type(key) in (_ListType, _TupleType, _DictType):
-                        subtype_ok = 0
-                        for t_key in t.keys():
-                            if type(key) == type(t_key):
+
+                    # We didn't find a key in the typespec that
+                    # matches the item's key exactly.  Try finding a
+                    # key that's a tuple, and use it to match.  Note
+                    # that we don't have to check dicts/lists, because
+                    # they're not hashable.
+                    elif type(key) == _TupleType:
+                        type_ok_2 = 0
+                        for (key_typespec, val_typespec) in t.items():
+                            if type(key_typespec) == _TupleType:
                                 try:
-                                    chktype(name, n, key, (t_key,))
-                                    chktype(name, n, arg[key],
-                                             t[t_key])
-                                    subtype_ok = 1
+                                    chktype(n, key, key_typespec)
+                                    chktype(n, val, *val_typespec)
+                                    type_ok_2 = 1
                                 except: pass
                         if not subtype_ok: type_ok = 0
+
+                    # If we couldn't find any matches at all, fail.
                     else:
                         type_ok = 0
-                if type_ok: return
+
+                # If all of the dict's items were ok, then return 1. 
+                if type_ok: return 1
+
+        # They gave us a bad type specification; complain.
         else:
-            raise AssertionError("chktype expected a valid "+\
-                                 "type specification.")
+            raise AssertionError("Invalid type specification")
+
+    # What's the name of the function?
+    name = traceback.extract_stack()[-2][2]
 
     # Type mismatch -- construct a user-readable error.
-    errstr = "\n  Argument " + `n` + " to " + name + "() must " +\
+    errstr = "\n\n  Argument " + `n` + " to " + name + "() must " +\
              "have type: "
     typestr = _typemsg(types)
-    if type(arg) == _InstanceType:
-        typestr += ' (not %s)' % arg.__class__.__name__
-    else:
-        typestr += ' (not %s)' % type(arg).__name__
     if len(typestr) + len(errstr) <= 75:
         errstr = errstr+typestr
         raise TypeError(errstr)
     else:
         errstr = errstr+'\n      '+typestr
         raise TypeError(errstr)
+
+def demo(intparam, listparam, dictparam):
+    assert chktype(1, intparam, _IntType)
+    assert chktype(2, listparam, [_IntType, _ListType])
+    assert chktype(3, dictparam, {_IntType:(_IntType,), ():[[],()]})
+
+class X:
+    def __init__(s, y):
+        assert chktype(1, y, _IntType)
+
+if __name__ == '__main__':
+    # Demonstrate usage.
+    demo(5, [], {})
+
+    if 1:
+        try: demo('x', [], {})
+        except Exception, e: print e
+        
+        try: demo(5, 'x', {})
+        except Exception, e: print e
+        
+        try: demo(5, [], 'x')
+        except Exception, e: print e
+
+    try: X('x')
+    except Exception, e: print e
+    
+    #demo('x', [], {})
 
