@@ -144,16 +144,17 @@ __copyright__ = """\
 Copyright (C) 2001 University of Pennsylvania.
 
 Distributed and Licensed under provisions of the IBM Common Public
-License (Version 0.5), which is included by reference.  The IBM Common 
-Public License can be found in the file LICENSE.TXT in the
+License (Version 0.5), which is included by reference.  The IBM
+Common Public License can be found in the file LICENSE.TXT in the
 distribution."""
+
 __licence__ = "IBM Common Public License (Version 0.5)"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
-The Natural Langauge Toolkit is a Python package that simplifies the
-construction of programs that process natural language; and defines
-standard interfaces between the different components of an NLP system.
-NLTK requires Python 2.1 or higher."""
+The Natural Langauge Toolkit is a Python package that simplifies
+the construction of programs that process natural language; and
+defines standard interfaces between the different components of
+an NLP system.  NLTK requires Python 2.1 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
