@@ -84,7 +84,7 @@ class TaggedTokenizer(TokenizerI):
         self._wstokenizer = WSTokenizer(addlocs, propnames)
         self._props = propnames
 
-    def tokenize(self, token, source=None):
+    def tokenize(self, token):
         # Inherit docs from TokenizerI
         assert chktype(1, token, Token)
         subtokens_prop = self._props.get('subtokens', 'subtokens')
@@ -102,6 +102,10 @@ class TaggedTokenizer(TokenizerI):
                 subtok['text'] = subtok['text'][:split]
             else:
                 subtok['tag'] = None
+
+    def xtokenize(self, token):
+        "Not implemented for this tokenizer"
+        raise NotImplementedError()
 
     def raw_tokenize(self, text):
         "Not implemented for this tokenizer"
