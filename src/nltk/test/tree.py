@@ -7,6 +7,14 @@
 #
 # $Id$
 
+"""
+Unit testing for L{nltk.tree}.
+
+@todo: Test L{nltk.tree.ProbabilisticTreeToken}
+@todo: Test L{nltk.tree.parse_treebank}
+@todo: Test L{nltk.tree.TreebankTokenizer}
+"""
+
 from nltk.tree import *
 from nltk.token import WSTokenizer
 
@@ -40,9 +48,9 @@ class TreeTestCase(unittest.TestCase):
 
     def testGetItem(self):
         "nltk.tree.Tree: [] operator tests"
-        self.failUnless(self.tree[0] == self.dp1)
-        self.failUnless(self.tree[1] == self.vp)
-        self.failUnless(self.tree[1][1] == self.dp2)
+        self.failUnlessEqual(self.tree[0], self.dp1)
+        self.failUnlessEqual(self.tree[1], self.vp)
+        self.failUnlessEqual(self.tree[1][1], self.dp2)
 
     def testLen(self):
         "nltk.tree.Tree: len operator tests"
@@ -76,24 +84,33 @@ class TreeTestCase(unittest.TestCase):
 
     def testLeaves(self):
         "nltk.tree.Tree: leaves method tests"
-        self.failUnless(self.dp1.leaves() == ("the", "dog"))
-        self.failUnless(self.tree.leaves() ==
-                        ("the", "dog", "chased", "the", "cat"))
-        self.failUnless(self.vp[0].leaves() == ("chased",))
-        self.failUnless(Tree('n').leaves() == ())
+        self.failUnlessEqual(self.dp1.leaves(), ("the", "dog"))
+        self.failUnlessEqual(self.tree.leaves(),
+                             ("the", "dog", "chased", "the", "cat"))
+        self.failUnlessEqual(self.vp[0].leaves(), ("chased",))
+        self.failUnlessEqual(Tree('n').leaves(), ())
 
     def testNodes(self):
         "nltk.tree.Tree: nodes method tests"
-        self.failUnless(self.dp1.nodes() == Tree('dp', Tree('d'), Tree('np')))
+        self.failUnlessEqual(self.dp1.nodes(),
+                             Tree('dp', Tree('d'), Tree('np')))
         tnodes = Tree('s', Tree('dp', Tree('d'), Tree('np')),
                       Tree('vp', Tree('v'),
                            Tree('dp', Tree('d'), Tree('np'))))
-        self.failUnless(self.tree.nodes() == tnodes)
-        self.failUnless(self.vp[0].nodes() == Tree('v'))
-        self.failUnless(Tree('n') == Tree('n'))
+        self.failUnlessEqual(self.tree.nodes(), tnodes)
+        self.failUnlessEqual(self.vp[0].nodes(), Tree('v'))
+        self.failUnlessEqual(Tree('n'), Tree('n'))
 
     def testCmp(self):
         "nltk.tree.Tree: comparison tests"
+        self.failUnlessEqual(Tree(1,2), Tree(1,2))
+        self.failUnlessEqual(Tree(1,Tree(2,3), Tree(4,5)),
+                        Tree(1,Tree(2,3), Tree(4,5)))
+        self.failUnlessEqual(Tree(1), Tree(1))
+        self.failUnlessEqual(self.tree, self.tree)
+        self.failUnlessEqual(self.dp1, self.dp1)
+
+        # Explicitly test ==/!=
         self.failIf(Tree(1,2) != Tree(1,2))
         self.failUnless(Tree(1,2) == Tree(1,2))
         self.failIf(Tree(1,Tree(2,3), Tree(4,5)) !=
@@ -106,6 +123,21 @@ class TreeTestCase(unittest.TestCase):
         self.failUnless(self.tree == self.tree)
         self.failIf(self.dp1 != self.dp1)
         self.failUnless(self.dp1 == self.dp1)
+
+        # Explicitly test cmp.  Right now, these raise exceptions, but
+        # that's not really safe; it should be changed.
+        #self.failIf(cmp(Tree(1,2), Tree(1,2)) != 0)
+        #self.failUnless(cmp(Tree(1,2), Tree(1,2)) != 0)
+        #self.failIf(cmp(Tree(1,Tree(2,3), Tree(4,5)),
+        #                Tree(1,Tree(2,3), Tree(4,5))) != 0)
+        #self.failUnless(cmp(Tree(1,Tree(2,3), Tree(4,5)),
+        #                    Tree(1,Tree(2,3), Tree(4,5))) != 0)
+        #self.failIf(cmp(Tree(1), Tree(1)) != 0)
+        #self.failUnless(cmp(Tree(1), Tree(1)) != 0)
+        #self.failIf(cmp(self.tree, self.tree) != 0)
+        #self.failUnless(cmp(self.tree, self.tree) != 0)
+        #self.failIf(cmp(self.dp1, self.dp1) != 0)
+        #self.failUnless(cmp(self.dp1, self.dp1) != 0)
         
         t1=Tree('np', 'dog')
         self.failUnlessRaises(AssertionError, lambda t1=t1: t1<t1)
