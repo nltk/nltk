@@ -13,8 +13,8 @@
 Brill's transformational rule-based tagger.
 
 @group Tagger: BrillTagger
-@group Rules: BrillRuleI, *BrillRule
-@group Templates: BrillTemplateI, *BrillTemplate
+@group Rules: BrillRuleI, *Rule
+@group Templates: BrillTemplateI, *Template
 @group Trainers: BrillTaggerTrainer, FastBrillTaggerTrainer
 """
 
