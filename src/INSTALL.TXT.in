@@ -100,9 +100,9 @@ Alternate Install Locations
     you are not a system administrator), then you can install it to
     an alternate location, and use your PYTHONPATH to let Python
     know where to find it.  To install to an alternate location,
-    use the "--home" argument to setup.py:
+    use the "--prefix" argument to setup.py:
 
-        python setup.py install --home=<dir>
+        python setup.py install --prefix=<dir>
 
     Once you have installed it, you will need to adjust your
     PYTHONPATH to point to the install directory:
@@ -110,8 +110,8 @@ Alternate Install Locations
         export PYTHONPATH=$PYTHONPATH:<dir>     # for sh or bash
         setenv PYTHONPATH $PYTHONPATH:<dir>     # for csh or tcsh
 
-    (For Windows, use "My Computer -> Advanced -> Environment
-    Variables -> New User Variable.")
+    (For Windows, right click on "My Computer" and select "Properties
+    -> Advanced -> Environment Variables -> New User Variable.")
 
     For more information on installing to an alternate location, see
     the distutils manual:
