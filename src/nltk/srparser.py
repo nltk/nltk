@@ -152,23 +152,23 @@ def demo():
 
     rules = (
         # Syntactic Rules
-        CFG_Rule(S, NP, VP),
-        CFG_Rule(NP, Det, N),
-        CFG_Rule(VP, V, NP, PP),
-        CFG_Rule(PP, P, NP),
+        CFGProduction(S, NP, VP),
+        CFGProduction(NP, Det, N),
+        CFGProduction(VP, V, NP, PP),
+        CFGProduction(PP, P, NP),
 
-        CFG_Rule(VP, V, PP),
+        CFGProduction(VP, V, PP),
 
         # Lexical Rules
-        CFG_Rule(NP, 'I'),
-        CFG_Rule(Det, 'the'),
-        CFG_Rule(Det, 'a'),
-        CFG_Rule(N, 'man'),
-        CFG_Rule(V, 'saw'),
-        CFG_Rule(P, 'in'),
-        CFG_Rule(P, 'with'),
-        CFG_Rule(N, 'park'),
-        CFG_Rule(N, 'telescope')
+        CFGProduction(NP, 'I'),
+        CFGProduction(Det, 'the'),
+        CFGProduction(Det, 'a'),
+        CFGProduction(N, 'man'),
+        CFGProduction(V, 'saw'),
+        CFGProduction(P, 'in'),
+        CFGProduction(P, 'with'),
+        CFGProduction(N, 'park'),
+        CFGProduction(N, 'telescope')
         )
     cfg = CFG(S, rules)
 

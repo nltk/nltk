@@ -319,18 +319,18 @@ class FSA:
 
 def grammar(terminals):
     (S, Star, Plus, Qmk, Paren) = [Nonterminal(s) for s in 'S*+?(']
-    rules = [CFG_Rule(S, Star),
-             CFG_Rule(S, Plus),
-             CFG_Rule(S, Qmk),
-             CFG_Rule(S, Paren),
-             CFG_Rule(S, S, S),
-             CFG_Rule(Star, S, '*'),
-             CFG_Rule(Plus, S, '+'),
-             CFG_Rule(Qmk, S, '?'),
-             CFG_Rule(Paren, '(', S, ')')]
+    rules = [CFGProduction(S, Star),
+             CFGProduction(S, Plus),
+             CFGProduction(S, Qmk),
+             CFGProduction(S, Paren),
+             CFGProduction(S, S, S),
+             CFGProduction(Star, S, '*'),
+             CFGProduction(Plus, S, '+'),
+             CFGProduction(Qmk, S, '?'),
+             CFGProduction(Paren, '(', S, ')')]
 
     for terminal in terminals:
-        rules.append(CFG_Rule(S, terminal))
+        rules.append(CFGProduction(S, terminal))
 
     return CFG(S, rules)
 

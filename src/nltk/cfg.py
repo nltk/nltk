@@ -32,15 +32,15 @@ parent of a particular set of children.  For example, the rule C{"<S>
 -> <NP> <VP>"} specifies that an C{"S"} node can be the parent of an
 C{"NP"} node and a C{"VP"} node.
 
-CFG rules are implemented by the C{CFG_Rule} class.  Each C{CFG_Rule}
-consists of a left hand side and a right hand side.  The X{left hand
-side} is a C{Nonterminal} that specifies the node type for a potential
-parent; and the X{right hand side} is a list that specifies allowable
-children for that parent.  This lists consists of C{Nonterminals} and
-text tokens: each C{Nonterminal} indicates that the corresponding
-child may be a C{TreeToken} with the specified node type; and each
-text type indicates that the corresponding child may be a C{Token}
-with the with that type.
+CFG rules are implemented by the C{CFGProduction} class.  Each
+C{CFGProduction} consists of a left hand side and a right hand side.
+The X{left hand side} is a C{Nonterminal} that specifies the node type
+for a potential parent; and the X{right hand side} is a list that
+specifies allowable children for that parent.  This lists consists of
+C{Nonterminals} and text tokens: each C{Nonterminal} indicates that
+the corresponding child may be a C{TreeToken} with the specified node
+type; and each text type indicates that the corresponding child may be
+a C{Token} with the with that type.
 
 The C{Nonterminal} class is used to distinguish node values from leaf
 values.  This prevents the grammar from accidentally using a leaf
@@ -73,12 +73,12 @@ Probabilistic CFGs
 
 String Representaitons
 ======================
-A C{CFG_Rule} whose left hand side is C{M{lhs}} and whose right hand
-side is C{M{rhs}} is written "C{M{lhs}->M{rhs}}".  A C{Nonterminal}
-with symbol M{s} is written "C{<M{s}>}" Thus, for example, the
-C{CFG_Rule} that specifies that a tree with node value C{"NP"} can
-have children that are subtrees with node values C{"Det"} and C{"N"}
-is written::
+A C{CFGProduction} whose left hand side is C{M{lhs}} and whose right
+hand side is C{M{rhs}} is written "C{M{lhs}->M{rhs}}".  A
+C{Nonterminal} with symbol M{s} is written "C{<M{s}>}" Thus, for
+example, the C{CFGProduction} that specifies that a tree with node
+value C{"NP"} can have children that are subtrees with node values
+C{"Det"} and C{"N"} is written::
 
     NP -> Det N
 
@@ -102,14 +102,15 @@ from types import IntType as _IntType
 class Nonterminal:
     """
     A non-terminal symbol for a context free grammar.  C{Nonterminal}
-    is a wrapper class for node values; it is used by C{CFG_Rule}s to
-    distinguish node values from leaf values.  The node value that is
-    wrapped by a C{Nonterminal} is known as its X{symbol}.  Symbols
-    are typically strings representing phrasal categories (such as
-    C{"NP"} or C{"VP"}).  However, more complex symbol types are
-    sometimes used (e.g., for lexicalized grammars).  Since symbols
-    are node values, they must be immutable and hashable.  Two
-    C{Nonterminal}s are considered equal if their symbols are equal.
+    is a wrapper class for node values; it is used by
+    C{CFGProduction}s to distinguish node values from leaf values.
+    The node value that is wrapped by a C{Nonterminal} is known as its
+    X{symbol}.  Symbols are typically strings representing phrasal
+    categories (such as C{"NP"} or C{"VP"}).  However, more complex
+    symbol types are sometimes used (e.g., for lexicalized grammars).
+    Since symbols are node values, they must be immutable and
+    hashable.  Two C{Nonterminal}s are considered equal if their
+    symbols are equal.
 
     @type _symbol: (any)
     @ivar _symbol: The node value corresponding to this
@@ -180,7 +181,7 @@ class Nonterminal:
 # CFGRule and CFG
 #################################################################
 
-class CFG_Rule:
+class CFGProduction:
     """
     A context-free grammar rule.  Each grammar rule expands a single
     C{Nonterminal} (the X{left-hand side}) to a sequence of terminals
@@ -203,11 +204,11 @@ class CFG_Rule:
 
     def __init__(self, lhs, *rhs):
         """
-        Construct a new C{CFG_Rule}.
+        Construct a new C{CFGProduction}.
 
-        @param lhs: The left-hand side of the new C{CFG_Rule}.
+        @param lhs: The left-hand side of the new C{CFGProduction}.
         @type lhs: C{Nonterminal}
-        @param rhs: The right-hand side of the new C{CFG_Rule}.
+        @param rhs: The right-hand side of the new C{CFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         self._lhs = lhs
@@ -215,14 +216,14 @@ class CFG_Rule:
 
     def lhs(self):
         """
-        @return: the left-hand side of this C{CFG_Rule}.
+        @return: the left-hand side of this C{CFGProduction}.
         @rtype: C{Nonterminal}
         """
         return self._lhs
 
     def rhs(self):
         """
-        @return: the right-hand side of this C{CFG_Rule}.
+        @return: the right-hand side of this C{CFGProduction}.
         @rtype: sequence of (C{Nonterminal} and (terminal))
         """
         return self._rhs
@@ -252,7 +253,7 @@ class CFG_Rule:
         @return: true if this C{Rule} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (isinstance(other, CFG_Rule) and
+        return (isinstance(other, CFGProduction) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
 
@@ -278,12 +279,12 @@ class CFG:
     def __init__(self, start, rules):
         """
         Create a new context-free grammar, from the given start state
-        and set of C{CFG_Rule}s.
+        and set of C{CFGProduction}s.
         
         @param start: The start symbol
         @type start: C{Nonterminal}
         @param rules: The list of rules that defines the grammar
-        @type rules: C{list} of C{CFG_Rule}
+        @type rules: C{list} of C{CFGProduction}
         """
         self._start = start
         self._rules = rules
@@ -309,36 +310,36 @@ class CFG:
 #################################################################
 
 from nltk.probability import ProbabilisticMixIn
-class PCFG_Rule(CFG_Rule, ProbabilisticMixIn):
+class PCFGProduction(CFGProduction, ProbabilisticMixIn):
     """
-    A probabilistic context free grammar rule.  C{PCFG_Rule}s are
-    essentially just C{CFG_Rule}s that have probabilities associated
+    A probabilistic context free grammar rule.  C{PCFGProduction}s are
+    essentially just C{CFGProduction}s that have probabilities associated
     with them.  These probabilities are used to record how likely it
     is that a given rule will be used.  In particular, the probability
-    of a C{PCFG_Rule} records the likelihood that its right-hand side
+    of a C{PCFGProduction} records the likelihood that its right-hand side
     is the correct instantiation for any given occurance of its
     left-hand side.
 
-    @see: C{CFG_Rule}
+    @see: C{CFGProduction}
     """
     def __init__(self, p, lhs, *rhs):
         """
-        Construct a new C{PCFG_Rule}.
+        Construct a new C{PCFGProduction}.
 
-        @param p: The probability of the new C{PCFG_Rule}.
-        @param lhs: The left-hand side of the new C{PCFG_Rule}.
+        @param p: The probability of the new C{PCFGProduction}.
+        @param lhs: The left-hand side of the new C{PCFGProduction}.
         @type lhs: C{Nonterminal}
-        @param rhs: The right-hand side of the new C{PCFG_Rule}.
+        @param rhs: The right-hand side of the new C{PCFGProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         ProbabilisticMixIn.__init__(self, p)
-        CFG_Rule.__init__(self, lhs, *rhs)
+        CFGProduction.__init__(self, lhs, *rhs)
 
     def __str__(self):
-        return CFG_Rule.__str__(self) + ' (p=%s)' % self._p
+        return CFGProduction.__str__(self) + ' (p=%s)' % self._p
 
     def __eq__(self, other):
-        return (isinstance(other, PCFG_Rule) and
+        return (isinstance(other, PCFGProduction) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self._p == other._p)
@@ -352,7 +353,7 @@ class PCFG(CFG):
     state and a set of rules.  The set of terminals and nonterminals
     is implicitly specified by the rules.
 
-    PCFG rules should be C{PCFG_Rule}s.  C{PCFG} imposes the
+    PCFG rules should be C{PCFGProduction}s.  C{PCFG} imposes the
     constraint that the set of rules with any given left-hand-side
     must have probabilities that sum to 1.
 
@@ -369,12 +370,12 @@ class PCFG(CFG):
     def __init__(self, start, rules):
         """
         Create a new context-free grammar, from the given start state
-        and set of C{CFG_Rule}s.
+        and set of C{CFGProduction}s.
         
         @param start: The start symbol
         @type start: C{Nonterminal}
         @param rules: The list of rules that defines the grammar
-        @type rules: C{list} of C{PCFG_Rule}
+        @type rules: C{list} of C{PCFGProduction}
         @raise ValueError: if the set of rules with any left-hand-side
             do not have probabilities that sum to a value within
             PCFG.EPSILON of 1.
@@ -397,12 +398,12 @@ class PCFG(CFG):
 # right.  Eventually we need unit testing..
 if __name__ == '__main__':
     (S, VP, NP, PP) = [Nonterminal(s) for s in ('S', 'VP', 'NP', 'PP')]
-    rules = [CFG_Rule(S, VP, NP),
-             CFG_Rule(VP, 'saw', NP),
-             CFG_Rule(VP, 'ate'),
-             CFG_Rule(NP, 'the', 'boy'),
-             CFG_Rule(PP, 'under', NP),
-             CFG_Rule(VP, VP, PP)]
+    rules = [CFGProduction(S, VP, NP),
+             CFGProduction(VP, 'saw', NP),
+             CFGProduction(VP, 'ate'),
+             CFGProduction(NP, 'the', 'boy'),
+             CFGProduction(PP, 'under', NP),
+             CFGProduction(VP, VP, PP)]
 
     for rule in rules:
         print '%-18s %r' % (rule,rule)
@@ -415,13 +416,13 @@ if __name__ == '__main__':
         if A == B: print '%3s == %-3s' % (A,B)
         else: print '%3s != %-3s' % (A,B)
              
-    prules = [PCFG_Rule(1, S, VP, NP),
-              PCFG_Rule(0.4, VP, 'saw', NP),
-              PCFG_Rule(0.4, VP, 'ate'),
-              PCFG_Rule(0.2, VP, VP, PP),
-              PCFG_Rule(0.8, NP, 'the', 'boy'),
-              PCFG_Rule(0.2, NP, 'Jack'),
-              PCFG_Rule(1.0, PP, 'under', NP)]
+    prules = [PCFGProduction(1, S, VP, NP),
+              PCFGProduction(0.4, VP, 'saw', NP),
+              PCFGProduction(0.4, VP, 'ate'),
+              PCFGProduction(0.2, VP, VP, PP),
+              PCFGProduction(0.8, NP, 'the', 'boy'),
+              PCFGProduction(0.2, NP, 'Jack'),
+              PCFGProduction(1.0, PP, 'under', NP)]
 
     for rule in prules:
         print '%-30s %r' % (rule,rule)

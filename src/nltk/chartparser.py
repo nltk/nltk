@@ -99,7 +99,7 @@ class ChartParser(ParserI):
         # Add an edge for each lexical item.
         if self._trace: print 'Adding lexical edges...'
         for tok in text:
-            drule = DottedCFG_Rule(tok.type(), ())
+            drule = DottedCFGProduction(tok.type(), ())
             probtok = ProbabilisticToken(1, tok.type(), tok.loc())
             new_edge = Edge(drule, probtok, tok.loc())
             if chart.insert(new_edge):
@@ -147,7 +147,7 @@ def self_loop_edge(grammar_rule, loc):
     Return an edge formed from rule and loc.  Its dot is at the
     leftmost position, and it has no children.
     """
-    drule = DottedCFG_Rule(grammar_rule.lhs(), grammar_rule.rhs(), 0)
+    drule = DottedCFGProduction(grammar_rule.lhs(), grammar_rule.rhs(), 0)
     treetok = TreeToken(drule.lhs().symbol())
     return Edge(drule, treetok, loc)
 
@@ -347,7 +347,7 @@ class IncrementalChartParser:
     def _create_edge_queue(self, text):
         edge_queue = []
         for tok in text:
-            drule = DottedCFG_Rule(tok.type(), ())
+            drule = DottedCFGProduction(tok.type(), ())
             edge_queue.append(Edge(drule, tok, tok.loc()))
         return edge_queue
 
@@ -443,17 +443,17 @@ def demo():
                                            for s in nonterminals.split()]
     
     grammar_rules1 = [
-        CFG_Rule(NP, 'John'), CFG_Rule(NP, 'I'), 
-        CFG_Rule(Det, 'the'), CFG_Rule(Det, 'my'),
-        CFG_Rule(Det, 'a'),
-        CFG_Rule(N, 'dog'),   CFG_Rule(N, 'cookie'),
-        CFG_Rule(V, 'ate'),  CFG_Rule(V, 'saw'),
-        CFG_Rule(P, 'with'), CFG_Rule(P, 'under'),
+        CFGProduction(NP, 'John'), CFGProduction(NP, 'I'), 
+        CFGProduction(Det, 'the'), CFGProduction(Det, 'my'),
+        CFGProduction(Det, 'a'),
+        CFGProduction(N, 'dog'),   CFGProduction(N, 'cookie'),
+        CFGProduction(V, 'ate'),  CFGProduction(V, 'saw'),
+        CFGProduction(P, 'with'), CFGProduction(P, 'under'),
 
-        CFG_Rule(S, NP, VP),  CFG_Rule(PP, P, NP),
-        CFG_Rule(NP, Det, N), CFG_Rule(NP, NP, PP),
-        CFG_Rule(VP, VP, PP), CFG_Rule(VP, V, NP),
-        CFG_Rule(VP, V),
+        CFGProduction(S, NP, VP),  CFGProduction(PP, P, NP),
+        CFGProduction(NP, Det, N), CFGProduction(NP, NP, PP),
+        CFGProduction(VP, VP, PP), CFGProduction(VP, V, NP),
+        CFGProduction(VP, V),
         ]
 
     grammar = CFG(S, grammar_rules1)
