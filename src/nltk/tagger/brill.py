@@ -1,4 +1,16 @@
+# Natural Language Toolkit: Brill Tagger
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@ldc.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
 """
+Brill's transformational rule-based tagger.
 
 @group Tagger: BrillTagger
 @group Rules: BrillRuleI, *BrillRule
