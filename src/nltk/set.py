@@ -227,8 +227,9 @@ class Set:
         @return: A copy of this set.
         @rtype: Set.
         """
-        s=Set()
-        s._dict.update(self._dict)
+        # "self.__class__" is the constructor for this class.
+        set=self.__class__()
+        set._dict.update(self._dict)
         return s
 
     def precision(self, other):
@@ -399,12 +400,6 @@ class MutableSet(Set):
         self._dict[elt] = 1
         return 1
 
-    def copy(self):
-        # Inherit docs from Set.
-        s=MutableSet()
-        s._dict.update(self._dict)
-        return s
-    
     def __hash__(self):
         raise TypeError, 'unhashable instance'
 
