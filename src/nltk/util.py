@@ -438,6 +438,7 @@ def re_show(regexp, string):
 ## Sparse Lists
 ######################################################################
 
+# [XX] SafeToken doesn't like SparseList!!!!
 class SparseList:
     """
     A dictionary-backed implementation of C{list}.  
