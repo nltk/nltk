@@ -2,6 +2,40 @@
 ##////////////////////////////////////////////////////////////////////////
 ##  Version 0.4
 ##////////////////////////////////////////////////////////////////////////
+Sat Oct 13 01:56:31 EDT 2001
+
+- Changed terminology in the chart parser
+- Added more meta-information in setup.py and __init__.py
+- Added CHANGELOG.TXT and INSTALL.TXT files to the source distribution.
+- Added a "getrule" keyword arg to SteppingChartParser.step() that
+  causes it to return an (edge, rule) pair (instead of just an edge).
+  This is used by nltk.draw.chart.ChartDemo
+- Removed nltk.draw_tree & nltk.draw_treetoken (they are obsolete)
+- Minor reference documentation fixes
+- Moved ChunkedTaggedTokenizer from tagger to chunkparser.py;
+  updated the implementaiton of ChunkedTaggedTokenizer to eliminate
+  a bug (index was incremented for [ and ])
+- Moved unchunk to chunkparser.py
+- Moved chunk scoring code to chunkparser.py.  Converted scoring
+  code to the ChunkScore class.  
+- Major overhaul of the rechunkparser module.
+- Fixed a divide-by-zero bug in Set.f_measure
+- Fixed bug in WSTokenizer.xtokenize (it was ignoring source/unit)
+- Added a LineTokenizer, which tokenizes a file into sentences, based
+  on newline characters.
+- Fixed minor docstring bug in WSTokenizer
+- Changed Token to print verbose string rep from __repr__.  I've been
+  going back and forth on how we should use different tostring() type
+  methods.  This will all get standardized/regularized at some point.
+  Probably by version 0.5
+- Renamed TreeToken.location() to TreeToken.loc()
+- Improvements to nltk.draw.chart, including: zooming; improved edge
+  highlighting; root window for ChartView constructor is now optional; 
+  control over whether the tree-view & source-view frames should be
+  shown; text field that displays the rule that generated the last
+  edge; different default test grammar/string.  Several bug fixes.
+- Improvements to nltk.draw.plot_graph and nltk.draw.tree_edit
+
 
 ##////////////////////////////////////////////////////////////////////////
 ##  Version 0.3
