@@ -30,6 +30,12 @@ the probabilities of feature value assignments, given labels::
 
 C{NBClassifier}s can be built from training data with the
 C{NBClassifierTrainer} class.
+
+@warning: We plan to significantly refactor the nltk.classifier
+    package for the next release of nltk.
+
+@group Classifiers: NBClassifier
+@group Classifier Trainers: NBClassifierTrainer
 """
 
 from nltk.classifier import *
