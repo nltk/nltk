@@ -380,7 +380,6 @@ class ShiftReduceParserDemo:
 
         # Draw the stack.
         stackx = 5
-        print "***", self._parser.stack()
         for tok in self._parser.stack():
             if isinstance(tok, Tree):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
@@ -686,7 +685,6 @@ class ShiftReduceParserDemo:
             for widget in widgets:
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
-            print "***", self._parser.stack()[-1]
             if not isinstance(tok, Tree): raise ValueError()
             label = TextWidget(self._canvas, str(tok.node), color='#006060',
                                font=self._boldfont)
