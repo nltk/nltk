@@ -736,7 +736,8 @@ which returns a new location spanning both of them:
     >>> print loc2.union(loc1)
     [8:14c]
 
-    # Union can also be written as addition
+Union can also be written as addition:
+
     >>> print loc1 + loc2
     [8:14c]
 
