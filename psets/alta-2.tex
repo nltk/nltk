@@ -1,0 +1,202 @@
+\def\bs{$\backslash$}
+
+\documentclass{worksheet}
+\heading{Practical NLP using Python}{ALTA Summer School 2003}
+\title{Worksheet, Day 2}
+
+\begin{document}
+\maketitle
+
+Refer to the running instructions from the previous worksheet. For these
+problems, the following imports will be required:
+
+\noindent\begin{tabbing}
+\tt\textbf{>>>} from nltk\_contrib.unimelb.tacohn.classifier import * \\
+\tt\textbf{>>>} from nltk\_contrib.unimelb.tacohn.classifier.feature import * \\
+\tt\textbf{>>>} from nltk\_contrib.unimelb.tacohn.classifier.naivebayes import * \\
+\tt\textbf{>>>} from nltk\_contrib.unimelb.tacohn.tagger.dictionary import * \\
+\end{tabbing}
+
+\section*{Parsing}
+
+Four parsing demonstrations are available in NLTK.  Please run the following:
+\begin{verbatim}
+>>> nltk.parser.chunk import *
+>>> demo()  # the chunk parser 
+
+>>> from nltk.draw.srparser import *
+>>> demo()  # the shift-reduce parser 
+
+>>> from nltk.draw.rdparser import *
+>>> demo()  # the recursive-descent parser
+
+>>> from nltk.draw.chart import *
+>>> demo()  # the chart parser
+\end{verbatim}
+
+\section*{Word sense disambiguation}
+
+Word sense disambiguation is a classification task. It involves resolving the
+correct sense (or meaning) of an instance of an ambiguous word in context. The
+context around the word serve as clues as to which sense is being used. This
+classification task is most commonly performed repeatedly for the same
+ambiguous word, each instance with its own context. The other variation is
+word sense tagging, where every word in a string of words must be
+disambiguated. Most of the systems in NLTK are classifiers, however the
+\texttt{DictionaryWordSenseTagger} implements the later scheme.
+
+\begin{enumerate}
+\item Feature detectors allow an instance to be processed into a simplified
+representation showing only whether certain interesting features were present
+in the instance. Instance here refers to a polysemous word in context (eg.
+sentence or paragraph). Interesting features might include the word
+immediately before the ambiguous word (head-word hereafter), the word after
+the head-word, the set of words used within a fixed window around the
+head-word, the preceding verb/adjective/etc in which the head-word has a
+syntactic relationship etc.
+
+The following code creates a simple feature detector which detects whether
+the word \texttt{'fishing'} appears in its input. Its input is a sequence of
+words. The lambda function tests whether the word ball appears in the list of
+words.
+
+\begin{verbatim}
+>>> from nltk_contrib.unimelb.tacohn.classifier.feature import *
+>>> fd = FunctionFeatureDetector(lambda text: 'fishing' in text)
+>>> fd.detect(['bass', 'fishing'])
+True
+>>> fd.detect(['bass', 'player'])
+False
+\end{verbatim}
+
+Test this feature detector on a number of test sentences, confirming that it
+does indeed return the expected results. Try writing another feature detector
+to return the length of the first word in the sequence.
+
+Note that in python $\le$2.2 binary values are represented as integers, with
+zero indicating false and non-zero indicating true. Python 2.3 has a boolean
+type with values True and False. 
+
+\item The following code creates a feature detector list to detect if any of
+the words \{'guitar', 'player', 'fish'\} appear in the input (a sequence of
+words, as earlier). It uses the \texttt{BagOfWordsFDList} class to do so,
+supplying it with a lexicon (the set of words to search for). This object
+acts like a list of individual feature detectors and can be indexed and used
+in the same way, however it is optimised to avoid searching through the input
+sequence for each word of interest in the lexicon. This is accessed by using
+its \texttt{detect()} method, which returns a \texttt{FeatureValueList}. This
+object acts like a list of return values from each feature detector, but
+again is optimised because it is often very sparse (contains very few
+non-zero values).
+
+\begin{verbatim}
+>>> from nltk_contrib.unimelb.tacohn.classifier.feature import *
+>>> text = 'An electric guitar player and bass player'.split()
+>>> lexicon = 'guitar player fish'.split()
+>>> fd_list = BagOfWordsFDList(lexicon)
+>>> fv_list = fd_list.detect(text)
+<FeatureValueList with 3 features>
+>>> [fv_list[i] for i in range(len(fv_list))]
+[1, 1, 0]
+>>> fv_list.assignments()
+[(0, 1), (1, 1)]
+>>> fd_list.describe(1)
+'player'
+\end{verbatim}
+
+Experiment with these objects. Try using a larger lexicon and a longer string
+of text. Use the \texttt{MultiBagOfWordsFDList} in place of the
+\texttt{BagOfWordsFDList} in order to get frequency counts for each word in
+the lexicon. NLTK includes other \texttt{FDList}s for various different
+purposes; look at the API documentation and the classification tutorial for
+details.
+
+\item Often the input isn't a sequence of words, but instead a sequence of
+\texttt{Token}s, possibly containing \texttt{TaggedType}s or other structures
+such as parse trees. Usually only a select part of the input is required by
+the feature detector. \texttt{Filter}s may be used to process the input into
+a more amenable form. The example below shows a sentence of the brown corpus
+(tokenized and tagged) being stripped down to a sequence of words. This is
+done by \texttt{base\_filter}, which can then be used with the
+\texttt{FilteredFDList} to create a feature detector list capable of
+detecting words from the tokenized and tagged input.
+
+\begin{verbatim}
+>>> from nltk.corpus import brown
+>>> text = brown.tokenize('cp04')[:14]
+['``'/'``'@[0w], 'He'/'PPS'@[1w], 'must'/'MD'@[2w], 'have'/'HV'@[3w],
+'forgiven'/'VBN'@[4w], 'me'/'PPO'@[5w], "''"/"''"@[6w], ','/','@[7w],
+'Henrietta'/'NP'@[8w], 'murmured'/'VBD'@[9w], 'to'/'IN'@[10w],
+'the'/'AT'@[11w], 'room'/'NN'@[12w], '.'/'.'@[13w]]
+>>> base_filter = ArrayFunctionFilter(lambda tk: tk.type().base())
+>>> base_filter(text)
+['``', 'He', 'must', 'have', 'forgiven', 'me', "''", ',', 'Henrietta',
+'murmured', 'to', 'the', 'room', '.']
+>>> bag_of_words = BagOfWordsFDList('forgiven you room'.split())
+>>> bag_of_words.detect(base_filter(text)).assignments()
+[(0, 1), (2, 1)]
+>>> filtered_fd_list = FilteredFDList(base_filter, bag_of_words)
+>>> filtered_fd_list.detect(text).assignments()
+[(0, 1), (2, 1)]
+\end{verbatim}
+
+A number of other filters exist. The \texttt{ArrayIndexFilter} indexes the
+input sequence with a given index or slice. This allows for instance the
+word preceding the head-word to be selected, or a window around the
+head-word. The \texttt{ArrayFunctionFilter} applies a given function to each
+item in the list returning a sequence containing the return values. The
+\texttt{CompositeFunctionFilter} allows filters to be applied one after the
+other. Try using these filters to extract a window of tokens (say from index
+2 to 5), extracting the words from the tokens and then converting these words
+to lower case. Embed this filter in a \texttt{FilteredFDList} using a
+\texttt{BagOfWordsFDList} to detect each lower-case word.
+
+\item Now that we've created feature detectors we can move on to the next
+step of creating classifiers. Classifiers take an instance in the form of
+feature values and output a classification, or sense. You can think of
+humans disambiguating in a similar way -- first we read a small section of
+text around the head-word, we then derive a semantic interpretation of that
+segment and then use that knowledge to state the intended meaning, or sense,
+of the head-word. The first two steps here are feature detection, and the
+last is classification.
+
+NLTK has a number of classifiers which are suitable for WSD, and more are in
+development. Use the example in the slides to train and test a naive Bayes
+classifier.  Note that the set of words referenced from a file words.txt has
+not been provided -- you can use \texttt{nltk.corpus.words} instead, using
+\texttt{words.read('words').split()} to retrieve a list of words.  Try some
+different classifier methods (\texttt{prob(), distribution\_list()}) to see
+how confident the classifier is of its prediction.
+
+Modify the code decapitalise the words in the context. Does this improve
+performance?  You can also use the Porter stemmer in
+\texttt{nltk.stemmer.porter} to remove morphological suffixes (eg. laughing
+$\rightarrow$ laugh) -- does this help performance? You can also supply the
+constructor with an 'estimator' argument. This allows for different smoothing
+operations, such as no smoothing (maximum likelihood estimate 'MLE'), add one
+smoothing ('Laplace') among others. It's important to have some smoothing so
+that the probabilities of a word given a sense is never zero, as these
+probabilities are multiplied together for each word in the context. It is not
+uncommon to see a zero probability assigned to every sense in such a
+scenario.
+
+\item NLTK includes a dictionary based word-sense tagger. This differs from
+the classifiers such as naive Bayes in that the tagger attempts to assign a
+sense label to every word of a sequence of words, where the classifiers
+assign labels only to a single word in the sequence. The tagger can be used
+with either Roget's thesaurus or WordNet. It attempts to find a combination
+of sense labels for words in a sentence such that the dictionary definitions
+of these senses exhibit maximal overlap. Overlap is defined as the number of
+words that appear in both definitions. Function words (determiners, common
+verbs, prepositions) need to be removed first so that the overlap is measured
+between content words (eg. nouns, uncommon verbs).
+
+Follow the example of the dictionary based tagger from the lecture slides.
+Where a word is tagged (eg. 'why' and 'movies' in the example) look up the
+definition as shown. Try using Roget's thesaurus -- are the results better or
+worse?
+
+\end{enumerate}
+
+\end{document}
+
