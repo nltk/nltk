@@ -333,3 +333,18 @@ def find_labels(labeled_tokens):
         labelmap[token.type().label()] = 1
     return labelmap.keys()
 
+def label_tokens(unlabeled_tokens, label):
+    """
+    @return: a list of labeled tokens, whose text and location
+        correspond to C{unlabeled_tokens}, and whose labels are
+        C{label}.
+    @rtype: C{list} of (C{Token} with type C{LabeledText})
+
+    @param unlabeled_tokens: The list of tokens for which a labeled
+        token list should be created.
+    @type unlabeled_tokens: C{list} of C{Token}
+    @param label: The label for the new labeled tokens.
+    @type label: (immutable)
+    """
+    return [Token(LabeledText(tok.type(), label), tok.loc())
+            for tok in unlabeled_tokens]
