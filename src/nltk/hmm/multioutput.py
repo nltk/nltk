@@ -15,8 +15,8 @@ as tuples of features and the probability of observing an observation in a
 particular state as the joint probability of the observations features given 
 the state.
 The joint probability formulas used here are based on: 
-    "McCallum, Nigram. A Comparision of Event models for Naive Bayes 
-    Text Classification"
+"McCallum, Nigram. A Comparision of Event models for Naive Bayes 
+Text Classification"
 """
 
 # PYTHON
@@ -58,7 +58,7 @@ class MultinomialHMM(HiddenMarkovModel):
                 % (len(self._states), features) + str
 
 class MultiVariateBernoulliHMM(HiddenMarkovModel):
-    def __init__(self, symbols, states, transitions, outputs, priors):
+    def __init__(self, symbols, states, transitions, outputs, priors, **properties):
         """
         @param  symbols:        sets of output symbols (alphabets) for
                                 each observation feature. Therefore the 
@@ -82,7 +82,7 @@ class MultiVariateBernoulliHMM(HiddenMarkovModel):
                                 used and may be overridden
         @type   properties:     C{dict}
         """
-        HiddenMarkovModel.__init__(self, symbols, states, transitions, outputs, priors)
+        HiddenMarkovModel.__init__(self, symbols, states, transitions, outputs, priors, properties)
         self._compile_logprobs()
 
     def _compile_logprobs(self):
@@ -146,9 +146,6 @@ class MultiOutputHMMTrainer(HiddenMarkovModelTrainer):
         state and which states start a sentence. These frequency distributions
         are then normalised into probability estimates, which can be
         smoothed if desired.
-
-        @type estimator: function taking a C{FreqDist} and a number of bins
-                         and returning a C{ProbDistI}
         """
         assert chktype(1, labelled_sequences, Token)
 
