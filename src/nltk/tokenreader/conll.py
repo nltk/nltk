@@ -15,6 +15,21 @@ strings.  (Under construction)
 from nltk.token import *
 from nltk.tokenreader import TokenReaderI
 from nltk import PropertyIndirectionMixIn
+import re
+
+# class ConllTokenReader(TokenReaderI, PropertyIndirectionMixIn):
+#     def __init__(self, **property_names):
+#         PropertyIndirectionMixIn.__init__(self, **property_names)
+
+#     _LINE_RE = re.compile('(\S+)\s+(\S+)\s+([BIO])-?(\S+)?')
+#     def read_token(self, s, source=None):
+#         # Break the text into sentences.
+#         sentences = s.split(
+            
+#         stack = 
+#         for match in self._LINE_RE.finditer(s):
+#             (word, tag, chunktag) = match.groups()
+            
 
 # [XX] THIS IS BROKEN:
 #class ConllChunkedTokenizer(TokenizerI):
