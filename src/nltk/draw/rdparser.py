@@ -118,7 +118,7 @@ class RecursiveDescentParserDemo:
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
         Label(self._prodframe, text='Available Expansions',
-              font=('helvetica', 14, 'bold')).pack()
+              font=('helvetica', -14, 'bold')).pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
                                  relief='groove', background='white',
                                  foreground='#909090',
@@ -176,7 +176,7 @@ class RecursiveDescentParserDemo:
     def _init_buttons(self, parent):
         # Set up the frames.
         self._buttonframe = buttonframe = Frame(parent)
-        buttonframe.pack(fill='x', side='bottom')
+        buttonframe.pack(fill='x', side='bottom', padx=3, pady=2)
         Button(buttonframe, text='Quit', underline=0,
                command=self.destroy).pack(side='right')
         Button(buttonframe, text='Print', underline=0,
@@ -199,13 +199,14 @@ class RecursiveDescentParserDemo:
 
     def _init_feedback(self, parent):
         self._feedbackframe = feedbackframe = Frame(parent)
-        feedbackframe.pack(fill='x', side='bottom')
+        feedbackframe.pack(fill='x', side='bottom', padx=3, pady=3)
         Label(feedbackframe, text='Last Operation:').pack(side='left')
-        lastoperframe = Frame(feedbackframe, relief='groove', border=2)
-        lastoperframe.pack(fill='x', side='right', padx=5, expand=1)
-        self._lastoper1 = Label(lastoperframe, foreground='#007070')
+        lastoperframe = Frame(feedbackframe, relief='sunken', border=1)
+        lastoperframe.pack(fill='x', side='right', expand=1, padx=5)
+        self._lastoper1 = Label(lastoperframe, foreground='#007070',
+                                background='#f0f0f0')
         self._lastoper2 = Label(lastoperframe, anchor='w', width=30,
-                                foreground='#004040')
+                                foreground='#004040', background='#f0f0f0')
         self._lastoper1.pack(side='left')
         self._lastoper2.pack(side='left', fill='x', expand=1)
 

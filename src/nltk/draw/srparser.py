@@ -129,7 +129,7 @@ class ShiftReduceParserDemo:
         self._prodframe = listframe = Frame(parent)
         self._prodframe.pack(fill='both', side='left', padx=2)
         Label(self._prodframe, text='Available Reductions',
-              font=('helvetica', 14, 'bold')).pack()
+              font=('helvetica', -14, 'bold')).pack()
         self._prodlist = Listbox(self._prodframe, selectmode='single',
                                  relief='groove', background='white',
                                  foreground='#909090',
@@ -209,13 +209,14 @@ class ShiftReduceParserDemo:
 
     def _init_feedback(self, parent):
         self._feedbackframe = feedbackframe = Frame(parent)
-        feedbackframe.pack(fill='x', side='bottom')
+        feedbackframe.pack(fill='x', side='bottom', padx=3, pady=3)
         Label(feedbackframe, text='Last Operation:').pack(side='left')
-        lastoperframe = Frame(feedbackframe, relief='groove', border=2)
-        lastoperframe.pack(fill='x', side='right', padx=5, expand=1)
-        self._lastoper1 = Label(lastoperframe, foreground='#007070')
+        lastoperframe = Frame(feedbackframe, relief='sunken', border=1)
+        lastoperframe.pack(fill='x', side='right', expand=1, padx=5)
+        self._lastoper1 = Label(lastoperframe, foreground='#007070',
+                                background='#f0f0f0')
         self._lastoper2 = Label(lastoperframe, anchor='w', width=30,
-                                foreground='#004040')
+                                foreground='#004040', background='#f0f0f0')
         self._lastoper1.pack(side='left')
         self._lastoper2.pack(side='left', fill='x', expand=1)
 
@@ -233,10 +234,10 @@ class ShiftReduceParserDemo:
         self._exprline = canvas.create_line(0,0,0,0, dash='.')
         self._stacktop = canvas.create_line(0,0,0,0, fill='#408080')
         self._stacklabel = TextWidget(canvas, 'Stack', color='#004040',
-                                  font=('helvetica', 16, 'bold'))
+                                  font=('helvetica', -16, 'bold'))
         self._rtextlabel = TextWidget(canvas, 'Remaining Text',
                                       color='#004040',
-                                      font=('helvetica', 16, 'bold'))
+                                      font=('helvetica', -16, 'bold'))
         self._cframe.add_widget(self._stacklabel)
         self._cframe.add_widget(self._rtextlabel)
 
@@ -259,7 +260,7 @@ class ShiftReduceParserDemo:
         # Position the titlebar & exprline
         (x1, y1, x2, y2) = self._stacklabel.bbox()
         y = y2-y1+10
-        self._canvas.coords(self._titlebar, -10, 0, 5000, y-4)
+        self._canvas.coords(self._titlebar, -5000, 0, 5000, y-4)
         self._canvas.coords(self._exprline, 0, y*2-10, 5000, y*2-10)
 
         # Position the titlebar labels..
@@ -270,7 +271,7 @@ class ShiftReduceParserDemo:
 
         # Draw the stack.
         stackx = 5
-        bold = ('helvetica', 12, 'bold')
+        bold = ('helvetica', -12, 'bold')
         for tok in self._parser.stack():
             if isinstance(tok, TreeToken):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
