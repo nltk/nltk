@@ -397,7 +397,7 @@ class TreeToken(Token):
             # Leaf token.
             else:
                 match = WORD.match(s, pos)
-                leaf = Token(text=match.group(1))
+                leaf = Token(TEXT=match.group(1))
                 if addlocs:
                     leaf['LOC'] = CharSpanLocation(pos, match.end(),
                                                    source)
