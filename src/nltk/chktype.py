@@ -76,14 +76,16 @@ def type_safety_level(level=None):
 
     @param level: The new type safety level.
     @type level: C{int} or C{None}
-    @return: The new type safety level.
+    @return: The old type safety level; or the current type safety
+        level, if C{level} is not specified.
     @rtype: C{int}
     """
     assert chktype(1, level, _IntType, _NoneType)
     global _type_safety_level
+    old_type_safety_level = _type_safety_level
     if level is not None:
         _type_safety_level = level
-    return _type_safety_level
+    return old_type_safety_level
 
 def classeq(instance1, instance2):
     """
