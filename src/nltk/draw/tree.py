@@ -903,7 +903,7 @@ if __name__ == '__main__':
     tree = Tree.parse('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))
-    ''', leafparser = lambda t: Token(TEXT=t))
+    ''', leafparser = lambda t,x: Token(TEXT=t))
                 
     tc = TreeWidget(cf.canvas(), tree, draggable=1, 
                     node_font=('helvetica', -14, 'bold'),
@@ -922,7 +922,7 @@ if __name__ == '__main__':
 
     treetok = Tree.parse('''
     (S (NP this tree) (VP (V is) (AdjP shapeable)))
-    ''', leafparser = lambda t: Token(TEXT=t))
+    ''', leafparser = lambda t,x: Token(TEXT=t))
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
@@ -943,7 +943,7 @@ if __name__ == '__main__':
     tree3 = Tree.parse('''
     (S (NP this tree) (AUX was)
        (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))
-       ''', leafparser = lambda t: Token(TEXT=t))
+       ''', leafparser = lambda t,x: Token(TEXT=t))
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
                               tree_xspace=2, tree_width=2)
     tc3['draggable'] = 1
@@ -978,7 +978,7 @@ built from tree_to_treesegment."""
 
     tree4 = Tree.parse('''
     (S (NP this tree) (VP (V is) (Adj horizontal)))
-    ''', leafparser = lambda t: Token(TEXT=t))
+    ''', leafparser = lambda t,x: Token(TEXT=t))
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),
