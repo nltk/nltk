@@ -16,8 +16,6 @@
 \def\verbatim@font{\normalfont\ttfamily\small}
 
 \title{433-460 Human Language Technology}
-\def\num#1{\author{Assignment #1}}
-\def\other#1{\author{#1}}
-\def\due#1{\date{Due #1}}
+\def\assignment#1#2#3{\author{Assignment #1: #2}\date{Due #3}}
 
 \endinput
