@@ -11,14 +11,14 @@
 #    - document more.  Clean up the documentation that's here.
 
 """
-Interface for producing tree structures that represent pieces of text.
-This task is known as X{parsing} the text, and the resulting tree
-structures are called the text's X{parses}.  Typically, the text is a
-single sentence, and the tree structure represents the syntactic
-structure of the sentence.  However, parsers can also be used in other
-domains.  For example, parsers could be used to derive the
-morphological structure of the morphemes that make up a word, or to
-derive the discourse structure of a list of utterances.
+Interface for producing tree structures that represent the internal
+organziation of a text.  This task is known as X{parsing} the text,
+and the resulting tree structures are called the text's X{parses}.
+Typically, the text is a single sentence, and the tree structure
+represents the syntactic structure of the sentence.  However, parsers
+can also be used in other domains.  For example, parsers could be used
+to derive the morphological structure of the morphemes that make up a
+word, or to derive the discourse structure of a list of utterances.
 
 Sometimes, a single piece of text can be represented by more than one
 tree structure.  Texts represented by more than one tree structure are
@@ -195,7 +195,6 @@ class ParserI2:
 
 class ProbablisticParserI(ParserI2):
     """
-
     A processing interface for associating proabilities with trees
     that represent possible structures for a sequence of tokens.  A
     C{ProbablisticParser} is a C{Parser} whose quality ratings are
