@@ -78,6 +78,7 @@ Possible future improvements:
 from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
+from Tkinter import *
         
 class ShiftReduceParserDemo:
     """
@@ -161,8 +162,10 @@ class ShiftReduceParserDemo:
 
     def _init_bindings(self):
         # Key bindings are a good thing.
-        self._top.bind('<q>', self.destroy)
-        self._top.bind('<Escape>', self.destroy)
+        self._top.bind('<Control-q>', self.destroy)
+        self._top.bind('<Control-x>', self.destroy)
+        self._top.bind('<Alt-q>', self.destroy)
+        self._top.bind('<Alt-x>', self.destroy)
         self._top.bind('<space>', self.step)
         self._top.bind('<s>', self.shift)
         self._top.bind('<Alt-s>', self.shift)
@@ -204,8 +207,17 @@ class ShiftReduceParserDemo:
                command=self.reduce).pack(side='left')
         Button(buttonframe, text='Undo', underline=0,
                command=self.undo).pack(side='left')
-        Button(buttonframe, text='Reset', 
+        Button(buttonframe, text='Reset',
                command=self.reset).pack(side='left')
+
+    def _init_menubar(self, parent):
+        menubar = Menu(parent)
+
+        fliemenu = Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Reset', underline=0,
+                             command=self.reset, accelerator='Del')
+        filemenu.add_command(label='Exit', underline=1,
+                             command=self.destroy, accelerator='Ctrl-x')
 
     def _init_feedback(self, parent):
         self._feedbackframe = feedbackframe = Frame(parent)
