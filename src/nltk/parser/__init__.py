@@ -1194,7 +1194,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         node_prop = self._propnames.get('node', 'node')
         
         # Make sure we *can* expand.
-        if len(self._frontier) == 0: return
+        if len(self._frontier) == 0: return []
         frontier_child = self._treetok.get_child(self._frontier[0])
         if (len(self._frontier) == 0 or
             not isinstance(frontier_child, TreeToken)):
