@@ -124,7 +124,7 @@ Tokens can be connected in cycles:
     >>> tok1['A'] = tok2
     >>> tok2['B'] = tok1
     >>> print tok1, tok2
-    <A=<B=...>> <B=<A=...>>
+    <A=<B=<...>>> <B=<A=<...>>>
     >>> tok1['A']['B'] is tok1
     True
     >>> tok1['A']['B']['A']['B']['A']['B']['A']['B'] is tok1
@@ -317,7 +317,7 @@ Cyclic tokens can be frozen:
     >>> tok1['A'] = tok2
     >>> tok2['B'] = tok1
     >>> print tok1.freeze(), tok2.freeze()
-    <A=<B=...>> <B=<A=...>>
+    <A=<B=<...>>> <B=<A=<...>>>
 
 Exclude and Project
 ===================
@@ -391,9 +391,9 @@ C{exclude} and C{project} both work with cyclic tokens:
     >>> tok2['B'] = tok1
     >>> tok2['C'] = tok1
     >>> print tok1
-    <A=<B=..., C=...>>
+    <A=<B=<...>, C=<...>>>
     >>> print tok1.exclude('B')
-    <A=<C=...>>
+    <A=<C=<...>>>
 """
 
 def test_TokenReprLocError(): """
