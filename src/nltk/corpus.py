@@ -79,6 +79,15 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
     LDC; it is therefore not included as part of the standard NLTK
     corpus set.  However, the C{treebank} object will provide access
     to this corpus, if it is installed.}
+
+  - L{semcor}: A tagged corpora of approximately 200,000 words, where
+    each word type is tagged with its part of speech and sense
+    identifier in WordNet.
+                                                                                
+  - L{senseval}: A set of corpora, each containing a set of contexts
+    in which a specific ambiguous word appears. Each instance is tagged
+    with a sense identifier. The ambiguous words used are line/N,
+    interest/N, hard/A and serve/V.
   
 @group Corpus Readers: twenty_newsgroups, treebank, words, reuters,
      ppatttach, brown, gutenberg
@@ -96,6 +105,9 @@ L{CorpusReaderI}.  The following corpus readers are currently defined:
      text.
 @var gutenberg: A collection fourteen public-domain English etexts
      from Project Gutenberg.
+@var semcor: A corpus of 200,000 words, each tagged with its WordNet sense.
+@var senseval: A collection of texts, each consisting of a set of instances
+     of a given ambiguous word, along tagged with its correct sense.
       
 @todo: Add default basedir for OS-X?
 
@@ -1119,6 +1131,29 @@ treebank = TreebankCorpusReader('treebank', 'treebank/',
                                 description_file='README')
 
 ###################################################
+## Semcor corpus
+                                                                                
+from nltk.sense import SemcorTokenizer
+
+description = """
+WordNet semantic concordance data. This is comprised of extracts from the
+Brown corpus, with each word tagged with its WordNet 1.7 tag.
+"""
+
+semcor = SimpleCorpusReader(
+    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
+    default_tokenizer = SemcorTokenizer(unit='word'))
+                                                                                
+###################################################
+## Senseval corpus
+                                                                                
+from nltk.sense import SensevalTokenizer
+                                                                                
+senseval = SimpleCorpusReader(
+    'senseval', 'senseval/', r'.*\.pos', description_file='README',
+    default_tokenizer = SensevalTokenizer())
+
+###################################################
 ## Reuters corpus
 
 reuters = '''\
@@ -1178,6 +1213,8 @@ def demo():
     _test_corpus(gutenberg)
     _test_corpus(roget)
     _test_corpus(words)
+    _test_corpus(semcor)
+    _test_corpus(senseval)
     _test_treebank()
     print '='*70
     
