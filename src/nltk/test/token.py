@@ -14,9 +14,8 @@ Unit testing for L{nltk.token}.
 from nltk.token import *
 from nltk.util import mark_stdout_newlines
 
-def test_Token():
-    """
-Unit testing for L{nltk.token.Token}.
+def test_Token(): """
+Unit testing for L{Token}.
 
     >>> Token.USE_SAFE_TOKENS=False
 
@@ -162,6 +161,15 @@ methods.
     None
     >>> print tok
     <ACCENT=3, TAG='NN', TEXT='watch'>
+    
+    >>> tok.get('TAG', 'VB')
+    'NN'
+    >>> tok.get('TOG', 'VB')
+    'VB'
+    
+    >>> tok.update({'TOG': 'XYZ'})
+    >>> print tok
+    <ACCENT=3, TAG='NN', TEXT='watch', TOG='XYZ'>
 
 To avoid confusion, tokens raise exceptions when tested for length or
 truth value:
@@ -174,7 +182,7 @@ truth value:
     Traceback (most recent call last):
       [...]
     TypeError: Token objects cannot be used as booleans
-    
+
 Token Representations
 =====================
 Special string representations can be registered for specific sets of
@@ -344,8 +352,7 @@ C{exclude} and C{project} both work with cyclic tokens:
     <A=<C=...>>
 """
 
-def test_FrozenToken():
-    """
+def test_FrozenToken(): """
 Unit testing for L{FrozenToken}.
 
 Frozen tokens can be contructed via freezing a normal token, or
@@ -400,6 +407,285 @@ test_SafeToken.__doc__ = test_Token.__doc__.replace(
     'TypeError: SafeToken objects cannot be used as booleans').replace(
     'TypeError: len() of unsized Token object',
     'TypeError: len() of unsized SafeToken object')
+
+def test_SafeToken_checks(): """
+Additional unit tests for C{SafeToken}.
+
+    >>> Token.USE_SAFE_TOKENS=True
+
+The C{LOC} property must contain a location:
+
+    >>> Token(TEXT='dog', LOC=CharSpanLocation(0,2))
+    <dog>@[0:2c]
+    >>> Token(TEXT='dog', LOC=(0,2))
+    Traceback (most recent call last):
+      [...]
+    TypeError: The 'LOC' property must contain a Location
+    >>> Token(TEXT='dog')['LOC'] = (0,2)
+    Traceback (most recent call last):
+      [...]
+    TypeError: The 'LOC' property must contain a Location
+    >>> Token(TEXT='dog').setdefault('LOC', (0,2))
+    Traceback (most recent call last):
+      [...]
+    TypeError: The 'LOC' property must contain a Location
+    >>> Token(TEXT='dog').update({'LOC': (0,2)})
+    Traceback (most recent call last):
+      [...]
+    TypeError: The 'LOC' property must contain a Location
+
+Exclude and project can't be given bad options:
+
+    >>> Token().project(x=1)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Bad option 'x'
+    >>> Token().exclude(x=1)
+    Traceback (most recent call last):
+      [...]
+    ValueError: Bad option 'x'
+"""
+
+def test_Location(): """
+Unit tests for L{LocationI} and its implementations.
+
+C{LocationI} is an abstract interface for locations.  It can't be
+instantiated directly:
+
+    >>> LocationI()
+    Traceback (most recent call last):
+      [...]
+    AssertionError: Interfaces can't be instantiated
+
+C{SpanLocation} is an abstract base class for locations that are based
+on spans.  It can't be instantiated directly:
+
+    >>> SpanLocation(0,1)
+    Traceback (most recent call last):
+      [...]
+    AssertionError: Abstract classes can't be instantiated
+
+CharSpanLocation
+================
+
+C{CharSpanLocation} is a location class derived from C{SpanLocation}.
+A C{CharSpanLocation} is constructed from a start, an end, and an
+optional source:
+
+    >>> loc1 = CharSpanLocation(0, 5, 'foo.txt')
+    >>> loc2 = CharSpanLocation(0, 5)
+    >>> loc3 = CharSpanLocation(8, 12)
+    >>> print loc1, loc2, loc3
+    [0:5c]@foo.txt [0:5c] [8:12c]
+
+The start, end, and source are accessed via methods:
+
+    >>> print loc1.start(), loc1.end(), loc1.source()
+    0 5 foo.txt
+
+The length is available via a C{length} method, and the C{len}
+operator:
+
+    >>> print loc1.length(), len(loc1)
+    5 5
+    >>> print loc3.length(), len(loc3)
+    4 4
+
+C{CharSpanLocations} are equal if their start, end, and source are
+equal:
+
+    >>> loc1 = CharSpanLocation(0,5,'foo.txt')
+    >>> loc2 = CharSpanLocation(1,5,'foo.txt')
+    >>> loc3 = CharSpanLocation(0,6,'foo.txt')
+    >>> loc4 = CharSpanLocation(0,5)
+    >>> loc5 = CharSpanLocation(0,5,'bar.txt')
+    >>> print loc1==loc1, loc1==loc2, loc1==loc3, loc1==loc4, loc1==loc5
+    True False False False False
+
+    >>> loc1 == CharSpanLocation(0,5,'foo.txt')
+    True
+
+C{CharSpanLocations} are hashable, and so they can be used as
+dictionary keys:
+
+    >>> {loc1: 10}
+    {[0:5c]: 10}
+
+Ordering
+~~~~~~~~
+A total ordering on C{CharSpanLocations} is defined by preceeds,
+succeeds, and overlaps.
+
+Two locations overlap if one's start falls between the other's start
+and end:
+
+    >>> loc1 = CharSpanLocation(8,12)
+    >>> loc2 = CharSpanLocation(10,14)
+    >>> print loc1.overlaps(loc2), loc2.overlaps(loc1)
+    True True
+
+Two locations are also considered to overlap if they are both
+zero-length locations at the same index:
+    
+    >>> loc1 = CharSpanLocation(8,8)
+    >>> loc2 = CharSpanLocation(8,8)
+    >>> print loc1.overlaps(loc2)
+    True
+
+Two locations are I{not} considered to overlap if they share a common
+boundary:
+
+    >>> loc1 = CharSpanLocation(8, 12)
+    >>> loc2 = CharSpanLocation(12, 14)
+    >>> print loc1.overlaps(loc2), loc2.overlaps(loc1)
+    False False
+
+Note that this definition of I{overlaps} is symmetric and reflexive,
+but not transitive:
+
+    >>> loc1 = CharSpanLocation(8, 12)
+    >>> loc2 = CharSpanLocation(11, 15)
+    >>> loc3 = CharSpanLocation(14, 20)
+    >>> print loc1.overlaps(loc2), loc2.overlaps(loc3), loc1.overlaps(loc3)
+    True True False
+
+C{precedes} and C{succeeds} test if a location occurs entirely before
+or after another location.
+
+    >>> loc1 = CharSpanLocation(8,12)
+    >>> loc2 = CharSpanLocation(14,15)
+    >>> print loc1.precedes(loc2), loc2.succeeds(loc1)
+    True True
+    >>> print loc1.succeeds(loc2), loc2.precedes(loc1)
+    False False
+    >>> loc1.succeeds(loc1)
+    False
+
+loc1 precedes loc2 if they share a common boundary:
+
+    >>> loc1 = CharSpanLocation(8, 12)
+    >>> loc2 = CharSpanLocation(12, 14)
+    >>> loc1.precedes(loc2)
+    True
+
+loc1 can preceed loc2 if I{either} is zero-length:
+
+    >>> loc1 = CharSpanLocation(12,12)
+    >>> loc2 = CharSpanLocation(12,14)
+    >>> loc3 = CharSpanLocation(14,14)
+    >>> print loc1.precedes(loc2), loc2.precedes(loc3)
+    True True
+
+But not if both are zero-length:
+    
+    >>> loc1 = CharSpanLocation(12,12)
+    >>> print loc1.precedes(loc1)
+    False
+
+Note that I{precedes} and I{succeds} are anti-symmetric,
+anti-reflexive, and transitive.
+
+For any two locations, exactly one of the following will always be
+true:
+
+  - C{loc1.precedes(loc2)}
+  - C{loc1.succeeds(loc2)}
+  - C{loc1.overlaps(loc2)}
+
+Contiguous Locations & Union
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Two locations are contiguous if they share a common boundary:
+
+    >>> loc1 = CharSpanLocation(8,12)
+    >>> loc2 = CharSpanLocation(12,14)
+    >>> print loc1.contiguous(loc2), loc2.contiguous(loc1)
+    True True
+    
+    >>> loc3 = CharSpanLocation(13, 14)
+    >>> loc1.contiguous(loc3)
+    False
+
+Either location can be zero-length:
+
+    >>> loc1 = CharSpanLocation(8,8)
+    >>> loc2 = CharSpanLocation(8,12)
+    >>> loc3 = CharSpanLocation(12,12)
+    >>> print loc1.contiguous(loc2), loc2.contiguous(loc3)
+    True True
+
+Or both can be:
+
+    >>> loc1 = CharSpanLocation(8,8)
+    >>> print loc1.contiguous(loc1)
+    True
+
+If two locations are contiguous, then they can be joined via C{union},
+which returns a new location spanning both of them:
+
+    >>> loc1 = CharSpanLocation(8,12)
+    >>> loc2 = CharSpanLocation(12,14)
+    >>> print loc1.union(loc2)
+    [8:14c]
+
+    # Union can also be written as addition
+    >>> print loc1 + loc2
+    [8:14c]
+
+Infinity
+~~~~~~~~
+Under special circumstances, it can be useful to use -INF as a
+location's tart, or +INF as its end.  This is done with
+C{SpanLocation.MIN} and C{SpanLocation.MAX}:
+
+    >>> loc1 = CharSpanLocation(SpanLocation.MIN, 8)
+    >>> loc2 = CharSpanLocation(8, 12)
+    >>> loc3 = CharSpanLocation(12, SpanLocation.MAX)
+    >>> print loc1, loc2, loc3
+    [-INF:8c] [8:12c] [12:+INFc]
+
+    >>> print loc1.precedes(loc2), loc2.precedes(loc3)
+    True True
+    >>> print loc1+loc2+loc3
+    [-INF:+INFc]
+
+IndexLocations
+==============
+C{IndexLocation} is an abstract base class for locations that are based
+on indexes.  It can't be instantiated directly:
+
+    >>> IndexLocation(0)
+    Traceback (most recent call last):
+      [...]
+    AssertionError: Abstract classes can't be instantiated
+
+It is implemented by C{WordIndexLocation}, C{SentIndexLocation}, and
+C{ParaIndexLocation}:
+
+    >>> loc1 = WordIndexLocation(1)
+    >>> loc2 = SentIndexLocation(2)
+    >>> loc3 = ParaIndexLocation(3)
+    >>> print loc1, loc2, loc3
+    [1w] [2s] [3p]
+
+Index locations can have sources:
+
+    >>> loc1 = WordIndexLocation(1, 'foo.txt')
+    >>> loc2 = SentIndexLocation(2, 'bar.txt')
+    >>> loc3 = ParaIndexLocation(3, 'baz.txt')
+    >>> print loc1, loc2, loc3
+    [1w]@foo.txt [2s]@bar.txt [3p]@baz.txt
+
+Sometimes it can be useful to use index locations as sources for other
+index locations, to provide hierarchical location specifications:
+
+    >>> loc1 = ParaIndexLocation(8, 'foo.txt')
+    >>> loc2 = SentIndexLocation(3, loc1)
+    >>> loc3 = WordIndexLocation(5, loc2)
+    >>> print loc3
+    [5w]@[3s]@[8p]@foo.txt
+
+
+"""
 
 def test_demo():
     r"""
