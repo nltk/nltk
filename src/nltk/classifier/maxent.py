@@ -16,6 +16,7 @@
 #   Factor out common training code for GIS/IIS
 
 from nltk.classifier import *
+from nltk.classifier.feature import *
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, WSTokenizer
 
@@ -960,7 +961,7 @@ def test(classifier, labeled_tokens):
     print 'Accuracy:', float(correct)/total
     
 if __name__ == '__main__':
-    #simple_test()
+     simple_test()
     #toks = get_toks(1)[:100]
-    demo(toks, 5)
+    #demo(toks, 5)
     #foo(toks, 5, 10)

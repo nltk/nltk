@@ -62,12 +62,13 @@ C{NBClassifier}.
 """
 
 from nltk.classifier import *
+from nltk.classifier.feature import *
 from nltk.probability import *
 from nltk.token import Token, WSTokenizer
 from nltk.chktype import chktype as _chktype
 
 import time
-from Numeric import zeros, product, nonzero, take
+from Numeric import zeros, product, nonzero, take, argmax
 
 ##//////////////////////////////////////////////////////
 ##  AssignmentEvent
