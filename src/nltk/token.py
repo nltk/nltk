@@ -374,7 +374,7 @@ class Location:
             raise ValueError('Locations have incompatible sources')
         (s1,e1) = (self._start, self._end)
         (s2,e2) = (other._start, other._end)
-        return (s1 <= s2 < e1) or (s2 <= s1 < e2)
+        return (s1 <= s2 <= e1) or (s2 <= s1 < e2) or (s1==s2==e1==e2)
 
     def __cmp__(self, other):
         """
