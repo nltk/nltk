@@ -547,16 +547,16 @@ def fsawindow(fsa):
     graph.bind_click(manage)
     cf.add_widget(graph, 20, 20)
 
-    return nodes, graph
+    return nodes, graph, cf
 
 # Test
 import nltk.fsa
 def demo():
     import time, random
     t = time.time()
-    regexps = [#'(ab(c*)c)*dea(b+)e',
-               #'((ab(c*))?(edc))*dea(b*)e',
-               #'(((ab(c*))?(edc))+dea(b+)eabba)*',
+    regexps = ['(ab(c*)c)*dea(b+)e',
+               '((ab(c*))?(edc))*dea(b*)e',
+               '(((ab(c*))?(edc))+dea(b+)eabba)*',
                '(ab(c*)c)*']
 
     # Pick a random regexp, and draw it.
@@ -569,7 +569,7 @@ def demo():
     # Show the DFA
     dfa = fsa.dfa()
     dfa.prune()
-    nodemap, graph = fsawindow(dfa)
+    nodemap, graph, cf = fsawindow(dfa)
 
     if 0:
         # Now, step through a text.
@@ -593,6 +593,8 @@ def demo():
         reset(0)
         graph.bind_click(step)
         graph.bind_click(reset, 3)
+
+    cf.mainloop()
 
 if __name__ == '__main__':
     demo()

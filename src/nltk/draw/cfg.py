@@ -483,7 +483,6 @@ class CFGEditor:
             ShowText(self._parent, 'Help: Chart Parser Demo',
                      (_CFGEditor_HELP).strip(), width=75)
 
-            
 def demo():
     from nltk.cfg import Nonterminal, CFGProduction, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
@@ -516,7 +515,10 @@ def demo():
     grammar = CFG(S, productions)
 
     def cb(cfg): print cfg
-    CFGEditor(None, grammar, cb)
+    top = Tk()
+    editor = CFGEditor(top, grammar, cb)
+    Button(top, text='Quit', command=top.destroy).pack()
+    top.mainloop()
 
 if 0:
     t = Tk()
