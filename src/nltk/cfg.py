@@ -254,10 +254,7 @@ class CFGProduction:
             C{CFGProduction}.
         @rtype: C{string}
         """
-        if isinstance(self._lhs, Nonterminal):
-            str = '%s ->' % (self._lhs.symbol(),)
-        else:
-            str = '%r ->' % (self._lhs,)
+        str = '%s ->' % (self._lhs.symbol(),)
         for elt in self._rhs:
             if isinstance(elt, Nonterminal):
                 str += ' %s' % (elt.symbol(),)
@@ -535,5 +532,4 @@ def demo():
     print `pcfg.productions()`.replace(',', ',\n'+' '*26)
     print
 
-if __name__ == '__main__':
-    demo()
+if __name__ == '__main__': demo()
