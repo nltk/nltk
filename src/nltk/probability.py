@@ -397,14 +397,14 @@ class DictionaryProbDist(ProbDistI):
         # Normalize the distribution, if requested.
         if normalize:
             if log:
-                norm_factor = sum_logs(self._prob_dict.values())
+                value_sum = sum_logs(self._prob_dict.values())
                 if value_sum <= -1e1000:
                     logp = math.log(1.0/len(prob_dict.keys()))
                     for x in prob_dict.keys():
                         self._prob_dict[x] = logp
                 else:
                     for (x, p) in self._prob_dict.items():
-                        self._prob_dict[x] -= norm_factor
+                        self._prob_dict[x] -= value_sum
             else:
                 value_sum = sum(self._prob_dict.values())
                 if value_sum == 0:
