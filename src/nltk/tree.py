@@ -83,7 +83,7 @@ class Tree:
 
     The node value associates information with the entire C{Tree}.
     For example, node values might be used to label syntactic
-    constituants with phrase tags, such as \"NP\" and\"VP\".
+    constituents with phrase tags, such as \"NP\" and\"VP\".
 
     The children encode the hierarchical contents of the C{Tree}.
     Each child is either a X{leaf} or a X{subtree}.  Leaves are the
@@ -157,7 +157,7 @@ class Tree:
         """
         Return this C{Tree}'s node value.  The node value associates
         information with the entire C{Tree}.  For example, node values
-        might be used to label syntactic constituants with phrase
+        might be used to label syntactic constituents with phrase
         tags, such as \"NP\" and\"VP\".
     
         @return: this C{Tree}'s node value.
@@ -342,7 +342,7 @@ class TreeToken(Token):
 
     The node value associates information with the entire
     C{TreeToken}.  For example, node values might be used to label
-    syntactic constituants with phrase tags, such as \"NP\" and\"VP\".
+    syntactic constituents with phrase tags, such as \"NP\" and\"VP\".
 
     The children encode the hierarchical contents of the C{TreeToken}.
     Each child is either a X{leaf} or a X{subtree}.  Leaves are the
@@ -447,7 +447,7 @@ class TreeToken(Token):
         Return this C{TreeToken}'s node value.  The node value
         associates information with the entire C{TreeToken}.  For
         example, node values might be used to label syntactic
-        constituants with phrase tags, such as \"NP\" and\"VP\".
+        constituents with phrase tags, such as \"NP\" and\"VP\".
     
         @return: this C{TreeToken}'s node value.
         @rtype: (nodetype)

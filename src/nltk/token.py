@@ -42,7 +42,7 @@ be used as text types.  Currently, the following classes are defined:
 
 In addition, the token module defines the C{TokenizerI} interface, as
 well as several implementations of that interface.  A X{tokenizer} is
-a class which converts a string of text into its constituant tokens.
+a class which converts a string of text into its constituent tokens.
 Different tokenizers may split the text up differently.
 """
 
