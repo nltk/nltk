@@ -77,7 +77,7 @@ from nltk.classifier.feature import *
 from nltk.classifier.featureselection import *
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, Location
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 from nltk.chktype import chktype as _chktype
 import time, types
 
@@ -1174,7 +1174,7 @@ def demonstrate_trainer(trainer_class, n_features=10000, n_words=7, debug=5):
     if debug: print _timestamp(t), '  done training'
 
     # A few test words...
-    toks = WSTokenizer().tokenize("jury the reports aweerdr "+
+    toks = WhitespaceTokenizer().tokenize("jury the reports aweerdr "+
                                   "atlanta's atlanta_s moowerp's")
 
     toks = toks * (1+((n_words-1)/len(toks)))

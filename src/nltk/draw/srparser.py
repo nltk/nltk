@@ -79,7 +79,7 @@ from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
 from nltk.draw.cfg import CFGEditor
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 from Tkinter import *
 import tkFont
         
@@ -574,7 +574,7 @@ class ShiftReduceParserDemo:
 
     def set_sentence(self, sentence):
         self._token = Token(TEXT=sentence)
-        WSTokenizer().tokenize(self._token) #[XX] use tagged?
+        WhitespaceTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
     #########################################
@@ -800,7 +800,7 @@ def demo():
 
     # tokenize the sentence
     sent = Token(TEXT='my dog saw a man in the park with a statue')
-    WSTokenizer().tokenize(sent)
+    WhitespaceTokenizer().tokenize(sent)
 
     ShiftReduceParserDemo(grammar, sent).mainloop()
 

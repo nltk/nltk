@@ -35,7 +35,7 @@ the L{TaggerI} interface.
 
 import types, re
 from nltk.chktype import chktype
-from nltk.tokenizer import Token, AbstractTokenizer, WSTokenizer, TokenizerI
+from nltk.tokenizer import Token, AbstractTokenizer, WhitespaceTokenizer, TokenizerI
 from nltk.probability import FreqDist, ConditionalFreqDist
 
 ##//////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ class TaggedTokenizer(AbstractTokenizer):
     @outprop: C{LOC}: The subtokens' locations.
     """
     def __init__(self, **property_names):
-        self._wstokenizer = WSTokenizer(**property_names)
+        self._wstokenizer = WhitespaceTokenizer(**property_names)
         AbstractTokenizer.__init__(self, **property_names)
     
     def tokenize(self, token, addlocs=False, addcontexts=False):
@@ -66,7 +66,7 @@ class TaggedTokenizer(AbstractTokenizer):
         TEXT = self._property_names.get('TEXT', 'TEXT')
         TAG = self._property_names.get('TAG', 'TAG')
 
-        # First, use WSTokenizer to divide on whitespace.
+        # First, use WhitespaceTokenizer to divide on whitespace.
         self._wstokenizer.tokenize(token, addlocs, addcontexts)
 
         # Then, split each subtoken's text into a text and a tag.

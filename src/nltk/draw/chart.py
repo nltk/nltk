@@ -44,7 +44,7 @@ import os.path
 
 from nltk.parser.chart import *
 from nltk.cfg import *
-from nltk.tokenizer import WSTokenizer
+from nltk.tokenizer import WhitespaceTokenizer
 from nltk.token import Token
 from nltk.tree import TreeToken
 from nltk.draw import ShowText, EntryDialog, in_idle
@@ -2114,7 +2114,7 @@ class ChartDemo:
 
     def set_sentence(self, sentence):
         self._token = Token(TEXT=sentence)
-        WSTokenizer().tokenize(self._token) #[XX] use tagged?
+        WhitespaceTokenizer().tokenize(self._token) #[XX] use tagged?
         self.reset()
 
     #////////////////////////////////////////////////////////////
@@ -2279,7 +2279,7 @@ def demo():
     
     sent = Token(TEXT='John ate the cake on the table with a fork')
     sent = Token(TEXT='John ate the cake on the table')
-    WSTokenizer().tokenize(sent)
+    WhitespaceTokenizer().tokenize(sent)
 
     print 'grammar= ('
     for rule in grammar.productions():

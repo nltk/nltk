@@ -23,15 +23,15 @@ from nltk.tokenizer import *
 
 import unittest
 
-class WSTokenizerTestCase(unittest.TestCase):
+class WhitespaceTokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for L{nltk.tokenizer.WSTokenizer}
+    Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}
     """
     def setUp(self):
-        self.tokenizer = WSTokenizer()
+        self.tokenizer = WhitespaceTokenizer()
 
     def testTokenize(self):
-        "nltk.token.WSTokenizer: tokenize method tests"
+        "nltk.token.WhitespaceTokenizer: tokenize method tests"
         ts1 = self.tokenizer.tokenize("this is a test")
         ts2 = [Token('this', Location(0, unit='w')),
                Token('is', Location(1, unit='w')),
@@ -53,15 +53,15 @@ class WSTokenizerTestCase(unittest.TestCase):
                Token('test', Location(3, unit='w', source='foo.txt'))]
         self.failUnlessEqual(ts1, ts2)
 
-class WSTokenizerTestCase(unittest.TestCase):
+class WhitespaceTokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for L{nltk.tokenizer.WSTokenizer}
+    Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}
     """
     def setUp(self):
-        self.tokenizer = WSTokenizer()
+        self.tokenizer = WhitespaceTokenizer()
 
     def testTokenize(self):
-        "nltk.token.WSTokenizer: tokenize method tests"
+        "nltk.token.WhitespaceTokenizer: tokenize method tests"
         ts1 = self.tokenizer.tokenize("this is a test")
         ts2 = [Token('this', Location(0, unit='w')),
                Token('is', Location(1, unit='w')),
@@ -84,7 +84,7 @@ class WSTokenizerTestCase(unittest.TestCase):
         self.failUnlessEqual(ts1, ts2)
 
     def testXTokenize(self):
-        "nltk.token.WSTokenizer: xtokenize method tests"
+        "nltk.token.WhitespaceTokenizer: xtokenize method tests"
         ts1 = self.tokenizer.xtokenize("this is a test")
         ts2 = [Token('this', Location(0, unit='w')),
                Token('is', Location(1, unit='w')),
@@ -108,7 +108,7 @@ class WSTokenizerTestCase(unittest.TestCase):
 
 class RETokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for L{nltk.tokenizer.WSTokenizer}
+    Unit test cases for L{nltk.tokenizer.WhitespaceTokenizer}
     """
     def setUp(self):
         self.tokenizers = [RETokenizer('\s+', negative=1),
@@ -166,7 +166,7 @@ def testsuite():
     """
     Return a PyUnit testsuite for the token module.
     """
-    t1 = unittest.makeSuite(WSTokenizerTestCase, 'test')
+    t1 = unittest.makeSuite(WhitespaceTokenizerTestCase, 'test')
     t2 = unittest.makeSuite(RETokenizerTestCase, 'test')
     return unittest.TestSuite( (t1, t2) )
 
