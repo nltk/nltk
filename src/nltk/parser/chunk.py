@@ -251,10 +251,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     @outprop: C{TAG}: The subtokens' tags.
     @outprop: C{LOC}: The subtokens' locations.
     """
-    _initial_tokenizer = RegexpTokenizer('(%s|%s|%s)' %
-                                         (r'\[', r'\]', r'[^\[\]\s]'))
-    
-    def __init__(self, chunk_node='CHUNK', addlocs=True, **property_names):
+    def __init__(self, chunk_node='CHUNK', **property_names):
         """
         @include: AbstractTokenizer.__init__
         @type chunk_node: C{string}
@@ -263,17 +260,17 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
             describing the type of information contained by the chunk,
             such as C{"NP"} for base noun phrases.
         """
-        AbstractTokenizer.__init__(self, addlocs, **property_names)
+        AbstractTokenizer.__init__(self, **property_names)
         self._chunk_node = chunk_node
 
         # This tokenizer divides the text into chunks and words:
         CHUNK = r'\[[^\[\]]+\]'
         WORD = r'[^\[\]\s]+'
-        self._tok1 = RegexpTokenizer('%s|%s' % (CHUNK, WORD),
-                                     addlocs=addlocs, **property_names)
+        self._tokenizer1 = RegexpTokenizer('%s|%s' % (CHUNK, WORD),
+                                           **property_names)
 
         # This tokenizer divides a chunk into words:
-        self._tok2 = RegexpTokenizer(WORD, addlocs=addlocs, **property_names)
+        self._tokenizer2 = RegexpTokenizer(WORD, **property_names)
 
     def _split_text_and_tag(self, subtok):
         TEXT = self._property_names.get('TEXT', 'TEXT')
@@ -285,7 +282,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
         else:
             subtok[TAG] = None
         
-    def tokenize(self, token):
+    def tokenize(self, token, addlocs=False):
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         NODE = self._property_names.get('NODE', 'NODE')
@@ -299,14 +296,14 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
             print "ERROR: unbalanced or nested brackets"
 
         # Divide the text into chunks and unchunked words:
-        self._tok1.tokenize(token)
+        self._tokenizer1.tokenize(token, addlocs=addlocs)
 
         # Process each one:
         subtoks = token[SUBTOKENS]
         for i, subtok in enumerate(subtoks):
             if subtok[TEXT][0] == '[':
                 # It's a chunk.  Find the words it contains.
-                self._tok2.tokenize(subtok)
+                self._tokenizer2.tokenize(subtok, addlocs=addlocs)
                 # Divide each word into text & tag:
                 for subsubtok in subtok[SUBTOKENS]:
                     self._split_text_and_tag(subsubtok)
@@ -1679,8 +1676,8 @@ def demo_eval(chunkparser, text):
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
-    token = Token(TEXT=text, LOC=CharSpanLocation(0, len(text), 'demo'))
-    LineTokenizer().tokenize(token)
+    token = Token(TEXT=text)
+    LineTokenizer().tokenize(token, addlocs=True)
     sentences = token['SUBTOKENS']
     ctt = ChunkedTaggedTokenizer('NP')
     for sentence in sentences:
