@@ -59,7 +59,7 @@ class TokenizerI:
         content vs audio content).
 
     @group Tokenizing: tokenize, xtokenize, raw_tokenize, raw_xtokenize
-    @group Accessors: unit, propnames
+    @group Accessors: unit
     @sort: tokenize, xtokenize, raw_tokenize, raw_xtokenize
     """
     # The input and output properties that are used by most
@@ -177,7 +177,7 @@ class AbstractTokenizer(TokenizerI):
         reconstruct the locations of tokens, given only the input
         string and the subtokens' string content.
     
-    @ivar _propnames: A dictionary from property specifications to
+    @ivar _props: A dictionary from property specifications to
         property names, indicating which property names to use.
     """
     __doc__ += TokenizerI._STANDARD_PROPERTIES
