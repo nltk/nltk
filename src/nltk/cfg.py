@@ -326,7 +326,7 @@ class PCFGProduction(CFGProduction, ProbabilisticMixIn):
         return CFGProduction.__str__(self) + ' (p=%s)' % self._p
 
     def __eq__(self, other):
-        return (isinstance(other, PCFGProduction) and
+        return (_classeq(self, other) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self._p == other._p)
@@ -368,12 +368,15 @@ class PCFG(CFG):
             do not have probabilities that sum to a value within
             PCFG.EPSILON of 1.
         """
+        assert _chktype(1, start, Nonterminal)
+        assert _chktype(2, productions, (PCFGProduction,), [PCFGProduction])
         CFG.__init__(self, start, productions)
 
         # Make sure that the probabilities sum to one.
         probs = {}
         for production in productions:
-            probs[production.lhs()] = probs.get(production.lhs(), 0)+production.p()
+            probs[production.lhs()] = (probs.get(production.lhs(), 0) +
+                                       production.p())
         for (lhs, p) in probs.items():
             if not ((1-PCFG.EPSILON) < p < (1+PCFG.EPSILON)):
                 raise ValueError("CFGProductions for %r do not sum to 1" % lhs)
