@@ -31,6 +31,9 @@ However, the parser module does I{not} distinguish these two types of
 ambiguity.
 """
 
+from nltk.tree import TreeToken
+from nltk.cfg import Nonterminal, CFG, CFGProduction
+
 ##//////////////////////////////////////////////////////
 ##  Parser Interface
 ##//////////////////////////////////////////////////////
@@ -112,7 +115,7 @@ class ShiftReduceParser(ParserI):
     Shift-reduce parser.
 
     Maintain two stacks: one for tokens, one for types/Nonterminals.
-    Match the Nonterminals/types stack against the RHS of rules when
+    Match the Nonterminals/types stack against the RHS of productions when
     trying to reduce.  Use the token stack to record the structures
     we've built so far.
     """
@@ -133,24 +136,24 @@ class ShiftReduceParser(ParserI):
         if self._trace: self._trace_shift(stack, remaining_text)
 
     def _reduce(self, stack, tokstack, remaining_text):
-        # scan through the rule set
-        for rule in self._grammar.rules():
-            rhslen = len(rule.rhs())
+        # scan through the production set
+        for production in self._grammar.productions():
+            rhslen = len(production.rhs())
                 
-            # check if the RHS of a rule matches the top of the stack
-            if tuple(stack[-rhslen:]) == rule.rhs():
+            # check if the RHS of a production matches the top of the stack
+            if tuple(stack[-rhslen:]) == production.rhs():
 
-                # replace the top of the stack with the LHS of the rule
-                stack[-rhslen:] = [rule.lhs()]
+                # replace the top of the stack with the LHS of the production
+                stack[-rhslen:] = [production.lhs()]
 
                 # combine the tree to reflect the reduction
-                treetok = TreeToken(rule.lhs().symbol(), *tokstack[-rhslen:])
+                treetok = TreeToken(production.lhs().symbol(), *tokstack[-rhslen:])
                 tokstack[-rhslen:] = [treetok]
 
                 # We reduced something
                 if self._trace:
-                    self._trace_reduce(stack, rule, remaining_text)
-                return rule
+                    self._trace_reduce(stack, production, remaining_text)
+                return production
 
         # We didn't reduce anything
         return 0
@@ -191,10 +194,10 @@ class ShiftReduceParser(ParserI):
         if self._trace == 2: self._trace_stack(stack, remaining_text, 'S')
         elif self._trace > 0: self._trace_stack(stack, remaining_text)
 
-    def _trace_reduce(self, stack, rule, remaining_text):
+    def _trace_reduce(self, stack, production, remaining_text):
         if self._trace > 2:
-            print 'Reduce %r <- %s' % (rule.lhs(),
-                                       ' '.join([`s` for s in rule.rhs()]))
+            print 'Reduce %r <- %s' % (production.lhs(),
+                                       ' '.join([`s` for s in production.rhs()]))
         if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
         elif self._trace > 1: self._trace_stack(stack, remaining_text)
 
@@ -220,18 +223,18 @@ class ShiftReduceParser(ParserI):
 
     def check_grammar(self):
         """
-        Check that all the rules in the grammar are useful.
+        Check that all the productions in the grammar are useful.
         """
-        rules = self._grammar.rules()
+        productions = self._grammar.productions()
 
-        # Any rule whose RHS is an extension of another rule's RHS
+        # Any production whose RHS is an extension of another production's RHS
         # will never be used. 
-        for i in range(len(rules)):
-            for j in range(i+1, len(rules)):
-                rhs1 = rules[i].rhs()
-                rhs2 = rules[j].rhs()
+        for i in range(len(productions)):
+            for j in range(i+1, len(productions)):
+                rhs1 = productions[i].rhs()
+                rhs2 = productions[j].rhs()
                 if rhs1[:len(rhs2)] == rhs2:
-                    print 'Warning: %r will never be used' % rules[i]
+                    print 'Warning: %r will never be used' % productions[i]
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
@@ -242,8 +245,8 @@ class RecursiveDescentParser(ParserI):
     A X{CFG expression} is a sequence of terminals and
     C{Nonterminal}s.
 
-    To X{expand} an expression with a rule is to replace a nonterminal
-    with a CFG expression, using a rule. (replace lhs with rhs)
+    To X{expand} an expression with a production is to replace a nonterminal
+    with a CFG expression, using a production. (replace lhs with rhs)
 
     An X{expansion} *could* be just a CFG expression that's been
     expanded.  But then what do I call the lists of tokens &
@@ -256,18 +259,30 @@ class RecursiveDescentParser(ParserI):
     its node type matches the nonterminal's symbol.
 
     A partial parse X{covers} a text if the sequence of tokens and
-    treetoken leaves is equal to the text.
-    
-    
+    treetoken leaves is equal to the text.        
     """
-    def __init__(self, grammar):
+    def __init__(self, grammar, trace=0):
         self._grammar = grammar
+        self._trace = trace
 
     def parse(self, text):
         # Inherit docs from ProbabilisticParserI; and delegate to parse_n
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
+
+    def trace(self, trace=2):
+        """
+        Set the level of tracing output that should be generated when
+        parsing a text.
+
+        @type trace: C{int}
+        @param trace: The trace level.  A trace level of C{0} will
+            generate no tracing output; and higher trace levels will
+            produce more verbose tracing output.
+        @rtype: C{None}
+        """
+        self._trace = trace
 
     def parse_n(self, text, n=None):
         # Inherit docs from ProbablisticParserI
@@ -306,10 +321,10 @@ class RecursiveDescentParser(ParserI):
         # If the expression and the text are both empty, then return a
         # single empty partial parse.
         if len(text) == 0 and len(expr) == 0:
-            self._trace_stack(expr, text, original_text, 1)
+            if self._trace: self._trace_stack(expr, text, original_text, 1)
             return [[]]
         else:
-            self._trace_stack(expr, text, original_text, 0)
+            if self._trace: self._trace_stack(expr, text, original_text, 0)
 
         # If the expression is empty, then we have text that we didn't
         # account for; return no partial parses.
@@ -317,12 +332,12 @@ class RecursiveDescentParser(ParserI):
 
         # Process the first element of the expression.
         if isinstance(expr[0], Nonterminal):
-            # If it's a nonterminal, try expanding it with grammar rules.
+            # If it's a nonterminal, try expanding it with grammar productions.
             # (This may return no partial parses)
             pparses = []
-            for rule in self._grammar.rules():
-                if rule.lhs() == expr[0]:
-                    pparses += self._expand_rule(rule, expr, text,
+            for production in self._grammar.productions():
+                if production.lhs() == expr[0]:
+                    pparses += self._expand_production(production, expr, text,
                                                  original_text)
             return pparses
         elif len(text) > 0 and expr[0] == text[0].type():
@@ -333,33 +348,33 @@ class RecursiveDescentParser(ParserI):
             # If it's a non-matching terminal, fail.
             return []
 
-    def _expand_rule(self, rule, expr, text, original_text):
+    def _expand_production(self, production, expr, text, original_text):
         """
         @return: all partial parses for the CFG expression C{expr}
             that cover C{text}, where the first element of C{expr} is
-            expanded using C{rule}.
+            expanded using C{production}.
         """
-        # Expand expr[0] with rule.
-        expansion = rule.rhs()+expr[1:]
+        # Expand expr[0] with production.
+        expansion = production.rhs()+expr[1:]
 
         # Find partial parses for the expanded CFG expression.
         expansion_pparses = self._expand_to_text(expansion, text,
                                                  original_text)
 
         # For each partial parse, collect the elements generated by
-        # the rule into a single TreeToken.
-        return [self._collect(rule, e) for e in expansion_pparses]
+        # the production into a single TreeToken.
+        return [self._collect(production, e) for e in expansion_pparses]
 
-    def _collect(self, rule, pparse):
+    def _collect(self, production, pparse):
         """
-        Collect the first C{rule.rhs} elements of C{pparse} into a
-        treetoken, with node C{rule.lhs}; Return the resulting partial
+        Collect the first C{production.rhs} elements of C{pparse} into a
+        treetoken, with node C{production.lhs}; Return the resulting partial
         parse.
         """
         # Collect the children into a tree.
-        rhs_len = len(rule.rhs())
+        rhs_len = len(production.rhs())
         children = pparse[:rhs_len]
-        treetok = TreeToken(rule.lhs(), *children)
+        treetok = TreeToken(production.lhs(), *children)
 
         # Replace the children with the tree, and return it.
         return [treetok] + pparse[rhs_len:]
@@ -372,3 +387,47 @@ class RecursiveDescentParser(ParserI):
         for elt in expr: print `elt`,
         if success: print ']     (good parse)'
         else: print ']'
+
+##//////////////////////////////////////////////////////
+##  Demonstration Code
+##//////////////////////////////////////////////////////
+
+def demo():
+    nonterminals = 'S VP NP PP P N Name V Det'
+    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+                                           for s in nonterminals.split()]
+    
+    productions = (
+        # Syntactic Rules
+        CFGProduction(S, NP, VP),
+        CFGProduction(NP, Det, N),
+        CFGProduction(VP, V, NP, PP, PP),
+        CFGProduction(PP, P, NP),
+
+        # Lexical Rules
+        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
+        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
+        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
+        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
+        CFGProduction(N, 'telescope')
+        )
+
+    grammar = CFG(S, productions)
+
+    sent = 'I saw a man in the park with a telescope'
+    print "Sentence:\n", sent
+
+    # tokenize the sentence
+    from nltk.token import WSTokenizer
+    tok_sent = WSTokenizer().tokenize(sent)
+
+    srparser = ShiftReduceParser(grammar)
+    rdparser = RecursiveDescentParser(grammar)
+
+    srparser.trace()
+    rdparser.trace()
+
+    for p in srparser.parse_n(tok_sent): print p
+    for p in rdparser.parse_n(tok_sent): print p
+
+if __name__ == '__main__': demo()
