@@ -25,13 +25,13 @@ The chart parsing demo allows you to interactively ...
 
 """
 
-class RuleView:
+class ProductionView:
     """
-    View a list of rules.  This can be used for the lexicon or for the
+    View a list of productions.  This can be used for the lexicon or for the
     grammar.
     """
-    def __init__(self, rules, title='Rule List'):
-        self._rules = rules
+    def __init__(self, productions, title='Production List'):
+        self._productions = productions
 
         self._top = Tkinter.Tk()
         self._top.title(title)
@@ -51,9 +51,9 @@ class RuleView:
         listscroll.pack(side='right', fill='y')
         listbox.pack(side='left', fill='both', expand=1)
 
-        # Add the rules.  We'll assume the rule list is immutable..
-        for rule in self._rules:
-            listbox.insert('end', rule)
+        # Add the productions.  We'll assume the production list is immutable..
+        for production in self._productions:
+            listbox.insert('end', production)
 
         # Add some keyboard bindings.
         #listbox.bind("<Double-Button-1>", self._ok)
@@ -303,8 +303,8 @@ class ChartView:
         """
         c = self._chart_canvas
 
-        for str in (' '.join([repr(t) for t in edge.drule().rhs()]),
-                    edge.drule().lhs()):
+        for str in (' '.join([repr(t) for t in edge.prod().rhs()]),
+                    edge.prod().lhs()):
             tag = c.create_text(0,0, text=str,
                                 font=('helvetica', self._fontsize, 'bold'),
                                 anchor='nw', justify='left')
@@ -378,8 +378,8 @@ class ChartView:
                                 
 
         # Draw a label for the edge.
-        rhs = [str(t) for t in edge.drule().rhs()]
-        pos = edge.drule().pos()
+        rhs = [str(t) for t in edge.prod().rhs()]
+        pos = edge.dotpos()
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
@@ -391,7 +391,7 @@ class ChartView:
         rhstag2 = c.create_text(dotx+6, y, text=rhs2,
                                 font=('helvetica', self._fontsize),
                                 anchor='nw')
-        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.drule().lhs()),
+        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.prod().lhs()),
                                 anchor='s',
                                 font=('helvetica', self._fontsize, 'bold'))
 
@@ -497,7 +497,7 @@ class ChartView:
         to be, How big the tree should be, etc.
         """
         # Figure out the text height and the unit size.
-        unitsize = 1
+        unitsize = 70 # min unitsize
         text_height = 0
         c = self._chart_canvas
 
@@ -624,14 +624,13 @@ class ChartView:
     def _add_rhs(self, edge):
         """
         Edit the given tree to include nodes for the right hand side
-        of its rules.  For each unexpanded node (i.e., elt to the
+        of its productions.  For each unexpanded node (i.e., elt to the
         right of the dot), add a new child whose token type is the
         empty string.
         """
         tree = edge.tree()
-        drule = edge.drule()
-        rhs = drule.rhs()
-        pos = drule.pos()
+        rhs = edge.prod().rhs()
+        pos = edge.dotpos()
 
         if tree.loc() is None:
             start_index = edge.loc().start()
@@ -729,17 +728,17 @@ class ChartView:
 
         # Add any new edges
         edges = self._chart.edges()
-        edges.sort(edgecmp)
+        edges.sort()
         for edge in edges:
             self._add_edge(edge)
 
         self._draw_loclines()
 
 class ChartDemo:
-    RULENAME = {'FR': 'Fundamental Rule',
-                'TD_init': 'Top-down Initialization',
-                'TD': 'Top-down Rule',
-                'BU': 'Bottom-up Rule',
+    RULENAME = {'FundamentalRule': 'Fundamental Rule',
+                'TopDownInitRule': 'Top-down Initialization',
+                'TopDownRule': 'Top-down Rule',
+                'BottomUpRule': 'Bottom-up Rule',
                 }
     
     def __init__(self, grammar, text, title='Chart Parsing Demo'):
@@ -828,10 +827,10 @@ class ChartDemo:
         self._rulelabel['font'] = ('helvetica', size, 'bold')
         
     def view_lexicon(self):
-        self._lexiconview = RuleView(self._lexicon, 'Lexicon')
+        self._lexiconview = ProductionView(self._lexicon, 'Lexicon')
 
     def view_grammar(self):
-        self._grammarview = RuleView(self._grammar, 'Grammar')
+        self._grammarview = ProductionView(self._grammar, 'Grammar')
         
     def reset(self):
         self._cp = SteppingChartParser(self._grammar, self._lexicon, 'S')
@@ -866,7 +865,7 @@ class ChartDemo:
         new_edge = self._cp.step(strategy=strategy)
                                
         if new_edge is not None:
-            self.display_rule(self._cp.current_rule())
+            self.display_rule(self._cp.current_chartrule())
             self._cv.update()
             self._cv.mark_edge(new_edge)
             self._cv.view_edge(new_edge)
@@ -919,7 +918,7 @@ def test():
     tok_sent = WSTokenizer().tokenize(sent)
 
     print 'grammar= ('
-    for rule in grammar.rules():
+    for rule in grammar.productions():
         print '    ', repr(rule)+','
     print ')'
     print 'sentence = %r' % sent
