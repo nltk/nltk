@@ -34,7 +34,7 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         PropertyIndirectionMixIn.__init__(self, **property_names)
 
     # [XX] source and add_locs are ignored!
-    def read_token(self, s, source=None, add_locs=False, add_contexts=False):
+    def read_token(self, s, add_contexts=False, add_locs=False, source=None):
         TAG = self.property('TAG')
         TEXT = self.property('TEXT')
         SUBTOKENS = self.property('SUBTOKENS')
@@ -52,8 +52,8 @@ class TaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                 subtok[CONTEXT] = SubtokenContextPointer(tok, SUBTOKENS, i)
         return tok
 
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
+    def read_tokens(self, s, add_contexts=False, add_locs=False, source=None):
+        return [self.read_token(s, add_contexts, add_locs, source)]
 
 
 class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
@@ -81,8 +81,7 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     @outprop: C{TAG}: The subtokens' tags.
     @outprop: C{LOC}: The subtokens' locations.
     """
-    def __init__(self, add_locs=False, add_contexts=False,
-                 top_node='S', chunk_node='CHUNK', **property_names):
+    def __init__(self, top_node='S', chunk_node='CHUNK', **property_names):
         """
         @include: AbstractTokenizer.__init__
         @type chunk_node: C{string}
@@ -92,15 +91,15 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             such as C{"NP"} for base noun phrases.
         """
         PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._add_locs = add_locs
-        self._add_contexts = add_contexts
         self._chunk_node = chunk_node
         self._top_node = top_node
 
     _WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
     _VALID = re.compile(r'^([^\[\]]+|\[[^\[\]]*\])*$')
-    
-    def read_token(self, s, source=None):
+
+    # [XX] Could this code be simplified by using TaggedTokenReader to
+    # do some of the work?
+    def read_token(self, s, add_contexts=False, add_locs=False, source=None):
         TEXT = self.property('TEXT')
         TAG = self.property('TAG')
         SUBTOKENS = self.property('SUBTOKENS')
@@ -128,7 +127,7 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
                     tok = Token(**{TEXT: text[:slash], TAG: text[slash+1:]})
                 else:
                     tok = Token(**{TEXT: text, TAG: None})
-                if self._add_locs:
+                if add_locs:
                     start, end = match.span()
                     if slash >= 0: end = start+slash
                     tok[LOC] = CharSpanLocation(start, end, source)
@@ -139,11 +138,11 @@ class ChunkedTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         # Add the SUBTOKENS property (from the tree's leaves)
         tok[SUBTOKENS] = leaves = tok[TREE].leaves()
         # Add context pointers.
-        if self._add_contexts:
+        if add_contexts:
             for i, subtok in enumerate(leaves):
                 subtok[CONTEXT] = SubtokenContextPointer(tok, SUBTOKENS, i)
         return tok
 
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
+    def read_tokens(self, s, add_contexts=False, add_locs=False, source=None):
+        return [self.read_token(s, add_contexts, add_locs, source)]
 
