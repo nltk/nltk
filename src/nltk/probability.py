@@ -72,11 +72,11 @@ class FreqDist:
     number of experiments, and incrementing the count for a sample
     every time it is an outcome of an experiment.  For example, the
     following code will produce a frequency distribution that encodes
-    how often each word type occurs in a text:
+    how often each word occurs in a text:
     
         >>> fdist = FreqDist()
-        >>> for token in document:
-        ...    fdist.inc(token.type())
+        >>> for token in text_token['SUBTOKENS']:
+        ...    fdist.inc(token['TEXT'])
     """
     def __init__(self):
         """
@@ -1009,9 +1009,9 @@ class ConditionalFreqDist:
     word type occurs, given the length of that word type:
 
         >>> cfdist = ConditionalFreqDist()
-        >>> for token in document:
-        ...     condition = len(token.type())
-        ...     cfdist[condition].inc(token.type())
+        >>> for token in text_token['SUBTOKENS']:
+        ...     condition = len(token['TEXT'])
+        ...     cfdist[condition].inc(token['TEXT'])
     """
     def __init__(self):
         """
