@@ -4,35 +4,31 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 #
 # $Id$
 
 """
-Classes and interfaces for dividing a string into a list of its
-constituent tokens.  This task, which is known as X{tokenizing}, is
-defined by the L{TokenizerI} interface.
+Classes and interfaces for dividing a token into its constituent
+pieces.  This task, which is known as X{tokenizing}, is defined by the
+L{TokenizerI} interface.
 
 This module defines several implementations of the tokenizer
 interface, such as L{WSTokenizer}, which splits texts based on
 whitespace; and L{RETokenizer}, which uses a regular expression to
-divide a string into tokens.  Several other modules also define
+divide a token into pieces.  Several other modules also define
 specialized tokenizers, such as L{nltk.tree.TreebankTokenizer} and
 L{nltk.tagger.TaggedTokenizer}.  For a complete list of available
 tokenizers, see the reference documentation for L{TokenizerI}.
 
 @group Interfaces: TokenizerI
-@group Tokenizers: WSTokenizer, RETokenizer, CharTokenizer,
-    LineTokenizer
-@sort: Location, Token, TokenizerI, WSTokenizer, RETokenizer, CharTokenizer,
-    LineTokenizer, _XTokenTuple
+@group Tokenizers: WSTokenizer, RETokenizer, CharTokenizer, LineTokenizer
+@sort: TokenizerI, WSTokenizer, RETokenizer, CharTokenizer, LineTokenizer
 """
 
-import re, sys, types
-import sre_parse, sre_constants, sre_compile
-from nltk.chktype import chktype as _chktype 
-from nltk.chktype import classeq as _classeq
+import re, sre_parse, sre_constants, sre_compile
+from nltk.chktype import chktype
 from nltk.token import *
 
 ##//////////////////////////////////////////////////////
@@ -40,200 +36,293 @@ from nltk.token import *
 ##//////////////////////////////////////////////////////
 class TokenizerI:
     """
-    A processing class responsible for separating a string of text
-    into a list of C{Token}s.  This process is known as X{tokenizing}
-    the string of text.  Particular C{Tokenizer}s may split the text
-    at different points, or may produce Tokens with different types.
+    A processing class for dividing a token's text content into a list
+    of subtokens.  This process is known as X{tokenizing}.
+    
+    Particular C{Tokenizer}s may split the token's string content at
+    different points, and may create subtokens with different
+    properties.
+
+    @group Tokenizing: tokenize, xtokenize, raw_tokenize, raw_xtokenize
+    @group Accessors: unit, propnames
+    @sort: tokenize, xtokenize, raw_tokenize, raw_xtokenize
     """
-    def __init__(self, unit=None):
+
+    # The input and output properties that are used by most
+    # tokenizers.  Specialized tokenizers might add extra input
+    # properties or output properties.
+    _STANDARD_PROPERTIES = """
+    @inprop:  C{text}: The string of text that should be divided into
+              tokens.
+    @outprop: C{subtokens}: The property where the generated
+              subtokens should be stored.
+    @outprop: C{subtokens.text}: The text content for individual
+              subtokens.
+    """
+    __doc__ += _STANDARD_PROPERTIES
+    
+    def __init__(self, unit=None, propnames={}):
         """
         Construct a new tokenizer.
 
         @type unit: C{string}
         @param unit: The unit that should be used for the locations of
-            tokens created by the tokenizer.  If no unit is specified,
-            then a default unit will be used.
+            subtokens created by the tokenizer.  If no unit is
+            specified, then a tokenizer-specific default unit will be
+            used.
+        @param propnames: The names of the properties that are used by
+            this tokenizer.  These names are encoded as a dictionary
+            that maps from abstract \"property specifications\" to
+            concrete property names.  For a list of the property
+            property specifications used by a particular tokenizer,
+            see its class docstring.
+        @type propnames: C{dict}
         """
-        #raise AssertionError, 'TokenizerI is an abstract interface'
-    
-    def tokenize(self, str, source=None):
-        """
-        Separate the given string of text into a list of C{Token}s.
-        The list of C{Token}s returned by tokenizing will be properly
-        ordered; i.e., for any i and j such that i<j::
+        if self.__class__ == TokenizerI:
+            raise AssertionError, "Interfaces can't be instantiated"
 
-            tokenize(str)[i].loc() < tokenize(str)[j].loc()
+    def tokenize(self, token, source=None):
+        """
+        Divide the given token's C{text} property into a list of
+        subtokens, and output that list to the C{subtokens} property.
+        Each subtoken defines a C{text} property, containing its
+        text; and a C{'loc'} property, containing its location.  The
+        locations are properly ordered; i.e., for any i and j such
+        that i<j::
+
+            subtokens[i]['loc'] < subtokens[j]['loc']
         
-        @param str: The string of text to tokenize.
-        @type str: C{string}
+        @param token: The token whose text should be tokenized.
+        @type token: C{Token}
         @param source: The source of the string to tokenize.  This
             will be used as the source for each token's location.
         @type source: any
-        @return: A list containing the C{Token}s
-            that are contained in C{str}.
-        @rtype: C{list} of C{Token}
         """
         raise NotImplementedError()
 
-    def xtokenize(self, str):
+    # Can text contain a generator instead?  Otherwise, we still need to
+    # read the entire text into memory.
+    def xtokenize(self, token):
         """
-        Separate the given string of text into a list of C{Token}s.
-        The tuple of C{Token}s returned by tokenizing will be properly
-        ordered; i.e., for any i and j such that i<j::
+        Divide the given token's C{text} property into a list of
+        subtokens, and output an iterator over that list to the
+        C{subtokens} property.  Each subtoken defines a C{text}
+        property, containing its text; and a C{'loc'} property,
+        containing its location.  The locations are properly ordered;
+        i.e., for any i and j such that i<j::
 
-            tokenize(str)[i].loc() < tokenize(str)[j].loc()
-
-        Like C{xrange} and C{file.xreadlines}, C{xtokenize} will
-        return a structure that emulates a tuple, without actually
-        keeping all of the tokens in memory.  The details of what
-        structure is used are left to the individual tokenizers; but
-        it is guaranteed that the value returned by xtokenize will
-        emulate a tuple of tokens.
+            subtokens[i]['loc'] < subtokens[j]['loc']
         
-        @param str: The string of text to tokenize.
-        @type str: C{string}
-        @return: A tuple-equivalant structure containing the C{Token}s
-            that are contained in C{str}.
-        @rtype: C{tuple} of C{Token} (or equiv.)
+        The token's C{text} property may contain an iterator over
+        strings, in which case the text content is taken to be the
+        concatenation of the substrings returned by the iterator
+        (i.e., C{''.join(token['text'])}).
+
+        @param token: The token whose text should be tokenized.
+        @type token: C{Token}
+        @param source: The source of the string to tokenize.  This
+            will be used as the source for each token's location.
+        @type source: any
         """
         # By default, call tokenize.
-        return self.tokenize(str)
+        raise NotImplementedError()
 
-class _XTokenTuple:
-    """
-    An internal class used to implement the C{xtokenize} method of
-    several tokenizers.  C{_XTokenTuple} essentially emulates a list
-    tuple of tokens; however, instead of explicitly storing the
-    tokens, they are generated on the fly as they are asked for.  This
-    seriously decreases the memory requirements for processing large
-    texts.
+    def raw_tokenize(self, text):
+        """
+        Divide the given text string into a list of substrings, and
+        return that list.
+        
+        @param text: The text to be tokenized.
+        @type text: C{string}
+        @rtype: C{string}
+        """
+        raise NotImplementedError()
 
-    Internally, C{_XTokenTuple} just maintains a list of types; the
-    location of each type should be its offset.  Thus, _XTokenTuple
-    only supports token tuples where the location of the M{n}th token
-    is @[M{n}].
-    """
-    def __init__(self, typelist, unit=None, source=None):
-        self._typelist = tuple(typelist)
-        self._unit = unit
-        self._source = source
+    def raw_xtokenize(self, text):
+        """
+        Divide the given text string into a list of substrings, and
+        return an iterator over that list.
+        
+        C{text} may be an iterator over strings, in which case the
+        text is taken to be the concatination of the substrings
+        returned by the iterator (i.e., C{''.join(text)}).
 
-    def __getitem__(self, index):
-        if type(index) == types.SliceType:
-            start, stop = (index.start, index.stop)
-            if stop == sys.maxint: stop = len(self)
+        @param text: The text to be tokenized.
+        @type text: C{string}
+        @rtype: C{string}
+        """
+        raise NotImplementedError()
 
-            toks = []
-            for i in range(start, stop):
-                loc = Location(i, unit=self._unit, source=self._source)
-                toks.append(Token(self._typelist[i], loc))
-            return toks
-        else:
-            loc = Location(index, unit=self._unit, source=self._source)
-            return Token(self._typelist[index], loc)
-
-    def __len__(self):
-        return len(self._typelist)
-
-    def __in__(self, token):
-        if not isinstance(token, Token): return 0
-        loc = token.loc()
-        if loc is None: return 0
-        if loc.length() != 1: return 0
-        if loc.unit() != self._unit: return 0
-        if loc.source() != self._source: return 0
-        start = loc.start()
-        if start<0 or start>=len(self._typelist): return 0
-        return self._typelist[start] == token.type()
-
-    def __repr__(self):
-        return repr(self[0:len(self)])
+    def unit(self):
+        """
+        @rtype: C{string}
+        @return: The unit that is used for locations of subtokens
+            generated by this tokenizer.
+        """
+        raise NotImplementedError()
     
-class WSTokenizer(TokenizerI):
-    """
-    A tokenizer that separates a string of text into words, based on
-    whitespace.  Each word is encoded as a C{Token} whose type is a
-    C{string}.  Location indices start at zero, and have a default
-    unit of C{'w'}.
-    """
-    def __init__(self, unit='w'):
+    def propnames(self):
         """
-        Construct a new tokenizer.
+        @rtype: C{dict}
+        @return: The names of the properties that are used by this
+        tokenizer.  These names are encoded as a dictionary that maps
+        from abstract \"property specifications\" to concrete property
+        names.  For a list of the property specifications used by a
+        particular tokenizer, see its class docstring.
+        """
+        raise NotImplementedError()
+    
+class AbstractTokenizer(TokenizerI):
+    """
+    An abstract base class for tokenizers that provides default
+    implementations for:
+      - L{unit}
+      - L{tokenize} (based on L{raw_tokenize})
+      - L{xtokenize} (based on L{raw_xtokenize})
+      - L{raw_xtokenize} (based on L{raw_tokenize})
+    """
+    __doc__ += TokenizerI._STANDARD_PROPERTIES
+    
+    def __init__(self, unit=None, propnames={}):
+        # Make sure we're not directly instantiated:
+        if self.__class__ == AbstractTokenizer:
+            raise AssertionError, "Abstract classes can't be instantiated"
 
-        @type unit: C{string}
-        @param unit: The unit that should be used for the locations of
-            tokens created by the tokenizer.  If no unit is specified,
-            then the default unit C{'w'} will be used.
-        """
         self._unit = unit
-        
-    def tokenize(self, str, source=None):
+        self._propnames = propnames
+
+    def unit(self):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
-        words = str.split()
-        return [Token(words[i], Location(i, unit=self._unit, source=source))
+        return self._unit
+    
+    def propnames(self):
+        # Inherit docs from TokenizerI
+        return self._propnames.copy()
+        
+    def tokenize(self, token, source=None):
+        # Inherit docs from TokenizerI
+        assert chktype(1, token, Token)
+
+        # Look up the property names.
+        text_pname = self._propnames.get('text', 'text')
+        subtokens_pname = self._propnames.get('subtokens', 'subtokens')
+        subtokens_text_pname = self._propnames.get('subtokens.text', 'text')
+        
+        words = self.raw_tokenize(token[text_pname])
+        locs = [Location(i, unit=self._unit, source=source)
                 for i in range(len(words))]
+        subtoks = [Token(**{subtokens_text_pname:w, 'loc':l})
+                   for (w,l) in zip(words, locs)]
+        token[subtokens_pname] = subtoks
 
-    def xtokenize(self, str, source=None):
+    def _subtoken_generator(text, source):
+        for i, word in enumerate(self.raw_xtokenize(text)):
+            loc = Location(i, unit=self._unit, source=source)
+            yield Token(text=word, loc=loc)
+        return
+
+    def xtokenize(self, token, source=None):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
-        return _XTokenTuple(str.split(), unit=self._unit, source=source)
+        assert chktype(1, token, Token)
+        return self._subtoken_generator(token['text'], source)
 
-# Do we really want this tokenizer to ignore whitespace characters?
-class CharTokenizer(TokenizerI):
-    """
-    A tokenizer that returns each non-whitespace character as a token.
-    Each character is encoded as a C{Token} whose type is a C{string}.
-    Location indices start at zero, and have a default unit of C{'c'}.
-    """
-    def __init__(self, unit='c'):
-        """
-        Construct a new tokenizer.
+    def raw_xtokenize(self, text):
+        # Inherit docs from TokenizerI
+        assert chktype(1, text, str, iter)
+        if isinstance(text, iter): text = ''.join(text)
+        return iter(self.raw_tokenize(text))
 
-        @type unit: C{string}
-        @param unit: The unit that should be used for the locations of
-            tokens created by the tokenizer.  If no unit is specified,
-            then the default unit C{'c'} will be used.
-        """
-        self._unit = unit
+    
+class WSTokenizer(AbstractTokenizer):
+    """
+    A tokenizer that divides a string of text into words, based on
+    whitespace.  Location indices start at zero, and have a default
+    unit of C{'w'}.
+    """ 
+    __doc__ += TokenizerI._STANDARD_PROPERTIES
+    
+    def __init__(self, unit='w', propnames={}):
+        # Inherit docs from TokenizerI
+        AbstractTokenizer.__init__(self, unit, propnames)
         
-    def tokenize(self, str, source=None):
+    def raw_tokenize(self, text):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
-        return [Token(str[i], Location(i, unit=self._unit, source=source))
-                for i in range(len(str))
-                if not str[i].isspace()]
+        assert chktype(1, text, str)
+        return text.split()
 
-class LineTokenizer(TokenizerI):
-    """
-    A tokenizer that separates a string of text into sentences, based
-    on newline characters.  Blank lines are ignored.  Each sentence is
-    encoded as a C{Token} whose type is a C{string}.  Location indices
-    start at zero, and have a default unit of C{'l'}.
-    """
-    def __init__(self, unit='l'):
-        """
-        Construct a new tokenizer.
+    def raw_xtokenize(self, text):
+        # Inherit docs from TokenizerI
+        assert chktype(1, text, str, iter)
+        whitespace = re.compile('\s+')
 
-        @type unit: C{string}
-        @param unit: The unit that should be used for the locations of
-            tokens created by the tokenizer.  If no unit is specified,
-            then the default unit C{'l'} will be used.
-        """
-        self._unit = unit
+        # If it's a single string, then convert it to a tuple
+        # (which we can iterate over, just like an iterator.)
+        if type(text) is str: text = (text,)
+
+        # Process each substring returned by the iterator, in turn.
+        # leftover is used to record any leftover material when we
+        # move on to a new substring.
+        leftover = ''
+        for substring in text:
+            position = 0  # The position within the substring
+            
+            # Skip any initial whitespace in the substring:
+            match = whitespace.match(text)
+            if match:
+                if leftover:
+                    yield leftover
+                    leftover = ''
+                position = match.end()
+
+            # Walk through the substring, looking for whitespace.
+            while position < len(text):
+                match = whitespace.search(text, position)
+                if match:
+                    yield leftover+text[position:match.start()]
+                    position = match.end()
+                    leftover = ''
+                else:
+                    leftover = text[position:]
+        yield text[position:]
+            
+class CharTokenizer(AbstractTokenizer):
+    """
+    A character that divides a string of text into individual
+    characters.  Location indices start at zero, and have a default
+    unit of C{'c'}.
+    """
+    __doc__ += TokenizerI._STANDARD_PROPERTIES
+    
+    def __init__(self, unit='c', propnames={},
+                 ignore_whitespace=False):
+        # Inherit docs from TokenizerI
+        AbstractTokenizer.__init__(self, unit, propnames)
+        self._ignore_whitespace = ignore_whitespace
         
-    def tokenize(self, str, source=None):
+    def raw_tokenize(self, text):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
-        lines = [s for s in str.split('\n') if s.strip() != '']
-        return [Token(lines[i], Location(i, unit=self._unit, source=source))
-                for i in range(len(lines))]
+        assert chktype(1, text, str)
+        if self._ignore_whitespace:
+            return [c for c in text if not isspace(c)]
+        else:
+            return list(text)
 
-    def xtokenize(self, str, source=None):
+class LineTokenizer(AbstractTokenizer):
+    """
+    A tokenizer that divides a string of text into sentences, based
+    on newline characters.  Blank lines are ignored.  Location indices
+    start at zero, and have a default unit of C{'s'}.
+    """
+    __doc__ += TokenizerI._STANDARD_PROPERTIES
+
+    def __init__(self, unit='s', propnames={}):
         # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
-        lines = [s for s in str.split('\n') if s.strip() != '']
-        return _XTokenTuple(lines, self._unit, source)
+        AbstractTokenizer.__init__(self, unit, propnames)
+        
+    def raw_tokenize(self, text):
+        # Inherit docs from TokenizerI
+        assert chktype(1, text, str)
+        return [s for s in text.split('\n') if s.strip() != '']
 
 def _remove_group_identifiers(parsed_re):
     """
@@ -247,8 +336,8 @@ def _remove_group_identifiers(parsed_re):
     @type parsed_re: C{SubPattern}
     """
 
-    is_list = isinstance(parsed_re, types.ListType)
-    is_tuple = isinstance(parsed_re, types.TupleType)
+    is_list = isinstance(parsed_re, list)
+    is_tuple = isinstance(parsed_re, tuple)
 
     if isinstance(parsed_re, sre_parse.SubPattern):
         # If it's a SubPattern, replace each item with its processed
@@ -279,9 +368,9 @@ def _remove_group_identifiers(parsed_re):
         # Don't need to do anything to other types
         return parsed_re
 
-class RETokenizer(TokenizerI):
+class RETokenizer(AbstractTokenizer):
     """
-    A tokenizer that separates a string of text into words, based on a
+    A tokenizer that divides a string of text into words, based on a
     regular expression.  By default, the regular expression specifies
     the form of a single word type; so the list of tokens returned
     includes all non-overlapping substrings that match the given
@@ -294,7 +383,9 @@ class RETokenizer(TokenizerI):
     Each word is encoded as a C{Token} whose type is a C{string}.
     Location indices start at zero, and have a unit of C{'word'}.
     """
-    def __init__(self, regexp, negative=0, unit='w'):
+    __doc__ += TokenizerI._STANDARD_PROPERTIES
+
+    def __init__(self, regexp, negative=0, unit='w', propnames={}):
         """
         Create a new C{RETokenizer} from a given regular expression.
         
@@ -316,10 +407,12 @@ class RETokenizer(TokenizerI):
             tokens created by the tokenizer.  If no unit is specified,
             then the default unit C{'w'} will be used.
         """
+        assert chktype(1, regexp, str)
+        
+        AbstractTokenizer.__init__(self, unit, propnames)
+        
         if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
-        assert _chktype(1, regexp, types.StringType)
         self._negative = negative
-        self._unit = unit
 
         # Replace any grouping parentheses with non-grouping ones.  We
         # need to do this, because the list returned by re.sub will
@@ -342,52 +435,35 @@ class RETokenizer(TokenizerI):
         grouped.append((sre_constants.SUBPATTERN, (1, parsed)))
 
         self._regexp = sre_compile.compile(grouped, re.UNICODE)
-        
-    def tokenize(self, str, source=None):
-        # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
 
+    def raw_tokenize(self, text):
+        # Inherit docs from TokenizerI
+        assert chktype(1, text, str)
+        
         # This split will return a list of alternating matches and
         # non-matches.  If negative=1, then we want the even elements;
         # if negative=0, then we want the odd elements.
-        words = self._regexp.split(str)
+        words = self._regexp.split(text)
         
         if self._negative:
-            words = [words[i] for i in range(len(words))
-                     if i%2==0 and words[i] != '']
+            # Return only the even words.
+            return [w for (i,w) in enumerate(words) if i%2==0 and w!='']
         else:
-            words = [words[i] for i in range(len(words))
-                     if i%2==1 and words[i] != '']
+            # Return only the odd words.
+            return [w for (i,w) in enumerate(words) if i%2==1 and w!='']
             
-        return [Token(words[i], Location(i, unit=self._unit, source=source))
-                for i in range(len(words))]
-
-    def xtokenize(self, str, source=None):
-        # Inherit docs from TokenizerI
-        assert _chktype(1, str, types.StringType)
-
-        # This split will return a list of alternating matches and
-        # non-matches.  If negative=1, then we want the even elements;
-        # if negative=0, then we want the odd elements.
-        words = self._regexp.split(str)
-        
-        if self._negative:
-            words = [words[i] for i in range(len(words))
-                     if i%2==0 and words[i] != '']
-        else:
-            words = [words[i] for i in range(len(words))
-                     if i%2==1 and words[i] != '']
-
-        return _XTokenTuple(words, self._unit, source)
-
 ##//////////////////////////////////////////////////////
 ##  Demonstration
 ##//////////////////////////////////////////////////////
 
-def _display(tokens):
+def _display(token, tokenizer):
     """
     A helper function for L{demo} that displays a list of tokens.
     """
+    token = token.copy() # Make a new copy.
+    tokenizer.tokenize(token)
+    tokens = token[tokenizer.propnames().get('subtokens', 'subtokens')]
+    
     # Get the string representation:
     str = '    '+`tokens`+' '
     
@@ -400,6 +476,9 @@ def _display(tokens):
     # Print the string
     print str
 
+# tempyhack:
+Token = dict
+
 def demo():
     """
     A demonstration that shows the output of several different
@@ -409,24 +488,25 @@ def demo():
     s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them."
     print 'Test string:'
     print `s`
+    tok = Token(text=s)
 
     print 'Tokenize using whitespace:'
-    _display(WSTokenizer().tokenize(s))
+    _display(tok, WSTokenizer())
     
     print 'Tokenize sequences of alphanumeric characters:'
-    _display(RETokenizer(r'\w+').tokenize(s))
+    _display(tok, RETokenizer(r'\w+'))
 
     print 'Tokenize sequences of letters and sequences of nonletters:'
-    _display(RETokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+').tokenize(s))
+    _display(tok, RETokenizer(r'[a-zA-zZ]+|[^a-zA-Z\s]+'))
 
     print 'A simple sentence tokenizer:'
-    _display(RETokenizer(r'\.(\s+|$)', negative=1, unit='s').tokenize(s))
+    _display(tok, RETokenizer(r'\.(\s+|$)', negative=1, unit='s'))
 
     print 'Tokenize by lines:'
-    _display(LineTokenizer().tokenize(s))
+    _display(tok, LineTokenizer())
 
     print 'Tokenize by (non-whitespace) characters:'
-    _display(CharTokenizer().tokenize(s))
+    _display(tok, CharTokenizer())
     return
     
 if __name__ == '__main__':
