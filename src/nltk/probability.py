@@ -28,7 +28,7 @@ experiment.  There are two types of probability distribution:
 The L{ConditionalFreqDist} class and L{ConditionalProbDistI} interface
 are used to encode conditional distributions.  Conditional probability
 distributions can be derived or analytic; but currently the only
-implementation of the C{CondtionalProbDistI} interface is
+implementation of the C{ConditionalProbDistI} interface is
 L{ConditionalProbDist}, a derived distribution.
 
 The L{ProbabilisticMixIn} class is a mix-in class that can be used to
@@ -53,7 +53,7 @@ C{Tree}).
 from nltk.chktype import chktype as _chktype
 from nltk.set import Set
 from nltk.util import sum_logs
-import types, math
+import types, math, Numeric
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -1005,6 +1005,86 @@ class GoodTuringProbDist(ProbDistI):
         """
         return '<GoodTuringProbDist based on %d samples>' % self._freqdist.N()
 
+class MutableProbDist(ProbDistI):
+    """
+    An mutable probdist where the probabilities may be easily modified. This
+    simply copies an existing probdist, storing the probability values in a
+    mutable dictionary and providing an update method.
+    """
+
+    def __init__(self, prob_dist, samples, store_logs=True):
+        """
+        Creates the mutable probdist based on the given prob_dist and using
+        the list of samples given. These values are stored as log
+        probabilities if the store_logs flag is set.
+
+        @param prob_dist: the distribution from which to garner the
+            probabilities
+        @type prob_dist: ProbDist
+        @param samples: the complete set of samples
+        @type samples: sequence of any
+        @param store_logs: whether to store the probabilities as logarithms
+        @type store_logs: bool
+        """
+        self._samples = samples
+        self._sample_dict = dict([(samples[i], i) for i in range(len(samples))])
+        self._data = Numeric.zeros(len(samples), Numeric.Float64)
+        for i in range(len(samples)):
+            if store_logs:
+                self._data[i] = prob_dist.logprob(samples[i])
+            else:
+                self._data[i] = prob_dist.prob(samples[i])
+        self._logs = store_logs
+
+    def samples(self):
+        # inherit doco
+        return self._samples
+
+    def prob(self, sample):
+        # inherit doco
+        i = self._sample_dict.get(sample)
+        if i != None:
+            if self._logs:
+                return exp(self._data[i])
+            else:
+                return self._data[i]
+        else:
+            return 0.0
+
+    def logprob(self, sample):
+        # inherit doco
+        i = self._sample_dict.get(sample)
+        if i != None:
+            if self._logs:
+                return self._data[i]
+            else:
+                return log(self._data[i])
+        else:
+            return NINF
+
+    def update(self, sample, prob, log=True):
+        """
+        Update the probability for the given sample. This may cause the object
+        to stop being the valid probability distribution - the user must
+        ensure that they update the sample probabilities such that all samples
+        have probabilities between 0 and 1 and that all probabilities sum to
+        one.
+
+        @param sample: the sample for which to update the probability
+        @type sample: any
+        @param prob: the new probability
+        @param prob: float
+        @param log: is the probability already logged
+        @param log: bool
+        """
+        i = self._sample_dict.get(sample)
+        assert i != None
+        if self._logs:
+            if log: self._data[i] = prob
+            else:   self._data[i] = log(prob)
+        else:
+            if log: self._data[i] = exp(prob)
+            else:   self._data[i] = prob
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
@@ -1235,6 +1315,29 @@ class ConditionalProbDist(ConditionalProbDistI):
         """
         n = len(self._pdists)
         return '<ConditionalProbDist with %d conditions>' % n
+
+class DictionaryConditionalProbDist(ConditionalProbDistI):
+    """
+    An alternative ConditionalProbDist that simply wraps a dictionary of
+    ProbDists rather than creating these from FreqDists.
+    """
+
+    def __init__(self, probdist_dict):
+        """
+        @param probdist_dict: a dictionary containing the probdists indexed
+            by the conditions
+        @type probdist_dict: dict any -> probdist
+        """
+        self._dict = probdist_dict
+
+    def __getitem__(self, condition):
+        # inherit doco
+        # this will cause an exception for unseen conditions
+        return self._dict[condition]
+
+    def conditions(self):
+        # inherit doco
+        return self._dict.keys()
 
 ##//////////////////////////////////////////////////////
 ##  Probabilistic Mix-in
