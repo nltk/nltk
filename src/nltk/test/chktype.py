@@ -7,6 +7,10 @@
 #
 # $Id$
 
+"""
+Unit testing for L{nltk.chktype}.
+"""
+
 from nltk.chktype import *
 import types
 
@@ -18,7 +22,7 @@ import unittest
 
 class ChktypeTestCase(unittest.TestCase):
     """
-    Unit test cases for C{chktype.chktype}
+    Unit test cases for L{nltk.chktype}
     """
     def setUp(self):
         type_safety_level(4)
