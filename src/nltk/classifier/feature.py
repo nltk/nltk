@@ -566,7 +566,7 @@ class AbstractFDList(FeatureDetectorListI):
         if feature_id >= len(self) or feature_id < 0:
             raise IndexError('FeatureDetectorList index out of range')
         def f(labeled_text, detect=self.detect, id=feature_id):
-            return id in detect(labeled_text)
+            return detect(labeled_text)[id]
         return FunctionFeatureDetector(f, ('f_%d()' % feature_id))
 
     def __add__(self, other):
