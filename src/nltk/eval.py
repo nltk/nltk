@@ -11,107 +11,186 @@
 Utility functions for evaluating processing modules.
 """
 
+import sets, math
 from nltk.chktype import chktype
-import sets
 
-def accuracy(wanted, got):
+def accuracy(reference, test):
     """
-    @return: The percentage of items in the list C{got} that are equal
-    to the corresponding items in the list C{wanted}.  In particular,
-    this function counts the number of instances where C{got[i]} ==
-    C{wanted[i]} and returns this count as a fraction of the size of
-    C{wanted}.  The two lists C{wanted} and C{got} must have equal
-    lengths.
+    Given a list of reference values and a corresponding list of test
+    values, return the percentage of corresponding values that are
+    equal.  In particular, return the percentage of indices
+    C{0<i<=len(test)} such that C{test[i] == reference[i]}.
 
-    @type wanted: C{list}
-    @param wanted: The correct values.
-    @type got: C{list}
-    @param got: The actual values.
+    @type reference: C{list}
+    @param reference: An ordered list of reference values.
+    @type test: C{list}
+    @param test: A list of values to compare against the corresponding
+        reference values.
+    @raise ValueError: If C{reference} and C{length} do not have the
+        same length.
     """
-    assert chktype(1, wanted, [])
-    assert chktype(2, got, [])
-    if len(wanted) != len(got):
+    assert chktype(1, reference, [])
+    assert chktype(2, test, [])
+    if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
-    num_correct = [1 for x,y in zip(wanted, got) if x==y]
-    return float(len(num_correct)) / len(wanted)
+    num_correct = [1 for x,y in zip(reference, test) if x==y]
+    return float(len(num_correct)) / len(reference)
 
-def precision(wanted, got):
+def precision(reference, test):
     """
-    @type wanted: C{set}
-    @type got: C{set}
+    Given a set of reference values and a set of test values, return
+    the percentage of test values that appear in the reference set.
+    In particular, return |C{reference}S{cap}C{test}|/|C{test}|.
+    If C{test} is empty, then return C{None}.
+    
+    @type reference: C{Set}
+    @param reference: A set of reference values.
+    @type test: C{Set}
+    @param test: A set of values to compare against the reference set.
+    @rtype: C{float} or C{None}
     """
-    assert chktype(1, wanted, sets.BaseSet)
-    assert chktype(2, got, sets.BaseSet)
-    if len(got) == 0:
+    assert chktype(1, reference, sets.BaseSet)
+    assert chktype(2, test, sets.BaseSet)
+    if len(test) == 0:
         return None
     else:
-        return float(len(wanted.intersection(got)))/len(got)
+        return float(len(reference.intersection(test)))/len(test)
 
-def recall(wanted, got):
+def recall(reference, test):
     """
-    @type wanted: C{set}
-    @type got: C{set}
+    Given a set of reference values and a set of test values, return
+    the percentage of reference values that appear in the test set.
+    In particular, return |C{reference}S{cap}C{test}|/|C{reference}|.
+    If C{reference} is empty, then return C{None}.
+    
+    @type reference: C{Set}
+    @param reference: A set of reference values.
+    @type test: C{Set}
+    @param test: A set of values to compare against the reference set.
+    @rtype: C{float} or C{None}
     """
-    assert chktype(1, wanted, sets.BaseSet)
-    assert chktype(2, got, sets.BaseSet)
-    if len(wanted) == 0:
+    assert chktype(1, reference, sets.BaseSet)
+    assert chktype(2, test, sets.BaseSet)
+    if len(reference) == 0:
         return None
     else:
-        return float(len(wanted.intersection(got)))/len(wanted)
+        return float(len(reference.intersection(test)))/len(reference)
 
-def f_measure(wanted, got, alpha=0.5):
-    p = precision(wanted, got)
-    r = recall(wanted, got)
+def f_measure(reference, test, alpha=0.5):
+    """
+    Given a set of reference values and a set of test values, return
+    the f-measure of the test values, when compared against the
+    reference values.  The f-measure is the harmonic mean of the
+    L{precision} and L{recall}, weighted by C{alpha}.  In particular,
+    given the precision M{p} and recall M{r} defined by:
+        - M{p} = |C{reference}S{cap}C{test}|/|C{test}|
+        - M{r} = |C{reference}S{cap}C{test}|/|C{reference}|
+    The f-measure is:
+        - 1/(C{alpha}/M{p} + (1-C{alpha})/M{r})
+        
+    If either C{reference} or C{test} is empty, then C{f_measure}
+    returns C{None}.
+    
+    @type reference: C{Set}
+    @param reference: A set of reference values.
+    @type test: C{Set}
+    @param test: A set of values to compare against the reference set.
+    @rtype: C{float} or C{None}
+    """
+    p = precision(reference, test)
+    r = recall(reference, test)
     if p is None or r is None:
         return None
     if p == 0 or r == 0:
         return 0
-    return 10.0/(alpha/p + (1-alpha)/r)
+    return 1.0/(alpha/p + (1-alpha)/r)
+
+def log_likelihood(reference, test):
+    """
+    Given a list of reference values and a corresponding list of test
+    probability distributions, return the average log likelihood of
+    the reference values, given the probability distributions.
+
+    @param reference: A list of reference values
+    @type reference: C{list}
+    @param test: A list of probability distributions over values to
+        compare against the corresponding reference values.
+    @type test: C{list} of L{ProbDist}
+    """
+    if len(reference) != len(test):
+        raise ValueError("Lists must have the same length.")
+
+    # Return the average value of dist.logprob(val).
+    total_likelihood = sum([dist.logprob(val)
+                            for (val, dist) in zip(reference, test)])
+    return total_likelihood/len(reference)
 
 class ConfusionMatrix:
     """
-    The confusion matrix between a list of correct values and the list
-    of actual values.  Entry [M{Li},M{Lj}] of this matrix is a count
-    of the number of times that label M{Li} was expected and label
-    M{Lj} was given.
+    The confusion matrix between a list of reference values and a
+    corresponding list of test values.  Entry [M{r},M{t}] of this
+    matrix is a count of the number of times that the reference value
+    M{r} corresponds to the test value M{t}.  E.g.:
+
+        >>> ref  = 'DET NN VB DET JJ NN NN IN DET NN'.split()
+        >>> test = 'DET VB VB DET NN NN NN IN DET NN'.split()
+        >>> cm = ConfusionMatrix(ref, test)
+        >>> print cm['NN', 'NN']
+        3
+
+    Note that the diagonal entries (M{Ri}=M{Tj}) of this matrix
+    corresponds to correct values; and the off-diagonal entries
+    correspond to incorrect values.
     """
-    def __init__(self, wanted, got):
+    def __init__(self, reference, test):
         """
-        Construct a new confusion matrix from a list of correct values
-        and a list of actual values.
-        @param wanted: The correct values.
-        @param got: The actual values.
-        """
-        assert chktype(1, wanted, [])
-        assert chktype(2, got, [])
+        Construct a new confusion matrix from a list of reference
+        values and a corresponding list of test values.
         
-        if len(wanted) != len(got):
+        @type reference: C{list}
+        @param reference: An ordered list of reference values.
+        @type test: C{list}
+        @param test: A list of values to compare against the
+            corresponding reference values.
+        @raise ValueError: If C{reference} and C{length} do not have
+            the same length.
+        """
+        assert chktype(1, reference, [])
+        assert chktype(2, test, [])
+        
+        if len(reference) != len(test):
             raise ValueError('Lists must have the same length.')
             
-        # Get a list of all labels.
-        labels = dict([(l,1) for l in wanted+got]).keys()
+        # Get a list of all values.
+        values = dict([(val,1) for val in reference+test]).keys()
 
-        # Construct a label->index dictionary
-        indices = dict([(l,i) for (i,l) in enumerate(labels)])
+        # Construct a value->index dictionary
+        indices = dict([(val,i) for (i,val) in enumerate(values)])
 
         # Make a confusion matrix table.
-        confusion = [[0 for l in labels] for l in labels]
+        confusion = [[0 for val in values] for val in values]
         max_conf = 0 # Maximum confusion
-        for w,g in zip(wanted, got):
+        for w,g in zip(reference, test):
             confusion[indices[w]][indices[g]] += 1
             max_conf = max(max_conf, confusion[indices[w]][indices[g]])
 
+        #: A list of all values in C{reference} or C{test}.
+        self._values = values
+        #: A dictionary mapping values in L{self._values} to their indices.
         self._indices = indices
+        #: The confusion matrix itself (as a list of lists of counts).
         self._confusion = confusion
-        self._labels = labels
+        #: The greatest count in L{self._confusion} (used for printing).
         self._max_conf = 0
-        self._total = len(wanted)
-        self._correct = sum([confusion[i][i] for i in range(len(labels))])
+        #: The total number of values in the confusion matrix.
+        self._total = len(reference)
+        #: The number of correct (on-diagonal) values in the matrix.
+        self._correct = sum([confusion[i][i] for i in range(len(values))])
 
     def __getitem__(self, (li,lj)):
         """
-        @return: The number of times that label C{li} was expected and
-        label C{lj} was given.
+        @return: The number of times that value C{li} was expected and
+        value C{lj} was given.
         @rtype: C{int}
         """
         i = self._indices[li]
@@ -125,7 +204,7 @@ class ConfusionMatrix:
     def __str__(self):
         return self.pp()
     
-    def pp(self, show_percents=False, labels_in_chart=True):
+    def pp(self, show_percents=False, values_in_chart=True):
         """
         @return: A multi-line string representation of this confusion
         matrix.
@@ -133,14 +212,14 @@ class ConfusionMatrix:
         """
         confusion = self._confusion
 
-        if labels_in_chart:
-            labels = self._labels
+        if values_in_chart:
+            values = self._values
         else:
-            labels = range(len(self._labels))
+            values = range(len(self._values))
 
-        # Construct a format string for row labels
-        labellen = max([len(str(l)) for l in labels])
-        label_format = '%' + `labellen` + 's |'
+        # Construct a format string for row values
+        valuelen = max([len(str(val)) for val in values])
+        value_format = '%' + `valuelen` + 's |'
         # Construct a format string for matrix entries
         if show_percents:
             entrylen = 6
@@ -149,25 +228,25 @@ class ConfusionMatrix:
             entrylen = len(`self._max_conf`)
             entry_format = '%' + `entrylen` + 'd'
 
-        # Write the column labels.
-        label_strings = [str(l) for l in labels]
+        # Write the column values.
+        value_strings = [str(val) for val in values]
         s = ''
-        for i in range(labellen):
-            s += (' '*labellen)+' |'
-            for l in label_strings:
-                if i >= labellen-len(l):
-                    s += l[i-labellen+len(l)].rjust(entrylen+1)
+        for i in range(valuelen):
+            s += (' '*valuelen)+' |'
+            for val in value_strings:
+                if i >= valuelen-len(val):
+                    s += val[i-valuelen+len(val)].rjust(entrylen+1)
                 else:
                     s += ' '*(entrylen+1)
             s += ' |\n'
 
         # Write a dividing line
-        s += '%s-+-%s+\n' % ('-'*labellen, '-'*((entrylen+1)*len(labels)))
+        s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
 
         # Write the entries.
-        for i in range(len(labels)):
-            s += label_format % labels[i]
-            for j in range(len(labels)):
+        for i in range(len(values)):
+            s += value_format % values[i]
+            for j in range(len(values)):
                 s += ' '
                 if show_percents:
                     s += entry_format % (100.0*confusion[i][j]/self._total)
@@ -176,46 +255,45 @@ class ConfusionMatrix:
             s += ' |\n'
             
         # Write a dividing line
-        s += '%s-+-%s+\n' % ('-'*labellen, '-'*((entrylen+1)*len(labels)))
+        s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
 
         # Write a key
-        s += '(row = wanted; col = got)\n'
-        if not labels_in_chart:
-            s += 'Label key:\n'
-            for i, label in enumerate(self._labels):
-                s += '%6d: %s\n' % (i, label)
+        s += '(row = reference; col = test)\n'
+        if not values_in_chart:
+            s += 'Value key:\n'
+            for i, value in enumerate(self._values):
+                s += '%6d: %s\n' % (i, value)
 
         return s
         
     def key(self):
-        labels = self._labels
-        str = 'Label key:\n'
-        indexlen = len(`len(labels)-1`)
+        values = self._values
+        str = 'Value key:\n'
+        indexlen = len(`len(values)-1`)
         key_format = '  %'+`indexlen`+'d: %s\n'
-        for i in range(len(labels)):
-            str += key_format % (i, labels[i])
+        for i in range(len(values)):
+            str += key_format % (i, values[i])
 
         return str
 
 def demo():
     print '-'*75
-    wanted = 'DET NN VB DET JJ NN NN IN DET NN'.split()
-    got    = 'DET VB VB DET NN NN NN IN DET NN'.split()
-    print 'Wanted =', wanted
-    print 'Got    =', got
+    reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
+    test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
+    print 'Reference =', reference
+    print 'Test    =', test
     print 'Confusion matrix:'
-    print ConfusionMatrix(wanted, got)
-    print 'Accuracy:', accuracy(wanted, got)
+    print ConfusionMatrix(reference, test)
+    print 'Accuracy:', accuracy(reference, test)
 
     print '-'*75
-    wanted_set = sets.Set(wanted)
-    got_set = sets.Set(got)
-    print 'Wanted =', wanted_set
-    print 'Got =   ', got_set
-    print 'Precision:', precision(wanted_set, got_set)
-    print '   Recall:', recall(wanted_set, got_set)
-    print 'F-Measure:', f_measure(wanted_set, got_set)
+    reference_set = sets.Set(reference)
+    test_set = sets.Set(test)
+    print 'Reference =', reference_set
+    print 'Test =   ', test_set
+    print 'Precision:', precision(reference_set, test_set)
+    print '   Recall:', recall(reference_set, test_set)
+    print 'F-Measure:', f_measure(reference_set, test_set)
     print '-'*75
-
 if __name__ == '__main__':
     demo()
