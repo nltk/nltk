@@ -63,29 +63,80 @@ class IeerTokenReader(TokenReaderI, PropertyIndirectionMixIn):
 
     _TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
 
-    def read_token(self, s):
+    def read_token(self, s, add_contexts=False, add_locs=False, source=None):
+        """
+        @return: A token containing the chunked tagged text that is
+            encoded in the given IEER style string.
+        @rtype: L{Token}
+        @param add_contexts: If true, then add a subtoken context
+            pointer to each subtoken.
+        @param add_locs: If true, then add locations to each subtoken.
+            Locations are based on sentence and word index numbers.
+        @param source: The soruce for subtokens' locations (ignored
+            unless C{add_locs=True}
+        """
         TREE = self.property('TREE')
         
         # Try looking for a single document.  If that doesn't work, then just
         # treat everything as within the <TEXT>...</TEXT>.
         m = self._DOC_RE.match(s)
         if m:
-            return self._read_doc_match(m)
+            tok = self._read_doc_match(m)
         else:
-            return Token(**{TREE: self._read_text(s)})
+            tok = Token(**{TREE: self._read_text(s)})
 
-    def read_tokens(self, s):
+        # Add WORDS, LOC, CONTEXT
+        self._add_derived_props(tok)
+
+        return tok
+
+    def read_tokens(self, s, add_contexts=False, add_locs=False, source=None):
+        """
+        @return: A list containing a single token, containing the
+            chunked tagged text that is encoded in the given IEER
+            style string.
+        @rtype: L{Token}
+        @param add_contexts: If true, then add a subtoken context
+            pointer to each subtoken.
+        @param add_locs: If true, then add locations to each subtoken.
+            Locations are based on sentence and word index numbers.
+        @param source: The soruce for subtokens' locations (ignored
+            unless C{add_locs=True}
+        """
         TREE = self.property('TREE')
         toks = [self._read_doc_match(m) for m in self._DOC_RE.finditer(s)]
         # If we didn't find any docs, try treating it as a single doc,
         # without the enclosing html headers.
-        if len(toks) > 0:
-            return toks
-        else:
-            return [Token(**{TREE: self._read_text(s)})]
+        if len(toks) == 0:
+            toks = [Token(**{TREE: self._read_text(s)})]
+
+        # Add WORDS, LOC, CONTEXT
+        for tok in toks:
+            self._add_derived_props(tok)
+
+        return toks
+
+    def _add_derived_props(self, tok, add_contexts, add_locs, source):
+        WORDS = self.property('WORDS')
+        TREE = self.property('TREE')
+        CONTEXT = self.property('CONTEXT')
+        LOC = self.property('LOC')
+        
+        # Add the WORDS property.
+        tok[WORDS] = tok[TREE].leaves()
+
+        # Add context pointers, if requested.
+        if add_contexts:
+            for i, word_tok in enumerate(tok[WORDS]):
+                cp = SubtokenContextPointer(tok, WORDS, i)
+                word_tok[CONTEXT] = cp
+
+        # Add locations, if requested
+        if add_locs:
+            for i, word_tok in enumerate(tok[WORDS]):
+                word_tok[LOC] = WordIndexLocation(i, source)
 
     def _read_doc_match(self, m):
-        WORDS = self.property('WORDS')          # list of tokens
         DOCNO = self.property('DOCNO')          # string
         DOCTYPE = self.property('DOCTYPE')      # string
         DATE_TIME = self.property('DATE_TIME')  # string
@@ -94,7 +145,6 @@ class IeerTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         TREE = self.property('TREE')            # tree over tokens
 
         tok = Token(**{TREE: self._read_text(m.group('text'))})
-        tok[WORDS] = tok[TREE].leaves()
         tok[DOCNO]=m.group('docno')
         tok[DOCTYPE]=m.group('doctype')
         tok[DATE_TIME]=m.group('date_time')
