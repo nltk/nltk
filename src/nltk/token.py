@@ -707,7 +707,7 @@ class WSTokenizer(TokenizerI):
         # Inherit docs from TokenizerI
         _chktype("WSTokenizer.tokenize", 1, str, (_StringType,))
         words = str.split()
-        return [Token(words[i], Location(i, unit='s', source=source))
+        return [Token(words[i], Location(i, unit='w', source=source))
                 for i in range(len(words))]
 
     def xtokenize(self, str, source=None):
