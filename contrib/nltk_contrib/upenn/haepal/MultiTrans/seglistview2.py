@@ -94,14 +94,16 @@ class CallhomeText(QTextEdit):
 
             QTextEdit.keyPressEvent(self, e)
 
-            self._data[p]['TEXT'] = self.text(p).ascii()
+            self._data[p]['TEXT'] = self.text(p).ascii()[:-1]
+            # note that [:-1] is used because a qt paragraph usually
+            # contains a trailing white space
             if h0 != self.paragraphRect(p).height():
-                self.emit(PYSIGNAL("paragraphHeightChanged()"), ())
+                self.emit(PYSIGNAL("paragraphsRearranged()"), ())
 
 
         if k == Qt.Key_Delete:
             if e.state() == Qt.AltButton:
-                self._deleteSegment(p)
+                self._data.delete(p)
             elif c != self.paragraphLength(p):
                 propagateChanges()
         elif k == Qt.Key_BackSpace:
@@ -179,31 +181,41 @@ class CallhomeText(QTextEdit):
             
 
     ### interface to higher level application
-    def load(self, filename):
-        self._data = Callhome()
-        self._data.load(filename)
-        self.clear()
-        for i,ann in enumerate(self._data):
-            self.insertParagraph(ann['TEXT'],i)
-        if i == len(self._data)-1: self.removeParagraph(i+1)
-        self.emit(PYSIGNAL("segmentAdded()"),())    # ... to the display
-        return self._data
+##     def load(self, filename):
+##         self._data = Callhome()
+##         self._data.load(filename)
+##         self.clear()
+##         for i,ann in enumerate(self._data):
+##             self.insertParagraph(ann['TEXT'],i)
+##         if i == len(self._data)-1: self.removeParagraph(i+1)
+##         self.emit(PYSIGNAL("segmentAdded()"),())    # ... to the display
+##         return self._data
 
-    def newFile(self):
-        self._data = Callhome()
-        self.clear()
-        self.emit(PYSIGNAL("segmentAdded()"),())
-        # not really but just acknowledge updates
-        return self._data
+##     def newFile(self):
+##         self._data = Callhome()
+##         self.clear()
+##         self.emit(PYSIGNAL("segmentAdded()"),())
+##         # not really but just acknowledge updates
+##         return self._data
     
     def setFile(self, f):
         if not isinstance(f, Callhome): return
         self._data = f
-        # do initialization
+        self.clear()
+        i = None    # self._data could be empty
+        for i,ann in enumerate(self._data):
+            self.insertParagraph(ann['TEXT'],i)
+        if i == len(self._data)-1: self.removeParagraph(i+1)
+        self.emit(PYSIGNAL("segmentAdded()"),())    # ... to the display
 
+        self.connect(f.emitter, PYSIGNAL("annotationAdded(Annotation,int)"),
+                     self.addSegment)
+        self.connect(f.emitter, PYSIGNAL("annotationDeleted(Annotation,int)"),
+                     self.deleteSegment)
+        
     def unsetFile(self):
         #clear the view
-        pass
+        self.clear()
 
     def setQWave(self, qwave):
         self._qwave = qwave
@@ -258,20 +270,14 @@ class CallhomeText(QTextEdit):
         self._seglock = None
 
 
-    def addSegment(self, seg):
-        try:
-            self._data.add(seg)
-        except ValueError:
-            # failed (because of overlap)
-            return
-        i = self._data.index(seg)
+    def addSegment(self, seg, i):
         self.insertParagraph(seg['TEXT'], i)
         self.setCursorPosition(i,0)
 
         # weird but works
         if i == len(self._data)-1: self.removeParagraph(i+1)
         
-        self.emit(PYSIGNAL("segmentAdded()"),())    # ... to the display
+        self.emit(PYSIGNAL("paragraphsRearranged()"),())
 
     def _deleteSegment(self, para):
         """
@@ -279,40 +285,37 @@ class CallhomeText(QTextEdit):
         the para num is known.
         """
         self.removeParagraph(para)
-        del self._data[para]
-        self.emit(PYSIGNAL("segmentDeleted()"),())  # ... from the display
+        #self._data.delete(para)
+        self.emit(PYSIGNAL("paragraphRearranged()"),())
         
-    def deleteSegment(self, seg):
-        try:
-            segi = self._data.index(seg)
-            self._deleteSegment(segi)
-        except ValueError:
-            pass
+    def deleteSegment(self, seg, i):
+        self._deleteSegment(i)
 
-    def createSegmentForCurrentRegion(self):
-        if self._qwave is not None:
-            c, a, b = self._qwave.getSelectedRegionS()
-            seg = self._data.new(c, a, b)
-            self.addSegment(seg)
+##     def createSegmentForCurrentRegion(self):
+##         print "hello"
+##         if self._qwave is not None:
+##             c, a, b = self._qwave.getSelectedRegionS()
+##             seg = self._data.new(c, a, b)
+##             self.addSegment(seg)
 
     def moveUpSegment(self, seg):
         i = self._data.index(seg)
         if i <= 0: return
-        del self._data[i]
-        self.removeParagraph(i)
+        self._data.delete(i)
+        #self.removeParagraph(i)
         self._data.insert(i-1, seg)
-        self.insertParagraph(seg['TEXT'], i-1)
-        self.emit(PYSIGNAL("paragraphHeightChanged()"), ())
+        #self.insertParagraph(seg['TEXT'], i-1)
+        self.emit(PYSIGNAL("paragraphsRearranged()"), ())
         
 
     def moveDownSegment(self, seg):
         i = self._data.index(seg)
         if i >= len(self._data)-1: return
-        del self._data[i]
-        self.removeParagraph(i)
+        self._data.delete(i)
+        #self.removeParagraph(i)
         self._data.insert(i+1, seg)
-        self.insertParagraph(seg['TEXT'], i+1)
-        self.emit(PYSIGNAL("paragraphHeightChanged()"), ())
+        #self.insertParagraph(seg['TEXT'], i+1)
+        self.emit(PYSIGNAL("paragraphsRearranged()"), ())
 
     def selectSegmentByFrame(self, a, b, c):
         if self._qwave is not None and \
@@ -323,7 +326,7 @@ class CallhomeText(QTextEdit):
             candidate = None
             for i,seg in enumerate(self._data):
                 if seg.start <= x:
-                    if seg.end > x:
+                    if seg.end >= x:
                         if seg['CHANNEL'] == ch:
                             candidate = i
                             break
@@ -394,11 +397,7 @@ class SeglistTextBulletBoard(QCanvasView):
         self.connect(self.text.verticalScrollBar(),
                      SIGNAL("valueChanged(int)"),
                      self._paintBullet)
-        self.connect(self.text, PYSIGNAL("paragraphHeightChanged()"),
-                     self.repaint)
-        self.connect(self.text, PYSIGNAL("segmentAdded()"),
-                     self.repaint)
-        self.connect(self.text, PYSIGNAL("segmentDeleted()"),
+        self.connect(self.text, PYSIGNAL("paragraphsRearranged()"),
                      self.repaint)
         
     def _paintBullet(self, v):
@@ -469,15 +468,25 @@ class CallhomeMixedView(QWidget):
             self._qwave.castSetRegionNoEcho(a,b,c)
 
     # interface to higher level application
-    def load(self, filename):
-        return self._text.load(filename)
+##     def load(self, filename):
+##         return self._text.load(filename)
 
-    def newFile(self):
-        self._text.newFile()
+##     def newFile(self):
+##         self._text.newFile()
+
+    def setFile(self, f):
+        self.connect(f.emitter,PYSIGNAL("test(t)"),self.test)
+        self._text.setFile(f)
+
+    def test(self, x):
+        print x
         
-    def newSegment(self):
-        if self._text is not None:
-            self._text.createSegmentForCurrentRegion()
+    def unsetFile(self):
+        pass
+    
+##     def newSegment(self):
+##         if self._text is not None:
+##             self._text.createSegmentForCurrentRegion()
 
     def rememberCurrentSegment(self):
         self._text.rememberCurrentSegment()

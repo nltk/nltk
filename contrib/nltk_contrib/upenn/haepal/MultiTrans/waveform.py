@@ -10,15 +10,29 @@ class Waveform(QWave.QWave):
         self.setFocusPolicy(self.NoFocus)
         if not self.openAudio(filename): return
 
-        # 0-th row is reserved for a tool bar
-
-        i = 1
+        #
+        #   0 1 2
+        # 0   T
+        # 1   S
+        # 2   R
+        # 3 V W A
+        # 4
+        # 5 V W A
+        # 6
+        #
+        # T - toolbar
+        # S - scrollbar
+        # R - horizontal ruler
+        # V - vertical ruler
+        # W - waveform display
+        # A - amplitude slider
+        #
+        i = 3
         ch = 0
         self.vrs = []
         self.slmap = {}
         self.ch2id = {}
         while ch < self.getInputChannels():
-            print i
             id = self.addWaveform(ch,i,1)
             self.ch2id[ch] = id
 
@@ -33,17 +47,21 @@ class Waveform(QWave.QWave):
             self.addWidget(sl,i,2)
             self.slmap[sl] = id
 
-            i += 1
+            i += 2
             ch += 1
-            
-        self.ruler = QWave.QWaveRuler(self)
-        self.addWidget(self.ruler,i,1)
-        i += 1
 
         self.sb = QWave.QWaveScrollBar(self)
-        self.addWidget(self.sb,i,1)
+        self.addWidget(self.sb,1,1)
+            
+        self.ruler = QWave.QWaveRuler(self, True)
+        self.addWidget(self.ruler,2,1)
 
+        self.nextrow = i
+        
 
+    def getNextRow(self):
+        return self.nextrow
+    
     ### slots
     def sl_changed(self, v):
         sl = self.sender()

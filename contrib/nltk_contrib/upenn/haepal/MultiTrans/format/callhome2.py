@@ -1,17 +1,26 @@
 
 import re, string
+import codecs
 
 ###
 import sys
 sys.path.append("..")
-from aglite2 import *
+from agwrap2 import *
+from qt import QObject, PYSIGNAL
 ###
 
 __all__ = ["Callhome", "Annotation"]
 
+
 class Callhome(list,AnnotationQuery):
+    def __init__(self):
+        list.__init__(self)
+        self._filename = None
+        self.emitter = QObject()
+        
     def load(self, filename):
-        file = open(filename)
+        encoder, decoder, reader, writer = codecs.lookup("utf-8")
+        file = reader(open(filename))
         for i,l in enumerate(file):
             a = l.split()
             if not a: continue
@@ -37,17 +46,43 @@ class Callhome(list,AnnotationQuery):
                                 TEXT=text))
         file.close()
         self.sort(lambda a,b:cmp(a.start,b.start))
+        self._filename = filename
 
-    def save(self, filename):
-        print "saving", filename
+    def save(self, filename=None):
+        if filename is not None:
+            self._filename = filename
+        if self._filename is not None:
+            f = file(self._filename, "w")
+            for i,seg in enumerate(self):
+                print >> f
+                print >> f, seg.start, seg.end, seg['SPKR']+':', seg['TEXT']
+            print >> f
         
     def add(self, seg):
         ch = seg['SPKR']
         for ann in self:
             if ann['SPKR']==ch and seg.overlaps(ann):
                 raise ValueError("can't add overlapping segment: " + str(seg))
-        self.append(seg)
+        list.append(self, seg)
         self.sort(lambda a,b:cmp(a.start,b.start))
+        seg.setCallback(self._agwrapCallback)
+        seg.setCallback2(self._agwrapCallback2)
+        i = self.index(seg)
+        self.emitter.emit(PYSIGNAL("annotationAdded(Annotation,int)"),(seg,i))
+
+    def insert(self, i, seg):
+        list.insert(self, i, seg)
+        self.emitter.emit(PYSIGNAL("annotationAdded(Annotation,int)"),(seg,i))
+
+
+    def delete(self, seg):
+        if isinstance(seg,Annotation):
+            i = self.index(seg)
+        else:
+            i = seg
+            seg = self[i]
+        list.__delitem__(self, i)
+        self.emitter.emit(PYSIGNAL('annotationDeleted(Annotation,int)'), (seg,i))
 
     def new(self, c, a, b):
         return Annotation(start=a, end=b,
@@ -56,4 +91,31 @@ class Callhome(list,AnnotationQuery):
                           CHANNEL=c,
                           TEXT="")
                           
-                          
+
+    def _agwrapCallback(self, *args):
+        self.emitter.emit(PYSIGNAL("annotationChanged(args)"),(args,))
+        
+    def _agwrapCallback2(self, *args):
+        self.emitter.emit(PYSIGNAL("annotationChanged2(args)"),(args,))
+
+
+    # disabled methods
+
+    def __delitem__(self, *args):
+        pass
+
+    def __delslice__(self, *args):
+        pass
+
+    def __add__(self, *args):
+        pass
+    
+    def append(self, *args):
+        pass
+
+    def pop(self, *args):
+        pass
+
+    def remove(self, *args):
+        pass
+    
