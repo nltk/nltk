@@ -80,17 +80,6 @@ class StemmerI:
         """
         raise NotImplementedError()
 
-    def propnames(self):
-        """
-        @rtype: C{dict}
-        @return: The names of the properties that are used by this
-        tokenizer.  These names are encoded as a dictionary that maps
-        from abstract \"property specifications\" to concrete property
-        names.  For a list of the property specifications used by a
-        particular tokenizer, see its class docstring.
-        """
-        raise NotImplementedError()
-
 class AbstractStemmer(StemmerI):
     """
     An abstract base class for stemmers that provides a default
@@ -98,7 +87,7 @@ class AbstractStemmer(StemmerI):
       - L{propnames}
       - L{stem} (based on C{raw_stem})
       
-    @ivar _propnames: A dictionary from property specifications to
+    @ivar _props: A dictionary from property specifications to
         property names, indicating which property names to use.
     """
     __doc__ += StemmerI._STANDARD_PROPERTIES
@@ -108,34 +97,67 @@ class AbstractStemmer(StemmerI):
         if self.__class__ == AbstractStemmer:
             raise AssertionError, "Abstract classes can't eb instantiated"
 
-        self._propnames = propnames
-
-    def propnames(self):
-        # Inherit docs from StemmerI
-        return self._propnames.copy()
+        self._props = propnames
 
     def stem(self, token):
-        # Inherit docs from StemmerI
         assert chktype(1, token, Token)
-        text_pname = self._propnames.get('text', 'text')
-        stem_pname = self._propnames.get('stem', 'stem')
-        token[stem_pname] = self.raw_stem(token[text_pname])
+        text_prop = self._props.get('text', 'text')
+        stem_prop = self._props.get('stem', 'stem')
+        token[stem_prop] = self.raw_stem(token[text_prop])
 
-class REStemmer(AbstractStemmer):
+class RegexpStemmer(AbstractStemmer):
     """
-    A stemmer that uses a regular expression to identify morphological
-    affixes.  Any substrings that matche the regular expression will
+    A stemmer that uses regular expressions to identify morphological
+    affixes.  Any substrings that matches the regular expressions will
     be removed.
     """
     __doc__ += StemmerI._STANDARD_PROPERTIES
     
     def __init__(self, regexp, propnames={}):
-        # Inherit docs from StemmerI
         assert chktype(1, regexp, str)
         AbstractStemmer.__init__(self, propnames)
-        self._regexp = re.compile(regexp)
+        if not hasattr(regexp, 'pattern'):
+            regexp = re.compile(regexp)
+        self._regexp = regexp
 
     def raw_stem(self, word):
-        # Inherit docs from StemmerI
         return self._regexp.sub('', word)
+
+    def __repr__(self):
+        return '<RegexpStemmer: %r>' % self._regexp.pattern
+
+    def regexp(self):
+        """
+        @rtype: C{string}
+        @return: The regular expression that is used to identify
+        morphological affixes.
+        """
+        return self._regexp.pattern
+
+def _demo_stemmer(stemmer):
+    # Tokenize a sample text.
+    from nltk.tokenizer import WSTokenizer
+    text = Token(text='John was eating icecream')
+    WSTokenizer(addlocs=False).tokenize(text)
+
+    # Use the stemmer to stem it.
+    for word in text['subtokens']: stemmer.stem(word)
+
+    # Print the results.
+    print stemmer
+    for word in text['subtokens']:
+        print '%20s => %s' % (word['text'], word['stem'])
+    print
+        
+def demo():
+    # Create a simple regular expression based stemmer
+    stemmer = RegexpStemmer('ing$|s$|e$')
+    _demo_stemmer(stemmer)
+
+    from nltk.stemmer.porter import PorterStemmer
+    stemmer = PorterStemmer()
+    _demo_stemmer(stemmer)
+
+if __name__ == '__main__': demo()
+
     
