@@ -20,7 +20,7 @@
 # This software is maintained by Vivake (vivakeATomniscia.org) and is available at:
 #     http://www.omniscia.org/~vivake/python/PorterStemmer.py
 #
-# Additional modifications were made to incorperate this module into
+# Additional modifications were made to incorporate this module into
 # nltk.  All such modifications are marked with "--NLTK--".  The nltk
 # version of this module is maintained by the NLTK development staff,
 # and is available from the NLTK webpage:
@@ -87,8 +87,8 @@ import string
 import nltk.stemmer, nltk.token
 
 ## --NLTK--
-## Use the stemmer interface as a base class.
-class PorterStemmer(nltk.stemmer.StemmerI):
+## Use AbstractStemmer as a base class.
+class PorterStemmer(nltk.stemmer.AbstractStemmer):
 
     ## --NLTK--
     ## Add a module docstring
@@ -105,7 +105,9 @@ class PorterStemmer(nltk.stemmer.StemmerI):
     PorterStemmer requires that all tokens have string types.
     """
 
-    def __init__(self):
+    ## --NLTK--
+    ## Add a "propnames" argument to the constructor.
+    def __init__(self, propnames={}):
         """The main part of the stemming algorithm starts here.
         b is a buffer holding a word to be stemmed. The letters are in b[k0],
         b[k0+1] ... ending at b[k]. In fact k0 = 0 in this demo program. k is
@@ -115,6 +117,9 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         Note that only lower case sequences are stemmed. Forcing to lower case
         should be done before stem(...) is called.
         """
+        ## --NLTK--
+        ## Call the base class's constructor.
+        nltk.stemmer.AbstractStemmer.__init__(self, propnames)
 
         self.b = ""  # buffer for word to be stemmed 
         self.k = 0
@@ -525,8 +530,8 @@ class PorterStemmer(nltk.stemmer.StemmerI):
         return ret
 
     ## --NLTK--
-    ## Don't use this procedure; we want to work with tokens, instead.
-    ## (commented out the following procedure)
+    ## Don't use this procedure; we want to work with individual
+    ## tokens, instead.  (commented out the following procedure)
     #def stem(self, text):
     #    parts = re.split("(\W+)", text)
     #    numWords = (len(parts) + 1)/2
@@ -545,12 +550,9 @@ class PorterStemmer(nltk.stemmer.StemmerI):
 
     ## --NLTK--
     ## Define a stem() method that implements the StemmerI interface.
-    def stem(self, token):
-        # Inherit documentation
-        word = token.type()
+    def raw_stem(self, word):
         stem = self.stem_word(string.lower(word), 0, len(word) - 1)
-        stem = self.adjust_case(word, stem)
-        return nltk.token.Token(stem, token.loc())
+        return self.adjust_case(word, stem)
 
 ## --NLTK--
 ## This test procedure isn't applicable.
@@ -576,25 +578,30 @@ def demo():
     # Pick a file from the brown corpus, and tokenize it.
     # Keep at most 100 tokens.
     import random
-    from nltk.corpus import treebank
-    item = random.choice(treebank.items('raw'))
-    text = treebank.tokenize(item)[:100]
+    #from nltk.corpus import treebank
+    #item = random.choice(treebank.items('raw'))
+    #text = treebank.tokenize(item)[:100]
+
+    # [XX] temmporary fix, until nltk.corpus is updated:
+    from nltk.tokenizer import *
+    text = Token(text='stemming can be fun and exciting')
+    WSTokenizer().tokenize(text)
 
     # Remove any formatting tokens.
-    text = [tok for tok in text
-            if tok.type() != '.START' and
-            not tok.type().startswith('======')]
+    text = [tok for tok in text['subtokens']
+            if tok['text'] != '.START' and
+            not tok['text'].startswith('======')]
 
     # Create a porter stemmer, and run it over the text.
     stemmer = PorterStemmer()
-    stemmed = [stemmer.stem(tok) for tok in text]
+    for tok in text: stemmer.stem(tok)
 
     # Convert the results to a string, and word-wrap them.
-    results = ' '.join([tok.type() for tok in stemmed])
+    results = ' '.join([tok['stem'] for tok in text])
     results = re.sub(r"(.{,70})\s", r'\1\n', results+' ').rstrip()
 
     # Convert the original to a string, and word wrap it.
-    original = ' '.join([tok.type() for tok in text])
+    original = ' '.join([tok['text'] for tok in text])
     original = re.sub(r"(.{,70})\s", r'\1\n', original+' ').rstrip()
 
     # Print the results.
