@@ -110,9 +110,54 @@ class ParserI:
         raise NotImplementedError()
 
 ##//////////////////////////////////////////////////////
+##  Abstract Base Class for Parsers
+##//////////////////////////////////////////////////////
+class AbstractParser(ParserI):
+    """
+    An abstract base class for parsers.  C{AbstractParser} provides
+    a default implementation for L{parse_n} (based on C{parse}).
+    
+    It also provides L{_parse_from_parse_n}, which can be used to
+    implement C{parse} based on C{parse_n}.
+    """
+    def __init__(self, **propnames):
+        """
+        Construct a new parser.
+        
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        """
+        # Make sure we're not directly instantiated:
+        if self.__class__ == AbstractParser:
+            raise AssertionError, "Abstract classes can't be instantiated"
+        self._propnames = propnames
+
+    def parse_n(self, token, n=None):
+        trees_prop = self._propnames.get('trees', 'trees')
+        tree_prop = self._propnames.get('tree', 'tree')
+        if n == 0:
+            token[trees_prop] = []   # (pathological case)
+        else:
+            self.parse(token)
+            token[trees_prop] = [token[tree_prop]]
+        del token[tree_prop]
+
+    def _parse_from_parse_n(self, token):
+        trees_prop = self._propnames.get('trees', 'trees')
+        tree_prop = self._propnames.get('tree', 'tree')
+        self.parse(token)
+        if token[trees_prop] == []:
+            token[tree_prop] = None
+        else:
+            token[tree_prop] = token[trees_prop][0]
+        del token[trees_prop]
+    
+##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
 ##//////////////////////////////////////////////////////
-class ShiftReduceParser(ParserI):
+class ShiftReduceParser(AbstractParser):
     """
     A simple bottom-up CFG parser that uses two operations, "shift"
     and "reduce", to find a single parse for a text.
@@ -180,7 +225,7 @@ class ShiftReduceParser(ParserI):
         assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
-        self._propnames = propnames
+        AbstractParser.__init__(self, **propnames)
         self._check_grammar()
 
     def grammar(self):
@@ -200,20 +245,6 @@ class ShiftReduceParser(ParserI):
         assert chktype(1, grammar, CFG)
         self._grammar = grammar
     
-    def parse_n(self, token, n=None):
-        assert chktype(1, token, Token)
-        assert chktype(2, n, types.IntType, types.NoneType)
-        trees_prop = self._propnames.get('trees', 'trees')
-        tree_prop = self._propnames.get('tree', 'tree')
-        
-        # Delegate to self.parse().
-        self.parse(token)
-
-        # Copy tree_prop -> trees_prop
-        if token[tree_prop] == None: token[trees_prop] = []
-        else: token[trees_prop] = [token[tree_prop]]
-        del token[tree_prop]
-
     def parse(self, token):
         assert chktype(1, token, [Token], (Token))
         subtokens_prop = self._propnames.get('subtokens', 'subtokens')
@@ -423,7 +454,7 @@ class ShiftReduceParser(ParserI):
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
 ##//////////////////////////////////////////////////////
-class RecursiveDescentParser(ParserI):
+class RecursiveDescentParser(AbstractParser):
     """
     A simple top-down CFG parser that parses texts by recursively
     expanding the fringe of a C{TreeToken}, and matching it against a
@@ -485,7 +516,7 @@ class RecursiveDescentParser(ParserI):
         assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
-        self._propnames = propnames
+        AbstractParser.__init__(self, **propnames)
 
     def grammar(self):
         """
@@ -506,14 +537,7 @@ class RecursiveDescentParser(ParserI):
 
     def parse(self, token):
         # Delegate to parse_n
-        trees_prop = self._propnames.get('trees', 'trees')
-        tree_prop = self._propnames.get('tree', 'tree')
-        
-        self.parse_n(token)
-
-        if len(token[trees_prop]) == 0: token[tree_prop] = None
-        else: token[tree_prop] = token[trees_prop][0]
-        del token[trees_prop]
+        self._parse_from_parse_n(token)
 
     def parse_n(self, token, n=None):
         # Inherit docs from ParserI
@@ -825,10 +849,10 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
-        self._propnames = propnames
         self._stack = None
         self._remaining_text = None
         self._history = []
+        AbstractParser.__init__(self, **propnames)
 
     def parse(self, token):
         assert chktype(1, token, Token)
@@ -999,7 +1023,6 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         assert chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
-        self._propnames = propnames
         self._rtext = None
         self._treetok = None
         self._frontier = [()]
@@ -1007,6 +1030,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._tried_m = {}
         self._history = []
         self._parses = []
+        AbstractParser.__init__(self, **propnames)
     
     def parse_n(self, token, n=None):
         assert chktype(1, token, Token)

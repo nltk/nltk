@@ -1479,9 +1479,8 @@ class SplitRule(REChunkParserRule):
 ##  REChunkParser
 ##//////////////////////////////////////////////////////
 
-class REChunkParser(ChunkParserI):
+class REChunkParser(ChunkParserI, AbstractParser):
     """
-
     A regular expression based chunk parser.  C{REChunkParser} uses a
     sequence X{rules} to find chunks within a text.  The chunking of
     the text is encoded using a C{ChunkString}, and each rule acts by
@@ -1534,7 +1533,7 @@ class REChunkParser(ChunkParserI):
         self._trace = trace
         self._chunk_node = chunk_node
         self._top_node = top_node
-        self._propnames = propnames
+        AbstractParser.__init__(self, **propnames)
 
     def _trace_apply(self, chunkstr, verbose):
         """

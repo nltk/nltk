@@ -58,7 +58,7 @@ defines three chart parsers:
 import re
 from nltk.chktype import chktype
 from nltk.token import Token
-from nltk.parser import ParserI
+from nltk.parser import ParserI, AbstractParser
 from nltk.tree import TreeToken
 from nltk.cfg import CFG, CFGProduction, Nonterminal, nonterminals
 
@@ -1210,7 +1210,7 @@ class PredictorRule(TopDownExpandRule): pass
 ##  Simple Earley Chart Parser
 ########################################################################
 
-class EarleyChartParser(ParserI):
+class EarleyChartParser(AbstractParser):
     """
     A chart parser implementing the Earley parsing algorithm:
 
@@ -1254,8 +1254,8 @@ class EarleyChartParser(ParserI):
         """
         self._grammar = grammar
         self._lexicon = lexicon
-        self._propnames = propnames
         self._trace = trace
+        AbstractParser.__init__(self, **propnames)
 
     def parse_n(self, token):
         trees_prop = self._propnames.get('trees', 'trees')
@@ -1297,14 +1297,7 @@ class EarleyChartParser(ParserI):
             
     def parse(self, token):
         # Delegate to parse_n
-        trees_prop = self._propnames.get('trees', 'trees')
-        tree_prop = self._propnames.get('tree', 'tree')
-        
-        self.parse_n(token)
-
-        if len(token[trees_prop]) == 0: token[tree_prop] = None
-        else: token[tree_prop] = token[trees_prop][0]
-        del token[trees_prop]
+        self._parse_from_parse_n(token)
 
 ########################################################################
 ##  Generic Chart Parser
@@ -1315,7 +1308,7 @@ TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(),
 BU_STRATEGY = [BottomUpInitRule(), BottomUpRule(),
                SingleEdgeFundamentalRule()]
 
-class ChartParser(ParserI):
+class ChartParser(AbstractParser):
     """
     A generic chart parser.  A X{strategy}, or list of
     L{ChartRules<ChartRuleI>}, is used to decide what edges to add to
@@ -1350,7 +1343,7 @@ class ChartParser(ParserI):
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
-        self._propnames = propnames
+        AbstractParser.__init__(self, **propnames)
 
     def parse_n(self, token):
         trees_prop = self._propnames.get('trees', 'trees')
@@ -1380,14 +1373,7 @@ class ChartParser(ParserI):
         
     def parse(self, token):
         # Delegate to parse_n
-        trees_prop = self._propnames.get('trees', 'trees')
-        tree_prop = self._propnames.get('tree', 'tree')
-        
-        self.parse_n(token)
-
-        if len(token[trees_prop]) == 0: token[tree_prop] = None
-        else: token[tree_prop] = token[trees_prop][0]
-        del token[trees_prop]
+        self._parse_from_parse_n(token)
 
 ########################################################################
 ##  Stepping Chart Parser
@@ -1413,10 +1399,10 @@ class SteppingChartParser(ChartParser):
         self._grammar = grammar
         self._strategy = strategy or []
         self._trace = trace
-        self._propnames = propnames
         self._chart = None
         self._current_chartrule = None
         self._restart = False
+        ChartParser.__init__(self, **propnames)
 
     #////////////////////////////////////////////////////////////
     # Initialization
