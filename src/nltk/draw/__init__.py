@@ -793,14 +793,16 @@ class SymbolWidget(TextWidget):
     @cvar SYMBOLS: A dictionary mapping from symbols to the character
         in the C{symbol} font used to render them.
     """
-    SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',  
-                'lambda': '\154', 'merge': '\304',
-                'forall': '\042', 'exists': '\044',
-                'subseteq': '\315', 'subset': '\314',
-                'notsubset': '\313', 'emptyset': '\306',
-                'imp': '\336', 'rightarrow': chr(222), #'\256',
-                'equal': '\75', 'notequal': '\271',
-                'epsilon': 'e'}
+    SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',
+               'lambda': '\154', 'merge': '\304',
+               'forall': '\042', 'exists': '\044',
+               'subseteq': '\315', 'subset': '\314',
+               'notsubset': '\313', 'emptyset': '\306',
+               'imp': '\336', 'rightarrow': chr(222), #'\256',
+               'equal': '\75', 'notequal': '\271',
+               'intersection': '\307', 'union': '\310',
+               'epsilon': 'e',
+               }
     
     def __init__(self, canvas, symbol, **attribs):
         """
@@ -2200,6 +2202,61 @@ class ColorizedList:
         
         return 'break'
     
+##//////////////////////////////////////////////////////
+##  Improved OptionMenu
+##//////////////////////////////////////////////////////
+
+class MutableOptionMenu(Menubutton):
+    def __init__(self, master, values, **options):
+        self._callback = options.get('command')
+        if 'command' in options: del options['command']
+        
+        # Create a variable
+        self._variable = variable = StringVar()
+        if len(values) > 0:
+            variable.set(values[0])
+
+        kw = {"borderwidth": 2, "textvariable": variable,
+              "indicatoron": 1, "relief": RAISED, "anchor": "c",
+              "highlightthickness": 2}
+        kw.update(options)
+        Widget.__init__(self, master, "menubutton", kw)
+        self.widgetName = 'tk_optionMenu'
+        self._menu = Menu(self, name="menu", tearoff=0,)
+        self.menuname = self._menu._w
+
+        self._values = []
+        for value in values: self.add(value)
+
+        self["menu"] = self._menu
+
+    def add(self, value):
+        if value in self._values: return
+        def set(value=value): self.set(value)
+        self._menu.add_command(label=value, command=set)
+        self._values.append(value)
+
+    def set(self, value):
+        self._variable.set(value)
+        if self._callback:
+            self._callback(value)
+
+    def remove(self, value):
+        # Might raise indexerror: pass to parent.
+        i = self._values.index(value)
+        del self._values[i]
+        self._menu.delete(i, i)
+
+    def __getitem__(self, name):
+        if name == 'menu':
+            return self.__menu
+        return Widget.__getitem__(self, name)
+
+    def destroy(self):
+        """Destroy this widget and the associated menu."""
+        Menubutton.destroy(self)
+        self._menu = None
+
 ##//////////////////////////////////////////////////////
 ##  Helpers
 ##//////////////////////////////////////////////////////
