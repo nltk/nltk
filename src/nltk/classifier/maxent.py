@@ -135,14 +135,14 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
     there is no obvious value of M{lambda[i]} corresponding to
     M{w[i]=0}.
     """
-    def __init__(self, fdlist, labels, weights, **kwargs):
+    def __init__(self, fd_list, labels, weights, **kwargs):
         """
         Construct a new conditional exponential classifier model.
         Typically, new classifier models are created by
         C{ClassifierTrainer}s.
 
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The feature detector list defining
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The feature detector list defining
             the features that are used by the C{NBClassifier}.  This
             should be the same feature detector list that was used to
             construct the feature value lists that are the samples of
@@ -161,12 +161,12 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
             weights = array(weights)
         self._weights = weights
         
-        AbstractFeatureClassifier.__init__(self, fdlist, labels)
+        AbstractFeatureClassifier.__init__(self, fd_list, labels)
 
-    def fvlist_likelihood(self, fvlist, label):
+    def fv_list_likelihood(self, fv_list, label):
         # Inherit docs from AbstractFeatureClassifier
         prod = 1.0
-        for (id, val) in fvlist.assignments():
+        for (id, val) in fv_list.assignments():
             prod *= (self._weights[id] ** val)
         return prod
 
@@ -196,7 +196,7 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
             exponential classifier.
         """
         return ('<ConditionalExponentialClassifier: %d labels, %d features>' %
-                (len(self._labels), len(self._fdlist)))
+                (len(self._labels), len(self._fd_list)))
 
 ##//////////////////////////////////////////////////////
 ##  Generalized Iterative Scaling
@@ -220,34 +220,34 @@ class GIS_FDList(AbstractFDList):
         - The feature values must sum to the same non-negative number
           for every C{LabeledText}
     """
-    def __init__(self, base_fdlist, C=None):
+    def __init__(self, base_fd_list, C=None):
         """
         Construct a new C{GIS_FDList}.
 
-        @param base_fdlist: The C{FeatureDetectorList} with which to
-            merge the two new features.  C{base_fdlist} must contain
+        @param base_fd_list: The C{FeatureDetectorList} with which to
+            merge the two new features.  C{base_fd_list} must contain
             boolean features.
-        @type base_fdlist: C{FeatureDetectorListI}
+        @type base_fd_list: C{FeatureDetectorListI}
 
         @param C: The correction constant for this C{GIS_FDList}.  This
             value must be at least as great as the highest sum of
-            feature values that could be returned by C{base_fdlist}.
-            If no value is given, a default of C{len(base_fdlist)} is
+            feature values that could be returned by C{base_fd_list}.
+            If no value is given, a default of C{len(base_fd_list)} is
             used.  While this value is safe, it is highly
             conservative, and usually leads to poor performance.
         @type C: C{int}
         """
-        self._base_fdlist = base_fdlist
-        if C == None: C = len(self._base_fdlist)
+        self._base_fd_list = base_fd_list
+        if C == None: C = len(self._base_fd_list)
         self._C = C
         
     def __len__(self):
         # Inherit docs from FeatureDetectorListI
-        return len(self._base_fdlist) + 2
+        return len(self._base_fd_list) + 2
 
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
-        values = self._base_fdlist.detect(labeled_text)
+        values = self._base_fd_list.detect(labeled_text)
         assignments = list(values.assignments())
 
         # If we knew the features were binary we could do:
@@ -256,14 +256,14 @@ class GIS_FDList(AbstractFDList):
         correction = self._C
         for (f,v) in assignments: correction -= v
         
-        assignments.append( (len(self._base_fdlist)+1, correction) )
+        assignments.append( (len(self._base_fd_list)+1, correction) )
         if correction < 0:
             raise ValueError("C value was set too low for GIS_FDList")
         
         # Add the always-on feature
-        assignments.append( (len(self._base_fdlist), 1) )
+        assignments.append( (len(self._base_fd_list), 1) )
 
-        return SimpleFeatureValueList(assignments, len(self._base_fdlist)+2)
+        return SimpleFeatureValueList(assignments, len(self._base_fd_list)+2)
 
     def C(self):
         """
@@ -298,7 +298,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
     text.  In other words, the following must be true for every
     labeled text C{lt}::
 
-        len(fdlist.detect(lt).assignments()) <= C
+        len(fd_list.detect(lt).assignments()) <= C
 
     Lower values of C{C} will cause faster convergance.  However, if
     the above constraint is violated, then GIS may produce incorrect
@@ -321,27 +321,27 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
           for the M{i}th feature that is predicted by the current
           model.
 
-    @ivar _fdlist: The feature detector list
+    @ivar _fd_list: The feature detector list
     @ivar _labels: The set of labels
     @ivar _debug: The default debug level
     @ivar _iter: The default number of iterations
     """
-    def __init__(self, fdlist):
+    def __init__(self, fd_list):
         """
         Construct a new Generalized Iterative Scaling classifier
         trainer for C{ConditionalExponentialClassifier}s.
 
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The base C{FeatureDetectorList} that should be
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The base C{FeatureDetectorList} that should be
             used by this classifier.  This C{FeatureDetectorList} will
             be augmented by two additional features: one which is
             always active; and one which ensures that the feature
             values must sum to the same non-negative number for every
             C{LabeledText}
         """
-        self._fdlist = fdlist
+        self._fd_list = fd_list
 
-    def _fcount_emperical(self, fdlist, labeled_tokens):
+    def _fcount_emperical(self, fd_list, labeled_tokens):
         """
         Calculate the emperical count for each feature.
         The emperical count for the M{i}th feature
@@ -349,12 +349,12 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         feature over the labeled texts in C{labeled_tokens}.  It is
         defined as::
 
-            SUM[lt] fdlist.detect(lt)[i]
+            SUM[lt] fd_list.detect(lt)[i]
 
         Where M{lt} are the labeled texts from C{labeled_tokens}.
 
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The feature detector list to use to generate
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The feature detector list to use to generate
             the emperical counts.
         @type labeled_tokens: C{list} of C{Token} with C{LabeledText}
             type 
@@ -366,17 +366,17 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             emperical count for feature M{i}.
         @rtype: C{array} of C{float}
         """
-        fcount = Numeric.zeros(len(fdlist), 'd')
+        fcount = Numeric.zeros(len(fd_list), 'd')
         
         for labeled_token in labeled_tokens:
             labeled_text = labeled_token.type()
-            values = fdlist.detect(labeled_text)
+            values = fd_list.detect(labeled_text)
             for (feature_id, val) in values.assignments():
                 fcount[feature_id] += val
 
         return fcount
 
-    def _fcount_estimated(self, classifier, fdlist,
+    def _fcount_estimated(self, classifier, fd_list,
                           labeled_tokens, labels):
         """
         Calculate the estimated count for each feature.  The
@@ -385,7 +385,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         texts in C{labeled_tokens} that is predicted by C{classifier}.
         It is defined as::
 
-            SUM[t] SUM[l] (fdlist.detect(LabeledText(t, l))[i] *
+            SUM[t] SUM[l] (fd_list.detect(LabeledText(t, l))[i] *
                            classifier.prob(LabeledText(t, l)))
 
         Where M{t} are the texts from C{labeled_tokens}; and M{l} are
@@ -394,8 +394,8 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         @type classifier: C{ClassifierI}
         @param classifier: The classifier that should be used to
             estimate the probability of labeled texts.
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The feature detector list to use to generate
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The feature detector list to use to generate
             the estimated counts.
         @type labeled_tokens: C{list} of C{Token} with C{LabeledText}
             type 
@@ -410,7 +410,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             estimated count for feature M{i}.
         @rtype: C{array} of C{float}
         """
-        fcount = Numeric.zeros(len(fdlist), 'd')
+        fcount = Numeric.zeros(len(fd_list), 'd')
         for tok in labeled_tokens:
             text = tok.type().text()
             dist = classifier.distribution_list(Token(text, tok.loc()))
@@ -418,8 +418,8 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
                 label = labels[lnum]
                 p = dist[lnum]
                 ltext = LabeledText(text, label)
-                fvlist = fdlist.detect(ltext)
-                for (fid, val) in fvlist.assignments():
+                fv_list = fd_list.detect(ltext)
+                for (fid, val) in fv_list.assignments():
                     fcount[fid] += p * val
         return fcount
 
@@ -450,13 +450,13 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             can fire for any labeled text.  In other words, the
             following must be true for every labeled text C{lt}::
 
-                len(fdlist.detect(lt).assignments()) <= C
+                len(fd_list.detect(lt).assignments()) <= C
 
             Lower values of C{C} will cause faster convergance.
             However, if the above constraint is violated, then GIS may
             produce incorrect results.  Therefore, you should choose
             the lowest value that you are sure obeys the above
-            constraint.  Default=C{len(fdlist)}.  (type=C{int})
+            constraint.  Default=C{len(fd_list)}.  (type=C{int})
             
           - C{accuracy_cutoff}: The accuracy value that indicates
             convergence.  If the accuracy becomes closer to one
@@ -488,7 +488,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         # Process the keyword arguments.
         iter = 20
         debug = 0
-        C = len(self._fdlist)
+        C = len(self._fd_list)
         labels = None
         ll_cutoff = lldelta_cutoff = None
         acc_cutoff = accdelta_cutoff = None
@@ -511,35 +511,35 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
 
         # Build the corrected feature detector list
         if debug > 0: print '  ==> Building corrected FDList'
-        corrected_fdlist = GIS_FDList(self._fdlist, C)
-        Cinv = 1.0 / corrected_fdlist.C()
+        corrected_fd_list = GIS_FDList(self._fd_list, C)
+        Cinv = 1.0 / corrected_fd_list.C()
 
         # Memoize the feature value lists for training data; this
         # improves speed.
         if debug > 0: print '  ==> Memoizing feature value lists'
         texts = [ltok.type().text() for ltok in labeled_tokens]
         if debug > 3: print '    -> Calling MemoizedFDList'
-        memoized_fdlist = MemoizedFDList(corrected_fdlist,
+        memoized_fd_list = MemoizedFDList(corrected_fd_list,
                                          texts, labels)
         if debug > 3: print '    -> Done calling MemoizedFDList'
 
         # Count how many times each feature occurs in the training data.
-        fcount_emperical = self._fcount_emperical(memoized_fdlist,
+        fcount_emperical = self._fcount_emperical(memoized_fd_list,
                                                   labeled_tokens)
         
         # An array that is 1 whenever fcount_emperical is zero.  In
         # other words, it is one for any feature that's not attested
         # in the data.  This is used to avoid division by zero.
-        unattested = Numeric.zeros(len(memoized_fdlist))
+        unattested = Numeric.zeros(len(memoized_fd_list))
         for i in range(len(fcount_emperical)):
             if fcount_emperical[i] == 0: unattested[i] = 1
 
         # Build the classifier.  Start with weight=1 for each feature,
         # except for the unattested features.  Start those out at
         # zero, since we know that's the correct value.
-        weights = Numeric.ones(len(memoized_fdlist), 'd')
+        weights = Numeric.ones(len(memoized_fd_list), 'd')
         weights -= unattested
-        classifier = ConditionalExponentialClassifier(memoized_fdlist, 
+        classifier = ConditionalExponentialClassifier(memoized_fd_list, 
                                                       labels, weights)
 
         # Old log-likelihood and accuracy; used to check if the change
@@ -563,7 +563,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             # Use the model to estimate the number of times each
             # feature should occur in the training data.
             fcount_estimated = self._fcount_estimated(classifier,
-                                                      memoized_fdlist,
+                                                      memoized_fd_list,
                                                       labeled_tokens,
                                                       labels)
             
@@ -599,11 +599,11 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             print
 
         # Don't use the memoized features.
-        return ConditionalExponentialClassifier(corrected_fdlist, labels,
+        return ConditionalExponentialClassifier(corrected_fd_list, labels,
                                                 classifier.weights())
 
     def __repr__(self):
-        return '<GISMaxentClassifierTrainer: %d features>' % len(self._fdlist)
+        return '<GISMaxentClassifierTrainer: %d features>' % len(self._fd_list)
 
 ##//////////////////////////////////////////////////////
 ##  IIS
@@ -644,18 +644,18 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
     C{IISMaxentClassifierTrainer} uses Newton's method to solve for
     M{delta[i]}.
     """
-    def __init__(self, fdlist):
+    def __init__(self, fd_list):
         """
         Construct a new Generalized Iterative Scaling classifier
         trainer for C{ConditionalExponentialClassifier}s.
 
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The C{FeatureDetectorList} that should be
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The C{FeatureDetectorList} that should be
             used by this classifier.
         """
-        self._fdlist = fdlist
+        self._fd_list = fd_list
 
-    def _ffreq_emperical(self, fdlist, labeled_tokens):
+    def _ffreq_emperical(self, fd_list, labeled_tokens):
         """
         Calculate the emperical frequency for each feature.
         The emperical frequency for the M{i}th feature represents the
@@ -663,12 +663,12 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         over the labeled texts in C{labeled_tokens}.  It is defined
         as::
 
-            SUM[lt] fdlist.detect(lt)[i]/len(labeled_tokens)
+            SUM[lt] fd_list.detect(lt)[i]/len(labeled_tokens)
 
         Where M{lt} are the labeled texts from C{labeled_tokens}.
 
-        @type fdlist: C{FeatureDetectorListI}
-        @param fdlist: The feature detector list to use to generate
+        @type fd_list: C{FeatureDetectorListI}
+        @param fd_list: The feature detector list to use to generate
             the emperical frequencies.
         @type labeled_tokens: C{list} of C{Token} with C{LabeledText}
             type 
@@ -680,24 +680,24 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             emperical frequency for feature M{i}.
         @rtype: C{array} of C{float}
         """
-        fcount = Numeric.zeros(len(fdlist), 'd')
+        fcount = Numeric.zeros(len(fd_list), 'd')
         
         for labeled_token in labeled_tokens:
             labeled_text = labeled_token.type()
-            values = fdlist.detect(labeled_text)
+            values = fd_list.detect(labeled_text)
             for (feature_id, val) in values.assignments():
                 fcount[feature_id] += val
 
         return fcount / len(labeled_tokens)
 
-    def _nfmap(self, labeled_tokens, labels, fdlist):
+    def _nfmap(self, labeled_tokens, labels, fd_list):
         """
         Construct a map that can be used to compress C{nf} (which is
         typically sparse).
 
         M{nf(ltext)} is the sum of the feature values for M{ltext}::
 
-            nf(ltext) = SUM[i] fdlist.detect(ltext)[i]
+            nf(ltext) = SUM[i] fd_list.detect(ltext)[i]
 
         This represents the number of features that are active for a
         given labeled text.  This method finds all values of M{nf()}
@@ -719,9 +719,9 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         @param labels: The set of labels that should be used to decide
             which values of M{nf()} are attested.
         @type labels: C{sequence} of (immutable)
-        @param fdlist: The feature detector list that should be used
+        @param fd_list: The feature detector list that should be used
             to find feature value lists for C{LabeledText}s.
-        @type fdlist: C{FeatureDetectorListI}
+        @type fd_list: C{FeatureDetectorListI}
         """
         # Map from nf to indices.  This allows us to use smaller arrays. 
         nfmap = {}
@@ -731,15 +731,15 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                 nf = 0
                 ltext = LabeledText(labeled_tokens[i].type().text(),
                                     labels[j])
-                fvlist = fdlist.detect(ltext)
-                for (id, val) in fvlist.assignments():
+                fv_list = fd_list.detect(ltext)
+                for (id, val) in fv_list.assignments():
                     nf += val
                 if not nfmap.has_key(nf):
                     nfmap[nf] = nfnum
                     nfnum += 1
         return nfmap
 
-    def _deltas(self, fdlist, labeled_tokens, labels,
+    def _deltas(self, fd_list, labeled_tokens, labels,
                 classifier, unattested, ffreq_emperical, nfmap,
                 nfarray, nftranspose):
         """
@@ -750,13 +750,13 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
           ffreq_emperical[i]
                  =
           SUM[t,l] (classifier.prob(LabeledText(t,l)) *
-                    fdlist.detect(LabeledText(t,l))[i] *
+                    fd_list.detect(LabeledText(t,l))[i] *
                     exp(delta[i] * nf(LabeledText(t,l))))
 
         Where:
             - M{t} is a text C{labeled_tokens}
             - M{l} is an element of C{labels}
-            - M{nf(ltext)} = SUM[M{j}] C{fdlist.detect}(M{ltext})[M{j}] 
+            - M{nf(ltext)} = SUM[M{j}] C{fd_list.detect}(M{ltext})[M{j}] 
 
         This method uses Newton's method to solve this equation for
         M{delta[i]}.  In particular, it starts with a guess of
@@ -767,10 +767,10 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         until convergence, where M{sum1} and M{sum2} are defined as::
         
           sum1 = SUM[t,l] (classifier.prob(LabeledText(t,l)) *
-                           fdlist.detect(LabeledText(t,l))[i] *
+                           fd_list.detect(LabeledText(t,l))[i] *
                            exp(delta[i] * nf(LabeledText(t,l))))
           sum2 = SUM[t,l] (classifier.prob(LabeledText(t,l)) *
-                           fdlist.detect(LabeledText(t,l))[i] *
+                           fd_list.detect(LabeledText(t,l))[i] *
                            nf(LabeledText(t,l)) *
                            exp(delta[i] * nf(LabeledText(t,l))))
 
@@ -782,9 +782,9 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         allows C{_deltas} to calculate M{sum1} and M{sum2} using
         matrices, which yields a signifigant performance improvement. 
 
-        @param fdlist: The feature detector list for the classifier
+        @param fd_list: The feature detector list for the classifier
             that this C{IISMaxentClassifierTrainer} is training.
-        @type fdlist: C{FeatureDetectorListI}
+        @type fd_list: C{FeatureDetectorListI}
         @param labeled_tokens: The set of training tokens.
         @type labeled_tokens: C{list} of C{Token} with C{LabeledText}
             type
@@ -818,13 +818,13 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         NEWTON_CONVERGE = 1e-12
         MAX_NEWTON = 30
         
-        deltas = Numeric.ones(len(fdlist), 'd')
+        deltas = Numeric.ones(len(fd_list), 'd')
 
         # Precompute the A matrix:
         # A[nf][id] = sum ( p(text) * p(label|text) * f(text,label) )
         # over all label,text s.t. num_features[label,text]=nf
         A = Numeric.zeros((len(nfmap),
-                           len(fdlist)), 'd')
+                           len(fd_list)), 'd')
         for i in xrange(len(labeled_tokens)):
             text = labeled_tokens[i].type().text()
             loc = labeled_tokens[i].loc()
@@ -832,8 +832,8 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             for j in xrange(len(labels)):
                 label = labels[j]
                 ltext = LabeledText(text, labels[j])
-                fvlist = fdlist.detect(ltext)
-                assignments = fvlist.assignments()
+                fv_list = fd_list.detect(ltext)
+                assignments = fv_list.assignments()
 
                 # Find the number of active features.
                 nf = 0.0
@@ -951,12 +951,12 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         # improves speed.
         if debug > 0: print '  ==> Memoizing training results'
         texts = [ltok.type().text() for ltok in labeled_tokens]
-        memoized_fdlist = MemoizedFDList(self._fdlist,
+        memoized_fd_list = MemoizedFDList(self._fd_list,
                                          texts, labels)
 
         # Find the frequency with which each feature occurs in the
         # training data.
-        ffreq_emperical = self._ffreq_emperical(memoized_fdlist,
+        ffreq_emperical = self._ffreq_emperical(memoized_fd_list,
                                                 labeled_tokens)
 
         # Find the nf map, and related variables nfarray and nfident.
@@ -964,7 +964,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         # nfmap compresses this sparse set of values to a dense list.
         # nfarray performs the reverse operation.  nfident is 
         # nfarray multiplied by an identity matrix.
-        nfmap = self._nfmap(labeled_tokens, labels, memoized_fdlist)
+        nfmap = self._nfmap(labeled_tokens, labels, memoized_fd_list)
         nfs = nfmap.items()
         nfs.sort(lambda x,y:cmp(x[1],y[1]))
         nfarray = Numeric.array([nf for (nf, i) in nfs], 'd')
@@ -973,16 +973,16 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         # An array that is 1 whenever ffreq_emperical is zero.  In
         # other words, it is one for any feature that's not attested
         # in the data.  This is used to avoid division by zero.
-        unattested = Numeric.zeros(len(memoized_fdlist))
+        unattested = Numeric.zeros(len(memoized_fd_list))
         for i in range(len(unattested)):
             if ffreq_emperical[i] == 0: unattested[i] = 1
 
         # Build the classifier.  Start with weight=1 for each feature,
         # except for the unattested features.  Start those out at
         # zero, since we know that's the correct value.
-        weights = Numeric.ones(len(memoized_fdlist), 'd')
+        weights = Numeric.ones(len(memoized_fd_list), 'd')
         weights -= unattested
-        classifier = ConditionalExponentialClassifier(memoized_fdlist, 
+        classifier = ConditionalExponentialClassifier(memoized_fd_list, 
                                                       labels, weights)
                 
         if debug > 0: print '  ==> Training (%d iterations)' % iter
@@ -999,7 +999,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                         accuracy(classifier, labeled_tokens)))
 
             # Calculate the deltas for this iteration, using Newton's method.
-            deltas = self._deltas(memoized_fdlist, labeled_tokens,
+            deltas = self._deltas(memoized_fd_list, labeled_tokens,
                                   labels, classifier, unattested,
                                   ffreq_emperical, nfmap, nfarray,
                                   nftranspose)
@@ -1032,11 +1032,11 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
             print
                    
         # Don't use memoized features.
-        return ConditionalExponentialClassifier(self._fdlist, labels,
+        return ConditionalExponentialClassifier(self._fd_list, labels,
                                                 classifier.weights())
 
     def __repr__(self):
-        return '<IISMaxentClassifierTrainer: %d features>' % len(self._fdlist)
+        return '<IISMaxentClassifierTrainer: %d features>' % len(self._fd_list)
         
 
 ##//////////////////////////////////////////////////////
@@ -1058,9 +1058,9 @@ def simple_test(trainer_class):
         i += 1
 
     func1 = lambda w:(w.label() in ('dans', 'en'))
-    fdlist = LabeledTextFunctionFDList(func1, (1,))
+    fd_list = LabeledTextFunctionFDList(func1, (1,))
 
-    trainer = trainer_class(fdlist)
+    trainer = trainer_class(fd_list)
 
     classifier = trainer.train(toks, labels=labels, iter=15)
     dist = classifier.distribution_dictionary(Token('to'))
@@ -1093,23 +1093,23 @@ def demo(labeled_tokens, trainer_class,
     
     if debug: print _timestamp(t), 'Constructing feature list...'
     f_range = [chr(i) for i in (range(ord('a'), ord('z'))+[ord("'")])]
-    fdlist = TextFunctionFDList(lambda w:w[0:1], f_range, labels)
-    fdlist += TextFunctionFDList(lambda w:w[-1:], f_range, labels)
-    fdlist += TextFunctionFDList(lambda w:w[-2:-1], f_range, labels)
-    fdlist += TextFunctionFDList(lambda w:w, ["atlanta's"], labels)
-    n_lens = (n_features - len(fdlist))/len(labels)
-    fdlist += TextFunctionFDList(lambda w:len(w), range(n_lens), labels)
+    fd_list = TextFunctionFDList(lambda w:w[0:1], f_range, labels)
+    fd_list += TextFunctionFDList(lambda w:w[-1:], f_range, labels)
+    fd_list += TextFunctionFDList(lambda w:w[-2:-1], f_range, labels)
+    fd_list += TextFunctionFDList(lambda w:w, ["atlanta's"], labels)
+    n_lens = (n_features - len(fd_list))/len(labels)
+    fd_list += TextFunctionFDList(lambda w:len(w), range(n_lens), labels)
 
     # Only use the features that are attested.
     fdselector = AttestedFeatureSelector(labeled_tokens,
                                          min_count=2)
-    fdlist = fdselector.select(fdlist)
+    fd_list = fdselector.select(fd_list)
 
-    trainer = trainer_class(fdlist)
+    trainer = trainer_class(fd_list)
     if debug:
         print _timestamp(t), 'Training', trainer
         print _timestamp(t), '  %d samples' % len(labeled_tokens)
-        print _timestamp(t), '  %d features' % len(fdlist)
+        print _timestamp(t), '  %d features' % len(fd_list)
         print _timestamp(t), '  %d labels' % len(labels)
 
     # If it's GIS, specify C.
