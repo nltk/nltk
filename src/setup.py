@@ -1,7 +1,6 @@
 #!/usr/local/bin/python
 #
-# Distutils setup script for the Natural Language
-# Processing Toolkit
+# Distutils setup script for the Natural Language Toolkit
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
