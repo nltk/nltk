@@ -1393,6 +1393,10 @@ class SteppingChartParser(ChartParser):
     adds a single edge to the chart.  C{set_strategy} changes the
     strategy used by the chart parser.  C{parses} returns the set of
     parses that has been found by the chart parser.
+
+    @ivar _restart: Records whether the parser's strategy, grammar,
+        or chart has been changed.  If so, then L{step} must restart
+        the parsing algorithm.
     """
     def __init__(self, grammar, strategy=None, trace=0, **propnames):
         self._grammar = grammar
@@ -1401,27 +1405,116 @@ class SteppingChartParser(ChartParser):
         self._propnames = propnames
         self._chart = None
         self._current_chartrule = None
-        self._edgeiter = None
+        self._restart = False
+
+    #////////////////////////////////////////////////////////////
+    # Initialization
+    #////////////////////////////////////////////////////////////
 
     def initialize(self, token):
+        "Begin parsing the given token."
         self._chart = Chart(token, **self._propnames)
+        self._restart = True
 
-    def set_strategy(self, strategy):
-        if strategy != self._strategy:
-            self._strategy = strategy
-            self._edgeiter = None
+    #////////////////////////////////////////////////////////////
+    # Stepping
+    #////////////////////////////////////////////////////////////
 
-    def parses(self):
-        return self._chart.parses(self._grammar.start())
+    def step(self):
+        """
+        @return: A generator that adds edges to the chart, one at a
+        time.  Each time the generator is resumed, it adds a single
+        edge and yields that edge.  If no more edges can be added,
+        then it yields C{None}.
+
+        If the parser's strategy, grammar, or chart is changed, then
+        the generator will continue adding edges using the new
+        strategy, grammar, or chart.
+
+        Note that this generator never terminates, since the grammar
+        or strategy might be changed to values that would add new
+        edges.  Instead, it yields C{None} when no more edges can be
+        added with the current strategy and grammar.
+        """
+        while 1:
+            self._restart = False
+            w = 50/(self._chart.num_leaves()+1)
+            
+            for e in self._parse():
+                if self._trace > 1: print self._current_chartrule
+                if self._trace > 0: print self._chart.pp_edge(e,w)
+                yield e
+                if self._restart: break
+            else:
+                yield None # No more edges.
+
+    def _parse(self):
+        """
+        A generator that implements the actual parsing algorithm.
+        L{step} iterates through this generator, and restarts it
+        whenever the parser's strategy, grammar, or chart is modified.
+        """
+        edges_added = 1
+        while edges_added > 0:
+            edges_added = 0
+            for rule in self._strategy:
+                self._current_chartrule = rule
+                for e in rule.apply_everywhere(self._chart, self._grammar):
+                    edges_added += 1
+                    yield e
+
+    #////////////////////////////////////////////////////////////
+    # Accessors
+    #////////////////////////////////////////////////////////////
+
+    def strategy(self):
+        "@return: The strategy used by this parser."
+        return self._strategy
+
+    def grammar(self):
+        "@return: The grammar used by this parser."
+        return self._grammar
 
     def chart(self):
+        "@return: The chart that is used by this parser."
         return self._chart
 
-    def set_chart(self):
-        self._chart = chart
-
     def current_chartrule(self):
+        "@return: The chart rule used to generate the most recent edge."
         return self._current_chartrule
+
+    def parses(self):
+        "@return: The parse trees currently contained in the chart."
+        return self._chart.parses(self._grammar.start())
+
+    #////////////////////////////////////////////////////////////
+    # Parser modification
+    #////////////////////////////////////////////////////////////
+
+    def set_strategy(self, strategy):
+        """
+        Change the startegy that the parser uses to decide which edges
+        to add to the chart.
+        @type strategy: C{list} of L{ChartRuleI}
+        @param strategy: A list of rules that should be used to decide
+            what edges to add to the chart.
+        """
+        self._strategy = strategy[:] # Make a copy.
+        self._restart = True
+
+    def set_grammar(self, grammar):
+        "Change the grammar used by the parser."
+        self._grammar = grammar
+        self._restart = True
+
+    def set_chart(self, chart):
+        "Load a given chart into the chart parser."
+        self._chart = chart
+        self._restart = True
+
+    #////////////////////////////////////////////////////////////
+    # Standard parser methods
+    #////////////////////////////////////////////////////////////
 
     def parse_n(self, token):
         trees_prop = self._propnames.get('trees', 'trees')
@@ -1430,45 +1523,11 @@ class SteppingChartParser(ChartParser):
         self.initialize(token)
 
         # Step until no more edges are generated.
-        for e in self.step(token):
-            print self.current_chartrule()
+        for e in self.step():
             if e is None: break
             
         # Output a list of complete parses.
         token[trees_prop] = self.parses()
-    
-    def step(self, token):
-        chart = Chart(token, **self._propnames)
-
-        while 1:
-            # Keep track of what strategy & grammar we're using.
-            strategy = self._strategy
-            grammar = self._grammar
-            
-            for e in self._step():
-                yield e
-
-                # If the strategy or grammar was changed, then 
-                # start over.
-                if strategy != self._strategy: break
-                if grammar != self._grammar: break
-            else:
-                yield None # No more edges.
-
-    def _step(self):
-        chart = self._chart
-        grammar = self._grammar
-        
-        edges_added = 1
-        while edges_added > 0:
-            edges_added = 0
-            for rule in self._strategy:
-                self._current_chartrule = rule
-                for e in rule.apply_everywhere(chart, grammar):
-                    edges_added += 1
-                    yield e
-
-        
 
 ########################################################################
 ##  Demo Code
@@ -1524,7 +1583,7 @@ def demo():
     #parser.parse_n(tok)
     #for tree in tok['trees']: print tree
 
-    parser = SteppingChartParser(grammar2, BU_STRATEGY, leaf='text')
+    parser = SteppingChartParser(grammar2, BU_STRATEGY, leaf='text', trace=1)
     parser.parse_n(tok)
     for tree in tok['trees']: print tree
     
