@@ -77,7 +77,8 @@ class AnnotationGraph:
     def add(self, token):
         self._tokens.append(token)
 
-    def set_locs_equal(offset1, offset2)
+    def join_locs(self, *offsets):
+        pass # stub
 
     def __str__(self):
         return '\n'.join([`t` for t in self._tokens])
@@ -131,7 +132,7 @@ print partitur
 ## Childes Graph (figure 4a)
 ############################################################
 
-chiles_a = AnnotationGraph()
+childes_a = AnnotationGraph()
 # Utterances
 childes_a.add(Token('yahoo',
                 Location(0, 1, unit='u'), type='W'))
@@ -146,7 +147,7 @@ print childes_a
 ## Childes Graph (figure 4b)
 ############################################################
 
-chiles_a = AnnotationGraph()
+childes_b = AnnotationGraph()
 # Words
 childes_b.add(Token('yahoo',  Location(0,  1,  unit='w'), type='W'))
 childes_b.add(Token('.',      Location(1,  2,  unit='w'), type='W'))
