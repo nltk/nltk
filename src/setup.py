@@ -42,8 +42,11 @@ setup(
     
     #############################################
     ## Package List
-    packages = ['nltk', 'nltk.test', 'nltk.draw', 'nltk.classifier',
-                'nltk.parser', 'nltk.stemmer'],
+    packages = ['nltk', 'nltk.classifier',
+                'nltk.clusterer', 'nltk.corpus', 'nltk.draw',
+                'nltk.feature', 'nltk.hmm', 'nltk.parser',
+                'nltk.stemmer', 'nltk.tagger', 'nltk.test',
+                'nltk.tokenizer', 'nltk.tokenreader']
     
     #############################################
     ## Extension Modules
