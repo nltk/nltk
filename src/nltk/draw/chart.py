@@ -10,16 +10,19 @@ Drawing charts, etc.
 """
 
 import Tkinter
-import math
-from nltk.chartparser import Chart, edgesort
+#import math
+from nltk.chartparser import Chart, edgecmp
 from nltk.token import Token, Location
 
 class ChartView:
     """
-    @ivar _source: The list of tokens that the chart maps over.
-    @ivar _chart: The chart we're drawing.
     @ivar _root: The root window.
-    @ivar _canvas: The canvas we're drawing on.
+    @ivar _chart_canvas: The canvas we're drawing on.
+    @ivar _tree_canvas: The canvas we're drawing on.
+    @ivar _source_canvas: The canvas we're drawing on.
+    
+    @ivar _chart: The chart we're drawing.
+    @ivar _source: The list of tokens that the chart maps over.
     @ivar _height: The max height of a tree over the tokens
     @ivar _unitsize: Pixel size of a unit.
     @ivar _edgelevels: Edges on each level
@@ -53,14 +56,33 @@ class ChartView:
 
         # Create the chart window.
         self._root = root
-        self._canvas = Tkinter.Canvas(self._root, width=600,
-                                      height=600)
-        self._canvas.pack(expand='true', fill='both')
+        self._tree_canvas = self._sb_canvas(root, 'n', 'x')
+        cframe = Tkinter.Frame(self._root, relief='sunk', border=2)
+        cframe.pack(fill='both')
+        self._source_canvas = Tkinter.Canvas(cframe, width=600,
+                                             height=50)
+        self._source_canvas.pack(fill='both')
+        self._chart_canvas = self._sb_canvas(root)
+        self._chart_canvas['height'] = 400
 
         self._analyze()
-        #self.draw()
+        self._chart_canvas.bind('<Configure>', self._configure)
 
-        self._canvas.bind('<Configure>', self._configure)
+    def _sb_canvas(self, root, expand='y', fill='both'):
+        cframe =Tkinter.Frame(root, relief='sunk', border=2)
+        cframe.pack(fill=fill, expand=expand)
+        canvas = Tkinter.Canvas(cframe)
+        
+        # Give the canvas a scrollbar.
+        sb = Tkinter.Scrollbar(cframe, orient='vertical')
+        sb.pack(side='right', fill='y')
+        canvas.pack(side='left', fill=fill, expand='yes')
+
+        # Connect the scrollbars to the canvas.
+        sb['command']=canvas.yview
+        canvas['yscrollcommand'] = sb.set
+
+        return canvas
 
     def _configure(self, e):
         loc = self._chart.loc()
@@ -92,15 +114,12 @@ class ChartView:
             if loc.overlaps(otherloc):
                 return 1
             if ((len(loc) == 0 or len(otherloc)==0) and
-                (loc.start() == otherloc.end() or
-                 loc.start() == otherloc.start() or
-                 loc.end() == otherloc.end() or
-                 loc.end() == otherloc.start())):
+                loc.start() == otherloc.start()):
                 return 1
         return 0
 
     def _analyze_edge(self, edge):
-        c = self._canvas
+        c = self._chart_canvas
         str = ' '.join([repr(t) for t in edge.dr()])
         tag = c.create_text(0,0, text=str,
                             anchor='nw', justify='left')
@@ -109,7 +128,7 @@ class ChartView:
         width = bbox[2] + ChartView._TOK_SPACING
         edgelen = max(len(edge.loc()), 1)
         self._unitsize = max(width/edgelen, self._unitsize)
-        self._text_height = max(self._text_height, bbox[1], bbox[3])
+        self._text_height = max(self._text_height, bbox[3] - bbox[1])
     
     def _add_edge(self, edge, minlvl=0):
         """
@@ -138,17 +157,16 @@ class ChartView:
         self._draw_edge(edge, lvl)
 
     def _draw_edge(self, edge, lvl):
-        c = self._canvas
+        c = self._chart_canvas
         loc = edge.loc()
         
         # Draw the arrow.
         x1 = (loc.start() * self._unitsize + ChartView._MARGIN)
         x2 = (loc.end() * self._unitsize + ChartView._MARGIN)
         if x2 == x1: x2 += max(4, self._unitsize/5)
-        y = (self._tree_height + self._text_height +
-             (lvl+1) * ChartView._CHART_LEVEL_SIZE)
+        y = (lvl+1) * ChartView._CHART_LEVEL_SIZE
         linetag = c.create_line(x1, y, x2, y, arrow='last',
-                                width=3, fill='blue')
+                                width=3, fill='#00f')
 
         # Draw a label for the edge.
         rhs = [repr(t) for t in edge.dr()]
@@ -156,7 +174,7 @@ class ChartView:
         rhs1 = ' '.join(rhs[:pos])
         rhs2 = ' '.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
-                                anchor='nw', fill='blue')
+                                anchor='nw', fill='#00f')
         dotx = c.bbox(rhstag1)[2] + 6
         doty = (c.bbox(rhstag1)[1]+c.bbox(rhstag1)[3])/2
         dottag = c.create_oval(dotx-2, doty-2, dotx+2, doty+2, 
@@ -181,37 +199,38 @@ class ChartView:
 
         # If it's selected, highlight it.
         if edge is self._edgeselection:
-            self._canvas.itemconfig(linetag, fill='#f00')
-            self._canvas.itemconfig(rhstag1, fill='#800')
-            self._canvas.itemconfig(dottag, fill='#800',
+            c.itemconfig(linetag, fill='#f00')
+            c.itemconfig(rhstag1, fill='#800')
+            c.itemconfig(dottag, fill='#800',
                                     outline='#800')
-            self._canvas.itemconfig(rhstag2, fill='#800')
+            c.itemconfig(rhstag2, fill='#800')
 
     def select_edge(self, edge, state=None):
+        c = self._chart_canvas
         if self._edgeselection != None:
             # Unselect the old edge.
             oldtags = self._edgetags[self._edgeselection]
-            self._canvas.itemconfig(oldtags[0], fill='#00f')
-            self._canvas.itemconfig(oldtags[1], fill='#008')
-            self._canvas.itemconfig(oldtags[2], fill='#008',
+            c.itemconfig(oldtags[0], fill='#00f')
+            c.itemconfig(oldtags[1], fill='#008')
+            c.itemconfig(oldtags[2], fill='#008',
                                     outline='#008')
-            self._canvas.itemconfig(oldtags[3], fill='#008')
+            c.itemconfig(oldtags[3], fill='#008')
             if self._edgeselection == edge and state == None:
                 self._edgeselection = None
                 return
             
         tags = self._edgetags[edge]
         if state == 0:
-            self._canvas.itemconfig(tags[0], fill='#00f')
-            self._canvas.itemconfig(tags[1], fill='#008')
-            self._canvas.itemconfig(tags[2], fill='#008', outline='#008')
-            self._canvas.itemconfig(tags[3], fill='#008')
+            c.itemconfig(tags[0], fill='#00f')
+            c.itemconfig(tags[1], fill='#008')
+            c.itemconfig(tags[2], fill='#008', outline='#008')
+            c.itemconfig(tags[3], fill='#008')
             self._edgeselection = None
         else:
-            self._canvas.itemconfig(tags[0], fill='#f00')
-            self._canvas.itemconfig(tags[1], fill='#800')
-            self._canvas.itemconfig(tags[2], fill='#800', outline='#800')
-            self._canvas.itemconfig(tags[3], fill='#800')
+            c.itemconfig(tags[0], fill='#f00')
+            c.itemconfig(tags[1], fill='#800')
+            c.itemconfig(tags[2], fill='#800', outline='#800')
+            c.itemconfig(tags[3], fill='#800')
             self._edgeselection = edge
             
     def _analyze(self):
@@ -222,7 +241,7 @@ class ChartView:
         # Figure out the text height and the unit size.
         unitsize = 1
         text_height = 0
-        c = self._canvas
+        c = self._tree_canvas
 
         # Check against all tokens
         for tok in self._source:
@@ -232,62 +251,71 @@ class ChartView:
             c.delete(tag)
             width = bbox[2] + ChartView._TOK_SPACING
             unitsize = max(width/len(tok.loc()), unitsize)
-            text_height = max(text_height, bbox[1], bbox[3])
+            text_height = max(text_height, bbox[3] - bbox[1])
 
         self._unitsize = unitsize
         self._text_height = text_height
+        self._source_height = (self._text_height +
+                               2*ChartView._MARGIN)
         
         # Check against edges.
         for edge in self._chart.edges():
             self._analyze_edge(edge)
 
-        self._text_height +=  ChartView._TOK_SPACING
-
         # Figure out the tree height.  Assume no unary productions??
-        maxdepth = math.log(len(self._source))/math.log(2)
+        maxdepth = 3#math.log(len(self._source))/math.log(2)
         self._tree_height = maxdepth * ChartView._TREE_LEVEL_SIZE
-        
         self._chart_height = 0
         self._resize()
 
     def _resize(self):
         # Grow, if need be.
-        c = self._canvas
+        c = self._chart_canvas
         width = ( (self._chart._loc.end() -
                    self._chart._loc.start()) * self._unitsize +
                   ChartView._MARGIN * 2 )
-        height = (self._tree_height + self._text_height +
-                  self._chart_height)
+        height = self._chart_height
         if int(c['width']) < width:
             c['width' ] = width
-        if int(c['height']) < height:
-            c['height' ] = height
+        self._tree_canvas['height'] = self._tree_height
+        c['scrollregion']=(0,0,width,height)
+
+        self._source_canvas['height'] = self._source_height
+                                         
 
     def _draw_loclines(self):
         """
         Draw location lines.  These are vertical gridlines used to
         show where each location unit is.
         """
-        c = self._canvas
+        c1 = self._tree_canvas
+        c2 = self._source_canvas
+        c3 = self._chart_canvas
         margin = ChartView._MARGIN
         for i in range(self._chart._loc.start()-1,
                        self._chart._loc.end()+1):
             x = i*self._unitsize + margin
-            y1 = self._tree_height + self._text_height
-            y2 = y1 + self._chart_height
-            if i % 10 == 0:
-                t=c.create_line(x, y1, x, y2, width=2)
-                c.tag_lower(t)
-                t=c.create_text(x+2, y1, text=`i`, anchor='nw')
-                c.tag_lower(t)
-            elif i % 5 == 0:
-                t=c.create_line(x, y1, x, y2, fill='gray60')
-                c.tag_lower(t)
-                t=c.create_text(x+2, y1, text=`i`, anchor='nw')
-                c.tag_lower(t)
+            
+            t1=c1.create_line(x, 0, x, self._tree_height)
+            c1.tag_lower(t1)
+            t2=c2.create_line(x, 0, x, self._source_height)
+            c2.tag_lower(t2)
+            t3=c3.create_line(x, 0, x, self._chart_height)
+            c3.tag_lower(t3)
+            t4=c3.create_text(x+2, 0, text=`i`, anchor='nw')
+            c3.tag_lower(t4)
+            if i % 5 == 0:
+                c1.itemconfig(t1, width=2, fill='gray40')
+                c2.itemconfig(t2, width=2, fill='gray40')
+                c3.itemconfig(t3, width=2, fill='gray40')
+            elif i % 2 == 0:
+                c1.itemconfig(t1, fill='gray40')
+                c2.itemconfig(t2, fill='gray40')
+                c3.itemconfig(t3, fill='gray40')
             else:
-                t=c.create_line(x, y1, x, y2, fill='gray80')
-                c.tag_lower(t)
+                c1.itemconfig(t1, fill='gray70')
+                c2.itemconfig(t2, fill='gray70')
+                c3.itemconfig(t3, fill='gray70')
 
     def selected_edge(self):
         return self._edgeselection
@@ -295,9 +323,9 @@ class ChartView:
     def _draw_source(self):
         """Draw the source string."""
         if len(self._source) == 0: return
-        c = self._canvas
+        c = self._source_canvas
         margin = ChartView._MARGIN
-        y = self._tree_height
+        y = ChartView._MARGIN
         
         for tok in self._source:
             x1 = tok.loc().start() * self._unitsize + margin
@@ -306,14 +334,18 @@ class ChartView:
             tag = c.create_text(x, y, text=repr(tok.type()),
                                 anchor='n', justify='left')
             bbox = c.bbox(tag)
-            c.create_rectangle(x1, bbox[1]-(ChartView._TOK_SPACING/2),
-                               x2, bbox[3]+(ChartView._TOK_SPACING/2))
+            rt=c.create_rectangle(x1+2, bbox[1]-(ChartView._TOK_SPACING/2),
+                                  x2-2, bbox[3]+(ChartView._TOK_SPACING/2),
+                                  fill='white', outline='white')
+            c.tag_lower(rt)
         
     def draw(self):
         """
         Draw everything (from scratch).
         """
-        self._canvas.delete('all')
+        self._tree_canvas.delete('all')
+        self._source_canvas.delete('all')
+        self._chart_canvas.delete('all')
 
         self._draw_source()
 
@@ -326,7 +358,7 @@ class ChartView:
 
         # Add any new edges
         edges = self._chart.edges()
-        edges.sort(edgesort)
+        edges.sort(edgecmp)
         for edge in edges:
             self._add_edge(edge)
 
@@ -341,6 +373,8 @@ class Demo:
         # Create the root window.
         self._root = Tkinter.Tk()
         self._root.bind('q', self.destroy)
+        buttons = Tkinter.Frame(self._root)
+        buttons.pack(side='bottom')
 
         grammar = (
             Rule('S',('NP','VP')),
@@ -360,18 +394,18 @@ class Demo:
         
         sent = 'the cat sat on the mat on the mat'
 
-        cp = ChartParser(grammar, 'S', lexicon)
+        cp = ChartParser(grammar, lexicon, 'S')
         tok_sent = WSTokenizer().tokenize(sent)
         self._chart = cp.load_sentence(tok_sent)
         self._cv = ChartView(self._root, self._chart, tok_sent)
 
         def bottom_up(chart=self._chart, cv=self._cv, cp=cp):
-            cp.bottom_up(chart)
+            cp.bottom_up_init(chart)
             cv.update()
         def fundamental(chart=self._chart, cv=self._cv, cp=cp):
             edge1 = cv.selected_edge()
             new_edge = None
-            if edge1 is not None and not edge1.final():
+            if edge1 is not None and not edge1.complete():
                 for edge2 in chart.final_edges():
                     if new_edge != None: break
                     if (edge1.next() == edge2.lhs() and
@@ -382,9 +416,9 @@ class Demo:
 
             if new_edge is None:
                 chart_edges = chart.edges()
-                chart_edges.sort(edgesort)
+                chart_edges.sort(edgecmp)
                 for edge1 in chart_edges:
-                    if edge1.final(): continue
+                    if edge1.complete(): continue
                     if new_edge != None: break
                     for edge2 in chart.final_edges():
                         if new_edge != None: break
@@ -398,8 +432,6 @@ class Demo:
             if new_edge != None: 
                 cv.select_edge(new_edge, 1)
 
-        buttons = Tkinter.Frame(self._root)
-        buttons.pack()
         b1=Tkinter.Button(buttons, text='Bottom Up',
                           command=bottom_up)
         b2=Tkinter.Button(buttons, text='Fundamental',
