@@ -17,8 +17,7 @@ irregular words (eg. common verbs in English), complicated
 morphological rules, and part-of-speech and sense ambiguities
 (eg. C{ceil-} is not the stem of C{ceiling}).
 
-C{StemmerI} defines an interface to which all stemmers must
-adhere. This interface provides simple methods for stemming words.
+C{StemmerI} defines a standard interface for stemmers.
 """
 
 from nltk.chktype import chktype
@@ -34,38 +33,21 @@ class StemmerI:
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
     """
-
-    # The input and output properties that are used by most stemmers.
-    # Specialized stemmers might add extra input properties or output
-    # properties.
-    _STANDARD_PROPERTIES = """
-    @inprop: C{text}: The text content of the word to be stemmed.
-    @outprop: C{stem}: The property where the stem should be stored.
-    """
-    __doc__ += _STANDARD_PROPERTIES
-
-    def __init__(self, propnames={}):
-        """
-        Construct a new stemmer.
-
-        @type propnames: C{dict}
-        @param propnames: The names of the properties that are used by
-            this stemmer.  These names are encoded as a dictionary
-            that maps from abstract \"property specifications\" to
-            concrete property names.  For a list of the property
-            property specifications used by a particular stemmer, see
-            its class docstring.
-        """
-        if self.__class__ == StemmerI:
-            raise AssertionError, "Interfaces can't be instantiated"
-        
-    def stem(self, token):
+    def stem(self, token, **propnames):
         """
         Remove morphological affixes from given token's C{text}
-        property, and write the remaining stem to the output property.
+        property, and output the remaining stem to the C{stem}
+        property.
 
         @param token: The word token that should be stemmed.
-        @type token: C{token}
+        @type token: L{Token}
+        @type propnames: C{dict}
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        @inprop: C{text}: The text content of the word to be stemmed.
+        @outprop: C{stem}: The property where the stem should be
+                  stored.
         """
         raise NotImplementedError()
 
@@ -80,30 +62,87 @@ class StemmerI:
         """
         raise NotImplementedError()
 
+    def stem_n(self, token, n=None, **propnames):
+        """
+        Find a list of the C{n} most likely stems for the given token,
+        and output it to the C{stems} property.  If the given token
+        has fewer than C{n} possible stems, then find all possible
+        stems.  The stems should be sorted in descending order of
+        estimated likelihood.
+
+        @param token: The word token that should be stemmed.
+        @type token: L{Token}
+        @param n: The maximum number of stems to generate.  If C{n}
+            is C{None}, then generate all possible stems.
+        @param propnames: A dictionary that can be used to override
+            the default property names.  Each entry maps from a
+            default property name to a new property name.
+        @inprop: C{text}: The text content of the word to be stemmed.
+        @outprop: C{stems}: The property where the list of stems
+                  should be stored.
+        """
+        raise NotImplementedError()
+
+    def raw_stem_n(self, word, n=None):
+        """
+        @return: A list of the C{n} most likely stems for the given
+        word string.  If the given word string has fewer than C{n}
+        possible stems, then return all possible stems.  The stems
+        should be sorted in descending order of estimated likelihood.
+
+        @param word: The word to be stemmed.
+        @type word: C{string}
+        @param n: The maximum number of stems to generate.  If C{n}
+            is C{None}, then generate all possible stems.
+        """
+        raise NotImplementedError()
+
 class AbstractStemmer(StemmerI):
     """
-    An abstract base class for stemmers that provides a default
-    implementations for:
-      - L{propnames}
-      - L{stem} (based on C{raw_stem})
-      
-    @ivar _props: A dictionary from property specifications to
-        property names, indicating which property names to use.
+    An abstract base class for stemmers.  C{AbstractStemmer} provides
+    a default implementations for:
+
+      - L{raw_stem} (based on C{stem})
+      - L{stem_n} (based on C{stem})
+      - L{raw_stem_n} (based on C{stem_n})
+
+    It also provides L{_stem_from_raw}, which can be used to implement
+    C{stem} based on C{raw_stem}; and L{stem_n_from_raw}, which can be
+    used to implement C{stem_n} based on C{raw_stem_n}.
     """
-    __doc__ += StemmerI._STANDARD_PROPERTIES
-    
-    def __init__(self, propnames={}):
+    def __init__(self):
         # Make sure we're not directly instantiated:
         if self.__class__ == AbstractStemmer:
-            raise AssertionError, "Abstract classes can't eb instantiated"
+            raise AssertionError, "Abstract classes can't be instantiated"
 
-        self._props = propnames
+    def raw_stem(self, text):
+      token = Token(text=text)
+      self.stem(token)
+      return token['stem']
 
-    def stem(self, token):
-        assert chktype(1, token, Token)
-        text_prop = self._props.get('text', 'text')
-        stem_prop = self._props.get('stem', 'stem')
+    def stem_n(self, token, n=None, **propnames):
+      stems_prop = propnames.get('stem', 'stem')
+      if n == 0:
+          token[stems_prop] = []   # (pathological case)
+      else:
+          self.stem(token)
+          token[stems_prop] = [token['stem']]
+      del token['stem']
+
+    def raw_stem_n(self, text, n=None):
+        token = Token(text=text)
+        self.stem_n(token, n)
+        return token['stems']
+
+    def _stem_from_raw(self, token, *propnames):
+        text_prop = propnames.get('text', 'text')
+        stem_prop = propnames.get('stem', 'stem')
         token[stem_prop] = self.raw_stem(token[text_prop])
+
+    def _stem_n_from_raw(self, token, *propnames):
+        text_prop = propnames.get('text', 'text')
+        stems_prop = propnames.get('stems', 'stems')
+        token[stems_prop] = self.raw_stem_n(token[text_prop])
 
 class RegexpStemmer(AbstractStemmer):
     """
@@ -111,11 +150,8 @@ class RegexpStemmer(AbstractStemmer):
     affixes.  Any substrings that matches the regular expressions will
     be removed.
     """
-    __doc__ += StemmerI._STANDARD_PROPERTIES
-    
-    def __init__(self, regexp, propnames={}):
+    def __init__(self, regexp):
         assert chktype(1, regexp, str)
-        AbstractStemmer.__init__(self, propnames)
         if not hasattr(regexp, 'pattern'):
             regexp = re.compile(regexp)
         self._regexp = regexp
@@ -123,16 +159,12 @@ class RegexpStemmer(AbstractStemmer):
     def raw_stem(self, word):
         return self._regexp.sub('', word)
 
+    def stem(self, token, **propnames):
+        # Delegate to self.raw_stem()
+        return self._stem_from_raw(token, **propnames)
+
     def __repr__(self):
         return '<RegexpStemmer: %r>' % self._regexp.pattern
-
-    def regexp(self):
-        """
-        @rtype: C{string}
-        @return: The regular expression that is used to identify
-        morphological affixes.
-        """
-        return self._regexp.pattern
 
 def _demo_stemmer(stemmer):
     # Tokenize a sample text.
