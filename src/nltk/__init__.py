@@ -94,7 +94,7 @@ cluster, the interfaces contained in that cluster are given.
     a text.
 
 @author: Edward Loper
-@version: 0.4.1
+@version: 0.5
 """
 
 """
@@ -131,7 +131,7 @@ to currently implemented interfaces and classes.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.4.1"
+__version__ = "0.5"
 
 # Copyright notice
 __copyright__ = """\
