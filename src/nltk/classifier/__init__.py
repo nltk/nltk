@@ -68,13 +68,6 @@ class ClassifierI:
     classifiers from training data.
 
     @outprop: C{CLASS}: The token's class.
-    @outprop: C{CLASS_PROBS}: A probability distribution over the
-              token's possible classes (optional).
-    @outprop: C{CLASS_SCORES}: A dictionary mapping each of the
-              token's possible classes to a numeric score (optional).
-    @outprop: C{CLASS_NBEST}: A list of the most likely classes for
-              the token, sorted in descending order of likelihood
-              (optional).
     """
     def classes(self):
         """
@@ -87,27 +80,53 @@ class ClassifierI:
         """
         Determine which class is most appropriate for the given token,
         and output it to the C{CLASS} property.  
-
-        If this classifier is probabilistic, then output a probability
-        distribution over the possible classes for C{token} to
-        C{CLASS_PROB}.
-
-        If this classifier can generate scores, then output a
-        dictionary mapping each of C{token}'s possible classes to a
-        numeric score to C{CLASS_SCORES}.
-
-        If this classifier can generate ranked output, then output a
-        list of the C{nbest} most likely classes for the token, sorted
-        in descending order of likelihood, to C{CLASS_NBEST}.  If
-        C{nbest==None}, then include all possible classes.
         
         @type token: L{Token}
         @param token: The token whose text should be classified.
-        @type nbest: C{int} or C{None}
-        @param nbest: The number of classes that should be output to
-            the C{CLASS_NBEST} property (if this classifier can
-            generate ranked output).  If C{nbest=None}, then output
-            all possible classes.
+        """
+        raise NotImplementedError()
+
+    def get_class(self, token):
+        """
+        @return: The class that is most appropriate for the given
+        token.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        """
+        raise NotImplementedError()
+
+    def get_class_probs(self, token):
+        """
+        @return: A probability distribution over the posssible classes
+        for the given token.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        @rtype: L{ProbDistI}
+        """
+        raise NotImplementedError()
+
+    def get_class_list(self, token):
+        """
+        @return: A list of the posssible classes for the given token.
+        When possible, this list should be sorted from most likely to
+        least likely.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        @rtype: C{list}
+        """
+        raise NotImplementedError()
+
+    def get_class_scores(self, token):
+        """
+        @return: A dictionary mapping from possible classes for the
+        given token to numeric scores.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        @rtype: C{dict}
         """
         raise NotImplementedError()
 
@@ -147,28 +166,53 @@ class MultiClassifierI:
         Determine the most appropriate set of classes for the given
         token, and output it to the C{CLASSES} property (encoded with
         C{tuple} or L{Set<sets.Set>}).
-
-        If this classifier is probabilistic, then output a probability
-        distribution over the possible sets of classes for C{token} to
-        C{CLASSES_PROB}.
-
-        If this classifier can generate scores, then output a
-        dictionary mapping each of C{token}'s possible sets of classes
-        to a numeric score to C{CLASSES_SCORES}.
-
-        If this classifier can generate ranked output (and
-        C{nbest!=0}), then output a list of the C{nbest} most likely
-        sets of classes for the token, sorted in descending order of
-        likelihood, to C{CLASSES_NBEST}.  If C{nbest==None}, then
-        include all possible sets of classes.
         
         @type token: L{Token}
         @param token: The token whose text should be classified.
-        @type nbest: C{int} or C{None}
-        @param nbest: The number of sets of classes that should be
-            output to the C{CLASSES_NBEST} property (if this classifier
-            can generate ranked output).  If C{nbest=None}, then
-            output all possible sets of classes.
+        """
+        raise NotImplementedError()
+
+    def get_class(self, token):
+        """
+        @return: The set of classes that is most appropriate for the
+        given token.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        """
+        raise NotImplementedError()
+
+    def get_class_probs(self, token):
+        """
+        @return: A probability distribution over the posssible sets of
+        classes for the given token.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        @rtype: L{ProbDistI}
+        """
+        raise NotImplementedError()
+
+    def get_class_list(self, token):
+        """
+        @return: A list of the posssible sets of classes for the given
+        token.  When possible, this list should be sorted from most
+        likely to least likely.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        @rtype: C{list}
+        """
+        raise NotImplementedError()
+
+    def get_class_scores(self, token):
+        """
+        @return: A dictionary mapping from possible sets of classes
+        for the given token to numeric scores.
+        
+        @type token: L{Token}
+        @param token: The token whose text should be classified.
+        @rtype: C{dict}
         """
         raise NotImplementedError()
 
@@ -231,7 +275,7 @@ class MultiClassifierTrainerI:
 ##  Helper Functions
 ##//////////////////////////////////////////////////////
 
-def attested_classes(tokens):
+def attested_classes(tokens, **property_names):
     """
     @return: A list of all classes that are attested in the given list
         of tokens.
@@ -239,22 +283,22 @@ def attested_classes(tokens):
     @param tokens: The list of tokens from which to extract classes.
     @type tokens: C{list} of (C{Token} with type C{ClassedText})
     """
+    CLASS = property_names.get('CLASS', 'CLASS')
     assert _chktype(1, tokens, [Token], (Token,))
-    return list(sets.Set([token['CLASS'] for token in tokens]))
+    return list(sets.Set([token[CLASS] for token in tokens]))
 
-def classifier_log_likelihood(classifier, gold):
+def classifier_log_likelihood(classifier, gold, **property_names):
+    CLASS = property_names.get('CLASS', 'CLASS')
     ll = 0.0
-    for gold_tok in gold:
-        test_tok = gold_tok.copy() # OUCH!
-        classifier.classify(test_tok)
-        ll += test_tok['CLASS_PROBS'].prob(gold_tok['CLASS'])
+    for tok in gold:
+        ll += classifier.get_class_probs(tok).logprob(tok[CLASS])
+    return ll
 
-def classifier_accuracy(classifier, gold):
+def classifier_accuracy(classifier, gold, **property_names):
+    CLASS = property_names.get('CLASS', 'CLASS')
     correct = 0
-    for gold_tok in gold:
-        test_tok = gold_tok.copy() # OUCH!
-        classifier.classify(test_tok)
-        if test_tok['CLASS'] == gold_tok['CLASS']:
+    for tok in gold:
+        if classifier.get_class(tok) == tok[CLASS]:
             correct += 1
     return float(correct) / len(gold)
 
