@@ -738,7 +738,12 @@ class RETokenizer(TokenizerI):
             raise ValueError("RETokenizer can't handle "+
                              "strings containing '\\0' or '\\1'")
 
+        # Surround each match with \0...\1
         str = re.sub(self._regexp, '\0\\1\1', str)
+
+        # Special case: if we found no tokens at all, return an empty list.
+        if '\0' not in str: return []
+
         str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)', '\0', str)
         words = str.split('\0')
         
