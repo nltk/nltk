@@ -32,12 +32,6 @@ class Edge:
     @type _edge: C{Token}
     @ivar _edge: The edge data structure, a C{Token} with a complex type
     """
-    # [edloper 8/14/01] As far as I can tell, edges only ever have one
-    # or zero children (either a Tree or nothing).    I would suggest that
-    # an edge always has exactly one child.    When you would have zero
-    # children (i.e., for the bottom up rule), you can have a Tree with
-    # no children.    If/when we change to TreeTokens, it would also have
-    # a zero-length location.
     
     def __init__(self, dr, children, loc):
         self._edge = Token((dr, children), loc)
@@ -65,13 +59,11 @@ class Edge:
         return hash((self.dr(), self.children(), self.loc()))
 
     def self_loop_start(self, rule):
-        # change to use future methods Location.startLoc() ...
         loc = self.loc().start_loc()
         dr = rule.dotted()
         return Edge(dr, (), loc)
 
     def self_loop_end(self, rule):
-        # change to use future methods Location.startLoc() ...
         loc = self.loc().end_loc()
         dr = rule.dotted()
         return Edge(dr, (), loc)
@@ -81,7 +73,7 @@ class Edge:
         dr = self.dr().shift()
         children = self.children() + edge.children()
         if dr.complete():
-            children = (Tree(dr.lhs(), *children),)
+            children = (TreeToken(dr.lhs(), *children),)
         return Edge(dr,children,loc)
 
 class Chart:
@@ -138,16 +130,10 @@ class Chart:
             print indent, edge.dr()
             print indent + "|" + "-"*(width*(end-start)-1) + "|"
 
-# get the location of a tokenized sentence (this is sick)
+# get the location of a tokenized sentence
 def _sentence_loc(tok_sent):
     return TreeToken('xyzzy', *tok_sent).loc()
 
-#     - I think parsers should probably return TreeTokens, not Trees.
-#       To get a Tree from a TreeToken, just use the .type() method
-#       (TreeTokens are a subclass of Token).
-
-# [edloper 8/14/01] Did you want to have methods for stepping through
-# a parse?
 class ChartParser(ParserI):
     """
     A generic chart parser.
@@ -186,7 +172,7 @@ class ChartParser(ParserI):
             for rule in self._lexicon:
                 if word.type() == rule[0]:
                     dr = DottedRule(rule.lhs(), rule[:], 1)
-                    tree = Tree(rule.lhs(), *rule[:])
+                    tree = TreeToken(rule.lhs(), word)
                     edge = Edge(dr, (tree,), word.loc())
                     added += self.add_edge(edge)
         if self._trace:
@@ -313,37 +299,28 @@ class SteppingChartParser(ChartParser):
         else:
             return added[0]
 
-    def FR_step(self, edge):
-        if self._action != ("FR", edge) or self.empty():
+    def _step(self, edge, function, action):
+        if self._action != action or self.empty():
             tmp_chart = self._chart.copy()
-            self._queue = self.FR_edge(edge)
+            if edge:
+                self._queue = function(edge)
+            else:
+                self._queue = function()
             self._chart = tmp_chart
-        self._action = ("FR", edge)
+        self._action = action
         return self.next()
+
+    def FR_step(self, edge):
+        return self._step(edge, self.FR_edge, (edge, self.FR_edge))
 
     def TD_step(self, edge):
-        if self._action != ("TD", edge) or self.empty():
-            tmp_chart = self._chart.copy()
-            self._queue = self.TD_edge(edge)
-            self._chart = tmp_chart
-        self._action = ("TD", edge)
-        return self.next()
-
-    def TD_init_step(self):
-        if self._action != "TDI" or self.empty():
-            tmp_chart = self._chart.copy()
-            self._queue = self.TD_init()
-            self._chart = tmp_chart
-        self._action = "TDI"
-        return self.next()
+        return self._step(edge, self.TD_edge, (edge, self.TD_edge))
 
     def BU_init_step(self, edge):
-        if self._action != ("BUI", edge) or self.empty():
-            tmp_chart = self._chart.copy()
-            self._queue = self.BU_init_edge(edge)
-            self._chart = tmp_chart
-        self._action = ("BUI", edge)
-        return self.next()
+        return self._step(edge, self.BU_init_edge, (edge, self.BU_init_edge))
+
+    def TD_init_step(self):
+        return self._step(None, self.TD_init, self.TD_init)
 
 edgenum = 0
 def xyzzy(chart, edge):
