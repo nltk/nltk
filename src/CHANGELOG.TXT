@@ -35,6 +35,8 @@ Sat Oct 13 01:56:31 EDT 2001
   shown; text field that displays the rule that generated the last
   edge; different default test grammar/string.  Several bug fixes.
 - Improvements to nltk.draw.plot_graph and nltk.draw.tree_edit
+- Changed all imports of nltk modules to use full names (e.g.
+  "nltk.token" instead of just "token")
 
 
 ##////////////////////////////////////////////////////////////////////////
