@@ -1,0 +1,263 @@
+Title: Stem Module For NLTK   
+Name:Chen-Fu Chiang, Jinyoung Choi
+Email: cchiang@seas.upenn.edu, choi3@babel.ling.upenn.edu
+
+
+Project Description:
+====================
+Ccreate a module that exports a function that performs stemming by means of the Porter 
+stemming algorithm. 
+
+The major purpose of stemming algorithm is to remove the commoner morphological and 
+inflexional endings from words, and by doing so we can reduced the size and complexity 
+of the data we are handling. According to the algorithm, basically there are serveral 
+rules for handling the suffix. There are 5 steps to follow and each step has its own rules 
+for suffix stripping. We will follow the 5 steps closely. However, as stated in Porter's 
+paper, this operation is useful for IR system peroformance, not for linguistic aspect of issues.
+
+In this module, you can either stem a file or stem a word. If a file, you can use stem_file.
+If a word, you should make it a token and then use Stemmer().stem_token.  
+
+
+Terms Used In This Algorithm: 
+==============================
+v: Vowel
+c: Consonant
+m: the occurence of (vc) in a word. A word can be seen as in the following form:  <c>(vc)^m<v> 
+   where c in the bracket means consonants can "consecutively" occur for 0 or more times. Once 
+   it encounters a vowel,then it should start to count the occurence of vc.   
+        Example:
+        <c><v>       gives 0  such as: TR-,  -EE,  TR-EE,(no "c" follows EE)  Y,  BY.
+        <c>vc<v>     gives 1  such as: TR-OUBL-E,  -OA-TS,  TR-EES-,  -IV-Y.
+        <c>vcvc<v>   gives 2  such as: TR-OUBL-ES-,  PR-IV-AT-E,  -OAT-EN-,  -ORR-ER-Y.
+
+
+Module Structures: 
+==================
+Module --->Contains 3 functions and 1 class. 
+
+   Functions:
+   1.isalphabet: check if a char is a letter
+   2.stem_file: reads in a file and print out the stemmed file in the form of a list of tokens
+   3.demo: a demostration to test if this project works, located at the bottom part of 
+           the stem.py file. Currently I turn off the demostration. If you want to turn
+           it back on, just go to the bottom two lines of the stem.py and remove the "#"
+           from  #if__name__=='__main__': and #demo("test.txt") and then re-execute this file.
+
+   Class: Stemmer-->3 attributes and 16 functions    
+          Attribute: self.b (a buffer), self.k, self.k0, self.j(index)
+          Functions(methods):
+          1. __init__: the constructor
+          2. consonant: checks if a char is a consonant 
+          3. m: checks the occurence of vc in a single word
+          4. voewlinstem: return 1 if there is at least one vowel in the word
+          5. doublec: check if double consonant exists
+          6. cvc: checks if 3 consecutive letters have the property of c-v-c and the 2nd c is not x,w, or y.
+          7. ends: check if the word ends with some specified string
+          8. setto: sets (j+1)..k to the characters in the input string; also re-adjust k 
+          9. r: if the word have "vc" occurred, call setto to insert a string 
+         10. step1ab, step1c, step2, step3, step4, step5: 6 functions that follow 5 steps in Porter's 
+             algorithm to strip the suffix according to the type of suffix. Each of the function 
+             sometimes might call functions listed from 2-9.  
+         11. stem_token: takes in a single token and then call all 6 functions in 10 to do stemming. 
+
+
+The Stripping Rules (extracted from the alogrithm): 
+==================================================
+Step 1a
+    SSES -> SS                         caresses  ->  caress
+    IES  -> I                          ponies    ->  poni
+                                       ties      ->  ti
+    SS   -> SS                         caress    ->  caress
+    S    ->                            cats      ->  cat
+
+Step 1b
+
+    (m>0) EED -> EE                    feed      ->  feed
+                                       agreed    ->  agree
+    (*v*) ED  ->                       plastered ->  plaster
+                                       bled      ->  bled
+    (*v*) ING ->                       motoring  ->  motor
+                                       sing      ->  sing
+
+If the second or third of the rules in Step 1b is successful, the following
+is done:
+
+    AT -> ATE                       conflat(ed)  ->  conflate
+    BL -> BLE                       troubl(ed)   ->  trouble
+    IZ -> IZE                       siz(ed)      ->  size
+    (*d and not (*L or *S or *Z))
+       -> single letter
+                                    hopp(ing)    ->  hop
+                                    tann(ed)     ->  tan
+                                    fall(ing)    ->  fall
+                                    hiss(ing)    ->  hiss
+                                    fizz(ed)     ->  fizz
+    (m=1 and *o) -> E               fail(ing)    ->  fail
+                                    fil(ing)     ->  file
+
+The rule to map to a single letter causes the removal of one of the double
+letter pair. The -E is put back on -AT, -BL and -IZ, so that the suffixes
+-ATE, -BLE and -IZE can be recognised later. This E may be removed in step
+4.
+
+Step 1c
+
+    (*v*) Y -> I                    happy        ->  happi
+                                    sky          ->  sky
+
+Step 1 deals with plurals and past participles. The subsequent steps are
+much more straightforward.
+
+Step 2
+
+    (m>0) ATIONAL ->  ATE           relational     ->  relate
+    (m>0) TIONAL  ->  TION          conditional    ->  condition
+                                    rational       ->  rational
+    (m>0) ENCI    ->  ENCE          valenci        ->  valence
+    (m>0) ANCI    ->  ANCE          hesitanci      ->  hesitance
+    (m>0) IZER    ->  IZE           digitizer      ->  digitize
+    (m>0) ABLI    ->  ABLE          conformabli    ->  conformable
+    (m>0) ALLI    ->  AL            radicalli      ->  radical
+    (m>0) ENTLI   ->  ENT           differentli    ->  different
+    (m>0) ELI     ->  E             vileli        - >  vile
+    (m>0) OUSLI   ->  OUS           analogousli    ->  analogous
+    (m>0) IZATION ->  IZE           vietnamization ->  vietnamize
+    (m>0) ATION   ->  ATE           predication    ->  predicate
+    (m>0) ATOR    ->  ATE           operator       ->  operate
+    (m>0) ALISM   ->  AL            feudalism      ->  feudal
+    (m>0) IVENESS ->  IVE           decisiveness   ->  decisive
+    (m>0) FULNESS ->  FUL           hopefulness    ->  hopeful
+    (m>0) OUSNESS ->  OUS           callousness    ->  callous
+    (m>0) ALITI   ->  AL            formaliti      ->  formal
+    (m>0) IVITI   ->  IVE           sensitiviti    ->  sensitive
+    (m>0) BILITI  ->  BLE           sensibiliti    ->  sensible
+
+The test for the string S1 can be made fast by doing a program switch on
+the penultimate letter of the word being tested. This gives a fairly even
+breakdown of the possible values of the string S1. It will be seen in fact
+that the S1-strings in step 2 are presented here in the alphabetical order
+of their penultimate letter. Similar techniques may be applied in the other
+steps.
+
+Step 3
+
+    (m>0) ICATE ->  IC              triplicate     ->  triplic
+    (m>0) ATIVE ->                  formative      ->  form
+    (m>0) ALIZE ->  AL              formalize      ->  formal
+    (m>0) ICITI ->  IC              electriciti    ->  electric
+    (m>0) ICAL  ->  IC              electrical     ->  electric
+    (m>0) FUL   ->                  hopeful        ->  hope
+    (m>0) NESS  ->                  goodness       ->  good
+
+Step 4
+
+    (m>1) AL    ->                  revival        ->  reviv
+    (m>1) ANCE  ->                  allowance      ->  allow
+    (m>1) ENCE  ->                  inference      ->  infer
+    (m>1) ER    ->                  airliner       ->  airlin
+    (m>1) IC    ->                  gyroscopic     ->  gyroscop
+    (m>1) ABLE  ->                  adjustable     ->  adjust
+    (m>1) IBLE  ->                  defensible     ->  defens
+    (m>1) ANT   ->                  irritant       ->  irrit
+    (m>1) EMENT ->                  replacement    ->  replac
+    (m>1) MENT  ->                  adjustment     ->  adjust
+    (m>1) ENT   ->                  dependent      ->  depend
+    (m>1 and (*S or *T)) ION ->     adoption       ->  adopt
+    (m>1) OU    ->                  homologou      ->  homolog
+    (m>1) ISM   ->                  communism      ->  commun
+    (m>1) ATE   ->                  activate       ->  activ
+    (m>1) ITI   ->                  angulariti     ->  angular
+    (m>1) OUS   ->                  homologous     ->  homolog
+    (m>1) IVE   ->                  effective      ->  effect
+    (m>1) IZE   ->                  bowdlerize     ->  bowdler
+
+The suffixes are now removed. All that remains is a little tidying up.
+
+Step 5a
+
+    (m>1) E     ->                  probate        ->  probat
+                                    rate           ->  rate
+    (m=1 and not *o) E ->           cease          ->  ceas
+
+Step 5b
+
+    (m > 1 and *d and *L) -> single letter
+                                    controll       ->  control
+                                    roll           ->  roll
+
+Usage:
+=======
+unicorn@(none):~/Documents/CIS530/4/stemmer> python
+Python 2.2 (#1, Mar 26 2002, 15:46:04)
+[GCC 2.95.3 20010315 (SuSE)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> execfile("stem.py")
+-- This line generates stem.pyc, so later you can just import any class/functions
+-- from this stem module and you don't need to execute this line again next time
+-- since the module is built in stem.pyc already
+
+>>> from stem import *
+-- import everything from the stem module
+
+>>> mytok=Token("happy")
+>>> Stemmer().stem_token(mytok)
+'happi'@[?]
+
+Note: If you want to stem a whole file, do the following
+>>> stem_file("filename")
+-- The would tokenize each word in the file and then process the tokens.
+-- Then print out the stemmed tokens. 
+
+
+Result and Data:
+================
+Input File: test.txt 
+unicorn@(none):~/Documents/CIS530/4/stemmer> more test.txt
+Life is all about understanding, communication and care.
+Being an individual in this nochanlant world, we have learned to be tough and stand on our own.
+How they call it? Oh, yes, competition takes the lead.
+
+There is no need to give others an image of how excellent you are. You are only given decades of 
+life. If you choose to build up the image, it is your choice.  I rather chose to be myself and I know 
+where I am from.
+
+Cest La Vie
+
+-Fu
+
+
+Results from stem.c:
+unicorn@(none):~/Documents/CIS530/4/stemmer> gcc -o stem stemmer.c
+unicorn@(none):~/Documents/CIS530/4/stemmer> ./stem test.txt
+life is all about understand, commun and care.
+be an individu in thi nochanl world, we have learn to be tough and stand on our own.
+how thei call it? oh, ye, competit take the lead.
+
+there is no need to give other an imag of how excel you ar. you ar onli given decad of
+life. if you choos to build up the imag, it is your choic.  i rather choos to be myself and i know
+where i am from.
+
+cest la vie
+
+-fu
+
+Results from stem.py:
+>>> stem_file('test.txt')
+Please wait... reading the the input file
+The output of stemmed tokens from input file is as the following:
+
+['life'@[0w], 'is'@[1w], 'all'@[2w], 'about'@[3w], 'understand,'@[4w], 'commun'@[5w], 'and'@[6w], 'care.'@[7w], 'be'@[8w], 'an'@[9w], 'individu'@[10w], 'in'@[11w], 'thi'@[12w], 'nochanl'@[13w], 'world,'@[14w], 'we'@[15w], 'have'@[16w], 'learn'@[17w], 'to'@[18w], 'be'@[19w], 'tough'@[20w], 'and'@[21w], 'stand'@[22w], 'on'@[23w], 'our'@[24w], 'own.'@[25w], 'how'@[26w], 'thei'@[27w], 'call'@[28w], 'it?'@[29w], 'oh,'@[30w], 'ye,'@[31w], 'competit'@[32w], 'take'@[33w], 'the'@[34w], 'lead.'@[35w], 'there'@[36w], 'is'@[37w], 'no'@[38w], 'need'@[39w], 'to'@[40w], 'give'@[41w], 'other'@[42w], 'an'@[43w], 'imag'@[44w], 'of'@[45w], 'how'@[46w], 'excel'@[47w], 'you'@[48w], 'ar.'@[49w], 'you'@[50w], 'ar'@[51w], 'onli'@[52w], 'given'@[53w], 'decad'@[54w], 'of'@[55w], 'life.'@[56w], 'If'@[57w], 'you'@[58w], 'choos'@[59w], 'to'@[60w], 'build'@[61w], 'up'@[62w], 'the'@[63w], 'imag,'@[64w], 'it'@[65w], 'is'@[66w], 'your'@[67w], 'choic.'@[68w], 'I'@[69w], 'rather'@[70w], 'choos'@[71w], 'to'@[72w], 'be'@[73w], 'myself'@[74w], 'and'@[75w], 'I'@[76w], 'know'@[77w], 'where'@[78w], 'I'@[79w], 'am'@[80w], 'from.'@[81w], 'cest'@[82w], 'La'@[83w], 'vie'@[84w], '-fu'@[85w]]
+
+Conclusion:
+===========
+I simply looked over the 86 words and compared the results. For this given input file, I verified that the stem_file
+in python code generated the exact stemmed words as the stem function written in c. 
+
+
+Reference: 
+==========
+1.Porter,M.F., 1980, An algorithm for suffix stripping, Program, 14(3) :130-137. 
+2.NLTK by Edward Loper, http://nltk.sourceforge.net/
+3.http://www.python.org & A handy python reference book
+4.stemmer.c
