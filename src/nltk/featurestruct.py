@@ -72,8 +72,9 @@ types of information about variables:
 # wanted to assign properties (like is_required) to features.  But I'd
 # like to see some compelling use cases before we add it.
 
-import re, copy
+import re
 from nltk.chktype import chktype as _chktype
+from types import NoneType
 
 #//////////////////////////////////////////////////////////////////////
 # Variables and variable bindings
@@ -82,8 +83,17 @@ from nltk.chktype import chktype as _chktype
 class FeatureVariable:
     """
     A variable that can stand for a single feature value in a feature
-    structure.  Each variable is identified by a case sensitive
-    identifier.
+    structure.  Each variable is defined by a unique identifier, which
+    can be either a case-sensitive string (for X{named variables}) or
+    an integer (for X{numbered variables}).
+
+    Named variables are created by calling the C{FeatureVariable}
+    constructor with a string identifier.  If multiple named variables
+    objects are created with the same identifier, then they represent
+    the same variable.  Numbered variables are created by calling the
+    C{FeatureVariable} constructor with no arguments; a new identifier
+    will be automatically generated.  Each new numbered variable object
+    is guaranteed to have a unique identifier.
 
     Variables do not directly contain values; instead, the mapping
     from variables to values is encoded externally as a set of
@@ -94,7 +104,9 @@ class FeatureVariable:
 
     @see: L{FeatureStruct}
     """
-    def __init__(self, identifier):
+    _next_numbered_id = 1
+    
+    def __init__(self, identifier=None):
         """
         Construct a new feature structure variable.
         @type identifier: C{string}
@@ -102,8 +114,12 @@ class FeatureVariable:
             Any two C{FeatureVariable} objects with the
             same identifier are treated as the same variable.
         """
-        assert _chktype(1, identifier, str)
-        self._identifier = identifier
+        assert _chktype(1, identifier, str, NoneType)
+        if identifier is None:
+            self._identifier = FeatureVariable._next_numbered_id
+            FeatureVariable._next_numbered_id += 1
+        else:
+            self._identifier = identifier
 
     def identifier(self):
         """
@@ -137,13 +153,22 @@ class FeatureVariable:
         return MergedFeatureVariable(self, variable)
 
     def parse(s):
+        """
+        Given a string that encodes a feature variable, return that
+        variable.  This method can be used to parse both
+        C{FeatureVariables} and C{MergedFeatureVariables}.  However,
+        this method can not be used to parse numbered variables, since
+        doing so could violate the guarantee that each numbered
+        variable object has a unique identifier.
+        """
         # Simple variable
-        match = re.match(r'\?\w+$', s)
+        match = re.match(r'\?[a-zA-Z_][a-zA-Z0-9_]*$', s)
         if match:
-            return FeatureVariable(match.group()[1:])
+            return FeatureVariable(s[1:])
 
         # Merged variable
-        match = re.match(r'\?<\w+(=\w+)*>$', s)
+        match = re.match(r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
+                         r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>$', s)
         if match:
             idents = s[2:-1].split('=')
             vars = [FeatureVariable(i) for i in idents]
@@ -493,20 +518,64 @@ class FeatureStruct:
         memo[id(self)] = newcopy
         return newcopy
 
+    #################################################################
+    ## Variables
+    #################################################################
+    
     def apply_bindings(self, bindings):
         """
-        Replace any variables bound by C{bindings} with their values.
-        
-        If C{self} contains a merged variable that is partially bound
-        by C{bindings}, then that variable's unbound subvariables will
-        be bound to its value.  E.g., if the bindings C{<?x=1>} are
+        @return: The feature structure that is obtained by replacing
+        each variable bound by C{bindings} with its values.  If
+        C{self} contains a merged variable that is partially bound by
+        C{bindings}, then that variable's unbound subvariables will be
+        bound to its value.  E.g., if the bindings C{<?x=1>} are
         applied to the feature structure C{[A = ?<x=y>]}, then the
         bindings will be updated to C{<?x=1,?y=1>}.
+        
+        @rtype: L{FeatureStructure}
         """
-        selfcopy = copy.deepcopy(self)
+        selfcopy = self.deepcopy()
         selfcopy._apply_bindings(bindings, {})
         return selfcopy
+
+    def rename_variables(self):
+        """
+        @return: The feature structure that is obtained by replacing
+        each variable in this feature structure with a new variable
+        that has a unique identifier.
         
+        @rtype: L{FeatureStructure}
+        """
+        selfcopy = self.deepcopy()
+        selfcopy._rename_variables({}, {})
+        return selfcopy
+        
+    def _apply_bindings(self, bindings, visited):
+        # Visit each node only once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+    
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, FeatureVariable):
+                if bindings.is_bound(fval):
+                    self._features[fname] = bindings.lookup(fval)
+            elif isinstance(fval, FeatureStruct):
+                fval._apply_bindings(bindings, visited)
+
+    def _rename_variables(self, newvars, visited):
+        # Visit each node only once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+    
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, FeatureVariable):
+                if not newvars.has_key(fval):
+                    newvars[fval] = FeatureVariable()
+                self._features[fname] = newvars[fval]
+            elif isinstance(fval, FeatureStruct):
+                fval._rename_variables(newvars, visited)
+        
+
     #################################################################
     ## Unification
     #################################################################
@@ -698,18 +767,6 @@ class FeatureStruct:
                 bindings.lookup(fval, True)
             elif isinstance(fval, FeatureStruct):
                 fval._rebind_merged_variables(bindings, visited)
-
-    def _apply_bindings(self, bindings, visited):
-        # Visit each node only once:
-        if visited.has_key(id(self)): return
-        visited[id(self)] = 1
-    
-        for (fname, fval) in self._features.items():
-            if isinstance(fval, FeatureVariable):
-                if bindings.is_bound(fval):
-                    self._features[fname] = bindings.lookup(fval)
-            elif isinstance(fval, FeatureStruct):
-                fval._apply_bindings(bindings, visited)
 
     #################################################################
     ## String Represenations
@@ -918,7 +975,9 @@ class FeatureStruct:
                  'comma': re.compile(r'\s*,\s*'),
                  'none': re.compile(r'None(?=\s|\]|,)'),
                  'int': re.compile(r'-?\d+(?=\s|\]|,)'),
-                 'var': re.compile(r'\?\w+'+'|'+'\?<\w+(=\w+)*>'),
+                 'var': re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*'+'|'+
+                                   r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
+                                   r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>'),
                  'symbol': re.compile(r'\w+'),
                  'stringmarker': re.compile("['\"\\\\]")}
 
@@ -1326,4 +1385,4 @@ def demo(trace=False):
 
 if __name__ == '__main__':
     test(verbosity=0)
-    demo()
+    #demo()
