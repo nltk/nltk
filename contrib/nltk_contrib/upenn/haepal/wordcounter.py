@@ -1,5 +1,21 @@
 #! /usr/bin/env python
 
+# Word Frequency Counter for Brown Corpus
+#
+# Requires: NLTK v1.3
+#
+# Configuration: Users will need to set the environment variable NLTK_CORPORA
+# eg export NLTK_CORPORA=/path/to/corpus
+#
+# Assumed File Structure: Brown corpus in uncompressed format
+#
+# Assumed Directory Structure:
+# $NLTK_CORPORA/brown/
+#
+# This script is not known to work on Win32 platforms since it requires
+# some Unix-ish Python modules. It _may_ work under a full installation
+# of Cygwin.
+
 import sys
 import fcntl
 import marshal
