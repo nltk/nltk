@@ -12,7 +12,6 @@ Unit testing for L{nltk.tree}.
 
 @todo: Test L{nltk.tree.ProbabilisticTreeToken}
 @todo: Test L{nltk.tree.parse_treebank}
-@todo: Test L{nltk.tree.TreebankTokenizer}
 """
 
 from nltk.tree import *
@@ -239,6 +238,49 @@ Trees can be compared for equality:
     
     >>> tree < tree2 or tree > tree2
     True
+"""
+
+def test_TreebankTokenReader(): r"""
+Unit tests for L{TreebankTokenReader}.
+
+The treebank token reader reads a treebank-style tree into a single
+token, with the TREE and WORDS properties:
+
+    >>> s = '(S (NP I) (VP (V enjoyed) (NP my cookie)))'
+    >>> treetok = TreebankTokenReader().read_token(s)
+    >>> print treetok.properties()
+    ['TREE', 'WORDS']
+    >>> print treetok['TREE']
+    (S: (NP: <I>) (VP: (V: <enjoyed>) (NP: <my> <cookie>)))
+    >>> print treetok['WORDS']
+    [<I>, <enjoyed>, <my>, <cookie>]
+
+With an optional argument (C{add_words}), the token reader constructor
+can be told not to include the WORDS property:
+
+    >>> treetok = TreebankTokenReader(add_words=False).read_token(s)
+    >>> print treetok.properties()
+    ['TREE']
+
+Another optional argument (C{add_locs}), can be used to tell the token
+reader constructor to add LOC properties to each leaf:
+    
+    >>> treetok = TreebankTokenReader(add_locs=True).read_token(s)
+    >>> print treetok['TREE']
+    (S:
+      (NP: <I>@[7:8c])
+      (VP: (V: <enjoyed>@[17:24c]) (NP: <my>@[30:32c] <cookie>@[33:39c])))
+    >>> print treetok['WORDS']
+    [<I>@[7:8c], <enjoyed>@[17:24c], <my>@[30:32c], <cookie>@[33:39c]]
+    >>> loc = treetok['WORDS'][1]['LOC']
+    >>> print loc.select(s)
+    enjoyed
+
+Another optional argument (C{add_contexts}), can be used to tell the
+token reader constructor to add LOC properties to each leaf:
+    
+    >>> treetok = TreebankTokenReader(add_contexts=True).read_token(s)
+    >>> # [XX] Finish this test!
 """
 
 #######################################################################
