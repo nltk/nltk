@@ -326,7 +326,7 @@ class Window:
 
         def foo(value, self=self):
             self.c.select(value)
-            print value
+            #print value
             #print type(value)
         
         self.c = c = MyPlotCanvas(window, "300", "200",
@@ -520,9 +520,10 @@ class ScalePopup(Toplevel):
         self.destroy()
         
     def onPress(self):
-        print self.resultx.get(), self.resulty.get()
+        pass
+        #print self.resultx.get(), self.resulty.get()
 
-def plot(list):
+def plot(*list):
     color = ['red', 'blue', 'lightblue', 'green', 'yellow', 'grey', 'black']
     marker = ['circle', 'dot', 'square', 'triangle',
               'triangle_down', 'cross', 'plus']
@@ -558,7 +559,9 @@ def plot(list):
         
     object = PlotGraphics(list)
     w = Window(object)
-    w.c.draw(w.object, 'automatic', 'automatic')    
+    w.c.draw(w.object, 'automatic', 'automatic')
+    # Necessary for non-interactive sessions:
+    mainloop()
 
 if __name__ == '__main__':
 
