@@ -86,7 +86,7 @@ class TokenizerI:
         @rtype: C{tuple} of C{Token} (or equiv.)
         """
         # By default, call tokenize.
-        self.tokenize(str)
+        return self.tokenize(str)
 
 class _XTokenTuple:
     """
