@@ -123,3 +123,82 @@ __maintainer_email__ = "edloper@gradient.cis.upenn.edu"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 
+##//////////////////////////////////////////////////////
+##  Tasks
+##//////////////////////////////////////////////////////
+
+class TaskI:
+    """
+    A standard NLTK language processing task.
+    
+    Individual processing tasks are defined as subclasses of C{TaskI}.
+    Each processing task defines an X{action method}, which takes a
+    single token, and performs the task's action on the token by
+    updating its properties (or the properties of contained tokens).
+    Action methods are generally named after the tasks; for example,
+    the action method for the C{ParserI} task is C{parse()}.
+
+    Property Indirection
+    ~~~~~~~~~~~~~~~~~~~~
+    Each processing task performs its action by reading and modifying
+    a token's properties.  The properties used by a task are specified
+    with generic names, such as C{SUBTOKENS} and C{TAG}; but
+    individual instances of the task classes should be specialized to
+    use more specific property names, such as C{WORDS} and C{SENSE}.
+    In order to allow this task-specific specialization, all task
+    interfaces should support X{property indirection}, which maps the
+    generic property names defined by the task to specific proprety
+    names supplied by the user to the constructor.
+
+    In particular, each processing task constructor should define a
+    keyword parameter that specifies the mapping from generic property
+    names to specific property names; and should define the
+    L{property()} method, which returns the specific property name
+    corresponding to a given generic property name.
+
+    Raw Action Methods
+    ~~~~~~~~~~~~~~~~~~
+    Each processing task may optionally define a X{raw action method},
+    which takes one or more arguments containing the information
+    needed to perform the task (not wrapped in a token), and returns
+    the newly generated information.  The raw action method should be
+    named C{raw_I{act}}, where C{I{act}} is the name of the action
+    method.
+    """
+    def property(self, prop):
+        """
+        @return: The specific property name that corresponds to the
+        given generic property name.  If no specific property name was
+        provided for C{generic_name}, then return C{generic_name}.
+        @rtype: C{string}
+        """
+        raise NotImplementedError
+
+class PropertyIndirectionMixIn:
+    """
+    A mix-in base clase that provides property indirection support.
+    Property indirection is required by the L{TaskI} interface; see
+    L{TaskI} for more information about property indireciton.
+    """
+    def __init__(self, **property_names):
+        """
+        Initialize the task's property indirection mapping with
+        the given dictionary.
+
+        @type property_names: C{dict} from C{string} to C{string}
+        @param property_names: A dictionary, mapping from generic
+            property names (as specified by the task interfaces)
+            to specific property names (as specified by the user).
+        """
+        self.__property_names = property_names
+
+    # Note: docstring copied from TaskI.property().
+    def property(self, generic_name):
+        """
+        @return: The specific property name that corresponds to the
+        given generic property name.  If no specific property name was
+        provided for C{generic_name}, then return C{generic_name}.
+        @rtype: C{string}
+        """
+        return self.__property_names.get(generic_name, generic_name)
+    
