@@ -282,13 +282,14 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
         else:
             subtok[TAG] = None
         
-    def tokenize(self, token, addlocs=False):
+    def tokenize(self, token, addlocs=False, addcontexts=False):
         assert chktype(1, token, Token)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         NODE = self._property_names.get('NODE', 'NODE')
         TEXT = self._property_names.get('TEXT', 'TEXT')
         TAG = self._property_names.get('TAG', 'TAG')
         LOC = self._property_names.get('LOC', 'LOC')
+        CONTEXT = self._property_names.get('CONTEXT', 'CONTEXT')
 
         # check that brackets are balanced and not nested
         brackets = re.sub(r'[^\[\]]', '', token[TEXT])
@@ -316,6 +317,12 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
             else:
                 # It's an unchunked token.  Divid its text & tag
                 self._split_text_and_tag(subtok)
+
+        # Add contexts, if requested
+        if addcontexts:
+            for i, subtok in enumerate(subtoks):
+                context = SubtokenContextPointer(token, SUBTOKENS, i)
+                subtoks[CONTEXT] = context
 
 # [XX] THIS IS BROKEN:
 #class ConllChunkedTokenizer(TokenizerI):
@@ -489,8 +496,9 @@ class IeerChunkedTokenizer(TokenizerI):
             C{"MONEY"}, C{"MEASURE"}
         """
         self._chunk_types = chunk_types
-        
-    def tokenize(self, str, source=None):
+
+    # [XX] addlocs and addcontexts are ignored.
+    def tokenize(self, str, addlocs=False, addcontexts=False):
 
         # Tokenizer that returns SGML tags and attributes as a single
         # token, elsewhere tokenizing on whitespace
