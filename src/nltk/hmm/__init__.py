@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2003 University of Melbourne
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
+#         Philip Blunsom <pcbl@cs.mu.oz.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
