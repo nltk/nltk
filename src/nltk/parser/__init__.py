@@ -2,6 +2,8 @@
 #
 # Copyright (C) 2001 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@ldc.upenn.edu>
+#         Scott Currie <sccurrie@seas.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -14,9 +16,9 @@ the text, and the resulting tree structures are called the text's
 X{parses}.  Typically, the text is a single sentence, and the tree
 structure represents the syntactic structure of the sentence.
 However, parsers can also be used in other domains.  For example,
-parsers could be used to derive the morphological structure of the
-morphemes that make up a word, or to derive the discourse structure of
-a list of utterances.
+parsers can be used to derive the morphological structure of the
+morphemes that make up a word, or to derive the discourse structure
+for a set of utterances.
 
 Sometimes, a single piece of text can be represented by more than one
 tree structure.  Texts represented by more than one tree structure are
@@ -29,6 +31,18 @@ which a text can be ambiguous:
 
 However, the parser module does I{not} distinguish these two types of
 ambiguity.
+
+The parser module defines C{ParserI}, a standard interface for parsing
+texts; and two simple implementations of that interface,
+C{ShiftReduceParser} and C{RecursiveDescentParser}.  It also contains
+three sub-modules for specialized kinds of parsing:
+
+  - C{nltk.parser.chart} defines chart parsing, which uses dynamic
+    programming to efficiently parse texts.
+  - C{nltk.parser.chunk} defines chunk parsing, which identifies
+    non-overlapping linguistic groups in a text.
+  - C{nltk.parser.probabilistic} defines probabilistic parsing, which
+    associates a probability with each parse.
 """
 
 from nltk.tree import TreeToken
@@ -50,18 +64,18 @@ class ParserI:
     not modify the text itself.  In particular, if M{t} is a text,
     then the leaves of any parse of M{t} should be M{t}.
 
-    Parsing a text generates zero or more parses.  Abstractly, each of
-    these parses has a X{quality} associated with it.  These quality
-    ratings are used to decide which parses to return.  In particular,
-    the C{parse} method returns the parse with the highest quality;
-    and the C{parse_n} method returns a list of parses, sorted by
-    their quality.
+    Parsing a text produces zero or more parses.  Abstractly, each
+    of these parses has a X{quality} associated with it.  These
+    quality ratings are used to decide which parses to return.  In
+    particular, the C{parse} method returns the parse with the highest
+    quality; and the C{parse_n} method returns a list of parses,
+    sorted by their quality.
 
     If multiple parses have the same quality, then C{parse} and
     C{parse_n} can choose between them arbitrarily.  In particular,
-    for some parsers, all parses have the same quality.  For these
-    parsers, C{parse} returns a single arbitrary parse, and C{parse_n}
-    returns an list of parses in arbitrary order.
+    for some parsers, all parses are assigned the same quality.  For
+    these parsers, C{parse} returns a single arbitrary parse, and
+    C{parse_n} returns a list of parses in arbitrary order.
     """
     def __init__(self):
         """
@@ -90,16 +104,16 @@ class ParserI:
         @return: a list of the C{n} best parses for the given text,
             sorted in descending order of quality (or all parses, if
             the text has less than C{n} parses).  The order among
-            parses with the same quality is undefined.  I.e., the
-            first parse in the list will have the highest quality; and
-            each subsequent parse will have equal or lower quality.
-            Note that the empty list will be returned if no parses
-            were found.
+            parses with the same quality is undefined.  In other
+            words, the first parse in the list will have the highest
+            quality; and each subsequent parse will have equal or
+            lower quality.  Note that the empty list will be returned
+            if no parses were found.
         @rtype: C{list} of C{TreeToken}
 
         @param n: The number of parses to generate.  At most C{n}
-            parses will be returned.  If C{n} is C{None}, return all
-            parses. 
+            parses will be returned.  If C{n} is not specified, return
+            all parses.
         @type n: C{int}
         @param text: The text to be parsed.  This text consists
             of a list of C{Tokens}, ordered by their C{Location}.
@@ -112,43 +126,171 @@ class ParserI:
 ##//////////////////////////////////////////////////////
 class ShiftReduceParser(ParserI):
     """
-    Shift-reduce parser.
+    A simple bottom-up CFG parser that uses two operations, "shift"
+    and "reduce", to find a single parse for a text.
 
-    Maintain two stacks: one for tokens, one for types/Nonterminals.
-    Match the Nonterminals/types stack against the RHS of productions when
-    trying to reduce.  Use the token stack to record the structures
-    we've built so far.
+    C{ShiftReduceParser} maintains a stack, which records the
+    structure of a portion of the text.  This stack is a list of
+    C{Token}s and C{TreeToken}s that collectively cover a portion of
+    the text.  For example, while parsing the sentence "the dog saw
+    the man" with a typical grammar, C{ShiftReduceParser} will produce
+    the following stack, which covers "the dog saw"::
+
+       [('NP': ('Det': 'the') ('N': 'dog'))@[0w:2w], ('V': 'saw')@[2w]]
+
+    C{ShiftReduceParser} attempts to extend the stack to cover the
+    entire text, and to combine the stack elements into a single tree,
+    producing a complete parse for the sentence.
+
+    Initially, the stack is empty.  It is extended to cover the text,
+    from left to right, by repeatedly applying two operations:
+
+      - X{shift} moves a token from the beginning of the text to the
+        end of the stack.
+      - X{reduce} uses a CFG production to combine the rightmost stack
+        elements into a single C{TreeToken}.
+
+    Often, more than one operation can be performed on a given stack.
+    In this case, C{ShiftReduceParser} uses the following heuristics
+    to decide which operation to perform:
+
+      - Only shift if no reductions are available.
+      - If multiple reductions are available, then apply the reduction
+        whose CFG production is listed earliest in the grammar.
+
+    Note that these heuristics are not guaranteed to choose an
+    operation that leads to a parse of the text.  Also, if multiple
+    parses exists, C{ShiftReduceParser} will return at most one of
+    them.
     """
     def __init__(self, grammar, trace=0):
         """
-        Construct a new C{SRParser}.
+        Create a new C{ShiftReduceParser}, that uses {grammar} to
+        parse texts.
+
+        @type grammar: C{CFG}
+        @param grammar: The grammar used to parse texts.
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            and higher numbers will produce more verbose tracing
+            output.
         """
         self._grammar = grammar
         self._trace = trace
-        self.check_grammar()
+        self._check_grammar()
 
-    def _shift(self, token, stack, tokstack, remaining_text):
+    def parse_n(self, text):
+        # Inherit documentation from ParserI; delegate to parse.
+        treetok = self.parse(text)
+        if treetok is None: return []
+        else: return [treetok]
+
+    def parse(self, text):
+        # Inherit documentation from ParserI.
+
+        # initialize the stack.
+        stack = []
+        remaining_text = text[:]
+        
+        # Trace output.
+        if self._trace: self._trace_stack(stack, remaining_text)
+
+        # iterate through the text, pushing the token's type onto
+        # the stack, then reducing the stack.
+        while len(remaining_text) > 0:
+            self._shift(stack, remaining_text)
+            while self._reduce(stack, remaining_text): pass
+
+        # Did we reduce everything?
+        if len(stack) != 1: return None
+
+        # Did we end up with the right category?
+        if stack[0].node() != self._grammar.start().symbol():
+            return None
+        
+        # We parsed successfully!
+        return stack[0]
+
+    def _shift(self, stack, remaining_text):
         """
-        Push the next token onto the stack.
+        Move a token from the beginning of C{remaining_text} to the
+        end of C{stack}.
+
+        @type stack: C{list} of C{Token} and C{TreeToken}
+        @param stack: A list of C{Token}s and C{TreeToken}s, encoding
+            the structure of the text that has been parsed so far.
+        @type remaining_text: C{list} of C{Token}
+        @param remaining_text: The portion of the text that is not yet
+            covered by C{stack}.
+        @rtype: C{None}
         """
-        stack.append(token.type())
-        tokstack.append(token)
+        stack.append(remaining_text[0])
+
+        # These are equivalant; the second is more efficient, but
+        # probably harder to read.  So just use the 1st for now.
+        remaining_text.remove(remaining_text[0])
+        #remaining_text[:1] = []  # delete the 1st element
+        
         if self._trace: self._trace_shift(stack, remaining_text)
 
-    def _reduce(self, stack, tokstack, remaining_text):
-        # scan through the production set
+    def _match(self, rhs, rightmost_stack):
+        """
+        @rtype: C{boolean}
+        @return: true if the right hand side of a CFG production
+            matches the rightmost elements of the stack.  C{rhs}
+            matches C{rightmost_stack} if they are the same length,
+            and each element of C{rhs} matches the corresponding
+            element of C{rightmost_stack}.  A nonterminal element of
+            C{rhs} matches any C{TreeToken} whose node value is equal
+            to the nonterminal's symbol.  A terminal element of C{rhs}
+            matches any C{Token} whose type is equal to the terminal.
+        @type rhs: C{list} of (terminal and C{Nonterminal})
+        @param rhs: The right hand side of a CFG production.
+        @type rightmost_stack: C{list} of (C{Token} and C{TreeToken})
+        @param rightmost_stack: The rightmost elements of the parser's
+            stack.
+        """
+        if len(rightmost_stack) != len(rhs): return 0
+        for i in range(len(rightmost_stack)):
+            if isinstance(rightmost_stack[i], TreeToken):
+                if not isinstance(rhs[i], Nonterminal): return 0
+                if rightmost_stack[i].node() != rhs[i].symbol(): return 0
+            else:
+                if isinstance(rhs[i], Nonterminal): return 0
+                if rightmost_stack[i].type() != rhs[i]: return 0
+        return 1
+
+    def _reduce(self, stack, remaining_text):
+        """
+        Find a CFG production whose right hand side matches the
+        rightmost stack elements; and combine those stack elements
+        into a single C{TreeToken}, with the node specified by the
+        production's left-hand side.  If more than one CFG production
+        matches the stack, then use the production that is listed
+        earliest in the grammar.  The new C{TreeToken} replaces the
+        elements in the stack.
+
+        @rtype: C{boolean}
+        @return: false if no CFG productions matched the rightmost
+            stack elements.
+        @type stack: C{list} of C{Token} and C{TreeToken}
+        @param stack: A list of C{Token}s and C{TreeToken}s, encoding
+            the structure of the text that has been parsed so far.
+        @type remaining_text: C{list} of C{Token}
+        @param remaining_text: The portion of the text that is not yet
+            covered by C{stack}.
+        """
+        # Try each production, in order.
         for production in self._grammar.productions():
             rhslen = len(production.rhs())
                 
             # check if the RHS of a production matches the top of the stack
-            if tuple(stack[-rhslen:]) == production.rhs():
-
-                # replace the top of the stack with the LHS of the production
-                stack[-rhslen:] = [production.lhs()]
+            if self._match(production.rhs(), stack[-rhslen:]):
 
                 # combine the tree to reflect the reduction
-                treetok = TreeToken(production.lhs().symbol(), *tokstack[-rhslen:])
-                tokstack[-rhslen:] = [treetok]
+                treetok = TreeToken(production.lhs().symbol(), *stack[-rhslen:])
+                stack[-rhslen:] = [treetok]
 
                 # We reduced something
                 if self._trace:
@@ -157,56 +299,6 @@ class ShiftReduceParser(ParserI):
 
         # We didn't reduce anything
         return 0
-
-    def parse(self, text):
-        # Inherit documentation from ParserI.
-
-        # initialize the stacks.
-        stack = []
-        tokstack = []
-
-        # Trace output.
-        remaining_text = text
-        if self._trace: self._trace_stack(stack, remaining_text)
-
-        # iterate through the text, pushing the token's type onto
-        # the stack, then reducing the stack.
-        for token in text:
-            remaining_text = remaining_text[1:]
-            self._shift(token, stack, tokstack, remaining_text)
-            while self._reduce(stack, tokstack, remaining_text): pass
-
-        # Did we reduce everything?
-        if len(stack) != 1: return None
-
-        # Did we end up with the right category?
-        if stack[0] != self._grammar.start(): return None
-        
-        # We parsed successfully!
-        return tokstack[0]
-
-    def _trace_stack(self, stack, remaining_text, marker=' '):
-        print ('  '+marker+' [' + ' '.join([`s` for s in stack])+' * '+
-               ' '.join([`s.type()` for s in remaining_text]) + ']')
-
-    def _trace_shift(self, stack, remaining_text):
-        if self._trace > 2: print 'Shift %r:' % stack[0]
-        if self._trace == 2: self._trace_stack(stack, remaining_text, 'S')
-        elif self._trace > 0: self._trace_stack(stack, remaining_text)
-
-    def _trace_reduce(self, stack, production, remaining_text):
-        if self._trace > 2:
-            print 'Reduce %r <- %s' % (production.lhs(),
-                                       ' '.join([`s` for s in production.rhs()]))
-        if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
-        elif self._trace > 1: self._trace_stack(stack, remaining_text)
-
-    # Delegate to parse
-    def parse_n(self, text):
-        # Inherit documentation from ParserI; delegate to parse.
-        treetok = self.parse(text)
-        if treetok is None: return []
-        else: return [treetok]
 
     def trace(self, trace=2):
         """
@@ -221,9 +313,54 @@ class ShiftReduceParser(ParserI):
         """
         self._trace = trace
 
-    def check_grammar(self):
+    def _trace_stack(self, stack, remaining_text, marker=' '):
         """
-        Check that all the productions in the grammar are useful.
+        Print trace output displaying the given stack and text.
+        
+        @rtype: C{None}
+        @param marker: A character that is printed to the left of the
+            stack.  This is used with trace level 2 to print 'S'
+            before shifted stacks and 'R' before reduced stacks.
+        """
+        str = '  '+marker+' [ '
+        for tok in stack:
+            if isinstance(tok, TreeToken):
+                str += `Nonterminal(tok.node())` + ' '
+            else:
+                str += `tok.type()` + ' '
+        str += '* ' + ' '.join([`s.type()` for s in remaining_text]) + ']'
+        print str
+
+    def _trace_shift(self, stack, remaining_text):
+        """
+        Print trace output displaying that a token has been shifted.
+        
+        @rtype: C{None}
+        """
+        if self._trace > 2: print 'Shift %r:' % stack[-1]
+        if self._trace == 2: self._trace_stack(stack, remaining_text, 'S')
+        elif self._trace > 0: self._trace_stack(stack, remaining_text)
+
+    def _trace_reduce(self, stack, production, remaining_text):
+        """
+        Print trace output displaying that C{production} was used to
+        reduce C{stack}.
+        
+        @rtype: C{None}
+        """
+        if self._trace > 2:
+            print 'Reduce %r <- %s' % (production.lhs(),
+                                       ' '.join([`s` for s in production.rhs()]))
+        if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
+        elif self._trace > 1: self._trace_stack(stack, remaining_text)
+
+    def _check_grammar(self):
+        """
+        Check to make sure that all of the CFG productions are
+        potentially useful.  If any productions can never be used,
+        then print a warning.
+
+        @rtype: C{None}
         """
         productions = self._grammar.productions()
 
@@ -241,25 +378,19 @@ class ShiftReduceParser(ParserI):
 ##//////////////////////////////////////////////////////
 class RecursiveDescentParser(ParserI):
     """
+    A simple top-down CFG parser that parses texts by recursively
+    expanding a CFG expression.  A X{CFG expression} is a sequence of
+    terminals and C{Nonterminal}s.
 
-    A X{CFG expression} is a sequence of terminals and
-    C{Nonterminal}s.
-
-    To X{expand} an expression with a production is to replace a nonterminal
-    with a CFG expression, using a production. (replace lhs with rhs)
-
-    An X{expansion} *could* be just a CFG expression that's been
-    expanded.  But then what do I call the lists of tokens &
-    treetokens? 
-
-    An X{partial parse} of a CFG expression is a sequence of C{Token}s
-    and {TreeToken}s that stand in a 1-to-1 relationship to that
-    expression: each C{Token} corresponds to a terminal and has the
-    same type, and each C{TreeToken} corresponds to a nonterminal, and
-    its node type matches the nonterminal's symbol.
-
-    A partial parse X{covers} a text if the sequence of tokens and
-    treetoken leaves is equal to the text.        
+    Terminology:
+      - An X{partial parse} of a CFG expression is a sequence of
+        C{Token}s and {TreeToken}s that stand in a 1-to-1
+        relationship to that expression: each C{Token} corresponds
+        to a terminal and has the same type, and each C{TreeToken}
+        corresponds to a nonterminal, and its node type matches the
+        nonterminal's symbol.
+      - A partial parse X{covers} a text if the sequence of tokens
+        and treetoken leaves is equal to the text.
     """
     def __init__(self, grammar, trace=0):
         self._grammar = grammar
@@ -270,19 +401,6 @@ class RecursiveDescentParser(ParserI):
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
-
-    def trace(self, trace=2):
-        """
-        Set the level of tracing output that should be generated when
-        parsing a text.
-
-        @type trace: C{int}
-        @param trace: The trace level.  A trace level of C{0} will
-            generate no tracing output; and higher trace levels will
-            produce more verbose tracing output.
-        @rtype: C{None}
-        """
-        self._trace = trace
 
     def parse_n(self, text, n=None):
         # Inherit docs from ProbablisticParserI
@@ -296,7 +414,7 @@ class RecursiveDescentParser(ParserI):
         if n is None: return parses
         else: return parses[:n]
 
-    def _expand_to_text(self, expr, text, original_text=None):
+    def _expand_to_text(self, expr, text, original_text=None, depth=1):
         """
         Find all partial parses for the CFG expression C{expr} that
         cover C{text}, and return them as a list.  
@@ -316,19 +434,23 @@ class RecursiveDescentParser(ParserI):
         @param original_text: The text that was originally given to
             the parser.  This is only used for producing trace output. 
         """
-        if original_text is None: original_text = text
+        if original_text is None:
+            original_text = text
+            if self._trace:
+                self._trace_stack(expr, text, original_text, 0, 'Start')
 
         # If the expression and the text are both empty, then return a
         # single empty partial parse.
         if len(text) == 0 and len(expr) == 0:
-            if self._trace: self._trace_stack(expr, text, original_text, 1)
+            if self._trace:
+                self._trace_stack(expr, text, original_text, depth, 'SUCCEED')
             return [[]]
-        else:
-            if self._trace: self._trace_stack(expr, text, original_text, 0)
 
         # If the expression is empty, then we have text that we didn't
         # account for; return no partial parses.
-        if len(expr) == 0: return []
+        if len(expr) == 0: 
+            if self._trace:
+                self._trace_stack(expr, text, original_text, depth, 'Fail')
 
         # Process the first element of the expression.
         if isinstance(expr[0], Nonterminal):
@@ -338,28 +460,41 @@ class RecursiveDescentParser(ParserI):
             for production in self._grammar.productions():
                 if production.lhs() == expr[0]:
                     pparses += self._expand_production(production, expr, text,
-                                                 original_text)
+                                                       original_text, depth)
             return pparses
         elif len(text) > 0 and expr[0] == text[0].type():
+            if self._trace:
+                self._trace_stack(expr[1:], text[1:], original_text,
+                                  depth, 'Shift')
             # If it's a matching terminal, go on to the rest of the stack.
-            pparses = self._expand_to_text(expr[1:], text[1:], original_text)
+            pparses = self._expand_to_text(expr[1:], text[1:],
+                                           original_text, depth)
             return [ [text[0]] + e for e in pparses]
         else:
+            if self._trace:
+                self._trace_stack(expr, text, original_text, depth, 'Fail')
             # If it's a non-matching terminal, fail.
             return []
 
-    def _expand_production(self, production, expr, text, original_text):
+    def _expand_production(self, production, expr, text,
+                           original_text, depth):
+                           
         """
         @return: all partial parses for the CFG expression C{expr}
             that cover C{text}, where the first element of C{expr} is
             expanded using C{production}.
+        @rtype: C{list} of (C{list} of (C{Token} and C{TreeToken}))
         """
         # Expand expr[0] with production.
         expansion = production.rhs()+expr[1:]
 
+        # Trace output
+        if self._trace:
+            self._trace_stack(expansion, text, original_text, depth, 'Expand')
+            
         # Find partial parses for the expanded CFG expression.
         expansion_pparses = self._expand_to_text(expansion, text,
-                                                 original_text)
+                                                 original_text, depth+1)
 
         # For each partial parse, collect the elements generated by
         # the production into a single TreeToken.
@@ -370,6 +505,10 @@ class RecursiveDescentParser(ParserI):
         Collect the first C{production.rhs} elements of C{pparse} into a
         treetoken, with node C{production.lhs}; Return the resulting partial
         parse.
+
+        @type production: C{CFGProduction}
+        @type pparse: C{list} of (C{list} of (C{Token} and C{TreeToken}))
+        @rtype: C{list} of (C{list} of (C{Token} and C{TreeToken}))
         """
         # Collect the children into a tree.
         rhs_len = len(production.rhs())
@@ -379,14 +518,29 @@ class RecursiveDescentParser(ParserI):
         # Replace the children with the tree, and return it.
         return [treetok] + pparse[rhs_len:]
 
-    def _trace_stack(self, expr, text, original_text, success):
-        print '[',
+    def trace(self, trace=2):
+        """
+        Set the level of tracing output that should be generated when
+        parsing a text.
+
+        @type trace: C{int}
+        @param trace: The trace level.  A trace level of C{0} will
+            generate no tracing output; and higher trace levels will
+            produce more verbose tracing output.
+        @rtype: C{None}
+        """
+        self._trace = trace
+
+    def _trace_stack(self, expr, text, original_text, depth, marker=' '):
+        if self._trace > 3: print '%-40s[' % ('  '*depth+marker),
+        elif self._trace == 3: print '[%2s] %-8s[' % (depth, marker),
+        else: print '%-8s[' % marker, 
+            
         pos = len(original_text) - len(text)
         for tok in original_text[:pos]: print `tok.type()`,
         print '*',
         for elt in expr: print `elt`,
-        if success: print ']     (good parse)'
-        else: print ']'
+        print ']'
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration Code
@@ -401,7 +555,8 @@ def demo():
         # Syntactic Rules
         CFGProduction(S, NP, VP),
         CFGProduction(NP, Det, N),
-        CFGProduction(VP, V, NP, PP, PP),
+        CFGProduction(VP, V, NP, PP),
+        CFGProduction(NP, Det, N, PP),
         CFGProduction(PP, P, NP),
 
         # Lexical Rules
@@ -409,12 +564,12 @@ def demo():
         CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
         CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
         CFGProduction(P, 'with'), CFGProduction(N, 'park'),
-        CFGProduction(N, 'telescope')
+        CFGProduction(N, 'dog'),   CFGProduction(N, 'telescope')
         )
 
     grammar = CFG(S, productions)
 
-    sent = 'I saw a man in the park with a telescope'
+    sent = 'I saw a man in the park'
     print "Sentence:\n", sent
 
     # tokenize the sentence
