@@ -55,7 +55,7 @@ class SRParser(ParserI):
         # initialization
         self._stack = []
         # initialize a structure for keeping track of the tree fragments
-        self._tree = ...
+        self._tree = None # <= FILL IN A VALUE
 
         # iterate through the tokens, pushing the token's type onto
         # the stack, then reducing the stack.
