@@ -229,10 +229,12 @@ class NBClassifier(ClassifierI):
             # Estimate the probability of LabeledText(text, label)
             p = 1.0
             fvlist = self._fdlist.detect(LabeledText(text, label))
-            for assignment in fvlist.assignments():
-                prob = self._prob_dist.prob(AssignmentEvent(assignment))
-                if prob != 1:
-                    p *= prob / (1-prob)
+            default = fvlist.default()
+            for (fid, val) in fvlist.assignments():
+                p1 = self._prob_dist.prob(AssignmentEvent((fid, val)))
+                p2 = self._prob_dist.prob(AssignmentEvent((fid, default)))
+                if p2 != 0:
+                    p *= p1 / p2
                 
             # Record the probability estimate.
             dist_list.append(p)
@@ -243,7 +245,7 @@ class NBClassifier(ClassifierI):
             return [1.0/len(self._labels) for l in self._labels]
 
         # Normalize the probability estimates.
-        dist_list = [p/total_p for p in dist_list]
+        return [p/total_p for p in dist_list]
 
         return dist_list
 
@@ -257,6 +259,7 @@ class NBClassifier(ClassifierI):
 
     def distribution(self, unlabeled_token):
         # Inherit docs from ClassifierI
+        dist_dict = self.distribution_dictionary(unlabeled_token)
         return DictionaryProbDist(dist_dict)
 
     def classify(self, unlabeled_token):
@@ -272,10 +275,12 @@ class NBClassifier(ClassifierI):
             # Estimate the probability of LabeledText(text, label)
             p = 1.0
             fvlist = self._fdlist.detect(LabeledText(text, label))
-            for assignment in fvlist.assignments():
-                prob = self._prob_dist.prob(AssignmentEvent(assignment))
-                if prob != 1:
-                    p *= prob / (1-prob)
+            default = fvlist.default()
+            for (fid, val) in fvlist.assignments():
+                p1 = self._prob_dist.prob(AssignmentEvent((fid, val)))
+                p2 = self._prob_dist.prob(AssignmentEvent((fid, default)))
+                if p2 != 0:
+                    p *= p1 / p2
                 if p <= max[1]: break
                 
             # Record the probability estimate.
@@ -492,7 +497,7 @@ class NBClassifierTrainer(ClassifierTrainerI):
               given, then the set of all labels attested in the
               training data will be used instead.  (type=C{list} of
               (immutable)).
-            - C{smoothing}: The smoothing algorithm that should be
+            - C{estimator}: The smoothing algorithm that should be
               applied to the probability estimates for feature value
               assignments.  Currently, the possible values are:
                 - C{'MLE'}: The maximum likelihood estimation.  This
@@ -508,10 +513,10 @@ class NBClassifierTrainer(ClassifierTrainerI):
         @rtype: C{ClassifierI}
         """
         # Process the keyword arguments
-        smoothing = 'MLE'
+        estimator = 'MLE'
         labels = None
         for (key, val) in kwargs.items():
-            if key == 'smoothing': smoothing = val
+            if key == 'estimator': estimator = val
             elif key == 'labels': labels = val
             else: raise TypeError('Unknown keyword arg %s' % key)
         if labels is None:
@@ -525,18 +530,18 @@ class NBClassifierTrainer(ClassifierTrainerI):
             freqdist.inc(fvlist)
 
         # Construct a probability distribution from the freq dist
-        if type(smoothing) != type(""):
-            if smoothing[0].lower() == 'lidstone':
-                l = smoothing[1]
+        if type(estimator) != type(""):
+            if estimator[0].lower() == 'lidstone':
+                l = estimator[1]
                 probdist = NBClassifierLidstoneProbDist(freqdist, l)
-        elif smoothing.lower() == 'mle':
+        elif estimator.lower() == 'mle':
             probdist = MLEProbDist(freqdist)
-        elif smoothing.lower() == 'laplace':
+        elif estimator.lower() == 'laplace':
             probdist = NBClassifierLidstoneProbDist(freqdist, 1.0)
-        elif smoothing.lower() == 'ele':
+        elif estimator.lower() == 'ele':
             probdist = NBClassifierLidstoneProbDist(freqdist, 0.5)
         else:
-            raise ValueError('Unknown smoothing type %r' % smoothing)
+            raise ValueError('Unknown estimator type %r' % estimator)
         
         return NBClassifier(self._fdlist, labels, probdist)
 
@@ -577,7 +582,7 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
 
     if debug: print _timestamp(), 'training on %d samples...' % len(labeled_tokens)
     trainer = NBClassifierTrainer(fdlist)
-    classifier = trainer.train(labeled_tokens, smoothing='ELE')
+    classifier = trainer.train(labeled_tokens, estimator='ELE')
     if debug: print _timestamp(), '  done training'
     
     if debug: print _timestamp(), ('%d tokens, %d labels' % (len(labeled_tokens), 
