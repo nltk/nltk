@@ -9,6 +9,11 @@
 
 """
 Unit testing for L{nltk.probability}.
+
+@todo: Test L{nltk.probability.HeldoutProbDist}
+@todo: Test L{nltk.probability.CrossValidationProbDist}
+@todo: Test L{nltk.probability.ConditionalProbDist}
+@todo: Test L{nltk.probability.ProbabilisticMixIn}
 """
 
 from nltk.probability import *
@@ -21,6 +26,7 @@ from nltk.set import Set
 import unittest
 
 class FreqDistTestCase(unittest.TestCase):
+    'Unit testing for L{nltk.probability.FreqDist}'
 
     def setUp(self):
         # Construct an experiment:
@@ -131,6 +137,8 @@ class FreqDistTestCase(unittest.TestCase):
         self.failUnlessEqual(self.empty_fdist.max(), None)
         
 class ConditionalFreqDistTestCase(unittest.TestCase):
+    'Unit testing for L{nltk.probability.ConditionalFreqDist}'
+    
     def setUp(self):
         self.cfdist = ConditionalFreqDist()
         pairs = ['aA', 'aB', 'cA', 'bC', 'aA', 'cA', 'cA', 'bA']
@@ -168,6 +176,7 @@ class ConditionalFreqDistTestCase(unittest.TestCase):
         self.failUnlessEqual(fdist_d.N(), 0)
 
 class UniformProbDistTestCase(unittest.TestCase):
+    'Unit testing for L{nltk.probability.UniformProbDist}'
     def setUp(self):
         self.pdist1 = UniformProbDist([1,3,2])
         self.pdist2 = UniformProbDist([3,1,1,1,1])
@@ -212,8 +221,12 @@ class UniformProbDistTestCase(unittest.TestCase):
         'nltk.probability.UniformProbDistTestCase: test __init__()'
         self.failUnlessRaises(ValueError, UniformProbDist, [])
 
-# Base class for testing prob dists
 class ProbDistTestCase(unittest.TestCase):
+    """
+    Abstract base class for testing (derived) probability
+    distributions.
+    """
+
     def make_probdist(self, fdist):
         raise AssertionError, 'abstract base class'
 
@@ -227,7 +240,7 @@ class ProbDistTestCase(unittest.TestCase):
             fdist = FreqDist()
             for sample in samples: fdist.inc(sample)
             self.pdists.append(self.make_probdist(fdist))
-            
+
     def testProb(self):
         # Do *not* include a description string (subclassing)
         i = 0
@@ -269,6 +282,7 @@ class ProbDistTestCase(unittest.TestCase):
             self.failUnlessEqual(Set(*pdist.samples()), Set(*samples))
 
 class MLEProbDistTestCase(ProbDistTestCase):
+    'Unit testing for L{nltk.probability.MLEProbDist}'
     def make_probdist(self, fdist):
         return MLEProbDist(fdist)
 
@@ -286,6 +300,7 @@ class MLEProbDistTestCase(ProbDistTestCase):
                  {0:0./1, 1:1/1, 2:0./1}]
 
 class LaplaceProbDistTestCase(ProbDistTestCase):
+    'Unit testing for L{nltk.probability.LaplaceProbDist}, with C{bins=None}'
     def make_probdist(self, fdist):
         return LaplaceProbDist(fdist)
 
@@ -302,7 +317,26 @@ class LaplaceProbDistTestCase(ProbDistTestCase):
                  
                  {0:1./6, 1:6./6, 2:1./6}]
 
+class Laplace20BinProbDistTestCase(ProbDistTestCase):
+    'Unit testing for L{nltk.probability.LaplaceProbDist}, with C{bins=20}'
+    def make_probdist(self, fdist):
+        return LaplaceProbDist(fdist, 20)
+
+    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1], # 20 bins
+                     [1,2,3,4,5,6,7,8,9,10], # 20 bins
+                     [1,1,1,1,1]] # 20 bin
+    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
+    
+    PROB_MAPS = [{0:1./30, 1:3./30, 2:4./30, 3:3./30, 4:2./30, 5:1./30,
+                  6:2./30, 7:1./30},
+                 
+                 {0:1./30, 1:2./30, 2:2./30, 3:2./30, 4:2./30, 5:2./30,
+                  6:2./30, 7:2./30, 8:2./30, 9:2./30, 10:2./30, 11:1./30},
+                 
+                 {0:1./25, 1:6.0/25, 2:1./25}]
+
 class ELEProbDistTestCase(ProbDistTestCase):
+    'Unit testing for L{nltk.probability.ELEProbDist}, with C{bins=None}'
     def make_probdist(self, fdist):
         return ELEProbDist(fdist)
 
@@ -320,24 +354,8 @@ class ELEProbDistTestCase(ProbDistTestCase):
                  
                  {0:0.5/5.5, 1:5.5/5.5, 2:0.5/5.5}]
 
-class Laplace20BinProbDistTestCase(ProbDistTestCase):
-    def make_probdist(self, fdist):
-        return LaplaceProbDist(fdist, 20)
-
-    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1], # 20 bins
-                     [1,2,3,4,5,6,7,8,9,10], # 20 bins
-                     [1,1,1,1,1]] # 20 bin
-    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
-    
-    PROB_MAPS = [{0:1./30, 1:3./30, 2:4./30, 3:3./30, 4:2./30, 5:1./30,
-                  6:2./30, 7:1./30},
-                 
-                 {0:1./30, 1:2./30, 2:2./30, 3:2./30, 4:2./30, 5:2./30,
-                  6:2./30, 7:2./30, 8:2./30, 9:2./30, 10:2./30, 11:1./30},
-                 
-                 {0:1./25, 1:6.0/25, 2:1./25}]
-
 class ELE20BinProbDistTestCase(ProbDistTestCase):
+    'Unit testing for L{nltk.probability.ELEProbDist}, with C{bins=20}'
     def make_probdist(self, fdist):
         return ELEProbDist(fdist, 20)
 
@@ -357,9 +375,8 @@ class ELE20BinProbDistTestCase(ProbDistTestCase):
 
 def testsuite():
     """
-    Return a PyUnit testsuite for the probability module.
+    Return a PyUnit testsuite for the L{nltk.probability} module.
     """
-
     t1 = unittest.makeSuite(FreqDistTestCase)
     t2 = unittest.makeSuite(ConditionalFreqDistTestCase)
     t3 = unittest.makeSuite(UniformProbDistTestCase)
