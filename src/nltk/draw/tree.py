@@ -923,8 +923,6 @@ if __name__ == '__main__':
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
 
-    from nltk.tree import TreebankTokenizer
-    
     treetok = TreeToken.parse('''
     (S (NP this tree) (VP (V is) (AdjP shapeable)))
     ''')
