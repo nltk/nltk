@@ -579,7 +579,7 @@ dictionary keys:
     {[0:5c]: 10}
 
 Ordering
-~~~~~~~~
+--------
 A total ordering on C{CharSpanLocations} is defined by preceeds,
 succeeds, and overlaps.
 
@@ -694,7 +694,7 @@ have compatible sources and location types:
     ValueError: Locations have incompatible types
 
 Contiguous Locations & Union
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 Two locations are contiguous if they share a common boundary:
 
     >>> loc1 = CharSpanLocation(8,12)
@@ -768,7 +768,7 @@ must have compatible sources and location types:
     ValueError: Locations have incompatible types
 
 Infinity
-~~~~~~~~
+--------
 Under special circumstances, it can be useful to use -INF as a
 location's tart, or +INF as its end.  This is done with
 C{SpanLocation.MIN} and C{SpanLocation.MAX}:
@@ -785,7 +785,7 @@ C{SpanLocation.MIN} and C{SpanLocation.MAX}:
     [-INF:+INFc]
 
 Select
-~~~~~~
+------
 L{SpanLocation.select} can be used to select the text specified by a
 location:
 
