@@ -22,16 +22,14 @@ include:
   - C{loc}: The token's location in its containing text.
 
 The C{loc} property, which is defined by most tokens, uses a
-L{Location} to specify the position of the token in its containing
-text.  This property has two important uses:
+L{Location<LocationI>} to specify the position of the token in its
+containing text.  This property has two important uses:
 
   1. It serves as a unique identifier that distinguishes each token
      from any other tokens that have the same properties (e.g., two
      occurances of the same word).
   2. It provides a pointer to the token's context.
   
-See the L{Token} class for more information.
-
 @group Tokens: Token, FrozenToken, SafeToken, ProbabilisticToken
 @group Locations: Location
 @group Auxilliary Data Types: FrozenDict
@@ -562,8 +560,76 @@ class SafeToken(Token):
 
 
 ######################################################################
+## Token Wrappers
+######################################################################
+
+class TokenWrapperI:
+    """
+    A wrapper for a token, that provides...
+      - extra methods
+      - extra operations (eg indexing)
+      - better string formatting
+    """
+    # Use this to delegate to token:
+    def __getattr__(self, attr):
+        return getattr(self._token, attr)
+
+class SeqWrapper(TokenWrapperI):
+    def __init__(self, token, propnames={}):
+        self._token = token
+        self._propnames = propnames
+
+######################################################################
 ## Location
 ######################################################################
+
+class LocationI(object):
+    """
+    The position of a token within its containing text.  Locations
+    serve two functions:
+
+      1. They uniquely identify a single token.
+      2. They provide access to that token's context.
+
+    Each implementation of the location interface provides a different
+    encoding for the position of a token.  The most common
+    implementation is L{SpanLocation}, which represents a token's
+    position as a span over indices in its containing text.
+
+    Since locations are used as unique identifiers for tokens, every
+    implementation of the location interface must support equality
+    testing and hashing.  Each implementation should also provide some
+    mechanism to access the given token's context, if possible.
+    """
+    # Locations must be comperable:
+    def __cmp__(self):
+        raise NotImplementedError()
+
+    # Locations must be hashable:
+    def __hash__(self):
+        raise NotImplementedError()
+
+class BaseLocation(LocationI):
+    def __init__(self, stringid):
+        self._stringid = stringid
+
+    def __cmp__(self, other):
+        if not isinstance(other, BaseLocation): return -1
+        return cmp(self._stringid, other._stringid)
+
+    def __hash__(self):
+        return hash(self._stringid)
+    
+class SpanLocation(LocationI):
+    def __init__(self, start, end, source, context_propname):
+        """
+        @param start: the start index
+        @param end: the end index
+        @param source: the token that contains this token
+        @param context_propname: the property in that token that the
+            indices are defined over.
+        """
+    
 
 class Location(object):
     """
