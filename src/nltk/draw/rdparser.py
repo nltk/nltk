@@ -71,6 +71,7 @@ from nltk.draw import *
 from nltk.parser import *
 from nltk.tokenizer import *
 from nltk.draw.cfg import *
+from nltk.draw.cfg import CFGEditor
         
 class RecursiveDescentParserDemo:
     """
