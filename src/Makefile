@@ -23,7 +23,7 @@ usage:
 
 # Tests.
 test: 
-	python nltk/test/__init__.py -v nltk/test/*.py
+	python nltk/test/__init__.py -v -c coverage
 
 # Clean.  
 #    - Erase any pyc and pyo files.
