@@ -65,6 +65,7 @@ of EM.
 
 from nltk.probability import *
 from Numeric import *
+import re
 
 class HMM:
     """
@@ -381,6 +382,32 @@ def _split_tagged_tokens(tagged_tokens):
 
     return words, word_set.elements(), tags, tag_set.elements()
 
+def cleanup_brown_tags(tagged_tokens):
+    start_re = re.compile(r'[^-*+]*')
+            
+    for token in tagged_tokens:
+        for sub_token in token['SUBTOKENS']:
+            m = start_re.match(sub_token['TAG'])
+            tag = m.group(0)
+            if tag:
+                sub_token['TAG'] = tag
+            else:
+                sub_token['TAG'] = '*'
+
+def annul_nonmatching_tags(tagged_tokens, tag_set, default):
+    tags = tag_set[:]
+    tags.sort()
+    tags.reverse() # ensures longest match is first
+    tag_re = re.compile(r'^(' + '|'.join(map(re.escape, tags)) + ')')
+    for token in tagged_tokens:
+        for sub_token in token['SUBTOKENS']:
+            tag = sub_token['TAG']
+            m = tag_re.search(tag)
+            if m:
+                sub_token['TAG'] = m.group(1)
+            else:
+                sub_token['TAG'] = default
+
 def demo_pos_supervised():
     from nltk.corpus import brown
     from nltk.tagger import TaggedTokenizer
@@ -389,7 +416,18 @@ def demo_pos_supervised():
     tagged_tokens = []
     for item in brown.items()[:5]:
         tagged_tokens.append(brown.tokenize(item))
+
+    tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
+        'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',
+        'ben', 'ber', 'bez', 'cc', 'cd', 'cd$', 'cs', 'do', 'dod', 'doz',
+        'dt', 'dt$', 'dti', 'dts', 'dtx', 'ex', 'fw', 'hv', 'hvd', 'hvg',
+        'hvn', 'hvz', 'in', 'jj', 'jjr', 'jjs', 'jjt', 'md', 'nn', 'nn$',
+        'nns', 'nns$', 'np', 'np$', 'nps', 'nps$', 'nr', 'nr$', 'od', 'pn',
+        'pn$', 'pp$', 'ppl', 'ppls', 'ppo', 'pps', 'ppss', 'ql', 'qlp', 'rb',
+        'rb$', 'rbr', 'rbt', 'rp', 'to', 'uh', 'vb', 'vbd', 'vbg', 'vbn',
+        'vbz', 'wdt', 'wp$', 'wpo', 'wps', 'wql', 'wrb']
         
+    annul_nonmatching_tags(tagged_tokens, tag_set, '*')
     words, word_set, tags, tag_set = _split_tagged_tokens(tagged_tokens)
 
     word_set.sort()
@@ -397,6 +435,7 @@ def demo_pos_supervised():
 
     print 'output alphabet', `word_set`[:50], '...'
     print 'state labels   ', `tag_set`[:50], '...'
+    print tag_set
 
     print 'Training HMM...'
 
