@@ -1,0 +1,88 @@
+
+##////////////////////////////////////////////////////////////////////////
+##  Version 0.4
+##////////////////////////////////////////////////////////////////////////
+
+##////////////////////////////////////////////////////////////////////////
+##  Version 0.3
+##////////////////////////////////////////////////////////////////////////
+
+- Added a copy of the IBM CPL in LICENSE.TXT
+- Major reorganization to the chart parser: 
+    - added a new StrategyClass, which enocdes a strategy
+    - formalized the notions of chart rule & strategy in the
+      comments/documentation.
+    - Divided rules into "static" rules and "edge-triggered" (or
+      "dynamic") rules.
+    - Changed rules from methods to functions, to facilitate
+      user-definition of new rules.
+    - Defined standard chart-parsing strategies
+    - wrote a new implementation of the stepping chart parser.
+    - replaced Edge.children with Edge.tree
+    - Added a length operator definition for Chart
+    - cleaned up the edge class
+- Renamed ParserI.parseTypes to ParserI.parse_types (to be
+  consistant with our naming conventions)
+- Changed printed representations of frequency distributions to
+  make it more likely that students won't confuse them with
+  dictionaries.
+- Renamed Rule.dotted to Rule.drule (for consistancy with
+  ChartParser)
+- Impoved printed repr functions for Rule
+- Minor docstring/comment fixes
+- Added a template for a shift-reduce parser
+- Renamed TreeToken.location() to TreeToken.loc()
+- Added a children() accessor to both Tree and TreeToken
+- Updated nltk.draw.chart in response to changes in
+  nltk.chartparser
+- Improved nltk.draw.chart.ChartDemo: implemented tree view;
+  added a way to view rules.
+- Initial import of draw.tree_edit, a module for drawing and
+  editing Trees and TreeTokens.
+
+##////////////////////////////////////////////////////////////////////////
+##  Version 0.2
+##////////////////////////////////////////////////////////////////////////
+
+- Updated reference documentation strings
+- Added cond_samples to frequency distributions
+- Fixed Nr method of frequency distributions
+- Fixed bug in SimpleFreqDist.cond_max
+- Changed implementation of CFFreqDist to use a dictionary of
+  SimpleFreqDists, instead of a dictionary of dictionaries.
+- Added a preliminary implementation of a probability distribution
+  that uses held-out data.
+- Added untag() and accuracy() methods to nltk.tagger, for testing
+  taggers.  
+- Cleaned up BackoffTagger implementation
+- Fixed minor bug in BackoffTagger: it had incorrect behavior if all
+  of the taggers returned UNK for any token.
+- Added UnigramTagger
+- Fixed bugs in comparison methods for TaggedType.
+- Changed parseTaggedType to convert tags to upper case.
+- Added xtokenize() methods to WSTokenizer and RETokenizer (and
+  associated class _XTokenTuple, which is the actual return type of
+  the xtokenize methods).  This method is analagous to xrange() or
+  xreadlines() -- it only constructs tokens as they are requested.
+  This can result in much more memory-efficient use of tokenized
+  texts. 
+- Fixed minor bugs in Location.__str__ that was causing it to not print
+  sources-of-sources 
+- Fixed bug in Token repre function, that used != instead of "is not"
+  to compare to None.
+- Fixed minor bug in RETokenizer caused unwanted behavior if the
+  regexp didn't match anything in the text at all.
+- Fixed code for drawing trees; added a new module, draw.tree, based
+  on the old draw_tree and draw_token modules, for displaying trees.
+- Fixed bug in draw.plot_graph that caused log-log plots of integer
+  values to get quantized in an unreasonable way
+- Added some more unit testing test cases
+- In the chartparser, broke BU_init_step into BU_init_edge_step and
+  BU_init_step (for the latter, you don't have to specify which edge
+  to use). 
+
+##////////////////////////////////////////////////////////////////////////
+##  Version 0.1
+##////////////////////////////////////////////////////////////////////////
+
+- Initial release
