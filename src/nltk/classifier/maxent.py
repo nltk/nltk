@@ -94,19 +94,21 @@ C{IISMaxentClassifierTrainer} uses Improved Iterative Scaling.
 # NOTES TO SELF:
 #   - Figure out what to do with FilteredFDList
 #   - Add keyword arguments to stop iteration at:
-#       - A specified value of log_likelihood
-#       - A specified delta value of log_likelihood
+#       - A specified value of classifier_log_likelihood
+#       - A specified delta value of classifier_log_likelihood
 #       - A specified value of accuracy
 #       - A specified delta value of accuracy
 #   - Add keyword arguments for IIS, for when to stop Newton's
 #      method. 
 
 from nltk.classifier import *
+from nltk.feature import *
 from nltk.probability import DictionaryProbDist
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token
 from nltk.tokenizer import WhitespaceTokenizer
 from nltk.chktype import chktype as _chktype
+from nltk import TaskI, PropertyIndirectionMixIn
 import time, types
 
 # Don't use from .. imports, because math and Numeric provide
@@ -449,7 +451,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
 
             # Check log-likelihood cutoffs.
             if ll_cutoff is not None or lldelta_cutoff is not None:
-                ll = log_likelihood(classifier, train_toks)
+                ll = classifier_log_likelihood(classifier, train_toks)
                 if ll_cutoff is not None and ll >= -abs(ll_cutoff): break
                 if lldelta_cutoff is not None:
                     if ll_old and (ll - ll_old) <= lldelta_cutoff: break
@@ -476,7 +478,7 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         
     def _trace(self, iternum, classifier, train_toks):
         print ('     %9d    %14.5f    %9.3f' %
-               (iternum+1, log_likelihood(classifier, train_toks),
+               (iternum+1, classifier_log_likelihood(classifier, train_toks),
                 accuracy(classifier, train_toks)))
         print
 
@@ -835,7 +837,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         for iternum in range(iter):
             if debug > 2:
                 print ('     %9d    %14.5f    %9.3f' %
-                       (iternum, log_likelihood(classifier, train_toks),
+                       (iternum, classifier_log_likelihood(classifier, train_toks),
                         accuracy(classifier, train_toks)))
 
             # Calculate the deltas for this iteration, using Newton's method.
@@ -850,7 +852,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
                         
             # Check log-likelihood cutoffs.
             if ll_cutoff is not None or lldelta_cutoff is not None:
-                ll = log_likelihood(classifier, train_toks)
+                ll = classifier_log_likelihood(classifier, train_toks)
                 if ll_cutoff is not None and ll > -ll_cutoff: break
                 if lldelta_cutoff is not None:
                     if (ll - ll_old) < lldelta_cutoff: break
@@ -866,7 +868,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
 
         if debug > 2:
             print ('     %9d    %14.5f    %9.3f' %
-                   (iternum+1, log_likelihood(classifier, train_toks),
+                   (iternum+1, classifier_log_likelihood(classifier, train_toks),
                     accuracy(classifier, train_toks)))
             print
                    
@@ -1059,7 +1061,7 @@ def demo():
     # Train a new classifier
     print 'training...'
     global classifier
-    classifier = IISMaxentClassifierTrainer().train(train)
+    classifier = IISMaxentClassifierTrainer().train(train, debug=5)
 
     # Use it to classify the test words.
     print 'classifying...'
