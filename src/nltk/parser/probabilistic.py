@@ -9,14 +9,14 @@
 
 """
 Classes and interfaces for associating probabilities with tree
-structures that represent the internal organziation of a text.  The
+structures that represent the internal organization of a text.  The
 probabilistic parser module defines C{ProbabilisticParserI}, a
 standard interface for associating probabilities with parses for a
 text.  It also defines two implementations of the
 C{ProbablisticParserI} interface, C{ViterbiPCFGParser} and
 C{BottomUpPCFGChartParser}.
 
-C{ViterbiPCFGParser} is a C{PCFG} parser based on a Viterbi-sytle
+C{ViterbiPCFGParser} is a C{PCFG} parser based on a Viterbi-style
 algorithm.  It uses dynamic programming to efficiently find the single
 most likely parse for a given text.
 
@@ -69,7 +69,7 @@ import types
 ##//////////////////////////////////////////////////////
 class ProbabilisticParserI(ParserI):
     """
-    A processing interface for associating proabilities with trees
+    A processing interface for associating probabilities with trees
     that represent possible structures for a sequence of tokens.  A
     C{ProbabilisticParser} is a C{Parser} whose quality ratings are
     probabilities.  In particular, the quality of a parse for a given
@@ -588,7 +588,7 @@ class BottomUpPCFGChartParser(AbstractProbabilisticParser):
     record partial results.  C{BottomUpPCFGChartParser} maintains a
     queue of edges that can be added to the chart.  This queue is
     initialized with edges for each token in the text that is being
-    parsed.  C{BottomUpPCFGChartParser} inserts these edges into to the
+    parsed.  C{BottomUpPCFGChartParser} inserts these edges into the
     chart one at a time, starting with the most likely edges, and
     proceeding to less likely edges.  For each edge that is added to
     the chart, it may become possible to insert additional edges into
