@@ -389,7 +389,6 @@ class FeatureStructure:
     """
     def __init__(self, **features):
         self._features = features
-        self._forward = None
 
     def __getitem__(self, index):
         if type(index) == str:
@@ -406,15 +405,35 @@ class FeatureStructure:
     def feature_names(self):
         return self._features.keys()
 
+    def deepcopy(self, memo=None):
+        if memo is None: memo = {}
+        memocopy = memo.get(id(self))
+        if memocopy is not None: return memocopy
+        features = {}
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, FeatureStructure):
+                features[fname] = fval.deepcopy(memo)
+            else:
+                features[fname] = fval
+        newcopy = FeatureStructure(**features)
+        memo[id(self)] = newcopy
+        return newcopy
+
+    def apply_bindings(self, bindings):
+        selfcopy = copy.deepcopy(self)
+        selfcopy._apply_bindings(bindings, {})
+        return selfcopy
+        
     #################################################################
     ## Unification
     #################################################################
 
-    # Unification is done in two steps:
-    #   1. Make copies of self and other, and destructively unify
-    #      them.
-    #   2. Make a pass through the unified structure to make sure
-    #      that we preserved reentrancy.
+    # The basic unification algorithm:
+    #   1. Make copies of self and other (preserving reentrance)
+    #   2. Destructively unify self and other
+    #   3. Apply forward pointers, to preserve reentrance.
+    #   4. Find any partially bound merged variables, and bind them.
+    #   5. Replace bound variables with their values.
     def unify(self, other, bindings=None):
         """
         Unify C{self} with C{other}, and return the resulting feature
@@ -436,102 +455,47 @@ class FeatureStructure:
             If C{bindings} is unspecified, then all variables are
             assumed to be unbound.
         """
-        if bindings is None:
-            bindings = FeatureStructureVariableBinding()
+        # If bindings are unspecified, use an empty set of bindings.
+        if bindings is None: bindings = FeatureStructureVariableBinding()
 
         # Make copies of self & other (since the unification algorithm
-        # is destructive).
+        # is destructive).  Use the same memo, to preserve reentrance
+        # links between self and other.
         memo = {}
         selfcopy = self.deepcopy(memo)
         othercopy = other.deepcopy(memo)
 
-        # Preserve reentrance links from bound values.
+        # Preserve reentrance links from bound variables into either
+        # self or other.
         for var in bindings.bound_variables():
             valid = id(bindings.lookup(var))
             if memo.has_key(valid):
                 bindings.bind(var, memo[valid])
 
-        # Do the unification.
-        try:
-            selfcopy._destructively_unify(othercopy, bindings)
-        except FeatureStructure._UnificationFailureError:
-            return None
-        except FeatureStructure._BindingFailureError:
-            raise ValueError("Bindings must be specified "+
-                             "when unifying with variables.")
+        # Do the actual unification.  If it fails, return None.
+        try: selfcopy._destructively_unify(othercopy, bindings)
+        except FeatureStructure._UnificationFailureError: return None
 
-        # Clean up any forwards.
-        selfcopy._cleanup_forwards({})
-        selfcopy._cleanup_binding_forwards(bindings)
+        # Replace any feature structure that has a forward pointer
+        # with the target of its forward pointer.
+        selfcopy._apply_forwards_to_bindings(bindings)
+        selfcopy._apply_forwards(visited={})
 
         # Find any partially bound merged variables, and bind their
         # unbound subvariables.
-        self._rebind_merged_variables(bindings, {})
+        selfcopy._rebind_merged_variables(bindings, visited={})
 
         # Replace bound vars with values.
-        selfcopy._apply_bindings(bindings, {})
+        selfcopy._apply_bindings(bindings, visited={})
         
         # Return the result.
         return selfcopy
 
-    def _rebind_merged_variables(self, bindings, visited):
-        # Visit each node only once:
-        if visited.has_key(id(self)): return
-        visited[id(self)] = 1
-    
-        for (fname, fval) in self._features.items():
-            if isinstance(fval, MergedFeatureStructureVariable):
-                bindings.lookup(fval, True)
-            elif isinstance(fval, FeatureStructure):
-                fval._rebind_merged_variables(bindings, visited)
-                
-
-    # Is this faster than copy.deepcopy?  Should be..?
-    def deepcopy(self, memo=None):
-        if memo is None: memo = {}
-        memocopy = memo.get(id(self))
-        if memocopy is not None: return memocopy
-        features = {}
-        for (fname, fval) in self._features.items():
-            if isinstance(fval, FeatureStructure):
-                features[fname] = fval.deepcopy(memo)
-            else:
-                features[fname] = fval
-        newcopy = FeatureStructure(**features)
-        memo[id(self)] = newcopy
-        return newcopy
-
-    def apply_bindings(self, bindings):
-        selfcopy = copy.deepcopy(self)
-        selfcopy._apply_bindings(bindings, {})
-        return selfcopy
-        
-    def _apply_bindings(self, bindings, visited):
-        # Visit each node only once:
-        if visited.has_key(id(self)): return
-        visited[id(self)] = 1
-    
-        for (fname, fval) in self._features.items():
-            if isinstance(fval, FeatureStructureVariable):
-                if bindings.is_bound(fval):
-                    self._features[fname] = bindings.lookup(fval)
-            elif isinstance(fval, FeatureStructure):
-                fval._apply_bindings(bindings, visited)
-
     class _UnificationFailureError(Exception):
-        """
-        An exception that is used by C{_destructively_unify} to abort
-        unification when a failure is encountered.
-        """
+        """ An exception that is used by C{_destructively_unify} to
+        abort unification when a failure is encountered.  """
 
-    class _BindingFailureError(Exception):
-        """
-        An exception that is used by C{_destructively_unify} to abort
-        unification if the user attempts to unify feature structures
-        with variables without providing a set of bindings.
-        """
-
-    def _destructively_unify(self, other, bindings):
+    def _destructively_unify(self, other, bindings, depth=0):
         """
         Attempt to unify C{self} and C{other} by modifying them
         in-place.  If the unification succeeds, then C{self} will
@@ -540,8 +504,10 @@ class FeatureStructure:
         _UnificationFailureError is raised, and the values of C{self}
         and C{other} are undefined.
         """
+        #print '  '*depth, '%r <UNIFY> %r' % (self, other)
+        
         # Look up the "cannonical" copy of other.
-        while other._forward is not None: other = other._forward
+        while hasattr(other, '_forward'): other = other._forward
 
         # Set other's forward pointer to point to self; this makes us
         # into the cannonical copy of other.
@@ -561,7 +527,7 @@ class FeatureStructure:
                 # Case 1: unify 2 feature structures (recursive case)
                 if (isinstance(selfval, FeatureStructure) and
                     isinstance(otherval, FeatureStructure)):
-                    selfval._destructively_unify(otherval, bindings)
+                    selfval._destructively_unify(otherval, bindings, depth+1)
                     
                 # Case 2: unify 2 variables
                 elif (isinstance(selfval, FeatureStructureVariable) and
@@ -583,11 +549,23 @@ class FeatureStructure:
             else:
                 self._features[fname] = otherval
 
-    def _cleanup_forwards(self, visited):
+    def _apply_forwards_to_bindings(self, bindings):
         """
-        Use the C{_forward} links on a feature structure generated
-        by L{_destructively_unify} to ensure that reentrancy is
-        preserved.
+        Replace any feature structure that has a forward pointer with
+        the target of its forward pointer (to preserve reentrancy).
+        """
+        for var in bindings.bound_variables():
+            value = bindings.lookup(var)
+            if (isinstance(value, FeatureStructure) and
+                hasattr(value, '_forward')):
+                while hasattr(value, '_forward'):
+                    value = value._forward
+                bindings.bind(var, value)
+
+    def _apply_forwards(self, visited):
+        """
+        Replace any feature structure that has a forward pointer with
+        the target of its forward pointer (to preserve reentrancy).
         """
         # Visit each node only once:
         if visited.has_key(id(self)): return
@@ -595,18 +573,33 @@ class FeatureStructure:
         
         for fname, fval in self._features.items():
             if isinstance(fval, FeatureStructure):
-                if fval._forward is not None:
-                    self._features[fname] = fval._forward
-                fval._cleanup_forwards(visited)
+                while hasattr(fval, '_forward'):
+                    fval = fval._forward
+                    self._features[fname] = fval
+                fval._apply_forwards(visited)
 
-    def _cleanup_binding_forwards(self, bindings):
-        for var in bindings.bound_variables():
-            value = bindings.lookup(var)
-            if (isinstance(value, FeatureStructure) and
-                value._forward is not None):
-                while value._forward is not None:
-                    value = value._forward
-                bindings.bind(var, value)
+    def _rebind_merged_variables(self, bindings, visited):
+        # Visit each node only once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+    
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, MergedFeatureStructureVariable):
+                bindings.lookup(fval, True)
+            elif isinstance(fval, FeatureStructure):
+                fval._rebind_merged_variables(bindings, visited)
+
+    def _apply_bindings(self, bindings, visited):
+        # Visit each node only once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+    
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, FeatureStructureVariable):
+                if bindings.is_bound(fval):
+                    self._features[fname] = bindings.lookup(fval)
+            elif isinstance(fval, FeatureStructure):
+                fval._apply_bindings(bindings, visited)
 
     #################################################################
     ## String Represenations
@@ -854,19 +847,24 @@ class FeatureStructureTestCase(unittest.TestCase):
 
     def testReentrantUnification(self):
         'Reentrant unification tests'
+        # A basic case of reentrant unification
         fs1 = FeatureStructure(B='b')
         fs2 = FeatureStructure(A=fs1, E=FeatureStructure(F=fs1))
-        fs3 = FeatureStructure(A=FeatureStructure(C='c'),
-                               E=FeatureStructure(F=FeatureStructure(D='d')))
-        
+        fs3 = FeatureStructure.parse('[A=[C=c], E=[F=[D=d]]]')
         fs4 = fs2.unify(fs3)
         fs4repr = '[A=(1)[B=b, C=c, D=d], E=[F->(1)]]'
         self.failUnlessEqual(repr(fs4), fs4repr)
-
         fs5 = fs3.unify(fs2)
         fs5repr = '[A=(1)[B=b, C=c, D=d], E=[F->(1)]]'
         self.failUnlessEqual(repr(fs5), fs5repr)
 
+        # More than 2 paths to a value
+        fs1 = FeatureStructure.parse('[a=[],b=[],c=[],d=[]]')
+        fs2 = FeatureStructure()
+        fs3 = FeatureStructure(a=fs2, b=fs2, c=fs2, d=fs2)
+        fs4 = fs1.unify(fs3)
+        self.failUnlessEqual(repr(fs4), '[a=(1)[], b->(1), c->(1), d->(1)]')
+        
     def testVariableForwarding(self):
         'Bound variables should get forwarded appropriately'
         cvar = FeatureStructureVariable('cvar')
@@ -879,8 +877,7 @@ class FeatureStructureTestCase(unittest.TestCase):
         fs2 = FeatureStructure(A=fs2y, B=fs2z, C=fs2y, D=fs2z)
 
         fs3 = fs1.unify(fs2)
-        fs3repr = ('[A=(1)[X=x, Y=y, Z=z], '+
-                   'B->(1), C->(1), D->(1)]')
+        fs3repr = ('[A=(1)[X=x, Y=y, Z=z], B->(1), C->(1), D->(1)]')
         self.failUnlessEqual(repr(fs3), fs3repr)
 
     def testCyclicStructures(self):
@@ -930,7 +927,6 @@ class FeatureStructureTestCase(unittest.TestCase):
         self.failUnlessEqual(repr(fs2), '[a=?x, b=?x=y, c=?y]')
         fs3 = fs2.unify(FeatureStructure.parse('[a=1]'))
         self.failUnlessEqual(repr(fs3), '[a=1, b=1, c=1]')
-        
 
 def testsuite():
     t1 = unittest.makeSuite(FeatureStructureTestCase)
