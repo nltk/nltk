@@ -52,6 +52,12 @@ types of information about variables:
     other, or X{merged}.  When an unbound variable is bound to a new
     value, any variables that it has been merged with will be bound to
     the same value.
+
+@todo: hashing
+@todo: equality testing
+@todo: more test cases
+@todo: finish cleaning up docstrings
+@todo: better parsing
 """
 
 # Open question: should there be a "feature" object?
@@ -142,7 +148,9 @@ class MergedFeatureStructureVariable(FeatureStructureVariable):
         
       - A merged variable is X{bound} if at least one of its
         subvariables is bound, and all of its bound subvariables are
-        assigned the same value.
+        assigned the same value.  (If at least one subvariable is
+        unbound, then the merved variable is said to be X{partially
+        bound}.)
         
       - A merged variable is X{inconsistant} if two or more
         subvariables are bound to different values.
@@ -249,7 +257,7 @@ class FeatureStructureVariableBinding:
         if isinstance(variable, MergedFeatureStructureVariable):
             bindings = [self._bindings.get(v)
                         for v in variable.subvariables()
-                        if self._bindings.hasattr(v)]
+                        if self._bindings.has_key(v)]
             if len(bindings) == 0: return 0
             inconsistant = [val for val in bindings if val != bindings[0]]
             if inconsistant: return 0
@@ -281,7 +289,7 @@ class FeatureStructureVariableBinding:
             # Get a list of all bindings.
             bindings = [self._bindings.get(v)
                         for v in variable.subvariables()
-                        if self._bindings.hasattr(v)]
+                        if self._bindings.has_key(v)]
             # If it's unbound, return the (merged) variable.
             if len(bindings) == 0: return variable
             # Make sure all the bindings are equal.
@@ -318,6 +326,9 @@ class FeatureStructureVariableBinding:
             self._bindings[variable] = value
 
     def __repr__(self):
+        """
+        Return a string representation of this set of bindings.
+        """
         if self._bindings:
             bindings = ['%r=%r' % (k,v) for (k,v) in self._bindings.items()]
             return '<Bindings: %s>' % (', '.join(bindings))
@@ -453,11 +464,27 @@ class FeatureStructure:
         selfcopy._cleanup_forwards({})
         selfcopy._cleanup_binding_forwards(bindings)
 
+        # Find any partially bound merged variables, and bind their
+        # unbound subvariables.
+        self._rebind_merged_variables(bindings, {})
+
         # Replace bound vars with values.
         selfcopy._apply_bindings(bindings, {})
         
         # Return the result.
         return selfcopy
+
+    def _rebind_merged_variables(self, bindings, visited):
+        # Visit each node only once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+    
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, MergedFeatureStructureVariable):
+                bindings.lookup(fval, True)
+            elif isinstance(fval, FeatureStructure):
+                fval._rebind_merged_variables(bindings, visited)
+                
 
     # Is this faster than copy.deepcopy?  Should be..?
     def deepcopy(self, memo=None):
@@ -487,7 +514,7 @@ class FeatureStructure:
         for (fname, fval) in self._features.items():
             if isinstance(fval, FeatureStructureVariable):
                 if bindings.is_bound(fval):
-                    self._features[fname] = bindings.lookup(fval, True)
+                    self._features[fname] = bindings.lookup(fval)
             elif isinstance(fval, FeatureStructure):
                 fval._apply_bindings(bindings, visited)
 
@@ -527,9 +554,9 @@ class FeatureStructure:
                 # If selfval or otherval is a bound variable, then
                 # replace it by the variable's bound value.
                 if isinstance(selfval, FeatureStructureVariable):
-                    selfval = bindings.lookup(selfval, True)
+                    selfval = bindings.lookup(selfval)
                 if isinstance(otherval, FeatureStructureVariable):
-                    otherval = bindings.lookup(otherval, True)
+                    otherval = bindings.lookup(otherval)
                 
                 # Case 1: unify 2 feature structures (recursive case)
                 if (isinstance(selfval, FeatureStructure) and
@@ -539,7 +566,7 @@ class FeatureStructure:
                 # Case 2: unify 2 variables
                 elif (isinstance(selfval, FeatureStructureVariable) and
                     isinstance(otherval, FeatureStructureVariable)):
-                    selfval = selfval.merge(otherval)
+                    self._features[fname] = selfval.merge(otherval)
                     #bindings.merge(selfval, otherval)
                 
                 # Case 3: unify a variable with a value
@@ -801,13 +828,8 @@ import unittest
 class FeatureStructureTestCase(unittest.TestCase):
     'Unit testing for FeatureStructure'
 
-    def failUnlessEqualSorted(self, list1, list2):
-        list1.sort()
-        list2.sort()
-        self.failUnlessEqual(list1, list2)
-
     def testUnification(self):
-        'Test basic unification'
+        'Basic unification tests'
 
         # Copying from self to other.
         fs1 = FeatureStructure(number='singular')
@@ -831,7 +853,7 @@ class FeatureStructureTestCase(unittest.TestCase):
         self.failUnlessEqual(repr(fs3), '[A=[B=b, C=c]]')
 
     def testReentrantUnification(self):
-        'Test unification of reentrant objects'
+        'Reentrant unification tests'
         fs1 = FeatureStructure(B='b')
         fs2 = FeatureStructure(A=fs1, E=FeatureStructure(F=fs1))
         fs3 = FeatureStructure(A=FeatureStructure(C='c'),
@@ -846,7 +868,7 @@ class FeatureStructureTestCase(unittest.TestCase):
         self.failUnlessEqual(repr(fs5), fs5repr)
 
     def testVariableForwarding(self):
-        'Test that bound variable values get forwarded appropriately'
+        'Bound variables should get forwarded appropriately'
         cvar = FeatureStructureVariable('cvar')
         dvar = FeatureStructureVariable('dvar')
         fs1x = FeatureStructure(X='x')
@@ -861,11 +883,9 @@ class FeatureStructureTestCase(unittest.TestCase):
                    'B->(1), C->(1), D->(1)]')
         self.failUnlessEqual(repr(fs3), fs3repr)
 
-    def testCyclicUnification(self):
-        'Create a cyclic structure via unification'
-        # Create the following cyclic feature structure:
-        #     [G=(1)[H->(1)], F=(1)]
-        # Where fs['G'] == fs['G', 'H'] == fs['G', 'H', 'H'] == ...
+    def testCyclicStructures(self):
+        'Cyclic structure tests'
+        # Create a cyclic structure via unification.
         fs1 = FeatureStructure()
         fs2 = FeatureStructure()
         fs3 = FeatureStructure(F=fs1, G=fs1)
@@ -881,8 +901,7 @@ class FeatureStructureTestCase(unittest.TestCase):
         self.failUnless(fs5['F'] is fs5['G', 'H', 'H'])
         self.failUnless(fs5['F'] is fs5[('G',)+(('H',)*10)])
 
-    def testCyclicUnificationFromBinding(self):
-        'create a cyclic structure via variables'
+        # Create a cyclic structure with variables.
         x = FeatureStructureVariable('x')
         fs1 = FeatureStructure(F=FeatureStructure(H=x))
         fs2 = FeatureStructure(F=x)
@@ -904,14 +923,23 @@ class FeatureStructureTestCase(unittest.TestCase):
         fs3 = fs2.unify(FeatureStructure.parse('[b=?x]'), bindings)
         self.failUnlessEqual(repr(fs3), '[a=(1)[], b->(1)]')
 
+    def testVariableMerging(self):
+        'Merged variable tests'
+        fs1 = FeatureStructure.parse('[a=?x, b=?x]')
+        fs2 = fs1.unify(FeatureStructure.parse('[b=?y, c=?y]'))
+        self.failUnlessEqual(repr(fs2), '[a=?x, b=?x=y, c=?y]')
+        fs3 = fs2.unify(FeatureStructure.parse('[a=1]'))
+        self.failUnlessEqual(repr(fs3), '[a=1, b=1, c=1]')
+        
+
 def testsuite():
     t1 = unittest.makeSuite(FeatureStructureTestCase)
     return unittest.TestSuite( (t1,) )
 
-def test():
-    runner = unittest.TextTestRunner()
+def test(verbosity):
+    runner = unittest.TextTestRunner(verbosity=verbosity)
     runner.run(testsuite())
 
 if __name__ == '__main__':
-    test()
+    test(2)
 
