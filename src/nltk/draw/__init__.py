@@ -46,6 +46,8 @@ __all__ = (
     'ParenWidget', 'BracketWidget',
     'SequenceWidget', 'StackWidget', 'SpaceWidget',
     'ScrollWatcherWidget', 'AbstractContainerWidget',
+    
+    'ShowText'
     )
 
 ##//////////////////////////////////////////////////////
@@ -760,6 +762,7 @@ class SymbolWidget(TextWidget):
     def set_symbol(self, symbol):
         """
         Change the symbol that is displayed by this symbol widget.
+
         @type symbol: C{string}
         @param symbol: The name of the symbol to display.
         """
@@ -1472,7 +1475,8 @@ class ShowText:
     typically used by graphical tools to display help text, or similar
     information.
     """
-    def __init__(self, root, title, text, width=None, height=None):
+    def __init__(self, root, title, text, width=None, height=None,
+                 **textbox_options):
         if width is None or height is None:
             (width, height) = self.find_dimentions(text, width, height)
         
@@ -1490,8 +1494,8 @@ class ShowText:
         tbf.pack(expand=1, fill='both')
         scrollbar = Scrollbar(tbf, orient='vertical')
         scrollbar.pack(side='right', fill='y')
-        textbox = Text(tbf, wrap='word',
-                               width=width, height=height)
+        textbox = Text(tbf, wrap='word', width=width, 
+                       height=height, **textbox_options)
         textbox.insert('end', text)
         textbox['state'] = 'disabled'
         textbox.pack(side='left', expand=1, fill='both')
