@@ -6,7 +6,7 @@ import marshal
 import nltk.corpus
 import os.path
 import string
-import time             ### ADDED BY SB
+import time
 
 class BrownCounter:
     
@@ -58,8 +58,8 @@ class BrownCounter:
             h = {}
             for item in  nltk.corpus.brown.items(grp):
                 toks = nltk.corpus.brown.tokenize(item)
-                for t in toks:
-                    w = t['TEXT'].lower()  ### SB: fixed for NLTK 1.3
+                for t in toks['SUBTOKENS']:
+                    w = t['TEXT'].lower()
                     try:
                         h[w] += 1
                     except KeyError:
