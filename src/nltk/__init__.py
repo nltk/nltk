@@ -133,3 +133,16 @@ to currently implemented interfaces and classes.
 @version: 0.1
 """
 
+# Define some useful meta-data.
+__author__ = "Edward Loper <edloper@gradient.cis.upenn.edu>"
+__copyright__ = """\
+Copyright (C) 2001 University of Pennsylvania.  All Rights Reserved.
+
+Distributed and Licensed under provisions of the IBM Common Public
+License (Version 0.5), which is included by reference.  The IBM Common 
+Public License can be found in the file LICENSE.TXT in the
+distribution."""
+__version__ = "0.1"
+__url__ = "http://nltk.sf.net/"
+
+
