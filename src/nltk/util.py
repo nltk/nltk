@@ -480,6 +480,9 @@ class SparseList:
         end = min(max(end, 0), self._len)
         return [self[i] for i in range(start, end)]
 
+    def __hash__(self):
+        raise TypeError, 'list objects are unhashable'
+
     def __iadd__(self, other):
         self.extend(other)
         return self
