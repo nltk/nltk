@@ -8,7 +8,7 @@
 # $Id$
 
 DISTRIBUTIONS = distributions
-NLTK_VERSION = 1.1a
+NLTK_VERSION = 1.1
 
 .PHONY: all usage help doc documentation webpage test
 .PHONY: distributions clean
