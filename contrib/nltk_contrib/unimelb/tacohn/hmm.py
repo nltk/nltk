@@ -410,7 +410,6 @@ def annul_nonmatching_tags(tagged_tokens, tag_set, default):
 
 def demo_pos_supervised():
     from nltk.corpus import brown
-    from nltk.tagger import TaggedTokenizer
     from sys import stdout
     print 'Loading data from Brown corpus...'
     tagged_tokens = []
