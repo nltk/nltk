@@ -67,6 +67,13 @@ or equal to its end index."
 #define LOC_ERROR_004 "Locations have incompatible sources"
 #define LOC_ERROR_005 "Locations are not contiguous"
 
+/* ============================= Type ============================== */
+#define TYPE_DOC "A unit of language, such as a word or sentence."
+#define TYPE_ERROR_001 "The Type constructor only accepts keyword arguments"
+#define TYPE_ERROR_002 "Property is not defined for this Type"
+#define TYPE_ERROR_003 "Type.extend only accepts keyword arguments"
+#define TYPE_ERROR_004 "Type does not define selected property"
+
 /*********************************************************************
  *  LOCATION
  *********************************************************************/
@@ -112,12 +119,12 @@ PyObject *normalizeCase(PyObject *string)
 
 /* Return true iff the units & source & type match.  otherwise,
  * set an appropriate exception and return 0. */
-int check_units_and_source(locationObject *self, locationObject *other)
+int check_units_and_source(nltkLocation *self, nltkLocation *other)
 {
     int result = 0;
     
     /* Check that the units match */
-    if (PyObject_Cmp(self->unit, other->unit, &result) == 1)
+    if (PyObject_Cmp(self->unit, other->unit, &result) == -1)
         return 0;
     if (result != 0) {
         PyErr_SetString(PyExc_ValueError, LOC_ERROR_003);
@@ -125,7 +132,7 @@ int check_units_and_source(locationObject *self, locationObject *other)
     }
 
     /* Check that the sources match */
-    if (PyObject_Cmp(self->source, other->source, &result) == 1)
+    if (PyObject_Cmp(self->source, other->source, &result) == -1)
         return 0;
     if (result != 0) {
         PyErr_SetString(PyExc_ValueError, LOC_ERROR_004);
@@ -136,13 +143,13 @@ int check_units_and_source(locationObject *self, locationObject *other)
 }
 
 /* Return a copy of the given location */
-locationObject *location_copy(locationObject* original)
+nltkLocation *nltkLocation_copy(nltkLocation* original)
 {
     PyTypeObject *type = original->ob_type;
-    locationObject *loc;
+    nltkLocation *loc;
     
     /* Create the return value object. */
-    loc = (locationObject*)type->tp_alloc(type, 0);
+    loc = (nltkLocation*)type->tp_alloc(type, 0);
     if (loc == NULL) return NULL;
 
     /* Fill in values. */
@@ -163,11 +170,10 @@ locationObject *location_copy(locationObject* original)
  * values.  Unit and source are set to None, and start & end are set
  * to zero. */
 static PyObject*
-location_new(PyTypeObject* type, PyObject *args, PyObject *keywords)
+nltkLocation__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
 {
     /* Allocate space for the new object. */
-    locationObject *self;
-    self = (locationObject*)type->tp_alloc(type, 0);
+    nltkLocation *self = (nltkLocation*)type->tp_alloc(type, 0);
     if (self == NULL) return NULL;
     
     /* Set the start & end to zero. */
@@ -183,14 +189,14 @@ location_new(PyTypeObject* type, PyObject *args, PyObject *keywords)
     /* Return the new object. */
     return (PyObject *)self;
 }
-
+    
 /* Location.__init__(self, start, end=None, unit=None, source=None) */
 /* Initialize the start, end, unit, and source for the given location.
  * If end is unspecified, then use start+1.  If source or unit are *
  * unspecified, then don't change them.  (Location.__new__ already set
  * them to None. */
 static int
-location_init(locationObject* self, PyObject *args, PyObject *keywords)
+nltkLocation__init__(nltkLocation* self, PyObject *args, PyObject *keywords)
 {
     PyObject *start = NULL;
     PyObject *end = NULL;
@@ -243,7 +249,7 @@ location_init(locationObject* self, PyObject *args, PyObject *keywords)
 /* Location.__del__(self) */
 /* Deallocate all space associated with this Location. */
 static void
-location_dealloc(locationObject* self)
+nltkLocation_dealloc(nltkLocation* self)
 {
     Py_XDECREF(self->unit);
     Py_XDECREF(self->source);
@@ -254,21 +260,21 @@ location_dealloc(locationObject* self)
 
 /* Location.length(self) */
 /* Return the length of this location (end-start). */
-static PyObject *location_length(locationObject* self, PyObject *args)
+static PyObject *nltkLocation_length(nltkLocation* self, PyObject *args)
 {
     return PyInt_FromLong(self->end - self->start);
 }
 
 /* Location.start_loc(self) */
 /* Return a zero-length location at the start offset */
-static locationObject *location_start_loc(locationObject* self, PyObject *args)
+static nltkLocation *nltkLocation_start_loc(nltkLocation* self, PyObject *args)
 {
     /* If we're already zero-length, just return ourself. */
     if (self->start == self->end) {
         Py_INCREF(self);
         return self;
     } else {
-        locationObject *loc = location_copy(self);
+        nltkLocation *loc = nltkLocation_copy(self);
         if (loc == NULL) return NULL;
         loc->end = self->start;
         return loc;
@@ -277,14 +283,14 @@ static locationObject *location_start_loc(locationObject* self, PyObject *args)
 
 /* Location.end_loc(self) */
 /* Return a zero-length location at the end offset */
-static locationObject *location_end_loc(locationObject* self, PyObject *args)
+static nltkLocation *nltkLocation_end_loc(nltkLocation* self, PyObject *args)
 {
     /* If we're already zero-length, just return ourself. */
     if (self->start == self->end) {
         Py_INCREF(self);
         return self;
     } else {
-        locationObject *loc = location_copy(self);
+        nltkLocation *loc = nltkLocation_copy(self);
         if (loc == NULL) return NULL;
         loc->start = self->end;
         return loc;
@@ -294,24 +300,24 @@ static locationObject *location_end_loc(locationObject* self, PyObject *args)
 /* Location.union(self, other) */
 /* If self and other are contiguous, then return a new location
  * spanning both self and other; otherwise, raise an exception. */
-static locationObject *location_union(locationObject* self, PyObject *args)
+static nltkLocation *nltkLocation_union(nltkLocation* self, PyObject *args)
 {
-    locationObject *other = NULL;
+    nltkLocation *other = NULL;
 
     /* Parse the arguments. */
-    if (!PyArg_ParseTuple(args, "O!:Location.union", &locationType, &other))
+    if (!PyArg_ParseTuple(args, "O!:Location.union", &nltkLocationType, &other))
         return NULL;
-    return location__add__(self, other);
+    return nltkLocation__add__(self, other);
 }
 
 /* Location.prec(self, other) */
 /* Return true if self ends before other begins. */
-static PyObject *location_prec(locationObject* self, PyObject *args)
+static PyObject *nltkLocation_prec(nltkLocation* self, PyObject *args)
 {
-    locationObject *other = NULL;
+    nltkLocation *other = NULL;
 
     /* Parse the arguments. */
-    if (!PyArg_ParseTuple(args, "O!:Location.prec", &locationType, &other))
+    if (!PyArg_ParseTuple(args, "O!:Location.prec", &nltkLocationType, &other))
         return NULL;
     if (!check_units_and_source(self, other))
         return NULL;
@@ -322,12 +328,12 @@ static PyObject *location_prec(locationObject* self, PyObject *args)
 
 /* Location.succ(self, other) */
 /* Return true if other ends before self begins. */
-static PyObject *location_succ(locationObject* self, PyObject *args)
+static PyObject *nltkLocation_succ(nltkLocation* self, PyObject *args)
 {
-    locationObject *other = NULL;
+    nltkLocation *other = NULL;
 
     /* Parse the arguments. */
-    if (!PyArg_ParseTuple(args, "O!:Location.succ", &locationType, &other))
+    if (!PyArg_ParseTuple(args, "O!:Location.succ", &nltkLocationType, &other))
         return NULL;
     if (!check_units_and_source(self, other))
         return NULL;
@@ -338,13 +344,13 @@ static PyObject *location_succ(locationObject* self, PyObject *args)
 
 /* Location.overlaps(self, other) */
 /* Return true if self overlaps other. */
-static PyObject *location_overlaps(locationObject* self, PyObject *args)
+static PyObject *nltkLocation_overlaps(nltkLocation* self, PyObject *args)
 {
-    locationObject *other = NULL;
+    nltkLocation *other = NULL;
     long s1, s2, e1, e2;
 
     /* Parse the arguments. */
-    if (!PyArg_ParseTuple(args, "O!:Location.overlaps", &locationType, &other))
+    if (!PyArg_ParseTuple(args, "O!:Location.overlaps", &nltkLocationType, &other))
         return NULL;
     if (!check_units_and_source(self, other))
         return NULL;
@@ -357,12 +363,12 @@ static PyObject *location_overlaps(locationObject* self, PyObject *args)
 
 /* Location.select(self, list) */
 /* Return list[self.start:self.end] */
-static PyObject *location_select(locationObject* self, PyObject *args)
+static PyObject *nltkLocation_select(nltkLocation* self, PyObject *args)
 {
     PyObject *list = NULL;
     
     /* Parse the arguments. */
-    if (!PyArg_ParseTuple(args, "O!:Location.overlaps", &PyList_Type, &list))
+    if (!PyArg_ParseTuple(args, "O!:Location.select", &PyList_Type, &list))
         return NULL;
 
     return PyList_GetSlice(list, self->start, self->end);
@@ -371,7 +377,7 @@ static PyObject *location_select(locationObject* self, PyObject *args)
 /* ====================== Location Operators ======================= */
 
 /* repr(self) */
-static PyObject *location__repr__(locationObject *self)
+static PyObject *nltkLocation__repr__(nltkLocation *self)
 {
     if (self->end == self->start+1) {
         if (self->unit == Py_None)
@@ -389,32 +395,31 @@ static PyObject *location__repr__(locationObject *self)
 }
 
 /* str(self) */
-static PyObject *location__str__(locationObject *self)
+static PyObject *nltkLocation__str__(nltkLocation *self)
 {
     if (self->source == Py_None)
-        return location__repr__(self);
-    else if (is_location(self->source))
+        return nltkLocation__repr__(self);
+    else if (is_nltkLocation(self->source))
         return PyString_FromFormat("%s%s",
-          PyString_AS_STRING(location__repr__(self)),
-          PyString_AS_STRING(location__str__((locationObject*)self->source)));
+          PyString_AS_STRING(nltkLocation__repr__(self)),
+          PyString_AS_STRING(nltkLocation__str__((nltkLocation*)self->source)));
     else
         return PyString_FromFormat("%s@%s",
-          PyString_AS_STRING(location__repr__(self)),
+          PyString_AS_STRING(nltkLocation__repr__(self)),
           PyString_AS_STRING(PyObject_Repr(self->source)));
 }
 
 /* len(self) */
-static int location__len__(locationObject *self)
+static int nltkLocation__len__(nltkLocation *self)
 {
     return (self->end - self->start);
 }
 
 /* cmp(self, other) */
-static int location__cmp__(locationObject *self, locationObject *other)
+static int nltkLocation__cmp__(nltkLocation *self, nltkLocation *other)
 {
     /* Check type(other) */
-    if (!is_location(other))
-        return 0;
+    if (!is_nltkLocation(other)) return -1;
 
     /* Check for unit/source mismatches */
     if (!check_units_and_source(self, other)) {
@@ -436,7 +441,7 @@ static int location__cmp__(locationObject *self, locationObject *other)
 }
 
 /* hash(self) */
-static long location__hash__(locationObject *self)
+static long nltkLocation__hash__(nltkLocation *self)
 {
     /* It's unusual for 2 different locations to share a start offset
        (for a given unit/source); so just hash off the start. */
@@ -446,10 +451,10 @@ static long location__hash__(locationObject *self)
 /* self+other */
 /* If self and other are contiguous, then return a new location
  * spanning both self and other; otherwise, raise an exception. */
-static locationObject *location__add__(locationObject *self,
-                                       locationObject *other) {
+static nltkLocation *nltkLocation__add__(nltkLocation *self,
+                                       nltkLocation *other) {
     /* Check type(other) */
-    if (!is_location(other)) {
+    if (!is_nltkLocation(other)) {
         PyErr_SetString(PyExc_TypeError, LOC_ERROR_002);
         return NULL;
     }
@@ -458,12 +463,12 @@ static locationObject *location__add__(locationObject *self,
         return NULL;
     
     if (self->end == other->start) {
-        locationObject *loc = location_copy(self);
+        nltkLocation *loc = nltkLocation_copy(self);
         loc->end = other->end;
         return loc;
     }
     else if (other->end == self->start) {
-        locationObject *loc = location_copy(other);
+        nltkLocation *loc = nltkLocation_copy(other);
         loc->end = self->end;
         return loc;
     }
@@ -476,70 +481,68 @@ static locationObject *location__add__(locationObject *self,
 /* =================== Location Type Definition ==================== */
 
 /* Location attributes */
-struct PyMemberDef location_members[] = {
-    {"start", T_INT, offsetof(locationObject, start), RO,
+struct PyMemberDef nltkLocation_members[] = {
+    {"start", T_INT, offsetof(nltkLocation, start), RO,
      LOCATION_START_DOC},
-    {"end", T_INT, offsetof(locationObject, end), RO,
+    {"end", T_INT, offsetof(nltkLocation, end), RO,
      LOCATION_END_DOC},
-    {"unit", T_OBJECT_EX, offsetof(locationObject, unit), RO,
+    {"unit", T_OBJECT_EX, offsetof(nltkLocation, unit), RO,
      LOCATION_UNIT_DOC},
-    {"source", T_OBJECT_EX, offsetof(locationObject, source), RO,
+    {"source", T_OBJECT_EX, offsetof(nltkLocation, source), RO,
      LOCATION_SOURCE_DOC},
     {NULL, 0, 0, 0, NULL} /* Sentinel */
 };
 
 /* Location methods */
-static PyMethodDef location_methods[] = {
-    {"length", (PyCFunction)location_length, METH_NOARGS,
+static PyMethodDef nltkLocation_methods[] = {
+    {"length", (PyCFunction)nltkLocation_length, METH_NOARGS,
      LOCATION_LENGTH_DOC},
-    {"start_loc", (PyCFunction)location_start_loc, METH_NOARGS,
-     "Return a location corresponding to the start of this location."},
-    {"end_loc", (PyCFunction)location_end_loc, METH_NOARGS,
-     "Return a location corresponding to the end of this location."},
-    {"union", (PyCFunction)location_union, METH_VARARGS,
-     "Union."},
-    {"prec", (PyCFunction)location_prec, METH_VARARGS,
-     "Prec."},
-    {"succ", (PyCFunction)location_succ, METH_VARARGS,
-     "Succ."},
-    {"overlaps", (PyCFunction)location_overlaps, METH_VARARGS,
-     "Overlaps."},
-    {"select", (PyCFunction)location_select, METH_VARARGS,
-     "Select."},
-    
-    /* End of list */
-    {NULL, NULL, 0, NULL}
+    {"start_loc", (PyCFunction)nltkLocation_start_loc, METH_NOARGS,
+     LOCATION_START_LOC_DOC},
+    {"end_loc", (PyCFunction)nltkLocation_end_loc, METH_NOARGS,
+     LOCATION_END_LOC_DOC},
+    {"union", (PyCFunction)nltkLocation_union, METH_VARARGS,
+     LOCATION_UNION_DOC},
+    {"prec", (PyCFunction)nltkLocation_prec, METH_VARARGS,
+     LOCATION_PREC_DOC},
+    {"succ", (PyCFunction)nltkLocation_succ, METH_VARARGS,
+     LOCATION_SUCC_DOC},
+    {"overlaps", (PyCFunction)nltkLocation_overlaps, METH_VARARGS,
+     LOCATION_OVERLAPS_DOC},
+    {"select", (PyCFunction)nltkLocation_select, METH_VARARGS,
+     LOCATION_SELECT_DOC},
+    {NULL, NULL, 0, NULL} /* Sentinel */
 };
 
 /* Location operators. */
 /* Use the tp_as_sequence protocol to implement len, concat, etc. */
-static PySequenceMethods location_as_sequence = {
-    (inquiry)location__len__,      /* sq_length */
-    (binaryfunc)location__add__,   /* sq_concat */
+static PySequenceMethods nltkLocation_as_sequence = {
+    (inquiry)nltkLocation__len__,      /* sq_length */
+    (binaryfunc)nltkLocation__add__,   /* sq_concat */
 };
 
-static PyTypeObject locationType = {
+static PyTypeObject nltkLocationType = {
     PyObject_HEAD_INIT(NULL)
     0,                                         /*ob_size*/
     "token.Location",                          /*tp_name*/
-    sizeof(locationObject),                    /*tp_basicsize*/
+    sizeof(nltkLocation),                      /*tp_basicsize*/
     0,                                         /*tp_itemsize*/
-    (destructor)location_dealloc,              /*tp_dealloc*/
+    (destructor)nltkLocation_dealloc,          /*tp_dealloc*/
     0,                                         /*tp_print*/
     0,                                         /*tp_getattr*/
     0,                                         /*tp_setattr*/
-    (cmpfunc)location__cmp__,                  /*tp_compare*/
-    (reprfunc)location__repr__,                /*tp_repr*/
+    (cmpfunc)nltkLocation__cmp__,              /*tp_compare*/
+    (reprfunc)nltkLocation__repr__,            /*tp_repr*/
     0,                                         /*tp_as_number*/
-    &location_as_sequence,                     /*tp_as_sequence*/
+    &nltkLocation_as_sequence,                 /*tp_as_sequence*/
     0,                                         /*tp_as_mapping*/
-    (hashfunc)location__hash__,                /*tp_hash */
+    (hashfunc)nltkLocation__hash__,            /*tp_hash */
     0,                                         /*tp_call*/
-    (reprfunc)location__str__,                 /*tp_str*/
+    (reprfunc)nltkLocation__str__,             /*tp_str*/
     0,                                         /*tp_getattro*/
     0,                                         /*tp_setattro*/
     0,                                         /*tp_as_buffer*/
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,  /*tp_flags*/
+    Py_TPFLAGS_DEFAULT,                        /*tp_flags*/
     LOCATION_DOC,                              /* tp_doc */
     0,		                               /* tp_traverse */
     0,		                               /* tp_clear */
@@ -547,17 +550,325 @@ static PyTypeObject locationType = {
     0,		                               /* tp_weaklistoffset */
     0,		                               /* tp_iter */
     0,		                               /* tp_iternext */
-    location_methods,                          /* tp_methods */
-    location_members,                          /* tp_members */
+    nltkLocation_methods,                      /* tp_methods */
+    nltkLocation_members,                      /* tp_members */
     0,                                         /* tp_getset */
     0,                                         /* tp_base */
     0,                                         /* tp_dict */
     0,                                         /* tp_descr_get */
     0,                                         /* tp_descr_set */
     0,                                         /* tp_dictoffset */
-    (initproc)location_init,                   /* tp_init */
+    (initproc)nltkLocation__init__,            /* tp_init */
     0,                                         /* tp_alloc */
-    (newfunc)location_new,                     /* tp_new */
+    (newfunc)nltkLocation__new__,              /* tp_new */
+};
+
+/*********************************************************************
+ *  TYPE
+ *********************************************************************/
+// Check immutability??
+
+/* ===================== Type Helper Functions ===================== */
+
+
+/* ================== Constructor and Destructor =================== */
+
+/* Type.__new__(type) */
+/* Create a new Type object, and initialize its members to default
+ * values.  The properties dictionary is set to None. */
+static PyObject*
+nltkType__new__(PyTypeObject* type, PyObject *args, PyObject *keywords)
+{
+    /* Allocate space for the new object. */
+    nltkType *self = (nltkType*)type->tp_alloc(type, 0);
+    if (self == NULL) return NULL;
+    
+    /* Set the properties dictionary to None. */
+    self->properties = Py_None;
+    Py_INCREF(Py_None);
+
+    /* Return the new object. */
+    return (PyObject *)self;
+}
+
+/* Type.__init__(self, start, end=None, unit=None, source=None) */
+/* Initialize the properties dictionary for the given Type object. */
+static int
+nltkType__init__(nltkType *self, PyObject *args, PyObject *keywords)
+{
+    // Check that there are no positional arguments.
+    if (PyObject_Length(args) != 0) {
+        PyErr_SetString(PyExc_TypeError, TYPE_ERROR_001);
+        return -1;
+    }
+
+    // Copy the properties dictionary.
+    Py_XDECREF(self->properties);
+    if (keywords != NULL)
+        self->properties = PyDict_Copy(keywords);
+    else
+        self->properties = PyDict_New();
+
+    return 0;
+}
+
+/* Type.__del__(self) */
+/* Deallocate all space associated with this Type. */
+static void
+nltkType_dealloc(nltkType *self)
+{
+    Py_XDECREF(self->properties);
+    self->ob_type->tp_free((PyObject*)self);
+}
+
+/* ========================= Type Methods ========================== */
+
+/* Type.get(self, property) */
+static PyObject *nltkType_get(nltkType *self, PyObject *args)
+{
+    PyObject *property=NULL, *value=NULL;
+
+    /* Parse the arguments. */
+    if (!PyArg_ParseTuple(args, "S:Type.get", &property))
+        return NULL;
+
+    /* Look up the value */
+    value = PyDict_GetItem(self->properties, property);
+    if (value != NULL) {
+        Py_INCREF(value);
+        return value;
+    } else {
+        PyErr_SetString(PyExc_KeyError, TYPE_ERROR_002);
+        return NULL;
+    }
+}
+
+/* Type.has(self, property) */
+static PyObject *nltkType_has(nltkType *self, PyObject *args)
+{
+    PyObject *property=NULL, *value=NULL;
+
+    /* Parse the arguments. */
+    if (!PyArg_ParseTuple(args, "S:Type.has", &property))
+        return NULL;
+
+    /* Look up the value */
+    value = PyDict_GetItem(self->properties, property);
+    return PyInt_FromLong(value != NULL);
+}
+
+/* Type.properties(self) */
+static PyObject *nltkType_properties(nltkType *self, PyObject *args)
+{
+    return PyDict_Keys(self->properties);
+}
+
+/* Type.extend(self, **properties) */
+static nltkType*
+nltkType_extend(nltkType *self, PyObject *args, PyObject *keywords)
+{
+    PyTypeObject *type = self->ob_type;
+    nltkType *newtypeobj;
+    
+    // Check that there are no positional arguments.
+    if (PyObject_Length(args) != 0) {
+        PyErr_SetString(PyExc_TypeError, TYPE_ERROR_003);
+        return NULL;
+    }
+
+    /* If keywords==null, then just return ourself */
+    if (keywords == NULL) {
+        Py_INCREF(self);
+        return self;
+    }
+    
+    /* Allocate space for the new object. */
+    newtypeobj = (nltkType*)type->tp_alloc(type, 0);
+    if (newtypeobj == NULL) return NULL;
+
+    /* Copy the dictionary from self */
+    if ((newtypeobj->properties = PyDict_Copy(self->properties)) == NULL)
+        return NULL;
+
+    /* Extend the dictionary with keywords */
+    if (PyDict_Update(newtypeobj->properties, keywords) == -1)
+        return NULL;
+    
+    /* Return the new object. */
+    return newtypeobj;
+}
+
+/* Type.select(self, *properties) */
+static nltkType*
+nltkType_select(nltkType *self, PyObject *args)
+{
+    PyTypeObject *type = self->ob_type;
+    nltkType *newtypeobj;
+    int size = PyTuple_GET_SIZE(args);
+    int i;
+    
+    /* If args==(), then just return ourself */
+    if (size == 0) {
+        Py_INCREF(self);
+        return self;
+    }
+
+    /* Allocate space for the new object. */
+    newtypeobj = (nltkType*)type->tp_alloc(type, 0);
+    if (newtypeobj == NULL) return NULL;
+
+    /* Create the new dictionary object. */
+    if ((newtypeobj->properties = PyDict_New()) == NULL)
+        return NULL;
+
+    /* Copy the selected attributes. */
+    for (i=0; i<size; i++) {
+        PyObject *key = PyTuple_GET_ITEM(args, i);
+        PyObject *val = PyDict_GetItem(self->properties, key);
+        if (val == NULL) {
+            PyErr_SetString(PyExc_KeyError, TYPE_ERROR_004);
+            Py_DECREF(newtypeobj);
+            return NULL;
+        }
+        PyDict_SetItem(newtypeobj->properties, key, val);
+    }
+
+    /* Return the new object. */
+    return newtypeobj;
+}
+
+/* ======================== Type Operators ========================= */
+
+/* repr(self) */
+static PyObject *nltkType__repr__(nltkType *self)
+{
+    PyObject *s, *items;
+    int size, i;
+
+    /* Construct the initial string. */
+    if ((s = PyString_FromString("<")) == NULL) return NULL;
+
+    /* Get the list of items. */
+    if ((items = PyDict_Items(self->properties)) == NULL) return NULL;
+    size = PyList_GET_SIZE(items);
+
+    /* Special check for empty types */
+    if (size == 0) {
+        PyString_ConcatAndDel(&s, PyString_FromString("Empty Type>"));
+        return s;
+    }
+    
+    /* Iterate through items */
+    for (i=0; i<size; i++) {
+        PyObject *tuple = PyList_GET_ITEM(items, i);
+        PyObject *key = PyTuple_GET_ITEM(tuple, 0);
+        PyObject *val = PyTuple_GET_ITEM(tuple, 1);
+        PyString_Concat(&s, key);
+        PyString_ConcatAndDel(&s, PyString_FromString("="));
+        PyString_ConcatAndDel(&s, PyObject_Repr(val));
+        if (i < (size-1))
+            PyString_ConcatAndDel(&s, PyString_FromString(", "));
+    }
+
+    Py_DECREF(items);
+
+    PyString_ConcatAndDel(&s, PyString_FromString(">"));
+    return s;
+}
+
+/* This is used by nltkType__getattr__; so declare it. */
+static PyMethodDef nltkType_methods[];
+
+/* self.property */
+static PyObject *nltkType__getattr__(nltkType *self, char *property)
+{
+    PyObject *val = PyDict_GetItemString(self->properties, property);
+    if (val != NULL) {
+        Py_INCREF(val);
+        return val;
+    } else {
+        val = Py_FindMethod(nltkType_methods, (PyObject*)self, property);
+        if (val != NULL) return val;
+        else {
+            PyErr_SetString(PyExc_KeyError, TYPE_ERROR_004);
+            return NULL;
+        }
+    }
+}
+
+/* cmp(self, other) */
+static int nltkType__cmp__(nltkType *self, nltkType *other)
+{
+    int result = 0;
+    
+    /* Check type(other) */
+    if (!is_nltkType(other)) return -1;
+
+    /* Compare based on dictionaries */
+    if (PyObject_Cmp(self->properties, other->properties, &result) == -1)
+        return -1;
+    return result;
+}
+
+/* hash(self) */
+static long nltkType__hash__(nltkType *self)
+{
+    // There's nothing good to hash off of. :(
+    return PyObject_Hash(self->properties);
+}
+
+/* ===================== Type Type Definition ====================== */
+
+/* Type methods */
+static PyMethodDef nltkType_methods[] = {
+    {"get", (PyCFunction)nltkType_get, METH_VARARGS, ""},
+    {"has", (PyCFunction)nltkType_has, METH_VARARGS, ""},
+    {"properties", (PyCFunction)nltkType_properties, METH_NOARGS, ""},
+    {"extend", (PyCFunction)nltkType_extend, METH_KEYWORDS, ""},
+    {"select", (PyCFunction)nltkType_select, METH_VARARGS, ""},
+    {NULL, NULL, 0, NULL} /* Sentinel */
+};
+
+static PyTypeObject nltkTypeType = {
+    PyObject_HEAD_INIT(NULL)
+    0,                                         /*ob_size*/
+    "token.Type",                              /*tp_name*/
+    sizeof(nltkType),                          /*tp_basicsize*/
+    0,                                         /*tp_itemsize*/
+    (destructor)nltkType_dealloc,              /*tp_dealloc*/
+    0,                                         /*tp_print*/
+    (getattrfunc)nltkType__getattr__,          /*tp_getattr*/
+    0,                                         /*tp_setattr*/
+    (cmpfunc)nltkType__cmp__,                  /*tp_compare*/
+    (reprfunc)nltkType__repr__,                /*tp_repr*/
+    0,                                         /*tp_as_number*/
+    0,                                         /*tp_as_sequence*/
+    0,                                         /*tp_as_mapping*/
+    (hashfunc)nltkType__hash__,                /*tp_hash */
+    0,                                         /*tp_call*/
+    0,                                         /*tp_str*/
+    0,                                         /*tp_getattro*/
+    0,                                         /*tp_setattro*/
+    0,                                         /*tp_as_buffer*/
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,  /*tp_flags*/
+    TYPE_DOC,                                  /* tp_doc */
+    0,		                               /* tp_traverse */
+    0,		                               /* tp_clear */
+    0,		                               /* tp_richcompare */
+    0,		                               /* tp_weaklistoffset */
+    0,		                               /* tp_iter */
+    0,		                               /* tp_iternext */
+    nltkType_methods,                          /* tp_methods */
+    0,                                         /* tp_members */
+    0,                                         /* tp_getset */
+    0,                                         /* tp_base */
+    0,                                         /* tp_dict */
+    0,                                         /* tp_descr_get */
+    0,                                         /* tp_descr_set */
+    0,                                         /* tp_dictoffset */
+    (initproc)nltkType__init__,                /* tp_init */
+    0,                                         /* tp_alloc */
+    (newfunc)nltkType__new__,                  /* tp_new */
 };
 
 /*********************************************************************
@@ -575,13 +886,15 @@ DL_EXPORT(void) init_ctoken(void)
 {
     PyObject *d, *m;
 
-    /** Finalize type objects */
-    if (PyType_Ready(&locationType) < 0) return;
+    /* Finalize type objects */
+    if (PyType_Ready(&nltkLocationType) < 0) return;
+    if (PyType_Ready(&nltkTypeType) < 0) return;
 
     /* Initialize the module */
     m = Py_InitModule3("_ctoken", _ctoken_methods, MODULE_DOC);
 
     /* Add the types to the module dictionary. */
     d = PyModule_GetDict(m);
-    PyDict_SetItemString(d, "Location", (PyObject*)&locationType);
+    PyDict_SetItemString(d, "Location", (PyObject*)&nltkLocationType);
+    PyDict_SetItemString(d, "Type", (PyObject*)&nltkTypeType);
 }
