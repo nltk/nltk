@@ -402,8 +402,8 @@ class ChunkString:
         improper bracketing.  Note, in particular, that bracketing may
         not be nested.
 
-        @type regexp: C{string} or C{regexp}
-        @param regexp: A regular expression matching the substring
+        @type pattern: C{string} 
+        @param pattern: A regular expression pattern matching the substring
             that should be replaced.  This will typically include a
             named group, which can be used by C{repl}.
         @type repl: C{string}
@@ -430,8 +430,8 @@ class ChunkString:
         improper bracketing.  Note, in particular, that bracketing may
         not be nested.
 
-        @type regexp: C{string} or C{regexp}
-        @param regexp: A regular expression matching the substring
+        @type pattern: C{string} or C{regexp}
+        @param pattern: A regular expression pattern matching the substring
             that should be replaced.  This will typically include a
             named group, which can be used by C{repl}.
         @type repl: C{string}
