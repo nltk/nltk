@@ -689,7 +689,7 @@ prepositional phrase.'''
 ###################################################
 ## Roget
 
-from nltk.corpus.roget import RogetCorpusReader
+from nltk.corpus.rogetreader import RogetCorpusReader
 roget = RogetCorpusReader('roget', 'roget/', 'roget15a.txt')
 
 ###################################################
