@@ -820,7 +820,7 @@ class SplitRule(REChunkParserRule):
         self._rigthpattern = right_tag_pattern
         regexp = re.compile('(?P<left>'+tag_pattern2re_pattern(left_tag_pattern)+')'+
                             '(?='+tag_pattern2re_pattern(right_tag_pattern)+')')
-        REChunkParserRule.__init__(self, regexp, '\g<left>\}\{', descr)
+        REChunkParserRule.__init__(self, regexp, r'\g<left>}{', descr)
 
     def __repr__(self):
         """
