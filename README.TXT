@@ -158,7 +158,7 @@ Releases
         3. Generate a CVS log of all the changes since the previous
            release (note quote marks):
 
-               cvs log "-r release<m>-<n-1>:" >changes.cvslog
+               cvs log "-rrelease-<m>-<n-1>:" >changes.cvslog
 
         4. Examine the cvs log, and use it to add a new section to 
            src/CHANGES.TXT; commit the changes to src/CHANGES.TXT
