@@ -48,6 +48,8 @@ three sub-modules for specialized kinds of parsing:
 from nltk.tree import TreeToken
 from nltk.token import Token
 from nltk.cfg import Nonterminal, CFG, CFGProduction
+from nltk.chktype import chktype as _chktype
+import types
 
 __all__ = (
     'ParserI',
@@ -185,6 +187,8 @@ class ShiftReduceParser(ParserI):
             and higher numbers will produce more verbose tracing
             output.
         """
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._check_grammar()
@@ -203,10 +207,13 @@ class ShiftReduceParser(ParserI):
         @param grammar: The new grammar.
         @type grammar: C{CFG}
         """
+        assert _chktype(1, grammar, CFG)
         return self._grammar
     
     def parse_n(self, text, n=None):
         # Inherit documentation from ParserI; delegate to parse.
+        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(2, n, types.IntType, types.NoneType)
         if n == 0: return []
         treetok = self.parse(text)
         if treetok is None: return []
@@ -214,6 +221,7 @@ class ShiftReduceParser(ParserI):
 
     def parse(self, text):
         # Inherit documentation from ParserI.
+        assert _chktype(1, text, [Token], (Token))
 
         # initialize the stack.
         stack = []
@@ -299,7 +307,7 @@ class ShiftReduceParser(ParserI):
         earliest in the grammar.  The new C{TreeToken} replaces the
         elements in the stack.
 
-        @rtype: C{CFGProduction} or C{boolean}
+        @rtype: C{CFGProduction} or C{None}
         @return: If a reduction is performed, then return the CFG
             production that the reduction is based on; otherwise,
             return false.
@@ -331,7 +339,7 @@ class ShiftReduceParser(ParserI):
                 return production
 
         # We didn't reduce anything
-        return 0
+        return None
 
     def trace(self, trace=2):
         """
@@ -344,6 +352,7 @@ class ShiftReduceParser(ParserI):
             produce more verbose tracing output.
         @rtype: C{None}
         """
+        assert _chktype(1, trace, types.IntType)
         # 1: just show shifts.
         # 2: show shifts & reduces
         # 3: display which tokens & productions are shifed/reduced
@@ -458,6 +467,8 @@ class RecursiveDescentParser(ParserI):
             and higher numbers will produce more verbose tracing
             output.
         """
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
 
@@ -475,16 +486,20 @@ class RecursiveDescentParser(ParserI):
         @param grammar: The new grammar.
         @type grammar: C{CFG}
         """
+        assert _chktype(1, grammar, CFG)
         return self._grammar
 
     def parse(self, text):
         # Inherit docs from ParserI; and delegate to parse_n
+        assert _chktype(1, text, [Token], (Token))
         final_trees = self.parse_n(text, 1)
         if len(final_trees) == 0: return None
         else: return final_trees[0]
 
     def parse_n(self, text, n=None):
         # Inherit docs from ParserI
+        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(2, n, types.IntType, types.NoneType)
 
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
@@ -669,6 +684,7 @@ class RecursiveDescentParser(ParserI):
             produce more verbose tracing output.
         @rtype: C{None}
         """
+        assert _chktype(1, trace, types.IntType)
         self._trace = trace
 
     def _trace_fringe(self, treetok, treeloc=None):
@@ -749,6 +765,8 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         history is used to implement the C{undo} operation.
     """
     def __init__(self, grammar, trace=0):
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._stack = None
@@ -757,6 +775,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
 
     def parse(self, text):
         # Inherit docs
+        assert _chktype(1, text, [Token], (Token))
         self.initialize(text)
         while self.step(): pass
         parses = self.parses()
@@ -786,6 +805,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         @param text: The text to start parsing.
         @type text: C{list} of C{Token}
         """
+        assert _chktype(1, text, [Token], (Token))
         self._stack = []
         self._remaining_text = text[:]
         self._history = []
@@ -808,9 +828,11 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     def shift(self):
         """
         Move a token from the beginning of the remaining text to the
-        end of the stack.
+        end of the stack.  If there are no more tokens in the
+        remaining text, then do nothing.
 
-        @rtype: C{None}
+        @return: True if the shift operation was successful.
+        @rtype: C{boolean}
         """
         if len(self._remaining_text) == 0: return 0
         self._history.append( (self._stack[:], self._remaining_text[:]) )
@@ -818,6 +840,18 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         return 1
         
     def reduce(self, production=None):
+        """
+        Use C{production} to combine the rightmost stack elements into
+        a single C{TreeToken}.  If C{production} does not match the
+        rightmost stack elements, then do nothing.
+
+        @return: The production used to reduce the stack, if a
+            reduction was performed.  If no reduction was performed,
+            return C{None}.
+        
+        @rtype: C{CFGProduction} or C{None}
+        """
+        assert _chktype(1, production, CFGProduction, types.NoneType)
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         return_val = self._reduce(self._stack, self._remaining_text,
                                   production)
@@ -892,6 +926,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         or not to match a token.
     """
     def __init__(self, grammar, trace=0):
+        assert _chktype(1, grammar, CFG)
+        assert _chktype(2, trace, types.IntType)
         self._grammar = grammar
         self._trace = trace
         self._rtext = None
@@ -903,6 +939,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._parses = []
     
     def parse_n(self, text, n=None):
+        assert _chktype(1, text, [Token], (Token))
+        assert _chktype(2, n, types.IntType, types.NoneType)
         self.initialize(text)
         while self.step(): pass
         if n is None: return self.parses()
@@ -917,6 +955,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         @param text: The text to start parsing.
         @type text: C{list} of C{Token}
         """
+        assert _chktype(1, text, [Token], (Token))
         self._rtext = text
         self._treetok = TreeToken(self._grammar.start().symbol())
         self._frontier = [()]
@@ -996,9 +1035,10 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
 
         @return: The production used to expand the frontier, if an
            expansion was performed.  If no expansion was performed,
-           return C{None}
+           return C{None}.
         @rtype: C{CFGProduction} or C{None}
         """
+        assert _chktype(1, production, CFGProduction, types.NoneType)
         # Make sure we *can* expand.
         if (len(self._frontier) == 0 or
             not isinstance(self._treetok[self._frontier[0]], TreeToken)):
