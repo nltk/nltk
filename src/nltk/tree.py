@@ -363,19 +363,19 @@ class Tree(AbstractTree):
         return str+')'
 
     # Contributed by trevorcohn1@users.sf.net
-    def latex_qtree(self, first=True):
-        """
+    def latex_qtree(self, first=1):
+        r"""
         Returns a representation of the tree token compatible with the LaTeX
-        qtree package. This consists of the string C{\\Tree} followed by
+        qtree package. This consists of the string C{\Tree} followed by
         the parse tree represented in bracketed notation.
 
         For example, the following result was generated from a parse tree of
-        the sentence C{The announcement astounded us}:
+        the sentence C{The announcement astounded us}::
 
-        \Tree [.I'' [.N'' [.D The ] [.N' [.N announcement ] ] ]
-            [.I' [.V'' [.V' [.V astounded ] [.N'' [.N' [.N us ] ] ] ] ] ] ]
+          \Tree [.I'' [.N'' [.D The ] [.N' [.N announcement ] ] ]
+              [.I' [.V'' [.V' [.V astounded ] [.N'' [.N' [.N us ] ] ] ] ] ] ]
 
-        See C{http://www.ling.upenn.edu/advice/latex.html} for the LaTeX=
+        See U{http://www.ling.upenn.edu/advice/latex.html} for the LaTeX
         style file for the qtree package.
 
         @return: A latex qtree representation of this tree.
@@ -385,11 +385,11 @@ class Tree(AbstractTree):
         """
         str = ''
         if first:
-            str = '\\Tree '
+            str = r'\Tree '
         str += '[.' + repr(self._node) + ' ' 
         for child in self._children:
             if isinstance(child, AbstractTree):
-                str += child.latex_qtree(False) + ' '
+                str += child.latex_qtree(0) + ' '
             else:
                 str += repr(child) + ' '
         str += ']'
