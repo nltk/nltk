@@ -191,7 +191,7 @@ class TreeView:
         node_x = (left+right)/2
         triangle_bottom = node_y+self._textheight+TreeView._Y_SPACING
         tag = c.create_polygon(node_x, node_y+self._textheight,
-                               left, bottom, right, bottom,
+                               left, triangle_bottom, right, triangle_bottom,
                                outline='black', fill='gray')
 
         # Set up a callback.
