@@ -111,7 +111,7 @@ class Token(dict):
     __slots__ = ('__repr_cyclecheck',)
 
     # Should we use the type-safe version of tokens?
-    USE_SAFE_TOKENS = True
+    USE_SAFE_TOKENS = False
 
     #/////////////////////////////////////////////////////////////////
     # Constructor
@@ -652,7 +652,7 @@ class SafeToken(Token):
 
     def _checkval(self, value):
         """
-        @return: True if the given value is a VALID property value.
+        @return: True if the given value is a valid property value.
         """
         # Is it a token or a container object?
         if (isinstance(value, Token) or
