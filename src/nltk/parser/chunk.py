@@ -1346,6 +1346,8 @@ def demo_eval(chunkparser, text):
     ctt = ChunkedTaggedTokenReader(chunk_node='NP', SUBTOKENS='WORDS')
     
     for sentence in text.split('\n'):
+        sentence = sentence.strip()
+        if not sentence: continue
         gold = ctt.read_token(sentence)
         test = Token(WORDS=gold['WORDS'])#, LOC=sentence['LOC'])
         chunkparser.parse(test)
