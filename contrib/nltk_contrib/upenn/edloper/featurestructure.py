@@ -1,8 +1,60 @@
+# Natural Language Toolkit: Feature Structures
+#
+# Copyright (C) 2003 University of Pennsylvania
+# Author: Edward Loper <edloper@ldc.upenn.edu>,
+#         Rob Speer (original code)
+# URL: <http://nltk.sourceforge.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
+
 """
-A preliminary feature structure module.
+Basic data classes for representing feature structures.  A X{feature
+structure} is a mapping from feature names to feature values, where:
 
-Based loosely on C{feature.py} by Rob Speer.
+  - Each X{feature name} is a case sensitive string.
+  - Each X{feature value} can be a base value (such as a string), a
+    variable, or a nested feature structure.
 
+Feature structures are typically used to represent partial information
+about objects.  A feature name that is not mapped to a value stands
+for a feature whose value is unknown (I{not} a feature without a
+value).  Two feature structures that represent (potentially
+overlapping) information about the same object can be combined by
+X{unification}.  When two inconsistant feature structures are unified,
+the unification fails and returns C{None}.
+
+Features are usually specified using X{feature paths}, or tuples of
+feature names that specify path through the nested feature structures
+to a value.
+
+Feature structures may contain reentrant feature values.  A
+X{reentrant feature value} is a single feature value that can be
+accessed via multiple feature paths.  Unification preserves the
+reentrance relations imposed by both of the unified feature
+structures.  After unification, any extensions to a reentrant feature
+value will be visible using any of its feature paths.
+
+Feature structure variables are encoded using the
+L{FeatureStructureVariable} class.  Feature structure variables are
+essentially just names; they do not directly contain values.  Instead,
+the mapping from variables to values is encoded externally to the
+variable, as a set of X{bindings}.  These bindings are stored using
+the L{FeatureStructureVariableBinding} class, which maintains two
+types of information about variables:
+
+  - For X{bound variables}, or variables that have been assigned
+    values, it records their values.
+    
+  - For X{unbound variables}, or variables that have not been assigned
+    values, it records which variables have been set equal to each
+    other, or X{merged}.  When an unbound variable is bound to a new
+    value, any variables that it has been merged with will be bound to
+    the same value.
+"""
+
+OPEN_QUESTIONS = """
 Should there be a feature object?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The current implementation doesn't actually include an object to
@@ -35,10 +87,6 @@ import re, copy
 # Variables and variable bindings
 #//////////////////////////////////////////////////////////////////////
 
-# This class doesn't actually do anything; all the work is done
-# by FeatureStructureVariableBinding, and during unification.  All that
-# matters is that 2 FeatureStructureVariables with the same identifier
-# should compare equal.
 class FeatureStructureVariable:
     """
     A variable that can stand for a single feature value in a feature
