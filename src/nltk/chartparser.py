@@ -292,18 +292,7 @@ class SteppingChartParser(ChartParser):
         ChartParser.__init__(self, grammar, lexicon, basecat, **kwargs)
         self._queue = []
         self._action = ()
-        self._stepping_chart = None
-    def load(self, strategy, tok_sent):
-        added = ChartParser.load(self, strategy, tok_sent)
-        self._stepping_chart = self._chart.copy()
-        return self._stepping_chart.edges()
 
-    def update_chart(self):
-        self._chart = self._stepping_chart.copy()
-    def update_stepping_chart(self):
-        self._stepping_chart = self._chart.copy()
-    def stepping_chart(self):
-        return self._stepping_chart
     def clear(self):
         self._queue = []
     def empty(self):
@@ -318,7 +307,7 @@ class SteppingChartParser(ChartParser):
         added = []
         while added == [] and not self.empty():
             next_edge = self.dequeue()
-            added = self._stepping_chart.add_edge(next_edge)
+            added = self._chart.add_edge(next_edge)
         if added == []:
             return None
         else:
@@ -326,25 +315,33 @@ class SteppingChartParser(ChartParser):
 
     def FR_step(self, edge):
         if self._action != ("FR", edge) or self.empty():
+            tmp_chart = self._chart.copy()
             self._queue = self.FR_edge(edge)
+            self._chart = tmp_chart
         self._action = ("FR", edge)
         return self.next()
 
     def TD_step(self, edge):
         if self._action != ("TD", edge) or self.empty():
+            tmp_chart = self._chart.copy()
             self._queue = self.TD_edge(edge)
+            self._chart = tmp_chart
         self._action = ("TD", edge)
         return self.next()
 
     def TD_init_step(self):
         if self._action != "TDI" or self.empty():
+            tmp_chart = self._chart.copy()
             self._queue = self.TD_init()
+            self._chart = tmp_chart
         self._action = "TDI"
         return self.next()
 
     def BU_init_step(self, edge):
         if self._action != ("BUI", edge) or self.empty():
+            tmp_chart = self._chart.copy()
             self._queue = self.BU_init_edge(edge)
+            self._chart = tmp_chart
         self._action = ("BUI", edge)
         return self.next()
 
@@ -414,7 +411,7 @@ def demo():
     cp.load(cp.bu_strategy(), tok_sent)
 
     print "THE INITIAL CHART:"
-    cp.stepping_chart().draw() # NB cp.chart() is ahead of us
+    cp.chart().draw() # NB cp.chart() is ahead of us
 
     for x in range(2):
         next = cp.TD_init_step()
@@ -457,11 +454,9 @@ def demo():
         next = cp.BU_init_step(edge)
         print "BU_INIT:", next
 
-    cp.stepping_chart().draw()
+    cp.chart().draw()
 
     print "ALRIGHT, LET'S APPLY THE BU_INIT RULE MAXIMALLY"
-
-    cp.update_chart() # start using chart instead of stepping chart
 
     edges = cp.BU_init()
 
@@ -469,8 +464,6 @@ def demo():
     print edges
 
     cp.chart().draw()
-
-    cp.update_stepping_chart() # use stepping chart again
 
     edge = cp.chart().edges()[12]
     print "USER PICKED EDGE:", edge
@@ -481,7 +474,6 @@ def demo():
         print "FUNDAMENTAL:", next
 
     print "NOW LET'S APPLY THE FR MAXIMALLY"
-    cp.update_chart() # switch back to the chart
     edges = cp.FR()
 
     print "ADDED:"
