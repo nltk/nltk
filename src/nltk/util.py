@@ -412,3 +412,223 @@ def re_show(regexp, string):
     @return: A string with braces surrounding the matched substrings.
     """
     print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip()),'\n'
+
+######################################################################
+## Sparse Lists
+######################################################################
+
+class SparseList:
+    """
+    A dictionary-backed implementation of C{list}.  
+    """
+    
+    def __init__(self, assignments, len, default):
+        # Check assignments for validity:
+        for index in assignments.keys():
+            if not isinstance(index, int) or not 0 <= index < len:
+                raise ValueError('Bad assignments index %r' % index)
+        
+        self._assignments = assignments
+        self._len = len
+        self._default = default
+
+    def assignments(self):
+        return self._assignments.items()
+
+    def __add__(self, other):
+        selfcopy = self.copy()
+        selfcopy.extend(other)
+        return selfcopy
+
+    def __contains__(self, value):
+        if value == self._default and len(self._assignments) < self._len:
+            return True
+        else:
+            return (value in self._assignments.values())
+
+    def __delitem__(self, index):
+        if index<0: index = self._len + index
+        if not 0 <= index < self._len:
+            raise IndexError, 'list assignment index out of range'
+        # Delegate to __delslice__
+        del self[index:index+1] 
+        
+    def __delslice__(self, start, end):
+        # Note: python handles negative start/end values for us.
+        start = min(max(start, 0), self._len)
+        end = min(max(end, 0), self._len)
+        # Delegate to __setslice__
+        self[start:end] = [] 
+
+    def __cmp__(self, other):
+        # First, check the common elements (in order).
+        for self_val, other_val in zip(self, other):
+            val_cmp = cmp(self_val, other_val)
+            if val_cmp != 0: return val_cmp
+        # If the common elements match, check length.
+        return cmp(len(self), len(other))
+
+    def __getitem__(self, index):
+        if index<0: index = self._len + index
+        if not 0 <= index < self._len:
+            raise IndexError, 'list index out of range'
+        return self._assignments.get(index, self._default)
+
+    def __getslice__(self, start, end):
+        # Note: python handles negative start/end values for us.
+        start = min(max(start, 0), self._len)
+        end = min(max(end, 0), self._len)
+        return [self[i] for i in range(start, end)]
+
+    def __hash__(self):
+        # Must hash equal to an equal list, so this is slow.
+        return hash(list(self))
+
+    def __iadd__(self):
+        self.extend(other)
+
+    def __imul__(self, x):
+        for i in range(x):
+            offset = i*self._len
+            for (index, val) in self._assignments:
+                self._assignments[index+offset] = value
+        self._len *= x
+
+    def __iter__(self):
+        for index in range(self._len):
+            yield self._assignments.get(index, self._default)
+
+    def __len__(self):
+        return self._len
+
+    def __mul__(self, other):
+        return list(self) * other # Cop out.
+
+    def __repr__(self):
+        # List the assignments dict in a cannonical order.
+        items = self._assignments.items()
+        items.sort()
+        assignments = '{%s}' % (', '.join(['%r: %r' % item
+                                           for item in items]))
+        return '%s(%s, %r, %r)' % (self.__class__.__name__, assignments,
+                                   self._len, self._default)
+
+    def __radd__(self, other):
+        # [XX] Inefficient
+        return other+list(self)
+
+    def __rmul__(self, other):
+        return self*other # Use __mul__
+    
+    def __setitem__(self, index, value):
+        if index<0: index = self._len + index
+        if not 0 <= index < self._len:
+            raise IndexError, 'list assignment index out of range'
+        if value == self._default:
+            try: del self._assignments[index]
+            except KeyError: pass
+        else:
+            self._assignments[index] = value
+
+    def __setslice__(self, start, end, values):
+        # Note: python handles negative start/end values for us.
+        start = min(max(start, 0), self._len)
+        end = min(max(end, 0), self._len)
+
+        # Offset for values after end:
+        offset = len(values) - max(end-start, 0)
+
+        # Create a new assignments dictionary, and add the current
+        # values.  For values after end, shift them by offset.
+        new_assignments = {}
+        for index, val in self._assignments.items():
+            if index < start:
+                new_assignments[index] = val
+            elif index >= end:
+                new_assignments[index+offset] = val
+
+        # Add the given values.
+        for index, val in enumerate(values):
+            if val != self._default:
+                new_assignments[start+index] = val
+
+        # Update our assignments dictionary & length.
+        self._assignments = new_assignments
+        self._len += offset
+
+    def __str__(self):
+        return str(list(self))
+    
+    def append(self, value):
+        if value != self._default:
+            self._assignments[self._len] = value
+        self._len += 1
+
+    def copy(self):
+        return SparseList(self._assignments.copy(),
+                          self._len, self._default)
+    
+    def count(self, value):
+        return len([1 for v in self if v==value])
+
+    def extend(self, iterable):
+        for value in iterable:
+            self.append(value)
+
+    def index(self, value):
+        for i, v in enumerate(self):
+            if v==value:
+                return i
+        else:
+            raise ValueError, 'list.index(x): x not in list'
+
+    def insert(self, index, object):
+        if not 0 <= index <= self._len:
+            raise IndexError, 'list index out of range'
+        # Delegate to __setslice__
+        self[index:index] = [object]
+
+    def pop(self, index=-1):
+        # Delegate to __getitem__ and __delitem__
+        try:
+            value = self[index]
+        except IndexError:
+            if self._len == 0:
+                raise IndexError, 'pop from empty list'
+            else:
+                raise IndexError, 'pop index out of range'
+        del self[index]
+        return value
+
+    def remove(self, value):
+        # Delegate to index and __delitem__
+        del self[self.index(value)]
+
+    def reverse(self):
+        new_assignments = {}
+        size = len(self)
+        for index, value in self._assignments.items():
+            new_assignments[size-1-index] = value
+        self._assignments = new_assignments
+    
+    def sort(self, cmpfunc=cmp):
+        values = self._assignments.values()
+        values.sort(cmpfunc)
+
+        # Find the location where "default" would go
+        for default_index, value in enumerate(values):
+            if cmpfunc(value, self._default) >= 0: break
+        else:
+            default_index = self._len
+
+        # Move anything less than the default to the beginning; and
+        # anything greater to the end.
+        new_assignments = {}
+        for index, value in enumerate(values[:default_index]):
+            new_assignments[index] = value
+        offset = self._len - (len(values)-default_index)
+        for index, value in enumerate(values[default_index:]):
+            new_assignments[index+offset] = value
+
+        # Update our assignments dictionary.
+        self._assignments = new_assignments
