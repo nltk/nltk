@@ -90,6 +90,98 @@ class ProductionView:
         self._top = None
 
 #//////////////////////////////////////////////////////////////////////
+# Small Chart Matrix View
+#//////////////////////////////////////////////////////////////////////
+
+class SmallChartMatrixView:
+    """
+    A view of a chart that displays the contents of the corresponding matrix.
+    """
+    def __init__(self, chart, source, root=None):
+        self._chart = chart
+        self._source = source
+        
+        # If they didn't provide a main window, then set one up.
+        if root is None:
+            top = Tkinter.Tk()
+            top.title('Chart Matrix')
+            def destroy1(e, top=top): top.destroy()
+            def destroy2(top=top): top.destroy()
+            top.bind('q', destroy1)
+            b = Tkinter.Button(top, text='Done', command=destroy2)
+            b.pack(side='bottom')
+            self._root = top
+        else:
+            self._root = root
+
+        self._init_locmap()
+        self._canvas = Tkinter.Canvas(self._root, width=100, height=100,
+                                      background='white')
+        self._canvas.pack(expand=1, fill='both')
+        self._init_locmap()
+        self.draw()
+
+    def _init_locmap(self):
+        # Mapping from indices to locations
+        self._index2loc = [t.loc().start() for t in self._source]
+        self._index2loc.append(self._source[-1].loc().end())
+
+        # Mapping from locations to indices
+        self._loc2index = {}
+        for i in self._index2loc:
+            self._loc2index[self._index2loc[i]] = i
+
+    def update(self):
+        # Gray out everything:
+        N = len(self._source)+1
+        for i in range(N):
+            for j in range(i, N):
+                self._canvas.itemconfig(self._cells[i][j], fill='gray20')
+        
+        for edge in self._chart.edges():
+            i = self._loc2index[edge.loc().start()]
+            j = self._loc2index[edge.loc().end()]
+            self._canvas.itemconfig(self._cells[i][j], fill='blue2')
+
+    def draw(self):
+        LEFT_MARGIN = BOT_MARGIN = 15
+        TOP_MARGIN = 5
+        c = self._canvas
+        N = len(self._source)+1
+        dx = (int(c['width'])-LEFT_MARGIN)/N
+        dy = (int(c['height'])-TOP_MARGIN-BOT_MARGIN)/N
+
+        c.delete('all')
+
+        # Labels and dotted lines
+        for i in range(N):
+            c.create_text(LEFT_MARGIN-2, i*dy+dy/2+TOP_MARGIN,
+                          text=`self._index2loc[i]`, anchor='e')
+            c.create_text(i*dx+dx/2+LEFT_MARGIN, N*dy+TOP_MARGIN+1,
+                          text=`self._index2loc[i]`, anchor='n')
+            c.create_line(LEFT_MARGIN, dy*(i+1)+TOP_MARGIN, 
+                          dx*N+LEFT_MARGIN, dy*(i+1)+TOP_MARGIN, dash='.')
+            c.create_line(dx*i+LEFT_MARGIN, TOP_MARGIN,
+                          dx*i+LEFT_MARGIN, dy*N+TOP_MARGIN, dash='.')
+
+        # A box around the whole thing
+        c.create_rectangle(LEFT_MARGIN, TOP_MARGIN,
+                           LEFT_MARGIN+dx*N, dy*N+TOP_MARGIN,
+                           width=2)
+
+        self._cells = []
+        for i in range(N):
+            self._cells.append([None]*i) # Extra padding
+            for j in range(i, N):
+                t = c.create_rectangle(j*dx+LEFT_MARGIN, i*dy+TOP_MARGIN,
+                                       (j+1)*dx+LEFT_MARGIN,
+                                       (i+1)*dy+TOP_MARGIN,
+                                       fill='gray20')
+                self._cells[-1].append(t)
+
+        self.update()
+
+#//////////////////////////////////////////////////////////////////////
 # Chart View
 #//////////////////////////////////////////////////////////////////////
 
@@ -948,7 +1040,7 @@ class ChartDemo:
 
             # Set up keyboard bindings.
             self._init_bindings()
-            
+
             # Enter mainloop.
             Tkinter.mainloop()
         except:
@@ -1302,5 +1394,33 @@ def test2():
     chart.insert(edge4)
     chart.draw(toks, draw_tree=1)
 
+def testmatrix():
+    nonterminals = 'NP Det N'
+    (NP, Det, N) = [Nonterminal(s) for s in nonterminals.split()]
+    toks = [Token('the', 0), Token('park', 1), Token('I', 2), Token('saw', 3)]
+    tree = TreeToken('NP',
+                     TreeToken('Det', toks[0]),
+                     TreeToken('N', toks[1]))
+
+    edge0 = TokenEdge(toks[0])
+    edge1 = TokenEdge(toks[1])
+
+    edge2 = ProductionEdge(CFGProduction(Det, 'the'),
+                           tree[0], tree[0].loc(), 1)
+    edge3 = ProductionEdge(CFGProduction(N, 'park'),
+                           tree[1], tree[1].loc(), 1)
+
+    edge4 = ProductionEdge(CFGProduction(NP, Det, N),
+                           tree, tree.loc(), 2)
+    
+    chart = Chart(Location(0,4))#tree.loc())
+    chart.insert(edge0)
+    chart.insert(edge1)
+    chart.insert(edge2)
+    chart.insert(edge3)
+    chart.insert(edge4)
+    SmallChartMatrixView(chart, toks)
+    
 if __name__ == '__main__':
     test()
+    #testmatrix()
