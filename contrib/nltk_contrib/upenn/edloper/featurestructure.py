@@ -434,7 +434,7 @@ class FeatureStructure:
     #   3. Apply forward pointers, to preserve reentrance.
     #   4. Find any partially bound merged variables, and bind them.
     #   5. Replace bound variables with their values.
-    def unify(self, other, bindings=None):
+    def unify(self, other, bindings=None, trace=False):
         """
         Unify C{self} with C{other}, and return the resulting feature
         structure.  This unified feature structure is the minimal
@@ -455,6 +455,8 @@ class FeatureStructure:
             If C{bindings} is unspecified, then all variables are
             assumed to be unbound.
         """
+        if trace: print # [XX]
+        
         # If bindings are unspecified, use an empty set of bindings.
         if bindings is None: bindings = FeatureStructureVariableBinding()
 
@@ -473,7 +475,7 @@ class FeatureStructure:
                 bindings.bind(var, memo[valid])
 
         # Do the actual unification.  If it fails, return None.
-        try: selfcopy._destructively_unify(othercopy, bindings)
+        try: selfcopy._destructively_unify(othercopy, bindings, trace)
         except FeatureStructure._UnificationFailureError: return None
 
         # Replace any feature structure that has a forward pointer
@@ -495,7 +497,7 @@ class FeatureStructure:
         """ An exception that is used by C{_destructively_unify} to
         abort unification when a failure is encountered.  """
 
-    def _destructively_unify(self, other, bindings, depth=0):
+    def _destructively_unify(self, other, bindings, trace=False, depth=0):
         """
         Attempt to unify C{self} and C{other} by modifying them
         in-place.  If the unification succeeds, then C{self} will
@@ -504,7 +506,10 @@ class FeatureStructure:
         _UnificationFailureError is raised, and the values of C{self}
         and C{other} are undefined.
         """
-        #print '  '*depth, '%r <UNIFY> %r' % (self, other)
+        if trace:
+            print '|   '*depth+' /'+`self`
+            print '|   '*depth+'|\\'+ `other`
+            print '|   '*(depth+1)
         
         # Look up the "cannonical" copy of other.
         while hasattr(other, '_forward'): other = other._forward
@@ -527,7 +532,10 @@ class FeatureStructure:
                 # Case 1: unify 2 feature structures (recursive case)
                 if (isinstance(selfval, FeatureStructure) and
                     isinstance(otherval, FeatureStructure)):
-                    selfval._destructively_unify(otherval, bindings, depth+1)
+                    if trace:
+                        print '%s| Unify %s:' % ('|   '*(depth), fname)
+                    selfval._destructively_unify(otherval, bindings,
+                                                 trace, depth+1)
                     
                 # Case 2: unify 2 variables
                 elif (isinstance(selfval, FeatureStructureVariable) and
@@ -549,6 +557,12 @@ class FeatureStructure:
             else:
                 self._features[fname] = otherval
 
+        if trace:
+            print '|   '*depth+'+-->'+`self`
+            if len(bindings.bound_variables()) > 0:
+                print '|   '*depth+'    '+`bindings`
+            print '|   '*depth
+        
     def _apply_forwards_to_bindings(self, bindings):
         """
         Replace any feature structure that has a forward pointer with
