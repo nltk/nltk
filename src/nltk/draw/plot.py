@@ -10,7 +10,7 @@
 """
 """
 
-from chktype import chktype as _chktype 
+#from chktype import chktype as _chktype 
 from types import FunctionType as _FunctionType
 from types import MethodType as _MethodType
 from types import BuiltinFunctionType as _BuiltinFunctionType
@@ -24,13 +24,13 @@ class Plot:
         @type vals: C{function} or C{list} of C{number}s
         @type rng: C{list} of C{number}s
         """
-        # Do type checking on the arguments.
-        _chktype('plot', 1, vals, ( [_IntType, _FloatType],
-                                    (_IntType, _FloatType),
-                                    _FunctionType, _BuiltinFunctionType,
-                                    _MethodType))
-        _chktype('plot', 2, rng, ( [_IntType, _FloatType],
-                                   (_IntType, _FloatType) ))
+#         # Do type checking on the arguments.
+#         _chktype('plot', 1, vals, ( [_IntType, _FloatType],
+#                                     (_IntType, _FloatType),
+#                                     _FunctionType, _BuiltinFunctionType,
+#                                     _MethodType))
+#         _chktype('plot', 2, rng, ( [_IntType, _FloatType],
+#                                    (_IntType, _FloatType) ))
 
         # Derive vals and range.
         if type(vals) in (_FunctionType, _BuiltinFunctionType,
