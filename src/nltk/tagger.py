@@ -34,7 +34,7 @@ strings.
 from nltk.chktype import chktype as _chktype
 from nltk.token import Token, TokenizerI, Location
 import re
-import probability
+from nltk.probability import ContextEvent, CFFreqDist, CFSample
 from types import StringType as _StringType
 
 ##//////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ class UnigramTagger(TaggerI):
     output.
     """
     def __init__(self):
-        self._freqdist = probability.CFFreqDist()
+        self._freqdist = CFFreqDist()
     
     def train(self, tagged_tokens):
         """
@@ -240,7 +240,7 @@ class UnigramTagger(TaggerI):
         for token in tagged_tokens:
             context = token.type().base()
             feature = token.type().tag()
-            self._freqdist.inc( probability.CFSample(context, feature) )
+            self._freqdist.inc( CFSample(context, feature) )
 
     def tag(self, tokens):
         # Inherit docs from TaggerI
@@ -249,7 +249,7 @@ class UnigramTagger(TaggerI):
         for token in tokens:
             # Predict the next tag
             context = token.type()
-            context_event = probability.ContextEvent(context)
+            context_event = ContextEvent(context)
             sample = self._freqdist.cond_max(context_event)
             if sample: tag = sample.feature()
             else: tag = 'UNK'
@@ -288,7 +288,7 @@ class NthOrderTagger(TaggerI):
         @type n: int
         """
         self._n = n
-        self._freqdist = probability.CFFreqDist()
+        self._freqdist = CFFreqDist()
 
     def train(self, tagged_tokens):
         """
@@ -306,7 +306,7 @@ class NthOrderTagger(TaggerI):
         for token in tagged_tokens:
             context = tuple(prev_tags+[token.type().base()])
             feature = token.type().tag()
-            self._freqdist.inc( probability.CFSample(context, feature) )
+            self._freqdist.inc( CFSample(context, feature) )
 
             # Update prev_tags
             if len(prev_tags) > 0:
@@ -321,7 +321,7 @@ class NthOrderTagger(TaggerI):
         for token in tokens:
             # Predict the next tag
             context = tuple(prev_tags+[token.type()])
-            context_event = probability.ContextEvent(context)
+            context_event = ContextEvent(context)
             sample = self._freqdist.cond_max(context_event)
             if sample: tag = sample.feature()
             else: tag = 'UNK'
