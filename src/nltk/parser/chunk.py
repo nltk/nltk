@@ -157,21 +157,20 @@ from nltk.chktype import chktype as _chktype
 import types, re
 
 # Used for sorting by epydoc; and for "import *"
-__all__ = [
-    'ChunkParserI',
-    'REChunkParser',
-    'REChunkParserRule',
-    'ChunkRule',
-    'ChinkRule',
-    'MergeRule',
-    'SplitRule',
-    'UnChunkRule',
-    'ChunkString',
-    'ChunkScore',
-    'ChunkedTaggedTokenizer',
-    'unchunk',
-    'tag_pattern2re_pattern',
-    ]
+# __all__ = [
+#     'ChunkParserI',
+#     'REChunkParser',
+#     'REChunkParserRule',
+#     'ChunkRule',
+#     'ChinkRule',
+#     'MergeRule',
+#     'SplitRule',
+#     'UnChunkRule',
+#     'ChunkString',
+#     'ChunkScore',
+#     'ChunkedTaggedTokenizer',
+#     'tag_pattern2re_pattern',
+#     ]
     
 ##//////////////////////////////////////////////////////
 ##  Chunk Parser Interface & Helpers

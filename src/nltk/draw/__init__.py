@@ -39,14 +39,13 @@ structures.  For more information, see the CLIG homepage at::
 
 from Tkinter import *
 
-__all__ = (
-    'CanvasFrame', 'CanvasWidget',
-    'TextWidget', 'SymbolWidget',
-    'BoxWidget', 'OvalWidget', 'ParenWidget', 'BracketWidget',
-    'SequenceWidget', 'StackWidget', 'SpaceWidget',
-    'ScrollWatcherWidget', 'AbstractContainerWidget',
-    
-    'ShowText', 'EntryDialog')
+# __all__ = (
+#     'CanvasFrame', 'CanvasWidget',
+#     'TextWidget', 'SymbolWidget',
+#     'BoxWidget', 'OvalWidget', 'ParenWidget', 'BracketWidget',
+#     'SequenceWidget', 'StackWidget', 'SpaceWidget',
+#     'ScrollWatcherWidget', 'AbstractContainerWidget',
+#     'ShowText', 'EntryDialog')
 
 # Including these causes circular dependancy trouble???
 #    'tree', 'chart', 'fas', 'srparser', 'plot',
