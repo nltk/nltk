@@ -90,8 +90,11 @@ class TaggedType:
         if not isinstance(other, TaggedType):
             raise TypeError("TaggedType compared for equality "+
                             "with a non-TaggedType.")
-        return (self.base == other.base and
-                self.tag == other.tag)
+        return (self._base == other._base and
+                self._tag == other._tag)
+
+    def __ne__(self, other):
+        return not (self == other)
     
     def __hash__(self):
         return hash( (self._base, self._tag) )
@@ -126,7 +129,7 @@ def parseTaggedType(string, unknownTag='UNK'):
     _chktype("parseTaggedType", 2, unknownTag, (_StringType,))
     elts = string.split('/', 1)
     if len(elts) > 1:
-        return TaggedType('/'.join(elts[:-1]), elts[-1])
+        return TaggedType('/'.join(elts[:-1]), elts[-1].upper())
     else:
         return TaggedType(string, unknownTag)
 
@@ -236,6 +239,56 @@ class NN_CD_Tagger(TaggerI):
             tagged_tokens.append(Token(token_type, token.loc()))
         return tagged_tokens
 
+class UnigramTagger(TaggerI):
+    """
+    A unigram stochastic tagger.  Before a C{UnigramTagger} can be
+    used, it should be trained on a list of C{TaggedToken}s.  Using
+    this training data, it will find the most likely tag for each word
+    type.  It will then use this information to assign the most
+    frequent tag to each word.  If the C{NthOrderTagger} encounters a
+    word in a context for which it has no data, it will assign it the
+    tag \"UNK\".
+    
+    This tagger expects a list of C{SimpleToken}s as its
+    input, and generates a list of C{TaggedToken}s as its
+    output.
+    """
+    def __init__(self):
+        self._freqDist = probability.CFFreqDist()
+    
+    def train(self, tagged_tokens):
+        """
+        Train this C{UnigramTagger} using the given
+        training data.  If this method is called multiple times, then
+        the training data from every call will be used.
+        
+        @param tagged_tokens: The training data.
+        @type tagged_tokens: list of TaggedToken
+        @returntype: None
+        """
+        for token in tagged_tokens:
+            context = token.type().base()
+            feature = token.type().tag()
+            self._freqDist.inc( probability.CFSample(context, feature) )
+
+    def tag(self, tokens):
+        # Inherit docs from TaggerI
+        tagged_tokens = []
+      
+        for token in tokens:
+            # Predict the next tag
+            context = token.type()
+            context_event = probability.ContextEvent(context)
+            sample = self._freqDist.cond_max(context_event)
+            if sample: tag = sample.feature()
+            else: tag = 'UNK'
+
+            # Update words
+            token_type = TaggedType(token.type(), tag)
+            tagged_tokens.append(Token(token_type, token.loc()))
+
+        return tagged_tokens
+    
 class NthOrderTagger(TaggerI):
     """
     An I{n}-th order stochastic tagger.  Before an
@@ -270,7 +323,7 @@ class NthOrderTagger(TaggerI):
         """
         Train this C{NthOrderTagger} using the given
         training data.  If this method is called multiple times, then
-        the training data from each call will be used.
+        the training data from every call will be used.
         
         @param tagged_tokens: The training data.
         @type tagged_tokens: list of TaggedToken
@@ -377,7 +430,16 @@ class BackoffTagger(TaggerI):
 
 def untag(tokens):
     return [Token(t.type().base(), t.loc()) for t in tokens]
-  
+
+def accuracy(orig, test):
+    if len(orig) != len(test):
+        print "OUCH! Bad lengths!!!"
+
+    correct = 0
+    for (o,t) in zip(orig, test):
+        if o == t: correct += 1
+    return float(correct)/len(orig)
+
 def test_tagger():
     """
     A simple test function for the C{Tagger} classes.  It
@@ -389,20 +451,23 @@ def test_tagger():
     
     @returntype: None
     """
-    tokens=TaggedTokenizer().tokenize(open('/home/edloper/tmp/foo.test', 'r').read())
+    tokens=TaggedTokenizer().tokenize(open('/home/edloper/tmp/foo.text', 'r').read())
 
     t0 = NthOrderTagger(0)
-    t0.train(tokens)
+    t0.train(tokens[100:])
 
     t1 = NthOrderTagger(1)                
-    t1.train(tokens)
+    t1.train(tokens[100:])
 
     ft = BackoffTagger( (t1, t0, NN_CD_Tagger()), 'UNK')
-    print 'Training:', 
-    for t in tokens: print t.type(),
+    result = ft.tag(untag(tokens)[:100])
+    print 'Original:  ',
+    for t in tokens[:100]: print t.type(),
     print ; print
-    print 'Result:  ', 
-    for t in ft.tag(untag(tokens)): print t.type(),
+    print 'Result:  ',
+    for t in result[:100]: print t.type(),
+    print ; print
+    print 'Accuracy', accuracy(tokens[:100], result)
     print ; print
 
 if __name__ == '__main__': test_tagger()
