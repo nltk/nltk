@@ -7,6 +7,13 @@
 #
 # $Id$
 
+"""
+Unit testing for L{nltk.token}.
+
+@todo: Test L{nltk.token.CharTokenizer}
+@todo: Test L{nltk.token.LineTokenizer}
+"""
+
 from nltk.token import *
 
 ##//////////////////////////////////////////////////////
@@ -17,7 +24,7 @@ import unittest
 
 class LocationTestCase(unittest.TestCase):
     """
-    Unit test cases for C{token.Location}
+    Unit test cases for L{nltk.token.Location}
     """
     def setUp(self):
         self.loc = Location(0, 10, source='foo.txt',
@@ -165,7 +172,7 @@ class LocationTestCase(unittest.TestCase):
 
 class TokenTestCase(unittest.TestCase):
     """
-    Unit test cases for C{token.Token}
+    Unit test cases for L{nltk.token.Token}
     """
     def setUp(self):
         self.loc = Location(0, 10)
@@ -241,7 +248,7 @@ class TokenTestCase(unittest.TestCase):
             
 class WSTokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for C{token.WSTokenizer}
+    Unit test cases for L{nltk.token.WSTokenizer}
     """
     def setUp(self):
         self.tokenizer = WSTokenizer()
@@ -271,7 +278,7 @@ class WSTokenizerTestCase(unittest.TestCase):
 
 class WSTokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for C{token.WSTokenizer}
+    Unit test cases for L{nltk.token.WSTokenizer}
     """
     def setUp(self):
         self.tokenizer = WSTokenizer()
@@ -299,16 +306,39 @@ class WSTokenizerTestCase(unittest.TestCase):
                Token('test', Location(3, unit='w'))]
         self.failUnlessEqual(ts1, ts2)
 
+    def testXTokenize(self):
+        "nltk.token.WSTokenizer: xtokenize method tests"
+        ts1 = self.tokenizer.xtokenize("this is a test")
+        ts2 = [Token('this', Location(0, unit='w')),
+               Token('is', Location(1, unit='w')),
+               Token('a', Location(2, unit='w')),
+               Token('test', Location(3, unit='w'))]
+        self.failUnlessEqual(list(ts1), ts2)
+
+        ts1 = self.tokenizer.xtokenize("this is a test", source='foo.txt')
+        ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
+               Token('is', Location(1, unit='w', source='foo.txt')),
+               Token('a', Location(2, unit='w', source='foo.txt')),
+               Token('test', Location(3, unit='w', source='foo.txt'))]
+        self.failUnlessEqual(list(ts1), ts2)
+    
+        ts1 = self.tokenizer.xtokenize("   this  is a   test ")
+        ts2 = [Token('this', Location(0, unit='w')),
+               Token('is', Location(1, unit='w')),
+               Token('a', Location(2, unit='w')),
+               Token('test', Location(3, unit='w'))]
+        self.failUnlessEqual(list(ts1), ts2)
+
 class RETokenizerTestCase(unittest.TestCase):
     """
-    Unit test cases for C{token.WSTokenizer}
+    Unit test cases for L{nltk.token.WSTokenizer}
     """
     def setUp(self):
         self.tokenizers = [RETokenizer('\s+'),
                            RETokenizer('\w+', positive=1)]
 
     def testTokenize(self):
-        "nltk.token.WSTokenizer: tokenize method tests"
+        "nltk.token.RETokenizer: tokenize method tests"
         for tokenizer in self.tokenizers:
             ts1 = tokenizer.tokenize("this is a test")
             ts2 = [Token('this', Location(0, unit='w')),
@@ -330,6 +360,30 @@ class RETokenizerTestCase(unittest.TestCase):
                    Token('a', Location(2, unit='w')),
                    Token('test', Location(3, unit='w'))]
             self.failUnlessEqual(ts1, ts2)
+    
+    def testXtokenize(self):
+        "nltk.token.RETokenizer: xtokenize method tests"
+        for tokenizer in self.tokenizers:
+            ts1 = tokenizer.xtokenize("this is a test")
+            ts2 = [Token('this', Location(0, unit='w')),
+                   Token('is', Location(1, unit='w')),
+                   Token('a', Location(2, unit='w')),
+                   Token('test', Location(3, unit='w'))]
+            self.failUnlessEqual(list(ts1), ts2)
+    
+            ts1 = tokenizer.xtokenize("this is a test", source='foo.txt')
+            ts2 = [Token('this', Location(0, unit='w', source='foo.txt')),
+                   Token('is', Location(1, unit='w', source='foo.txt')),
+                   Token('a', Location(2, unit='w', source='foo.txt')),
+                   Token('test', Location(3, unit='w', source='foo.txt'))]
+            self.failUnlessEqual(list(ts1), ts2)
+        
+            ts1 = tokenizer.xtokenize("   this  is a   test ")
+            ts2 = [Token('this', Location(0, unit='w')),
+                   Token('is', Location(1, unit='w')),
+                   Token('a', Location(2, unit='w')),
+                   Token('test', Location(3, unit='w'))]
+            self.failUnlessEqual(list(ts1), ts2)
     
 def testsuite():
     """
