@@ -136,7 +136,7 @@ class Token(dict):
             token should define.  Each element maps a property name to
             its value.
         """
-        self.update(properties)
+        super(Token, self).__init__(**properties)
 
     #/////////////////////////////////////////////////////////////////
     # Accessors
