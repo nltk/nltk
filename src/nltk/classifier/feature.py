@@ -106,6 +106,10 @@ where the labels are identical, and the feature value list is obtained
 by applying some feature detector list to the text.
 """
 
+from nltk.classifier import ClassifierI, LabeledText
+from nltk.probability import ProbDistI
+from nltk.token import Token
+
 # Issues:
 #    - Do I want to use FDList or FeatureDetectorList.  E.g., c.f.:
 #        * LabeledTextFunctionFDList
@@ -556,9 +560,9 @@ class FeatureDetectorListI:
 
 class AbstractFDList(FeatureDetectorListI):
     """
-    Provide default definitions for most C{FeatureDetectorListI}
-    methods.  The only methods that subclasses need to implement are 
-    C{detect} and C{__len__}.
+    An abstraract base class that provides default definitions for
+    most C{FeatureDetectorListI} methods.  The only methods that
+    subclasses need to implement are C{detect} and C{__len__}.
 
     This class serves as the base class for most of the feature value
     lists provided by nltk.  It also provides a convenient basis for
@@ -921,6 +925,64 @@ class BagOfWordsFDList(AbstractFDList):
 
         return SimpleFeatureValueList(assignments, self._N)
 
+class MemoizedFDList(AbstractFDList):
+    """
+    A feature detector list that always returns the same
+    C{FeatureValueList} that a given X{base C{FeatureDetectorList}}
+    would; but that pre-computes and re-uses its C{FeatureValueList}s.
+    This can signifigantly improve the efficiency of iterative
+    training alogrithms, where C{detect} is called repeatedly on the
+    same C{LabeledText}.
+
+    When a new C{MemoizedFDList} is constructed, the
+    C{FeatureValueList} for each text/label combination is
+    precomputed.  When C{detect} is called, these precomputed values
+    are returned, when possible.
+
+    Although C{MemoizedFDList} usually improves efficiency, it takes
+    space proportional to the number of texts used times the number of
+    labels used.  When memory is limited, it may be better not to use
+    C{MemoizedFDlist}.
+    """
+    def __init__(self, base_fdlist, texts, labels):
+        """
+        Construct a new C{MemoizedFDList}.  Pre-compute the
+        C{FeatureValueList} for each C{LabeledText(M{t}, M{l})} where
+        C{M{t}} is an element of C{texts} and C{M{l}} is an element of
+        C{labels}.  These pre-computed C{FeatureValueList}s will be
+        returned whenever C{detect} is called with the corresponding
+        labeled text.
+
+        @param base_fdlist: The base C{FeatureDetectorList}.  This
+            C{MemoizedFDList} always returns the same
+            C{FeatureValueList} that C{base_fdlist} would.
+        @type base_fdlist: C{FeatureDetectorListI}
+        @param texts: The list of texts for which C{FeatureValueList}s
+            should be pre-computed.
+        @type texts: (immutable)
+        @param labels: The list of labels for which C{FeatureValueList}s
+            should be pre-computed.
+        @type labels: (immutable)
+        """
+        self._cache = {}
+        self._base_fdlist = base_fdlist
+        for text in texts:
+            for label in labels:
+                ltext = LabeledText(text, label)
+                self._cache[ltext] = base_fdlist.detect(ltext)
+
+    def detect(self, labeled_text):
+        # Inherit docs
+        fvlist = self._cache.get(labeled_text, None)
+        if fvlist is not None:
+            return fvlist
+        else:
+            return self._base_fdlist.detect(labeled_text)
+
+    def __len__(self):
+        # Inherit docs
+        return len(self._base_fdlist)
+    
 ##//////////////////////////////////////////////////////
 ##  Labeled FeatureValueList
 ##//////////////////////////////////////////////////////
@@ -973,6 +1035,182 @@ class LabeledFeatureValueList:
         """
         return '%r/%r' % (self._fvlist, self._label) 
 
+##//////////////////////////////////////////////////////
+##  Abstract Feature Classifier
+##//////////////////////////////////////////////////////
+class _AbstractFeatureClassifierProbDist(ProbDistI):
+    def __init__(self, unlabeled_token, dist_dict):
+        self._tok = unlabeled_token
+        self._dist_dict = dist_dict
+    def prob(self, sample):
+        if not isinstance(sample, Token):
+            return 0
+        if sample.loc() != self._tok.loc():
+            return 0
+        if sample.type().text() != self._tok.type().text():
+            return 0
+        return self._dist_dict.get(sample.type().label(), 0)
+
+class AbstractFeatureClassifier(ClassifierI):
+    """
+    An abstraract base class that provides default definitions for all
+    of the C{ClassifierI} methods.  The only method that subclasses
+    need to implement is C{fvlist_likelihood}.  This method returns a
+    float indicating the likelihood of a given feature value list.
+
+    Subclasses may override the method C{zero_distribution_list}.
+    This method determines what probability distribution should be
+    returned if C{fvlist_likelihood} returns zero for every label.
+    Its default implementation returns a uniform distribution.
+
+    Subclass constructors should have C{fdlist} and C{labels} as their
+    first two arguments; and should use them to call the
+    C{AbstractFeatureClassifier} constructor.
+
+    In addition to providing default definitions for the methods
+    defined by C{Classifier}, C{AbstractFeatureClassifier} implements
+    the method C{fdlist}, which returns the C{FeatureDetectorList}
+    used by this classifier.
+
+    @type _fdlist: C{FeatureDetectorListI}
+    @ivar _fdlist: The feature detector list defining the features
+        that are used by this classifier.
+    @type _labels: C{list} of (immutable)
+    @ivar _labels: A list of the labels that should be considered by
+        this classifier.
+    """
+    def __init__(self, fdlist, labels):
+        """
+        Initialize the feature detector list and label list for this
+        classifier.  This constructor should be called by subclasses,
+        using the statement:
+
+            AbstractFeatureClassifier.__init__(self, fdlist, labels)
+            
+        @type fdlist: C{FeatureDetectorListI}
+        @param fdlist: The feature detector list defining
+            the features that are used by the C{Classifier}.
+        @type labels: C{list} of (immutable)
+        @param labels: A list of the labels that should be considered
+            by this C{NBClassifier}.  Typically, labels are C{string}s
+            or C{int}s.
+        """
+        self._fdlist = fdlist
+        self._labels = labels
+    
+    def fvlist_likelihood(self, fvlist):
+        """
+        @rtype: C{float}
+        @return: a likelihood estimate for the given feature value
+            list.  This estimate should equal M{Z*P(C{fvlist})} for
+            some positive normalization constant Z that does not
+            depend on the label used to generate C{fvlist}.  The
+            estimate must be positive.
+        @param fvlist: The feature value list whose likelihood should
+            be estimated.
+        @type fvlist: C{FeatureValueListI}
+        """
+        raise AssertionError()
+
+    def zero_distribution_list(self, unlabeled_token):
+        """
+        Return a list indicating the likelihood that
+        C{unlabeled_token} is a member of each category.  This method
+        is called whenever C{fvlist_likelihood} returns zero for every
+        C{LabeledText} whose text is C{unlabled_token.type()}.  Its
+        default behavior is to return a uniform distribution; however,
+        it can be overridden to provide a different behavior.
+        Reasonable alternatives might include:
+            - Return zero for each label.
+            - Use a modified C{fvlist_likelihood} that allows zeros to
+              "cancel out" between different label values.
+        
+        @return: a list of probabilities.  The M{i}th element of the
+            list is the probability that C{unlabeled_text} belongs to
+            C{labels()[M{i}]}'s category.
+        @rtype: C{sequence} of C{float}
+        @param unlabeled_token: The text to be classified.
+        @type unlabeled_token: C{Token}
+        """
+        return [1.0/len(self._labels) for l in self._labels]
+    
+    def distribution_list(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        total_p = 0.0
+        text = unlabeled_token.type()
+
+        # Construct a list containing the probability of each label.
+        dist_list = []
+        for label in self._labels:
+            fvlist = self._fdlist.detect(LabeledText(text, label))
+            p = self.fvlist_likelihood(fvlist)
+            dist_list.append(p)
+            total_p += p
+
+        # If p=0 for all samples, return a uniform distribution.
+        if total_p == 0:
+            return self.zero_distribution_list(unlabeled_token)
+
+        # Normalize the probability fvlist_likelihoods.
+        return [p/total_p for p in dist_list]
+
+    def distribution_dictionary(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        dist_dict = {}
+        dist_list = self.distribution_list(unlabeled_token)
+        for labelnum in range(len(self._labels)):
+            dist_dict[self._labels[labelnum]] = dist_list[labelnum]
+        return dist_dict
+
+    def distribution(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        dist_dict = self.distribution_dictionary(unlabeled_token)
+        return _AbstractFeatureClassifierProbDist(unlabeled_token,
+                                                  dist_dict)
+
+    def classify(self, unlabeled_token):
+        # Inherit docs from ClassifierI
+        text = unlabeled_token.type()
+        
+        # (label, likelihood) pair that maximizes likelihood
+        max = (None, 0)
+
+        # Find the label that maximizes the non-normalized probability
+        # fvlist_likelihoods.
+        for label in self._labels:
+            fvlist = self._fdlist.detect(LabeledText(text, label))
+            p = self.fvlist_likelihood(fvlist)
+            if p > max[1]: max = (label, p)
+
+        return Token(LabeledText(text, max[0]), unlabeled_token.loc())
+
+    def prob(self, labeled_token):
+        # Inherit docs from ClassifierI
+        text = labeled_token.type().text()
+        label = labeled_token.type().label()
+        return distribution_dictionary(text)[label]
+
+    def labels(self):
+        # Inherit docs from ClassifierI
+        return self._labels
+
+    def fdlist(self):
+        """
+        @rtype: C{FeatureDetectorListI}
+        @return: The feature detector list defining the features that
+            are used by the C{NBClassifier}.
+        """
+        return self._fdlist
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this Naive Bayes
+            classifier.  
+        """
+        return ('<Classifier: %d labels, %d features>' %
+                (len(self.labels()), len(self.fdlist())))
+    
 ##//////////////////////////////////////////////////////
 ##  Feature Selection
 ##//////////////////////////////////////////////////////
