@@ -10,388 +10,463 @@
 """
 Unit testing for L{nltk.probability}.
 
-@todo: Test L{nltk.probability.HeldoutProbDist}
-@todo: Test L{nltk.probability.CrossValidationProbDist}
-@todo: Test L{nltk.probability.ConditionalProbDist}
-@todo: Test L{nltk.probability.ProbabilisticMixIn}
+@group Frequency Distributions: test_FreqDist
+@group Probability Distributions: test_*ProbDist*
 """
 
 from nltk.probability import *
+from nltk.util import mark_stdout_newlines
+import random
 from nltk.set import Set
 
-##//////////////////////////////////////////////////////
-##  Test code
-##//////////////////////////////////////////////////////
+def test_FreqDist(): """
+Unit tests for L{FreqDist}
 
-import unittest
+A frequency distribution records the outcomes of an experiment.  It is
+empty when it is constructed:
 
-class FreqDistTestCase(unittest.TestCase):
-    'Unit testing for L{nltk.probability.FreqDist}'
+    >>> fdist = FreqDist()
+    >>> fdist
+    <FreqDist with 0 samples>
 
-    def setUp(self):
-        # Construct an experiment:
-        self.outcomes = '1 8 3 2 1 1 8 3 7 4 5 8 8 2 2'.split()
-        self.bins = Set(*self.outcomes)
+Sample outcomes are recorded with C{inc}:
 
-        # Record the experiment in a FreqDist.
-        self.fdist = FreqDist()
-        for outcome in self.outcomes:
-            self.fdist.inc(outcome)
+    >>> outcomes = 'A H C B A A H C G D E H H B B'.split()
+    >>> for outcome in outcomes:
+    ...     fdist.inc(outcome)
+    >>> fdist
+    <FreqDist with 15 samples>
+    >>> print fdist
+    <FreqDist: 'H': 4, 'A': 3, 'B': 3, 'C': 2, 'D': 1, 'E': 1, 'G': 1>
 
-        # Fencepost case: empty distribution
-        self.empty_fdist = FreqDist()
+The count for a given sample is returned by C{count}:
 
-    def testN(self):
-        'nltk.probability.FreqDistTestCase: test N()'
-        self.failUnlessEqual(self.fdist.N(), len(self.outcomes))
-        self.failUnlessEqual(self.empty_fdist.N(), 0)
+    >>> fdist.count('A')
+    3
+    >>> fdist.count('D')
+    1
+    >>> fdist.count('Z')
+    0
 
-    def testB(self):
-        'nltk.probability.FreqDistTestCase: test B()'
-        self.failUnlessEqual(self.fdist.B(), len(self.bins))
-        self.failUnlessEqual(self.empty_fdist.B(), 0)
+The frequency of a given sample is returned by C{freq}:
 
-    def testSamples(self):
-        'nltk.probability.FreqDistTestCase: test samples()'
-        global z, b
-        z = Set(*self.fdist.samples()), self.bins
-        b = (z[0] == z[1])
-        self.failUnlessEqual(Set(*self.fdist.samples()), self.bins)
-        self.failUnlessEqual(self.empty_fdist.samples(), [])
+    >>> print '%.4f' % fdist.freq('A')
+    0.2000
+    >>> print '%.4f' % fdist.freq('D')
+    0.0667
+    >>> print '%.4f' % fdist.freq('Z')
+    0.0000
 
-    def testNr(self):
-        'nltk.probability.FreqDistTestCase: test Nr()'
-        self.failUnlessEqual(self.fdist.Nr(0), 0)
-        self.failUnlessEqual(self.fdist.Nr(1), 3)
-        self.failUnlessEqual(self.fdist.Nr(2), 1)
-        self.failUnlessEqual(self.fdist.Nr(3), 2)
-        self.failUnlessEqual(self.fdist.Nr(4), 1)
-        self.failUnlessEqual(self.fdist.Nr(5), 0)
+The most frequent sample is returned by C{max}
 
-        self.failUnlessEqual(self.fdist.Nr(0, 15), 8)
-        self.failUnlessEqual(self.fdist.Nr(1, 15), 3)
-        self.failUnlessEqual(self.fdist.Nr(2, 15), 1)
-        self.failUnlessEqual(self.fdist.Nr(3, 15), 2)
-        self.failUnlessEqual(self.fdist.Nr(4, 15), 1)
-        self.failUnlessEqual(self.fdist.Nr(5, 15), 0)
+    >>> fdist.max()
+    'H'
 
-        self.failUnlessEqual(self.empty_fdist.Nr(0), 0)
-        self.failUnlessEqual(self.empty_fdist.Nr(1), 0)
-        self.failUnlessEqual(self.empty_fdist.Nr(2), 0)
-        self.failUnlessEqual(self.empty_fdist.Nr(0, 5), 5)
-        self.failUnlessEqual(self.empty_fdist.Nr(1, 5), 0)
-        self.failUnlessEqual(self.empty_fdist.Nr(2, 5), 0)
-        
-        self.failUnlessRaises(IndexError, self.fdist.Nr, -1)
-        self.failUnlessRaises(IndexError, self.empty_fdist.Nr, -1)
-        self.failUnlessRaises(IndexError, self.fdist.Nr, -1, 15)
-        self.failUnlessRaises(IndexError, self.empty_fdist.Nr, -1, 15)
+The number of sample outcomes is returned by C{N}:
 
-    def testCount(self):
-        'nltk.probability.FreqDistTestCase: test count()'
-        self.failUnlessEqual(self.fdist.count('0'), 0)
-        self.failUnlessEqual(self.fdist.count('1'), 3)
-        self.failUnlessEqual(self.fdist.count('2'), 3)
-        self.failUnlessEqual(self.fdist.count('3'), 2)
-        self.failUnlessEqual(self.fdist.count('4'), 1)
-        self.failUnlessEqual(self.fdist.count('5'), 1)
-        self.failUnlessEqual(self.fdist.count('6'), 0)
-        self.failUnlessEqual(self.fdist.count('7'), 1)
-        self.failUnlessEqual(self.fdist.count('8'), 4)
-        self.failUnlessEqual(self.fdist.count('9'), 0)
-        self.failUnlessEqual(self.fdist.count(0), 0)
-        
-        self.failUnlessEqual(self.empty_fdist.count(0), 0)
-        self.failUnlessEqual(self.empty_fdist.count('0'), 0)
-        self.failUnlessEqual(self.empty_fdist.count('x'), 0)
+    >>> fdist.N()
+    15
 
-    def testFreq(self):
-        'nltk.probability.FreqDistTestCase: test freq()'
-        N = float(len(self.outcomes))
-        self.failUnlessEqual(self.fdist.freq('0'), 0/N)
-        self.failUnlessEqual(self.fdist.freq('1'), 3/N)
-        self.failUnlessEqual(self.fdist.freq('2'), 3/N)
-        self.failUnlessEqual(self.fdist.freq('3'), 2/N)
-        self.failUnlessEqual(self.fdist.freq('4'), 1/N)
-        self.failUnlessEqual(self.fdist.freq('5'), 1/N)
-        self.failUnlessEqual(self.fdist.freq('6'), 0/N)
-        self.failUnlessEqual(self.fdist.freq('7'), 1/N)
-        self.failUnlessEqual(self.fdist.freq('8'), 4/N)
-        self.failUnlessEqual(self.fdist.freq('9'), 0/N)
-        self.failUnlessEqual(self.fdist.freq(0), 0/N)
+The number of sample values (or bins) is returned by C{B}:
 
-        self.failUnlessEqual(self.empty_fdist.freq(0), 0)
-        self.failUnlessEqual(self.empty_fdist.freq('0'), 0)
-        self.failUnlessEqual(self.empty_fdist.freq('x'), 0)
+    >>> fdist.B()
+    7
 
-    def testMax(self):
-        'nltk.probability.FreqDistTestCase: test max()'
-        self.failUnlessEqual(self.fdist.max(), '8')
+The set of sample values with nonzero counts are returned by
+C{samples}, in undefined order:
 
-        # If there are 2 samples w/ the same freq, return one.
-        fdist2 = FreqDist()
-        for outcome in [0, 0, 1, 2, 3, 3]: fdist2.inc(outcome)
-        self.failUnless(fdist2.max() in [0, 3])
+    >>> samples = fdist.samples()
+    >>> samples.sort()
+    >>> samples
+    ['A', 'B', 'C', 'D', 'E', 'G', 'H']
 
-        # If there are no samples, return None.
-        self.failUnlessEqual(self.empty_fdist.max(), None)
-        
-class ConditionalFreqDistTestCase(unittest.TestCase):
-    'Unit testing for L{nltk.probability.ConditionalFreqDist}'
-    
-    def setUp(self):
-        self.cfdist = ConditionalFreqDist()
-        pairs = ['aA', 'aB', 'cA', 'bC', 'aA', 'cA', 'cA', 'bA']
-        for (condition, outcome) in pairs:
-            self.cfdist[condition].inc(outcome)
-            
-    def testConditions(self):
-        'nltk.probability.ConditionalFreqDistTestCase: test conditions()'
-        self.failUnlessEqual(Set(*self.cfdist.conditions()),
-                             Set('a', 'b', 'c'))
+C{sorted_samples} returns a list of the samples, sorted in order of
+decreasing frequency:
 
-        # Accessing a condition adds it.
-        self.cfdist['x']
-        self.failUnlessEqual(Set(*self.cfdist.conditions()),
-                             Set('a', 'b', 'c', 'x'))
+   >>> print fdist.sorted_samples()
+   ['H', 'A', 'B', 'C', 'D', 'E', 'G']
 
-    def testGetItem(self):
-        'nltk.probability.ConditionalFreqDistTestCase: test __getitem__()'
-        
-        fdist_a = self.cfdist['a']
-        self.failUnlessEqual(fdist_a.N(), 3)
-        self.failUnlessEqual(fdist_a.count('A'), 2)
-        self.failUnlessEqual(fdist_a.count('B'), 1)
+The number of samples with a given count is returned by C{Nr}:
 
-        fdist_b = self.cfdist['b']
-        self.failUnlessEqual(fdist_b.N(), 2)
-        self.failUnlessEqual(fdist_b.count('A'), 1)
-        self.failUnlessEqual(fdist_b.count('C'), 1)
+    >>> fdist.Nr(1)
+    3
+    >>> fdist.Nr(2)
+    1
+    >>> fdist.Nr(3)
+    2
 
-        fdist_c = self.cfdist['c']
-        self.failUnlessEqual(fdist_c.N(), 3)
-        self.failUnlessEqual(fdist_c.count('A'), 3)
+C{Nr(0)} can be calculated if the number of bins is supplied:
 
-        fdist_d = self.cfdist['d']
-        self.failUnlessEqual(fdist_d.N(), 0)
+    >>> fdist.Nr(0, 10)
+    3
 
-class UniformProbDistTestCase(unittest.TestCase):
-    'Unit testing for L{nltk.probability.UniformProbDist}'
-    def setUp(self):
-        self.pdist1 = UniformProbDist([1,3,2])
-        self.pdist2 = UniformProbDist([3,1,1,1,1])
-            
-    def testProb(self):
-        'nltk.probability.UniformProbDistTestCase: test prob()'
-        self.failUnlessEqual(self.pdist1.prob(0), 0)
-        self.failUnlessEqual(self.pdist1.prob(1), 1.0/3)
-        self.failUnlessEqual(self.pdist1.prob(2), 1.0/3)
-        self.failUnlessEqual(self.pdist1.prob(3), 1.0/3)
+It is an error to call C{Nr} with C{r<0}:
 
-        self.failUnlessEqual(self.pdist2.prob(0), 0)
-        self.failUnlessEqual(self.pdist2.prob(1), 1.0/2)
-        self.failUnlessEqual(self.pdist2.prob(2), 0)
-        self.failUnlessEqual(self.pdist2.prob(3), 1.0/2)
+    >>> fdist.Nr(-1)
+    Traceback (most recent call last):
+      [...]
+    IndexError: FreqDist.Nr(): r must be non-negative
 
-    def testLogProb(self):
-        'nltk.probability.UniformProbDistTestCase: test prob()'
-        import math
-        self.failUnlessEqual(self.pdist1.logprob(1), math.log(1.0/3))
-        self.failUnlessEqual(self.pdist1.logprob(2), math.log(1.0/3))
-        self.failUnlessEqual(self.pdist1.logprob(3), math.log(1.0/3))
+The C{in} operator can be used to test if a sample has a nonzero
+count:
 
-        self.failUnlessEqual(self.pdist2.logprob(1), math.log(1.0/2))
-        self.failUnlessEqual(self.pdist2.logprob(3), math.log(1.0/2))
-        
-        self.failUnlessRaises(OverflowError, self.pdist1.logprob, 0)
-        self.failUnlessRaises(OverflowError, self.pdist2.logprob, 0)
-        self.failUnlessRaises(OverflowError, self.pdist2.logprob, 2)
+    >>> print 'A' in fdist
+    True
+    >>> print 'Z' in fdist
+    False
 
-    def testMax(self):
-        'nltk.probability.UniformProbDistTestCase: test max()'
-        self.failUnless(self.pdist1.max() in [1,2,3])
-        self.failUnless(self.pdist2.max() in [1,3])
+"""
 
-    def testSamples(self):
-        'nltk.probability.UniformProbDistTestCase: test samples()'
-        self.failUnlessEqual(Set(*self.pdist1.samples()), Set(1,2,3))
-        self.failUnlessEqual(Set(*self.pdist2.samples()), Set(1,3))
+def test_ProbDistI(): r"""
+Unit tests for L{ProbDistI}.
 
-    def testEmptyProbDist(self):
-        'nltk.probability.UniformProbDistTestCase: test __init__()'
-        self.failUnlessRaises(ValueError, UniformProbDist, [])
+C{ProbDistI} is an interface for probability distributions.
 
-class ProbDistTestCase(unittest.TestCase):
+    >>> ProbDistI()
+    Traceback (most recent call last):
+      [...]
+    AssertionError: Interfaces can't be instantiated
+
+It declares 4 methods, which must be implemented by derived classes:
+
+    >>> class BrokenProbDist(ProbDistI):
+    ...     pass
+    >>> BrokenProbDist().prob('A')
+    Traceback (most recent call last):
+      [...]
+    AssertionError
+    >>> BrokenProbDist().logprob('A')
+    Traceback (most recent call last):
+      [...]
+    AssertionError
+    >>> BrokenProbDist().max()
+    Traceback (most recent call last):
+      [...]
+    AssertionError
+    >>> BrokenProbDist().samples()
+    Traceback (most recent call last):
+      [...]
+    AssertionError
+"""
+
+def test_UniformProbDist(): r"""
+Unit tests for L{UniformProbDist}.
+
+A uniform probability distribution is constructed from a list of
+samples:
+
+    >>> samples = 'A B C D E F G H'.split()
+    >>> pdist = UniformProbDist(samples)
+    >>> print pdist
+    <UniformProbDist with 8 samples>
+
+It assigns equal probability to all samples:
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %s' % (sample, pdist.prob(sample))
+    P('A') = 0.125
+    P('B') = 0.125
+    P('C') = 0.125
+    P('D') = 0.125
+    P('E') = 0.125
+    P('F') = 0.125
+    P('G') = 0.125
+    P('H') = 0.125
+
+C{max} returns an arbitrary sample from the samples:
+
+    >>> pdist.max() in pdist.samples()
+    True
+
+Any duplicates given to the constructor are ignored:
+
+    >>> samples = 'A B C D E F G H A B B A C A H H H'.split()
+    >>> pdist = UniformProbDist(samples)
+    >>> print pdist
+    <UniformProbDist with 8 samples>
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %s' % (sample, pdist.prob(sample))
+    P('A') = 0.125
+    P('B') = 0.125
+    P('C') = 0.125
+    P('D') = 0.125
+    P('E') = 0.125
+    P('F') = 0.125
+    P('G') = 0.125
+    P('H') = 0.125
+"""
+
+def test_DictionaryProbDist(): r"""
+Unit tests for L{DictionaryProbDist}.
+
+A dictionary probability distribution is constructed from a dictionary
+that maps samples to probabilities:
+
+    >>> sampledict = {'A': 0.25, 'B': 0.5, 'C': 0.125, 'D': 0.125}
+    >>> pdist = DictionaryProbDist(sampledict)
+    >>> print pdist
+    <ProbDist with 4 samples>
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %s' % (sample, pdist.prob(sample))
+    P('A') = 0.25
+    P('B') = 0.5
+    P('C') = 0.125
+    P('D') = 0.125
+
+    >>> pdist.max()
+    'B'
+"""
+
+def test_MLEProbDist(): r"""
+Unit tests for L{MLEProbDist}.
+
+An MLE probability distribution is constructed from an underlying
+frequency distribution:
+
+    >>> fdist = FreqDist()
+    >>> for outcome in 'A H C B A A H C G D E H H B B D'.split():
+    ...     fdist.inc(outcome)
+
+    >>> pdist = MLEProbDist(fdist)
+    >>> print pdist
+    <MLEProbDist based on 16 samples>
+
+The probability of a sample is equal to its frequency:
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D', 'E', 'G', 'H']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %s' % (sample, pdist.prob(sample))
+    P('A') = 0.1875
+    P('B') = 0.1875
+    P('C') = 0.125
+    P('D') = 0.125
+    P('E') = 0.0625
+    P('G') = 0.0625
+    P('H') = 0.25
+
+    >>> pdist.max()
+    'H'
+"""
+
+def test_LidstoneProbDist(): r"""
+Unit tests for L{LidstoneProbDist}.
+
+An Lidstone probability distribution is constructed from an underlying
+frequency distribution, a gamma, and optionally a number of bins:
+
+    >>> fdist = FreqDist()
+    >>> for outcome in 'A B A A A C A B A D A A C A C'.split():
+    ...     fdist.inc(outcome)
+
+    >>> pdist = LidstoneProbDist(fdist, 0.25, 4)
+    >>> print pdist
+    <LidstoneProbDist based on 15 samples>
+
+The probability of a sample is equal to its frequency:
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %s' % (sample, pdist.prob(sample))
+    P('A') = 0.578125
+    P('B') = 0.140625
+    P('C') = 0.203125
+    P('D') = 0.078125
+
+    >>> pdist.max()
+    'A'
+
+The underlying frequency distribution can be accessed with C{freqdist}:
+
+    >>> print pdist.freqdist()
+    <FreqDist: 'A': 9, 'C': 3, 'B': 2, 'D': 1>
+"""
+
+def test_LidstoneProbDist(): r"""
+Unit tests for L{LidstoneProbDist}.
+
+An Lidstone probability distribution is constructed from an underlying
+frequency distribution and optionally a number of bins:
+
+    >>> fdist = FreqDist()
+    >>> for outcome in 'A B A A B A A B A D A A C D'.split():
+    ...     fdist.inc(outcome)
+
+    >>> pdist = LidstoneProbDist(fdist, 4)
+    >>> print pdist
+    <LidstoneProbDist based on 14 samples>
+
+The probability of a sample is equal to its frequency:
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %.4f' % (sample, pdist.prob(sample))
+    P('A') = 0.4000
+    P('B') = 0.2333
+    P('C') = 0.1667
+    P('D') = 0.2000
+
+    >>> pdist.max()
+    'A'
+
+The underlying frequency distribution can be accessed with C{freqdist}:
+
+    >>> print pdist.freqdist()
+    <FreqDist: 'A': 8, 'B': 3, 'D': 2, 'C': 1>
+"""
+
+def test_ELEProbDist(): r"""
+Unit tests for L{ELEProbDist}.
+
+An ELE probability distribution is constructed from an underlying
+frequency distribution and optionally a number of bins:
+
+    >>> fdist = FreqDist()
+    >>> for outcome in 'A B A A B A A B A D A A C D'.split():
+    ...     fdist.inc(outcome)
+
+    >>> pdist = ELEProbDist(fdist, 4)
+    >>> print pdist
+    <ELEProbDist based on 14 samples>
+
+The probability of a sample is equal to its frequency:
+
+    >>> samples = pdist.samples(); samples.sort(); print samples
+    ['A', 'B', 'C', 'D']
+    >>> for sample in samples:
+    ...     print 'P(%r) = %.4f' % (sample, pdist.prob(sample))
+    P('A') = 0.5312
+    P('B') = 0.2188
+    P('C') = 0.0938
+    P('D') = 0.1562
+
+    >>> pdist.max()
+    'A'
+
+The underlying frequency distribution can be accessed with C{freqdist}:
+
+    >>> print pdist.freqdist()
+    <FreqDist: 'A': 8, 'B': 3, 'D': 2, 'C': 1>
+"""
+
+def test_HeldoutProbDist(): r"""
+Unit tests for L{HeldoutProbDist}
+
+(to be written)
+"""
+
+def test_CrossValidationProbDist(): r"""
+Unit tests for L{CrossValidationProbDist}
+
+(to be written)
+"""
+
+def test_WittenBellProbDist(): r"""
+Unit tests for L{WittenBellProbDist}
+
+(to be written)
+"""
+
+def test_GoodTuringProbDist(): r"""
+Unit tests for L{GoodTuringProbDist}
+
+(to be written)
+"""
+
+def test_ConditionalFreqDist(): r"""
+Unit tests for L{ConditionalFreqDist}
+
+(to be written)
+"""
+
+def test_ConditionalProbDistI(): r"""
+Unit tests for L{ConditionalProbDistI}
+
+(to be written)
+"""
+
+def test_ConditionalProbDist(): r"""
+Unit tests for L{ConditionalProbDist}
+
+(to be written)
+"""
+
+def test_ProbabilisticMixIn(): r"""
+Unit tests for L{ProbabilisticMixIn}
+
+(to be written)
+"""
+
+def test_demo(): r"""
+Unit tests for L{nltk.probability.demo}.
+
+    >>> random.seed(123456)
+    >>> mark_stdout_newlines(demo)
+    6 samples (1-6); 500 outcomes were sampled for each FreqDist
+    ========================================================================
+          FreqDist MLEProbD Lidstone HeldoutP HeldoutP CrossVal |  Actual
+    ------------------------------------------------------------------------
+      1   0.082000 0.082000 0.082505 0.078000 0.082000 0.084000 | 0.083333
+      2   0.164000 0.164000 0.164016 0.172000 0.181000 0.175667 | 0.166667
+      3   0.238000 0.238000 0.237575 0.250000 0.238000 0.242000 | 0.250000
+      4   0.246000 0.246000 0.245527 0.248000 0.246000 0.238667 | 0.250000
+      5   0.198000 0.198000 0.197813 0.172000 0.181000 0.184333 | 0.166667
+      6   0.072000 0.072000 0.072565 0.080000 0.072000 0.075333 | 0.083333
+    ------------------------------------------------------------------------
+    Total 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 | 1.000000
+    ========================================================================
+      fdist1: <FreqDist: 4: 123, 3: 119, 5: 99, 2: 82, 1: 41, 6: 36>
+      fdist2: <FreqDist: 3: 125, 4: 124, 2: 86, 5: 86, 6: 40, 1: 39>
+      fdist3: <FreqDist: 3: 119, 4: 111, 5: 98, 2: 89, 1: 46, 6: 37>
+    <--BLANKLINE-->
+
+    >>> random.seed(654321)
+    >>> mark_stdout_newlines(demo)
+    6 samples (1-6); 500 outcomes were sampled for each FreqDist
+    ========================================================================
+          FreqDist MLEProbD Lidstone HeldoutP HeldoutP CrossVal |  Actual
+    ------------------------------------------------------------------------
+      1   0.082000 0.082000 0.082505 0.096000 0.082000 0.085333 | 0.083333
+      2   0.202000 0.202000 0.201789 0.142000 0.202000 0.170000 | 0.166667
+      3   0.234000 0.234000 0.233598 0.268000 0.234000 0.256000 | 0.250000
+      4   0.236000 0.236000 0.235586 0.254000 0.236000 0.246000 | 0.250000
+      5   0.160000 0.160000 0.160040 0.152000 0.160000 0.157333 | 0.166667
+      6   0.086000 0.086000 0.086481 0.088000 0.086000 0.085333 | 0.083333
+    ------------------------------------------------------------------------
+    Total 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 | 1.000000
+    ========================================================================
+      fdist1: <FreqDist: 4: 118, 3: 117, 2: 101, 5: 80, 6: 43, 1: 41>
+      fdist2: <FreqDist: 3: 134, 4: 127, 5: 76, 2: 71, 1: 48, 6: 44>
+      fdist3: <FreqDist: 3: 133, 4: 124, 2: 83, 5: 80, 6: 41, 1: 39>
+    <--BLANKLINE-->
     """
-    Abstract base class for testing (derived) probability
-    distributions.
-    """
 
-    def make_probdist(self, fdist):
-        raise AssertionError, 'abstract base class'
+#######################################################################
+# Test Runner
+#######################################################################
 
-    PDIST_OUTCOMES = 'a list of lists of sample outcomes'
-    PROB_MAPS = 'a list of dictionaries mapping samples to probs'
-    MAXES = 'a list of maxes'
-
-    def setUp(self):
-        self.pdists = []
-        for samples in self.PDIST_OUTCOMES:
-            fdist = FreqDist()
-            for sample in samples: fdist.inc(sample)
-            self.pdists.append(self.make_probdist(fdist))
-
-    def testProb(self):
-        # Do *not* include a description string (subclassing)
-        i = 0
-        for (probmap, pdist) in zip(self.PROB_MAPS, self.pdists):
-            for (sample, prob) in probmap.items():
-                prob2 = pdist.prob(sample)
-                msg = ('%r != %r\n    Context: pdist[%d].prob(%s)' %
-                       (prob, prob2, i, sample))
-                self.failUnlessEqual(prob, prob2, msg)
-            i += 1
-
-    def testLogProb(self):
-        # Do *not* include a description string (subclassing)
-        import math
-        i = 0
-        for (probmap, pdist) in zip(self.PROB_MAPS, self.pdists):
-            for (sample, prob) in probmap.items():
-                if prob>0:
-                    logprob1 = math.log(prob)
-                    logprob2 = pdist.logprob(sample)
-                    msg = ('%r != %r\n    Context: pdist[%d].logprob(%s)' %
-                           (logprob1, logprob2, i, sample))
-                    self.failUnlessEqual(logprob1, logprob2, msg )
-                else:
-                    self.failUnlessRaises(OverflowError, pdist.logprob, sample)
-            i += 1
-
-    def testMax(self):
-        # Do *not* include a description string (subclassing)
-        for (max, pdist) in zip(self.MAXES, self.pdists):
-            if type(max) in (type(()), type([])):
-                self.failUnless(pdist.max() in max)
-            else:
-                self.failUnlessEqual(pdist.max(), max)
-
-    def testSamples(self):
-        # Do *not* include a description string (subclassing)
-        for (samples, pdist) in zip(self.PDIST_OUTCOMES, self.pdists):
-            self.failUnlessEqual(Set(*pdist.samples()), Set(*samples))
-
-class MLEProbDistTestCase(ProbDistTestCase):
-    'Unit testing for L{nltk.probability.MLEProbDist}'
-    def make_probdist(self, fdist):
-        return MLEProbDist(fdist)
-
-    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1],
-                     [1,2,3,4,5,6,7,8,9,10],
-                     [1,1,1,1,1]]
-    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
-    
-    PROB_MAPS = [{0:0./10, 1:2./10, 2:3./10, 3:2./10, 4:1./10, 5:0./16,
-                  6:1./10, 7:0./10},
-                 
-                 {0:0./10, 1:1./10, 2:1./10, 3:1./10, 4:1./10, 5:1./10,
-                  6:1./10, 7:1./10, 8:1./10, 9:1./10, 10:1./10, 11:0./10},
-                 
-                 {0:0./1, 1:1/1, 2:0./1}]
-
-class LaplaceProbDistTestCase(ProbDistTestCase):
-    'Unit testing for L{nltk.probability.LaplaceProbDist}, with C{bins=None}'
-    def make_probdist(self, fdist):
-        return LaplaceProbDist(fdist)
-
-    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1], # 6 bins
-                     [1,2,3,4,5,6,7,8,9,10], # 10 bins
-                     [1,1,1,1,1]] # 1 bin
-    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
-    
-    PROB_MAPS = [{0:1./16, 1:3./16, 2:4./16, 3:3./16, 4:2./16, 5:1./16,
-                  6:2./16, 7:1./16},
-                 
-                 {0:1./20, 1:2./20, 2:2./20, 3:2./20, 4:2./20, 5:2./20,
-                  6:2./20, 7:2./20, 8:2./20, 9:2./20, 10:2./20, 11:1./20},
-                 
-                 {0:1./6, 1:6./6, 2:1./6}]
-
-class Laplace20BinProbDistTestCase(ProbDistTestCase):
-    'Unit testing for L{nltk.probability.LaplaceProbDist}, with C{bins=20}'
-    def make_probdist(self, fdist):
-        return LaplaceProbDist(fdist, 20)
-
-    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1], # 20 bins
-                     [1,2,3,4,5,6,7,8,9,10], # 20 bins
-                     [1,1,1,1,1]] # 20 bin
-    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
-    
-    PROB_MAPS = [{0:1./30, 1:3./30, 2:4./30, 3:3./30, 4:2./30, 5:1./30,
-                  6:2./30, 7:1./30},
-                 
-                 {0:1./30, 1:2./30, 2:2./30, 3:2./30, 4:2./30, 5:2./30,
-                  6:2./30, 7:2./30, 8:2./30, 9:2./30, 10:2./30, 11:1./30},
-                 
-                 {0:1./25, 1:6.0/25, 2:1./25}]
-
-class ELEProbDistTestCase(ProbDistTestCase):
-    'Unit testing for L{nltk.probability.ELEProbDist}, with C{bins=None}'
-    def make_probdist(self, fdist):
-        return ELEProbDist(fdist)
-
-    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1], # 6 bins
-                     [1,2,3,4,5,6,7,8,9,10], # 10 bins
-                     [1,1,1,1,1]] # 1 bin
-    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
-    
-    PROB_MAPS = [{0:0.5/13, 1:2.5/13, 2:3.5/13, 3:2.5/13, 4:1.5/13, 5:0.5/13,
-                  6:1.5/13, 7:0.5/13},
-                 
-                 {0:0.5/15, 1:1.5/15, 2:1.5/15, 3:1.5/15, 4:1.5/15,
-                  5:1.5/15, 6:1.5/15, 7:1.5/15, 8:1.5/15, 9:1.5/15,
-                  10:1.5/15, 11:0.5/15},
-                 
-                 {0:0.5/5.5, 1:5.5/5.5, 2:0.5/5.5}]
-
-class ELE20BinProbDistTestCase(ProbDistTestCase):
-    'Unit testing for L{nltk.probability.ELEProbDist}, with C{bins=20}'
-    def make_probdist(self, fdist):
-        return ELEProbDist(fdist, 20)
-
-    PDIST_OUTCOMES = [[6,3,4,1,2,2,2,8,3,1], # 20 bins
-                     [1,2,3,4,5,6,7,8,9,10], # 20 bins
-                     [1,1,1,1,1]] # 20 bin
-    MAXES = [2, (1,2,3,4,5,6,7,8,9,10), 1]
-    
-    PROB_MAPS = [{0:0.5/20, 1:2.5/20, 2:3.5/20, 3:2.5/20, 4:1.5/20, 5:0.5/20,
-                  6:1.5/20, 7:0.5/20},
-                 
-                 {0:0.5/20, 1:1.5/20, 2:1.5/20, 3:1.5/20, 4:1.5/20,
-                  5:1.5/20, 6:1.5/20, 7:1.5/20, 8:1.5/20, 9:1.5/20,
-                  10:1.5/20, 11:0.5/20},
-                 
-                 {0:0.5/15, 1:5.5/15, 2:0.5/15}]
+import sys, os, os.path
+if __name__ == '__main__': sys.path[0] = None
+import unittest, doctest, trace
 
 def testsuite():
-    """
-    Return a PyUnit testsuite for the L{nltk.probability} module.
-    """
-    t1 = unittest.makeSuite(FreqDistTestCase)
-    t2 = unittest.makeSuite(ConditionalFreqDistTestCase)
-    t3 = unittest.makeSuite(UniformProbDistTestCase)
-    t4 = unittest.makeSuite(MLEProbDistTestCase)
-    t5 = unittest.makeSuite(LaplaceProbDistTestCase)
-    t6 = unittest.makeSuite(ELEProbDistTestCase)
-    t7 = unittest.makeSuite(Laplace20BinProbDistTestCase)
-    t8 = unittest.makeSuite(ELE20BinProbDistTestCase)
-    return unittest.TestSuite( (t1, t2, t3, t4, t5, t6, t7, t8, ) )
+    import doctest, nltk.test.probability
+    reload(nltk.test.probability)
+    return doctest.DocTestSuite(nltk.test.probability)
 
-def test():
-    import unittest
-    runner = unittest.TextTestRunner()
+def test(verbosity=2):
+    runner = unittest.TextTestRunner(verbosity=verbosity)
     runner.run(testsuite())
 
 if __name__ == '__main__':
     test()
-
