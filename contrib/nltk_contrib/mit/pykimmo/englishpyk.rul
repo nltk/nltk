@@ -1,0 +1,288 @@
+; You are looking at the "Rule panel" of the interface
+; that displays one of the two finite state
+; machines to be used in parsing words. 
+; The second finite state machine, the Lexicon and 
+; Alternations, is displayed on the left.
+; This is an english rule file that specifies the
+; character 'spelling changes' required for a simple
+; subset of English. Please read this for a short summary
+; of the file format.  You can also refer to this file
+; as a model for the syntax of rule files.
+;
+; Note how comments in this file start with a semicolon
+; and *must* appear on their own line.
+; Blank lines do not matter.
+ 
+; The rule file specifies the allowed alphabet
+; characters; for convenience, equivalence classes of 
+; characters, called "Subsets"; and, finally, 
+; the "spelling changes" -- the allowed
+; lexical/surface character pairs in words described as
+; special sorts of finite-state automata.
+
+; You can edit rules directly in this window, and save them
+; (to your own directory), via the "Save" menu item. Or, you
+; you can use an external editor and load the .rul file.
+; The other panel to your left, "Lexicon & Alternations",
+; displays the second finite-state automaton needed, that 
+; gives the allowed morpheme sequences in a language
+; If you load other rule files you will note slight
+; difference in their syntax.  This is because we have
+; made this version of kimmo backward compatible with
+; older versions.
+
+; The first real line of the .rul file should be a declaration that
+; lists ALL the alphabetic characters to use for 
+; the language description.  
+; These will often include
+; special characters to stand for accent marks.  
+; The @ is used a kind of wildcard match character - see 
+; the description of the finite-state rule automata. 
+
+; There are three other 'reserved' characters that should
+; appear in this first declaration : +, #, and 0.
+; + is an 'concatenation' marker, used to denote the
+; boundary between a root (stem) and an affix, or two affixes
+; in a lexical (underlying) form, as in 'cat+s'.
+; So you will use this only for generation
+; # is the end-of-word character 
+; 0 is a special "empty" character that denotes the 'null'
+; character - i.e., it is like an empty string
+
+; Whitespace does not matter in the subset or rule
+; declarations, but carriage returns do matter.
+
+; The boundary char *forces* a lexical representation
+; of the end-of-word transition, for use if you choose.
+; The internal Kimmo engine, which operates *purely* on subsets, 
+; then needs to have proper rule definitions which include
+; the boundary char.
+; Rule file for the English description.
+; This description of English is based on the article "A two-level
+; morphological analysis of English," by Lauri Karttunen and
+; K. Wittenburg, Texas Linguistic Forum 22:217-228 (1983).
+
+; ' = apostrophe
+; - = hyphen
+; ` = stress
+; + = morpheme break
+
+ALPHABET    a b c d e f g h i j k l m n o p q r s t u v w x y z ' - ` +
+NULL 0
+ANY  @
+BOUNDARY #
+SUBSET C    b c d f g h j k l m n p q r s t v w x y z  
+SUBSET Csib s x z     
+SUBSET Cpal c g       
+SUBSET V    a e i o u 
+SUBSET Vbk  a o u     
+
+;; The "defaults" say what the possible lexical, surface
+;; are possible even if NO rule applies
+
+RULE "1 Consonant defaults"  1 22
+     b c d f g h j k l m n p q r s t v w x y z @
+     b c d f g h j k l m n p q r s t v w x y z @
+1:  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+; ` and + default to 0
+; - defaults to either - or 0
+RULE "2 Vowels and other defaults"  1 11
+     a e i o u ' - - ` + @
+     a e i o u ' - 0 0 0 @
+1:  1 1 1 1 1 1 1 1 1 1 1
+
+
+; Epenthesis
+; LR: fox+0s  kiss+0s  church+0s  spy+0s
+; SR: fox0es  kiss0es  church0es  spi0e
+
+RULE "3 Epenthesis, 0:e => [Csib|ch|sh|y:i] +:0___s [+:0|#]" 7 9
+    c h s Csib y + # 0 @
+    c h s Csib i 0 # e @
+1: 2 1 4 3    3 1 1 0 1
+2: 2 3 3 3    3 1 1 0 1
+3: 2 1 3 3    3 5 1 0 1
+4: 2 3 3 3    3 5 1 0 1
+5: 2 1 2 2    2 1 1 6 1
+6. 0 0 7 0    0 0 0 0 0
+7. 0 0 0 0    0 1 1 0 0
+
+RULE "4 Epenthesis,  0:0 /<= [Csib|ch|sh|y:i] +:0___s [+:0|#]"  6 8
+    c h s Csib y + # @
+    c h s Csib i 0 # @
+1: 2 1 4 3    3 1 1 1
+2: 2 3 3 3    3 1 1 1
+3: 2 1 3 3    3 5 1 1
+4: 2 3 3 3    3 5 1 1
+5: 2 1 6 3    3 1 1 1
+6: 2 3 4 3    3 0 0 1
+
+
+; y:i-spelling
+; LR: spy+s  happy+ly  spot0+y+ness
+; SR: spies  happi0ly  spott0i0ness
+
+RULE "5 y:i-spelling, y:i <= :C__+:0 ~[i|']"  4 7
+     @  y  y  +  i  '  @
+     C  i  @  0  i  '  @
+1:  2  1  1  1  1  1  1
+2:  2  1  3  2  1  1  1
+3:  2  1  1  4  1  1  1
+4:  0  0  0  0  1  1  0
+
+RULE "6 y:i-spelling, y:i => :C__+:0 ~[i|']"  4 6
+     @  y  +  i  '  @
+     C  i  0  i  '  @
+1:  2  0  1  1  1  1
+2:  2  3  2  1  1  1
+3.  0  0  4  0  0  0
+4.  2  1  1  0  0  1
+
+
+; s-deletion
+; LR: cat+s+'s  fox+s+'s
+; SR: cat0s0'0  foxes0'0
+
+RULE "7 s-deletion, s:0 <=> +:0 (0:e) s +:0 '___"  5 6
+     +  0  s  '  s  @
+     0  e  @  '  0  @
+1:  2  1  1  1  0  1
+2:  2  2  3  1  0  1
+3:  4  1  1  1  0  1
+4:  2  1  3  5  0  1
+5:  2  1  0  1  1  1
+
+
+; Elision
+; LR: `move+ed `move+ing `move+able `be+ing
+; SR: 0mov0+ed 0mov00ing 0mov00able 0be0ing
+
+; LR: `trace+ed `trace+ing `trace+able
+; SR: 0trac00ed 0trac00ing 0trace0able
+
+; except in Cpal___+:0 Vbk
+RULE "8 Elision, e:0 <= VCC*___+:0 V" 8 8
+    C Cpal e e + V Vbk @
+    C Cpal 0 @ 0 V Vbk @
+1: 1 1    1 2 1 2 2   1
+2: 3 6    1 2 1 2 2   1
+3: 3 6    1 4 1 2 2   1
+4: 1 1    1 2 5 2 2   1
+5: 1 1    1 0 1 0 0   1
+6: 1 1    1 7 1 2 2   1
+7: 1 1    1 2 8 2 2   1
+8: 1 1    1 0 1 0 1   1
+
+; elision prohibited after Cpal and before back vowel
+RULE "9 e:0 /<= VC*Cpal___+:0 Vbk" 5 7
+     V C Cpal e + Vbk @
+     V C Cpal 0 0 Vbk @
+1:  2 1 1    1 1 2   1
+2:  2 2 3    1 1 2   1
+3:  2 1 1    4 1 2   1
+4:  2 1 1    1 5 2   1
+5:  2 1 1    1 1 0   1
+
+; LR: a`gree+ed a`gree+ing a`gree+able `hoe+ed `hoe+ing `dye+ed `dye+ing
+; SR: a0gre00ed a0gree0ing a0gree0able 0ho00ed 0hoe0ing 0dy00ed 0dye0ing
+;
+; BUT compare these:
+; LR: `argue+ing `argue+able
+; SR: 0argu00ing 0argu00able
+
+RULE "10 e:0 <= C[V|y]___+:0 e" 5 8
+    C V y e e + ` @
+    C V y 0 @ 0 0 @
+1: 2 1 1 1 1 1 1 1
+2: 2 3 3 1 3 1 2 1
+3: 2 1 1 1 4 1 3 1
+4: 2 1 1 1 1 5 4 1
+5: 2 1 1 1 0 1 5 1
+
+RULE "11 e:0 <= Cu___+:0 V" 5 7
+    C u e e + V @
+    C u 0 @ 0 V @
+1: 2 1 1 1 1 1 1
+2: 2 3 1 1 1 1 1
+3: 2 1 1 4 1 1 1
+4: 2 1 1 1 5 1 1
+5: 2 0 1 0 1 0 1
+
+; clean-up rule for three <= Elision rules above plus i:y-spelling below
+RULE "12 Elision, e:0 => VCC*___+:0 V, C[V|y]___+:0 e, Cu___+:0 V, i:y___+:0 i" 12 10
+      C  e  +  i  y  V  e  u  `  @
+      C  0  0  y  y  V  e  u  0  @
+  1:  6  0  1  10 6  2  2  2  1  1
+  2:  3  0  1  10 3  2  2  2  2  1
+  3:  3  4  1  10 3  7  7  10 3  1
+  4.  0  0  5  0  0  0  0  0  4  0
+  5.  0  0  0  0  0  1  1  1  5  0
+  6:  6  0  1  10 7  7  7  10 6  1
+  7:  3  8  1  10 1  2  2  2  7  1
+  8.  0  0  9  0  0  0  0  0  8  0
+  9.  0  0  0  0  0  0  1  0  9  0
+10:  6  11 1  10 6  1  1  1  10 1
+11.  0  0  12 0  0  0  0  0  11 0
+12.  0  0  0  0  0  1  1  1  12 0
+
+
+; i:y-spelling
+; LR: tie+ed  tie+ing
+; SR: ti00ed  ty00ing
+
+; e:@ instead of e:0 to force Elision to apply
+RULE "13 i:y-spelling, i:y <= ___ e: +:0 i"  4 5
+     i  e  +  i  @
+     y  @  0  i  @
+1:  1  1  1  2  1
+2:  1  3  1  2  1
+3:  1  1  4  2  1
+4:  1  1  1  0  1
+
+RULE "14 i:y-spelling, i:y => ___ e:0 +:0 i"  4 5
+     i  e  +  i	@
+     y  0  0  i  @
+1:  2  1  1  1	1
+2.  0  3  0  0	0
+3.  0  0  4  0	0
+4.  0  0  0  1	0
+
+
+; Gemination
+; LR: re`fer0+ed `travel+ed `sleep+ing `slip0+ing `spot0+y
+; SR: re0ferr0ed 0travel0ed 0sleep0ing 0slipp0ing 0spott0y
+
+; {C} = {b,d,f,g,l,m,n,p,r,s,t}
+RULE "15 Gemination, 0:{C} => `:0 C* V {C}___[V|y:]"  16 27
+     `  V  y  b  d  f  g  l  m  n  p  r  s  t  0  0  0  0  0  0  0  0  0 0 0 + @
+     0  V  @  b  d  f  g  l  m  n  p  r  s  t  b  d  f  g  l  m  n  p  r s t 0 @
+  1: 2  1  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  0  0  0 0 0 1 1
+  2: 2  5  1  2  2  2  2  2  2  2  2  2  2  2  0  0  0  0  0  0  0  0  0 0 0 1 2
+  3. 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 0 0 4 0
+  4. 0  1  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 0 0 0 0
+  5: 2  1  1  6  7  8  9  10 11 12 13 14 15 16 0  0  0  0  0  0  0  0  0 0 0 1 1
+  6: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  3  0  0  0  0  0  0  0  0 0 0 1 1
+  7: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  3  0  0  0  0  0  0  0 0 0 1 1
+  8: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  3  0  0  0  0  0  0 0 0 1 1
+  9: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  3  0  0  0  0  0 0 0 1 1
+10: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  3  0  0  0  0 0 0 1 1
+11: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  3  0  0  0 0 0 1 1
+12: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  3  0  0 0 0 1 1
+13: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  0  3  0 0 0 1 1
+14: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  0  0  3 0 0 1 1
+15: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  0  0  0 3 0 1 1
+16: 2  5  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  0  0  0 0 3 1 1
+
+; {C} = {b,d,f,g,l,m,n,p,r,s,t}
+RULE "16 Gemination, 0:0 /<= `:0 C* V {C}___+:0 [V|y:]"  5 16
+     `  V  y  b  d  f  g  l  m  n  p  r  s  t  +  @
+     0  V  @  b  d  f  g  l  m  n  p  r  s  t  0  @
+1:  2  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+2:  2  4  2  2  2  2  2  2  2  2  2  2  2  2  1  2
+3:  2  0  0  1  1  1  1  1  1  1  1  1  1  1  1  1
+4:  2  1  1  5  5  5  5  5  5  5  5  5  5  5  1  1
+5:  2  1  1  1  1  1  1  1  1  1  1  1  1  1  3  1
+
+
+END

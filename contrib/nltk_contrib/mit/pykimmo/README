@@ -1,0 +1,8 @@
+6.863 Kimmo morphological analyzer
+by: Carl de Marcken; Beracah Yankama; Robert Berwick
+
+This program requires Python 2.3 or later. Tkinter, nltk-1.2 and
+nltk-1.2-contrib need to be installed as well.
+
+Run 'kimmo.py -h' to see command line options.
+
