@@ -18,6 +18,8 @@ from chktype import chkclass as _chkclass
 from types import SliceType as _SliceType
 from types import IntType as _IntType
 
+from string import join
+
 class Rule:
     """
     A context-free grammar rule.
@@ -85,7 +87,7 @@ class Rule:
         @return: a pretty-printed version of the C{Rule}.
         @rtype: C{string}
         """
-        return str(self._lhs) + ' -> ' + ''.join([str(s) for s in self._rhs])
+        return str(self._lhs) + ' -> ' + join([str(s) for s in self._rhs])
 
     def __repr__(self):
         """
@@ -119,11 +121,6 @@ class Rule:
         """
         return hash((self._lhs, self._rhs))
 
-    # [edloper 8/14/01] This is a circular reference, but I guess it's
-    # ok.  :)  Otherwise, you could define an external function..
-    # [sb 8/14/01] Nothing wrong with the circular dependency, though
-    # I'd actually prefer this to be a second initializer in
-    # DottedRule - i.e. initializing a DottedRule from a Rule.
     def dotted(self):
         """
         @return: A C{DottedRule} corresponding to the C{Rule}, with
@@ -131,7 +128,6 @@ class Rule:
         @rtype: C{int}
         """
         return DottedRule(self.lhs(), self[:])
-
 
 class DottedRule(Rule):
     """
@@ -154,9 +150,9 @@ class DottedRule(Rule):
         Construct a new C{DottedRule}.
 
         @param lhs: The left-hand side of the new C{Rule}.
-        @type lhs: C{string}
+        @type lhs: C{object}
         @param rhs: The right-hand side of the new C{Rule}.
-        @type rhs: C{tuple} of C{string}s
+        @type rhs: C{tuple} of C{objects}s
         @param pos: The position of the dot (defaults to zero).
         @type pos: C{int}
         """
@@ -174,7 +170,7 @@ class DottedRule(Rule):
     def next(self):
         """
         @return: the next element on the right-hand side following the dot.
-        @rtype: C{string}
+        @rtype: C{object}
         """
         return self[self._pos]
 
@@ -211,9 +207,9 @@ class DottedRule(Rule):
         @rtype: C{string}
         """
         return str(self._lhs) + ' -> ' +\
-               ''.join([str(item) for item in self._rhs[:self._pos]]) +\
+               join([str(item) for item in self._rhs[:self._pos]]) +\
                ' * ' +\
-               ''.join([str(item) for item in self._rhs[self._pos:]])
+               join([str(item) for item in self._rhs[self._pos:]])
 
     def __repr__(self):
         """
