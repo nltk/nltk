@@ -180,6 +180,14 @@ class AbstractChunkRule(ChunkRule):
 ##  Chunk Parser Utility Functions
 ##//////////////////////////////////////////////////////
 
+_re_braces = re.compile(r'[^{}]')
+_re_matching_braces = re.compile(r'^(\{\})*$')
+
+def _check_braces(str):
+    braces = sub(_re_braces, '', str)
+    if not match(_re_matching_braces, braces):
+        raise ValueError('Unbalanced or nested chunk delimiters\n' + str)
+
 def format(str):
     """
     Format a string of tokens for display.
@@ -223,8 +231,6 @@ def tag2str(tagged_sent):
 
 # Precompiled regular expressions used by str2chunks
 
-_re_braces = re.compile(r'[^{}]')
-_re_matching_braces = re.compile(r'(\{\})*')
 _re_punct_boundary = re.compile(r'([>}])(?=[<{])')
 _re_token_rep = re.compile(r'<([^>]*)/([^>]*)@(\d+)>')
 _re_chunks = re.compile(r'{([^}]*)}')
@@ -244,9 +250,7 @@ def str2chunks(str):
     @type str: C{string}
     """
 
-    braces = sub(_re_braces, '', str)
-    if not match(_re_matching_braces, braces):
-        print "ERROR: unbalanced or nested braces"
+    _check_braces(str)
 
     # insert commas between closing and opening punctuation
     str = sub(_re_punct_boundary, r'\1, ', str)
@@ -299,6 +303,7 @@ class REChunkParser(ChunkParserI):
         result = sub(pattern, action, str)
         if self._debug:
             self._diagnostic(rule, str, result)
+            _check_braces(result)
         return result
 
     def parse(self, tagged_sent):
