@@ -8,7 +8,7 @@
 # $Id$
 
 # Todo:
-#    - document more.  Clean up the documentation that's here.
+#    - Rewrite the module-level docstring
 
 """
 Interface for producing tree structures that represent the internal
@@ -35,96 +35,6 @@ ambiguity.
 
 class ParserI:
     """
-    B{This class is obsolete -- it will be replaced by ParserI2 once
-    we have finished migrating all of the parsers to the new interface}
-    
-    A processing interface for deriving tree structures that represent
-    an ordered list of tokens.  Typically, these tree structures will
-    indicate the syntactic structure of sentences.
-
-    Parsing a text will generate zero or more tree structures, known
-    as parses.  Abstractly, each of these parses has a X{quality}
-    associated with it.  Usually, a parse's quality represents the
-    probability that it is a correct parse; however, the exact
-    definition of quality is left to individual parsers.  These
-    quality ratings are used to decide which parses to return.  In
-    particular, the methods C{parse()} and C{parseTypes()} can both
-    return lists of the M{n} best parses, sorted in descending order
-    of quality.
-    """
-    def __init__(self):
-        """
-        Construct a new C{Parser}.
-        """
-
-    def parse(self, tokens, n=None):
-        """
-        Parse the piece of text contained in the given list of
-        tokens.  Return the C{n} best parses for the text (or all
-        parses, if the number of parses is less than C{n})).
-        
-        @return: A list of the C{n} best parses for the given text,
-            sorted in descending order of quality.  In other words,
-            the first parse in the list will have the highest quality; 
-            and each subsequent parse will have equal or lower
-            quality.  The order among parses with the same quality is
-            undefined.  Note that the empty list will be returned if
-            no parses were found.
-        @rtype: C{list} of C{TreeToken}
-
-        @param n: The number of parses to generate.  At most C{n}
-            parses will be returned.  If C{n} is C{None}, return all
-            parses. 
-        @type n: C{int}
-        
-        @param tokens: The list of tokens to be parsed.
-        @type tokens: C{list} of C{Token}
-        """
-        assert 0, "ParserI is an abstract interface"
-
-    def parse_types(self, types, n=None):
-        """
-        Parse the piece of text contained in the given list of
-        types.  Return the C{n} best parses for the text (or all
-        parses, if the number of parses is less than C{n})).
-
-        This method does not need to be overridden by implementations: 
-        it has a default implementation, which delegates to parse().
-        
-        @return: A list of the C{n} best parses for the given text,
-            sorted in descending order of quality.  In other words,
-            the first parse in the list will have the highest quality; 
-            and each subsequent parse will have equal or lower
-            quality.  The order among parses with the same quality is
-            undefined.  Note that the empty list will be returned if
-            no parses were found.
-        @rtype: C{list} of C{Tree}
-
-        @param n: The number of parses to generate.  At most C{n}
-            parses will be returned.  If C{n} is C{None}, return all
-            parses. 
-        @type n: C{int}
-        
-        @param types: The list of tokens to be parsed.
-        @type types: C{list} of C{Token}
-        """
-        # Convert the list of types to a list of tokens.  Use
-        # arbitrary locations.  Unit is 't' for 'token'
-        toks = [Token(t, i, unit='t', source='(ParserI)')
-                for (t,i) in zip(types, range(len(types)))]
-
-        # Run the normal parse method on the list of tokens.
-        parses = self.parse(toks, n)
-
-        # Extract Trees (instead of TreeTokens) to return.
-        return [parse.type() for parse in parses]
-
-#################################################################
-# New parser interface.
-#################################################################
-
-class ParserI2:
-    """
     A processing interface for deriving trees that represent possible
     structures for a sequence of tokens.  These tree structures are
     known as X{parses}.  Typically, parsers are used to derive syntax
@@ -148,9 +58,6 @@ class ParserI2:
     for some parsers, all parses have the same quality.  For these
     parsers, C{parse} returns a single arbitrary parse, and C{parse_n}
     returns an list of parses in arbitrary order.
-
-    B{NOTE: This is a temporary name for this class, until the old
-    version of C{ParserI} is completely phased out.}
     """
     def __init__(self):
         """
@@ -196,7 +103,7 @@ class ParserI2:
         """
         assert 0, "ParserI is an abstract interface"
 
-class ProbabilisticParserI(ParserI2):
+class ProbabilisticParserI(ParserI):
     """
     A processing interface for associating proabilities with trees
     that represent possible structures for a sequence of tokens.  A
