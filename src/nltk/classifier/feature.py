@@ -101,6 +101,9 @@ takes to process the feature value list.
 from nltk.classifier import ClassifierI, LabeledText
 from nltk.probability import ProbDistI
 from nltk.token import Token
+from nltk.chktype import chktype as _chktype
+from nltk.chktype import classeq as _classeq
+import types
 
 # Issues:
 #    - Do I want to use FDList or FeatureDetectorList.  E.g., c.f.:
@@ -180,10 +183,14 @@ class FunctionFeatureDetector(FeatureDetectorI):
             detector.  This name is used in the string representation
             of the feature detector.
         """
+        assert _chktype(1, function, types.FunctionType,
+                        types.BuiltinFunctionType, types.ClassType)
+        assert _chktype(2, name, types.NoneType, types.StringType)
         self._name = name
         self._func = function
 
     def detect(self, labeled_text):
+        assert _chktype(1, labeled_text, LabeledText)
         # Inherit docs from FeatureDetectorI
         return self._func(labeled_text)
 
@@ -309,6 +316,7 @@ class ArrayFeatureValueList(FeatureValueListI):
 
     def __getitem__(self, feature_id):
         # Inherit docs from FeatureValueListI
+        assert _chktype(1, feature_id, types.IntType)
         return self._values[feature_id]
 
     def default(self):
@@ -359,10 +367,12 @@ class EmptyFeatureValueList(FeatureValueListI):
         @param default: The default value for this feature value list.
             This is used as the feature value for every feature.
         """
+        assert _chktype(1, len, types.IntType)
         self._len = len
         self._default = default
     def __getitem__(self, feature_id):
         # Inherit docs from FeatureValueListI
+        assert _chktype(1, feature_id, types.IntType)
         return self._default
     def default(self):
         # Inherit docs from FeatureValueListI
@@ -416,12 +426,15 @@ class SimpleFeatureValueList(FeatureValueListI):
             If a feature's value is not specified by C{assignments},
             then that feature's value is the default value.
         """
+        assert _chktype(1, assignments, [()], ((),))
+        assert _chktype(2, len, types.IntType)
         self._assignments = assignments
         self._len = len
         self._default = default
 
     def __getitem__(self, feature_id):
         # Inherit docs from FeatureValueListI
+        assert _chktype(1, feature_id, types.IntType)
         if feature_id >= self._len:
             raise IndexError('FeatureValueList index out of range')
         for (id, val) in self._assignments:
@@ -563,6 +576,7 @@ class AbstractFDList(FeatureDetectorListI):
     """
     def __getitem__(self, feature_id):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, feature_id, types.IntType)
         if feature_id >= len(self) or feature_id < 0:
             raise IndexError('FeatureDetectorList index out of range')
         def f(labeled_text, detect=self.detect, id=feature_id):
@@ -574,6 +588,7 @@ class AbstractFDList(FeatureDetectorListI):
         # n.b.: Slight circular dependency (since
         # MergedFDList is itself derived from
         # AbstractFDList).
+        assert _chktype(1, other, FeatureDetectorListI)
         return MergedFDList(self, other)
 
     def __repr__(self):
@@ -620,6 +635,7 @@ class MergedFDList(AbstractFDList):
         @param sub_fd_lists: The feature detector lists to combine.
         @type sub_fd_lists: C{list} of C{FeatureDetectorListI}
         """
+        assert _chktype('vararg', sub_fd_lists, (FeatureDetectorListI,))
         self._sub_fd_lists = []
         self._offsets = []
         offset = 0
@@ -645,6 +661,7 @@ class MergedFDList(AbstractFDList):
     # for now, at least, everything uses SimpleFeatureValueLists.
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         assignments = []
         default = None
         for i in range(len(self._sub_fd_lists)):
@@ -677,20 +694,25 @@ class SimpleFDList(FeatureDetectorListI):
             feature with id M{i}.
         @type feature_detectors: C{sequence} of C{FeatureDetectorI}
         """
+        assert _chktype(1, feature_detectors, [FeatureDetectorI],
+                        (FeatureDetectorI,))
         self._feature_detectors = feature_detectors
     def __getitem__(self, feature_id):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, feature_id, types.IntType)
         if feature_id >= len(self) or feature_id < 0:
             raise IndexError('FeatureDetectorList index out of range')
         return self._feature_detectors[feature_id]
     def __add__(self, other):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, other, FeatureDetectorListI)
         return MergedFDList(self, other)
     def __len__(self):
         # Inherit docs from FeatureDetectorListI
         return len(self._feature_detectors)
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         values = [fd.detect(labeled_text)
                   for fd in self._feature_detectors]
         return ArrayFeatureValueList(values)
@@ -712,6 +734,7 @@ class AlwaysOnFDList(AbstractFDList):
         return 1
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         return AlwaysOnFDList._FVLIST
 
 class LabeledTextFunctionFDList(AbstractFDList):
@@ -744,6 +767,9 @@ class LabeledTextFunctionFDList(AbstractFDList):
         @type range: C{list} of (immutable)
         @param range: The range of C{function}.  
         """
+        assert _chktype(1, function, types.FunctionType,
+                        types.BuiltinFunctionType, types.ClassType)
+        assert _chktype(2, range, [], ())
         self._func = function
 
         self._map = {}
@@ -759,6 +785,7 @@ class LabeledTextFunctionFDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         fid = self._map.get(self._func(labeled_text), None)
         if fid is None:
             return EmptyFeatureValueList(self._N)
@@ -806,6 +833,10 @@ class TextFunctionFDList(AbstractFDList):
         @param labels: The set of labels used by this
             C{TextFunctionFDList}. 
         """
+        assert _chktype(1, function, types.FunctionType,
+                        types.BuiltinFunctionType, types.ClassType)
+        assert _chktype(2, range, [], ())
+        assert _chktype(3, labels, (), [])
         self._func = function
         self._labels = labels
 
@@ -831,6 +862,7 @@ class TextFunctionFDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         lnum = self._lmap.get(labeled_text.label(), None)
         vnum = self._vmap.get(self._func(labeled_text.text()), None)
         if (lnum == None) or (vnum == None):
@@ -877,6 +909,8 @@ class BagOfWordsFDList(AbstractFDList):
         @param labels: The set of labels used by this
             C{TextFunctionFDList}. 
         """
+        assert _chktype(1, words, (), [])
+        assert _chktype(2, labels, (), [])
         if None in words:
             raise ValueError('TextFunctionFDList can not '+
                              'be used if words contains None')
@@ -906,6 +940,7 @@ class BagOfWordsFDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         lnum = self._lmap.get(labeled_text.label(), None)
         if lnum is None: return EmptyFeatureValueList(self._N)
         offset = lnum*self._num_values
@@ -938,6 +973,7 @@ class MultiBagOfWordsFDList(BagOfWordsFDList):
 
     def detect(self, labeled_text):
         # Inherit docs from FeatureDetectorListI
+        assert _chktype(1, labeled_text, LabeledText)
         lnum = self._lmap.get(labeled_text.label(), None)
         if lnum is None: return EmptyFeatureValueList()
         offset = lnum*self._num_values
@@ -985,11 +1021,14 @@ class MemoizedFDList(AbstractFDList):
         @type base_fd_list: C{FeatureDetectorListI}
         @param texts: The list of texts for which C{FeatureValueList}s
             should be pre-computed.
-        @type texts: (immutable)
+        @type texts: C{sequence} of (immutable)
         @param labels: The list of labels for which C{FeatureValueList}s
             should be pre-computed.
-        @type labels: (immutable)
+        @type labels: C{sequence} of (immutable)
         """
+        assert _chktype(1, base_fd_list, FeatureDetectorListI)
+        assert _chktype(2, texts, (), [])
+        assert _chktype(3, labels, (), [])
         self._cache = {}
         self._base_fd_list = base_fd_list
         for text in texts:
@@ -999,6 +1038,7 @@ class MemoizedFDList(AbstractFDList):
 
     def detect(self, labeled_text):
         # Inherit docs
+        assert _chktype(1, labeled_text, LabeledText)
         fv_list = self._cache.get(labeled_text, None)
         if fv_list is not None:
             return fv_list
@@ -1014,6 +1054,8 @@ class MemoizedFDList(AbstractFDList):
 ##//////////////////////////////////////////////////////
 class _AbstractFeatureClassifierProbDist(ProbDistI):
     def __init__(self, unlabeled_token, dist_dict):
+        assert _chktype(1, unlabeled_token, Token)
+        assert _chktype(2, dist_dict, {})
         self._tok = unlabeled_token
         self._dist_dict = dist_dict
     def prob(self, sample):
@@ -1069,6 +1111,8 @@ class AbstractFeatureClassifier(ClassifierI):
             by this C{NBClassifier}.  Typically, labels are C{string}s
             or C{int}s.
         """
+        assert _chktype(1, fd_list, FeatureDetectorListI)
+        assert _chktype(2, labels, (), [])
         self._fd_list = fd_list
         self._labels = labels
     
@@ -1106,10 +1150,12 @@ class AbstractFeatureClassifier(ClassifierI):
         @param unlabeled_token: The text to be classified.
         @type unlabeled_token: C{Token}
         """
+        assert _chktype(1, unlabeled_token, Token)
         return [1.0/len(self._labels) for l in self._labels]
     
     def distribution_list(self, unlabeled_token):
         # Inherit docs from ClassifierI
+        assert _chktype(1, unlabeled_token, Token)
         total_p = 0.0
         text = unlabeled_token.type()
 
@@ -1130,6 +1176,7 @@ class AbstractFeatureClassifier(ClassifierI):
 
     def distribution_dictionary(self, unlabeled_token):
         # Inherit docs from ClassifierI
+        assert _chktype(1, unlabeled_token, Token)
         dist_dict = {}
         dist_list = self.distribution_list(unlabeled_token)
         for labelnum in range(len(self._labels)):
@@ -1138,12 +1185,14 @@ class AbstractFeatureClassifier(ClassifierI):
 
     def distribution(self, unlabeled_token):
         # Inherit docs from ClassifierI
+        assert _chktype(1, unlabeled_token, Token)
         dist_dict = self.distribution_dictionary(unlabeled_token)
         return _AbstractFeatureClassifierProbDist(unlabeled_token,
                                                   dist_dict)
 
     def classify(self, unlabeled_token):
         # Inherit docs from ClassifierI
+        assert _chktype(1, unlabeled_token, Token)
         text = unlabeled_token.type()
         
         # (label, likelihood) pair that maximizes likelihood
@@ -1160,6 +1209,7 @@ class AbstractFeatureClassifier(ClassifierI):
 
     def prob(self, labeled_token):
         # Inherit docs from ClassifierI
+        assert _chktype(1, labeled_token, Token)
         text = labeled_token.type().text()
         label = labeled_token.type().label()
         return distribution_dictionary(text)[label]
