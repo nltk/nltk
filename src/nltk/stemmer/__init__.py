@@ -191,7 +191,7 @@ def _demo_stemmer(stemmer):
     # Tokenize a sample text.
     from nltk.tokenizer import WhitespaceTokenizer
     text = Token(TEXT='John was eating icecream')
-    WhitespaceTokenizer(addlocs=False).tokenize(text)
+    WhitespaceTokenizer().tokenize(text)
 
     # Use the stemmer to stem it.
     for word in text['SUBTOKENS']: stemmer.stem(word)
