@@ -1,0 +1,39 @@
+FILES:
+
+chasentoken.py: ChasenTokenReader class, includes set up for crl corpus
+
+netypes.py: sets up named entity tree, and lookup table for key words that
+correspond to certain NE types, also functions for searching NE tree and finding
+a list of parents of an item.
+
+question.py: contains functions to read, tag and analyse questions, as well as
+evaluate against the data I have. Data needs to be in the relevant places.
+
+Requires having the tools chasen and iconv installed in your path. Also
+requires a UTF-8 capable terminal and Japanese fonts.
+
+The file question.py imports chasentoken and netypes.
+
+You can:
+
+analyse a question
+	analyse_question('富士山の高さは？')
+which will return question and answer type
+
+evaluate the classifiers against the gold standard from the CRL data (if you
+have it)
+	eval()
+
+Or the lower level functions:
+
+tag and tokenise a Japanese question (or indeed any Japanese input) with 
+	tok = tokenize_question('富士山の高さは？')
+which will return a sentence token, with each 'word' (according to the ChaSen
+tagger) represented with TEXT, READing, BASE form and POS TAG.
+
+classify the question type of the tokenised question
+	type = classify_question(tok)
+	
+classify the answer type of the tokenised question
+	answertype = classify_answer(tok, type)
+
