@@ -229,8 +229,17 @@ class RETokenizer(TokenizerI):
         """
         if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
         assert _chktype(1, regexp, types.StringType)
-        self._regexp = re.compile('('+regexp+')', re.UNICODE)
         self._negative = negative
+        
+        # Replace any grouping parenthases with non-grouping ones.  We
+        # need to do this, because the list returned by re.sub will
+        # contain an element corresponding to every set of grouping
+        # parenthases.
+        regexp = re.sub(r'\((?!\?)', r'(?:', regexp)
+
+        # Add grouping parenthases around the regexp; this will allow
+        # us to access the material that was split on.
+        self._regexp = re.compile('('+regexp+')', re.UNICODE)
         
     def tokenize(self, str, unit='w', source=None):
         # Inherit docs from TokenizerI
@@ -268,3 +277,63 @@ class RETokenizer(TokenizerI):
                      if i%2==1 and words[i] != '']
 
         return _XTokenTuple(words, unit, source)
+
+##//////////////////////////////////////////////////////
+##  Demonstration
+##//////////////////////////////////////////////////////
+
+def demo():
+    """
+    A demonstration function, showing the output of several different
+    tokenizers on the same string.
+    """
+    # Set up the test data.
+    s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them. "
+    tokenizers = [
+        [r"WSTokenizer()                     # Simple word tokenizer"],
+        [r"RETokenizer(r'\w+')               # Only keep alphanumerics"],
+        [r"RETokenizer(r'\w+|[^a-zA-Z\s]+')  # Group non-alpha characters"],
+        [r"RETokenizer(r'\.\s+', negative=1) # Simple sentence tokenizer",
+         's'], # unit for tokenize()
+        [r"LineTokenizer()                   # Tokenize into lines"],
+        [r"CharTokenizer()                   # Tokenize into characters"],
+        ]
+                  
+    def wordwrap(tokens):
+        str = '['
+        index = 0
+        lines = 0
+        for tok in tokens:
+            tokrepr = `tok`
+            index += len(tokrepr)+2
+            if index >= 75:
+                str += '\n '
+                index = len(tokrepr)+3
+                lines += 1
+            if lines > 2:
+                str += '..., '
+                break
+            str += '%s, ' % tokrepr
+        str = str[:-2] + ']'
+        return str
+    
+    print '='*75
+    print 'Test string:'
+    print "'''%s'''" % s
+    for elt in tokenizers:
+        print '_'*75
+        descr = elt[0]
+        tokenizer = eval(descr.split('#')[0])
+        print 'tokenizer = %s' % descr
+        if len(elt) == 1:
+            print 'tokenizer.tokenize(s)'
+            print wordwrap(tokenizer.tokenize(s))
+        else:
+            print 'tokenizer.tokenize(s, unit="%s")' % elt[1]
+            print wordwrap(tokenizer.tokenize(s, unit=elt[1]))
+
+    print '='*75
+    
+if __name__ == '__main__':
+    demo()
+    
