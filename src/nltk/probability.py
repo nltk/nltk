@@ -474,10 +474,9 @@ class FreqDistI:
     distribution.
 
     Frequency distributions are required to implement the methods
-    C{inc()}, C{N()}, C{count()},
-    C{freq()}, C{cond_freq()}, C{max()},
-    and C{cond_max()}.  In the future, this list may be
-    exapanded, and optional methods may be added.
+    C{inc()}, C{N()}, C{count()}, C{freq()}, C{cond_freq()}, C{max()},
+    and C{cond_max()}.  In the future, this list may be exapanded, and
+    optional methods may be added.
     """
     def inc(self, sample):
         """
@@ -937,7 +936,7 @@ class CFFreqDist(FreqDistI):
         # Inherit docs from FreqDistI
         event = sample_or_event
         _chktype("CFFreqDist.count", 1, event, (CFSample, ContextEvent))
-        if type(event) == CFSample:
+        if isinstance(event, CFSample):
             if self._dict.has_key(event.context()) and \
                self._dict[event.context()].has_key(event.feature()):
                 return self._dict[event.context()][event.feature()]
