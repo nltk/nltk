@@ -584,9 +584,16 @@ class RecursiveDescentParserDemo:
         self._autostep = 0
         self._cframe.print_to_file()
 
-    def mainloop(self, *args, **varargs):
-        self._top.mainloop(*args, **varargs)
-
+    def mainloop(self, *args, **kwargs):
+        """
+        Enter the Tkinter mainloop.  This function must be called if
+        this demo is created from a non-interactive program (e.g.
+        from a secript); otherwise, the demo will close as soon as
+        the script completes.
+        """
+        if in_idle(): return
+        self._top.mainloop(*args, **kwargs)
+        
     def resize(self, size=None):
         if size is not None: self._size.set(size)
         size = self._size.get()
