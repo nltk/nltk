@@ -1232,47 +1232,93 @@ class ConditionalProbDist(ConditionalProbDistI):
 class ProbabilisticMixIn:
     """
     A mix-in class to associate probabilities with other classes
-    (tokens, trees, rules, etc.).  To use the C{ProbabilisticMixIn}
-    class, define a new class that derives from an existing class and
-    from ProbabilisticMixIn.  You will need to define a new constructor 
-    for the new class, which explicitly calls the constructors of both
-    its parent classes.  For example:
+    (trees, rules, etc.).  To use the C{ProbabilisticMixIn} class,
+    define a new class that derives from an existing class and from
+    ProbabilisticMixIn.  You will need to define a new constructor for
+    the new class, which explicitly calls the constructors of both its
+    parent classes.  For example:
 
         >>> class A:
         ...     def __init__(self, x, y): self.data = (x,y)
         ... 
         >>> class ProbabilisticA(A, ProbabilisticMixIn):
-        ...     def __init__(self, p, x, y):
+        ...     def __init__(self, x, y, **prob_kwarg):
         ...         A.__init__(self, x, y)
-        ...         ProbabilisticMixIn.__init__(self, p)
+        ...         ProbabilisticMixIn.__init__(self, **prob_kwarg)
 
-    We suggest that you make C{prob} the first argument for the new
-    probabilistic class, and keep all other arguments the same as they
-    were.  This ensures that there will be no problems with
-    constructors that expect varargs parameters.
+    See the documentation for the ProbabilisticMixIn
+    L{constructor<__init__>} for information about the arguments it
+    expects.
 
     You should generally also redefine the string representation
     methods, the comparison methods, and the hashing method.
     """
-    def __init__(self, prob):
+    def __init__(self, **kwargs):
         """
         Initialize this object's probability.  This initializer should
         be called by subclass constructors.  C{prob} should generally be
         the first argument for those constructors.
 
-        @param prob: The probability associated with the object.
+        @kwparam prob: The probability associated with the object.
+        @type prob: C{float}
+        @kwparam logprob: The log of the probability associated with
+            the object.
+        @type logrpob: C{float}
+        """
+        # Make sure they gave one or the other (but not both)
+        if ('prob' in kwargs) == ('logprob' in kwargs):
+            raise TypeError, 'Must specify either prob or logprob'
+        
+        if 'prob' in kwargs:
+            ProbabilisticMixIn.set_prob(self, kwargs['prob'])
+        else:
+            ProbabilisticMixIn.set_logprob(self, kwargs['logprob'])
+            
+    def set_prob(self, prob):
+        """
+        Set the probability associated with this object to C{prob}.
+        @param prob: The new probability
         @type prob: C{float}
         """
         assert _chktype(1, prob, types.IntType, types.FloatType)
-        if not 0 <= prob <= 1: raise ValueError('Bad probability: %s' % prob)
-        self._prob = prob
+        self.__prob = prob
+        self.__logprob = None
+
+    def set_logprob(self, logprob):
+        """
+        Set the log probability associated with this object to
+        C{logprob}.  I.e., set the probability associated with this
+        object to C{exp(logprob)}.
+        @param logprob: The new log probability
+        @type logprob: C{float}
+        """
+        assert _chktype(1, prob, types.IntType, types.FloatType)
+        self.__logprob = prob
+        self.__prob = None
 
     def prob(self):
         """
-        @return: the probability associated with this object.
+        @return: The probability associated with this object.
         @rtype: C{float}
         """
-        return self._prob
+        if self.__prob is None: self.__prob = math.exp(self.__logprob)
+        return self.__prob
+
+    def logprob(self):
+        """
+        @return: C{log(p)}, where C{p} is the probability associated
+        with this object.
+        
+        @rtype: C{float}
+        """
+        if self.__prob is None: self.__prob = math.exp(self.__logprob)
+        return self.__prob
+
+class ImmutableProbabilisticMixIn(ProbabilisticMixIn):
+    def set_prob(self, prob):
+        raise ValueError, '%s is immutable' % self.__class__.__name__
+    def set_logprob(self, prob):
+        raise ValueError, '%s is immutable' % self.__class__.__name__
     
 ##//////////////////////////////////////////////////////
 ##  Demonstration
