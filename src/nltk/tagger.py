@@ -36,7 +36,7 @@ the L{TaggerI} interface.
 
 import types, re
 from nltk.chktype import chktype
-from nltk.tokenizer import Token, AbstractTokenizer, WSTokenizer
+from nltk.tokenizer import Token, AbstractTokenizer, WSTokenizer, TokenizerI
 from nltk.probability import FreqDist, ConditionalFreqDist
 
 
@@ -71,37 +71,39 @@ class TaggedTokenizer(AbstractTokenizer):
     the form C{I{text}/I{tag}}, where C{I{text}} specifies the word's
     C{text} property, and C{I{tag}} specifies its C{tag} property.
     Words that do not contain a slash are assigned a C{tag} of C{None}.
-
-    @inprop:  C{text}: The content that should be divided into tokens.
-    @inprop: C{loc}: The content's location.
-    @outprop: C{subtokens}: The property where the generated subtokens
-              should be stored.
-    @outprop: C{subtokens.text}: The text content for individual subtokens.
-    @outprop: C{subtokens.tag}: The tag for individual subtokens.
-    @outprop: C{subtokens.loc}: The locations of individual subtokens.
     """
-    def __init__(self, addlocs=True, propnames={}):
-        self._wstokenizer = WSTokenizer(addlocs, propnames)
-        self._props = propnames
-
-    def tokenize(self, token):
-        # Inherit docs from TokenizerI
+    _wstokenizer = WSTokenizer()
+    
+    def tokenize(self, token, **propnames):
+        """
+        @include: TokenizerI.tokenize
+        @outprop: C{tag}: The property where the subtokens' tags
+                  should be stored.
+        """
         assert chktype(1, token, Token)
-        subtokens_prop = self._props.get('subtokens', 'subtokens')
-        subtokens_text_prop = self._props.get('subtokens.text', 'text')
-        subtokens_tag_prop = self._props.get('subtokens.tag', 'tag')
+        subtokens_prop = propnames.get('subtokens', 'subtokens')
+        text_prop = propnames.get('text', 'text')
+        tag_prop = propnames.get('tag', 'tag')
 
         # First, use WSTokenizer to divide on whitespace.
         self._wstokenizer.tokenize(token)
 
         # Then, split each subtoken's text into a text and a tag.
         for subtok in token[subtokens_prop]:
-            split = subtok['text'].find('/')
+            split = subtok[text_prop].find('/')
             if split >= 0:
-                subtok['tag'] = subtok['text'][split+1:].upper()
-                subtok['text'] = subtok['text'][:split]
+                subtok[tag_prop] = subtok[text_prop][split+1:]
+                subtok[text_prop] = subtok[text_prop][:split]
             else:
-                subtok['tag'] = None
+                subtok[tag_prop] = None
+
+    def xtokenize(self, token, **propnames):
+        """
+        @include: TokenizerI.xtokenize
+        @outprop: C{tag}: The property where the subtokens' tags
+                  should be stored.
+        """
+        AbstractTokenizer.xtokenize(self, token, **propnames)
 
 ##//////////////////////////////////////////////////////
 ##  Tagger Interface
