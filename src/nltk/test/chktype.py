@@ -12,173 +12,375 @@ Unit testing for L{nltk.chktype}.
 """
 
 from nltk.chktype import *
+from nltk.util import mark_stdout_newlines
 import types
 
 ##//////////////////////////////////////////////////////
 ##  Test code
 ##//////////////////////////////////////////////////////
 
-import unittest
+def test_chktype(): r"""
+Unit test cases for L{nltk.chktype}.
 
-class ChktypeTestCase(unittest.TestCase):
-    """
-    Unit test cases for L{nltk.chktype}
-    """
-    def setUp(self):
-        type_safety_level(4)
+The amount of type checking performed is controlled by the type safety
+level, which is set with L{type_safety_level}:
+
+    >>> old_level = type_safety_level(4)
+
+C{chktype} is used by adding calls to C{chktype} at the top of a
+function or method, checking the types of the inputs:
+
+    >>> def demo(x, f, s):
+    ...     assert chktype(1, x, int, long)
+    ...     assert chktype(2, f, float)
+    ...     assert chktype(3, s, str)
+    ...     return 'ok'
+
+Calls with correct argument types proceed normally:
+
+    >>> demo(1, 1.0, 'hello')
+    'ok'
+    >>> demo(-5, 1.0, '')
+    'ok'
+    >>> demo(12L, 1.0, 'hello')
+    'ok'
+
+Calls with invalid argument types raise exceptions.  Define a test
+function, to capture the exception string & collapse whitespace
+(because doctest can't deal w/ multiline exception strings):
+
+    >>> def test(func, *args):
+    ...     try: func(*args)
+    ...     except TypeError, e: 
+    ...         raise TypeError(' '.join(str(e).split()))
+
+Now call the demo function with bad argument types:
+
+    >>> test(demo, 1.0, 1.0, 'hello')
+    Traceback (most recent call last):
+    TypeError: Argument 1 to demo() must have type: (int or long) (got a float)
+
+    >>> test(demo, 1, 1, 'hello')
+    Traceback (most recent call last):
+     ...
+    TypeError: Argument 2 to demo() must have type: float (got a int)
+
+    >>> test(demo, 1, 1L, 'hello')
+    Traceback (most recent call last):
+     ...
+    TypeError: Argument 2 to demo() must have type: float (got a long)
+
+    >>> test(demo, 1, 'x', 'hello')
+    Traceback (most recent call last):
+     ...
+    TypeError: Argument 2 to demo() must have type: float (got a str)
+
+    >>> test(demo, 'x', 1.0, 'hello')
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: (int or long) (got a str)
+
+    >>> test(demo, 0, 0.0, 12)
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: str (got a int)
+
+    >>> test(demo, 0, 1.0, ['h', 'i'])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: str (got a list)
+
+    >>> test(demo, [0], 1.0, 'hi')
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: (int or long) (got a list)
+
+    >>> test(demo, 0, [1.0], 'hi')
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: float (got a list)
+
+List Type Checks
+================
+
+    >>> def demo(list1, list2, list3):
+    ...     assert chktype(1, list1, [])
+    ...     assert chktype(2, list2, [int])
+    ...     assert chktype(3, list3, [int, [str]])
+    ...     return 'ok'
+
+These should be fine:
+
+    >>> demo([], [], [])
+    'ok'
+    >>> demo(['x'], [1], [1])
+    'ok'
+    >>> demo(['a', {}, (), 3], [1,2], [3,4])
+    'ok'
+    >>> demo([], [], [1, ['x'], 2, ['y', 'z']])
+    'ok'
+
+These should raise exceptions:
+
+    >>> test(demo, (), [], [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: list (got a tuple)
     
-    def demo1(self, x, f, s):
-        assert chktype(1, x, types.IntType, types.LongType)
-        assert chktype(2, f, types.FloatType)
-        assert chktype(3, s, types.StringType)
-
-    def testTypes(self):
-        # These should not raise exceptions:
-        def t1(demo=self.demo1): demo(1, 1.0, 'hello')
-        def t2(demo=self.demo1): demo(-5, 1.0, '')
-        def t3(demo=self.demo1): demo(12L, 1.0, 'hello')
-        t1(), t2(), t3()
-
-        # These should raise exceptions:
-        def t4(demo=self.demo1): demo(1.0, 1.0, 'hello')
-        def t5(demo=self.demo1): demo(1, 1, 'hello')
-        def t6(demo=self.demo1): demo(1, 1L, 'hello')
-        def t7(demo=self.demo1): demo(1, 'x', 'hello')
-        def t8(demo=self.demo1): demo('x', 1.0, 'hello')
-        def t9(demo=self.demo1): demo(0, 0.0, 12)
-        def t10(demo=self.demo1): demo(0, 1.0, ['h' ,'i'])
-        def t11(demo=self.demo1): demo([0], 1.0, 'hi')
-        def t12(demo=self.demo1): demo(0, [1.0], 'hi')
-
-        for t in (t4, t5, t6, t7, t8, t9, t10, t11, t12):
-            self.assertRaises(TypeError, t)
-
-    def demo2(self, list1, list2, list3):
-        assert chktype(1, list1, [])
-        assert chktype(2, list2, [types.IntType])
-        assert chktype(3, list3, [types.IntType, [types.StringType]])
-
-    def testLists(self):
-        # These should not raise exceptions:
-        def t1(demo=self.demo2): demo([], [], [])
-        def t2(demo=self.demo2): demo(['x'], [1], [1])
-        def t3(demo=self.demo2): demo(['a', {}, (), 3], [1,2], [3,4])
-        def t4(demo=self.demo2): demo([], [], [1, ['x'], 2, ['y', 'z']])
-        t1(), t2(), t3(), t4()
-
-        # These should raise exceptions:
-        def t5(demo=self.demo2): demo((), [], [])
-        def t6(demo=self.demo2): demo([], (), [])
-        def t7(demo=self.demo2): demo([], [], ())
-        
-        def t8(demo=self.demo2): demo({}, [], [])
-        def t9(demo=self.demo2): demo([], {}, [])
-        def t10(demo=self.demo2): demo([], [], {})
-        
-        def t11(demo=self.demo2): demo(1, [], [])
-        def t12(demo=self.demo2): demo([], 1, [])
-        def t13(demo=self.demo2): demo([], [], 1)
-        
-        def t14(demo=self.demo2): demo([], [2,2,2.0], [])
-        def t15(demo=self.demo2): demo([], [], [2,'x',2.0])
-        def t16(demo=self.demo2): demo([], [], [3, [3]])
-        def t17(demo=self.demo2): demo([], [], [3, ['x', ['y']]])
-
-        for t in (t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17):
-            self.assertRaises(TypeError, t)
-
-    def demo3(self, tuple1, tuple2, tuple3):
-        assert chktype(1, tuple1, ())
-        assert chktype(2, tuple2, (types.IntType,))
-        assert chktype(3, tuple3, (types.IntType, (types.StringType,)))
-        
-    def testTuples(self):
-        # These should not raise exceptions:
-        def t1(demo=self.demo3): demo((), (), ())
-        def t2(demo=self.demo3): demo(('x',), (1,), (1,))
-        def t3(demo=self.demo3): demo(('a', {}, (), 3,), (1,2,), (3,4,))
-        def t4(demo=self.demo3): demo((), (), (1, ('x',), 2, ('y', 'z',),))
-        t1(), t2(), t3(), t4()
-
-        # These should raise exceptions:
-        def t5(demo=self.demo3): demo([], (), ())
-        def t6(demo=self.demo3): demo((), [], ())
-        def t7(demo=self.demo3): demo((), (), [])
-        
-        def t8(demo=self.demo3): demo({}, (), ())
-        def t9(demo=self.demo3): demo((), {}, ())
-        def t10(demo=self.demo3): demo((), (), {})
-        
-        def t11(demo=self.demo3): demo(1, (), ())
-        def t12(demo=self.demo3): demo((), 1, ())
-        def t13(demo=self.demo3): demo((), (), 1)
-        
-        def t14(demo=self.demo3): demo((), (2,2,2.0,), ())
-        def t15(demo=self.demo3): demo((), (), (2,'x',2.0,))
-        def t16(demo=self.demo3): demo((), (), (3, (3,),))
-        def t17(demo=self.demo3): demo((), (), (3, ('x', ('y',),),))
-
-        for t in (t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17):
-            self.assertRaises(TypeError, t)
-
-    def demo4(self, dict1, dict2, dict3, dict4):
-        assert chktype(1, dict1, {})
-        assert chktype(2, dict2, {types.IntType: [types.IntType]})
-        assert chktype(3, dict3, {types.IntType: [types.StringType,
-                                                  types.IntType],
-                                  types.FloatType: [types.FloatType]})
-        assert chktype(4, dict4, {(types.IntType,): [(), []],
-                                  ((),): [(types.IntType,)]})
-                      
-    def testDicts(self):
-        # These should not raise exceptions:
-        def t1(demo=self.demo4): demo({}, {}, {}, {})
-        def t2(demo=self.demo4): demo({1:'x', 'x':1}, {}, {}, {})
-        def t3(demo=self.demo4): demo({}, {1:2, 3:5}, {}, {})
-        def t4(demo=self.demo4): demo({}, {}, {1:'x', 1:3, 1:0,
-                                               1.0:2.0, -.2:0.0}, {})
-        def t5(demo=self.demo4): demo({}, {}, {}, {(2,3): ('x',2),
-                                                   (2,3): ['x',2],
-                                                   ((3,'x'),): (1,3)})
-        t1(), t2(), t3(), t5()
-
-        # These should raise exceptions:
-        def t6(demo=self.demo4): demo([], {}, {}, {})
-        def t7(demo=self.demo4): demo({}, [], {}, {})
-        def t8(demo=self.demo4): demo({}, {}, [], {})
-        def t9(demo=self.demo4): demo({}, {}, {}, [])
-        
-        def t10(demo=self.demo4): demo({}, {1:'x'}, {}, {})
-        def t11(demo=self.demo4): demo({}, {'x':1}, {}, {})
-        def t12(demo=self.demo4): demo({}, {'x':'x'}, {}, {})
-        
-        def t13(demo=self.demo4): demo({}, {}, {1:1.0}, {})
-        def t14(demo=self.demo4): demo({}, {}, {1.0:1}, {})
-        def t15(demo=self.demo4): demo({}, {}, {1.0:'x'}, {})
-
-        def t16(demo=self.demo4): demo({}, {}, {}, {(): 2})
-        def t17(demo=self.demo4): demo({}, {}, {}, {3: ()})
-        def t18(demo=self.demo4): demo({}, {}, {}, {((),): [33]})
-
-        for t in (t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18):
-            self.assertRaises(TypeError, t)
+    >>> test(demo, [], (), [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (list of int) (got a tuple)
     
-def testsuite():
-    """
-    Return a PyUnit testsuite for the chktype module.
-    """
+    >>> test(demo, [], [], ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (list of (int or (list of str))) (got a tuple)
+
+    >>> test(demo, {}, [], [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: list (got a dict)
+
+    >>> test(demo, [], {}, [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (list of int) (got a dict)
+
+    >>> test(demo, [], [], {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (list of (int or (list of str))) (got a dict)
+
+    >>> test(demo, 1, [], [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: list (got a int)
+
+    >>> test(demo, [], 1, [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (list of int) (got a int)
+
+    >>> test(demo, [], [], 1)
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (list of (int or (list of str))) (got a int)
+
+    >>> test(demo, [], [2,2,2.0], [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (list of int) (got a list)
+
+    >>> test(demo, [], [], [2,'x',2.0])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (list of (int or (list of str))) (got a list)
+
+    >>> test(demo, [], [], [3, [3]])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (list of (int or (list of str))) (got a list)
+
+    >>> test(demo, [], [], [3, ['x', ['y']]])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (list of (int or (list of str))) (got a list)
+
+Tuple Type checks:
+==================
+    >>> def demo(tuple1, tuple2, tuple3):
+    ...     assert chktype(1, tuple1, ())
+    ...     assert chktype(2, tuple2, (int,))
+    ...     assert chktype(3, tuple3, (int, (str,)))
+    ...     return 'ok'
+
+These should be fine:
+
+    >>> demo((), (), ())
+    'ok'
+    >>> demo(('x',), (1,), (1,))
+    'ok'
+    >>> demo(('a', {}, (), 3), (1,2), (3,4))
+    'ok'
+    >>> demo((), (), (1, ('x',), 2, ('y', 'z')))
+    'ok'
+
+These should raise exceptions:
+
+    >>> test(demo, [], (), ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: tuple (got a list)
     
-    tests = unittest.TestSuite()
+    >>> test(demo, (), [], ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (tuple of int) (got a list)
+    
+    >>> test(demo, (), (), [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (tuple of (int or (tuple of str))) (got a list)
 
-    chktypetests = unittest.makeSuite(ChktypeTestCase, 'test')
-    tests = unittest.TestSuite( (tests, chktypetests) )
+    >>> test(demo, {}, (), ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: tuple (got a dict)
 
-    return tests
+    >>> test(demo, (), {}, ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (tuple of int) (got a dict)
 
-def test():
-    import unittest
-    runner = unittest.TextTestRunner()
-    runner.run(testsuite())
+    >>> test(demo, (), (), {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (tuple of (int or (tuple of str))) (got a dict)
+
+    >>> test(demo, 1, (), ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: tuple (got a int)
+
+    >>> test(demo, (), 1, ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (tuple of int) (got a int)
+
+    >>> test(demo, (), (), 1)
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (tuple of (int or (tuple of str))) (got a int)
+
+    >>> test(demo, (), (2,2,2.0), ())
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (tuple of int) (got a tuple)
+
+    >>> test(demo, (), (), (2,'x',2.0))
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (tuple of (int or (tuple of str))) (got a tuple)
+
+    >>> test(demo, (), (), (3, (3,)))
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (tuple of (int or (tuple of str))) (got a tuple)
+
+    >>> test(demo, (), (), (3, ('x', ('y',))))
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (tuple of (int or (tuple of str))) (got a tuple)
+
+Dict Type checks:
+=================
+    >>> def demo(dict1, dict2, dict3, dict4):
+    ...     assert chktype(1, dict1, {})
+    ...     assert chktype(2, dict2, {int: [int]})
+    ...     assert chktype(3, dict3, {int: [str, int],
+    ...                               float: [float]})
+    ...     assert chktype(4, dict4, {(int,): [(), []],
+    ...                               ((),): [(int,)]})
+    ...     return 'ok'
+
+These should be fine:
+
+    >>> demo({}, {}, {}, {})
+    'ok'
+    >>> demo({1:'x', 'x':1}, {}, {}, {})
+    'ok'
+    >>> demo({}, {1:2, 3:5}, {}, {})
+    'ok'
+    >>> demo({}, {}, {1:'x', 1:3, 1:0, 1.1:2.1, -.2:0.0}, {})
+    'ok'
+    >>> demo({}, {}, {}, {(2,3): ('x',2), (2,3): ['x',2], ((3,'x'),): (1,3)})
+    'ok'
+
+These should raise exceptions:
+                                                   
+    >>> test(demo, [], {}, {}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 1 to demo() must have type: dictionary (got a list)
+    
+    >>> test(demo, {}, [], {}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (dictionary from int to int) (got a list)
+    
+    >>> test(demo, {}, {}, [], {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (dictionary from float to float or from int to (str or int)) (got a list)
+    
+    >>> test(demo, {}, {}, {}, [])
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a list)
+    
+    >>> test(demo, {}, {1:'x'}, {}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (dictionary from int to int) (got a dict)
+    
+    >>> test(demo, {}, {'x':1}, {}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (dictionary from int to int) (got a dict)
+    
+    >>> test(demo, {}, {'x':'x'}, {}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 2 to demo() must have type: (dictionary from int to int) (got a dict)
+    
+    >>> test(demo, {}, {}, {1:1.0}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (dictionary from float to float or from int to (str or int)) (got a dict)
+    
+    >>> test(demo, {}, {}, {1.0:1}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (dictionary from float to float or from int to (str or int)) (got a dict)
+    
+    >>> test(demo, {}, {}, {1.0:'x'}, {})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 3 to demo() must have type: (dictionary from float to float or from int to (str or int)) (got a dict)
+    
+    >>> test(demo, {}, {}, {}, {(): 2})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a dict)
+    
+    >>> test(demo, {}, {}, {}, {3: ()})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a dict)
+    
+    >>> test(demo, {}, {}, {}, {((),): [33]})
+    Traceback (most recent call last):
+    ...
+    TypeError: Argument 4 to demo() must have type: (dictionary from (tuple of tuple) to (tuple of int) or from (tuple of int) to (tuple or list)) (got a dict)
+"""
+    
+#######################################################################
+# Test Runner
+#######################################################################
+
+import sys, os, os.path
+if __name__ == '__main__': sys.path[0] = None
+import unittest, doctest, trace
+
+def testsuite(reload_module=False):
+    import doctest, nltk.test.chktype
+    if reload_module: reload(nltk.test.chktype)
+    return doctest.DocTestSuite(nltk.test.chktype)
+
+def test(verbosity=2, reload_module=False):
+    runner = unittest.TextTestRunner(verbosity=verbosity)
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
