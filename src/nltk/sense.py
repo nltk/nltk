@@ -468,8 +468,11 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
     Tokenizer for Senseval-2 files. These files are encoded in pseudo-XML
     grouped into instances, each containing a few paragraphs of text
     including the head word. The instance is tagged with the sense 
-    identifier, and the head word is marked up. This tokenizer accepts
-    those files with POS tags.
+    identifiers, and the head word is marked up. This tokenizer accepts
+    those files with POS tags. Note that the labels of the
+    C{SenseLabeledText}s (as returned inside C{Token}s from the tokenize
+    method) are tuples, as the Senseval-2 format allows for multiple senses
+    for a given instance. This sequence will have at least one item.
 
     The XML is first cleaned up before being processed. 
     """
