@@ -407,15 +407,17 @@ class DictionaryProbDist(ProbDistI):
                     
     def prob(self, sample):
         if self._log:
-            return math.exp(self._prob_dict.get(sample, 0))
+            if sample not in self._prob_dict: return 0
+            else: return math.exp(self._prob_dict[sample])
         else:
             return self._prob_dict.get(sample, 0)
 
     def logprob(self, sample):
         if self._log:
-            return self._prob_dict.get(sample, 0)
+            return self._prob_dict.get(sample, 1e-1000)
         else:
-            return math.log(self._prob_dict.get(sample, 0))
+            if sample not in self._prob_dict: return 1e-1000
+            else: return math.log(self._prob_dict[sample])
 
     def max(self):
         if not hasattr(self, '_max'):
