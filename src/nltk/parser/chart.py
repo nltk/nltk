@@ -1317,8 +1317,7 @@ class EarleyChartParser(AbstractParser):
         self._trace = trace
         AbstractParser.__init__(self, **property_names)
 
-    def parse_n(self, token):
-        TREES = self.property('TREES')
+    def get_parse_list(self, token):
         chart = Chart(token, **self.property_names())
         grammar = self._grammar
 
@@ -1353,12 +1352,8 @@ class EarleyChartParser(AbstractParser):
                             print 'Completer', chart.pp_edge(e,w)
 
         # Output a list of complete parses.
-        token[TREES] = chart.parses(grammar.start())
+        return chart.parses(grammar.start())
             
-    def parse(self, token):
-        # Delegate to parse_n
-        self._parse_from_parse_n(token)
-
 ########################################################################
 ##  Generic Chart Parser
 ########################################################################
@@ -1405,8 +1400,7 @@ class ChartParser(AbstractParser):
         self._trace = trace
         AbstractParser.__init__(self, **property_names)
 
-    def parse_n(self, token):
-        TREES = self.property('TREES')
+    def get_parse_list(self, token):
         chart = Chart(token, **self.property_names())
         grammar = self._grammar
 
@@ -1428,12 +1422,8 @@ class ChartParser(AbstractParser):
                     print '  - Added %d edges' % edges_added_by_rule
                 edges_added += edges_added_by_rule
         
-        # Output a list of complete parses.
-        token[TREES] = chart.parses(grammar.start())
-        
-    def parse(self, token):
-        # Delegate to parse_n
-        self._parse_from_parse_n(token)
+        # Return a list of complete parses.
+        return chart.parses(grammar.start())
 
 ########################################################################
 ##  Stepping Chart Parser
@@ -1577,9 +1567,7 @@ class SteppingChartParser(ChartParser):
     # Standard parser methods
     #////////////////////////////////////////////////////////////
 
-    def parse_n(self, token):
-        TREES = self.property('TREES')
-
+    def get_parse_list(self, token):
         # Initialize ourselves.
         self.initialize(token)
 
@@ -1587,8 +1575,8 @@ class SteppingChartParser(ChartParser):
         for e in self.step():
             if e is None: break
             
-        # Output a list of complete parses.
-        token[TREES] = self.parses()
+        # Return a list of complete parses.
+        return self.parses()
 
 ########################################################################
 ##  Demo Code
@@ -1658,29 +1646,29 @@ def demo():
     if choice in ('1', '5'):
         cp = ChartParser(grammar, TD_STRATEGY, LEAF='TEXT', SUBTOKENS='WORDS', trace=2)
         t = time.time()
-        cp.parse_n(sent)
+        parses = cp.get_parse_list(sent)
         times['top down'] = time.time()-t
-        assert len(sent['TREES'])==5, 'Not all parses found'
-        for tree in sent['TREES']: print tree
+        assert len(parses)==5, 'Not all parses found'
+        for tree in parses: print tree
 
     # Run the bottom-up parser, if requested.
     if choice in ('2', '5'):
         cp = ChartParser(grammar, BU_STRATEGY, LEAF='TEXT', SUBTOKENS='WORDS', trace=2)
         t = time.time()
-        cp.parse_n(sent)
+        parses = cp.get_parse_list(sent)
         times['bottom up'] = time.time()-t
-        assert len(sent['TREES'])==5, 'Not all parses found'
-        for tree in sent['TREES']: print tree
+        assert len(parses)==5, 'Not all parses found'
+        for tree in parses: print tree
 
     # Run the earley, if requested.
     if choice in ('3', '5'):
         cp = EarleyChartParser(earley_grammar, earley_lexicon,
                                LEAF='TEXT', SUBTOKENS='WORDS', trace=1)
         t = time.time()
-        cp.parse_n(sent)
+        parses = cp.get_parse_list(sent)
         times['Earley parser'] = time.time()-t
-        assert len(sent['TREES'])==5, 'Not all parses found'
-        for tree in sent['TREES']: print tree
+        assert len(parses)==5, 'Not all parses found'
+        for tree in parses: print tree
 
     # Run the stepping parser, if requested.
     if choice in ('4', '5'):
