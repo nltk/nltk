@@ -22,6 +22,7 @@ help:
 	@echo "    make test           -- Run test cases"
 	@echo "    make webpage        -- Build the web page"
 	@echo "    make xfer           -- Build and upload the web page"
+	@echo "    make webpage.tar.gz -- Build documentation archive"
 	@echo
 
 all: documentation test distributions
@@ -31,6 +32,10 @@ docs: documentation
 documentation:
 	$(MAKE) -C doc
 	$(MAKE) -C psets
+
+webpage.tgz:
+webpage.tar.gz:
+	$(MAKE) -C doc webpage.tar.gz
 
 web: webpage
 html: webpage
