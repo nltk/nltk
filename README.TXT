@@ -176,7 +176,8 @@ Releases
 
         1. Update the version number in src/nltk/__init__.py (in 2
            places: the docstring comment; and the __version__
-           variable).
+           variable).  Also, update the version number in 
+           doc/Makefile (for epydoc documentation).
         2. Make sure all changes are committed.
         3. Generate a CVS log of all the changes since the previous
            release (note quote marks):
