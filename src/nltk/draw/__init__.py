@@ -184,13 +184,20 @@ class CanvasWidget:
         @type parent: C{CanvasWidget}
         @param attribs: The new canvas widget's attributes.
         """
+        if self.__class__ == CanvasWidget:
+            raise TypeError, 'CanvasWidget is an abstract base class'
+        
         if not isinstance(canvas, Canvas):
             raise TypeError('Expected a canvas!')
         
         self.__canvas = canvas
         self.__parent = parent
+
+        # If the subclass constructor called _add_child_widget, then
+        # self.__children will already exist.
         if not hasattr(self, '_CanvasWidget__children'): self.__children = []
 
+        # Is this widget hidden?
         self.__hidden = 0
 
         # Update control (prevents infinite loops)
@@ -299,6 +306,30 @@ class CanvasWidget:
         for tag in self.tags():
             self.__canvas.move(tag, dx, dy)
         if self.__parent: self.__parent.update(self)
+
+    def moveto(self, x, y, anchor='NW'):
+        """
+        Move this canvas widget to the given location.  In particular,
+        shift the canvas widget such that the corner or side of the
+        bounding box specified by C{anchor} is at location (C{x},
+        C{y}).
+
+        @param x,y: The location that the canvas widget should be moved
+            to.
+        @param anchor: The corner or side of the canvas widget that
+            should be moved to the specified location.  C{'N'}
+            specifies the top center; C{'NE'} specifies the top right
+            corner; etc.
+        """
+        x1,y1,x2,y2 = self.bbox()
+        if anchor == 'NW': self.move(x-x1,        y-y1)
+        if anchor == 'N':  self.move(x-x1/2-x2/2, y-y1)
+        if anchor == 'NE': self.move(x-x2,        y-y1)
+        if anchor == 'E':  self.move(x-x2,        y-y1/2-y2/2)
+        if anchor == 'SE': self.move(x-x2,        y-y2)
+        if anchor == 'S':  self.move(x-x1/2-x2/2, y-y2)
+        if anchor == 'SW': self.move(x-x1,        y-y2)
+        if anchor == 'W':  self.move(x-x1,        y-y1/2-y2/2)
 
     def destroy(self):
         """
@@ -841,7 +872,7 @@ class SymbolWidget(TextWidget):
 class AbstractContainerWidget(CanvasWidget):
     """
     An abstract class for canvas widgets that contain a single child,
-    such as C{CanvasBox} and C{CanvasOval}.  Subclasses must define
+    such as C{BoxWidget} and C{OvalWidget}.  Subclasses must define
     a constructor, which should create any new graphical elements and
     then call the C{AbstractCanvasContainer} constructor.  Subclasses
     must also define the C{_update} method and the C{_tags} method;
@@ -1842,26 +1873,40 @@ class EntryDialog:
     """
     A dialog box for entering 
     """
-    def __init__(self, parent, text='', set_callback=None, title=None):
+    def __init__(self, parent, original_text='', instructions='',
+                 set_callback=None, title=None):
         self._parent = parent
-        self._original_text = text
+        self._original_text = original_text
         self._set_callback = set_callback
 
-        width = min(20, len(text)*3/2)
+        width = max(30, len(original_text)*3/2)
         self._top = Toplevel(parent)
-        self._entry = Entry(self._top, width=width)
-        self._entry.pack(expand=1, fill='x')
-        self._entry.insert(0, text)
 
         if title: self._top.title(title)
-        
+
+        # The text entry box.
+        entryframe = Frame(self._top)
+        entryframe.pack(expand=1, fill='both', padx=5, pady=5,ipady=10)
+        if instructions:
+            l=Label(entryframe, text=instructions)
+            l.pack(side='top', anchor='w', padx=30)
+        self._entry = Entry(entryframe, width=width)
+        self._entry.pack(expand=1, fill='x', padx=30)
+        self._entry.insert(0, original_text)
+
+        # A divider
+        divider = Frame(self._top, borderwidth=1, relief='sunken')
+        divider.pack(fill='x', ipady=1, padx=10)
+
+        # The buttons.
         buttons = Frame(self._top)
-        buttons.pack(expand=0, fill='x')
-        b = Button(buttons, text='Cancel', command=self._cancel)
-        b.pack(side='right')
-        b = Button(buttons, text='Ok', command=self._ok)
-        b.pack(side='left')
-        b = Button(buttons, text='Apply', command=self._apply)
+        buttons.pack(expand=0, fill='x', padx=5, pady=5)
+        b = Button(buttons, text='Cancel', command=self._cancel, width=8)
+        b.pack(side='right', padx=5)
+        b = Button(buttons, text='Ok', command=self._ok,
+                   width=8, default='active')
+        b.pack(side='left', padx=5)
+        b = Button(buttons, text='Apply', command=self._apply, width=8)
         b.pack(side='left')
         
         self._top.bind('<Return>', self._ok)
