@@ -94,7 +94,7 @@ cluster, the interfaces contained in that cluster are given.
     a text.
 
 @author: Edward Loper
-@version: 0.1
+@version: 0.3
 """
 
 """
@@ -133,7 +133,7 @@ Distributed and Licensed under provisions of the IBM Common Public
 License (Version 0.5), which is included by reference.  The IBM Common 
 Public License can be found in the file LICENSE.TXT in the
 distribution."""
-__version__ = "0.2"
+__version__ = "0.3"
 __url__ = "http://nltk.sf.net/"
 
 
