@@ -848,7 +848,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         productions = []
         for production in self._grammar.productions():
             rhslen = len(production.rhs())
-            if self._match(production.rhs(), self._stack[-rhslen:]):
+            if self._match_rhs(production.rhs(), self._stack[-rhslen:]):
                 productions.append(production)
         return productions
 
