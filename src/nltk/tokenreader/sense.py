@@ -367,8 +367,9 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
 
     # [XX] add_locs and add_contexts are ignored.
     def tokenize(self, token, add_locs=False, add_contexts=False):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
+#       SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         fixed =  _fixXML(token[TEXT])
@@ -378,8 +379,8 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
 
     # [XX] add_locs and add_contexts are ignored.
     def xtokenize(self, token, add_locs=False, add_contexts=False):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
+        TEXT = self.property('TEXT')
         text = token[TEXT]
         if hasattr(text, '__iter__') and hasattr(text, 'next'):
             text = ''.join(text)
@@ -420,7 +421,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
             self._head = self._wnum - 1
         
     def endElement(self, tag):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
+        SUBTOKENS = self.property('SUBTOKENS')
         if tag == 'wf':
             text = self._data.strip()
             pos = self._pos
