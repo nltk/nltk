@@ -91,7 +91,7 @@ class TreeToken(Token):
     C{(M{i1}, M{i2}, ..., M{iN})}, specifying
     C{self.get_child(M{i1}).get_child(M{i2})...getchild(M{iN})}.
     """
-    def __init__(self, **properties):
+    def __init__(self, propdict=None, **properties):
         """
         Construct a new tree token.
 
@@ -101,7 +101,7 @@ class TreeToken(Token):
             property, which should contain a list of C{Token}s and
             C{TreeToken}s.
         """
-        super(TreeToken, self).__init__(**properties)
+        super(TreeToken, self).__init__(propdict, **properties)
         if not self.has('CHILDREN'):
             raise ValueError('TreeTokens must define the CHILDREN property')
         if type(self['CHILDREN']) is not list:

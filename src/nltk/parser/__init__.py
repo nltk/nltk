@@ -1329,15 +1329,15 @@ def demo():
     grammar = CFG(S, productions)
 
     # Tokenize a sample sentence.
-    sent = Token(text='I saw a man in the park')
+    sent = Token(TEXT='I saw a man in the park')
     from nltk.tokenizer import WSTokenizer
     WSTokenizer().tokenize(sent)
 
     # Define a list of parsers.
-    parsers = [ShiftReduceParser(grammar, leaf='TEXT'),
-               RecursiveDescentParser(grammar, leaf='TEXT'),
-               SteppingShiftReduceParser(grammar, leaf='TEXT'),
-               SteppingRecursiveDescentParser(grammar, leaf='TEXT')]
+    parsers = [ShiftReduceParser(grammar, LEAF='TEXT'),
+               RecursiveDescentParser(grammar, LEAF='TEXT'),
+               SteppingShiftReduceParser(grammar, LEAF='TEXT'),
+               SteppingRecursiveDescentParser(grammar, LEAF='TEXT')]
 
     # Ask the user to choose a parser.
     import sys
@@ -1351,6 +1351,6 @@ def demo():
     # Run the parser.
     parser.trace()
     parser.parse_n(sent)
-    for p in sent['trees']: print p
+    for p in sent['TREES']: print p
 
 if __name__ == '__main__': demo()

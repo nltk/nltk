@@ -603,7 +603,7 @@ def demo():
     for tok in text: stemmer.stem(tok)
 
     # Convert the results to a string, and word-wrap them.
-    results = ' '.join([tok['stem'] for tok in text])
+    results = ' '.join([tok['STEM'] for tok in text])
     results = re.sub(r"(.{,70})\s", r'\1\n', results+' ').rstrip()
 
     # Convert the original to a string, and word wrap it.

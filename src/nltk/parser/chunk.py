@@ -159,12 +159,11 @@ REChunkParser
     tag_pattern2re_pattern
 """
 
-from nltk.parser import ParserI
+from nltk.parser import ParserI, AbstractParser
 from nltk.tree import TreeToken
 from nltk.tokenizer import TokenizerI, AbstractTokenizer
 from nltk.tokenizer import LineTokenizer, RegexpTokenizer, WSTokenizer
 from nltk.token import Token, CharSpanLocation
-from nltk.tagger import parse_tagged_type
 from nltk.chktype import chktype
 from nltk.set import Set
 import types, re
@@ -233,7 +232,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     C{None}.
 
       >>> ctt = ChunkedTaggedTokenizer('NP')
-      >>> tok = Token(text='[The/DT dog/NN] saw/VBD [him/PRP]')
+      >>> tok = Token(TEXT='[The/DT dog/NN] saw/VBD [him/PRP]')
       >>> ctt.tokenize(tok)
       >>> print tok['SUBTOKENS']
       [(NP: <The/DT> <dog/NN>), <saw/VBD>, (NP: <him/PRP>)]
@@ -241,7 +240,7 @@ class ChunkedTaggedTokenizer(AbstractTokenizer):
     The C{TreeToken} constructor can be used to group this list of
     tokens and chunks into a single chunk structure:
 
-      >>> chunkstruct = TreeToken(node='S', children=tok['SUBTOKENS'])
+      >>> chunkstruct = TreeToken(NODE='S', CHILDREN=tok['SUBTOKENS'])
       (S: (NP: <The/DT> <dog/NN>) <saw/VBD> (NP: <him/PRP>))
         
     @inprop: C{TEXT}: The input token's text content.
@@ -1595,10 +1594,11 @@ class REChunkParser(ChunkParserI, AbstractParser):
         assert chktype(2, trace, types.NoneType, types.IntType)
         SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
         TREE = self._property_names.get('TREE', 'TREE')
+        NODE = self._property_names.get('NODE', 'NODE')
 
         if len(token[SUBTOKENS]) == 0:
             print 'Warning: parsing empty text'
-            token[TREE] = TreeToken(node=self._top_node, children=())
+            token[TREE] = TreeToken({NODE:self._top_node, 'CHILDREN':()})
             return
         
         # Use the default trace value?
@@ -1679,16 +1679,16 @@ def demo_eval(chunkparser, text):
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
-    token = Token(text=text, loc=CharSpanLocation(0, len(text), 'demo'))
+    token = Token(TEXT=text, LOC=CharSpanLocation(0, len(text), 'demo'))
     LineTokenizer().tokenize(token)
     sentences = token['SUBTOKENS']
     ctt = ChunkedTaggedTokenizer('NP')
     for sentence in sentences:
         ctt.tokenize(sentence)
-        gold = TreeToken(node='S', children=sentence['SUBTOKENS'])
-        test = Token(subtokens=gold.leaves(), loc=sentence['LOC'])
+        gold = TreeToken(NODE='S', CHILDREN=sentence['SUBTOKENS'])
+        test = Token(SUBTOKENS=gold.leaves(), LOC=sentence['LOC'])
         chunkparser.parse(test)
-        chunkscore.score(gold, test['tree'])
+        chunkscore.score(gold, test['TREE'])
 
         #correct_toks = ctt.tokenize(sentence.type(), source=sentence.loc())
         #correct = TreeToken('S', *correct_toks)

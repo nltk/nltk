@@ -437,7 +437,8 @@ class FrozenToken(Token):
         @require: The values for the given properties must be
             immutable.
         """
-        super(FrozenToken, self).update(propdict, **properties)
+        if propdict is not None: dict.update(self, propdict)
+        dict.update(self, properties)
         self._hash = hash(sum([hash(i) for i in self.items()]))
         
     def __setitem__(self, property, value):

@@ -943,7 +943,7 @@ def demo():
         return
 
     # Tokenize the sentence.
-    token = Token(text=s, loc=CharSpanLocation(0, len(s), 'demo'))
+    token = Token(TEXT=s, LOC=CharSpanLocation(0, len(s), 'demo'))
     WSTokenizer().tokenize(token)
 
     # Ask the user how many parses to find.
@@ -959,12 +959,12 @@ def demo():
         
     # Define a list of parsers.  We'll use all parsers.
     parsers = [
-        ViterbiPCFGParser(pcfg, leaf='TEXT'),
-        InsidePCFGParser(pcfg, leaf='TEXT'), 
-        RandomPCFGParser(pcfg, leaf='TEXT'),
-        UnsortedPCFGParser(pcfg, leaf='TEXT'),
-        LongestPCFGParser(pcfg, leaf='TEXT'),
-        BeamPCFGParser(len(token['SUBTOKENS'])+1, pcfg, leaf='TEXT')
+        ViterbiPCFGParser(pcfg, LEAF='TEXT'),
+        InsidePCFGParser(pcfg, LEAF='TEXT'), 
+        RandomPCFGParser(pcfg, LEAF='TEXT'),
+        UnsortedPCFGParser(pcfg, LEAF='TEXT'),
+        LongestPCFGParser(pcfg, LEAF='TEXT'),
+        BeamPCFGParser(len(token['SUBTOKENS'])+1, pcfg, LEAF='TEXT')
         ]
 
     # Run the parsers on the tokenized sentence.
@@ -973,13 +973,13 @@ def demo():
     num_parses = []
     all_parses = {}
     for parser in parsers:
-        print '\ns: %s\nparser: %s\ngrammar: %s' % (s,parser,pcfg)
+        print '\ns: %s\nparser: %s\ngrammar: %s' % (S,parser,pcfg)
         parser.trace(3)
         t = time.time()
         parser.parse_n(token, max_parses)
-        parses = token['trees']
+        parses = token['TREES']
         times.append(time.time()-t)
-        if parses: p = reduce(lambda a,b:a+b['prob'], parses, 0)/len(parses)
+        if parses: p = reduce(lambda a,b:a+b['PROB'], parses, 0)/len(parses)
         else: p = 0
         average_p.append(p)
         num_parses.append(len(parses))
@@ -993,7 +993,7 @@ def demo():
         print '%18s |%11.4f%11d%19.14f' % (parsers[i].__class__.__name__,
                                          times[i],num_parses[i],average_p[i])
     parses = all_parses.keys()
-    if parses: p = reduce(lambda a,b:a+b['prob'], parses, 0)/len(parses)
+    if parses: p = reduce(lambda a,b:a+b['PROB'], parses, 0)/len(parses)
     else: p = 0
     print '-------------------+------------------------------------------'
     print '%18s |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
@@ -1011,7 +1011,7 @@ def demo():
     print 'Print parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
         for parse in parses:
-            print parse.exclude('prob', 'LOC')
+            print parse.exclude('PROB', 'LOC')
 
 if __name__ == '__main__':
     demo()

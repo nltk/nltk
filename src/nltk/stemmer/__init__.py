@@ -189,7 +189,7 @@ class RegexpStemmer(AbstractStemmer):
 def _demo_stemmer(stemmer):
     # Tokenize a sample text.
     from nltk.tokenizer import WSTokenizer
-    text = Token(text='John was eating icecream')
+    text = Token(TEXT='John was eating icecream')
     WSTokenizer(addlocs=False).tokenize(text)
 
     # Use the stemmer to stem it.
@@ -198,7 +198,7 @@ def _demo_stemmer(stemmer):
     # Print the results.
     print stemmer
     for word in text['SUBTOKENS']:
-        print '%20s => %s' % (word['TEXT'], word['stem'])
+        print '%20s => %s' % (word['TEXT'], word['STEM'])
     print
         
 def demo():

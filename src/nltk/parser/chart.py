@@ -1396,13 +1396,10 @@ class SteppingChartParser(ChartParser):
         the parsing algorithm.
     """
     def __init__(self, grammar, strategy=None, trace=0, **property_names):
-        self._grammar = grammar
-        self._strategy = strategy or []
-        self._trace = trace
         self._chart = None
         self._current_chartrule = None
         self._restart = False
-        ChartParser.__init__(self, **property_names)
+        ChartParser.__init__(self, grammar, strategy, trace, **property_names)
 
     #////////////////////////////////////////////////////////////
     # Initialization
@@ -1576,7 +1573,7 @@ def demo():
     earley_grammar = CFG(S, grammatical_productions)
 
     # Tokenize a sample sentence.
-    sent = Token(text='I saw John with a dog with my cookie')
+    sent = Token(TEXT='I saw John with a dog with my cookie')
     print "Sentence:\n", sent
     from nltk.tokenizer import WSTokenizer
     WSTokenizer().tokenize(sent)
@@ -1599,36 +1596,36 @@ def demo():
 
     # Run the top-down parser, if requested.
     if choice in ('1', '5'):
-        cp = ChartParser(grammar, TD_STRATEGY, leaf='TEXT', trace=2)
+        cp = ChartParser(grammar, TD_STRATEGY, LEAF='TEXT', trace=2)
         t = time.time()
         cp.parse_n(sent)
         times['top down'] = time.time()-t
-        assert len(sent['trees'])==5, 'Not all parses found'
-        for tree in sent['trees']: print tree
+        assert len(sent['TREES'])==5, 'Not all parses found'
+        for tree in sent['TREES']: print tree
 
     # Run the bottom-up parser, if requested.
     if choice in ('2', '5'):
-        cp = ChartParser(grammar, BU_STRATEGY, leaf='TEXT', trace=2)
+        cp = ChartParser(grammar, BU_STRATEGY, LEAF='TEXT', trace=2)
         t = time.time()
         cp.parse_n(sent)
         times['bottom up'] = time.time()-t
-        assert len(sent['trees'])==5, 'Not all parses found'
-        for tree in sent['trees']: print tree
+        assert len(sent['TREES'])==5, 'Not all parses found'
+        for tree in sent['TREES']: print tree
 
     # Run the earley, if requested.
     if choice in ('3', '5'):
         cp = EarleyChartParser(earley_grammar, earley_lexicon,
-                               leaf='TEXT', trace=1)
+                               LEAF='TEXT', trace=1)
         t = time.time()
         cp.parse_n(sent)
         times['Earley parser'] = time.time()-t
-        assert len(sent['trees'])==5, 'Not all parses found'
-        for tree in sent['trees']: print tree
+        assert len(sent['TREES'])==5, 'Not all parses found'
+        for tree in sent['TREES']: print tree
 
     # Run the stepping parser, if requested.
     if choice in ('4', '5'):
         t = time.time()
-        cp = SteppingChartParser(grammar, leaf='TEXT', trace=1)
+        cp = SteppingChartParser(grammar, LEAF='TEXT', trace=1)
         cp.initialize(sent)
         for i in range(4):
             print '*** SWITCH TO TOP DOWN'
