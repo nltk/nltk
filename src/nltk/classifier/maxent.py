@@ -909,8 +909,8 @@ def demo(items=30):
     # Create the feature detector.
     detector = MergedFeatureDetector(
         TextFeatureDetector(),                 # word's text
-        #ContextWordFeatureDetector(offset=-1), # previous word's text
-        #ContextWordFeatureDetector(offset=1),  # next word's text
+        ContextWordFeatureDetector(offset=-1), # previous word's text
+        ContextWordFeatureDetector(offset=1),  # next word's text
         )
 
     # Run feature detection on the training data.
