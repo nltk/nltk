@@ -1116,7 +1116,7 @@ with categories by Reuters.'''
 # Not supported yet
 
 #################################################################
-# Testing/Example use
+# Demonstration
 #################################################################
 
 def _truncate_repr(obj, n):
@@ -1128,29 +1128,31 @@ def _test_corpus(corpus):
     print '='*70
     print corpus.name().center(70)
     print '-'*70
-    print 'description() = ' + _truncate_repr(corpus.description(), 70-16)
-    print 'license()     = ' + _truncate_repr(corpus.license(), 70-16)
-    print 'copyright()   = ' + _truncate_repr(corpus.copyright(), 70-16)
-    print 'items()       = ' + _truncate_repr(corpus.items(), 70-16)
-    print 'groups()      = ' + _truncate_repr(corpus.groups(), 70-16)
+    print 'description() => ' + _truncate_repr(corpus.description(), 70-17)
+    print 'license()     => ' + _truncate_repr(corpus.license(), 70-17)
+    print 'copyright()   => ' + _truncate_repr(corpus.copyright(), 70-17)
+    print 'items()       => ' + _truncate_repr(corpus.items(), 70-17)
+    print 'groups()      => ' + _truncate_repr(corpus.groups(), 70-17)
     item = corpus.items()[0]
     contents = corpus.read(item)
-    print 'read(e0)      = ' + _truncate_repr(contents, 70-16)
+    print 'read(e0)      => ' + _truncate_repr(contents, 70-17)
     if len(contents) > 50000: return
-    print 'tokenize(e0)  = ' + _truncate_repr(corpus.tokenize(item), 70-16)
+    print 'tokenize(e0)  => ' + _truncate_repr(corpus.tokenize(item), 70-17)
 
 def _test_treebank():
     _test_corpus(treebank)
-    print 'er, et, ep, em = raw, tagged, parsed, merged'
-    er = treebank.items('raw')[0]
-    et = treebank.items('tagged')[0]
-    ep = treebank.items('parsed')[0]
-    em = treebank.items('merged')[0]
-    for (name, item) in zip('er et ep em'.split(), (er, et, ep, em)):
+    print '-'*70
+    print "r, t, p, m = [treebank.items(group)[0] for group in"
+    print "              'raw', 'tagged', 'parsed', 'merged']"
+    r = treebank.items('raw')[0]
+    t = treebank.items('tagged')[0]
+    p = treebank.items('parsed')[0]
+    m = treebank.items('merged')[0]
+    for (name, item) in zip('rtpm', (r, t, p, m)):
         contents = treebank.read(item)
         tokenized = treebank.tokenize(item)
-        print 'read(%s)      = %s' % (name, _truncate_repr(contents, 70-16))
-        print 'tokenize(%s)  = %s' % (name, _truncate_repr(tokenized, 70-16))
+        print 'read(%s)       => %s' % (name, _truncate_repr(contents, 70-17))
+        print 'tokenize(%s)   => %s' % (name, _truncate_repr(tokenized, 70-17))
 
 def demo():
     """
