@@ -41,56 +41,10 @@
  * lookup slower.  */
 #define LC_CACHE_SIZE 5
 
-/*********************************************************************
- *  Location Context
- *********************************************************************
- * This struct is used to pair together a unit and a source.  Since
- * we're often dealing with many tokens that all have the same unit
- * and source, we can save 1 word/location by having each location
- * point to a single nltkLocationContext object.
- *
- * We maintain a cache of the most recently used location contexts,
- * which allows us to reuse them when new locations are defined.  Use
- * getLocationContext to get a new location context for a location;
- * and freeLocationContext to free a location context.
- *
- * nltkLocationContext objects are entirely internal to the ctoken
- * implementation; they are not visible from the python interface. */
-
-typedef struct {
-    int refcount;
-    PyObject *unit;
-    PyObject *source;
-} nltkLocationContext;
-
-/* Location Constructor & Destructor */
-nltkLocationContext *getLocationContext(PyObject *unit, PyObject *source);
-int destroy_location_context(nltkLocationContext *lc);
-
-/* Increase the given location context's reference count by one.
- * It is safe to call locationContext_INCREF(NULL). */
-#define locationContext_INCREF(lc) (void)(((lc)==NULL) || ((lc)->refcount++))
-
-/* Decrease the given location context's reference count by one.  If
- * the reference count goes to zero, then free it.  It is safe to call
- * locationContext_DECREF(NULL). */
-#define locationContext_DECREF(lc) (void)(((lc)==NULL) || \
-                                          (--((lc)->refcount)) || \
-                                          destroy_location_context(lc))
-
-/* Equality check (for comparing locations) */
-int check_location_contexts_eq(nltkLocationContext *c1,
-                               nltkLocationContext *c2);
-
-/* A faster version of check_location_contexts_eq, that first checks if
- * c1==c2.  This should actually be the case most of the time, because
- * the location context cache lets us reuse location context
- * objects. */
-#define CHECK_LOCATION_CONTEXTS_EQ(c1, c2) \
-      (((c1)==(c2)) || check_location_contexts_eq((c1), (c2)))
-
-/* Helper functions */
-PyObject *normalizeUnitCase(PyObject *string);
+/* How large is the cache for property name lists?  Larger caches
+ * increase the chance for shairing property name lists, but make
+ * cache lookup slower.  */
+#define PNL_CACHE_SIZE 20
 
 /*********************************************************************
  *  Location
@@ -110,16 +64,16 @@ PyObject *normalizeUnitCase(PyObject *string);
 
 /* The object struct for the arbitrary-length location object */
 typedef struct {
-    PyObject_HEAD                 /* Object head: refcount & type */
-    nltkLocationContext *context; /* The unit and the source */
-    long int start;               /* The start index */
-    long int end;                 /* The end index */
+    PyObject_HEAD         /* Object head: refcount & type */
+    PyObject *context;    /* A tuple containing the unit and the source */
+    long int start;       /* The start index */
+    long int end;         /* The end index */
 } nltkLocation;
 
 /* The object struct for the length-1 location object */
 typedef struct {
     PyObject_HEAD                 /* Object head: refcount & type */
-    nltkLocationContext *context; /* The unit and the source */
+    PyObject *context; /* The unit and the source */
     long int start;               /* The start index */
 } nltkLen1Location;
 
@@ -135,10 +89,13 @@ static PyTypeObject nltkLen1LocationType;
 #define nltkLocation_Check(op) (nltkLocation_CheckExact(op) || \
                                 nltkLen1Location_Check(op))
 
-/* Get the end index of a location (works for both implementations) */
+/* Macros to get a location's attributes (work for all implementations) */
+#define nltkLocation_START(op) ((op)->start)
 #define nltkLocation_END(op) (nltkLen1Location_Check(op) ? \
                                   ((op)->start+1) :\
                                   ((op)->end))
+#define nltkLocation_UNIT(op) GET_LC_UNIT(op->context)
+#define nltkLocation_SOURCE(op) GET_LC_SOURCE(op->context)
 
 /*********************************************************************
  *  Type
@@ -147,12 +104,14 @@ static PyTypeObject nltkLen1LocationType;
 /* The struct that is used to encode Type instances. */
 typedef struct {
     PyObject_VAR_HEAD         /* Object head: refcount & type & size */
-    PyObject *properties[1];  /* alternating list of (value/name) */
+    PyObject *prop_names;     /* List of property names */
+    PyObject *prop_vals[1];   /* Array of property values */
 } nltkType;
 
 /* Use these macros to access nltkType.properties. */
-#define nltkType_PROP_NAME(ob, n) ((ob)->properties[(n)*2])
-#define nltkType_PROP_VALUE(ob, n) ((ob)->properties[(n)*2+1])
+#define nltkType_PROP_NAME(ob, n) \
+    PyList_GET_ITEM(((nltkType*)(ob))->prop_names, (n))
+#define nltkType_PROP_VALUE(ob, n) (((nltkType*)ob)->prop_vals[n])
 
 /* The Type type. */
 static PyTypeObject nltkTypeType;
@@ -188,11 +147,70 @@ static PyTypeObject nltkTokenType;
 
 /* The struct that is used to encode InlinedToken instances. */
 typedef struct {
-    PyObject_VAR_HEAD         /* Object head: refcount & type & size */
-    
-    PyObject *properties[1];  /* alternating list of (value/name) */
-
+    PyObject_VAR_HEAD        /* Object head: refcount & type & size */
+    PyObject *context;       /* A tuple containing the unit and the source */
+    long int start;          /* The start index */
+    long int end;            /* The end index */
+    PyObject *prop_names;    /* List of property names */
+    PyObject *prop_vals[1];  /* Array of property values */
 } nltkInlinedToken;
+
+/*********************************************************************
+ *  DOCSTRINGS & ERROR MESSAGES
+ *********************************************************************/
+
+#define MODULE_DOC "The token module (c implementation)."
+
+/* =========================== Location =========================== */
+#define LOCATION_DOC "A span over indices in text."
+#define LOCATION_START_DOC "The index at which this Token begins."
+#define LOCATION_END_DOC "The index at which this Token ends."
+#define LOCATION_UNIT_DOC "The index unit used by this location."
+#define LOCATION_SOURCE_DOC "An identifier naming the text over which \
+this location is defined."
+#define LOCATION_LENGTH_DOC "Location.length(self) -> int\n\
+Return the length of this Location."
+#define LOCATION_START_LOC_DOC "Location.start_loc(self) -> Location\n\
+Return a zero-length location at the start offset of this location."
+#define LOCATION_END_LOC_DOC "Location.end_loc(self) -> Location\n\
+Return a zero-length location at the end offset of this location."
+#define LOCATION_UNION_DOC "Location.union(self, other) -> Location\n\
+If self and other are contiguous, then return a new location \n\
+spanning both self and other; otherwise, raise an exception."
+#define LOCATION_PREC_DOC "Location.prec(self, other) -> boolean\n\
+@return: True if self occurs entirely before other.  In particular,\n\
+return true iff self.end <= other.start, and self!=other."
+#define LOCATION_SUCC_DOC "Location.succ(self, other) -> boolean\n\
+@return: True if self occurs entirely after other.  In particular,\n\
+return true iff other.end <= self.start, and self!=other."
+#define LOCATION_OVERLAPS_DOC "Location.overlaps(self, other) -> boolean\n\
+@return: True if self overlaps other.  In particular, return true\n\
+iff self.start <= other.start < self.end; or \n\
+other.start <= self.start < other.end."
+#define LOCATION_SELECT_DOC "Location.select(self, list) -> list\n\
+@return The sublist specified by this location.  I.e., return \n\
+list[self.start:self.end]"
+
+#define LOC_ERROR_001 "A location's start index must be less than \
+or equal to its end index."
+#define LOC_ERROR_002 "Locations can only be added to Locations"
+#define LOC_ERROR_003 "Locations have incompatible units"
+#define LOC_ERROR_004 "Locations have incompatible sources"
+#define LOC_ERROR_005 "Locations are not contiguous"
+
+/* ============================= Type ============================== */
+#define TYPE_DOC "A unit of language, such as a word or sentence."
+#define TYPE_ERROR_001 "The Type constructor only accepts keyword arguments"
+#define TYPE_ERROR_002 "Property is not defined for this Type"
+#define TYPE_ERROR_003 "Type.extend only accepts keyword arguments"
+#define TYPE_ERROR_004 "Type does not define selected property"
+#define TYPE_ERROR_005 "Types are immutable objects"
+#define TYPE_ERROR_006 "Type.select requires string arguments"
+
+/* ============================ Token ============================== */
+#define TOKEN_DOC "An occurance of a type"
+#define TOKEN_ERROR_001 "Bad Token: Token.__init__ was never called."
+#define TOKEN_ERROR_002 "Tokens are immutable objects"
 
 
 #endif /* ifndef CTOKEN_H */
