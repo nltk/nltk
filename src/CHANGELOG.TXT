@@ -1,4 +1,33 @@
 ##////////////////////////////////////////////////////////////////////////
+##  Version 0.7
+##////////////////////////////////////////////////////////////////////////
+Fri Jun  7 10:57:40 EDT 2002
+
+- Complete re-implementation of the recursive descent (top-down)
+  parser.  The new implementation should be easier for students to
+  understand.
+- New stepping versions of the recursive-descent parser and the shift/
+  reduce parser.
+- New interactive tool for experimenting with the shift/reduce parser.
+- New interactive tool for experimenting with the recursive descent 
+  parser.
+- Major re-organization of nltk.draw (visualization & interactive tools)
+  - New "CanvasWidget" class, based loosely on CLIG.  (See CLIG homepage
+    at <http://www.ags.uni-sb.de/~konrad/clig.html> for info about CLIG)
+  - Added basic canvas widgets: TextWidget, SymbolWidget, BoxWidget,
+    OvalWidget, ParenWidget, BracketWidget, SequenceWidget,StackWidget, 
+    SpaceWidget, ScrollWatcherWidget
+  - Added CanvasFrame, which manages a canvas & scrollbars.
+  - New canvas widgets for displaying trees: TreeSegmentWidget and
+    TreeWidget
+  - Minor fixes to nltk.draw.chart
+  - Minor fixes to nltk.draw.fsa
+- Added "tree positions" to Tree and TreeToken: now you can use
+  "mytree[3,2,4]" (or even "loc=(3,2,4); mytree[loc]") to mean
+  "mytree.children()[3].children()[2].children()[4]"
+- Added with_substitution member to Tree and TreeToken 
+
+##////////////////////////////////////////////////////////////////////////
 ##  Version 0.6
 ##////////////////////////////////////////////////////////////////////////
 Fri May 31 03:15:47 EDT 2002
