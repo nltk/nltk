@@ -90,9 +90,9 @@ def _pytype(obj):
 ##//////////////////////////////////////////////////////
 
 # functions for zero-width assertions
-def lookbehind(str):
+def _lookbehind(str):
     return '(?<='+str+')'
-def lookahead(str):
+def _lookahead(str):
     return '(?='+str+')'
 
 # A chunk rule matches a target string and performs an action
@@ -127,7 +127,7 @@ class ChunkRule:
         if kwargs.has_key('right'):
             self._right = kwargs['right']
         self._pattern = re.compile(
-            lookbehind(self._left) + self._target + lookahead(self._right))
+            _lookbehind(self._left) + self._target + _lookahead(self._right))
         if kwargs.has_key('doc'):
             self._doc = kwargs['doc']
     def pattern(self):
@@ -160,6 +160,8 @@ def expand(str):
 
 # Calls expand on the left, target and right arguments.
 # Could this duplicate less of the ChunkRule constructor?
+# Bug: Note that the lookbehind assertion won't work since
+# Python won't allow variable width lookbehind assertions
 class AbstractChunkRule(ChunkRule):
     def __init__(self, target, action, **kwargs):
         self._target = expand(target)
@@ -170,18 +172,28 @@ class AbstractChunkRule(ChunkRule):
         if kwargs.has_key('right'):
             self._right = expand(kwargs['right'])
         self._pattern = re.compile(
-            lookbehind(self._left) + self._target + lookahead(self._right))
+            _lookbehind(self._left) + self._target + _lookahead(self._right))
         if kwargs.has_key('doc'):
             self._doc = kwargs['doc']
 
 ##//////////////////////////////////////////////////////
-##  Chunk Parser
+##  Chunk Parser Utility Functions
 ##//////////////////////////////////////////////////////
 
-# Format a string of tokens for display.
-# Spacing around <>{} will show the insertion/deletion of chunk boundaries
-# (assuming that the only difference is indels of '{' and '}')
 def format(str):
+    """
+    Format a string of tokens for display.
+
+    This function inserts space characters in a token string, so
+    that different chunkings of the same token string will line up
+    when displayed one underneath the other.  This is convenient for
+    diagnostics which show the progress of a chunk parser.
+
+    @return: a formatted version of the token string for display
+    @rtype: C{string}
+    @param str: The token string to be formatted
+    @type str: C{string}
+    """
     str = sub(r' +', '', str)
     str = sub(r'@\d+', '', str)
     str = sub(r'<[^/]+/', '<', str)
@@ -191,36 +203,65 @@ def format(str):
     str = sub(r'{ <', '{<', str)
     return str
 
-# assumes tags are strings and locations are unary
-# ignores the source and unit (bug)
+# Bugs: assumes tags are strings and locations are unary,
+# ignores the source and unit
 def tag2str(tagged_sent):
+    """
+    Convert a tokenized, tagged sentence to a token string.
+
+    @return: the token string version of the tokenized, tagged sentence
+    @rtype: C{string}
+    @param tagged_sent: the tokenized, tagged sentence
+    @type tagged_sent: C{list} of C{TaggedToken}
+    """
+
     str = ''
     for tok in tagged_sent:
         str += '<' + tok.type().base() + '/' + tok.type().tag() + '@' + `tok.loc().start()` + '>'
     return str
 
-# convert a string to a chunk structure
-# "{<the/DT@[1]><cat/NN@[2]>}<sat/VBD@[3]>" becomes
-# [ [ 'the'/'DT'@[1], 'cat'/'NN'@[2] ], 'sat'/'VBD'@[3] ]
-# first define some regexps for efficiency
+
+# Precompiled regular expressions used by str2chunks
 
 _re_braces = re.compile(r'[^{}]')
 _re_matching_braces = re.compile(r'(\{\})*')
 _re_punct_boundary = re.compile(r'([>}])(?=[<{])')
 _re_token_rep = re.compile(r'<([^>]*)/([^>]*)@(\d+)>')
 _re_chunks = re.compile(r'{([^}]*)}')
+
 def str2chunks(str):
+    """
+    Convert a token string to a chunk structure.
+
+    Take the token string, with embedded chunk delimiters, and
+    build an executable expression which returns a chunk structure.
+    E.g.: "{<the/DT@[1]><cat/NN@[2]>}<sat/VBD@[3]>"
+    becomes: [ [ 'the'/'DT'@[1], 'cat'/'NN'@[2] ], 'sat'/'VBD'@[3] ]
+
+    @return: the chunk structure for a chunked token string
+    @rtype: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
+    @param str: the token string
+    @type str: C{string}
+    """
+
     braces = sub(_re_braces, '', str)
     if not match(_re_matching_braces, braces):
         print "ERROR: unbalanced or nested braces"
+
     # insert commas between closing and opening punctuation
     str = sub(_re_punct_boundary, r'\1, ', str)
+
     # generate code to build a token from the string representation of the token
     str = sub(_re_token_rep, r'Token(TaggedType("\1", "\2"), Location(\3, unit="word"))', str)
+
     # replace {} chunk syntax with [] list syntax
     str = sub(_re_chunks, r'[\1]', str)
     str = '[' + str + ']'
     return eval(str)
+
+##//////////////////////////////////////////////////////
+##  Chunk Parser
+##//////////////////////////////////////////////////////
 
 class REChunkParser(ChunkParserI):
     """
@@ -230,9 +271,19 @@ class REChunkParser(ChunkParserI):
 
     @type _rulelist: C{list} of C{ChunkRule}s.
     @ivar _rulelist: The cascade of chunk rules to be applied.
+    @type _debug: C{int}
+    @ivar _debug: The debug flag
     """
 
     def __init__(self, rulelist, debug=0):
+        """
+        Construct a new chunk parser.
+
+        @param rulelist: The cascade of chunk rules to be applied.
+        @type rulelist: C{list} of C{ChunkRule}
+        @param debug: The debug flag
+        @type debug: C{int}
+        """
         self._rulelist = rulelist
         self._debug = debug
 
@@ -252,13 +303,62 @@ class REChunkParser(ChunkParserI):
 
     def parse(self, tagged_sent):
         """
+        Chunk parse a tagged, tokenized sentence.
+
+        @param tagged_sent: the tagged, tokenized sentence.
+        @type tagged_sent: C{list} of C{TaggedToken}
         @return: a chunk structure
-        @rtype: C{list} of (C{token} or (C{list} of C{token}))
+        @rtype: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
         """
         str = tag2str(tagged_sent)
         for rule in self._rulelist:
             str = self._apply(rule, str)
         return str2chunks(str)
+
+##//////////////////////////////////////////////////////
+##  Evaluation Code
+##//////////////////////////////////////////////////////
+
+def unchunk(chunked_sent):
+    """
+    Unchunk a chunked sentence.
+
+    This function removes the nested-list structure, to create a flat list.
+
+    @param chunked_sent: a chunk structure
+    @type chunked_sent: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
+    @return: a list of tagged tokens
+    @rtype: C{list} of C{TaggedToken}
+    """
+    unchunked_sent = []
+    for token in chunked_sent:
+        if _pytype(token) == _pytype([]):
+            unchunked_sent.extend(token)
+        else:
+            unchunked_sent.append(token)
+    return unchunked_sent
+
+def score(correct_chunks, guessed_chunks):
+    """
+    Given a correctly chunked sentence, score another chunked sentence.
+    
+    For each chunked sentence, this function extracts the chunk locations,
+    puts them into two sets, then reports the precision, recall and F measure.
+
+    @param correct_chunks: a chunk structure
+    @type correct_chunks: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
+    @param guessed_chunks: a chunk structure
+    @type guessed_chunks: C{list} of (C{TaggedToken} or (C{list} of C{TaggedToken}))
+    """
+    correct_locs = _chunk_locs(correct_chunks)
+    guessed_locs = _chunk_locs(guessed_chunks)
+    correct = Set(*correct_locs) # convert to a set
+    guessed = Set(*guessed_locs)
+    print "CORRECT:   ", correct
+    print "GUESS:     ", guessed
+    print "PRECISION: ", correct.precision(guessed)
+    print "RECALL:    ", correct.recall(guessed)
+    print "F MEASURE: ", correct.f_measure(guessed)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration code
@@ -275,27 +375,6 @@ def _chunk_locs(chunked_sent):
         if _pytype(token) == _pytype([]):
             locs.append(_seq_loc(token))
     return locs
-
-# unchunk a chunked sentence
-def unchunk(chunked_sent):
-    unchunked_sent = []
-    for token in chunked_sent:
-        if _pytype(token) == _pytype([]):
-            unchunked_sent.extend(token)
-        else:
-            unchunked_sent.append(token)
-    return unchunked_sent
-
-def score(correct_chunks, guessed_chunks):
-    correct_locs = _chunk_locs(correct_chunks)
-    guessed_locs = _chunk_locs(guessed_chunks)
-    correct = Set(*correct_locs) # convert to a set
-    guessed = Set(*guessed_locs)
-    print "CORRECT:   ", correct
-    print "GUESS:     ", guessed
-    print "PRECISION: ", correct.precision(guessed)
-    print "RECALL:    ", correct.recall(guessed)
-    print "F MEASURE: ", correct.f_measure(guessed)
 
 from nltk.set import *
 def demo():
@@ -332,3 +411,4 @@ def demo():
     chunked_sent = cp.parse(unchunked_sent)
     score(correct_chunked_sent, chunked_sent)
 
+if __name__ == '__main__': demo()
