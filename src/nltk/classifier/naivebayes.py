@@ -8,117 +8,166 @@
 # $Id$
 
 from nltk.classifier import *
+from nltk.probability import FreqDistI
 from nltk.probability import SimpleFreqDist
 from nltk.probability import CFFreqDist, CFSample, ContextEvent
-from nltk.probability import MLEProbDist
+from nltk.probability import MLEProbDist, ELEProbDist
 from nltk.probability import ProbDistI, EventI
 from nltk.token import Token, WSTokenizer
 from nltk.chktype import chktype as _chktype
 
+import time
 from Numeric import zeros
 
 ##//////////////////////////////////////////////////////
-##  Naive Bayes PDist
+##  Labeled FeatureValueList & Events
 ##//////////////////////////////////////////////////////
 
-class NBProbDist(ProbDistI):
-    def __init__(self, events):
-        self._events = events
-        self._counts = zeros(len(events))
-        self._N = 0
-        self._freqs = None
-
-    def inc(self, sample):
-        for i in range(len(self._events)):
-            if sample in self._events[i]:
-                self._counts[i] += 1
-        self._N += 1
-        self._freqs = None
-
-    def _cache(self):
-        #print
-        #print 'counts', self._counts
-        #print 'N', self._N
-        self._freqs = self._counts / float(self._N)
-        #print 'freqs', self._freqs
-
-    def prob(self, sample):
-        p = 1.0
-        if self._freqs is None: self._cache()
-        for i in range(len(self._events)):
-            if sample in self._events[i]:
-                #print 'prob(%s)=%s' % (self._events[i], self._freqs[i])
-                p *= self._freqs[i]
-        #print 'prob(%s)=%s' % (sample, p)
-        return p
-
-##//////////////////////////////////////////////////////
-##  Naive Bayes Classifier
-##//////////////////////////////////////////////////////
-
-class LabelFeaturesSample:
-    def __init__(self, label, features):
+class LabeledFeatureValueList:
+    def __init__(self, fvl, label):
+        self._fvl = fvl
         self._label = label
-        self._features = features
-
-    def label(self): return self._label
-    def features(self): return self._features
-
-class FeatureEvent(EventI):
-    def __init__(self, feature):
-        self._feature = feature
-
-    def feature(self): return self._feature
-
-    def __contains__(self, sample):
-        return self._feature in sample.features()
-
-class ContainsEvent(EventI):
-    def __init__(self, val):
-        self._val = val
-    def __contains__(self, sample):
-        return self._val in sample
+    def feature_values(self):
+        return self._fvl
+    def label(self):
+        return self._label
+    def __repr__(self):
+        return '<LabeledFeatureValueList %r %r>' % (self._label, self._fvl) 
 
 class LabelEvent(EventI):
     def __init__(self, label):
         self._label = label
+    def contains(self, sample):
+        return sample._label == self._label
+    def label(self):
+        return self._label
+    def __repr__(self):
+        return ('{Event x: x=LabeledFeatureValueList' +
+                ' with label %r}' % self._label)
 
-    def label(self): return self._label
+class AssignmentEvent(EventI):
+    def __init__(self, assignment):
+        self._assignment = assignment
+    def assignment(self):
+        return self._assignment
+    def contains(self, sample):
+        return sample._assignment == self._assignment
+    def __repr__(self):
+        return ('{Event x: x=LabeledFeatureValueList' +
+                ' with assignment %r}' % self._assignment)
 
-    def __contains__(self, sample):
-        return self._label == sample.label()
+##//////////////////////////////////////////////////////
+##  Specialized frequency distribution.
+##//////////////////////////////////////////////////////
 
-class NBProbDistFoo(ProbDistI):
+class NBClassifierFreqDist(FreqDistI):
     """
-    Calculates P(abcd) as P(a)P(b)P(c)P(d), where abcd are features..
+    A frequency distribution whose samples are labeled feature value
+    lists; and which is specialized for finding the following
+    frequencies:
+    
+        - freq(label)
+        - freq(assignment|label)
 
-    Samples are tuples of features.  Features are ints from 0..B
+    Assumes binary features (for now).
+
+    Internally, maintain a 2d array of features x labels, which we use
+    to count the number of times each feature is active with a label.
+    Use a single global N.
+    
     """
-    def __init__(self, B):
-        self._B = B
-        self._counts = zeros(B)
-        self._freqs = None
-        self._N = 0
+    def __init__(self, labels, features):
+        self._features = features
+        self._num_features = len(features)
+        self._labels = labels
+        
+        # Map from labels -> indices.
+        self._num_labels = len(labels)
+        self._label_map = {}
+        i = 0
+        for label in labels:
+            self._label_map[label] = i
+            i += 1
+
+        # Keep two arrays..
+        self._fcounts = zeros( (self._num_labels, self._num_features) )
+        self._lcounts = zeros(self._num_labels)
+        self._N = 0.0
+
+        # Cache...
+        self._ffreqs = None
+        self._lfreqs = None
+
+    def B(self):
+        #?!?!?
+        return self._num_labels * (2L**self._num_features)
+
+    def N(self):
+        return self._N
 
     def inc(self, sample):
-        for feature in sample:
-            self._counts[feature] += 1
+        _chktype('NBClassifierFreqDist.inc', 1, sample, (LabeledFeatureValueList,))
+
+        # Increment the total count.
         self._N += 1
-        self._freqs = None
 
-    def cache(self):
-        self._freqs = self._counts / float(N)
+        # Get the label index.
+        label_index = self._label_map[sample.label()]
 
-    def prob(self, sample_or_event):
-        # Expect a list of features.
-        p = 1.0
-        for feature in sample:
-            p *= self._freqs[feature]
-        return p
-            
+        # Increment the label count array
+        self._lcounts[label_index] += 1
+
+        # Increment the feature count array
+        for (feature_id,val) in sample.feature_values().assignments():
+            self._fcounts[label_index, feature_id] += 1
+
+    def freq(self, event):
+        # EFFICIENCY TEST:
+        #return 0
         
+        _chktype('NBClassifierFreqDist.freq', 1, event, (LabelEvent,))
+        label_index = self._label_map[event.label()]
+        return self._lcounts[label_index] / self._N
 
-    
+    def cond_freq(self, event, condition):
+        # EFFICIENCY TEST:
+        #return 0
+        
+        #_chktype('NBClassifierFreqDist.cond_freq', 1, event, (AssignmentEvent,))
+        #_chktype('NBClassifierFreqDist.cond_freq', 2, condition, (LabelEvent,))
+        label_index = self._label_map[condition.label()]
+        (feature_id, value) = event.assignment()
+
+        if value:
+            return self._fcounts[label_index, feature_id] / self._N
+        else:
+            return 1 - (self._fcounts[label_index, feature_id] / self._N)
+
+    def cheat(self, text):
+        if self._ffreqs is None: self._ffreqs = self._fcounts / self._N
+        if self._lfreqs is None: self._lfreqs = self._lcounts / self._N
+        
+        # Convert the feature values into an array.
+        fvals = zeros( (self._num_labels, self._num_features) )
+        for label_id in range(self._num_labels):
+            label = self._labels[label_id]
+            values = self._features.detect(LabeledText(text, label))
+            for (feature_id, val) in values.assignments():
+                fvals[label_id][feature_id] = val
+
+        # Copy it num_labels times.
+        fvals = fvals * ones( (self._num_labels, 1) )
+
+        # Do element-wise multiplication
+        fplus = self._ffreqs * fvals
+        fminus = (1-self._ffreqs) * (1-fvals)
+        ftot = fplus + fminus
+
+        fprobs = product(transpose(ftot))
+        probs = fprobs * self._lfreqs
+
+        return self._labels[argmax(probs)]
+
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -128,42 +177,54 @@ class NBClassifier(ClassifierI):
     """
     A Naive Bayes classifier::
 
-      P(inst, label) = P(label) P(f0|label) P(f1|label) ... P(fn|label)
+      P(inst, label) = P(label) * P(fi|label) * (1-P(fj|label))
 
-    Where fi are the features that fired.
+    Where fi are the features that fired; and fj are the features that
+    did not fire.
 
     Model parameters:
-      - PDF for labels
+      - FeatureDetectorList
+      - A PDF whose samples are C{LabeledFeatureValueList}s
       - PDF for feature|label
+
+    Hm.. So maybe have a different NBProbDist for each label..
+    
     """
-    def __init__(self, featurelist, labels, label_pdist, feature_pdists):
-        self._featurelist = featurelist
+    def __init__(self, featuredetectors, labels, pdist):
+        self._featuredetectors = featuredetectors
         self._labels = labels
-        self._label_pdist = label_pdist
-        self._feature_pdists = feature_pdists
+        self._pdist = pdist
 
     def prob(self, labeled_token):
         """
         Find the probability of the given labeled instance, using the
         naive bayes assumption.
         """
-        labeled_type = labeled_token.type()
-        label = labeled_type.label()
-        text = labeled_type.base()
-        feature_pdist = self._feature_pdists[label]
+        labeled_text = labeled_token.type()
+        label = labeled_text.label()
+        text = labeled_text.text()
         
-        p = self._label_pdist.prob(label)
-        p *= feature_pdist.prob(self._featurelist.detect(text))
+        p = self._pdist.prob(LabelEvent(label))
+        featurevalues = self._featuredetectors.detect(labeled_text)
+        #for feature_id in range(len(featurevalues)):
+        #    assignment = (feature_id, featurevalues[feature_id])
+        #    p *= self._pdist.cond_prob(AssignmentEvent(assignment),
+        #                               LabelEvent(label))
+        for assignment in featurevalues.assignments():
+            p *= self._pdist.cond_prob(AssignmentEvent(assignment),
+                                       LabelEvent(label))
 
-        if p > 0:
-            print "P(%s) = %s" % (label, p)
         return p
 
     def classify(self, token):
+        ## Much more efficient..  But this is cheating!
+        #if isinstance(self._pdist._freqdist, NBClassifierFreqDist):
+        #    return self._pdist._freqdist.cheat(token.type())
+        
         max_p = -1
         max_label = None
         for label in self._labels:
-            labeled_tok = Token(LabeledType(token.type(), label),
+            labeled_tok = Token(LabeledText(token.type(), label),
                                 token.loc())
             p = self.prob(labeled_tok)
             if p > max_p:
@@ -172,86 +233,110 @@ class NBClassifier(ClassifierI):
         return max_label
 
 ##//////////////////////////////////////////////////////
-##  Naive Bayes Classifier Factory
+##  Naive Bayes Classifier Trainer
 ##//////////////////////////////////////////////////////
 
-class NBClassifierFactory(ClassifierFactoryI):
-    def __init__(self, features):
+class NBClassifierTrainer(ClassifierTrainerI):
+    def __init__(self, features, labels):
         self._features = features
+        self._labels = labels
 
-    def create(self, labeled_tokens):
-        events = [ContainsEvent(i) for i in range(len(self._features))]
-                
-        label_fdist = SimpleFreqDist()
-        feature_pdists = {}
+    def train(self, labeled_tokens):
+        fdist = NBClassifierFreqDist(self._labels, self._features)
         
         for labeled_token in labeled_tokens:
             labeled_type = labeled_token.type()
             label = labeled_type.label()
-            text = labeled_type.base()
+            text = labeled_type.text()
+            feature_values = self._features.detect(labeled_type)
+            lfvl = LabeledFeatureValueList(feature_values, label)
+            fdist.inc(lfvl)
 
-            label_fdist.inc(label)
-            features = self._features.detect(text)
-            if not feature_pdists.has_key(label):
-                feature_pdists[label] = NBProbDist(events)
-            feature_pdists[label].inc(features)
-
-        label_pdist = MLEProbDist(label_fdist)
-        return NBClassifier(self._features, label_fdist.samples(),
-                            label_pdist, feature_pdists)
+        pdist = MLEProbDist(fdist)
+        return NBClassifier(self._features, self._labels, pdist)
             
 ##//////////////////////////////////////////////////////
 ##  Test code
 ##//////////////////////////////////////////////////////
 
-if __name__ == '__main__':
-    from nltk.tagger import TaggedTokenizer
-    file = '/mnt/cdrom2/data/brown/ca01'
-    text = open(file).read()
+t0=0
+def resettime():
+    global t0
+    t0 = time.time()
+def timestamp():
+    return '%8.2fs ' % (time.time()-t0)
+
+def demo(labeled_tokens, n_words=5, n_lens=20, debug=1):
+    resettime()
     
-    ttoks = TaggedTokenizer().tokenize(text)
-    
+    if debug: print timestamp(), 'constructing feature list...'
     features = (
-        AlwaysFeatureList() +
-        FunctionFeatureList(lambda w:w[0],
+        AlwaysFeatureDetectorList() +
+        FunctionFeatureDetectorList(lambda w:w.text()[0],
                            [chr(i) for i in range(ord('a'), ord('z'))]) +
-        FunctionFeatureList(lambda w:w[-1],
+        FunctionFeatureDetectorList(lambda w:w.text()[-1],
                            [chr(i) for i in range(ord('a'), ord('z'))]) +
-        FunctionFeatureList(lambda w:len(w), range(15)) +
-        ValueFeatureList(("Atlanta's",))
+        FunctionFeatureDetectorList(lambda w:len(w.text()), range(n_lens)) +
+        ValueFeatureDetectorList(("Atlanta's",))
         )
+    if debug: print timestamp(), '  got %d features' % len(features)
 
-    factory = NBClassifierFactory(features)
-
-    labeled_tokens = [Token(LabeledType(tok.type().base(),
-                                           tok.type().tag()),
-                               tok.loc())
-                         for tok in ttoks]
+    if debug: print timestamp(), 'getting a list of labels...'
+    labelmap = {}
+    for ltok in labeled_tokens:
+        labelmap[ltok.type().label()] = 1
+    labels = labelmap.keys()
+    if debug: print timestamp(), '  got %d labels.' % len(labels)
     
-    print 'training...'
-    classifier = factory.create(labeled_tokens)
-    print 'done training'
+    if debug: print timestamp(), 'training on %d samples...' % len(labeled_tokens)
+    trainer = NBClassifierTrainer(features, labels)
+    classifier = trainer.train(labeled_tokens)
+    if debug: print timestamp(), '  done training'
     
-    print ('%d tokens, %d labels' % (len(labeled_tokens), 
+    if debug: print timestamp(), ('%d tokens, %d labels' % (len(labeled_tokens), 
                                      len(classifier._labels)))
-    t = time.time()
-    toks = WSTokenizer().tokenize("jury the reports taasd aweerdr "+
+    toks = WSTokenizer().tokenize("jury the reports aweerdr "+
                                   "Atlanta's")
     
     #import time
     #for i in range(20):
     #    for word in toks:
     #        classifier.classify(word)
-    #print '100 classifications: %0.4f secs' % (time.time()-t)
-            
+    #if debug: print timestamp(), '100 classifications: %0.4f secs' % (time.time()-t)
+
+    t = time.time()
+    toks = toks * (n_words/len(toks))
     for word in toks:
-        print word
+        if debug: print timestamp(), word
         label = classifier.classify(word)
-        print '  =>', label
+        if debug: print timestamp(), '  =>', label
+
+    return time.time()-t
         
+def get_toks(debug=0):
+    resettime()
+    from nltk.tagger import TaggedTokenizer
+    file = '/mnt/cdrom2/data/brown/ca01'
+    text = open(file).read()
 
+    if debug: print timestamp(), 'tokenizing %d chars' % len(text)
+    ttoks = TaggedTokenizer().tokenize(text)
+    labeled_tokens = [Token(LabeledText(tok.type().base(),
+                                           tok.type().tag()),
+                               tok.loc())
+                         for tok in ttoks]
+    if debug: print timestamp(), '  done tokenizing'
+    return labeled_tokens
     
     
 
-    
+# Time for 5 texts with 10,000 features: 4.3 secs/feature
+if __name__ == '__main__':
+    toks = get_toks(1)
+    print
+    t1 = demo(toks, 5, 10000)
 
+  # T = .148
+  # F = .00106
+  #
+  # time = (T texts+alpha)*(F features+beta)
