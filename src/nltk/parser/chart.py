@@ -385,7 +385,7 @@ class TokenEdge(EdgeI):
         @return: A concise string representation of the C{Edge}
         @rtype: C{string}
         """
-        return '[Edge: %s]%s' % (self, self._loc)
+        return '[Edge: %s]%s' % (self, self._token.loc())
 
     def __str__(self):
         """
@@ -892,6 +892,7 @@ class SteppingChartParser(ChartParser):
         if strategy != self._strategy:
             self._strategy = strategy
             self._edge_queue = []
+            self._current_chartrule = None
 
     def parses(self):
         """
@@ -907,6 +908,18 @@ class SteppingChartParser(ChartParser):
         Return the chart that is used by the parser.
         """
         return self._chart
+
+    def set_chart(self, chart):
+        """
+        Load a given chart into the stepping chart parser.
+
+        @param chart: The chart to use for parsing.
+        @type chart: C{Chart}
+        @rtype: C{none}
+        """
+        self._chart = chart
+        self._edge_queue = []
+        self._current_chartrule = None
 
     def current_chartrule(self):
         """
