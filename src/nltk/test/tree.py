@@ -22,293 +22,241 @@ from nltk.tokenizer import WhitespaceTokenizer
 ##  Test code
 ##//////////////////////////////////////////////////////
 
-import unittest
 
-def _token(type,start): return Token(type, Location(start))
-class TreeTestCase(unittest.TestCase):
-    """
-    Unit test cases for C{tree.Tree}
-    """
-    def setUp(self):
-        self.dp1 = Tree('dp', Tree('d', 'the'), Tree('np', 'dog'))
-        self.dp2 = Tree('dp', Tree('d', 'the'), Tree('np', 'cat'))
-        self.vp = Tree('vp', Tree('v', 'chased'), self.dp2)
-        self.tree = Tree('s', self.dp1, self.vp)
+def test_Tree(): r"""
+Unit test cases for L{tree.Tree}.
 
-    def testConstructor(self):
-        "nltk.tree.Tree: constructor tests"
-        # We can mix nodes and leaves on one level.
-        self.failUnlessEqual(Tree(1, 2, Tree(3), 4, Tree(5, 6)),
-                             Tree(1, 2, Tree(3), 4, Tree(5, 6)))
+C{Trees} are used to encode hierarchical structures.  Each C{Tree}
+object encodes a single grouping in the hierarchy.  A C{Tree} is
+actually a specialized subclass of C{list} that:
 
-    def testNode(self):
-        "nltk.tree.Tree: node accessor tests"
-        self.failUnlessEqual(self.tree.node(), 's')
-        self.failUnlessEqual(self.tree[0].node(), 'dp')
-        self.failUnlessEqual(self.tree[1][0].node(), 'v')
+  - Adds a new attribute, the C{node} value.
 
-    def testGetItem(self):
-        "nltk.tree.Tree: [] operator tests"
-        self.failUnlessEqual(self.tree[0], self.dp1)
-        self.failUnlessEqual(self.tree[1], self.vp)
-        self.failUnlessEqual(self.tree[1][1], self.dp2)
+  - Conceptually divides its children into two groups: C{Tree}
+    children (called \"subtrees\") and non-C{Tree} children (called
+    \"leaves\").
 
-    def testLen(self):
-        "nltk.tree.Tree: len operator tests"
-        self.failUnlessEqual(len(self.tree), 2)
-        self.failUnlessEqual(len(self.dp1), 2)
-        self.failUnlessEqual(len(self.dp1[0]), 1)
-        self.failUnlessEqual(len(Tree('n')), 0)
-        self.failUnlessEqual(len(Tree('n', 'c')), 1)
+  - Adds several tree-specific operations.
 
-    def testRepr(self):
-        "nltk.tree.Tree: repr output tests"
-        self.failUnlessEqual(repr(self.vp), "('vp': ('v': 'chased') " + 
-                             "('dp': ('d': 'the') ('np': 'cat')))")
-        self.failUnlessEqual(repr(self.dp1), "('dp': ('d': 'the') "+
-                             "('np': 'dog'))")
-        self.failUnlessEqual(repr(Tree('n')), "('n':)")
-        self.failUnlessEqual(repr(Tree('n', 'c')), "('n': 'c')")
-        self.failUnlessEqual(repr(Tree(1, 2)), "(1: 2)")
-        self.failUnlessEqual(repr(Tree( (1,2), (3,4) )), "((1, 2): (3, 4))")
-        
-    def testStr(self):
-        "nltk.tree.Tree: str output tests"
-        self.failUnlessEqual(str(self.vp), "('vp': ('v': 'chased') " + 
-                             "('dp': ('d': 'the') ('np': 'cat')))")
-        self.failUnlessEqual(str(self.dp1), "('dp': ('d': 'the') "+
-                             "('np': 'dog'))")
-        self.failUnlessEqual(str(Tree('n')), "('n':)")
-        self.failUnlessEqual(str(Tree('n', 'c')), "('n': 'c')")
-        self.failUnlessEqual(str(Tree(1, 2)), "(1: 2)")
-        self.failUnlessEqual(str(Tree( (1,2), (3,4) )), "((1, 2): (3, 4))")
+  - Adds a new tree-specific indexing scheme.
 
-    def testLeaves(self):
-        "nltk.tree.Tree: leaves method tests"
-        self.failUnlessEqual(self.dp1.leaves(), ("the", "dog"))
-        self.failUnlessEqual(self.tree.leaves(),
-                             ("the", "dog", "chased", "the", "cat"))
-        self.failUnlessEqual(self.vp[0].leaves(), ("chased",))
-        self.failUnlessEqual(Tree('n').leaves(), ())
+Trees are created from a node and a list (or any iterable) of
+children:
 
-    def testNodes(self):
-        "nltk.tree.Tree: nodes method tests"
-        self.failUnlessEqual(self.dp1.nodes(),
-                             Tree('dp', Tree('d'), Tree('np')))
-        tnodes = Tree('s', Tree('dp', Tree('d'), Tree('np')),
-                      Tree('vp', Tree('v'),
-                           Tree('dp', Tree('d'), Tree('np'))))
-        self.failUnlessEqual(self.tree.nodes(), tnodes)
-        self.failUnlessEqual(self.vp[0].nodes(), Tree('v'))
-        self.failUnlessEqual(Tree('n'), Tree('n'))
+    >>> Tree(1, [2, 3, 4])
+    (1: 2 3 4)
+    >>> Tree('S', [Tree('NP', ['I']), 
+    ...            Tree('VP', [Tree('V', ['saw']),
+    ...                        Tree('NP', ['him'])])])
+    (S: (NP: 'I') (VP: (V: 'saw') (NP: 'him')))
 
-    def testCmp(self):
-        "nltk.tree.Tree: comparison tests"
-        self.failUnlessEqual(Tree(1,2), Tree(1,2))
-        self.failUnlessEqual(Tree(1,Tree(2,3), Tree(4,5)),
-                        Tree(1,Tree(2,3), Tree(4,5)))
-        self.failUnlessEqual(Tree(1), Tree(1))
-        self.failUnlessEqual(self.tree, self.tree)
-        self.failUnlessEqual(self.dp1, self.dp1)
+One exception to \"any iterable\": in order to avoid confusion,
+strings are I{not} accepted as children lists:
 
-        # Explicitly test ==/!=
-        self.failIf(Tree(1,2) != Tree(1,2))
-        self.failUnless(Tree(1,2) == Tree(1,2))
-        self.failIf(Tree(1,Tree(2,3), Tree(4,5)) !=
-                    Tree(1,Tree(2,3), Tree(4,5)))
-        self.failUnless(Tree(1,Tree(2,3), Tree(4,5)) ==
-                        Tree(1,Tree(2,3), Tree(4,5)))
-        self.failIf(Tree(1) != Tree(1))
-        self.failUnless(Tree(1) == Tree(1))
-        self.failIf(self.tree != self.tree)
-        self.failUnless(self.tree == self.tree)
-        self.failIf(self.dp1 != self.dp1)
-        self.failUnless(self.dp1 == self.dp1)
+    >>> Tree('NP', 'Bob')
+    Traceback (most recent call last):
+      ...
+    TypeError: children should be a list, not a string
 
-        # Explicitly test cmp.  Right now, these raise exceptions, but
-        # that's not really safe; it should be changed.
-        #self.failIf(cmp(Tree(1,2), Tree(1,2)) != 0)
-        #self.failUnless(cmp(Tree(1,2), Tree(1,2)) != 0)
-        #self.failIf(cmp(Tree(1,Tree(2,3), Tree(4,5)),
-        #                Tree(1,Tree(2,3), Tree(4,5))) != 0)
-        #self.failUnless(cmp(Tree(1,Tree(2,3), Tree(4,5)),
-        #                    Tree(1,Tree(2,3), Tree(4,5))) != 0)
-        #self.failIf(cmp(Tree(1), Tree(1)) != 0)
-        #self.failUnless(cmp(Tree(1), Tree(1)) != 0)
-        #self.failIf(cmp(self.tree, self.tree) != 0)
-        #self.failUnless(cmp(self.tree, self.tree) != 0)
-        #self.failIf(cmp(self.dp1, self.dp1) != 0)
-        #self.failUnless(cmp(self.dp1, self.dp1) != 0)
-        
-        t1=Tree('np', 'dog')
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1<t1)
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1>t1)
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1<=t1)
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1>=t1)
+A single level can contain both leaves and subtrees:
 
-    def testHeight(self):
-        "nltk.tree.Tree: height method tests"
-        self.failUnlessEqual(self.tree.height(), 5)
-        self.failUnlessEqual(self.vp.height(), 4)
-        self.failUnlessEqual(self.dp1.height(), 3)
-        self.failUnlessEqual(self.dp1[0].height(), 2)
-        self.failUnlessEqual(Tree('node').height(), 1)
+    >>> Tree(1, [2, Tree(3, [4]), 5])
+    (1: 2 (3: 4) 5)
 
-class TreeTokenTestCase(unittest.TestCase):
-    """
-    Unit test cases for C{tree.TreeToken}
-    """
-    def setUp(self):
-        text = 'the dog chased the cat'
-        self.words = WhitespaceTokenizer().tokenize(text)
-        self.dp1 = TreeToken('dp', TreeToken('d', self.words[0]),
-                             TreeToken('np', self.words[1]))
-        self.dp2 = TreeToken('dp', TreeToken('d', self.words[3]),
-                        TreeToken('np', self.words[4]))
-        self.vp = TreeToken('vp', TreeToken('v', self.words[2]), self.dp2)
-        self.tree = TreeToken('s', self.dp1, self.vp)
+Some trees to run tests on:
 
-    def testConstructor(self):
-        "nltk.tree.Tree: constructor tests"
-        # We can mix nodes and leaves on one level.
-        TreeToken(1, Token(2), TreeToken(3),
-                  Token(4), TreeToken(5, Token(6)))
+    >>> dp1 = Tree('dp', [Tree('d', ['the']), Tree('np', ['dog'])])
+    >>> dp2 = Tree('dp', [Tree('d', ['the']), Tree('np', ['cat'])])
+    >>> vp = Tree('vp', [Tree('v', ['chased']), dp2])
+    >>> tree = Tree('s', [dp1, vp])
+    >>> print tree
+    (s:
+      (dp: (d: the) (np: dog))
+      (vp: (v: chased) (dp: (d: the) (np: cat))))
 
-        # Locations must be properly ordered.
-        self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', _token(1,5)),
-                                        _token(1,1),
-                                        TreeToken('n', _token(1,2)),
-                                        _token(1,3)))
-        self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', _token(1,0)),
-                                        _token(1,1),
-                                        TreeToken('n', _token(1,2)),
-                                        _token(1,0)))
-        self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', _token(1,0)),
-                                        _token(1,5),
-                                        TreeToken('n', _token(1,3)),
-                                        _token(1,7)))
-        self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', _token(1,0)),
-                                        _token(1,5),
-                                        TreeToken('n', Token(1,None)),
-                                        _token(1,3)))
-                                         
-                                         
-        
-    def testNode(self):
-        "nltk.tree.TreeToken: node accessor tests"
-        self.failUnlessEqual(self.tree.node(), 's')
-        self.failUnlessEqual(self.tree[0].node(), 'dp')
-        self.failUnlessEqual(self.tree[1][0].node(), 'v')
+The node value is stored using the C{node} attribute:
 
-    def testGetItem(self):
-        "nltk.tree.TreeToken: [] operator tests"
-        self.failUnless(self.tree[0] == self.dp1)
-        self.failUnless(self.tree[1] == self.vp)
-        self.failUnless(self.tree[1][1] == self.dp2)
+    >>> dp1.node, dp2.node, vp.node, tree.node
+    ('dp', 'dp', 'vp', 's')
 
-    def testLen(self):
-        "nltk.tree.TreeToken: len operator tests"
-        self.failUnlessEqual(len(self.tree), 2)
-        self.failUnlessEqual(len(self.dp1), 2)
-        self.failUnlessEqual(len(self.dp1[0]), 1)
-        self.failUnlessEqual(len(TreeToken('n')), 0)
-        self.failUnlessEqual(len(TreeToken('n', Token('c'))), 1)
+This attribute can be modified directly:
 
-    def testRepr(self):
-        "nltk.tree.TreeToken: repr output tests"
-        self.failUnlessEqual(repr(self.vp), "('vp': ('v': 'chased') " + 
-                             "('dp': ('d': 'the') ('np': 'cat')))@[2w:5w]")
-        self.failUnlessEqual(repr(self.dp1),
-                             "('dp': ('d': 'the') ('np': 'dog'))@[0w:2w]")
-        self.failUnlessEqual(repr(TreeToken('n')), "('n':)@[?]")
-        self.failUnlessEqual(repr(TreeToken('n', Token('c'))),
-                             "('n': 'c')@[?]")
-        self.failUnlessEqual(repr(TreeToken(1, Token(2))), "(1: 2)@[?]")
-        
-    def testStr(self):
-        "nltk.tree.TreeToken: str output tests"
-        self.failUnlessEqual(repr(self.vp), "('vp': ('v': 'chased') " + 
-                             "('dp': ('d': 'the') ('np': 'cat')))@[2w:5w]")
-        self.failUnlessEqual(repr(self.dp1), "('dp': ('d': 'the') "+
-                             "('np': 'dog'))@[0w:2w]")
-        self.failUnlessEqual(repr(TreeToken('n')), "('n':)@[?]")
-        self.failUnlessEqual(repr(TreeToken('n', Token('c'))), "('n': 'c')@[?]")
-        self.failUnlessEqual(repr(TreeToken(1, Token(2))), "(1: 2)@[?]")
+    >>> dp1.node = 'np'
+    >>> dp2.node = 'np'
+    >>> print tree
+    (s:
+      (np: (d: the) (np: dog))
+      (vp: (v: chased) (np: (d: the) (np: cat))))
 
-    def testLeaves(self):
-        "nltk.tree.TreeToken: leaves method tests"
-        self.failUnless(self.dp1.leaves() == (self.words[0], self.words[1]))
-        self.failUnless(self.tree.leaves() == tuple(self.words))
-        self.failUnless(self.vp[0].leaves() == (self.words[2],))
-        self.failUnless(TreeToken('n').leaves() == ())
+Children can be accessed with indexing, just as with normal lists:
 
-    def testNodes(self):
-        "nltk.tree.TreeToken: nodes method tests"
-        self.failUnless(self.dp1.nodes() == TreeToken('dp', TreeToken('d'), TreeToken('np')))
-        tnodes = TreeToken('s', TreeToken('dp', TreeToken('d'), TreeToken('np')),
-                      TreeToken('vp', TreeToken('v'),
-                           TreeToken('dp', TreeToken('d'), TreeToken('np'))))
-        self.failUnless(self.tree.nodes() == tnodes)
-        self.failUnless(self.vp[0].nodes() == TreeToken('v'))
-        self.failUnless(TreeToken('n') == TreeToken('n'))
+    >>> tree[0]
+    (np: (d: 'the') (np: 'dog'))
+    >>> tree[1][1]
+    (np: (d: 'the') (np: 'cat'))
 
-    def testCmp(self):
-        "nltk.tree.TreeToken: comparison tests"
-        def token(type,start): return Token(type, Location(start))
-        self.failIf(TreeToken(1,token(2,0)) != TreeToken(1,token(2,0)))
-        self.failUnless(TreeToken(1,token(2,0)) == TreeToken(1,token(2,0)))
-        self.failIf(TreeToken(1,TreeToken(2,token(3,0)),
-                              TreeToken(4,token(5,1))) !=
-                    TreeToken(1,TreeToken(2,token(3,0)),
-                              TreeToken(4,token(5,1))))
-        self.failUnless(TreeToken(1,TreeToken(2,token(3,0)),
-                                  TreeToken(4,token(5,1))) ==
-                        TreeToken(1,TreeToken(2,token(3,0)),
-                                  TreeToken(4,token(5,1))))
-        self.failIf(TreeToken(1) != TreeToken(1))
-        self.failUnless(TreeToken(1) == TreeToken(1))
-        self.failIf(self.tree != self.tree)
-        self.failUnless(self.tree == self.tree)
-        self.failIf(self.dp1 != self.dp1)
-        self.failUnless(self.dp1 == self.dp1)
-        
-        t1=TreeToken('np', Token('dog'))
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1<t1)
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1>t1)
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1<=t1)
-        self.failUnlessRaises(AssertionError, lambda t1=t1: t1>=t1)
+Children can be modified directly, as well:
 
-    def testHeight(self):
-        "nltk.tree.TreeToken: height method tests"
-        self.failUnlessEqual(self.tree.height(), 5)
-        self.failUnlessEqual(self.vp.height(), 4)
-        self.failUnlessEqual(self.dp1.height(), 3)
-        self.failUnlessEqual(self.dp1[0].height(), 2)
-        self.failUnlessEqual(TreeToken('node').height(), 1)
+    >>> tree[0], tree[1][1] = tree[1][1], tree[0]
+    >>> print tree
+    (s:
+      (np: (d: the) (np: cat))
+      (vp: (v: chased) (np: (d: the) (np: dog))))
 
-def testsuite():
-    """
-    Return a PyUnit testsuite for the tree module.
-    """
+The C{Tree} class adds a new method of indexing, using tuples rather
+than ints.  C{t[a,b,c]} is equivalant to C{t[a][b][c]}.  The sequence
+C{(a,b,c)} is called a \"tree path\".
+
+    >>> print tree[1,1][0]
+    (d: the)
+
+    >>> # Switch the cat & dog back the way they were.
+    >>> tree[1,1], tree[0] = tree[0], tree[1,1]
+    >>> print tree
+    (s:
+      (np: (d: the) (np: dog))
+      (vp: (v: chased) (np: (d: the) (np: cat))))
+
+    >>> path = (1,1,1,0)
+    >>> print tree[path]
+    cat
+
+The length of a tree is the number of children it has.
+
+    >>> len(tree), len(dp1), len(dp2), len(dp1[0])
+    (2, 2, 2, 1)
+    >>> len(Tree('x', []))
+    0
+
+The current repr for trees looks like this:
+
+    >>> print repr(tree)
+    (s: (np: (d: 'the') (np: 'dog')) (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
+
+But this might change in the future.  Similarly, the current str looks
+like:
+
+    >>> print str(tree)
+    (s:
+      (np: (d: the) (np: dog))
+      (vp: (v: chased) (np: (d: the) (np: cat))))
     
-    tests = unittest.TestSuite()
+(Note line-wrapping).  But the details of both reprs might change.
 
-    treetests = unittest.makeSuite(TreeTestCase, 'test')
-    tests = unittest.TestSuite( (tests, treetests) )
+The C{leaves} method returns a list of a trees leaves:
 
-    treetokentests = unittest.makeSuite(TreeTokenTestCase, 'test')
-    tests = unittest.TestSuite( (tests, treetokentests) )
+    >>> print tree.leaves()
+    ['the', 'dog', 'chased', 'the', 'cat']
 
-    return tests
+The C{height} method returns the height of the tree.  A tree with no
+children is considered to have a height of 1; a tree with only
+children is considered to have a height of 2; and any other tree's
+height is one plus the maximum of its children's heights:
 
-def test():
-    import unittest
-    runner = unittest.TextTestRunner()
-    runner.run(testsuite())
+    >>> print tree.height()
+    5
+    >>> print tree[1,1,1].height()
+    2
+    >>> print tree[0].height()
+    3
+
+The C{treepositions} method returns a list of the tree positions of
+subtrees and leaves in a tree.  By default, it gives the position of
+every tree, subtree, and leaf, in prefix order:
+
+    >>> print tree.treepositions()
+    [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
+
+The order can also be specified explicitly.  Four orders are currently
+supported:
+
+    # Prefix order
+    >>> print tree.treepositions('preorder')
+    [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
+
+    # Postfix order
+    >>> print tree.treepositions('postorder')
+    [(0, 0, 0), (0, 0), (0, 1, 0), (0, 1), (0,), (1, 0, 0), (1, 0), (1, 1, 0, 0), (1, 1, 0), (1, 1, 1, 0), (1, 1, 1), (1, 1), (1,), ()]
+    
+    # Both prefix & postfix order (subtrees listed twice, leaves once)
+    >>> print tree.treepositions('bothorder')
+    [(), (0,), (0, 0), (0, 0, 0), (0, 0), (0, 1), (0, 1, 0), (0, 1), (0,), (1,), (1, 0), (1, 0, 0), (1, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 1, 1, 0), (1, 1, 1), (1, 1), (1,), ()]
+    
+    # Leaves only (in order)
+    >>> print tree.treepositions('leaves')
+    [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 0, 0), (1, 1, 1, 0)]
+
+C{treepositions} can be useful for modifying a tree.  For example, we
+could upper-case all leaves with:
+
+    >>> for pos in tree.treepositions('leaves'):
+    ...     tree[pos] = tree[pos].upper()
+    >>> print tree
+    (s:
+      (np: (d: THE) (np: DOG))
+      (vp: (v: CHASED) (np: (d: THE) (np: CAT))))
+
+In addition to C{str} and C{repr}, several methods exist to convert a
+tree object to one of several standard tree encodings:
+
+    >>> print tree.pp_treebank()
+    (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
+    >>> print tree.pp_latex_qtree()
+    \Tree [.s
+            [.np [.d THE ] [.np DOG ] ]
+            [.vp [.v CHASED ] [.np [.d THE ] [.np CAT ] ] ] ]
+
+Trees can be parsed from treebank strings with the static
+C{Tree.parse} method:
+
+    >>> tree2 = Tree.parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
+    >>> print tree2
+    (S: (NP: I) (VP: (V: enjoyed) (NP: my cookie)))
+
+Trees can be compared for equality:
+
+    >>> tree == Tree.parse(tree.pp_treebank())
+    True
+    >>> tree2 == Tree.parse(tree2.pp_treebank())
+    True
+    >>> tree == tree2
+    False
+    >>> tree == Tree.parse(tree2.pp_treebank())
+    False
+    >>> tree2 == Tree.parse(tree.pp_treebank())
+    False
+
+    >>> tree != Tree.parse(tree.pp_treebank())
+    False
+    >>> tree2 != Tree.parse(tree2.pp_treebank())
+    False
+    >>> tree != tree2
+    True
+    >>> tree != Tree.parse(tree2.pp_treebank())
+    True
+    >>> tree2 != Tree.parse(tree.pp_treebank())
+    True
+    
+    >>> tree < tree2 or tree > tree2
+    True
+"""
+
+#######################################################################
+# Test Runner
+#######################################################################
+
+import sys, os, os.path
+if __name__ == '__main__': sys.path[0] = None
+import unittest, doctest, trace
+
+def testsuite(reload_module=False):
+    import doctest, nltk.test.tree
+    if reload_module: reload(nltk.test.tree)
+    return doctest.DocTestSuite(nltk.test.tree)
+
+def test(verbosity=2, reload_module=False):
+    runner = unittest.TextTestRunner(verbosity=verbosity)
+    runner.run(testsuite(reload_module))
 
 if __name__ == '__main__':
-    test()
+    test(reload_module=True)
