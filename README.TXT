@@ -189,10 +189,9 @@ Releases
 
     The procedure for making a new release is:
 
-        1. Update the version number.  The version number is
+        1. Update the version numbers.  The version numbers are
            currently listed/referenced in the following files:
-             - Makefile
-             - doc/Makefile
+             - Makefile (CORPORA_VERSION)
              - doc/webpage/index.html
              - src/nltk/__init__.py
              - contrib/nltk_contrib/__init__.py
