@@ -79,7 +79,7 @@ from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
 from nltk.draw.cfg import CFGEditor
-from nltk.token import WSTokenizer
+from nltk.tokenizer import WSTokenizer
 from Tkinter import *
         
 class ShiftReduceParserDemo:
@@ -763,7 +763,6 @@ def demo():
 
     # tokenize the sentence
     sent = 'my dog saw a man in the park with a statue'
-    from nltk.token import WSTokenizer
     text = WSTokenizer().tokenize(sent)
 
     ShiftReduceParserDemo(grammar, text).mainloop()

@@ -51,7 +51,7 @@ strings.
 from nltk.chktype import chktype as _chktype
 from nltk.chktype import classeq as _classeq
 import types
-from nltk.token import Token, TokenizerI, Location
+from nltk.tokenizer import Token, TokenizerI, Location
 import re
 from nltk.probability import FreqDist, ConditionalFreqDist
 

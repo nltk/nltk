@@ -13,7 +13,7 @@ Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
 from nltk.parser.probabilistic import InsidePCFGParser
-from nltk.token import CharTokenizer
+from nltk.tokenizer import CharTokenizer
 from nltk.set import *
 from nltk.cfg import *
 from nltk.tree import *

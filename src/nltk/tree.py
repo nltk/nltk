@@ -47,7 +47,8 @@ functions are defined:
 @group Tokenizers: TreebankTokenizer
 """
 
-from nltk.token import Token, Location, TokenizerI
+from nltk.token import Token, Location
+from nltk.tokenizer import TokenizerI
 from nltk.probability import ProbabilisticMixIn
 import re
 from nltk.chktype import chktype as _chktype

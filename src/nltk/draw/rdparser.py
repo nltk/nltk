@@ -69,6 +69,7 @@ Keyboard Shortcuts::
 from nltk.draw.tree import *
 from nltk.draw import *
 from nltk.parser import *
+from nltk.tokenizer import *
         
 class RecursiveDescentParserDemo:
     """
@@ -865,7 +866,6 @@ def demo():
     grammar = CFG(S, productions)
 
     sent = 'the dog saw a man in the park'
-    from nltk.token import WSTokenizer
     text = WSTokenizer().tokenize(sent)
 
     RecursiveDescentParserDemo(grammar, text).mainloop()
