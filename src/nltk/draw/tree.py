@@ -337,6 +337,7 @@ class TreeView:
     def destroy(self, *args):
         """
         Destroy the root window.
+        
         @rtype: C{None}
         """
         if self._top is None: return

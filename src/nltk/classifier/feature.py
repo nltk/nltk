@@ -295,7 +295,7 @@ class ArrayFeatureValueList(FeatureValueListI):
     @type _default: (immutable)
     @ivar _default: The default value.
     """
-    def __init__(self, values):
+    def __init__(self, values, default=0):
         """
         Build a new C{ArrayFeatureValueList}.
 
@@ -931,12 +931,12 @@ class LabeledFeatureValueList:
         new labeled feature value list for C{labeled_text}.  It uses
         C{feature_detector_list} to produce the feature value list::
 
-            >>> fvl = feature_detector_list.detect(labeled_text)
+            >>> fvlist = feature_detector_list.detect(labeled_text)
             >>> label = labeled_text.label()
-            >>> lfvl = LabeledFeatureValueList(lfvl, label)
+            >>> lfvlist = LabeledFeatureValueList(fvlist, label)
         
-        @param fvl: The feature value list
-        @type fvl: C{FeatureValueList}
+        @param fvlist: The feature value list
+        @type fvlist: C{FeatureValueList}
         @param label: The label
         @type label: C{string}
         """
