@@ -1,0 +1,117 @@
+Christopher Maloof								5/03
+
+An implementation of the Brill tagger
+
+Introduction
+	I implemented a Brill tagger (“transformation-based error-driven learner”) in Python for the Natural Language Toolkit.  The tagger requires an initial (probably less-sophisticated) tagger and a set of templates for generating transformations or rules.  It can be trained on a corpus of annotated data; this involves stripping the annotations, re-tagging the unannotated corpus using the initial tagger, and then using the templates to generate the rules which fix the most tagging errors.  Once trained, it can tag a new data set by first using the initial tagger and then applying the ordered list of rules.
+	The tagger is not especially fast, which made it difficult to run many tests on large data sets.  Informal tests indicated that the accuracy of the tagger is only slightly better than a unigram tagger’s when it generates 30-100 rules from a corpus of a few ten thousands of lexical tokens tagged with parts of speech.  Most of the errors are on “unknown words” that weren’t in the training corpus and are arbitrarily tagged as nouns by the unigram tagger.
+	It does, however, generate rules which seem intuitively sensible, even for relatively small corpora.  Extensions to speed up the tagging process and improve unknown word tagging would be relatively simple to implement and would allow larger tests to be run.  This in turn would make it easier to try experiments and modifications, such as adding different sorts of rules.
+
+Interfaces
+	The Brill tagger follows the NLTK TaggerI interface.  Besides tagging, it also allows training on a corpus, which must be done before tagging is possible; loading transformation lists from files, which can replace training; and saving rule lists produced by training.
+	Key to training a Brill tagger are the templates that define the kinds of rules it can use.  These are defined by the TemplateI interface.  The important operation of a TemplateI is to accept a tagged corpus, an index, and the correct tag for the index in the corpus, and return a list of rules that would make the tag correct.  For example, given a tagged corpus “the/DT dog/VB barks/VBZ”, an index for the second word, and “NN” as the correct tag, a template for looking at the tags of preceding tokens would return the transformation “Replace VB with NN if it’s preceded by a word tagged with DT.”  A template for looking at the base words of following tokens would return “Replace VB with NN if it’s followed by the word “barks”.
+	The transformations themselves are defined by the RuleI interface.  A RuleI has two main operations.  Given a corpus and an index, the RuleI can test whether it would make a change at that index of the corpus.  And given a corpus and a subset of indices of the corpus, the RuleI can apply itself to those indices, modifying the corpus and returning the list of indices where it made changes.
+
+Templates
+	The “standard” Brill templates given in Brill (1995) all generate rules that can be written in the form “If the nth token is tagged A, and any token between n+start and n+end has property B, and ... , then change the tag of the nth token from A to C.”  For example, start=end=-1 would refer to rules that check just the preceding token.  Note that multiple tests may be included in a rule; the rule applies if they all hold.
+	These templates can all be implemented as instances of a ProximateTokensTemplate, which examines properties of certain tokens whose locations are specified relative to the target token.  Subclasses of ProximateTokensTemplate can generate rules which check either tags or base types (words) of nearby tokens; other subclasses could very easily be written to look at other properties of the tokens (e.g., their suffixes, or the general classification of a tag, like “noun” or “verb”) as well.
+	Other kinds of templates are certainly possible.  It’s not necessary for templates to refer only to fixed relative locations like “the token 2 to the right”; it would also be possible to refer things like “the first token to the left following a comma”, among many other possibilities.  A template could conceivably attempt to find the boundaries of phrases and sentences, and generate rules referring to these higher-level objects.  It’s hard to guess whether these kinds of things would be useful without examining the sorts of errors that better Brill taggers make, and seeing whether attempting to use higher-level constructs might help to fix them.
+	Perhaps unfortunately, templates are limited to a single “change A to C” instruction, so we can’t create rules that would, say, change any of several verb classes to NN under some condition, although this might be more perspicuous than a set of low-ranked individual rules taking VB --> NN, VBP --> NN, etc.
+
+Training
+	The training algorithm repeatedly determines the transformation that would produce the greatest net reduction in error in the corpus; applies this rule; and repeats indefinitely, storing all the rules in a list.  It typically stops after it generates a predetermined number of rules, or when it can no longer find any rules with significant positive effect.
+	My implementation, on each iteration, first notes the errors in the corpus and produces all rules that fix any of these errors, together with a count of how many errors each rule fixes.  Of course, transformations on the corpus may also introduce new mistakes by retagging previously-correct tokens.  Each useful rule is therefore tested on the set of correctly-tagged tokens as well; to save time, the correct part of the corpus is organized by tag, so that each rule need only be tested on the correct tokens which have its “target” tag.  In addition, the rules which fix the most errors are checked first, and we end the search when we find that the net error reduction produced by some rule is at least as large as the number of errors fixed by the best untested rule.
+	For a corpus of n tokens, this algorithm theoretically could require O(n2) time in the limit.  The number of rules generated is proportional to the number of errors, which (although small) is proportional to n.  Testing useful rules on the correct part of the corpus requires us to potentially traverse a constant fraction of the corpus for every rule.  In practice, however, ordering the rules allows us to check relatively few of them, and the bulk of the algorithm’s time seems to be spent finding applicable rules in the first place.
+	So sorting the corpus by tag reduces traversal time, and ordering our rule tests reduces the number of rules we need to check.  But producing the 50 best rules for a corpus of 40,000 tokens still requires about 40 minutes on gradient.cis.upenn.edu.  50 rules on a corpus of 8,000 tokens took only 6 minutes, while generating just 8 rules on a corpus of 240,000 tokens required 72 minutes.  We can conclude that in practice, the time required per rule chosen does increase faster than n, although slower than n2.
+	Further optimizations are probably possible, but to gain really significant speed will most likely require storing information about the corpus and useful rules across iterations of the algorithm.  Ramshaw and Marcus (1994) present an algorithm that does this; it could be implemented in this framework if a getNeighborhood method were added to RuleI to indicate which tokens a rule might be conditioned on.
+
+Results
+	For the most part, this implementation of the Brill tagger produced interesting and intuitive rules but didn’t actually perform much better than the simple unigram tagger it used to do its initial tagging.  I didn’t do any comprehensive formal tests, as these would be very time-consuming under the current implementation, and the gist of the results seems clear.  A variety of tests, using training corpus sizes in the range of 10-50,000 tokens and generating 30-100 rules, consistently showed that the Brill tagger was approximately 1-2 percentage points more accurate than its base tagger.  (The actual accuracies in our tests varied from around 70% to nearly 90%, depending heavily on how well the base unigram tagger was trained.)  Adding lexical rule templates didn’t make an obvious difference, although lexical rules are frequently generated.
+	Most rules made a certain amount of intuitive sense.  Attached as an appendix is a list of the first 30 rules generated by a tagger training on a 200,000-word corpus.  We compared this to a list of the first 30 rules generated from a 47,000-word corpus, and found that 16 of the rules were identical and 5 more were extremely similar, differing only in how far away they searched for a tag.
+
+Analysis
+	Manual examination of errors made by the tagger reveals that a large majority of them seem to be words improperly given the “singular noun” tag NN.
+	A large proportion of the words in a test set tend to be unknown.  The initial tagger always tags these with NN (or CD for numbers).  These NN tags seem to be difficult to repair using rules.  Unknown words come in many types.  Some are proper names, as would be expected; but for corpora as small as those we’re using, many ordinary noun and verb forms just happen not to occur in the training data.  The result is that incorrect NN tags are scattered through the data with few obvious patterns; this is suggested by the observation that despite NN’s frequency, few of the top rules actually fix NN tags at all.
+	Unknown words not only resist correct tagging, but also hamper efforts to tag nearby words, because they obscure the words’ real context.  It’s not clear how large an effect this has, but sequences of several NN tags in the Brill-tagged text seem to be common.  (Typically some NN tags in such a sequence are actually correct.)  Presumably these are hard to fix; even the first tag in an NN sequence is missing about half its proper context, and the inner tags are missing even more, at least until the outer tags are corrected.
+	A simple solution would be to use a better initial tagger, or at least train our unigram tagger on more of the corpus.  (It’s currently trained on the same data as the Brill tagger in my standard test method, even though it can handle larger corpora.)  We could handle unknown words separately by having the unigram tagger back off to a tagger more suited for guessing new words’ tags.  One candidate would be another Brill tagger pre-trained specifically to tag unknown words based on things like prefixes; Brill (1995) describes such a tagger.  It could easily be implemented using ProximateTokenTemplates, because the letters in a word can be considered a property of a token, and looking only at tokens a fixed distance away should be fine (a distance of 1 or 0 would probably suffice).
+
+Conclusions
+	The Brill tagger is not too difficult to implement, but the obvious implementations take a long time to train on large data sets.  Furthermore, a Brill tagger doesn’t work well without a good initial tagger that handles unknown words.  Such new words are common but hard to distinguish if they’re just given arbitrary tags, and they tend to obscure the actual context of other words in the corpus as well.  Even so, however, the training algorithm is sufficient to produce rules that appear sensible and are of some use.
+
+
+References
+
+Brill, E. (1995).  “Transformation-based error-driven learning and natural language 	processing: A case study in part of speech tagging.”  Computational Linguistics 	21(4): 543-565.
+
+Ramshaw, L.A., and Marcus, M.P. (1994).  “Exploring the statistical derivation of 	transformational rule sequences for part-of-speech tagging.”  In The Balancing 	Act: Proceedings of the ACL Workshop on Combining Symbolic and Statistical 	Approaches to Language, New Mexico State University.
+
+
+
+
+Appendix: Top 30 rules for a corpus of 200,000 tokens
+
+---
+
+Replace NN with VB if the preceding word is tagged TO (score: 243)
+
+Replace VBP with VB if one of the 3 preceding words is tagged MD (score: 207)
+
+Replace NN with VB if the preceding word is tagged MD (score: 177)
+
+Replace VBN with VBD if the preceding word is tagged NNP (score: 153)
+
+Replace VB with NN if one of the 2 preceding words is tagged DT (score: 151)
+
+Replace VBN with VBD if the preceding word is tagged PRP (score: 133)
+
+Replace POS with VBZ if one of the 2 preceding words is tagged PRP (score: 129)
+
+Replace VBP with VB if the preceding word is tagged TO (score: 128)
+
+Replace VB with VBP if the preceding word is tagged NNS (score: 124)
+
+Replace VBD with VBN if one of the 2 preceding words is tagged VBZ (score: 121)
+
+Replace VBD with VBN if the preceding word is tagged VBD (score: 98)
+
+Replace IN with WDT if the following word is tagged VBZ (score: 88)
+
+Replace VBD with VBN if one of the 3 preceding words is have (score: 86)
+
+Replace VB with VBP if the preceding word is tagged PRP (score: 85)
+
+Replace IN with RB if the word 2 after is as (score: 84)
+
+Replace JJR with RBR if the following word is tagged JJ (score: 84)
+
+Replace IN with WDT if the following word is tagged MD (score: 82)
+
+Replace VBP with VB if one of the 2 preceding words is n't (score: 70)
+
+Replace VBD with VBN if one of the 3 preceding words is be (score: 54)
+
+Replace IN with WDT if the following word is tagged VBP (score: 45)
+
+Replace IN with WDT if the following word is tagged VBD (score: 37)
+
+Replace VBN with VBD if the preceding word is tagged NN, and the following word is tagged DT (score: 37)
+
+Replace POS with VBZ if the following word is tagged DT (score: 36)
+
+Replace IN with RB if the following word is tagged , (score: 34)
+
+Replace NN with VB if the preceding word is n't (score: 34)
+
+Replace RB with JJ if the preceding word is tagged DT, and the following word is tagged NN (score: 33)
+
+Replace VB with VBP if the preceding word is that (score: 29)
+
+Replace VBN with VBD if the preceding word is tagged NNS, and the following word is tagged DT (score: 29)
+
+Replace IN with WDT if the following word is tagged VBP (score: 29)
+
+Replace NNS with VBZ if the preceding word is tagged PRP (score: 28)
+
+---
+
+These rules collectively fixed 2635 out of the 9809 errors found in the training corpus.
