@@ -501,8 +501,7 @@ class TreeToken(token.Token):
             typechildren.append(child.type())
         return Tree(self._node, *typechildren)
 
-    # [sb: this should be called loc() not location()]
-    def location(self):
+    def loc(self):
         """
         Return the location of this C{TreeToken}.  If none of the
         leaves of this C{TreeToken} have locations, then this location
@@ -520,10 +519,6 @@ class TreeToken(token.Token):
         """
         return self._location
 
-    # [sb: for future compatibility]
-    def loc(self):
-        return self._location
-    
     def pp(self, margin=70, indent=0):
         """
         @return: A pretty-printed string representation of this
