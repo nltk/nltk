@@ -130,10 +130,20 @@ def parseTaggedType(string):
 
 class TaggedTokenizer(TokenizerI):
     """
-    A tokenizer that splits a string of tagged text into words, based
-    on whitespace.  Each tagged word is encoded as a C{Token} whose
-    type is a C{TaggedType}.  Location indices start at zero, and have
-    a unit of C{'w'}.
+    A tokenizer that splits a string of tagged text into tokens.  Each
+    tagged token is encoded as a C{Token} whose type is a
+    C{TaggedType}.  Location indices start at zero, and have a unit of
+    C{'w'}.
+
+    The string is split into words using whitespace, and each word
+    should have the form C{I{type}/I{tag}}, where C{I{type}} is the
+    base type for the token, and C{I{tag}} is the tag for the token.
+    Words that do not contain a slash are treated as C{I{type}/None}
+
+      >>> tt = TaggedTokenizer()
+      >>> tt.tokenize('The/DT dog/NN saw/VBD him/PRP')
+      ['The'/'DT'@[0w], 'dog'/'NN'@[1w],
+       'saw'/'VBD'@[2w], 'him'/'PRP'@[3w]]
     """
     def __init__(self): pass
     def tokenize(self, str, source=None):
