@@ -1,0 +1,208 @@
+\documentclass{cis530}
+\usepackage{url}
+\num{2}\due{1:30pm Monday 1 October 2001}
+
+\begin{document}
+\maketitle
+
+Please read the tutorials on \emph{Tagging} and \emph{Writing Classes
+for NLTK}.
+
+{\bf Accessing NLTK.}  
+To access the centrally installed version of NLTK on unagi you will
+need to have\\ \texttt{/spd25/cis530/nltk/src} in your PYTHONPATH (see
+Lutz pp20ff).  If you are working from your own copy of NLTK, it will
+be necessary to download the current version (0.2); please see the
+course website for details.
+
+{\bf Grading.}  
+Points will be awarded for well-structured and well-documented code.
+Points will be deducted for late submissions.  Assignments must be
+strictly original work.
+
+{\bf Submission.}  
+Please email your completed assignment as a
+\emph{single Python program} to both instructors
+\texttt{sb@cis, edloper@gradient.cis}, in the body of the message.
+Please use plain ASCII (no zip files or attachments) and ensure
+that no lines are longer than 80 characters.
+
+\section{Lexicon and Morphology}
+
+Complete the following questions from Finegan chapter 2, on pp. 64-66:
+\emph{(a) 2-1, (b) 2-2, (c) 2-3, (d) 2-9}.  
+Save your answers using functions named
+\texttt{p1a()}, \texttt{p1b()}, \texttt{p1c()}, and \texttt{p1d()}, which
+return formatted text strings.  These functions should have the form:
+
+{\tt
+\begin{tabbing}
+def p1a():\\
+\qquad return """\\
+\textit{(place your solution here)}\\
+"""
+\end{tabbing}
+}
+
+\section{Morphological Analysis}
+
+Wrtie a function, \texttt{p2()}, that uses NLTK to draw trees for each
+of the words listed in problem \emph{2-8} of Finegan (chapter 2,
+p. 66).  You can use the \texttt{Tree} class to draw trees.  For
+example, you could draw the tree found on page 47 of Finegan with the
+following Python code:
+
+\begin{verbatim}
+from nltk.tree import Tree
+t1 = Tree('Adverb',
+          Tree('Adjective', 'un',
+               Tree('Adjective',
+                    Tree('Verb', 'control'),
+                    'able')),
+          'ly')
+t1.draw()
+\end{verbatim}
+
+Note that the \texttt{Tree} constructor takes the tree's node value,
+followed by a list of children.  Refer to the \texttt{Tree} reference
+documentation for more information.  We will cover \texttt{Tree}s in
+detail when we discuss parsing.
+
+\section{Syntax}
+
+Complete questions \emph{(a) 5-1} and \emph{(b) 5-2} from Finegan
+chapter 5, on pp. 174-175.  Save your answers using functions named
+\texttt{p3a()} and \texttt{p3b()}, which return formatted text
+strings.  These functions should have the form:
+
+{\tt
+\begin{tabbing}
+def p3a():\\
+\qquad return """\\
+\textit{(place your solution here)}\\
+"""
+\end{tabbing}
+}
+
+\section{Syntax Trees}
+
+Write a function, \texttt{p4a()}, that draws each of the trees
+requested in problem \emph{5-3} in Finegan (chapter 5, pp. 174-175).
+You can use the \texttt{Tree} class to draw trees.  For example, you
+could draw the tree for the sentence ``dogs chase cats'' with the
+following code:
+
+\begin{verbatim}
+from nltk.tree import Tree
+t2 = Tree('S',
+          Tree('NP', 'dogs'),
+          Tree('VP', 
+               Tree('V', 'chase'),
+               Tree('NP', 'cats')))
+t2.draw()
+\end{verbatim}
+
+Write a function, \texttt{p4b()}, which returns a formatted
+documentation string answering the remaining questions from problem
+\emph{5-3}.  This function should have the form:
+
+{\tt
+\begin{tabbing}
+def p4b():\\
+\qquad return """\\
+\textit{(place your solution here)}\\
+"""
+\end{tabbing}
+}
+
+\section{Rule-Based Tagging}
+
+NLTK defines the \texttt{NN\_CD\_Tagger}, which is typically used as a
+``fall-back'' tagger, to tag unknown words.  It tags tokens as either
+numbers (``CD'') or nouns (``NN''), by checking whether their type
+matches a simple regular expression.  Although \texttt{NN\_CD\_Tagger}
+has decent performance, there is a lot of room for improvement.  For
+example, we could tag any word that ends with ``-s'' as a plural noun.
+Propose four new rules that could be used to tag unknown words, based
+on the contents of their type.
+
+Write a new tagger named \texttt{P5}, which implements these new
+rules.  Your code for \texttt{P5} should have the form:
+
+{\tt
+\begin{tabbing}
+class P5(TaggerI):\\
+\qquad def \_\_init\_\_(self):\\
+\qquad\qquad $\ldots$\\
+\\
+\qquad def tag(self, tokens):\\
+\qquad\qquad $\ldots$
+\end{tabbing}
+}
+
+\newpage
+You can use the \texttt{accuracy} function in the \texttt{nltk.tagger}
+module to test the accuracy of your new tagger.  Since it is generally
+advisable to test a system on different data than you train it on, we
+suggest that you set aside the first 100 tokens of your training text
+for testing.  The following function could be used to test your
+tagger:
+
+{\tt
+\begin{tabbing}
+from nltk.tagger import TaggedTokenizer, untag, accuracy, TaggerI\\
+\\
+def test\_p5():\\
+\qquad tokens = TaggedTokenizer().tokenize(open('taggedcorpus.txt', 'r').read())\\
+\qquad tagger = P5()\\
+\qquad tagger.train(tokens[100:])\\
+\qquad result = tagger.tag(untag(tokens[100:]))\\
+\qquad print 'Accuracy', accuracy(tokens[100:], result)
+\end{tabbing}
+}
+
+You can find tagged corpera in \texttt{/data/brown/} on the
+resources CD; or in
+\texttt{/spd25/cis530/cdrom/resources/data/brown/} on unagi.
+
+\section{Probablistic Tagging}
+
+NLTK defines the \texttt{NthOrderTagger}, which uses a token's base
+type and the predicted tags of the previous $n$ tokens to help predict
+each new tag.  In other words, it uses the following context to
+predict each tag:
+
+$$context(i) = \langle token_i.basetype, token_{i-1}.tag, \ldots, token_{i-n}.tag\rangle$$
+
+Using this context, \texttt{NthOrderTagger} can tag texts with
+relatively high accuracy.  However, it is possible to define taggers
+that use many other contexts.  Some examples of alternative contexts
+which might yield good results are:
+
+$$context(i) = \langle token_i.basetype, token_{i-1}.basetype\rangle$$
+$$context(i) = \langle token_i.basetype, token_{i+1}.basetype\rangle$$
+$$context(i) = \langle token_i.basetype, token_{i-1}.basetype, token_{i-1}.tag\rangle$$
+$$context(i) = \langle Set(token_{i-2}.basetype, \ldots, token_{i+2}.basetype\rangle$$
+
+Choose one of these contexts, or come up with your own, and use it to
+write a probablistic tagger nameed \texttt{P6}.  Your code for
+\texttt{P6} should have the form:
+
+{\tt
+\begin{tabbing}
+class P6(TaggerI):\\
+\qquad def \_\_init\_\_(self):\\
+\qquad\qquad $\ldots$\\
+\\
+\qquad def train(self, tagged\_tokens):\\
+\qquad\qquad $\ldots$\\
+\\
+\qquad def tag(self, tokens):\\
+\qquad\qquad $\ldots$
+\end{tabbing}
+}
+
+You can use the \texttt{accuracy} function in the \texttt{nltk.tagger}
+module to test the accuracy of your new tagger (see problem 5).
+
+\end{document}
