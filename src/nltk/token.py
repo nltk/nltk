@@ -177,12 +177,12 @@ class Token(dict):
             after the frozen copy is generated will not be propagated
             to the frozen copy.
         """
-        FROZENerties = {}
+        frozen_properties = {}
         for (key, val) in self.items():
-            FROZENerties[key] = self._freezeval(val)
+            frozen_properties[key] = self._freezeval(val)
             
         frozen_token_class = self.frozen_token_class()
-        return frozen_token_class(**FROZENerties)
+        return frozen_token_class(**frozen_properties)
 
     def frozen_token_class():
         """
@@ -387,6 +387,13 @@ class Token(dict):
         Raise C{TypeError}, since C{Token} obejcts are unhashable.
         """
         raise TypeError('%s objects are unhashable' %
+                        self.__class__.__name__)
+
+    def __len__(self):
+        """
+        Raise C{TypeError}, since C{Token} objects are unsized.
+        """
+        raise TypeError('len() of unsized %s object' %
                         self.__class__.__name__)
 
 # Register some specialized string representations for common
