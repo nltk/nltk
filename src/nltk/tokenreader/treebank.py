@@ -36,8 +36,7 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     @outprop: C{SUBTOKENS}: A list of the tree's leaves.
     @outprop: C{TEXT}: The text of the tree's subtokens.
     """
-    def __init__(self, add_locs=False, add_contexts=False, 
-                 add_subtoks=True, **property_names):
+    def __init__(self, **property_names):
         """
         @type add_locs: C{bool}
         @param add_locs: Should this token reader add the C{LOC}
@@ -55,13 +54,12 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             will contain a list of the trees leaves.
         """
         PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._add_locs = add_locs
-        self._add_contexts = add_contexts
-        self._add_subtoks = add_subtoks
         self._source = None # <- not thread-safe.
 
-    def read_token(self, s, source=None):
-        treetoks = self.read_tokens(s, source)
+    def read_token(self, s, add_contexts=False, add_subtoks=True,
+                   add_locs=False, source=None):
+        treetoks = self.read_tokens(s, add_contexts, add_subtoks,
+                                    add_locs, source)
         if len(treetoks) == 0:
             raise ValueError, 'No tree found'
         elif len(treetoks) > 1:
@@ -69,13 +67,19 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
         else:
             return treetoks[0]
 
-    def read_tokens(self, s, source=None):
+    def read_tokens(self, s, add_contexts=False, add_subtoks=True,
+                   add_locs=False, source=None):
         TREE = self.property('TREE')
         SUBTOKENS = self.property('SUBTOKENS')
         self._source = source
+
+        if add_locs:
+            leafparser = self._locs_leafparser
+        else:
+            leafparser = self._nolocs_leafparser
         
         treetoks = []
-        for tree in Tree.parse_iter(s, leafparser=self._leafparser):
+        for tree in Tree.parse_iter(s, leafparser=leafparser):
             # If the tree has an extra level with node='', then get
             # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
             if len(tree) == 1 and tree.node == '':
@@ -86,22 +90,27 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             treetoks.append(treetok)
             
             # Add contexts to leaf tokens, if requested.
-            if self._add_contexts:
+            if add_contexts:
                 self._add_contexts_to_leaves(treetok, tree, ())
 
             # Add the SUBTOKENS property, if requested
-            if self._add_subtoks:
+            if add_subtoks:
                 treetoks[-1][SUBTOKENS] = tree.leaves()
 
         # Return the list
         return treetoks
 
-    def _leafparser(self, text, (start, end)):
+    def _locs_leafparser(self, text, (start, end)):
         TEXT = self.property('TEXT')
         LOC = self.property('LOC')
         tok = Token(**{TEXT: text})
-        if self._add_locs:
-            tok[LOC] = CharSpanLocation(start, end, self._source)
+        tok[LOC] = CharSpanLocation(start, end, self._source)
+        return tok
+
+    def _nolocs_leafparser(self, text, (start, end)):
+        TEXT = self.property('TEXT')
+        LOC = self.property('LOC')
+        tok = Token(**{TEXT: text})
         return tok
 
     def _add_contexts_to_leaves(self, container, val, path):
@@ -116,21 +125,22 @@ class TreebankTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             assert 0, 'Unexpected object type in tree'
 
 class TreebankFileTokenReader(TokenReaderI):
-    def __init__(self, add_locs=False, add_contexts=False, 
-                 add_subtoks=True, **property_names):
-        self._tb_reader = TreebankTokenReader(
-            add_locs=add_locs, add_contexts=add_contexts,
-            add_subtoks=add_subtoks, **property_names)
+    def __init__(self,  **property_names):
+        self._tb_reader = TreebankTokenReader(**property_names)
 
     def property(self, name):
         return self._tb_reader.property(name)
 
-    def read_token(self, s, source=None):
-        treetoks = self._tb_reader.read_tokens(s, source)
+    def read_token(self, s, add_contexts=False, add_subtoks=True,
+                   add_locs=False, source=None):
+        treetoks = self._tb_reader.read_tokens(s, add_contexts, add_subtoks,
+                                               add_locs, source)
         return Token(**{self.property('SUBTOKENS'): treetoks})
 
-    def read_tokens(self, s, source=None):
-        return [self.read_token(s, source)]
+    def read_tokens(self, s, add_contexts=False, add_subtoks=True,
+                   add_locs=False, source=None):
+        return [self.read_token(s, add_contexts, add_subtoks,
+                                add_locs, source)]
     
 class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
@@ -167,18 +177,16 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             chunker as part of the PARTS preprocessor, and \"are best
             ignored.\"
     """
-    def __init__(self, add_locs=False, add_contexts=False,
-                 **property_names):
+    def __init__(self,  **property_names):
         PropertyIndirectionMixIn.__init__(self, **property_names)
-        self._add_locs = add_locs
-        self._add_contexts = add_contexts
 
         # A token reader for processing sentences.
         self._sent_reader = ChunkedTaggedTokenReader(
-            add_locs, add_contexts, top_node='S', chunk_node='NP_CHUNK',
-            **property_names)
+            top_node='S', chunk_node='NP_CHUNK', **property_names)
+            
 
-    def read_token(self, s, source=None):
+    def read_token(self, s, add_contexts=False, add_locs=False, 
+                   source=None):
         assert chktype(1, s, str)
 
         TEXT = self.property('TEXT')
@@ -204,17 +212,19 @@ class TreebankTaggedTokenReader(TokenReaderI, PropertyIndirectionMixIn):
             sent_toks = []
             for sent_num, sentence in enumerate(sentences):
                 sent_loc = SentIndexLocation(sent_num, para_loc)
-                sent_tok = self._sent_reader.read_token(sentence, sent_loc)
+                sent_tok = self._sent_reader.read_token(
+                    sentence, add_contexts=add_contexts,
+                    add_locs=add_locs, source=sent_loc)
                 sent_toks.append(sent_tok)
             para_toks.append(Token(**{SENTS: sent_toks}))
-            if self._add_locs:
+            if add_locs:
                 para_toks[-1][LOC] = para_loc
 
         # Create a token for the document
         tok = Token(**{PARAS: para_toks})
 
         # Add context pointers, if requested
-        if self._add_contexts:
+        if add_contexts:
             for para_num, para_tok in enumerate(tok[PARAS]):
                 para_tok[CONTEXT] = SubtokenContextPointer(tok, PARAS,
                                                            para_num)
