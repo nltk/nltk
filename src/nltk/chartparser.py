@@ -17,65 +17,66 @@ from nltk.tree import *
 from nltk.set import *
 
 def edgecmp(e1,e2):
-    return cmp((e1.loc().length(), e1.loc(), e1.dotted_rule()),
-               (e2.loc().length(), e2.loc(), e2.dotted_rule()))
+    return cmp((e1.loc().length(), e1.loc(), e1.drule()),
+               (e2.loc().length(), e2.loc(), e2.drule()))
 
 class Edge:
-    # [edloper n.b.: I want to change the internal rep of edges.. sometime.]
     """
-    An edge of a chart.    Edges are represented using C{Token}s, since
-    an edge is just a piece of linguistic information at a
-    C{Location}.    Edges also contain a C{DottedRule} and a C{Tree}.
-    This class mainly provides a convenient wrapper around C{Token} with
-    a suitable initializer and accessor functions.    Additionally, it provides
-    functions to perform common chart-parser functions on edges.
+    An edge of a chart.    An edges is a span of tokens (i.e. a C{Location})
+    with an associated C{DottedRule} and a C{Tree}.  The Edge class provides
+    basic functions plus a some common chart-parser functions on edges.
 
-    @type _edge: C{Token}
-    @ivar _edge: The edge data structure, a C{Token} with a complex type
+    @type _drule: C{DottedRule}
+    @ivar _drule: The dotted rule of the edge.
+    @type _tree: C{TreeToken}
+    @ivar _tree: The current parse tree of the edge.
+    @type _loc: C{Location}
+    @ivar _loc: The span of tokens covered by the edge.
     """
     
-    def __init__(self, dotted_rule, children, loc):
-        self._edge = Token((dotted_rule, children), loc)
-    def dotted_rule(self):
-        return self._edge.type()[0]
+    def __init__(self, drule, tree, loc):
+        self._drule = drule
+        self._tree = tree
+        self._loc = loc
+    def drule(self):
+        return self._drule
     def tree(self):
-        return self._edge.type()[1]
-    def lhs(self):
-        return self.dotted_rule().lhs()
-    def next(self):
-        return self.dotted_rule().next()
+        return self._tree
+    # a complete edge is one whose dotted rule is complete
     def complete(self):
-        return self.dotted_rule().complete()
+        return self._drule.complete()
     def loc(self):
-        return self._edge.loc()
+        return self._loc
+    # the start/end of an edge is the start/end of the edge's location
     def start(self):
-        return self.loc().start()
+        return self._loc.start()
     def end(self):
-        return self.loc().end()
+        return self._loc.end()
     def __repr__(self):
-        return repr(self.dotted_rule())\
-               + repr(self.tree()) + repr(self.loc())
+        return repr(self._drule) + repr(self._tree) + repr(self._loc)
     def __eq__(self, other):
-        return (self._edge == other._edge)
+        return (self._drule == other._drule and
+                self._tree == other._tree and
+                self._loc == other._loc)
     def __hash__(self):
-        return hash((self.dotted_rule(), self.tree(), self.loc()))
+        return hash((self._drule, self._tree, self._loc))
 
     def self_loop_start(self, rule):
         loc = self.loc().start_loc()
-        dotted_rule = rule.dotted()
-        return Edge(dotted_rule, Tree(dotted_rule.lhs()), loc)
+        dr = rule.drule()
+        return Edge(dr, Tree(dr.lhs()), loc)
 
     def self_loop_end(self, rule):
-        loc = self.loc().end_loc()
-        dotted_rule = rule.dotted()
-        return Edge(dotted_rule, Tree(dotted_rule.lhs()), loc)
+        loc = self._loc.end_loc()
+        dr = rule.drule()
+        return Edge(dr, Tree(dr.lhs()), loc)
 
     def FR(self, edge):
-        loc = self.loc().union(edge.loc())
-        dotted_rule = self.dotted_rule().shift()
-        tree = TreeToken(self.tree().node(),
-                         *(self.tree().children() + (edge.tree(),)))
-        return Edge(dotted_rule, tree, loc)
+        loc = self._loc.union(edge.loc())
+        dr = self._drule.shift()
+        tree = TreeToken(self._tree.node(),
+                         *(self._tree.children() + (edge.tree(),)))
+        return Edge(dr, tree, loc)
 
 class Chart:
     """
@@ -175,7 +176,7 @@ class Chart:
         spans the entire chart.
         """
         return [edge.tree() for edge in self.edges() if
-                edge.loc() == self._loc and edge.lhs() == node]
+                edge.loc() == self._loc and edge.drule().lhs() == node]
 
     def contains(self, edge):
         """
@@ -200,7 +201,7 @@ class Chart:
             start = edge.start()
             end = edge.end()
             indent = " " * width * start
-            print indent, edge.dotted_rule()
+            print indent, edge.drule()
             print indent + "|" + "-"*(width*(end-start)-1) + "|"
 
 def _seq_loc(tok_sent):
@@ -490,9 +491,9 @@ class ChartParser(ParserI):
             for rule in self._lexicon:
                 if word.type() == rule[0]:
                     # We found an edge for this word.
-                    dotted_rule = DottedRule(rule.lhs(), rule.rhs(), 1)
+                    drule = DottedRule(rule.lhs(), rule.rhs(), 1)
                     tree = TreeToken(rule.lhs(), word)
-                    edge = Edge(dotted_rule, tree, word.loc())
+                    edge = Edge(drule, tree, word.loc())
                     added += self._chart.insert(edge)
 
         # If we're tracing the output, print the newly initialized chart.
@@ -573,12 +574,8 @@ class ChartParser(ParserI):
 ############################################
 ## CHART RULES
 #
-# See the docstring for ChartParser for a discussion of # the
+# See the docstring for ChartParser for a discussion of the
 # different types of chart rules.
-
-# [edloper 9/27/01] These are external.  If we make them member
-# functions, then it is not at all obvious how you should write new
-# chart rules.  
 
 def TD_init(chart, grammar, basecat):
     "Top-down init (explicit rule)"
@@ -587,8 +584,8 @@ def TD_init(chart, grammar, basecat):
     loc = chart.loc().start_loc()
     for rule in grammar:
         if rule.lhs() == basecat:
-            dotted_rule = rule.dotted()
-            new_edge = Edge(dotted_rule, Tree(dotted_rule.lhs()), loc)
+            drule = rule.drule()
+            new_edge = Edge(drule, Tree(drule.lhs()), loc)
             added += [new_edge]
     return added
 
@@ -596,7 +593,7 @@ def TD_edge(chart, grammar, basecat, edge):
     "Top-down init (edge triggered rule)"
     added = []
     for rule in grammar:
-        if not edge.complete() and rule.lhs() == edge.next():
+        if not edge.complete() and rule.lhs() == edge.drule().next():
             new_edge = edge.self_loop_end(rule)
             added += [new_edge]
     return added
@@ -605,7 +602,7 @@ def BU_init_edge(chart, grammar, basecat, edge):
     "Bottom-up init (explicit rule helper) (NOT A RULE)"
     added = []
     for rule in grammar:
-        if edge.lhs() == rule[0]:
+        if edge.drule().lhs() == rule[0]:
             new_edge = edge.self_loop_start(rule)
             added += [new_edge]
     return added
@@ -623,7 +620,8 @@ def FR_edge(chart, grammar, basecat, edge):
     added = []
     if not edge.complete():
         for edge2 in chart.complete_edges():
-            if edge.next() == edge2.lhs() and edge.end() == edge2.start():
+            if (edge.drule().next() == edge2.drule().lhs() and
+                edge.end() == edge2.start()):
                 new_edge = edge.FR(edge2)
                 added += [new_edge]
     return added
@@ -891,3 +889,5 @@ def demo():
     print "Parse(s):"
     for parse in cp.parses():
         print parse.pp()
+
+if __name__ == '__main__': demo()
