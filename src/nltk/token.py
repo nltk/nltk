@@ -585,9 +585,9 @@ class SafeToken(Token):
         assert chktype('vararg', properties, (self._checkval,))
         return super(SafeToken, self).exclude(*properties, **options)
 
-    def get(self, property):
+    def get(self, property, default=None):
         assert chktype(1, property, str)
-        return super(SafeToken, self).get(property)
+        return super(SafeToken, self).get(property, default)
 
     def has(self, property):
         assert chktype(1, property, str)
@@ -614,8 +614,8 @@ class SafeToken(Token):
     def setdefault(self, property, default=None):
         assert chktype(1, property, str)
         assert chktype(2, default, self._checkval)
-        if ((property == 'LOC') and not isinstance(value, LocationI)
-            and value is not None):
+        if ((property == 'LOC') and not isinstance(default, LocationI)
+            and default is not None):
             raise TypeError("The 'LOC' property must contain a Location")
         return super(SafeToken, self).setdefault(property, default)
         
@@ -886,8 +886,8 @@ class SpanLocation(LocationI):
         if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
         else: unit = ''
         if self._source is None: source = ''
-        else: source = str(self._source)
-        return '[%s:%s%s]@%s' % (self._start, self._end, unit, source)
+        else: source = '@%s' % self._source
+        return '[%s:%s%s]%s' % (self._start, self._end, unit, source)
 
 class CharSpanLocation(SpanLocation):
     """
@@ -924,14 +924,14 @@ class IndexLocation(LocationI):
     as word indices or time).
     """
     __slots__ = ('index', 'source')
-    def __init__(self, index, source):
+    def __init__(self, index, source=None):
         """
         Construct a new location that specifies the text at X{index}.
         @type source: C{string}
         @param source: A case-sensitive string identifying the text
             containing this location.
         """
-        if self.__class__ == SpanLocation:
+        if self.__class__ == IndexLocation:
             raise AssertionError, "Abstract classes can't be instantiated"
         self._index = index
         self._source = source
@@ -963,8 +963,8 @@ class IndexLocation(LocationI):
         if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
         else: unit = ''
         if self._source is None: source = ''
-        else: source = str(self._source)
-        return '[%s%s]@%s' % (self._index, unit, source)
+        else: source = '@%s' % self._source
+        return '[%s%s]%s' % (self._index, unit, source)
 
 class WordIndexLocation(IndexLocation):
     """
@@ -980,7 +980,7 @@ class SentIndexLocation(IndexLocation):
     containing text.
     """
     __slots__ = ()
-    UNIT = 'w'
+    UNIT = 's'
 
 class ParaIndexLocation(IndexLocation):
     """
@@ -988,7 +988,7 @@ class ParaIndexLocation(IndexLocation):
     containing text.
     """
     __slots__ = ()
-    UNIT = 'w'
+    UNIT = 'p'
 
 ######################################################################
 ## Demonstration
