@@ -49,8 +49,11 @@ from nltk.tree import TreeToken
 from nltk.set import Set
 from nltk.cfg import CFG, CFGProduction, Nonterminal
 
+from nltk.chktype import chktype as _chktype 
+from nltk.chktype import classeq as _classeq
+
 # Used for sorting by epydoc; and for "import *"
-__all__ = [
+__epydoc_sort__ = [
     # Chart Parsers
     'ChartParser',
     'SteppingChartParser',
@@ -58,7 +61,9 @@ __all__ = [
 
     # Basic data types.
     'Chart',
-    'Edge',
+    'EdgeI',
+    'ProductionEdge',
+    'TokenEdge',
     'FRChart',
 
     # Chart Rules.
@@ -78,19 +83,138 @@ __all__ = [
 ##  Edge
 ##//////////////////////////////////////////////////////
 
-class Edge:
+class EdgeI:
     """
-    A hypothesis about the tree structure for a subsequence of the
-    text.  An edge consists of a CFG production, a location, a X{dot
-    position}, and a C{TreeToken}.  It specifies that its production's
-    left hand side might expand to its right hand side, starting with
-    the subsequence of text specified by its location.  The dot
-    position is an index into the production's right hand side, which
-    indicates what right hand side elements cover the text specified
-    by its location.
+    A hypothesis about the tree structure for a subsequence of a text.
+    Each edge records the fact that a structure is (partially)
+    consistent with the text.  Every edge contains:
 
-    An edge with production C{[Production: A -> B C D]}, location
-    C{@[3w:8w]}, and dot position 2 is written::
+        - A C{Location}, indicating what subsequence of the text is
+          consistant with the structure.
+
+        - A X{left-hand side}, specifying what kind of structure is
+          consistant with the subsequence.  The left-hand side can be
+          either a nonterminal or a text type:
+              - A nonterminal specifies a C{TreeToken} whose node type
+                is the nonterminal's symbol.
+              - A text type specifies a C{Token} with that type.
+
+        - A C{Token}, recording the actual structure that is
+          consistant with the text.  This value is not used during
+          chart parsing; but it provides convenient access to complete
+          parses once the chart parsing algorithm terminates.
+
+    In addition, every edge is either "complete" or "incomplete."  An
+    edge is X{complete} if its structure has been found to be fully
+    consistent with the text.  An edge is X{incomplete} if its
+    structure is partially consistant with the text.  In particular,
+    if an edge is incomplete, then the subsequence of the text
+    specified by its location is a possible prefix for its structure.
+
+    There are two kinds of edge:
+
+        - C{TokenEdge}s record which tokens occur in the text.
+          C{TokenEdge}s are always complete.
+
+        - C{ProductionEdge}s record which trees have been found to be
+          (partially) consistant with the text.  In addition to the
+          fields discussed above, each C{ProductionEdge} contains a
+          X{right-hand side}, specifying what kind of children the
+          tree structure has.
+
+    The C{EdgeI} interface provides a common interface to both types
+    of edge, allowing chart parsers to treat them in a uniform manner.
+    """
+    def __init__(self):
+        """
+        Construct a new edge.
+        """
+        assert 0, "EdgeI is an abstract interface"
+
+    def lhs(self):
+        """
+        @return: this edge's left-hand side.  The left-hand side is a
+            nonterminal or text token specifying what kind of
+            structure this edge contains:
+                - A nonterminal specifies a C{TreeToken} whose node
+                  type is the nonterminal's symbol.
+                - A text type specifies a C{Token} with that type.
+        @rtype: C{Nonterminal} or text token
+        """
+        raise AssertionError('EdgeI is an abstract interface')
+
+    def complete(self):
+        """
+        @return: true if this edge's structure is fully consistent
+            with the text.
+        @rtype: C{boolean}
+        """
+        raise AssertionError('EdgeI is an abstract interface')
+
+    def structure(self):
+        """
+        @return: this edge's structure.
+        @rtype: C{TreeToken} or C{Token}
+        """
+        raise AssertionError('EdgeI is an abstract interface')
+
+    def loc(self):
+        """
+        @return: the location spanned by this edge.  This location
+            indicates which span of the text is (partially) consistent
+            with this edge's structure.
+        @rtype: C{Location}
+        """
+        raise AssertionError('EdgeI is an abstract interface')
+
+    def start(self):
+        """
+        @return: the start index of this edge's location.
+        @rtype: C{int}
+        """
+        raise AssertionError('EdgeI is an abstract interface')
+
+    def end(self):
+        """
+        @return: the end index of this edge's location.
+        @rtype: C{int}
+        """
+        raise AssertionError('EdgeI is an abstract interface')
+
+class ProductionEdge(EdgeI):
+    """
+    A X{production edge} specifies that a tree licensed by a
+    C{CFGProduction} is partially consistant with the text.  In
+    particular, it indicates that a prefix of the production's right
+    hand side is consistant with a subsequence of the text.  Each
+    C{ProductionEdge} contains:
+
+        - The CFG production licensing the tree that is partially
+          consistant with the text.
+
+        - The X{dot position}, which specifies what prefix of the
+          production's right hand side is consistant with the text.
+          In particular, if C{M{prod}} is the production, then the dot
+          position C{M{d}} specifies that C{M{prod}.rhs()[:M{d}]} is
+          the prefix of the production's right hand that is consistant
+          with the text.
+          
+        - A C{Location} specifying the span of the text that is
+          consistant with the prefix of the production's right hand
+          side.
+
+    For example, the production edge based on the production
+    C{[Production: VP -> V NP PP]}, with dot position C{2} and
+    location C{@[3w:7w]} indicates that the tree structure::
+
+        [VP: [V: ...] [NP: ...] [PP: ...]]
+
+    is partially consistant with the text.  In particular, it
+    specifies that the first two children of the tree are consistant
+    with the text spanning from the third word to the seventh word.
+
+    A C{ProductionEdge} with production C{[Production: A -> B C D]},
+    location C{@[3w:8w]}, and dot position 2 is written::
 
         [Edge: A -> B C * D]@[3w:8w]
 
@@ -98,88 +222,86 @@ class Edge:
     @ivar _prod: The production of the edge.
     @type _dotpos: C{int}
     @ivar _dotpos: The position of the dot.
-    @type _tree: C{TreeToken}
-    @ivar _tree: The current parse tree of the edge.
+    @type _structure: C{TreeToken}
+    @ivar _structure: The current parse tree of the edge.
     @type _loc: C{Location}
     @ivar _loc: The span of tokens covered by the edge.
     """
-    
-    def __init__(self, prod, tree, loc, dotpos=0):
+    def __init__(self, prod, structure, loc, dotpos=0):
         """
-        Construct a new C{Edge}.
+        Construct a new C{ProductionEdge}.
 
-        @param prod: The production associated with the edge.
+        @param prod: The CFG production that the edge is based on.
         @type prod: C{CFGProduction}
-        @param tree: The (partial) parse tree so far constructed for the edge.
-        @type tree: C{TreeToken}
-        @param loc: The location spanned by the edge.
+        @param structure: The (partial) parse tree that is consistant
+            with a subsequence of the text.  This tree's node value
+            should be based on the production's left-hand side.  It
+            should have C{dotpos} children, corresponding to the first
+            C{dotpos} elements of the production's right-hand side.
+            Each nonterminal in the production's right hand side
+            should correspond to a subtree whose node value is the
+            nonterminal's symbol.  Each terminal in the production's
+            right-hand side should correspond to a token whose type is
+            equal to the terminal.
+        @type structure: C{TreeToken}
+        @param loc: The location spanned by the edge.  This location
+            specifies the span of the text that is consistant with
+            a prefix of the production's right hand side.
         @type loc: C{Location}
-        @param dotpos: The position of the edge's dot.
+        @param dotpos: The position of the edge's dot.  This position
+            specifies what prefix of the production's right hand side
+            is consistant with the text.  In particular, if C{M{prod}}
+            is the production, then the dot position C{M{d}} specifies
+            that C{M{prod}.rhs()[:M{d}]} is the prefix of the
+            production's right hand that is consistant with the text.
         @type dotpos: C{int}
         """
         if not isinstance(prod, CFGProduction): raise ValueError
         self._prod = prod
-        self._tree = tree
+        self._structure = structure
         self._loc = loc
         self._dotpos = dotpos
 
+    # Accessors -- inherit docs from EdgeI
+    def lhs(self): return self._prod.lhs()
+    def structure(self): return self._structure
+    def loc(self): return self._loc
+    def start(self): return self._loc.start()
+    def end(self): return self._loc.end()
+    
     def prod(self):
         """
-        @return: the production of the edge.
+        @return: the production that this edge is based on.
         @rtype: C{CFGProduction}
         """
         return self._prod
 
     def dotpos(self):
         """
-        @return: the position of the dot in the edge's C{CFGProduction}.
+        @return: the position of the dot in the edge's production.
         @rtype: C{int}
         """
         return self._dotpos
 
     def next(self):
         """
-        @return: the next element on the right-hand side following the dot.
-        @rtype: C{object}
+        @return: the element of the edge's production's right hand
+            side that immediately follows the dot.
+        @rtype: C{Nonterminal} or terminal
         """
         return self._prod.rhs()[self._dotpos]
 
+    def rhs(self):
+        """
+        @return: the right hand side of the production that this edge
+            is based on.
+        @rtype: C{list} of (C{Nonterminal} and terminal)
+        """
+        return self._prod.lhs()
+        
     def complete(self):
-        """
-        @return: true if the dot is in the final position on the
-            right-hand side.
-        @rtype: C{boolean}
-        """
+        # Docs inherited from EdgeI
         return self._dotpos == len(self._prod.rhs())
-
-    def tree(self):
-        """
-        @return: the parse tree of the edge.
-        @rtype: C{TreeToken}
-        """
-        return self._tree
-    
-    def loc(self):
-        """
-        @return: the location spanned by this edge
-        @rtype: C{Location}
-        """
-        return self._loc
-
-    # the start/end of an edge is the start/end of the edge's location
-    def start(self):
-        """
-        @return: the start index of the edge's location
-        @rtype: C{Location}
-        """
-        return self._loc.start()
-
-    def end(self):
-        """
-        @return: the end index of the edge's location
-        @rtype: C{Location}
-        """
-        return self._loc.end()
 
     def __repr__(self):
         """
@@ -189,21 +311,17 @@ class Edge:
         return '[Edge: %s]%s' % (self, self._loc)
 
     def __str__(self):
-        if isinstance(self._prod._lhs, Nonterminal):
-            str = '%s ->' % (self._prod._lhs.symbol(),)
-        else:
-            str = '%r ->' % (self._prod._lhs,)
-        for elt in self._prod._rhs[:self._dotpos]:
-            if isinstance(elt, Nonterminal):
-                str += ' %s' % (elt.symbol(),)
+        """
+        @return: A verbose string representation of the C{Edge}
+        @rtype: C{string}
+        """
+        str = '%s ->' % (self._prod._lhs.symbol(),)
+        for i in range(len(self._prod.rhs())):
+            if i == self._dotpos: str += ' *'
+            if isinstance(self._prod.rhs()[i], Nonterminal):
+                str += ' %s' % (self._prod.rhs()[i].symbol(),)
             else:
-                str += ' %r' % (elt,)
-        str += ' *'
-        for elt in self._prod._rhs[self._dotpos:]:
-            if isinstance(elt, Nonterminal):
-                str += ' %s' % (elt.symbol(),)
-            else:
-                str += ' %r' % (elt,)
+                str += ' %r' % (self._prod.rhs()[i],)
         return str
 
     def __eq__(self, other):
@@ -211,23 +329,92 @@ class Edge:
         @return: true if this C{Edge} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (self._prod == other._prod and
-                self._tree == other._tree and
+        return (_classeq(self, other) and 
+                self._prod == other._prod and
+                self._structure == other._structure and
                 self._loc == other._loc and
                 self._dotpos == other._dotpos)
 
     def __cmp__(self, other):
         if self == other: return 0
-        return cmp((self.loc().length(), self.loc(), self.prod()),
-                   (other.loc().length(), other.loc(), other.prod()))
+        if isinstance(other, TokenEdge): return -1
+        val = cmp([self._loc.length(), self._loc.start()],
+                  [other._loc.length(), other._loc.start()])
+        if val == 0: return 1
+        else: return val
 
     def __hash__(self):
         """
         @return: A hash value for the C{Edge}.
         @rtype: C{int}
         """
-        return hash((self._prod, self._tree, self._loc, self._dotpos))
+        return hash((self._prod, self._structure, self._loc, self._dotpos))
 
+class TokenEdge(EdgeI):
+    """
+    A C{token edge} specifies that a single token occurs in the text.
+    Encoding the text tokens as edges allows chart parsers to treat
+    tokens and subtrees in a uniform manner.
+
+    A C{TokenEdge} with left-hand side C{'cat'} and location C{@[2w]}
+    is written::
+
+        [Edge: 'cat' -> *]
+
+    """
+    def __init__(self, token):
+        """
+        Construct a new C{TokenEdge}.
+        """
+        self._token = token
+
+    # Accessors -- inherit docs from EdgeI
+    def lhs(self): return self._token.type()
+    def structure(self): return self._token
+    def loc(self): return self._token.loc()
+    def start(self): return self._token.loc().start()
+    def end(self): return self._token.loc().end()
+    
+    def complete(self):
+        # Inherit docs from EdgeI
+        return 1
+
+    def __repr__(self):
+        """
+        @return: A concise string representation of the C{Edge}
+        @rtype: C{string}
+        """
+        return '[Edge: %s]%s' % (self, self._loc)
+
+    def __str__(self):
+        """
+        @return: A verbose string representation of the C{Edge}
+        @rtype: C{string}
+        """
+        return '%r -> *' % self._token
+
+    def __eq__(self, other):
+        """
+        @return: true if this C{Edge} is equal to C{other}.
+        @rtype: C{boolean}
+        """
+        return _classeq(self, other) and self._token == other._token
+
+    def __cmp__(self, other):
+        if self == other: return 0
+        if isinstance(other, ProductionEdge): return 1
+        val = cmp(self._token.loc().length(),
+                  other._token.loc().length())
+        if val == 0: return 1
+        else: return val
+
+    def __hash__(self):
+        """
+        @return: A hash value for the C{Edge}.
+        @rtype: C{int}
+        """
+        return hash(self._token)
+    
 ##//////////////////////////////////////////////////////
 ##  Chart
 ##//////////////////////////////////////////////////////
@@ -316,8 +503,8 @@ class Chart:
         root node value is C{node}.  Use self._loc to test if the edge
         spans the entire chart.
         """
-        return [edge.tree() for edge in self.edges() if
-                edge.loc() == self._loc and edge.prod().lhs() == node]
+        return [edge.structure() for edge in self.edges() if
+                edge.loc() == self._loc and edge.lhs() == node]
 
     def contains(self, edge):
         """
@@ -394,7 +581,7 @@ class FRChart(Chart):
     that could combine with a given edge by the fundamental rule.  The
     fundamental rule can combine two edges C{M{e1}} and C{M{e2}} if
     C{M{e1}.end()==M{e2}.start()} and
-    C{M{e1}.next()==M{e2}.prod().lhs()}.
+    C{M{e1}.next()==M{e2}.lhs()}.
 
     C{FRChart} indexes the set of complete edges in the chart by their
     start location and their production's left hand side; and indexes
@@ -421,7 +608,7 @@ class FRChart(Chart):
         return_value = Chart.insert(self, edge)
         if return_value:
             if edge.complete():
-                key = (edge.start(), edge.prod().lhs())
+                key = (edge.start(), edge.lhs())
                 self._complete.setdefault(key, []).append(edge)
             else:
                 key = (edge.end(), edge.next())
@@ -474,7 +661,7 @@ class FRChart(Chart):
         @type edge: C{Edge}
         """
         if edge.complete():
-            return self._incomplete.get((edge.start(), edge.prod().lhs()),[])
+            return self._incomplete.get((edge.start(), edge.lhs()),[])
         else:
             return self._complete.get((edge.end(), edge.next()),[])
 
@@ -549,8 +736,7 @@ class ChartParser(ParserI):
         # Add an edge for each lexical item.
         #if self._trace: print 'Adding lexical edges...'
         for tok in text:
-            prod = CFGProduction(tok.type())
-            new_edge = Edge(prod, tok, tok.loc())
+            new_edge = TokenEdge(tok)
             if chart.insert(new_edge):
                 if self._trace > 1:
                     print '%-20s %s' % ('Lexical Insertion',
@@ -600,16 +786,16 @@ def self_loop_edge(production, loc):
     leftmost position, and it has no children.
     """
     treetok = TreeToken(production.lhs().symbol())
-    return Edge(production, treetok, loc)
+    return ProductionEdge(production, treetok, loc)
 
 def fr_edge(edge1, edge2):
     """
     Return a fundamental-rule edge.
     """
     loc = edge1.loc().union(edge2.loc())
-    children = edge1.tree().children() + (edge2.tree(),)
-    treetok = TreeToken(edge1.tree().node(), *children)
-    return Edge(edge1.prod(), treetok, loc, edge1.dotpos()+1)
+    children = edge1.structure().children() + (edge2.structure(),)
+    treetok = TreeToken(edge1.structure().node(), *children)
+    return ProductionEdge(edge1.prod(), treetok, loc, edge1.dotpos()+1)
     
 class TopDownInitRule(ChartRuleI):
     def apply(self, chart, grammar):
@@ -637,7 +823,7 @@ class BottomUpRule(ChartRuleI):
         edges = []
         for production in grammar.productions():
             for edge in chart.edges():
-                if edge.prod().lhs() == production.rhs()[0]:
+                if edge.lhs() == production.rhs()[0]:
                     loc = edge.loc().start_loc()
                     edges.append(self_loop_edge(production, loc))
         return edges
@@ -648,7 +834,7 @@ class FundamentalRule(ChartRuleI):
         edges = []
         for edge in chart.incomplete_edges():
             for edge2 in chart.complete_edges():
-                if (edge.next() == edge2.prod().lhs() and
+                if (edge.next() == edge2.lhs() and
                     edge.end() == edge2.start()):
                     edges.append(fr_edge(edge, edge2))
         return edges
@@ -826,8 +1012,7 @@ class IncrementalChartParser:
     def _create_edge_queue(self, text):
         edge_queue = []
         for tok in text:
-            prod = CFGProduction(tok.type())
-            edge_queue.append(Edge(prod, tok, tok.loc()))
+            edge_queue.append(TokenEdge(tok))
 
         # Start with the first word (top of stack = last elt)
         edge_queue.reverse()
@@ -854,8 +1039,8 @@ class IncrementalChartParser:
             
             # Check if the edge is a complete parse.
             if (edge.loc() == chart.loc() and
-                edge.prod().lhs() == self._grammar.start()):
-                parses.append(edge.tree())
+                edge.lhs() == self._grammar.start()):
+                parses.append(edge.structure())
                 if len(parses) == n: break
 
         if self._trace:
@@ -881,7 +1066,7 @@ class IncrementalChartParser:
 
 class IncrementalTopDownInitRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
-        if isinstance(edge.tree(), TreeToken): return []
+        if isinstance(edge.structure(), TreeToken): return []
         return [self_loop_edge(production, chart.loc().start_loc())
                 for production in grammar.productions()
                 if production.lhs() == grammar.start()]
@@ -897,19 +1082,19 @@ class IncrementalBottomUpRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
         return [self_loop_edge(production, edge.loc().start_loc())
                 for production in grammar.productions()
-                if edge.prod().lhs() == production.rhs()[0]]
+                if edge.lhs() == production.rhs()[0]]
 
 class IncrementalFundamentalRule(IncrementalChartRuleI):
     def apply(self, chart, grammar, edge):
         if edge.complete():
             return [fr_edge(edge2, edge)
                     for edge2 in chart.incomplete_edges()
-                    if (edge2.next() == edge.prod().lhs() and
+                    if (edge2.next() == edge.lhs() and
                         edge2.end() == edge.start())]
         else:
             return [fr_edge(edge, edge2)
                     for edge2 in chart.complete_edges()
-                    if (edge.next() == edge2.prod().lhs() and
+                    if (edge.next() == edge2.lhs() and
                         edge.end() == edge2.start())]
 
 INCREMENTAL_BU_STRATEGY = [IncrementalBottomUpRule(),
@@ -977,14 +1162,14 @@ def demo():
     if STEP:
         cp = SteppingChartParser(grammar, trace=tr)
         cp.initialize(tok_sent)
-        for j in range(5):
+        for i in range(5):
             print 'TOP DOWN'
             cp.set_strategy(TD_STRATEGY)
-            for i in range(20):
+            for j in range(20):
                 if not cp.step(): break
             print 'BOTTOM UP'
             cp.set_strategy(BU_STRATEGY)
-            for i in range(20):
+            for k in range(20):
                 if not cp.step(): break
             print 'CHART SIZE:', len(cp.chart())
         for parse in cp.parses(): print parse
