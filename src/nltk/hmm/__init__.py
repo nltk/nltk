@@ -35,7 +35,7 @@ Formally, a HMM can be characterised by:
     - the transition probabilities M{a_{ij} = P(s_t = j | s_{t-1} = i)}. These
       represent the probability of transition to each state from a given
       state. 
-    - the output probability matrix M{b_i(k) = P(X_t = o_k | s_t = i). These
+    - the output probability matrix M{b_i(k) = P(X_t = o_k | s_t = i)}. These
       represent the probability of observing each symbol in a given state.
     - the initial state distribution. This gives the probability of starting
       in each state.
@@ -383,6 +383,10 @@ class HiddenMarkovModel:
                 % (len(self._states), len(self._symbols))
 
 class HiddenMarkovModelTrainer:
+    """
+    Algorithms for learning HMM parameters from training data. These include
+    both supervised learning (MLE) and unsupervised learning (Baum-Welch).
+    """
     def __init__(self, states=None, symbols=None, **properties):
         """
         Creates an HMM trainer to induce an HMM with the given states and
@@ -448,12 +452,12 @@ class HiddenMarkovModelTrainer:
         @param unlabelled_sequences: the training data, a set of
             sequences of observations
         @type unlabelled_sequences: Token
-        @param kwargs: may include the following parameters:
+        @param kwargs: may include the following parameters::
             model - a HiddenMarkovModel instance used to begin the Baum-Welch
-                    algorithm
+                algorithm
             max_iterations - the maximum number of EM iterations
             convergence_logprob - the maximum change in log probability to
-                    allow convergence
+                allow convergence
         """
 
         # grab the property names used
