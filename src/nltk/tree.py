@@ -351,10 +351,10 @@ class TreeToken(token.Token):
     C{TreeToken} objects that are used to encode the structure of the
     C{TreeToken}.
 
-    A C{Tree}'s X{leaf set} consists of the leaf children of the
-    C{Tree} and the leaf sets of its subtrees.  All leaves in a tree's
-    leaf set must have text types with the same pytype.  A C{Tree}'s
-    X{nodes values set} consists of the node value of the C{Tree} and
+    A C{TreeToken}'s X{leaf set} consists of the leaf children of the
+    C{TreeToken} and the leaf sets of its subtrees.  All leaves in a tree's
+    leaf set must have text types with the same pytype.  A C{TreeToken}'s
+    X{nodes values set} consists of the node value of the C{TreeToken} and
     the node value sets of its subtrees.  All node values in a tree's
     node value set must have the same pytype.
 
@@ -373,7 +373,7 @@ class TreeToken(token.Token):
         Construct a new C{TreeToken} object, with the given node value
         and children.  For example:
 
-            >>> Tree('np', Token('the', 0), Token('cat', 1))
+            >>> TreeToken('np', Token('the', 0), Token('cat', 1))
             ('np': 'the' 'cat')@[0:2]
 
         Note that the children should not be given as a single list.
@@ -381,7 +381,7 @@ class TreeToken(token.Token):
         children, use the following syntax:
 
             >>> children = (Token('the', 0), Token('cat', 1))
-            >>> Tree('np', *children)
+            >>> TreeToken('np', *children)
             ('np': 'the' 'cat')@[0:2]
 
         @param node: The new C{Tree}'s node value.
