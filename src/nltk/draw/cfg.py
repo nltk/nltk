@@ -12,14 +12,59 @@ Visualization tools for CFGs.
 
 """
 
+# Testing
+import nltk.draw.tree; reload(nltk.draw.tree)
+
+"""
+Idea for a nice demo:
+  - 3 panes: grammar, treelet, working area
+    - grammar is a list of productions
+    - when you select a production, the treelet that it licenses appears
+      in the treelet area
+    - the working area has the text on the bottom, and S at top.  When
+      you select a production, it shows (ghosted) the locations where
+      that production's treelet could be attached to either the text
+      or the tree rooted at S.
+    - the user can drag the treelet onto one of those (or click on them?)
+    - the user can delete pieces of the tree from the working area
+      (right click?)
+    - connecting top to bottom? drag one NP onto another?
+
++-------------------------------------------------------------+
+| S -> NP VP   |                 S                            |
+|[NP -> Det N ]|                / \                           |
+|     ...      |              NP  VP                          |
+| N -> 'dog'   |                                              |
+| N -> 'cat'   |                                              |
+|     ...      |                                              |
++--------------+                                              |
+|      NP      |                      Det     N               |
+|     /  \     |                       |      |               |
+|   Det   N    |  the    cat    saw   the    dog              |
+|              |                                              |
++--------------+----------------------------------------------+
+
+Operations:
+  - connect a new treelet -- drag or click shadow
+  - delete a treelet -- right click
+    - if only connected to top, delete everything below
+    - if only connected to bottom, delete everything above
+  - connect top & bottom -- drag a leaf to a root or a root to a leaf
+  - disconnect top & bottom -- right click
+    - if connected to top & bottom, then disconnect
+"""
+
 from nltk.draw import *
 from nltk.cfg import *
 from Tkinter import *
 from nltk.tree import *
-from nltk.draw.tree import tree_to_treesegment
+from nltk.draw.tree import *
 
-ARROW = '\256'   # <- this doesn't appear to be portable.
-ARROW = chr(222) # <- is this better??
+ARROW = SymbolWidget.SYMBOLS['rightarrow']
+
+######################################################################
+# Production List
+######################################################################
 
 class ProductionList:
     """
@@ -29,20 +74,29 @@ class ProductionList:
 
     Take a select callback.  Use highlight() to set highlight...
     """
-    def __init__(self, parent, cfg):
+    def __init__(self, parent, cfg, **options):
         self._parent = parent
-        self._cfg = cfg
+        self._callbacks = {}
 
         # Which production is selected? (index)
         self._selected = None
 
-        self._init_prodframe()
-        
-    def _init_prodframe(self):
+        # Initialize the Tkinter frames.
+        self._init_prodframe(options.copy())
+
+        # Set up key & mouse bindings.
+        self._textwidget.bind('<KeyPress>', self._keypress)
+        self._textwidget.bind('<ButtonPress>', self._buttonpress)
+
+        # Fill in the given CFG's productions.
+        self.set_cfg(cfg)
+
+    def _init_prodframe(self, options):
         self._prodframe = Frame(self._parent)
 
         # Create the basic Text widget & scrollbar.
-        self._textwidget = Text(self._prodframe, background='#e0e0e0')
+        options.setdefault('background', '#e0e0e0')
+        self._textwidget = Text(self._prodframe, **options)
         self._textscroll = Scrollbar(self._prodframe, takefocus=0,
                                      orient='vertical')
         self._textwidget.config(yscrollcommand = self._textscroll.set)
@@ -64,8 +118,12 @@ class ProductionList:
                                     border='', underline=1)
         self._textwidget.tag_lower('highlight', 'sel')
 
-        # Enter in the productions.
-        for production in self._cfg.productions():
+    def set_cfg(self, cfg):
+        self._productions = cfg.productions()
+        
+        self._textwidget['state'] = 'normal'
+        self._textwidget.delete('1.0', 'end')
+        for production in cfg.productions():
             self._textwidget.insert('end', '%s\t' % production.lhs(),
                                     'nonterminal')
             self._textwidget.insert('end', ARROW, 'arrow')
@@ -78,18 +136,51 @@ class ProductionList:
                     self._textwidget.insert('end', ' %r' % elt,
                                             'terminal')
             self._textwidget.insert('end', '\n')
+        # Remove the final newline
+        self._textwidget.delete('end-1char', 'end')
         self._textwidget.mark_set('insert', '1.0')
-
         self._textwidget['state'] = 'disabled'
-        self._textwidget.bind('<KeyPress>', self._keypress)
-        self._textwidget.bind('<ButtonPress>', self._buttonpress)
+
+    def add_callback(self, event, func):
+        """
+        @param event: One of: click1, click2, click3, space, return,
+            select, up, down, next, prior
+        """
+        if event == 'select': events = ['click1', 'space', 'return']
+        elif event == 'move': events = ['up', 'down', 'next', 'prior']
+        else: events = [event]
+
+        for e in events:
+            self._callbacks.setdefault(e,{})[func] = 1
+
+    def remove_callback(self, event, func):
+        if event is None: events = self._callbacks.keys()
+        else: events = [event]
+
+        for e in events:
+            try: del self._callbacks[e][func]
+            except: pass
+
+    def _fire_callback(self, event, production):
+        if not self._callbacks.has_key(event): return
+        for cb_func in self._callbacks[event].keys():
+            cb_func(production)
 
     def _buttonpress(self, event):
-        print 'buttonpress', event.__dict__
-        return 'break'
+        clickloc = '@%d,%d' % (event.x,event.y)
+        insert_point = self._textwidget.index(clickloc)
+        prodnum = int(insert_point.split('.')[0])-1
+        prod = self._productions[prodnum]
+        self._fire_callback('click%d' % event.num, prod)
         
     def _keypress(self, event):
-        if event.keysym == 'Down': delta='+1line'
+        if event.keysym == 'Return' or event.keysym == 'space':
+            insert_point = self._textwidget.index('insert')
+            prodnum = int(insert_point.split('.')[0])-1
+            prod = self._productions[prodnum]
+            self._fire_callback(event.keysym.lower(), prod)
+            return
+        elif event.keysym == 'Down': delta='+1line'
         elif event.keysym == 'Up': delta='-1line'
         elif event.keysym == 'Next': delta='+10lines'
         elif event.keysym == 'Prior': delta='-10lines'
@@ -99,21 +190,34 @@ class ProductionList:
         self._textwidget.see('insert')
         self._textwidget.tag_remove('sel', '1.0', 'end+1char')
         self._textwidget.tag_add('sel', 'insert linestart', 'insert lineend')
+
+        insert_point = self._textwidget.index('insert')
+        prodnum = int(insert_point.split('.')[0])-1
+        prod = self._productions[prodnum]
+        self._fire_callback(event.keysym.lower(), prod)
+        
         return 'break'
     
-    def highlight(self, productions):
+    def highlight(self, *productions):
         self._textwidget.tag_remove('highlight', '1.0', 'end+1char')
         for production in productions:
-            index = list(self._cfg.productions()).index(production)
+            index = list(self._productions).index(production)
             (start, end) = ('%d.0' % (index+1), '%d.0' % (index+2))
             self._textwidget.tag_add('highlight', start, end)
 
     def pack(self, *args, **kwargs):
         self._prodframe.pack(*args, **kwargs)
         
+    def grid(self, *args, **kwargs):
+        self._prodframe.grid(*args, **kwargs)
+        
     def focus(self, *args, **kwargs):
         self._textwidget.focus(*args, **kwargs)
         
+
+######################################################################
+# CFG Editor
+######################################################################
 
 _CFGEditor_HELP = """
 
@@ -486,6 +590,200 @@ class CFGEditor:
             ShowText(self._parent, 'Help: Chart Parser Demo',
                      (_CFGEditor_HELP).strip(), width=75)
 
+######################################################################
+# New Demo (built tree based on cfg)
+######################################################################
+
+class CFGDemo:
+    def __init__(self, grammar, text):
+        self._grammar = grammar
+        self._text = text
+
+        # Set up the main window.
+        self._top = Tk()
+        self._top.title('Context Free Grammar Demo')
+
+        # Base font size
+        self._size = IntVar(self._top)
+        self._size.set(12) # = medium
+
+        # Set up the key bindings
+        self._init_bindings(self._top)
+
+        # Create the basic frames
+        frame1 = Frame(self._top)
+        frame1.pack(side='left', fill='y', expand=0)
+        self._init_menubar(self._top)
+        self._init_buttons(self._top)
+        self._init_grammar(frame1)
+        self._init_treelet(frame1)
+        self._init_workspace(self._top)
+
+    #//////////////////////////////////////////////////
+    # Initialization
+    #//////////////////////////////////////////////////
+
+    def _init_bindings(self, top):
+        top.bind('<Control-q>', self.destroy)
+    
+    def _init_menubar(self, parent): pass
+    
+    def _init_buttons(self, parent): pass
+    
+    def _init_grammar(self, parent):
+        self._prodlist = ProductionList(parent, self._grammar, width=20)
+        self._prodlist.pack(side='top', fill='both', expand=1)
+        self._prodlist.focus()
+        self._prodlist.add_callback('select', self._selectprod_cb)
+        self._prodlist.add_callback('move', self._selectprod_cb)
+
+    def _init_treelet(self, parent):
+        self._treelet_canvas = Canvas(parent, background='white')
+        self._treelet_canvas.pack(side='bottom', fill='x')
+        self._treelet = None
+
+    def _init_workspace(self, parent):
+        self._workspace = CanvasFrame(parent, background='white')
+        self._workspace.pack(side='right', fill='both', expand=1)
+        self._tree = None
+        self.reset_workspace()
+
+    #//////////////////////////////////////////////////
+    # Workspace
+    #//////////////////////////////////////////////////
+
+    def reset_workspace(self):
+        c = self._workspace.canvas()
+        fontsize = int(self._size.get())
+        node_font = ('helvetica', -(fontsize+4), 'bold')
+        leaf_font = ('helvetica', -(fontsize+2))
+        
+        # Remove the old tree
+        if self._tree is not None:
+            self._workspace.remove_widget(self._tree)
+
+        # The root of the tree.
+        start = self._grammar.start().symbol()
+        rootnode = TextWidget(c, start, font=node_font, draggable=1)
+
+        # The leaves of the tree.
+        leaves = []
+        for word in self._text:
+            if isinstance(word, Token): word = word.type()
+            leaves.append(TextWidget(c, word, font=leaf_font, draggable=1))
+
+        # Put it all together into one tree
+        self._tree = TreeSegmentWidget(c, rootnode, leaves,
+                                       color='white')
+
+        # Add it to the workspace.
+        self._workspace.add_widget(self._tree)
+
+        # Move the leaves to the bottom of the workspace.
+        for leaf in leaves: leaf.move(0,100)
+        
+        #self._nodes = {start:1}
+        #self._leaves = dict([(l,1) for l in leaves])
+
+    def workspace_markprod(self, production):
+        pass
+
+    def _markproduction(self, prod, tree=None):
+        if tree is None: tree = self._tree
+        for i in range(len(tree.subtrees())-len(prod.rhs())):
+            if tree['color', i] == 'white':
+                self._markproduction
+            
+            for j, node in enumerate(prod.rhs()):
+                widget = tree.subtrees()[i+j]
+                if (isinstance(node, Nonterminal) and
+                    isinstance(widget, TreeSegmentWidget) and
+                    node.symbol == widget.node().text()):
+                    pass # matching nonterminal
+                elif (isinstance(node, str) and
+                      isinstance(widget, TextWidget) and
+                      node == widget.text()):
+                    pass # matching nonterminal
+                else: break
+            else:
+                # Everything matched!
+                print 'MATCH AT', i
+
+    #//////////////////////////////////////////////////
+    # Grammar 
+    #//////////////////////////////////////////////////
+
+    def _selectprod_cb(self, production):
+        canvas = self._treelet_canvas
+        
+        self._prodlist.highlight(production)
+        if self._treelet is not None: self._treelet.destroy()
+
+        # Convert the production to a tree.
+        rhs = production.rhs()
+        for (i, elt) in enumerate(rhs):
+            if isinstance(elt, Nonterminal): elt = Tree(elt)
+        tree = Tree(production.lhs().symbol(), *rhs)
+
+        # Draw the tree in the treelet area.
+        fontsize = int(self._size.get())
+        node_font = ('helvetica', -(fontsize+4), 'bold')
+        leaf_font = ('helvetica', -(fontsize+2))
+        self._treelet = tree_to_treesegment(canvas, tree,
+                                            node_font=node_font,
+                                            leaf_font=leaf_font)
+        self._treelet['draggable'] = 1
+
+        # Center the treelet.
+        (x1, y1, x2, y2) = self._treelet.bbox()
+        w, h = int(canvas['width']), int(canvas['height'])
+        self._treelet.move((w-x1-x2)/2, (h-y1-y2)/2)
+
+        # Mark the places where we can add it to the workspace.
+        self._markproduction(production)
+    
+    def destroy(self, *args):
+        self._top.destroy()
+
+    def mainloop(self, *args, **kwargs):
+        self._top.mainloop(*args, **kwargs)
+
+def demo2():
+    from nltk.cfg import Nonterminal, CFGProduction, CFG
+    nonterminals = 'S VP NP PP P N Name V Det'
+    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+                                           for s in nonterminals.split()]
+    productions = (
+        # Syntactic Productions
+        CFGProduction(S, NP, VP),
+        CFGProduction(NP, Det, N),
+        CFGProduction(NP, NP, PP),
+        CFGProduction(VP, VP, PP),
+        CFGProduction(VP, V, NP, PP),
+        CFGProduction(VP, V, NP),
+        CFGProduction(PP, P, NP),
+        CFGProduction(PP),
+
+        CFGProduction(PP, 'up', 'over', NP),
+        
+        # Lexical Productions
+        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
+        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
+        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
+        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
+        CFGProduction(N, 'dog'),  CFGProduction(N, 'statue'),
+        CFGProduction(Det, 'my'),
+        )
+    grammar = CFG(S, productions)
+
+    text = 'I saw a man in the park'.split()
+    d=CFGDemo(grammar, text)
+    d.mainloop()
+
+######################################################################
+# Old Demo
+######################################################################
+
 def demo():
     from nltk.cfg import Nonterminal, CFGProduction, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
@@ -532,4 +830,4 @@ if 0:
     p.focus()
     p.highlight([productions[2], productions[8]])
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__': demo2()
