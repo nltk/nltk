@@ -751,14 +751,15 @@ class RETokenizer(TokenizerI):
     is encoded as a C{Token} whose type is a C{string}.  Location
     indices start at zero, and have a unit of C{'word'}.
     """
-    def __init__(self, regexp):
+    def __init__(self, regexp, positive=1):
         """
         @type regexp: string
         """
         _chktype("RETokenizer", 1, regexp, (_StringType, ))
         self._regexp = re.compile('('+regexp+')')
+        self._positive = positive
         
-    def tokenize(self, str, source=None):
+    def tokenize(self, str, **kwargs):
         # Inherit docs from TokenizerI
         _chktype("RETokenizer.tokenize", 1, str, (_StringType,))
 
@@ -766,25 +767,29 @@ class RETokenizer(TokenizerI):
             raise ValueError("RETokenizer can't handle "+
                              "strings containing '\\0' or '\\1'")
 
-        # Surround each match with \0...\1
-        str = re.sub(self._regexp, '\0\\1\1', str)
+        if self._positive:
+            # Surround each match with \0...\1
+            str = re.sub(self._regexp, '\0\\1\1', str)
 
-        # Special case: if we found no tokens at all, return an empty list.
-        if '\0' not in str: return []
+            # Special case: if we found no tokens at all, return an empty list.
+            if '\0' not in str: return []
 
-        str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)', '\0', str)
-        words = str.split('\0')
+            str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)',
+                         '\0', str)
+            words = str.split('\0')
+        else:
+            words = re.sub(self._regexp, '\0', str).split('\0')
         
         tokens = []
         loc = 0
         for i in range(len(words)):
             if words[i] == '': continue
-            tokens.append(Token(words[i], Location(loc, unit='w',
-                                                   source=source)))
+            tokens.append(Token(words[i], Location(loc, **kwargs)))
             loc += 1
         return tokens
 
-    def xtokenize(self, str, source=None):
+    # Does not handle self._positive!!
+    def xtokenize(self, str, **kwargs):
         # Inherit docs from TokenizerI
         _chktype("WSTokenizer.xtokenize", 1, str, (_StringType,))
 
@@ -792,17 +797,14 @@ class RETokenizer(TokenizerI):
             raise ValueError("RETokenizer can't handle "+
                              "strings containing '\\0' or '\\1'")
 
-        import time
-        t=time.time()
-        print 'sub1'
-        str = re.sub(self._regexp, '\0\\1\1', str)
-        print time.time()-t; t = time.time()
-        print 'sub2'
-        str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)', '\0', str)
-        print time.time()-t; t = time.time()
-        print 'filter'
+        if self._positive:
+            str = re.sub(self._regexp, '\0\\1\1', str)
+            if '\0' in str:
+                str = re.sub('(\1[^\0]*\0)|(^[^\0]+\0)|(\1[^\1]*$)',
+                             '\0', str)
+        else:
+            str = re.sub(self._regexp, '\0', str)
+            
         words = [w for w in str.split('\0') if w != '']
-        print time.time()-t; t = time.time()
-        print 'xtokentuple'
-        return _XTokenTuple(words)
+        return _XTokenTuple(words, **kwargs)
 
