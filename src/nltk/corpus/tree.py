@@ -33,21 +33,21 @@ class TreebankCorpusReader(CorpusReaderI):
 
         if treebank_2:
             # 3 groups:
-            self._groups = ('tagged', 'parsed', 'merged')
+            self._groups = ('tagged', 'parsed', 'combined')
             self._group_directory = { 
                 'tagged':'tagged/pos', 'parsed':'parsed/prd',
-                'merged':'parsed/mrg' }
+                'combined':'combined/mrg' }
             self._group_mask = { 'tagged':r'.*\.pos',
-                'parsed':r'.*\.prd', 'merged':'.*\.mrg' }
+                'parsed':r'.*\.prd', 'combined':'.*\.mrg' }
         else:
             # 4 groups:
-            self._groups = ('raw', 'tagged', 'parsed', 'merged')
+            self._groups = ('raw', 'tagged', 'parsed', 'combined')
             self._group_directory = dict([(g, g) for g in self._groups])
             self._group_mask = dict([(g, r'.*') for g in self._groups])
 
         # Are the merged items "virtual" (i.e., constructed on the
         # fly from the parsed & tagged items)?  This is true iff the
-        # treebank corpus doesn't contain a "merged" subdirectory.
+        # treebank corpus doesn't contain a "combined" subdirectory.
         self._virtual_merged = 0
         
         # Postpone actual initialization until the corpus is accessed;
@@ -84,17 +84,17 @@ class TreebankCorpusReader(CorpusReaderI):
             self._basedir = '' # empty
             self._rootdir = self._original_rootdir
 
-        # Check the directory for 'merged', and change it to
-        # 'combined' if appropriate.
-        if 'merged' in self._groups:
-            if os.path.isdir(os.path.join(self._rootdir, 'combined')):
-                self._group_directory['merged'] = 'combined'
+#        # Check the directory for 'merged', and change it to
+#        # 'combined' if appropriate.
+#        if 'merged' in self._groups:
+#            if os.path.isdir(os.path.join(self._rootdir, 'combined')):
+#                self._group_directory['merged'] = 'combined'
 
         # Get the list of items in each group.
         self._group_items = {}
         for group in self._groups:
             self._find_items(group)
-        if not self._group_items.has_key('merged'):
+        if not self._group_items.has_key('combined'):
             self._virtual_merged = 1
             self._find_virtual_merged_items()
 
@@ -127,11 +127,12 @@ class TreebankCorpusReader(CorpusReaderI):
                     if re.match(mask + r'$', file_name) and \
                        not file_name.startswith('readme'):
                         self._group_items[group].append(
-                            os.path.join(dir_path, file_name))
+                            os.path.join(group, file_name))
+#                            os.path.join(dir_path, file_name))
 
     def _find_virtual_merged_items(self):
         # Check to make sure we have both the .tagged and the .parsed files.
-        self._group_items['merged'] = merged = []
+        self._group_items['combined'] = merged = []
         is_tagged = {}
         for item in self._group_items.get('tagged', []):
             basename = os.path.basename(item).split('.')[0]
@@ -139,7 +140,7 @@ class TreebankCorpusReader(CorpusReaderI):
         for item in self._group_items.get('parsed', []):
             basename = os.path.basename(item).split('.')[0]
             if is_tagged.get(basename):
-                merged.append(os.path.join('merged', '%s.mrg' % basename))
+                merged.append(os.path.join('combined', '%s.mrg' % basename))
 
     #////////////////////////////////////////////////////////////
     #// Corpus Information/Metadata
@@ -193,7 +194,7 @@ class TreebankCorpusReader(CorpusReaderI):
 
     def path(self, item):
         self._initialize()
-        if self._virtual_merged and item.startswith('merged'):
+        if self._virtual_merged and item.startswith('combined'):
             estr = 'The given item is virtual; it has no path'
             raise NotImplementedError, estr
         else:
@@ -203,7 +204,7 @@ class TreebankCorpusReader(CorpusReaderI):
         return open(self.path(item))
 
     def raw_read(self, item):
-        if self._virtual_merged and item.startswith('merged'):
+        if self._virtual_merged and item.startswith('combined'):
             basename = os.path.basename(item).split('.')[0]
             tagged_item = os.path.join('tagged', '%s.pos' % basename)
             parsed_item = os.path.join('parsed', '%s.prd' % basename)
@@ -215,7 +216,7 @@ class TreebankCorpusReader(CorpusReaderI):
 
     def _token_reader(self, item):
         self._initialize()
-        if item in self._group_items['merged']:
+        if item in self._group_items['combined']:
             return self._mrg_reader
         elif item in self._group_items['tagged']:
             return self._tag_reader
@@ -348,5 +349,4 @@ class TreebankCorpusReader(CorpusReaderI):
 
     def groups(self):
         return self._groups
-
 
