@@ -8,6 +8,7 @@
 # $Id$
 
 from nltk.tree import *
+from nltk.token import WSTokenizer
 
 ##//////////////////////////////////////////////////////
 ##  Test code
@@ -141,9 +142,8 @@ class TreeTokenTestCase(unittest.TestCase):
     Unit test cases for C{tree.TreeToken}
     """
     def setUp(self):
-        self.words = [Token('the', 0), Token('dog', 1),
-                      Token('chased', 2), Token('the', 3), 
-                      Token('cat', 4)]
+        text = 'the dog chased the cat'
+        self.words = WSTokenizer().tokenize(text)
         self.dp1 = TreeToken('dp', TreeToken('d', self.words[0]),
                              TreeToken('np', self.words[1]))
         self.dp2 = TreeToken('dp', TreeToken('d', self.words[3]),
@@ -175,27 +175,28 @@ class TreeTokenTestCase(unittest.TestCase):
                                    TreeToken(1, TreeToken(2, TreeToken(3, 4)),
                                         TreeToken(5, TreeToken(6, 'a')), 7)))
 
+        def token(type,start): return Token(type, Location(start))
         # Locations must be properly ordered.
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', Token(1,5)),
-                                        Token(1,1),
-                                        TreeToken('n', Token(1,2)),
-                                        Token(1,3)))
+                              TreeToken('n', TreeToken('n', token(1,5)),
+                                        token(1,1),
+                                        TreeToken('n', token(1,2)),
+                                        token(1,3)))
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', Token(1,0)),
-                                        Token(1,1),
-                                        TreeToken('n', Token(1,2)),
-                                        Token(1,0)))
+                              TreeToken('n', TreeToken('n', token(1,0)),
+                                        token(1,1),
+                                        TreeToken('n', token(1,2)),
+                                        token(1,0)))
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', Token(1,0)),
-                                        Token(1,5),
-                                        TreeToken('n', Token(1,3)),
-                                        Token(1,7)))
+                              TreeToken('n', TreeToken('n', token(1,0)),
+                                        token(1,5),
+                                        TreeToken('n', token(1,3)),
+                                        token(1,7)))
         self.failUnlessRaises(ValueError, lambda :
-                              TreeToken('n', TreeToken('n', Token(1,0)),
-                                        Token(1,5),
+                              TreeToken('n', TreeToken('n', token(1,0)),
+                                        token(1,5),
                                         TreeToken('n', Token(1,None)),
-                                        Token(1,3)))
+                                        token(1,3)))
                                          
                                          
         
@@ -222,19 +223,20 @@ class TreeTokenTestCase(unittest.TestCase):
     def testRepr(self):
         "nltk.tree.TreeToken: repr output tests"
         self.failUnlessEqual(repr(self.vp), "('vp': ('v': 'chased') " + 
-                             "('dp': ('d': 'the') ('np': 'cat')))@[2:5]")
-        self.failUnlessEqual(repr(self.dp1), "('dp': ('d': 'the') "+
-                             "('np': 'dog'))@[0:2]")
+                             "('dp': ('d': 'the') ('np': 'cat')))@[2w:5w]")
+        self.failUnlessEqual(repr(self.dp1),
+                             "('dp': ('d': 'the') ('np': 'dog'))@[0w:2w]")
         self.failUnlessEqual(repr(TreeToken('n')), "('n':)@[?]")
-        self.failUnlessEqual(repr(TreeToken('n', Token('c'))), "('n': 'c')@[?]")
+        self.failUnlessEqual(repr(TreeToken('n', Token('c'))),
+                             "('n': 'c')@[?]")
         self.failUnlessEqual(repr(TreeToken(1, Token(2))), "(1: 2)@[?]")
         
     def testStr(self):
         "nltk.tree.TreeToken: str output tests"
         self.failUnlessEqual(repr(self.vp), "('vp': ('v': 'chased') " + 
-                             "('dp': ('d': 'the') ('np': 'cat')))@[2:5]")
+                             "('dp': ('d': 'the') ('np': 'cat')))@[2w:5w]")
         self.failUnlessEqual(repr(self.dp1), "('dp': ('d': 'the') "+
-                             "('np': 'dog'))@[0:2]")
+                             "('np': 'dog'))@[0w:2w]")
         self.failUnlessEqual(repr(TreeToken('n')), "('n':)@[?]")
         self.failUnlessEqual(repr(TreeToken('n', Token('c'))), "('n': 'c')@[?]")
         self.failUnlessEqual(repr(TreeToken(1, Token(2))), "(1: 2)@[?]")
@@ -258,12 +260,17 @@ class TreeTokenTestCase(unittest.TestCase):
 
     def testCmp(self):
         "nltk.tree.TreeToken: comparison tests"
-        self.failIf(TreeToken(1,Token(2,0)) != TreeToken(1,Token(2,0)))
-        self.failUnless(TreeToken(1,Token(2,0)) == TreeToken(1,Token(2,0)))
-        self.failIf(TreeToken(1,TreeToken(2,Token(3,0)), TreeToken(4,Token(5,1))) !=
-                    TreeToken(1,TreeToken(2,Token(3,0)), TreeToken(4,Token(5,1))))
-        self.failUnless(TreeToken(1,TreeToken(2,Token(3,0)), TreeToken(4,Token(5,1))) ==
-                        TreeToken(1,TreeToken(2,Token(3,0)), TreeToken(4,Token(5,1))))
+        def token(type,start): return Token(type, Location(start))
+        self.failIf(TreeToken(1,token(2,0)) != TreeToken(1,token(2,0)))
+        self.failUnless(TreeToken(1,token(2,0)) == TreeToken(1,token(2,0)))
+        self.failIf(TreeToken(1,TreeToken(2,token(3,0)),
+                              TreeToken(4,token(5,1))) !=
+                    TreeToken(1,TreeToken(2,token(3,0)),
+                              TreeToken(4,token(5,1))))
+        self.failUnless(TreeToken(1,TreeToken(2,token(3,0)),
+                                  TreeToken(4,token(5,1))) ==
+                        TreeToken(1,TreeToken(2,token(3,0)),
+                                  TreeToken(4,token(5,1))))
         self.failIf(TreeToken(1) != TreeToken(1))
         self.failUnless(TreeToken(1) == TreeToken(1))
         self.failIf(self.tree != self.tree)
