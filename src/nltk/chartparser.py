@@ -130,8 +130,8 @@ class Chart:
             print indent, edge.dotted_rule()
             print indent + "|" + "-"*(width*(end-start)-1) + "|"
 
-# get the location of a tokenized sentence
-def _sentence_loc(tok_sent):
+# get the location of a tokenized sequence
+def _seq_loc(tok_sent):
     return TreeToken('xyzzy', *tok_sent).loc()
 
 class ChartParser(ParserI):
@@ -178,7 +178,7 @@ class ChartParser(ParserI):
     # set up the rule invocation strategy and the sentence to parse
     def load(self, strategy, tok_sent):
         (self._functions, self._edgetrigger) = strategy
-        loc = _sentence_loc(tok_sent)
+        loc = _seq_loc(tok_sent)
         self._chart = Chart(loc)
 
         added = []
