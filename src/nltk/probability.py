@@ -1046,8 +1046,8 @@ class ProbabilisticMixIn:
         be called by subclass constructors.  C{prob} should generally be
         the first argument for those constructors.
 
-        @param p: The probability associated with the object.
-        @type p: C{float}
+        @param prob: The probability associated with the object.
+        @type prob: C{float}
         """
         assert _chktype(1, prob, types.IntType, types.FloatType)
         if not 0 <= prob <= 1: raise ValueError('Bad probability: %s' % prob)
