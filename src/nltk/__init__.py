@@ -15,7 +15,7 @@ interfaced to annotated corpora.
 
 NLTK is primarily intended for use as a teaching tool.  Along with the
 tutorials and problem sets available from U{the NLTK
-webpage<http://nltk.sourceforge.net}, NLTK provides ready-to-use
+webpage<http://nltk.sourceforge.net>}, NLTK provides ready-to-use
 computational linguistics courseware.  Students can augment and
 replace existing components, learning structured programming by
 example, and manipulating sophisticated models from the outset.
@@ -68,7 +68,7 @@ of the C{ParserI} interface.
 @contributor: Steven Bird
 @contributor: Edward Loper
 
-@group Core Modules: token, tree, corpora, probability
+@group Core Modules: token, tree, corpus, probability
 @group Data Modules: set, cfg, fsa
 @group Task Modules: classifier, parser, speech, stemmer, tagger
 @group Visualization: draw
