@@ -245,30 +245,43 @@ class SparseListFeatureEncoder(AbstractFeatureEncoder):
     constructor's C{count} parameter.
 
     An index is also added for unseen basic values.
+
+    @param _val_to_fid: A dictionary mapping from basic values to
+        feature ids.  Feature id 0 is reserved for unseen
+        basic values.
+    @param _fid_to_val: A list mapping from feature id's to the
+        basic values that they encode (used for debugging).
+    @param _val_to_count: A dictionary mapping from basic values
+        to the number of times they been registered.
     """
-    def __init__(self, feature_name, range=None, count=False,
-                 unknown_cutoff=0, **property_names):
+    def __init__(self, feature_name, fvals=None, count=False,
+                 unseen_cutoff=0, **property_names):
         """
         @param count: Should number of occurances be counted (giving
            an int vector) or not (giving a boolean vector)?
-        @param unknown_cutoff: Treat all features that were registered
-            fewer than C{unknown_cutoff} times as if they're unknown.
+        @param unseen_cutoff: Treat all features that were registered
+            fewer than C{unseen_cutoff} times as if they're unseen.
         """
+        AbstractFeatureEncoder.__init__(self, **property_names)
+        
         self._property_names = property_names
         self._feature_name = feature_name
         self._count = count
+        self._unseen_cutoff = unseen_cutoff
         
-        if range is not None:
-            self._id_to_val = list(range)
-            self._val_to_id = dict([(v,i) for (i,v) in enumerate(range)])
-            self._len = len(range)
+        if fvals is not None:
+            # Initialize the mappings between basic values and feature
+            # identifiers.  Reserve fid 0 for unseen feature values.
+            self._fid_to_val = ['<unknown>']+list(fvals)
+            self._val_to_fid = dict([(v,i+1) for (i,v) in enumerate(fvals)])
+            # Features do not need to be registered.
+            self._val_to_count = None
         else:
-            self._id_to_val = []
-            self._val_to_id = {}
-            self._len = None # Features need to be registered
+            # Features need to be registered.
+            self._fid_to_val = None
+            self._val_to_fid = None
+            self._val_to_count = {}
 
-        AbstractFeatureEncoder.__init__(self, **property_names)
-        
     def register(self, token):
         if self.frozen(): raise ValueError, 'already frozen'
 
@@ -283,63 +296,62 @@ class SparseListFeatureEncoder(AbstractFeatureEncoder):
             for val in feature_val:
                 self._register(val)
         else:
-            raise ValueError('Unsupported feature value type %s' %
+            raise ValueError('Unsupported feature value type %r' %
                              type(feature_val).__name__)
 
-    def _register(self, feature_val):
-        if feature_val not in self._val_to_id:
-            self._val_to_id[feature_val] = len(self._id_to_val)
-            self._id_to_val.append(feature_val)
+    def _register(self, val):
+        "Register a single basic value"
+        self._val_to_count[val] = self._val_to_count.get(val,0) + 1
 
     def freeze(self):
         if self.frozen(): raise ValueError, 'already frozen'
-        self._len = len(self._id_to_val)
+        
+        fvals = [fval for (fval, count) in self._val_to_count.items()
+                 if count > self._unseen_cutoff]
+        self._fid_to_val = ['<unknown>'] + fvals
+        self._val_to_fid = dict([(v,i+1) for (i,v) in enumerate(fvals)])
 
     def frozen(self):
-        return (self._len is not None)
+        return (self._val_to_fid is not None)
 
     def description(self, fid):
-        return '%s=%s' % (self._feature_name, self._id_to_val[fid])
+        return '%s=%s' % (self._feature_name, self._fid_to_val[fid])
 
     def num_features(self):
-        return self._len
-
-    def foo(self):
-        return ['%s=%s' % (self._feature_name, self._id_to_val[fid])
-                for fid in range(self._len)]
+        return len(self._fid_to_val)
 
     def raw_encode_features(self, token):
         if not self.frozen(): raise ValueError, 'must freeze first'
         FEATURES = self.property('FEATURES')
+        num_features = len(self._fid_to_val)
         
         if self._feature_name not in token[FEATURES]:
-            return SparseList({}, self._len, False)
+            return SparseList({}, num_features, False)
         
         feature_val = token[FEATURES][self._feature_name]
 
-        # [XX] deal with unseen feature values
         if isinstance(feature_val, (str, int, tuple)):
             if self._count:
                 # Basic value -> int sparse list
-                assigns = {self._val_to_id[feature_val]:1}
-                return SparseList(assigns, self._len, 0)
+                assigns = {self._val_to_fid.get(feature_val,0):1}
+                return SparseList(assigns, num_features, 0)
             else:
                 # Basic value -> bool sparse list
-                assigns = {self._val_to_id[feature_val]:True}
-                return SparseList(assigns, self._len, False)
+                assigns = {self._val_to_fid.get(feature_val,0):True}
+                return SparseList(assigns, num_features, False)
         elif isinstance(feature_val, (list, Set)):
             if self._count:
                 # List/set of basic value -> int sparse list
                 assigns = {}
                 for v in feature_val:
-                    fid = self._val_to_id[feature_val]
+                    fid = self._val_to_fid.get(feature_val,0)
                     assigns[fid] = assigns.get(fid,0)+1
-                return SparseList(assigns, self._len, 0)
+                return SparseList(assigns, num_features, 0)
             else:
                 # List/set of basic value -> bool sparse list
-                assigns = dict([(self._val_to_id[v], True)
+                assigns = dict([(self._val_to_fid.get(v,0), True)
                                 for v in feature_val])
-                return SparseList(assigns, self._len, False)
+                return SparseList(assigns, num_features, False)
         else:
             raise ValueError('Unsupported feature value type %s' %
                              type(feature_val).__name__)
@@ -353,7 +365,7 @@ class SparseListFeatureEncoder(AbstractFeatureEncoder):
 def demo():
     import nltk.corpus
     text = nltk.corpus.brown.tokenize('cr01')
-    toks = text['SUBTOKENS']
+    toks = text['SUBTOKENS'][:40]
     split = len(toks) * 3/4
     train, test = toks[:split], toks[split:]
     
@@ -368,13 +380,13 @@ def demo():
 
     encoder.freeze()
     
-    #print ''.join(['%8s' % s for s in encoder.foo()])
-
     for tok in test:
         for detector in detectors:
             detector.detect_features(tok)
         fvals = encoder.raw_encode_features(tok)
         print tok
+        print ' '.join([`fid`
+                        for fid, fval in fvals.assignments()])
         print ' '.join([encoder.description(fid)
                         for fid, fval in fvals.assignments()])
         #print [1*v for v in fvals]
