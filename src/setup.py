@@ -8,12 +8,13 @@
 #
 
 from distutils.core import setup
+import nltk
 
 setup(name="nltk",
-      version="0.1",
       description="Natural Language Processing Toolkit",
-      author="Edward Loper",
       author_email="ed@loper.org",
-      url="http://www.cis.upenn.edu/~edloper/nltk/",
+      version=nltk.__version__,
+      author=nltk.__author__,
+      url=nltk.__url__,
       packages=['nltk'])
 
