@@ -1,8 +1,27 @@
+##////////////////////////////////////////////////////////////////////////
+##  Version 0.4.1
+##////////////////////////////////////////////////////////////////////////
+Fri Oct 19 06:00:00 EDT 2001
+
+- Re-implemented ChunkScore for efficiency reasons.  Added len()
+  member to ChunkScore (gives the number of chunks scored).  
+- Implemented pretty-printing __str__ method for CFFreqDist
+- Added bins optional arg for CFFreqDist constructor, which is used 
+  to generate B and Nr[0] correctly.
+- Fixed HeldOutProbDist
+- Implemented CrossValidationProbDist
+- Added probability test code
+- RETokenizers can now use negative regular expressions (specified via
+  an optional arg to the RETokenizer constructor)
+- RETokenizer.tokenize source arg changed to a keyword arg (this may
+  change again -- we will define some standard for passing source &
+  unit to tokenizers)
+
 
 ##////////////////////////////////////////////////////////////////////////
 ##  Version 0.4
 ##////////////////////////////////////////////////////////////////////////
-Sat Oct 13 01:56:31 EDT 2001
+Sat Oct 14 06:00:00 EDT 2001
 
 - Changed terminology in the chart parser
 - Added more meta-information in setup.py and __init__.py
