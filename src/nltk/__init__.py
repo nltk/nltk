@@ -1,11 +1,11 @@
+# Natural Language Toolkit
 #
-# Natural Language Toolkit for Python:
-# Edward Loper
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 #
-# Created [03/16/01 05:27 PM]
-# (extracted from nltk.py, created [02/26/01 11:24 PM])
 # $Id$
-#
 
 """
 The Natural Language Toolkit is a package intended to simplify the
@@ -136,7 +136,7 @@ to currently implemented interfaces and classes.
 # Define some useful meta-data.
 __author__ = "Edward Loper <edloper@gradient.cis.upenn.edu>"
 __copyright__ = """\
-Copyright (C) 2001 University of Pennsylvania.  All Rights Reserved.
+Copyright (C) 2001 University of Pennsylvania.
 
 Distributed and Licensed under provisions of the IBM Common Public
 License (Version 0.5), which is included by reference.  The IBM Common 

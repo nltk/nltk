@@ -1,15 +1,18 @@
+# Natural Language Toolkit: Primary Makefile
 #
-# NLP Toolkit main Makefile
-# Edward Loper
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 #
-# Created [05/24/01 11:34 PM]
-#
+# $Id$
 
 all: documentation test distributions
 
+usage: help
 help:
 	# Usage:
-	#     make [all | documentation | distributions | test | clean]
+	#     make [all | documentation | distributions | test | clean | help]
 
 documentation:
 	$(MAKE) -C doc

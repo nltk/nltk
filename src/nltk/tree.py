@@ -1,11 +1,11 @@
+# Natural Language Toolkit: Text Trees
 #
-# Natural Language Toolkit:
-# Text Trees
-# Edward Loper
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 #
-# Created [06/22/01 01:35 AM]
 # $Id$
-#
 
 # Open questions:
 #     Should "tree" and "treetoken" be "ttree" and "ttreetoken" or

@@ -1,11 +1,11 @@
+# Natural Language Toolkit: source Makefile
 #
-# NLP Toolkit main source Makefile
-# Edward Loper
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 #
-# Produce both built and source distributions of the Python code.
-#
-# Created [05/27/01 09:16 PM]
-#
+# $Id$
 
 all: distributions
 
@@ -14,6 +14,7 @@ test:
 
 clean:
 	rm -rf build dist MANIFEST
+	rm -f *.pyc nltk/*.pyc
 
 # Distributions.
 # Build all from scratch; and create links for convenient access.
