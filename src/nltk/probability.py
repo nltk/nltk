@@ -30,8 +30,8 @@ class EventI:
     this subset need not be finite.  Events are typically written as
     the set of samples they contain, or as a function in first order
     logic.  Examples are::
-      {1,2,3}
-      {x:x>0}
+        {1,2,3}
+        {x:x>0}
 
     The only method that events are required to implement is
     C{contains()}, which tests whether a sample is a
@@ -60,8 +60,21 @@ class EventI:
     methods (C{__cmp__}, C{subset}, etc.).  If a
     method is unable to return a correct result because it is given an 
     unsupported type of sample or event, it should raise a
-    NotImplementedError.  (?? is this the right exception? use
-    NotSupportedError? ValueError? ??)
+    NotImplementedError.
+
+    String representations for events should have the form::
+
+        {Event ...}
+
+    Some examples are:
+
+        >>> SetEvent(Set(1, 2, 3))
+        {Event 3, 2, 1}
+        >>> NullEvent()
+        {Event}
+        >>> def even(x): x%2 == 0
+        >>> PredEvent(even)
+        {Event x: even(x)}
     """
     def contains(self, sample):
         """
@@ -302,13 +315,13 @@ class EventI:
         """
         raise NotImplementedError()
     
-    def __or__(self, other):
+    def __add__(self, other):
         return self.union(other)
-    __or__.__doc__ = union.__doc__
+    __add__.__doc__ = union.__doc__
     
-    def __and__(self, other):
+    def __mul__(self, other):
         return self.intersection(other)
-    __and__.__doc__ = intersection.__doc__
+    __mul__.__doc__ = intersection.__doc__
     
     def __sub__(self, other):
         return self.difference(other)
@@ -328,42 +341,39 @@ class SampleEvent(EventI):
         """
         self._sample = sample
     def contains(self, sample):
-        # Inherit docs from EventI
         return sample == self._sample
     def equals(self, other):
-        # Inherit docs from EventI
         return self.samples() == other.samples()
     def subset(self, other):
-        # Inherit docs from EventI
         return self._sample in other
     def superset(self, other):
-        # Inherit docs from EventI
         if isinstance(other, SampleEvent):
             return self._sample == other._sample
-        elif isinstance(other, SetEvent):
-            return (len(other) == 0) or \
-                   (len(other) == 1 and self._sample in other)
+        # This may raise NotImplementedError:
+        elif len(other) == 0:
+            return 1
+        elif len(other) == 1:
+            return self._sample in other
         else:
             raise NotImplementedError()
     def toSetEvent(self):
         """
-        Convert this SampleEvent to a SetEvent.
+        @return: A SetEvent containing this event's sample.
+        @rtype: SetEvent
         """
+        return SetEvent(Set(self._sample))
     def union(self, other):
-        # Inherit docs from EventI
-        return self.toSetEvent.union(other)
+        return self.toSetEvent().union(other)
     def intersection(self, other):
-        # Inherit docs from EventI
-        return self.toSetEvent.intersection(other)
+        return self.toSetEvent().intersection(other)
     def difference(self, other):
-        # Inherit docs from EventI
-        return self.toSetEvent.difference(other)
+        return self.toSetEvent().difference(other)
     def samples(self):
-        # Inherit docs from EventI
         return Set(self._sample)
     def len(self):
-        # Inherit docs from EventI
         return 1
+    def predicate_name(self):
+        return 'x==%r' % self._sample
     def sample(self):
         """
         @return: The single sample contained by this
@@ -389,18 +399,15 @@ class SetEvent(EventI):
         """
         self._set = set
     def contains(self, sample):
-        # Inherit docs from EventI
         return sample in self._set
     def equals(self, other):
-        # Inherit docs from EventI
+        # This may raise NotImplementedError:
         return self.samples() == other.samples()
     def subset(self, other):
-        # Inherit docs from EventI
         for elt in self._set.elements():
             if elt not in other: return 0
         return 1
     def superset(self, other):
-        # Inherit docs from EventI
         if isinstance(other, SampleEvent):
             return other.sample() in self
         elif isinstance(other, SetEvent):
@@ -408,24 +415,26 @@ class SetEvent(EventI):
         else:
             raise NotImplementedError()
     def union(self, other): 
-        # Inherit docs from EventI
         try:
             return SetEvent(self._set.union(other.samples()))
+        except NotImplementedError:
+            f = (lambda x, a=self, b=other:(x in a or x in b))
+            if hasattr(other, 'predicate_name'):
+                return PredEvent(f, '(%s) or (%s)' %
+                                 (self.predicate_name(),
+                                  other.predicate_name()))
+            else:
+                return PredEvent(f)
+    def intersection(self, other):
+        try:
+            return SetEvent(self._set.intersection(other.samples()))
         except NotImplementedError:
             newset = Set()
             for elt in self._set.elements():
                 if elt in other:
                     newset.insert(elt)
             return SetEvent(newset)
-    def intersection(self, other):
-        # Inherit docs from EventI
-        try:
-            return SetEvent(self._set.intersection(other.samples()))
-        except NotImplementedError:
-            f = (lambda x, a=self, b=other:(x in a or x in b))
-            return PredEvent(f)
     def difference(self, other):
-        # Inherit docs from EventI
         try:
             return SetEvent(self._set.difference(other.samples()))
         except NotImplementedError:
@@ -435,26 +444,29 @@ class SetEvent(EventI):
                     newset.insert(elt)
             return SetEvent(newset)
     def samples(self):
-        # Inherit docs from EventI
         # Make a copy -- it's safer.
         return self._set.copy()
     def len(self):
-        # Inherit docs from EventI
         return len(self._set)
+    def predicate_name(self):
+        return 'x in %r' % self._set.elements()
     def __repr__(self):
         if len(self._set) == 0: return '{Event}'
         str = '{Event '
-        for elt in self._set.elements()[:5]:
-            str += repr(elt)+', '
-        if len(self._set) <= 5:
-            return str[:-2]+'}'
-        else:
-            return str+'...}'
+        for elt in self._set.elements():
+            str += "%r, " % elt
+        return str[:-2]+'}'
     def __str__(self):
         if len(self._set) == 0: return '{Event}'
+        x = 7
         str = '{Event '
-        for elt in self._set.elements():
-            str += repr(elt)+', '
+        for elt in self._set.elements()[:5]:
+            substr = '%r, ' % elt
+            if len(substr) + x > 75:
+                str += "\n    "
+                x = 4
+            x += len(substr)
+            str += substr
         return str[:-2]+'}'
 
 class PredEvent(EventI):
@@ -469,20 +481,30 @@ class PredEvent(EventI):
       e1 = PredEvent(lambda x:x>3)            {x:x>3}
       e2 = PredEvent(lambda x:x[0:2]=='hi')   {x:x[0:2]=='hi'}
     """
-    def __init__(self, func):
+    def __init__(self, predicate, name=None):
         """
         Construct a new C{PredEvent} from the given
         function.  The function should return 1 for any samples
         contained in the C{Event}, and 0 for any samples not 
         contained in the C{Event}.
         
-        @param func: A function specifying what samples are in this
-               C{Event}.
-        @type func: Function or BuiltinFunction
+        @param predicate: A function specifying what samples are in
+             this C{Event}.
+        @type predicate: C{Function} or C{BuiltinFunction}
+        @param name: A descriptive name for the predicate function.
+            This name is used when the event is printed.  It should be
+            a .. hrm.
+        @type name: C{string}
         """
-        self._func = func
+        self._predicate = predicate
+        if name is None:
+            self._name = self._predicate.__name__+'(x)'
+            if self._name == '<lambda>(x)':
+                self._name = 'f(x)'
+        else:
+            self._name = name
     def contains(self, sample):
-        return self._func(sample) != 0
+        return self._predicate(sample) != 0
     def equals(self, other):
         """
         B{Not implemented by this Event class.}
@@ -502,30 +524,40 @@ class PredEvent(EventI):
         """
         raise NotImplementedError()
     def superset(self, other):
-        # Inherit docs from EventI
         if isinstance(other, SampleEvent):
             return other.sample() in self
-        elif isinstance(other, SetEvent):
+        else:
+            # This may raise NotImplementedError:
             for elt in other.samples().elements():
                 if elt not in self: return 0
             return 1
-        else:
-            raise NotImplementedError()
     def union(self, other): 
-        # Inherit docs from EventI
         try:
             return SetEvent(other.samples()).union(self)
         except NotImplementedError:
-            f = (lambda x, a=self, b=other:(x in a and x in b))
-            return PredEvent(f)
+            f = (lambda x, a=self, b=other:(x in a or x in b))
+            if hasattr(other, 'predicate_name'):
+                return PredEvent(f, '(%s) or (%s)' %
+                                 (self.predicate_name(),
+                                  other.predicate_name()))
+            else:
+                return PredEvent(f)
     def intersection(self, other):
-        # Inherit docs from EventI
-        f = (lambda x, a=self, b=other:(x in a or x in b))
-        return PredEvent(f)
+        f = (lambda x, a=self, b=other:(x in a and x in b))
+        if hasattr(other, 'predicate_name'):
+            return PredEvent(f, '(%s) and (%s)' %
+                             (self.predicate_name(),
+                              other.predicate_name()))
+        else:
+            return PredEvent(f)
     def difference(self, other):
-        # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a and x not in b))
-        return PredEvent(f)
+        if hasattr(other, 'predicate_name'):
+            return PredEvent(f, '(%s) and not (%s)' %
+                             (self.predicate_name(),
+                              other.predicate_name()))
+        else:
+            return PredEvent(f)
     def samples(self):
         """
         B{Not implemented by this Event class.}
@@ -540,9 +572,21 @@ class PredEvent(EventI):
         @rtype: None
         """
         raise NotImplementedError()
+    def predicate_name(self):
+        """
+        @return: a descriptive name for the predicate function.
+        @rtype: C{string}
+        """
+        return self._name
     def __repr__(self):
-        return '{Event x: %s(x)}' % self._func.__name__
-
+        return '{Event x: %s}' % self.predicate_name()
+    def predicate(self):
+        """
+        @return: The predicate that this event is based on.
+        @type predicate: C{Function} or C{BuiltinFunction}
+        """
+        return self._predicate
+        
 class NullEvent(EventI):
     """
     An event that contains no samples.
@@ -555,6 +599,7 @@ class NullEvent(EventI):
     def intersection(self, other): return self
     def difference(self, other): return self
     def samples(self): return Set()
+    def predicate_name(self): return "false"
     def len(self): return 0
     def __repr__(self): return '{Event}'
 
@@ -571,8 +616,13 @@ class UniversalEvent(EventI):
     def union(self, other): return self
     def intersection(self, other): return other
     def difference(self, other):
-        # Inherit docs from EventI
         f = (lambda x, b=other:(x not in b))
+        if hasattr(other, 'predicate_name'):
+            return PredEvent(f, 'not (%s)' %
+                             (other.predicate_name()))
+        else:
+            return PredEvent(f)
+        
         return PredEvent(f)
         
     def samples(self): 
@@ -582,6 +632,7 @@ class UniversalEvent(EventI):
         @rtype: None
         """
         raise NotImplementedError()
+    def predicate_name(self): return "true"
     def len(self): return None
     def __repr__(self): return '{Event x}'
         
@@ -925,22 +976,15 @@ class SimpleFreqDist(FreqDistI):
 
     def __repr__(self):
         """
-        Return the informal string representation of this
-        C{SimpleFreqDist}.  The informal representation of a
-        C{SimpleFreqDist} is the informal
-        representation of its dictionary.
-        
-        @return: The informal string representation of this
-            C{SimpleFreqDist}.
         @rtype: string
         """
-        str = '{SimpleFreqDist '
+        str = '<SimpleFreqDist '
         for sample in self.samples():
             str += "%r:%r, " % (sample, self.count(sample))
-        return str[:-2]+'}'
+        return str[:-2]+'>'
     
     def __str__(self):
-        str = '{SimpleFreqDist\n    '
+        str = '<SimpleFreqDist\n    '
         x = 4
         for sample in self.samples():
             substr = "%r: %r, " % (sample, self.count(sample))
@@ -949,9 +993,8 @@ class SimpleFreqDist(FreqDistI):
                 x = 4
             x += len(substr)
             str += substr
-        return str[:-2]+'}'
+        return str[:-2]+'>'
 
-  
 ##//////////////////////////////////////////////////////
 ##  Context-Feature Samples
 ##//////////////////////////////////////////////////////
@@ -1068,7 +1111,6 @@ class ContextEvent(EventI):
         self._context = context
         
     def contains(self, sample):
-        # Inherit docs from EventI
         if not isinstance(sample, CFSample): return 0
         return sample.context() == self._context
     
@@ -1085,30 +1127,24 @@ class ContextEvent(EventI):
         return self._context
     
     def equals(self, other):
-        # Inherit docs from EventI
         if isinstance(other, ContextEvent):
             return self._context == other._context
         else:
             raise NotImplementedError()
     
     def subset(self, other):
-        # Inherit docs from EventI
         return self.equals(other)
     
     def superset(self, other):
-        # Inherit docs from EventI
         return self.equals(other)
 
     def union(self, other): 
-        # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a and x in b))
         return PredEvent(f)
     def intersection(self, other):
-        # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a or x in b))
         return PredEvent(f)
     def difference(self, other):
-        # Inherit docs from EventI
         f = (lambda x, a=self, b=other:(x in a and x not in b))
         return PredEvent(f)
     def samples(self):
@@ -1304,10 +1340,10 @@ class CFFreqDist(FreqDistI):
             C{CFFreqDist}.
         @rtype: string
         """
-        str = '{CFFreqDist '
+        str = '<CFFreqDist '
         for sample in self.samples():
             str += "%r:%r, " % (sample, self.count(sample))
-        return str[:-1]+'}'
+        return str[:-1]+'>'
 
     def __str__(self):
         """
@@ -1771,6 +1807,26 @@ def testCFFreqDist():
     for r in range(20):
         print fdist.Nr(r),
         
-if __name__ == '__main__':
-    testCFFreqDist()
+#if __name__ == '__main__':
+    #testCFFreqDist()
     #testXVal()
+if __name__ == '__main__':
+    e1 = PredEvent(lambda x:x>20, 'x>20')
+    e2 = PredEvent(lambda x:x<130, 'x<130')
+    e3 = SampleEvent(30)
+    e4 = SampleEvent(99)
+    e5 = SampleEvent(500)
+    print e1+e2, e1*e2, e1-e2
+    print
+    print e3+e4
+    print
+    print (e3+e4+e5) + (e1*e2)
+    print (e3+e4+e5) * (e1*e2)
+    print (e3+e4+e5) - (e1*e2)
+    print
+    print (e1*e2) + (e3+e4+e5) 
+    print (e1*e2) * (e3+e4+e5) 
+    print (e1*e2) - (e3+e4+e5)
+    print
+    print UniversalEvent() - e5
+
