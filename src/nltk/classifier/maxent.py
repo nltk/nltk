@@ -163,7 +163,7 @@ class ConditionalExponentialClassifier(AbstractFeatureClassifier):
         
         AbstractFeatureClassifier.__init__(self, fdlist, labels)
 
-    def fvlist_likelihood(self, fvlist):
+    def fvlist_likelihood(self, fvlist, label):
         # Inherit docs from AbstractFeatureClassifier
         prod = 1.0
         for (id, val) in fvlist.assignments():
