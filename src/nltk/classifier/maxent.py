@@ -250,9 +250,12 @@ class GIS_FDList(AbstractFDList):
         values = self._base_fdlist.detect(labeled_text)
         assignments = list(values.assignments())
 
-        # Add the correction feature (NOTE: we assume binary features
-        # here!  Is that save? 
-        correction = self._C - len(assignments)
+        # If we knew the features were binary we could do:
+        #correction = self._C - len(assignments)
+
+        correction = self._C
+        for (f,v) in assignments: correction -= v
+        
         assignments.append( (len(self._base_fdlist)+1, correction) )
         if correction < 0:
             raise ValueError("C value was set too low for GIS_FDList")
@@ -515,8 +518,10 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
         # improves speed.
         if debug > 0: print '  ==> Memoizing feature value lists'
         texts = [ltok.type().text() for ltok in labeled_tokens]
+        if debug > 3: print '    -> Calling MemoizedFDList'
         memoized_fdlist = MemoizedFDList(corrected_fdlist,
                                          texts, labels)
+        if debug > 3: print '    -> Done calling MemoizedFDList'
 
         # Count how many times each feature occurs in the training data.
         fcount_emperical = self._fcount_emperical(memoized_fdlist,
@@ -573,17 +578,17 @@ class GISMaxentClassifierTrainer(ClassifierTrainerI):
             # Check log-likelihood cutoffs.
             if ll_cutoff is not None or lldelta_cutoff is not None:
                 ll = log_likelihood(classifier, labeled_tokens)
-                if ll_cutoff is not None and ll > -ll_cutoff: break
+                if ll_cutoff is not None and ll >= -abs(ll_cutoff): break
                 if lldelta_cutoff is not None:
-                    if (ll - ll_old) < lldelta_cutoff: break
+                    if ll_old and (ll - ll_old) <= lldelta_cutoff: break
                     ll_old = ll
 
             # Check accuracy cutoffs.
             if acc_cutoff is not None or accdelta_cutoff is not None:
                 acc = accuracy(classifier, labeled_tokens)
-                if acc_cutoff is not None and acc < acc_cutoff: break
+                if acc_cutoff is not None and acc >= acc_cutoff: break
                 if accdelta_cutoff is not None:
-                    if (acc_old - acc) < accdelta_cutoff: break
+                    if acc_old and (acc_old - acc) <= accdelta_cutoff: break
                     acc_old = acc
 
 
@@ -716,7 +721,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         @type labels: C{sequence} of (immutable)
         @param fdlist: The feature detector list that should be used
             to find feature value lists for C{LabeledText}s.
-        @tyep fdlist: C{FeatureDetectorListI}
+        @type fdlist: C{FeatureDetectorListI}
         """
         # Map from nf to indices.  This allows us to use smaller arrays. 
         nfmap = {}
