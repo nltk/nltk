@@ -1,3 +1,12 @@
+# Natural Language Toolkit: Finite State Automata
+#
+# Copyright (C) 2001 University of Pennsylvania
+# Author: Steven Bird <sb@ldc.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
+
 """
 FSA class - deliberately simple so that the operations are easily understood.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
