@@ -8,7 +8,7 @@
 # $Id$
 
 from nltk.chktype import chktype as _chktype
-from types import IntType as _IntType
+import types
 from nltk.set import Set
 
 ##//////////////////////////////////////////////////////
@@ -908,7 +908,7 @@ class SimpleFreqDist(FreqDistI):
 
     def cond_samples(self, condition):
         # Inherit docs from FreqDistI
-        _chktype("SimpleFreqDist.cond_samples", 1, condition, (EventI,))
+        _chktype(1, condition, EventI)
         return [sample for sample in self.samples() if (sample in condition)]
         
     def Nr(self, r):
@@ -916,7 +916,7 @@ class SimpleFreqDist(FreqDistI):
         # We have to do a full search.  That's slow.  If they
         # ask for one Nr, they'll probably ask for others, so cache
         # the results.
-        _chktype("SimpleFreqDist.Nr", 1, r, (_IntType,))
+        _chktype(1, r, types.IntType)
         if self._Nr_cache == None: 
             nr = [self.B()]
             for sample in self.samples():
@@ -1221,7 +1221,7 @@ class CFFreqDist(FreqDistI):
 
     def inc(self, sample):
         # Inherit docs from FreqDistI
-        _chktype("CFFreqDist.inc", 1, sample, (CFSample,))
+        _chktype(1, sample, CFSample)
         self._Nr_cache = None
         self._N += 1
         (context, feature) = (sample.context(), sample.feature())
@@ -1250,7 +1250,7 @@ class CFFreqDist(FreqDistI):
 
     def cond_samples(self, condition):
         # Inherit docs from FreqDistI
-        _chktype("CFFreqDist.cond_samples", 1, condition, (EventI,))
+        _chktype(1, condition, EventI)
         if isinstance(event, ContextEvent):
             return self._context_fdists[condition.context()].samples()
         else:
@@ -1261,7 +1261,7 @@ class CFFreqDist(FreqDistI):
         # We have to do a full search.  That's slow.  If they
         # ask for one Nr, they'll probably ask for others, so cache
         # the results.
-        _chktype("CFFreqDist.Nr", 1, r, (_IntType,))
+        _chktype(1, r, types.IntType)
         if self._Nr_cache == None: 
             nr = []
             for sample in self.samples():
@@ -1276,7 +1276,7 @@ class CFFreqDist(FreqDistI):
     def count(self, sample_or_event):
         # Inherit docs from FreqDistI
         event = sample_or_event
-        _chktype("CFFreqDist.count", 1, event, (CFSample, ContextEvent))
+        _chktype(1, event, CFSample, ContextEvent)
         if isinstance(event, CFSample):
             # CFSample
             if not self._context_fdists.has_key(event.context()):
@@ -1298,8 +1298,8 @@ class CFFreqDist(FreqDistI):
         # them with docs that specify that event must be a CFSample
         # and condition must be a ContextEvent.
         sample = sample_or_event
-        _chktype("CFFreqDist.cond_freq", 1, sample, (CFSample,))
-        _chktype("CFFreqDist.cond_freq", 2, condition, (ContextEvent,))
+        _chktype(1, sample, CFSample)
+        _chktype(2, condition, ContextEvent)
         feature = sample.feature()
         context = condition.context()
         if not self._context_fdists.has_key(context):
@@ -1324,7 +1324,7 @@ class CFFreqDist(FreqDistI):
     
     def cond_max(self, condition):
         # Inherit docs from FreqDistI
-        _chktype("CFFreqDist.cond_max", 1, condition, (ContextEvent,))
+        _chktype(1, condition, ContextEvent)
         context = condition.context()
         if not self._context_fdists.has_key(context): return None
         max_count = -1
