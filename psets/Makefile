@@ -1,8 +1,9 @@
-all: exercises-002.dvi
-clean:
-pdf:
-ps:
+all: ps pdf
+pdf: exercises-002.pdf exercises-001.pdf
+ps: exercises-002.ps exercises-001.ps
 dvi:
+clean:
+	rm -f *.eps *.log *.aux *.dvi *.ps *.toc *.pdf
 
 # General rules
 %.dvi: %.tex
