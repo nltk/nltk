@@ -201,7 +201,7 @@ class MaxentClassifier(ClassifierI):
 ##  GIS
 ##//////////////////////////////////////////////////////
 
-class GIS_FDList(AbstractFeatureDetectorList):
+class GIS_FDList(AbstractFDList):
     """
     Adds 2 features to a feature list:
       - one feature that's always on
@@ -231,7 +231,7 @@ class GIS_FDList(AbstractFeatureDetectorList):
     def C(self):
         return self._C
 
-class MemoizedFDList(AbstractFeatureDetectorList):
+class MemoizedFDList(AbstractFDList):
     """
     Remember the feature detector lists for the training data, so we
     don't need to re-compute them.
@@ -251,7 +251,7 @@ class MemoizedFDList(AbstractFeatureDetectorList):
     def __len__(self):
         return len(self._fdlist)
 
-class FilteredFDList(AbstractFeatureDetectorList):
+class FilteredFDList(AbstractFDList):
     """
     Only include features that mean something.
     """
@@ -650,7 +650,7 @@ class IISMaxentClassifierTrainer(ClassifierTrainerI):
         if debug > 0: print '  ==> Filtering training results'
         filtered_fdlist = self._fdlist
         #filtered_fdlist = (
-        #     AlwaysFeatureDetectorList() +
+        #     AlwaysFDList() +
         #     FilteredFDList(self._fdlist, labeled_tokens, labels))
         
         #filtered_fdlist = self._fdlist
@@ -766,8 +766,8 @@ def simple_test():
         toks.append(Token(LabeledText('to', tag)))
 
     func1 = lambda w:(w.label() in ('dans', 'en'))
-    features = FunctionFeatureDetectorList(func1, (1,))
-    features += AlwaysFeatureDetectorList()
+    features = FunctionFDList(func1, (1,))
+    features += AlwaysFDList()
 
     if 0:
         trainer = IISMaxentClassifierTrainer(features)
@@ -806,32 +806,24 @@ def demo(labeled_tokens, n_words=5, n_lens=20, debug=5):
     if debug: print timestamp(), '  got %d labels.' % len(labels)
     
     if debug: print timestamp(), 'constructing feature list...'
-    f_range = [(chr(i),l)
-             for i in (range(ord('a'), ord('z'))+[ord("'")])
-             for l in labels]
-    func = lambda w:(w.text()[0:1], w.label())
-    features = FunctionFeatureDetectorList(func, f_range)
-    func = lambda w:(w.text()[-1:], w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
-    func = lambda w:(w.text()[-2:-1], w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
-    f_vals = [LabeledText("Atlanta's", l) for l in labels]
-    features += ValueFeatureDetectorList(f_vals)
-    f_range = [(n, l) for n in range(n_lens) for l in labels]
-    func = lambda w:(len(w.text()), w.label())
-    features += FunctionFeatureDetectorList(func, f_range)
-
-    if debug: print timestamp(), '  got %d features' % len(features)
+    fdlist = AlwaysOnFDList()
+    f_range = [chr(i) for i in (range(ord('a'), ord('z'))+[ord("'")])]
+    fdlist += TextFunctionFDList(lambda w:w[0:1], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w[-1:], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w[-2:-1], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w, ["atlanta's"], labels)
+    fdlist += TextFunctionFDList(lambda w:len(w), range(n_lens), labels)
+    if debug: print timestamp(), '  got %d features' % len(fdlist)
 
     if debug: print timestamp(), 'training on %d samples...' % len(labeled_tokens)
     t=time.time()
     # ======================
     if 1:
-        trainer = IISMaxentClassifierTrainer(features)
+        trainer = IISMaxentClassifierTrainer(fdlist)
         classifier = trainer.train(labeled_tokens, iter=10,
                                    debug=debug)
     else:
-        trainer = GISMaxentClassifierTrainer(features)
+        trainer = GISMaxentClassifierTrainer(fdlist)
         classifier = trainer.train(labeled_tokens, iter=20,
                                    debug=debug, C=4)
     if debug: print timestamp(), '  done training'
@@ -890,46 +882,39 @@ def get_toks(debug=0):
     return labeled_tokens
     
 def foo(labeled_tokens, n_words=5, n_lens=20, debug=1):
-     """
-     Create a file foo.test
-     """
-     resettime()
-   
-     if debug: print timestamp(), 'getting a list of labels...'
-     labelmap = {}
-     for ltok in labeled_tokens:
-         labelmap[ltok.type().label()] = 1
-     labels = labelmap.keys()
-     if debug: print timestamp(), '  got %d labels.' % len(labels)
+    """
+    Create a file foo.test
+    """
+    resettime()
+    
+    if debug: print timestamp(), 'getting a list of labels...'
+    labelmap = {}
+    for ltok in labeled_tokens:
+        labelmap[ltok.type().label()] = 1
+    labels = labelmap.keys()
+    if debug: print timestamp(), '  got %d labels.' % len(labels)
+    
+    labels = ['x']
+    if debug: print timestamp(), 'constructing feature list...'
+    #features = AlwaysFDList()
+    fdlist = AlwaysOnFDList()
+    f_range = [chr(i) for i in (range(ord('a'), ord('z'))+[ord("'")])]
+    fdlist += TextFunctionFDList(lambda w:w[0:1], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w[-1:], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w[-2:-1], f_range, labels)
+    fdlist += TextFunctionFDList(lambda w:w, ["atlanta's"], labels)
+    fdlist += TextFunctionFDList(lambda w:len(w), range(n_lens), labels)
 
-     labels = ['x']
-     if debug: print timestamp(), 'constructing feature list...'
-     #features = AlwaysFeatureDetectorList()
-     f_range = [(chr(i),l)
-              for i in (range(ord('a'), ord('z'))+[ord("'")])
-              for l in labels]
-     func = lambda w:(w.text()[0:1], 'x')
-     features = FunctionFeatureDetectorList(func, f_range)
-     func = lambda w:(w.text()[-1:], 'x')
-     features += FunctionFeatureDetectorList(func, f_range)
-     func = lambda w:(w.text()[-2:-1], 'x')
-     features += FunctionFeatureDetectorList(func, f_range)
-     f_vals = [LabeledText("Atlanta's", l) for l in labels]
-     features += ValueFeatureDetectorList(f_vals)
-     f_range = [(n, l) for n in range(n_lens) for l in labels]
-     func = lambda w:(len(w.text()), 'x')
-     features += ValueFeatureDetectorList(f_vals)
+    if debug: print timestamp(), '  got %d features' % len(features)
 
-     if debug: print timestamp(), '  got %d features' % len(features)
-
-     out = open('foo.test', 'w')
-     for tok in labeled_tokens:
-         fvlist = features.detect(tok.type())
-         print >>out, tok.type().label(),
-         for assignment in fvlist.assignments():
-             print >>out, "%d=%d" % assignment,
-         print >>out
-     out.close()
+    out = open('foo.test', 'w')
+    for tok in labeled_tokens:
+        fvlist = features.detect(tok.type())
+        print >>out, tok.type().label(),
+        for assignment in fvlist.assignments():
+            print >>out, "%d=%d" % assignment,
+        print >>out
+    out.close()
 
 def test(classifier, labeled_tokens):
     import sys
@@ -950,6 +935,6 @@ def test(classifier, labeled_tokens):
     
 if __name__ == '__main__':
      #simple_test()
-     #toks = get_toks(1)[:100]
+     toks = get_toks(1)[:100]
      demo(toks, 5)
      #foo(toks, 5, 10)
