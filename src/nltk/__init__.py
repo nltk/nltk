@@ -104,7 +104,7 @@ Distributed and Licensed under provisions of the GNU Public
 License, which is included by reference.
 """
 
-__licence__ = "GNU Public License"
+__license__ = "GNU Public License"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Langauge Toolkit is a Python package that simplifies
