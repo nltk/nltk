@@ -8,16 +8,51 @@
 # $Id$
 
 """
-A simple tool for plotting functions.  Sample use:
+A simple tool for plotting functions.  Each new C{Plot} object opens a
+new window, containing the plot for a sinlge function.  See the
+documentation for L{Plot} for information about creating new plots.
 
-    >>> from nltk.draw.plot import Plot
-    >>> Plot(lambda v: sin(v)**2+0.01)
+Sample plots
+============
+Plot sin(x) from -10 to 10, with a step of 0.1:
+    >>> Plot(math.sin)
+
+Plot cos(x) from 0 to 2*pi, with a step of 0.01:
+    >>> Plot(math.cos, slice(0, 2*math.pi, 0.01))
+
+Plot a list of points (connected by lines).
+    >>> points = ([1,1], [3,8], [5,3], [6,12], [1,24])
+    >>> Plot(points)
+
+Plot a list of y-values (connected by lines).  Each value[i] is
+plotted at x=i.
+    >>> values = [x**2 for x in range(200)]
+    >>> Plot(values)
+
+Plot a function with logarithmic axes.
+    >>> def f(x): return 5*x**2+2*x+8
+    >>> Plot(f, slice(1,10,.1), scale='log')
+
+Plot the same function with semi-logarithmic axes.
+    >>> Plot(f, slice(1,10,.1),
+             scale='log-linear')  # logarithmic x; linear y
+    >>> Plot(f, slice(1,10,.1),
+             scale='linear-log')  # linear x; logarithmic y
+
+BLT
+===
+If L{BLT<http://incrtcl.sourceforge.net/blt/>} and
+L{PMW<http://pmw.sourceforge.net/>} are both installed, then BLT is
+used to plot graphs.  Otherwise, a simple Tkinter-based implementation
+is used.  The Tkinter-based implementation does I{not} display axis
+values.
 
 @group Plot Frame Implementations: PlotFrameI, CanvasPlotFrame,
     BLTPlotFrame
 """
 
-# Used from "from nltk.draw.plot import *"
+# This is used by "from nltk.draw.plot import *". to decide what to
+# import.  It also declares to nltk that only the Plot class is public.
 __all__ = ['Plot']
 
 # Implementation note:
@@ -25,14 +60,10 @@ __all__ = ['Plot']
 #   plot coordinates.
 
 # Delegate to BLT?
-#   <http://sourceforge.net/projects/blt/>
+#   
 #   
 
-from types import FunctionType as _FunctionType
-from types import MethodType as _MethodType
-from types import BuiltinFunctionType as _BuiltinFunctionType
-from types import IntType as _IntType
-from types import FloatType as _FloatType
+from types import *
 from math import log, log10, ceil, floor
 import Tkinter, sys, time
 from nltk.draw import ShowText
@@ -44,38 +75,35 @@ class PlotFrameI:
     CanvasPlotFrame if BLTPlotFrame is unavaibale.
     """
     def postscript(self, filename):
-        """
-        """
+        'Print the contents of the plot to the given file'
+        raise AssertionError, 'PlotFrameI is an interface'
     def config_axes(self, xlog, ylog):
-        """
-        """
+        'Set the scale for the axes (linear/logarithmic)'
+        raise AssertionError, 'PlotFrameI is an interface'
     def invtransform(self, x, y):
-        """
-        """
+        'Transform pixel coordinates to plot coordinates'
+        raise AssertionError, 'PlotFrameI is an interface'
     def zoom(self, i1, j1, i2, j2):
-        """
-        """
+        'Zoom to the given range'
+        raise AssertionError, 'PlotFrameI is an interface'
     def visible_area(self):
-        """
-        """
+        'Return the visible area rect (in plot coordinates)'
+        raise AssertionError, 'PlotFrameI is an interface'
     def create_zoom_marker(self):
-        """
-        """
+        'mark the zoom region, for drag-zooming'
+        raise AssertionError, 'PlotFrameI is an interface'
     def adjust_zoom_marker(self, x0, y0, x1, y1):
-        """
-        """
+        'adjust the zoom region marker, for drag-zooming'
+        raise AssertionError, 'PlotFrameI is an interface'
     def delete_zoom_marker(self):
-        """
-        """
+        'delete the zoom region marker (for drag-zooming)'
+        raise AssertionError, 'PlotFrameI is an interface'
     def bind(self, *args): 
-        """
-        """
+        'bind an event to a function'
+        raise AssertionError, 'PlotFrameI is an interface'
     def unbind(self, *args): 
-        """
-        """
-
-
-
+        'unbind an event'
+        raise AssertionError, 'PlotFrameI is an interface'
 
 class CanvasPlotFrame(PlotFrameI):
     def __init__(self, root, vals, rng):
@@ -103,12 +131,12 @@ class CanvasPlotFrame(PlotFrameI):
         self._canvas['yscrollcommand'] = sb1.set
         self._canvas['xscrollcommand'] = sb2.set
 
-        # Start out with linear coordinates.
-        self._xlog = self._ylog = 0
-        
         self._width = self._height = -1
         self._canvas.bind('<Configure>', self._configure)
 
+        # Start out with linear coordinates.
+        self.config_axes(0, 0)
+        
     def _configure(self, event):
         if self._width != event.width or self._height != event.height:
             self._width = event.width
@@ -292,7 +320,7 @@ class BLTPlotFrame(PlotFrameI):
             Pmw.initialise()
             self._graph = Pmw.Blt.Graph(self._frame)
         except:
-            raise ImportError('Pwm not installed!')
+            raise ImportError('Pmw not installed!')
 
         # Add scrollbars.
         sb1 = Tkinter.Scrollbar(self._frame, orient='vertical')
@@ -403,18 +431,104 @@ class BLTPlotFrame(PlotFrameI):
 
 
 class Plot:
+    """
+    A simple graphical tool for plotting functions.  Each new C{Plot}
+    object opens a new window, containing the plot for a sinlge
+    function.  Multiple plots in the same window are not (yet)
+    supported.  The C{Plot} constructor supports several mechanisms
+    for defining the set of points to plot.  A few examples of plots
+    are:
+    
+        >>> import math
+
+        # Plot the math.sin function over the range [-10:10:.1]
+        >>> Plot(math.sin)
+
+        # Plot the math.sin function over the range [0:1:.001]
+        >>> Plot(math.sin, slice(0, 1, .001))
+
+        # Plot a list of points
+        >>> points = ([1,1], [3,8], [5,3], [6,12], [1,24])
+        >>> Plot(points)
+
+        # Plot a list of values, at x=0, x=1, x=2, ..., x=n
+        >>> Plot([x**2 for x in range(20)])
+    """
     def __init__(self, vals, rng=None, **kwargs):
-        # Derive vals and range.
-        if type(vals) in (_FunctionType, _BuiltinFunctionType,
-                            _MethodType):
-            if rng == None: rng = [x*0.1 for x in range(-100, 100)]
-            vals = [vals(i) for i in rng]
-        elif len(vals) > 0 and type(vals[0]) in (type(()), type([])):
+        """
+        Create a new C{Plot}.
+
+        @vals: The set of values to plot.  C{vals} can be a list of
+            y-values; a list of points; or a function.
+        @rng: The range over which to plot.  C{rng} can be a list
+            of x-values, or a slice object.  If no range is
+            specified, a default range will be used.  Note that
+            C{rng} may I{not} be specified if C{vals} is a list
+            of points.
+        @keyword scale: The scales that should be used for the axes.
+            Possible values are:
+              - C{'linear'}: both axes are linear.
+              - C{'log-linear'}: The x axis is logarithmic; and the y
+                axis is linear.
+              - C{'linear-log'}: The x axis is linear; and the y axis
+                is logarithmic.
+              - C{'log'}: Both axes are logarithmic.
+            By default, C{scale} is C{'linear'}.
+        """
+        # If range is a slice, then expand it to a list.
+        if type(rng) is SliceType:
+            (start, stop, step) = (rng.start, rng.stop, rng.step)
+            if step>0 and stop>start:
+                rng = [start]
+                i = 0
+                while rng[-1] < stop:
+                    rng.append(start+i*step)
+                    i += 1
+            elif step<0 and stop<start:
+                rng = [start]
+                i = 0
+                while rng[-1] > stop:
+                    rng.append(start+i*step)
+                    i += 1
+            else:
+                rng = []
+
+        # If vals is a function, evaluate it over range.
+        if type(vals) in (FunctionType, BuiltinFunctionType,
+                            MethodType):
+            if rng is None: rng = [x*0.1 for x in range(-100, 100)]
+            try: vals = [vals(i) for i in rng]
+            except TypeError:
+                raise TypeError, 'Bad range type: %s' % type(rng)
+
+        # If vals isn't a function, make sure it's a sequence:
+        elif type(vals) not in (ListType, TupleType):
+            raise ValueError, 'Bad values type: %s' % type(vals)
+
+        # If vals is a list of points, unzip it.
+        elif len(vals) > 0 and type(vals[0]) in (ListType, TupleType):
+            if rng is not None:
+                estr = "Can't specify a range when vals is a list of points."
+                raise ValueError, estr
             (rng, vals) = zip(*vals)
-        elif rng == None:
+
+        # If vals & rng are both lists, make sure their lengths match.
+        elif type(rng) in (ListType, TupleType):
+            if len(rng) != len(vals):
+                estr = 'Range list and value list have different lengths.'
+                raise ValueError, estr
+
+        # If rng is unspecified, take it to be integers starting at zero
+        elif rng is None:
             rng = range(len(vals))
-        self._vals = vals
+
+        # If it's an unknown range type, then fail.
+        else:
+            raise TypeError, 'Bad range type: %s' % type(rng)
+
+        # Set _rng/_vals
         self._rng = rng
+        self._vals = vals
 
         # Find max/min's.
         self._imin = min(rng)
@@ -447,10 +561,10 @@ class Plot:
         self._plot.config_axes(self._ilog.get(), self._jlog.get())
 
         ## Set up zooming
-        self._plot.bind("<ButtonPress-1>", self.zoom_in_buttonpress)
-        self._plot.bind("<ButtonRelease-1>", self.zoom_in_buttonrelease)
-        self._plot.bind("<ButtonPress-2>", self.zoom_out)
-        self._plot.bind("<ButtonPress-3>", self.zoom_out)
+        self._plot.bind("<ButtonPress-1>", self._zoom_in_buttonpress)
+        self._plot.bind("<ButtonRelease-1>", self._zoom_in_buttonrelease)
+        self._plot.bind("<ButtonPress-2>", self._zoom_out)
+        self._plot.bind("<ButtonPress-3>", self._zoom_out)
 
         self._init_menubar(self._root)
 
@@ -458,7 +572,7 @@ class Plot:
         self._root.bind('<Control-q>', self.destroy)
         self._root.bind('<Control-x>', self.destroy)
         self._root.bind('<Control-p>', self.postscript)
-        self._root.bind('<Control-a>', self.zoom_all)
+        self._root.bind('<Control-a>', self._zoom_all)
         self._root.bind('<F1>', self.help)
         
     def _init_menubar(self, parent):
@@ -473,10 +587,10 @@ class Plot:
 
         zoommenu = Tkinter.Menu(menubar, tearoff=0)
         zoommenu.add_command(label='Zoom in', underline=5,
-                             command=self.zoom_in, accelerator='left click')
+                             command=self._zoom_in, accelerator='left click')
         zoommenu.add_command(label='Zoom out', underline=5,
-                             command=self.zoom_out, accelerator='right click')
-        zoommenu.add_command(label='View 100%', command=self.zoom_all,
+                             command=self._zoom_out, accelerator='right click')
+        zoommenu.add_command(label='View 100%', command=self._zoom_all,
                              accelerator='Ctrl-a')
         menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
 
@@ -506,8 +620,11 @@ class Plot:
         self._plot.config_axes(self._ilog.get(), self._jlog.get())
 
     def about(self, *e):
+        """
+        Dispaly an 'about' dialog window for the NLTK plot tool.
+        """
         ABOUT = ("NLTK Plot Tool\n"
-                 "Written by Edward Loper")
+                 "<http://nltk.sourceforge.net>")
         TITLE = 'About: Plot Tool'
         if isinstance(self._plot, BLTPlotFrame):
             ABOUT += '\n\nBased on the BLT Widget'
@@ -518,16 +635,26 @@ class Plot:
             ShowText(self._root, TITLE, ABOUT)
             
     def help(self, *e):
+        """
+        Display a help window.
+        """
+        doc = __doc__.split('\n@', 1)[0].strip()
+        import re
+        doc = re.sub(r'[A-Z]{([^}<]*)(<[^>}]*>)?}', r'\1', doc)
         self._autostep = 0
         # The default font's not very legible; try using 'fixed' instead. 
         try:
-            ShowText(self._root, 'Help: Plot Tool',
-                     (__doc__).strip(), width=75, font='fixed')
+            ShowText(self._root, 'Help: Plot Tool', doc,
+                     width=75, font='fixed')
         except:
-            ShowText(self._root, 'Help: Plot Tool',
-                     (__doc__).strip(), width=75)
+            ShowText(self._root, 'Help: Plot Tool', doc, width=75)
+                     
 
     def postscript(self, *e):
+        """
+        Print the (currently visible) contents of the plot window to a
+        postscript file.
+        """
         from tkFileDialog import asksaveasfilename
         ftypes = [('Postscript files', '.ps'),
                   ('All files', '*')]
@@ -536,11 +663,21 @@ class Plot:
         self._plot.postscript(filename)
         
     def destroy(self, *args):
+        """
+        Cloase the plot window.
+        """
         if self._root is None: return
         self._root.destroy()
         self._root = None
 
     def mainloop(self, *varargs, **kwargs):
+        """
+        Enter the mainloop for the window.  This method must be called
+        (with no arguments) if a Plot is constructed from a
+        non-interactive Python program (e.g., from a script); otherwise,
+        the script will continue executing, and the plot window will
+        close as soon se the script completes.
+        """
         self._root.mainloop(*varargs, **kwargs)
 
     def _zoom(self, i1, j1, i2, j2):
@@ -570,18 +707,18 @@ class Plot:
         # Do the actual zooming.
         self._plot.zoom(i1, j1, i2, j2)
 
-    def zoom_in_buttonpress(self, event):
+    def _zoom_in_buttonpress(self, event):
         self._press_x = event.x
         self._press_y = event.y
         self._press_time = time.time()
         self._plot.create_zoom_marker()
-        self._bind_id = self._plot.bind("<Motion>", self.zoom_in_drag)
+        self._bind_id = self._plot.bind("<Motion>", self._zoom_in_drag)
 
-    def zoom_in_drag(self, event):
+    def _zoom_in_drag(self, event):
         self._plot.adjust_zoom_marker(self._press_x, self._press_y,
                                       event.x, event.y)
 
-    def zoom_in_buttonrelease(self, event):
+    def _zoom_in_buttonrelease(self, event):
         self._plot.delete_zoom_marker()
         self._plot.unbind("<Motion>", self._bind_id)
         if ((time.time() - self._press_time > 0.1) and
@@ -590,21 +727,21 @@ class Plot:
             (i2, j2) = self._plot.invtransform(event.x, event.y)
             self._zoom(i1, j1, i2, j2)
         else:
-            self.zoom_in()
+            self._zoom_in()
         
-    def zoom_in(self, *e): 
+    def _zoom_in(self, *e): 
         (i1, j1, i2, j2) = self._plot.visible_area()
         di = (i2-i1)*0.1
         dj = (j2-j1)*0.1
         self._zoom(i1+di, j1+dj, i2-di, j2-dj)
 
-    def zoom_out(self, *e):
+    def _zoom_out(self, *e):
         (i1, j1, i2, j2) = self._plot.visible_area()
         di = -(i2-i1)*0.1
         dj = -(j2-j1)*0.1
         self._zoom(i1+di, j1+dj, i2-di, j2-dj)
 
-    def zoom_all(self, *e):
+    def _zoom_all(self, *e):
         self._zoom(self._imin, self._jmin, self._imax, self._jmax)
 
 
