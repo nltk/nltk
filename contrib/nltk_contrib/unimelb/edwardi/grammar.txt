@@ -1,0 +1,32 @@
+---- Rules -----
+Start -> S
+S[plural ?p] -> NP[plural ?p] VP1[plural ?p, fin +]
+S -> if S then S
+VP1[plural ?p, fin +] -> VP[plural ?p, fin +]
+VP1[plural ?p, fin ?f] -> Aux[plural ?p, fin ?f] not VP[fin -]
+NP[plural ?p] -> N[plural ?p]
+NP[plural ?p] -> Det[plural ?p] N[plural ?p]
+VP[tense ?t, fin ?f] -> V[tense ?t, fin ?f]
+VP[tense ?t, fin ?f] -> V[tense ?t, fin ?f] NP
+NP[plural ?p] -> PN[plural ?p]
+NP[plural ?p] -> Pro[plural ?p]
+---- Lexicon -----
+Jones PN[plural -, gen male]
+Ulysses PN[plural -, gen -hum]
+Porsche N[plural -, gen -hum]
+woman N[plural -, gen fem]
+man N[plural -, gen male]
+owns V[tense present, plural -, fin +]
+own V[fin -]
+like V[fin -]
+likes V[plural -, fin +]
+the Det[]
+a Det[plural -]
+it Pro[plural -, gen -hum]
+he Pro[plural -, gen male]
+him Pro[plural -, gen male]
+she Pro[plural -, gen fem]
+her Pro[plural -, gen fem]
+fascinates V[tense present]
+does Aux[plural -]
+do Aux[plural +]
