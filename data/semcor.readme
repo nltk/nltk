@@ -1,8 +1,5 @@
-SemCor 1.7a must be downloaded from
-http://engr.smu.edu/~rada/semcor/semcor1.7a.tar.gz
-
+SemCor 1.7a
+===========
 This package includes concordances of semantically tagged Brown Corpus files
 linked to WordNet 1.7 senses.
-
-Uncompress the file in the corpora directory (this directory, usually) for the
-nltk.corpus.semcor object to work.
+http://engr.smu.edu/~rada/semcor/semcor1.7a.tar.gz
