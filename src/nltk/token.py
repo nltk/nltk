@@ -615,8 +615,6 @@ class SpanLocation(LocationI):
     C{SpanLocation} is an abstract base class; individual subclasses
     are used to specify the measure over which the span is defined
     (such as character indices or time).
-
-    @ivar _source: The name of the document containing this location.
     """
     __slots__ = ('_start', '_end', '_source')
 
@@ -814,6 +812,82 @@ class CharSpanLocation(SpanLocation):
         C{text[self.start(), self.end()]}.
         """
         return text[self._start:self._end]
+
+class IndexLocation(LocationI):
+    """
+    An abstract base class for the location of a token, encoded as a
+    single index.
+
+    C{IndexLocation} is an abstract base class; individual subclasses
+    are used to specify the unit over which the index is defined (such
+    as word indices or time).
+    """
+    __slots__ = ('index', 'source')
+    def __init__(self, index, source):
+        """
+        Construct a new location that specifies the text at X{index}.
+        @type source: C{string}
+        @param source: A case-sensitive string identifying the text
+            containing this location.
+        """
+        if self.__class__ == SpanLocation:
+            raise AssertionError, "Abstract classes can't be instantiated"
+        self._index = index
+        self._source = source
+
+    def source(self):
+        # Documentation inherited from LocationI
+        return self._source
+
+    def index(self):
+        """
+        @return: This location's index.
+        """
+        return self._index
+    
+    def __cmp__(self, other):
+        if self.__class__ != other.__class__: return -1
+        return cmp((self._index, self._source),
+                   (other._index, other._source))
+
+    def __hash__(self):
+        return hash((self._index, self._source))
+        
+    def __repr__(self):
+        if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
+        else: unit = ''
+        return '[%s%s]' % (self._index, unit)
+
+    def __str__(self):
+        if hasattr(self.__class__, 'UNIT'): unit = self.__class__.UNIT
+        else: unit = ''
+        if self._source is None: source = ''
+        else: source = str(self._source)
+        return '[%s%s]@%s' % (self._index, unit, source)
+
+class WordIndexLocation(IndexLocation):
+    """
+    The location of a word, encoded as a word index within the
+    containing text.
+    """
+    __slots__ = ()
+    UNIT = 'w'
+
+class SentIndexLocation(IndexLocation):
+    """
+    The location of a sentence, encoded as a sentence index within the
+    containing text.
+    """
+    __slots__ = ()
+    UNIT = 'w'
+
+class ParaIndexLocation(IndexLocation):
+    """
+    The location of a paragraph, encoded as a paragraph index within the
+    containing text.
+    """
+    __slots__ = ()
+    UNIT = 'w'
 
 # We're currently undecided about token wrappers:
 #######################################################################
