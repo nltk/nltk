@@ -482,17 +482,21 @@ class SparseList:
 
     def __hash__(self):
         # Must hash equal to an equal list, so this is slow.
-        return hash(list(self))
+        # [XX] - should we support this, as lists are inherently unhashable
+        # due to their being mutable?
+        return hash(tuple(self))
 
-    def __iadd__(self):
+    def __iadd__(self, other):
         self.extend(other)
+        return self
 
     def __imul__(self, x):
         for i in range(x):
             offset = i*self._len
-            for (index, val) in self._assignments:
+            for index, value in self._assignments.items():
                 self._assignments[index+offset] = value
         self._len *= x
+        return self
 
     def __iter__(self):
         for index in range(self._len):
@@ -569,6 +573,7 @@ class SparseList:
                           self._len, self._default)
     
     def count(self, value):
+        # [XX] - inefficient: when value = default, don't need to iterate
         return len([1 for v in self if v==value])
 
     def extend(self, iterable):
@@ -576,6 +581,8 @@ class SparseList:
             self.append(value)
 
     def index(self, value):
+        # [XX] - inefficient:
+        # when not default then only consider assignments
         for i, v in enumerate(self):
             if v==value:
                 return i
