@@ -132,6 +132,7 @@ import sys, os.path, re
 from nltk.tokenizer import WhitespaceTokenizer, RegexpTokenizer, TokenizerI
 from nltk.token import Token, CharSpanLocation, SpanLocation
 from nltk.tagger import TaggedTokenizer
+from nltk.tagger.treebank import TreebankTaggedTokenizer
 from nltk.tree import TreebankTokenizer
 #from nltk.parser.chunk import ChunkedTaggedTokenizer, ConllChunkedTokenizer
 
@@ -871,7 +872,7 @@ class TreebankCorpusReader(CorpusReaderI):
     # Default tokenizers.
     _ws_tokenizer = WhitespaceTokenizer()
     _tb_tokenizer = TreebankTokenizer()
-    _tag_tokenizer = TaggedTokenizer()
+    _tag_tokenizer = TreebankTaggedTokenizer()
     
     def __init__(self, name, rootdir, treebank_2=False,
                  description_file=None, license_file=None,
