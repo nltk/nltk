@@ -1,5 +1,9 @@
 #! /bin/sh
 
+# This script is designed to launch a number of parallel processes
+# as a model for parallelisation prior to usage of applications in
+# distributed computation environments or on multi-processor machines
+
 usage() {
 
     cat <<EOF
