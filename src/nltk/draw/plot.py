@@ -8,6 +8,7 @@
 # $Id$
 
 """
+A simple tool for plotting functions.
 """
 
 #from chktype import chktype as _chktype 
@@ -54,16 +55,15 @@ class Plot:
 
         # Set up the buttons
         buttons = Tkinter.Frame(self._root)
-        buttons.pack(side='bottom')
-        quit = Tkinter.Button(buttons, text='quit',
-                              command = self.destroy)
-        quit.pack(side='left')
-        zoomin = Tkinter.Button(buttons, text='zoom in',
-                                command = self.zoomin)
-        zoomin.pack(side='left')
-        zoomout = Tkinter.Button(buttons, text='zoom out',
-                                 command = self.zoomout)
-        zoomout.pack(side='left')
+        buttons.pack(side='bottom', fill='x')
+        Tkinter.Button(buttons, text='Done',
+                       command = self.destroy).pack(side='right')
+        Tkinter.Button(buttons, text='Zoom In',
+                       command = self.zoomin).pack(side='left')
+        Tkinter.Button(buttons, text='Zoom Out',
+                       command = self.zoomout).pack(side='left')
+        Tkinter.Button(buttons, text='Print',
+                       command = self.printps).pack(side='left')
 
         # Set up the canvas.
         cframe = Tkinter.Frame(self._root)
@@ -94,14 +94,9 @@ class Plot:
         (_1, _2, width, height) = self._c['scrollregion'].split()
         width = float(width)
         height = float(height)
-        self._c['width'] = width
-        self._c['height'] = height
 
-        # If the scrollregion is smaller than the window was resized
-        # to, then zoom out.
         scale = max(e.width/width, e.height/height)
-        if scale > 1:
-            self._c['scrollregion'] = (0, 0, width*scale, height*scale)
+        self._c['scrollregion'] = (0, 0, width*scale, height*scale)
 
         self._plot()
 
@@ -115,6 +110,16 @@ class Plot:
 
     def zoomin(self, *args): self.zoom(1.2, *args)
     def zoomout(self, *args): self.zoom(1/1.2, *args)
+    def printps(self, *args):
+        from tkFileDialog import asksaveasfilename
+        ftypes = [('Postscript files', '.ps'),
+                  ('All files', '*')]
+        filename = asksaveasfilename(filetypes=ftypes, defaultextension='.ps')
+        if not filename: return
+        (x0, y0, w, h) = self._c['scrollregion'].split()
+        self._c.postscript(file=filename, x=float(x0), y=float(y0),
+                           width=float(w)+2, height=float(h)+2)
+        
 
     def destroy(self, *args):
         self._root.destroy()
@@ -145,8 +150,7 @@ class Plot:
         min_j -= jsize/10
         max_j += jsize/10
 
-        return (min_i, min_j,
-                max_i, max_j,
+        return (min_i, min_j, max_i, max_j,
                 width/(max_i-min_i), height/(max_j-min_j),
                 height)
 
