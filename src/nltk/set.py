@@ -254,6 +254,8 @@ class Set:
         """
         
         guessed = len(other)
+        if guessed == 0:
+            return None
         found = len(self.intersection(other))
         return float(found)/guessed
 
@@ -267,6 +269,8 @@ class Set:
         """
         
         to_find = len(self)
+        if to_find == 0:
+            return None
         found = len(self.intersection(other))
         return float(found)/to_find
 
@@ -283,6 +287,8 @@ class Set:
 
         p = self.precision(other)
         r = self.recall(other)
+        if p is None or r is None:
+            return None
         return 1/(alpha/p + (1-alpha)/r)
 
     def __repr__(self):
