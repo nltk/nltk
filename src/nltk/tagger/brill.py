@@ -579,7 +579,7 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
         return n1.union(n2)
 
 ######################################################################
-## Brill Tagger Trainers
+## Brill Tagger Trainer
 ######################################################################
 
 class BrillTaggerTrainer:
@@ -786,14 +786,273 @@ class BrillTaggerTrainer:
                                       numchanges-fixscore*2+score)), '|',
         print rule
 
+######################################################################
+## Fast Brill Tagger Trainer
+######################################################################
+
+class FastBrillTaggerTrainer:
+    """
+    A faster trainer for brill taggers.
+    """
+    def __init__(self, initial_tagger, templates, trace=0,
+                 **property_names):
+        self._initial_tagger = initial_tagger
+        self._templates = templates
+        self._trace = trace
+        self._property_names = property_names
+
+    def property(self, name):
+        return self._property_names.get(name, name)
+
+    #////////////////////////////////////////////////////////////
+    # Training
+    #////////////////////////////////////////////////////////////
+
+    def train(self, train_token, max_rules=200, min_score=2):
+        SUBTOKENS = self.property('SUBTOKENS')
+        TAG = self.property('TAG')
+
+        # If TESTING is true, extra computation is done to determine whether
+        # each "best" rule actually reduces net error by the score it received.
+        TESTING = False
+        
+        # Basic idea: Keep track of the rules that apply at each position.
+        # And keep track of the positions to which each rule applies.
+
+        # The set of somewhere-useful rules that apply at each position
+        rulesByPosition = []
+        for i in range(len(train_token[SUBTOKENS])):
+            rulesByPosition.append(Set())
+
+        # Mapping somewhere-useful rules to the positions where they apply.
+        # Then maps each position to the score change the rule generates there.
+        # (always -1, 0, or 1)
+        positionsByRule = {}
+
+        # Map scores to sets of rules known to achieve *at most* that score.
+        rulesByScore = {0:{}}
+        # Conversely, map somewhere-useful rules to their minimal scores.
+        ruleScores = {}
+
+        tagIndices = {}   # Lists of indices, mapped to by their tags
+
+        # Maps rules to the first index in the corpus where it may not be known
+        # whether the rule applies.  (Rules can't be chosen for inclusion
+        # unless this value = len(corpus).  But most rules are bad, and
+        # we won't need to check the whole corpus to know that.)
+        # Some indices past this may actually have been checked; it just isn't
+        # guaranteed.
+        firstUnknownIndex = {}
+
+        # Make entries in the rule-mapping dictionaries.
+        # Should be called before _updateRuleApplies.
+        def _initRule (rule):
+            positionsByRule[rule] = {}
+            rulesByScore[0][rule] = None
+            ruleScores[rule] = 0
+            firstUnknownIndex[rule] = 0
+
+        # Takes a somewhere-useful rule which applies at index i;
+        # Updates all rule data to reflect that the rule so applies.
+        def _updateRuleApplies (rule, i):
+
+            # If the rule is already known to apply here, ignore.
+            # (This only happens if the position's tag hasn't changed.)
+            if positionsByRule[rule].has_key(i):
+                return
+
+            if rule.replacement_tag() == train_token[SUBTOKENS][i][TAG]:
+                positionsByRule[rule][i] = 1
+            elif rule.original_tag() == train_token[SUBTOKENS][i][TAG]:
+                positionsByRule[rule][i] = -1
+            else: # was wrong, remains wrong
+                positionsByRule[rule][i] = 0
+
+            # Update rules in the other dictionaries
+            del rulesByScore[ruleScores[rule]][rule]
+            ruleScores[rule] += positionsByRule[rule][i]
+            if not rulesByScore.has_key(ruleScores[rule]):
+                rulesByScore[ruleScores[rule]] = {}
+            rulesByScore[ruleScores[rule]][rule] = None
+            rulesByPosition[i].add(rule)
+
+        # Takes a rule which no longer applies at index i;
+        # Updates all rule data to reflect that the rule doesn't apply.
+        def _updateRuleNotApplies (rule, i):
+            del rulesByScore[ruleScores[rule]][rule]
+            ruleScores[rule] -= positionsByRule[rule][i]
+            if not rulesByScore.has_key(ruleScores[rule]):
+                rulesByScore[ruleScores[rule]] = {}
+            rulesByScore[ruleScores[rule]][rule] = None
+
+            del positionsByRule[rule][i]
+            rulesByPosition[i].remove(rule)
+            # Optional addition: if the rule now applies nowhere, delete
+            # all its dictionary entries.
+
+        myToken = train_token.exclude(TAG)
+        self._initial_tagger.tag(myToken)
+        tokens = myToken[SUBTOKENS] # [XX] ??????
+
+        # First sort the corpus by tag, and also note where the errors are.
+        errorIndices = []  # only used in initialization
+        for i in range(len(myToken[SUBTOKENS])):
+            tag = myToken[SUBTOKENS][i][TAG]
+            if tag != train_token[SUBTOKENS][i][TAG]:
+                errorIndices.append(i)
+            if not tagIndices.has_key(tag):
+                tagIndices[tag] = []
+            tagIndices[tag].append(i)
+
+        print "Finding useful rules..."
+        # Collect all rules that fix any errors, with their positive scores.
+        for i in errorIndices:
+            for template in self._templates:
+                # Find the templated rules that could fix the error.
+                for rule in template.applicable_rules(myToken[SUBTOKENS], i,
+                                                    train_token[SUBTOKENS][i][TAG]):
+                    if not positionsByRule.has_key(rule):
+                        _initRule(rule)
+                    _updateRuleApplies(rule, i)
+
+        print "Done initializing %i useful rules." %len(positionsByRule)
+
+        if TESTING:
+            after = -1 # bug-check only
+
+        # Each iteration through the loop tries a new maxScore.
+        maxScore = max(rulesByScore.keys())
+        rules = []
+        while len(rules) < max_rules and maxScore >= min_score:
+
+            # Find the next best rule.  This is done by repeatedly taking a rule with
+            # the highest score and stepping through the corpus to see where it
+            # applies.  When it makes an error (decreasing its score) it's bumped
+            # down, and we try a new rule with the highest score.
+            # When we find a rule which has the highest score AND which has been
+            # tested against the entire corpus, we can conclude that it's the next
+            # best rule.
+
+            bestRule = None
+            bestRules = rulesByScore[maxScore].keys()
+
+            for rule in bestRules:
+                # Find the first relevant index at or following the first
+                # unknown index.  (Only check indices with the right tag.)
+                ti = bisect.bisect_left(tagIndices[rule.original_tag()],
+                                        firstUnknownIndex[rule])
+                for nextIndex in tagIndices[rule.original_tag()][ti:]:
+                    if rule.applies(myToken[SUBTOKENS], nextIndex):
+                        _updateRuleApplies(rule, nextIndex)
+                        if ruleScores[rule] < maxScore:
+                            firstUnknownIndex[rule] = nextIndex+1
+                            break  # the _update demoted the rule
+
+                # If we checked all remaining indices and found no more errors:
+                if ruleScores[rule] == maxScore:
+                    firstUnknownIndex[rule] = len(tokens) # i.e., we checked them all
+                    print "%i) %s (score: %i)" %(len(rules)+1, rule, maxScore)
+                    bestRule = rule
+                    break
+                
+            if bestRule == None: # all rules dropped below maxScore
+                del rulesByScore[maxScore]
+                maxScore = max(rulesByScore.keys())
+                continue  # with next-best rules
+
+            # bug-check only
+            if TESTING:
+                before = len(_errorPositions(tokens, train_tokens))
+                print "There are %i errors before applying this rule." %before
+                assert after == -1 or before == after, \
+                        "after=%i but before=%i" %(after,before)
+                        
+            print "Applying best rule at %i locations..." \
+                    %len(positionsByRule[bestRule].keys())
+            
+            # If we reach this point, we've found a new best rule.
+            # Apply the rule at the relevant sites.
+            # (apply_at is a little inefficient here, since we know the rule applies
+            #  and don't actually need to test it again.)
+            rules.append(bestRule)
+            bestRule.apply_at(tokens, positionsByRule[bestRule].keys())
+
+            # Update the tag index accordingly.
+            for i in positionsByRule[bestRule].keys(): # where it applied
+                # Update positions of tags
+                # First, find and delete the index for i from the old tag.
+                oldIndex = bisect.bisect_left(tagIndices[bestRule.original_tag()], i)
+                del tagIndices[bestRule.original_tag()][oldIndex]
+
+                # Then, insert i into the index list of the new tag.
+                if not tagIndices.has_key(bestRule.replacement_tag()):
+                    tagIndices[bestRule.replacement_tag()] = []
+                newIndex = bisect.bisect_left(tagIndices[bestRule.replacement_tag()], i)
+                tagIndices[bestRule.replacement_tag()].insert(newIndex, i)
+
+            # This part is tricky.
+            # We need to know which sites might now require new rules -- that
+            # is, which sites are close enough to the changed site so that
+            # a template might now generate different rules for it.
+            # Only the templates can know this.
+            #
+            # If a template now generates a different set of rules, we have
+            # to update our indices to reflect that.
+            print "Updating neighborhoods of changed sites.\n" 
+
+            # First, collect all the indices that might get new rules.
+            neighbors = Set()
+            for i in positionsByRule[bestRule].keys(): # sites changed
+                for template in self._templates:
+                    neighbors.update(template.get_neighborhood(myToken[SUBTOKENS], i))
+
+            # Then collect the new set of rules for each such index.
+            c = d = e = 0
+            for i in neighbors:
+                siteRules = Set()
+                for template in self._templates:
+                    # Get a set of the rules that the template now generates
+                    siteRules.update(Set(template.applicable_rules(
+                                        myToken[SUBTOKENS], i, train_token[SUBTOKENS][i][TAG])))
+
+                # Update rules no longer generated here by any template
+                for obsolete in rulesByPosition[i] - siteRules:
+                    c += 1
+                    _updateRuleNotApplies(obsolete, i)
+
+                # Update rules only now generated by this template
+                for newRule in siteRules - rulesByPosition[i]:
+                    d += 1
+                    if not positionsByRule.has_key(newRule):
+                        e += 1
+                        _initRule(newRule) # make a new rule w/score=0
+                    _updateRuleApplies(newRule, i) # increment score, etc.
+
+            if TESTING:
+                after = before - maxScore
+            print "%i obsolete rule applications, %i new ones, " %(c,d)+ \
+                    "using %i previously-unseen rules." %e        
+
+            maxScore = max(rulesByScore.keys()) # may have gone up
+
+        
+        if self._trace > 0: print ("Training Brill tagger on %d tokens..." %
+                                   len(train_token[SUBTOKENS]))
+        
+        # Maintain a list of the rules that apply at each position.
+        rules_by_position = [{} for tok in train_token[SUBTOKENS]]
+
+        # Create and return a tagger from the rules we found.
+        return BrillTagger(self._initial_tagger, rules)
 
 ######################################################################
 ## Testing
 ######################################################################
 
 def _errorPositions (train_token, token):
-    return [i for i in range(len(token['SUBTOKENS'])) \
-            if token['SUBTOKENS'][i]['TAG'] != train_token['SUBTOKENS'][i]['TAG'] ]
+    return [i for i in range(len(token['SUBTOKENS'])) 
+            if token['SUBTOKENS'][i]['TAG'] !=
+            train_token['SUBTOKENS'][i]['TAG'] ]
 
 # returns a list of errors in string format
 def errorList (train_token, token, radius=2):
@@ -856,7 +1115,7 @@ def getWSJTokens (n, randomize = False):
                   if taggedData[i]['TEXT'][0] not in "[]="]
     return taggedData
 
-def test(numFiles=100, maxRules=200, minScore=2, ruleFile="dump.rules",
+def test(numFiles=100, max_rules=200, min_score=2, ruleFile="dump.rules",
          errorOutput = "errors.out", ruleOutput="rules.out",
          randomize=False, train=.8, trace=3):
 
@@ -898,8 +1157,8 @@ def test(numFiles=100, maxRules=200, minScore=2, ruleFile="dump.rules",
         ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
         ]
 
-    trainer = BrillTaggerTrainer(backoff, templates, trace)
-    b = trainer.train(trainingData, maxRules, minScore)
+    trainer = FastBrillTaggerTrainer(backoff, templates, trace)
+    b = trainer.train(trainingData, max_rules, min_score)
 
     print
     print("Brill accuracy: %f" % tagger_accuracy(b, [goldData]))
@@ -921,19 +1180,19 @@ def test(numFiles=100, maxRules=200, minScore=2, ruleFile="dump.rules",
     print("Done.")
 
 # TESTING
-#sys.argv = ['', '5', '0', '200', '1']
+#sys.argv = ['', '50', '0', '200', '1']
     
 if __name__ == '__main__':
     args = sys.argv[1:]
 
     if len(args) == 0 or len(args) > 4:
-        print "Usage: python brill.py n [randomize [maxRules [minScore]]]\n \
+        print "Usage: python brill.py n [randomize [max_rules [min_score]]]\n \
             n -> number of WSJ files to read\n \
             randomize -> 0 (default) means read the first n files in the corpus, \
                           1 means read a random set of n files \n \
-            maxRules -> (default 200) generate at most this many rules during \
+            max_rules -> (default 200) generate at most this many rules during \
                              training \n \
-            minScore -> (default 2) only use rules which decrease the number of \
+            min_score -> (default 2) only use rules which decrease the number of \
                            errors in the training corpus by at least this much"
     else:
         args = map(int, args)
@@ -944,13 +1203,13 @@ if __name__ == '__main__':
             print("Using %i files, randomize=%i\n" %tuple(args[:2]) )
             test(numFiles = args[0], randomize = args[1])
         elif len(args) == 3:
-            print("Using %i files, randomize=%i, maxRules=%i\n" %tuple(args[:3]) )
-            test(numFiles = args[0], randomize = args[1], maxRules = args[2])
+            print("Using %i files, randomize=%i, max_rules=%i\n" %tuple(args[:3]) )
+            test(numFiles = args[0], randomize = args[1], max_rules = args[2])
         elif len(args) == 4:
-            print("Using %i files, randomize=%i, maxRules=%i, minScore=%i\n"
+            print("Using %i files, randomize=%i, max_rules=%i, min_score=%i\n"
                   %tuple(args[:4]) )
-            test(numFiles = args[0], randomize = args[1], maxRules = args[2],
-                 minScore = args[3])
+            test(numFiles = args[0], randomize = args[1], max_rules = args[2],
+                 min_score = args[3])
 
         print("\nCheck errors.out for a listing of errors in the training set, "+
               "and rules.out for a list of the rules above.")
