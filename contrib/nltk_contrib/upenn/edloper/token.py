@@ -106,9 +106,9 @@ alternatives, in terms of functionality, complexity, and speed::
     - t(c): Avg. time to create a new token.
     - t(e): Avg. time to extend a token with a new property.
 
-Note that the implementations are not totally comple; e.g., they don't
-define equality operators or hash operators.  These will need to be
-implemented eventually, but for the purposes of comparing different
+Note that the implementations are not totally complete; e.g., they
+don't define equality operators or hash operators.  These will need to
+be implemented eventually, but for the purposes of comparing different
 implementations, they would just clutter things up.
 """
 
