@@ -7,6 +7,11 @@
 #
 # $Id$
 
+# To do:
+#   - make sure variable names are used consistantly (fdlist, etc.)
+#   - remove any confusions about the type of labels (string vs
+#      immutable) 
+
 """
 Classes and interfaces used to classify texts into categories.  A
 X{category} is a coherent group of texts.  This module focuses on
@@ -24,7 +29,7 @@ on any kind of text.  For example, classifiers can be used:
 
   - to group documents by topic
   - to group words by part of speech
-  - to group aucoustic symbols by which phoneme they represent
+  - to group acoustic signals by which phoneme they represent
   - to group sentences by their author
 
 Each category is uniquely defined by a X{label}, such as C{'sports'}
@@ -37,19 +42,14 @@ C{ClassifierTrainerI} is a general interface for classes that build
 classifiers from training data.
 """
 
-# Note: there is inconsistancy in docstrings between whether label is
-# a string or just any immutable object.  That needs to be cleared up.
-
 from Numeric import array
 
 ##//////////////////////////////////////////////////////
 ##  Texts and Labels
 ##//////////////////////////////////////////////////////
 
-# A text can be any object.  In theory, texts are required to be
-# immutable, since they are used as the type of a token.  However, in
-# practice, nothing currently depends on their being immutable.  Thus,
-# lists of words can currently be used (instead of tuples of words).
+# A text can be any object.  Texts are required to be immutable, since
+# they are used as the type of a token.
 
 # A label can be any immutable object.  Typically, labels are either
 # integers or strings.
@@ -74,7 +74,7 @@ class LabeledText:
     """
     def __init__(self, text, label):
         """
-        Construct a new C{LabeledType}
+        Construct a new C{LabeledType}.
 
         @param text: The new C{LabeledType}'s text.
         @type text: (immutable)
@@ -100,12 +100,39 @@ class LabeledText:
         return self._label
 
     def __lt__(self, other):
+        """
+        Raise a C{TypeError}, since C{LabeledText} is not an ordered
+        type.
+        
+        @raise TypeError: C{LabeledText} is not an ordered type.
+        """
         raise TypeError("LabeledText is not an ordered type")
+    
     def __le__(self, other):
+        """
+        Raise a C{TypeError}, since C{LabeledText} is not an ordered
+        type.
+        
+        @raise TypeError: C{LabeledText} is not an ordered type.
+        """
         raise TypeError("LabeledText is not an ordered type")
+    
     def __gt__(self, other):
+        """
+        Raise a C{TypeError}, since C{LabeledText} is not an ordered
+        type.
+        
+        @raise TypeError: C{LabeledText} is not an ordered type.
+        """
         raise TypeError("LabeledText is not an ordered type")
+    
     def __ge__(self, other):
+        """
+        Raise a C{TypeError}, since C{LabeledText} is not an ordered
+        type.
+        
+        @raise TypeError: C{LabeledText} is not an ordered type.
+        """
         raise TypeError("LabeledText is not an ordered type")
     
     def __cmp__(self, other):
@@ -273,11 +300,11 @@ class ClassifierTrainerI:
         @param labeled_tokens: A list of correctly labeled texts.
             These texts will be used as training samples to construct
             a new classifier.
-        @param kwargs:
-          - C{labels}: The set of possible labels.  If none is given,
-            then the set of all labels attested in the training data
-            will be used instead.  (type=C{list} of (immutable)).
-            
+        @param kwargs: Keyword arguments.
+            - C{labels}: The set of possible labels.  If none is
+              given, then the set of all labels attested in the
+              training data will be used instead.  (type=C{list} of
+              (immutable)).
         @return: A new classifier, trained from the given labeled
             tokens.
         @rtype: C{ClassifierI}
