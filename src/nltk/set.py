@@ -228,8 +228,8 @@ class Set:
         @rtype: Set.
         """
         # "self.__class__" is the constructor for this class.
-        set=self.__class__()
-        set._dict.update(self._dict)
+        s=self.__class__()
+        s._dict.update(self._dict)
         return s
 
     def precision(self, other):
