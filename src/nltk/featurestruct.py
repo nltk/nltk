@@ -56,8 +56,10 @@ types of information about variables:
 @todo: more test cases
 @sort: FeatureStruct, FeatureVariable, MergedFeatureVariable,
        FeatureBindings
+@group Feature Structures: FeatureStruct
 @group Variables: FeatureVariable, MergedFeatureVariable,
                   FeatureBindings
+@group Unit Tests: FeatureStructTestCase
 """
 
 # Open question: should there be a "feature" object?
