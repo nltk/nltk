@@ -1,0 +1,5 @@
+attic
+*.pyc
+*.aux
+*.dvi
+*.log
