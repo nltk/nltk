@@ -17,7 +17,7 @@ is very sensitive to changes in the location and layout of the target web
 page.
 """
 
-import urllib, re, nltk.speech.tts
+import urllib, re, nltk.speech.tts as tts
 
 URL	= "http://www.bom.gov.au/cgi-bin/wrap_fwo.pl?IDV10450.txt"
 REGEXP	= "(Forecast for Melbourne .*)Suburban"
