@@ -105,16 +105,16 @@ class Token(dict):
     # Constructor
     #/////////////////////////////////////////////////////////////////
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, **properties):
         """
         Create and return a new C{Token} object.  If
         L{USE_SAFE_TOKENS} is true, then the new token will be a
         L{SafeToken}; otherwise, it will be a L{Token}.
         """
         if cls is Token and Token.USE_SAFE_TOKENS:
-            return super(Token, cls).__new__(SafeToken, *args, **kwargs)
+            return super(Token, cls).__new__(SafeToken, **properties)
         else:
-            return super(Token, cls).__new__(cls, *args, **kwargs)
+            return super(Token, cls).__new__(cls, **properties)
 
     def __init__(self, **properties):
         """
@@ -317,7 +317,8 @@ class Token(dict):
         """
         props = list(props)
         props.sort()
-        Token._repr_funcs[tuple(props)] = repr
+        if repr is None: del Token._repr_funcs[tuple(props)]
+        else: Token._repr_funcs[tuple(props)] = repr
     register_repr = staticmethod(register_repr)
 
     def __repr__(self):
@@ -329,17 +330,27 @@ class Token(dict):
         else:
             return repr(self)
 
+    _cyclic_props = {}
+    def register_cyclic(prop):
+        Token._cyclic_props[prop] = True
+    register_cyclic = staticmethod(register_cyclic)
+    
     def _default_repr(self):
         """
         @return: A full string representation of this C{Type}.
         @rtype: C{string}
         """
         # Convert each property (except loc) to a string.
-        items = ', '.join(['%s=%r' % (p,v)
-                           for (p,v) in self.items()
-                           if p != 'loc'])
+        props = []
+        for (p,v) in self.items():
+            if p == 'loc': continue
+            elif self._cyclic_props.get(p):
+                props.append('%s=...' % (p,))
+            else:
+                props.append('%s=%r' % (p,v))
+        props = ', '.join(props)
         # If there are no properties, use "<empty>" instead.
-        if len(items) == 0: items = 'empty'
+        if len(props) == 0: props = 'empty'
         # If there's a location, then add it to the end.
         if self.has_key('loc'):
             if not isinstance(self['loc'], LocationI):
@@ -347,7 +358,7 @@ class Token(dict):
             locstr = '@%r' % self['loc']
         else: locstr = ''
         # Assemble & return the final string.
-        return '<%s>%s' % (items, locstr)
+        return '<%s>%s' % (props, locstr)
 
     # The superclass already raises TypeError here; but its error
     # message ("dict objects are unhashable") might be confusing.
@@ -411,8 +422,6 @@ class FrozenToken(Token):
         raise TypeError('FrozenToken objects are immutable')
     def update(self, src):
         raise TypeError('FrozenToken objects are immutable')
-    def copy(self, deep=True):
-        return self.__class__(self)
     def __hash__(self):
         return self._hash
 
@@ -532,7 +541,7 @@ class SafeToken(Token):
         assert chktype(2, default, self._checkval)
         if (property == 'loc') and not isinstance(value, LocationI):
             raise TypeError("The 'loc' property must contain a Location")
-        return super(SafeToken, self).setdefault(property, default=None)
+        return super(SafeToken, self).setdefault(property, default)
         
     def update(self, src):
         assert chktype(1, src, {str:self._checkval})
