@@ -117,7 +117,7 @@ class SenseLabeledText(nltk.classifier.LabeledText):
     with the sense of the head word.
     """
 
-    def __init__(self, text, sense, headIndex):
+    def __init__(self, text, sense, headIndex, lemma):
         """
         Create a sense labeled text.
 
@@ -127,9 +127,12 @@ class SenseLabeledText(nltk.classifier.LabeledText):
         @type sense: (any), usually a C{String}
         @param headIndex: The index of the head word
         @type headIndex: C{Integer}
+        @param: The lemma (uninflected form) of the head word
+        @type: C{String}
         """
         nltk.classifier.LabeledText.__init__(self, text, sense)
         self._headIndex = headIndex
+        self._lemma = lemma
 
     def headIndex(self):
         """
@@ -137,6 +140,13 @@ class SenseLabeledText(nltk.classifier.LabeledText):
         @returntype: C{Integer}
         """
         return self._headIndex
+
+    def lemma(self):
+        """
+        @return: The lemma (uninflected form) of the head word
+        @returntype: C{String}
+        """
+        return self._lemma
 
     def __repr__(self):
         return nltk.classifier.LabeledText.__repr__(self) + \
@@ -379,13 +389,17 @@ class DOMSensevalTokenizer(nltk.tokenizer.TokenizerI):
         out = []
         instances = doc.getElementsByTagName('instance')
         for instance in instances:
-            answer = instance.getElementsByTagName('answer')[0]
+            lexelt = instance.getElementsByTagName('lexelt')[0]
             context = instance.getElementsByTagName('context')[0]
-            sense = _to_ascii(answer.getAttribute('senseid'))
+            answers = instance.getElementsByTagName('answer')
+            senses = []
+            for answer in answers:
+                senses.append(_to_ascii(answer.getAttribute('senseid')))
             loc = nltk.token.Location(0,
                 source=_to_ascii(answer.getAttribute('instance')))
             tokens, head = self._map_context(context, loc)
-            lt = SenseLabeledText(tokens, sense, head)
+            lt = SenseLabeledText(tokens, tuple(senses), head,
+                _to_ascii(lexelt.getAttribute('item')))
             token = nltk.token.Token(lt, loc)
             out.append(token)
         doc.unlink()
@@ -398,13 +412,17 @@ class DOMSensevalTokenizer(nltk.tokenizer.TokenizerI):
         # this takes up a HUGE amount of memory
         instances = doc.getElementsByTagName('instance')
         for instance in instances:
-            answer = instance.getElementsByTagName('answer')[0]
+            lexelt = instance.getElementsByTagName('lexelt')[0]
             context = instance.getElementsByTagName('context')[0]
-            sense = _to_ascii(answer.getAttribute('senseid'))
+            answers = instance.getElementsByTagName('answer')
+            senses = []
+            for answer in answers:
+                senses.append(_to_ascii(answer.getAttribute('senseid')))
             loc = nltk.token.Location(0,
                 source=_to_ascii(answer.getAttribute('instance')))
             tokens, head = self._map_context(context, loc)
-            lt = SenseLabeledText(tokens, sense, head)
+            lt = SenseLabeledText(tokens, tuple(senses), head,
+                _to_ascii(lexelt.getAttribute('item')))
             token = nltk.token.Token(lt, loc)
             yield token
         doc.unlink()
@@ -417,23 +435,32 @@ def _fixXML(text):
     text = re.sub(r'<([~\^])>', r'\1', text)
     # fix lone &
     text = re.sub(r'(\s+)\&(\s+)', r'\1&amp;\2', text)
-    # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
-    text = re.sub(r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>',
-                  r' <wf pos="\2">\1</wf>', text)
     # fix """
     text = re.sub(r'"""', '\'"\'', text)
     # fix <s snum=dd> => <s snum="dd"/>
     text = re.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
-    # fix foreign word tag (remove)
-    text = re.sub(r'<\&frasl>\s*<p[^>]*>', '', text)
+    # fix foreign word tag
+    text = re.sub(r'<\&frasl>\s*<p[^>]*>', 'FRASL', text)
     # remove <&I .> 
     text = re.sub(r'<\&I[^>]*>', '', text)
     # fix <{word}>
     text = re.sub(r'<{([^}]+)}>', r'\1', text)
     # remove <@>, <p>, </p>
     text = re.sub(r'<(@|/?p)>', r'', text)
-    # remove <&M .>
-    text = re.sub(r'<&M \.>', r'', text)
+    # remove <&M .> and <&T .> and <&Ms .>
+    text = re.sub(r'<&\w+ \.>', r'', text)
+    # remove <!DOCTYPE... > lines
+    text = re.sub(r'<!DOCTYPE[^>]*>', r'', text)
+    # remove <[hi]> and <[/p]> etc
+    text = re.sub(r'<\[\/?[^>]+\]*>', r'', text)
+    # take the thing out of the brackets: <&hellip;>
+    text = re.sub(r'<(\&\w+;)>', r'\1', text)
+    # and remove the & for those patterns that aren't regular XML
+    text = re.sub(r'&(?!amp|gt|lt|apos|quot)', r'', text)
+    # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
+    text = re.sub(r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>',
+                  r' <wf pos="\2">\1</wf>', text)
+    text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
     return text
 
 class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
@@ -450,6 +477,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
     def __init__(self):
         xml.sax.ContentHandler.__init__(self)
         nltk.tokenizer.TokenizerI.__init__(self)
+        self._lemma = ''
         self.reset()
 
     def tokenize(self, str, source=None):
@@ -482,10 +510,12 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
             self._pos = _to_ascii(attr.getValueByQName('pos'))
         elif tag == 'answer':
             instance_id = _to_ascii(attr.getValueByQName('instance'))
-            self._sense = _to_ascii(attr.getValueByQName('senseid'))
+            self._senses.append(_to_ascii(attr.getValueByQName('senseid')))
             self._iloc = nltk.token.Location(0, source=instance_id)
         elif tag == 'context':
             self._data = ''
+        elif tag == 'lexelt':
+            self._lemma = _to_ascii(attr.getValueByQName('item'))
         elif tag == 'head':
             self._head = self._wnum - 1
         
@@ -497,7 +527,8 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
             self._wnum += 1
             self._data = ''
         elif tag == 'context':
-            lt = SenseLabeledText(self._tokens, self._sense, self._head)
+            lt = SenseLabeledText(self._tokens, tuple(self._senses),
+                                  self._head, self._lemma)
             token = nltk.token.Token(lt, self._iloc)
             self._instances.append(token)
             self.reset(False)
@@ -509,7 +540,7 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, nltk.tokenizer.TokenizerI):
         if instances:
             self._instances = []
         if state:
-            self._sense = None
+            self._senses = []
             self._head = None
             self._data = ''
             self._wnum = 1
@@ -531,4 +562,19 @@ def _demo_semcor_tokenizer(type, files):
         except:
             print >>sys.stderr, 'Error parsing file:', file
             raise
+
+def _demo_senseval_tokenizer(files):
+    tk = SensevalTokenizer()
+    for file in files:
+        print '=' * 80
+        print file
+        print '=' * 80
+        for token in tk.xtokenize(open(file).read()):
+            print token
+
+if __name__ == '__main__':
+    path = '/home/tacohn/lt/nltk/nltk/data/senseval/'
+    files = map(lambda x, p=path: p + x, ['line.pos', 'serve.pos', 'hard.pos', 'interest.pos'])
+    _demo_senseval_tokenizer(files)
+
 
