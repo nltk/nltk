@@ -27,7 +27,7 @@ class StemFeatureDetector(PropertyFeatureDetector):
     C{STEM} property, and stores it in the C{STEM} feature.
     """
     def __init__(self, **property_names):
-        PropertyFeatureDetector.__init__(self, 'TEXT', **property_names)
+        PropertyFeatureDetector.__init__(self, 'STEM', **property_names)
 
 class ContextWordFeatureDetector(AbstractFeatureDetector):
     """
