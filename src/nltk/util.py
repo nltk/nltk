@@ -12,7 +12,7 @@ A collection of basic utility classes and functions that are used
 by the toolkit.
 """
 
-import itertools, sys
+import itertools, sys, re
 
 ######################################################################
 ## Frozen Dictionary
@@ -351,3 +351,44 @@ class DemoInterpreter:
                 out = '%s: %s' % (e.__class__.__name__, e)
                 print '  '+'\n  '.join(out.split('\n'))
 
+######################################################################
+## Doctest Helpers
+######################################################################
+
+def capture_stdout(func, *args, **kwargs):
+    """
+
+    Call C{func} with the given arguments, and capture anything it
+    writes to standard output to a string.
+
+    @param func: The function to call
+    @param args, kwargs: The argumens that should be passed to C{func}
+        when it is called.
+    @rtype: C{string}
+    @return: A string containing everything written by C{func} to
+        standard output.
+    """
+    import StringIO
+    old_stdout = sys.stdout
+    sys.stdout = StringIO.StringIO()
+    func(*args, **kwargs)
+    out = sys.stdout.getvalue()
+    sys.stdout = old_stdout
+    return out
+
+def mark_stdout_newlines(func, *args, **kwargs):
+    """
+    Call C{func} with the given arguments, and replace any blank lines
+    that it writes to standard output with the string
+    C{'<--BLANKLINE-->'}.  This is used in DocTest suites, since
+    DocTest can't handle output that contains blank lines.  E.g.:
+
+        >>> def f(x): print 'first line\n\nthird line'
+        >>> mark_stdout_newlines(f)
+        first line
+        <--BLANKLINE-->
+        third line
+    """
+    print re.sub(r'\n[ \t]*\n', '\n<--BLANKLINE-->\n',
+                 capture_stdout(func, *args, **kwargs)).rstrip()
+    
