@@ -29,10 +29,10 @@ from nltk_contrib.unimelb.tacohn.classifier.feature import *
 from nltk_contrib.pywordnet import *
 from nltk_contrib.pywordnet import _dictionaryFor
 from nltk_contrib.pywordnet.tools import getIndex, morphy
+from nltk_contrib.pywordnet.stemmer import WordNetStemmer
 from nltk.corpus import *
 from nltk.probability import *
 from nltk.set import *
-from nltk.stemmer import WordNetStemmer
 from nltk.stemmer.porter import PorterStemmer
 from nltk.tagger import *
 from nltk.tokenizer import *
