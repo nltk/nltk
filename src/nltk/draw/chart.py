@@ -46,7 +46,7 @@ from nltk.parser.chart import *
 from nltk.cfg import *
 from nltk.tokenizer import WhitespaceTokenizer
 from nltk.token import Token
-from nltk.tree import TreeToken
+from nltk.tree import Tree
 from nltk.draw import ShowText, EntryDialog, in_idle
 from nltk.draw import MutableOptionMenu
 from nltk.draw import ColorizedList, SymbolWidget, CanvasFrame
@@ -1428,7 +1428,7 @@ class ChartView:
         # If it's a new edge, then get a new list of treetoks.
         if self._treetoks_edge != edge:
             self._treetoks = [t for t in self._chart.trees(edge)
-                              if isinstance(t, TreeToken)]
+                              if isinstance(t, Tree)]
             self._treetoks_edge = edge
             self._treetoks_index = 0
 
@@ -1493,8 +1493,8 @@ class ChartView:
 
         # Draw the children
         child_xs = []
-        for child in treetok['CHILDREN']:
-            if isinstance(child, TreeToken):
+        for child in treetok:
+            if isinstance(child, Tree):
                 child_x, index = self._draw_treetok(child, index, depth+1)
                 child_xs.append(child_x)
             else:
@@ -1513,25 +1513,25 @@ class ChartView:
         # Draw the node
         nodey = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         tag = c.create_text(nodex, nodey, anchor='n', justify='center',
-                            text=str(treetok['NODE']), fill='#042',
+                            text=str(treetok.node), fill='#042',
                             font=self._boldfont)
         self._tree_tags.append(tag)
 
         # Draw lines to the children.
         childy = nodey + ChartView._TREE_LEVEL_SIZE + self._text_height
-        for childx, child in zip(child_xs, treetok['CHILDREN']):
-            if isinstance(child, TreeToken) and child['CHILDREN']:
+        for childx, child in zip(child_xs, treetok):
+            if isinstance(child, Tree) and child:
                 # A "real" tree token:
                 tag = c.create_line(nodex, nodey + self._text_height,
                                     childx, childy, width=2, fill='#084')
                 self._tree_tags.append(tag)
-            if isinstance(child, TreeToken) and not child['CHILDREN']:
+            if isinstance(child, Tree) and not child:
                 # An unexpanded tree token:
                 tag = c.create_line(nodex, nodey + self._text_height,
                                     childx, childy, width=2,
                                     fill='#048', dash='2 3')
                 self._tree_tags.append(tag)
-            if not isinstance(child, TreeToken):
+            if not isinstance(child, Tree):
                 # A leaf:
                 tag = c.create_line(nodex, nodey + self._text_height,
                                     childx, 10000, width=2, fill='#084')
@@ -2259,10 +2259,6 @@ class ChartDemo:
         self.apply_strategy(self._EARLEY, PseudoEarleyEdgeRule)
         
 def demo():
-    nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
-                                           for s in nonterminals.split()]
-
     grammar = CFG.parse("""
     # Grammatical productions.
         S -> NP VP

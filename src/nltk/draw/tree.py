@@ -8,10 +8,10 @@
 # $Id$
 
 """
-Graphically display a C{TreeToken}.
+Graphically display a C{Tree}.
 """
 from Tkinter import *
-from nltk.tree import TreeToken
+from nltk.tree import Tree
 from nltk.token import Token
 from nltk.draw import *
 import sys
@@ -400,14 +400,13 @@ def _tree_to_treeseg(canvas, tree, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs,
                      property_names={'LEAF':'TEXT'}):
-    NODE = property_names.get('NODE', 'NODE')
     LEAF = property_names.get('LEAF', 'LEAF')
-    if isinstance(tree, TreeToken):
-        node = make_node(canvas, tree[NODE], **node_attribs)
+    if isinstance(tree, Tree):
+        node = make_node(canvas, tree.node, **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf, 
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
-                    for child in tree['CHILDREN']]
+                    for child in tree]
         return TreeSegmentWidget(canvas, node, subtrees, **tree_attribs)
     elif isinstance(tree, Token):
         return make_leaf(canvas, tree[LEAF], **leaf_attribs)
@@ -417,15 +416,15 @@ def _tree_to_treeseg(canvas, tree, make_node, make_leaf,
 def tree_to_treesegment(canvas, tree, make_node=TextWidget,
                         make_leaf=TextWidget, **attribs):
     """
-    Convert a C{TreeToken} into a C{TreeSegmentWidget}.
+    Convert a C{Tree} into a C{TreeSegmentWidget}.
 
     @param make_node: A C{CanvasWidget} constructor or a function that
         creates C{CanvasWidgets}.  C{make_node} is used to convert
-        the C{TreeToken}'s nodes into C{CanvasWidgets}.  If no constructor
+        the C{Tree}'s nodes into C{CanvasWidgets}.  If no constructor
         is specified, then C{TextWidget} will be used.
     @param make_leaf: A C{CanvasWidget} constructor or a function that
         creates C{CanvasWidgets}.  C{make_leaf} is used to convert
-        the C{TreeToken}'s leafs into C{CanvasWidgets}.  If no constructor
+        the C{Tree}'s leafs into C{CanvasWidgets}.  If no constructor
         is specified, then C{TextWidget} will be used.
     @param attribs: Attributes for the canvas widgets that make up the
         returned C{TreeSegmentWidget}.  Any attribute beginning with
@@ -434,7 +433,7 @@ def tree_to_treesegment(canvas, tree, make_node=TextWidget,
         C{'node_'} will be passed to all nodes.  Any attribute
         beginning with C{'leaf_'} will be passed to all leaves.  And
         any attribute beginning with C{'loc_'} will be passed to all
-        text locations (for C{TreeToken}s).
+        text locations (for C{Tree}s).
     """
     # Process attribs.
     tree_attribs = {}
@@ -458,9 +457,9 @@ def tree_to_treesegment(canvas, tree, make_node=TextWidget,
 
 class TreeWidget(CanvasWidget):
     """
-    A canvas widget that displays a single C{TreeToken}.
+    A canvas widget that displays a single C{Tree}.
     C{TreeWidget} manages a group of C{TreeSegmentWidget}s that are
-    used to display a C{TreeToken}.
+    used to display a C{Tree}.
 
     Attributes:
     
@@ -470,7 +469,7 @@ class TreeWidget(CanvasWidget):
         leaf widgets for this C{TreeWidget}.
       - C{loc_M{attr}}: Sets the attribute C{M{attr}} on all of the
         location widgets for this C{TreeWidget} (if it was built from
-        a C{TreeToken}).  Note that location widgets are
+        a C{Tree}).  Note that location widgets are
         C{TextWidget}s. 
       
       - C{xspace}: The amount of horizontal space to leave between
@@ -604,14 +603,13 @@ class TreeWidget(CanvasWidget):
         for node in self._nodes: node.bind_drag(callback, button)
             
     def _make_collapsed_trees(self, canvas, tree, key):
-        NODE = self._property_names.get('NODE', 'NODE')
         LEAF = self._property_names.get('LEAF', 'LEAF')
         
-        if not isinstance(tree, TreeToken): return
+        if not isinstance(tree, Tree): return
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        node = make_node(canvas, tree[NODE], **self._nodeattribs)
+        node = make_node(canvas, tree.node, **self._nodeattribs)
         self._nodes.append(node)
         leaves = [make_leaf(canvas, l[LEAF], **self._leafattribs)
                   for l in tree.leaves()]
@@ -627,21 +625,20 @@ class TreeWidget(CanvasWidget):
         treeseg.hide()
 
         # Build trees for children.
-        for i in range(len(tree['CHILDREN'])):
-            child = tree['CHILDREN'][i]
+        for i in range(len(tree)):
+            child = tree[i]
             self._make_collapsed_trees(canvas, child, key + (i,))
 
     def _make_expanded_tree(self, canvas, tree, key):
-        NODE = self._property_names.get('NODE', 'NODE')
         LEAF = self._property_names.get('LEAF', 'LEAF')
         
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        if isinstance(tree, TreeToken):
-            node = make_node(canvas, tree[NODE], **self._nodeattribs)
+        if isinstance(tree, Tree):
+            node = make_node(canvas, tree.node, **self._nodeattribs)
             self._nodes.append(node)
-            children = tree['CHILDREN']
+            children = tree
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
                         for i in range(len(children))]
             treeseg = TreeSegmentWidget(canvas, node, subtrees,
@@ -903,10 +900,10 @@ if __name__ == '__main__':
     
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
-    tree = TreeToken.parse('''
+    tree = Tree.parse('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))
-    ''')
+    ''', leafparser = lambda t: Token(TEXT=t))
                 
     tc = TreeWidget(cf.canvas(), tree, draggable=1, 
                     node_font=('helvetica', -14, 'bold'),
@@ -923,9 +920,9 @@ if __name__ == '__main__':
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
 
-    treetok = TreeToken.parse('''
+    treetok = Tree.parse('''
     (S (NP this tree) (VP (V is) (AdjP shapeable)))
-    ''')
+    ''', leafparser = lambda t: Token(TEXT=t))
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
@@ -943,10 +940,10 @@ if __name__ == '__main__':
     paren = ParenWidget(cf.canvas(), tc2)
     cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
-    tree3 = TreeToken.parse('''
+    tree3 = Tree.parse('''
     (S (NP this tree) (AUX was)
        (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))
-       ''')
+       ''', leafparser = lambda t: Token(TEXT=t))
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
                               tree_xspace=2, tree_width=2)
     tc3['draggable'] = 1
@@ -971,7 +968,7 @@ Try clicking, right clicking, and dragging
 different elements of each of the trees.
 The top-left tree is a TreeWidget built from
 a Tree.  The top-right is a TreeWidget built
-from a TreeToken, using non-default widget
+from a Tree, using non-default widget
 constructors for the nodes & leaves (BoxWidget
 and OvalWidget).  The bottom-left tree is
 built from tree_to_treesegment."""
@@ -979,9 +976,9 @@ built from tree_to_treesegment."""
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
 
-    tree4 = TreeToken.parse('''
+    tree4 = Tree.parse('''
     (S (NP this tree) (VP (V is) (Adj horizontal)))
-    ''')
+    ''', leafparser = lambda t: Token(TEXT=t))
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),
