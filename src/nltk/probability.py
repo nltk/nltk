@@ -1110,8 +1110,8 @@ def demo(numsamples=6, numoutcomes=500):
         C{numsamples} bins.
     @rtype: C{None}
     """
-    _chktype(1, numsamples, types.IntType)
-    _chktype(2, numoutcomes, types.IntType)
+    assert _chktype(1, numsamples, types.IntType)
+    assert _chktype(2, numoutcomes, types.IntType)
 
     # Randomly sample a stochastic process three times.
     fdist1 = _create_rand_fdist(numsamples, numoutcomes)
