@@ -8,8 +8,10 @@
 # $Id$
 
 """
-Tree.py is a simple tree-drawing program.  The tree must be in
-Tree (label, child1, child2, ...) form, for this to work.
+A simple tree-editing tool.  This tool is not yet fully functional.
+
+This tool will most likely be re-written to use the new canvas widget
+framework (TreeSegmentWidgets in particular).
 """
 
 """
