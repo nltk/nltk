@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from mit.rspeer.parser.readfile import GrammarFile
-from mit.rspeer.parser.featurechart import *
+from nltk_contrib.mit.rspeer.parser.readfile import GrammarFile
+from nltk_contrib.mit.rspeer.parser.featurechart import *
 from nltk.tokenizer import WhitespaceTokenizer
 
 NAME = '6.863 Earley Parser'

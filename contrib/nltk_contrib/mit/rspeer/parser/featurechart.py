@@ -1,5 +1,5 @@
 from nltk.parser.chart import *
-from mit.rspeer.feature import *
+from nltk_contrib.mit.rspeer.feature import *
 
 def apply(obj, vars):
 	if isinstance(obj, Category): return obj.apply_bindings(vars)
