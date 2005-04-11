@@ -134,6 +134,21 @@ class HiddenMarkovModel:
             property, and optionally the TAG property
         @type sequence:  Token
         """
+	return exp(self.log_probability(sequence))
+
+    def log_probability(self, sequence):
+        """
+	Returns the log-probability of the given symbol sequence. If the
+	sequence is labelled, then returns the joint log-probability of the
+	symbol, state sequence. Otherwise, uses the forward algorithm to find
+	the log-probability over all label sequences.
+
+        @return: the log-probability of the sequence
+        @rtype: float
+        @param sequence: the sequence of symbols which must contain the TEXT
+            property, and optionally the TAG property
+        @type sequence:  Token
+        """
         assert chktype(1, sequence, Token)
 
         SUBTOKENS = self._properties.get('SUBTOKENS', 'SUBTOKENS')
@@ -152,11 +167,11 @@ class HiddenMarkovModel:
                 state = symbols[t][TAG]
                 p += self._transitions[last_state].logprob(state) + \
                      self._outputs[state].logprob(symbols[t][TEXT])
-            return exp(p)
+            return p
         else:
             alpha = self._forward_probability(sequence)
             p = _log_add(*alpha[T-1, :])
-            return exp(p)
+            return p
 
     def tag(self, unlabelled_sequence):
         """
@@ -209,8 +224,7 @@ class HiddenMarkovModel:
 
         # find the starting log probabilities for each state
         symbol = symbols[0][TEXT]
-        for i in range(N):
-            state = self._states[i]
+        for i, state in enumerate(self._states):
             V[0, i] = self._priors.logprob(state) + \
                       self._output_logprob(state, symbol)
             B[0, state] = None
@@ -299,6 +313,194 @@ class HiddenMarkovModel:
             cum_p += add_p
         raise Exception('Invalid probability distribution - does not sum to one')
 
+    def entropy(self, unlabelled_sequence):
+	"""
+	Returns the entropy over labellings of the given sequence. This is
+	given by:
+
+	H(O) = - sum_S Pr(S | O) log Pr(S | O)
+
+	where the summation ranges over all state sequences, S. Let M{Z =
+	Pr(O) = sum_S Pr(S, O)} where the summation ranges over all state
+	sequences and O is the observation sequence. As such the entropy can
+	be re-expressed as:
+
+	H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
+	  = log Z - sum_S Pr(S | O) log Pr(S, 0)
+	  = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
+					          + sum_t Pr(O_t | S_t) ]
+	
+	The order of summation for the log terms can be flipped, allowing
+	dynamic programming to be used to calculate the entropy. Specifically,
+	we use the forward and backward probabilities (alpha, beta) giving:
+
+	H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
+	          + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
+				/ Z * log Pr(sj | si)
+	          + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
+
+	This simply uses alpha and beta to find the probabilities of partial
+	sequences, constrained to include the given state(s) at some point in
+	time.
+	"""
+        assert chktype(1, unlabelled_sequence, Token)
+    
+        SUBTOKENS = 'SUBTOKENS'
+        TAG = 'TAG'
+	TEXT = 'TEXT'
+
+        symbols = unlabelled_sequence[SUBTOKENS]
+        T = len(symbols)
+        N = len(self._states)
+
+	alpha = self._forward_probability(unlabelled_sequence)
+	beta = self._backward_probability(unlabelled_sequence)
+	normalisation = _log_add(*alpha[T-1, :])
+
+	entropy = normalisation
+
+	# starting state, t = 0
+	for i, state in enumerate(self._states):
+	    p = exp(alpha[0, i] + beta[0, i] - normalisation)
+	    entropy -= p * self._priors.logprob(state) 
+	    #print 'p(s_0 = %s) =' % state, p
+
+	# state transitions
+	for t0 in range(T - 1):
+	    t1 = t0 + 1
+	    for i0, s0 in enumerate(self._states):
+		for i1, s1 in enumerate(self._states):
+		    p = exp(alpha[t0, i0] + self._transitions[s0].logprob(s1) +
+			       self._outputs[s1].logprob(symbols[t1][TEXT]) + 
+			       beta[t1, i1] - normalisation)
+		    entropy -= p * self._transitions[s0].logprob(s1) 
+		    #print 'p(s_%d = %s, s_%d = %s) =' % (t0, s0, t1, s1), p
+
+	# symbol emissions
+	for t in range(T):
+	    for i, state in enumerate(self._states):
+		p = exp(alpha[t, i] + beta[t, i] - normalisation)
+		entropy -= p * self._outputs[state].logprob(symbols[t][TEXT]) 
+		#print 'p(s_%d = %s) =' % (t, state), p
+
+	return entropy
+
+    def point_entropy(self, unlabelled_sequence):
+	"""
+	Returns the pointwise entropy over the possible states at each
+	position in the chain, given the observation sequence.
+	"""
+        assert chktype(1, unlabelled_sequence, Token)
+    
+        SUBTOKENS = 'SUBTOKENS'
+        TAG = 'TAG'
+
+        symbols = unlabelled_sequence[SUBTOKENS]
+        T = len(symbols)
+        N = len(self._states)
+
+	alpha = self._forward_probability(unlabelled_sequence)
+	beta = self._backward_probability(unlabelled_sequence)
+	normalisation = _log_add(*alpha[T-1, :])
+    
+	entropies = zeros(T, Float64)
+	probs = zeros(N, Float64)
+	for t in range(T):
+	    for s in range(N):
+		probs[s] = alpha[t, s] + beta[t, s] - normalisation
+
+	    for s in range(N):
+		entropies[t] -= exp(probs[s]) * probs[s]
+
+	return entropies
+
+    def _exhaustive_entropy(self, unlabelled_sequence):
+        assert chktype(1, unlabelled_sequence, Token)
+    
+        SUBTOKENS = 'SUBTOKENS'
+        TAG = 'TAG'
+	TEXT = 'TEXT'
+
+        symbols = unlabelled_sequence[SUBTOKENS]
+        T = len(symbols)
+        N = len(self._states)
+
+	labellings = [[state] for state in self._states]
+	for t in range(T - 1):
+	    current = labellings
+	    labellings = []
+	    for labelling in current:
+		for state in self._states:
+		    labellings.append(labelling + [state])
+
+	log_probs = []
+	for labelling in labellings:
+	    labelled_sequence = unlabelled_sequence.copy()
+	    for t, label in enumerate(labelling):
+		labelled_sequence[SUBTOKENS][t][TAG] = label
+	    lp = self.log_probability(labelled_sequence)
+	    log_probs.append(lp)
+	normalisation = _log_add(*log_probs)
+
+	#ps = zeros((T, N), Float64)
+	#for labelling, lp in zip(labellings, log_probs):
+	    #for t in range(T):
+		#ps[t, self._states.index(labelling[t])] += exp(lp - normalisation)
+
+	#for t in range(T):
+	    #print 'prob[%d] =' % t, ps[t]
+
+	entropy = 0
+	for lp in log_probs:
+	    lp -= normalisation
+	    entropy -= exp(lp) * lp
+
+	return entropy
+
+    def _exhaustive_point_entropy(self, unlabelled_sequence):
+        assert chktype(1, unlabelled_sequence, Token)
+    
+        SUBTOKENS = 'SUBTOKENS'
+        TAG = 'TAG'
+	TEXT = 'TEXT'
+
+        symbols = unlabelled_sequence[SUBTOKENS]
+        T = len(symbols)
+        N = len(self._states)
+
+	labellings = [[state] for state in self._states]
+	for t in range(T - 1):
+	    current = labellings
+	    labellings = []
+	    for labelling in current:
+		for state in self._states:
+		    labellings.append(labelling + [state])
+
+	log_probs = []
+	for labelling in labellings:
+	    labelled_sequence = unlabelled_sequence.copy()
+	    for t, label in enumerate(labelling):
+		labelled_sequence[SUBTOKENS][t][TAG] = label
+	    lp = self.log_probability(labelled_sequence)
+	    log_probs.append(lp)
+
+	normalisation = _log_add(*log_probs)
+
+	probabilities = zeros((T, N), Float64)
+	probabilities[:] = _NINF
+	for labelling, lp in zip(labellings, log_probs):
+	    lp -= normalisation
+	    for t, label in enumerate(labelling):
+		index = self._states.index(label)
+		probabilities[t, index] = _log_add(probabilities[t, index], lp)
+
+	entropies = zeros(T, Float64)
+	for t in range(T):
+	    for s in range(N):
+		entropies[t] -= exp(probabilities[t, s]) * probabilities[t, s]
+
+	return entropies
+
     def _forward_probability(self, unlabelled_sequence):
         """
         Return the forward probability matrix, a T by N array of
@@ -321,21 +523,19 @@ class HiddenMarkovModel:
         alpha = zeros((T, N), Float64)
 
         symbol = symbols[0][TEXT]
-        for i in range(N):
-            state = self._states[i]
+        for i, state in enumerate(self._states):
             alpha[0, i] = self._priors.logprob(state) + \
                           self._outputs[state].logprob(symbol)
 
         for t in range(1, T):
             symbol = symbols[t][TEXT]
-            for i in range(N):
-                si = self._states[i]
+            for i, si in enumerate(self._states):
                 alpha[t, i] = _NINF
-                for j in range(N):
-                    sj = self._states[j]
+                for j, sj in enumerate(self._states):
                     alpha[t, i] = _log_add(alpha[t, i], alpha[t-1, j] +
                                            self._transitions[sj].logprob(si))
                 alpha[t, i] += self._outputs[si].logprob(symbol)
+
 
         return alpha
 
@@ -366,14 +566,12 @@ class HiddenMarkovModel:
         # inductively calculate remaining backward values
         for t in range(T-2, -1, -1):
             symbol = symbols[t+1][TEXT]
-            for i in range(N):
-                si = self._states[i]
+            for i, si in enumerate(self._states):
                 beta[t, i] = _NINF
-                for j in range(N):
-                    sj = self._states[j]
+		for j, sj in enumerate(self._states):
                     beta[t, i] = _log_add(beta[t, i],
-                                          self._transitions[si].logprob(sj) + \
-                                          self._outputs[sj].logprob(symbol) + \
+                                          self._transitions[si].logprob(sj) + 
+                                          self._outputs[sj].logprob(symbol) + 
                                           beta[t + 1, j])
 
         return beta
@@ -689,14 +887,18 @@ def demo():
 
     print 'Testing', model
 
-    for test in [['up'] * 2, ['up'] * 5, ['up', 'down', 'up'], ['down'] * 5, 
-                ['unchanged'] * 5 + ['up']]:
+    for test in [['up', 'up'], ['up', 'down', 'up'],
+		 ['down'] * 5, ['unchanged'] * 5 + ['up']]:
 
         token = Token(SUBTOKENS=map(lambda t: Token(TEXT=t), test))
         print 'Testing with state sequence', test
         print 'probability =', model.probability(token)
         print 'tagging =    ', model.tag(token)
         print 'p(tagged) =  ', model.probability(token)
+	print 'H =          ', model.entropy(token)
+	print 'H_exh =      ', model._exhaustive_entropy(token)
+	print 'H(point) =   ', model.point_entropy(token)
+	print 'H_exh(point)=', model._exhaustive_point_entropy(token)
         print
 
 
@@ -751,6 +953,7 @@ def test_pos(model, labelled_sequences, display=False):
             print super_token
             print 'HMM >>>'
             print pts
+	    print model.entropy(super_token)
             print '-' * 60
         else:
             print '\b.',
@@ -844,8 +1047,8 @@ def demo_bw():
     hmm = trainer.train_unsupervised(training, model=model, max_iterations=1000)
     
 if __name__ == '__main__':
-    #demo()
-    demo_pos()
+    demo()
+    #demo_pos()
     #demo_pos_bw()
     #demo_bw()
 
