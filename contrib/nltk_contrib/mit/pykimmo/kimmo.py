@@ -1914,11 +1914,11 @@ _kimmo_terminal_regexp    = '[a-zA-Z0-9\+\'\-\#\@\$\%\!\^\`\}\{]+' # \}\{\<\>\,\
 _kimmo_terminal_regexp_fsa    = '[^:\s]+'	# for FSA, only invalid chars are whitespace and :
 											# '[a-zA-Z0-9\+\'\-\#\@\$\%\!\^\`\}\{\<\>\,\.\~\*]+'
 _kimmo_terminal_regexp_ext= '~?' + _kimmo_terminal_regexp
-_kimmo_subset_tokenizer   = RETokenizer(_kimmo_terminal_regexp_fsa) # RETokenizer(_kimmo_terminal_regexp)
-_kimmo_defaults_tokenizer = RETokenizer(_kimmo_terminal_regexp + '|\:')
-_kimmo_defaults_fsa_tokenizer = RETokenizer(_kimmo_terminal_regexp_fsa + '|\:')
-_kimmo_rule_tokenizer     = RETokenizer(_kimmo_terminal_regexp_ext + '|[\:\(\)\[\]\?\&\*\_]|<=>|==>|<==|/<=')
-#_kimmo_rule_tokenizer     = RETokenizer(_kimmo_terminal_regexp_ext + '|[\:\(\)\[\]\?\&\_]|.\*|<=>|==>|<==|/<=')
+_kimmo_subset_tokenizer   = RegexpTokenizer(_kimmo_terminal_regexp_fsa) # RETokenizer(_kimmo_terminal_regexp)
+_kimmo_defaults_tokenizer = RegexpTokenizer(_kimmo_terminal_regexp + '|\:')
+_kimmo_defaults_fsa_tokenizer = RegexpTokenizer(_kimmo_terminal_regexp_fsa + '|\:')
+_kimmo_rule_tokenizer     = RegexpTokenizer(_kimmo_terminal_regexp_ext + '|[\:\(\)\[\]\?\&\*\_]|<=>|==>|<==|/<=')
+#_kimmo_rule_tokenizer     = RegexpTokenizer(_kimmo_terminal_regexp_ext + '|[\:\(\)\[\]\?\&\_]|.\*|<=>|==>|<==|/<=')
 
 
 _arrows = ['==>', '<=>', '<==', '/<=']
@@ -1932,16 +1932,16 @@ _non_list_initial_special_tokens.extend(_arrows)
 
 def parse_pair_sequence(description,token_type):
     """Read the description, which should be in form [X|X:Y]+, and return a list of pairs"""
+    desc = Token(TEXT=description)
     if token_type == 'FSA':
-    	tokens = _kimmo_defaults_fsa_tokenizer.tokenize(description)
+    	_kimmo_defaults_fsa_tokenizer.tokenize(desc)
     else:
-    	tokens = _kimmo_defaults_tokenizer.tokenize(description)
+    	_kimmo_defaults_tokenizer.tokenize(desc)
     prev = None
     colon = False
     result = []
-    for token in tokens:
-        
-        str = token.type()
+    for token in desc['SUBTOKENS']:
+        str = token['TEXT']
         if str == ':':
             if colon: raise ValueError('two colons in a row')
             if prev == None: raise ValueError('colon must follow identifier')
@@ -1966,10 +1966,11 @@ class KimmoSubset:
         assert _chktype(1, name, types.StringType)
         assert _chktype(2, description, types.StringType)
         self._name = name
-        self._description = description
-        tokens = _kimmo_subset_tokenizer.tokenize(description)
+        desc = Token(TEXT=description)
+        self._description = desc
+        _kimmo_subset_tokenizer.tokenize(desc)
         all = sets.Set()
-        for t in tokens: all.add(t.type())
+        for t in desc['SUBTOKENS']: all.add(t['TEXT'])
         self._subset = [str for str in all]
         
     def name(self): return self._name
@@ -2022,7 +2023,9 @@ class KimmoArrowRule:
         self._description = description
         self._negated = False
         self._pairs = sets.Set()
-        self._parse(_kimmo_rule_tokenizer.tokenize(description))
+        desc = Token(TEXT=description)
+        _kimmo_rule_tokenizer.tokenize(desc)
+        self._parse(desc['SUBTOKENS'])
         
     def __repr__(self):
         return '<KimmoArrowRule %s: %s>' % (self._name, self._description)
@@ -2035,7 +2038,7 @@ class KimmoArrowRule:
         for current_state in current_states:
             for next_state in fsa.forward_traverse(current_state):
                 ok = False
-                for pair in fsa._labels[(current_state, next_state)].elements():
+                for pair in fsa._labels[(current_state, next_state)]:
                     if pair.matches(input, output, subsets):
                         ok = True
                         break
@@ -2108,15 +2111,15 @@ class KimmoArrowRule:
                 raise ValueError('ran off end of input')
             else:
                 return None
-        return tokens[i].type()
+        return tokens[i]['TEXT']
 
 
     def _pair_from_tree(self, tree):
-        if (tree.node() != 'Pair'): raise RuntimeException('expected Pair, got ' + str(tree))
+        if (tree.node != 'Pair'): raise RuntimeException('expected Pair, got ' + str(tree))
         if len(tree) == 1:
-            return KimmoPair(tree[0].type(), tree[0].type())
+            return KimmoPair(tree[0]['TEXT'], tree[0]['TEXT'])
         else:
-            return KimmoPair(tree[0].type(), tree[2].type())
+            return KimmoPair(tree[0]['TEXT'], tree[2]['TEXT'])
 
 
     def _parse_pair(self, tokens, i):
@@ -2129,9 +2132,9 @@ class KimmoArrowRule:
             t2 = self._next_token(tokens, j+1, True)
             if t2 in _special_tokens: raise ValueError('expected identifier, not ' + t2)
             j = j + 2
-            tree = TreeToken('Pair', *tokens[i:j])
+            tree = Tree('Pair', tokens[i:j])
         else:
-            tree = TreeToken('Pair', tokens[i])
+            tree = Tree('Pair', [tokens[i]])
         #print str(self._pair_from_tree(tree)) + ' from ' + str(i) + ' to ' + str(j)
         return (j, tree)
 
@@ -2171,7 +2174,7 @@ class KimmoArrowRule:
 
 
     def _collect_alphabet(self, tree, sigma):
-        if tree.node() == 'Pair':
+        if tree.node == 'Pair':
             pair = self._pair_from_tree(tree)
             sigma.add(pair)
             self._pairs.add(pair)
@@ -2180,23 +2183,24 @@ class KimmoArrowRule:
 
 
     def _parse_list(self, tokens, i, type='Cons'):
-        #print 'parsing list at ' + str(i)
+        print 'parsing list at ' + str(i)
         t = self._next_token(tokens, i)
         if t == None or t in _non_list_initial_special_tokens:
             #print '  failing immediately '
             return (i, None)
         (j, s) = self._parse_singleton(tokens, i)
         (k, r) = self._parse_list(tokens, j, type)
+        print (k,r)
         if r == None:
-            #print '  returning (%d, %s)' % (j, s)
+            print '  returning (%d, %s)' % (j, s)
             return (j, s)
-        tree = TreeToken(type, s, r)
-        #print '  returning (%d, %s)' % (k, tree)
+        tree = Tree(type, [s, r])
+        print '  returning (%d, %s)' % (k, tree)
         return (k, tree)
 
 
     def _parse_singleton(self, tokens, i):
-        #print 'parsing singleton at ' + str(i)
+        print 'parsing singleton at ' + str(i)
         t = self._next_token(tokens, i, True)
         j = i
         result = None
@@ -2220,25 +2224,25 @@ class KimmoArrowRule:
         t = self._next_token(tokens, j)
         if t in ['*', '&', '?']:
             j = j + 1
-            result = TreeToken(t, result)
+            result = Tree(t, [result])
         return (j, result)
 
 
     def _build_fsa(self, fsa, entry_node, tree, reverse):
-        if tree.node() == 'Pair':
+        if tree.node == 'Pair':
             return self._build_terminal(fsa, entry_node, self._pair_from_tree(tree))
-        elif tree.node() == 'Cons':
+        elif tree.node == 'Cons':
             return self._build_seq(fsa, entry_node, tree[0], tree[1], reverse)
-        elif tree.node() == 'Or':
+        elif tree.node == 'Or':
             return self._build_or(fsa, entry_node, tree[0], tree[1], reverse)
-        elif tree.node() == '*':
+        elif tree.node == '*':
             return self._build_star(fsa, entry_node, tree[0], reverse)
-        elif tree.node() == '&':
+        elif tree.node == '&':
             return self._build_plus(fsa, entry_node, tree[0], reverse)
-        elif tree.node() == '?':
+        elif tree.node == '?':
             return self._build_qmk(fsa, entry_node, tree[0], reverse)
         else:
-            raise RuntimeError('unknown tree node'+tree.node())
+            raise RuntimeError('unknown tree node'+tree.node)
 
 
     def _build_terminal(self, fsa, entry_node, terminal):
