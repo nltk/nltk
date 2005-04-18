@@ -24,7 +24,7 @@ epsilon = None
 # inserting and deleting elements from sets stored in hashes
 def _hashed_set_insert(hash, key, item):
     if hash.has_key(key):
-        hash[key].insert(item)
+        hash[key].add(item)
     else:
         hash[key] = set([item])
 def _hashed_set_delete(hash, key, item):
@@ -69,13 +69,13 @@ class FSA:
         return 0
 
     def finals(self):
-        return self._finals.elements()
+        return tuple(self._finals)
 
     def states(self):
         return range(self._num+1)
 
     def add_final(self, state):
-        self._finals.insert(state)
+        self._finals.add(state)
 
     def delete_final(self, state):
         self._finals = self._finals.difference(set([state]))
@@ -95,8 +95,8 @@ class FSA:
         _hashed_set_insert(self._labels, (s1,s2), label)
         
     def inserts(self, state_set, label, s2):
-        for s1 in state_set.elements():
-            self.insert(s1, label, s2)
+        for s1 in tuple(state_set):
+            self.add(s1, label, s2)
 
     def delete(self, s1, label, s2):
         _hashed_set_delete(self._forward, s1, s2)
@@ -144,25 +144,25 @@ class FSA:
 
     def forward_traverse(self, state):
         if self._forward.has_key(state):
-            return tuple(self._forward[state].elements())
+            return tuple(self._forward[state])
         else:
             return ()
 
     def reverse_traverse(self, state):
         if self._reverse.has_key(state):
-            return tuple(self._reverse[state].elements())
+            return tuple(self._reverse[state])
         else:
             return ()
 
     def next(self, s1, label):
         states = []
         for s2 in self.forward_traverse(s1):
-            if self._labels[(s1,s2)].contains(label):
+            if label in self._labels[(s1,s2)]:
                 states.append(s2)
         return tuple(states)
 
 #        if self._table.has_key((state, label)):
-#            return tuple(self._table[(state, label)].elements())
+#            return tuple(self._table[(state, label)])
 #        else:
 #            return ()
 
@@ -203,17 +203,17 @@ class FSA:
         self.forward_accessible(self.start(), forward_acc)
 
         acc = acc.intersection(forward_acc)
-        return tuple(acc.elements())
+        return tuple(acc)
 
     def forward_accessible(self, s1, visited):
         for s2 in self.forward_traverse(s1):
             if not s2 in visited:
-                visited.insert(s2)
+                visited.add(s2)
                 self.forward_accessible(s2, visited)
     def reverse_accessible(self, s1, visited):
         for s2 in self.reverse_traverse(s1):
             if not s2 in visited:
-                visited.insert(s2)
+                visited.add(s2)
                 self.reverse_accessible(s2, visited)
 
     # From ASU page 119
@@ -273,13 +273,13 @@ class FSA:
 #
 #        # TODO - add epsilon transition from finals to initials
 #        for final in self._finals:
-#            self.insert(final, epsilon, self._count)
+#            self.add(final, epsilon, self._count)
 #        self._table.extend(fsa._table)
 
     # generate all strings in the language up to length maxlen
     def generate(self, maxlen, state=0, prefix=""):
         if maxlen > 0:
-            if self._finals.contains(state):
+            if state in self._finals:
                 print prefix
             for (s1, labels, s2) in self.outgoing_transitions(state):
                 for label in labels():
@@ -348,31 +348,31 @@ def re2nfa_build(fsa, node, tree):
 
 def re2nfa_char(fsa, node, char):
     new = fsa.new_state()
-    fsa.insert(node, char, new)
+    fsa.add(node, char, new)
     return new
 
 def re2nfa_qmk(fsa, node, tree):
     node1 = fsa.new_state()
     node2 = re2nfa_build(fsa, node1, tree)
     node3 = fsa.new_state()
-    fsa.insert(node, epsilon, node1)
-    fsa.insert(node, epsilon, node3)
-    fsa.insert(node2, epsilon, node3)
+    fsa.add(node, epsilon, node1)
+    fsa.add(node, epsilon, node3)
+    fsa.add(node2, epsilon, node3)
     return node3
 
 def re2nfa_plus(fsa, node, tree):
     node1 = re2nfa_build(fsa, node, tree[0])
-    fsa.insert(node1, epsilon, node)
+    fsa.add(node1, epsilon, node)
     return node1
 
 def re2nfa_star(fsa, node, tree):
     node1 = fsa.new_state()
     node2 = re2nfa_build(fsa, node1, tree)
     node3 = fsa.new_state()
-    fsa.insert(node, epsilon, node1)
-    fsa.insert(node, epsilon, node3)
-    fsa.insert(node2, epsilon, node1)
-    fsa.insert(node2, epsilon, node3)
+    fsa.add(node, epsilon, node1)
+    fsa.add(node, epsilon, node3)
+    fsa.add(node2, epsilon, node1)
+    fsa.add(node2, epsilon, node3)
     return node3
 
 #################################################################
