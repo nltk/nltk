@@ -136,6 +136,7 @@ class Tree(list):
         if c != 0: return c
         else: return list.__cmp__(self, other)
     def __eq__(self, other):
+        if other == None: return False
         return self.node == other.node and list.__eq__(self, other)
     def __ne__(self, other):
         return not (self == other)
