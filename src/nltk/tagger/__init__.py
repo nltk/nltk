@@ -342,6 +342,13 @@ class UnigramTagger(SequentialTagger):
     def raw_train(self, words, tags):
         for word, tag in zip(words, tags):
             self._freqdist[word].inc(tag)
+            
+    def raw_tag(self, words):
+        tags = []
+        for word in words:
+            tags.append( self._freqdist.__getitem__(word).max() )
+            
+        return tags
 
     def __repr__(self):
         return '<Unigram Tagger>'
