@@ -46,7 +46,6 @@ def find_packages(path, prefix='', packages=None):
         find_packages(filepath, pkg, packages)
     return packages
 packages = find_packages('nltk_contrib')
-print packages
 
 #############################################
 ## Find data files
@@ -60,11 +59,9 @@ def find_data_files(path, data_files=None):
         else:
             (base,extn) = os.path.splitext(name)
             if extn != '.py':
-                print name
                 data_files.append(filepath)
     return data_files
 data_files = find_data_files('nltk_contrib')
-print data_files
 
 setup_dict = {
     #############################################
@@ -75,7 +72,7 @@ setup_dict = {
     'version': nltk_contrib.__version__,
     'url': nltk_contrib.__url__,
     'long_description': nltk_contrib.__longdescr__,
-    'licence': nltk_contrib.__licence__,
+    'license': nltk_contrib.__licence__,
     'keywords': nltk_contrib.__keywords__,
     'maintainer': nltk_contrib.__maintainer__,
     'maintainer_email': nltk_contrib.__maintainer_email__,

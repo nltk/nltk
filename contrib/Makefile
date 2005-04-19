@@ -39,25 +39,25 @@ sdist: gztardist zipdist
 bdist: rpmdist windist
 
 # Produce dist/$(NAME)-$(VERSION).tar.gz
-gztardist: INSTALL.TXT
+gztardist: INSTALL.txt
 	python setup.py -q sdist --format=gztar
 
 # Produce dist/$(NAME)-$(VERSION).tar.gz
-zipdist: INSTALL.TXT
+zipdist: INSTALL.txt
 	python setup.py -q sdist --format=zip
 
 # Produce dist/$(NAME)-$(VERSION)-1.noarch.rpm
 # Produce dist/$(NAME)-$(VERSION)-1.src.rpm
-rpmdist: INSTALL.TXT
+rpmdist: INSTALL.txt
 	python setup.py -q bdist --format=rpm
 
 # Produce dist/$(NAME)-$(VERSION).win32.exe
-windist: INSTALL.TXT
+windist: INSTALL.txt
 	python setup.py -q bdist --format=wininst
 
 checkdocs:
 	$(EPYDOC) -v --check nltk_contrib
 
 # Automatically add the appropriate version number.
-INSTALL.TXT: INSTALL.TXT.in
+INSTALL.txt: INSTALL.txt.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
