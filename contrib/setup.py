@@ -47,22 +47,6 @@ def find_packages(path, prefix='', packages=None):
     return packages
 packages = find_packages('nltk_contrib')
 
-#############################################
-## Find data files
-def find_data_files(path, data_files=None):
-    if data_files is None: data_files = []
-    for name in os.listdir(path):
-        filepath = os.path.join(path, name)
-        if os.path.isdir(filepath):
-            if name != 'CVS':
-                find_data_files(filepath, data_files)
-        else:
-            (base,extn) = os.path.splitext(name)
-            if extn != '.py':
-                data_files.append(filepath)
-    return data_files
-data_files = find_data_files('nltk_contrib')
-
 setup_dict = {
     #############################################
     ## Distribution Metadata
@@ -83,10 +67,6 @@ setup_dict = {
     #############################################
     ## Package List
     'packages': packages,
-    
-    #############################################
-    ## Datafile List
-    'data_files': [('', data_files)],
     
     #############################################
     ## Extension Modules
