@@ -1,8 +1,9 @@
 ###############################################################
 ###  Natural Language Toolkit (NLTK) Contributions Package  ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-### Copyright (C) 2001 University of Pennsylvania           ###
+### Copyright (C) 2001-2005 University of Pennsylvania      ###
 ### Author: Edward Loper <edloper@gradient.cis.upenn.edu>   ###
+###         Steven Bird <sb@csse.unimelb.edu.au>            ###
 ### URL: <http://nltk.sf.net>                               ###
 ### For license information, see LICENSE.TXT                ###
 ###############################################################
@@ -45,11 +46,13 @@ Mailing Lists
         about NLTK (very low volume)
       - nltk-devel: Discussions between NLTK developers
       - nltk-commits: CVS commit logs for NLTK
+      - nltk-teach: Discussions amongst people teaching with NLTK
 
     To subscribe:
       - <http://lists.sourceforge.net/lists/listinfo/nltk-announce>
       - <http://lists.sourceforge.net/lists/listinfo/nltk-devel>
       - <http://lists.sourceforge.net/lists/listinfo/nltk-commits>
+      - NLTK-Teach: please contact Steven Bird
 
     Archives:
       - <http://sourceforge.net/mailarchive/forum.php?forum=nltk-announce>
@@ -60,5 +63,5 @@ Contributing
 ~~~~~~~~~~~~
     If you are interested in contributing to NLTK, please email Edward
     Loper and Steven Bird at <edloper@gradient.cis.upenn.edu> and
-    <sb@cs.mu.oz.au>.
+    <sb@csse.unimelb.edu.au>
 
