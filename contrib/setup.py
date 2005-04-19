@@ -45,7 +45,7 @@ def find_packages(path, prefix='', packages=None):
         # files.  This lets us use the __path__ magic for packages.
         find_packages(filepath, pkg, packages)
     return packages
-packages = find_packages('')
+packages = find_packages('.')
 
 setup_dict = {
     #############################################
