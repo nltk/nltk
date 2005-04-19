@@ -75,7 +75,7 @@ def _add_subdirectories_to_package(package_path_list):
 ##  Metadata
 ##//////////////////////////////////////////////////////
 
-# Version.  This version number is independant of nltk's version
+# Version.  This version number is independent of nltk's version
 # number, but parallels it.  (I.e., we release nltk version x.y and
 # nltk_contrib version x.y at the same time.)
 __version__ = "1.4.3"
@@ -95,7 +95,7 @@ Contributed files for the Natural Language Toolkit.  The Natural
 Langauge Toolkit is a Python package that simplifies the construction
 of programs that process natural language; and defines standard
 interfaces between the different components of an NLP system.  NLTK
-requires Python 2.1 or higher."""
+requires Python 2.4 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
