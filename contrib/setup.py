@@ -45,7 +45,26 @@ def find_packages(path, prefix='', packages=None):
         # files.  This lets us use the __path__ magic for packages.
         find_packages(filepath, pkg, packages)
     return packages
-packages = find_packages('.')
+packages = find_packages('nltk_contrib')
+print packages
+
+#############################################
+## Find data files
+def find_data_files(path, data_files=None):
+    if data_files is None: data_files = []
+    for name in os.listdir(path):
+        filepath = os.path.join(path, name)
+        if os.path.isdir(filepath):
+            if name != 'CVS':
+                find_data_files(filepath, data_files)
+        else:
+            (base,extn) = os.path.splitext(name)
+            if extn != '.py':
+                print name
+                data_files.append(filepath)
+    return data_files
+data_files = find_data_files('nltk_contrib')
+print data_files
 
 setup_dict = {
     #############################################
@@ -67,6 +86,10 @@ setup_dict = {
     #############################################
     ## Package List
     'packages': packages,
+    
+    #############################################
+    ## Datafile List
+    'data_files': [('', data_files)],
     
     #############################################
     ## Extension Modules
