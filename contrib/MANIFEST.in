@@ -1,1 +1,4 @@
+include INSTALL.txt
+include LICENSE.txt
+include README.txt
 recursive-include LICENSE* INSTALL* CHANGELOG* README* *.*
