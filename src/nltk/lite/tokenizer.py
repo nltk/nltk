@@ -137,17 +137,25 @@ def token_split(text, pattern, advanced=False):
 def tokenize(text, pattern, gaps=False, advanced=False):
     """
     Tokenize the text according to the regular expression pattern.
-    Set gaps to True if the pattern matches the material between tokens.
-    Set advanced to True if the pattern contains () groups.
 
     @param text: the string or string iterator to be tokenized
-    @type parsed_re: C{string} or C{iter(string)}
+    @type text: C{string} or C{iter(string)}
+    @param pattern: the regular expression
+    @type pattern: C{string}
+    @param gaps: set to True if the pattern matches material between tokens
+    @type gaps: C{boolean}
+    @param advanced: set to True if the pattern is complex, making use of () groups
+    @type advanced: C{boolean}
     @return: An iterator over tokens
     """
 
     for (i,token) in enumerate(token_split(text, pattern, advanced)):
         if ((i%2==0) == gaps and token != ''):
             yield token
+
+def whitespaceTokenize(s):
+    return (t for t in tokenize(s, pattern=WHITESPACE, gaps=True))
+
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
@@ -185,7 +193,7 @@ def demo():
     print `s`
     print
     print 'Tokenize using whitespace:'
-    _display(tokenize(s, pattern=WHITESPACE, gaps=True))
+    _display(whitespaceTokenize(s))
     print
     print 'Tokenize sequences of alphanumeric characters:'
     _display(tokenize(s, pattern=r'\w+', gaps=False))
