@@ -47,7 +47,6 @@ class AffixTagger (SequentialTagger):
         self._freqdist = ConditionalFreqDist()
         
         assert length >= 1
-        assert minlength >= 2
         assert minlength > length
         
         self._length = length
