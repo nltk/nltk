@@ -25,15 +25,24 @@ class TaggerI:
     identify some aspect each subtoken, such as its part of speech or
     its word sense.
     """
-    def tag(self, token):
+    def tag(self, tokens):
         """
-        Assign a tag to each subtoken in C{token['SUBTOKENS']}, and
-        write those tags to the subtokens' C{tag} properties.
+        Assign a tag to each token in C{tokens}, and yield a tagged token
+        of the form (token, tag)
         """
         raise NotImplementedError()
 
+class SequentialTagger(TaggerI):
+    def tag(self, tokens):
+        for token in tokens:
+            tag = self.tag_one(token)
+            if tag == None and self._backoff:
+                tag = self._backoff.tag_one(token)
+            yield (token, tag)
+    
+### Taggers that ignore history
 
-class DefaultTagger(TaggerI):
+class DefaultTagger(SequentialTagger):
     """
     A tagger that assigns the same tag to every token.
     """
@@ -45,19 +54,19 @@ class DefaultTagger(TaggerI):
         @param tag: The tag that should be assigned to every token.
         """
         self._tag = tag
+        self._backoff = None # cannot have a backoff tagger!
         
-    def tag(self, tokens):
-        for t in tokens:
-            yield (t, self._tag)
-    
+    def tag_one(self, token, history=None):
+        return self._tag  # ignore token and history
+
     def __repr__(self):
         return '<DefaultTagger: %s>' % self._tag
 
-class RegexpTagger(TaggerI):
+class RegexpTagger(SequentialTagger):
     """
     A tagger that assigns tags to words based on regular expressions.
     """
-    def __init__(self, regexps):
+    def __init__(self, regexps, backoff=None):
         """
         Construct a new regexp tagger.
 
@@ -69,18 +78,18 @@ class RegexpTagger(TaggerI):
             assigned the tag C{None}.
         """
         self._regexps = regexps
+        self._backoff = backoff
 
-    def tag(self, tokens):
-        for t in tokens:
-            for regexp, tag in self._regexps:
-                if re.match(regexp, t):
-                    yield (t, tag)
-            yield (t, None)
-                                      
+    def tag_one(self, token, history=None):
+        for regexp, tag in self._regexps:
+            if re.match(regexp, token): # ignore history
+                return tag
+        return None
+
     def __repr__(self):
         return '<RegexprTagger: %d regexps>' % len(self._regexps)
 
-class UnigramTagger(TaggerI):
+class UnigramTagger(SequentialTagger):
     """
     A unigram stochastic tagger.  Before a C{UnigramTagger} can be
     used, it should be trained on a tagged corpus.  Using this
@@ -90,13 +99,14 @@ class UnigramTagger(TaggerI):
     word which it has no data, it will assign it the
     tag C{None}.
     """
-    def __init__(self):
+    def __init__(self, backoff=None):
         """
         Construct a new unigram stochastic tagger.  The new tagger
         should be trained, using the L{train()} method, before it is
         used to tag data.
         """
         self._freqdist = ConditionalFreqDist()
+        self._backoff = backoff
 
     def train(self, tagged_tokens):
         """
@@ -110,47 +120,52 @@ class UnigramTagger(TaggerI):
         @type tagged_tokens: C{tuple} or C{iter(tuple)}
         """
 
-        # Record each text/tag pair in the frequency distribution.
-        for (word, tag) in tagged_tokens:
-            self._freqdist[word].inc(tag)
+        for (token, tag) in tagged_tokens:
+            if self._backoff and self._backoff.tag_one(token) != tag:
+                self._freqdist[token].inc(tag)
 
-    def tag(self, tokens):
-        # Find the most likely tag for the tokens.
-        for t in tokens:
-            yield (t, self._freqdist[t].max())
+    def tag_one(self, token, history=None):
+        return self._freqdist[token].max() # ignore history
 
     def __repr__(self):
         return '<Unigram Tagger>'
 
+### Taggers that use history
+
 class Queue:
     def __init__(self, length):
         self._length = length
-        self._queue = ":" * (self._length - 1)
+        self._queue = (None,) * (self._length - 1)
     def enqueue(self, item):
-        self._queue = item + ":" + self._queue
-        i = self._queue.rfind(":")
-        self._queue = self._queue[:i]
-    def queue(self):
+        self._queue = (item,) + self._queue
+        self._queue = self._queue[:-1]
+    def set(self, items):
+        if len(items) >= len(self._length):
+            # restrict to required length
+            self._queue = items[self._length:]
+        else:
+            # pad to required length
+            self._queue = items + (None,) * (self._length - 1 - len(items))
+    def get(self):
         return self._queue
 
-class NGramTagger(TaggerI):
+class NGramTagger(SequentialTagger):
     """
     An I{n}-gram stochastic tagger.  Before an C{NGramTagger}
     can be used, it should be trained on a tagged corpus.  Using this
     training data, it will construct a frequency distribution
     describing the frequencies with each word is tagged in different
     contexts.  The context considered consists of the word to be
-    tagged and the I{n} previous words' tags.  Once the tagger has been
+    tagged and the I{n-1} previous words' tags.  Once the tagger has been
     trained, it uses this frequency distribution to tag words by
     assigning each word the tag with the maximum frequency given its
     context.  If the C{NGramTagger} encounters a word in a context
     for which it has no data, it will assign it the tag C{None}.
     """
-    def __init__(self, n, cutoff=0):
+    def __init__(self, n, cutoff=0, backoff=None):
         """
-        Construct a new I{n}-gram stochastic tagger.  The new
-        tagger should be trained, using the L{train()} method, before
-        it is used to tag data.
+        Construct an I{n}-gram stochastic tagger.  The tagger must be trained
+        using the L{train()} method before being used to tag data.
         
         @param n: The order of the new C{NGramTagger}.
         @type n: int
@@ -160,104 +175,62 @@ class NGramTagger(TaggerI):
             C{cutoff} examples of a given context in training,
             then it will return a tag of C{None} for that context.
         """
-        if n < 0: raise ValueError('n must be non-negative')
+        if n < 2: raise ValueError('n must be greater than 1')
         self._freqdist = ConditionalFreqDist()
         self._n = n
         self._cutoff = cutoff
-        self._recent_tags = Queue(n-1)
+        self._history = Queue(n-1)
+        self._backoff = None
 
     def train(self, tagged_tokens):
         """
         Train this C{NGramTagger} using the given training data.
         If this method is called multiple times, then the training
-        data will be combined.
+        data will be aggregated.
         
-        @param tagged_tokens: A tagged corpus.  Each token in
+        @param tagged_tokens: Tagged training data.  Each token in
             C{tagged_tokens} should be a tuple consisting of
             C{text} and a C{tag}.
         @type tagged_tokens: C{tuple} or C{iter(tuple)}
         """
-        for (word, tag) in tagged_tokens:
-            context = (self._recent_tags, word)
-            self._freqdist[context].inc(tag)
-            self._recent_tags.enqueue(tag)
 
-    def tag(self, words):
-        # Construct the context from the current subtoken's text and
-        # the adjacent tokens' tags.
-                        
-        for word in words:
-            context = (self._recent_tags, word)
-            tag = self._freqdist[context].max()
+        for (token, tag) in tagged_tokens:
+            history = self._history.get()
+            if self._backoff and self._backoff.tag_one(token, history) != tag:
+                print history, token, tag
+                self._freqdist[(history, token)].inc(tag)
+            self._history.enqueue(tag)
 
-            # If we're sufficiently confident in this tag, then return it.
-            # Otherwise, return None.
-            if self._freqdist[context].count(tag) >= self._cutoff:
-                yield (word, tag)
-            else:
-                yield (word, None)
+    def tag_one(self, token, history=None):
+        if history:
+            self._history.set(history) # NB this may truncate history
+        history = self._history.get()
+        context = (history, token)
+        tag = self._freqdist[context].max()
+
+        # If we're sufficiently confident in this tag, then return it.
+        if self._freqdist[context].count(tag) >= self._cutoff:
+            return tag
+        else:
+            return self._backoff.tag_one(token, self._history.get())
+        return None
 
     def __repr__(self):
-        n = repr(self._n)
-        return '<%s-gram Tagger>' % n
+        return '<%s-gram Tagger>' % repr(self._n)
 
-# class BackoffTagger(TaggerI):
-#     """
-#     A C{Tagger} that tags tokens using a basic backoff model.  Each
-#     C{BackoffTagger} is paramaterised by an ordered list sub-taggers.
-#     In order to assign a tag to a token, each of these sub-taggers is
-#     consulted in order.  If a sub-tagger is unable to determine a tag
-#     for the given token, it should use assign the special tag C{None}.
-#     Each token is assigned the first non-C{None} tag returned by a
-#     tagger.
-#     """
-#     def __init__(self, taggers):
-#         """
-#         Construct a new C{BackoffTagger}, from the given
-#         list of taggers.
-        
-#         @param taggers: The list of taggers used by this
-#                C{BackoffTagger}.  These taggers will be
-#                consulted in the order in which they appear in the list.
-#         @type taggers: list of SequentialTagger
-#         """
-#         self._taggers = taggers
-
-#         # Keep a record of how often each tagger was used
-#         self._tagger_count = {}
-#         for tagger in taggers:
-#             self._tagger_count[tagger] = 0
-#         self._total_count = 0
-
-# ##
-# ## PROBLEM: how do we manage the global history?
-# ## must happen outside the queue constructed by each tagger
-# ## => sequential tagger must be a kind of tagger that takes
-# ##   history as an argument; this is how we will distinguish
-# ##   its signature from other taggers?
-# ##
-#     def tag(self, tokens):
-#         self._total_count += 1
-#         for token in tokens:
-#             for tagger in self._taggers:
-#                 tag = tagger.tag(token)
-#                 if tag is not None:
-#                     self._tagger_count[tagger] += 1
-#                     return tag
-
-#         # Default to None if all taggers return None.
-#         return None
-
-#     def print_usage_stats(self):
-#         total = self._total_count
-#         print '  %20s | %s' % ('Tagger', 'Words Tagged')
-#         print '  '+'-'*21+'|'+'-'*17
-#         for tagger in self._taggers:
-#             count = self._tagger_count[tagger]
-#             print '  %20s |    %4.1f%%' % (tagger, 100.0*count/total)
-
-#     def __repr__(self):
-#         return '<BackoffTagger: %s>' % self._taggers
+###
+#
+#    def print_usage_stats(self):
+#        total = self._total_count
+#        print '  %20s | %s' % ('Tagger', 'Words Tagged')
+#        print '  '+'-'*21+'|'+'-'*17
+#        for tagger in self._taggers:
+#            count = self._tagger_count[tagger]
+#            print '  %20s |    %4.1f%%' % (tagger, 100.0*count/total)
+#
+#    def __repr__(self):
+#        return '<BackoffTagger: %s>' % self._taggers
+###
     
 from nltk.eval import accuracy
 def tagger_accuracy(tagger, gold):
@@ -310,10 +283,10 @@ def demo(num_files=20):
     print 'Training taggers.'
 
     # Create a default tagger
-    default_tagger = DefaultTagger('nn')
+    t0 = DefaultTagger('nn')
 
-    t1 = UnigramTagger()
-    t2 = NGramTagger(2)
+    t1 = UnigramTagger(backoff=t0)
+    t2 = NGramTagger(2, backoff=t1)
 #    t3 = NGramTagger(3)
 
     t1.train(brown('a'))
@@ -334,7 +307,7 @@ def demo(num_files=20):
     print 'Running the taggers on test data...'
     print '  Default (nn) tagger: ',
     sys.stdout.flush()
-    _demo_tagger(default_tagger, brown('a'))
+    _demo_tagger(t0, brown('a'))
 
     print '  Unigram tagger:      ',
     sys.stdout.flush()
