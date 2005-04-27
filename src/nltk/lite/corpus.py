@@ -91,12 +91,10 @@ def brown(files = list('abcdefghjklmnpr')):
 
     path = corpus_path('brown')
 
-    # If it's a single string, then convert it to a tuple
-    # (which we can iterate over, just like an iterator.)
+    # Just one file to process?  If so convert to a tuple so we can iterate
     if type(files) is str: files = (files,)
 
     for file in files:
-        print 'FILE', file
         f = open(os.path.join(path, file))
         for t in whitespaceTokenize(f):
             slash = t.rfind('/')
@@ -110,7 +108,7 @@ def demo():
     """
     Demonstrate corpus access for each of the defined corpora.
     """
-    set_basedir('/home/sb/nltk/data/')   # location for modified corpus
+    set_basedir('/data/nltk/data/')   # location for modified corpus
     for token in brown('a'):
         print token
     
