@@ -108,8 +108,10 @@ def demo():
     """
     Demonstrate corpus access for each of the defined corpora.
     """
-    set_basedir('/data/nltk/data/')   # location for modified corpus
-    for token in brown('a'):
+    set_basedir('/home/sb/nltk/data/')   # location for modified corpus
+#    set_basedir('/data/nltk/data/')   # location for modified corpus
+
+    for token in brown(files='a'):
         print token
     
 if __name__ == '__main__':
