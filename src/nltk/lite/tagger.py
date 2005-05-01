@@ -173,6 +173,109 @@ class UnigramTagger(SequentialBackoffTagger):
             self.size(), self._cutoff)
 
 
+# Affix tagger, based on code by Tiago Tresoldi <tresoldi@users.sf.net>
+class AffixTagger(SequentialBackoffTagger):
+    """
+    A stochastic tagger that assign tags to tokens based on leading or
+    trailing substrings (it is important to note that the substrings
+    are not necessarily "true" morphological affixes).  Before an
+    C{AffixTagger} can be used, it should be trained on a tagged
+    corpus. Using this training data, it will find the most likely tag
+    for each word type. It will then use this information to assign
+    the most frequent tag to each word. If the C{AffixTagger}
+    encounters a prefix or suffix in a word for which it has no data,
+    it will assign the tag C{None}.
+    """
+    def __init__ (self, length, minlength, cutoff=1, backoff=None):
+        """
+        Construct a new affix stochastic tagger. The new tagger should be
+        trained, using the L{train()} method, before it is used to tag
+        data.
+        
+        @type length: C{number}
+        @param length: The length of the affix to be considered during 
+            training and tagging (negative for suffixes)
+        @type minlength: C{number}
+        @param minlength: The minimum length for a word to be considered
+            during training and tagging. It must be longer that C{length}.
+        """
+#        SequentialBackoffTagger.__init__(self)
+        self._model = {}
+        
+        assert minlength > 0
+        
+        self._length = length
+        self._minlength = minlength
+        self._cutoff = cutoff
+        self._backoff = backoff
+        self._history = None
+        
+    def _get_affix(self, token):
+        if self._length > 0:
+            return token[:self._length]
+        else:
+            return token[self._length:]
+
+    def train(self, tagged_tokens, verbose=False):
+        """
+        Train this C{AffixTagger} using the given training data. If this
+        method is called multiple times, then the training data will be
+        combined.
+        
+        @param tagged_tokens: Tagged training data.  Each token in
+            C{tagged_tokens} should be a tuple consisting of
+            C{text} and a C{tag}.
+        @type tagged_tokens: C{tuple} or C{iter(tuple)}
+        """
+
+        if self.size() != 0:
+            raise ValueError, 'Tagger is already trained'
+        token_count = hit_count = 0
+        fd = ConditionalFreqDist()
+        
+        for (token, tag) in tagged_tokens:
+            token_count += 1
+            # If token is long enough
+            if len(token) >= self._minlength:
+                backoff_tag = self._backoff_tag_one(token)
+                if tag != backoff_tag:
+                    # get the affix and record it
+                    affix = self._get_affix(token)
+                    hit_count += 1
+                    fd[affix].inc(tag)
+        for affix in fd.conditions():
+            best_tag = fd[affix].max()
+            if fd[affix].count(best_tag) > self._cutoff:
+                self._model[affix] = best_tag
+        # generate stats
+        if verbose:
+            size = len(self._model)
+            backoff = 100 - (hit_count * 100.0)/ token_count
+            pruning = 100 - (size * 100.0) / len(fd.conditions())
+            print "[Trained Affix tagger:",
+            print "size=%d, backoff=%.2f%%, pruning=%.2f%%]" % (
+                size, backoff, pruning)
+
+    def tag_one(self, token, history=None):
+        if self.size() == 0:
+            raise ValueError, 'Tagger is not trained'
+        affix = self._get_affix(token)
+        if len(token) >= self._minlength and self._model.has_key(affix):
+            return self._model[affix]
+        if self._backoff:
+            return self._backoff.tag_one(token, history)
+        return None
+
+    def size(self):
+        return len(self._model)
+
+    def __repr__(self):
+        return '<Affix Tagger: size=%d, cutoff=%d>' % (
+            self.size(), self._cutoff)
+
+
+
+
 ### Taggers that use history
 
 class Queue:
@@ -288,6 +391,10 @@ class TrigramTagger(NGramTagger):
     def __init__(self, cutoff=1, backoff=None):
         NGramTagger.__init__(self, 3, cutoff, backoff)
 
+
+
+
+
 ###
 #
 #    def print_usage_stats(self):
@@ -353,9 +460,10 @@ def demo(num_files=20):
     print 'Training taggers.'
 
     # Create a default tagger
-    t0 = DefaultTagger('nn'); print t0
+    t0 = DefaultTagger('nn')
 
-    t1 = UnigramTagger(cutoff=2, backoff=t0)
+#    t1 = UnigramTagger(cutoff=2, backoff=t0)
+    t1 = AffixTagger(length=-3, minlength=5, backoff=t0)
     t2 = BigramTagger(cutoff=0, backoff=t1)
     t3 = TrigramTagger(backoff=t2)
 
