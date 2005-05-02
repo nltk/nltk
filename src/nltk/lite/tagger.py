@@ -409,7 +409,7 @@ class TrigramTagger(NGramTagger):
 #        return '<BackoffTagger: %s>' % self._taggers
 ###
     
-from nltk.eval import accuracy
+from eval import accuracy
 def tagger_accuracy(tagger, gold):
     """
     Score the accuracy of the tagger against the gold standard.
@@ -462,12 +462,13 @@ def demo(num_files=20):
     # Create a default tagger
     t0 = DefaultTagger('nn')
 
-#    t1 = UnigramTagger(cutoff=2, backoff=t0)
-    t1 = AffixTagger(length=-3, minlength=5, backoff=t0)
-    t2 = BigramTagger(cutoff=0, backoff=t1)
+    t1a = AffixTagger(length=-3, minlength=5, backoff=t0)
+    t1b = UnigramTagger(cutoff=2, backoff=t1a)
+    t2 = BigramTagger(cutoff=0, backoff=t1b)
     t3 = TrigramTagger(backoff=t2)
 
-    t1.train(brown('a'), verbose=True)
+    t1a.train(brown('a'), verbose=True)
+    t1b.train(brown('a'), verbose=True)
     t2.train(brown('a'), verbose=True)
     t3.train(brown('a'), verbose=True)
 
@@ -487,9 +488,13 @@ def demo(num_files=20):
     sys.stdout.flush()
     _demo_tagger(t0, brown('b'))
 
+    print '  Affix tagger:      ',
+    sys.stdout.flush()
+    _demo_tagger(t1a, list(brown('b'))[:1000])
+
     print '  Unigram tagger:      ',
     sys.stdout.flush()
-    _demo_tagger(t1, list(brown('b'))[:1000])
+    _demo_tagger(t1b, list(brown('b'))[:1000])
 
     print '  Bigram tagger:       ',
     sys.stdout.flush()
@@ -504,8 +509,6 @@ def demo(num_files=20):
 #        print '='*75
 
 if __name__ == '__main__':
-    # Standard boilerpate.  (See note in <http://?>)
-    #from nltk.tagger import *
     from corpus import set_basedir
 #    set_basedir('/data/nltk/data/')   # location for modified corpus
     set_basedir('/home/sb/nltk/data/')   # location for modified corpus
