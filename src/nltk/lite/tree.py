@@ -253,12 +253,17 @@ class Tree(list):
 # Parsing
 #////////////////////////////////////////////////////////////
     
-# [XX] Note that this only parses treebank strings; it doesn't handle
-# strings like (S: (NP: I) (VP: (V: saw) (NP: him))), where there's a
-# ":" separator.
-# [staticmethod]
+def parse(s):
+    """
+    Parse a treebank string and return a tree.  Trees are represented
+    as nested brackettings, e.g. (S (NP (NNP John)) (VP (V runs))).
 
-def parse(s, preterminal_tags=False):
+    @return: A tree corresponding to the string representation.
+    @rtype: C{tree}
+    @param s: The string to be converted
+    @type s: C{string}
+    """
+
     SPACE = re.compile(r'\s*')
     WORD = re.compile(r'\s*([^\s\(\)]*)\s*')
 
@@ -283,8 +288,6 @@ def parse(s, preterminal_tags=False):
                 # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
                 if tree.node == '':
                     tree = tree[0]
-                if preterminal_tags:
-                    return self._convert_preterminals_to_tags(tree)
                 else:
                     return tree
             stack[-2].append(stack[-1])
@@ -299,26 +302,23 @@ def parse(s, preterminal_tags=False):
 
     raise ValueError, 'mismatched parens'
 
-def _convert_preterminals_to_tags(self, tree):
-    for i, child in enumerate(tree):
-        if isinstance(child, Tree):
-            # If it's a preterminal, convert it.
-            if len(child) == 1 and isinstance(child[0], Token):
-                child[0][TAG] = child.node
-                tree[i] = child[0]
-            # Otherwise, recurse.
-            else:
-                self._convert_preterminals_to_tags(child)
-
-
 def chunk(s, chunk_node="NP", top_node="S"):
     """
-    A token reader that divides a string of chunked tagged text into
-    chunks and unchunked tokens, and produces a C{Tree}.
+    Divide a string of chunked tagged text into
+    chunks and unchunked tokens, and produce a C{Tree}.
     Chunks are marked by square brackets (C{[...]}).  Words are
     deliniated by whitespace, and each word should have the form
     C{I{text}/I{tag}}.  Words that do not contain a slash are
     assigned a C{tag} of C{None}.
+
+    @return: A tree corresponding to the string representation.
+    @rtype: C{tree}
+    @param s: The string to be converted
+    @type s: C{string}
+    @param chunk_node: The label to use for chunk nodes
+    @type chunk_node: C{string}
+    @param top_node: The label to use for the root of the tree
+    @type top_node: C{string}
     """
 
     WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
@@ -357,45 +357,40 @@ def demo():
     C{Tree} from the L{treebank<nltk.corpus.treebank>} corpus,
     and shows the results of calling several of their methods.
     """
-    import tree; reload(tree) # [XX]
-    from nltk.util import DemoInterpreter
-    d = DemoInterpreter()
-    d.start('Tree Demo')
-    d.silent("from tree import *")
     
     # Demonstrate tree parsing.
-    d("s = '(S (NP (DT the) (NN cat)) "+
-      "(VP (VBD ate) (NP (DT a) (NN cookie))))'")
-    d("tree = Tree.parse(s)")
-    d("print tree")
-    d.hline()
+    s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
+    t = parse(s)
+    print t
 
-    # Demonstrate basic tree accessors.
-    d("print tree.node           # tree's constituent type")
-    d("print tree[0]             # tree's first child")
-    d("print tree[1]             # tree's second child")
-    d("print tree.height()")
-    d("print tree.leaves()")
-    d("print tree[1]")
-    d("print tree[1,1]")
-    d("print tree[1,1,0]")
-    d.hline()
+    print t.node           # tree's constituent type
+    print t[0]             # tree's first child
+    print t[1]             # tree's second child
+    print t.height()
+    print t.leaves()
+    print t[1]
+    print t[1,1]
+    print t[1,1,0]
 
     # Demonstrate tree modification.
-    d("the_cat = tree[0]")
-    d("the_cat.insert(1, Tree.parse('(JJ big)'))")
-    d("print tree")
-    d("tree[1,1,1] = Tree.parse('(NN cake)')")
-    d("print tree")
-    d.hline()
+    the_cat = t[0]
+    the_cat.insert(1, parse('(JJ big)'))
+    print t
+    t[1,1,1] = parse('(NN cake)')
+    print t
 
     # Demonstrate parsing of treebank output format.
-    d("tree = tree.parse(tree.pp_treebank())[0]")
-    d("print tree")
-    d.hline()
+    t = parse(t.pp_treebank())[0]
+    print t
 
     # Demonstrate LaTeX output
-    d("print tree.pp_latex_qtree()")
+    print t.pp_latex_qtree()
+
+    # Demonstrate chunk parsing
+    s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
+    from tree import chunk
+    print chunk(s).pp()
+
 
 if __name__ == '__main__':
     demo()
