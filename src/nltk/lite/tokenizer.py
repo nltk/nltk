@@ -18,6 +18,7 @@ import re, sre_parse, sre_constants, sre_compile
 
 WHITESPACE = '\s+'
 NEWLINE = '\n'
+BLANKLINE = '\n\n'
 
 def _remove_group_identifiers(parsed_re):
     """
@@ -156,6 +157,9 @@ def tokenize(text, pattern, gaps=False, advanced=False):
 def whitespaceTokenize(s):
     return (t for t in tokenize(s, pattern=WHITESPACE, gaps=True))
 
+def blanklineTokenize(s):
+    return (t for t in tokenize(s, pattern=BLANKLINE, gaps=True))
+
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
@@ -188,7 +192,7 @@ def demo():
     tokenizers on the same string.
     """
     # Define the test string.
-    s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them."
+    s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
     print 'Input text:'
     print `s`
     print
@@ -205,7 +209,10 @@ def demo():
     _display(tokenize(s, pattern=r'\.(\s+|$)', gaps=True))
     print
     print 'Tokenize by lines:'
-    _display(tokenize(s, NEWLINE))
+    _display(tokenize(s, pattern=NEWLINE, gaps=True))
+    print
+    print 'Tokenize by blank lines:'
+    _display(tokenize(s, pattern=BLANKLINE, gaps=True))
     print
     
 if __name__ == '__main__':
