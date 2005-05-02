@@ -191,7 +191,7 @@ class Tree(list):
             if isinstance(child, Tree):
                 childstrs.append(child._ppflat(nodesep, parens))
             else:
-                childstrs.append('%s' % child)
+                childstrs.append('%s' % child.__repr__())
         return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
                                 ' '.join(childstrs), parens[1])
 
@@ -310,6 +310,41 @@ def _convert_preterminals_to_tags(self, tree):
             else:
                 self._convert_preterminals_to_tags(child)
 
+
+def chunk(s, chunk_node="NP", top_node="S"):
+    """
+    A token reader that divides a string of chunked tagged text into
+    chunks and unchunked tokens, and produces a C{Tree}.
+    Chunks are marked by square brackets (C{[...]}).  Words are
+    deliniated by whitespace, and each word should have the form
+    C{I{text}/I{tag}}.  Words that do not contain a slash are
+    assigned a C{tag} of C{None}.
+    """
+
+    WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
+    VALID = re.compile(r'^([^\[\]]+|\[[^\[\]]*\])*$')
+
+    if not VALID.match(s):
+        raise ValueError, 'Invalid token string (bad brackets)'
+        
+    stack = [Tree(top_node, [])]
+    for match in WORD_OR_BRACKET.finditer(s):
+        text = match.group()
+        if text[0] == '[':
+            chunk = Tree(chunk_node, [])
+            stack[-1].append(chunk)
+            stack.append(chunk)
+        elif text[0] == ']':
+            stack.pop()
+        else:
+            slash = text.rfind('/')
+            if slash >= 0:
+                tok = (text[:slash], text[slash+1:])
+            else:
+                tok = (text, None)
+            stack[-1].append(tok)
+
+    return stack[0]
 
 ######################################################################
 ## Demonstration
