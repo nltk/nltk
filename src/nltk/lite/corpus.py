@@ -148,6 +148,39 @@ def treebank_parsed(files = 'wsj_00_parsed'):
             yield tree.parse(t)
 
 
+def treebank_chunked(files = 'wsj_00_chunked'):
+
+    """
+    Read chunks from the Penn Treebank corpus sample.
+
+    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
+    available under fair use for the purposes of illustrating NLTK
+    tools for tokenizing, tagging, chunking and parsing.  This data is
+    for non-commercial use only.
+
+    Contents: chunked data from Wall Street Journal for 1650 sentences, e.g.:
+
+    [ Pierre/NNP Vinken/NNP ]
+    ,/, 
+    [ 61/CD years/NNS ]
+    old/JJ ,/, will/MD join/VB 
+    [ the/DT board/NN ]
+    as/IN 
+    [ a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ]
+    ./.
+    """       
+
+    path = corpus_path('treebank')
+
+    # Just one file to process?  If so convert to a tuple so we can iterate
+    if type(files) is str: files = (files,)
+
+    for file in files:
+        s = open(os.path.join(path, file)).read()
+        for t in blanklineTokenize(s):
+            yield tree.chunk(t)
+
+
 def demo():
     """
     Demonstrate corpus access for each of the defined corpora.
@@ -163,6 +196,12 @@ def demo():
 
     i=0
     for tree in treebank_parsed():
+        print tree.pp()
+        i+=1
+        if i>3: break
+
+    i=0
+    for tree in treebank_chunked():
         print tree.pp()
         i+=1
         if i>3: break
