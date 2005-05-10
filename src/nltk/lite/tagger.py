@@ -20,10 +20,9 @@ from nltk.probability import FreqDist, ConditionalFreqDist
 
 class TaggerI:
     """
-    A processing interface for assigning a tag to each subtoken in an
-    ordered list of subtokens.  Tags are case sensitive strings that
-    identify some aspect each subtoken, such as its part of speech or
-    its word sense.
+    A processing interface for assigning a tag to each token in a list.
+    Tags are case sensitive strings that identify some property of each
+    token, such as its part of speech or its sense.
     """
     def tag(self, tokens):
         """
@@ -392,7 +391,12 @@ class TrigramTagger(NGramTagger):
         NGramTagger.__init__(self, 3, cutoff, backoff)
 
 
-
+def tag2tuple(s, sep='/'):
+    loc = s.rfind(sep)
+    if loc >= 0:
+        return (s[:loc], s[loc+1:])
+    else:
+        return (s, None)
 
 
 ###
