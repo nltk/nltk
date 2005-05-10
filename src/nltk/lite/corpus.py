@@ -1,5 +1,6 @@
 import sys, os.path, re
 from tokenizer import whitespaceTokenize
+from tagger import tag2tuple
 
 #################################################################
 # Base Directory for Corpora
@@ -97,12 +98,7 @@ def brown(files = list('abcdefghjklmnpr')):
     for file in files:
         f = open(os.path.join(path, file))
         for t in whitespaceTokenize(f):
-            slash = t.rfind('/')
-            if slash >= 0:
-                yield (t[:slash], t[slash+1:])
-            else:
-                yield (t, None)
-
+            yield tag2tuple(t)
 
 
 from tokenizer import blanklineTokenize
@@ -181,6 +177,36 @@ def treebank_chunked(files = 'wsj_00_chunked'):
             yield tree.chunk(t)
 
 
+def treebank_tagged(files = 'wsj_00_tagged'):
+
+    """
+    Read tagged tokens from the Penn Treebank corpus sample.
+
+    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
+    available under fair use for the purposes of illustrating NLTK
+    tools for tokenizing, tagging, chunking and parsing.  This data is
+    for non-commercial use only.
+
+    Contents: tagged data from Wall Street Journal for 1650 sentences, e.g.:
+
+    Pierre/NNP Vinken/NNP ,/, 61/CD years/NNS old/JJ ,/, will/MD join/VB 
+    the/DT board/NN as/IN a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ./.
+    """       
+
+    path = corpus_path('treebank')
+
+    # Just one file to process?  If so convert to a tuple so we can iterate
+    if type(files) is str: files = (files,)
+
+    for file in files:
+        f = open(os.path.join(path, file)).read()
+        for sent in blanklineTokenize(f):
+            l = []
+            for t in whitespaceTokenize(sent):
+                l.append(tag2tuple(t))
+            yield l
+
+
 def demo():
     """
     Demonstrate corpus access for each of the defined corpora.
@@ -203,6 +229,12 @@ def demo():
     i=0
     for tree in treebank_chunked():
         print tree.pp()
+        i+=1
+        if i>3: break
+    
+    i=0
+    for token in treebank_tagged():
+        print token()
         i+=1
         if i>3: break
     
