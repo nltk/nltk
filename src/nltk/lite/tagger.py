@@ -122,26 +122,27 @@ class UnigramTagger(SequentialBackoffTagger):
         self._backoff = backoff
         self._history = None
         
-    def train(self, tagged_tokens, verbose=False):
+    def train(self, tagged_corpus, verbose=False):
         """
         Train this C{UnigramTagger} using the given training data.
         
-        @param tagged_tokens: A tagged corpus.  Each token in
-            C{tagged_tokens} should be a tuple consisting of
+        @param tagged_corpus: A tagged corpus.  Each item should be
+            a C{list} of tagged tokens, where each consists of
             C{text} and a C{tag}.
-        @type tagged_tokens: C{tuple} or C{iter(tuple)}
+        @type tagged_corpus: C{list} or C{iter(list)}
         """
 
         if self.size() != 0:
             raise ValueError, 'Tagger is already trained'
         token_count = hit_count = 0
         fd = ConditionalFreqDist()
-        for (token, tag) in tagged_tokens:
-            token_count += 1
-            backoff_tag = self._backoff_tag_one(token)
-            if tag != backoff_tag:
-                hit_count += 1
-                fd[token].inc(tag)
+        for sentence in tagged_corpus:
+            for (token, tag) in sentence:
+                token_count += 1
+                backoff_tag = self._backoff_tag_one(token)
+                if tag != backoff_tag:
+                    hit_count += 1
+                    fd[token].inc(tag)
         for token in fd.conditions():
             best_tag = fd[token].max()
             if fd[token].count(best_tag) > self._cutoff:
@@ -215,16 +216,16 @@ class AffixTagger(SequentialBackoffTagger):
         else:
             return token[self._length:]
 
-    def train(self, tagged_tokens, verbose=False):
+    def train(self, tagged_corpus, verbose=False):
         """
         Train this C{AffixTagger} using the given training data. If this
         method is called multiple times, then the training data will be
         combined.
         
-        @param tagged_tokens: Tagged training data.  Each token in
-            C{tagged_tokens} should be a tuple consisting of
+        @param tagged_corpus: A tagged corpus.  Each item should be
+            a C{list} of tagged tokens, where each consists of
             C{text} and a C{tag}.
-        @type tagged_tokens: C{tuple} or C{iter(tuple)}
+        @type tagged_corpus: C{list} or C{iter(list)}
         """
 
         if self.size() != 0:
@@ -232,16 +233,17 @@ class AffixTagger(SequentialBackoffTagger):
         token_count = hit_count = 0
         fd = ConditionalFreqDist()
         
-        for (token, tag) in tagged_tokens:
-            token_count += 1
-            # If token is long enough
-            if len(token) >= self._minlength:
-                backoff_tag = self._backoff_tag_one(token)
-                if tag != backoff_tag:
-                    # get the affix and record it
-                    affix = self._get_affix(token)
-                    hit_count += 1
-                    fd[affix].inc(tag)
+        for sentence in tagged_corpus:
+            for (token, tag) in sentence:
+                token_count += 1
+                # If token is long enough
+                if len(token) >= self._minlength:
+                    backoff_tag = self._backoff_tag_one(token)
+                    if tag != backoff_tag:
+                        # get the affix and record it
+                        affix = self._get_affix(token)
+                        hit_count += 1
+                        fd[affix].inc(tag)
         for affix in fd.conditions():
             best_tag = fd[affix].max()
             if fd[affix].count(best_tag) > self._cutoff:
@@ -280,6 +282,8 @@ class AffixTagger(SequentialBackoffTagger):
 class Queue:
     def __init__(self, length):
         self._length = length
+        self.clear()
+    def clear(self):
         self._queue = (None,) * self._length
     def enqueue(self, item):
         self._queue = (item,) + self._queue[:self._length-1]
@@ -326,28 +330,30 @@ class NGramTagger(SequentialBackoffTagger):
         self._history = Queue(n-1)
         self._backoff = backoff
 
-    def train(self, tagged_tokens, verbose=False):
+    def train(self, tagged_corpus, verbose=False):
         """
         Train this C{NGramTagger} using the given training data.
         
-        @param tagged_tokens: Tagged training data.  Each token in
-            C{tagged_tokens} should be a tuple consisting of
+        @param tagged_corpus: A tagged corpus.  Each item should be
+            a C{list} of tagged tokens, where each consists of
             C{text} and a C{tag}.
-        @type tagged_tokens: C{tuple} or C{iter(tuple)}
+        @type tagged_corpus: C{list} or C{iter(list)}
         """
 
         if self.size() != 0:
             raise ValueError, 'Tagger is already trained'
         token_count = hit_count = 0
         fd = ConditionalFreqDist()
-        for (token, tag) in tagged_tokens:
-            token_count += 1
-            history = self._history.get()
-            backoff_tag = self._backoff_tag_one(token, history)
-            if tag != backoff_tag:
-                hit_count += 1
-                fd[(history, token)].inc(tag)
-            self._history.enqueue(tag)
+        for sentence in tagged_corpus:
+            self._history.clear()
+            for (token, tag) in sentence:
+                token_count += 1
+                history = self._history.get()
+                backoff_tag = self._backoff_tag_one(token, history)
+                if tag != backoff_tag:
+                    hit_count += 1
+                    fd[(history, token)].inc(tag)
+                self._history.enqueue(tag)
         for context in fd.conditions():
             best_tag = fd[context].max()
             if fd[context].count(best_tag) > self._cutoff:
@@ -398,6 +404,8 @@ def tag2tuple(s, sep='/'):
     else:
         return (s, None)
 
+def untag(tagged_sentence):
+    return (w for (w, t) in tagged_sentence)
 
 ###
 #
@@ -427,11 +435,15 @@ def tagger_accuracy(tagger, gold):
     @rtype: C{float}
     """
 
-    gold = list(gold)
-    test = list(tagger.tag(word for (word, tag) in gold))
-    print 'GOLD:', gold[:50]
-    print 'TEST:', test[:50]
-    return accuracy(gold, test)
+    gold_tokens = []
+    test_tokens = []
+    for sent in gold:
+        gold_tokens += sent
+        test_tokens += list(tagger.tag(untag(sent)))
+
+    print 'GOLD:', gold_tokens[:50]
+    print 'TEST:', test_tokens[:50]
+    return accuracy(gold_tokens, test_tokens)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
@@ -441,38 +453,29 @@ def _demo_tagger(tagger, gold):
     acc = tagger_accuracy(tagger, gold)
     print 'Accuracy = %4.1f%%' % (100.0 * acc)
 
-def demo(num_files=20):
+def demo():
     """
     A simple demonstration function for the C{Tagger} classes.  It
     constructs a C{BackoffTagger} using a 2nd order C{NthOrderTagger},
     a 1st order C{NthOrderTagger}, a 0th order C{NthOrderTagger}, and
     an C{DefaultTagger}.  It trains and tests the tagger using the
     brown corpus.
-
-    @type num_files: C{int}
-    @param num_files: The number of files that should be used for
-        training and for testing.  Two thirds of these files will be
-        used for training.  All files are randomly selected
-        (I{without} replacement) from the brown corpus.  If
-        C{num_files>=500}, then all 500 files will be used.
-    @rtype: None
     """
     from corpus import brown
-    import sys, random
-    num_files = max(min(num_files, 500), 3)
+    import sys
 
     print 'Training taggers.'
 
     # Create a default tagger
     t0 = DefaultTagger('nn')
 
-    t1a = AffixTagger(length=-3, minlength=5, backoff=t0)
-    t1b = UnigramTagger(cutoff=2, backoff=t1a)
-    t2 = BigramTagger(cutoff=0, backoff=t1b)
+#    t1a = AffixTagger(length=-3, minlength=5, backoff=t0)
+#    t1b = UnigramTagger(cutoff=2, backoff=t1a)
+    t1 = UnigramTagger(cutoff=1, backoff=t0)
+    t2 = BigramTagger(cutoff=1, backoff=t1)
     t3 = TrigramTagger(backoff=t2)
 
-    t1a.train(brown('a'), verbose=True)
-    t1b.train(brown('a'), verbose=True)
+    t1.train(brown('a'), verbose=True)
     t2.train(brown('a'), verbose=True)
     t3.train(brown('a'), verbose=True)
 
@@ -492,13 +495,9 @@ def demo(num_files=20):
     sys.stdout.flush()
     _demo_tagger(t0, brown('b'))
 
-    print '  Affix tagger:      ',
-    sys.stdout.flush()
-    _demo_tagger(t1a, list(brown('b'))[:1000])
-
     print '  Unigram tagger:      ',
     sys.stdout.flush()
-    _demo_tagger(t1b, list(brown('b'))[:1000])
+    _demo_tagger(t1, list(brown('b'))[:1000])
 
     print '  Bigram tagger:       ',
     sys.stdout.flush()
