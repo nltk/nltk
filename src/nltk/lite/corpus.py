@@ -96,10 +96,12 @@ def brown(files = list('abcdefghjklmnpr')):
     if type(files) is str: files = (files,)
 
     for file in files:
-        f = open(os.path.join(path, file))
-        for t in whitespaceTokenize(f):
-            yield tag2tuple(t)
-
+        f = open(os.path.join(path, file)).read()
+        for sent in blanklineTokenize(f):
+            l = []
+            for t in whitespaceTokenize(sent):
+                l.append(tag2tuple(t))
+            yield l
 
 from tokenizer import blanklineTokenize
 import tree
@@ -215,10 +217,10 @@ def demo():
 #    set_basedir('/data/nltk/data/')   # location for modified corpus
 
     i=0
-    for token in brown(files='a'):
-        print token
+    for sent in brown(files='a'):
+        print sent
         i+=1
-        if i>50: break
+        if i>5: break
 
     i=0
     for tree in treebank_parsed():
