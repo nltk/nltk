@@ -1,0 +1,16 @@
+The following files have been ported to NLTK-Lite:
+
+brill.py
+cfg.py
+chunk.py
+corpus.py
+eval.py
+featurestructure.py
+stemmer.py
+tagger.py
+tokenizer.py
+tree.py
+
+The following are currently being ported:
+
+parser.py
