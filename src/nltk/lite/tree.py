@@ -168,6 +168,39 @@ class Tree(list):
         return 1 + max_child_height
 
     #////////////////////////////////////////////////////////////
+    # Convert, copy
+    #////////////////////////////////////////////////////////////
+
+    # [classmethod]
+    def convert(cls, val):
+        """
+        Convert a tree between different types.  C{cls} determines
+        which class will be used to encode the new tree.  E.g.:
+
+           >>> # Convert tree into a Tree:
+           >>> tree = Tree.convert(tree)
+           >>> # Convert tree into a ParentedTree:
+           >>> tree = ParentedTree.convert(tree)
+           >>> # Convert tree into a MultiParentedTree:
+           >>> tree = MultiParentedTree.convert(tree)
+
+        @type tree: L{Tree}
+        @param tree: The tree that should be converted.
+        @return: The new C{Tree}.
+        """
+        if isinstance(val, Tree):
+            children = [cls.convert(child) for child in val]
+            return cls(val.node, children)
+        else:
+            return val
+    convert = classmethod(convert)
+
+    def copy(self, deep=False):
+        if not deep: return self.__class__(self.node, self)
+        else: return self.__class__.convert(self)
+
+
+    #////////////////////////////////////////////////////////////
     # Visualization & String Representation
     #////////////////////////////////////////////////////////////
     
@@ -248,6 +281,34 @@ class Tree(list):
         """
         return r'\Tree ' + self.pp(indent=6, nodesep='', parens=('[.', ' ]'))
     
+
+class ImmutableTree(Tree):
+    def __setitem__(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def __setslice__(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def __delitem__(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def __delslice__(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def __iadd__(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def __imul__(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def append(self, v):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def extend(self, v):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def pop(self, v=None):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def remove(self, v):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def reverse(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def sort(self):
+        raise ValueError, 'ImmutableTrees may not be modified'
+    def __hash__(self):
+        return hash( (self.node, tuple(self)) )
 
 #////////////////////////////////////////////////////////////
 # Parsing

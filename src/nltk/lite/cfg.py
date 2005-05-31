@@ -66,7 +66,7 @@ with the right hand side (M{rhs}) in a tree (M{tree}) is known as
 X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
-from nltk.token import *
+from types import InstanceType
 import re
 
 
