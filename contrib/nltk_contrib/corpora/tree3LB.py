@@ -5,7 +5,6 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
-# $Id$
 """
 CATALAN AND SPANISH TREEBANKS:
 
@@ -218,4 +217,57 @@ class Treebank3LBCorpusReader(CorpusReaderI):
             return self._3LB_reader
 
 
+#################################################################
+# Demonstration
+#################################################################
+
+def _truncate_repr(obj, width, indent, lines=3):
+    n = width-indent
+    s = repr(obj)
+    if len(s) > n*lines:
+        s = s[:n*lines-3] + '...'
+    s = re.sub('(.{%d})' % n, '\\1\n'+' '*indent, s)
+    return s.rstrip()
+
+
+def _test_corpus(corpus):
+    if corpus is None:
+        print '(skipping None)'
+        return
+    print '='*70
+    print corpus.name().center(70)
+    print '-'*70
+    print 'description() => ' + _truncate_repr(corpus.description(), 70,17)
+    print 'license()     => ' + _truncate_repr(corpus.license(), 70,17)
+    print 'copyright()   => ' + _truncate_repr(corpus.copyright(), 70,17)
+    print 'items()       => ' + _truncate_repr(corpus.items(), 70,17)
+    print 'groups()      => ' + _truncate_repr(corpus.groups(), 70,17)
+    item = corpus.items()[0]
+    contents = corpus.read(item)
+    print 'read(e0)      => ' + _truncate_repr(contents, 70,17)
+
+
+def _test_treebank():
+    print "<Corpus: 3LB (contains 489 items; 2 groups)>"
+    _test_corpus(LB)
+    print '-'*70
+    print "cas, cat = [LB.items(group)[0] for group in"
+    print " Spanish and Catalan: 'cas', 'cat']"
+    cas = LB.items('cas')[0]
+    cat = LB.items('cat')[1]
+
+    for (name, item) in zip(('cas','cat'), (cas, cat)):
+        contents = LB.read(item)
+        print 'read(%s)       => %s' % (name, _truncate_repr(contents, 70,17))
+
+
+def demo():
+    """
+    Demonstrate corpus access for each of the defined corpora.
+    """
+    _test_treebank()
+    
+if __name__ == '__main__':
+    LB = Treebank3LBCorpusReader('3LB', "3LB/",description_file="LEEME",license_file="LICENCIA")
+    demo()
 LB = Treebank3LBCorpusReader('3LB', "3LB/",description_file="LEEME",license_file="LICENCIA")
