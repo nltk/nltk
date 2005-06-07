@@ -6,23 +6,14 @@
 #         Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Brill's transformational rule-based tagger.
-
-@group Tagger: BrillTagger
-@group Rules: BrillRuleI, *Rule
-@group Templates: BrillTemplateI, *Template
-@group Trainers: BrillTaggerTrainer, FastBrillTaggerTrainer
 """
 
-from tagger import TaggerI, DefaultTagger, RegexpTagger, \
-     UnigramTagger, tagger_accuracy
+from tagger import *
 from corpus import set_basedir, treebank_tagged
 
-from sets import Set # for sets
 import bisect        # for binary search through a subset of indices
 import os            # for finding WSJ files
 import pickle        # for storing/loading rule lists
@@ -72,7 +63,7 @@ class BrillTagger(TaggerI):
         tag_to_positions = {}
         for i, (token, tag) in enumerate(tagged_tokens):
             if tag not in tag_to_positions:
-                tag_to_positions[tag] = Set([i])
+                tag_to_positions[tag] = set([i])
             else:
                 tag_to_positions[tag].add(i)
 
@@ -88,7 +79,7 @@ class BrillTagger(TaggerI):
             for i in changed:
                 tag_to_positions[rule.original_tag()].remove(i)
                 if rule.replacement_tag() not in tag_to_positions:
-                    tag_to_positions[rule.replacement_tag()] = Set([i])
+                    tag_to_positions[rule.replacement_tag()] = set([i])
                 else:
                     tag_to_positions[rule.replacement_tag()].add(i)
         for t in tagged_tokens:
@@ -500,7 +491,7 @@ class ProximateTokensTemplate(BrillTemplateI):
         between M{index+start} and M{index+end} (inclusive) is
         M{value}.
         """
-        conditions = Set()
+        conditions = set()
         s = max(0, index+start)
         e = min(index+end+1, len(tokens))
         for i in range(s, e):
@@ -510,7 +501,7 @@ class ProximateTokensTemplate(BrillTemplateI):
 
     def get_neighborhood(self, tokens, index):
         # inherit docs from BrillTemplateI
-        neighborhood = Set([index])
+        neighborhood = set([index])
         for (start, end) in self._boundaries:
             s = max(0, index+start)
             e = min(index+end+1, len(tokens))
@@ -739,7 +730,7 @@ class BrillTaggerTrainer:
         correct token C{i}'s tag in C{test_tokens}.
         """
         
-        applicable_rules = Set()
+        applicable_rules = set()
         if test_tokens[i][1] != train_tokens[i][1]:
             correct_tag = train_tokens[i][1]
             for template in self._templates:
@@ -799,7 +790,7 @@ class FastBrillTaggerTrainer:
         # The set of somewhere-useful rules that apply at each position
         rulesByPosition = []
         for i in range(len(train_tokens)):
-            rulesByPosition.append(Set())
+            rulesByPosition.append(set())
 
         # Mapping somewhere-useful rules to the positions where they apply.
         # Then maps each position to the score change the rule generates there.
@@ -976,7 +967,7 @@ class FastBrillTaggerTrainer:
             print "Updating neighborhoods of changed sites.\n" 
 
             # First, collect all the indices that might get new rules.
-            neighbors = Set()
+            neighbors = set()
             for i in positionsByRule[bestRule].keys(): # sites changed
                 for template in self._templates:
                     neighbors.update(template.get_neighborhood(tagged_tokens, i))
@@ -984,10 +975,10 @@ class FastBrillTaggerTrainer:
             # Then collect the new set of rules for each such index.
             c = d = e = 0
             for i in neighbors:
-                siteRules = Set()
+                siteRules = set()
                 for template in self._templates:
                     # Get a set of the rules that the template now generates
-                    siteRules.update(Set(template.applicable_rules(
+                    siteRules.update(set(template.applicable_rules(
                                         tagged_tokens, i, train_tokens[i][1])))
 
                 # Update rules no longer generated here by any template
