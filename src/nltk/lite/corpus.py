@@ -1,3 +1,11 @@
+# Natural Language Toolkit: Corpus access
+#
+# Copyright (C) 2001-2005 University of Pennsylvania
+# Author: Steven Bird <sb@ldc.upenn.edu>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 import sys, os.path, re
 from tokenizer import whitespaceTokenize
 from tagger import tag2tuple
@@ -206,6 +214,35 @@ def treebank_tagged(files = 'wsj_00_tagged'):
             l = []
             for t in whitespaceTokenize(sent):
                 l.append(tag2tuple(t))
+            yield l
+
+def treebank_raw(files = 'wsj_00_raw'):
+
+    """
+    Read word tokens from the Penn Treebank corpus sample.
+
+    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
+    available under fair use for the purposes of illustrating NLTK
+    tools for tokenizing, tagging, chunking and parsing.  This data is
+    for non-commercial use only.
+
+    Contents: tagged data from Wall Street Journal for 1650 sentences, e.g.:
+
+    Pierre Vinken , 61 years old , will join the board as a nonexecutive
+    director Nov. 29 .
+    """       
+
+    path = corpus_path('treebank')
+
+    # Just one file to process?  If so convert to a tuple so we can iterate
+    if type(files) is str: files = (files,)
+
+    for file in files:
+        f = open(os.path.join(path, file)).read()
+        for sent in blanklineTokenize(f):
+            l = []
+            for t in whitespaceTokenize(sent):
+                l.t
             yield l
 
 
