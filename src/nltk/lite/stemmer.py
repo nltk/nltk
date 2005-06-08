@@ -6,7 +6,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-#
 
 """
 Interfaces used to remove morphological affixes from words, leaving
