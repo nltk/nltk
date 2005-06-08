@@ -5,8 +5,6 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
 """
 Classes and interfaces for producing tree structures that represent
