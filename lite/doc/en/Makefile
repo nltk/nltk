@@ -1,0 +1,41 @@
+# NLTK-LITE: Tutorial Makefile
+#
+# Copyright (C) 2001-2005 University of Pennsylvania
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
+TUTORIALS = tokenize.txt
+HTML = tokenize.html
+PDF = tokenize.pdf
+
+PYTHON = python
+RST2HTML = rst2html.py
+RST2LATEX = rst2latex.py
+
+STYLESHEET_PATH = ..
+
+.SUFFIXES: .txt .html .pdf
+
+help: usage
+usage:
+	@echo "Usage:"
+	@echo "    make all         -- Build HTML & PDF output"
+	@echo "    make html        -- Build HTML output"
+	@echo "    make pdf         -- Build PDF output"
+	@echo "    make clean       -- Remove all built files"
+
+all: $(HTML) $(PDF)
+clean:
+	rm -f $(PDF)
+
+.txt.html:
+	$(RST2HTML) --stylesheet-path=$(STYLESHEET_PATH) $< > $@
+
+.txt.tex:
+	$(RST2LATEX) $< > $@
+
+.tex.pdf:
+	$(PDFLATEX) $<
+
