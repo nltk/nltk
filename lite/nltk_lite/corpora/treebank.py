@@ -167,30 +167,23 @@ def raw(files = 'raw'):
 
 
 def demo():
-    i=0
+    from itertools import islice
+
     for tree in parsed():
         print tree.pp()
-        i+=1
-        if i>3: break
 
-    i=0
-    for tree in chunked():
+    for tree in islice(parsed(), 3):
         print tree.pp()
-        i+=1
-        if i>3: break
-    
-    i=0
-    for sent in tagged():
+
+    for tree in islice(chunked(), 3):
+        print tree.pp()
+
+    for sent in islice(tagged(), 3):
         print sent
-        i+=1
-        if i>3: break
-    
-    i=0
-    for sent in raw():
+
+    for sent in islice(raw(), 3):
         print sent
-        i+=1
-        if i>3: break
-    
+
 if __name__ == '__main__':
     demo()
 

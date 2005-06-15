@@ -76,7 +76,7 @@ def raw(files = items):
     getword = lambda t: tag2tuple(t)[0]
     return _read(files, getword)
 
-def tagged(files = list('abcdefghjklmnpr')):
+def tagged(files = items):
     return _read(files, tag2tuple)
 
 def demo():

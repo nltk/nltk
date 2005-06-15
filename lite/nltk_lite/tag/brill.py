@@ -12,11 +12,10 @@ Brill's transformational rule-based tagger.
 """
 
 from nltk_lite.tag import *
-from nltk_lite.corpora import treebank
+from nltk_lite.corpora.treebank import tagged
 
 import bisect        # for binary search through a subset of indices
 import os            # for finding WSJ files
-import pickle        # for storing/loading rule lists
 import random        # for shuffling WSJ files
 import sys           # for getting command-line arguments
 
@@ -1065,7 +1064,7 @@ def test(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     # for testing.
 
     print "Loading tagged data..."
-    sents = list(treebank.tagged())
+    sents = list(tagged())
     if randomize:
         random.seed(len(sents))
         random.shuffle(sents)

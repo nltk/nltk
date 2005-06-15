@@ -102,12 +102,11 @@ def accuracy(tagger, gold):
         gold_tokens += sent
         test_tokens += list(tagger.tag(untag(sent)))
 
-    print 'GOLD:', gold_tokens[:50]
-    print 'TEST:', test_tokens[:50]
+#    print 'GOLD:', gold_tokens[:50]
+#    print 'TEST:', test_tokens[:50]
     return evaluate.accuracy(gold_tokens, test_tokens)
 
 #############################################################
 
 from unigram import *
 from ngram import *
-from brill import *
