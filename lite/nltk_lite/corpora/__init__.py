@@ -6,8 +6,6 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-__all__ = ['brown', 'treebank', 'genesis']
-
 import os
 
 def set_basedir(path):
