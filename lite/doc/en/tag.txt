@@ -1,0 +1,559 @@
+.. -*- mode: rst -*-
+
+=======
+Tagging
+=======
+
+:Authors: Steven Bird, Ewan Klein and Edward Loper
+:Contact: sb@csse.unimelb.edu.au
+:Version: 0.1
+:Revision: $Revision$
+:Date: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. |copy| unicode:: 0xA9 .. copyright sign
+.. |rarr| unicode:: U+2192 .. right arrow
+
+------------
+Introduction
+------------
+
+Many natural language expressions are ambiguous, and we need to draw
+on other sources of information to aid interpretation.  For instance,
+our preferred interpretation of ``fruit flies like a
+banana`` depends on the presence of contextual cues that cause
+us to expect ``flies`` to be a noun or a verb.  Before
+we can even address such issues, we need to be able to represent the
+required linguistic information.  Here is a possible representation:
+
+
+=========  =========  ========  =====  ==========
+``Fruit``  ``flies``  ``like``  ``a``  ``banana``
+noun       verb       prep      det    noun
+=========  =========  ========  =====  ==========
+
+=========  =========  ========  =====  ==========
+``Fruit``  ``flies``  ``like``  ``a``  ``banana``
+noun       noun       verb      det    noun
+=========  =========  ========  =====  ==========
+
+Most language processing systems must recognize and interpret the
+linguistic structures that exist in a sequence of words.  This task is
+virtually impossible if all we know about each word is its text
+representation.  To determine whether a given string of words has the
+structure of, say, a noun phrase, it is infeasible to check through a
+(possibly infinite) list of all strings which can be classed as noun
+phrases.  Instead we want to be able to generalise over *classes* of
+words. These word classes are commonly given labels such as
+'determiner', 'adjective' and 'noun'.  Conversely, to interpret words
+we need to be able to discriminate between different usages, such as
+``deal`` as a noun or a verb.  The process of classifying words in
+this way, and labelling them accordingly, is known as *part-of-speech
+tagging*, *POS-tagging*, or simply *tagging*.  The collection of tags
+used for a particular task is known as a *tag set*.
+
+We earlier presented two interpretations of *Fruit flies like a
+banana* as examples of how a string of word tokens can be augmented
+with information about the word classes that the words belong to. In
+effect, we carried out tagging for the string ``fruit flies like a
+banana``. However, tags are more usually attached inline to the text
+they are associated with. This is illustrated in the following
+sentence from the Brown Corpus: `` The/at Pantheon's/np$ interior/nn
+,/, still/rb in/in its/pp$ original/jj form/nn ,/, is/bez truly/ql
+majestic/jj and/cc an/at architectural/jj triumph/nn ./.  ``
+
+.. According to our table later on, ./. should actually be ./end
+
+Here, the sequence ``The/at`` means that the word token ``The`` is
+tagged ``at``, which is the Brown Corpus tag for article.
+(The reader may be initially puzzled by strings like
+``,/,``. This just means that the tag for a comma is '``,'``.)
+	
+We can think of tagging as one way of *annotating* a text corpus.
+Annotation is a way of adding information to a text -- indeed, we
+might like to think of it as a way of making explicit information
+which is already implicitly present in the text.
+
+What is the value of annotating a text in this way? One illustration
+is the use of tagged corpora to study patterns of word usage in
+different genres (*stylistics*).  For example, we can use the tags to
+identify all words of a certain class, such as modals, then tabulate
+their frequency of occurrence in different genres, as shown below:
+
+==================  ===  =====  ===  =====  ====  ====
+Use of Modals in Brown Corpus, by Genre
+------------------------------------------------------
+Genre               can  could  may  might  must  will 
+==================  ===  =====  ===  =====  ====  ====
+skill and hobbies   273  59     130  22     83    259 
+humor               17   33     8    8      9     13 
+fiction: science    16   49     4    12     8     16 
+press: reportage    94   86     66   36     50    387 
+fiction: romance    79   195    11   51     46    43 
+religion            84   59     79   12     54    64 
+
+This tutorial focuses on part-of-speech tagging, as an early step in
+language processing which does not depend on deep linguistic analysis.
+Readers should be aware that are many other kinds of tagging.  Words
+can be tagged with directives to a speech synthesiser, indicating
+which words should be emphasised.  Words can be tagged with sense
+numbers, indicating which sense of the word was used.  Words can also
+be tagged with morphological features.  Examples of each of these
+kinds of tags are shown in the following table.
+Note that for space reasons, we only show the tag on a single
+italicised word. Note also that the first two examples use XML-style
+tags, where elements in angle brackets enclose the word that is
+tagged.
+
+===============================================   ==================================================================
+Examples of Non Part-of-Speech Tagging
+--------------------------------------------------------------------------------------------------------------------
+Speech Synthesis Markup Language (W3C SSML)       That is a <emphasis>*big*</emphasis> car! 
+SemCor: Brown Corpus tagged with WordNet senses   Space in any <wf pos="NN" lemma="form" wnsn="4">*form*&lt;/wf>
+                                                  is completely measured by the three dimensions.
+                                                  (Wordnet form/nn sense 4: "shape, form, configuration,
+                                                  contour, conformation")
+Morphological tagging, from the                   E' italiano , come progetto e realizzazione , il
+Turin University Italian Treebank                 *primo* (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .
+===============================================   ==================================================================
+
+We have already noted that part-of-speech tags are closely related to
+the notion of word class used in syntax.  The assumption in
+theoretical linguistics is that every distinct word type will be
+listed in a lexicon (or dictionary), with information about its
+pronunciation, syntactic properties and meaning. A key component of
+the word's syntactic properties will be its class. When we carry out a
+syntactic analysis of our earlier example ``fruit flies like a
+banana``, we will look up each word in the lexicon, determine its word
+class, and then group it into a hierarchy of phrases, as illustrated
+in the following parse tree.
+
+.. figure:: ../images/syntax-tree.png
+   :scale: 1
+
+   Syntactic Parse Tree
+
+In this tree, we have used standard syntactic abbreviations for word
+classes. These are shown in the following table, together with their
+counterparts from the Brown tag set.
+
+================   =========     ============================
+Word Class Labels and Tags
+-------------------------------------------------------------
+Word Class Label   Brown Tag     Word Class 
+Det                at            Article 
+N                  nn            Noun 
+V                  vb            Verb 
+Adj                jj            Adjective 
+P                  in            Preposition 
+Card               cd            Number 
+-                  end           Sentence-ending punctuation 
+================   =========     ============================
+
+In syntactic analyses, there is often a close connection between the
+class a word belongs to and the phrases it forms with neighbouring
+words. So, for example, a noun phrase (labelled NP) will usually
+consist of a noun (N) optional accompanied by an article (Det) and
+some modifiers such as adjectives (Adj). We can express this
+generalisation in terms of a production rule::
+
+  NP |rarr| Det Adj* N
+
+In such a case, we say that the noun is the *head* of the noun phrase;
+roughly speaking, the head of a phrase is a required element which can
+occur in any context that the phrase as a whole can occur in.
+However, from a purely notational point of view, we are free to use
+any labels we want for word classes, and these could just as well be
+the labels provided by a tag set. For example, we could replace the
+preceding rule with the following::
+
+  NP |rarr| at jj* nn
+
+This is useful since some practical tasks, we might use an automatic
+tagger to label the words in our example with tags drawn from the
+Brown tag set, and use that as a basis for building a syntactic parse
+tree such as the one we saw above.
+
+So far, we have only looked at tags as capturing information about
+word class. However, common tag sets like those used in the Brown
+Corpus also capture a certain amount of *morpho-syntactic*
+information. Consider, for example, the selection of distinct forms of
+the word ``be`` illustrated in the following sentences:
+
+  Be still!
+  Being still is hard.
+  I am still.
+  I have been still all day.
+  I was still all day.
+
+We say that these forms are morpho-syntactically distinct because they
+exhibit different morphological inflections and different
+co-occurrence restrictions with neighbouring words. For example,
+``am`` cannot replace either of the first two examples:
+
+  *Am still!
+  *Am still is hard.
+
+These differences between the forms are encoded in their Brown Corpus
+tags: ``be/be, being/beg, am/bem, been/ben`` and ``was/bedz``. This
+means that an automatic tagger which uses this tag set is in effect
+carrying out a limited amount of morphological analysis.
+
+--------------
+Simple Taggers
+--------------
+
+In this section we consider three simple taggers.  They all process
+the input tokens one by one, adding a tag to each token.  In each case
+they being with tokenized text.  We can easily create a sample of
+tokenized text as follows::
+
+  >>> from nltk_lite import tokenize
+  >>> text = "John saw 3 polar bears ."
+  >>> tokens = list(tokenize.whitespace(text))
+  >>> print tokens
+  ['John', 'saw', '3', 'polar', 'bears', '.']
+
+.. Note:: the tokenizer is a *generator* over tokens.  We cannot print
+   it directly, but we can convert it to a list for printing, as shown
+   in the above program.  Note that we can only use a generator once,
+   but if we save it as a list, the list can be used many times over.
+
+The Default Tagger
+------------------
+
+The simplest possible tagger assigns the same tag to each token
+regardless of the token's text.  The ``DefaultTagger`` class
+implements this kind of tagger.  In the following program, we create a
+tagger called ``my_tagger`` which tags everything as a noun.
+
+  >>> from nltk_lite import tag
+  >>> my_tagger = tag.Default('nn')
+  >>> list(my_tagger.tag(tokens))
+  [('John', 'nn'), ('saw', 'nn'), ('3', 'nn'), ('polar', 'nn'), ('bears', 'nn'), ('.', 'nn')]
+
+This is a simple algorithm, and it performs poorly when used on its
+own. On a typical corpus, it will tag only 20%-30% of the tokens
+correctly. However, it is a very reasonable tagger to use as a
+default, if a more advanced tagger fails to determine a token's
+tag. When used in conjunction with other taggers, a ``DefaultTagger``
+can significantly improve performance.
+
+.. Important:: Default taggers assign their tag to every single word,
+   even words that have never been encountered before.  Thus, they help
+   to improve the robustness of a language processing system.
+
+The Regular Expression Tagger
+-----------------------------
+
+The regular expression tagger assigns tags to tokens on the basis of
+matching patterns in the token's text.  For instance, the following
+tagger assigns ``cd`` to cardinal numbers, and ``nn`` to everything
+else::
+
+  >>> patterns = {r'^[0-9]+(.[0-9]+)?$': 'cd', r'.*': 'nn'}
+  >>> nn_cd_tagger = tag.Regexp(patterns)
+  >>> list(nn_cd_tagger.tag(tokens))
+  [('John', 'nn'), ('saw', 'nn'), ('3', 'cd'), ('polar', 'nn'), ('bears', 'nn'), ('.', 'nn')]
+
+We can generalise this method to guess the correct tag for words based
+on the presence of certain prefix or suffix strings.  For instance,
+English words beginning with ``un-`` are likely to be adjectives.
+
+The Unigram Tagger
+------------------
+
+The ``UnigramTagger`` class implements a simple statistical tagging
+algorithm: for each token, it assigns the tag that is most likely for
+that token's text. For example, it will assign the tag ``jj`` to any
+occurrence of the word ``frequent``, since ``frequent`` is used as an
+adjective (e.g. ``a frequent word``) more often than it is used as a
+verb (e.g. ``I frequent this cafe``).
+
+Before a ``UnigramTagger`` can be used to tag data, it must be trained
+on a *training corpus*. It uses this corpus to determine which tags
+are most common for each word.  ``UnigramTaggers`` are trained using
+the ``train()`` method, which takes a tagged corpus::
+
+  >>> from nltk_lite.corpora import brown
+  >>> from itertools import islice
+  >>> train_sents = list(islice(brown.tagged(), 500))  # sents 0..499
+  >>> mytagger = tag.Unigram()
+  >>> mytagger.train(train_sents)
+
+Once a ``UnigramTagger`` has been trained, the ``tag()`` method can be
+used to tag new text::
+
+  >>> text = "John saw the book on the table"
+  >>> tokens = list(tokenize.whitespace(text))
+  >>> list(mytagger.tag(tokens))
+  [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', None), ('on', 'in'), ('the', 'at'), ('table', None)]
+
+As we noted earlier, ``Unigram`` will assign the default tag
+``None`` to any token that was not encountered in the training data.
+We can instruct it to *backoff* to our default ``nn_cd_tagger`` when
+it cannot assign a tag itself::
+
+  >>> mytagger = tag.Unigram(backoff=nn_cd_tagger)
+  >>> mytagger.train(train_sents)
+  >>> list(mytagger.tag(tokens))
+  [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', 'nn'), ('on', 'in'), ('the', 'at'), ('table', 'nn')]
+
+Now all the words are guaranteed to be tagged.
+
+------------------
+Evaluating Taggers
+------------------
+
+As we experiment with different taggers, it is important to have an
+objective performance measure.  Fortunately, we already have manually
+verified training data (the original tagged corpus), so we can use
+that to evaluate our taggers.
+
+Consider the following sentence from the Brown Corpus.  The 'Gold
+Standard' tags from the corpus are given in the second column, while
+the tags assigned by a unigram tagger appear in the third column.  Two
+mistakes made by the unigram tagger are italicised.
+
+===============  =============  ==============
+Evaluating Taggers
+----------------------------------------------
+Sentence         Gold Standard  Unigram Tagger
+===============  =============  ==============
+The              at             at
+President        nn-tl          nn-tl
+said             vbd            vbd
+he               pps            pps
+will             md             md
+ask              vb             vb
+Congress         np             np
+to               to             to
+increase         vb             *nn*
+grants           nns            nns
+to               in             *to*
+states           nns            nns
+for              in             in
+vocational       jj             jj
+rehabilitation   nn             nn
+.                .              .
+===============  =============  ==============
+
+The tagger correctly tagged 14 out of 16 words, so it gets a score of
+14/16, or 87.5%.  Of course, accuracy should be judged on the basis of
+a larger sample of data.  NLTK provides a function called
+``tag.accuracy`` to automate the task.  In the simplest case, we
+can test the tagger using the same data it was trained on:
+
+  >>> acc = tag.accuracy(mytagger, train_sents)
+  >>> print 'Accuracy = %4.1f%%' % (100 * acc)
+  Accuracy = 84.7%
+
+However, testing a language processing system using the same data it
+was trained on is unwise.  A system which simply memorised the
+training data would get a perfect score without doing any linguistic
+modelling.  Instead, we would like to reward systems that make good
+generalizations, so we should test against *unseen data*, and replace
+``train_sents`` above with ``unseen_sents``.  We can then define the
+two sets of data as follows:
+
+  >>> train_sents  = islice(brown.tagged('a'), 500)
+  >>> unseen_sents = islice(brown.tagged('a'), 500, 600) # sents 500-599
+
+Now we train the tagger using ``train_sents`` and evaluate it using
+``unseen_sents``, as follows:
+
+  >>> mytagger = tag.Unigram(backoff=nn_cd_tagger)
+  >>> mytagger.train(train_sents)
+  >>> acc = tag.accuracy(mytagger, unseen_sents)
+  >>> print 'Accuracy = %4.1f%%' % (100 * acc)
+  Accuracy = 74.7%
+
+The accuracy scores produced by this evaluation method are lower, but
+they give a more realistic picture of the performance of the tagger.
+Note that the performance of any statistical tagger is highly
+dependent on the quality of its training set. In particular, if the
+training set is too small, it will not be able to reliably estimate
+the most likely tag for each word. Performance will also suffer if the
+training set is significantly different from the texts we wish to tag.
+
+In the process of developing a tagger, we can use the accuracy score
+as an objective measure of the improvements made to the system.
+Initially, the accuracy score will go up quickly as we fix obvious
+shortcomings of the tagger.  After a while, however, it becomes more
+difficult and improvements are small.
+
+While the accuracy score is certainly useful, it does not tell us how
+to improve the tagger.  For this we need to undertake error analysis.
+For instance, we could construct a *confusion matrix*, with a row and
+a column for every possible tag, and entries that record how often a
+word with tag *T :subscript:i* is incorrectly tagged as *T
+:subscript:j*.  Another approach is to analyse the context of errors.
+
+  >>> errors = {}
+  >>> for i in range(len(unseen_sents)):
+  ...     raw_sent = tag.untag(unseen_sents[i])
+  ...     test_sent = list(mytagger.tag(raw_sent))
+  ...     unseen_sent = unseen_sents[i]
+  ...     for j in range(len(test_sent)):
+  ...         if test_sent[j][1] != unseen_sent[j][1]:
+  ...             test_context = test_sent[j-1:j+1]
+  ...             gold_context = unseen_sent[j-1:j+1]
+  ...             if None not in test_context:
+  ...                 pair = (tuple(test_context), tuple(gold_context))
+  ...                 errors[pair] = errors.get(pair, 0) + 1
+
+The above program catalogs all errors, along with the tag on the left
+and their frequency of occurrence.  The ``errors`` dictionary has keys
+of the form ``((t1,t2),(g1,g2))``, where ``(t1,t2)`` are the test
+tags, and ``(g1,g2)`` are the gold-standard tags.  The values in the
+``errors`` dictionary are simple counts of how often the error
+occurred.  With some further processing, we construct the list
+``counted_errors`` containing tuples consisting of counts and errors,
+and then do a reverse sort to get the most significant errors first:
+
+  >>> counted_errors = [(errors[k], k) for k in errors.keys()]
+  >>> counted_errors.sort()
+  >>> counted_errors.reverse()
+  >>> for err in counted_errors[:5]:
+  ...     print err
+  (32, ((), ()))
+  (5, ((('the', 'at'), ('Rev.', 'nn')), (('the', 'at'), ('Rev.', 'np'))))
+  (5, ((('Assemblies', 'nn'), ('of', 'in')), (('Assemblies', 'nns-tl'), ('of', 'in-tl'))))
+  (4, ((('of', 'in'), ('God', 'nn')), (('of', 'in-tl'), ('God', 'np-tl'))))
+  (3, ((('to', 'to'), ('form', 'nn')), (('to', 'to'), ('form', 'vb'))))
+  (3, ((('the', 'at'), ('teamsters', 'nn')), (('the', 'at'), ('teamsters', 'nns'))))
+  (3, ((('the', 'at'), ('Bible', 'nn')), (('the', 'at'), ('Bible', 'np'))))
+  (3, ((('of', 'in'), ('God', 'nn')), (('of', 'in'), ('God', 'np'))))
+  (3, ((('new', 'jj'), ('churches', 'nn')), (('new', 'jj'), ('churches', 'nns'))))
+  (3, ((('fire', 'nn'), ('fighters', 'nn')), (('fire', 'nn'), ('fighters', 'nns'))))
+
+The fifth line of output records the fact that there were 11 cases
+where the unigram tagger mistakenly tagged a noun as a verb, following
+an article.  In fact we already encountered this mistake in <xref
+linkend="table.evaluation"/> for the word ``increase``.  The unigram
+tagger tagged ``increase`` as a verb instead of a noun since it
+occurred more often in the training data as a verb.  However, when
+``increase`` appears after an article, it is invariably a noun.
+Evidently, the performance of the tagger would improve if it was
+modified to consider not just the word being tagged, but also the tag
+of the word on the left.  Such taggers are known as bigram taggers,
+and we consider them next.
+
+--------------------
+Higher Order Taggers
+--------------------
+
+Earlier we encountered the ``UnigramTagger``, which assigns a tag to a
+word based on the identity of that word.  In this section we will look
+at taggers that exploit a larger amount of context when assigning a
+tag.
+
+Bigram Taggers
+--------------
+
+As their name suggests, <glossterm>bigram taggers</glossterm> use two
+pieces of information for each tagging decision.  Usually this
+information is the text of the current word together with the tag of
+the previous word. These two pieces of information constitute the
+<glossterm>context</glossterm> for the token to be tagged. Given the
+context, the tagger assigns the most likely tag.  We can visualise
+this process with the help of the following bigram table, a tiny
+fragment of the internal data structure built by a bigram tagger.
+
+====  ====  =========  ====   ========   ======   ====  ======
+Fragment of Bigram Table
+--------------------------------------------------------------
+      ask   Congress   to     increase   grants   to    states
+====  ====  =========  ====   ========   ======   ====  ======
+at                            nn
+tl                     to                         to 
+bd                     to                nns      to
+md    *vb*                     vb
+vb          *np*        to                *nns*     to    nns 
+np                     *to*                        to
+to    vb               *vb*  
+nn          np         to     nn         nns      to
+nns                    to                         *to*
+in          np         in                         in    *nns* 
+jj                     to                nns      to    nns 
+====  ====  =========  ====   ========   ======   ====  ======
+
+.. source code for bigram table
+   from nltk.tagger import *
+   from nltk.corpus import brown
+   train_tokens = []
+   for item in brown.items()[:10]:
+       train_tokens.append(brown.read(item))
+   mytagger = NthOrderTagger(1)
+   for tok in train_tokens: mytagger.train(tok)
+   words = '''ask Congress to increase grants to states'''.split()
+   tags = '''at nn-tl vbd md vb np to nn nns in jj'''.split()
+
+   print "     ",
+   for word in words:
+       print " %s " % word,
+   print
+   for tag in tags:
+       print "%5s" % tag,
+       for word in words:
+           guess = mytagger._freqdist[((tag,), word)].max()
+           if not guess: guess=""
+           print " %s " % guess,
+       print
+    
+The best way to understand the table is to work through an example.
+Suppose we have already processed the sentence ``The President will
+ask Congress to increase grants to states for vocational
+rehabilitation .`` as far as ``will/md``.  We can use the table to
+simply read off the tags that should be assigned to the remainder of
+the sentence.  When preceded by ``md``, the tagger guesses that the
+word ``ask`` has the tag ``vb`` (italicised in the table).  Moving to
+the next word, we know it is preceded by ``vb``, and looking across
+this row we see that ``Congress`` is assigned the tag ``np``.  The
+process continues through the rest of the sentence.  When we encounter
+the word ``increase``, we correctly assign it the tag ``vb`` (unlike
+the unigram tagger which assigned it ``nn``).  However, the bigram
+tagger mistakenly assigns the infinitival tag to the word ``to``
+immediately preceding ``states``, and not the preposition tag.  This
+suggests that we may need to consider even more context in order to
+get the correct tag.
+
+--------------
+N-Gram Taggers
+--------------
+
+As we have just seen, it may be desirable to look at more than just
+the preceding word's tag when making a tagging decision.  An *n-gram
+tagger* is a generalisation of a bigram tagger whose context is the
+current token's text together with the part-of-speech tags of the *n*
+preceding tokens, as shown in the following diagram. It then picks the
+tag which is most likely for that context. The tag to be chosen, *t
+:subscript:k*, is circled, and the context is shaded in grey. In this
+example of an n-gram tagger, we have *n=3*; that is, we consider the
+tags of the two preceding words in addition to the current word.
+
+.. figure:: images/tag-context.png
+   :scale: 1
+
+   Tagger Context
+ 
+.. note:: A 1-gram tagger is another term for a unigram tagger: i.e.,
+   the context used to tag a token is just the text of the token itself.
+   2-gram taggers are also called *bigram taggers*, and 3-gram taggers
+   are called *trigram taggers*.  We have defined bigram and trigram
+   taggers as special cases of n-gram taggers.
+
+``tag.Ngram`` uses a tagged training corpus to determine which
+part-of-speech tag is most likely for each context::
+
+  >>> tagger = tag.Bigram()
+  >>> tagger.train(brown.tagged('a'))
+
+Once a bigram tagger has been trained, it can be used to tag untagged
+corpora:
+
+  >>> text = "John saw the book on the table"
+  >>> tokens = list(tokenize.whitespace(text))
+  >>> list(tagger.tag(tokens))
+  [('John', 'NN'), ('saw', 'VB'), ('the', 'AT'), ('book', 'NN'), ('on', 'IN'), ('the', 'AT'), ('table', 'NN')]
