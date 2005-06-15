@@ -236,7 +236,8 @@
       (PP-LOC (IN in) 
         (NP (PRP$ our) (NNS products) ))
       (ADVP-TMP (RB now) ))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT Neither) 
       (NP (NNP Lorillard) )
@@ -934,7 +935,7 @@
           (. .) )
       (PP (VBG according) 
         (PP (TO to) 
-          (NP (NNP Donoghue) (POS 's) ))))
+          (NP (NNP Donoghue) (POS 's) )))))
     (. .) )
 
 (S 
@@ -2088,7 +2089,7 @@
                 (ADVP (RB up) 
                   (NP (CD 20) (NN %) )
                   (PP-TMP (IN from) 
-                    (NP (JJ last) (NNP October) )))))))))
+                    (NP (JJ last) (NNP October) ))))))))))
     (. .) )
 
 (S 
@@ -2408,7 +2409,8 @@
                         (NP (NNS advertisers) ))
                       (PP-2 (IN on) (`` ``) 
                         (NP (NN renewal) (NN advertising) )))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NN magazine) )
     (VP (MD will) 
@@ -2959,7 +2961,8 @@
     (NP-SBJ (DT That) )
     (VP (VBZ attracts) 
       (NP (NN attention) ))
-    (: ...) ))
+    (: ...) )
+
 (S 
     (S-1 
       (NP-SBJ (PRP it) )
@@ -3149,7 +3152,7 @@
             (NP (CD 25) (NNS cents) ))
           (. .) )
       (PP-LOC (IN in) 
-        (NP (NNP New) (NNP York) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) )))
+        (NP (NNP New) (NNP York) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) ))))
     (. .) )
 
 (S 
@@ -3485,7 +3488,8 @@
           (VP (MD would) 
             (VP (VB be) (`` ``) 
               (NP-PRD (DT an) (JJ administrative) (NN nightmare) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-LOC (IN In) 
       (NP (NNP New) (NNP York) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) ))
@@ -4232,7 +4236,8 @@
                     (VP (VBD did) (RB not) 
                       (VP (VB include) 
                         (NP (NNP Seymour) )))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NNS documents) )
     (ADVP (RB also) )
@@ -4375,7 +4380,8 @@
       (NP-SBJ (PRP you) )
       (VP (VBP do) (RB n't) 
         (VP (-NONE- *?*) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP (IN Besides) 
       (NP 
@@ -5221,7 +5227,8 @@
                             (-RRB- -RCB-)
                             (NN country) (POS 's) )
                           (JJ own) (NNS citizens) )))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP U.S.) (NN trade) (NNS negotiators) )
     (VP (VBP argue) 
@@ -5599,7 +5606,8 @@
                     (NP (VBG continuing) (JJ slow) (NN progress) )
                     (PP-LOC (IN in) 
                       (NP (NNP Malaysia) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP She) )
     (VP (VBD did) (RB n't) 
@@ -5869,7 +5877,8 @@
                       (NP (JJ American) (NN business) (NN history) ))))))))))
     (. .) 
     (-RRB- -RRB-)
-    ))
+    )
+
 (S 
     (NP-SBJ-32 
       (NP (CD THREE) (NNS COMPUTERS) )
@@ -6654,7 +6663,8 @@
                                 (NP (DT the) (NNP U.S.) )
                                 (CC and) 
                                 (NP (DT the) (NNP Virgin) (NNPS Islands) )))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Timex) )
     (VP (VBZ is) 
@@ -7293,7 +7303,8 @@
                 (JJ other) (NNS investors) )
               (PP-LOC (IN outside) 
                 (NP (DT the) (NNP U.S.) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ (JJ Such) (NNS devices) )
@@ -7773,6 +7784,7 @@
 (FRAG 
     (NP (DT The) (JJ next) (NN province) )
     (. .) )
+
 (SINV (`` ``) 
     (S-TPC-1 
       (S 
@@ -7800,7 +7812,7 @@
                 (NP (NNP Northampton) )
                 (, ,) 
                 (NP (NNP Mass) )))))))
-    (. .) )
+    (. .) ))
 
 (S-2 
     (NP-SBJ 
@@ -9144,7 +9156,8 @@
     (NP-SBJ (PRP I) )
     (VP (VBP draw) 
       (NP (DT a) (NN blank) ))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP (IN By) 
       (NP (JJS most) (NNS measures) ))
@@ -9313,7 +9326,8 @@
               (NP-SBJ (NNS inventories) )
               (VP (VBP are) 
                 (ADJP-PRD (JJ excessive) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT A) (JJ soft) (NN landing) )
     (VP (VBZ is) 
@@ -10092,7 +10106,8 @@
                             (ADVP (IN at) (JJS least) )
                             (RB not) (VBG increasing) 
                             (ADVP (RB that) (RB much) )))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ 
@@ -10347,6 +10362,7 @@
     (VP (VBZ is) 
       (NP-PRD (NNP Japan) ))
     (. .) )
+
 (S 
     (PP (IN For) 
       (NP (DT an) (JJ American) (NN reader) ))
@@ -10701,7 +10717,8 @@
                               (S 
                                 (NP-SBJ (-NONE- *T*-1) )
                                 (NP-PRD (DT a) (`` ``) (NN game) )))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (SBAR-ADV (IN As) 
       (S 
@@ -10723,7 +10740,8 @@
                 (NP (JJ hard) (NN work) )
                 (CC and) 
                 (NP (NN harmony) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S (`` ``) 
       (NP-SBJ (NNP Wa) )
@@ -12104,7 +12122,8 @@
           (NP-LGS (DT the) (NN playwright) ))
         (PP-TMP (IN in) 
           (NP (CD 1901) ))))
-    (: ...) ))
+    (: ...) )
+
 (S 
     (S-TPC-2 
       (PP-TMP (IN After) 
@@ -12675,7 +12694,8 @@
               (NP (DT a) (NN cardboard) (NN box) ))))))
     (. .) 
     (-RRB- -RRB-)
-    ))
+    )
+
 (S 
     (NP-SBJ (DT The) (NNP Artist) )
     (VP (VBZ has) 
@@ -13008,7 +13028,8 @@
               (NP (NNP Story) )
               (PP (IN of) 
                 (NP (NNP Women) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP He) )
     (VP (VBZ has) 
@@ -13611,7 +13632,8 @@
               (RB last) 
               (CC and)
               (RB always) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (DT A) (NN trend) )
@@ -13677,7 +13699,6 @@
                 (JJ entertaining) ))))))
     (, ,) 
     (CC and)
-    
     (, ,)
     (S 
       (ADVP-TMP 
@@ -13710,7 +13731,8 @@
                   (NP-SBJ (DT the) (NN ad) )
                   (VP (VBZ is) 
                     (ADJP-PRD (JJ truthful) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-TMP (IN In) 
       (NP (CD 1989) ))
@@ -13764,7 +13786,7 @@
                             (CC and) 
                             (NP (NNP Virginia) )))))))))))))
     (. .) )
-(NP (NNP New) (NNP York) (NNP City) (. .) )
+
 (S 
     (NP-SBJ (DT The) (NN screen) )
     (VP (VBZ fills) 
@@ -13875,7 +13897,8 @@
                 (NP (DT no) (NNS receipts) )
                 (CC and) 
                 (NP (DT no) (NN office) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SBARQ-2 (`` ``) 
     (NP-TPC (NNP David) (NNP Dinkins) )
     (PRN 
@@ -13898,8 +13921,8 @@
             (VP (VBZ 's) 
               (VP (VBN caught) 
                 (NP (-NONE- *-1) )))))))
-    (. ?) ('' '') ))
-(NP-2 
+    (. ?) ('' '')
+  (NP-2 
     (NP (`` ``) (JJ Nasty) (NNS innuendoes) 
       (, ,)
       ('' '') )
@@ -13934,6 +13957,7 @@
                       (VP (VBZ does) (RB n't) 
                         (VP (VB exist) )))))))))))
     (. .) ('' '') ))
+
 (S 
     (S-SBJ 
       (NP-SBJ-1 (-NONE- *-2) )
@@ -14033,7 +14057,7 @@
             (NP-SBJ (-NONE- *) )
             (VP (TO to) 
               (VP (VB choose) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '')
 (FRAG-1 (`` ``) 
     (NP (JJ Funny) (NN thing) )
     (PRN 
@@ -14053,6 +14077,7 @@
             (NP-SBJ (-NONE- *-2) )
             (NP-PRD (NNP Rudolph) (NNP Giuliani) )))))
     (. .) ('' '') ))
+
 (SBARQ 
     (WHNP-1 (WP Who) )
     (SQ (VBZ 's) 
@@ -14060,7 +14085,6 @@
       (VP (VBG telling) 
         (NP (DT the) (NN truth) )))
     (. .) )
-(NP (NN Everybody) (: --) (IN and) (NN nobody) (. .) )
 
 (S 
     (NP-SBJ (PRP It) )
@@ -14245,7 +14269,8 @@
           (NP-SBJ (DT the) (NNP Dinkins) (NN ad) )
           (VP (VBZ is) (`` ``) 
             (ADJP-PRD (JJ deceptive) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-1 
     (NP-SBJ (DT The) (JJ other) (NN side) )
     (PRN 
@@ -14299,8 +14324,8 @@
                     (NP (DT the) (NN language) )
                     (PP-LOC (IN in) 
                       (NP (DT the) (NN legislation) ))))))))))
-    (. .) ('' '') ))
-(NP (NNP Virginia) (. .) )
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (JJ Democratic) (NNP Lt.) (NNP Gov.) (NNP Douglas) (NNP Wilder) )
     (VP (VBD opened) 
@@ -14410,7 +14435,8 @@
                 (NP (PRP it) )
                 (PP-DTV (TO to) 
                   (NP (DT the) (NNS politicians) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-3 
       (NP (DT That) (JJ commercial) )
@@ -14561,7 +14587,8 @@
         (VP (VB have) 
           (NP (NNS boyfriends) ))
         (. ?) )
-      ('' '') )))
+      ('' '') ))
+
 (S 
     (ADVP-TMP (RB Then) )
     (NP-SBJ (DT an) (NN announcer) )
@@ -14635,7 +14662,8 @@
                   (VP (TO to) 
                     (VP (VB pass) 
                       (NP (-NONE- *T*-2) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ (NNP Mr.) (NNP Wilder) )
@@ -14776,7 +14804,8 @@
                       (NP (PDT all) (DT the) (JJ negative) (NN campaigning) )))
                   (PP-PUT (IN on) 
                     (NP (NNP Coleman) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ (NNP Mr.) (NNP Coleman) )
@@ -14827,6 +14856,7 @@
     (. .) )
 
 (NP-HLN (NNP New) (NNP Jersey) (. .) )
+
 (S 
     (NP-SBJ (DT The) (NNS attacks) )
     (VP (VBD began) 
@@ -14870,7 +14900,8 @@
     (NP-SBJ (-NONE- *) )
     (VP (VB Consider) 
       (NP (NNP Jim) (NNP Courter) ))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC And) 
     (ADVP-TMP (RB then) )
     (NP-SBJ 
@@ -14924,7 +14955,8 @@
               (VP (VBG suing) 
                 (PP-CLR (IN for) 
                   (NP (NN consumer) (NN fraud) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC And) 
     (NP-SBJ 
       (NP (DT the) (NN nose) )
@@ -15029,7 +15061,8 @@
               (CC and) 
               (VP (VBD caused) 
                 (NP (DT no) (NN pollution) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP Mr.) (NNP Courter) (POS 's) )
@@ -15049,6 +15082,7 @@
         (VP (VBG telling) 
           (NP (DT the) (NN truth) ))))
     (. .) )
+
 (S 
     (NP-SBJ 
       (NP (NNP Stephen) (NNP Salmore) )
@@ -15182,7 +15216,7 @@
             (NP-SBJ (NNP O'Connor) )
             (VP (VBZ is) 
               (NP-PRD (PRP$ your) (NN man) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
 
 (S 
     (NP-SBJ-1 
@@ -16020,7 +16054,8 @@
             (NP-SBJ (-NONE- *) )
             (VP (VBG designing) 
               (NP (PRP$ its) (NN architecture) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC But) 
     (S-NOM-SBJ 
       (NP-SBJ (-NONE- *) )
@@ -16179,7 +16214,8 @@
         (NP-PRD (DT a) (JJ net) (NN gain) )
         (PP (IN for) 
           (NP (NN everyone) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT Some) (JJ Asian) (NNS nations) )
     (VP (VBP are) 
@@ -16420,7 +16456,8 @@
                 (PP-MNR (IN in) 
                   (NP (JJ different) (NNS forms) ))
                 (ADVP-TMP (-NONE- *T*-2) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (ADVP (RB Virtually) (NN word) (IN for) (NN word) )
     (, ,) 
@@ -16889,7 +16926,8 @@
       (ADVP (RB also) )
       (PP-PRD (IN on) 
         (NP (DT the) (NN rise) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-CLF (CC And) 
     (S-ADV 
       (NP-SBJ (-NONE- *-1) )
@@ -16946,7 +16984,8 @@
           ('' '') 
           (VP (VBZ is) (`` ``) 
             (ADJP-PRD (JJ common) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NN group) )
     (VP (VBZ says) 
@@ -17360,7 +17399,8 @@
                           (ADVP-MNR (RB seriously) )
                           (ADVP (IN at) (DT all) )
                           (ADVP-TMP (-NONE- *T*-1) ))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP Paul) (NNP Sandifer) )
@@ -17541,7 +17581,8 @@
           (NP (DT no) (NN enrollment) )
           (PP-LOC (IN in) 
             (NP (NNS honors) (NNS programs) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (NNP Mrs.) (NNP Ward) )
     (VP (VBD took) 
@@ -17749,7 +17790,8 @@
           (NP (CD 12) (NNS years) ))
         (PP-TMP (IN before) 
           (NP (PRP$ her) (NN dismissal) ))))
-    (. .) (`` ``) ))
+    (. .) (`` ``) )
+
 (S 
     (NP-SBJ (PRP I) )
     (VP (VBD loved) 
@@ -17778,7 +17820,8 @@
                     (NP (-NONE- *T*-1) )
                     (PP-CLR (IN with) 
                       (NP (PRP$ my) (NNS students) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (SBAR-TMP (IN While) 
       (S 
@@ -17891,7 +17934,8 @@
               (NP (NN Teacher) )
               (PP (IN of) 
                 (NP (DT the) (NN Year) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SINV (`` ``) 
     (S-TPC-1 
       (S 
@@ -18099,7 +18143,8 @@
               (NP (DT the) (NNS stands) ))
             (PP-LOC (IN at) 
               (NP (DT a) (NN football) (NN game) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT Some) (JJ fellow) (NNS teachers) )
     (, ,) 
@@ -18471,7 +18516,8 @@
                 (ADVP-TMP (RB never) )
                 (VP (VBD had) 
                   (NP (-NONE- *T*-1) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
     (VP (VBZ says) 
@@ -18611,7 +18657,8 @@
             (NP (-NONE- *T*-1) )))))
     (VP (VBD was) 
       (NP-PRD (DT another) (JJ drag-down) (NN blow) ))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP School) (NNS officials) )
@@ -18805,7 +18852,8 @@
             (NP (DT the) (NN law) )
             (PP-CLR (IN into) 
               (NP (PRP$ your) (JJ own) (NNS hands) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mrs.) (NNP Ward) )
     (VP (VBZ says) 
@@ -18884,7 +18932,8 @@
                       (ADJP-PRD (JJ easy) 
                         (PP (IN for) 
                           (NP (DT the) (NN school) ))))))))))))
-    (. .) ('' ') ))
+    (. .) ('' ') )
+
 (S 
     (S-TPC-1 
       (NP-SBJ (PRP I) )
@@ -18907,7 +18956,8 @@
               (NP (DT a) (NN knife) )
               (PP-LOC-CLR (IN in) 
                 (NP (PRP me) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP 
       (PP (TO To) 
@@ -19254,7 +19304,8 @@
         (NP-SBJ (PRP We) )
         (VP (VBP have) 
           (NP (PDT all) (DT the) (NNS answers) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (JJ Many) (NNS colleagues) )
     (VP (VBP are) 
@@ -19318,7 +19369,8 @@
             (NP (DT all) )
             (PP (IN of) 
               (NP (PRP us) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC But) 
     (NP-SBJ (JJ several) (NNS teachers) )
     (ADVP (RB also) )
@@ -19376,7 +19428,8 @@
                 (NP-SBJ (PRP she) )
                 (VP (VBD did) 
                   (NP (-NONE- *T*-1) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
     (VP (VBZ says) 
@@ -19485,7 +19538,8 @@
                   (NP-SBJ (-NONE- *T*-2) )
                   (PP-LOC-PRD (IN on) 
                     (NP (DT the) (NN test) )))
-                (. ?) ))))))))
+                (. ?) )))))))
+
 (S 
     (NP-TMP (DT These) (NNS days) )
     (, ,) 
@@ -19536,7 +19590,8 @@
             (PP (IN for) 
               (NP (DT the) (JJ Roman) (NN numeral) (CD IX) ))))
         (. ?) )
-      ('' '') )))
+      ('' '') ))
+
 (S 
     (NP-SBJ (PRP It) )
     (ADVP (RB also) )
@@ -20337,7 +20392,8 @@
                                   (NP (NNS tests) )
                                   (CC and) 
                                   (NP (NN testing) (NN format) ))))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ (PRP He) )
@@ -20645,7 +20701,8 @@
               (VP (VBN continued) 
                 (NP (-NONE- *-1) )
                 (ADVP-TMP (RB indefinitely) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP He) )
     (VP (VBD said) 
@@ -21337,7 +21394,7 @@
       (NP 
         (QP (RB roughly) (CD 145) (CD million) )
         (NNS shares) ))
-    (. .) )
+    (. .) ))
 
 (S 
     (NP-SBJ 
@@ -21646,7 +21703,8 @@
             (NP (DT the) (NN deal) )
             (`` ``) 
             (NP (DT the) (JJ green) (NN light) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Jennison) )
     (VP (VBD said) 
@@ -21932,7 +21990,8 @@
                   (NP (JJ near-record) (NNS earnings) )
                   (PP-TMP (IN in) 
                     (NP (CD 1990) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ (NNP Weisfield) (POS 's) )
@@ -22151,7 +22210,8 @@
                               (NP (JJ certain) (NNS disputes) )
                               (PP (IN with) 
                                 (NP (DT the) (NN company) )))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (NNP Giant) (NNP Group) )
     (VP (VBZ is) 
@@ -22946,7 +23006,8 @@
                   (VP (VBG being) 
                     (VP (VBN initiated) 
                       (NP (-NONE- *-2) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-LOC (IN In) 
       (NP (DT some) (NNS cases) ))
@@ -23367,7 +23428,8 @@
         (NP (-NONE- *-2) )
         (PP-CLR (TO to) 
           (NP (DT a) (JJ paltry) (NN sum) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-LOC (IN At) 
       (NP (PRP$ his) (JJ new) (NN job) ))
@@ -23417,7 +23479,8 @@
                 (VP (TO to) 
                   (VP (VB be) 
                     (NP-PRD (DT a) (JJ high-priced) (NN lawyer) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-HLN 
     (NP-SBJ 
       (NP (NNP DOONESBURY) (NN CREATOR'S) )
@@ -23695,6 +23758,7 @@
     (VP (VBN UPHELD) 
       (NP (-NONE- *-1) ))
     (. .) )
+
 (S 
     (NP-SBJ (DT A) (JJ federal) (NNS appeals) (NN court) )
     (VP (VBD upheld) 
@@ -23779,7 +23843,8 @@
                   (, ,)
                   (VBP promote) (CC or) (VBP advocate) 
                   (NP (NN abortion) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NN Title) (NNP X) (NNS funds) )
     (VP (VBP are) 
@@ -23924,7 +23989,8 @@
                                         (VP (VBG picking) 
                                           (PRT (RP up) )
                                           (NP (JJ teenage) (NNS boys) ))))))))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC But) 
     (NP-SBJ 
       (NP (NNP Robert) (NNP R.) (NNP Murray) )
@@ -24143,6 +24209,7 @@
       (PP-CLR (TO TO) 
         (NP (DT THE) (NN DEFENSE) )))
     (. .) )
+
 (S 
     (NP-SBJ 
       (NP (DT A) (JJ former) (NN member) )
@@ -24595,7 +24662,8 @@
       (ADJP-PRD (JJ contrary) 
         (PP (TO to) 
           (NP (JJ common) (NN sense) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP NEC) )
     (VP (VBD released) 
@@ -24837,7 +24905,8 @@
         (VP (MD will) 
           (VP (VB be) 
             (NP-PRD (DT a) (NN minus) (NN factor) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (`` ``) (JJ one-yen) ('' '') (NN controversy) )
     (ADVP-TMP (RB first) )
@@ -25122,6 +25191,7 @@
     (. .) )
 
 (NP-HLN (NNS PAPERS) (. .) )
+
 (S 
     (NP-SBJ-1 (NNP Backe) (NNP Group) (NNP Inc.) )
     (VP (VBD agreed) 
@@ -25169,6 +25239,7 @@
     (. .) )
 
 (NP-HLN (NN TV) (. .) )
+
 (S 
     (NP-SBJ-1 (NNP Price) (NNP Communications) (NNP Corp.) )
     (VP (VBD completed) 
@@ -25392,39 +25463,6 @@
                       (NP (JJ mechanical) (NN engineering) (NN productivity) ))))))))))
     (. .) )
 
-(X (IN @) ))
-(X (NNP Money) (NNP Market) (NNP Deposits-a) (CD 6.21) (NN %) ))
-(NP 
-    (NP 
-      (LST (LS a) (: -) )
-      (NP (JJ Average) (NN rate) )
-      (VP (VBN paid) 
-        (NP (-NONE- *) )
-        (NP-TMP (NN yesterday) )
-        (PP (IN by) 
-          (NP-LGS (CD 100) (JJ large) (NNS banks) 
-            (CC and)
-            (NNS thrifts) ))
-        (PP-LOC (IN in) 
-          (NP (DT the) (CD 10) (JJS largest) (JJ metropolitan) (NNS areas) ))))
-    (SBAR (IN as) 
-      (S 
-        (NP-SBJ-2 (-NONE- *) )
-        (VP (VBN compiled) 
-          (NP (-NONE- *-2) )
-          (PP (IN by) 
-            (NP-LGS (NNP Bank) (NNP Rate) (NNP Monitor) )))))
-    (. .) )
-
-(NP 
-    (LST (LS b) (: -) )
-    (JJ Current) (JJ annual) (NN yield) (. .) )
-
-(NP 
-    (NP (VBN Guaranteed) (NN minimum) )
-    (NP (CD 6) (NN %) )
-    (. .) )
-
 (S 
     (NP-SBJ (NNP LSI) (NNP Logic) (NNP Corp.) )
     (VP (VBD reported) 
@@ -25572,7 +25610,8 @@
           (ADVP (IN at) (JJS least) )
           (IN until) 
           (NP (NN midyear) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP (IN As) 
       (NP (DT a) (NN result) ))
@@ -25798,7 +25837,8 @@
             (NP-PRD (JJ dead) (NN money) )
             (PP-TMP (IN for) 
               (NP (DT a) (NN while) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 
       (NP (NN Yesterday) (POS 's) )
@@ -25847,17 +25887,6 @@
                         (NP (DT the) (NNP U.S.) (NN economy) )))))))))))
     (. .) )
 
-(NP-HLN 
-    (NP (NNP INGERSOLL-RAND) (NNP Co) (. .) )
-    (PRN 
-      (-LRB- -LRB-)
-      (NP-LOC 
-        (NP (NNP Woodcliff) (NNP Lake) )
-        (, ,) 
-        (NP (NNP N.J) (. .) )
-
-      (-RRB- -RRB-) )
-    (: --) ))
 (S 
     (NP-SBJ-2 
       (NP (NNP William) (NNP G.) (NNP Kuhns) )
@@ -26121,7 +26150,8 @@
                         (NP-SBJ (-NONE- *-3) )
                         (VP (TO to) 
                           (VP (VB erode) ))))))))))))
-    (. ?) ('' '') ))
+    (. ?) ('' '') )
+
 (S 
     (PP-LOC (IN In) 
       (NP (JJ late) (NNP New) (NNP York) (NN trading) ))
@@ -26847,7 +26877,8 @@
                   (NP-SBJ (PRP it) )
                   (VP (VBZ 's) 
                     (NP-PRD (DT the) (JJ right) (NN time) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-1 (CC But) 
     (PRN 
       (, ,)
@@ -26886,7 +26917,8 @@
               ('' ') 
               (PP-DIR (IN across) 
                 (NP (DT the) (NN street) )))))))
-    (, ,) ('' '') ))
+    (, ,) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP Viacom) (POS 's) )
@@ -27025,7 +27057,8 @@
             (RB not) 
             (VP (VB renew) (`` ``) 
               (NP-TTL (NNP Cosby) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP Dick) (NNP Lobo) )
@@ -27055,7 +27088,8 @@
                 (NP (DT a) (JJ major) (NN disappointment) )
                 (PP (TO to) 
                   (NP (PRP us) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (`` ``) 
     (PP-LOC (IN At) 
       (NP 
@@ -27083,7 +27117,8 @@
     (NP-SBJ (EX There) )
     (VP (VBD was) (RB n't) 
       (NP-PRD (-NONE- *?*) ))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP Neil) (NNP Kuvin) )
@@ -27116,7 +27151,8 @@
             (VP (VBZ 's) (`` ``) 
               (VP (VBN pleased) 
                 (NP (-NONE- *-1) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC But) 
     (NP-SBJ (PRP he) )
     (VP (VBZ adds) 
@@ -27247,6 +27283,7 @@
             (PP-CLR (IN at) 
               (NP (JJ major) (NNS advertisers) ))))))
     (. .) )
+
 (S 
     (NP-SBJ-1 
       (NP (NNP Garbage) (NN magazine) )
@@ -27906,7 +27943,8 @@
           (NP (VBN recycled) (NN paper) ))))
     (. .) 
     (-RRB- -RRB-)
-    ))
+    )
+
 (S 
     (PP (VBG According) 
       (PP (TO to) 
@@ -28034,6 +28072,7 @@
     (PP-LOC (NNP ON) 
       (NP (NNP TV) ))
     (. .) )
+
 (S 
     (NP-SBJ (NNP Interpublic) (NNP Group) )
     (VP (VBD said) 
@@ -28180,6 +28219,7 @@
     (. .) )
 
 (NP-HLN (NNP NEW) (NNP ACCOUNT) (. .) )
+
 (S 
     (NP-SBJ 
       (NP (NNP CoreStates) (NNP Financial) (NNP Corp.) )
@@ -28219,6 +28259,7 @@
     (. .) )
 
 (NP-HLN (NNP AT&T) (NNP FAX) (. .) )
+
 (S 
     (NP-SBJ 
       (NP 
@@ -28268,6 +28309,7 @@
     (. .) )
 
 (NP-HLN (CD FIRST) (NNP CAMPAIGN) (. .) )
+
 (S 
     (NP-SBJ (NNP Enterprise) (NNP Rent-A-Car) (NNP Inc.) )
     (VP (VBZ breaks) 
@@ -28329,6 +28371,7 @@
     (. .) )
 
 (NP-HLN (NNP LANDOR) (NNPS ASSOCIATES) (. .) )
+
 (S 
     (NP-SBJ (NNP Young) (CC &) (NNP Rubicam) )
     (VP (VBD said) 
@@ -28346,6 +28389,7 @@
     (. .) )
 
 (NP-HLN (NNP ACQUISITION) (. .) )
+
 (S 
     (NP-SBJ 
       (NP (NNP Ketchum) (NNPS Communications) )
@@ -28675,7 +28719,8 @@
                                     (VP (TO to) 
                                       (VP (VB top) 
                                         (NP (PRP us) )))))))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (NNP Temple) )
     (PRN 
@@ -28718,7 +28763,8 @@
                             (NP-SBJ (-NONE- *-3) )
                             (VP (VBG accepting) 
                               (NP (PRP$ our) (JJ superior) (NN cash) (NN offer) ))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (DT A) (NN spokesman) )
@@ -28853,7 +28899,8 @@
                       (NP (DT the) (NN month) ))))))))))
     (. .) 
     (-RRB- -RCB-)
-    ))
+    )
+
 (S 
     (NP-SBJ (NNP Temple) )
     (RB also) 
@@ -28894,7 +28941,8 @@
           (VP (VBZ has) 
             (VP (VBN been) (`` ``) 
               (ADJP-PRD (RB very) (JJ positive) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-LOC (IN In) 
       (NP (NNP New) (NNP York) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) ))
@@ -29041,7 +29089,8 @@
                         (NP (PRP$ its) (NN extension) )
                         (PP (IN of) 
                           (NP (NN passenger) (NN car) (NNS standards) ))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-TMP (IN In) 
       (NP (NNP September) ))
@@ -29232,7 +29281,8 @@
         (NP (DT a) 
           (ADJP (RB very) (JJ different) )
           (JJ regulatory) (NN environment) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 
       (NP (NNP Sen.) (NNP John) (NNP Danforth) )
@@ -29831,7 +29881,8 @@
                           (VP (TO to) 
                             (VP (VB be) 
                               (NP-PRD (JJ interesting) (NNS partners) ))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP He) )
     (VP (VBD added) 
@@ -29843,7 +29894,8 @@
           (NP-PRD 
             (NP (NN nothing) )
             (ADJP (RB very) (JJ hot) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Driscoll) )
     (VP (VBD did) (RB n't) 
@@ -29902,7 +29954,8 @@
                               (NP (NN favor) )
                               (PP (IN of) 
                                 (NP (NN passage) )))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-95 
       (NP (NNP Bank) )
@@ -29940,7 +29993,7 @@
                       (NP (CD 1989) ))))
                 (PP-DIR (IN from) 
                   (NP-TMP (DT the) (JJ year-earlier) (NN period) ))))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (NP-SBJ-1 (DT The) (NN company) )
@@ -30205,7 +30258,8 @@
                           (NP (JJ certain) (NNS disputes) )
                           (PP-CLR (IN with) 
                             (NP (DT the) (NN company) )))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-96 (NNP Giant) (NNP Group) )
     (VP (VBZ is) 
@@ -30336,7 +30390,8 @@
               (PRT (RP out) )
               (PP-CLR (RB as) 
                 (ADJP (JJ such) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ (PRP It) )
@@ -30986,7 +31041,8 @@
             (VP (VBP are) 
               (VP (VBG growing) 
                 (ADJP-PRD (RBR more) (JJ scarce) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-1 
     (S 
       (NP-SBJ (NN Wine) (NNS auctions) )
@@ -31058,6 +31114,7 @@
     (VP (VBP offer) 
       (NP (DT a) (NN bargain) ))
     (. .) ('' '') ))
+
 (S 
     (NP-SBJ (-NONE- *) )
     (VP (VB Take) 
@@ -31329,7 +31386,7 @@
                 (NNS opinions) )
               (PP (IN of) 
                 (NP (NN value) )))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (S 
@@ -31342,7 +31399,8 @@
       (NP-SBJ (PRP they) )
       (VP (VBP 're) 
         (VP (VBN gone) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Pratt) )
     (VP (VBD remarked) 
@@ -31450,7 +31508,8 @@
                       (NP (PRP it) )
                       (PP-CLR (TO to) 
                         (NP (PRP$ their) (NN collection) )))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SINV (`` ``) 
     (S-TPC-1 
       (NP-SBJ (PRP It) )
@@ -31521,7 +31580,8 @@
                 (VP (VBP appeal) 
                   (PP-CLR (TO to) 
                     (NP (DT these) (NNS people) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT That) )
     (VP (VBZ explains) 
@@ -31606,7 +31666,8 @@
                       (ADJP (RB equally) (JJ good) ))
                     (PP-CLR (IN for) 
                       (ADJP (JJR less) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S 
       (NP-SBJ-1 (NNP Mr.) (NNP Martin) )
@@ -32231,7 +32292,8 @@
                 (NP (NN food) (NN packaging) (NN machinery) )
                 (CC and) 
                 (NP (NN material) (NN handling) (NN equipment) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (JJ Retail) (NNS sales) )
     (ADVP (RB also) )
@@ -32258,7 +32320,8 @@
                 (NP (NN home) (NNS appliances) )
                 (CC and) 
                 (NP (NN consumer) (NNS electronics) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC And) 
     (NP-SBJ-101 (NN construction) )
     (ADVP (RB also) )
@@ -32361,7 +32424,8 @@
                           (NP (PRP us) )
                           (PP-DIR (IN into) 
                             (NP (NN recession) )))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-2 (`` ``) 
     (S 
       (NP-SBJ (EX There) )
@@ -32901,7 +32965,8 @@
     (NP-SBJ (JJ immediate) (NN action) )
     (VP (VBZ is) 
       (ADJP-PRD (JJ imperative) ))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (DT The) (NNS securities) )
@@ -32931,47 +32996,6 @@
               (-NONE- *U*) )
             (PP (IN in) 
               (NP (VBG maturing) (NNS notes) ))))))
-    (. .) )
-
-(S 
-    (NP-SBJ 
-      (NP (DT The) (JJ new) (NNS securities) )
-      (, ,) 
-      (NP 
-        (NP (NN part) )
-        (PP (IN of) 
-          (NP 
-            (NP (DT the) (JJ federal) (NN government) (POS 's) )
-            (JJ regular) (JJ quarterly) (VBG refunding) )))
-      (, ,) )
-    (VP (MD will) 
-      (VP (VB consist) 
-        (PP-CLR (IN of) )))
-    (. .) )
-(NP (: --) 
-    (NP 
-      (QP ($ $) (CD 10) (CD billion) )
-      (-NONE- *U*) )
-    (PP (IN of) 
-      (NP (JJ three-year) (NNS notes) ))
-    (, ,) 
-    (SBAR 
-      (WHNP-1 (-NONE- 0) )
-      (S 
-        (NP-SBJ-108 (-NONE- *T*-1) )
-        (VP 
-          (VP (TO to) 
-            (VP (VB be) 
-              (VP (VBN auctioned) 
-                (NP (-NONE- *-108) )
-                (NP-TMP (NNP Tuesday) ))))
-          (CC and) 
-          (VP (TO to) 
-            (VP (VB mature) 
-              (NP-TMP 
-                (NP (NNP Nov.) (CD 15) )
-                (, ,) 
-                (NP (CD 1992) )))))))
     (. .) )
 
 (NP (: --) 
@@ -33471,7 +33495,8 @@
                                     (ADJP (RB exceptionally) (JJ good) )
                                     (NNS returns) )
                                   (X 
-                                    (PP (IN in) )))))))))))))))))))
+                                    (PP (IN in) ))))))))))))))))))
+
 (S 
     (NP-SBJ (JJ Economic) (NN news) )
     (VP (VBD had) 
@@ -33534,6 +33559,7 @@
 (PP-LOC (IN In) 
     (NP (JJ major) (NN market) (NN activity) )
     (. .) )
+
 (S 
     (NP-SBJ (NN Stock) (NNS prices) )
     (VP (VBD rose) 
@@ -33874,7 +33900,8 @@
                 (VP (VBG continuing) 
                   (PP-3 (IN on) 
                     (NP (JJ other) (JJ various) (NNS transactions) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP It) )
     (VP (VBD did) (RB n't) 
@@ -33946,7 +33973,8 @@
               (NP (PRP it) ))
             (PP-TMP (IN for) 
               (NP (DT the) (JJ long) (NN haul) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNP Mr.) (NNP Simmons) )
@@ -34034,7 +34062,8 @@
                                       (NP-SBJ (PRP it) )
                                       (VP (VBZ becomes) 
                                         (NP-PRD (DT a) (JJ bad) (NN acquisition) )))))))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (NNP Georgia) (NNP Gulf) (NN stock) )
     (VP (VBD rose) 
@@ -34386,7 +34415,7 @@
                     (VP (VBD were) 
                       (VP (VBN sold) 
                         (NP (-NONE- *-115) )))))))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (PP-TMP (IN In) 
@@ -34584,7 +34613,7 @@
     (NP-SBJ (DT a) (NNP Johnson) (CC &) (NNP Johnson) (NN spokesman) )
     (VP (VBD declined) 
       (NP (NN comment) ))
-    (. .) )
+    (. .) ))
 
 (S 
     (NP-SBJ 
@@ -34898,7 +34927,6 @@
                     (-LRB- -LCB-) 
                     (PP-LOC (IN in) 
                       (NP (DT the) (NNP U.S.) (. .) )
-
                     (-RRB- -RCB-) )
                   (VP (TO to) 
                     (VP (VB be) 
@@ -34917,7 +34945,7 @@
       (NP (DT the) (NN spokesman) )
       (, ,) 
       (NP (NNP Taizo) (NNP Watanabe) ))
-    (. .) )
+    (. .) ))
 
 (S 
     (PP-TMP (IN At) 
@@ -35163,7 +35191,8 @@
                                 (NP (NN access) )
                                 (PP (TO to) 
                                   (NP (DT the) (JJ Japanese) (NN capital) (NNS markets) ))))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (SBAR-TMP (IN While) 
       (S 
@@ -35433,7 +35462,8 @@
                   (ADJP-PRD (JJ wrong) 
                     (PP (IN with) 
                       (NP (PRP it) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-2 
     (NP-SBJ-1 
       (NP (DT That) (NN process) )
@@ -35550,7 +35580,8 @@
     (VP (VBP are) 
       (VP (VBG taking) 
         (NP (NN action) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Elisabeth) (NNP Rubinfien) )
     (VP (VBD contributed) 
@@ -35688,7 +35719,7 @@
           (. .) )
       (PP-PRP (IN for) 
         (NP (NN investment) )))
-    (. .) )
+    (. .) ))
 
 (S 
     (PP-LOC (IN In) 
@@ -36166,7 +36197,8 @@
                 (NP (DT the) (NN inside) )
                 (, ,) (RB not) 
                 (NP (DT the) (NN outside) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S-TPC-1 
       (NP-SBJ 
@@ -36330,7 +36362,8 @@
                     (ADVP (RB particularly) )
                     (IN in) 
                     (NP (JJ new) (NNS ventures) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-119 
       (NP (DT A) (NN host) )
@@ -36505,7 +36538,8 @@
                           (VP (MD can) 
                             (VP (VB generate) 
                               (NP (-NONE- *T*-1) ))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SINV 
     (VP (VBZ Adds) 
       (S (-NONE- *ICH*-1) ))
@@ -36571,7 +36605,8 @@
                   (NP 
                     (QP (CD 1) (NN %) (TO to) (CD 2) (NN %) )
                     (-NONE- *U*) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Klauser) )
     (VP (VBZ says) 
@@ -37657,7 +37692,8 @@
           (VP (TO to) 
             (VP (VB define) 
               (NP (PRP$ their) (NN customer) (NN base) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NN competition) )
     (VP (VBZ has) 
@@ -37707,7 +37743,8 @@
               (NP (NN today) (POS 's) )
               (JJ rate-sensitive) (NNS customers) )))
         (ADJP-PRD (JJ costly) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (NNS Packages) )
     (VP (VBP encourage) 
@@ -38040,8 +38077,7 @@
                                       (NP (DT the) (NN department) (NN store) )
                                       (, ,) (RB not) 
                                       (NP (DT the) (NN boutique) ))))))))))))))))))
-    (. .) ('' '') ))
-(NP-HLN (NNS IRAs) (. .) )
+    (. .) ('' '') )
 
 (S 
     (NP-SBJ (NNP SHAREDATA) (NNP Inc.) )
@@ -38152,6 +38188,7 @@
               (NP ($ $) (CD 15,000) (-NONE- *U*) 
                 (QP (CC or) (JJR less) )))))))
     (. .) )
+
 (S 
     (LST (LS 1) (. .) )
     (NP-SBJ (-NONE- *) )
@@ -38390,6 +38427,7 @@
         (NP (PRP$ your) (NN help) )
         (ADVP-TMP (RB now) )))
     (. .) )
+
 (S 
     (NP-TMP 
       (NP (DT Every) (NN day) )
@@ -38496,6 +38534,7 @@
                 (PP-LOC-CLR (IN off) 
                   (NP (DT the) (JJ federal) (NN budget) (NN deficit) ))))))))
     (. .) )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Baris) )
     (VP (VBZ is) 
@@ -39183,7 +39222,8 @@
                                 (VP (VBG feeling) 
                                   (ADJP-PRD (JJ good) )))
                               (ADVP-LOC (-NONE- *T*-1) ))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-TMP (IN At) 
       (NP (CD one) (NN point) ))
@@ -39460,7 +39500,7 @@
                       (NP (DT the) (NNP Agriculture) (NNS committees) )
                       (PP-LOC (IN in) 
                         (NP (DT both) (NNS houses) )))))))))))
-    (. .) )
+    (. .))
 
 (S 
     (NP-SBJ 
@@ -39474,7 +39514,6 @@
             (NP (DT the) (NNS English) )))
         (, ,) 
         (CC and)
-        
         (, ,)
         (PP (IN like) 
           (NP (JJS most) (JJ English) (NNS peculiarities) ))
@@ -39487,15 +39526,6 @@
                 (NP (DT the) (NN world) )))))))
     (. .) )
 
-(NP (: --) 
-    (NP (NNP Dorothy) (NNP L.) (NNP Sayers) )
-    (, ,) (`` ``) 
-    (NP-TTL (DT The) (CD Nine) (NNP Tailors) )
-    ('' '') ))
-(NP-LOC 
-    (NP (NNP ASLACTON) )
-    (, ,) 
-    (NP (NNP England) )))
 (S (: --) 
     (S 
       (PP-TPC-2 (IN Of) 
@@ -39776,7 +39806,8 @@
         (ADVP (RB just) )
         (VBP drift) 
         (ADVP-DIR (RB away) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Hammond) )
     (VP (VBZ worries) 
@@ -40281,7 +40312,8 @@
                     (NP (JJ mathematical) (NN completeness) )
                     (CC and) 
                     (NP (JJ mechanical) (NN perfection) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S-2 
     (NP-SBJ-1 (NNS Ringers) )
     (PRN 
@@ -40310,7 +40342,8 @@
                         (ADVP-MNR (RB faultlessly) )
                         (VBN performed) 
                         (NP (-NONE- *) )))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SINV (`` ``) 
     (S-TPC-1 
       (NP-SBJ (NN Ringing) )
@@ -40617,7 +40650,8 @@
               (VP (MD would) (`` ``) 
                 (VP (VB reopen) 
                   (NP (DT the) (NN wound) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S (CC But) 
     (NP-SBJ 
       (NP (NNP C.J.B.) (NNP Marshall) )
@@ -40750,7 +40784,8 @@
                     (NP (-NONE- *-139) )
                     (PP-CLR (IN into) 
                       (NP (DT that) (JJR fuller) (NN life) ))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SINV 
     (S-TPC-2 
       (NP-SBJ-1 
@@ -40822,7 +40857,8 @@
                 (NP (DT The) (NNP Bells) )
                 (PP-LOC (IN in) 
                   (NP (PRP$ Your) (NNP Care) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (SINV 
     (VP (VBZ Says) 
       (S (-NONE- *ICH*-1) ))
@@ -40843,7 +40879,8 @@
                     (NP (NN church) (NN life) 
                       (CC and)
                       (NN experience) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP Mr.) (NNP Baldwin) )
     (VP (VBZ is) 
@@ -41122,7 +41159,8 @@
                         (NP (NN tea) )
                         (PP-LOC (IN at) 
                           (NP (NNS meetings) ))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-LOC (IN In) 
       (NP 
@@ -41172,7 +41210,8 @@
                 (ADJP (RB unbearably) (JJ flatulent) 
                   (PP-LOC (IN in) 
                     (NP (NNS peals) )))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-1 (DT Another) (NNS women) )
     (VP (VBD wrote) 
@@ -41420,7 +41459,8 @@
       (ADJP-PRD (JJ hospitable) 
         (PP (TO to) 
           (NP (DT the) (NN stock) (NN market) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (ADVP (RB Indeed) )
     (, ,) 
@@ -42106,6 +42146,7 @@
             (NP (NN dividend) (NN growth) ))
           (NP-TMP (JJ next) (NN year) ))))
     (. .) )
+
 (S 
     (NP-SBJ (JJ Common) (NN wisdom) )
     (VP (VBZ suggests) 
@@ -42942,7 +42983,8 @@
                   (CC and)
                   (RB radically) )
                 (JJ different) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP-PRP (IN As) 
       (NP (DT a) (NN result) ))
@@ -43216,7 +43258,8 @@
                 (ADVP-LOC (RB here) )
                 (PP-CLR (IN as) 
                   (NP (DT an) (`` ``) (JJ old) (NN friend) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NN paper) )
     (VP (VBD accused) 
@@ -43319,7 +43362,6 @@
                         (NP 
                           (NP (NNS hundreds) 
                             (, ,)
-                            
                             (CC and)
                             (RB perhaps) (NNS thousands) )
                           (, ,) 
@@ -43393,7 +43435,8 @@
             (NP (DT the) (NNS leaders) )
             (PP (IN of) 
               (NP (NNP China) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NNP Chinese) )
     (VP (VBD responded) 
@@ -43495,7 +43538,8 @@
               (NP (NNP China) )
               (PP-PRP (IN for) 
                 (NP (PRP it) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP (IN Despite) 
       (NP (DT the) (JJ harsh) (NNS exchanges) ))
@@ -43569,7 +43613,8 @@
           (VP (VBD had) 
             (VP (VBN reached) 
               (NP (DT a) (`` ``) (NN stalemate) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ 
       (NP (NNS Relations) )
@@ -43683,7 +43728,7 @@
               (NP (NNP China) ))
             (PP-TMP (IN on) 
               (NP (NNP Saturday) ))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (S-TPC-2 (CC And) 
@@ -44071,7 +44116,8 @@
                           (NP (DT the) (NN salary) (NNS stakes) )
                           (PP (IN for) 
                             (NP (JJ new) (NNS employees) )))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (JJ Japanese) (JJ industrial) (NNS companies) )
     (VP (MD should) 
@@ -44121,7 +44167,8 @@
           (: ...) 
           (VP (VBD caused) 
             (NP (DT the) (NN problem) )))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP He) )
     (VP (VBZ is) 
@@ -44146,6 +44193,7 @@
                 (PP-CLR (IN for) 
                   (NP (JJR more) (NN money) ))))))))
     (. .) )
+
 (S 
     (S 
       (NP-SBJ (NN Money) )
@@ -44342,7 +44390,7 @@
                 (NP (NNP Japan) )))))))
     (. .) )
 
-(NP (NNP Hiroshi) (NNP Asada) ))
+(NP (NNP Hiroshi) (NNP Asada) )
 
 (S 
     (PP (IN In) 
@@ -44483,7 +44531,8 @@
         (NP (DT a) (JJ negative) (NN view) )
         (PP (IN of) 
           (NP (PRP$ his) (NN spouse) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NNS statistics) )
     (VP (VBP imply) 
@@ -44661,7 +44710,7 @@
                 (NP (VBG reporting) (NNS requirements) )
                 (PP (IN on) 
                   (NP (NNS securities) (NNS sales) ))))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (ADVP (RB Also) )
@@ -44742,7 +44791,7 @@
             (, ,) 
             (PP-LOC (IN among) 
               (NP (JJ other) (NNS things) ))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (ADVP (RB Also) )
@@ -45042,7 +45091,7 @@
         (NP (DT a) 
           (ADJP ($ $) (CD 10,000) (-NONE- *U*) )
           (NN fine) )))
-    (. .) )
+    (. .) ))
 
 (S 
     (ADVP (RB Also) )
@@ -45053,7 +45102,8 @@
       (`` ``) 
       (PP (IN in) 
         (NP (DT a) (JJ principal) (NN capacity) )))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (PP (IN Without) 
       (S-NOM 
@@ -45153,7 +45203,7 @@
           (NP (DT a) (NN fine) )
           (PP (IN of) 
             (NP ($ $) (CD 20,000) (-NONE- *U*) )))))
-    (. .) )
+    (. .) ))
 
 (S 
     (PP (IN Without) 
@@ -45220,7 +45270,8 @@
           (ADJP-PRD (JJ inappropriate) 
             (CC and)
             (JJ inaccurate) ))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (PRP He) )
     (VP (VBD described) 
@@ -45293,7 +45344,7 @@
           (VBN fined) 
           (NP (-NONE- *-1) )
           (NP ($ $) (CD 15,000) (-NONE- *U*) ))))
-    (. .) )
+    (. .) ))
 
 (S 
     (NP-SBJ 
@@ -45484,201 +45535,6 @@
         (NP (DT any) (NN comment) )))
     (. .) )
 
-(FRAG 
-    (FRAG 
-      (NP-SBJ-1 
-        (NP (NNP Andrew) (NNP Derel) (NNP Adams) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Killeen) )
-          (, ,) 
-          (NP (NNP Texas) )))
-      (, ,) 
-      (VP (VBN fined) 
-        (NP (-NONE- *-1) )
-        (NP ($ $) (CD 15,000) (-NONE- *U*) )))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ 
-        (NP (NNP John) (NNP Francis) (NNP Angier) (NNP Jr.) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Reddington) (NNP Shores) )
-          (, ,) 
-          (NP (NNP Fla.) )
-          (. .) )
-      (NP ($ $) (CD 15,000) (-NONE- *U*) ))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ 
-        (NP (NNP Mark) (NNP Anthony) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Arlington) (NNP Heights) )
-          (, ,) 
-          (NP (NNP Ill.) )
-          (. .) )
-      (NP 
-        (NP ($ $) (CD 10,000) (-NONE- *U*) )
-        (CC and) 
-        (NP (JJ 30-day) (NN suspension) )))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ 
-        (NP (NNP William) (NNP Stirlen) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Arlington) (NNP Heights) )
-          (, ,) 
-          (NP (NNP Ill.) )
-          (. .) )
-      (NP 
-        (NP ($ $) (CD 7,500) (-NONE- *U*) )
-        (CC and) 
-        (NP (JJ 30-day) (NN suspension) )))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ 
-        (NP (NNP Fred) (NNP W.) (NNP Bonnell) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Boulder) )
-          (, ,) 
-          (NP (NNP Colo.) )
-          (. .) )
-      (NP 
-        (NP ($ $) (CD 2,500) (-NONE- *U*) )
-        (CC and) 
-        (NP (JJ six-month) (NN suspension) )))
-    (: ;) 
-    (NP 
-      (NP (NNP Michael) (NNP J.) (NNP Boorse) )
-      (, ,) 
-      (NP-LOC 
-        (NP (NNP Horsham) )
-        (, ,) 
-        (NP (NNP Pa.) )))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ-3 
-        (NP (NNP David) (NNP Chiodo) )
-        (, ,) 
-        (NP-LOC (NNP Dallas) )
-        (, ,) )
-      (NP ($ $) (CD 5,000) (-NONE- *U*) )
-      (, ,) 
-      (VP (VBD barred) 
-        (NP (-NONE- *-3) )
-        (PP-CLR (IN as) 
-          (NP (DT a) (NN principal) ))))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ 
-        (NP (NNP Camille) (NNP Chafic) (NNP Cotran) )
-        (, ,) 
-        (NP-LOC (NNP London) )
-        (, ,) )
-      (NP ($ $) (CD 25,000) (-NONE- *U*) ))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ-4 (NNP John) (NNP William) (NNP Curry) )
-      (, ,) 
-      (VP 
-        (VP (VBN fined) 
-          (NP (-NONE- *-4) )
-          (NP ($ $) (CD 5,000) (-NONE- *U*) ))
-        (, ,) 
-        (VP (VBN ordered) 
-          (NP-2 (-NONE- *-4) )
-          (S 
-            (NP-SBJ (-NONE- *-2) )
-            (VP (TO to) 
-              (VP (VB disgorge) 
-                (NP ($ $) (CD 30,000) (-NONE- *U*) ))))))
-      (, ,) 
-      (NP (JJ one-year) (NN suspension) ))
-    (. .) )
-
-(FRAG 
-    (FRAG 
-      (NP-SBJ-4 
-        (NP (NNP John) (NNP William) (NNP Davis) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Colonsville) )
-          (, ,) 
-          (NP (NNP Miss.) )))
-      (, ,) 
-      (VP (VBN fined) 
-        (NP (-NONE- *-4) )
-        (NP ($ $) (CD 200,000) (-NONE- *U*) )))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ 
-        (NP (NNP Jeffrey) (NNP Gerard) (NNP Dompierre) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP Valrico) )
-          (, ,) 
-          (NP (NNP Fla.) )))
-      (, ,) 
-      (NP 
-        (NP ($ $) (CD 5,000) (-NONE- *U*) )
-        (CC and) 
-        (NP (JJ 10-day) (NN suspension) )))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ-3 
-        (NP (NNP Eugene) (NNP Michael) (NNP Felten) )
-        (, ,) 
-        (NP-LOC 
-          (NP (NNP La) (NNP Canada) )
-          (, ,) 
-          (NP (NNP Calif.) )))
-      (, ,) 
-      (VP 
-        (VP (VBN fined) 
-          (NP (-NONE- *-3) )
-          (NP ($ $) (CD 25,000) (-NONE- *U*) ))
-        (, ,) 
-        (VP (VBN ordered) 
-          (NP-2 (-NONE- *-3) )
-          (S 
-            (NP-SBJ (-NONE- *-2) )
-            (VP (TO to) 
-              (VP (VB disgorge) 
-                (NP ($ $) (CD 16,072) (-NONE- *U*) )))))
-        (CC and) 
-        (VP 
-          (VP (VBN suspended) 
-            (NP (-NONE- *-3) )
-            (NP-TMP (CD one) (NN year) )))))
-    (: ;) 
-    (FRAG 
-      (NP-SBJ-5 
-        (NP (NNP Marion) (NNP Stewart) (NNP Spitler) )
-        (, ,) 
-        (NP-LOC (NNP La) (NNP Canada) )
-        (, ,) )
-      (VP 
-        (VP (VBN fined) 
-          (NP (-NONE- *-5) )
-          (NP ($ $) (CD 15,000) (-NONE- *U*) ))
-        (, ,) 
-        (VP (VBN ordered) 
-          (NP-1 (-NONE- *-5) )
-          (S 
-            (NP-SBJ (-NONE- *-1) )
-            (VP (TO to) 
-              (VP (VB disgorge) 
-                (NP ($ $) (CD 18,444) (-NONE- *U*) )))))
-        (CC and) 
-        (VP 
-          (VP (VBN suspended) 
-            (NP (-NONE- *-5) )
-            (NP-TMP (CD six) (NNS months) )))))
-    (. .) )
-
 (S 
     (NP-SBJ (NNP Mr.) (NNP Felten) )
     (VP (VBD said) 
@@ -45712,7 +45568,8 @@
               (NP (DT a) (JJ sizable) (NN fine) 
                 (CC and)
                 (NN suspension) ))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S-TPC-1 
       (NP-SBJ (DT The) (NN matter) )
@@ -46071,7 +45928,8 @@
               (VP (MD can) 
                 (VP (VB avoid) 
                   (NP (JJ stupid) (NNS mistakes) ))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ-3 
       (NP (DT The) (NN following) )
@@ -46331,7 +46189,7 @@
             (NP (NNP Nev.) ))
           (, ,) )
         (NP (JJ two-year) (NN suspension) )))
-    (. .) )
+    (. .) ))
 
 (SINV (`` ``) 
     (S-TPC-2 
@@ -46894,7 +46752,8 @@
                             (NP (PRP$ their) (JJ own) (NNS accounts) )))))))))))))
     (. .) 
     (-RRB- -RRB-)
-    ))
+    )
+
 (S 
     (NP-SBJ (DT Both) 
       (NP 
@@ -46944,7 +46803,7 @@
                   (JJ futures-related) (NN investment) (NNS strategies) )
                 (PP-CLR (TO to) 
                   (NP (JJ big) (JJ institutional) (NNS clients) ))))))))
-    (. .) )
+    (. .) ))
 
 (S 
     (NP-SBJ (PRP They) )
@@ -47007,7 +46866,8 @@
                                       (NP (-NONE- *T*-3) )
                                       (PP-LOC (IN in) 
                                         (NP (NNP America) )))))))))))))))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (DT The) (NNP British) )
     (ADVP (RB also) )
@@ -47059,7 +46919,8 @@
                   (NP (NN concern) )))
               (PP-TMP (IN at) 
                 (NP (DT the) (NN moment) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (NP-SBJ (NNP London) )
     (VP (VBZ serves) 
@@ -47604,7 +47465,8 @@
             (VP (VB vote) 
               (PP-CLR (IN for) 
                 (NP (PRP it) )))))))
-    (. .) ('' '') ))
+    (. .) ('' '') )
+
 (S 
     (S-TPC-1 
       (SBAR-ADV (IN While) 
