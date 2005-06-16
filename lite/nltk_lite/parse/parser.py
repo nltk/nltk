@@ -52,7 +52,7 @@ three sub-modules for specialized kinds of parsing:
 
 from cfg import Nonterminal, CFG, CFGProduction, nonterminals
 from tree import *
-from nltk_lite.tokenize import whitespaceTokenize
+from nltk_lite import tokenize
 from types import *
 
 ##//////////////////////////////////////////////////////
@@ -1215,7 +1215,7 @@ def demo():
     grammar = CFG(S, productions)
 
     # Tokenize a sample sentence.
-    sent = list(whitespaceTokenize('I saw a man in the park'))
+    sent = list(tokenize.whitespace('I saw a man in the park'))
 
     # Define a list of parsers.
     parsers = [ShiftReduceParser(grammar),
