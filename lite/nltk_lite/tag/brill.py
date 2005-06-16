@@ -12,7 +12,6 @@ Brill's transformational rule-based tagger.
 """
 
 from nltk_lite.tag import *
-from nltk_lite.corpora.treebank import tagged
 
 import bisect        # for binary search through a subset of indices
 import os            # for finding WSJ files
@@ -1057,6 +1056,8 @@ def errorList (train_tokens, tokens, radius=2):
 def test(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
          errorOutput = "errors.out", ruleOutput="rules.out",
          randomize=False, train=.8, trace=3):
+
+    from nltk_lite.corpora.treebank import tagged
 
     NN_CD_tagger = Regexp([(r'^[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
 
