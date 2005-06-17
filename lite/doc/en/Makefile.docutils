@@ -1,0 +1,453 @@
+# .. -*- Makefile -*-
+
+# ******************************************************
+# Generic makefile for document processing with docutils
+# ******************************************************
+
+# This file provides typical rules for processing documents with docutils.  By
+# default it provides common targets (`all`, `pdf`, `clean`, etc.) for
+# processing all ``*.txt`` files in this directory.
+
+# You should be able to customize just about everything by setting variables
+# defined here (they all have defaults and are documented in comments).  You
+# can set them on make's command line or by building your own makefile that
+# sets them before including this one.  For simplest cases, you'd want to give
+# `DOCS` and perhaps `ALL`.
+#
+# Some things can be customized per document with make's
+# per-target/per-pattern variable assignment syntax, e.g. ``mydoc.ps: FLAGS +=
+# --no-doc-title``.  Unfortunately this won't work for any variables that
+# affect rules sources/targets (in particular, extension variables and
+# variables that enable pre/postprocessing).
+
+# If you want deeper customization or to integrate this into your makefile(s)
+# for other things, you can make it very include-friendly by flipping a few
+# settings:
+#
+# - All variables can be put in a "namespace" by setting the variable
+#   `docutils.` (note the dot!) to the desired prefix.  In comments, variable
+#   names are given without the prefix.
+#
+# - The non-pattern common targets and, to a lesser degree, the LaTeX rules
+#   might conflict with your rules.  You can disable them by setting
+#   `ENABLE_COMMON_TARGETS` and/or `ENABLE_LATEX_RULES` to ``0``.
+#
+#   - The most common targets, like `all`, don't have commands but depend on
+#     targets like `docutils.all` that do the real work.  This way they are
+#     automatically merged with your dependencies and commands for the same
+#     name.
+
+# This file should be self-documenting; read it file for the full list of
+# customizable variables and other gory details...
+
+# GNU Make is required!  Some targets use common unix utils.
+
+# The latest version of this file lives at
+# http://docutils.sourceforge.net/sandbox/cben/make/Makefile.docutils
+
+
+# "Namespace"
+# ***********
+
+# All variables defined in this file can be optionally prefixed with anything
+# you want (e.g.  ``DOCUTILS.``) to avoid namespace pollution.  To enable
+# this, set the variable `docutils.` (note the period in the variable name) to
+# the desired prefix.  Note that then, you would have to use the prefix when
+# setting any variables that affect this file...
+docutils. ?=
+##docutils. ?= DOCUTILS.
+
+# Pattern rules - very include-friendly makefile portion
+# ******************************************************
+
+# This part is designed to be included in makefiles.  It supplies implicit
+# pattern rules for docutils' tools.  All that is left to you is to request
+# building of files with extensions of the output formats (.html, .tex, .dvi,
+# .ps, .pdf).  You should have (or be able to build) input files with .txt
+# extension.  Almost everything (including extensions) is configurable by
+# setting variables defined in this file.  You should set these variables
+# before including this file to avoid problems.
+
+# If you also want typical explicit rules for targets like ``html``, ``dvi``
+# and ``clean`` to build associated files, you will find them in later
+# sections...
+
+# Tool names
+# ==========
+
+# `TOOLS` lists the tools / processing stages that are supported and have [at
+# least some] associated variables according to the conventions below.  It
+# provides some introspection ablity, currently used in the `docutils.clean`
+# target for computing the list of output extensions.
+$(docutils.)TOOLS += RST2HTML PEPTOOL RST2LATEX RST2PDFLATEX		\
+		     MATHHACK IMGMATHHACK				\
+		     HTML_WILD_EXTS LATEX_WILD_EXTS PDFLATEX_WILD_EXTS
+
+# As accustomed in makefiles, tool names can be customized by setting
+# variables named after the tools.  Here they are slightly more systemathic
+# than their current names.
+
+# ``html.py`` is expected to be renamed to ``rst2html.py`` soon.
+ifneq "$(shell which rst2html.py)" ""
+$(docutils.)RST2HTML ?= rst2html.py
+else
+$(docutils.)RST2HTML ?= html.py
+endif
+
+$(docutils.)RST2LATEX ?= rst2latex.py
+
+# ``pep.py`` is the RST PEP -> HTML converter tool; ``pep2html.py`` also
+# supports old PEP format and does extra PEP services.
+$(docutils.)RSTPEP2HTML ?= rep.py
+
+$(docutils.)PEPTOOL ?= pep2html.py
+
+# In this makefile I use only PEPTOOL (too bad RSTPEP2HTML doesn't support the
+# old pep format, it has a better command-line interface).
+
+# More such variables appear in the pre/postprocessing sections below.
+
+# @@@ TODO: Support other tools, e.g. RST2XML.
+
+# Extensions
+# ==========
+
+# For simplicity, only one source extension is supported at a time.  If you
+# need to allow several (e.g. ``.txt`` and ``.rst``), you should be able to
+# call make recursively several times, setting `SRCEXT` to a different value
+# each time...
+$(docutils.)SRCEXT ?= .txt
+
+# There are various reasons to preprocess/postprocess docutils.  This makefile
+# directly supports some ways and should play nice with others.  It's more
+# convenient to use intermediate files than pipes (because then you can easily
+# inspect them for debugging).  So we need a way to insert intermediate files
+# into the dependency chain.  Solution: variables (`<toolname>.SRCEXT` and
+# `<toolname>.TRGEXT`) that control the source/target extensions of each rule.
+# These variables must be set before the rules that use them.
+$(docutils.)PEPTOOL.SRCEXT ?= $($(docutils.)SRCEXT)
+$(docutils.)PEPTOOL.TRGEXT ?= .html
+$(docutils.)RST2HTML.SRCEXT ?= $($(docutils.)SRCEXT)
+$(docutils.)RST2HTML.TRGEXT ?= .html
+$(docutils.)RST2LATEX.SRCEXT ?= $($(docutils.)SRCEXT)
+$(docutils.)RST2LATEX.TRGEXT ?= .tex
+
+# PDFLaTeX might need different processing and extension (in particular
+# because no image format is supported by both it and LaTeX).  This is sort of
+# a hack: pretend we have a separate RST2PDFLATEX tool.
+$(docutils.)RST2PDFLATEX.SRCEXT ?= $($(docutils.)RST2LATEX.SRCEXT)
+$(docutils.)RST2PDFLATEX.TRGEXT ?= .pdftex
+
+# Specific preprocessing/postprocessing support
+# ---------------------------------------------
+
+# The extension manipulation is subtle.  It's important to use simple
+# variables (set with ``:=``) to allow chaining.  Since each processing stage
+# can be enabled independently of others, they can only be attached to the
+# main tool (e.g. RST2HTML).
+
+# Note that PEPTOOL is not supported here because non-standard processing is
+# not a good idea in PEPs anyway.  Won't be a big problem to add if needed...
+
+# @@@ TODO: Support as many external/sandbox tools as possible.
+
+# sandbox/cben/rolehack math preprocessing hacks
+# ..............................................
+
+# This makefile provides rules that support preprocessing by
+# `<../rolehack/mathhack.py>`_ and `<../rolehack/imgmathhack.py>`_.  Set
+# `ENABLE_MATHHACK` to 1 to run them before rst2html.py and rst2latex.py.
+$(docutils.)ENABLE_MATHHACK ?= 0
+
+$(docutils.)MATHHACK.SRCEXT := $($(docutils.)RST2LATEX.SRCEXT)
+ifeq "$(origin $(docutils.)MATHHACK.TRGEXT)" "undefined"
+$(docutils.)MATHHACK.TRGEXT := $($(docutils.)RST2LATEX.SRCEXT).mathhack
+endif
+
+# In theory, IMGMATHHACK is applicable to all tools.  It's not very useful
+# with anything but RST2HTML, so that's the only one we attach to currently...
+$(docutils.)IMGMATHHACK.SRCEXT := $($(docutils.)RST2HTML.SRCEXT)
+ifeq "$(origin $(docutils.)IMGMATHHACK.TRGEXT)" "undefined"
+$(docutils.)IMGMATHHACK.TRGEXT := $($(docutils.)RST2HTML.SRCEXT).imgmathhack
+endif
+
+ifeq "$($(docutils.)ENABLE_MATHHACK)" "1"
+$(docutils.)RST2LATEX.SRCEXT := $($(docutils.)MATHHACK.TRGEXT)
+$(docutils.)RST2HTML.SRCEXT := $($(docutils.)IMGMATHHACK.TRGEXT)
+endif
+
+# If any preprocessing has been applied, it's good to tell docutils the name
+# of the original file.  But in current docutils, ``--source-url`` forces on
+# ``--source-link``.  So you can control this option, per tool.
+$(docutils.)RST2LATEX.ENABLE_SOURCE_URL ?= 0
+ifeq "$($(docutils.)RST2LATEX.ENABLE_SOURCE_URL)" "1"
+$(docutils.)RST2LATEX.FLAGS += --source-url=$*$($(docutils.)SRCEXT)
+endif
+
+$(docutils.)RST2HTML.ENABLE_SOURCE_URL ?= 0
+ifeq "$($(docutils.)RST2HTML.ENABLE_SOURCE_URL)" "1"
+$(docutils.)RST2HTML.FLAGS += --source-url=$*$($(docutils.)SRCEXT)
+endif
+
+# You can set `MATHHACK_DIR` to provide an explicit location for these scripts
+# (you must include a trailing slash!).  You can also change the tool name
+# variables completely...
+$(docutils.)MATHHACK_DIR ?=
+$(docutils.)MATHHACK ?= $($(docutils.)MATHHACK_DIR)mathhack.py
+$(docutils.)IMGMATHHACK ?= $($(docutils.)MATHHACK_DIR)imgmathhack.py
+
+%$($(docutils.)MATHHACK.TRGEXT): %$($(docutils.)MATHHACK.SRCEXT)
+	$($(docutils.)MATHHACK) $< $@
+
+%$($(docutils.)IMGMATHHACK.TRGEXT): %$($(docutils.)IMGMATHHACK.SRCEXT)
+	$($(docutils.)IMGMATHHACK) $< $@
+
+# Rudimentary adaptation of ``.*`` file extensions to output format
+# .................................................................
+
+# Docutils currently doesn't support referencing different files depending on
+# on the output format (e.g. LaTeX requires EPS images but HTML supports
+# everything else).  Here are simple sed scripts, converting ``.*`` to one
+# extension for images and one for links, different for each tool.  **Be
+# warned that the regexps are not bullet-proof and could be confused!**
+
+# Set `ENABLE_WILD_EXTS` to 1 if you want to enable them.
+$(docutils.)ENABLE_WILD_EXTS ?= 0
+
+# This is an arbitrary guess, quite probable that you would want to change it.
+$(docutils.)HTML_WILD_EXTS.IMGEXT ?= .png
+# ``.htm`` is also widespread but here we mostly talk about local files
+# produced with docutils.
+$(docutils.)HTML_WILD_EXTS.LINKEXT ?= .html
+
+# LaTeX only undestands Encapsulated PostScript.
+$(docutils.)LATEX_WILD_EXTS.IMGEXT ?= .eps
+# LaTeX is just as well convetible to PS but only PDF supports links, so this
+# is a good guess...
+$(docutils.)LATEX_WILD_EXTS.LINKEXT ?= .pdf
+
+# PDFLaTeX understands common formats like PNG but doesn't understand EPS!
+$(docutils.)PDFLATEX_WILD_EXTS.IMGEXT ?= .png
+# Again, PDFLaTeX supports links.
+$(docutils.)PDFLATEX_WILD_EXTS.LINKEXT ?= .pdf
+
+# Intermediate extensions:
+$(docutils.)HTML_WILD_EXTS.SRCEXT ?= .html.wild_exts
+$(docutils.)LATEX_WILD_EXTS.SRCEXT ?= .tex.wild_exts
+$(docutils.)PDFLATEX_WILD_EXTS.SRCEXT ?= .pdftex.wild_exts
+
+# Chain to the tools.
+$(docutils.)HTML_WILD_EXTS.TRGEXT := $($(docutils.)RST2HTML.TRGEXT)
+$(docutils.)LATEX_WILD_EXTS.TRGEXT := $($(docutils.)RST2LATEX.TRGEXT)
+$(docutils.)PDFLATEX_WILD_EXTS.TRGEXT := $($(docutils.)RST2PDFLATEX.TRGEXT)
+
+ifeq "$($(docutils.)ENABLE_WILD_EXTS)" "1"
+$(docutils.)RST2HTML.TRGEXT := $($(docutils.)HTML_WILD_EXTS.SRCEXT)
+$(docutils.)RST2LATEX.TRGEXT := $($(docutils.)LATEX_WILD_EXTS.SRCEXT)
+$(docutils.)RST2PDFLATEX.TRGEXT := $($(docutils.)PDFLATEX_WILD_EXTS.SRCEXT)
+endif
+
+%$($(docutils.)HTML_WILD_EXTS.TRGEXT): %$($(docutils.)HTML_WILD_EXTS.SRCEXT)
+	sed -e 's/\( [sS][rR][cC]="[^"]*\)\.\*"/\1$($(docutils.)HTML_WILD_EXTS.IMGEXT)"/g' -e "s/\( [sS][rR][cC]='[^']*\)\.\*'/\1$($(docutils.)HTML_WILD_EXTS.IMGEXT)'/g" -e 's/\( [hH][rR][eE][fF]="[^"]*\)\.\*"/\1$($(docutils.)HTML_WILD_EXTS.LINKEXT)"/g' -e "s/\( [hH][rR][eE][fF]='[^']*\)\.\*'/\1$($(docutils.)HTML_WILD_EXTS.LINKEXT)'/g" $< > $@
+
+%$($(docutils.)LATEX_WILD_EXTS.TRGEXT): %$($(docutils.)LATEX_WILD_EXTS.SRCEXT)
+	sed -e 's/\(\\includegraphics{[^}]*\)\.\*}/\1$($(docutils.)LATEX_WILD_EXTS.IMGEXT)}/g' -e 's/\(\\href{[^}]*\)\.\*}/\1$($(docutils.)LATEX_WILD_EXTS.LINKEXT)}/g' $< > $@
+
+%$($(docutils.)PDFLATEX_WILD_EXTS.TRGEXT): %$($(docutils.)PDFLATEX_WILD_EXTS.SRCEXT)
+	sed -e 's/\(\\includegraphics{[^}]*\)\.\*}/\1$($(docutils.)PDFLATEX_WILD_EXTS.IMGEXT)}/g' -e 's/\(\\href{[^}]*\)\.\*}/\1$($(docutils.)PDFLATEX_WILD_EXTS.LINKEXT)}/g' $< > $@
+
+
+# Config files and extra flags
+# ============================
+
+# Consider using config files instead of flags for most tasks.  To specify
+# config file(s) other than the default, set `CONFIG` to a space-separated
+# list of them.  Later files override earlier ones (and all override the
+# `DOCUTILSCONFIG` environment variable, which you should *not* touch in a
+# Makefile, it's for the user).  Non-existant config files are ignored.
+#
+# Relative file names in `CONFIG` are relative to the current directory,
+# independently of the target name.  If you use ``%`` in `CONFIG`, it will be
+# replaced with the target name (without extension) and it will be
+# interpretted relative to the target's directory -- giving you per-file
+# configs.
+$(docutils.)CONFIG ?=
+
+# I found absolutely no way to implement in make per-directory config file
+# dependencies that don't depend on the target basename.  You can just do::
+#
+#     $(docutils.)FLAGS += $(*D)/config.file.name
+#
+# but it won't be considered a dependency (which is not such a big issue).  Or
+# you can always run make in the directory of the target...
+
+# You can provide extra docutils options by setting variables named
+# `<toolname>.FLAGS`.  `FLAGS` gives default flags for all tools.
+$(docutils.)FLAGS += $(foreach c,$($(docutils.)CONFIG),--config=$(subst %,$(*D)/,$(findstring %,$(c)))$(subst %,$(*F),$(c)))
+$(docutils.)RST2HTML.FLAGS += $($(docutils.)FLAGS)
+$(docutils.)RST2LATEX.FLAGS += $($(docutils.)FLAGS)
+$(docutils.)PEPTOOL.FLAGS += $($(docutils.)FLAGS)
+
+
+# Extra dependencies
+# ==================
+
+# When docutils config files change, it usually affects docutils' so it should
+# be rebuilt.  So we add them as dependencies.
+# 
+# .. note:: Deletion of a config file will *not* cause a rebuild.
+
+# Figure out the default config files from the environment:
+DOCUTILSCONFIG ?= /etc/docutils.conf:./docutils.conf:$(HOME)/.docutils
+
+# You can set `CONFIG_DEPS` to override the depencies on config files without
+# changing the actual config files used by docutils.  It's space-separated.
+$(docutils.)CONFIG_DEPS ?= $(subst :, ,$(DOCUTILSCONFIG)) $($(docutils.)CONFIG)
+
+# `EXTRA_DEPS` specifies the actual extra dependencies.
+#
+# Config files that exist are automatically included (unexistant ones would
+# cause make to complain that it doesn't know how to build them).
+$(docutuls.)EXTRA_DEPS += $(wildcard $($(docutils.)CONFIG_DEPS))
+
+# Note also that you can supply extra dependencies for pattern rules by
+# yourself, as long as you don't provide commands, e.g. ::
+#
+#    foo.html: extra_deps
+#
+# Typical extra depencies you'd want to add: HTML stylesheets (if you embed
+# them), files appearing in ``.. include::``.
+
+
+# HTML output
+# ===========
+
+# pep-%.html must be before the %.html rule to get higher priority.
+pep-%$($(docutils.)PEPTOOL.TRGEXT): pep-%$($(docutils.)PEPTOOL.SRCEXT) \
+				    $($(docutils.)EXTRA_DEPS)
+	$($(docutils.)PEPTOOL) $($(docutils.)PEPTOOL.FLAGS) $<
+ifneq "$($(docutils.)PEPTOOL.TRGEXT)" ".html"
+	# $($(docutils.)PEPTOOL) lacks output file name control, work around.
+	mv $(basename $<).html $<
+endif
+
+%$($(docutils.)RST2HTML.TRGEXT): %$($(docutils.)RST2HTML.SRCEXT) \
+				 $($(docutils.)EXTRA_DEPS)
+	$($(docutils.)RST2HTML) $($(docutils.)RST2HTML.FLAGS) $< $@
+
+# LaTeX output
+# ============
+
+%$($(docutils.)RST2LATEX.TRGEXT): %$($(docutils.)RST2LATEX.SRCEXT) \
+				  $($(docutils.)EXTRA_DEPS)
+	$($(docutils.)RST2LATEX) $($(docutils.)RST2LATEX.FLAGS) $< $@
+
+# LaTeX processing rules
+# ----------------------
+
+# This part is not fully parametrized; it's not related to docutils so if you
+# want to get fancy in this respect, provide your own rules.  You can disable
+# the rules here, by setting `ENABLE_LATEX_RULES` to 0.
+$(docutils.)ENABLE_LATEX_RULES ?= 1
+
+# PDFLaTeX does a better job than LaTeX->DVIPDF (e.g. it supports hyperlinks
+# and generates a PDF outline) but you usually can't run the same file through
+# both LaTeX and PDFLaTeX because they don't understand a single common
+# format.  Solution: there is a separate preprocessing stage
+# PDFLATEX_WILD_EXTS.  Set this to 0 to go through DVIPDF.
+$(docutils.)ENABLE_PDFLATEX ?= 1
+
+ifeq "$($(docutils.)ENABLE_LATEX_RULES)" "1"
+
+# These variables are common-practice but it's still cleaner to put them in
+# the "namespace".
+
+$(docutils.)LATEX ?= latex
+$(docutils.)PDFLATEX ?= pdflatex
+$(docutils.)DVIPS ?= dvips
+$(docutils.)DVIPDF ?= dvipdf
+
+%.dvi: %.tex
+	cd $(*D); $(LATEX) $(*F)
+
+%.ps: %.dvi
+	$(DVIPS) $< -o $@
+
+ifeq "$($(docutils.)ENABLE_PDFLATEX)" "1"
+%.pdf: %.pdftex
+	cd $(*D); $(PDFLATEX) $(*F).pdftex
+else
+%.pdf: %.dvi
+	$(DVIPDF) $< $@
+endif
+
+endif # ENABLE_LATEX_RULES
+
+# Fallback when you don't provide for different PDFLaTeX processing.
+%$($(docutils.)RST2PDFLATEX.TRGEXT): %$($(docutils.)RST2LATEX.TRGEXT)
+	cp $< $@
+
+
+# Typical standard targets
+# ************************
+
+# This section provides typical rules for processing documents with docutils.
+# Since they might clash with your rules, they are optional and can be
+# disabled by setting `ENABLE_COMMON_TARGETS` to ``0``.
+$(docutils.)ENABLE_COMMON_TARGETS ?= 1
+
+# `DOCS` gives the documents to process.  You should typically set this
+# (defaults to all files with the source extension in current directory).
+$(docutils.)DOCS ?= $(wildcard *$($(docutils.)SRCEXT))
+
+# `STEMS` is the docs list without the source extension, (makes rules shorter).
+$(docutils.)STEMS ?= $($(docutils.)DOCS:$($(docutils.)SRCEXT)=)
+
+# Set `ALL` to change the things to build by default.
+$(docutils.)ALL ?= html ps pdf
+
+ifeq "$($(docutils.)ENABLE_COMMON_TARGETS)" "1"
+
+docutils.all: $($(docutils.)ALL)
+
+# Targets like ``clean`` weren't directly used.  Rather they don't have
+# commands but have targets like ``docutils.clean`` (that do have commands) as
+# prerequisites.  This allows you to give your commands for them.  You can
+# inhibit these alias dependencies by setting `ENABLE_SHORT_TARGETS` to 0.
+$(docutils.)ENABLE_SHORT_TARGETS ?= 1
+
+ifeq "$($(docutils.)ENABLE_SHORT_TARGETS)" "1"
+all: docutils.all
+safeclean: docutils.safeclean
+mostlyclean: docutils.mostlyclean
+clean: docutils.clean
+endif
+
+html: $($(docutils.)STEMS:=.html)
+tex: $($(docutils.)STEMS:=.tex)
+dvi: $($(docutils.)STEMS:=.dvi)
+ps: $($(docutils.)STEMS:=.ps)
+pdf: $($(docutils.)STEMS:=.pdf)
+
+# Extensions of unneeded byproducts (specifically, LaTeX byproducts).
+$(docutils.)SAFECLEAN_EXTS += .log .aux .out .toc
+
+# Extensions that are direct outputs of this makefile.
+$(docutils.)CLEAN_EXTS += $(foreach tool,$($(docutils.)TOOLS),$($(docutils.)$(tool).TRGEXT))
+$(docutils.)CLEAN_EXTS += .dvi .ps .pdf
+
+# `safeclean` cleans only unneeded byproducts.
+docutils.safeclean:
+	-rm -f $(foreach ext,$($(docutils.)SAFECLEAN_EXTS),$($(docutils.)STEMS:=$(ext)))
+
+# `mostlyclean` cleans almost everything.
+docutils.mostlyclean: docutils.safeclean
+	-rm -f $(foreach ext,$($(docutils.)CLEAN_EXTS),$($(docutils.)STEMS:=$(ext)))
+
+# `clean` also cleans imgmathhack images that take a lot of time to rebuild.
+docutils.clean: docutils.mostlyclean
+ifeq "$($(docutils.)ENABLE_MATHHACK)" "1"
+	-rm -rf ./imgmath/
+endif
+
+endif # ENABLE_COMMON_TARGETS
