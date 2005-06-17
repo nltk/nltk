@@ -302,6 +302,9 @@ it cannot assign a tag itself::
 
 Now all the words are guaranteed to be tagged.
 
+
+*AFFIX TAGGERS*
+
 ------------------
 Evaluating Taggers
 ------------------
@@ -557,3 +560,217 @@ corpora:
   >>> tokens = list(tokenize.whitespace(text))
   >>> list(tagger.tag(tokens))
   [('John', 'NN'), ('saw', 'VB'), ('the', 'AT'), ('book', 'NN'), ('on', 'IN'), ('the', 'AT'), ('table', 'NN')]
+
+As with the other taggers considered earlier, n-gram taggers will
+assign the default tag ``None`` to any token whose context was not
+encountered in the training data.Note that as *n* gets larger, the
+specificity of the contexts increases; and with it, the chance that
+the data we wish to tag will contain contexts that were not present in
+the training data. This is sometimes referred to as a *sparse data*
+problem. Thus, there is a trade-off between the accuracy and the
+coverage of our results. This is a common type of trade-off in natural
+language processing. It is closely related to the *precision/recall
+trade-off* that we'll encounter later when we discuss information
+retrieval.
+
+-----------------
+Combining Taggers
+-----------------
+
+One way to address the trade-off between accuracy and coverage is to
+use the more accurate algorithms when we can, but to fall back on
+algorithms with wider coverage when necessary. For example, we could
+combine the results of a first order tagger, a 0th order tagger, and
+an ``NN_CD_Tagger``, as follows:
+
+1. Try tagging the token with the bigram tagger.
+2. If the bigram tagger is unable to find a tag for the token, try
+   finding a tag with the unigram tagger.
+3. If the unigram tagger is also unable to find a tag, use a
+   default tagger to find a tag.
+
+Each NLTK tagger permits a backoff-tagger to be specified.
+The backoff-tagger may itself have a backoff tagger::
+
+  >>> t0 = tag.Default('nn')
+  >>> t1 = tag.Unigram(backoff=t0)
+  >>> t2 = tag.Bigram(backoff=t1)
+  >>> t1.train(brown.tagged('a'))
+  >>> t2.train(brown.tagged('a'))
+
+.. Note:: We specify the backoff tagger when the tagger is
+initialized, so that training can take advantage of the backing off.
+Thus, if the bigram tagger and its unigram backoff tagger would assign
+the same tag in a certain context, the training instance is discarded.
+This keeps the bigram tagger model as small as possible.  We can
+further specify that a tagger needs to see more than one instance of a
+context in order to retain it, e.g. ``Bigram(cutoff=2, backoff=t1)``
+will discard contexts which have only been seen once or twice.
+
+Now we can test the taggers::
+
+  >>> accuracy0 = tag.accuracy(t0, unseen_tokens)
+  >>> accuracy1 = tag.accuracy(t1, unseen_tokens)
+  >>> accuracy2 = tag.accuracy(t2, unseen_tokens)
+
+  >>> print 'Default Accuracy = %4.1f%%' % (100 * accuracy0)
+  Unigram Accuracy = 74.7%
+  >>> print 'Unigram Accuracy  = %4.1f%%' % (100 * accuracy1)
+  Bigram Accuracy  = 75.5%
+  >>> print 'Bigram Accuracy = %4.1f%%' % (100 * accuracy2)
+  Trigram Accuracy = 75.5%
+
+.. combining taggers using voting?
+
+----------------
+The Brill Tagger
+----------------
+
+A potential issue with nth-order tagger is their size.  If tagging is
+to be employed in a variety of language technologies deployed on
+mobile computing devices, it is important to find ways to reduce the
+size of models without overly compromising performance.  An nth-order
+tagger with backoff may store trigram and bigram tables, large sparse
+arrays which may have hundreds of millions of entries.  As we saw in
+the above bigram table, n-gram models only consider the tags of words
+in the context.  A consequence of the size of the models is that it is
+simply impractical for nth-order models to be conditioned on the
+identities of words in the context.  In this section we will examine
+Brill tagging, a statistical tagging method which performs very well
+using models that are only a tiny fraction of the size of nth-order
+taggers.
+
+Brill tagging is a kind of *transformation-based learning*.  The
+general idea is very simple: guess the tag of each word, then go back
+and fix the mistakes.  In this way, a Brill tagger successively
+transforms a bad tagging of a text into a good one.  As with nth-order
+tagging this is a *supervised learning* method, since we need
+annotated training data.  However, unlike nth-order tagging, it does
+not count observations but compiles a list of transformational
+correction rules.
+
+The process of Brill tagging is usually explained by analogy with
+painting.  Suppose we were painting a tree, with all its details of
+boughs, branches, twigs and leaves, against a uniform sky-blue
+background.  Instead of painting the tree first then trying to paint
+blue in the gaps, it is simpler to paint the whole canvas blue, then
+"correct" the tree section by overpainting the blue background.  In
+the same fashion we might paint the trunk a uniform brown before going
+back to overpaint further details with a fine brush.  Brill tagging
+uses the same idea: get the bulk of the painting right with broad
+brush strokes, then fix up the details.  As time goes on, successively
+finer brushes are used, and the scale of the changes becomes
+arbitrarily small.  The decision of when to stop is somewhat
+arbitrary.  The following table illustrates this process, first
+tagging with the unigram tagger, then fixing the errors.
+
+==============  =======  ==========  =================================  =============================
+Steps in Brill Tagging
+-----------------------------------------------------------------------------------------------------
+Sentence:       Gold:    Unigram:    Replace ``nn`` with ``vb``         Replace ``to`` with ``in``
+                                     when the previous word is ``to``   when the next tag is ``nns`` 
+The             at       at
+President       nn-tl    nn-tl
+said            vbd      vbd
+he              pps      pps
+will            md       md
+ask             vb       vb
+Congress        np       np
+to              to       to
+increase        vb       *nn*         *vb*
+grants          nns      nns
+to              in       *to*         *to*                                *in*
+states          nns      nns
+for             in       in
+vocational      jj       jj
+rehabilitation  nn       nn
+==============  =======  ==========  =================================  =============================
+
+In this table we see two rules.  All such rules are generated from a
+template of the following form: form "replace *T :subscript:1* with *T
+:subscript:2* in the context *C*".  Typical contexts are the identity
+or the tag of the preceding or following word, or the appearance of a
+tag within 2-3 words of of the current word.  During its training
+phase, the tagger guesses values for *T :subscript:1*, *T
+:subscript:2* and *C*, to create thousands of candidate rules.  Each
+rule is then assigned a score based on its net benefit: the number of
+incorrect tags that it corrects, less the number of correct tags it
+incorrectly modifies.  This process is best illustrated by a listing
+of the output from the NLTK Brill tagger (here run on tagged Wall
+Street Journal text from the Penn Treebank). [#]_
+
+.. [#] We are grateful to Christopher Maloof for developing this Brill tagger
+       for NLTK.
+
+::
+
+  Loading tagged data...
+  Training unigram tagger: [accuracy: 0.820940]
+  Training Brill tagger on 37168 tokens...
+ 
+  Iteration 1: 1482 errors; ranking 23989 rules;
+    Found: "Replace POS with VBZ if the preceding word is tagged PRP"
+    Apply: [changed 39 tags: 39 correct; 0 incorrect]
+ 
+  Iteration 2: 1443 errors; ranking 23662 rules;
+    Found: "Replace VBP with VB if one of the 3 preceding words is tagged MD"
+    Apply: [changed 36 tags: 36 correct; 0 incorrect]
+ 
+  Iteration 3: 1407 errors; ranking 23308 rules;
+    Found: "Replace VBP with VB if the preceding word is tagged TO"
+    Apply: [changed 24 tags: 23 correct; 1 incorrect]
+ 
+  Iteration 4: 1384 errors; ranking 23057 rules;
+    Found: "Replace NN with VB if the preceding word is to"
+    Apply: [changed 67 tags: 22 correct; 45 incorrect]
+  ...
+  Iteration 20: 1138 errors; ranking 20717 rules;
+    Found: "Replace RBR with JJR if one of the 2 following words is tagged NNS"
+    Apply: [changed 14 tags: 10 correct; 4 incorrect]
+ 
+  Iteration 21: 1128 errors; ranking 20569 rules;
+    Found: "Replace VBD with VBN if the preceding word is tagged VBD"
+  [insufficient improvement; stopping]
+ 
+  Brill accuracy: 0.835145
+
+----------
+Conclusion
+----------
+
+This chapter has introduced the language processing task known as
+tagging, with an emphasis on part-of-speech tagging.  English word
+classes and their corresponding tags were introduced.  We showed how
+tagged tokens and tagged corpora can be represented, then discussed a
+variety of taggers: default tagger, regular expression tagger, unigram
+tagger, nth-order taggers, and the Brill tagger.  We also described
+some objective evaluation methods.  In the process, the reader has
+been introduced to two important paradigms in language processing,
+namely *language modelling* and *transformation-based learning*.  The
+former is extremely general, and we will encounter it again later.
+The latter had to be specially tailored to the tagging task, but
+resulted in smaller, linguistically-interpretable models.
+
+.. Discussion of how statistical methods have been used to
+   reach a linguistically interpretable, symbolic result.
+   Contrast between n-gram and Brill tagger about whether
+   we can learn anything from inspecting the model itself
+   (n-gram data vs transformational rules).  Comparing accuracy
+   of these two methods: 2D graph showing how accuracy changes
+   for the two methods as training size increases.
+
+There are several other important approaches to tagging involving
+*Hidden Markov Models* (see ``nltk.hmm``) and *Finite State
+Transducers*, though a discussion of these approaches falls outside
+the scope of this chapter.  Later we will see a generalization of
+tagging called *chunking* in which a contiguous sequence of words is
+assigned a single tag.
+
+
+
+.. Further Reading
+
+.. Brill tagging: Manning 361ff; Jurafsky 307ff
+
+.. HMM tagging: Manning 345ff
+
