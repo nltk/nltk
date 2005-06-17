@@ -189,6 +189,9 @@ ifeq "$($(docutils.)RST2HTML.ENABLE_SOURCE_URL)" "1"
 $(docutils.)RST2HTML.FLAGS += --source-url=$*$($(docutils.)SRCEXT)
 endif
 
+# Added by EK
+$(docutils.)RST2HTML.FLAGS += --stylesheet=../default.css
+
 # You can set `MATHHACK_DIR` to provide an explicit location for these scripts
 # (you must include a trailing slash!).  You can also change the tool name
 # variables completely...
