@@ -1,0 +1,6 @@
+MAIN = /home/champoll/tblplus/Tbl-parameters;
+FILE_TEMPLATE = ${MAIN}/file.templ;
+RULE_TEMPLATES = ${MAIN}/rules.templ;
+LOG_FILE = ${MAIN}/log.txt;
+EMPTY_LINES_ARE_SEPARATORS = 1;
+
