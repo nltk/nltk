@@ -573,6 +573,11 @@ language processing. It is closely related to the *precision/recall
 trade-off* that we'll encounter later when we discuss information
 retrieval.
 
+.. Note:: n-gram taggers should not consider context that crosses a
+sentence boundary.  Accordingly, NLTK taggers are designed to work
+with lists of sentences, where each sentence is a list of words, a
+doubly-nested structure.
+
 -----------------
 Combining Taggers
 -----------------
@@ -774,3 +779,146 @@ assigned a single tag.
 
 .. HMM tagging: Manning 345ff
 
+---------
+Exercises
+---------
+
+1. **Explorations with part-of-speech tagged corpora**:
+Tokenize the Brown Corpus and build one or more suitable data structures
+so that you can answer the following questions.
+
+  a) What is the most frequent tag? (This is the tag we would want to
+      assign with ``tag.Default``.
+  #)  Which word has the greatest number of distinct tags?
+  #)  What is the ratio of masculine to feminine pronouns?
+  #)  How many words are ambiguous, in the sense that they appear with at least two tags?
+  #)  What percentage of word *occurrences* in the Brown Corpus involve
+      these ambiguous words?
+  #)  Which nouns are more common in their plural form than their singular form?
+          (Only consider regular plurals, formed with the ``-s`` suffix.)
+  #)  Produce an alphabetically sorted list of the distinct words tagged as ``md``.
+  #)  Identify words which can be plural nouns or third person singular verbs (e.g. ``deals``).
+  #)  Identify three-word prepositional phrases of the form
+      preposition + determiner + noun.
+  #)  There are 264 distinct words having exactly three possible tags.
+      Print a table with the integers 1..10 in one column, and the
+      number of distinct words in the corpus having 1..10 distinct tags.
+  #)  The word ``still`` has seven possible tags.
+      Print out seven sentences containing this word, each one having
+      a different tag.
+
+#. **Regular Expression Tagging**
+   We defined the ``NN_CD_Tagger``, which can be used
+   as a fall-back tagger for unknown words.  This tagger only checks for
+   cardinal numbers.  By testing for particular prefix or suffix strings,
+   it should be possible to guess other tags.  For example, 
+   we could tag any word that ends with ``-s``
+   as a plural noun.
+   Define a regular expression tagger (using ``tag.Regexp``
+   which tests for at least five other patterns in the spelling of words.
+   (Use inline documentation to explain the rules.)
+   Evaluate the tagger using ``tag.accuracy()``, and
+   discuss your findings.
+          
+#. **Unigram Tagging**
+   Train a unigram tagger and run it on some new text.
+   Evaluate the tagger as before and discuss your findings.
+   Observe that some words are not assigned a tag.  Why not?
+          
+#. **Bigram Tagging**
+   Train a bigram tagger with no backoff tagger, and run it on some of the training
+   data.  Next, run it on some new data.  What happens to the
+   performance of the tagger?  Why?
+
+#. **Combining taggers**
+   There is typically a trade-off between the accuracy and coverage
+   for taggers: taggers that use more specific contexts usually
+   produce more accurate results, when they have seen those contexts
+   in the training data; but because the training data is limited,
+   they are less likely to encounter each context. The backoff
+   argument of the tagger initializer permits us to address this
+   problem by trying taggers with more specific contexts first; and
+   falling back to the more general taggers when necessary. Create a
+   default tagger and various unigram and n-gram taggers,
+   incorporating backoff, and train them on part of the Brown corpus.
+
+   a) Create three different combinations of the taggers. Test the
+      accuracy of each combined tagger. Which combination works best?
+
+   #) Try varying the size of the training corpus. How does it affect
+      your results?
+
+#. **Tagger context** (advanced)
+
+   N-gram taggers choose a tag for a token based on its type and the
+   tags of the *n-1* preceding tokens. This is a common context to use
+   for tagging, but certainly not the only possible context.
+   Construct a new tagger, subclassed from ``SequentialTagger``, that
+   uses a different context. If your tagger's context contains
+   multiple elements, then you should combine them in a
+   ``tuple``. Some possibilities for elements to include are: (i) the
+   text of the current token, or of a previous token; (ii) the length
+   of the current token's text, or of a previous token's text. (iii)
+   the first letter of the current token's text, or of a previous
+   token's text. (iv) the tag of a previous token.  Try to choose
+   context elements that you believe will help the tagger decide which
+   tag is appropriate. Keep in mind the trade-off between more
+   specific taggers with accurate results; and more general taggers
+   with broader coverage.  Combine your tagger with other taggers
+   using the backoff method.
+
+   a) How does the combined tagger's accuracy compare to the basic tagger? 
+
+   #) How does the combined tagger's accuracy compare to the combined taggers you
+      created in the previous exercise? 
+
+#. **Reverse sequential taggers** (advanced)
+   Since sequential taggers tag tokens in order, one at a time, they
+   can only use the predicted tags to the *left* of the current token
+   to decide what tag to assign to a token. But in some cases, the
+   *right* context can provide more information about what tag should
+   be used. A reverse sequential tagger is a tagger that: (i) assigns
+   tags to one token at a time, starting with the last token of the
+   text, and proceeding in right-to-left order. (ii) decides which tag
+   to assign a token on the basis of that token, the tokens that
+   follow it, and the predicted tags for the tokens that follow it.
+
+   There is no need to create new classes to perform reverse
+   sequential tagging.  By reversing texts at appropriate times, we
+   can use sequential tagging classes to perform reverse sequential
+   tagging. In particular, we should reverse the training text before
+   we train the tagger; and reverse the text that we wish to tag both
+   before and after we use the sequential tagger. Use this technique
+   to create a bigram reverse sequential tagger.
+
+   a) Measure its accuracy on a tagged section of the Brown corpus. Be
+      sure to use a different section of the corpus for testing than you
+      used for training.
+
+   b) How does its accuracy compare to a first order sequential
+   tagger, using the same training data and test data?
+        
+#. **Alternatives to backoff**
+   Create a new kind of tagger that combines several subtaggers using
+   a new mechanism other than backoff (e.g. voting).  For robustness
+   in the face of unknown words, include a regexp tagger, a unigram
+   tagger that removes a small number of prefix or suffix characters
+   until it recognises a word, or an n-gram tagger that does not
+   consider the text of the token being tagged.
+        
+#. **Comparing nth-order taggers and Brill taggers**
+   Investigate the relative accuracy of nth-order taggers with backoff
+   and Brill taggers as the size of the training data is increased.
+   Analyze and compare the errors made by each kind of tagger.
+        
+#. **Application to other languages**
+    Obtain some tagged data for another language, and train and
+    evaluate a variety of taggers on it.  If the language is
+    morphologically complex, or if there are any orthographic clues
+    (e.g. capitalization) to word classes, consider developing a
+    regular expression tagger for it (ordered after the unigram
+    tagger, and before the default tagger).  How does the accuracy of
+    your tagger(s) compare with the same taggers run on English data?
+    Discuss any issues you encounter in applying these methods to the
+    language.
+        
