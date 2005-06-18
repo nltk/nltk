@@ -1,0 +1,86 @@
+#!/home/champoll/Python/bin/python
+
+"""
+
+Simple script that presents the rules output by fnTBL as called by this project in a more
+human-readable format. For example, a rule like
+
+GOOD:3 BAD:0 SCORE:3 RULE: original_-1=_ original_0=b original_1=r original_2=a => guess=g
+
+is shown as
+
+GOOD:3 BAD:0 SCORE:3 RULE: replace " bra" by " gra"
+
+and so on. Note that this script is highly specific to the way fnTBL is used in this project
+and will not work on fnTBL-written rules in general.
+
+usage: inspect <rulefile>
+"""
+
+import sys, commands, re
+
+blank = '_'
+deletion = '@'
+
+# hack to print something directly attached to previous
+# output
+def no_space_before(x):
+    sys.stdout.softspace = 0
+    return x
+ns = no_space_before
+
+def list_to_string(l):
+    result = ''
+    for thing in l:
+        result = result + thing
+    return result
+
+
+# start of script
+
+if not len(sys.argv) == 2:
+        print 'usage: inspect <rulefile>'
+        sys.exit(1)
+
+
+
+start = re.compile(r'GOOD:\d* BAD:\d* SCORE:\d* RULE:\d* ') # matches the beginning of a rule 
+original = 'original_(-?\d+)=([^ \n]+) '                    # matches one of the "original_x=y" things in a rule
+guess = re.compile('guess=([^ \n]+)')                       # matches the "guess=z" part of a rule
+
+for line in open(sys.argv[1]):
+
+    matcher = start.search(line)
+    if not line.startswith('#'):                            # comment lines start with # in the rule file
+        pos1 = matcher.end()                                # pos1 is the place where the GOOD/BAD/SCORE part ends
+        head = line[:pos1]
+        body = line[pos1:]
+        print head,
+        print 'replace "',
+        index = 999                                         
+        s = ''
+        replacement_letter = guess.search(body).group(1)
+        if replacement_letter == blank:
+            replacement_letter = ' '
+        if replacement_letter == deletion:
+            replacement_letter = ''
+        for pos, letter in re.findall(original, body):
+            if index == 999:                                # if index hasn't been set yet (how do I say this in Python?)
+                index = int(pos)
+            if letter == blank:
+                letter = ' '
+            if letter == deletion:
+                letter = ''
+            s = s + letter
+
+        print ns(s + '" by "'),
+        l= list(s)
+        l[-index] = replacement_letter                      # generate the replacing sting by switching around one letter in it
+        print ns(list_to_string(l)),
+        print ns('";')
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+#!/home/champoll/Python/bin/python
+import sys, commands, re
+
+"""
+This little script can be used to quickly generate the file "rules.templ"
+which tells fnTBL the templates after which rules are generated and tried out.
+The parameter 'windowsize' should be something like 1 to 20 or so (depending
+on your system) and indicates the maximal distance between two letters such that
+they will 'see' each other as features. Larger numbers slow down system
+performance and may result in overfitting; smaller numbers may result in failing
+to capture long-distance dependencies. It's the usual tradeoff, but fnTBL is
+VERY fast even with large window sizes, so try it out :)
+usage: makeruletemplates.py <int:windowsize> > rules.templ
+"""
+
+
+if not len(sys.argv) == 2:
+    print 'usage: makeruletemplates.py <int:windowsize> > rules.templ'
+    sys.exit(1)
+
+window = int(sys.argv[1])
+
+for extent in range(window+1): # 0 to window inclusive
+
+    for i in range(0, extent+1):
+        # uncomment the following to produce dynamic as well as static rules
+      #  for j in range(0-extent, 1):
+      #     print 'guess_'+str(i+j),
+      #  print '=> guess'
+
+        # generate templates for static rules (rules that only take the initial
+        # state into account, not the present guess)
+        for j in range(0-extent, 1): 
+            print 'original_'+str(i+j),
+        print '=> guess'

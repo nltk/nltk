@@ -1,0 +1,79 @@
+#!/home/champoll/Python/bin/python
+import sys, commands, re, tempfile
+
+""" 
+This script brings a text file into suitable format for fnTBL, so that it can be used
+either as a test file or as a file on which fnTBL-generated rules are applied. It shouldn't
+be called directly by the user (use apply instead, followed by evaluate if you want to do testing)
+"""
+
+
+blank = '_' # only one character!
+
+tmp = tempfile.gettempdir()+'/'
+
+# hack to print something directly attached to previous
+# output
+def no_space_before(x):
+    sys.stdout.softspace = 0
+    return x
+
+def remove_whitespace_at_end(string):
+    return re.sub("\s+$", "", string)
+rw = remove_whitespace_at_end
+
+def insert_newlines_after_every_character(string):
+    result = ''
+    for character in string:
+       result = result+character+'\n'
+    return result
+inaec = insert_newlines_after_every_character
+
+
+
+# start of script
+
+if not len(sys.argv) == 2:
+    print "usage: maketestfile input.txt (shouldn't be called directly by you)"
+    sys.exit(1)
+
+file1 = sys.argv[1]
+
+
+# eliminate whitespace at end of lines
+temp1 = open(tmp+"__temp1__", "w")
+
+for line in open(file1):
+    # remove whitespace after periods within paragraphs
+    line = line.replace('. ', '.')
+    temp1.write(inaec(rw(line)+' '))
+temp1.close()
+
+foundperiod = False
+
+for line in open(tmp+"__temp1__"):
+    """
+    if foundperiod == True: # we are after a period
+        if line.startswith(' '): # if not within a paragraph
+            print '\n',
+        else:
+            print ' ', # insert again whitespace after periods within paragraphs
+        foundperiod = False
+    """
+    line = line.replace(' ', blank)
+
+    # get rid of newline
+    line = line[:-1]
+    print line, line, line
+    """
+    if line.startswith('.'): # insert blank line after period
+        foundperiod = True
+    """
+    if line.startswith('.'):
+        print
+commands.getoutput("rm -f "+tmp+"__temp1__")
+
+
+
+
+

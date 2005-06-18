@@ -1,0 +1,23 @@
+# train the fnTBL system
+
+if [ $# -ne 4 ]; then
+         echo 1>&2 'Usage: learn <original> <goldstandard> <rule_output> <int:threshold>'
+         echo 1>&2 'Trains the fnTBL system letter-based, write rules into rule_output'
+         echo 1>&2 '(the threshold parameter is for fnTBL and indicates the minimal score a rule'
+         echo 1>&2 'needs in order to be kept. Set it to zero if you do not know what to do)'
+         exit 127
+fi
+
+# align original and gold standard
+align $1 $2 > /tmp/training_file.txt
+
+# If I was better at writing shell scripts, I'd determine the temp directory
+# and the directory with the parameter file like I do it in the python scripts :)
+
+~/fnTBL-1.1/bin/fnTBL-train /tmp/training_file.txt $3 \
+-F ~/tblplus/Tbl-parameters/parameter-file.txt -threshold $4
+
+# clean up
+rm /tmp/training_file.txt
+
+exit 0
