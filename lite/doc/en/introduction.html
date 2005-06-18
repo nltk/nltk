@@ -7,7 +7,7 @@
 <title>Introduction to Natural Language Processing</title>
 <meta name="author" content="Steven Bird" />
 <meta name="author" content="Ewan Klein and Edward Loper" />
-<meta name="date" content="2005-06-13" />
+<meta name="date" content="2005-06-17" />
 <meta name="copyright" content="© 2001-2005 University of Pennsylvania" />
 <link rel="stylesheet" href=".." type="text/css" />
 </head>
@@ -27,9 +27,9 @@
 <tr><th class="docinfo-name">Version:</th>
 <td>0.1</td></tr>
 <tr><th class="docinfo-name">Revision:</th>
-<td>1.1</td></tr>
+<td>1.2</td></tr>
 <tr><th class="docinfo-name">Date:</th>
-<td>2005-06-13</td></tr>
+<td>2005-06-17</td></tr>
 <tr><th class="docinfo-name">Copyright:</th>
 <td>© 2001-2005 University of Pennsylvania</td></tr>
 <tr class="field"><th class="docinfo-name">License:</th><td class="field-body">Creative Commons Attribution-NonCommercial-ShareAlike License</td>
@@ -242,15 +242,15 @@ NLP applications implemented in the Prolog programming language.</p>
 declarative/procedural distinction and the principle of
 compositionality.  They only seemed to get in the way of building
 practical systems.  For example, early question answering systems
-employed fixed pattern-matching templates such as: <tt class="docutils literal"><span class="pre">How</span> <span class="pre">many</span>
-<span class="pre">&amp;blank;:subscript:`i`</span> <span class="pre">does</span> <span class="pre">&amp;blank;:subscript:`j`</span> <span class="pre">have?</span></tt>, where slot
+employed fixed pattern-matching templates such as: <em>How many
+&amp;blank;:subscript:`i` does &amp;blank;:subscript:`j` have?</em>, where slot
 <tt class="docutils literal"><span class="pre">i</span></tt> is a feature or service, and slot <tt class="docutils literal"><span class="pre">j</span></tt> is a person or place.
 Each template came with a predefined semantic function, such as
 <tt class="docutils literal"><span class="pre">count(i,j)</span></tt>.  A user's question which matched the template would be
 mapped to the corresponding semantic function and then &quot;executed&quot; to
 obtain an answer, <tt class="docutils literal"><span class="pre">k</span> <span class="pre">=</span> <span class="pre">count(i,j)</span></tt>.  This answer would be
-substituted into a new template: <tt class="docutils literal"><span class="pre">&amp;blank;:subscript:`j`</span> <span class="pre">has</span>
-<span class="pre">&amp;blank;:subscript:`k`</span> <span class="pre">&amp;blank;:subscript:`i`</span></tt>.  For example, the
+substituted into a new template: <em>&amp;blank;:subscript:`j` has
+&amp;blank;:subscript:`k` &amp;blank;:subscript:`i`</em>.  For example, the
 question <em>How many airports:subscript:`i` does London:subscript:`j`
 have?</em> can be mapped onto a template (as shown by the subscripts) and
 translated to an executable program.  The result can be substituted
@@ -518,8 +518,8 @@ the input can belong to the category. To illustrate, let's suppose
 that the first grammer rule chosen by the parser is <em>S |rarr| NP VP</em>
 and the second rule chosen is <em>NP |rarr| Det N</em>; then the partial
 tree will be:</p>
-<div class="figure">
-<img alt="../images/partialtree.png" src="../images/partialtree.png" />
+<div align="center" class="figure">
+<img alt="../images/partialtree.png" height="400" src="../images/partialtree.png" />
 <p class="caption">Partial Parse Tree</p>
 </div>
 <p>If we assume that the input string we are trying to parse is <em>the cat
@@ -540,8 +540,8 @@ produce a definite result at the end.</p>
 the context of a spoken dialogue system, such as our earlier example
 of an application that offers the user information about movies
 currently on show.</p>
-<div class="figure">
-<img alt="../images/dialogue.png" src="../images/dialogue.png" />
+<div align="center" class="figure">
+<img alt="../images/dialogue.png" height="400" src="../images/dialogue.png" />
 <p class="caption">Architecture of Spoken Dialogue System</p>
 </div>
 <p>Down the lefthand side of the diagram we have shown a pipeline of some

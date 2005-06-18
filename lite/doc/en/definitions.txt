@@ -1,0 +1,6 @@
+.. |copy| unicode:: 0xA9 .. copyright sign
+.. |forall| unicode:: U+2220 .. for all
+.. |larr| unicode:: U+2190 .. left arrow
+.. |rarr| unicode:: U+2192 .. right arrow
+.. |space| unicode:: U+2423 .. space underbar
+   

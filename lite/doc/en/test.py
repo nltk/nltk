@@ -1,2 +1,2 @@
 import doctest
-doctest.testfile("tokenize.txt")
+doctest.testfile("tag.txt")

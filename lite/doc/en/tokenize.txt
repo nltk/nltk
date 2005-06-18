@@ -1,10 +1,11 @@
 .. -*- mode: rst -*-
+.. include:: definitions.txt
 
 =====================================================================
 Elementary Language Processing: Tokenizing Text and Classifying Words
 =====================================================================
 
-:Authors: Steven Bird, Ewan Klein and Edward Loper
+:Authors: Steven Bird, Ewan Klein, Edward Loper
 :Contact: sb@csse.unimelb.edu.au
 :Version: 0.1
 :Revision: $Revision$
@@ -12,9 +13,6 @@ Elementary Language Processing: Tokenizing Text and Classifying Words
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. |copy| unicode:: 0xA9 .. copyright sign
-.. |space| unicode:: U+2423 .. space underbar
-   
 .. _Introduction:
 
 ------------
