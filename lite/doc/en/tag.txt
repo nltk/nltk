@@ -1,19 +1,17 @@
 .. -*- mode: rst -*-
+.. include:: definitions.txt
 
 =======
 Tagging
 =======
 
-:Authors: Steven Bird, Ewan Klein and Edward Loper
+:Authors: Steven Bird, Ewan Klein, Edward Loper
 :Contact: sb@csse.unimelb.edu.au
 :Version: 0.1
 :Revision: $Revision$
 :Date: $Date$
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
-
-.. |copy| unicode:: 0xA9 .. copyright sign
-.. |rarr| unicode:: U+2192 .. right arrow
 
 ------------
 Introduction

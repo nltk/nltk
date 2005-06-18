@@ -1,21 +1,17 @@
 .. -*- mode: rst -*-
+.. include:: definitions.txt
 
 ===========================================
 Introduction to Natural Language Processing
 ===========================================
 
-:Authors: Steven Bird, Ewan Klein and Edward Loper
+:Authors: Steven Bird, Ewan Klein, Edward Loper
 :Contact: sb@csse.unimelb.edu.au
 :Version: 0.1
 :Revision: $Revision$
 :Date: $Date$
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
-
-.. |copy| unicode:: 0xA9 .. copyright sign
-.. |forall| unicode:: U+2220 .. for all
-.. |larr| unicode:: U+2190 .. left arrow
-.. |rarr| unicode:: U+2192 .. right arrow
 
 .. Epigraph:: The single and shortest definition of civilization may
    be the word *language*...  Civilization, if it means something
@@ -228,15 +224,15 @@ A separate strand of development in the 1960s and 1970s eschewed the
 declarative/procedural distinction and the principle of
 compositionality.  They only seemed to get in the way of building
 practical systems.  For example, early question answering systems
-employed fixed pattern-matching templates such as: ``How many
-&blank;:subscript:`i` does &blank;:subscript:`j` have?``, where slot
+employed fixed pattern-matching templates such as: *How many
+&blank;:subscript:`i` does &blank;:subscript:`j` have?*, where slot
 ``i`` is a feature or service, and slot ``j`` is a person or place.
 Each template came with a predefined semantic function, such as
 ``count(i,j)``.  A user's question which matched the template would be
 mapped to the corresponding semantic function and then "executed" to
 obtain an answer, ``k = count(i,j)``.  This answer would be
-substituted into a new template: ``&blank;:subscript:`j` has
-&blank;:subscript:`k` &blank;:subscript:`i```.  For example, the
+substituted into a new template: *&blank;:subscript:`j` has
+&blank;:subscript:`k` &blank;:subscript:`i`*.  For example, the
 question *How many airports:subscript:`i` does London:subscript:`j`
 have?* can be mapped onto a template (as shown by the subscripts) and
 translated to an executable program.  The result can be substituted
