@@ -92,6 +92,7 @@ fiction: science    16   49     4    12     8     16
 press: reportage    94   86     66   36     50    387 
 fiction: romance    79   195    11   51     46    43 
 religion            84   59     79   12     54    64 
+==================  ===  =====  ===  =====  ====  ====
 
 This tutorial focuses on part-of-speech tagging, as an early step in
 language processing which does not depend on deep linguistic analysis.
@@ -100,23 +101,22 @@ can be tagged with directives to a speech synthesiser, indicating
 which words should be emphasised.  Words can be tagged with sense
 numbers, indicating which sense of the word was used.  Words can also
 be tagged with morphological features.  Examples of each of these
-kinds of tags are shown in the following table.
+kinds of tags are shown below.
 Note that for space reasons, we only show the tag on a single
 italicised word. Note also that the first two examples use XML-style
 tags, where elements in angle brackets enclose the word that is
 tagged.
 
-===============================================   ==================================================================
-Examples of Non Part-of-Speech Tagging
---------------------------------------------------------------------------------------------------------------------
-Speech Synthesis Markup Language (W3C SSML)       That is a <emphasis>*big*</emphasis> car! 
-SemCor: Brown Corpus tagged with WordNet senses   Space in any <wf pos="NN" lemma="form" wnsn="4">*form*&lt;/wf>
-                                                  is completely measured by the three dimensions.
-                                                  (Wordnet form/nn sense 4: "shape, form, configuration,
-                                                  contour, conformation")
-Morphological tagging, from the                   E' italiano , come progetto e realizzazione , il
-Turin University Italian Treebank                 *primo* (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .
-===============================================   ==================================================================
+1. *Speech Synthesis Markup Language (W3C SSML):*
+   ``That is a <emphasis>*big*</emphasis> car!``
+#. *SemCor: Brown Corpus tagged with WordNet senses:*
+   ``Space in any <wf pos="NN" lemma="form" wnsn="4">*form*</wf>
+   is completely measured by the three dimensions.``
+   (Wordnet form/nn sense 4: "shape, form, configuration,
+   contour, conformation")
+#. *Morphological tagging, from the Turin University Italian Treebank:*
+   ``E' italiano , come progetto e realizzazione , il
+   *primo* (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .``
 
 We have already noted that part-of-speech tags are closely related to
 the notion of word class used in syntax.  The assumption in
@@ -139,9 +139,10 @@ classes. These are shown in the following table, together with their
 counterparts from the Brown tag set.
 
 ================   =========     ============================
-Word Class Labels and Tags
+Word Class Labels and Brown Corpus Tags
 -------------------------------------------------------------
 Word Class Label   Brown Tag     Word Class 
+================   =========     ============================
 Det                at            Article 
 N                  nn            Noun 
 V                  vb            Verb 
@@ -192,8 +193,8 @@ exhibit different morphological inflections and different
 co-occurrence restrictions with neighbouring words. For example,
 ``am`` cannot replace either of the first two examples:
 
-  *Am still!
-  *Am still is hard.
+  \*Am still!
+  \*Am still is hard.
 
 These differences between the forms are encoded in their Brown Corpus
 tags: ``be/be, being/beg, am/bem, been/ben`` and ``was/bedz``. This
@@ -574,9 +575,9 @@ trade-off* that we'll encounter later when we discuss information
 retrieval.
 
 .. Note:: n-gram taggers should not consider context that crosses a
-sentence boundary.  Accordingly, NLTK taggers are designed to work
-with lists of sentences, where each sentence is a list of words, a
-doubly-nested structure.
+   sentence boundary.  Accordingly, NLTK taggers are designed to work
+   with lists of sentences, where each sentence is a list of words, a
+   doubly-nested structure.
 
 -----------------
 Combining Taggers
@@ -604,13 +605,13 @@ The backoff-tagger may itself have a backoff tagger::
   >>> t2.train(brown.tagged('a'))
 
 .. Note:: We specify the backoff tagger when the tagger is
-initialized, so that training can take advantage of the backing off.
-Thus, if the bigram tagger and its unigram backoff tagger would assign
-the same tag in a certain context, the training instance is discarded.
-This keeps the bigram tagger model as small as possible.  We can
-further specify that a tagger needs to see more than one instance of a
-context in order to retain it, e.g. ``Bigram(cutoff=2, backoff=t1)``
-will discard contexts which have only been seen once or twice.
+   initialized, so that training can take advantage of the backing off.
+   Thus, if the bigram tagger and its unigram backoff tagger would assign
+   the same tag in a certain context, the training instance is discarded.
+   This keeps the bigram tagger model as small as possible.  We can
+   further specify that a tagger needs to see more than one instance of a
+   context in order to retain it, e.g. ``Bigram(cutoff=2, backoff=t1)``
+   will discard contexts which have only been seen once or twice.
 
 Now we can test the taggers::
 
