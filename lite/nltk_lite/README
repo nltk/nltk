@@ -1,0 +1,34 @@
+Status of conversion to NLTK-Lite:
+==================================
+
+The following modules are completed, except where otherwise noted:
+
+./corpora:
+  brown.py
+  genesis.py
+  treebank.py
+
+./draw:
+  cfg.py
+  plot.py
+  rdparser.py (broken)
+  srparser.py (broken)
+  tree.py
+
+./parse:
+  cfg.py
+  chunk.py (broken)
+  featurestructure.py
+  parser.py (many functions need to be renamed)
+  tree.py
+
+./tag:
+  brill.py
+  ngram.py
+  unigram.py
+
+./tokenize:
+  porter.py
+  regexp.py
+  stem.py
+
