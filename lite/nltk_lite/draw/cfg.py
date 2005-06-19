@@ -727,7 +727,7 @@ def demo():
 
     def cb(cfg): print cfg
     top = Tk()
-    editor = CFGEditor(top, cfg.productions(), cb)
+    editor = CFGEditor(top, cfg, cb)
     Label(top, text='\nTesting CFG Editor\n').pack()
     Button(top, text='Quit', command=top.destroy).pack()
     top.mainloop()
