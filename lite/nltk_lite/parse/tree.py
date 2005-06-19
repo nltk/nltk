@@ -184,8 +184,8 @@ class Tree(list):
            >>> # Convert tree into a MultiParentedTree:
            >>> tree = MultiParentedTree.convert(tree)
 
-        @type tree: L{Tree}
-        @param tree: The tree that should be converted.
+        @type val: L{Tree}
+        @param val: The tree that should be converted.
         @return: The new C{Tree}.
         """
         if isinstance(val, Tree):

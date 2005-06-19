@@ -15,6 +15,10 @@ PYTHON = python
 # Get the version of nltk
 NLTK_VERSION=$(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 
+# CVS snapshot build directory
+DATE = $(shell date +%F)
+CVS_SNAPSHOT = nltk_lite_$(DATE)
+
 all: distributions
 
 usage:
@@ -62,9 +66,19 @@ rpmdist: INSTALL.TXT
 windist: INSTALL.TXT
 	python setup.py -q bdist --format=wininst
 
-checkdocs:
-	$(EPYDOC) -v --check nltk
+checkapidocs:
+	$(EPYDOC) -v --check nltk_lite
+
+apidocs:
+	$(EPYDOC) -o doc/api nltk_lite
 
 # Automatically add the appropriate version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
+
+# CVS snapshot
+tgz:
+	rm -rf $(CVS_SNAPSHOT)
+	cvs -d:ext:stevenbird@cvs.sourceforge.net:/cvsroot/nltk co nltk/lite
+	mv nltk $(CVS_SNAPSHOT)
+	tar cvzf $(CVS_SNAPSHOT).tgz $(CVS_SNAPSHOT)

@@ -30,7 +30,6 @@ class StemmerI:
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
     
-    @outprop: C{STEM}: The token's morphological stem.
     """
     def stem(self, token):
         """
