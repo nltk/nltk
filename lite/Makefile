@@ -78,7 +78,10 @@ INSTALL.TXT: INSTALL.TXT.in
 
 # CVS snapshot
 tgz:
+	echo "build apidocs and tutorials manually"
 	rm -rf $(CVS_SNAPSHOT)
 	cvs -d:ext:stevenbird@cvs.sourceforge.net:/cvsroot/nltk co nltk/lite
 	mv nltk $(CVS_SNAPSHOT)
+#	cp -r doc/api $(CVS_SNAPSHOT)/lite/doc/api
+	cp doc/en/*.html $(CVS_SNAPSHOT)/lite/doc/en
 	tar cvzf $(CVS_SNAPSHOT).tgz $(CVS_SNAPSHOT)
