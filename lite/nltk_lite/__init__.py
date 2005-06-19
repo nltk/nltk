@@ -16,13 +16,12 @@ possible.
 Key differences from NLTK are as follows:
 - tokens are represented as strings, tuples, or trees
 - all tokenizers are iterators
-- no sub-packages (NLTK packages become modules here)
-- limit object orientation (e.g. classes with one method, subclassing)
+- less object orientation
 
 NLTK-Lite is primarily intended to facilitate teaching NLP to students
 having limited programming experience.  The focus is on teaching
-Python together with the help of NLP recipes, instead of teaching students to use
-a large set of specialized classes.
+Python together with the help of NLP recipes, instead of teaching
+students to use a large set of specialized classes.
 
 @version: 0.1
 
@@ -62,9 +61,5 @@ __maintainer_email__ = "sb@csse.unimelb.edu.au"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 
-
-# import all modules here
-# from tokenizer import *
-# from cfg import *
 
 

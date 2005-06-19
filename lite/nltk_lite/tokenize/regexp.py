@@ -156,8 +156,8 @@ def whitespace(s):
     """
     Tokenize the text at whitespace.
 
-    @param text: the string or string iterator to be tokenized
-    @type text: C{string} or C{iter(string)}
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
     return (t for t in regexp(s, pattern=WHITESPACE, gaps=True))
@@ -166,8 +166,8 @@ def line(s):
     """
     Tokenize the text into lines.
 
-    @param text: the string or string iterator to be tokenized
-    @type text: C{string} or C{iter(string)}
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
     return (t for t in regexp(s, pattern=NEWLINE, gaps=True))
@@ -176,8 +176,8 @@ def blankline(s):
     """
     Tokenize the text into paragraphs (separated by blank lines).
 
-    @param text: the string or string iterator to be tokenized
-    @type text: C{string} or C{iter(string)}
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
     return (t for t in regexp(s, pattern=BLANKLINE, gaps=True))
