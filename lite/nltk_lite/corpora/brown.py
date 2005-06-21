@@ -80,12 +80,13 @@ def tagged(files = items):
     return _read(files, tag2tuple)
 
 def demo():
+    from nltk_lite.corpora import brown
     from itertools import islice
 
-    for sent in islice(raw('a'), 0, 5):
+    for sent in islice(brown.raw('a'), 0, 5):
         print sent
 
-    for sent in islice(tagged('a'), 0, 5):
+    for sent in islice(brown.tagged('a'), 0, 5):
         print sent
 
 if __name__ == '__main__':

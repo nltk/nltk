@@ -56,19 +56,17 @@ def raw(files = 'english-kjv'):
             yield t
 
 def demo():
+    from nltk_lite.corpora import genesis
+    from itertools import islice
 
-    i=0
-    for word in raw():
+    print 'English:'
+    for word in islice(genesis.raw(), 27):
         print word,
-        i+=1
-        if i>26: break
     print
 
-    i=0
-    for word in raw('finnish'):
+    print 'Finnish:'
+    for word in islice(genesis.raw('finnish'), 27):
         print word,
-        i+=1
-        if i>26: break
     print
 
 if __name__ == '__main__':
