@@ -22,7 +22,7 @@ import sys           # for getting command-line arguments
 ## The Brill Tagger
 ######################################################################
 
-class Brill(TaggerI):
+class Brill(TagI):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     X{initial tagger} (such as L{tag.Default}) to assign an intial
@@ -39,7 +39,7 @@ class Brill(TaggerI):
     def __init__(self, initial_tagger, rules):
         """
         @param initial_tagger: The initial tagger
-        @type initial_tagger: L{TaggerI}
+        @type initial_tagger: L{TagI}
         @param rules: An ordered list of transformation rules that
             should be used to correct the initial tagging.
         @type rules: C{list} of L{BrillRuleI}
@@ -51,7 +51,7 @@ class Brill(TaggerI):
         return self._rules[:]
 
     def tag (self, tokens):
-        # Inherit documentation from TaggerI
+        # Inherit documentation from TagI
         
         # Run the initial tagger.
         tagged_tokens = list(self._initial_tagger.tag(tokens))

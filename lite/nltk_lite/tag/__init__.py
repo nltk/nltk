@@ -15,7 +15,7 @@ the L{TaggerI} interface.
 
 from types import ListType
 
-class TaggerI:
+class TagI:
     """
     A processing interface for assigning a tag to each token in a list.
     Tags are case sensitive strings that identify some property of each
@@ -28,7 +28,7 @@ class TaggerI:
         """
         raise NotImplementedError()
 
-class SequentialBackoff(TaggerI):
+class SequentialBackoff(TagI):
     """
     A tagger that tags words sequentially, left to right.
     """
