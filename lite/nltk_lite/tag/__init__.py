@@ -13,7 +13,7 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TaggerI} interface.
 """
 
-from types import list
+from types import ListType
 
 class TaggerI:
     """
@@ -33,7 +33,7 @@ class SequentialBackoff(TaggerI):
     A tagger that tags words sequentially, left to right.
     """
     def tag(self, tokens, verbose=False):
-        if type(tokens[0]) == list:
+        if type(tokens[0]) == ListType:
             yield tag_sents(self, tokens, verbose)
         for token in tokens:
             tag = self.tag_one(token)
