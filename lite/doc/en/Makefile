@@ -6,9 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-TUTORIALS = preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt
-HTML =      preface.html introduction.html programming.html tokenize.html tag.html
-PDF =       preface.pdf  introduction.pdf  programming.pdf  tokenize.pdf  tag.pdf
+TUTORIALS = preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt  parse.txt
+HTML =      preface.html introduction.html programming.html tokenize.html tag.html parse.html
+PDF =       preface.pdf  introduction.pdf  programming.pdf  tokenize.pdf  tag.pdf  parse.pdf
 
 PYTHON = python
 RST2HTML = rst2html.py
