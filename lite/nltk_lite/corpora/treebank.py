@@ -167,21 +167,19 @@ def raw(files = 'raw'):
 
 
 def demo():
+    from nltk_lite.corpora import treebank
     from itertools import islice
 
-    for tree in parsed():
+    for tree in islice(treebank.parsed(), 3):
         print tree.pp()
 
-    for tree in islice(parsed(), 3):
+    for tree in islice(treebank.chunked(), 3):
         print tree.pp()
 
-    for tree in islice(chunked(), 3):
-        print tree.pp()
-
-    for sent in islice(tagged(), 3):
+    for sent in islice(treebank.tagged(), 3):
         print sent
 
-    for sent in islice(raw(), 3):
+    for sent in islice(treebank.raw(), 3):
         print sent
 
 if __name__ == '__main__':
