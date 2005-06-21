@@ -19,21 +19,21 @@ sentences.  In this context, the leaves of a parse tree are word
 tokens; and the node values are phrasal categories, such as C{NP}
 and C{VP}.
 
-The L{CFG} class is used to encode context free grammars.  Each C{CFG}
+The L{Grammar} class is used to encode context free grammars.  Each C{Grammar}
 consists of a start symbol and a set of productions.  The X{start
 symbol} specifies the root node value for parse trees.  For example,
 the start symbol for syntactic parsing is usually C{S}.  Start
 symbols are encoded using the C{Nonterminal} class, which is discussed
 below.
 
-A CFG's X{productions} specify what parent-child relationships a parse
+A Grammar's X{productions} specify what parent-child relationships a parse
 tree can contain.  Each production specifies that a particular
 node can be the parent of a particular set of children.  For example,
 the production C{<S> -> <NP> <VP>} specifies that an C{S} node can
 be the parent of an C{NP} node and a C{VP} node.
 
-CFG productions are implemented by the C{CFGProduction} class.
-Each C{CFGProduction} consists of a left hand side and a right hand
+Grammar productions are implemented by the C{Production} class.
+Each C{Production} consists of a left hand side and a right hand
 side.  The X{left hand side} is a C{Nonterminal} that specifies the
 node type for a potential parent; and the X{right hand side} is a list
 that specifies allowable children for that parent.  This lists
@@ -45,12 +45,12 @@ corresponding child may be a C{Token} with the with that type.
 The C{Nonterminal} class is used to distinguish node values from leaf
 values.  This prevents the grammar from accidentally using a leaf
 value (such as the English word "A") as the node of a subtree.  Within
-a C{CFG}, all node values are wrapped in the C{Nonterminal} class.
+a C{Grammar}, all node values are wrapped in the C{Nonterminal} class.
 Note, however, that the trees that are specified by the grammar do
 B{not} include these C{Nonterminal} wrappers.
 
-CFGs can also be given a more procedural interpretation.  According to
-this interpretation, a CFG specifies any tree structure M{tree} that
+Grammars can also be given a more procedural interpretation.  According to
+this interpretation, a Grammar specifies any tree structure M{tree} that
 can be produced by the following procedure:
 
     - Set M{tree} to the start symbol
@@ -89,7 +89,7 @@ class Nonterminal:
     """
     A non-terminal symbol for a context free grammar.  C{Nonterminal}
     is a wrapper class for node values; it is used by
-    C{CFGProduction}s to distinguish node values from leaf values.
+    C{Production}s to distinguish node values from leaf values.
     The node value that is wrapped by a C{Nonterminal} is known as its
     X{symbol}.  Symbols are typically strings representing phrasal
     categories (such as C{"NP"} or C{"VP"}).  However, more complex
@@ -98,8 +98,8 @@ class Nonterminal:
     hashable.  Two C{Nonterminal}s are considered equal if their
     symbols are equal.
 
-    @see: L{CFG}
-    @see: L{CFGProduction}
+    @see: L{Grammar}
+    @see: L{Production}
     @type _symbol: (any)
     @ivar _symbol: The node value corresponding to this
         C{Nonterminal}.  This value must be immutable and hashable. 
@@ -199,10 +199,10 @@ def nonterminals(symbols):
     return [Nonterminal(s.strip()) for s in symbol_list]
 
 #################################################################
-# CFGProduction and CFG
+# Production and Grammar
 #################################################################
 
-class CFGProduction:
+class Production:
     """
     A context-free grammar production.  Each production
     expands a single C{Nonterminal} (the X{left-hand side}) to a
@@ -211,13 +211,13 @@ class CFGProduction:
     not a C{Nonterminal}.  Typically, terminals are strings
     representing word types, such as C{"dog"} or C{"under"}.
 
-    Abstractly, a CFG production indicates that the right-hand side is
-    a possible X{instantiation} of the left-hand side.  CFG
+    Abstractly, a Grammar production indicates that the right-hand side is
+    a possible X{instantiation} of the left-hand side.  Grammar
     productions are X{context-free}, in the sense that this
     instantiation should not depend on the context of the left-hand
     side or of the right-hand side.
 
-    @see: L{CFG}
+    @see: L{Grammar}
     @see: L{Nonterminal}
     @type _lhs: L{Nonterminal}
     @ivar _lhs: The left-hand side of the production.
@@ -227,11 +227,11 @@ class CFGProduction:
 
     def __init__(self, lhs, rhs):
         """
-        Construct a new C{CFGProduction}.
+        Construct a new C{Production}.
 
-        @param lhs: The left-hand side of the new C{CFGProduction}.
+        @param lhs: The left-hand side of the new C{Production}.
         @type lhs: L{Nonterminal}
-        @param rhs: The right-hand side of the new C{CFGProduction}.
+        @param rhs: The right-hand side of the new C{Production}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         self._lhs = lhs
@@ -239,14 +239,14 @@ class CFGProduction:
 
     def lhs(self):
         """
-        @return: the left-hand side of this C{CFGProduction}.
+        @return: the left-hand side of this C{Production}.
         @rtype: L{Nonterminal}
         """
         return self._lhs
 
     def rhs(self):
         """
-        @return: the right-hand side of this C{CFGProduction}.
+        @return: the right-hand side of this C{Production}.
         @rtype: sequence of (C{Nonterminal} and (terminal))
         """
         return self._rhs
@@ -254,7 +254,7 @@ class CFGProduction:
     def __str__(self):
         """
         @return: A verbose string representation of the
-            C{CFGProduction}.
+            C{Production}.
         @rtype: C{string}
         """
         str = '%s ->' % (self._lhs.symbol(),)
@@ -275,7 +275,7 @@ class CFGProduction:
 
     def __eq__(self, other):
         """
-        @return: true if this C{CFGProduction} is equal to C{other}.
+        @return: true if this C{Production} is equal to C{other}.
         @rtype: C{boolean}
         """
         return (_classeq(self, other) and
@@ -291,7 +291,7 @@ class CFGProduction:
 
     def __hash__(self):
         """
-        @return: A hash value for the C{CFGProduction}.
+        @return: A hash value for the C{Production}.
         @rtype: C{int}
         """
         return hash((self._lhs, self._rhs))
@@ -305,10 +305,10 @@ class CFGProduction:
         Returns a list of productions!
         """
         # Use _PARSE_RE to check that it's valid.
-        if not CFGProduction._PARSE_RE.match(s):
+        if not Production._PARSE_RE.match(s):
             raise ValueError, 'Bad production string'
         # Use _SPLIT_RE to process it.
-        pieces = CFGProduction._SPLIT_RE.split(s)
+        pieces = Production._SPLIT_RE.split(s)
         pieces = [p for i,p in enumerate(pieces) if i%2==1]
         lhside = Nonterminal(pieces[0])
         rhsides = [[]]
@@ -319,31 +319,27 @@ class CFGProduction:
                 rhsides[-1].append(piece[1:-1])        # Terminal
             else:
                 rhsides[-1].append(Nonterminal(piece)) # Nonterminal
-        return [CFGProduction(lhside, rhside) for rhside in rhsides]
+        return [Production(lhside, rhside) for rhside in rhsides]
     parse = staticmethod(parse)
 
-class CFG:
+class Grammar:
     """
-    A context-free grammar.  A CFG consists of a start state and a set
+    A context-free grammar.  A Grammar consists of a start state and a set
     of productions.  The set of terminals and nonterminals is
     implicitly specified by the productions.
 
     If you need efficient key-based access to productions, you
     can use a subclass to implement it.
-
-    @see: L{CFGProduction}
-    @see: L{Nonterminal}
-    @see: L{nltk.parser}
     """
     def __init__(self, start, productions):
         """
         Create a new context-free grammar, from the given start state
-        and set of C{CFGProduction}s.
+        and set of C{Production}s.
         
         @param start: The start symbol
         @type start: L{Nonterminal}
         @param productions: The list of productions that defines the grammar
-        @type productions: C{list} of L{CFGProduction}
+        @type productions: C{list} of L{Production}
         """
         self._start = start
         self._productions = tuple(productions)
@@ -355,10 +351,10 @@ class CFG:
         return self._start
 
     def __repr__(self):
-        return '<CFG with %d productions>' % len(self._productions)
+        return '<Grammar with %d productions>' % len(self._productions)
 
     def __str__(self):
-        str = 'CFG with %d productions' % len(self._productions)
+        str = 'Grammar with %d productions' % len(self._productions)
         str += ' (start state = %s)' % self._start
         for production in self._productions:
             str += '\n    %s' % production
@@ -369,13 +365,13 @@ class CFG:
         for linenum, line in enumerate(s.split('\n')):
             line = line.strip()
             if line.startswith('#') or line=='': continue
-            try: productions += CFGProduction.parse(line)
+            try: productions += Production.parse(line)
             except ValueError:
                 raise ValueError, 'Unable to parse line %s' % linenum
         if len(productions) == 0:
             raise ValueError, 'No productions found!'
         start = productions[0].lhs()
-        return CFG(start, productions)
+        return Grammar(start, productions)
     parse = staticmethod(parse)
 
 #################################################################
@@ -384,20 +380,22 @@ class CFG:
 
 def demo():
     """
-    A demonstration showing how C{CFG}s and C{PCFG}s can be
-    created and used.
+    A demonstration showing how C{Grammar}s can be created and used.
     """
+
+    from nltk_lite.parse import cfg
+
     # Create some nonterminals
-    S, NP, VP, PP = nonterminals('S, NP, VP, PP')
-    N, V, P, Det = nonterminals('N, V, P, Det')
+    S, NP, VP, PP = cfg.nonterminals('S, NP, VP, PP')
+    N, V, P, Det = cfg.nonterminals('N, V, P, Det')
     VP_slash_NP = VP/NP
 
     print 'Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP]
     print '    S.symbol() =>', `S.symbol()`
     print
 
-    # Create some CFG Productions
-    cfg = CFG.parse("""
+    # Create some Grammar Productions
+    grammar = Grammar.parse("""
     S -> NP VP
     PP -> P NP
     NP -> Det N
@@ -414,11 +412,11 @@ def demo():
     P -> 'in'
     """)
 
-    print 'A CFG grammar:', `cfg`
-    print '    cfg.start()       =>', `cfg.start()`
-    print '    cfg.productions() =>',
+    print 'A Grammar:', `grammar`
+    print '    grammar.start()       =>', `grammar.start()`
+    print '    grammar.productions() =>',
     # Use string.replace(...) is to line-wrap the output.
-    print `cfg.productions()`.replace(',', ',\n'+' '*25)
+    print `grammar.productions()`.replace(',', ',\n'+' '*25)
     print
 
 if __name__ == '__main__': demo()
