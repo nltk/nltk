@@ -21,9 +21,9 @@ Introduction
 ------------
 
 Native speakers of any language have strong intuitions about the
-well-formedness of putative sentences in that language.  These intuitions
-are surprisingly detailed.  For example, consider the following six sentences
-involving three synonymous verbs *loaded*,
+well-formedness of putative sentences in that language.  These
+intuitions are surprisingly detailed.  For example, consider the
+following six sentences involving three synonymous verbs *loaded*,
 *dumped*, and *filled*.
 
 # The farmer *loaded* sand into the cart
@@ -33,19 +33,18 @@ involving three synonymous verbs *loaded*,
 # *The farmer *filled* sand into the cart
 # The farmer *filled* the cart with sand
 
-Two of the sentences (starred) are ill-formed.  As we shall see, patterns of
-well-formedness and ill-formedness in a sequence of words can be understood
-with respect to the internal **phrase structure** of the
-sentences.  We can develop formal models of these structures using grammars
-and parsers.
+Two of the sentences (starred) are ill-formed.  As we shall see,
+patterns of well-formedness and ill-formedness in a sequence of words
+can be understood with respect to the internal **phrase structure** of
+the sentences.  We can develop formal models of these structures using
+grammars and parsers.
 
 In the context of computational modelling, a language is often viewed
 as a set of well-formed sentences.  Sequences of words which are not
 grammatical are excluded from this set.  Now, since there is no
 upper-bound on the length of a sentence, the number of possible
-sentences is unbounded.
-For example, it is possible to add an unlimited amount of
-material to a sentence by using ``and`` or by
+sentences is unbounded.  For example, it is possible to add an
+unlimited amount of material to a sentence by using ``and`` or by
 chaining relative clauses, as illustrated in the following example
 from a children's story:
 
@@ -72,42 +71,36 @@ from a children's story:
 
 Given that the resources of a computer, however large, are still
 finite, it is necessary to devise a finite description of this
-infinite set.  Such descriptions are called
-**grammars**.  We have already encountered this
-possibility in the context of regular expressions.  For example, the
-expression ``a+`` describes the infinite set ``{a, aa, aaa, aaaa,
-...}``.  Apart from their compactness, grammars usually capture
-important properties of the language being studied, and can be used to
-systematically map between sequences of words and abstract
-representations of their meaning.  Thus, even if we were to impose an
-upper bound on sentence length to ensure the language was finite, we
-would still want to come up with a compact representation in the form
-of a grammar.
-
-
+infinite set.  Such descriptions are called **grammars**.  We have
+already encountered this possibility in the context of regular
+expressions.  For example, the expression ``a+`` describes the
+infinite set ``{a, aa, aaa, aaaa, ...}``.  Apart from their
+compactness, grammars usually capture important properties of the
+language being studied, and can be used to systematically map between
+sequences of words and abstract representations of their meaning.
+Thus, even if we were to impose an upper bound on sentence length to
+ensure the language was finite, we would still want to come up with a
+compact representation in the form of a grammar.
 
 A well-formed sentence of a language is more than an arbitrary
 sequence of words from the language.  Certain kinds of words usually
-go together.  For instance, determiners like ``the``
-are typically followed by adjectives or nouns, but not by verbs.
-Groups of words form intermediate structures called phrases or
-**constituents**.  These constituents can be
-identified using standard syntactic tests, such as substitution,
-movement and coordination.  For example, if a sequence of words can
-be replaced with a pronoun, then that sequence is likely to be a
-constituent.  According to this test, we can infer that the
-italicised string in the following example is a constituent:
+go together.  For instance, determiners like ``the`` are typically
+followed by adjectives or nouns, but not by verbs.  Groups of words
+form intermediate structures called phrases or **constituents**.
+These constituents can be identified using standard syntactic tests,
+such as substitution, movement and coordination.  For example, if a
+sequence of words can be replaced with a pronoun, then that sequence
+is likely to be a constituent.  According to this test, we can infer
+that the italicised string in the following example is a constituent:
 
 
-#. *Ordinary daily multivitamin and mineral supplements* could 
+1. *Ordinary daily multivitamin and mineral supplements* could 
    help adults with diabetes fight off some minor infections.
 #. *They* could help adults with diabetes fight off some minor infections.
 
-.. Note::
- Readers are referred to any introductory text on syntax for fuller
- treatment of constituency, e.g. McCawley (1998) The Syntactic
- Phenomena of English.
-
+.. Note:: Readers are referred to any introductory text on syntax for
+   fuller treatment of constituency, e.g. McCawley (1998) The Syntactic
+   Phenomena of English.
 
 The structure of a sentence may be represented using a phrase
 structure tree, in which the terminal symbols are the words of the
@@ -120,42 +113,35 @@ strange.  This is because we have used used labels drawn from the
 Brown Corpus part-of-speech tag set; see XREF(Tagging Chapter: Intro)
 for discussion.
 
-
 _`parse_tree`
 
-.. "><title>Phrase Structure Tree</title>
-   <informaltable frame="all">
-   <tgroup cols="1"><tbody><row><entry>
+.. figure:: ../images.parsing/parse_tree.png
 
-.. image:: ../images.parsing/parse_tree.png
+   Phrase Structure Tree
 
 A *grammar* is a formal system which specifies which sequences of
 words are well-formed in the language, and which provides one or more
 phrase structures for the sequence.  We will focus our attention on a
 particular kind of grammar called a *context-free grammar* (CFG),
-which is a collection of productions of the form ``S |rarr| NP VP``.
+which is a collection of productions of the form ``S`` |rarr| ``NP VP``.
 We interpret this productions as saying that a constituent of category
 ``S`` can consist of subconstituents of categories ``NP`` and
-``VP``. Similarly, the production ``VB |rarr| 'help'`` means that the
+``VP``. Similarly, the production ``VB`` |rarr| ``'help'`` means that the
 constituent of category ``VB`` can consist of the string ``help``.
 For a phrase structure tree to be well-formed relative to a grammar,
 each non-terminal node and its children must correspond to such a
 production in the grammar.
 
-
-
-A *parser* is a computational
-system which processes input sentences according to the productions of the
-grammar, and builds one or more constituent structures which conform
-to the grammar.  We take a grammar to be a declarative specification
-of well-formedness, and a parser to be a procedural interpretation of
-the grammar.
-In this chapter we will present context-free
-grammars, and describe some simple parsers that work with them.
+A *parser* is a computational system which processes input sentences
+according to the productions of the grammar, and builds one or more
+constituent structures which conform to the grammar.  We take a
+grammar to be a declarative specification of well-formedness, and a
+parser to be a procedural interpretation of the grammar.  In this
+chapter we will present context-free grammars, and describe some
+simple parsers that work with them.
 
 
 ..  EXPAND THE ABOVE DISCUSSION 
-
 
 Parsing is important in linguistics and natural language processing
 for a variety of reasons.  A parser permits a grammar to be evaluated
@@ -173,71 +159,54 @@ a question-answering system to undergo parsing as an initial step.
 Linguistic Overview 
 --------------------
 
-.. 
+.. X.2 linguistic overview (for non-linguist readers)
+   - how have linguists addressed the problem?
+   - what are the shortcomings of the non-computational approach?
+   - cover structural ambiguity and PP attachment
+   - cover subcategorization, Levin classes
 
-  X.2 linguistic overview (for non-linguist readers)
-  - how have linguists addressed the problem?
-  - what are the shortcomings of the non-computational approach?
+.. Parsing has a long and interesting history in computational
+   linguistics.  [NOTES: the perspective of early generative grammar;
+   early NLP approaches including ATNs and DCGs; grammar formalisms and
+   development environments.]
 
-  - cover structural ambiguity and PP attachment
-  - cover subcategorization, Levin classes
+.. Context-free grammars: CFG productions and their interpretation.
 
-
-
-  Parsing has a long and interesting history in computational
-  linguistics.
-  [NOTES: the perspective of early generative grammar;
-  early NLP approaches including ATNs and DCGs;
-  grammar formalisms and development environments.]
-
-
-
-  Context-free grammars: CFG productions and their interpretation.
-
-
-
-  Discussion about how CFGs are created by hand.
-
-  -->
+.. Discussion about how CFGs are created by hand.
 
 Let's start off by looking at a simple context-free grammar:
 
-|S |rarr| NP VP
-|NP |rarr| Det N
-|NP |rarr| Det N PP
-|VP |rarr| V NP PP
-|VP |rarr| V NP
-|VP |rarr| V
-|PP |rarr| P NP
+| S |rarr| NP VP
+| NP |rarr| Det N
+| NP |rarr| Det N PP
+| VP |rarr| V NP PP
+| VP |rarr| V NP
+| VP |rarr| V
+| PP |rarr| P NP
 
-|NP |rarr| 'I'
-|Det |rarr| 'the'
-|Det |rarr| 'a'
-|N |rarr| 'man' | 'park' | 'dog' | 'telescope'
-|V |rarr| 'saw'
-|P |rarr| 'in' | 'with'
-
+| NP |rarr| 'I'
+| Det |rarr| 'the'
+| Det |rarr| 'a'
+| N |rarr| 'man' | 'park' | 'dog' | 'telescope'
+| V |rarr| 'saw'
+| P |rarr| 'in' | 'with'
 
 The productions are presented in two groups which we will call
-**grammatical productions** and **lexical productions**
-respectively. The labels in the grammatical productions are all
-**nonterminal symbols**: these are the grammatical categories we use
-to label constituents.  By contrast, **terminal symbols** are what we
-call the words whose syntactic behaviour is defined by the
-grammar. Notice that in the lexical productions, we have used
-disjunction '``|``' on the righthand side of the productions as an
-abbreviatory device. For example, ``P |rarr| 'in' | 'with'`` means
-that a ``P`` (preposition) can be realized as either ``in`` or
-``with``.
+**grammatical productions** and **lexical productions** respectively.
+The labels in the grammatical productions are all **nonterminal
+symbols**: these are the grammatical categories we use to label
+constituents.  By contrast, **terminal symbols** are what we call the
+words whose syntactic behaviour is defined by the grammar. Notice that
+in the lexical productions, we have used disjunction '``|``' on the
+righthand side of the productions as an abbreviatory device. For
+example, ``P`` |rarr| ``'in' | 'with'`` means that a ``P``
+(preposition) can be realized as either ``in`` or ``with``.
 
-.. Note::
- It is also possible to have disjunctions on the righthand sides
- of grammatical productions.
+.. Note:: It is also possible to have disjunctions on the righthand
+   sides of grammatical productions.
 
-
-`parse_tree2`_ illustrates two possible phrase structure
-analyses of the string ``The dog saw the man in the
-park``:
+`parse_tree2`_ illustrates two possible phrase structure analyses of
+the string ``The dog saw the man in the park``:
 
 .. figure:: ../images.parsing/parse_tree2.png
 
@@ -247,58 +216,56 @@ park``:
 .. figure:: ../images.parsing/parse_tree3.png
 
 The fact that our grammar admits two distinct structures for this
-sentence indicates that the sentence is **structurally
-ambiguous**. The ambiguity in question is often called a **PP
-attachment ambiguity**, since the issue at hand is how the ``PP``
-(prepositional phrase) ``in the park`` should be attached to the
-phrase structure tree. In this case, we can see that the grammar
-admits just two choices. The ``PP`` is either attached as a daughter
-of ``VP`` or else as a daughter of ``NP``. There is also a difference
-in semantic interpretation associated with the two structures, though
-the meaning distinction is somewhat subtle in this case. Where the
-``PP`` is attached to ``VP``, the intended interpretation is that the
-event of seeing took place in the park, while if the ``PP`` is
-attached to ``NP``, being in the park is a property of the ``NP``
-referent; that is, the man was in the park, but the agent of the
-seeing &mdash; the dog &mdash; was somewhere else (e.g., sitting on
-the balcony of an apartment overlooking the park).  As we will see,
-dealing with ambiguity is a key challenge in parsing.
+sentence indicates that the sentence is **structurally ambiguous**.
+The ambiguity in question is often called a **PP attachment
+ambiguity**, since the issue at hand is how the ``PP`` (prepositional
+phrase) ``in the park`` should be attached to the phrase structure
+tree. In this case, we can see that the grammar admits just two
+choices. The ``PP`` is either attached as a daughter of ``VP`` or else
+as a daughter of ``NP``. There is also a difference in semantic
+interpretation associated with the two structures, though the meaning
+distinction is somewhat subtle in this case. Where the ``PP`` is
+attached to ``VP``, the intended interpretation is that the event of
+seeing took place in the park, while if the ``PP`` is attached to
+``NP``, being in the park is a property of the ``NP`` referent; that
+is, the man was in the park, but the agent of the seeing &mdash; the
+dog &mdash; was somewhere else (e.g., sitting on the balcony of an
+apartment overlooking the park).  As we will see, dealing with
+ambiguity is a key challenge in parsing.
 
-We remarked earlier that there is no upper bound on the length
-of sentences of a natural language. Within context-free grammars, the
-main mechanism which allows this unboundedness is
-**recursion**. A grammar is said to be recursive if
-a category occurring on the lefthand side of a production also appears
-on the righthand side of a production. If this dual occurrence takes
-place in one and the same production, then we have **direct
-recursion**; otherwise we have **indirect
-recursion**. These two cases are both illustrated in the
+We remarked earlier that there is no upper bound on the length of
+sentences of a natural language. Within context-free grammars, the
+main mechanism which allows this unboundedness is **recursion**. A
+grammar is said to be recursive if a category occurring on the
+lefthand side of a production also appears on the righthand side of a
+production. If this dual occurrence takes place in one and the same
+production, then we have **direct recursion**; otherwise we have
+**indirect recursion**. These two cases are both illustrated in the
 following grammar:
 
-|S |rarr| NP VP
-|NP |rarr| Det N
-|NP |rarr| Det N PP
-|VP |rarr| VP Conj VP
-|VP |rarr| V NP PP
-|VP |rarr| V NP
-|VP |rarr| V S
-|VP |rarr| V
-|PP |rarr| P NP
+| S |rarr| NP VP
+| NP |rarr| Det N
+| NP |rarr| Det N PP
+| VP |rarr| VP Conj VP
+| VP |rarr| V NP PP
+| VP |rarr| V NP
+| VP |rarr| V S
+| VP |rarr| V
+| PP |rarr| P NP
 
-|NP |rarr| 'I'
-|Det |rarr| 'the'
-|Det |rarr| 'a'
-|N |rarr| 'man' | 'park' | 'dog' | 'telescope'
-|V |rarr| 'saw' | 'barked' | 'said'
-|P |rarr| 'in' | 'with'
-|Conj |rarr| 'and' | 'or'
+| NP |rarr| 'I'
+| Det |rarr| 'the'
+| Det |rarr| 'a'
+| N |rarr| 'man' | 'park' | 'dog' | 'telescope'
+| V |rarr| 'saw' | 'barked' | 'said'
+| P |rarr| 'in' | 'with'
+| Conj |rarr| 'and' | 'or'
 
-
-That is, the production ``VP |rarr| VP Conj VP`` involves direct
+That is, the production ``VP`` |rarr| ``VP Conj VP`` involves direct
 recursion on the category``VP``, whereas undirect recursion on ``S``
-arises from the combination of two productions, namely ``S |rarr| NP
-VP`` and ``VP |rarr| V S``.  _`recursive_parse1` shows a phrase
-structure tree involving coordinated ``VP`` s:
+arises from the combination of two productions, namely ``S`` |rarr|
+``NP VP`` and ``VP`` |rarr| ``V S``.  _`recursive_parse1` shows a
+phrase structure tree involving coordinated ``VP`` s:
 
 .. figure:: ../images.parsing/recursive_parse1.png
 
@@ -307,22 +274,22 @@ structure tree involving coordinated ``VP`` s:
 In this chapter, we only consider very small ('toy') context-free
 grammars, in order to illustrate the key aspects of parsing such
 grammars. But there is an obvious question as to whether the general
-approach can be scaled up to cover large corpora of natural languages. How hard
-would it be to construct such a set of rules by hand? In general, the
-answer is: Very hard. Even if we allow ourselves to use various
-formal devices that give much more succinct representations of phrase
-structure rules (some of which will be discussed in the next
-chapter), it is still extremely difficult to keep control of the
-complex interactions between the many rules required to cover the
-major constructions of a language. That is, it is hard to modularize
-grammars, so that one portion can be worked on independently of the
-other parts. This in turn means that it is difficult to distribute
-the task of
-grammar writing across a team of linguists. Another difficulty is
-that as the grammar expands to cover a wider and wider range of
-constructions,  there is a corresponding increase in the number of
-analyses which are admitted for any one sentence. In other words,
-ambiguity increases proportionally with coverage.
+approach can be scaled up to cover large corpora of natural
+languages. How hard would it be to construct such a set of rules by
+hand? In general, the answer is: Very hard. Even if we allow ourselves
+to use various formal devices that give much more succinct
+representations of phrase structure rules (some of which will be
+discussed in the next chapter), it is still extremely difficult to
+keep control of the complex interactions between the many rules
+required to cover the major constructions of a language. That is, it
+is hard to modularize grammars, so that one portion can be worked on
+independently of the other parts. This in turn means that it is
+difficult to distribute the task of grammar writing across a team of
+linguists. Another difficulty is that as the grammar expands to cover
+a wider and wider range of constructions, there is a corresponding
+increase in the number of analyses which are admitted for any one
+sentence. In other words, ambiguity increases proportionally with
+coverage.
 
 .. 
  that w a broad coverage grammar
@@ -342,8 +309,6 @@ Functional Grammar (LFG) Pargram project
 Phrase Structure Grammar (HPSG) LinGO Matrix framework
 (http://www.delph-in.net/matrix/), and the Lexicalized Tree Adjoining
 Grammar XTAG Project (http://www.cis.upenn.edu/~xtag/).
-
-
 
 
 -----------------------------------
@@ -383,21 +348,16 @@ process.  With the initial goal (find an ``S``), the ``S`` root node
 is created.  As the above process recursively expands its goals using
 the productions of the grammar, the parse tree is extended downwards
 (hence the name *recursive descent*).  We can see this in action using
-the parser demonstration ``nltk.draw.rdparser``.  To run this
+the parser demonstration ``nltk_lite.draw.rdparser``.  To run this
 demonstration, use the following commands::
 
- >>> from nltk.draw.rdparser import demo
+ >>> from nltk_lite.draw.rdparser import demo
  >>> demo()
 
 
-Six stages of the execution of this parser are shown in
-rdparser_.
+Six stages of the execution of this parser are shown below:
 
-..  
- <figure id="rdparser"><title>Six Stages of a Recursive Descent
- Parser: initial, after two productions, after matching "the", failing
- to match "man", completed parse, backtracking
-
+.. figure::
 
 .. image:: ../images.parsing/rdparser1.png 
 .. image:: ../images.parsing/rdparser2.png
@@ -406,7 +366,9 @@ rdparser_.
 .. image:: ../images.parsing/rdparser5.png
 .. image:: ../images.parsing/rdparser6.png
 
-
+   Six Stages of a Recursive Descent Parser: initial, after two
+   productions, after matching "the", failing to match "man",
+   completed parse, backtracking
 
 ..
  Discussion: choosing which of several possible productions to apply;
@@ -470,22 +432,20 @@ if the grammar has a production ``NP |rarr| Det N`` then the reduce
 operation causes these two items to be replaced with ``NP(Det(the),
 N(dog))``.  This process continues until a parse tree for the entire
 sentence has been constructed.  We can see this in action using the
-parser demonstration ``nltk.draw.srparser``.  To run this
+parser demonstration ``nltk_lite.draw.srparser``.  To run this
 demonstration, use the following commands::
 
- >>> from nltk.draw.srparser import demo
+ >>> from nltk_lite.draw.srparser import demo
  >>> demo()
 
-Six stages of the execution of this parser are shown in
-srparser_.
+Six stages of the execution of this parser are shown below:
 
 .. 
    To do: use letter identifiers for subfigures.
-   Six Stages of a Shift-Reduce Parser: initial, after one shift,
-   after shift reduce shift reduce, after recognizing the second NP,
-   complex NP, final step. 
 
 _srparser
+
+.. figure::
 
 .. image:: ../images.parsing/srparser1.png
 .. image:: ../images.parsing/srparser2.png
@@ -494,28 +454,31 @@ _srparser
 .. image:: ../images.parsing/srparser5.png
 .. image:: ../images.parsing/srparser6.png
 
+   Six Stages of a Shift-Reduce Parser: initial, after one shift,
+   after shift reduce shift reduce, after recognizing the second NP,
+   complex NP, final step. 
 
 A shift-reduce parser may fail to parse the sentence, even though the
 sentence is well-formed according to the grammar.  In such cases,
 there are no remaining input words to shift, and there is no way to
 reduce the remaining items on the stack, as exemplified in the left
-example in `sr-conflict`_.  The parser entered this blind alley at an
-earlier stage shown in the middle example in `sr-conflict`_, when it
-reduced instead of shifted.  This situation is called a *shift-reduce
-conflict*.  At another possible stage of processing shown in the right
-example in `sr-conflict`_, the parser must choose between two possible
-reductions, both matching the top items on the stack: ``V |rarr| V NP
-PP`` or ``NP |rarr| NP PP``.  This situation is called a
-*reduce-reduce conflict*.
+example below.  The parser entered this blind alley at an earlier
+stage shown in the middle example below, when it reduced instead of
+shifted.  This situation is called a *shift-reduce conflict*.  At
+another possible stage of processing shown in the right example below,
+the parser must choose between two possible reductions, both matching
+the top items on the stack: ``V |rarr| V NP PP`` or ``NP |rarr| NP
+PP``.  This situation is called a *reduce-reduce conflict*.
 
-.. 
- To do: diagram showing search tree with success and failure.
- Conflict in Shift-Reduce Parsing _`sr-conflict`
+.. figure::
 
 .. image:: ../images.parsing/srparser7.png 
 .. image:: ../images.parsing/srparser8.png
 .. image:: ../images.parsing/srparser9.png
 
+   Conflict in Shift-Reduce Parsing
+
+.. To do: diagram showing search tree with success and failure.
 
 Shift-reduce parsers may implement policies for resolving such
 conflicts.  For example, they may address shift-reduce conflicts by
@@ -535,11 +498,9 @@ a single time, regardless of whether it will later be used by the ``V
  Advanced Topics in Parsing (optional) 
  --------------------
 
- <warning> Some of the following is out of
- date.  See the 
- "http://&refdoc;/nltk.parser-module.html">reference
- documentation for ``nltk.parser`` for more
- up-to-date information. </warning>
+ Some of the following is out of date.  See the reference
+ documentation for ``nltk_lite.parse`` for more up-to-date
+ information.
 
  Parsing as a search problem.  Finding the right parse.
 
@@ -550,8 +511,6 @@ a single time, regardless of whether it will later be used by the ``V
  - challenges for particular languages / language families
  - research questions
 
- -->
-
 ----------------
 Parsing in NLTK 
 ----------------
@@ -561,88 +520,64 @@ Parsing in NLTK
  - how does NLTK do it?
  - simple problems and worked solutions
  - suggested projects (e.g. for your MSc students)
- -->
-
-_`nltk.grammars`
 
 ---------------------
 Context Free Grammars
 ---------------------
 
- The "http://&refdoc;/nltk.cfg-module.html" ``nltk.cfg``
- module defines a set of classes that are used to define context free
- grammars:
+The ``nltk_lite.cfg`` module defines a set of classes that are used to
+define context free grammars:
 
-
-#. The "http://&refdoc;/nltk.cfg.Nonterminal-class.html"
-   ``Nonterminal`` class is used to represent nonterminals.
+1. The ``Nonterminal`` class is used to represent nonterminals.
  
-#. The "http://&refdoc;/nltk.cfg.CFGProduction-class.html"
-   ``CFGProduction`` class is used to represent CFG
-   productions. 
+#. The ``CFGProduction`` class is used to represent CFG productions.
 
-#. The "http://&refdoc;/nltk.cfg.CFG-class.html" ``CFG`` class is used
-   to represent CFGs.
-
-_`nltk.grammars.nonterminal`
+#. The ``CFG`` class is used to represent CFGs.
 
 ------------
 Nonterminals
 ------------
 
 
-"http://&refdoc;/nltk.cfg.Nonterminal-class.html" ``Nonterminal`` is a
-simple class that's used to let NLTK distinguish terminals from
-nonterminals.  Each ``Nonterminal`` is defined by a **symbol**, which
-is represented by a case-sensitive string.  Typical symbols for
-``Nonterminals`` are ``"S"`` (for sentence) and ``"NP"`` (for noun
-phrases).  To construct a ``Nonterminal``, use the
-"http://&refdoc;/nltk.cfg.Nonterminal-class.html#__init__"
+``Nonterminal`` is a simple class that's used to let NLTK distinguish
+terminals from nonterminals.  Each ``Nonterminal`` is defined by a
+**symbol**, which is represented by a case-sensitive string.  Typical
+symbols for ``Nonterminals`` are ``"S"`` (for sentence) and ``"NP"``
+(for noun phrases).  To construct a ``Nonterminal``, use the
 ``Nonterminal`` constructor::
 
- >>> from nltk.cfg import *
- >>> S = Nonterminal('S')
+ >>> from nltk_lite.parse import cfg
+ >>> S = cfg.Nonterminal('S')
  <S>
- >>> NP = Nonterminal('NP')
+ >>> NP = cfg.Nonterminal('NP')
  <NP>
 
 ..  Mention the symbol() method? -->
 ..  Mention division of nonterminal? -->
 
-If you are defining many nonterminals at once, you can
-use the 
-"http://&refdoc;/nltk.cfg-module.html#nonterminals"
-``nonterminals()`` function.  This
-function takes a string containing a list of symbol names, and
-returns a list of ``Nonterminals`` constructed
-from those symbol names::
+If you are defining many nonterminals at once, you can use the
+``nonterminals()`` function.  This function takes a string containing
+a list of symbol names, and returns a list of ``Nonterminals``
+constructed from those symbol names::
 
-  VP, Adj, V, N = nonterminals('VP, Adj, V, N')
+  >>> VP, Adj, V, N = cfg.nonterminals('VP, Adj, V, N')
   <VP>, <Adj>, <V>, <N>
 
-When using the ``nonterminals()``
-function, you should be always be careful to make sure that
-the order of the variables you define matches the order of the
-nonterminals in the string.
-
-
-_`nltk.grammars.cfgproductions`
+When using the ``nonterminals()`` function, you should be always be
+careful to make sure that the order of the variables you define
+matches the order of the nonterminals in the string.
 
 -----------
 Productions
 -----------
 
-CFG productions are represented with the 
-"http://&refdoc;/nltk.cfg.CFGProduction-class.html"
-
-``CFGProduction`` class.  Each ``CFGProduction`` specifies that a
-nonterminal (the **left-hand side**) can be expanded to a sequence of
-terminals and nonterminals (the **right-hand side**).
-``CFGProductions`` are created with the
-"http://&refdoc;/nltk.cfg.CFGProduction-class.html#__init__"
-``CFGProducition`` constructor, which
-takes a nonterminal left-hand side, and zero or more terminals
-and nonterminals for the right-hand side::
+CFG productions are represented with the ``CFGProduction`` class.
+Each ``CFGProduction`` specifies that a nonterminal (the **left-hand
+side**) can be expanded to a sequence of terminals and nonterminals
+(the **right-hand side**).  ``CFGProductions`` are created with the
+``CFGProducition`` constructor, which takes a nonterminal left-hand
+side, and zero or more terminals and nonterminals for the right-hand
+side::
 
  >>> prod1 = CFGProduction(S, [NP, VP])
  S -> NP VP
@@ -662,31 +597,19 @@ constituent moved::
  >>> prod3 = CFGProduction(trace, [])
  t ->
 
-
-_`nltk.grammars.cfg`
-
 -----
  CFGs 
 -----
 
-Context free grammars are encoded by the 
-"http://&refdoc;/nltk.cfg.CFG-class.html"
-``CFG`` class.  A
-``CFG`` consists of a special
-**start** nonterminal, and an ordered list
-of productions.  ``CFGs`` are created with the
-"http://&refdoc;/nltk.cfg.CFG-class.html#__init__"
-``CFG`` constructor::
+Context free grammars are encoded by the ``CFG`` class.  A ``CFG``
+consists of a special **start** nonterminal, and an ordered list of
+productions.  ``CFGs`` are created with the constructor::
 
   >>> grammar = CFG(S, [prod1, prod2, prod3])
   <CFG with 3 productions>
 
-A CFG's start state is returned by the 
-"http://&refdoc;/nltk.cfg.CFG-class.html#start"
-``start``method; and its list of
-productions is returned by the 
-"http://&refdoc;/nltk.cfg.CFG-class.html#productions"
-``productions`` method::
+A CFG's start state is returned by the ``start``method; and its list
+of productions is returned by the ``productions`` method::
 
   >>> grammar.start()
   <S>
@@ -696,13 +619,12 @@ productions is returned by the
   t ->
   ]
 
-
 A complete example of a toy grammar is given below::
 
- >>> from nltk.cfg import *
+ >>> from nltk_lite.parse import cfg
 
- >>> S, VP, NP, PP = nonterminals('S, VP, NP, PP')
- >>> V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
+ >>> S, VP, NP, PP = cfg.nonterminals('S, VP, NP, PP')
+ >>> V, N, P, Name, Det = cfg.nonterminals('V, N, P, Name, Det')
 
  >>> productions = (
  ...     CFGProduction(S, [NP, VP]),
@@ -721,42 +643,32 @@ A complete example of a toy grammar is given below::
  >>> grammar = CFG(S, productions)
 
 
-.. Note:: 
- All of the grammars shown here use atomic non-terminal
- symbols, e.g. ``VP``.  For extensions that support
- feature-based grammars and parsers, please refer to the
- ``nltk_contrib.mit.rspeer.parser`` module.
-
-
-_`nltk.tree`
+.. Note:: All of the grammars shown here use atomic non-terminal
+   symbols, e.g. ``VP``.  For extensions that support feature-based
+   grammars and parsers, please refer to the
+   ``nltk_contrib.mit.rspeer.parser`` module.
 
 ------
  Trees 
 ------
 
-The 
-"http://&refdoc;/nltk.tree-module.html"
-``nltk.tree`` module defines classes and
-functions for working with trees.
+The ``nltk_lite.tree`` module defines classes and functions for
+working with trees.
 
-.. Note::
- The ``nltk.tree`` module currently has
- no direct support for representing movement, traces, and
- co-indexing.  We plan to extend the class to support these
- features more fully in the future. 
+.. Note:: The ``nltk_lite.tree`` module currently has no direct
+   support for representing movement, traces, and co-indexing.  We plan
+   to extend the class to support these features more fully in the
+   future.
 
-#.  The node value is a string containing
+1.  The node value is a string containing
     the tree's constituent type (e.g., "NP" or "VP").
-#.  The children encode the hierarchical contents
-    of the tree.  Each child is either a ``TreeToken`` or a ``Token``. 
+#.  The children encode the hierarchical contents of the tree.
 
-.. Note::
- Although the ``Tree`` class is usually
- used for encoding syntax trees, it can be used to encode
- *any* homogeneous hierarchical structure
- that spans a text (such as morphological structure or
- discourse structure).  In the general case, leaves and node
- values do not have to be strings. 
+.. Note:: Although the ``Tree`` class is usually used for encoding
+   syntax trees, it can be used to encode *any* homogeneous hierarchical
+   structure that spans a text (such as morphological structure or
+   discourse structure).  In the general case, leaves and node values do
+   not have to be strings.
 
  A ``Tree`` with node value
 `n` and children
@@ -768,11 +680,10 @@ written ``(``n``:
 `c:subscript:`2`` ...
 `c:subscript:`n``)``.
 ``Tree`` s are created with the 
-"http://&refdoc;/nltk.tree.TreeToken-class.html#__init__"
 ``Tree constructor``, which takes a
 node value and zero or more children::
 
- >>> from nltk.tree import *
+ >>> from nltk_lite.parse.tree import *
  # A tree with one child (a token):
  >>> tree1 = Tree('NP', ['John'])
  (NP: <John>)
@@ -803,12 +714,9 @@ indexing::
  <saw>
  (NP: <the> <man>)
 
-The printed representation for complex trees
-can be difficult to read.  In these cases, the 
-"http://&refdoc;/nltk.tree.Tree-class.html#draw"
-``draw`` method can be very useful.
-This method opens a new window, containing a graphical
-representation of the tree.  
+The printed representation for complex trees can be difficult to read.
+In these cases, the ``draw`` method can be very useful.  This method
+opens a new window, containing a graphical representation of the tree.
 
   >>> tree3.draw()
 
@@ -820,21 +728,15 @@ The tree display window allows you to zoom in and out;
 to collapse and expand subtrees; and to print the graphical
 representation to a postscript file. 
 
-To compare multiple trees in a single
-window, use the 
-"http://&refdoc;/nltk.draw.tree-module.html#draw_trees"
-``draw_trees()`` method, from the
-"http://&refdoc;/nltk.draw.tree-module.html"
-``nltk.draw.tree`` module::
+To compare multiple trees in a single window, use the ``draw_trees()``
+method, from the ``nltk.draw.tree`` module::
 
  >>> from nltk.draw.tree import draw_trees
  >>> draw_trees(tree1, tree2, tree3)
 
-The ``Tree`` class implements a number
-of other useful methods.  See the 
-"http://&refdoc;/nltk.tree.Tree-class.html"
-``Tree`` reference documentation for
-more information about these methods. 
+The ``Tree`` class implements a number of other useful methods.  See
+the ``Tree`` reference documentation for more information about these
+methods.
 
  >>> tree3.leaves()
  [<saw>, <the>, <man>]
@@ -842,8 +744,6 @@ more information about these methods.
  3
 
 ..  Mention tree positions? -->
-
-_`nltk.tree.initializing`
 
 --------------------------------
  Initializing Trees from Strings 
@@ -857,58 +757,42 @@ is from a labelled bracketing::
  >>> tree = Tree.parse(sent)
  (VP: (VBD: <saw>) (NP: (DT: <the>) (NN: <man>)))
 
-
-_`nltk.tree.reading`
-
 ---------------------------------------
  Reading Trees from the Treebank Corpus 
 ---------------------------------------
 
- The "http://&refdoc;/nltk.corpus-module.html"
-``nltk.corpus`` module defines the
-"http://&refdoc;/nltk.corpus-module.html#treebank"
-``treebank`` corpus, which contains a
-collection of hand-annotated parse trees for English
-text.  
-..  
- Add a reference to LDC here? -->
+The ``nltk_lite.corpora`` module defines the ``treebank`` corpus,
+which contains a collection of hand-annotated parse trees for English
+text.
 
-::
- >>> from nltk.corpus import treebank
+..  Add a reference to LDC here?
 
- # Get a list of the items in the corpus.
- >>> treebank.items()
+ >>> from nltk_lite.corpora import treebank
+
+ >>> treebank.items
  ['wsj_0001.prd', 'wsj_0002.prd', 'wsj_0003.prd', ...]
 
- # Read the first file as a list of Trees.
- #>>> treebank.read('parsed/wsj_0001.prd')
+ >>> treebank.parsed('parsed/wsj_0001.prd')
  [ (S: (NP-SBJ: (NP: <Pierre> <Vinken>) ...)
  (VP: will ...)),
  (S: (NP-SBJ: <Mr.> <Vinken>)
  (VP: <is> ...)) ]
 
 
-
 --------------------
 The Parser Interface 
 --------------------
 
-The "http://&refdoc;/nltk.parser-module.html"
-``parser`` module defines the "http://&refdoc;/nltk.parser.ParserI-class.html"
-``ParserI`` interface, which defines the
-set of methods which all parsers should support.  The
-``ParserI`` interface defines two methods: 
+The ``parse`` module defines the ``ParserI`` interface, which defines
+the set of methods which all parsers should support.  The ``ParserI``
+interface defines two methods:
 
 ..  
  I say "n best" and "in descending order of quality" here,
  but so far we've only talked about grammars with no notion of
- parse quality.  Will that be confusing? -->
+ parse quality.  Will that be confusing?
 
-
-
-"http://&refdoc;/nltk.parser.ParserI-class.html#parse"
-
-#. The ``parse`` method returns the single best parse for a given
+1. The ``parse`` method returns the single best parse for a given
    text.  The text is represented as a list of ``Tokens``.  If no
    parses are found for the given text, then ``parse`` returns
    ``None``.
@@ -916,18 +800,13 @@ set of methods which all parsers should support.  The
 #. The ``get_parse_list`` method returns a list of the parses for the
    given text.
 
-For example, here is what the recursive descent parser
-generates for a simple sentence and grammar::
+For example, here is what the recursive descent parser generates for a
+simple sentence and grammar::
 
- # Tokenize a simple sentence
- >>> from nltk.tokenizer import WhitespaceTokenizer
- >>> sentence = 'I saw a man in the park'
- >>> sent = Token(TEXT=sentence)
- >>> WhitespaceTokenizer().tokenize(sent)
-
- # Build a parser
- >>> from nltk.parser import RecursiveDescentParser
- >>> parser = RecursiveDescentParser(grammar, LEAF='TEXT')
+ >>> from nltk_lite import tokenize
+ >>> sent = tokenize.whitespace('I saw a man in the park')
+ >>> from nltk.parse import RecursiveDescentParser
+ >>> parser = RecursiveDescentParser(grammar)
 
  # Get all parses.
  >>> for p in parser.get_parse_list(sent):
@@ -947,32 +826,22 @@ generates for a simple sentence and grammar::
  (PP: (P: <in>) (NP: (Det: <the>) (N: <park>)))))
 
 
-_`nltk.ShiftReduceParser`
-
 -----------------------
 The Shift Reduce Parser 
 -----------------------
 
- The "http://&refdoc;/nltk.parser-module.html"
-``nltk.parser`` module defines 
-"http://&refdoc;/nltk.parser.ShiftReduceParser-class.html"
-``ShiftReduceParser``, a simple
-non-backtracking implementation of a bottom-up shift-reduce
-parser.  Since this parser does not implement any backtracking,
-it is not guaranteed to find a parse for a text, even if one
-exists.  Furthermore, it will always find at most one parse,
-even if more parses exist. 
+The ``nltk.parser`` module defines ``ShiftReduceParser``, a simple
+non-backtracking implementation of a bottom-up shift-reduce parser.
+Since this parser does not implement any backtracking, it is not
+guaranteed to find a parse for a text, even if one exists.
+Furthermore, it will always find at most one parse, even if more
+parses exist.
 
-Shift reduce parsers are created from
-``CFGs`` by the 
-"http://&refdoc;/nltk.parser.ShiftReduceParser-class.html#__init__"
-``ShiftReduceParser`` constructor.  The
-constructor takes an optional argument ``trace``.
-If ``trace`` is greater than zero, then the
-parser will describe the steps that it takes as it parses a
-text.  Higher values of ``trace`` produce more
-verbose descriptions.
-::
+Shift reduce parsers are created from ``CFGs`` by the
+``ShiftReduceParser`` constructor.  The constructor takes an optional
+argument ``trace``.  If ``trace`` is greater than zero, then the
+parser will describe the steps that it takes as it parses a text.
+Higher values of ``trace`` produce more verbose descriptions.  ::
 
  >>> from nltk.parser import *
 
@@ -1007,45 +876,32 @@ verbose descriptions.
  >>> from nltk.draw.srparser import demo
  >>> demo()
 
-
-_`nltk.RecursiveDescentParser`
-
 ----------------------------
 The Recursive Descent Parser 
 ----------------------------
 
-The  "http://&refdoc;/nltk.parser-module.html"
-``nltk.parser`` module defines
-"http://&refdoc;/nltk.parser.RecursiveDescentParser-class.html"
-``RecursiveDescentParser``, a simple recursive implementation of a
-top-down parser.  Unlike the shift-reduce parser, this parser is
-guaranteed to find all parses for a sentence.  But because it's a
-simple recursive top-down parser, it can enter an infinite loop if the
-grammar contains a left-recursive production.
+The ``nltk.parser`` module defines ``RecursiveDescentParser``, a
+simple recursive implementation of a top-down parser.  Unlike the
+shift-reduce parser, this parser is guaranteed to find all parses for
+`a sentence.  But because it's a simple recursive top-down parser, it
+can enter an infinite loop if the grammar contains a left-recursive
+production.
 
-Recursive descent parsers are created from
-``CFGs`` by the 
-""http://&refdoc;/nltk.parser.RecursiveDescentParser-class.html#__init__"
-``RecursiveDescentParser`` constructor.
-The constructor takes an optional argument
-``trace``.  As with the shift reduce parser, this
-value specifies how verbosely the parser should describe the
-steps that it takes as it parses a text.
-::
- >>> from nltk.parser import *
+Recursive descent parsers are created from ``CFGs`` by the
+``RecursiveDescentParser`` constructor.  The constructor takes an
+optional argument ``trace``.  As with the shift reduce parser, this
+value specifies how verbosely the parser should describe the steps
+that it takes as it parses a text::
 
- # Construct a new parser for the grammar
+  >>> from nltk_lite.parse import *
  >>> rd_parser = RecursiveDescentParser(grammar)
 
 The following example shows the trace output generated by
-`rd_parser`_ on a simple sentence, where
-``E`` = expand and ``M`` = match.
-Material to the left of the asterisk has been matched and
-incorporated into the parse tree.
+``rd_parser`` on a simple sentence, where ``E`` = expand and ``M`` =
+match.  Material to the left of the asterisk has been matched and
+incorporated into the parse tree::
 
-::
- >>> sent = Token(TEXT='I saw a man')
- >>> WhitespaceTokenizer().tokenize(sent)
+ >>> sent = tokenize.whitespace('I saw a man')
  >>> rd_parser.trace()
  >>> parses = rd_parser.get_parse_list(sent)
  Parsing 'I saw a man'
