@@ -14,9 +14,10 @@ which matches tokens or gaps.
 
 import re, sre_parse, sre_constants, sre_compile
 
-WHITESPACE = '\s+'
-NEWLINE = '\n'
-BLANKLINE = '\n\s*\n'
+WHITESPACE = r'\s+'
+NEWLINE    = r'\n'
+BLANKLINE  = r'\n\s*\n'
+WORDPUNCT  = r'[a-zA-Z]+|[^a-zA-Z\s]+'
 
 def _remove_group_identifiers(parsed_re):
     """
@@ -182,6 +183,18 @@ def blankline(s):
     """
     return (t for t in regexp(s, pattern=BLANKLINE, gaps=True))
 
+def wordpunct(s):
+    """
+    Tokenize the text into sequences of alphabetic and non-alphabetic
+    characters.  E.g. "She said 'hello.'" would be tokenized to
+    ["She", "said", "'", "hello", ".'"]
+
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
+    @return: An iterator over tokens
+    """
+    return (t for t in regexp(s, pattern=WORDPUNCT))
+
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
@@ -225,7 +238,7 @@ def demo():
     _display(regexp(s, pattern=r'\w+', gaps=False))
     print
     print 'Tokenize sequences of letters and sequences of nonletters:'
-    _display(regexp(s, pattern=r'[a-zA-zZ]+|[^a-zA-Z\s]+'))
+    _display(regexp(s, pattern=WORDPUNCT))
     print
     print 'A simple sentence tokenizer:'
     _display(regexp(s, pattern=r'\.(\s+|$)', gaps=True))
