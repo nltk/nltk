@@ -1,0 +1,329 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+===================================
+Programming Fundamentals and Python
+===================================
+
+:Authors: Steven Bird, Ewan Klein, Edward Loper
+:Contact: sb@csse.unimelb.edu.au
+:Version: 0.1
+:Revision: $Revision$
+:Date: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Note:: This is an early draft
+
+------------
+Introduction
+------------
+
+
+
+
+----------------------------
+Processing lists and strings
+----------------------------
+
+First, list initialization, length, indexing, slicing::
+
+  >>> a = ['colourless', 'green', 'ideas']
+  >>> print a
+  ['colourless', 'green', 'ideas']
+  >>> a
+  ['colourless', 'green', 'ideas']
+  >>> len(a)
+  3
+  >>> a[1]
+  'green'
+  >>> a[-1]
+  'ideas'
+  >>> a[1:]
+  ['green', 'ideas']
+
+Note that we had to explicitly print the result of the assignment
+above, using ``print a``.  We achieved the same result by giving the
+variable name, which Python evaluates and prints.  Below we see use of
+list concatenation, sorting and reversal.  The final command
+concatenates two list elements::
+
+  >>> b = a + ['sleep', 'furiously']
+  >>> print b
+  ['colourless', 'green', 'ideas', 'sleep', 'furiously']
+  >>> b.sort()
+  >>> print b
+  ['colourless', 'furiously', 'green', 'ideas', 'sleep']
+  >>> b.reverse()
+  >>> print b
+  ['sleep', 'ideas', 'green', 'furiously', 'colourless']
+  >>> b[2] + b[1]
+  'greenideas'
+
+Simple for loop:
+
+  >>> for w in b:
+  ...    print w[0]
+  ...
+  s
+  i
+  g
+  f
+  c
+
+Miscellaneous further interesting examples::
+
+  >>> b[2][1]
+  'r'
+  >>> b.index('green')
+  2
+  >>> b[5]
+  IndexError: list index out of range
+  >>> b[0] * 3
+  'sleepsleepsleep'
+  >>> c = ' '.join(b)
+  >>> print c
+  sleep ideas green furiously colourless
+  >>> c.split('r')
+  ['sleep ideas g', 'een fu', 'iously colou', 'less']
+  >>> map(lambda x: len(x), b)
+  [5, 5, 5, 9, 10]
+  >>> [(x, len(x)) for x in b]
+  [('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
+
+Next we'll take a look at Python *dictionaries* (or associative arrays).
+
+  >>> d = {}
+  >>> d['colourless'] = 'adj'
+  >>> d['furiously'] = 'adv'
+  >>> d['ideas'] = 'n'
+  >>> d.keys()
+  ['furiously', 'colourless', 'ideas']
+  >>> d.values()
+  ['adv', 'adj', 'n']
+  >>> d
+  {'furiously': 'adv', 'colourless': 'adj', 'ideas': 'n'}
+  >>> print d.has_key('ideas')
+  True
+  >>> print d.get('sleep')
+  None
+  >>> for w in d.keys():
+  ...    print "%s [%s]," % (w, d[w]),
+  furiously [adv], colourless [adj], ideas [n],
+
+We can use dictionaries to count word occurrences.  For example, the
+following code reads *Macbeth* and counts the frequency of each word::
+
+  >>> from nltk_lite.corpora import gutenberg
+  >>> from nltk_lite.util import inc
+  >>> words = {}                                        # initialize a dictionary
+  >>> for word in gutenberg.raw('shakespeare-macbeth'): # tokenize Macbeth
+  ...     word = word.lower()                           # normalize to lowercase
+  ...     inc(words, word)
+
+Now we can inspect the dictionary::
+
+  >>> print words['scotland']
+  12
+  >>> frequencies = [(freq, word) for (word, freq) in words.items()]
+  >>> frequencies.sort()
+  >>> frequencies.reverse()
+  >>> print frequencies[:20]
+  [(1986, ','), (1245, '.'), (692, 'the'), (654, "'"), (567, 'and'), (482, ':'), (399, 'to'), (365, 'of'), (360, 'i'), (255, 'a'), (246, 'that'), (242, '?'), (224, 'd'), (218, 'you'), (213, 'in'), (207, 'my'), (198, 'is'), (170, 'not'), (165, 'it'), (156, 'with')]
+
+Finally, we look at Python's regular expression module, for
+substituting and searching within strings.  We use a utility function
+``re_show`` to show how regular expressions match against substrings.
+
+  >>> import re
+  >>> from nltk_lite.util import re_show
+  >>> string = "colourless green ideas sleep furiously"
+  >>> re_show('l', string)
+  co{l}our{l}ess green ideas s{l}eep furious{l}y
+  >>> re.sub('l', 's', string)
+  'cosoursess green ideas sseep furioussy'
+  >>> re_show('green', string)
+  colourless {green} ideas sleep furiously
+  >>> re.sub('green', 'red', string)
+  'colourless red ideas sleep furiously'
+  >>> re_show('[^aeiou][aeiou]', string)
+  {co}{lo}ur{le}ss g{re}en{ i}{de}as s{le}ep {fu}{ri}ously
+  >>> re.findall('[^aeiou][aeiou]', string)
+  ['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
+  >>> re.findall('([^aeiou])([aeiou])', string)
+  [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
+  >>> re_show('(green|sleep)', string)
+  colourless {green} ideas {sleep} furiously
+  >>> re.findall('(green|sleep)', string)
+  ['green', 'sleep']
+
+--------------
+Accessing NLTK
+--------------
+
+NLTK consists of a set of Python *modules*, each of which defines
+classes and functions related to a single data structure or task.
+Before you can use a module, you must ``import`` its contents.  The
+simplest way to import the contents of a module is to use the ``from
+module import *`` command.  For example, to import the contents of the
+``nltk_lite.util`` module, which is discussed in this tutorial, type:
+
+  >>> from nltk_lite.util import *
+
+A disadvantage of this style of import statement is that it does not
+specify what objects are imported; and it is possible that some of the
+import objects will unintentionally cause conflicts.  To avoid this
+disadvantage, you can explicitly list the objects you wish to import.
+For example, to import the ``re_show`` function from the
+``nltk_lite.util`` module, type::
+
+  >>> from nltk_lite.util import re_show
+
+Another option is to import the module itself, rather than
+its contents.  Now its contents can then be accessed
+using *fully qualified* dotted names:
+
+  >>> from nltk_lite import util
+  >>> util.re_show('green', string)
+  colourless {green} ideas sleep furiously
+
+For more information about importing, see any Python textbook.
+
+NLTK is distributed with several corpora, listed in the introduction.
+Many of these corpora are supported by the NLTK ``corpora`` module.
+The following code listing shows how some of these corpora can be
+accessed.
+
+  >>> from nltk_lite.corpora import gutenberg
+  >>> from itertools import islice
+  >>> gutenberg.items
+  ['austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems', 'blake-songs', 'chesterton-ball', 'chesterton-brown', 'chesterton-thursday', 'milton-paradise', 'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth', 'whitman-leaves']
+  >>> from nltk_lite.corpora import brown
+  >>> brown.items
+  ['ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', 'ca08', 'ca09',
+  'ca10', 'ca11', 'ca12', 'ca13', 'ca14', 'ca15', 'ca16', 'ca17', ... ]
+  >>> print list(islice(brown.raw('ca01'), 20))
+  <[<The/at>, <Fulton/np-tl>, <County/nn-tl>, <Grand/jj-tl>,
+  <Jury/nn-tl>, <said/vbd>, <Friday/nr>, <an/at>, <investigation/nn>,
+  <of/in>, <Atlanta's/np$>, <recent/jj>, <primary/nn>, <election/nn>,
+  <produced/vbd>, <``/``>, <no/at>, <evidence/nn>, <''/''>, <that/cs>,
+  <any/dti>, <irregularities/nns>, <took/vbd>, <place/nn>, <./.>, ...]>
+  >>> print list(islice(brown.tagged('ca01'), 20))
+  <[<The/at>, <Fulton/np-tl>, <County/nn-tl>, <Grand/jj-tl>,
+  <Jury/nn-tl>, <said/vbd>, <Friday/nr>, <an/at>, <investigation/nn>,
+  <of/in>, <Atlanta's/np$>, <recent/jj>, <primary/nn>, <election/nn>,
+  <produced/vbd>, <``/``>, <no/at>, <evidence/nn>, <''/''>, <that/cs>,
+  <any/dti>, <irregularities/nns>, <took/vbd>, <place/nn>, <./.>, ...]>
+  >>> from nltk_lite.corpora import treebank
+  >>> treebank.items
+  ['wsj_0001.prd', 'wsj_0002.prd', 'wsj_0003.prd', ...]
+  >>> print list(islice(treebank.parsed('parsed/wsj_0001.prd'), 2)
+  [ (S: (NP-SBJ: (NP: <Pierre> <Vinken>) ...)
+          (VP: will ...)),
+    (S: (NP-SBJ: <Mr.> <Vinken>)
+          (VP: <is> ...)) ]
+
+
+.. DEBUGGING - diagnostic print statements etc
+   STRUCTURED PROGRAMMING
+   ALGORITHM DESIGN
+
+---------------
+NLTK Interfaces
+---------------
+
+``TokenizerI`` is the first "interface" class we've encountered; at
+this point, we'll take a short digression to explain how interfaces
+are implemented in NLTK.
+
+An *interface* gives a partial specification of the behavior of a
+class, including specifications for methods that the class should
+implement.  For example, a "comparable" interface might specify that a
+class must implement a comparison method.  Interfaces do not give a
+complete specification of a class; they only specify a minimum set of
+methods and behaviors which should be implemented by the class.  For
+example, the ``TaggerI`` interface specifies that a tagger class must
+implement a ``tag`` method, which takes a ``string``, and returns a
+tuple, consisting of that string and its part-of-speech tag; but it
+does not specify what other methods the class should implement (if
+any).
+
+.. note:: The notion of "interfaces" can be very useful in ensuring that
+   different classes work together correctly.  Although the concept of
+   "interfaces" is supported in many languages, such as Java, there is no
+   native support for interfaces in Python.
+
+NLTK therefore implements interfaces using classes, all of whose
+methods raise the ``NotImplementedError`` exception.  To distinguish
+interfaces from other classes, they are always named with a trailing
+``I``.  If a class implements an interface, then it should be a
+subclass of the interface.  For example, the ``Ngram`` tagger class
+implements the ``TaggerI`` interface, and so it is a subclass of
+``TaggerI``.
+
+---------------
+Further Reading
+---------------
+
+Python
+------
+
+Guido Van Rossum (2003).
+*An Introduction to Python*,
+Network Theory Ltd;
+
+Guido Van Rossum (2003).
+*The Python Language Reference*,
+Network Theory Ltd,
+
+Algorithmic Problem Solving
+---------------------------
+
+Harel, Levitin
+
+Development of NLTK
+-------------------
+
+Edward Loper and Steven Bird (2002).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL Workshop on Effective Tools and
+Methodologies for Teaching Natural Language Processing and Computational
+Linguistics*,
+Somerset, NJ: Association for Computational Linguistics,
+pp. 62-69, http://arXiv.org/abs/cs/0205028
+
+BirdLoper04
+
+Edward Loper (2004).
+NLTK: Building a Pedagogical Toolkit in Python,
+*PyCon DC 2004*
+Python Software Foundation,
+http://www.python.org/pycon/dc2004/papers/
+
+---------
+Exercises
+---------
+
+Using the Python interpreter in interactive mode, experiment with
+words, texts, tokens, locations and tokenizers, and satisfy yourself
+that you understand all the examples in the tutorial.  Now complete
+the following questions.
+
+1. Describe the class of strings matched by the following regular
+   expressions:
+
+  a) ``[a-zA-Z]+``
+  #) ``[A-Z][a-z]*``
+  #) ``\d+(\.\d+)?``
+  #) ``([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*``
+  #) ``\w+|[^\w\s]+``
+
+#. Write regular expressions to match the following classes of strings:
+
+  a) A single determiner (assume that *a*, *an*, and *the*
+     are the only determiners).
+  #) An arithmetic expression using integers, addition, and
+     multiplication, such as ``2*3+8``.
+
+#. Use the corpus module to tokenize ``austin-persuasion.txt``.
+   How many words does this book have?
