@@ -55,7 +55,7 @@ def parsed(files = 'parsed'):
         s = open(path).read()
         for t in tokenize.blankline(s):
             print t
-            yield tree.parse(t)
+            yield tree.bracket_parse(t)
 
 
 def chunked(files = 'chunked', basedir = "corpora/treebank"):
