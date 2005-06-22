@@ -271,7 +271,7 @@ class Production:
             C{Production}. 
         @rtype: C{string}
         """
-        return '[Production: %s]' % self
+        return '%s' % self
 
     def __eq__(self, other):
         """
