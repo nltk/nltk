@@ -75,6 +75,9 @@ apidocs:
 tutorials:
 	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
 
+corpora:
+	tar czvf corpora.tgz --exclude=CVS corpora
+
 # Automatically add the appropriate version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
