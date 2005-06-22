@@ -314,7 +314,7 @@ class ImmutableTree(Tree):
 # Parsing
 #////////////////////////////////////////////////////////////
     
-def parse(s):
+def bracket_parse(s):
     """
     Parse a treebank string and return a tree.  Trees are represented
     as nested brackettings, e.g. (S (NP (NNP John)) (VP (V runs))).
@@ -419,9 +419,11 @@ def demo():
     and shows the results of calling several of their methods.
     """
     
+    from nltk_lite.parse import tree
+
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
-    t = parse(s)
+    t = tree.bracket_parse(s)
     print t
 
     print t.node           # tree's constituent type
@@ -435,13 +437,13 @@ def demo():
 
     # Demonstrate tree modification.
     the_cat = t[0]
-    the_cat.insert(1, parse('(JJ big)'))
+    the_cat.insert(1, tree.bracket_parse('(JJ big)'))
     print t
-    t[1,1,1] = parse('(NN cake)')
+    t[1,1,1] = tree.bracket_parse('(NN cake)')
     print t
 
     # Demonstrate parsing of treebank output format.
-    t = parse(t.pp_treebank())[0]
+    t = tree.bracket_parse(t.pp_treebank())[0]
     print t
 
     # Demonstrate LaTeX output
