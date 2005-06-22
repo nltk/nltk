@@ -13,6 +13,12 @@ Learning NLP with the Natural Language Toolkit
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
+.. Note:: This is a draft.  Please send any feedback to the authors.
+
+------------
+Introduction
+------------
+
 The *Natural Language Toolkit (NLTK)* was originally created as part
 of a computational linguistics course in the Department of Computer
 and Information Science at the University of Pennsylvania in 2001.
@@ -77,7 +83,9 @@ architecture.  Thus, as we have seen, NLTK offers a fresh approach to
 NLP pedagogy, in which theoretical content is tightly integrated with
 application.
     
+------------------
 The Design of NLTK
+------------------
 
 NLTK was designed with six requirements in mind.  First, NLTK is *easy
 to use*.  The primary purpose of the toolkit is to allow students to
@@ -190,3 +198,10 @@ Stopwords Corpus           Porter et al           2,400 stopwords for 11 languag
 \*Penn Treebank (sel       LDC                    40k words, tagged and parsed
 Wordlist Corpus            OpenOffice.org et al   960k words and 20k affixes for 8 languages
 =========================  =====================  ============================================================
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
