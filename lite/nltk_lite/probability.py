@@ -50,7 +50,6 @@ C{Tree}).
 @todo: Better handling of log probabilities.
 """
 
-from nltk.util import sum_logs
 import types, math, numarray
 
 _NINF = float('-inf')
@@ -1322,6 +1321,35 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
     def conditions(self):
         # inherit doco
         return self._dict.keys()
+
+##//////////////////////////////////////////////////////
+## Adding in log-space.
+##//////////////////////////////////////////////////////
+
+# If the difference is bigger than this, then just take the bigger one:
+_ADD_LOGS_MAX_DIFF = math.log(1e-30)
+
+def add_logs(logx, logy):
+    """
+    Given two numbers C{logx}=M{log(x)} and C{logy}=M{log(y)}, return
+    M{log(x+y)}.  Conceptually, this is the same as returning
+    M{log(exp(C{logx})+exp(C{logy}))}, but the actual implementation
+    avoids overflow errors that could result from direct computation.
+    """
+    if (logx < logy + _ADD_LOGS_MAX_DIFF):
+        return logy
+    if (logy < logx + _ADD_LOGS_MAX_DIFF):
+        return logx
+    base = min(logx, logy)
+    return base + math.log(math.exp(logx-base) + math.exp(logy-base))
+
+def sum_logs(logs):
+    if len(logs) == 0:
+        # Use some approximation to infinity.  What this does
+        # depends on your system's float implementation.
+        return -1e1000
+    else:
+        return reduce(add_logs, logs[1:], logs[0])
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
