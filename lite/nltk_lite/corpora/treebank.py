@@ -54,7 +54,6 @@ def parsed(files = 'parsed'):
         path = os.path.join(get_basedir(), "treebank", file)
         s = open(path).read()
         for t in tokenize.blankline(s):
-            print t
             yield tree.bracket_parse(t)
 
 
