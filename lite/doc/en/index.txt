@@ -1,0 +1,37 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+===================
+NLTK-Lite Tutorials
+===================
+
+:Authors: Steven Bird, Ewan Klein, Edward Loper
+:Contact: sb@csse.unimelb.edu.au
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. _Preface: preface.html
+.. _Introduction: introduction.html
+.. _Programming: programming.html
+.. _Tokenize: tokenize.html
+.. _Tag: tag.html
+.. _Parse: parse.html
+
+--------
+Contents
+--------
+
+0. Preface_
+#. Introduction_
+#. Programming_
+#. Tokenize_
+#. Tag_
+#. Parse_
+
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
