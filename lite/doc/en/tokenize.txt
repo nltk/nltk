@@ -13,6 +13,8 @@ Elementary Language Processing: Tokenizing Text and Classifying Words
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
+.. Note:: This is a draft.  Please send any feedback to the authors.
+
 .. _Introduction:
 
 ------------
@@ -351,7 +353,7 @@ sample every time it is an outcome of the experiment.  The following
 program produces a frequency distribution that records how often each
 word occurs in a text, and prints the most frequently occurring word:
 
-  >>> from nltk.probability import FreqDist
+  >>> from nltk_lite.probability import FreqDist
   >>> fd = FreqDist()
   >>> for token in genesis.raw():
   ...     fd.inc(token)
@@ -407,7 +409,7 @@ frequency distributions are indexed by the condition.
 
 ::
 
-  >>> from nltk.probability import ConditionalFreqDist
+  >>> from nltk_lite.probability import ConditionalFreqDist
   >>> cfdist = ConditionalFreqDist()
 
   >>> for text in genesis.items:
@@ -457,7 +459,7 @@ We will now use a ``ConditionalFreqDist`` to predict the most likely
 next word in a text.  To begin, we load a corpus from a text file, and
 create an empty ``ConditionalFreqDist``::
 
-  >>> from nltk.probability import ConditionalFreqDist
+  >>> from nltk_lite.probability import ConditionalFreqDist
   >>> cfdist = ConditionalFreqDist()
 
 We then examine each token in the corpus, and increment the
