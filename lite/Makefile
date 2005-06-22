@@ -72,6 +72,9 @@ checkapidocs:
 apidocs:
 	$(EPYDOC) -o doc/api nltk_lite
 
+tutorials:
+	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
+
 # Automatically add the appropriate version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
