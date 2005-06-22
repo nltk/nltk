@@ -64,7 +64,7 @@ parameters or unsupervised learning using the Baum-Welch algorithm, a variant
 of EM.
 """
 
-from nltk.probability import *
+from nltk_lite.probability import *
 from numarray import *
 import re
 
@@ -743,8 +743,8 @@ class HiddenMarkovModelTrainer:
         for sequence in labelled_sequences:
             lasts = None
             for token in sequence:
-                state = token[TAG]
-                symbol = token[TEXT]
+                state = token[_TAG]
+                symbol = token[_TEXT]
                 if lasts == None:
                     starting.inc(state)
                 else:
@@ -956,15 +956,15 @@ def demo_bw():
     rng = random.Random()
     for i in range(10):
         item = model.random_sample(rng, 5)
-        training.append((item, None))
+        training.append([(i[0], None) for i in item])
 
     # train on those examples, starting with the model that generated them
     trainer = HiddenMarkovModelTrainer(states, symbols)
     hmm = trainer.train_unsupervised(training, model=model, max_iterations=1000)
     
 if __name__ == '__main__':
-    #demo()
+    demo()
     #demo_pos()
     #demo_pos_bw()
-    demo_bw()
+    #demo_bw()
 
