@@ -1,0 +1,216 @@
+c  Created for Randy Speirs for Assyrian phonetic keyboard layout
+c  Jan 23, 1998 by Karen Buseman,  JAARS
+c  for use with the program Keyman
+
+NAME "AssyrianPhonetic"
+BITMAPS asy2_on asy2_off
+HOTKEY "^+A"
+VERSION 3.1
+
+begin > use(Main)
+        c these stores are used below in RESTRICTIONS
+        store(vowelout) "eiou"      c vowels in text
+        store(vowelkey) "YEAO"      c same vowels as keystrokes
+        store(modout)   "~{}"       c modifiers: palatialize, soften, harden
+        store(modkey)   "~DF"       c same modifiers as keystrokes
+
+c unused font positions are listed below
+c + "" > "^"       c present tense, dot over
+c + "" > "+"       c past tense
+c + "" > ">"       c chevron, >>
+c + "" > "<"       c chevron, <<
+c + "" > "Z"       c plain cross
+c + "" > "@"       c round quotes, ))
+c + "" > "&"       c round quotes, ((
+c + "" > "y{a"     c yud with dot under & small alep above
+c + "" > "I"       c present feminine verbs, two square dots under
+c + "" > "W"       c paragraph symbol
+c + "" > "_"       c maratana (schwa, underline)
+c + "" > "X"       c thin space
+c + "" > "Q"       c abbreviation
+
+
+group(Main) using keys
+
+c unshifted-shifted keyboard in physical key order
+
++ "`" > "'"       c apostrophe
++ "~" > "~"       c tilde shape
++ "1" > "1"       c one
++ "!" > "!"       c exclamation mark
++ "2" > "2"       c two
++ "@" > "#"       c pound sign, hatch mark
++ "3" > "3"       c three
++ "#" > "wI"      c waw with two square dots under
++ "4" > "4"       c four
++ "$" > "H"       c pe with > wedge on left
++ "5" > "5"       c five
++ "%" > "%"       c percent sign
++ "6" > "6"       c six
++ "^" > "hIy"     c he yud with two square dots under
++ "7" > "7"       c seven
++ "&" > "hIw"     c he waw with two square dots under
++ "8" > "8"       c eight
++ "*" > "*"       c asterisk
++ "9" > "9"       c nine
++ "(" > "("       c closing parenthesis, (
++ "0" > "0"       c zero
++ ")" > ")"       c opening parenthesis, )
++ "-" > "-"       c hyphen
++ "_" > "E"       c connector
++ "=" > "S"       c equals
++ "+" > "A"       c plus
++ "\" > "\"       c backslash
++ "|" > "|"       c vertical bar
+
++ "q" > "q"       c qoph
+c + "Q" > ""        c nothing on Q
+
++ "w" > "w"       c waw
++ "W" > "w{"      c waw with dot under
+
+c + "e" > ""        c nothing on e
++ "E" > "i"       c two parallel dots under
+
++ "r" > "r"       c resh
++ "R" > "r="      c resh plural
+
++ "t" > "t"       c tau
++ "T" > "t{"      c softened tau
+
++ "y" > "y"       c yud
++ "Y" > "e"       c two diagonal dots under
+
++ "u" > "w}"      c waw with dot over
++ "U" > "U"       c symbol for God
+
++ "i" > "y{"      c ikwasa (yud with dot under)
++ "I" > "Y"       c fancy cross
+
++ "o" > "w}"      c waw with dot over
++ "O" > "u"       c dot over and under
+
++ "p" > "p"       c pe
++ "P" > "="       c plural, two square dots over
+
++ "[" > "'"       c apostrophe
++ "{" > "["       c square bracket
++ ']' > '"'       c quote mark
++ "}" > "]"       c square bracket
+
+
++ "a" > "a"       c alep
++ "A" > "o"       c two diagonal dots over
+
++ "s" > "s"       c semkath
++ "S" > "j"       c zhin
+
++ "d" > "d"       c daleth
++ "D" > "{"       c softener, single dot under
+
++ "P" > "p~"      c pe softened, with saucer softener
++ "F" > "}"       c hardener (dot over)
+
++ "g" > "g"       c gamal
++ "G" > "g{"      c gamal softened dot under
+
++ "h" > "h"       c he
++ "H" > "x"       c kheth
+
++ "j" > "f"       c teth
++ "J" > "g~"      c jamal, gamal softened with tilde
+
++ "k" > "k"       c kap
++ "K" > "k{"      c chap, kap softened
+
++ "l" > "l"       c lamad
++ "lL" > "la"     c lamad alep (for old keying habits)
+
++ ";" > ";"       c semicolon
++ ":" > ":"       c colon
+
++ "'" > "v"       c ayin
++ '"' > '"'       c quote mark
+
+
++ "z" > "z"       c zayn
++ "Z" > "j~"      c zhin with tilde softener
+
+c + "x" > ""        c nothing on x
++ "X" > "`"       c silencer
+
++ "c" > "c"       c sadhe
++ "C" > "k~"      c kap softened with tilde
+
++ "v" > "D"       c tau alep, like regular tau
++ "V" > "F"       c tau alep
+
++ "b" > "b"       c beth
++ "B" > "b{"      c beth softened
+
++ "n" > "n"       c nun
++ "N" > "e="      c combination plural and zlama long
+
++ "m" > "m"       c mim
+c + "M" > ""        c nothing on M
+
++ "," > ","       c comma
++ "." > "."       c period
++ "/" > "/"       c forward slash
++ "?" > "?"       c question mark
+
+
+c RESTRICTIONS
+
+c no doubling up of overstrikes
+"e" + "Y" > context     c vowels
+"i" + "E" > context
+"o" + "A" > context
+"u" + "O" > context
+"`" + "X" > context     c silencer
+"~" + "~" > context     c tilde
+c "_" + "Y" > context     c schwa
+"{" + "D" > context     c dot under
+"}" + "F" > context     c dot over
+"=" + "P" > context     c plural
+
+
+c no two vowels together
+any(vowelout) + any(vowelkey) > context beep
+
+c schwa and silencer not with vowels or each other
+"`" + any(vowelkey) > context beep      c silencer  +  vowel key
+any(vowelout) + "X" > context beep      c vowel     +  silencer key
+c "_" + any(vowelkey) > context beep      c schwa     +  vowel key
+c any(vowelout) + "R" > context beep      c vowel     +  schwa key
+c "`" + "_"           > context beep      c silencer  +  schwa key
+c "_" + "`"           > context beep      c schwa     +  silencer key
+
+c dot under or over never with tilde or together
+any(modout) + any(modkey) > context beep
+
+c standardizing text sequences -- by pairs
+c desired sequence is modifier, vowel, plural
+c possible sequences are MV, MP, VP, VM, PM, PV
+c the first three are correct
+c so only three of the six possible are listed below
+
+c VM > MV
+any(vowelout) + any(modkey) > index(modout,2) context
+c PM > MP
+"=" + any(modkey) > index(modout,2) context
+c PV > VP
+"=" + any(vowelkey) > index(vowelout,2) context
+
+c sequences by threes
+c desired sequence is modifier, vowel, plural
+c possible sequences are MVP, MPV, VMP, VPM, PMV, PVM
+c the first is OK
+c in the second, only the PV sequence needs to change
+c in the third, the P is OK so only the VM needs to change
+c for the fifth (PMV), PM > MP, then PV > VP, so the pairs handle it
+c for the sixth (PVM), PV > VP, then VPM is handled by the fourth
+c so only one of the six possible is listed below
+
+c VPM > MVP
+any(vowelout) "=" + any(modkey) > index(modout,3) context

@@ -1,0 +1,852 @@
+<html>
+
+<title>Handling Shoebox Dictionaries with the NLTK</title>
+
+<body bgcolor="#FFFFFF">
+
+<center>
+<h1>Handling Shoebox Dictionaries with the Natural Language Toolkit</h1>
+<h3>Stuart Robinson</h3>
+</center>
+
+<p>This tutorial introduces the Shoebox capabilities of the Natural Language Toolkit (NLTK) for Python. Here we concentrate on Shoebox dictionaries rather than interlinearized texts. (As soon as the NLTK provides full-support for handling Shoebox interlinear texts, a follow-up tutorial will be made available.)</p>
+
+
+
+<a name="toc"></a>
+<h4>Table of Contents</h4>
+
+<ol>
+  <li><a href="#section1">What is Shoebox?</a></li>
+  <li><a href="#section2">How does <tt>nltk.shoebox</tt> work?</a></li>
+  <li><a href="#section3">Some Case Studies</a></li>
+    <ul>
+      <li><a href="#casestudy1">Case 1: Adding a Field to a Shoebox Lexicon Automatically</a></li>
+      <li><a href="#casestudy2">Case 2: Filtering out Specific Fields in a Database</a></li>
+      <li><a href="#casestudy3">Case 3: Automatically Extracting Minimal Pairs</a></li>
+      <li><a href="#casestudy4">Case 4: Formatting a Shoebox Lexicon for Display</a></li>
+      <li><a href="#casestudy5">Case 5: Handling Entry Date Stamps</a></li>
+      <li><a href="#casestudy6">Case 6: Guess Entry Template of Shoebox Dictionary Without Metadata</a></li>
+      <li><a href="#casestudy7">Case 7: Automatic Analysis of Word Length and Photactics</a></li>
+      <li><a href="#casestudy8">Case 8: Validating Field Data Against Range Sets</a></li>
+<!--
+      <li><a href="#casestudy9">Case 9: Chaging the Order of Fields in an Entry</a></li>
+      <li><a href="#casestudy10">Case 10: Breaking a Single Field into Many</a></li>
+      <li><a href="#casestudy11">Case 11: Checking Fields for Uniqueness</a></li>
+-->
+    </ul>
+  <li><a href="#section4">Conclusion</a></li>
+</ol>
+
+
+
+<a name="section1"></a>
+<h2>What is Shoebox?</h2> 
+
+<p><a href="http://www.sil.org/computing/shoebox/">Shoebox</a> (and its latest incarnation, <a href="http://www.sil.org/computing/toolbox/">Toolbox</a>) is a computer program used by many linguists to handle fieldwork data. The description of the program provided on the Shoebox homepage sums it up quite nicely:
+
+<p>"Shoebox is a computer program that helps field linguists and anthropologists integrate various kinds of text data: lexical, cultural, grammatical, etc. It has flexible options for sorting, selecting, and displaying data. It is especially useful for helping researchers build a dictionary as they use it to analyze and interlinearize text. The name Shoebox recalls the use of shoe boxes to hold note cards on which definitions of words were written in the days before researchers could use computers in the field."</p>
+
+<p>A sample entry from a Shoebox dictionary of Rotokas (East Papuan, spoken on Bougainville) is provided below. Note the program displays the data in two columns: on the left are the field markers, which identify different data fields; on the right are the field values, which provide the information about the fields on the left for an entry (in this case, the entry for the lexeme <i>korau</i>).</p>
+
+<table border="1">
+  <tr>
+    <td><img src="images/screenshot-toolbox-lex-small-cropped.jpeg"></td>
+  </tr>
+</table>
+
+<p>Alternative views of the data are possible. For example, below we find the same data displayed in three columns: on the left are the field markers and their descriptions; on the right are the field values (the data for a particular entry).</p>
+
+<table border="1">
+  <tr>
+    <td><img src="images/screenshot-toolbox-lex2-small-cropped.jpeg"></td>
+  </tr>
+</table>
+
+<p>It is possible to look at this data in its raw form using any word processor (e.g., Notepad, MS Word, etc.) or text editor (e.g., vi, emacs, etc.). We provide here a full Shoebox/Toolbox dictionary file for Rotokas which includes only entries beginning with the letter 'k': <a href="../samples/Rotokas/ROTRT.DIC">ROTRT.DIC</a>. Here is what a sample entry from it looks like:</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>\lx korau
+\ps V.A
+\ge clear
+\ge unobstructed
+\gp klia
+\dt 14/Feb/2005
+\cmt What is aue doing in the first example?
+\ex Korauvira toupai aue evaoa.
+\xp Diwais em i stap long ples klia.
+\xe The trees are in the clearing.
+\ex Ezra korauvira rutu toreparoi.
+\xp Ezra i sanap long ples klia.
+\xe Ezra is standing up in the clearing.
+</pre></p></td></tr>
+</table>
+
+<p>This raw data is simply text and can be manipulated programmatically. Being able to manipulate Shoebox databases programmatically is extremely useful. Although Shoebox is a very full-featured program with good data analysis capabilities, there is no substitute for the flexibility a bona fide programming language provides. Anyone who uses Shoebox has no doubt at some point wanted to perform a particular type of analysis but found the inherent capabilities of Shoebox inadequate for the task. For example, it would be quite difficult to query a Shoebox dictionary and obtain every example sentence, formatted for insertion in word processor, for an entry that begins with a particular consonant, ends with a particular suffix, and belongs to a particular part of speech. Using the NLTK with Shoebox, such a query is straightforward.</p>
+
+<p>Here we will learn how to use the Natural Language Toolkit for Python to manipulate Shoebox data of this sort. Although this tutorial does not require intimate knowledge of Shoebox, it is a good idea to familiarize yourself with at least the basics of the application. Fortunately, there is a good deal of documentation available (see the links at the end of this tutorial). (The programs really are quite similar and the skills acquired on one transfer to the other almost entirely.)</p>
+
+
+
+<!--
+<h2>What is the Natural Language Toolkit?</h2>
+
+<p>The <a href="http://freshmeat.net/projects/nltk/">Natural Language Toolkit (NLTK)</a> is, according to its authors, "a suite of program modules, data sets, tutorials, and exercises, covering symbolic and statistical natural language processing".  It is written in Python, an object-oriented scripting language, and, like Python, it is also free software in every sense of the term. You pay nothing for it and you are free to peek under the hood.</p>
+
+<p>You can learn more about what the NLTK has to offer by consulting the <a href="http://nltk.sourceforge.net/docs.html">NLTK documentation</a>. In addition, there are also two academic articles on the NLTK (<a href="http://arxiv.org/abs/cs/0205028">1</a> | <a href="http://www.ldc.upenn.edu/sb/home/papers/nltk.pdf">2</a>) and a few tutorials, such as those on the NLTK site itself (<a href="http://nltk.sourceforge.net/tutorial/index.html">sourceforge.net</a>) or David Mertz's <a href="http://www-106.ibm.com/developerworks/linux/library/l-cpnltk.html">mini NLTK tutorial</a>. You will first need to install the NLTK. First, <a href="http://sourceforge.net/project/showfiles.php?group_id=30982&amp;package_id=23005">download the required files for the NLTK</a>. The NLTK is divided into three modules. It's the NLTK proper that you should install. The modules nltk-data and nltk-contrib can be ignored for now. After you <a href="http://nltk.sourceforge.net/install.html">follow the installation instructions for the NLTK</a>, you can begin to familiarize yourself with its contents.</p>
+-->
+
+
+
+<!-- HOW DOES NLTK.SHOEBOX WORK? -->
+<a name="section2"></a>
+<h2>How does <tt>nltk.shoebox</tt> work?</h2>
+
+<p>Let's begin by looking at how <tt>nltk.shoebox</tt> is organized. Within <tt>nltk.shoebox</tt>, there are two main modules: standardformat.py and shoebox.py. The standardformat modules handles most of the low-level functions for dealing with files in standard format (which in theory encompasses more than Shoebox files). The shoebox modules handles a good deal more, providing functionality for handling various aspects of standard format files that are specific to the Shoebox program. We will look at each in turn.</p>
+
+
+
+<h3>Standard Format</h3>
+
+<p>The first is a module that provides functionality for handling Standard Format, the file format used by Shoebox. Standard format is not well described (and is arguably rendered obsolete by other formats, such as XML). It consists of a collection of entries, which are generally separated from one another by double carriage returns. (Technically, what defines the beginning of an entry is a particular field, sometimes referred to as the <b>head field</b>.)</p>
+
+<p>A sample entry from a Frisian Shoebox dictionary is provided below:</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+\fri do
+\ps Pron
+\g you
+\eng you
+</pre><td></tr>
+</table>
+
+<p>It is broken down into its constituent parts here:</p>
+
+<table border="1">
+  <tr>
+    <td><b>Field</b></td>
+    <td><b>Field Marker</b></td>
+    <td><b>Field Value</b></td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><pre>\fri</pre></td>
+    <td><pre>do</pre></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><pre>\ps</pre></td>
+    <td><pre>Pron</pre></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><pre>\g</pre></td>
+    <td><pre>you</pre></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><pre>\eng</pre></td>
+    <td><pre>you</pre></td>
+  </tr>
+</table>
+
+<p>Note that the field marker occurs at the beginning of a line and is preceded by a backslash and that the field value is separated from the field marker by a single space mark.</p>
+
+
+
+<h3>Shoebox</h3>
+
+<p>Shoebox data is saved in a format known as <b>Standard Format</b>, which is described in more details elsewhere (<a href="../documentation/index.html">click here for some documentation</a>). Although most users interact with only one or two Shoebox files, many more are generated by the program. These files are normally modified from within Shoebox, using its handy graphical interface, but they can also be directly edited. However, this should be done with caution, since minor changes can have dramatic effects. We recommend that changes be made to copies of files and not to the originals. This significantly reduces the likelihood of irretrievable errors that lead to data loss.</p>
+
+<p>To understand a little better what goes on under the hood, we will look at the files from <tt>Samples/Frisian1/</tt>.</p>
+
+<table cellspacing="2" border="1">
+  <tr>
+    <td><b>File</b></td>
+    <td></td>
+    <td><b>Description</b></td>
+  </tr>
+  <tr>
+    <td><tt>Fri.prj</tt></td>
+    <td></td>
+    <td>Frisian Project File</td>
+  </tr>
+  <tr>
+    <td><tt>Default.lng</tt>, <tt>Frisian.lng</tt></td>
+    <td></td>
+    <td>Language encoding files</td>
+  </tr>
+  <tr>
+    <td>FrisianD.typ</td>
+    <td></td>
+    <td>Metadata for Frisian dictionary</td>
+  </tr>
+  <tr>
+    <td>FriRt.dic</td>
+    <td></td>
+    <td>Frisian dictionary</td>
+  </tr>
+  <tr>
+    <td>FrisianT.typ</td>
+    <td></td>
+    <td>Metadata for Frisian texts</td>
+  </tr>
+  <tr>
+    <td>FriSampl.txt</td>
+    <td></td>
+    <td>A sample interlinear text in Frisian</td>
+  </tr>
+</table>
+
+<p>It is useful to distinguish between two types of files: data files, which contain actual language data (lexicon, text, etc.), and metadata files, which contain information about the language data (rather than the actual data itself). Data files are directly modified by the user through the Shoebox program, whereas metadata files are modified indirectly, by the program itself.</p>
+
+<p>As an illustration, consider a particular entry from the Frisian dictionary, the one for the word <i>a</i>. It had four field markers: <tt>eng</tt>, <tt>fri</tt>, <tt>g</tt>, and <tt>ps</tt>. Information about these field markers is found in <tt>FrisianD.typ</tt>. Excerpts from this file are provided below:</p>
+
+<table border="1">
+  <tr>
+    <td><b>Field Markers</b></td>
+    <td><tt>eng</tt></td>
+    <td><tt>fri</tt></td>
+    <td><tt>g</tt></td>
+    <td><tt>ps</tt></td>
+  </tr>
+  <tr>
+    <td><b>Metadata Definition</b></td>
+    <td valign="top"><pre>\+mkr eng
+\nam English
+\lng Default
+\mkrOverThis fri
+\-mkr</pre></td>
+    <td valign="top"><pre>\+mkr fri
+\nam Frisian Word
+\lng Frisian
+\-mkr</pre></td>
+    <td valign="top"><pre>\+mkr g
+\nam Gloss
+\lng Default
+\mkrOverThis fri
+\-mkr</pre></td>
+    <td valign="top"><pre>\+mkr ps
+\nam Part of Speech
+\lng Default
+\mkrOverThis fri
+\-mkr</pre></td>
+  </tr>
+</table>
+
+<p>When metadata of this sort is available, it is possible to validate Shoebox data against it in order to ensure that the data is well-formed. In one of the cases examined below (<a href="#casestudy8">Case 8: Validating Field Data Against Range Sets</a>), we will see how the fields of a Shoebox dictionary can be validated against metadata to ensure that all of the field values for a particular field marker belong to a fixed list of possible values.</p>
+
+
+
+<!-- SOME CASE STUDIES -->
+<a name="section3"></a>
+<h2>Some Case Studies</h2>
+
+<p>For these demonstrations of <tt>nltk.shoebox</tt> functionality, we will manipulate the sample Shoebox files that come with Shoebox (in the folder <tt>Samples</tt>). Because the sample files can be useful when learning how to use Shoebox, most users prefer to keep an unmodified version of them. Therefore, we recommend making a backup of these files before trying the scripts below.</p>
+
+
+
+<a name="casestudy1"></a>
+<h3>Case 1: Adding a Field to a Shoebox Lexicon Automatically</h3>
+
+<p>For this case study, we will manipulate the Frisian dictionary that comes with Shoebox. Our goal is to add to each entry in the lexicon a field that provides the CV skeleton for that entry. For example, the CV skeleton for <i>brek</i> is <tt>CCVC</tt> and for <i>bikwaam</i>, <tt>CVCCVVC</tt>. The Shoebox functionality of the NLTK significantly simplifies the job of going through each entry and computings its CV skeleton, as can be seen by <a href="../bin/add-cv-skeleton.py">add-cv-skeleton.py</a>.</p>
+
+<p>To see the script in operation, we can run it on one of the Frisian dictionaries that accompanies Shoebox, <tt>Samples/Frisian1/FriRt.dic</tt>, as follows:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/add-cv-skeleton.py -f samples/Frisian1/FriRt.dic
+</pre></td></tr>
+</table>
+
+<p>Because the scripts writes to standard output, its output can be redirected to a file in order to create a new version of the processed Shoebox dictionary file, as illustrated below:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/add-cv-skeleton.py -f samples/Frisian1/FriRt.dic > samples/Frisian1/FriRt-new.dic
+</pre></td></tr>
+</table>
+
+<p>When the new version of the lexicon is opened again with Shoebox, the only change is the inclusion of a <tt>cv</tt> field in every entry, as can be seen in the following "before and after" screenshots:</p>
+
+<table border="0">
+  <tr>
+    <td><b>Before</b></td>
+    <td>&nbsp;</td>
+    <td><b>After</b></td>
+  </tr>
+  <tr>
+    <td><img src="images/add-cv-skeleton-before.jpeg"></td>
+    <td>&nbsp;</td>
+    <td><img src="images/add-cv-skeleton-after.jpeg"></td>
+  </tr>
+</table>
+
+<p>EXPLAIN HOW IT WORKS--IN DETAIL</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def main() :
+    filepath = handle_options()
+    fp = StandardFormatFileParser(filepath)
+    sff = fp.parse()
+    print sff.getHeader()
+    for entry in sff.getEntries() :
+        headField = e.getHeadField()
+        frisian = headField[1]
+        entry.addField("cv", cv(frisian))
+        print e
+</pre><td></tr>
+</table>
+
+<p>???</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def cv(s):
+    s = s.lower()
+    s = re.sub(r'[^a-z]',     r'-', s)
+    s = re.sub(r'[^aeiou\-]', r'C', s)
+    s = re.sub(r'[aeiou]',    r'V', s)
+    return (s)
+</pre><td></tr>
+</table>
+
+<p>???</p>
+
+
+
+<a name="casestudy2"></a>
+<h3>Case 2: Filtering out Specific Fields in a Database</h3>
+
+<p>It is sometimes useful to be able to remove extraneous fields from a dictionary. The script <a href="../bin/filter-fields.py">filter-fields.py</a> prints out the contents of a Shoebox dictionary, omitting the field specified by the user on the command-line. To see how it works, we will run the filter on the Rotokas dictionary <a href="../samples/ROTRT.DIC">ROTRT.DIC</a>, filtering out the date field (<tt>\dt</tt>), as follows:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/filter-fields.py -f samples/Rotokas/ROTRT.DIC -f dt
+</pre></td></tr>
+</table>
+
+<p>In order to filter out multiple fields, the script can be run multiple times, as illustrated below:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/filter-fields.py -f samples/Rotokas/ROTRT.DIC -f dt > /tmp/foo1.txt
+$ python bin/filter-fields.py -f /tmp/foo1.txt -f cmt > /tmp/foo2.txt
+$ python bin/filter-fields.py -f /tmp/foo2.txt -f nt > samples/Rotokas/ROTRT-FILTERED.DIC
+</pre></td></tr>
+</table>
+
+<p>To understand how the script works, we'll look at the <tt>main()</tt> function, provided below:</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def main() :
+    filepath = handle_options()
+    fp = StandardFormatFileParser(filepath)
+    sff = fp.parse()
+    print sff.getHeader()
+    for e in sff.getEntries() :
+        lex   = e.getHeadField()[1]
+        pos   = e.getFieldValuesByFieldMarkerAsString("ps")
+        gloss = e.getFieldValuesByFieldMarkerAsString("ge")
+        eng   = e.getFieldValuesByFieldMarker("eng")
+        if eng :
+            print "%s (%s) ``%s''" % (lex, pos, ", ".join(eng))
+        else :
+            print "%s (%s) ``%s''" % (lex, pos, gloss)
+</pre></td></tr>
+</table>
+
+<p>The function <tt>handle_options()</tt> first obtains from the command-line the path to a Shoebox file and the field to be filtered. Then the Shoebox dictionary is parsed into a StandardFormatFile object. A list of entries is obtained using the <tt>getEntries()</tt> method and then iterated over. From each entry, the following fields are obtained:
+
+<ul>
+  <li>the lexical entry (the head field)</li>
+  <li>the part-of-speech</li>
+  <li>the gloss</li>
+  <li>any and all English translations</li>
+</ul>
+
+<p>Note that the English translations are obtained using a different accessor method, <tt>getFieldValuesByFieldMarker()</tt>. This is because the English translation field differs from the others by being both optional and non-unique. If an entry lacks this field, an empty-list is returned. The if-loop checks whether the list is empty. If it is, the non-optional gloss field is printed out. If the list is non-empty, its items are joined with commas into a string; otherwise, the non-optional gloss field is printed out.</p>
+
+
+
+<a name="casestudy3"></a>
+<h3>Case 3: Automatically Extracting Minimal Pairs</h3>
+
+<p>When studying the phonology of a language, it is useful to have a list of <b>minimal pairs</b>---which for our purposes here we will deifne as a pair of words that differ from one another by a single segment (e.g., <i>bill</i> and <i>pill</i> in English). Producing such minimal pairs from memory can be difficult. Fortunately, it is relatively easy to extract minimal pairs automatically from word lists, provided that the orthography in the word list is phonemic (i.e., characters represent phonemes) and that each phoneme is represented by a different alphanumeric character (i.e., a number or letter).</p>
+
+<p>With a monographic, phonemic orthography, finding minimal pairs is a fairly trivial task. One simple algorithm for identifying minimal pairs goes as follows: Every word in the word list is compared to every other word. If two words are of different lengths, they cannot be a minimal pair, and can therefore be ignored. If two words are of the same length, the two words are lined up and each segment in the word is compared one by one, in sequential order. A minimal pair is simply a pair of words that differ only by one segment. (This can be easily determined by keeping a counter of the number of differing segments.) Consider a pair of words like <i>mint</i> and <i>lint</i>. If we line up the two words, and compare their letters one by one, we find that they differ by a single letter, and are therefore a minimal pair, as shown below:</p>
+
+<table border="1">
+<tr><td><table cellpadding="2" cellspacing="2">
+  <tr>
+    <td><b>Index</b></td>
+    <td>0</td>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td><b>Letters</b></td>
+    <td><tt>m</tt></td>
+    <td><tt>i</tt></td>
+    <td><tt>n</tt></td>
+    <td><tt>t</tt></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><tt>l</tt></td>
+    <td><tt>i</tt></td>
+    <td><tt>n</tt></td>
+    <td><tt>t</tt></td>
+  </tr>
+  <tr>
+    <td><b>Same?</b></td>
+    <td><tt>N</tt></td>
+    <td><tt>Y</tt></td>
+    <td><tt>Y</tt></td>
+    <td><tt>Y</tt></td>
+  </tr>
+</table></td></tr>
+</table>
+
+<!--<p>The only problem with this approach is that when you compare every word in a list to every other, the number of comparisons required ends up being very large, since the number of comparisons is exponentially related to the number of words in the list (if the number of words in a word list is <i>n</i>, then the number of comparison is <i>n<sup>2</sup></i>). Therefore, the speed up the program, we first divide up the list according to word length and only compare words of similar length.</p>-->
+
+<p>Here we provide a simple script that takes a Shoebox dictionary and extracts all of the minimal pairs in it: <a href="../bin/find-min-pairs.py">find-min-pairs.py</a>. The first part of the program uses the NLTK's Shoebox functionality to extract all of the words from the Shoebox dictionary.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>def extractWords(f) :
+    words = []
+    fp = StandardFormatFileParser(f)
+    sf = fp.parse()
+    for e in sf.getEntries() :
+        fri = e.getFieldValuesByFieldMarkerAsString("fri")
+        words.append(fri)
+    return words</pre></td></tr>
+</table>
+
+<p>The words are then fed into the function that finds minimal pairs. It first sorts them by length using a dictionary in which the key is a word length and the value is a list of words of that length.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>def sortWordsByLength(words) :
+    wordLengths = {}
+    for w in words :
+        wl = len(w)
+        if not wordLengths.has_key(wl) :
+            wordLengths[wl] = []
+        wordLengths[wl].append(w)
+    return wordLengths
+
+def findMinPairs(words) :
+    wordsByLength = sortWordsByLength(words)
+    for l in wordsByLength.keys() :
+        words = wordsByLength[l]
+        for w1 in words :
+            for w2 in words :
+                i = 0
+                diffCount = 0
+                diffChar1 = ''
+                diffChar2 = ''
+                while i < l :
+                    if not w1[i] == w2[i] :
+                        diffCount = diffCount + 1
+                        diffChar1 = w1[i]
+                        diffChar2 = w2[i]
+                    i = i + 1
+                if diffCount == 1 :
+                    print "%s/%s:%s/%s" % (diffChar1, diffChar2, w1, w2)</pre></td></tr>
+</table>
+
+<p>The code above automatically extracts a list of minimal pairs from a dictionary, provided that the dictionary uses the field marker <tt>lx</tt> for the lexical entry itself. The script takes a command-line argument specifying the path to the dictionary file. Using the NLTK, every lexical entry in the dictionary is extracted and sorted by length before being stored in a dictionary, where the key is a wordlength and the value is the list of words of that length (e.g., 1 for <i>a</i> or <i>I</i>, 2 for <i>an</i>, <i>to</i>, or <i>it</i>, etc.). It thens goes through each wordlist and compares words of the same length to see whether they constitute a minimal pair.</p>
+
+
+
+<a name="casestudy4"></a>
+<h3>Case 4: Formatting a Shoebox Lexicon for Display</h3>
+
+<p>Raw Shoebox data isn't easy for people to read. (To use computer science parlance, it isn't very human-readable.) Therefore it's useful to be able to reformat a Shoebox dictionary file according to your wishes. Although Shoebox has in-built facilities for producing formatted dictionaries, they are not as flexible or as powerful as a full-fledged programming language such as Python. Here we will stick to the basics and see how a plain text, minimally formated version of a Shoebox dictionary can be produced using the NLTK.</p>
+
+<p>The script <a href="../bin/reformat-dict.py">reformat-dict.py</a> does the job. It is fun as follows:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/reformat-dict.py -f samples/Rotokas/ROTRT.DIC
+</pre></td></tr>
+</table>
+
+<p>The script is quite simple. It simply parses a Shoebox dictionary file, goes through each entry, retrieves selected fields, and then prints them out with some bare bones formatting: the lexeme, the part-of-speech in parentheses, and the English translation in quotes. Note that the translation is created dynamically, but first checking whether the field <tt>eng</tt> exists for an entry, and then falling back on <tt>ge</tt> if it does not.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def main() :
+    filepath = handle_options()
+    fp = StandardFormatFileParser(filepath)
+    sff = fp.parse()
+    print sff.getHeader()
+    for e in sff.getEntries() :
+        lex   = e.getHeadField()[1]
+        pos   = e.getFieldValuesByFieldMarkerAsString("ps")
+        gloss = e.getFieldValuesByFieldMarkerAsString("ge")
+        eng   = e.getFieldValuesByFieldMarker("eng")
+        if eng :
+            print "%s (%s) ``%s''" % (lex, pos, ", ".join(eng))
+        else :
+            print "%s (%s) ``%s''" % (lex, pos, gloss)
+</pre></td></tr>
+</table>
+
+<p>It would be a trivial matter to change the formatting---say, by putting the part-of-speech in lowercase. We leave this as an exercise for the reader.</p>
+
+
+
+<a name="casestudy5"></a>
+<h3>Case 5: Handling Entry Date Stamps</h3>
+
+<p>If properly configured (see <a href="http://www.sil.org/computing/shoebox/tips/DateStamp.html">date stamps documentation</a>), Shoebox will automatically update the date field of a dictionary entery whenever that entry is modified (created or edited). We will refer to this date field as a <b>date stamp</b>. Date stamps are a very useful feature with a number of possible applications, but one obvious use is that they provide an inherent log of activity in a database. This can be quite useful if one person wishes to review the changes made to a database by another, as might be the case when a Shoebox dictionary is shared by multiple parties. (Shoebox makes few provisions for multi-user set-ups.)</p>
+
+
+
+<h4>Obtaining a Log of Activity on a Shoebox Database</h4>
+
+<p>By looking at date stamps, it is possible to quickly determine the general patterns of activity on a database. Essentially, this means being able to quickly and easily answer questions such as the following: When was the database originally created? When was it first modified? When was it last modified? These questions can be answered using the script <a href="../bin/list-modified-dates.py">list-modified-dates.py</a>, which takes a Shoebox dictionary and provides a summary of the activity on it using entry date stamps. Its use with <a href="../samples/Rotokas/ROTRT.DIC">ROTRT.DIC</a> is illustrated below:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/list-modified-dates.py -f samples/Rotokas/ROTRT.DIC
+YEAR MONTH COUNT
+2003 May 2
+2004 Jan 1
+2004 Feb 64
+2004 May 1
+2004 Jul 14
+2004 Aug 4
+2004 Sep 49
+2004 Oct 5
+2004 Nov 5
+2004 Dec 151
+2005 Jan 123
+2005 Feb 307
+2005 Mar 37
+2005 Apr 29
+2005 May 46
+</pre></td></tr>
+</table>
+
+<p>The output of the program is a breakdown of the number of entries modified during a particular month of a particular year. In the previous example, we see that the entries in the dictionary were modified between 2003 and 2005 with a peak of activity between December 2004 and Feb 2005.</p>
+
+<p>The Shoebox functionality of the NLTK greatly simplifies this programming task. In fact, the only real complication is the handling of dates and times in Python (see <a href="???">???</a> for documentation). To understand how the script works, we will first look at the function <tt>main()</tt>, which calls a number of custom functions. First, the file to be processed is obtained from the command line. Second, the file is parsed and the date fields of every entry is put into a dictionary, where each key is a particular dates whose associated value is a count of the number of entries modified on that date. Finally, the contents of this dictionary are printed out for display.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def main() :
+    fn = handle_options()
+    d = process_file(fn)
+    print_results(d)
+</pre></td></tr>
+</table>
+
+<p>PROVIDE MORE DESCRIPTION AND EXPLANATION</p>
+
+<p>In the function <tt>print_results(d)</tt> for display the months are converted from integers to strings for the sake of readability. This is done using a custom fuction <tt>format_month(intMonth)</tt>. It would also be possible to do this conversion with built-in functionality from the Python standard library.</p>
+
+
+
+<h4>Finding All Entries Modified During a Particular Time Range</h4>
+
+<p>Once we have a general idea of when a database has been modified, it would be useful to be able to view only the entries within a particular time range. The script <a href="../bin/find-modified-entries.py">find-modified-entries.py</a> takes a Shoebox dictionary and lists all entries modified within a time range specified by the user using command-line options. The logic of the script is reasonably straightforward:</p>
+
+<ul>
+  <li>if the user provides a start and end date, all entries modified on those dates or between them will be listed</li>
+  <li>if the user provides only a start date, all entries modified on that date and after it will be listed</li>
+  <li>if the user provides only an end date, all entries modified on that date and before it will be listed</li>
+</ul>
+
+<p>Here we illustrate its use ???</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/find-modified-entries.py -s samples/Rotokas/ROTRT.DIC
+</pre></td></tr>
+</table>
+
+<p>The script works by parsing the Shoebox dictionary into a StandardFormatFile object and iterating over its entries. Entries that match the time range specified by the user are listed; all others are ignored. If the user specifies a date on the command-line in the wrong format, an error message is raised, as illustrated below:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+$ python bin/find-modified-entries.py -s samples/Rotokas/ROTRT.DIC
+</pre></td></tr>
+</table>
+
+<p>SAY SOMETHING ABOUT DATES</p>
+
+
+
+<a name="casestudy6"></a>
+<h3>Case 6: Guess Entry Template of Shoebox Dictionary Without Metadata</h3>
+
+<p>If you work with Shoebox data, it's fairly likely that at some point you will come across a Shoebox dictionary by itself without any of the supporting metadata (language definitions, field marker definitions, etc.). In such a scenario, it is useful to be able to quickly eyeball the data in order to learn more about the template used for entries. The idea is to query the database structure implicit in the dictionary by asking questions of the following sort: Which elements are obligatory? Which are optional? What are the dependencies? Here we will present a short script that attempts to automate this game of twenty questions: <a href="../bin/query-template-structure.py">query-template-structure.py</a></p>
+
+<p>Below we see the result of running the script on the Rotokas dictionary <a href="samples/Rotokas/ROTRT.DIC">ROTRT.DIC</a>:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+[stuart@dsl-82-171-86-16 nltk]$ python tutorial/scripts/query-template-structure.py -f tutorial/samples/Rotokas/ROTRT.DIC
+\ps     845     100%
+\lx     845     100%
+\ge     845     100%
+\gp     840     99%
+\dt     838     99%
+\xp     705     83%
+\xe     705     83%
+\ex     705     83%
+\rt     339     40%
+\nt     162     19%
+\cmt    119     14%
+\eng    87      10%
+\sf     51      6%
+\rdp    36      4%
+\arg    31      3%
+\cd     28      3%
+\sa     20      2%
+\cm     19      2%
+\ig     10      1%
+\dx     9       1%
+\vx     8       0%
+\alt    8       0%
+\cl     7       0%
+\am     7       0%
+\wf     2       0%
+\sc     1       0%
+TOTAL   100     100%
+</pre></td></tr>
+</table>
+
+<p>Here's how the script works: EXPLAIN IN BROAD STROKES.</p>
+
+<p>The parsing of the Shoebox dictionary into entries is done using the custom function <tt>get_entries(fn)</tt>, which, given a filepath to a Shoebox dictionary, will return a list of entries.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def get_entries(fn) :
+    fp = StandardFormatFileParser(fn)
+    sff = fp.parse()
+    return sff.getEntries()
+</pre></td></tr>
+</table>
+
+<p>The function <tt>process_entries(entries)</tt> keeps track of the distribution of fields across entries using a dictionary.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def process_entries(entries) :
+    counter = {}
+    i = 0
+    for e in entries :
+        for fm in e.getFields() :
+            try :
+                counter[fm] = counter[fm] + 1 
+            except :
+                counter[fm] = 1
+    return counter
+</pre></td></tr>
+</table>
+
+<p>The rest of the action happens with the <tt>main()</tt> function. EXPLAIN</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+def main() :
+    filepath = handle_options()
+    entries = get_entries(filepath)
+    totalEntries = len(entries)
+
+    counter = process_entries(entries)
+    fieldMarkers = sort_by_value(counter)
+    fieldMarkers.reverse()
+    for fieldMarker in fieldMarkers :
+        numEntries = counter[fieldMarker]
+        pctEntries = ((1.0 * numEntries)/totalEntries) * 100.0
+        print "\%s\t%i\t%i%%" % (fieldMarker, numEntries, pctEntries)
+    print "%s\t%i\t%i%%" % ("TOTAL", 100, 100)
+</pre></td></tr>
+</table>
+
+<p>More sophisticated analysis of entry templates is of course possible. For example, this script does not reveal whether a given field has more than one value. In other words, it does not distinguish between unique and non-unique fields. We leave this as an exercise for the reader.</p>
+
+
+
+<a name="casestudy7"></a>
+<h3>Case 7: Automatic Analysis of Word Length and Photactics</h3>
+
+<p>The analysis of word length and photactics can be facilitated by automatically extracting all of the patterns represented in a Shoebox dictionary. (Obviously, the larger the Shoebox deictionary, the greater the likelihood that meaningful results can be obtained.)</p>
+
+<p>???</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>def main() :
+    fn = handle_options()
+    fp = StandardFormatFileParser(fn)
+    sff = fp.parse()
+
+    d = {}
+    for e in sff.getEntries() :
+        fri = e.getFieldValuesByFieldMarkerAsString(FIELD_MARKER_FRISIAN)
+        fri_cv = cv(fri)
+        if not d.has_key(fri_cv) :
+            d[fri_cv] = 0
+        d[fri_cv] = d[fri_cv] + 1
+
+    wordshapes = d.keys()
+    wordshapes.sort()
+    for ws in wordshapes :
+        count = d[ws]
+        print "%s %i" % (ws, count)
+</pre></td></tr>
+</table>
+
+<p>The main trick is transforming a lexical entry in its raw form (a practical orthography where vowel length is indicated by repeating a vowel character---i.e., the long version of <tt>a</tt> is <tt>aa</tt>). The function <tt>cv</tt> does most of the work. It performs a series of transformations on the data, producing a CV template where vowel length is similarly indicated---e.g., producing <tt>CVVCV</tt> from <i>tuuta</i>.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>def cv(s):
+    s = s.lower()
+    s = re.sub(r'[^a-z]',     r'-', s)
+    s = re.sub(r'[^aeiou\-]', r'C', s)
+    s = re.sub(r'[aeiou]',    r'V', s)
+    return (s)
+</pre></td></tr>
+</table>
+
+<p>???</p>
+
+
+
+<a name="casestudy8"></a>
+<h3>Case 8: Validating Field Data Against Range Sets</h3>
+<p>One particularly useful feature of Shoebox is the ability to restrict the possible values of a field. For example, part of speech information usually refers to a restricted set of categories (e.g., Noun, Verb, Adjective, Adverb, etc.). In the part-of-speech field of a Shoebox lexicon, one may therefore wish to restrict the possible values to a restricted inventory (e.g., <tt>N</tt>, <tt>V</tt>, <tt>ADJ</tt>, and <tt>ADV</tt>), which in Shoebox is called a <b>range set</b>.</p>
+
+<p>To see the range set for a particular field, you must select the pull-down menu <b>Database</b> and select <b>Properties</b>, as shown in the following screenshot.</p>
+
+<p><img src="images/screenshot-rangeset-1.jpg"></p>
+
+<p>You can then select a specific field from list of those recognized by the database, as shown in the following screenshot.</p>
+
+<p><img src="images/screenshot-rangeset-2.jpg"></p>
+
+<p>From this list, we will select a particular field and examine its range set. In the following screenshot, the part-of-speech field has been selected.</p>
+
+<p><img src="images/screenshot-rangeset-3.jpg"></p>
+
+<p>If we select the range set for the part-of-speech field, we can see whether the field has a range set defined for it---it does---and which elements are in it.</p>
+
+<p><img src="images/screenshot-rangeset-4.jpg"></p>
+
+<p>Unfortunately, when you add or edit a range set within Shoebox, any old entries that are in conflict with the new range set will not be automatically flagged. In fact, the only time that Shoebox enforces the range set for a data field is when you attempt to save changes to that field. In other words, only when an entry is created or edited will the range set be enforced.</p> 
+
+<p>What is interesting about this particular problem is that its solution involves two files: the actual Shoebox dictionary file and a metadata file used by Shoebox which defines the range set. A snippet of such a file is provided below:</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>
+???
+</pre></td></tr>
+</table>
+
+<p>Using the NLTK, we can validate the Shoebox file against the metadata and ensure that all of the field values conform to the defined range sets for their field markers.</p>
+
+<p>The script <a href="../bin/validate-shoebox.py">validate-shoebox.py</a> takes a Shoebox dictionary file and a dictionary type file and validates the dictionary file against the metadata of the dictionary type file. It is run as follows:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+[localhost shoebox]$ python tutorial/scripts/validate-shoebox.py --s=samples/Frisian1/FriRt.dic --m=samples/Frisian1/FrisianD.typ
+</pre></td></tr>
+</table>
+
+<p>In this case, running the script should do nothing. When a dicitonary conforms to its metadata, nothing happens. It is only when there are discrepancies that exceptions are raised. To see how this works, we will run the same script on a modified version of the metadata, <a href="../samples/Rotokas/FrisianDAlt.typ">FrisianDAlt.typ</a>, where the field marker <tt>ps</tt> has the range set of <tt>N</tt> and <tt>V</tt>. When the script is run on this alternative metadata, the results are quite different.</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+[localhost shoebox]$ python tutorial/scripts/validate-shoebox.py --s=samples/Frisian1/FriRt.dic \
+--m=tutorial/FrisianDAlt.typ
+[\_sh v3.0  400  Frisian Dictionary]
+Traceback (most recent call last):
+  File "tutorial/scripts/validate-shoebox.py", line 37, in ?
+    ev.validate()
+  File "/home/stuart/workspace/Shoebox/shoebox/shoebox/shoebox.py", line 395, in validate
+    raise BadFieldValue(BadFieldValue.FIELD_VALUE_ERROR_RANGE_SET, e, f, fmm)
+shoebox.shoebox.BadFieldValue: 'Range Set' error in '\ps' field of record 4!
+Record:
+\fri -ber
+\ps V>Adj
+\g able
+</pre></td></tr>
+</table>
+
+<p>To understand what is going on here, we need to look at how the script <a href="../bin/???">???</a> works.</p>
+
+<p><ol>
+  <li>the filenames for the Shoebox dictionary and the metadata file are taken from the command-line</li>
+  <li>a MetadataParser is used to construct a Metadata object from the metadata file</li>
+  <li>a StandardFormatParser is used to construct a StandardFormat object from the dictionary file</li>
+  <li>a MetaDataValidator object uses the MetadataFile object and the StandardFormat object to validate the dictionary data</li>
+</ol></p>
+
+<p>If the dictionary data conforms to the range set in the metadata, nothing happens. That is, the <tt>validate()</tt> method simply returns true. However, if the dictionary data does not conform to the range set in the metadata, a BadFieldValue error is thrown.</p>
+
+<table width="100%" border="0" bgcolor="#CCFFFF">
+<tr><td><pre>import sys
+from optparse               import OptionParser
+from shoebox.shoebox        import MetadataParser, ShoeboxValidator
+from shoebox.standardformat import StandardFormatFileParser
+
+# Deal with metadata
+fo = open(options.metadata, 'rU')
+mdFc = fo.read()
+fo.close()
+mp = MetadataParser(mdFc)
+md = mp.parse()
+
+# Deal with Shoebox
+fo = open(options.shoebox, 'rU')
+sbFc = fo.read()
+fo.close()
+fp = StandardFormatFileParser(sbFc)
+fp.setHeadFieldMarker(md.getHeadFieldMarker())
+sb = fp.parse()
+
+# Validate
+ev = ShoeboxValidator()
+ev.setMetadata(md)
+ev.setShoebox(sb)
+ev.validate()
+</pre></td></tr>
+</table>
+
+<p>EXPLAIN HOW THE SCRIPT WORKS. MAY NEED TO BETTER DEVELOP EXCEPTION MODEL.</p>
+
+
+
+
+<a name="section4"></a>
+<h2>Conclusion</h2>
+
+<p>In this tutorial we have seen how the NLTK can make it easier to carve up, manipulate, and query dictionary files produced by Shoebox. In another, we will see how some of the same tools can be used to work with interlinear texts produced by Shoebox.</p>
+
+
+
+<a name="links"></a>
+<h2>Links</h2>
+
+<a href="http://nltk.sourceforge.net">Natural Language Toolkit (NLTK) Homepage</a><br>
+<a href="http://nltk.sourceforge.net/tutorial/index.html">NLTK Tutorials</a><br>
+<a href="http://www.python.org">Python Homepage</a><br>
+<a href="http://www.sil.org/computing/shoebox">Shoebox Homepage</a><br>
+<a href="http://www.sil.org/computing/toolbox">Toolbox Homepage</a><br>
+<a href="http://www.sil.org/computing/shoebox/TipList.html">User Tips for Shoebox</a><br>
+</body>
+
+<p><hr></p>
+
+<p><small>The author may be contacted at <a href="stuart AT zapata DOT org">stuart AT zapata DOT org</a>. Many thanks to those who read drafts of this tutorial and provided feedback: Steven Bird, Brian McWhinney, and Loretta O'Connor. All errors are of course my own.</small></p>
+
+</html>

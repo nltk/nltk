@@ -1,0 +1,27 @@
+\exword{aio}{food}
+\exword{aioaio}{snack}
+\exword{paupaoi}{--}
+\exword{akuei}{salt}
+\exword{rukue}{lit/ignited}
+\exword{auea}{--}
+\exword{arueia}{(safe) container made from a section of bamboo/(native) bank made from}
+\exword{asiraue}{shellfish}
+\exword{aue}{ignore}
+\exword{auero}{these(allN)}
+\exword{aioa}{food/feast/meal}
+\exword{au}{blinded by light}
+\exword{voe}{--}
+\exword{avieua}{salt-impregnated bamboo tube used for cooking/bamboo tube impregnated}
+\exword{voea}{3PL.M}
+\exword{voeari}{these others beyond (all M or all MF)}
+\exword{putaeua}{wing}
+\exword{viovioe}{exemplify}
+\exword{upeua}{men wearing Upe}
+\exword{evoea}{those (all M/MF)}
+\exword{virueua}{penis}
+\exword{akoea}{truly!}
+\exword{vaikeua}{fish trap made of rattan or vine}
+\exword{touea}{bird, with small black body and call similar to Friar bird's call.}
+\exword{viseua}{bamboo tube open at both ends}
+\exword{utauei}{gecko, small body and white skin}
+\exword{tavoteua}{}

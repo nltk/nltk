@@ -1,0 +1,21 @@
+\+LanguageEncoding phonetic
+\ver 5.0
+\desc MDF phonetic language encoding.
+Fill in your phonetic characters.
+\+srtset 
+
+\+srt phonetic
+\desc Fill in your phonetic characters.
+\-srt
+
+\srtDefault phonetic
+\-srtset
+\+varset 
+
+\-varset
+\+fnt 
+\Name Courier New
+\Size 11
+\rgbColor 0,0,0
+\-fnt
+\-LanguageEncoding

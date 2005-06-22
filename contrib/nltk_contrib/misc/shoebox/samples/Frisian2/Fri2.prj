@@ -1,0 +1,123 @@
+\+ShProjectSettings 
+\ver 5.0
+\ProjectPath C:\xxxx\Samples\FRISIAN2\Fri2.prj
+\+CorpusSet 
+\WordLstLimitCount
+\WordLstMaxCount 10
+\ConcordanceSearchType 3
+\ConcordanceLimitCount
+\ConcordanceMaxCount 1000
+\ConcordanceOutput lookup.db
+\-CorpusSet
+\AutoWrap
+\LangCtrlHeight 19
+\+fntMarkers 
+\Name MS Sans Serif
+\Size 10
+\-fntMarkers
+\+rundosMarkers 
+\-rundosMarkers
+\placementMain normal -1 -1 -4 -4 1 1 639 309
+\+dblst 
+
+\+db C:\xxxx\Samples\FRISIAN2\Frisampl.txt
+\+wndlst 
+\+wnd 
+\placement normal -1 -1 -1 -1 0 0 313 205
+\z 1
+\ViewMarkers
+\widthMarkerArea 50
+\+brflst 
+\FieldEmptyEntry *empty*
+\NoFieldEntry *no field*
+\+brf 
+\mkr id
+\width 295
+\-brf
+\-brflst
+\+ind 
+\mkrPriKey id
+\srtPriKey Default
+\-ind
+\+rec 
+\fldPriKey First sample sentence from the tutorial
+\-rec
+\+keySearch 
+\match_char p
+\-keySearch
+\+keyInsert 
+\MatchWhole
+\match_char p
+\-keyInsert
+\+keyJump 
+\fldPri Berne
+\MatchWhole
+\match_char p
+\-keyJump
+\+keyJumpInsert 
+\MatchWhole
+\match_char p
+\-keyJumpInsert
+\CaretLine 2
+\CaretLineScroll 2
+\CaretChar 0
+\-wnd
+\-wndlst
+\-db
+
+\+db C:\xxxx\Samples\FRISIAN2\Frirt.dic
+\+wndlst 
+\+wnd 
+\placement normal -1 -1 -1 -1 313 0 626 205
+\z 0
+\ViewMarkers
+\widthMarkerArea 50
+\JumpTarget
+\+brflst 
+\FieldEmptyEntry *empty*
+\NoFieldEntry *no field*
+\+brf 
+\mkr fri
+\width 82
+\-brf
+\+brf 
+\mkr ps
+\width 206
+\-brf
+\-brflst
+\+ind 
+\mkrPriKey fri
+\srtPriKey Frisian
+\-ind
+\+rec 
+\fldPriKey -e
+\-rec
+\+keySearch 
+\match_char p
+\-keySearch
+\+keyInsert 
+\MatchWhole
+\match_char p
+\-keyInsert
+\+keyJump 
+\MatchWhole
+\match_char p
+\-keyJump
+\+keyJumpInsert 
+\MatchWhole
+\match_char p
+\-keyJumpInsert
+\CaretLine 1
+\CaretLineScroll 1
+\CaretChar 0
+\-wnd
+\-wndlst
+\-db
+
+\-dblst
+\+Find 
+\match_char p
+\+ftxlst 
+\-ftxlst
+\-Find
+\-ShProjectSettings

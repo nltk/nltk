@@ -1,0 +1,122 @@
+<html>
+
+<title>Why Shoebox Needs Unique Identifiers for Lexicon Entries</title>
+
+<body bgcolor="#FFFFFF">
+
+
+
+<!-- WHY SHOEBOX NEEDS UNIQUE IDENTIFIERS FOR LEXICON ENTRIES -->
+<h2>Why Shoebox Needs Unique Identifiers for Lexicon Entries</h2>
+
+<p>Shoebox is a very useful tool for fieldworkers. It provides a good deal of functionality and is fairly stable and robust. Its latest incarantion, Toolbox, improves upon Shoebox by providing support for Unicode. However, there is a fundamental problem with updating previously interlinearized texts which limits the utility of both programs.</p>
+
+<p>For example, consider the interlinearized text below, which is a very simple one consisting of only three lines in Rotokas (<a href="rotokas/rtext1.txt">rtext1.txt</a>):</p>
+
+<pre>
+\_sh v3.0  400  Rotokas Text
+
+\id test
+
+\t Raru kakate uukoro         avaroe              eisire       kovoa.
+\m Raru kakate uuko  -ro      ava -ro     -e      eisi -re     kovo -a
+\g Raru ???    water -PL      go  -3.SG.M -RP     ???  -ALL    work -N.SG
+\p PN   ???    CLASS -SUFF.CL V   -SUFF.V -SUFF.V ???  -SUFF.N V    -SUFF.N.2
+\f Raru fills up the bamboo water tub and goes to work.
+
+\t ovu-ia        aitetoa        epao?
+\m ovu   -ia     aite   -toa    epao
+\g where -LOC    father -M.SG   EXIST
+\p WH    -SUFF.N N      -SUFF.N PART
+\f Where is dad?
+
+\t kakau        kovoro          purapaivoi                      oiraara    moni  oupasia.
+\m kakau        kovo   -ro      pura    -pa     -i      -voi    oira -ara  moni  ou  -pa     -sia
+\g sweet.potato garden -PL      make/do -PROG   -3.PL   -PRES   man  -PL   money get -PROG   -PURP
+\p N            CLASS  -SUFF.CL V       -SUFF.V -SUFF.V -SUFF.V N    -PL.N N     V   -SUFF.V -SUFF.V
+\f Men made cocoa gardens in order to get money.
+</pre>
+
+<p>The Shoebox dictionary used to produce the interlinearization is <a href="rotokas/ROTRT.DIC">ROTRT.DIC</a>. However, any dictionary is essentially a word-in-progress, which means that its contents are a moving target. Entries get added, deleted, and modified on a regular basis, sometimes gradually, sometimes all at once (say, during a fieldwork trip). Let's make a few changes to the lexicon and see what impact they will have on the text when we attempt to re-interlinearize it.</p>
+
+<p>For the sake of illustration, we will make a few minor changes to the lexicon. In particular, we will recognize a distinct classifier word class, to which <i>uuko</i> and <i>kovo</i> belong and for which -<i>ro</i> is the pluralizer. The revised lexicon is <a href="">ROTRT2.DIC</a>. Note that the changes are very minor, the only change being to the value of the <tt>\ps</tt> field.</p>
+
+<table border="1">
+  <tr>
+    <td>&nbsp;</td>
+    <td colspan="2"><b>Shoebox Entry</b></td>
+  </tr>
+  <tr>
+    <td><b>Lexeme</b></td>
+    <td><b>Before</b></td>
+    <td><b>After</b></td>
+  </tr>
+
+  <tr>
+    <td><pre>kovo</pre></td>
+    <td><pre>\lx kovo
+\ps N
+\ge garden
+\dt 12/Mar/2005</pre></td>
+    <td><pre>\lx kovo
+\ps CL
+\ge garden
+\dt 12/Mar/2005</pre></td>
+  </tr>
+
+  <tr>
+    <td><pre>uuko</pre></td>
+    <td><pre>\lx uuko
+\ps N
+\ge water
+\dt 12/Mar/2005</pre></td>
+    <td><pre>\lx kovo
+\ps CL
+\ge garden
+\dt 12/Mar/2005</pre></td>
+  </tr>
+
+  <tr>
+    <td><pre>-ro</pre></td>
+    <td><pre>\lx -ro
+\ps SUFF.N
+\ge PL
+\dt 12/Mar/2005</pre></td>
+    <td><pre>\lx -ro
+\ps SUFF.CL
+\ge PL
+\dt 12/Mar/2005</pre></td>
+  </tr>
+</table>
+
+<p>How can the interlinearized text be updated from the revised lexicon? If we go through each morpheme in the text and try to update the morpheme glosses, we immediately encounter a problem. It is essentially a look-up problem, which concerns how a morpheme in a text can be identified with a particular entry in the lexicon. We will concentrate on the entry <tt>kovo</tt> since it is here that the problem is most evident.</p>
+
+<p>Isolated from the other morphemes in the text, the glossing for <tt>kovoro</tt> looks like this:
+
+<p><pre>
+\t kovoro
+\m kovo   -ro
+\g garden -PL
+\p CLASS  -SUFF.CL
+</pre></p>
+
+<p>The revised lexicon has no entry that matches this morpheme exactly. There are two entries for <tt>kovo</tt>: <tt>kovo</tt> [CL] `garden' and <tt>kovo</tt> [V] 'work'. For Shoebox to update the interlinearization appropriately, it needs some way of knowing which of these two entries should be used to do the updating of the interlinearization. The essential point is that there is no foolproof way of solving this look-up problem if there is no way to uniquely identify which entry in a lexicon a given intearlinearized morpheme corresponds to.</p>
+
+<p>With a unique identifier for each lexicon entry, the problem disappears; updating interlinearized text is trivial. The basic algorithim is as follows: Go through each morpheme in a text, retrieve its unique identifier, obtain the corresponding lexicon entry, and update the glossing in the interlinearized text.</p>
+
+
+
+<!-- COMPLICATIONS -->
+<h3>Complications</h3>
+
+<p>The main problem with unique identifiers is that they introduce into Shoebox a field that the user does not control and in fact should not control. Unlike other user-defined fields in Shoebox, the unique identifier for each entry cannot be modified by the user, at least not by anyone but the most expert user. The reason for this is simple. If users were able to change unique identifiers, and interlinearlization relies upon these unique identifiers to keep texts up to date, then users would be able to inadvertently ruin their texts. Clearly this is an undesirable state of affairs.</p>
+
+<p>The right solution, I think, is to make the unique identifier for each lexicon entry an unmodifiable hidden field which is only used internally by Shoebox and to add a timestamp for interlinearization which the program can use to determine whether a lexicon and text are out-of-synch with one another.</p>
+
+<p><hr></p>
+
+<p>Contact the author at: <a href="mailto:stuart DOT robinson AT mpi DOT nl">Stuart DOT Robinson AT mpi DOT nl</a>.</p>
+
+</body>
+
+</html>

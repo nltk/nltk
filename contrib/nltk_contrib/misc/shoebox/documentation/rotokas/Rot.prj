@@ -1,0 +1,196 @@
+\+ShProjectSettings 
+\ver 5.0
+\ProgramVersion 1.4 Nov 2004 Windows
+\ProjectPath Z:\home\stuart\shoebox\documentation\rotokas\Rot.prj
+\LockProject 0
+\AutomaticKeyboardSwitching
+\+CorpusSet 
+\WordLstLimitCount
+\WordLstMaxCount 10
+\ConcordanceSearchType 3
+\ConcordanceLimitCount
+\ConcordanceMaxCount 1000
+\ConcordanceOutput lookup.db
+\-CorpusSet
+\LangCtrlHeight 24
+\+fntMarkers 
+\Name MS Sans Serif
+\Size 12
+\charset 00
+\-fntMarkers
+\+rundosMarkers 
+\-rundosMarkers
+\placementMain max -1 -1 -4 -2 51 3 946 701
+\+dblst 
+
+\+db Z:\home\stuart\shoebox\documentation\rotokas\ROTRT.DIC
+\+wndlst 
+\+wnd 
+\placement normal -1 -1 -4 -23 22 22 818 465
+\z 0
+\ViewMarkers
+\widthMarkerArea 50
+\JumpTarget
+\FocusTarget
+\+brflst 
+\FieldEmptyEntry *empty*
+\NoFieldEntry *no field*
+\+brf 
+\mkr lx
+\width 778
+\-brf
+\-brflst
+\+ind 
+\mkrPriKey lx
+\srtPriKey Rotokas
+\-ind
+\+rec 
+\fldPriKey eisi
+\-rec
+\+keySearch 
+\fldPri eisi
+\match_char p
+\-keySearch
+\+keyInsert 
+\fldPri -a
+\MatchWhole
+\match_char p
+\-keyInsert
+\CaretLine 2
+\CaretLineScroll 2
+\CaretChar 10
+\-wnd
+\-wndlst
+\-db
+
+\+db Z:\home\stuart\shoebox\documentation\rotokas\text.txt
+\+wndlst 
+\+wnd 
+\placement max -1 -1 -4 -23 44 44 862 465
+\z 1
+\ViewMarkers
+\widthMarkerArea 50
+\JumpTarget
+\FocusTarget
+\+brflst 
+\FieldEmptyEntry *empty*
+\NoFieldEntry *no field*
+\+brf 
+\mkr id
+\width 800
+\-brf
+\-brflst
+\+ind 
+\mkrPriKey id
+\srtPriKey Default
+\-ind
+\+rec 
+\fldPriKey test
+
+\-rec
+\+keySearch 
+\match_char p
+\-keySearch
+\+keyInsert 
+\MatchWhole
+\match_char p
+\-keyInsert
+\CaretLine 18
+\CaretLineScroll 18
+\CaretChar 0
+\-wnd
+\-wndlst
+\-db
+
+\-dblst
+\+Find 
+\MatchWhole
+\SingleField
+\Field ps
+\match_char c
+\+ftxlst 
+\+ftx 
+\text vure
+\lng Default
+\-ftx
+\+ftx 
+\text FAUNA
+\lng Default
+\-ftx
+\+ftx 
+\text koierirei
+\lng Rotokas
+\-ftx
+\+ftx 
+\text banis
+\lng Rotokas
+\-ftx
+\+ftx 
+\text fence
+\lng Rotokas
+\-ftx
+\+ftx 
+\text upiriko
+\lng Default
+\-ftx
+\+ftx 
+\text N.???
+\lng Default
+\-ftx
+\+ftx 
+\text knife
+\lng Default
+\-ftx
+\+ftx 
+\text ???
+\lng Default
+\-ftx
+\+ftx 
+\text and
+\lng Default
+\-ftx
+\+ftx 
+\text aisia
+\lng Rotokas
+\-ftx
+\+ftx 
+\text Sari sigo
+\lng Default
+\-ftx
+\+ftx 
+\text ravaisi
+\lng Default
+\-ftx
+\+ftx 
+\text Kovae
+\lng Default
+\-ftx
+\+ftx 
+\text CLASS
+\lng Default
+\-ftx
+\+ftx 
+\text sisiuvevo
+\lng Default
+\-ftx
+\+ftx 
+\text now
+\lng Default
+\-ftx
+\+ftx 
+\text ruipa
+\lng Default
+\-ftx
+\+ftx 
+\text arorea
+\lng Default
+\-ftx
+\+ftx 
+\text V.B
+\lng Default
+\-ftx
+\-ftxlst
+\-Find
+\AmbigBoxLeft 73
+\AmbigBoxTop 20
+\-ShProjectSettings

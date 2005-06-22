@@ -1,0 +1,98 @@
+c Date.cct - Sort year-2000-compatible dates in Shoebox
+c 1998-04-09 Mark R. Pedrotti (ICTS Software Development)
+c 1998-06-30 MRP: Move use(gRest) after endif in group(gMonth)
+c                 where it belongs. Mistaken placement caused
+c                 an infinite loop in CC for non-date fields.
+c Acknowledgment: Martin Hosken suggested this approach.
+c
+c Because Date.lng depends on this change table file,
+c you must put them together in the same settings folder.
+c
+c Convert the "surface" form of a Shoebox datestamp field,
+c like MDF's \dt, to an "underlying" form that will work
+c with most any sort order: four to eight digits yyyymmdd
+c (for example 19980409, 199804, or 1998).
+c
+c Examples of inputs:
+c 09/Apr/98           Shoebox 1, 2, and 3
+c  9/apr/98           Minor variations are accepted
+c 09/Apr/1998         Shoebox 4
+c 01/Jan/00           Shoebox 2
+c 01/Jan/100@#$...    Shoebox 3 will do this. Yuck! Not accepted.
+c 01/Jan/2000         Shoebox 4
+c    Jun/2001         Partial: month-year
+c        2001         Partial: year-alone (must be four digits)
+c
+c The two partial formats are for searching and jumping by date.
+c
+c This change table assumes that Shoebox has trimmed surrounding
+c white space from the date field. If the input doesn't match
+c a date format, it passes through unchanged.
+
+c --------------------------------------------------------------------
+begin >
+    caseless  c Disregard case distinction in month abbreviations
+    store(D) '0123456789' endstore  c Digit
+    use(gDay)
+
+define(dDate) > out(yyyy) out(mm) out(dd)
+
+c --------------------------------------------------------------------
+group(gDay)
+
+any(D) any(D) any(D) any(D) > store(yyyy) dup do(dDate) use(gRest)
+
+any(D) any(D) > store(dd)     dup use(gSlashAfterDay)
+       any(D) > store(dd) '0' dup use(gSlashAfterDay)
+
+'' > use(gMonth)  c It may be a month-year partial date
+
+c --------------------------------------------------------------------
+group(gSlashAfterDay)
+
+'/' > set(Day) use(gMonth)
+
+'' > out(dd) use(gRest)  c Not a date
+
+c --------------------------------------------------------------------
+group(gMonth)
+
+'jan' > store(mmm) dup store(mm) '01' use(gSlashAfterMonth)
+'feb' > store(mmm) dup store(mm) '02' use(gSlashAfterMonth)
+'mar' > store(mmm) dup store(mm) '03' use(gSlashAfterMonth)
+'apr' > store(mmm) dup store(mm) '04' use(gSlashAfterMonth)
+'may' > store(mmm) dup store(mm) '05' use(gSlashAfterMonth)
+'jun' > store(mmm) dup store(mm) '06' use(gSlashAfterMonth)
+'jul' > store(mmm) dup store(mm) '07' use(gSlashAfterMonth)
+'aug' > store(mmm) dup store(mm) '08' use(gSlashAfterMonth)
+'sep' > store(mmm) dup store(mm) '09' use(gSlashAfterMonth)
+'oct' > store(mmm) dup store(mm) '10' use(gSlashAfterMonth)
+'nov' > store(mmm) dup store(mm) '11' use(gSlashAfterMonth)
+'dec' > store(mmm) dup store(mm) '12' use(gSlashAfterMonth)
+
+'' > if(Day) out(dd) '/' endif use(gRest)
+
+c --------------------------------------------------------------------
+group(gSlashAfterMonth)
+
+'/' > use(gYear)
+
+'' > if(Day) out(dd) '/' endif out(mmm) use(gRest)  c Not a date
+
+c --------------------------------------------------------------------
+group(gYear)
+
+any(D) any(D) any(D) any(D) > store(yyyy) dup do(dDate) use(gRest)
+
+   '0' any(D) > next  c Consider 00-39 to be truncated from 20yy
+   '1' any(D) > next
+   '2' any(D) > next
+   '3' any(D) > store(yyyy) '20' dup do(dDate) use(gRest)
+any(D) any(D) > store(yyyy) '19' dup do(dDate) use(gRest)
+
+'' > if(Day) out(dd) '/' endif out(mmm) '/' use(gRest)  c Not a date
+
+c --------------------------------------------------------------------
+group(gRest)
+
+endfile > endfile
