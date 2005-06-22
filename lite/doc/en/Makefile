@@ -27,6 +27,8 @@ usage:
 	@echo "    make clean       -- Remove all built files"
 
 all: $(HTML) $(PDF)
+html: $(HTML)
+pdf: $(PDF)
 clean:
 	rm -f $(PDF)
 
