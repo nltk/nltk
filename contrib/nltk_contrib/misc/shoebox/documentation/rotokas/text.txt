@@ -1,0 +1,21 @@
+\_sh v3.0  400  Rotokas Text
+
+\id test
+
+\t Raru kakate      uukoro        avaroe              eisire             kovoa.
+\m Raru kakate      uuko  -ro     ava -ro     -e      eisi       -re     kovo -a
+\g Raru bamboo.tube water -PL     go  -3.SG.M -RP     at/to/from -ALL    work -N.SG
+\p PN   N           N     -SUFF.N V   -SUFF.V -SUFF.V DIR        -SUFF.N V    -SUFF.N.2
+\f Raru fills up the bamboo water tub and goes to work.
+
+\t ovu-ia        aitetoa        epao?
+\m ovu   -ia     aite   -toa    epao
+\g where -LOC    father -M.SG   EXIST
+\p WH    -SUFF.N N      -SUFF.N PART
+\f Where is dad?
+
+\t kakau        kovoro         purapaivoi                      oiraara    moni  oupasia.
+\m kakau        kovo   -ro     pura    -pa     -i      -voi    oira -ara  moni  ou  -pa     -sia
+\g sweet.potato garden -PL     make/do -PROG   -3.PL   -PRES   man  -PL   money get -PROG   -PURP
+\p N            N      -SUFF.N V       -SUFF.V -SUFF.V -SUFF.V N    -PL.N N     V   -SUFF.V -SUFF.V
+\f Men made cocoa gardens in order to get money.

@@ -1,0 +1,253 @@
+\+LanguageEncoding Axininca
+\ver 5.0
+\desc sort and case for non-KeyMan users
+for Shoebox walkthrough
+\case A a 
+B b
+C c
+Ç ç
+É Á
+Ë Ã
+D d
+E e
+F f
+G g
+Ì Å
+H h
+I i
+J j
+K k
+L l
+M m
+N n
+Ñ ñ
+O o
+P p
+Q q
+R r
+S s
+T t
+U u
+V v
+W w
+X x
+Y y
+Z z
+\+srtset 
+
+\+srt Axininca
+\desc created for SHW walkthrough
+\primary A a 
+B b
+C c
+Ç ç
+É Á
+ÉÀ ÁÀ
+Ë Ã
+ËÀ ÃÀ
+D d
+E e
+F f
+G g
+Ì Å
+H h
+I i
+J j
+K k
+L l
+M m
+N n
+Ñ ñ
+O o
+P p
+Q q
+R r
+RÆ rÆ
+S s
+T t
+TÀ tÀ
+U u
+V v
+W w
+Ê Â
+X x
+Y y
+Z z
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+_
+\SecFollowing À Æ
+\ignore -
+\-srt
+
+\srtDefault Axininca
+\-srtset
+\+varset 
+
+\+var !
+\chars . , ? : ; ! < > { } [ ] ( ) " ' `
+\-var
+
+\+var @
+\chars A a 
+B b
+C c
+Ç ç
+É Á
+Ë Ã
+D d
+E e
+F f
+G g
+Ì Å
+H h
+I i
+J j
+K k
+L l
+M m
+N n
+Ñ ñ
+O o
+P p
+Q q
+R r
+S s
+T t
+U u
+V v
+W w
+Ê Â
+X x
+Y y
+Z z
+À Æ
+\-var
+
+\+var D
+\chars 0 1 2 3 4 5 6 7 8 9
+\-var
+
+\+var L
+\chars a 
+ b
+ c
+ ç
+ Á
+ Ã
+ d
+ e
+ f
+ g
+ Å
+ h
+ i
+ j
+ k
+ l
+ m
+ n
+ ñ
+ o
+ p
+ q
+ r
+ s
+ t
+ u
+ v
+ w Â
+ x
+ y
+ z
+\-var
+
+\+var U
+\chars A 
+B
+C 
+Ç 
+É 
+Ë 
+D 
+E 
+F 
+G
+Ì
+H
+I 
+J 
+K
+L 
+M
+N
+Ñ
+O
+P
+Q
+R
+S
+T
+U
+V
+W Ê
+X
+Y
+Z
+\-var
+
+\+var cons
+\chars B b
+C c
+Ç ç
+É Á
+Ë Ã
+D d
+F f
+G g
+Ì Å
+H h
+J j
+K k
+L l
+M m
+N n
+Ñ ñ
+P p
+Q q
+R r
+S s
+T t
+V v
+W w
+Ê Â
+X x
+Y y
+Z z
+\-var
+
+\+var nasal
+\chars M m N n Ñ ñ
+\-var
+
+\+var vowel
+\chars A a E e I i O o U u
+\-var
+
+\-varset
+\+fnt 
+\Name Axininca Ft SILDoulos
+\Size 11
+\Bold
+\rgbColor 0,0,0
+\-fnt
+\kbdKeyman Axininca
+\-LanguageEncoding

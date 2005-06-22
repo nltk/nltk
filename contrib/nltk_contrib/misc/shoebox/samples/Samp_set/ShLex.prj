@@ -1,0 +1,73 @@
+\+ShProjectSettings 
+\ver 5.0
+\ProjectPath C:\xxxx\Samples\SAMP_SET\shlex.prj
+\+CorpusSet 
+\WordLstLimitCount
+\WordLstMaxCount 10
+\ConcordanceSearchType 3
+\ConcordanceLimitCount
+\ConcordanceMaxCount 1000
+\ConcordanceOutput lookup.db
+\-CorpusSet
+\AutoWrap
+\LangCtrlHeight 19
+\+fntMarkers 
+\Name MS Sans Serif
+\Size 10
+\-fntMarkers
+\+rundosMarkers 
+\-rundosMarkers
+\placementMain normal -1 -1 -4 -4 -1 -2 617 379
+\+dblst 
+
+\+db C:\xxxx\Samples\SAMP_SET\Shlex.db
+\+wndlst 
+\+wnd 
+\placement normal -1 -1 -4 -23 0 0 606 278
+\z 0
+\ViewMarkers
+\widthMarkerArea 50
+\+brflst 
+\FieldEmptyEntry *empty*
+\NoFieldEntry *no field*
+\+brf 
+\mkr lx
+\width 588
+\-brf
+\-brflst
+\+ind 
+\mkrPriKey lx
+\srtPriKey vernacular
+\-ind
+\+rec 
+\fldPriKey a
+\-rec
+\+keySearch 
+\match_char p
+\-keySearch
+\+keyInsert 
+\MatchWhole
+\match_char p
+\-keyInsert
+\+keyJump 
+\MatchWhole
+\match_char p
+\-keyJump
+\+keyJumpInsert 
+\MatchWhole
+\match_char p
+\-keyJumpInsert
+\CaretLine 0
+\CaretLineScroll 0
+\CaretChar 0
+\-wnd
+\-wndlst
+\-db
+
+\-dblst
+\+Find 
+\match_char p
+\+ftxlst 
+\-ftxlst
+\-Find
+\-ShProjectSettings

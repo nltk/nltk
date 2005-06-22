@@ -1,0 +1,72 @@
+\+ShProjectSettings 
+\ver 5.0
+\ProgramVersion 1.4 Nov 2004 Windows
+\ProjectPath Z:\home\stuart\workspace\nltk\samples\Frisian1\Fri.prj
+\LockProject 0
+\AutomaticKeyboardSwitching
+\+CorpusSet 
+\WordLstLimitCount
+\WordLstMaxCount 10
+\ConcordanceSearchType 3
+\ConcordanceLimitCount
+\ConcordanceMaxCount 1000
+\ConcordanceOutput lookup.db
+\-CorpusSet
+\LangCtrlHeight 24
+\+fntMarkers 
+\Name MS Sans Serif
+\Size 10
+\charset 00
+\-fntMarkers
+\+rundosMarkers 
+\-rundosMarkers
+\placementMain normal -1 -1 -4 -2 -4 -2 1020 722
+\+dblst 
+
+\+db Z:\home\stuart\workspace\nltk\samples\Frisian1\FriRt-new.dic
+\+wndlst 
+\+wnd 
+\placement normal -1 -1 -1 -1 44 48 858 465
+\z 0
+\ViewMarkers
+\widthMarkerArea 50
+\JumpTarget
+\FocusTarget
+\+brflst 
+\FieldEmptyEntry *empty*
+\NoFieldEntry *no field*
+\+brf 
+\mkr fri
+\width 796
+\-brf
+\-brflst
+\+ind 
+\mkrPriKey fri
+\srtPriKey Frisian
+\-ind
+\+rec 
+\fldPriKey do
+\-rec
+\+keySearch 
+\match_char p
+\-keySearch
+\+keyInsert 
+\MatchWhole
+\match_char p
+\-keyInsert
+\CaretLine 0
+\CaretLineScroll 0
+\CaretChar 0
+\-wnd
+\-wndlst
+\-db
+
+\-dblst
+\+Find 
+\match_char p
+\+ftxlst 
+\-ftxlst
+\-Find
+\AmbigBoxLeft 0
+\AmbigBoxTop 20
+\-ShProjectSettings

@@ -1,0 +1,273 @@
+<html>
+<body bgcolor="#FFFFFF">
+
+
+
+<!--  PARSING SHOEBOX DATA -->
+<h1>Parsing Shoebox Data in Python</h1>
+
+
+<!-- SOURCE CODE -->
+<h2>Source Code</h2>
+
+<p>The code base is in a very early stage of development (beta). All the usual disclaimers apply. Use at your own risk.</p>
+
+<p>Download: [ <a href="../download/shoebox.tar.gz">shoebox.tar.gz</a> ]</p>
+
+
+
+<!-- BACKGROUND -->
+<h2>Background</h2>
+
+<p>Shoebox data files are marked up in <b>Standard Format</b>, a loosely defined data format which is basically obsolescent (thanks to XML). As is the case with XML, it is useful to distinguish between two kinds of valid Shoebox data files: well-formed and valid.
+
+<ul>
+  <li><b>well-formed</b> Shoebox files merely conform to Standard Format</li>
+  <li><b>valid</b> Shoebox file are well-formed and in addition are consistent with metadata</li>
+</ul>
+
+<p>Well-formedness is therefore a necessary (but not sufficient) condition for validity.</p>
+
+
+
+<!-- STANDARD FORMAT -->
+<h3>Standard Format</h3>
+
+<p>Without validating information from a Shoebox metadata file, the following assumptions will be made about standard format:</p>
+
+<ol>
+  <li>Field Marker:
+    <ol type="a">
+      <li>occurs at the beginning of a line</li>
+      <li>starts with a single backslash</li>
+      <li>first character after backslash is alphabetic</li>
+      <li>cannot contain whitespace</li>
+      <li>second and subsequent characters can be alphanumeric, an underscore (_), and/or dash (-)</li>
+      <li>is separated from associated field data by a single space</li>
+    </ol>
+  </li>
+  <li>Field Data:
+    <ol type="a">
+      <li>unrestricted text</li>
+      <li>can include carriage returns</li>
+      <li>cannot contain a line-inital backslash</li>
+    </ol>
+  </li>
+</ol>
+
+<p>Some examples of well-formed and ill-formed Shoebox data are provided below:</p>
+
+<table>
+  <tr>
+    <td><b>Well-Formed</b></td>
+  </tr>
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <td bgcolor="#CCFFFF" valign="top"><pre>
+\ref orang
+\ps N
+\ge person
+</pre></td>
+          <td>&nbsp;</td>
+          <td bgcolor="#CCFFFF" valign="top"><pre>
+\ref orang
+\ps N
+\nt
+\ge person
+</pre></td>
+          <td>&nbsp;</td>
+          <td bgcolor="#CCFFFF" valign="top"><pre>
+\ref orang
+\ps N
+\ge person
+\ge people
+</pre></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td><b>Ill-Formed</b></td>
+  </tr>
+  <tr>
+      <table>
+        <tr>
+          <td bgcolor="#CCFFFF" valign="top"><pre>
+\ref orang \ps N \ge person
+</pre></td>
+          <td>&nbsp;</td>
+          <td bgcolor="#CCFFFF" valign="top"><pre>
+\1 orang
+\2 N
+\3
+\4 person
+</pre></td>
+          <td>&nbsp;</td>
+          <td bgcolor="#CCFFFF" valign="top"><pre>
+\ref orang \
+\ge person
+\ge people
+</pre></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+
+<p>There are some special field markers reserved for use by Shoebox which violate the rule concerning the initial-character of the field marker--for example, <tt>\+mkrset</tt> and <tt>\-mkrset</tt>. So far, it seems to be only <tt>+</tt> and <tt>-</tt>. The rule for the first character might therefore be relaxed.</p>
+
+
+
+<!-- PARSING -->
+<h3>Parsing</h3>
+
+<p>There are 3 ways of parsing a Shoebox file into entries and their associated fields:</p>
+
+
+<table border="1">
+  <tr>
+    <td><b>Available Information</b></td>
+    <td><b>Description</b></td>
+    <td><b>Can be Parsed?</b></td>
+    <td><b>Can be Validated?</b></td>
+  </tr>
+  <tr>
+    <td>No Metadata</td>
+    <td>If no metadata is available, it is assumed that the first field of the first entry encountered is the head field.</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>Head Field Known</td>
+    <td>If the head field marker is known, it is therefore possible to properly handle multiline fields.</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>Shoebox Metadata</td>
+    <td>With the full metadata available (i.e., *.typ file), it is possible to parse the data file and ensure that the contents conform to the metadata constraints.</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+</table>
+
+<p><a href="conundrum.html">Comments on Shoebox Parsing</a></p>
+
+
+
+<!-- VALIDATION -->
+<h3>Validation</h3>
+
+<p>When a full metadata description of a Shoebox file is available, the Shoebox parser can validate its contents against their metadata specification. All validation errors extend from the class ShoeboxValidationError. The following validation errors are recognized:</p>
+
+<ul>
+  <li>BadMetadataFile</li>
+  <li>NoMetadataFound</li>
+  <li>BadFieldValue</li>
+    <ul>
+      <li>ValueOutsideRangeSet</li>
+      <li>NoWordWrap</li>
+      <li>EmptyValue</li>
+      <li>SingleWord</li>
+    </ul>
+</ul>
+
+
+
+<!-- FUNCTIONALITY -->
+<h2>Functionality</h2>
+
+<p>A good deal of the functionality for Shoebox per se (rather than Standard Format) has been reverse-engineered. If anyone is aware of explicit specifications for the make-up of Shoebox metadata, please contact <a href="stuart AT zapata DOT org">the author</a>.</p>
+
+
+<!--  FEATURE WISH LIST -->
+<h3>Feature Wish List</h3>
+
+<ol>
+  <li>the shoebox reader should probably read from a file instead of a string, to make it more similar to the corpus readers</li>
+  <li>include inline epydoc documentation like the rest of NLTK  http://epydoc.sourceforge.net/</td>
+  <li>tutorial (include the bin/*.py examples as demo code so that each module can be run from the command line and demonstrate something useful (cf the rest of NLTK)</li>
+  <li>make sure we have methods to create new fields and new entries, and save them to a shoebox file (NB this may involve updating a project file as well)</li>
+  <li>Unicode handling for Toolbox</li>
+  <li>Better error handling for Shoebox validation</li>
+  <li>Automatic parsing and alignment of interlinearized tiers</li>
+</ol>
+
+
+
+<!--  VALIDATION -->
+<h3>Known Bugs or Limitations</h3>
+
+<ol>
+  <!--<li>Only handles Unix files</li>-->
+  <li>Font information for markers ignored</li>
+  <li>File sets, jump sets, templates, and (RTF) export sets ignored</li>
+  <li>Interlinearized texts do not always parse properly (\id in metadata, but \ref is actual head field)
+</ol>
+
+
+
+<!-- SAMPLE DATA -->
+<h2>Sample Data</h2>
+
+<p>You can test the the Standard Format parser by running some test scripts (<a href="../download/bin.tar.gz">bin.tar.gz</a>) on the sample data that comes with Shoebox (<a href="../download/samples.tar.gz">samples.tar.gz</a>). Make sure that the <tt>shoebox</tt> directory containing the Shoebox modules can be found by Python by adding it to the environment variable <tt>PYTHONPATH</tt>.</p>
+
+<p>For purposes of illustration, assume that all of the above-linked files reside in your home directory called <tt>foo</tt>. The following Bash session illustrates how to run a sample script:</p>
+
+<table width="100%" border="0" bgcolor="#CC99FF">
+<tr><td><pre>
+~/foo $ ls
+bin.tar.gz  samples.tar.gz  shoebox.tar.gz
+~/foo $ gunzip bin.tar.gz
+~/foo $ tar xf bin.tar
+~/foo $ gunzip samples.tar.gz
+~/foo $ tar xf samples.tar
+~/foo $ gunzip shoebox.tar.gz
+~/foo $ tar xf shoebox.tar
+~/foo $ rm -f *.tar
+~/foo $ ls
+bin  samples  shoebox
+~/foo $ export PYTHONPATH=$PYTHONPATH:~/foo/shoebox/
+~/foo $ python bin/print-shoebox.py -s samples/Frisian1/FriRt.dic
+</pre></td></tr>
+</table>
+
+<p>For a collection of use cases, see the following different possibilities:</p>
+
+<table border="1">
+  <tr>
+    <td><b>Available Information</b></td>
+    <td><b>Test Scripts</b></td>
+  </tr>
+  <tr>
+    <td>No Metadata</td>
+    <td><tt>$ python bin/print-shoebox.py -s samples/Frisian1/FriRt.dic</tt><br>
+        <tt>$ python bin/print-shoebox.py -s samples/Frisian2/FriRt.dic</tt><br>
+        <tt>$ python bin/print-shoebox.py -s samples/Axint/Ax.lex</tt></td>
+  </tr>
+  <tr>
+    <td>Head Field Known</td>
+    <td><tt>$ python bin/print-shoebox.py -s samples/Frisian1/FriRt.dic -f lx</tt><br>
+        <tt>$ python bin/print-shoebox.py -s samples/Frisian2/FriRt.dic -f lx</tt><br>
+        <tt>$ python bin/print-shoebox.py -s samples/Axint/Ax.lex       -f lx</tt></td>
+  </tr>
+  <tr>
+    <td>Shoebox Metadata</td>
+    <td><tt>$ python bin/print-shoebox.py -s samples/Frisian1/FriRt.dic -m samples/Frisian1/FrisianD.typ</tt><br>
+        <tt>$ python bin/print-shoebox.py -s samples/Frisian2/FriRt.dic -m samples/Frisian2/FrisianD.typ</tt><br>
+        <tt>$ python bin/print-shoebox.py -s samples/Axint/Ax.lex       -m samples/Axint/Axininc2.typ</tt></td>
+  </tr>
+</table>
+
+
+<p>For more examples and explanation, see <a href="../tutorial/index.html">the tutorial</a>.</p>
+
+<p><hr></p>
+
+<p><small>The author may be contacted at <a href="mailto:stuart DOT robinson AT mpi DOT nl">Stuart DOT Robinson AT mpi DOT nl</a>.</small></p>
+
+</body>
+</html>

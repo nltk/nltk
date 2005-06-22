@@ -1,0 +1,265 @@
+<html>
+
+<title>The Conundrum of Paragraph Structure in Shoebox Texts</title>
+
+<body bgcolor="#FFFFFF">
+
+<h2>The Conundrum of Paragraph Structure in Shoebox Texts</h2>
+
+<p>Shoebox texts differ from Shoebox lexicons in possessing two levels of structure: a paragraph structure, in which records are usually marked by the record marker <tt>\id</tt>, and line structure, in which records are usually marked by <tt>\ref</tt>. Because there are two levels, we are faced with a conundrum (<a href="http://dictionary.reference.com/search?q=conundrum">"a paradoxical, insoluble, or difficult problem"</a>): either we parse texts like lexicons and ignore their first level of structure (the paragraph structure imposed by <tt>\id</tt>) or we parse texts differently and obtain a two-level structure where files contain paragraphs which in turn contain lines.</p>
+
+<p>The conundrum rears its ugly head when we try to parse one of the sample texts that comes with Shoebox, <a href="../samples/Frisian1/FriSampl.txt">FriSampl.txt</a>. (Warning: Some characters will look strange when pasted straight into HTML without conversion.)</p>
+
+<small>
+<pre>
+\_sh v3.0  397  Frisian Text
+
+\id Adjectives with ûn
+\ref 1
+\t ûnbrekber.
+ûnwis.
+ûntrou.
+ûngeef.
+ûnfreonlik.
+ûnwolkom.
+ûntagonklik.
+ûnbikwaam.
+ûnferlykber.
+ûnkrekt.
+ûngenêslik.
+ûnytber.
+ûnbegeanber.
+ûngeduldich.
+ûnfolmakke.
+ûnbeskamme.
+ûnmooglik.
+ûnwierskynlik.
+
+\id First sample sentence from the tutorial
+\ref 1
+\t Berne      en   opgroeid         yn   Ynje,
+\m bern -e    en   op-  groei -e    yn   Ynje
+\g bear -PSTP and  up-  grow  -PSTP in   Indonesia
+\p V    -Tns  Conj Dir- V     -Tns  Prep N
+
+\f Born and raised in Indonesia, 
+
+\ref 2
+\t sil  dêr   syn  grêf  wêze.
+\f 
+\id frilake.txt Tutorial Exercise
+\ref 1
+\t Fryslân yn maitiidpracht, wylst de sinne skynde oer
+de marren en de wide greiden mei fee.
+\f 
+
+\ref 2
+\t Noarwegen, doe't de hege sinne dreamde yn 'e fjorden.
+\f 
+
+\ref 3
+\t Heite en Memme lân.
+\f 
+
+\ref 4
+\t Mar sines?
+\f 
+
+\ref 5
+\t Hij hat der nea werom west.
+\f 
+
+\id Verb present and past paradigm
+\ref 1
+\t miene.
+\f 
+
+\ref 2
+\t ik mien.
+do mienst.
+hy mient.
+wy miene.
+\f 
+
+\ref 3
+\t ik miende.
+do miendest.
+hy miende.
+wy mienden.
+\f 
+</pre>
+</small>
+
+<p>The hierarchical structure of the text looks something like this:</p>
+
+<table border="1">
+  <tr>
+    <td>Paragraphs</td>
+    <td>Contents</td>
+  </tr>
+  <tr>
+    <td><pre>\id Adjectives with ûn</pre></td>
+    <td><table border="1">
+      <tr>
+        <td>Lines</td>
+        <td>Contents</td>
+      </tr>
+      <tr>
+        <td><pre>\ref 1</pre></td>
+        <td><pre>\t Ã»nbrekber.
+Ã»nwis.
+Ã»ntrou.
+Ã»ngeef.
+Ã»nfreonlik.
+Ã»nwolkom.
+Ã»ntagonklik.
+Ã»nbikwaam.
+Ã»nferlykber.
+Ã»nkrekt.
+Ã»ngenÃªslik.
+Ã»nytber.
+Ã»nbegeanber.
+Ã»ngeduldich.
+Ã»nfolmakke.
+Ã»nbeskamme.
+Ã»nmooglik.
+Ã»nwierskynlik.</pre>
+        </td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td><pre>\id First sample sentence from the tutorial</pre></td>
+    <td><table border="1">
+      <tr>
+        <td>Lines</td>
+        <td>Content</td>
+      </tr>
+      <tr>
+        <td><pre>\ref 1</pre></td>
+        <td><pre>\t Berne      en   opgroeid         yn   Ynje,
+\m bern -e    en   op-  groei -e    yn   Ynje
+\g bear -PSTP and  up-  grow  -PSTP in   Indonesia
+\p V    -Tns  Conj Dir- V     -Tns  Prep N
+
+\f Born and raised in Indonesia,</pre>
+        </td>
+      </tr>
+      </tr>
+      <tr>
+        <td><pre>\ref 2</pre></td>
+        <td><pre>\t sil  dÃªr   syn  grÃªf  wÃªze.
+\f
+</pre></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td><pre>\id frilake.txt Tutorial Exercise</pre></td>
+    <td><table border="1">
+      <tr>
+        <td>Lines</td>
+        <td>Content</td>
+      </tr>
+      <tr>
+        <td><pre>\ref 1</pre></td>
+        <td><pre>\t FryslÃ¢n yn maitiidpracht, wylst de sinne skynde oer
+de marren en de wide greiden mei fee.
+\f 
+</pre></td>
+      </tr>
+      <tr>
+        <td><pre>\ref 2</pre></td>
+        <td><pre>\t Noarwegen, doe't de hege sinne dreamde yn 'e fjorden.
+\f 
+</pre></td>
+      </tr>
+      <tr>
+        <td><pre>\ref 3</pre></td>
+        <td><pre>\t Heite en Memme lÃ¢n.
+\f 
+</pre></td>
+      </tr>
+      <tr>
+        <td><pre>\ref 4</pre></td>
+        <td><pre>\t Mar sines?
+\f
+</pre></td>
+      </tr>
+      <tr>
+        <td><pre>\ref 5</pre></td>
+        <td><pre>\t Hij hat der nea werom west.
+\f 
+</pre></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td><pre>\id Verb present and past paradigm</pre></td>
+    <td>[...]</td>
+  </tr>
+</table>
+
+<p>What's interesting is that if we look at the metadata for this text, it treats the field marker <tt>\id</tt> as the record marker. The metadata for the markers is excerpted from (<a href="../samples/Frisian1/FrisianT.typ">FrisanT.typ</a>):</p>
+
+<pre>
+\+DatabaseType Frisian Text
+\ver 5.0
+\desc Frisian Interlinear Text for Tutorial
+\+mkrset 
+\lngDefault Default
+\mkrRecord id
+
+\+mkr f
+\nam Free Translation
+\lng Default
+\mkrOverThis id
+\-mkr
+
+\+mkr g
+\nam Gloss
+\lng Default
+\mkrOverThis id
+\-mkr
+
+\+mkr id
+\nam Identifier
+\lng Default
+\-mkr
+
+\+mkr m
+\nam Morphemes
+\lng Default
+\mkrOverThis id
+\-mkr
+
+\+mkr p
+\nam Part of Spch
+\lng Default
+\mkrOverThis id
+\-mkr
+
+\+mkr ref
+\nam Reference
+\lng Default
+\mkrOverThis id
+\-mkr
+
+\+mkr t
+\nam Text
+\lng Frisian
+\mkrOverThis id
+\-mkr
+
+\-mkrset
+</pre>
+
+<p>If we ignore the paragraph structure, and treat <tt>\ref</tt> as the record marker, we are essentially declaring the metadata incorrect. So, either we ignore the metadata and parse the text by lines rather than paragraphs or we split the file parser into two subclasses (one for lexicons and another for texts) and define different behavior for each. I favor having two subclasses but I'd like to solicit the opinion of others.</p>
+
+<p><hr></p>
+
+<p>Contact the author at: <a href="mailto:stuart DOT robinson AT mpi DOT nl">Stuart DOT Robinson AT mpi DOT nl</a></p>
+
+</body>
+
+</html>

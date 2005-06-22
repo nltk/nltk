@@ -1,0 +1,42 @@
+\_sh v3.0  400  Asy Scrip
+
+\id Php
+\ct qplawn
+\c 2
+\s mkyk{wD mjyxyD
+\p
+\v 1 bus ain ay{t yohbultoa dliboa bmjy{xoa, wain mloytoa dliboa m{n xw{boa, wain ay{t jury{kw{toa drw{xoa, wain ay{t ruxruxtoa wr=uxmea,
+\v 2 tumimw}n xudw{ty{ dhoweytw}n bxud xy{ul, wbxud xw{boa, wbxdoa gonoa wbxud xw{job{oa.
+\v 3 loa vob{dy{tw}n mindy{ bmuqurocw{toa yun bxiqroa bufy{loa, ailoa bmuky{k{w{toa howeytw}n bixjob{oa xud lh}w a`xer`noa bw{j zowdoa m{n lgonowk{w}n.
+\v 4 kl a`nojoa minowk{w}n loa gujiq lyw{tronoa dgoneh auxk~y{, ailoa aw{p lpuydoa da`xer=`nea.
+\v 5 xojb{y{tw}n hur h}w mindy{ dxjy{b{leh aw{p y{jw}v mjy{xoa,
+\v 6 h}w dy{hwoa bkyonoa daulohoa, loa xjy{b{leh dboroborw{toa vum aulohoa poyjoa hwoa xfy{ptoa xfw{pyoa,
+\v 7 ailoa sw{pqoaleh goneh wjqy{lleh dmw{toa dregoa, whwealeh bcw{rtoa dbnuy=nojoa.
+\v 8 wkud jqy{lleh aisky{moa dburnojoa, wmw{mkik{oaleh goneh wjly{mleh hul mowtoa, mowtoa dzqy{poa.
+\v 9 bw{t daohoa aw{p aulohoa bw{j zowdoa mw{rimleh aileh, wyw{hbilleh aileh jimoa lvilil m{n kl jimoa,
+10 dbjimoa dy{jw}v kl bw{rkoa koypoa bjmuyoa wbaurvoa wdlailtixt m{n aurvoa,
+\v 11 wkl lijonoa mowdea dy{jw}v mjy{xoa moryoa yleh, lxiqroa daulohoa boboa.
+\s bhrwna ayk{ kwk{b{=a
+\p
+\v 12 bus hudk{oa mw{xiby{, doak{y{ dbkl zub{noa mw{cyitlowk{w}n, loa auxk~y{ ay{mun dy{win hwoa lkislowk{w}n, ailoa bw{j zowdoa aody{oa drixqoa ywin minowk{w}n, mukmilw}n pw{rqonowk{w}n bzdw{vtoa wbrutruttoa,
+\v 13 sobob aulohoa yleh dkea polix by{owk{w}n dmuvbidlowk{w}n dboveytw}n wvob{dy{tw}n cib{yoneh fob{oa.
+\v 14 vb{w}dw}n kloyhy mindy{on=ea dloa furfumtoa wdloa dw{borw{toa,
+\v 15 dhoweytw}n dloa lowmoa wdik{y=ea, bnw}n=ea daulohoa dloa lukoa gow xud dowroa pk~y{loa wxry{b{oa, wdpoyjy{tw}n xizyea goweh auyk{ kowk{k=ea buhrw{nea gow volmoa,
+\v 16 db{y{qea bhemizmon dxuy=ea, dvob{din jw{b{horoa byowmoa dmjy{xoa dloa rxifly{ wkk~y{xly{ bhobosw{toa.
+\v 17 ay{noa aw{p ain poyjin cw{nciloa vul dbixtoa wxilmut dhuymonw{towk{w}n, bixdoyoa ywin wbipcoxoa vum klowk{w}n.
+\v 18 whur hudk{oa aw{p auxtw}n xdeymw}n wpcw}xw}n vumy{.
+\s fymDws wapprwdyfws
+\p
+\v 19 bheb{y{ ywin bmorun y{jw}v dbit judrin lkislowk{w}n fy{moDw}s bg~uldw{toa, daw{p aonoa xodeyn ay{mun djomvin bw{t auhwolotowk{w}n.
+\v 20 sobob luytly{ xud a`xer`noa mauyk{ dy{eh, djury{roay{t ay{tleh bw{somoa bjw{lowk{w}n,
+\v 21 sobob kloyhy fuvw{yea ynoa botr yw{tronoa dgonoyhy wloa dy{jw}v mjy{xoa.
+\v 22 ay{noa kea yodvy{tw}n dfy{moteaw}s mw{xziyw{h yleh goneh xjy{xoa, sobob auyk{ xud brw}noa dbobeh ply{xoa yleh vumy{ baewongoly{w}n.
+\v 23 bw{t daohoa bheb{y{ ywin djudrineh lkislowk{w}n bg~uldw{toa, ay{mun dxozeyn doak{y{ bit howy{ jw{lony{=.
+\v 24 ay{noa bheb{y{ ywin bmoryoa daw{p aonoa bgony{ bit aoteyn bg~uldw{toa.
+\p
+\v 25 ay{noa xjy{b{ly{ daununqoytoa hwoa djudrin lkislowk{w}n aopoprw}dy{fw}s, auxw}noa wjury{koa bpw{lxony{ wduxjoa vumy{, wjly{xoa ddy{owk{w}n djw{dirowk{w}n aily{ dtugbir lsny{qw{ty{.
+\v 26 judw{rea ywin aileh sobob juhww{tea yleh lixzoyoa lklowk{w}n, wroboa pjy{moa hwoa ay{mun ydy{vleh djmy{vlowk{w}n mry{voa hwoa.
+\v 27 mig~id mry{voa hwoa hul mowtoa, ay{noa aulohoa rw{xeamleh vuleh. loa auxk~y{ vuleh ay{noa aw{p vuly{, dloa howealy{ xujoa vul xujoa.
+\v 28 bw{t daohoa bxopofw{toa jw{diry{ aileh lkislowk{w}n dxozeytw}n leh mindrij wdxodeytw}n, wdxujy{ howea bocw{roa.
+\v 29 bus qublw}n leh bmorun bkl xudw{toa, wmyuqrw}n la`noj=ea mauyk{ dy{eh,
+\v 30 sobob qw{rbinoa hwoa lmowtoa bw{t xotir dpw{lxonoa dmjy{xoa, mw{tib{leh goneh gow qeww}ndy{nw}s dtumim hwoa bocw{rw{toa dxilmutowk{w}n lkisly{.
