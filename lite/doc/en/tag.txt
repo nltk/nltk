@@ -13,6 +13,8 @@ Tagging
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
+.. Note:: This is a draft.  Please send any feedback to the authors.
+
 ------------
 Introduction
 ------------
@@ -921,3 +923,9 @@ so that you can answer the following questions.
     Discuss any issues you encounter in applying these methods to the
     language.
         
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+

@@ -13,13 +13,13 @@ Programming Fundamentals and Python
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. Note:: This is an early draft
+.. Note:: This is a draft.  Please send any feedback to the authors.
 
 ------------
 Introduction
 ------------
 
-
+*To be written*
 
 
 ----------------------------
@@ -327,3 +327,10 @@ the following questions.
 
 #. Use the corpus module to tokenize ``austin-persuasion.txt``.
    How many words does this book have?
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+

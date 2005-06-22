@@ -13,8 +13,7 @@ Elementary Language Processing: Parsing
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. _Introduction:
-
+.. Note:: This is a draft.  Please send any feedback to the authors.
 
 ------------
 Introduction 
@@ -1080,5 +1079,9 @@ recursive descent parser::
  >>> demo()
 
 
+----
 
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
 
