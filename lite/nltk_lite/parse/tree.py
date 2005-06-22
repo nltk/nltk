@@ -199,6 +199,18 @@ class Tree(list):
         if not deep: return self.__class__(self.node, self)
         else: return self.__class__.convert(self)
 
+    def _frozen_class(self): return ImmutableTree
+    def freeze(self, leaf_freezer=None):
+        frozen_class = self._frozen_class()
+        if leaf_freezer is None:
+            newcopy = frozen_class.convert(self)
+        else:
+            newcopy = self.copy(deep=True)
+            for pos in newcopy.treepositions('leaves'):
+                newcopy[pos] = leaf_freezer(newcopy[pos])
+            newcopy = frozen_class.convert(newcopy)
+        hash(newcopy) # Make sure the leaves are hashable.
+        return newcopy
 
     #////////////////////////////////////////////////////////////
     # Visualization & String Representation
