@@ -72,11 +72,13 @@ checkapidocs:
 apidocs:
 	$(EPYDOC) -o doc/api nltk_lite
 
-tutorials:
-	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
+docdist:
+	zip -r doc doc -x CVS
+#	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
 
-corpora:
-	tar czvf corpora.tgz --exclude=CVS corpora
+corporadist:
+	zip -r corpora corpora -x CVS
+#	tar czvf corpora.tgz --exclude=CVS corpora
 
 # Automatically add the appropriate version number.
 INSTALL.TXT: INSTALL.TXT.in
