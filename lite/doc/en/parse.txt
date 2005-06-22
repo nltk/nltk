@@ -330,7 +330,6 @@ Computational Approaches to Parsing
 Recursive Descent Parsing 
 -------------------------
 
-
 The simplest kind of parser interprets the grammar as a specification
 of how to break a high-level goal into several lower-level subgoals.
 The top-level goal is to find an ``S``.  The ``S |rarr| NP VP``
@@ -351,8 +350,8 @@ the productions of the grammar, the parse tree is extended downwards
 the parser demonstration ``nltk_lite.draw.rdparser``.  To run this
 demonstration, use the following commands::
 
- >>> from nltk_lite.draw.rdparser import demo
- >>> demo()
+ from nltk_lite.draw.rdparser import demo
+ demo()
 
 
 Six stages of the execution of this parser are shown below:
@@ -370,20 +369,16 @@ Six stages of the execution of this parser are shown below:
    productions, after matching "the", failing to match "man",
    completed parse, backtracking
 
-..
- Discussion: choosing which of several possible productions to apply;
- backtracking; termination.
+.. Discussion: choosing which of several possible productions to apply;
+   backtracking; termination.
 
- Problems with recursive descent parsing:
- considers structures and words that are not attested;
- backtracking may discard parsed constituents that need to be rebuilt;
- for example, backtracking over ``VP |rarr| V NP``
- will discard the structures created for the
- ``V`` and ``NP`` non-terminals.  If the parser then proceeds
- with ``VP |rarr| V NP PP``, then the structures for the
- ``V`` and ``NP`` must be created again.
-
-
+Problems with recursive descent parsing: considers structures and
+words that are not attested; backtracking may discard parsed
+constituents that need to be rebuilt; for example, backtracking over
+``VP`` |rarr| ``V NP`` will discard the structures created for the ``V``
+and ``NP`` non-terminals.  If the parser then proceeds with ``VP``
+|rarr| ``V NP PP``, then the structures for the ``V`` and ``NP`` must be
+created again.
 
 Recursive descent parsing is a kind of *top-down parsing*.  These use
 the grammar to *predict* what the input will be, before inspecting any
@@ -435,8 +430,8 @@ sentence has been constructed.  We can see this in action using the
 parser demonstration ``nltk_lite.draw.srparser``.  To run this
 demonstration, use the following commands::
 
- >>> from nltk_lite.draw.srparser import demo
- >>> demo()
+ from nltk_lite.draw.srparser import demo
+ demo()
 
 Six stages of the execution of this parser are shown below:
 
@@ -528,11 +523,11 @@ Context Free Grammars
 The ``nltk_lite.cfg`` module defines a set of classes that are used to
 define context free grammars:
 
-1. The ``Nonterminal`` class is used to represent nonterminals.
+1. The ``cfg.Nonterminal`` class is used to represent nonterminals.
  
-#. The ``CFGProduction`` class is used to represent CFG productions.
+#. The ``cfg.Production`` class is used to represent CFG productions.
 
-#. The ``CFG`` class is used to represent CFGs.
+#. The ``cfg.Grammar`` class is used to represent CFGs.
 
 ------------
 Nonterminals
@@ -546,11 +541,13 @@ symbols for ``Nonterminals`` are ``"S"`` (for sentence) and ``"NP"``
 (for noun phrases).  To construct a ``Nonterminal``, use the
 ``Nonterminal`` constructor::
 
- >>> from nltk_lite.parse import cfg
- >>> S = cfg.Nonterminal('S')
- <S>
- >>> NP = cfg.Nonterminal('NP')
- <NP>
+  >>> from nltk_lite.parse import cfg
+  >>> S = cfg.Nonterminal('S')
+  >>> S
+  <S>
+  >>> NP = cfg.Nonterminal('NP')
+  >>> NP
+  <NP>
 
 ..  Mention the symbol() method? -->
 ..  Mention division of nonterminal? -->
@@ -561,7 +558,8 @@ a list of symbol names, and returns a list of ``Nonterminals``
 constructed from those symbol names::
 
   >>> VP, Adj, V, N = cfg.nonterminals('VP, Adj, V, N')
-  <VP>, <Adj>, <V>, <N>
+  >>> VP, Adj, V, N
+  (<VP>, <Adj>, <V>, <N>)
 
 When using the ``nonterminals()`` function, you should be always be
 careful to make sure that the order of the variables you define
@@ -571,18 +569,20 @@ matches the order of the nonterminals in the string.
 Productions
 -----------
 
-CFG productions are represented with the ``CFGProduction`` class.
-Each ``CFGProduction`` specifies that a nonterminal (the **left-hand
+CFG productions are represented with the ``cfg.Production`` class.
+Each ``Production`` specifies that a nonterminal (the **left-hand
 side**) can be expanded to a sequence of terminals and nonterminals
-(the **right-hand side**).  ``CFGProductions`` are created with the
-``CFGProducition`` constructor, which takes a nonterminal left-hand
+(the **right-hand side**).  Productions are created with the
+``cfg.Producition`` constructor, which takes a nonterminal left-hand
 side, and zero or more terminals and nonterminals for the right-hand
 side::
 
- >>> prod1 = CFGProduction(S, [NP, VP])
- S -> NP VP
- >>> prod2 = CFGProduction(NP, ['the', Adj, N])
- NP -> 'the' Adj N
+  >>> prod1 = cfg.Production(S, [NP, VP])
+  >>> prod1
+  S -> NP VP
+  >>> prod2 = cfg.Production(NP, ['the', Adj, N])
+  >>> prod2
+  NP -> 'the' Adj N
 
 The right-hand side may contain any number of elements.  In
 particular, for so-called **epsilon productions**, the right-hand side
@@ -590,57 +590,53 @@ is empty.  When parsing natural language, epsilon productions are
 often used for **traces**, which mark the position from which a
 constituent moved::
 
- >>> trace = Nonterminal('t')
- <t>
+  >>> trace = cfg.Nonterminal('t')
+  >>> trace
+  <t>
 
- # A trace does not generate any text.
- >>> prod3 = CFGProduction(trace, [])
- t ->
+  >>> prod3 = cfg.Production(trace, [])
+  >>> prod3
+  t ->
 
------
- CFGs 
------
+----
+CFGs
+----
 
-Context free grammars are encoded by the ``CFG`` class.  A ``CFG``
+Context free grammars are encoded by the ``Grammar`` class.  A ``Grammar``
 consists of a special **start** nonterminal, and an ordered list of
-productions.  ``CFGs`` are created with the constructor::
+productions.  ``Grammars`` are created with the constructor::
 
-  >>> grammar = CFG(S, [prod1, prod2, prod3])
-  <CFG with 3 productions>
+  >>> grammar = cfg.Grammar(S, [prod1, prod2, prod3])
+  >>> grammar
+  <Grammar with 3 productions>
 
-A CFG's start state is returned by the ``start``method; and its list
+A grammar's start state is returned by the ``start``method; and its list
 of productions is returned by the ``productions`` method::
 
   >>> grammar.start()
   <S>
   >>> grammar.productions()
-  [ S -> NP V,
-  NP -> 'the' Adj N,
-  t ->
-  ]
+  (S -> NP VP, NP -> 'the' Adj N, t ->)
 
 A complete example of a toy grammar is given below::
 
- >>> from nltk_lite.parse import cfg
-
- >>> S, VP, NP, PP = cfg.nonterminals('S, VP, NP, PP')
- >>> V, N, P, Name, Det = cfg.nonterminals('V, N, P, Name, Det')
-
- >>> productions = (
- ...     CFGProduction(S, [NP, VP]),
- ...     CFGProduction(NP, [Det, N]),
- ...     CFGProduction(VP, [V, NP]),
- ...     CFGProduction(VP, [V, NP, PP]),
- ...     CFGProduction(NP, [Det, N, PP]),
- ...     CFGProduction(PP, [P, NP]),
-
- ...     CFGProduction(NP, ['I']),   CFGProduction(Det, ['the']),
- ...     CFGProduction(Det, ['a']),  CFGProduction(N, ['man']),
- ...     CFGProduction(V, ['saw']),  CFGProduction(P, ['in']),
- ...     CFGProduction(P, ['with']), CFGProduction(N, ['park']),
- ...     CFGProduction(N, ['dog']),   CFGProduction(N, ['telescope'])
- ... )
- >>> grammar = CFG(S, productions)
+  >>> from nltk_lite.parse import cfg
+  >>> S, VP, NP, PP = cfg.nonterminals('S, VP, NP, PP')
+  >>> V, N, P, Name, Det = cfg.nonterminals('V, N, P, Name, Det')
+  >>> productions = (
+  ...     cfg.Production(S, [NP, VP]),
+  ...     cfg.Production(NP, [Det, N]),
+  ...     cfg.Production(VP, [V, NP]),
+  ...     cfg.Production(VP, [V, NP, PP]),
+  ...     cfg.Production(NP, [Det, N, PP]),
+  ...     cfg.Production(PP, [P, NP]),
+  ...     cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
+  ...     cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
+  ...     cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
+  ...     cfg.Production(P, ['with']), cfg.Production(N, ['park']),
+  ...     cfg.Production(N, ['dog']),  cfg.Production(N, ['telescope'])
+  ... )
+  >>> grammar = cfg.Grammar(S, productions)
 
 
 .. Note:: All of the grammars shown here use atomic non-terminal
@@ -681,44 +677,48 @@ written ``(``n``:
 `c:subscript:`n``)``.
 ``Tree`` s are created with the 
 ``Tree constructor``, which takes a
-node value and zero or more children::
+node value and zero or more children.
+Here we see a simple tree with a single child node, itself a token::
 
- >>> from nltk_lite.parse.tree import *
- # A tree with one child (a token):
- >>> tree1 = Tree('NP', ['John'])
- (NP: <John>)
+  >>> from nltk_lite.parse.tree import Tree
+  >>> tree1 = Tree('NP', ['John'])
+  >>> tree1
+  (NP: 'John')
 
- # A tree with two children (both tokens):
- >>> tree2 = Tree('NP', ['the', 'man'])
- (NP: <the> <man>)
+Here is an example with two children:
 
- # A tree with two children (a token and a subtree):
- >>> tree3 = Tree('VP', ['saw', tree2])
- (VP: <saw> (NP: <the> <man>))
+  >>> tree2 = Tree('NP', ['the', 'man'])
+  >>> tree2
+  (NP: 'the' 'man')
 
-A ``Tree``'s node value is accessed with
-the ``node`` property:: 
+Finally, here is a more complex example, where one of the
+children is itself a tree:
 
- >>> tree1.node
- NP
+  >>> tree3 = Tree('VP', ['saw', tree2])
+  >>> tree3
+  (VP: 'saw' (NP: 'the' 'man'))
 
-A ``Tree``'s children are accessed by
-indexing:: 
+A tree's node value is accessed with the ``node`` property:: 
 
- >>> tree3[0]
- <saw>
- >>> tree3[1]
- (NP: <the> <man>)
- >>> for child in tree3:
- ...     print child
- <saw>
- (NP: <the> <man>)
+  >>> tree1.node
+  'NP'
+
+A tree's children are accessed by indexing:: 
+
+  >>> tree3[0]
+  'saw'
+  >>> tree3[1]
+  (NP: 'the' 'man')
+  >>> for child in tree3:
+  ...     print child
+  saw
+  (NP: 'the' 'man')
 
 The printed representation for complex trees can be difficult to read.
 In these cases, the ``draw`` method can be very useful.  This method
-opens a new window, containing a graphical representation of the tree.
+opens a new window, containing a graphical representation of the tree::
 
-  >>> tree3.draw()
+  tree3.draw()
 
 .. Note::
  This and the following graphical interface are broken in NLTK 1.4, but will
@@ -731,17 +731,17 @@ representation to a postscript file.
 To compare multiple trees in a single window, use the ``draw_trees()``
 method, from the ``nltk.draw.tree`` module::
 
- >>> from nltk.draw.tree import draw_trees
- >>> draw_trees(tree1, tree2, tree3)
+  from nltk.draw.tree import draw_trees
+  draw_trees(tree1, tree2, tree3)
 
 The ``Tree`` class implements a number of other useful methods.  See
 the ``Tree`` reference documentation for more information about these
 methods.
 
- >>> tree3.leaves()
- [<saw>, <the>, <man>]
- >>> tree3.height()
- 3
+  >>> tree3.leaves()
+  ['saw', 'the', 'man']
+  >>> tree3.height()
+  3
 
 ..  Mention tree positions? -->
 
@@ -749,13 +749,14 @@ methods.
  Initializing Trees from Strings 
 --------------------------------
 
-A convenient way to initialize a large tree
-is from a labelled bracketing::
+A convenient way to initialize a large tree is from a labelled
+bracketing::
 
-
- >>> sent = '(VP (VBD saw) (NP (DT the) (NN man)))'
- >>> tree = Tree.parse(sent)
- (VP: (VBD: <saw>) (NP: (DT: <the>) (NN: <man>)))
+  >>> from nltk_lite.parse import bracket_parse
+  >>> sent = '(VP (VBD saw) (NP (DT the) (NN man)))'
+  >>> tree = bracket_parse(sent)
+  >>> tree
+  (VP: (VBD: 'saw') (NP: (DT: 'the') (NN: 'man')))
 
 ---------------------------------------
  Reading Trees from the Treebank Corpus 
@@ -767,24 +768,33 @@ text.
 
 ..  Add a reference to LDC here?
 
- >>> from nltk_lite.corpora import treebank
-
- >>> treebank.items
- ['wsj_0001.prd', 'wsj_0002.prd', 'wsj_0003.prd', ...]
-
- >>> treebank.parsed('parsed/wsj_0001.prd')
- [ (S: (NP-SBJ: (NP: <Pierre> <Vinken>) ...)
- (VP: will ...)),
- (S: (NP-SBJ: <Mr.> <Vinken>)
- (VP: <is> ...)) ]
+  >>> from nltk_lite.corpora import treebank
+  >>> from itertools import islice
+  >>> print list(islice(treebank.parsed(), 1))[0]
+  (S:
+    (NP-SBJ:
+      (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
+      (,: ',')
+      (ADJP: (NP: (CD: '61') (NNS: 'years')) (JJ: 'old'))
+      (,: ','))
+    (VP:
+      (MD: 'will')
+      (VP:
+        (VB: 'join')
+        (NP: (DT: 'the') (NN: 'board'))
+        (PP-CLR:
+          (IN: 'as')
+          (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
+        (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
+    (.: '.'))
 
 
 --------------------
 The Parser Interface 
 --------------------
 
-The ``parse`` module defines the ``ParserI`` interface, which defines
-the set of methods which all parsers should support.  The ``ParserI``
+The ``parse`` module defines the ``ParseI`` interface, which defines
+the set of methods which all parsers should support.  The ``ParseI``
 interface defines two methods:
 
 ..  
@@ -803,28 +813,27 @@ interface defines two methods:
 For example, here is what the recursive descent parser generates for a
 simple sentence and grammar::
 
- >>> from nltk_lite import tokenize
- >>> sent = tokenize.whitespace('I saw a man in the park')
- >>> from nltk.parse import RecursiveDescentParser
- >>> parser = RecursiveDescentParser(grammar)
+  >>> from nltk_lite import tokenize
+  >>> sent = list(tokenize.whitespace('I saw a man in the park'))
+  >>> from nltk_lite import parse
+  >>> rd_parser = parse.RecursiveDescent(grammar)
 
- # Get all parses.
- >>> for p in parser.get_parse_list(sent):
- >>>     print p
- (S:
- (NP: <I>)
- <saw>
- (NP:
- (Det: <a>)
- (N: <man>)
- (PP: (P: <in>) (NP: (Det: <the>) (N: <park>)))))
- (S:
- (NP: <I>)
- (VP:
- (V: <saw>)
- (NP: (Det: <a>) (N: <man>))
- (PP: (P: <in>) (NP: (Det: <the>) (N: <park>)))))
-
+  >>> for p in rd_parser.get_parse_list(sent):
+  ...     print p
+  (S:
+    (NP: 'I')
+    (VP:
+      (V: 'saw')
+      (NP:
+        (Det: 'a')
+        (N: 'man')
+        (PP: (P: 'in') (NP: (Det: 'the') (N: 'park'))))))
+  (S:
+    (NP: 'I')
+    (VP:
+      (V: 'saw')
+      (NP: (Det: 'a') (N: 'man'))
+      (PP: (P: 'in') (NP: (Det: 'the') (N: 'park')))))
 
 -----------------------
 The Shift Reduce Parser 
@@ -837,50 +846,46 @@ guaranteed to find a parse for a text, even if one exists.
 Furthermore, it will always find at most one parse, even if more
 parses exist.
 
-Shift reduce parsers are created from ``CFGs`` by the
+Shift reduce parsers are created from ``Grammars`` by the
 ``ShiftReduceParser`` constructor.  The constructor takes an optional
 argument ``trace``.  If ``trace`` is greater than zero, then the
 parser will describe the steps that it takes as it parses a text.
 Higher values of ``trace`` produce more verbose descriptions.  ::
 
- >>> from nltk.parser import *
+  >>> sr_parse = parse.ShiftReduce(grammar)
 
- # Construct a new parser for the grammar
- >>> sr_parser = ShiftReduceParser(grammar, LEAF='TEXT')
+The following example shows the trace output generated by
+``sr_parser`` on a simple sentence: 
 
-  The following example shows the trace output generated by
- ``sr_parser`` on a simple sentence: 
+  >>> sent = list(tokenize.whitespace('I saw a man'))
+  >>> sr_parse.trace()
+  >>> sr_parse.parse(sent)
+  Parsing 'I saw a man'
+      [ * I saw a man]
+    S [ 'I' * saw a man]
+    R [ <NP> * saw a man]
+    S [ <NP> 'saw' * a man]
+    R [ <NP> <V> * a man]
+    S [ <NP> <V> 'a' * man]
+    R [ <NP> <V> <Det> * man]
+    S [ <NP> <V> <Det> 'man' * ]
+    R [ <NP> <V> <Det> <N> * ]
+    R [ <NP> <V> <NP> * ]
+    R [ <NP> <VP> * ]
+    R [ <S> * ]
+  (S: (NP: 'I') (VP: (V: 'saw') (NP: (Det: 'a') (N: 'man'))))
 
- >>> sent = Token(TEXT='I saw a man')
- >>> WhitespaceTokenizer().tokenize(sent)
- >>> sr_parser.trace()
- >>> sr_parser.parse(sent)
- [ * 'I' 'saw' 'a' 'man']
- S [ 'I' * 'saw' 'a' 'man']
- R [ <NP> * 'saw' 'a' 'man']
- S [ <NP> 'saw' * 'a' 'man']
- R [ <NP> <V> * 'a' 'man']
- S [ <NP> <V> 'a' * 'man']
- R [ <NP> <V> <Det> * 'man']
- S [ <NP> <V> <Det> 'man' * ]
- R [ <NP> <V> <Det> <N> * ]
- R [ <NP> <V> <NP> * ]
- R [ <NP> <VP> * ]
- R [ <S> * ]
- >>> print sent['TREE']
- (S: (NP: <I>) (VP: (V: <saw>) (NP: (Det: <a>) (N: <man>))))
+NLTK also defines a graphical demonstration tool for the
+shift reduce parser::
 
-  NLTK also defines a graphical demonstration tool for the
- shift reduce parser: 
-
- >>> from nltk.draw.srparser import demo
- >>> demo()
+ from nltk.draw.srparser import demo
+ demo()
 
 ----------------------------
 The Recursive Descent Parser 
 ----------------------------
 
-The ``nltk.parser`` module defines ``RecursiveDescentParser``, a
+The ``nltk_lite.parser`` module defines ``RecursiveDescent``, a
 simple recursive implementation of a top-down parser.  Unlike the
 shift-reduce parser, this parser is guaranteed to find all parses for
 `a sentence.  But because it's a simple recursive top-down parser, it
@@ -888,53 +893,93 @@ can enter an infinite loop if the grammar contains a left-recursive
 production.
 
 Recursive descent parsers are created from ``CFGs`` by the
-``RecursiveDescentParser`` constructor.  The constructor takes an
+``RecursiveDescent`` constructor.  The constructor takes an
 optional argument ``trace``.  As with the shift reduce parser, this
 value specifies how verbosely the parser should describe the steps
 that it takes as it parses a text::
 
   >>> from nltk_lite.parse import *
- >>> rd_parser = RecursiveDescentParser(grammar)
+  >>> rd_parser = RecursiveDescent(grammar)
 
 The following example shows the trace output generated by
 ``rd_parser`` on a simple sentence, where ``E`` = expand and ``M`` =
 match.  Material to the left of the asterisk has been matched and
 incorporated into the parse tree::
 
- >>> sent = tokenize.whitespace('I saw a man')
- >>> rd_parser.trace()
- >>> parses = rd_parser.get_parse_list(sent)
- Parsing 'I saw a man'
- [ * <S> ]
- E [ * <NP> <VP> ]
- E [ * <Det> <N> <VP> ]
- E [ * <the> <N> <VP> ]
- E [ * <a> <N> <VP> ]
- E [ * <Det> <N> <PP> <VP> ]
- E [ * <the> <N> <PP> <VP> ]
- E [ * <a> <N> <PP> <VP> ]
- E [ * <I> <VP> ]
- M [ <I> * <VP> ]
- E [ <I> * <V> <NP> ]
- E [ <I> * <saw> <NP> ]
- M [ <I> <saw> * <NP> ]
- E [ <I> <saw> * <Det> <N> ]
- E [ <I> <saw> * <the> <N> ]
- E [ <I> <saw> * <a> <N> ]
- ...
- E [ <I> <saw> <a> * <park> <PP> <PP> ]
- E [ <I> <saw> <a> * <dog> <PP> <PP> ]
- E [ <I> <saw> <a> * <telescope> <PP> <PP> ]
- E [ <I> <saw> * <I> <PP> ]
- >>> for tree in parses: print tree
- (S: (NP: <I>) (VP: (V: <saw>) (NP: (Det: <a>) (N: <man>))))
+  >>> sent = list(tokenize.whitespace('I saw a man'))
+  >>> rd_parser.trace()
+  >>> rd_parser.get_parse_list(sent)
+  Parsing 'I saw a man'
+      [ * <S> ]
+    E [ * <NP> <VP> ]
+    E [ * <Det> <N> <VP> ]
+    E [ * 'the' <N> <VP> ]
+    E [ * 'a' <N> <VP> ]
+    E [ * <Det> <N> <PP> <VP> ]
+    E [ * 'the' <N> <PP> <VP> ]
+    E [ * 'a' <N> <PP> <VP> ]
+    E [ * 'I' <VP> ]
+    M [ 'I' * <VP> ]
+    E [ 'I' * <V> <NP> ]
+    E [ 'I' * 'saw' <NP> ]
+    M [ 'I' 'saw' * <NP> ]
+    E [ 'I' 'saw' * <Det> <N> ]
+    E [ 'I' 'saw' * 'the' <N> ]
+    E [ 'I' 'saw' * 'a' <N> ]
+    M [ 'I' 'saw' 'a' * <N> ]
+    E [ 'I' 'saw' 'a' * 'man' ]
+    M [ 'I' 'saw' 'a' 'man' ]
+    + [ 'I' 'saw' 'a' 'man' ]
+    E [ 'I' 'saw' 'a' * 'park' ]
+    E [ 'I' 'saw' 'a' * 'dog' ]
+    E [ 'I' 'saw' 'a' * 'telescope' ]
+    E [ 'I' 'saw' * <Det> <N> <PP> ]
+    E [ 'I' 'saw' * 'the' <N> <PP> ]
+    E [ 'I' 'saw' * 'a' <N> <PP> ]
+    M [ 'I' 'saw' 'a' * <N> <PP> ]
+    E [ 'I' 'saw' 'a' * 'man' <PP> ]
+    M [ 'I' 'saw' 'a' 'man' * <PP> ]
+    E [ 'I' 'saw' 'a' 'man' * <P> <NP> ]
+    E [ 'I' 'saw' 'a' 'man' * 'in' <NP> ]
+    E [ 'I' 'saw' 'a' 'man' * 'with' <NP> ]
+    E [ 'I' 'saw' 'a' * 'park' <PP> ]
+    E [ 'I' 'saw' 'a' * 'dog' <PP> ]
+    E [ 'I' 'saw' 'a' * 'telescope' <PP> ]
+    E [ 'I' 'saw' * 'I' ]
+    E [ 'I' * <V> <NP> <PP> ]
+    E [ 'I' * 'saw' <NP> <PP> ]
+    M [ 'I' 'saw' * <NP> <PP> ]
+    E [ 'I' 'saw' * <Det> <N> <PP> ]
+    E [ 'I' 'saw' * 'the' <N> <PP> ]
+    E [ 'I' 'saw' * 'a' <N> <PP> ]
+    M [ 'I' 'saw' 'a' * <N> <PP> ]
+    E [ 'I' 'saw' 'a' * 'man' <PP> ]
+    M [ 'I' 'saw' 'a' 'man' * <PP> ]
+    E [ 'I' 'saw' 'a' 'man' * <P> <NP> ]
+    E [ 'I' 'saw' 'a' 'man' * 'in' <NP> ]
+    E [ 'I' 'saw' 'a' 'man' * 'with' <NP> ]
+    E [ 'I' 'saw' 'a' * 'park' <PP> ]
+    E [ 'I' 'saw' 'a' * 'dog' <PP> ]
+    E [ 'I' 'saw' 'a' * 'telescope' <PP> ]
+    E [ 'I' 'saw' * <Det> <N> <PP> <PP> ]
+    E [ 'I' 'saw' * 'the' <N> <PP> <PP> ]
+    E [ 'I' 'saw' * 'a' <N> <PP> <PP> ]
+    M [ 'I' 'saw' 'a' * <N> <PP> <PP> ]
+    E [ 'I' 'saw' 'a' * 'man' <PP> <PP> ]
+    M [ 'I' 'saw' 'a' 'man' * <PP> <PP> ]
+    E [ 'I' 'saw' 'a' 'man' * <P> <NP> <PP> ]
+    E [ 'I' 'saw' 'a' 'man' * 'in' <NP> <PP> ]
+    E [ 'I' 'saw' 'a' 'man' * 'with' <NP> <PP> ]
+    E [ 'I' 'saw' 'a' * 'park' <PP> <PP> ]
+    E [ 'I' 'saw' 'a' * 'dog' <PP> <PP> ]
+    E [ 'I' 'saw' 'a' * 'telescope' <PP> <PP> ]
+    E [ 'I' 'saw' * 'I' <PP> ]
+  [(S: (NP: 'I') (VP: (V: 'saw') (NP: (Det: 'a') (N: 'man'))))]
 
 NLTK also defines a graphical demonstration tool for the
 recursive descent parser:: 
 
- >>> from nltk.draw.rdparser import demo
- >>> demo()
-
-
+  from nltk.draw.rdparser import demo
+  demo()
 
 
