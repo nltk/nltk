@@ -355,7 +355,12 @@ demonstration, use the following commands::
 
 Six stages of the execution of this parser are shown below:
 
-.. figure::
+.. figure::../images.parsing/empty.png
+
+   Six Stages of a Recursive Descent Parser: initial, after two
+   productions, after matching "the", failing to match "man",
+   completed parse, backtracking
+
 
 .. image:: ../images.parsing/rdparser1.png 
 .. image:: ../images.parsing/rdparser2.png
@@ -364,9 +369,6 @@ Six stages of the execution of this parser are shown below:
 .. image:: ../images.parsing/rdparser5.png
 .. image:: ../images.parsing/rdparser6.png
 
-   Six Stages of a Recursive Descent Parser: initial, after two
-   productions, after matching "the", failing to match "man",
-   completed parse, backtracking
 
 .. Discussion: choosing which of several possible productions to apply;
    backtracking; termination.
@@ -439,7 +441,11 @@ Six stages of the execution of this parser are shown below:
 
 _srparser
 
-.. figure::
+.. figure::../images.parsing/empty.png
+
+   Six Stages of a Shift-Reduce Parser: initial, after one shift,
+   after shift reduce shift reduce, after recognizing the second NP,
+   complex NP, final step. 
 
 .. image:: ../images.parsing/srparser1.png
 .. image:: ../images.parsing/srparser2.png
@@ -448,9 +454,6 @@ _srparser
 .. image:: ../images.parsing/srparser5.png
 .. image:: ../images.parsing/srparser6.png
 
-   Six Stages of a Shift-Reduce Parser: initial, after one shift,
-   after shift reduce shift reduce, after recognizing the second NP,
-   complex NP, final step. 
 
 A shift-reduce parser may fail to parse the sentence, even though the
 sentence is well-formed according to the grammar.  In such cases,
@@ -464,13 +467,15 @@ the parser must choose between two possible reductions, both matching
 the top items on the stack: ``V |rarr| V NP PP`` or ``NP |rarr| NP
 PP``.  This situation is called a *reduce-reduce conflict*.
 
-.. figure::
+.. figure::../images.parsing/empty.png
+
+   Conflict in Shift-Reduce Parsing
 
 .. image:: ../images.parsing/srparser7.png 
 .. image:: ../images.parsing/srparser8.png
 .. image:: ../images.parsing/srparser9.png
 
-   Conflict in Shift-Reduce Parsing
+ 
 
 .. To do: diagram showing search tree with success and failure.
 
@@ -572,7 +577,7 @@ CFG productions are represented with the ``cfg.Production`` class.
 Each ``Production`` specifies that a nonterminal (the **left-hand
 side**) can be expanded to a sequence of terminals and nonterminals
 (the **right-hand side**).  Productions are created with the
-``cfg.Producition`` constructor, which takes a nonterminal left-hand
+``cfg.Production`` constructor, which takes a nonterminal left-hand
 side, and zero or more terminals and nonterminals for the right-hand
 side::
 
@@ -665,17 +670,17 @@ working with trees.
    discourse structure).  In the general case, leaves and node values do
    not have to be strings.
 
- A ``Tree`` with node value
+A ``Tree`` with node value
 `n` and children
-`c:subscript:`1``,
-`c:subscript:`2``, ...
-`c:subscript:`n`` is
-written ``(``n``:
-`c:subscript:`1``
-`c:subscript:`2`` ...
-`c:subscript:`n``)``.
-``Tree`` s are created with the 
-``Tree constructor``, which takes a
+`c`:subscript:`1`,
+`c`:subscript:`2`, ...
+`c`:subscript:`n` is
+written ``(n``:
+`c`:subscript:`1`
+`c`:subscript:`2` ...
+`c`:subscript:`n`\ ``)``.
+
+``Tree``\ s are created with the ``Tree constructor``, which takes a
 node value and zero or more children.
 Here we see a simple tree with a single child node, itself a token::
 
@@ -684,14 +689,14 @@ Here we see a simple tree with a single child node, itself a token::
   >>> tree1
   (NP: 'John')
 
-Here is an example with two children:
+Here is an example with two children::
 
   >>> tree2 = Tree('NP', ['the', 'man'])
   >>> tree2
   (NP: 'the' 'man')
 
 Finally, here is a more complex example, where one of the
-children is itself a tree:
+children is itself a tree::
 
   >>> tree3 = Tree('VP', ['saw', tree2])
   >>> tree3
@@ -887,15 +892,15 @@ The Recursive Descent Parser
 The ``nltk_lite.parser`` module defines ``RecursiveDescent``, a
 simple recursive implementation of a top-down parser.  Unlike the
 shift-reduce parser, this parser is guaranteed to find all parses for
-`a sentence.  But because it's a simple recursive top-down parser, it
+a sentence.  But because it's a simple recursive top-down parser, it
 can enter an infinite loop if the grammar contains a left-recursive
 production.
 
 Recursive descent parsers are created from ``CFGs`` by the
-``RecursiveDescent`` constructor.  The constructor takes an
-optional argument ``trace``.  As with the shift reduce parser, this
-value specifies how verbosely the parser should describe the steps
-that it takes as it parses a text::
+``RecursiveDescent`` constructor.  The constructor takes an optional
+argument ``trace``.  As with the shift reduce parser, this value
+specifies how verbosely the parser should describe the steps that it
+takes as it parses a text::
 
   >>> from nltk_lite.parse import *
   >>> rd_parser = RecursiveDescent(grammar)
