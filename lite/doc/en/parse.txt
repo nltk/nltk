@@ -34,7 +34,7 @@ following six sentences involving three synonymous verbs *loaded*,
 
 Two of the sentences (starred) are ill-formed.  As we shall see,
 patterns of well-formedness and ill-formedness in a sequence of words
-can be understood with respect to the internal **phrase structure** of
+can be understood with respect to the internal :glossterm:`phrase structure` of
 the sentences.  We can develop formal models of these structures using
 grammars and parsers.
 
@@ -70,7 +70,7 @@ from a children's story:
 
 Given that the resources of a computer, however large, are still
 finite, it is necessary to devise a finite description of this
-infinite set.  Such descriptions are called **grammars**.  We have
+infinite set.  Such descriptions are called :glossterm:`grammars`.  We have
 already encountered this possibility in the context of regular
 expressions.  For example, the expression ``a+`` describes the
 infinite set ``{a, aa, aaa, aaaa, ...}``.  Apart from their
@@ -85,7 +85,7 @@ A well-formed sentence of a language is more than an arbitrary
 sequence of words from the language.  Certain kinds of words usually
 go together.  For instance, determiners like ``the`` are typically
 followed by adjectives or nouns, but not by verbs.  Groups of words
-form intermediate structures called phrases or **constituents**.
+form intermediate structures called phrases or :glossterm:`constituents`.
 These constituents can be identified using standard syntactic tests,
 such as substitution, movement and coordination.  For example, if a
 sequence of words can be replaced with a pronoun, then that sequence
@@ -191,10 +191,10 @@ Let's start off by looking at a simple context-free grammar:
 | P |rarr| 'in' | 'with'
 
 The productions are presented in two groups which we will call
-**grammatical productions** and **lexical productions** respectively.
-The labels in the grammatical productions are all **nonterminal
-symbols**: these are the grammatical categories we use to label
-constituents.  By contrast, **terminal symbols** are what we call the
+:glossterm:`grammatical productions` and :glossterm:`lexical productions` respectively.
+The labels in the grammatical productions are all :glossterm:`nonterminal
+symbols`: these are the grammatical categories we use to label
+constituents.  By contrast, :glossterm:`terminal symbols` are what we call the
 words whose syntactic behaviour is defined by the grammar. Notice that
 in the lexical productions, we have used disjunction '``|``' on the
 righthand side of the productions as an abbreviatory device. For
@@ -204,20 +204,20 @@ example, ``P`` |rarr| ``'in' | 'with'`` means that a ``P``
 .. Note:: It is also possible to have disjunctions on the righthand
    sides of grammatical productions.
 
-`parse_tree2`_ illustrates two possible phrase structure analyses of
-the string ``The dog saw the man in the park``:
+`parse_tree2`__ illustrates two possible phrase structure analyses of
+the string ``The dog saw a man in the park``:
 
 .. figure:: ../images.parsing/parse_tree2.png
 
-   Structural Ambiguity
-   _`parse_tree2`
+   __`parse_tree2` Structural Ambiguity
+   
 
 .. figure:: ../images.parsing/parse_tree3.png
 
 The fact that our grammar admits two distinct structures for this
-sentence indicates that the sentence is **structurally ambiguous**.
-The ambiguity in question is often called a **PP attachment
-ambiguity**, since the issue at hand is how the ``PP`` (prepositional
+sentence indicates that the sentence is :glossterm:`structurally ambiguous`.
+The ambiguity in question is often called a :glossterm:`PP attachment
+ambiguity`, since the issue at hand is how the ``PP`` (prepositional
 phrase) ``in the park`` should be attached to the phrase structure
 tree. In this case, we can see that the grammar admits just two
 choices. The ``PP`` is either attached as a daughter of ``VP`` or else
@@ -234,12 +234,12 @@ ambiguity is a key challenge in parsing.
 
 We remarked earlier that there is no upper bound on the length of
 sentences of a natural language. Within context-free grammars, the
-main mechanism which allows this unboundedness is **recursion**. A
+main mechanism which allows this unboundedness is :glossterm:`recursion`. A
 grammar is said to be recursive if a category occurring on the
 lefthand side of a production also appears on the righthand side of a
 production. If this dual occurrence takes place in one and the same
-production, then we have **direct recursion**; otherwise we have
-**indirect recursion**. These two cases are both illustrated in the
+production, then we have :glossterm:`direct recursion`; otherwise we have
+:glossterm:`indirect recursion`. These two cases are both illustrated in the
 following grammar:
 
 | S |rarr| NP VP
@@ -540,7 +540,7 @@ Nonterminals
 
 ``Nonterminal`` is a simple class that's used to let NLTK distinguish
 terminals from nonterminals.  Each ``Nonterminal`` is defined by a
-**symbol**, which is represented by a case-sensitive string.  Typical
+:glossterm:`symbol`, which is represented by a case-sensitive string.  Typical
 symbols for ``Nonterminals`` are ``"S"`` (for sentence) and ``"NP"``
 (for noun phrases).  To construct a ``Nonterminal``, use the
 ``Nonterminal`` constructor::
@@ -574,9 +574,9 @@ Productions
 -----------
 
 CFG productions are represented with the ``cfg.Production`` class.
-Each ``Production`` specifies that a nonterminal (the **left-hand
-side**) can be expanded to a sequence of terminals and nonterminals
-(the **right-hand side**).  Productions are created with the
+Each ``Production`` specifies that a nonterminal (the :glossterm:`left-hand
+side`) can be expanded to a sequence of terminals and nonterminals
+(the :glossterm:`right-hand side`).  Productions are created with the
 ``cfg.Production`` constructor, which takes a nonterminal left-hand
 side, and zero or more terminals and nonterminals for the right-hand
 side::
@@ -589,9 +589,9 @@ side::
   NP -> 'the' Adj N
 
 The right-hand side may contain any number of elements.  In
-particular, for so-called **epsilon productions**, the right-hand side
+particular, for so-called :glossterm:`epsilon productions`, the right-hand side
 is empty.  When parsing natural language, epsilon productions are
-often used for **traces**, which mark the position from which a
+often used for :glossterm:`traces`, which mark the position from which a
 constituent moved::
 
   >>> trace = cfg.Nonterminal('t')
@@ -607,7 +607,7 @@ CFGs
 ----
 
 Context free grammars are encoded by the ``Grammar`` class.  A ``Grammar``
-consists of a special **start** nonterminal, and an ordered list of
+consists of a special :glossterm:`start` nonterminal, and an ordered list of
 productions.  ``Grammars`` are created with the constructor::
 
   >>> grammar = cfg.Grammar(S, [prod1, prod2, prod3])
