@@ -3,4 +3,7 @@
 .. |larr| unicode:: U+2190 .. left arrow
 .. |rarr| unicode:: U+2192 .. right arrow
 .. |space| unicode:: U+2423 .. space underbar
-   
+    
+.. role:: glossterm(emphasis)
+   :class: indexed
+
