@@ -273,12 +273,8 @@ class ChunkScore:
 
     def score(self, correct, guessed):
         """
-        Given a correctly chunked text, score another chunked text.
-        Merge the results with all previous scorings.  Note that when
-        the score() function is used repeatedly, each token I{must}
-        have a unique location.  For sentence-at-a-time chunking, it
-        is recommended that you use locations like C{@12w@3s} (the
-        word at index 12 of the sentence at index 3).
+        Given a correctly chunked sentence, score another chunked
+        version of the same sentence.
         
         @type correct: chunk structure
         @param correct: The known-correct ("gold standard") chunked
@@ -291,6 +287,7 @@ class ChunkScore:
                                if isinstance(t, Tree)])
         self._guessed |= set([self._childtuple(t) for t in guessed
                                if isinstance(t, Tree)])
+
         self._tp = self._guessed & self._correct
         self._fn = self._correct - self._guessed
         self._fp = self._guessed - self._correct
@@ -1271,12 +1268,12 @@ def demo_eval(chunkparser, text):
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
-    from nltk_lite.parse import tree
+    from tree import *
     
     for sentence in text.split('\n'):
         sentence = sentence.strip()
         if not sentence: continue
-        gold = tree.chunk(sentence)
+        gold = chunk(sentence)
         tokens = gold.leaves()
         test = chunkparser.parse(tokens)
         chunkscore.score(gold, test)
