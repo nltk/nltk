@@ -82,25 +82,25 @@ structures of fixed depth (typically depth 2), and as fine-grained as
 possible, as shown below::
 
 1. Parsing:
-| [ :subscript:NP</subscript>
-|   [ :subscript:NP</subscript>
+| [ :subscript:NP
+|   [ :subscript:NP
 |     G.K. Chesterton ],
-|   [ :subscript:NP</subscript>
-|     [ :subscript:NP</subscript>
+|   [ :subscript:NP
+|     [ :subscript:NP
 |       author ] of
-|     [ :subscript:NP</subscript>
-|       [ :subscript:NP</subscript>
+|     [ :subscript:NP
+|       [ :subscript:NP
 |         The Man ] who was
-|       [ :subscript:NP</subscript>
+|       [ :subscript:NP
 |         Thursday ]
 |     ]
 |   ]
 | ]
 #. Chunking:
-| [ :subscript:NP</subscript> G.K. Chesterton ],
-| [ :subscript:NP</subscript> author ] of
-| [ :subscript:NP</subscript> The Man ] who was
-| [ :subscript:NP</subscript> Thursday ]
+| [ :subscript:NP G.K. Chesterton ],
+| [ :subscript:NP author ] of
+| [ :subscript:NP The Man ] who was
+| [ :subscript:NP Thursday ]
 
 In this chapter we explore the representation of chunks, and show how
 chunks can be recognized using a *chunk parser*.  We describe a chunk
@@ -163,18 +163,11 @@ tagged text is illustrated below.:
     
   [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]
 
-This can be parsed using the ``ChunkedTaggedTokenReader`` as shown.
+This can be parsed using ``tree.chunk()`` function as shown.
     
-  >>> from nltk.tokenreader.tagged import ChunkedTaggedTokenReader
-  >>> chunked_string = "[ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]"
-  >>> reader = ChunkedTaggedTokenReader(chunk_node='NP', SUBTOKENS='WORDS')
-  >>> sent_token = reader.read_token(chunked_string)
-  >>> print sent_token['TREE']
-  (S:
-    (NP: <the/DT> <little/JJ> <cat/NN>)
-    <sat/VBD>
-    <on/IN>
-    (NP: <the/DT> <mat/NN>))
+  >>> from nltk_lite.parse import tree
+  >>> tree.chunk("[ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]")
+  (S: (NP: ('the', 'DT') ('little', 'JJ') ('cat', 'NN')) ('sat', 'VBD') ('on', 'IN') (NP: ('the', 'DT') ('mat', 'NN')))
     
 We usually want to read structured data from corpora, not strings.  In
 the remainder of this section we show how this is done for two popular
@@ -185,41 +178,25 @@ Reading chunk structures from bracketed text
 
 We can obtain a larger quantity of chunked text from the tagged Wall
 Street Journal in the Penn Treebank corpus.  NLTK includes a sample of
-this corpus, and it can be accessed as follows:
+this corpus.  The tagged section of the corpus consists of chunked,
+tagged text.  We can read in a chunked string as follows:
 
-  >>> from nltk.corpus import treebank
-  >>> print treebank.groups()
-  ('raw', 'tagged', 'parsed', 'merged')
-  >>> treebank.items('tagged')
-  ('tagged/wsj_0001.pos', 'tagged/wsj_0002.pos', ...)
+  >>> from nltk_lite.corpora import treebank
+  >>> from itertools import islice
+  >>> list(islice(treebank.chunked(), 1))
+  [(S: (NP: ('Pierre', 'NNP') ('Vinken', 'NNP')) (',', ',') (NP: ('61', 'CD') ('years', 'NNS')) ('old', 'JJ') (',', ',') ('will', 'MD') ('join', 'VB') (NP: ('the', 'DT') ('board', 'NN')) ('as', 'IN') (NP: ('a', 'DT') ('nonexecutive', 'JJ') ('director', 'NN') ('Nov.', 'NNP') ('29', 'CD')) ('.', '.'))]
 
-Each file in the ``tagged`` section of the corpus consists of chunked,
-tagged text.  We can read in a file as follows:
+We can view this as a tree as follows:
 
-  >>> item = treebank.items('tagged')[10]
-  >>> tree = treebank.read(item)
-  <SENTS=[<TREE=(S: (NP_CHUNK: <South/NNP> <Korea/NNP>) <registered/VBD> ...
-      
-The result is a token with a ``SENTS`` property that contains a list
-of chunk structures.  We can access the third sentence as shown below:
+  >>> sent = list(islice(treebank.chunked(), 1))[0]
+  >>> tree.chunk(sent)
 
-  >>> tree = treebank.read(item)['SENTS'][2]['TREE']
-  >>> print tree
-  (S:
-    (NP_CHUNK: <Exports/NNS>)
-    <in/IN>
-    (NP_CHUNK: <October/NNP>)
-    <stood/VBD>
-    <at/IN>
-    (NP_CHUNK: <$/$> <5.29/CD> <billion/CD>)
-    <,/,>
-    ...
-
-We can display this tree graphically using the ``nltk.draw.tree``
+We can display this tree graphically using the ``nltk_lite.draw.tree``
 module:
 
-  >>> from nltk.draw.tree import *
-  >>> tree.draw()
+  t = tree.chunk(sent)
+  from nltk_lite.draw.tree import *
+  t.draw()
 
 Reading chunked text from IOB-tagged data
 -----------------------------------------
@@ -255,7 +232,7 @@ information into a chunk structure.  Moreover, it permits us to choose
 any subset of the three chunk types to use (by default it includes all
 three).  The example below produces only ``NP`` chunks:
     
-  >>> from nltk.tokenreader.conll import *
+  >>> from nltk_lite.tokenreader.conll import *
   >>> text = """he PRP B-NP
   ... accepted VBD B-VP
   # ...
@@ -324,7 +301,7 @@ The ``ChunkRule`` constructor takes a tag pattern and a description
 string.  Here is a rule which chunks sequences consisting of one or
 more words tagged as ``DT`` or ``NN`` (i.e. determiners and nouns).
     
-  >>> from nltk.parser.chunk import *
+  >>> from nltk_lite.parser.chunk import *
   >>> rule = ChunkRule('<DT|NN>+',
   ...                  'Chunk sequences of DT and NN')
 
@@ -343,8 +320,8 @@ illustrated by the complete program below.
 provides a short explanation of the purpose or the effect of the rule.
 This description is accessed via the ``descr()`` method. </footnote>
     
-  >>> from nltk.tokenreader.tagged import *
-  >>> from nltk.parser.chunk import *
+  >>> from nltk_lite.tokenreader.tagged import *
+  >>> from nltk_lite.parser.chunk import *
   >>> sent = "the/DT little/JJ cat/NN sat/VBD on/IN the/DT mat/NN"
   >>> reader = TaggedTokenReader(SUBTOKENS='WORDS')
   >>> sent_token = reader.read_token(sent)
@@ -373,8 +350,8 @@ match takes precedence.  For example, if we apply a rule that matches
 two consecutive nouns to a text containing three consecutive nouns,
 then the first two nouns will be chunked:
 
-  >>> from nltk.tagger import *
-  >>> from nltk.tokenreader import *
+  >>> from nltk_lite.tagger import *
+  >>> from nltk_lite.tokenreader import *
   >>> text = "dog/NN cat/NN mouse/NN"
   >>> nouns = TaggedTokenReader(SUBTOKENS='WORDS').read_token(text)
   >>> rule = ChunkRule('<NN><NN>',
@@ -681,7 +658,7 @@ To illustrate this rule, we will use a combine it with a chunking rule
 that chunks sequences of noun phrases, adjectives, and determiners:
 
   # Tokenize a new test text
-  >>> from nltk.tokenreader import *
+  >>> from nltk_lite.tokenreader import *
   >>> text = 'Bob/NNP saw/VBD the/DT man/NN the/DT cat/NN chased/VBD'
   >>> sent_token = TaggedTokenReader(SUBTOKENS='WORDS').read_token(text)
   >>> chunk_rule = ChunkRule('<NN.*|DT|JJ>+',
@@ -743,8 +720,7 @@ trees, we use the ``leaves()`` method to extract this flattened list.
 Note that we must always include location information when evaluating
 a chunk parser.
     
-  >>> from nltk.token import *
-  >>> from nltk.tokenreader.tagged import ChunkedTaggedTokenReader
+  >>> from nltk_lite.tokenreader.tagged import ChunkedTaggedTokenReader
   >>> chunked_string = "[ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]"
   >>> reader = ChunkedTaggedTokenReader(chunk_node='NP', SUBTOKENS='WORDS')
   >>> correct = reader.read_token(chunked_string, add_locs=True)
@@ -756,7 +732,7 @@ a chunk parser.
 Now we run a chunker, and then compare the resulting chunked sentences
 with the originals, as follows:
   
-  >>> from nltk.parser.chunk import *
+  >>> from nltk_lite.parse.chunk import *
   >>> chunkscore = ChunkScore()
   >>> rule = ChunkRule('<PRP|DT|POS|JJ|CD|N.*>+', "Chunk items that often occur in NPs")
   >>> chunkparser = RegexpChunkParser([rule], chunk_node='NP',
@@ -778,8 +754,8 @@ following program listing shows a typical use of the ``ChunkScore``
 class.  In this example, ``chunkparser`` is being tested on each
 sentence from the Wall Street Journal tagged files.
 
-  >>> from nltk.parser.chunk import *
-  >>> from nltk.corpus import treebank
+  >>> from nltk_lite.parser.chunk import *
+  >>> from nltk_lite.corpora import treebank
   >>> rule = ChunkRule('<DT|JJ|NN>+', "Chunk sequences of DT, JJ, and NN")
   >>> chunkparser = RegexpChunkParser([rule], chunk_node='NP',
   ...                 top_node='S', TAG='POS', SUBTOKENS='WORDS')
@@ -833,9 +809,9 @@ whether it occurs inside or outside a chunk more often.  We can do
 this easily using a chunked corpus and a conditional frequency
 distribution as shown below:
       
-  >>> from nltk.probability import ConditionalFreqDist
-  >>> from nltk.parser.chunk import *
-  >>> from nltk.corpus import treebank
+  >>> from nltk_lite.probability import ConditionalFreqDist
+  >>> from nltk_lite.parse import chunk
+  >>> from nltk_lite.corpora import treebank
   >>> cfdist = ConditionalFreqDist()
   >>> items = treebank.items('tagged')
   >>> split = len(items)*9/10
@@ -884,15 +860,15 @@ tree whose leaves are tagged tokens.
 *There should be a way to use the ``TreebankTokenReader`` to
 do this work.*
 
-  >>> from nltk.tree import Tree
-  >>> from nltk.parser.chunk import *
-  >>> the    = Token(TEXT='the', TAG='DT')
-  >>> little = Token(TEXT='little', TAG='JJ')
-  >>> cat    = Token(TEXT='cat', TAG='NN')
-  >>> sat    = Token(TEXT='sat', TAG='VBD')
-  >>> on     = Token(TEXT='on', TAG='IN')
-  >>> the    = Token(TEXT='the', TAG='DT')
-  >>> mat    = Token(TEXT='mat', TAG='NN')
+  >>> from nltk_lite.parse import Tree
+  >>> from nltk_lite.parse import chunk
+  >>> the    = ('the', 'DT')
+  >>> little = ('little', 'JJ')
+  >>> cat    = ('cat', 'NN')
+  >>> sat    = ('sat', 'VBD')
+  >>> on     = ('on', 'IN')
+  >>> the    = ('the', 'DT')
+  >>> mat    = ('mat', 'NN')
   >>> np2 = Tree('NP', [the, mat])
   >>> vp = Tree('VP', [sat, on, np2])
   >>> np1 = Tree('NP', [the, little, cat])
@@ -958,8 +934,8 @@ Exercises
 #. **Chunking Demonstration:**
    Run the chunking demonstration...
 
-  >>> from nltk.parser.chunk import *
-  >>> demo()  # the chunk parser
+  from nltk_lite.parse import chunk
+  chunk.demo()  # the chunk parser
 
 #. **IOB Tagging:**
    A common file representation of chunks uses the tags ``BEGIN``,
