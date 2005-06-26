@@ -12,6 +12,7 @@ syntax trees and morphological trees.
 """
 
 import re, types
+from nltk_lite import tokenize
 
 ######################################################################
 ## Trees
@@ -419,6 +420,56 @@ def chunk(s, chunk_node="NP", top_node="S"):
 
     return stack[0]
 
+def conll_chunk(s, chunk_types=("NP",), top_node="S"):
+    """
+    @return: A token containing the chunked tagged text that is
+        encoded in the given CONLL 2000 style string.
+    @rtype: L{Token}
+    @param add_contexts: If true, then add a subtoken context
+        pointer to each subtoken.
+    @param add_locs: If true, then add locations to each subtoken.
+        Locations are based on sentence and word index numbers.
+    """
+    sentences = list(tokenize.blankline(s))
+    if sentences[0] == '': sentences = sentences[1:]
+    if sentences[-1] == '': sentences = sentences[:-1]
+
+    return [_read_sent(sent, chunk_types, top_node) for sent in sentences]
+
+_LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
+def _read_sent(s, chunk_types, top_node):
+    stack = [Tree(top_node, [])]
+
+    for lineno, line in enumerate(tokenize.line(s)):
+
+        # Decode the line.
+        match = _LINE_RE.match(line)
+        if match is None:
+            raise ValueError, 'Error on line %d' % lineno
+        (word, tag, state, chunk_type) = match.groups()
+
+        # If it's a chunk type we don't care about, treat it as O.
+        if (chunk_types is not None and
+            chunk_type not in chunk_types):
+            state = 'O'
+
+        # For "Begin"/"Outside", finish any completed chunks -
+        # also do so for "Inside" which don't match the previous token.
+        mismatch_I = state == 'I' and chunk_type != stack[-1].node
+        if state in 'BO' or mismatch_I:
+            if len(stack) == 2: stack.pop()
+
+        # For "Begin", start a new chunk.
+        if state == 'B' or mismatch_I:
+            chunk = Tree(chunk_type, [])
+            stack[-1].append(chunk)
+            stack.append(chunk)
+
+        # Add the new word token.
+        stack[-1].append((word, tag))
+
+    return stack[0]
+
 ######################################################################
 ## Demonstration
 ######################################################################
@@ -464,7 +515,39 @@ def demo():
     # Demonstrate chunk parsing
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
     from tree import chunk
-    print chunk(s).pp()
+    print chunk(s, chunk_node='NP').pp()
+
+    s = """
+These DT B-NP
+research NN I-NP
+protocols NNS I-NP
+offer VBP B-VP
+to TO B-PP
+the DT B-NP
+patient NN I-NP
+not RB O
+only RB O
+the DT B-NP
+very RB I-NP
+best JJS I-NP
+therapy NN I-NP
+which WDT B-NP
+we PRP B-NP
+have VBP B-VP
+established VBN I-VP
+today NN B-NP
+but CC B-NP
+also RB I-NP
+the DT B-NP
+hope NN I-NP
+of IN B-PP
+something NN B-NP
+still RB B-ADJP
+better JJR I-ADJP
+. . O
+"""
+    print conll_chunk(s, chunk_types=('NP', 'PP', 'VP'))[0].pp()
+
 
 if __name__ == '__main__':
     demo()
