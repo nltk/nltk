@@ -420,24 +420,14 @@ def chunk(s, chunk_node="NP", top_node="S"):
 
     return stack[0]
 
+_LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
 def conll_chunk(s, chunk_types=("NP",), top_node="S"):
     """
-    @return: A token containing the chunked tagged text that is
+    @return: A chunk structure for a single sentence
         encoded in the given CONLL 2000 style string.
-    @rtype: L{Token}
-    @param add_contexts: If true, then add a subtoken context
-        pointer to each subtoken.
-    @param add_locs: If true, then add locations to each subtoken.
-        Locations are based on sentence and word index numbers.
+    @rtype: L{Tree}
     """
-    sentences = list(tokenize.blankline(s))
-    if sentences[0] == '': sentences = sentences[1:]
-    if sentences[-1] == '': sentences = sentences[:-1]
 
-    return [_read_sent(sent, chunk_types, top_node) for sent in sentences]
-
-_LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
-def _read_sent(s, chunk_types, top_node):
     stack = [Tree(top_node, [])]
 
     for lineno, line in enumerate(tokenize.line(s)):
@@ -546,7 +536,7 @@ still RB B-ADJP
 better JJR I-ADJP
 . . O
 """
-    print conll_chunk(s, chunk_types=('NP', 'PP', 'VP'))[0].pp()
+    print conll_chunk(s, chunk_types=('NP', 'PP', 'VP')).pp()
 
 
 if __name__ == '__main__':
