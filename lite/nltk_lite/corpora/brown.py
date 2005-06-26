@@ -37,7 +37,7 @@ r. humor
 
 from nltk_lite.corpora import get_basedir
 from nltk_lite import tokenize
-from nltk_lite.tag import tag2tuple
+from nltk_lite.tag import string2tags, string2words
 import os
 
 items = list('abcdefghjklmnpr')
@@ -60,24 +60,20 @@ item_name = {
     'r': 'humor'
     }
 
-def _read(files, token_function):
+def _read(files, conversion_function):
     if type(files) is str: files = (files,)
 
     for file in files:
         path = os.path.join(get_basedir(), "brown", file)
         f = open(path).read()
         for sent in tokenize.blankline(f):
-            l = []
-            for t in tokenize.whitespace(sent):
-                l.append(token_function(t))
-            yield l
+            yield conversion_function(sent)
 
 def raw(files = items):
-    getword = lambda t: tag2tuple(t)[0]
-    return _read(files, getword)
+    return _read(files, string2words)
 
 def tagged(files = items):
-    return _read(files, tag2tuple)
+    return _read(files, string2tags)
 
 def demo():
     from nltk_lite.corpora import brown
