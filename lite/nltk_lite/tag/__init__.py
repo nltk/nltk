@@ -79,6 +79,8 @@ class Default(SequentialBackoff):
 # UTILITY FUNCTIONS
 ##################################################################
 
+from nltk_lite import tokenize
+
 def tag2tuple(s, sep='/'):
     loc = s.rfind(sep)
     if loc >= 0:
@@ -89,6 +91,15 @@ def tag2tuple(s, sep='/'):
 def untag(tagged_sentence):
     return (w for (w, t) in tagged_sentence)
 
+def string2tags(s, sep='/'):
+    return [tag2tuple(t, sep) for t in tokenize.whitespace(s)]
+
+def string2words(s, sep='/'):
+    return [tag2tuple(t, sep)[0] for t in tokenize.whitespace(s)]
+
+##################################################################
+# EVALUATION
+##################################################################
 
 from nltk_lite import evaluate
 def accuracy(tagger, gold):
