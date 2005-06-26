@@ -16,7 +16,7 @@ import re, sre_parse, sre_constants, sre_compile
 
 WHITESPACE = r'\s+'
 NEWLINE    = r'\n'
-BLANKLINE  = r'\n\s*\n'
+BLANKLINE  = r'\s*\n\s*\n\s*'
 WORDPUNCT  = r'[a-zA-Z]+|[^a-zA-Z\s]+'
 
 def _remove_group_identifiers(parsed_re):
