@@ -1157,7 +1157,6 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             else:
                 print rule.descr()+':'
             print indent, chunkstr
-        print
         
     def _notrace_apply(self, chunkstr):
         """
