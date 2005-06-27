@@ -397,7 +397,7 @@ class ChunkScore:
         return ("ChunkParse score:\n" +
                 ("    Precision: %5.1f%%\n" % (self.precision()*100)) +
                 ("    Recall:    %5.1f%%\n" % (self.recall()*100))+
-                ("    F-Measure: %5.1f%%\n" % (self.f_measure()*100)))
+                ("    F-Measure: %5.1f%%" % (self.f_measure()*100)))
         
     def _chunk_toks(self, text):
         """
@@ -1353,9 +1353,6 @@ def demo():
     print
 
 if __name__ == '__main__':
-    print "Sorry, the chunk parser is currently broken."
-    print "It will be fixed for version 1.0"
-    print
     demo()
 
 
