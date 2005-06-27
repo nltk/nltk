@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import os
+import os, sys
 
 def set_basedir(path):
     """
