@@ -717,8 +717,7 @@ Note that we must always include location information when evaluating
 a chunk parser.
     
   >>> correct = tree.chunk("[ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]")
-  >>> guess = correct.leaves()
-  >>> print guess
+  >>> correct.leaves()
   [('the', 'DT'), ('little', 'JJ'), ('cat', 'NN'), ('sat', 'VBD'), ('on', 'IN'), ('the', 'DT'), ('mat', 'NN')]
 
 Now we run a chunker, and then compare the resulting chunked sentences
@@ -728,10 +727,10 @@ with the originals, as follows:
   >>> chunkscore = parse.ChunkScore()
   >>> rule = parse.ChunkRule('<PRP|DT|POS|JJ|CD|N.*>+', "Chunk items that often occur in NPs")
   >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S')
-  >>> correct = chunkparser.parse(guess)
+  >>> guess = chunkparser.parse(correct.leaves())
   >>> chunkscore.score(correct, guess)
   >>> print chunkscore
-  ChunkParser score:
+  ChunkParse score:
       Precision: 100.0%
       Recall:    100.0%
       F-Measure: 100.0%
@@ -752,12 +751,12 @@ sentence from the Wall Street Journal tagged files.
   >>> chunkscore = parse.ChunkScore()
   >>> for chunk_struct in islice(treebank.chunked(), 10):
   ...     test_sent = chunkparser.parse(chunk_struct.leaves())
-  ...     chunkscore.score(sent, test_sent)
+  ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore
-  ChunkParser score:
-      Precision:  43.5%
-      Recall:     30.5%
-      F-Measure:  35.8%
+  ChunkParse score:
+      Precision:  53.1%
+      Recall:     35.4%
+      F-Measure:  42.5%
 
 .. note: It is important to add locations to tokens (using
 ``add_locs=True``) so that the scorer doesn't confuse tokens taken
@@ -768,17 +767,48 @@ The overall results of the evaluation can be viewed by printing the
 accessor method: ``precision()``, ``recall``, ``f_measure``,
 ``missed``, and ``incorrect``.  The ``missed`` and ``incorrect``
 methods can be especially useful when trying to improve the
-performance of a chunk parser:
+performance of a chunk parser.  Here are the missed chunks:
 
   >>> from random import randint
-  >>> print 'Chunks missed by the chunk parser:'
   >>> missed = chunkscore.missed()
   >>> for i in range(15):
   ...     print missed[randint(0,len(missed)-1)]
-  >>> print 'Incorrect chunks returned by the chunk parser:'
+  (('A', 'DT'), ('Lorillard', 'NNP'), ('spokewoman', 'NN'))
+  (('it', 'PRP'),)
+  (('symptoms', 'NNS'),)
+  (('even', 'RB'), ('brief', 'JJ'), ('exposures', 'NNS'))
+  (('its', 'PRP$'), ('Micronite', 'NN'), ('cigarette', 'NN'), ('filters', 'NNS'))
+  (('30', 'CD'), ('years', 'NNS'))
+  (('workers', 'NNS'),)
+  (('preliminary', 'JJ'), ('findings', 'NNS'))
+  (('Medicine', 'NNP'),)
+  (('cancer', 'NN'), ('deaths', 'NNS'))
+  (('Consolidated', 'NNP'), ('Gold', 'NNP'), ('Fields', 'NNP'), ('PLC', 'NNP'))
+  (('Medicine', 'NNP'),)
+  (('its', 'PRP$'), ('Micronite', 'NN'), ('cigarette', 'NN'), ('filters', 'NNS'))
+  (('a', 'DT'), ('forum', 'NN'))
+  (('researchers', 'NNS'),)
+
+Here are the incorrect chunks:
+
   >>> incorrect = chunkscore.incorrect()
   >>> for i in range(15):
   ...     print incorrect[randint(0,len(incorrect)-1)]
+  (('New', 'JJ'), ('York-based', 'JJ'))
+  (('Micronite', 'NN'), ('cigarette', 'NN'))
+  (('a', 'DT'), ('forum', 'NN'), ('likely', 'JJ'))
+  (('later', 'JJ'),)
+  (('later', 'JJ'),)
+  (('brief', 'JJ'),)
+  (('preliminary', 'JJ'),)
+  (('New', 'JJ'), ('York-based', 'JJ'))
+  (('resilient', 'JJ'),)
+  (('group', 'NN'),)
+  (('cancer', 'NN'),)
+  (('the', 'DT'),)
+  (('cancer', 'NN'),)
+  (('Micronite', 'NN'), ('cigarette', 'NN'))
+  (('A', 'DT'),)
 
 .. note: By default, only the first 100 missed chunks and the first
 100 incorrect chunks will be remembered by the ``ChunkScore``.  You
@@ -813,14 +843,15 @@ distribution as shown below:
   >>> print 'Chunking:', tag_pattern
   Chunking: <PRP$|VBG|VBD|``|VBN|POS|''|VBP|WDT|JJ|WP|VBZ|DT|RP|$|NN|)|(|FW|,|.|TO|PRP|RB|:|NNS|NNP|VB|WRB|CC|LS|PDT|RBS|RBR|CD|EX|IN|WP$|MD|NNPS|JJS|JJR|SYM|UH>+
 
-  # Now, in the evaluation phase we chunk any sequence of those tags:
+Now, in the evaluation phase we chunk any sequence of those tags:
 
   >>> rule = parse.ChunkRule(tag_pattern, 'Chunk any sequence involving commonly chunked tags')
-  >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S')
+  >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S', trace=1)
   >>> chunkscore = parse.ChunkScore()
   >>> for chunk_struct in test:
+  ...     print chunk_struct
   ...     test_sent = chunkparser.parse(chunk_struct.leaves())
-  ...     chunkscore.score(sent, test_sent)
+  ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore
   ChunkParser score:
       Precision:  80.2%
