@@ -1,0 +1,28 @@
+digraph x {
+   rankdir=LR;
+   
+   /* The nodes */
+   {
+       node [style=filled, color=black, fillcolor=lightgray];
+       1 [label="i"];
+       2 [label="j"];
+       3 [label="k"];
+   }
+
+   /* The sentence */
+   {
+       edge [style=invis, weight=100];
+       node [shape=plaintext];
+       dots1->1->dots2->2->dots3->3->dots4;
+       dots1 [label="..."];
+       dots2 [label="..."];
+       dots3 [label="..."];
+       dots4 [label="..."];
+   }
+   
+   /* Edges */
+   {
+       1->3 [label="A -> alpha B * beta"];
+   }
+
+}
