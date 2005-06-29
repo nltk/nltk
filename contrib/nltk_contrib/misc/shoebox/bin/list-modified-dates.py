@@ -28,18 +28,18 @@ def format_month(intMonth) :
                } 
     return months[intMonth]
 
-
 def handle_options() :
     parser = OptionParser()
-    parser.add_option("-f", "--filepath",
-                      dest="filepath",
-                      help="path to Shoebox dictionary file")
-    (options, args) = parser.parse_args()
-    if not options.filepath :
-        sys.stderr.write("%s -f FILE\n" % sys.argv[0])
-        sys.exit(0)
-    return options.filepath
+    parser.add_option("-g", "--histogram",
+                      dest="histogram",
+                      action="store_true",
+                      help="print histogram")
 
+    (options, args) = parser.parse_args()
+    if not args[0] :
+        sys.stderr.write("%s [-g] FILE\n" % args[0])
+        sys.exit(0)
+    return args[0], options.histogram
 
 def process_file(fn) :
     d = {}
@@ -58,22 +58,29 @@ def process_file(fn) :
             d[modDate.year][modDate.month].append(e)
     return d
 
-
-def print_results(d) :
-    print "YEAR MONTH COUNT"
+def print_results(d, histogram) :
+    total = 0
+    for yr in d.keys() :
+        months = d[yr].keys()
+        for m in months :
+            dateList = d[yr][m]
+            count = len(dateList)
+            total = total + count
+    
     for yr in d.keys() :
         months = d[yr].keys()
         months.sort()
         for m in months :
             dateList = d[yr][m]
             count = len(dateList)
-            print "%s %s %i" % (yr, format_month(m), count)
-
+            if histogram :
+                print "%s %s %04s %s" % (yr, format_month(m), count, ((count * 100 / total) * "*") )                
+            else :
+                print "%s %s %04s %02d%%" % (yr, format_month(m), count, (count * 100.0 / total) )
 
 def main() :
-    fn = handle_options()
+    fn, histogram = handle_options()
     d = process_file(fn)
-    print_results(d)
-
+    print_results(d, histogram)
 
 main()
