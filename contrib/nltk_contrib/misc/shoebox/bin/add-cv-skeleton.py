@@ -7,19 +7,7 @@
 
 import sys, re
 from optparse import OptionParser
-from shoebox.standardformat import StandardFormatFileParser, StandardFormatFile
-
-def handle_options() :
-    parser = OptionParser()
-    parser.add_option("-f",
-                      "--filepath",
-                      dest="filepath",
-                      help="path to Shoebox dictionary file")
-    (options, args) = parser.parse_args()
-    if not options.filepath :
-        sys.stderr.write("%s -f <FILEPATH>\n" % sys.argv[0])
-        sys.exit(0)
-    return options.filepath
+from shoebox.standardformat import StandardFormatFileParser
 
 def cv(s):
     s = s.lower()
@@ -29,14 +17,20 @@ def cv(s):
     return (s)
 
 def main() :
-    filepath = handle_options()
+    try :
+        filepath = sys.argv[1]
+    except :
+        sys.stderr.write("%s -f <FILEPATH>\n" % sys.argv[0])
+        sys.exit(0)
+        
     fp = StandardFormatFileParser(filepath)
     sff = fp.parse()
+
     print sff.getHeader()
     for entry in sff.getEntries() :
-        headField = e.getHeadField()
+        headField = entry.getHeadField()
         frisian = headField[1]
         entry.addField("cv", cv(frisian))
-        print e
-        
+        print entry
+
 main()
