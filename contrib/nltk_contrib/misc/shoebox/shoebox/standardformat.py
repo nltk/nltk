@@ -1,11 +1,19 @@
+# --------------------------------------------------------
+# AUTHOR: Stuart P. Robinson
+# DATE:   22 June 2005
+# DESC:   This module provide various classes for the
+#         manipulation of standard format data files (the
+#         format used by Shoebox/Toolbox)
+# --------------------------------------------------------
+
 import re, string
 from utilities import SequentialDictionary
 
-# ---------------------------------------------
+# --------------------------------------------------------
 # CLASS:  Field
 # DESC:   Tuple that holds a field marker and
 #         its field value
-# ---------------------------------------------
+# --------------------------------------------------------
 class Field :
 
   def __init__(self, fieldMarker, fieldValue) :
@@ -21,12 +29,12 @@ class Field :
     return self._field[1]
 
 
-# ---------------------------------------------
+# --------------------------------------------------------
 # CLASS:  StandardFormatFileParser
 # DESC:   Class for parsing a file in Standard
 #         Format (SF) into a manipulable data
 #         structure.
-# ---------------------------------------------
+# --------------------------------------------------------
 
 class StandardFormatFileParser :
 

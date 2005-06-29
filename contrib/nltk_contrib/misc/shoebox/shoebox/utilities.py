@@ -1,10 +1,18 @@
+# --------------------------------------------------------
+# AUTHOR: Stuart P. Robinson
+# DATE:   22 June 2005
+# DESC:   This module provides a number of utility classes
+#         used by the standardformat and shoebox modules.
+# --------------------------------------------------------
+
 from UserDict import UserDict
 
-# -------------------------------------------------------------
+
+# --------------------------------------------------------
 # CLASS:  SequentialDictionary
-# DESC:   Dictionary that retains the order in
-#         which keys were entered
-# -------------------------------------------------------------
+# DESC:   Dictionary that retains the order in which keys
+#         were added to it.
+# --------------------------------------------------------
 class SequentialDictionary(UserDict) :
 
   def __init__(self, dict=None) :
@@ -59,10 +67,12 @@ class SequentialDictionary(UserDict) :
 
   def values(self) :
     return map(self.get, self._keys)
-
   
 
 # -------------------------------------------------------------
+# Given a line of text that is morpheme aligned, the indices
+# for each left word boundary is returned.
+#
 #     0    5  8   12              28          <- indices
 #     |    |  |   |               |
 #     |||||||||||||||||||||||||||||||||||||||
@@ -95,6 +105,15 @@ def getIndices(str) :
   return indices
 
 
+# --------------------------------------------------------
+# Given a string a list of indices, this function returns
+# a list the substrings defined by those indices.
+# For example, given the arguments 
+#   'antidisestablishmentarianism',
+#   [4, 7, 16, 20, 25]
+# this function returns
+#   ['anti', 'dis', 'establish', 'ment', arian', 'ism']
+# --------------------------------------------------------
 def sliceByIndices(str, indices) :
   slices = []
   for i in range(0, len(indices)) :

@@ -1,3 +1,11 @@
+# --------------------------------------------------------
+# AUTHOR: Stuart P. Robinson
+# DATE:   22 June 2005
+# DESC:   This module provide various classes for the
+#         manipulation of the hidden metadata files used
+#         by Shoebox/Toolbox.
+# --------------------------------------------------------
+
 import re
 
 # ---------------------------------------------
