@@ -294,28 +294,28 @@ NLTK defines two classes for encoding edges:
 
 ``LeafEdges`` are constructed from a leaf terminal and an index:
       
-  >>> from nltk_lite.parse import chart
-  >>> edge2=chart.LeafEdge('dog', 3)
+  >>> from nltk_lite.parse.chart import *
+  >>> edge2=LeafEdge('dog', 3)
   >>> edge2
-  [Edge: 'dog' -> *]@[3:4w]
+  [Edge: [3:4] 'dog']
 
 ``TreeEdges`` are constructed from a span, a left-hand side, a
 right-hand side, and a dot position:
       
   >>> from nltk_lite.parse import cfg
   >>> V, VP, NP, PP = cfg.nonterminals('V VP NP PP')
-  >>> edge1=chart.TreeEdge((3,7), VP, [V,NP,PP], 2)
+  >>> edge1=TreeEdge((3,7), VP, [V,NP,PP], 2)
   >>> edge1
-  [Edge: VP -> V NP * PP]@[3:7w]
+  [Edge: [3:7] VP -> V NP * PP]
 
 The convenience function ``TreeEdge.from_production`` creates the
 ``TreeEdge`` licensed by a given CFG production:
       
-  >>> prod = cfg.Production.parse('S->NP VP')[0]
+  >>> prod = cfg.parse_production('S->NP VP')[0]
   >>> index = 3
-  >>> edge3 = chart.TreeEdge.from_production(prod, 3)
+  >>> edge3 = TreeEdge.from_production(prod, 3)
   >>> edge3
-  [Edge: S  -> * NP VP]@[3:3w]
+  [Edge: [3:3] S  -> * NP VP]
 
 Both ``TreeEdge`` and ``LeafEdge`` implement the ``EdgeI`` interface,
 which defines the methods that all edges should support:
@@ -373,20 +373,22 @@ child to the left of the dot.  It is used to reconstruct the parse
 trees once parsing is finished.
       
   >>> NP, N = cfg.nonterminals('NP N')
-  >>> edge1 = chart.LeafEdge('hat', 3)
-  >>> edge2 = chart.TreeEdge((3,3), NP, [N], 0)
-  >>> edge3 = chart.TreeEdge((3,4), NP, [N], 1)
+  >>> edge1 = LeafEdge('hat', 3)
+  >>> edge2 = TreeEdge((3,3), NP, [N], 0)
+  >>> edge3 = TreeEdge((3,4), NP, [N], 1)
   >>> chart.insert(edge1, [])
+  True
   >>> chart.insert(edge2, [])
+  True
   >>> chart.insert(edge3, [edge1])
+  True
         
   # Pretty-print the chart: 
   >>> print chart.pp()
   |.  James  .  wears  .    a    .   hat   .|
-  |.         .         .         >         .| NP -> * N 
-  |.         .         .         [---------]| NP -> N * 
-  |.         .         .         [---------]| 'hat'. 
-  ]]></programlisting>
+  |.         .         .         >         .| [3:3] NP -> * N 
+  |.         .         .         [---------]| [3:4] NP -> N * 
+  |.         .         .         [---------]| [3:4] 'hat' 
 
 The leaves of the chart's token can be accessed with the methods
 ``num_leaves``, ``leaf``, and ``leaves``.  Note that this methods
@@ -406,43 +408,42 @@ The chart's edges can be accessed with the methods ``num_edges`` and
   >>> chart.num_edges()
   3
   >>> for edge in chart.edges(): print edge
-  [Edge: 'hat' -> *]@[3:4w]
-  [Edge: NP -> * N]@[3:3w]
-  [Edge: NP -> N *]@[3:4w]
+  [3:4] 'hat'
+  [3:3] NP -> * N
+  [3:4] NP -> N *
 
 The ``select`` method can be used to efficiently retrieve all edges
 that satisfy one or more restrictions:
 
-  # Edges whose span starts at 3.
   >>> for edge in chart.select(start=3): print edge
-  [Edge: 'hat' -> *]@[3:4w]
-  [Edge: NP -> * N]@[3:3w]
-  [Edge: NP -> N *]@[3:4w]
-  # Edges whose left hand side is NP.
+  [3:4] 'hat'
+  [3:3] NP -> * N
+  [3:4] NP -> N *
   >>> for edge in chart.select(lhs=NP): print edge
-  [Edge: NP -> * N]@[3:3w]
-  [Edge: NP -> N *]@[3:4w]
-  # Edges whose span length is 1.
+  [3:3] NP -> * N
+  [3:4] NP -> N *
   >>> for edge in chart.select(length=1): print edge
-  [Edge: 'hat' -> *]@[3:4w]
-  [Edge: NP -> N *]@[3:4w]
-  # Edges whose left hand side is NP and whose length is 1.
+  [3:4] 'hat'
+  [3:4] NP -> N *
   >>> for edge in chart.select(lhs=NP, length=1): print edge
-  [Edge: NP -> N *]@[3:4w]
+  [3:4] NP -> N *
 
 The following attributes can be given as restrictions to ``select``:
 ``span``, ``start`` ``end``, ``length``, ``lhs``, ``rhs``, ``next``,
 ``dot``, ``is_complete``, ``is_incomplete``.
 
 The ``trees`` method returns a list of the trees that are associated
-with a given edge; and the ``parses`` method returns a list of the
-parse trees for a given start symbol:
-        
-  >>> chart.trees(edge3)
-  [(NP: <hat>)]
+with a given edge:
 
-  # After having added many more edges: 
-  >>> chart.parses('S')
+  >>> chart.trees(edge3)
+  [(NP: 'hat')]
+
+The ``parses`` method returns a list of the
+parse trees for a given start symbol.  E.g. after having added
+many more edges, we could ask for the complete edges which span the
+entire chart, and which are based on a production from ``S``, using
+``chart.parses('S')``:
+
   (S: (NP: <James>) (VP: (V: <wears>) (NP: (Det: <a>) (N: <hat>))))
 
 Chart Rules
@@ -513,12 +514,9 @@ chart.  In particular, ``ChartParser`` uses the following algorithm:
 basic bottom-up strategy.  When constructing a ``ChartParser``, you
 can use either of these strategies, or create your own.
 
-The following example illustrates the use of the chart parser:
+The following example illustrates the use of the chart parser.
+We start by defining a simple grammar:
 
-  >>> from nltk_lite import tokenize
-  >>> from nltk_lite.parser import chart
-
-  # Define a simple grammar.
   >>> grammar = cfg.parse('''
   ...   S -> NP VP
   ...   VP -> V NP | VP PP
@@ -530,25 +528,25 @@ The following example illustrates the use of the chart parser:
   ...   P -> "on" | "by" | "with"
   ...   ''')
 
-  # Create and tokenize a sentence token.
-  >>> sent = tokenize.whitespace('John saw a cat with my cookie')
+Next we tokenize a sentence.  We make sure it is a list (not an iterator), since
+we wish to use the same tokenized sentence several times.
 
-  # Parse the sentence, bottom-up.
-  >>> parser = ChartParser(grammar, BU_STRATEGY, LEAF='TEXT')
+  >>> sent = list(tokenize.whitespace('John saw a cat with my cookie'))
+  >>> parser = ChartParser(grammar, BU_STRATEGY)
   >>> for tree in parser.get_parse_list(sent):
   ...     print tree
   (S:
-    (NP: <John>)
+    (NP: 'John')
     (VP:
-      (VP: (V: <saw>) (NP: (Det: <a>) (N: <cat>)))
-      (PP: (P: <with>) (NP: (Det: <my>) (N: <cookie>)))))
+      (VP: (V: 'saw') (NP: (Det: 'a') (N: 'cat')))
+      (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie')))))
   (S:
-    (NP: <John>)
+    (NP: 'John')
     (VP:
-      (V: <saw>)
+      (V: 'saw')
       (NP:
-        (NP: (Det: <a>) (N: <cat>))
-        (PP: (P: <with>) (NP: (Det: <my>) (N: <cookie>))))))
+        (NP: (Det: 'a') (N: 'cat'))
+        (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie'))))))
 
 The ``trace`` parameter can be specified when creating a parser, to
 turn on tracing (higher trace levels produce more verbose output).
@@ -556,185 +554,187 @@ The following examples show the trace output for parsing the same
 sentence with both the top-down and the bottom-up strategies.
 
   # Parse the sentence, bottom-up, with tracing turned on.
-  >>> parser = ChartParser(grammar, BU_STRATEGY, LEAF='TEXT', trace=2)
+  >>> parser = ChartParser(grammar, BU_STRATEGY, trace=2)
   >>> parser.get_parse(sent)
   |. John. saw .  a  . cat . with.  my .cooki.|
   Bottom Up Init Rule:
-  |[-----]     .     .     .     .     .     .| 'John'. 
-  |.     [-----]     .     .     .     .     .| 'saw'. 
-  |.     .     [-----]     .     .     .     .| 'a'. 
-  |.     .     .     [-----]     .     .     .| 'cat'. 
-  |.     .     .     .     [-----]     .     .| 'with'. 
-  |.     .     .     .     .     [-----]     .| 'my'. 
-  |.     .     .     .     .     .     [-----]| 'cookie'. 
+  |[-----]     .     .     .     .     .     .| [0:1] 'John' 
+  |.     [-----]     .     .     .     .     .| [1:2] 'saw' 
+  |.     .     [-----]     .     .     .     .| [2:3] 'a' 
+  |.     .     .     [-----]     .     .     .| [3:4] 'cat' 
+  |.     .     .     .     [-----]     .     .| [4:5] 'with' 
+  |.     .     .     .     .     [-----]     .| [5:6] 'my' 
+  |.     .     .     .     .     .     [-----]| [6:7] 'cookie' 
   Bottom Up Predict Rule:
-  |>     .     .     .     .     .     .     .| NP -> * 'John' 
-  |.     >     .     .     .     .     .     .| V  -> * 'saw' 
-  |.     .     >     .     .     .     .     .| Det -> * 'a' 
-  |.     .     .     >     .     .     .     .| N  -> * 'cat' 
-  |.     .     .     .     >     .     .     .| P  -> * 'with' 
-  |.     .     .     .     .     >     .     .| Det -> * 'my' 
-  |.     .     .     .     .     .     >     .| N  -> * 'cookie' 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * 'John' 
+  |.     >     .     .     .     .     .     .| [1:1] V  -> * 'saw' 
+  |.     .     >     .     .     .     .     .| [2:2] Det -> * 'a' 
+  |.     .     .     >     .     .     .     .| [3:3] N  -> * 'cat' 
+  |.     .     .     .     >     .     .     .| [4:4] P  -> * 'with' 
+  |.     .     .     .     .     >     .     .| [5:5] Det -> * 'my' 
+  |.     .     .     .     .     .     >     .| [6:6] N  -> * 'cookie' 
   Fundamental Rule:
-  |[-----]     .     .     .     .     .     .| NP -> 'John' * 
-  |.     [-----]     .     .     .     .     .| V  -> 'saw' * 
-  |.     .     [-----]     .     .     .     .| Det -> 'a' * 
-  |.     .     .     [-----]     .     .     .| N  -> 'cat' * 
-  |.     .     .     .     [-----]     .     .| P  -> 'with' * 
-  |.     .     .     .     .     [-----]     .| Det -> 'my' * 
-  |.     .     .     .     .     .     [-----]| N  -> 'cookie' * 
+  |[-----]     .     .     .     .     .     .| [0:1] NP -> 'John' * 
+  |.     [-----]     .     .     .     .     .| [1:2] V  -> 'saw' * 
+  |.     .     [-----]     .     .     .     .| [2:3] Det -> 'a' * 
+  |.     .     .     [-----]     .     .     .| [3:4] N  -> 'cat' * 
+  |.     .     .     .     [-----]     .     .| [4:5] P  -> 'with' * 
+  |.     .     .     .     .     [-----]     .| [5:6] Det -> 'my' * 
+  |.     .     .     .     .     .     [-----]| [6:7] N  -> 'cookie' * 
   Bottom Up Predict Rule:
-  |>     .     .     .     .     .     .     .| S  -> * NP VP 
-  |>     .     .     .     .     .     .     .| NP -> * NP PP 
-  |.     >     .     .     .     .     .     .| VP -> * V NP 
-  |.     .     >     .     .     .     .     .| NP -> * Det N 
-  |.     .     .     .     >     .     .     .| PP -> * P NP 
-  |.     .     .     .     .     >     .     .| NP -> * Det N 
+  |>     .     .     .     .     .     .     .| [0:0] S  -> * NP VP 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * NP PP 
+  |.     >     .     .     .     .     .     .| [1:1] VP -> * V NP 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * Det N 
+  |.     .     .     .     >     .     .     .| [4:4] PP -> * P NP 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * Det N 
   Fundamental Rule:
-  |[----->     .     .     .     .     .     .| S  -> NP * VP 
-  |[----->     .     .     .     .     .     .| NP -> NP * PP 
-  |.     [----->     .     .     .     .     .| VP -> V * NP 
-  |.     .     [----->     .     .     .     .| NP -> Det * N 
-  |.     .     [-----------]     .     .     .| NP -> Det N * 
-  |.     .     .     .     [----->     .     .| PP -> P * NP 
-  |.     .     .     .     .     [----->     .| NP -> Det * N 
-  |.     .     .     .     .     [-----------]| NP -> Det N * 
-  |.     [-----------------]     .     .     .| VP -> V NP * 
-  |.     .     .     .     [-----------------]| PP -> P NP * 
-  |[-----------------------]     .     .     .| S  -> NP VP * 
+  |[----->     .     .     .     .     .     .| [0:1] S  -> NP * VP 
+  |[----->     .     .     .     .     .     .| [0:1] NP -> NP * PP 
+  |.     [----->     .     .     .     .     .| [1:2] VP -> V * NP 
+  |.     .     [----->     .     .     .     .| [2:3] NP -> Det * N 
+  |.     .     [-----------]     .     .     .| [2:4] NP -> Det N * 
+  |.     .     .     .     [----->     .     .| [4:5] PP -> P * NP 
+  |.     .     .     .     .     [----->     .| [5:6] NP -> Det * N 
+  |.     .     .     .     .     [-----------]| [5:7] NP -> Det N * 
+  |.     [-----------------]     .     .     .| [1:4] VP -> V NP * 
+  |.     .     .     .     [-----------------]| [4:7] PP -> P NP * 
+  |[-----------------------]     .     .     .| [0:4] S  -> NP VP * 
   Bottom Up Predict Rule:
-  |.     .     >     .     .     .     .     .| S  -> * NP VP 
-  |.     .     >     .     .     .     .     .| NP -> * NP PP 
-  |.     .     .     .     .     >     .     .| S  -> * NP VP 
-  |.     .     .     .     .     >     .     .| NP -> * NP PP 
-  |.     >     .     .     .     .     .     .| VP -> * VP PP 
+  |.     .     >     .     .     .     .     .| [2:2] S  -> * NP VP 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * NP PP 
+  |.     .     .     .     .     >     .     .| [5:5] S  -> * NP VP 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * NP PP 
+  |.     >     .     .     .     .     .     .| [1:1] VP -> * VP PP 
   Fundamental Rule:
-  |.     .     [----------->     .     .     .| S  -> NP * VP 
-  |.     .     [----------->     .     .     .| NP -> NP * PP 
-  |.     .     .     .     .     [----------->| S  -> NP * VP 
-  |.     .     .     .     .     [----------->| NP -> NP * PP 
-  |.     [----------------->     .     .     .| VP -> VP * PP 
-  |.     .     [-----------------------------]| NP -> NP PP * 
-  |.     [-----------------------------------]| VP -> VP PP * 
-  |.     .     [----------------------------->| S  -> NP * VP 
-  |.     .     [----------------------------->| NP -> NP * PP 
-  |.     [----------------------------------->| VP -> VP * PP 
-  |.     [-----------------------------------]| VP -> V NP * 
-  |[=========================================]| S  -> NP VP * 
-  |[=========================================]| S  -> NP VP * 
-  |.     [----------------------------------->| VP -> VP * PP
+  |.     .     [----------->     .     .     .| [2:4] S  -> NP * VP 
+  |.     .     [----------->     .     .     .| [2:4] NP -> NP * PP 
+  |.     .     .     .     .     [----------->| [5:7] S  -> NP * VP 
+  |.     .     .     .     .     [----------->| [5:7] NP -> NP * PP 
+  |.     [----------------->     .     .     .| [1:4] VP -> VP * PP 
+  |.     .     [-----------------------------]| [2:7] NP -> NP PP * 
+  |.     [-----------------------------------]| [1:7] VP -> VP PP * 
+  |.     .     [----------------------------->| [2:7] S  -> NP * VP 
+  |.     .     [----------------------------->| [2:7] NP -> NP * PP 
+  |.     [----------------------------------->| [1:7] VP -> VP * PP 
+  |.     [-----------------------------------]| [1:7] VP -> V NP * 
+  |[=========================================]| [0:7] S  -> NP VP * 
+  |[=========================================]| [0:7] S  -> NP VP * 
+  |.     [----------------------------------->| [1:7] VP -> VP * PP 
+  (S: (NP: 'John') (VP: (VP: (V: 'saw') (NP: (Det: 'a') (N: 'cat'))) (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie')))))
 
-  # Parse the sentence, top-down, with tracing turned on.
-  >>> parser = ChartParser(grammar, TD_STRATEGY, LEAF='TEXT', trace=2)
+Next we parse the same sentence, top-down, with tracing turned on:
+
+  >>> parser = ChartParser(grammar, TD_STRATEGY, trace=2)
   >>> parser.get_parse(sent)
   |. John. saw .  a  . cat . with.  my .cooki.|
   Top Down Init Rule:
-  |>     .     .     .     .     .     .     .| S  -> * NP VP 
+  |>     .     .     .     .     .     .     .| [0:0] S  -> * NP VP 
   Top Down Expand Rule:
-  |>     .     .     .     .     .     .     .| NP -> * 'John' 
-  |>     .     .     .     .     .     .     .| NP -> * 'Mary' 
-  |>     .     .     .     .     .     .     .| NP -> * 'Bob' 
-  |>     .     .     .     .     .     .     .| NP -> * Det N 
-  |>     .     .     .     .     .     .     .| NP -> * NP PP 
-  |>     .     .     .     .     .     .     .| Det -> * 'a' 
-  |>     .     .     .     .     .     .     .| Det -> * 'an' 
-  |>     .     .     .     .     .     .     .| Det -> * 'the' 
-  |>     .     .     .     .     .     .     .| Det -> * 'my' 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * 'John' 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * 'Mary' 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * 'Bob' 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * Det N 
+  |>     .     .     .     .     .     .     .| [0:0] NP -> * NP PP 
+  |>     .     .     .     .     .     .     .| [0:0] Det -> * 'a' 
+  |>     .     .     .     .     .     .     .| [0:0] Det -> * 'an' 
+  |>     .     .     .     .     .     .     .| [0:0] Det -> * 'the' 
+  |>     .     .     .     .     .     .     .| [0:0] Det -> * 'my' 
   Top Down Match Rule:
-  |[-----]     .     .     .     .     .     .| 'John'. 
+  |[-----]     .     .     .     .     .     .| [0:1] 'John' 
   Fundamental Rule:
-  |[-----]     .     .     .     .     .     .| NP -> 'John' * 
-  |[----->     .     .     .     .     .     .| NP -> NP * PP 
-  |[----->     .     .     .     .     .     .| S  -> NP * VP 
+  |[-----]     .     .     .     .     .     .| [0:1] NP -> 'John' * 
+  |[----->     .     .     .     .     .     .| [0:1] NP -> NP * PP 
+  |[----->     .     .     .     .     .     .| [0:1] S  -> NP * VP 
   Top Down Expand Rule:
-  |.     >     .     .     .     .     .     .| PP -> * P NP 
-  |.     >     .     .     .     .     .     .| VP -> * V NP 
-  |.     >     .     .     .     .     .     .| VP -> * VP PP 
-  |.     >     .     .     .     .     .     .| P  -> * 'on' 
-  |.     >     .     .     .     .     .     .| P  -> * 'by' 
-  |.     >     .     .     .     .     .     .| P  -> * 'with' 
-  |.     >     .     .     .     .     .     .| V  -> * 'saw' 
-  |.     >     .     .     .     .     .     .| V  -> * 'ate' 
+  |.     >     .     .     .     .     .     .| [1:1] PP -> * P NP 
+  |.     >     .     .     .     .     .     .| [1:1] VP -> * V NP 
+  |.     >     .     .     .     .     .     .| [1:1] VP -> * VP PP 
+  |.     >     .     .     .     .     .     .| [1:1] P  -> * 'on' 
+  |.     >     .     .     .     .     .     .| [1:1] P  -> * 'by' 
+  |.     >     .     .     .     .     .     .| [1:1] P  -> * 'with' 
+  |.     >     .     .     .     .     .     .| [1:1] V  -> * 'saw' 
+  |.     >     .     .     .     .     .     .| [1:1] V  -> * 'ate' 
   Top Down Match Rule:
-  |.     [-----]     .     .     .     .     .| 'saw'. 
+  |.     [-----]     .     .     .     .     .| [1:2] 'saw' 
   Fundamental Rule:
-  |.     [-----]     .     .     .     .     .| V  -> 'saw' * 
-  |.     [----->     .     .     .     .     .| VP -> V * NP 
+  |.     [-----]     .     .     .     .     .| [1:2] V  -> 'saw' * 
+  |.     [----->     .     .     .     .     .| [1:2] VP -> V * NP 
   Top Down Expand Rule:
-  |.     .     >     .     .     .     .     .| NP -> * 'John' 
-  |.     .     >     .     .     .     .     .| NP -> * 'Mary' 
-  |.     .     >     .     .     .     .     .| NP -> * 'Bob' 
-  |.     .     >     .     .     .     .     .| NP -> * Det N 
-  |.     .     >     .     .     .     .     .| NP -> * NP PP 
-  |.     .     >     .     .     .     .     .| Det -> * 'a' 
-  |.     .     >     .     .     .     .     .| Det -> * 'an' 
-  |.     .     >     .     .     .     .     .| Det -> * 'the' 
-  |.     .     >     .     .     .     .     .| Det -> * 'my' 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * 'John' 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * 'Mary' 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * 'Bob' 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * Det N 
+  |.     .     >     .     .     .     .     .| [2:2] NP -> * NP PP 
+  |.     .     >     .     .     .     .     .| [2:2] Det -> * 'a' 
+  |.     .     >     .     .     .     .     .| [2:2] Det -> * 'an' 
+  |.     .     >     .     .     .     .     .| [2:2] Det -> * 'the' 
+  |.     .     >     .     .     .     .     .| [2:2] Det -> * 'my' 
   Top Down Match Rule:
-  |.     .     [-----]     .     .     .     .| 'a'. 
+  |.     .     [-----]     .     .     .     .| [2:3] 'a' 
   Fundamental Rule:
-  |.     .     [-----]     .     .     .     .| Det -> 'a' * 
-  |.     .     [----->     .     .     .     .| NP -> Det * N 
+  |.     .     [-----]     .     .     .     .| [2:3] Det -> 'a' * 
+  |.     .     [----->     .     .     .     .| [2:3] NP -> Det * N 
   Top Down Expand Rule:
-  |.     .     .     >     .     .     .     .| N  -> * 'dog' 
-  |.     .     .     >     .     .     .     .| N  -> * 'cat' 
-  |.     .     .     >     .     .     .     .| N  -> * 'cookie' 
+  |.     .     .     >     .     .     .     .| [3:3] N  -> * 'dog' 
+  |.     .     .     >     .     .     .     .| [3:3] N  -> * 'cat' 
+  |.     .     .     >     .     .     .     .| [3:3] N  -> * 'cookie' 
   Top Down Match Rule:
-  |.     .     .     [-----]     .     .     .| 'cat'. 
+  |.     .     .     [-----]     .     .     .| [3:4] 'cat' 
   Fundamental Rule:
-  |.     .     .     [-----]     .     .     .| N  -> 'cat' * 
-  |.     .     [-----------]     .     .     .| NP -> Det N * 
-  |.     [-----------------]     .     .     .| VP -> V NP * 
-  |.     .     [----------->     .     .     .| NP -> NP * PP 
-  |[-----------------------]     .     .     .| S  -> NP VP * 
-  |.     [----------------->     .     .     .| VP -> VP * PP 
+  |.     .     .     [-----]     .     .     .| [3:4] N  -> 'cat' * 
+  |.     .     [-----------]     .     .     .| [2:4] NP -> Det N * 
+  |.     [-----------------]     .     .     .| [1:4] VP -> V NP * 
+  |.     .     [----------->     .     .     .| [2:4] NP -> NP * PP 
+  |[-----------------------]     .     .     .| [0:4] S  -> NP VP * 
+  |.     [----------------->     .     .     .| [1:4] VP -> VP * PP 
   Top Down Expand Rule:
-  |.     .     .     .     >     .     .     .| PP -> * P NP 
-  |.     .     .     .     >     .     .     .| P  -> * 'on' 
-  |.     .     .     .     >     .     .     .| P  -> * 'by' 
-  |.     .     .     .     >     .     .     .| P  -> * 'with' 
+  |.     .     .     .     >     .     .     .| [4:4] PP -> * P NP 
+  |.     .     .     .     >     .     .     .| [4:4] P  -> * 'on' 
+  |.     .     .     .     >     .     .     .| [4:4] P  -> * 'by' 
+  |.     .     .     .     >     .     .     .| [4:4] P  -> * 'with' 
   Top Down Match Rule:
-  |.     .     .     .     [-----]     .     .| 'with'. 
+  |.     .     .     .     [-----]     .     .| [4:5] 'with' 
   Fundamental Rule:
-  |.     .     .     .     [-----]     .     .| P  -> 'with' * 
-  |.     .     .     .     [----->     .     .| PP -> P * NP 
+  |.     .     .     .     [-----]     .     .| [4:5] P  -> 'with' * 
+  |.     .     .     .     [----->     .     .| [4:5] PP -> P * NP 
   Top Down Expand Rule:
-  |.     .     .     .     .     >     .     .| NP -> * 'John' 
-  |.     .     .     .     .     >     .     .| NP -> * 'Mary' 
-  |.     .     .     .     .     >     .     .| NP -> * 'Bob' 
-  |.     .     .     .     .     >     .     .| NP -> * Det N 
-  |.     .     .     .     .     >     .     .| NP -> * NP PP 
-  |.     .     .     .     .     >     .     .| Det -> * 'a' 
-  |.     .     .     .     .     >     .     .| Det -> * 'an' 
-  |.     .     .     .     .     >     .     .| Det -> * 'the' 
-  |.     .     .     .     .     >     .     .| Det -> * 'my' 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * 'John' 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * 'Mary' 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * 'Bob' 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * Det N 
+  |.     .     .     .     .     >     .     .| [5:5] NP -> * NP PP 
+  |.     .     .     .     .     >     .     .| [5:5] Det -> * 'a' 
+  |.     .     .     .     .     >     .     .| [5:5] Det -> * 'an' 
+  |.     .     .     .     .     >     .     .| [5:5] Det -> * 'the' 
+  |.     .     .     .     .     >     .     .| [5:5] Det -> * 'my' 
   Top Down Match Rule:
-  |.     .     .     .     .     [-----]     .| 'my'. 
+  |.     .     .     .     .     [-----]     .| [5:6] 'my' 
   Fundamental Rule:
-  |.     .     .     .     .     [-----]     .| Det -> 'my' * 
-  |.     .     .     .     .     [----->     .| NP -> Det * N 
+  |.     .     .     .     .     [-----]     .| [5:6] Det -> 'my' * 
+  |.     .     .     .     .     [----->     .| [5:6] NP -> Det * N 
   Top Down Expand Rule:
-  |.     .     .     .     .     .     >     .| N  -> * 'dog' 
-  |.     .     .     .     .     .     >     .| N  -> * 'cat' 
-  |.     .     .     .     .     .     >     .| N  -> * 'cookie' 
+  |.     .     .     .     .     .     >     .| [6:6] N  -> * 'dog' 
+  |.     .     .     .     .     .     >     .| [6:6] N  -> * 'cat' 
+  |.     .     .     .     .     .     >     .| [6:6] N  -> * 'cookie' 
   Top Down Match Rule:
-  |.     .     .     .     .     .     [-----]| 'cookie'. 
+  |.     .     .     .     .     .     [-----]| [6:7] 'cookie' 
   Fundamental Rule:
-  |.     .     .     .     .     .     [-----]| N  -> 'cookie' * 
-  |.     .     .     .     .     [-----------]| NP -> Det N * 
-  |.     .     .     .     [-----------------]| PP -> P NP * 
-  |.     .     .     .     .     [----------->| NP -> NP * PP 
-  |.     .     [-----------------------------]| NP -> NP PP * 
-  |.     [-----------------------------------]| VP -> VP PP * 
-  |.     [-----------------------------------]| VP -> V NP * 
-  |.     .     [----------------------------->| NP -> NP * PP 
-  |[=========================================]| S  -> NP VP * 
-  |.     [----------------------------------->| VP -> VP * PP 
-  |[=========================================]| S  -> NP VP * 
-  |.     [----------------------------------->| VP -> VP * PP 
+  |.     .     .     .     .     .     [-----]| [6:7] N  -> 'cookie' * 
+  |.     .     .     .     .     [-----------]| [5:7] NP -> Det N * 
+  |.     .     .     .     [-----------------]| [4:7] PP -> P NP * 
+  |.     .     .     .     .     [----------->| [5:7] NP -> NP * PP 
+  |.     .     [-----------------------------]| [2:7] NP -> NP PP * 
+  |.     [-----------------------------------]| [1:7] VP -> VP PP * 
+  |.     [-----------------------------------]| [1:7] VP -> V NP * 
+  |.     .     [----------------------------->| [2:7] NP -> NP * PP 
+  |[=========================================]| [0:7] S  -> NP VP * 
+  |.     [----------------------------------->| [1:7] VP -> VP * PP 
+  |[=========================================]| [0:7] S  -> NP VP * 
+  |.     [----------------------------------->| [1:7] VP -> VP * PP 
   Top Down Expand Rule:
-  |.     .     .     .     .     .     .     >| PP -> * P NP 
-  |.     .     .     .     .     .     .     >| P  -> * 'on' 
-  |.     .     .     .     .     .     .     >| P  -> * 'by' 
-  |.     .     .     .     .     .     .     >| P  -> * 'with' 
-  
+  |.     .     .     .     .     .     .     >| [7:7] PP -> * P NP 
+  |.     .     .     .     .     .     .     >| [7:7] P  -> * 'on' 
+  |.     .     .     .     .     .     .     >| [7:7] P  -> * 'by' 
+  |.     .     .     .     .     .     .     >| [7:7] P  -> * 'with' 
+  (S: (NP: 'John') (VP: (VP: (V: 'saw') (NP: (Det: 'a') (N: 'cat'))) (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie')))))
