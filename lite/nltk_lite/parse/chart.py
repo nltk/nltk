@@ -289,7 +289,8 @@ class TreeEdge(EdgeI):
 
     # String representation
     def __str__(self):
-        str = '%-2s ->' % (self._lhs.symbol(),)
+        str = '[%s:%s] ' % (self._span[0], self._span[1])
+        str += '%-2s ->' % (self._lhs.symbol(),)
             
         for i in range(len(self._rhs)):
             if i == self._dot: str += ' *'
@@ -301,7 +302,7 @@ class TreeEdge(EdgeI):
         return str
         
     def __repr__(self):
-        return '[Edge: %s]@[%s:%sw]' % (self, self._span[0], self._span[1])
+        return '[Edge: %s]' % self
 
 class LeafEdge(EdgeI):
     """
@@ -347,9 +348,10 @@ class LeafEdge(EdgeI):
         return hash((self._index, self._leaf))
 
     # String representations
-    def __str__(self): return '%r.' % self._leaf
+    def __str__(self): return '[%s:%s] %r' % (self._index, self._index+1, self._leaf)
+
     def __repr__(self):
-        return '[Edge: %s]@[%s:%sw]' % (self, self._index, self._index+1)
+        return '[Edge: %s]' % (self)
 
 ########################################################################
 ##  Chart
@@ -393,8 +395,8 @@ class Chart:
         """
 
         # Record the sentence token and the sentence length.
-        self._tokens = tokens
-        self._num_leaves = len(tokens)
+        self._tokens = list(tokens)
+        self._num_leaves = len(self._tokens)
 
         # A list of edges contained in this chart.
         self._edges = []
@@ -949,10 +951,10 @@ class FundamentalRule(AbstractChartRule):
     A rule that joins two adjacent edges to form a single combined
     edge.  In particular, this rule specifies that any pair of edges:
     
-        - [AS{->}S{alpha}*BS{beta}]@[i:j]
-        - [BS{->}S{gamma}*]@[j:k]
+        - [AS{->}S{alpha}*BS{beta}][i:j]
+        - [BS{->}S{gamma}*][j:k]
     licenses the edge:
-        - [AS{->}S{alpha}B*S{beta}]@[i:j]
+        - [AS{->}S{alpha}B*S{beta}][i:j]
     """
     NUM_EDGES=2
     def apply_iter(self, chart, grammar, left_edge, right_edge):
@@ -981,10 +983,10 @@ class SingleEdgeFundamentalRule(AbstractChartRule):
     A rule that joins a given edge with adjacent edges in the chart,
     to form combined edges.  In particular, this rule specifies that
     either of the edges:
-        - [AS{->}S{alpha}*BS{beta}]@[i:j]
-        - [BS{->}S{gamma}*]@[j:k]
+        - [AS{->}S{alpha}*BS{beta}][i:j]
+        - [BS{->}S{gamma}*][j:k]
     licenses the edge:
-        - [AS{->}S{alpha}B*S{beta}]@[i:j]
+        - [AS{->}S{alpha}B*S{beta}][i:j]
     if the other edge is already in the chart.
     @note: This is basically L{FundamentalRule}, with one edge is left
         unspecified.
@@ -1017,7 +1019,7 @@ class TopDownInitRule(AbstractChartRule):
     """
     A rule licensing edges corresponding to the grammar productions for
     the grammar's start symbol.  In particular, this rule specifies that:
-        - [SS{->}*S{alpha}]@[0:i]
+        - [SS{->}*S{alpha}][0:i]
     is licensed for each grammar production C{SS{->}S{alpha}}, where
     C{S} is the grammar's start symbol.
     """
@@ -1034,9 +1036,9 @@ class TopDownExpandRule(AbstractChartRule):
     A rule licensing edges corresponding to the grammar productions
     for the nonterminal following an incomplete edge's dot.  In
     particular, this rule specifies that:
-        - [AS{->}S{alpha}*BS{beta}]@[i:j]
+        - [AS{->}S{alpha}*BS{beta}][i:j]
     licenses the edge:
-        - [BS{->}*S{gamma}]@[j:j]
+        - [BS{->}*S{gamma}][j:j]
     for each grammar production C{BS{->}S{gamma}}.
     """
     NUM_EDGES=1
@@ -1052,9 +1054,9 @@ class TopDownMatchRule(AbstractChartRule):
     """
     A rule licensing an edge corresponding to a terminal following an
     incomplete edge's dot.  In particular, this rule specifies that:
-        - [AS{->}S{alpha}*w{beta}]@[i:j]
+        - [AS{->}S{alpha}*w{beta}][i:j]
     licenses the leaf edge:
-        - [wS{->}*]@[j:j+1]
+        - [wS{->}*][j:j+1]
     if the C{j}th word in the text is C{w}.
     """
     NUM_EDGES = 1
@@ -1130,7 +1132,7 @@ class BottomUpInitRule(AbstractChartRule):
     """
     A rule licensing any edges corresponding to terminals in the
     text.  In particular, this rule licenses the leaf edge:
-        - [wS{->}*]@[i:i+1]
+        - [wS{->}*][i:i+1]
     for C{w} is a word in the text, where C{i} is C{w}'s index.
     """
     NUM_EDGES=0
@@ -1168,11 +1170,11 @@ class CompleterRule(AbstractChartRule):
     A rule that joins a given complete edge with adjacent incomplete
     edges in the chart, to form combined edges.  In particular, this
     rule specifies that:
-        - [BS{->}S{gamma}*]@[j:k]
+        - [BS{->}S{gamma}*][j:k]
     licenses the edge:
-        - [AS{->}S{alpha}B*S{beta}]@[i:j]
+        - [AS{->}S{alpha}B*S{beta}][i:j]
     given that the chart contains:
-        - [AS{->}S{alpha}*BS{beta}]@[i:j]
+        - [AS{->}S{alpha}*BS{beta}][i:j]
     @note: This is basically L{FundamentalRule}, with the left edge
         left unspecified.
     """
@@ -1196,10 +1198,10 @@ class ScannerRule(AbstractChartRule):
     A rule licensing a leaf edge corresponding to a part-of-speech
     terminal following an incomplete edge's dot.  In particular, this
     rule specifies that:
-        - [AS{->}S{alpha}*PS{beta}]@[i:j]
+        - [AS{->}S{alpha}*PS{beta}][i:j]
     licenses the edges:
-        - [PS{->}w*]@[j:j+1]
-        - [wS{->}*]@[j:j+1]
+        - [PS{->}w*][j:j+1]
+        - [wS{->}*][j:j+1]
     if the C{j}th word in the text is C{w}; and C{P} is a valid part
     of speech for C{w}.
     """
@@ -1571,7 +1573,7 @@ def demo():
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
     from nltk_lite import tokenize
-    tokens = list(tokenize.whitespace(sent))
+    tokens = tokenize.whitespace(sent)
 
     # Ask the user which parser to test
     print '  1: Top-down chart parser'
