@@ -295,15 +295,16 @@ NLTK defines two classes for encoding edges:
 ``LeafEdges`` are constructed from a leaf terminal and an index:
       
   >>> from nltk_lite.parse import chart
-  >>> edge2=LeafEdge('dog', 3)
+  >>> edge2=chart.LeafEdge('dog', 3)
   >>> edge2
   [Edge: 'dog' -> *]@[3:4w]
 
 ``TreeEdges`` are constructed from a span, a left-hand side, a
 right-hand side, and a dot position:
       
-  >>> V, VP, NP, PP = nonterminals('V VP NP PP')
-  >>> edge1=TreeEdge((3,7), VP, [V,NP,PP], 2)
+  >>> from nltk_lite.parse import cfg
+  >>> V, VP, NP, PP = cfg.nonterminals('V VP NP PP')
+  >>> edge1=chart.TreeEdge((3,7), VP, [V,NP,PP], 2)
   >>> edge1
   [Edge: VP -> V NP * PP]@[3:7w]
 
@@ -312,16 +313,16 @@ The convenience function ``TreeEdge.from_production`` creates the
       
   >>> prod = cfg.Production.parse('S->NP VP')[0]
   >>> index = 3
-  >>> edge3 = TreeEdge.from_production(prod, 3)
+  >>> edge3 = chart.TreeEdge.from_production(prod, 3)
   >>> edge3
-  [Edge: S -> * NP VP]@[3:3]
+  [Edge: S  -> * NP VP]@[3:3w]
 
 Both ``TreeEdge`` and ``LeafEdge`` implement the ``EdgeI`` interface,
 which defines the methods that all edges should support:
 
   # The edge's span, start, end, and length
   >>> edge1.span()
-  (3,6)
+  (3, 7)
   >>> edge1.start()
   3
   >>> edge1.end()
@@ -337,7 +338,7 @@ which defines the methods that all edges should support:
 
   # The edge's dot position.
   >>> edge1.dot()
- 2
+  2
 
   # Is it a complete edge?
   >>> edge1.is_complete()
@@ -361,7 +362,7 @@ constructor</ulink>:
 
   >>> from nltk_lite import tokenize
   >>> text = 'James wears a hat'
-  >>> chart = Chart(tokenize.whitespace(text)
+  >>> chart = Chart(tokenize.whitespace(text))
 
 .. Talk about child pointer lists & reconstruction earlier!
 
@@ -372,9 +373,9 @@ child to the left of the dot.  It is used to reconstruct the parse
 trees once parsing is finished.
       
   >>> NP, N = cfg.nonterminals('NP N')
-  >>> edge1 = LeafEdge('hat', 3)
-  >>> edge2 = TreeEdge((3,3), NP, [N], 0)
-  >>> edge3 = TreeEdge((3,4), NP, [N], 1)
+  >>> edge1 = chart.LeafEdge('hat', 3)
+  >>> edge2 = chart.TreeEdge((3,3), NP, [N], 0)
+  >>> edge3 = chart.TreeEdge((3,4), NP, [N], 1)
   >>> chart.insert(edge1, [])
   >>> chart.insert(edge2, [])
   >>> chart.insert(edge3, [edge1])
