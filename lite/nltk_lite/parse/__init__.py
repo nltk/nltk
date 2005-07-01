@@ -157,3 +157,4 @@ from featurestructure import *
 from sr import *
 from rd import *
 from chunk import *
+from chart import *
