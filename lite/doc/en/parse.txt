@@ -105,14 +105,12 @@ The structure of a sentence may be represented using a phrase
 structure tree, in which the terminal symbols are the words of the
 sentence, the pre-terminal symbols are parts of speech, and the
 remaining non-terminals are syntactic constituents.  An example of
-such a tree is shown in `parse_tree`_. For those trained in
+such a tree is shown below. For those trained in
 theoretical linguistics, the lexical categories (i.e., the nonterminal
 symbols immediately dominating the leafs of the tree) may appear
 strange.  This is because we have used used labels drawn from the
 Brown Corpus part-of-speech tag set; see XREF(Tagging Chapter: Intro)
 for discussion.
-
-_`parse_tree`
 
 .. figure:: ../images.parsing/parse_tree.png
 
@@ -204,14 +202,13 @@ example, ``P`` |rarr| ``'in' | 'with'`` means that a ``P``
 .. Note:: It is also possible to have disjunctions on the righthand
    sides of grammatical productions.
 
-`parse_tree2`__ illustrates two possible phrase structure analyses of
+The following tree illustrates two possible phrase structure analyses of
 the string ``The dog saw a man in the park``:
 
 .. figure:: ../images.parsing/parse_tree2.png
 
-   __`parse_tree2` Structural Ambiguity
+   Structural Ambiguity
    
-
 .. figure:: ../images.parsing/parse_tree3.png
 
 The fact that our grammar admits two distinct structures for this
@@ -263,12 +260,12 @@ following grammar:
 That is, the production ``VP`` |rarr| ``VP Conj VP`` involves direct
 recursion on the category``VP``, whereas undirect recursion on ``S``
 arises from the combination of two productions, namely ``S`` |rarr|
-``NP VP`` and ``VP`` |rarr| ``V S``.  _`recursive_parse1` shows a
+``NP VP`` and ``VP`` |rarr| ``V S``.  Here is a
 phrase structure tree involving coordinated ``VP`` s:
 
 .. figure:: ../images.parsing/recursive_parse1.png
 
-   Coordinated VP Phrase Structure Tree `recursive_parse1`_
+   Coordinated VP Phrase Structure Tree
 
 In this chapter, we only consider very small ('toy') context-free
 grammars, in order to illustrate the key aspects of parsing such
@@ -438,8 +435,6 @@ Six stages of the execution of this parser are shown below:
 
 .. 
    To do: use letter identifiers for subfigures.
-
-_srparser
 
 .. figure::../images.parsing/empty.png
 
