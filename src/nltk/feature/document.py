@@ -21,7 +21,6 @@ class BagOfContainedWordsFeatureDetector(AbstractFeatureDetector):
     """
     def __init__(self, **property_names):
         AbstractFeatureDetector.__init__(self, **property_names)
-        self._window = window
         
     def get_features(self, token):
         return {'BOW': [tok['TEXT'] for tok in token['SUBTOKENS']]}
@@ -37,7 +36,6 @@ class SetOfContainedWordsFeatureDetector(AbstractFeatureDetector):
     """
     def __init__(self, **property_names):
         AbstractFeatureDetector.__init__(self, **property_names)
-        self._window = window
         
     def get_features(self, token):
         return {'SOW': Set([tok['TEXT'] for tok in token['SUBTOKENS']])}
