@@ -13,7 +13,7 @@ Elementary Language Processing: Parsing
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. Note:: This is a draft.  Please send any feedback to the authors.
+.. note:: This is a draft.  Please send any feedback to the authors.
 
 ------------
 Introduction 
@@ -25,12 +25,12 @@ intuitions are surprisingly detailed.  For example, consider the
 following six sentences involving three synonymous verbs *loaded*,
 *dumped*, and *filled*.
 
-# The farmer *loaded* sand into the cart
-# The farmer *loaded* the cart with sand
-# The farmer *dumped* sand into the cart
-# *The farmer *dumped* the cart with sand
-# *The farmer *filled* sand into the cart
-# The farmer *filled* the cart with sand
+#. The farmer *loaded* sand into the cart
+#. The farmer *loaded* the cart with sand
+#. The farmer *dumped* sand into the cart
+#. \*The farmer *dumped* the cart with sand
+#. \*The farmer *filled* sand into the cart
+#. The farmer *filled* the cart with sand
 
 Two of the sentences (starred) are ill-formed.  As we shall see,
 patterns of well-formedness and ill-formedness in a sequence of words
@@ -97,7 +97,7 @@ that the italicised string in the following example is a constituent:
    help adults with diabetes fight off some minor infections.
 #. *They* could help adults with diabetes fight off some minor infections.
 
-.. Note:: Readers are referred to any introductory text on syntax for
+.. note:: Readers are referred to any introductory text on syntax for
    fuller treatment of constituency, e.g. McCawley (1998) The Syntactic
    Phenomena of English.
 
@@ -171,45 +171,81 @@ Linguistic Overview
 
 .. Discussion about how CFGs are created by hand.
 
-Let's start off by looking at a simple context-free grammar:
+*********************
+Structural Ambiguity
+*********************
 
-| S |rarr| NP VP
-| NP |rarr| Det N
-| NP |rarr| Det N PP
-| VP |rarr| V NP PP
-| VP |rarr| V NP
-| VP |rarr| V
-| PP |rarr| P NP
+Let's start off by looking at a simple context-free grammar, `G1`_:
 
-| NP |rarr| 'I'
-| Det |rarr| 'the'
-| Det |rarr| 'a'
-| N |rarr| 'man' | 'park' | 'dog' | 'telescope'
-| V |rarr| 'saw'
-| P |rarr| 'in' | 'with'
+
+_`G1`
+ | S |rarr| NP VP
+ | NP |rarr| Det N
+ | NP |rarr| Det N PP
+ | VP |rarr| V NP PP
+ | VP |rarr| V NP
+ | VP |rarr| V
+ | PP |rarr| P NP
+ |
+ | Det |rarr| 'the'
+ | Det |rarr| 'a'
+ | N |rarr| 'man' | 'park' | 'dog' | 'telescope'
+ | V |rarr| 'saw' | 'walked'
+ | P |rarr| 'in' | 'with'
 
 The productions are presented in two groups which we will call
-:glossterm:`grammatical productions` and :glossterm:`lexical productions` respectively.
-The labels in the grammatical productions are all :glossterm:`nonterminal
-symbols`: these are the grammatical categories we use to label
-constituents.  By contrast, :glossterm:`terminal symbols` are what we call the
-words whose syntactic behaviour is defined by the grammar. Notice that
-in the lexical productions, we have used disjunction '``|``' on the
-righthand side of the productions as an abbreviatory device. For
-example, ``P`` |rarr| ``'in' | 'with'`` means that a ``P``
-(preposition) can be realized as either ``in`` or ``with``.
+:glossterm:`grammatical productions` and :glossterm:`lexical
+productions` respectively.  The labels in the grammatical productions
+(e.g., `S`, `NP`, `VP`, `Det`, etc) are all :glossterm:`nonterminal
+symbols`, as are the labels on the lefthand side of the lexical
+productions.  Nonterminal symbols correspond to the grammatical
+categories we use to label constituents.  By contrast,
+:glossterm:`terminal symbols` are what we call the words (e.g., `the`,
+`a`, `man` and so on) whose syntactic behaviour is defined by the
+grammar. Sometimes we also refer to these words as
+:glossterm:`lexical items`; these are the strings which will be
+listed in a lexicon.
 
-.. Note:: It is also possible to have disjunctions on the righthand
-   sides of grammatical productions.
+Notice that in the lexical productions, we have used
+disjunction '``|``' on the righthand side of the productions as an
+abbreviatory device. For example, ``P`` |rarr| ``'in' | 'with'`` means
+that a ``P`` (preposition) can be realized as either ``in`` or
+``with``.
 
-The following tree illustrates two possible phrase structure analyses of
-the string ``The dog saw a man in the park``:
+The categories `S`, `NP`, `VP` and `PP` on the righthand side of the
+grammatical productions in `G1`_ are sometimes called
+:glossterm:`phrasal categories`. The remaining categories, `Det`,
+`N`, `V` and `P` are :glossterm:`lexical categories`, in that they introduce
+lexical items. 
 
-.. figure:: ../images.parsing/parse_tree2.png
+======    ====================    =======
+Symbol    Gloss                   Example
+======    ====================    =======
+S         sentence                *the man walked*
+NP        noun phrase 		  *a dog*
+VP        verb phrase 		  *saw a park*
+PP        prepositional phrase 	  *with a telescope*
+..	  ..                      ..
+Det       determiner              ..
+N         noun                    ..
+V         verb                    ..
+P         preposition             ..
+======    ====================    =======
 
-   Structural Ambiguity
-   
-.. figure:: ../images.parsing/parse_tree3.png
+
+If we were to parse the string ``The dog saw a man in the park`` using
+`G1`_, we would end up with two distinct analyses, as shown 
+in `Figure 1`_.
+
+.. figure:: ../images.parsing/empty.png
+
+   _`Figure 1`: Structural Ambiguity
+
+.. image:: ../images.parsing/parse_tree2.png 
+   :scale: 70
+ 
+.. image:: ../images.parsing/parse_tree3.png
+   :scale: 70
 
 The fact that our grammar admits two distinct structures for this
 sentence indicates that the sentence is :glossterm:`structurally ambiguous`.
@@ -218,7 +254,9 @@ ambiguity`, since the issue at hand is how the ``PP`` (prepositional
 phrase) ``in the park`` should be attached to the phrase structure
 tree. In this case, we can see that the grammar admits just two
 choices. The ``PP`` is either attached as a daughter of ``VP`` or else
-as a daughter of ``NP``. There is also a difference in semantic
+as a daughter of ``NP``. 
+
+There is also a difference in semantic
 interpretation associated with the two structures, though the meaning
 distinction is somewhat subtle in this case. Where the ``PP`` is
 attached to ``VP``, the intended interpretation is that the event of
@@ -229,43 +267,98 @@ dog &mdash; was somewhere else (e.g., sitting on the balcony of an
 apartment overlooking the park).  As we will see, dealing with
 ambiguity is a key challenge in parsing.
 
+*********
+Recursion
+*********
+
 We remarked earlier that there is no upper bound on the length of
 sentences of a natural language. Within context-free grammars, the
 main mechanism which allows this unboundedness is :glossterm:`recursion`. A
-grammar is said to be recursive if a category occurring on the
+grammar is said to be :glossterm:`recursive` if a category occurring on the
 lefthand side of a production also appears on the righthand side of a
-production. If this dual occurrence takes place in one and the same
-production, then we have :glossterm:`direct recursion`; otherwise we have
+production. If this dual occurrence takes place in *one and the same
+production*, then we have :glossterm:`direct recursion`; otherwise we have
 :glossterm:`indirect recursion`. These two cases are both illustrated in the
 following grammar:
 
-| S |rarr| NP VP
-| NP |rarr| Det N
-| NP |rarr| Det N PP
-| VP |rarr| VP Conj VP
-| VP |rarr| V NP PP
-| VP |rarr| V NP
-| VP |rarr| V S
-| VP |rarr| V
-| PP |rarr| P NP
-
-| NP |rarr| 'I'
-| Det |rarr| 'the'
-| Det |rarr| 'a'
-| N |rarr| 'man' | 'park' | 'dog' | 'telescope'
-| V |rarr| 'saw' | 'barked' | 'said'
-| P |rarr| 'in' | 'with'
-| Conj |rarr| 'and' | 'or'
+_`G2`
+ | S  |rarr| NP VP
+ | NP |rarr| Det N
+ | NP |rarr| Det N PP
+ | VP |rarr| VP Conj VP
+ | VP |rarr| V NP PP
+ | VP |rarr| V NP
+ | VP |rarr| V S
+ | VP |rarr| V
+ | PP |rarr| P NP
+ |
+ | Det |rarr| 'the'
+ | Det |rarr| 'a'
+ | N |rarr| 'man' | 'woman' | 'park' | 'dog' | 'telescope'
+ | V |rarr| 'saw' | 'barked' | 'disappeared' | 'said' | 'gave'
+ | P |rarr| 'in' | 'with' | 'to'
+ | Conj |rarr| 'and' | 'or'
 
 That is, the production ``VP`` |rarr| ``VP Conj VP`` involves direct
-recursion on the category``VP``, whereas undirect recursion on ``S``
+recursion on the category``VP``\, whereas indirect recursion on ``S``
 arises from the combination of two productions, namely ``S`` |rarr|
 ``NP VP`` and ``VP`` |rarr| ``V S``.  Here is a
-phrase structure tree involving coordinated ``VP`` s:
+phrase structure tree involving coordinated ``VP``\s:
 
 .. figure:: ../images.parsing/recursive_parse1.png
 
-   Coordinated VP Phrase Structure Tree
+   _`Figure 2:` Coordinated VP Phrase Structure Tree
+
+The following examples illustrate how recursion on `S` can yield
+longer and longer sentences:
+
+#. The man said that the dog barked.
+#. The man said that the woman said that the dog barked.
+#. The man said that the woman said that the man said that the dog
+   barked.
+#. The man said that the woman said that the man said that the woman
+   said ...
+
+.. left and right recursion
+
+***************************
+Heads and Subcategorization
+***************************
+
+The grammar `G2`_ correctly generates examples like these,
+corresponding to the four productions with `VP` on the righthand side:
+
+#. The woman gave the telescope to the dog.
+#. The woman saw a man.
+#. A man said that the woman disappeared.
+#. The dog barked.
+
+That is, `gave` can occur with a following `NP` and `PP`; 
+`saw` can occur with a following `NP`; 
+`said` can occur with a following `S`; 
+and `barked` can occur with no following phrase.
+In these cases, `NP`, `PP` and `S` are called :glossterm:`complements`
+of the respective verbs.
+
+However, there are fairly strong constraints on what verbs can occur
+with what complements. Thus, we would like our grammars to mark the
+following examples as ungrammatical:
+ 
+#. \*The woman disappeared the telescope to the dog.
+#. \*The dog barked a man.
+#. \*A man gave that the woman disappeared.
+#. \*A man said.
+
+.. caution:: It should be borne in mind that it is possible to create
+   examples which involve 'non-standard' but interpretable
+   combinations of verbs and complements. Thus, we can, at a stretch,
+   interpret *the man disappeared the dog* as meaning that the man
+   made the dog disappeared. We will ignore such examples here.
+
+
+*****************************
+Manually Constructed Grammars
+*****************************
 
 In this chapter, we only consider very small ('toy') context-free
 grammars, in order to illustrate the key aspects of parsing such
@@ -346,8 +439,8 @@ the productions of the grammar, the parse tree is extended downwards
 the parser demonstration ``nltk_lite.draw.rdparser``.  To run this
 demonstration, use the following commands::
 
- from nltk_lite.draw.rdparser import demo
- demo()
+>> from nltk_lite.draw.rdparser import demo
+>> demo()
 
 
 Six stages of the execution of this parser are shown below:
@@ -409,7 +502,7 @@ a parse tree with an ``S`` node as its root.
  bottom up - find little pieces and expand...
 
 
-.. Note::
+.. note::
  Note that the reduce operation may only be applied to the top of the stack.
  Reducing items lower in the stack must be done before later items are pushed onto
  the stack.
@@ -643,6 +736,26 @@ A complete example of a toy grammar is given below::
    grammars and parsers, please refer to the
    ``nltk_contrib.mit.rspeer.parser`` module.
 
+Another format for reading grammars::
+
+  >>> from nltk_lite.parse import cfg
+  >>> grammar = cfg.Grammar.parse('''
+  ...   S -> NP VP
+  ...   VP -> V NP | VP PP
+  ...   V -> "saw" | "ate"
+  ...   NP -> "John" | "Mary" | "Bob" | Det N | NP PP
+  ...   Det -> "a" | "an" | "the" | "my"
+  ...   N -> "dog" | "cat" | "cookie"
+  ...   PP -> P NP
+  ...   P -> "on" | "by" | "with"
+  ...   ''')
+
+  >>> from nltk_lite import tokenize, parse
+  >>> sent = list(tokenize.whitespace("Mary say Bob"))
+  >>> rd_parser = parse.RecursiveDescent(grammar)
+  >>> for p in rd_parser.get_parse_list(sent):
+  ...      print p
+  
 ------
  Trees 
 ------
