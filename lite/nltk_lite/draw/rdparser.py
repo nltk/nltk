@@ -68,14 +68,14 @@ Keyboard Shortcuts::
 
 from nltk_lite.draw.tree import *
 from nltk_lite.draw import *
-from nltk_lite.parse import *
+from nltk_lite import parse
 from nltk_lite import tokenize
 from nltk_lite.draw.cfg import *
 from nltk_lite.draw.cfg import CFGEditor
 import tkFont
 from Tkinter import *
         
-class RecursiveDescentParserDemo:
+class RecursiveDescentDemo:
     """
     A graphical tool for exploring the recursive descent parser.  The tool
     displays the parser's tree and the remaining text, and allows the
@@ -87,7 +87,7 @@ class RecursiveDescentParserDemo:
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = SteppingRecursiveDescentParser(grammar, trace)
+        self._parser = parse.SteppingRecursiveDescent(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()
@@ -868,8 +868,8 @@ def demo():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """    
-    from nltk.cfg import CFG
-    cfg = CFG.parse("""
+    from nltk_lite.parse import cfg
+    grammar = cfg.parse_grammar("""
     # Grammatical productions.
         S -> NP VP
         NP -> Det N PP | Det N
@@ -885,7 +885,7 @@ def demo():
 
     sent = list(tokenize.whitespace('the dog saw a man in the park'))
 
-    RecursiveDescentParserDemo(cfg, sent).mainloop()
+    RecursiveDescentDemo(grammar, sent).mainloop()
 
 if __name__ == '__main__': demo()
         
