@@ -77,13 +77,13 @@ Possible future improvements:
 
 from nltk_lite.draw.tree import *
 from nltk_lite.draw import *
-from nltk_lite.parse import *
+from nltk_lite import parse
 from nltk_lite.draw.cfg import CFGEditor
 from nltk_lite import tokenize
 from Tkinter import *
 import tkFont
         
-class ShiftReduceParserDemo:
+class ShiftReduceDemo:
     """
     A graphical tool for exploring the shift/reduce parser.  The tool
     displays the parser's stack and the remaining text, and allows the
@@ -91,11 +91,11 @@ class ShiftReduceParserDemo:
     can shift tokens onto the stack, and can perform reductions on the
     top elements of the stack.  A "step" button simply steps through
     the parsing process, performing the operations that
-    C{ShiftReduceParser} would use.
+    C{parse.ShiftReduce} would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = SteppingShiftReduceParser(grammar, trace)
+        self._parser = parse.SteppingShiftReduce(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()
@@ -381,7 +381,7 @@ class ShiftReduceParserDemo:
         # Draw the stack.
         stackx = 5
         for tok in self._parser.stack():
-            if isinstance(tok, Tree):
+            if isinstance(tok, parse.Tree):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
                            'node_font': self._boldfont,
                            'node_color': '#006060',
@@ -684,7 +684,7 @@ class ShiftReduceParserDemo:
             for widget in widgets:
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
-            if not isinstance(tok, Tree): raise ValueError()
+            if not isinstance(tok, parse.Tree): raise ValueError()
             label = TextWidget(self._canvas, str(tok.node), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
@@ -707,7 +707,7 @@ class ShiftReduceParserDemo:
 #
 #             # Make a new one.
 #             tok = self._parser.stack()[-1]
-#             if isinstance(tok, TreeToken):
+#             if isinstance(tok, parse.Tree):
 #                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
 #                            'node_font': bold, 'node_color': '#006060',
 #                            'leaf_color': '#006060', 'leaf_font':self._font}
@@ -771,36 +771,36 @@ def demo():
     text. 
     """
     
-    from nltk.cfg import Nonterminal, CFGProduction, CFG
+    from nltk_lite.parse import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+    (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]
     
     productions = (
         # Syntactic Productions
-        CFGProduction(S, [NP, VP]),
-        CFGProduction(NP, [Det, N]),
-        CFGProduction(NP, [NP, PP]),
-        CFGProduction(VP, [VP, PP]),
-        CFGProduction(VP, [V, NP, PP]),
-        CFGProduction(VP, [V, NP]),
-        CFGProduction(PP, [P, NP]),
+        cfg.Production(S, [NP, VP]),
+        cfg.Production(NP, [Det, N]),
+        cfg.Production(NP, [NP, PP]),
+        cfg.Production(VP, [VP, PP]),
+        cfg.Production(VP, [V, NP, PP]),
+        cfg.Production(VP, [V, NP]),
+        cfg.Production(PP, [P, NP]),
 
         # Lexical Productions
-        CFGProduction(NP, ['I']),   CFGProduction(Det, ['the']),
-        CFGProduction(Det, ['a']),  CFGProduction(N, ['man']),
-        CFGProduction(V, ['saw']),  CFGProduction(P, ['in']),
-        CFGProduction(P, ['with']), CFGProduction(N, ['park']),
-        CFGProduction(N, ['dog']),  CFGProduction(N, ['statue']),
-        CFGProduction(Det, ['my']),
+        cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
+        cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
+        cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
+        cfg.Production(P, ['with']), cfg.Production(N, ['park']),
+        cfg.Production(N, ['dog']),  cfg.Production(N, ['statue']),
+        cfg.Production(Det, ['my']),
         )
 
-    grammar = CFG(S, productions)
+    grammar = cfg.Grammar(S, productions)
 
     # tokenize the sentence
-    sent = tokenize.whitespace('my dog saw a man in the park with a statue')
+    sent = list(tokenize.whitespace('my dog saw a man in the park with a statue'))
 
-    ShiftReduceParserDemo(grammar, sent).mainloop()
+    ShiftReduceDemo(grammar, sent).mainloop()
 
 if __name__ == '__main__': demo()
         
