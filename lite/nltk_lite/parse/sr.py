@@ -26,7 +26,7 @@ class ShiftReduce(AbstractParse):
     the man" with a typical grammar, C{ShiftReduce} will produce
     the following stack, which covers "the dog saw"::
 
-       [(NP: (Det: <'the'>) (N: <'dog'>)), (V: <'saw'>)]
+       [(NP: (Det: 'the') (N: 'dog')), (V: 'saw')]
 
     C{ShiftReduce} attempts to extend the stack to cover the
     entire text, and to combine the stack elements into a single tree,
