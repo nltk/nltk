@@ -78,12 +78,11 @@ def tagged(files = items):
 def demo():
     from nltk_lite.corpora import brown
     from itertools import islice
+    from pprint import pprint
 
-    for sent in islice(brown.raw('a'), 0, 5):
-        print sent
+    pprint(list(islice(brown.raw('a'), 0, 5)))
 
-    for sent in islice(brown.tagged('a'), 0, 5):
-        print sent
+    pprint(list(islice(brown.tagged('a'), 0, 5)))
 
 if __name__ == '__main__':
     demo()

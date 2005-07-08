@@ -18,6 +18,7 @@ WHITESPACE = r'\s+'
 NEWLINE    = r'\n'
 BLANKLINE  = r'\s*\n\s*\n\s*'
 WORDPUNCT  = r'[a-zA-Z]+|[^a-zA-Z\s]+'
+SHOEBOXSEP = r'^\\'
 
 def _remove_group_identifiers(parsed_re):
     """
@@ -161,7 +162,7 @@ def whitespace(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return (t for t in regexp(s, pattern=WHITESPACE, gaps=True))
+    return regexp(s, pattern=WHITESPACE, gaps=True)
 
 def line(s):
     """
@@ -171,7 +172,7 @@ def line(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return (t for t in regexp(s, pattern=NEWLINE, gaps=True))
+    return regexp(s, pattern=NEWLINE, gaps=True)
 
 def blankline(s):
     """
@@ -181,7 +182,7 @@ def blankline(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return (t for t in regexp(s, pattern=BLANKLINE, gaps=True))
+    return regexp(s, pattern=BLANKLINE, gaps=True)
 
 def wordpunct(s):
     """
@@ -193,8 +194,17 @@ def wordpunct(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return (t for t in regexp(s, pattern=WORDPUNCT))
+    return regexp(s, pattern=WORDPUNCT)
 
+def shoebox(s):
+    """
+    Tokenize a Shoebox entry into its fields (separated by backslash markers).
+
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
+    @return: An iterator over tokens
+    """
+    return regexp(s, pattern=SHOEBOXSEP, gaps=True)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration

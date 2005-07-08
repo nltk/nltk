@@ -90,3 +90,46 @@
 -->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Simple approach: "delete one".  First define a function that returns
+a list of strings, each one having a different character deleted from
+the supplied form:
+
+  >>> def delete_one(word):
+  ...     for i in range(len(word)):
+  ...         yield word[:i]+word[i+1:]
+
+Next construct an index over all these forms:
+
+  >>> idx = {}
+  >>> for lex in lexemes:
+  ...     for s in delete_one(lex):
+  ...         if s not in idx:
+  ...             idx[s] = set()
+  ...         idx[s].add(lex)
+
+Now we can define a lookup function:
+
+  >>> def lookup(word):
+  ...     candidates = set()
+  ...     for s in delete_one(word):
+  ...         if s in idx:
+  ...             candidates.update(idx[s])
+  ...     return candidates
+
+Now we can test it out:
+
+  >>> lookup('kokopouto')
+  set(['kokopeoto', 'kokopuoto'])
+  >>> lookup('kokou')
+  set(['kokoa', 'kokeu', 'kokio', 'kooru', 'kokoi', 'kooku', 'kokoo'])
+
+Note that this simple method only returns forms of the same length.
+
+#. Write a spelling correction function which, given a word of length
+   ``i``, can return candidate corrections of length ``i-1``, ``i``,
+   or ``i+1``.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

@@ -131,7 +131,6 @@ def tagged(files = 'chunked'):
             yield l
 
 def raw(files = 'raw'):
-
     """
     Read sentences from the Penn Treebank corpus sample.
 

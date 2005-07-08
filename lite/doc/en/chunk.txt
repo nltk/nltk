@@ -79,7 +79,7 @@ differences, however.  First, as noted above, chunking is not
 exhaustive, and typically omits items in the surface string.  Second,
 where parsing constructs nested deeply structures, chunking creates
 structures of fixed depth (typically depth 2), and as fine-grained as
-possible, as shown below::
+possible, as shown below:
 
 1. Parsing:
 | [ :subscript:NP
@@ -328,7 +328,7 @@ illustrated by the complete program below.
 
 .. note: Each rule must have a "description" associated with it, which
 provides a short explanation of the purpose or the effect of the rule.
-This description is accessed via the ``descr()`` method. </footnote>
+This description is accessed via the ``descr()`` method.
     
   >>> from nltk_lite import tag
   >>> sent = tag.string2tags("the/DT little/JJ cat/NN sat/VBD on/IN the/DT mat/NN")
@@ -654,7 +654,6 @@ location that has "``NN``" to the left and "``DT``" to the right:
 To illustrate this rule, we will use a combine it with a chunking rule
 that chunks sequences of noun phrases, adjectives, and determiners:
 
-  # Tokenize a new test text
   >>> sent = tag.string2tags('Bob/NNP saw/VBD the/DT man/NN the/DT cat/NN chased/VBD')
   >>> chunk_rule = parse.ChunkRule('<NN.*|DT|JJ>+',
   ...                        'Chunk sequences of NN, JJ, and DT')
