@@ -360,7 +360,7 @@ def parse_production(s):
             rhsides[-1].append(Nonterminal(piece)) # Nonterminal
     return [Production(lhside, rhside) for rhside in rhsides]
 
-def parse(s):
+def parse_grammar(s):
     productions = []
     for linenum, line in enumerate(s.split('\n')):
         line = line.strip()
@@ -394,7 +394,7 @@ def demo():
     print
 
     # Create some Grammar Productions
-    grammar = Grammar.parse("""
+    grammar = cfg.parse_grammar("""
     S -> NP VP
     PP -> P NP
     NP -> Det N
