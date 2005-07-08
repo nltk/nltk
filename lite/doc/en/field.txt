@@ -1,0 +1,616 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+=============================================
+Accessing and Analyzing Linguistic Field Data
+=============================================
+
+:Authors: Steven Bird
+:Contact: sb@csse.unimelb.edu.au
+:Version: 0.1
+:Revision: $Revision$
+:Date: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Note:: This is a draft.  Please send any feedback to the authors.
+
+------------
+Introduction 
+------------
+
+The most popular tool for managing linguistic field data is *Shoebox*.
+Together with its more recent incarnation (*Toolbox*), Shoebox uses a
+simple file format which we can easily read and write.  NLTK_Lite
+includes a Shoebox dictionary of Rotokas, an East Papuan language
+spoken on the island of Bougainville (provided by Stuart Robinson).
+
+| \lx kaa
+| \ps N.M
+| \cl isi
+| \ge cooking banana
+| \gp banana bilong kukim
+| \sf FLORA
+| \dt 12/Feb/2005
+| \ex Taeavi iria kaa isi kovopaueva kaparapasia.
+| \xp Taeavi i bin planim gaden banana bilong kukim tasol long paia.
+| \xe Taeavi planted banana in order to cook it.
+
+Each field consists of a field name (e.g. ``lx``, for lexeme), and a
+value (e.g. ``kaa``).  Other fields are:
+``ps`` part-of-speech;
+``cl`` classifier;
+``ge`` English gloss;
+``gp`` Pidgin English gloss;
+``sf`` Semantic field;
+``dt`` Date last edited;
+``ex`` Example sentence;
+``xp`` Pidgin translation of example;
+``xe`` English translation of example.
+
+We can use the ``shoebox.raw()`` method to access a Shoebox file to
+perform various operations that involve single-pass scanning of a
+lexicon.  For example, here we compute the average number of fields
+for each entry:
+
+  >>> from nltk_lite.corpora import shoebox
+  >>> sum_size = num_entries = 0
+  >>> for entry in shoebox.raw('rotokas'):
+  ...     num_entries += 1
+  ...     sum_size += len(entry)
+  >>> print sum_size/num_entries
+  10
+
+As we will see below, we can also use the ``raw()`` method in
+functions that add or remove fields, or to examine sequences of fields.
+
+The raw method reads each field into a list, preserving the order of fields.
+Another version of the method reads an entry into a Python dictionary.
+
+  >>> entries = list(shoebox.dict('rotokas'))
+  >>> from pprint import pprint
+  >>> pprint(entries[3])
+  {'cl': 'isi',
+   'dt': '12/Feb/2005',
+   'ex': 'Taeavi iria kaa isi kovopaueva kaparapasia.',
+   'ge': 'cooking banana',
+   'gp': 'banana bilong kukim',
+   'lx': 'kaa',
+   'ps': 'N.M',
+   'sf': 'FLORA',
+   'xe': 'Taeavi planted banana in order to cook it.',
+   'xp': 'Taeavi i bin planim gaden banana bilong kukim tasol long paia.'}
+
+We can use this method to print a formatted version of a lexicon.
+It allows us to request specific fields without needing to be
+concerned with their relative ordering in an entry.
+
+  >>> for entry in entries[70:80]:
+  ...     lex = entry['lx']
+  ...     pos = entry['ps']
+  ...     dfn = entry['ge']
+  ...     if entry.has_key('eng'):
+  ...         dfn = entry['eng']
+  ...     print "%s (%s) '%s'" % (lex, pos, dfn)
+  kakapikoto (N.N2) 'newborn baby'
+  kakapu (V.B) 'place in sling for purpose of carrying'
+  kakapua (N.N) 'sling for lifting'
+  kakara (N.N) 'bracelet'
+  Kakarapaia (N.PN) 'village name'
+  kakarau (N.F) 'stingray'
+  Kakarera (N.PN) 'name'
+  Kakareraia (N.???) 'name'
+  kakata (N.F) 'cockatoo'
+  kakate (N.F) 'bamboo tube for water'
+
+-----------------------
+Simple Entry Processing
+-----------------------
+
+
+Obtaining Values of a Field
+---------------------------
+
+  >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas')
+  ...	             for field in entry if field[0] == 'lx']
+
+Adding New Fields
+-----------------
+
+Define a function which maps a string of consonants and vowels
+to the corresponding CV sequence, e.g. ``kakapua`` would map to
+``CVCVCVV``.
+
+  >>> import re
+  >>> def cv(s):
+  ...     s = s.lower()
+  ...     s = re.sub(r'[^a-z]',     r'-', s)
+  ...     s = re.sub(r'[^aeiou\-]', r'C', s)
+  ...     s = re.sub(r'[aeiou]',    r'V', s)
+  ...     return (s)
+
+Now, scan the lexicon, and add a new cv field after every lx field.
+Here we will do it for a single entry only:
+
+  >>> entries = list(shoebox.raw('rotokas'))
+  >>> for field in entries[50]:
+  ...     print "\\%s %s" % field
+  ...	  if field[0] == "lx":
+  ...	      print "\\cv %s" % cv(field[1])
+  \lx kaeviro
+  \cv CVVCVCV
+  \ps V.A
+  \ge lift off
+  \ge take off
+  \gp go antap
+  \nt used to describe action of plane
+  \dt 12/Feb/2005
+  \ex Pita kaeviroroe kepa kekesia oa vuripierevo kiuvu.
+  \xp Pita i go antap na lukim haus win i bagarapim.
+  \xe Peter went to look at the house that the wind destroyed.
+
+
+Removing Fields
+---------------
+
+  >>> retain = ('lx', 'ps')
+  >>> entries = list(shoebox.raw('rotokas'))
+  >>> for entry in entries[50:55]:
+  ...     for field in entry:
+  ...         if field[0] in retain:
+  ...             print "\\%s %s" % field
+  ...     print
+  \lx kaeviro
+  \ps V.A
+  <BLANKLINE>
+  \lx kagave
+  \ps N.F
+  <BLANKLINE>
+  \lx kaie
+  \ps V.A
+  <BLANKLINE>
+  \lx kaiea
+  \ps N.N
+  <BLANKLINE>
+  \lx kaikaio
+  \ps N.N
+  <BLANKLINE>
+
+
+--------
+Analysis
+--------
+
+Find reduplicated words.  For each lexeme ``lex``, we will check if
+the lexicon contains the reduplicated form ``lex+lex``.  In order to
+do this we need to store all lexemes in memory.  We will also keep
+track of the English glosses, so they can be displayed alongside the
+wordforms.  Accordingly, we create a Python dictionary ``lexgloss``
+which maps lexemes to their English glosses:
+
+  >>> lexgloss = {}
+  >>> for entry in shoebox.dict('rotokas'):
+  ...     if entry.has_key('lx') and entry['ps'][0] == 'V':
+  ...         lexgloss[entry['lx']] = entry['ge']
+
+Next, for each lexeme, check if the reduplicated form is present, and
+if so, report the forms and their glosses.
+
+  >>> for lex in lexgloss:
+  ...     if lex+lex in lexgloss:
+  ...         print "%s (%s); %s (%s)" % (lex, lexgloss[lex], lex+lex, lexgloss[lex+lex])
+  kuvu (fill.up); kuvukuvu (stamp the ground)
+  kitu (save); kitukitu (scrub clothes)
+  kopa (ingest); kopakopa (gulp.down)
+  kasi (burn); kasikasi (angry)
+  koi (high pitched sound); koikoi (groan with pain)
+  kee (chip); keekee (shattered)
+  kauo (jump); kauokauo (jump up and down)
+  kea (deceived); keakea (lie)
+  kove (drop); kovekove (drip repeatedly)
+  kape (unable to meet); kapekape (grip with arms not meeting)
+  kapo (fasten.cover.strip); kapokapo (fasten.cover.strips)
+  koa (skin); koakoa (remove the skin)
+  kipu (paint); kipukipu (rub.on)
+  koe (spoon out a solid); koekoe (spoon out)
+  kovo (work); kovokovo (surround)
+  kiru (have sore near mouth); kirukiru (crisp)
+  kotu (bite); kotukotu (grind teeth together)
+  kavo (collect); kavokavo (work black magic)
+  kuri (scrape); kurikuri (scratch repeatedly)
+  karu (unhook); karukaru (open)
+  kare (return); karekare (return)
+  kari (break); karikari (shred)
+  kiro (write); kirokiro (write)
+  kae (carry); kaekae (tempt)
+  koru (make return); korukoru (obstruct)
+  ku (finished with); kuku (spoonfeed)
+  kosi (exit); kosikosi (exit)
+
+Print trisyllabic verbs ending in a long vowel.  Make use of the fact
+that syllable onsets are obligatory, and only consist of a single
+consonant.  We use the ``cv`` function to get the CV template of the
+lexeme, then count the number of Cs it contains.
+
+  >>> for entry in shoebox.dict('rotokas'):
+  ...     if entry.has_key('lx'):
+  ...         lex = entry['lx']
+  ...         cns = list(cv(lex)).count('C')
+  ...         pos = entry['ps']
+  ...         if lex[-1] in 'aeiou' and lex[-2] in 'aeiou' \
+  ...           and cns == 3 and pos[0] == 'V':
+  ...             dfn = entry['ge']
+  ...             print "%s (%s) '%s'" % (lex, pos, dfn)
+  kaetupie (V.B) 'tighten'
+  kakupie (V.B) 'yodel'
+  kapatau (V.B) 'add to'
+  kapuapie (V.B) 'wound'
+  kapupie (V.B) 'close tight'
+  kapuupie (V.B) 'close'
+  karepie (V.B) 'return'
+  karivai (V.A) 'have an appetite'
+  kasipie (V.B) 'care for'
+  kaukaupie (V.B) 'intense sunlight'
+  kavorou (V.A) 'intercept'
+  kavupie (V.B) 'leave.behind'
+  kekepie (V.B) 'show'
+  keruria (V.A) 'determined'
+  ketoopie (V.B) 'make sprout from seed'
+  koatapie (V.B) 'accept'
+  koetapie (V.B) 'satisfy curiosity'
+  kokovae (V.A) 'sing'
+  kokovua (V.B) 'shave the hair line'
+  kopiipie (V.B) 'kill'
+  korupie (V.B) 'take outside'
+  kosipie (V.B) 'make exit'
+  kovopie (V.B) 'use to make work'
+  kukuvai (V.B) 'cover the head from rain or sun'
+  kuvaupie (V.B) 'leave alone'
+  kuverea (V.A) 'not all right'
+
+Let's count up the various kinds of CV syllables.
+
+  >>> from nltk_lite.probability import FreqDist
+  >>> fd = FreqDist()
+  >>> from nltk_lite.tokenize import regexp
+  >>> for lex in lexemes:
+  ...     for syl in regexp(lex, pattern=r'[^aeiou][aeiou]+'):
+  ...         if len(syl) == 2:
+  ...             fd.inc(syl)
+
+Rather than just printing the syllables and their frequency counts, we
+will tabulate them:
+
+  >>> for vowel in 'aeiou':
+  ...     for cons in 'ptkvsr':
+  ...          print '%s%s:%4d ' % (cons, vowel, fd.count(cons+vowel)),
+  ...     print
+  pa:  70  ta:  31  ka: 298  va:  64  sa:   0  ra: 156 
+  pe:  24  te:   7  ke: 108  ve:  17  se:   1  re:  47 
+  pi:  42  ti:   0  ki:  69  vi:  95  si:  79  ri:  68 
+  po:  25  to: 133  ko: 306  vo:  36  so:   3  ro:  73 
+  pu:  30  tu:  29  ku: 129  vu:  35  su:   0  ru:  58 
+
+Consider the ``t`` and ``s`` columns, and observe that ``ti`` is not
+attested, while ``si`` is frequent.  This suggests that a phonological
+process of palatalisation is operating in the language.  We would then
+want to consider the other syllables involving ``s``.
+
+
+Finding Minimal Pairs
+---------------------
+
+First, select the length of the words of interest, the position
+of the target segment in the word, and the minimum number of forms
+we would like to see:
+
+  >>> length = 4
+  >>> position = 1
+  >>> min = 3
+
+Now, we iterate over all the lexemes, checking if they have the
+required length:
+
+  >>> from nltk_lite.utilities import MinimalSet
+  >>> ms = MinimalSet()
+  >>> for lex in lexemes:
+  ...     if len(lex) == length:
+  ...         context = lex[:position] + '_' + lex[position+1:]
+  ...         target = lex[position]
+  ...         ms.add(context, target, lex)
+
+Finally, we print the table of minimal sets.  We specify that
+each context was seen at least the minimum number of required times.
+
+  >>> for context in ms.contexts(3):
+  ...     for target in ms.targets():
+  ...         print "%-4s" % ms.display(context, target, "-"),
+  ...     print
+  kasi -    kesi kusi kosi
+  kava -    -    kuva kova
+  karu kiru keru kuru koru
+  kapu kipu -    -    kopu
+  karo kiro -    -    koro
+  kari kiri keri kuri kori
+  kapa -    kepa -    kopa
+  kara kira kera -    kora
+  kaku -    -    kuku koku
+  kaki kiki -    -    koki
+
+Observe in the above example that the context, target, and displayed
+material were all based on the lexeme field.  However, the idea of
+minimal sets is much more general.  For instance, suppose we wanted to
+get a list of wordforms having more than one possible part-of-speech.
+Then the target will be part-of-speech field, and the context will be
+the lexeme field.  We will also display the English gloss field.
+
+  >>> ms = MinimalSet()
+  >>> for entry in shoebox.dict('rotokas'):
+  ...     if entry.has_key('lx'):
+  ...         display = "%s (%s)" % (entry['ps'], entry['ge'])
+  ...         ms.add(entry['lx'], entry['ps'], display)
+  >>> for context in ms.contexts()[:10]:
+  ...     print "%s:" % context, "; ".join(ms.display_all(context))
+  kokovara: N.N (unripe coconut); V.A (unripe)
+  kapua: N.N (sore); V.A (have sores)
+  kosikosi: V.B (cut off sago palm leaves); V.A (exit)
+  koie: V.??? (get pig to eat); N.??? (pig)
+  kovo: N.N (work); V.B (work); CLASS (garden)
+  kavori: V.B (collect crayfish or lobster); N.??? (lobster)
+  kororo: N.N (sphere); N.??? (bird)
+  korita: V.B (cut up meat); N.??? (cutlet?)
+  keru: N.N (bone); V.A (harden like bone)
+  kirokiro: V.B (write); N.F (bush used for sorcery)
+
+
+Analysing Texts
+---------------
+
+Use the shoebox lexicon to tag a text with part-of-speech information,
+then do POS-sensitive concordance-style searches.
+
+
+-----------------------------------------------------------
+Example Applications: Improving Access to Lexical Resources
+-----------------------------------------------------------
+
+A lexicon constructed as part of field-based research is a potential
+*language resource* for speakers of a language.  Even when the
+language in question has a standard writing system, many speakers
+will not be literate in the language.  They may be able to attempt
+an approximate spelling for a word, or they may prefer to access the
+dictionary via an index which uses the language of wider
+communication.  In this section we deal with the first of these.
+The second is left to the reader as an exercise.
+
+Fuzzy Spelling
+--------------
+
+Confusible sets:
+
+  >>> group = {
+  ...     ' ':0,                     # blank (for short words)
+  ...     'p':1,  'b':1,  'v':1,     # labials
+  ...     't':2,  'd':2,  's':2,     # alveolars
+  ...     'l':3,  'r':3,             # sonorant consonants
+  ...     'i':4,  'e':4,             # high front vowels
+  ...     'u':5,  'o':5,             # high back vowels
+  ...     'a':6                      # low vowels
+  ... }
+
+Soundex: idea of a signature.  Words with the same signature
+considered confusible.  Consider first letter of a word to be so
+cognitively salient that people will not get it wrong.
+
+  >>> def soundex(word):
+  ...     if len(word) == 0: return word  # sanity check
+  ...     word += '    '                  # ensure word long enough
+  ...     c0 = word[0].upper()
+  ...     c1 = group[word[1]]
+  ...     cons = filter(lambda x: x in 'pbvtdslr ', word[2:])
+  ...     c2 = group[cons[0]]
+  ...     c3 = group[cons[1]]
+  ...     return "%s%d%d%d" % (c0, c1, c2, c3)
+  >>> print soundex('kalosavi')
+  K632
+  >>> print soundex('ti')
+  T400
+  
+Now we can build a soundex index of the lexicon:
+
+  >>> soundex_idx = {}
+  >>> for lex in lexemes:
+  ...     code = soundex(lex)
+  ...     if code not in soundex_idx:
+  ...         soundex_idx[code] = set()
+  ...     soundex_idx[code].add(lex)
+
+We should sort these candidates by proximity with the target word.
+
+  >>> from nltk_lite.utilities import edit_dist
+  >>> def fuzzy_spell(target):
+  ...     scored_candidates = []
+  ...     code = soundex(target)
+  ...     for word in soundex_idx[code]:
+  ...         dist = edit_dist(word, target)
+  ...         scored_candidates.append((dist, word))
+  ...     scored_candidates.sort()
+  ...     return [w for (d,w) in scored_candidates[:10]]
+
+Finally, we can look up a word to get approximate matches:
+
+  >>> fuzzy_spell('kokopouto')
+  ['kokopeoto', 'kokopuoto', 'kokepato', 'koovoto', 'koepato', 'kooupato', 'kopato', 'kopiito', 'kovuto', 'koavaato']
+  >>> fuzzy_spell('kogou')
+  ['kogo', 'koou', 'kokeu', 'koko', 'kokoa', 'kokoi', 'kokoo', 'koku', 'kooe', 'kooku']
+
+
+
+------------------
+Generating Reports
+------------------
+
+
+Discovering Entry Patterns
+--------------------------
+
+Print most frequent fields
+
+  >>> fd = FreqDist()
+  >>> for entry in shoebox.raw('rotokas'):
+  ...     for field in entry:
+  ...	      fd.inc(field[0])
+  >>> fd.sorted_samples()[:10]
+  ['ge', 'ex', 'xe', 'xp', 'gp', 'lx', 'ps', 'dt', 'rt', 'eng']
+
+
+Discovering patterns of fields:
+
+  >>> fd = FreqDist()
+  >>> for entry in shoebox.raw('rotokas'):
+  ...     marker_list = [field[0] for field in entry]
+  ...     markers = ':'.join(marker_list)
+  ...	  fd.inc(markers)
+  >>> top_ten = fd.sorted_samples()[:10]
+  >>> print '\n'.join(top_ten)
+  lx:rt:ps:ge:gp:dt:ex:xp:xe
+  lx:ps:ge:gp:dt:ex:xp:xe
+  lx:ps:ge:gp:dt:ex:xp:xe:ex:xp:xe
+  lx:rt:ps:ge:gp:dt:ex:xp:xe:ex:xp:xe
+  lx:ps:ge:gp:nt:dt:ex:xp:xe
+  lx:ps:ge:gp:dt
+  lx:ps:ge:ge:gp:dt:ex:xp:xe:ex:xp:xe
+  lx:rt:ps:ge:ge:gp:dt:ex:xp:xe:ex:xp:xe
+  lx:ps:ge:ge:gp:dt:ex:xp:xe
+  lx:rt:ps:ge:ge:gp:dt:ex:xp:xe
+
+
+.. Parsing Entries?
+   Some shoebox entries have nested structure.  Thus they correspond to a
+   tree over the fields.
+
+Looking at Timestamps
+---------------------
+
+  >>> fd = FreqDist()
+  >>> from string import split
+  >>> for entry in shoebox.dict('rotokas'):
+  ...     if 'dt' in entry:
+  ...         (day, month, year) = split(entry['dt'], '/')
+  ...         fd.inc((month, year))
+  >>> for time in fd.sorted_samples():
+  ...     print time[0], '/', time[1], ':', fd.count(time)
+  Feb / 2005 : 307
+  Dec / 2004 : 151
+  Jan / 2005 : 123
+  Feb / 2004 : 64
+  Sep / 2004 : 49
+  May / 2005 : 46
+  Mar / 2005 : 37
+  Apr / 2005 : 29
+  Jul / 2004 : 14
+  Nov / 2004 : 5
+  Oct / 2004 : 5
+  Aug / 2004 : 4
+  May / 2003 : 2
+  Jan / 2004 : 1
+  May / 2004 : 1
+
+To put these in time order, we need to set up a special comparison function.
+Otherwise, if we just sort the months, we'll get them in alphabetical order.
+
+  >>> month_index = {
+  ...     "Jan" : 1, "Feb" : 2,  "Mar" : 3,  "Apr" : 4,
+  ...     "May" : 5, "Jun" : 6,  "Jul" : 7,  "Aug" : 8,
+  ...     "Sep" : 9, "Oct" : 10, "Nov" : 11, "Dec" : 12
+  ... }
+  >>> def time_cmp(a, b):
+  ...     a2 = a[1], month_index[a[0]]
+  ...     b2 = b[1], month_index[b[0]]
+  ...     return cmp(a2, b2)
+
+The comparison function says that we compare two times of the
+form ``('Mar', '2004')`` by reversing the order of the month and
+year, and converting the month into a number to get ``('2004', '3')``,
+then using Python's built-in ``cmp`` function to compare them.
+
+Now we can get the times found in the Shoebox entries, sort them
+according to our ``time_cmp`` comparison function, and then print them
+in order.  This time we print bars to indicate frequency:
+
+  >>> times = fd.samples()
+  >>> times.sort(cmp=time_cmp)
+  >>> for time in times:
+  ...     print time[0], '/', time[1], ':', '#' * (1 + fd.count(time)/10)
+  May / 2003 : #
+  Jan / 2004 : #
+  Feb / 2004 : #######
+  May / 2004 : #
+  Jul / 2004 : ##
+  Aug / 2004 : #
+  Sep / 2004 : #####
+  Oct / 2004 : #
+  Nov / 2004 : #
+  Dec / 2004 : ################
+  Jan / 2005 : #############
+  Feb / 2005 : ###############################
+  Mar / 2005 : ####
+  Apr / 2005 : ###
+  May / 2005 : #####
+
+
+---------
+Exercises
+---------
+
+1. Write a program to filter out just the date field (``dt``) without
+   having to list the fields we wanted to retain.
+
+#. Print an index of a lexicon.  For each lexical entry, construct a
+   tuple of the form ``(gloss, lexeme)``, then sort and print them all.
+
+#. Write a program to find any parts of speech (``ps`` field) that
+   occurred less than ten times.  Perhaps these are typing mistakes?
+
+#. We saw a method for discovering cases of whole-word reduplication.
+   Write a function to find words that may contain partial
+   reduplication.  Use the ``re.search()`` method, and the following
+   regular expression: ``(..+)\1``
+
+#. What is the frequency of each consonant and vowel contained in
+   lexeme fields?
+
+#. Build an index of those lexemes which appear in example sentences.
+   Suppose the lexeme for a given entry is *w*.
+   Then add a single cross-reference field ``xrf`` to this entry, referencing
+   the headwords of other entries having example sentences containing
+   $w$.  Do this for all entries and save the result as a shoebox-format file.
+  
+#. Write a program to add a new field ``syl`` which gives a count of
+   the number of syllables in the word.
+
+#. Write a soundex function that is appropriate for a language you are
+   interested in.  If the language has clusters (consonants or
+   vowels), consider how reliably people can discriminate the second
+   and subsequent member of a cluster.  If these are highly
+   confusible, ignore them in the signature.  If the *order* of
+   segments in a cluster leads to confusion, normalise this in the
+   signature (e.g. sort each cluster alphabetically, so that a word
+   like ``treatments`` would be normalised to ``rtaemtenst``, before
+   the code is computed).
+  
+#. Write a function which displays the complete entry for a lexeme.
+   When the lexeme is incorrectly spelled it should display the entry
+   for the most similarly spelled lexeme.
+ 
+#. How many entries were last modified in 2004?
+
+
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
+
