@@ -54,7 +54,6 @@ def raw(files = 'rotokas'):
     if type(files) is str: files = (files,)
 
     for file in files:
-        print "FILE:", file
         path = os.path.join(get_basedir(), "shoebox", file + ".dic")
         f = open(path).read()
         for entry in tokenize.blankline(f):
