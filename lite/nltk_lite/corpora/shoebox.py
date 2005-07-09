@@ -12,6 +12,7 @@
 from nltk_lite.corpora import get_basedir
 from nltk_lite import tokenize
 from string import split
+from itertools import imap
 import os
 
 def _parse_entry(str):
@@ -53,15 +54,14 @@ def raw(files = 'rotokas'):
     if type(files) is str: files = (files,)
 
     for file in files:
+        print "FILE:", file
         path = os.path.join(get_basedir(), "shoebox", file + ".dic")
         f = open(path).read()
         for entry in tokenize.blankline(f):
             yield list(_parse_entry(entry))
 
-def dict(files = 'rotokas'):
-    if type(files) is str: files = (files,)
-    for entry in raw(files):
-        yield dict(entry)
+def dictionary(files = 'rotokas'):
+    return imap(dict, raw(files))
 
 def _dict_list_entry(entry):
     d = {}
@@ -89,7 +89,7 @@ def demo():
     pprint(list(islice(shoebox.raw(), 3)))
 
     print 'Dictionary:'
-    pprint(list(islice(shoebox.dict(), 3)))
+    pprint(list(islice(shoebox.dictionary(), 3)))
 
     print 'Dictionary-List:'
     pprint(list(islice(shoebox.dict_list(), 3)))
