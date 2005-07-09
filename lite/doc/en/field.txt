@@ -67,7 +67,7 @@ functions that add or remove fields, or to examine sequences of fields.
 The raw method reads each field into a list, preserving the order of fields.
 Another version of the method reads an entry into a Python dictionary.
 
-  >>> entries = list(shoebox.dict('rotokas'))
+  >>> entries = list(shoebox.dictionary('rotokas'))
   >>> from pprint import pprint
   >>> pprint(entries[3])
   {'cl': 'isi',
@@ -189,7 +189,7 @@ wordforms.  Accordingly, we create a Python dictionary ``lexgloss``
 which maps lexemes to their English glosses:
 
   >>> lexgloss = {}
-  >>> for entry in shoebox.dict('rotokas'):
+  >>> for entry in shoebox.dictionary('rotokas'):
   ...     if entry.has_key('lx') and entry['ps'][0] == 'V':
   ...         lexgloss[entry['lx']] = entry['ge']
 
@@ -232,7 +232,7 @@ that syllable onsets are obligatory, and only consist of a single
 consonant.  We use the ``cv`` function to get the CV template of the
 lexeme, then count the number of Cs it contains.
 
-  >>> for entry in shoebox.dict('rotokas'):
+  >>> for entry in shoebox.dictionary('rotokas'):
   ...     if entry.has_key('lx'):
   ...         lex = entry['lx']
   ...         cns = list(cv(lex)).count('C')
@@ -345,7 +345,7 @@ Then the target will be part-of-speech field, and the context will be
 the lexeme field.  We will also display the English gloss field.
 
   >>> ms = MinimalSet()
-  >>> for entry in shoebox.dict('rotokas'):
+  >>> for entry in shoebox.dictionary('rotokas'):
   ...     if entry.has_key('lx'):
   ...         display = "%s (%s)" % (entry['ps'], entry['ge'])
   ...         ms.add(entry['lx'], entry['ps'], display)
@@ -381,7 +381,9 @@ will not be literate in the language.  They may be able to attempt
 an approximate spelling for a word, or they may prefer to access the
 dictionary via an index which uses the language of wider
 communication.  In this section we deal with the first of these.
-The second is left to the reader as an exercise.
+The second is left to the reader as an exercise.  We will also
+generate a wordfinder puzzle which can be used to test knowledge
+of lexical items.
 
 Fuzzy Spelling
 --------------
@@ -445,6 +447,104 @@ Finally, we can look up a word to get approximate matches:
   ['kogo', 'koou', 'kokeu', 'koko', 'kokoa', 'kokoi', 'kokoo', 'koku', 'kooe', 'kooku']
 
 
+Wordfinder Puzzle
+-----------------
+
+Here we will generate a grid of letters, containing words found in the
+dictionary.  First we remove any duplicates and disregard the order in
+which the lexemes appeared in the dictionary.  We do this by converting
+it to a set, then back to a list.  Then we select the first 200 words,
+and then only keep those words having a reasonable length.
+
+  >>> words = list(set(lexemes))
+  >>> words = words[:200]
+  >>> words = [w for w in words if 3 <= len(w) <= 12]
+
+Now we generate the wordfinder grid, and print it out.
+
+  >>> from nltk_lite.misc.wordfinder import wordfinder
+  >>> grid, used = wordfinder(words)
+  >>> for i in range(len(grid)):
+  ...     for j in range(len(grid[i])):
+  ...         print grid[i][j],
+  ...     print
+  O G H K U U V U V K U O R O V A K U N C
+  K Z O T O I S E K S N A I E R E P A K C
+  I A R A A K I O Y O V R S K A W J K U Y
+  L R N H N K R G V U K G I A U D J K V N
+  I I Y E A U N O K O O U K T R K Z A E L
+  A V U K O X V K E R V T I A A E R K R K
+  A U I U G O K U T X U I K N V V L I E O
+  R R K O K N U A J Z T K A K O O S U T R
+  I A U A U A S P V F O R O O K I C A O U
+  V K R R T U I V A O A U K V V S L P E K
+  A I O A I A K R S V K U S A A I X I K O
+  P S V I K R O E O A R E R S E T R O J X
+  O I I S U A G K R O R E R I T A I Y O A
+  R R R A T O O K O I K I W A K E A A R O
+  O E A K I K V O P I K H V O K K G I K T
+  K K L A K A A R M U G E P A U A V Q A I
+  O O O U K N X O G K G A R E A A P O O R
+  K V V P U J E T Z P K B E I E T K U R A
+  N E O A V A E O R U K B V K S Q A V U E
+  C E K K U K I K I R A E K O J I Q K K K
+
+Finally we generate the words which need to be found.
+
+  >>> for i in range(len(used)):
+  ...     print "%d:" % (i+1), used[i]
+  1: KASIARAO
+  2: KERIKERISI
+  3: KARUVIRA
+  4: KOGO
+  5: KOROTO
+  6: KOVASI
+  7: KOKOVARA
+  8: KUVU
+  9: KAPOKARI
+  10: KOKOROPAVIRA
+  11: KEAVIRA
+  12: KUROVIRA
+  13: KUVERETO
+  14: KATA
+  15: KUVA
+  16: KAREKOVA
+  17: KAVOROU
+  18: KUSI
+  19: KIKISI
+  20: KOARAUA
+  21: KOVOVO
+  22: KAPUA
+  23: KORUKO
+  24: KERISI
+  25: KERAVISI
+  26: KIKIRAEKO
+  27: KITUKITU
+  28: KAPUU
+  29: KOVUTO
+  30: KOIE
+  31: KOGOVA
+  32: KATAAVIRA
+  33: KUUVU
+  34: KORUOU
+  35: KEVOISI
+  36: KESIOTO
+  37: KAARA
+  38: KUROEA
+  39: KITU
+  40: KUROO
+  41: KEARITO
+  42: KUROA
+  43: KOVARUA
+  44: KUI
+  45: KUE
+  46: KOVE
+  47: KOVO
+  48: KAPERE
+  49: KILIA
+  50: KAKIUA
+  51: KAITA
+  52: KAKIRI
 
 ------------------
 Generating Reports
@@ -494,7 +594,7 @@ Looking at Timestamps
 
   >>> fd = FreqDist()
   >>> from string import split
-  >>> for entry in shoebox.dict('rotokas'):
+  >>> for entry in shoebox.dictionary('rotokas'):
   ...     if 'dt' in entry:
   ...         (day, month, year) = split(entry['dt'], '/')
   ...         fd.inc((month, year))
