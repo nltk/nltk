@@ -492,59 +492,20 @@ Now we generate the wordfinder grid, and print it out.
 Finally we generate the words which need to be found.
 
   >>> for i in range(len(used)):
-  ...     print "%d:" % (i+1), used[i]
-  1: KASIARAO
-  2: KERIKERISI
-  3: KARUVIRA
-  4: KOGO
-  5: KOROTO
-  6: KOVASI
-  7: KOKOVARA
-  8: KUVU
-  9: KAPOKARI
-  10: KOKOROPAVIRA
-  11: KEAVIRA
-  12: KUROVIRA
-  13: KUVERETO
-  14: KATA
-  15: KUVA
-  16: KAREKOVA
-  17: KAVOROU
-  18: KUSI
-  19: KIKISI
-  20: KOARAUA
-  21: KOVOVO
-  22: KAPUA
-  23: KORUKO
-  24: KERISI
-  25: KERAVISI
-  26: KIKIRAEKO
-  27: KITUKITU
-  28: KAPUU
-  29: KOVUTO
-  30: KOIE
-  31: KOGOVA
-  32: KATAAVIRA
-  33: KUUVU
-  34: KORUOU
-  35: KEVOISI
-  36: KESIOTO
-  37: KAARA
-  38: KUROEA
-  39: KITU
-  40: KUROO
-  41: KEARITO
-  42: KUROA
-  43: KOVARUA
-  44: KUI
-  45: KUE
-  46: KOVE
-  47: KOVO
-  48: KAPERE
-  49: KILIA
-  50: KAKIUA
-  51: KAITA
-  52: KAKIRI
+  ...     print "%-12s" % used[i],
+  ...     if float(i+1)%5 == 0: print
+  KASIARAO     KERIKERISI   KARUVIRA     KOGO         KOROTO      
+  KOVASI       KOKOVARA     KUVU         KAPOKARI     KOKOROPAVIRA
+  KEAVIRA      KUROVIRA     KUVERETO     KATA         KUVA        
+  KOKARAPATO   KAREKOVA     KAVOROU      KUSI         KIKISI      
+  KOARAUA      KOVOVO       KOKORUUTO    KAPUA        KORUKO      
+  KERISI       KERAVISI     KITUKITU     KAPUU        KOVUTO      
+  KOIE         KOGOVA       KAROTO       KUUVU        KAVOVOA     
+  KESIOTO      KAARE        KAARA        KUROEA       KORUOTO     
+  KITU         KUROO        KUROA        KOKEE        KUI         
+  KUE          KEOPA        KOVE         KOVO         KIUVE       
+  KAUO         KILIA        KAAKASI      KEROROI      KOSI        
+  KAKUA        KIRIOTO      KAITA
 
 ------------------
 Generating Reports
