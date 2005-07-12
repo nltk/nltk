@@ -68,6 +68,9 @@ def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTU
     @rtype: C(tuple)
     """
 
+    # place longer words first
+    words.sort(cmp=lambda x,y:cmp(len(x),len(y)), reverse=True)
+
     grid = []  # the letter grid
     used = []  # the words we used
 
