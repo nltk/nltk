@@ -16,6 +16,9 @@ NLTK-Lite Tutorials
 .. _Tokenize: tokenize.html
 .. _Tag: tag.html
 .. _Parse: parse.html
+.. _Chunk: chunk.html
+.. _Chart: chart.html
+.. _Field: field.html
 
 --------
 Contents
@@ -27,7 +30,9 @@ Contents
 #. Tokenize_
 #. Tag_
 #. Parse_
-
+#. Chunk_
+#. Chart_
+#. Field_
 
 ----
 
