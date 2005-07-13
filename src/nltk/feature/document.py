@@ -23,10 +23,14 @@ class BagOfContainedWordsFeatureDetector(AbstractFeatureDetector):
         AbstractFeatureDetector.__init__(self, **property_names)
         
     def get_features(self, token):
-        return {'BOW': [tok['TEXT'] for tok in token['SUBTOKENS']]}
+        BOW = self.property('BOW')
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
+        return {BOW: [tok[TEXT] for tok in token[SUBTOKENS]]}
     
     def features(self):
-        return ['BOW']
+        BOW = self.property('BOW')
+        return [BOW]
 
 class SetOfContainedWordsFeatureDetector(AbstractFeatureDetector):
     """
@@ -38,8 +42,11 @@ class SetOfContainedWordsFeatureDetector(AbstractFeatureDetector):
         AbstractFeatureDetector.__init__(self, **property_names)
         
     def get_features(self, token):
-        return {'SOW': Set([tok['TEXT'] for tok in token['SUBTOKENS']])}
+        SOW = self.property('SOW')
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
+        return {SOW: Set([tok[TEXT] for tok in token[SUBTOKENS]])}
     
     def features(self):
-        return ['SOW']
+        return [SOW]
 
