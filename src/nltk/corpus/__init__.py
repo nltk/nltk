@@ -132,8 +132,6 @@ import sys, os.path, re
 from nltk.token import *
 from nltk.tokenizer import RegexpTokenizer
 from nltk.tokenreader import *
-from nltk.tokenreader import sense
-from nltk.tokenreader import tokenizerbased
 
 #################################################################
 # Base Directory for Corpora
@@ -731,27 +729,26 @@ treebank = TreebankCorpusReader('treebank', 'treebank/', False,
 
 ###################################################
 ## Semcor corpus
-#from nltk.sense import SemcorTokenizer
 
 description = """
 WordNet semantic concordance data. This is comprised of extracts from the
 Brown corpus, with each word tagged with its WordNet 1.7 tag.
 """
 
-semcor = None
-#semcor = SimpleCorpusReader(
-#    'semcor', 'semcor1.7/', r'brown./tagfiles/.*', description=description,
-#    default_tokenizer = SemcorTokenizer())
+semcor = SimpleCorpusReader(
+    'semcor', 'semcor1.7/', r'brown./tagfiles/.*',
+    groups=[('brown1', r'brown1/tagfiles/.*'),
+            ('brown2', r'brown2/tagfiles/.*'),
+            ('brownv', r'brownv/tagfiles/.*')],
+    description=description,
+    token_reader = SemcorTokenReader())
     
 ###################################################
 ## Senseval corpus
-#from nltk.sense import SensevalTokenizer
 
-senseval = None
-SensevalTokenReader = tokenizerbased.TokenizerBasedTokenReader(sense.SensevalTokenizer())
 senseval = SimpleCorpusReader(
     'senseval', 'senseval/', r'.*\.pos', description_file='README',
-    token_reader = SensevalTokenReader)
+    token_reader = SensevalTokenReader())
 
 ###################################################
 ## Names corpus

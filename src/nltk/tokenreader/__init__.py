@@ -58,6 +58,7 @@ from nltk.tokenreader.treebank import *
 from nltk.tokenreader.tagged import *
 from nltk.tokenreader.conll import *
 from nltk.tokenreader.ieer import *
+from nltk.tokenreader.sense import *
 
 ######################################################################
 ## Demo

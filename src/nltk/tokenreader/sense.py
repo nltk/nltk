@@ -13,7 +13,7 @@
 
 Grouping of tools relating to Word Sense Disambiguation (WSD).
 Currently, this module is comprised of the C{SenseTaggedType} and
-C{SemcorTokenizer} classes. It is intended to grow as more general
+C{SemcorTokenReader} classes. It is intended to grow as more general
 WSD utilities are created, however, it may be conflated with the
 classifier modules due to the high levels of similarity between
 classification for Infromation Retrieval (IR) and classification for
@@ -24,17 +24,15 @@ These can be accessed via the C{lemma}, C{sense_id} and C{global_id}
 methods. The interface may need subtle adjustments to reflect the sense
 tagging of other data sources (eg. SENSEVAL) as parsers are developed.
 
-The C{SemcorTokenizer} parses Semcor 1.7 data, as used in the C{corpus}
+The C{SemcorTokenReader} parses Semcor 1.7 data, as used in the C{corpus}
 module. This data is sourced from C{http://engr.smu.edu/~rada/semcor/}.
 """
 
-from __future__ import generators
 import re
 import sgmllib
-import xml.dom.minidom
 import xml.sax
-from nltk.tokenizer import AbstractTokenizer
 from nltk.token import *
+from nltk.tokenreader import *
 
 # [XX] Register reprs for these?
 
@@ -42,9 +40,9 @@ from nltk.token import *
 # Semcor
 ############################################################
 
-class SemcorTokenizer(AbstractTokenizer):
+class SemcorTokenReader(TokenReaderI, PropertyIndirectionMixIn):
     """
-    Tokenizer for Semcor 1.7 files. These files are encoded in SGML,
+    Token reader for Semcor 1.7 files. These files are encoded in SGML,
     hierarchically organised into paragraphs, sentences and individual
     tokens. Each token is marked up with its part-of-speech, and
     optionally with a WordNet lemma, synset number and global
@@ -52,13 +50,25 @@ class SemcorTokenizer(AbstractTokenizer):
     located in WordNet. Nb. The C{pywordnet} project provides a Python
     interface to WordNet.
 
-    This tokenizer may be parametised with the unit of hierarchy to
-    preserve -- either word, sentence or paragraph. When tokenizing
+    This token reader may be parametised with the unit of hierarchy to
+    preserve -- either word, sentence or paragraph. When processing
     with word units, a list of tokens of words will be returned. When
-    tokenizing with sentence units, a list of tokens of sentences will
+    processing sentence units, a list of tokens of sentences will
     be returned. A token of a sentence contains a list of tokens of
     words. Paragraph goes a set further, returning a list of tokens of
     paragraphs (lists of sentences).
+
+    Nb: The properties SUBTOKENS, TEXT, LOC, POS and SENSE are used
+    in constructing the tokens. They take on the usual meanings, however 
+    POS is used in the place of TAG, and SENSE is a new property
+    unique to sense tagged data.
+
+    @outprop: C{SUBTOKENS}: The list of subtokens.
+    @outprop: C{TEXT}: The subtokens' text contents.
+    @outprop: C{POS}: The subtokens' part-of-speech tags.
+    @outprop: C{LOC}: The subtokens' location.
+    @outprop: C{SENSE}: The subtokens' wordnet sense tags -- a 3-tuple of
+        the lemma, sense number and wordnet sense reference.
     """
 
     UNIT_WORD       = 'word'
@@ -67,30 +77,26 @@ class SemcorTokenizer(AbstractTokenizer):
 
     def __init__(self, unit=UNIT_WORD, **property_names):
         """
-        Creates a SemcorTokenizer.
-
         @param unit: one of 'word', 'sentence' or 'paragraph';
             indicating the level of hierarchy to be processed.
         @type unit: C{String}
         """
-        assert unit in [ SemcorTokenizer.UNIT_WORD,
-                         SemcorTokenizer.UNIT_SENTENCE,
-                         SemcorTokenizer.UNIT_PARAGRAPH ]
+        assert unit in [ SemcorTokenReader.UNIT_WORD,
+                         SemcorTokenReader.UNIT_SENTENCE,
+                         SemcorTokenReader.UNIT_PARAGRAPH ]
         self._unit = unit
         self._parse_method = _parseSGMLString
         # if it were valid XML, we could use this:
         #self._parse_method = xml.dom.minidom.parseString
-        AbstractTokenizer.__init__(self, **property_names)
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
-    # [XX] add_locs and add_contexts are ignored.
-    def tokenize(self, token, add_locs=False, add_contexts=False):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        
-        text = token[TEXT]
+    # [XX] add_contexts and source are ignored.
+    def read_token(self, s, add_contexts=False, add_locs=False, source=None):
+        TEXT = self.property('TEXT')
+        SUBTOKENS = self.property('SUBTOKENS')
         
         output = []
-        dom = self._parse_method(text)
+        dom = self._parse_method(s)
         files = dom.getElementsByTagName('contextfile')
         for file in files:
             contexts = file.getElementsByTagName('context')
@@ -99,66 +105,91 @@ class SemcorTokenizer(AbstractTokenizer):
                     + ':' + _to_ascii(context.getAttribute('filename'))
                 paragraphs = context.getElementsByTagName('p')
                 for paragraph in paragraphs:
-                    item = self._map_paragraph(paragraph, filename)
+                    item = self._map_paragraph(paragraph, filename, add_locs)
                     if self._unit == self.UNIT_PARAGRAPH:
                         output.append(item)
                     else:
                         output.extend(item)
-        token[SUBTOKENS] = output
+        return Token(**{SUBTOKENS: output})
 
-    def _map_paragraph(self, node, source):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LOC = self._property_names.get('LOC', 'LOC')
-        pnum = int(node.getAttribute('pnum'))
-        ploc = ParaIndexLocation(pnum, source)
+    def read_tokens(self, s, add_contexts=False, add_locs=False, source=None):
+        return [self.read_token(s, add_contexts, add_locs, source)]
+
+    def _map_paragraph(self, node, source, add_locs):
+        SUBTOKENS = self.property('SUBTOKENS')
+        LOC = self.property('LOC')
+        ploc = None
+        if add_locs:
+            pnum = int(node.getAttribute('pnum'))
+            ploc = ParaIndexLocation(pnum, source)
         sentences = node.getElementsByTagName('s')
         out = []
         for sentence in sentences:
-            item = self._map_sentence(sentence, ploc)
+            item = self._map_sentence(sentence, ploc, add_locs)
             if self._unit != self.UNIT_WORD:
                 out.append(item)
             else:
                 out.extend(item)
         if self._unit == self.UNIT_PARAGRAPH:
-            return Token({SUBTOKENS:out, LOC:ploc})
+            if add_locs:
+                return Token(SUBTOKENS=out, LOC=ploc)
+            else:
+                return Token(SUBTOKENS=out)
         else:
             return out
 
-    def _map_sentence(self, node, source):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        LOC = self._property_names.get('LOC', 'LOC')
-        snum = int(node.getAttribute('snum'))
-        sloc = SentIndexLocation(snum, source)
+    def _map_sentence(self, node, source, add_locs):
+        SUBTOKENS = self.property('SUBTOKENS')
+        LOC = self.property('LOC')
+        if add_locs:
+            snum = int(node.getAttribute('snum'))
+            sloc = SentIndexLocation(snum, source)
         out = []
         index = 0
         for word in node.childNodes:
-            wloc = WordIndexLocation(index, sloc)
-            item = self._map_word(word, wloc)
+            wloc = None
+            if add_locs:
+                wloc = WordIndexLocation(index, sloc)
+            item = self._map_word(word, wloc, add_locs)
             if item <> None:
                 index += 1
                 out.append(item)
         if self._unit != self.UNIT_WORD:
-            return Token({SUBTOKENS:out, LOC:sloc})
+            if add_locs:
+                return Token(SUBTOKENS=out, LOC=sloc)
+            else:
+                return Token(SUBTOKENS=out)
         else:
             return out
 
-    def _map_word(self, node, loc):
+    def _map_word(self, node, loc, add_locs):
+        TEXT = self.property('TEXT')
+        LEMMA = self.property('LEMMA')
+        POS = self.property('POS')
+        SENSE = self.property('SENSE')
+
         if node.localName == 'wf':
             text = _to_ascii(node.childNodes[0].data)
             pos = _to_ascii(node.getAttribute('pos'))
             lemma = _to_ascii(node.getAttribute('lemma'))
             wnsn = _to_ascii(node.getAttribute('wnsn'))
             lexsn = _to_ascii(node.getAttribute('lexsn'))
-            if not lemma or not wnsn or not lexsn:
-                lemma = wnsn = lexsn = None
 
-            return Token(text=text, pos=pos, lemma=lemma,
-                         wnsn=wnsn, lexsn=lexsn, loc=loc)
+            t = Token(TEXT=text, POS=pos)
+            if add_locs:
+                t[LOC] = loc
+            if lemma:
+                t[LEMMA] = lemma
+                if wnsn and lexsn:
+                    t[SENSE] = (lemma, wnsn, lexsn)
+            return t
                          
         elif node.localName == 'punc':
             text = _to_ascii(node.childNodes[0].data)
-            return Token(text=text, pos=text, lemma=None,
-                         wnsn=None, lexsn=None, loc=loc)
+            if add_locs:
+                return Token(TEXT=text, POS=text, LOC=loc)
+            else:
+                return Token(TEXT=text, POS=text)
         else:
             return None
 
@@ -167,7 +198,7 @@ def _to_ascii(text):
 
 class _SGMLNode:
     """
-    Mimics a xml.dom.Node object, well, enough for SemcorTokenizer to be
+    Mimics a xml.dom.Node object, well, enough for SemcorTokenReader to be
     fooled.
     """
 
@@ -208,7 +239,7 @@ class _SimpleSGMLParser(sgmllib.SGMLParser):
         self._document = _SGMLNode('document', None, {}, [])
         self._stack = [self._document]
 
-    def document(self): 
+    def document(self):
         return self._document
     
     def _current(self):
@@ -235,78 +266,6 @@ def _parseSGMLString(text):
 ############################################################
 # Senseval
 ############################################################
-
-class DOMSensevalTokenizer(AbstractTokenizer):
-    """
-    Tokenizer for Senseval-2 files. These files are encoded in pseudo-XML
-    grouped into instances, each containing a few paragraphs of text
-    including the head word. The instance is tagged with the sense 
-    identifier, and the head word is marked up. This tokenizer accepts
-    those files with POS tags.
-
-    The XML is first cleaned up before being processed. The code is
-    not particularly efficient - with large files, memory usage may
-    cause problems. This is due to the use of the XML DOM - the less
-    readable C{SensevalTokenizer} is
-    """
-
-    def __init__(self, **property_names):
-        AbstractTokenizer.__init__(self, **property_names)
-
-    def _map_context(self, node, source):
-        head = None
-        tokens = []
-        for index, child in enumerate(node.childNodes):
-            if child.localName == 'head':
-                head = index
-                child = child.getElementsByTagName('wf')[0]
-            if child.localName == 'wf':
-                pos = _to_ascii(child.getAttribute('pos'))
-                text = _to_ascii(child.firstChild.data)
-                loc = WordIndexLocation(index, source)
-                tokens.append(Token(text=text, pos=pos, loc=loc))
-        return tokens, head
-
-    # [XX] add_locs and add_contexts are ignored.
-    def tokenize(self, token, add_locs=False, add_contexts=False):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        self.xtokenize(token, add_locs, add_contexts)
-        token[SUBTOKENS] = list(token[SUBTOKENS])
-
-    # [XX] add_locs and add_contexts are ignored.
-    def xtokenize(self, token, add_locs=False, add_contexts=False):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        TEXT = self._property_names.get('TEXT', 'TEXT')
-        text = token[TEXT]
-        if hasattr(text, '__iter__') and hasattr(text, 'next'):
-            text = ''.join(text)
-        token[SUBTOKENS] = self._tokengen(text, add_locs, add_contexts)
-
-    # [XX] add_locs and add_contexts are ignored.
-    def _tokengen(self, text, add_locs=False, add_contexts=False):
-        SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        # inherit docs
-        fixed = _fixXML(text)
-        doc = xml.dom.minidom.parseString(fixed)
-        # this takes up a HUGE amount of memory
-        instances = doc.getElementsByTagName('instance')
-        for instance in instances:
-            lexelt = instance.getElementsByTagName('lexelt')[0]
-            context = instance.getElementsByTagName('context')[0]
-            answers = instance.getElementsByTagName('answer')
-            senses = []
-            for answer in answers:
-                senses.append(_to_ascii(answer.getAttribute('senseid')))
-
-            # [XX] ??
-            loc = _to_ascii(answer.getAttribute('instance'))
-
-            tokens, head = self._map_context(context, loc)
-            lemma = _to_ascii(lexelt.getAttribute('item'))
-            
-            yield Token({SUBTOKENS:tokens, 'senses':tuple(sense),
-                           'head':head, 'lemma':lemma})
-        doc.unlink()
 
 def _fixXML(text):
     """
@@ -344,48 +303,50 @@ def _fixXML(text):
     text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
     return text
 
-class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
+class SensevalTokenReader(xml.sax.ContentHandler, TokenReaderI, PropertyIndirectionMixIn):
     """
-    Tokenizer for Senseval-2 files. These files are encoded in pseudo-XML
-    grouped into instances, each containing a few paragraphs of text
-    including the head word. The instance is tagged with the sense 
-    identifiers, and the head word is marked up. This tokenizer accepts
-    those files with POS tags. Note that the labels of the
-    C{SenseLabeledText}s (as returned inside C{Token}s from the tokenize
-    method) are tuples, as the Senseval-2 format allows for multiple senses
-    for a given instance. This sequence will have at least one item.
+    Token reader for Senseval-2 files. These files are encoded in pseudo-XML
+    grouped into instances, each containing a few paragraphs of text including
+    the head word. The instance is tagged with the sense identifiers, and the
+    head word is marked up. This tokenizer accepts those files with POS tags.
+    Note that the labels of the C{SenseLabeledText}s (as returned inside
+    C{Token}s from the tokenize method) are tuples, as the Senseval-2 format
+    allows for multiple senses for a given instance. This sequence will have
+    at least one item.
 
     The XML is first cleaned up before being processed. 
+
+    @outprop: C{INSTANCES}: The list of instances (polysemous word and its context).
+    @outprop: C{SUBTOKENS}: The list of subtokens withing each instance.
+    @outprop: C{TEXT}: The subtokens' text contents.
+    @outprop: C{POS}: The subtokens' part-of-speech tags.
+    @outprop: C{LOC}: The subtokens' location.
+    @outprop: C{SENSE}: The subtokens' senseval sense tag - a tuple of the
+        lemma and the list of correct sense tags.
     """
 
     def __init__(self, buffer_size=1024, **property_names):
         xml.sax.ContentHandler.__init__(self)
         self._lemma = ''
         self._buffer_size = buffer_size
+        self._add_locs = False
         self.reset()
-        AbstractTokenizer.__init__(self, **property_names)
+        PropertyIndirectionMixIn.__init__(self, **property_names)
 
-    # [XX] add_locs and add_contexts are ignored.
-    def tokenize(self, token, add_locs=False, add_contexts=False):
-#       SUBTOKENS = self._property_names.get('SUBTOKENS', 'SUBTOKENS')
-        SUBTOKENS = self.property('SUBTOKENS')
-        TEXT = self.property('TEXT')
+    # [XX] add_contexts and source are ignored.
+    def read_token(self, s, add_contexts=False, add_locs=False, source=None):
+        INSTANCES = self.property('INSTANCES')
+        self._add_locs = add_locs
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
-        fixed =  _fixXML(token[TEXT])
+        fixed =  _fixXML(s)
         parser.feed(fixed)
         parser.close()
-        token[SUBTOKENS] = self._instances
+        return Token(INSTANCES = self._instances)
 
-    # [XX] add_locs and add_contexts are ignored.
-    def xtokenize(self, token, add_locs=False, add_contexts=False):
-        SUBTOKENS = self.property('SUBTOKENS')
-        TEXT = self.property('TEXT')
-        text = token[TEXT]
-        if hasattr(text, '__iter__') and hasattr(text, 'next'):
-            text = ''.join(text)
-        token[SUBTOKENS] = self._tokengen(text)
-        
+    def read_tokens(self, s, add_contexts=False, add_locs=False, source=None):
+        return [self.read_token(s, add_contexts, add_locs, source)]
+
     def _tokengen(self, text):
         fixed = _fixXML(text)
         parser = xml.sax.make_parser()
@@ -409,31 +370,39 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
         elif tag == 'answer':
             instance_id = _to_ascii(attr.getValueByQName('instance'))
             self._senses.append(_to_ascii(attr.getValueByQName('senseid')))
-
             # [XX] ???
             self._iloc = instance_id
-            
         elif tag == 'context':
             self._data = ''
         elif tag == 'lexelt':
             self._lemma = _to_ascii(attr.getValueByQName('item'))
         elif tag == 'head':
-            self._head = self._wnum - 1
+            self._head = 'next'
         
     def endElement(self, tag):
         SUBTOKENS = self.property('SUBTOKENS')
+        SENSE = self.property('SENSE')
+        HEAD = self.property('HEAD')
+        LEMMA = self.property('LEMMA')
+        LOC = self.property('LOC')
+        POS = self.property('POS')
+
         if tag == 'wf':
             text = self._data.strip()
             pos = self._pos
+            tk = Token(TEXT=text, POS=pos)
             loc = WordIndexLocation(self._wnum, self._iloc)
-            self._tokens.append(Token(text=text, pos=pos, loc=loc))
+            if self._add_locs:
+                tk[LOC] = loc
+            if self._head == 'next':
+                self._head = loc
+                tk[SENSE] = (self._lemma, self._senses)
+                tk[LEMMA] = self._lemma
+            self._tokens.append(tk)
             self._wnum += 1
             self._data = ''
         elif tag == 'context':
-            self._instances.append(Token({SUBTOKENS:self._tokens,
-                                            'senses':tuple(self._senses),
-                                            'head':self._head,
-                                            'lemma':self._lemma}))
+            self._instances.append(Token(SUBTOKENS=self._tokens, HEAD=self._head))
             self.reset(False)
 
     def instances(self):
@@ -451,41 +420,50 @@ class SAXSensevalTokenizer(xml.sax.ContentHandler, AbstractTokenizer):
             self._tokens = []
             self._pos = None
 
-#SensevalTokenizer = DOMSensevalTokenizer
-SensevalTokenizer = SAXSensevalTokenizer
-
-def _demo_semcor_tokenizer(type, files):
+def demo_SemcorTokenReader(type, files):
     import pprint, sys
-    r = SemcorTokenizer(type)
+    r = SemcorTokenReader(type)
     for file in files:
         print 'Parsing', file, '...'
         print '=' * 75
         try:
-            tok = Token(TEXT=open(file).read())
-            r.tokenize(tok)
+            tok = r.read_token(open(file).read())
             for item in tok['SUBTOKENS']:
                 pprint.pprint(item)
         except:
             print >>sys.stderr, 'Error parsing file:', file
             raise
 
-def _demo_senseval_tokenizer(files):
-    tk = SensevalTokenizer()
+def demo_SensevalTokenReader(files):
+    r = SensevalTokenReader()
     for file in files:
         print '=' * 75
         print file
         print '=' * 75
-        tok = Token(TEXT=open(file).read())
-        tk.xtokenize(tok)
+        tok = r.read_token(open(file).read())
         for token in tok['SUBTOKENS']:
             print token
 
-if __name__ == '__main__':
-    #files = ['%s/br-%s' % (path,x) for x in 'a01 a02 a11 k29'.split()]
-    #_demo_semcor_tokenizer('sentence', files)
-    path = '/usr/share/nltk/senseval/'
-    files = ['%s/%s.pos' % (path,x)
-             for x in 'line serve hard interest'.split()]
-    _demo_senseval_tokenizer(files)
+def demo(add_locs = False):
+    import nltk.corpus, os.path
 
+    print '*' * 80
+    print 'SemcorTokenReader'
+    print '*' * 80
+    print
+    path = os.path.join(nltk.corpus.get_basedir(), 'semcor1.7', 'brown1', 'tagfiles')
+    infile = os.path.join(path, 'br-a01')
+    demo_SemcorTokenReader('sentence', [infile])
+
+    print
+    print '*' * 80
+    print 'SensevalTokenReader'
+    print '*' * 80
+    print
+    path = os.path.join(nltk.corpus.get_basedir(), 'senseval')
+    infile = os.path.join(path, 'interest.pos')
+    demo_SensevalTokenReader([infile])
+
+if __name__ == '__main__':
+    demo()
 
