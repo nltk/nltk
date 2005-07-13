@@ -152,9 +152,9 @@ some point; for example, we would expect the natural language input to
 a question-answering system to undergo parsing as an initial step.
 
 
---------------------
-Linguistic Overview 
---------------------
+.. --------------------
+.. Linguistic Overview 
+.. --------------------
 
 .. X.2 linguistic overview (for non-linguist readers)
    - how have linguists addressed the problem?
