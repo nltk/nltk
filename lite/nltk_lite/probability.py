@@ -31,23 +31,6 @@ distributions can be derived or analytic; but currently the only
 implementation of the C{ConditionalProbDistI} interface is
 L{ConditionalProbDist}, a derived distribution.
 
-The L{ProbabilisticMixIn} class is a mix-in class that can be used to
-associate probabilities with data classes (such as C{Token} or
-C{Tree}).
-
-@group Frequency Distributions: FreqDist
-@group Derived Probability Distributions: ProbDistI, MLEProbDist,
-    LidstoneProbDist, LaplaceProbDist, ELEProbDist, HeldoutProbDist,
-    CrossValidationProbDist
-@group Analyitic Probability Distributions: UniformProbDist
-@group Conditional Distributions: ConditionalFreqDist,
-    ConditionalProbDistI, ConditionalProbDist
-@group Probabilistic Mix-In: ProbabilisticMixIn
-@sort: FreqDist, ProbDistI, MLEProbDist, LidstoneProbDist, LaplaceProbDist, 
-    ELEProbDist, HeldoutProbDist, CrossValidationProbDist, UniformProbDist,
-    ConditionalFreqDist, ConditionalProbDistI, ConditionalProbDist
-
-@todo: Better handling of log probabilities.
 """
 
 import types, math, numarray
@@ -1050,11 +1033,11 @@ class MutableProbDist(ProbDistI):
         one.
 
         @param sample: the sample for which to update the probability
-        @type sample: any
+        @type sample: C{any}
         @param prob: the new probability
-        @param prob: float
+        @type prob: C{float}
         @param log: is the probability already logged
-        @param log: bool
+        @type log: C{bool}
         """
         i = self._sample_dict.get(sample)
         assert i != None

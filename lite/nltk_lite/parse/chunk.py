@@ -172,7 +172,7 @@ class ChunkParseI(ParseI):
         and return a tree
         
         @param tokens: The list of (word, tag) tokens to be chunked.
-        @type token: L{list} of L{tuple}
+        @type tokens: L{list} of L{tuple}
         """
         assert 0, "ChunkParseI is an abstract interface"
 

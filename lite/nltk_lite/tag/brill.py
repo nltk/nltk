@@ -589,8 +589,8 @@ class BrillTrainer:
         reduces the net number of errors in the corpus by at least
         C{min_score}.
         
-        @type train_token: C{list} of L{tuple}
-        @param train_token: The corpus of tagged tokens
+        @type train_tokens: C{list} of L{tuple}
+        @param train_tokens: The corpus of tagged tokens
         @type max_rules: C{int}
         @param max_rules: The maximum number of transformations to be created
         @type min_score: C{int}
@@ -1026,8 +1026,8 @@ def errorList (train_tokens, tokens, radius=2):
 
     @param train_tokens: The correct tagging of the corpus
     @type train_tokens: C{list} of C{tuple}
-    @param token: The tagged corpus
-    @type token: C{list} of C{tuple}
+    @param tokens: The tagged corpus
+    @type tokens: C{list} of C{tuple}
     @param radius: How many tokens on either side of a wrongly-tagged token
         to include in the error string.  For example, if C{radius}=2, each error
         string will show the incorrect token plus two tokens on either side.
