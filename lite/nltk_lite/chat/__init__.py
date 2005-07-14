@@ -43,7 +43,7 @@ class Chat:
         Substitute words in the string, according to the specified reflections,
         e.g. "I'm" -> "you are"
         
-        @type str: C{string)
+        @type str: C{string}
         @param str: The string to be mapped
         @rtype: C{string}
         """
@@ -69,7 +69,7 @@ class Chat:
         """
         Generate a response to the user input.
         
-        @type str: C{string)
+        @type str: C{string}
         @param str: The string to be mapped
         @rtype: C{string}
         """

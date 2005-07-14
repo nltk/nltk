@@ -14,9 +14,9 @@ use of iterators so that large tasks generate output as early as
 possible.
 
 Key differences from NLTK are as follows:
-- tokens are represented as strings, tuples, or trees
-- all tokenizers are iterators
-- less object orientation
+ - tokens are represented as strings, tuples, or trees
+ - all tokenizers are iterators
+ - less object orientation
 
 NLTK-Lite is primarily intended to facilitate teaching NLP to students
 having limited programming experience.  The focus is on teaching
