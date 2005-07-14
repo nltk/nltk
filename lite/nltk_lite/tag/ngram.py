@@ -211,7 +211,7 @@ def demo():
     sys.stdout.flush()
     _demo_tagger(t2, list(brown.tagged('b'))[:1000])
 
-    print '  Trigram tagger:       ',
+    print '  Trigram tagger:      ',
     sys.stdout.flush()
     _demo_tagger(t3, list(brown.tagged('b'))[:1000])
 
