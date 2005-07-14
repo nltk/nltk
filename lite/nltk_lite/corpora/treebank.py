@@ -42,8 +42,6 @@ def parsed(files = 'parsed'):
 
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
-    @param basedir: Base directory of the files
-    @type basedir: L{string}
     @rtype: iterator over L{tree}
     """       
 
@@ -57,7 +55,7 @@ def parsed(files = 'parsed'):
             yield tree.bracket_parse(t)
 
 
-def chunked(files = 'chunked', basedir = "corpora/treebank"):
+def chunked(files = 'chunked'):
 
     """
     Read chunks from the Penn Treebank corpus sample.
@@ -80,8 +78,6 @@ def chunked(files = 'chunked', basedir = "corpora/treebank"):
 
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
-    @param basedir: Base directory of the files
-    @type basedir: L{string}
     @rtype: iterator over L{tree}
     """       
 
@@ -112,8 +108,6 @@ def tagged(files = 'chunked'):
 
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
-    @param basedir: Base directory of the files
-    @type basedir: L{string}
     @rtype: iterator over L{list(tuple)}
     """       
 
@@ -146,8 +140,6 @@ def raw(files = 'raw'):
 
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
-    @param basedir: Base directory of the files
-    @type basedir: L{string}
     @rtype: iterator over L{list(string)}
     """       
 

@@ -45,8 +45,6 @@ def raw(files = 'rotokas'):
 
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
-    @param basedir: Base directory of the files
-    @type basedir: L{string}
     @rtype: iterator over L{list(string)}
     """       
 

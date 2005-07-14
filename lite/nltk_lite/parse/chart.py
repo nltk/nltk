@@ -27,11 +27,11 @@ Charts are encoded with the L{Chart} class, and edges are encoded with
 the L{TreeEdge} and L{LeafEdge} classes.  The chart parser module
 defines three chart parsers:
 
-  - C{ChartParser} is a simple and flexible chart parser.  Given a
+  - C{ChartParse} is a simple and flexible chart parser.  Given a
     set of chart rules, it will apply those rules to the chart until
     no more edges are added.
 
-  - C{SteppingChartParser} is a subclass of C{ChartParser} that can
+  - C{SteppingChartParse} is a subclass of C{ChartParse} that can
     be used to step through the parsing process.
 
   - C{EarleyParser} is an implementation of the Earley chart parsing
@@ -389,8 +389,8 @@ class Chart:
         """
         Construct a new empty chart.
 
-        @type token: L{Token}
-        @param token: The sentence that this chart will be used to
+        @type tokens: L{Token}
+        @param tokens: The sentence that this chart will be used to
             parse.
         """
 
@@ -1229,7 +1229,7 @@ class PredictorRule(TopDownExpandRule): pass
 ##  Simple Earley Chart Parser
 ########################################################################
 
-class EarleyChartParser(AbstractParse):
+class EarleyChartParse(AbstractParse):
     """
     A chart parser implementing the Earley parsing algorithm:
 
@@ -1245,7 +1245,7 @@ class EarleyChartParser(AbstractParse):
                 - Apply CompleterRule to I{edge}
         - Return any complete parses in the chart
 
-    C{EarleyChartParser} uses a X{lexicon} to decide whether a leaf
+    C{EarleyChartParse} uses a X{lexicon} to decide whether a leaf
     has a given part of speech.  This lexicon is encoded as a
     dictionary that maps each word to a list of parts of speech that
     word can have.
@@ -1317,11 +1317,11 @@ TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(),
 BU_STRATEGY = [BottomUpInitRule(), BottomUpPredictRule(),
                SingleEdgeFundamentalRule()]
 
-class ChartParser(AbstractParse):
+class ChartParse(AbstractParse):
     """
     A generic chart parser.  A X{strategy}, or list of
     L{ChartRules<ChartRuleI>}, is used to decide what edges to add to
-    the chart.  In particular, C{ChartParser} uses the following
+    the chart.  In particular, C{ChartParse} uses the following
     algorithm to parse texts:
 
         - Until no new edges are added:
@@ -1334,7 +1334,7 @@ class ChartParser(AbstractParse):
         Create a new chart parser, that uses C{grammar} to parse
         texts.
 
-        @type grammar: L{CFG}
+        @type grammar: L{cfg.Grammar}
         @param grammar: The grammar used to parse texts.
         @type strategy: C{list} of L{ChartRuleI}
         @param strategy: A list of rules that should be used to decide
@@ -1378,9 +1378,9 @@ class ChartParser(AbstractParse):
 ##  Stepping Chart Parser
 ########################################################################
 
-class SteppingChartParser(ChartParser):
+class SteppingChartParse(ChartParse):
     """
-    A C{ChartParser} that allows you to step through the parsing
+    A C{ChartParse} that allows you to step through the parsing
     process, adding a single edge at a time.  It also allows you to
     change the parser's strategy or grammar midway through parsing a
     text.
@@ -1398,7 +1398,7 @@ class SteppingChartParser(ChartParser):
         self._chart = None
         self._current_chartrule = None
         self._restart = False
-        ChartParser.__init__(self, grammar, strategy, trace)
+        ChartParse.__init__(self, grammar, strategy, trace)
 
     #////////////////////////////////////////////////////////////
     # Initialization
@@ -1563,10 +1563,10 @@ def demo():
     for prod in lexical_productions:
         earley_lexicon.setdefault(prod.rhs()[0], []).append(prod.lhs())
 
-    # The grammar for ChartParser and SteppingChartParser:
+    # The grammar for ChartParse and SteppingChartParse:
     grammar = cfg.Grammar(S, grammatical_productions+lexical_productions)
 
-    # The grammar for EarleyChartParser:
+    # The grammar for EarleyChartParse:
     earley_grammar = cfg.Grammar(S, grammatical_productions)
 
     # Tokenize a sample sentence.
@@ -1593,7 +1593,7 @@ def demo():
 
     # Run the top-down parser, if requested.
     if choice in ('1', '5'):
-        cp = ChartParser(grammar, TD_STRATEGY, trace=2)
+        cp = ChartParse(grammar, TD_STRATEGY, trace=2)
         t = time.time()
         parses = cp.get_parse_list(tokens)
         times['top down'] = time.time()-t
@@ -1602,7 +1602,7 @@ def demo():
 
     # Run the bottom-up parser, if requested.
     if choice in ('2', '5'):
-        cp = ChartParser(grammar, BU_STRATEGY, trace=2)
+        cp = ChartParse(grammar, BU_STRATEGY, trace=2)
         t = time.time()
         parses = cp.get_parse_list(tokens)
         times['bottom up'] = time.time()-t
@@ -1611,7 +1611,7 @@ def demo():
 
     # Run the earley, if requested.
     if choice in ('3', '5'):
-        cp = EarleyChartParser(earley_grammar, earley_lexicon, trace=1)
+        cp = EarleyChartParse(earley_grammar, earley_lexicon, trace=1)
         t = time.time()
         parses = cp.get_parse_list(tokens)
         times['Earley parser'] = time.time()-t
@@ -1621,7 +1621,7 @@ def demo():
     # Run the stepping parser, if requested.
     if choice in ('4', '5'):
         t = time.time()
-        cp = SteppingChartParser(grammar, trace=1)
+        cp = SteppingChartParse(grammar, trace=1)
         cp.initialize(tokens)
         for i in range(4):
             print '*** SWITCH TO TOP DOWN'

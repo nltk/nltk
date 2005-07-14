@@ -514,7 +514,7 @@ class FeatureStructure:
         """
         @return: A list of all feature structures that can be reached
             from C{self} by multiple feature paths.
-        @rtype: C{list} of L{FeatureStructureure}
+        @rtype: C{list} of L{FeatureStructure}
         """
         reentrance_dict = self._find_reentrances({})
         return [struct for (struct, reentrant) in reentrance_dict.items()
@@ -534,7 +534,7 @@ class FeatureStructure:
         applied to the feature structure C{[A = ?<x=y>]}, then the
         bindings will be updated to C{<?x=1,?y=1>}.
         
-        @rtype: L{FeatureStructureure}
+        @rtype: L{FeatureStructure}
         """
         selfcopy = self.deepcopy()
         selfcopy._apply_bindings(bindings, {})
@@ -570,7 +570,7 @@ class FeatureStructure:
         @type newvars: C{dictionary} from L{FeatureStructureVariable}
         to L{FeatureStructureVariable}
         
-        @rtype: L{FeatureStructureure}
+        @rtype: L{FeatureStructure}
         """
         if newvars is None: newvars = {}
         selfcopy = self.deepcopy()
