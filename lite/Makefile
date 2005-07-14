@@ -19,6 +19,18 @@ NLTK_VERSION=$(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 DATE = $(shell date +%F)
 CVS_SNAPSHOT = nltk_lite_$(DATE)
 
+# Where is the web page hosted on the web?
+NLTK_URL = http://nltk.sourceforge.net/lite
+WEBPAGE_DIR = webpage
+WEBHOST_NAME = shell.sourceforge.net
+WEBHOST_DIR = /home/groups/n/nl/nltk/htdocs/lite
+REFDOC_DIR = webpage/api
+REFDOC_UPTODATE = $(REFDOC_DIR)/.uptodate
+
+# Options for epydoc.
+EPYDOC_OPTS = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
+               --inheritance=included
+
 all: distributions
 
 usage:
@@ -66,11 +78,9 @@ rpmdist: INSTALL.TXT
 windist: INSTALL.TXT
 	python setup.py -q bdist --format=wininst
 
-checkapidocs:
-	$(EPYDOC) -v --check nltk_lite
-
 apidocs:
-	$(EPYDOC) -o doc/api nltk_lite
+	rm -rf $(REFDOC_DIR)/*
+	$(EPYDOC) $(EPYDOC_OPTS) -o $(REFDOC_DIR) nltk_lite
 
 docdist:
 	zip -r doc doc -x CVS
@@ -83,6 +93,9 @@ corporadist:
 # Automatically add the appropriate version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
+
+xfer: webpage
+	rsync -arz -e ssh $(WEBPAGE_DIR)/* $(WEBHOST_NAME):$(WEBHOST_DIR)
 
 # CVS snapshot
 tgz:
