@@ -134,6 +134,26 @@ class MinimalSet:
         return self._targets
 
 
+######################################################################
+## Regexp display (thanks to David Mertz)
+######################################################################
+
+import re
+def re_show(regexp, string):
+    """
+
+    Search C{string} for substrings matching C{regexp} and wrap
+    the matches with braces.  This is convenient for learning about
+    regular expressions.
+
+    @param regexp: The regular expression.
+    @param string: The string being matched.
+    @rtype: C{string}
+    @return: A string with braces surrounding the matched substrings.
+    """
+    print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip()),'\n'
+
+
 ##########################################################################
 # READ FROM FILE OR STRING
 ##########################################################################
