@@ -739,7 +739,7 @@ A complete example of a toy grammar is given below::
 Another format for reading grammars::
 
   >>> from nltk_lite.parse import cfg
-  >>> grammar = cfg.Grammar.parse('''
+  >>> grammar = cfg.parse_grammar('''
   ...   S -> NP VP
   ...   VP -> V NP | VP PP
   ...   V -> "saw" | "ate"
@@ -751,7 +751,7 @@ Another format for reading grammars::
   ...   ''')
 
   >>> from nltk_lite import tokenize, parse
-  >>> sent = list(tokenize.whitespace("Mary say Bob"))
+  >>> sent = list(tokenize.whitespace("Mary saw Bob"))
   >>> rd_parser = parse.RecursiveDescent(grammar)
   >>> for p in rd_parser.get_parse_list(sent):
   ...      print p
@@ -880,9 +880,8 @@ text.
 
 ..  Add a reference to LDC here?
 
-  >>> from nltk_lite.corpora import treebank
-  >>> from itertools import islice
-  >>> print list(islice(treebank.parsed(), 1))[0]
+  >>> from nltk_lite.corpora import treebank, extract
+  >>> print extract(0, treebank.parsed())
   (S:
     (NP-SBJ:
       (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
