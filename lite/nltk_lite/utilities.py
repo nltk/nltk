@@ -151,7 +151,7 @@ def re_show(regexp, string):
     @rtype: C{string}
     @return: A string with braces surrounding the matched substrings.
     """
-    print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip()),'\n'
+    print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip())
 
 
 ##########################################################################

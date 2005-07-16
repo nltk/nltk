@@ -29,10 +29,10 @@ def selection(a):
     for i in range(len(a)-1):
         min = i
         for j in range(i+1, len(a)):
-            count += 1
             if a[j] < a[min]:
                 min = j
                 a[min],a[i] = a[i],a[min]
+                count += 1
     return count
 
 ##################################################################
@@ -50,9 +50,9 @@ def bubble(a):
     count = 0
     for i in range(len(a)-1):
         for j in range(len(a)-i-1):
-            count += 1
             if a[j+1] < a[j]:
                 a[j],a[j+1] = a[j+1],a[j]
+                count += 1
     return count
 
 
