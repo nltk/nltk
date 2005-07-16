@@ -219,6 +219,12 @@ entry exists, ``has_key()``, and ``get()``, as illustrated below:
   >>> print d.get('sleep')
   None
 
+As a simple rule of thumb, dictionary entries are like variable names.
+We can *create* them simply by assigning to them, e.g.
+``x = 2`` (variable), ``d['x'] = 2`` (dictionary entry).
+We can *access* them by reference, e.g.
+``print x`` (variable), ``print d['x']`` (dictionary entry).
+
 We can use dictionaries to count word occurrences.  For example, the
 following code reads *Macbeth* and counts the frequency of each word::
 
@@ -240,31 +246,69 @@ Now we can inspect the dictionary::
   >>> print frequencies[:20]
   [(1986, ','), (1245, '.'), (692, 'the'), (654, "'"), (567, 'and'), (482, ':'), (399, 'to'), (365, 'of'), (360, 'i'), (255, 'a'), (246, 'that'), (242, '?'), (224, 'd'), (218, 'you'), (213, 'in'), (207, 'my'), (198, 'is'), (170, 'not'), (165, 'it'), (156, 'with')]
 
-Finally, we look at Python's regular expression module, for
-substituting and searching within strings.  We use a utility function
-``re_show`` to show how regular expressions match against substrings.
+-------------------
+Regular Expressions
+-------------------
+
+Finally, we look at Python's regular expression module ``re``, for
+substituting and searching within strings.
 
   >>> import re
   >>> from nltk_lite.utilities import re_show
-  >>> string = "colourless green ideas sleep furiously"
-  >>> re_show('l', string)
+  >>> s = "colourless green ideas sleep furiously"
+
+We use a utility function ``re_show`` to show how regular expressions
+match against substrings.  First we search for all instances of a particular
+character or character sequence:
+
+  >>> re_show('l', s)
   co{l}our{l}ess green ideas s{l}eep furious{l}y
-  >>> re.sub('l', 's', string)
-  'cosoursess green ideas sseep furioussy'
-  >>> re_show('green', string)
+  >>> re_show('green', s)
   colourless {green} ideas sleep furiously
-  >>> re.sub('green', 'red', string)
+
+Now we can perform substitutions.  In the first instance we replace
+all instances of ``l`` with ``s``.  Note that this generates a string
+as output, and doesn't modify the original string.  Then we replace
+any instances of ``green`` with ``red``.
+
+  >>> re.sub('l', 's', s)
+  'cosoursess green ideas sseep furioussy'
+  >>> re.sub('green', 'red', s)
   'colourless red ideas sleep furiously'
-  >>> re_show('[^aeiou][aeiou]', string)
-  {co}{lo}ur{le}ss g{re}en{ i}{de}as s{le}ep {fu}{ri}ously
-  >>> re.findall('[^aeiou][aeiou]', string)
-  ['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
-  >>> re.findall('([^aeiou])([aeiou])', string)
-  [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
-  >>> re_show('(green|sleep)', string)
+
+So far we have only seen simple patterns, consisting of individual
+characters or sequences of characters.  However, regular expressions can
+also contain special syntax, such as ``|`` for disjunction, e.g.:
+
+  >>> re_show('(green|sleep)', s)
   colourless {green} ideas {sleep} furiously
-  >>> re.findall('(green|sleep)', string)
+  >>> re.findall('(green|sleep)', s)
   ['green', 'sleep']
+
+We can also disjoin individual characters.  For example,
+``[aeiou]`` matches any of ``a``, ``e``, ``i``, ``o``, or ``u``,
+that is, any vowel.  The expression ``[^aeiou]`` matches anything
+that is not a vowel.  In the following example, we match sequences
+consisting of non-vowels followed by vowels.
+
+  >>> re_show('[^aeiou][aeiou]', s)
+  {co}{lo}ur{le}ss g{re}en{ i}{de}as s{le}ep {fu}{ri}ously
+  >>> re.findall('[^aeiou][aeiou]', s)
+  ['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
+
+We can put parentheses around parts of an expression in order to
+generate structured results.  For example, here we see all those
+non-vowel characters which appear before a vowel:
+
+  >>> re.findall('([^aeiou])[aeiou]', s)
+  ['c', 'l', 'l', 'r', ' ', 'd', 'l', 'f', 'r']
+
+We can even generate pairs (or *tuples*), which we may then go
+on and tabulate.
+
+  >>> re.findall('([^aeiou])([aeiou])', s)
+  [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
+
 
 --------------
 Accessing NLTK
@@ -292,29 +336,56 @@ Another option is to import the module itself, rather than
 its contents.  Now its contents can then be accessed
 using *fully qualified* dotted names:
 
-  >>> re_show('green', string)
+  >>> re_show('green', s)
   colourless {green} ideas sleep furiously
 
 For more information about importing, see any Python textbook.
 
 NLTK is distributed with several corpora, listed in the introduction.
 Many of these corpora are supported by the NLTK ``corpora`` module.
-The following code listing shows how some of these corpora can be
-accessed.
+First we import the Gutenberg corpus (a selection of texts from
+the Project Gutenberg electronic text archive).
 
   >>> from nltk_lite.corpora import gutenberg
-  >>> from itertools import islice
   >>> gutenberg.items
   ['austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems', 'blake-songs', 'chesterton-ball', 'chesterton-brown', 'chesterton-thursday', 'milton-paradise', 'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth', 'whitman-leaves']
+
+We access the text content using a special Python construct called an
+*iterator*.  It produces a stream of words, which we can access using
+the syntax ``for item in iterator``, as shown below:
+
+  >>> count = 0
+  >>> for word in gutenberg.raw('whitman-leaves'):
+  ...     count += 1
+  >>> print count
+  154873
+
+NLTK-Lite also includes the Brown Corpus, the first million word,
+part-of-speech tagged electronic corpus of English, created in 1961 at
+Brown University.  Each of the sections ``a`` through ``r`` represents
+a different genre.
+
   >>> from nltk_lite.corpora import brown
   >>> brown.items
   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
-  >>> print list(islice(brown.raw(), 1))
-  [['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']]
-  >>> print list(islice(brown.tagged(), 1))
-  [[('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]]
+
+We can extract individual sentences from the corpus iterator using the
+``extract()`` function:
+
+  >>> from nltk_lite.corpora import extract
+  >>> print extract(0, brown.raw())
+  ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
+
+We can also access the tagged text using the ``brown.tagged()`` method:
+
+  >>> print extract(0, brown.tagged())
+  [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]
+
+NLTK-Lite includes a 5% fragment of the Penn Treebank.  This can be accessed using
+``treebank.raw()`` for the raw text, and ``treebank.tagged()`` for the tagged text.
+
   >>> from nltk_lite.corpora import treebank
-  >>> print list(islice(treebank.parsed(), 1))[0]
+  >>> print extract(0, treebank.parsed())
   (S:
     (NP-SBJ:
       (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
@@ -332,9 +403,89 @@ accessed.
         (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
     (.: '.'))
 
-.. DEBUGGING - diagnostic print statements etc
-   STRUCTURED PROGRAMMING
-   ALGORITHM DESIGN
+
+-------------------
+Program Development
+-------------------
+
+Programming is a skill which is acquired over several years of
+experience with a variety of programming languages and tasks.  Key
+high-level abilities are *algorithm design* and its manifestation in
+*structured programming*.  Key low-level abilities include familiarity
+with the syntactic constructs of the language, and knowledge of a
+variety of diagnostic methods for trouble-shooting a program which
+does not exhibit the expected behaviour.
+
+Algorithm Design
+----------------
+
+An *algorithm* is a "recipe" for solving a problem.  For example,
+to multiply 16 by 12 we might use any of the following methods:
+
+1. Add 16 to itself 12 times over
+#. Perform "long multiplication", starting with the least-significant
+   digits of both numbers
+#. Look up a multiplication table
+#. Repeatedly halve the first number and double the second,
+   16*12 = 8*24 = 4*48 = 2*96 = 192
+#. Do 10*12 to get 120, then add 6*12
+
+Each of these methods is a different algorithm, and requires different
+amounts of computation time and different amounts of intermediate
+information to store.  A similar situation holds for many other
+superficially simple tasks, such as sorting a list of words.  Now, as
+we saw above, Python provides a built-in function ``sort()`` that
+performs this task efficiently.  However, NLTK-Lite also provides
+several algorithms for sorting lists, to illustrate the variety of
+possible methods.  To illustrate the difference in efficiency, we
+will create a list of 1000 numbers, randomize the list, then sort it,
+counting the number of list manipulations required.
+
+  >>> from random import shuffle
+  >>> a = range(1000)                     # [0,1,2,...999]
+  >>> shuffle(a)                          # randomize
+
+Now we can try a simple sort method called *bubble sort*, which
+scans through the list many times, exchanging adjacent items if
+they are out of order.  It sorts the list ``a`` in-place, and returns
+the number of times it modified the list:
+
+  >>> from nltk_lite.misc import sort
+  >>> sort.bubble(a)
+  250918
+
+We can try the same task using various sorting algorithms.  Evidently
+*merge sort* is much better than bubble sort, and *quicksort* is better still.
+
+  >>> shuffle(a); sort.merge(a)
+  6175
+  >>> shuffle(a); sort.quick(a)
+  2378
+
+Readers are encouraged to look at ``nltk_lite.misc.sort`` to see how
+these different methods work.  The collection of NLTK-Lite modules
+exemplify a variety of algorithm design techniques, including
+brute-force, divide-and-conquer, dynamic programming, and greedy search.
+Readers who would like a systematic introduction to algorithm design
+should consult the resources mentioned at the end of this tutorial.
+
+Debugging
+---------
+
+This task is known as *debugging*, since the problems are usually
+small relative to their impact, hard-to-find, and seem to take on a
+life of their own as the programmer tries to hunt them down.
+
+The first step is to isolate the problem.  If there was a run-time
+error, the Python interpreter will exit, providing a *stack-trace*
+which lists the most recently called functions with their line numbers.
+The simplest way to deal with such errors is to add print statements
+to the program just before the offending line, permitting you to inspect
+the values of variables (sometimes they are different to what you expected).
+
+Python also provides an interactive debugger called ``pdb``, which stands
+for Python debugger.  If your program is saved in a file ``myscript.py``,
+then you can access the debugger with ``python -m pdb myscript.py``.
 
 ---------------
 NLTK Interfaces
@@ -378,16 +529,22 @@ Python
 
 Guido Van Rossum (2003).
 *An Introduction to Python*,
-Network Theory Ltd;
+Network Theory Ltd.
 
 Guido Van Rossum (2003).
 *The Python Language Reference*,
-Network Theory Ltd,
+Network Theory Ltd.
 
 Algorithmic Problem Solving
 ---------------------------
 
-Harel, Levitin
+David Harel (2004).
+*Algorithmics: The Spirit of Computing* (Third Edition),
+Addison Wesley.
+
+Anany Levitin (2004).
+*The Design and Analysis of Algorithms*,
+Addison Wesley.
 
 Development of NLTK
 -------------------
@@ -400,7 +557,9 @@ Linguistics*,
 Somerset, NJ: Association for Computational Linguistics,
 pp. 62-69, http://arXiv.org/abs/cs/0205028
 
-BirdLoper04
+Steven Bird and Edward Loper (2004).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL demonstration session*, pp 214-217.
 
 Edward Loper (2004).
 NLTK: Building a Pedagogical Toolkit in Python,
@@ -417,7 +576,21 @@ words, texts, tokens, locations and tokenizers, and satisfy yourself
 that you understand all the examples in the tutorial.  Now complete
 the following questions.
 
-1. Describe the class of strings matched by the following regular
+1. Using the Python interpreter in interactive mode, experiment with
+   the examples contained in this tutorial.  Think of a sentence and
+   represent it as a list of strings, e.g. ['Hello', 'world'].
+   Try the various operations for indexing, slicing and sorting the elements
+   of your list.  Extract individual items (strings), and perform
+   some of the string operations on them.
+
+#. Create a dictionary ``d``, and add some entries.  What happens if
+   you try to access a non-existent entry, e.g. ``d['xyz']``?
+
+#. Define a string ``s = 'colourless'``.  Write a Python statement
+   that changes this to 'colorless', using only the slice and
+   concatenation operations.
+
+#. Describe the class of strings matched by the following regular
    expressions:
 
   a) ``[a-zA-Z]+``
