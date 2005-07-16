@@ -44,3 +44,9 @@ elif os.path.isdir('/usr/share/nltk_lite'):
 else:
     set_basedir('/usr/lib/nltk_lite')
 
+# Access to individual corpus items
+
+# extract the nth item from iterator i
+from itertools import islice
+def extract(n, i):
+    return list(islice(i, n, n+1))[0]
