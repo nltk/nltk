@@ -19,34 +19,77 @@ Programming Fundamentals and Python
 Introduction
 ------------
 
-*To be written*
-
+This tutorial provides a non-technical overview of Python.
+It contains many program fragments which you should try yourself.
+For a more detailed overview, we recommend that you consult
+one of the introductions available from www.python.org.
 
 ----------------------------
 Processing lists and strings
 ----------------------------
 
-First, list initialization, length, indexing, slicing::
+In writing Python programs for natural language processing we make
+heavy use of lists.  A list is simply an ordered sequence of items.
+Each item could be a string, a number, or some more complex object
+such as a list.  A Python list is represented as comma-separated
+items, enclosed inside brackets, e.g. ``['John', 14, 'Sep', 1984]`` is
+a list consisting of four elements.  We initialize a list by giving a
+variable name, followed by the equals sign, followed by this square
+bracket notation, e.g.:
 
   >>> a = ['colourless', 'green', 'ideas']
-  >>> print a
-  ['colourless', 'green', 'ideas']
+
+This command sets the value of variable ``a``.  To see the value of
+this variable, we can give the command ``print a``.  In interactive
+mode, we can just type the variable name:
+
   >>> a
   ['colourless', 'green', 'ideas']
+
+To find out the length of a list, we can use the ``len()`` function,
+which takes the list variable as its argument:
+
   >>> len(a)
   3
+
+We can access the items of a list individually by using indexes.  Note
+that list items are counted starting from zero.
+
+  >>> a[0]
+  'colourless'
   >>> a[1]
   'green'
+
+We can also index from the *end* of the list, using negative numbers.
+Thus, index ``-1`` returns the last item:
+
   >>> a[-1]
   'ideas'
-  >>> a[1:]
+
+Sometimes we mistakenly try to access an index position which does not exist.
+If so, Python reports an error:
+
+  >>> a[5]
+  IndexError: list index out of range
+
+It is often useful to access multiple items in a list.  In Python this is done using
+a special construct called the *slice*.  In general, if ``a`` is a list, then
+``a[m:n]`` is the slice starting at item ``m``, and going up to (but not including)
+item ``n``.
+
+  >>> a[1:3]
   ['green', 'ideas']
 
-Note that we had to explicitly print the result of the assignment
-above, using ``print a``.  We achieved the same result by giving the
-variable name, which Python evaluates and prints.  Below we see use of
-list concatenation, sorting and reversal.  The final command
-concatenates two list elements::
+If we leave out the first number, it is assumed to be zero, the start of the list.
+So ``a[:n]`` finds everything up to (but not including) item ``n``.
+Similarly, ``a[m:]`` finds everything from item ``m`` to the end:
+
+  >>> a[1:]
+  ['green', 'ideas']
+  >>> a[:2]
+  ['colourless', 'green']
+
+Lists can be concatenated, sorted and reversed, as we se below:
 
   >>> b = a + ['sleep', 'furiously']
   >>> print b
@@ -57,10 +100,26 @@ concatenates two list elements::
   >>> b.reverse()
   >>> print b
   ['sleep', 'ideas', 'green', 'furiously', 'colourless']
-  >>> b[2] + b[1]
-  'greenideas'
 
-Simple for loop:
+.. Note:: If we access individual elements of the above list (which
+   are strings), then concatenating them has a different result:
+
+   >>> b[2] + b[1]
+   'greenideas'
+
+   This happens because ``b[2]`` is not a list, but an *element* of a list,
+   in this case, a string.  Here is another example:
+
+   >>> c = [1,2,3,4,5]
+   >>> c[2] + c[1]
+   5
+
+   Thus, the behaviour of this ``+`` operator depends on the types of
+   its arguments.
+
+We can use the ``for item in list`` syntax to *iterate* over the items of
+a list.  In the following fragment we iterate over each word in the above
+``b`` list, and print the first character of each word:
 
   >>> for w in b:
   ...    print w[0]
@@ -71,61 +130,111 @@ Simple for loop:
   f
   c
 
-Miscellaneous further interesting examples::
+Observe that we used the bracket notation to access characters in
+a string, just as we earlier used the notation to access items in a
+list.  We can combine these two kinds of access, e.g. to find the
+third word (at index 2), and print the second character (at index 1):
 
+  >>> b[2]
+  'green'
   >>> b[2][1]
   'r'
+
+So far we have accessed items in a list by giving their index.  We
+can also access them in terms of their content.  The ``index()``
+function returns the first index where the specified item was found:
+
   >>> b.index('green')
   2
-  >>> b[5]
-  IndexError: list index out of range
-  >>> b[0] * 3
+
+We have already seen the string concatenation operator, ``+``.
+We can multiply strings:
+
+  >>> 'sleep' * 3
   'sleepsleepsleep'
+
+We can also join and split strings:
+
   >>> c = ' '.join(b)
-  >>> print c
-  sleep ideas green furiously colourless
+  >>> c
+  'sleep ideas green furiously colourless'
   >>> c.split('r')
   ['sleep ideas g', 'een fu', 'iously colou', 'less']
+
+There are plenty of more sophisticated operations we can perform with
+lists and strings, e.g.:
+
   >>> map(lambda x: len(x), b)
   [5, 5, 5, 9, 10]
   >>> [(x, len(x)) for x in b]
   [('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
 
-Next we'll take a look at Python *dictionaries* (or associative arrays).
+More information on lists and strings can be found by
+typing ``help(list)`` and ``help(str)`` at the command prompt.
+
+------------
+Dictionaries
+------------
+
+Lists and strings are accessed by indexes.  This turns out to be too
+limiting for many applications.  Instead, we would like to access items
+by their names.  For instance, we access a printed dictionary by looking
+up an entry by its headword, not by its number.  Python provides a
+*dictionary* data type.  We access it using the familiar bracket notation.
+Here we declare that ``d`` is a dictionary, then add three entries to it:
 
   >>> d = {}
   >>> d['colourless'] = 'adj'
   >>> d['furiously'] = 'adv'
   >>> d['ideas'] = 'n'
+
+The *keys* of the dictionary are just the "headwords".  However, they are
+not in any predefined order.
+
   >>> d.keys()
   ['furiously', 'colourless', 'ideas']
-  >>> d.values()
-  ['adv', 'adj', 'n']
+  >>> d['ideas']
+  'n'
+
+We can iterate over the items in a dictionary using the
+``for entry in dict`` syntax, as illustrated below:
+
+  >>> for w in d:
+  ...    print "%s [%s]," % (w, d[w]),
+  furiously [adv], colourless [adj], ideas [n],
+
+We can print an entire dictionary just by typing its name at the interactive
+command prompt:
+
   >>> d
   {'furiously': 'adv', 'colourless': 'adj', 'ideas': 'n'}
+
+If we try to access a non-existent entry, e.g. by typing
+``d['sleep']``, the Python interpreter will report an error.
+Two other functions are useful when we don't know if an
+entry exists, ``has_key()``, and ``get()``, as illustrated below:
+
   >>> print d.has_key('ideas')
   True
   >>> print d.get('sleep')
   None
-  >>> for w in d.keys():
-  ...    print "%s [%s]," % (w, d[w]),
-  furiously [adv], colourless [adj], ideas [n],
 
 We can use dictionaries to count word occurrences.  For example, the
 following code reads *Macbeth* and counts the frequency of each word::
 
   >>> from nltk_lite.corpora import gutenberg
-  >>> from nltk_lite.util import inc
-  >>> words = {}                                        # initialize a dictionary
+  >>> count = {}                                        # initialize a dictionary
   >>> for word in gutenberg.raw('shakespeare-macbeth'): # tokenize Macbeth
   ...     word = word.lower()                           # normalize to lowercase
-  ...     inc(words, word)
+  ...     if word not in count:                         # seen this word before?
+  ...         count[word] = 0                           # if not, set count to zero
+  ...     count[word] += 1
 
 Now we can inspect the dictionary::
 
-  >>> print words['scotland']
+  >>> print count['scotland']
   12
-  >>> frequencies = [(freq, word) for (word, freq) in words.items()]
+  >>> frequencies = [(freq, word) for (word, freq) in count.items()]
   >>> frequencies.sort()
   >>> frequencies.reverse()
   >>> print frequencies[:20]
@@ -136,7 +245,7 @@ substituting and searching within strings.  We use a utility function
 ``re_show`` to show how regular expressions match against substrings.
 
   >>> import re
-  >>> from nltk_lite.util import re_show
+  >>> from nltk_lite.utilities import re_show
   >>> string = "colourless green ideas sleep furiously"
   >>> re_show('l', string)
   co{l}our{l}ess green ideas s{l}eep furious{l}y
@@ -168,7 +277,7 @@ simplest way to import the contents of a module is to use the ``from
 module import *`` command.  For example, to import the contents of the
 ``nltk_lite.util`` module, which is discussed in this tutorial, type:
 
-  >>> from nltk_lite.util import *
+  >>> from nltk_lite.utilities import *
 
 A disadvantage of this style of import statement is that it does not
 specify what objects are imported; and it is possible that some of the
@@ -177,14 +286,13 @@ disadvantage, you can explicitly list the objects you wish to import.
 For example, to import the ``re_show`` function from the
 ``nltk_lite.util`` module, type::
 
-  >>> from nltk_lite.util import re_show
+  >>> from nltk_lite.utilities import re_show
 
 Another option is to import the module itself, rather than
 its contents.  Now its contents can then be accessed
 using *fully qualified* dotted names:
 
-  >>> from nltk_lite import util
-  >>> util.re_show('green', string)
+  >>> re_show('green', string)
   colourless {green} ideas sleep furiously
 
 For more information about importing, see any Python textbook.
@@ -200,29 +308,29 @@ accessed.
   ['austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems', 'blake-songs', 'chesterton-ball', 'chesterton-brown', 'chesterton-thursday', 'milton-paradise', 'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth', 'whitman-leaves']
   >>> from nltk_lite.corpora import brown
   >>> brown.items
-  ['ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', 'ca08', 'ca09',
-  'ca10', 'ca11', 'ca12', 'ca13', 'ca14', 'ca15', 'ca16', 'ca17', ... ]
-  >>> print list(islice(brown.raw('ca01'), 20))
-  <[<The/at>, <Fulton/np-tl>, <County/nn-tl>, <Grand/jj-tl>,
-  <Jury/nn-tl>, <said/vbd>, <Friday/nr>, <an/at>, <investigation/nn>,
-  <of/in>, <Atlanta's/np$>, <recent/jj>, <primary/nn>, <election/nn>,
-  <produced/vbd>, <``/``>, <no/at>, <evidence/nn>, <''/''>, <that/cs>,
-  <any/dti>, <irregularities/nns>, <took/vbd>, <place/nn>, <./.>, ...]>
-  >>> print list(islice(brown.tagged('ca01'), 20))
-  <[<The/at>, <Fulton/np-tl>, <County/nn-tl>, <Grand/jj-tl>,
-  <Jury/nn-tl>, <said/vbd>, <Friday/nr>, <an/at>, <investigation/nn>,
-  <of/in>, <Atlanta's/np$>, <recent/jj>, <primary/nn>, <election/nn>,
-  <produced/vbd>, <``/``>, <no/at>, <evidence/nn>, <''/''>, <that/cs>,
-  <any/dti>, <irregularities/nns>, <took/vbd>, <place/nn>, <./.>, ...]>
+  ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
+  >>> print list(islice(brown.raw(), 1))
+  [['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']]
+  >>> print list(islice(brown.tagged(), 1))
+  [[('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]]
   >>> from nltk_lite.corpora import treebank
-  >>> treebank.items
-  ['wsj_0001.prd', 'wsj_0002.prd', 'wsj_0003.prd', ...]
-  >>> print list(islice(treebank.parsed('parsed/wsj_0001.prd'), 2)
-  [ (S: (NP-SBJ: (NP: <Pierre> <Vinken>) ...)
-          (VP: will ...)),
-    (S: (NP-SBJ: <Mr.> <Vinken>)
-          (VP: <is> ...)) ]
-
+  >>> print list(islice(treebank.parsed(), 1))[0]
+  (S:
+    (NP-SBJ:
+      (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
+      (,: ',')
+      (ADJP: (NP: (CD: '61') (NNS: 'years')) (JJ: 'old'))
+      (,: ','))
+    (VP:
+      (MD: 'will')
+      (VP:
+        (VB: 'join')
+        (NP: (DT: 'the') (NN: 'board'))
+        (PP-CLR:
+          (IN: 'as')
+          (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
+        (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
+    (.: '.'))
 
 .. DEBUGGING - diagnostic print statements etc
    STRUCTURED PROGRAMMING
