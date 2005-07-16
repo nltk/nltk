@@ -181,9 +181,8 @@ Street Journal in the Penn Treebank corpus.  NLTK includes a sample of
 this corpus.  The tagged section of the corpus consists of chunked,
 tagged text.  We can read in a chunked sentence as follows:
 
-  >>> from nltk_lite.corpora import treebank
-  >>> from itertools import islice
-  >>> list(islice(treebank.chunked(), 1))[0]
+  >>> from nltk_lite.corpora import treebank, extract
+  >>> extract(0, treebank.chunked())
   (S: (NP: ('Pierre', 'NNP') ('Vinken', 'NNP')) (',', ',') (NP: ('61', 'CD') ('years', 'NNS')) ('old', 'JJ') (',', ',') ('will', 'MD') ('join', 'VB') (NP: ('the', 'DT') ('board', 'NN')) ('as', 'IN') (NP: ('a', 'DT') ('nonexecutive', 'JJ') ('director', 'NN') ('Nov.', 'NNP') ('29', 'CD')) ('.', '.'))
 
 We can display this tree graphically using the ``nltk_lite.draw.tree``
@@ -743,7 +742,6 @@ following program listing shows a typical use of the ``ChunkScore``
 class.  In this example, ``chunkparser`` is being tested on each
 sentence from the Wall Street Journal tagged files.
 
-  >>> from nltk_lite.corpora import treebank
   >>> from itertools import islice
   >>> rule = parse.ChunkRule('<DT|JJ|NN>+', "Chunk sequences of DT, JJ, and NN")
   >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S')
@@ -827,7 +825,6 @@ this easily using a chunked corpus and a conditional frequency
 distribution as shown below:
       
   >>> from nltk_lite.probability import ConditionalFreqDist
-  >>> from nltk_lite.corpora import treebank
   >>> cfdist = ConditionalFreqDist()
   >>> chunk_data = list(treebank.chunked())
   >>> split = len(chunk_data)*9/10
@@ -848,7 +845,6 @@ Now, in the evaluation phase we chunk any sequence of those tags:
   >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S', trace=1)
   >>> chunkscore = parse.ChunkScore()
   >>> for chunk_struct in test:
-  ...     print chunk_struct
   ...     test_sent = chunkparser.parse(chunk_struct.leaves())
   ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore

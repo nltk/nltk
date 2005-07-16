@@ -312,14 +312,12 @@ pattern is matched against the gaps.  For example, here is how
 
 The ``nltk_lite.corpora`` package provides ready access to several
 corpora included with NLTK, along with built-in tokenizers.  For
-example, ``brown.tagged()`` is an iterator over tagged sentences
-from the Brown Corpus.  We use ``islice()`` to specify the range
-of sentences of interest::
+example, ``brown.tagged()`` is an iterator over tagged sentences from
+the Brown Corpus.  We use ``extract()`` to extract a sentence of
+interest::
 
-  >>> from nltk_lite.corpora import brown
-  >>> from itertools import islice
-  >>> for sent in islice(brown.tagged('a'), 1):
-  ...     print sent
+  >>> from nltk_lite.corpora import brown, extract
+  >>> print extract(0, brown.tagged('a'))
   [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]
 
 In particular, ``brown.tagged()`` doesn't just read the
