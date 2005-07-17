@@ -311,6 +311,22 @@ on and tabulate.
   >>> re.findall('([^aeiou])([aeiou])', s)
   [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
 
+---------------------------
+Accessing Files and the Web
+---------------------------
+
+It is easy to access local files, and web-pages in Python.  Here are some
+examples:
+
+  >>> print open('corpus.txt').read() 
+  Hello world.  This is a test file.
+
+  >>> from urllib import urlopen
+  >>> page = urlopen("http://news.bbc.co.uk/").read()
+  >>> page = re.sub('<[^>]*>', '', page)   # strip HTML markup
+  >>> page = re.sub('\s+', ' ', page)      # strip whitespace
+  >>> print page
+
 --------------
 Accessing NLTK
 --------------
