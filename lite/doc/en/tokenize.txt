@@ -972,6 +972,11 @@ file 'corpus.txt'.
   tokenize such strings so that each city name was stored as a single
   token?
 
+#. Concordancing:
+   Write a function which takes a word as its argument, and which
+   searches the Brown Corpus for instances of this word.  For each
+   instance, generate a line of text with the target word in the middle.
+
 #. Zipf's Law:
    Let *f(w)* be the frequency of a word *w* in free text. Suppose that
    all the words of a text are ranked according to their frequency,
