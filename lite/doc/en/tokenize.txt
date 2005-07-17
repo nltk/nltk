@@ -972,6 +972,27 @@ file 'corpus.txt'.
   tokenize such strings so that each city name was stored as a single
   token?
 
+#. Zipf's Law:
+   Let *f(w)* be the frequency of a word *w* in free text. Suppose that
+   all the words of a text are ranked according to their frequency,
+   with the most frequent word first. Zipf's law states that the
+   frequency of a word type is inversely proportional to its rank
+   (i.e. f*r=k, for some constant k). For example, the 50th most
+   common word type should occur three times as frequently as the
+   150th most common word type.
+
+  #. Write a Python function to process a large text and plot word
+  frequency against word rank using the nltk_lite.draw.plot module. Do
+  you confirm Zipf's law? (Hint: it helps to set the axes to log-log.) 
+  What is going on at the extreme ends of the plotted line?
+
+  #. Generate random text, e.g. using ``random.choice("abcdefg ")``,
+  taking care to include the space character.  Use the string
+  concatenation operator to accumulate characters into a (very)
+  long string.  Then tokenize this string, and generate the Zipf
+  plot as before, and compare the two plots.  What do you make of
+  Zipf's Law in the light of this?
+
 #. Working with tagged text: Write a program which loads the Brown
 corpus, then, given a word, lists the possible tags for the word each
 with a frequency count.  For example, for the word ``strike`` the
