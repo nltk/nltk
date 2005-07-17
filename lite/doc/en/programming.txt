@@ -22,7 +22,7 @@ Introduction
 This tutorial provides a non-technical overview of Python.
 It contains many program fragments which you should try yourself.
 For a more detailed overview, we recommend that you consult
-one of the introductions available from www.python.org.
+one of the introductions listed in the further reading section below.
 
 ----------------------------
 Processing lists and strings
@@ -171,6 +171,8 @@ lists and strings, e.g.:
 
 More information on lists and strings can be found by
 typing ``help(list)`` and ``help(str)`` at the command prompt.
+To find out about individual functions, you can type, e.g.
+``help(list.append)``.
 
 ------------
 Dictionaries
@@ -308,7 +310,6 @@ on and tabulate.
 
   >>> re.findall('([^aeiou])([aeiou])', s)
   [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
-
 
 --------------
 Accessing NLTK
@@ -535,6 +536,17 @@ Guido Van Rossum (2003).
 *The Python Language Reference*,
 Network Theory Ltd.
 
+Guido van Rossum (2005).
+*Python Tutorial*
+http://docs.python.org/tut/tut.html
+
+A.M. Kuchling.
+*Regular Expression HOWTO*,
+http://www.amk.ca/python/howto/regex/
+
+*Python Documentation*
+http://docs.python.org/
+
 Algorithmic Problem Solving
 ---------------------------
 
@@ -608,6 +620,12 @@ the following questions.
 
 #. Use the corpus module to tokenize ``austin-persuasion.txt``.
    How many words does this book have?
+
+#. Try running the Eliza chat-bot.  First, import it with
+   ``from nltk_lite.chat import eliza``, then run the demonstration,
+   ``demo()``.  How *intelligent* is this program?
+   Take a look at the program code and see if you can
+   discover how it works.
 
 ----
 
