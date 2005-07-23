@@ -675,3 +675,4 @@ NLTK_
 .. _NLTK: http://nltk.sourceforge.net/
 
 
+.. To add: paradigms
