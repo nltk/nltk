@@ -19,6 +19,7 @@ NLTK-Lite Tutorials
 .. _Chunk: chunk.html
 .. _Chart: chart.html
 .. _Field: field.html
+.. _Regexps: regexps.html
 
 --------
 Contents
@@ -33,6 +34,7 @@ Contents
 #. Chunk_
 #. Chart_
 #. Field_
+#. Regexps_
 
 ----
 
