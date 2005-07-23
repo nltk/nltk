@@ -34,7 +34,7 @@ illustrate the richness of language:
 2. When using the toaster please ensure that the exhaust fan is turned
    on. (sign in dormitory kitchen)
 3. Amiodarone weakly inhibited CYP2C9, CYP2D6, and CYP3A4-mediated
-   activities with Ki values of 45.1-271.6 &mu;M (Medline)
+   activities with Ki values of 45.1-271.6 |mu|\M (Medline)
 4. Iraqi Head Seeks Arms (spoof headline, ``http://www.snopes.com/humor/nonsense/head97.htm``
 5. The earnest prayer of a righteous man has great power and wonderful
    results. (James 5:16b)
@@ -61,7 +61,7 @@ Threatened remnant cultures have words to distinguish plant subspecies
 according to therapeutic uses which are unknown to science.  Languages
 evolve over time as they come into contact with each other and they
 provide a unique window onto human pre-history.  Technological change
-gives rise to new words like *weblog* and new morphemes like *e-* and
+gives rise to new words like *blog* and new morphemes like *e-* and
 *cyber-*.  In many parts of the world, small linguistic variations
 from one town to the next add up to a completely different language in
 the space of a half-hour drive.  For its breathtaking complexity and
@@ -112,11 +112,11 @@ endeavour of practical natural language processing to a broader
 audience than ever before.
 
 .. Note:: An important aspect of learning NLP using these materials is
-   to experience both the challenge and &mdash; we hope &mdash; the
+   to experience both the challenge and -- we hope -- the
    satisfaction of creating software to process natural language.  The
    accompanying software, NLTK, is available for free and runs on most
    operating systems including Linux/Unix, Mac OSX and Microsoft Windows.
-   You can download NTLK from ``nltk.sourceforge.net``, along with
+   You can download NTLK from ``http://nltk.sourceforge.net/``, along with
    extensive documentation.  We encourage you to install NLTK on your
    machine before reading beyond the end of this chapter.
 
@@ -126,7 +126,7 @@ A Brief History of Natural Language Processing
 
 A long-standing challenge within computer science has been to build
 intelligent machines.  The chief measure of machine intelligence has
-been a linguistic one, namely the Turing Test.  Can a dialogue system,
+been a linguistic one, namely the Turing Test: can a dialogue system,
 responding to a user's typed input with its own textual output,
 perform so naturally that users cannot distinguish it from a human
 interlocutor using the same interface?  Today, there is substantial
@@ -154,8 +154,8 @@ the movie. This inference seems so obvious to humans that we usually
 do not even notice it has been made, yet a natural language system
 needs to be endowed with this capability in order to interact
 naturally. Without it, when asked "Do you know when Saving Private
-Ryan is playing", a system might simply &mdash; and unhelpfully
-&mdash; respond with a cold "Yes". While it appears that this
+Ryan is playing", a system might simply -- and unhelpfully
+-- respond with a cold "Yes". While it appears that this
 dialogue system can perform simple inferences, such sophistication is
 only found in cutting edge research prototypes.  Instead, the
 developers of commercial dialogue systems use contextual assumptions
@@ -204,7 +204,7 @@ if we translate *John saw Mary* into a formula ``saw(j,m)``, we
 (implicitly or explicitly) intepret the English verb *saw* as a binary
 relation, and *John* and *Mary* as denoting individuals.  More general
 statements like *All birds fly* require quantifiers, in this case
-|forall| meaning *for all*: * |forall| x: bird(x) |rarr| fly(x).*
+|forall| meaning *for all*: |forall| x: bird(x) |rarr| fly(x).
 This use of logic provided the technical machinery to perform
 inferences that are an important part of language understanding. The
 third development was the *principle of compositionality*. This was
@@ -213,7 +213,7 @@ the meaning of its parts and their mode of combination. This principle
 provided a useful correspondence between syntax and semantics, namely
 that the meaning of a complex expression could be computed
 recursively.  Given the representation of *It is not true that
-&blank;:subscript:`p`* as ``not(p)`` and *John saw Mary* as
+|space| :subscript:`p`* as ``not(p)`` and *John saw Mary* as
 ``saw(j,m)``, we can compute the interpretation of *It is not true
 that John saw Mary* recursively using the above information to get
 ``not(saw(j,m))``. Today, this approach is most clearly manifested in
@@ -224,17 +224,17 @@ A separate strand of development in the 1960s and 1970s eschewed the
 declarative/procedural distinction and the principle of
 compositionality.  They only seemed to get in the way of building
 practical systems.  For example, early question answering systems
-employed fixed pattern-matching templates such as: *How many
-&blank;:subscript:`i` does &blank;:subscript:`j` have?*, where slot
+employed fixed pattern-matching templates such as: *How many*
+|space| :subscript:`i` *does* |space| :subscript:`j` *have?*, where slot
 ``i`` is a feature or service, and slot ``j`` is a person or place.
 Each template came with a predefined semantic function, such as
 ``count(i,j)``.  A user's question which matched the template would be
 mapped to the corresponding semantic function and then "executed" to
 obtain an answer, ``k = count(i,j)``.  This answer would be
-substituted into a new template: *&blank;:subscript:`j` has
-&blank;:subscript:`k` &blank;:subscript:`i`*.  For example, the
-question *How many airports:subscript:`i` does London:subscript:`j`
-have?* can be mapped onto a template (as shown by the subscripts) and
+substituted into a new template: |space| :subscript:`j` *has*
+|space| :subscript:`k` |space| :subscript:`i`.  For example, the
+question *How many airports*:subscript:`i` *does London*:subscript:`j`
+*have?* can be mapped onto a template (as shown by the subscripts) and
 translated to an executable program.  The result can be substituted
 into a new template and returned to the user: *London has five
 airports*.  Finally, the subscripts are removed and the natural
@@ -245,9 +245,8 @@ are formalized like phrase-structure grammars, but their constituents
 are no longer grammatical categories like noun phrase, but semantic
 categories like *Airport* and *City*.  These grammars work very well
 in limited domains, and are still widely used in spoken language
-systems.  However, they suffer from brittleness, duplication of
-grammatical structure in different semantic categories, and lack of
-portability.
+systems.  However, they lack robustness and portability, and they
+duplicate grammatical structure in different semantic categories.
 
 The contrasting approaches to NLP described in the preceding
 paragraphs relates back to early metaphysical debates about
@@ -266,8 +265,8 @@ result of supernatural revelation or sensory experience.  In contrast,
 Locke and others took the empiricist view, that our primary source of
 knowledge is the experience of our faculties, and that human reason
 plays a secondary role in reflecting on that experience.  Prototypical
-evidence for this position was Galileo's discovery &mdash; based on
-careful observation of the motion of the planets &mdash; that the
+evidence for this position was Galileo's discovery -- based on
+careful observation of the motion of the planets -- that the
 solar system is heliocentric and not geocentric.  In the context of
 linguistics, this debate leads to the following question: to what
 extent does human linguistic experience, versus our innate "language
@@ -334,11 +333,11 @@ sources of symbolic information, like hand-constructed parse trees and
 semantic representations.  Now the circle is closed, and we see
 symbolic information informing statistical models.
 
-This new rapprochement between high-church and low-church NLP is
-giving rise to many exciting new developments.  We will touch on some
-of these in the ensuing pages.  We too will perform this balancing
-act, employing approaches to NLP that integrate these
-historically-opposed philosophies and methodologies.
+This new rapprochement is giving rise to many exciting new
+developments.  We will touch on some of these in the ensuing pages.
+We too will perform this balancing act, employing approaches to NLP
+that integrate these historically-opposed philosophies and
+methodologies.
 
 ------------------------------------------
 An NLP Application: Information Extraction
@@ -470,19 +469,19 @@ recipe for mapping some input into an appropriate output in a finite
 number of steps.
 
 A simple parsing algorithm for context-free gramars, for instance,
-looks first for a rule of the form *S |rarr| X:subscript:`1` &mldr;
-X:subscript:`n`*, and builds a partial tree structure. It then steps
+looks first for a rule of the form ``S`` |rarr| ``X``:subscript:`1` |cdots|
+``X``:subscript:`n`, and builds a partial tree structure. It then steps
 through the grammar rules one-by-one, looking for a rule of the form
-*X:subscript:`1` |rarr| Y:subscript:`1` ...  Y:subscript:`j`* which
+``X``:subscript:`1` |rarr| ``Y``:subscript:`1` ...  ``Y``:subscript:`j` which
 will expand the leftmost daughter introduced by the ``S`` rule, and
 further extends the partial tree. This process continues, for example
-by looking for a rule of the form *Y:subscript:`1` |rarr|
-Z:subscript:`1` ...  Z:subscript:`k`* and expanding the partial tree
+by looking for a rule of the form ``Y``:subscript:`1` |rarr|
+``Z``:subscript:`1` ...  ``Z``:subscript:`k` and expanding the partial tree
 appropriately, until the leftmost node label in the partial tree is a
 lexical category; the parser then checks to see if the first word of
 the input can belong to the category. To illustrate, let's suppose
-that the first grammer rule chosen by the parser is *S |rarr| NP VP*
-and the second rule chosen is *NP |rarr| Det N*; then the partial
+that the first grammer rule chosen by the parser is ``S`` |rarr| ``NP VP``
+and the second rule chosen is ``NP`` |rarr| ``Det N``; then the partial
 tree will be:
  
 .. figure:: ../images/partialtree.png
@@ -499,8 +498,9 @@ if we had built the same partial tree with an input string *did the
 cat sleep*, the parse would fail at this point, since *did* is not of
 category ``Det``.  The parser would throw away the structure built so
 far and look for an alternative way of going from the ``S`` node down
-to a leftmost lexical category (e.g., using a rule ``S |rarr| V NP
-VP``). The important point for now is not the details of this or other
+to a leftmost lexical category (e.g., using a rule ``S`` |rarr| ``V NP
+VP``).
+The important point for now is not the details of this or other
 parsing algorithms; we discuss this topic much more fully in the
 chapter on parsing. Rather, we just want to illustrate the idea that
 an algorithm can be broken down into a fixed number of steps which
@@ -554,14 +554,14 @@ The Python Programming Language
 NLTK is written in the Python language, a simple yet powerful
 scripting language with excellent functionality for processing
 linguistic data.  Python can be downloaded for free from
-``www.python.org``.  Here is a five-line Python program which takes
-text input and prints all the words ending in ``ing``:
+``http://www.python.org/``.  Here is a five-line Python program which takes
+text input and prints all the words ending in ``ing``::
 
-  | import sys                            # load the system library
-  | for line in sys.stdin.readlines():    # for each line of input
-  |     for word in line.split():         # for each word in the line
-  |         if word.endswith('ing'):      # does the word end in 'ing'?
-  |             print word                # if so, print the word
+ import sys                            # load the system library
+ for line in sys.stdin.readlines():    # for each line of input
+     for word in line.split():         # for each word in the line
+         if word.endswith('ing'):      # does the word end in 'ing'?
+             print word                # if so, print the word
 
 This program illustrates some of the main features of Python.  First,
 whitespace is used to *nest* lines of code, thus the line starting
@@ -583,30 +583,29 @@ never written a program before.
 
 This readability of Python is striking in comparison to other
 languages which have been used for NLP, such as Perl.  Here is a Perl
-program which prints words ending in ``ing``:
+program which prints words ending in ``ing``::
 
-  | while (<>) {                          # for each line of input
-  |     foreach my $word (split) {        # for each word in a line
-  |         if ($word =~ /ing$/) {        # does the word end in 'ing'?
-  |             print "$word\n";          # if so, print the word
-  |         }
-  |     }
-  | }
+  while (<>) {                          # for each line of input
+      foreach my $word (split) {        # for each word in a line
+          if ($word =~ /ing$/) {        # does the word end in 'ing'?
+              print "$word\n";          # if so, print the word
+          }
+      }
+  }
 
-Like Python, Perl is a scripting language.  However, it is not a real
-object-oriented language, and its syntax is obscure.  For instance, it
-is difficult to guess what kind of entities are represented by:
-``&lt;&gt;``, ``$``, ``my``, and ``split``.  We agree that "it is
-quite easy in Perl to write programs that simply look like raving
-gibberish, even to experienced Perl programmers" (Hammond 2003:47).
-Having used Perl ourselves in research and teaching since the 1980s,
-we have found that Perl programs of any size are inordinately
-difficult to maintain and re-use.  Therefore we believe Perl is not an
-optimal choice of programming language for linguists or for language
-processing.  Several other languages are used for NLP, including
-Prolog, Java, LISP and C.  In the appendix we have provided
-translations of our five-line Python program into these and other
-languages, and invite you to compare them for readability.
+Like Python, Perl is a scripting language.  However, its syntax is
+obscure.  For instance, it is difficult to guess what kind of entities
+are represented by: ``<>``, ``$``, ``my``, and ``split``.  We
+agree that "it is quite easy in Perl to write programs that simply
+look like raving gibberish, even to experienced Perl programmers"
+(Hammond 2003:47).  Having used Perl ourselves in research and
+teaching since the 1980s, we have found that Perl programs of any size
+are inordinately difficult to maintain and re-use.  Therefore we
+believe Perl is not an optimal choice of programming language for
+linguists or for language processing.  Several other languages are
+used for NLP, including Prolog, Java, LISP and C.  In the appendix we
+have provided translations of our five-line Python program into these
+and other languages, and invite you to compare them for readability.
 
 We chose Python as the implementation language for NLTK because it has
 a shallow learning curve, its syntax and semantics are transparent,
@@ -671,13 +670,13 @@ NLP Textbooks and Surveys
 This section will give a brief overview of other NLP textbooks, and
 field-wide surveys *(to be written).*
 
-* Recent textbooks: Manning &amp; Schutze, Jurafsky &amp; Martin.
+* Recent textbooks: Manning and Schutze, Jurafsky and Martin.
 
 * Older textbooks: Allen (1995), Charniak (1993), Grishman.
   Prolog-based: Covington (1994), Gazdar and Mellish (1989)
   Pereira and Shieber; Mathematical foundations: Partee et al.
 
-* Recent field-wide surveys: Mitkov, Dale et al
+* Recent field-wide surveys: Mitkov, Dale et al, HLT Survey.
 
 --------------------------------------------
 Appendix: NLP in other Programming Languages
@@ -694,135 +693,134 @@ developing natural language parsers and feature-based grammars, given
 the inbuilt support for search and the *unification* operation which
 combines two feature structures into one.  Unfortunately Prolog is not
 easy to use for string processing or input/output, as the following
-program code demonstrates:
+program code demonstrates::
 
-  | main :-
-  |     current_input(InputStream),
-  |     read_stream_to_codes(InputStream, Codes),
-  |     codesToWords(Codes, Words),
-  |     maplist(string_to_list, Words, Strings),
-  |     filter(endsWithIng, Strings, MatchingStrings),
-  |     writeMany(MatchingStrings),
-  |     halt.
-  | 
-  | codesToWords([], []).
-  | codesToWords([Head | Tail], Words) :-
-  |     ( char_type(Head, space) ->
-  |         codesToWords(Tail, Words)
-  |     ;
-  |         getWord([Head | Tail], Word, Rest),
-  |         codesToWords(Rest, Words0),
-  |         Words = [Word | Words0]
-  |     ).
-  | 
-  | getWord([], [], []).
-  | getWord([Head | Tail], Word, Rest) :-
-  |     (
-  |         ( char_type(Head, space) ; char_type(Head, punct) )
-  |     ->  Word = [], Tail = Rest
-  |     ;   getWord(Tail, Word0, Rest), Word = [Head | Word0]
-  |     ).
-  | 
-  | filter(Predicate, List0, List) :-
-  |     ( List0 = [] -> List = []
-  |     ;   List0 = [Head | Tail],
-  |         ( apply(Predicate, [Head]) ->
-  |             filter(Predicate, Tail, List1),
-  |             List = [Head | List1]
-  |         ;   filter(Predicate, Tail, List)
-  |         )
-  |     ).
-  | 
-  | endsWithIng(String) :- sub_string(String, _Start, _Len, 0, 'ing').
-  | 
-  | writeMany([]).
-  | writeMany([Head | Tail]) :- write(Head), nl, writeMany(Tail).
+  main :-
+      current_input(InputStream),
+      read_stream_to_codes(InputStream, Codes),
+      codesToWords(Codes, Words),
+      maplist(string_to_list, Words, Strings),
+      filter(endsWithIng, Strings, MatchingStrings),
+      writeMany(MatchingStrings),
+      halt.
+  
+  codesToWords([], []).
+  codesToWords([Head | Tail], Words) :-
+      ( char_type(Head, space) ->
+          codesToWords(Tail, Words)
+      ;
+          getWord([Head | Tail], Word, Rest),
+          codesToWords(Rest, Words0),
+          Words = [Word | Words0]
+      ).
+  
+  getWord([], [], []).
+  getWord([Head | Tail], Word, Rest) :-
+      (
+          ( char_type(Head, space) ; char_type(Head, punct) )
+      ->  Word = [], Tail = Rest
+      ;   getWord(Tail, Word0, Rest), Word = [Head | Word0]
+      ).
+  
+  filter(Predicate, List0, List) :-
+      ( List0 = [] -> List = []
+      ;   List0 = [Head | Tail],
+          ( apply(Predicate, [Head]) ->
+              filter(Predicate, Tail, List1),
+              List = [Head | List1]
+          ;   filter(Predicate, Tail, List)
+          )
+      ).
+  
+  endsWithIng(String) :- sub_string(String, _Start, _Len, 0, 'ing').
+  
+  writeMany([]).
+  writeMany([Head | Tail]) :- write(Head), nl, writeMany(Tail).
 
 Java is an object-oriented language incorporating native support for
 the internet, that was originally designed to permit the same
-executable program to be run on most computer platforms.  Java is
-quickly replacing COBOL as the standard language for business
-enterprise software.
+executable program to be run on most computer platforms.  Java has
+replaced COBOL as the standard language for business enterprise
+software::
 
-  | import java.io.*;
-  | public class IngWords {
-  |     public static void main(String[] args) {
-  |         BufferedReader in = new BufferedReader(new
-  | 	    InputStreamReader(
-  |                  System.in));
-  |         String line = in.readLine();
-  |         while (line != null) {
-  |             for (String word : line.split(" ")) {
-  |                 if (word.endsWith("ing"))
-  |                     System.out.println(word);
-  |             }
-  |             line = in.readLine();
-  |         }
-  |     }
-  | }
+  import java.io.*;
+  public class IngWords {
+      public static void main(String[] args) {
+          BufferedReader in = new BufferedReader(new
+  	    InputStreamReader(
+                   System.in));
+          String line = in.readLine();
+          while (line != null) {
+              for (String word : line.split(" ")) {
+                  if (word.endsWith("ing"))
+                      System.out.println(word);
+              }
+              line = in.readLine();
+          }
+      }
+  }
 
 
 The C programming language is a highly-efficient low-level language
 that is popular for operating system software and for teaching the
-fundamentals of computer science.
+fundamentals of computer science::
 
-  | #include <sys/types.h>
-  | #include <regex.h>
-  | #include <stdio.h>
-  | #define BUFFER_SIZE 1024
-  | 
-  | int main(int argc, char \*\*argv) {
-  |      regex_t space_pat, ing_pat;
-  |      char buffer[BUFFER_SIZE];
-  |      regcomp(&space_pat, "[, \t\n]+", REG_EXTENDED);
-  |      regcomp(&ing_pat, "ing$", REG_EXTENDED | REG_ICASE);
-  | 
-  |      while (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
-  |          char \*start = buffer;
-  |          regmatch_t space_match;
-  |          while (regexec(&space_pat, start, 1, &space_match, 0) == 0) {
-  |              if (space_match.rm_so > 0) {
-  |                  regmatch_t ing_match;
-  |                  start[space_match.rm_so] = '\0';
-  |                  if (regexec(&ing_pat, start, 1, &ing_match, 0) == 0)
-  |                      printf("%s\n", start);
-  |              }
-  |              start += space_match.rm_eo;
-  |          }
-  |      }
-  |      regfree(&space_pat);
-  |      regfree(&ing_pat);
-  | 
-  |      return 0;
-  | }
+  #include <sys/types.h>
+  #include <regex.h>
+  #include <stdio.h>
+  #define BUFFER_SIZE 1024
+  
+  int main(int argc, char \*\*argv) {
+       regex_t space_pat, ing_pat;
+       char buffer[BUFFER_SIZE];
+       regcomp(&space_pat, "[, \t\n]+", REG_EXTENDED);
+       regcomp(&ing_pat, "ing$", REG_EXTENDED | REG_ICASE);
+  
+       while (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+           char \*start = buffer;
+           regmatch_t space_match;
+           while (regexec(&space_pat, start, 1, &space_match, 0) == 0) {
+               if (space_match.rm_so > 0) {
+                   regmatch_t ing_match;
+                   start[space_match.rm_so] = '\0';
+                   if (regexec(&ing_pat, start, 1, &ing_match, 0) == 0)
+                       printf("%s\n", start);
+               }
+               start += space_match.rm_eo;
+           }
+       }
+       regfree(&space_pat);
+       regfree(&ing_pat);
+  
+       return 0;
+  }
 
 LISP is a so-called functional programming language, in which all
 objects are lists, and all operations are performed by (nested)
 functions of the form ``(function arg1 arg2 ...)``.  Many of the
-earliest NLP systems were implemented in LISP.
+earliest NLP systems were implemented in LISP::
 
-  | (defpackage "REGEXP-TEST" (:use "LISP" "REGEXP"))
-  | (in-package "REGEXP-TEST")
-  | 
-  | (defun has-suffix (string suffix)
-  |   "Open a file and look for words ending in _ing."
-  |   (with-open-file (f string)
-  |      (with-loop-split (s f " ")
-  |         (mapcar #'(lambda (x) (has_suffix suffix x)) s))))
-  | 
-  | (defun has_suffix (suffix string)
-  |   (let* ((suffix_len (length suffix))
-  |    (string_len (length string))
-  |     (base_len (- string_len suffix_len)))
-  |     (if (string-equal suffix string :start1 0 :end1 NIL :start2 base_len :end2 NIL)
-  |         (print string))))
-  | 
-  | (has-suffix "test.txt" "ing")
+  (defpackage "REGEXP-TEST" (:use "LISP" "REGEXP"))
+  (in-package "REGEXP-TEST")
+  
+  (defun has-suffix (string suffix)
+    "Open a file and look for words ending in _ing."
+    (with-open-file (f string)
+       (with-loop-split (s f " ")
+          (mapcar #'(lambda (x) (has_suffix suffix x)) s))))
+  
+  (defun has_suffix (suffix string)
+    (let* ((suffix_len (length suffix))
+     (string_len (length string))
+      (base_len (- string_len suffix_len)))
+      (if (string-equal suffix string :start1 0 :end1 NIL :start2 base_len :end2 NIL)
+          (print string))))
+  
+  (has-suffix "test.txt" "ing")
 
 Haskell is another functional programming language which permits
-a much more compact solution of our simple task:
+a much more compact solution of our simple task::
 
-  | module Main
-  |   where main = interact (unlines.(filter ing).(map (filter isAlpha)).words)
-  |     where ing = (=="gni").(take 3).reverse
-
+  module Main
+    where main = interact (unlines.(filter ing).(map (filter isAlpha)).words)
+      where ing = (=="gni").(take 3).reverse
