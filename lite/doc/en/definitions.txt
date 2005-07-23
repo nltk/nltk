@@ -1,9 +1,15 @@
 .. |copy| unicode:: 0xA9 .. copyright sign
-.. |forall| unicode:: U+2220 .. for all
+.. |forall| unicode:: U+2200 .. for all
 .. |larr| unicode:: U+2190 .. left arrow
 .. |rarr| unicode:: U+2192 .. right arrow
 .. |space| unicode:: U+2423 .. space underbar
 .. |dot| unicode:: U+000B .. bullet
+.. |mu| unicode:: U+03BC .. mu
+.. |cdots| unicode:: U+22EF .. cdots
+.. |ulcorn| unicode:: U+231C .. up-left corner
+.. |urcorn| unicode:: U+231D .. up-right corner
+.. |dlcorn| unicode:: U+231E .. down-left corner
+.. |drcorn| unicode:: U+231F .. down-right corner
     
 .. role:: glossterm(emphasis)
    :class: indexed
