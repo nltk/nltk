@@ -43,11 +43,7 @@ needlessly picky to ask what a word is. Can't we just say that a word
 is a string of characters which has white space before and after it?
 However, it turns out that things are quite a bit more complex. To get
 a flavour of the problems, consider the following text from the Wall
-Street Journal:
-
-.. _wsj_0034:
-
-blah::
+Street Journal::
 
   Paragraph 12 from ``wsj_0034``
 
@@ -79,7 +75,7 @@ say that ``aren't`` is a contraction of two distinct words.
 If we take our naive definition of word literally (as we should, if we
 are thinking of implementing it in code), then there are some other
 minor but real problems. For example, assuming our file consists of a
-number of separate lines, as indicated in wsj_0034_, then all the
+number of separate lines, as in the WSJ text, then all the
 words which come at the beginning of a line will fail to be preceded
 by whitespace (unless we treat the newline character as a
 whitespace). Second, according to our criterion, punctuation symbols
@@ -96,7 +92,7 @@ lowercase initial. However, to formulate such a rule, we must be able
 to identify a period as a token in its own right.
 
 A slightly different challenge is raised by examples such as the
-following (drawn from the MedLine [ref] corpus):
+following (drawn from the MedLine corpus):
 
 #. This is a alpha-galactosyl-1,4-beta-galactosyl-specific adhesin.
 
@@ -123,7 +119,7 @@ as word may depend a great deal on what our purposes are.
    there is no visual representation of word boundaries in Chinese
    text.
 
-Let's look in more detail at the words in wsj_0034_.
+Let's look in more detail at the words in the WSJ text.
 Suppose we use white space as the delimiter for words, and then list
 all the words of the text in alphabetical order; we would expect to
 get something like the following::
@@ -143,11 +139,10 @@ word ``deprecate``, or when we say that the words ``barf`` and
 ``vomit`` are synonyms. On the other hand, a word token is something
 which exists in time and space. For example, we could talk about my
 uttering a token of the word ``grunge`` in Edinburgh on July 14, 2003;
-equally, we can say that the second word token in <xref wsj_0034_ is a
+equally, we can say that the second word token in the WSJ text is a
 token of the word type ``probably``, or that there are two tokens of
 the type ``European`` in the text.  More generally, we want to say
-that there are 90 word tokens in wsj_0034_, but only 76 word
-types.
+that there are 90 word tokens in the WSJ text, but only 76 word types.
 
 The terms *token* and *type* can also be applied to other linguistic
 entities.  For example, a *sentence token* is an individual occurrence
@@ -160,7 +155,7 @@ and type.
 .. _token.representing:
 
 Representing tokens
-===================
+-------------------
 
 When written language is stored in a computer file it is normally
 represented as a sequence or *string* of characters.  That is, in a
@@ -188,11 +183,9 @@ example, suppose we have a file containing the following two lines::
 From the parser's point of view, this file is just a string of
 characters:
 
-.. parsed-literal::
-
   'The |space| cat |space| climbed\\nthe |space| tree.'
 
-*[NB remove extra space from this???]*
+.. *[NB remove extra space from this???]*
 
 Note that we use single quotes to delimit strings,
 "|space|" to represent space and "\n" to represent newline.
@@ -424,10 +417,8 @@ with which that word length is used::
   ...     wordlens.sort()
   ...     points = [(i, cfdist[cond].freq(i)) for i in wordlens]
 
-.. Note:: Once the plotting module is ported to nltk_lite, it will be
-   possible to do: ``Plot(points).mainloop()``
-
-.. frequency.predicting:
+We can plot these points using the ``Plot`` function defined in
+``nltk_lite.draw.plot``, as follows: ``Plot(points).mainloop()``
 
 ----------------------------------------
 An Application: Predicting the Next Word
@@ -518,7 +509,7 @@ In this section we present the standard criteria for categorising
 words in this way, then discuss the main classes of words in English.
 
 Categorising Words
-==================
+------------------
 
 How do we decide what category a word should belong to? In general,
 linguists invoke three kinds of criteria for making the decision:
@@ -578,7 +569,7 @@ changes very gradually over time.
     *open classes*.
 
 English Word Classes
-====================
+--------------------
 
 This section presents a brief overview of English word classes.
 Readers requiring more detail are encouraged to consult a grammar of
@@ -689,7 +680,7 @@ wps   WH-pronoun, nominative                     that who whoever whosoever what
 ====  =========================================  ==========================================================
 
 Part-of-Speech Tag Sets
-=======================
+-----------------------
 
 Most part-of-speech tag sets make use of the same basic categories,
 such as noun, verb, adjective, and preposition. However, tag sets
@@ -724,8 +715,7 @@ In this tutorial, we will use the following tags: ``at`` (article)
 (Preposition), ``cd`` (Number), and ``end`` (Sentence-ending
 punctuation).  As we mentioned, this is a radically simplified version
 of the Brown Corpus tag set, which in its entirety has 87 basic tags
-plus many combinations.  A fuller list is given in the Appendix of the
-tagging tutorial.
+plus many combinations.
 
 ---------------------------------------------
 Representing Tagged Tokens and Tagged Corpora
@@ -770,8 +760,6 @@ whitespace-separated tokens, where each token is of the form
 It is possible to use the ``nltk_lite.corpora`` module to read and
 tokenize data from a tagged corpus, as we saw above.
 
-*MENTION SENTENCE STRUCTURE*
-
 Here is another example which constructs tokens from a string::
 
   >>> sent = """
@@ -792,7 +780,7 @@ part-of-speech tag of a word, and exploring the frequency distribution
 of modal verbs according to text genre.
 
 Classifying Words Automatically
-===============================
+-------------------------------
 
 A tagged corpus can be used to *train* a simple classifier, which can
 then be used to guess the tag for untagged words.  For each word, we
@@ -802,7 +790,7 @@ as ``vb``.  On this evidence, if we were asked to guess the tag for
 ``deal`` we would choose ``nn``, and we would be right over two-thirds
 of the time.  The following program performs this tagging task, when
 trained on the "g" section of the Brown Corpus (so-called *belles
-lettres*, creative writing valued for its esthetic content).
+lettres*, creative writing valued for its aesthetic content).
 
   >>> cfdist = ConditionalFreqDist()
   >>> for sentence in brown.tagged('g'):
@@ -858,7 +846,7 @@ to be adjectives than nouns::
   [('%', 'nn'), ("'", None), ('-', 'jj'), ('2', 'nn'), ('5', 'nn'), ('A', 'nn'), ('D', 'nn'), ('O', 'nn'), ('S', 'nn'), ('a', 'nn'), ('c', 'jj'), ('b', 'nn'), ('e', 'nn'), ('d', 'nn'), ('g', 'nn'), ('f', 'nn'), ('i', 'nn'), ('h', 'nn'), ('k', 'nn'), ('m', 'nn'), ('l', 'jj'), ('o', 'nn'), ('n', 'nn'), ('p', 'nn'), ('s', 'nn'), ('r', 'nn'), ('u', 'nn'), ('t', 'nn'), ('w', 'nn'), ('y', 'nn'), ('x', 'nn'), ('z', 'nn')]
 
 Exploring text genres
-=====================
+---------------------
 
 Now that we can load a significant quantity of tagged text, we can
 process it and extract items of interest.  The following code iterates
