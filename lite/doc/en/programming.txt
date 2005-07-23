@@ -19,10 +19,10 @@ Programming Fundamentals and Python
 Introduction
 ------------
 
-This tutorial provides a non-technical overview of Python.
-It contains many program fragments which you should try yourself.
-For a more detailed overview, we recommend that you consult
-one of the introductions listed in the further reading section below.
+This tutorial provides a non-technical overview of Python.  It
+contains many working program fragments which you should try yourself.
+For a more detailed overview, we recommend that you consult one of the
+introductions listed in the further reading section below.
 
 ----------------------------
 Processing lists and strings
@@ -174,9 +174,9 @@ typing ``help(list)`` and ``help(str)`` at the command prompt.
 To find out about individual functions, you can type, e.g.
 ``help(list.append)``.
 
-------------
-Dictionaries
-------------
+----------------------
+Dictionaries in Python
+----------------------
 
 Lists and strings are accessed by indexes.  This turns out to be too
 limiting for many applications.  Instead, we would like to access items
@@ -353,7 +353,8 @@ Another option is to import the module itself, rather than
 its contents.  Now its contents can then be accessed
 using *fully qualified* dotted names:
 
-  >>> re_show('green', s)
+  >>> from nltk_lite import utilities
+  >>> utilities.re_show('green', s)
   colourless {green} ideas sleep furiously
 
 For more information about importing, see any Python textbook.
@@ -611,33 +612,33 @@ the following questions.
    of your list.  Extract individual items (strings), and perform
    some of the string operations on them.
 
-#. Create a dictionary ``d``, and add some entries.  What happens if
+2. Create a dictionary ``d``, and add some entries.  What happens if
    you try to access a non-existent entry, e.g. ``d['xyz']``?
 
-#. Define a string ``s = 'colourless'``.  Write a Python statement
+3. Define a string ``s = 'colourless'``.  Write a Python statement
    that changes this to 'colorless', using only the slice and
    concatenation operations.
 
-#. Describe the class of strings matched by the following regular
+4. Describe the class of strings matched by the following regular
    expressions:
 
-  a) ``[a-zA-Z]+``
-  #) ``[A-Z][a-z]*``
-  #) ``\d+(\.\d+)?``
-  #) ``([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*``
-  #) ``\w+|[^\w\s]+``
+   a) ``[a-zA-Z]+``
+   #) ``[A-Z][a-z]*``
+   #) ``\d+(\.\d+)?``
+   #) ``([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*``
+   #) ``\w+|[^\w\s]+``
 
-#. Write regular expressions to match the following classes of strings:
+5. Write regular expressions to match the following classes of strings:
 
   a) A single determiner (assume that *a*, *an*, and *the*
      are the only determiners).
   #) An arithmetic expression using integers, addition, and
      multiplication, such as ``2*3+8``.
 
-#. Use the corpus module to tokenize ``austin-persuasion.txt``.
+6. Use the corpus module to tokenize ``austin-persuasion.txt``.
    How many words does this book have?
 
-#. Try running the Eliza chat-bot.  First, import it with
+7. Try running the Eliza chat-bot.  Import it with
    ``from nltk_lite.chat import eliza``, then run the demonstration,
    ``demo()``.  How *intelligent* is this program?
    Take a look at the program code and see if you can
