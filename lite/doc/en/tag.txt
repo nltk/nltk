@@ -157,7 +157,7 @@ class a word belongs to and the phrases it forms with neighbouring
 words. So, for example, a noun phrase (labelled NP) will usually
 consist of a noun (N) optional accompanied by an article (Det) and
 some modifiers such as adjectives (Adj). We can express this
-generalisation in terms of a production rule::
+generalisation in terms of a production rule:
 
   NP |rarr| Det Adj* N
 
@@ -167,7 +167,7 @@ occur in any context that the phrase as a whole can occur in.
 However, from a purely notational point of view, we are free to use
 any labels we want for word classes, and these could just as well be
 the labels provided by a tag set. For example, we could replace the
-preceding rule with the following::
+preceding rule with the following:
 
   NP |rarr| at jj* nn
 
@@ -216,7 +216,7 @@ tokenized text as follows::
   >>> print tokens
   ['John', 'saw', '3', 'polar', 'bears', '.']
 
-.. Note:: the tokenizer is a *generator* over tokens.  We cannot print
+.. Note:: The tokenizer is a *generator* over tokens.  We cannot print
    it directly, but we can convert it to a list for printing, as shown
    in the above program.  Note that we can only use a generator once,
    but if we save it as a list, the list can be used many times over.
@@ -243,7 +243,8 @@ can significantly improve performance.
 
 .. Important:: Default taggers assign their tag to every single word,
    even words that have never been encountered before.  Thus, they help
-   to improve the robustness of a language processing system.
+   to improve the robustness of a language processing system.  We will
+   return to them later, in the context of our discussion of *backoff*.
 
 The Regular Expression Tagger
 -----------------------------
@@ -304,7 +305,17 @@ it cannot assign a tag itself::
 Now all the words are guaranteed to be tagged.
 
 
-*AFFIX TAGGERS*
+Affix Taggers
+-------------
+
+Affix taggers are like unigram taggers, except they are trained on
+word prefixes or suffixes of a specified length.  (NB. Here we use
+*prefix* and *suffix* in the string sense, not the morphological
+sense.)  For example, the following tagger will consider suffixes of
+length 3 (e.g. *-ize*, *-ion*), for words having at least 5
+characters.
+
+  >>> t3 = Affix(-3, 5, backoff=t2)
 
 ------------------
 Evaluating Taggers
@@ -391,8 +402,8 @@ While the accuracy score is certainly useful, it does not tell us how
 to improve the tagger.  For this we need to undertake error analysis.
 For instance, we could construct a *confusion matrix*, with a row and
 a column for every possible tag, and entries that record how often a
-word with tag *T :subscript:i* is incorrectly tagged as *T
-:subscript:j*.  Another approach is to analyse the context of errors.
+word with tag *T* :subscript:`i` is incorrectly tagged as *T*
+:subscript:`j`.  Another approach is to analyse the context of errors.
 
   >>> errors = {}
   >>> for i in range(len(unseen_sents)):
@@ -434,15 +445,14 @@ and then do a reverse sort to get the most significant errors first:
 
 The fifth line of output records the fact that there were 11 cases
 where the unigram tagger mistakenly tagged a noun as a verb, following
-an article.  In fact we already encountered this mistake in <xref
-linkend="table.evaluation"/> for the word ``increase``.  The unigram
-tagger tagged ``increase`` as a verb instead of a noun since it
-occurred more often in the training data as a verb.  However, when
-``increase`` appears after an article, it is invariably a noun.
-Evidently, the performance of the tagger would improve if it was
-modified to consider not just the word being tagged, but also the tag
-of the word on the left.  Such taggers are known as bigram taggers,
-and we consider them next.
+an article.  In fact we already encountered this mistake for the word
+``increase`` in the above evaluation table.  The unigram tagger tagged
+``increase`` as a verb instead of a noun since it occurred more often
+in the training data as a verb.  However, when ``increase`` appears
+after an article, it is invariably a noun.  Evidently, the performance
+of the tagger would improve if it was modified to consider not just
+the word being tagged, but also the tag of the word on the left.  Such
+taggers are known as bigram taggers, and we consider them next.
 
 --------------------
 Higher Order Taggers
@@ -532,12 +542,12 @@ the preceding word's tag when making a tagging decision.  An *n-gram
 tagger* is a generalisation of a bigram tagger whose context is the
 current token's text together with the part-of-speech tags of the *n*
 preceding tokens, as shown in the following diagram. It then picks the
-tag which is most likely for that context. The tag to be chosen, *t
-:subscript:k*, is circled, and the context is shaded in grey. In this
+tag which is most likely for that context. The tag to be chosen, *t*
+:subscript:`k`, is circled, and the context is shaded in grey. In this
 example of an n-gram tagger, we have *n=3*; that is, we consider the
 tags of the two preceding words in addition to the current word.
 
-.. figure:: images/tag-context.png
+.. figure:: ../images/tag-context.png
    :scale: 1
 
    Tagger Context
@@ -586,8 +596,8 @@ Combining Taggers
 One way to address the trade-off between accuracy and coverage is to
 use the more accurate algorithms when we can, but to fall back on
 algorithms with wider coverage when necessary. For example, we could
-combine the results of a first order tagger, a 0th order tagger, and
-an ``NN_CD_Tagger``, as follows:
+combine the results of a bigram tagger, a unigram tagger, and
+a ``NN_CD_Tagger``, as follows:
 
 1. Try tagging the token with the bigram tagger.
 2. If the bigram tagger is unable to find a tag for the token, try
@@ -693,12 +703,12 @@ rehabilitation  nn       nn
 ==============  =======  ==========  =================================  =============================
 
 In this table we see two rules.  All such rules are generated from a
-template of the following form: form "replace *T :subscript:1* with *T
-:subscript:2* in the context *C*".  Typical contexts are the identity
+template of the following form: form "replace *T* :subscript:`1` with *T*
+:subscript:`2` in the context *C*".  Typical contexts are the identity
 or the tag of the preceding or following word, or the appearance of a
 tag within 2-3 words of of the current word.  During its training
-phase, the tagger guesses values for *T :subscript:1*, *T
-:subscript:2* and *C*, to create thousands of candidate rules.  Each
+phase, the tagger guesses values for *T* :subscript:`1`, *T*
+:subscript:`2` and *C*, to create thousands of candidate rules.  Each
 rule is then assigned a score based on its net benefit: the number of
 incorrect tags that it corrects, less the number of correct tags it
 incorrectly modifies.  This process is best illustrated by a listing
@@ -808,7 +818,7 @@ so that you can answer the following questions.
       Print out seven sentences containing this word, each one having
       a different tag.
 
-#. **Regular Expression Tagging**
+2. **Regular Expression Tagging**:
    We defined the ``NN_CD_Tagger``, which can be used
    as a fall-back tagger for unknown words.  This tagger only checks for
    cardinal numbers.  By testing for particular prefix or suffix strings,
@@ -821,17 +831,17 @@ so that you can answer the following questions.
    Evaluate the tagger using ``tag.accuracy()``, and
    discuss your findings.
           
-#. **Unigram Tagging**
+3. **Unigram Tagging**:
    Train a unigram tagger and run it on some new text.
    Evaluate the tagger as before and discuss your findings.
    Observe that some words are not assigned a tag.  Why not?
           
-#. **Bigram Tagging**
+4. **Bigram Tagging**:
    Train a bigram tagger with no backoff tagger, and run it on some of the training
    data.  Next, run it on some new data.  What happens to the
    performance of the tagger?  Why?
 
-#. **Combining taggers**
+5. **Combining taggers**:
    There is typically a trade-off between the accuracy and coverage
    for taggers: taggers that use more specific contexts usually
    produce more accurate results, when they have seen those contexts
@@ -849,7 +859,7 @@ so that you can answer the following questions.
    #) Try varying the size of the training corpus. How does it affect
       your results?
 
-#. **Tagger context** (advanced)
+6. **Tagger context** (advanced):
 
    N-gram taggers choose a tag for a token based on its type and the
    tags of the *n-1* preceding tokens. This is a common context to use
@@ -873,7 +883,7 @@ so that you can answer the following questions.
    #) How does the combined tagger's accuracy compare to the combined taggers you
       created in the previous exercise? 
 
-#. **Reverse sequential taggers** (advanced)
+7. **Reverse sequential taggers** (advanced):
    Since sequential taggers tag tokens in order, one at a time, they
    can only use the predicted tags to the *left* of the current token
    to decide what tag to assign to a token. But in some cases, the
@@ -899,7 +909,7 @@ so that you can answer the following questions.
    b) How does its accuracy compare to a first order sequential
    tagger, using the same training data and test data?
         
-#. **Alternatives to backoff**
+8. **Alternatives to backoff**:
    Create a new kind of tagger that combines several subtaggers using
    a new mechanism other than backoff (e.g. voting).  For robustness
    in the face of unknown words, include a regexp tagger, a unigram
@@ -907,12 +917,12 @@ so that you can answer the following questions.
    until it recognises a word, or an n-gram tagger that does not
    consider the text of the token being tagged.
         
-#. **Comparing nth-order taggers and Brill taggers**
+9. **Comparing nth-order taggers and Brill taggers**:
    Investigate the relative accuracy of nth-order taggers with backoff
    and Brill taggers as the size of the training data is increased.
    Analyze and compare the errors made by each kind of tagger.
         
-#. **Application to other languages**
+10. **Application to other languages**:
     Obtain some tagged data for another language, and train and
     evaluate a variety of taggers on it.  If the language is
     morphologically complex, or if there are any orthographic clues
