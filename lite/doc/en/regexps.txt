@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: definitions.txt
 
-=====================================================================
-Elementary Language Processing: Tokenizing Text and Classifying Words
-=====================================================================
+===================================================
+Regular Expressions for Natural Language Processing
+===================================================
 
 :Authors: Steven Bird, Ewan Klein
 :Contact: sb@csse.unimelb.edu.au
