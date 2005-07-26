@@ -120,7 +120,7 @@ if it is at the beginning of a chunk, and contained within that chunk.
 Subsequent tokens within the chunk are tagged ``INSIDE``.  All other
 tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
 
-.. figure: ../images/chunk-tagrep.png
+.. figure:: ../images/chunk-tagrep.png
    :scale: 1
 
    Tag Representation of Chunk Structures
@@ -128,9 +128,9 @@ tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
 The other logical representation for chunk structures is to use trees,
 as shown below.  These have the benefit that each chunk is a
 constituent that can be manipulated directly.  NLTK uses this for its
-internal representation of chunks.
+internal representation of chunks:
     
-.. figure: ../images/chunk-treerep.png
+.. figure:: ../images/chunk-treerep.png
    :scale: 1
 
    Tree Representation of Chunk Structures
@@ -326,8 +326,8 @@ respectively.  Now we can use this to chunk a tagged sentence, as
 illustrated by the complete program below.
 
 .. note: Each rule must have a "description" associated with it, which
-provides a short explanation of the purpose or the effect of the rule.
-This description is accessed via the ``descr()`` method.
+   provides a short explanation of the purpose or the effect of the rule.
+   This description is accessed via the ``descr()`` method.
     
   >>> from nltk_lite import tag
   >>> sent = tag.string2tags("the/DT little/JJ cat/NN sat/VBD on/IN the/DT mat/NN")
@@ -517,7 +517,7 @@ following rule will unchunk any sequence of tokens whose tags are all
 "``NN``" or "``DT``":
       
   >>> unchunk_rule = parse.UnChunkRule('<NN|DT>+',
-  ...                            'Unchunk sequences of NN and DT')
+  ...                        'Unchunk sequences of NN and DT')
 
 We can combine this rule with a chunking rule to form a chunk parser:
 
@@ -713,14 +713,14 @@ structure into a list of tokens.  Since chunk structures are just
 trees, we use the ``leaves()`` method to extract this flattened list.
 Note that we must always include location information when evaluating
 a chunk parser.
-    
+
   >>> correct = tree.chunk("[ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]")
   >>> correct.leaves()
   [('the', 'DT'), ('little', 'JJ'), ('cat', 'NN'), ('sat', 'VBD'), ('on', 'IN'), ('the', 'DT'), ('mat', 'NN')]
 
 Now we run a chunker, and then compare the resulting chunked sentences
 with the originals, as follows:
-  
+
   >>> from nltk_lite import parse
   >>> chunkscore = parse.ChunkScore()
   >>> rule = parse.ChunkRule('<PRP|DT|POS|JJ|CD|N.*>+', "Chunk items that often occur in NPs")
@@ -823,7 +823,7 @@ chunking method is to classify every tag in the training data as to
 whether it occurs inside or outside a chunk more often.  We can do
 this easily using a chunked corpus and a conditional frequency
 distribution as shown below:
-      
+
   >>> from nltk_lite.probability import ConditionalFreqDist
   >>> cfdist = ConditionalFreqDist()
   >>> chunk_data = list(treebank.chunked())
@@ -873,11 +873,7 @@ chunked text.
 #. ``MergeRule`` can be used to merge two contiguous chunks.
 #. ``SplitRule`` can be used to split a single chunk into two smaller chunks.
 
----------------
-Further Reading
----------------
-
-*to be written*
+.. Further Reading
 
 ---------
 Exercises

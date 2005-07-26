@@ -4,8 +4,13 @@
 .. |rarr| unicode:: U+2192 .. right arrow
 .. |space| unicode:: U+2423 .. space underbar
 .. |dot| unicode:: U+000B .. bullet
-.. |mu| unicode:: U+03BC .. mu
+.. |alpha| unicode:: U+03B1
+.. |beta| unicode:: U+03B2
+.. |gamma| unicode:: U+03B3
+.. |mu| unicode:: U+03BC
 .. |cdots| unicode:: U+22EF .. cdots
+.. |leq| unicode:: U+2264
+.. |geq| unicode:: U+2265
 .. |ulcorn| unicode:: U+231C .. up-left corner
 .. |urcorn| unicode:: U+231D .. up-right corner
 .. |dlcorn| unicode:: U+231E .. down-left corner
