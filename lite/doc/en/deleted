@@ -133,3 +133,37 @@ Note that this simple method only returns forms of the same length.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+---------------
+NLTK Interfaces
+---------------
+
+An *interface* gives a partial specification of the behavior of a
+class, including specifications for methods that the class should
+implement.  For example, a "comparable" interface might specify that a
+class must implement a comparison method.  Interfaces do not give a
+complete specification of a class; they only specify a minimum set of
+methods and behaviors which should be implemented by the class.  For
+example, the ``TaggerI`` interface specifies that a tagger class must
+implement a ``tag`` method, which takes a ``string``, and returns a
+tuple, consisting of that string and its part-of-speech tag; but it
+does not specify what other methods the class should implement (if
+any).
+
+.. note:: The notion of "interfaces" can be very useful in ensuring that
+   different classes work together correctly.  Although the concept of
+   "interfaces" is supported in many languages, such as Java, there is no
+   native support for interfaces in Python.
+
+NLTK therefore implements interfaces using classes, all of whose
+methods raise the ``NotImplementedError`` exception.  To distinguish
+interfaces from other classes, they are always named with a trailing
+``I``.  If a class implements an interface, then it should be a
+subclass of the interface.  For example, the ``Ngram`` tagger class
+implements the ``TaggerI`` interface, and so it is a subclass of
+``TaggerI``.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
