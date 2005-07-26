@@ -183,9 +183,7 @@ example, suppose we have a file containing the following two lines::
 From the parser's point of view, this file is just a string of
 characters:
 
-  'The |space| cat |space| climbed\\nthe |space| tree.'
-
-.. *[NB remove extra space from this???]*
+  'The\ |space|\ cat\ |space|\ climbed\\nthe\ |space|\ tree.'
 
 Note that we use single quotes to delimit strings,
 "|space|" to represent space and "\n" to represent newline.
