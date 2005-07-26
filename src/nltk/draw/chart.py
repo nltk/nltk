@@ -1,7 +1,8 @@
 # Natural Language Toolkit: Chart Parser Demo
 #
-# Copyright (C) 2001 University of Pennsylvania
+# Copyright (C) 2001-2005 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Jean Mark Gawron <gawron@mail.sdsu.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
