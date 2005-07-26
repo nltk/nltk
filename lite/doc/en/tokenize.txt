@@ -152,7 +152,7 @@ sentence tokens, but only one sentence type.  When the kind of token
 or type is obvious from context, we will simply use the terms token
 and type.
 
-.. _token.representing:
+.. _representing.tokens:
 
 Representing tokens
 -------------------
@@ -227,7 +227,7 @@ from files::
   >>> text_str
   'Hello world.  This is a test file.\n'
 
-However, as we noted in token.representing_, it is usually preferrable
+However, as we noted in representing.tokens_, it is usually preferrable
 to represent a text as a list of tokens.  These lists are typically
 created using a *tokenizer*, such as ``tokenize.whitespace`` which
 splits strings into words at whitespaces::
@@ -251,15 +251,14 @@ splits strings into words at whitespaces::
      ...     print porter.stem(token),
      stem can be fun and excit
 
-We noted in the Introduction_ that tokenization based on whitespace is
-too simplistic for most applications; for instance, it fails to
-separate the last word of a phrase or sentence from punctuation
-characters, such as comma, period, exclamation mark and question mark.
-As its name suggests, ``tokenize.regexp`` employs a regular expression
-to determine how text should be split up.  This regular expression
-specifies the characters that can be included in a valid word.  To
-define a tokenizer that includes punctuation as separate tokens, we
-could use:
+Tokenization based on whitespace is too simplistic for most
+applications; for instance, it fails to separate the last word of a
+phrase or sentence from punctuation characters, such as comma, period,
+exclamation mark and question mark.  As its name suggests,
+``tokenize.regexp`` employs a regular expression to determine how text
+should be split up.  This regular expression specifies the characters
+that can be included in a valid word.  To define a tokenizer that
+includes punctuation as separate tokens, we could use:
 
   >>> text = '''Hello.  Isn't this fun?'''
   >>> pattern = r'\w+|[^\w\s]+'

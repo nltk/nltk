@@ -109,8 +109,8 @@ such a tree is shown below. For those trained in
 theoretical linguistics, the lexical categories (i.e., the nonterminal
 symbols immediately dominating the leafs of the tree) may appear
 strange.  This is because we have used used labels drawn from the
-Brown Corpus part-of-speech tag set; see XREF(Tagging Chapter: Intro)
-for discussion.
+Brown Corpus part-of-speech tag set (please see the chapter on tagging
+for discussion).
 
 .. figure:: ../images.parsing/parse_tree.png
 
@@ -218,9 +218,11 @@ grammatical productions in `G1`_ are sometimes called
 `N`, `V` and `P` are :glossterm:`lexical categories`, in that they introduce
 lexical items. 
 
-======    ====================    =======
+======    ====================    =====================
+Part of Speech Categories
+-------------------------------------------------------
 Symbol    Gloss                   Example
-======    ====================    =======
+======    ====================    =====================
 S         sentence                *the man walked*
 NP        noun phrase 		  *a dog*
 VP        verb phrase 		  *saw a park*
@@ -230,22 +232,22 @@ Det       determiner              ..
 N         noun                    ..
 V         verb                    ..
 P         preposition             ..
-======    ====================    =======
+======    ====================    =====================
 
 
 If we were to parse the string ``The dog saw a man in the park`` using
 `G1`_, we would end up with two distinct analyses, as shown 
-in `Figure 1`_.
+below:
 
-.. figure:: ../images.parsing/empty.png
-
-   _`Figure 1`: Structural Ambiguity
-
-.. image:: ../images.parsing/parse_tree2.png 
+.. figure:: ../images.parsing/parse_tree2.png 
    :scale: 70
  
-.. image:: ../images.parsing/parse_tree3.png
+   Structural Ambiguity: VP modification
+
+.. figure:: ../images.parsing/parse_tree3.png
    :scale: 70
+
+   Structural Ambiguity: NP modification
 
 The fact that our grammar admits two distinct structures for this
 sentence indicates that the sentence is :glossterm:`structurally ambiguous`.
@@ -702,7 +704,7 @@ productions.  ``Grammars`` are created with the constructor::
   >>> grammar
   <Grammar with 3 productions>
 
-A grammar's start state is returned by the ``start``method; and its list
+A grammar's start state is returned by the ``start`` method; and its list
 of productions is returned by the ``productions`` method::
 
   >>> grammar.start()
