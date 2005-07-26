@@ -80,7 +80,7 @@ These *dotted edges* are used to record all of the hypotheses that a
 chart parser makes about constituents in a sentence.  Formally, we can
 define a dotted edge as follows:
 
-  A dotted edge [A |rarr| c1 ... cd; |dot| cd+1 ... cn]@[&i;:&j;]
+  A dotted edge [A |rarr| c1 ... cd; |dot| cd+1 ... cn]@[i:j]
   records the hypothesis that a constituent of type A starts with
   children c1...cd covering words wi...wj, but still needs children
   cd+1...cn to be complete (where both c1...cd and cd+1...cn may be
@@ -121,8 +121,8 @@ be licensed in one of three ways:
 1. The *sentence* can license an edge.  In particular, each word wi
    in the sentence licenses the complete edge [wi |rarr| |dot| ]@[i:i+1].
 #. The *grammar* can license an edge.  In particular, each grammar
-   production A |rarr| &alpha; licenses the self-loop edge [A |rarr|
-   |dot| &alpha;]@[i:i] for every i, 0&le;i<n.
+   production A |rarr| |alpha| licenses the self-loop edge [A |rarr|
+   |dot| |alpha| ]@[i:i] for every i, 0\ |leq|\ i<n.
 #. The *current chart contents* can license an edge.
           
 However, it is not wise to add *all* licensed edges to the chart,
@@ -148,14 +148,14 @@ it states that if the chart contains the edges:
 
 .. image:: ../images/chart_fr1.png
 
-1. [&A; |rarr| &alpha; |dot| &B;&beta;]@[&i;:&j;]
-2. [&B; |rarr| &gamma; |dot| ]@[&j;:&k;]
+1. [A |rarr| |alpha| |dot| B |beta| ]@[i:j]
+2. [B |rarr| |gamma| |dot| ]@[j:k]
 
 Then the parser should add the edge:
 
 .. image:: ../images/chart_fr2.png
 
-3. [&A; |rarr| &alpha;&B; |dot| &beta;]@[&i;:&k;]
+3. [A |rarr| |alpha| B |dot| |beta| ]@[i:k]
 
 
 Bottom Up Parsing
@@ -165,12 +165,12 @@ To create a bottom-up parser, we need to add two rules: the *Bottom-Up
 Initialization Rule*; and the *Bottom-Up Predict Rule*.
 
 The Bottom-Up Initialization Rule says to add all edges licensed by
-the sentence.  In particular, it states that for every word &wi;, the
+the sentence.  In particular, it states that for every word w\ :subscript:`i`, the
 parser should add the edge:
 
 .. image:: ../images/chart_bu_init.png
 
-#. [&wi; |rarr|  |dot| ]@[&i;:&i;+1]
+#. [w\ :subscript:`i`; |rarr|  |dot| ]@[i:i+1]
 
 .. ouch: write this better! :)
 
@@ -182,17 +182,17 @@ if the chart contains the complete edge:
 
 .. image:: ../images/chart_bu_predict1.png
 
-1. [&A; |rarr| &alpha; |dot| ]@[&i;:&j;]
+1. [A |rarr| |alpha| |dot| ]@[i:j]
 
 And the grammar contains the production:
 
-2. &B; |rarr| &A; &beta;
+2. B |rarr| A |beta|
 
 Then the parser should add the self-loop edge:
 
 .. image:: ../images/chart_bu_predict2.png
 
-3. [&B; |rarr|  |dot| &beta;]@[&i;:&i;]
+3. [B |rarr|  |dot| |beta| ]@[i:i]
         
 Using these three rules, we can parse a sentence as follows:
 
@@ -220,48 +220,48 @@ The top-down initialization rule captures the fact that root of any
 parse must be the start symbol.  It states that for every grammar
 production:
 
-1. S |rarr| &alpha;
+1. S |rarr| |alpha|
 
 The parser should add the self-loop edge: 
 
 ..image:: ../images/chart_td_init.png
 
-2. [S |rarr|  |dot| &alpha;]@[0:0]
+2. [S |rarr|  |dot| |alpha| ]@[0:0]
 
 The top-down expand rule says that if the chart contains an incomplete
-edge whose dot is followed by a nonterminal &B;, then the parser
+edge whose dot is followed by a nonterminal ``B``, then the parser
 should add any self-loop edges licensed by the grammar whose left-hand
-side is &B;.  In particular, if the chart contains the incomplete
+side is ``B``.  In particular, if the chart contains the incomplete
 edge:
 
 ..image:: ./images/chart_td_expand1.pn
 
-1. [&A; |rarr| &alpha; |dot| &B;&beta;]@[&i;:&j;]
+1. [A |rarr| |alpha| |dot| B |beta| ]@[i:j]
 
 Then for each grammar production: 
 
-2. &B; |rarr| &gamma;
+2. B |rarr| |gamma|
 
 The parser should add the edge: 
 
 ..image:: ../images/chart_td_expand2.png
 
-3. [&B; |rarr|  |dot| &gamma;]@[&j;:&j;]
+3. [B |rarr|  |dot| |gamma| ]@[j:j]
 
 The top-down match rule says that if the chart contains an incomplete
-edge whose dot is followed by a terminal &w;, then the parser should
+edge whose dot is followed by a terminal w, then the parser should
 add an edge if the terminal corresponds to the text.  In particular,
 if the chart contains the incomplete edge:
 
 ..image:: ../images/chart_td_match1.png
 
-1. [A |rarr| &alpha; |dot| &wj;&beta;]@[&i;:&j;]
+1. [A |rarr| |alpha| |dot| w\ :subscript:`j` |beta| ]@[i:j]
 
 Then the parser should add the complete edge: 
 
 ..image:: ../images/chart_td_match2.png
 
-2. [&wj; |rarr|  |dot| ]@[&j;:&j;+1]
+2. [w\ :subscript:`j`; |rarr| |dot| ]@[j:j+1]
 
 Using these four rules, we can parse a sentence as follows:
 
@@ -288,9 +288,9 @@ Edges
 NLTK defines two classes for encoding edges: 
 
 1. ``LeafEdge`` is used to encode edges of the form
-   [&wi; |rarr|  |dot| ]@[&i;:&i;+1]. 
+   [w\ :subscript:`i` |rarr| |dot| ]@[i:i+1]. 
 2. ``TokenEdge`` is used to encode edges of the
-   form [&A; |rarr| &alpha; |dot| &beta;]@[&i;:&j;]. 
+   form [A |rarr| |alpha| |dot| |beta| ]@[i:j]. 
 
 ``LeafEdges`` are constructed from a leaf terminal and an index:
       
@@ -368,9 +368,9 @@ constructor</ulink>:
 
 New edges are added to the chart using the ``insert`` method, which
 takes an edge and a child pointer list.  A *child pointer list* is a
-list of edges &e1;...&ed;, specifying the edges that licensed each
-child to the left of the dot.  It is used to reconstruct the parse
-trees once parsing is finished.
+list of edges e\ :subscript:`1` |cdots| e\ :subscript:`d`, specifying the
+edges that licensed each child to the left of the dot.  It is used to
+reconstruct the parse trees once parsing is finished.
       
   >>> NP, N = cfg.nonterminals('NP N')
   >>> edge1 = LeafEdge('hat', 3)
@@ -383,8 +383,8 @@ trees once parsing is finished.
   >>> chart.insert(edge3, [edge1])
   True
         
-  # Pretty-print the chart: 
-  >>> print chart.pp()
+Finally, we can pretty-print the chart with ``chart.pp()`` to get::
+
   |.  James  .  wears  .    a    .   hat   .|
   |.         .         .         >         .| [3:3] NP -> * N 
   |.         .         .         [---------]| [3:4] NP -> N * 
@@ -394,7 +394,7 @@ The leaves of the chart's token can be accessed with the methods
 ``num_leaves``, ``leaf``, and ``leaves``.  Note that this methods
 return the leaf properties of the words, and not the word tokens
 themselves:
-      
+
   >>> chart.num_leaves()
   4
   >>> chart.leaf(1)
@@ -551,7 +551,7 @@ we wish to use the same tokenized sentence several times.
 The ``trace`` parameter can be specified when creating a parser, to
 turn on tracing (higher trace levels produce more verbose output).
 The following examples show the trace output for parsing the same
-sentence with both the top-down and the bottom-up strategies.
+sentence with both the bottom-up and top-down strategies::
 
   # Parse the sentence, bottom-up, with tracing turned on.
   >>> parser = ChartParser(grammar, BU_STRATEGY, trace=2)
@@ -623,7 +623,7 @@ sentence with both the top-down and the bottom-up strategies.
   |.     [----------------------------------->| [1:7] VP -> VP * PP 
   (S: (NP: 'John') (VP: (VP: (V: 'saw') (NP: (Det: 'a') (N: 'cat'))) (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie')))))
 
-Next we parse the same sentence, top-down, with tracing turned on:
+Next we parse the same sentence, top-down, with tracing turned on::
 
   >>> parser = ChartParser(grammar, TD_STRATEGY, trace=2)
   >>> parser.get_parse(sent)
