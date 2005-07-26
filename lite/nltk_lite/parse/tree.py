@@ -221,7 +221,7 @@ class Tree(list):
         """
         Open a new window containing a graphical diagram of this tree.
         """
-        from nltk.draw.tree import draw_trees
+        from nltk_lite.draw.tree import draw_trees
         draw_trees(self)
 
     def __repr__(self):

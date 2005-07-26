@@ -14,7 +14,7 @@ the L{TaggerI} interface.
 """
 
 import types, re
-from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk_lite.probability import FreqDist, ConditionalFreqDist
 from nltk_lite.tag import *
 
 ##############################################################
