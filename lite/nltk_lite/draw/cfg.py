@@ -447,7 +447,7 @@ class CFGEditor:
         for line in lines:
             line = line.strip()
             if line=='': continue
-            productions += CFGProduction.parse(line)
+            productions += Production.parse(line)
             #if line.strip() == '': continue
             #if not CFGEditor._PRODUCTION_RE.match(line):
             #    raise ValueError('Bad production string %r' % line)
@@ -462,7 +462,7 @@ class CFGEditor:
             #    return ''
             #CFGEditor._TOKEN_RE.sub(parse_token, rhs_str)
             #
-            #productions.append(CFGProduction(lhs, *rhs))
+            #productions.append(Production(lhs, *rhs))
 
         return productions
 
@@ -663,32 +663,32 @@ class CFGDemo:
         self._top.mainloop(*args, **kwargs)
 
 def demo2():
-    from nltk.cfg import Nonterminal, CFGProduction, CFG
+    from nltk_lite.parse import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+    (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]
     productions = (
         # Syntactic Productions
-        CFGProduction(S, NP, VP),
-        CFGProduction(NP, Det, N),
-        CFGProduction(NP, NP, PP),
-        CFGProduction(VP, VP, PP),
-        CFGProduction(VP, V, NP, PP),
-        CFGProduction(VP, V, NP),
-        CFGProduction(PP, P, NP),
-        CFGProduction(PP),
+        cfg.Production(S, [NP, VP]),
+        cfg.Production(NP, [Det, N]),
+        cfg.Production(NP, [NP, PP]),
+        cfg.Production(VP, [VP, PP]),
+        cfg.Production(VP, [V, NP, PP]),
+        cfg.Production(VP, [V, NP]),
+        cfg.Production(PP, [P, NP]),
+        cfg.Production(PP, []),
 
-        CFGProduction(PP, 'up', 'over', NP),
+        cfg.Production(PP, ['up', 'over', NP]),
         
         # Lexical Productions
-        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
-        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
-        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
-        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
-        CFGProduction(N, 'dog'),  CFGProduction(N, 'statue'),
-        CFGProduction(Det, 'my'),
+        cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
+        cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
+        cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
+        cfg.Production(P, ['with']), cfg.Production(N, ['park']),
+        cfg.Production(N, ['dog']),  cfg.Production(N, ['statue']),
+        cfg.Production(Det, ['my']),
         )
-    grammar = CFG(S, productions)
+    grammar = cfg.Grammar(S, productions)
 
     text = 'I saw a man in the park'.split()
     d=CFGDemo(grammar, text)
@@ -699,12 +699,12 @@ def demo2():
 ######################################################################
 
 def demo():
-    from nltk_lite.parse.cfg import Nonterminal, CFGProduction, CFG
+    from nltk_lite.parse import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
+    (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]
     
-    cfg = CFG.parse("""
+    grammar = cfg.parse_grammar("""
     S -> NP VP
     PP -> P NP
     PP -> 'up' 'over' NP
@@ -725,37 +725,38 @@ def demo():
     P -> 'with'
     """)
 
-    def cb(cfg): print cfg
+    def cb(grammar): print grammar
     top = Tk()
-    editor = CFGEditor(top, cfg, cb)
+    editor = CFGEditor(top, grammar, cb)
     Label(top, text='\nTesting CFG Editor\n').pack()
     Button(top, text='Quit', command=top.destroy).pack()
     top.mainloop()
 
 def demo3():
+    from nltk_lite.parse import cfg
     (S, VP, NP, PP, P, N, Name, V, Det) = \
         nonterminals('S, VP, NP, PP, P, N, Name, V, Det')
     
     productions = (
         # Syntactic Productions
-        CFGProduction(S, NP, VP),
-        CFGProduction(NP, Det, N),
-        CFGProduction(NP, NP, PP),
-        CFGProduction(VP, VP, PP),
-        CFGProduction(VP, V, NP, PP),
-        CFGProduction(VP, V, NP),
-        CFGProduction(PP, P, NP),
-        CFGProduction(PP),
+        cfg.Production(S, [NP, VP]),
+        cfg.Production(NP, [Det, N]),
+        cfg.Production(NP, [NP, PP]),
+        cfg.Production(VP, [VP, PP]),
+        cfg.Production(VP, [V, NP, PP]),
+        cfg.Production(VP, [V, NP]),
+        cfg.Production(PP, [P, NP]),
+        cfg.Production(PP, []),
 
-        CFGProduction(PP, 'up', 'over', NP),
+        cfg.Production(PP, ['up', 'over', NP]),
         
         # Lexical Productions
-        CFGProduction(NP, 'I'),   CFGProduction(Det, 'the'),
-        CFGProduction(Det, 'a'),  CFGProduction(N, 'man'),
-        CFGProduction(V, 'saw'),  CFGProduction(P, 'in'),
-        CFGProduction(P, 'with'), CFGProduction(N, 'park'),
-        CFGProduction(N, 'dog'),  CFGProduction(N, 'statue'),
-        CFGProduction(Det, 'my'),
+        cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
+        cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
+        cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
+        cfg.Production(P, ['with']), cfg.Production(N, ['park']),
+        cfg.Production(N, ['dog']),  cfg.Production(N, ['statue']),
+        cfg.Production(Det, ['my']),
         )
     
     t = Tk()
