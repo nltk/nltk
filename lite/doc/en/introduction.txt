@@ -212,8 +212,8 @@ the notion that the meaning of a complex expression is comprised of
 the meaning of its parts and their mode of combination. This principle
 provided a useful correspondence between syntax and semantics, namely
 that the meaning of a complex expression could be computed
-recursively.  Given the representation of *It is not true that
-|space| :subscript:`p`* as ``not(p)`` and *John saw Mary* as
+recursively.  Given the representation of *It is not true that*
+|space|\ :subscript:`p` as ``not(p)`` and *John saw Mary* as
 ``saw(j,m)``, we can compute the interpretation of *It is not true
 that John saw Mary* recursively using the above information to get
 ``not(saw(j,m))``. Today, this approach is most clearly manifested in
@@ -225,14 +225,14 @@ declarative/procedural distinction and the principle of
 compositionality.  They only seemed to get in the way of building
 practical systems.  For example, early question answering systems
 employed fixed pattern-matching templates such as: *How many*
-|space| :subscript:`i` *does* |space| :subscript:`j` *have?*, where slot
+|space|\ :subscript:`i` *does* |space|\ :subscript:`j` *have?*, where slot
 ``i`` is a feature or service, and slot ``j`` is a person or place.
 Each template came with a predefined semantic function, such as
 ``count(i,j)``.  A user's question which matched the template would be
 mapped to the corresponding semantic function and then "executed" to
 obtain an answer, ``k = count(i,j)``.  This answer would be
-substituted into a new template: |space| :subscript:`j` *has*
-|space| :subscript:`k` |space| :subscript:`i`.  For example, the
+substituted into a new template: |space|\ :subscript:`j` *has*
+|space|\ :subscript:`k` |space|\ :subscript:`i`.  For example, the
 question *How many airports*:subscript:`i` *does London*:subscript:`j`
 *have?* can be mapped onto a template (as shown by the subscripts) and
 translated to an executable program.  The result can be substituted
