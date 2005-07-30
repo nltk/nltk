@@ -1,0 +1,831 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+================================================
+Introdução ao Processamento de Linguagem Natural
+================================================
+
+:Autores: Steven Bird, Ewan Klein, Edward Loper
+:Contato: sb@csse.unimelb.edu.au
+:Versão: 0.1
+:Revisão: $Revision$
+:Data: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Epigraph:: A única e mais curta definição para civilização poderia ser
+   a palavra *linguagem*... Civilização, se realmente significa algo
+   concreto, é o mecanismo consciente mas não-programado pelo qual os homens
+   comunicam. E por meio da comunicação eles vivem com os outros,
+   pensam, criam e agem. - John Ralston Saul
+
+-------------------
+O desafio da língua
+-------------------
+
+A linguagem é a manifestação primária da inteligência humana. Por meio da
+linguagem expressamos nossas necessidades básicas e grandiosas aspirações,
+conhecimento técnico e vôos da fantasia. Idéias são compartilhadas ao
+longo de enormes separações de distância e tempo. Os exemplos a seguir da
+língua inglesa demonstram a riqueza da linguagem:
+
+1. Overhead the day drives level and grey, hiding the sun by a flight
+   of grey spears.  (William Faulkner, *As I Lay Dying*, 1935)
+2. When using the toaster please ensure that the exhaust fan is turned
+   on. (sign in dormitory kitchen)
+3. Amiodarone weakly inhibited CYP2C9, CYP2D6, and CYP3A4-mediated
+   activities with Ki values of 45.1-271.6 |mu|\M (Medline)
+4. Iraqi Head Seeks Arms (spoof headline, ``http://www.snopes.com/humor/nonsense/head97.htm``
+5. The earnest prayer of a righteous man has great power and wonderful
+   results. (James 5:16b)
+6. Twas brillig, and the slithy toves did gyre and gimble in the wabe
+   (Lewis Carroll, *Jabberwocky*, 1872)
+7. There are two ways to do this, AFAIK :smile:  (internet discussion archive)
+
+Graças a esta riqueza, o estudo da linguagem é parte de muitas
+disciplinas além da lingüística, incluíndo tradução, crítica literária,
+filosofia, antropologia e psicologia. Também devem ser listados campos
+não tão óbvios que investigam o uso da linguagem, como o direito, a hermenêutica,
+as disciplinas forenses, a telefonia, a pedagogia, a arqueologia, a
+criptoanálise e as patologias da fala. Cada uma aplica metodologias diferentes
+para reunir observações, desenvolver teorias e testar hipóteses. Ainda
+assim, todas servem para nossa compreensão mais profunda da linguagem
+e do intelecto que se manifesta por meio desta.
+
+À importância da linguagem para a ciência e para as artes equivale-se em
+significancia o tesouro cultural que é inerente na linguagem.
+Cada uma das aproximadamente 7.000 línguas humanas é rica em unique respects,
+em suas histórias oráis e na criação de lendas, até sua construções gramaticais
+e sua próprias palavras e nuances de significado.
+Culturas remanescentes ameaçadas possuem palavras para distinguir sub-espécies
+de plantas de acordo com seus usos terapêuticos que são desconhecidos à
+ciência. Línguas evoluem ao longo do tempo ao entrar em contato entre si,
+fornecendo uma janela única para a pré-história humana. Mudanças tecnológicas
+dão origem a novas palavras como *blog* e novos morfemas como *e-* e
+*cyber-*. Em muitas partes do mundo, pequenas variações lingüísticas
+de uma cidade para a outra se traduzem em línguas completamente diferentes
+no espaço de uma viagem de carro de meia-hora. Por sua complexidade de
+tirar o fôlego e sua diversidade, a linguagem humana é uma colorida
+tapeçaria que se extende ao longo do tempo e do espaço.
+
+Cada nova onda na tecnologia da computação encarou novos desafios
+para a análise lingüística. As primeiras linguagens de máquina
+cederam seu espaço a linguagens de programação de alto nível que
+são processadas e interpretadas automaticamente. Bancos de dados são
+interrogados utilizando expressões lingüísticas como ``SELECT age
+FROM employee`` (SELECIONE idade DE empregado). Recentemente, dispositivos
+de computação tornaram-se presentes em todos os lugares e são freqüentemente
+equipados com interfaces multimodais que trabalham com texto, fala, diálogo
+e movimentos de canetas. De uma forma ou de outra, construir novos
+sistemas para uma interação lingüística natural irá requerir uma
+sofisticada análise da linguagem.
+
+Hoje em dia, o grande desafio para a análise lingüística é apresentado
+pela explosão de texto e conteúdo multimídia na world-wide web.
+Para muitas pessoas, uma grande e crescente fração do tempo de trabalho
+e lazer é gasta navegando e acessando este universo de informação. *Quais
+localidades turísticas posso visitar entre Philadelphia e Pittsburgh com
+um orçamento limitado? O que os críticos dizem sobre as câmeras digitais
+da Canon? Quais previsões para o mercado do aço foram realizadas por
+comentarias confiáveis na semana passada?* Responder a estas perguntas
+requer uma combinação de tarefas de processamento lingüístico que inclui
+extração de informações, inferência e resumo (summarisation). A escala de
+tais tarefas muitas vezes requer uma computação de alto desempenho.
+
+Como vimos, o *processamento de linguagem natural*, ou PLN, é importante
+por razões científicas, econômicas, sociais e culturais. O PLN está
+sendo sujeito a um rápido crescimento e suas teorias e métodos têm sido
+utilizados em uma variedade de novas tecnologias da linguagem. Por esta
+razão, é imporatnte que muitas pessoas tenha um conhecimento efetivo
+do PLN. No meio acadêmico, este grupo inclui pessoas das áreas de
+humanities computing e corpus lingüísticos até a ciência da computação
+e inteligência artificial. No meio industrial, este grupo inclui pessoas
+na interação humano-computador, analistas de informações de negócios e
+desenvolvimento de software para a web. Nós esperamos que você, um membro
+desta diversificada audiência que está lendo este material, venha a apreciar
+os trabalhos de campo de crescimento rápido que é o PLN e que aplique suas
+tecnologias no solucionamento de problemas do mundo real. Os capítulos a seguir
+apresentam uam seleção cuidadosamente balanceada de fundamentos teóricos e
+aplicações práticas, equipando o leitor de forma tal a poder trabalhar com
+extensos conjuntos de dados, criar modelos robustos para fenômenos lingüísticos, 
+usando-os efetivamente em tecnologias de linguagem. Integrando tudo isto
+com o Natural Language Toolkit (NLTK), esperamos que este livro possa revelar
+um excitante empenho em um processamento prático de linguagem natural
+para uma audiência ainda maior.
+
+.. Note:: Um aspecto importante na aprendizagem de PLN utilizando este material
+   é experimentar tanto o desafio quanto a -- esperamos -- satisfação em criar
+   softwares para processar linguagem natural. O software que acompanha, o NLTK,
+   é disponibilizado livremente é pode ser utilizado na maioria dos sistemas
+   operacionais, incluíndo Linux/Unix, Max OSX e Microsoft Windows. O NLTK
+   pode ser obtido em ``http://nltk.sourceforge.net/``, juntamente com uma
+   extensa documentação. Te encorajamos a instalar o NLTK em teu computador
+   antes de começar a ler além do final deste capítulo.
+
+--------------------------------------------------------
+Uma curta história do processamento de linguagem natural
+--------------------------------------------------------
+
+Um desafio duradouro na ciência da computação tem sido construir máquinas
+inteligentes. A principal forma de medir a inteligência de uma máquina tem
+sido a lingüística, principalmente o Turing Test: seria um sistema de diálogo
+capaz de, respondendo a um usuário que digita em seu próprio terminal,
+comportar-se de forma tão natural que o usuário não seria capaz de distinguir
+entre a máquina e um intelocutor humano que estivesse usando a mesma interface?
+Hoje em dia, há uma substancial pesquisa em andamento e desenvolvimento em áreas
+como a tradução automática e o diálogo falado, e significativos sistemas
+comerciais estão em uso de forma difusa. O diálogo a seguir ilustra uma
+aplicação típica:
+
+  | S: Em que posso ajudá-lo?
+  | U: Sabes me dizer em quais horários o Resgate do Soldado Ryan está em cartaz?
+  | S: Para qual cinema?
+  | U: O cinema Paramount.
+  | S: O Resgate do Soldado Ryan não está sendo exibido no cinema Paramount theater, mas
+  |    está em cartaz no cinema Madison às 15h00, 17h30, 20h00 e 22h30. 
+
+Os sistemas de diálogo comerciais de hoje em dia são extritamente limitados
+a limitadas aplicações bem definidas. Não poderíamos pedir ao sistema acima
+para nos fornecer caminhos rodoviários a seguir ou detalhes sobre os restaurantes
+mais próximos, a menos que as informações necessárias já tenham sido armazanadas
+e sentenças de perguntas e respostas apropriadas tenham sido incorporadas ao
+sistema de processamento lingüístico. Note como o sistema acima parece
+entender os objetivos do usuário: este último pergunta quando determinado filme
+está em cartaz e o sistema corretamente determina, a partir disto, que o usuário
+deseja ver este filme. Esta inferência parece tão óbvia aos humanos que geralmente
+não nos damos conta de que foi realizada; ainda assim, um sistema de linguagem
+natural precisa ser dotado desta habilidade para interagir naturalmente. Sem esta,
+quando perguntado "Sabes me dizer em quais horários o Resgate do Soldado Ryan está
+em cartaz" um sistema poderia simplesmente - a inutilmente - responder com um frio
+"Sim". Mesmo com a impressão de que este sistema diálogo possa realizar inferências
+simples, tal sofisticação somente é encontrada nos mais avançados protótipos de
+pesquisa. Ao invés disso, os desenvolvedores de sistemas de diálogo comerciais
+utilizam suposições contextuais e uma simplificada lógica de negócios para
+garantir que as diferentes formas nas quais o usuário pode expressar seus pedidos
+ou fornecer informações sejam manejadas de tal forma que faça sentido para
+aquela aplicação em particular. Assim, caso o usuário diga "Quando é que...",
+"Eu gostaria de saber..." ou "Podes me dizer...", regras simples irão
+resultar sempre na listagem dos horários de exibição disponíveis ao usuário.
+Isto é suficiente para que o sistema realize um serviço útil.
+
+Apesar de alguns avanços recentes, é geralmente verdade que estes sistemas
+de linguagem natural que já foram colocados em operação ainda não podem
+efetuar um raciocínio baseado no senso comum ou valer-se de um conhecimento
+de mundo. Podemos esperar que estes difíceis problemas de inteligência
+artificial sejam resolvidos, mas ao mesmo tempo é necessário viver com
+limitações severas nas capacidades de raciocínio e conhecimento dos sistemas
+de linguagem natural. Desta forma, desde o início, um importante objetivo da
+pesquisa em PLN foi avançar no cálice sagrado da interação lingüística natural
+*sem* recorrer a este conhecimento irrestrito e habilidade de raciocínio.
+Trata-se de um desafio antigo, e portanto é importante rever a história
+deste campo.
+
+A própria noção de que a linguagem natural poderia ser tratada de uma
+forma computacional nasceu de um programa de pesquisa, que pode ser datado
+ao início do 1900, em reconstruir o raciocínio matemático utilizando a lógica,
+manisfestado claramente sobretudo nos trabalhos de Frege, Russell, Wittgenstein,
+Tarski, Lambek e Carnap. Este trabalho levou à noção de linguagem como
+um sistema formal ao qual poderia ser aplicado um processamento automático.
+Três desenvolvimentos posteriores lançaram as fundações para o processamento
+de linguagem natural. O primeiro foi a *teoria da linguagem formal*. Esta define
+a linguagem como um conjunto de cadeias aceitas por uma classe de autômatas,
+como línguas context-free e pushdown automata, fornecendo o suporte para
+a sintaxe computacional.
+
+O segundo desenvolvimento foi a *lógica simbólica*. Esta disponibilizou um
+método formal para capturar aspectos selecionados da linguagem natural que
+são relevantes para expressar provas lógicas. Um calculus formal em lógica
+simbólica fornece a sintaxe da linguagem, juntamente com as regras de
+inferência e, possivelmente, as regras para a interpretação em um set-theoretic
+model; exemplos são a lógica proposicional e a lógica first-order. Dado
+este tipo de calculus, dentro de uma sintexe bem definida e uma semântica,
+torna-se possível associar significados a expressões de linguagem natural ao
+traduzí-las em expressões de calculus formal. Por exemplo, se traduzirmos
+"João viu Maria" na fórmula ``viu(j,m(``, interpretamos (implicita e 
+explicitamente) o verbo português *viu* com uma relação binária, com
+*João* e *Maria* denotando indivíduos. Sentenças mais gerais como
+*Todos os pássaros voam* requerem quantificadores, no caso
+|paratodos| significando *para todos*: |paratodos| x: pássaro(x) |rarr| voar(x).
+Esta utilização da lógica possibilitou às máquinas técnicas realizar
+inferências que desempenham um papel importante na compreensão lingüística.
+O terceiro desenvolvimento foi o *princípio da composicionalidade*. Esta
+era a noção de que o significado de expressões complexas é resultado
+do significado de suas partes e de seu modo de combinação. Este princípio
+resultou em uma útil correspondência entre sintaxe e semântica,
+principalmente quanto ao fato de o significado de uma expressão complexa
+poder ser computado recursivamente. Dada a representação *Não é verdade
+que |space| :subscript:`p`* como ``não(p)`` e *João viu Maria* como
+``viu(j,m)``, podemos computar a interpretação de *Não é verdade que João
+viu Maria* recursivamente, utilizando as informações acima para obter
+``não(viu(j,m))``. Hoje em dia, esta abordagem manifesta-se de forma mais
+clara na família de formalismos gramaticais conhecida como unification-based
+grammar, e nas aplicações de PLN desenvolvidas na linguagem de
+programação Prolog.
+
+Uma parte separada do desenvolvimento nas décadas de 1960 e 1970 manteve-se
+deliberadamente distante da distinção declarativa/procedural e do princípio
+de composicionalidade. Estes pareciam impedirVER a construção de sistemas
+práticos. Por exemplo, os primeiros sistemas de respostas utilizavam
+padrões fixos de coincidência como: *Quantos* |space| :subscript:`i`
+|space| :subscript:`j` *possui?*, no qual o elemento ``i``era uma propriedade
+ou serviço e o elemento ``j`` uma pessoa ou lugar. Cada padrão era
+fornecido com uma função semântica pré-definida, como ``contar(i,j)``. A
+pergunta do usuário que coincidisse com o padrão seria mapeada para a
+função semântica correspondente e então "executada" para obter a
+resposta, ``k = contar(i,j)``. Esta resposta seria, por sua vez, substituída
+em um novo padrão: |space| :subscript:`j` *possui*
+|space| :subscript:`k` |space| :subscript:`i`. Por exemplo para a questão
+*Quantos aeroportos*:subscript:`i` *Londres*:subscript:`j`
+*possui?* poderia ser mapeada para um padrão (como mostrado pelos subscritos) 
+e traduzida para um programa executável. O resultado seria substituído
+em um novo padrão retornado ao usuário: *Londres possui cinco aeroportos.*.
+Finalmente, os subscritos são removidos e uma resposta em linguagem
+natural é fornecida ao usuário.
+
+Esta abordagem do PLN é conhecido por *gramática semântica*. Este tipo
+de gramática é formalizado como gramáticas de frases-estruturas, mas seus
+constituíntes não são mais categorias gramaticais como sintagmas verbais,
+mas categorias semânticas como *aeroporto* e *cidade*. Estas gramáticas
+funcionam muito bem em domínios restritos, e ainda são largamente empregadas
+em sistemas de linguagem falada. Todavia, eles não apresentam uma
+robustness e uma portabilidade e eles duplicam estruturas gramaticais em
+diferentes categorias semânticas.
+
+As abordagens contrastantes para o PLN descrito nos parágrafos anteriores
+relaciona-se com os debates metafísicos iniciais sobre *racionalismo*
+versus *empirismo* e *realismo* versus *idealismo*, que ocorreram no
+período do Iluminismo da filosofia ocidental. Estes debates ocorreram
+sobre um pano de fundo de pensamento ortodoxo, no qual acreditava-se estar
+a origem de todo conhecimento na revelação divina. Durante este período dos
+séculos XVII e XVIII, filósofos argumentaram que a razão humana ou as experiencias
+sensitivas eram prioritárias à revelação. Descartes e Leibniz, entre outros,
+assumiram a posição racionalista, assegurando que toda a verdade possuia origem
+no pensamento humano e na existência de "idéias inatas" implantadas em nossas
+mentes desde o nascimento. Por exemplo, eles notavam como os princípios da
+geometria euclídeana haviam sido desenvolvidos usando-se a razão humana, e que
+não eram resultado de alguma revelação sobrenatural ou experiência sensitiva.
+Em contraste, Locke e outros assumiram a postura empirista, segunda a qual
+nossa fonte primária de conhecimento são nossas faculdades e a razão humana
+assume um papel secundário em refletir sobre estas experiências. Evidências
+prototípicas para esta posição estavam nas descobertas de Galileu -- baseadas
+na observação cuidadosa do movimento dos planetas -- de que o sistema solar
+é heliocêntrico e não geocêntrico. No contexto da lingüística, este debate
+leva à seguinte questão: até qual ponto a experiência lingüística humana,
+oposta à nossa inata "faculdade lingüística", fornece as bases para nosso
+conhecimento da linguagem? No PLN este problema revela-se como diferenças
+nas prioridades de corpus de dados versus introspecção lingüística na
+construção de modelos computacionais.
+
+Uma ulterior preocupação, envolta pelo debate entre *realismo* e
+*idealismo*, era o estatus metafísico dos construtos de uma teoria.
+Kant argumentava uma distinção entre fenômenos, as manifestações que
+podemos experimentar, e "as coisas em si" que não nunca podem ser conhecidas
+diretamente. Um linguista realista tomaria um construto teórico como um
+"sintagma nominal" como sendo uma entidade do mundo real que existe independentemente
+da percepção humana e da razão, e que na verdade *causa* o fenômeno lingüístico
+observado. Um linguista idealista, por outro lado, argumentaria que sintagmas
+nominais, juntamente com construtos mais abtratos como representações
+semânticas, são intrinsicamente não observáveis, e simplesmente servem
+seu papel como ficções úteis. A forma como os lingüístas escrevem sobre
+teorias freqüentemente revela uma ponto de vista realista, enquanto
+os que se envolvem de forma prática com o PLN ocupam um terreno neutro
+ou inclinam-se a uma posição idealista.
+
+Estes assuntos ainda estão vivos, e revelam-se nas distinções entre métodos
+simbólicos e estatísticos, processamento deep e shallow, classificações
+binárias ou por gradientes, e objetivos científicos versus de engenharia.
+De qualquer forma, estes contrastes são altamente brandos, e o debate não
+é mais polarizado como antigamente. De fato, a maior parte das discussões -- e
+inclusive a maior parte dos avanços -- envolve um *ato de equilíbrio* entre os
+dois extremos. Por exemplo, uma posição intermediária assume que os seres
+humanos são providos de forma inata com métodos de aprendizagem analógicos
+e baseados em memória (fraco racionalismo), e utilizam estes métodos para
+identificar padrões significativos em sua experiência com linguagem
+sensorial (empirismo). Para uma ilustração mais completa, considere a
+forma como estatísticas de amplos corpora podem servir de evidência
+para escolhas binárias em uma gramática simbólica. Por exemplo,
+dicionários descrevem as palavras *completamente* e *definitivamente*
+como quase sinônimos, mesmo que seus padrões de utilização sejam
+bastante distintos quando combinados com o verbo que as segue,
+como mostrado a seguir:
+
+===========  =======  =======  =======  =================
+Absolutely vs Definitely (Liberman 2005, LanguageLog.org)
+---------------------------------------------------------
+Google hits  adore    love     like     prefer
+===========  =======  =======  =======  =================
+absolutely   289,000  905,000  16,200   644
+definitely   1,460    51,000   158,000  62,600
+razão        198/1    18/1     1/10     1/97
+===========  =======  =======  =======  =================
+
+.. http://itre.cis.upenn.edu/~myl/languagelog/archives/002022.html
+
+Note como *absolutely adore* é aproximadamente 200 vezes mais comum
+do que *definitely adore*, enquanto *absolutely prefer* é aproximadamente
+100 vezes mais raro que *definitely prefer*. Esta informação é utilizada
+por modelos de linguagem estatísticos, mas também pode servir de evidência
+para uma listagem simbólica das combinações de palavras nas quais
+*absolutely* pode modificar apenas ações extremas e atributos. Esta
+informação poderia ser representada como uma característica binária de
+certos itens lexicais. Desta forma, podemos ver dados estatísticos
+alimentando modelos simbólicos. Agora que esta informação foi codificada,
+está disponível para ser explorada como uma característica contextual
+para uma modelagem lingüística estatística, como árvores de parsing
+construídas a mão e representações semânticas. Agora que o círculo
+foi fechado, podemos ver as informações simbólicas fornecendo informações
+aos modelos estatísticos.
+
+Esta nova abordagem está dando origem a vários e excitantes
+desenvolvimentos novos. Iremos discutir sobre alguns destes nas páginas
+a seguir. Nós também iremos realizar um *ato de equilíbrio*, utilizando
+abordagens de PLN que integrem estas filosofias e metodologias
+historicamente opostas.
+
+---------------------------------------------
+Uma aplicação do PLN: extração de informações
+---------------------------------------------
+
+Para muitas aplicações de PLN, a prioridade consiste em extrair significado
+de um texto escrito. Isto precisa ser feito de uma forma *robusta*; o processamento
+não deve falhar quando um input inesperado ou mal formado é recebido. Hoje em dia,
+uma interpretação semântica robusta é mais fácil quando métodos de processamento
+shallow são utilizados. Como vimos na seção anterior, estes métodos limitam severamente
+(ou até mesmo omitem) a análise sintática e restringem a complexidade
+das representações semânticas target.
+
+Um exemplo conhecido de semântica shallow é a Extração de Informações (EI). Em
+contraste com uma compreensão completa do texto, sistemas de EI buscam apenas
+reconhecer um número limitado de tópicos semânticos pré-definidos e utilizar
+uma representação semântica controlada. A fase inicial da extração de informações
+envolve a detecção de entidades nomeadas, expressões que denotam lugares físicos,
+pessoas, empresas, tempo e quantidades monetárias (de fato, estas entidades nomeadas
+nada mais são do que as categorias de baixo nível das gramáticas semânticas que
+vimos na seção anterior, mas sob uma nova aparência). Para ilustrar isto, o texto
+a seguir contém várias expressões que receberam tags para entidades de tipo
+``tempo`` (time), ``empresa`` (company) e ``lugar`` (location):
+
+  | The incident occurred <time>around 5.30pm</time> when a man walked into
+  | <company>William Hill bookkeepers</company> on <location>Ware Road</location>,
+  | and threatened a member of staff with a small black handgun. 
+
+O output final de um sistema de extração de informações, geralmente chamado de
+template, consiste de um número fixo de lacunas que devem ser preenchidas. Mais
+semanticamente, podemos pensar no template como denotando um evento no qual a
+participação das entidades se dá ocupando funções específicas. Eis um exemplo
+correspondente ao texto acima:
+
+  | Crime event
+  |   Time: around 5.30pm
+  |   Location: William Hill bookkeepers on Ware Road
+  |   Suspect: man
+  |   Weapon: small black handgun
+
+Os trabalhos iniciais com EI demonstraram que regras montadas a mão conseguiam
+obter um bom nível de acerdo nas tarefas definidas pelas DARPA Message Understanding
+Conferences (MUC). Em geral, um nível de acerto mais elevado foi obtido na
+identificação de entidades nomeadas, como em ``William Hill bookkeepers``.
+É porém mais difícil identificar qual lacuna deve ser preenchida com cada
+informação; e é ainda mais difícil identificar com precisão o tipo de evento
+no qual as entidades estão participando. Nos anos mais recentes a atenção se
+deslocou para a criação de sistemas de EI mais adaptáveis a novos domínios pela
+utilização de alguma forma de aprendizagem mecânica. Estes sistemas funcionam
+moderadamente bem em textos com marcações (como por exemplo texto com marcações
+HTML), mas seu desempenho em texto livre ainda necessita de aperfeiçoamentos
+antes que possam ser adotados mais amplamente.
+
+Sistemas de EI costumam utilizar fontes de conhecimento externo em adição a
+seus textos de input. Por exemplo, reconhecedores de entidades nomeadas
+freqüentemente utilizam listas de lugares topográficos, extensos catálogos
+de pessoas e lugares como o Getty Thesaurus of Geographic Names. No domínio
+da bioinformática, é comum valer-se de bases de conhecimentos externas para
+os nomes padrão de genes e proteínas. Uma ontologia lexical de propósitos
+gerais chamada WordNet é freqüentemente utilizada em sistemas de EI. Certas vezes,
+ontologias para domínios formais são utilizadas como fontes de conhecimento
+para EI, permitindo aos sistemas desempenhar inferências taxonômicas simples
+e resolver ambigüidades na classificação dos slot-fillers.
+
+Por exemplo, um sistema de EI para extrair estatísticas de basquetebol a
+partir de artigos jornalísticos na web poderia ter de interpretar a sentença
+*Quincy played three games last weekend* (Quincy disputou três jogos no
+último fim-de-semana), onde o sujeito ambíguo *Quincy* pode ser tanto
+um jogador quanto uma equipe. Uma ontologia na qual *Quincy* é identificado
+como o nome de um equipe de basquetebol de uma escola permitiria resolver
+a ambigüidade. Em outros casos o template resolve a ambigüidade
+sobre o slot filler. Assim, no domínio do basquetebol, *Washington* pode
+referir-se a um dos muitos jogadores, equipes ou lugares possíveis. Se
+soubermos que o verbo *won* (venceu) requer uma entidade cujo papel na
+taxonomia seja o de uma equipe, podemos resolver a ambigüidade de uma
+sentença como *Washington won*.
+
+.. Um exemplo de tarefas de PLN
+
+.. uma seleção de: tradução mecânica, sistemas de diálogo, resumo de documentos,
+   extração de informações, busca e recuperação de texto, resposta a questionamentos
+
+-----------------------------------------------
+A arquitetura de sistemas lingüísticos e de PLN
+-----------------------------------------------
+
+Dentro da abordagem à lingüística teórica conhecida por gramática gerativa,
+argumenta-se que os seres humanos possuem tipos diferentes de conhecimento
+lingüístico, organizados em diferentes módulos: por exemplo, o conhecimento
+da estrutura dos sons de uma língua (fonologia), o conhecimento da estrutura
+das palavras (morfologia), o conhecimento da estrutura das frases (sintaxe) e
+o conhecimento do significado (semântica). Em uma teoria lingüística formal,
+cada tipo de conhecimento lingüístico é tornado explícito como um *módulo*
+diferente da teoria, consistindo de uma coleção de elementos de base juntamente
+com uma forma de combiná-los em estruturas complexas. Por exemplo, o módulo
+fonológico pode fornecer um conjunto de fonemas em paralelo com uma operação
+para concatenação dos mesmos fonemas em cadeias fonológicas. De forma
+similar, um módulo sintático pode fornecer nós nomeados como primitivos
+juntamente com um mecanismo para a sua utilização em árvores. Um conjunto de
+primitivos lingüísticos, em combinação com alguns operadores para a definição
+de elementos complexo, é normalmente chamado de um nível de representação.
+
+Além de definir os módulos, a gramática gerativa prescreverá de que forma
+estes interagem. Por exemplo, seqüências fonológicas bem formadas fornecerão
+o conteúdo fonológico de palavras e palavras fornecerão os elementos terminais
+para árvores de sintaxe. Árvores de sintaxe bem formadas serão mapeadas a
+representações semânticas e informação contextual ou pragmática irá basear
+estas representações semânticas em alguma situação do mundo real.
+
+Como indicado acima, um aspecto importante das teorias de gramática gerativa
+é que estas são pensadas para modelar o conhecimento lingüístico de
+falantes e ouvintes; eles não pensadas como uma forma de explicar os processos
+reais segundo os quais as pessoas processam informações lingüísticas. Isto é,
+em parte, refletido no argumento de a gramática gerativa relaciona-se à
+*competência* de um falante nativo idealizado, ao invés do *desempenho* (performance)
+de um falante particular. Uma distinção fortemente relacionada é dizer que uma
+gramática gerativa relaciona-se com conhecimento *declarativo* e não *procedural*.
+Como pode-se esperar, a lingüística computacional ocupa um papel crucial no
+propor modelos procedurals para uma língua. Um exemplo central é o parsing,
+no qual deve-se desenvolver mecanismos computacionais que convertam
+cadeias de palavras em representações estruturais como árvores de sintaxe.
+Ainda assim, é amplamente aceito o fato de que modelos computacionais de linguagem
+bem implementados contém tanto aspectos declarativos quando procedurals. Desta
+forma, uma avaliação (account) completa do parsing dirá quando conhecimento
+declarativo na forma de gramática e léxico combina-se com conhecimento
+procedural que determina de que forma uma análise sintática deva ser aplicada
+a uma dada cadeia de palavras. Este conhecimento procedural será expresso na
+forma de um algoritmo: isto é, uma receita explícita para mapear determinado
+input em um output apropriado por meio de um número limitado de passos.
+
+Um algoritmo de parsing simples para gramáticas de livres de contexto, por
+exemplo, analisa primeiro uma regra na forma ``S`` |rarr| ``X``:subscript:`1` |cdots|
+``X``:subscript:`n`, e monta uma estrutura em árvore parcial. A seguir, trabalha
+sobre as regras gramaticais uma a uma, procurando por uma regra na forma
+``X``:subscript:`1` |rarr| ``Y``:subscript:`1` ...  ``Y``:subscript:`j` que
+expandirá o ramo mais à esquerda introduzido pela regra ``S``, e que extende
+ainda mais a árvore parcial. O processo continua, por exemplo procurando por
+uma regra na forma ``Y``:subscript:`1` |rarr|
+``Z``:subscript:`1` ...  ``Z``:subscript:`k` expandindo a árvore parcial de
+forma apropriada, até que o nó mais à esquerda da árvore parcial seja uma
+categoria lexical; o parser verifica então se a primeira palavra do input pode
+pertencer a esta categoria. Para ilustrar, vamos supor que a primeira regra
+gramatical escolhida pelo parser seja ``S`` |rarr| ``NP VP``
+e que a segunda regra seja ``NP`` |rarr| ``Det N``; a árvore parcial resultante
+será:
+
+.. figure:: ../images/partialtree.png
+   :height: 400
+   :align: center
+
+   Árvore de parsing parcial
+
+Se considerarmos que a cadeia de palavras de input à qual estamos tentando
+aplicar o processo de parsing seja *the cat slept* ("o gato dormiu"), teremos
+sucesso ao identificar *the* como uma palavra que pode pertencer à categoria
+``Det``. Neste caso, o parser prossegue para o próximo nó da árvore, ``N``, e
+para a próxima palavra do input, *cat*. Porém, se tivéssemos montado a mesma
+árvore parcial com uma string de entrada *did the cat sleep* ("o gato dormiu?"),
+o parsing iria falhar neste ponto, já que *did* não pertence à categoria
+``Det``. O parser descartaria a estrutura montada até este ponto e iria buscar
+uma forma alternativa para ir do nó ``S`` até a categoria lexical mais à
+esquerda (por exemplo, utilizando uma regra como ``S`` |rarr| ``V NP
+VP``).
+O importante a ser notado neste momento não são os detalhes deste ou de algum
+outro algoritmo de parsing; este tópico será discutido muito mais profundamente
+no capítulo destinado ao parsing. Ao contrário, queremos apenas ilustrar a idéia
+de que um algoritmo pode ser dividido em um número fixo de passos que
+produzem um resultado definido ao final.
+
+Na figura a seguir, ilustramos com uma maior extensão estes pontos no contexto
+de um sistema de diálogo falado, como nosso exemplo inicial de uma aplicação
+que oferece ao usuário informações sobre filmes que estão atualmente em cartaz.
+
+.. figure:: ../images/dialogue.png
+   :height: 400
+   :align: center
+
+   Arquitetura de um Sistema de Diálogo Falado
+
+Seguindo o lado esquerdo do diagrama, mostramos um caminho de alguns *componentes*
+do reconhecimento de fala representativos. Estes mapeiam do input oral por meio
+de um parsing sintático para algum tipo de representação de significado.
+Seguindo pelo lado direito do diagrama há uma caminho inverso de componentes
+para a geração de fala a partir de um conceito. Estes componentes constituem
+o aspecto procedural da processamento de linguagem natural do sistema. Na coluna
+central do diagrama podem ser encontrados alguns aspectos declarativos
+representativos: os repositories de informações relacionadas à linguagem que
+são utilizados pelos componentes de processamento.
+
+Em adição à constituição da distinção declarativo/procedural, o diagrama também
+ilustra que formas de modularizar o conhecimento lingüístico motivadas 
+lingüísticamente são freqüentemente refletidas em sistemas computacionais. Isto
+é, os vários componentes são organizados de tal forma que os dados que
+eles compartilham correspondem aproximadamente aos diferentes níveis de
+representação. Por exemplo, o output de um componente de análise de fala
+irá conter seqüências de representações fonológicas para palavras e o output
+do parser será uma representação semântica. É evidente que o paralelo não é
+preciso, em parte porque muitas vezes o lugar onde colocar as fronteiras
+entre os diferentes componentes de processamento não passa de um expediente
+prático. Por exemplo, podemos assumir que dentro de componente de parsing há um
+nível de representação sintática, mesmo que tenhamos escolhido não expor isto
+no nível do diagrama de sistema. Apesar destas idosincrasias, a maioria dos
+sistemas de PLN divide seu processamento em uma séries de passos discretos.
+No processo de compreensão de linguagem natural, estas etapas vão dos níveis
+mais concretos àqueles mais abstrados, enquanto na produção de linguagem
+natural a direção é inversa.
+
+---------------------------------
+A linguagem de programação Python
+---------------------------------
+
+O NLTK é escrito na linguagem Python, uma simples mas poderosa linguagem
+de scripting com excelente funcionalidades para o processamento de dados
+lingüísticos. O Python pode ser obtido gratuitamente no endereço
+``http://www.python.org/``. Eis um programa em Python de cinco linhas que
+recebe um texto de input e exibe todas as palavras que terminam em ``-ing``::
+
+ import sys                            # carrega a biblioteca do sistema
+ for line in sys.stdin.readlines():    # para cada linha de input
+     for word in line.split():         # para cada palavra da linha
+         if word.endswith('ing'):      # a palavra termina em -ing?
+             print word                # se sim, exibe a palavra
+
+Este programa ilustra algumas das principais características do Python. Primeiro,
+espaços em branco são usados para *aninhar* linhas de código, de tal forma
+que a linha que inicia por ``if`` falls inside the scope da linha anterior
+que inicia por ``for``, fazendo com que o teste do ``-ing`` seja executado
+para cada palavra. Segundo, o Python é *orientado a objetos*; cada variável
+constitui uma entidade que possui um número definido de atributos e métodos.
+Por exemplo, ``line`` (linha) é mais do que uma mera seqüência de caracteres:
+ela é um objeto de string (cadeia) que possui um método (ou operação) chamado
+``split`` (dividir) que podemos utilizar para separar uma linha em suas
+palavras constituíntes. Para aplicar um método a um objeto, entramos com o nome
+do objeto, seguido por um ponto, seguido pelo nome do método. Terceiro,
+os métodos possuem *argumentos* que são expressos entre parênteses. Por exemplo,
+``split`` não possui argumentos pois estamos separando a string em todos
+os pontos em que é encontrado um espaço. Para separar uma string em sentenças
+delimitadas por pontos, poderíamos escrever ``split('.')``. Por último,
+e mais importante, o Python é altamente legível, tanto que é bastante fácil
+entender o que o programa acima faz mesmo para quem nunca tenha escrito um
+programa antes.
+
+Esta legibilidade do Python é marcante em comparação com outras linguagens
+que têm sido utilizadas para PLN, como o Perl. Eis um programa em Perl
+que exibe as palavras terminadas em ``-ing``::
+
+  while (<>) {                          # para cada linha de input
+      foreach my $word (split) {        # para cada palavra na linha
+          if ($word =~ /ing$/) {        # a palavra termina em ``-ing``?
+              print "$word\n";          # se sim, exibe a palavra
+          }
+      }
+  }
+
+Como o Python, o Perl é uma linguagem de scripting. Porém, sua sintaxe é
+obscura. Por exemplo, é difícil adivinhar que tipo de entidades são
+representadas por: ``<>``, ``$``, ``my`` e ``split``. Devemos concordar
+que "é bastante fácil com o Perl escrever programas que simplesmente
+aparentam ser emaranhados sem sentidos, mesmo para programadores de Perl
+experientes" (Hammond 2003:47). Tendo nós mesmos usado o Parl para
+pesquisa e ensino durante a década de 1980, somos da opinião que programas
+em Perl de qualquer tamanho são mais difíceis de manter e reutilizar do que
+o comum. Portanto, acreditamos que o Perl não é a melhor escolha para uma
+linguagem de programação destinada a lingüístas ou ao processamento lingüístico.
+Muitas outras linguagens foram utilizadas para PLN, incluíndo Prolog, Java, LISP
+e C. No apêndice fornecemos traduções de nosso programa em Python de cinco
+linhas nestas outras linguagens, e te convidamos a compará-los em termos
+de legibilidade.
+
+Escolhemos o Python como linguagem para implementação do NLTK porque
+sua curva de aprendizagem é shallow, sua sintaxe e sua semântica são
+transparentes e porque este oferece boas funcionalidades para a manipulação
+de strings. Sendo uma linguagem de scripting, o Python facilita a exploração
+interativa. Sendo uma linguagem orietada a objetos, o Python permite que
+dados e métodos sejam encapsulados e reutilizados facilmente. O Python
+é distribuído com uma extensa biblioteca padrão, incluíndo componentes para
+programação gráfica, processamento numérico e processamento de dados
+da web.
+
+O NLTK implementa uma infraestrutura básica que pode ser utilizada para
+construir programas de PLN em Python. Ele oferece:
+
+* Classes de base para a representação de dados relevantes ao processamento
+  de linguagem natural.
+
+* Interfaces padrão para a realização de tarefas, como a tokenização, o
+  tagging e o parsing.
+
+* Implementações padrão para cada tarefa, que podem ser combinadas para resolver
+  problemas complexos.
+
+* Uma extensa documentação, incluíndo tutorias e documentação de referência.
+
+-------------------
+Leituras adicionais
+-------------------
+
+A Association for Computational Linguistics (ACL, Associação para a Lingüística
+Computacional) o órgão profissional máximo no campo do PLN. Seu jornal e proceedings
+das conferências, aproximadamente 10.000 artigos, estão disponíveis on-line em
+uma interface para os textos completos, em ``http://www.aclweb.org/anthology/``.
+
+Vários sistemas de PLN possuem interfaces on-line que podes querer experimentar,
+como:
+
+* WordNet: ``http://wordnet.princeton.edu/``
+* Translation: ``http://world.altavista.com/``
+* ChatterBots: ``http://www.loebner.net/Prizef/loebner-prize.html``
+* Question Answering: ``http://www.answerbus.com/``
+* Summarisation: ``http://tangra.si.umich.edu/clair/md/demo.cgi``
+
+Websites úteis com informações substanciais sobre PLN:
+``http://www.hltcentral.org/``, ``http://www.lt-world.org/``,
+``http://www.aclweb.org/``, ``http://www.elsnet.org/``.  O website da ACL
+contém uma visão gearl sobre lingüística computacional, incluíndo
+cópias dos capítulos de introdução de livros recentes, em
+``http://www.aclweb.org/archive/what.html``.
+
+
+..    Trabalhos acadêmicos chave que analisam o desenvolvimento histórico, ...
+
+Reconhecimentos: O sistema de diálogo é extraído do Tutorial em Spoken Dialogue
+Systems (Tutorial em Sistemas de Diálogo Falado) de Bob Carpenter e Jennifer
+Chu-Carroll apresentado no ACL-99; as seguintes pessoas contribuíram gentilmente
+com programas de exemplo: Tim Baldwin, Trevor
+Cohn, Rod Farmer, Edward Ivanovic, Olivia March e Lars Yencken.
+
+Livros sobre PLN e pesquisas
+----------------------------
+
+Esta seção irá fornecer uma breve visão geral sobre outros livros relacionados
+ao PLN bem como pesquisas realizadas no campo *a ser escrita*.
+
+* Livros recentes: Manning and Schutze, Jurafsky e Martin.
+
+* Lirvos antigos: Allen (1995), Charniak (1993), Grishman.
+  Sobre Prolog: Covington (1994), Gazdar e Mellish (1989)
+  Pereira e Shieber; Mathematical foundations: Partee et al.
+
+* Recent field-wide surveys: Mitkov, Dale et al, HLT Survey.
+
+-------------------------------------------------
+Apêndice: PLN em outras linguagens de programação
+-------------------------------------------------
+
+Anteriormente explicamos as razões para nossa escolha da linguagem
+de programação Python. Mostramos um simples programa em Python que
+lia um texto e exibia as palavras que terminavam em ``-ing``. Neste
+apêndice, iremos apresentar programas eqüivalentes em outras linguagens,
+para que os leitores também possam sentir um pouco da atração (appeal)
+do Python.
+
+O Prolog é uma linguagem de programação lógica que têm sido bastante popular
+no desenvolvimento de parsers para linguagens naturais e gramáticas
+feature-based, dado seu suporte nativo para buscas e para a operação
+de *unificação*, que combina duas estruturas características em uma.
+Infelizmente não é fácil utilizar o Prolog para processamento de strings
+ou para input/output, como o código do programa abaixo demonstra::
+
+  main :-
+      current_input(InputStream),
+      read_stream_to_codes(InputStream, Codes),
+      codesToWords(Codes, Words),
+      maplist(string_to_list, Words, Strings),
+      filter(endsWithIng, Strings, MatchingStrings),
+      writeMany(MatchingStrings),
+      halt.
+  
+  codesToWords([], []).
+  codesToWords([Head | Tail], Words) :-
+      ( char_type(Head, space) ->
+          codesToWords(Tail, Words)
+      ;
+          getWord([Head | Tail], Word, Rest),
+          codesToWords(Rest, Words0),
+          Words = [Word | Words0]
+      ).
+  
+  getWord([], [], []).
+  getWord([Head | Tail], Word, Rest) :-
+      (
+          ( char_type(Head, space) ; char_type(Head, punct) )
+      ->  Word = [], Tail = Rest
+      ;   getWord(Tail, Word0, Rest), Word = [Head | Word0]
+      ).
+  
+  filter(Predicate, List0, List) :-
+      ( List0 = [] -> List = []
+      ;   List0 = [Head | Tail],
+          ( apply(Predicate, [Head]) ->
+              filter(Predicate, Tail, List1),
+              List = [Head | List1]
+          ;   filter(Predicate, Tail, List)
+          )
+      ).
+  
+  endsWithIng(String) :- sub_string(String, _Start, _Len, 0, 'ing').
+  
+  writeMany([]).
+  writeMany([Head | Tail]) :- write(Head), nl, writeMany(Tail).
+
+O Java é uma linguagem orientada a objetos que incorpora suporte nativo
+à internet, projetada originalmente para permitir que um mesmo programa
+executável pudesse ser usado na maioria dos sistemas de computação. O Java
+substituiu o COBOL como linguagem de programação padrão no business enterprise
+software::
+
+  import java.io.*;
+  public class IngWords {
+      public static void main(String[] args) {
+          BufferedReader in = new BufferedReader(new
+  	    InputStreamReader(
+                   System.in));
+          String line = in.readLine();
+          while (line != null) {
+              for (String word : line.split(" ")) {
+                  if (word.endsWith("ing"))
+                      System.out.println(word);
+              }
+              line = in.readLine();
+          }
+      }
+  }
+
+
+A linguagem de programação C é uma línguagem de baixo de nível de alta
+eficiência, popular em software para sistemas operacionais e para ensinar
+fundamentos de ciência da computação::
+
+  #include <sys/types.h>
+  #include <regex.h>
+  #include <stdio.h>
+  #define BUFFER_SIZE 1024
+  
+  int main(int argc, char \*\*argv) {
+       regex_t space_pat, ing_pat;
+       char buffer[BUFFER_SIZE];
+       regcomp(&space_pat, "[, \t\n]+", REG_EXTENDED);
+       regcomp(&ing_pat, "ing$", REG_EXTENDED | REG_ICASE);
+  
+       while (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+           char \*start = buffer;
+           regmatch_t space_match;
+           while (regexec(&space_pat, start, 1, &space_match, 0) == 0) {
+               if (space_match.rm_so > 0) {
+                   regmatch_t ing_match;
+                   start[space_match.rm_so] = '\0';
+                   if (regexec(&ing_pat, start, 1, &ing_match, 0) == 0)
+                       printf("%s\n", start);
+               }
+               start += space_match.rm_eo;
+           }
+       }
+       regfree(&space_pat);
+       regfree(&ing_pat);
+  
+       return 0;
+  }
+
+O LISP é considerada uma linguagem de programação funcional, nas quais
+todos os objetos são listas e todas as operações são realizadas por
+funções (aninhadas) na forma ``(função arg1 arg2 ...)``. Muitos dos
+primeiros sistemas de PLN eram implementados em LISP::
+
+  (defpackage "REGEXP-TEST" (:use "LISP" "REGEXP"))
+  (in-package "REGEXP-TEST")
+  
+  (defun has-suffix (string suffix)
+    "Open a file and look for words ending in _ing."
+    (with-open-file (f string)
+       (with-loop-split (s f " ")
+          (mapcar #'(lambda (x) (has_suffix suffix x)) s))))
+  
+  (defun has_suffix (suffix string)
+    (let* ((suffix_len (length suffix))
+     (string_len (length string))
+      (base_len (- string_len suffix_len)))
+      (if (string-equal suffix string :start1 0 :end1 NIL :start2 base_len :end2 NIL)
+          (print string))))
+  
+  (has-suffix "test.txt" "ing")
+
+O Haskell é outra linguagem de programação funcional que permite
+uma solução muito mais compacta para nossa simples tarefa::
+
+  module Main
+    where main = interact (unlines.(filter ing).(map (filter isAlpha)).words)
+      where ing = (=="gni").(take 3).reverse

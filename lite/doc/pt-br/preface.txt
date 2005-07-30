@@ -1,0 +1,215 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+=============================================
+Aprendendo PLN com o Natural Language Toolkit
+=============================================
+
+:Autores: Steven Bird, Ewan Klein, Edward Loper
+:Contato: sb@csse.unimelb.edu.au
+:Versão: 0.1
+:Revisão: $Revision$
+:Data: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Nota:: Este é um esboço. Por favor, envie seus comentários aos autores.
+
+----------
+Introdução
+----------
+
+O *Natural Language Toolkit (NLTK)* foi inicialmente desenvolvido como parte
+das disciplinas de lingüística computacional do Departamento de Ciências da
+Computação e Informação (Department of Computer and Information Science) da
+University of Pennsylvania em 2001.
+Desde então, tem sido desenvolvido e ampliado com a ajuda de dezenas de
+contribuintes e já foi adotado nas disciplinas de dezenas de universidades,
+servindo de base para vários projetos de pesquisa. Nesta seção iremos discutir
+alguns dos benefícios em aprender (e ensinar) PLN (Processamento de Linguagem
+Natural) utilizando-se o NLTK.
+
+Recentemente, os responsáveis pelo NLTK empanharam-se em criar uma versão mais leve
+do mesmo, chamada NLTK-Lite. O NLTK-Lite é uma versão mais simples e mais rápido do NLTK.
+Uma vez completo, o NLTK-Lite oferecerá todas as funcionalidades do NLTK.
+Em compensação, ao contrário do NLTK, o NLTK não impõe uma responsabilidade tão
+grande no programador. Sempre que possível, os objetos padrão do Python
+são utilizados no lugar das versões específicas para PLN, de tal forma que os
+estudantes que estejam aprendendo a programar estão aprendendo a programar em
+Python com o auxílio de algumas bibliotecas, ao invés de aprender apenas a
+programar no NLTK.
+
+PLN é normalmente ensinado nos limites de uma disciplina de um único semestre,
+tanto a nível de graduação quanto de pós-graduação.
+Infelizmente, revela-se bastante difícil abordar tanto o lado teórico quanto
+o lado prático da matéria em um período de tempo tão curto.
+Algumas disciplinas focam-se na teoria em detrimento de exercícios práticos,
+privando os estudantes do desafio e da excitação de escrever programas que
+processem uma linguagem natural automaticamente. Outras disciplinas são
+estudadas simplesmente para ensinar lingüistas a programas e não se extendem
+além da mecânica da programação para investigar mais profundamente o PLN.
+O NLTK foi desenvolvido para solucionar este grande problema, tornando
+possível a abordagem de uma quantidade substancial tanto de teoria quanto
+de prática ao longo de uma disciplina de um único semestre.
+
+Uma parcela significativa de qualquer disciplina de PLN constitui-se da
+exploração de estruturas de dados fundamentais e de algoritmos. Estes são
+normalmente ensinados com a ajuda de algumas notações formais e de diagramas
+complexos. Árvores extensas e tabelas são copiadas no quadro e editadas em uma
+tediosa câmera lenta, ou trabalhosamente preparadas em uma apresentação de
+slides. Um método mais efetivo é utlizar demonstrações em tempo real nas quais
+estes diagramas são gerados e atualizados automaticamente. O NLTK fornece
+interfaces gráficas para usuários interativas, tornando possível ver o estado
+de um programa e estudar sua execução passo-a-passo. A maioria dos componentes
+do NLTK possui um modo de demonstração que realizará alguma tarefa de interesse
+sem requerer alguma entrada de dados especial por parte do usuário. É até
+mesmo possível realizar algumas modificações aos programas como resposta a
+questões do tipo "e se". Desta forma, os estudantes aprendem a mecânica do
+PLN rapidamente, formando uma percepção detalhada das estruturas de dados
+e dos algoritmos, adquirindo novas habilidades para a resolução de problemas.
+
+O NLTK permite o trabalho com tarefas com níveis de dificuldade e propósitos
+diferentes. Na mais simples das tarefas, os alunos podem trabalhar com os
+componentes existentes e testar uma ampla variedade de tarefas relacionas ao
+PLN. Este tipo de tarefa pode até mesmo não requerer nenhuma programação, no
+caso de existirem demonstrações, ou simplesmente exigir a mudança de uma ou
+duas linhas de código. Com a progressiva familiarização dos estudantes com o
+toolkit, pode-se perdir-lhes para modificar componentes existentes ou criar
+sistemas completos a partir destes. O NLTK também oferece aos estudantes um
+framework flexível para projetos avançados, como o desenvolvimento de sistemas
+multi-componentes, criados a partir da integração e extensão de componentes do
+NLTK, ou agregando componentes complemente novos. Neste caso, o NLTK auxilia
+oferecendo implementações padrão para todas as estruturas de dados básicas e
+algoritmos, interfaces para corpora padrão, substanciais corpora de demonstração e
+uma arquitetura flexível e extensível. Desta forma, como vimos, o NLTK oferece
+uma abordagem nova para a pedagogia do PLN, na qual o conteúdo teórico está
+firmemente integrado com a aplicação prática.
+
+----------------
+O design do NLTK
+----------------
+
+O NLTK for projetado com seis exigências em mente. Primeiro, o NLTK
+é *fácil de usar*. A finalidade primária do toolkit é permitir aos
+estudantes concentrar-se na construção de sustemas de processamento de
+linguagem natural. Quanto mais tempo os estudantes tiverem de passar
+aprendendo a utilizar o toolkit, menos útil este se torna. Segundo, esforçamo-nos
+significativamente para assugarar que todas as estruturas de dados e
+interfaces são *consistentes*, facilitando a realização de uma série
+de tarefas a partir de um framework uniforme. Terceiro, o toolkit é
+*extensível*, acomodando facilmente novos componentes, tanto aqueles que
+repliquem ou que ampliem as funcionalidades já existentes.  Além disto, o
+toolkit foi organizado de forma que seja normalmente óbvio onde as
+extensões devam ser inseridas dentro de sua infraestrutura. Quarto, o toolkit
+foi projetado para ser *simples*, fornecendo um framework intuitivo e
+agradável juntamente com substanciais blocos de construção, de tal forma
+que os estudantes possam adquirir um conhecimento prático de PLN sem
+ter de escrever centenas de linhas de código. Quinto, o toolkit é
+*modular*, garantindo que a intersecção entre componentes diferentes do
+toolkit seja minimizada e utilizando interfaces simples e bem definidas.
+Em particular, deveria ser possível completar projetos individuais
+utilizando apenas reduzidas partes do toolkit, sem a necessidade de
+entender como estas interagem com o restante. Isto permite aos estudantes
+aprender a utilizar o toolkit de forma incremental, ao longo da disciplina.
+A modularidade também torna mais fácil as modificações e extensões
+ao toolkit. Por último, o toolkit é *bem documentado*, incluíndo
+nomenclatura, estruturas de dados e implementações.
+
+Constratando com estas exigências há três não-exigências.
+Primeiro, mesmo que o toolkit disponibilize um amplo leque de funções,
+não há pretensões de que este seja enciclopédico. É necessário que
+haja uma série de formas com as quais os estudantes possam ampliar o
+toolkit. Segundo, mesmo que o tolkit deva ser eficiente o suficiente para
+que os estudantes possam utilizá-lo em seus sistemas de PLN para
+a realização de tarefas significativas, não é necessário otimizar
+altamente o seu desempenho durante a execução. Este tipo de otimização
+freqüentemente envolve algoritmos mais complexos e certas vezes requer
+a utilização das linguagens C ou C++, tornando mais difícil a instalação
+do toolkit. Terceiro, nos abstemos de utilizar "truques" de programação
+inteligentes, já que as implementações claras são de longe preferíveis às
+engenhosas mas indecifráveis.
+
+O NLTK é organizado em uma coleção de componentes para tarefas específicas. Cada
+módulo é uma combinação das estruturas de dados para a representação de um
+tipo particular de informação como árvores, juntamente com implementações
+de algoritmos padrão que envolvem estas estruturas como os parsers. Esta
+abordagem é uma característica intrínseca ao *design orientado a objetos*,
+no qual componentes encapsulam seja os recursos que os métodos necessários
+para efetuar uma tarefa específica.
+
+Os componentes mais fundamentais do NLTK são aqueles utilizados para identificar
+e manipular palavras individuais de textos. Estes incluem: ``tokenize``,
+para dividir uma cadeia de caracteres em toquens de palavras; ``corpora``,
+para ler vários corpora; ``tag``, para adicionar tags de partes-do-discurso,
+incluíndo taggers por expressões regulares, taggers tipo n-gram e taggers
+tipo Brill.
+
+O segundo tipo de módulo é utilizado para criar e manipular informações
+lingüísticas estruturadas. Estes componentes incluem: ``tree``, para a
+representação e processamento de árvores de parsing; ``featurestructure``,
+para construir e unificar estruturas de características aninhadas (ou
+matrizes de atributos-valores); ``cfg``, para especificar gramáticas livres e
+``parse``, para criar árvores de parsing sobre um texto de input, incluíndo
+parsers de charts, chunk parsers e parses probabilísticos.
+
+Vários componentes auxiliares são fornecidos para facilitar o processamento e
+a visualização. Estes incluem: ``draw``, para visualizar estruturas NLP e
+processos; ``probability``, para contar e coletar informações sobre eventos, bem
+como realizar estimativas estatísticas e ``corpus``, para acessar corpora
+lingüísticos com tags.
+
+   
+.. Finally, several advanced components are provided, mostly
+   demonstrating NLP applications of machine learning techniques.  These
+   include: ``clusterer``, for discovering groups of similar items within
+   a large collection, including k-means and expectation maximisation;
+   ``classifier``, for categorising text into different types, including
+   naive Bayes and maximum entropy; and ``hmm``, for Hidden Markov
+   Models, useful for a variety of sequence classification tasks.
+    
+
+Um grupo adicional de componentes não é especificamente parte do NLTK.
+Estes incluem uma ampla seleção de contribuições de terceiros, freqüentemente
+desenvolvidas como projetos de estudantes nas várias instituições nas quais
+o NLTK é utilizado, e distribuídas em um package à parte chamado *NLTK Contrib*.
+Muitas destas contribuições de estudantes, como o tagger tipo Brill e o módulo
+HMM, foram incorporadas ao NLTK. Mesmo que estes componentes não sejam
+mantidos (maintained), eles podem servir como um útil ponto de partida para
+futuros projetos de estudantes. Muitas vezes eles não funcionam com a versão
+atual do NLTK.
+
+Em complemento ao software e à documentação, o NLTK oferece exemplos de corpus
+sustanciais, listados abaixo. Muitos destes podem ser acessados utilizando-se o
+módulo ``corpora``, eleminando a necessidade de escrever-se código para o
+processamento dos arquivos antes de iniciar as tarefas de PLN.
+
+   
+=========================  =====================  ============================================================
+Exemplos de corpora and corpus distribuídos com o NLTK (itens com astericos disponíveis no NLTK-Lite)
+--------------------------------------------------------------------------------------------------------------
+Corpus                     Compilado por               Conteúdo
+=========================  =====================  ============================================================
+20 Newsgroups (sel)        Lang, Rennie           3 grupos de discussão, 4000 posts, 780 mil palavras
+\*Brown Corpus             Francis, Kucera        15 gêneros literários, 1.15 milhão de palavras, com tags
+CoNLL 2000 Chunking Data   Tjong Kim Sang         270k palavras, com tags e chunked
+\*Genesis Corpus           Misc web sources       6 textos, 200 mil palavras, 6 línguas
+Project Gutenberg (sel)    Hart, Newby, et al     14 textos, 1.7 milhão de palavras
+NIST 1999 Info Extr (sel)  Garofolo               63 mil palavras, newswire and named-entity SGML markup
+Levin Verb Index           Beth Levin             3 mil verbos com classes Levin
+Lexicon Corpus                                    Palavras, tags e freqüências do Brown Corpus e WSJ
+Names Corpus               Kantrowitz, Ross       8 mil nomes masculinos e femininos
+PP Attachment Corpus       Ratnaparkhi            28 mil frases preposicionais, com tags de modificadores de nome ou verbo
+Roget's Thesaurus          Project Gutenberg      200 mil palavras, texto formatado
+SEMCOR                     Rus, Mihalcea          880 mil palavras, tags para partes-do-discurso e sentido
+SENSEVAL 2 Corpus          Ted Pedersen           600 mil palavras, tags para partes-do-discurso e sentido
+Stopwords Corpus           Porter et al           2,400 stopwords para 11 línguas
+\*Penn Treebank (sel       LDC                    40 mil palavras, tags e parsed
+Wordlist Corpus            OpenOffice.org et al   960 mil palavras e 20 mil afixos para 8 línguas
+=========================  =====================  ============================================================
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
