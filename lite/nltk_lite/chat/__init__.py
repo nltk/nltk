@@ -55,7 +55,7 @@ class Chat:
             words += ' ' + word
         return words
 
-    def _wildcards(self, response):
+    def _wildcards(self, response, match):
         pos = string.find(response,'%')
         while pos >= 0:
             num = string.atoi(response[pos+1:pos+2])
@@ -80,8 +80,8 @@ class Chat:
 
             # did the pattern match?
             if match:
-                resp = whrandom.choice(response)  # pick a random response
-                resp = self._wildcards(resp)      # process wildcards
+                resp = whrandom.choice(response)    # pick a random response
+                resp = self._wildcards(resp, match) # process wildcards
 
                 # fix munged punctuation at the end
                 if resp[-2:] == '?.': resp = resp[:-2] + '.'

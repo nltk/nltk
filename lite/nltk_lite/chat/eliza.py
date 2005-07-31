@@ -251,12 +251,13 @@ def demo():
     print "Hello.  How are you feeling today?"
     s = ""
     while s != "quit":
+        s = "quit"
         try: s = raw_input(">")
         except EOFError:
-            s = "quit"
             print s
-        while s[-1] in "!.": s = s[:-1]
-        print eliza.respond(s)
+        if s:
+            while s[-1] in "!.": s = s[:-1]
+            print eliza.respond(s)
 
 
 if __name__ == "__main__":
