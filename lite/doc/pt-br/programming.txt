@@ -1,0 +1,675 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+====================================
+Fundaemntos de programação em Python
+====================================
+
+:Autores: Steven Bird, Ewan Klein, Edward Loper
+:Contato: sb@csse.unimelb.edu.au
+:Versão: 0.1
+:Revisão: $Revision$
+:Data: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Nota:: Este é um esboço. Por favor, envie seus comentários aos autores.
+
+----------
+Introdução
+----------
+
+Este tutorial fornece uma introduçaõ não técnica ao Python. Ele contém vários
+fragmentos de programas funcionantes que você pode experimentar. Para uma
+visão mais detalhada, recomendamos consular uma das introduções listadas
+na seção de leituras adicionais abaixo.
+
+----------------------------
+Processando listas e strings
+----------------------------
+
+Ao escrever programas em Python para o processamento de linguagem
+natural, utilizamos extensamente listas. Uma lista é simplesmente uma
+seqüência ordenada de itens. Cada item pode ser uma string, um número ou
+algum outro objeto mais complexo como uma lista. Uma lista em Python é
+representada com valores separados por vírgula, encapsulados em chaves,
+como em ``['John', 14, 'Sep', 1984]``, uma lista que consiste de quatro
+elementos. As listas são inicializadas fornecendo seus conteúdos a um
+nome de variável, seguido pelo sinal de igual e por esta notação
+entre chaves, como em:
+
+  >>> a = ['colourless', 'green', 'ideas']
+
+Este comando atribui um valor à variável ``a``. Para ver o valor desta
+variável, podemos entrar com o comando ``print a``. Em modo interativo,
+podemos simplesmente entrar com o nome da variável:
+
+  >>> a
+  ['colourless', 'green', 'ideas']
+
+Para obter o comprimento da lista, utilizamos a função ``len()``, que
+recebe a variável de lista como seu argumento:
+
+  >>> len(a)
+  3
+
+Podemos acessar os itens de uma lista individualmente utilizando índices.
+Lembre-se que os itens de uma lista são numerados a partir do zero.
+
+  >>> a[0]
+  'colourless'
+  >>> a[1]
+  'green'
+
+Podemos também utilizar índices a partir do *fim* da lista, utilizando
+número negativos. Desta forma, o índice ``-1`` retorna o último ítem:
+
+  >>> a[-1]
+  'ideas'
+
+Certas vezes podemos tentar erronêamente acessar uma posição de índice inexistente.
+Neste caso, o Python reporta um erro:
+
+  >>> a[5]
+  IndexError: list index out of range
+
+Muitas vezes é útil acessar ítens múltiplos em uma lista. No Python, isto pode ser
+feito utilizando uma construção especial chamada *slice*. Em geral, se ``a`` for 
+a lista, então ``a[m:n]`` é o slice que inicia no ítem de índice ``m`` e se extende
+até (mas não incluíndo) o ítem ``n``.
+
+  >>> a[1:3]
+  ['green', 'ideas']
+
+Se o primeiro número não for fornecido, assume-se que este seja zero, ou seja o início
+da lista. Assim, ``a[:n]`` retorna todos os itens do início até (mas não incluíndo) o
+ítem de índice ``n``. De forma similar, ``a[m:]`` retorna todos os itens de ``m`` até
+o final:
+
+  >>> a[1:]
+  ['green', 'ideas']
+  >>> a[:2]
+  ['colourless', 'green']
+
+Listas podem ser concatenadas, ordenadas e invertidas, como podemos ver abaixo:
+
+  >>> b = a + ['sleep', 'furiously']
+  >>> print b
+  ['colourless', 'green', 'ideas', 'sleep', 'furiously']
+  >>> b.sort()
+  >>> print b
+  ['colourless', 'furiously', 'green', 'ideas', 'sleep']
+  >>> b.reverse()
+  >>> print b
+  ['sleep', 'ideas', 'green', 'furiously', 'colourless']
+
+.. Nota:: Se acessarmos os elementos individuais da lista acima (todos strings), o
+   resultado da concatenação será diferente:
+
+   >>> b[2] + b[1]
+   'greenideas'
+
+   Isto ocorre porque ``b[2]`` não é uma lista, mas sim um *elemento* de uma lista,
+   neste caso uma string. Eis outro exemplo:
+
+   >>> c = [1,2,3,4,5]
+   >>> c[2] + c[1]
+   5
+
+   Assim, o comportamento deste operador ``+`` depende do tipo de seus argumentos.
+
+Podemos utilizar a sintaxe ``for item in list`` (do inglês, "para item na lista") para
+*iterate* ao longo dos itens de uma lista. No fragmento abaixo, iterate em cada uma
+das palavras da lista ``b`` acima, e exibimos na tela o primeiro caracter de cada
+palavra:
+
+  >>> for w in b:
+  ...    print w[0]
+  ...
+  s
+  i
+  g
+  f
+  c
+
+Observe como utilizamos a notação com chaves para acessar os caracteres de uma
+string, da mesma forma que anteriormente utilizamos esta notação para acessar os
+itens de uma lista. Podemos combinar estes dois tipos de acesso, por exemplo para
+encontrar a terceira palavra (de índice 2) e imprimir seu segundo caracter (de
+índice 1):
+
+  >>> b[2]
+  'green'
+  >>> b[2][1]
+  'r'
+
+Até agora, acessamos os itens de uma lista fornecendo seus índices. Podemos
+tambem acessar os itens com base em seus conteúdos. A função ``index()``
+retorna o primeiro índice onde o item especificado é encontrado:
+
+  >>> b.index('green')
+  2
+
+Já estudamos o operador de concatenação de strings, ``+``. Podemos também
+multiplicar strings:
+
+  >>> 'sleep' * 3
+  'sleepsleepsleep'
+
+Também é possível juntar e separar strings:
+
+  >>> c = ' '.join(b)
+  >>> c
+  'sleep ideas green furiously colourless'
+  >>> c.split('r')
+  ['sleep ideas g', 'een fu', 'iously colou', 'less']
+
+Há várias outras operações mais sofisticadas que podemos realizar com
+listas e strings, por exemplo:
+
+  >>> map(lambda x: len(x), b)
+  [5, 5, 5, 9, 10]
+  >>> [(x, len(x)) for x in b]
+  [('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
+
+Mais informações sobre listas e strings podem ser obtidas digitando-se
+``help(list)`` e ``help(str)`` na linha de comando. Para obter mais informações
+sobre funções específicas, utiliza-se o mesmo comando, por exemplo 
+``help(list.append)``.
+
+---------------------
+Dicionários em Python
+---------------------
+
+Listas e strings são acessadas por meio de índices. Este tipo de operação
+resulta limitado para muitas tarefas. Podemos, por exemplo, desejar acessar
+itens com base em seus nomes. Para dar um exemplo, quando utilizamos um
+dicionário impresso buscamos itens com base em palavras e não com base
+em um número. O Python oferece um tipo de dado de *dicionário*. Podemos
+acessá-lo utilizando a já familiar notação com chaves. Abaixo, declaramos
+``d`` como um dicionário, adicionando a seguir três itens a ela:
+
+  >>> d = {}
+  >>> d['colourless'] = 'adj'
+  >>> d['furiously'] = 'adv'
+  >>> d['ideas'] = 'n'
+
+As *chaves* de um dicionário são exatamente estas "palavras-índices". Estas,
+porém, não possuem ou mantêm nenhuma ordem pré-definida.
+
+  >>> d.keys()
+  ['furiously', 'colourless', 'ideas']
+  >>> d['ideas']
+  'n'
+
+Podemos iterate no itens de um dicionário utilizando a sintaxe
+``for entry in dict`` (do inglês, "para entrada em dicionário"), como
+ilustrado abaixo:
+
+  >>> for w in d:
+  ...    print "%s [%s]," % (w, d[w]),
+  furiously [adv], colourless [adj], ideas [n],
+
+Podemos exibir o conteúdo de um dicionário inteiro simplesmente entrando com
+seu nome na linha de comando interativa:
+
+  >>> d
+  {'furiously': 'adv', 'colourless': 'adj', 'ideas': 'n'}
+
+Se tentarmos acessar um item não-existente, or exemplo entrando com
+``d['sleep']``, o interpretador do Python irá reportar um erro.
+Duas outras funções são úteis se não sabemos da existência de um ítem
+ou não, ``has_key()`` (do inglês, "tem chave") e ``get()`` (do inglês,
+"obter"), como ilustrado abaixo:
+
+  >>> print d.has_key('ideas')
+  True
+  >>> print d.get('sleep')
+  None
+
+Como uma regra geral, podemos dizer que os itens de um dicionário
+comportam-se como nomes variáveis. Podemos *criá-los* simplesmente
+atribuíndo-lhes um valor, por exemplo
+``x = 2`` (variável), ``d['x'] = 2`` (item de dicionário).
+Podemos *acessá-los* por referências, como em
+``print x`` (variável), ``print d['x']`` (item de dicionário).
+
+Podemos utilizar dicionários para contar o número de ocorrências de uma
+palavra. Por exemplo, o código a seguir lê o texto de *Macbeth* e armazena
+a freqüência de cada palavra::
+
+  >>> from nltk_lite.corpora import gutenberg
+  >>> count = {}                                        # inicializa um dicionário
+  >>> for word in gutenberg.raw('shakespeare-macbeth'): # toqueniza Macbeth
+  ...     word = word.lower()                           # normaliza para caixa-baixa
+  ...     if word not in count:                         # Esta palavra já foi encontrada?
+  ...         count[word] = 0                           # se não, marca o contador como zero
+  ...     count[word] += 1
+
+Podemos agora inspecionar o dicionário::
+
+  >>> print count['scotland']
+  12
+  >>> frequencies = [(freq, word) for (word, freq) in count.items()]
+  >>> frequencies.sort()
+  >>> frequencies.reverse()
+  >>> print frequencies[:20]
+  [(1986, ','), (1245, '.'), (692, 'the'), (654, "'"), (567, 'and'), (482, ':'), (399, 'to'), (365, 'of'), (360, 'i'), (255, 'a'), (246, 'that'), (242, '?'), (224, 'd'), (218, 'you'), (213, 'in'), (207, 'my'), (198, 'is'), (170, 'not'), (165, 'it'), (156, 'with')]
+
+--------------------
+Expressões Regulares
+--------------------
+
+Por último, vamos dar uma olha no módulo de expressões regulares do Python, o
+``re``, utilizado para efetuar substituição e pesquisa dentro de strings.
+
+  >>> import re
+  >>> from nltk_lite.utilities import re_show
+  >>> s = "colourless green ideas sleep furiously"
+
+Utilizamos a função auxiliar ``re_show`` para mostrar como as expressões
+regulares serão combinadas com as strings. Primeiro buscaremos por todas
+as ocorrências de um caracter em particular ou por uma seqüência de caracteres:
+
+  >>> re_show('l', s)
+  co{l}our{l}ess green ideas s{l}eep furious{l}y
+  >>> re_show('green', s)
+  colourless {green} ideas sleep furiously
+
+Podemos agora executar substituições. No primeiro caso podemos substituir todas
+as ocorrências de ``l`` por ``s``. Note que isto gera uma nova string como
+resposta e não modifica a string original. Finalmente, substituímos qualquer
+ocorrência de ``green`` por ``red``.
+
+  >>> re.sub('l', 's', s)
+  'cosoursess green ideas sseep furioussy'
+  >>> re.sub('green', 'red', s)
+  'colourless red ideas sleep furiously'
+
+Por enquanto vimos apenas padrões simples, consistindo de caracteres individuais
+ou de seqüências de caracteres. Porém, com expressões regulares podemos também
+incluír sintaxes especias, como o ``|`` para disjunção, por exemplo:
+
+  >>> re_show('(green|sleep)', s)
+  colourless {green} ideas {sleep} furiously
+  >>> re.findall('(green|sleep)', s)
+  ['green', 'sleep']
+
+Podemos também separar caracteres individuais. Por exemplo, ``[aeiou]``
+combina com ``a``, ``e``, ``i``, ``o`` e ``u``,
+ou seja, qualquer vogal. A expressão ``[^aeiou]`` combina com qualquer
+caracter que não seja uma vogal. No exemplo a seguir, as combinações
+são efetuadas sobre seqüências constituídas por não-vogais seguidas de
+vogais:
+
+  >>> re_show('[^aeiou][aeiou]', s)
+  {co}{lo}ur{le}ss g{re}en{ i}{de}as s{le}ep {fu}{ri}ously
+  >>> re.findall('[^aeiou][aeiou]', s)
+  ['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
+
+Podemos colocar parênteses ao redor de partes de uma expressão reguar
+para gerar resultados estruturados. Por exemplo, da forma seguinte
+podemos obter todos os caracteres não-vogais que aparecem antes de
+uma vogal:
+
+  >>> re.findall('([^aeiou])[aeiou]', s)
+  ['c', 'l', 'l', 'r', ' ', 'd', 'l', 'f', 'r']
+
+Podemos até mesmo gerar pares (ou *tuples*) com os quais poderíamos
+continuar o trabalho, tabulando-os.
+
+  >>> re.findall('([^aeiou])([aeiou])', s)
+  [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
+
+--------------------------
+Acessando arquivos e a web
+--------------------------
+
+É fácil acessar arquivos locais e páginas web dentro do Python. Eis alguns
+exemplos:
+
+  >>> print open('corpus.txt').read() 
+  Hello world.  This is a test file.
+
+  >>> from urllib import urlopen
+  >>> page = urlopen("http://news.bbc.co.uk/").read()
+  >>> page = re.sub('<[^>]*>', '', page)   # remove a marcação HTML
+  >>> page = re.sub('\s+', ' ', page)      # remove espaços
+  >>> print page
+
+-----------------
+Accessando o NLTK
+-----------------
+
+O NLTK consiste de um conjunto de *módulos* em Python, cada um dos quais
+define classes e funções relacionadas a uma única estrutura de dados
+ou tarefa. Antes de se utilizar um módulo, é necessário ``import``ar seu
+contúdo. A forma mais simples para importar o conteúdo de um módulo é utilizar
+o comando ``from module import *`` (do inglês, "de modulo importa *"). Por
+exemplo, para importar o conteúdo do módulo ``nltk_lite.util``, discutido neste
+tutorial, digitamos:
+
+  >>> from nltk_lite.utilities import *
+
+Uma desvantagem deste tipo de comando de importação é que ele não especifica
+quais objetos a serem importados; é possível que alguns dos objetos importados
+não intencionalmente causem algum tipo de conflito. Para evitar esta
+desvantagem, pode-se listar explicitamente quais objetos deseja-se importar.
+Por exemplo, para importar a função ``re_show`` a partir do módulo
+``nltk_lite.util`` usa-se::
+
+  >>> from nltk_lite.utilities import re_show
+
+Outra opção consiste em importar o módulo em si, ao invés de seu
+contúdo. Desta forma seu conteúdo pode ser acessado utilizando-se
+nomes separados por ponto *fully qualified*:
+
+  >>> from nltk_lite import utilities
+  >>> utilities.re_show('green', s)
+  colourless {green} ideas sleep furiously
+
+Para maiores informações sobre importação, consulte qualquer livro
+sobre o Python.
+
+O NLTK é distribuído com vários corpora, listados na introdução. Muitos
+destes corpora são disponibilizados pelo módulo ``corpora`` do NLTK.
+No exemplo, iremos imporar primeiro o corpus Gutenberg (uma seleção
+de textos do arquivo de textos eletrônicos do Projeto Gutenberg).
+
+  >>> from nltk_lite.corpora import gutenberg
+  >>> gutenberg.items
+  ['austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems', 'blake-songs', 'chesterton-ball', 'chesterton-brown', 'chesterton-thursday', 'milton-paradise', 'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth', 'whitman-leaves']
+
+Acessamos o conteúdo textual utilizando uma construção especial do Python
+chamada de *iterator*. Esta produz um fluxo de palavras, que podemos acessar
+por meio da sintaxe ``for item in iterator`` (do inglês, "para item em iterator"),
+como mostrado abaixo:
+
+  >>> count = 0
+  >>> for word in gutenberg.raw('whitman-leaves'):
+  ...     count += 1
+  >>> print count
+  154873
+
+O NLTK-Lite também inclui o primeiro milhão de palavras do Brown Corpus,
+um corpus eletrônico da língua inglesa marcado com tags de partes-do-discurso, criado
+em 1961 na Brown University. Cada uma das seleções de ``a`` a ``r`` representa
+um gênero literário diferente.
+
+  >>> from nltk_lite.corpora import brown
+  >>> brown.items
+  ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
+
+Podemos extrair sentenças individuais do iterator do corpus utilizando a função
+``extract()``:
+
+  >>> from nltk_lite.corpora import extract
+  >>> print extract(0, brown.raw())
+  ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
+
+Também podemos acessar o texto com tags utilizando o método ``brown.tagged()``:
+
+  >>> print extract(0, brown.tagged())
+  [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]
+
+O NLTK-Lite inclui um fragmento de 5% do Penn Treebank. Este pode ser acessado
+utilizando-se a função ``treebank.raw()`` para o texto puro e ``treebank.tagger()``
+para o texto com tags.
+
+  >>> from nltk_lite.corpora import treebank
+  >>> print extract(0, treebank.parsed())
+  (S:
+    (NP-SBJ:
+      (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
+      (,: ',')
+      (ADJP: (NP: (CD: '61') (NNS: 'years')) (JJ: 'old'))
+      (,: ','))
+    (VP:
+      (MD: 'will')
+      (VP:
+        (VB: 'join')
+        (NP: (DT: 'the') (NN: 'board'))
+        (PP-CLR:
+          (IN: 'as')
+          (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
+        (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
+    (.: '.'))
+
+
+---------------------------
+Desenolvimento de programas
+---------------------------
+
+Programação é uma habilidade que é adquirida ao longo de vários anos de
+experiências e com uma variedade de linguagens de prorgamação e tarefas.
+Habilidades de alto nível chave são o *design de algoritmos* e sua manifestação
+na *programação estruturada*. Habilidades de baixo nível chave incluem familiaridade
+com as construções sintáticas da linguagem e um conhecimento de uma série
+de métodos de diagnóstico para a resolução de problemas em um programa que
+não se comporta da forma planejada.
+
+Design de algoritmos
+--------------------
+
+Um "algoritmo" é uma "receita" para solucionar um problema. Por exemplo,
+para multiplicar 16 por 12 podemos utilizar qualquer um dos métodos seguintes:
+
+1. Somar 16 por 12 vezes
+#. Realizar uma "multiplicação longa", começando pelo dígitos menos
+   significates de cada número
+#. Procurar a resposta em uma tabuada
+#. Repetidamente cortar pela metade o primeiro número e duplicar o segundo,
+   16*12 = 8*24 = 4*48 = 2*96 = 192
+#. Calcular 10*12, obtendo 120, e somar ao resultado 6*12
+
+Cada um destes métodos utiliza um algoritmo diferente e requer diferentes
+quantidades de tempo de computação e diferentes quantidades de informação
+intermediária a ser armazenada. Uma situação parecida ocorre em várias outras
+tarefas superficialmente simples, como ordenar uma lista de palavras. Como
+vimos acimas, o Python oferece uma função padrão ``sort()`` que executa
+esta tarefa de forma eficiente. Porém, o NLTK-Lite também oferece vários
+algoritmos para ordenação de listas, como forma de ilustrar a variedade de
+métodos possíveis. Para ilustrar a diferença em termos de eficiência,
+criaremos uma lista de 1000 números, disporemos seus ítens de forma aleatória
+e finalmente a ordenaremos, contando o número de manipulações da lista
+necessárias.
+
+  >>> from random import shuffle
+  >>> a = range(1000)                     # [0,1,2,...999]
+  >>> shuffle(a)                          # dispõe aleatóriamente
+
+Podemos agora experimentar um método de ordenação simples, chamado
+*bubble sort* que analisa todos os itens da lista todas as vezes
+que for necessário, trocando o valor de dois itens adjacentes se estes
+estiverem fora de ordem. Este método ordena a lista ``a`` in-place e
+retorna o número de vezes que foi necessário modificar a lista:
+
+  >>> from nltk_lite.misc import sort
+  >>> sort.bubble(a)
+  250918
+
+Podemos experimentar a mesma tarefa utilizando vários algoritmos de
+ordenação. Torna-se evidente que o método *merge sort*  é de longe melhor que
+o bubble sort, e que o *quicksort* é ainda melhor.
+
+  >>> shuffle(a); sort.merge(a)
+  6175
+  >>> shuffle(a); sort.quick(a)
+  2378
+
+Encorajamos os leitores a analisar o ``nltk_lite.misc.sort`` para entender
+como cada um destes diferentes métodos funciona. A coleção dos módulos do NLTK-Lite
+exemplifica uma variedade de ténicas de design de algoritmos, incluído de
+força-bruta, divide-and-conquer, programação dinâmica e greedy seach. Os
+leitores que estejam interessados em uma introdução sistemática ao design de
+algoritmos podem consultar alguma das referências mencionadas ao final
+deste tutorial.
+
+Debugging
+---------
+
+(to analyze, does not make much sense in portuguese - tiago)
+This task is known as *debugging*, since the problems are usually
+small relative to their impact, hard-to-find, and seem to take on a
+life of their own as the programmer tries to hunt them down.
+
+A primeira tarefa constitui-se em isolar o problema. Se ocorre um erro
+durante a execução de um programa, o interpretador do Python irá
+encerrar, fornecendo um *stack-trace* que lista as funções chamadas
+mais recentemente e o número de suas linhas dentro do árquivo fonte. A forma
+mais simples para lidar com este tipo de erro é adicionar uma série de
+comandos print ao programa antes da linha onde o problema ocorre, permitindo
+o programador inspecionar os valores das variáveis (certas vezes estes
+não serão os esperados).
+
+O Python também oferece um debugger interativo chamado ` pdb``, sigla
+para Python DeBugger. Se seu programa foi gravado em um arquivo chamado
+``myscript.py`` você pode utilizar o debugger com o comando 
+``python -m pdb myscript.py``.
+
+-----------------
+Interface do NLTK
+-----------------
+
+``TokenizerI`` é a primeira "interface" de classe que encontramos; a
+esta altura, faremos uma pequena discussão para explicar como
+interfaces são implementadas no NLTK.
+
+Uma *interface* fornece uma especificação parcial para o comportamento de
+uma classe, incluíndo especificações para os métodos que a classe deverá
+implementar. Por exemplo, uma interface "comparável" pode especificar
+que a classe deve obrigatoriamente implementar um método para comparação.
+As interfaces não fornecem uma especificação completa para a classe; elas
+apenas definem um conjunto mínimo de métodos e comportamentos que deverão
+ser implementados pelas classes. Por exemplo, a interface ``TaggerI`` 
+especifica que a classe de um tagger deve obrigatoriamente implementar um
+método ``tag``, que recebendo uma ``string`` retorna um tuple que consista
+da string e suas tags para partes-do-discurso; a interface não especifica,
+porém, quais outros métodos a classe deve implementar (se algum método
+adicional é implementado).
+
+.. Nota:: a noção de "interfaces" pode ser muito útil para assegurar que
+   classes diferentes trabalhem juntas corretamente. Mesmo que o conceito
+   de "interface" esteja presente em muitas linguagens, como em Java, não
+   há uma implementação nativa para interface em Python.
+
+Assim, o NLTK implementa interfaces por meio de classes, todas as quais
+originam a exceção ``NotImplementedError``. Para distinguir interfaces de
+outras classes, elas são sempre nomeadas com um ``I`` final. Se uma
+classe implementa uma interface, esta será uma subclasse da interface. Por
+exemplo, a classe de tagger ``Ngram`` implementa a interface 
+``TaggerI``, sendo portanto uma subclasse de ``TaggedI``.
+
+-------------------
+Leituras adicionais
+-------------------
+
+Python
+------
+
+Guido Van Rossum (2003).
+*An Introduction to Python*,
+Network Theory Ltd.
+
+Guido Van Rossum (2003).
+*The Python Language Reference*,
+Network Theory Ltd.
+
+Guido van Rossum (2005).
+*Python Tutorial*
+http://docs.python.org/tut/tut.html
+
+A.M. Kuchling.
+*Regular Expression HOWTO*,
+http://www.amk.ca/python/howto/regex/
+
+*Python Documentation*
+http://docs.python.org/
+
+Solução algorítmica de problemas
+--------------------------------
+
+David Harel (2004).
+*Algorithmics: The Spirit of Computing* (Third Edition),
+Addison Wesley.
+
+Anany Levitin (2004).
+*The Design and Analysis of Algorithms*,
+Addison Wesley.
+
+Desenvolvimento do NLTK
+-----------------------
+
+Edward Loper and Steven Bird (2002).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL Workshop on Effective Tools and
+Methodologies for Teaching Natural Language Processing and Computational
+Linguistics*,
+Somerset, NJ: Association for Computational Linguistics,
+pp. 62-69, http://arXiv.org/abs/cs/0205028
+
+Steven Bird and Edward Loper (2004).
+NLTK: The Natural Language Toolkit,
+*Proceedings of the ACL demonstration session*, pp 214-217.
+
+Edward Loper (2004).
+NLTK: Building a Pedagogical Toolkit in Python,
+*PyCon DC 2004*
+Python Software Foundation,
+http://www.python.org/pycon/dc2004/papers/
+
+---------
+Exercícios
+---------
+
+Utilizando o interpretador do Python em modo interativo, trabalhe
+com palavras, textos, toquens, locations e toquenizadores, até
+assegurar-se de ter compreendido todos os exemplos deste tutorial.
+A seguir, complete as questões a seguir.
+
+1. Utilizando o interpretador do Python em modo interativo, trabalhe com
+   os exemplos contidos neste tutorial. Pense em uma sentença e
+   represente-a como uma lista de strings, por exemplo ['Olá', 'mundo'].
+   Experimente as várias operações para indexação, separação e 
+   ordenação dos elementos de sua lista. Extraia itens individuais
+   (strings) e realize algum tipo de operação de strings nelas.
+
+2. Crie um dicionário ``d`` e adicione a este algumas entradas. O que
+   acontece quando se tenta acessar uma entrada não existe, como
+   ``d['xyz']``?
+
+3. Defina a string ``s = 'colourless'``. Escreva uma expressão em Python
+   que mude o conteúdo desta string para 'colorless', utilizando apenas
+   métodos de separação e concatenação.
+
+4. Descreva a classe de strins que combinam com as expressões
+   regulares a seguir:
+
+   a) ``[a-zA-Z]+``
+   #) ``[A-Z][a-z]*``
+   #) ``\d+(\.\d+)?``
+   #) ``([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*``
+   #) ``\w+|[^\w\s]+``
+
+5. Escreva expressões regulares que combinem com as seguintes classes
+   de strings:
+
+   a) Um único determinante em inglês (considere *a*, *an* e *the*
+      como os únicos determinantes possíveis).
+   #) Uma expressão aritmética que utilize números inteiros, adição
+      e multiplicação, como ``2*3+8``.
+
+6. Utilize o módulo de corpus para toquenizar o arquivo 
+   ``austin-persuasion.txt``. Quantas palavras este livro possui?
+
+7. Execute o programa de conversação Eliza. Importe-o com o comando
+   ``from nltk_lite.chat import elize`` e execute a demostranção com
+   ``demo()``. Quão *inteligente* é este programa? Examine o código 
+   do programa e tente entender de que forma ele funciona.
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
