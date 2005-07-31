@@ -1,0 +1,29 @@
+.. -*- mode: rst -*-
+.. include:: definitions.txt
+
+===================
+NLTK-Lite Tutorials
+===================
+
+:Authors: Steven Bird, Ewan Klein, Edward Loper
+:Contact: sb@csse.unimelb.edu.au
+:Version: |version|
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. _English: en/
+.. _Brazilian_Portuguese: pt-br/
+
+--------
+Contents
+--------
+
+0. English_
+#. Brazilian_Portuguese_   (translation by Tiago Tresoldi)
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
