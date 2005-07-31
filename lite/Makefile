@@ -97,9 +97,6 @@ INSTALL.TXT: INSTALL.TXT.in
 xfer: webpage
 	rsync -arz -e ssh $(WEBPAGE_DIR)/* $(WEBHOST_NAME):$(WEBHOST_DIR)
 
-cvs-snapshot:
-        rsync -arz -e ssh * $(WEBHOST_NAME):$(WEBHOST_DIR)
-
 # CVS snapshot
 tgz:
 	echo "build apidocs and tutorials manually"
