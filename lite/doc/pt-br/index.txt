@@ -1,5 +1,5 @@
 .. -*- mode: rst -*-
-.. include:: definitions.txt
+.. include:: ../definitions.txt
 
 ======================
 Tutoriais do NLTK-Lite
@@ -7,6 +7,7 @@ Tutoriais do NLTK-Lite
 
 :Autores: Steven Bird, Ewan Klein, Edward Loper
 :Contato: sb@csse.unimelb.edu.au
+:Version: |version|
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
 
