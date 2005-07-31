@@ -7,6 +7,7 @@ NLTK-Lite Tutorials
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Contact: sb@csse.unimelb.edu.au
+:Version: |version|
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 

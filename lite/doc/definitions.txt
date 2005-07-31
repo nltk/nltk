@@ -11,11 +11,11 @@
 .. |cdots| unicode:: U+22EF .. cdots
 .. |leq| unicode:: U+2264
 .. |geq| unicode:: U+2265
-.. |ulcorn| unicode:: U+231C .. up-left corner
-.. |urcorn| unicode:: U+231D .. up-right corner
-.. |dlcorn| unicode:: U+231E .. down-left corner
-.. |drcorn| unicode:: U+231F .. down-right corner
+.. |l| unicode:: U+00AB .. left chevron
+.. |r| unicode:: U+00BB .. right chevron
     
+.. |version| replace:: 0.2
+
 .. role:: glossterm(emphasis)
    :class: indexed
 

@@ -7,7 +7,7 @@ Regular Expressions for Natural Language Processing
 
 :Authors: Steven Bird, Ewan Klein
 :Contact: sb@csse.unimelb.edu.au
-:Version: 0.1
+:Version: |version|
 :Revision: $Revision$
 :Date: $Date$
 :Copyright: |copy| 2001-2005 University of Pennsylvania
@@ -268,7 +268,7 @@ character inside a class expression ``[]``. Let's look at an example.
 The regular expression |l|\ ``[^aeiou]`` |r| is just like our earlier character
 class |l|\ ``[aeiou]``\ |r|, except now the set of vowels is preceded
 by ``^``. The expression as a whole is interpreted as matching
-anything which *fails* to match |l|\\ ``[aeiou]``\ |r|\ . In other
+anything which *fails* to match |l|\ ``[aeiou]``\ |r|\ . In other
 words, it matches all lowercase consonants (plus all uppercase letters
 and non-alphabetic characters).
 
