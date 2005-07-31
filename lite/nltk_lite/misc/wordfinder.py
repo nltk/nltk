@@ -107,11 +107,12 @@ def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTU
     return grid, used
 
 def demo():
-    words = open('/usr/share/dict/words').readlines()
-    random.shuffle(words)
-    words = words[:200]
-    words = [w for w in words if 3 <= len(w) <= 12]
-    grid, used = wordfinder(words)
+    from nltk_lite.corpora import words
+    wordlist = list(words.raw())
+    random.shuffle(wordlist)
+    wordlist = wordlist[:200]
+    wordlist = [w for w in wordlist if 3 <= len(w) <= 12]
+    grid, used = wordfinder(wordlist)
 
     print "Word Finder\n"
     for i in range(len(grid)):
