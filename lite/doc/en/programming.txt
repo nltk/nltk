@@ -1,5 +1,5 @@
 .. -*- mode: rst -*-
-.. include:: definitions.txt
+.. include:: ../definitions.txt
 
 ===================================
 Programming Fundamentals and Python
