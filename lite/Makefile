@@ -24,7 +24,7 @@ NLTK_URL = http://nltk.sourceforge.net/lite
 WEBPAGE_DIR = webpage
 WEBHOST_NAME = shell.sourceforge.net
 WEBHOST_DIR = /home/groups/n/nl/nltk/htdocs/lite
-REFDOC_DIR = webpage/api
+REFDOC_DIR = doc/api
 REFDOC_UPTODATE = $(REFDOC_DIR)/.uptodate
 
 # Options for epydoc.
