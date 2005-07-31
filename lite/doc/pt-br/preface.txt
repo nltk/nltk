@@ -7,7 +7,7 @@ Aprendendo PLN com o Natural Language Toolkit
 
 :Autores: Steven Bird, Ewan Klein, Edward Loper
 :Contato: sb@csse.unimelb.edu.au
-:Versão: 0.1
+:Versão: |version|
 :Revisão: $Revision$
 :Data: $Date$
 :Copyright: |copy| 2001-2005 University of Pennsylvania
