@@ -1,5 +1,5 @@
 .. -*- mode: rst -*-
-.. include:: definitions.txt
+.. include:: ../definitions.txt
 
 =============================================
 Accessing and Analyzing Linguistic Field Data
