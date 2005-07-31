@@ -1,5 +1,5 @@
 .. -*- mode: rst -*-
-.. include:: definitions.txt
+.. include:: ../definitions.txt
 
 =============================================
 Aprendendo PLN com o Natural Language Toolkit
