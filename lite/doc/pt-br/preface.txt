@@ -13,7 +13,7 @@ Aprendendo PLN com o Natural Language Toolkit
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. Nota:: Este é um esboço. Por favor, envie seus comentários aos autores.
+.. Note:: Este é um esboço. Por favor, envie seus comentários aos autores.
 
 ----------
 Introdução

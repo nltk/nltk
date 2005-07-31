@@ -205,7 +205,7 @@ traduzí-las em expressões de calculus formal. Por exemplo, se traduzirmos
 explicitamente) o verbo português *viu* com uma relação binária, com
 *João* e *Maria* denotando indivíduos. Sentenças mais gerais como
 *Todos os pássaros voam* requerem quantificadores, no caso
-|paratodos| significando *para todos*: |paratodos| x: pássaro(x) |rarr| voar(x).
+|forall| significando *para todos*: |forall| x: pássaro(x) |rarr| voar(x).
 Esta utilização da lógica possibilitou às máquinas técnicas realizar
 inferências que desempenham um papel importante na compreensão lingüística.
 O terceiro desenvolvimento foi o *princípio da composicionalidade*. Esta
