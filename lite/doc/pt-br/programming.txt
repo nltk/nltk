@@ -13,7 +13,7 @@ Fundaemntos de programação em Python
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. Nota:: Este é um esboço. Por favor, envie seus comentários aos autores.
+.. Note:: Este é um esboço. Por favor, envie seus comentários aos autores.
 
 ----------
 Introdução
@@ -103,7 +103,7 @@ Listas podem ser concatenadas, ordenadas e invertidas, como podemos ver abaixo:
   >>> print b
   ['sleep', 'ideas', 'green', 'furiously', 'colourless']
 
-.. Nota:: Se acessarmos os elementos individuais da lista acima (todos strings), o
+.. Note:: Se acessarmos os elementos individuais da lista acima (todos strings), o
    resultado da concatenação será diferente:
 
    >>> b[2] + b[1]
@@ -531,10 +531,6 @@ para Python DeBugger. Se seu programa foi gravado em um arquivo chamado
 Interface do NLTK
 -----------------
 
-``TokenizerI`` é a primeira "interface" de classe que encontramos; a
-esta altura, faremos uma pequena discussão para explicar como
-interfaces são implementadas no NLTK.
-
 Uma *interface* fornece uma especificação parcial para o comportamento de
 uma classe, incluíndo especificações para os métodos que a classe deverá
 implementar. Por exemplo, uma interface "comparável" pode especificar
@@ -548,7 +544,7 @@ da string e suas tags para partes-do-discurso; a interface não especifica,
 porém, quais outros métodos a classe deve implementar (se algum método
 adicional é implementado).
 
-.. Nota:: a noção de "interfaces" pode ser muito útil para assegurar que
+.. Note:: a noção de "interfaces" pode ser muito útil para assegurar que
    classes diferentes trabalhem juntas corretamente. Mesmo que o conceito
    de "interface" esteja presente em muitas linguagens, como em Java, não
    há uma implementação nativa para interface em Python.
