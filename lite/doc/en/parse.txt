@@ -7,7 +7,7 @@ Elementary Language Processing: Parsing
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Contact: sb@csse.unimelb.edu.au
-:Version: 0.1
+:Version: |version|
 :Revision: $Revision$
 :Date: $Date$
 :Copyright: |copy| 2001-2005 University of Pennsylvania
@@ -264,8 +264,8 @@ distinction is somewhat subtle in this case. Where the ``PP`` is
 attached to ``VP``, the intended interpretation is that the event of
 seeing took place in the park, while if the ``PP`` is attached to
 ``NP``, being in the park is a property of the ``NP`` referent; that
-is, the man was in the park, but the agent of the seeing &mdash; the
-dog &mdash; was somewhere else (e.g., sitting on the balcony of an
+is, the man was in the park, but the agent of the seeing - the
+dog - was somewhere else (e.g., sitting on the balcony of an
 apartment overlooking the park).  As we will see, dealing with
 ambiguity is a key challenge in parsing.
 
