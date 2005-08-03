@@ -416,6 +416,23 @@ use the non-greedy star operator |l|\ ``*?``\ |r|\ , we get the
 desired match, since |l|\ ``*?``\ |r| tries to consume as little
 input as possible.
 
+---------
+Exercises
+---------
+
+1. Write a program to convert individual words to *Pig Latin*.  Words starting with
+   a vowel have ``way`` appended (e.g. ``is`` becomes ``isway``).
+   Words beginning with a consonant have all consonants up to the first
+   vowel moved to the end of the word, and then ``ay`` is appended
+   (e.g. ``start`` becomes ``artstay``).
+
+  a. Extend the program to convert text, instead of individual words.
+
+  b. Extend it further to preserve capitalisation, to keep ``qu`` together
+     (i.e. so that ``quiet`` becomes ``ietquay``), and to detect when ``y``
+     is used as a consonant (e.g. ``yellow``) vs a vowel (e.g. ``style``).
+
+
 ----
 
 NLTK_
