@@ -607,7 +607,7 @@ the following questions.
 
 7. Try running the Eliza chat-bot.  Import it with
    ``from nltk_lite.chat import eliza``, then run the demonstration,
-   ``demo()``.  How *intelligent* is this program?
+   ``eliza.demo()``.  How *intelligent* is this program?
    Take a look at the program code and see if you can
    discover how it works.
 
