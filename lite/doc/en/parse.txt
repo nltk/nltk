@@ -196,7 +196,7 @@ _`G1`
 The productions are presented in two groups which we will call
 :glossterm:`grammatical productions` and :glossterm:`lexical
 productions` respectively.  The labels in the grammatical productions
-(e.g., `S`, `NP`, `VP`, `Det`, etc) are all :glossterm:`nonterminal
+(e.g., ``S``, ``NP``, ``VP``, ``Det``, etc) are all :glossterm:`nonterminal
 symbols`, as are the labels on the lefthand side of the lexical
 productions.  Nonterminal symbols correspond to the grammatical
 categories we use to label constituents.  By contrast,
@@ -209,19 +209,19 @@ listed in a lexicon.
 Notice that in the lexical productions, we have used
 disjunction '``|``' on the righthand side of the productions as an
 abbreviatory device. For example, ``P`` |rarr| ``'in' | 'with'`` means
-that a ``P`` (preposition) can be realized as either ``in`` or
-``with``.
+that a ``P`` (preposition) can be realized as either `in` or
+`with`.
 
-The categories `S`, `NP`, `VP` and `PP` on the righthand side of the
+The categories ``S``, ``NP``, ``VP`` and ``PP`` on the righthand side of the
 grammatical productions in `G1`_ are sometimes called
-:glossterm:`phrasal categories`. The remaining categories, `Det`,
-`N`, `V` and `P` are :glossterm:`lexical categories`, in that they introduce
+:glossterm:`phrasal categories`. The remaining categories, ``Det``,
+``N``, ``V`` and ``P`` are :glossterm:`lexical categories`, in that they introduce
 lexical items. 
 
 ======    ====================    =====================
 Part of Speech Categories
 -------------------------------------------------------
-Symbol    Gloss                   Example
+Symbol    Meaning                 Example
 ======    ====================    =====================
 S         sentence                *the man walked*
 NP        noun phrase 		  *a dog*
@@ -235,7 +235,7 @@ P         preposition             ..
 ======    ====================    =====================
 
 
-If we were to parse the string ``The dog saw a man in the park`` using
+If we were to parse the string `The dog saw a man in the park` using
 `G1`_, we would end up with two distinct analyses, as shown 
 below:
 
@@ -253,7 +253,7 @@ The fact that our grammar admits two distinct structures for this
 sentence indicates that the sentence is :glossterm:`structurally ambiguous`.
 The ambiguity in question is often called a :glossterm:`PP attachment
 ambiguity`, since the issue at hand is how the ``PP`` (prepositional
-phrase) ``in the park`` should be attached to the phrase structure
+phrase) `in the park` should be attached to the phrase structure
 tree. In this case, we can see that the grammar admits just two
 choices. The ``PP`` is either attached as a daughter of ``VP`` or else
 as a daughter of ``NP``. 
@@ -311,7 +311,7 @@ phrase structure tree involving coordinated ``VP``\s:
 
    _`Figure 2:` Coordinated VP Phrase Structure Tree
 
-The following examples illustrate how recursion on `S` can yield
+The following examples illustrate how recursion on ``S`` can yield
 longer and longer sentences:
 
 #. The man said that the dog barked.
@@ -328,18 +328,18 @@ Heads and Subcategorization
 ***************************
 
 The grammar `G2`_ correctly generates examples like these,
-corresponding to the four productions with `VP` on the righthand side:
+corresponding to the four productions with ``VP`` on the lefthand side:
 
 #. The woman gave the telescope to the dog.
 #. The woman saw a man.
 #. A man said that the woman disappeared.
 #. The dog barked.
 
-That is, `gave` can occur with a following `NP` and `PP`; 
-`saw` can occur with a following `NP`; 
-`said` can occur with a following `S`; 
+That is, `gave` can occur with a following ``NP`` and ``PP``; 
+``saw` can occur with a following ``NP``; 
+`said` can occur with a following ``S``; 
 and `barked` can occur with no following phrase.
-In these cases, `NP`, `PP` and `S` are called :glossterm:`complements`
+In these cases, ``NP``, ``PP`` and ``S`` are called :glossterm:`complements`
 of the respective verbs.
 
 However, there are fairly strong constraints on what verbs can occur
@@ -355,7 +355,53 @@ following examples as ungrammatical:
    examples which involve 'non-standard' but interpretable
    combinations of verbs and complements. Thus, we can, at a stretch,
    interpret *the man disappeared the dog* as meaning that the man
-   made the dog disappeared. We will ignore such examples here.
+   made the dog disappear. We will ignore such examples here.
+
+How can we ensure that our grammar correctly excludes the
+ungrammatical examples above?  We need some way of constraining
+grammar productions which expand `VP` so that verbs *only* cooccur
+with their correct complements. We do this by dividing the class of
+verbs into \'subcategories\', each of which is associated with a
+different set of complements. For example, :glossterm:`transitive
+verbs` such as `saw`, `kissed` and `hit` require a following ``NP``
+object complement. Let's introduce a new label for such verbs, namely
+``V_tr``, and use it in the following productions:
+
+| VP |rarr| V_tr NP
+| V_tr |rarr| 'saw' | 'kissed' | 'hit'
+
+Now `*the dog barked the man` is excluded since we haven't listed
+`barked` as a ``V_tr``, but `the woman saw a man` is still allowed.
+The following table provides more examples of labels for verb subcategories.
+
+======    ====================    =====================
+Verb Subcategories
+-------------------------------------------------------
+Symbol    Meaning                 Example
+======    ====================    =====================
+V_itr     intransitive verb       *barked*
+V_tr      transitive verb         *saw a man*
+V_dat     dative verb             *gave a dog to a man*
+V_sent    sentential verb         *said that a dog barked*
+======    ====================    =====================
+
+The revised grammar for ``VP`` will now look like this:
+
+| VP |rarr| V_dat NP PP
+| VP |rarr| V_tr NP
+| VP |rarr| V_sent S
+| VP |rarr| V_itr 
+|
+| V_dat |rarr| 'gave' | 'donated' | 'presented'
+| V_tr |rarr| 'saw' | 'kissed' | 'hit' | 'sang'
+| V_sent |rarr| 'said' | 'knew' | 'alleged'
+| V_itr |rarr| 'barked' | 'disappeared' | 'elapsed' | 'sang'
+
+Notice that on this approach, a given lexical item can belong to more
+than one subcategory. For example, `sang` can occur both with and
+without a following ``NP`` complement.
+
+
 
 
 *****************************
