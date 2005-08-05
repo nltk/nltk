@@ -323,9 +323,9 @@ longer and longer sentences:
 
 .. left and right recursion
 
-***************************
-Heads and Subcategorization
-***************************
+********************************
+Heads, Complements and Modifiers
+********************************
 
 The grammar `G2`_ correctly generates examples like these,
 corresponding to the four productions with ``VP`` on the lefthand side:
@@ -340,7 +340,8 @@ That is, `gave` can occur with a following ``NP`` and ``PP``;
 `said` can occur with a following ``S``; 
 and `barked` can occur with no following phrase.
 In these cases, ``NP``, ``PP`` and ``S`` are called :glossterm:`complements`
-of the respective verbs.
+of the respective verbs, and the verbs themselves are called
+:glossterm:`heads` of the verb phrase.
 
 However, there are fairly strong constraints on what verbs can occur
 with what complements. Thus, we would like our grammars to mark the
@@ -401,8 +402,64 @@ Notice that on this approach, a given lexical item can belong to more
 than one subcategory. For example, `sang` can occur both with and
 without a following ``NP`` complement.
 
+Lexical heads other than ``V`` can be subcategorized for particular complements:
+
+*Nouns*
+   #. The rumour **that Kim was bald** circulated widely.
+   #. \*The picture **that Kim was bald** circulated widely.
+*Adjectives*
+   #. Lee was afraid **to leave**.
+   #. \*Lee was tall **to leave**.
+
+It has also been suggested that 'ordinary' prepositions are
+transitive, and that many so-called adverb are in fact intransitive
+prepositions. For example, *towards* requires an ``NP`` complement,
+while *home* and *forwards* forbid them.
 
 
+#. Lee ran towards the house.
+#. \*Lee ran towards.
+
+#. Sammy walked home.
+#. \*Sammy walked home the house.
+
+#. Brent stepped one pace forwards.
+#. \*Brent stepped one pace forwards the house.
+
+Adopting this approach, we can also analyse certain prepositions as allowing ``PP`` complements:
+
+#. Kim ran away **from the house**.
+#. Lee jumped down **into the boat**.
+
+In general, the lexical categories ``V``, ``N``, ``A`` and ``P`` are
+taken to be the heads of the respective phrases ``VP``, ``NP``,
+``AP`` and ``PP``. Abstracting over the identity of these phrases, we
+can say that a lexical category ``X`` is the head of its immediate
+``XP`` phrase, and moreover that the complements `C`:subscript:`1` ... `C`:subscript:`n` of
+``X`` will occur as sisters of ``X`` within that ``XP``. This is
+illustrated in the following schema:
+
+.. figure:: ../images.parsing/xp.png
+
+We have argued that lexical categories need to be subdivided into
+subcategories to account for the fact that different lexical items
+select different sequences of following complements. That is, it is a
+distinguishing property of complements that they co-occur with some
+lexical items but not others. By contrast, :glossterm:`modifiers` can
+occur with pretty much any instance of the relevant lexical class. For
+example, consider the temporal adverbial *last Thursday*:
+
+#. The woman gave the telescope to the dog last Thursday.
+#. The woman saw a man last Thursday.
+#. The dog barked last Thursday.
+
+Moreover, modifiers are always optional, whereas complements are at
+least sometimes obligatory. We can use the phrase structure
+geometry to draw a structural distinction between complements, which
+occur as sisters of the lexical head, versus modifiers, which occur as
+sisters of the phrase which encloses the head:
+
+.. figure:: ../images.parsing/xp-mod.png
 
 *****************************
 Manually Constructed Grammars
