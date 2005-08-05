@@ -13,6 +13,7 @@
 .. |geq| unicode:: U+2265
 .. |l| unicode:: U+00AB .. left chevron
 .. |r| unicode:: U+00BB .. right chevron
+.. |mdash| unicode:: U+02014 .. em dash
     
 .. |version| replace:: 0.2
 
