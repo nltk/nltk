@@ -79,28 +79,29 @@ differences, however.  First, as noted above, chunking is not
 exhaustive, and typically omits items in the surface string.  Second,
 where parsing constructs nested deeply structures, chunking creates
 structures of fixed depth (typically depth 2), and as fine-grained as
-possible, as shown below:
+possible, as shown below::
 
-1. Parsing:
-| [ :subscript:NP
-|   [ :subscript:NP
-|     G.K. Chesterton ],
-|   [ :subscript:NP
-|     [ :subscript:NP
-|       author ] of
-|     [ :subscript:NP
-|       [ :subscript:NP
-|         The Man ] who was
-|       [ :subscript:NP
-|         Thursday ]
-|     ]
-|   ]
-| ]
-#. Chunking:
-| [ :subscript:NP G.K. Chesterton ],
-| [ :subscript:NP author ] of
-| [ :subscript:NP The Man ] who was
-| [ :subscript:NP Thursday ]
+  1. Parsing:
+  [
+    [
+      G.K. Chesterton ],
+    [
+      [
+        author ] of
+      [
+        [
+          The Man ] who was
+        [
+          Thursday ]
+      ]
+    ]
+  ]
+
+  2. Chunking:
+  [ G.K. Chesterton ],
+  [ author ] of
+  [ The Man ] who was
+  [ Thursday ]
 
 In this chapter we explore the representation of chunks, and show how
 chunks can be recognized using a *chunk parser*.  We describe a chunk
@@ -127,7 +128,7 @@ tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
 
 The other logical representation for chunk structures is to use trees,
 as shown below.  These have the benefit that each chunk is a
-constituent that can be manipulated directly.  NLTK uses this for its
+constituent that can be manipulated directly.  NLTK-Lite uses this for its
 internal representation of chunks:
     
 .. figure:: ../images/chunk-treerep.png
@@ -171,13 +172,13 @@ This can be parsed using ``tree.chunk()`` function as shown.
     
 We usually want to read structured data from corpora, not strings.  In
 the remainder of this section we show how this is done for two popular
-chunked corpus formats.
+chunked corpus formats, namely bracketed text and IOB-tagged data.
     
 Reading chunk structures from bracketed text
 --------------------------------------------
 
 We can obtain a larger quantity of chunked text from the tagged Wall
-Street Journal in the Penn Treebank corpus.  NLTK includes a sample of
+Street Journal in the Penn Treebank corpus.  NLTK-Lite includes a sample of
 this corpus.  The tagged section of the corpus consists of chunked,
 tagged text.  We can read in a chunked sentence as follows:
 
@@ -186,7 +187,7 @@ tagged text.  We can read in a chunked sentence as follows:
   (S: (NP: ('Pierre', 'NNP') ('Vinken', 'NNP')) (',', ',') (NP: ('61', 'CD') ('years', 'NNS')) ('old', 'JJ') (',', ',') ('will', 'MD') ('join', 'VB') (NP: ('the', 'DT') ('board', 'NN')) ('as', 'IN') (NP: ('a', 'DT') ('nonexecutive', 'JJ') ('director', 'NN') ('Nov.', 'NNP') ('29', 'CD')) ('.', '.'))
 
 We can display this tree graphically using the ``nltk_lite.draw.tree``
-module:
+module::
 
   t = tree.chunk(sent)
   from nltk_lite.draw.tree import *
@@ -273,11 +274,12 @@ Chunking with Regular Expressions
 
 Earlier we noted that chunking builds flat (or non-nested) structures.
 In practice, the extents of text to be chunked are identified using
-regular expressions over sequences of part-of-speech tags.  In NLTK
+regular expressions over sequences of part-of-speech tags.  NLTK-Lite
 provides a regular expression chunk parser, ``RegexpChunkParser`` to
 define the kinds of chunk we are interested in, and then to chunk a
 tagged text.  This discussion presumes that readers are already
-familiar with regular expressions.
+familiar with regular expressions (please see the regular expression
+chapter for details).
     
 ``RegexpChunkParser`` works by manipulating a *chunk structure*, which
 represents a particular chunking of the text.  The chunk parser begins
@@ -298,14 +300,14 @@ them easier to use for chunk parsing.  First, The angle brackets group
 their contents into atomic units, so "``<NN>+``" matches one or more
 repetitions of "``<NN>``"; and "``<NN|JJ>``" matches "``<NN>``" or
 "``<JJ>``."  Second, the period wildcard operator is constrained not
-to cross tag boundaries, so that "``<NN.*&gt;``" matches any single
+to cross tag boundaries, so that "``<NN.*>``" matches any single
 tag starting with "``NN``."  Finally, whitespace is ignored in tag
-patterns, so "``<DT&gt; | <NN&gt;``" is equivalent to
-"``<DT&gt;|<NN&gt;``".  This allows tag patterns to be formatted to
+patterns, so "``<DT> | <NN>``" is equivalent to
+"``<DT>|<NN>``".  This allows tag patterns to be formatted to
 improve readability.
     
 Now that we can define tag patterns, it is a straightforward matter to
-set up an NLTK chunk parser.  The simplest type of rule is
+set up an NLTK-Lite chunk parser.  The simplest type of rule is
 ``ChunkRule``.  This chunks anything that matches a given tag pattern.
 The ``ChunkRule`` constructor takes a tag pattern and a description
 string.  Here is a rule which chunks sequences consisting of one or
@@ -317,7 +319,6 @@ more words tagged as ``DT`` or ``NN`` (i.e. determiners and nouns).
 Now we can define a regular expression chunk parser based on this rule as
 follows:
 
-  # Construct a new noun-phrase chunk parser
   >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S')
 
 Note that the constructor has optional second and third arguments that
@@ -325,7 +326,7 @@ specify the node labels for chunks and for the top-level node,
 respectively.  Now we can use this to chunk a tagged sentence, as
 illustrated by the complete program below.
 
-.. note: Each rule must have a "description" associated with it, which
+.. Note: Each rule must have a "description" associated with it, which
    provides a short explanation of the purpose or the effect of the rule.
    This description is accessed via the ``descr()`` method.
     
@@ -369,14 +370,14 @@ to help the developer diagnose any problems.
 The ``parse.RegexpChunk`` constructor takes an optional ``trace``
 argument, which specifies whether debugging output should be shown
 during parsing.  This output shows the rules that are applied, and
-shows the chunking hypothesis at each stage of processing.  <footnote>
-Note that the ``parse`` method can also be given a trace value; this
-overrides the value given to the constructor.</footnote> In the
-execution trace, chunks are indicated by braces.  In the following
-example, two chunking rules are applied to the input sentence.  The
-first rule finds all sequences of three tokens whose tags are ``DT``,
-``JJ``, and ``NN``, and the second rule finds any sequence of tokens
-whose tags are either ``DT`` or ``NN``.
+shows the chunking hypothesis at each stage of processing.  (Note that
+the ``parse`` method can also be given a trace value; this overrides
+the value given to the constructor.)  In the execution trace, chunks
+are indicated by braces.  In the following example, two chunking rules
+are applied to the input sentence.  The first rule finds all sequences
+of three tokens whose tags are ``DT``, ``JJ``, and ``NN``, and the
+second rule finds any sequence of tokens whose tags are either ``DT``
+or ``NN``.
       
   >>> sent = tag.string2tags("the/DT little/JJ cat/NN sat/VBD on/IN the/DT mat/NN")
   >>> rule1 = parse.ChunkRule('<DT><JJ><NN>', 'Chunk det+adj+noun')
@@ -459,7 +460,7 @@ Chinking
 ===========  ==========================  ======================  ======================
 
 A ``ChinkRule`` chinks anything that matches a given tag pattern.
-``ChinkRule``s are created with the ``ChinkRule`` constructor, which
+ChinkRules are created with the ``ChinkRule`` constructor, which
 takes a tag pattern and a description string.  For example, the
 following rule will chink any sequence of tokens whose tags are all
 "``VBD``" or "``IN``":
@@ -495,12 +496,12 @@ Finally, we can combine these two rules to create a chunk parser:
 If a tag pattern matches at multiple overlapping locations, the first
 match takes precedence.
 
-.. note: Cascading Rules: ``RegexpChunkParsers`` can use any number of
-``ChunkRules`` and ``ChinkRules``, in any order.  As was discussed
-above, ``ChunkRules`` only create chunks that do not partially overlap
-with chunks already in the chunking hypothesis.  Similarly,
-``ChinkRules`` only create chinks that do not partially overlap with
-chinks that are already in the hypothesis.
+.. Note: Cascading Rules: ``RegexpChunkParsers`` can use any number of
+   ``ChunkRules`` and ``ChinkRules``, in any order.  As was discussed
+   above, ``ChunkRules`` only create chunks that do not partially overlap
+   with chunks already in the chunking hypothesis.  Similarly,
+   ``ChinkRules`` only create chinks that do not partially overlap with
+   chinks that are already in the hypothesis.
 
 The Unchunk Rule
 ----------------
@@ -542,7 +543,7 @@ We can combine this rule with a chunking rule to form a chunk parser:
 
 Note that we would get a different result if we used a ``ChinkRule``
 with the same tag pattern (instead of an ``UnChunkRule``), since
-``ChinkRule``s can remove pieces of a chunk:
+chink rules can remove pieces of a chunk:
       
   >>> unchink_rule = parse.UnChunkRule('<NN|DT>+',
   ...                            'Chink sequences of NN and DT')
@@ -574,17 +575,18 @@ be used to merge and split chunks.
 
 ``MergeRules`` are used to merge two contiguous chunks.  Each
 ``MergeRule`` is parameterized by two tag patterns: a left pattern and
-a right pattern.  A ``MergeRule`` will merge two contiguous chunks *C
-:subscript:1* and *C :subscript:2* if the end of *C :subscript:1*
-matches the left pattern, and the beginning of *C :subscript:2*
+a right pattern.  A ``MergeRule`` will merge two contiguous chunks
+C\ :subscript:1 and C\ :subscript:2 if the end of C\ :subscript:1
+matches the left pattern, and the beginning of C\ :subscript:2
 matches the right pattern. For example, consider the following
 chunking hypothesis:
 
   [the/DT little/JJ] [cat/NN]
 
-Where *C :subscript:1* is ``[the/DT little/JJ]`` and *C :subscript:2*
+Where C\ :subscript:1 is ``[the/DT little/JJ]`` and
+C\ :subscript:2
 is ``[cat/NN]``.  If the left pattern is "``JJ``", and the right
-pattern is "``NN``", then *C :subscript:1* and *C :subscript:2* will
+pattern is "``NN``", then C\ :subscript:1 and C\ :subscript:2 will
 be merged to form a single chunk:
 
   [the/DT little/JJ cat/NN]
@@ -701,12 +703,12 @@ From these two sets, we can define five useful metrics:
 * **Missed Chunks**: What correct chunks were not guessed?
 * **Incorrect Chunks**: What guessed chunks were not correct?
 
-.. note: Note that these metrics do not assign any credit for chunks
-that are "almost" right (e.g., chunks that extend one word too long).
-It would be possible to design metrics that do assign partial credit
-for such cases, they would be more complex.  We decided to keep our
-metrics simple, so that it is easy to understand what a given result
-means.
+.. Note: Note that these metrics do not assign any credit for chunks
+   that are "almost" right (e.g., chunks that extend one word too long).
+   It would be possible to design metrics that do assign partial credit
+   for such cases, they would be more complex.  We decided to keep our
+   metrics simple, so that it is easy to understand what a given result
+   means.
 
 During evaluation of a chunk parser, it is useful to flatten a chunk
 structure into a list of tokens.  Since chunk structures are just
@@ -754,10 +756,6 @@ sentence from the Wall Street Journal tagged files.
       Precision:  53.1%
       Recall:     35.4%
       F-Measure:  42.5%
-
-.. note: It is important to add locations to tokens (using
-``add_locs=True``) so that the scorer doesn't confuse tokens taken
-from different regions of the data.
 
 The overall results of the evaluation can be viewed by printing the
 ``ChunkScore``.  Each evaluation metric is also returned by an
@@ -807,12 +805,12 @@ Here are the incorrect chunks:
   (('Micronite', 'NN'), ('cigarette', 'NN'))
   (('A', 'DT'),)
 
-.. note: By default, only the first 100 missed chunks and the first
-100 incorrect chunks will be remembered by the ``ChunkScore``.  You
-can tell ``ChunkScore`` to record more chunk examples with the
-``max_fp_examples`` (maximum false positive examples) and the
-``max_fn_examples`` (maximum false negative examples) keyword
-arguments to the ``ChunkScore`` constructor:
+.. Note: By default, only the first 100 missed chunks and the first
+   100 incorrect chunks will be remembered by the ``ChunkScore``.  You
+   can tell ``ChunkScore`` to record more chunk examples with the
+   ``max_fp_examples`` (maximum false positive examples) and the
+   ``max_fn_examples`` (maximum false negative examples) keyword
+   arguments to the ``ChunkScore`` constructor:
 
   >>> chunkscore = parse.ChunkScore(max_fp_examples=1000,
   ...                        max_fn_examples=1000)
