@@ -60,7 +60,6 @@
 	<li>for Mac OS X 10.3x, Xcode 1.5 from http://developer.apple.com/ (requires registration)
 	<li>for Mac OS X 10.4x, Xcode 2.1 from http://developer.apple.com/ (requires registration)
 	</ul>
-
 <P>Mount the dmg, and follow the OSX Packager installation instructions.
 
 <P>If gcc is installed, then download the Python source distribution from http://www.python.org/ftp/python/2.4.1/Python-2.4.1.tgz to $TMP.
@@ -97,6 +96,7 @@
 <P>Then modify the system's linkages from the standard Python 2.3.x to the new version:
 
 <pre>
+	sudo rm /usr/bin/python
 	sudo ln -s /usr/local/bin/python /usr/bin/python
 </pre>
 
@@ -109,12 +109,20 @@
 <a name="numarray"></a>
 <h2> Installing Numarray </h2>
 
-<BLINK>CURRENTLY NUMARRAY IS NOT DISTRIBUTED AS A BINARY FOR MAC OSX</BLINK>
-
 <P>NLTK also requires a Python module called Numarray, which provides a range of mathematical
 functions.
 
-<P>Download the Numarray source distribution from http://prdownloads.sourceforge.net/numpy/numarray-1.3.3.tar.gz?download
+<P>Numarray is available as either a source distribution which needs to be compiled, or as a binary.
+
+<h3>Binary</h3>
+
+<P>Download the appropriate Numarray binary from http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip to $TMP.
+
+<P>Mount the dmg, double click and follow the OSX Packager install instructions.
+
+<h3>Compile</h3>
+
+<P>If gcc is installed, download the Numarray source distribution from http://prdownloads.sourceforge.net/numpy/numarray-1.3.3.tar.gz?download
 to $TMP.
 
 <P>Uncompress the Numarray source distribution:
