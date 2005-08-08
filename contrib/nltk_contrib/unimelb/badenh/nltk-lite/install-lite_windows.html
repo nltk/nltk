@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> 
+  <head>
+    <title>Installing NLTK-Lite on Windows</title>
+    <link rel="stylesheet" href="nltk.css" type="text/css"/>
+  </head>
+<body>
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr><th class="navtitle" colspan="6">Natural Language Toolkit</th></tr>
+  <tr>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="index.html">Home</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="install.html">Installation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="docs.html">Documentation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="teach.html">Teaching</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="contrib.html">Contributing</a></td>
+  <td align="center" width="16.6%">
+    <a href="http://sourceforge.net/projects/nltk"> 
+    <img src="sflogo.png" width="88" height="26" border="0"
+    alt="SourceForge" align="top"/></a></td>
+    </tr>
+</table>
+<div class="body">
+
+<h1>Installing NLTK-Lite on Windows</h1>
+
+<a name="python"></a>
+<h2>Installing Python</h2>
+
+<P>NLTK-Lite requires the Python scripting language interpreter to be installed on your machine.
+
+<P>Download the Python source distribution from http://www.python.org/ftp/python/2.4.1/Python-2.4.1.msi
+
+<P>Launch the installer by double clicking on the file. Follow the installation instructions.
+
+<a name="numarray"></a>
+<h2>Installing Numarray</h2>
+
+<P>NLTK also requires a Python module called Numarray, whicb provides a range of mathematical functions.
+
+<P>Download the Numarray source distribution from http://prdownloads.sourceforge.net/numpy/numarray-1.3.3.exe?download
+
+<P>Launch the installer by double clicking on the file. Follow the installation instructions.
+
+<a name="nltk"></a>
+<h2> Installing NLTK-Lite </h2>    
+
+<P>Download the NLTK-Lite source distribution from http://prdownloads.sourceforge.net/nltk/nltk_lite-0.2.exe?download  
+
+<P>The installation wizard will guide you through the installation process.  If you are
+    upgrading to a new version of NLTK-Lite, the installation wizard will
+    ask you if you wish to overwrite the old NLTK-Lite files; answer
+    "yes."</p>
+
+<a name="data"></a>
+<h2> Installing the NLTK-Lite Data Package </h2>
+
+<P>Download the NLTK-Lite Data distribution from http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.2.zip?download
+
+<P>Uncompress the NLTK data package.  Typically, this is done
+    by double-clicking on the <code>nltk-data-??.??.zip</code> file.
+    However, depending on what tool you use to unzip files, the
+    procedure might be slightly different.  If you don't already have
+    a tool to unzip files, you can use the <a target="_blank"
+    href="http://www.winzip.com">WinZip</a> evaluation version. </li>
+
+<P>Create a folder to hold the NLTK-Lite data.  Common locations for
+    this folder are <code>C:\Program Files\Python2.4\nltk-lite</code>; and
+    <code>C:\Program Files\Python2.4\lib\nltk-lite</code>. </li>
+
+<P>Uncompress each corpus or collection of sample data that you'd
+       like to use to into the NLTK-Lite data folder that you created.
+       Typically, this is done by copying <i>corpus</i>.zip into the
+       NLTK-Lite data folder that you created; and double-clicking
+       on <i>corpus</i>.zip.  Each <i>corpus</i>.zip file will
+       uncompress into its own subfolder.  </li>
+
+<P>If the NLTK-Lite data folder that you created is not in
+       <i>path-to-python</i>\nltk-lite or <i>path-to-python</i>\lib\nltk-lite,
+       then you will need to tell NLTK-Lite where to find the data.  You
+       can do this by setting the NLTK_LITE_CORPORA environment variable.
+       For most versions of Windows, this enviroment variable can be
+       set with the following procedure:
+
+    <ol>
+      <li> Right click on "My Computer", and select "Properties".</li>
+      <li> Select the "Advanced" tab.</li>
+      <li> Click on "Environment Variables"</li>
+      <li> Under "User Variables," click "New..."</li>
+      <li> Type "NLTK_CORPORA_LITE" into the "Variable Name" field;
+           and type the path to the NLTK data folder that you
+           created into the "Variable Value" field.</li>
+      <li> Hit "Ok" (3 times) to close the dialog windows.</li>  
+    </ol>
+  </li>
+</ol>
+
+</div>
+<table class="transparent" width="100%">
+<tr><td align="left"><font size="-1">
+<!-- hhmts start -->
+Last modified: Tue Aug 12 14:28:21 EST 2003
+<!-- hhmts end -->
+</font></td><td align="right"><font size="-1">
+<address><a href="mailto:edloper@gradient.cis.upenn.edu,sb@cs.mu.oz.au">Edward D. Loper, Steven Bird</a></address>
+</font></td></tr></table>
+</body> </html>
