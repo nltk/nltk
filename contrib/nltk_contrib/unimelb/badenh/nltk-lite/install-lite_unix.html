@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Installing NLTK on Unix or Macintosh (OS X)</title>
+<link rel="stylesheet" href="nltk.css" type="text/css"/>
+</head>
+<body>
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr><th class="navtitle" colspan="6">Natural Language Toolkit</th></tr>
+  <tr>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="index.html">Home</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="install.html">Installation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="docs.html">Documentation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="teach.html">Teaching</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="contrib.html">Contributing</a></td>
+  <td align="center" width="16.6%">
+    <a href="http://sourceforge.net/projects/nltk"> 
+    <img src="sflogo.png" width="88" height="26" border="0"
+    alt="SourceForge" align="top"/></a></td>
+    </tr>
+</table>
+<div class="body">
+
+<h1>Installing NLTK-Lite from Source on Unix or Macintosh (OS X)</h1>
+
+<a name="preliminaries">
+<h2>Preliminaries</h2>
+
+<P>Open a terminal session.
+
+<P>Decide on a temporary location in which to store downloaded files, eg /tmp
+
+<P>Set this temporary location as an environment variable
+
+<pre>
+	export TMP=/tmp
+</pre>
+
+<a name="python"></a>
+<h2>Installing Python </h2>
+
+<P>NLTK-Lite requires the Python scripting language interpreter to be installed on your machine.
+
+<P>Download the Python source distribution from http://www.python.org/ftp/python/2.4.1/Python-2.4.1.tgz to $TMP.
+
+<P>Uncompress the Python source distribution:
+
+<pre>
+	cd $TMP
+	gunzip Python-2.4.1.tar.gz
+	tar -xvf Python-2.4.1.tar
+</pre>
+
+<P>Compile and install the Python source distribution:
+
+<pre>
+	cd Python-2.4.1
+	./configure
+	make
+	sudo make install
+</pre>
+
+<P> Check the Python installation:
+
+<pre>
+	python -V
+</pre>
+	
+<a name="numarray"></a>
+<h2> Installing Numarray </h2>
+
+<P>NLTK also requires a Python module called Numarray, whicb provides a range of mathematical
+functions.
+
+<P>Download the Numarray source distribution from http://prdownloads.sourceforge.net/numpy/numarray-1.3.3.tar.gz?download
+to $TMP.
+
+<P>Uncompress the Numarray source distribution:
+
+<pre>
+	cd $TMP
+	gunzip numarray-1.3.3.tar.gz
+	tar -xvf numarray-1.3.3.tar.gz
+</pre>
+
+<P>Install the Numarray module:
+
+<pre>
+	cd numarray-1.3.3
+	sudo python setup.py install
+</pre>
+
+<a name="nltk-lite"></a>
+<h2> Installing NLTK-Lite </h2>
+
+<p>Download the NLTK-Lite source distribution from http://prdownloads.sourceforge.net/nltk/nltk_lite-0.2.tar.gz?download
+to $TMP.
+
+<P>Uncompress the NLTK-Lite source distribution:
+
+<pre>
+	cd $TMP
+	gunzip nltk_lite-0.2.tar.gz
+	tar -xvf nltk_lite-0.2.tar
+</pre>
+
+<P>Install the NLTK-Lite mododule:
+
+<pre>
+	cd nltk_lite-0.2
+	sudo python setup.py install
+</pre>
+
+<a name="nltk-lite-data"></a>
+<h2> Installing the NLTK-Lite Data Package </h2>
+
+<P>Download the NLTK-Lite Data distribution from http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.2.zip?download
+to $TMP.
+
+<P>Uncompress the NLTK-Lite Data distribution:
+
+<pre>
+	cd $TMP
+	unzip nltk_lite-corpora-0.2.zip
+</pre>
+
+<P>Create a directory to hold the NLTK-Lite corpus set.  A common path 
+for this directory is /usr/share/nltk.  If you are not a system
+administrator, you can put this directory in your home directory (e.g. ~/nltk).
+
+<pre>
+	mkdir /usr/share/nltk
+</pre>
+
+<P>Uncompress each corpus that you'd like to use to into the NLTK corpus directory that you created,
+eg:
+
+<pre>
+	unzip -d /usr/share/nltk/ brown.zip
+</pre>
+
+<P>For convenience, a recursive uncompression can be performed by:
+
+<pre>
+	cd $TMP/nltk_lite-corpora-0.2
+	ls | grep zip | while read i; do unzip -d /usr/share/nltk $i; done
+</pre>
+
+<P>Set an environment variable for the NLTK-Lite Data
+
+<pre>
+	export NLTK_LITE_CORPORA=/PATH/TO/DATA
+</pre>
+
+<P>For convenience this environment variable can be set in your $HOME/.bash_profile so it
+is loaded every time you start a terminal session:
+
+<pre>
+	echo "export NLTK_LITE_CORPORA=/PATH/TO/DATA" >> $HOME/.bash_profile
+</pre>
+
+<P>Alternatively, you can also use the function set_basedir() in the module nltk_lite.corpora:
+
+<pre>
+	[user@host ~]$ python
+	Python 2.4.1 (#1, Aug  4 2005, 10:25:27)
+	[GCC 3.4.3 20050227 (Red Hat 3.4.3-22.fc3)] on linux2
+	Type "help", "copyright", "credits" or "license" for more information.
+	>>> from nltk_lite.corpora import set_basedir
+	>>> set_basedir('/PATH/TO/DATA/')
+</pre>
+
+
+</div>
+<table class="transparent" width="100%">
+<tr><td align="left"><font size="-1">
+<!-- hhmts start -->
+Last modified:
+<!-- hhmts end -->
+</font></td><td align="right"><font size="-1">
+<address><a href="mailto:edloper@gradient.cis.upenn.edu,sb@cs.mu.oz.au">Edward D. Loper, Steven Bird</a></address>
+</font></td></tr></table>
+</body> </html>
