@@ -1,0 +1,138 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+=======================
+Projects with NLTK-Lite
+=======================
+
+:Authors: Steven Bird
+:Contact: sb@csse.unimelb.edu.au
+:Version: |version|
+:Revision: $Revision$
+:Date: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+------------
+Introduction 
+------------
+
+This document describes a variety of possible natural language
+processing projects that can be undertaken using NLTK.
+
+
+
+
+--------------
+Project Topics
+--------------
+
+1. Develop a concordance system for the Brown Corpus, supporting
+   searches that include part-of-speech tags, replicating some of the
+   functionality of commercial software (e.g. MonoConc_).
+   Investigate indexing for more efficient searches.
+
+.. _MonoConc: http://www.athel.com/mono.html
+
+2. Build a language-guesser, to classify text documents by language,
+   replicating some of the functionality of TextCat_.
+   Create an evaluation dataset, possibly using the Opus_Corpus_.
+
+.. _TextCat: http://odur.let.rug.nl/~vannoord/TextCat/
+.. _Opus_Corpus: http://logos.uio.no/opus/
+
+3. Develop a semantic similarity module based on WordNet_ and Pedersen's
+   Wordnet_Similarity_ algorithms.
+
+.. _WordNet: http://wordnet.princeton.edu/
+.. _WordNet_Similarity: http://search.cpan.org/dist/WordNet-Similarity/
+
+4. Build a text compression system combining a dictionary-based
+   compression algorithm (such as the ones described in
+   Managing_Gigabytes_) along with information provided by a
+   part-of-speech tagger which should lower the conditional entropy of
+   the following word.
+
+.. _Managing_Gigabytes: http://www.cs.mu.oz.au/mg/
+
+5. Implement a classifier which detects emotion in text, using one of
+   the emotional text databases from the HUMAINE_Portal_ for training and testing.
+
+.. _HUMAINE_Portal: http://emotion-research.net/
+
+6. Re-implement any NLTK-Lite functionality for a language other than
+   English (tokenizer, tagger, chunker, parser, etc).  You will
+   probably need to collect suitable corpora, and develop corpus
+   readers.
+
+7. Develop a morphological analyser for a language of your choice.
+
+8. Implement an LPath_ tree query interpreter.
+
+.. _LPath: http://www.ldc.upenn.edu/Projects/QLDB/
+
+9. Create a database of named entities, categorised as: person,
+   location, organisation, cardinal, duration, measure, date.
+   Train a named-entity tagger using the NIST IEER data
+   (included with NLTK) and use it to tag more text and collect
+   an expanded set of named entities.
+   
+10. Port the NLTK text classification system to NLTK-Lite.
+
+11. Implement a cascaded chunking system.
+
+----------
+Assessment
+----------
+
+This section describes the project assessment requirements for
+*433-460 Human Language Technology* at the University of Melbourne.
+Project assessment has three components: an oral presentation (5%),
+a written report (10%), and an implementation (20%).
+
+Oral Presentation
+-----------------
+
+Students will give a 10-minute oral presentation to the rest of the
+class in the second-last week of semester.  This will be evaluated for
+the quality of content and presentation:
+
+* presentation (clarity, presentation materials, organization)
+* content (defining the task, motivation, data, results, outstanding issues)
+
+Written Report
+--------------
+
+Students should submit a ~5-page written report, with approximately
+one page covering each of the following points:
+
+* introduction (define the task, motivation)
+* method (any algorithms, data)
+* implementation (description, how to run it)
+* results (e.g. show some output and discuss)
+* evaluation (your critical discussion of the work) 
+
+This should be prepared using the Python ``docutils`` and ``doctest``
+packages.
+
+Implementation
+--------------
+
+Marks will be be awarded for the basic implementation and for various
+kinds of complexity, as described below:
+
+* Basic implementation (10%)
+
+ - we are able to run the system
+ - we can easily test the system (interface is usable, output is appropriately detailed and clearly formatted)
+ - we can easily work out how the system is implemented (understandable code, inline documentation; you can assume we read the report first)
+ - the system implements NLP algorithms (i.e. relevant to the subject, re-using existing NLP algorithms wherever possible instead of reinventing the wheel)
+ - the NLP algorithms are correctly implemented 
+
+* Complexity (10%)
+
+ - the system implements a non-trivial problem
+ - the system combines multiple HLT components as appropriate
+ - appropriate training data is used (effort in obtaining and preparing the data will be considered)
+ - the system permits exploration of the problem domain and the algorithms (e.g. through appropriate parameterization)
+ - a range of system configurations/modifications are explored (e.g. classifiers trained and tested using different parameters) 
