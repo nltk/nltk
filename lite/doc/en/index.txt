@@ -21,6 +21,7 @@ NLTK-Lite Tutorials
 .. _Chart: chart.html
 .. _Field: field.html
 .. _Regexps: regexps.html
+.. _Projects: projects.html
 
 --------
 Contents
@@ -36,6 +37,7 @@ Contents
 #. Chart_
 #. Field_
 #. Regexps_
+#. Projects_
 
 ----
 
