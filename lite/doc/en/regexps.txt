@@ -432,6 +432,11 @@ Exercises
      (i.e. so that ``quiet`` becomes ``ietquay``), and to detect when ``y``
      is used as a consonant (e.g. ``yellow``) vs a vowel (e.g. ``style``).
 
+2. Write a utility function that takes a URL as its argument, and returns
+   the contents of the URL, with all HTML markup removed.  Use ``urllib.urlopen``
+   to access the contents of the URL, e.g.
+   ``raw_contents = urllib.urlopen('http://nltk.sourceforge.net/').read()``.
+
 
 ----
 
