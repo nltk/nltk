@@ -524,7 +524,7 @@ Recursive Descent Parsing
 
 The simplest kind of parser interprets the grammar as a specification
 of how to break a high-level goal into several lower-level subgoals.
-The top-level goal is to find an ``S``.  The ``S |rarr| NP VP``
+The top-level goal is to find an ``S``.  The ``S`` |rarr| ``NP VP``
 production permits the parser to replace this goal with two subgoals:
 find an ``NP``, then find a ``VP``.  Each of these subgoals can be
 replaced in turn by sub-sub-goals, using productions that have ``NP``
@@ -593,15 +593,13 @@ Shift-Reduce Parsing
 
 The simplest kind of bottom-up parsing is known as shift-reduce
 parsing.  The parser repeadly pushes the next input word onto a stack;
-this is the *shift* operation.  If the top
-<replaceable>n</replaceable> items on the stack match the
-<replaceable>n</replaceable> items on the right-hand side of some
-production, then they are all popped off the stack, and the item on
-the left-hand side of the production is pushed on the stack.  This
-replacement of the top <replaceable>n</replaceable> items with a
-single item is the *reduce* operation.  The parser finishes
-when all the input is consumed and there is only one item remaining on the stack,
-a parse tree with an ``S`` node as its root.
+this is the *shift* operation.  If the top *n* items on the stack
+match the *n* items on the right-hand side of some production, then
+they are all popped off the stack, and the item on the left-hand side
+of the production is pushed on the stack.  This replacement of the top
+*n* items with a single item is the *reduce* operation.  The parser
+finishes when all the input is consumed and there is only one item
+remaining on the stack, a parse tree with an ``S`` node as its root.
 
 
 .. 
@@ -617,11 +615,11 @@ a parse tree with an ``S`` node as its root.
 
 The shift-reduce parser builds a parse tree during the above process.
 If the top of stack holds the word ``dog`` and if the grammar has a
-production ``N |rarr| dog`` then the reduce operation causes the word
+production ``N`` |rarr| ``dog`` then the reduce operation causes the word
 to be replaced with the parse tree for this production.  For
 convenience we will represent this tree as ``N(dog)``.  At a later
 stage, if the top of the stack holds two items ``Det(the) N(dog)`` and
-if the grammar has a production ``NP |rarr| Det N`` then the reduce
+if the grammar has a production ``NP`` |rarr| ``Det N`` then the reduce
 operation causes these two items to be replaced with ``NP(Det(the),
 N(dog))``.  This process continues until a parse tree for the entire
 sentence has been constructed.  We can see this in action using the
@@ -659,8 +657,8 @@ stage shown in the middle example below, when it reduced instead of
 shifted.  This situation is called a *shift-reduce conflict*.  At
 another possible stage of processing shown in the right example below,
 the parser must choose between two possible reductions, both matching
-the top items on the stack: ``V |rarr| V NP PP`` or ``NP |rarr| NP
-PP``.  This situation is called a *reduce-reduce conflict*.
+the top items on the stack: ``V`` |rarr| ``V NP PP`` or ``NP`` |rarr|
+``NP PP``.  This situation is called a *reduce-reduce conflict*.
 
 .. figure::../images.parsing/empty.png
 
@@ -676,16 +674,16 @@ PP``.  This situation is called a *reduce-reduce conflict*.
 
 Shift-reduce parsers may implement policies for resolving such
 conflicts.  For example, they may address shift-reduce conflicts by
-shifting only when no reduces are possible, and they may address
-reduce-reduce conflicts by favouring the reduce operation that removes
+shifting only when no reductions are possible, and they may address
+reduce-reduce conflicts by favouring the reduction operation that removes
 the most items from the stack.  No such policies are failsafe however.
 
 The advantages of shift-reduce parsers over recursive descent parsers
 is that they only build structure that corresponds to the words in the
 input.  Furthermore, they only build each substructure once,
 e.g. ``NP(Det(the), N(man))`` is only built and pushed onto the stack
-a single time, regardless of whether it will later be used by the ``V
-|rarr| V NP PP`` reduction or the ``NP |rarr| NP PP`` reduction.
+a single time, regardless of whether it will later be used by the ``V``
+|rarr| ``V NP PP`` reduction or the ``NP`` |rarr| ``NP PP`` reduction.
 
 .. 
  --------------------
@@ -705,9 +703,9 @@ a single time, regardless of whether it will later be used by the ``V
  - challenges for particular languages / language families
  - research questions
 
-----------------
-Parsing in NLTK 
-----------------
+--------------------
+Parsing in NLTK Lite
+--------------------
 
 .. 
  X.5 implementation
@@ -939,10 +937,6 @@ opens a new window, containing a graphical representation of the tree::
 
   tree3.draw()
 
-.. Note::
- This and the following graphical interface are broken in NLTK 1.4, but will
- be fixed in NLTK 1.5.
-
 The tree display window allows you to zoom in and out;
 to collapse and expand subtrees; and to print the graphical
 representation to a postscript file. 
@@ -950,7 +944,7 @@ representation to a postscript file.
 To compare multiple trees in a single window, use the ``draw_trees()``
 method, from the ``nltk.draw.tree`` module::
 
-  from nltk.draw.tree import draw_trees
+  from nltk_lite.draw.tree import draw_trees
   draw_trees(tree1, tree2, tree3)
 
 The ``Tree`` class implements a number of other useful methods.  See
