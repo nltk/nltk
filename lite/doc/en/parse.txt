@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-=======================================
-Elementary Language Processing: Parsing
-=======================================
+=======
+Parsing
+=======
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Contact: sb@csse.unimelb.edu.au
@@ -171,9 +171,8 @@ a question-answering system to undergo parsing as an initial step.
 
 .. Discussion about how CFGs are created by hand.
 
-*********************
 Structural Ambiguity
-*********************
+--------------------
 
 Let's start off by looking at a simple context-free grammar, `G1`_:
 
@@ -239,15 +238,17 @@ If we were to parse the string `The dog saw a man in the park` using
 `G1`_, we would end up with two distinct analyses, as shown 
 below:
 
-.. figure:: ../images.parsing/parse_tree2.png 
-   :scale: 70
- 
-   Structural Ambiguity: VP modification
+===================  ==================
+Structural Ambiguity
+---------------------------------------
+VP modification      NP modification
+===================  ==================
+|parse_tree2|        |parse_tree3|
+===================  ==================
 
-.. figure:: ../images.parsing/parse_tree3.png
-   :scale: 70
+.. |parse_tree2| image:: ../images.parsing/parse_tree2.png
+.. |parse_tree3| image:: ../images.parsing/parse_tree3.png
 
-   Structural Ambiguity: NP modification
 
 The fact that our grammar admits two distinct structures for this
 sentence indicates that the sentence is :glossterm:`structurally ambiguous`.
@@ -269,9 +270,8 @@ dog - was somewhere else (e.g., sitting on the balcony of an
 apartment overlooking the park).  As we will see, dealing with
 ambiguity is a key challenge in parsing.
 
-*********
 Recursion
-*********
+---------
 
 We remarked earlier that there is no upper bound on the length of
 sentences of a natural language. Within context-free grammars, the
@@ -305,7 +305,7 @@ That is, the production ``VP`` |rarr| ``VP Conj VP`` involves direct
 recursion on the category``VP``\, whereas indirect recursion on ``S``
 arises from the combination of two productions, namely ``S`` |rarr|
 ``NP VP`` and ``VP`` |rarr| ``V S``.  Here is a
-phrase structure tree involving coordinated ``VP``\s:
+phrase structure tree involving coordinated verb phrases:
 
 .. figure:: ../images.parsing/recursive_parse1.png
 
@@ -323,9 +323,8 @@ longer and longer sentences:
 
 .. left and right recursion
 
-********************************
 Heads, Complements and Modifiers
-********************************
+--------------------------------
 
 The grammar `G2`_ correctly generates examples like these,
 corresponding to the four productions with ``VP`` on the lefthand side:
@@ -353,7 +352,7 @@ following examples as ungrammatical:
 #. \*A man said.
 
 .. caution:: It should be borne in mind that it is possible to create
-   examples which involve 'non-standard' but interpretable
+   examples which involve "non-standard" but interpretable
    combinations of verbs and complements. Thus, we can, at a stretch,
    interpret *the man disappeared the dog* as meaning that the man
    made the dog disappear. We will ignore such examples here.
@@ -461,9 +460,8 @@ sisters of the phrase which encloses the head:
 
 .. figure:: ../images.parsing/xp-mod.png
 
-*****************************
 Manually Constructed Grammars
-*****************************
+-----------------------------
 
 In this chapter, we only consider very small ('toy') context-free
 grammars, in order to illustrate the key aspects of parsing such
@@ -547,22 +545,26 @@ demonstration, use the following commands::
 >> from nltk_lite.draw.rdparser import demo
 >> demo()
 
-
 Six stages of the execution of this parser are shown below:
 
-.. figure::../images.parsing/empty.png
++----------------------------------------------------------------------------------+
+|                        Six Stages of a Recursive Descent Parser                  |
++===========================+==========================+===========================+
+| 1. Initial stage          | 2. After two productions | 3. After matching "the"   |
+|                           |                          |                           |
+| |rdparser1|               | |rdparser2|              | |rdparser3|               |
++---------------------------+--------------------------+---------------------------+
+| 4. Failing to match "man" | 5. Completed parse       | 6. Backtracking           |
+|                           |                          |                           |
+| |rdparser4|               | |rdparser5|              | |rdparser6|               |
++---------------------------+--------------------------+---------------------------+
 
-   Six Stages of a Recursive Descent Parser: initial, after two
-   productions, after matching "the", failing to match "man",
-   completed parse, backtracking
-
-
-.. image:: ../images.parsing/rdparser1.png 
-.. image:: ../images.parsing/rdparser2.png
-.. image:: ../images.parsing/rdparser3.png
-.. image:: ../images.parsing/rdparser4.png
-.. image:: ../images.parsing/rdparser5.png
-.. image:: ../images.parsing/rdparser6.png
+.. |rdparser1| image:: ../images.parsing/rdparser1.png
+.. |rdparser2| image:: ../images.parsing/rdparser2.png
+.. |rdparser3| image:: ../images.parsing/rdparser3.png
+.. |rdparser4| image:: ../images.parsing/rdparser4.png
+.. |rdparser5| image:: ../images.parsing/rdparser5.png
+.. |rdparser6| image:: ../images.parsing/rdparser6.png
 
 
 .. Discussion: choosing which of several possible productions to apply;
