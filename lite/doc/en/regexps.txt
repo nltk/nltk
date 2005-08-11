@@ -412,7 +412,15 @@ input as possible.
 Exercises
 ---------
 
-1. Write a program to convert individual words to *Pig Latin*.  Words starting with
+1. Describe the class of strings matched by the following regular expressions:
+
+  a) ``[a-zA-Z]+``
+  b) ``[A-Z][a-z]*``
+  c) ``\d+(\.\d+)?``
+  d) ``([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*``
+  e) ``\w+|[^\w\s]+``
+
+2. Write a program to convert individual words to *Pig Latin*.  Words starting with
    a vowel have ``way`` appended (e.g. ``is`` becomes ``isway``).
    Words beginning with a consonant have all consonants up to the first
    vowel moved to the end of the word, and then ``ay`` is appended
@@ -424,11 +432,18 @@ Exercises
      (i.e. so that ``quiet`` becomes ``ietquay``), and to detect when ``y``
      is used as a consonant (e.g. ``yellow``) vs a vowel (e.g. ``style``).
 
-2. Write a utility function that takes a URL as its argument, and returns
+3. Write a utility function that takes a URL as its argument, and returns
    the contents of the URL, with all HTML markup removed.  Use ``urllib.urlopen``
    to access the contents of the URL, e.g.
    ``raw_contents = urllib.urlopen('http://nltk.sourceforge.net/').read()``.
 
+4. Write a program to guess the number of syllables from the orthographic
+   representation of words (e.g. English text).
+
+5. Download some text from a language that has vowel harmony (e.g. Hungarian),
+   extract the vowel sequences of words, and create a vowel bigram table.
+
+6. Obtain a pronunciation lexicon, and try generating nonsense rhymes.
 
 ----
 
