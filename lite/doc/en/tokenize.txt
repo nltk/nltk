@@ -1038,6 +1038,9 @@ conditions, to get the system to score 80% or better.
   #. Finally, combine multiple conditions into a tuple, and explore
   which combination of conditions gives the best result.
 
+#. Write a program to implement one or more text readability scores
+   (http://en.wikipedia.org/wiki/Readability).
+
 ----
 
 NLTK_
