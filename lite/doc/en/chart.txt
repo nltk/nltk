@@ -358,7 +358,7 @@ Charts
 
 Charts are encoded using the ``Chart`` class.  To create an empty
 chart spanning a given sentence, use the ``Chart``
-constructor</ulink>:
+constructor:
 
   >>> from nltk_lite import tokenize
   >>> text = 'James wears a hat'
@@ -499,7 +499,7 @@ ChartParser
 -----------
 
 ``nltk_lite.parse.chart`` defines a simple yet flexible chart parser,
-<ulink ``parse.Chart``.  A new chart parser is constructed from a
+``parse.Chart``.  A new chart parser is constructed from a
 grammar and a list of chart rules (also known as a *strategy*).  These
 rules will be applied, on order, until no new edges are added to the
 chart.  In particular, ``ChartParser`` uses the following algorithm:
@@ -738,3 +738,24 @@ Next we parse the same sentence, top-down, with tracing turned on::
   |.     .     .     .     .     .     .     >| [7:7] P  -> * 'by' 
   |.     .     .     .     .     .     .     >| [7:7] P  -> * 'with' 
   (S: (NP: 'John') (VP: (VP: (V: 'saw') (NP: (Det: 'a') (N: 'cat'))) (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie')))))
+
+
+---------
+Exercises
+---------
+
+1. Use the graphical chart-parser interface to experiment with
+   different rule invocation strategies. Come up with your own strategy
+   which you can execute manually using the graphical interface. Describe
+   the steps, and report any efficiency improvements it has (e.g. in terms
+   of the size of the resulting chart). Do these improvements depend on
+   the structure of the grammar? What do you think of the prospects for
+   significant performance boosts from cleverer rule invocation
+   strategies?
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+

@@ -1199,6 +1199,50 @@ recursive descent parser::
   demo()
 
 
+---------
+Exercises
+---------
+
+1. Pick some of the syntactic constructions described in any
+   introductory syntax text (e.g. Jurafsky and Martin, Chapter 9) and
+   create a set of 15 sentences.  Five sentences should be unambiguous
+   (have a unique parse), five should be ambiguous, and a further five
+   should be ungrammatical.
+
+  a) Develop a small grammar, consisting of about ten syntactic
+     productions, to account for this data.  Refine your set of sentences
+     as needed to test and demonstrate the grammar.  Write a function
+     to demonstrate your grammar on three sentences: (i) a
+     sentence having exactly one parse; (ii) a sentence having more than
+     one parse; (iii) a sentence having no parses.  Discuss your
+     observations using inline comments.
+
+  b) Create a list ``words`` of all the words in your lexicon, and use
+     ``random.choice(words)`` to generate sequences of 5-10 randomly
+     selected words.  Does this generate any grammatical sentences which
+     your grammar rejects, or any ungrammatical sentences which your
+     grammar accepts?  Now use this information to help you improve your
+     grammar.  Discuss your findings.
+
+2. A left-corner parser is a top-down parser with bottom-up filtering.
+   Unlike an ordinary recursive descent parser, it does not get trapped
+   in left-recursive productions.  Suppose `X` is a non-terminal that
+   expands to some sequence `Y`:subscript:`1` |cdots| `Y`:subscript:`n`
+   of terminals and non-terminals.  We call `Y`:subscript:`1` the
+   *left-corner* of `X`.
+
+  a) Write a function to preprocess the context-free grammar to build
+     a table where each row contains two cells, the first holding a
+     non-terminal, and the second holding the collection of possible
+     left-corners of that non-terminal.
+
+  b) Write a new parser (inheriting from ``ParseI``), based on the
+     recursive descent parser, which builds this left-corner table
+     when it is initialized on a grammar.  Now, each time a production
+     is considered by the parser, check that the next input word is
+     compatible with at least one of the pre-terminal categories in
+     the left-corner table.
+
 ----
 
 NLTK_
