@@ -1243,6 +1243,14 @@ Exercises
      compatible with at least one of the pre-terminal categories in
      the left-corner table.
 
+3. Compare the performance of the top-down, bottom-up, and left-corner
+   parsers using the same grammar and three grammatical test
+   sentences. Use ``time.time()`` to log the amount of time each
+   parser takes on the same sentence.  Write a function which runs all
+   three parsers on all three sentences, and prints a 3-by-3 grid of
+   times, as well as row and column totals. Discuss your findings.
+
+
 ----
 
 NLTK_
