@@ -96,7 +96,7 @@ describing patterns that we want to match*. In order to make explicit
 when we are talking about a pattern *patt*, we will
 use the notation |patt|\ . The first thing to say
 about regular expressions is that most letters match themselves. For
-example, the pattern |l| ``sing`` |r| exactly matches the
+example, the pattern |l|\ ``sing``\ |r| exactly matches the
 string ``sing``. In addition, regular expressions provide us with a
 set of *special characters* [#]_ which give us a way to match *sets of
 strings*, and we will now look at these.
@@ -265,7 +265,7 @@ cumbersome. A better alternative is to say: let's match anything which
 isn't a vowel. To do this, we need a way of expressing
 *complementation*.  We do this using the symbol "``^``" as the first
 character inside a class expression ``[]``. Let's look at an example.
-The regular expression |l|\ ``[^aeiou]`` |r| is just like our earlier character
+The regular expression |l|\ ``[^aeiou]``\ |r| is just like our earlier character
 class |l|\ ``[aeiou]``\ |r|, except now the set of vowels is preceded
 by ``^``. The expression as a whole is interpreted as matching
 anything which *fails* to match |l|\ ``[aeiou]``\ |r|\ . In other
@@ -347,45 +347,37 @@ In the next example, we assume that we have a local copy (i.e.,
 per line.
 
   >>> from re import * 
-  >>> from nltk.corpus import words            # NB not NLTK_LITE yet
+  >>> from nltk_lite.corpora import words
 
 Next we read in the list of words and count them:
 
-  >>> w = words.open('words').read()
-  >>> len(w)
-  408865
+  >>> wordlist = list(words.raw())
+  >>> len(wordlist)
+  45378
 
 Now we can compile a regular expression for words containing a sequence of two 'a's
 and find the matches:
 
   >>> r1 = compile('.*aa.*') 
-  >>> print r1.findall(w)
+  >>> [w for w in wordlist if r1.match(w)]
   ['Afrikaans', 'bazaar', 'bazaars', 'Canaan', 'Haag', 'Haas', 'Isaac', 'Isaacs', 'Isaacson', 'Izaak', 'Salaam', 'Transvaal', 'Waals']
 
 Suppose now that we want to find all three-letter words ending in the
 letter "``c``". Our first attempt might be as follows:
 
   >>> r1 = compile('..c') 
-  >>> print r1.findall(w)[:10]
-  ['bac', 'duc', 'duc', 'duc', 'duc', 'duc', 'duc', 'duc', 'anc', 'jec']
+  >>> [w for w in wordlist if r1.match(w)][:10]
+  ['accede', 'acceded', 'accedes', 'accelerate', 'accelerated', 'accelerates', 'accelerating', 'acceleration', 'accelerations', 'accelerator']
 
-The problem is that we have matched three-letter sequences ending in
-"``c``" which occur *anywhere within a word*. For example, the pattern
-will match "``c``" in words like ``aback``, ``Aerobacter`` and
-``albacore``. Inspection of the file ``words`` reveals that words are
-listed one to a line. So we might want to revise our pattern so that
-the match string is anchored to the beginning and ends of the line:
-|l| ``^...$`` |r| . However, the ``words`` is read into Python
-as a single string (containing line breaks), and the Python ``re``
-module interprets |l| ``^`` |r| as matching only only at the
-beginning of the string as a whole; i.e., in this case, the pattern
-would only try to match against the first word of the file. To deal
-with this, we use the *compilation flag* ``MULTILINE`` which makes
-|l| ``^`` |r| also match at the beginning of each line with a
-string:
+The problem is that we have matched words containing three-letter
+sequences ending in "``c``" which occur *anywhere within a word*. For
+example, the pattern will match "``c``" in words like ``aback``,
+``Aerobacter`` and ``albacore``.  Instead, we must revise our pattern
+so that it is anchored to the beginning and ends of the word: |l|\
+``^...$``\ |r|\ :
 
-  >>> r2 = compile('^..c$',MULTILINE)
-  >>> print r2.findall(w)
+  >>> r2 = compile('^..c$')
+  >>> [w for w in wordlist if r2.match(w)]
   ['arc', 'Doc', 'Lac', 'Mac', 'Vic']
 
 In the section on complementation, we briefly looked at the task of
