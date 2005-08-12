@@ -42,7 +42,7 @@ many serious uses of this so-called *pattern matching*.
 One instructive example is the task of finding all doubled words in a
 text; an example would be the string ``for for example``. Notice that
 we would be particularly interested in finding cases where the words
-were split across a linebreak (in practise, most erroneously doubled
+were split across a linebreak (in practice, most erroneously doubled
 words occur in this context). Consequently, even with such a
 relatively banal task, we need to be able to describe patterns which
 refer not just to "ordinary" characters, but also to formatting
@@ -200,20 +200,20 @@ repeatability.  For example, expression |p[aeiou]+t| matches the words
 listed above, along with: ``peat``, ``poet``, and ``pout``.
 
 Often the choices we want to describe cannot be expressed at the level
-of individual characters.  As we will see in [xref to tagging
-chapter], different parts of speech are often *tagged* using labels
-from a tagset. In the Brown tagset, for example, singular nouns have
-the tag ``NN1``, while plural nouns have the tag ``NN2``, while nouns
-which are unspecified for number (e.g., ``aircraft``) are tagged
-``NN0``. So we might use |NN.*| as a pattern which will match any
-nominal tag. Now, suppose we were processing the output of a tagger to
-extract string of tokens corresponding to noun phrases, we might want
-to find all nouns (``NN.*``), adjectives (``JJ.*``), determiners
-(``DT``) and cardinals (``CD``), while excluding all other word types
-(e.g. verbs ``VB.*``).  It is possible, using a single regular
-expression, to search for this set of candidates using the *choice
-operator* "``|``" as follows: |NN.*|JJ.*|DT|CD|\ . This says: match
-``NN.*`` *or* ``JJ.*`` *or* ``DT`` *or* ``CD``.
+of individual characters.  As discussed in the tagging tutorial,
+different parts of speech are often *tagged* using labels from a
+tagset. In the Brown tagset, for example, singular nouns have the tag
+``NN1``, while plural nouns have the tag ``NN2``, while nouns which
+are unspecified for number (e.g., ``aircraft``) are tagged ``NN0``. So
+we might use |NN.*| as a pattern which will match any nominal
+tag. Now, suppose we were processing the output of a tagger to extract
+string of tokens corresponding to noun phrases, we might want to find
+all nouns (``NN.*``), adjectives (``JJ.*``), determiners (``DT``) and
+cardinals (``CD``), while excluding all other word types (e.g. verbs
+``VB.*``).  It is possible, using a single regular expression, to
+search for this set of candidates using the *choice operator* "``|``"
+as follows: |NN.*|JJ.*|DT|CD|\ . This says: match ``NN.*`` *or*
+``JJ.*`` *or* ``DT`` *or* ``CD``.
  
 As another example of multi-character choices, suppose that we wanted
 to create a program to simplify English prose, replacing rare words
@@ -325,12 +325,33 @@ contains one or more special characters? An example would be the
 arithmetic statement ``$5.00 * ($3.05 + $0.85)``. In this case, we
 need to resort to the so-called *escape* character "``\``"
 ("backslash"). For example, to match a dollar amount, we might use
-|l|\ ``\$[1-9][0-9]*\.[0-9][0-9]``\ |r|\ .
+|l|\ ``\$[1-9][0-9]*\.[0-9][0-9]``\ |r|\ .  The same goes for matching
+other special characters.
 
 .. Advanced Regular Expressions
    greedy vs non-greedy matching
    zero-width assertions
    more special symbols: \b etc
+
+
+===========  =============================================================
+       Special Sequences
+--------------------------------------------------------------------------
+``\b``       Word boundary (zero width)
+-----------  -------------------------------------------------------------
+``\d``       Any decimal digit (equivalent to ``[0-9]``)
+-----------  -------------------------------------------------------------
+``\D``       Any non-digit character (equivalent to ``[^0-9]``)
+-----------  -------------------------------------------------------------
+``\s``       Any whitespace character (equivalent to ``[ \t\n\r\f\v]``
+-----------  -------------------------------------------------------------
+``\S``       Any non-whitespace character (equivalent to ``[^ \t\n\r\f\v]``)
+-----------  -------------------------------------------------------------
+``\w``       Any alphanumeric character (equivalent to ``[a-zA-Z0-9_]``)
+-----------  -------------------------------------------------------------
+``\W``       Any non-alphanumeric character (equivalent to ``[^a-zA-Z0-9_]``)
+===========  =============================================================
+
 
 ----------------
 Python Interface
