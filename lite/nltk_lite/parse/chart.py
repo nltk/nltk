@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2005 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
+#         Jean Mark Gawron <gawron@mail.sdsu.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -34,15 +35,10 @@ defines three chart parsers:
   - C{SteppingChartParse} is a subclass of C{ChartParse} that can
     be used to step through the parsing process.
 
-  - C{EarleyParser} is an implementation of the Earley chart parsing
+  - C{EarleyParse} is an implementation of the Earley chart parsing
     algorithm.  It makes a single left-to-right pass through the
     chart, and applies one of three rules (predictor, scanner, and
     completer) to each edge it encounters.
-"""
-"""
-@group Data Types: Chart, EdgeI, *Edge
-@group Chart Parsers: *Parser
-@group Chart Rules: ChartRuleI, *Rule
 """
 
 import re
@@ -310,7 +306,7 @@ class LeafEdge(EdgeI):
     a word in the sentence.  A leaf edge consists of:
 
       - An X{index}, indicating the position of the word.
-      - A X{leaf}, specifying the word's LEAF property.
+      - A X{leaf}, specifying the word's content.
 
     A leaf edge's left-hand side is its leaf value, and its right hand
     side is C{()}.  Its span is C{[index, index+1]}, and its dot
@@ -320,8 +316,8 @@ class LeafEdge(EdgeI):
         """
         Construct a new C{LeafEdge}.
 
-        @param leaf: The new edge's leaf value, specifying the LEAF
-            property of the word that is recorded by this edge.
+        @param leaf: The new edge's leaf value, specifying the word
+            that is recorded by this edge.
         @param index: The new edge's index, specifying the position of
             the word that is recorded by this edge.
         """
@@ -349,7 +345,6 @@ class LeafEdge(EdgeI):
 
     # String representations
     def __str__(self): return '[%s:%s] %r' % (self._index, self._index+1, self._leaf)
-
     def __repr__(self):
         return '[Edge: %s]' % (self)
 
@@ -393,7 +388,6 @@ class Chart:
         @param tokens: The sentence that this chart will be used to
             parse.
         """
-
         # Record the sentence token and the sentence length.
         self._tokens = list(tokens)
         self._num_leaves = len(self._tokens)
@@ -1255,7 +1249,7 @@ class EarleyChartParse(AbstractParse):
         Create a new Earley chart parser, that uses C{grammar} to
         parse texts.
         
-        @type grammar: C{CFG}
+        @type grammar: C{cfg.Grammar}
         @param grammar: The grammar used to parse texts.
         @type lexicon: C{dict} from C{string} to (C{list} of C{string})
         @param lexicon: A lexicon of words that records the parts of
@@ -1270,9 +1264,10 @@ class EarleyChartParse(AbstractParse):
         self._grammar = grammar
         self._lexicon = lexicon
         self._trace = trace
+        AbstractParse.__init__(self)
 
-    def get_parse_list(self, token):
-        chart = Chart(token)
+    def get_parse_list(self, tokens):
+        chart = Chart(tokens)
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1348,9 +1343,10 @@ class ChartParse(AbstractParse):
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
+        AbstractParse.__init__(self)
 
-    def get_parse_list(self, token):
-        chart = Chart(token)
+    def get_parse_list(self, tokens):
+        chart = Chart(tokens)
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1404,9 +1400,9 @@ class SteppingChartParse(ChartParse):
     # Initialization
     #////////////////////////////////////////////////////////////
 
-    def initialize(self, token):
-        "Begin parsing the given token."
-        self._chart = Chart(token)
+    def initialize(self, tokens):
+        "Begin parsing the given tokens."
+        self._chart = Chart(tokens)
         self._restart = True
 
     #////////////////////////////////////////////////////////////
@@ -1573,7 +1569,9 @@ def demo():
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
     from nltk_lite import tokenize
-    tokens = tokenize.whitespace(sent)
+    tokens = list(tokenize.whitespace(sent))
+
+    print tokens
 
     # Ask the user which parser to test
     print '  1: Top-down chart parser'
