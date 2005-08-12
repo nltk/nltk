@@ -311,6 +311,9 @@ on and tabulate.
   >>> re.findall('([^aeiou])([aeiou])', s)
   [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
 
+For an extended discussion of regular expressions, please see the
+regular expression tutorial.
+
 ---------------------------
 Accessing Files and the Web
 ---------------------------
