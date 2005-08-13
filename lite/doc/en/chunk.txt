@@ -42,8 +42,9 @@ Chunking is like tokenization and tagging in other respects.  First,
 chunking can skip over material in the input.  Observe that only some
 of the tagged tokens have been chunked, while others are left out.
 Compare this with the way that tokenization has omitted spaces and
-punctuation characters.  Second, chunking typically uses finite state
-methods to identify material of interest.  For example, the chunk in
+punctuation characters.  Second, chunking typically uses
+regular-expression based methods (also known as *finite-state
+methods*) to identify material of interest.  For example, the chunk in
 the above diagram could have been found by the expression
 ``<DT><JJ>*<NN>`` which matches an optional determiner, followed by
 zero or more adjectives, followed by a noun.  Compare this with the
@@ -128,8 +129,8 @@ tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
 
 The other logical representation for chunk structures is to use trees,
 as shown below.  These have the benefit that each chunk is a
-constituent that can be manipulated directly.  NLTK-Lite uses this for its
-internal representation of chunks:
+constituent that can be manipulated directly.  NLTK-Lite uses this for
+its internal representation of chunks:
     
 .. figure:: ../images/chunk-treerep.png
    :scale: 1
@@ -902,6 +903,5 @@ Exercises
         
   a) Evaluate your chunker on 100 sentences from a chunked corpus,
      and report the precision, recall and F-measure.
-  b) Use the ``chunkscore.missed()`` and
-     ``chunkscore.incorrect()`` methods to
-     identify the errors made by your chunker.  Discuss.
+  b) Use the ``chunkscore.missed()`` and ``chunkscore.incorrect()``
+     methods to identify the errors made by your chunker.  Discuss.
