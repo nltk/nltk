@@ -259,16 +259,64 @@ tree. In this case, we can see that the grammar admits just two
 choices. The ``PP`` is either attached as a daughter of ``VP`` or else
 as a daughter of ``NP``. 
 
-There is also a difference in semantic
-interpretation associated with the two structures, though the meaning
-distinction is somewhat subtle in this case. Where the ``PP`` is
-attached to ``VP``, the intended interpretation is that the event of
-seeing took place in the park, while if the ``PP`` is attached to
-``NP``, being in the park is a property of the ``NP`` referent; that
-is, the man was in the park, but the agent of the seeing - the
-dog - was somewhere else (e.g., sitting on the balcony of an
-apartment overlooking the park).  As we will see, dealing with
-ambiguity is a key challenge in parsing.
+There is also a difference in semantic interpretation associated with
+the two structures, though the meaning distinction is somewhat subtle
+in this case. Where the ``PP`` is attached to ``VP``, the intended
+interpretation is that the event of seeing took place in the park,
+while if the ``PP`` is attached to ``NP``, being in the park is a
+property of the ``NP`` referent; that is, the man was in the park, but
+the agent of the seeing - the dog - was somewhere else (e.g., sitting
+on the balcony of an apartment overlooking the park).  As we will see,
+dealing with ambiguity is a key challenge in parsing.
+
+Prepositional Phrase Attachment Corpus
+--------------------------------------
+
+The *Prepositional Phrase Attachment Corpus*, included with NLTK-Lite,
+facilitates systematic study of the attachment of prepositional phrases.
+It contains lines of the following form::
+
+  47830 allow visits between families N
+  47830 allow visits on peninsula V
+  47828 announced reduction in formalities N
+  46487 announced plan in September V
+  42457 acquired interest in firm N
+  42457 acquired interest in 1986 V
+
+Each line consists of a sentence identifier, a verb, a noun, a
+preposition, another noun (the head noun from the prepositional
+phrase), and finally an "attachment" (``N`` or ``V``) to indicate
+whether the prepositional phrase attaches to the noun phrase or the
+verb phrase.  The above examples correspond to the following tree
+fragments:
+
+  (VP allow (NP visits (PP between families)))
+  (VP allow (NP visits) (PP on peninsula))
+  (VP announced (NP reduction (PP in formalities))
+  (VP announced (NP plan) (PP in September))
+  (VP acquired (NP interest (PP in firm)))
+  (VP acquired (NP interest) (PP in 1986))
+
+We can access the PP Attachment Corpus as follows:
+
+  >>> from nltk_lite.corpora import ppattach
+  >>> pprint(list(islice(ppattach.raw('training'), 0, 5)))
+  [('0', 'join', 'board', 'as', 'director', 'V'),
+   ('1', 'is', 'chairman', 'of', 'N.V.', 'N'),
+   ('2', 'named', 'director', 'of', 'conglomerate', 'N'),
+   ('3', 'caused', 'percentage', 'of', 'deaths', 'N'),
+   ('5', 'using', 'crocidolite', 'in', 'filters', 'V')]
+
+There is also a ``dictionary()`` method which may be more convenient
+in some cases, e.g.:
+
+  >>> extract(2, ppattach.dictionary('training'))
+ {'attachment': 'N',
+  'noun1': 'director',
+  'noun2': 'conglomerate',
+  'prep': 'of',
+  'sent': '2',
+  'verb': 'named'}
 
 Recursion
 ---------
@@ -1245,6 +1293,16 @@ Exercises
    parser takes on the same sentence.  Write a function which runs all
    three parsers on all three sentences, and prints a 3-by-3 grid of
    times, as well as row and column totals. Discuss your findings.
+
+4. Pick some common verbs.
+
+  a) Write a program to find those verbs in the PP Attachment Corpus
+     included with NLTK-Lite.  Find any cases where the same verb
+     exhibits two different attachments, but where the first noun,
+     or second noun, or preposition, stay unchanged (as we saw in
+     the PP Attachment Corpus example data above).
+
+  b) Devise CFG grammar rules to cover some of these cases.
 
 
 ----
