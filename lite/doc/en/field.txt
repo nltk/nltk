@@ -21,20 +21,21 @@ Introduction
 
 The most popular tool for managing linguistic field data is *Shoebox*.
 Together with its more recent incarnation (*Toolbox*), Shoebox uses a
-simple file format which we can easily read and write.  NLTK_Lite
+simple file format which we can easily read and write, permitting us
+to apply computational methods to linguistic field data.  NLTK_Lite
 includes a Shoebox dictionary of Rotokas, an East Papuan language
-spoken on the island of Bougainville (provided by Stuart Robinson).
+spoken on the island of Bougainville (provided by Stuart Robinson)::
 
-| \lx kaa
-| \ps N.M
-| \cl isi
-| \ge cooking banana
-| \gp banana bilong kukim
-| \sf FLORA
-| \dt 12/Feb/2005
-| \ex Taeavi iria kaa isi kovopaueva kaparapasia.
-| \xp Taeavi i bin planim gaden banana bilong kukim tasol long paia.
-| \xe Taeavi planted banana in order to cook it.
+  \lx kaa
+  \ps N.M
+  \cl isi
+  \ge cooking banana
+  \gp banana bilong kukim
+  \sf FLORA
+  \dt 12/Feb/2005
+  \ex Taeavi iria kaa isi kovopaueva kaparapasia.
+  \xp Taeavi i bin planim gaden banana bilong kukim tasol long paia.
+  \xe Taeavi planted banana in order to cook it.
 
 Each field consists of a field name (e.g. ``lx``, for lexeme), and a
 value (e.g. ``kaa``).  Other fields are:
@@ -181,12 +182,15 @@ Removing Fields
 Analysis
 --------
 
-Find reduplicated words.  For each lexeme ``lex``, we will check if
-the lexicon contains the reduplicated form ``lex+lex``.  In order to
-do this we need to store all lexemes in memory.  We will also keep
-track of the English glosses, so they can be displayed alongside the
-wordforms.  Accordingly, we create a Python dictionary ``lexgloss``
-which maps lexemes to their English glosses:
+In this section we consider a selection of analysis tasks.
+
+First, we will develop a program to find reduplicated words.
+For each lexeme ``lex``, we will check if the lexicon contains the
+reduplicated form ``lex+lex``.  In order to do this we need to store
+all lexemes in memory.  We will also keep track of the English
+glosses, so they can be displayed alongside the wordforms.
+Accordingly, we create a Python dictionary ``lexgloss`` which maps
+lexemes to their English glosses:
 
   >>> lexgloss = {}
   >>> for entry in shoebox.dictionary('rotokas'):
