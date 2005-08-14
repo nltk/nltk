@@ -285,13 +285,13 @@ Using these four rules, we can parse a sentence as follows:
 #. Return all of the parse trees corresponding to the parse edges in the chart. 
 
 For example, the following diagram shows the order in which get added
-when applying bottom-up parsing to a simple example sentence:
+when applying top-down parsing to a simple example sentence:
 
-.. image:: "../images/chart_top_down_chart.png
+.. image:: ../images/chart_top_down.png
 
----------------------
-Chart Parsing in NLTK
----------------------
+--------------------------
+Chart Parsing in NLTK-Lite
+--------------------------
 
 Edges
 -----
