@@ -35,8 +35,6 @@ L{ConditionalProbDist}, a derived distribution.
 
 import types, math, numarray
 
-_NINF = float('-inf')
-
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////
@@ -999,11 +997,11 @@ class MutableProbDist(ProbDistI):
         self._logs = store_logs
 
     def samples(self):
-        # inherit doco
+        # inherit documentation
         return self._samples
 
     def prob(self, sample):
-        # inherit doco
+        # inherit documentation
         i = self._sample_dict.get(sample)
         if i != None:
             if self._logs:
@@ -1014,7 +1012,7 @@ class MutableProbDist(ProbDistI):
             return 0.0
 
     def logprob(self, sample):
-        # inherit doco
+        # inherit documentation
         i = self._sample_dict.get(sample)
         if i != None:
             if self._logs:
@@ -1022,7 +1020,7 @@ class MutableProbDist(ProbDistI):
             else:
                 return log(self._data[i])
         else:
-            return _NINF
+            return float('-inf')
 
     def update(self, sample, prob, log=True):
         """
@@ -1297,12 +1295,12 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
         self._dict = probdist_dict
 
     def __getitem__(self, condition):
-        # inherit doco
+        # inherit documentation
         # this will cause an exception for unseen conditions
         return self._dict[condition]
 
     def conditions(self):
-        # inherit doco
+        # inherit documentation
         return self._dict.keys()
 
 ##//////////////////////////////////////////////////////
