@@ -420,6 +420,8 @@ def chunk(s, chunk_node="NP", top_node="S"):
 
     return stack[0]
 
+### CONLL
+
 _LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
 def conll_chunk(s, chunk_types=("NP",), top_node="S"):
     """
@@ -459,6 +461,72 @@ def conll_chunk(s, chunk_types=("NP",), top_node="S"):
         stack[-1].append((word, tag))
 
     return stack[0]
+
+### IEER
+
+_IEER_DOC_RE = re.compile(r'<DOC>\s*'
+                          r'(<DOCNO>\s*(?P<docno>.+?)\s*</DOCNO>\s*)?'
+                          r'(<DOCTYPE>\s*(?P<doctype>.+?)\s*</DOCTYPE>\s*)?'
+                          r'(<DATE_TIME>\s*(?P<date_time>.+?)\s*</DATE_TIME>\s*)?'
+                          r'<BODY>\s*'
+                          r'(<HEADLINE>\s*(?P<headline>.+?)\s*</HEADLINE>\s*)?'
+                          r'<TEXT>(?P<text>.*?)</TEXT>\s*'
+                          r'</BODY>\s*</DOC>\s*', re.DOTALL)
+
+_IEER_TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
+
+def _ieer_read_text(s, top_node):
+    stack = [Tree(top_node, [])]
+    for piece_m in re.finditer('<[^>]+>|[^\s<]+', s):
+        piece = piece_m.group()
+        try:
+            if piece.startswith('<b_'):
+                m = _IEER_TYPE_RE.match(piece)
+                if m is None: print 'XXXX', piece
+                chunk = Tree(m.group('type'), [])
+                stack[-1].append(chunk)
+                stack.append(chunk)
+            elif piece.startswith('<e_'):
+                stack.pop()
+#           elif piece.startswith('<'):
+#               print "ERROR:", piece
+#               raise ValueError # Unexpected HTML
+            else:
+                stack[-1].append(piece)
+        except (IndexError, ValueError):
+            raise ValueError('Bad IEER string (error at character %d)' %
+                             piece_m.start())
+    if len(stack) != 1:
+        raise ValueError('Bad IEER string')
+    return stack[0]
+
+def ieer_chunk(s, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION',
+               'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'], top_node="S"):
+    """
+    Convert a string of chunked tagged text in the IEER named
+    entity format into a chunk structure.  Chunks are of several
+    types, LOCATION, ORGANIZATION, PERSON, DURATION, DATE, CARDINAL,
+    PERCENT, MONEY, and MEASURE.
+
+    @return: A chunk structure containing the chunked tagged text that is
+        encoded in the given IEER style string.
+    @rtype: L{Tree}
+    """
+
+    # Try looking for a single document.  If that doesn't work, then just
+    # treat everything as if it was within the <TEXT>...</TEXT>.
+    m = _IEER_DOC_RE.match(s)
+    if m:
+        return {
+            'text': _ieer_read_text(m.group('text'), top_node),
+            'docno': m.group('docno'),
+            'doctype': m.group('doctype'),
+            'date_time': m.group('date_time'),
+            'headline': m.group('headline')
+            }
+    else:
+        return _ieer_read_text(s, top_node)
+
 
 ######################################################################
 ## Demonstration
