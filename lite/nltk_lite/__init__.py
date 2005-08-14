@@ -23,7 +23,7 @@ having limited programming experience.  The focus is on teaching
 Python together with the help of NLP recipes, instead of teaching
 students to use a large set of specialized classes.
 
-@version: 0.2
+@version: 0.3
 
 """
 
@@ -33,7 +33,7 @@ students to use a large set of specialized classes.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.2"
+__version__ = "0.3"
 
 # Copyright notice
 __copyright__ = """\

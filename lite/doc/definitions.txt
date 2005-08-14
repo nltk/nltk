@@ -1,3 +1,5 @@
+.. |version| replace:: 0.3
+
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |forall| unicode:: U+2200 .. for all
 .. |larr| unicode:: U+2190 .. left arrow
@@ -16,8 +18,6 @@
 .. |r| unicode:: U+00BB .. right chevron
 .. |mdash| unicode:: U+02014 .. em dash
     
-.. |version| replace:: 0.2
-
 .. role:: glossterm(emphasis)
    :class: indexed
 
