@@ -372,7 +372,7 @@ class Chart:
     edge's right-hand side.
 
     @ivar _tokens: The sentence that the chart covers.
-    @ivar _num_leaves: The number of subtokens in L{_tokens}.
+    @ivar _num_leaves: The number of tokens.
     @ivar _edges: A list of the edges in the chart
     @ivar _edge_to_cpls: A dictionary mapping each edge to a set
         of child pointer lists that are associated with that edge.
