@@ -74,7 +74,7 @@ to form a complete constituent.  For example, the edge in the
 following chart records the hypothesis that "a VP starts with the V
 *likes*, but still needs an NP to become complete":
 
-.. image:: ../images/intro_dottededge.png
+.. image:: ../images/chart_intro_dottededge.png
 
 These *dotted edges* are used to record all of the hypotheses that a
 chart parser makes about constituents in a sentence.  Formally, we can
@@ -197,16 +197,21 @@ Then the parser should add the self-loop edge:
 Using these three rules, we can parse a sentence as follows:
 
 1. Create an empty chart spanning the sentence. 
+
 #. Apply the Bottom-Up Initialization Rule to each word. 
+
 #. Until no more edges are added: 
+
   a) Apply the Bottom-Up Predict Rule everywhere it applies. 
+
   #) Apply the Fundamental Rule everywhere it applies. 
+
 #. Return all of the parse trees corresponding to the parse edges in the chart. 
 
 For example, the following diagram shows the order in which get added
 when applying bottom-up parsing to a simple example sentence:
         
-.. image:: ../images/chart_bottom_up_chart.png
+.. image:: ../images/chart_bottom_up.png
 
 
 Top-Down Parsing
@@ -266,11 +271,17 @@ Then the parser should add the complete edge:
 Using these four rules, we can parse a sentence as follows:
 
 1. Create an empty chart spanning the sentence. 
+
 #. Apply the Top-Down Initialization Rule to each word. 
+
 #. Until no more edges are added: 
+
   a) Apply the Top-Down Expand Rule everywhere it applies. 
+
   #) Apply the Top-Down Match Rule everywhere it applies. 
+
   #) Apply the Fundamental Rule everywhere it applies. 
+
 #. Return all of the parse trees corresponding to the parse edges in the chart. 
 
 For example, the following diagram shows the order in which get added
