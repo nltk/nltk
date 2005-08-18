@@ -371,16 +371,16 @@ count for words of this length.
 
   >>> def length_dist(text):
   ...     fd = FreqDist()                        # initialize an empty frequency distribution
-  ...     for token in genesis.raw():            # for each token
+  ...     for token in genesis.raw(text):        # for each token
   ...         fd.inc(len(token))                 # found another word with this length
   ...     for i in range(15):                    # for each length from 0 to 14
   ...         print "%2d" % int(100*fd.freq(i)), # print the percentage of words with this length
   ...     print
 
-  >>> length_dist('english-kjv.txt')
+  >>> length_dist('english-kjv')
    0  2 14 28 21 13  7  5  2  2  0  0  0  0  0
-  >>> length_dist('finnish.txt')
-   0  2 14 28 21 13  7  5  2  2  0  0  0  0  0
+  >>> length_dist('finnish')
+   0  0  9  6 11 16 16 12  9  6  3  2  2  1  0
 
 A *condition* specifies the context in which an experiment is
 performed.  Often, we are interested in the effect that conditions
