@@ -572,7 +572,7 @@ def _demo_tagger(gold_documents, tagger):
     acc = tagger_accuracy(tagger, gold_documents)
     print 'Accuracy = %4.1f%%' % (100.0 * acc)
 
-def demo(num_files=20):
+def demo(num_files=44):
     """
     A simple demonstration function for the C{Tagger} classes.  It
     constructs a C{BackoffTagger} using a 2nd order C{NthOrderTagger},
