@@ -89,6 +89,9 @@ Project Topics
 12. Implement a chat-bot that incorporates a more sophisticated
     dialogue model than ``nltk_lite.chat.eliza``.
 
+13. Implement a feature-based grammar and parser in NLTK-Lite
+    (incorporate nltk.contrib.mit.rspeer)
+
 ----------
 Assessment
 ----------
