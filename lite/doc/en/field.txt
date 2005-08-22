@@ -654,16 +654,6 @@ Exercises
 #. Write a program to add a new field ``syl`` which gives a count of
    the number of syllables in the word.
 
-#. Write a soundex function that is appropriate for a language you are
-   interested in.  If the language has clusters (consonants or
-   vowels), consider how reliably people can discriminate the second
-   and subsequent member of a cluster.  If these are highly
-   confusible, ignore them in the signature.  If the *order* of
-   segments in a cluster leads to confusion, normalise this in the
-   signature (e.g. sort each cluster alphabetically, so that a word
-   like ``treatments`` would be normalised to ``rtaemtenst``, before
-   the code is computed).
-  
 #. Write a function which displays the complete entry for a lexeme.
    When the lexeme is incorrectly spelled it should display the entry
    for the most similarly spelled lexeme.
