@@ -311,7 +311,7 @@ There is also a ``dictionary()`` method which may be more convenient
 in some cases, e.g.:
 
   >>> extract(2, ppattach.dictionary('training'))
- {'attachment': 'N',
+  {'attachment': 'N',
   'noun1': 'director',
   'noun2': 'conglomerate',
   'prep': 'of',
