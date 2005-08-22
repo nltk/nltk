@@ -28,6 +28,9 @@ incorporated into the toolkit.
 Project Topics
 --------------
 
+Linguisitically Oriented
+------------------------
+
 1. Develop a concordance system for the Brown Corpus, supporting
    searches that include part-of-speech tags, replicating some of the
    functionality of commercial software (e.g. MonoConc_).
@@ -35,14 +38,30 @@ Project Topics
 
 .. _MonoConc: http://www.athel.com/mono.html
 
-2. Build a language-guesser, to classify text documents by language,
+#. Develop a morphological analyser for a language of your choice.
+
+#. Write a soundex function that is appropriate for a language you are
+   interested in.  If the language has clusters (consonants or
+   vowels), consider how reliably people can discriminate the second
+   and subsequent member of a cluster.  If these are highly
+   confusible, ignore them in the signature.  If the *order* of
+   segments in a cluster leads to confusion, normalise this in the
+   signature (e.g. sort each cluster alphabetically, so that a word
+   like ``treatments`` would be normalised to ``rtaemtenst``, before
+   the code is computed).  (NB. See field.html for more details.)
+
+
+Computationally Oriented
+------------------------
+
+1. Build a language-guesser, to classify text documents by language,
    replicating some of the functionality of TextCat_.
    Create an evaluation dataset, possibly using the Opus_Corpus_.
 
 .. _TextCat: http://odur.let.rug.nl/~vannoord/TextCat/
 .. _Opus_Corpus: http://logos.uio.no/opus/
 
-3. Develop a semantic similarity module based on WordNet_ and two of
+2. Develop a semantic similarity module based on WordNet_ and two of
    Pedersen's Wordnet_Similarity_ algorithms.  Develop a lexical-chain
    based WSD system, and evaluate it using the SEMCOR corpus (corpus reader
    provided in NLTK).
@@ -50,7 +69,7 @@ Project Topics
 .. _WordNet: http://wordnet.princeton.edu/
 .. _WordNet_Similarity: http://wn-similarity.sourceforge.net/
 
-4. Build a text compression system combining a dictionary-based
+3. Build a text compression system combining a dictionary-based
    compression algorithm (such as the ones described in
    Managing_Gigabytes_) along with information provided by a
    part-of-speech tagger which should lower the conditional entropy of
@@ -58,39 +77,40 @@ Project Topics
 
 .. _Managing_Gigabytes: http://www.cs.mu.oz.au/mg/
 
-5. Implement a classifier which detects emotion in text, using one of
+4. Implement a classifier which detects emotion in text, using one of
    the emotional text databases from the HUMAINE_Portal_ for training and testing.
 
 .. _HUMAINE_Portal: http://emotion-research.net/
 
-6. Re-implement any NLTK-Lite functionality for a language other than
+5. Re-implement any NLTK-Lite functionality for a language other than
    English (tokenizer, tagger, chunker, parser, etc).  You will
    probably need to collect suitable corpora, and develop corpus
    readers.
 
-7. Develop a morphological analyser for a language of your choice.
-
-8. Implement an LPath_ tree query interpreter.
+6. Implement an LPath_ tree query interpreter.
 
 .. _LPath: http://www.ldc.upenn.edu/Projects/QLDB/
 
-9. Create a database of named entities, categorised as: person,
+7. Create a database of named entities, categorised as: person,
    location, organisation, cardinal, duration, measure, date.
    Train a named-entity tagger using the NIST IEER data
    (included with NLTK) and use it to tag more text and collect
    an expanded set of named entities.
    
-10. Port the NLTK text classification system to NLTK-Lite.
+8. Port the NLTK text classification system to NLTK-Lite.
 
-11. Implement a system for cascaded_chunking_.
+9. Implement a system for cascaded_chunking_.
 
 .. _cascaded_chunking: http://www.vinartus.net/spa/97a.pdf
 
-12. Implement a chat-bot that incorporates a more sophisticated
+10. Implement a chat-bot that incorporates a more sophisticated
     dialogue model than ``nltk_lite.chat.eliza``.
 
-13. Implement a feature-based grammar and parser in NLTK-Lite
+11. Implement a feature-based grammar and parser in NLTK-Lite
     (incorporate nltk.contrib.mit.rspeer)
+
+12. Implement a categorial grammar parser, including semantic
+    representations.
 
 ----------
 Assessment
