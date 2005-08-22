@@ -443,13 +443,13 @@ and then do a reverse sort to get the most significant errors first:
   (3, ((('new', 'jj'), ('churches', 'nn')), (('new', 'jj'), ('churches', 'nns'))))
   (3, ((('fire', 'nn'), ('fighters', 'nn')), (('fire', 'nn'), ('fighters', 'nns'))))
 
-The fifth line of output records the fact that there were 11 cases
-where the unigram tagger mistakenly tagged a noun as a verb, following
-an article.  In fact we already encountered this mistake for the word
-``increase`` in the above evaluation table.  The unigram tagger tagged
+The fifth line of output records the fact that there were 3 cases
+where the unigram tagger mistakenly tagged a verb as a noun, following
+the word ``to``.  (We encountered the inverse of this mistake for the word
+``increase`` in the above evaluation table, where the unigram tagger tagged
 ``increase`` as a verb instead of a noun since it occurred more often
-in the training data as a verb.  However, when ``increase`` appears
-after an article, it is invariably a noun.  Evidently, the performance
+in the training data as a verb.)  Here, when ``form`` appears
+after the word ``to``, it is invariably a verb.  Evidently, the performance
 of the tagger would improve if it was modified to consider not just
 the word being tagged, but also the tag of the word on the left.  Such
 taggers are known as bigram taggers, and we consider them next.
