@@ -254,7 +254,7 @@ matching patterns in the token's text.  For instance, the following
 tagger assigns ``cd`` to cardinal numbers, and ``nn`` to everything
 else::
 
-  >>> patterns = {r'^[0-9]+(.[0-9]+)?$': 'cd', r'.*': 'nn'}
+  >>> patterns = [(r'^[0-9]+(.[0-9]+)?$', 'cd'), (r'.*', 'nn')]
   >>> nn_cd_tagger = tag.Regexp(patterns)
   >>> list(nn_cd_tagger.tag(tokens))
   [('John', 'nn'), ('saw', 'nn'), ('3', 'cd'), ('polar', 'nn'), ('bears', 'nn'), ('.', 'nn')]
