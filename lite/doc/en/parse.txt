@@ -1096,10 +1096,10 @@ simple sentence and grammar::
       (PP: (P: 'in') (NP: (Det: 'the') (N: 'park')))))
 
 -----------------------
-The Shift Reduce Parser 
+The Shift Reduce Parser
 -----------------------
 
-The ``nltk.parser`` module defines ``ShiftReduceParser``, a simple
+The ``nltk_lite.parse`` module defines ``ShiftReduce``, a simple
 non-backtracking implementation of a bottom-up shift-reduce parser.
 Since this parser does not implement any backtracking, it is not
 guaranteed to find a parse for a text, even if one exists.
@@ -1107,7 +1107,7 @@ Furthermore, it will always find at most one parse, even if more
 parses exist.
 
 Shift reduce parsers are created from ``Grammars`` by the
-``ShiftReduceParser`` constructor.  The constructor takes an optional
+``ShiftReduceParse`` constructor.  The constructor takes an optional
 argument ``trace``.  If ``trace`` is greater than zero, then the
 parser will describe the steps that it takes as it parses a text.
 Higher values of ``trace`` produce more verbose descriptions.  ::
