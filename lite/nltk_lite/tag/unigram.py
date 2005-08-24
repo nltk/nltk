@@ -216,7 +216,7 @@ class Regexp(SequentialBackoff):
         self._history = None
 
     def tag_one(self, token, history=None):
-        for regexp, tag in self._regexps.items():
+        for regexp, tag in self._regexps:
             if re.match(regexp, token): # ignore history
                 return tag
         return None
@@ -254,7 +254,7 @@ def demo():
     t2 = Affix(-3, 5, cutoff=2, backoff=t0)
     t2.train(brown.tagged('a'), verbose=True)
 
-    t3 = Regexp({r'.*ed': 'vbd'}, backoff=t0)  # no training
+    t3 = Regexp([(r'.*ed', 'vbd')], backoff=t0)  # no training
 
     # Tokenize the testing files
     test_tokens = []
