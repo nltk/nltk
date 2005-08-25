@@ -13,7 +13,7 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TaggerI} interface.
 """
 
-import types, re
+import re
 from nltk_lite.probability import FreqDist, ConditionalFreqDist
 
 ##############################################################
@@ -57,6 +57,10 @@ class Unigram(SequentialBackoff):
             raise ValueError, 'Tagger is already trained'
         token_count = hit_count = 0
         fd = ConditionalFreqDist()
+
+        if isinstance(tagged_corpus[0], tuple):
+            tagged_corpus = [tagged_corpus]
+
         for sentence in tagged_corpus:
             for (token, tag) in sentence:
                 token_count += 1
