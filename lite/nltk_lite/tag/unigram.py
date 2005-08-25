@@ -219,6 +219,8 @@ class Regexp(SequentialBackoff):
         for regexp, tag in self._regexps:
             if re.match(regexp, token): # ignore history
                 return tag
+        if self._backoff:
+            return self._backoff.tag_one(token, history)
         return None
 
     def __repr__(self):
