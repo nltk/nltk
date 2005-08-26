@@ -896,7 +896,7 @@ Another format for reading grammars::
   ...   S -> NP VP
   ...   VP -> V NP | VP PP
   ...   V -> "saw" | "ate"
-  ...   NP -> "John" | "Mary" | "Bob" | Det N | NP PP
+  ...   NP -> "John" | "Mary" | "Bob" | Det N
   ...   Det -> "a" | "an" | "the" | "my"
   ...   N -> "dog" | "cat" | "cookie"
   ...   PP -> P NP
