@@ -9,6 +9,7 @@
 TUTORIALS = index.txt  preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt  parse.txt  chunk.txt  chart.txt  field.txt  regexps.txt  projects.txt
 HTML =      index.html preface.html introduction.html programming.html tokenize.html tag.html parse.html chunk.html chart.html field.html regexps.html projects.html
 PDF =       index.pdf  preface.pdf  introduction.pdf  programming.pdf  tokenize.pdf  tag.pdf  parse.pdf  chunk.pdf  chart.pdf  field.pdf  regexps.pdf  projects.pdf
+ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.errs tag.errs parse.errs chunk.errs chart.errs field.errs regexps.errs projects.errs
 
 PYTHON = python
 PDFLATEX = pdflatex
@@ -17,7 +18,7 @@ RST2LATEX = rst2latex.py
 
 STYLESHEET_PATH = ..
 
-.SUFFIXES: .txt .html .pdf
+.SUFFIXES: .txt .html .pdf .errs
 
 help: usage
 usage:
@@ -25,13 +26,17 @@ usage:
 	@echo "    make all         -- Build HTML & PDF output"
 	@echo "    make html        -- Build HTML output"
 	@echo "    make pdf         -- Build PDF output"
+	@echo "    make errs        -- Run doctest to generate .errs files"
 	@echo "    make clean       -- Remove all built files"
 
 all: $(HTML) $(PDF)
 html: $(HTML)
 pdf: $(PDF)
+errs: $(ERRS)
+	ls -l $(ERRS)
+
 clean:
-	rm -f $(PDF) $(HTML) *.tex *.log *.aux
+	rm -f $(PDF) $(HTML) $(ERRS) *.tex *.log *.aux
 
 .txt.html:
 	$(RST2HTML) --stylesheet-path=$(STYLESHEET_PATH) $< > $@
@@ -42,3 +47,5 @@ clean:
 .tex.pdf:
 	$(PDFLATEX) $<
 
+.txt.errs:
+	$(PYTHON) -c "import doctest; doctest.testfile('$<')" > $@
