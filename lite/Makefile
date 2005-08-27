@@ -24,14 +24,11 @@ NLTK_URL = http://nltk.sourceforge.net/lite
 WEBPAGE_DIR = webpage
 WEBHOST_NAME = shell.sourceforge.net
 WEBHOST_DIR = /home/groups/n/nl/nltk/htdocs/lite
-REFDOC_DIR1 = doc/api1
-REFDOC_DIR2 = doc/api2
+REFDOC_DIR = doc/api
 REFDOC_UPTODATE = $(REFDOC_DIR)/.uptodate
 
 # Options for epydoc.
-EPYDOC_OPTS1 = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
-               --inheritance=included
-EPYDOC_OPTS2 = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
+EPYDOC_OPTS = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
                --inheritance=listed
 
 all: distributions
@@ -81,13 +78,9 @@ rpmdist: INSTALL.TXT
 windist: INSTALL.TXT
 	python setup.py -q bdist --format=wininst
 
-apidocs1:
-	rm -rf $(REFDOC_DIR1)/*
-	$(EPYDOC) $(EPYDOC_OPTS1) -o $(REFDOC_DIR1) nltk_lite
-
-apidocs2:
-	rm -rf $(REFDOC_DIR2)/*
-	$(EPYDOC) $(EPYDOC_OPTS2) -o $(REFDOC_DIR2) nltk_lite
+apidocs:
+	rm -rf $(REFDOC_DIR)/*
+	$(EPYDOC) $(EPYDOC_OPTS) -o $(REFDOC_DIR) nltk_lite
 
 docdist:
 	zip -r doc doc -x CVS
