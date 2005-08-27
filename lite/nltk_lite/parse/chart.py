@@ -626,6 +626,10 @@ class Chart:
             child_choices = [self._trees(cp, memo, tree_class)
                              for cp in cpl]
 
+            # Kludge to ensure child_choices is a doubly-nested list
+            if type(child_choices[0]) == type(""):
+                child_choices = [child_choices]
+
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
