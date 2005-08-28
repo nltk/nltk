@@ -300,6 +300,8 @@ fragments:
 We can access the PP Attachment Corpus as follows:
 
   >>> from nltk_lite.corpora import ppattach
+  >>> from pprint import pprint
+  >>> from itertools import islice
   >>> pprint(list(islice(ppattach.raw('training'), 0, 5)))
   [('0', 'join', 'board', 'as', 'director', 'V'),
    ('1', 'is', 'chairman', 'of', 'N.V.', 'N'),
@@ -310,13 +312,15 @@ We can access the PP Attachment Corpus as follows:
 There is also a ``dictionary()`` method which may be more convenient
 in some cases, e.g.:
 
-  >>> extract(2, ppattach.dictionary('training'))
+  >>> from nltk_lite.corpora import extract
+  >>> item = extract(2, ppattach.dictionary('training'))
+  >>> pprint(item)
   {'attachment': 'N',
-  'noun1': 'director',
-  'noun2': 'conglomerate',
-  'prep': 'of',
-  'sent': '2',
-  'verb': 'named'}
+   'noun1': 'director',
+   'noun2': 'conglomerate',
+   'prep': 'of',
+   'sent': '2',
+   'verb': 'named'}
 
 Recursion
 ---------
@@ -638,7 +642,6 @@ topic of the next section.
 Shift-Reduce Parsing 
 --------------------
 
-
 The simplest kind of bottom-up parsing is known as shift-reduce
 parsing.  The parser repeadly pushes the next input word onto a stack;
 this is the *shift* operation.  If the top *n* items on the stack
@@ -892,11 +895,11 @@ A complete example of a toy grammar is given below::
 Another format for reading grammars::
 
   >>> from nltk_lite.parse import cfg
-  >>> grammar = cfg.parse_grammar('''
+  >>> grammar2 = cfg.parse_grammar('''
   ...   S -> NP VP
-  ...   VP -> V NP | VP PP
+  ...   VP -> V NP | V NP PP
   ...   V -> "saw" | "ate"
-  ...   NP -> "John" | "Mary" | "Bob" | Det N
+  ...   NP -> "John" | "Mary" | "Bob" | Det N | Det N PP
   ...   Det -> "a" | "an" | "the" | "my"
   ...   N -> "dog" | "cat" | "cookie"
   ...   PP -> P NP
@@ -905,13 +908,14 @@ Another format for reading grammars::
 
   >>> from nltk_lite import tokenize, parse
   >>> sent = list(tokenize.whitespace("Mary saw Bob"))
-  >>> rd_parser = parse.RecursiveDescent(grammar)
+  >>> rd_parser = parse.RecursiveDescent(grammar2)
   >>> for p in rd_parser.get_parse_list(sent):
   ...      print p
+  (S: (NP: 'Mary') (VP: (V: 'saw') (NP: 'Bob')))
   
-------
- Trees 
-------
+-----
+Trees 
+-----
 
 The ``nltk_lite.tree`` module defines classes and functions for
 working with trees.
