@@ -13,6 +13,7 @@ syntax trees and morphological trees.
 
 import re, types
 from nltk_lite import tokenize
+from nltk_lite.probability import ProbabilisticMixIn
 
 ######################################################################
 ## Trees
@@ -323,9 +324,75 @@ class ImmutableTree(Tree):
     def __hash__(self):
         return hash( (self.node, tuple(self)) )
 
-#////////////////////////////////////////////////////////////
-# Parsing
-#////////////////////////////////////////////////////////////
+
+######################################################################
+## Probabilistic trees
+######################################################################
+class ProbabilisticTree(Tree, ProbabilisticMixIn):
+    def __init__(self, node, children, **prob_kwargs):
+        ProbabilisticMixIn.__init__(self, **prob_kwargs)
+        Tree.__init__(self, node, children)
+
+    # We have to patch up these methods to make them work right:
+    def _frozen_class(self): return ImmutableProbabilisticTree
+    def __repr__(self):
+        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
+    def __str__(self):
+        return '%s (p=%s)' % (self.pp(margin=60), self.prob())
+    def __cmp__(self, other):
+        c = Tree.__cmp__(self, other)
+        if c != 0: return c
+        return cmp(self.prob(), other.prob())
+    def __eq__(self, other):
+        return Tree.__eq__(self, other) and self.prob()==other.prob()
+    def copy(self, deep=False):
+        if not deep: return self.__class__(self.node, self, prob=self.prob())
+        else: return self.__class__.convert(self)
+    def convert(cls, val):
+        if isinstance(val, Tree):
+            children = [cls.convert(child) for child in val]
+            if isinstance(val, ProbabilisticMixIn):
+                return cls(val.node, children, prob=val.prob())
+            else:
+                return cls(val.node, children, prob=1.0)
+        else:
+            return val
+    convert = classmethod(convert)
+
+class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
+    def __init__(self, node, children, **prob_kwargs):
+        ProbabilisticMixIn.__init__(self, **prob_kwargs)
+        ImmutableTree.__init__(self, node, children)
+
+    # We have to patch up these methods to make them work right:
+    def _frozen_class(self): return ImmutableProbabilisticTree
+    def __repr__(self):
+        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
+    def __str__(self):
+        return '%s (p=%s)' % (self.pp(margin=60), self.prob())
+    def __cmp__(self, other):
+        c = Tree.__cmp__(self, other)
+        if c != 0: return c
+        return cmp(self.prob(), other.prob())
+    def __eq__(self, other):
+        return Tree.__eq__(self, other) and self.prob()==other.prob()
+    def copy(self, deep=False):
+        if not deep: return self.__class__(self.node, self, prob=self.prob())
+        else: return self.__class__.convert(self)
+    def convert(cls, val):
+        if isinstance(val, Tree):
+            children = [cls.convert(child) for child in val]
+            if isinstance(val, ProbabilisticMixIn):
+                return cls(val.node, children, prob=val.prob())
+            else:
+                return cls(val.node, children, prob=1)
+        else:
+            return val
+    convert = classmethod(convert)
+
+######################################################################
+## Parsing
+######################################################################
     
 def bracket_parse(s):
     """
@@ -562,6 +629,11 @@ def demo():
     print t
     t[1,1,1] = tree.bracket_parse('(NN cake)')
     print t
+
+    # Demonstrate probabilistic trees.
+
+    pt = tree.ProbabilisticTree('x', ['y', 'z'], prob=0.5)
+    print pt
 
     # Demonstrate parsing of treebank output format.
     t = tree.bracket_parse(t.pp_treebank())[0]
