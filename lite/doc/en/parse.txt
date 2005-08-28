@@ -22,7 +22,7 @@ Introduction
 Native speakers of any language have strong intuitions about the
 well-formedness of putative sentences in that language.  These
 intuitions are surprisingly detailed.  For example, consider the
-following six sentences involving three synonymous verbs *loaded*,
+following six sentences involving three semantically similar verbs *loaded*,
 *dumped*, and *filled*.
 
 #. The farmer *loaded* sand into the cart
@@ -38,12 +38,12 @@ can be understood with respect to the internal :glossterm:`phrase structure` of
 the sentences.  We can develop formal models of these structures using
 grammars and parsers.
 
-In the context of computational modelling, a language is often viewed
-as a set of well-formed sentences.  Sequences of words which are not
-grammatical are excluded from this set.  Now, since there is no
-upper-bound on the length of a sentence, the number of possible
-sentences is unbounded.  For example, it is possible to add an
-unlimited amount of material to a sentence by using ``and`` or by
+In the context of formal and computational modelling, a language is
+often viewed as a set of well-formed sentences.  Sequences of words
+which are not grammatical are excluded from this set.  Now, since
+there is no upper-bound on the length of a sentence, the number of
+possible sentences is unbounded.  For example, it is possible to add
+an unlimited amount of material to a sentence by using ``and`` or by
 chaining relative clauses, as illustrated in the following example
 from a children's story:
 
@@ -70,16 +70,21 @@ from a children's story:
 
 Given that the resources of a computer, however large, are still
 finite, it is necessary to devise a finite description of this
-infinite set.  Such descriptions are called :glossterm:`grammars`.  We have
-already encountered this possibility in the context of regular
-expressions.  For example, the expression ``a+`` describes the
+infinite set.  Such descriptions are called
+:glossterm:`grammars`. That is, a grammar of a language is a means of
+specifying which strings belong to the language, and as we have just
+remarked, it needs to be a finite specification (rather than, say,
+just a list of all the grammatical sentences). We have already
+encountered this idea of a finite specification in the context of
+regular expressions.  For example, the expression ``a+`` describes the
 infinite set ``{a, aa, aaa, aaaa, ...}``.  Apart from their
-compactness, grammars usually capture important properties of the
-language being studied, and can be used to systematically map between
-sequences of words and abstract representations of their meaning.
-Thus, even if we were to impose an upper bound on sentence length to
-ensure the language was finite, we would still want to come up with a
-compact representation in the form of a grammar.
+compactness, grammars usually capture important structural and
+distributional properties of the language being studied, and can be
+used to systematically map between sequences of words and abstract
+representations of their meaning.  Thus, even if we were to impose an
+upper bound on sentence length to ensure the language was finite, we
+would still want to come up with a compact representation in the form
+of a grammar.
 
 A well-formed sentence of a language is more than an arbitrary
 sequence of words from the language.  Certain kinds of words usually
@@ -116,24 +121,24 @@ for discussion).
 
    Phrase Structure Tree
 
-A *grammar* is a formal system which specifies which sequences of
-words are well-formed in the language, and which provides one or more
-phrase structures for the sequence.  We will focus our attention on a
-particular kind of grammar called a *context-free grammar* (CFG),
-which is a collection of productions of the form ``S`` |rarr| ``NP VP``.
-We interpret this productions as saying that a constituent of category
-``S`` can consist of subconstituents of categories ``NP`` and
-``VP``. Similarly, the production ``VB`` |rarr| ``'help'`` means that the
-constituent of category ``VB`` can consist of the string ``help``.
-For a phrase structure tree to be well-formed relative to a grammar,
-each non-terminal node and its children must correspond to such a
-production in the grammar.
+A grammar is a formal system which specifies which sequences of words
+are well-formed in the language, and which provides one or more phrase
+structures for the sequence.  We will focus our attention on a
+particular kind of grammar called a :glossterm:`context-free grammar`
+(CFG), which is a collection of rules or *productions* of the form
+``S`` |rarr| ``NP VP``.  We interpret this production as saying that a
+constituent of category ``S`` can consist of subconstituents of
+categories ``NP`` and ``VP``. Similarly, the production ``VB`` |rarr|
+``'help'`` means that the constituent of category ``VB`` can consist
+of the string ``help``.  For a phrase structure tree to be well-formed
+relative to a grammar, each non-terminal node and its children must
+correspond to such a production in the grammar.
 
-A *parser* is a computational system which processes input sentences
-according to the productions of the grammar, and builds one or more
-constituent structures which conform to the grammar.  We take a
-grammar to be a declarative specification of well-formedness, and a
-parser to be a procedural interpretation of the grammar.  In this
+A :glossterm:`parser` is a computational system which processes input sentences
+according to the productions of a grammar, and builds one or more
+constituent structures which conform to the grammar. While a
+grammar is a declarative specification of well-formedness,  a
+parser is a procedural interpretation of the grammar.  In this
 chapter we will present context-free grammars, and describe some
 simple parsers that work with them.
 
@@ -256,7 +261,7 @@ The ambiguity in question is often called a :glossterm:`PP attachment
 ambiguity`, since the issue at hand is how the ``PP`` (prepositional
 phrase) `in the park` should be attached to the phrase structure
 tree. In this case, we can see that the grammar admits just two
-choices. The ``PP`` is either attached as a daughter of ``VP`` or else
+choices. The ``PP`` is attached either as a daughter of ``VP`` or else
 as a daughter of ``NP``. 
 
 There is also a difference in semantic interpretation associated with
@@ -265,9 +270,10 @@ in this case. Where the ``PP`` is attached to ``VP``, the intended
 interpretation is that the event of seeing took place in the park,
 while if the ``PP`` is attached to ``NP``, being in the park is a
 property of the ``NP`` referent; that is, the man was in the park, but
-the agent of the seeing - the dog - was somewhere else (e.g., sitting
-on the balcony of an apartment overlooking the park).  As we will see,
-dealing with ambiguity is a key challenge in parsing.
+the agent of the seeing |mdash| the dog |mdash| might have somewhere
+else (e.g., sitting on the balcony of an apartment overlooking the
+park).  As we will see, dealing with ambiguity is a key challenge in
+parsing.
 
 Prepositional Phrase Attachment Corpus
 --------------------------------------
@@ -290,12 +296,12 @@ whether the prepositional phrase attaches to the noun phrase or the
 verb phrase.  The above examples correspond to the following tree
 fragments:
 
-  (VP allow (NP visits (PP between families)))
-  (VP allow (NP visits) (PP on peninsula))
-  (VP announced (NP reduction (PP in formalities))
-  (VP announced (NP plan) (PP in September))
-  (VP acquired (NP interest (PP in firm)))
-  (VP acquired (NP interest) (PP in 1986))
+  | (VP allow (NP visits (PP between families)))
+  | (VP allow (NP visits) (PP on peninsula))
+  | (VP announced (NP reduction (PP in formalities))
+  | (VP announced (NP plan) (PP in September))
+  | (VP acquired (NP interest (PP in firm)))
+  | (VP acquired (NP interest) (PP in 1986))
 
 We can access the PP Attachment Corpus as follows:
 
@@ -315,7 +321,7 @@ in some cases, e.g.:
   >>> from nltk_lite.corpora import extract
   >>> item = extract(2, ppattach.dictionary('training'))
   >>> pprint(item)
-  {'attachment': 'N',
+   {'attachment: 'N',
    'noun1': 'director',
    'noun2': 'conglomerate',
    'prep': 'of',
@@ -354,9 +360,9 @@ _`G2`
  | Conj |rarr| 'and' | 'or'
 
 That is, the production ``VP`` |rarr| ``VP Conj VP`` involves direct
-recursion on the category``VP``\, whereas indirect recursion on ``S``
+recursion on the category ``VP``\, whereas indirect recursion on ``S``
 arises from the combination of two productions, namely ``S`` |rarr|
-``NP VP`` and ``VP`` |rarr| ``V S``.  Here is a
+``NP VP`` and ``VP`` |rarr| ``V S``.  To illustrate, here is a
 phrase structure tree involving coordinated verb phrases:
 
 .. figure:: ../images.parsing/recursive_parse1.png
@@ -387,7 +393,7 @@ corresponding to the four productions with ``VP`` on the lefthand side:
 #. The dog barked.
 
 That is, `gave` can occur with a following ``NP`` and ``PP``; 
-``saw` can occur with a following ``NP``; 
+`saw` can occur with a following ``NP``; 
 `said` can occur with a following ``S``; 
 and `barked` can occur with no following phrase.
 In these cases, ``NP``, ``PP`` and ``S`` are called :glossterm:`complements`
@@ -411,7 +417,7 @@ following examples as ungrammatical:
 
 How can we ensure that our grammar correctly excludes the
 ungrammatical examples above?  We need some way of constraining
-grammar productions which expand `VP` so that verbs *only* cooccur
+grammar productions which expand ``VP`` so that verbs *only* cooccur
 with their correct complements. We do this by dividing the class of
 verbs into \'subcategories\', each of which is associated with a
 different set of complements. For example, :glossterm:`transitive
@@ -594,8 +600,8 @@ the productions of the grammar, the parse tree is extended downwards
 the parser demonstration ``nltk_lite.draw.rdparser``.  To run this
 demonstration, use the following commands::
 
->> from nltk_lite.draw.rdparser import demo
->> demo()
+  >> from nltk_lite.draw.rdparser import demo
+  >> demo()
 
 Six stages of the execution of this parser are shown below:
 
@@ -643,7 +649,7 @@ Shift-Reduce Parsing
 --------------------
 
 The simplest kind of bottom-up parsing is known as shift-reduce
-parsing.  The parser repeadly pushes the next input word onto a stack;
+parsing.  The parser repeatedly pushes the next input word onto a stack;
 this is the *shift* operation.  If the top *n* items on the stack
 match the *n* items on the right-hand side of some production, then
 they are all popped off the stack, and the item on the left-hand side
