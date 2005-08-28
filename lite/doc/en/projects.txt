@@ -28,7 +28,7 @@ incorporated into the toolkit.
 Project Topics
 --------------
 
-Linguisitically Oriented
+Linguistically Oriented
 ------------------------
 
 1. Develop a concordance system for the Brown Corpus, supporting
