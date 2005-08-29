@@ -115,7 +115,7 @@ Representing Chunks: Tags vs Trees
 
 As befitting its intermediate status between tagging and parsing,
 chunk structures can be represented using tags or trees.  The most
-widespread file representation uses so-called ``IOB'' tags.  In this
+widespread file representation uses so-called ``IOB`` tags.  In this
 scheme, each token is tagged with one of three special chunk tags,
 ``BEGIN``, ``INSIDE`` or ``OUTSIDE``.  A token is tagged as ``BEGIN``
 if it is at the beginning of a chunk, and contained within that chunk.
