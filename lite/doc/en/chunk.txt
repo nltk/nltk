@@ -824,33 +824,40 @@ this easily using a chunked corpus and a conditional frequency
 distribution as shown below:
 
   >>> from nltk_lite.probability import ConditionalFreqDist
+  >>> from nltk_lite.parse import Tree
+  >>> import re
   >>> cfdist = ConditionalFreqDist()
   >>> chunk_data = list(treebank.chunked())
   >>> split = len(chunk_data)*9/10
   >>> train, test = chunk_data[:split], chunk_data[split:]
   >>> for chunk_struct in train:
-  ...     for (word, tag) in chunk_struct.leaves():
-  ...         cfdist[tag].inc(True)
-  ...     else:
-  ...         cfdist[tag].inc(False)
+  ...     for constituent in chunk_struct:
+  ...         if isinstance(constituent, Tree):
+  ...             for (word, tag) in constituent.leaves():
+  ...                 cfdist[tag].inc(True)
+  ...         else:
+  ...             (word, tag) = constituent
+  ...             cfdist[tag].inc(False)
+
   >>> chunk_tags = [tag for tag in cfdist.conditions() if cfdist[tag].max() == True]
+  >>> chunk_tags = [re.sub(r'(\W)', r'\\\1', tag) for tag in chunk_tags]
   >>> tag_pattern = '<' + '|'.join(chunk_tags) + '>+'
   >>> print 'Chunking:', tag_pattern
-  Chunking: <PRP$|VBG|VBD|``|VBN|POS|''|VBP|WDT|JJ|WP|VBZ|DT|RP|$|NN|)|(|FW|,|.|TO|PRP|RB|:|NNS|NNP|VB|WRB|CC|LS|PDT|RBS|RBR|CD|EX|IN|WP$|MD|NNPS|JJS|JJR|SYM|UH>+
+  Chunking: <PRP\$|POS|WDT|JJ|WP|DT|\$|NN|PRP|NNS|NNP|LS|PDT|CD|EX|WP\$|NNPS|JJS|JJR>+
 
 Now, in the evaluation phase we chunk any sequence of those tags:
 
   >>> rule = parse.ChunkRule(tag_pattern, 'Chunk any sequence involving commonly chunked tags')
-  >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S', trace=1)
+  >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S')
   >>> chunkscore = parse.ChunkScore()
   >>> for chunk_struct in test:
   ...     test_sent = chunkparser.parse(chunk_struct.leaves())
   ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore
-  ChunkParser score:
-      Precision:  80.2%
-      Recall:     81.1%
-      F-Measure:  80.7%
+  ChunkParse score:
+      Precision:  91.3%
+      Recall:     93.8%
+      F-Measure:  92.5%
 
 ----------
 Conclusion
