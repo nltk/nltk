@@ -229,7 +229,7 @@ production:
 
 The parser should add the self-loop edge: 
 
-..image:: ../images/chart_td_init.png
+.. image:: ../images/chart_td_init.png
 
 2. [S |rarr|  |dot| |alpha| ]@[0:0]
 
@@ -239,7 +239,7 @@ should add any self-loop edges licensed by the grammar whose left-hand
 side is ``B``.  In particular, if the chart contains the incomplete
 edge:
 
-..image:: ./images/chart_td_expand1.pn
+.. image:: ../images/chart_td_expand1.png
 
 1. [A |rarr| |alpha| |dot| B |beta| ]@[i:j]
 
@@ -249,7 +249,7 @@ Then for each grammar production:
 
 The parser should add the edge: 
 
-..image:: ../images/chart_td_expand2.png
+.. image:: ../images/chart_td_expand2.png
 
 3. [B |rarr|  |dot| |gamma| ]@[j:j]
 
@@ -258,13 +258,13 @@ edge whose dot is followed by a terminal w, then the parser should
 add an edge if the terminal corresponds to the text.  In particular,
 if the chart contains the incomplete edge:
 
-..image:: ../images/chart_td_match1.png
+.. image:: ../images/chart_td_match1.png
 
 1. [A |rarr| |alpha| |dot| w\ :subscript:`j` |beta| ]@[i:j]
 
 Then the parser should add the complete edge: 
 
-..image:: ../images/chart_td_match2.png
+.. image:: ../images/chart_td_match2.png
 
 2. [w\ :subscript:`j`; |rarr| |dot| ]@[j:j+1]
 
