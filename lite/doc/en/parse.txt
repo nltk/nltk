@@ -112,14 +112,14 @@ sentence, the pre-terminal symbols are parts of speech, and the
 remaining non-terminals are syntactic constituents.  An example of
 such a tree is shown below. For those trained in
 theoretical linguistics, the lexical categories (i.e., the nonterminal
-symbols immediately dominating the leafs of the tree) may appear
+symbols immediately dominating the words of the tree) may appear
 strange.  This is because we have used used labels drawn from the
 Brown Corpus part-of-speech tag set (please see the chapter on tagging
 for discussion).
 
 .. figure:: ../images.parsing/parse_tree.png
 
-   Phrase Structure Tree
+..   Phrase Structure Tree
 
 A grammar is a formal system which specifies which sequences of words
 are well-formed in the language, and which provides one or more phrase
@@ -175,6 +175,40 @@ a question-answering system to undergo parsing as an initial step.
 .. Context-free grammars: CFG productions and their interpretation.
 
 .. Discussion about how CFGs are created by hand.
+
+Phrase Structure Trees
+----------------------
+
+As we saw above, linguistic structure is typically represented using
+in terms of tree, and we take this opportunity to briefly go over some
+concepts and terminology. Consider the following example:
+
+.. figure:: ../images.parsing/trees_tree.png
+
+Abstractly, the tree is a set of connected nodes, each of which is labeled with a category.
+We note that linguistic trees grow upside down: the
+node labeled ``S`` is the *root* of the tree, while the *leaves* of the
+tree are labeled with the words 'Lee', 'saw', 'the' and 'dog'. We use
+a family metaphor to talk about trees: for example, ``S`` is the
+*mother* of ``VP``, while conversely ``VP`` is a *daughter*  (or child) of
+``S``. Moreover, since ``NP`` and ``VP`` are both daughters of ``S``,
+they are also *sisters*. 
+
+Although it is helpful to represent trees in a graphical format, for
+computational purposes we usually need a more text-oriented
+representation. One standard method is to use a combination of bracket
+and labels to indicate the structure, as shown here::
+
+   (S 
+       (NP  'Lee')
+       (VP 
+             (V 'saw')
+             (NP 
+                   (Det 'the')
+                   (N  'dog'))))
+
+As we will see later, NLTK employs a similar approach for printing out
+trees.
 
 Structural Ambiguity
 --------------------
