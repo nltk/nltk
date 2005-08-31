@@ -321,6 +321,9 @@ continuar o trabalho, tabulando-os.
   >>> re.findall('([^aeiou])([aeiou])', s)
   [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
 
+Para uma discussão mais profunda sobre expressões regulares, consulte um
+tutorial a respeito.
+
 --------------------------
 Acessando arquivos e a web
 --------------------------
@@ -335,7 +338,8 @@ exemplos:
   >>> page = urlopen("http://news.bbc.co.uk/").read()
   >>> page = re.sub('<[^>]*>', '', page)   # remove a marcação HTML
   >>> page = re.sub('\s+', ' ', page)      # remove espaços
-  >>> print page
+  >>> print page[:60]
+  BBC NEWS | News Front Page News Sport Weather World Service
 
 -----------------
 Accessando o NLTK
@@ -660,7 +664,7 @@ A seguir, complete as questões a seguir.
 
 7. Execute o programa de conversação Eliza. Importe-o com o comando
    ``from nltk_lite.chat import elize`` e execute a demostranção com
-   ``demo()``. Quão *inteligente* é este programa? Examine o código 
+   ``eliza.demo()``. Quão *inteligente* é este programa? Examine o código 
    do programa e tente entender de que forma ele funciona.
 
 ----
