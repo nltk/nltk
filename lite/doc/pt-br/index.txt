@@ -21,6 +21,7 @@ Tutoriais do NLTK-Lite
 .. _Chart: chart.html
 .. _Field: field.html
 .. _Regexps: regexps.html
+.. _Projetos: projects.html
 
 ------
 Índice
@@ -36,6 +37,7 @@ Tutoriais do NLTK-Lite
 #. Chart_
 #. Field_
 #. Regexps_
+#. Projetos_
 
 ----
 
