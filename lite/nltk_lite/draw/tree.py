@@ -883,7 +883,7 @@ if __name__ == '__main__':
     
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
-    t = tree.parse('''
+    t = tree.bracket_parse('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))''')
                 
@@ -902,7 +902,7 @@ if __name__ == '__main__':
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
 
-    treetok = tree.parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
+    treetok = tree.bracket_parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
@@ -920,7 +920,7 @@ if __name__ == '__main__':
     paren = ParenWidget(cf.canvas(), tc2)
     cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
-    tree3 = tree.parse('''
+    tree3 = tree.bracket_parse('''
     (S (NP this tree) (AUX was)
        (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))''')
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
@@ -955,7 +955,7 @@ built from tree_to_treesegment."""
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
 
-    tree4 = tree.parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
+    tree4 = tree.bracket_parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),
