@@ -529,8 +529,7 @@ class ChunkString:
         for i in range(1+len(brackets)/5000):
             substr = brackets[i*5000:i*5000+5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
-                raise ValueError('Transformation generated invalid '+
-                                 'chunkstring')
+                raise ValueError('Transformation generated invalid chunkstring')
 
         if verify_tags<=0: return
         

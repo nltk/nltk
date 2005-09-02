@@ -169,6 +169,22 @@ class Tree(list):
                 max_child_height = max(max_child_height, 1)
         return 1 + max_child_height
 
+    def treepositions(self, order='preorder'):
+        """
+        @param order: One of: C{preorder}, C{postorder}, C{bothorder},
+            C{leaves}.
+        """
+        positions = []
+        if order in ('preorder', 'bothorder'): positions.append( () )
+        for i, child in enumerate(self):
+            if isinstance(child, Tree):
+                childpos = child.treepositions(order)
+                positions.extend([(i,)+p for p in childpos])
+            else:
+                positions.append( (i,) )
+        if order in ('postorder', 'bothorder'): positions.append( () )
+        return positions
+
     #////////////////////////////////////////////////////////////
     # Convert, copy
     #////////////////////////////////////////////////////////////
