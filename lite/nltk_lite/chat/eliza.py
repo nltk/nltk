@@ -12,24 +12,7 @@
 # a translation table used to convert things you say into things the
 # computer says back, e.g. "I am" --> "you are"
 
-from nltk_lite.chat import Chat
-
-reflections = {
-  "am"     : "are",
-  "was"    : "were",
-  "i"      : "you",
-  "i'd"    : "you would",
-  "i've"   : "you have",
-  "i'll"   : "you will",
-  "my"     : "your",
-  "are"    : "am",
-  "you've" : "I have",
-  "you'll" : "I will",
-  "your"   : "my",
-  "yours"  : "mine",
-  "you"    : "me",
-  "me"     : "you"
-}
+from nltk_lite.chat import Chat, reflections
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
