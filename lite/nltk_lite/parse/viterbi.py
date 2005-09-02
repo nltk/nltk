@@ -16,10 +16,10 @@ import types
 ##  Viterbi PCFG Parser
 ##//////////////////////////////////////////////////////
 
-class Viterbi(AbstractParse):
+class ViterbiParse(AbstractParse):
     """
     A bottom-up C{PCFG} parser that uses dynamic programming to find
-    the single most likely parse for a text.  The C{Viterbi} parser
+    the single most likely parse for a text.  The C{ViterbiParse} parser
     parses texts by filling in a X{most likely constituent table}.
     This table records the most probable tree representation for any
     given span and node value.  In particular, it has an entry for
@@ -27,7 +27,7 @@ class Viterbi(AbstractParse):
     likely subtree that spans from the start index to the end index,
     and has the given node value.
 
-    The C{Viterbi} parser fills in this table incrementally.  It starts
+    The C{ViterbiParse} parser fills in this table incrementally.  It starts
     by filling in all entries for constituents that span one element
     of text (i.e., entries where the end index is one greater than the
     start index).  After it has filled in all table entries for
@@ -40,7 +40,7 @@ class Viterbi(AbstractParse):
     symbol.
 
     In order to find the most likely constituent with a given span and
-    node value, the C{Viterbi} parser considers all productions that
+    node value, the C{ViterbiParse} parser considers all productions that
     could produce that node value.  For each production, it finds all
     children that collectively cover the span and have the node values
     specified by the production's right hand side.  If the probability
@@ -49,7 +49,7 @@ class Viterbi(AbstractParse):
     then the table is updated with this new tree.
 
     A pseudo-code description of the algorithm used by
-    C{Viterbi} is:
+    C{ViterbiParse} is:
 
       - Create an empty most likely constituent table, M{MLC}.
       - For M{width} in 1...len(M{text}):
@@ -75,7 +75,7 @@ class Viterbi(AbstractParse):
     """
     def __init__(self, grammar, trace=0):
         """
-        Create a new C{Viterbi} parser, that uses {grammar} to
+        Create a new C{ViterbiParse} parser, that uses {grammar} to
         parse texts.
 
         @type grammar: C{pcfg.Grammar}
@@ -327,7 +327,7 @@ class Viterbi(AbstractParse):
         print str
 
     def __repr__(self):
-        return '<Viterbi parser for %r>' % self._grammar
+        return '<ViterbiParser for %r>' % self._grammar
 
 
 ##//////////////////////////////////////////////////////
@@ -343,7 +343,7 @@ def demo():
     """
     import sys, time
     from nltk_lite import tokenize
-    from nltk_lite.parse import cfg, pcfg, Viterbi
+    from nltk_lite.parse import cfg, pcfg, ViterbiParse
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [('I saw John with my cookie', pcfg.toy1),
@@ -367,7 +367,7 @@ def demo():
     # Tokenize the sentence.
     tokens = list(tokenize.whitespace(sent))
 
-    parser = Viterbi(grammar)
+    parser = ViterbiParse(grammar)
     all_parses = {}
 
     print '\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar)
