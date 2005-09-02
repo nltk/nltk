@@ -336,8 +336,8 @@ class Grammar:
         return str
 
 _PARSE_RE = re.compile(r'^(\w+)\s*' + r'(?:-+>|=+>)\s*' + 
-                       r'(?:("[\w ]+"|\'[\w ]+\'|\w+|\|)\s*)*$')
-_SPLIT_RE = re.compile(r'(\w+|-+>|=+>|"[\w ]+"|\'[\w ]+\'|\|)')
+                       r'(?:("[\w\' ]+"|\'[\w ]+\'|\w+|\|)\s*)*$')
+_SPLIT_RE = re.compile(r'(\w+|-+>|=+>|"[\w\' ]+"|\'[\w ]+\'|\|)')
 
 def parse_production(s):
     """
