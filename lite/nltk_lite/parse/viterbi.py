@@ -213,7 +213,7 @@ class ViterbiParse(AbstractParse):
                             print '   Insert:',
                         else:
                             print '  Discard:',
-                        self._trace_production(production, tree, tokens, p, span, len(tokens))
+                        self._trace_production(production, p, span, len(tokens))
                 if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
                     changed = 1
@@ -297,19 +297,17 @@ class ViterbiParse(AbstractParse):
 
         return childlists
 
-    def _trace_production(self, production, tree, tokens, p, span, width):
+    def _trace_production(self, production, p, span, width):
         """
         Print trace output indicating that a given production has been
         applied at a given location.
 
         @param production: The production that has been applied
-        @type production: C{PCFGProduction}
-        @type tokens: C{list} of tokens
-        @param tokens: The text we are parsing.  This is only used for
-            trace output.  
-        @param p: The probability of the tree produced by the
-            production.  
+        @type production: C{Production}
+        @param p: The probability of the tree produced by the production.  
         @type p: C{float}
+        @param span: The span of the production
+        @type span: C{tuple}
         @rtype: C{None}
         """
         
