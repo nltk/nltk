@@ -11,11 +11,31 @@
 """
 A class for simple chatbots.  These perform simple pattern matching on sentences
 typed by users, and respond with automatically generated sentences.
+
+These chatbots may not work using the windows command line or the
+windows IDLE GUI.
 """
 
 import string
 import re
-import whrandom
+import random
+
+reflections = {
+  "am"     : "are",
+  "was"    : "were",
+  "i"      : "you",
+  "i'd"    : "you would",
+  "i've"   : "you have",
+  "i'll"   : "you will",
+  "my"     : "your",
+  "are"    : "am",
+  "you've" : "I have",
+  "you'll" : "I will",
+  "your"   : "my",
+  "yours"  : "mine",
+  "you"    : "me",
+  "me"     : "you"
+}
 
 class Chat:
     def __init__(self, pairs, reflections={}):
@@ -34,7 +54,7 @@ class Chat:
         @rtype: C{None}
         """
 
-        self._pairs = [(re.compile(x),y) for (x,y) in pairs]
+        self._pairs = [(re.compile(x, re.IGNORECASE),y) for (x,y) in pairs]
         self._reflections = reflections
 
     # bug: only permits single word expressions to be mapped
@@ -80,7 +100,7 @@ class Chat:
 
             # did the pattern match?
             if match:
-                resp = whrandom.choice(response)    # pick a random response
+                resp = random.choice(response)    # pick a random response
                 resp = self._wildcards(resp, match) # process wildcards
 
                 # fix munged punctuation at the end
@@ -88,3 +108,15 @@ class Chat:
                 if resp[-2:] == '??': resp = resp[:-2] + '?'
                 return resp
 
+# Hold a conversation with a chatbot
+
+def converse(bot, quit="quit"):
+    input = ""
+    while input != quit:
+        input = quit
+        try: input = raw_input(">")
+        except EOFError:
+            print input
+        if input:
+            while input[-1] in "!.": input = input[:-1]
+            print bot.respond(input)
