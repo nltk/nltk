@@ -92,6 +92,57 @@ class Grammar(cfg.Grammar):
                 raise ValueError("cfg.Productions for %r do not sum to 1" % lhs)
 
 #################################################################
+# Toy PCFGs
+#################################################################
+
+_S, _VP, _NP, _PP = cfg.nonterminals('S, VP, NP, PP')
+_V, _N, _P, _Name, _Det = cfg.nonterminals('V, N, P, Name, Det')
+
+toy1 = Grammar(_S, [
+    Production(_NP, [_Det, _N], prob=0.5),
+    Production(_NP, [_NP, _PP], prob=0.25),
+    Production(_NP, ['John'], prob=0.1),
+    Production(_NP, ['I'], prob=0.15), 
+    Production(_Det, ['the'], prob=0.8),
+    Production(_Det, ['my'], prob=0.2),
+    Production(_N, ['dog'], prob=0.5),
+    Production(_N, ['cookie'], prob=0.5),
+    Production(_VP, [_VP, _PP], prob=0.1),
+    Production(_VP, [_V, _NP], prob=0.7),
+    Production(_VP, [_V], prob=0.2),
+    Production(_V, ['ate'], prob=0.35),
+    Production(_V, ['saw'], prob=0.65),
+    Production(_S, [_NP, _VP], prob=1.0),
+    Production(_PP, [_P, _NP], prob=1.0),
+    Production(_P, ['with'], prob=0.61),
+    Production(_P, ['under'], prob=0.39)])
+
+toy2 = Grammar(_S, [
+    Production(_V, ['saw'], prob=0.21),
+    Production(_V, ['ate'], prob=0.51),
+    Production(_V, ['ran'], prob=0.28),
+    Production(_N, ['boy'], prob=0.11),
+    Production(_N, ['cookie'], prob=0.12),
+    Production(_N, ['table'], prob=0.13),
+    Production(_N, ['telescope'], prob=0.14),
+    Production(_N, ['hill'], prob=0.50),
+    Production(_Name, ['Jack'], prob=0.52),
+    Production(_Name, ['Bob'], prob=0.48),
+    Production(_P, ['with'], prob=0.61),
+    Production(_P, ['under'], prob=0.39),
+    Production(_Det, ['the'], prob=0.41),
+    Production(_Det, ['a'], prob=0.31),
+    Production(_Det, ['my'], prob=0.28),
+    Production(_S, [_NP, _VP], prob=1.00),
+    Production(_VP, [_V, _NP], prob=0.59),
+    Production(_VP, [_V], prob=0.40),
+    Production(_VP, [_VP, _PP], prob=0.01),
+    Production(_NP, [_Det, _N], prob=0.41),
+    Production(_NP, [_Name], prob=0.28),
+    Production(_NP, [_NP, _PP], prob=0.31),
+    Production(_PP, [_P, _NP], prob=1.00)])
+
+#################################################################
 # Demonstration
 #################################################################
 
