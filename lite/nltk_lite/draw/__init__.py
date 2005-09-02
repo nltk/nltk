@@ -2322,3 +2322,10 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+from cfg import *
+from chart import *
+from plot import *
+from rdparser import *
+from srparser import *
+from tree import *
