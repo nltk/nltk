@@ -46,7 +46,7 @@ punctuation characters.  Second, chunking typically uses
 regular-expression based methods (also known as *finite-state
 methods*) to identify material of interest.  For example, the chunk in
 the above diagram could have been found by the expression
-``<DT><JJ>*<NN>`` which matches an optional determiner, followed by
+``<DT>?<JJ>*<NN>`` which matches an optional determiner, followed by
 zero or more adjectives, followed by a noun.  Compare this with the
 way that tokenization and tagging both make use of regular
 expressions.  Third, chunking, like tokenization and tagging, is very
