@@ -510,10 +510,10 @@ ChartParser
 -----------
 
 ``nltk_lite.parse.chart`` defines a simple yet flexible chart parser,
-``parse.Chart``.  A new chart parser is constructed from a
+``ChartParse``.  A new chart parser is constructed from a
 grammar and a list of chart rules (also known as a *strategy*).  These
 rules will be applied, on order, until no new edges are added to the
-chart.  In particular, ``ChartParser`` uses the following algorithm:
+chart.  In particular, ``ChartParse`` uses the following algorithm:
       
 | Until no new edges are added:
 |   For each chart rule *$*:
@@ -522,13 +522,13 @@ chart.  In particular, ``ChartParser`` uses the following algorithm:
         
 ``nltk_lite.parse.chart`` defines two pre-made strategies:
 ``TD_STRATEGY``, a basic top-down strategy; and ``BU_STRATEGY``, a
-basic bottom-up strategy.  When constructing a ``ChartParser``, you
+basic bottom-up strategy.  When constructing a chart parser, you
 can use either of these strategies, or create your own.
 
 The following example illustrates the use of the chart parser.
 We start by defining a simple grammar:
 
-  >>> grammar = cfg.parse('''
+  >>> grammar = cfg.parse_grammar('''
   ...   S -> NP VP
   ...   VP -> V NP | VP PP
   ...   V -> "saw" | "ate"
@@ -543,7 +543,7 @@ Next we tokenize a sentence.  We make sure it is a list (not an iterator), since
 we wish to use the same tokenized sentence several times.
 
   >>> sent = list(tokenize.whitespace('John saw a cat with my cookie'))
-  >>> parser = ChartParser(grammar, BU_STRATEGY)
+  >>> parser = ChartParse(grammar, BU_STRATEGY)
   >>> for tree in parser.get_parse_list(sent):
   ...     print tree
   (S:
@@ -565,7 +565,7 @@ The following examples show the trace output for parsing the same
 sentence with both the bottom-up and top-down strategies::
 
   # Parse the sentence, bottom-up, with tracing turned on.
-  >>> parser = ChartParser(grammar, BU_STRATEGY, trace=2)
+  >>> parser = ChartParse(grammar, BU_STRATEGY, trace=2)
   >>> parser.get_parse(sent)
   |. John. saw .  a  . cat . with.  my .cooki.|
   Bottom Up Init Rule:
@@ -636,7 +636,7 @@ sentence with both the bottom-up and top-down strategies::
 
 Next we parse the same sentence, top-down, with tracing turned on::
 
-  >>> parser = ChartParser(grammar, TD_STRATEGY, trace=2)
+  >>> parser = ChartParse(grammar, TD_STRATEGY, trace=2)
   >>> parser.get_parse(sent)
   |. John. saw .  a  . cat . with.  my .cooki.|
   Top Down Init Rule:
