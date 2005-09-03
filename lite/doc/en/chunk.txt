@@ -148,11 +148,11 @@ contains both chunks and un-chunked tokens.  For example, the
 following chunk structure captures the sample noun phrases in a
 sentence:
 
-| (S: (NP: <I>)
-|     <saw>
-|     (NP: <the> <big> <dog>)
-|     <on>
-|     (NP: <the> <hill>))
+| (S: (NP: 'I')
+|     'saw'
+|     (NP: 'the' 'big' 'dog')
+|     'on'
+|     (NP: 'the' 'hill'))
 
 
 --------------------
@@ -184,15 +184,31 @@ this corpus.  The tagged section of the corpus consists of chunked,
 tagged text.  We can read in a chunked sentence as follows:
 
   >>> from nltk_lite.corpora import treebank, extract
-  >>> extract(0, treebank.chunked())
-  (S: (NP: ('Pierre', 'NNP') ('Vinken', 'NNP')) (',', ',') (NP: ('61', 'CD') ('years', 'NNS')) ('old', 'JJ') (',', ',') ('will', 'MD') ('join', 'VB') (NP: ('the', 'DT') ('board', 'NN')) ('as', 'IN') (NP: ('a', 'DT') ('nonexecutive', 'JJ') ('director', 'NN') ('Nov.', 'NNP') ('29', 'CD')) ('.', '.'))
+  >>> chunk_tree = extract(0, treebank.chunked())
+  >>> print chunk_tree
+  (S:
+    (NP: ('Pierre', 'NNP') ('Vinken', 'NNP'))
+    (',', ',')
+    (NP: ('61', 'CD') ('years', 'NNS'))
+    ('old', 'JJ')
+    (',', ',')
+    ('will', 'MD')
+    ('join', 'VB')
+    (NP: ('the', 'DT') ('board', 'NN'))
+    ('as', 'IN')
+    (NP:
+      ('a', 'DT')
+      ('nonexecutive', 'JJ')
+      ('director', 'NN')
+      ('Nov.', 'NNP')
+      ('29', 'CD'))
+    ('.', '.'))
 
 We can display this tree graphically using the ``nltk_lite.draw.tree``
 module::
 
-  t = tree.chunk(sent)
   from nltk_lite.draw.tree import *
-  t.draw()
+  chunk_tree.draw()
 
 Reading chunked text from IOB-tagged data
 -----------------------------------------
