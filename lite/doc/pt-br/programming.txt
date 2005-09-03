@@ -452,6 +452,41 @@ com as construções sintáticas da linguagem e um conhecimento de uma série
 de métodos de diagnóstico para a resolução de problemas em um programa que
 não se comporta da forma planejada.
 
+Definindo funções
+-----------------
+
+Freqüentemente, ocorre que uma determinada parte de um programa precise
+ser utilizada várias vezes. Por exemplo, imagine que estamos escrevendo
+um programa que forneça a forma plural para substantivos no singular,
+e que esta tarefa precise ser realizada em diferentes partes do
+programa. Ao invés de repetir o mesmo código inúmeras vezes, é mais
+eficiente (e mais confiável) limitar este funcionamento dentro de uma
+única *função*. Uma função é uma construção de programação que
+recebe um ou mais dados de entrada ("inputs") e gera um dado
+de saída ("output") a estes. No caso em questão, tomamos uma única
+palavra na forma singular como input e geramos a sua forma
+plural como output:
+
+  >>> def plural(word):
+  ...     if word[-1] == 'y':
+  ...         return word[:-1] + 'ies'
+  ...     elif word[-1] in 'sx':
+  ...         return word + 'es'
+  ...     elif word[-2:] in ['sh', 'ch']:
+  ...         return word + 'es'
+  ...     elif word[-2:] == 'an':
+  ...         return word[:-2] + 'en'
+  ...     return word + 's'
+  >>> plural('fairy')
+  'fairies'
+  >>> plural('woman')
+  'women'
+
+Programas bem estruturados costumam fazer um uso extensivo de funções.
+Em geral, quando um bloco de programação é mais longo que uma tela
+cheia, ajuda muito, em termos de legibilidade, decompô-lo em
+uma ou mais funções.
+
 Design de algoritmos
 --------------------
 
