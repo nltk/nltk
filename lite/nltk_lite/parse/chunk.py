@@ -28,10 +28,10 @@ chunk structure's L{leaves<Tree.leaves>} method.
 
 The C{parser.chunk} module defines L{ChunkI}, a standard interface for
 chunking texts; and L{RegexpChunk}, a regular-expression based
-implementation of that interface.  It also defines the
-L{ChunkedTaggedTokenizer} and L{ConllChunkedTokenizer} classes, which
-tokenize strings containing chunked and tagged texts; and
-L{ChunkScore}, a utility class for scoring chunk parsers.
+implementation of that interface.  It uses the L{tree.chunk} and
+L{tree.conll_chunk} methods, which tokenize strings containing chunked
+and tagged texts.  It defines L{ChunkScore}, a utility class for
+scoring chunk parsers.
 
 RegexpChunk
 ===========
@@ -150,7 +150,7 @@ RegexpChunk
 
 from nltk_lite.parse import ParseI, AbstractParse
 from tree import Tree
-from nltk_lite.tokenize import *
+from nltk_lite import tokenize
 import types, re
 
 ##//////////////////////////////////////////////////////
@@ -1249,12 +1249,11 @@ def demo_eval(chunkparser, text):
     Demonstration code for evaluating a chunk parser, using a
     C{ChunkScore}.  This function assumes that C{text} contains one
     sentence per line, and that each sentence has the form expected by
-    C{ChunkedTaggedTokenizer}.  It runs the given chunk parser on each
-    sentence in the text, and scores the result.  It prints the final
-    score (precision, recall, and f-measure); and reports the set of
-    chunks that were missed and the set of chunks that were
-    incorrect.  (At most 10 missing chunks and 10 incorrect chunks are
-    reported).
+    C{tree.chunk}.  It runs the given chunk parser on each sentence in
+    the text, and scores the result.  It prints the final score
+    (precision, recall, and f-measure); and reports the set of chunks
+    that were missed and the set of chunks that were incorrect.  (At
+    most 10 missing chunks and 10 incorrect chunks are reported).
 
     @param chunkparser: The chunkparser to be tested
     @type chunkparser: C{ChunkParseI}

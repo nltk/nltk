@@ -1135,7 +1135,7 @@ if __name__ == '__main__':
     else:
         args = sys.argv[1:]
 
-    if len(args) len(args) > 4:
+    if len(args) > 4:
         print "Usage: python brill.py [n [randomize [max_rules [min_score]]]]\n \
             n -> number of WSJ sentences to read\n \
             randomize -> 0 (default) means read the first n sentences in the corpus, \
