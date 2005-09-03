@@ -129,7 +129,6 @@ class ViterbiParse(AbstractParse):
         # that might cover that span to the constituents dictionary.
         for length in range(1, len(tokens)+1):
             if self._trace:
-                if self._trace > 1: print
                 print ('Finding the most likely constituents'+
                        ' spanning %d text elements...' % length)
             #print constituents
