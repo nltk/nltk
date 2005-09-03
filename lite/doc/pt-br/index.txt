@@ -19,6 +19,7 @@ Tutoriais do NLTK-Lite
 .. _Parsing: parse.html
 .. _Chunk: chunk.html
 .. _Chart: chart.html
+.. _PCFG: pcfg.html
 .. _Field: field.html
 .. _Regexps: regexps.html
 .. _Projetos: projects.html
@@ -35,6 +36,7 @@ Tutoriais do NLTK-Lite
 #. Parsing_
 #. Chunk_
 #. Chart_
+#. PCFG_
 #. Field_
 #. Regexps_
 #. Projetos_
