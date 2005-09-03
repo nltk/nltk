@@ -112,6 +112,9 @@ Computationally Oriented
 12. Implement a categorial grammar parser, including semantic
     representations.
 
+13. Develop a prepositional phrase attachment classifier, using
+    the ``ppattach`` corpus for training and testing.
+
 ----------
 Assessment
 ----------
