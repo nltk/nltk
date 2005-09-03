@@ -6,10 +6,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-TUTORIALS = index.txt  preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt  parse.txt  chunk.txt  chart.txt  field.txt  regexps.txt  projects.txt
-HTML =      index.html preface.html introduction.html programming.html tokenize.html tag.html parse.html chunk.html chart.html field.html regexps.html projects.html
-PDF =       index.pdf  preface.pdf  introduction.pdf  programming.pdf  tokenize.pdf  tag.pdf  parse.pdf  chunk.pdf  chart.pdf  field.pdf  regexps.pdf  projects.pdf
-ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.errs tag.errs parse.errs chunk.errs chart.errs field.errs regexps.errs projects.errs
+TUTORIALS = index.txt  preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt  parse.txt  chunk.txt  chart.txt  pcfg.txt  field.txt  regexps.txt  projects.txt
+HTML =      index.html preface.html introduction.html programming.html tokenize.html tag.html parse.html chunk.html chart.html pcfg.html field.html regexps.html projects.html
+PDF =       index.pdf  preface.pdf  introduction.pdf  programming.pdf  tokenize.pdf  tag.pdf  parse.pdf  chunk.pdf  chart.pdf  pcfg.pdf  field.pdf  regexps.pdf  projects.pdf
+ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.errs tag.errs parse.errs chunk.errs chart.errs pcfg.errs field.errs regexps.errs projects.errs
 
 PYTHON = python
 PDFLATEX = pdflatex

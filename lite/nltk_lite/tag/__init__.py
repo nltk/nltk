@@ -117,6 +117,7 @@ def accuracy(tagger, gold):
     gold_tokens = []
     test_tokens = []
     for sent in gold:
+        sent = list(sent)
         gold_tokens += sent
         test_tokens += list(tagger.tag(untag(sent)))
 
