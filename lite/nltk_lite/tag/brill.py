@@ -1053,11 +1053,12 @@ def errorList (train_tokens, tokens, radius=2):
 
     return errors
 
-def test(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
+def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
          errorOutput = "errors.out", ruleOutput="rules.out",
          randomize=False, train=.8, trace=3):
 
     from nltk_lite.corpora.treebank import tagged
+    from nltk_lite.tag import accuracy
 
     NN_CD_tagger = Regexp([(r'^[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
 
@@ -1082,9 +1083,11 @@ def test(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
 
     print "Training unigram tagger:",
     u = Unigram(backoff=NN_CD_tagger)
-    u.train(training_data)
-    print("[accuracy: %f]"
-          %tagger_accuracy(u, gold_data))
+
+    # NB training and testing are required to use a list-of-lists structure,
+    # so we wrap the flattened corpus data with the extra list structure.
+    u.train([training_data])
+    print("[accuracy: %f]" % accuracy(u, [gold_data]))
 
     # Brill tagger
 
@@ -1106,7 +1109,7 @@ def test(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     b = trainer.train(training_data, max_rules, min_score)
 
     print
-    print("Brill accuracy: %f" % tagger_accuracy(b, gold_data))
+    print("Brill accuracy: %f" % accuracy(b, [gold_data]))
 
     print("\nRules: ")
     printRules = file(ruleOutput, 'w')
@@ -1128,18 +1131,18 @@ def test(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     
 if __name__ == '__main__':
     if sys.argv == ['']:
-        args = ['200', '0', '200', '3']
+        args = ['200', '0', '20', '3']
     else:
         args = sys.argv[1:]
 
-    if len(args) == 0 or len(args) > 4:
-        print "Usage: python brill.py n [randomize [max_rules [min_score]]]\n \
+    if len(args) len(args) > 4:
+        print "Usage: python brill.py [n [randomize [max_rules [min_score]]]]\n \
             n -> number of WSJ sentences to read\n \
             randomize -> 0 (default) means read the first n sentences in the corpus, \
                           1 means read a random set of n sentences \n \
-            max_rules -> (default 200) generate at most this many rules during \
+            max_rules -> (default 20) generate at most this many rules during \
                              training \n \
-            min_score -> (default 2) only use rules which decrease the number of \
+            min_score -> (default 3) only use rules which decrease the number of \
                            errors in the training corpus by at least this much"
     else:
         args = map(int, args)
