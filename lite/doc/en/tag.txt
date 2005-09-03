@@ -281,15 +281,15 @@ the ``train()`` method, which takes a tagged corpus::
   >>> from nltk_lite.corpora import brown
   >>> from itertools import islice
   >>> train_sents = list(islice(brown.tagged(), 500))  # sents 0..499
-  >>> mytagger = tag.Unigram()
-  >>> mytagger.train(train_sents)
+  >>> unigram_tagger = tag.Unigram()
+  >>> unigram_tagger.train(train_sents)
 
 Once a ``UnigramTagger`` has been trained, the ``tag()`` method can be
 used to tag new text::
 
   >>> text = "John saw the book on the table"
   >>> tokens = list(tokenize.whitespace(text))
-  >>> list(mytagger.tag(tokens))
+  >>> list(unigram_tagger.tag(tokens))
   [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', None), ('on', 'in'), ('the', 'at'), ('table', None)]
 
 As we noted earlier, ``Unigram`` will assign the default tag
@@ -297,9 +297,9 @@ As we noted earlier, ``Unigram`` will assign the default tag
 We can instruct it to *backoff* to our default ``nn_cd_tagger`` when
 it cannot assign a tag itself::
 
-  >>> mytagger = tag.Unigram(backoff=nn_cd_tagger)
-  >>> mytagger.train(train_sents)
-  >>> list(mytagger.tag(tokens))
+  >>> unigram_tagger = tag.Unigram(backoff=nn_cd_tagger)
+  >>> unigram_tagger.train(train_sents)
+  >>> list(unigram_tagger.tag(tokens))
   [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', 'nn'), ('on', 'in'), ('the', 'at'), ('table', 'nn')]
 
 Now all the words are guaranteed to be tagged.
@@ -315,7 +315,7 @@ sense.)  For example, the following tagger will consider suffixes of
 length 3 (e.g. *-ize*, *-ion*), for words having at least 5
 characters.
 
-  >>> t3 = Affix(-3, 5, backoff=t2)
+  >>> affix_tagger = tag.Affix(-3, 5, backoff=unigram_tagger)
 
 ------------------
 Evaluating Taggers
@@ -360,7 +360,7 @@ a larger sample of data.  NLTK provides a function called
 ``tag.accuracy`` to automate the task.  In the simplest case, we
 can test the tagger using the same data it was trained on:
 
-  >>> acc = tag.accuracy(mytagger, train_sents)
+  >>> acc = tag.accuracy(unigram_tagger, train_sents)
   >>> print 'Accuracy = %4.1f%%' % (100 * acc)
   Accuracy = 84.7%
 
@@ -372,15 +372,15 @@ generalizations, so we should test against *unseen data*, and replace
 ``train_sents`` above with ``unseen_sents``.  We can then define the
 two sets of data as follows:
 
-  >>> train_sents  = islice(brown.tagged('a'), 500)
-  >>> unseen_sents = islice(brown.tagged('a'), 500, 600) # sents 500-599
+  >>> train_sents  = list(brown.tagged('a'))[:500]
+  >>> unseen_sents = list(brown.tagged('a'))[500:600] # sents 500-599
 
 Now we train the tagger using ``train_sents`` and evaluate it using
 ``unseen_sents``, as follows:
 
-  >>> mytagger = tag.Unigram(backoff=nn_cd_tagger)
-  >>> mytagger.train(train_sents)
-  >>> acc = tag.accuracy(mytagger, unseen_sents)
+  >>> unigram_tagger = tag.Unigram(backoff=nn_cd_tagger)
+  >>> unigram_tagger.train(train_sents)
+  >>> acc = tag.accuracy(unigram_tagger, unseen_sents)
   >>> print 'Accuracy = %4.1f%%' % (100 * acc)
   Accuracy = 74.7%
 
@@ -408,7 +408,7 @@ word with tag *T* :subscript:`i` is incorrectly tagged as *T*
   >>> errors = {}
   >>> for i in range(len(unseen_sents)):
   ...     raw_sent = tag.untag(unseen_sents[i])
-  ...     test_sent = list(mytagger.tag(raw_sent))
+  ...     test_sent = list(unigram_tagger.tag(raw_sent))
   ...     unseen_sent = unseen_sents[i]
   ...     for j in range(len(test_sent)):
   ...         if test_sent[j][1] != unseen_sent[j][1]:
@@ -437,11 +437,6 @@ and then do a reverse sort to get the most significant errors first:
   (5, ((('Assemblies', 'nn'), ('of', 'in')), (('Assemblies', 'nns-tl'), ('of', 'in-tl'))))
   (4, ((('of', 'in'), ('God', 'nn')), (('of', 'in-tl'), ('God', 'np-tl'))))
   (3, ((('to', 'to'), ('form', 'nn')), (('to', 'to'), ('form', 'vb'))))
-  (3, ((('the', 'at'), ('teamsters', 'nn')), (('the', 'at'), ('teamsters', 'nns'))))
-  (3, ((('the', 'at'), ('Bible', 'nn')), (('the', 'at'), ('Bible', 'np'))))
-  (3, ((('of', 'in'), ('God', 'nn')), (('of', 'in'), ('God', 'np'))))
-  (3, ((('new', 'jj'), ('churches', 'nn')), (('new', 'jj'), ('churches', 'nns'))))
-  (3, ((('fire', 'nn'), ('fighters', 'nn')), (('fire', 'nn'), ('fighters', 'nns'))))
 
 The fifth line of output records the fact that there were 3 cases
 where the unigram tagger mistakenly tagged a verb as a noun, following
@@ -499,7 +494,7 @@ jj                     to                nns      to    nns
    train_tokens = []
    for item in brown.items()[:10]:
        train_tokens.append(brown.read(item))
-   mytagger = NthOrderTagger(1)
+   mytagger = tag.ngram(2)
    for tok in train_tokens: mytagger.train(tok)
    words = '''ask Congress to increase grants to states'''.split()
    tags = '''at nn-tl vbd md vb np to nn nns in jj'''.split()
@@ -559,22 +554,23 @@ tags of the two preceding words in addition to the current word.
    taggers as special cases of n-gram taggers.
 
 ``tag.Ngram`` uses a tagged training corpus to determine which
-part-of-speech tag is most likely for each context::
+part-of-speech tag is most likely for each context.  Here we see
+a special case of n-gram tagger, namely a bigram tagger::
 
-  >>> tagger = tag.Bigram()
-  >>> tagger.train(brown.tagged('a'))
+  >>> bigram_tagger = tag.Bigram()
+  >>> bigram_tagger.train(brown.tagged(['a','b']))
 
 Once a bigram tagger has been trained, it can be used to tag untagged
 corpora:
 
   >>> text = "John saw the book on the table"
   >>> tokens = list(tokenize.whitespace(text))
-  >>> list(tagger.tag(tokens))
-  [('John', 'NN'), ('saw', 'VB'), ('the', 'AT'), ('book', 'NN'), ('on', 'IN'), ('the', 'AT'), ('table', 'NN')]
+  >>> list(bigram_tagger.tag(tokens))
+  [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', 'nn'), ('on', 'in'), ('the', 'at'), ('table', None)]
 
 As with the other taggers considered earlier, n-gram taggers will
 assign the default tag ``None`` to any token whose context was not
-encountered in the training data.Note that as *n* gets larger, the
+encountered in the training data.  Note that as *n* gets larger, the
 specificity of the contexts increases; and with it, the chance that
 the data we wish to tag will contain contexts that were not present in
 the training data. This is sometimes referred to as a *sparse data*
@@ -597,7 +593,7 @@ One way to address the trade-off between accuracy and coverage is to
 use the more accurate algorithms when we can, but to fall back on
 algorithms with wider coverage when necessary. For example, we could
 combine the results of a bigram tagger, a unigram tagger, and
-a ``NN_CD_Tagger``, as follows:
+a ``nn_cd_tagger``, as follows:
 
 1. Try tagging the token with the bigram tagger.
 2. If the bigram tagger is unable to find a tag for the token, try
@@ -625,18 +621,16 @@ The backoff-tagger may itself have a backoff tagger::
 
 Now we can test the taggers::
 
-  >>> accuracy0 = tag.accuracy(t0, unseen_tokens)
-  >>> accuracy1 = tag.accuracy(t1, unseen_tokens)
-  >>> accuracy2 = tag.accuracy(t2, unseen_tokens)
+  >>> accuracy0 = tag.accuracy(t0, unseen_sents)
+  >>> accuracy1 = tag.accuracy(t1, unseen_sents)
+  >>> accuracy2 = tag.accuracy(t2, unseen_sents)
 
   >>> print 'Default Accuracy = %4.1f%%' % (100 * accuracy0)
-  Unigram Accuracy = 74.7%
+  Default Accuracy = 13.1%
   >>> print 'Unigram Accuracy  = %4.1f%%' % (100 * accuracy1)
-  Bigram Accuracy  = 75.5%
+  Unigram Accuracy  = 87.9%
   >>> print 'Bigram Accuracy = %4.1f%%' % (100 * accuracy2)
-  Trigram Accuracy = 75.5%
-
-.. combining taggers using voting?
+  Bigram Accuracy = 85.2%
 
 ----------------
 The Brill Tagger
@@ -819,7 +813,7 @@ so that you can answer the following questions.
       a different tag.
 
 2. **Regular Expression Tagging**:
-   We defined the ``NN_CD_Tagger``, which can be used
+   We defined the ``nn_cd_tagger``, which can be used
    as a fall-back tagger for unknown words.  This tagger only checks for
    cardinal numbers.  By testing for particular prefix or suffix strings,
    it should be possible to guess other tags.  For example, 

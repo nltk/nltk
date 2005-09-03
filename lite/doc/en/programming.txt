@@ -329,7 +329,7 @@ examples:
   >>> page = re.sub('<[^>]*>', '', page)   # strip HTML markup
   >>> page = re.sub('\s+', ' ', page)      # strip whitespace
   >>> print page[:60]
-  BBC NEWS | News Front Page News Sport Weather World Service
+   BBC NEWS | News Front Page News Sport Weather World Service
 
 --------------
 Accessing NLTK

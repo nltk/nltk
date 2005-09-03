@@ -356,7 +356,7 @@ in some cases, e.g.:
   >>> from nltk_lite.corpora import extract
   >>> item = extract(2, ppattach.dictionary('training'))
   >>> pprint(item)
-   {'attachment: 'N',
+  {'attachment': 'N',
    'noun1': 'director',
    'noun2': 'conglomerate',
    'prep': 'of',
