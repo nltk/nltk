@@ -438,6 +438,37 @@ with the syntactic constructs of the language, and knowledge of a
 variety of diagnostic methods for trouble-shooting a program which
 does not exhibit the expected behaviour.
 
+Defining Functions
+------------------
+
+It often happens that part of a program needs to be used several times over.
+For example, suppose we were writing a program that needed to be able to form
+the plural of a singular noun, and that this needed to be done at various
+places during the program.  Rather than repeating the same code several times
+over, it is more efficient (and reliable) to localize this work inside a *function*.
+A function is a programming construct which takes one or more inputs, and produces
+an output.  In this case, we will take the singular noun as input, and generate a
+plural form as output:
+
+  >>> def plural(word):
+  ...     if word[-1] == 'y':
+  ...         return word[:-1] + 'ies'
+  ...     elif word[-1] in 'sx':
+  ...         return word + 'es'
+  ...     elif word[-2:] in ['sh', 'ch']:
+  ...         return word + 'es'
+  ...     elif word[-2:] == 'an':
+  ...         return word[:-2] + 'en'
+  ...     return word + 's'
+  >>> plural('fairy')
+  'fairies'
+  >>> plural('woman')
+  'women'
+
+Well-structured programs often make extensive use of functions.  Often when a block
+of program code grows longer than a screenful, it is a great help to readability if
+it is decomposed into one or more functions.
+
 Algorithm Design
 ----------------
 
