@@ -58,7 +58,7 @@ class Unigram(SequentialBackoff):
         token_count = hit_count = 0
         fd = ConditionalFreqDist()
 
-        if isinstance(tagged_corpus[0], tuple):
+        if isinstance(tagged_corpus, list) and isinstance(tagged_corpus[0], tuple):
             tagged_corpus = [tagged_corpus]
 
         for sentence in tagged_corpus:
@@ -282,11 +282,11 @@ def demo():
     sys.stdout.flush()
     _demo_tagger(t1, list(brown.tagged('b'))[:1000])
 
-    print '  Affix tagger:      ',
+    print '  Affix tagger:        ',
     sys.stdout.flush()
     _demo_tagger(t2, list(brown.tagged('b'))[:1000])
 
-    print '  Regexp tagger:      ',
+    print '  Regexp tagger:       ',
     sys.stdout.flush()
     _demo_tagger(t3, list(brown.tagged('b'))[:1000])
 
