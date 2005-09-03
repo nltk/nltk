@@ -186,8 +186,8 @@ that maintains a queue of edges, and adds them to the chart one at a
 time.  The ordering of this queue is based on the probabilities
 associated with the edges, allowing the parser to expand more likely
 edges before less likely ones.  Different queue orderings are used to
-implement a variety of different search strategies.  These
-algorithms are implemented in the ``nltk_lite.parse.viterbi`` and
+implement a variety of different search strategies.  These algorithms
+are implemented in the ``nltk_lite.parse.viterbi`` and
 ``nltk_lite.parse.pchart`` modules.
 
 A Viterbi-Style PCFG Parser
@@ -219,76 +219,85 @@ Span  Node Tree                                                                P
 [0:6] S    (S: (NP: I) (VP: saw (NP: (NP: John) (PP: with (NP: my cookie)))))  0.0001
 ===== ==== ==================================================================  =======
 
-Once the table has been completely filled in, the parser simply returns the entry for
-the most likely constituent that spans the entire text, and whose node value is the
-start symbol.  For this example, it would return the entry with a span of [0:6] and a
-node value of "S".
+Once the table has been completely filled in, the parser simply
+returns the entry for the most likely constituent that spans the
+entire text, and whose node value is the start symbol.  For this
+example, it would return the entry with a span of [0:6] and a node
+value of "S".
 
-Note that we only record the *most likely* constituent for any given span and node
-value.  For example, in the table above, there are actually two possible constituents
-that cover the span [1:6] and have "VP" node values.
+Note that we only record the *most likely* constituent for any given
+span and node value.  For example, in the table above, there are
+actually two possible constituents that cover the span [1:6] and have
+"VP" node values.
     
-1. "saw John, who has my cookie"::
+1. "saw John, who has my cookie":
 
-  (VP: saw
-     (NP: (NP: *John*) 
-          (PP: *with* 
-          (NP: *my* *cookie*))))
+| (VP: saw
+|    (NP: (NP: *John*) 
+|         (PP: *with* 
+|         (NP: *my* *cookie*))))
 
-2. "used my cookie to see John"::
+2. "used my cookie to see John":
 
-  (VP: (VP: *saw* 
-           (NP: (NP: *John*))
-           (PP: *with* 
-              (NP: *my* *cookie*))))
+| (VP: (VP: *saw* 
+|         (NP: (NP: *John*))
+|         (PP: *with* 
+|             (NP: *my* *cookie*))))
 
-Since the grammar we are using to parse the text indicates that the first of these
-tree structures has a higher probability, the parser discards the second one.
+Since the grammar we are using to parse the text indicates that the
+first of these tree structures has a higher probability, the parser
+discards the second one.
 
 Filling in the Most Likely Constituents Table
 *********************************************
 
-Because the grammar used by ``ViterbiParse`` is a PCFG, the probability of each
-constituent can be calculated from the probabilities of its children.  Since a
-constituent's children can never cover a larger span than the constituent itself,
-each entry of the most likely constituents table depends only on entries for
-constituents with *shorter* spans (or equal spans, in the case of unary and epsilon
-productions).
+Because the grammar used by ``ViterbiParse`` is a PCFG, the
+probability of each constituent can be calculated from the
+probabilities of its children.  Since a constituent's children can
+never cover a larger span than the constituent itself, each entry of
+the most likely constituents table depends only on entries for
+constituents with *shorter* spans (or equal spans, in the case of
+unary and epsilon productions).
 
-``ViterbiParse`` takes advantage of this fact, and fills in the most likely
-constituent table incrementally.  It starts by filling in the entries for all
-constituents that span a single element of text.  After it has filled in all the
-table entries for constituents that span one element of text, it fills in the entries
-for constituents that span two elements of text.  It continues filling in the entries
-for constituents spanning larger and larger portions of the text, until the entire
-table has been filled.
+``ViterbiParse`` takes advantage of this fact, and fills in the most
+likely constituent table incrementally.  It starts by filling in the
+entries for all constituents that span a single element of text.
+After it has filled in all the table entries for constituents that
+span one element of text, it fills in the entries for constituents
+that span two elements of text.  It continues filling in the entries
+for constituents spanning larger and larger portions of the text,
+until the entire table has been filled.
 
 To find the most likely constituent with a given span and node value,
-``ViterbiParse`` considers all productions that could produce that node value.  For
-each production, it checks the most likely constituents table for sequences of
-children that collectively cover the span and that have the node values specified by
-the production's right hand side.  If the tree formed by applying the production to
-the children has a higher probability than the current table entry, then it updates
-the most likely constituents table with the new tree.
+``ViterbiParse`` considers all productions that could produce that
+node value.  For each production, it checks the most likely
+constituents table for sequences of children that collectively cover
+the span and that have the node values specified by the production's
+right hand side.  If the tree formed by applying the production to the
+children has a higher probability than the current table entry, then
+it updates the most likely constituents table with the new tree.
 
 Handling Unary Productions and Epsilon Productions
 **************************************************
 
-A minor difficulty is introduced by unary productions and epsilon productions: an
-entry of the most likely constituents table might depend on another entry with the
-same span.  For example, if the grammar contains the production ``V`` |rarr| ``VP``,
-then the table entries for ``VP`` depend on the entries for ``V`` with the same span.
-This can be a problem if the constituents are checked in the wrong order.  For
-example, if the parser tries to find the most likely constituent for a ``VP``
-spanning [1:3] before it finds the most likely constituents for ``V`` spanning [1:3],
-then it can't apply the ``V`` |rarr| VP`` production.
+A minor difficulty is introduced by unary productions and epsilon
+productions: an entry of the most likely constituents table might
+depend on another entry with the same span.  For example, if the
+grammar contains the production ``V`` |rarr| ``VP``, then the table
+entries for ``VP`` depend on the entries for ``V`` with the same span.
+This can be a problem if the constituents are checked in the wrong
+order.  For example, if the parser tries to find the most likely
+constituent for a ``VP`` spanning [1:3] before it finds the most
+likely constituents for ``V`` spanning [1:3], then it can't apply the
+``V`` |rarr| VP`` production.
       
-To solve this problem, ``ViterbiParse`` repeatedly checks each span until it finds no
-new table entries.  Note that cyclic grammar productions (e.g. ``V`` |rarr| ``V``)
-will *not* cause this procedure to enter an infinite loop.  Since all production
-probabilities are less than or equal to 1, any constituent generated by a cycle in
-the grammar will have a probability that is less than or equal to the original
-constituent; so ``ViterbiParse`` will discard it.
+To solve this problem, ``ViterbiParse`` repeatedly checks each span
+until it finds no new table entries.  Note that cyclic grammar
+productions (e.g. ``V`` |rarr| ``V``) will *not* cause this procedure
+to enter an infinite loop.  Since all production probabilities are
+less than or equal to 1, any constituent generated by a cycle in the
+grammar will have a probability that is less than or equal to the
+original constituent; so ``ViterbiParse`` will discard it.
 
 Using ``ViterbiParse``
 ----------------------
@@ -338,10 +347,11 @@ parse, that ``get_parse_list`` will never return more than one parse.
               (P: 'with')
               (NP: (Det: 'a') (N: 'telescope')))))))) (p=7.53678903935e-11)
 
-The ``trace`` method can be used to set the level of tracing output that is generated
-when parsing a text.  Trace output displays the constituents that are considered, and
-indicates which ones are added to the most likely constituent table.  It also
-indicates the likelihood for each constituent.
+The ``trace`` method can be used to set the level of tracing output
+that is generated when parsing a text.  Trace output displays the
+constituents that are considered, and indicates which ones are added
+to the most likely constituent table.  It also indicates the
+likelihood for each constituent.
 
   >>> viterbi_parser1.trace(3)
   >>> tree = viterbi_parser1.parse(sent1)
@@ -387,61 +397,69 @@ A Bottom-Up PCFG Chart Parser
 Introduction
 ------------
 
-The Viterbi-style algorithm described in the previous section finds the single most
-likely parse for a given text.  But for many applications, it is useful to produce
-several alternative parses.  This is often the case when probabilistic parsers are
-combined with other probabilistic systems.  In particular, the most probable parse
-may be assigned a low probability by other systems; and a parse that is given a low
-probability by the parser might have a better overall probability.
+The Viterbi-style algorithm described in the previous section finds
+the single most likely parse for a given text.  But for many
+applications, it is useful to produce several alternative parses.
+This is often the case when probabilistic parsers are combined with
+other probabilistic systems.  In particular, the most probable parse
+may be assigned a low probability by other systems; and a parse that
+is given a low probability by the parser might have a better overall
+probability.
 
-For example, a probabilistic parser might decide that the most likely parse for "I
-saw John with the cookie" is is the structure with the interpretation "I used my
-cookie to see John"; but that parse would be assigned a low probability by a semantic
-system.  Combining the probability estimates from the parser and the semantic system,
-the parse with the interpretation "I saw John, who had my cookie" would be given a
-higher overall probability.
+For example, a probabilistic parser might decide that the most likely
+parse for "I saw John with the cookie" is is the structure with the
+interpretation "I used my cookie to see John"; but that parse would be
+assigned a low probability by a semantic system.  Combining the
+probability estimates from the parser and the semantic system, the
+parse with the interpretation "I saw John, who had my cookie" would be
+given a higher overall probability.
 
-This section describes ``BottomUpChartParser``, a parser for PCFGs that can find
-multiple parses for a text.  It assumes that you have already read the chart parsing
-tutorial, and are familiar with the data structures and productions used for chart
-parsing.
+This section describes ``BottomUpChartParser``, a parser for PCFGs
+that can find multiple parses for a text.  It assumes that you have
+already read the chart parsing tutorial, and are familiar with the
+data structures and productions used for chart parsing.
 
 The Basic Algorithm
 -------------------
 
-``BottomUpChartParser`` is a bottom-up parser for ``PCFG``s that uses a ``Chart`` to
-record partial results.  It maintains a queue of ``Edge``\ s, and adds them to the
-chart one at a time.  The ordering of this queue is based on the probabilities
-associated with the edges, allowing the parser to insert more likely edges before
-exploring less likely ones.  For each edge that the parser adds to the chart, it may
-become possible to insert new edges into the chart; these are added to the queue.
-``BottomUpChartParser`` continues adding the edges in the queue to the chart
-until enough complete parses have been found, or until the edge queue is empty.
+``BottomUpChartParser`` is a bottom-up parser for ``PCFG``s that uses
+a ``Chart`` to record partial results.  It maintains a queue of
+``Edge``\ s, and adds them to the chart one at a time.  The ordering
+of this queue is based on the probabilities associated with the edges,
+allowing the parser to insert more likely edges before exploring less
+likely ones.  For each edge that the parser adds to the chart, it may
+become possible to insert new edges into the chart; these are added to
+the queue.  ``BottomUpChartParser`` continues adding the edges in the
+queue to the chart until enough complete parses have been found, or
+until the edge queue is empty.
 
 Probabilistic Edges
 -------------------
 
-An ``Edge`` associates a dotted production and a location with a (partial) parse
-tree.  A *probabilistic edge* can be formed by using a
-``ProbabilisticTree`` to encode an edge's parse tree.  The probability of
-this tree is the product of the probability of the
-production that generated it and the probabilities of its children.  For example, the
-probability associated with an edge ``[Edge: S`` |rarr| ``NP`` |dot| ``VP]@[0:2]`` is the
-probability of its NP child times the probability of the PCFG production
-``S`` |rarr| ``NP VP``.  Note that an edge's tree token only includes
-children for elements to the left of the edge's dot.  Thus, the edge's probability
-does *not* include any probabilities for the elements to the right of the edge's dot.
+An ``Edge`` associates a dotted production and a location with a
+(partial) parse tree.  A *probabilistic edge* can be formed by using a
+``ProbabilisticTree`` to encode an edge's parse tree.  The probability
+of this tree is the product of the probability of the production that
+generated it and the probabilities of its children.  For example, the
+probability associated with an edge ``[Edge: S`` |rarr| ``NP`` |dot|
+``VP]@[0:2]`` is the probability of its NP child times the probability
+of the PCFG production ``S`` |rarr| ``NP VP``.  Note that an edge's
+tree token only includes children for elements to the left of the
+edge's dot.  Thus, the edge's probability does *not* include any
+probabilities for the elements to the right of the edge's dot.
 
 The Edge Queue
 --------------
 
-The edge queue is a sorted list of edges that can be added to the chart.  It is
-initialized with a single edge for each token in the text.  These *token edges* have
-the form [Edge: token |rarr| |dot|] where *token* is the word.
+The edge queue is a sorted list of edges that can be added to the
+chart.  It is initialized with a single edge for each token in the
+text.  These *token edges* have the form [Edge: token |rarr| |dot|]
+where *token* is the word.
 
-As each edge from the queue is added to the chart, it may become possible to insert
-new edges into the chart; these new edges are added to the queue.  There are two ways
-that it can become possible to insert new edges into the chart:
+As each edge from the queue is added to the chart, it may become
+possible to insert new edges into the chart; these new edges are added
+to the queue.  There are two ways that it can become possible to
+insert new edges into the chart:
 
 1. The *bottom-up initialization production* can be used to add a self-loop edge
    whenever an edge whose dot is in position 0 is added to the chart.
@@ -449,23 +467,27 @@ that it can become possible to insert new edges into the chart:
 2. The *fundamental production* can be used to combine a new edge with edges already
    present in the chart.
 
-The edge queue is implemented using a ``list``.  For efficiency reasons,
-``BottomUpChartParser`` uses ``pop`` to remove edges from the queue.  Thus, the
-front of the queue is the *end* of the list.  This needs to be kept in mind when
-implementing sorting orders for the queue: edges that should be tried first should be
-placed at the end of the list.
+The edge queue is implemented using a ``list``.  For efficiency
+reasons, ``BottomUpChartParser`` uses ``pop`` to remove edges from the
+queue.  Thus, the front of the queue is the *end* of the list.  This
+needs to be kept in mind when implementing sorting orders for the
+queue: edges that should be tried first should be placed at the end of
+the list.
 
 Sorting The Edge Queue
 ----------------------
 
-By changing the sorting order used by the queue, we can control the strategy that the
-parser uses to search for parses of a text.  Since there are a wide variety of
-reasonable search strategies, ``BottomUpChartParser`` does not define the sorting
-order for the queue.  Instead, ``BottomUpPCFGChartParser`` is defined as an abstract
-class; and subclasses are used to implement a variety of different queue orderings.
-Each subclass is required to define the ``sort_queue`` method, which sorts a given
-queue.  The remainder of this section describes four different subclasses of
-``BottomUpChartParser`` that are defined in the ``nltk_lite.parse.pchart`` module.
+By changing the sorting order used by the queue, we can control the
+strategy that the parser uses to search for parses of a text.  Since
+there are a wide variety of reasonable search strategies,
+``BottomUpChartParser`` does not define the sorting order for the
+queue.  Instead, ``BottomUpPCFGChartParser`` is defined as an abstract
+class; and subclasses are used to implement a variety of different
+queue orderings.  Each subclass is required to define the
+``sort_queue`` method, which sorts a given queue.  The remainder of
+this section describes four different subclasses of
+``BottomUpChartParser`` that are defined in the
+``nltk_lite.parse.pchart`` module.
 
 InsideParse
 ***********
@@ -473,32 +495,36 @@ InsideParse
 .. We should either explain "inside probabilities" or rename this parser (to
         ``LowestCostFirstParser``?). 
 
-The simplest way to order the queue is to sort the edges by the probabilities of
-their tree tokens.  This ordering concentrates the efforts of the parser on edges
-that are more likely to be correct descriptions of the texts that they span.  This
-approach is implemented by the ``InsideParse`` class.
+The simplest way to order the queue is to sort the edges by the
+probabilities of their tree tokens.  This ordering concentrates the
+efforts of the parser on edges that are more likely to be correct
+descriptions of the texts that they span.  This approach is
+implemented by the ``InsideParse`` class.
 
-The probability of an edge's tree token provides an upper bound on the probability of
-any parse produced using that edge.  The probabilistic "cost" of using an edge to
-form a parse is one minus its tree token's probability.  Thus, inserting the edges
-with the most likely tree tokens first results in a *lowest-cost-first* search
-strategy.  Lowest-cost-first search is an *optimal* search strategy: the first
+The probability of an edge's tree token provides an upper bound on the
+probability of any parse produced using that edge.  The probabilistic
+"cost" of using an edge to form a parse is one minus its tree token's
+probability.  Thus, inserting the edges with the most likely tree
+tokens first results in a *lowest-cost-first* search strategy.
+Lowest-cost-first search is an *optimal* search strategy: the first
 solution it finds is guaranteed to be the best solution.
 
-However, lowest-cost-first search can be rather inefficient.  Since a tree's
-probability is the product of the probabilities of all the productions used to
-generate it, smaller trees tend to have higher probabilities than larger ones.  Thus,
-lowest-cost-first search tends to insert edges with small tree tokens before moving
-on to edges with larger ones.  But any complete parse of the text will necessarily
-have a large tree token; so complete parses will tend to be inserted after nearly all
-other edges.
+However, lowest-cost-first search can be rather inefficient.  Since a
+tree's probability is the product of the probabilities of all the
+productions used to generate it, smaller trees tend to have higher
+probabilities than larger ones.  Thus, lowest-cost-first search tends
+to insert edges with small tree tokens before moving on to edges with
+larger ones.  But any complete parse of the text will necessarily have
+a large tree token; so complete parses will tend to be inserted after
+nearly all other edges.
 
-The basic problem with lowest-cost-first search is that it ignores the probability
-that an edge's tree is part of a complete parse.  It will try parses that are locally
-coherent, even if they are unlikely to form part of a complete parse.  Unfortunately,
-it can be quite difficult to calculate the probability that a tree is part of a
-complete parse.  However, we can use a variety of techniques to approximate that
-probability.
+The basic problem with lowest-cost-first search is that it ignores the
+probability that an edge's tree is part of a complete parse.  It will
+try parses that are locally coherent, even if they are unlikely to
+form part of a complete parse.  Unfortunately, it can be quite
+difficult to calculate the probability that a tree is part of a
+complete parse.  However, we can use a variety of techniques to
+approximate that probability.
 
 Since ``InsideParse`` is a subclass of ``BottomUpChartParse``, it only
 needs to define a ``sort_queue`` method.  Thus, the implementation of
@@ -512,14 +538,15 @@ needs to define a ``sort_queue`` method.  Thus, the implementation of
 LongestParse
 ************
 
-``LongestParse`` sorts its queue in descending order of the edges' lengths.  These
-lengths (properly normalized) provide a crude approximations to the probabilities
-that trees are part of complete parses.  Thus, ``LongestParse`` employs a
-*best-first* search strategy, where it inserts the edges that are closest to
-producing complete parses before trying any other edges.  Best-first search is *not*
-an optimal search strategy: the first solution it finds is not guaranteed to be the
-best solution.  However, it will usually find a complete parse much more quickly than
-lowest-cost-first search.
+``LongestParse`` sorts its queue in descending order of the edges'
+lengths.  These lengths (properly normalized) provide a crude
+approximations to the probabilities that trees are part of complete
+parses.  Thus, ``LongestParse`` employs a *best-first* search
+strategy, where it inserts the edges that are closest to producing
+complete parses before trying any other edges.  Best-first search is
+*not* an optimal search strategy: the first solution it finds is not
+guaranteed to be the best solution.  However, it will usually find a
+complete parse much more quickly than lowest-cost-first search.
 
 Since ``LongestParse`` is a subclass of ``BottomUpChartParse``, its implementation
 simply defines a ``sort_queue`` method::
@@ -532,28 +559,33 @@ simply defines a ``sort_queue`` method::
 BeamParse
 *********
 
-When large grammars are used to parse a text, the edge queue can grow quite long.
-The edges at the end of a large well-sorted queue are unlikely to be used.
-Therefore, it is reasonable to remove (or *prune*) these edges from the queue.
+When large grammars are used to parse a text, the edge queue can grow
+quite long.  The edges at the end of a large well-sorted queue are
+unlikely to be used.  Therefore, it is reasonable to remove (or
+*prune*) these edges from the queue.
 
-``BeamParse`` provides a simple implementation of a pruning PCFG parser.  It
-uses the same sorting order as ``InsideParse``.  But whenever the edge queue
-grows beyond a pre-defined maximum length, ``BeamParse`` truncates it.  The
-resulting search strategy, lowest-cost-first search with pruning, is a type of beam
-search.  (A *beam search* is a search strategy that only keeps the best partial
-results.)  The queue's predefined maximum length is called the *beam size* (or simply
-the *beam*).  The parser's beam size is set by the first argument to its constructor.
+``BeamParse`` provides a simple implementation of a pruning PCFG
+parser.  It uses the same sorting order as ``InsideParse``.  But
+whenever the edge queue grows beyond a pre-defined maximum length,
+``BeamParse`` truncates it.  The resulting search strategy,
+lowest-cost-first search with pruning, is a type of beam search.  (A
+*beam search* is a search strategy that only keeps the best partial
+results.)  The queue's predefined maximum length is called the *beam
+size* (or simply the *beam*).  The parser's beam size is set by the
+first argument to its constructor.
 
-Beam search reduces the space requirements for lowest-cost-first search, by
-discarding edges that are not likely to be used.  But beam search also loses many of
-lowest-cost-first search's more useful properties.  Beam search is not optimal: it is
-not guaranteed to find the best parse first.  In fact, since it might prune a
-necessary edge, beam search is not even *complete*: it is not guaranteed to return a
+Beam search reduces the space requirements for lowest-cost-first
+search, by discarding edges that are not likely to be used.  But beam
+search also loses many of lowest-cost-first search's more useful
+properties.  Beam search is not optimal: it is not guaranteed to find
+the best parse first.  In fact, since it might prune a necessary edge,
+beam search is not even *complete*: it is not guaranteed to return a
 parse if one exists.
 
-The implementation for ``BeamParse`` defines two methods.  First, it overrides
-the constructor, since it needs to record the beam size.  And second, it defines the
-``sort_queue`` method, which sorts the queue and discards any excess edges::
+The implementation for ``BeamParse`` defines two methods.  First, it
+overrides the constructor, since it needs to record the beam size.
+And second, it defines the ``sort_queue`` method, which sorts the
+queue and discards any excess edges::
         
   class BeamParse(BottomUpChartParse):
     def __init__(self, beam_size, grammar, trace=0):
@@ -567,9 +599,10 @@ the constructor, since it needs to record the beam size.  And second, it defines
       if len(queue) > self._beam_size:
         queue[:] = queue[len(queue)-self._beam_size:]
 
-Note that when truncating the queue, ``sort_queue`` uses the expression ``queue[:]``
-to change the *contents* of the ``queue`` variable.  In particular, compare it to the
-following code, which reassigns the local variable ``queue``, but does not modify the
+Note that when truncating the queue, ``sort_queue`` uses the
+expression ``queue[:]`` to change the *contents* of the ``queue``
+variable.  In particular, compare it to the following code, which
+reassigns the local variable ``queue``, but does not modify the
 contents of the given list::
 
   # WRONG: This does not change the contents of the edge queue. 
@@ -586,13 +619,13 @@ contents of the given list::
 Using ``BottomUpChartParser``
 -----------------------------
 
-These parsers are created using the ``BottomUpChartParse`` subclasses's
-constructors.  These include: ``InsideParse``, ``LongestParse``, ``BeamParser``, and
-``RandomParse``.
+These parsers are created using the ``BottomUpChartParse``
+subclasses's constructors.  These include: ``InsideParse``,
+``LongestParse``, ``BeamParser``, and ``RandomParse``.
 
-See the reference documentation for the ``BottomUpChartParse`` module for a complete
-list of subclasses.  Unless a subclass overrides the constructor, it takes a single
-PCFG:
+See the reference documentation for the ``BottomUpChartParse`` module
+for a complete list of subclasses.  Unless a subclass overrides the
+constructor, it takes a single PCFG:
 
   >>> from nltk_lite.parse.pchart import *
   >>> inside_parser = InsideParse(pcfg.toy1)
@@ -627,9 +660,10 @@ PCFG:
       (VP: (V: 'saw') (NP: 'John'))
       (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie'))))) (p=2.081625e-05)
 
-The ``trace`` method can be used to set the level of tracing output that is generated
-when parsing a text.  Trace output displays edges as they are added to the chart, and
-shows the probability for each edges' tree token.
+The ``trace`` method can be used to set the level of tracing output
+that is generated when parsing a text.  Trace output displays edges as
+they are added to the chart, and shows the probability for each edges'
+tree token.
 
   >>> inside_parser.trace(3)
   >>> trees = inside_parser.get_parse_list(sent1)
@@ -690,8 +724,20 @@ shows the probability for each edges' tree token.
     |. [--------->| [1:6] VP -> VP * PP                prob=1.38775e-05
 
 
+---------------
+Further Reading
+---------------
+
+Steven Abney (1996). Statistical Methods and Linguistics. In: Judith Klavans
+and Philip Resnik (eds.), The Balancing Act: Combining Symbolic and
+Statistical Approaches to Language. MIT Press.
+``http://www.vinartus.net/spa/95c.pdf``
+
+Christopher Manning and Hinrich Schutze (1999).  *Foundations of
+Statistical Natural Language Processing*.  MIT Press.  (esp chapter 12).
 
 ----
 
 NLTK_
+
 .. _NLTK: http://nltk.sourceforge.net/
