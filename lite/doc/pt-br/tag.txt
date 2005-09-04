@@ -1,0 +1,999 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+=======
+Tagging
+=======
+
+:Autores: Steven Bird, Ewan Klein, Edward Loper
+:Contato: sb@csse.unimelb.edu.au
+:Versão: |version|
+:Revisão: $Revision$
+:Data: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Note:: Este é um esboço. Por favor, envie seus comentários aos autores.
+
+----------
+Introdução
+----------
+
+Muitos enunciados de uma linguagem natural são ambíguos, obrigando-nos
+a utilizar outras fontes de informação para ajudar na interpretação. Por
+exemplo, a nossa interpretação do enunciado em inglês ``fruit flies like
+a banana`` depende da presença de marcas contextuais que nos predispõem
+a interpretar ``flies`` como um substantivo ou como um verbo. Antes mesmo
+que possamos abordar esta discussão, é preciso que sejamos capazes de
+representar as informações lingüísticas necessárias. Eis uma representação
+possível:
+
+=========  =========  ========  =====  ==========
+``Fruit``  ``flies``  ``like``  ``a``  ``banana``
+nome       verbo      prep      det    nome
+=========  =========  ========  =====  ==========
+
+=========  =========  ========  =====  ==========
+``Fruit``  ``flies``  ``like``  ``a``  ``banana``
+nome       nome       verbo     det    nome
+=========  =========  ========  =====  ==========
+
+A maioria dos sistemas de processamento lingüístico necessita
+reconhecer e interpretar as estruturas lingüísticas que existem numa
+seqüência de palavras. Esta tarefa é virtualmente impossível se tudo
+que soubermos sobre cada palavra é sua representação textual. Para
+determinar se uma dada string de palavras possui a estrutura de, por
+exemplo, um sintagma nominal, é impraticável verificar uma lista
+(potencialmente infinita) de todas as strings que podem ser
+classificadas como sintagma nominal. Ao invés disso, queremos ter a
+capacidade de generalizar quanto a *classes* de palavras. Estas classes
+de palavras são normalmente "etiquetas" que reportam informações como
+'artigo', 'adjetivo' ou 'substantivo'. De forma contrária, para
+interpretar palavras somos obrigados a saber discriminar entre as
+diferentes utilizações de uma mesma palavra, como ``deal`` que pode
+ser utilizada tanto como substantivo quanto como verbo. O processo
+de classificação de palavras neste sentido, e sua etiquetação em
+conformidade com esta classificação, é conhecido por *tagging das
+partes-do-discurso* (ou 'tagging de classes gramaticais'),
+*POS-tagging* (a partir da abreviatura inglesa) ou simplesmente
+*tagging*. O conjunto de tags utilizado para determinada tarefa é
+conhecido por *tag set* (ou 'conjunto de tags').
+
+Apresentamos anteriormente duas interpretações para *Fruit flies like
+a banana*, exemplos de como uma string de palavras pode ser complementada
+com informações referentes às classes gramaticais às quais suas
+palavras pertencem. Na verdade, o que fizemos foi executar um processo
+de tagging para a string ``fruit flies likes a banana``. Porém, as tags
+são geralmente incluídas ao lado do texto aos quais estão associadas.
+Isto é ilustrado pelo seguinte trecho extraído do Brown Corpus: 
+``The/at Pantheon's/np$ interior/nn ,/, still/rb in/in its/pp$ original/jj
+form/nn ,/, is/bez truly/ql majestic/jj and/cc an/at architectural/jj
+triumph/nn ./. ``.
+
+.. Conforme nossa tabela a seguir, ./. deveria ser, na verdade, ./end
+
+Here, the sequence ``The/at`` means that the word token ``The`` is
+tagged ``at``, which is the Brown Corpus tag for article.
+(The reader may be initially puzzled by strings like
+``,/,``. This just means that the tag for a comma is '``,'``.)
+
+Neste exemplo, a seqüência ``The/at`` indica que o toquen de palavra
+``The`` carrega consigo a tag ``at``, que é a tag do Brown Corpus para
+'artigo'. (O leitor pode ficar inicialmente perplexo com strings
+como ``,/,``; isto simplesmente significa que a tag para a vírgula
+é '``,'``)
+
+Podemos pensar no processo de tagging como uma forma de *anotar*
+um corpus textual. Anotações são uma forma de adicionar-se informações
+a um texto -- de fato, podemos pensar nestas como uma forma de tornar
+explícitas informações já presentes implicitamente no texto.
+
+Qual o propósito de anotar-se um texto desta forma? Uma demonstração é a
+utilização de corpora com tags para estudar padrões de utilização de
+palavras em diferentes gêneros literários (*estilística*). Por exemplo,
+podemos utilizar as tags para identificar todas as palavras de uma
+determinada classe, como os verbos modais em inglês, e então tabular suas
+freqüências de ocorrência nos diferentes gêneros, como mostrado
+abaixo:
+
+==================  ===  =====  ===  =====  ====  ====
+Uso de verbos modais no Brown Corpus, por gênero
+------------------------------------------------------
+Gênero              can  could  may  might  must  will 
+==================  ===  =====  ===  =====  ====  ====
+skill and hobbies   273  59     130  22     83    259 
+humor               17   33     8    8      9     13 
+fiction: science    16   49     4    12     8     16 
+press: reportage    94   86     66   36     50    387 
+fiction: romance    79   195    11   51     46    43 
+religion            84   59     79   12     54    64 
+==================  ===  =====  ===  =====  ====  ====
+
+Este tutorial foca-se no tagging de partes-do-discurso, por ser um passo
+inicial no processamento lingüístico que não depende de uma profunda
+análise lingüística. Os leitores devem lembrar-se de que existem muitos
+outros tipos de tagging. As palavras podem receber tags com diretivas
+para um sintetizador de voz, indicando quais palavras deveriam ser
+enfatizadas. As palavras também podem receber tags com índices numéricos
+de sentido, referendio-se a qual sentido está sendo utilizado naquela
+ocorrência. As palavras também podem receber tags referentes a
+propriedades morfológicas. Exemplos de cada um destes tipos de tags são
+mostrados abaixo. Note que por motivos de espaço somente reportamos a
+tag da palavra em itálico. Note também que os dois primeiros exemplos
+utilizam tags no estilo XML, no qual os elementos entre sinais de maior
+e menor cercam a palavra à qual a tag se refere.
+
+1. *Speech Synthesis Markup Language (W3C SSML):*
+   ``That is a <emphasis>*big*</emphasis> car!``
+#. *SemCor: Brown Corpus tagged with WordNet senses:*
+   ``Space in any <wf pos="NN" lemma="form" wnsn="4">*form*</wf>
+   is completely measured by the three dimensions.``
+   (Wordnet form/nn sense 4: "shape, form, configuration,
+   contour, conformation")
+#. *Morphological tagging, from the Turin University Italian Treebank:*
+   ``E' italiano , come progetto e realizzazione , il
+   *primo* (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .``
+
+Já dissemos que as tags referentes às partes-do-discurso estão em forte
+relação com a noção de classe gramatical utilizada na sintaxe. O princípio
+assumido pela lingüística teórica é de que todo tipo distinto de palavra
+estará listado em um léxico (ou dicionário), com informações quanto à
+sua pronúncia, propriedades sintáticas e significado. Uma componente
+chave das propriedades sintáticas de uma palavra será a classe à qual
+ela pertence. Quando realizamos uma análise sintática de nosso exemplo
+anterior ``fruit flies like a banana``, procuramos por cada palavra em
+nosso léxico, determinamos qual é sua classe gramatical e finalmente
+a agrupamos em uma hierarquia de frases, como ilustrado na árvore de
+análise ('parse tree') a seguir.
+
+.. figure:: ../images/syntax-tree.png
+   :scale: 1
+
+   Syntactic Parse Tree
+
+Nesta árvore, utilizamos as abreviações sintáticas padrão para as
+classes gramaticais. Estas são listadas na tabela a seguir, juntamente
+a seus correspondentes no tag-set do Brown Corpus.
+
+================   =========     ============================
+Etiquetas de classes gramaticais e tags do Brown Corpus
+-------------------------------------------------------
+Etiqueta de classe gramatical   Tag Brown     Classe gramatical 
+=============================   =========     ===========================
+Det                             at            Artigo
+N                               nn            Substantivo
+V                               vb            Verbo
+Adj                             jj            Adjetivo 
+P                               in            Preposição 
+Card                            cd            Numeral 
+-                               end           Pontuação de final de frase 
+=============================   =========     ===========================
+
+Em análises sintáticas, há normalmente uma estreita correlação entre a
+classe à qual uma palavra pertence e as frases e sintagmas que esta forma
+com as palavras vizinhas. Assim, por exemplo, um sintagma nominal (designado
+por NP) consiste normalmente de um substantivo (N), opcionalmente
+acompanhado por um artigo (Det) e alguns modificadores como adjetivos
+(Adj). Podemos expressar esta generalização em termos de uma regra de produção:
+
+  NP |rarr| Det Adj* N
+
+Nestes casos, dizemos que o substantivo é o *head* (em português 'cabeça'
+ou 'chefe', mas no Brasil costuma-se utilizar a terminologia inglesa) do
+sintagma nominal; basicamente podemos dizer que o head de um sintagma é
+o elemento essencial que pode ocorrer em qualquer contexto em que o
+sintagma como um todo pode ocorrer. Porém, de um ponto de vista
+puramente notacional, temos liberdade para utilizar qualquer etiqueta
+que desejarmos para as classes de palavras e estas podem ser as tags
+fornecidas pelo tag-set. Por exemplo, poderíamos substituir a regra
+anterior pela seguinte:
+
+  NP |rarr| at jj* nn
+
+Isto é conveniente, pois em algumas tarefas práticas podemos utilizar
+um tagger automático para etiquetar as palavras de nosso exemplo com
+as tags retiradas do tag-set Brown, e utilizar o resultado como base
+para a construção de uma árvore de análises sintática como vimos
+acima. 
+
+Até agora, discorremos apenas sobre as tags utilizadas para referir-se
+a informações quanto à classe das palavras. Porém, tag-sets comuns como
+aqueles utilizados no Brown Corpus costumam incluir também informações
+de cunho *morfo-sintático*. Considere, por exemplo, a seleção de formas
+distintas da palavra ``be`` ilustrada nas sentenças a seguir:
+
+  Be still!
+  Being still is hard.
+  I am still.
+  I have been still all day.
+  I was still all day.
+
+Dizemos que estas formas são morfo-sintáticamente distintas pois elas
+apresentam diferentes flexões morfológicas e diferentes restrições
+co-ocorrentes com as palavras vizinhas. Por exemplo, ``am`` não pode
+substituir nenhum dos dois primeiros exemplos:
+
+  \*Am still!
+  \*Am still is hard.
+
+Estas diferenças entre as formas são codificadas em suas tags do
+Brown Corpus: ``be/be, being/beg, am/bem, been/ben`` e ``was/bedz``.
+Isto significa que um tagger automático que utilize este tag-set está
+na verdade efetuando uma limitada análise morfológica.
+
+---------------
+Taggers simples
+---------------
+
+Nesta seção iremos abordar três taggers simples. Todos eles processam
+os toquens fornecidos ('input tokens') um a um, adicionando uma tag a
+cada toquen. Em todos os casos eles trabalham sobre texto toquenizado.
+Podemos criar facilmente um exemplo de texto toquenizado da seguinte
+forma:
+
+  >>> from nltk_lite import tokenize
+  >>> text = "John saw 3 polar bears ."
+  >>> tokens = list(tokenize.whitespace(text))
+  >>> print tokens
+  ['John', 'saw', '3', 'polar', 'bears', '.']
+
+.. Note:: O toquenizador é um *gerador* de tokens. Não podemos
+   exibí-lo diretamente, mas podemos convertê-lo em uma lista para
+   exibição, como mostrado no programa acima. Note como podemos utilizar
+   um gerador uma única vez, mas se o salvarmos na forma lista podemos
+   utilizar esta última quantas vezes for necessário.
+
+O Default Tagger (Tagger por defeito)
+-------------------------------------
+
+O tagger mais simples possível atribui uma mesma tag a qualquer toquen
+que lhe seja fornecindo, não importando o texto do toquen. A classe
+``DefaultTagger`` implementa este tipo de tagger. No programa abaixo,
+iremos criar um tagger chamado ``my_tagger`` que marca qualquer toquen
+como sendo um substantivo.
+
+  >>> from nltk_lite import tag
+  >>> my_tagger = tag.Default('nn')
+  >>> list(my_tagger.tag(tokens))
+  [('John', 'nn'), ('saw', 'nn'), ('3', 'nn'), ('polar', 'nn'), ('bears', 'nn'), ('.', 'nn')]
+
+Trata-se de um algoritmo muito simples e que fornece resultados
+precários quando usado isoladamente. Em um corpus típico, apenas
+20-30% dos tokens receberão uma tag adequada. É porém razoável utilizar
+este tipo de tagger como "tagger por defeito" (ou seja, como última
+alternativa), se taggers mais sofisticados falharem em determinar a
+tag correta para um toquen. Quando usado em conjunto com outros taggers,
+um ``DefaultTagger`` pode melhorar significativamente o desempenho.
+
+.. Important:: Default Taggers atribuem sua tag para qualquer palavra,
+   mesmo àquelas que nunca foram encontradas antes. Assim, eles ajudam
+   a tornar o sistema de processamento lingüístico mais sólido. Iremos
+   abordá-los novamente a seguir, no contexto de nossa discussão
+   sobre o *backoff*.
+
+O Tagger por Expressões Regulares
+---------------------------------
+
+O tagger por expressões regulares atribui tags aos toquens com base
+em padrões ('matching patterns') aplicados ao texto dos toquens. Por
+exemplo, o tagger a seguir atribui a tag ``cd`` aos numerais cardinais e
+``nn`` aos demais itens::
+
+  >>> patterns = [(r'^[0-9]+(.[0-9]+)?$', 'cd'), (r'.*', 'nn')]
+  >>> nn_cd_tagger = tag.Regexp(patterns)
+  >>> list(nn_cd_tagger.tag(tokens))
+  [('John', 'nn'), ('saw', 'nn'), ('3', 'cd'), ('polar', 'nn'), ('bears', 'nn'), ('.', 'nn')]
+
+Podemos generalizar este método para estimar qual a tag correta para uma
+palavra com base na presença de prefixos ou sufixos. Por exemplo, as
+palavras em inglês que começam por ``un-`` são provavelmente adjetivos.
+
+O Unigram Tagger
+------------------
+
+A classe ``UnigramTagger`` implementa um algoritmo estatístico simples
+para o processo de tagging: a cada toquen é atribuída a tag mais provável
+em função de seu texto. Por exemplo, este tipo de tagger irá atribuir a
+tag ``jj`` a qualquer ocorrência da palavra ``frequent``, pois esta aparece
+mais freqüentemente como um adjetivo (como em ``a frequent word``) do que
+como um verbo (como em ``I frequent this cafe``).
+
+Antes que um ``UnigramTagger`` possa ser utilizado no processo de tagging
+é necessário trainá-lo em *corpus de treinamento*. O tagger irá utilizar
+este corpus para determinar qual a tag mais comum para cada palavra. Os
+``UnigramTaggers`` são treinados usando-se o método ``train()``, que
+recebe como argumento um corpus com informações de tags::
+
+  >>> from nltk_lite.corpora import brown
+  >>> from itertools import islice
+  >>> train_sents = list(islice(brown.tagged(), 500))  # sents 0..499
+  >>> unigram_tagger = tag.Unigram()
+  >>> unigram_tagger.train(train_sents)
+
+Uma vez que um ``UnigramTagger`` tenha sido treinado, o método ``tag()``
+pode ser utilizado no processo de tagging de novos textos::
+
+  >>> text = "John saw the book on the table"
+  >>> tokens = list(tokenize.whitespace(text))
+  >>> list(unigram_tagger.tag(tokens))
+  [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', None), ('on', 'in'), ('the', 'at'), ('table', None)]
+
+Como dissemos anteriormente, um ``UnigramTagger`` atribuirá a tag padrão
+``None`` ("nada") a qualquer token que não tenha sido encontrado durante
+o treinamento. Podemos instruí-lo a *backoff* para nosso tagger
+``nn_cd_tagger`` nestes casos em que não é capaz de atribuir uma tag
+por conta própria::
+
+  >>> unigram_tagger = tag.Unigram(backoff=nn_cd_tagger)
+  >>> unigram_tagger.train(train_sents)
+  >>> list(unigram_tagger.tag(tokens))
+  [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', 'nn'), ('on', 'in'), ('the', 'at'), ('table', 'nn')]
+
+Temos agora certeza de que todas as palavras receberam tags.
+
+Os Affix Taggers
+----------------
+
+Os Affix Taggers são similares aos Unigram Taggers, diferindo destes pelo
+fato de serem treinados sobre prefixos ou sufixos de comprimentos
+pré-determinados (lembre-se de que neste caso estamos usando *prefixo* e
+*sufixo* no sentido de partes de uma strings, e não no sentido
+morfológico). Por exemplo, o tagger a seguir irá considerar sufixos
+de três letras (como *-ize* e *-ion*) para palavras que tenham ao menos
+cinco letras de comprimento.
+
+  >>> affix_tagger = Affix(-3, 5, backoff=unigram_tagger)
+
+-----------------
+Avaliando taggers
+-----------------
+
+Conforme testamos diferentes tipos de taggers, é importante dispormos de
+um método objetiva para medição de desempenhos. Por sorte já dispomos de
+um corpus de treinamento verificado manualmente (o corpus com informações
+de tags original) que poderemos utilizar para avaliar nossos taggers.
+
+Considere as sentenças a seguir retiradas do Brown Corpus. As tags 'Gold
+Standard' ('Padrão de Ouro', as tags corretas) do corpus são reportadas
+na segunda coluna, enquanto as tags atribuídas pelo Unigram Tagger
+aparecem na terceira coluna. Os dois erros cometidos pelo Unigram Tagger
+são assinalados em itálico.
+
+===============  =============  ==============
+Avaliando taggers
+----------------------------------------------
+Sentença         Gold Standard  Unigram Tagger
+===============  =============  ==============
+The              at             at
+President        nn-tl          nn-tl
+said             vbd            vbd
+he               pps            pps
+will             md             md
+ask              vb             vb
+Congress         np             np
+to               to             to
+increase         vb             *nn*
+grants           nns            nns
+to               in             *to*
+states           nns            nns
+for              in             in
+vocational       jj             jj
+rehabilitation   nn             nn
+.                .              .
+===============  =============  ==============
+
+O tagger atribuiu tags corretas a 14 das 16 palavras, resultando em um
+índice de acerto de 14/16 ou 87,5%. Evidentemente, o desempenho deveria
+ser avaliado com base em um conteúdo maior de dados. O NLTK disponibiliza
+uma função chamada ``tag.accuracy`` que automatiza esta tarefa. No caso
+mais simples, podemos testar o tagger utilizando o mesmo conjunto de
+dados sobre o qual ele foi treinado:
+
+  >>> acc = tag.accuracy(unigram_tagger, train_sents)
+  >>> print 'Accuracy = %4.1f%%' % (100 * acc)
+  Accuracy = 84.7%
+
+Todavia, testar um sistema de processamento lingüístico sobre os mesmos
+dados que foram utilizados para seu treinamento não é muito sábio. Um
+sistema que simplesmente memorizasse os dados de treinamento obteria um
+resultado perfeito sem realizar qualquer tipo de modelagem lingüística.
+Ao invés disso, é importante valorizar sistemas que consigam traçar
+boas generalizações, de tal forma que possamos aplicá-los a *dados
+não-vistos* e substituir o ``train_sents`` ('tokens de treinamento', em
+inglês) acima por ``unseen_sents`` ('tokens não-vistos', em inglês).
+Podemos então definir dois conjuntos de dados como a seguir:
+
+  >>> train_sents  = islice(brown.tagged('a'))[:500]
+  >>> unseen_sents = islice(brown.tagged('a'))[500:600] # sents 500-599
+
+Agora é possível treinar o tagger utilizando o ``train_sents`` e avaliar
+seu desempenho utilizando o ``unseen_sents``, como mostrado a seguir:
+
+  >>> unigram_tagger = tag.Unigram(backoff=nn_cd_tagger)
+  >>> unigram_tagger.train(train_sents)
+  >>> acc = tag.accuracy(unigram_tagger, unseen_sents)
+  >>> print 'Accuracy = %4.1f%%' % (100 * acc)
+  Accuracy = 74.7%
+
+Os resultados de desempenho produzidos por este método de avaliação são
+inferiores mas fornecem-nos uma imagem mais realista do desempenho do
+tagger. Note que o desempenho de qualquer tagger estatístico depende
+em grande parte da qualidade dos dados utilizados para treiná-lo. Em
+especial, se a quantidade de dados de treinamento for pequena, o tagger
+não será capaz de estimar a tag mais provável para cada palavra de forma
+ confiável. O desempenho também sofrerá se os dados de treinamento
+forem significativamente diferentes dos textos aos quais desejamos aplicar
+o processo de tagging.
+
+Durante o processo de desenvolvimento de um tagger, podemos utilizar o
+índice de desempenho como uma medida objetiva das melhorias aportadas
+ao sistema. Inicialmente, o índice de desempenho crescerá rapidamente a
+medida que solucionamos problemas óbvios no tagger. Após certo tempo,
+porém, as melhorias tornam-se mais difíceis e o índice cresce pouco.
+
+Mesmo sendo o índice de desempenho extremamente útil, ele não nos informa
+sobre como melhorar o tagger. Para isto é necessário que realizemos uma
+análise de erro. Por exemplo, podemos construir uma *matriz de confusão*, com
+uma linha e uma coluna para cada tag possível, e entradas que armazenem
+o quão freqüentemente a tag *T* :subscript:`i` é incorretamente utilizada
+no lugar de *T* :subscript:`j`. Outra abordagem é uma análise do contexto
+dos erros.
+
+  >>> errors = {}
+  >>> for i in range(len(unseen_sents)):
+  ...     raw_sent = tag.untag(unseen_sents[i])
+  ...     test_sent = list(unigram_tagger.tag(raw_sent))
+  ...     unseen_sent = unseen_sents[i]
+  ...     for j in range(len(test_sent)):
+  ...         if test_sent[j][1] != unseen_sent[j][1]:
+  ...             test_context = test_sent[j-1:j+1]
+  ...             gold_context = unseen_sent[j-1:j+1]
+  ...             if None not in test_context:
+  ...                 pair = (tuple(test_context), tuple(gold_context))
+  ...                 errors[pair] = errors.get(pair, 0) + 1
+
+O programa acima cataloga todos os erros juntamente com a tag à esquerda
+de cada um (a tag da palavra que os antecede) e suas freqüências de
+ocorrência. O dicionário ``errors`` possui entradas na forma
+``((t1,t2),(g1,g2))``, nas quais ``(t1,t2)`` são as tags de teste e
+``(g1,g2)`` são as tags do Gold Standard. Os valores armazenados no
+dicionário ``errors`` são simples contagens da freqüência com a qual os
+erros são encontrados. Com algum processamento adicional, podemos
+construir a lista ``counted_errors`` contendo tuples que consistam das
+contagens e dos erros, revertendo sua ordem ao final para obter os
+erros mais significativos primeiro:
+
+  >>> counted_errors = [(errors[k], k) for k in errors.keys()]
+  >>> counted_errors.sort()
+  >>> counted_errors.reverse()
+  >>> for err in counted_errors[:5]:
+  ...     print err
+  (32, ((), ()))
+  (5, ((('the', 'at'), ('Rev.', 'nn')), (('the', 'at'), ('Rev.', 'np'))))
+  (5, ((('Assemblies', 'nn'), ('of', 'in')), (('Assemblies', 'nns-tl'), ('of', 'in-tl'))))
+  (4, ((('of', 'in'), ('God', 'nn')), (('of', 'in-tl'), ('God', 'np-tl'))))
+  (3, ((('to', 'to'), ('form', 'nn')), (('to', 'to'), ('form', 'vb'))))
+
+A quinta linha do output (saída, resultado do programa) demonstra o fato
+de que há 3 casos em que o Unigram Tagger atribuiu errôneamente a tag de verbo
+a um substantivo que seguia a palavra ``to``. (Encontramos o inverso deste
+erro para a palavra ``increase`` na tabela de avaliação acima, na qual
+o Unigram Tagger havia marcado ``increase`` como um verbo ao invés de um
+substantivo, pois esta ocorre mais freqüentemente nos dados de treinamento
+como um verbo) Aqui, quando ``form`` segue a palavra ``to``, esta é
+invariavelmente um verbo. Evidentemente, o desempenho do tagger melhoraria
+se este fosse modificado para que passasse a considerar não apenas a palavra
+que está sendo processada a cada momento, mas também a tag já atribuída à
+palavra que a antecede. Este tipo de tagger é conhecido por Bigram Tagger e
+será o próximo tipo a ser abordado.
+
+---------------------------------------------------
+Os Taggers de Ordem Superior (Higher Order Taggers)
+---------------------------------------------------
+
+Nas seções anteriores estudamos o ``UnigramTagger``, que atribui uma tag
+a uma palavra com base na identidade desta palavra. Nesta seção iremos
+considerar os taggers que adoperam uma quantidade maior de contexto durante
+o processo de atribuição de uma tag.
+
+Bigram Taggers
+--------------
+
+Como seu nome sugere, os <glossterm>bigram taggers</glossterm> utilizam
+dois pedaços de informação para cada decisão quanto ao tagging.
+Normalmente esta informação é constituída pelo texto da palavra que
+está sendo analisada no momento e a tag da palavra anterior. Estes dois
+pedaços de informação constituem o <glossterm>contexto</glossterm> para o
+toquen ao qual será atribuída uma tag. Dado o contexto, o tagger busca
+atribuir a tag mais provável. Podemos visualizar este processo com
+a ajuda da tabela de bigramas abaixo, um pequeno fragmento da estrutura
+interna de dados que é construída por um Bigram Tagger.
+
+====  ====  =========  ====   ========   ======   ====  ======
+Fragmento de uma tabela de bigramas
+--------------------------------------------------------------
+      ask   Congress   to     increase   grants   to    states
+====  ====  =========  ====   ========   ======   ====  ======
+at                            nn
+tl                     to                         to 
+bd                     to                nns      to
+md    *vb*                     vb
+vb          *np*        to                *nns*     to    nns 
+np                     *to*                        to
+to    vb               *vb*  
+nn          np         to     nn         nns      to
+nns                    to                         *to*
+in          np         in                         in    *nns* 
+jj                     to                nns      to    nns 
+====  ====  =========  ====   ========   ======   ====  ======
+
+.. source code for bigram table
+   from nltk.tagger import *
+   from nltk.corpus import brown
+   train_tokens = []
+   for item in brown.items()[:10]:
+       train_tokens.append(brown.read(item))
+   mytagger = tag.ngram(2)
+   for tok in train_tokens: mytagger.train(tok)
+   words = '''ask Congress to increase grants to states'''.split()
+   tags = '''at nn-tl vbd md vb np to nn nns in jj'''.split()
+
+   print "     ",
+   for word in words:
+       print " %s " % word,
+   print
+   for tag in tags:
+       print "%5s" % tag,
+       for word in words:
+           guess = mytagger._freqdist[((tag,), word)].max()
+           if not guess: guess=""
+           print " %s " % guess,
+       print
+
+A melhor forma para se entender esta tabela é trabalhar com esta
+sobre um exemplo. Suponha que já tenhamos processado a sentença
+``The President will ask Congress to increase grants to states for
+vocational rehabilitation .`` até a altura do toquen ``will/md``.
+Podemos utilizar esta tabela para entender quais tags seriam atribuídas
+ao restante da sentença. Quando antecedida por ``md``, o tagger considera
+que a palavra ``ask`` deve receber a tag ``vb`` (em itálico na tabela).
+Continuando para a próxima palavra, sabemos que a tag anterior será
+agora ``vb``, e buscando por esta linha podemos encontrar ``Congress``
+com a atribuição da tag ``np``. O processo segue até o final da frase.
+No momento em que a palavra ``increase`` é encontrada, atribuímos-lhe
+corretamente a tag ``vb`` (ao contrário do Unigram Tagger que a
+marcaria como ``nn``). Ainda assim, o Bigram Tagger errôneamente atribui
+a tag de "infinitivante" (ou seja, que em língua inglesa torna o verbo
+sucessivo um verbo no infinitivo) à palavra ``to`` que antecede ``states``
+e não a tag correta que indica tratar-se de uma preposição. Isto sugere
+que pode ser necessário considerar um contexto ainda maior para obter
+a tag correta.
+
+-----------------------------------
+Taggers de ordem-N (N-Gram Taggers)
+-----------------------------------
+
+Como acabamos de ver, pode ser interessante considerar mais dados além
+da tag da palavra antecedente durante um processo de taggin. Um *tagger
+de ordem N* é uma generalização de um Bigram Tagger, cujo contexto é o
+texto do toquen atual juntamente com as tags dos *n* toquens anteriores,
+como mostrado no diagrama abaixo. O tagger seleciona a tag mais provável
+com base nas informações deste contexto. A tag a ser escolhida, *t*
+:subscript:`k`, está circulada e o contexto está hachurado em tons de
+cinza. Neste exemplo de tagger de ordem N, temos *n=3*; em outras palavras,
+estamos inspecionando as duas palavras que antecedem a atual.
+
+.. figure:: ../images/tag-context.png
+   :scale: 1
+
+   Contexto do tagger
+ 
+.. note:: Um tagger de ordem 1 é outra denominação para o Unigram Tagger,
+   ou seja o contexto utilizando para atribuir uma tag a um toquen é
+   apenas o texto do próprio. Taggers de ordem 2 também são conhecidos
+   por *Bigram Taggers* e taggers de ordem 3 por *trigram taggers*.
+   Definimos, assim, os bigram e trigram taggers como casos especiais
+   dos taggers de ordem N.
+
+``tag.Ngram`` utiliza um corpus de treinamento com tags para determinar
+qual tag de parte-do-discurso é a mais provável para cada contexto.
+Aqui vemos um caso especial do tagger de ordem-N, chamado de
+Bigram Tagger::
+
+  >>> bigram_tagger = tag.Bigram()
+  >>> bigram_tagger.train(brown.tagged(['a','b']))
+
+Uma vez que o Bigram Tagger tenha sido treinado, podemos utilizá-lo para
+atribuir tags a corpora ainda sem estas informações:
+
+  >>> text = "John saw the book on the table"
+  >>> tokens = list(tokenize.whitespace(text))
+  >>> list(tagger.tag(tokens))
+  [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', 'nn'), ('on', 'in'), ('the', 'at'), ('table', None)]
+
+Como os outros taggers considerados anteriormente, os taggers de ordem
+N também atribuirão a tag padrão ``None`` a qualquer toquen cujo contexto
+não tenha sido encontrado em seus dados de treinamento. Note que, à medida
+que *n* aumenta, a especificidade do contexto também aumenta e, com esta,
+as possibilidades de que os dados que desejamos treinar contenham contextos
+que não estão presentes nos dados de treinamento. Este problema é
+normalmente conhecido por *dados esparsos*. Assim, é necessário encontrar
+um eqüilíbrio entre os índices de acerto e abrangência de nossos
+resultados. Este é um fator habitual no processamento de linguagem natural.
+Ele está intimamente relacionado ao *problema do precision/recall* que
+encontraremos depois ao discutirmos a obtenção de informações.
+
+.. Note:: taggers de ordem N não deveriam considerar contextos que
+   ultrapassam os limites das sentenças. Em conformidade com isto, os
+   taggers do NLTK foram projetados para trabalhar com listas de
+   sentenças, na qual cada sentença constitui uma lista de palavras,
+   um estrutura duplamente aninhada.
+
+------------------
+Combinando taggers
+------------------
+
+One way to address the trade-off between accuracy and coverage is to
+use the more accurate algorithms when we can, but to fall back on
+algorithms with wider coverage when necessary. For example, we could
+combine the results of a bigram tagger, a unigram tagger, and
+a ``NN_CD_Tagger``, as follows:
+
+Uma forma de lidarmos com o trade-off entre índice de acerto e extensão é
+utilizar os algoritmos mais precisos quando pudermos, mas permitindo-se
+utilizar algoritmos de abordagem mais ampla quando necessário. Por exemplo,
+poderíamos combinar os resultados de um Bigram Tagger, de um Unigram
+Tagger e de um ``nn_cd_tagger`` da seguinte forma:
+
+1. Tenta-se atribuir uma tag ao toquen com o Bigram Tagger.
+2. Se o Bigram Tagger for incapaz de encontrar uma tag para o toquen,
+   tenta-se encontrar uma com o Unigram Tagger.
+3. Se o Unigram Tagger também é incapaz de encontrar uma tag,
+   utiliza-se o tagger padrão para encontrar uma tag.
+
+Cada tagger do NLTK permite que se especifique um backoff-tagger.
+O backoff-tagger também pode, por sua vez, ter um backoff-tagger::
+
+  >>> t0 = tag.Default('nn')
+  >>> t1 = tag.Unigram(backoff=t0)
+  >>> t2 = tag.Bigram(backoff=t1)
+  >>> t1.train(brown.tagged('a'))
+  >>> t2.train(brown.tagged('a'))
+
+.. Note:: Determina-se o backoff tagger no momento da inicialização do
+   tagger, de tal forma que o treinamento possa valer-se do backing off.
+   Assim, caso o Bigram Tagger e seu Unigram Tagger de backoff fossem
+   atribuir a mesma tag em um contexto específico, a etapa de treinamento
+   é descartada. Isto mantém o modelo do Bigram Tagger na menor extensão
+   possível. Adicionalmente, podemos determinar que um tagger necessite
+   de mais de uma ocorrência de um contexto para mantê-lo, por exemplo
+   com ``Bigram(cutoff=2, backoff=t1)``, que desconsideraria contextos
+   encontrados apenas uma ou duas vezes.
+
+Podemos agora testar os taggers::
+
+  >>> accuracy0 = tag.accuracy(t0, unseen_sents)
+  >>> accuracy1 = tag.accuracy(t1, unseen_sents)
+  >>> accuracy2 = tag.accuracy(t2, unseen_sents)
+
+  >>> print 'Default Accuracy = %4.1f%%' % (100 * accuracy0)
+  Default Accuracy = 13.1%
+  >>> print 'Unigram Accuracy  = %4.1f%%' % (100 * accuracy1)
+  Unigram Accuracy  = 87.9%
+  >>> print 'Bigram Accuracy = %4.1f%%' % (100 * accuracy2)
+  Bigram Accuracy = 85.2%
+
+--------------
+O Brill Tagger
+--------------
+
+Um problema em potencial com taggers de ordem N é seu tamanho. Se o
+processo de tagging vier a ser desempenhado por uma variedade de
+tecnologias da linguagem em dispositivos portáteis de computação, é
+importante encontrar formas de reduzir o tamanho dos modelos sem
+comprometer demasiadamente o desempenho. Uma combinação de diferentes
+taggers de ordem N pode armazenar tabelas de trigram e bigram, enormes
+matrizes esparsas que podem conter centenas de milhões de entradas. Como
+vimos na tabela de bigramas acima, modelos de ordem N apenas consideram
+as tags das palavras dentro de determinado contexto. Uma conseqüência do
+tamanho destes modelos é simplesmente a impraticabilidade de se
+condicionar modelos de ordem N quanto às características das palavras
+no contexto. Nesta seção iremos examinar o método Brill para tagging, um
+método de tagging estatístico que apresenta um desempenho muito bom
+utilizando modelos que correspondem a uma pequena fração do tamanho de
+taggers de ordem N.
+
+O Brill tagging é um tipo de *aprendizagem baseada em transformações*
+("transformation-based learning", em inglês). A idéia geral é bastante
+simples: primeiramente, atribui-se a tag mais provável a cada palavra
+e então retorna-se ao início para corrigir os erros. Desta forma, um
+Brill Tagger transforma aos poucos um texto com tags incorretamente marcadas
+em um com tags corretamente marcadas. Como no processo de tagging por
+ordem N, trata-se de um método de *aprendizagem supervisionada*
+("supervised learning", em inglês), já que é necessário um conjundo de
+dados anotados sobre os quais efetuar o treinamento. Porém, ao contrário
+do tagging de ordem N, ele não efetua uma contagem das observações mas
+compila uma lista de regras de correção transformacionais.
+
+O processo de Brill Tagging é geralmente explicado por meio de uma
+analogia com a pintura. Imagine que estejamos pintando uma árvore, com
+todos seus detalhes de ramos, galhos e folhas sobre um fundo uniforme
+de cor azul-celeste. Ao invés de pintarmos primeiro a árvore e então pintar
+em azul os espaços entre seus ramos, é muito mais simples pintar a
+tela inteira de azul e então "corrigir" nesta a seção da árvore, pintando
+sobre o fundo azul. Da mesma forma podemos pintar o tronco com um marrom
+uniforme antes de voltar para pincelar sobre este detalhes mais específicos.
+O Brill Tagging vale-se da mesma idíea: obtém-se inicialmente o "grosso"
+da pintura com pinceladas bruscas e então cuida-se dos detalhes. Com o
+andamento do processo, pincéis cada vez menores são utilizados e a escala
+das mudanças torna-se arbitrariamente pequena. A decisão quanto ao momento
+certo para parar também é, de certa forma, arbitrária. A tabela a seguir
+ilustra este processo utilizando inicialmente um unigram tagger e
+corrigindo os erros logo após.
+
+==============  =======  ==========  =================================  =============================
+Passos no Brill Tagging
+-----------------------------------------------------------------------------------------------------
+Sentence:       Gold:    Unigram:    Substitui ``nn`` por ``vb``         Substitui ``to`` por ``in``
+                                     quando a palavra anterior for ``to``   quando a tag a seguir for ``nns`` 
+The             at       at
+President       nn-tl    nn-tl
+said            vbd      vbd
+he              pps      pps
+will            md       md
+ask             vb       vb
+Congress        np       np
+to              to       to
+increase        vb       *nn*         *vb*
+grants          nns      nns
+to              in       *to*         *to*                                *in*
+states          nns      nns
+for             in       in
+vocational      jj       jj
+rehabilitation  nn       nn
+==============  =======  ==========  =================================  =============================
+
+Nesta tabela vemos duas regras. Todas estas regras são geradas a partir
+de um modelo com a seguinte forma: "substitui *T* :subscript:`1` por
+*T* :subscript:`2` no contexto *C*".Contextos típicos são a identidade
+ou a tag das palavras que precedem ou seguem a atual ou a presença de
+determinada tag num intervalo de 2-3 palavras de distância da atual.
+Durante sua etapa de treinamento, o tagger estima os valores para
+*T* :subscript:`1`, *T* :subscript:`2` e *C* para criar milhares de
+regras em potencial. A cada regra é então atribuído um coeficiente de
+desempenho baseado em seu sucesso global: o número de tags incorretas que
+ele corrige menos o número de tags corretas que ele incorretamente
+modifica. Este processo é ilustrado melhor por meio da listagem do output
+do Brill Tagger do NLTK (aqui sendo executado no corpus com tags do
+Wall Street Journal distribuído com o Penn Treebank). [#]_
+
+.. [#] Agradecemos a Christopher Maloof por desenvolver este Brill Tagger
+       para o NLTK.
+
+::
+
+  Loading tagged data...
+  Training unigram tagger: [accuracy: 0.820940]
+  Training Brill tagger on 37168 tokens...
+ 
+  Iteration 1: 1482 errors; ranking 23989 rules;
+    Found: "Replace POS with VBZ if the preceding word is tagged PRP"
+    Apply: [changed 39 tags: 39 correct; 0 incorrect]
+ 
+  Iteration 2: 1443 errors; ranking 23662 rules;
+    Found: "Replace VBP with VB if one of the 3 preceding words is tagged MD"
+    Apply: [changed 36 tags: 36 correct; 0 incorrect]
+ 
+  Iteration 3: 1407 errors; ranking 23308 rules;
+    Found: "Replace VBP with VB if the preceding word is tagged TO"
+    Apply: [changed 24 tags: 23 correct; 1 incorrect]
+ 
+  Iteration 4: 1384 errors; ranking 23057 rules;
+    Found: "Replace NN with VB if the preceding word is to"
+    Apply: [changed 67 tags: 22 correct; 45 incorrect]
+  ...
+  Iteration 20: 1138 errors; ranking 20717 rules;
+    Found: "Replace RBR with JJR if one of the 2 following words is tagged NNS"
+    Apply: [changed 14 tags: 10 correct; 4 incorrect]
+ 
+  Iteration 21: 1128 errors; ranking 20569 rules;
+    Found: "Replace VBD with VBN if the preceding word is tagged VBD"
+  [insufficient improvement; stopping]
+ 
+  Brill accuracy: 0.835145
+
+---------
+Conclusão
+---------
+
+Este capítulo introduziu a tarefa de processamento lingüístico conhecida
+por tagging, com ênfase no tagging das partes do discurso. Classes de
+palavra da língua inglesa e suas tags correspondentes foram apresentadas.
+Mostramos como tokens com tags e corpora com tags podem ser
+representados e discutimos uma série de taggers: default tagger, taggers
+por expressões regulares, unigram taggers, taggers de ordem N e o
+Brill tagger. Também descrevemos alguns métodos de avaliação objetivos. No
+processo, o leitor foi introduzido a dois importantes paradigmas do
+processamento lingüístico, a *modelagem lingüística* e a *aprendizagem
+baseada em transformações*. A primeira é extremamente geral e será
+discutida novamente nos próximos capítulos. A última foi adaptada
+especialmente para a tarefa de tagging, mas resultou em modelos menores
+e lingüisticamente interpretáveis.
+
+.. Discussion of how statistical methods have been used to
+   reach a linguistically interpretable, symbolic result.
+   Contrast between n-gram and Brill tagger about whether
+   we can learn anything from inspecting the model itself
+   (n-gram data vs transformational rules).  Comparing accuracy
+   of these two methods: 2D graph showing how accuracy changes
+   for the two methods as training size increases.
+
+Há várias outras abordagens importandes ao tagging que envolvem 
+*Hidden Markov Models* (veja ``nltk.hmm``) e *transdutores de estado
+finito*, mas uma discussão sobre estas abordagens não entra no
+objetivo deste capítulo. Mais tarde veremos uma generalização do
+tagging chamada *chunking* na qual a uma seqüência contínua de
+palavras é atribuída uma única tag.
+
+
+
+.. Leituras adicionais
+
+.. Brill tagging: Manning 361ff; Jurafsky 307ff
+
+.. HMM tagging: Manning 345ff
+
+----------
+Exercícios
+----------
+
+1. **Experimentações com corpora com tags de partes do discurso**:
+Toquenize o Brown Corpus e construa uma ou mais estruturas de dados
+apropriadas para que você possa responder às seguintes questões.
+
+  a) Qual é a tag mais freqüÇente? (Esta é a tag que deveria ser
+     atribuída por ``tag.Default``)
+  #) Qual palavra possui o maior número de tags distintas?
+  #) Qual é a razão entre pronomes masculinos e femininos?
+  #) Quantas palavras são ambíguas, no sentido que podem receber no
+     mínimo duas tags diferentes?
+  #) Qual porcentagem de *ocorrências* de palavras do Brown Corpus envolve
+     estas palavras ambíguas?
+  #) Quais substantivos são mias comuns em sua forma plural que em sua
+     forma singular? (Considere apenas plurais regulares, formados pelo
+     sufixo ``-s``)
+  #) Produza uma lista ordenada alfabeticamente das palavras distintas que
+     recebem a tag ``md``.
+  #) Identifique palavras que podem ser tanto substantivos no plural quanto
+     verbos na terceira pessoa do singular (como ``deals``).
+  #) Identifique frases preposicionais de três palavras na forma preposição
+     + determinante + substantivo.
+  #) Há 264 palavras distintas com exatamente três tags possíveis. Exiba uma
+     tabela com os números de 1 a 10 em uma coluna e o número de palavras
+     distintas do corpus com um número de a 1 a 10 tags possíveis.
+  #) A palavra still pode receber sete tags diferentes. Exiba sete sentenças
+     que contenham esta palavra, uma para cada tag diferente.
+
+2. **Tagging por expressões regulares**:
+   No capítulo, definimos o ``nn_cd_tagger`` que pode ser utilizado como um
+   tagger de fall-back para palavras desconhecidas. Este tagger verifica
+   apenas a presença ou não de número cardinais. Testando strings de prefixos
+   e sufixos particulares, deveria ser possível adivinhar outras tags. Por
+   exemplo, poderíamos atribuir a tag de substantivo plural a toda palavra
+   terminada em ``-s``.
+   Defina um tagger por expressões regulares (utilizando o ``tag.Regexp``
+   que teste por ao menos cinco outros padrões na grafia das palavras.
+   (Utilize documentação inline para documentar as regras.)
+   Avalie a precisão do tagger utilizando o ``tag.accuracy()`` e discuta
+   quanto aos resultados.
+
+3. **Unigram Tagging**:
+   Treie um Unigram Tagger e execute-o sobre um texto novo.
+   Avalie o tagger como antes e discuta quanto aos resultados.
+   Observe como a algumas palavra não é atribuída nenhuma tag. Por quê?
+
+4. **Bigram Tagging**:
+   Treine um Bigram Tagger sem tagger de backoff e execute-o sobre parte
+   dos dados de treinamento. Após isto, execute-o sobre dados novos. O
+   que acontece com o desempenho do tagger? Por quê?
+
+5. **Combinando taggers**:
+   Tipicamente, há um trade-off entre o desempenho e a abrangência dos
+   taggers: taggers que utilizam conceitos mais especificos geralmente
+   produzem resultados mais precisos quando foram treinados sobre estes
+   contextos; mas como os dados de treinamento são limitados, é menor a
+   probabilidade que eles encontrem cada contexto. O argumento backoff
+   da inicialização dos taggers permite-nos endereçar este problema tentando
+   incialmente com tagger de contextos mais específicos; e valendo-se
+   de taggers mais gerais quando necessário. Crie um default tagger e vários
+   taggers de tipo Unigram e de Ordem-N, incorporando backoffs, e treine-os
+   sobre uma parte do Brown corpus.
+
+   a) Crie três diferentes combinações de taggers. Teste a precisão de
+      cada tagger combinado. Qual combinação apresenta os melhores
+      resultados?
+
+   #) Tente alterar o tamanho do corpus de treinamento. Como isto afeta os
+      resultados?
+
+6. **Tagger context** (avançado):
+
+   Taggers de ordem-N escolhem a tag para cada toquen com base em seu
+   tipo e na tag dos *n-1* toquens anteriores. Este é um contexto comum
+   para utilização no processo de tagging, mas certamente não é o
+   único contexto possível. Construa um novo tagger, derivando da classe
+   ``SequentialTagger``, que utilize um contexto diferente. Se o contexto
+   de teu tagger contém elementos múltiplos, deverias combiná-los em um
+   ``tuple``. Entre as possibilidades para elementos a serem incluídos
+   estão: (i) o texto do toquen atual, ou de um toquen anterior;
+   (ii) o comprimento do texto do toquen atual, ou do texto de um toquen
+   anterior; (iii) a primeira letra do texto do toquen atual, ou do texto
+   de um toquen anterior; (iv) a tag de um toquen anterior. Tente
+   escolher elementos de contexto que pensas possam ajudar o tagger a
+   decidir qual a tag mais apropriada. Lembre-se do trade-off entre taggers
+   específicos com resultados mais precisos e taggers mais gerais
+   de abrangência maior. Combine seu tagger com outros taggers utilizando
+   o método do backoff.
+
+   a) Compare o desempenho do tagger combiando com o do tagger básico.
+
+   #) Compare o desempenho do tagger combinado com o dos taggers combinados
+      que você criou no exercício anterior.
+
+7. **Taggers seqüenciais reversos** (avançado):
+   Como taggers seqüenciais atribuem as tags em ordem, uma por vez, eles
+   podem utilizar apenas as tags à *esquerda* do toquen atual para decidir
+   qual a tag atribuir a um toquen. Mas, em alguns casos, o contexto à
+   *direita* pode fornecer mais informações sobre qual tag deveria ser
+   utilizada. Um tagger seqüencialmente reverso é um tagger que: (i)
+   atribui tags em ordem, uma por vez, iniciando pelo último toquen de um
+   texto e prosseguindo da direita para a esqueda. (ii) decide qual tag
+   atribuir a um toquen com base neste toquen, nos toquens que o seguem
+   e nas tags previstas para os toquens que o seguem.
+
+   Não é necessário criar novas classes para executar um tagging em
+   seqüência reversa. Revertendo os textos no momento apropriado, podemos
+   utilizar classes de taggers seqüenciais para executar tagging por
+   seqüência reversa. Além disso, deveríamos reverter o texto de treinamento
+   antes de treinar estes taggers e reverter o texto que submeteremos ao
+   tagging tanto antes quanto depois da utilização do tagger seqüencial.
+   Utilize esta técnica para criar um Bigram Tagger de seqüência reversa.
+
+   a) Meça sua precisão numa seção com tags do Brown Corpus. Assegure-se
+      de estar utilizando seções diferentes do corpus para o treinamento
+      e para a avaliação.
+
+   b) Compare o seu desempenho com um tagger de primeira ordem seqüencial,
+      utilizando os mesmos dados de treinamento e avaliação.
+        
+8. **Alternativas ao backoff**:
+   Crie um novo tipo de tagger que combine vários subtaggers utilizando
+   um novo mecanismo ao invés do backoff (como por votação). Para um
+   desempenho robusto frente a palavras desconhecidas, inclua um tagger
+   por expressões regulares, um Unigram Tagger que remova um pequeno
+   número de caracteres de prefixo ou sufixo até que a palavra seja
+   reconhecida ou um tagger de Ordem-N que não considere o texto do
+   token que está sendo processado.   
+        
+9. **Comparando taggers de ordem-N com Brill Taggers**:
+   Investigue a precisão relativa de taggers de ordem N com backoff e
+   taggers tipo Brill quando o tamanho dos dados de treinamento é
+   aumentado. Analise e compare os erros cometidos por cada tipo de tagger.
+        
+10. **Aplicando a outras línguas**:
+    Obtenha alguns dados com tags para outra língua e treine e avalie um
+    série de taggers sobre estes. Se a língua em questão for morfologicamente
+    complexa ou se houverem marcas ortográficas para as classes de palavras
+    (como inicias maiúsculas), considere o desenvolvimento de um tagger por
+    expressões regulares para estes casos (que será executado após o unigram
+    tagger e antes do default tagger). Como a precisão deste(s) tagger(s)
+    se compara com os taggers de mesmo tipo para a língua inglesa? Discuta
+    qualquer problema que você tenha encontrado na aplicação destes métodos
+    à língua em questão.
+        
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
