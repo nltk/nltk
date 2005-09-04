@@ -94,7 +94,7 @@ def token_split(text, pattern, advanced=False):
         if advanced:
             regexp = _compile(pattern)   # pattern contains ()
         else:
-            regexp = re.compile(pattern)
+            regexp = re.compile(pattern, re.UNICODE)
 
         # If it's a single string, then convert it to a tuple
         # (which we can iterate over, just like an iterator.)
