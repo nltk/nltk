@@ -72,16 +72,11 @@ triumph/nn ./. ``.
 
 .. Conforme nossa tabela a seguir, ./. deveria ser, na verdade, ./end
 
-Here, the sequence ``The/at`` means that the word token ``The`` is
-tagged ``at``, which is the Brown Corpus tag for article.
-(The reader may be initially puzzled by strings like
-``,/,``. This just means that the tag for a comma is '``,'``.)
-
 Neste exemplo, a seqüência ``The/at`` indica que o toquen de palavra
 ``The`` carrega consigo a tag ``at``, que é a tag do Brown Corpus para
 'artigo'. (O leitor pode ficar inicialmente perplexo com strings
 como ``,/,``; isto simplesmente significa que a tag para a vírgula
-é '``,'``)
+é ``','``)
 
 Podemos pensar no processo de tagging como uma forma de *anotar*
 um corpus textual. Anotações são uma forma de adicionar-se informações
@@ -155,9 +150,9 @@ Nesta árvore, utilizamos as abreviações sintáticas padrão para as
 classes gramaticais. Estas são listadas na tabela a seguir, juntamente
 a seus correspondentes no tag-set do Brown Corpus.
 
-================   =========     ============================
+=============================   =========     ===========================
 Etiquetas de classes gramaticais e tags do Brown Corpus
--------------------------------------------------------
+-------------------------------------------------------------------------
 Etiqueta de classe gramatical   Tag Brown     Classe gramatical 
 =============================   =========     ===========================
 Det                             at            Artigo
@@ -421,7 +416,7 @@ tagger. Note que o desempenho de qualquer tagger estatístico depende
 em grande parte da qualidade dos dados utilizados para treiná-lo. Em
 especial, se a quantidade de dados de treinamento for pequena, o tagger
 não será capaz de estimar a tag mais provável para cada palavra de forma
- confiável. O desempenho também sofrerá se os dados de treinamento
+confiável. O desempenho também sofrerá se os dados de treinamento
 forem significativamente diferentes dos textos aos quais desejamos aplicar
 o processo de tagging.
 
@@ -731,11 +726,11 @@ certo para parar também é, de certa forma, arbitrária. A tabela a seguir
 ilustra este processo utilizando inicialmente um unigram tagger e
 corrigindo os erros logo após.
 
-==============  =======  ==========  =================================  =============================
+==============  =======  ========  =====================================  =================================
 Passos no Brill Tagging
------------------------------------------------------------------------------------------------------
-Sentence:       Gold:    Unigram:    Substitui ``nn`` por ``vb``         Substitui ``to`` por ``in``
-                                     quando a palavra anterior for ``to``   quando a tag a seguir for ``nns`` 
+-----------------------------------------------------------------------------------------------------------
+Sentence:       Gold:    Unigram:  Substitui ``nn`` por ``vb``            Substitui ``to`` por ``in``
+                                   quando a palavra anterior for ``to``   quando a tag a seguir for ``nns`` 
 The             at       at
 President       nn-tl    nn-tl
 said            vbd      vbd
@@ -744,14 +739,14 @@ will            md       md
 ask             vb       vb
 Congress        np       np
 to              to       to
-increase        vb       *nn*         *vb*
+increase        vb       *nn*       *vb*
 grants          nns      nns
-to              in       *to*         *to*                                *in*
+to              in       *to*       *to*                                  *in*
 states          nns      nns
 for             in       in
 vocational      jj       jj
 rehabilitation  nn       nn
-==============  =======  ==========  =================================  =============================
+==============  =======  ========  =====================================  =================================
 
 Nesta tabela vemos duas regras. Todas estas regras são geradas a partir
 de um modelo com a seguinte forma: "substitui *T* :subscript:`1` por
