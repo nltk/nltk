@@ -98,7 +98,7 @@ def token_split(text, pattern, advanced=False):
 
         # If it's a single string, then convert it to a tuple
         # (which we can iterate over, just like an iterator.)
-        if type(text) is str: text = (text,)
+        if type(text) is str or unicode: text = (text,)
 
         # Process each substring returned by the iterator, in turn.
         # "leftover" is used to record any leftover material when we
