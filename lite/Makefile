@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2005 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+#	 Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -29,7 +29,13 @@ REFDOC_UPTODATE = $(REFDOC_DIR)/.uptodate
 
 # Options for epydoc.
 EPYDOC_OPTS = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
-               --inheritance=listed
+	       --inheritance=listed
+
+# Sourceforge mirror
+SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
+
+.PHONY: all usage help doc documentation webpage test
+.PHONY: distributions clean iso python tgz
 
 all: distributions
 
@@ -50,10 +56,12 @@ test:
 clean:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
+	rm -rf doc/api
+	rm -f doc/*/*.html
 	rm -rf build dist MANIFEST
 
 # Distributions. Build all from scratch.
-distributions: clean sdist bdist
+distributions: clean sdist bdist docdist corporadist
 
 # Source distributions
 sdist: gztardist zipdist
@@ -83,11 +91,11 @@ apidocs:
 	$(EPYDOC) $(EPYDOC_OPTS) -o $(REFDOC_DIR) nltk_lite
 
 docdist:
-	zip -r doc doc -x CVS
+	zip -r doc/nltk_lite-doc-($NLTK_VERSION) doc -x CVS
 #	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
 
 corporadist:
-	zip -r corpora corpora -x CVS
+	zip -r doc/nltk_lite-corpora-($NLTK_VERSION) corpora -x CVS
 #	tar czvf corpora.tgz --exclude=CVS corpora
 
 # Automatically add the appropriate version number.
@@ -106,3 +114,22 @@ tgz:
 #	cp -r doc/api $(CVS_SNAPSHOT)/lite/doc/api
 	cp doc/en/*.html $(CVS_SNAPSHOT)/lite/doc/en
 	tar cvzf $(CVS_SNAPSHOT).tgz $(CVS_SNAPSHOT)
+
+python:	.python.done
+	mkdir iso iso/mac iso/win iso/unix
+	wget -O iso/mac/MacPython-OSX-2.4.1-1.dmg http://undefined.org/python/MacPython-OSX-2.4.1-1.dmg
+	wget -O iso/mac/numarray-1.1.1-py2.4-macosx10.3.zip http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
+	wget -O iso/win/Python-2.4.1.msi http://www.python.org/ftp/python/2.4.1/Python-2.4.1.msi
+	wget -O iso/win/numarray-1.3.3.exe http://prdownloads.sourceforge.net/numpy/numarray-1.3.3.exe?download
+	wget -O iso/unix/Python-2.4.1.tgz http://www.python.org/ftp/python/2.4.1/Python-2.4.1.tgz
+	wget -O iso/unix/numarray-1.3.3.tar.gz $SFNETMIRROR/numpy/numarray-1.3.3.tar.gz
+	touch .python.done
+
+iso:	dist python
+	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
+	cp dist/nltk_lite-$(NLTK_VERSION).exe		iso/win/
+	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/unix
+	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm	iso/unix
+	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
+	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
+	cp *.txt *.TXT					iso
