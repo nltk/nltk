@@ -104,7 +104,7 @@ NP]@[1:1] is a self-loop edge.
 If a complete edge spans the entire sentence, and has the grammars'
 start symbol as its left-hand side, then the edge is called a *parse
 edge*, and it encodes one or more parse trees for the sentence.  In
-the following chart, [S |rarr| NP V |dot| ]@[0:3] is a parse edge.
+the following chart, [S |rarr| NP VP |dot| ]@[0:3] is a parse edge.
       
 .. image:: ../images/chart_intro_parseedge.png
 
