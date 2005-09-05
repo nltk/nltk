@@ -35,7 +35,7 @@ EPYDOC_OPTS = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
 SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
 
 .PHONY: all usage help doc documentation webpage test
-.PHONY: distributions clean iso python tgz
+.PHONY: distributions clean iso python .python.done tgz
 
 all: distributions
 
@@ -116,7 +116,7 @@ tgz:
 	tar cvzf $(CVS_SNAPSHOT).tgz $(CVS_SNAPSHOT)
 
 python:	.python.done
-	mkdir iso iso/mac iso/win iso/unix
+	mkdir -p iso/{mac,win,unix}
 	wget -O iso/mac/MacPython-OSX-2.4.1-1.dmg http://undefined.org/python/MacPython-OSX-2.4.1-1.dmg
 	wget -O iso/mac/numarray-1.1.1-py2.4-macosx10.3.zip http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
 	wget -O iso/win/Python-2.4.1.msi http://www.python.org/ftp/python/2.4.1/Python-2.4.1.msi
