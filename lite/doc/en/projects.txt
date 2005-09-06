@@ -50,6 +50,22 @@ Linguistically Oriented
    like ``treatments`` would be normalised to ``rtaemtenst``, before
    the code is computed).  (NB. See field.html for more details.)
 
+#. Develop a text classification system which efficiently classifies documents
+   in two or three closely related languages. Consider the discriminating features
+   between languages despite their apparent similarity. Implementation should
+   be evaluated using unseen data.
+
+#. Explore the phonotactic system of a language you ar interested in.
+   Compare your findings to a published phonological or grammatical
+   description of the same language.
+
+#. Implement a structured text rendering module which takes linguistic
+   data from a source such as Shoebox and generates XML based lexicon or interlinear
+   text based on user preferences for field exports.
+
+#. Develop a grammatical paradigm generation function which takes some
+   form of tagged text as input and generates paradigm representations of 
+   related linguistic features.
 
 Computationally Oriented
 ------------------------
