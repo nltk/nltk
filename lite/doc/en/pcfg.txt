@@ -132,7 +132,7 @@ that all productions with a given left-hand side must have
 probabilities that sum to one:
 
   for all *lhs*:
-    SIGMA :subscript:rhs P(*lhs* |rarr| *rhs*) = 1
+    SIGMA\ :subscript:`rhs` P(*lhs* |rarr| *rhs*) = 1
 
 The example grammar given above obeys this constraint: for ``S``,
 there is only one production, with a probability of 1.0; for ``VP``,
@@ -230,19 +230,19 @@ span and node value.  For example, in the table above, there are
 actually two possible constituents that cover the span [1:6] and have
 "VP" node values.
     
-1. "saw John, who has my cookie":
+1. "saw John, who has my cookie"::
 
-| (VP: saw
-|    (NP: (NP: *John*) 
-|         (PP: *with* 
-|         (NP: *my* *cookie*))))
+  (VP: saw
+     (NP: (NP: *John*) 
+          (PP: *with* 
+          (NP: *my* *cookie*))))
 
 2. "used my cookie to see John":
 
-| (VP: (VP: *saw* 
-|         (NP: (NP: *John*))
-|         (PP: *with* 
-|             (NP: *my* *cookie*))))
+  (VP: (VP: *saw* 
+          (NP: (NP: *John*))
+          (PP: *with* 
+              (NP: *my* *cookie*))))
 
 Since the grammar we are using to parse the text indicates that the
 first of these tree structures has a higher probability, the parser
@@ -289,7 +289,7 @@ This can be a problem if the constituents are checked in the wrong
 order.  For example, if the parser tries to find the most likely
 constituent for a ``VP`` spanning [1:3] before it finds the most
 likely constituents for ``V`` spanning [1:3], then it can't apply the
-``V`` |rarr| VP`` production.
+``V`` |rarr| ``VP`` production.
       
 To solve this problem, ``ViterbiParse`` repeatedly checks each span
 until it finds no new table entries.  Note that cyclic grammar
@@ -422,9 +422,9 @@ data structures and productions used for chart parsing.
 The Basic Algorithm
 -------------------
 
-``BottomUpChartParser`` is a bottom-up parser for ``PCFG``s that uses
+``BottomUpChartParser`` is a bottom-up parser for PCFGs that uses
 a ``Chart`` to record partial results.  It maintains a queue of
-``Edge``\ s, and adds them to the chart one at a time.  The ordering
+edges, and adds them to the chart one at a time.  The ordering
 of this queue is based on the probabilities associated with the edges,
 allowing the parser to insert more likely edges before exploring less
 likely ones.  For each edge that the parser adds to the chart, it may
@@ -444,7 +444,7 @@ generated it and the probabilities of its children.  For example, the
 probability associated with an edge ``[Edge: S`` |rarr| ``NP`` |dot|
 ``VP]@[0:2]`` is the probability of its NP child times the probability
 of the PCFG production ``S`` |rarr| ``NP VP``.  Note that an edge's
-tree token only includes children for elements to the left of the
+tree only includes children for elements to the left of the
 edge's dot.  Thus, the edge's probability does *not* include any
 probabilities for the elements to the right of the edge's dot.
 
@@ -496,16 +496,16 @@ InsideParse
         ``LowestCostFirstParser``?). 
 
 The simplest way to order the queue is to sort the edges by the
-probabilities of their tree tokens.  This ordering concentrates the
+probabilities of their trees.  This ordering concentrates the
 efforts of the parser on edges that are more likely to be correct
 descriptions of the texts that they span.  This approach is
 implemented by the ``InsideParse`` class.
 
-The probability of an edge's tree token provides an upper bound on the
+The probability of an edge's tree provides an upper bound on the
 probability of any parse produced using that edge.  The probabilistic
-"cost" of using an edge to form a parse is one minus its tree token's
-probability.  Thus, inserting the edges with the most likely tree
-tokens first results in a *lowest-cost-first* search strategy.
+"cost" of using an edge to form a parse is one minus its tree's
+probability.  Thus, inserting the edges with the most likely trees
+first results in a *lowest-cost-first* search strategy.
 Lowest-cost-first search is an *optimal* search strategy: the first
 solution it finds is guaranteed to be the best solution.
 
@@ -513,10 +513,10 @@ However, lowest-cost-first search can be rather inefficient.  Since a
 tree's probability is the product of the probabilities of all the
 productions used to generate it, smaller trees tend to have higher
 probabilities than larger ones.  Thus, lowest-cost-first search tends
-to insert edges with small tree tokens before moving on to edges with
-larger ones.  But any complete parse of the text will necessarily have
-a large tree token; so complete parses will tend to be inserted after
-nearly all other edges.
+to insert edges with small trees before moving on to edges with larger
+ones.  But any complete parse of the text will necessarily have a
+large tree; so complete parses will tend to be inserted after nearly
+all other edges.
 
 The basic problem with lowest-cost-first search is that it ignores the
 probability that an edge's tree is part of a complete parse.  It will
@@ -532,7 +532,7 @@ needs to define a ``sort_queue`` method.  Thus, the implementation of
 
   class InsideParse(BottomUpChartParse):
     def sort_queue(self, queue, chart):
-      # Sort the edges by the probabilities of their tree tokens.
+      # Sort the edges by the probabilities of their trees.
       queue.sort(lambda e1,e2:cmp(e1.tree().prob(), e2.tree().prob()))
 
 LongestParse
@@ -553,7 +553,7 @@ simply defines a ``sort_queue`` method::
 
   class LongestParse(BottomUpChartParse):
     def sort_queue(self, queue, chart):
-      # Sort the edges by the lengths of their tree tokens.
+      # Sort the edges by the lengths of their trees.
       queue.sort(lambda e1,e2: cmp(len(e1.loc()), len(e2.loc())))
 
 BeamParse
@@ -663,7 +663,7 @@ constructor, it takes a single PCFG:
 The ``trace`` method can be used to set the level of tracing output
 that is generated when parsing a text.  Trace output displays edges as
 they are added to the chart, and shows the probability for each edges'
-tree token.
+tree.
 
   >>> inside_parser.trace(3)
   >>> trees = inside_parser.get_parse_list(sent1)
