@@ -132,7 +132,7 @@ that all productions with a given left-hand side must have
 probabilities that sum to one:
 
   for all *lhs*:
-    SIGMA\ :subscript:`rhs` P(*lhs* |rarr| *rhs*) = 1
+    `SIGMA`:subscript:`rhs` P(*lhs* |rarr| *rhs*) = 1
 
 The example grammar given above obeys this constraint: for ``S``,
 there is only one production, with a probability of 1.0; for ``VP``,
@@ -230,19 +230,24 @@ span and node value.  For example, in the table above, there are
 actually two possible constituents that cover the span [1:6] and have
 "VP" node values.
     
-1. "saw John, who has my cookie"::
+1. "saw John, who has my cookie":
 
   (VP: saw
-     (NP: (NP: *John*) 
-          (PP: *with* 
-          (NP: *my* *cookie*))))
+     (NP: (NP: John)
+          (PP: with
+          (NP: my cookie))))
+
+.. the above example is nonsense when we use a proper name;
+   it only works when we use a common noun,
+   e.g. "saw the man with my cookie"
+
 
 2. "used my cookie to see John":
 
-  (VP: (VP: *saw* 
-          (NP: (NP: *John*))
-          (PP: *with* 
-              (NP: *my* *cookie*))))
+  (VP: saw
+     (NP: John)
+     (PP: with
+         (NP: my cookie)))
 
 Since the grammar we are using to parse the text indicates that the
 first of these tree structures has a higher probability, the parser
