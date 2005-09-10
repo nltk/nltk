@@ -1041,6 +1041,11 @@ conditions, to get the system to score 80% or better.
 #. Write a program to implement one or more text readability scores
    (http://en.wikipedia.org/wiki/Readability).
 
+#. Design an algorithm to find the statistically improbable
+   phrases of a document collection.
+   http://www.amazon.com/gp/search-inside/sipshelp.html/
+
+
 ----
 
 NLTK_
