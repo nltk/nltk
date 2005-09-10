@@ -146,9 +146,14 @@ e.g. ``kakapua`` would map to ``CVCVCVV``.
   >>> def cv(s):
   ...     s = s.lower()
   ...     s = re.sub(r'[^a-z]',     r'-', s)
-  ...     s = re.sub(r'[^aeiou\-]', r'C', s)
   ...     s = re.sub(r'[aeiou]',    r'V', s)
+  ...     s = re.sub(r'[^V\-]',     r'C', s)
   ...     return (s)
+
+This mapping has four steps.  First, the string is converted to lowercase,
+then we replace any non-alphabetic characters ``[^a-z]`` with a dash.
+Next, we replace all vowels with ``V``.  Finally, anything that is not
+a ``V`` or a dash, must be a consonant, so we replace it with a ``C``.
 
 Now, we can scan the lexicon and add a new cv field after every lx
 field.  Here we will do it for a single entry only:
