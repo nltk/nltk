@@ -108,19 +108,39 @@ concerned with their relative ordering in an entry.
 Simple Entry Processing
 -----------------------
 
+The simplest approach to processing a Shoebox file is to scan it, one
+entry at a time.  As we have seen, the ``shoebox.raw()`` method
+returns entries, where each entry is a sequence of fields.
 
-Obtaining Values of a Field
----------------------------
+For example, we can extract all the values of a particular field into
+a list, as follows:
+
+  >>> lexemes = []
+  >>> for entry in shoebox.raw('rotokas'):
+  ...     for field in entry:
+  ...         if field[0] == 'lx':
+  ...             normalised_lexeme = field[1].lower()
+  ...             lexemes.append(normalised_lexeme)
+
+However, we can achieve the same behaviour more economically using
+Python's *list comprehension* syntax, as follows:
 
   >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas')
   ...	             for field in entry if field[0] == 'lx']
 
+Note that we do not need to store the entire lexicon in memory.
+Instead, we simply scan through it, and extract the information
+we need.
+
 Adding New Fields
 -----------------
 
-Define a function which maps a string of consonants and vowels
-to the corresponding CV sequence, e.g. ``kakapua`` would map to
-``CVCVCVV``.
+It is often convenient to add new fields that are derived from
+existing ones.  Such fields often facilitate analysis.
+
+For example, let us define a function which maps a string of
+consonants and vowels to the corresponding CV sequence,
+e.g. ``kakapua`` would map to ``CVCVCVV``.
 
   >>> import re
   >>> def cv(s):
@@ -130,8 +150,8 @@ to the corresponding CV sequence, e.g. ``kakapua`` would map to
   ...     s = re.sub(r'[aeiou]',    r'V', s)
   ...     return (s)
 
-Now, scan the lexicon, and add a new cv field after every lx field.
-Here we will do it for a single entry only:
+Now, we can scan the lexicon and add a new cv field after every lx
+field.  Here we will do it for a single entry only:
 
   >>> entries = list(shoebox.raw('rotokas'))
   >>> for field in entries[50]:
@@ -153,6 +173,8 @@ Here we will do it for a single entry only:
 
 Removing Fields
 ---------------
+
+Finally, we can also use this technique to remove fields, as follows:
 
   >>> retain = ('lx', 'ps')
   >>> entries = list(shoebox.raw('rotokas'))
@@ -644,6 +666,11 @@ Exercises
 
 #. What is the frequency of each consonant and vowel contained in
    lexeme fields?
+
+#. We saw a method for adding a ``cv`` field.  There is an interesting
+   issue with keeping this up-to-date when someone modifies the content
+   of the ``lx`` field on which it is based.  Write a version of this
+   program to add a ``cv`` field, replacing any existing ``cv`` field.
 
 #. Build an index of those lexemes which appear in example sentences.
    Suppose the lexeme for a given entry is *w*.
