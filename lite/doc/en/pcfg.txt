@@ -234,8 +234,7 @@ actually two possible constituents that cover the span [1:6] and have
 
   (VP: saw
      (NP: (NP: John)
-          (PP: with
-          (NP: my cookie))))
+          (PP: with (NP: my cookie))))
 
 .. the above example is nonsense when we use a proper name;
    it only works when we use a common noun,
@@ -246,8 +245,7 @@ actually two possible constituents that cover the span [1:6] and have
 
   (VP: saw
      (NP: John)
-     (PP: with
-         (NP: my cookie)))
+     (PP: with (NP: my cookie)))
 
 Since the grammar we are using to parse the text indicates that the
 first of these tree structures has a higher probability, the parser
