@@ -1149,6 +1149,10 @@ de palavras como substantivos ou adjetivos obteve um índice de acerto de
 #. Escreva um programa para implementar um ou mais testes de legibilidade
 (http://en.wikipedia.org/wiki/Readability, em inglês).
 
+#. Projete um algoritmo que encontre as frases estatisticamente improváveis
+de uma coleção de documentos.
+http://www.amazon.com/gp/search-inside/sipshelp.html/
+
 ----
 
 NLTK_
