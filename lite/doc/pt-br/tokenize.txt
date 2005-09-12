@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-===============================================================================================
+===========================================================================================
 Fundamentos de processamento lingüístico: tokenização de textos e classificação de palavras
-===============================================================================================
+===========================================================================================
 
 :Autores: Steven Bird, Ewan Klein, Edward Loper
 :Contato: sb@csse.unimelb.edu.au
@@ -197,22 +197,13 @@ caracteres:
 Note que utilizamos apóstrofos para deimitar as strings, "|space|" para
 representar espaços e a expressão "\n" para representar uma nova linha.
 
-As we just pointed out, to tokenize this text for consumption by the
-parser, we need to explicitly indicate which substrings are words. One
-convenient way to do this in Python is to split the string into a
-*list* of words, where each word is a string, such as
-``'dog'``. [#]_ 
-In Python, lists are printed as a series of objects
-(in this case, strings), surrounded by square brackets and separated
-by commas::
-
 Como acabamos de dizer, para toquenizar este texto e permitir sua
 utilização pelo parser é necessário indicar explicitamente quais substrings
 são palavras. Uma forma conveniente de se fazer isto em Python é dividir a
 string em uma *lista* de palavras, na qual cada palavra seja uma string, como
 em ``'dog'``. [#]_
 Em Python, uma lista é representada como uma série de objetos (neste caso,
-strings) separados por vírgulas, delimitada por conchetes:
+strings) separados por vírgulas, delimitada por conchetes::
 
   >>> palavras = ['the', 'cat', 'climbed', 'the', 'tree']
   >>> palavras
@@ -237,21 +228,16 @@ Muitas tarefas do processamento de linguagem natural envolvem a análise de
 textos de dimensões variadas, indo de uma única sentença até corpora
 extensos. Há várias formas de se representar textos usando o NLTK. A
 mais simples destas é por meio de uma única string. Estas strings podem
-ser lidas diretamente de arquivos::
+ser lidas diretamente de arquivos:
 
   >>> text_str = open('corpus.txt').read() 
   >>> text_str
   'Hello world.  This is a test file.\n'
 
-However, as we noted in representing.tokens_, it is usually preferrable
-to represent a text as a list of tokens.  These lists are typically
-created using a *tokenizer*, such as ``tokenize.whitespace`` which
-splits strings into words at whitespaces::
-
 Porém, como notamos em representing.tokens_, é normalmente preferível
 representar um texto como uma lista de toquens. Estas listas são normalmente
 criadas utilizando-se um *toquenizador* como o ``tokenize.whitespace`` que
-separa as strings em palavras conforme os espaços::
+separa as strings em palavras conforme os espaços:
 
   >>> from nltk_lite import tokenize
   >>> text = 'Hello world.  This is a test string.'
@@ -265,14 +251,14 @@ separa as strings em palavras conforme os espaços::
    suas palavras para versões apenas com letra minúscula, expandindo
    contrações e até mesmo extraíndo o radical de cada palavra, processo
    este conhecido por "stemming". Um exemplo de stemming é listado
-   abaixo::
+   abaixo:
 
-     >>> text = 'stemming can be fun and exciting'
-     >>> tokens = tokenize.whitespace(text)
-     >>> porter = tokenize.PorterStemmer()
-     >>> for token in tokens:
-     ...     print porter.stem(token),
-     stem can be fun and excit
+  >>> text = 'stemming can be fun and exciting'
+  >>> tokens = tokenize.whitespace(text)
+  >>> porter = tokenize.PorterStemmer()
+  >>> for token in tokens:
+  ...     print porter.stem(token),
+  stem can be fun and excit
 
 A toquenização baseada em espaços é simplista demais para a maioria das
 aplicações; por exemplo, ela falha ao separar a última palavra de uma
@@ -307,19 +293,12 @@ Por exemplo, em sua versão atual ela separa a string ``'$22.50'`` em quatro
 toquens distintos; podemos porém desejar que ela identifique neste tipo de
 string um único toquen. A solução para isto é modificar a expressão regular,
 adicionado uma nova subexpressão que trate especificamente de strings
-neste formato:
+neste formato::
 
   >>> text = 'That poster costs $22.40.'
   >>> pattern = r'\w+|\$\d+\.\d+|[^\w\s]+'
   >>> list(tokenize.regexp(text, pattern))
   ['That', 'poster', 'costs', '$22.40', '.']
-
-It is sometimes more convenient to write a regular expression
-matching the material that appears *between* tokens, such as whitespace
-and punctuation.  The ``tokenize()`` function constructor permits
-an optional boolean parameter ``gaps``; when set to ``True`` the
-pattern is matched against the gaps.  For example, here is how
-``whitespaceTokenize()`` is defined::
 
 Certas vezes, é mais conveniente escrever uma expressão regular que
 aceite o que é encontrado *entre* os tokens, como os espaços em branco ou

@@ -65,10 +65,10 @@ com informações referentes às classes gramaticais às quais suas
 palavras pertencem. Na verdade, o que fizemos foi executar um processo
 de tagging para a string ``fruit flies likes a banana``. Porém, as tags
 são geralmente incluídas ao lado do texto aos quais estão associadas.
-Isto é ilustrado pelo seguinte trecho extraído do Brown Corpus: 
+Isto é ilustrado pelo seguinte trecho extraído do Brown Corpus:
 ``The/at Pantheon's/np$ interior/nn ,/, still/rb in/in its/pp$ original/jj
 form/nn ,/, is/bez truly/ql majestic/jj and/cc an/at architectural/jj
-triumph/nn ./. ``.
+triumph/nn ./.``.
 
 .. Conforme nossa tabela a seguir, ./. deveria ser, na verdade, ./end
 
