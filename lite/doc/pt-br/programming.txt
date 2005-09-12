@@ -349,7 +349,7 @@ O NLTK consiste de um conjunto de *módulos* em Python, cada um dos quais
 define classes e funções relacionadas a uma única estrutura de dados
 ou tarefa. Antes de se utilizar um módulo, é necessário ``import``ar seu
 contúdo. A forma mais simples para importar o conteúdo de um módulo é utilizar
-o comando ``from module import *`` (do inglês, "de modulo importa *"). Por
+o comando ``from module import *`` (do inglês, "de modulo importa \*"). Por
 exemplo, para importar o conteúdo do módulo ``nltk_lite.util``, discutido neste
 tutorial, digitamos:
 
@@ -653,9 +653,9 @@ NLTK: Building a Pedagogical Toolkit in Python,
 Python Software Foundation,
 http://www.python.org/pycon/dc2004/papers/
 
----------
+----------
 Exercícios
----------
+----------
 
 Utilizando o interpretador do Python em modo interativo, trabalhe
 com palavras, textos, toquens, locations e toquenizadores, até

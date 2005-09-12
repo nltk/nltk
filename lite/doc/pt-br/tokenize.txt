@@ -162,7 +162,7 @@ partir do contexto, utilizaremos apenas os termos token e tipo.
 .. _representing.tokens:
 
 Representando toquens
---------------------
+---------------------
 
 Quando a linguagem escrita é armazenada em um arquivo de computador, ela
 é normalmente representada por meio de uma seqüência ou *string* (do inglês,
