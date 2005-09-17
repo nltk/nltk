@@ -131,6 +131,13 @@ Computationally Oriented
 13. Develop a prepositional phrase attachment classifier, using
     the ``ppattach`` corpus for training and testing.
 
+14. Develop a program for unsupervised learning of phonological rules,
+    using the method described by Goldwater and Johnson:
+    http://acl.ldc.upenn.edu/acl2004/sigphon/pdf/goldwater.pdf
+
+15. Use WordNet to infer lexical semantic relationships on the entries
+    of a Shoebox lexicon for some arbitrary language.
+
 ----------
 Assessment
 ----------
