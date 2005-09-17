@@ -138,6 +138,9 @@ Computationally Oriented
 15. Use WordNet to infer lexical semantic relationships on the entries
     of a Shoebox lexicon for some arbitrary language.
 
+16. Implement Penton's paradigm visualisation tool.
+    http://www.cs.mu.oz.au/~djpenton/
+
 ----------
 Assessment
 ----------
