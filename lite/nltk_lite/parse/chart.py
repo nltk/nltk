@@ -636,7 +636,6 @@ class Chart:
 
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
-                print children
                 lhs = edge.lhs().symbol()
                 trees.append(Tree(lhs, children))
 
@@ -664,9 +663,6 @@ class Chart:
         """
         children_lists = [[]]
         for child_choice in child_choices:
-            print ">", [child_list+[child]
-                              for child in child_choice
-                              for child_list in children_lists]
             children_lists = [child_list+[child]
                               for child in child_choice
                               for child_list in children_lists]
