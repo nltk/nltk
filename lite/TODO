@@ -1,0 +1,14 @@
+
+Version 0.5
+
+* fixed chart parser [SB]
+* expand fieldwork chapter [SB]
+* improve intro Python stuff
+* port Cohn's clusterer [SB]
+
+Version ?
+
+* add lambda semantics to parse package [SB]
+* write feature-based syntax chapter, incl semantics [EK]
+* port NLTK classifiers
+
