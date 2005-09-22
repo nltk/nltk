@@ -56,6 +56,7 @@ item_name = {
 }
 
 def raw(files = 'cmudict'):
+    """
     @param files: One or more cmudict files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{tree}

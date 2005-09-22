@@ -44,6 +44,7 @@ def _parse_entry(str):
         yield field
 
 def raw(files = 'rotokas'):
+    """
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{list(string)}
