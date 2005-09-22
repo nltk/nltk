@@ -8,66 +8,36 @@ Use of this dictionary, for any research or commercial purpose, is
 completely unrestricted.  If you use or redistribute this material, we
 would appreciate acknowlegement of its origin.
 
---------------------------------------------------------------------
+File Format: Each line consists of an uppercased word, a counter
+(for alternative pronunciations), and a transcription.  Vowels are
+marked for stress (1=primary, 2=secondary, 0=no stress).  E.g.:
+NATURAL 1 N AE1 CH ER0 AH0 L
 
-File Format: Each line consists of an uppercased word, an optional
-counter inside parentheses (for alternative pronunciations), and a
-transcription.  Vowels are marked for stress (1=primary, 2=secondary,
-0=no stress).
-
-NATURAL  N AE1 CH ER0 AH0 L
-NATURAL'S  N AE1 CH ER0 AH0 L Z
-NATURAL'S(2)  N AE1 CH R AH0 L Z
-NATURAL(2)  N AE1 CH R AH0 L
-NATURALISM  N AE1 CH ER0 AH0 L IH2 Z AH0 M
-NATURALISM(2)  N AE1 CH R AH0 L IH2 Z AH0 M
-NATURALIST  N AE1 CH ER0 AH0 L AH0 S T
-NATURALIST(2)  N AE1 CH R AH0 L AH0 S T
-NATURALISTIC  N AE2 CH ER0 AH0 L IH1 S T IH0 K
-NATURALISTIC(2)  N AE2 CH R AH0 L IH1 S T IH0 K
-NATURALISTS  N AE1 CH ER0 AH0 L AH0 S T S
-NATURALISTS(2)  N AE1 CH ER0 AH0 L AH0 S S
-NATURALISTS(3)  N AE1 CH R AH0 L AH0 S T S
-NATURALISTS(4)  N AE1 CH R AH0 L AH0 S S
-NATURALISTS(5)  N AE1 CH ER0 AH0 L AH0 S
-NATURALISTS(6)  N AE1 CH R AH0 L AH0 S
-NATURALIZATION  N AE1 CH ER0 AH0 L AH0 Z EY1 SH AH0 N
-NATURALIZATION(2)  N AE1 CH R AH0 L AH0 Z EY1 SH AH0 N
-NATURALIZE  N AE1 CH ER0 AH0 L AY2 Z
-NATURALIZE(2)  N AE1 CH R AH0 L AY2 Z
-NATURALIZED  N AE1 CH ER0 AH0 L AY2 Z D
-NATURALIZED(2)  N AE1 CH R AH0 L AY2 Z D
-NATURALLY  N AE1 CH ER0 AH0 L IY0
-NATURALLY(2)  N AE1 CH R AH0 L IY0
-NATURE  N EY1 CH ER0
-NATURE'S  N EY1 CH ER0 Z
-NATURED  N EY1 CH ER0 D
-NATUREDLY  N EY1 CH ER0 D L IY0
-NATURES  N EY1 CH ER0 Z
-
---------------------------------------------------------------------
+The dictionary contains 127069 entries.  Of these, 119400 words are assigned
+a unique pronunciation, 6830 words have two pronunciations, and 839 words have
+three or more pronunciations.  Many of these are fast-speech variants.
 
 Phonemes: There are 39 phonemes, as shown below:
-
-Phoneme Example Translation	Phoneme Example Translation
-------- ------- -----------     ------- ------- -----------
-AA	odd     AA D		AE	at	AE T
-AH	hut	HH AH T		AO	ought	AO T
-AW	cow	K AW		AY	hide	HH AY D
-B 	be	B IY		CH	cheese	CH IY Z
-D 	dee	D IY		DH	thee	DH IY
-EH	Ed	EH D		ER	hurt	HH ER T
-EY	ate	EY T		F 	fee	F IY
-G 	green	G R IY N	HH	he	HH IY
-IH	it	IH T		IY	eat	IY T
-JH	gee	JH IY		K 	key	K IY
-L 	lee	L IY		M 	me	M IY
-N 	knee	N IY		NG	ping	P IH NG
-OW	oat	OW T		OY	toy	T OY
-P 	pee	P IY		R 	read	R IY D
-S 	sea	S IY		SH	she	SH IY
-T 	tea	T IY		TH	theta	TH EY T AH
-UH	hood	HH UH D		UW	two	T UW
-V 	vee	V IY		W 	we	W IY
-Y 	yield	Y IY L D	Z 	zee	Z IY
-ZH	seizure	S IY ZH ER
+    
+    Phoneme Example Translation    Phoneme Example Translation
+    ------- ------- -----------    ------- ------- -----------
+    AA      odd     AA D           AE      at      AE T
+    AH      hut     HH AH T        AO      ought   AO T
+    AW      cow     K AW           AY      hide    HH AY D
+    B       be      B IY           CH      cheese  CH IY Z
+    D       dee     D IY           DH      thee    DH IY
+    EH      Ed      EH D           ER      hurt    HH ER T
+    EY      ate     EY T           F       fee     F IY
+    G       green   G R IY N       HH      he      HH IY
+    IH      it      IH T           IY      eat     IY T
+    JH      gee     JH IY          K       key     K IY
+    L       lee     L IY           M       me      M IY
+    N       knee    N IY           NG      ping    P IH NG
+    OW      oat     OW T           OY      toy     T OY
+    P       pee     P IY           R       read    R IY D
+    S       sea     S IY           SH      she     SH IY
+    T       tea     T IY           TH      theta   TH EY T AH
+    UH      hood    HH UH D        UW      two     T UW
+    V       vee     V IY           W       we      W IY
+    Y       yield   Y IY L D       Z       zee     Z IY
+    ZH      seizure S IY ZH ER
