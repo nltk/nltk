@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Read chunk structures from the CONLL Corpus
+Read chunk structures from the CONLL-2000 Corpus
 """       
 
 from nltk_lite.corpora import get_basedir

@@ -9,6 +9,26 @@
 # please see the nltk_contrib.misc.shoebox package,
 # contributed by Stuart Robinson <Stuart.Robinson@mpi.nl>
 
+"""
+Read entries from the Shoebox corpus sample, returning a list
+of pairs, where each pair consists of a field name and value
+
+Contents: lexicons for various languages, with entries of the form:
+
+\\lx kaakauko
+\\ps N.M
+\\ge gray weevil
+\\sf FAUNA.INSECT
+\\nt pictured on PNG postage stamp
+\\dt 28/Jan/2005
+\\ex Kaakauko ira toupareveira aue-ia niugini stemp.
+\\xp Kaakauko em insect em i istap long niugini.
+\\xe The gray weevil is found on the PNG stamp.
+\\ex Kaakauko iria toupaeveira niugini stamia.
+\\xp Weevil i stap long niguini stamp.
+\\xe The gray weevil is on the New Guinea stamp.
+"""
+
 from nltk_lite.corpora import get_basedir
 from nltk_lite import tokenize
 from string import split
@@ -24,25 +44,6 @@ def _parse_entry(str):
         yield field
 
 def raw(files = 'rotokas'):
-    """
-    Read entries from the Shoebox corpus sample, returning a list
-    of pairs, where each pair consists of a field name and value
-
-    Contents: lexicons for various languages, with entries of the form:
-
-    \\lx kaakauko
-    \\ps N.M
-    \\ge gray weevil
-    \\sf FAUNA.INSECT
-    \\nt pictured on PNG postage stamp
-    \\dt 28/Jan/2005
-    \\ex Kaakauko ira toupareveira aue-ia niugini stemp.
-    \\xp Kaakauko em insect em i istap long niugini.
-    \\xe The gray weevil is found on the PNG stamp.
-    \\ex Kaakauko iria toupaeveira niugini stamia.
-    \\xp Weevil i stap long niguini stamp.
-    \\xe The gray weevil is on the New Guinea stamp.
-
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{list(string)}
