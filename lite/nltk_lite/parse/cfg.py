@@ -234,6 +234,8 @@ class Production:
         @param rhs: The right-hand side of the new C{Production}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
+        if isinstance(rhs, str):
+            raise TypeError, 'production right hand side should be a list, not a string'
         self._lhs = lhs
         self._rhs = tuple(rhs)
 
@@ -392,6 +394,8 @@ def demo():
     print 'Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP]
     print '    S.symbol() =>', `S.symbol()`
     print
+
+    print cfg.Production("S", "NP")
 
     # Create some Grammar Productions
     grammar = cfg.parse_grammar("""
