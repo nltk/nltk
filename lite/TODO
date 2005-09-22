@@ -1,14 +1,23 @@
+KEY: "-" = not done; "+" = done
 
-Version 0.5
+Version 0.5 (late September)
 
-* fixed chart parser [SB]
-* expand fieldwork chapter [SB]
-* improve intro Python stuff
-* port Cohn's clusterer [SB]
++ fix chart parser [SB]
++ add pronouncing dictionary [SB]
+- expand fieldwork chapter [SB]
+- improve intro Python stuff
+- port Cohn's clusterer [SB]
+
+Version 0.6 (October)
+
 
 Version ?
 
-* add lambda semantics to parse package [SB]
-* write feature-based syntax chapter, incl semantics [EK]
-* port NLTK classifiers
-
+Most of these require code and tutorials:
+- add lambda semantics to parse package [SB]
+- write feature-based syntax chapter, incl semantics [EK]
+- port NLTK classifiers
+- method for saving models (pickle, shelve)
+- language modelling package
+- SRL corpus and reader
+- good off-the-shelf tagger and chunker
