@@ -12,17 +12,37 @@ from nltk_lite.tag import tag2tuple
 from nltk_lite.parse import tree
 import os
 
-def parsed(files = 'parsed'):
+"""
+Penn Treebank corpus sample: tagged, NP-chunked, and parsed data from
+Wall Street Journal for 1650 sentences.
 
-    """
-    Read trees from the Penn Treebank corpus sample.
+This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
+available under fair use for the purposes of illustrating NLTK
+tools for tokenizing, tagging, chunking and parsing.  This data is
+for non-commercial use only.
 
-    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
-    available under fair use for the purposes of illustrating NLTK
-    tools for tokenizing, tagging, chunking and parsing.  This data is
-    for non-commercial use only.
+Raw:
 
-    Contents: parsed data from Wall Street Journal for 1650 sentences, e.g.:
+    Pierre Vinken , 61 years old , will join the board as a nonexecutive
+    director Nov. 29 .
+
+Tagged:
+
+    Pierre/NNP Vinken/NNP ,/, 61/CD years/NNS old/JJ ,/, will/MD join/VB 
+    the/DT board/NN as/IN a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ./.
+
+NP-Chunked:
+
+    [ Pierre/NNP Vinken/NNP ]
+    ,/, 
+    [ 61/CD years/NNS ]
+    old/JJ ,/, will/MD join/VB 
+    [ the/DT board/NN ]
+    as/IN 
+    [ a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ]
+    ./.
+
+Parsed:
 
     ( (S 
       (NP-SBJ 
@@ -39,7 +59,10 @@ def parsed(files = 'parsed'):
             (NP (DT a) (JJ nonexecutive) (NN director) ))
           (NP-TMP (NNP Nov.) (CD 29) )))
       (. .) ))
+"""
 
+def parsed(files = 'parsed'):
+    """
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{tree}
@@ -56,26 +79,7 @@ def parsed(files = 'parsed'):
 
 
 def chunked(files = 'chunked'):
-
     """
-    Read chunks from the Penn Treebank corpus sample.
-
-    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
-    available under fair use for the purposes of illustrating NLTK
-    tools for tokenizing, tagging, chunking and parsing.  This data is
-    for non-commercial use only.
-
-    Contents: chunked data from Wall Street Journal for 1650 sentences, e.g.:
-
-    [ Pierre/NNP Vinken/NNP ]
-    ,/, 
-    [ 61/CD years/NNS ]
-    old/JJ ,/, will/MD join/VB 
-    [ the/DT board/NN ]
-    as/IN 
-    [ a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ]
-    ./.
-
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{tree}
@@ -92,20 +96,7 @@ def chunked(files = 'chunked'):
 
 
 def tagged(files = 'chunked'):
-
     """
-    Read tagged sentences from the Penn Treebank corpus sample.
-
-    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
-    available under fair use for the purposes of illustrating NLTK
-    tools for tokenizing, tagging, chunking and parsing.  This data is
-    for non-commercial use only.
-
-    Contents: tagged data from Wall Street Journal for 1650 sentences, e.g.:
-
-    Pierre/NNP Vinken/NNP ,/, 61/CD years/NNS old/JJ ,/, will/MD join/VB 
-    the/DT board/NN as/IN a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ./.
-
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{list(tuple)}
@@ -126,18 +117,6 @@ def tagged(files = 'chunked'):
 
 def raw(files = 'raw'):
     """
-    Read sentences from the Penn Treebank corpus sample.
-
-    This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
-    available under fair use for the purposes of illustrating NLTK
-    tools for tokenizing, tagging, chunking and parsing.  This data is
-    for non-commercial use only.
-
-    Contents: tagged data from Wall Street Journal for 1650 sentences, e.g.:
-
-    Pierre Vinken , 61 years old , will join the board as a nonexecutive
-    director Nov. 29 .
-
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
     @rtype: iterator over L{list(string)}
