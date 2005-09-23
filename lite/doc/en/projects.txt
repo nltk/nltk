@@ -128,20 +128,23 @@ Computationally Oriented
 12. Implement a categorial grammar parser, including semantic
     representations.
 
-13. Develop a prepositional phrase attachment classifier, using
+13. Implement Pereira and Warren's Chat-80 system for geographical
+    question answering.  ``http://www.cis.upenn.edu/~pereira/oldies.html``.
+
+14. Develop a prepositional phrase attachment classifier, using
     the ``ppattach`` corpus for training and testing.
 
-14. Develop a program for unsupervised learning of phonological rules,
+15. Develop a program for unsupervised learning of phonological rules,
     using the method described by Goldwater and Johnson:
     http://acl.ldc.upenn.edu/acl2004/sigphon/pdf/goldwater.pdf
 
-15. Use WordNet to infer lexical semantic relationships on the entries
+16. Use WordNet to infer lexical semantic relationships on the entries
     of a Shoebox lexicon for some arbitrary language.
 
-16. Implement Penton's paradigm visualisation tool.
+17. Implement Penton's paradigm visualisation tool.
     http://www.cs.mu.oz.au/~djpenton/
 
-17. Add semantic interpretation to a CFG, generating propositions that
+18. Add semantic interpretation to a CFG, generating propositions that
     can be evaluated against a database.  Start with a lambda calculus
     interpreter in Python (e.g. http://www.alcyone.com/software/church/) and Rob Speer's
     feature-based CFG (nltk_contrib/mit/rspeer/parser), and augment a
