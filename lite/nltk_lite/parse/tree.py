@@ -185,6 +185,20 @@ class Tree(list):
         if order in ('postorder', 'bothorder'): positions.append( () )
         return positions
 
+    def subtrees(self, filter=None):
+        """
+        Generate all the subtrees of this tree, optionally restricted
+        to trees matching the filter function.
+        @type: filter: C{function}
+        @param: filter: the function to filter all local trees
+        """
+        if not filter or filter(self):
+            yield self
+        for child in self:
+            if isinstance(child, Tree):
+                for subtree in child.subtrees(filter):
+                    yield subtree
+
     #////////////////////////////////////////////////////////////
     # Convert, copy
     #////////////////////////////////////////////////////////////
