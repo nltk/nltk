@@ -19,6 +19,123 @@ Introduction to Natural Language Processing
    communicate.  And through communication they live with each other,
    think, create, and act.  - John Ralston Saul
 
+
+-------------------------------
+Why Language Processing is Easy
+-------------------------------
+
+[Notes: In this preliminary section we see three non-trivial programs for manipulating
+natural language.  These programs won't be understandable to novice programmers,
+though it may be possible to get some sense of how they work...  The later chapters
+will explain all this in great detail...]
+
+
+The following program finds words that rhyme with the target word:
+
+    >>> prondict = cmudict.dictionary()
+    >>> target = prondict['AMETHYST'][0]
+    >>> for word in prondict.keys():
+    ...     for pron in prondict[word]:
+    ...         if pron[-4:] == target[-4:]:
+    ...             print word
+    AMETHYST
+    POTTHAST
+    FURTHEST
+            
+
+The following program performs a simple bigram analysis of the book of
+Genesis (King James Version) then generates text in the same style.
+
+    >>> from nltk_lite.corpora import genesis
+    >>> from nltk_lite.probability import ConditionalFreqDist
+    >>> from string import join
+    >>> cfdist = ConditionalFreqDist()
+    >>> prev = None
+    >>> for word in genesis.raw():
+    ...     word = word.lower()
+    ...     cfdist[prev].inc(word)
+    ...     prev = word
+    >>> words = []
+    >>> prev = 'lo,'
+    >>> for i in range(99):
+    ...     words.append(prev)
+    ...     for word in cfdist[prev].sorted_samples():
+    ...         if word not in words:
+    ...             break
+    ...     prev = word
+    >>> print join(words)
+    lo, it came to the land of his father and he said, i will not be a wife unto him, saying, if thou shalt take our money in their kind, cattle, in thy seed after these are my son from off any more than all that is this day with him into egypt, he, hath taken away unawares to pass, when she bare jacob said one night, because they were born two hundred years old, as for an altar there, he had made me out at her pitcher upon every living creature after thee shall come near her: yea,
+
+
+
+
+The following program reads trees from the Penn Treebank corpus, and finds instances
+of verb phrase conjunctions involving the word *but*, and displays the two verb phrases.
+
+    >>> from nltk_lite.corpora import treebank
+    >>> from string import join
+    >>> def vp_conj(tree):
+    ...     if tree.node == 'VP' and len(tree) == 3 and tree[1].leaves() == ['but']:
+    ...         return True
+    ...     else:
+    ...         return False
+    >>> for tree in treebank.parsed():
+    ...     for vp1,conj,vp2 in tree.subtrees(vp_conj):
+    ...         print join(vp1.leaves()), "BUT", join(vp2.leaves())
+    are still of some concern to the U.S. BUT are deemed *-1 to pose less-serious problems for American patent and copyright owners than those on the `` priority '' list
+    has opened its market to foreign cigarettes BUT restricts advertising to designated places
+    in recent months has been trying *-1 to join international organizations BUT failed earlier this year *-1 to win membership in the World Health Organization and the World Tourism Organization
+    admits 0 she made a big mistake BUT insists 0 her motives were correct
+    said 0 Sea Containers ' plan raises `` numerous legal , regulatory , financial and fairness issues , '' BUT did n't elaborate
+    confirmed 0 he had consented to the sanctions BUT declined *-1 to comment further
+    are a guide to general levels BUT do n't always represent actual transactions
+    flirted with a conversion to tabloid format for years BUT never executed the plan
+    must pay for his own ticket BUT gets a companion 's ticket free if they fly on United Airlines
+    ended slightly higher BUT trailed gains in the Treasury market
+    hailed *-1 by environmentalists BUT despised *-1 by utilities because they feared 0 it would limit their growth
+    confirmed the filing BUT would n't elaborate
+    condemned the truce suspension as `` deplorable '' BUT brushed off talk of * renewing military funding for the insurgents
+    plans *-1 to sell $ 30 billion *U* in notes and bonds next week BUT will delay the auction unless Congress quickly raises the debt ceiling
+
+
+
+The following program processes a lexicon for the Rotokas language
+(East Papuan, Bougainville Island), and generates *minimal sets*
+involving the vowels of the first syllable:
+
+    >>> from nltk_lite.corpora import shoebox
+    >>> from nltk_lite.utilities import MinimalSet
+    >>> length = 4
+    >>> position = 1
+    >>> min = 3
+    >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas')
+    ...		   for field in entry if field[0] == 'lx']
+    >>> ms = MinimalSet()
+    >>> for lex in lexemes:
+    ...     if len(lex) == length:
+    ...         context = lex[:position] + '_' + lex[position+1:]
+    ...         target = lex[position]
+    ...         ms.add(context, target, lex)
+    >>> for context in ms.contexts(3):
+    ...     for target in ms.targets():
+    ...         print "%-4s" % ms.display(context, target, "-"),
+    ...     print
+    kasi -    kesi kusi kosi
+    kava -    -    kuva kova
+    karu kiru keru kuru koru
+    kapu kipu -    -    kopu
+    karo kiro -    -    koro
+    kari kiri keri kuri kori
+    kapa -    kepa -    kopa
+    kara kira kera -    kora
+    kaku -    -    kuku koku
+    kaki kiki -    -    koki
+
+
+We have seen that that writing programs to manipulate natural language is easy.
+Next we will see why it is interesting...
+
+
 ----------------------
 The Language Challenge
 ----------------------
