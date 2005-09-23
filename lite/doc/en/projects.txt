@@ -141,6 +141,12 @@ Computationally Oriented
 16. Implement Penton's paradigm visualisation tool.
     http://www.cs.mu.oz.au/~djpenton/
 
+17. Add semantic interpretation to a CFG, generating propositions that
+    can be evaluated against a database.  Start with a lambda calculus
+    interpreter in Python (e.g. http://www.alcyone.com/software/church/) and Rob Speer's
+    feature-based CFG (nltk_contrib/mit/rspeer/parser), and augment a
+    feature-based grammar with attributes to hold the semantic representations.
+
 ----------
 Assessment
 ----------
