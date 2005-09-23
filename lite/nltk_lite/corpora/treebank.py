@@ -14,17 +14,17 @@ import os
 
 """
 Penn Treebank corpus sample: tagged, NP-chunked, and parsed data from
-Wall Street Journal for 1650 sentences.
+Wall Street Journal for 3700 sentences.
 
-This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
+This is a ~10% fragment of Penn Treebank, (C) LDC 1995.  It is made
 available under fair use for the purposes of illustrating NLTK
 tools for tokenizing, tagging, chunking and parsing.  This data is
 for non-commercial use only.
 
 Raw:
 
-    Pierre Vinken , 61 years old , will join the board as a nonexecutive
-    director Nov. 29 .
+    Pierre Vinken, 61 years old, will join the board as a nonexecutive
+    director Nov. 29.
 
 Tagged:
 
@@ -139,17 +139,25 @@ def demo():
     from nltk_lite.corpora import treebank
     from itertools import islice
 
+    print "Parsed:"
     for tree in islice(treebank.parsed(), 3):
         print tree.pp()
+    print
 
+    print "Chunked:"
     for tree in islice(treebank.chunked(), 3):
         print tree.pp()
+    print
 
+    print "Tagged:"
     for sent in islice(treebank.tagged(), 3):
         print sent
+    print
 
+    print "Raw:"
     for sent in islice(treebank.raw(), 3):
         print sent
+    print
 
 if __name__ == '__main__':
     demo()
