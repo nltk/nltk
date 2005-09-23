@@ -4,6 +4,9 @@ Version 0.5 (late September)
 
 + fix chart parser [SB]
 + add pronouncing dictionary [SB]
++ double treebank WSJ to 10% [SB]
++ add subtree iterator to facilitate flexible tree navigation
+- add introductory nltk examples to first section of intro chapter [SB]
 - expand fieldwork chapter [SB]
 - improve intro Python stuff
 - port Cohn's clusterer [SB]
