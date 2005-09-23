@@ -56,8 +56,8 @@ class FreqDist:
     how often each word occurs in a text:
     
         >>> fdist = FreqDist()
-        >>> for token in text_token['SUBTOKENS']:
-        ...    fdist.inc(token['TEXT'])
+        >>> for word in tokenize.whitespace(sent):
+        ...    fdist.inc(word)
     """
     def __init__(self):
         """
@@ -1095,9 +1095,9 @@ class ConditionalFreqDist:
     word type occurs, given the length of that word type:
 
         >>> cfdist = ConditionalFreqDist()
-        >>> for token in text_token['SUBTOKENS']:
-        ...     condition = len(token['TEXT'])
-        ...     cfdist[condition].inc(token['TEXT'])
+        >>> for word in tokenize.whitespace(sent):
+        ...     condition = len(word)
+        ...     cfdist[condition].inc(word)
     """
     def __init__(self):
         """
