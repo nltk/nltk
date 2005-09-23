@@ -1,15 +1,17 @@
 KEY: "-" = not done; "+" = done
 
-Version 0.5 (late September)
+Version 0.5 (Monday 26 September)
 
-+ fix chart parser [SB]
++ fix chart parser bug [SB]
 + add pronouncing dictionary [SB]
 + double treebank WSJ to 10% [SB]
 + add subtree iterator to facilitate flexible tree navigation
 - add introductory nltk examples to first section of intro chapter [SB]
 - expand fieldwork chapter [SB]
-- improve intro Python stuff
 - port Cohn's clusterer [SB]
+- add OLAC support: read and write an OLAC static repository
+- XML processing in Python
+- urllib
 
 Version 0.6 (October)
 
