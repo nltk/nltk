@@ -32,6 +32,7 @@ will explain all this in great detail...]
 
 The following program finds words that rhyme with the target word:
 
+    >>> from nltk_lite.corpora import cmudict
     >>> prondict = cmudict.dictionary()
     >>> target = prondict['AMETHYST'][0]
     >>> for word in prondict.keys():
@@ -48,6 +49,7 @@ Genesis (King James Version) then generates text in the same style.
 
     >>> from nltk_lite.corpora import genesis
     >>> from nltk_lite.probability import ConditionalFreqDist
+    >>> from nltk_lite.utilities import print_string
     >>> from string import join
     >>> cfdist = ConditionalFreqDist()
     >>> prev = None
@@ -63,11 +65,15 @@ Genesis (King James Version) then generates text in the same style.
     ...         if word not in words:
     ...             break
     ...     prev = word
-    >>> print join(words)
-    lo, it came to the land of his father and he said, i will not be a wife unto him, saying, if thou shalt take our money in their kind, cattle, in thy seed after these are my son from off any more than all that is this day with him into egypt, he, hath taken away unawares to pass, when she bare jacob said one night, because they were born two hundred years old, as for an altar there, he had made me out at her pitcher upon every living creature after thee shall come near her: yea,
-
-
-
+    >>> print_string(join(words))
+    lo, it came to the land of his father and he said, i will not be a
+    wife unto him, saying, if thou shalt take our money in their kind,
+    cattle, in thy seed after these are my son from off any more than all
+    that is this day with him into egypt, he, hath taken away unawares to
+    pass, when she bare jacob said one night, because they were born two
+    hundred years old, as for an altar there, he had made me out at her
+    pitcher upon every living creature after thee shall come near her:
+    yea,
 
 The following program reads trees from the Penn Treebank corpus, and finds instances
 of verb phrase conjunctions involving the word *but*, and displays the two verb phrases.
