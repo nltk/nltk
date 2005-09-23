@@ -10,10 +10,40 @@
 # PRETTY PRINTING
 ##########################################################################
 
-def pr(iterator, start=0, end=None):
+def pr(data, start=0, end=None):
+    """
+    Pretty print a sequence of data items
+
+    @param data: the data stream to print
+    @type data: C{sequence} or C{iterator}
+    @param start: the start position
+    @type start: C{int}
+    @param end: the end position
+    @type end: C{int}
+    """
     from pprint import pprint
     from itertools import islice
-    pprint(list(islice(iterator, start, end)))
+    pprint(list(islice(data, start, end)))
+
+def print_string(s, width=70):
+    """
+    Pretty print a string, breaking lines on whitespace
+
+    @param s: the string to print, consisting of words and spaces
+    @type s: C{string}
+    @param width: the display width
+    @type width: C{int}
+    """
+    import re
+    while s:
+        s = s.strip()
+        try:
+            i = s[:width].rindex(' ')
+        except ValueError:
+            print s
+            return
+        print s[:i]
+        s = s[i:]
 
 ##########################################################################
 # EDIT DISTANCE (LEVENSHTEIN)
@@ -141,7 +171,6 @@ class MinimalSet:
 import re
 def re_show(regexp, string):
     """
-
     Search C{string} for substrings matching C{regexp} and wrap
     the matches with braces.  This is convenient for learning about
     regular expressions.
