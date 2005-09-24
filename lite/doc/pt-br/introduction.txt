@@ -19,6 +19,159 @@ Introdução ao Processamento de Linguagem Natural
    comunicam. E por meio da comunicação eles vivem com os outros,
    pensam, criam e agem. - John Ralston Saul
 
+------------------------------------------
+Porque o processamento lingüístico é fácil
+------------------------------------------
+
+Como escrevemos programas para manipular linguagens naturais? Quais
+questões referentes à linguagem poderemos responder? Como estes
+programas funcionariam e de quais dados precisariam? Estes são apenas
+alguns entre os tópicos que iremos abordar nestes tutoriais. Antes
+de enfrentarmos o assunto sistematicamente, daremos uma breve olhada
+a alguns simples programas que manipulam dados lingüísticos em uma
+série de formas interessantes e não triviais. Leitores não familiarizados
+com a programação ou com a linguagem Python também serão capazes de
+formar uma idéia geral sobre o que estes programas fazem. Nos capítulos
+seguitnes, exploraremos a operação destes e de outros programas mais
+profundamente.
+
+O programa a seguir procura no CMU Pronunciation Dictionary (Dicionário
+de Pronúncia do CMU) por palavras marcadas com a acentuação
+*pre-preantepenúltima*. Este programa procura em todas as strings de
+pronúncia ``pron`` e extrai destas os números de acentuação referentes,
+armazenando-os em uma variável chamada ``stress_pattern`` (do inglês,
+"padrão acentual"). Se o padrão acentual terminar por ``1 0 0 0 0``,
+indicando nenhuma variável acentuada após a quinta vogal do fim para o
+início, a palavra correspondente é exibida na tela. Observe que a palavra
+*spiritualists* é exibida múltiplas vezes, com base nas diferentes
+quantias de redução de obstruíntes finais de palavra.
+
+    >>> from nltk_lite.corpora import cmudict
+    >>> from string import join
+    >>> for word, num, pron in cmudict.raw():
+    ...     stress_pattern = join(c for c in join(pron) if c in "012")
+    ...     if stress_pattern.endswith("1 0 0 0 0"):
+    ...         print word, "/", join(pron)
+    ACCUMULATIVELY / AH0 K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+    AGONIZINGLY / AE1 G AH0 N AY0 Z IH0 NG L IY0
+    CARICATURIST / K EH1 R AH0 K AH0 CH ER0 AH0 S T
+    CIARAMITARO / CH ER1 AA0 M IY0 T AA0 R OW0
+    CUMULATIVELY / K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+    DEBENEDICTIS / D EH1 B EH0 N AH0 D IH0 K T AH0 S
+    DELEONARDIS / D EH1 L IY0 AH0 N AA0 R D AH0 S
+    FORMALIZATION / F AO1 R M AH0 L AH0 Z EY0 SH AH0 N
+    GIANNATTASIO / JH AA1 N AA0 T AA0 S IY0 OW0
+    HYPERSENSITIVITY / HH AY2 P ER0 S EH1 N S AH0 T IH0 V AH0 T IY0
+    IMAGINATIVELY / IH2 M AE1 JH AH0 N AH0 T IH0 V L IY0
+    INSTITUTIONALIZES / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z AH0 Z
+    INSTITUTIONALIZING / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z IH0 NG
+    MANGIARACINA / M AA1 N JH ER0 AA0 CH IY0 N AH0
+    SPIRITUALIST / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T
+    SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T S
+    SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S S
+    SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S
+    SPIRITUALLY / S P IH1 R IH0 CH AH0 W AH0 L IY0
+    UNALIENABLE / AH0 N EY1 L IY0 EH0 N AH0 B AH0 L
+    UNDERKOFFLER / AH1 N D ER0 K AH0 F AH0 L ER0
+
+O programa a seguir processa um léxico para a língua Rotokas (Papua
+Oriental, Ilha de Bougainville), gerando *conjuntos mínimos* que
+envolvam as vogais da primeira sílaba. Cada coluna da tabela
+resultante fornece evidências para distinções vocálicas:
+
+    >>> from nltk_lite.corpora import shoebox
+    >>> from nltk_lite.utilities import MinimalSet
+    >>> length, position, min = 4, 1, 3
+    >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas')
+    ...        for field in entry if field[0] == 'lx']
+    >>> ms = MinimalSet()
+    >>> for lex in lexemes:
+    ...     if len(lex) == length:
+    ...         context = lex[:position] + '_' + lex[position+1:]
+    ...         target = lex[position]
+    ...         ms.add(context, target, lex)
+    >>> for context in ms.contexts(3):
+    ...     for target in ms.targets():
+    ...         print "%-4s" % ms.display(context, target, "-"),
+    ...     print
+    kasi -    kesi kusi kosi
+    kava -    -    kuva kova
+    karu kiru keru kuru koru
+    kapu kipu -    -    kopu
+    karo kiro -    -    koro
+    kari kiri keri kuri kori
+    kapa -    kepa -    kopa
+    kara kira kera -    kora
+    kaku -    -    kuku koku
+    kaki kiki -    -    koki
+
+Os exemplos acima utilizaram recursos lexicais já existentes. Podemos, contudo,
+escrever programas que analisem textos puros em busca de estilos e padrões
+de uso de palavras. O programa a seguir executa uma simples análise de bigramas
+no livro do Gênese (versão da King James Bible) e gera texto sem sentido
+em algum estilo. Podemos utilizar técnicas similares para identificação
+de gênero literário ou autoria.
+
+    >>> from nltk_lite.corpora import genesis
+    >>> from nltk_lite.probability import ConditionalFreqDist
+    >>> from nltk_lite.utilities import print_string
+    >>> cfdist = ConditionalFreqDist()
+    >>> prev = None
+    >>> for word in genesis.raw():
+    ...     word = word.lower()
+    ...     cfdist[prev].inc(word)
+    ...     prev = word
+    >>> words = []
+    >>> prev = 'lo,'
+    >>> for i in range(99):
+    ...     words.append(prev)
+    ...     for word in cfdist[prev].sorted_samples():
+    ...         if word not in words:
+    ...             break
+    ...     prev = word
+    >>> print_string(join(words))
+    lo, it came to the land of his father and he said, i will not be a
+    wife unto him, saying, if thou shalt take our money in their kind,
+    cattle, in thy seed after these are my son from off any more than all
+    that is this day with him into egypt, he, hath taken away unawares to
+    pass, when she bare jacob said one night, because they were born two
+    hundred years old, as for an altar there, he had made me out at her
+    pitcher upon every living creature after thee shall come near her:
+    yea,
+
+O programa a seguir lê árvores sintáticas do corpus Penn Treebank, encontrando
+ocorrências de conjunções de sintgamas verbais que envolvam a palavra *but* (do
+inglês, "mas") e exiba os dois sintagmas verbais.
+
+    >>> from nltk_lite.corpora import treebank
+    >>> from string import join
+    >>> def vp_conj(tree):
+    ...     if tree.node == 'VP' and len(tree) == 3 and tree[1].leaves() == ['but']:
+    ...         return True
+    ...     else:
+    ...         return False
+    >>> for tree in treebank.parsed():
+    ...     for vp1,conj,vp2 in tree.subtrees(vp_conj):
+    ...         print join(child.node for child in vp1), "*BUT*", join(child.node for child in vp2)
+    VBP ADVP-TMP PP-PRD PP *BUT* VBP VP
+    VBZ VP *BUT* VBZ NP PP-CLR
+    PP-TMP VBZ VP *BUT* VBD ADVP-TMP S
+    VBZ SBAR *BUT* VBZ SBAR
+    VBD SBAR *BUT* VBD RB VP
+    VBD SBAR *BUT* VBD S
+    VBP NP-PRD *BUT* VBP RB ADVP-TMP VP
+    VBN PP PP-TMP *BUT* ADVP-TMP VBN NP
+    MD VP *BUT* VBZ NP SBAR-ADV
+    VBD ADVP-CLR *BUT* VBD NP
+    VBN NP PP *BUT* VBN NP PP SBAR-PRP
+    VBD NP *BUT* MD RB VP
+    VBD NP PP-CLR *BUT* VBD PRT NP
+    VBZ S *BUT* MD VP
+
+Vimos que escrever programas para manipular linguagens naturais é fácil. Nas
+seções a seguir vermos porque isto é tão interessante e importante...
+
+
 -------------------
 O desafio da língua
 -------------------
