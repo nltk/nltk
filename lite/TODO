@@ -1,28 +1,41 @@
 KEY: "-" = not done; "+" = done
 
+---------------------------------
 Version 0.5 (Monday 26 September)
+---------------------------------
 
 + fix chart parser bug [SB]
 + add pronouncing dictionary [SB]
 + double treebank WSJ to 10% [SB]
 + add subtree iterator to facilitate flexible tree navigation
-- add introductory nltk examples to first section of intro chapter [SB]
++ add introductory nltk examples to first section of intro chapter [SB]
 - expand fieldwork chapter [SB]
 - port Cohn's clusterer [SB]
-- add OLAC support: read and write an OLAC static repository
-- XML processing in Python
-- urllib
+- document recommended methods for saving models (pickle, shelve) [SB]
+- marshalling [SB/TT]
 
-Version 0.6 (October)
+-------------------------
+Version 0.6 (mid October)
+-------------------------
+
+- add OLAC support: read and write an OLAC static repository [SB]
+- XML processing in Python [SB]
+- urllib [SB]
+
+-----------------------
+Version 0.7 (November?)
+-----------------------
 
 
-Version ?
+-------------
+Uncategorized
+-------------
+
 
 Most of these require code and tutorials:
-- add lambda semantics to parse package [SB]
+- add lambda semantics to parse package
 - write feature-based syntax chapter, incl semantics [EK]
 - port NLTK classifiers
-- method for saving models (pickle, shelve)
 - language modelling package
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
