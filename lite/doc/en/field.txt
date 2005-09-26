@@ -19,6 +19,156 @@ Accessing and Analyzing Linguistic Field Data
 Introduction 
 ------------
 
+Linguistic fieldwork deals with essentially three kinds of data:
+lexicons, paradigms and texts. A lexicon is a database of words,
+minimally containing part of speech information and glosses. A
+paradigm (broadly construed) is any kind of rational tabulation of
+words or phrases to illustrate contrasts and systematic variation.  A
+text is essentially any larger unit such as a narrative or a
+conversation.  In addition to these three kinds of data, linguistic
+fieldwork deals with three main kinds of description: field notes,
+grammars and analytical papers.
+
+These various kinds of data and description enter into a complex web
+of relations. For example, the discovery of a new word in a text may
+require an update to the lexicon and the construction of a new
+paradigm (e.g. to correctly classify the word). Such updates may
+occasion the creation of some field notes, the extension of a grammar
+and possibly even the revision of the manuscript for an analytical
+paper. Progress on description and analysis gives fresh insights about
+how to organise existing data and it informs the quest for new
+data.
+
+Whether one is sorting data, or generating tabulations, or gathering
+statistics, or searching for a (counter-)example, or verifying the
+transcriptions used in a manuscript, the principal challenge is
+computational.  In the following we will consider various methods
+for manipulating linguistic field data, focussing on data stored in
+the popular *Shoebox* format.
+
+-----------------------------------------------------------------
+Tools and technologies for language documentation and description
+-----------------------------------------------------------------
+
+Language documentation projects are increasing in their reliance on
+new digital technologies and software tools.  Bird and Simons (2003)
+identified and categorized a wide variety of these tools.  We briefly
+review these here, and mention various ways that our own programs can
+interface with them.
+
+General purpose tools
+---------------------
+
+Conventional office software is widely used in computer-based language
+documentation work, given its familiarity and ready availability.
+This includes word processors and spreadsheets.
+
+**Word Processors.** These are often used in creating dictionaries and
+interlinear texts.  However, it is rather time-consuming to maintain
+the consistency of the content and format.  Consider a dictionary in
+which each entry has a part-of-speech field, drawn from a set of 20
+possibilities, displayed after the pronunciation field, and rendered
+in 11-point bold.  No convential word processor has search or macro
+functions capable of verifying that all part-of-speech fields have
+been correctly entered and displayed.  This task requires exhaustive
+manual checking.  If the word processor permits the document to be
+saved in a non-proprietary format, such as RTF, HTML, or XML, it may
+be possible to write programs to do this checking automatically.
+
+Consider the following fragment of a lexical entry:
+"sleep [sli:p] **vi** *condition of body and mind...*\ ".
+We can enter this in MSWord, then "Save as Web Page",
+then inspect the resulting HTML::
+
+    <p class=MsoNormal>sleep <span style='mso-spacerun:yes'> </span>[<span
+    class=SpellE>sli:p</span>]<span style='mso-spacerun:yes'>  </span><b><span
+    style='font-size:11.0pt'>vi</span></b><span style='mso-spacerun:yes'>  </span><i>a
+    condition of body and mind�o:p></o:p></i></p>
+
+Observe that the entry is represented as an HTML paragraph, using the
+``<p>`` element, and that the part of speech appears inside a ``<span
+style='font-size:11.0pt'>`` element.  The following program defines
+the set of legal parts-of-speech ``legal_pos``.  Then it extracts all
+11-point content from the ``dict.htm`` file and stores it in the set
+``used_pos``.  Observe that the search pattern contains a
+parenthesized sub-expression; only the material that matches this
+sub-expression is returned by ``re.findall``.  Finally, the program
+constructs the set of illegal parts-of-speech as ``used_pos -
+legal_pos``:
+
+    >>> import re
+    >>> legal_pos = set(['n', 'v.t.', 'v.i.', 'adj', 'det'])
+    >>> pattern = re.compile(r"'font-size:11.0pt'>([a-z.]+)<")
+    >>> document = open("dict.htm").read()
+    >>> used_pos = set(re.findall(pattern, document))
+    >>> illegal_pos = used_pos.difference(legal_pos)
+    >>> print list(illegal_pos)
+    ['v.intr', 'v.i', 'intrans']
+
+This simple program represents the tip of the iceberg.  We can develop
+sophisticated tools to check the consistency of word processor files,
+and report errors so that the maintainer of the dictionary can correct
+the original file *using the original word processor*.  We can write
+other programs to *convert* the data into a different format.  For
+example, the following program extracts the words and their
+pronunciations and generates output in "comma-separated value" (CSV) format:
+
+    >>> import re
+    >>> document = open("dict.htm").read()
+    >>> document = re.sub("[\r\n]", "", document)
+    >>> word_pattern = re.compile(r">([\w]+)")
+    >>> pron_pattern = re.compile(r"\[.*>([a-z:]+)<.*\]")
+    >>> for entry in document.split("<p"):
+    ...     word_match = word_pattern.search(entry)
+    ...     pron_match = pron_pattern.search(entry)
+    ...     if word_match and pron_match:
+    ...         lex = word_match.group(1)
+    ...         pos = pron_match.group(1)
+    ...         print "'%s','%s'" % (lex, pos)
+    'sleep','sli:p'
+    'walk','wo:k'
+    'wake','weik'
+
+**Spreadsheets.** These are often used for wordlists or paradigms.  A
+comparative wordlist may be stored in a spreadsheet, with a row for
+each cognate set, and a column for each language.  Examples are
+available from ``www.rosettaproject.org``.  Programs such as Excel can
+export spreadsheets in the CSV format, and we can write programs to
+manipulate them, with the help of Python's ``csv`` module.  For
+example, we may want to print out cognates having an edit-distance of
+at least three from each other (i.e. 3 insertions, deletions, or
+substitutions).
+
+**Databases.** Sometimes lexicons are stored in a full-fledged
+relational database.  When properly normalized, these databases can
+implement many well-formedness constraints.  For example, we can
+require that all parts-of-speech come from a specified vocabulary by
+declaring that the part-of-speech field is an *enumerated type*.
+However, the relational model is often too restrictive for linguistic
+data, which typically has many optional and repeatable fields (e.g.
+dictionary sense definitions and example sentences).
+Query languages such as SQL cannot express many
+linguistically-motivated queries, e.g. *find all words that appear
+in example sentences for which no dictionary entry is provided*.
+Now supposing that the database supports exporting data to CSV format,
+we can express this query in the following program:
+
+    >>> import csv
+    >>> lexemes = []
+    >>> defn_words = []
+    >>> for row in csv.reader(open("dict.csv")):
+    ...     lexeme, pron, pos, defn = row
+    ...     lexemes.append(lexeme)
+    ...     defn_words += defn.split()
+    >>> undefined = list(set(defn_words).difference(set(lexemes)))
+    >>> undefined.sort()
+    >>> print undefined
+    ['...', 'a', 'and', 'body', 'by', 'cease', 'condition', 'down', 'each', 'foot', 'lifting', 'mind', 'of', 'progress', 'setting', 'to']
+
+-------------------------
+Processing "Shoebox" Data
+-------------------------
+
 The most popular tool for managing linguistic field data is *Shoebox*.
 Together with its more recent incarnation (*Toolbox*), Shoebox uses a
 simple file format which we can easily read and write, permitting us
@@ -104,7 +254,6 @@ concerned with their relative ordering in an entry.
   kakata (N.F) 'cockatoo'
   kakate (N.F) 'bamboo tube for water'
 
------------------------
 Simple Entry Processing
 -----------------------
 
@@ -133,7 +282,7 @@ Instead, we simply scan through it, and extract the information
 we need.
 
 Adding New Fields
------------------
+~~~~~~~~~~~~~~~~~
 
 It is often convenient to add new fields that are derived from
 existing ones.  Such fields often facilitate analysis.
@@ -177,7 +326,7 @@ field.  Here we will do it for a single entry only:
 
 
 Removing Fields
----------------
+~~~~~~~~~~~~~~~
 
 Finally, we can also use this technique to remove fields, as follows:
 
@@ -205,7 +354,6 @@ Finally, we can also use this technique to remove fields, as follows:
   <BLANKLINE>
 
 
---------
 Analysis
 --------
 
@@ -329,7 +477,7 @@ want to consider the other syllables involving ``s``.
 
 
 Finding Minimal Pairs
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 First, select the length of the words of interest, the position
 of the target segment in the word, and the minimum number of forms
@@ -395,13 +543,12 @@ the lexeme field.  We will also display the English gloss field.
 
 
 Analysing Texts
----------------
+~~~~~~~~~~~~~~~
 
 Use the shoebox lexicon to tag a text with part-of-speech information,
 then do POS-sensitive concordance-style searches.
 
 
------------------------------------------------------------
 Example Applications: Improving Access to Lexical Resources
 -----------------------------------------------------------
 
@@ -417,7 +564,7 @@ generate a wordfinder puzzle which can be used to test knowledge
 of lexical items.
 
 Fuzzy Spelling
---------------
+~~~~~~~~~~~~~~
 
 Confusible sets:
 
@@ -479,7 +626,7 @@ Finally, we can look up a word to get approximate matches:
 
 
 Wordfinder Puzzle
------------------
+~~~~~~~~~~~~~~~~~
 
 Here we will generate a grid of letters, containing words found in the
 dictionary.  First we remove any duplicates and disregard the order in
@@ -538,13 +685,12 @@ Finally we generate the words which need to be found.
   KAUO         KILIA        KAAKASI      KEROROI      KOSI        
   KAKUA        KIRIOTO      KAITA
 
-------------------
 Generating Reports
 ------------------
 
 
 Discovering Entry Patterns
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Print most frequent fields
 
@@ -582,7 +728,7 @@ Discovering patterns of fields:
    tree over the fields.
 
 Looking at Timestamps
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
   >>> fd = FreqDist()
   >>> from string import split
@@ -651,11 +797,33 @@ in order.  This time we print bars to indicate frequency:
   May / 2005 : #####
 
 
+-----------------
+Language Archives
+-----------------
+
+*This section will describe OLAC, the Open Language Archives Community.*
+
+
+Managing Metadata for Language Resources
+----------------------------------------
+
+*This section will discuss how to manipulate OLAC data*
+
+
+
 ---------
 Exercises
 ---------
 
-1. Write a program to filter out just the date field (``dt``) without
+1. Write a program that scans an HTML dictionary file to find entries
+   having an illegal part-of-speech field, and reports the *headword* for
+   each entry.
+
+#. Obtain a comparative wordlist in CSV format, and write a program
+   that prints those cognates having an edit-distance of at least three
+   from each other.
+
+#. Write a program to filter out just the date field (``dt``) without
    having to list the fields we wanted to retain.
 
 #. Print an index of a lexicon.  For each lexical entry, construct a
