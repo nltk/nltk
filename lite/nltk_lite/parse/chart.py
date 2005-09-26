@@ -565,17 +565,17 @@ class Chart:
     # Tree extraction & child pointer lists
     #////////////////////////////////////////////////////////////
 
-    def parses(self, root):
+    def parses(self, root, tree_class=Tree):
         """
         @return: A list of the complete tree structures that span
         the entire chart, and whose root node is C{root}.
         """
         trees = []
         for edge in self.select(span=(0,self._num_leaves), lhs=root):
-            trees += self.trees(edge, complete=True)
+            trees += self.trees(edge, tree_class=tree_class, complete=True)
         return trees
 
-    def trees(self, edge, complete=False):
+    def trees(self, edge, tree_class=Tree, complete=False):
         """
         @return: A list of the tree structures that are associated
         with C{edge}.
@@ -590,9 +590,9 @@ class Chart:
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
-        return self._trees(edge, complete, memo={})
+        return self._trees(edge, complete, memo={}, tree_class=Tree)
 
-    def _trees(self, edge, complete, memo):
+    def _trees(self, edge, complete, memo, tree_class):
         """
         A helper function for L{edge_to_trees}.
         @param memo: A dictionary used to record the trees that we've
@@ -627,7 +627,7 @@ class Chart:
             # Get the set of child choices for each child pointer.
             # child_choices[i] is the set of choices for the tree's
             # ith child.
-            child_choices = [self._trees(cp, complete, memo)
+            child_choices = [self._trees(cp, complete, memo, tree_class)
                              for cp in cpl]
 
             # Kludge to ensure child_choices is a doubly-nested list
@@ -637,11 +637,11 @@ class Chart:
             # For each combination of children, add a tree.
             for children in self._choose_children(child_choices):
                 lhs = edge.lhs().symbol()
-                trees.append(Tree(lhs, children))
+                trees.append(tree_class(lhs, children))
 
         # If the edge is incomplete, then extend it with "partial trees":
         if edge.is_incomplete():
-            unexpanded = [Tree(elt,[])
+            unexpanded = [tree_class(elt,[])
                           for elt in edge.rhs()[edge.dot():]]
             for tree in trees:
                 tree.extend(unexpanded)
