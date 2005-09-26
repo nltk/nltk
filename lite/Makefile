@@ -91,11 +91,11 @@ apidocs:
 	$(EPYDOC) $(EPYDOC_OPTS) -o $(REFDOC_DIR) nltk_lite
 
 docdist:
-	zip -r doc/nltk_lite-doc-($NLTK_VERSION) doc -x CVS
+	zip -r doc/nltk_lite-doc-$(NLTK_VERSION) doc -x CVS
 #	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
 
 corporadist:
-	zip -r doc/nltk_lite-corpora-($NLTK_VERSION) corpora -x CVS
+	zip -r doc/nltk_lite-corpora-$(NLTK_VERSION) corpora -x CVS
 #	tar czvf corpora.tgz --exclude=CVS corpora
 
 # Automatically add the appropriate version number.
