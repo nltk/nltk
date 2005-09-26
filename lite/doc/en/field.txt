@@ -801,14 +801,58 @@ in order.  This time we print bars to indicate frequency:
 Language Archives
 -----------------
 
-*This section will describe OLAC, the Open Language Archives Community.*
-
+Language technology and the linguistic sciences are confronted with a
+vast array of language resources, richly structured, large and
+diverse. Multiple communities depend on language resources, including
+linguists, engineers, teachers and actual speakers.  Thanks to recent
+advances in digital technologies, we now have unprecedented
+opportunities to bridge these communities to the language resources
+they need. First, inexpensive mass storage technology permits large
+resources to be stored in digital form, while the Extensible Markup
+Language (XML) and Unicode provide flexible ways to represent
+structured data and ensure its long-term survival. Second, digital
+publication on the web is the most practical and efficient means of
+sharing language resources. Finally, a standard resource description
+model and interchange method provided by the Open Language Archives
+Community (OLAC) makes it possible to construct a *union catalog* over
+multiple repositories and archives (see ``http://www.language-archives.org/``).
 
 Managing Metadata for Language Resources
 ----------------------------------------
 
-*This section will discuss how to manipulate OLAC data*
+OLAC metadata extends the *Dublin Core* metadata set with descriptors
+that are important for language resources.
 
+The container for an OLAC metadata record is the element ``<olac>``.
+Here is a valid OLAC metadata record from the Pacific And Regional
+Archive for Digital Sources in Endangered Cultures (PARADISEC)::
+
+  <olac:olac xsi:schemaLocation="http://purl.org/dc/elements/1.1/ http://www.language-archives.org/OLAC/1.0/dc.xsd
+    http://purl.org/dc/terms/ http://www.language-archives.org/OLAC/1.0/dcterms.xsd
+    http://www.language-archives.org/OLAC/1.0/ http://www.language-archives.org/OLAC/1.0/olac.xsd">
+    <dc:title>Tiraq Field Tape 019</dc:title>
+    <dc:identifier>AB1-019</dc:identifier>
+    <dcterms:hasPart>AB1-019-A.mp3</dcterms:hasPart>
+    <dcterms:hasPart>AB1-019-A.wav</dcterms:hasPart>
+    <dcterms:hasPart>AB1-019-B.mp3</dcterms:hasPart>
+    <dcterms:hasPart>AB1-019-B.wav</dcterms:hasPart>
+    <dc:contributor xsi:type="olac:role" olac:code="recorder">Brotchie, Amanda</dc:contributor>
+    <dc:subject xsi:type="olac:language" olac:code="x-sil-MME"/>
+    <dc:language xsi:type="olac:language" olac:code="x-sil-BCY"/>
+    <dc:language xsi:type="olac:language" olac:code="x-sil-MME"/>
+    <dc:format>Digitised: yes;</dc:format>
+    <dc:type>primary_text</dc:type>
+    <dcterms:accessRights>standard, as per PDSC Access form</dcterms:accessRights>
+    <dc:description>SIDE A<p>1. Elicitation Session - Discussion and
+      translation of Lise's and Marie-Claire's Songs and Stories from
+      Tape 18 (Tamedal)<p><p>SIDE B<p>1. Elicitation Session: Discussion
+      of and translation of Lise's and Marie-Clare's songs and stories
+      from Tape 018 (Tamedal)<p>2. Kastom Story 1 - Bislama
+      (Alec). Language as given: Tiraq</dc:description>
+  </olac:olac>
+    
+
+.. note:: The remainder of this section will discuss how to manipulate OLAC metadata.
 
 
 ---------
@@ -859,8 +903,6 @@ Exercises
    for the most similarly spelled lexeme.
  
 #. How many entries were last modified in 2004?
-
-
 
 ----
 
