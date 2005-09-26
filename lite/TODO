@@ -26,6 +26,7 @@ Version 0.6 (mid October)
 - incorporate Speer's feature-based parser
 - expand coverage of Brazilian Portuguese translations [TT]
 - get epydoc docstrings to compile cleanly
+- fix misc.quicksort [SB]
 
 -----------------------
 Version 0.7 (November?)

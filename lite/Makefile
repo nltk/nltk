@@ -120,9 +120,9 @@ python:	.python.done
 	wget -N -O iso/mac/MacPython-OSX-2.4.1-1.dmg http://undefined.org/python/MacPython-OSX-2.4.1-1.dmg
 	wget -N -O iso/mac/numarray-1.1.1-py2.4-macosx10.3.zip http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
 	wget -N -O iso/win/Python-2.4.1.msi http://www.python.org/ftp/python/2.4.1/python-2.4.1.msi
-	wget -N -O iso/win/numarray-1.3.3.exe $SFNETMIRROR/numpy/numarray-1.3.3.win32-py2.4.exe?download
+	wget -N -O iso/win/numarray-1.3.3.exe $(SFNETMIRROR)/numpy/numarray-1.3.3.win32-py2.4.exe?download
 	wget -N -O iso/unix/Python-2.4.1.tgz http://www.python.org/ftp/python/2.4.1/Python-2.4.1.tgz
-	wget -N -O iso/unix/numarray-1.3.3.tar.gz $SFNETMIRROR/numpy/numarray-1.3.3.tar.gz
+	wget -N -O iso/unix/numarray-1.3.3.tar.gz $(SFNETMIRROR)/numpy/numarray-1.3.3.tar.gz
 	touch .python.done
 
 iso:	dist
@@ -134,3 +134,5 @@ iso:	dist
 	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
 	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
 	cp *.txt *.TXT					iso
+	ln -f -s iso/ nltk_lite-$(NLTK_VERSION)
+	mkisofs -f -r -o dist/nltk_lite-$(NLTK_VERSION).iso nltk_lite-$(NLTK_VERSION)
