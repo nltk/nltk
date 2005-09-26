@@ -7,20 +7,25 @@ Version 0.5 (Monday 26 September)
 + fix chart parser bug [SB]
 + add pronouncing dictionary [SB]
 + double treebank WSJ to 10% [SB]
-+ add subtree iterator to facilitate flexible tree navigation
++ add subtree iterator to facilitate flexible tree navigation [SB]
 + add introductory nltk examples to first section of intro chapter [SB]
-- expand fieldwork chapter [SB]
-- port Cohn's clusterer [SB]
-- document recommended methods for saving models (pickle, shelve) [SB]
-- marshalling [SB/TT]
++ expand fieldwork tutorial [SB]
++ expand coverage of Brazilian Portuguese translations [TT]
 
 -------------------------
 Version 0.6 (mid October)
 -------------------------
 
+- port Cohn's clusterer [SB]
+- document recommended methods for saving models (pickle, shelve) [SB]
+- marshalling [SB/TT]
 - add OLAC support: read and write an OLAC static repository [SB]
 - XML processing in Python [SB]
 - urllib [SB]
+- further expand fieldwork tutorial [SB]
+- incorporate Speer's feature-based parser
+- expand coverage of Brazilian Portuguese translations [TT]
+- get epydoc docstrings to compile cleanly
 
 -----------------------
 Version 0.7 (November?)
