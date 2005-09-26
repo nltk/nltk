@@ -380,7 +380,7 @@ count for words of this length.
   >>> length_dist('english-kjv')
    0  2 14 28 21 13  7  5  2  2  0  0  0  0  0
   >>> length_dist('finnish')
-   0  0  9  6 11 16 16 12  9  6  3  2  2  1  0
+   0  0  9  6 10 16 16 12  9  6  3  2  2  1  0
 
 A *condition* specifies the context in which an experiment is
 performed.  Often, we are interested in the effect that conditions

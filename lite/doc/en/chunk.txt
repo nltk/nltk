@@ -859,7 +859,7 @@ distribution as shown below:
   >>> chunk_tags = [re.sub(r'(\W)', r'\\\1', tag) for tag in chunk_tags]
   >>> tag_pattern = '<' + '|'.join(chunk_tags) + '>+'
   >>> print 'Chunking:', tag_pattern
-  Chunking: <PRP\$|POS|WDT|JJ|WP|DT|\$|NN|PRP|NNS|NNP|LS|PDT|CD|EX|WP\$|NNPS|JJS|JJR>+
+  Chunking: <PRP\$|VBG\|NN|POS|WDT|JJ|WP|DT|\#|\$|NN|FW|PRP|NNS|NNP|LS|PDT|RBS|CD|EX|WP\$|NNPS|JJS|JJR>+
 
 Now, in the evaluation phase we chunk any sequence of those tags:
 
@@ -871,9 +871,9 @@ Now, in the evaluation phase we chunk any sequence of those tags:
   ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore
   ChunkParse score:
-      Precision:  91.3%
+      Precision:  91.8%
       Recall:     93.8%
-      F-Measure:  92.5%
+      F-Measure:  92.8%
 
 ----------
 Conclusion
