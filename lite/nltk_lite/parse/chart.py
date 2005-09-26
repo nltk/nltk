@@ -590,7 +590,7 @@ class Chart:
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
-        return self._trees(edge, complete, memo={}, tree_class=Tree)
+        return self._trees(edge, complete, memo={}, tree_class=tree_class)
 
     def _trees(self, edge, complete, memo, tree_class):
         """
