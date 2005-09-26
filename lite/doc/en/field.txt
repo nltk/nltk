@@ -124,10 +124,10 @@ pronunciations and generates output in "comma-separated value" (CSV) format:
     ...     if word_match and pron_match:
     ...         lex = word_match.group(1)
     ...         pos = pron_match.group(1)
-    ...         print "'%s','%s'" % (lex, pos)
-    'sleep','sli:p'
-    'walk','wo:k'
-    'wake','weik'
+    ...         print '"%s","%s"' % (lex, pos)
+    "sleep","sli:p"
+    "walk","wo:k"
+    "wake","weik"
 
 **Spreadsheets.** These are often used for wordlists or paradigms.  A
 comparative wordlist may be stored in a spreadsheet, with a row for
