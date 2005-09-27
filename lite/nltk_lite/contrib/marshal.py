@@ -4,6 +4,8 @@
 # this is useful for inspecting or tweaking the models.
 # We may incorporate this as a marshal method in each model.
 
+# TODO: describe each tagger marshal format in the epydocs?
+
 from itertools import islice
 import re
 
@@ -13,6 +15,13 @@ from nltk_lite.corpora import brown
 # marshal-classes
 class MarshalUnigram (tag.Unigram):
     def marshal (self, filename):
+        """
+        Marshals (saves to a plain text file) the tagger model.
+       
+        @param filename: Name of the file to which save the model (will
+                         be overwritten if it already exists).
+        @type filename: C{string}
+        """
         handler = file(filename, "w")
         
         for text, tag in self._model.iteritems():
@@ -21,6 +30,15 @@ class MarshalUnigram (tag.Unigram):
         handler.close()
         
     def unmarshal (self, filename):
+        """
+        Unmarshals (loads from a plain text file) the tagger model. For
+        safety, this operation is intended to be performed only on
+        newly created taggers (i.e., without any previous model).
+       
+        @param filename: Name of the file from which the model will
+                         be read.
+        @type filename: C{string}
+        """
         handler = file(filename, "r")
         
         pattern = re.compile(r'^(.+):(.+?)$', re.UNICODE)
@@ -33,6 +51,13 @@ class MarshalUnigram (tag.Unigram):
 
 class MarshalAffix (tag.Affix):
     def marshal (self, filename):
+        """
+        Marshals (saves to a plain text file) the tagger model.
+        
+        @param filename: Name of the file to which save the model (will
+                         be overwritten if it already exists).
+        @type filename: C{string}
+        """
         handler = file(filename, "w")
         
         handler.write("length %i\n" % self._length)
@@ -44,6 +69,15 @@ class MarshalAffix (tag.Affix):
         handler.close()
 
     def unmarshal (self, filename):
+        """
+        Unmarshals (loads from a plain text file) the tagger model. For
+        safety, this operation is intended to be performed only on
+        newly created taggers (i.e., without any previous model).
+        
+        @param filename: Name of the file from which the model will
+                         be read.
+        @type filename: C{string}
+        """
         handler = file(filename, "r")
         
         lines = handler.readlines()
@@ -61,6 +95,13 @@ class MarshalAffix (tag.Affix):
 
 class MarshalNgram (tag.Ngram):
     def marshal (self, filename):
+        """
+        Marshals (saves to a plain text file) the tagger model.
+        
+        @param filename: Name of the file to which save the model (will
+                         be overwritten if it already exists).
+        @type filename: C{string}
+        """
         handler = file(filename, "w")
         
         handler.write("n %i\n" % self._n)
@@ -78,6 +119,15 @@ class MarshalNgram (tag.Ngram):
         handler.close()
 
     def unmarshal (self, filename):
+        """
+        Unmarshals (loads from a plain text file) the tagger model. For
+        safety, this operation is intended to be performed only on
+        newly created taggers (i.e., without any previous model).
+        
+        @param filename: Name of the file from which the model will
+                         be read.
+        @type filename: C{string}
+        """
         handler = file(filename, "r")
         
         lines = handler.readlines()
