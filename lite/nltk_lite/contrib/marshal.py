@@ -87,9 +87,12 @@ class MarshalNgram (tag.Ngram):
         
         pattern = re.compile(r'^\[(.+)\]:(.+):(.+?)$', re.UNICODE)
         
-        # build 'context_pattern': having to deal with the possibility of
-        # the field separation character (":") being used as a tag or text,
-        # the correct regexp pattern is built accordingly to self._n
+        # As the separator-char ":" can be used as a tag or as a text,
+        # 'context_pattern' is built based on the context's size (self._n),
+        # for example:
+        #   self._n = 2 -> r'^(.+?)$', like 'tag1'
+        #   self._n = 3 -> r'^(.+?):(.+?)$', like 'tag1:tag2'
+        #   self._n = 4 -> r'^(.+?):(.+?):(.+?)$', like 'tag1:tag2:tag3'
         context_pattern_str = r'^(.+?)%s$' % ( r':(.+?)' * (self._n-2) )
         context_pattern = re.compile(context_pattern_str, re.UNICODE)
         
