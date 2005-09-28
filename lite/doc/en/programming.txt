@@ -403,8 +403,9 @@ We can also access the tagged text using the ``brown.tagged()`` method:
   >>> print extract(0, brown.tagged())
   [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]
 
-NLTK-Lite includes a 5% fragment of the Penn Treebank.  This can be accessed using
-``treebank.raw()`` for the raw text, and ``treebank.tagged()`` for the tagged text.
+NLTK-Lite includes a 10% fragment of the Wall Street Journal section
+of the Penn Treebank.  This can be accessed using ``treebank.raw()``
+for the raw text, and ``treebank.tagged()`` for the tagged text.
 
   >>> from nltk_lite.corpora import treebank
   >>> print extract(0, treebank.parsed())
