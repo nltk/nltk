@@ -302,7 +302,7 @@ e.g. ``kakapua`` would map to ``CVCVCVV``.
 This mapping has four steps.  First, the string is converted to lowercase,
 then we replace any non-alphabetic characters ``[^a-z]`` with a dash.
 Next, we replace all vowels with ``V``.  Finally, anything that is not
-a ``V`` or a dash, must be a consonant, so we replace it with a ``C``.
+a ``V`` or a dash must be a consonant, so we replace it with a ``C``.
 
 Now, we can scan the lexicon and add a new cv field after every lx
 field.  Here we will do it for a single entry only:
