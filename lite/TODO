@@ -47,3 +47,27 @@ Most of these require code and tutorials:
 - language modelling package
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
+
+
+
+-----
+BOOK
+______
+
+The following rendering/organizational features would be helpful:
+- allow consecutive numbering of examples within a chapter
+- develop a 'house-style' for call-outs (e.g., Note, Tip, etc)
+   - which ones are allowed?
+   - when do we use which?
+   - how should they be rendered?
+- agree a method for cross-references between chapters
+- collect all references into a final bibliography
+- once PDF versions are available, add rule to Makefile which compiles a single PDF for all chapters
+
+More substantive:
+- what is the final inventory of chapters for the first edition?
+    - can we just make do with what's there plus a chapter on feature-based syntax and semantics?
+- proposed draft cycle for book
+    - produce and internally review a complete draft of all chapters at the end of each month, Sept - Dec
+
+
