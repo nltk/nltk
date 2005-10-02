@@ -29,6 +29,7 @@ Version 0.6 (mid October)
 - fix misc.quicksort [SB]
 - add wordnet/pywordnet [SB]
 - PDF versions of tutorials [SB]
+- interpolated and backoff language models [SB]
 
 -----------------------
 Version 0.7 (November?)
