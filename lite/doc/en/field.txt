@@ -167,9 +167,9 @@ we can express this query in the following program:
     >>> print undefined
     ['...', 'a', 'and', 'body', 'by', 'cease', 'condition', 'down', 'each', 'foot', 'lifting', 'mind', 'of', 'progress', 'setting', 'to']
 
--------------------------
-Processing "Shoebox" Data
--------------------------
+-----------------------
+Processing Shoebox Data
+-----------------------
 
 Over the last two decades, several dozen tools have been developed
 that provide specialized support for linguistic data management.
@@ -216,6 +216,9 @@ alphabetic.  The field name is separated from the field's contents by
 whitespace.  The contents can be arbitrary text, and can continue over
 several lines (but cannot contain a line-initial backslash).
 
+Accessing Shoebox Data
+----------------------
+
 We can use the ``shoebox.raw()`` method to access a Shoebox file to
 perform various operations that involve single-pass scanning of a
 lexicon.  For example, here we compute the average number of fields
@@ -255,59 +258,6 @@ We can index into this list, thus ``entries[3]`` returns entry number
      'xe': 'Taeavi planted banana in order to cook it.',
      'xp': 'Taeavi i bin planim gaden banana bilong kukim tasol long paia.'}
 
-We can use the ``shoebox.dictionary()`` method to print a formatted
-version of a lexicon.  It allows us to request specific fields without
-needing to be concerned with their relative ordering in the original file.
-
-    >>> for entry in entries[70:80]:
-    ...     lex = entry['lx']
-    ...     pos = entry['ps']
-    ...     dfn = entry['ge']
-    ...     if entry.has_key('eng'):
-    ...         dfn = entry['eng']
-    ...     print "%s (%s) '%s'" % (lex, pos, dfn)
-    kakapikoto (N.N2) 'newborn baby'
-    kakapu (V.B) 'place in sling for purpose of carrying'
-    kakapua (N.N) 'sling for lifting'
-    kakara (N.N) 'bracelet'
-    Kakarapaia (N.PN) 'village name'
-    kakarau (N.F) 'stingray'
-    Kakarera (N.PN) 'name'
-    Kakareraia (N.???) 'name'
-    kakata (N.F) 'cockatoo'
-    kakate (N.F) 'bamboo tube for water'
-
-.. sidebar:: Producing CSV output
-
-    We could have produced comma-separated value (CSV) format with a
-    slightly different print statement: ``print '"%s";"%s";"%s"\n' % (lex, pos, dfn)``
-
-We can use the same idea to generate HTML tables instead of plain text.
-This would be useful for publishing a Shoebox lexicon on the web.
-
-    >>> html = "<table>\n"
-    >>> for entry in entries[70:80]:
-    ...     lex = entry['lx']
-    ...     pos = entry['ps']
-    ...     dfn = entry['ge']
-    ...     if entry.has_key('eng'):
-    ...         dfn = entry['eng']
-    ...     html += "  <tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (lex, pos, dfn)
-    >>> html += "</table>"
-    >>> print html
-    <table>
-      <tr><td>kakapikoto</td><td>N.N2</td><td>newborn baby</td></tr>
-      <tr><td>kakapu</td><td>V.B</td><td>place in sling for purpose of carrying</td></tr>
-      <tr><td>kakapua</td><td>N.N</td><td>sling for lifting</td></tr>
-      <tr><td>kakara</td><td>N.N</td><td>bracelet</td></tr>
-      <tr><td>Kakarapaia</td><td>N.PN</td><td>village name</td></tr>
-      <tr><td>kakarau</td><td>N.F</td><td>stingray</td></tr>
-      <tr><td>Kakarera</td><td>N.PN</td><td>name</td></tr>
-      <tr><td>Kakareraia</td><td>N.???</td><td>name</td></tr>
-      <tr><td>kakata</td><td>N.F</td><td>cockatoo</td></tr>
-      <tr><td>kakate</td><td>N.F</td><td>bamboo tube for water</td></tr>
-    </table>
-
 Simple Entry Processing
 -----------------------
 
@@ -325,13 +275,6 @@ all the lexemes.  We can do this as follows, starting by initialising
     ...             normalised_lexeme = field[1].lower()
     ...             lexemes.append(normalised_lexeme)
 
-Each field is stored as a tuple, e.g. ``('lx', 'kakate')``.  For each
-field in each entry, we check to see if the field name is ``lx``.  If
-it is, we convert the field's contents to lowercase, and append it to
-the ``lexemes`` list.  Observe that this process does not store the
-entire lexicon in memory.  Instead, the information we want is
-extracted during a single scan of the lexicon.
-
 .. sidebar:: Python's *list comprehension* syntax
 
     Note that we can construct the ``lexemes`` list much more economically
@@ -341,6 +284,13 @@ extracted during a single scan of the lexicon.
     ...              for entry in shoebox.raw('rotokas')
     ...	               for field in entry if field[0] == 'lx']
 
+
+Each field is stored as a tuple, e.g. ``('lx', 'kakate')``.  For each
+field in each entry, we check to see if the field name is ``lx``.  If
+it is, we convert the field's contents to lowercase, and append it to
+the ``lexemes`` list.  Observe that this process does not store the
+entire lexicon in memory.  Instead, the information we want is
+extracted during a single scan of the lexicon.
 
 **Adding New Fields:**
 It is often convenient to add new fields that are derived from
@@ -352,21 +302,20 @@ e.g. ``kakapua`` would map to ``CVCVCVV``.
     >>> import re
     >>> def cv(s):
     ...     s = s.lower()
-    ...     s = re.sub(r'[^a-z]',     r'-', s)
+    ...     s = re.sub(r'[^a-z]',     r'_', s)
     ...     s = re.sub(r'[aeiou]',    r'V', s)
-    ...     s = re.sub(r'[^V\-]',     r'C', s)
+    ...     s = re.sub(r'[^V_]',     r'C', s)
     ...     return (s)
 
 This mapping has four steps.  First, the string is converted to lowercase,
-then we replace any non-alphabetic characters ``[^a-z]`` with a dash.
+then we replace any non-alphabetic characters ``[^a-z]`` with an underscore.
 Next, we replace all vowels with ``V``.  Finally, anything that is not
-a ``V`` or a dash must be a consonant, so we replace it with a ``C``.
-
-Now, we can scan the lexicon and add a new cv field after every lx
+a ``V`` or an underscore must be a consonant, so we replace it with a ``C``.
+Now, we can scan the lexicon and add a new ``cv`` field after every ``lx``
 field.  Here we will do it for a single entry only:
 
-    >>> entries = list(shoebox.raw('rotokas'))
-    >>> for field in entries[50]:
+    >>> raw_entries = list(shoebox.raw('rotokas'))
+    >>> for field in raw_entries[50]:
     ...     print "\\%s %s" % field
     ...	    if field[0] == "lx":
     ...	        print "\\cv %s" % cv(field[1])
@@ -383,14 +332,14 @@ field.  Here we will do it for a single entry only:
     \xe Peter went to look at the house that the wind destroyed.
 
 **Removing Fields:**
-Finally, we can also use this technique to make copies of Shoebox data
+We can also use this technique to make copies of Shoebox data
 that lack particular fields.  For example, we may want to sanitise our
 lexical data before giving it to others, by removing unnecessary
 fields (e.g. fields containing personal comments.)
 
     >>> retain = ('lx', 'ps')
-    >>> entries = list(shoebox.raw('rotokas'))
-    >>> for entry in entries[50:55]:
+    >>> raw_entries = list(shoebox.raw('rotokas'))
+    >>> for entry in raw_entries[50:55]:
     ...     for field in entry:
     ...         if field[0] in retain:
     ...             print "\\%s %s" % field
@@ -411,9 +360,65 @@ fields (e.g. fields containing personal comments.)
     \ps N.N
     <BLANKLINE>
 
+**Formatting Entries:**
+We can use the ``shoebox.dictionary()`` method to print a formatted
+version of a lexicon.  It allows us to request specific fields without
+needing to be concerned with their relative ordering in the original file.
 
-Analysis
---------
+    >>> entries = list(shoebox.dictionary('rotokas'))
+    >>> for entry in entries[70:80]:
+    ...     lex = entry['lx']
+    ...     pos = entry['ps']
+    ...     dfn = entry['ge']
+    ...     if 'eng' in entry:
+    ...         dfn = entry['eng']
+    ...     print "%s (%s) '%s'" % (lex, pos, dfn)
+    kakapikoto (N.N2) 'newborn baby'
+    kakapu (V.B) 'place in sling for purpose of carrying'
+    kakapua (N.N) 'sling for lifting'
+    kakara (N.N) 'bracelet'
+    Kakarapaia (N.PN) 'village name'
+    kakarau (N.F) 'stingray'
+    Kakarera (N.PN) 'name'
+    Kakareraia (N.???) 'name'
+    kakata (N.F) 'cockatoo'
+    kakate (N.F) 'bamboo tube for water'
+
+.. sidebar:: Producing CSV output
+
+    We could have produced comma-separated value (CSV) format with a
+    slightly different print statement: ``print '"%s";"%s";"%s"\n' % (lex, pos, dfn)``
+
+We can use the same idea to generate HTML tables instead of plain text.
+This would be useful for publishing a Shoebox lexicon on the web.
+It produces HTML elements ``<table>``, ``<tr>`` (table row), and
+``<td>`` (table data).
+
+    >>> html = "<table>\n"
+    >>> for entry in entries[70:80]:
+    ...     lex = entry['lx']
+    ...     pos = entry['ps']
+    ...     dfn = entry['ge']
+    ...     if 'eng' in entry:
+    ...         dfn = entry['eng']
+    ...     html += "  <tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (lex, pos, dfn)
+    >>> html += "</table>"
+    >>> print html
+    <table>
+      <tr><td>kakapikoto</td><td>N.N2</td><td>newborn baby</td></tr>
+      <tr><td>kakapu</td><td>V.B</td><td>place in sling for purpose of carrying</td></tr>
+      <tr><td>kakapua</td><td>N.N</td><td>sling for lifting</td></tr>
+      <tr><td>kakara</td><td>N.N</td><td>bracelet</td></tr>
+      <tr><td>Kakarapaia</td><td>N.PN</td><td>village name</td></tr>
+      <tr><td>kakarau</td><td>N.F</td><td>stingray</td></tr>
+      <tr><td>Kakarera</td><td>N.PN</td><td>name</td></tr>
+      <tr><td>Kakareraia</td><td>N.???</td><td>name</td></tr>
+      <tr><td>kakata</td><td>N.F</td><td>cockatoo</td></tr>
+      <tr><td>kakate</td><td>N.F</td><td>bamboo tube for water</td></tr>
+    </table>
+
+Exploration
+-----------
 
 In this section we consider a variety of analysis tasks.
 
@@ -426,7 +431,7 @@ which maps lexemes to their English glosses:
 
     >>> lexgloss = {}
     >>> for entry in shoebox.dictionary('rotokas'):
-    ...     if entry.has_key('lx') and entry['ps'][0] == 'V':
+    ...     if 'lx' in entry and entry['ps'][0] == 'V':
     ...         lexgloss[entry['lx']] = entry['ge']
 
 Next, for each lexeme ``lex``, we will check if the lexicon contains the
@@ -463,21 +468,6 @@ their glosses.
     koru (make return); korukoru (obstruct)
     ku (finished with); kuku (spoonfeed)
     kosi (exit); kosikosi (exit)
-
-The above example found whole-word reduplication.  We can find
-potential cases of word-initial CV reduplication as follows.
-(Evidently this kind of reduplication is not productive in Rotokas.)
-
-    >>> for lex in lexgloss:
-    ...     if len(lex) > 2:
-    ...         redup = lex[:2]+lex
-    ...         if redup in lexgloss:
-    ...             print "%s (%s); %s (%s)" % (lex, lexgloss[lex], redup, lexgloss[redup])
-    kavu (left behind); kakavu (scoop up with the hands)
-    koro (go inside the eye); kokoro (crazy)
-    kori (mark); kokori (spiralled)
-    kae (carry); kakae (little)
-    kosi (exit); kokosi (???)
 
 **Complex Search Criteria:**
 Phonological description typically identifies the segments, alternations,
@@ -520,10 +510,7 @@ A phonological description may include an examination of the segmental
 and prosodic constraints on well-formed morphemes and lexemes.  For
 example, we may want to find trisyllabic verbs ending in a long vowel.
 Our program can make use of the fact that syllable onsets are
-obligatory and simple (only consist of a single consonant).  We use
-the ``cv`` function to get the CV template of the lexeme, then count
-the number of Cs it contains.
-
+obligatory and simple (only consist of a single consonant).
 First, we will encapsulate the syllabic counting part in a separate
 function.  It gets the CV template of the word ``cv(word)`` and counts
 the number of consonants it contains:
@@ -533,8 +520,9 @@ the number of consonants it contains:
     ...     num_cons = template.count('C')
     ...     return num_cons
 
-We also encapsulate the vowel test in a function, as this helps the readability
-of the final program.  This function returns a boolean value:
+We also encapsulate the vowel test in a function, as this improves the readability
+of the final program.  This function returns the value ``True`` just in case ``char``
+is a vowel.
 
     >>> def is_vowel(char):
     ...     return (char in 'aeiou')
@@ -542,13 +530,14 @@ of the final program.  This function returns a boolean value:
 Over time we may create a useful collection of such functions.  We can save them
 in a file ``utilities.py``, and then at the start of each program we can simply
 import all the functions in one go using ``from utilities import *``.
+We take the entry to be a verb if the first letter of its part of speech is a ``V``.
 Here, then, is the program to display trisyllabic verbs ending in a long vowel:
 
     >>> for entry in shoebox.dictionary('rotokas'):
-    ...     if entry.has_key('lx'):
+    ...     if 'lx' in entry:
     ...         lex = entry['lx']
     ...         pos = entry['ps']
-    ...         if is_vowel(lex[-1]) and is_vowel(lex[-2]) and num_syls(lex) == 3 and pos[0] == 'V':
+    ...         if num_syls(lex) == 3 and is_vowel(lex[-1]) and is_vowel(lex[-2]) and pos[0] == 'V':
     ...             dfn = entry['ge']
     ...             print "%s (%s) '%s'" % (lex, pos, dfn)
     kaetupie (V.B) 'tighten'
@@ -586,47 +575,67 @@ except for a single property.  For example, the words pairs *mace* vs
 *maze* and *face* vs *faze*, and many others like them, demonstrate the
 existence of a phonemic distinction between *s* and *z* in English.
 NLTK-Lite provides flexible support for constructing minimal sets, using
-the ``MinimalSet()`` class.
+the ``MinimalSet()`` class.  This class needs three pieces of information
+for each item to be added:
+``context``: the material that must be fixed across all members of a minimal set;
+``target``: the material that changes across members of a minimal set;
+``display``: the material that should be displayed for each item.
 
-We begin by setting some parameters, namely the length of the words of
-interest, the position of the target segment in the word, and the
-minimum number of forms we would like to see for any minimal set to be displayed:
 
-    >>> length, position, min = 4, 1, 3
+=========================  ==================  ===============  ===========
+Examples of Minimal Set Parameters
+---------------------------------------------------------------------------
+Minimal Set                Context             Target           Display
+=========================  ==================  ===============  ===========
+*bib*, *bid*, *big*        first two letters   third letter     word
+*deal (N)*, *deal (V)*     whole word          pos              word (pos)
+=========================  ==================  ===============  ===========
 
-Now, we define a function that iterates over all the lexemes, checking
-if they have the required length.  The ``context`` is taken to be the entire
-word, except for the target segment.  Thus, if ``lex = kasi``,
-then ``context = lex[:1]+'_'+lex[2:] = k_si``.
+We begin by creating a list of parameter values, generated from the
+full lexical entries.  In our first example, we will print minimal sets
+involving lexemes of length 4, with a target position of 1 (second
+segment).  The ``context`` is taken to be the entire word, except for
+the target segment.  Thus, if lex is ``kasi``, then context is
+``lex[:1]+'_'+lex[2:]``, or ``k_si``.  Note that no parameters are
+generated if the lexeme does not consist of exactly four segments.
+
+    >>> lexemes = [entry['lx'] for entry in shoebox.dictionary('rotokas')
+    ...              if 'lx' in entry]
+    >>> position = 1
+    >>> parameters = [(lex[:position] + '_' + lex[position+1:],
+    ...                lex[position],
+    ...                lex)
+    ...               for lex in lexemes if len(lex) == 4]
+
+Now, we define a function that builds creates and populates the
+``MinimalSet`` object.  For each ``context, target, display`` triple, it
+adds an entry to the minimal set.
 
     >>> from nltk_lite.utilities import MinimalSet
-    >>> def build_min_set(lexemes, length, position):
+    >>> def build_min_set(parameters):
     ...     min_set = MinimalSet()
-    ...     for lex in lexemes:
-    ...         if len(lex) == length:
-    ...             context = lex[:position] + '_' + lex[position+1:]
-    ...             target = lex[position]
-    ...             min_set.add(context, target, lex)
+    ...     for context, target, display in parameters:
+    ...         min_set.add(context, target, display)
     ...     return min_set
 
+Finally, we print the table of minimal sets.  We specify that each
+context was seen at least 3 times.
 
-Finally, we print the table of minimal sets.  We specify that
-each context was seen at least the minimum number of required times.
-
-    >>> for context in min_set.contexts(min):
-    ...     for target in min_set.targets():
-    ...         print "%-4s" % min_set.display(context, target, "-"),
+    >>> ms = build_min_set(parameters)
+    >>> for context in ms.contexts(3):
+    ...     print context + ':',
+    ...     for target in ms.targets():
+    ...         print "%-4s" % ms.display(context, target, "-"),
     ...     print
-    kasi -    kesi kusi kosi
-    kava -    -    kuva kova
-    karu kiru keru kuru koru
-    kapu kipu -    -    kopu
-    karo kiro -    -    koro
-    kari kiri keri kuri kori
-    kapa -    kepa -    kopa
-    kara kira kera -    kora
-    kaku -    -    kuku koku
-    kaki kiki -    -    koki
+    k_si: kasi -    kesi -    kosi
+    k_ru: karu kiru keru kuru koru
+    k_pu: kapu kipu -    -    kopu
+    k_ro: karo kiro -    -    koro
+    k_ri: kari kiri keri kuri kori
+    k_pa: kapa -    kepa -    kopa
+    k_ra: kara kira kera -    kora
+    k_ku: kaku -    -    kuku koku
+    k_ki: kaki kiki -    -    koki
 
 Observe in the above example that the context, target, and displayed
 material were all based on the lexeme field.  However, the idea of
@@ -635,11 +644,9 @@ get a list of wordforms having more than one possible part-of-speech.
 Then the target will be part-of-speech field, and the context will be
 the lexeme field.  We will also display the English gloss field.
 
-    >>> ms = MinimalSet()
-    >>> for entry in shoebox.dictionary('rotokas'):
-    ...     if entry.has_key('lx'):
-    ...         display = "%s (%s)" % (entry['ps'], entry['ge'])
-    ...         ms.add(entry['lx'], entry['ps'], display)
+    >>> parameters = [(entry['lx'], entry['ps'], "%s (%s)" % (entry['ps'], entry['ge']))
+    ...               for entry in shoebox.dictionary('rotokas') if 'lx' in entry]
+    >>> ms = build_min_set(parameters)
     >>> for context in ms.contexts()[:10]:
     ...     print "%s:" % context, "; ".join(ms.display_all(context))
     kokovara: N.N (unripe coconut); V.A (unripe)
@@ -653,12 +660,9 @@ the lexeme field.  We will also display the English gloss field.
     keru: N.N (bone); V.A (harden like bone)
     kirokiro: V.B (write); N.F (bush used for sorcery)
 
-
-Analysing Texts
-~~~~~~~~~~~~~~~
-
-Use the shoebox lexicon to tag a text with part-of-speech information,
-then do POS-sensitive concordance-style searches.
+.. Analysing Texts:
+   Use the shoebox lexicon to tag a text with part-of-speech information,
+   then do POS-sensitive concordance-style searches.
 
 
 Example Applications: Improving Access to Lexical Resources
@@ -675,10 +679,11 @@ The second is left to the reader as an exercise.  We will also
 generate a wordfinder puzzle which can be used to test knowledge
 of lexical items.
 
-Fuzzy Spelling
-~~~~~~~~~~~~~~
+Fuzzy Spelling (notes)
+~~~~~~~~~~~~~~~~~~~~~~
 
-Confusible sets:
+Confusible sets of segments: if two segments are confusible, map them
+to the same integer.
 
     >>> group = {
     ...     ' ':0,                     # blank (for short words)
@@ -796,6 +801,8 @@ Finally we generate the words which need to be found.
 Generating Reports
 ------------------
 
+Finally, we take a look at simple methods to generate summary reports,
+giving us an overall picture of the quality and organisation of the data.
 
 Discovering Entry Patterns
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -967,10 +974,12 @@ Archive for Digital Sources in Endangered Cultures (PARADISEC)::
 Further Reading
 ---------------
 
+Bird, Steven (1999).  Multidimensional exploration of online linguistic field data
+    *Proceedings of the 29th Meeting of the North-East Linguistic
+    Society*, pp 33-50.
+
 Bird, Steven and Gary Simons (2003).  Seven Dimensions of Portability
     for Language Documentation and Description, *Language* 79: 557-582.
-
-
 
 ---------
 Exercises
