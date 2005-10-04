@@ -644,21 +644,21 @@ get a list of wordforms having more than one possible part-of-speech.
 Then the target will be part-of-speech field, and the context will be
 the lexeme field.  We will also display the English gloss field.
 
-    >>> parameters = [(entry['lx'], entry['ps'], "%s (%s)" % (entry['ps'], entry['ge']))
+    >>> parameters = [(entry['lx'], entry['ps'][0], "%s (%s)" % (entry['ps'][0], entry['ge']))
     ...               for entry in shoebox.dictionary('rotokas') if 'lx' in entry]
     >>> ms = build_min_set(parameters)
     >>> for context in ms.contexts()[:10]:
-    ...     print "%s:" % context, "; ".join(ms.display_all(context))
-    kokovara: N.N (unripe coconut); V.A (unripe)
-    kapua: N.N (sore); V.A (have sores)
-    kosikosi: V.B (cut off sago palm leaves); V.A (exit)
-    koie: V.??? (get pig to eat); N.??? (pig)
-    kovo: N.N (work); V.B (work); CLASS (garden)
-    kavori: V.B (collect crayfish or lobster); N.??? (lobster)
-    kororo: N.N (sphere); N.??? (bird)
-    korita: V.B (cut up meat); N.??? (cutlet?)
-    keru: N.N (bone); V.A (harden like bone)
-    kirokiro: V.B (write); N.F (bush used for sorcery)
+    ...     print "%10s:" % context, "; ".join(ms.display_all(context))
+      kokovara: N (unripe coconut); V (unripe)
+         kapua: N (sore); V (have sores)
+          koie: N (pig); V (get pig to eat)
+          kovo: C (garden); N (work); V (work)
+        kavori: N (lobster); V (collect crayfish or lobster)
+        korita: N (cutlet?); V (cut up meat)
+          keru: N (bone); V (harden like bone)
+      kirokiro: N (bush used for sorcery); V (write)
+        kaapie: N (fishhook); V (capture)
+           kou: C (heap); V (defecate)
 
 .. Analysing Texts:
    Use the shoebox lexicon to tag a text with part-of-speech information,
