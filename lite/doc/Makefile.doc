@@ -14,7 +14,7 @@ ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.
 PYTHON = python
 PDFLATEX = pdflatex
 RST2HTML = rst2html.py
-RST2LATEX = rst2latex.py
+RST2LATEX = rst2latex.py --output-encoding-error-handler "backslashreplace"
 
 STYLESHEET_PATH = ../default.css
 
