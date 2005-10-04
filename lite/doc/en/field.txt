@@ -277,9 +277,11 @@ needing to be concerned with their relative ordering in the original file.
     kakata (N.F) 'cockatoo'
     kakate (N.F) 'bamboo tube for water'
 
-In this case we generated output in plain text format.  We could have produced
-CSV format with a slightly different print statement:
-``print '"%s";"%s";"%s"\n' % (lex, pos, dfn)``
+.. sidebar:: Producing CSV output
+
+    We could have produced comma-separated value (CSV) format with a
+    slightly different print statement: ``print '"%s";"%s";"%s"\n' % (lex, pos, dfn)``
+
 We can use the same idea to generate HTML tables instead of plain text.
 This would be useful for publishing a Shoebox lexicon on the web.
 
@@ -323,20 +325,22 @@ all the lexemes.  We can do this as follows, starting by initialising
     ...             normalised_lexeme = field[1].lower()
     ...             lexemes.append(normalised_lexeme)
 
-Each field is stored as a tuple, e.g. ``('lx', 'kakate')``.
-For each field in each entry, we check to see if the field name is
-``lx``.  If it is, we convert the field's contents to lowercase, and
-append it to the ``lexemes`` list.
+Each field is stored as a tuple, e.g. ``('lx', 'kakate')``.  For each
+field in each entry, we check to see if the field name is ``lx``.  If
+it is, we convert the field's contents to lowercase, and append it to
+the ``lexemes`` list.  Observe that this process does not store the
+entire lexicon in memory.  Instead, the information we want is
+extracted during a single scan of the lexicon.
 
-Note that we can achieve the same behaviour much more economically
-using Python's *list comprehension* syntax, as follows:
+.. sidebar:: Python's *list comprehension* syntax
 
-    >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas')
-    ...	             for field in entry if field[0] == 'lx']
+    Note that we can construct the ``lexemes`` list much more economically
+    using Python's *list comprehension* syntax, as follows:
 
-Observe that this process does not store the entire lexicon in memory.
-Instead, the information we want is extracted during a single scan of the
-lexicon.
+    >>> lexemes = [field[1].lower()
+    ...              for entry in shoebox.raw('rotokas')
+    ...	               for field in entry if field[0] == 'lx']
+
 
 **Adding New Fields:**
 It is often convenient to add new fields that are derived from
@@ -575,35 +579,43 @@ Here, then, is the program to display trisyllabic verbs ending in a long vowel:
     kuverea (V.A) 'not all right'
 
 
+**Finding Minimal Sets:**
+In order to establish a contrast segments (or lexical properties, for
+that matter), we would like to find pairs of words which are identical
+except for a single property.  For example, the words pairs *mace* vs
+*maze* and *face* vs *faze*, and many others like them, demonstrate the
+existence of a phonemic distinction between *s* and *z* in English.
+NLTK-Lite provides flexible support for constructing minimal sets, using
+the ``MinimalSet()`` class.
 
-Finding Minimal Pairs
-~~~~~~~~~~~~~~~~~~~~~
+We begin by setting some parameters, namely the length of the words of
+interest, the position of the target segment in the word, and the
+minimum number of forms we would like to see for any minimal set to be displayed:
 
-First, select the length of the words of interest, the position
-of the target segment in the word, and the minimum number of forms
-we would like to see:
+    >>> length, position, min = 4, 1, 3
 
-    >>> length = 4
-    >>> position = 1
-    >>> min = 3
-
-Now, we iterate over all the lexemes, checking if they have the
-required length:
+Now, we define a function that iterates over all the lexemes, checking
+if they have the required length.  The ``context`` is taken to be the entire
+word, except for the target segment.  Thus, if ``lex = kasi``,
+then ``context = lex[:1]+'_'+lex[2:] = k_si``.
 
     >>> from nltk_lite.utilities import MinimalSet
-    >>> ms = MinimalSet()
-    >>> for lex in lexemes:
-    ...     if len(lex) == length:
-    ...         context = lex[:position] + '_' + lex[position+1:]
-    ...         target = lex[position]
-    ...         ms.add(context, target, lex)
+    >>> def build_min_set(lexemes, length, position):
+    ...     min_set = MinimalSet()
+    ...     for lex in lexemes:
+    ...         if len(lex) == length:
+    ...             context = lex[:position] + '_' + lex[position+1:]
+    ...             target = lex[position]
+    ...             min_set.add(context, target, lex)
+    ...     return min_set
+
 
 Finally, we print the table of minimal sets.  We specify that
 each context was seen at least the minimum number of required times.
 
-    >>> for context in ms.contexts(3):
-    ...     for target in ms.targets():
-    ...         print "%-4s" % ms.display(context, target, "-"),
+    >>> for context in min_set.contexts(min):
+    ...     for target in min_set.targets():
+    ...         print "%-4s" % min_set.display(context, target, "-"),
     ...     print
     kasi -    kesi kusi kosi
     kava -    -    kuva kova
