@@ -16,24 +16,29 @@ Version 0.5 (Monday 26 September)
 Version 0.6 (mid October)
 -------------------------
 
++ number sections [SB]
 - port Cohn's clusterer [SB]
 - document recommended methods for saving models (pickle, shelve) [SB]
 - marshalling [SB/TT]
 - add OLAC support: read and write an OLAC static repository [SB]
 - XML processing in Python [SB]
 - urllib [SB]
-- further expand fieldwork tutorial [SB]
++ further expand fieldwork tutorial [SB]
 - incorporate Speer's feature-based parser
 - expand coverage of Brazilian Portuguese translations [TT]
-- get epydoc docstrings to compile cleanly
+- get epydoc docstrings to compile cleanly [EL]
 - fix misc.quicksort [SB]
-- add wordnet/pywordnet [SB]
-- PDF versions of tutorials [SB]
+- add wordnet/pywordnet to distribution, example of interface in tutorial [SB]
+- PDF versions of tutorials, including single PDF aggregate [SB]
 - interpolated and backoff language models [SB]
+- improve invocation of Brill tagger
+- consecutive numbering of examples in a chapter?
+- make more use of sidebars
 
 -----------------------
 Version 0.7 (November?)
 -----------------------
+
 
 
 -------------
@@ -49,11 +54,13 @@ Most of these require code and tutorials:
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
 
+- instructor's manual including solutions to exercises
+
 
 
 -----
 BOOK
-______
+-----
 
 The following rendering/organizational features would be helpful:
 - allow consecutive numbering of examples within a chapter
