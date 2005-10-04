@@ -21,3 +21,4 @@
 .. role:: glossterm(emphasis)
    :class: indexed
 
+.. sectnum::
