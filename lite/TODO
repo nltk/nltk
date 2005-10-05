@@ -39,24 +39,21 @@ Version 0.6 (mid October)
 Version 0.7 (November?)
 -----------------------
 
-
-
 -------------
 Uncategorized
 -------------
 
-
 Most of these require code and tutorials:
 - add lambda semantics to parse package
 - write feature-based syntax chapter, incl semantics [EK]
-- port NLTK classifiers
+- port NLTK classifiers to NLTK Lite
 - language modelling package
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
-
+- better explanation of left corner parsing in parse.txt 
 - instructor's manual including solutions to exercises
-
-
+- material on writing (adapting?) a corpus reader
+- explanation of functions of distribution scripts and the parameters that scripts in the distribution take
 
 -----
 BOOK
