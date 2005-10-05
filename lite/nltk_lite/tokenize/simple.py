@@ -12,11 +12,9 @@ Functions for tokenizing a text, based on a regular expression
 which matches tokens or gaps.
 """
 
-from string import split
-
-SPACE      = r' '
-NEWLINE    = r'\n'
-BLANKLINE  = r'\n\n'
+SPACE      = ' '
+NEWLINE    = '\n'
+BLANKLINE  = '\n\n'
 SHOEBOXSEP = r'^\\'
 
 def space(s):
@@ -27,7 +25,7 @@ def space(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return split(s, SPACE)
+    return s.split(SPACE)
 
 def line(s):
     """
@@ -37,7 +35,7 @@ def line(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return split(s, NEWLINE)
+    return s.split(NEWLINE)
 
 def blankline(s):
     """
@@ -47,7 +45,7 @@ def blankline(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return split(s, BLANKLINE)
+    return s.split(BLANKLINE)
 
 def shoebox(s):
     """
@@ -57,7 +55,7 @@ def shoebox(s):
     @type s: C{string} or C{iter(string)}
     @return: An iterator over tokens
     """
-    return split(s, SHOEBOXSEP)
+    return s.split(SHOEBOXSEP)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
