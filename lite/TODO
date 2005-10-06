@@ -34,26 +34,27 @@ Version 0.6 (mid October)
 - improve invocation of Brill tagger
 - consecutive numbering of examples in a chapter?
 - make more use of sidebars
+- better explanation of left corner parsing in parse.txt [EK]
 
 -----------------------
 Version 0.7 (November?)
 -----------------------
+
+- write feature-based syntax chapter, incl semantics [EK]
+- add lambda semantics to Speer's feature-based parse package [EK]
 
 -------------
 Uncategorized
 -------------
 
 Most of these require code and tutorials:
-- add lambda semantics to parse package
-- write feature-based syntax chapter, incl semantics [EK]
+
 - port NLTK classifiers to NLTK Lite
 - language modelling package
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
-- better explanation of left corner parsing in parse.txt 
 - instructor's manual including solutions to exercises
 - more contributed materials (e.g. MIT pykimmo)
-
 - material on writing (adapting?) a corpus reader
 - explanation of functions of distribution scripts and the parameters that scripts in the distribution take
 - add short section about formatting output - tabulation etc
