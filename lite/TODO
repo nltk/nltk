@@ -52,6 +52,8 @@ Most of these require code and tutorials:
 - good off-the-shelf tagger and chunker
 - better explanation of left corner parsing in parse.txt 
 - instructor's manual including solutions to exercises
+- more contributed materials (e.g. MIT pykimmo)
+
 - material on writing (adapting?) a corpus reader
 - explanation of functions of distribution scripts and the parameters that scripts in the distribution take
 - add short section about formatting output - tabulation etc
