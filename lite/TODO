@@ -50,7 +50,7 @@ Uncategorized
 Most of these require code and tutorials:
 
 - port NLTK classifiers to NLTK Lite
-- language modelling package
+- language modelling
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
 - instructor's manual including solutions to exercises
@@ -58,6 +58,9 @@ Most of these require code and tutorials:
 - material on writing (adapting?) a corpus reader
 - explanation of functions of distribution scripts and the parameters that scripts in the distribution take
 - add short section about formatting output - tabulation etc
+- collocations
+- lexical semantics
+- statistical parsing
 
 -----
 BOOK
