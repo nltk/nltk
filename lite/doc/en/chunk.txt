@@ -901,10 +901,10 @@ Exercises
 ---------
 
 #. **Chunking Demonstration:**
-   Run the chunking demonstration...
+   Run the chunking demonstration::
 
-  from nltk_lite.parse import chunk
-  chunk.demo()  # the chunk parser
+      from nltk_lite.parse import chunk
+      chunk.demo()  # the chunk parser
 
 #. **IOB Tagging:**
    A common file representation of chunks uses the tags ``BEGIN``,
@@ -923,7 +923,7 @@ Exercises
    regular-expression chunk parser ``RegexpChunkParser``.  Use any
    combination of rules.
         
-  a) Evaluate your chunker on 100 sentences from a chunked corpus,
-     and report the precision, recall and F-measure.
-  b) Use the ``chunkscore.missed()`` and ``chunkscore.incorrect()``
-     methods to identify the errors made by your chunker.  Discuss.
+   a. Evaluate your chunker on 100 sentences from a chunked corpus,
+      and report the precision, recall and F-measure.
+   b. Use the ``chunkscore.missed()`` and ``chunkscore.incorrect()``
+      methods to identify the errors made by your chunker.  Discuss.
