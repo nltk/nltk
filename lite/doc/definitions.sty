@@ -1,2 +1,28 @@
 \usepackage{ucs}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+\thispagestyle{empty}
+\setlength{\headrulewidth}{0pt}
+\lhead{}\chead{}\rhead{}
+\lfoot{\it Natural Language Toolkit}
+\cfoot{\it\thepage}
+\rfoot{\it nltk.sourceforge.net}
+
+
+%%%%%%%%% HYPHENATION CONTROL %%%%%%%%
+
+\pretolerance 250
+\tolerance 500
+% \hyphenpenalty 250
+\hyphenpenalty 200
+\exhyphenpenalty 100
+\doublehyphendemerits 7500
+\finalhyphendemerits 7500
+\brokenpenalty 10000
+\lefthyphenmin 3
+\righthyphenmin 3
+\widowpenalty 10000
+\clubpenalty 10000
+\displaywidowpenalty 10000
+\looseness 1
