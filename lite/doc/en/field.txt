@@ -6,7 +6,6 @@ Accessing and Analyzing Linguistic Field Data
 =============================================
 
 :Authors: Steven Bird
-:Contact: sb@csse.unimelb.edu.au
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
