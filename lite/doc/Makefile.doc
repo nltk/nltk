@@ -14,9 +14,10 @@ ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.
 PYTHON = python
 PDFLATEX = pdflatex
 RST2HTML = rst2html.py
-RST2LATEX = rst2latex.py --output-encoding-error-handler "backslashreplace"
+RST2LATEX = rst2latex.py --output-encoding=utf-8 --output-encoding-error-handler "backslashreplace"
 
-STYLESHEET_PATH = ../default.css
+CSS_STYLESHEET_PATH = ../default.css
+LATEX_STYLESHEET_PATH = ../definitions.sty
 
 .SUFFIXES: .txt .html .pdf .errs
 
@@ -39,10 +40,10 @@ clean:
 	rm -f $(PDF) $(HTML) $(ERRS) *.tex *.log *.aux
 
 .txt.html:
-	$(RST2HTML) --stylesheet-path=$(STYLESHEET_PATH) $< > $@
+	$(RST2HTML) --stylesheet-path=$(CSS_STYLESHEET_PATH) $< > $@
 
 .txt.tex:
-	$(RST2LATEX) $< > $@
+	$(RST2LATEX) --stylesheet-path=$(LATEX_STYLESHEET_PATH) $< > $@
 
 .tex.pdf:
 	$(PDFLATEX) $<
