@@ -35,8 +35,6 @@ Linguistically Oriented
    functionality of commercial software (e.g. MonoConc_).
    Investigate indexing for more efficient searches.
 
-.. _MonoConc: http://www.athel.com/mono.html
-
 #. Develop a morphological analyser for a language of your choice.
 
 #. Write a soundex function that is appropriate for a language you are
@@ -65,6 +63,8 @@ Linguistically Oriented
 #. Develop a grammatical paradigm generation function which takes some
    form of tagged text as input and generates paradigm representations of 
    related linguistic features.
+
+.. _MonoConc: http://www.athel.com/mono.html
 
 Computationally Oriented
 ------------------------

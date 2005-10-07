@@ -634,10 +634,6 @@ constructor, it takes a single PCFG:
   >>> longest_parser = LongestParse(pcfg.toy1)
   >>> beam_parser = BeamParse(20, pcfg.toy1)
 
-.. Warning:: ``BottomUpChartParse`` is an abstract class; you should not directly
-   instantiate it.  If you try to use it to parse a text, it will raise an exception,
-   since ``sort_queue`` will be undefined.
-
   >>> print inside_parser.parse(sent1)
   (S:
     (NP: 'I')
@@ -661,6 +657,10 @@ constructor, it takes a single PCFG:
     (VP:
       (VP: (V: 'saw') (NP: 'John'))
       (PP: (P: 'with') (NP: (Det: 'my') (N: 'cookie'))))) (p=2.081625e-05)
+
+.. Warning:: ``BottomUpChartParse`` is an abstract class; you should not directly
+   instantiate it.  If you try to use it to parse a text, it will raise an exception,
+   since ``sort_queue`` will be undefined.
 
 The ``trace`` method can be used to set the level of tracing output
 that is generated when parsing a text.  Trace output displays edges as
