@@ -6,7 +6,6 @@ Probabilistic Parsing
 =====================
 
 :Authors: Edward Loper, Steven Bird
-:Contact: sb@csse.unimelb.edu.au
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$

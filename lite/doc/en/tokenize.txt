@@ -6,7 +6,6 @@ Elementary Language Processing: Tokenizing Text and Classifying Words
 =====================================================================
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
-:Contact: sb@csse.unimelb.edu.au
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
@@ -922,40 +921,40 @@ Exercises
 ---------
 
 #. Accessing and tokenizing a text file: Obtain some plain text data
-(e.g. visit a web-page and save it as plain text), and store it in a
-file 'corpus.txt'.
+   (e.g. visit a web-page and save it as plain text), and store it in a
+   file 'corpus.txt'.
 
-  #. Using the ``open()`` and ``read()`` functions, load the text into
-  a string variable and print it.
+   a. Using the ``open()`` and ``read()`` functions, load the text into
+      a string variable and print it.
 
-  #. Now, initialize a new token with ``Token()``, using this text.
-  Tokenize the text with ``WhitespaceTokenizer``, and specify that the
-  result should be stored in the ``WORDS`` property.  Print the
-  result.
+   #. Now, initialize a new token with ``Token()``, using this text.
+      Tokenize the text with ``WhitespaceTokenizer``, and specify that the
+      result should be stored in the ``WORDS`` property.  Print the
+      result.
 
-  #. Next, compute the number of tokens, using the ``len()`` function,
-  and print the result.
+   #. Next, compute the number of tokens, using the ``len()`` function,
+      and print the result.
 
-  #. Finally, discuss shortcomings of this method for tokenizing text.
-  In particular, identify any material which has not been correctly
-  tokenized.  (You may need to look for a more complex text.)
+   #. Finally, discuss shortcomings of this method for tokenizing text.
+      In particular, identify any material which has not been correctly
+      tokenized.  (You may need to look for a more complex text.)
 
 #. Tokenizing text using regular expressions:
    Obtain some plain text data (e.g. visit a web-page and
    save it as plain text), and store it in a file 'corpus.txt'.
    so that you can answer the following questions.
 
-  #. Word processors typically hyphenate words when they are split
-  across a linebreak.  When word-processed documents are converted to
-  plain text, the pieces are usually not recombined.  It is easy to
-  discover such texts by searching on the web for broken words,
-  e.g. ``depart- ment``.  Create a ``RegexpTokenizer`` which treats
-  such broken words as a single token.
+   a. Word processors typically hyphenate words when they are split
+      across a linebreak.  When word-processed documents are converted to
+      plain text, the pieces are usually not recombined.  It is easy to
+      discover such texts by searching on the web for broken words,
+      e.g. ``depart- ment``.  Create a ``RegexpTokenizer`` which treats
+      such broken words as a single token.
 
-  #. Consider the following book title: *This Is the Beat Generation:
-  New York-San Francisco-Paris*.  What would it take to be able to
-  tokenize such strings so that each city name was stored as a single
-  token?
+   #. Consider the following book title: *This Is the Beat Generation:
+      New York-San Francisco-Paris*.  What would it take to be able to
+      tokenize such strings so that each city name was stored as a single
+      token?
 
 #. Concordancing:
    Write a function which takes a word as its argument, and which
@@ -971,72 +970,72 @@ file 'corpus.txt'.
    common word type should occur three times as frequently as the
    150th most common word type.
 
-  #. Write a Python function to process a large text and plot word
-  frequency against word rank using the nltk_lite.draw.plot module. Do
-  you confirm Zipf's law? (Hint: it helps to set the axes to log-log.) 
-  What is going on at the extreme ends of the plotted line?
+   a. Write a Python function to process a large text and plot word
+      frequency against word rank using the nltk_lite.draw.plot module. Do
+      you confirm Zipf's law? (Hint: it helps to set the axes to log-log.) 
+      What is going on at the extreme ends of the plotted line?
 
-  #. Generate random text, e.g. using ``random.choice("abcdefg ")``,
-  taking care to include the space character.  Use the string
-  concatenation operator to accumulate characters into a (very)
-  long string.  Then tokenize this string, and generate the Zipf
-  plot as before, and compare the two plots.  What do you make of
-  Zipf's Law in the light of this?
+   #. Generate random text, e.g. using ``random.choice("abcdefg ")``,
+      taking care to include the space character.  Use the string
+      concatenation operator to accumulate characters into a (very)
+      long string.  Then tokenize this string, and generate the Zipf
+      plot as before, and compare the two plots.  What do you make of
+      Zipf's Law in the light of this?
 
 #. Working with tagged text: Write a program which loads the Brown
-corpus, then, given a word, lists the possible tags for the word each
-with a frequency count.  For example, for the word ``strike`` the
-program would generate: ``[('nn', 25), ('vb', 21)]``.  (Hint: this
-task involves sorting and reversing a list of tuples which has the
-form ``[(21, 'vb'), (25, 'nn')]``.  To convert such lists into the
-required form, use ``word_freq = [(y,x) for (x,y) in freq_word]``.)
+   corpus, then, given a word, lists the possible tags for the word each
+   with a frequency count.  For example, for the word ``strike`` the
+   program would generate: ``[('nn', 25), ('vb', 21)]``.  (Hint: this
+   task involves sorting and reversing a list of tuples which has the
+   form ``[(21, 'vb'), (25, 'nn')]``.  To convert such lists into the
+   required form, use ``word_freq = [(y,x) for (x,y) in freq_word]``.)
 
-  #. Use your program to print the tags and their frequencies for the
-  following words: ``can, fox, get, lift, like, but, frank, line,
-  interest``.  Check that you know the meaning of the high-frequency
-  tags.
+   a. Use your program to print the tags and their frequencies for the
+      following words: ``can, fox, get, lift, like, but, frank, line,
+      interest``.  Check that you know the meaning of the high-frequency
+      tags.
 
-  #. Write a program to find the 20 words which have the greatest
-  variety of different possible tags.
+   #. Write a program to find the 20 words which have the greatest
+      variety of different possible tags.
 
-  #. Pick words which can be either a noun or a verb (e.g. ``deal``).
-  Guess which is the most likely tag for each word, then check whether
-  you were right.
+   #. Pick words which can be either a noun or a verb (e.g. ``deal``).
+      Guess which is the most likely tag for each word, then check whether
+      you were right.
 
 #. Predicting the next word: The word prediction program we saw in
-this chapter quickly gets stuck in a cycle.  Modify the program to
-choose the next word randomly, from a list of the *n* most likely
-words in the given context.  (Hint: store the *n* most likely words in
-a list ``lwords`` then randomly choose a word from the list using
-``random.choice()``.)
+   this chapter quickly gets stuck in a cycle.  Modify the program to
+   choose the next word randomly, from a list of the *n* most likely
+   words in the given context.  (Hint: store the *n* most likely words in
+   a list ``lwords`` then randomly choose a word from the list using
+   ``random.choice()``.)
 
-  #. Select a particular genre, such as a section of the Brown Corpus,
-  or a genesis translation, or one of the newsgroups corpora.  Train
-  your system on this corpus and get it to generate random text.  You
-  may have to experiment with different start words. How intelligible
-  is the text?  Examine the strengths and weaknesses of this method of
-  generating random text.
+   a. Select a particular genre, such as a section of the Brown Corpus,
+      or a genesis translation, or one of the newsgroups corpora.  Train
+      your system on this corpus and get it to generate random text.  You
+      may have to experiment with different start words. How intelligible
+      is the text?  Examine the strengths and weaknesses of this method of
+      generating random text.
 
-  #. Try the same approach with different genres, and with different
-  amounts of training data.  What do you observe?
+   #. Try the same approach with different genres, and with different
+      amounts of training data.  What do you observe?
 
-  #. Now train your system using two distinct genres and experiment
-  with generating text in the hybrid genre.  As before, discuss your
-  observations.
+   #. Now train your system using two distinct genres and experiment
+      with generating text in the hybrid genre.  As before, discuss your
+      observations.
 
 #. Classifying words automatically: The program for classifying words
-as nouns or adjectives scored 71%.  We will try to come up with better
-conditions, to get the system to score 80% or better.
+   as nouns or adjectives scored 71%.  We will try to come up with better
+   conditions, to get the system to score 80% or better.
 
-  #. Revise the condition to use a longer suffix of the word, such as
-  the last two characters, or the last three characters.  What happens
-  to the performance?  Which suffixes are diagnostic for adjectives?
+   a. Revise the condition to use a longer suffix of the word, such as
+      the last two characters, or the last three characters.  What happens
+      to the performance?  Which suffixes are diagnostic for adjectives?
 
-  #. Explore other conditions, such as variable length prefixes of a
-  word, or the length of a word, or the number of vowels in a word.
+   #. Explore other conditions, such as variable length prefixes of a
+      word, or the length of a word, or the number of vowels in a word.
 
-  #. Finally, combine multiple conditions into a tuple, and explore
-  which combination of conditions gives the best result.
+   #. Finally, combine multiple conditions into a tuple, and explore
+      which combination of conditions gives the best result.
 
 #. Write a program to implement one or more text readability scores
    (http://en.wikipedia.org/wiki/Readability).

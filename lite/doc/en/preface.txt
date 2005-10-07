@@ -6,7 +6,6 @@ Learning NLP with the Natural Language Toolkit
 ==============================================
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
-:Contact: sb@csse.unimelb.edu.au
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
