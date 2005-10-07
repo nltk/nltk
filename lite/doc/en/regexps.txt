@@ -6,7 +6,6 @@ Regular Expressions for Natural Language Processing
 ===================================================
 
 :Authors: Steven Bird, Ewan Klein
-:Contact: sb@csse.unimelb.edu.au
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$

@@ -6,7 +6,6 @@ Projects with NLTK-Lite
 =======================
 
 :Authors: Steven Bird
-:Contact: sb@csse.unimelb.edu.au
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
