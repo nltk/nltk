@@ -73,81 +73,70 @@ Computationally Oriented
    replicating some of the functionality of TextCat_.
    Create an evaluation dataset, possibly using the Opus_Corpus_.
 
-.. _TextCat: http://odur.let.rug.nl/~vannoord/TextCat/
-.. _Opus_Corpus: http://logos.uio.no/opus/
-
-2. Develop a semantic similarity module based on WordNet_ and two of
+#. Develop a semantic similarity module based on WordNet_ and two of
    Pedersen's Wordnet_Similarity_ algorithms.  Develop a lexical-chain
    based WSD system, and evaluate it using the SEMCOR corpus (corpus reader
    provided in NLTK).
 
-.. _WordNet: http://wordnet.princeton.edu/
-.. _WordNet_Similarity: http://wn-similarity.sourceforge.net/
-
-3. Build a text compression system combining a dictionary-based
+#. Build a text compression system combining a dictionary-based
    compression algorithm (such as the ones described in
    Managing_Gigabytes_) along with information provided by a
    part-of-speech tagger which should lower the conditional entropy of
    the following word.
 
-.. _Managing_Gigabytes: http://www.cs.mu.oz.au/mg/
-
-4. Implement a classifier which detects emotion in text, using one of
-   the emotional text databases from the HUMAINE_Portal_ for training and testing.
-
-.. _HUMAINE_Portal: http://emotion-research.net/
-
-5. Re-implement any NLTK-Lite functionality for a language other than
+#. Re-implement any NLTK-Lite functionality for a language other than
    English (tokenizer, tagger, chunker, parser, etc).  You will
    probably need to collect suitable corpora, and develop corpus
    readers.
 
-6. Implement an LPath_ tree query interpreter.
-
-.. _LPath: http://www.ldc.upenn.edu/Projects/QLDB/
-
-7. Create a database of named entities, categorised as: person,
+#. Create a database of named entities, categorised as: person,
    location, organisation, cardinal, duration, measure, date.
    Train a named-entity tagger using the NIST IEER data
    (included with NLTK) and use it to tag more text and collect
    an expanded set of named entities.
    
-8. Port the NLTK text classification system to NLTK-Lite.
+#. Port the NLTK text classification system to NLTK-Lite.
 
-9. Implement a system for cascaded_chunking_.
+#. Implement a system for cascaded_chunking_.
 
+#. Implement a chat-bot that incorporates a more sophisticated
+   dialogue model than ``nltk_lite.chat.eliza``.
+
+#. Implement a feature-based grammar and parser in NLTK-Lite
+   (incorporate nltk.contrib.mit.rspeer)
+
+#. Implement a categorial grammar parser, including semantic
+   representations.
+
+#. Implement Pereira and Warren's Chat-80 system for geographical
+   question answering.  ``http://www.cis.upenn.edu/~pereira/oldies.html``.
+
+#. Develop a prepositional phrase attachment classifier, using
+   the ``ppattach`` corpus for training and testing.
+
+#. Develop a program for unsupervised learning of phonological rules,
+   using the method described by Goldwater and Johnson:
+   http://acl.ldc.upenn.edu/acl2004/sigphon/pdf/goldwater.pdf
+
+#. Use WordNet to infer lexical semantic relationships on the entries
+   of a Shoebox lexicon for some arbitrary language.
+
+#. Implement Penton's paradigm visualisation tool.
+   ``http://www.cs.mu.oz.au/~djpenton/``
+
+#. Add semantic interpretation to a CFG, generating propositions that
+   can be evaluated against a database.  Start with a lambda calculus
+   interpreter in Python (e.g. http://www.alcyone.com/software/church/) and Rob Speer's
+   feature-based CFG (nltk_contrib/mit/rspeer/parser), and augment a
+   feature-based grammar with attributes to hold the semantic representations.
+
+.. _TextCat: http://odur.let.rug.nl/~vannoord/TextCat/
+.. _Opus_Corpus: http://logos.uio.no/opus/
+.. _WordNet: http://wordnet.princeton.edu/
+.. _WordNet_Similarity: http://wn-similarity.sourceforge.net/
+.. _Managing_Gigabytes: http://www.cs.mu.oz.au/mg/
+.. _LPath: http://www.ldc.upenn.edu/Projects/QLDB/
 .. _cascaded_chunking: http://www.vinartus.net/spa/97a.pdf
-
-10. Implement a chat-bot that incorporates a more sophisticated
-    dialogue model than ``nltk_lite.chat.eliza``.
-
-11. Implement a feature-based grammar and parser in NLTK-Lite
-    (incorporate nltk.contrib.mit.rspeer)
-
-12. Implement a categorial grammar parser, including semantic
-    representations.
-
-13. Implement Pereira and Warren's Chat-80 system for geographical
-    question answering.  ``http://www.cis.upenn.edu/~pereira/oldies.html``.
-
-14. Develop a prepositional phrase attachment classifier, using
-    the ``ppattach`` corpus for training and testing.
-
-15. Develop a program for unsupervised learning of phonological rules,
-    using the method described by Goldwater and Johnson:
-    http://acl.ldc.upenn.edu/acl2004/sigphon/pdf/goldwater.pdf
-
-16. Use WordNet to infer lexical semantic relationships on the entries
-    of a Shoebox lexicon for some arbitrary language.
-
-17. Implement Penton's paradigm visualisation tool.
-    http://www.cs.mu.oz.au/~djpenton/
-
-18. Add semantic interpretation to a CFG, generating propositions that
-    can be evaluated against a database.  Start with a lambda calculus
-    interpreter in Python (e.g. http://www.alcyone.com/software/church/) and Rob Speer's
-    feature-based CFG (nltk_contrib/mit/rspeer/parser), and augment a
-    feature-based grammar with attributes to hold the semantic representations.
 
 ----------
 Assessment

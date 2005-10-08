@@ -198,6 +198,153 @@ Stopwords Corpus           Porter et al           2,400 stopwords for 11 languag
 Wordlist Corpus            OpenOffice.org et al   960k words and 20k affixes for 8 languages
 =========================  =====================  ============================================================
 
+--------------------------------------------
+Appendix: NLP in other Programming Languages
+--------------------------------------------
+
+Earlier we explained the thinking that lay behind our choice of the
+Python programming language.  We showed a simple Python program that
+reads in text and prints the words that end with ``ing``.  In this
+appendix we provide equivalent programs in other languages, so that
+readers can gain a sense of the appeal of Python.
+
+Prolog is a logic programming language which has been popular for
+developing natural language parsers and feature-based grammars, given
+the inbuilt support for search and the *unification* operation which
+combines two feature structures into one.  Unfortunately Prolog is not
+easy to use for string processing or input/output, as the following
+program code demonstrates::
+
+  main :-
+      current_input(InputStream),
+      read_stream_to_codes(InputStream, Codes),
+      codesToWords(Codes, Words),
+      maplist(string_to_list, Words, Strings),
+      filter(endsWithIng, Strings, MatchingStrings),
+      writeMany(MatchingStrings),
+      halt.
+  
+  codesToWords([], []).
+  codesToWords([Head | Tail], Words) :-
+      ( char_type(Head, space) ->
+          codesToWords(Tail, Words)
+      ;
+          getWord([Head | Tail], Word, Rest),
+          codesToWords(Rest, Words0),
+          Words = [Word | Words0]
+      ).
+  
+  getWord([], [], []).
+  getWord([Head | Tail], Word, Rest) :-
+      (
+          ( char_type(Head, space) ; char_type(Head, punct) )
+      ->  Word = [], Tail = Rest
+      ;   getWord(Tail, Word0, Rest), Word = [Head | Word0]
+      ).
+  
+  filter(Predicate, List0, List) :-
+      ( List0 = [] -> List = []
+      ;   List0 = [Head | Tail],
+          ( apply(Predicate, [Head]) ->
+              filter(Predicate, Tail, List1),
+              List = [Head | List1]
+          ;   filter(Predicate, Tail, List)
+          )
+      ).
+  
+  endsWithIng(String) :- sub_string(String, _Start, _Len, 0, 'ing').
+  
+  writeMany([]).
+  writeMany([Head | Tail]) :- write(Head), nl, writeMany(Tail).
+
+Java is an object-oriented language incorporating native support for
+the internet, that was originally designed to permit the same
+executable program to be run on most computer platforms.  Java has
+replaced COBOL as the standard language for business enterprise
+software::
+
+  import java.io.*;
+  public class IngWords {
+      public static void main(String[] args) {
+          BufferedReader in = new BufferedReader(new
+  	    InputStreamReader(
+                   System.in));
+          String line = in.readLine();
+          while (line != null) {
+              for (String word : line.split(" ")) {
+                  if (word.endsWith("ing"))
+                      System.out.println(word);
+              }
+              line = in.readLine();
+          }
+      }
+  }
+
+
+The C programming language is a highly-efficient low-level language
+that is popular for operating system software and for teaching the
+fundamentals of computer science::
+
+  #include <sys/types.h>
+  #include <regex.h>
+  #include <stdio.h>
+  #define BUFFER_SIZE 1024
+  
+  int main(int argc, char \*\*argv) {
+       regex_t space_pat, ing_pat;
+       char buffer[BUFFER_SIZE];
+       regcomp(&space_pat, "[, \t\n]+", REG_EXTENDED);
+       regcomp(&ing_pat, "ing$", REG_EXTENDED | REG_ICASE);
+  
+       while (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+           char \*start = buffer;
+           regmatch_t space_match;
+           while (regexec(&space_pat, start, 1, &space_match, 0) == 0) {
+               if (space_match.rm_so > 0) {
+                   regmatch_t ing_match;
+                   start[space_match.rm_so] = '\0';
+                   if (regexec(&ing_pat, start, 1, &ing_match, 0) == 0)
+                       printf("%s\n", start);
+               }
+               start += space_match.rm_eo;
+           }
+       }
+       regfree(&space_pat);
+       regfree(&ing_pat);
+  
+       return 0;
+  }
+
+LISP is a so-called functional programming language, in which all
+objects are lists, and all operations are performed by (nested)
+functions of the form ``(function arg1 arg2 ...)``.  Many of the
+earliest NLP systems were implemented in LISP::
+
+  (defpackage "REGEXP-TEST" (:use "LISP" "REGEXP"))
+  (in-package "REGEXP-TEST")
+  
+  (defun has-suffix (string suffix)
+    "Open a file and look for words ending in _ing."
+    (with-open-file (f string)
+       (with-loop-split (s f " ")
+          (mapcar #'(lambda (x) (has_suffix suffix x)) s))))
+  
+  (defun has_suffix (suffix string)
+    (let* ((suffix_len (length suffix))
+     (string_len (length string))
+      (base_len (- string_len suffix_len)))
+      (if (string-equal suffix string :start1 0 :end1 NIL :start2 base_len :end2 NIL)
+          (print string))))
+  
+  (has-suffix "test.txt" "ing")
+
+Haskell is another functional programming language which permits
+a much more compact solution of our simple task::
+
+  module Main
+    where main = interact (unlines.(filter ing).(map (filter isAlpha)).words)
+      where ing = (=="gni").(take 3).reverse
+
 ----
 
 NLTK_

@@ -33,7 +33,6 @@ This process is called *chunking*, and is also known as *chunk
 parsing*, *partial parsing*, or *light parsing*.
 
 .. figure:: ../images/chunk-segmentation.png
-   :scale: 1
 
    Segmentation and Labelling at both the Token and Chunk Levels
 
@@ -122,7 +121,6 @@ Subsequent tokens within the chunk are tagged ``INSIDE``.  All other
 tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
 
 .. figure:: ../images/chunk-tagrep.png
-   :scale: 1
 
    Tag Representation of Chunk Structures
 
@@ -132,7 +130,6 @@ constituent that can be manipulated directly.  NLTK-Lite uses this for
 its internal representation of chunks:
     
 .. figure:: ../images/chunk-treerep.png
-   :scale: 1
 
    Tree Representation of Chunk Structures
 
