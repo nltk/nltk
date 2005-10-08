@@ -10,35 +10,22 @@ NLTK-Lite Tutorials
 :Copyright: |copy| 2001-2005 University of Pennsylvania
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
-.. _Preface: preface.html
-.. _Introduction: introduction.html
-.. _Programming: programming.html
-.. _Tokenize: tokenize.html
-.. _Tag: tag.html
-.. _Parse: parse.html
-.. _Chunk: chunk.html
-.. _Chart: chart.html
-.. _PCFG: pcfg.html
-.. _Field: field.html
-.. _Regexps: regexps.html
-.. _Projects: projects.html
-
 --------
 Contents
 --------
 
-0. Preface_
-#. Introduction_
-#. Programming_
-#. Tokenize_
-#. Tag_
-#. Parse_
-#. Chunk_
-#. Chart_
-#. PCFG_
-#. Field_
-#. Regexps_
-#. Projects_
+0. [\ `HTML <preface.html>`__\ \|\ `PDF <preface.pdf>`__\ ] Preface
+#. [\ `HTML <introduction.html>`__\ \|\ `PDF <introduction.pdf>`__\ ] Introduction
+#. [\ `HTML <programming.html>`__\ \|\ `PDF <programming.pdf>`__\ ] Programming
+#. [\ `HTML <tokenize.html>`__\ \|\ `PDF <tokenize.pdf>`__\ ] Tokenization
+#. [\ `HTML <tag.html>`__\ \|\ `PDF <tag.pdf>`__\ ] Tagging
+#. [\ `HTML <parse.html>`__\ \|\ `PDF <parse.pdf>`__\ ] Parsing
+#. [\ `HTML <chunk.html>`__\ \|\ `PDF <chunk.pdf>`__\ ] Chunk Parsing
+#. [\ `HTML <chart.html>`__\ \|\ `PDF <chart.pdf>`__\ ] Chart Parsing
+#. [\ `HTML <pcfg.html>`__\ \|\ `PDF <pcfg.pdf>`__\ ] Probabilistic Grammars
+#. [\ `HTML <field.html>`__\ \|\ `PDF <field.pdf>`__\ ] Fieldwork
+#. [\ `HTML <regexps.html>`__\ \|\ `PDF <regexps.pdf>`__\ ] Regular Expressions
+#. [\ `HTML <projects.html>`__\ \|\ `PDF <projects.pdf>`__\ ] Project Topics
 
 ----
 
