@@ -6,6 +6,7 @@ Version 0.6 (mid October)
 
 + number sections [SB]
 + further expand fieldwork tutorial [SB]
++ PDF versions of tutorials [SB]
 - document recommended methods for saving models (pickle, shelve) [SB]
 - marshalling [SB/TT]
 - incorporate Speer's feature-based parser
@@ -13,7 +14,6 @@ Version 0.6 (mid October)
 - get epydoc docstrings to compile cleanly [EL]
 - fix misc.quicksort [SB]
 - add wordnet/pywordnet to distribution, example of interface in tutorial [SB]
-- PDF versions of tutorials, including single PDF aggregate [SB]
 - interpolated and backoff language models [SB]
 - improve invocation of Brill tagger
 - consecutive numbering of examples in a chapter?
@@ -31,6 +31,7 @@ Version 0.7 (November?)
 - XML processing in Python [SB]
 - add OLAC support: read and write an OLAC static repository [SB]
 - urllib [SB]
+- single PDF aggregate [SB]
 
 -------------
 Uncategorized
