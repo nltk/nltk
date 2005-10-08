@@ -12,7 +12,7 @@ PDF =       index.pdf  preface.pdf  introduction.pdf  programming.pdf  tokenize.
 ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.errs tag.errs parse.errs chunk.errs chart.errs pcfg.errs field.errs regexps.errs projects.errs
 
 PYTHON = python
-PDFLATEX = pdflatex
+PDFLATEX = pdflatex -halt-on-error
 RST2HTML = rst2html.py
 RST2LATEX = rst2latex.py --output-encoding=utf-8 --output-encoding-error-handler "backslashreplace" --use-latex-docinfo --font-encoding=T1
 FILTER = sed 's/\[utf8\]/[utf8,utf8x]/'
