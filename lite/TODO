@@ -1,29 +1,13 @@
 KEY: "-" = not done; "+" = done
 
----------------------------------
-Version 0.5 (Monday 26 September)
----------------------------------
-
-+ fix chart parser bug [SB]
-+ add pronouncing dictionary [SB]
-+ double treebank WSJ to 10% [SB]
-+ add subtree iterator to facilitate flexible tree navigation [SB]
-+ add introductory nltk examples to first section of intro chapter [SB]
-+ expand fieldwork tutorial [SB]
-+ expand coverage of Brazilian Portuguese translations [TT]
-
 -------------------------
 Version 0.6 (mid October)
 -------------------------
 
 + number sections [SB]
-- port Cohn's clusterer [SB]
++ further expand fieldwork tutorial [SB]
 - document recommended methods for saving models (pickle, shelve) [SB]
 - marshalling [SB/TT]
-- add OLAC support: read and write an OLAC static repository [SB]
-- XML processing in Python [SB]
-- urllib [SB]
-+ further expand fieldwork tutorial [SB]
 - incorporate Speer's feature-based parser
 - expand coverage of Brazilian Portuguese translations [TT]
 - get epydoc docstrings to compile cleanly [EL]
@@ -42,6 +26,11 @@ Version 0.7 (November?)
 
 - write feature-based syntax chapter, incl semantics [EK]
 - add lambda semantics to Speer's feature-based parse package [EK]
+- port Cohn's clusterer [SB]
+- wordnet interface
+- XML processing in Python [SB]
+- add OLAC support: read and write an OLAC static repository [SB]
+- urllib [SB]
 
 -------------
 Uncategorized
@@ -50,6 +39,7 @@ Uncategorized
 Most of these require code and tutorials:
 
 - port NLTK classifiers to NLTK Lite
+- permit multiple corpus locations; allow corpus readers to be pointed at user's local files
 - language modelling
 - SRL corpus and reader
 - good off-the-shelf tagger and chunker
@@ -61,6 +51,8 @@ Most of these require code and tutorials:
 - collocations
 - lexical semantics
 - statistical parsing
+- information extraction (e.g. from biomedical literature)
+  - regular expressions for extracting temporal expressions
 
 -----
 BOOK
@@ -82,4 +74,20 @@ More substantive:
 - proposed draft cycle for book
     - produce and internally review a complete draft of all chapters at the end of each month, Sept - Dec
 
+
+*****************************************************************************
+**** OLD
+*****************************************************************************
+
+---------------------------------
+Version 0.5 (Monday 26 September)
+---------------------------------
+
++ fix chart parser bug [SB]
++ add pronouncing dictionary [SB]
++ double treebank WSJ to 10% [SB]
++ add subtree iterator to facilitate flexible tree navigation [SB]
++ add introductory nltk examples to first section of intro chapter [SB]
++ expand fieldwork tutorial [SB]
++ expand coverage of Brazilian Portuguese translations [TT]
 
