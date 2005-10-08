@@ -182,10 +182,10 @@ example, suppose we have a file containing the following two lines::
 From the parser's point of view, this file is just a string of
 characters:
 
-  'The\ |space|\ cat\ |space|\ climbed\\nthe\ |space|\ tree.'
+  'The_cat_climbed_the_tree.'
 
-Note that we use single quotes to delimit strings,
-"|space|" to represent space and "\n" to represent newline.
+Note that we use single quotes to delimit strings, "_" to represent
+space and "\n" to represent newline.
 
 As we just pointed out, to tokenize this text for consumption by the
 parser, we need to explicitly indicate which substrings are words. One
