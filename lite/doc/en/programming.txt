@@ -100,21 +100,10 @@ Lists can be concatenated, sorted and reversed, as we se below:
   >>> print b
   ['sleep', 'ideas', 'green', 'furiously', 'colourless']
 
-.. Note:: If we access individual elements of the above list (which
-   are strings), then concatenating them has a different result:
-
-   >>> b[2] + b[1]
-   'greenideas'
-
-   This happens because ``b[2]`` is not a list, but an *element* of a list,
-   in this case, a string.  Here is another example:
-
-   >>> c = [1,2,3,4,5]
-   >>> c[2] + c[1]
-   5
-
-   Thus, the behaviour of this ``+`` operator depends on the types of
-   its arguments.
+.. Note:: The individual elements of the above list are strings, and
+   when we try to concatenate them using the ``+`` operator,
+   Python performs *string concatenation*.
+   E.g. ``b[2] + b[1]`` concatenates two strings to give 'greenideas'.
 
 We can use the ``for item in list`` syntax to *iterate* over the items of
 a list.  In the following fragment we iterate over each word in the above

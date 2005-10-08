@@ -274,10 +274,8 @@ all the lexemes.  We can do this as follows, starting by initialising
     ...             normalised_lexeme = field[1].lower()
     ...             lexemes.append(normalised_lexeme)
 
-.. sidebar:: Python's *list comprehension* syntax
-
-    Note that we can construct the ``lexemes`` list much more economically
-    using Python's *list comprehension* syntax, as follows:
+Note that we can construct the ``lexemes`` list much more economically
+using Python's *list comprehension* syntax, as follows:
 
     >>> lexemes = [field[1].lower()
     ...              for entry in shoebox.raw('rotokas')
