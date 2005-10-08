@@ -1,5 +1,20 @@
+
+%%%%%%%% UNICODE SUPPORT %%%%%%%%
+
 \usepackage{ucs}
-\usepackage[utf8x]{inputenc}
+\newcommand{\textalpha}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\alpha}}}
+\renewcommand{\textbeta}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\beta}}}
+\newcommand{\textgamma}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\gamma}}}
+\renewcommand{\textmu}{{\usefont{OML}{hlcm}{m}{n} \ensuremath{\mu}}}
+
+%%%%%%%% IMAGE SIZE CONTROL %%%%%%%%
+
+\usepackage{keyval}
+% \setkeys{Gin}{scale=50} broken?
+\setkeys{Gin}{width=0.8\textwidth}
+
+%%%%%%%% HEADERS AND FOOTERS %%%%%%%%
+
 \usepackage{fancyheadings}
 \pagestyle{fancy}
 \thispagestyle{empty}
@@ -10,7 +25,7 @@
 \rfoot{\it nltk.sourceforge.net}
 
 
-%%%%%%%%% HYPHENATION CONTROL %%%%%%%%
+%%%%%%%% HYPHENATION CONTROL %%%%%%%%
 
 \pretolerance 250
 \tolerance 500
