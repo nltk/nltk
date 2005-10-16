@@ -19,6 +19,7 @@ Version 0.6 (mid October)
 - consecutive numbering of examples in a chapter?
 - make more use of sidebars
 - better explanation of left corner parsing in parse.txt [EK]
+- port MXTerminator, and get James' fixes
 
 -----------------------
 Version 0.7 (November?)
