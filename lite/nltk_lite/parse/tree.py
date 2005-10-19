@@ -55,7 +55,7 @@ class Tree(list):
         """
         Construct a new tree.
         """
-        if isinstance(children, str):
+        if isinstance(children, (str, unicode)):
             raise TypeError, 'children should be a list, not a string'
         list.__init__(self, children)
         self.node = node

@@ -614,7 +614,7 @@ class CFGDemo:
                     isinstance(widget, TreeSegmentWidget) and
                     node.symbol == widget.node().text()):
                     pass # matching nonterminal
-                elif (isinstance(node, str) and
+                elif (isinstance(node, (str, unicode)) and
                       isinstance(widget, TextWidget) and
                       node == widget.text()):
                     pass # matching nonterminal
