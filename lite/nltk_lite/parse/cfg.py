@@ -114,6 +114,7 @@ class Nonterminal:
             hashable. 
         """
         self._symbol = symbol
+        self._hash = hash(symbol)
 
     def symbol(self):
         """
@@ -148,7 +149,7 @@ class Nonterminal:
         else: return -1
 
     def __hash__(self):
-        return hash(self._symbol)
+        return self._hash
 
     def __repr__(self):
         """
@@ -238,6 +239,7 @@ class Production:
             raise TypeError, 'production right hand side should be a list, not a string'
         self._lhs = lhs
         self._rhs = tuple(rhs)
+        self._hash = hash((self._lhs, self._rhs))
 
     def lhs(self):
         """
@@ -296,7 +298,7 @@ class Production:
         @return: A hash value for the C{Production}.
         @rtype: C{int}
         """
-        return hash((self._lhs, self._rhs))
+        return self._hash
 
 
 class Grammar:
@@ -395,7 +397,7 @@ def demo():
     print '    S.symbol() =>', `S.symbol()`
     print
 
-    print cfg.Production("S", "NP")
+    print cfg.Production(S, [NP])
 
     # Create some Grammar Productions
     grammar = cfg.parse_grammar("""
