@@ -1060,7 +1060,7 @@ def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     from nltk_lite.corpora.treebank import tagged
     from nltk_lite.tag import accuracy
 
-    NN_CD_tagger = Regexp([(r'^[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
+    NN_CD_tagger = Regexp([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
 
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
