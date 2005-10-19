@@ -234,7 +234,7 @@ class Production:
         @param rhs: The right-hand side of the new C{Production}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
-        if isinstance(rhs, str):
+        if isinstance(rhs, (str, unicode)):
             raise TypeError, 'production right hand side should be a list, not a string'
         self._lhs = lhs
         self._rhs = tuple(rhs)
