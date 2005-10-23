@@ -69,7 +69,7 @@ class Tree(list):
         if c != 0: return c
         else: return list.__cmp__(self, other)
     def __eq__(self, other):
-        if other == None: return False
+        if not isinstance(other, Tree): return False
         return self.node == other.node and list.__eq__(self, other)
     def __ne__(self, other):
         return not (self == other)
@@ -374,6 +374,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         if c != 0: return c
         return cmp(self.prob(), other.prob())
     def __eq__(self, other):
+        if not isinstance(other, Tree): return False
         return Tree.__eq__(self, other) and self.prob()==other.prob()
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self, prob=self.prob())
@@ -405,6 +406,7 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
         if c != 0: return c
         return cmp(self.prob(), other.prob())
     def __eq__(self, other):
+        if not isinstance(other, Tree): return False
         return Tree.__eq__(self, other) and self.prob()==other.prob()
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self, prob=self.prob())
