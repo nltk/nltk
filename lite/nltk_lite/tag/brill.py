@@ -672,12 +672,13 @@ class BrillTrainer:
             # once for each tag that the rule changes to an incorrect
             # value.
             score = fixscore
-            for i in correct_indices[rule.original_tag()]:
-                if rule.applies(test_tokens, i):
-                    score -= 1
-                    # If the score goes below best_score, then we know
-                    # that this isn't the best rule; so move on:
-                    if score <= best_score: break
+            if correct_indices.has_key(rule.original_tag()):
+                for i in correct_indices[rule.original_tag()]:
+                    if rule.applies(test_tokens, i):
+                        score -= 1
+                        # If the score goes below best_score, then we know
+                        # that this isn't the best rule; so move on:
+                        if score <= best_score: break
 
             #print '%5d %5d %s' % (fixscore, score, rule)
 
@@ -747,7 +748,7 @@ class BrillTrainer:
            B      |     
    S   F   r   O  |        Score = Fixed - Broken
    c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
-   o   x   k   h  |  u    Broken = num tags changed correct -> incorrect
+   o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
    r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
    e   d   n   r  |  e
 ------------------+-------------------------------------------------------
@@ -1148,17 +1149,17 @@ if __name__ == '__main__':
         args = map(int, args)
         if len(args) == 1:
             print("Using the first %i sentences.\n" %args[0])
-            test(numSents = args[0])
+            demo(numSents = args[0])
         elif len(args) == 2:
             print("Using %i sentences, randomize=%i\n" %tuple(args[:2]) )
-            test(numSents = args[0], randomize = args[1])
+            demo(numSents = args[0], randomize = args[1])
         elif len(args) == 3:
             print("Using %i sentences, randomize=%i, max_rules=%i\n" %tuple(args[:3]) )
-            test(numSents = args[0], randomize = args[1], max_rules = args[2])
+            demo(numSents = args[0], randomize = args[1], max_rules = args[2])
         elif len(args) == 4:
             print("Using %i sentences, randomize=%i, max_rules=%i, min_score=%i\n"
                   %tuple(args[:4]) )
-            test(numSents = args[0], randomize = args[1], max_rules = args[2],
+            demo(numSents = args[0], randomize = args[1], max_rules = args[2],
                  min_score = args[3])
 
         print("\nCheck errors.out for a listing of errors in the training set, "+
