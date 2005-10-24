@@ -56,6 +56,8 @@ Most of these require code and tutorials:
 - information extraction (e.g. from biomedical literature)
   - regular expressions for extracting temporal expressions
 
+- better (some?) coverage of parse tree navigation - currently can only really work this out from the API or reading the tree.py source code
+
 -----
 BOOK
 -----
