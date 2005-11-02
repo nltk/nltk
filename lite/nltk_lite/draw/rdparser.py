@@ -74,6 +74,8 @@ from nltk_lite.draw.cfg import *
 from nltk_lite.draw.cfg import CFGEditor
 import tkFont
 from Tkinter import *
+
+
         
 class RecursiveDescentDemo:
     """
@@ -435,7 +437,6 @@ class RecursiveDescentDemo:
                 self._prodlist.insert(index, ' %s' % productions[index])
 
     def _position_text(self):
-
         # Line up the text widgets that are matched against the tree
         numwords = len(self._sent)
         num_matched = numwords - len(self._parser.remaining_text())
@@ -490,7 +491,7 @@ class RecursiveDescentDemo:
 
     def reset(self, *e):
         self._autostep = 0
-        self._parser.initialize(self._token)
+        self._parser.initialize(self._sent)
         self._lastoper1['text'] = 'Reset Demo'
         self._lastoper2['text'] = ''
         self._redraw()
@@ -854,13 +855,13 @@ class RecursiveDescentDemo:
             self._prodlist.insert('end', (' %s' % production))
         
     def edit_sentence(self, *e):
-        sentence = ' '.join([tok['TEXT'] for tok in self._token['SUBTOKENS']])
+        sentence = ' '.join(self._sent)
         title = 'Edit Text'
         instr = 'Enter a new sentence to parse.'
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._sent = tokenize.whitespace(sentence) #[XX] use tagged?
+        self._sent = list(tokenize.whitespace(sentence)) #[XX] use tagged?
         self.reset()
 
 def demo():

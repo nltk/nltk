@@ -468,10 +468,10 @@ class ShiftReduceDemo:
         elif self.shift(): return 1
         else: 
             if len(self._parser.parses()) > 0:
-                self._lastoper1['text'] = 'Finised:'
+                self._lastoper1['text'] = 'Finished:'
                 self._lastoper2['text'] = 'Success'
             else:
-                self._lastoper1['text'] = 'Finised:'
+                self._lastoper1['text'] = 'Finished:'
                 self._lastoper2['text'] = 'Failure'
 
     def shift(self, *e):
@@ -573,7 +573,7 @@ class ShiftReduceDemo:
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._sent = tokenize.whitespace(sentence) #[XX] use tagged?
+        self._sent = list(tokenize.whitespace(sentence)) #[XX] use tagged?
         self.reset()
 
     #########################################
