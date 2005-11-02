@@ -153,7 +153,7 @@ class CFGEditor:
     def __init__(self, parent, cfg=None, set_cfg_callback=None):
         self._parent = parent
         if cfg is not None: self._cfg = cfg
-        else: self._cfg = CFG(Nonterminal('S'), [])
+        else: self._cfg = Grammar(Nonterminal('S'), [])
         self._set_cfg_callback = set_cfg_callback
 
         self._highlight_matching_nonterminals = 1
@@ -447,7 +447,7 @@ class CFGEditor:
         for line in lines:
             line = line.strip()
             if line=='': continue
-            productions += Production.parse(line)
+            productions += parse_production(line)
             #if line.strip() == '': continue
             #if not CFGEditor._PRODUCTION_RE.match(line):
             #    raise ValueError('Bad production string %r' % line)
@@ -478,7 +478,7 @@ class CFGEditor:
     def _apply(self, *e):
         productions = self._parse_productions()
         start = Nonterminal(self._start.get())
-        cfg = CFG(start, productions)
+        cfg = Grammar(start, productions)
         if self._set_cfg_callback is not None:
             self._set_cfg_callback(cfg)
         
