@@ -631,7 +631,7 @@ class Chart:
                              for cp in cpl]
 
             # Kludge to ensure child_choices is a doubly-nested list
-            if type(child_choices[0]) == type(""):
+            if len(child_choices) > 0 and type(child_choices[0]) == type(""):
                 child_choices = [child_choices]
 
             # For each combination of children, add a tree.
