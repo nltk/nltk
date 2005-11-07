@@ -3,6 +3,9 @@
 from nltk_lite.parse.featurestructure import *
 from nltk_lite.parse import cfg
 import string
+import church
+
+import pdb
 
 class Category(FeatureStructure, cfg.Nonterminal):
     """
@@ -184,6 +187,34 @@ class Category(FeatureStructure, cfg.Nonterminal):
                 del self._features[fname]
             elif isinstance(fval, Category):
                 fval._remove_unbound_vars()
+
+                
+    # EK: adapted from nltk.featurestructure
+    # We need to deal with cases where the LHS of a rule
+    # has a value which is an ApplicationExpression containing FeatureVariables
+    def _apply_bindings(self, bindings, visited):
+        # Visit each node only once:
+        if visited.has_key(id(self)): return
+        visited[id(self)] = 1
+      
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, FeatureVariable):
+                if bindings.is_bound(fval):
+                    self._features[fname] = bindings.lookup(fval)
+            # fval is a church Expression of the form 'app(?x ?y)
+            elif isinstance(fval, church.ApplicationExpression):
+                newval = fval
+                for semvar in fval.variables():
+                    varstr = semvar.__str__()
+                    # discard church Variables which are not FeatureVariables
+                    if varstr.startswith('?'): 
+                        var = FeatureVariable.parse(varstr)
+                        if bindings.is_bound(var):
+                            newval = newval.replace(semvar, bindings.lookup(var))
+                #pdb.set_trace()
+                self._features[fname] = newval                  
+            elif isinstance(fval, FeatureStructure):
+                fval._apply_bindings(bindings, visited)               
     
     # All this is unlikely to be necessary. All I've changed is to make
     # strings case-insensitive.
@@ -196,6 +227,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
         _UnificationFailureError is raised, and the values of C{self}
         and C{other} are undefined.
         """
+        trace = True
         if trace:
             print '  '+'|   '*depth+' /'+`self`
             print '  '+'|   '*depth+'|\\'+ `other`
@@ -211,9 +243,11 @@ class Category(FeatureStructure, cfg.Nonterminal):
                 # replace it by the variable's bound value.
                 if isinstance(selfval, FeatureVariable):
                     selfval = bindings.lookup(selfval)
+                    if trace:
+                        print '  | Bnd var: bindings.lookup(selfval)', bindings.lookup(selfval)
                 if isinstance(otherval, FeatureVariable):
                     otherval = bindings.lookup(otherval)
-                
+
                 if trace:
                     print '  '+'|   '*(depth+1)
                     print '  '+'%s| Unify %s feature:'%('|   '*(depth),fname)
@@ -381,6 +415,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
                                    r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
                                    r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>'),
                  'symbol': re.compile(r'\w+'),
+#                 'application': re.compile(r'(app)\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)'),
                  'disjunct': re.compile(r'\s*\|\s*'),
                  'whitespace': re.compile(r'\s*'),
                  'stringmarker': re.compile("['\"\\\\]")}
@@ -453,7 +488,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
         while position < len(s):
             # Use these variables to hold info about the feature:
             name = target = val = None
-            
+
             # Is this a shorthand boolean value?
             match = _PARSE_RE['bool'].match(s, position)
             if match is not None:
@@ -472,7 +507,6 @@ class Category(FeatureStructure, cfg.Nonterminal):
                 match = _PARSE_RE['assign'].match(s, position)
                 if match is None: raise ValueError('equals sign', position)
                 position = match.end()
-
                 val, position = cls._parseval(s, position, reentrances)
             features[name] = val
                     
@@ -505,6 +539,18 @@ class Category(FeatureStructure, cfg.Nonterminal):
         
         # End of string (error)
         if position == len(s): raise ValueError('value', position)
+
+        # EK: Semantic value, of the form <app(?x, ?y) >'; return an ApplicationExpression
+ 	match = _PARSE_RE['application'].match(s, position)
+        if match is not None:
+            fun = church.Parser(match.group(2)).next()
+            arg = church.Parser(match.group(3)).next()
+            return church.ApplicationExpression(fun, arg), match.end()	
+
+ 	# EK: Other semantic value enclosed by '< >'; return value given by the church parser
+ 	match = _PARSE_RE['semantics'].match(s, position)
+        if match is not None:
+            return church.Parser(match.group(1)).next(), match.end()	
         
         # String value
         if s[position] in "'\"":
@@ -634,6 +680,8 @@ class GrammarCategory(Category):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
+ 	    elif isinstance(fval, church.Expression): # EK: Use the church repr for expressions
+ 		segments.append('%s=%r' % (fname, fval.__str__()))
             elif not isinstance(fval, Category):
                 segments.append('%s=%r' % (fname, fval))
             else:
@@ -664,6 +712,9 @@ class GrammarCategory(Category):
                                    r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
                                    r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>'),
                  'symbol': re.compile(r'\w+'),
+                 'semantics': re.compile(r'<([^>]+)>'), # EK
+                 #EK: Assumes that Applications in sem always take FeatureVariable arguments
+                 'application': re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)>'),
                  'disjunct': re.compile(r'\s*\|\s*'),
                  'slash': re.compile(r'\s*/\s*'),
                  'whitespace': re.compile(r'\s*'),
