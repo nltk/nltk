@@ -10,6 +10,8 @@ from tree import *
 from nltk_lite import tokenize
 from nltk_lite.parse import AbstractParse, cfg
 from types import *
+#
+from nltk.chktype import chktype
 
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
@@ -410,6 +412,18 @@ class SteppingShiftReduce(ShiftReduce):
         if self._stack[0].node != self._grammar.start().symbol():
             return []
         return self._stack
+
+# copied from nltk.parser
+
+    def set_grammar(self, grammar):
+        """
+        Change the grammar used to parse texts.
+        
+        @param grammar: The new grammar.
+        @type grammar: C{CFG}
+        """
+        assert chktype(1, grammar, cfg.Grammar)
+        self._grammar = grammar
     
 ##//////////////////////////////////////////////////////
 ##  Demonstration Code
