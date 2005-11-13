@@ -156,6 +156,8 @@ class VariableExpression(Expression):
 
     def __str__(self): return '%s' % self.variable
 
+    def __repr__(self): return '%s' % self.variable
+
 class LambdaExpression(Expression):
     """A lambda expression: \\x.M."""
     def __init__(self, variable, term):
@@ -260,6 +262,9 @@ class ApplicationExpression(Expression):
         if isinstance(self.first, ApplicationExpression):
             strFirst = strFirst[1:-1]
         return '(%s %s)' % (strFirst, self.second)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class Parser:
