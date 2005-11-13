@@ -229,8 +229,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
         """
         trace = True
         if trace:
-            print '  '+'|   '*depth+' /'+`self`
-            print '  '+'|   '*depth+'|\\'+ `other`
+            print '  '+'|   '*depth+'?', `self`, '==', `other`
         
         for (fname, otherval) in other._features.items():
             if trace:
@@ -244,13 +243,13 @@ class Category(FeatureStructure, cfg.Nonterminal):
                 if isinstance(selfval, FeatureVariable):
                     selfval = bindings.lookup(selfval)
                     if trace:
-                        print '  | Bnd var: bindings.lookup(selfval)', bindings.lookup(selfval)
+                        print '  | Bound var:', bindings.lookup(selfval)
                 if isinstance(otherval, FeatureVariable):
                     otherval = bindings.lookup(otherval)
 
                 if trace:
                     print '  '+'|   '*(depth+1)
-                    print '  '+'%s| Unify %s feature:'%('|   '*(depth),fname)
+                    print '  '+'%s| Unify "%s" feature:' % ('|   '*(depth),fname)
                     
                 # Case 1: unify 2 feature structures (recursive case)
                 if (isinstance(selfval, FeatureStructure) and
@@ -287,9 +286,8 @@ class Category(FeatureStructure, cfg.Nonterminal):
                         trace_selfval._apply_forwards({})
                     if isinstance(trace_otherval, FeatureStructure):
                         trace_otherval._apply_forwards({})
-                    print '  '+'%s|    /%r' % ('|   '*(depth), trace_selfval)
-                    print '  '+'%s|   |\\%r' % ('|   '*(depth), trace_otherval)
-                    print '  '+'%s|   +-->%r' % ('|   '*(depth),
+                    print '  '+'%s|   ? %r == %r' % ('|   '*(depth), trace_selfval, trace_otherval)
+                    print '  '+'%s|   > %r' % ('|   '*(depth),
                                             self._features[fname])
                     
             # Case 5: copy from other
@@ -298,7 +296,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
 
         if trace:
             print '  '+'|   '*depth+'|'
-            print '  '+'|   '*depth+'+-->'+`self`
+            print '  '+'|   '*depth+'>', `self`
             if len(bindings.bound_variables()) > 0:
                 print '  '+'|   '*depth+'    '+`bindings`
     
