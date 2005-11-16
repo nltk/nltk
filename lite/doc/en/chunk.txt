@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-========
-Chunking
-========
+=============
+Chunk Parsing
+=============
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
