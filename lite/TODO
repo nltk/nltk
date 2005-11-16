@@ -1,17 +1,15 @@
 KEY: "-" = not done; "+" = done
 
 -------------------------
-Version 0.6 (mid October)
+Version 0.6 (mid November)
 -------------------------
 
 + number sections [SB]
 + further expand fieldwork tutorial [SB]
 + PDF versions of tutorials [SB]
 - document recommended methods for saving models (pickle, shelve) [SB]
-- marshalling [SB/TT]
 - incorporate Speer's feature-based parser
 - expand coverage of Brazilian Portuguese translations [TT]
-- get epydoc docstrings to compile cleanly [EL]
 - fix misc.quicksort [SB]
 - add wordnet/pywordnet to distribution, example of interface in tutorial [SB]
 - interpolated and backoff language models [SB]
@@ -20,19 +18,25 @@ Version 0.6 (mid October)
 - make more use of sidebars
 - better explanation of left corner parsing in parse.txt [EK]
 - port MXTerminator, and get James' fixes
+- integrate some student projects [SB]
+- add Li & Roth question classification data? [SB]
+- port more of the NLTK corpus readers [SB]
 
 -----------------------
-Version 0.7 (November?)
+Version 0.7 (December?)
 -----------------------
 
 - write feature-based syntax chapter, incl semantics [EK]
 - add lambda semantics to Speer's feature-based parse package [EK]
+- get epydoc docstrings to compile cleanly [EL]
 - port Cohn's clusterer [SB]
 - wordnet interface
 - XML processing in Python [SB]
 - add OLAC support: read and write an OLAC static repository [SB]
 - urllib [SB]
 - single PDF aggregate [SB]
+- marshalling [SB/TT]
+- integrate more student projects [SB]
 
 -------------
 Uncategorized
