@@ -39,7 +39,7 @@ echo "ISO Image will be placed in $ISODIR"
 export SFNETMIRROR=http://optusnet.dl.sourceforge.net/sourceforge	#change this to suit your system
 echo "Using $SFNETMIRROR"
 
-export VERSION=0.4			# change this to suit	
+export VERSION=0.5			# change this to suit	
 echo "NLTK Lite version $VERSION"
 
 #
