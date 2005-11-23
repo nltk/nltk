@@ -1,0 +1,16 @@
+#!/bin/sh
+
+thresh=200
+while [ $thresh -le 700 ]; do
+	echo "skew.${thresh}"
+	`echo "./proj.py corpus.rnd -t ${thresh}"` > "./results/skew.$thresh"
+	thresh=`expr $thresh + 50`
+done
+	
+thresh=20
+while [ $thresh -le 70 ]; do
+	echo "rel.${thresh}"
+	athresh=`echo "scale=2;$thresh/10" | bc`
+	`echo "./proj.py corpus.rnd -r -t ${athresh}"` > "./results/rel.$thresh"
+	thresh=`expr $thresh + 5`
+done
