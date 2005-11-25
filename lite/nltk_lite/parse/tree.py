@@ -13,6 +13,7 @@ syntax trees and morphological trees.
 
 import re, types
 from nltk_lite import tokenize
+from nltk_lite.parse import cfg
 from nltk_lite.probability import ProbabilisticMixIn
 
 ######################################################################
@@ -199,6 +200,21 @@ class Tree(list):
                 for subtree in child.subtrees(filter):
                     yield subtree
 
+    def productions(self):
+        """
+        Generate the productions that correspond to the non-terminal nodes of the tree.
+        For each subtree of the form (P: C1 C2 ... Cn) this produces a production of the
+        form P -> C1 C2 ... Cn.
+
+        @rtype: list of C{cfg.Production}s
+        """
+
+        prods = [cfg.Production(cfg.Nonterminal(self.node), _child_names(self))]
+        for child in self:
+            if isinstance(child, Tree):
+                prods += child.productions()
+        return prods
+
     #////////////////////////////////////////////////////////////
     # Convert, copy
     #////////////////////////////////////////////////////////////
@@ -267,6 +283,8 @@ class Tree(list):
         for child in self:
             if isinstance(child, Tree):
                 childstrs.append(child._ppflat(nodesep, parens))
+            elif isinstance(child, str):
+                childstrs.append(child)
             else:
                 childstrs.append('%s' % child.__repr__())
         return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
@@ -421,6 +439,16 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
         else:
             return val
     convert = classmethod(convert)
+
+
+def _child_names(tree):
+    names = []
+    for child in tree:
+        if isinstance(child, Tree):
+            names.append(cfg.Nonterminal(child.node))
+        else:
+            names.append(child)
+    return names
 
 ######################################################################
 ## Parsing
@@ -644,8 +672,10 @@ def demo():
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
     t = tree.bracket_parse(s)
+    print "Convert bracketed string into tree:"
     print t
 
+    print "Display tree properties:"
     print t.node           # tree's constituent type
     print t[0]             # tree's first child
     print t[1]             # tree's second child
@@ -658,26 +688,42 @@ def demo():
     # Demonstrate tree modification.
     the_cat = t[0]
     the_cat.insert(1, tree.bracket_parse('(JJ big)'))
+    print "Tree modification:"
     print t
     t[1,1,1] = tree.bracket_parse('(NN cake)')
     print t
+    print
 
     # Demonstrate probabilistic trees.
 
     pt = tree.ProbabilisticTree('x', ['y', 'z'], prob=0.5)
+    print "Probabilistic Tree:"
     print pt
+    print
 
     # Demonstrate parsing of treebank output format.
     t = tree.bracket_parse(t.pp_treebank())[0]
+    print "Convert tree to bracketed string and back again:"
+    print t.pp_treebank()
     print t
+    print
 
     # Demonstrate LaTeX output
+    print "LaTeX output:"
     print t.pp_latex_qtree()
+    print
+
+    # Demonstrate Productions
+    print "Production output:"
+    print t.productions()
+    print
 
     # Demonstrate chunk parsing
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
     from tree import chunk
+    print "Chunk Parsing:"
     print chunk(s, chunk_node='NP').pp()
+    print
 
     s = """
 These DT B-NP
@@ -713,5 +759,3 @@ better JJR I-ADJP
 
 if __name__ == '__main__':
     demo()
-
-
