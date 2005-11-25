@@ -19,6 +19,7 @@ NEWLINE    = r'\n'
 BLANKLINE  = r'\s*\n\s*\n\s*'
 WORDPUNCT  = r'[a-zA-Z]+|[^a-zA-Z\s]+'
 SHOEBOXSEP = r'^\\'
+TREEBANK   = r'^\(.*?(?=^\(|\Z)'
 
 def _remove_group_identifiers(parsed_re):
     """
@@ -84,7 +85,7 @@ def _compile(regexp):
     grouped = sre_parse.SubPattern(pattern)
     grouped.append((sre_constants.SUBPATTERN, (1, parsed)))
 
-    return sre_compile.compile(grouped, re.UNICODE)
+    return sre_compile.compile(grouped, re.UNICODE | re.MULTILINE | re.DOTALL)
 
 def token_split(text, pattern, advanced=False):
         """
@@ -94,7 +95,7 @@ def token_split(text, pattern, advanced=False):
         if advanced:
             regexp = _compile(pattern)   # pattern contains ()
         else:
-            regexp = re.compile(pattern, re.UNICODE)
+            regexp = re.compile(pattern, re.UNICODE | re.MULTILINE | re.DOTALL)
 
         # If it's a single string, then convert it to a tuple
         # (which we can iterate over, just like an iterator.)
@@ -206,6 +207,16 @@ def shoebox(s):
     @return: An iterator over tokens
     """
     return regexp(s, pattern=SHOEBOXSEP, gaps=True)
+
+def treebank(s):
+    """
+    Tokenize a Treebank file into its tree strings
+
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
+    @return: An iterator over tokens
+    """
+    return regexp(s, pattern=TREEBANK, advanced=True)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
