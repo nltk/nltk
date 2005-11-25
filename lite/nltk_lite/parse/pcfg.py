@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2005 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@ldc.upenn.edu> (minor additions)
+#         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (induction)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -66,12 +67,12 @@ class Grammar(cfg.Grammar):
         that sum to 1.
     """
     EPSILON = 0.01
-    
+
     def __init__(self, start, productions):
         """
         Create a new context-free grammar, from the given start state
         and set of C{cfg.Production}s.
-        
+
         @param start: The start symbol
         @type start: L{Nonterminal}
         @param productions: The list of productions that defines the grammar
@@ -91,6 +92,34 @@ class Grammar(cfg.Grammar):
             if not ((1-Grammar.EPSILON) < p < (1+Grammar.EPSILON)):
                 raise ValueError("cfg.Productions for %r do not sum to 1" % lhs)
 
+def induce(start, productions):
+    """
+    Induce a PCFG grammar from a list of productions.
+
+    The probability of a production A -> B C in a PCFG is:
+
+                    count(A -> B C)
+      P(A | B, C) = ---------------       where * is any right hand side
+                     count(A -> *)
+
+    @param start: The start symbol
+    @type start: L{Nonterminal}
+    @param productions: The list of productions that defines the grammar
+    @type productions: C{list} of L{Production}
+    """
+
+    pcount = {} # Production count: the number of times a given production occurs
+    lcount = {} # LHS-count: counts the number of times a given lhs occurs
+
+    for prod in productions:
+        lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
+        pcount[prod]       = pcount.get(prod,       0) + 1
+
+    prods = [Production(p.lhs(), p.rhs(), prob=float(pcount[p]) / lcount[p.lhs()])\
+             for p in pcount]
+    return Grammar(start, prods)
+
+
 #################################################################
 # Toy PCFGs
 #################################################################
@@ -102,7 +131,7 @@ toy1 = Grammar(_S, [
     Production(_NP, [_Det, _N], prob=0.5),
     Production(_NP, [_NP, _PP], prob=0.25),
     Production(_NP, ['John'], prob=0.1),
-    Production(_NP, ['I'], prob=0.15), 
+    Production(_NP, ['I'], prob=0.15),
     Production(_Det, ['the'], prob=0.8),
     Production(_Det, ['my'], prob=0.2),
     Production(_N, ['dog'], prob=0.5),
@@ -148,11 +177,12 @@ toy2 = Grammar(_S, [
 
 def demo():
     """
-    A demonstration showing how C{PCFG}s can be
-    created and used.
+    A demonstration showing how PCFG C{Grammar}s can be created and used.
     """
 
-    from nltk_lite.parse import cfg, pcfg
+    from nltk_lite.corpora import treebank, extract
+    from nltk_lite.parse import cfg, pcfg, pchart, treetransforms
+    from itertools import islice
 
     # Create some probabilistic CFG Productions
     S, A, B, C = cfg.nonterminals('S A B C')
@@ -161,8 +191,8 @@ def demo():
                   pcfg.Production(B, [B, 'b'], prob=0.5),
                   pcfg.Production(B, [C], prob=0.5),
                   pcfg.Production(C, ['a'], prob=0.1),
-                  pcfg.Production(C, ['b'], prob=0.9)] 
-    
+                  pcfg.Production(C, ['b'], prob=0.9)]
+
     pcfg_prod = pcfg_prods[2]
     print 'A PCFG production:', `pcfg_prod`
     print '    pcfg_prod.lhs()  =>', `pcfg_prod.lhs()`
@@ -178,5 +208,30 @@ def demo():
     # Use string.replace(...) is to line-wrap the output.
     print `grammar.productions()`.replace(',', ',\n'+' '*26)
     print
+
+    # extract productions from three trees and induce the PCFG
+    print "Induce PCFG grammar from treebank data:"
+
+    productions = []
+    for tree in islice(treebank.parsed(),3):
+        # perform optional in-place tree transformations, e.g.:
+        # treetransforms.collapseUnary(tree, collapsePOS = False)
+        # treetransforms.chomskyNormalForm(tree, horzMarkov = 2)
+
+        productions += tree.productions()
+
+    grammar = pcfg.induce(S, productions)
+    print grammar
+    print
+
+    print "Parse sentence using induced grammar:"
+
+    parser = pchart.InsideParse(grammar)
+    parser.trace(3)
+
+    sent = extract(0, treebank.raw())
+    print sent
+    for parse in parser.get_parse_list(sent):
+        print parse
 
 if __name__ == '__main__': demo()
