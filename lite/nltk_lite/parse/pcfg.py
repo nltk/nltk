@@ -99,7 +99,7 @@ def induce(start, productions):
     The probability of a production A -> B C in a PCFG is:
 
                     count(A -> B C)
-      P(A | B, C) = ---------------       where * is any right hand side
+      P(B, C | A) = ---------------       where * is any right hand side
                      count(A -> *)
 
     @param start: The start symbol
