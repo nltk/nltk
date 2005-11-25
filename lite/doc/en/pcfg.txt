@@ -726,6 +726,58 @@ tree.
     |. [--------->| [1:6] VP -> VP * PP                prob=1.38775e-05
 
 
+-----------------
+Grammar Induction
+-----------------
+
+As we have seen, PCFG productions are just like CFG productions,
+adorned with probabilities.  So far, we have simply specified these
+probabilities in the grammar.  However, it is more usual to *estimate*
+these probabilities from training data, namely a collection of parse
+trees or *treebank*.
+
+The simplest method uses *Maximum Likelihood Estimation*, so called
+because probabilities are chosen in order to maximize the likelihood
+of the training data.  The probability of a production
+``VP`` |rarr| ``V NP PP`` is *p(V,NP,PP | VP)*.  We calculate this as
+follows::
+
+                        count(VP -> V NP PP)
+      P(V,NP,PP | VP) = --------------------
+                        count(VP -> ...)
+
+Here is a simple program that induces a grammar from the first
+three parse trees in the Penn Treebank corpus:
+
+    >>> from nltk_lite.corpora import treebank
+    >>> from itertools import islice
+    >>> productions = []
+    >>> for tree in islice(treebank.parsed(),3):
+    ...      productions += tree.productions()
+    >>> grammar = pcfg.induce(S, productions)
+    >>> for production in grammar.productions()[:10]:
+    ...      print production
+    PP -> IN NP (p=1.0)
+    NNP -> 'Nov.' (p=0.0714285714286)
+    NNP -> 'Agnew' (p=0.0714285714286)
+    JJ -> 'industrial' (p=0.142857142857)
+    NP -> CD NNS (p=0.133333333333)
+    , -> ',' (p=1.0)
+    CC -> 'and' (p=1.0)
+    NNP -> 'Pierre' (p=0.0714285714286)
+    NP -> NNP NNP NNP NNP (p=0.0666666666667)
+    NNP -> 'Rudolph' (p=0.0714285714286)
+
+.. Note:: Grammar induction usually involves normalizing the grammar
+   in various ways.  The ``nltk_lite.parse.treetransforms`` module
+   supports binarization (Chomsky Normal Form), parent annotation,
+   Markov order-N smoothing, and unary collapsing.  This information
+   can be accessed as follows:
+
+    >>> from nltk_lite.parse import treetransforms
+    >>> help(treetransforms)
+
+
 ---------------
 Further Reading
 ---------------
