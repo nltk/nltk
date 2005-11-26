@@ -11,7 +11,7 @@
 Brill's transformational rule-based tagger.
 """
 
-from nltk_lite.tag import *
+from nltk_lite.tag import TagI
 
 import bisect        # for binary search through a subset of indices
 import os            # for finding WSJ files
@@ -1054,20 +1054,25 @@ def errorList (train_tokens, tokens, radius=2):
 
     return errors
 
+#####################################################################################
+# Demonstration
+#####################################################################################
+
 def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
          errorOutput = "errors.out", ruleOutput="rules.out",
          randomize=False, train=.8, trace=3):
 
-    from nltk_lite.corpora.treebank import tagged
-    from nltk_lite.tag import accuracy
+    from nltk_lite.corpora import treebank
+    from nltk_lite import tag
+    from nltk_lite.tag import brill
 
-    NN_CD_tagger = Regexp([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
+    NN_CD_tagger = tag.Regexp([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
 
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
 
     print "Loading tagged data..."
-    sents = list(tagged())
+    sents = list(treebank.tagged())
     if randomize:
         random.seed(len(sents))
         random.shuffle(sents)
@@ -1083,34 +1088,34 @@ def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     # Unigram tagger
 
     print "Training unigram tagger:",
-    u = Unigram(backoff=NN_CD_tagger)
+    u = tag.Unigram(backoff=NN_CD_tagger)
 
     # NB training and testing are required to use a list-of-lists structure,
     # so we wrap the flattened corpus data with the extra list structure.
     u.train([training_data])
-    print("[accuracy: %f]" % accuracy(u, [gold_data]))
+    print("[accuracy: %f]" % tag.accuracy(u, [gold_data]))
 
     # Brill tagger
 
     templates = [
-        SymmetricProximateTokensTemplate(ProximateTagsRule, (1,1)),
-        SymmetricProximateTokensTemplate(ProximateTagsRule, (2,2)),
-        SymmetricProximateTokensTemplate(ProximateTagsRule, (1,2)),
-        SymmetricProximateTokensTemplate(ProximateTagsRule, (1,3)),
-        SymmetricProximateTokensTemplate(ProximateWordsRule, (1,1)),
-        SymmetricProximateTokensTemplate(ProximateWordsRule, (2,2)),
-        SymmetricProximateTokensTemplate(ProximateWordsRule, (1,2)),
-        SymmetricProximateTokensTemplate(ProximateWordsRule, (1,3)),
-        ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1,1)),
-        ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1,1)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,1)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (2,2)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,2)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,3)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,1)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (2,2)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,2)),
+        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
+        brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
+        brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1)),
         ]
 
-    #trainer = FastBrillTrainer(u, templates, trace)
-    trainer = BrillTrainer(u, templates, trace)
+    #trainer = brill.FastBrillTrainer(u, templates, trace)
+    trainer = brill.BrillTrainer(u, templates, trace)
     b = trainer.train(training_data, max_rules, min_score)
 
     print
-    print("Brill accuracy: %f" % accuracy(b, [gold_data]))
+    print("Brill accuracy: %f" % tag.accuracy(b, [gold_data]))
 
     print("\nRules: ")
     printRules = file(ruleOutput, 'w')
@@ -1126,41 +1131,7 @@ def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     for e in el:
         errorFile.write(e+"\n\n")
     errorFile.close()
-    print("Done.")
+    print "Done; rules and errors saved to %s and %s." % (ruleOutput, errorOutput)
 
-# TESTING
-    
 if __name__ == '__main__':
-    if sys.argv == ['']:
-        args = ['200', '0', '20', '3']
-    else:
-        args = sys.argv[1:]
-
-    if len(args) > 4:
-        print "Usage: python brill.py [n [randomize [max_rules [min_score]]]]\n \
-            n -> number of WSJ sentences to read\n \
-            randomize -> 0 (default) means read the first n sentences in the corpus, \
-                          1 means read a random set of n sentences \n \
-            max_rules -> (default 20) generate at most this many rules during \
-                             training \n \
-            min_score -> (default 3) only use rules which decrease the number of \
-                           errors in the training corpus by at least this much"
-    else:
-        args = map(int, args)
-        if len(args) == 1:
-            print("Using the first %i sentences.\n" %args[0])
-            demo(numSents = args[0])
-        elif len(args) == 2:
-            print("Using %i sentences, randomize=%i\n" %tuple(args[:2]) )
-            demo(numSents = args[0], randomize = args[1])
-        elif len(args) == 3:
-            print("Using %i sentences, randomize=%i, max_rules=%i\n" %tuple(args[:3]) )
-            demo(numSents = args[0], randomize = args[1], max_rules = args[2])
-        elif len(args) == 4:
-            print("Using %i sentences, randomize=%i, max_rules=%i, min_score=%i\n"
-                  %tuple(args[:4]) )
-            demo(numSents = args[0], randomize = args[1], max_rules = args[2],
-                 min_score = args[3])
-
-        print("\nCheck errors.out for a listing of errors in the training set, "+
-              "and rules.out for a list of the rules above.")
+    demo()
