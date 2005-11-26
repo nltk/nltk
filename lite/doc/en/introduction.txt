@@ -633,7 +633,6 @@ and the second rule chosen is ``NP`` |rarr| ``Det N``; then the partial
 tree will be:
 
 .. figure:: ../images/partialtree.png
-   :align: center
 
    Partial Parse Tree
 
@@ -659,7 +658,6 @@ of an application that offers the user information about movies
 currently on show.
 
 .. figure:: ../images/dialogue.png
-   :align: center
 
    Architecture of Spoken Dialogue System
 
