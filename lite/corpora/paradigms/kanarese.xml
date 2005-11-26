@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<document><metaproperties>
+	<source>Trudgill 1974:36</source>
+	<copyright/>
+	<title>Regional and caste differences in Kanarese</title>
+</metaproperties>
+
+<parse-tree>
+  <operator opcode="hierarchy" instruction="1">
+	 <operand type="domain" arg="root">content</operand>
+	 <operand type="branch" arg="leaf">2</operand>
+  </operator>
+  <operator opcode="hierarchy" instruction="2">
+	 <operand type="domain" arg="root">caste</operand>
+	 <operand type="branch" arg="leaf">3</operand>
+  </operator>
+  <operator opcode="hierarchy" instruction="3">
+	 <operand type="domain" arg="root">town</operand>
+	 <operand type="domain" arg="leaf">morpheme</operand>
+  </operator>
+</parse-tree>
+<attributes>
+  <name name="caste">
+    <value value="Brahmin"/>
+    <value value="non-Brahmin"/>
+  </name>
+  <name name="town">
+    <value value="Dharwar"/>
+    <value value="Bangalore"/>
+  </name>
+  <name name="morpheme">
+    <value value="'it is'"/>
+    <value value="'inside'"/>
+    <value value="infinitive affix"/>
+    <value value="participle affix"/>
+    <value value="'sit'"/>
+    <value value="reflexive"/>
+  </name>
+  <name name="content">
+    <value value="-alli"/>
+    <value value="-likke"/>
+    <value value="-o"/>
+    <value value="-ok"/>
+    <value value="-olage"/>
+    <value value="ayti"/>
+    <value value="ɘde"/>
+    <value value="ide"/>
+    <value value="ko"/>
+    <value value="-a"/>
+    <value value="-aga"/>
+    <value value="-ak"/>
+    <value value="kont-"/>
+    <value value="kunt-"/>
+    <value value="kut-"/> 
+  </name>
+</attributes>
+
+<paradigm>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="'it is'"/>    
+    <attribute name="content" value="ɘde"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="'inside'"/>    
+    <attribute name="content" value="-olage"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="infinitive affix"/>    
+    <attribute name="content" value="-likke"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="participle affix"/>    
+    <attribute name="content" value="-o"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="'sit'"/>    
+    <attribute name="content" value="kut-"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="reflexive"/>    
+    <attribute name="content" value="ko"/>
+  </form>
+  
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="'it is'"/>    
+    <attribute name="content" value="ide"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="'inside'"/>    
+    <attribute name="content" value="-alli"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="infinitive affix"/>    
+    <attribute name="content" value="-ok"/>
+  </form>  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="participle affix"/>    
+    <attribute name="content" value="-o"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="'sit'"/>    
+    <attribute name="content" value="kut-"/>
+  </form>
+  <form>
+    <attribute name="caste" value="Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="reflexive"/>    
+    <attribute name="content" value="ko"/>
+  </form>  
+
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="'it is'"/>    
+    <attribute name="content" value="ayti"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="'inside'"/>    
+    <attribute name="content" value="-aga"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="infinitive affix"/>    
+    <attribute name="content" value="-ak"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="participle affix"/>    
+    <attribute name="content" value="-a"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="'sit'"/>    
+    <attribute name="content" value="kunt-"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Dharwar"/>
+    <attribute name="morpheme" value="reflexive"/>    
+    <attribute name="content" value="kont-"/>
+  </form>
+  
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="'it is'"/>    
+    <attribute name="content" value="ayti"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="'inside'"/>    
+    <attribute name="content" value="-aga"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="infinitive affix"/>    
+    <attribute name="content" value="-ak"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="participle affix"/>    
+    <attribute name="content" value="-a"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="'sit'"/>    
+    <attribute name="content" value="kunt-"/>
+  </form>
+  <form>
+    <attribute name="caste" value="non-Brahmin"/>
+    <attribute name="town" value="Bangalore"/>
+    <attribute name="morpheme" value="reflexive"/>    
+    <attribute name="content" value="kont-"/>
+  </form>    
+</paradigm></document>
