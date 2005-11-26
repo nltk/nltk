@@ -5,7 +5,6 @@
 .. |larr| unicode:: U+2190 .. left arrow
 .. |rarr| unicode:: U+2192 .. right arrow
 .. |rdarr| unicode:: U+21D2 .. right double arrow
-.. |space| unicode:: U+2423 .. space underbar
 .. |dot| unicode:: U+2022 .. bullet
 .. |alpha| unicode:: U+03B1
 .. |beta| unicode:: U+03B2

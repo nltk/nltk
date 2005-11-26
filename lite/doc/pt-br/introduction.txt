@@ -367,7 +367,7 @@ do significado de suas partes e de seu modo de combinação. Este princípio
 resultou em uma útil correspondência entre sintaxe e semântica,
 principalmente quanto ao fato de o significado de uma expressão complexa
 poder ser computado recursivamente. Dada a representação *Não é verdade
-que |space| :subscript:`p`* como ``não(p)`` e *João viu Maria* como
+que -:subscript:`p`* como ``não(p)`` e *João viu Maria* como
 ``viu(j,m)``, podemos computar a interpretação de *Não é verdade que João
 viu Maria* recursivamente, utilizando as informações acima para obter
 ``não(viu(j,m))``. Hoje em dia, esta abordagem manifesta-se de forma mais
@@ -379,15 +379,15 @@ Uma parte separada do desenvolvimento nas décadas de 1960 e 1970 manteve-se
 deliberadamente distante da distinção declarativa/procedural e do princípio
 de composicionalidade. Estes pareciam impedirVER a construção de sistemas
 práticos. Por exemplo, os primeiros sistemas de respostas utilizavam
-padrões fixos de coincidência como: *Quantos* |space| :subscript:`i`
-|space| :subscript:`j` *possui?*, no qual o elemento ``i``era uma propriedade
+padrões fixos de coincidência como: *Quantos* -:subscript:`i`
+-:subscript:`j` *possui?*, no qual o elemento ``i``era uma propriedade
 ou serviço e o elemento ``j`` uma pessoa ou lugar. Cada padrão era
 fornecido com uma função semântica pré-definida, como ``contar(i,j)``. A
 pergunta do usuário que coincidisse com o padrão seria mapeada para a
 função semântica correspondente e então "executada" para obter a
 resposta, ``k = contar(i,j)``. Esta resposta seria, por sua vez, substituída
-em um novo padrão: |space| :subscript:`j` *possui*
-|space| :subscript:`k` |space| :subscript:`i`. Por exemplo para a questão
+em um novo padrão: -:subscript:`j` *possui*
+-:subscript:`k` -:subscript:`i`. Por exemplo para a questão
 *Quantos aeroportos*:subscript:`i` *Londres*:subscript:`j`
 *possui?* poderia ser mapeada para um padrão (como mostrado pelos subscritos) 
 e traduzida para um programa executável. O resultado seria substituído
@@ -641,8 +641,6 @@ e que a segunda regra seja ``NP`` |rarr| ``Det N``; a árvore parcial resultante
 será:
 
 .. figure:: ../images/partialtree.png
-   :height: 400
-   :align: center
 
    Árvore de parsing parcial
 
@@ -668,8 +666,6 @@ de um sistema de diálogo falado, como nosso exemplo inicial de uma aplicação
 que oferece ao usuário informações sobre filmes que estão atualmente em cartaz.
 
 .. figure:: ../images/dialogue.png
-   :height: 400
-   :align: center
 
    Arquitetura de um Sistema de Diálogo Falado
 
