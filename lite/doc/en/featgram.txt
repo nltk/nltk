@@ -1,0 +1,133 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+======================
+Feature Based Grammar
+======================
+
+:Authors: Ewan Klein
+:Version: |version|
+:Revision: $Revision$
+:Date: $Date$
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Note:: This is a draft.  Please send any feedback to the authors.
+
+--------------
+ Introduction
+--------------
+
+
+
+--------------------
+ Problems with CFGs
+--------------------
+
+
+
+
+Subcategorization
+-----------------
+
+We saw in chapter[cfg] that it was desirable to sometimes use category
+labels that draw finer distinctions that just noting the standard
+category of a constituent. For example, in order to represent
+different subcategories of verb, we introduced labels such as ``Vitr``
+and ``Vtr`` for intransitive and transitive verbs respectively.
+This allowed us to write rules like the following:
+
+| VP |rarr| V_itr 
+| VP |rarr| V_tr NP
+
+Although it is tempting to think of ``Vitr``
+and ``Vtr`` as two kinds of ``V``, this is unjustified: from a formal
+point of view, ``Vitr`` has no closer relationship with ``Vtr`` than
+it does, say, with ``NP``. As it stands, ``Vitr``
+and ``Vtr`` are unanalyzable nonterminal symbols from a CFG. One
+unwelcome consequence is that we do not seem able to say anything
+about the class of verbs in general. For example, we cannot say
+something like "All lexical items of category ``V`` can be marked for
+tense", since `bark`, say, is an item of category ``Vitr``, not ``V``.
+
+Within the field of phonology, a somewhat comparable challenge has
+been to develop a method for representing different classes of phoneme which
+share some property. For example, we might want to say that `b`, `g`,
+`d` and `m` all share the property of being voiced (i.e., their
+pronunciation involves vibration of the vocal folds), while `b`, `p`
+and `m` share the different property of having a  labial point of
+articulaion (i.e. their pronunciation involves closure of the lips).
+The proposed solution to this problem has been to represent phonemes
+as bundles of phonological :glossterm:`features`. 
+
+.. rule proliferation
+   loss of generalizations
+
+Case Government
+---------------
+
+
+Agreement
+---------
+
+.. Add something on gender?
+
+-------------------------
+ Features and Categories
+-------------------------
+
+.. brief history
+   gpsg, hpsg, lfg
+
+Deconstructing Grammatical Categories
+-------------------------------------
+
+.. attribute value pairs
+   atomic values
+   boolean values
+   mention X-bar?
+
+Capturing Constraints in Rules
+------------------------------
+
+.. using variables in rules
+
+
+Unbounded Dependency Constructions
+----------------------------------
+
+
+--------------------------------
+ Adding Compositional Semantics
+--------------------------------
+
+Overview
+--------
+
+The lambda calculus
+-------------------
+
+Compositionality
+----------------
+
+-----------------
+ Further Reading
+-----------------
+
+
+
+---------
+Exercises
+---------
+
+1. 
+
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
+
+
