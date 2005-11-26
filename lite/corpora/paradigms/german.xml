@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document><metaproperties>
+	<source>Finegan (1990:60)</source>
+	<copyright/>
+	<title>German Definite Article</title>
+</metaproperties>
+
+<attributes>
+	<name name="number">
+		<value value="singular"/>
+		<value value="plural"/>
+	</name>
+	<name name="gender">
+		<value value="masculine"/>
+		<value value="feminine"/>
+		<value value="neuter"/>
+	</name>	
+	<name name="case">
+		<value value="nominative"/>
+		<value value="accusative"/>
+		<value value="genitive"/>
+		<value value="dative"/>
+	</name>
+	<name name="content">
+		<value value="der"/>
+		<value value="den"/>
+		<value value="des"/>
+		<value value="dem"/>
+		<value value="die"/>
+		<value value="das"/>
+	</name>
+</attributes>
+
+<paradigm>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="content" value="der"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="content" value="den"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="content" value="des"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="content" value="dem"/>
+  </form>
+
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="content" value="der"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="content" value="der"/>
+  </form>
+
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="content" value="das"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="content" value="das"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="content" value="des"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="content" value="dem"/>
+  </form>
+
+  
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="content" value="der"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="masculine"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="content" value="den"/>
+  </form>
+
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="content" value="der"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="feminine"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="content" value="den"/>
+  </form>
+
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="content" value="die"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="content" value="der"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="gender" value="neuter"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="content" value="den"/>
+  </form>
+  
+</paradigm>
+</document>

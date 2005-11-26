@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<document><metaproperties>
+	<source>Spencer 1998:137</source>
+	<copyright/>
+	<title>Stress exchange patterns in Russian</title>
+</metaproperties>
+
+
+
+<attributes>
+  <name name="number">
+    <value value="singular"/>
+    <value value="plural"/>
+  </name>
+  <name name="case">
+    <value value="nominative"/>
+    <value value="accusative"/>
+    <value value="genitive"/>
+    <value value="dative"/>
+    <value value="instrumental"/>
+    <value value="locative"/>
+  </name>
+  <name name="class">
+    <value value="classI"/>
+    <value value="classII"/>
+  </name>
+  <name name="content">
+    <value value="'okna"/>
+    <value value="'oknam"/>
+    <value value="'oknami"/>
+    <value value="'oknax"/>
+    <value value="'okon"/>
+    <value value="m'esta"/>
+    <value value="m'este"/>
+    <value value="m'esto"/>
+    <value value="m'estom"/>
+    <value value="mest"/>
+    <value value="mest'a"/>
+    <value value="mest'am"/>
+    <value value="mest'ami"/>
+    <value value="mest'ax"/>
+    <value value="okn'a"/>
+    <value value="okn'e"/>
+    <value value="okn'o"/>  
+  </name>
+</attributes>
+<paradigm>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="okn'o"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="okn'o"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="okn'a"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="okn'e"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="instrumental"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="okn'o"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="locative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="okn'e"/>
+  </form>
+
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="'okna"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="'okna"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="'okon"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="'oknam"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="instrumental"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="'oknami"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="locative"/>
+    <attribute name="class" value="classI"/>
+    <attribute name="content" value="'oknax"/>
+  </form>
+  
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="m'esto"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="m'esto"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="m'esta"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="m'este"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="instrumental"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="m'estom"/>
+  </form>
+  <form>
+    <attribute name="number" value="singular"/>
+    <attribute name="case" value="locative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="m'este"/>
+  </form>
+
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="nominative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="mest'a"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="accusative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="mest'a"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="genitive"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="mest"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="dative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="mest'am"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="instrumental"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="mest'ami"/>
+  </form>
+  <form>
+    <attribute name="number" value="plural"/>
+    <attribute name="case" value="locative"/>
+    <attribute name="class" value="classII"/>
+    <attribute name="content" value="mest'ax"/>
+  </form>
+</paradigm></document>
