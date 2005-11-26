@@ -192,9 +192,9 @@ estejamos trabalhando com um arquivo que contenha as duas linhas abaixo::
 Do ponto de vista do parser, este arquivo é meramente uma string de
 caracteres:
 
-  'The\ |space|\ cat\ |space|\ climbed\\nthe\ |space|\ tree.'
+  'The_cat_climbed\\nthe_tree.'
 
-Note que utilizamos apóstrofos para deimitar as strings, "|space|" para
+Note que utilizamos apóstrofos para deimitar as strings, "_" para
 representar espaços e a expressão "\n" para representar uma nova linha.
 
 Como acabamos de dizer, para toquenizar este texto e permitir sua

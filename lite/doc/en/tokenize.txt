@@ -182,7 +182,7 @@ example, suppose we have a file containing the following two lines::
 From the parser's point of view, this file is just a string of
 characters:
 
-  'The_cat_climbed_the_tree.'
+  'The_cat_climbed\\n_the_tree.'
 
 Note that we use single quotes to delimit strings, "_" to represent
 space and "\n" to represent newline.
