@@ -307,7 +307,8 @@ Accessing Files and the Web
 ---------------------------
 
 It is easy to access local files, and web-pages in Python.  Here are some
-examples:
+examples.  (You will need to create a file called ``corpus.txt``
+before you can open it for reading.)
 
   >>> print open('corpus.txt').read() 
   Hello world.  This is a test file.
