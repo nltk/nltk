@@ -278,19 +278,19 @@ class Tree(list):
     def __str__(self):
         return self.pp()
 
-    def _ppflat(self, nodesep, parens):
+    def _ppflat(self, nodesep, parens, quotes):
         childstrs = []
         for child in self:
             if isinstance(child, Tree):
-                childstrs.append(child._ppflat(nodesep, parens))
-            elif isinstance(child, str):
-                childstrs.append(child)
+                childstrs.append(child._ppflat(nodesep, parens, quotes))
+            elif isinstance(child, str) and not quotes:
+                childstrs.append('%s' % child)
             else:
                 childstrs.append('%s' % child.__repr__())
         return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
                                 ' '.join(childstrs), parens[1])
 
-    def pp(self, margin=70, indent=0, nodesep=':', parens='()'):
+    def pp(self, margin=70, indent=0, nodesep=':', parens='()', quotes=True):
         """
         @return: A pretty-printed string representation of this tree.
         @rtype: C{string}
@@ -306,7 +306,7 @@ class Tree(list):
         """
 
         # Try writing it on one line.
-        s = self._ppflat(nodesep, parens)
+        s = self._ppflat(nodesep, parens, quotes)
         if len(s)+indent < margin:
             return s
 
@@ -315,13 +315,13 @@ class Tree(list):
         for child in self:
             if isinstance(child, Tree):
                 s += '\n'+' '*(indent+2)+child.pp(margin, indent+2,
-                                                  nodesep, parens)
+                                                  nodesep, parens, quotes)
             else:
                 s += '\n'+' '*(indent+2)+repr(child)
         return s+parens[1]
 
     def pp_treebank(self, margin=70, indent=0):
-        return self.pp(margin, indent, '')
+        return self.pp(margin, indent, nodesep='', quotes=False)
 
     def pp_latex_qtree(self):
         r"""
