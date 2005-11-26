@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<document><metaproperties>
+	<source>Austin 1981:51</source>
+	<copyright/>
+	<title>Diyari case forms</title>
+</metaproperties>
+
+
+<attributes>
+<name name="case">
+    <value value="ERG"/>
+    <value value="NOM"/>
+    <value value="ACC"/>
+    <value value="ABS"/>
+    <value value="LOC"/>
+    <value value="ALL"/>
+    <value value="ABL"/>
+    <value value="DAT"/>
+  </name>
+  <name name="stem">
+    <value value="person-DL"/>
+    <value value="person-PL"/>
+    <value value="woman's name"/>
+    <value value="man's name"/>
+    <value value="stick"/>
+    <value value="young man"/>
+    <value value="boy"/>
+    <value value="man"/>
+    <value value="Place Name 'Farina'"/>
+    <value value="Temp. Loc. 'today'"/>
+    <value value="Spatial Loc. 'there'"/>
+  </name>
+  <name name="content">
+    <value value="kanawara"/>
+    <value value="kanawarali"/>
+    <value value="kanawarana"/>
+    <value value="kanawarani"/>
+    <value value="kanawaranu"/>
+    <value value="kanawaranundu"/>
+    <value value="kanawulali"/>
+    <value value="kanawulana"/>
+    <value value="kanawulani"/>
+    <value value="kanawulanu"/>
+    <value value="kanawulanundu"/>
+    <value value="kanku"/>
+    <value value="kankundu"/>
+    <value value="kankuni"/>
+    <value value="kankuya"/>
+    <value value="kankuyali"/>
+    <value value="kararandu"/>
+    <value value="kararaya"/>
+    <value value="karari"/>
+    <value value="matarali"/>
+    <value value="matarandu"/>
+    <value value="matarani"/>
+    <value value="mataraya"/>
+    <value value="matari"/>
+    <value value="naka"/>
+    <value value="nakandu"/>
+    <value value="nakani"/>
+    <value value="pita"/>
+    <value value="pitali"/>
+    <value value="pitandu"/>
+    <value value="pitani"/>
+    <value value="pitaya"/>
+    <value value="tari"/>
+    <value value="tariali"/>
+    <value value="tarindu"/>
+    <value value="tarini"/>
+    <value value="tariya"/>
+    <value value="tirimirinanka"/>
+    <value value="tirimirinanu"/>
+    <value value="tirimirindu"/>
+    <value value="tirimirini"/>
+    <value value="tirimirinina"/>
+    <value value="tirimirinundu"/>
+    <value value="watamankali"/>
+    <value value="watamankana"/>
+    <value value="watamankani"/>
+    <value value="watamankanu"/>
+    <value value="watamankanundu"/>
+    <value value="widawatandu"/>
+    <value value="widawatani"/>
+    <value value="widawataya"/>
+  </name>
+</attributes>
+
+<paradigm>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulali"/>
+  </form>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawarali"/>
+  </form>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirindu"/>
+  </form> 
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="man's name"/>
+    <attribute name="content" value="watamankali"/>
+  </form>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="stick"/>
+    <attribute name="content" value="pitali"/>
+  </form>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="young man"/>
+    <attribute name="content" value="tariali"/>
+  </form>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="boy"/>
+    <attribute name="content" value="kankuyali"/>
+  </form>
+  <form>
+    <attribute name="case" value="ERG"/>
+    <attribute name="stem" value="man"/>
+    <attribute name="content" value="matarali"/>
+  </form>
+
+  <form>
+    <attribute name="case" value="NOM"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulu"/>
+  </form>
+  <form>
+    <attribute name="case" value="NOM"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawara"/>
+  </form>
+  <form>
+    <attribute name="case" value="NOM"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirini"/>
+  </form> 
+  <form>
+    <attribute name="case" value="ABS"/>
+    <attribute name="stem" value="man's name"/>
+    <attribute name="content" value="watamankana"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABS"/>
+    <attribute name="stem" value="stick"/>
+    <attribute name="content" value="pita"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABS"/>
+    <attribute name="stem" value="young man"/>
+    <attribute name="content" value="tari"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABS"/>
+    <attribute name="stem" value="boy"/>
+    <attribute name="content" value="kanku"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABS"/>
+    <attribute name="stem" value="man"/>
+    <attribute name="content" value="matari"/>
+  </form>
+  <form>
+    <attribute name="case" value="ACC"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulana"/>
+  </form>
+  <form>
+    <attribute name="case" value="ACC"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawarana"/>
+  </form>
+  <form>
+    <attribute name="case" value="ACC"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirinina"/>
+  </form> 
+
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulanu"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawaranu"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirinanu"/>
+  </form> 
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="man's name"/>
+    <attribute name="content" value="watamankanu"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="stick"/>
+    <attribute name="content" value="pitani"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="young man"/>
+    <attribute name="content" value="tarini"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="boy"/>
+    <attribute name="content" value="kankuni"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="man"/>
+    <attribute name="content" value="matarani"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="Place Name 'Farina'"/>
+    <attribute name="content" value="widawatani"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="Temp. Loc. 'today'"/>
+    <attribute name="content" value="karari"/>
+  </form>
+  <form>
+    <attribute name="case" value="LOC"/>
+    <attribute name="stem" value="Spatial Loc. 'there'"/>
+    <attribute name="content" value="naka"/>
+  </form>
+
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulanu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawaranu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirinanu"/>
+  </form> 
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="man's name"/>
+    <attribute name="content" value="watamankanu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="stick"/>
+    <attribute name="content" value="pitaya"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="young man"/>
+    <attribute name="content" value="tariya"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="boy"/>
+    <attribute name="content" value="kankuya"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="man"/>
+    <attribute name="content" value="mataraya"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="Place Name 'Farina'"/>
+    <attribute name="content" value="widawataya"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="Temp. Loc. 'today'"/>
+    <attribute name="content" value="kararaya"/>
+  </form>
+  <form>
+    <attribute name="case" value="ALL"/>
+    <attribute name="stem" value="Spatial Loc. 'there'"/>
+    <attribute name="content" value="nakani"/>
+  </form>
+
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulanundu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawaranundu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirinundu"/>
+  </form> 
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="man's name"/>
+    <attribute name="content" value="watamankanundu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="stick"/>
+    <attribute name="content" value="pitandu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="young man"/>
+    <attribute name="content" value="tarindu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="boy"/>
+    <attribute name="content" value="kankundu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="man"/>
+    <attribute name="content" value="matarandu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="Place Name 'Farina'"/>
+    <attribute name="content" value="widawatandu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="Temp. Loc. 'today'"/>
+    <attribute name="content" value="kararandu"/>
+  </form>
+  <form>
+    <attribute name="case" value="ABL"/>
+    <attribute name="stem" value="Spatial Loc. 'there'"/>
+    <attribute name="content" value="nakandu"/>
+  </form>
+
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="person-DL"/>
+    <attribute name="content" value="kanawulani"/>
+  </form>
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="person-PL"/>
+    <attribute name="content" value="kanawarani"/>
+  </form>
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="woman's name"/>
+    <attribute name="content" value="tirimirinanka"/>
+  </form> 
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="man's name"/>
+    <attribute name="content" value="watamankani"/>
+  </form>
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="stick"/>
+    <attribute name="content" value="pitaya"/>
+  </form>
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="young man"/>
+    <attribute name="content" value="tariya"/>
+  </form>
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="boy"/>
+    <attribute name="content" value="kankuya"/>
+  </form>
+  <form>
+    <attribute name="case" value="DAT"/>
+    <attribute name="stem" value="man"/>
+    <attribute name="content" value="matarandu"/>
+  </form>
+
+</paradigm></document>
