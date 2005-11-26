@@ -1,31 +1,33 @@
-KEY: "-" = not done; "+" = done
+KEY: "-" = not done; "~" = started; "+" = done; "?" = maybe
 
 -------------------------
-Version 0.6 (mid November)
+Version 0.6 (late November)
 -------------------------
 
 + number sections [SB]
 + further expand fieldwork tutorial [SB]
 + PDF versions of tutorials [SB]
-- document recommended methods for saving models (pickle, shelve) [SB]
-- incorporate Speer's feature-based parser
-- expand coverage of Brazilian Portuguese translations [TT]
-- fix misc.quicksort [SB]
-- add wordnet/pywordnet to distribution, example of interface in tutorial [SB]
-- interpolated and backoff language models [SB]
-- improve invocation of Brill tagger
-- consecutive numbering of examples in a chapter?
-- make more use of sidebars
-- better explanation of left corner parsing in parse.txt [EK]
-- port MXTerminator, and get James' fixes
-- integrate some student projects [SB]
-- add Li & Roth question classification data? [SB]
-- port more of the NLTK corpus readers [SB]
++ upgrade CD-ROM distro to Python 2.4.2, including webpage instructions
++ PCFG grammar induction added, short discussion in PCFG tutorial [SB]
++ YCOE corpus reader [SB]
++ improve invocation of Brill tagger
++ add some student projects to the contrib area [SB]
 
 -----------------------
 Version 0.7 (December?)
 -----------------------
 
+- add Li & Roth question classification data? [SB]
+- port more of the NLTK corpus readers [SB]
+- expand coverage of Brazilian Portuguese translations [TT]
+- consecutive numbering of examples in a chapter?
+- better explanation of left corner parsing in parse.txt [EK]
+- port MXTerminator, and get James' fixes
+- document recommended methods for saving models (pickle, shelve) [SB]
+- incorporate Speer's feature-based parser
+- fix misc.quicksort [SB]
+- add wordnet/pywordnet to distribution, example of interface in tutorial [SB]
+- interpolated and backoff language models [SB]
 - write feature-based syntax chapter, incl semantics [EK]
 - add lambda semantics to Speer's feature-based parse package [EK]
 - get epydoc docstrings to compile cleanly [EL]
@@ -37,6 +39,7 @@ Version 0.7 (December?)
 - single PDF aggregate [SB]
 - marshalling [SB/TT]
 - integrate more student projects [SB]
+- make more use of sidebars
 
 -------------
 Uncategorized
