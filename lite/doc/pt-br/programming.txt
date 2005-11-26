@@ -104,19 +104,9 @@ Listas podem ser concatenadas, ordenadas e invertidas, como podemos ver abaixo:
   ['sleep', 'ideas', 'green', 'furiously', 'colourless']
 
 .. Note:: Se acessarmos os elementos individuais da lista acima (todos strings), o
-   resultado da concatenação será diferente:
-
-   >>> b[2] + b[1]
-   'greenideas'
-
+   resultado da concatenação será diferente: ``b[2] + b[1] = 'greenideas'``
    Isto ocorre porque ``b[2]`` não é uma lista, mas sim um *elemento* de uma lista,
-   neste caso uma string. Eis outro exemplo:
-
-   >>> c = [1,2,3,4,5]
-   >>> c[2] + c[1]
-   5
-
-   Assim, o comportamento deste operador ``+`` depende do tipo de seus argumentos.
+   neste caso uma string.
 
 Podemos utilizar a sintaxe ``for item in list`` (do inglês, "para item na lista") para
 *iterate* ao longo dos itens de uma lista. No fragmento abaixo, iterate em cada uma
