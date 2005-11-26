@@ -1,4 +1,4 @@
-.. |version| replace:: 0.5
+.. |version| replace:: 0.6
 
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |forall| unicode:: U+2200 .. for all
