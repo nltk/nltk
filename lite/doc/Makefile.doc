@@ -31,14 +31,17 @@ usage:
 	@echo "    make errs        -- Run doctest to generate .errs files"
 	@echo "    make clean       -- Remove all built files"
 
-all: $(HTML) $(PDF)
+all: $(HTML) $(PDF) clean_up
 html: $(HTML)
 pdf: $(PDF)
 errs: $(ERRS)
 	ls -l $(ERRS)
 
 clean:
-	rm -f $(PDF) $(HTML) $(ERRS) *.tex *.log *.aux
+	rm -f $(PDF) $(HTML) $(ERRS) *.tex *.log *.aux *.out *.errs
+
+clean_up:
+	rm -f *.log *.aux *.tex *.out *.errs
 
 .txt.html:
 	$(RST2HTML) --stylesheet-path=$(CSS_STYLESHEET_PATH) $< > $@
