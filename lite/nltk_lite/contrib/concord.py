@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Utility functions
+# Natural Language Toolkit: Concordance System
 #
 # Copyright (C) 2005 University of Melbourne
 # Author: Peter Spiller
