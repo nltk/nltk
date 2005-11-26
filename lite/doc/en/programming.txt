@@ -245,15 +245,15 @@ substituting and searching within strings.
 
   >>> import re
   >>> from nltk_lite.utilities import re_show
-  >>> s = "colourless green ideas sleep furiously"
+  >>> sent = "colourless green ideas sleep furiously"
 
 We use a utility function ``re_show`` to show how regular expressions
 match against substrings.  First we search for all instances of a particular
 character or character sequence:
 
-  >>> re_show('l', s)
+  >>> re_show('l', sent)
   co{l}our{l}ess green ideas s{l}eep furious{l}y
-  >>> re_show('green', s)
+  >>> re_show('green', sent)
   colourless {green} ideas sleep furiously
 
 Now we can perform substitutions.  In the first instance we replace
@@ -261,18 +261,18 @@ all instances of ``l`` with ``s``.  Note that this generates a string
 as output, and doesn't modify the original string.  Then we replace
 any instances of ``green`` with ``red``.
 
-  >>> re.sub('l', 's', s)
+  >>> re.sub('l', 's', sent)
   'cosoursess green ideas sseep furioussy'
-  >>> re.sub('green', 'red', s)
+  >>> re.sub('green', 'red', sent)
   'colourless red ideas sleep furiously'
 
 So far we have only seen simple patterns, consisting of individual
 characters or sequences of characters.  However, regular expressions can
 also contain special syntax, such as ``|`` for disjunction, e.g.:
 
-  >>> re_show('(green|sleep)', s)
+  >>> re_show('(green|sleep)', sent)
   colourless {green} ideas {sleep} furiously
-  >>> re.findall('(green|sleep)', s)
+  >>> re.findall('(green|sleep)', sent)
   ['green', 'sleep']
 
 We can also disjoin individual characters.  For example,
@@ -281,22 +281,22 @@ that is, any vowel.  The expression ``[^aeiou]`` matches anything
 that is not a vowel.  In the following example, we match sequences
 consisting of non-vowels followed by vowels.
 
-  >>> re_show('[^aeiou][aeiou]', s)
+  >>> re_show('[^aeiou][aeiou]', sent)
   {co}{lo}ur{le}ss g{re}en{ i}{de}as s{le}ep {fu}{ri}ously
-  >>> re.findall('[^aeiou][aeiou]', s)
+  >>> re.findall('[^aeiou][aeiou]', sent)
   ['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
 
 We can put parentheses around parts of an expression in order to
 generate structured results.  For example, here we see all those
 non-vowel characters which appear before a vowel:
 
-  >>> re.findall('([^aeiou])[aeiou]', s)
+  >>> re.findall('([^aeiou])[aeiou]', sent)
   ['c', 'l', 'l', 'r', ' ', 'd', 'l', 'f', 'r']
 
 We can even generate pairs (or *tuples*), which we may then go
 on and tabulate.
 
-  >>> re.findall('([^aeiou])([aeiou])', s)
+  >>> re.findall('([^aeiou])([aeiou])', sent)
   [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
 
 For an extended discussion of regular expressions, please see the
