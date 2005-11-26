@@ -247,11 +247,11 @@ separa as strings em palavras conforme os espaços:
 .. Note:: Por "espaço", não entendemos apenas o espaço entre palavras, mas
    também as tabulações e os finais de linha.
 
-.. Note:: A toquenização pode normalizar um texto, por exemplo mapeando
-   suas palavras para versões apenas com letra minúscula, expandindo
-   contrações e até mesmo extraíndo o radical de cada palavra, processo
-   este conhecido por "stemming". Um exemplo de stemming é listado
-   abaixo:
+A toquenização pode normalizar um texto, por exemplo mapeando suas
+palavras para versões apenas com letra minúscula, expandindo
+contrações e até mesmo extraíndo o radical de cada palavra, processo
+este conhecido por "stemming". Um exemplo de stemming é listado
+abaixo:
 
   >>> text = 'stemming can be fun and exciting'
   >>> tokens = tokenize.whitespace(text)
