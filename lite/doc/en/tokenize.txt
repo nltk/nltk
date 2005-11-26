@@ -239,9 +239,9 @@ splits strings into words at whitespaces::
 .. Note:: By "whitespace", we mean not only interword space, but
    also tab and line-end.
 
-.. Note:: Tokenization may normalize the text, mapping all words to
-   lowercase, expanding contractions, and possibly even stemming the
-   words.  An example for stemming is shown below::
+Note that tokenization may normalize the text, mapping all words to lowercase,
+expanding contractions, and possibly even stemming the words.  An
+example for stemming is shown below::
 
      >>> text = 'stemming can be fun and exciting'
      >>> tokens = tokenize.whitespace(text)
