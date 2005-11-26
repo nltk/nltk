@@ -206,7 +206,7 @@ Simple Taggers
 
 In this section we consider three simple taggers.  They all process
 the input tokens one by one, adding a tag to each token.  In each case
-they being with tokenized text.  We can easily create a sample of
+they begin with tokenized text.  We can easily create a sample of
 tokenized text as follows::
 
   >>> from nltk_lite import tokenize

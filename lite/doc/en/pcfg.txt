@@ -772,10 +772,8 @@ three parse trees in the Penn Treebank corpus:
    in various ways.  The ``nltk_lite.parse.treetransforms`` module
    supports binarization (Chomsky Normal Form), parent annotation,
    Markov order-N smoothing, and unary collapsing.  This information
-   can be accessed as follows:
-
-    >>> from nltk_lite.parse import treetransforms
-    >>> help(treetransforms)
+   can be accessed by importing ``treetransforms`` from
+   ``nltk_lite.parse``, then calling ``help(treetransforms)``.
 
 
 ---------------
