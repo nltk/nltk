@@ -11,8 +11,6 @@ from tree import *
 from nltk_lite import tokenize
 from nltk_lite.parse import AbstractParse
 from types import *
-#
-from nltk.chktype import chktype
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
@@ -624,7 +622,6 @@ class SteppingRecursiveDescent(RecursiveDescent):
         @param grammar: The new grammar.
         @type grammar: C{CFG}
         """
-        assert chktype(1, grammar, cfg.Grammar)
         self._grammar = grammar
         
 ##//////////////////////////////////////////////////////

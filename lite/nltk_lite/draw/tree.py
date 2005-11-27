@@ -757,7 +757,7 @@ class TreeWidget(CanvasWidget):
 
 class TreeView:
     def __init__(self, *trees):
-        from nltk.draw import CanvasFrame
+        from nltk_lite.draw import CanvasFrame
         from math import sqrt, ceil
     
         self._trees = trees
