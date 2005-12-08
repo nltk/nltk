@@ -1,18 +1,5 @@
 KEY: "-" = not done; "~" = started; "+" = done; "?" = maybe
 
--------------------------
-Version 0.6 (late November)
--------------------------
-
-+ number sections [SB]
-+ further expand fieldwork tutorial [SB]
-+ PDF versions of tutorials [SB]
-+ upgrade CD-ROM distro to Python 2.4.2, including webpage instructions
-+ PCFG grammar induction added, short discussion in PCFG tutorial [SB]
-+ YCOE corpus reader [SB]
-+ improve invocation of Brill tagger
-+ add some student projects to the contrib area [SB]
-
 -----------------------
 Version 0.7 (December?)
 -----------------------
@@ -22,7 +9,6 @@ Version 0.7 (December?)
 - expand coverage of Brazilian Portuguese translations [TT]
 - consecutive numbering of examples in a chapter?
 - better explanation of left corner parsing in parse.txt [EK]
-- port MXTerminator, and get James' fixes
 - document recommended methods for saving models (pickle, shelve) [SB]
 - incorporate Speer's feature-based parser
 - fix misc.quicksort [SB]
@@ -32,14 +18,26 @@ Version 0.7 (December?)
 - add lambda semantics to Speer's feature-based parse package [EK]
 - get epydoc docstrings to compile cleanly [EL]
 - port Cohn's clusterer [SB]
-- wordnet interface
-- XML processing in Python [SB]
+- port NLTK feature detectors [SB]
+- marshalling [SB/TT]
+- integrate more student projects [SB]
+  - TAG, textcat, paradigms
+- make more use of sidebars
+- add Chinese treebank and corpus reader
+- add presidential speeches corpus and tutorial example [SB]
+- decision list classifier
+
+----------------------
+Version 0.8 (January?)
+----------------------
+
 - add OLAC support: read and write an OLAC static repository [SB]
 - urllib [SB]
 - single PDF aggregate [SB]
-- marshalling [SB/TT]
-- integrate more student projects [SB]
-- make more use of sidebars
+- XML processing in Python [SB]
+- port MXTerminator, and get James' fixes
+- collocation tutorial or in prog chapter
+- collocation support (chi-sq, PMI, spearman rank correlation, etc)
 
 -------------
 Uncategorized
@@ -57,7 +55,6 @@ Most of these require code and tutorials:
 - material on writing (adapting?) a corpus reader
 - explanation of functions of distribution scripts and the parameters that scripts in the distribution take
 - add short section about formatting output - tabulation etc
-- collocations
 - lexical semantics
 - statistical parsing
 - information extraction (e.g. from biomedical literature)
@@ -101,4 +98,17 @@ Version 0.5 (Monday 26 September)
 + add introductory nltk examples to first section of intro chapter [SB]
 + expand fieldwork tutorial [SB]
 + expand coverage of Brazilian Portuguese translations [TT]
+
+-------------------------
+Version 0.6 (late November)
+-------------------------
+
++ number sections [SB]
++ further expand fieldwork tutorial [SB]
++ PDF versions of tutorials [SB]
++ upgrade CD-ROM distro to Python 2.4.2, including webpage instructions [SB]
++ PCFG grammar induction added, short discussion in PCFG tutorial [SB]
++ YCOE corpus reader [SB]
++ improve invocation of Brill tagger [SB]
++ add some student projects to the contrib area [SB]
 
