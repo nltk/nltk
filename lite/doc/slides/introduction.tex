@@ -1,0 +1,484 @@
+% for slides
+\documentclass[presentation]{beamer}
+
+% for handout
+% \documentclass[handout]{beamer}
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{4 on 1}[a4paper,landscape,scale=0.9]
+
+\mode<handout>
+{
+  \usetheme{default}
+  \usepackage{fullpage}
+  \usepackage{pgf}
+  \usepackage{hyperref}
+  \setjobnamebeamerversion{introduction.beamer}
+}
+
+\mode<article>
+{
+  \usepackage{fullpage}
+  \usepackage{pgf}
+  \usepackage{hyperref}
+  \setjobnamebeamerversion{introduction.beamer}
+}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  \setbeamercovered{transparent}
+  % If you wish to uncover everything in a step-wise fashion, uncomment
+  % the following command: 
+  \beamerdefaultoverlayspecification{<+->}
+
+}
+
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{alltt}
+
+\title{NLTK: Introduction to Natural Language Processing}
+
+\author{Steven Bird}
+\institute{
+  Department of Computer Science\\
+  University of Melbourne, AUSTRALIA
+  \and
+  Linguistic Data Consortium\\
+  Department of Linguistics\\
+  University of Pennsylvania, USA
+}
+
+\date{\today}
+
+\subject{Natural Language Toolkit}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Why Language Processing is Easy}
+
+\begin{frame}
+  \frametitle{Questions}
+  \begin{itemize}
+    \item How do we write programs to manipulate natural language?
+    \item What questions about language could we answer?
+    \item How would the programs work?
+    \item What data would they need?
+    \item First: what do they look like?
+  \end{itemize}
+\end{frame}
+
+\subsection{Searching Pronunciation Dictionary}
+
+\begin{frame}[fragile]
+  \frametitle{Searching Pronunciation Dictionary}
+  \scriptsize
+
+\begin{verbatim}
+    >>> from nltk_lite.corpora import cmudict
+    >>> from string import join
+    >>> for word, num, pron in cmudict.raw():
+    ...     stress_pattern = join(c for c in join(pron) if c in "012")
+    ...     if stress_pattern.endswith("1 0 0 0 0"):
+    ...         print word, "/", join(pron)
+    ACCUMULATIVELY / AH0 K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+    AGONIZINGLY / AE1 G AH0 N AY0 Z IH0 NG L IY0
+    CARICATURIST / K EH1 R AH0 K AH0 CH ER0 AH0 S T
+    CIARAMITARO / CH ER1 AA0 M IY0 T AA0 R OW0
+    CUMULATIVELY / K Y UW1 M Y AH0 L AH0 T IH0 V L IY0
+    DEBENEDICTIS / D EH1 B EH0 N AH0 D IH0 K T AH0 S
+    DELEONARDIS / D EH1 L IY0 AH0 N AA0 R D AH0 S
+    FORMALIZATION / F AO1 R M AH0 L AH0 Z EY0 SH AH0 N
+    GIANNATTASIO / JH AA1 N AA0 T AA0 S IY0 OW0
+    HYPERSENSITIVITY / HH AY2 P ER0 S EH1 N S AH0 T IH0 V AH0 T IY0
+    IMAGINATIVELY / IH2 M AE1 JH AH0 N AH0 T IH0 V L IY0
+    INSTITUTIONALIZES / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z AH0 Z
+    INSTITUTIONALIZING / IH2 N S T AH0 T UW1 SH AH0 N AH0 L AY0 Z IH0 NG
+    MANGIARACINA / M AA1 N JH ER0 AA0 CH IY0 N AH0
+    SPIRITUALIST / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T
+    SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S T S
+    SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S S
+    SPIRITUALISTS / S P IH1 R IH0 CH AH0 W AH0 L AH0 S
+    SPIRITUALLY / S P IH1 R IH0 CH AH0 W AH0 L IY0
+    UNALIENABLE / AH0 N EY1 L IY0 EH0 N AH0 B AH0 L
+    UNDERKOFFLER / AH1 N D ER0 K AH0 F AH0 L ER0
+\end{verbatim}
+\end{frame}
+
+\subsection{Minimal Sets from Lexicon}
+\begin{frame}[fragile]
+  \frametitle{Minimal Sets from Lexicon}
+  \scriptsize
+\begin{verbatim}
+    >>> from nltk_lite.corpora import shoebox
+    >>> from nltk_lite.utilities import MinimalSet
+    >>> length, position, min = 4, 1, 3
+    >>> lexemes = [field[1].lower() for entry in shoebox.raw('rotokas')
+    ...		   for field in entry if field[0] == 'lx']
+    >>> ms = MinimalSet()
+    >>> for lex in lexemes:
+    ...     if len(lex) == length:
+    ...         context = lex[:position] + '_' + lex[position+1:]
+    ...         target = lex[position]
+    ...         ms.add(context, target, lex)
+    >>> for context in ms.contexts(3):
+    ...     for target in ms.targets():
+    ...         print "%-4s" % ms.display(context, target, "-"),
+    ...     print
+    kasi -    kesi kusi kosi
+    kava -    -    kuva kova
+    karu kiru keru kuru koru
+    kapu kipu -    -    kopu
+    karo kiro -    -    koro
+    kari kiri keri kuri kori
+    kapa -    kepa -    kopa
+    kara kira kera -    kora
+    kaku -    -    kuku koku
+    kaki kiki -    -    koki
+\end{verbatim}
+\end{frame}
+
+
+\subsection{Modelling Text Genres}
+\begin{frame}[fragile]
+  \frametitle{Modelling Text Genres}
+  \scriptsize
+\begin{verbatim}
+    >>> from nltk_lite.corpora import genesis
+    >>> from nltk_lite.probability import ConditionalFreqDist
+    >>> from nltk_lite.utilities import print_string
+    >>> cfdist = ConditionalFreqDist()
+    >>> prev = None
+    >>> for word in genesis.raw():
+    ...     word = word.lower()
+    ...     cfdist[prev].inc(word)
+    ...     prev = word
+    >>> words = []
+    >>> prev = 'lo,'
+    >>> for i in range(99):
+    ...     words.append(prev)
+    ...     for word in cfdist[prev].sorted_samples():
+    ...         if word not in words:
+    ...             break
+    ...     prev = word
+    >>> print_string(join(words))
+    lo, it came to the land of his father and he said, i will not be a
+    wife unto him, saying, if thou shalt take our money in their kind,
+    cattle, in thy seed after these are my son from off any more than all
+    that is this day with him into egypt, he, hath taken away unawares to
+    pass, when she bare jacob said one night, because they were born two
+    hundred years old, as for an altar there, he had made me out at her
+    pitcher upon every living creature after thee shall come near her:
+    yea,
+\end{verbatim}
+\end{frame}
+
+\subsection{Exploring Syntax}
+\begin{frame}[fragile]
+  \frametitle{Exploring Syntax}
+  \scriptsize
+\begin{verbatim}
+    >>> from nltk_lite.corpora import treebank
+    >>> from string import join
+    >>> def vp_conj(tree):
+    ...     if tree.node == 'VP' and len(tree) == 3 and tree[1].leaves() == ['but']:
+    ...         return True
+    ...     else:
+    ...         return False
+    >>> for tree in treebank.parsed():
+    ...     for vp1,conj,vp2 in tree.subtrees(vp_conj):
+    ...         print join(child.node for child in vp1), "*BUT*", join(child.node for child in vp2)
+    VBP ADVP-TMP PP-PRD PP *BUT* VBP VP
+    VBZ VP *BUT* VBZ NP PP-CLR
+    PP-TMP VBZ VP *BUT* VBD ADVP-TMP S
+    VBZ SBAR *BUT* VBZ SBAR
+    VBD SBAR *BUT* VBD RB VP
+    VBD SBAR *BUT* VBD S
+    VBP NP-PRD *BUT* VBP RB ADVP-TMP VP
+    VBN PP PP-TMP *BUT* ADVP-TMP VBN NP
+    MD VP *BUT* VBZ NP SBAR-ADV
+    VBD ADVP-CLR *BUT* VBD NP
+    VBN NP PP *BUT* VBN NP PP SBAR-PRP
+    VBD NP *BUT* MD RB VP
+    VBD NP PP-CLR *BUT* VBD PRT NP
+    VBZ S *BUT* MD VP
+\end{verbatim}
+\end{frame}
+
+\section{The Language Challenge}
+
+\subsection{The Richness of Language}
+
+\begin{frame}
+\frametitle{The Richness of Language}
+\begin{itemize}
+\item basic needs and lofty aspirations; technical know-how and
+  flights of fantasy
+\item ideas are shared over great separations of distance and time
+\end{itemize}
+
+\begin{enumerate}
+\item Overhead the day drives level and grey, hiding the sun by a flight
+   of grey spears.  (William Faulkner, *As I Lay Dying*, 1935)
+\item When using the toaster please ensure that the exhaust fan is turned
+   on. (sign in dormitory kitchen)
+\item Amiodarone weakly inhibited CYP2C9, CYP2D6, and CYP3A4-mediated
+   activities with Ki values of 45.1-271.6 |mu|\M (Medline)
+\item Iraqi Head Seeks Arms (spoof headline, ``http://www.snopes.com/humor/nonsense/head97.htm``
+\item The earnest prayer of a righteous man has great power and wonderful
+   results. (James 5:16b)
+\item Twas brillig, and the slithy toves did gyre and gimble in the wabe
+   (Lewis Carroll, *Jabberwocky*, 1872)
+\item There are two ways to do this, AFAIK :smile:  (internet discussion archive)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Disciplines Studying Language}
+\begin{enumerate}
+\item linguistics
+\item translation
+\item literary criticism
+\item philosophy
+\item anthropology
+\item psychology
+\item law
+\item hermeneutics
+\item forensics
+\item telephony
+\item pedagogy
+\item archaeology
+\item cryptanalysis
+\item speech pathology
+\end{enumerate}
+\end{frame}
+
+\subsection{Language in Computing}
+
+\begin{frame}
+\frametitle{Language in Computing}
+\begin{itemize}
+\item new waves of computing technology: new challenges for language
+  analysis
+\item early machine languages
+\item high-level programming languages, automatically parsed and
+  interpreted
+\item databases: e.g. \verb|SELECT age FROM employee|
+\item ubiquitous computing
+\item multimodality: text, speech, dialogue, pen gestures
+\item building new systems for natural linguistic interaction
+  requires sophisticated language analysis
+\end{itemize}
+\end{frame}
+
+\subsection{Language on the Web}
+\begin{frame}
+\frametitle{Language on the Web}
+\begin{itemize}
+\item explosion of text and multimedia content
+\item large and growing fraction of work and leisure time
+\item questions:
+  \begin{enumerate}
+  \item \textit{What tourist sites can I visit between Philadelphia and Pittsburgh on a
+    limited budget?}
+  \item \textit{What do expert critics say about Canon digital
+      cameras?}
+  \item \textit{What predictions about the steel market were made by
+      credible commentators in the past week?}
+  \end{enumerate}
+\item requires a combination of language processing tasks, e.g.
+  information extraction, inference, and summarisation
+\item scale: high-performance computing
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Web as Corpus}
+
+\begin{verbatim}
+Absolutely vs Definitely (Liberman 2005, LanguageLog.org)
+
+Google hits  adore    love     like     prefer
+===========  =======  =======  =======  =================
+absolutely   289,000  905,000  16,200   644
+definitely   1,460    51,000   158,000  62,600
+ratio        198/1    18/1     1/10     1/97
+===========  =======  =======  =======  =================
+
+http://itre.cis.upenn.edu/~myl/languagelog/archives/002022.html
+\end{verbatim}
+\end{frame}
+
+\subsection{Natural Language Processing}
+
+\begin{frame}
+\frametitle{Natural Language Processing}
+\begin{itemize}
+\item experiencing rapid growth as theories and methods deployed in
+new technologies
+\item people from many fields should have a working knowledge of NLP
+\item academia: from humanities computing and corpus linguistics through to computer science and
+artificial intelligence
+\item industry: human-computer interaction, business information analysis, and web
+software development
+\item NLTK contains a carefully-balanced selection of theoretical foundations and
+    practical application, equips people to:
+  \begin{enumerate}
+  \item work with large datasets
+  \item create robust models of linguistic phenomena
+  \item deploy them in working language technologies
+  \end{enumerate}
+\item importance of practical experience in language processing
+\item download NLTK from \texttt{nltk.sourceforge.net} and install
+\end{itemize}
+\end{frame}
+
+\section{The Python Programming Language}
+
+-------------------------------
+The Python Programming Language
+-------------------------------
+
+NLTK is written in the Python language, a simple yet powerful
+scripting language with excellent functionality for processing
+linguistic data.  Python can be downloaded for free from
+``http://www.python.org/``.  Here is a five-line Python program which takes
+text input and prints all the words ending in ``ing``::
+
+ import sys                            # load the system library
+ for line in sys.stdin.readlines():    # for each line of input
+     for word in line.split():         # for each word in the line
+         if word.endswith('ing'):      # does the word end in 'ing'?
+             print word                # if so, print the word
+
+This program illustrates some of the main features of Python.  First,
+whitespace is used to *nest* lines of code, thus the line starting
+with ``if`` falls inside the scope of the previous line starting with
+``for``, so the ``ing`` test is performed for each word.  Second,
+Python is *object-oriented*; each variable is an entity which has
+certain defined attributes and methods.  For example, ``line`` is more
+than a sequence of characters.  It is a string object that has a
+method (or operation) called ``split`` that we can use to break a line
+into its words.  To apply a method to an object, we give the object
+name, followed by a period, followed by the method name.  Third,
+methods have *arguments* expressed inside parentheses.  For instance,
+``split`` had no argument because we were splitting the string
+wherever there was white space.  To split a string into sentences
+delimited by a period, we could write ``split('.')``.  Finally, and
+most importantly, Python is highly readable, so much so that it is
+fairly easy to guess what the above program does even if you have
+never written a program before.
+
+This readability of Python is striking in comparison to other
+languages which have been used for NLP, such as Perl.  Here is a Perl
+program which prints words ending in ``ing``::
+
+  while (<>) {                          # for each line of input
+      foreach my $word (split) {        # for each word in a line
+          if ($word =~ /ing$/) {        # does the word end in 'ing'?
+              print "$word\n";          # if so, print the word
+          }
+      }
+  }
+
+Like Python, Perl is a scripting language.  However, its syntax is
+obscure.  For instance, it is difficult to guess what kind of entities
+are represented by: ``<>``, ``$``, ``my``, and ``split``.  We
+agree that "it is quite easy in Perl to write programs that simply
+look like raving gibberish, even to experienced Perl programmers"
+(Hammond 2003:47).  Having used Perl ourselves in research and
+teaching since the 1980s, we have found that Perl programs of any size
+are inordinately difficult to maintain and re-use.  Therefore we
+believe Perl is not an optimal choice of programming language for
+linguists or for language processing.  Several other languages are
+used for NLP, including Prolog, Java, LISP and C.  In the preface we
+provided translations of our five-line Python program into these
+and other languages, and invite you to compare them for readability.
+
+We chose Python as the implementation language for NLTK because it has
+a shallow learning curve, its syntax and semantics are transparent,
+and it has good string-handling functionality.  As a scripting
+language, Python facilitates interactive exploration.  As an
+object-oriented language, Python permits data and methods to be
+encapsulated and re-used easily.  Python comes with an extensive
+standard library, including components for graphical programming,
+numerical processing, and web data processing.
+
+NLTK defines a basic infrastructure that can be used to build NLP
+programs in Python.  It provides:
+
+* Basic classes for representing data relevant to natural language
+  processing.
+
+* Standard interfaces for performing tasks, such
+  as tokenization, tagging, and parsing.
+
+* Standard implementations for each task, which
+  can be combined to solve complex problems.
+
+* Extensive documentation, including tutorials
+  and reference documentation.
+
+---------------
+Further Reading
+---------------
+
+The Association for Computational Linguistics (ACL) is the peak
+professional body in NLP.  Its journal and conference proceedings,
+approximately 10,000 articles, are available online with a full-text
+search interface, via ``http://www.aclweb.org/anthology/``.
+
+Several NLP systems have online interfaces that you might like to
+experiment with, e.g.:
+
+* WordNet: ``http://wordnet.princeton.edu/``
+* Translation: ``http://world.altavista.com/``
+* ChatterBots: ``http://www.loebner.net/Prizef/loebner-prize.html``
+* Question Answering: ``http://www.answerbus.com/``
+* Summarisation: ``http://tangra.si.umich.edu/clair/md/demo.cgi``
+
+Useful websites with substantial information about NLP:
+``http://www.hltcentral.org/``, ``http://www.lt-world.org/``,
+``http://www.aclweb.org/``, ``http://www.elsnet.org/``.  The ACL
+website contains an overview of computational linguistics, including
+copies of introductory chapters from recent textbooks, at
+``http://www.aclweb.org/archive/what.html``.
+
+
+..    Key papers that cover historical developments, ...
+
+Acknowledgements: The dialogue example is taken from Bob Carpenter and
+Jennifer Chu-Carroll's ACL-99 Tutorial on Spoken Dialogue Systems; the
+following people kindly provided program samples: Tim Baldwin, Trevor
+Cohn, Rod Farmer, Edward Ivanovic, Olivia March, and Lars Yencken.
+
+NLP Textbooks and Surveys
+-------------------------
+
+This section will give a brief overview of other NLP textbooks, and
+field-wide surveys *(to be written).*
+
+* Recent textbooks: Manning and Schutze, Jurafsky and Martin.
+
+* Older textbooks: Allen (1995), Charniak (1993), Grishman.
+  Prolog-based: Covington (1994), Gazdar and Mellish (1989)
+  Pereira and Shieber; Mathematical foundations: Partee et al.
+
+* Recent field-wide surveys: Mitkov, Dale et al, HLT Survey.
+
+
+
+
+\end{document}
