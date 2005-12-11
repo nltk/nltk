@@ -1,5 +1,5 @@
 % for slides
-\documentclass[presentation]{beamer}
+\documentclass{beamer}
 
 % for handout
 % \documentclass[handout]{beamer}
@@ -60,7 +60,7 @@
 
 \begin{document}
 
-\section{Introduction}
+\section{Introduction: Programming Basics}
 
 \begin{frame}
   \titlepage
@@ -68,23 +68,23 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Introduction}
-
 \begin{frame}
-  \frametitle{Introduction
+  \frametitle{Introduction}
   \begin{itemize}
     \item non-technical overview
     \item many working program fragments
     \item try them for yourself as we go along
     \item many online tutorials (see \url{www.python.org})
+    \item Textbook: Zelle, John (2004) \textit{Python Programming: An Introduction
+        to Computer Science}
   \end{itemize}
 \end{frame}
 
-\subsection{Processing Lists and Strings}
+\subsection{Lists}
 
 \begin{frame}[fragile]
   \frametitle{Defining Lists}
-  \scriptsize
+  \small
 
 \begin{itemize}
 \item list: ordered sequence of items
@@ -104,12 +104,13 @@
   >>> a
   ['colourless', 'green', 'ideas']
 \end{verbatim}
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}
   \frametitle{Simple List Operations}
-  \scriptsize
+  \small
 
 \begin{enumerate}
 \item length: \texttt{len()}
@@ -126,9 +127,11 @@
 \end{enumerate}
 \end{frame}
 
+\subsection{Strings}
+
 \begin{frame}
   \frametitle{Simple String Operations}
-  \scriptsize
+  \small
 
 \begin{enumerate}
 \item joining: \texttt{c = ' '.join(b)}
@@ -140,9 +143,7 @@
 \end{enumerate}
 \end{frame}
 
-\section{Dictionaries}
-
-\subsection{Defining and Accessing}
+\subsection{Dictionaries}
 
 \begin{frame}[fragile]
   \frametitle{Dictionaries}
@@ -172,8 +173,6 @@
 \end{itemize}
 \end{frame}
 
-\subsection{Iteration}
-
 \begin{frame}[fragile]
 \frametitle{Dictionaries: Iteration}
 
@@ -186,14 +185,15 @@
 \begin{itemize}
 \item rule of thumb: dictionary entries are like variable names
 \item \textit{create} them by assigning to them\\
-  \texttt{x = 2} (variable), \texttt{d['x'] = 2}} (dictionary entry)
+  \verb|x = 2| (variable), \verb|d['x'] = 2| (dictionary entry)
 \item \textit{access} them by reference\\
-  \texttt{print x} (variable), \texttt{print d['x']}} (dictionary entry)
+  \verb|print x| (variable), \verb|print d['x']| (dictionary entry)
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Dictionaries: Example: Counting Word Occurrences}
+\small
 
 \begin{verbatim}
   >>> from nltk_lite.corpora import gutenberg
@@ -220,166 +220,200 @@ Now inspect the dictionary:
 
 \section{Regular Expressions}
 
--------------------
-Regular Expressions
--------------------
+\subsection{Introduction}
 
-Finally, we look at Python's regular expression module ``re``, for
-substituting and searching within strings.
+\begin{frame}
+\frametitle{Regular Expressions}
+\begin{itemize}
+\item string matching
+\item substitution
+\item patterns, classes
+\item Python's regular expression module: \texttt{re}
+\item NLTK's utility function: \texttt{re\_show}
+\end{itemize}
+\end{frame}
 
+\subsection{Matching and Substituting}
+
+\begin{frame}[fragile]
+\frametitle{Loading module, Matching}
+
+\begin{itemize}
+\item Set up:
+
+\begin{verbatim}
   >>> import re
   >>> from nltk_lite.utilities import re_show
   >>> sent = "colourless green ideas sleep furiously"
+\end{verbatim}
 
-We use a utility function ``re_show`` to show how regular expressions
-match against substrings.  First we search for all instances of a particular
-character or character sequence:
+\item Matching:
 
+\begin{verbatim}
   >>> re_show('l', sent)
   co{l}our{l}ess green ideas s{l}eep furious{l}y
   >>> re_show('green', sent)
   colourless {green} ideas sleep furiously
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-Now we can perform substitutions.  In the first instance we replace
-all instances of ``l`` with ``s``.  Note that this generates a string
-as output, and doesn't modify the original string.  Then we replace
-any instances of ``green`` with ``red``.
+\begin{frame}[fragile]
+\frametitle{Substitutions}
 
+\begin{itemize}
+\item E.g. replace all instances of \texttt{l} with \texttt{s}.
+\item Creates an output string (doesn't modify input)
+
+\begin{verbatim}
   >>> re.sub('l', 's', sent)
   'cosoursess green ideas sseep furioussy'
+\end{verbatim}
+
+\item Work on substrings (NB not words)
+
+\begin{verbatim}
   >>> re.sub('green', 'red', sent)
   'colourless red ideas sleep furiously'
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-So far we have only seen simple patterns, consisting of individual
-characters or sequences of characters.  However, regular expressions can
-also contain special syntax, such as ``|`` for disjunction, e.g.:
+\subsection{More Complex Patterns}
 
+\begin{frame}[fragile]
+\frametitle{More Complex Patterns}
+
+\begin{itemize}
+\item Disjunction:
+
+\begin{verbatim}
   >>> re_show('(green|sleep)', sent)
   colourless {green} ideas {sleep} furiously
   >>> re.findall('(green|sleep)', sent)
   ['green', 'sleep']
+\end{verbatim}
 
-We can also disjoin individual characters.  For example,
-``[aeiou]`` matches any of ``a``, ``e``, ``i``, ``o``, or ``u``,
-that is, any vowel.  The expression ``[^aeiou]`` matches anything
-that is not a vowel.  In the following example, we match sequences
-consisting of non-vowels followed by vowels.
+\item Character classes, e.g. non-vowels followed by vowels:
 
+\begin{verbatim}
   >>> re_show('[^aeiou][aeiou]', sent)
   {co}{lo}ur{le}ss g{re}en{ i}{de}as s{le}ep {fu}{ri}ously
   >>> re.findall('[^aeiou][aeiou]', sent)
   ['co', 'lo', 'le', 're', ' i', 'de', 'le', 'fu', 'ri']
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-We can put parentheses around parts of an expression in order to
-generate structured results.  For example, here we see all those
-non-vowel characters which appear before a vowel:
+\subsection{Structured Results}
 
+\begin{frame}[fragile]
+\frametitle{Structured Results}
+\begin{itemize}
+\item Select a sub-part to be returned
+\item e.g. non-vowel characters which appear before a vowel:
+
+\begin{verbatim}
   >>> re.findall('([^aeiou])[aeiou]', sent)
   ['c', 'l', 'l', 'r', ' ', 'd', 'l', 'f', 'r']
+\end{verbatim}
 
-We can even generate pairs (or *tuples*), which we may then go
-on and tabulate.
+\item generate \textit{tuples}, for later tabulation
 
+\begin{verbatim}
   >>> re.findall('([^aeiou])([aeiou])', sent)
   [('c', 'o'), ('l', 'o'), ('l', 'e'), ('r', 'e'), (' ', 'i'), ('d', 'e'), ('l', 'e'), ('f', 'u'), ('r', 'i')]
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-For an extended discussion of regular expressions, please see the
-regular expression tutorial.
+\section{Accessing Data and Programs}
 
----------------------------
-Accessing Files and the Web
----------------------------
+\subsection{Accessing Files}
 
-It is easy to access local files, and web-pages in Python.  Here are some
-examples.  (You will need to create a file called ``corpus.txt``
-before you can open it for reading.)
+\begin{frame}[fragile]
+\frametitle{Accessing Files and the Web}
+\begin{itemize}
+\item accessing local files (create \texttt{corpus.txt} first)
 
+\begin{verbatim}
   >>> print open('corpus.txt').read() 
   Hello world.  This is a test file.
+\end{verbatim}
 
+\item Accessing URLs on the Web:
+
+\begin{verbatim}
   >>> from urllib import urlopen
   >>> page = urlopen("http://news.bbc.co.uk/").read()
-  >>> page = re.sub('<[^>]*>', '', page)   # strip HTML markup
-  >>> page = re.sub('\s+', ' ', page)      # strip whitespace
+  >>> page = re.sub('<[^>]*>', '', page)
+  >>> page = re.sub('\s+', ' ', page)
   >>> print page[:60]
    BBC NEWS | News Front Page News Sport Weather World Service
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
---------------
-Accessing NLTK
---------------
+\subsection{Accessing NLTK}
 
-NLTK consists of a set of Python *modules*, each of which defines
-classes and functions related to a single data structure or task.
-Before you can use a module, you must ``import`` its contents.  The
-simplest way to import the contents of a module is to use the ``from
-module import *`` command.  For example, to import the contents of the
-``nltk_lite.util`` module, which is discussed in this tutorial, type:
+\begin{frame}[fragile]
+\frametitle{Accessing NLTK}
 
-  >>> from nltk_lite.utilities import *
+\begin{itemize}
+\item modules: classes, functions
+\item data structures, algorithms
+\item importing, e.g. \texttt{from nltk\_lite.utilities import *}
+\item conflicts
+\item explicit naming: \texttt{from nltk\_lite.utilities import re\_show}
+\item higher level module import:
 
-A disadvantage of this style of import statement is that it does not
-specify what objects are imported; and it is possible that some of the
-import objects will unintentionally cause conflicts.  To avoid this
-disadvantage, you can explicitly list the objects you wish to import.
-For example, to import the ``re_show`` function from the
-``nltk_lite.util`` module, type::
-
-  >>> from nltk_lite.utilities import re_show
-
-Another option is to import the module itself, rather than
-its contents.  Now its contents can then be accessed
-using *fully qualified* dotted names:
-
+\begin{verbatim}
   >>> from nltk_lite import utilities
   >>> utilities.re_show('green', s)
   colourless {green} ideas sleep furiously
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-For more information about importing, see any Python textbook.
+\subsection{Accessing Corpora}
 
-NLTK is distributed with several corpora, listed in the introduction.
-Many of these corpora are supported by the NLTK ``corpora`` module.
-First we import the Gutenberg corpus (a selection of texts from
-the Project Gutenberg electronic text archive).
+\begin{frame}[fragile]
+\frametitle{Texts from Project Gutenberg}
 
+\begin{verbatim}
   >>> from nltk_lite.corpora import gutenberg
   >>> gutenberg.items
   ['austen-emma', 'austen-persuasion', 'austen-sense', 'bible-kjv', 'blake-poems', 'blake-songs', 'chesterton-ball', 'chesterton-brown', 'chesterton-thursday', 'milton-paradise', 'shakespeare-caesar', 'shakespeare-hamlet', 'shakespeare-macbeth', 'whitman-leaves']
-
-We access the text content using a special Python construct called an
-*iterator*.  It produces a stream of words, which we can access using
-the syntax ``for item in iterator``, as shown below:
-
   >>> count = 0
   >>> for word in gutenberg.raw('whitman-leaves'):
   ...     count += 1
   >>> print count
   154873
+\end{verbatim}
+\end{frame}
 
-NLTK-Lite also includes the Brown Corpus, the first million word,
-part-of-speech tagged electronic corpus of English, created in 1961 at
-Brown University.  Each of the sections ``a`` through ``r`` represents
-a different genre.
+\begin{frame}[fragile]
+\frametitle{Brown Corpus}
+\small
 
+\begin{verbatim}
   >>> from nltk_lite.corpora import brown
   >>> brown.items
   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
-
-We can extract individual sentences from the corpus iterator using the
-``extract()`` function:
-
   >>> from nltk_lite.corpora import extract
   >>> print extract(0, brown.raw())
   ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
-
-We can also access the tagged text using the ``brown.tagged()`` method:
-
   >>> print extract(0, brown.tagged())
   [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]
+\end{verbatim}
+\end{frame}
 
-NLTK-Lite includes a 10% fragment of the Wall Street Journal section
-of the Penn Treebank.  This can be accessed using ``treebank.raw()``
-for the raw text, and ``treebank.tagged()`` for the tagged text.
 
+\begin{frame}[fragile]
+\frametitle{Penn Treebank}
+\small
+
+\begin{verbatim}
   >>> from nltk_lite.corpora import treebank
   >>> print extract(0, treebank.parsed())
   (S:
@@ -398,32 +432,36 @@ for the raw text, and ``treebank.tagged()`` for the tagged text.
           (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
         (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
     (.: '.'))
+\end{verbatim}
+\end{frame}
 
+\section{Program Development}
 
--------------------
-Program Development
--------------------
+\subsection{Introduction}
 
-Programming is a skill which is acquired over several years of
-experience with a variety of programming languages and tasks.  Key
-high-level abilities are *algorithm design* and its manifestation in
-*structured programming*.  Key low-level abilities include familiarity
-with the syntactic constructs of the language, and knowledge of a
-variety of diagnostic methods for trouble-shooting a program which
-does not exhibit the expected behaviour.
+\begin{frame}
+\frametitle{Program Development}
+\begin{itemize}
+\item Algorithm Design
+\item Structured Programming
+\item Debugging
+\item Performance Tuning
+\end{itemize}
+\end{frame}
 
-Defining Functions
-------------------
+\subsection{Defining Functions}
 
-It often happens that part of a program needs to be used several times over.
-For example, suppose we were writing a program that needed to be able to form
-the plural of a singular noun, and that this needed to be done at various
-places during the program.  Rather than repeating the same code several times
-over, it is more efficient (and reliable) to localize this work inside a *function*.
-A function is a programming construct which takes one or more inputs, and produces
-an output.  In this case, we will take the singular noun as input, and generate a
-plural form as output:
+\begin{frame}[fragile]
+\frametitle{Defining Functions}
+\scriptsize
+\begin{itemize}
+\item part of a program needs to be used several times over
+\item e.g. form plural of singular noun, to be done in several places
+  in a program
+\item localize this work inside a \textit{function}
+\item also helps readability, reusability
 
+\begin{verbatim}
   >>> def plural(word):
   ...     if word[-1] == 'y':
   ...         return word[:-1] + 'ies'
@@ -438,191 +476,92 @@ plural form as output:
   'fairies'
   >>> plural('woman')
   'women'
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-Well-structured programs often make extensive use of functions.  Often when a block
-of program code grows longer than a screenful, it is a great help to readability if
-it is decomposed into one or more functions.
+\subsection{Algorithm Design}
 
-Algorithm Design
-----------------
+\begin{frame}
+  \frametitle{Algorithm Design}
+  \small
 
-An *algorithm* is a "recipe" for solving a problem.  For example,
-to multiply 16 by 12 we might use any of the following methods:
+  \begin{itemize}
+  \item \textit{algorithm}: a "recipe" for solving a problem
+  \item e.g. to multiply 16 by 12 we might use any of the following methods:
 
-1. Add 16 to itself 12 times over
-#. Perform "long multiplication", starting with the least-significant
-   digits of both numbers
-#. Look up a multiplication table
-#. Repeatedly halve the first number and double the second,
-   16*12 = 8*24 = 4*48 = 2*96 = 192
-#. Do 10*12 to get 120, then add 6*12
+    \begin{enumerate}
+    \item Add 16 to itself 12 times over
+    \item Perform "long multiplication", starting with the least-significant
+      digits of both numbers
+    \item Look up a multiplication table
+    \item Repeatedly halve the first number and double the second,
+      16*12 = 8*24 = 4*48 = 2*96 = 192
+    \item Do 10*12 to get 120, then add 6*12
+    \end{enumerate}
 
-Each of these methods is a different algorithm, and requires different
-amounts of computation time and different amounts of intermediate
-information to store.  A similar situation holds for many other
-superficially simple tasks, such as sorting a list of words.  Now, as
-we saw above, Python provides a built-in function ``sort()`` that
-performs this task efficiently.  However, NLTK-Lite also provides
-several algorithms for sorting lists, to illustrate the variety of
-possible methods.  To illustrate the difference in efficiency, we
-will create a list of 1000 numbers, randomize the list, then sort it,
-counting the number of list manipulations required.
+  \item computation time, intermediate storage
+  \item brute-force, divide-and-conquer, dynamic programming, greedy search
+  \item Textbook: Levitin, Anany (2003) \textit{Introduction to the Design and
+      Analysis of Algorithms}
+  \end{itemize}
+\end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Sorting Algorithms}
+
+\begin{itemize}
+\item Many algorithms for sorting
+\item Illustrates the difference in algorithm complexity
+
+\begin{verbatim}
   >>> from random import shuffle
-  >>> a = range(1000)                     # [0,1,2,...999]
-  >>> shuffle(a)                          # randomize
-
-Now we can try a simple sort method called *bubble sort*, which
-scans through the list many times, exchanging adjacent items if
-they are out of order.  It sorts the list ``a`` in-place, and returns
-the number of times it modified the list:
-
   >>> from nltk_lite.misc import sort
-  >>> sort.bubble(a)
+  >>> a = range(1000)
+  >>> shuffle(a); sort.bubble(a)
   250918
-
-We can try the same task using various sorting algorithms.  Evidently
-*merge sort* is much better than bubble sort, and *quicksort* is better still.
-
   >>> shuffle(a); sort.merge(a)
   6175
   >>> shuffle(a); sort.quick(a)
   2378
+\end{verbatim}
+\end{itemize}
+\end{frame}
 
-Readers are encouraged to look at ``nltk_lite.misc.sort`` to see how
-these different methods work.  The collection of NLTK-Lite modules
-exemplify a variety of algorithm design techniques, including
-brute-force, divide-and-conquer, dynamic programming, and greedy search.
-Readers who would like a systematic introduction to algorithm design
-should consult the resources mentioned at the end of this tutorial.
+\subsection{Debugging}
 
-Debugging
----------
+\begin{frame}
+  \frametitle{Debugging}
 
-This task is known as *debugging*, since the problems are usually
-small relative to their impact, hard-to-find, and seem to take on a
-life of their own as the programmer tries to hunt them down.
+  \begin{itemize}
+  \item What's in the name:
+    \begin{itemize}
+    \item problems are small relative to their impact
+    \item hard-to-find
+    \item seem to take on a life of their own as the programmer tries to
+      hunt them down
+    \end{itemize}
+  \item steps:
+    \begin{itemize}
+    \item isolate the problem
+    \item syntax error: see error messages, linked to line numbers
+    \item run-time error: \textit{stack-trace}
+    \item add diagnostic print statements
+    \item display values of variables just before problem
+    \item Python debugger: \texttt{pdb}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
 
-The first step is to isolate the problem.  If there was a run-time
-error, the Python interpreter will exit, providing a *stack-trace*
-which lists the most recently called functions with their line numbers.
-The simplest way to deal with such errors is to add print statements
-to the program just before the offending line, permitting you to inspect
-the values of variables (sometimes they are different to what you expected).
+\subsection{Next Steps...}
 
-Python also provides an interactive debugger called ``pdb``, which stands
-for Python debugger.  If your program is saved in a file ``myscript.py``,
-then you can access the debugger with ``python -m pdb myscript.py``.
+\begin{frame}
+\frametitle{Next Steps: Learning to Program}
+\begin{itemize}
+\item experimental
+\item Python's \texttt{help} and \texttt{dir} commands
+\item tutorial exercises
+\end{itemize}
+\end{frame}
 
----------------
-Further Reading
----------------
-
-Python
-------
-
-Guido Van Rossum (2003).
-*An Introduction to Python*,
-Network Theory Ltd.
-
-Guido Van Rossum (2003).
-*The Python Language Reference*,
-Network Theory Ltd.
-
-Guido van Rossum (2005).
-*Python Tutorial*
-http://docs.python.org/tut/tut.html
-
-A.M. Kuchling.
-*Regular Expression HOWTO*,
-http://www.amk.ca/python/howto/regex/
-
-*Python Documentation*
-http://docs.python.org/
-
-Algorithmic Problem Solving
----------------------------
-
-David Harel (2004).
-*Algorithmics: The Spirit of Computing* (Third Edition),
-Addison Wesley.
-
-Anany Levitin (2004).
-*The Design and Analysis of Algorithms*,
-Addison Wesley.
-
-Development of NLTK
--------------------
-
-Edward Loper and Steven Bird (2002).
-NLTK: The Natural Language Toolkit,
-*Proceedings of the ACL Workshop on Effective Tools and
-Methodologies for Teaching Natural Language Processing and Computational
-Linguistics*,
-Somerset, NJ: Association for Computational Linguistics,
-pp. 62-69, http://arXiv.org/abs/cs/0205028
-
-Steven Bird and Edward Loper (2004).
-NLTK: The Natural Language Toolkit,
-*Proceedings of the ACL demonstration session*, pp 214-217.
-
-Edward Loper (2004).
-NLTK: Building a Pedagogical Toolkit in Python,
-*PyCon DC 2004*
-Python Software Foundation,
-http://www.python.org/pycon/dc2004/papers/
-
----------
-Exercises
----------
-
-Using the Python interpreter in interactive mode, experiment with
-words, texts, tokens, locations and tokenizers, and satisfy yourself
-that you understand all the examples in the tutorial.  Now complete
-the following questions.
-
-1. Using the Python interpreter in interactive mode, experiment with
-   the examples contained in this tutorial.  Think of a sentence and
-   represent it as a list of strings, e.g. ['Hello', 'world'].
-   Try the various operations for indexing, slicing and sorting the elements
-   of your list.  Extract individual items (strings), and perform
-   some of the string operations on them.
-
-2. Create a dictionary ``d``, and add some entries.  What happens if
-   you try to access a non-existent entry, e.g. ``d['xyz']``?
-
-3. Define a string ``s = 'colourless'``.  Write a Python statement
-   that changes this to 'colorless', using only the slice and
-   concatenation operations.
-
-4. Describe the class of strings matched by the following regular
-   expressions:
-
-   a) ``[a-zA-Z]+``
-   #) ``[A-Z][a-z]*``
-   #) ``\d+(\.\d+)?``
-   #) ``([bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz])*``
-   #) ``\w+|[^\w\s]+``
-
-5. Write regular expressions to match the following classes of strings:
-
-  a) A single determiner (assume that *a*, *an*, and *the*
-     are the only determiners).
-  #) An arithmetic expression using integers, addition, and
-     multiplication, such as ``2*3+8``.
-
-6. Use the corpus module to tokenize ``austin-persuasion.txt``.
-   How many words does this book have?
-
-7. Try running the Eliza chat-bot.  Import it with
-   ``from nltk_lite.chat import eliza``, then run the demonstration,
-   ``eliza.demo()``.  How *intelligent* is this program?
-   Take a look at the program code and see if you can
-   discover how it works.
-
-----
-
-NLTK_
-
-.. _NLTK: http://nltk.sourceforge.net/
-
+\end{document}
