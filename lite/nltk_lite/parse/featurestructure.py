@@ -581,12 +581,12 @@ class FeatureStructure:
         # Visit each node only once:
         if visited.has_key(id(self)): return
         visited[id(self)] = 1
-    
         for (fname, fval) in self._features.items():
             if isinstance(fval, FeatureVariable):
                 if bindings.is_bound(fval):
-                    self._features[fname] = bindings.lookup(fval)
-            elif isinstance(fval, FeatureStructure):
+                    fval = bindings.lookup(fval)
+                    self._features[fname] = fval
+            if isinstance(fval, FeatureStructure):
                 fval._apply_bindings(bindings, visited)
 
     def _rename_variables(self, newvars, visited):
@@ -1383,7 +1383,9 @@ def demo(trace=False):
         '[obj=?x]', '[subj=?x]',
         '[/=None]', '[/=NP]',
         '[cat=NP]', '[cat=VP]', '[cat=PP]',
-        '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]'
+        '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
+        '[gender=masc, agr=?C]',
+        '[gender=?S, agr=[gender=?S,person=3rd]]'
         ]
     
     all_fstructs = [(i, FeatureStructure.parse(fstruct_strings[i]))
