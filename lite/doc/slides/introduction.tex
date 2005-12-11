@@ -40,16 +40,15 @@
 \usepackage[T1]{fontenc}
 \usepackage{alltt}
 
-\title{NLTK: Introduction to Natural Language Processing}
+\title{NLTK: \\ Introduction to Natural Language Processing}
 
-\author{Steven Bird}
+\author{Steven Bird \and Edward Loper \and Ewan Klein}
 \institute{
-  Department of Computer Science\\
   University of Melbourne, AUSTRALIA
   \and
-  Linguistic Data Consortium\\
-  Department of Linguistics\\
   University of Pennsylvania, USA
+  \and
+  University of Edinburgh, UK
 }
 
 \date{\today}
@@ -60,6 +59,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+
+\section{Introduction}
 
 \begin{frame}
   \titlepage
@@ -84,7 +85,7 @@
 
 \begin{frame}[fragile]
   \frametitle{Searching Pronunciation Dictionary}
-  \scriptsize
+  \tiny
 
 \begin{verbatim}
     >>> from nltk_lite.corpora import cmudict
@@ -120,7 +121,7 @@
 \subsection{Minimal Sets from Lexicon}
 \begin{frame}[fragile]
   \frametitle{Minimal Sets from Lexicon}
-  \scriptsize
+  \tiny
 \begin{verbatim}
     >>> from nltk_lite.corpora import shoebox
     >>> from nltk_lite.utilities import MinimalSet
@@ -154,7 +155,7 @@
 \subsection{Modelling Text Genres}
 \begin{frame}[fragile]
   \frametitle{Modelling Text Genres}
-  \scriptsize
+  \tiny
 \begin{verbatim}
     >>> from nltk_lite.corpora import genesis
     >>> from nltk_lite.probability import ConditionalFreqDist
@@ -188,7 +189,7 @@
 \subsection{Exploring Syntax}
 \begin{frame}[fragile]
   \frametitle{Exploring Syntax}
-  \scriptsize
+  \tiny
 \begin{verbatim}
     >>> from nltk_lite.corpora import treebank
     >>> from string import join
@@ -229,23 +230,25 @@
 \item ideas are shared over great separations of distance and time
 \end{itemize}
 
+\scriptsize
+
 \begin{enumerate}
 \item Overhead the day drives level and grey, hiding the sun by a flight
-   of grey spears.  (William Faulkner, *As I Lay Dying*, 1935)
+   of grey spears.  (William Faulkner, \textit{As I Lay Dying}, 1935)
 \item When using the toaster please ensure that the exhaust fan is turned
    on. (sign in dormitory kitchen)
 \item Amiodarone weakly inhibited CYP2C9, CYP2D6, and CYP3A4-mediated
-   activities with Ki values of 45.1-271.6 |mu|\M (Medline)
-\item Iraqi Head Seeks Arms (spoof headline, ``http://www.snopes.com/humor/nonsense/head97.htm``
+   activities with Ki values of 45.1-271.6 $\mu$M (Medline)
+\item Iraqi Head Seeks Arms (spoof headline, \url{http://www.snopes.com/humor/nonsense/head97.htm}
 \item The earnest prayer of a righteous man has great power and wonderful
    results. (James 5:16b)
 \item Twas brillig, and the slithy toves did gyre and gimble in the wabe
-   (Lewis Carroll, *Jabberwocky*, 1872)
+   (Lewis Carroll, \textit{Jabberwocky}, 1872)
 \item There are two ways to do this, AFAIK :smile:  (internet discussion archive)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Disciplines Studying Language}
 \begin{enumerate}
 \item linguistics
@@ -266,7 +269,6 @@
 \end{frame}
 
 \subsection{Language in Computing}
-
 \begin{frame}
 \frametitle{Language in Computing}
 \begin{itemize}
@@ -275,7 +277,7 @@
 \item early machine languages
 \item high-level programming languages, automatically parsed and
   interpreted
-\item databases: e.g. \verb|SELECT age FROM employee|
+\item databases: e.g. \texttt{SELECT age FROM employee}
 \item ubiquitous computing
 \item multimodality: text, speech, dialogue, pen gestures
 \item building new systems for natural linguistic interaction
@@ -304,27 +306,29 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{Web as Corpus}
+\begin{frame}
+\frametitle{Web as Corpus: Absolutely vs Definitely}
+\scriptsize
 
-\begin{verbatim}
-Absolutely vs Definitely (Liberman 2005, LanguageLog.org)
+\begin{tabular}{l|llll}
+\textbf{Google hits}
+& \textbf{adore}
+& \textbf{love}
+& \textbf{like}
+& \textbf{prefer} \\ \hline
+absolutely  & 289,000 & 905,000 & 16,200  & 644 \\
+definitely  & 1,460   & 51,000  & 158,000 & 62,600 \\
+ratio       & 198/1   & 18/1    & 1/10    & 1/97
+\end{tabular}
 
-Google hits  adore    love     like     prefer
-===========  =======  =======  =======  =================
-absolutely   289,000  905,000  16,200   644
-definitely   1,460    51,000   158,000  62,600
-ratio        198/1    18/1     1/10     1/97
-===========  =======  =======  =======  =================
-
-http://itre.cis.upenn.edu/~myl/languagelog/archives/002022.html
-\end{verbatim}
+\url{http://itre.cis.upenn.edu/~myl/languagelog/archives/002022.html}
 \end{frame}
 
 \subsection{Natural Language Processing}
 
 \begin{frame}
 \frametitle{Natural Language Processing}
+\small
 \begin{itemize}
 \item experiencing rapid growth as theories and methods deployed in
 new technologies
@@ -347,138 +351,96 @@ software development
 
 \section{The Python Programming Language}
 
--------------------------------
-The Python Programming Language
--------------------------------
+\subsection{Key Features}
 
-NLTK is written in the Python language, a simple yet powerful
-scripting language with excellent functionality for processing
-linguistic data.  Python can be downloaded for free from
-``http://www.python.org/``.  Here is a five-line Python program which takes
-text input and prints all the words ending in ``ing``::
+\begin{frame}
+\frametitle{Python: Key Features}
+\begin{itemize}
+\item simple yet powerful, shallow learning curve
+\item object-oriented: encapsulation, re-use
+\item scripting language, facilitates interactive exploration
+\item excellent functionality for processing linguistic data
+\item extensive standard library, incl graphics, web, numerical processing
+\item downloaded for free from \url{http://www.python.org/}
+\end{itemize}
+\end{frame}
 
- import sys                            # load the system library
- for line in sys.stdin.readlines():    # for each line of input
-     for word in line.split():         # for each word in the line
-         if word.endswith('ing'):      # does the word end in 'ing'?
-             print word                # if so, print the word
+\subsection{Python Example}
+\begin{frame}[fragile]
+\frametitle{Python Example}
 
-This program illustrates some of the main features of Python.  First,
-whitespace is used to *nest* lines of code, thus the line starting
-with ``if`` falls inside the scope of the previous line starting with
-``for``, so the ``ing`` test is performed for each word.  Second,
-Python is *object-oriented*; each variable is an entity which has
-certain defined attributes and methods.  For example, ``line`` is more
-than a sequence of characters.  It is a string object that has a
-method (or operation) called ``split`` that we can use to break a line
-into its words.  To apply a method to an object, we give the object
-name, followed by a period, followed by the method name.  Third,
-methods have *arguments* expressed inside parentheses.  For instance,
-``split`` had no argument because we were splitting the string
-wherever there was white space.  To split a string into sentences
-delimited by a period, we could write ``split('.')``.  Finally, and
-most importantly, Python is highly readable, so much so that it is
-fairly easy to guess what the above program does even if you have
-never written a program before.
+\begin{verbatim}
+ import sys
+ for line in sys.stdin.readlines():
+     for word in line.split():
+         if word.endswith('ing'):
+             print word
+\end{verbatim}
 
-This readability of Python is striking in comparison to other
-languages which have been used for NLP, such as Perl.  Here is a Perl
-program which prints words ending in ``ing``::
+\begin{enumerate}
+\item whitespace: nesting lines of code; scope
+\item object-oriented: attributes, methods (e.g. \texttt{line})
+\item readable
+\end{enumerate}
+\end{frame}
 
-  while (<>) {                          # for each line of input
-      foreach my $word (split) {        # for each word in a line
-          if ($word =~ /ing$/) {        # does the word end in 'ing'?
-              print "$word\n";          # if so, print the word
+\subsection{Comparison with Perl}
+\begin{frame}[fragile]
+\frametitle{Comparison with Perl}
+
+\begin{verbatim}
+  while (<>) {
+      foreach my $word (split) {
+          if ($word =~ /ing$/) {
+              print "$word\n";
           }
       }
   }
+\end{verbatim}
 
-Like Python, Perl is a scripting language.  However, its syntax is
-obscure.  For instance, it is difficult to guess what kind of entities
-are represented by: ``<>``, ``$``, ``my``, and ``split``.  We
-agree that "it is quite easy in Perl to write programs that simply
-look like raving gibberish, even to experienced Perl programmers"
-(Hammond 2003:47).  Having used Perl ourselves in research and
-teaching since the 1980s, we have found that Perl programs of any size
-are inordinately difficult to maintain and re-use.  Therefore we
-believe Perl is not an optimal choice of programming language for
-linguists or for language processing.  Several other languages are
-used for NLP, including Prolog, Java, LISP and C.  In the preface we
-provided translations of our five-line Python program into these
-and other languages, and invite you to compare them for readability.
+\begin{enumerate}
+\item syntax is obscure: \textit{what are:} \verb|<> $ my split| ?
+\item ``it is quite easy in Perl to write programs that simply
+  look like raving gibberish, even to experienced Perl programmers''
+  (Hammond \textit{Perl Programming for Linguists} 2003:47)
+\item large programs difficult to maintain, reuse
+\end{enumerate}
+\end{frame}
 
-We chose Python as the implementation language for NLTK because it has
-a shallow learning curve, its syntax and semantics are transparent,
-and it has good string-handling functionality.  As a scripting
-language, Python facilitates interactive exploration.  As an
-object-oriented language, Python permits data and methods to be
-encapsulated and re-used easily.  Python comes with an extensive
-standard library, including components for graphical programming,
-numerical processing, and web data processing.
+\subsection{What NLTK adds to Python}
+\begin{frame}
+\frametitle{What NLTK adds to Python}
 
 NLTK defines a basic infrastructure that can be used to build NLP
 programs in Python.  It provides:
 
-* Basic classes for representing data relevant to natural language
-  processing.
+\begin{itemize}
+\item Basic classes for representing data relevant to natural language
+  processing
+\item Standard interfaces for performing tasks, such
+  as tokenization, tagging, and parsing
+\item Standard implementations for each task, which
+  can be combined to solve complex problems
+\item Extensive documentation, including tutorials
+  and reference documentation
+\end{itemize}
+\end{frame}
 
-* Standard interfaces for performing tasks, such
-  as tokenization, tagging, and parsing.
+\begin{frame}[fragile]
+\frametitle{Installing Python and NLTK}
+\begin{enumerate}
+\item Install Python, Numeric
+\item Install NLTK-Lite, NLTK-Lite-Corpora
+\item Set environment variable \verb|NLTK_LITE_CORPORA|
+\end{enumerate}
 
-* Standard implementations for each task, which
-  can be combined to solve complex problems.
+\textit{For detailed instructions, see:}
 
-* Extensive documentation, including tutorials
-  and reference documentation.
+\begin{itemize}
+\item  http://nltk.sourceforge.net/install.html
+\item  CDROM: /webpage/install.html
+\end{itemize}
 
----------------
-Further Reading
----------------
-
-The Association for Computational Linguistics (ACL) is the peak
-professional body in NLP.  Its journal and conference proceedings,
-approximately 10,000 articles, are available online with a full-text
-search interface, via ``http://www.aclweb.org/anthology/``.
-
-Several NLP systems have online interfaces that you might like to
-experiment with, e.g.:
-
-* WordNet: ``http://wordnet.princeton.edu/``
-* Translation: ``http://world.altavista.com/``
-* ChatterBots: ``http://www.loebner.net/Prizef/loebner-prize.html``
-* Question Answering: ``http://www.answerbus.com/``
-* Summarisation: ``http://tangra.si.umich.edu/clair/md/demo.cgi``
-
-Useful websites with substantial information about NLP:
-``http://www.hltcentral.org/``, ``http://www.lt-world.org/``,
-``http://www.aclweb.org/``, ``http://www.elsnet.org/``.  The ACL
-website contains an overview of computational linguistics, including
-copies of introductory chapters from recent textbooks, at
-``http://www.aclweb.org/archive/what.html``.
-
-
-..    Key papers that cover historical developments, ...
-
-Acknowledgements: The dialogue example is taken from Bob Carpenter and
-Jennifer Chu-Carroll's ACL-99 Tutorial on Spoken Dialogue Systems; the
-following people kindly provided program samples: Tim Baldwin, Trevor
-Cohn, Rod Farmer, Edward Ivanovic, Olivia March, and Lars Yencken.
-
-NLP Textbooks and Surveys
--------------------------
-
-This section will give a brief overview of other NLP textbooks, and
-field-wide surveys *(to be written).*
-
-* Recent textbooks: Manning and Schutze, Jurafsky and Martin.
-
-* Older textbooks: Allen (1995), Charniak (1993), Grishman.
-  Prolog-based: Covington (1994), Gazdar and Mellish (1989)
-  Pereira and Shieber; Mathematical foundations: Partee et al.
-
-* Recent field-wide surveys: Mitkov, Dale et al, HLT Survey.
-
-
-
+\end{frame}
 
 \end{document}
