@@ -25,6 +25,7 @@ Version 0.7 (December?)
 - make more use of sidebars
 - add Chinese treebank and corpus reader
 + add presidential speeches corpus and tutorial example [SB]
+- produce latex-beamer slides for tutorials
 - decision list classifier
 
 ----------------------
