@@ -1,5 +1,5 @@
 % for slides
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 % for handout
 % \documentclass[handout]{beamer}
@@ -437,11 +437,10 @@ Now inspect the dictionary:
 
 \section{Program Development}
 
-\subsection{Introduction}
-
 \begin{frame}
 \frametitle{Program Development}
 \begin{itemize}
+\item High-level Design
 \item Algorithm Design
 \item Structured Programming
 \item Debugging
@@ -449,7 +448,7 @@ Now inspect the dictionary:
 \end{itemize}
 \end{frame}
 
-\subsection{Defining Functions}
+\subsection{Defining Functions and Modules}
 
 \begin{frame}[fragile]
 \frametitle{Defining Functions}
@@ -478,6 +477,19 @@ Now inspect the dictionary:
   'women'
 \end{verbatim}
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Defining Modules}
+
+\begin{verbatim}
+def parsed(files):
+    for file in files:
+        path = os.path.join(get_basedir(), "treebank", file)
+        s = open(path).read()
+        for t in tokenize.blankline(s):
+            yield tree.bracket_parse(t)
+\end{verbatim}
 \end{frame}
 
 \subsection{Algorithm Design}
@@ -526,6 +538,52 @@ Now inspect the dictionary:
   2378
 \end{verbatim}
 \end{itemize}
+\end{frame}
+
+\subsection{Top-Down Design}
+
+\begin{frame}
+\frametitle{Top-Down Design}
+\begin{itemize}
+\item Break down high-level task into manageable components
+\item Build and test each component
+\item Assemble them into a complex system
+\item Example: identify adjective-noun collocations in text
+  \begin{enumerate}
+  \item read in the corpus
+  \item count events (each adjective, noun, adj-noun combination)
+  \item compute $\chi^2$ statistics
+  \item sort adj-noun pairs in decreasing order
+  \item output $n$-most significant collocations
+  \end{enumerate}
+\item what are the inputs and outputs of each step (i.e. \textit{interfaces})
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Top-Down Design (cont)}
+
+\begin{enumerate}
+\item Define top-level function:
+
+\begin{verbatim}
+def colloc(corpus_name, num):
+    corpus = load_corpus(corpus_name)
+    a_counts, n_counts, a_n_counts = count(corpus, 'JJ', 'NN')
+    a_n_scores = chisq(a_counts, n_counts, a_n_counts)
+    a_n_ranked = sort_by_score(a_n_scores)
+    return a_n_ranked[:num]
+\end{verbatim}
+
+\item Iteratively define lower-level functions, e.g. \texttt{chisq()}
+
+\item Bottom-up testing
+\begin{itemize}
+\item standard test cases for components, known output
+\item only assemble once each component is known to work correctly
+  on the test cases
+\end{itemize}
+\end{enumerate}
 \end{frame}
 
 \subsection{Debugging}
