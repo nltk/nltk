@@ -151,6 +151,7 @@ condition of body and mind ...o:p></o:p></i></p>
 
 \begin{frame}[fragile]
 \frametitle{Example: Validating Dictionaries stored in MSWord}
+\small
 
 \begin{verbatim}
 >>> import re
@@ -223,6 +224,7 @@ condition of body and mind ...o:p></o:p></i></p>
 
 \begin{frame}[fragile]
 \frametitle{Database Example}  
+\small
 
 \begin{verbatim}
 >>> import csv
@@ -235,7 +237,8 @@ condition of body and mind ...o:p></o:p></i></p>
 >>> undefined = list(set(defn_words).difference(set(lexemes)))
 >>> undefined.sort()
 >>> print undefined
-['...', 'a', 'and', 'body', 'by', 'cease', 'condition', 'down', 'each', 'foot', 'lifting', 'mind', 'of', 'progress', 'setting', 'to']
+['...', 'a', 'and', 'body', 'by', 'cease', 'condition', 'down',
+'each', 'foot', 'lifting', 'mind', 'of', 'progress', 'setting', 'to']
 \end{verbatim}
 \end{frame}
 
@@ -666,6 +669,7 @@ kuverea (V.A) 'not all right'
 \begin{itemize}
 \item E.g. mace vs maze, face vs faze
 \item minimal set parameters: context, target, display
+\vfil
 \small
 
 \begin{tabular}{l|lll}
@@ -702,7 +706,7 @@ kuverea (V.A) 'not all right'
 
 \begin{frame}[fragile]
 \frametitle{Finding Minimal Sets: Example 1 (cont)}
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> ms = build_min_set(parameters)
@@ -728,7 +732,10 @@ k_ki: kaki kiki -    -    koki
 \scriptsize
 
 \begin{verbatim}
->>> parameters = [(entry['lx'], entry['ps'][0], "%s (%s)" % (entry['ps'][0], entry['ge']))
+>>> parameters = [(entry['lx'],
+                   entry['ps'][0],
+                   "%s (%s)" % (entry['ps'][0], entry['ge'])
+                  )
 ...               for entry in shoebox.dictionary('rotokas') if 'lx' in entry]
 >>> ms = build_min_set(parameters)
 >>> for context in ms.contexts()[:10]:
@@ -849,7 +856,8 @@ T400
 ...     for field in entry:
 ...	        fd.inc(field[0])
 >>> fd.sorted_samples()[:10]
-['ge', 'ex', 'xe', 'xp', 'gp', 'lx', 'ps', 'dt', 'rt', 'eng']
+['ge', 'ex', 'xe', 'xp', 'gp', 'lx', 'ps',
+'dt', 'rt', 'eng']
 \end{verbatim}
 \end{frame}
 
