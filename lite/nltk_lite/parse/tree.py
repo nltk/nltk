@@ -123,7 +123,7 @@ class Tree(list):
             else:
                 self[index[0]][index[1:]] = value
     
-    def __detitem__(self, index):
+    def __delitem__(self, index):
         if isinstance(index, int):
             return list.__delitem__(self, index)
         else:
