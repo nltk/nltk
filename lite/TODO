@@ -1,7 +1,7 @@
 KEY: "-" = not done; "~" = started; "+" = done; "?" = maybe
 
 -----------------------
-Version 0.7 (December?)
+Version 0.7 (January)
 -----------------------
 
 - add Li & Roth question classification data? [SB]
@@ -27,9 +27,10 @@ Version 0.7 (December?)
 + add presidential speeches corpus and tutorial example [SB]
 - produce latex-beamer slides for tutorials
 - decision list classifier
+- Unicode compliance [SB]
 
 ----------------------
-Version 0.8 (January?)
+Version 0.8 (February?)
 ----------------------
 
 - add OLAC support: read and write an OLAC static repository [SB]
