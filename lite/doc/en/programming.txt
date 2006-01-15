@@ -9,7 +9,7 @@ Programming Fundamentals and Python
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
-:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Copyright: |copy| |copyrightinfo|
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
 .. Note:: This is a draft.  Please send any feedback to the authors.
@@ -21,7 +21,8 @@ Introduction
 This tutorial provides a non-technical overview of Python.  It
 contains many working program fragments which you should try yourself.
 For a more detailed overview, we recommend that you consult one of the
-introductions listed in the further reading section below.
+introductions listed in the further reading section below.  More
+advanced programming material is contained in a later tutorial.
 
 ----------------------------
 Processing lists and strings
@@ -141,6 +142,11 @@ We can multiply strings:
   >>> 'sleep' * 3
   'sleepsleepsleep'
 
+Here is a useful idiom for reversing strings:
+
+  >>> b[::-1]
+  'sselruoloc ylsuoifur neerg saedi peels'
+
 We can also join and split strings:
 
   >>> c = ' '.join(b)
@@ -148,14 +154,6 @@ We can also join and split strings:
   'sleep ideas green furiously colourless'
   >>> c.split('r')
   ['sleep ideas g', 'een fu', 'iously colou', 'less']
-
-There are plenty of more sophisticated operations we can perform with
-lists and strings, e.g.:
-
-  >>> map(lambda x: len(x), b)
-  [5, 5, 5, 9, 10]
-  >>> [(x, len(x)) for x in b]
-  [('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
 
 More information on lists and strings can be found by
 typing ``help(list)`` and ``help(str)`` at the command prompt.
@@ -416,120 +414,6 @@ for the raw text, and ``treebank.tagged()`` for the tagged text.
     (.: '.'))
 
 
--------------------
-Program Development
--------------------
-
-Programming is a skill which is acquired over several years of
-experience with a variety of programming languages and tasks.  Key
-high-level abilities are *algorithm design* and its manifestation in
-*structured programming*.  Key low-level abilities include familiarity
-with the syntactic constructs of the language, and knowledge of a
-variety of diagnostic methods for trouble-shooting a program which
-does not exhibit the expected behaviour.
-
-Defining Functions
-------------------
-
-It often happens that part of a program needs to be used several times over.
-For example, suppose we were writing a program that needed to be able to form
-the plural of a singular noun, and that this needed to be done at various
-places during the program.  Rather than repeating the same code several times
-over, it is more efficient (and reliable) to localize this work inside a *function*.
-A function is a programming construct which takes one or more inputs, and produces
-an output.  In this case, we will take the singular noun as input, and generate a
-plural form as output:
-
-  >>> def plural(word):
-  ...     if word[-1] == 'y':
-  ...         return word[:-1] + 'ies'
-  ...     elif word[-1] in 'sx':
-  ...         return word + 'es'
-  ...     elif word[-2:] in ['sh', 'ch']:
-  ...         return word + 'es'
-  ...     elif word[-2:] == 'an':
-  ...         return word[:-2] + 'en'
-  ...     return word + 's'
-  >>> plural('fairy')
-  'fairies'
-  >>> plural('woman')
-  'women'
-
-Well-structured programs often make extensive use of functions.  Often when a block
-of program code grows longer than a screenful, it is a great help to readability if
-it is decomposed into one or more functions.
-
-Algorithm Design
-----------------
-
-An *algorithm* is a "recipe" for solving a problem.  For example,
-to multiply 16 by 12 we might use any of the following methods:
-
-1. Add 16 to itself 12 times over
-#. Perform "long multiplication", starting with the least-significant
-   digits of both numbers
-#. Look up a multiplication table
-#. Repeatedly halve the first number and double the second,
-   16*12 = 8*24 = 4*48 = 2*96 = 192
-#. Do 10*12 to get 120, then add 6*12
-
-Each of these methods is a different algorithm, and requires different
-amounts of computation time and different amounts of intermediate
-information to store.  A similar situation holds for many other
-superficially simple tasks, such as sorting a list of words.  Now, as
-we saw above, Python provides a built-in function ``sort()`` that
-performs this task efficiently.  However, NLTK-Lite also provides
-several algorithms for sorting lists, to illustrate the variety of
-possible methods.  To illustrate the difference in efficiency, we
-will create a list of 1000 numbers, randomize the list, then sort it,
-counting the number of list manipulations required.
-
-  >>> from random import shuffle
-  >>> a = range(1000)                     # [0,1,2,...999]
-  >>> shuffle(a)                          # randomize
-
-Now we can try a simple sort method called *bubble sort*, which
-scans through the list many times, exchanging adjacent items if
-they are out of order.  It sorts the list ``a`` in-place, and returns
-the number of times it modified the list:
-
-  >>> from nltk_lite.misc import sort
-  >>> sort.bubble(a)
-  250918
-
-We can try the same task using various sorting algorithms.  Evidently
-*merge sort* is much better than bubble sort, and *quicksort* is better still.
-
-  >>> shuffle(a); sort.merge(a)
-  6175
-  >>> shuffle(a); sort.quick(a)
-  2378
-
-Readers are encouraged to look at ``nltk_lite.misc.sort`` to see how
-these different methods work.  The collection of NLTK-Lite modules
-exemplify a variety of algorithm design techniques, including
-brute-force, divide-and-conquer, dynamic programming, and greedy search.
-Readers who would like a systematic introduction to algorithm design
-should consult the resources mentioned at the end of this tutorial.
-
-Debugging
----------
-
-This task is known as *debugging*, since the problems are usually
-small relative to their impact, hard-to-find, and seem to take on a
-life of their own as the programmer tries to hunt them down.
-
-The first step is to isolate the problem.  If there was a run-time
-error, the Python interpreter will exit, providing a *stack-trace*
-which lists the most recently called functions with their line numbers.
-The simplest way to deal with such errors is to add print statements
-to the program just before the offending line, permitting you to inspect
-the values of variables (sometimes they are different to what you expected).
-
-Python also provides an interactive debugger called ``pdb``, which stands
-for Python debugger.  If your program is saved in a file ``myscript.py``,
-then you can access the debugger with ``python -m pdb myscript.py``.
-
 ---------------
 Further Reading
 ---------------
@@ -581,6 +465,10 @@ pp. 62-69, http://arXiv.org/abs/cs/0205028
 Steven Bird and Edward Loper (2004).
 NLTK: The Natural Language Toolkit,
 *Proceedings of the ACL demonstration session*, pp 214-217.
+
+Steven Bird (2005).
+NLTK-Lite: Efficient Scripting for Natural Language Processing,
+*4th International Conference on Natural Language Processing*, pp 1-8.
 
 Edward Loper (2004).
 NLTK: Building a Pedagogical Toolkit in Python,
