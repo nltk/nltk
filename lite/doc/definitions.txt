@@ -1,4 +1,5 @@
 .. |version| replace:: 0.6
+.. |copyrightinfo| replace:: 2001-2006 University of Pennsylvania
 
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |forall| unicode:: U+2200 .. for all

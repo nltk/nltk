@@ -13,6 +13,7 @@ NLTK-Lite Tutorials
 
 .. _English: en/
 .. _Brazilian_Portuguese: pt-br/
+.. _Presentation_Slides: slides/
 
 --------
 Contents
@@ -20,6 +21,9 @@ Contents
 
 0. English_
 #. Brazilian_Portuguese_   (translation by Tiago Tresoldi)
+
+* Presentation_Slides_
+
 
 ----
 
