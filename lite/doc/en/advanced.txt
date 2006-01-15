@@ -1,0 +1,343 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+==============================
+Advanced Programming in Python
+==============================
+
+:Authors: Steven Bird, Ewan Klein, Edward Loper
+:Version: |version|
+:Revision: $Revision$
+:Date: $Date$
+:Copyright: |copy| |copyrightinfo|
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+.. Note:: This is a draft.  Please send any feedback to the authors.
+
+------------
+Introduction
+------------
+
+This chapter introduces concepts in algorithms, data structures,
+program design, and advanced Python programming.
+It contains many working program fragments which you should try yourself.
+
+
+---------------
+Advanced Python
+---------------
+
+
+List Comprehensions
+-------------------
+
+Many language processing tasks involve applying the same operation to
+every item in a list.
+
+  >>> from nltk_lite import tokenize
+  >>> stemmer = tokenize.RegexpStemmer('ing$|s$|e$')
+
+
+
+  >>> sent = ['The', 'dog', 'gave', 'John', 'the', 'newspaper']
+  >>> [word.lower() for word in sent]
+  ['the', 'dog', 'gave', 'john', 'the', 'newspaper']
+
+As another example, we could remove all determiners from a list of
+words:
+
+  >>> def is_determiner(word):
+  ...     return word.lower() in ('a', 'an', 'the')
+  >>> [word for word in sent if not is_determiner(word)]
+  ['dog', 'gave', 'John', 'newspaper']
+
+
+Combining the transformations...
+
+  >>> [word.lower() for word in sent if not is_determiner(word)]
+  ['dog', 'gave', 'john', 'newspaper']
+
+
+This applies the ``len`` function to every item in ``b``.
+The following code builds a list of tuples, where each tuple consists
+of a word and its length.
+
+  >>> [(x, len(x)) for x in b]
+  [('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
+
+
+
+List Operations
+---------------
+
+There are plenty of more sophisticated operations we can perform with
+lists and strings, e.g.:
+
+  >>> map(len, b)
+  [5, 5, 5, 9, 10]
+
+
+
+-------------------
+Program Development
+-------------------
+
+Programming is a skill which is acquired over several years of
+experience with a variety of programming languages and tasks.  Key
+high-level abilities are *algorithm design* and its manifestation in
+*structured programming*.  Key low-level abilities include familiarity
+with the syntactic constructs of the language, and knowledge of a
+variety of diagnostic methods for trouble-shooting a program which
+does not exhibit the expected behaviour.
+
+Defining Functions
+------------------
+
+It often happens that part of a program needs to be used several times over.
+For example, suppose we were writing a program that needed to be able to form
+the plural of a singular noun, and that this needed to be done at various
+places during the program.  Rather than repeating the same code several times
+over, it is more efficient (and reliable) to localize this work inside a *function*.
+A function is a programming construct which takes one or more inputs, and produces
+an output.  In this case, we will take the singular noun as input, and generate a
+plural form as output:
+
+  >>> def plural(word):
+  ...     if word[-1] == 'y':
+  ...         return word[:-1] + 'ies'
+  ...     elif word[-1] in 'sx':
+  ...         return word + 'es'
+  ...     elif word[-2:] in ['sh', 'ch']:
+  ...         return word + 'es'
+  ...     elif word[-2:] == 'an':
+  ...         return word[:-2] + 'en'
+  ...     return word + 's'
+  >>> plural('fairy')
+  'fairies'
+  >>> plural('woman')
+  'women'
+
+Well-structured programs often make extensive use of functions.  Often when a block
+of program code grows longer than a screenful, it is a great help to readability if
+it is decomposed into one or more functions.
+
+Algorithm Design
+----------------
+
+An *algorithm* is a "recipe" for solving a problem.  For example,
+to multiply 16 by 12 we might use any of the following methods:
+
+1. Add 16 to itself 12 times over
+#. Perform "long multiplication", starting with the least-significant
+   digits of both numbers
+#. Look up a multiplication table
+#. Repeatedly halve the first number and double the second,
+   16*12 = 8*24 = 4*48 = 2*96 = 192
+#. Do 10*12 to get 120, then add 6*12
+
+Each of these methods is a different algorithm, and requires different
+amounts of computation time and different amounts of intermediate
+information to store.  A similar situation holds for many other
+superficially simple tasks, such as sorting a list of words.  Now, as
+we saw above, Python provides a built-in function ``sort()`` that
+performs this task efficiently.  However, NLTK-Lite also provides
+several algorithms for sorting lists, to illustrate the variety of
+possible methods.  To illustrate the difference in efficiency, we
+will create a list of 1000 numbers, randomize the list, then sort it,
+counting the number of list manipulations required.
+
+  >>> from random import shuffle
+  >>> a = range(1000)                     # [0,1,2,...999]
+  >>> shuffle(a)                          # randomize
+
+Now we can try a simple sort method called *bubble sort*, which
+scans through the list many times, exchanging adjacent items if
+they are out of order.  It sorts the list ``a`` in-place, and returns
+the number of times it modified the list:
+
+  >>> from nltk_lite.misc import sort
+  >>> sort.bubble(a)
+  250918
+
+We can try the same task using various sorting algorithms.  Evidently
+*merge sort* is much better than bubble sort, and *quicksort* is better still.
+
+  >>> shuffle(a); sort.merge(a)
+  6175
+  >>> shuffle(a); sort.quick(a)
+  2378
+
+Readers are encouraged to look at ``nltk_lite.misc.sort`` to see how
+these different methods work.  The collection of NLTK-Lite modules
+exemplify a variety of algorithm design techniques, including
+brute-force, divide-and-conquer, dynamic programming, and greedy search.
+Readers who would like a systematic introduction to algorithm design
+should consult the resources mentioned at the end of this tutorial.
+
+Programming Style
+-----------------
+
+We have just seen how the same task can be performed in different
+ways, with implications for efficiency.  Another factor influencing
+program development is *programming style*.  Consider the following
+program to compute the average length of words in the Brown Corpus:
+
+  >>> count = 0
+  >>> total = 0
+  >>> for sent in brown.raw():
+  ...     for token in sent:
+  ...         count += 1
+  ...         total += len(token)
+  >>> print float(total) / count
+  4.2765382469
+
+In this program we use the variable ``count`` to keep track of the
+number of tokens seen, and ``total`` to store the combined length of
+all words.  This is a low-level style, not far removed from machine
+code, the primitive operations performed by the computer's CPU.
+The two variables are just like a CPU's registers, accumulating values
+at many intermediate stages, values which are almost meaningless. 
+We say that this program is written in a *procedural* style, dictating
+the machine operations step by step.  Now consider the following
+program which computes the same thing:
+
+  >>> tokens = [token for sent in brown.raw() for token in sent]
+  >>> total = sum(map(len, tokens))
+  >>> print float(total)/len(tokens)
+  4.2765382469
+
+The first line uses a list comprehension to construct the sequence of
+tokens.  The second line *maps* the ``len`` function to this sequence,
+to create a list of length values, which are summed.  The third line
+computes the average as before.  Notice here that each line of code
+performs a complete, meaningful action.  Moreover, they do not dictate
+how the computer will perform the computations; we state high level
+relationships like "``total`` is the sum of the lengths of the tokens"
+and leave the details to the Python interpreter.  Accordingly, we say
+that this program is written in a *declarative* style.
+
+Here is another example to illustrate the procedural/declarative
+distinction.  Notice again that the procedural version
+involves low-level steps and a variable having meaningless
+intermediate values:
+
+  >>> words = []
+  >>> for sent in brown.raw():
+  ...     for token in sent:
+  ...         if token not in words:
+  ...             words.append(token)
+  ... words.sort()
+
+The declarative version (given second) makes use of higher-level
+built-in functions:
+
+  >>> words = set(brown.raw())
+  >>> words.sort()
+
+What do these programs compute?  Which version was easier to
+interpret?
+
+Consider one further example, which sorts three-letter words by their
+final letters.  The words come from the widely-used Unix wordlist,
+made available as an NLTK corpus called ``words``.  Two words ending
+with the same letter will be sorted according to their second-last
+letters.  The result of this sort method is that rhyming words will be
+contiguous.  Two programs are given; Which one is more declarative,
+and which is more procedural?
+
+As an aside, for readability we define a function for reversing
+strings that will be used by both programs:
+
+  >>> def reverse(word):
+  ...     return word[::-1]
+
+Here's the first program.  We define a helper function ``reverse_cmp``
+which calls the built-in ``cmp`` comparison function on reversed
+strings.  The ``cmp`` function returns ``-1``, ``0``, or ``1``,
+depending on whether its first argument is less than, equal to, or
+greater than its second argument.  We tell the list sort function to
+use ``reverse_cmp`` instead of ``cmp`` (the default).
+
+  >>> from nltk_lite.corpora import words
+  >>> def reverse_cmp(x,y):
+  ...     return cmp(reverse(x), reverse(y))
+  >>> word_list = [word for word in words.raw('en') if len(w) == 3]
+  >>> word_list.sort(reverse_cmp)
+  >>> print word_list[-12:]
+  ['toy', 'spy', 'cry', 'dry', 'fry', 'pry', 'try', 'buy', 'guy', 'ivy', 'Paz', 'Liz']
+
+Here's the second program.  In the first loop it collects up all the
+three-letter words in reversed form.  Next, it sorts the list of
+reversed words.  Then, in the second loop, it iterates over each
+position in the list using the variable ``i``, and replaces each item
+with its reverse.  We have now re-reversed the words, and can print
+them out.
+
+  >>> word_list = []
+  >>> for word in words.raw('en'):
+  ...     if len(word) == 3:
+  ...         word_list.append(reverse(word))
+  >>> word_list.sort()
+  >>> for i in range(len(word_list)):
+  ...     word_list[i] = reverse(word_list[i])
+  >>> print word_list[-12:]
+  ['toy', 'spy', 'cry', 'dry', 'fry', 'pry', 'try', 'buy', 'guy', 'ivy', 'Paz', 'Liz']
+
+Choosing between procedural and declarative styles is just that, a
+question of style.  There are no hard boundaries, and it is possible
+to mix the two.  Readers new to programming are encouraged to
+experiment with both styles, and to make the extra effort required to
+master higher-level constructs, such as list comprehensions, and
+built-in functions like ``map``.
+
+Debugging
+---------
+
+This task is known as *debugging*, since the problems are usually
+small relative to their impact, hard-to-find, and seem to take on a
+life of their own as the programmer tries to hunt them down.
+
+The first step is to isolate the problem.  If there was a run-time
+error, the Python interpreter will exit, providing a *stack-trace*
+which lists the most recently called functions with their line numbers.
+The simplest way to deal with such errors is to add print statements
+to the program just before the offending line, permitting you to inspect
+the values of variables (sometimes they are different to what you expected).
+
+Python also provides an interactive debugger called ``pdb``, which stands
+for Python debugger.  If your program is saved in a file ``myscript.py``,
+then you can access the debugger with ``python -m pdb myscript.py``.
+
+---------------
+Further Reading
+---------------
+
+Algorithmic Problem Solving
+---------------------------
+
+David Harel (2004).
+*Algorithmics: The Spirit of Computing* (Third Edition),
+Addison Wesley.
+
+Anany Levitin (2004).
+*The Design and Analysis of Algorithms*,
+Addison Wesley.
+
+---------
+Exercises
+---------
+
+Using the Python interpreter in interactive mode, satisfy yourself
+that you understand all the examples in the chapter.  Now complete
+the following questions.
+
+1. Write a program to sort words by length.  Define a helper function
+   ``cmp_len`` which uses the ``cmp`` comparison function on word
+   lengths.
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
