@@ -9,7 +9,7 @@ Introduction to Natural Language Processing
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
-:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Copyright: |copy| |copyrightinfo|
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
 .. Epigraph:: The single and shortest definition of civilization may

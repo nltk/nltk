@@ -9,7 +9,7 @@ Projects with NLTK-Lite
 :Version: |version|
 :Revision: $Revision$
 :Date: $Date$
-:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Copyright: |copy| |copyrightinfo|
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
 ------------

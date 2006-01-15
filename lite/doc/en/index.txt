@@ -7,7 +7,7 @@ NLTK-Lite Tutorials
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
-:Copyright: |copy| 2001-2005 University of Pennsylvania
+:Copyright: |copy| |copyrightinfo|
 :License: Creative Commons Attribution-NonCommercial-ShareAlike License
 
 --------
@@ -19,6 +19,7 @@ Contents
 #. [\ `HTML <programming.html>`__\ \|\ `PDF <programming.pdf>`__\ ] Programming
 #. [\ `HTML <tokenize.html>`__\ \|\ `PDF <tokenize.pdf>`__\ ] Tokenization
 #. [\ `HTML <tag.html>`__\ \|\ `PDF <tag.pdf>`__\ ] Tagging
+#. [\ `HTML <advanced.html>`__\ \|\ `PDF <advanced.pdf>`__\ ] Advanced Programming
 #. [\ `HTML <parse.html>`__\ \|\ `PDF <parse.pdf>`__\ ] Parsing
 #. [\ `HTML <chunk.html>`__\ \|\ `PDF <chunk.pdf>`__\ ] Chunk Parsing
 #. [\ `HTML <chart.html>`__\ \|\ `PDF <chart.pdf>`__\ ] Chart Parsing
