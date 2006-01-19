@@ -196,6 +196,9 @@ class ChunkParseI(ParseI):
 ##  Evaluation Helper
 ##//////////////////////////////////////////////////////
 
+# Patched for increased performance by Yoav Goldberg <yoavg@cs.bgu.ac.il>, 2006-01-13
+#  -- statistics are evaluated only on demand, instead of at every sentence evaluation
+
 class ChunkScore:
     """
     A utility class for scoring chunk parsers.  C{ChunkScore} can
@@ -268,9 +271,22 @@ class ChunkScore:
         self._fp_num = 0
         self._fn_num = 0
 
+        self._measuresNeedUpdate = False
+
     def _childtuple(self, t):
         return tuple(t.freeze())
 
+    
+    def _updateMeasures(self):
+        if (self._measuresNeedUpdate):
+           self._tp = self._guessed & self._correct
+           self._fn = self._correct - self._guessed
+           self._fp = self._guessed - self._correct
+           self._tp_num = len(self._tp)
+           self._fp_num = len(self._fp)
+           self._fn_num = len(self._fn)
+           self._measuresNeedUpdate = False
+    
     def score(self, correct, guessed):
         """
         Given a correctly chunked sentence, score another chunked
@@ -282,18 +298,13 @@ class ChunkScore:
         @type guessed: chunk structure
         @param guessed: The chunked sentence to be scored.
         """
-	
+	     
         self._correct |= set([self._childtuple(t) for t in correct
                                if isinstance(t, Tree)])
         self._guessed |= set([self._childtuple(t) for t in guessed
                                if isinstance(t, Tree)])
+        self._measuresNeedUpdate = True
 
-        self._tp = self._guessed & self._correct
-        self._fn = self._correct - self._guessed
-        self._fp = self._guessed - self._correct
-        self._tp_num = len(self._tp)
-        self._fp_num = len(self._fp)
-        self._fn_num = len(self._fn)
 
     def precision(self):
         """
@@ -301,6 +312,7 @@ class ChunkScore:
             scored by this C{ChunkScore}.
         @rtype: C{float}
         """
+        self._updateMeasures()
         div = self._tp_num + self._fp_num
         if div == 0: return 0
         else: return float(self._tp_num) / div
@@ -311,6 +323,7 @@ class ChunkScore:
             scored by this C{ChunkScore}.
         @rtype: C{float}
         """
+        self._updateMeasures()
         div = self._tp_num + self._fn_num
         if div == 0: return 0
         else: return float(self._tp_num) / div
@@ -327,6 +340,7 @@ class ChunkScore:
             value.  C{alpha} should have a value in the range [0,1].
         @type alpha: C{float}
         """
+        self._updateMeasures()
         p = self.precision()
         r = self.recall()
         if p == 0 or r == 0:    # what if alpha is 0 or 1?
@@ -342,6 +356,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the missed chunks.
         """
+        self._updateMeasures()
         return list(self._fn)
     
     def incorrect(self):
@@ -353,6 +368,7 @@ class ChunkScore:
             spanning the chunk.  This encoding makes it easier to
             examine the incorrect chunks.
         """
+        self._updateMeasures()
         return list(self._fp)
     
     def correct(self):
@@ -376,6 +392,7 @@ class ChunkScore:
         return list(self._guessed)
 
     def __len__(self):
+        self._updateMeasures()
         return self._tp_num + self._fn_num
     
     def __repr__(self):
