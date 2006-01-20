@@ -27,54 +27,59 @@ It contains many working program fragments which you should try yourself.
 Advanced Python
 ---------------
 
-
-List Comprehensions
--------------------
-
-Many language processing tasks involve applying the same operation to
-every item in a list.
-
-  >>> from nltk_lite import tokenize
-  >>> stemmer = tokenize.RegexpStemmer('ing$|s$|e$')
-
-
-
-  >>> sent = ['The', 'dog', 'gave', 'John', 'the', 'newspaper']
-  >>> [word.lower() for word in sent]
-  ['the', 'dog', 'gave', 'john', 'the', 'newspaper']
-
-As another example, we could remove all determiners from a list of
-words:
-
-  >>> def is_determiner(word):
-  ...     return word.lower() in ('a', 'an', 'the')
-  >>> [word for word in sent if not is_determiner(word)]
-  ['dog', 'gave', 'John', 'newspaper']
-
-
-Combining the transformations...
-
-  >>> [word.lower() for word in sent if not is_determiner(word)]
-  ['dog', 'gave', 'john', 'newspaper']
-
-
-This applies the ``len`` function to every item in ``b``.
-The following code builds a list of tuples, where each tuple consists
-of a word and its length.
-
-  >>> [(x, len(x)) for x in b]
-  [('sleep', 5), ('ideas', 5), ('green', 5), ('furiously', 9), ('colourless', 10)]
-
-
-
 List Operations
 ---------------
 
 There are plenty of more sophisticated operations we can perform with
 lists and strings, e.g.:
 
-  >>> map(len, b)
-  [5, 5, 5, 9, 10]
+  >>> sent = ['The', 'dog', 'gave', 'John', 'the', 'newspaper']
+  >>> map(len, sent)
+  [3, 3, 4, 4, 3, 9]
+
+
+List Comprehensions
+-------------------
+
+Many language processing tasks involve applying the same operation to
+every item in a list.  Here we lowercase each word:
+
+  >>> [word.lower() for word in sent]
+  ['the', 'dog', 'gave', 'john', 'the', 'newspaper']
+
+As another example, we could remove all determiners from a list of
+words:
+
+  >>> def is_lexical(word):
+  ...     return word.lower() not in ('a', 'an', 'the', 'that', 'to')
+  >>> [word for word in sent if is_lexical(word)]
+  ['dog', 'gave', 'John', 'newspaper']
+
+Or equivalently:
+
+  >>> filter(is_lexical, sent)
+  ['dog', 'gave', 'John', 'newspaper']
+
+
+Combining the transformations...
+
+  >>> [word.lower() for word in sent if is_lexical(word)]
+  ['dog', 'gave', 'john', 'newspaper']
+
+
+.. Another example: stemming each word:
+..   >>> from nltk_lite import tokenize
+..   >>> stemmer = tokenize.RegexpStemmer('ing$|s$|e$')
+
+The following code builds a list of tuples, where each tuple consists
+of a word and its length.
+
+  >>> [(x, len(x)) for x in sent]
+  [('The', 3), ('dog', 3), ('gave', 4), ('John', 4), ('the', 3), ('newspaper', 9)]
+
+
+
+
 
 
 
@@ -182,9 +187,10 @@ ways, with implications for efficiency.  Another factor influencing
 program development is *programming style*.  Consider the following
 program to compute the average length of words in the Brown Corpus:
 
+  >>> from nltk_lite.corpora import brown
   >>> count = 0
   >>> total = 0
-  >>> for sent in brown.raw():
+  >>> for sent in brown.raw('a'):
   ...     for token in sent:
   ...         count += 1
   ...         total += len(token)
@@ -201,7 +207,7 @@ We say that this program is written in a *procedural* style, dictating
 the machine operations step by step.  Now consider the following
 program which computes the same thing:
 
-  >>> tokens = [token for sent in brown.raw() for token in sent]
+  >>> tokens = [token for sent in brown.raw('a') for token in sent]
   >>> total = sum(map(len, tokens))
   >>> print float(total)/len(tokens)
   4.2765382469
@@ -221,24 +227,25 @@ distinction.  Notice again that the procedural version
 involves low-level steps and a variable having meaningless
 intermediate values:
 
-  >>> words = []
-  >>> for sent in brown.raw():
+  >>> word_list = []
+  >>> for sent in brown.raw('a'):
   ...     for token in sent:
-  ...         if token not in words:
-  ...             words.append(token)
-  ... words.sort()
+  ...         if token not in word_list:
+  ...             word_list.append(token)
+  >>> word_list.sort()
 
 The declarative version (given second) makes use of higher-level
 built-in functions:
 
-  >>> words = set(brown.raw())
-  >>> words.sort()
+  >>> tokens = [word for sent in brown.raw('a') for word in sent]
+  >>> word_list = list(set(tokens))
+  >>> word_list.sort()
 
 What do these programs compute?  Which version was easier to
 interpret?
 
 Consider one further example, which sorts three-letter words by their
-final letters.  The words come from the widely-used Unix wordlist,
+final letters.  The words come from the widely-used Unix word-list,
 made available as an NLTK corpus called ``words``.  Two words ending
 with the same letter will be sorted according to their second-last
 letters.  The result of this sort method is that rhyming words will be
@@ -261,7 +268,7 @@ use ``reverse_cmp`` instead of ``cmp`` (the default).
   >>> from nltk_lite.corpora import words
   >>> def reverse_cmp(x,y):
   ...     return cmp(reverse(x), reverse(y))
-  >>> word_list = [word for word in words.raw('en') if len(w) == 3]
+  >>> word_list = [word for word in words.raw('en') if len(word) == 3]
   >>> word_list.sort(reverse_cmp)
   >>> print word_list[-12:]
   ['toy', 'spy', 'cry', 'dry', 'fry', 'pry', 'try', 'buy', 'guy', 'ivy', 'Paz', 'Liz']
