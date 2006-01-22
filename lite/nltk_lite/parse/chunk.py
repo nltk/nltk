@@ -273,10 +273,6 @@ class ChunkScore:
 
         self._measuresNeedUpdate = False
 
-    def _childtuple(self, t):
-        return tuple(t.freeze())
-
-    
     def _updateMeasures(self):
         if (self._measuresNeedUpdate):
            self._tp = self._guessed & self._correct
@@ -299,10 +295,8 @@ class ChunkScore:
         @param guessed: The chunked sentence to be scored.
         """
 	     
-        self._correct |= set([self._childtuple(t) for t in correct
-                               if isinstance(t, Tree)])
-        self._guessed |= set([self._childtuple(t) for t in guessed
-                               if isinstance(t, Tree)])
+        self._correct |= _chunksets(correct)
+        self._guessed |= _chunksets(guessed)
         self._measuresNeedUpdate = True
 
 
@@ -421,6 +415,19 @@ class ChunkScore:
         @return: The list of tokens contained in C{text}.
         """
         return [tok for tok in text if isinstance(tok, AbstractTree)]
+
+# extract chunks, and assign unique id, the absolute position of
+# the first word of the chunk
+def _chunksets(t):
+    pos = 0
+    chunks = []
+    for child in t:
+        if isinstance(child, Tree):
+            chunks.append((pos, tuple(child.freeze())))
+            pos += len(child)
+        else:
+            pos += 1
+    return set(chunks)
 
 ##//////////////////////////////////////////////////////
 ##  Precompiled regular expressions
@@ -1282,7 +1289,7 @@ def demo_eval(chunkparser, text):
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
-    from tree import *
+    from tree import chunk
     
     for sentence in text.split('\n'):
         sentence = sentence.strip()
@@ -1332,7 +1339,8 @@ def demo():
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
     [ The/DT cats/NNS ] ./.
-    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./."""
+    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
+    [ John/NNP ] saw/VBD [the/DT cat/NN] the/DT cat/NN liked/VBD ./."""
 
     print '*'*75
     print 'Evaluation text:'
