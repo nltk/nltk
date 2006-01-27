@@ -302,22 +302,24 @@ successively updating the chunk structure.  Once all of the rules have
 been applied, the resulting chunk structure is stored in the specified
 property of the token.
     
-Chunk rules are defined in terms of regular expression patterns over
-"tag strings."  A *tag string* is a string consisting of tags,
-delimited with angle-brackets, e.g.: ``<DT><JJ><NN><VBD><DT><NN>``.
-(Note that tag strings do not contain any whitespace.)  Chunk rules
-are defined using a special kind of regular expression pattern, called
-a *tag pattern*.  Tag patterns are identical to the regular expression
+In order to define chunk rules, we first need to introduce the notion of 
+"tag strings."  A *tag string* is a string consisting of tags
+delimited with angle-brackets, e.g., ``<DT><JJ><NN><VBD><DT><NN>``.
+(Note that tag strings do not contain any whitespace.)  We can now create 
+a special kind of regular expression pattern over tag strings, called
+a *tag pattern*.  An example of a tag pattern is 
+``<DT><JJ><NN>?``. Tag patterns are identical to the regular expression
 patterns we have already seen, except for three differences which make
-them easier to use for chunk parsing.  First, The angle brackets group
+them easier to use for chunk parsing.  First, the angle brackets group
 their contents into atomic units, so "``<NN>+``" matches one or more
-repetitions of "``<NN>``"; and "``<NN|JJ>``" matches "``<NN>``" or
+repetitions of the tag string "``<NN>``"; and "``<NN|JJ>``" matches the tag strings "``<NN>``" or
 "``<JJ>``."  Second, the period wildcard operator is constrained not
 to cross tag boundaries, so that "``<NN.*>``" matches any single
 tag starting with "``NN``."  Finally, whitespace is ignored in tag
 patterns, so "``<DT> | <NN>``" is equivalent to
-"``<DT>|<NN>``".  This allows tag patterns to be formatted to
-improve readability.
+"``<DT>|<NN>``"; this allows tag patterns to be formatted to
+improve readability. (Note however that ``<DT> <JJ> | <NN>`` is not permitted, since this
+introduces whitespace into the tag string to the left of the disjunction ``|``.)
     
 Now that we can define tag patterns, it is a straightforward matter to
 set up an NLTK-Lite chunk parser.  The simplest type of rule is
