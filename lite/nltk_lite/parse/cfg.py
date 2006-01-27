@@ -339,9 +339,18 @@ class Grammar:
             str += '\n    %s' % production
         return str
 
-_PARSE_RE = re.compile(r'^(\w+)\s*' + r'(?:-+>|=+>)\s*' + 
-                       r'(?:("[\w\' ]+"|\'[\w ]+\'|\w+|\|)\s*)*$')
-_SPLIT_RE = re.compile(r'(\w+|-+>|=+>|"[\w\' ]+"|\'[\w ]+\'|\|)')
+_PARSE_RE = re.compile(r'''^(\w+)\s*           # lhs
+                          (?:-+>|=+>)\s*       # arrow
+                          (?:(                 # rhs:
+                               "[^"]+"         # doubled-quoted terminal
+                               |'[^']+'        # single-quoted terminal
+                               |\w+|           # non-terminal
+                               \|              # disjunction
+                             )
+                             \s*)              # trailing space
+                             *$''',
+                       re.VERBOSE)
+_SPLIT_RE = re.compile(r'''(\w+|-+>|=+>|"[^"]+"|'[^']+'|\|)''')
 
 def parse_production(s):
     """
