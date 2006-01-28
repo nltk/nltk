@@ -39,7 +39,7 @@ import types, math, numarray
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////
 
-class FreqDist:
+class FreqDist(object):
     """
     A frequency distribution for the outcomes of an experiment.  A
     frequency distribution records the number of times each outcome of
@@ -256,7 +256,7 @@ class FreqDist:
 ##  Probability Distributions
 ##//////////////////////////////////////////////////////
 
-class ProbDistI:
+class ProbDistI(object):
     """
     A probability distribution for the outcomes of an experiment.  A
     probability distribution specifies how likely it is that an
@@ -1059,7 +1059,7 @@ def log_likelihood(test_pdist, actual_pdist):
 ##  Conditional Distributions
 ##//////////////////////////////////////////////////////
 
-class ConditionalFreqDist:
+class ConditionalFreqDist(object):
     """
     A collection of frequency distributions for a single experiment
     run under different conditions.  Conditional frequency
@@ -1150,7 +1150,7 @@ class ConditionalFreqDist:
         n = len(self._fdists)
         return '<ConditionalFreqDist with %d conditions>' % n
 
-class ConditionalProbDistI:
+class ConditionalProbDistI(object):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability
@@ -1336,7 +1336,7 @@ def sum_logs(logs):
 ##  Probabilistic Mix-in
 ##//////////////////////////////////////////////////////
 
-class ProbabilisticMixIn:
+class ProbabilisticMixIn(object):
     """
     A mix-in class to associate probabilities with other classes
     (trees, rules, etc.).  To use the C{ProbabilisticMixIn} class,

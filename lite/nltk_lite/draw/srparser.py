@@ -83,7 +83,7 @@ from nltk_lite import tokenize
 from Tkinter import *
 import tkFont
         
-class ShiftReduceDemo:
+class ShiftReduceDemo(object):
     """
     A graphical tool for exploring the shift/reduce parser.  The tool
     displays the parser's stack and the remaining text, and allows the

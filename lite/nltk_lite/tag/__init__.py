@@ -13,7 +13,7 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TaggerI} interface.
 """
 
-class TagI:
+class TagI(object):
     """
     A processing interface for assigning a tag to each token in a list.
     Tags are case sensitive strings that identify some property of each

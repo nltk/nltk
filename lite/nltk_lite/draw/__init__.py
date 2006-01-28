@@ -52,7 +52,7 @@ from Tkinter import *
 ##  CanvasWidget
 ##//////////////////////////////////////////////////////
 
-class CanvasWidget:
+class CanvasWidget(object):
     """
     A collection of graphical elements and bindings used to display a
     complex object on a Tkinter C{Canvas}.  A canvas widget is
@@ -1590,7 +1590,7 @@ class ScrollWatcherWidget(CanvasWidget):
 ##  Canvas Frame
 ##//////////////////////////////////////////////////////
 
-class CanvasFrame:
+class CanvasFrame(object):
     """
     A C{Tkinter} frame containing a canvas and scrollbars.
     C{CanvasFrame} uses a C{ScrollWatcherWidget} to ensure that all of
@@ -1791,7 +1791,7 @@ class CanvasFrame:
 ##  Text display
 ##//////////////////////////////////////////////////////
 
-class ShowText:
+class ShowText(object):
     """
     A C{Tkinter} window used to display a text.  C{ShowText} is
     typically used by graphical tools to display help text, or similar
@@ -1871,7 +1871,7 @@ class ShowText:
 ##  Entry dialog
 ##//////////////////////////////////////////////////////
 
-class EntryDialog:
+class EntryDialog(object):
     """
     A dialog box for entering 
     """
@@ -1945,7 +1945,7 @@ class EntryDialog:
 ##  Colorized List
 ##//////////////////////////////////////////////////////
 
-class ColorizedList:
+class ColorizedList(object):
     """
     An abstract base class for displaying a colorized list of items.
     Subclasses should define:

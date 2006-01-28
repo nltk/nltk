@@ -50,7 +50,7 @@ from nltk_lite.parse import cfg
 ##  Edges
 ########################################################################
 
-class EdgeI:
+class EdgeI(object):
     """
     A hypothesis about the structure of part of a sentence.
     Each edge records the fact that a structure is (partially)
@@ -352,7 +352,7 @@ class LeafEdge(EdgeI):
 ##  Chart
 ########################################################################
 
-class Chart:
+class Chart(object):
     """
     A blackboard for hypotheses about the syntactic constituents of a
     sentence.  A chart contains a set of edges, and each edge encodes
@@ -805,7 +805,7 @@ class Chart:
 ##  Chart Rules
 ########################################################################
 
-class ChartRuleI:
+class ChartRuleI(object):
     """
     A rule that specifies what new edges are licensed by any given set
     of existing edges.  Each chart rule expects a fixed number of
@@ -876,7 +876,7 @@ class ChartRuleI:
         """
         raise AssertionError, 'ChartRuleI is an abstract interface'
         
-class AbstractChartRule:
+class AbstractChartRule(object):
     """
     An abstract base class for chart rules.  C{AbstractChartRule}
     provides:

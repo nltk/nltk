@@ -47,7 +47,7 @@ three sub-modules for specialized kinds of parsing:
 ##//////////////////////////////////////////////////////
 ##  Parser Interface
 ##//////////////////////////////////////////////////////
-class ParseI:
+class ParseI(object):
     """
     A processing class for deriving trees that represent possible
     structures for a sequence of tokens.  These tree structures are
