@@ -396,9 +396,9 @@ def demo():
     print
     print 'Draw parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
-        from nltk_lite import draw
+        from nltk_lite.draw.tree import draw_trees
         print '  please wait...'
-        draw.tree.draw_trees(*parses)
+        draw_trees(*parses)
 
     # Ask the user if we should print the parses.
     print
