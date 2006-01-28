@@ -66,19 +66,7 @@ with the right hand side (M{rhs}) in a tree (M{tree}) is known as
 X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
-from types import InstanceType
 import re
-
-
-def _classeq(instance1, instance2):
-    """
-    @return: true iff the given objects are instances of the same
-        class.
-    @rtype: C{bool}
-    """
-    return (type(instance1) == InstanceType and
-            type(instance2) == InstanceType and
-            instance1.__class__ == instance2.__class__)
 
 
 #################################################################
@@ -131,8 +119,11 @@ class Nonterminal:
             symbol.
         @rtype: C{boolean}
         """
-        return (self is other or _classeq(self, other) and
-                self._symbol == other._symbol)
+        try:
+            return ((self._symbol == other._symbol) \
+                    and isinstance(other, self.__class__))
+        except AttributeError:
+            return False
 
     def __ne__(self, other):
         """
@@ -282,15 +273,15 @@ class Production:
         @return: true if this C{Production} is equal to C{other}.
         @rtype: C{boolean}
         """
-        return (_classeq(self, other) and
+        return (isinstance(other, self.__class__) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs)
-
+                 
     def __ne__(self, other):
         return not (self == other)
 
     def __cmp__(self, other):
-        if not _classeq(self, other): return -1
+        if not isinstance(other, self.__class__): return -1
         return cmp((self._lhs, self._rhs), (other._lhs, other._rhs))
 
     def __hash__(self):

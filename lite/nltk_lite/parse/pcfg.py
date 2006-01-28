@@ -40,7 +40,7 @@ class Production(cfg.Production, ImmutableProbabilisticMixIn):
         return cfg.Production.__str__(self) + ' (p=%s)' % self.prob()
 
     def __eq__(self, other):
-        return (_classeq(self, other) and
+        return (isinstance(other, self.__class__) and
                 self._lhs == other._lhs and
                 self._rhs == other._rhs and
                 self.prob() == other.prob())
