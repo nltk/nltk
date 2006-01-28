@@ -1336,6 +1336,9 @@ def demo():
     parsed with four different chunk parsers, using a variety of rules
     and strategies.
     """
+
+    from nltk_lite.parse import chunk
+
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
     [ The/DT cats/NNS ] ./.
@@ -1348,31 +1351,31 @@ def demo():
     print '*'*75
 
     # Use a simple regexp to define regular expressions.
-    r1 = ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
-    cp = RegexpChunk([r1], chunk_node='NP', top_node='S', trace=1)
-    demo_eval(cp, text)
+    r1 = chunk.ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
+    cp = chunk.RegexpChunk([r1], chunk_node='NP', top_node='S', trace=1)
+    chunk.demo_eval(cp, text)
     print
 
     # Use a chink rule to remove everything that's *not* an NP
-    r1 = ChunkRule(r'<.*>+', 'Chunk everything')
-    r2 = ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
-    cp = RegexpChunk([r1, r2], chunk_node='NP', top_node='S', trace=1)
-    demo_eval(cp, text)
+    r1 = chunk.ChunkRule(r'<.*>+', 'Chunk everything')
+    r2 = chunk.ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
+    cp = chunk.RegexpChunk([r1, r2], chunk_node='NP', top_node='S', trace=1)
+    chunk.demo_eval(cp, text)
     print
 
     # Unchunk non-NP words, and then merge consecutive NPs
-    r1 = ChunkRule(r'(<.*>)', 'Chunk each tag')
-    r2 = UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
-    r3 = MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
-    cp = RegexpChunk([r1,r2,r3], chunk_node='NP', top_node='S', trace=1)
-    demo_eval(cp, text)
+    r1 = chunk.ChunkRule(r'(<.*>)', 'Chunk each tag')
+    r2 = chunk.UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
+    r3 = chunk.MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
+    cp = chunk.RegexpChunk([r1,r2,r3], chunk_node='NP', top_node='S', trace=1)
+    chunk.demo_eval(cp, text)
     print
 
     # Chunk sequences of NP words, and split them at determiners
-    r1 = ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
-    r2 = SplitRule('', r'<DT>', 'Split before DT')
-    cp = RegexpChunk([r1,r2], chunk_node='NP', top_node='S', trace=1)
-    demo_eval(cp, text)
+    r1 = chunk.ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
+    r2 = chunk.SplitRule('', r'<DT>', 'Split before DT')
+    cp = chunk.RegexpChunk([r1,r2], chunk_node='NP', top_node='S', trace=1)
+    chunk.demo_eval(cp, text)
     print
 
 if __name__ == '__main__':
