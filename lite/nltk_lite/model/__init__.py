@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-class ModelI:
+class ModelI(object):
     """
     A processing interface for assigning a probability to the next word.
     """

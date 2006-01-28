@@ -30,7 +30,7 @@ from nltk_lite import parse
 from nltk_lite.parse import cfg
 from re import *
 
-class ParadigmQuery:
+class ParadigmQuery(object):
     """
     Class to read and parse a paradigm visualisation query
     """
@@ -182,7 +182,7 @@ class ParadigmQuery:
 
 # Additional Classes for handling The various types of recursive operations
 
-class QuerySentence:
+class QuerySentence(object):
     """
     Handles the XML export of sentences
     """
@@ -222,7 +222,7 @@ class QuerySentence:
         return self.child.toXML()
 
 
-class QueryDomain:
+class QueryDomain(object):
     """
     Handles the XML export of the domain operation
     """
@@ -240,7 +240,7 @@ class QueryDomain:
         return self.content
 
 
-class QueryHierarchy:
+class QueryHierarchy(object):
     """
     Handles the XML export of the hierarchy operation
     """
@@ -266,7 +266,7 @@ class QueryHierarchy:
                + '</operator>'
 
 
-class QueryTable:
+class QueryTable(object):
     """
     Handles the XML export of the hierarchy operation
     """

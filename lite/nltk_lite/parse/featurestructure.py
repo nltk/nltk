@@ -70,7 +70,7 @@ from types import NoneType
 # Variables and variable bindings
 #//////////////////////////////////////////////////////////////////////
 
-class FeatureVariable:
+class FeatureVariable(object):
     """
     A variable that can stand for a single feature value in a feature
     structure.  Each variable is defined by a unique identifier, which
@@ -241,7 +241,7 @@ class AliasedFeatureVariable(FeatureVariable):
     def __hash__(self):
         return self._aliases.__hash__()
 
-class FeatureBindings:
+class FeatureBindings(object):
     """
     A partial mapping from feature variables to values.  Simple
     variables can be either X{bound} (i.e., assigned a value), or
@@ -377,7 +377,7 @@ class FeatureBindings:
                    (other._bindings, other._synonyms))
 
 # Feature structures use identity-based-equality.
-class FeatureStructure:
+class FeatureStructure(object):
     """
     A structured set of features.  These features are represented as a
     mapping from feature names to feature values, where each feature

@@ -73,7 +73,7 @@ import re
 # Nonterminal
 #################################################################
 
-class Nonterminal:
+class Nonterminal(object):
     """
     A non-terminal symbol for a context free grammar.  C{Nonterminal}
     is a wrapper class for node values; it is used by
@@ -194,7 +194,7 @@ def nonterminals(symbols):
 # Production and Grammar
 #################################################################
 
-class Production:
+class Production(object):
     """
     A context-free grammar production.  Each production
     expands a single C{Nonterminal} (the X{left-hand side}) to a
@@ -292,7 +292,7 @@ class Production:
         return self._hash
 
 
-class Grammar:
+class Grammar(object):
     """
     A context-free grammar.  A Grammar consists of a start state and a set
     of productions.  The set of terminals and nonterminals is

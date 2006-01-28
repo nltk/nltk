@@ -73,7 +73,7 @@ _NINF = float('-inf')
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
 
-class HiddenMarkovModel:
+class HiddenMarkovModel(object):
     """
     Hidden Markov model class, a generative model for labelling sequence data.
     These models define the joint probability of a sequence of symbols and
@@ -519,7 +519,7 @@ class HiddenMarkovModel:
         return '<HiddenMarkovModel %d states and %d output symbols>' \
                 % (len(self._states), len(self._symbols))
 
-class HiddenMarkovModelTrainer:
+class HiddenMarkovModelTrainer(object):
     """
     Algorithms for learning HMM parameters from training data. These include
     both supervised learning (MLE) and unsupervised learning (Baum-Welch).

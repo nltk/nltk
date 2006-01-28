@@ -87,7 +87,7 @@ class Brill(TagI):
 ## Brill Rules
 ######################################################################
 
-class BrillRuleI:
+class BrillRuleI(object):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by brill taggers.  Each transformation finds all tokens
@@ -375,7 +375,7 @@ class ProximateWordsRule(ProximateTokensRule):
 ## Brill Templates
 ######################################################################
 
-class BrillTemplateI:
+class BrillTemplateI(object):
     """
     An interface for generating lists of transformational rules that
     apply at given corpus positions.  C{BrillTemplateI} is used by
@@ -569,7 +569,7 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
 ## Brill Tagger Trainer
 ######################################################################
 
-class BrillTrainer:
+class BrillTrainer(object):
     """
     A trainer for brill taggers.
     """
@@ -764,7 +764,7 @@ class BrillTrainer:
 ## Fast Brill Tagger Trainer
 ######################################################################
 
-class FastBrillTrainer:
+class FastBrillTrainer(object):
     """
     A faster trainer for brill taggers.
     """

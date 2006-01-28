@@ -16,7 +16,7 @@ __license__ = 'GPL'
 class Error(Exception): pass
 
 
-class Variable:
+class Variable(object):
     """A variable, either free or bound."""
     
     def __init__(self, name):
@@ -30,65 +30,7 @@ class Variable:
     def __str__(self): return self.name
 
 
-class Set:
-    """A collection of unique objects, with uniqueness determined by an
-    equals method."""
-    
-    def __init__(self, seq=None):
-        if seq is None:
-            seq = []
-        self.items = seq
-
-    def __contains__(self, x):
-        """Is x contained in this set?"""
-        for element in self.items:
-            if x.equals(element):
-                return 1
-        return 0
-
-    def __len__(self): return len(self.items)
-    def __getitem__(self, index): return self.items[index]
-
-    def add(self, x):
-        """Add an object to the list."""
-        if not x in self:
-            self.items.append(x)
-
-    def remove(self, x):
-        """Remove an object from the list."""
-        # Must remove by equality, not identity.
-        for element in self.items:
-            if x.equals(element):
-                self.items.remove(element)
-                return
-
-    def unionWith(self, other):
-        """Perform the union of self and other, replacing self."""
-        for x in other:
-            self.add(x)
-
-    def intersectWith(self, other):
-        """Perform the intersection of self and other, replacing self."""
-        for x in self:
-            if not x in other:
-                self.remove(x)
-
-    def sort(self, function=None):
-        """Sort the elements of the set according to some comparison
-        function.  Sorting simply changes the order in which the elements
-        are printed, nothing more."""
-        if function is None:
-            function = lambda x, y: cmp(str(x), str(y))
-        self.items.sort(function)
-
-    def __str__(self):
-        return '[%s]' % (', '.join([str(x) for x in self.items]))
-
-    def __repr__(self):
-        return '[%s]' % (', '.join([repr(x) for x in self.items]))
-
-
-class Expression:
+class Expression(object):
     """The abstract class of a lambda calculus expression."""
     def __init__(self):
         if self.__class__ is Expression:
@@ -267,7 +209,7 @@ class ApplicationExpression(Expression):
         return self.__str__()
 
 
-class Parser:
+class Parser(object):
     """A lambda calculus expression parser."""
 
     # Tokens.

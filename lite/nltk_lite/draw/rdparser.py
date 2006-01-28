@@ -77,7 +77,7 @@ from Tkinter import *
 
 
         
-class RecursiveDescentDemo:
+class RecursiveDescentDemo(object):
     """
     A graphical tool for exploring the recursive descent parser.  The tool
     displays the parser's tree and the remaining text, and allows the

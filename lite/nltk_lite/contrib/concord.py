@@ -10,7 +10,7 @@ from math import *
 import re
 from nltk_lite.probability import *
 
-class SentencesIndex:
+class SentencesIndex(object):
     """Class implementing an index of a collection of sentences.
 
     Given a list of sentences, where each sentence is a list of words,
@@ -61,7 +61,7 @@ class SentencesIndex:
         """
         return self.lengths
 
-class IndexConcordance:
+class IndexConcordance(object):
     """ Class that generates concordances from a list of sentences.
 
     Uses an index for efficiency. If a SentencesIndex object is provided,
@@ -548,7 +548,7 @@ class IndexConcordance:
         else:
             return False
 
-class Aggregator:
+class Aggregator(object):
     """ Class for aggregating and summarising corpus concordance data.
 
     This class allows one or more sets of concordance data to be summarised and

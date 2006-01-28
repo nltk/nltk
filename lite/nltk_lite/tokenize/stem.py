@@ -25,7 +25,7 @@ import re
 ##  Stemmer Interface
 ##//////////////////////////////////////////////////////
 
-class StemmerI:
+class StemmerI(object):
     """
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
