@@ -90,7 +90,7 @@ class EdgeList(ColorizedList):
 # Chart Matrix View
 #######################################################################
 
-class ChartMatrixView:
+class ChartMatrixView(object):
     """
     A view of a chart that displays the contents of the corresponding matrix.
     """
@@ -316,7 +316,7 @@ class ChartMatrixView:
 # Chart Results View
 #######################################################################
 
-class ChartResultsView:
+class ChartResultsView(object):
     def __init__(self, parent, chart, grammar, toplevel=True):
         self._chart = chart
         self._grammar = grammar
@@ -455,7 +455,7 @@ class ChartResultsView:
 # Chart Comparer
 #######################################################################
 
-class ChartComparer:
+class ChartComparer(object):
     """
 
     @ivar _root: The root window
@@ -837,7 +837,7 @@ class ChartComparer:
 # Chart View
 #######################################################################
 
-class ChartView:
+class ChartView(object):
     """
     A component for viewing charts.  This is used by C{ChartDemo} to
     allow students to interactively experiment with various chart
@@ -1619,7 +1619,7 @@ class PseudoEarleyInitRule(TopDownInitRule):
 # These version of the chart rules only apply to a specific edge.
 # This lets the user select an edge, and then apply a rule.
 
-class EdgeRule:
+class EdgeRule(object):
     """
     To create an edge rule, make an empty base class that uses
     EdgeRule as the first base class, and the basic rule as the
@@ -1648,7 +1648,7 @@ class PseudoEarleyEdgeRule(EdgeRule, PseudoEarleyRule): pass
 # Chart Demo
 #######################################################################
 
-class ChartDemo:
+class ChartDemo(object):
     def __init__(self, grammar, tokens, title='Chart Parsing Demo'):
         # Initialize the parser
         self._init_parser(grammar, tokens)

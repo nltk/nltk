@@ -129,7 +129,7 @@ the CFG:
 
 """
 
-class CFGEditor:
+class CFGEditor(object):
     """
     A dialog window for creating and editing context free grammars.
     C{CFGEditor} places the following restrictions on what C{CFG}s can
@@ -508,7 +508,7 @@ class CFGEditor:
 # New Demo (built tree based on cfg)
 ######################################################################
 
-class CFGDemo:
+class CFGDemo(object):
     def __init__(self, grammar, text):
         self._grammar = grammar
         self._text = text

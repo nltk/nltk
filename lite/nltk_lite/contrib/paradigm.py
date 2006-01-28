@@ -25,7 +25,7 @@ from xml.dom.ext.reader import Sax2
 from paradigmquery import ParadigmQuery
 import re, os
 
-class Paradigm:
+class Paradigm(object):
     """
     Paradigm visualisation class
 
@@ -252,7 +252,7 @@ class Paradigm:
 
         return
 
-class Sentence:
+class Sentence(object):
     """
     Manages any operation
     Passes request onto other handlers if necessary

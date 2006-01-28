@@ -199,7 +199,7 @@ class ChunkParseI(ParseI):
 # Patched for increased performance by Yoav Goldberg <yoavg@cs.bgu.ac.il>, 2006-01-13
 #  -- statistics are evaluated only on demand, instead of at every sentence evaluation
 
-class ChunkScore:
+class ChunkScore(object):
     """
     A utility class for scoring chunk parsers.  C{ChunkScore} can
     evaluate a chunk parser's output, based on a number of statistics
@@ -443,7 +443,7 @@ _VALID_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
 ##  ChunkString
 ##//////////////////////////////////////////////////////
 
-class ChunkString:
+class ChunkString(object):
     """
     A string-based encoding of a particular chunking of a text.
     Internally, the C{ChunkString} class uses a single string to
@@ -785,7 +785,7 @@ def tag_pattern2re_pattern(tag_pattern):
 
     return tag_pattern
 
-class RegexpChunkRule:
+class RegexpChunkRule(object):
     """
     A rule specifying how to modify the chunking in a C{ChunkString},
     using a transformational regular expression.  The
@@ -1289,12 +1289,12 @@ def demo_eval(chunkparser, text):
     # Evaluate our chunk parser.
     chunkscore = ChunkScore()
 
-    from tree import chunk
+    from nltk_lite.parse import tree
     
     for sentence in text.split('\n'):
         sentence = sentence.strip()
         if not sentence: continue
-        gold = chunk(sentence)
+        gold = tree.chunk(sentence)
         tokens = gold.leaves()
         test = chunkparser.parse(tokens)
         chunkscore.score(gold, test)

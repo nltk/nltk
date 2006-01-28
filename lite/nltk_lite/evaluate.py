@@ -118,7 +118,7 @@ def log_likelihood(reference, test):
                             for (val, dist) in zip(reference, test)])
     return total_likelihood/len(reference)
 
-class ConfusionMatrix:
+class ConfusionMatrix(object):
     """
     The confusion matrix between a list of reference values and a
     corresponding list of test values.  Entry [M{r},M{t}] of this

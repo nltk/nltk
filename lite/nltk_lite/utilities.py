@@ -94,7 +94,7 @@ def edit_dist(s1, s2):
 # MINIMAL SETS
 ##########################################################################
 
-class MinimalSet:
+class MinimalSet(object):
     """
     Find contexts where more than one possible target value can
     appear.  E.g. if targets are word-initial letters, and contexts

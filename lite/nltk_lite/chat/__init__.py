@@ -37,7 +37,7 @@ reflections = {
   "me"     : "you"
 }
 
-class Chat:
+class Chat(object):
     def __init__(self, pairs, reflections={}):
         """
         Initialize the chatbot.  Pairs is a list of patterns and responses.  Each

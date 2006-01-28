@@ -68,7 +68,7 @@ from math import log, log10, ceil, floor
 import Tkinter, sys, time
 from nltk_lite.draw import ShowText, in_idle
 
-class PlotFrameI:
+class PlotFrameI(object):
     """
     A frame for plotting graphs.  If BLT is present, then we use
     BLTPlotFrame, since it's nicer.  But we fall back on
@@ -443,7 +443,7 @@ class BLTPlotFrame(PlotFrameI):
         self._graph.postscript_output(filename)
 
 
-class Plot:
+class Plot(object):
     """
     A simple graphical tool for plotting functions.  Each new C{Plot}
     object opens a new window, containing the plot for a sinlge

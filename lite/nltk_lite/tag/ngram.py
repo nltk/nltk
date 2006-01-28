@@ -21,7 +21,7 @@ from nltk_lite.tag import *
 # N-GRAM TAGGERS: these make use of history
 ##############################################################
 
-class Queue:
+class Queue(object):
     def __init__(self, length):
         self._length = length
         self.clear()
