@@ -768,9 +768,9 @@ sentence from the Wall Street Journal tagged files.
   ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore
   ChunkParse score:
-      Precision:  53.1%
-      Recall:     35.4%
-      F-Measure:  42.5%
+      Precision:  48.6%
+      Recall:     34.0%
+      F-Measure:  40.0%
 
 The overall results of the evaluation can be viewed by printing the
 ``ChunkScore``.  Each evaluation metric is also returned by an
@@ -869,9 +869,9 @@ Now, in the evaluation phase we chunk any sequence of those tags:
   ...     chunkscore.score(chunk_struct, test_sent)
   >>> print chunkscore
   ChunkParse score:
-      Precision:  91.8%
-      Recall:     93.8%
-      F-Measure:  92.8%
+      Precision:  90.7%
+      Recall:     94.0%
+      F-Measure:  92.3%
 
 ----------
 Conclusion
