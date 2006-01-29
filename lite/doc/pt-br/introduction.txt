@@ -10,8 +10,8 @@ Introdução ao Processamento de Linguagem Natural
 :Versão: |version|
 :Revisão: $Revision$
 :Data: $Date$
-:Copyright: |copy| 2001-2005 University of Pennsylvania
-:Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
+:Copyright: |copy| |copyrightinfo|
+:Licença: |license|
 
 .. Epigraph:: A única e mais curta definição para civilização poderia ser
    a palavra *linguagem*... Civilização, se realmente significa algo
