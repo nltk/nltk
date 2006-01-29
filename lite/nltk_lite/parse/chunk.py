@@ -270,6 +270,7 @@ class ChunkScore(object):
         self._tp_num = 0
         self._fp_num = 0
         self._fn_num = 0
+        self._count = 0
 
         self._measuresNeedUpdate = False
 
@@ -282,7 +283,7 @@ class ChunkScore(object):
            self._fp_num = len(self._fp)
            self._fn_num = len(self._fn)
            self._measuresNeedUpdate = False
-    
+
     def score(self, correct, guessed):
         """
         Given a correctly chunked sentence, score another chunked
@@ -295,10 +296,10 @@ class ChunkScore(object):
         @param guessed: The chunked sentence to be scored.
         """
 	     
-        self._correct |= _chunksets(correct)
-        self._guessed |= _chunksets(guessed)
+        self._correct |= _chunksets(correct, self._count)
+        self._guessed |= _chunksets(guessed, self._count)
+        self._count += 1
         self._measuresNeedUpdate = True
-
 
     def precision(self):
         """
@@ -343,47 +344,43 @@ class ChunkScore(object):
     
     def missed(self):
         """
-        @rtype: C{set} of C{Token}
-        @return: the set of chunks which were included in the
+        @rtype: C{list} of chunks
+        @return: the chunks which were included in the
             correct chunk structures, but not in the guessed chunk
-            structures.  Each chunk is encoded as a single token,
-            spanning the chunk.  This encoding makes it easier to
-            examine the missed chunks.
+            structures, listed in input order.
         """
         self._updateMeasures()
-        return list(self._fn)
+        chunks = list(self._fn)
+        return [c[1] for c in chunks]  # discard position information
     
     def incorrect(self):
         """
-        @rtype: C{set} of C{Token}
-        @return: the set of chunks which were included in the
+        @rtype: C{list} of chunks
+        @return: the chunks which were included in the
             guessed chunk structures, but not in the correct chunk
-            structures.  Each chunk is encoded as a single token,
-            spanning the chunk.  This encoding makes it easier to
-            examine the incorrect chunks.
+            structures, listed in input order.
         """
         self._updateMeasures()
-        return list(self._fp)
+        chunks = list(self._fp)
+        return [c[1] for c in chunks]  # discard position information
     
     def correct(self):
         """
-        @rtype: C{set} of C{Token}
-        @return: the set of chunks which were included in the correct
-            chunk structures.  Each chunk is encoded as a single token,
-            spanning the chunk.  This encoding makes it easier to
-            examine the correct chunks.
+        @rtype: C{list} of chunks
+        @return: the chunks which were included in the correct
+            chunk structures, listed in input order.
         """
-        return list(self._correct)
+        chunks = list(self._correct)
+        return [c[1] for c in chunks]  # discard position information
 
     def guessed(self):
         """
-        @rtype: C{set} of C{Token}
-        @return: the set of chunks which were included in the guessed
-            chunk structures.  Each chunk is encoded as a single token,
-            spanning the chunk.  This encoding makes it easier to
-            examine the guessed chunks.
+        @rtype: C{list} of chunks
+        @return: the chunks which were included in the guessed
+            chunk structures, listed in input order.
         """
-        return list(self._guessed)
+        chunks = list(self._guessed)
+        return [c[1] for c in chunks]  # discard position information
 
     def __len__(self):
         self._updateMeasures()
@@ -418,12 +415,12 @@ class ChunkScore(object):
 
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
-def _chunksets(t):
+def _chunksets(t, count):
     pos = 0
     chunks = []
     for child in t:
         if isinstance(child, Tree):
-            chunks.append((pos, tuple(child.freeze())))
+            chunks.append(((count, pos), tuple(child.freeze())))
             pos += len(child)
         else:
             pos += 1
@@ -1292,6 +1289,7 @@ def demo_eval(chunkparser, text):
     from nltk_lite.parse import tree
     
     for sentence in text.split('\n'):
+        print sentence
         sentence = sentence.strip()
         if not sentence: continue
         gold = tree.chunk(sentence)
@@ -1311,8 +1309,6 @@ def demo_eval(chunkparser, text):
     if chunkscore.missed():
         print 'Missed:'
         missed = chunkscore.missed()
-        # sort, so they'll always be listed in the same order.
-        missed.sort()
         for chunk in missed[:10]:
             print '  ', chunk
         if len(chunkscore.missed()) > 10:
@@ -1322,7 +1318,6 @@ def demo_eval(chunkparser, text):
     if chunkscore.incorrect():
         print 'Incorrect:'
         incorrect = chunkscore.incorrect()
-        incorrect.sort() # sort, so they'll always be listed in the same order.
         for chunk in incorrect[:10]:
             print '  ', chunk
         if len(chunkscore.incorrect()) > 10:
