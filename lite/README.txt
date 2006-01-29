@@ -1,7 +1,7 @@
 ###############################################################
 ###           Natural Language Toolkit (NLTK-LITE)          ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-### Copyright (C) 2005 University of Pennsylvania           ###
+### Copyright (C) 2006 University of Pennsylvania           ###
 ### Author: Steven Bird <sb@csse.unimelb.edu.au>            ###
 ###         Edward Loper <edloper@gradient.cis.upenn.edu>   ###
 ### URL: <http://nltk.sourceforge.net>                      ###
@@ -75,3 +75,17 @@ Contributing
     If you are interested in contributing to NLTK, please email
     Steven Bird <sb@csse.unimelb.edu.au> and Edward Loper
     <edloper@gradient.cis.upenn.edu>
+
+
+Redistributing
+~~~~~~~~~~~~~~
+    NLTK source code is distributed under the Gnu Public License.
+    NLTK documentation is distributed under the Creative Commons
+    Sharealike License.  NLTK may be freely redistributed, subject to
+    the provisions of these licenses.
+
+Citing
+~~~~~~
+    Please cite NLTK as follows:
+    Bird, Steven and Edward Loper (2006).  Natural Language Toolkit.
+    http://nltk.sourceforge.net/
