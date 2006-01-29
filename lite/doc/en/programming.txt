@@ -142,10 +142,10 @@ We can multiply strings:
   >>> 'sleep' * 3
   'sleepsleepsleep'
 
-Here is a useful idiom for reversing strings:
+A useful idiom for reversing strings (and lists) is ``[::-1]``:
 
-  >>> b[::-1]
-  'sselruoloc ylsuoifur neerg saedi peels'
+  >>> 'sleep'[::-1]
+  'peels'
 
 We can also join and split strings:
 
@@ -345,7 +345,7 @@ its contents.  Now its contents can then be accessed
 using *fully qualified* dotted names:
 
   >>> from nltk_lite import utilities
-  >>> utilities.re_show('green', s)
+  >>> utilities.re_show('green', sent)
   colourless {green} ideas sleep furiously
 
 For more information about importing, see any Python textbook.
