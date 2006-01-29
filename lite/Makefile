@@ -120,9 +120,9 @@ python:	.python.done
 	wget -N -O iso/mac/MacPython-OSX-2.4.1-1.dmg http://undefined.org/python/MacPython-OSX-2.4.1-1.dmg
 	wget -N -O iso/mac/numarray-1.1.1-py2.4-macosx10.3.zip http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
 	wget -N -O iso/win/Python-2.4.2.msi http://www.python.org/ftp/python/2.4.2/python-2.4.2.msi
-	wget -N -O iso/win/numarray-1.4.1.exe $(SFNETMIRROR)/numpy/numarray-1.4.1.win32-py2.4.exe?download
+	wget -N -O iso/win/numarray-1.5.0.exe $(SFNETMIRROR)/numpy/numarray-1.5.0.win32-py2.4.exe?download
 	wget -N -O iso/unix/Python-2.4.2.tgz http://www.python.org/ftp/python/2.4.2/Python-2.4.2.tgz
-	wget -N -O iso/unix/numarray-1.4.1.tar.gz $(SFNETMIRROR)/numpy/numarray-1.4.1.tar.gz?download
+	wget -N -O iso/unix/numarray-1.5.0.tar.gz $(SFNETMIRROR)/numpy/numarray-1.5.0.tar.gz?download
 	touch .python.done
 
 iso:	dist
