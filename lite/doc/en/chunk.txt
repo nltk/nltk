@@ -10,7 +10,7 @@ Chunk Parsing
 :Revision: $Revision$
 :Date: $Date$
 :Copyright: |copy| |copyrightinfo|
-:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+:License: |license|
 
 .. Note:: This is a draft.  Please send any feedback to the authors.
 

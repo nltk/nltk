@@ -10,8 +10,8 @@ Tagging
 :Versão: |version|
 :Revisão: $Revision$
 :Data: $Date$
-:Copyright: |copy| 2001-2005 University of Pennsylvania
-:Licença: Creative Commons Attribution-NonCommercial-ShareAlike License
+:Copyright: |copy| |copyrightinfo|
+:Licença: |license|
 
 .. Note:: Este é um esboço. Por favor, envie seus comentários aos autores.
 

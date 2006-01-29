@@ -8,7 +8,7 @@ NLTK-Lite Tutorials
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
 :Copyright: |copy| |copyrightinfo|
-:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+:License: |license|
 
 --------
 Contents

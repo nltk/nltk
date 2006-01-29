@@ -10,7 +10,7 @@ Introduction to Natural Language Processing
 :Revision: $Revision$
 :Date: $Date$
 :Copyright: |copy| |copyrightinfo|
-:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+:License: |license|
 
 .. Epigraph:: The single and shortest definition of civilization may
    be the word *language*...  Civilization, if it means something
