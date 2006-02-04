@@ -957,7 +957,7 @@ class FundamentalRule(AbstractChartRule):
     licenses the edge:
         - [AS{->}S{alpha}B*S{beta}][i:j]
     """
-    NUM_EDGES=2
+    NUM_EDGES = 2
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
@@ -970,7 +970,7 @@ class FundamentalRule(AbstractChartRule):
                             lhs=left_edge.lhs(), rhs=left_edge.rhs(),
                             dot=left_edge.dot()+1)
 
-        # Add it to the chart, with appropraite child pointers.
+        # Add it to the chart, with appropriate child pointers.
         changed_chart = False
         for cpl1 in chart.child_pointer_lists(left_edge):
             if chart.insert(new_edge, cpl1+(right_edge,)):
@@ -992,7 +992,7 @@ class SingleEdgeFundamentalRule(AbstractChartRule):
     @note: This is basically L{FundamentalRule}, with one edge is left
         unspecified.
     """
-    NUM_EDGES=1
+    NUM_EDGES = 1
 
     _fundamental_rule = FundamentalRule()
     
@@ -1024,13 +1024,12 @@ class TopDownInitRule(AbstractChartRule):
     is licensed for each grammar production C{SS{->}S{alpha}}, where
     C{S} is the grammar's start symbol.
     """
-    NUM_EDGES=0
+    NUM_EDGES = 0
     def apply_iter(self, chart, grammar):
-        for prod in grammar.productions():
-            if prod.lhs() == grammar.start():
-                new_edge = TreeEdge.from_production(prod, 0)
-                if chart.insert(new_edge, ()):
-                    yield new_edge
+        for prod in grammar.productions(lhs=grammar.start()):
+            new_edge = TreeEdge.from_production(prod, 0)
+            if chart.insert(new_edge, ()):
+                yield new_edge
 
 class TopDownExpandRule(AbstractChartRule):
     """
@@ -1042,14 +1041,13 @@ class TopDownExpandRule(AbstractChartRule):
         - [BS{->}*S{gamma}][j:j]
     for each grammar production C{BS{->}S{gamma}}.
     """
-    NUM_EDGES=1
+    NUM_EDGES = 1
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
-        for prod in grammar.productions():
-            if edge.next() == prod.lhs():
-                new_edge = TreeEdge.from_production(prod, edge.end())
-                if chart.insert(new_edge, ()):
-                    yield new_edge
+        for prod in grammar.productions(lhs=edge.next()):
+            new_edge = TreeEdge.from_production(prod, edge.end())
+            if chart.insert(new_edge, ()):
+                yield new_edge
 
 class TopDownMatchRule(AbstractChartRule):
     """
@@ -1136,7 +1134,7 @@ class BottomUpInitRule(AbstractChartRule):
         - [wS{->}*][i:i+1]
     for C{w} is a word in the text, where C{i} is C{w}'s index.
     """
-    NUM_EDGES=0
+    NUM_EDGES = 0
     def apply_iter(self, chart, grammar):
         for index in range(chart.num_leaves()):
             new_edge = LeafEdge(chart.leaf(index), index)
@@ -1153,14 +1151,13 @@ class BottomUpPredictRule(AbstractChartRule):
         - [BS{->}*AS{beta}]
     for each grammar production C{BS{->}AS{beta}}
     """
-    NUM_EDGES=1
+    NUM_EDGES = 1
     def apply_iter(self, chart, grammar, edge):
         if edge.is_incomplete(): return
-        for prod in grammar.productions():
-            if edge.lhs() == prod.rhs()[0]:
-                new_edge = TreeEdge.from_production(prod, edge.start())
-                if chart.insert(new_edge, ()):
-                    yield new_edge
+        for prod in grammar.productions(rhs=edge.lhs()):
+            new_edge = TreeEdge.from_production(prod, edge.start())
+            if chart.insert(new_edge, ()):
+                yield new_edge
 
 #////////////////////////////////////////////////////////////
 # Earley Parsing
@@ -1179,7 +1176,7 @@ class CompleterRule(AbstractChartRule):
     @note: This is basically L{FundamentalRule}, with the left edge
         left unspecified.
     """
-    NUM_EDGES=1
+    NUM_EDGES = 1
     
     _fundamental_rule = FundamentalRule()
     
@@ -1206,7 +1203,7 @@ class ScannerRule(AbstractChartRule):
     if the C{j}th word in the text is C{w}; and C{P} is a valid part
     of speech for C{w}.
     """
-    NUM_EDGES=1
+    NUM_EDGES = 1
     def __init__(self, word_to_pos_lexicon):
         self._word_to_pos = word_to_pos_lexicon
 
