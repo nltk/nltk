@@ -313,12 +313,26 @@ class Grammar(object):
         """
         self._start = start
         self._productions = tuple(productions)
-
-    def productions(self):
-        return self._productions
-
+        self._lhs_index = {}
+        self._rhs_index = {}
+        for prod in self._productions:
+            if prod._lhs not in self._lhs_index:
+                self._lhs_index[prod._lhs] = []
+            if prod._rhs[0] not in self._rhs_index:
+                self._rhs_index[prod._rhs[0]] = []
+            self._lhs_index[prod._lhs].append(prod)
+            self._rhs_index[prod._rhs[0]].append(prod)
+        
     def start(self):
         return self._start
+
+    def productions(self, lhs=None, rhs=None):
+        if lhs and lhs in self._lhs_index:
+                return self._lhs_index[lhs]
+        elif rhs and rhs in self._rhs_index:
+                return self._rhs_index[rhs]
+        else:
+            return self._productions
 
     def __repr__(self):
         return '<Grammar with %d productions>' % len(self._productions)
