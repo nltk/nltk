@@ -1625,7 +1625,7 @@ def demo():
         t = time.time()
         cp = SteppingChartParse(grammar, trace=1)
         cp.initialize(tokens)
-        for i in range(4):
+        for i in range(5):
             print '*** SWITCH TO TOP DOWN'
             cp.set_strategy(TD_STRATEGY)
             for j, e in enumerate(cp.step()):
