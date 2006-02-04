@@ -21,7 +21,8 @@ Introduction
 ------------
 
 This chapter provides an introduction to regular expressions
-illustrated with examples from language processing.
+illustrated with examples from language processing.  It builds on
+the brief introduction given in the introductory programming chapter.
     
 We have already noted that a text can be viewed as a string of
 characters. What kinds of processing are performed at the character
