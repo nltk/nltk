@@ -1,0 +1,1207 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Revised: Time-stamp: <2005-11-07 13:41:29 ewan>
+% 
+% $Log$
+% Revision 1.1  2006/02/08 15:36:53  ehk
+% First import of beamer.sty slides. Some files still need renaming.
+%
+% Revision 1.4  2005/11/08 15:34:52  ewan
+% *** empty log message ***
+%
+% Revision 1.3  2005/11/07 12:54:07  ewan
+% Fixed images
+%
+% Revision 1.2  2005/11/07 09:53:00  ewan
+% First cut
+%
+% Revision 1.1  2005/10/28 18:35:56  ewan
+% *** empty log message ***
+%
+% Revision 1.1  2004/11/17 13:54:43  ewan
+% *** empty log message ***
+%
+% Revision 1.1  2004/08/16 16:24:28  ewan
+% *** empty log message ***
+%
+% Revision 1.1  2004/08/09 21:56:09  neilb
+% move from teaching/modules/icl to teaching/courses/icl. No corrections done
+%
+% Revision 1.9  2003/11/17 12:10:32  ewan
+% Edited includegraphics to look in images for chart_n.eps files
+%
+% Revision 1.8  2003/11/17 12:02:54  ewan
+% First import into CVS
+%
+% Revision 1.1  2003/10/14 15:23:23  ewan
+% *** empty log message ***
+%
+% Revision 1.2  2002/12/06 14:06:20  ewan
+% Added acknowledgement slide
+%
+% Revision 1.1  2002/11/25 10:08:31  ewan
+% First import into CVS
+%
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Chart Parsing}
+\author{Ewan Klein \newline \mbox{ }ewan@inf.ed.ac.uk\mbox{ }}
+\date{ICL --- 7 November 2005}
+
+
+
+\newcommand{\Rule}{\rule{\textwidth}{1pt}}
+\newcommand{\SqB}[1]{[#1]}
+
+\newcommand{\bigdot}{\mbox{\begin{scriptsize}{\ensuremath{\bullet}}\end{scriptsize}}}
+
+\newcommand{\chdot}{\bigdot}
+
+\input{../defs.sty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[plain]{algorithm}
+%\renewcommand{\algorithmicelsif}{\textbf{elsif}}
+% Seminar style settings
+%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+
+% Shading
+\definecolor{light}{gray}{.80}
+\newcommand{\Hilite}[1]{\colorbox{yellow}{#1}}
+\newcommand{\Shade}[1]{\colorbox{light}{#1}}
+
+\newcommand{\Em}[1]{\textcolor{red}{#1}}
+\newcommand{\Dim}[1]{\textcolor{gray}{#1}}
+
+\setlength{\parskip}{0in}
+\setlength{\parindent}{0in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% JM abbreviations
+\def\tab{\hbox{\kern0.4in}}    %% Insert space (even at start of line)
+\def\al{\\\tab}                %% Next line is indented
+\def\nl{\\\tab\tab}            %% Next line is double-indented
+\def\nnl{\\\tab\tab\tab}       %% Next line is triple-indented
+\def\blob{$\diamondsuit\ \ $}  %% Itemization without all the spacing
+\def\mysum{\begin{Huge}\mbox{$\Sigma$}\end{Huge}}
+\def\myprod{\begin{Huge}\mbox{$\Pi$}\end{Huge}}
+\def\rarrow{$\rightarrow\ \ $}  %% 
+
+\newcommand{\elt}{{\,{\in}\,}}  %%%cuts down on spacing
+\newcommand{\eq}{{\,{=}\,}}  %%%cuts down on spacing
+\def\stimes{{\,\times\,}}       %%%cuts down on spacing
+
+%% BNF grammars %pnorvig Mar 14 1994:
+\newcommand{\bl}{\;}                   %A blank between BNF constituents
+\newcommand{\bnf}[1]{{\it #1}}          %A BNF constituent
+\newcommand{\bnfeq}{\ensuremath{\rightarrow}} % BNF arrow (separates LHS from RHS) 
+\newcommand{\bnfreveq}{\ensuremath{\leftarrow}}      % Reverse BNF arrow
+\newcommand{\bnft}[1]{\ensuremath{\boldmath \( #1 \)}} % A BNF terminal 
+\newcommand{\bnfv}[1]{\bnf{#1}}         % A BNF terminal variable constituent
+\newcommand{\bnfnull}{\bnft{\epsilon}}  % An empty BNF right-hand-side
+\newcommand{\bnfor}{\ensuremath{\mid\bl}}            % A BNF disjunction
+\newcommand{\dcg}{\Leftarrow_{dcg}}     % Obsolete!
+
+\newcommand{\fhs}[3]{\frac{#1}{#2} #3}  % Filler, Hole, Semantics
+
+\newlength{\maxfigwidth}
+\setlength{\maxfigwidth}{\textwidth}
+\addtolength{\maxfigwidth}{-8\fboxsep}
+\addtolength{\maxfigwidth}{-8\fboxrule}
+
+%%%%%%%%%%%% elements of programs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\defprog}[1]{\mbox{{\sc #1}}} 
+\newcommand{\prog}[1]{\mbox{{\sc #1}}}   %%% same as defprog
+\newcommand{\noprog}[1]{\mbox{{\sc #1}}} %%% same as defprog
+\newcommand{\system}[1]{\mbox{{\sc #1}}} %%% same as defprog
+\newcommand{\nosystem}[1]{\mbox{{\sc #1}}} %%% same as defprog
+\newcommand{\act}[1]{{\it #1}}
+\newcommand{\key}[1]{{\bf #1}}
+\def\k{\key}
+\newcommand{\var}[1]{{\it #1}}
+\def\v{\var}
+\def\p{\prg}
+\newcommand{\setq}[2]{#1\hbox{$\,\leftarrow\,$}#2}
+\newcommand{\setqmath}[2]{#1 \leftarrow #2}
+
+%%pnorvig Mar 14 1994:
+\newcommand{\labl}[1]{\prog{#1}}        % Statement Label in code
+\newcommand{\cmt}[1]{{\tt /*} {\it #1} {\tt */}}        % Comment in code
+\newcommand{\rcmt}[1]{\hfill {\tt /*} {\it #1} {\tt */}}
+\newcommand{\Endfn}[1]{}                % End of a function in code
+\newcommand{\fnsep}{\hspace*{0in}\raisebox{3pt}{\rule{\codewidth}{0.2pt}}\hfill}        % Between functions in code
+
+\def\code{\noindent\nobreak\begin{Large}
+        \begingroup\obeylines\obeyspaces\docode}
+\def\docode#1{\noindent\framebox[\columnwidth][l]%
+{~~\begin{minipage}{\codewidth}~
+#1
+~\end{minipage}}\endgroup%
+\nobreak\end{Large}\noindent\ignorespaces}
+\def\asis{\obeylines\obeyspaces}
+\def\ttp{.\skip -0.5em\ }
+{\obeyspaces\global\def {\ }}
+
+
+%% Fine tuning for perfect formatting
+
+\newcommand{\ac}{,\hspace{0.15em}}
+\newcommand{\ts}{\,}
+\newcommand{\bodysep}{\vspace{0.1in}}
+\newcommand{\subfnsep}{\vspace{0.06in}}
+\newcommand{\prebnfsep}{\vspace{-0.25in}}
+\newcommand{\postbnfsep}{\vspace{0.1in}}
+\newcommand{\fnvar}[1]{\prog{#1}}
+\newcommand{\func}[3]{\key{function} \defprog{#1}(#2) \key{returns} #3}
+\newcommand{\nofunc}[3]{\key{function} \noprog{#1}(#2) \key{returns} #3}
+\newcommand{\proc}[2]{\key{procedure} \defprog{#1}(#2)}
+\newcommand{\noproc}[2]{\key{procedure} \noprog{#1}(#2)}
+\newcommand{\firstinputs}[2]{\key{inputs}: \var{#1}, #2}
+\newcommand{\inputs}[2]{\phantom{\key{inputs}: }\var{#1}, #2}
+\newcommand{\firstlocal}[2]{\key{local variables}: \var{#1}, #2}
+\newcommand{\local}[2]{\phantom{\key{local variables}: }\var{#1}, #2}
+\newcommand{\firststatic}[2]{\key{static}: \var{#1}, #2}
+\newcommand{\static}[2]{\phantom{\key{static}: }\var{#1}, #2}
+
+\newlength{\codewidth}
+\setlength{\codewidth}{\textwidth}
+\addtolength{\codewidth}{-0.5in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{synttree}
+\branchheight{5ex}
+
+
+\begin{document}
+\frame{\titlepage}
+
+\mode<article>{\section[Outline]{ICL/Chart Parsing CFGs/2005-11-07}}
+\mode<presentation>{
+  \section[Outline]{}
+}
+
+\frame{\tableofcontents}
+
+\section{Review Top-down Parsing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Parsing}
+
+
+Parsing with a CFG is the task of assigning a correct tree (or
+derivation) to a string given some grammar.
+
+A correct tree is:
+\begin{itemize}
+\item consistent with the grammar, and
+\item the leaves of the tree cover all and only the words in the input.
+\end{itemize}
+
+There may be a very large number of correct trees for any given input \ldots
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Problems that arise}
+
+  \begin{itemize}
+    
+  \item Left Recursion
+    
+  \item Ambiguity
+    
+  \item Inefficiencies due to backtracking
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 28
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Common substructures}
+
+
+  \begin{itemize}
+  \item Despite ambiguity and backtracking there are commons
+    substructures to be taken advantage of.
+
+
+  \item Consider parsing the following \NP:
+
+    \begin{quote}
+      \ling{a flight from Indianapolis to Houston on TWA}
+    \end{quote}
+
+    with the following rules:
+
+    \begin{quote}
+      \NP\ $\rightarrow$ \Det \,\, \Nom
+
+      \Nom\ $\rightarrow$ \Nom \,\, \PP
+  
+%      \NP\ $\rightarrow$ \PropN
+    \end{quote}
+
+  \item What happens with a top-down parser?
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 29
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+    \frametitle{Backtracking}
+
+
+
+\synttree[NP
+            [Det [\ling{a}]]
+            [Nom [.t \ling{flight}]]
+] \underline{\ling{from Indianopolis to Houston on TWA}}
+
+\medskip
+
+\synttree[NP
+            [Det [\ling{a}]]
+            [Nom 
+                 [Nom [.t \ling{flight}]]
+                 [PP [.t \ling{from Indianapolis}]]]
+] \underline{\ling{to Houston on TWA}}
+  
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Backtracking, cont}
+
+
+\synttree[NP
+            [Det [\ling{a}]]
+            [Nom 
+                 [Nom 
+                     [Nom [.t \ling{flight}]]
+                     [PP [.t \ling{from Indianapolis}]]]
+                 [PP [.t \ling{to Houston}]]]
+] \underline{\ling{on TWA}}
+  
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Backtracking, cont}
+
+
+\synttree[NP
+            [Det [\ling{a}]]
+            [Nom 
+                [Nom 
+                     [Nom 
+                         [Nom [.t \ling{flight}]]
+                         [PP [.t \ling{from Indianapolis}]]]
+                     [PP [.t \ling{to Houston}]]]
+                [PP  [.t \ling{on TWA}]]]
+]
+  
+
+\end{frame}
+
+
+
+
+\section{Chart Parsing}
+
+\subsection{Overview}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Dynamic Programming}
+
+
+Our current algorithm builds valid trees, discards them during
+backtracking, then rebuilds them.
+\begin{itemize}
+\item the subtree for \ling{a flight} was derived 4 times.
+\end{itemize}
+
+\Em{Dynamic programming} is one answer to problems that have
+sub-problems that get solved again and again
+
+We'll consider an algorithm that fills a table with solutions to
+subproblems that:
+
+
+\begin{itemize}
+\item does a parallel top-down search with bottom-up filtering
+\item does not do repeated work
+\item solves the left-recursion problem
+%\item solves an exponential problem in $O(N^3)$ time
+\end{itemize}
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 7
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Dynamic Programming and Parsing}
+
+
+  \begin{itemize}
+    
+  \item Systematically fill in tables of solutions to subproblems.
+    
+    
+  \item When complete, the table contains all possible solutions to all of
+    the subproblems needed to solve the whole problem
+%    compactly encodes all possible solutions to the whole problem.
+    
+    
+  \item For parsing:
+
+    \begin{itemize}
+    \item the table stores subtrees for constituents.
+    
+    
+    \item Solves reparsing inefficiencies, because subtrees are not
+      reparsed but looked up.
+    
+    
+    \item Solves ambiguity explosions, because the table
+      \emph{implicitly} stores all parses.
+ 
+    \item Each subtree is represented only once and shared by all parses
+      that need it.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{Lexical Edges}
+
+
+\begin{center}
+\includegraphics[scale=1]{../images/nchart0.pdf}  
+\end{center}
+\end{frame}
+
+\subsection{Charts as Graphs}
+
+\begin{frame}[fragile]
+\frametitle{Nonterminal Edges: NP}
+
+\begin{center}
+\includegraphics[scale=1]{../images/nchart1.pdf}  
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Nonterminal Edges: VP}
+
+\begin{center}
+\includegraphics[scale=1]{../images/nchart2.pdf}  
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Nonterminal Edges: Rules}
+
+\begin{itemize}
+\item Useful to label arcs with \Em{rules} rather than categories:
+\end{itemize}
+
+\begin{center}
+\includegraphics[scale=.8]{../images/nchart3.pdf}  
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Incomplete Edges}
+
+\begin{itemize}
+\item Recall that the parser can make \Em{predictions} on the basis of rules:
+  \begin{itemize}
+  \item I'm trying to expand an \VP, and I've found a \V\ so I'll start looking for an \NP.
+  \end{itemize}
+\item Record incomplete constituents with \Em{dotted rules}:
+  \begin{itemize}
+  \item Dot on the RHS of a rule shows what we\'ve found already:\\
+ \VP\ $\rightarrow$ V \,\,\bigdot\,\, \NP
+\item We can use this as a label for an incomplete constituent.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Incomplete Edges, cont.}
+
+\begin{center}
+\includegraphics[scale=1]{../images/nchart4.pdf}  
+\end{center}
+
+\end{frame}
+
+% \begin{frame}[fragile]
+% \frametitle{Nonterminal Edges: S}
+
+% \begin{center}
+% \includegraphics[scale=.85]{../images/chart3}  
+% \end{center}
+
+% \end{frame}
+
+\subsection{The Basic Idea}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Dynamic Programming and Parsing}
+
+
+The Earley algorithm:
+
+\begin{itemize}
+  
+\item fills a table (the \Em{chart}) in a single left-to-right pass
+  over the input.
+\item The chart will be size $N+1$, where $N$ is the number of words in
+  the input.
+\item Chart entries are associated with the gaps between the
+  words --- like slice indexing in Python.
+
+\item For each word position in the sentence, the chart contains a set
+  of edges representing the partial parse trees generated so far.
+
+\item So Chart[0] is the set of edges representing the parse before looking at a word.
+
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 9
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{States}
+
+  \begin{itemize}
+  \item J\&M call the chart entries \Em{states}.
+ 
+\item The chart entries represent three distinct kinds of things:
+  \begin{itemize}
+  \item completed constituents;
+  \item in-progress constituents; and
+  \item predicted constituents
+  \end{itemize}
+
+  \item The three kinds of states correspond to different dot locations in
+    dotted rules:
+    \begin{description}
+    \item[Completed:] \VP\ $\rightarrow$ V \,\, \NP \,\,\bigdot
+  
+    \item[In-progress:] \NP\ $\rightarrow$ \Det \,\,\bigdot \,\, \Nom\
+  
+    \item[Predicted:] \Se\ $\rightarrow$ \bigdot \,\, \VP
+    \end{description}
+
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Incomplete NP Edge: Self-loop}
+
+%\NP\ $\rightarrow$ \bigdot \,\, \Det \,\, \Nom\
+\begin{center}
+\includegraphics[scale=1]{../images/nchart5.pdf}  
+\end{center}
+
+\end{frame}
+
+
+
+% \begin{frame}[fragile]
+% \frametitle{Incomplete NP Edge: Det recognised}
+
+% %\NP\ $\rightarrow$ \Det \,\,\bigdot \,\, \Nom\
+% \begin{center}
+% %\includegraphics[scale=1.2]{../images/chart0-2}  
+% \end{center}
+
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 10
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{States, cont.}
+
+
+  \begin{itemize}
+    
+  \item Given dotted rules like those we've just seen, we need to record:
+
+    \begin{itemize}
+    \item where the represented constituent is in the input, and
+    \item what its parts are.
+    \end{itemize}
+
+  \item So we add a pair of coordinates $[x,y]$ to the state:
+
+\begin{itemize}
+  
+  \item $A \rightarrow \alpha , \; [x,y] $
+  \item $x$ indicates the position in input where the state begins
+  \item $y$ indicates position of dot
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Example with coordinates}
+
+
+\begin{center}
+\includegraphics[scale=1]{../images/nchart6}  
+\end{center}
+\end{frame}
+
+\subsection{Example States}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 11
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{States, cont.}
+
+Example states in parsing \ling{Book that flight}:
+ 
+\begin{enum}
+  
+  \item \Se\ $\rightarrow$\; \bigdot\ \VP, [0,0]
+
+    \begin{itemize}
+    \item First 0 indicates that the constituent begins at the start of the
+      input.
+    \item Second 0 indicates that the dot also begins at start of input, and
+      thus indicates a top-down prediction.
+    \end{itemize} 
+
+  \item \NP\ $\rightarrow$ \Det\ \bigdot\ \Nom, [1,2]
+
+    \begin{itemize}
+    \item the \NP\ begins at position 1
+    \item the dot is at position 2
+    \item \Det\ has been successfully \ling{completed}
+    \item \Nom\ is \Em{predicted} next
+    \end{itemize}
+  \end{enum}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 11-a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{States, cont.}
+
+  \begin{enum}
+
+    \item \VP\ $\rightarrow$ \V\ \NP\ \bigdot, [0,3]
+
+      \begin{itemize}
+      \item \VP\ is \Em{completed}
+      \item no further \Em{predictions} from this rule
+      \item a successful parse that spans the entire input
+      \end{itemize}
+    \end{enum}
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 12
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Graphical States}
+
+%%\includegraphics[trim=72 0 72 0]{moore/figures/fig10.15.ps}
+%\includegraphics[scale=.85]{moore/figures/fig10.15.ps}
+
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 13
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Success}
+
+
+%As with the Viterbi and Forward algorithms, 
+The final answer is found
+by looking at the last column of the table. In particular, for an input
+of $N$ words, if we
+find the following kind of state in the chart then we've succeeded: 
+\begin{quote}
+  
+  \Se\ $\rightarrow \alpha$  \bigdot, [0,N]
+\end{quote}
+
+\end{frame}
+
+\section{The Earley Algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 14
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Parsing}
+
+
+Parsing is sweeping through the chart creating the three
+kinds of states as we go. States are never removed, and
+we never backtrack.
+
+\begin{itemize}
+  
+\item New \emph{predicted} states are based on existing table entries
+  (predicted, or in-progress) that predict a certain constituent at that
+  spot.
+  
+\item New \emph{in-progress} states are created by updating older states
+  to reflect the fact that previously expected completed constituents
+  have been located.
+  
+\item New \emph{completed} states are created when the dot in an
+  in-progress state moves to the end.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 15
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{More Specifically}
+
+
+  \begin{enum}
+  \item Predict all the states you can.
+    
+  \item Read an input.
+    \begin{itemize}
+    \item See what predictions you can match.
+    \item Extend matched states, add new predictions.
+    \item Go to next state (goto 2)
+  \end{itemize}
+
+  \item At the end, see if \textit{state\/}$[N+1]$ contains a complete \Se.
+\end{enum}
+
+\end{frame}
+
+%\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 16
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Earley Algorithm}
+
+
+The Earley algorithm has three main functions that do all the work:
+\begin{description}
+\item [Predictor:] Adds predictions into the chart
+\item [Completer:] Moves the dot to the right when new constituents are
+  found
+\item [Scanner:] Reads the input words and enters states representing
+  those words into the chart
+\end{description}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 17
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Predictor}
+
+
+\code{\small
+  \proc{Predictor}{($A \bnfeq \alpha \bigdot B \beta, [i,j]$)}
+       \key{for each} $(B \bnfeq \gamma)$ \key{in} \prog{Grammar-Rules-For}($B${\ac}\var{grammar}) \key{do}
+              \prog{Enqueue}(($B \bnfeq \bigdot \gamma, [j,j]$){\ac}\var{chart}[\var{j}])
+       \key{end}
+}
+
+\begin{itemize}
+\item Intuition: new states represent top-down expectations.
+\item Applied when a state has a non-terminal to the right of a dot that
+  is not a part-of-speech.
+\item Generates one new state for each alternative expansion of the
+  non-terminal in the grammar.
+\item Adds states to the same chart entry as generating state.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 18
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Completer}
+
+
+\code{\small
+  \proc{Completer}{($B \,\, \bnfeq \,\, \gamma \,\, \bigdot, [j,k]$)}
+       \key{for each} ($A \bnfeq \alpha \bigdot B \beta, [i,j]$) \key{in} \var{chart}[\var{j}] \key{do}
+              \prog{Enqueue}(($A \bnfeq \alpha B \bigdot \beta, [i,k]$){\ac}\var{chart[k]})
+       \key{end}
+
+}
+
+\begin{itemize}
+\item Intuition: parser has discovered a constituent, so must find and
+  advance states that were looking for this grammatical category at this
+  position in input.
+\item Applied when dot has reached right end of rule.
+\item New states are generated by copying old state and advancing dot
+  over expected category.
+\item Adds new states to same chart entry as generating state.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 19
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Scanner}
+
+
+\code{\small
+  \proc{Scanner}{($A \bnfeq \alpha \bigdot B \beta, [i,j]$)}
+       \key{if} B $\in$ \prog{Parts-of-Speech}(\var{word[j]}) \key{then}
+            \prog{Enqueue}(($B \bnfeq word[j] \bigdot, [j,j+1]$){\ac}\var{chart[j+1]})
+}
+
+\begin{itemize}
+  
+\item New states for predicted part-of-speech.
+\item Applicable when part-of-speech is to the right of a dot.
+\item Adds states to next chart entry.
+\end{itemize}
+
+Note:  Earley parser uses top-down predictions to help disambiguate
+part-of-speech ambiguities.  Only those parts-of-speech of a word
+that are predicted by some state will find their way into the chart.
+
+\end{frame}
+
+
+%\begin{frame}[fragile]
+%\renewcommand{\baselinestretch}{.9}
+%\vspace{-2ex}
+
+%  \code{\small
+%\func{Earley-Parse}{\var{words{\ac}grammar}}{\var{chart}}
+%\bodysep
+%   \prog{Enqueue}(($\gamma \bnfeq \chdot S, [0,0]$){\ac}\var{chart[0]})
+
+%   \key{for} \setq{\var{i}}{\key{from} 0 \key{to} \prog{Length}(\var{words})} \key{do}
+%     \key{for} \key{each} \var{state} \key{in} \var{chart}[\var{i}] \key{do}
+%        \key{if} \prog{Incomplete?}(\var{state}) \key{and} 
+%                      \prog{Next-Cat}(\var{state}) is not a part of speech \key{then}
+%             \prog{Predictor}(\var{state})
+%        \key{elseif} \prog{Incomplete?}(\var{state}) \key{and} 
+%                      \prog{Next-Cat}(\var{state}) is a part of speech \key{then}
+%              \prog{Scanner}(\var{state})
+%        \key{else}
+%             \prog{Completer}(\var{state})
+%     \key{end}
+%   \key{end}
+%   \key{return}(\var{chart})
+
+%\subfnsep
+%  \proc{Enqueue}{\var{state{\ac}chart-entry}}
+%       \key{if} \var{state} is not already in \var{chart-entry} \key{then}
+%             Add \var{state} at end of \var{chart-entry}
+%       \key{end}
+%}
+
+
+
+
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 20
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Parsing Example}
+
+\renewcommand{\baselinestretch}{1}
+\begin{frame}[fragile]
+  \frametitle{Mini grammar and lexicon}
+
+\bigskip
+
+\begin{tabular}{|p{15em}||l|}\hline
+\Se\ $\rightarrow$ \NP\ \VP\ $\mid$ \Aux\ \NP\ \VP\ $\mid$  \VP  & 
+\Det\ $\rightarrow$ \ling{that} $\mid$ \ling{this} $\mid$ \ling{a} \\
+\NP\ $\rightarrow$ \Det\ \Nom\  $\mid$ \PropN & 
+\N\ $\rightarrow$ \ling{book} $\mid$ \ling{flight} $\mid$ \ling{meal}\\
+\Nom\ $\rightarrow$ \Nom\ \PP\  $\mid$ \N\ \Nom & 
+\V\ $\rightarrow$ \ling{book} $\mid$ \ling{include} $\mid$ \ling{prefer}\\
+\PP\ $\rightarrow$ \Prep\ \NP & 
+\Aux\ $\rightarrow$ \ling{does} \\
+\VP\ $\rightarrow$ \V\ $\mid$  \V\ \NP & 
+\Prep\ $\rightarrow$ \ling{from} $\mid$ \ling{to} $\mid$ \ling{on}\\
+\Nom\ $\rightarrow$ \N\ \PP\ $\mid$  \N\ \Nom  & 
+\PropN\ $\rightarrow$ \ling{Houston} $\mid$ \ling{TWA}\\
+\hline
+\end{tabular}
+
+
+
+\end{frame}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Slide 21
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Example: Chart[0]}
+
+
+%{
+%\input{moore/martin/earley0}}
+
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 22
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Example: Chart[0] and Chart[1]}
+
+
+{
+\input{earley1}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 23
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Example: Chart[1] and Chart[2]}
+
+
+
+\input{earley2}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 24
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Example: Chart[3]}
+
+
+
+\input{earley3}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 25
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Examples: Local Ambiguity}
+
+
+%Let's assume that we're parsing the \VP \ling{gave mary a book} using the 
+%following  rules:
+
+
+%\begin{quote}
+%  \Se\ $\rightarrow$ \VP
+
+%  \VP\ $\rightarrow$ \V
+  
+%  \VP\ $\rightarrow$ \V\ \NP
+  
+%  \VP\ $\rightarrow$ \V\  \NP  \PP
+  
+%  \VP\ $\rightarrow$ \V\  \NP  \NP
+
+%\end{quote}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Slide 26
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Examples: Local Ambiguity}
+
+
+
+
+
+
+\subsection{Left Recursion}
+
+%\includegraphics[scale=.7]{moore/figures/mary.ps}
+
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 27
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Examples: Left Recursion}
+
+
+What about parsing the \NP \ling{a flight from Denver to Boston}
+with the following rules:
+\begin{quote}
+  \NP\ $\rightarrow$ \NP\ \PP
+
+  \NP\ $\rightarrow$ \Det\ \Nom
+
+  \NP\ $\rightarrow$ Proper-Noun
+
+\end{quote}
+
+\begin{itemize}
+  \item We construct the state (\NP\ $\rightarrow$ \bigdot\ \NP\ \PP,
+    [0,0]) and add it to \textit{chart}[0]
+  \item The \textsc{Predictor} function then requires us to find a rule
+    which expands the (non-lexical) category immediately to the right of
+    the dot. 
+  \item So let's pick the first rule above, and \textsc{Enqueue} the
+    state (\NP\ $\rightarrow$ \bigdot\ \NP\ \PP, [0,0]).
+  \item But this is already in the state, so we don't add it again. 
+\end{itemize}
+
+
+%\includegraphics[scale=.7]{moore/figures/denver.ps}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Slide 28
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Examples: Global Ambiguity}
+
+
+%The key ambiguity arises from the \VP\ $\rightarrow$ \VP\ \PP\ rule and
+%the \NP\ $\rightarrow$ \NP  \PP\ rule.
+
+
+
+
+
+
+%\includegraphics[scale=.4]{moore/figures/evening.ps}
+
+
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 29
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Useful Properties}
+
+%  \begin{itemize}
+    
+%  \item Error handling
+    
+%  \item Alternative control strategies
+%\end{itemize}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Error handling}
+
+
+%  \begin{itemize}
+    
+
+%  \item What happens when we look at the contents of the last table
+%    column and don't find a \Se\ $\rightarrow \alpha \, \bigdot$ rule?
+%  \item Is  there some way to proceed?
+%  \item Yes. The chart contains every constituent and combination of
+%    constituents that could have been found for that input given the
+%    grammar.
+%  \item Useful for partial (or shallow) parsing, also called
+%    \ling{chunking}, which is frequently used in information extraction
+%    and question answering.
+%\end{itemize}
+
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 32
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Alternative Control Strategies}
+
+
+%Its trivial to take the Earley top-down strategy and change it to
+%bottom-up or \ldots
+
+%\ldots to change it to a best-first (A*) strategy based on the
+%probabilities of the constituents. Simply compute and store the
+%probabilities of constituents in the chart as you are parsing. Then
+%instead of expanding the columns/states in a fixed order you allow the
+%probabilities to control the order of expansion.
+
+
+%\end{frame}
+
+\section{Reading}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 33
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Reading}
+
+{\large 
+  \begin{itemize}
+    
+  \item Read section 10.4 of J\&M
+ %on finite state parting methods (tutorial).
+% Chapter 12 for next time.
+
+    
+  \item Read the NLTK-Lite Tutorial on Chart Parsing
+
+%  \item Assignment 2: Sorry, it's late. I'll try to mail out details about it
+%    tomorrow.
+
+  \end{itemize}
+
+}
+
+%Start on the new homework!
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 34
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}[fragile]
+%  \frametitle{Acknowledgements}
+
+
+%Some of this material was taken from the course web pages
+%of James Martin. 
+
+%\end{frame}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 35
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Memoization and Dynamic Programming}
+
+  
+\item As we've seen, dynamic programming techniques make explicit use of
+tables to keep track of solutions to previously encountered problems.
+
+\item Correspondingly, dynamic programming algorithms are oriented around
+systematically \Em{filling} these tables.
+
+\item Memoization is an alternative technique that achieves the same
+results but allows the algorithm
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "earley-lec"
+%%% End: 

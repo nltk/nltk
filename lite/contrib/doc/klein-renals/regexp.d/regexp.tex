@@ -1,0 +1,876 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Revised: Time-stamp: <2005-10-10 09:43:30 ewan>
+% 
+% $Log$
+% Revision 1.1  2006/02/08 15:36:53  ehk
+% First import of beamer.sty slides. Some files still need renaming.
+%
+% Revision 1.8  2005/10/10 14:29:09  ewan
+% *** empty log message ***
+%
+% Revision 1.7  2005/10/10 12:43:33  ewan
+% *** empty log message ***
+%
+% Revision 1.6  2005/10/10 11:37:45  ewan
+% *** empty log message ***
+%
+% Revision 1.5  2005/10/10 11:31:34  ewan
+% Added  more re_show examples
+%
+% Revision 1.4  2005/10/10 10:59:54  ewan
+% *** empty log message ***
+%
+% Revision 1.3  2005/10/10 08:46:15  ewan
+% Reorganized sequence of slides, added some sectioning, minor edits.
+%
+% Revision 1.2  2005/10/09 13:39:14  ewan
+% *** empty log message ***
+%
+% Revision 1.1  2005/10/09 10:19:04  ewan
+% First import
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NB
+% Add some diagrams of FSAs!!!
+% add something on sub
+% add regexp tokenizer
+% add another example of using REs?
+% 
+% Named Groups example -- not a good place to introduce string formatting!
+
+\title{Regular Expressions}
+\author{Ewan Klein \newline \mbox{ }ewan@inf.ed.ac.uk\mbox{ }}
+\date{ICL --- 10 October 2005}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\input{../defs.sty}
+\usepackage{fancybox}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{alltt}
+\usepackage{url}
+
+
+% Shading
+\definecolor{light}{gray}{.80}
+\newcommand{\Hilite}[1]{\colorbox{yellow}{#1}}
+\newcommand{\Shade}[1]{\colorbox{light}{#1}}
+%\newcommand{\Hilite}[1]{\colorbox{white}{#1}}
+%\newcommand{\Shade}[1]{\colorbox{white}{#1}}
+
+
+\newcommand{\Comment}[1]{\textcolor{blue}{#1}}
+\newcommand{\Em}[1]{\textcolor{red}{#1}}
+\newcommand{\Dim}[1]{\textcolor{gray}{#1}}
+
+\setlength{\parskip}{0in}
+\setlength{\parindent}{0in}
+
+% Headers and Footers
+% \newpagestyle{mystyle}%
+% {} %header
+% {\sl Ewan Klein, ICL Week 3, Lecture 1 \hfil \thepage \hfil October 4, 2004} %footer
+%{\hfil File \jobname.tex; Printed \today\hfil}
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+
+\mode<article>{\section[Outline]{ICL/Regular Expressions/2005-10-10}}
+\mode<presentation>{
+  \section[Outline]{}
+}
+
+\frame{\tableofcontents}
+
+% \begin{frame}
+
+
+%  \begin{center}
+%     {\Huge \textbf{Introduction to Computational Linguistics}
+
+% Regular Expressions
+
+% }
+% \bigskip
+% Week 3, Lecture 1\\
+% \today
+% \end{center}
+
+% \end{frame}
+
+\section{Overview of REs}
+
+\subsection{Introduction}
+
+\begin{frame}[fragile]
+%   \frametitle{Today}
+
+%   \begin{itemize}
+%     \item Overview of Regular Expressions (REs)
+%     \item Examples of Using REs
+%   \end{itemize}
+
+Goals: 
+\begin{itemize}
+  \item a basic idea of the formal background for REs
+  \item an ability to write small Python programs that do 
+useful things with REs
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Motivation}
+
+  \begin{description}
+  \item [Task:] To search for strings using (partially
+      specified) \Em{patterns}
+  \item [Why:]\hfill\\ 
+    \begin{itemize}
+    \item validate data fields (dates, email addresses, URLs)
+    \item filter text (spam, disallowed web sites)
+    \item identify particular strings in a text (token boundaries for tokenization)
+    \item convert the output of one processing component into the format
+          required for a second component  (\verb!rabbit_NN!
+          $\rightarrow$ \verb!<word pos=''NN''>rabbit</word>!) 
+    \end{itemize}
+
+  \end{description}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{The Basic Idea}
+
+  \begin{itemize}
+    \item \Em{Regular expressions} form a language for expressing patterns.
+    \item The language can be stated as a formal algebra.
+    \item Recognizers for RE can be efficiently implemented.
+    \item `Regular expression' also a term for a pattern that is
+      constructed using the language.
+    \item Every pattern specifies a \Em{set of strings}.
+    \item Text string: a sequence of letters, numerals, spaces, tabs,
+      punctuation, \ldots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Initital Examples}
+
+  \begin{tabular}{lll} \hline
+              & \Em{Pattern}   & \Em{Matches} \\ \hline
+concatenation & \textbf{abc} & abc \\ \hline
+disjunction   & \textbf{a} $\mid$ \textbf{b} & a, b \\
+              & (\textbf{a} $\mid$ \textbf{bb}) \textbf{d} & ad, bbd\\ \hline
+closure       & \textbf{a}* & $\epsilon$, a, aa, aaa, aaaa, \ldots\\ 
+              & \textbf{c}(\textbf{a} $\mid$ \textbf{bb})* & c, ca, cbb,
+                                                             cabb, caa, cbbbb,
+                                                             \ldots\\ \hline
+             
+
+  \end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Two Types of RE}
+
+\begin{description}
+  \item [Literals] Every normal text character is an RE, and denotes
+    itself.
+  \item [Metacharacters] Special characters which allow you to specify
+    various sets of strings.
+\end{description}
+Example---Kleene star (*)
+\begin{itemize}
+  \item \textbf{a} denotes \textit{a}
+  \item \textbf{a*} denotes $\epsilon$ (empty string), \textit{a},
+    \textit{aa}, \textit{aaa}, \ldots
+  
+\end{itemize}
+\end{frame}
+
+\subsection{Formal Background to REs}
+
+\begin{frame}[fragile]
+  \frametitle{Preliminaries: Operations on Sets of Strings}
+
+    Let $\Sigma$ be a finite set of symbols and let $\Sigma^*$ be the set
+    of all strings (including the empty string) over $\Sigma$. Suppose
+    $L, L_{1}, L_{2}$ are subsets of $\Sigma^*$.
+
+  \begin{itemize}
+  
+    \item The \textit{union} of $L_{1}, L_{2}$,
+      denoted $L_{1}\cup L_{2}$,  is the set of
+      strings $x$ such that
+      $x \in L_{1}$ or $x \in L_{2}$.
+   \item The \textit{concatenation} of $L_{1}, L_{2}$,
+      denoted $L_{1}L_{2}$,  is the set of
+      strings $xy$ such that
+      $x \in L_{1}$ and $y \in L_{2}$.
+    \item The \textit{Kleene closure} of $L$, denoted $L^*$, is the set of
+      strings constructed by concatenating any number of strings from
+      $L$. $L^*$ contains $\epsilon$, the empty string.
+    \item The \textit{positive closure} of $L$, denoted $L^+$, is the same as
+      $L^*$ but without $\epsilon$.
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Examples}
+
+Let $L_1 = \{a, b\} \text{ and } L_2 = \{c\}$. Then
+\begin{itemize}
+  \item $L_{1}\cup L_{2} = \{a, b, c\}$
+  \item $L_{1}L_{2} = \{ac, bc\}$
+  \item $\{a, b\}^* = \{\epsilon, a, b, aa, bb, ab, ba, \ldots\}$
+  \item $\{a, b\}^+ = \{a, b, aa, bb, ab, ba, \ldots\}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Formal Definition of Regular Expressions}
+
+Regular expressions over a finite alphabet $\Sigma$:
+\begin{enumerate}
+%\item $\emptyset$  is a regular expression and denotes the empty set.
+\item $\epsilon$ is a regular expression and denotes the set
+  $\{\epsilon\}$.
+\item For each $a$ in $\Sigma$, \boldmath{a} is a regular expression and
+  denotes the set $\{a\}$.
+\item If $r$ and $s$ are regular expressions denoting the sets $R$ and
+  $S$ respectively, then 
+  \begin{itemize}
+    \item $(r \mid s)$ is a regular expression denoting $R \cup S$.
+    \item $(rs)$ is a regular expression denoting $RS$.
+    \item $(r^*)$ is a regular expression denoting $R^*$.
+  \end{itemize}
+
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Recognizers}
+
+  \begin{itemize}
+  \item A \Em{recognizer} for a language is a program that takes as input a
+string $x$ and answers ``yes'' if $x$ is a sentence of the language and
+``no'' otherwise.
+\item We can think of this program as a machine which only emits two possible
+responses to its input.
+  \end{itemize}
+
+
+
+\end{frame}
+\begin{frame}[fragile]
+ \frametitle{Finite State Automata\hfill \includegraphics[scale=.15]{../images/skleene}}
+
+\begin{itemize}
+\item A Finite State Automaton (FSA) is an \Em{abstract finite machine}.
+
+\item Regular expressions can be viewed as a way to describe a Finite
+  State Automaton (FSA)
+  
+\item Kleene's theorem (1956): FSA and RE describe the same languages:
+  \begin{itemize}
+    \item Any regular expression can be implemented as an FSA.
+    \item Any FSA can be described by a regular expression.
+  \end{itemize}
+  
+\item Regular languages are those that can be \Em{recognized} by FSAs (or
+  characterized by a regular expression).
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Extensions of Basic REs}
+
+\begin{frame}[fragile]
+  \frametitle{Metacharacters}
+
+NB. Different sets of metacharacters and notations used by different `host languages' (e.g., Unix
+grep, GNU emacs, Perl, Java, Python,  etc.). Cf. Jurafsky \& Martin, Appendix A)
+
+\begin{description}
+  \item [Disjunction:] \textbf{$\mid$}
+  \item [Wild card:] \textbf{}.
+  \item [Optionality:] \textbf{}?
+  \item [Quantification:] \textbf{*} and \textbf{+}
+  \item [Choice:] \textbf{[Mm]} \textbf{[0123456789]}
+  \item [Ranges:] \textbf{[a-z]} \textbf{[0-9]}
+  \item [Negation:] \textbf{[$^\wedge$Mm]} (only when `$^\wedge$' occurs immediately
+    after `[')
+
+\end{description}
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{Special Backslash Sequences}
+
+  \begin{itemize}
+  \item Standard escape sequences\\
+  \begin{tabular}{l}
+\verb!\t!: tab \\
+\verb!\n!: newline \\
+  \end{tabular}
+
+  \item Abbreviatory forms\\
+  \begin{tabular}{ll}
+\verb!\d!: digit (i.e., numeral) & \verb!\D!: non-digit \\
+\verb!\s!: `whitespace' ([ \verb!\t\n!]) & \verb!\S!: non-whitespace \\
+\verb!\w!: `alphanumeric' ([a-zA-Z0-9]) & \verb!\W!: non-alphanumeric \\
+  \end{tabular}
+
+   \item \verb!\! is a general escape character; e.g., \verb!\.! is
+         not a wildcard, but
+         matches a period, \verb!.!
+   \item If you want to use \verb!\! in a string, it has to be
+         escaped: \verb!\\!
+
+  \end{itemize}
+
+
+
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Anchors}
+
+(Also: zero-width characters)
+
+\begin{itemize}
+  \item Anchors don't match strings in the text, instead
+  \item they match \Em{positions} in the text.\\
+
+ \begin{tabular}{lp{3in}}
+\verb!^!: & matches beginning of line (or text)\\
+\verb!$!: & matches end of line (or text) \\%$
+\verb!\b!: &  matches word boundary (i.e., a location with \verb!\w! on one side
+but not the other)  \\
+  \end{tabular}
+\end{itemize}
+ 
+\end{frame}
+
+\section{REs in Python}
+
+\subsection{Examples with \texttt{re\_show}}
+
+\begin{frame}[fragile]
+\frametitle{Wildcard}
+
+\begin{verbatim}
+>>> from nltk_lite.utilities import re_show
+>>> s = '''BP has agreed to sell
+... it's petrochemicals unit for $5.1bn.'''
+>>> re_show('...', s)
+{BP }{has}{ ag}{ree}{d t}{o s}{ell}
+{it'}{s p}{etr}{och}{emi}{cal}{s u}{nit}{ fo}{r $}{5.1}{bn.}
+\end{verbatim}
+\begin{verbatim}
+>>> re_show('.a..', s)
+BP {has }agreed to sell
+it's petrochemi{cals} unit for $5.1bn.
+\end{verbatim}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Wildcards with Quantifiers}
+
+
+\begin{verbatim}
+>>> re_show('s.*l', s)
+BP ha{s agreed to sell}
+it'{s petrochemical}s unit for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('B.*P', s)
+{BP} has agreed to sell
+it's petrochemicals unit for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('B.+P', s)
+BP has agreed to sell
+it's petrochemicals unit for $5.1bn.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Disjunction}
+
+
+\begin{verbatim}
+>>> re_show('has|it', s)
+BP {has} agreed to sell
+{it}'s petrochemicals un{it} for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('has | it', s)
+BP {has }agreed to sell
+it's petrochemicals unit for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('(e|l)+', s)
+BP has agr{ee}d to s{ell}
+it's p{e}troch{e}mica{l}s unit for $5.1bn.
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Zero Width Characters}
+
+
+\begin{verbatim}
+>>> re_show('l', s)
+BP has agreed to se{l}{l}
+it's petrochemica{l}s unit for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('l$', s)
+BP has agreed to sel{l}
+it's petrochemicals unit for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('i', s)
+BP has agreed to sell
+{i}t's petrochem{i}cals un{i}t for $5.1bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('^i', s)
+BP has agreed to sell
+{i}t's petrochemicals unit for $5.1bn.
+\end{verbatim}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Escaping Special Characters}
+
+
+\begin{verbatim}
+>>> re_show('.', s)
+{B}{P}{ }{h}{a}{s}{ }{a}{g}{r}{e}{e}{d}...
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('\.', s)
+BP has agreed to sell
+it's petrochemicals unit for $5{.}1bn{.}
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('$', s)
+BP has agreed to sell{}
+it's petrochemicals unit for $5.1bn.{}
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('\$', s)
+BP has agreed to sell
+it's petrochemicals unit for {$}5.1bn.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Metacharacters and Negated Ranges}
+
+
+\begin{verbatim}
+>>> re_show('\w',s)
+{B}{P} {h}{a}{s} {a}{g}{r}{e}{e}{d} ...
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('\d',s)
+BP has agreed to sell
+it's petrochemicals unit for ${5}.{1}bn.
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('[^a-z\s]',s)
+{B}{P} has agreed to sell
+it{'}s petrochemicals unit for {$}{5}{.}{1}bn{.}
+\end{verbatim}
+
+\begin{verbatim}
+>>> re_show('[^\w]',s)
+BP{ }has{ }agreed{ }to{ }sell{
+}it{'}s{ }petrochemicals{ }unit{ }for{ }{$}5{.}1bn{.}
+\end{verbatim}
+\end{frame}
+
+\subsection{Match objects in Python}
+
+\begin{frame}[fragile]
+\frametitle{Using REs in Python, 1}
+
+\begin{itemize}
+\item Usually best to compile the RE into a PatternObject; more
+  efficient, and it can be re-used.
+\begin{verbatim}
+>>> import re
+>>> str = 'do you say hello or hullo?'
+>>> helloRE = re.compile('h[eu]llo')
+\end{verbatim}
+\item The resulting PatternObject has a number of methods:
+\end{itemize}
+\begin{description}
+  \item [findall(s):] returns a list of \Em{all} matches of pattern in string \texttt{s}
+  \item [search(s):] searches for \Em{leftmost} occurrence of pattern in string \texttt{s}
+  \item [match(s):] tries to match pattern at the \Em{beginning} of string \texttt{s}
+\end{description}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Using REs in Python, 2}
+
+\begin{itemize}
+\item The PatternObject method\texttt{findall} returns a \Em{list}:
+\begin{verbatim}
+>>> helloRE.findall(str)
+['hello', 'hullo']
+\end{verbatim}
+\item  The PatternObject method \texttt{search} (and \texttt{match)} returns a MatchObject or None.
+\item A MatchObject has a variety of methods, but is not a string.
+\begin{verbatim}
+>>> m = helloRE.search(str)
+>>> m
+<_sre.SRE_Match object at 0x47b138>
+>>> m.group() # return matched substring (sort of!)
+'hello'
+>>> m.end() # index of end of target
+16
+\end{verbatim}
+
+\end{itemize}
+\end{frame}
+
+%NB Say something about what LOOK.search() means
+
+% \begin{frame}[fragile]
+%   \frametitle{I am looking for\ldots}
+
+% \begin{verbatim}
+% #!/usr/bin/python2.2
+
+% import re
+% from nltk.corpus import *
+
+% LOOK  = re.compile('I am looking for')
+
+% for item in twenty_newsgroups.items('misc.forsale'):
+%     for line in twenty_newsgroups.readlines(item):
+%         if LOOK.search(line):
+%             print line
+% \end{verbatim}
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+% \begin{verbatim}
+%         I am looking for a round trip ...
+
+%    I am looking for a good used window ...
+
+%  I am looking for a large futon and frame.
+
+%   I am looking for the Coleco Tablehockey ...
+
+% I am looking for a math coprocessor for a 286-16mhz.
+
+% As it says in the subject, I am looking for ...
+% \end{verbatim}
+% \end{frame}
+
+% % where does lstrip() come from? I.e atring methods....
+% \begin{frame}[fragile]
+%   \frametitle{Prettifying the output}
+% \begin{alltt}
+
+% for item in twenty_newsgroups.items('misc.forsale'):
+%     for line in twenty_newsgroups.readlines(item):
+%         if LOOK.search(line):
+%             print line\Hilite{.lstrip(),}
+% \end{alltt}
+% \begin{verbatim}
+% I am looking for a round trip ...
+% I am looking for a good used window ...
+% I am looking for a large futon and frame.
+% I am looking for the Coleco Tablehockey ...
+% I am looking for a math coprocessor for a 286-16mhz.
+% As it says in the subject, I am looking for ...
+% \end{verbatim}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Disjunction}
+
+% \begin{alltt}
+% LOOK  = re.compile(``I\Hilite{('| a)}m looking for'')   
+% \end{alltt}
+% \begin{verbatim}
+% I'm looking for $500 or best offer, but act fast ...
+% I am looking for a round trip Madison/Chicago ...
+% I'm looking for a Sharp 6220 or TI Travelmate 2000 ...
+% I am looking for a good used window air conditioner ...
+% I am looking for a large futon and frame.
+% I'm looking for a used/inexpensive audio ...
+% I'm looking for about 25-30 dollars but
+% \end{verbatim}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Multiple Tests}
+
+% \begin{alltt}
+% MONEY  = re.compile('\verb!\$\d+|!dollars')
+
+% for item in twenty_newsgroups.items('misc.forsale'):
+%   for line in twenty_newsgroups.readlines(item):
+%     if LOOK.search(line) \Hilite{and not MONEY.search(line)}:
+%       print line.lstrip(), 
+% \end{alltt}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Optionality}
+
+% \begin{alltt}
+% MON = re.compile('\Hilite{S?VGA}')
+
+% for item in twenty_newsgroups.items('misc.forsale'):
+%     for line in twenty_newsgroups.readlines(item):
+%         if MON.search(line):
+%             print line.lstrip(),
+% \end{alltt}
+% \begin{verbatim}
+% SVGA monitor that syncs from 15-38khz
+% Subject: Diamond Stealth 24 24bit SVGA for sale
+% An AAMAZING  1024x768 .28 dot pitch SVGA monitor
+% Local Bus 1MB SVGA Video Card,
+% 14" SVGA Monitor (.28dpi)
+% VGA Monochrome 64 Grey Scale
+% BUILT-IN Paradise SVGA controller with 1 meg of RAM 
+% \end{verbatim}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Repetition}
+% \begin{alltt}
+% \Hilite{MON = re.compile('.?VGA.*[Mm]onitors?')}    
+
+% SVGA monitor that syncs from 15-38khz
+% An AAMAZING  1024x768 .28 dot pitch SVGA monitor
+% 14" SVGA Monitor (.28dpi)
+% SVGA card/w color Tatung VGA Monitor
+% 386-40 with VGA \Shade{Color} Monitor, dual floppy
+% For sale KFC SVGA Monitor 1024X768 .28DP Non-interlaced
+% Subject: EGA/VGA Monitor&Card wanted
+% I am looking for a decent EGA or VGA monitor/card
+% Samsung VGA monitor
+% multisynching or straight VGA \Shade{(cheap)} monitor.
+% KFC SVGA Monitor 1024X768 .28DP Non-interlaced 14" 
+% \end{alltt}
+
+% \end{frame}
+
+% % give example of embedded From:
+% \begin{frame}[fragile]
+%   \frametitle{Anchors}
+
+% \begin{alltt}
+% FROM = re.compile('\Hilite{^}From:.*@\verb!\w!*com')
+
+% for item in twenty_newsgroups.items('misc.forsale'):
+%     for line in twenty_newsgroups.readlines(item):
+%         if FROM.search(line):
+%             print line,    
+% \end{alltt}
+% \begin{alltt}
+% From: creol@net\Shade{com}.com
+% From: bigjoe@netcom.com (g perry)
+% From: jonathan@\Shade{com}p.lancs.ac.uk (Mr J J Trevor)
+% From: marc@comp.lancs.ac.uk (Marc Goldman)
+% From: jonathan@comp.lancs.ac.uk (Mr J J Trevor)
+% From: gregg@netcom.com (gregg weber)
+% From: afhetzel@netcom.com (A.F. Hetzel)
+% \end{alltt}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Scoping}
+
+% \begin{alltt}
+% FROM = re.compile('^From:.*@(\verb!\!w+\verb!\!.)+com')
+% \end{alltt}
+% one or more word characters followed by a period --- occurring one or more
+% times
+% \begin{alltt}
+% From: jvinson@xsoft.xerox.\Shade{com} (Jeffrey A Vinson)
+% From: pat@wrs.\Shade{com} (Patrick Boylan)
+% From: creol@netcom.\Shade{com}
+% From: gregh@hprnd.rose.hp.\Shade{com} (Greg Holdren)
+% From: srfergu@rufus.erenj.com (Scott Ferguson)
+% From: pfc@jungle.genrad.com (Paul F. Cappucci)
+% From: pat@wrs.com (Patrick Boylan)
+% From: srscnslt@telesciences.com (SRS Consultant)
+% From: isifisher@aol.com
+% \end{alltt}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Greedy Matching}
+
+% \begin{alltt}
+% FROM = re.compile('^From:.*@.*com\verb!\!s')
+% \end{alltt}
+% Match as many characters as possible between `@' and the string `com\verb!\!s'
+
+% Equivalent to previous version for this data.
+% \end{frame}
+
+% give example of numeric groups
+
+% do the string modulus stuff in a separate example?
+\begin{frame}[fragile]
+\frametitle{Groups}
+
+\begin{itemize}
+\item Groups in regular expressions are captured using parentheses.
+\begin{verbatim}
+>>> import re
+>>> str = 'do you say hello or hullo?'
+>>> reGRP = re.compile('(d.)(.*)(e..)')
+>>> m = reGRP.search(str)
+>>> m
+<_sre.SRE_Match object at 0x64390>
+>>> m.groups()
+('do', ' you say h', 'ell')
+\end{verbatim}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Named Groups}
+
+\begin{itemize}
+\item Name groups captured using \verb!(?P<name>)!:
+\end{itemize}
+{\small
+\begin{verbatim}
+FROM = re.compile("""
+     ^From:          # Anchor to start of line
+     \s*             # maybe some spaces
+     (?P<user>\w+)   # 'user': group of word characters 
+     @               
+     (?P<domain>     # the 'domain':
+     \S+)            # some non-space characters
+     \s              # finally, a space character
+     """,re.VERBOSE)
+\end{verbatim}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Named Groups (cont.)}
+{\small
+\begin{verbatim}
+from nltk_lite.corpus import twenty_newsgroups
+
+for item in twenty_newsgroups.items('misc.forsale'):
+    text = twenty_newsgroups.read(item)
+    m = FROM.search(text)
+    if m:
+      print '%s is at %s' % \
+      (m.group('user'), m.group('domain'))
+\end{verbatim}
+}
+\begin{verbatim}
+kedz is at bigwpi.WPI.EDU
+myoakam is at cis.ohio-state.edu
+gt1706a is at prism.gatech.EDU
+jvinson is at xsoft.xerox.com
+hungjenc is at usc.edu
+thouchin is at cs.umr.edu
+kssimon is at silver.ucs.indiana.edu
+\end{verbatim}
+\end{frame}
+
+\section{Admin}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Reading}
+
+
+
+\begin{itemize}
+  \item {\large Jurafsky \& Martin, Chap 2}
+  \item {\large NLTK Lite Tutorial: Regular Expressions}
+available from 
+\url{http://nltk.sourceforge.net/lite/doc/en/regexps.html}
+\end{itemize}
+
+%NB. You're not expected to know about details of Finite State Automata for exams
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Admin Stuff}
+
+
+
+\begin{itemize}
+\item The main exam for this course will be in May, but there will be
+  an additional exam for visiting students at the end of this
+  semester.
+  \item ICL Web Page is at: \\
+\url{http://www.inf.ed.ac.uk/teaching/courses/icl/}
+\end{itemize}
+
+%NB. You're not expected to know about details of Finite State Automata for exams
+
+\end{frame}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "regexp-lec"
+%%% End: 
