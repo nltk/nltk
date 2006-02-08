@@ -10,6 +10,7 @@ Version 0.7 (end January)
 ? send first 4 chapters to reviewer (intro, prog, tokenization, tagging)
 ? colourising program examples [JC]
 
+- include Kimmo system from NLTK-Contrib [SB]
 - add Li & Roth question classification data? [SB]
 - port more of the NLTK corpus readers [SB]
 - expand coverage of Brazilian Portuguese translations [TT]
