@@ -1,0 +1,314 @@
+\title{Words and Tokenkization }
+\author{Ewan Klein \newline \mbox{ }ewan@inf.ed.ac.uk\mbox{ }}
+\date{ICL --- 6 October 2005}
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+
+\mode<article>{\section[Outline]{ICL/Words and Tokenization/2005-10-05}}
+\mode<presentation>{
+  \section[Outline]{}
+}
+
+\frame{\tableofcontents}
+
+\section{Words}
+
+\begin{frame}[fragile]
+  \frametitle{Text Processing}
+
+
+
+  \begin{quotation}
+    \noindent
+    Text processing is arguably what most programmers spend most of
+    their time doing. The information that lives in business software
+    systems mostly comes down to collections of \textbf{words} about the
+    application domain---maybe with a few special symbols mixed in.\\
+    \noindent
+    David Mertz, \textit{Text Processing in Python}
+  \end{quotation}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{What is a Word (1)?}
+
+
+
+Notion of `word' is not straightword
+
+    \begin{description}
+    \item[Orthographic word:] string of characters with `whitespace'
+      at each end; e.g.\ \textit{these are words}
+
+    \item[Phonological word:] `words' which are pronounced as a
+      phonological unit; e.g.\ \textit{they'll wanna leave}
+
+    \item[Clitic/Leaner:] Items which can't form a phonological word
+      in isolation, but require a host.; e.g.\ \textit{a(n)},
+      \textit{'ll}
+
+    \item[Lexeme (lexical item):] `Words in a dictionary';
+        e.g. \textsc{have} is lexical item corresponding to
+        \textbf{grammatical word forms}
+        \textit{have}, \textit{has}, \textit{had}, \textit{having}
+    \end{description}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{What is a Word (2)?}
+
+    \begin{description}
+      \item[Lemma/Citation Form:] Grammatical form that is chosen to
+        represent a lexeme. In English, usually the \textbf{base} form
+        (i.e., with no grammatical marking)
+
+      \item[Multi-part/Discontinuous Words:] Sequences which are
+        multiple orthographic words but exhibit the semantic coherence
+        of words; e.g.\ \textit{Kim
+          \textbf{rang} her \textbf{up}}
+
+        \item[Short Forms:] abbreviations (\textit{Dept.}), logograms
+        (\pounds), contractions (\textit{we'll}), acronyms (\textit{BBC})
+    \end{description}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Inflectional and Derivational Morphology}
+
+  \begin{itemize}
+    \item Grammatical markings: used to differentiate different forms
+      of a lexeme; e.g., \textit{bake}, \textit{bakes}, \textit{baker}
+ 
+
+      \begin{itemize}
+      \item \textit{bake} is the \textbf{root} or \textbf{stem}
+        form
+      \item \textit{-s} and \textit{-r} are \textbf{morphological
+          affixes} that attach to the root
+      \item \textit{bakes} is a (grammatically) \textbf{inflected}
+        form (i.e., 3rd person singular present verb)
+      \item \textit{baker} is a \textbf{derived} form
+      \end{itemize}
+
+    \item \textbf{Stemming} is an operation that strips off
+      grammatical markings to leave the stem; e.g.\ \textit{foxes}
+      $\Rightarrow$ \textit{fox},  \textit{flies}
+      $\Rightarrow$ \textit{fly}
+
+    \item \textbf{Lemmatization} is an operation that specifies the
+      lemma corresponding to a word form; what counts as lemma may
+      vary with application.
+    \end{itemize}
+\end{frame}
+
+\section{Tokenization}
+
+% \begin{frame}[fragile]
+%   \frametitle{Why Tokenize?}
+% Look, ma, no spaces!:
+
+% 美国人
+
+%   \begin{itemize}
+%   \item<1->  The simplest way to represent a text is with a single string.
+% \begin{verbatim}
+% >>> open("hello.txt").read()   
+% 'Hello world!\tThis is a \ntest file.\n'  
+% \end{verbatim}
+%   \item<2-> But its difficult to process (e.g., parse) a text in this format.
+%   \item<2-> Instead, more convenient to work with a \textbf{list} of
+%     \textbf{tokens}. 
+% {\small
+% \begin{verbatim}
+% >>> tokens = ['Hello', 'world!', 'This', 'is', 'a', 'test', 'file.'] 
+% >>> for t in tokens:
+% ...     t = t.lower()
+% ...     print t   
+% \end{verbatim}
+% }
+%   \end{itemize}
+% \end{frame}
+
+ 
+\begin{frame}[fragile]
+  \frametitle{Why Tokenize?}
+
+  \begin{itemize}
+  \item<1->  The simplest way to represent a text is with a single string.
+\begin{verbatim}
+>>> open("hello.txt").read()   
+'Hello world!\tThis is a \ntest file.\n'  
+\end{verbatim}
+  \item<2-> We need to identify parts of the string that should
+    undergo further processing, e.g., parsing into grammatical structure.
+  \item<3-> We call the parts \textbf{tokens}.
+  \item<4-> In NLTK, it's convenient to work with a \textbf{list} of
+    tokens, typically corresponding to orthographic words: 
+{\small
+\begin{verbatim}
+>>> tokens = ['Hello', 'world!', 'This', 'is', 'a', 'test', 'file.'] 
+>>> for t in tokens:
+...     t = t.lower()
+...     print t   
+\end{verbatim}
+}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Simple Word Tokenization}
+
+  \begin{itemize}
+  \item<1->  The simple 'space' tokenizer in NLTK Lite:
+\begin{verbatim}
+>>> from nltk_lite.tokenize import *
+>>> s = 'This is a\n string.' 
+>>> simple.space(s)
+['This', 'is', 'a\n', 'string.']  
+\end{verbatim}
+  \item<2-> \verb!space(s)! just splits the string at single spaces.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Other Kinds of Token}
+
+Tokens can be of various different types:
+\begin{itemize}
+\item<1-> words (most usual)
+\item<2-> lines
+\begin{verbatim}
+>>> from nltk_lite.tokenize import *
+>>> s = 'This is a\n string.' 
+>>> simple.line(s)
+['This is a', ' string.'] 
+\end{verbatim}
+
+\item<2-> \verb!line(s)! splits the string at newlines (\verb!\n!).
+\item<3-> sentences (also useful, but tricky!)
+\item<4-> paragraphs
+\end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Identifying Tokens}
+
+    \begin{itemize}
+    \item \textit{Do you mean this this or that this?}
+    \item Three occurrences of \textit{this}; i.e.,
+    \item three \textbf{tokens} of the \textbf{type} `this'.
+    \begin{description}
+    \item [Word token:] an occurrence of a word form at a particular
+      spatio-temporal location (e.g. a sequential position in a text,
+      an utterance event at a time and place);
+    \item [Word type:] ideally, the lexeme, but in fact might be a
+      grammatical word form.
+      Tokens \textbf{belong} to a given type. 
+      \end{description}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Counting Types vs.\ Tokens}
+{\small
+\begin{verbatim}
+from nltk_lite.corpora import gutenberg
+
+count = {}                      # initialize dictionary
+
+for token in gutenberg.raw('shakespeare-macbeth'):    
+    token = token.lower()           # normalize case
+    if token not in count:          # previously unseen token?
+        count[token] = 0            #   if so set count to 0
+    count[token] += 1               # increment token count
+\end{verbatim}
+
+\begin{verbatim}
+lc_tokens = list(gutenberg.raw('shakespeare-macbeth'))
+
+no_tokens = len(lc_tokens)          # 23939
+no_types = len(count.keys())        #  3629
+tt_ratio = no_tokens/no_types       #     6
+\end{verbatim}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Problems with Identifying Tokens}
+
+  \begin{itemize}
+  \item<1-> What counts as word token in English often arbitrary: \\
+    e.g.\ \textit{ice cream},     \textit{ice-cream},     \textit{icecream}
+  \item<2-> Tokenization may also depend on requirements of downstream
+    processing; e.g.\ maybe treat \textit{we've} as two word
+    tokens and try to find \textit{'ve} as a contracted form in lexicon.
+  \item<3-> Tokenization decisions can effect part-of-speech tagging
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Tokenization and Tagging}
+  \begin{itemize}
+  \item \textit{\ldots a previously described FK506-binding
+      protein-associated protein}\\
+  \item two possible tokenizations, depending on whether we tokenize
+    the first hyphen in its own right:
+    \begin{itemize}
+    \item FK506 - binding protein-associated protein
+    \item FK506-binding protein-associated protein
+    \end{itemize}
+  \item This leads to two different part-of-speech, using an existing
+    tagger:
+{\small
+  \verb!FK506\_SYM -_: binding_VBG protein-associated_JJ protein_NN!\\
+  \verb!FK506-binding_JJ protein-associated_JJ protein_NN!
+}
+  \end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{Reading}
+
+  \begin{itemize}
+  \item Read NLTK Lite Tutorial \textit{Elementary Language Processing} at least up to
+    Section 5.
+  \end{itemize}
+\end{frame}
+
+
+
+
+\section{Summary}
+
+\begin{frame}
+  \frametitle{Summary}
+
+  \begin{itemize}
+  \item Most text processing makes assumptions about linguistic units;
+    good to be aware of the major distinctions in notion of `word'.
+  \item Tokenization into words is important for subsequent processing
+  \item Tokenization into sentences also important
+  \item But not always easy to tokenize in a consistent and sensible
+    manner, and no Right Answer in general.
+  \end{itemize}
+\end{frame}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "tokenization-lec"
+%%% End: 

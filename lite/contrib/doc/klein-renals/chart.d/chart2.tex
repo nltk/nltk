@@ -1,0 +1,442 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Revised: Time-stamp: <2005-11-10 16:30:21 ewan>
+% 
+% $Log$
+% Revision 1.1  2006/02/08 15:36:53  ehk
+% First import of beamer.sty slides. Some files still need renaming.
+%
+% Revision 1.4  2005/11/10 17:02:02  ewan
+% *** empty log message ***
+%
+% Revision 1.3  2005/11/10 13:49:59  ewan
+% *** empty log message ***
+%
+% Revision 1.2  2005/11/10 13:45:40  ewan
+% *** empty log message ***
+%
+% Revision 1.1  2005/11/10 13:17:27  ewan
+% *** empty log message ***
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Chart Parsing, Part 2}
+\author{Ewan Klein \newline \mbox{ }ewan@inf.ed.ac.uk\mbox{ }}
+\date{ICL --- 10 November 2005}
+
+
+
+\newcommand{\Rule}{\rule{\textwidth}{1pt}}
+\newcommand{\SqB}[1]{[#1]}
+
+\newcommand{\bigdot}{\mbox{\begin{scriptsize}{\ensuremath{\bullet}}\end{scriptsize}}}
+
+\newcommand{\chdot}{\bigdot}
+
+\input{../defs.sty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[plain]{algorithm}
+%\renewcommand{\algorithmicelsif}{\textbf{elsif}}
+% Seminar style settings
+%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+
+% Shading
+\definecolor{light}{gray}{.80}
+\newcommand{\Hilite}[1]{\colorbox{yellow}{#1}}
+\newcommand{\Shade}[1]{\colorbox{light}{#1}}
+
+\newcommand{\Em}[1]{\textcolor{red}{#1}}
+\newcommand{\Dim}[1]{\textcolor{gray}{#1}}
+
+\setlength{\parskip}{0in}
+\setlength{\parindent}{0in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% JM abbreviations
+\def\tab{\hbox{\kern0.4in}}    %% Insert space (even at start of line)
+\def\al{\\\tab}                %% Next line is indented
+\def\nl{\\\tab\tab}            %% Next line is double-indented
+\def\nnl{\\\tab\tab\tab}       %% Next line is triple-indented
+\def\blob{$\diamondsuit\ \ $}  %% Itemization without all the spacing
+\def\mysum{\begin{Huge}\mbox{$\Sigma$}\end{Huge}}
+\def\myprod{\begin{Huge}\mbox{$\Pi$}\end{Huge}}
+\def\rarrow{$\rightarrow\ \ $}  %% 
+
+\newcommand{\elt}{{\,{\in}\,}}  %%%cuts down on spacing
+\newcommand{\eq}{{\,{=}\,}}  %%%cuts down on spacing
+\def\stimes{{\,\times\,}}       %%%cuts down on spacing
+
+%% BNF grammars %pnorvig Mar 14 1994:
+\newcommand{\bl}{\;}                   %A blank between BNF constituents
+\newcommand{\bnf}[1]{{\it #1}}          %A BNF constituent
+\newcommand{\bnfeq}{\ensuremath{\rightarrow}} % BNF arrow (separates LHS from RHS) 
+\newcommand{\bnfreveq}{\ensuremath{\leftarrow}}      % Reverse BNF arrow
+\newcommand{\bnft}[1]{\ensuremath{\boldmath \( #1 \)}} % A BNF terminal 
+\newcommand{\bnfv}[1]{\bnf{#1}}         % A BNF terminal variable constituent
+\newcommand{\bnfnull}{\bnft{\epsilon}}  % An empty BNF right-hand-side
+\newcommand{\bnfor}{\ensuremath{\mid\bl}}            % A BNF disjunction
+\newcommand{\dcg}{\Leftarrow_{dcg}}     % Obsolete!
+
+\newcommand{\fhs}[3]{\frac{#1}{#2} #3}  % Filler, Hole, Semantics
+
+\newlength{\maxfigwidth}
+\setlength{\maxfigwidth}{\textwidth}
+\addtolength{\maxfigwidth}{-8\fboxsep}
+\addtolength{\maxfigwidth}{-8\fboxrule}
+
+%%%%%%%%%%%% elements of programs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\defprog}[1]{\mbox{{\sc #1}}} 
+\newcommand{\prog}[1]{\mbox{{\sc #1}}}   %%% same as defprog
+\newcommand{\noprog}[1]{\mbox{{\sc #1}}} %%% same as defprog
+\newcommand{\system}[1]{\mbox{{\sc #1}}} %%% same as defprog
+\newcommand{\nosystem}[1]{\mbox{{\sc #1}}} %%% same as defprog
+\newcommand{\act}[1]{{\it #1}}
+\newcommand{\key}[1]{{\bf #1}}
+\def\k{\key}
+\newcommand{\var}[1]{{\it #1}}
+\def\v{\var}
+\def\p{\prg}
+\newcommand{\setq}[2]{#1\hbox{$\,\leftarrow\,$}#2}
+\newcommand{\setqmath}[2]{#1 \leftarrow #2}
+
+%%pnorvig Mar 14 1994:
+\newcommand{\labl}[1]{\prog{#1}}        % Statement Label in code
+\newcommand{\cmt}[1]{{\tt /*} {\it #1} {\tt */}}        % Comment in code
+\newcommand{\rcmt}[1]{\hfill {\tt /*} {\it #1} {\tt */}}
+\newcommand{\Endfn}[1]{}                % End of a function in code
+\newcommand{\fnsep}{\hspace*{0in}\raisebox{3pt}{\rule{\codewidth}{0.2pt}}\hfill}        % Between functions in code
+
+\def\code{\noindent\nobreak\begin{Large}
+        \begingroup\obeylines\obeyspaces\docode}
+\def\docode#1{\noindent\framebox[\columnwidth][l]%
+{~~\begin{minipage}{\codewidth}~
+#1
+~\end{minipage}}\endgroup%
+\nobreak\end{Large}\noindent\ignorespaces}
+\def\asis{\obeylines\obeyspaces}
+\def\ttp{.\skip -0.5em\ }
+{\obeyspaces\global\def {\ }}
+
+
+%% Fine tuning for perfect formatting
+
+\newcommand{\ac}{,\hspace{0.15em}}
+\newcommand{\ts}{\,}
+\newcommand{\bodysep}{\vspace{0.1in}}
+\newcommand{\subfnsep}{\vspace{0.06in}}
+\newcommand{\prebnfsep}{\vspace{-0.25in}}
+\newcommand{\postbnfsep}{\vspace{0.1in}}
+\newcommand{\fnvar}[1]{\prog{#1}}
+\newcommand{\func}[3]{\key{function} \defprog{#1}(#2) \key{returns} #3}
+\newcommand{\nofunc}[3]{\key{function} \noprog{#1}(#2) \key{returns} #3}
+\newcommand{\proc}[2]{\key{procedure} \defprog{#1}(#2)}
+\newcommand{\noproc}[2]{\key{procedure} \noprog{#1}(#2)}
+\newcommand{\firstinputs}[2]{\key{inputs}: \var{#1}, #2}
+\newcommand{\inputs}[2]{\phantom{\key{inputs}: }\var{#1}, #2}
+\newcommand{\firstlocal}[2]{\key{local variables}: \var{#1}, #2}
+\newcommand{\local}[2]{\phantom{\key{local variables}: }\var{#1}, #2}
+\newcommand{\firststatic}[2]{\key{static}: \var{#1}, #2}
+\newcommand{\static}[2]{\phantom{\key{static}: }\var{#1}, #2}
+
+\newlength{\codewidth}
+\setlength{\codewidth}{\textwidth}
+\addtolength{\codewidth}{-0.5in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{synttree}
+\branchheight{5ex}
+
+
+\begin{document}
+\frame{\titlepage}
+
+\mode<article>{\section[Outline]{ICL/Chart Parsing, Part 2/2005-11-10}}
+\mode<presentation>{
+  \section[Outline]{}
+}
+
+\frame{\tableofcontents}
+
+\section{Review Chart Parsing}
+
+\begin{frame}[fragile]
+ \frametitle{Charts and Edges}
+
+
+ \begin{itemize}
+ \item A \Em{chart} records hypotheses about possible constituents;
+ \item it contains a set of \Em{edges}.
+ \item Each edge has information about
+   \begin{itemize}
+   \item start index of the constituent,
+   \item end index,
+   \item the hypothesized type of the constituent and its sub-constituents
+   \end{itemize}
+ \item NLTK: \verb![A -> B C]@[i:j]!
+ \item The content of an edge takes the form of a dotted rule:
+$A \rightarrow \alpha \, \bigdot \, \beta$:
+\begin{itemize}
+\item $\alpha$ is what we've \Em{found} so far,
+\item $\beta$ is what we still  \Em{need} in order to complete an $A$.
+\end{itemize}
+ \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Chart Parser Rules}
+
+
+ \begin{itemize}
+ \item A chart parser \Em{rule} (or function) adds new edges to the chart.
+ \item A chart parsing \Em{strategy} defines a set of rules.
+ \item \Em{Top Down}
+   \begin{itemize}
+   \item top down initialization rule
+   \item top down predictor rule
+   \item fundamental rule (completer)
+   \end{itemize}
+ \item \Em{Bottom Up}
+   \begin{itemize}
+   \item bottom up predictor rule
+   \item fundamental rule (completer)
+   \end{itemize}
+ 
+ \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Fundamental Rule}
+
+ \begin{itemize}
+ \item Fundamental Rule is used by both strategies.
+ \item If the chart contains
+   \begin{itemize}
+   \item $A \rightarrow \alpha \, \bigdot B \gamma, [i,j]$
+ and
+\item $C \rightarrow \beta [j,k]$, then add  
+
+\item $A \rightarrow \alpha  B \, \bigdot \gamma, [i,k]$
+   \end{itemize}
+ 
+
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Top Down Predictor Rule}
+
+ \begin{itemize}
+ \item If the chart contains
+   \begin{itemize}
+   \item $A \rightarrow \alpha \, \bigdot  \, C \beta, [i,j]$
+     then
+      \begin{itemize}
+      \item for each production $C \rightarrow \gamma$,  add  
+      \item $C \rightarrow  \bigdot \gamma, [j,j]$
+      \end{itemize}
+   \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Bottom Up Predictor Rule}
+
+ \begin{itemize}
+ \item If the chart contains
+   \begin{itemize}
+   \item $A \rightarrow \alpha \, \bigdot, [i,j]$
+     then
+      \begin{itemize}
+      \item for each production $B \rightarrow A \beta$,  add  
+      \item $B \rightarrow  \bigdot A  \beta, [i,j]$
+      \end{itemize}
+   \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 25
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Examples: Local Ambiguity}
+
+
+%Let's assume that we're parsing the \VP \ling{gave mary a book} using the 
+%following  rules:
+
+
+%\begin{quote}
+%  \Se\ $\rightarrow$ \VP
+
+%  \VP\ $\rightarrow$ \V
+  
+%  \VP\ $\rightarrow$ \V\ \NP
+  
+%  \VP\ $\rightarrow$ \V\  \NP  \PP
+  
+%  \VP\ $\rightarrow$ \V\  \NP  \NP
+
+%\end{quote}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Slide 26
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+%  \frametitle{Examples: Local Ambiguity}
+
+
+
+
+
+
+\section{Left Recursion and Ambiguity}
+
+%\includegraphics[scale=.7]{moore/figures/mary.ps}
+
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 27
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Examples: Left Recursion}
+
+
+Assume we are parsing \NP \ling{a flight from Denver to Boston}
+with the following rules:
+\begin{quote}
+  \NP\ $\rightarrow$ \NP\ \PP
+
+  \NP\ $\rightarrow$ \Det\ \Nom
+
+  \NP\ $\rightarrow$ Proper-Noun
+
+\end{quote}
+
+\begin{itemize}
+  \item We construct the state (\NP\ $\rightarrow$ \bigdot\ \NP\ \PP,
+    [0,0]) and add it to \textit{chart}[0]
+  \item The Predictor rule  requires us to find a rule
+    which expands the (non-lexical) category immediately to the right of
+    the dot. 
+  \item Pick the first rule above, and add the
+    state (\NP\ $\rightarrow$ \bigdot\ \NP\ \PP, [0,0]).
+  \item But this is already in the chart, so we don't add it again. 
+\end{itemize}
+
+
+%\includegraphics[scale=.7]{moore/figures/denver.ps}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Slide 28
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+ \frametitle{Examples: Global Ambiguity}
+
+\includegraphics[scale=.6]{../images/oldmen.pdf}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Examples: Global Ambiguity}
+
+\includegraphics[scale=.6]{../images/oldmen2.pdf}
+
+
+\end{frame}
+
+
+%\begin{frame}[fragile]
+%  \frametitle{Error handling}
+
+
+%  \begin{itemize}
+    
+
+%  \item What happens when we look at the contents of the last table
+%    column and don't find a \Se\ $\rightarrow \alpha \, \bigdot$ rule?
+%  \item Is  there some way to proceed?
+%  \item Yes. The chart contains every constituent and combination of
+%    constituents that could have been found for that input given the
+%    grammar.
+%  \item Useful for partial (or shallow) parsing, also called
+%    \ling{chunking}, which is frequently used in information extraction
+%    and question answering.
+%\end{itemize}
+
+%\end{frame}
+
+
+
+%\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Chart Parser Demo}
+
+\begin{verbatim}
+>>> from nltk_lite.draw.chart import demo
+>>> demo()
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\section{Reading}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 33
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+  \frametitle{Reading}
+
+{\large 
+  \begin{itemize}
+    
+  \item Read section 10.4 of J\&M
+
+  \item Read the NLTK-Lite Tutorial on Chart Parsing
+
+
+  \end{itemize}
+
+}
+
+
+\end{frame}
+
+
+
+
+\end{document}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "earley-pt2-lec"
+%%% End: 
