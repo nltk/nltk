@@ -34,6 +34,7 @@ Version 0.7 (end January)
 - decision list classifier
 - Unicode compliance [SB]
 - add material on program design to programming chapter [SB]
+- check graphical demos on windows machines (add cf.mainloop()?) [SB]
 
 --------------------------
 Version 0.8 (end February)
