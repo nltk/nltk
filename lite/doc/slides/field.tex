@@ -1,16 +1,15 @@
 % for slides
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 % for handout
 % \documentclass[handout]{beamer}
-% \usepackage{pgfpages}
-% \pgfpagesuselayout{4 on 1}[a4paper,landscape,scale=0.9]
 
 \mode<handout>
 {
   \usetheme{default}
-  \usepackage{fullpage}
-  \usepackage{pgf}
+  \setbeamercolor{background canvas}{bg=black!5}
+  \usepackage{pgfpages}
+  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
   \usepackage{hyperref}
   \setjobnamebeamerversion{field.beamer}
 }
@@ -151,7 +150,7 @@ condition of body and mind ...o:p></o:p></i></p>
 
 \begin{frame}[fragile]
 \frametitle{Example: Validating Dictionaries stored in MSWord}
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> import re
@@ -224,7 +223,7 @@ condition of body and mind ...o:p></o:p></i></p>
 
 \begin{frame}[fragile]
 \frametitle{Database Example}  
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> import csv
@@ -264,6 +263,7 @@ condition of body and mind ...o:p></o:p></i></p>
 
 \begin{frame}[fragile]
 \frametitle{Shoebox Example}
+\small
 
 \begin{verbatim}
 \lx kaa
@@ -407,6 +407,7 @@ condition of body and mind ...o:p></o:p></i></p>
 \item sanitise our data before giving it to others
 \end{itemize}
 
+\small
 \begin{verbatim}
 >>> retain = ('lx', 'ps')
 >>> raw_entries = list(shoebox.raw('rotokas'))
@@ -438,8 +439,7 @@ condition of body and mind ...o:p></o:p></i></p>
 \frametitle{Formatting Entries: dictionary() method}
 
 \begin{itemize}
-\item request specific fields without concern for their relative
-  ordering
+\item request specific fields without concern for ordering
 \end{itemize}
 \scriptsize
 
@@ -484,6 +484,11 @@ kakate (N.F) 'bamboo tube for water'
 ...     html += "  <tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (lex, pos, dfn)
 >>> html += "</table>"
 >>> print html
+\end{verbatim}
+
+\tiny
+
+\begin{verbatim}
 <table>
   <tr><td>kakapikoto</td><td>N.N2</td><td>newborn baby</td></tr>
   <tr><td>kakapu</td><td>V.B</td><td>place in sling for purpose of carrying</td></tr>
@@ -522,6 +527,10 @@ kakate (N.F) 'bamboo tube for water'
 >>> for lex in lexgloss:
 ...     if lex+lex in lexgloss:
 ...         print "%s (%s); %s (%s)" % (lex, lexgloss[lex], lex+lex, lexgloss[lex+lex])
+\end{verbatim}
+
+\tiny
+\begin{verbatim}
 kuvu (fill.up); kuvukuvu (stamp the ground)
 kitu (save); kitukitu (scrub clothes)
 kopa (ingest); kopakopa (gulp.down)
@@ -561,7 +570,7 @@ kosi (exit); kosikosi (exit)
 \item for phonological description, identify segments, alternations,
   syllable canon...
 \item what syllable types occur in lexemes (MSC, conspiracies)?
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> from nltk_lite.tokenize import regexp
@@ -580,7 +589,7 @@ kosi (exit); kosikosi (exit)
 \begin{itemize}
 \item Tabulate the results:
 
-{\small
+{\scriptsize
 \begin{verbatim}
 >>> for vowel in 'aeiou':
 ...     for cons in 'ptkvsr':
@@ -623,7 +632,7 @@ pu:  49  tu:  35  ku: 169  vu:  44  su:   1  ru:  72
 
 \begin{frame}[fragile]
 \frametitle{Prosodically-motivated search (cont)}
-\scriptsize
+\tiny
 
 \begin{verbatim}
 >>> for entry in shoebox.dictionary('rotokas'):
@@ -682,7 +691,7 @@ kuverea (V.A) 'not all right'
 
 \begin{frame}[fragile]
 \frametitle{Finding Minimal Sets: Example 1}
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> lexemes = [entry['lx'] for entry in shoebox.dictionary('rotokas')
@@ -736,7 +745,8 @@ k_ki: kaki kiki -    -    koki
                    entry['ps'][0],
                    "%s (%s)" % (entry['ps'][0], entry['ge'])
                   )
-...               for entry in shoebox.dictionary('rotokas') if 'lx' in entry]
+...               for entry in shoebox.dictionary('rotokas')
+...                 if 'lx' in entry]
 >>> ms = build_min_set(parameters)
 >>> for context in ms.contexts()[:10]:
 ...     print "%10s:" % context, "; ".join(ms.display_all(context))
@@ -768,7 +778,7 @@ k_ki: kaki kiki -    -    koki
 
 \begin{frame}[fragile]
 \frametitle{Computing Soundex}
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> group = {
@@ -785,7 +795,7 @@ k_ki: kaki kiki -    -    koki
 
 \begin{frame}[fragile]
 \frametitle{Computing Soundex (cont)}
-\small
+\scriptsize
 
 \begin{verbatim}
 >>> def soundex(word):
@@ -833,9 +843,11 @@ T400
 
 \begin{verbatim}
 >>> fuzzy_spell('kokopouto')
-['kokopeoto', 'kokopuoto', 'kokepato', 'koovoto', 'koepato', 'kooupato', 'kopato', 'kopiito', 'kovuto', 'koavaato']
+['kokopeoto', 'kokopuoto', 'kokepato', 'koovoto', 'koepato',
+ 'kooupato', 'kopato', 'kopiito', 'kovuto', 'koavaato']
 >>> fuzzy_spell('kogou')
-['kogo', 'koou', 'kokeu', 'koko', 'kokoa', 'kokoi', 'kokoo', 'koku', 'kooe', 'kooku']
+['kogo', 'koou', 'kokeu', 'koko', 'kokoa', 'kokoi', 'kokoo',
+ 'koku', 'kooe', 'kooku']
 \end{verbatim}
 \end{frame}
 
@@ -863,6 +875,7 @@ T400
 
 \begin{frame}[fragile]
 \frametitle{Generating Summary Reports (cont)}
+\small
 
 \begin{verbatim}
 >>> fd = FreqDist()
@@ -889,7 +902,7 @@ lx:rt:ps:ge:ge:gp:dt:ex:xp:xe
 
 \begin{frame}[fragile]
 \frametitle{Looking at Timestamps}
-\small
+\scriptsize
 \begin{verbatim}
 >>> fd = FreqDist()
 >>> from string import split
