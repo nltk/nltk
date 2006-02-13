@@ -40,7 +40,8 @@
 
 Notion of `word' is not straightword
 
-    \begin{description}
+\pause
+    \begin{description}[<+->]
     \item[Orthographic word:] string of characters with `whitespace'
       at each end; e.g.\ \textit{these are words}
 
@@ -62,7 +63,7 @@ Notion of `word' is not straightword
 \begin{frame}[fragile]
   \frametitle{What is a Word (2)?}
 
-    \begin{description}
+    \begin{description}[<+->]
       \item[Lemma/Citation Form:] Grammatical form that is chosen to
         represent a lexeme. In English, usually the \textbf{base} form
         (i.e., with no grammatical marking)
@@ -81,7 +82,7 @@ Notion of `word' is not straightword
 \begin{frame}[fragile]
   \frametitle{Inflectional and Derivational Morphology}
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item Grammatical markings: used to differentiate different forms
       of a lexeme; e.g., \textit{bake}, \textit{bakes}, \textit{baker}
  
@@ -109,37 +110,12 @@ Notion of `word' is not straightword
 
 \section{Tokenization}
 
-% \begin{frame}[fragile]
-%   \frametitle{Why Tokenize?}
-% Look, ma, no spaces!:
-
-% 美国人
-
-%   \begin{itemize}
-%   \item<1->  The simplest way to represent a text is with a single string.
-% \begin{verbatim}
-% >>> open("hello.txt").read()   
-% 'Hello world!\tThis is a \ntest file.\n'  
-% \end{verbatim}
-%   \item<2-> But its difficult to process (e.g., parse) a text in this format.
-%   \item<2-> Instead, more convenient to work with a \textbf{list} of
-%     \textbf{tokens}. 
-% {\small
-% \begin{verbatim}
-% >>> tokens = ['Hello', 'world!', 'This', 'is', 'a', 'test', 'file.'] 
-% >>> for t in tokens:
-% ...     t = t.lower()
-% ...     print t   
-% \end{verbatim}
-% }
-%   \end{itemize}
-% \end{frame}
 
  
 \begin{frame}[fragile]
   \frametitle{Why Tokenize?}
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item<1->  The simplest way to represent a text is with a single string.
 \begin{verbatim}
 >>> open("hello.txt").read()   
@@ -164,15 +140,15 @@ Notion of `word' is not straightword
 \begin{frame}[fragile]
   \frametitle{Simple Word Tokenization}
 
-  \begin{itemize}
-  \item<1->  The simple 'space' tokenizer in NLTK Lite:
+  \begin{itemize}[<+->]
+  \item The simple 'space' tokenizer in NLTK Lite:
 \begin{verbatim}
 >>> from nltk_lite.tokenize import *
 >>> s = 'This is a\n string.' 
 >>> simple.space(s)
 ['This', 'is', 'a\n', 'string.']  
 \end{verbatim}
-  \item<2-> \verb!space(s)! just splits the string at single spaces.
+  \item \verb!space(s)! just splits the string at single spaces.
   \end{itemize}
 \end{frame}
 
@@ -181,9 +157,9 @@ Notion of `word' is not straightword
   \frametitle{Other Kinds of Token}
 
 Tokens can be of various different types:
-\begin{itemize}
-\item<1-> words (most usual)
-\item<2-> lines
+\begin{itemize}[<+->]
+\item words (most usual)
+\item lines
 \begin{verbatim}
 >>> from nltk_lite.tokenize import *
 >>> s = 'This is a\n string.' 
@@ -191,9 +167,9 @@ Tokens can be of various different types:
 ['This is a', ' string.'] 
 \end{verbatim}
 
-\item<2-> \verb!line(s)! splits the string at newlines (\verb!\n!).
-\item<3-> sentences (also useful, but tricky!)
-\item<4-> paragraphs
+\item \verb!line(s)! splits the string at newlines (\verb!\n!).
+\item sentences (also useful, but tricky!)
+\item paragraphs
 \end{itemize}
 
 
@@ -203,7 +179,7 @@ Tokens can be of various different types:
 \begin{frame}[fragile]
   \frametitle{Identifying Tokens}
 
-    \begin{itemize}
+    \begin{itemize}[<+->]
     \item \textit{Do you mean this this or that this?}
     \item Three occurrences of \textit{this}; i.e.,
     \item three \textbf{tokens} of the \textbf{type} `this'.
@@ -233,6 +209,7 @@ for token in gutenberg.raw('shakespeare-macbeth'):
     count[token] += 1               # increment token count
 \end{verbatim}
 
+\pause
 \begin{verbatim}
 lc_tokens = list(gutenberg.raw('shakespeare-macbeth'))
 
@@ -246,7 +223,7 @@ tt_ratio = no_tokens/no_types       #     6
 \begin{frame}[fragile]
   \frametitle{Problems with Identifying Tokens}
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item<1-> What counts as word token in English often arbitrary: \\
     e.g.\ \textit{ice cream},     \textit{ice-cream},     \textit{icecream}
   \item<2-> Tokenization may also depend on requirements of downstream
@@ -260,7 +237,7 @@ tt_ratio = no_tokens/no_types       #     6
 
 \begin{frame}[fragile]
   \frametitle{Tokenization and Tagging}
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item \textit{\ldots a previously described FK506-binding
       protein-associated protein}\\
   \item two possible tokenizations, depending on whether we tokenize
@@ -295,7 +272,7 @@ tt_ratio = no_tokens/no_types       #     6
 \begin{frame}
   \frametitle{Summary}
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item Most text processing makes assumptions about linguistic units;
     good to be aware of the major distinctions in notion of `word'.
   \item Tokenization into words is important for subsequent processing
@@ -310,5 +287,5 @@ tt_ratio = no_tokens/no_types       #     6
 
 %%% Local Variables: 
 %%% mode: latex
-%%% TeX-master: "tokenization-lec"
+%%% TeX-master: "tokenize-lec"
 %%% End: 
