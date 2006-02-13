@@ -135,8 +135,10 @@ We can use similar techniques for genre and authorship identification.
     pitcher upon every living creature after thee shall come near her:
     yea,
 
-The following program reads trees from the Penn Treebank corpus, and finds instances
-of verb phrase conjunctions involving the word *but*, and displays the two verb phrases.
+The following program reads trees from the Penn Treebank corpus, finds
+instances of verb phrase conjunctions involving the word *but*, and
+displays  strings of part-of-speech tags corresponding to the two
+verb phrases.
 
     >>> from nltk_lite.corpora import treebank
     >>> from string import join
@@ -163,8 +165,10 @@ of verb phrase conjunctions involving the word *but*, and displays the two verb 
     VBD NP PP-CLR *BUT* VBD PRT NP
     VBZ S *BUT* MD VP
 
-We have seen that that writing programs to manipulate natural language is easy.
-In the following sections we will see why it is interesting and important...
+We have seen that that writing programs to manipulate natural language
+is can be accomplished using simple techniques and a small amount of
+Python code.  In the following sections we will see why it is
+interesting and important.
 
 
 ----------------------
@@ -233,8 +237,10 @@ is spent navigating and accessing this universe of information.  *What
 tourist sites can I visit between Philadelphia and Pittsburgh on a
 limited budget?  What do expert critics say about Canon digital
 cameras?  What predictions about the steel market were made by
-credible commentators in the past week?* Answering such questions
-requires a combination of language processing tasks including
+credible commentators in the past week?* At present, humans require
+skill, knowledge, and some luck, to extract answers to these questions
+from existing search engines.  Getting a computer to answer them
+automatically would involve a range of language processing tasks, including
 information extraction, inference, and summarisation.  The scale of
 such tasks often calls for high-performance computing.
 
@@ -354,14 +360,15 @@ relation, and *John* and *Mary* as denoting individuals.  More general
 statements like *All birds fly* require quantifiers, in this case
 |forall| meaning *for all*: |forall| x: bird(x) |rarr| fly(x).
 This use of logic provided the technical machinery to perform
-inferences that are an important part of language understanding. The
-third development was the *principle of compositionality*. This was
-the notion that the meaning of a complex expression is comprised of
-the meaning of its parts and their mode of combination. This principle
-provided a useful correspondence between syntax and semantics, namely
-that the meaning of a complex expression could be computed
-recursively.  Given the representation of *It is not true that*
--:subscript:`p` as ``not(p)`` and *John saw Mary* as
+inferences that are an important part of language understanding. 
+
+The third development was the *principle of compositionality*. This
+was the notion that the meaning of a complex expression is comprised
+of the meaning of its parts and their mode of combination. This
+principle provided a useful correspondence between syntax and
+semantics, namely that the meaning of a complex expression could be
+computed recursively.  Given the representation of *It is not true
+that* -:subscript:`p` as ``not(p)`` and *John saw Mary* as
 ``saw(j,m)``, we can compute the interpretation of *It is not true
 that John saw Mary* recursively using the above information to get
 ``not(saw(j,m))``. Today, this approach is most clearly manifested in
@@ -390,7 +397,7 @@ language answer is returned to the user.
 
 This approach to NLP is known as *semantic grammar*.  Such grammars
 are formalized like phrase-structure grammars, but their constituents
-are no longer grammatical categories like noun phrase, but semantic
+are no longer grammatical categories such as *Noun Phrase*, but semantic
 categories like *Airport* and *City*.  These grammars work very well
 in limited domains, and are still widely used in spoken language
 systems.  However, they lack robustness and portability, and they
@@ -474,8 +481,8 @@ language models, but it also counts as evidence for a symbolic account
 of word combination in which *absolutely* can only modify extreme
 actions or attributes.  This information could be represented as a
 binary-valued feature of certain lexical items.  Thus, we see
-statistical data informing symbolic models.  Now that this information
-is codified, it is available to be exploited as a contextual feature
+statistical data informing symbolic models.  Once this information
+has been codified, it is available to be exploited as a contextual feature
 for a statistical language modelling, alongside many other rich
 sources of symbolic information, like hand-constructed parse trees and
 semantic representations.  Now the circle is closed, and we see
@@ -530,7 +537,7 @@ is an example corresponding to the above text:
 Early work in IE demonstrated that hand-built rules could achieve good
 accuracy in the tasks defined by the DARPA Message Understanding
 Conferences (MUC).  In general, highest accuracy has been achieved in
-identifying named entities, such as ``William Hill bookkeepers``.
+identifying so-called named entities, such as ``William Hill bookkeepers``.
 However, it is harder to identify which slots the entities should
 fill; and harder still to accurately identify which event the entities
 are participating in.  In recent years attention has shifted to making
@@ -657,7 +664,7 @@ the context of a spoken dialogue system, such as our earlier example
 of an application that offers the user information about movies
 currently on show.
 
-.. figure:: ../images/dialogue.png
+.. figure:: ../images/dialogue-90dpi.png
 
    Architecture of Spoken Dialogue System
 
@@ -779,7 +786,7 @@ programs in Python.  It provides:
 Further Reading
 ---------------
 
-The Association for Computational Linguistics (ACL) is the peak
+The Association for Computational Linguistics (ACL) is the foremost
 professional body in NLP.  Its journal and conference proceedings,
 approximately 10,000 articles, are available online with a full-text
 search interface, via ``http://www.aclweb.org/anthology/``.
