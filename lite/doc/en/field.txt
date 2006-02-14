@@ -834,10 +834,51 @@ Discovering patterns of fields:
     lx:ps:ge:ge:gp:dt:ex:xp:xe
     lx:rt:ps:ge:ge:gp:dt:ex:xp:xe
 
+Finding frequent pairs of fields:
 
-.. Parsing Entries?
-   Some shoebox entries have nested structure.  Thus they correspond to a
-   tree over the fields.
+    >>> fd = FreqDist()
+    >>> for entry in shoebox.raw('rotokas'):
+    ...     previous = "0"
+    ...     for field in entry:
+    ...         current = field[0]
+    ...         fd.inc("%s->%s" % (previous, current))
+    ...         previous = current
+    >>> fd.sorted_samples()[:10]
+    ['ex->xp', 'xp->xe', '0->lx', 'ge->gp', 'ps->ge', 'dt->ex', 'lx->ps', 'gp->dt', 'xe->ex', 'lx->rt']
+
+
+Some shoebox entries have nested structure.  Thus they correspond to a
+tree over the fields.  We can check for well-formedness by parsing the
+field names, e.g.:
+
+    >>> from nltk_lite import parse
+    >>> grammar = parse.cfg.parse_grammar('''
+    ...   S -> Head "ps" Glosses Comment "dt" Examples
+    ...   Head -> "lx" | "lx" "rt"
+    ...   Glosses -> Gloss Glosses
+    ...   Glosses ->
+    ...   Gloss -> "ge" | "gp"
+    ...   Examples -> Example Examples
+    ...   Examples ->
+    ...   Example -> "ex" "xp" "xe"
+    ...   Comment -> "cmt"
+    ...   Comment ->
+    ...   ''')
+
+    >>> rd_parser = parse.RecursiveDescent(grammar)
+
+    >>> fd = FreqDist()
+    >>> for entry in shoebox.raw('rotokas'):
+    ...     marker_list = [field[0] for field in entry]
+    ...     if rd_parser.get_parse_list(marker_list):
+    ...         print "+", marker_list
+    ...     else:
+    ...         print "-", marker_list
+        
+
+
+
+
 
 Looking at Timestamps
 ~~~~~~~~~~~~~~~~~~~~~
