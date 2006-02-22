@@ -5,8 +5,6 @@ Version 0.7 (end January)
 -----------------------
 
 ? rework programming chapter [JC]
-? incorporate feature-based parsing into NLTK [EK]
-? polishing first 4 chapters [all]
 ? send first 4 chapters to reviewer (intro, prog, tokenization, tagging)
 ? colourising program examples [JC]
 
@@ -15,12 +13,9 @@ Version 0.7 (end January)
 - port more of the NLTK corpus readers [SB]
 - expand coverage of Brazilian Portuguese translations [TT]
 - consecutive numbering of examples in a chapter?
-- better explanation of left corner parsing in parse.txt [EK]
 - document recommended methods for saving models (pickle, shelve) [SB]
 - fix misc.quicksort [SB]
 - interpolated and backoff language models [SB]
-- write feature-based syntax chapter, incl semantics [EK]
-- add lambda semantics to Speer's feature-based parse package [EK]
 - get epydoc docstrings to compile cleanly [EL]
 - port Cohn's clusterer [SB]
 - port NLTK feature detectors [SB]
@@ -30,7 +25,7 @@ Version 0.7 (end January)
 - make more use of sidebars
 - add Chinese treebank and corpus reader
 + add presidential speeches corpus and tutorial example [SB]
-- produce latex-beamer slides for tutorials
+
 - decision list classifier
 - Unicode compliance [SB]
 - add material on program design to programming chapter [SB]
@@ -41,17 +36,19 @@ Version 0.8 (end February)
 --------------------------
 
 ? first version of maxent package [JC]
-? Feature-based parsing content added to parsing chapter [EK]
 ? polishing on the 4 parsing chapters
   (parsing, chunk, chart, probabilistic)
   (but less polished than the first four)
 ? show these drafts to reviewer (as work in progress)
 
+~ polishing first 4 chapters [all]
+~ produce latex-beamer slides for tutorials [EK]
 - add wordnet/pywordnet to distribution, example of interface in tutorial [SB]
 - add OLAC support: read and write an OLAC static repository [SB]
 - urllib [SB]
 - single PDF aggregate [SB]
 - XML processing in Python [SB]
+- better explanation of left corner parsing in parse.txt [EK]
 - port MXTerminator, and get James' fixes
 - collocation tutorial or in prog chapter
 - collocation support (chi-sq, PMI, spearman rank correlation, etc)
@@ -65,6 +62,10 @@ Version 0.9 (end March)
 ? outline of maxent tutorial [JC]
 ? outline of new lexicon chapter [EK? SB?]
 ? more non-English examples and exercises throughout [SB]
+~ add lambda semantics to Speer's feature-based parse package [EK]
+~ incorporate feature-based parsing into NLTK [EK]
+- Feature-based parsing content added to parsing chapter [EK]
+~ write feature-based syntax chapter, incl semantics [EK]
 
 -------------
 Uncategorized
