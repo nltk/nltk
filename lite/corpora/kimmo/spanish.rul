@@ -1,0 +1,176 @@
+ALPHABET a ^ b c C d e < f g G h i I { j J k l m M n N ~ o O * p q r s t u U > v w x y z Z + 
+NULL     0
+ANY      @
+BOUNDARY #
+SUBSET V     a e i o u ^ < { * >
+SUBSET BACK  u o a > * ^
+SUBSET FRONT e i < {
+SUBSET LOW   e o a < * ^
+SUBSET HIGH  i u { >
+SUBSET UMO    U M O
+SUBSET @ a ^ b c C d e < f g G h i I { j J k l m M n N ~ o O * p q r s t u U > v w x y z Z + 0
+
+
+RULE "Surface Characteres" 1 33
+     a ^ b c d e < f g h i { j k l m n ~ o * p q r s t u > v w x y z @
+     a ^ b c d e < f g h i { j k l m n ~ o * p q r s t u > v w x y z @
+ 1:  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+RULE "Convert to e" 1 4
+     U M O @
+     e e e @
+  1: 1 1 1 1
+
+RULE "convert to o" 1 4
+     U M O @
+     o o o @
+  1: 1 1 1 1
+
+RULE "convert to d" 1 3
+     e i @
+     d d @
+  1: 1 1 1 
+
+RULE "convert to 0" 1 3
+     e i @
+     0 0 @
+  1: 1 1 1 
+
+RULE "gjmutation" 3 5
+     J J BACK   +  @
+     g j BACK   0  @
+  1: 2 3  1     1  1
+  2. 0 0  0     2  1
+  3. 0 0  1     3  0
+
+RULE "czcmutation"   5 8
+     Z Z C C 0 BACK  +   @
+     z c z c c BACK  0   @
+  1: 3 2 4 2 0    1  1   1
+  2. 0 0 0 0 0    0  2   1
+  3. 0 0 0 0 0    1  3   0
+  4. 0 0 0 0 5    0  0   0
+  5. 0 0 0 0 0    1  5   0
+
+RULE "zcmutation" 4 6
+     z z     + 0      FRONT @
+     z c     0 FRONT  FRONT @
+  1: 4 2     1 1       1    1
+  2. 0 0     3 0       1    0
+  3. 0 0     0 1       1    0
+  4: 1 2     4 0       0    1
+
+RULE "pluralization" 6 5
+     V + s 0 @ 
+     V 0 s e @ 
+  1: 2 1 1 0 3 
+  2: 2 4 1 0 3 
+  3: 2 5 1 0 3
+  4. 1 0 1 0 0
+  5. 1 0 0 6 1
+  6. 0 0 1 0 0
+
+RULE "e-i Stem-Changing Verbs" 7 7
+     i + i { V LOW @
+     e 0 i { V LOW @
+  1: 2 1 4 4 1 1 1
+  2. 2 3 0 0 0 0 2 
+  3. 0 0 6 6 0 0 0
+  4: 2 5 4 4 1 1 4  
+  5: 0 0 7 7 1 1 5  
+  6: 0 0 1 1 1 0 1
+  7. 0 0 0 0 0 1 0
+
+RULE "c-g" 10 9
+     G G BACK + @ r G FRONT FRONT 
+     c g BACK 0 @ r 0 0     FRONT
+  1: 2 3  1   1 1 1 5 0       1
+  2. 0 0  0   2 1 1 0 0       9
+  3. 0 0  4   3 0 0 0 0       0
+  4: 0 0  1   1 1 0 0 0       1
+  5. 0 0  0   6 0 0 0 0       0
+  6. 0 0  0   0 0 0 0 7       0
+  7. 0 0  0   0 0 8 0 0       0
+  8. 0 0  1   0 1 1 0 0       1
+  9: 0 0  1   0 1 10 0 0     1           
+ 10: 0 0  0   0 0  0 0 0      0
+
+RULE "n-ng l-lg" 4 6
+     N N BACK + @ r
+     0 g BACK 0 @ r
+  1: 2 3  1   1 1 1
+  2. 0 0  0   2 1 1
+  3. 0 0  4   3 0 0
+  4: 0 0  1   1 1 0   
+
+RULE "dr< future" 7 7
+     N N FRONT + @ r FRONT 
+     0 g d     0 @ r FRONT
+  1: 2 5 0     1 1 1  1
+  2: 0 0 0     3 1 1  1
+  3: 0 0 4     0 1 1  6
+  4. 0 0 0     0 0 1  0
+  5. 0 0 0     5 1 1  1
+  6: 0 0 0     0 1 7  1
+  7: 0 0 0     0 0 0  0
+
+RULE "o-ue Stem-Changing Verbs" 8 9
+  UMO 0 UMO LOW V s n +  @
+     e u o LOW V s n 0  @
+ 1:  0 2 7 1   1 1 1 1  1   
+ 2.  3 0 0 0   0 0 0 0  0
+ 3.  0 0 0 0   0 3 3 4  3
+ 4.  0 0 0 5   0 0 0 0  0
+ 5:  0 0 0 0   0 6 6 0  0
+ 6:  0 0 0 0   0 0 0 0  0  
+ 7:  0 0 7 1   1 7 7 8  7
+ 8.  0 0 0 8   1 8 8 0  1 
+
+RULE "u gerundo  verb ir & er-r" 10 8
+     U U + i e @ e r
+     u o 0 i e @ 0 r
+ 1:  2 5 1 1 1 1 1 1
+ 2.  0 0 3 0 0 2 0 2
+ 3.  0 0 0 4 0 0 0 0
+ 4.  0 0 0 0 1 0 0 0
+ 5:  0 0 5 6 9 5 7 5
+ 6.  0 0 0 1 0 1 0 1
+ 7.  0 0 0 0 0 0 0 8
+ 8.  0 0 0 1 1 1 0 1
+ 9:  0 0 0 1 1 1 0 10
+10:  0 0 0 0 0 0 0 0
+
+RULE "u gerundo & u in 2p pl 3p pl subj in  verb ir for verbs o-ue" 9 7
+     M M + @ BACK i e 
+     u o 0 @ BACK i e 
+ 1:  2 6 1 1  1   1 1 
+ 2.  0 0 3 2  0   0 0  
+ 3.  0 0 0 0  4   8 0   
+ 4.  0 0 0 5  5   5 5   
+ 5.  0 0 0 1  1   1 1   
+ 6:  0 0 7 6  1   0 0  
+ 7:  0 0 0 1  0   9 0   
+ 8.  0 0 0 0  0   0 1   
+ 9:  0 0 0 1  1   1 0  
+
+RULE "i gerundo verb ir" 6 6
+     I I + i e @
+     i e 0 i e @
+ 1:  2 5 1 1 1 1
+ 2.  0 0 3 0 0 2
+ 3.  0 0 0 4 0 0
+ 4.  0 0 0 0 1 0
+ 5:  0 0 5 6 5 5
+ 6.  0 0 0 1 0 1
+
+RULE "e-ie Stem-Changing Verbs" 8 9
+     I 0 LOW V s n + N @
+     e i LOW V s n 0 g @
+ 1:  7 2  1  1 1 1 1 1 1   
+ 2.  3 0  0  0 0 0 0 0 0
+ 3.  0 0  0  0 3 3 4 0 3
+ 4.  0 0  5  0 0 0 0 0 0
+ 5:  0 0  0  0 6 6 0 0 0
+ 6:  0 0  0  0 0 0 0 0 0  
+ 7:  7 0  1  1 7 7 8 1 7
+ 8.  0 0  8  1 8 8 0 0 1 
