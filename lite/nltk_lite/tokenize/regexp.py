@@ -248,28 +248,31 @@ def demo():
     A demonstration that shows the output of several different
     tokenizers on the same string.
     """
+
+    from nltk_lite import tokenize
+
     # Define the test string.
     s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
     print 'Input text:'
     print `s`
     print
     print 'Tokenize using whitespace:'
-    _display(whitespace(s))
+    _display(tokenize.whitespace(s))
     print
     print 'Tokenize sequences of alphanumeric characters:'
-    _display(regexp(s, pattern=r'\w+', gaps=False))
+    _display(tokenize.regexp(s, pattern=r'\w+', gaps=False))
     print
     print 'Tokenize sequences of letters and sequences of nonletters:'
-    _display(regexp(s, pattern=WORDPUNCT))
+    _display(tokenize.regexp(s, pattern=WORDPUNCT))
     print
     print 'A simple sentence tokenizer:'
-    _display(regexp(s, pattern=r'\.(\s+|$)', gaps=True))
+    _display(tokenize.regexp(s, pattern=r'\.(\s+|$)', gaps=True))
     print
     print 'Tokenize by lines:'
-    _display(regexp(s, pattern=NEWLINE, gaps=True))
+    _display(tokenize.regexp(s, pattern=NEWLINE, gaps=True))
     print
     print 'Tokenize by blank lines:'
-    _display(regexp(s, pattern=BLANKLINE, gaps=True))
+    _display(tokenize.regexp(s, pattern=BLANKLINE, gaps=True))
     print
     
 if __name__ == '__main__':
