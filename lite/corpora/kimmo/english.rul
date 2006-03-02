@@ -1,0 +1,257 @@
+; You are looking at the "Rule panel" of the interface
+; that displays one of the two finite state
+; machines to be used in parsing words. 
+; The second finite state machine, the Lexicon and 
+; Alternations, is displayed on the left.
+; This is an english rule file that specifies the
+; character 'spelling changes' required for a simple
+; subset of English. Please read this for a short summary
+; of the file format.  You can also refer to this file
+; as a model for the syntax of rule files.
+;
+; Note how comments in this file start with a semicolon
+; and *must* appear on their own line.
+; Blank lines do not matter.
+ 
+; The rule file specifies the allowed alphabet
+; characters; for convenience, equivalence classes of 
+; characters, called "Subsets"; and, finally, 
+; the "spelling changes" -- the allowed
+; lexical/surface character pairs in words described as
+; special sorts of finite-state automata.
+
+; You can edit rules directly in this window, and save them
+; (to your own directory), via the "Save" menu item. Or, you
+; you can use an external editor and load the .rul file.
+; The other panel to your left, "Lexicon & Alternations",
+; displays the second finite-state automaton needed, that 
+; gives the allowed morpheme sequences in a language
+; If you load other rule files you will note slight
+; difference in their syntax.  This is because we have
+; made this version of kimmo backward compatible with
+; older versions.  For consistency, please use the format
+; described here, but you should be able to follow
+; the other rule systems once you've grasped this one.
+
+; The first line of the .rul file is a declaration that
+; tells the system ALL alphabetic characters to use for 
+; the language description.  It consists of a special name,
+;  '@', a reserved character, and then all the rest of the 
+; alphabetic characters used.  These will often include 
+; special characters to stand for accent marks.  
+; The @ is used a kind of wildcard match character - see 
+; the description of the finite-state rule automata. 
+
+; There are three other 'reserved' characters that should
+; appear in this first declaration : +, #, and 0.
+; + is an 'concatenation' marker, used to denote the
+; boundary between a root (stem) and an affix, or two affixes
+; in a lexical (underlying) form, as in 'cat+s'.
+; So you will use this only for generation
+; # is the end-of-word character 
+; 0 is a special "empty" character that denotes the 'null'
+; character - i.e., it is like an empty string
+
+; Whitespace does not matter in the subset or rule
+; declarations, but carriage returns do matter.
+
+; The boundary char *forces* a lexical representation
+; of the end-of-word transition, for use if you choose.
+; The internal Kimmo engine, which operates *purely* on subsets, 
+; then needs to have proper rule definitions which include
+; the boundary char.
+BOUNDARY #
+
+SUBSET @ a b c d e f g h i j k l m n o p q r s t u v w x y z ' ` + # 0
+
+; you cannot have subsets with subsets in them
+; Subsets contain only base character primitives.
+; (example of bad subset definition - contains @, which 
+; is already its own subset )
+; SUBSET BAD a @ b c
+
+; Next we define any further SUBSETs, collections of
+; alphabet characters grouped into equivalence classes
+; for the purpose of rules.  In English, for example,
+; we define the class of Consonants, denoted "C" - this
+; is the first Subset below.  This is so we can refer
+; to that as a shorthand in rule definitions.
+; The Subset 'Csib' is the class of "sibilants" - characters
+; assocated with a 'hissing' sound
+; We also have 'Cpal' - "palatives" or characters associated
+; with sounds made by moving the tongue against the palate.
+; Then we define three classes of vowels: all vowels; vowels
+; including y; and vowels that are made at the back of the
+; mouth. 
+; You design whatever subsets you need to make rule-writing
+; easier and more natural.
+
+SUBSET C b c d f g h j k l m n p q r s t v w x y z
+SUBSET CnoY b c d f g h j k l m n p q r s t v w x z
+SUBSET Csib s x z
+SUBSET Cpal c g
+SUBSET V a e i o u
+SUBSET Vy a e i o u y
+SUBSET Vbk a o u
+SUBSET I i '
+SUBSET Empty ` +
+
+; skip a blank line between the SUBSET declarations
+; and the next items, which are the RULES.
+; the default rule represents the identity transitions
+; that must appear if no other rules apply; (e.g., 'a' <=> a:a)
+; By default, if just a single character is given, it means a:a, i.e.
+; a lexical (underlying) a appears with a surface a.
+; The order of the items in this list do not matter.
+
+DEFAULT b c d f g h j k l m n p q r s t v w x y z a e i o u +:0 `:0 #
+
+; Arrow rules. These are more like traditional linguistic
+; re-write rule formulations. e.g. "e gets deleted 
+; if there is a preceding consonant"
+; We do not describe these in detail here - wait until
+; next time to learn about these.
+; The first 3 arrowrules below insert 'e' in certain
+; contexts, for instance, 'fish'+s -> 'fishEs'
+; Note the use of the 'sibilant' abbreviation - the 'e'
+; is inserted if there is a 'sh', 'ch', etc. sound
+
+ARROWRULE 03:epenthesis1 0:e ==> [Csib (c h) (s h) y:i] +:0 _ s [+:0 #]
+ARROWRULE 03:epenthesis2		+:0 /<= [Csib (c h) (s h) y:i] _ s [+:0 #]
+ARROWRULE 05:y:i-spelling		y:i <=> @:C +:0? _ +:0 ~I
+ARROWRULE 07:s-deletion		s:0 <=> +:0 0:e? s +:0 ' _
+
+; The second way to specify the spelling change rules
+; is by directly giving a finite-state transition table.
+; They maintain a state diagram for the state the
+; kimmo rule should be in when evaluating AND TRANSITIONING letters in a
+; word, char by char.  They operate in PARALLEL:
+; They are "failure" driven as a group, which means that
+; for a word to be either successfully generated or 
+; recognized, it must pass ALL rules, character by character.
+; Another way to think of this is that they are CONSTRAINT FILTERS
+; that allow certain pairs to pass or not.
+
+; The (admitedly bizzare) n x n tabular format for 
+; specifying the state transition tables is partly
+; historical remnant. It is as follows:
+; (1) The keyword "RULE" followed by a rule label in double
+; quotes, and then the size of the transition table,
+; # of states by # of distinct transition labels, i.e.,
+; subsets used in this rule. So this should correspond
+; to the number of rows and the number of columns in
+; the transition table itself.
+; (2) Two lines that specify the possible transition labels
+; There are two lines because, recall, we are specifying
+; PAIRS of (lexical, surface) characters for each transition
+; For example, in the first Rule belo. we state that
+; LEXICAL Capl (palative consonants) are paired with
+; SURFACE Cpal. This is one possible transition label.
+
+; Below the transition labels we specify the finite state
+; machine itself, as a matrix in (from-state, to-state) form.
+; The initial state is always 1.
+; The states must be given in numerical order.
+; Final states are specified by putting a colon, ";",
+; after the state number; there can be more than one final
+; state, as in the rule below.
+; All other states must have a period (.) after their name.
+; The default failure state which you need not specify is
+; state 0; in addition, if the machine is in a non-final
+; state with leftover input. that is a failure as well.
+; The failure state is considered to be 0, or a 
+
+; For example, in the rule below, the machine starts (as 
+; always) in state 1.  If it sees a lexical (underlying)
+; Cpal paired with a surface Cpal, it loops back to state
+; 1.  If it sees an underlying end of affix marker +
+; paired with a surface zero, it goes to state 1.
+; Finally, note the last column, headed by @ and @
+; on the next line.  This is the pair (@, @).
+; What this denotes is CONTEXT RELATIVE. It is a 
+; wildcard, RELATIVE to whatever other subsets are
+; used in that particular rule.  Since @ denotes the
+; universal alphabet of characters, it is thus 
+; the set denoted by @ MINUS all the characters in
+; Csib, C, e, 0, @, +, 0, Vbk, and V.
+
+; !!! IMPORTANT.  The order of evaluation of subset transitions
+; is not left to right, but rather "smallest subset size" to
+; largest.  That means that e:e will be evaluated long
+; before @:@.  (@ being the largest subset).  So if you
+; have two conflicting state transitions (overlapping matching chars)
+; then the smaller subset will be chosen.  If sizes match, then
+; behavior is unpredictable.
+
+; this rule will pair an underlying char e with a
+; surface null (0),in certain contexts. Example:
+; move+ing -> moving. Traditionally,this is called
+; "Elision" by linguists. You should trace out the operation of
+; this finite state machine yourself, to confirm that
+; it works as advertised.
+
+RULE "08:elision: e:0 <= VCC*___+:0 V" 8 8
+   Cpal C    e   e   + Vbk   V   @
+   Cpal C    0   @   0 Vbk   V   @
+1: 1    1    1   2   1   2   2   1
+2: 3    6    1   2   1   2   2   1
+3: 3    6    1   4   1   2   2   1
+4: 1    1    1   2   5   2   2   1
+5: 1    1    1   0   1   2   0   1
+6: 1    1    1   7   1   2   2   1
+7: 1    1    1   2   8   2   2   1
+8: 1    1    1   0   1   0   0   1
+
+; Skip one or more blank lines between RULES
+
+ARROWRULE 09:elision2		e:0 /<= V C* Cpal  _ +:0 Vbk
+ARROWRULE 10:elision3		e:0 <== C Vy       _ +:0 e
+ARROWRULE 11:elision4		e:0 <== C u        _ +:0 V
+
+# ARROWRULE 12:elision		e:0 => VCC*___+:0 V, C[V|y]___+:0 e, Cu___+:0 V, i:y___+:0 i
+
+; replacing an i with a y, a ` with a null, and a + with a null
+RULE "12:elision, e:0 => VCC*___+:0 V, C[V|y]___+:0 e, Cu___+:0 V, i:y___+:0 i" 12 10
+    y  C  e  +   i   e  u   V   `   @
+    y  C  0  0   y   e  u   V   0   @
+1:  6  6  0   1  10  2  2   2   1   1
+2:  3  3  0   1  10  2  2   2   2   1
+3:  3  3  4   1   0  7  10  7   3   1
+4.  0  0  0   5   0  0  0   0   4   0
+5.  0  0  0   0   0  1  1   1   5   0
+6:  7  6  0   1  10  7  10  7   6   1
+7:  1  3  8   1  10  2  2   2   7   1
+8.  0  0  0   9   0  0  0   0   8   0
+9.  0  0  0   0   0  1  0   0   9   0
+10: 6  6 11   1  10  1  1   1   10  1
+11. 0  0  0  12  0   0  0   0   11  0
+12. 0  0  0   0  0   1  1   1   12  0
+
+ARROWRULE 13:i:y-spelling		i:y <== _ e:@ +:0 i
+ARROWRULE 14:i:y-spelling		i:y ==> _ e:0 +:0 i
+ARROWRULE 15:geminationB		0:b <=> `:0 C* V b _ +:0 Vy
+ARROWRULE 15:geminationD		0:d <=> `:0 C* V d _ +:0 Vy
+ARROWRULE 15:geminationF		0:f <=> `:0 C* V f _ +:0 Vy
+ARROWRULE 15:geminationG		0:g <=> `:0 C* V g _ +:0 Vy
+ARROWRULE 15:geminationL		0:l <=> `:0 C* V l _ +:0 Vy
+ARROWRULE 15:geminationM		0:m <=> `:0 C* V m _ +:0 Vy
+ARROWRULE 15:geminationN		0:n <=> `:0 C* V n _ +:0 Vy
+ARROWRULE 15:geminationP		0:p <=> `:0 C* V p _ +:0 Vy
+ARROWRULE 15:geminationR		0:r <=> `:0 C* V r _ +:0 Vy
+ARROWRULE 15:geminationS		0:s <=> `:0 C* V s _ +:0 Vy
+ARROWRULE 15:geminationT		0:t <=> `:0 C* V t _ +:0 Vy
+ARROWRULE 15:gemination2		+:0 /<= `:0 C* V C _ Vy
+
+ARROWRULE disambig1 Empty:0 /<= _ Empty:0
+ARROWRULE disambig2 Empty:0 /<= Empty:0 _
+
+
+ARROWRULE stress-only-on-syllables `:0 ==> _ C* Vy
+ARROWRULE no-word-initial-+		+:0 /<= # _
+ARROWRULE no-word-final---+		+:0 /<= _ #
+
+; Skip a blank line and then this keyword to end the 
+; rule description
+
+END
+
