@@ -215,10 +215,6 @@
   }
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Simple Taggers}
-
 \subsection{Tagging}
 
 \begin{frame}
@@ -273,6 +269,10 @@
   \end{description}
 \end{frame}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Simple Taggers and Evaluation}
 
 \subsection{Simple taggers} 
 
@@ -372,11 +372,7 @@ the book on the shelf")))
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Evaluating taggers}
-
-\subsection{Accuracy and gold standard} 
+\subsection{Evaluating taggers}
 
 \begin{frame}
   \frametitle{Evaluating taggers}
@@ -440,10 +436,12 @@ def print_accuracy(tagger, data):
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Higher Order Taggers}
+\section{More Powerful Taggers}
+
+\subsection{N-gram Taggers}
 
 \begin{frame}
-  \frametitle{n-gram based tagging}
+  \frametitle{N-gram taggers}
   \begin{itemize}
   \item Basic idea:  Choose the tag  that maximises:
     \[ P(\mbox{word} | \mbox{tag}) \cdot 
@@ -523,18 +521,16 @@ def print_accuracy(tagger, data):
   \frametitle{Limitation of NLTK n-gram taggers}
 
   \begin{itemize}
-  \item<1-> Does not find the most likely sequence of tags, simply works
+  \item Does not find the most likely sequence of tags, simply works
     left to right always assigning the most probable single tag (given
     the previous tag assignments)
-  \item<1-> Does not cope with zero probability problem well (no smoothing
+  \item Does not cope with zero probability problem well (no smoothing
     or discounting)
-  \item<2-> (see module \verb+nltk_lite.tag.hmm+)
+  \item see module \verb|nltk_lite.tag.hmm|
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{The Brill Tagger}
+\subsection{The Brill Tagger}
 
 \begin{frame}
   \frametitle{Brill Tagger}
@@ -556,7 +552,7 @@ def print_accuracy(tagger, data):
 \begin{frame}
   \frametitle{Brill Tagger: Example}
 
-{\small
+{\scriptsize
 \begin{tabular}{lllp{4cm}p{4cm}}
 \textbf{Sentence}
 & \textbf{Gold}
@@ -593,10 +589,8 @@ rehabilitation & nn      & nn
 
   \begin{itemize}
   \item \textbf{Reading:} 
-    \begin{itemize}
-    \item Jurafsky and Martin, chapter 8 (esp. sec
-    8.5); 
-  \item  Manning and Sch\"utze, chapter 10; 
+    Jurafsky and Martin, chapter 8 (esp. sec 8.5); 
+    Manning and Sch\"utze, chapter 10; 
   \item Rule-based and statistical tagging
   \item HMMs and n-grams for statistical tagging
   \item Operation of a simple bigram tagger
