@@ -67,8 +67,11 @@ majestic/jj and/cc an/at architectural/jj triumph/nn ./.  ``
 Here, the sequence ``The/at`` means that the word token ``The`` is
 tagged ``at``, which is the Brown Corpus tag for article.
 (The reader may be initially puzzled by strings like
-``,/,``. This just means that the tag for a comma is '``,'``.)
+``,/,``. This just means that the tag for a comma is '``,``'.)
 	
+Motivation for Tagging
+----------------------
+
 We can think of tagging as one way of *annotating* a text corpus.
 Annotation is a way of adding information to a text -- indeed, we
 might like to think of it as a way of making explicit information
@@ -92,6 +95,23 @@ press: reportage    94   86     66   36     50    387
 fiction: romance    79   195    11   51     46    43 
 religion            84   59     79   12     54    64 
 ==================  ===  =====  ===  =====  ====  ====
+
+Another motivation for tagging is that it helps us predict the
+behaviour of a previously unseen word.  For example, if we encounter
+the word ``blogging`` we might be able to infer that it is a verb, with
+the root ``blog``, and likely to occur after forms of the auxiliary
+``to be`` (e.g. ``he was blogging``), and unlikely to occur after adjectives.
+
+Parts of speech are also used in speech synthesis and
+recognition.  For example, ``wind/nn``, as in ``the wind blew``, is
+pronounced with a short vowel, whereas ``wind/vb``, as in ``wind the
+clock``, is pronounced with a long vowel.  Other examples can be
+found where the stress pattern differs depending on whether the word
+is a noun or a verb, e.g. ``contest``, ``insult``, ``present``, ``protest``,
+``rebel``, ``suspect``.
+
+Kinds of Tagging
+----------------
 
 This tutorial focuses on part-of-speech tagging, as an early step in
 language processing which does not depend on deep linguistic analysis.
@@ -132,6 +152,10 @@ in the following parse tree.
    :scale: 1
 
    Syntactic Parse Tree
+
+
+Common Part-of-Speech Tags
+--------------------------
 
 In this tree, we have used standard syntactic abbreviations for word
 classes. These are shown in the following table, together with their
@@ -199,6 +223,12 @@ These differences between the forms are encoded in their Brown Corpus
 tags: ``be/be, being/beg, am/bem, been/ben`` and ``was/bedz``. This
 means that an automatic tagger which uses this tag set is in effect
 carrying out a limited amount of morphological analysis.
+
+.. Chapter Overview
+.. ----------------
+
+.. In the next section we take ...
+
 
 --------------
 Simple Taggers
