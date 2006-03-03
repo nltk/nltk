@@ -557,7 +557,6 @@ immediately preceding ``states``, and not the preposition tag.  This
 suggests that we may need to consider even more context in order to
 get the correct tag.
 
---------------
 N-Gram Taggers
 --------------
 
@@ -614,7 +613,6 @@ retrieval.
    with lists of sentences, where each sentence is a list of words, a
    doubly-nested structure.
 
------------------
 Combining Taggers
 -----------------
 
@@ -773,6 +771,12 @@ Street Journal text from the Penn Treebank). [#]_
  
   Brill accuracy: 0.835145
 
+
+Brill taggers have another interesting property: the rules are
+linguistically interpretable.  Compare this with the n-gram taggers,
+which employ a potentially massive table of n-grams.  It is not clear
+what we can learn from inspecting such a table.
+
 ----------
 Conclusion
 ----------
@@ -794,54 +798,79 @@ resulted in smaller, linguistically-interpretable models.
    reach a linguistically interpretable, symbolic result.
    Contrast between n-gram and Brill tagger about whether
    we can learn anything from inspecting the model itself
-   (n-gram data vs transformational rules).  Comparing accuracy
-   of these two methods: 2D graph showing how accuracy changes
-   for the two methods as training size increases.
+   (n-gram data vs transformational rules).
 
 There are several other important approaches to tagging involving
-*Hidden Markov Models* (see ``nltk.hmm``) and *Finite State
+*Hidden Markov Models* (see ``nltk_lite.tag.hmm``) and *Finite State
 Transducers*, though a discussion of these approaches falls outside
 the scope of this chapter.  Later we will see a generalization of
 tagging called *chunking* in which a contiguous sequence of words is
 assigned a single tag.
 
+Tagging exhibits several properties that are characteristic of natural
+language processing.  First, tagging involves *classification*: words have
+properties; many words share the same property (e.g. ``cat`` and ``dog``
+are both nouns), while some words can have multiple such properties
+(e.g. ``wind`` is a noun and a verb).  Second, in tagging, disambiguation
+occurs via *representation*: we augment the representation of tokens with
+part-of-speech tags.  Third, training a tagger involves *sequence learning
+from annotated corpora*.  Finally, tagging uses *simple, general, methods*
+such as conditional frequency distributions and transformation-based learning.
 
+---------------
+Further Reading
+---------------
 
-.. Further Reading
+Tagging: Jurafsky and Martin, Chapter 8
 
-.. Brill tagging: Manning 361ff; Jurafsky 307ff
+Brill tagging: Manning and Schutze 361ff; Jurafsky and Martin 307ff
 
-.. HMM tagging: Manning 345ff
+HMM tagging: Manning and Schutze 345ff
+
+Wikipedia:
+``http://en.wikipedia.org/wiki/Part-of-speech_tagging``
+
+List of available taggers:
+``http://www-nlp.stanford.edu/links/statnlp.html``
 
 ---------
 Exercises
 ---------
 
-1. **Explorations with part-of-speech tagged corpora**:
+1. **Ambiguity resolved by part-of-speech tags**:
+  Scour the web for examples of spoof newspaper headlines, such as
+  ``British Left Waffles on Falkland Islands``, and
+  ``Juvenile Court to Try Shooting Defendant``.
+  Manually tag these headlines to see if knowledge of the part-of-speech
+  tags removes the ambiguity.
+
+2. **Explorations with part-of-speech tagged corpora**:
 Tokenize the Brown Corpus and build one or more suitable data structures
 so that you can answer the following questions.
 
-  a) What is the most frequent tag? (This is the tag we would want to
+  a)  What is the most frequent tag? (This is the tag we would want to
       assign with ``tag.Default``.
   #)  Which word has the greatest number of distinct tags?
+  #)  What proportion of word types are always assigned the same part-of-speech tag?
   #)  What is the ratio of masculine to feminine pronouns?
   #)  How many words are ambiguous, in the sense that they appear with at least two tags?
   #)  What percentage of word *occurrences* in the Brown Corpus involve
       these ambiguous words?
-  #)  Which nouns are more common in their plural form than their singular form?
+  #)  Which nouns are more common in their plural form, rather than their singular form?
           (Only consider regular plurals, formed with the ``-s`` suffix.)
   #)  Produce an alphabetically sorted list of the distinct words tagged as ``md``.
-  #)  Identify words which can be plural nouns or third person singular verbs (e.g. ``deals``).
-  #)  Identify three-word prepositional phrases of the form
-      preposition + determiner + noun.
+  #)  Identify words which can be plural nouns or third person singular verbs
+      (e.g. ``deals``, ``flies``).
+  #)  Identify three-word prepositional phrases of the form IN + DET + NN
+      (eg. ``in the lab``).
   #)  There are 264 distinct words having exactly three possible tags.
       Print a table with the integers 1..10 in one column, and the
       number of distinct words in the corpus having 1..10 distinct tags.
-  #)  The word ``still`` has seven possible tags.
-      Print out seven sentences containing this word, each one having
-      a different tag.
+  #)  For the word with the greatest number of distrinct tags, print
+      out sentences from the corpus containing the word, and giving
+      examples of the different tags.
 
-2. **Regular Expression Tagging**:
+3. **Regular Expression Tagging**:
    We defined the ``nn_cd_tagger``, which can be used
    as a fall-back tagger for unknown words.  This tagger only checks for
    cardinal numbers.  By testing for particular prefix or suffix strings,
@@ -854,17 +883,17 @@ so that you can answer the following questions.
    Evaluate the tagger using ``tag.accuracy()``, and
    discuss your findings.
           
-3. **Unigram Tagging**:
+4. **Unigram Tagging**:
    Train a unigram tagger and run it on some new text.
    Evaluate the tagger as before and discuss your findings.
    Observe that some words are not assigned a tag.  Why not?
           
-4. **Bigram Tagging**:
+5. **Bigram Tagging**:
    Train a bigram tagger with no backoff tagger, and run it on some of the training
    data.  Next, run it on some new data.  What happens to the
    performance of the tagger?  Why?
 
-5. **Combining taggers**:
+6. **Combining taggers**:
    There is typically a trade-off between the accuracy and coverage
    for taggers: taggers that use more specific contexts usually
    produce more accurate results, when they have seen those contexts
@@ -882,7 +911,7 @@ so that you can answer the following questions.
    #) Try varying the size of the training corpus. How does it affect
       your results?
 
-6. **Tagger context** (advanced):
+7. **Tagger context** (advanced):
 
    N-gram taggers choose a tag for a token based on its type and the
    tags of the *n-1* preceding tokens. This is a common context to use
@@ -906,7 +935,7 @@ so that you can answer the following questions.
    #) How does the combined tagger's accuracy compare to the combined taggers you
       created in the previous exercise? 
 
-7. **Reverse sequential taggers** (advanced):
+8. **Reverse sequential taggers** (advanced):
    Since sequential taggers tag tokens in order, one at a time, they
    can only use the predicted tags to the *left* of the current token
    to decide what tag to assign to a token. But in some cases, the
@@ -932,7 +961,7 @@ so that you can answer the following questions.
    b) How does its accuracy compare to a first order sequential
    tagger, using the same training data and test data?
         
-8. **Alternatives to backoff**:
+9. **Alternatives to backoff**:
    Create a new kind of tagger that combines several subtaggers using
    a new mechanism other than backoff (e.g. voting).  For robustness
    in the face of unknown words, include a regexp tagger, a unigram
@@ -940,12 +969,12 @@ so that you can answer the following questions.
    until it recognises a word, or an n-gram tagger that does not
    consider the text of the token being tagged.
         
-9. **Comparing nth-order taggers and Brill taggers**:
+10. **Comparing nth-order taggers and Brill taggers**:
    Investigate the relative accuracy of nth-order taggers with backoff
    and Brill taggers as the size of the training data is increased.
    Analyze and compare the errors made by each kind of tagger.
         
-10. **Application to other languages**:
+11. **Application to other languages**:
     Obtain some tagged data for another language, and train and
     evaluate a variety of taggers on it.  If the language is
     morphologically complex, or if there are any orthographic clues
