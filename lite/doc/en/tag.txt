@@ -18,6 +18,9 @@ Tagging
 Introduction
 ------------
 
+Parts of Speech
+---------------
+
 Many natural language expressions are ambiguous, and we need to draw
 on other sources of information to aid interpretation.  For instance,
 our preferred interpretation of ``fruit flies like a
@@ -663,26 +666,26 @@ Now we can test the taggers::
 The Brill Tagger
 ----------------
 
-A potential issue with nth-order tagger is their size.  If tagging is
+A potential issue with n-gram taggers is their size.  If tagging is
 to be employed in a variety of language technologies deployed on
 mobile computing devices, it is important to find ways to reduce the
-size of models without overly compromising performance.  An nth-order
+size of models without overly compromising performance.  An n-gram
 tagger with backoff may store trigram and bigram tables, large sparse
 arrays which may have hundreds of millions of entries.  As we saw in
 the above bigram table, n-gram models only consider the tags of words
 in the context.  A consequence of the size of the models is that it is
-simply impractical for nth-order models to be conditioned on the
+simply impractical for n-gram models to be conditioned on the
 identities of words in the context.  In this section we will examine
 Brill tagging, a statistical tagging method which performs very well
-using models that are only a tiny fraction of the size of nth-order
+using models that are only a tiny fraction of the size of n-gram
 taggers.
 
 Brill tagging is a kind of *transformation-based learning*.  The
 general idea is very simple: guess the tag of each word, then go back
 and fix the mistakes.  In this way, a Brill tagger successively
-transforms a bad tagging of a text into a good one.  As with nth-order
+transforms a bad tagging of a text into a good one.  As with n-gram
 tagging this is a *supervised learning* method, since we need
-annotated training data.  However, unlike nth-order tagging, it does
+annotated training data.  However, unlike n-gram tagging, it does
 not count observations but compiles a list of transformational
 correction rules.
 
@@ -786,7 +789,7 @@ tagging, with an emphasis on part-of-speech tagging.  English word
 classes and their corresponding tags were introduced.  We showed how
 tagged tokens and tagged corpora can be represented, then discussed a
 variety of taggers: default tagger, regular expression tagger, unigram
-tagger, nth-order taggers, and the Brill tagger.  We also described
+tagger, n-gram taggers, and the Brill tagger.  We also described
 some objective evaluation methods.  In the process, the reader has
 been introduced to two important paradigms in language processing,
 namely *language modelling* and *transformation-based learning*.  The
@@ -969,8 +972,8 @@ so that you can answer the following questions.
    until it recognises a word, or an n-gram tagger that does not
    consider the text of the token being tagged.
         
-10. **Comparing nth-order taggers and Brill taggers**:
-   Investigate the relative accuracy of nth-order taggers with backoff
+10. **Comparing n-gram taggers and Brill taggers**:
+   Investigate the relative accuracy of n-gram taggers with backoff
    and Brill taggers as the size of the training data is increased.
    Analyze and compare the errors made by each kind of tagger.
         
