@@ -1,0 +1,35 @@
+.. -*- mode: rst -*-
+.. include:: ../definitions.txt
+
+=============================
+NLTK-Lite Presentation Slides
+=============================
+
+:Authors: Steven Bird
+:Version: |version|
+:Copyright: |copy| 2001-2005 University of Pennsylvania
+:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+
+--------
+Contents
+--------
+
+0. Preface
+#. [\ `PDF <introduction.pdf>`__\ \|\ `LaTeX-Beamer <introduction.tex>`__\ ] Introduction
+#. [\ `PDF <programming.pdf>`__\ \|\ `LaTeX-Beamer <programming.tex>`__\ ] Programming
+#. Tokenization
+#. [\ `PDF <tagging.pdf>`__\ \|\ `LaTeX-Beamer <tagging.tex>`__\ ] Tagging
+#. Parsing
+#. Chunk Parsing
+#. Chart Parsing
+#. Probabilistic Grammars
+#. [\ `PDF <field.pdf>`__\ \|\ `LateX-Beamer <field.tex>`__\ ] Fieldwork
+#. Regular Expressions
+#. Project Topics
+
+----
+
+NLTK_
+
+.. _NLTK: http://nltk.sourceforge.net/
+
