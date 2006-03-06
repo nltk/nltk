@@ -1,0 +1,57 @@
+----------------
+WRITING SCHEDULE
+----------------
+
+First group of chapters, due ASAP (mid March?)
+All of us now need to be checking these thoroughly
+
+0. Preface 90% [All]
+
+1. Introduction 75% [All]
+
+2. Programming 50% [All]
+
+3. Tokenization 90% [All]
+   + sentence tokenization (port MXTerminator?)
+
+4. Tagging 90% [All]
+
+------------------------------------------
+
+Please sign up to take one of these chapters from draft to final-draft
+during April and May.
+
+5. Advanced Programming 50%
+   + pywordnet
+   + XML
+   + collocations?
+   + simple extractive summarization?
+
+6. Parsing 75%
+   + feature-based grammars
+
+7. Chunk Parsing 75%
+
+8. Chart Parsing 75%
+
+9. Probabilistic Grammars and Parsing 25%
+
+10. Fieldwork 75% [Steven]
+    + OLAC
+    + language identification, spearman rank correlation
+
+11. Regular Expressions 90%
+    + chatbots
+
+12. Project Topics
+
+-------------------------------------------
+
+Other chapters?
+
+a) Maximum entropy modelling (James?)
+b) Lexicon (Ewan?)
+c) Text classification (Edward?)
+   + question classification
+d) Finite state morphology (Steven?)
+e) Asian languages (Ewan?, Steven?)
