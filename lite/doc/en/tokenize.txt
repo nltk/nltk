@@ -509,8 +509,8 @@ Categorising Words
 
 How do we decide what category a word should belong to? In general,
 linguists invoke three kinds of criteria for making the decision:
-formal; syntactic (or distributional); notional (or semantic).  A
-*formal* criterion is one which looks at the internal structure of a
+morphological (or formal); syntactic (or distributional); semantic (or notional).  A
+*morphological* criterion is one which looks at the internal structure of a
 word. For example, ``-ness`` is a suffix which combines with an
 adjective to produce a noun. Examples are ``happy`` > ``happiness``,
 ``ill`` > ``illness``. [#]_ So if we encounter a word which ends in
@@ -529,7 +529,7 @@ noun, or immediately following the words ``be`` or
 #. the near window
 #. The end is (very) near.
 
-A familiar example of a *notional* criterion is that a noun is "the
+A familiar example of a *semantic* criterion is that a noun is "the
 name of a person, place or thing". Within modern linguistics, notional
 criteria for word classes have be viewed with considerable suspicion,
 mainly because they are hard to formalise. Nevertheless, notional
@@ -539,7 +539,7 @@ languages that we are unfamiliar with; that is, if we all we know
 about the Dutch ``verjaardag`` is that it means the same as the
 English word ``birthday``, then we can guess that ``verjaardag`` is a
 noun in Dutch. However, some care is needed: although we might
-translate ``zij is van dag jarig`` as ``it's her birthday today``, the
+translate ``zij is vandaag jarig`` as ``it's her birthday today``, the
 word ``jarig`` is in fact an adjective in Dutch, and has no exact
 equivalent in English.
 
@@ -639,7 +639,7 @@ Two other important word classes are *adjectives* and *adverbs*.
 Adjectives describe nouns, and can be used as modifiers
 (e.g. ``large`` in ``the large pizza``), or in predicates (e.g. ``the
 pizza is large``).  English adjectives can be morphologically complex
-(e.g.  ``fall<subscript>V</subscript>+ing`` in ``the falling
+(e.g.  ``fall``:subscript:`V`\ ``+ing`` in ``the falling
 stocks``).  Adverbs modify verbs to specify the time, manner, place or
 direction of the event described by the verb (e.g. ``quickly`` in
 ``the stocks fell quickly``).  Adverbs may also modify adjectives
@@ -927,10 +927,8 @@ Exercises
    a. Using the ``open()`` and ``read()`` functions, load the text into
       a string variable and print it.
 
-   #. Now, initialize a new token with ``Token()``, using this text.
-      Tokenize the text with ``WhitespaceTokenizer``, and specify that the
-      result should be stored in the ``WORDS`` property.  Print the
-      result.
+   #. Now, tokenize the text with ``tokenize.whitespace()``, and print
+      the result.
 
    #. Next, compute the number of tokens, using the ``len()`` function,
       and print the result.
@@ -940,16 +938,20 @@ Exercises
       tokenized.  (You may need to look for a more complex text.)
 
 #. Tokenizing text using regular expressions:
-   Obtain some plain text data (e.g. visit a web-page and
-   save it as plain text), and store it in a file 'corpus.txt'.
-   so that you can answer the following questions.
+   Obtain some plain text data (e.g. the Wall Street Journal example
+   found at the start of this chapter, or else visit a web-page and
+   save it as plain text), and store it in a file 'corpus.txt', then
+   answer the following questions, using ``tokenize.regexp()``.
 
-   a. Word processors typically hyphenate words when they are split
+   a. Develop a regular expression to correctly identify the tokens.
+      Pay particular attention to the treatment of punctation and numbers.
+
+   #. Word processors typically hyphenate words when they are split
       across a linebreak.  When word-processed documents are converted to
       plain text, the pieces are usually not recombined.  It is easy to
       discover such texts by searching on the web for broken words,
-      e.g. ``depart- ment``.  Create a ``RegexpTokenizer`` which treats
-      such broken words as a single token.
+      e.g. ``depart- ment``.  Create a tokenizer which treats such
+      broken words as a single token.
 
    #. Consider the following book title: *This Is the Beat Generation:
       New York-San Francisco-Paris*.  What would it take to be able to
