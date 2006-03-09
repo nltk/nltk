@@ -6,7 +6,6 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
 TEX = introduction.tex programming.tex tag.tex field.tex
 PDF = introduction.pdf programming.pdf tag.pdf field.pdf
 
@@ -15,7 +14,7 @@ RST2HTML = rst2html.py
 
 .SUFFIXES: .txt .html .tex .pdf
 
-.PHONY: all clean rsync
+.PHONY: all clean
 
 all: $(PDF) index.html
 
@@ -29,8 +28,5 @@ index.html:	index.txt
 	pdflatex $<
 	rm $@
 	pdflatex $<
-
-rsync:
-	rsync -arz -e ssh index.txt index.html $(TEX) $(PDF) $(WEB)/doc/slides/
 
 
