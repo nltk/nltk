@@ -42,7 +42,7 @@ D. UPLOAD
 
 E. WEBSITE
 
-1. rsync the docs, code, and webpage
+1. rsync the docs, code, and webpage (remove .pyc and .pyo files)
 2. add a news item
 3. post to one or more of the mailing lists, including course mailing lists
 
