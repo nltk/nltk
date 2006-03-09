@@ -101,7 +101,7 @@ python:	.python.done
 
 iso:	dist
 	echo "get Python distro?"
-        rm -rf iso/webpage iso/nltk* iso/*/nltk*
+	rm -rf iso/webpage iso/nltk* iso/*/nltk*
 	mkdir -p iso/webpage iso/webpage/screenshots/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
 	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
