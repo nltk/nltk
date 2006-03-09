@@ -34,5 +34,4 @@ setup(
                 'nltk_lite.tokenize', 'nltk_lite.tag',
                 'nltk_lite.parse', 'nltk_lite.chat', 'nltk_lite.draw',
                 'nltk_lite.misc', 'nltk_lite.model', 'nltk_lite.contrib'],
-
     )
