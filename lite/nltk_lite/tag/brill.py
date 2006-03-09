@@ -1058,9 +1058,28 @@ def errorList (train_tokens, tokens, radius=2):
 # Demonstration
 #####################################################################################
 
-def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
-         errorOutput = "errors.out", ruleOutput="rules.out",
-         randomize=False, train=.8, trace=3):
+def demo(num_sents=100, max_rules=200, min_score=2, error_output = "errors.out",
+         rule_output="rules.out", randomize=False, train=.8, trace=3):
+    """
+    Brill Tagger Demonstration
+
+    @param num_sents: how many sentences of training and testing data to use
+    @type num_sents: L{int}
+    @param max_rules: maximum number of rule instances to create
+    @type max_rules: L{int}
+    @param min_score: the minimum score for a rule in order for it to be considered
+    @type min_score: L{int}
+    @param error_output: the file where errors will be saved
+    @type error_output: L{string}
+    @param rule_output: the file where rules will be saved
+    @type rule_output: L{string}
+    @param randomize: whether the training data should be a random subset of the corpus
+    @type randomize: L{boolean}
+    @param train: the fraction of the the corpus to be used for training (1=all)
+    @type train: L{float}
+    @param trace: the level of diagnostic tracing output to produce (0-3)
+    @type train: L{int}
+    """
 
     from nltk_lite.corpora import treebank
     from nltk_lite import tag
@@ -1077,7 +1096,7 @@ def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
         random.seed(len(sents))
         random.shuffle(sents)
 
-    tagged_data = [t for s in sents[:numSents] for t in s]
+    tagged_data = [t for s in sents[:num_sents] for t in s]
     cutoff = int(len(tagged_data)*train)
 
     training_data = tagged_data[:cutoff]
@@ -1118,20 +1137,19 @@ def demo(numSents=100, max_rules=200, min_score=2, ruleFile="dump.rules",
     print("Brill accuracy: %f" % tag.accuracy(b, [gold_data]))
 
     print("\nRules: ")
-    printRules = file(ruleOutput, 'w')
+    printRules = file(rule_output, 'w')
     for rule in b.rules():
         print(str(rule))
         printRules.write(str(rule)+"\n\n")
-    #b.saveRules(ruleFile)
 
     testing_data = list(b.tag(testing_data))
     el = errorList(gold_data, testing_data)
-    errorFile = file(errorOutput, 'w')
+    errorFile = file(error_output, 'w')
 
     for e in el:
         errorFile.write(e+"\n\n")
     errorFile.close()
-    print "Done; rules and errors saved to %s and %s." % (ruleOutput, errorOutput)
+    print "Done; rules and errors saved to %s and %s." % (rule_output, error_output)
 
 if __name__ == '__main__':
     demo()
