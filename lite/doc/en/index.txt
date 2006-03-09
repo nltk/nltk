@@ -20,12 +20,11 @@ Contents
 #. [\ `HTML <tokenize.html>`__\ \|\ `PDF <tokenize.pdf>`__\ ] Tokenization
 #. [\ `HTML <tag.html>`__\ \|\ `PDF <tag.pdf>`__\ ] Tagging
 #. [\ `HTML <advanced.html>`__\ \|\ `PDF <advanced.pdf>`__\ ] Advanced Programming
-#. [\ `HTML <parse.html>`__\ \|\ `PDF <parse.pdf>`__\ ] Parsing
 #. [\ `HTML <chunk.html>`__\ \|\ `PDF <chunk.pdf>`__\ ] Chunk Parsing
+#. [\ `HTML <parse.html>`__\ \|\ `PDF <parse.pdf>`__\ ] Parsing
 #. [\ `HTML <chart.html>`__\ \|\ `PDF <chart.pdf>`__\ ] Chart Parsing
 #. [\ `HTML <pcfg.html>`__\ \|\ `PDF <pcfg.pdf>`__\ ] Probabilistic Grammars
 #. [\ `HTML <field.html>`__\ \|\ `PDF <field.pdf>`__\ ] Fieldwork
-#. [\ `HTML <regexps.html>`__\ \|\ `PDF <regexps.pdf>`__\ ] Regular Expressions
 #. [\ `HTML <projects.html>`__\ \|\ `PDF <projects.pdf>`__\ ] Project Topics
 
 ----
