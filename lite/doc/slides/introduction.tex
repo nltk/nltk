@@ -1,44 +1,6 @@
-% for slides
-\documentclass{beamer}
-
-% for handout
-% \documentclass[handout]{beamer}
-% \usepackage{pgfpages}
-% \pgfpagesuselayout{4 on 1}[a4paper,landscape,scale=0.9]
-
-\mode<handout>
-{
-  \usetheme{default}
-  \usepackage{fullpage}
-  \usepackage{pgf}
-  \usepackage{hyperref}
-  \setjobnamebeamerversion{introduction.beamer}
-}
-
-\mode<article>
-{
-  \usepackage{fullpage}
-  \usepackage{pgf}
-  \usepackage{hyperref}
-  \setjobnamebeamerversion{introduction.beamer}
-}
-
-\mode<presentation>
-{
-  \usetheme{Warsaw}
-  \setbeamercovered{transparent}
-  % If you wish to uncover everything in a step-wise fashion, uncomment
-  % the following command: 
-  \beamerdefaultoverlayspecification{<+->}
-
-}
-
-
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
-\usepackage{times}
-\usepackage[T1]{fontenc}
-\usepackage{alltt}
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
 
 \title{NLTK: \\ Introduction to Natural Language Processing}
 
@@ -50,10 +12,6 @@
   \and
   University of Edinburgh, UK
 }
-
-\date{\today}
-
-\subject{Natural Language Toolkit}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
