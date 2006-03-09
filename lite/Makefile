@@ -6,9 +6,6 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-# Epydoc executable
-EPYDOC = epydoc
-
 # Python executable
 PYTHON = python
 
@@ -18,18 +15,6 @@ NLTK_VERSION=$(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 # CVS snapshot build directory
 DATE = $(shell date +%F)
 CVS_SNAPSHOT = nltk_lite_$(DATE)
-
-# Where is the web page hosted on the web?
-NLTK_URL = http://nltk.sourceforge.net/lite
-WEBPAGE_DIR = webpage
-WEBHOST_NAME = shell.sourceforge.net
-WEBHOST_DIR = /home/groups/n/nl/nltk/htdocs/lite
-REFDOC_DIR = doc/api
-REFDOC_UPTODATE = $(REFDOC_DIR)/.uptodate
-
-# Options for epydoc.
-EPYDOC_OPTS = -n nltk-lite --navlink "nltk $(NLTK_VERSION)" -u $(NLTK_URL) \
-	       --inheritance=listed
 
 # Sourceforge mirror
 SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
@@ -49,15 +34,10 @@ usage:
 test: 
 	$(PYTHON) runtests.py -v -c coverage
 
-# Clean.  
-#    - Erase any pyc and pyo files.
-#    - Get rid of build/dist directories
-#    - Erase the MANIFEST file (it's generated from MANIFEST.in)
 clean:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
-	rm -rf doc/api
-	rm -f doc/*/*.html
+	$(MAKE) -C doc clean
 	rm -rf build dist MANIFEST
 
 # Distributions. Build all from scratch.
@@ -86,11 +66,8 @@ rpmdist: INSTALL.TXT
 windist: INSTALL.TXT
 	python setup.py -q bdist --format=wininst
 
-apidocs:
-	rm -rf $(REFDOC_DIR)/*
-	$(EPYDOC) $(EPYDOC_OPTS) -o $(REFDOC_DIR) nltk_lite
-
 docdist:
+	$(MAKE) -C doc all
 	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x CVS
 #	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
 
@@ -101,9 +78,6 @@ corporadist:
 # Automatically add the appropriate version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
-
-xfer: webpage
-	rsync -arz -e ssh $(WEBPAGE_DIR)/* $(WEBHOST_NAME):$(WEBHOST_DIR)
 
 # CVS snapshot
 tgz:
@@ -126,7 +100,8 @@ python:	.python.done
 	touch .python.done
 
 iso:	dist
-	echo "get python distro?"
+	echo "get Python distro?"
+        rm -rf iso/webpage iso/nltk* iso/*/nltk*
 	mkdir -p iso/webpage iso/webpage/screenshots/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
 	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
