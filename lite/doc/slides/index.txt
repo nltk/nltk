@@ -7,24 +7,27 @@ NLTK-Lite Presentation Slides
 
 :Authors: Steven Bird
 :Version: |version|
-:Copyright: |copy| 2001-2005 University of Pennsylvania
-:License: Creative Commons Attribution-NonCommercial-ShareAlike License
+:Copyright: |copy| |copyrightinfo|
+:License: Creative Commons Attribution-ShareAlike License
 
 --------
 Contents
 --------
 
+These PDF slides were produced using the LaTeX Beamer package.
+The source materials are also made available here; please send
+any improvements to Steven Bird, for inclusion in future versions.
+
 0. Preface
-#. [\ `PDF <introduction.pdf>`__\ \|\ `LaTeX-Beamer <introduction.tex>`__\ ] Introduction
-#. [\ `PDF <programming.pdf>`__\ \|\ `LaTeX-Beamer <programming.tex>`__\ ] Programming
+#. [\ `PDF slides <introduction.pdf>`__\ \|\ `LaTeX-Beamer source <introduction.tex>`__\ ] Introduction
+#. [\ `PDF slides <programming.pdf>`__\ \|\ `LaTeX-Beamer source <programming.tex>`__\ ] Programming
 #. Tokenization
-#. [\ `PDF <tagging.pdf>`__\ \|\ `LaTeX-Beamer <tagging.tex>`__\ ] Tagging
-#. Parsing
+#. [\ `PDF slides <tagging.pdf>`__\ \|\ `LaTeX-Beamer source <tagging.tex>`__\ ] Tagging
 #. Chunk Parsing
+#. Parsing
 #. Chart Parsing
 #. Probabilistic Grammars
-#. [\ `PDF <field.pdf>`__\ \|\ `LateX-Beamer <field.tex>`__\ ] Fieldwork
-#. Regular Expressions
+#. [\ `PDF slides <field.pdf>`__\ \|\ `LateX-Beamer source <field.tex>`__\ ] Fieldwork
 #. Project Topics
 
 ----
