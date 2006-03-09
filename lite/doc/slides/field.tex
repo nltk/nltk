@@ -1,43 +1,6 @@
-% for slides
-\documentclass[handout]{beamer}
-
-% for handout
-% \documentclass[handout]{beamer}
-
-\mode<handout>
-{
-  \usetheme{default}
-  \setbeamercolor{background canvas}{bg=black!5}
-  \usepackage{pgfpages}
-  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
-  \usepackage{hyperref}
-  \setjobnamebeamerversion{field.beamer}
-}
-
-\mode<article>
-{
-  \usepackage{fullpage}
-  \usepackage{pgf}
-  \usepackage{hyperref}
-  \setjobnamebeamerversion{field.beamer}
-}
-
-\mode<presentation>
-{
-  \usetheme{Warsaw}
-  \setbeamercovered{transparent}
-  % If you wish to uncover everything in a step-wise fashion, uncomment
-  % the following command: 
-  \beamerdefaultoverlayspecification{<+->}
-
-}
-
-
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
-\usepackage{times}
-\usepackage[T1]{fontenc}
-\usepackage{alltt}
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
 
 \title{Accessing and Analyzing Linguistic Field Data}
 
@@ -45,10 +8,6 @@
 \institute{
   University of Melbourne, AUSTRALIA
 }
-
-\date{\today}
-
-\subject{Natural Language Toolkit}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
