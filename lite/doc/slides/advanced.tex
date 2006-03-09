@@ -1,0 +1,216 @@
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Advanced Programming in Python}
+
+\author{Steven Bird \and Edward Loper \and Ewan Klein}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Pennsylvania, USA
+  \and
+  University of Edinburgh, UK
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Regular Expressions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Program Development}
+
+\begin{frame}
+\frametitle{Program Development}
+\begin{itemize}
+\item High-level Design
+\item Algorithm Design
+\item Structured Programming
+\item Debugging
+\item Performance Tuning
+\end{itemize}
+\end{frame}
+
+\subsection{Defining Functions and Modules}
+
+\begin{frame}[fragile]
+\frametitle{Defining Functions}
+\scriptsize
+\begin{itemize}
+\item part of a program needs to be used several times over
+\item e.g. form plural of singular noun, to be done in several places
+  in a program
+\item localize this work inside a \textit{function}
+\item also helps readability, reusability
+
+\begin{verbatim}
+  >>> def plural(word):
+  ...     if word[-1] == 'y':
+  ...         return word[:-1] + 'ies'
+  ...     elif word[-1] in 'sx':
+  ...         return word + 'es'
+  ...     elif word[-2:] in ['sh', 'ch']:
+  ...         return word + 'es'
+  ...     elif word[-2:] == 'an':
+  ...         return word[:-2] + 'en'
+  ...     return word + 's'
+  >>> plural('fairy')
+  'fairies'
+  >>> plural('woman')
+  'women'
+\end{verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Defining Modules}
+
+\begin{verbatim}
+def parsed(files):
+    for file in files:
+        path = os.path.join(get_basedir(), "treebank", file)
+        s = open(path).read()
+        for t in tokenize.blankline(s):
+            yield tree.bracket_parse(t)
+\end{verbatim}
+\end{frame}
+
+\subsection{Algorithm Design}
+
+\begin{frame}
+  \frametitle{Algorithm Design}
+  \small
+
+  \begin{itemize}
+  \item \textit{algorithm}: a "recipe" for solving a problem
+  \item e.g. to multiply 16 by 12 we might use any of the following methods:
+
+    \begin{enumerate}
+    \item Add 16 to itself 12 times over
+    \item Perform "long multiplication", starting with the least-significant
+      digits of both numbers
+    \item Look up a multiplication table
+    \item Repeatedly halve the first number and double the second,
+      16*12 = 8*24 = 4*48 = 2*96 = 192
+    \item Do 10*12 to get 120, then add 6*12
+    \end{enumerate}
+
+  \item computation time, intermediate storage
+  \item brute-force, divide-and-conquer, dynamic programming, greedy search
+  \item Textbook: Levitin, Anany (2003) \textit{Introduction to the Design and
+      Analysis of Algorithms}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Sorting Algorithms}
+
+\begin{itemize}
+\item Many algorithms for sorting
+\item Illustrates the difference in algorithm complexity
+
+\begin{verbatim}
+  >>> from random import shuffle
+  >>> from nltk_lite.misc import sort
+  >>> a = range(1000)
+  >>> shuffle(a); sort.bubble(a)
+  250918
+  >>> shuffle(a); sort.merge(a)
+  6175
+  >>> shuffle(a); sort.quick(a)
+  2378
+\end{verbatim}
+\end{itemize}
+\end{frame}
+
+\subsection{Top-Down Design}
+
+\begin{frame}
+\frametitle{Top-Down Design}
+\begin{itemize}
+\item Break down high-level task into manageable components
+\item Build and test each component
+\item Assemble them into a complex system
+\item Example: identify adjective-noun collocations in text
+  \begin{enumerate}
+  \item read in the corpus
+  \item count events (each adjective, noun, adj-noun combination)
+  \item compute $\chi^2$ statistics
+  \item sort adj-noun pairs in decreasing order
+  \item output $n$-most significant collocations
+  \end{enumerate}
+\item what are the inputs and outputs of each step (i.e. \textit{interfaces})
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Top-Down Design (cont)}
+
+\begin{enumerate}
+\item Define top-level function:
+
+\begin{verbatim}
+def colloc(corpus_name, num):
+    corpus = load_corpus(corpus_name)
+    a_counts, n_counts, a_n_counts = count(corpus, 'JJ', 'NN')
+    a_n_scores = chisq(a_counts, n_counts, a_n_counts)
+    a_n_ranked = sort_by_score(a_n_scores)
+    return a_n_ranked[:num]
+\end{verbatim}
+
+\item Iteratively define lower-level functions, e.g. \texttt{chisq()}
+
+\item Bottom-up testing
+\begin{itemize}
+\item standard test cases for components, known output
+\item only assemble once each component is known to work correctly
+  on the test cases
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+\subsection{Debugging}
+
+\begin{frame}
+  \frametitle{Debugging}
+
+  \begin{itemize}
+  \item What's in the name:
+    \begin{itemize}
+    \item problems are small relative to their impact
+    \item hard-to-find
+    \item seem to take on a life of their own as the programmer tries to
+      hunt them down
+    \end{itemize}
+  \item steps:
+    \begin{itemize}
+    \item isolate the problem
+    \item syntax error: see error messages, linked to line numbers
+    \item run-time error: \textit{stack-trace}
+    \item add diagnostic print statements
+    \item display values of variables just before problem
+    \item Python debugger: \texttt{pdb}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection{Next Steps...}
+
+\begin{frame}
+\frametitle{Next Steps: Learning to Program}
+\begin{itemize}
+\item experimental
+\item Python's \texttt{help} and \texttt{dir} commands
+\item tutorial exercises
+\end{itemize}
+\end{frame}
+
