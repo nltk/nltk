@@ -1,0 +1,140 @@
+File: timitdic.doc, updated 10/11/90
+
+                       TIMIT Lexicon Documentation
+
+
+The dictionary found in the file "timitdic.txt" contains entries for all of
+the words in the TIMIT prompts.  There are a total of 6229 entries in the
+lexicon.  The lexicon was derived in part from the MIT adapted version of the
+Merriam-Webster Pocket Dictionary of 1964 ("Pocket") and a preliminary version
+of a general English lexicon under development at CMU.  The pronunciations in
+the MIT pocket lexicon have been verified and modified over the years by
+various people.  However, many of the words in the TIMIT scripts did not
+appear in the pocket lexicon, and needed to be added.  These include other
+forms of words found in "Pocket" and words not found in any form.  Rules were
+used to generate pronunciations in the former case and the derived
+pronunciations were hand-checked.  In the latter case, consisting mainly of
+proper names and abbreviated forms (such as "takin'" instead of "taking" or
+"'em"), the pronunciations were added by hand.
+
+The symbols in the lexical representation are abstract, quasi-phonemic marks
+representing the underlying sounds and typically correspond to a variety of
+different sounds in the actual recordings.  The term quasi-phonemic is used
+because some differences represented in the lexicon are often found in speech,
+even though they are not really phonemically distinctive in English, such as
+the /er/~/axr/ in which /er/ co-occurs with stress.
+
+
+
+Format of the Lexicon
+---------------------
+
+All entries have been converted to lower case.  Stress markers are given as 1
+for primary stress and 2 for secondary stress, tacked on to the end of the
+vowel symbol.  Hyphenated words such as "head-in-the-clouds" can be found as a
+single entry and as the individual words "head", "in", "the", and "clouds".
+One pronunciation is provided per entry except in the case where the same
+orthography corresponds to different parts of speech with different
+pronunciations, and both forms exist in the TIMIT scripts.  To differentiate
+these words, multiple entries are given, with the syntactic class following
+the symbol ~.  The classes found in the lexicon are:  ~n noun ~v verb ~adj
+adjective ~pres present tense ~past past tense.
+
+An example is the word "live", with the entries:
+   live~v  l ih v
+   live~adj l ay v 
+
+
+
+Pronunciation Conventions
+-------------------------
+
+The pronunciation is specified using the the CMU symbol set (see "phoncode.doc"
+for a description of the symbols).  While it is realized that one
+pronunciation is often not sufficient, many of the alternate pronunciations
+may be predicted by use of phonological rules and may be highly dialect
+dependent.  Using only one pronunciation per word forced the somewhat vexing
+decision of which one to use.  We did not put extensive study into such
+issues, and do not make any claims of the theoretical correctness of our
+decisions on particular words.  Our tendency has been to use the more marked
+alternate because we think it is harder to predict.  We tried to make the
+pronunciations as consistent as possible.  In a number of cases we referred to
+the authorities Kenyon and Knott (1953) and Webster's Third New International
+Dictionary (1966).
+
+
+1) Vowel variability:
+
+Many of the pronunciation differences for vowels occur in semi-vowel
+environments and in unstressed syllables.
+
+- The vowel in words like "for", "pour", and "more" are often transcribed
+using either the vowel /ow/ or the vowel /ao/.  This lexicon uses /ao/.
+
+- The vowel in words like "air" and "care" has been transcribed using /ae/, so
+as to differentiate this vowel from the /eh/ in "berry".  Some speakers
+actually make a three-way distinction ("Mary" "merry" "marry"), with the vowel
+in Mary being somewhat in between an /eh/, /ae/, and /ey/.  These speakers may
+use the same vowel in words like "care".
+
+ - The vowel /ih/ (as opposed to /iy/) has been systematically used in the
+transcription of words like "fear" and "year". 
+
+- unstressed schwa alternation /ix/~/ax/:  /ix/ is usually used for schwas
+between 2 alveolars ("roses" /r ow1 z ix z/), otherwise /ax/ is used ("ahead"
+/ax hh eh1 d/).  
+
+- /r/ following the diphthongs /aw/ ("hour") and /ay/ ("fire") have been
+transcribed as /axr/, except where the /r/ is syllable-initial as in words
+like "irate" and "virus".
+
+- vowel reduction:  In some cases the pronunciation of a word may alternate
+between a full vowel and a highly reduced one.  In these cases preference was
+given to the pronunciation with the more marked vowel instead of the schwa.
+For example, the pronunciation of "accept" is given as /ae1 k s eh p t/, not
+/ax1 k s eh p t/.
+
+
+
+2) Stress differences:
+
+- /er/~/axr/ alternation -- /axr/ is used in unstressed syllables and /er/ in
+stressed syllables.
+
+- /ih/~/ix/, /ah/~/ax/ -- once again the distinction is based on stress.  The
+forms /ix/ and /ax/ are used in reduced syllables.  
+
+- /y uw/~/y uh/ -- the tendency is to use /y uw/ in stressed positions as in
+"attribution" /ae t r ih b y uw1 sh ix n/, and /y uh/ in unstressed position
+as in "attribute~v" /ax t r ih2 b y uh t/.
+
+
+
+3) Syllabics: 
+
+The transcriptions are fairly liberal in the use of the syllabics /em/, /en/,
+and /el/, even though they may be pronounced as a sequence of a schwa followed
+by /m/, /n/, or /l/.  For example, words ending in "-ism" are transcribed as
+/ih z em/ even though a short schwa often appears in the transition from the
+/z/ to the /em/.
+
+- /en/ must follow a coronal, except in rare occurrences such as "cap'n" 
+/k ae1 p en/ and "haven't" /h ae1 v en t/.
+
+- in general, /el/ is used instead of /ax l/ except before a stressed vowel.
+Some exceptions are found in words ending in the "-ly" suffix.  For example,
+"angrily" is transcribed /ae1 ng g r ax l iy/, not /ae1 ng g r el iy/.  The
+only occurrences of /el l/ are found in compound words such as "jungle-like"
+and "liberal-led".
+
+
+
+
+References
+----------
+
+John S.  Kenyon and Thomas A.  Knott (1953), "A Pronouncing Dictionary of
+American English," Merriam-Webster Inc., Springfield, Ma.
+
+"Webster's Third New International Dictionary, Unabridged" (1966), Philip B.
+Gove, Ed., William Benton, Publ., Encyclopedia Britannica, Inc., Chicago.
