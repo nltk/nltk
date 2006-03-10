@@ -1,0 +1,751 @@
+; timitdic.txt, updated 10/12/90
+;
+; This file contains a dictionary of all the words in the TIMIT
+; prompts.  It is formatted so that each line contains a word in lower case 
+; followed by 2 blank spaces and then the quasi-phonemic transcription
+; given between slashes.  For an explanation of the phonemic symbols
+; see the file "phoncode.doc".  Hyphenated words appear in the 
+; complete form and as individual words.  Abbreviations, such as
+; "mr" are followed by the punctuation ".".   Lines beginning with a semicolon
+; are comments and should be ignored on searches.
+;
+; A few words can be found in the orthographic transcriptions that
+; were not in the prompts.  These words were not included in the lexicon
+; below, but are listed here for completeness.
+;
+; bourgeoisie  /b uh2 r zh w aa1 z iy/
+; lined  /l ay1 n d/
+; simmered  /s ih1 m axr d/
+; teeny  /t iy1 n iy/
+;
+a  /ax/
+able  /ey1 b el/
+about  /ax b aw1 t/
+according  /ax k ao1 r d ix ng/
+action  /ae1 k sh ix n/
+advisement  /ax d v ay1 z m ax n t/
+after  /ae1 f t axr/
+again  /ax g eh1 n/
+agency  /ey1 jh ix n s iy/
+airfields  /ae1 r f iy2 l d z/
+al  /ae1 l/
+alien  /ey1 l iy ax n/
+alimony  /ae1 l ax m ow2 n iy/
+all  /ao1 l/
+all-purpose  /ao1 l p er1 p ax s/
+almost  /ao1 l m ow1 s t/
+alone  /ax l ow1 n/
+also  /ao1 l s ow2/
+although  /ao l dh ow1/
+always  /ao1 l w ey z/
+amounts  /ax m aw1 n t s/
+an  /ae n/
+analysis  /ax n ae1 l ix s ix s/
+and  /ae n d/
+answered  /ae1 n s axr d/
+answers  /ae1 n s axr z/
+antagonistic  /ae n t ae2 g ax n ih1 s t ix k/
+anti-  /ae1 n t ay2/
+anti-infective  /ae2 n t ay ih n f eh1 k t ih v/
+anti-slavery  /ae2 n t ay s l ey1 v axr iy/
+any  /eh1 n iy/
+anyone's  /eh1 n iy w ah2 n z/
+apples  /ae1 p el z/
+appointment  /ax p oy1 n t m ax n t/
+aprons  /ey1 p r ax n z/
+arbitrate  /aa1 r b ax t r ey2 t/
+archeological  /aa2 r k iy ax l aa1 jh ix k el/
+are  /aa1 r/
+argue  /aa1 r g y uw2/
+around  /ax r aw1 n d/
+artists  /aa1 r t ix s t s/
+as  /ae1 z/
+associates  /ax s ow1 s iy ey t s/
+assume  /ax s uw1 m/
+ate  /ey1 t/
+atmosphere  /ae1 t m ax s f ih2 r/
+autographs  /ao1 t ix g r ae2 f s/
+available  /ax v ey1 l ix b el/
+avoided  /ax v oy1 d ix d/
+away  /ax w ey1/
+awkward  /ao1 k w axr d/
+axis  /ae1 k s ix s/
+bank  /b ae1 ng k/
+battery  /b ae1 t axr iy/
+battery-powered  /b ae1 t axr iy p aw2 axr d/
+be  /b iy1/
+becoming  /b ih k ah1 m ix ng/
+bequests  /b ih k w eh1 s t s/
+betide  /b ax t ay1 d/
+biblical  /b ih1 b l ih k el/
+big  /b ih1 g/
+biology  /b ay aa1 l ax jh iy/
+birth  /b er1 th/
+birthday  /b er1 th d ey2/
+bizarre  /b ax z aa1 r/
+black  /b l ae1 k/
+blistered  /b l ih1 s t axr d/
+blowing  /b l ow1 ix ng/
+bluejay  /b l uw1 jh ey2/
+blues  /b l uw1 z/
+books  /b uh1 k s/
+born  /b ao1 r n/
+both  /b ow1 th/
+bought  /b ao1 t/
+bowl  /b ow1 l/
+boy  /b oy1/
+boy's  /b oy1 z/
+breakfast  /b r eh1 k f ix s t/
+bright  /b r ay1 t/
+brother  /b r ah1 dh axr/
+brother's  /b r ah1 dh axr z/
+brush  /b r ah1 sh/
+building  /b ih1 l d ix ng/
+built  /b ih1 l t/
+bureaucracy  /b y axr aa1 k r ix s iy/
+but  /b ah1 t/
+buy  /b ay1/
+by  /b ay1/
+calf  /k ae1 f/
+call  /k ao1 l/
+camp  /k ae1 m p/
+can  /k ae1 n/
+can't  /k ae1 n t/
+carefully  /k ae1 r f uh l iy/
+carl  /k aa1 r l/
+cartoon  /k aa r t uw1 n/
+cases  /k ey1 s ix z/
+catkins  /k ae1 t k ix n z/
+causes  /k ao1 z ix z/
+celebrates  /s eh1 l ix b r ey2 t s/
+challenge  /ch ae1 l ix n jh/
+challenged  /ch ae1 l ix n jh d/
+change  /ch ey1 n jh/
+charged  /ch aa1 r jh d/
+charmer  /ch aa1 r m axr/
+child  /ch ay1 l d/
+children  /ch ih1 l d r ax n/
+chlorine  /k l ao1 r iy2 n/
+choreographer  /k ao2 r iy aa1 g r ax f axr/
+church  /ch er1 ch/
+circle  /s er1 k el/
+clarify  /k l ae1 r ax f ay2/
+clasp  /k l ae1 s p/
+clay  /k l ey1/
+cliff's  /k l ih1 f s/
+clothing  /k l ow1 dh ix ng/
+coast  /k ow1 s t/
+coat  /k ow1 t/
+coconut  /k ow1 k ax n ah2 t/
+coeducational  /k ow2 eh jh ix k ey1 sh ix n el/
+colleges  /k aa1 l ih jh z/
+come  /k ah1 m/
+common  /k aa1 m ax n/
+companions  /k ax m p ae1 n y ix n z/
+complete  /k ax m p l iy1 t/
+complexity  /k ax m p l eh1 k s ix t iy/
+confirm  /k ax n f er1 m/
+consistently  /k ax n s ih1 s t ix n t l iy/
+contained  /k ax n t ey1 n d/
+continuous  /k ax n t ih1 n y uw ax s/
+cooperated  /k ow aa1 p axr ey2 t ix d/
+correct  /k axr eh1 k t/
+cost  /k ao1 s t/
+costumes  /k aa1 s t uw m z/
+could  /k uh1 d/
+could've  /k uh1 d ax v/
+county  /k aw1 n t iy/
+courier  /k er1 iy axr/
+cows  /k aw1 z/
+crab  /k r ae1 b/
+cream  /k r iy1 m/
+credit  /k r eh1 d ix t/
+crucial  /k r uw1 sh el/
+cupcakes  /k ah1 p k ey2 k s/
+damage  /d ae1 m ih jh/
+dark  /d aa1 r k/
+data  /d ey1 t ax/
+daytime  /d ey1 t ay2 m/
+deal  /d iy1 l/
+departments  /d ax p aa1 r t m ax n t s/
+deserves  /d ix z er1 v z/
+dessert  /d ih z er1 t/
+destroy  /d ix s t r oy1/
+diagnosis  /d ay2 ih g n ow1 s ix s/
+difficult  /d ih1 f ih k ah2 l t/
+direction  /d axr eh1 k sh ix n/
+discouraging  /d ih s k er1 ih jh ix ng/
+disguise  /d ix s g ay1 z/
+dispensing  /d ih s p eh1 n s ix ng/
+display  /d ih s p l ey1/
+distracted  /d ih s t r ae1 k t ix d/
+divorced  /d ax v ao1 r s t/
+do  /d uw1/
+does  /d ah1 z/
+don't  /d ow1 n t/
+door  /d ao1 r/
+down  /d aw1 n/
+draw  /d r ao1/
+drawing  /d r ao1 ix ng/
+drive  /d r ay1 v/
+drugstore  /d r ah1 g s t ao2 r/
+drunkard  /d r ah1 ng k er d/
+dry  /d r ay1/
+dwarf  /d w ao1 r f/
+each  /iy1 ch/
+early  /er1 l iy/
+ease  /iy1 z/
+eastern  /iy1 s t axr n/
+eat  /iy1 t/
+eating  /iy1 t ix ng/
+else  /eh1 l s/
+encouraged  /ih n k er1 ih jh d/
+engineering  /eh2 n jh ix n ih1 r ix ng/
+enigma  /ih n ih1 g m ax/
+enough  /ih n ah1 f/
+equivalent  /ih k w ih1 v el ax n t/
+even  /iy1 v ax n/
+every  /eh1 v r iy/
+example  /ih g z ae1 m p el/
+examples  /ih g z ae1 m p el z/
+exchanged  /ih k s ch ey1 n jh d/
+excitement  /ih k s ay1 t m ax n t/
+execution  /eh2 k s ix k y uw1 sh ix n/
+exercises  /eh1 k s axr s ay2 z ix z/
+exhibited  /ih g z ih1 b ax t ix d/
+eyes  /ay1 z/
+eyestrain  /ay1 s t r ey2 n/
+face  /f ey1 s/
+family  /f ae1 m el iy/
+famous  /f ey1 m ax s/
+fancy  /f ae1 n s iy/
+farm  /f aa1 r m/
+features  /f iy1 ch axr z/
+fields  /f iy1 l d z/
+fill  /f ih1 l/
+fires  /f ay1 axr z/
+first  /f er1 s t/
+flew  /f l uw1/
+flying  /f l ay1 ix ng/
+food  /f uw1 d/
+for  /f ao1 r/
+forces  /f ao1 r s ix z/
+forest  /f ao1 r ix s t/
+form  /f ao1 r m/
+found  /f aw1 n d/
+fresh  /f r eh1 sh/
+friends  /f r eh1 n d z/
+frightened  /f r ay1 t en d/
+from  /f r ah1 m/
+fuming  /f y uw1 m ix ng/
+gab  /g ae1 b/
+garage  /g axr aa1 zh/
+garlic  /g aa1 r l ih k/
+general's  /jh eh1 n axr el z/
+gently  /jh eh1 n t l iy/
+george  /jh ao1 r jh/
+get  /g eh1 t/
+gifts  /g ih1 f t s/
+giraffes  /jh axr ae1 f s/
+gives  /g ih1 v z/
+glass  /g l ae1 s/
+go  /g ow1/
+go-cart  /g ow1 k aa2 r t/
+goes  /g ow1 z/
+good  /g uh1 d/
+good-news  /g uh1 d n uw1 z/
+good-size  /g uh1 d s ay z/
+government  /g ah1 v axr n m ax n t/
+grade  /g r ey1 d/
+grade-equivalent  /g r ey1 d ih k w ih1 v el ax n t/
+graph  /g r ae1 f/
+great  /g r ey1 t/
+group  /g r uw1 p/
+gus  /g ah1 s/
+habit  /hh ae1 b ix t/
+halloween  /hh ae2 l ow iy1 n/
+hand  /hh ae1 n d/
+hard  /hh aa1 r d/
+hardy  /hh aa1 r d iy/
+harms  /hh aa1 r m z/
+has  /hh ae1 z/
+hatred  /hh ey1 t r ix d/
+have  /hh ae1 v/
+he  /hh iy1/
+he'd  /hh iy1 d/
+he'll  /hh ih1 l/
+he's  /hh iy1 z/
+he'd  /hh iy1 d/
+heels  /hh iy1 l z/
+heights  /hh ay1 t s/
+help  /hh eh1 l p/
+helpless  /hh eh1 l p l ax s/
+her  /hh er1/
+here  /hh ih1 r/
+here's  /hh ih1 r z/
+heroism  /hh eh1 r ow ih2 z em/
+herself  /hh axr s eh1 l f/
+hesitate  /hh eh1 z ix t ey2 t/
+high  /hh ay1/
+him  /hh ih1 m/
+hindu  /hh ih1 n d uw2/
+hired  /hh ay1 axr d/
+his  /hh ih1 z/
+history  /hh ih1 s t axr iy/
+hole  /hh ow1 l/
+holiday  /hh aa1 l ix d ey2/
+home  /hh ow1 m/
+home-made  /hh ow1 m ey2 d/
+honeybees  /hh ah1 n iy b iy2 z/
+honor  /aa1 n axr/
+hot  /hh aa1 t/
+housewives  /hh aw1 s w ay2 v z/
+however  /hh aw eh1 v axr/
+hull  /hh ah1 l/
+hysterical  /hh ih s t eh1 r ix k el/
+i  /ay1/
+i'd  /ay1 d/
+i'll  /ay1 l/
+i'm  /ay1 m/
+i've  /ay1 v/
+ice  /ay1 s/
+ices  /ay1 s ix z/
+ideology  /ay2 d iy aa1 l ax jh iy/
+if  /ih1 f/
+ignored  /ih g n ao1 r d/
+ill  /ih1 l/
+illegally  /ih2 l iy1 g el iy/
+imagination  /ih m ae2 jh ix n ey1 sh ix n/
+immediate  /ih m iy1 d iy ax t/
+impossible  /ih2 m p aa1 s ix b el/
+in  /ih1 n/
+initiative  /ih n ih1 sh ix t ih v/
+instantaneous  /ih2 n s t ax n t ey1 n iy ax s/
+instructions  /ih n s t r ah1 k sh ix n z/
+intelligence  /ih n t eh1 l ix jh ix n s/
+interchangeably  /ih2 n t axr ch ey1 n jh ax b l iy/
+interpretation  /ih n t er2 p r ax t ey1 sh ix n/
+interviewee  /ih2 n t axr v y uw2 iy1/
+into  /ih1 n t uw2/
+involved  /ih n v aa1 l v d/
+irish  /ay1 r ih sh/
+is  /ih1 z/
+it  /ih1 t/
+it'd  /ih1 t uh d/
+it's  /ih1 t s/
+it's  /ih1 t s/
+its  /ih1 t s/
+jaw  /jh ao1/
+jim  /jh ih1 m/
+jim's  /jh ih1 m z/
+john's  /jh aa1 n z/
+joint  /jh oy1 n t/
+jokes  /jh ow1 k s/
+journalist  /jh er1 n el ix s t/
+joyce  /jh oy1 s/
+juice  /jh uw1 s/
+junior  /jh uw1 n y axr/
+just  /jh ah1 s t/
+kept  /k eh1 p t/
+kippers  /k ih1 p axr z/
+know  /n ow1/
+lagoon  /l ax g uw1 n/
+lamb's  /l ae1 m z/
+largely  /l aa1 r jh l iy/
+lawful  /l ao1 f uh l/
+left  /l eh1 f t/
+lifelong  /l ay1 f l ao2 ng/
+light  /l ay1 t/
+like  /l ay1 k/
+lincoln  /l ih1 ng k ax n/
+line  /l ay1 n/
+lines  /l ay1 n z/
+list  /l ih1 s t/
+live~adj  /l ay1 v/
+live~v  /l ih1 v/
+lively  /l ay1 v l iy/
+lives  /l ih1 v z/
+local  /l ow1 k el/
+lodge  /l aa1 jh/
+long  /l ao1 ng/
+long-overdue  /l ao1 ng ow2 v axr d uw1/
+long-range  /l ao1 ng r ey1 n jh/
+long-term  /l ao1 ng t er1 m/
+longer  /l ao1 ng g axr/
+look  /l uh1 k/
+lot  /l aa1 t/
+made  /m ey1 d/
+majority  /m ax jh ao1 r ix t iy/
+make  /m ey1 k/
+makes  /m ey1 k s/
+man  /m ae1 n/
+man's  /m ae1 n z/
+man's  /m ae1 n z/
+manufacturer  /m ae2 n y uw f ae1 k ch er axr/
+mark  /m aa1 r k/
+marketing  /m aa1 r k ix t ix ng/
+marksmanship  /m aa1 r k s m ax n sh ih2 p/
+mask  /m ae1 s k/
+masquerade  /m ae2 s k axr ey1 d/
+may  /m ey1/
+maybe  /m ey1 b iy2/
+me  /m iy1/
+median  /m iy1 d iy ax n/
+met  /m eh1 t/
+miles  /m ay1 l z/
+misplaced  /m ih s p l ey1 s t/
+moisture  /m oy1 s ch axr/
+monday  /m ah1 n d ey/
+money  /m ah1 n iy/
+morning  /m ao1 r n ix ng/
+most  /m ow1 s t/
+movies  /m uw1 v iy z/
+moving  /m uw1 v ix ng/
+mrs.  /m ih1 s ix z/
+much  /m ah1 ch/
+murky  /m er1 k iy/
+muscles  /m ah1 s el z/
+museum  /m y uw z iy1 ax m/
+muskrat  /m ah1 s k r ae2 t/
+must  /m ah1 s t/
+my  /m ay1/
+myself  /m ay s eh1 l f/
+naive  /n aa iy1 v/
+names  /n ey1 m z/
+national  /n ae1 sh ix n el/
+near  /n ih1 r/
+near-at-hand  /n ih1 r ae t hh ae1 n d/
+nevada  /n ax v ae1 d ax/
+nevada's  /n ax v ae1 d ax z/
+never  /n eh1 v axr/
+new  /n uw1/
+news  /n uw1 z/
+nice  /n ay1 s/
+night  /n ay1 t/
+no  /n ow1/
+norwegian  /n ao r w iy1 jh ix n/
+not  /n aa1 t/
+notoriety  /n ow2 t axr ay1 ax t iy/
+now  /n aw1/
+nuclear  /n uw1 k l iy axr/
+obstacles  /aa1 b s t ih k el z/
+occasionally  /ax k ey1 zh ix n ax l iy/
+ocean  /ow1 sh ix n/
+ocean's  /ow1 sh ix n z/
+of  /ax v/
+officials  /ax f ih1 sh el z/
+often  /ao1 f ax n/
+ointment  /oy1 n t m ax n t/
+old  /ow1 l d/
+old-timers  /ow1 l d t ay1 m axr z/
+older  /ow1 l d axr/
+on  /ao1 n/
+one's  /w ah1 n z/
+only  /ow1 n l iy/
+operates  /aa1 p axr ey2 t s/
+or  /ao1 r/
+orange  /ao1 r ih n jh/
+other  /ah1 dh axr/
+out  /aw1 t/
+out-moded  /aw2 t m ow1 d ix d/
+out-of-doors  /aw1 t ax v d ao1 r z/
+outcast  /aw1 t k ae2 s t/
+outdoors  /aw t d ao1 r z/
+outfit  /aw1 t f ih2 t/
+outgrow  /aw2 t g r ow1/
+over  /ow1 v axr/
+overly  /ow1 v axr l iy/
+overthrow  /ow2 v axr th r ow1/
+overweight  /ow1 v er w ey2 t/
+own  /ow1 n/
+packing  /p ae1 k ix ng/
+paper  /p ey1 p axr/
+parties  /p aa1 r t iy z/
+pass  /p ae1 s/
+pathological  /p ae2 th ax l aa1 jh ih k el/
+pays  /p ey1 z/
+peeling  /p iy1 l ix ng/
+perpendicular  /p er2 p ix n d ih1 k y uh l axr/
+personal  /p er1 s ix n el/
+pie  /p ay1/
+pine  /p ay1 n/
+place  /p l ey1 s/
+planning  /p l ae1 n ix ng/
+platform  /p l ae1 t f ao2 r m/
+play  /p l ey1/
+please  /p l iy1 z/
+pleasure  /p l eh1 zh axr/
+pointing  /p oy1 n t ix ng/
+points  /p oy1 n t s/
+poison  /p oy1 z en/
+policy  /p aa1 l ix s iy/
+poor  /p uh1 r/
+positive  /p aa1 z ix t ih v/
+pouring  /p ao1 r ix ng/
+practical  /p r ae1 k t ih k el/
+problem  /p r aa1 b l ax m/
+proper  /p r aa1 p axr/
+proved  /p r uw1 v d/
+prowler  /p r aw1 l axr/
+publicity  /p ah2 b l ih1 s ix t iy/
+pure  /p y uh1 r/
+quality  /k w aa1 l ix t iy/
+question  /k w eh1 s ch ix n/
+quick  /k w ih1 k/
+quite  /k w ay1 t/
+rachel's  /r ey1 ch el z/
+ran  /r ae1 n/
+readiness  /r eh1 d ih n ix s/
+reading  /r iy1 d ix ng/
+ready  /r eh1 d iy/
+real  /r iy1 l/
+received  /r ih s iy1 v d/
+redwoods  /r eh1 d w uh2 d z/
+reflect  /r ih f l eh1 k t/
+refund  /r iy1 f ah2 n d/
+refurbishing  /r ih f er1 b ih sh ix ng/
+regarding  /r ih g aa1 r d ix ng/
+relaxed  /r ih l ae1 k s t/
+remained  /r ih m ey1 n d/
+removal  /r ih m uw1 v el/
+repainted  /r ix p ey1 n t ix d/
+resolute  /r eh1 z ax l uw2 t/
+resolved  /r ih z aa1 l v d/
+results  /r ih z ah1 l t s/
+rewarded  /r ih w ao1 r d ix d/
+rhubarb  /r uw1 b aa2 r b/
+right  /r ay1 t/
+ripe  /r ay1 p/
+rise  /r ay1 z/
+rockets  /r aa1 k ix t s/
+role  /r ow1 l/
+routine  /r uw t iy1 n/
+roy  /r oy1/
+ruffles  /r ah1 f el z/
+run  /r ah1 n/
+run-down  /r ah1 n d aw2 n/
+save  /s ey1 v/
+saw  /s ao1/
+scalp  /s k ae1 l p/
+scholars  /s k aa1 l axr z/
+screen  /s k r iy1 n/
+screw  /s k r uw1/
+screwdriver  /s k r uw1 d r ay2 v axr/
+sculpture  /s k ah1 l p ch axr/
+seasoning  /s iy1 z en ix ng/
+seldom  /s eh1 l d ax m/
+semi-  /s eh1 m ih/
+semi-heights  /s eh2 m ih hh ay1 t s/
+sentiment  /s eh1 n t ax m ax n t/
+sequoia  /s ih k w oy1 ax/
+serve  /s er1 v/
+service  /s er1 v ax s/
+she  /sh iy1/
+she'd  /sh iy1 d/
+she's  /sh iy1 z/
+shed  /sh eh1 d/
+shimmers  /sh ih1 m axr z/
+ship's  /sh ih1 p s/
+shorten  /sh ao1 r t en/
+should  /sh uh1 d/
+show  /sh ow1/
+silence  /s ay1 l ax n s/
+simpler  /s ih1 m p l axr/
+sing  /s ih1 ng/
+situation  /s ih2 ch uw ey1 sh ix n/
+ski  /s k iy1/
+skirt  /s k er1 t/
+slavery  /s l ey1 v axr iy/
+slip  /s l ih1 p/
+small  /s m ao1 l/
+smiths  /s m ih1 th s/
+so  /s ow1/
+so-called  /s ow1 k ao1 l d/
+social  /s ow1 sh el/
+something  /s ah1 m th ih ng/
+son  /s ah1 n/
+song  /s ao1 ng/
+sound  /s aw1 n d/
+spherical  /s f ih1 r ih k el/
+spray  /s p r ey1/
+spurious  /s p y uh1 r iy ax s/
+stab  /s t ae1 b/
+staff  /s t ae1 f/
+standby  /s t ae1 n d b ay2/
+start  /s t aa1 r t/
+status  /s t ae1 t ix s/
+still  /s t ih1 l/
+straight  /s t r ey1 t/
+straightforward  /s t r ey2 t f ao1 r w axr d/
+struck  /s t r ah1 k/
+study  /s t ah1 d iy/
+stung  /s t ah1 ng/
+subdued  /s ah b d uw1 d/
+suburban  /s ah b er1 b ix n/
+suburbanites  /s ah b er1 b ix n ay2 t s/
+suffer  /s ah1 f axr/
+sun  /s ah1 n/
+sundown  /s ah1 n d aw2 n/
+sunshine  /s ah1 n sh ay2 n/
+sure  /sh uh1 r/
+sure-sure  /sh uh1 r sh uh1 r/
+survive  /s axr v ay1 v/
+sweaters  /s w eh1 t axr z/
+symbolize  /s ih1 m b ax l ay2 z/
+tad  /t ae1 d/
+tadpole  /t ae1 d p ow2 l/
+take  /t ey1 k/
+taken  /t ey1 k ix n/
+talk  /t ao1 k/
+talked  /t ao1 k t/
+tantalizing  /t ae1 n t ax l ay2 z ix ng/
+tax  /t ae1 k s/
+tax-aided  /t ae1 k s ey1 d ix d/
+tea  /t iy1/
+ten  /t eh1 n/
+terms  /t er1 m z/
+test  /t eh1 s t/
+test-run  /t eh1 s t r ah1 n/
+tetanus  /t eh1 t n ix s/
+that  /dh ae1 t/
+that'll  /dh ae1 t el/
+that's  /dh ae1 t s/
+the  /dh ax/
+their  /dh ae1 r/
+them  /dh eh1 m/
+then  /dh eh1 n/
+there  /dh ae1 r/
+there's  /dh ae1 r z/
+these  /dh iy1 z/
+they  /dh ey1/
+they'd  /dh ey1 d/
+they'll  /dh ey1 l/
+they're  /dh ae1 r/
+they've  /dh ey1 v/
+they've  /dh ey1 v/
+think  /th ih1 ng k/
+thinker  /th ih1 ng k axr/
+thinking  /th ih1 ng k ix ng/
+this  /dh ih1 s/
+those  /dh ow1 z/
+though  /dh ow1/
+three  /th r iy1/
+three-inch  /th r iy1 ih1 n ch/
+through  /th r uw1/
+time  /t ay1 m/
+timing  /t ay1 m ix ng/
+tips  /t ih1 p s/
+to  /t uw1/
+today  /t ix d ey1/
+today'll  /t ix d ey1 el/
+today's  /t ix d ey1 z/
+today's  /t ix d ey1 z/
+told  /t ow1 l d/
+tomblike  /t uw1 m l ay2 k/
+tomboy  /t aa1 m b oy2/
+tomorrow  /t ax m aa1 r ow2/
+too  /t uw1/
+too-naked  /t uw1 n ey1 k ix d/
+top  /t aa1 p/
+towards  /t ao1 r d z/
+town  /t aw1 n/
+traits  /t r ey1 t s/
+tranquilizers  /t r ae1 ng k w ih l ay2 z axr z/
+travelers  /t r ae1 v el axr z/
+trees  /t r iy1 z/
+triumphant  /t r ay ah1 m f ax n t/
+truck  /t r ah1 k/
+turpentine  /t er1 p ax n t ay2 n/
+twenty  /t w eh1 n t iy/
+twenty-five  /t w eh1 n t iy f ay1 v/
+twenty-nine  /t w eh1 n t iy n ay1 n/
+twenty-three  /t w eh1 n t iy th r iy1/
+twenty-two  /t w eh1 n t iy t uw1/
+two  /t uw1/
+unappreciated  /ah2 n ax p r iy1 sh iy ey2 t ix d/
+under  /ah1 n d axr/
+under-age  /ah2 n d axr ey1 jh/
+underbrush  /ah1 n d axr b r ah2 sh/
+uniqueness  /y uw n iy1 k n ix s/
+universality  /y uw2 n ix v er s ae1 l ix t iy/
+unknown  /ah2 n ow1 n/
+up  /ah1 p/
+upgrade  /ah1 p g r ey2 d/
+us  /ah1 s/
+use~n  /y uw1 s/
+use~v  /y uw1 z/
+used  /y uw1 z d/
+uses  /y uw1 z ix z/
+using  /y uw1 z ix ng/
+vaguely  /v ey1 g l iy/
+valley  /v ae1 l iy/
+valuables  /v ae1 l y uh b el z/
+vanquished  /v ae1 n k w ih sh t/
+vault  /v ao1 l t/
+very  /v eh1 r iy/
+villains  /v ih1 l ix n z/
+vodka  /v aa1 d k ax/
+walk  /w ao1 k/
+want  /w ao1 n t/
+wanted  /w ao1 n t ix d/
+warm  /w ao1 r m/
+warrior  /w ao1 r iy axr/
+was  /w ax z/
+washington  /w ao1 sh ix ng t ah n/
+waste  /w ey1 s t/
+watched  /w aa1 ch t/
+watches  /w aa1 ch ix z/
+water  /w ao1 t axr/
+we  /w iy1/
+we'd  /w iy1 d/
+we'll  /w ih1 l/
+we're  /w ih1 r/
+we've  /w iy1 v/
+we'll  /w ih1 l/
+wealth  /w eh1 l th/
+wedded  /w eh1 d ix d/
+went  /w eh1 n t/
+were  /w er/
+what  /hh w aa1 t/
+what're  /hh w aa1 t axr/
+what's  /hh w aa1 t s/
+what's-his-name  /hh w aa1 t s hh ih z n ey2 m/
+when  /hh w eh1 n/
+where  /hh w ae1 r/
+where're  /hh w ae1 r axr/
+which  /hh w ih1 ch/
+will  /w ih1 l/
+willow  /w ih1 l ow2/
+willowy  /w ih1 l ow iy/
+wine  /w ay1 n/
+wishful  /w ih1 sh f uh l/
+with  /w ih1 dh/
+woe  /w ow1/
+woman  /w uh1 m ax n/
+won't  /w ow1 n t/
+wool  /w uh1 l/
+wore  /w ao1 r/
+worked  /w er1 k t/
+working  /w er1 k ix ng/
+worried  /w er1 iy d/
+worship  /w er1 sh ix p/
+would  /w uh1 d/
+would've  /w uh1 d ax v/
+wound~n  /w uw1 n d/
+wound~v  /w aw1 n d/
+wrap  /r ae1 p/
+yearly  /y ih1 r l iy/
+years  /y ih1 r z/
+yellow  /y eh1 l ow2/
+yet  /y eh1 t/
+yogurt  /y ow1 g er t/
+you  /y uw1/
+you'd  /y uw1 d/
+you'll  /y uw1 l/
+you're  /y uh1 r/
+you've  /y uw1 v/
+you're  /y uh1 r/
+young  /y ah1 ng/
+youngsters  /y ah1 ng s t axr z/
+your  /y uh1 r/
+zoos  /z uw1 z/

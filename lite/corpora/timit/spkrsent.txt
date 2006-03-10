@@ -1,0 +1,26 @@
+; File: spkrsent.txt, updated 10/15/90
+;
+; Table of TIMIT speaker IDs and the numbers of the 10 sentence-texts they read.
+; These 10 sentence-texts consist of 2 "SA", 5 "SX", and 3 "SI" sentences.
+; See "/timit/readme.doc" and printed documentation for more information about
+; the design and selection of these sentences.  Lines beginning with a semicolon
+; are comments and should be ignored on searches.
+;
+;ID   <SA>  <-------- SX --------->  <----- SI ----->
+;---  ----  -----------------------  ----------------
+CPM0  1  2  114  294   24  204  384   564  1194  1824
+VMH0  1  2  386  116  296   26  206   836  1466  2096
+ARC0  1  2  108  288   18  198  378   558  1188  1818
+AEM0  1  2  312   42  222  402  132   762  1392  2022
+ADC0  1  2  287   17  197  377  107   737  1367  1997
+ALK0  1  2    6  186  366   96  276   456  1086   658
+AEB0  1  2   90  270  450  180  360   990  1411  2250
+ALR0  1  2  245  425  155  335   65   695  1325  1955
+BGT0  1  2  261  441  171  351   81   711  1341  1841
+TLG0  1  2   33  213  393  123  303   483   840  1743
+BMA1  1  2   54  234  414  144  324   954  2207  2214
+APB0  1  2  163  343   73  253  433  1063  1693  2323
+ADD0  1  2   88  268  448  178  358   538  1295  1798
+BLV0  1  2  158  338   68  248  428  1058  1688  2318
+BCG0  1  2   57  237  417  147  327   957   486  2217
+BCG1  1  2   82  262  442  172  352   982  1612  2242

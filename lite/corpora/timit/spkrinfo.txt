@@ -1,0 +1,55 @@
+; File: spkrinfo.txt - updated 10/15/90
+;
+; Table of speakers/speaker information used in DARPA TIMIT Acoustic-Phonetic
+; Speech Corpus.  Lines beginning with a semicolon are comments and should be 
+; ignored on searches.
+;
+; ID - Speaker initials (of form AAAN where 'A' is alphabetic initial and 'N'
+;                        is a digit 0-9 to disambiguate identical initials)
+; Sex - Speaker gender (M or F)
+; DR - Speaker dialect region number (1 - New England
+;                                     2 - Northern
+;                                     3 - North Midland
+;                                     4 - South Midland
+;                                     5 - Southern
+;                                     6 - New York City
+;                                     7 - Western
+;                                     8 - Army Brat (moved around))
+; Use - Data usage (TRN - System training speaker
+;                   TST - System test speaker)
+; RecDate - Recording date
+; BirthDate - Speaker birth date
+; Ht - Speaker height
+; Race - Speaker race (WHT - White
+;                      BLK - Black
+;                      AMR - American Indian
+;                      SPN - Spanish-American
+;                      ORN - Oriental
+;                      ??? - Unknown)
+; Edu - Speaker education level (HS - High School
+;                                AS - Associate Degree
+;                                BS - Bachelor's Degree (BS or BA)
+;                                MS - Master's Degree (MS or MA)
+;                                PHD - Doctorate Degree (PhD, JD, or MD)
+;                                ?? - Unknown)
+;
+; Comments - Interesting speaker attributes or abnormalities
+;
+;ID  Sex DR Use  RecDate   BirthDate  Ht    Race Edu  Comments
+;--- --- -- ---  --------  --------- -----  ---- ---  -------------------
+CPM0  M  1  TRN  01/30/86  02/18/62  5'6"   WHT  BS 
+VMH0  F  1  TRN  03/11/86  01/08/60  5'05"  WHT  BS   BEST NEW ENGLAND ACCENT SO FAR 
+ARC0  M  2  TRN  01/30/86  12/03/57  5'9"   WHT  MS 
+AEM0  F  2  TRN  02/27/86  05/13/60  5'3"   WHT  BS 
+ADC0  M  3  TRN  02/25/86  04/27/54  5'9"   WHT  HS 
+ALK0  F  3  TRN  01/28/86  07/23/38  5'6"   WHT  HS 
+AEB0  M  4  TRN  04/10/86  09/20/37  5'11"  WHT  HS 
+ALR0  F  4  TRN  02/20/86  06/05/62  5'4"   WHT  BS 
+BGT0  M  5  TRN  02/21/86  03/22/58  5'10"  WHT  BS 
+TLG0  F  5  TRN  01/21/86  04/01/60  5'6"   WHT  BS 
+BMA1  M  6  TRN  04/02/86  08/16/54  6'02"  WHT  BS   GOOD EX NYC-LONG IS. 
+APB0  F  6  TRN  04/30/86  09/18/45  5'5"   WHT  HS 
+ADD0  M  7  TRN  01/28/86  03/23/58  6'2"   WHT  BS 
+BLV0  F  7  TRN  04/29/86  12/14/58  5'8"   WHT  MS 
+BCG0  M  8  TRN  04/02/86  08/11/59  5'8"   WHT  BS 
+BCG1  F  8  TRN  04/09/86  02/23/59  4'9"   ???  BS 
