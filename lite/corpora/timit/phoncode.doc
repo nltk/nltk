@@ -1,0 +1,117 @@
+File: phoncode.doc, updated 10/12/90
+
+This file contains a table of all the phonemic and phonetic symbols used in
+the TIMIT lexicon and in the phonetic transcriptions.  These include the
+stress markers {1,2} found only in the lexicon and the following symbols which
+occur only in the transcriptions:
+
+1) the closure intervals of stops which are distinguished from the stop
+   release.  The closure symbols for the stops b,d,g,p,t,k are
+   bcl,dcl,gcl,pcl,tck,kcl, respectively.  The closure portions of jh
+   and ch, are dcl and tcl.
+
+2) allophones that do not occur in the lexicon.  The use of a given 
+   allophone may be dependent on the speaker, dialect, speaking rate, 
+   and phonemic context, among other factors.  Since the use of these 
+   allophones is difficult to predict, they have not been used in the 
+   phonemic transcriptions in the lexicon.
+
+  - flap dx,  such as in words "muddy" or "dirty"
+  
+  - nasal flap nx, as in "winner"
+
+  - glottal stop q, which may be an allophone of t, or may mark an initial 
+    vowel or a vowel-vowel boundary
+
+  - voiced-h hv, a voiced allophone of h, typically found intervocalically
+
+  - fronted-u ux, allophone of uw, typically found in alveolar context
+
+  - devoiced-schwa ax-h, very short, devoiced vowel, typically occurring
+    for reduced vowels surrounded by voiceless consonants
+
+3) other symbols include two types of silence; pau, marking a pause, and
+   epi, denoting epenthetic silence which is often found between a fricative 
+   and a semivowel or nasal, as in "slow", and h#, used to mark the silence
+   and/or non-speech events found at the beginning and end of the signal.
+
+ 	
+                                       POSSIBLE PHONETIC
+                SYMBOL    EXAMPLE WORD   TRANSCRIPTION   
+                ------    ------------   -------------   
+  Stops:   
+                  b          bee           BCL B iy
+                  d          day           DCL D ey
+                  g          gay           GCL G ey 
+                  p          pea           PCL P iy
+                  t          tea           TCL T iy
+                  k          key           KCL K iy
+                  dx         muddy, dirty  m ah DX iy, dcl d er DX iy
+                  q          bat           bcl b ae Q
+
+  Affricates:
+                  jh         joke          DCL JH ow kcl k
+                  ch         choke         TCL CH ow kcl k
+
+  Fricatives:
+                  s          sea           S iy
+                  sh         she           SH iy
+                  z          zone          Z ow n
+                  zh         azure         ae ZH er
+                  f          fin           F ih n
+                  th         thin          TH ih n
+                  v          van           V ae n 
+                  dh         then          DH e n
+
+  Nasals:
+                  m          mom           M aa M
+                  n          noon          N uw N
+                  ng         sing          s ih NG
+                  em         bottom        b aa tcl t EM
+                  en         button        b ah q EN
+                  eng        washington    w aa sh ENG tcl t ax n
+                  nx         winner        w ih NX axr
+                                
+  Semivowels and
+  Glides:
+                  l          lay           L ey
+                  r          ray           R ey
+                  w          way           W ey
+                  y          yacht         Y aa tcl t
+                  hh         hay           HH ey
+                  hv         ahead         ax HV eh dcl d
+                  el         bottle        bcl b aa tcl t EL
+                  
+
+  Vowels:
+                  iy         beet          bcl b IY tcl t
+                  ih         bit           bcl b IH tcl t 
+                  eh         bet           bcl b EH tcl t
+                  ey         bait          bcl b EY tcl t
+                  ae         bat           bcl b AE tcl t
+                  aa         bott          bcl b AA tcl t
+                  aw         bout          bcl b AW tcl t
+                  ay         bite          bcl b AY tcl t
+                  ah         but           bcl b AH tcl t
+                  ao         bought        bcl b AO tcl t
+                  oy         boy           bcl b OY
+                  ow         boat          bcl b OW tcl t
+                  uh         book          bcl b UH kcl k
+                  uw         boot          bcl b UW tcl t
+                  ux         toot          tcl t UX tcl t
+                  er         bird          bcl b ER dcl d
+                  ax         about         AX bcl b aw tcl t
+                  ix         debit         dcl d eh bcl b IX tcl t
+                  axr        butter        bcl b ah dx AXR
+                  ax-h       suspect       s AX-H s pcl p eh kcl k tcl t
+
+
+
+  Others:
+                SYMBOL    DESCRIPTION
+                ------    -----------
+                  pau     pause
+                  epi     epenthetic silence
+                  h#      begin/end marker (non-speech events)
+                  1       primary stress marker
+                  2       secondary stress marker

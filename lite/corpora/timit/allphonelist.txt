@@ -1,0 +1,160 @@
+dr1-mcpm0/sa1		h# sh iy hv ae dcl jh ax-h dcl d aa r kcl k s ux tcl ax-h n gcl g r iy s ix w aa sh w ao dx axr ao l y ih axr h# 
+dr1-mcpm0/sa2		h# d ow n q ae s epi m iy tcl t ix kcl k eh r iy ix n q oy l iy r ae gcl g l ay kcl k dh ae q h# 
+dr1-mcpm0/sx114		h# dh ax-h kcl k aa r tcl t ux n f iy tcl ch ix z q ih m ah s kcl k r ae tcl ax nx ax tcl t ae dcl p ow l h# 
+dr1-mcpm0/sx294		h# sh ix dcl jh axr ae s bcl b ix kcl k eh pcl t en s epi m ao l z ux z h# 
+dr1-mcpm0/sx24		h# ao l dh ow q ao l w ey z ax l ow n w iy s ax v ay v h# 
+dr1-mcpm0/sx204		h# iy v ih n q ay ow kcl k ey zh l ix gcl g eh tcl t dh m ah n d ey bcl b l ux z h# 
+dr1-mcpm0/sx384		h# p l iy sh ao q en dh ix s kcl k er tcl f ix dcl jh oy s h# 
+dr1-mcpm0/si564		h# w ay ng gcl g l ae s hh iy l z pau ah tcl t ax-h bcl b iy f aw n ih m bcl b ow th hh ay pau ix n s eh m ay hh ay tcl s h# 
+dr1-mcpm0/si1194	h# w ow bcl b iy tcl t ay dcl dh iy ix n tcl t ix v y uw iy pau hh ix f hh iy ae n s ix dcl d v ey gcl g l iy h# 
+dr1-mcpm0/si1824	h# p aa z ax-h v r iy z ah l tcl s tcl t aa r tcl pau w ax nx ix tcl g ow z tcl t ao axr dcl z dh ix hh ae n y ix y ux z tcl t ix m ey kcl k y er m aa kcl k h# 
+dr1-fvmh0/sa1		h# sh iy hv ae dcl y ix dcl d aa kcl s ux tcl en gcl g r iy s iy w aa sh epi w aa dx ax q ao l y ih ax h# 
+dr1-fvmh0/sa2		h# d ow nx ae s epi m iy dx ix kcl k eh r iy ix n oy l iy r ae gcl l ay kcl dh ae tcl h# 
+dr1-fvmh0/sx386		h# w ih tcl ch tcl ch er ch z ix dh ix s m ih s epi w er sh ix pcl p ih n h# 
+dr1-fvmh0/sx116		h# k l ae s pcl p dh ax s kcl k r ux ix nx y ax l eh f tcl t hh ae n dcl d h# 
+dr1-fvmh0/sx296		h# dh ix tcl t ux aa dx ix s ix kcl s sh ey n zh ao dx ix gcl g r ae f s h# 
+dr1-fvmh0/sx26		h# m ow s y ah ng r ay z er l iy eh v r iy m ao en h# 
+dr1-fvmh0/sx206		h# w ax n pcl p iy l iy ng ih nx ao r ix n jh ix dx ix z hh aa dcl n aa tcl t ax-h s pcl p r ey dcl jh ux s h# 
+dr1-fvmh0/si836		h# n ow m eh n y ix f ae kcl sh er ax hv z tcl t ey kcl k ix nx iy ix n ih sh ax-h tcl t ih v ix n pcl p oy n tcl t iy aw tcl dh ix kcl k ao s tcl ix n v ao l v dcl d h# 
+dr1-fvmh0/si1466	h# q ix n s ih m pcl p el ih tcl t er m z ih dx ax m aw n s tcl t ix pcl p oy n tcl t iy ng dh ax pcl p l ae tcl f ao m ax n ax pcl p r aa pcl p ax dcl d ix r eh kcl sh ix n h# 
+dr1-fvmh0/si2096	h# r ae nx ix w ey ix nx ax bcl b l ae kcl n ay q w ix th ax l ao f el w eh dx ix dcl m ae n h# 
+dr2-marc0/sa1		h# sh iy hv eh dcl d y er dcl d aa r kcl k s ux q pau en gcl g r iy s iy w aa sh epi w ao dx er ao l y ih axr h# 
+dr2-marc0/sa2		h# d ow nx ae s epi m ih dx ix kcl k eh r iy ix n oy l iy r ae gcl l ay kcl dh ae tcl h# 
+dr2-marc0/sx108		h# hh ih s kcl k ae l pcl p ax z bcl b l ih s tcl t axr dcl f ax-h tcl t ix dx ey z hh aa tcl s ah n h# 
+dr2-marc0/sx288		h# b r ah sh f ay axr z axr kcl k aa m ix n ix n dh ix dcl d r ay q ah n axr bcl b r ah sh ax v n ax v aa dx ax h# 
+dr2-marc0/sx18		h# q aa l ax m ow nx iy hh aa r m z ix dcl d ix v ao r s epi m ae n z epi w eh l th h# 
+dr2-marc0/sx198		h# n ao r w iy dcl jh ix n s epi w eh dx er z axr m ey dx ax v l ae m z epi w uh l h# 
+dr2-marc0/sx378		h# q ay dcl jh eh s ao dcl jh ix m n ih r dh ix n ux q aa r kcl k ix ax l aa dcl jh ax-h kcl k el m y ux z iy ix m h# 
+dr2-marc0/si558		h# q ix z axr r ih l ae kcl k s tcl ow m ae q m ax s f ih r iy n ah f tcl t ux hh eh l pcl p er aw tcl g r ow dh iy z tcl t r ey tcl s h# 
+dr2-marc0/si1188	h# m ey bcl b iy dh ey w el tcl t ey kcl k ah s h# 
+dr2-marc0/si1818	h# f y ux m ih ng hh eh l pcl p l ax s hh iy w aa tcl ch dh ax m pcl p ae s em h# 
+dr2-faem0/sa1		h# sh iy hv eh dcl jh axr dcl d aa r kcl k s ux q ix n gcl g r iy s iy w ao sh epi w ao dx er q ao l y ih er h# 
+dr2-faem0/sa2		h# d ow nx ae s kcl m iy tcl t ix kcl k ih r iy ix n q oy l iy r ae gcl g l ay kcl k dh ae tcl t h# 
+dr2-faem0/sx312		h# dh ow z ae n s axr z w el bcl b iy s tcl t r ey q f ao w axr dx ix f y ux th iy ng kcl k dh ix m th r uw kcl k eh r f el iy f er s tcl t h# 
+dr2-faem0/sx42		h# b ih bcl b l ih kcl k el s kcl k aa l er z pau q aa r gcl g y ux hv ih s tcl t r iy h# 
+dr2-faem0/sx222		h# y ux ao l w ix z kcl k ax m ah pcl p w ix th pcl p ae th ax l aa dcl jh ix kcl k el ix gcl g z ae m pcl p el s h# 
+dr2-faem0/sx402		h# w ih l s er v r uw bcl b aa r bcl p ay ae f tcl t axr r ey tcl ch el z tcl t ao kcl k h# 
+dr2-faem0/sx132		h# p ax bcl b l ih s ix dx iy eh n ow dx axr r ay ix dx iy gcl g ow hv ae n dcl d ix n hv ae n dcl d h# 
+dr2-faem0/si762		h# f ih l s epi m ao l hv ow l q ix n bcl b ow l w ih th kcl k l ey h# 
+dr2-faem0/si1392	h# q ax s ux m f ao r ix gcl z ae m pcl p uh l q ax s ix tcl ch uw ey sh en w eh axr f aa r m hv eh z ax pcl p ae kcl k iy ng sh eh dcl d pau q ae n dcl d f iy l dcl s h# 
+dr2-faem0/si2022	h# w ah dx aw q f ix tcl d uh sh iy dcl d r ay v f ao h# 
+dr3-madc0/sa1		h# sh iy hv eh dcl d y er dcl d aa r kcl s ux tcl t ih n gcl g r iy s iy w ao sh epi w ao dx er q ao l y ih er h# 
+dr3-madc0/sa2		h# d ow n q ae s kcl m iy tcl t ix kcl k ih r iy ix n q oy l ih r ae gcl g l ay kcl dh ae q h# 
+dr3-madc0/sx287		h# q ix n dh ax l ao ng r ah n pau q ix pcl p ey z tcl t ix bcl b ay kcl k w aa l ix dx iy kcl k l ow dh iy ng h# 
+dr3-madc0/sx17		h# k aa r l ih v s ih nx ah l ay v l ix hv ow m h# 
+dr3-madc0/sx197		h# d r ao iy tcl ch gcl g r ae f ax n ix n ux ae kcl s ix s h# 
+dr3-madc0/sx377		h# sh iy ao ix z dcl jh y ow kcl k s ax-h bcl b aw tcl t ux m ah tcl ch gcl g aa r l ih kcl ih n hv ih z f ux dcl h# 
+dr3-madc0/sx107		h# b er th dcl dh ey pcl p aa r dx iy z hv ae v kcl k ah pcl k ey kcl k s ix nx ay s kcl k r iy m h# 
+dr3-madc0/si737		h# hh ae v ey tcl t eh s tcl t r ah nx ao n dh ax f ae m l iy f er s tcl t pau t ux bcl b iy sh er tcl t ay m iy nx ih n s iy z n iy nx q aa r ay q h# 
+dr3-madc0/si1367	h# dh ih bcl b ae dx er iy m iy dx iy ix n gcl g r ey dx iy kcl k w ix v ax l ix n tcl pau w ix z y ux z dcl d ih n dcl d ae dx eh n ae l ax s ix s ix n ih s tcl t ah dx iy h# 
+dr3-madc0/si1997	h# l ay kcl ih z ih f q ih w axr bcl b ih l tcl q ax v bcl b uh kcl s h# 
+dr3-falk0/sa1		h# sh iy hv eh dcl d y er dcl d aa r kcl k s ux tcl q ix n gcl g r iy z iy w ao sh epi w ao dx er q ao l y ih er h# 
+dr3-falk0/sa2		h# d ow n q ae s kcl m iy tcl t ix kcl k eh r iy ix n q oy l iy r ae gcl g l ay kcl dh ae tcl t h# 
+dr3-falk0/sx6		h# b r ay tcl s ah n sh ay n sh ih m er z ao n dh iy y ow sh en h# 
+dr3-falk0/sx186		h# w uh dcl d ih tcl t aa m bcl b oy q ao f tcl t ix n pcl p l ey aw tcl d ao er z h# 
+dr3-falk0/sx366		h# w ix y ux pcl p l iy z kcl k ix n f er m gcl g ah v ax m ix n tcl p aa l ax s iy r ix gcl g aa r dx iy ng w ey s tcl t r iy m uw v el h# 
+dr3-falk0/sx96		h# m ae s kcl k axr r ey dcl p aa r dx iy z tcl t ae kcl s epi w ah n z ix m ae dcl jh ix n ey sh ix n h# 
+dr3-falk0/sx276		h# jh aa n z bcl b r ah dh er r iy pcl p ey nx ix dcl dh ix gcl g axr aa dcl jh dcl d ao er h# 
+dr3-falk0/si456		h# t ux q ah dh er kcl k ey s ix z q ao l s ow w er q ah n dcl d er ix dcl v ay z m ix n tcl t h# 
+dr3-falk0/si1086	h# pau dh eh n dh ix kcl k ao r iy aa gcl g axr f er m ah s tcl t q aa r bcl b ix tcl t r ey tcl t h# 
+dr3-falk0/si658		h# dh ix s tcl t r ey tcl l ay n w ix dcl s ih m b ax l ay z ix tcl s y ux n iy kcl n eh s pau dh ix s er kcl k el ax v dcl jh y ux nx ax v er s ae l ax tcl t iy h# 
+dr4-maeb0/sa1		h# sh iy hv eh dcl jh axr dcl d aa r kcl k s ux dx ix ng gcl g r iy s ix w ao sh epi w ao dx axr ao l y ih axr h# 
+dr4-maeb0/sa2		h# d ow n ae s kcl m ih tcl t ux kcl k eh r iy eh n ow l iy r ae gcl g l ay kcl dh ey eh tcl t h# 
+dr4-maeb0/sx90		h# dh ix th ih ng kcl k er z ax-h f ey m ax s kcl k ah l pcl ch axr h# 
+dr4-maeb0/sx270		h# q aa r hv aa l eh dcl d ey ey pcl p r ix n z ax v ey l ax bcl b el tcl t uw ah s h# 
+dr4-maeb0/sx450		h# r oy ih gcl n ao r dcl dh ix s pcl p er iy ih s dcl d ey dx ix pcl p oy s ix n dcl d r ao ix ng dh ix gcl g r ae f h# 
+dr4-maeb0/sx180		h# ao l m ow s tcl t ao l kcl k ao l ih dcl jh ix z aa r n ae kcl k ow eh dcl jh ax-h kcl k ey sh epi n el h# 
+dr4-maeb0/sx360		h# q ay q ah s ux m ao r sh tcl ch axr w el dcl d eh m ix dcl jh epi dh ih sh ih pcl s hh ah l h# 
+dr4-maeb0/si990		h# q ae n dcl dh iy z hv aa r dx iy tcl t r ae l axr z aa r n aa dx ah n ax pcl p r iy sh iy ey dx ix dcl t ax-h dcl d ey h# 
+dr4-maeb0/si1411	h# r ix z aa l v dh eh tcl dh iy ae nx ix s l ey v r iy s ih nx ix m ah n ix z bcl b iy kcl k ah m ix ng r aa pcl p f axr r eh z ax l ux dx ae kcl sh en h# 
+dr4-maeb0/si2250	h# q ao l y ow w ih sh f el th ih ng kcl k ix ng w ow n tcl ch ey n dcl jh dh ey eh tcl t h# 
+dr4-falr0/sa1		h# sh iy hv eh dcl jh axr dcl d aa r kcl k s ux tcl t q ix ng gcl g r iy s iy w aa r sh epi w aa dx axr q ao l y ih er h# 
+dr4-falr0/sa2		h# d ow nx ae s kcl k m iy tcl t ix kcl k ih r iy ix n q oy l iy r ae gcl g l ay kcl dh ae tcl h# 
+dr4-falr0/sx245		h# d uh z hh ih n d ux q ih dx iy aa l ix dcl jh iy q aa nx axr kcl k aw z h# 
+dr4-falr0/sx425		h# m uw v iy z n eh v axr hv ae v ix n ah f v ih l ax n s h# 
+dr4-falr0/sx155		h# iy w ao dx axr kcl k ix n tcl t ey n dcl t ux m ah tcl ch kcl k l ao r iy n q ix n s tcl t ah ng hv ix z ay z h# 
+dr4-falr0/sx335		h# g ah s ao pcl p ay n t r iy z ix n r eh dcl w uh dcl z q ao n hv ix z epi w ao kcl k th r ux s ix kcl k oy ix n ae sh en el f ao axr s tcl t h# 
+dr4-falr0/sx65		h# ch ae l ix n jh iy tcl ch dcl jh uh nx axr el z ix n tcl t eh l ix dcl jh ix n tcl t s h# 
+dr4-falr0/si695		h# dh iy n y ux bcl b axr th ih z ix m iy dx iy ix q eh n ih n s tcl t ix n tcl t ey n iy ix s h# 
+dr4-falr0/si1325	h# k w ay dx ao f ax n hv ah n iy bcl b iy z f ao r m ax m ix dcl jh uh r ix dx iy aa n dh ax w ih l ow kcl k ae kcl k ix n s h# 
+dr4-falr0/si1955	h# l ay kcl k iy n ah f w ax l ao l bcl b iy ah pcl p ao n tcl t aa pcl p ay s ah n dcl d aw n h# 
+dr5-mbgt0/sa1		h# sh iy hv ae dcl jh er dcl d aa r kcl k s ux tcl t ix ng gcl g r iy s iy w ao sh epi w ah dx axr q ao l y ih axr h# 
+dr5-mbgt0/sa2		h# d ow nx ae s kcl m iy dx ix kcl k ih r iy ix n q oy l iy r ae gcl l ay kcl dh ae tcl h# 
+dr5-mbgt0/sx261		h# d ux y ux hv ae v dh ix y eh l ow q oy n m ih n tcl r eh dx iy h# 
+dr5-mbgt0/sx441		h# d ow n q l uh kcl k f axr gcl g r ux pcl v ae y ix bcl b el s pau ix n ix bcl b ae ng kcl v ao l tcl h# 
+dr5-mbgt0/sx171		h# dh ax dcl d ay gcl n ow s ix s epi w ax z dcl d ax-h s kcl k er ix dcl jh ix ng pau hh aw eh v axr pau hh iy w ax z epi n aa q ow v axr l iy w er iy dcl h# 
+dr5-mbgt0/sx351		h# dh ix n ux s axr bcl b er bcl axr n ay tcl s epi w er kcl t hh aa r dcl ao n r iy f er r ix sh ih ng dh eh r q ow l dx axr hh ow m h# 
+dr5-mbgt0/sx81		h# ih tcl s ih m pcl p aa s bcl b el tcl t ax dcl d iy l w ax dh bcl b y er aa kcl k axr s iy h# 
+dr5-mbgt0/si711		h# n ux kcl k l iy axr r aa kcl k ix tcl s kcl k ih n dcl d ix s tcl t r oy q eh r f iy l dcl z epi w ix dh iy s h# 
+dr5-mbgt0/si1341	h# m aa r kcl k s epi m ix n sh ih pcl p ih gcl g z ae m pcl p el h# 
+dr5-mbgt0/si1841	h# sh ax-h f aw n hv er s eh l f q ey bcl el tcl t ax s ih ng ih n iy r ow l pau eh nx ih nx iy s ao ng w ix tcl ch tcl t r ah kcl k axr f ae n tcl s iy h# 
+dr5-ftlg0/sa1		h# sh iy hv ae dcl y er dcl d aa r kcl k s ux tcl q ih n gcl g r iy z iy w ao sh epi w ao dx er q ao l y ih er h# 
+dr5-ftlg0/sa2		h# d ow n ae s epi m iy tcl t ux kcl k eh r iy ix n q oy l iy r ae gcl g l ay kcl dh ae tcl h# 
+dr5-ftlg0/sx33		h# k ow kcl k ix n ah tcl k r iy m pcl p ay m ey kcl k s ix n ay s dcl d ix z er tcl h# 
+dr5-ftlg0/sx213		h# dh ix n ux z ey dcl jh ix n s iy hv ay er dx ey gcl g r ey tcl jh er nx ax l ix s tcl h# 
+dr5-ftlg0/sx393		h# sh iy y ux z ix z bcl b ow th n ey m z q ih n tcl t axr tcl ch ey n dcl jh ix bcl b l iy h# 
+dr5-ftlg0/sx123		h# ey s kcl k r ux y axr ay v axr q ih z m ey dcl f axr m v aa dcl d kcl k ah q ix n ao r ix n dcl jh ux s h# 
+dr5-ftlg0/sx303		h# dh ah bcl b l ux dcl jh ey f l ux ow v axr dh ax hv ay bcl b ih l dcl ix ng h# 
+dr5-ftlg0/si483		h# dh ih s tcl t ae f dcl d ix z er z ah l aa tcl q ah v kcl k r eh dx ih q w er kcl k iy ng dcl d aw n hv ih er q ah n dcl d er r ih l q aa bcl s tcl t ix kcl k el z h# 
+dr5-ftlg0/si840		h# k ax m pcl p l eh kcl k s ix tcl t iy ah v kcl k em pcl p l iy tcl m aa r kcl k ix dx iy ng pcl p l ae nx ix ng h# 
+dr5-ftlg0/si1743	h# hh iy w eh nx aa n tcl t ux pcl p er s en el bcl b iy kcl k w eh s pau ah l ih s tcl t ah v n ey m z l aa r dcl jh l iy ah n ow n tcl t ix hv ih m h# 
+dr6-mbma1/sa1		h# sh iy hv ae dcl d y axr dcl d aa kcl k s ux tcl q ix n gcl g r iy s ix w ao sh epi w ao dx ax q ao l y ih ax h# 
+dr6-mbma1/sa2		h# d ow nx ae s kcl m iy tcl t ix kcl k ae r iy ix nx oy l iy r ae gcl g l ay kcl dh ae tcl h# 
+dr6-mbma1/sx54		h# dh ix iy s tcl s ix n kcl k ow s tcl s ix z ix pcl p l ey s f ax pcl p y ao pcl p l eh zh axr ix nx ix kcl s ay tcl m en tcl h# 
+dr6-mbma1/sx234		h# dh ix pcl p ey pcl p ax bcl b oy bcl b ao tcl t ux ae pcl p el z ix n dcl th r iy ay s ax-h s h# 
+dr6-mbma1/sx414		h# q ay r ih sh y ah ng s tcl t ih z pau iy tcl f r eh sh kcl k ih pcl p ix z f ax bcl b r eh kcl k f ax-h s tcl t h# 
+dr6-mbma1/sx144		h# dh ax w ih l ih w iy w uh m ih n hh pau w ao r ah m ah s kcl k r ae tcl k ow tcl h# 
+dr6-mbma1/sx324		h# dh ax l ow kcl k el dcl d r ah gcl s tcl t ow w ix s tcl ch ao zh w ix tcl q iy l iy gcl ax l iy dcl d ix s pcl p eh n s ix n tcl t r ae ng kcl k w ax l ay z ax-h s h# 
+dr6-mbma1/si954		h# f er s tcl dh ey w ao nx ix dcl t ix kcl k l ae axr f ay eh tcl t ae n tcl t ax l ay z ix ng bcl b ix z aa r q ix n ih gcl g m ax h# 
+dr6-mbma1/si2207	h# q ae z w iy ey tcl w iy tcl t ao kcl t h# 
+dr6-mbma1/si2214	h# q eh n eh v ih sh ow m ay f ey s ax m ay tcl t r ah kcl k axr aw n hv ih axr ih gcl g eh n h# 
+dr6-fapb0/sa1		h# sh ix hv ae dcl jh uh dcl d aa r kcl s ux q ix n gcl g r iy s ix w ao sh epi w ao dx axr q ao l y ih axr h# 
+dr6-fapb0/sa2		h# d ow n q ae s kcl m ix tcl t ax-h kcl k ae r iy ix n q oy l ix r ae gcl ix l ay kcl dh ae q h# 
+dr6-fapb0/sx163		h# dh ey r iy m ey n dcl d epi l ay f l ah ng epi f r eh n dcl z q ae n kcl k em pcl p ae n y ix n tcl s h# 
+dr6-fapb0/sx343		h# dh ix f r ay tcl en tcl ch ay l dcl w ix z dcl jh eh n tcl l iy s ah bcl d ux dcl d bcl b ay hv ix z bcl b ih gcl b r ah dh axr h# 
+dr6-fapb0/sx73		h# k l ih f s dcl d ih s pcl p l ey epi w ah s epi m ix s pcl p l ey s tcl t q aa n dh ix s kcl k r iy n h# 
+dr6-fapb0/sx253		h# b ay q iy dcl d iy ng y ow gcl g er dcl pau y ux m ey l ih v l ao ng gcl g axr h# 
+dr6-fapb0/sx433		h# dh iy q ow v ax w ey tcl ch aa r m ax kcl k ux dcl d s epi l ih pcl p oy z ih n q ih n tcl t uw q eh n iy w ah n z tcl t iy h# 
+dr6-fapb0/si1063	h# n ow kcl k w eh sh tcl ch ix n v r ah f el z hh ih m q ow ax kcl k ao s ix s hv ih m tcl t ux hv eh z ix tcl t ey tcl h# 
+dr6-fapb0/si1693	h# ih tcl w ix z q ao kcl k w ax dcl pau v eh r iy q ao kcl k w axr dcl h# 
+dr6-fapb0/si2323	h# w eh w iy l eh f epi w aa epi sh epi eng tcl t ix n hv ih s ah n tcl t ae dcl d epi w ih z q ih l q ae n m ix s ix z l ih ng kcl k eh n pau hh ix s tcl t eh r axr kcl k el h# 
+dr7-madd0/sa1		h# sh iy hv ae dcl y er dcl d aa r kcl k s ux tcl t q ih n gcl g r iy s iy w ao sh w ao dx er q ao l y ih er h# 
+dr7-madd0/sa2		h# d ow n ae s kcl m iy dx ix kcl k eh r iy ix n q oy l iy r ae gcl g l ay kcl dh ae tcl t h# 
+dr7-madd0/sx88		h# f l ay ix ng s tcl t ae n dcl b ay kcl k ix n bcl b iy pcl p r ae kcl t ax-h kcl k el q ix f y ux w aa n tcl t ux s ey v m ah n iy h# 
+dr7-madd0/sx268		h# dh ix dcl jh ao q aa pcl p axr r ey tcl s bcl b ay y ux z iy ng q ae n tcl t ae gcl ix n ih s tcl t ih kcl m ah s el z h# 
+dr7-madd0/sx448		h# s f ih r ix kcl k el gcl g ih f tcl s pau aa r dcl d ih f ix kcl k el tcl t ux r ae pcl p h# 
+dr7-madd0/sx178		h# sh iy q ix ng kcl k er ix dcl jh dcl hh er tcl ch ih l dcl d axr n tcl t ux m ey kcl dh eh r q ow n hv aa l ax w iy n kcl k aa s tcl t ux m z h# 
+dr7-madd0/sx358		h# jh ao er dcl jh s eh l dcl d ax m w aa tcl ch ix z dcl d ey tcl t ay m uw v iy z h# 
+dr7-madd0/si538		h# k aw n iy ix f ih sh el z hv ae v kcl k ow ao pcl p er ey dx ix dcl k en s ih s tcl t en q l iy h# 
+dr7-madd0/si1295	h# hh iy m ey gcl g ih dx ix tcl t ae kcl k s r iy f ah n dcl d h# 
+dr7-madd0/si1798	h# w ih l bcl b ow th bcl b iy bcl b l ow ih ng tcl t aw n tcl t em ao r ow s ow w ix w ow n q b iy m uw v iy ng ih n ao n y ux h# 
+dr7-fblv0/sa1		h# sh iy hv eh dcl jh er dcl d aa r kcl k s ux tcl t q ix ng gcl g r iy s ix w aa r sh epi w aa dx axr q aa l y ih axr h# 
+dr7-fblv0/sa2		h# d ow n ae s kcl m iy tcl t ux kcl k eh r iy q eh n oy ax l iy r ae gcl g l ay kcl k dh ae q h# 
+dr7-fblv0/sx158		h# dh ih dcl d r ah ng kcl k axr dcl d ih z ah s ow sh ix l q aw tcl k ae s tcl t h# 
+dr7-fblv0/sx338		h# dh ax dcl d aa r kcl k pau m er kcl k iy l ix gcl g ux n w aw n dcl d ah r aw n dcl d f ao r m ay l epi s h# 
+dr7-fblv0/sx68		h# q ah pcl g r ey dcl jh axr s tcl t ey dcl d ix s tcl t ux r ix f l eh kcl ch ih r w eh l th h# 
+dr7-fblv0/sx248		h# r iy dx iy ng ih n pcl p ao r l ay tcl t gcl g ih v zh ux q ay s tcl t r ey n h# 
+dr7-fblv0/sx428		h# q ey kcl k r ae bcl ch ae l ax n dcl jh dcl d epi m iy pau b eh dx ix kcl k w ih kcl k s tcl t ae bcl b v ae ng kcl k w ix sh tcl t hh ih m h# 
+dr7-fblv0/si1058	h# r eh dcl d iy n ih s eh kcl s axr s ay z ix z q aa r aa l m uh s tcl t kcl k ix n tcl t ix n y ux ix s h# 
+dr7-fblv0/si1688	h# s ah m epi th ix ng eh l s dcl z ax-h s tcl t r ae kcl t ih dcl d hv ih m pau hh y eh tcl dh ix w ix z epi n ow s aw n dcl d q ow n l iy tcl t ux m l ay kcl k s ay l en tcl t s h# 
+dr7-fblv0/si2318	h# d ow n tcl dh ey s tcl t ih l kcl k aa l y ux dcl jh ux n y er q eh z epi dh ow y er bcl b ah tcl t ih n y ih r z ow l dcl d h# 
+dr8-mbcg0/sa1		h# sh iy hv ae dcl jh er dcl d aa r kcl k s ux q ix n gcl g r iy s iy w ao sh epi w ao dx axr ao l y ih axr h# 
+dr8-mbcg0/sa2		h# d ow nx ae s epi m iy z ix kcl k ih r iy ix n q oy l iy r ae gcl g l ay kcl k dh ae tcl hh h# 
+dr8-mbcg0/sx57		h# dh ax pcl p r aw l axr w ao r ix s kcl k iy m ae s f ao r dcl d ix z gcl g ay z h# 
+dr8-mbcg0/sx237		h# dh ix kcl k ao iy er w ah z ax dcl d ax w ao r f h# 
+dr8-mbcg0/sx417		h# v ae l ih l aa dcl jh y ih l iy s eh l ax bcl b r ey tcl s dh ax f er s kcl k ae f bcl b ao r n h# 
+dr8-mbcg0/sx147		h# k r eh kcl t q eh kcl k s ix kcl k y ux sh en ax v m ay ix n s tcl t r ah kcl sh en z ix z kcl k r ux sh el h# 
+dr8-mbcg0/sx327		h# q ae r iy s iy v dcl d ix dcl jh oy n tcl t ix pcl p oy n m ax n tcl pau ih n dh ix bcl b ay ax l ax dcl jh iy q eh n dh iy q ih n dcl jh ix n ih r ix n dcl d ix pcl p aa r q m en tcl t s h# 
+dr8-mbcg0/si957		h# b ax dx iy w ix z v eh r iy m ah sh l ay kcl k ix z ax s ow sh ih tcl s epi ih nx ix z hv ey tcl t r ix dcl q ax v kcl k ae m pcl r uw tcl t iy n h# 
+dr8-mbcg0/si486		h# ih w ix z tcl t ay m n ix gcl g ow ah pcl m ay s eh l f h# 
+dr8-mbcg0/si2217	h# hh iy dcl n aa dx ow n l iy tcl t ow l dcl m iy s ow pau hh iy pcl p r uw v dcl d ih tcl h# 
+dr8-fbcg1/sa1		h# sh iy hv ae dcl d y axr dcl d aa r kcl k s ux tcl q ix ng gcl g r iy s iy w aa sh epi w aa dx axr q ao l y ih axr h# 
+dr8-fbcg1/sa2		h# d ow n q ae s epi m iy tcl t ux kcl k eh r iy q eh n q oy l iy r ae gcl g l ay kcl dh ae q h# 
+dr8-fbcg1/sx82		h# g uh dcl s er v ih sh ih dcl b iy r iy w ao r dx ih dcl b ay bcl b ih gcl t ih pcl s h# 
+dr8-fbcg1/sx262		h# k ae n dh iy ey dcl jh ih n s iy q ow v axr th r ow q ey l iy ix n f ao r s ih z h# 
+dr8-fbcg1/sx442		h# s ix bcl b er v ih n hv aw s epi w ay z ao f ix n s ah f axr f r ax m dh ix gcl g ae bcl hv ae bcl b ih tcl h# 
+dr8-fbcg1/sx172		h# dh ax tcl t r ae ah m f ih n q w ao r iy er q ix gcl z ih v ix dx ih dcl pau n ay iy v hh ih r ow ix z em h# 
+dr8-fbcg1/sx352		h# ix kcl k ao r dx iy n tcl t ax m ay ix n tcl t er v axr tcl t ey sh en ah dh ax pcl p r aa bcl b l ax m pau t ux l ay n z m ah s bcl b iy pcl p er pcl p ix n dcl d ih kcl k y ix l axr h# 
+dr8-fbcg1/si982		h# t eh q n ih s kcl k ih dcl b iy ah v oy dx ih dcl b ay pcl p ao r ix ng w ao r m tcl t er pcl p ix n tcl t ay n q ow v er ax w ux n dcl d h# 
+dr8-fbcg1/si1612	h# dh ey v n eh v axr m eh tcl pau y ix n ow h# 
+dr8-fbcg1/si2242	h# t w eh n tcl t iy tcl t ux ao r tcl t w eh n tcl t iy th r iy h# 
