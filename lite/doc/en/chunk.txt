@@ -452,8 +452,12 @@ and ``ChinkRule``.
 The Chink Rule
 --------------
       
-A *chink* is a sequence of tokens that is not included in a chunk. In
-the following example, ``sat/VBD on/IN`` is a chink::
+The word *chink* initially meant a sequence of stopwords,
+according to a 1975 paper by Ross and Tukey (cited by Abney in the
+recommended reading for this chapter).
+Following Abney, we define a *chink* is a sequence
+of tokens that is not included in a chunk.
+In the following example, ``sat/VBD on/IN`` is a chink::
 
   [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ]
 
@@ -562,7 +566,7 @@ Note that we would get a different result if we used a ``ChinkRule``
 with the same tag pattern (instead of an ``UnChunkRule``), since
 chink rules can remove pieces of a chunk:
       
-  >>> unchink_rule = parse.UnChunkRule('<NN|DT>+',
+  >>> chink_rule = parse.ChinkRule('<NN|DT>+',
   ...                            'Chink sequences of NN and DT')
   >>> chunk_rule = parse.ChunkRule('<NN|DT|JJ>+',
   ...                        'Chunk sequences of NN, JJ, and DT')
@@ -577,10 +581,13 @@ chink rules can remove pieces of a chunk:
                  {<DT>  <JJ>  <NN>} <VBD>  <IN> {<DT>  <NN>}
   >>> print chunk_tree
   (S:
-    (NP: ('the', 'DT') ('little', 'JJ') ('cat', 'NN'))
+    ('the', 'DT')
+    (NP: ('little', 'JJ'))
+    ('cat', 'NN')
     ('sat', 'VBD')
     ('on', 'IN')
-    (NP: ('the', 'DT') ('mat', 'NN')))
+    ('the', 'DT')
+    ('mat', 'NN'))
 
 The Merge Rule
 --------------
@@ -895,7 +902,15 @@ chunked text.
 #. ``MergeRule`` can be used to merge two contiguous chunks.
 #. ``SplitRule`` can be used to split a single chunk into two smaller chunks.
 
-.. Further Reading
+---------------
+Further Reading
+---------------
+
+Abney, Steven (1996). Tagging and Partial Parsing.
+In: Ken Church, Steve Young, and Gerrit Bloothooft (eds.),
+*Corpus-Based Methods in Language and Speech.*
+Kluwer Academic Publishers, Dordrecht.
+``http://www.vinartus.net/spa/95a.pdf``
 
 ---------
 Exercises
