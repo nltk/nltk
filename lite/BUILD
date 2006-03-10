@@ -9,9 +9,10 @@ A. VERSION NUMBER
 
 1. cd nltk/lite
 2. Modify nltk_lite/__init__.py with the version number (2 places)
-3. Edit ../doc/webpage/install*.html with new version number
-4. Edit ../doc/webpage/index.html with new release announcement
-5. Commit all the above changes
+3. Edit doc/definitions.txt with new version number
+4. Edit ../doc/webpage/install*.html with new version number
+5. Edit ../doc/webpage/index.html with new release announcement
+6. Commit all the above changes
 
 
 B. BUILD

@@ -1,4 +1,4 @@
-.. |version| replace:: 0.6.2
+.. |version| replace:: 0.6.3
 .. |copyrightinfo| replace:: 2001-2006 University of Pennsylvania
 .. |license| replace:: Creative Commons Attribution-ShareAlike License
 
