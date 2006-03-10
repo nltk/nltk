@@ -18,6 +18,15 @@ Chunk Parsing
 Introduction
 ------------
 
+Chunk parsing is an efficient and robust approach to parsing natural
+language, and a popular alternative to the full parsing that we will
+see in later chapters.  Chunks are non-overlapping regions of text,
+usually consisting of a head word (such as a noun) and the adjacent
+modifiers and function words (such as adjectives and determiners).
+
+Chunking: Analogy with Tokenization and Tagging
+-----------------------------------------------
+
 Two of the most common operations in language processing are
 *segmentation* and *labelling*.  For example, tokenization *segments*
 a sequence of characters into tokens, while tagging *labels* each of
@@ -55,6 +64,9 @@ information extraction both need to identify and label extents
 of text, they typically require quite different definitions of those
 extents.
     
+Motivation
+----------
+
 There are two chief motivations for chunking: to locate information,
 or to ignore information.  In the former case, we may want to extract
 all noun phrases so that they can be indexed.  A text retrieval system
@@ -84,16 +96,12 @@ possible, as shown below::
 
   1. Parsing:
   [
+    [ G.K. Chesterton ],
     [
-      G.K. Chesterton ],
-    [
+      [ author ] of
       [
-        author ] of
-      [
-        [
-          The Man ] who was
-        [
-          Thursday ]
+        [ The Man ] who was
+        [ Thursday ]
       ]
     ]
   ]
@@ -104,12 +112,23 @@ possible, as shown below::
   [ The Man ] who was
   [ Thursday ]
 
+Another significant motivation for chunk parsing is its robustness and
+efficiency relative to so-called full parsing.  The latter approach is
+built around recursive phrase structure grammars, parsing strategies,
+and arbitrary-depth trees.  Full parsing has problems with robustness,
+given the difficulty in getting broad coverage and in resolving ambiguity.
+Full parsing is also relatively inefficient, being O(`n`:superscript:`3`),
+rather than O(n) as for chunk parsing.
+
 In this chapter we explore the representation of chunks, and show how
-chunks can be recognized using a *chunk parser*.  We describe a chunk
-parsing method based on regular expressions, then show how chunk
-parsers can be cascaded to create more deeply nested structures.
+chunks can be recognized using a chunk parser.  We describe a chunk
+parsing method based on regular expressions.
     
-----------------------------------
+-------------------------
+Accessing Chunked Corpora
+-------------------------
+
+
 Representing Chunks: Tags vs Trees
 ----------------------------------
 
@@ -136,15 +155,12 @@ latter method for its internal representation of chunks:
    Tree Representation of Chunk Structures
 
 A *chunk parser* finds contiguous, non-overlapping spans of related
-tokens and groups them together into *chunks*.  The following chunk
-represents a simple noun phrase: ``(NP: <the> <big> <dog>)``
-    
+tokens and groups them together into *chunks*.    
 The chunk parser combines these individual chunks together, along with
 the intervening tokens, to form a *chunk structure*.  A chunk
 structure is a two-level tree that spans the entire text, and
 contains both chunks and un-chunked tokens.  For example, the
-following chunk structure captures the sample noun phrases in a
-sentence:
+following chunk structure captures the noun phrases in a sentence:
 
 | (S: (NP: 'I')
 |     'saw'
@@ -152,10 +168,6 @@ sentence:
 |     'on'
 |     (NP: 'the' 'hill'))
 
-
---------------------
-Reading Chunked Text
---------------------
 
 Chunk parsers often operate on tagged texts, and use the tags to help
 make chunking decisions.  A common string representation for chunked
@@ -170,7 +182,7 @@ This can be parsed using ``tree.chunk()`` function as shown.
   (S: (NP: ('the', 'DT') ('little', 'JJ') ('cat', 'NN')) ('sat', 'VBD') ('on', 'IN') (NP: ('the', 'DT') ('mat', 'NN')))
     
 We usually want to read structured data from corpora, not strings.  In
-the remainder of this section we show how this is done for two popular
+the following sections we show how this is done for two popular
 chunked corpus formats, namely bracketed text and IOB-tagged data.
     
 Reading chunk structures from bracketed text
@@ -237,7 +249,7 @@ below::
 
 Each line consists of a word, its part-of-speech, the chunk category
 ``B`` (begin), ``I`` (inside) or ``O`` (outside), and the chunk type
-``NP``, ``VP`` or ``PP``.  The ``ConllTokenReader`` parses this
+``NP``, ``VP`` or ``PP``.  The CoNLL chunk reader ``parse.conll_chunk()`` parses this
 information into a chunk structure.  Moreover, it permits us to choose
 any subset of the three chunk types to use (by default it includes all
 three).  The example below produces only ``NP`` chunks:
@@ -278,25 +290,46 @@ three).  The example below produces only ``NP`` chunks:
       ('concern', 'NN'))
     ('.', '.'))
   
+We can load the CoNLL 2000 corpus using the CoNLL corpus reader
+``corpora.conll2000.chunked()``.
+
 This concludes our discussion of loading chunked data.  In the rest of
 this chapter we will see how chunked data can be created from
 tokenized text, chunked using a chunk parser, then evaluated against
 the so-called gold-standard data.
   
----------------------------------
+Exercises
+---------
+
+#. **IOB Tagging:**
+   A common file representation of chunks uses the tags ``BEGIN``,
+   ``INSIDE`` and ``OUTSIDE``.  Why are three tags necessary?  What
+   problem would be caused if we used ``INSIDE`` and ``OUTSIDE`` tags
+   exclusively?
+        
+#. **CoNLL 2000 Corpus:**
+   In this section we saw how chunked data could be read from the Treebank
+   corpus.  Write a similar program to access the first sentence of the
+   CoNLL 2000 corpus.  You will need to import the ``conll2000`` module
+   from the ``nltk_lite.corpora`` package.
+
+-------------
+Chunk Parsing
+-------------
+
 Chunking with Regular Expressions
 ---------------------------------
 
 Earlier we noted that chunking builds flat (or non-nested) structures.
 In practice, the extents of text to be chunked are identified using
 regular expressions over sequences of part-of-speech tags.  NLTK-Lite
-provides a regular expression chunk parser, ``RegexpChunkParser`` to
+provides a regular expression chunk parser, ``parse.RegexpChunk`` to
 define the kinds of chunk we are interested in, and then to chunk a
 tagged text.  This discussion presumes that readers are already
 familiar with regular expressions (please see the regular expression
 chapter for details).
     
-``RegexpChunkParser`` works by manipulating a *chunk structure*, which
+``RegexpChunk`` works by manipulating a *chunk structure*, which
 represents a particular chunking of the text.  The chunk parser begins
 with a structure in which no tokens are chunked.  Each
 regular-expression pattern (or *chunk rule*) is applied in turn,
@@ -326,7 +359,7 @@ introduces whitespace into the tag string to the left of the disjunction ``|``.)
 Now that we can define tag patterns, it is a straightforward matter to
 set up an NLTK-Lite chunk parser.  The simplest type of rule is
 ``ChunkRule``.  This chunks anything that matches a given tag pattern.
-The ``ChunkRule`` constructor takes a tag pattern and a description
+``ChunkRule`` takes a tag pattern and a description
 string.  Here is a rule which chunks sequences consisting of one or
 more words tagged as ``DT`` or ``NN`` (i.e. determiners and nouns).
     
@@ -338,7 +371,7 @@ follows:
 
   >>> chunkparser = parse.RegexpChunk([rule], chunk_node='NP', top_node='S')
 
-Note that the constructor has optional second and third arguments that
+Note that ``RegexpChunk`` has optional second and third arguments that
 specify the node labels for chunks and for the top-level node,
 respectively.  Now we can use this to chunk a tagged sentence, as
 illustrated by the complete program below.
@@ -374,7 +407,7 @@ then the first two nouns will be chunked:
   >>> parser.parse(nouns)
   (S: (NP: ('dog', 'NN') ('cat', 'NN')) ('mouse', 'NN'))
 
-------------------------
+
 Developing Chunk Parsers
 ------------------------
 
@@ -384,17 +417,15 @@ added.  In a later section we will describe an automatic evaluation
 process.  Here we show how to trace the execution of a chunk parser,
 to help the developer diagnose any problems.
 
-The ``parse.RegexpChunk`` constructor takes an optional ``trace``
-argument, which specifies whether debugging output should be shown
-during parsing.  This output shows the rules that are applied, and
-shows the chunking hypothesis at each stage of processing.  (Note that
-the ``parse`` method can also be given a trace value; this overrides
-the value given to the constructor.)  In the execution trace, chunks
-are indicated by braces.  In the following example, two chunking rules
-are applied to the input sentence.  The first rule finds all sequences
-of three tokens whose tags are ``DT``, ``JJ``, and ``NN``, and the
-second rule finds any sequence of tokens whose tags are either ``DT``
-or ``NN``.
+``RegexpChunk`` has an optional ``trace`` argument, which specifies
+whether debugging output should be shown during parsing.  This output
+shows the rules that are applied, and shows the chunking hypothesis at
+each stage of processing.  In the execution trace, chunks are
+indicated by braces.  In the following example, two chunking rules are
+applied to the input sentence.  The first rule finds all sequences of
+three tokens whose tags are ``DT``, ``JJ``, and ``NN``, and the second
+rule finds any sequence of tokens whose tags are either ``DT`` or
+``NN``.
       
   >>> sent = tag.string2tags("the/DT little/JJ cat/NN sat/VBD on/IN the/DT mat/NN")
   >>> rule1 = parse.ChunkRule('<DT><JJ><NN>', 'Chunk det+adj+noun')
@@ -439,6 +470,15 @@ will get a different result:
 Here, rule 2 ("chunk det+adj+noun") did not find any chunks, since all
 chunks that matched its tag pattern overlapped with chunks that were
 already in the hypothesis.
+
+
+Exercises
+---------
+
+#. **NP Chunker:**
+   Develop a simple noun phrase chunker for the CoNLL corpus using
+   ``ChunkRule`` and the regular-expression chunk parser ``RegexpChunk``.
+
 
 -------------------
 More Chunking Rules
@@ -489,7 +529,7 @@ following rule will chink any sequence of tokens whose tags are all
   >>> chink_rule = parse.ChinkRule('<VBD|IN>+',
   ...                        'Chink sequences of VBD and IN')
 
-Remember that ``RegexpChunkParser`` begins with a chunking hypothesis
+Remember that ``RegexpChunk`` begins with a chunking hypothesis
 where nothing is chunked.  So before we apply our chink rule, we'll
 apply another rule that puts the entire sentence in a single chunk:
 
@@ -517,7 +557,7 @@ Finally, we can combine these two rules to create a chunk parser:
 If a tag pattern matches at multiple overlapping locations, the first
 match takes precedence.
 
-.. Note: Cascading Rules: ``RegexpChunkParsers`` can use any number of
+.. Note: Cascading Rules: ``RegexpChunk`` can use any number of
    ``ChunkRules`` and ``ChinkRules``, in any order.  As was discussed
    above, ``ChunkRules`` only create chunks that do not partially overlap
    with chunks already in the chunking hypothesis.  Similarly,
@@ -922,12 +962,6 @@ Exercises
       from nltk_lite.parse import chunk
       chunk.demo()  # the chunk parser
 
-#. **IOB Tagging:**
-   A common file representation of chunks uses the tags ``BEGIN``,
-   ``INSIDE`` and ``OUTSIDE``.  Why are three tags necessary?  What
-   problem would be caused if we used ``INSIDE`` and ``OUTSIDE`` tags
-   exclusively?
-        
 #. **Predicate structure:**
    Develop an NP chunker which converts POS-tagged text into a list of
    tuples, where each tuple is a verb followed by its arguments.
@@ -936,10 +970,21 @@ Exercises
         
 #. **NP Chunker:**
    Develop a noun phrase chunker for the CoNLL corpus using the
-   regular-expression chunk parser ``RegexpChunkParser``.  Use any
+   regular-expression chunk parser ``RegexpChunk``.  Use any
    combination of rules.
         
    a. Evaluate your chunker on 100 sentences from a chunked corpus,
       and report the precision, recall and F-measure.
    b. Use the ``chunkscore.missed()`` and ``chunkscore.incorrect()``
       methods to identify the errors made by your chunker.  Discuss.
+   c. Compare the performance of your chunker to the baseline chunker
+      discussed in the evaluation section of this chapter.
+
+#. (Advanced) **Chunking by Tagging:**
+   Apply the n-gram and Brill tagging methods to IOB chunk tagging.
+   Instead of assigning POS tags to words, here we will assign IOB tags
+   to the POS tags.  E.g. if the tag ``DT`` (determiner) often occurs
+   at the start of a chunk, it will be tagged ``B`` (begin).  Evaluate
+   the performance of these chunking methods relative to the regular
+   expression chunking methods covered in this chapter.
+
