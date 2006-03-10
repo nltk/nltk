@@ -17,6 +17,9 @@ RST2HTML = rst2html.py
 RST2LATEX = rst2latex.py --output-encoding=utf-8 --output-encoding-error-handler "backslashreplace" --use-latex-docinfo --font-encoding=T1
 FILTER = sed 's/\[utf8\]/[utf8,utf8x]/'
 
+WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
+RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
+
 CSS_STYLESHEET_PATH = ../default.css
 LATEX_STYLESHEET_PATH = ../definitions.sty
 
@@ -54,3 +57,6 @@ clean_up:
 
 .txt.errs:
 	$(PYTHON) -c "import doctest; doctest.testfile('$<')" > $@
+
+rsync-en:
+	rsync $(RSYNC_OPTS) . $(WEB)/doc/en/
