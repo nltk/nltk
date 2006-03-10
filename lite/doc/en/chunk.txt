@@ -29,8 +29,10 @@ structures.  The result of such classification is usually stored by
 adding a label to the piece in question.  Now that we have mapped
 characters to tagged-tokens, we will carry on with segmentation and
 labelling at a higher level, as illustrated in the following diagram.
-This process is called *chunking*, and is also known as *chunk
-parsing*, *partial parsing*, or *light parsing*.
+The solid boxes show word-level segmentation and labelling, while the
+dashed boxes show a higher-level segmentation and labelling.  These
+larger pieces are called *chunks*, and the process of identifying them
+is called *chunking*, *chunk parsing*, *partial parsing*, or *light parsing*.
 
 .. figure:: ../images/chunk-segmentation.png
 
@@ -49,7 +51,7 @@ zero or more adjectives, followed by a noun.  Compare this with the
 way that tokenization and tagging both make use of regular
 expressions.  Third, chunking, like tokenization and tagging, is very
 application-specific.  For example, while linguistic analysis and
-information extraction both need to identify and label salient extents
+information extraction both need to identify and label extents
 of text, they typically require quite different definitions of those
 extents.
     
@@ -111,11 +113,11 @@ parsers can be cascaded to create more deeply nested structures.
 Representing Chunks: Tags vs Trees
 ----------------------------------
 
-As befitting its intermediate status between tagging and parsing,
-chunk structures can be represented using tags or trees.  The most
+As befits its intermediate status between tagging and parsing,
+chunk structures can be represented using either tags or trees.  The most
 widespread file representation uses so-called ``IOB`` tags.  In this
 scheme, each token is tagged with one of three special chunk tags,
-``BEGIN``, ``INSIDE`` or ``OUTSIDE``.  A token is tagged as ``BEGIN``
+``INSIDE``, ``OUTSIDE``, or ``BEGIN``.  A token is tagged as ``BEGIN``
 if it is at the beginning of a chunk, and contained within that chunk.
 Subsequent tokens within the chunk are tagged ``INSIDE``.  All other
 tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
@@ -124,10 +126,10 @@ tokens are tagged ``OUTSIDE``.  An example of this scheme is shown below:
 
    Tag Representation of Chunk Structures
 
-The other logical representation for chunk structures is to use trees,
+The other obvious representation for chunk structures is to use trees,
 as shown below.  These have the benefit that each chunk is a
-constituent that can be manipulated directly.  NLTK-Lite uses this for
-its internal representation of chunks:
+constituent that can be manipulated directly.  NLTK-Lite uses this
+latter method for its internal representation of chunks:
     
 .. figure:: ../images/chunk-treerep.png
 
@@ -138,8 +140,8 @@ tokens and groups them together into *chunks*.  The following chunk
 represents a simple noun phrase: ``(NP: <the> <big> <dog>)``
     
 The chunk parser combines these individual chunks together, along with
-the intervening tokens, to form a chunk structure.  A *chunk
-structure* is a two-level tree that spans the entire text, and
+the intervening tokens, to form a *chunk structure*.  A chunk
+structure is a two-level tree that spans the entire text, and
 contains both chunks and un-chunked tokens.  For example, the
 following chunk structure captures the sample noun phrases in a
 sentence:
