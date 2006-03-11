@@ -37,6 +37,11 @@ class Brill(TagI):
     are created by learning rules from a training corpus, using either
     L{BrillTrainer} or L{FastBrillTrainer}.
     """
+    
+    # TODO: move into __init__() when all marshalling classes will be moved into
+    # standard tree
+    _classname = "BrillTagger"
+
     def __init__(self, initial_tagger, rules):
         """
         @param initial_tagger: The initial tagger
