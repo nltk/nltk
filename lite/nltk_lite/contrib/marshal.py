@@ -13,11 +13,43 @@ import nltk_lite.tag as tag
 from nltk_lite.corpora import brown
 
 # marshal-classes
-class MarshalUnigram (tag.Unigram):
+
+class MarshalDefault (tag.Default):
+    _classname = "DefaultTagger"
+
     def marshal (self, filename):
         """
         Marshals (saves to a plain text file) the tagger model.
        
+        @param filename: Name of the file to which save the model (will
+                         be overwritten if it already exists).
+        @type filename: C{string}
+        """
+        handler = file(filename, "w")
+        handler.write(self._tag)
+        handler.close()
+
+    def unmarshal (self, filename):
+        """
+        Unmarshals (loads from a plain text file) the tagger model. For
+        safety, this operation is intended to be performed only on
+        newly created taggers (i.e., without any previous model).
+
+        @param filename: Name of the file from which the model will
+                         be read.
+        @type filename: C{string}
+        """
+        handler = file(filename, "r")
+        self._tag = handler.read()
+        handler.close()
+
+class MarshalUnigram (tag.Unigram):
+    _classname = "UnigramTagger"
+
+    def marshal (self, filename):
+        """
+        Marshals (saves to a plain text file) the tagger model.
+
         @param filename: Name of the file to which save the model (will
                          be overwritten if it already exists).
         @type filename: C{string}
@@ -50,6 +82,8 @@ class MarshalUnigram (tag.Unigram):
         handler.close()
 
 class MarshalAffix (tag.Affix):
+    _classname = "AffixTagger"
+
     def marshal (self, filename):
         """
         Marshals (saves to a plain text file) the tagger model.
@@ -94,6 +128,8 @@ class MarshalAffix (tag.Affix):
         handler.close()
 
 class MarshalNgram (tag.Ngram):
+    _classname = "NgramTagger"
+
     def marshal (self, filename):
         """
         Marshals (saves to a plain text file) the tagger model.
@@ -168,4 +204,3 @@ def demo ():
 
     tagger.unmarshal("ngram.test")
     print tagger._model
-
