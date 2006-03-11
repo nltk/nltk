@@ -9,12 +9,12 @@ All of us now need to be checking these thoroughly
 
 1. Introduction 75% [All]
 
-2. Programming 50% [All]
+2. Programming 50% [James, 2006-03-24]
 
 3. Tokenization 90% [All]
    + sentence tokenization (port MXTerminator?)
 
-4. Tagging 90% [All]
+4. Tagging 90% [Steven, 2006-03-10]
 
 ------------------------------------------
 
@@ -27,10 +27,10 @@ during April and May.
    + collocations?
    + simple extractive summarization?
 
-6. Parsing 75%
-   + feature-based grammars
+6. Chunk Parsing 75% [Steven, 2006-03-14]
 
-7. Chunk Parsing 75%
+7. Parsing 75%
+   + feature-based grammars
 
 8. Chart Parsing 75%
 
@@ -55,3 +55,4 @@ c) Text classification (Edward?)
    + question classification
 d) Finite state morphology (Steven?)
 e) Asian languages (Ewan?, Steven?)
+f) Language modelling
