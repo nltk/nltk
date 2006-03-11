@@ -68,7 +68,8 @@ from nltk_lite.probability import *
 from numarray import *
 import re
 
-_NINF = float('-inf')
+# _NINF = float('-inf')  # won't work on Windows
+_NINF = float('-1e300')
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
