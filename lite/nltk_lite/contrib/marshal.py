@@ -156,15 +156,16 @@ class MarshalNgram (tag.Ngram):
         
         handler.close()
 
-# load train corpus
-train_sents = list(islice(brown.tagged(), 500))
+def demo ():
+    # load train corpus
+    train_sents = list(islice(brown.tagged(), 500))
 
-# create taggers
-tagger = MarshalNgram(3)
+    # create taggers
+    tagger = MarshalNgram(3)
 
-#tagger.train(train_sents)
-#tagger.marshal("ngram.test")
+    #tagger.train(train_sents)
+    #tagger.marshal("ngram.test")
 
-tagger.unmarshal("ngram.test")
-print tagger._model
+    tagger.unmarshal("ngram.test")
+    print tagger._model
 
