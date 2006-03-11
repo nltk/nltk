@@ -714,7 +714,7 @@ The backoff-tagger may itself have a backoff tagger::
   >>> t0 = tag.Default('nn')
   >>> t1 = tag.Unigram(backoff=t0)
   >>> t2 = tag.Bigram(backoff=t1)
-  >>> t1.train(brown.tagged('a'))
+  >>> t1.train(brown.tagged('a'))    # section a: press-reportage
   >>> t2.train(brown.tagged('a'))
 
 .. Note:: We specify the backoff tagger when the tagger is
@@ -726,18 +726,19 @@ The backoff-tagger may itself have a backoff tagger::
    context in order to retain it, e.g. ``Bigram(cutoff=2, backoff=t1)``
    will discard contexts which have only been seen once or twice.
 
-Now we can test the taggers::
+As before we test the taggers against unseen data.  Here we will use
+a different segment of the corpus.
 
-  >>> accuracy0 = tag.accuracy(t0, unseen_sents)
-  >>> accuracy1 = tag.accuracy(t1, unseen_sents)
-  >>> accuracy2 = tag.accuracy(t2, unseen_sents)
+  >>> accuracy0 = tag.accuracy(t0, brown.tagged('b')) # section b: press-editorial
+  >>> accuracy1 = tag.accuracy(t1, brown.tagged('b'))
+  >>> accuracy2 = tag.accuracy(t2, brown.tagged('b'))
 
   >>> print 'Default Accuracy = %4.1f%%' % (100 * accuracy0)
-  Default Accuracy = 13.1%
+  Default Accuracy = 12.5%
   >>> print 'Unigram Accuracy  = %4.1f%%' % (100 * accuracy1)
-  Unigram Accuracy  = 87.9%
+  Unigram Accuracy  = 80.2%
   >>> print 'Bigram Accuracy = %4.1f%%' % (100 * accuracy2)
-  Bigram Accuracy = 85.2%
+  Bigram Accuracy = 78.3%
 
 
 Exercises
