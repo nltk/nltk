@@ -1,0 +1,195 @@
+\documentclass{beamer}             % for slides
+% \documentclass[handout]{beamer}    % for handout
+\input{beamer}
+
+\title{Chunk Parsing}
+
+\author{Steven Bird \and Edward Loper \and Ewan Klein}
+\institute{
+  University of Melbourne, AUSTRALIA
+  \and
+  University of Pennsylvania, USA
+  \and
+  University of Edinburgh, UK
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section{Introduction}
+
+\subsection{What is it?}
+
+\begin{frame}
+\begin{itemize}
+\item chunk parsing:
+  \begin{itemize}
+    \item efficient and robust approach to parsing natural language
+    \item a popular alternative to the full parsing
+  \end{itemize}
+\item chunks:
+  \begin{itemize}
+  \item non-overlapping regions of text
+  \item contain a head word (e.g. noun)
+  \item adjacent modifiers and function words
+  \end{itemize}
+\item motivations:
+  \begin{itemize}
+  \item extract information
+  \item ignore information
+  \end{itemize}
+\end{itemize}
+\end{frame}
+\subsection{Motivation}
+
+\pgfdeclareimage[width=10cm]{chunk-coref}{../images/chunk-coref}
+\begin{frame}
+  \frametitle{Extracting Information: Coreference Annotation}
+  \centerline{\pgfuseimage{chunk-coref}}
+\end{frame}
+
+\pgfdeclareimage[width=10cm]{chunk-muc}{../images/chunk-muc}
+\begin{frame}
+  \frametitle{Extracting Information: Message Understanding}
+  \centerline{\pgfuseimage{chunk-muc}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Ignoring Information: Lexical Acquisition}
+
+  \begin{itemize}
+  \item studying syntactic patterns, e.g. finding verbs in a corpus, displaying possible arguments
+  \item e.g. \texttt{gave}, in 100 files of the Penn Treebank corpus
+  \item replaced internal details of each noun phrase with \texttt{NP}
+
+\begin{verbatim}
+  gave NP
+  gave up NP in NP
+  gave NP up
+  gave NP help
+  gave NP to NP
+\end{verbatim}
+    
+  \item use in lexical acquisition, grammar development
+  \end{itemize}
+\end{frame}
+
+\subsection{Analogy with Tokenization and Tagging}
+
+\pgfdeclareimage[width=8cm]{chunk-segmentation}{../images/chunk-segmentation}
+\begin{frame}[fragile]
+  \frametitle{Analogy with Tokenization and Tagging}
+
+  \begin{itemize}
+  \item fundamental in NLP: segmentation and labelling
+  \item tokenization and tagging
+  \centerline{\pgfuseimage{chunk-segmentation}}
+  \item other similarities: skipping material; finite-state; application specific
+  \end{itemize}
+\end{frame}
+
+\subsection{Chunking vs Parsing}
+
+\begin{frame}[fragile]
+  \frametitle{Chunking vs Parsing}
+  \small
+
+\begin{verbatim}
+  1. Parsing:
+  [
+    [ G.K. Chesterton ],
+    [
+      [ author ] of
+      [
+        [ The Man ] who was
+        [ Thursday ]
+      ]
+    ]
+  ]
+
+  2. Chunking:
+  [ G.K. Chesterton ],
+  [ author ] of
+  [ The Man ] who was
+  [ Thursday ]
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Chunking vs Parsing}
+  \begin{enumerate}
+  \item flat vs nested
+  \item context
+  \item robustness
+  \item efficiency
+  \item methodology
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Perfection is unattainable}
+
+\begin{verbatim}
+  1. Prepositional phrase:
+  [
+    [ I ]
+    [ turned ]
+    [ off the spectroroute ]
+  ]
+
+  2. Verb-particle construction:
+  [
+    [ I ]
+    [ turned off ]
+    [ the spectroroute ]
+  ]
+\end{verbatim}
+\end{frame}
+
+
+\section{Accessing Chunked Corpora}
+
+\subsection{Representing Chunks: Tags vs Trees}
+
+\pgfdeclareimage[width=8cm]{chunk-tagrep}{../images/chunk-tagrep}
+\begin{frame}
+  \frametitle{Tag Representation}
+  \centerline{\pgfuseimage{chunk-tagrep}}
+\end{frame}
+
+\pgfdeclareimage[width=8cm]{chunk-treerep}{../images/chunk-treerep}
+\begin{frame}
+  \frametitle{Tree Representation}
+  \centerline{\pgfuseimage{chunk-treerep}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Chunk Structures}
+\begin{verbatim}
+  (S: (NP: 'I')
+      'saw'
+      (NP: 'the' 'big' 'dog')
+      'on'
+      (NP: 'the' 'hill'))
+\end{verbatim}
+  \begin{itemize}
+  \item Demonstration: reading chunk structures from Treebank and CoNLL-2000 corpora
+  \end{itemize}
+\end{frame}
+
+\section{Chunk Parsing}
+
+\subsection{Chunking with Regular Expressions}
+
+\subsection{Developing Chunk Parsers}
+
+\subsection{More Chunking Rules}
+
+\section{Evaluating Chunk Parsers}
+
+\end{document}
+
