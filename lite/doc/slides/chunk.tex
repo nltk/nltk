@@ -46,13 +46,13 @@
 \end{frame}
 \subsection{Motivation}
 
-\pgfdeclareimage[width=10cm]{chunk-coref}{../images/chunk-coref}
+<\pgfdeclareimage[width=12cm]{chunk-coref}{../images/chunk-coref}
 \begin{frame}
   \frametitle{Extracting Information: Coreference Annotation}
   \centerline{\pgfuseimage{chunk-coref}}
 \end{frame}
 
-\pgfdeclareimage[width=10cm]{chunk-muc}{../images/chunk-muc}
+\pgfdeclareimage[width=12cm]{chunk-muc}{../images/chunk-muc}
 \begin{frame}
   \frametitle{Extracting Information: Message Understanding}
   \centerline{\pgfuseimage{chunk-muc}}
@@ -86,7 +86,7 @@
 
   \begin{itemize}
   \item fundamental in NLP: segmentation and labelling
-  \item tokenization and tagging
+  \item tokenization and tagging \\[2ex]
   \centerline{\pgfuseimage{chunk-segmentation}}
   \item other similarities: skipping material; finite-state; application specific
   \end{itemize}
@@ -96,10 +96,11 @@
 
 \begin{frame}[fragile]
   \frametitle{Chunking vs Parsing}
-  \small
+  \scriptsize
 
+  \begin{enumerate}
+  \item Parsing
 \begin{verbatim}
-  1. Parsing:
   [
     [ G.K. Chesterton ],
     [
@@ -110,13 +111,16 @@
       ]
     ]
   ]
+\end{verbatim}
 
-  2. Chunking:
+  \item Chunking:
+\begin{verbatim}
   [ G.K. Chesterton ],
   [ author ] of
   [ The Man ] who was
   [ Thursday ]
 \end{verbatim}
+\end{enumerate}
 \end{frame}
 
 \begin{frame}
@@ -183,6 +187,13 @@
 
 \section{Chunk Parsing}
 
+\begin{frame}
+  \frametitle{Chunk Parsing}
+
+To Do
+
+\end{frame}
+
 \subsection{Chunking with Regular Expressions}
 
 \subsection{Developing Chunk Parsers}
@@ -190,6 +201,13 @@
 \subsection{More Chunking Rules}
 
 \section{Evaluating Chunk Parsers}
+
+\begin{frame}
+  \frametitle{Evaluating Chunk Parsers}
+
+To Do
+
+\end{frame}
 
 \end{document}
 
