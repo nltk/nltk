@@ -71,14 +71,21 @@ There are two chief motivations for chunking: to locate information,
 or to ignore information.  In the former case, we may want to extract
 all noun phrases so that they can be indexed.  A text retrieval system
 could the use the index to support efficient retrieval for queries
-involving terminological expressions.  In the latter case we may want
-to study syntactic patterns, finding particular verbs in a corpus and
-displaying their arguments.  For instance, here are uses of the verb
-``gave`` in the first 100 files of the Penn Treebank corpus.
-NP-chunking has been used so that the internal details of each noun
-phrase can be replaced with ``NP``.  In this way we can discover
-significant grammatical properties even before a grammar has been
-developed::
+involving terminological expressions.  A message understanding system
+will extract salient chunks of text from a news story and populate a
+database.
+
+.. figure:: ../images/chunk-muc.png
+
+   The Message Understanding Process (from Abney 1996)
+
+In the latter case we may want to study syntactic patterns, finding
+particular verbs in a corpus and displaying their arguments.  For
+instance, here are uses of the verb ``gave`` in the first 100 files of
+the Penn Treebank corpus.  NP-chunking has been used so that the
+internal details of each noun phrase can be replaced with ``NP``.  In
+this way we can discover significant grammatical properties even
+before a grammar has been developed::
     
   gave NP
   gave up NP in NP
