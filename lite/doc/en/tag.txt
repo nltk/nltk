@@ -1005,6 +1005,42 @@ part-of-speech tags.  Third, training a tagger involves *sequence learning
 from annotated corpora*.  Finally, tagging uses *simple, general, methods*
 such as conditional frequency distributions and transformation-based learning.
 
+Unfortunately perfect tagging is impossible.  Consider the case of a
+trigram tagger.  How many cases of part-of-speech ambiguity does it
+encounter?
+
+  >>> from nltk_lite.corpora import brown
+  >>> from nltk_lite.probability import ConditionalFreqDist
+  >>> cfdist = ConditionalFreqDist()
+  >>> for sent in brown.tagged('a'):
+  ...     p = [(None, None)] # empty token/tag pair
+  ...     trigrams = zip(p+p+sent, p+sent+p, sent+p+p)
+  ...     for (pair1,pair2,pair3) in trigrams:
+  ...         context = (pair1[1], pair2[1], pair3[0]) # previous two tags, current word
+  ...         cfdist[context].inc(pair3[1])            # current tag
+  >>> total = ambiguous = 0
+  >>> for cond in cfdist.conditions():
+  ...     if cfdist[cond].B() > 1:
+  ...         ambiguous += cfdist[cond].N()
+  ...     total += cfdist[cond].N()
+  >>> print 100.0 * ambiguous / total
+  5.09036201939
+
+Thus, 5%, or one out of twenty trigrams, is ambiguous: given the
+current word and the previous two tags, there is more than one tag
+that could be assigned to the current word.  Sometimes more context
+will resolve the ambiguity.  In other cases however, as noted by Abney
+(1996), the ambiguity can only resolved with reference to syntax, or
+to world knowledge.  Despite these imperfections, part-of-speech
+tagging has played a crucial role in the rise of statistical
+approaches to natural language processing.  The surprising accuracy of
+statistical taggers was a striking demonstration that it was possible
+to solve one small part of the language understanding problem, namely
+part-of-speech disambiguation, without reference to deeper sources of
+linguistic knowledge.  Can this idea be pushed further?  In the next
+chapter, on chunk parsing, we shall see that it can.
+
+
 ---------------
 Further Reading
 ---------------
@@ -1014,6 +1050,12 @@ Tagging: Jurafsky and Martin, Chapter 8
 Brill tagging: Manning and Schutze 361ff; Jurafsky and Martin 307ff
 
 HMM tagging: Manning and Schutze 345ff
+
+Abney, Steven (1996). Tagging and Partial Parsing.
+In: Ken Church, Steve Young, and Gerrit Bloothooft (eds.),
+*Corpus-Based Methods in Language and Speech.*
+Kluwer Academic Publishers, Dordrecht.
+``http://www.vinartus.net/spa/95a.pdf``
 
 Wikipedia:
 ``http://en.wikipedia.org/wiki/Part-of-speech_tagging``
@@ -1042,9 +1084,24 @@ Further Exercises
    Discuss any issues you encounter in applying these methods to the
    language.
         
+#. **Impossibility of exact tagging:**
+   Consult the Abney reading and review his discussion of the
+   impossibility of exact tagging.  Explain why correct tagging of
+   these examples requires access to other kinds of information than
+   just words and tags.  How might you estimate the scale of this
+   problem?
+   
 #. **HMM taggers**:
    Explore the Hidden Markov Model tagger included with NLTK,
    ``nltk_lite.tag.hmm``.
+
+#. (Advanced) **Estimation:**
+   Use some of the estimation techniques in ``nltk_lite.probability``,
+   such as *Lidstone* or *Laplace* estimation, to develop a statistical
+   tagger that does a better job than ngram backoff taggers in cases where
+   contexts encountered during testing were not seen during training.
+   Read up on the TnT tagger, since this provides useful technical
+   background: ``http://www.aclweb.org/anthology/A00-1031``
 
 ----
 
