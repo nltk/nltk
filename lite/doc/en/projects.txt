@@ -30,7 +30,7 @@ Project Topics
 Linguistically Oriented
 ------------------------
 
-1. Develop a concordance system for the Brown Corpus, supporting
+#. Develop a concordance system for the Brown Corpus, supporting
    searches that include part-of-speech tags, replicating some of the
    functionality of commercial software (e.g. MonoConc_).
    Investigate indexing for more efficient searches.
@@ -69,9 +69,12 @@ Linguistically Oriented
 Computationally Oriented
 ------------------------
 
-1. Build a language-guesser, to classify text documents by language,
+#. Build a language-guesser, to classify text documents by language,
    replicating some of the functionality of TextCat_.
    Create an evaluation dataset, possibly using the Opus_Corpus_.
+
+#. Implement the TnT statistical tagger in NLTK-Lite.
+   ``http://www.aclweb.org/anthology/A00-1031``
 
 #. Develop a semantic similarity module based on WordNet_ and two of
    Pedersen's Wordnet_Similarity_ algorithms.  Develop a lexical-chain
