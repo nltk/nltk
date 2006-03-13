@@ -76,6 +76,8 @@ Computationally Oriented
 #. Implement the TnT statistical tagger in NLTK-Lite.
    ``http://www.aclweb.org/anthology/A00-1031``
 
+#. Develop a sentence tokenizer for NLTK-Lite.  (E.g. port MXTerminator).
+
 #. Develop a semantic similarity module based on WordNet_ and two of
    Pedersen's Wordnet_Similarity_ algorithms.  Develop a lexical-chain
    based WSD system, and evaluate it using the SEMCOR corpus (corpus reader
