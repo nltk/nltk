@@ -2318,6 +2318,7 @@ def demo():
     ct2.bind_click(color)
     ct3.bind_click(color)
 
+    cf.mainloop()
     #ShowText(None, 'title', ((('this is text'*150)+'\n')*5))
 
 if __name__ == '__main__':
