@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 # URL: <http://nltk.sf.net>
