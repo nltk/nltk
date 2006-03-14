@@ -813,15 +813,16 @@ sets:
 * **guessed**: The set of chunks returned by the chunk parser. 
 * **correct**: The correct set of chunks, as defined in the test corpus.
 
-The evaluate method we will use comes from the field of information retrieval,
+The evaluation method we will use comes from the field of information retrieval,
 and considers the performance of a document retrieval system.  We will set up
 an analogy between the correct set of chunks and a user's so-called "information need",
 and between the set of returned chunks and a system's returned documents.  Consider
 the following diagram.
 
 .. figure:: ../images/precision-recall.png
+   :scale: 70
 
-   Precision and Recall
+   True and False Positives and Negatives
 
 The intersection of these sets defines four regions: the true
 positives (TP), true negatives (TN), false positives (FP), and false
@@ -829,7 +830,7 @@ negatives (FN).  Two standard measures are
 *precision*, the fraction of guessed chunks that were correct TP/(TP+FP),
 and *recall*, the fraction of correct chunks that were identified
 TP/(TP+FN).  A third measure, the *F measure*, is the harmonic mean
-of precision and recall, i.e. 1(0.5/Precision + 0.5/Recall)
+of precision and recall, i.e. 1/(0.5/Precision + 0.5/Recall)
 
 .. Note: Note that these metrics do not assign any credit for chunks
    that are "almost" right (e.g., chunks that extend one word too long).
@@ -1056,3 +1057,7 @@ Exercises
    (in English).  It would appear that the same information is being maintained in
    two places.  Is this likely to become a problem as the size of the rule sets grows?
    If so, speculate about any ways that this problem might be addressed.
+
+#. (Advanced) **Cascased Chunking:**
+   Develop a system for cascaded chunking, cf Abney's Cass system
+   ``http://www.vinartus.net/spa/97a.pdf``
