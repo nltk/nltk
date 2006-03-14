@@ -1006,6 +1006,27 @@ The resulting structured information is useful in information extraction
 tasks and in the description of the syntactic environments of words.
 The latter will be invaluable as we move to full parsing.
       
+A recurring theme of this chapter has been *diagnosis*.  The simplest
+kind is manual, when we inspect the output of a chunker and observe
+some undesirable behavior that we would like to fix.  We have also
+seen three objective approaches to diagnosis.  The first approach is
+to write utility programs to analyze the training data, such as
+counting the number of times a given part-of-speech tag occurs inside
+and outside an NP chunk.  The second approach is to perform error
+analysis on the missed and incorrect chunks produced by the chunk
+parser.  Sometimes those errors can be fixed.  In other cases we may
+observe shortcomings in the methodology itself, cases where we cannot
+hope to get the correct answer because the system simply does not have
+access to the necessary information.  The third approach is to
+evaluate the system against some gold standard data to obtain an
+overall performance score; we can use this diagnostically by
+parameterising the system, specifying which chunk rules are used on a
+given run, and tabulating performance for different parameter
+combinations.  Careful use of these diagnostic methods permits us to
+*tune* the performance of our system.  We will see this theme emerge
+again later in chapters dealing with other topics in natural language
+processing.
+
 ---------------
 Further Reading
 ---------------
@@ -1042,7 +1063,7 @@ Exercises
    noun phrases and prepositions,
    e.g. ``the little cat sat on the mat`` becomes ``('sat', 'on', 'NP')``...
         
-#. (Advanced) **Chunking by Tagging:**
+#. (Advanced) **Transformation-Based Chunking:**
    Apply the n-gram and Brill tagging methods to IOB chunk tagging.
    Instead of assigning POS tags to words, here we will assign IOB tags
    to the POS tags.  E.g. if the tag ``DT`` (determiner) often occurs
@@ -1061,3 +1082,4 @@ Exercises
 #. (Advanced) **Cascased Chunking:**
    Develop a system for cascaded chunking, cf Abney's Cass system
    ``http://www.vinartus.net/spa/97a.pdf``
+
