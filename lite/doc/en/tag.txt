@@ -246,7 +246,7 @@ Exercises
    #)  What proportion of word types are always assigned the same part-of-speech tag?
    #)  What is the ratio of masculine to feminine pronouns?
    #)  How many words are ambiguous, in the sense that they appear with at least two tags?
-   #)  What percentage of word *occurrences* in the Brown Corpus involve
+   #)  What percentage of tokens in the Brown Corpus involve
        these ambiguous words?
    #)  Which nouns are more common in their plural form, rather than their singular form?
        (Only consider regular plurals, formed with the ``-s`` suffix.)
