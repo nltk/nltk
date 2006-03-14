@@ -27,67 +27,41 @@ incorporated into the toolkit.
 Project Topics
 --------------
 
-Linguistically Oriented
-------------------------
-
-#. Develop a concordance system for the Brown Corpus, supporting
-   searches that include part-of-speech tags, replicating some of the
-   functionality of commercial software (e.g. MonoConc_).
-   Investigate indexing for more efficient searches.
-
-#. Develop a morphological analyser for a language of your choice.
-
-#. Write a soundex function that is appropriate for a language you are
-   interested in.  If the language has clusters (consonants or
-   vowels), consider how reliably people can discriminate the second
-   and subsequent member of a cluster.  If these are highly
-   confusible, ignore them in the signature.  If the *order* of
-   segments in a cluster leads to confusion, normalise this in the
-   signature (e.g. sort each cluster alphabetically, so that a word
-   like ``treatments`` would be normalised to ``rtaemtenst``, before
-   the code is computed).  (NB. See field.html for more details.)
-
-#. Develop a text classification system which efficiently classifies documents
-   in two or three closely related languages. Consider the discriminating features
-   between languages despite their apparent similarity. Implementation should
-   be evaluated using unseen data.
-
-#. Explore the phonotactic system of a language you ar interested in.
-   Compare your findings to a published phonological or grammatical
-   description of the same language.
-
-#. Implement a structured text rendering module which takes linguistic
-   data from a source such as Shoebox and generates XML based lexicon or interlinear
-   text based on user preferences for field exports.
-
-#. Develop a grammatical paradigm generation function which takes some
-   form of tagged text as input and generates paradigm representations of 
-   related linguistic features.
-
-.. _MonoConc: http://www.athel.com/mono.html
-
 Computationally Oriented
 ------------------------
 
-#. Build a language-guesser, to classify text documents by language,
-   replicating some of the functionality of TextCat_.
-   Create an evaluation dataset, possibly using the Opus_Corpus_.
+#. NLTK will soon include a temporal expression identifier (i.e., a system
+   capable of identifying expressions such as "last Christmas", "a forthnight
+   ago"), build a temporal expression grounder that will assign specific
+   timestamps to these expressions, e.g. [Day: 25; Month:12; Year: 2005]. Test
+   the accuracy of your system on the TIMEX dataset.
+
+#. Taking the VerbOcean data which captures semantic relationships between
+   verbs (``http://semantics.isi.edu/ocean/verbocean.unrefined.2004-05-20.txt.gz``),
+   generate a semantic network of verb relationships and implement a
+   tree traversal algorithm that can calculate the similarity between
+   two verbs, e.g.  "fly" and "crash". You can find a demo of this
+   system at: ``http://falcon.isi.edu/cgi-bin/graph-analysis/view-graph.pl``
+
+#. News stories from different sources often contain contradictory
+   information regarding a particular event such as the number of
+   people killed in an earthquake. Build a numerical expression
+   recogniser and resolver that can identify equality and
+   contradiction between numerical expression such as: "5 adults" !=
+   "3 children and 2 adults", but "5 people" = "3 children and 2
+   adults".
 
 #. Implement the TnT statistical tagger in NLTK-Lite.
    ``http://www.aclweb.org/anthology/A00-1031``
 
-#. Develop a sentence tokenizer for NLTK-Lite.  (E.g. port MXTerminator).
+#. Develop a maximum-entropy POS tagger for NLTK-Lite (e.g. see MXPOST)
+
+#. Develop a sentence tokenizer for NLTK-Lite (e.g. see MXTerminator).
 
 #. Develop a semantic similarity module based on WordNet_ and two of
    Pedersen's Wordnet_Similarity_ algorithms.  Develop a lexical-chain
    based WSD system, and evaluate it using the SEMCOR corpus (corpus reader
    provided in NLTK).
-
-#. Build a text compression system combining a dictionary-based
-   compression algorithm (such as the ones described in
-   Managing_Gigabytes_) along with information provided by a
-   part-of-speech tagger which should lower the conditional entropy of
-   the following word.
 
 #. Re-implement any NLTK-Lite functionality for a language other than
    English (tokenizer, tagger, chunker, parser, etc).  You will
@@ -101,8 +75,6 @@ Computationally Oriented
    an expanded set of named entities.
    
 #. Port the NLTK text classification system to NLTK-Lite.
-
-#. Implement a system for cascaded_chunking_.
 
 #. Implement a chat-bot that incorporates a more sophisticated
    dialogue model than ``nltk_lite.chat.eliza``.
@@ -126,14 +98,70 @@ Computationally Oriented
 #. Use WordNet to infer lexical semantic relationships on the entries
    of a Shoebox lexicon for some arbitrary language.
 
-#. Implement Penton's paradigm visualisation tool.
-   ``http://www.cs.mu.oz.au/~djpenton/``
-
 #. Add semantic interpretation to a CFG, generating propositions that
    can be evaluated against a database.  Start with a lambda calculus
    interpreter in Python (e.g. http://www.alcyone.com/software/church/) and Rob Speer's
    feature-based CFG (nltk_contrib/mit/rspeer/parser), and augment a
    feature-based grammar with attributes to hold the semantic representations.
+
+Linguistically Oriented
+------------------------
+
+#. Develop a morphological analyser for a language of your choice.
+
+#. Write a soundex function that is appropriate for a language you are
+   interested in.  If the language has clusters (consonants or
+   vowels), consider how reliably people can discriminate the second
+   and subsequent member of a cluster.  If these are highly
+   confusible, ignore them in the signature.  If the *order* of
+   segments in a cluster leads to confusion, normalise this in the
+   signature (e.g. sort each cluster alphabetically, so that a word
+   like ``treatments`` would be normalised to ``rtaemtenst``, before
+   the code is computed).  (NB. See field.html for more details.)
+
+#. Develop a text classification system which efficiently classifies documents
+   in two or three closely related languages. Consider the discriminating features
+   between languages despite their apparent similarity. Implementation should
+   be evaluated using unseen data.
+
+#. Explore the phonotactic system of a language you are interested in.
+   Compare your findings to a published phonological or grammatical
+   description of the same language.
+
+#. Implement a structured text rendering module which takes linguistic
+   data from a source such as Shoebox and generates XML based lexicon or interlinear
+   text based on user preferences for field exports.
+
+#. Develop a grammatical paradigm generation function which takes some
+   form of tagged text as input and generates paradigm representations of 
+   related linguistic features.
+
+Previous Projects
+-----------------
+
+The following projects were undertaken in 2005 and implementations
+will be made available in a planned NLTK-Lite-Contrib distribution.
+More work can be done on these, building on the existing work.
+
+#. Develop a concordance system for the Brown Corpus, supporting
+   searches that include part-of-speech tags, replicating some of the
+   functionality of commercial software (e.g. MonoConc_).
+   Investigate indexing for more efficient searches.
+
+#. Build a language-guesser, to classify text documents by language,
+   replicating some of the functionality of TextCat_.
+   Create an evaluation dataset, possibly using the Opus_Corpus_.
+
+#. Implement Penton's paradigm visualisation tool.
+   ``http://www.cs.mu.oz.au/~djpenton/``
+
+#. Implement a system for cascaded_chunking_.
+
+#. Build a text compression system combining a dictionary-based
+   compression algorithm (such as the ones described in
+   Managing_Gigabytes_) along with information provided by a
+   part-of-speech tagger which should lower the conditional entropy of
+   the following word.
 
 .. _TextCat: http://odur.let.rug.nl/~vannoord/TextCat/
 .. _Opus_Corpus: http://logos.uio.no/opus/
@@ -142,6 +170,8 @@ Computationally Oriented
 .. _Managing_Gigabytes: http://www.cs.mu.oz.au/mg/
 .. _LPath: http://www.ldc.upenn.edu/Projects/QLDB/
 .. _cascaded_chunking: http://www.vinartus.net/spa/97a.pdf
+.. _MonoConc: http://www.athel.com/mono.html
+
 
 ----------
 Assessment
