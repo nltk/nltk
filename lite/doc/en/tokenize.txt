@@ -209,10 +209,10 @@ from files::
   >>> text_str
   'Hello world.  This is a test file.\n'
 
-However, as we noted in representing.tokens_, it is usually preferrable
-to represent a text as a list of tokens.  These lists are typically
-created using a *tokenizer*, such as ``tokenize.whitespace`` which
-splits strings into words at whitespaces::
+However, as noted above, it is usually preferrable to represent a text
+as a list of tokens.  These lists are typically created using a
+*tokenizer*, such as ``tokenize.whitespace`` which splits strings into
+words at whitespaces::
 
   >>> from nltk_lite import tokenize
   >>> text = 'Hello world.  This is a test string.'
@@ -578,24 +578,6 @@ http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/
 Language Files: Materials for an Introduction to Language and
 Linguistics (Eighth Edition), The Ohio State University Department of
 Linguistics, http://www.ling.ohio-state.edu/publications/files/
-
----------
-Exercises
----------
-
-#. Classifying words automatically: The program for classifying words
-   as nouns or adjectives scored 71%.  We will try to come up with better
-   conditions, to get the system to score 80% or better.
-
-   a. Revise the condition to use a longer suffix of the word, such as
-      the last two characters, or the last three characters.  What happens
-      to the performance?  Which suffixes are diagnostic for adjectives?
-
-   #. Explore other conditions, such as variable length prefixes of a
-      word, or the length of a word, or the number of vowels in a word.
-
-   #. Finally, combine multiple conditions into a tuple, and explore
-      which combination of conditions gives the best result.
 
 
 

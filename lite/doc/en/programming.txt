@@ -524,6 +524,10 @@ the following questions.
    Take a look at the program code and see if you can
    discover how it works.
 
+8. (Advanced) Write a program that takes a word as input, and finds
+   the rhyming words, using ``corpora.cmudict``.
+   
+
 ----
 
 NLTK_
