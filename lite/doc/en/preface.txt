@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-==============================================
-Learning NLP with the Natural Language Toolkit
-==============================================
+=======================================================
+Preface: Learning NLP with the Natural Language Toolkit
+=======================================================
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
@@ -18,36 +18,18 @@ Learning NLP with the Natural Language Toolkit
 Introduction
 ------------
 
-The *Natural Language Toolkit (NLTK)* was originally created as part
-of a computational linguistics course in the Department of Computer
-and Information Science at the University of Pennsylvania in 2001.
-Since then it has been developed and expanded with the help of dozens
-of contributors.  It has now been adopted in courses in dozens of
-universities, and serves as the basis of many research projects.  In
-this section we will discuss some of the benefits of learning (and
-teaching) NLP using NLTK.
-
-Recently, the NLTK developers have been creating a lightweight version
-NLTK, called NLTK-Lite.  NLTK-Lite is simpler and faster than NLTK.
-Once it is complete, NLTK-Lite will provide all the same functionality
-as NLTK.  However, unlike NLTK, NLTK-Lite does not impose such a heavy
-burden on the programmer.  Wherever possible, standard Python objects
-are used instead of custom NLP versions, so that students learning to
-program for the first time will be learning to program in Python with
-some useful libraries, rather than learning to program in NLTK.
-
-NLP is often taught within the confines of a single-semester course,
-either at advanced undergraduate level, or at postgraduate level.
-Unfortunately, it turns out to be rather difficult to cover both the
-theoretical and practical sides of the subject in such a short span of
-time.  Some courses focus on theory to the exclusion of practical
-exercises, and deprive students of the challenge and excitement of
-writing programs to automatically process natural language.  Other
-courses are simply designed to teach programming for linguists, and do
-not get past the mechanics of programming to cover significant NLP.
-NLTK was developed to address this very problem, making it feasible to
-cover a substantial amount of theory and practice within a
-single-semester course.
+Natural Language Processing (NLP) is often taught within the confines
+of a single-semester course, either at advanced undergraduate level,
+or at postgraduate level.  Unfortunately, it turns out to be rather
+difficult to cover both the theoretical and practical sides of the
+subject in such a short span of time.  Some courses focus on theory to
+the exclusion of practical exercises, and deprive students of the
+challenge and excitement of writing programs to automatically process
+natural language.  Other courses are simply designed to teach
+programming for linguists, and do not manage to cover any significant
+NLP content.  NLTK was developed to address this very problem, making
+it feasible to cover a substantial amount of theory and practice
+within a single-semester course.
     
 A significant fraction of any NLP course is made up of fundamental
 data structures and algorithms.  These are usually taught with the
@@ -82,6 +64,25 @@ architecture.  Thus, as we have seen, NLTK offers a fresh approach to
 NLP pedagogy, in which theoretical content is tightly integrated with
 application.
     
+The *Natural Language Toolkit (NLTK)* was originally created as part
+of a computational linguistics course in the Department of Computer
+and Information Science at the University of Pennsylvania in 2001.
+Since then it has been developed and expanded with the help of dozens
+of contributors.  It has now been adopted in courses in dozens of
+universities, and serves as the basis of many research projects.  In
+this section we will discuss some of the benefits of learning (and
+teaching) NLP using NLTK.
+
+**Note on NLTK-Lite:**
+Recently, the NLTK developers have been creating a lightweight version
+NLTK, called NLTK-Lite.  NLTK-Lite is simpler and faster than NLTK.
+Once it is complete, NLTK-Lite will provide all the same functionality
+as NLTK.  However, unlike NLTK, NLTK-Lite does not impose such a heavy
+burden on the programmer.  Wherever possible, standard Python objects
+are used instead of custom NLP versions, so that students learning to
+program for the first time will be learning to program in Python with
+some useful libraries, rather than learning to program in NLTK.
+
 ------------------
 The Design of NLTK
 ------------------
@@ -119,9 +120,9 @@ should be efficient enough that students can use their NLP systems to
 perform meaningful tasks, it does not need to be highly optimized for
 runtime performance.  Such optimizations often involve more complex
 algorithms, and sometimes require the use of C or C++, making the
-toolkit harder to install.  Third, we have avoided clever programming
-tricks, since clear implementations are far preferable to ingenious
-yet indecipherable ones.
+toolkit less accessible, and harder to install.  Third, we have
+avoided clever programming tricks, since clear implementations are far
+preferable to ingenious yet indecipherable ones.
     
 NLTK is organized into a collection of task-specific components.  Each
 module is a combination of data structures for representing a
@@ -133,10 +134,9 @@ accomplish a particular task.
     
 The most fundamental NLTK components are for identifying and
 manipulating individual words of text.  These include: ``tokenize``,
-for breaking up strings of characters into word tokens; ``corpora``,
-for reading various corpora; ``tag``, for adding part-of-speech tags,
-including regular-expression taggers, n-gram taggers and Brill
-taggers.
+for breaking up strings of characters into word tokens; ``tag``, for
+adding part-of-speech tags, including regular-expression taggers,
+n-gram taggers and Brill taggers; and the Porter stemmer.
     
 The second kind of module is for creating and manipulating structured
 linguistic information.  These components include: ``tree``, for
@@ -149,7 +149,7 @@ parsers and probabilistic parsers.
 Several utility components are provided to facilitate processing and
 visualization.  These include: ``draw``, to visualize NLP structures
 and processes; ``probability``, to count and collate events, and
-perform statistical estimation; and ``corpus``, to access tagged
+perform statistical estimation; and ``corpora``, to access tagged
 linguistic corpora.
     
 .. Finally, several advanced components are provided, mostly
@@ -181,12 +181,11 @@ Corpora and Corpus Samples Distributed with NLTK (starred items with NLTK-Lite)
 Corpus                     Compiler               Contents
 =========================  =====================  ============================================================
 20 Newsgroups (sel)        Lang, Rennie           3 newsgroups, 4000 posts, 780k words
-\*Brown Corpus             Francis, Kucera        15 genres, 1.15M words, tagged
+Brown Corpus               Francis, Kucera        15 genres, 1.15M words, tagged
 CoNLL 2000 Chunking Data   Tjong Kim Sang         270k words, tagged and chunked
 \*Genesis Corpus           Misc web sources       6 texts, 200k words, 6 languages
 Project Gutenberg (sel)    Hart, Newby, et al     14 texts, 1.7M words
 NIST 1999 Info Extr (sel)  Garofolo               63k words, newswire and named-entity SGML markup
-Levin Verb Index           Beth Levin             3k verbs with Levin classes
 Lexicon Corpus                                    Words, tags and frequencies from Brown Corpus and WSJ
 Names Corpus               Kantrowitz, Ross       8k male and female names
 PP Attachment Corpus       Ratnaparkhi            28k prepositional phrases, tagged as noun or verb modifiers
@@ -194,19 +193,28 @@ Roget's Thesaurus          Project Gutenberg      200k words, formatted text
 SEMCOR                     Rus, Mihalcea          880k words, part-of-speech and sense tagged
 SENSEVAL 2 Corpus          Ted Pedersen           600k words, part-of-speech and sense tagged
 Stopwords Corpus           Porter et al           2,400 stopwords for 11 languages
-\*Penn Treebank (sel       LDC                    40k words, tagged and parsed
+Penn Treebank (sel)        LDC                    40k words, tagged and parsed
+TIMIT Corpus (sel)         NIST/LDC               audio files and transcripts for 16 speakers
 Wordlist Corpus            OpenOffice.org et al   960k words and 20k affixes for 8 languages
 =========================  =====================  ============================================================
 
 --------------------------------------------
-Appendix: NLP in other Programming Languages
+NLP in Python vs other Programming Languages
 --------------------------------------------
 
-Earlier we explained the thinking that lay behind our choice of the
-Python programming language.  We showed a simple Python program that
-reads in text and prints the words that end with ``ing``.  In this
-appendix we provide equivalent programs in other languages, so that
-readers can gain a sense of the appeal of Python.
+Many programming languages have been used for NLP.  As we will explain
+in more detail in the introductory chapter, we have chosen Python because
+we believe it is well-suited to the special requirements of NLP.  Here
+we present a brief survey of several programming languages, for the simple
+task of reading a text and printing the words that end with ``ing``.
+We begin with the Python version, which we believe is readily interpretable,
+even by non Python programmers:
+
+  import sys
+  for line in sys.stdin.readlines():
+      for word in line.split():
+          if word.endswith('ing'):
+              print word
 
 Prolog is a logic programming language which has been popular for
 developing natural language parsers and feature-based grammars, given
@@ -282,8 +290,7 @@ software::
 
 
 The C programming language is a highly-efficient low-level language
-that is popular for operating system software and for teaching the
-fundamentals of computer science::
+that is popular for operating system and networking software::
 
   #include <sys/types.h>
   #include <regex.h>
