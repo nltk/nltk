@@ -199,12 +199,12 @@
   \item regular expressions over part-of-speech tags: \texttt{parse.RegexpChunk}
   \item \textit{Tag string:} a string consisting of tags
     delimited with angle-brackets,
-    e.g. \verb|<DT><JJ><NN><VBD><DT><NN>|
+    e.g. \verb/<DT><JJ><NN><VBD><DT><NN>/
   \item \textit{Tag pattern:} regular expression over tag strings
     \begin{itemize}
-    \item \verb|<DT><JJ>?<NN>|
-    \item \verb|<NN|JJ>+|
-    \item \verb|<NN.*>|
+    \item \verb/<DT><JJ>?<NN>/
+    \item \verb/<NN|JJ>+/
+    \item \verb/<NN.*>/
     \end{itemize}
   \item chunk a sequence of words matching a tag pattern: \texttt{parse.ChunkRule}
 
