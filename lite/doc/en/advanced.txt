@@ -496,6 +496,136 @@ Exercises
 
 7. Obtain a pronunciation lexicon, and try generating nonsense rhymes.
 
+-----------------
+Some Applications
+-----------------
+
+Classifying Words Automatically
+-------------------------------
+
+A tagged corpus can be used to *train* a simple classifier, which can
+then be used to guess the tag for untagged words.  For each word, we
+can count the number of times it is tagged with each tag.  For
+instance, the word ``deal`` is tagged 89 times as ``nn`` and 41 times
+as ``vb``.  On this evidence, if we were asked to guess the tag for
+``deal`` we would choose ``nn``, and we would be right over two-thirds
+of the time.  The following program performs this tagging task, when
+trained on the "g" section of the Brown Corpus (so-called *belles
+lettres*, creative writing valued for its aesthetic content).
+
+  >>> cfdist = ConditionalFreqDist()
+  >>> for sentence in brown.tagged('g'):
+  ...     for token in sentence:
+  ...         word = token[0]
+  ...         tag = token[1]
+  ...         cfdist[word].inc(tag)
+  >>> for word in "John saw 3 polar bears".split():
+  ...     print word, cfdist[word].max()
+  John np
+  saw vbd
+  3 cd-tl
+  polar jj
+  bears vbz
+    
+Note that ``bears`` was incorrectly tagged as the 3rd person singular
+form of a verb, since this word appears more frequently as a verb than
+a noun in esthetic writing.
+
+A problem with this approach is that it creates a huge model, with an
+entry for every possible combination of word and tag.  For certain
+tasks it is possible to construct reasonably good models which are
+tiny in comparison.  For instance, let's try to guess whether a verb
+is a noun or adjective from the last letter of the word alone.  We can
+do this as follows:
+
+  >>> tokens = []
+  >>> for sent in brown.tagged('g'):
+  ...     for (word,tag) in sent:
+  ...         if tag in ['nn', 'jj'] and len(word) > 3:
+  ...             char = word[-1]
+  ...             tokens.append((char,tag))
+  >>> split = len(tokens)*9/10
+  >>> train, test = tokens[:split], tokens[split:]
+  >>> cfdist = ConditionalFreqDist()
+  >>> for (char,tag) in train:
+  ...     cfdist[char].inc(tag)
+  >>> correct = total = 0
+  >>> for (char,tag) in test:
+  ...     if tag == cfdist[char].max():
+  ...         correct += 1
+  ...     total += 1
+  >>> print correct*100/total
+  71
+
+This result of 71% is marginally better than the result of 65% that we
+get if we assign the ``nn`` tag to every word.  We can inspect the
+model to see which tag is assigned to a word given its final letter.
+Here we learn that words which end in ``c`` or ``l`` are more likely
+to be adjectives than nouns::
+
+  >>> print [(c, cfdist[c].max()) for c in cfdist.conditions()]
+  [('%', 'nn'), ("'", None), ('-', 'jj'), ('2', 'nn'), ('5', 'nn'), ('A', 'nn'), ('D', 'nn'), ('O', 'nn'), ('S', 'nn'), ('a', 'nn'), ('c', 'jj'), ('b', 'nn'), ('e', 'nn'), ('d', 'nn'), ('g', 'nn'), ('f', 'nn'), ('i', 'nn'), ('h', 'nn'), ('k', 'nn'), ('m', 'nn'), ('l', 'jj'), ('o', 'nn'), ('n', 'nn'), ('p', 'nn'), ('s', 'nn'), ('r', 'nn'), ('u', 'nn'), ('t', 'nn'), ('w', 'nn'), ('y', 'nn'), ('x', 'nn'), ('z', 'nn')]
+
+Exploring text genres
+---------------------
+
+Now that we can load a significant quantity of tagged text, we can
+process it and extract items of interest.  The following code iterates
+over the fifteen genres of the Brown Corpus (accessed using
+``brown.groups()``).  The material for each genre lives in a set of
+files (accessed using ``brown.items``).  Each of these is tokenized
+in turn.  The next step is to check if the token has the ``md`` tag.
+For each of these words we increment a count.
+This uses the conditional frequency distribution, where the condition
+is the current genre, and the event is the modal.
+
+  >>> cfdist = ConditionalFreqDist()
+  >>> for genre in brown.items:                  # each genre
+  ...     for sent in brown.tagged(genre):       # each sentence
+  ...         for (word,tag) in sent:            # each tagged token
+  ...             if tag == 'md':                # found a modal
+  ...                  cfdist[genre].inc(word.lower())
+
+The conditional frequency distribution is nothing more than a mapping
+from each genre to the distribution of modals in that genre.  The
+following code fragment identifies a small set of modals of interest,
+and processes the data structure to output the required counts.
+
+  >>> modals = ['can', 'could', 'may', 'might', 'must', 'will']
+  >>> print "%-40s" % 'Genre', ' '.join([("%6s" % m) for m in modals])
+  Genre                                       can  could    may  might   must   will
+  >>> for genre in cfdist.conditions():    # generate rows
+  ...     print "%-40s" % brown.item_name[genre],
+  ...     for modal in modals:
+  ...         print "%6d" % cfdist[genre].count(modal),
+  ...     print
+  press: reportage                             94     86     66     36     50    387
+  press: reviews                               44     40     45     26     18     56
+  press: editorial                            122     56     74     37     53    225
+  skill and hobbies                           273     59    130     22     83    259
+  religion                                     84     59     79     12     54     64
+  belles-lettres                              249    216    213    113    169    222
+  popular lore                                168    142    165     45     95    163
+  miscellaneous: government & house organs    115     37    152     13     99    237
+  fiction: general                             39    168      8     42     55     50
+  learned                                     366    159    325    126    202    330
+  fiction: science                             16     49      4     12      8     16
+  fiction: mystery                             44    145     13     57     31     17
+  fiction: adventure                           48    154      6     58     27     48
+  fiction: romance                             79    195     11     51     46     43
+  humor                                        17     33      8      8      9     13
+
+There are some interesting patterns in this table.  For instance,
+compare the rows for government literature and adventure literature;
+the former is dominated by the use of ``can, may, must, will`` while
+the latter is characterised by the use of ``could`` and ``might``.
+With some further work it might be possible to guess the genre of a
+new text automatically, according to its distribution of modals.
+
+Now that we have seen how tagged tokens and tagged corpora are
+created and accessed, we are ready to take a look at the automatic
+categorization of words.
+
 -------------------
 Program Development
 -------------------

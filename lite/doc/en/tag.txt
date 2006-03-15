@@ -18,8 +18,227 @@ Tagging
 Introduction
 ------------
 
-Parts of Speech
----------------
+In the last chapter, we treated all words alike: things are either
+tokens or not. However, for many applications, we want to distinguish
+between *different kinds* of words. For example, we want to be able to
+make explicit that we have recognized one string as an ordinary
+lexical item, another as numerical expression, and yet another as a
+punctuation character. Morever, we want to distinguish different kinds
+of lexical items.  In fact, there is a long tradition within
+linguistics of classifying words into categories called *parts of
+speech*. These are sometimes also called word classes or *lexical
+categories*.  Familiar examples are *noun*, *verb*, *preposition*,
+*adjective* and *adverb*.  In this section we present the standard
+criteria for categorising words in this way, then discuss the main
+classes of words in English.
+
+Categorising Words
+------------------
+
+How do we decide what category a word should belong to? In general,
+linguists invoke three kinds of criteria for making the decision:
+morphological (or formal); syntactic (or distributional); semantic (or
+notional).  A *morphological* criterion is one which looks at the
+internal structure of a word. For example, ``-ness`` is a suffix which
+combines with an adjective to produce a noun. Examples are ``happy`` >
+``happiness``, ``ill`` > ``illness``. [#]_ So if we encounter a word
+which ends in ``-ness``, this is very likely to be a noun.  </para>
+
+.. [#] We use > to mean 'is derived from'.
+
+A *syntactic* criterion refers to the syntactic contexts in which a
+word can occur. For example, assume that we have already determined
+the category of nouns. Then we might say that a syntactic criterion
+for an adjective in English is that it can occur immediately before a
+noun, or immediately following the words ``be`` or
+``very``. According to these tests,
+``near`` should be categorised as an adjective:
+
+#. the near window
+#. The end is (very) near.
+
+A familiar example of a *semantic* criterion is that a noun is "the
+name of a person, place or thing". Within modern linguistics, notional
+criteria for word classes have be viewed with considerable suspicion,
+mainly because they are hard to formalise. Nevertheless, notional
+criteria underpin many of our intuitions about word classes, and
+enable us to make a good guess about the categorisation of words in
+languages that we are unfamiliar with; that is, if we all we know
+about the Dutch ``verjaardag`` is that it means the same as the
+English word ``birthday``, then we can guess that ``verjaardag`` is a
+noun in Dutch. However, some care is needed: although we might
+translate ``zij is vandaag jarig`` as ``it's her birthday today``, the
+word ``jarig`` is in fact an adjective in Dutch, and has no exact
+equivalent in English.
+
+.. http://www.askoxford.com/pressroom/archive/odelaunch/
+
+All languages acquire new lexical items. A list of words recently
+added to the Oxford Dictionary of English includes ``cyberslacker,
+fatoush, blamestorm, SARS, cantopop, bupkis, noughties, muggle``, and
+``robata``. Notice that all these new words are nouns, and this is
+reflected in calling nouns an *open class*. By contrast, prepositions
+are regarded as a *closed class*. That is, there is a limited set of
+words belonging to the class (e.g., ``above, along, at, below, beside,
+between, during, for, from, in, near, on, outside, over, past,
+through, towards, under, up, with``), and membership of the set only
+changes very gradually over time.
+
+..  Some word classes consist of a limited set of so-called
+    *function* words. Prepositions are one such class, comprising
+    items like etc.  These are called *closed classes*, in the sense
+    that although languages acquire new lexical items.  Content words
+    such as nouns are not limited in this way, and are continually
+    being extended with the invention of new words.  These are called
+    *open classes*.
+
+English Word Classes
+--------------------
+
+Linguists commonly recognize four major categories of open class words
+in English, namely nouns, verbs, adjectives and adverbs.  Nouns
+generally refer to people, places, things, or concepts, e.g.: *woman,
+Scotland, book, intelligence*.  In the context of a sentence, nouns
+can appear after determiners and adjectives, and can be the subject or
+object of the verb:
+
+============  =============================================  ===================================
+Syntactic Patterns involving some Nouns
+------------------------------------------------------------------------------------------------
+Word          After a determiner                             Subject of the verb
+woman         *the* woman who I saw yesterday ...             the woman *sat* down
+Scotland      *the* Scotland I remember as a child ...        Scotland *has* five million people
+book          *the* book I bought yesterday ...               this book *recounts* the colonisation of Australia
+intelligence  *the* intelligence displayed by the child ...   Mary's intelligence *impressed* her teachers
+============  =============================================  ===================================
+
+English nouns can be morphologically complex.  For example, words like
+``books`` and ``women`` are plural.  As we saw earlier, words with the
+``-ness`` suffix are nouns that have been derived from adjectives,
+e.g. ``happiness`` and ``illness``.  The ``-ment`` suffix appears on
+certain nouns derived from verbs, e.g. ``government`` and
+``establishment``.
+
+Nouns are usually further classified as *common nouns* and
+*proper nouns*.  Proper nouns identify particular individuals or entities,
+e.g. ``Moses`` and ``Scotland``, while common nouns are all the rest.
+Another important distinction exists between *count nouns* and
+*mass nouns*. Count nouns are thought of as distinct entities which can be
+counted, such as ``pig`` (e.g. ``one pig, two pigs, many pigs``).
+They cannot occur with the word ``much`` (i.e. \*\ ``much pigs``).  Mass
+nouns, on the other hand, are not thought of as distinct entities
+(e.g.  ``sand``).  They cannot be pluralised, and do not occur with
+numbers (e.g. \*\ ``two sands``, \*\ ``many sands``).  However, they can
+occur with ``much`` (i.e. ``much sand``).
+    
+Verbs are words which describe events and actions, e.g. ``fall``,
+``eat``.  In the context of a sentence, verbs express a relation
+involving the referents of one or more noun phrases.
+
+=======  =================  ===============================================
+Syntactic Patterns involving some Verbs
+---------------------------------------------------------------------------
+Word     Simple             With modifiers and adjuncts (italicised)
+fall     Rome fell          Dot com stocks *suddenly* fell *like a stone*
+eat      Mice eat cheese    John ate the pizza *with gusto*
+=======  =================  ===============================================
+
+Verbs can be classified according to the number of arguments (usually
+noun phrases) that they co-occur with.  The word ``fall`` is
+*intransitive*, requiring exactly one argument (the entity which
+falls).  The word ``eat`` is *transitive*, requiring two arguments
+(the eater and the eaten).  Other verbs are more complex; for instance
+``put`` requires three arguments, the agent doing the putting, the
+entity being put somewhere, and a location.  The ``-ing`` suffix
+appears on nouns derived from verbs, e.g. ``the falling of the
+leaves`` (this is known as the *gerund*).
+
+English verbs can be morphologically complex.  For instance, the
+*present participle* of a verb ends in ``-ing``, and expresses the
+idea of ongoing, incomplete action (e.g. ``falling, eating``).  The
+*past participle* of a verb often ends in ``-ed``, and expresses the
+idea of a completed action (e.g. ``fell, ate``).
+
+Two other important word classes are *adjectives* and *adverbs*.
+Adjectives describe nouns, and can be used as modifiers
+(e.g. ``large`` in ``the large pizza``), or in predicates (e.g. ``the
+pizza is large``).  English adjectives can be morphologically complex
+(e.g.  ``fall``:subscript:`V`\ ``+ing`` in ``the falling
+stocks``).  Adverbs modify verbs to specify the time, manner, place or
+direction of the event described by the verb (e.g. ``quickly`` in
+``the stocks fell quickly``).  Adverbs may also modify adjectives
+(e.g. ``really`` in ``Mary's teacher was really nice``).
+
+English has several categories of closed class words in addition to
+prepositions, and each dictionary and grammar classifies them
+differently.  The following table gives a sample of
+closed class words, following the classification of the Brown
+Corpus. [#]_
+
+.. [#] Note that part-of-speech tags may be presented as either
+       upper-case or lower-case strings -- there is no significance
+       attached to this difference.
+
+
+====  =========================================  ==========================================================
+Some English Closed Class Words, with Brown Tag
+-----------------------------------------------------------------------------------------------------------
+ap    determiner/pronoun, post-determiner        many other next more last former little several enough most least only very few fewer past same
+at    article                                    the an no a every th' ever' ye
+cc    conjunction, coordinating                  and or but plus & either neither nor yet 'n' and/or minus an'
+cs    conjunction, subordinating                 that as after whether before while like because if since for than until so unless though providing once lest till whereas whereupon supposing albeit then
+in    preposition                                of in for by considering to on among at through with under into regarding than since despite ...
+md    modal auxiliary                            should may might will would must can could shall ought need wilt
+pn    pronoun, nominal                           none something everything one anyone nothing nobody everybody everyone anybody anything someone no-one nothin'
+ppl   pronoun, singular, reflexive               itself himself myself yourself herself oneself ownself
+pp$   determiner, possessive                     our its his their my your her out thy mine thine
+pp$$  pronoun, possessive                        ours mine his hers theirs yours
+pps   pronoun, personal, nom, 3rd pers sng       it he she thee
+ppss  pronoun, personal, nom, not 3rd pers sng   they we I you ye thou you'uns
+wdt   WH-determiner                              which what whatever whichever
+wps   WH-pronoun, nominative                     that who whoever whosoever what whatsoever
+====  =========================================  ==========================================================
+
+Part-of-Speech Tag Sets
+-----------------------
+
+Most part-of-speech tag sets make use of the same basic categories,
+such as noun, verb, adjective, and preposition. However, tag sets
+differ both in how finely they divide words into categories; and in
+how they define their categories. For example, ``is`` might be tagged
+as a verb in one tag set; but as a distinct form of ``to be`` in
+another tag set -- in fact, we just observed the latter situation
+in the Brown Corpus tag set.  This variation in tag sets is
+unavoidable, since part-of-speech tags are used in different ways for
+different tasks. In other words, there is no one 'right way' to assign
+tags, only more or less useful ways, depending on one's goals.
+
+..  There are several part-of-speech tag sets in widespread
+    use, because there are different schemes for classifying words
+    (owing to the different weight given to formal, syntactic and
+    notional criteria), and because different processing tasks call for
+    finer or coarser classification.
+
+Observe that the tagging process simultaneously collapses distinctions
+(i.e., lexical identity is usually lost when all personal pronouns are
+tagged ``prp``), while introducing distinctions and removing
+ambiguities (e.g. ``deal`` tagged as ``vb`` or ``nn``).  This move
+facilitates classification and prediction.  Observe that when we
+introduce finer distinctions in a tag set, we get better information
+about linguistic context, but we have to do more work to classify the
+current token (there are more tags to choose from).  Conversely, with
+fewer distinctions, we have less work to do for classifying the
+current token, but less information about the context to draw on.
+
+In this tutorial, we will use the following tags: ``at`` (article)
+``nn`` (Noun), ``vb`` (Verb), ``jj`` (Adjective), ``in``
+(Preposition), ``cd`` (Number), and ``end`` (Sentence-ending
+punctuation).  As we mentioned, this is a radically simplified version
+of the Brown Corpus tag set, which in its entirety has 87 basic tags
+plus many combinations.
+
+Parts of Speech (SOME DUPLICATION HERE)
+---------------------------------------
 
 Many natural language expressions are ambiguous, and we need to draw
 on other sources of information to aid interpretation.  For instance,
@@ -156,8 +375,8 @@ in the following parse tree.
    Syntactic Parse Tree
 
 
-Common Part-of-Speech Tags
---------------------------
+Common Part-of-Speech Tags (SOME DUPLICATION HERE)
+--------------------------------------------------
 
 In this tree, we have used standard syntactic abbreviations for word
 classes. These are shown in the following table, together with their
@@ -236,7 +455,7 @@ Exercises
    Manually tag these headlines to see if knowledge of the part-of-speech
    tags removes the ambiguity.
 
-#. **Explorations with part-of-speech tagged corpora**:
+#. **Explorations with part-of-speech tagged corpora:**
    Tokenize the Brown Corpus and build one or more suitable data structures
    so that you can answer the following questions.
 
@@ -246,7 +465,7 @@ Exercises
    #)  What proportion of word types are always assigned the same part-of-speech tag?
    #)  What is the ratio of masculine to feminine pronouns?
    #)  How many words are ambiguous, in the sense that they appear with at least two tags?
-   #)  What percentage of tokens in the Brown Corpus involve
+   #)  What percentage of word *occurrences* in the Brown Corpus involve
        these ambiguous words?
    #)  Which nouns are more common in their plural form, rather than their singular form?
        (Only consider regular plurals, formed with the ``-s`` suffix.)
@@ -262,11 +481,71 @@ Exercises
        out sentences from the corpus containing the word, and giving
        examples of the different tags.
 
-.. Chapter Overview
-.. ----------------
+#. **Competition:**
+   Working with someone else, take turns to pick a word which can be
+   either a noun or a verb (e.g. ``contest``); the opponent has to
+   predict which one is likely to be the most frequent; check the
+   opponents prediction, and tally the score over several turns.
 
-.. In the next section we take ...
+------------------------
+Accessing Tagged Corpora
+------------------------
 
+Representing Tags: Python Tuples
+--------------------------------
+
+By convention, a tagged token is represented using a Python tuple::
+
+  >>> tok = ('fly', 'nn')
+  >>> tok
+  ('fly', 'nn')
+
+We can access the properties of this token in the usual way, as
+shown below:
+
+  >>> print tok[0]
+  fly
+  >>> print tok[1]
+  nn
+
+Several large corpora (such as the Brown Corpus and portions of the
+Wall Street Journal) have been manually tagged with part-of-speech
+tags.  Before we can use these corpora, we must read them from files
+and tokenize them.
+
+Reading Tagged Corpora
+----------------------
+
+Tagged texts are usually stored in files as sequences of
+whitespace-separated tokens, where each token is of the form
+``text/tag``, as illustrated below for a sample from the Brown Corpus::
+
+  The/at grand/jj jury/nn commented/vbd on/in a/at number/nn of/in
+  other/ap topics/nns ,/, among/in them/ppo the/at Atlanta/np and/cc
+  Fulton/np-tl County/nn-tl purchasing/vbg departments/nns which/wdt it/pps
+  said/vbd ``/`` are/ber well/ql operated/vbn and/cc follow/vb generally/rb
+  accepted/vbn practices/nns which/wdt inure/vb to/in the/at best/jjt
+  interest/nn of/in both/abx governments/nns ''/'' ./.
+
+Here is another example which constructs tokens from a string::
+
+  >>> sent = """
+  ... John/nn saw/vb the/at book/nn on/in the/at table/nn ./end  He/nn sighed/vb ./end
+  ... """
+  >>> from nltk_lite.tag import tag2tuple
+  >>> for t in tokenize.whitespace(sent):
+  ...     print tag2tuple(t),
+  ('John', 'nn') ('saw', 'vb') ('the', 'at') ('book', 'nn') ('on', 'in') ('the', 'at') ('table', 'nn') ('.', 'end') ('He', 'nn') ('sighed', 'vb') ('.', 'end')
+
+It is possible to use the ``nltk_lite.corpora`` module to read and
+tokenize data from a tagged corpus, as we saw above.
+
+
+Exercises
+---------
+
+#. Write programs to access the various tagged corpora included with NLTK:
+   ``brown``, ``conll2000``, and ``treebank``.
 
 --------------
 Simple Taggers
