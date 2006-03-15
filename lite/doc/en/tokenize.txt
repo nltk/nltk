@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-=====================================================================
-Elementary Language Processing: Tokenizing Text and Classifying Words
-=====================================================================
+============
+Tokenization
+============
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
@@ -14,27 +14,9 @@ Elementary Language Processing: Tokenizing Text and Classifying Words
 
 .. Note:: This is a draft.  Please send any feedback to the authors.
 
-.. _Introduction:
-
 ------------
 Introduction
 ------------
-
-Texts are usually represented in a computer as files containing a
-potentially long sequence of characters.  For most kinds of linguistic
-processing, we need to identify and categorize the words of the text.
-This turns out to be a non-trivial task.  In this chapter we introduce
-*tokens* as the building blocks of text, and show how texts can be
-*tokenized*.  Next we consider the categorization of tokens according
-to their parts-of-speech, and do some preliminary exploration of the
-Brown Corpus, a collection of over a million words of tagged English
-text.  Along the way we take a look at some interesting applications:
-generating random text, classifying words automatically, and analyzing
-the modal verbs of different genres.
-
------------------------------------
-Tokens: the building blocks of text
------------------------------------
 
 How do we know that piece of text is a *word*, and how do we represent
 words and associated information in a machine?  It might seem
@@ -151,7 +133,9 @@ sentence tokens, but only one sentence type.  When the kind of token
 or type is obvious from context, we will simply use the terms token
 and type.
 
-.. _representing.tokens:
+------------
+Tokenization
+------------
 
 Representing tokens
 -------------------
@@ -212,9 +196,8 @@ tokenization of a text can be carried out by converting the single
 string representing the text into a list of strings, each of which
 corresponds to a word.
 
-------------
-Tokenization
-------------
+Texts: Sequences of Tokens
+--------------------------
 
 Many natural language processing tasks involve analyzing texts of
 varying sizes, ranging from single sentences to very large corpora.
@@ -301,21 +284,64 @@ pattern is matched against the gaps.  For example, here is how
 
 The ``nltk_lite.corpora`` package provides ready access to several
 corpora included with NLTK, along with built-in tokenizers.  For
-example, ``brown.tagged()`` is an iterator over tagged sentences from
+example, ``brown.raw()`` is an iterator over sentences from
 the Brown Corpus.  We use ``extract()`` to extract a sentence of
 interest::
 
   >>> from nltk_lite.corpora import brown, extract
-  >>> print extract(0, brown.tagged('a'))
-  [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl'), ('Grand', 'jj-tl'), ('Jury', 'nn-tl'), ('said', 'vbd'), ('Friday', 'nr'), ('an', 'at'), ('investigation', 'nn'), ('of', 'in'), ("Atlanta's", 'np$'), ('recent', 'jj'), ('primary', 'nn'), ('election', 'nn'), ('produced', 'vbd'), ('``', '``'), ('no', 'at'), ('evidence', 'nn'), ("''", "''"), ('that', 'cs'), ('any', 'dti'), ('irregularities', 'nns'), ('took', 'vbd'), ('place', 'nn'), ('.', '.')]
+  >>> print extract(0, brown.raw('a'))
+  ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
 
-In particular, ``brown.tagged()`` doesn't just read the
-relevant text into a string, it also invokes the appropriate
-tokenizer.
+Exercises
+---------
 
-.. frequency:
+#. **Accessing and tokenizing a text file:** Obtain some plain text data
+   (e.g. visit a web-page and save it as plain text), and store it in a
+   file 'corpus.txt'.
 
----------------
+   a. Using the ``open()`` and ``read()`` functions, load the text into
+      a string variable and print it.
+
+   #. Now, tokenize the text with ``tokenize.whitespace()``, and print
+      the result.
+
+   #. Next, compute the number of tokens, using the ``len()`` function,
+      and print the result.
+
+   #. Finally, discuss shortcomings of this method for tokenizing text.
+      In particular, identify any material which has not been correctly
+      tokenized.  (You may need to look for a more complex text.)
+
+#. **Tokenizing text using regular expressions:**
+   Obtain some plain text data (e.g. the Wall Street Journal example
+   found at the start of this chapter, or else visit a web-page and
+   save it as plain text), and store it in a file 'corpus.txt', then
+   answer the following questions, using ``tokenize.regexp()``.
+
+   a. Develop a regular expression to correctly identify the tokens.
+      Pay particular attention to the treatment of punctation and numbers.
+
+   #. Word processors typically hyphenate words when they are split
+      across a linebreak.  When word-processed documents are converted to
+      plain text, the pieces are usually not recombined.  It is easy to
+      discover such texts by searching on the web for broken words,
+      e.g. ``depart- ment``.  Create a tokenizer which treats such
+      broken words as a single token.
+
+   #. Consider the following book title: *This Is the Beat Generation:
+      New York-San Francisco-Paris*.  What would it take to be able to
+      tokenize such strings so that each city name was stored as a single
+      token?
+
+#. **Concordancing:**
+   Write a function which takes a word as its argument, and which
+   searches the Brown Corpus for instances of this word.  For each
+   instance, generate a line of text with the target word in the middle.
+
+-----------------------------
+Simple Statistics with Tokens
+-----------------------------
+
 Counting Tokens
 ---------------
 
@@ -416,9 +442,8 @@ with which that word length is used::
 We can plot these points using the ``Plot`` function defined in
 ``nltk_lite.draw.plot``, as follows: ``Plot(points).mainloop()``
 
-----------------------------------------
-An Application: Predicting the Next Word
-----------------------------------------
+Predicting the Next Word
+------------------------
 
 Conditional frequency distributions are often used for prediction.
 *Prediction* is the problem of deciding a likely outcome for a given
@@ -486,420 +511,58 @@ as demonstrated by the text generated above.  A more advanced approach
 would be to randomly choose each word, with more frequent words chosen
 more often.
 
---------------------------------
-Word Classes and Parts of Speech
---------------------------------
+Exercises
+---------
 
-In the preceding sections, we have pretty much treated all words
-alike: things are either tokens or not. However, for many
-applications, we want to distinguish between *different kinds* of
-tokens. For example, we want to be able to make explicit that we have
-recognized one string as an ordinary lexical item, another as
-numerical expression, and yt another as a punctuation
-character. Morever, we want to distinguish different kinds of lexical
-items.  In fact, there is a long tradition within linguistics of
-classifying words into categories called *parts of speech*. These are
-sometimes also called word classes or *lexical categories*.  Familiar
-examples are *noun*, *verb*, *preposition*, *adjective* and *adverb*.
-In this section we present the standard criteria for categorising
-words in this way, then discuss the main classes of words in English.
+#. **Zipf's Law**:
+   Let *f(w)* be the frequency of a word *w* in free text. Suppose that
+   all the words of a text are ranked according to their frequency,
+   with the most frequent word first. Zipf's law states that the
+   frequency of a word type is inversely proportional to its rank
+   (i.e. f*r=k, for some constant k). For example, the 50th most
+   common word type should occur three times as frequently as the
+   150th most common word type.
 
-Categorising Words
-------------------
+   a) Write a Python function to process a large text and plot word
+      frequency against word rank using the nltk_lite.draw.plot module. Do
+      you confirm Zipf's law? (Hint: it helps to set the axes to log-log.) 
+      What is going on at the extreme ends of the plotted line?
 
-How do we decide what category a word should belong to? In general,
-linguists invoke three kinds of criteria for making the decision:
-morphological (or formal); syntactic (or distributional); semantic (or notional).  A
-*morphological* criterion is one which looks at the internal structure of a
-word. For example, ``-ness`` is a suffix which combines with an
-adjective to produce a noun. Examples are ``happy`` > ``happiness``,
-``ill`` > ``illness``. [#]_ So if we encounter a word which ends in
-``-ness``, this is very likely to be a noun.  </para>
+   #) Generate random text, e.g. using ``random.choice("abcdefg ")``,
+      taking care to include the space character.  Use the string
+      concatenation operator to accumulate characters into a (very)
+      long string.  Then tokenize this string, and generate the Zipf
+      plot as before, and compare the two plots.  What do you make of
+      Zipf's Law in the light of this?
 
-.. [#] We use > to mean 'is derived from'.
+#. **Predicting the next word**: The word prediction program we saw in
+   this chapter quickly gets stuck in a cycle.  Modify the program to
+   choose the next word randomly, from a list of the *n* most likely
+   words in the given context.  (Hint: store the *n* most likely words in
+   a list ``lwords`` then randomly choose a word from the list using
+   ``random.choice()``.)
 
-A *syntactic* criterion refers to the syntactic contexts in which a
-word can occur. For example, assume that we have already determined
-the category of nouns. Then we might say that a syntactic criterion
-for an adjective in English is that it can occur immediately before a
-noun, or immediately following the words ``be`` or
-``very``. According to these tests,
-``near`` should be categorised as an adjective:
+   a) Select a particular genre, such as a section of the Brown Corpus,
+      or a genesis translation, or one of the newsgroups corpora.  Train
+      your system on this corpus and get it to generate random text.  You
+      may have to experiment with different start words. How intelligible
+      is the text?  Examine the strengths and weaknesses of this method of
+      generating random text.
 
-#. the near window
-#. The end is (very) near.
+   #) Try the same approach with different genres, and with different
+      amounts of training data.  What do you observe?
 
-A familiar example of a *semantic* criterion is that a noun is "the
-name of a person, place or thing". Within modern linguistics, notional
-criteria for word classes have be viewed with considerable suspicion,
-mainly because they are hard to formalise. Nevertheless, notional
-criteria underpin many of our intuitions about word classes, and
-enable us to make a good guess about the categorisation of words in
-languages that we are unfamiliar with; that is, if we all we know
-about the Dutch ``verjaardag`` is that it means the same as the
-English word ``birthday``, then we can guess that ``verjaardag`` is a
-noun in Dutch. However, some care is needed: although we might
-translate ``zij is vandaag jarig`` as ``it's her birthday today``, the
-word ``jarig`` is in fact an adjective in Dutch, and has no exact
-equivalent in English.
+   #) Now train your system using two distinct genres and experiment
+      with generating text in the hybrid genre.  As before, discuss your
+      observations.
 
-.. http://www.askoxford.com/pressroom/archive/odelaunch/
+#. Write a program to implement one or more text readability scores
+   (see ``http://en.wikipedia.org/wiki/Readability``).
 
-All languages acquire new lexical items. A list of words recently
-added to the Oxford Dictionary of English includes ``cyberslacker,
-fatoush, blamestorm, SARS, cantopop, bupkis, noughties, muggle``, and
-``robata``. Notice that all these new words are nouns, and this is
-reflected in calling nouns an *open class*. By contrast, prepositions
-are regarded as a *closed class*. That is, there is a limited set of
-words belonging to the class (e.g., ``above, along, at, below, beside,
-between, during, for, from, in, near, on, outside, over, past,
-through, towards, under, up, with``), and membership of the set only
-changes very gradually over time.
-
-..  Some word classes consist of a limited set of so-called
-    *function* words. Prepositions are one such class, comprising
-    items like etc.  These are called *closed classes*, in the sense
-    that although languages acquire new lexical items.  Content words
-    such as nouns are not limited in this way, and are continually
-    being extended with the invention of new words.  These are called
-    *open classes*.
-
-English Word Classes
---------------------
-
-This section presents a brief overview of English word classes.
-Readers requiring more detail are encouraged to consult a grammar of
-English.
-
-Linguists commonly recognize four major categories of open class words
-in English, namely nouns, verbs, adjectives and adverbs.  Nouns
-generally refer to people, places, things, or concepts, e.g.: *woman,
-Scotland, book, intelligence*.  In the context of a sentence, nouns
-can appear after determiners and adjectives, and can be the subject or
-object of the verb:
-
-============  =============================================  ===================================
-Syntactic Patterns involving some Nouns
-------------------------------------------------------------------------------------------------
-Word          After a determiner                             Subject of the verb
-woman         *the* woman who I saw yesterday ...             the woman *sat* down
-Scotland      *the* Scotland I remember as a child ...        Scotland *has* five million people
-book          *the* book I bought yesterday ...               this book *recounts* the colonisation of Australia
-intelligence  *the* intelligence displayed by the child ...   Mary's intelligence *impressed* her teachers
-============  =============================================  ===================================
-
-English nouns can be morphologically complex.  For example, words like
-``books`` and ``women`` are plural.  As we saw earlier, words with the
-``-ness`` suffix are nouns that have been derived from adjectives,
-e.g. ``happiness`` and ``illness``.  The ``-ment`` suffix appears on
-certain nouns derived from verbs, e.g. ``government`` and
-``establishment``.
-
-Nouns are usually further classified as *common nouns* and
-*proper nouns*.  Proper nouns identify particular individuals or entities,
-e.g. ``Moses`` and ``Scotland``, while common nouns are all the rest.
-Another important distinction exists between *count nouns* and
-*mass nouns*. Count nouns are thought of as distinct entities which can be
-counted, such as ``pig`` (e.g. ``one pig, two pigs, many pigs``).
-They cannot occur with the word ``much`` (i.e. \*``much pigs``).  Mass
-nouns, on the other hand, are not thought of as distinct entities
-(e.g.  ``sand``).  They cannot be pluralised, and do not occur with
-numbers (e.g. \*``two sands``, \*``many sands``).  However, they can
-occur with ``much`` (i.e. ``much sand``).
-    
-Verbs are words which describe events and actions, e.g. ``fall``,
-``eat``.  In the context of a sentence, verbs express a relation
-involving the referents of one or more noun phrases.
-
-=======  =================  ===============================================
-Syntactic Patterns involving some Verbs
----------------------------------------------------------------------------
-Word     Simple             With modifiers and adjuncts (italicised)
-fall     Rome fell          Dot com stocks *suddenly* fell *like a stone*
-eat      Mice eat cheese    John ate the pizza *with gusto*
-=======  =================  ===============================================
-
-Verbs can be classified according to the number of arguments (usually
-noun phrases) that they co-occur with.  The word ``fall`` is
-*intransitive*, requiring exactly one argument (the entity which
-falls).  The word ``eat`` is *transitive*, requiring two arguments
-(the eater and the eaten).  Other verbs are more complex; for instance
-``put`` requires three arguments, the agent doing the putting, the
-entity being put somewhere, and a location.  The ``-ing`` suffix
-appears on nouns derived from verbs, e.g. ``the falling of the
-leaves`` (this is known as the *gerund*).
-
-English verbs can be morphologically complex.  For instance, the
-*present participle* of a verb ends in ``-ing``, and expresses the
-idea of ongoing, incomplete action (e.g. ``falling, eating``).  The
-*past participle* of a verb often ends in ``-ed``, and expresses the
-idea of a completed action (e.g. ``fell, ate``).
-
-Two other important word classes are *adjectives* and *adverbs*.
-Adjectives describe nouns, and can be used as modifiers
-(e.g. ``large`` in ``the large pizza``), or in predicates (e.g. ``the
-pizza is large``).  English adjectives can be morphologically complex
-(e.g.  ``fall``:subscript:`V`\ ``+ing`` in ``the falling
-stocks``).  Adverbs modify verbs to specify the time, manner, place or
-direction of the event described by the verb (e.g. ``quickly`` in
-``the stocks fell quickly``).  Adverbs may also modify adjectives
-(e.g. ``really`` in ``Mary's teacher was really nice``).
-
-English has several categories of closed class words in addition to
-prepositions, and each dictionary and grammar classifies them
-differently.  The following table gives a sample of
-closed class words, following the classification of the Brown
-Corpus. [#]_
-
-.. [#] Note that part-of-speech tags may be presented as either
-       upper-case or lower-case strings -- there is no significance
-       attached to this difference.
-
-
-====  =========================================  ==========================================================
-Some English Closed Class Words, with Brown Tag
------------------------------------------------------------------------------------------------------------
-ap    determiner/pronoun, post-determiner        many other next more last former little several enough most least only very few fewer past same
-at    article                                    the an no a every th' ever' ye
-cc    conjunction, coordinating                  and or but plus & either neither nor yet 'n' and/or minus an'
-cs    conjunction, subordinating                 that as after whether before while like because if since for than until so unless though providing once lest till whereas whereupon supposing albeit then
-in    preposition                                of in for by considering to on among at through with under into regarding than since despite ...
-md    modal auxiliary                            should may might will would must can could shall ought need wilt
-pn    pronoun, nominal                           none something everything one anyone nothing nobody everybody everyone anybody anything someone no-one nothin'
-ppl   pronoun, singular, reflexive               itself himself myself yourself herself oneself ownself
-pp$   determiner, possessive                     our its his their my your her out thy mine thine
-pp$$  pronoun, possessive                        ours mine his hers theirs yours
-pps   pronoun, personal, nom, 3rd pers sng       it he she thee
-ppss  pronoun, personal, nom, not 3rd pers sng   they we I you ye thou you'uns
-wdt   WH-determiner                              which what whatever whichever
-wps   WH-pronoun, nominative                     that who whoever whosoever what whatsoever
-====  =========================================  ==========================================================
-
-Part-of-Speech Tag Sets
------------------------
-
-Most part-of-speech tag sets make use of the same basic categories,
-such as noun, verb, adjective, and preposition. However, tag sets
-differ both in how finely they divide words into categories; and in
-how they define their categories. For example, ``is`` might be tagged
-as a verb in one tag set; but as a distinct form of ``to be`` in
-another tag set -- in fact, we just observed the latter situation
-in the Brown Corpus tag set.  This variation in tag sets is
-unavoidable, since part-of-speech tags are used in different ways for
-different tasks. In other words, there is no one 'right way' to assign
-tags, only more or less useful ways, depending on one's goals.
-
-..  <note><para> There are several part-of-speech tag sets in widespread
-    use, because there are different schemes for classifying words
-    (owing to the different weight given to formal, syntactic and
-    notional criteria), and because different processing tasks call for
-    finer or coarser classification.</para></note>
-
-Observe that the tagging process simultaneously collapses distinctions
-(i.e., lexical identity is usually lost when all personal pronouns are
-tagged ``prp``), while introducing distinctions and removing
-ambiguities (e.g. ``deal`` tagged as ``vb`` or ``nn``).  This move
-facilitates classification and prediction.  Observe that when we
-introduce finer distinctions in a tag set, we get better information
-about linguistic context, but we have to do more work to classify the
-current token (there are more tags to choose from).  Conversely, with
-fewer distinctions, we have less work to do for classifying the
-current token, but less information about the context to draw on.
-
-In this tutorial, we will use the following tags: ``at`` (article)
-``nn`` (Noun), ``vb`` (Verb), ``jj`` (Adjective), ``in``
-(Preposition), ``cd`` (Number), and ``end`` (Sentence-ending
-punctuation).  As we mentioned, this is a radically simplified version
-of the Brown Corpus tag set, which in its entirety has 87 basic tags
-plus many combinations.
-
----------------------------------------------
-Representing Tagged Tokens and Tagged Corpora
----------------------------------------------
-
-The preceding sections have discussed the nature and use of tags in
-language processing.  In this section the computational representation
-of tags is presented.  First we consider individual tagged tokens, and
-show how they are created and accessed.  Then we address tagged
-corpora.
-
-By convention, a tagged token is represented using a Python tuple::
-
-  >>> tok = ('fly', 'nn')
-  >>> tok
-  ('fly', 'nn')
-
-We can access the properties of this token in the usual way, as
-shown below:
-
-  >>> print tok[0]
-  fly
-  >>> print tok[1]
-  nn
-
-Several large corpora (such as the Brown Corpus and portions of the
-Wall Street Journal) have been manually tagged with part-of-speech
-tags.  Before we can use these corpora, we must read them from files
-and tokenize them.
-
-Tagged texts are usually stored in files as sequences of
-whitespace-separated tokens, where each token is of the form
-``text/tag``, as illustrated below for a sample from the Brown Corpus::
-
-  The/at grand/jj jury/nn commented/vbd on/in a/at number/nn of/in
-  other/ap topics/nns ,/, among/in them/ppo the/at Atlanta/np and/cc
-  Fulton/np-tl County/nn-tl purchasing/vbg departments/nns which/wdt it/pps
-  said/vbd ``/`` are/ber well/ql operated/vbn and/cc follow/vb generally/rb
-  accepted/vbn practices/nns which/wdt inure/vb to/in the/at best/jjt
-  interest/nn of/in both/abx governments/nns ''/'' ./.
-
-It is possible to use the ``nltk_lite.corpora`` module to read and
-tokenize data from a tagged corpus, as we saw above.
-
-Here is another example which constructs tokens from a string::
-
-  >>> sent = """
-  ... John/nn saw/vb the/at book/nn on/in the/at table/nn ./end  He/nn sighed/vb ./end
-  ... """
-  >>> from nltk_lite.tag import tag2tuple
-  >>> for t in tokenize.whitespace(sent):
-  ...     print tag2tuple(t),
-  ('John', 'nn') ('saw', 'vb') ('the', 'at') ('book', 'nn') ('on', 'in') ('the', 'at') ('table', 'nn') ('.', 'end') ('He', 'nn') ('sighed', 'vb') ('.', 'end')
-
------------------
-More Applications
------------------
-
-Now that we can access tagged text, it is possible to do a variety of
-useful processing tasks.  Here we consider just two: guessing the
-part-of-speech tag of a word, and exploring the frequency distribution
-of modal verbs according to text genre.
-
-Classifying Words Automatically
--------------------------------
-
-A tagged corpus can be used to *train* a simple classifier, which can
-then be used to guess the tag for untagged words.  For each word, we
-can count the number of times it is tagged with each tag.  For
-instance, the word ``deal`` is tagged 89 times as ``nn`` and 41 times
-as ``vb``.  On this evidence, if we were asked to guess the tag for
-``deal`` we would choose ``nn``, and we would be right over two-thirds
-of the time.  The following program performs this tagging task, when
-trained on the "g" section of the Brown Corpus (so-called *belles
-lettres*, creative writing valued for its aesthetic content).
-
-  >>> cfdist = ConditionalFreqDist()
-  >>> for sentence in brown.tagged('g'):
-  ...     for token in sentence:
-  ...         word = token[0]
-  ...         tag = token[1]
-  ...         cfdist[word].inc(tag)
-  >>> for word in "John saw 3 polar bears".split():
-  ...     print word, cfdist[word].max()
-  John np
-  saw vbd
-  3 cd-tl
-  polar jj
-  bears vbz
-    
-Note that ``bears`` was incorrectly tagged as the 3rd person singular
-form of a verb, since this word appears more frequently as a verb than
-a noun in esthetic writing.
-
-A problem with this approach is that it creates a huge model, with an
-entry for every possible combination of word and tag.  For certain
-tasks it is possible to construct reasonably good models which are
-tiny in comparison.  For instance, let's try to guess whether a verb
-is a noun or adjective from the last letter of the word alone.  We can
-do this as follows:
-
-  >>> tokens = []
-  >>> for sent in brown.tagged('g'):
-  ...     for (word,tag) in sent:
-  ...         if tag in ['nn', 'jj'] and len(word) > 3:
-  ...             char = word[-1]
-  ...             tokens.append((char,tag))
-  >>> split = len(tokens)*9/10
-  >>> train, test = tokens[:split], tokens[split:]
-  >>> cfdist = ConditionalFreqDist()
-  >>> for (char,tag) in train:
-  ...     cfdist[char].inc(tag)
-  >>> correct = total = 0
-  >>> for (char,tag) in test:
-  ...     if tag == cfdist[char].max():
-  ...         correct += 1
-  ...     total += 1
-  >>> print correct*100/total
-  71
-
-This result of 71% is marginally better than the result of 65% that we
-get if we assign the ``nn`` tag to every word.  We can inspect the
-model to see which tag is assigned to a word given its final letter.
-Here we learn that words which end in ``c`` or ``l`` are more likely
-to be adjectives than nouns::
-
-  >>> print [(c, cfdist[c].max()) for c in cfdist.conditions()]
-  [('%', 'nn'), ("'", None), ('-', 'jj'), ('2', 'nn'), ('5', 'nn'), ('A', 'nn'), ('D', 'nn'), ('O', 'nn'), ('S', 'nn'), ('a', 'nn'), ('c', 'jj'), ('b', 'nn'), ('e', 'nn'), ('d', 'nn'), ('g', 'nn'), ('f', 'nn'), ('i', 'nn'), ('h', 'nn'), ('k', 'nn'), ('m', 'nn'), ('l', 'jj'), ('o', 'nn'), ('n', 'nn'), ('p', 'nn'), ('s', 'nn'), ('r', 'nn'), ('u', 'nn'), ('t', 'nn'), ('w', 'nn'), ('y', 'nn'), ('x', 'nn'), ('z', 'nn')]
-
-Exploring text genres
----------------------
-
-Now that we can load a significant quantity of tagged text, we can
-process it and extract items of interest.  The following code iterates
-over the fifteen genres of the Brown Corpus (accessed using
-``brown.groups()``).  The material for each genre lives in a set of
-files (accessed using ``brown.items``).  Each of these is tokenized
-in turn.  The next step is to check if the token has the ``md`` tag.
-For each of these words we increment a count.
-This uses the conditional frequency distribution, where the condition
-is the current genre, and the event is the modal.
-
-  >>> cfdist = ConditionalFreqDist()
-  >>> for genre in brown.items:                  # each genre
-  ...     for sent in brown.tagged(genre):       # each sentence
-  ...         for (word,tag) in sent:            # each tagged token
-  ...             if tag == 'md':                # found a modal
-  ...                  cfdist[genre].inc(word.lower())
-
-The conditional frequency distribution is nothing more than a mapping
-from each genre to the distribution of modals in that genre.  The
-following code fragment identifies a small set of modals of interest,
-and processes the data structure to output the required counts.
-
-  >>> modals = ['can', 'could', 'may', 'might', 'must', 'will']
-  >>> print "%-40s" % 'Genre', ' '.join([("%6s" % m) for m in modals])
-  Genre                                       can  could    may  might   must   will
-  >>> for genre in cfdist.conditions():    # generate rows
-  ...     print "%-40s" % brown.item_name[genre],
-  ...     for modal in modals:
-  ...         print "%6d" % cfdist[genre].count(modal),
-  ...     print
-  press: reportage                             94     86     66     36     50    387
-  press: reviews                               44     40     45     26     18     56
-  press: editorial                            122     56     74     37     53    225
-  skill and hobbies                           273     59    130     22     83    259
-  religion                                     84     59     79     12     54     64
-  belles-lettres                              249    216    213    113    169    222
-  popular lore                                168    142    165     45     95    163
-  miscellaneous: government & house organs    115     37    152     13     99    237
-  fiction: general                             39    168      8     42     55     50
-  learned                                     366    159    325    126    202    330
-  fiction: science                             16     49      4     12      8     16
-  fiction: mystery                             44    145     13     57     31     17
-  fiction: adventure                           48    154      6     58     27     48
-  fiction: romance                             79    195     11     51     46     43
-  humor                                        17     33      8      8      9     13
-
-There are some interesting patterns in this table.  For instance,
-compare the rows for government literature and adventure literature;
-the former is dominated by the use of ``can, may, must, will`` while
-the latter is characterised by the use of ``could`` and ``might``.
-With some further work it might be possible to guess the genre of a
-new text automatically, according to its distribution of modals.
-
-Now that we have seen how tagged tokens and tagged corpora are
-created and accessed, we are ready to take a look at the automatic
-categorization of words.
+#. (Advanced) **Statistically Improbable Phrases:**
+   Design an algorithm to find the statistically improbable
+   phrases of a document collection.
+   http://www.amazon.com/gp/search-inside/sipshelp.html/
 
 ---------------
 Further Reading
@@ -920,111 +583,6 @@ Linguistics, http://www.ling.ohio-state.edu/publications/files/
 Exercises
 ---------
 
-#. Accessing and tokenizing a text file: Obtain some plain text data
-   (e.g. visit a web-page and save it as plain text), and store it in a
-   file 'corpus.txt'.
-
-   a. Using the ``open()`` and ``read()`` functions, load the text into
-      a string variable and print it.
-
-   #. Now, tokenize the text with ``tokenize.whitespace()``, and print
-      the result.
-
-   #. Next, compute the number of tokens, using the ``len()`` function,
-      and print the result.
-
-   #. Finally, discuss shortcomings of this method for tokenizing text.
-      In particular, identify any material which has not been correctly
-      tokenized.  (You may need to look for a more complex text.)
-
-#. Tokenizing text using regular expressions:
-   Obtain some plain text data (e.g. the Wall Street Journal example
-   found at the start of this chapter, or else visit a web-page and
-   save it as plain text), and store it in a file 'corpus.txt', then
-   answer the following questions, using ``tokenize.regexp()``.
-
-   a. Develop a regular expression to correctly identify the tokens.
-      Pay particular attention to the treatment of punctation and numbers.
-
-   #. Word processors typically hyphenate words when they are split
-      across a linebreak.  When word-processed documents are converted to
-      plain text, the pieces are usually not recombined.  It is easy to
-      discover such texts by searching on the web for broken words,
-      e.g. ``depart- ment``.  Create a tokenizer which treats such
-      broken words as a single token.
-
-   #. Consider the following book title: *This Is the Beat Generation:
-      New York-San Francisco-Paris*.  What would it take to be able to
-      tokenize such strings so that each city name was stored as a single
-      token?
-
-#. Concordancing:
-   Write a function which takes a word as its argument, and which
-   searches the Brown Corpus for instances of this word.  For each
-   instance, generate a line of text with the target word in the middle.
-
-#. Zipf's Law:
-   Let *f(w)* be the frequency of a word *w* in free text. Suppose that
-   all the words of a text are ranked according to their frequency,
-   with the most frequent word first. Zipf's law states that the
-   frequency of a word type is inversely proportional to its rank
-   (i.e. f*r=k, for some constant k). For example, the 50th most
-   common word type should occur three times as frequently as the
-   150th most common word type.
-
-   a. Write a Python function to process a large text and plot word
-      frequency against word rank using the nltk_lite.draw.plot module. Do
-      you confirm Zipf's law? (Hint: it helps to set the axes to log-log.) 
-      What is going on at the extreme ends of the plotted line?
-
-   #. Generate random text, e.g. using ``random.choice("abcdefg ")``,
-      taking care to include the space character.  Use the string
-      concatenation operator to accumulate characters into a (very)
-      long string.  Then tokenize this string, and generate the Zipf
-      plot as before, and compare the two plots.  What do you make of
-      Zipf's Law in the light of this?
-
-#. Working with tagged text: Write a program which loads the Brown
-   corpus, then, given a word, lists the possible tags for the word each
-   with a frequency count.  For example, for the word ``strike`` the
-   program would generate: ``[('nn', 25), ('vb', 21)]``.  (Hint: this
-   task involves sorting and reversing a list of tuples which has the
-   form ``[(21, 'vb'), (25, 'nn')]``.  To convert such lists into the
-   required form, use ``word_freq = [(y,x) for (x,y) in freq_word]``.)
-
-   a. Use your program to print the tags and their frequencies for the
-      following words: ``can, fox, get, lift, like, but, frank, line,
-      interest``.  Check that you know the meaning of the high-frequency
-      tags.
-
-   #. Write a program to find the 20 words which have the greatest
-      variety of different possible tags.
-
-   #. Pick words which can be either a noun or a verb (e.g. ``deal``).
-      Guess which is the most likely tag for each word, then check whether
-      you were right.
-
-#. Predicting the next word: The word prediction program we saw in
-   this chapter quickly gets stuck in a cycle.  Modify the program to
-   choose the next word randomly, from a list of the *n* most likely
-   words in the given context.  (Hint: store the *n* most likely words in
-   a list ``lwords`` then randomly choose a word from the list using
-   ``random.choice()``.)
-
-   a. Select a particular genre, such as a section of the Brown Corpus,
-      or a genesis translation, or one of the newsgroups corpora.  Train
-      your system on this corpus and get it to generate random text.  You
-      may have to experiment with different start words. How intelligible
-      is the text?  Examine the strengths and weaknesses of this method of
-      generating random text.
-
-   #. Try the same approach with different genres, and with different
-      amounts of training data.  What do you observe?
-
-   #. Now train your system using two distinct genres and experiment
-      with generating text in the hybrid genre.  As before, discuss your
-      observations.
-
 #. Classifying words automatically: The program for classifying words
    as nouns or adjectives scored 71%.  We will try to come up with better
    conditions, to get the system to score 80% or better.
@@ -1039,12 +597,6 @@ Exercises
    #. Finally, combine multiple conditions into a tuple, and explore
       which combination of conditions gives the best result.
 
-#. Write a program to implement one or more text readability scores
-   (http://en.wikipedia.org/wiki/Readability).
-
-#. Design an algorithm to find the statistically improbable
-   phrases of a document collection.
-   http://www.amazon.com/gp/search-inside/sipshelp.html/
 
 
 ----
