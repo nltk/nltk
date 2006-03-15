@@ -622,9 +622,28 @@ the latter is characterised by the use of ``could`` and ``might``.
 With some further work it might be possible to guess the genre of a
 new text automatically, according to its distribution of modals.
 
-Now that we have seen how tagged tokens and tagged corpora are
-created and accessed, we are ready to take a look at the automatic
-categorization of words.
+Exercises
+---------
+
+#. **Classifying words automatically:**
+   The program for classifying words as nouns or adjectives scored 71%.
+   Try to come up with better conditions, to get the system to score 80% or better.
+
+   a) Revise the condition to use a longer suffix of the word, such as
+      the last two characters, or the last three characters.  What happens
+      to the performance?  Which suffixes are diagnostic for adjectives?
+
+   #) Explore other conditions, such as variable length prefixes of a
+      word, or the length of a word, or the number of vowels in a word.
+
+   #) Finally, combine multiple conditions into a tuple, and explore
+      which combination of conditions gives the best result.
+
+#. **Exploring text genres:**
+   Investigate the table of modal distributions and look for other patterns.
+   Try to explain them in terms of your own impressionistic understanding
+   of the different genres.  Can you find other closed classes of words that
+   exhibit significant differences across different genres?
 
 -------------------
 Program Development

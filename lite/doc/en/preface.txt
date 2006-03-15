@@ -208,7 +208,7 @@ we believe it is well-suited to the special requirements of NLP.  Here
 we present a brief survey of several programming languages, for the simple
 task of reading a text and printing the words that end with ``ing``.
 We begin with the Python version, which we believe is readily interpretable,
-even by non Python programmers:
+even by non Python programmers::
 
   import sys
   for line in sys.stdin.readlines():
