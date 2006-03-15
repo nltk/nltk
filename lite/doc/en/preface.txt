@@ -216,6 +216,28 @@ even by non Python programmers:
           if word.endswith('ing'):
               print word
 
+
+Like Python, Perl is a scripting language.  However, its syntax is
+obscure.  For instance, it is difficult to guess what kind of entities
+are represented by: ``<>``, ``$``, ``my``, and ``split``, in the following
+program::
+
+  while (<>) {
+      foreach my $word (split) {
+          if ($word =~ /ing$/) {
+              print "$word\n";
+          }
+      }
+  }
+
+We agree that "it is quite easy in Perl to write programs that simply
+look like raving gibberish, even to experienced Perl programmers"
+(Hammond 2003:47).  Having used Perl ourselves in research and
+teaching since the 1980s, we have found that Perl programs of any size
+are inordinately difficult to maintain and re-use.  Therefore we
+believe Perl is not an optimal choice of programming language for
+linguists or for language processing.
+
 Prolog is a logic programming language which has been popular for
 developing natural language parsers and feature-based grammars, given
 the inbuilt support for search and the *unification* operation which
@@ -351,6 +373,11 @@ a much more compact solution of our simple task::
   module Main
     where main = interact (unlines.(filter ing).(map (filter isAlpha)).words)
       where ing = (=="gni").(take 3).reverse
+
+(We are grateful to the following people for furnishing us with these
+program samples: Tim Baldwin, Trevor Cohn, Rod Farmer, Edward
+Ivanovic, Olivia March, and Lars Yencken.)
+
 
 ----
 
