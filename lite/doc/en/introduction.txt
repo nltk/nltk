@@ -170,6 +170,15 @@ is can be accomplished using simple techniques and a small amount of
 Python code.  In the following sections we will see why it is
 interesting and important.
 
+.. Note:: An important aspect of learning NLP using these materials is
+   to experience both the challenge and -- we hope -- the
+   satisfaction of creating software to process natural language.  The
+   accompanying software, NLTK, is available for free and runs on most
+   operating systems including Linux/Unix, Mac OSX and Microsoft Windows.
+   You can download NLTK from ``http://nltk.sourceforge.net/``, along with
+   extensive documentation.  We encourage you to install NLTK on your
+   machine before reading beyond the end of this chapter.
+
 
 ----------------------
 The Language Challenge
@@ -264,15 +273,6 @@ language technologies.  By integrating all of this with the Natural
 Language Toolkit (NLTK), we hope this book opens up the exciting
 endeavour of practical natural language processing to a broader
 audience than ever before.
-
-.. Note:: An important aspect of learning NLP using these materials is
-   to experience both the challenge and -- we hope -- the
-   satisfaction of creating software to process natural language.  The
-   accompanying software, NLTK, is available for free and runs on most
-   operating systems including Linux/Unix, Mac OSX and Microsoft Windows.
-   You can download NTLK from ``http://nltk.sourceforge.net/``, along with
-   extensive documentation.  We encourage you to install NLTK on your
-   machine before reading beyond the end of this chapter.
 
 ----------------------------------------------
 A Brief History of Natural Language Processing
@@ -623,7 +623,7 @@ knowledge will be expressed as an algorithm: that is, an explicit
 recipe for mapping some input into an appropriate output in a finite
 number of steps.
 
-A simple parsing algorithm for context-free gramars, for instance,
+A simple parsing algorithm for context-free grammars, for instance,
 looks first for a rule of the form ``S`` |rarr| ``X``:subscript:`1` |cdots|
 ``X``:subscript:`n`, and builds a partial tree structure. It then steps
 through the grammar rules one-by-one, looking for a rule of the form
@@ -640,6 +640,7 @@ and the second rule chosen is ``NP`` |rarr| ``Det N``; then the partial
 tree will be:
 
 .. figure:: ../images/partialtree.png
+   :scale: 50
 
    Partial Parse Tree
 
@@ -732,32 +733,6 @@ most importantly, Python is highly readable, so much so that it is
 fairly easy to guess what the above program does even if you have
 never written a program before.
 
-This readability of Python is striking in comparison to other
-languages which have been used for NLP, such as Perl.  Here is a Perl
-program which prints words ending in ``ing``::
-
-  while (<>) {                          # for each line of input
-      foreach my $word (split) {        # for each word in a line
-          if ($word =~ /ing$/) {        # does the word end in 'ing'?
-              print "$word\n";          # if so, print the word
-          }
-      }
-  }
-
-Like Python, Perl is a scripting language.  However, its syntax is
-obscure.  For instance, it is difficult to guess what kind of entities
-are represented by: ``<>``, ``$``, ``my``, and ``split``.  We
-agree that "it is quite easy in Perl to write programs that simply
-look like raving gibberish, even to experienced Perl programmers"
-(Hammond 2003:47).  Having used Perl ourselves in research and
-teaching since the 1980s, we have found that Perl programs of any size
-are inordinately difficult to maintain and re-use.  Therefore we
-believe Perl is not an optimal choice of programming language for
-linguists or for language processing.  Several other languages are
-used for NLP, including Prolog, Java, LISP and C.  In the preface we
-provided translations of our five-line Python program into these
-and other languages, and invite you to compare them for readability.
-
 We chose Python as the implementation language for NLTK because it has
 a shallow learning curve, its syntax and semantics are transparent,
 and it has good string-handling functionality.  As a scripting
@@ -798,7 +773,7 @@ experiment with, e.g.:
 * Translation: ``http://world.altavista.com/``
 * ChatterBots: ``http://www.loebner.net/Prizef/loebner-prize.html``
 * Question Answering: ``http://www.answerbus.com/``
-* Summarisation: ``http://tangra.si.umich.edu/clair/md/demo.cgi``
+* Summarisation: `http://newsblaster.cs.columbia.edu/``
 
 Useful websites with substantial information about NLP:
 ``http://www.hltcentral.org/``, ``http://www.lt-world.org/``,
@@ -811,9 +786,7 @@ copies of introductory chapters from recent textbooks, at
 ..    Key papers that cover historical developments, ...
 
 Acknowledgements: The dialogue example is taken from Bob Carpenter and
-Jennifer Chu-Carroll's ACL-99 Tutorial on Spoken Dialogue Systems; the
-following people kindly provided program samples: Tim Baldwin, Trevor
-Cohn, Rod Farmer, Edward Ivanovic, Olivia March, and Lars Yencken.
+Jennifer Chu-Carroll's ACL-99 Tutorial on Spoken Dialogue Systems.
 
 NLP Textbooks and Surveys
 -------------------------
