@@ -22,8 +22,9 @@ any improvements to Steven Bird, for inclusion in future versions.
 #. [\ `PDF slides <introduction.pdf>`__\ \|\ `LaTeX-Beamer source <introduction.tex>`__\ ] Introduction
 #. [\ `PDF slides <programming.pdf>`__\ \|\ `LaTeX-Beamer source <programming.tex>`__\ ] Programming
 #. Tokenization
-#. [\ `PDF slides <tagging.pdf>`__\ \|\ `LaTeX-Beamer source <tagging.tex>`__\ ] Tagging
+#. [\ `PDF slides <tag.pdf>`__\ \|\ `LaTeX-Beamer source <tag.tex>`__\ ] Tagging
 #. Chunk Parsing
+#. [\ `PDF slides <chunk.pdf>`__\ \|\ `LaTeX-Beamer source <chunk.tex>`__\ ] Chunking
 #. Parsing
 #. Chart Parsing
 #. Probabilistic Grammars
