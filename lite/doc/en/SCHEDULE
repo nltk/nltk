@@ -9,7 +9,7 @@ All of us now need to be checking these thoroughly
 
 1. Introduction 75% [All]
 
-2. Programming 50% [James, 2006-03-24]
+2. Programming 50% [James, 2006-03-24; Edward]
 
 3. Tokenization 90% [All]
    + sentence tokenization (port MXTerminator?)
@@ -21,7 +21,7 @@ All of us now need to be checking these thoroughly
 Please sign up to take one of these chapters from draft to final-draft
 during April and May.
 
-5. Advanced Programming 50%
+5. Advanced Programming 50% [Edward]
    + pywordnet
    + XML
    + collocations?
@@ -32,7 +32,7 @@ during April and May.
 7. Parsing 75% [Ewan]
    + feature-based grammars
 
-8. Chart Parsing 75%
+8. Chart Parsing 75% [Edward]
 
 9. Probabilistic Grammars and Parsing 25%
 
