@@ -4,6 +4,8 @@
 ; Lines beginning with a semicolon are comments and should be ignored on 
 ; searches.
 ;
+She had your dark suit in greasy wash water all year. (sa1)
+Don't ask me to carry an oily rag like that. (sa2)
 Bright sunshine shimmers on the ocean. (sx6)
 Carl lives in a lively home. (sx17)
 Alimony harms a divorced man's wealth. (sx18)
