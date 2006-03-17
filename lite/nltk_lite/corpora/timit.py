@@ -174,6 +174,10 @@ def demo():
 
     print "audio playback:"
     print "---------------"
+    print "  playing sentence", sentid, "by speaker", spkrid, "(a.k.a. %s)"%record[0], "..."
+    data = timit.audiodata(itemid)
+    timit.play(data)
+    print
     print "  playing words:"
     words = timit.raw(sentences=[itemid], offset=True).next()
     for word, start, end in words:
@@ -189,7 +193,10 @@ def demo():
         time.sleep(1.5)
         data = timit.audiodata(itemid, start, end)
         timit.play(data)
+    print
     
     
 if __name__ == '__main__':
     demo()
+
+
