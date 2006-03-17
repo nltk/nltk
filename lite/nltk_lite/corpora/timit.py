@@ -127,8 +127,8 @@ def play(data):
 def demo():
     from nltk_lite.corpora import timit
 
-    print "sentence 5"
-    print "----------"
+    print "6th item (timit.items[5])"
+    print "-------------------------"
     itemid = timit.items[5]
     spkrid, sentid = itemid.split(':')
     print "  item id:    ", itemid
