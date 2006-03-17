@@ -8,21 +8,33 @@
 # For license information, see LICENSE.TXT
 
 """
-Read tokens from the NLTK TIMIT Corpus.
+Read tokens, phoneses and audio data from the NLTK TIMIT Corpus.
 
-TIMIT Corpus  --  http://.../
+This corpus contains selected portion of the TIMIT corpus.
 
-This corpus contains selected texts from the TIMIT corpus
+* 16 speakers from 8 dialect regions
+* 1 male and 1 female from each dialect region
+* total 130 sentences (10 sentences per speaker.  Note that some
+  sentences are shared among other speakers, especially sa1 and sa2
+  are spoken by all speakers.)
+* total 160 recording of sentences (10 recordings per speaker)
+* audio format: NIST Sphere, single channel, 16kHz sampling,
+  16 bit sample, PCM encoding
 
-* ...
 """       
 
 from nltk_lite.corpora import get_basedir
 from nltk_lite import tokenize
 from itertools import islice
-import os, re
+import ossaudiodev, time
+import sys, os, re
 
-__all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo"]
+if sys.platform.startswith('linux') or sys.platform.startswith('freebsd'):
+    PLAY_ENABLED = True
+else:
+    PLAY_ENABLED = False
+    
+__all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo", "audiodata", "play"]
 
 PREFIX = os.path.join(get_basedir(),"timit")
 
@@ -73,7 +85,45 @@ def raw(sentences=items, offset=False):
 def phonetic(sentences=items, offset=False):
     return _prim(".phn", sentences, offset)
 
+def audiodata(item, start=0, end=None):
+    """
+    @param start: start offset
+    @type start: integer (number of 16kHz frames)
+    @param end: end offset
+    @type end: integer (number of 16kHz frames) or None to indicate
+    the end of file
+    @return: string of sequence of bytes of audio samples
+    """
+    assert(end is None or end > start)
+    fnam = os.path.join(PREFIX,item.replace(':',os.path.sep)) + '.wav'
+    if end is None:
+        data = open(fnam).read()
+    else:
+        data = open(fnam).read(1024+end*2)
+    return data[1024+start*2:]
 
+def play(data):
+    """
+    @param data: audio samples
+    @type data: string of bytes of audio samples
+    """
+    if not PLAY_ENABLED:
+        print >>sys.stderr, "sorry, currently we don't support audio playback on this platform:", sys.platform
+        return
+
+    try:
+        dsp = ossaudiodev.open('w')
+    except IOError, e:
+        print >>sys.stderr, "can't acquire the audio device; please activate your audio device."
+        print >>sys.stderr, "system error message:", str(e)
+        return
+    
+    dsp.setfmt(ossaudiodev.AFMT_S16_LE)
+    dsp.channels(1)
+    dsp.speed(16000)
+    dsp.write(data)
+    dsp.close()
+    
 def demo():
     from nltk_lite.corpora import timit
 
@@ -121,5 +171,25 @@ def demo():
         print "    %-5s:" % word, timit.dictionary[word]
     print
 
+
+    print "audio playback:"
+    print "---------------"
+    print "  playing words:"
+    words = timit.raw(sentences=[itemid], offset=True).next()
+    for word, start, end in words:
+        print "    playing %-10s in 1.5 seconds ..." % `word`
+        time.sleep(1.5)
+        data = timit.audiodata(itemid, start, end)
+        timit.play(data)
+    print
+    print "  playing phonemes (first 10):"
+    phones = timit.phonetic(sentences=[itemid], offset=True).next()
+    for phone, start, end in phones[:10]:
+        print "    playing %-10s in 1.5 seconds ..." % `phone`
+        time.sleep(1.5)
+        data = timit.audiodata(itemid, start, end)
+        timit.play(data)
+    
+    
 if __name__ == '__main__':
     demo()
