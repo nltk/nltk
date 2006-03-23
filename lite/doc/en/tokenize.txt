@@ -113,7 +113,7 @@ trying to solve.
    morphemes are words in their own right, but many words contain more
    than one morpheme; most of them consist of two morphemes. However,
    there is no visual representation of word boundaries in Chinese
-   text.
+   text. Does this work? |zh-ding|
 
 ----------------
 Tokens and Types
@@ -153,8 +153,8 @@ and type.
 We can use this new terminology to express the two interpretations for
 our task unambiguously:
 
-1. Count the number of word tokens that appear in a document.
-2. Count the number of word types that appear in a document.
+1.  Count the number of word tokens that appear in a document.
+2.  Count the number of word types that appear in a document.
 
 In the previous section, we considered how we might accomplish the
 first of these tasks; now, let's turn our attention to the second
@@ -375,7 +375,7 @@ an important notion is that of a `lexeme` or `lexical item`. This
 corresponds broadly to the notion of a word that you might look up in
 a dictionary of English or some other language. For example, in order
 to find the meaning of the word ``said``, you need to know first that
-it is a particular grammatical form of the lexeme ``SAY``. (We adopt
+it is a particular `grammatical form` of the lexeme ``SAY``. (We adopt
 the standard convention of representing lexemes with upper-case
 forms.) Similarly,  ``say``, ``says`` and ``saying`` are also
 grammatical forms of ``SAY``. While ``said``, ``says`` and ``saying``
@@ -385,6 +385,15 @@ base form is conventionally used as the `lemma` (or `citation form`)
 for a word. It is the lemma that is chosen to represent the
 corresponding lexeme. (For example, the main entry for lexical item
 will be listed under the word's lemma.)
+
+Many of the word-like forms that occur in text have received little
+attention from linguists but are nevertheless so prevalent that they
+need to be dealt with in many NLP applications. These include
+abbreviations such as `Dept.` or `Mr.` and acronyms such as `NATO` ,
+`Interpol` or `SQL`. Also of interest are symbols such as $ (`dollar`)
+and @ (`at`). Unlike ordinary punctuation marks, these symbols
+(sometimes called `logograms`) stand for words, and would be spoken as
+such if the text were read aloud.
 
 
 ---------------
