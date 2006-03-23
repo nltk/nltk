@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-============
-Tokenization
-============
+=====
+Words
+=====
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
@@ -18,79 +18,94 @@ Tokenization
 Introduction
 ------------
 
-How do we know that piece of text is a *word*, and how do we represent
-words and associated information in a machine?  It might seem
-needlessly picky to ask what a word is. Can't we just say that a word
-is a string of characters which has white space before and after it?
-However, it turns out that things are quite a bit more complex. To get
-a flavour of the problems, consider the following text from the Wall
-Street Journal::
+Language can be divided up into pieces at a variety of different
+levels, ranging from sounds, to utterances, to documents.  In this
+chapter, we will focus on a very important level for much work in
+computational linguistics: words.  Just what are words, and how should
+we represent them in a machine?  At first, these may seem like trivial
+questions, but it turns out that there are some important issues
+involved in defining and encoding words.
 
-  Paragraph 12 from ``wsj_0034``
+.. It looks like the corpora module has changed a lot since the last
+   time I looked -- do we not have access to *any* texts in a
+   non-tokenized form??  That doesn't give the users much to play
+   with.  
 
-  It's probably worth paying a premium for funds that invest in markets
-  that are partially closed to foreign investors, such as South Korea,
-  some specialists say.  But some European funds recently have
-  skyrocketed; Spain Fund has surged to a startling 120% premium.  It has
-  been targeted by Japanese investors as a good long-term play tied to
-  1992's European economic integration.  And several new funds that aren't
-  even fully invested yet have jumped to trade at big premiums.
+To help us explore these issues, consider the following simple task:
+*count the number of words that appear in a document*.  We'll use the
+following article (``wsj_0063``) from the Wall Street Journal as our
+example text::
 
-  "I'm very alarmed to see these rich valuations," says Smith Barney's
-  Mr. Porter.
+  Sea Containers Ltd. said it might increase the price of its
+  $70-a-share buy-back plan if pressed by Temple Holdings Ltd., which
+  made an earlier tender offer for Sea Containers.
 
-Let's start with the string ``aren't``. According to our naive
-definition, it counts as only one word. But consider a situation where
-we wanted to check whether all the words in our text occurred in a
-dictionary, and our dictionary had entries for ``are`` and ``not``,
-but not for ``aren't``.  In this case, we would probably be happy to
-say that ``aren't`` is a contraction of two distinct words.
+      ...
+  
+  Mr. Sherwood said reaction to Sea Containers' proposal has been
+  "very positive." In New York Stock Exchange composite trading
+  yesterday, Sea Containers closed at $62.625, up 62.5 cents.
 
+.. Should we use a smaller example, where we can include the whole
+   text?  I picked this example by serching for a variety of
+   interesting features (contains '--', contractions, numbers,
+   quotes, the same word used in lower case & capitalized, etc).
 
-.. We can make a similar point about ``1992's``. We might want to run
-   a small program over our text to extract all words which express
-   dates. In this case, we would get achieve more generality by first
-   stripping oexcept in this case, we would not expect to find
-   ``1992`` in a dictionary.
+To count the number of words in this article, we can simply divide it
+up into a list of individual word strings, and check the length of
+that list.  They most obvious way to divide the article up is to split
+its text string on any sequence of spaces, newlines, or other
+"whitespace" characters:
 
-If we take our naive definition of word literally (as we should, if we
-are thinking of implementing it in code), then there are some other
-minor but real problems. For example, assuming our file consists of a
-number of separate lines, as in the WSJ text, then all the
-words which come at the beginning of a line will fail to be preceded
-by whitespace (unless we treat the newline character as a
-whitespace). Second, according to our criterion, punctuation symbols
-will form part of words; that is, a string like ``investors,`` will
-also count as a word, since there is no whitespace between
-``investors`` and the following comma. Consequently, we run the risk
-of failing to recognise that ``investors,`` (with appended comma) is a
-token of the same type as ``investors`` (without appended comma). More
-importantly, we would like punctuation to be a "first-class citizen"
-for tokenization and subsequent processing. For example, we might want
-to implement a rule which says that a word followed by a period is
-likely to be an abbreviation if the immediately following word has a
-lowercase initial. However, to formulate such a rule, we must be able
-to identify a period as a token in its own right.
+  >>> words = text.split()
+  >>> print words
+  ['Sea', 'Containers', 'Ltd.', 'said', 'it', 'might', ...]
+  >>> len(words)
+  426
 
-A slightly different challenge is raised by examples such as the
-following (drawn from the MedLine corpus):
+However, there are a few issues with this solution.  First, it is not
+clear that every sequence of non-whitespace characters should be
+considered a word.  For example, our example article contains the
+following sentence::
 
-#. This is a alpha-galactosyl-1,4-beta-galactosyl-specific adhesin.
+  A spokesman for Temple estimated that Sea Containers' plan -- if all
+  the asset sales materialize -- would result in shareholders
+  receiving only $36 to $45 a share in cash.
 
-#. The corresponding free cortisol fractions in these sera were 4.53
-   +/- 0.15% and 8.16 +/- 0.23%, respectively.
+Our simple algorithm treats each occurance of the sequence "``--``" as
+a word; but most humans would consider them to be punctuation marks,
+not words.
 
-In these cases, we encounter terms which are unlikely to be found in
-any general purpose English lexicon. Moreover, we will have no success
-in trying to syntactically analyse these strings using a standard
-grammar of English. Now for some applications, we would like to
-"bundle up" expressions such as
-``alpha-galactosyl-1,4-beta-galactosyl-specific adhesin`` and ``4.53
-+/- 0.15%`` so that they are presented as unanalysable atoms to the
-parser. That is, we want to treat them as single "words" for the
-purposes of subsequent processing.  The upshot is that, even if we
-confine our attention to English text, the question of what we treat
-as word may depend a great deal on what our purposes are.
+Second, there may be some character sequences that are not separated
+by whitespace, but which we still want to consider separate words.
+One example of this is contractions, such as "``didn't``."  If we're
+analyzing the meaning of a sentence, it might be more useful to treat
+this character string as two separate words, "``did``" and "``not``."
+Similarly, it sometimes makes more sense to treat hyphenated strings
+as two words.  For example, in the expression "``pro-New York``,"
+it seems quite unnatural to say that "``pro-New``" is a single word.
+
+.. I know I've seen better examples of this than "pro-New York, but
+   I can't think of one right now..
+   
+Finally, there may be times when we want to treat a character sequence
+that contains whitespace as a single word.  For example, it it
+sometimes useful to treat proper names such as "John Smith" or "New
+York" as individual words, even though they contain spaces.
+
+As an expecially subtle example, consider the numeric expressions in
+the following sentence (drawn from the MedLine corpus)::
+
+  The corresponding free cortisol fractions in these sera were 4.53
+  +/- 0.15% and 8.16 +/- 0.23%, respectively.
+
+Should we say that the numeric expression "4.53 +/- 0.15%" is three
+words?  Or should we say that it's a single compound word?  Or should
+we say that it is actually *nine* words, since it's read "four point
+five three, plus or minus fifteen percent"?  Or should we say that
+it's not a "real" word at all, since it wouldn't appear in any
+dictionary?  The answer will most likely depend on what task we're
+trying to solve.
 
 .. Note:: If we turn to languages other than English, segmenting words
    can be even more of a challenge. For example, in Chinese
@@ -100,21 +115,24 @@ as word may depend a great deal on what our purposes are.
    there is no visual representation of word boundaries in Chinese
    text.
 
-Let's look in more detail at the words in the WSJ text.
-Suppose we use white space as the delimiter for words, and then list
-all the words of the text in alphabetical order; we would expect to
-get something like the following::
+----------------
+Tokens and Types
+----------------
+Let us return to our task: *count the number of words that appear in a
+document*.  In the previous section, we interpreted "the number of
+words" to mean "the number of times was any word was used."  However,
+another interpretation is possible: we might want to know how many
+distinct "dictionary entries" were used, regardless of the number of
+times that each dictionary item was repeated.  For example, the
+following sentence contains seven "word uses," but only uses four
+"dictionary entries"::
 
-  120, 1992, And, Barney, But, European, European, Fund, I, It, It,
-  Japanese, Korea, Mr, Porter, Smith, South, Spain, a, a, a, ...
+  John likes Mary and Mary likes John.
 
-Now, if we ask a program utility to tell us how many words there in
-the text, it will probably return the answer: 90.  This calculation
-depends on treating each of the three occurrences of ``a`` as a
-separate word. Yet what do we mean by saying that is some object ``a``
-which occurs three times? Are there three words ``a`` or just one? We
-can in fact answer "Both" if we draw a distinction between a word
-*token* versus a word *type*.  A word type is somewhat abstract; it's
+Two distinguish between these two interpretations, we will define two
+new terms, "token" and "type."  A word *token* is an individual
+occurance of a word in a concrete context.  A word *type* is a
+"dictionary entry" for a word.  A word type is somewhat abstract; it's
 what we're talking about when we say that we know the meaning of the
 word ``deprecate``, or when we say that the words ``barf`` and
 ``vomit`` are synonyms. On the other hand, a word token is something
@@ -122,8 +140,7 @@ which exists in time and space. For example, we could talk about my
 uttering a token of the word ``grunge`` in Edinburgh on July 14, 2003;
 equally, we can say that the second word token in the WSJ text is a
 token of the word type ``probably``, or that there are two tokens of
-the type ``European`` in the text.  More generally, we want to say
-that there are 90 word tokens in the WSJ text, but only 76 word types.
+the type ``European`` in the text.
 
 The terms *token* and *type* can also be applied to other linguistic
 entities.  For example, a *sentence token* is an individual occurrence
@@ -133,114 +150,147 @@ sentence tokens, but only one sentence type.  When the kind of token
 or type is obvious from context, we will simply use the terms token
 and type.
 
+We can use this new terminology to express the two interpretations for
+our task unambiguously:
+
+1. Count the number of word tokens that appear in a document.
+2. Count the number of word types that appear in a document.
+
+In the previous section, we considered how we might accomplish the
+first of these tasks; now, let's turn our attention to the second
+task, that of counting word types.  Again, we will start with a simple
+approach: split the article's text on any sequence of whitespace, and
+count the number of times each substring occurs.  But this time, we'll
+use a ``set`` instead of a ``list`` to collect the words:
+
+  >>> word_types = set()
+  >>> for word in text.split():
+  ...     word_types.add(word)
+  >>> print word_types
+  set(['$777', 'August,', 'surplus', 'issues,"', 'price.', 'The',
+       'the', 'price', '--', 'legal', "didn't", 'asset', 'assets', ...])
+  >>> print len(word_types)
+  252
+
+A quick glance at the contents of ``word_types`` reveals some of the
+shortcomings of this approach.  These shortcomings can be divided into
+to categories:
+
+- *Tokenization*: Which substrings of the original text contain
+  word tokens?
+- *Type definition*: How do we decide whether two tokens have the
+  same type?
+
+We encountered many of the issues with tokenization when we looked at
+the task of counting tokens.  For example, should "``--``" be counted
+as a word token?  In addition to the issues we've already seen, our
+algorithm's ignorance about punctuation can cause it to count the same
+word type multiple times.  For example, the substrings "``price.``"
+and "``price``" will be treated as two different word types. When we
+were counting tokens, this didn't affect our overall answer, since
+both "``price.``" and "price" count as a single token.  But since the
+two strings are not identical, our algorithm counts them as two
+separate types.  These tokenization issues could be addressed by
+defining a more advanced algorithm for splitting the text into word
+tokens (i.e., a *tokenizer*).
+
+The type definition issues are exemplified by the fact that "``the``"
+and "``The``" are listed as two separate word types.  We would like to
+say that these two tokens have the same type, but just happen to be
+written differently.  But since our simple algorithm uses strict
+equality to divide word tokens into types, it treats them as two
+distinct types.  A more subtle question is whether the two tokens
+"``asset``" and "``assets``" should be considered to share a type or
+not.  On the one hand, they would both be listed under the same entry
+in a dictionary; but on the other hand, there is a definite semantic
+difference between them.  As with some of the questions about
+tokenization, our decision about whether to treat these two tokens as
+having the same type or not will depend on the problem we're trying to
+solve.
+
+Example: Stylistics
+-------------------
+
+So far, we've seen how to count the number of tokens or types in a
+document.  But it's much more interesting to look at *which* tokens or
+types appear in a document.  We can use a dictionary to count the
+number of occurances of each word type in a document:
+
+  >>> counts = {}
+  >>> for word in text.split():
+  ...     counts[word] = counts.get(word, 0) + 1
+
+In the expression ``counts.get(word, 0)``, ``0`` is a default value:
+the expression will return ``counts[word]`` if word is alreay in the
+dictionary, or 0 if it is not.  To view the contents of the
+dictionary, we can iterate over its keys and print each entry:
+    
+  >>> for word in sorted(counts):
+  ...     print counts[word], word
+  1 $777
+  1 August,
+  1 surplus
+  1 issues,"
+    ...
+  3 In
+  1 at
+
+We can also print the number of times that a specific word we're
+interested in appeared:
+
+  >>> print counts['might']
+  3
+
+Applying this same approach to document collections that are
+categorized by genre, we cn learn something about the patterns of word
+usage in those genres.  For example, the following table was
+constructed by counting the number of times various modal words appear
+in different genres in the Brown Corpus:
+
+==================  ===  =====  ===  =====  ====  ====
+Use of Modals in Brown Corpus, by Genre
+------------------------------------------------------
+Genre               can  could  may  might  must  will 
+==================  ===  =====  ===  =====  ====  ====
+skill and hobbies   273  59     130  22     83    259 
+humor               17   33     8    8      9     13 
+fiction: science    16   49     4    12     8     16 
+press: reportage    94   86     66   36     50    387 
+fiction: romance    79   195    11   51     46    43 
+religion            84   59     79   12     54    64 
+==================  ===  =====  ===  =====  ====  ====
+
+.. This might be a good place to put a couple exercises, to let them
+   wet their feet.  E.g., look at the ratio of types:tokens in
+   different genres.
+
 ------------
 Tokenization
 ------------
 
-Representing tokens
--------------------
+*Tokenization* is the task of extracting a list of elementary tokens
+that constitute a piece of language data.  As we've seen, tokenization
+based solely on whitespace is too simplistic for most applications.
+More advanced tokenization can be performed by using a regular
+expression to specify which character sequences should be treated as
+words.
 
-When written language is stored in a computer file it is normally
-represented as a sequence or *string* of characters.  That is, in a
-standard text file, individual words are strings, sentences are
-strings, and indeed the whole text is one long string. The characters
-in a string don't have to be just the ordinary alphanumerics; strings
-can also include special characters which represent space, tab and
-newline.
+.. Note:: We mainly focus on tokenization of text data into words,
+   since it's such a common task, but tokenization can also be applied
+   to different modalities, such as speech (or even sign language);
+   and to different levels, such as phonemes or sentences.
 
-Most computational processing is performed above the level of
-characters.  In compiling a programming language, for example, the
-compiler expects its input to be a sequence of tokens that it knows
-how to deal with; for example, the classes of identifiers, string
-constants and numerals.  Analogously, a parser will expect its input
-to be a sequence of word tokens rather than a sequence of individual
-characters.  At its simplest, then, tokenization of a text involves
-searching for locations in the string of characters containing
-whitespace (space, tab, or newline) or certain punctuation symbols,
-and breaking the string into word tokens at these points.  For
-example, suppose we have a file containing the following two lines::
+.. I don't approve of defining a 'regexp' function inside a
+   'regexp' module and then importing it into the parent package
+   so that it's impossible to access the module. :-/
 
-  The cat climbed
-  the tree.
+.. I strongly object to having the regexp tokenizer need an
+   advanced=True arugment to deal with standard regexps.
 
-From the parser's point of view, this file is just a string of
-characters:
-
-  'The_cat_climbed\\n_the_tree.'
-
-Note that we use single quotes to delimit strings, "_" to represent
-space and "\n" to represent newline.
-
-As we just pointed out, to tokenize this text for consumption by the
-parser, we need to explicitly indicate which substrings are words. One
-convenient way to do this in Python is to split the string into a
-*list* of words, where each word is a string, such as
-``'dog'``. [#]_ 
-In Python, lists are printed as a series of objects
-(in this case, strings), surrounded by square brackets and separated
-by commas::
-
-  >>> words = ['the', 'cat', 'climbed', 'the', 'tree']
-  >>> words
-  ['the', 'cat', 'climbed', 'the', 'tree']
-
-.. [#] We say "convenient" because Python makes it easy to iterate
-       through a list, processing the items one by one.
-
-Notice that we have introduced a new variable ``words`` which is bound
-to the list, and that we entered the variable on a new line to check
-its value.
-
-To summarize, we have just illustrated how, at its simplest,
-tokenization of a text can be carried out by converting the single
-string representing the text into a list of strings, each of which
-corresponds to a word.
-
-Texts: Sequences of Tokens
---------------------------
-
-Many natural language processing tasks involve analyzing texts of
-varying sizes, ranging from single sentences to very large corpora.
-There are a number of ways to represent texts using NLTK.  The
-simplest is as a single string.  These strings can be loaded directly
-from files::
-
-  >>> text_str = open('corpus.txt').read() 
-  >>> text_str
-  'Hello world.  This is a test file.\n'
-
-However, as noted above, it is usually preferrable to represent a text
-as a list of tokens.  These lists are typically created using a
-*tokenizer*, such as ``tokenize.whitespace`` which splits strings into
-words at whitespaces::
-
-  >>> from nltk_lite import tokenize
-  >>> text = 'Hello world.  This is a test string.'
-  >>> list(tokenize.whitespace(text))
-  ['Hello', 'world.', 'This', 'is', 'a', 'test', 'string.']
-
-.. Note:: By "whitespace", we mean not only interword space, but
-   also tab and line-end.
-
-Note that tokenization may normalize the text, mapping all words to lowercase,
-expanding contractions, and possibly even stemming the words.  An
-example for stemming is shown below::
-
-     >>> text = 'stemming can be fun and exciting'
-     >>> tokens = tokenize.whitespace(text)
-     >>> porter = tokenize.PorterStemmer()
-     >>> for token in tokens:
-     ...     print porter.stem(token),
-     stem can be fun and excit
-
-Tokenization based on whitespace is too simplistic for most
-applications; for instance, it fails to separate the last word of a
-phrase or sentence from punctuation characters, such as comma, period,
-exclamation mark and question mark.  As its name suggests,
-``tokenize.regexp`` employs a regular expression to determine how text
-should be split up.  This regular expression specifies the characters
-that can be included in a valid word.  To define a tokenizer that
-includes punctuation as separate tokens, we could use:
+The function ``epydoc.tokenize.regexp()`` takes a text string and a
+regular expression, and returns the list of substrings that match the
+regular expression.  To define a tokenizer that includes punctuation
+as separate tokens, we could use:
 
   >>> text = '''Hello.  Isn't this fun?'''
   >>> pattern = r'\w+|[^\w\s]+'
@@ -265,7 +315,7 @@ expression.  For example, it currently breaks the string
 ``'$22.50'`` into four tokens; but we might want it to include this
 as a single token.  One approach to making this change would be
 to add a new clause to the tokenizer's regular expression, which
-is specialized for handling strings of this form::
+is specialized for handling strings of this form:
 
   >>> text = 'That poster costs $22.40.'
   >>> pattern = r'\w+|\$\d+\.\d+|[^\w\s]+'
@@ -277,94 +327,54 @@ matching the material that appears *between* tokens, such as whitespace
 and punctuation.  The ``tokenize()`` function constructor permits
 an optional boolean parameter ``gaps``; when set to ``True`` the
 pattern is matched against the gaps.  For example, here is how
-``whitespaceTokenize()`` is defined::
+``whitespaceTokenize()`` is defined:
 
   >>> list(tokenize.regexp(text, pattern=r'\s+', gaps=True))
   ['That', 'poster', 'costs', '$22.40.']
 
-The ``nltk_lite.corpora`` package provides ready access to several
-corpora included with NLTK, along with built-in tokenizers.  For
-example, ``brown.raw()`` is an iterator over sentences from
-the Brown Corpus.  We use ``extract()`` to extract a sentence of
-interest::
+---------------
+Type Definition
+---------------
 
-  >>> from nltk_lite.corpora import brown, extract
-  >>> print extract(0, brown.raw('a'))
-  ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
+This section should discuss how we define types.  I.e., how do we
+decide whether two tokens have the same type or not.  Note that this
+is a more general concept than normalization & stemming, but it's
+certainly related.  This section should talk about:
+  - normalization (eg case normalization)
+  - stemming
+  - roots & inflection
+  - porter stemmer
+  - morphology?
 
-Exercises
----------
+.. Why is stemming stuff in the tokenization module?  Tokenization 
+   and normalization are two totally separate concepts in my mind.
 
-#. **Accessing and tokenizing a text file:** Obtain some plain text data
-   (e.g. visit a web-page and save it as plain text), and store it in a
-   file 'corpus.txt'.
-
-   a. Using the ``open()`` and ``read()`` functions, load the text into
-      a string variable and print it.
-
-   #. Now, tokenize the text with ``tokenize.whitespace()``, and print
-      the result.
-
-   #. Next, compute the number of tokens, using the ``len()`` function,
-      and print the result.
-
-   #. Finally, discuss shortcomings of this method for tokenizing text.
-      In particular, identify any material which has not been correctly
-      tokenized.  (You may need to look for a more complex text.)
-
-#. **Tokenizing text using regular expressions:**
-   Obtain some plain text data (e.g. the Wall Street Journal example
-   found at the start of this chapter, or else visit a web-page and
-   save it as plain text), and store it in a file 'corpus.txt', then
-   answer the following questions, using ``tokenize.regexp()``.
-
-   a. Develop a regular expression to correctly identify the tokens.
-      Pay particular attention to the treatment of punctation and numbers.
-
-   #. Word processors typically hyphenate words when they are split
-      across a linebreak.  When word-processed documents are converted to
-      plain text, the pieces are usually not recombined.  It is easy to
-      discover such texts by searching on the web for broken words,
-      e.g. ``depart- ment``.  Create a tokenizer which treats such
-      broken words as a single token.
-
-   #. Consider the following book title: *This Is the Beat Generation:
-      New York-San Francisco-Paris*.  What would it take to be able to
-      tokenize such strings so that each city name was stored as a single
-      token?
-
-#. **Concordancing:**
-   Write a function which takes a word as its argument, and which
-   searches the Brown Corpus for instances of this word.  For each
-   instance, generate a line of text with the target word in the middle.
+-----------------
+Lexical Resources
+-----------------
+Discuss lexical resources:
+  - what are they?
+  - different notions of type
+  - examples
+    - finding rhyming words
+    - using cmudict
+    - prononciation variation
 
 -----------------------------
 Simple Statistics with Tokens
 -----------------------------
 
-Counting Tokens
----------------
-
-Perhaps the simplest thing to do once we have pulled tokens out of
-text is to count them.  We can do this as follows, to compare the
-lengths of the English and Finnish translations of the book of
-Genesis::
-
-  >>> from nltk_lite.corpora import genesis
-  >>> len(list(genesis.raw('english-kjv')))
-  38240
-  >>> len(list(genesis.raw('finnish')))
-  26595
-
-We can do more sophisticated counting using *frequency distribution*.
-In general, a frequency distribution records the number of times each
-outcome of an experiment has occured.  For instance, a frequency
-distribution could be used to record the frequency of each word in a
-document.  Frequency distributions are generally initialized by
-repeatedly running an experiment, and incrementing the count for a
-sample every time it is an outcome of the experiment.  The following
-program produces a frequency distribution that records how often each
-word occurs in a text, and prints the most frequently occurring word:
+We can do more sophisticated counting using *frequency distributions*.
+Abstractly, a frequency distribution is a record of the number of
+times each *outcome* of an *experiment* has occured.  For instance, a
+frequency distribution could be used to record the frequency of each
+word in a document (where the "experiment" is examining a word, and
+the "outcome" is the word's type).  Frequency distributions are
+generally created by repeatedly running an experiment, and
+incrementing the count for a sample every time it is an outcome of the
+experiment.  The following program produces a frequency distribution
+that records how often each word type occurs in a text, and prints the
+most frequently occurring word:
 
   >>> from nltk_lite.probability import FreqDist
   >>> fd = FreqDist()
@@ -375,7 +385,7 @@ word occurs in a text, and prints the most frequently occurring word:
 
 Once we construct a frequency distribution that records
 the outcomes of an experiment, we can use it to examine a number
-of interesting properties of the experiment.  These properties
+of interesting properties of the experiment.  Some of these properties
 are summarized below:
 
 ==========  ==================  ===========================================
@@ -390,7 +400,7 @@ Samples     fd.samples()        list of distinct samples recorded
 Max         fd.max()            sample with the greatest number of outcomes
 ==========  ==================  ===========================================
 
-We can use a ``FreqDist`` to examine the distribution of word lengths
+We can also use a ``FreqDist`` to examine the distribution of word lengths
 in a corpus.  For each word, we find its length, and increment the
 count for words of this length.
 
@@ -407,6 +417,9 @@ count for words of this length.
   >>> length_dist('finnish')
    0  0  9  6 10 16 16 12  9  6  3  2  2  1  0
 
+Conditional Frequency Distributions
+-----------------------------------
+
 A *condition* specifies the context in which an experiment is
 performed.  Often, we are interested in the effect that conditions
 have on the outcome for an experiment.  For example, we might want to
@@ -420,8 +433,6 @@ is a collection of frequency distributions for the same
 experiment, run under different conditions.  The individual
 frequency distributions are indexed by the condition.
 
-::
-
   >>> from nltk_lite.probability import ConditionalFreqDist
   >>> cfdist = ConditionalFreqDist()
 
@@ -432,7 +443,7 @@ frequency distributions are indexed by the condition.
 
 To plot the results, we construct a list of points, where the x
 coordinate is the word length, and the y coordinate is the frequency
-with which that word length is used::
+with which that word length is used:
 
   >>> for cond in cfdist.conditions():
   ...     wordlens = cfdist[cond].samples()
@@ -564,6 +575,19 @@ Exercises
    phrases of a document collection.
    http://www.amazon.com/gp/search-inside/sipshelp.html/
 
+-------
+Summary
+-------
+
+- Add a summary and/or conclusions section here that links into the
+  following chapter on tagging.  Some possibilities:
+  
+    - word types collapse distinctions between tokens.  But
+      sometimes we want to group tokens while preserving those
+      distinctions.  I.e., tagging.
+
+    - transition via lexical resources?
+
 ---------------
 Further Reading
 ---------------
@@ -579,11 +603,192 @@ Language Files: Materials for an Introduction to Language and
 Linguistics (Eighth Edition), The Ohio State University Department of
 Linguistics, http://www.ling.ohio-state.edu/publications/files/
 
-
-
 ----
 
 NLTK_
 
 .. _NLTK: http://nltk.sourceforge.net/
+
+
+.. ===================== UNUSED =====================
+
+   Some of the following material might belong in other chapters
+
+   Programming?
+   ------------
+   The ``nltk_lite.corpora`` package provides ready access to several
+   corpora included with NLTK, along with built-in tokenizers.  For
+   example, ``brown.raw()`` is an iterator over sentences from
+   the Brown Corpus.  We use ``extract()`` to extract a sentence of
+   interest:
+   
+     >>> from nltk_lite.corpora import brown, extract
+     >>> print extract(0, brown.raw('a'))
+     ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent', 'primary', 'election', 'produced', '``', 'no', 'evidence', "''", 'that', 'any', 'irregularities', 'took', 'place', '.']
+   
+   Old intro material
+   ------------------
+   How do we know that piece of text is a *word*, and how do we represent
+   words and associated information in a machine?  It might seem
+   needlessly picky to ask what a word is. Can't we just say that a word
+   is a string of characters which has white space before and after it?
+   However, it turns out that things are quite a bit more complex. To get
+   a flavour of the problems, consider the following text from the Wall
+   Street Journal::
+   
+     Let's start with the string ``aren't``. According to our naive
+     definition, it counts as only one word. But consider a situation where
+     we wanted to check whether all the words in our text occurred in a
+     dictionary, and our dictionary had entries for ``are`` and ``not``,
+     but not for ``aren't``.  In this case, we would probably be happy to
+     say that ``aren't`` is a contraction of two distinct words.
+   
+   
+   .. We can make a similar point about ``1992's``. We might want to run
+      a small program over our text to extract all words which express
+      dates. In this case, we would get achieve more generality by first
+      stripping oexcept in this case, we would not expect to find
+      ``1992`` in a dictionary.
+   
+   If we take our naive definition of word literally (as we should, if we
+   are thinking of implementing it in code), then there are some other
+   minor but real problems. For example, assuming our file consists of a
+   number of separate lines, as in the WSJ text, then all the
+   words which come at the beginning of a line will fail to be preceded
+   by whitespace (unless we treat the newline character as a
+   whitespace). Second, according to our criterion, punctuation symbols
+   will form part of words; that is, a string like ``investors,`` will
+   also count as a word, since there is no whitespace between
+   ``investors`` and the following comma. Consequently, we run the risk
+   of failing to recognise that ``investors,`` (with appended comma) is a
+   token of the same type as ``investors`` (without appended comma). More
+   importantly, we would like punctuation to be a "first-class citizen"
+   for tokenization and subsequent processing. For example, we might want
+   to implement a rule which says that a word followed by a period is
+   likely to be an abbreviation if the immediately following word has a
+   lowercase initial. However, to formulate such a rule, we must be able
+   to identify a period as a token in its own right.
+   
+   A slightly different challenge is raised by examples such as the
+   following (drawn from the MedLine corpus):
+   
+   #. This is a alpha-galactosyl-1,4-beta-galactosyl-specific adhesin.
+   
+   #. The corresponding free cortisol fractions in these sera were 4.53
+      +/- 0.15% and 8.16 +/- 0.23%, respectively.
+   
+   In these cases, we encounter terms which are unlikely to be found in
+   any general purpose English lexicon. Moreover, we will have no success
+   in trying to syntactically analyse these strings using a standard
+   grammar of English. Now for some applications, we would like to
+   "bundle up" expressions such as
+   ``alpha-galactosyl-1,4-beta-galactosyl-specific adhesin`` and ``4.53
+   +/- 0.15%`` so that they are presented as unanalysable atoms to the
+   parser. That is, we want to treat them as single "words" for the
+   purposes of subsequent processing.  The upshot is that, even if we
+   confine our attention to English text, the question of what we treat
+   as word may depend a great deal on what our purposes are.
+   
+   Representing tokens
+   -------------------
+   When written language is stored in a computer file it is normally
+   represented as a sequence or *string* of characters.  That is, in a
+   standard text file, individual words are strings, sentences are
+   strings, and indeed the whole text is one long string. The characters
+   in a string don't have to be just the ordinary alphanumerics; strings
+   can also include special characters which represent space, tab and
+   newline.
+   
+   Most computational processing is performed above the level of
+   characters.  In compiling a programming language, for example, the
+   compiler expects its input to be a sequence of tokens that it knows
+   how to deal with; for example, the classes of identifiers, string
+   constants and numerals.  Analogously, a parser will expect its input
+   to be a sequence of word tokens rather than a sequence of individual
+   characters.  At its simplest, then, tokenization of a text involves
+   searching for locations in the string of characters containing
+   whitespace (space, tab, or newline) or certain punctuation symbols,
+   and breaking the string into word tokens at these points.  For
+   example, suppose we have a file containing the following two lines::
+   
+     The cat climbed
+     the tree.
+   
+   From the parser's point of view, this file is just a string of
+   characters:
+   
+     'The_cat_climbed\\n_the_tree.'
+   
+   Note that we use single quotes to delimit strings, "_" to represent
+   space and "\n" to represent newline.
+   
+   As we just pointed out, to tokenize this text for consumption by the
+   parser, we need to explicitly indicate which substrings are words. One
+   convenient way to do this in Python is to split the string into a
+   *list* of words, where each word is a string, such as
+   ``'dog'``. [#]_ 
+   In Python, lists are printed as a series of objects
+   (in this case, strings), surrounded by square brackets and separated
+   by commas:
+   
+     >>> words = ['the', 'cat', 'climbed', 'the', 'tree']
+     >>> words
+     ['the', 'cat', 'climbed', 'the', 'tree']
+   
+   .. [#] We say "convenient" because Python makes it easy to iterate
+          through a list, processing the items one by one.
+   
+   Notice that we have introduced a new variable ``words`` which is bound
+   to the list, and that we entered the variable on a new line to check
+   its value.
+   
+   To summarize, we have just illustrated how, at its simplest,
+   tokenization of a text can be carried out by converting the single
+   string representing the text into a list of strings, each of which
+   corresponds to a word.
+   
+   Some of this could maybe be dicussed in the programming chapter?
+   ----------------------------------------------------------------
+   Many natural language processing tasks involve analyzing texts of
+   varying sizes, ranging from single sentences to very large corpora.
+   There are a number of ways to represent texts using NLTK.  The
+   simplest is as a single string.  These strings can be loaded directly
+   from files:
+   
+     >>> text_str = open('corpus.txt').read() 
+     >>> text_str
+     'Hello world.  This is a test file.\n'
+   
+   However, as noted above, it is usually preferrable to represent a text
+   as a list of tokens.  These lists are typically created using a
+   *tokenizer*, such as ``tokenize.whitespace`` which splits strings into
+   words at whitespaces:
+   
+     >>> from nltk_lite import tokenize
+     >>> text = 'Hello world.  This is a test string.'
+     >>> list(tokenize.whitespace(text))
+     ['Hello', 'world.', 'This', 'is', 'a', 'test', 'string.']
+   
+   .. Note:: By "whitespace", we mean not only interword space, but
+      also tab and line-end.
+   
+   Note that tokenization may normalize the text, mapping all words to lowercase,
+   expanding contractions, and possibly even stemming the words.  An
+   example for stemming is shown below:
+   
+        >>> text = 'stemming can be fun and exciting'
+        >>> tokens = tokenize.whitespace(text)
+        >>> porter = tokenize.PorterStemmer()
+        >>> for token in tokens:
+        ...     print porter.stem(token),
+        stem can be fun and excit
+   
+   Tokenization based on whitespace is too simplistic for most
+   applications; for instance, it fails to separate the last word of a
+   phrase or sentence from punctuation characters, such as comma, period,
+   exclamation mark and question mark.  As its name suggests,
+   ``tokenize.regexp`` employs a regular expression to determine how text
+   should be split up.  This regular expression specifies the characters
+   that can be included in a valid word.  To define a tokenizer that
+   includes punctuation as separate tokens, we could use:
 
