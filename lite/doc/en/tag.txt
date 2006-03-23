@@ -795,11 +795,11 @@ tag.
 Bigram Taggers
 --------------
 
-As their name suggests, <glossterm>bigram taggers</glossterm> use two
+As their name suggests, :glossterm:`bigram taggers` use two
 pieces of information for each tagging decision.  Usually this
 information is the text of the current word together with the tag of
 the previous word. These two pieces of information constitute the
-<glossterm>context</glossterm> for the token to be tagged. Given the
+:glossterm:`context` for the token to be tagged. Given the
 context, the tagger assigns the most likely tag.  We can visualize
 this process with the help of the following bigram table, a tiny
 fragment of the internal data structure built by a bigram tagger.
