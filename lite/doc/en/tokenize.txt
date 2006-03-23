@@ -344,6 +344,50 @@ pattern is matched against the gaps.  For example, here is how
 .. exercises here
 
 ---------------
+What is a Word?
+---------------
+
+Linguists have devoted considerable effort to distinguishing different
+ways in which the term `word` is used. What we have focussed on so far
+are often called `orthographic words`: strings of characters which can
+be separated by various textual criteria such as the presence of
+whitespace.
+However, for linguists, the spoken word is often
+regarded as having greater primacy, in the sense that natural
+languages have all
+evolved as spoken mediums, and children learn to speak long before
+they can write and read (if indeed they ever do). Subjectively, we
+hear spoken utterances as a succession of words, but it is rarely the
+case that there are perceptible gaps between spoken words in
+conversational speech. Nevertheless, spoken words can and do occur in
+isolation. Using a variety of (sometime language-dependent) criteria,
+certain phonological units are classed as `phonological words`, and
+these units need not correspond to orthographic words: an example is
+the utterance ``wanna`` as a contraction of the words ``want`` and ``to``.
+Returning to an example
+mentioned before,    note that the form  "``n't``" in "``didn't``" cannot
+form a phonological word by itself, and is sometimes called a `clitic`
+or `leaner`; it needs to to combine with a 'host' word before it can be
+uttered in normal speech.
+
+Independent of the distinction between spoken and written language,
+an important notion is that of a `lexeme` or `lexical item`. This
+corresponds broadly to the notion of a word that you might look up in
+a dictionary of English or some other language. For example, in order
+to find the meaning of the word ``said``, you need to know first that
+it is a particular grammatical form of the lexeme ``SAY``. (We adopt
+the standard convention of representing lexemes with upper-case
+forms.) Similarly,  ``say``, ``says`` and ``saying`` are also
+grammatical forms of ``SAY``. While ``said``, ``says`` and ``saying``
+are morphologically inflected, ``say`` lacks any morphological
+inflection and is therefore termed the `base` form. In English, the
+base form is conventionally used as the `lemma` (or `citation form`)
+for a word. It is the lemma that is chosen to represent the
+corresponding lexeme. (For example, the main entry for lexical item
+will be listed under the word's lemma.)
+
+
+---------------
 Type Definition
 ---------------
 
@@ -351,11 +395,12 @@ This section should discuss how we define types.  I.e., how do we
 decide whether two tokens have the same type or not.  Note that this
 is a more general concept than normalization & stemming, but it's
 certainly related.  This section should talk about:
-  - normalization (eg case normalization)
-  - stemming
-  - roots & inflection
-  - porter stemmer
-  - morphology?
+
+- normalization (eg case normalization)
+- stemming
+- roots & inflection
+- porter stemmer
+- morphology?
 
 .. Why is stemming stuff in the tokenization module?  Tokenization 
    and normalization are two totally separate concepts in my mind.
