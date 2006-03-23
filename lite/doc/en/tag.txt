@@ -32,6 +32,8 @@ categories*.  Familiar examples are *noun*, *verb*, *preposition*,
 criteria for categorising words in this way, then discuss the main
 classes of words in English.
 
+**OPENING EXAMPLE**
+
 Categorising Words
 ------------------
 
@@ -52,7 +54,7 @@ the category of nouns. Then we might say that a syntactic criterion
 for an adjective in English is that it can occur immediately before a
 noun, or immediately following the words ``be`` or
 ``very``. According to these tests,
-``near`` should be categorised as an adjective:
+``near`` should be categorized as an adjective:
 
 #. the near window
 #. The end is (very) near.
@@ -60,7 +62,7 @@ noun, or immediately following the words ``be`` or
 A familiar example of a *semantic* criterion is that a noun is "the
 name of a person, place or thing". Within modern linguistics, notional
 criteria for word classes have be viewed with considerable suspicion,
-mainly because they are hard to formalise. Nevertheless, notional
+mainly because they are hard to formalize. Nevertheless, notional
 criteria underpin many of our intuitions about word classes, and
 enable us to make a good guess about the categorisation of words in
 languages that we are unfamiliar with; that is, if we all we know
@@ -127,7 +129,7 @@ Another important distinction exists between *count nouns* and
 counted, such as ``pig`` (e.g. ``one pig, two pigs, many pigs``).
 They cannot occur with the word ``much`` (i.e. \*\ ``much pigs``).  Mass
 nouns, on the other hand, are not thought of as distinct entities
-(e.g.  ``sand``).  They cannot be pluralised, and do not occur with
+(e.g.  ``sand``).  They cannot be pluralized, and do not occur with
 numbers (e.g. \*\ ``two sands``, \*\ ``many sands``).  However, they can
 occur with ``much`` (i.e. ``much sand``).
     
@@ -138,7 +140,7 @@ involving the referents of one or more noun phrases.
 =======  =================  ===============================================
 Syntactic Patterns involving some Verbs
 ---------------------------------------------------------------------------
-Word     Simple             With modifiers and adjuncts (italicised)
+Word     Simple             With modifiers and adjuncts (italicized)
 fall     Rome fell          Dot com stocks *suddenly* fell *like a stone*
 eat      Mice eat cheese    John ate the pizza *with gusto*
 =======  =================  ===============================================
@@ -170,37 +172,47 @@ direction of the event described by the verb (e.g. ``quickly`` in
 (e.g. ``really`` in ``Mary's teacher was really nice``).
 
 English has several categories of closed class words in addition to
-prepositions, and each dictionary and grammar classifies them
-differently.  The following table gives a sample of
-closed class words, following the classification of the Brown
-Corpus. [#]_
+prepositions, such as *articles* or *determiners* (e.g. ``the``, ``a``),
+*modals* (e.g. ``should``, ``may``),
+and *personal pronouns* (e.g. ``she``, ``they``).
+Each dictionary and grammar classifies these words differently.
 
-.. [#] Note that part-of-speech tags may be presented as either
-       upper-case or lower-case strings -- there is no significance
-       attached to this difference.
+We have already noted that part-of-speech tags are closely related to
+the notion of word class used in syntax.  The assumption in
+theoretical linguistics is that every distinct word type will be
+listed in a lexicon (or dictionary), with information about its
+pronunciation, syntactic properties and meaning. A key component of
+the word's syntactic properties will be its class. When we carry out a
+syntactic analysis of our earlier example ``fruit flies like a
+banana``, we will look up each word in the lexicon, determine its word
+class, and then group it into a hierarchy of phrases, as illustrated
+in the following parse tree.
 
+.. figure:: ../images/syntax-tree.png
 
-====  =========================================  ==========================================================
-Some English Closed Class Words, with Brown Tag
------------------------------------------------------------------------------------------------------------
-ap    determiner/pronoun, post-determiner        many other next more last former little several enough most least only very few fewer past same
-at    article                                    the an no a every th' ever' ye
-cc    conjunction, coordinating                  and or but plus & either neither nor yet 'n' and/or minus an'
-cs    conjunction, subordinating                 that as after whether before while like because if since for than until so unless though providing once lest till whereas whereupon supposing albeit then
-in    preposition                                of in for by considering to on among at through with under into regarding than since despite ...
-md    modal auxiliary                            should may might will would must can could shall ought need wilt
-pn    pronoun, nominal                           none something everything one anyone nothing nobody everybody everyone anybody anything someone no-one nothin'
-ppl   pronoun, singular, reflexive               itself himself myself yourself herself oneself ownself
-pp$   determiner, possessive                     our its his their my your her out thy mine thine
-pp$$  pronoun, possessive                        ours mine his hers theirs yours
-pps   pronoun, personal, nom, 3rd pers sng       it he she thee
-ppss  pronoun, personal, nom, not 3rd pers sng   they we I you ye thou you'uns
-wdt   WH-determiner                              which what whatever whichever
-wps   WH-pronoun, nominative                     that who whoever whosoever what whatsoever
-====  =========================================  ==========================================================
+   Syntactic Parse Tree
 
 Part-of-Speech Tag Sets
 -----------------------
+
+In the syntax tree we saw in the last section, we have used standard
+syntactic abbreviations for word classes. These are shown in the
+following table, together with their counterparts from the Brown tag
+set.
+
+================   =========     ============================
+Word Class Labels and Brown Corpus Tags
+-------------------------------------------------------------
+Word Class Label   Brown Tag     Word Class 
+================   =========     ============================
+Det                at            Article 
+N                  nn            Noun 
+V                  vb            Verb 
+Adj                jj            Adjective 
+P                  in            Preposition 
+Card               cd            Number 
+-                  end           Sentence-ending punctuation 
+================   =========     ============================
 
 Most part-of-speech tag sets make use of the same basic categories,
 such as noun, verb, adjective, and preposition. However, tag sets
@@ -237,8 +249,43 @@ punctuation).  As we mentioned, this is a radically simplified version
 of the Brown Corpus tag set, which in its entirety has 87 basic tags
 plus many combinations.
 
-Parts of Speech (SOME DUPLICATION HERE)
----------------------------------------
+
+
+A piece to be relocated
+-----------------------
+
+The following table gives a sample of closed class words, following
+the classification of the Brown Corpus. [#]_
+
+.. [#] Note that part-of-speech tags may be presented as either
+       upper-case or lower-case strings -- there is no significance
+       attached to this difference.
+
+
+====  =========================================  ==========================================================
+Some English Closed Class Words, with Brown Tag
+-----------------------------------------------------------------------------------------------------------
+ap    determiner/pronoun, post-determiner        many other next more last former little several enough most least only very few fewer past same
+at    article                                    the an no a every th' ever' ye
+cc    conjunction, coordinating                  and or but plus & either neither nor yet 'n' and/or minus an'
+cs    conjunction, subordinating                 that as after whether before while like because if since for than until so unless though providing once lest till whereas whereupon supposing albeit then
+in    preposition                                of in for by considering to on among at through with under into regarding than since despite ...
+md    modal auxiliary                            should may might will would must can could shall ought need wilt
+pn    pronoun, nominal                           none something everything one anyone nothing nobody everybody everyone anybody anything someone no-one nothin'
+ppl   pronoun, singular, reflexive               itself himself myself yourself herself oneself ownself
+pp$   determiner, possessive                     our its his their my your her out thy mine thine
+pp$$  pronoun, possessive                        ours mine his hers theirs yours
+pps   pronoun, personal, nom, 3rd pers sng       it he she thee
+ppss  pronoun, personal, nom, not 3rd pers sng   they we I you ye thou you'uns
+wdt   WH-determiner                              which what whatever whichever
+wps   WH-pronoun, nominative                     that who whoever whosoever what whatsoever
+====  =========================================  ==========================================================
+
+
+
+
+A piece to be relocated
+-----------------------
 
 Many natural language expressions are ambiguous, and we need to draw
 on other sources of information to aid interpretation.  For instance,
@@ -265,7 +312,7 @@ virtually impossible if all we know about each word is its text
 representation.  To determine whether a given string of words has the
 structure of, say, a noun phrase, it is infeasible to check through a
 (possibly infinite) list of all strings which can be classed as noun
-phrases.  Instead we want to be able to generalise over *classes* of
+phrases.  Instead we want to be able to generalize over *classes* of
 words. These word classes are commonly given labels such as
 'determiner', 'adjective' and 'noun'.  Conversely, to interpret words
 we need to be able to discriminate between different usages, such as
@@ -291,32 +338,8 @@ tagged ``at``, which is the Brown Corpus tag for article.
 (The reader may be initially puzzled by strings like
 ``,/,``. This just means that the tag for a comma is '``,``'.)
 	
-Motivation for Tagging
-----------------------
-
-We can think of tagging as one way of *annotating* a text corpus.
-Annotation is a way of adding information to a text -- indeed, we
-might like to think of it as a way of making explicit information
-which is already implicitly present in the text.
-
-What is the value of annotating a text in this way? One illustration
-is the use of tagged corpora to study patterns of word usage in
-different genres (*stylistics*).  For example, we can use the tags to
-identify all words of a certain class, such as modals, then tabulate
-their frequency of occurrence in different genres, as shown below:
-
-==================  ===  =====  ===  =====  ====  ====
-Use of Modals in Brown Corpus, by Genre
-------------------------------------------------------
-Genre               can  could  may  might  must  will 
-==================  ===  =====  ===  =====  ====  ====
-skill and hobbies   273  59     130  22     83    259 
-humor               17   33     8    8      9     13 
-fiction: science    16   49     4    12     8     16 
-press: reportage    94   86     66   36     50    387 
-fiction: romance    79   195    11   51     46    43 
-religion            84   59     79   12     54    64 
-==================  ===  =====  ===  =====  ====  ====
+A piece to be relocated
+-----------------------
 
 Another motivation for tagging is that it helps us predict the
 behaviour of a previously unseen word.  For example, if we encounter
@@ -332,93 +355,11 @@ found where the stress pattern differs depending on whether the word
 is a noun or a verb, e.g. ``contest``, ``insult``, ``present``, ``protest``,
 ``rebel``, ``suspect``.
 
-Kinds of Tagging
-----------------
-
-This tutorial focuses on part-of-speech tagging, as an early step in
-language processing which does not depend on deep linguistic analysis.
-Readers should be aware that are many other kinds of tagging.  Words
-can be tagged with directives to a speech synthesiser, indicating
-which words should be emphasised.  Words can be tagged with sense
-numbers, indicating which sense of the word was used.  Words can also
-be tagged with morphological features.  Examples of each of these
-kinds of tags are shown below.
-Note that for space reasons, we only show the tag on a single
-italicised word. Note also that the first two examples use XML-style
-tags, where elements in angle brackets enclose the word that is
-tagged.
-
-1. *Speech Synthesis Markup Language (W3C SSML):*
-   ``That is a <emphasis>*big*</emphasis> car!``
-#. *SemCor: Brown Corpus tagged with WordNet senses:*
-   ``Space in any <wf pos="NN" lemma="form" wnsn="4">*form*</wf>
-   is completely measured by the three dimensions.``
-   (Wordnet form/nn sense 4: "shape, form, configuration,
-   contour, conformation")
-#. *Morphological tagging, from the Turin University Italian Treebank:*
-   ``E' italiano , come progetto e realizzazione , il
-   *primo* (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .``
-
-We have already noted that part-of-speech tags are closely related to
-the notion of word class used in syntax.  The assumption in
-theoretical linguistics is that every distinct word type will be
-listed in a lexicon (or dictionary), with information about its
-pronunciation, syntactic properties and meaning. A key component of
-the word's syntactic properties will be its class. When we carry out a
-syntactic analysis of our earlier example ``fruit flies like a
-banana``, we will look up each word in the lexicon, determine its word
-class, and then group it into a hierarchy of phrases, as illustrated
-in the following parse tree.
-
-.. figure:: ../images/syntax-tree.png
-
-   Syntactic Parse Tree
 
 
-Common Part-of-Speech Tags (SOME DUPLICATION HERE)
---------------------------------------------------
 
-In this tree, we have used standard syntactic abbreviations for word
-classes. These are shown in the following table, together with their
-counterparts from the Brown tag set.
-
-================   =========     ============================
-Word Class Labels and Brown Corpus Tags
--------------------------------------------------------------
-Word Class Label   Brown Tag     Word Class 
-================   =========     ============================
-Det                at            Article 
-N                  nn            Noun 
-V                  vb            Verb 
-Adj                jj            Adjective 
-P                  in            Preposition 
-Card               cd            Number 
--                  end           Sentence-ending punctuation 
-================   =========     ============================
-
-In syntactic analyses, there is often a close connection between the
-class a word belongs to and the phrases it forms with neighbouring
-words. So, for example, a noun phrase (labelled NP) will usually
-consist of a noun (N) optional accompanied by an article (Det) and
-some modifiers such as adjectives (Adj). We can express this
-generalisation in terms of a production rule:
-
-  NP |rarr| Det Adj* N
-
-In such a case, we say that the noun is the *head* of the noun phrase;
-roughly speaking, the head of a phrase is a required element which can
-occur in any context that the phrase as a whole can occur in.
-However, from a purely notational point of view, we are free to use
-any labels we want for word classes, and these could just as well be
-the labels provided by a tag set. For example, we could replace the
-preceding rule with the following:
-
-  NP |rarr| at jj* nn
-
-This is useful since some practical tasks, we might use an automatic
-tagger to label the words in our example with tags drawn from the
-Brown tag set, and use that as a basis for building a syntactic parse
-tree such as the one we saw above.
+A piece to be relocated
+-----------------------
 
 So far, we have only looked at tags as capturing information about
 word class. However, common tag sets like those used in the Brown
@@ -444,6 +385,10 @@ These differences between the forms are encoded in their Brown Corpus
 tags: ``be/be, being/beg, am/bem, been/ben`` and ``was/bedz``. This
 means that an automatic tagger which uses this tag set is in effect
 carrying out a limited amount of morphological analysis.
+
+
+
+
 
 Exercises
 ---------
@@ -605,7 +550,7 @@ else::
   >>> list(nn_cd_tagger.tag(tokens))
   [('John', 'nn'), ('saw', 'nn'), ('3', 'cd'), ('polar', 'nn'), ('bears', 'nn'), ('.', 'nn')]
 
-We can generalise this method to guess the correct tag for words based
+We can generalize this method to guess the correct tag for words based
 on the presence of certain prefix or suffix strings.  For instance,
 English words beginning with ``un-`` are likely to be adjectives.
 
@@ -699,7 +644,7 @@ that to evaluate our taggers.
 Consider the following sentence from the Brown Corpus.  The 'Gold
 Standard' tags from the corpus are given in the second column, while
 the tags assigned by a unigram tagger appear in the third column.  Two
-mistakes made by the unigram tagger are italicised.
+mistakes made by the unigram tagger are italicized.
 
 ===============  =============  ==============
 Evaluating Taggers
@@ -735,7 +680,7 @@ can test the tagger using the same data it was trained on:
   Accuracy = 84.7%
 
 However, testing a language processing system using the same data it
-was trained on is unwise.  A system which simply memorised the
+was trained on is unwise.  A system which simply memorized the
 training data would get a perfect score without doing any linguistic
 modelling.  Instead, we would like to reward systems that make good
 generalizations, so we should test against *unseen data*, and replace
@@ -855,7 +800,7 @@ pieces of information for each tagging decision.  Usually this
 information is the text of the current word together with the tag of
 the previous word. These two pieces of information constitute the
 <glossterm>context</glossterm> for the token to be tagged. Given the
-context, the tagger assigns the most likely tag.  We can visualise
+context, the tagger assigns the most likely tag.  We can visualize
 this process with the help of the following bigram table, a tiny
 fragment of the internal data structure built by a bigram tagger.
 
@@ -906,7 +851,7 @@ ask Congress to increase grants to states for vocational
 rehabilitation .`` as far as ``will/md``.  We can use the table to
 simply read off the tags that should be assigned to the remainder of
 the sentence.  When preceded by ``md``, the tagger guesses that the
-word ``ask`` has the tag ``vb`` (italicised in the table).  Moving to
+word ``ask`` has the tag ``vb`` (italicized in the table).  Moving to
 the next word, we know it is preceded by ``vb``, and looking across
 this row we see that ``Congress`` is assigned the tag ``np``.  The
 process continues through the rest of the sentence.  When we encounter
@@ -1101,7 +1046,7 @@ Exercises
    a new mechanism other than backoff (e.g. voting).  For robustness
    in the face of unknown words, include a regexp tagger, a unigram
    tagger that removes a small number of prefix or suffix characters
-   until it recognises a word, or an n-gram tagger that does not
+   until it recognizes a word, or an n-gram tagger that does not
    consider the text of the token being tagged.
         
 ----------------
@@ -1273,6 +1218,30 @@ Transducers*, though a discussion of these approaches falls outside
 the scope of this chapter.  Later we will see a generalization of
 tagging called *chunking* in which a contiguous sequence of words is
 assigned a single tag.
+
+Part-of-speech tagging is just one kind of tagging, one that
+does not depend on deep linguistic analysis.
+There are many other kinds of tagging.  Words
+can be tagged with directives to a speech synthesizer, indicating
+which words should be emphasized.  Words can be tagged with sense
+numbers, indicating which sense of the word was used.  Words can also
+be tagged with morphological features.  Examples of each of these
+kinds of tags are shown below.
+Note that for space reasons, we only show the tag for a single
+(italicized) word. Note also that the first two examples use XML-style
+tags, where elements in angle brackets enclose the word that is
+tagged.
+
+1. *Speech Synthesis Markup Language (W3C SSML):*
+   ``That is a <emphasis>*big*</emphasis> car!``
+#. *SemCor: Brown Corpus tagged with WordNet senses:*
+   ``Space in any <wf pos="NN" lemma="form" wnsn="4">*form*</wf>
+   is completely measured by the three dimensions.``
+   (Wordnet form/nn sense 4: "shape, form, configuration,
+   contour, conformation")
+#. *Morphological tagging, from the Turin University Italian Treebank:*
+   ``E' italiano , come progetto e realizzazione , il
+   *primo* (PRIMO ADJ ORDIN M SING) porto turistico dell' Albania .``
 
 Tagging exhibits several properties that are characteristic of natural
 language processing.  First, tagging involves *classification*: words have
