@@ -19,7 +19,7 @@ Introduction
 ------------
 
 Language can be divided up into pieces at a variety of different
-levels, ranging from sounds, to utterances, to documents.  In this
+grain sizes, ranging from sounds up to utterances and even to documents.  In this
 chapter, we will focus on a very important level for much work in
 computational linguistics: words.  Just what are words, and how should
 we represent them in a machine?  At first, these may seem like trivial
@@ -120,11 +120,11 @@ Tokens and Types
 ----------------
 Let us return to our task: *count the number of words that appear in a
 document*.  In the previous section, we interpreted "the number of
-words" to mean "the number of times was any word was used."  However,
+words" to mean "the number of times any word was used."  However,
 another interpretation is possible: we might want to know how many
 distinct "dictionary entries" were used, regardless of the number of
 times that each dictionary item was repeated.  For example, the
-following sentence contains seven "word uses," but only uses four
+following sentence contains seven "word uses" but only uses four
 "dictionary entries"::
 
   John likes Mary and Mary likes John.
@@ -138,9 +138,9 @@ word ``deprecate``, or when we say that the words ``barf`` and
 ``vomit`` are synonyms. On the other hand, a word token is something
 which exists in time and space. For example, we could talk about my
 uttering a token of the word ``grunge`` in Edinburgh on July 14, 2003;
-equally, we can say that the second word token in the WSJ text is a
-token of the word type ``probably``, or that there are two tokens of
-the type ``European`` in the text.
+equally, we can say that the last word token in the WSJ text is a
+token of the word type ``cents``, or that there are four tokens of
+the type ``Sea`` in the text.
 
 The terms *token* and *type* can also be applied to other linguistic
 entities.  For example, a *sentence token* is an individual occurrence
@@ -213,13 +213,18 @@ Example: Stylistics
 
 So far, we've seen how to count the number of tokens or types in a
 document.  But it's much more interesting to look at *which* tokens or
-types appear in a document.  We can use a dictionary to count the
+types appear in a document.  We can use a Python dictionary to count the
 number of occurrences of each word type in a document:
 
   >>> counts = {}
   >>> for word in text.split():
   ...     counts[word] = counts.get(word, 0) + 1
 
+.. Do we need to remind the reader about dictionaries at this point?
+
+The first statement, ``counts = {}``, initializes the dictionary,
+while the next two lines successively add entries to it and increment
+the count each time we encounter a new token of a given type.
 In the expression ``counts.get(word, 0)``, ``0`` is a default value:
 the expression will return ``counts[word]`` if word is already in the
 dictionary, or 0 if it is not.  To view the contents of the
