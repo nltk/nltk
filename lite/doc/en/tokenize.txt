@@ -18,9 +18,9 @@ Words
 Introduction
 ------------
 
-Language can be divided up into pieces at a variety of different
-grain sizes, ranging from sounds up to utterances and even to documents.  In this
-chapter, we will focus on a very important level for much work in
+Language can be divided up into pieces at a variety of different grain
+sizes, ranging from sounds up to utterances and even to documents.  In
+this chapter, we will focus on a very important level for much work in
 computational linguistics: words.  Just what are words, and how should
 we represent them in a machine?  At first, these may seem like trivial
 questions, but it turns out that there are some important issues
@@ -404,10 +404,41 @@ such if the text were read aloud.
 Type Definition
 ---------------
 
+Suppose we are interested in the linguistic distribution of the word
+`said`:LX:.  As we will see later in this chapter, we can use a
+Conditional Frequency Distribution to find out all the words that
+immediately follow it. Suppose, for example, that we look at all the
+words which immediately follow the word. Here are the final 59 items
+(from a list of 138) that follow `said`:LX: in the NLTK `treebank`
+corpus::
+
+  ['each', 'early', 'elections', 'employees', 'excess', 
+   'export', 'exports', 'factory', 'final', 'first-half', 
+   'had', 'he', 'his', 'holders', 'in', 'income', 'institutions', 
+   'insurance', 'is', 'it', 'its', 'last', 'local', 'manufacturing',
+   'many', 'more', 'most', 'net', 'one', 'operations', 'orders', 
+   'person', 'potential', 'prices', 'profit', 'profit-taking', 
+   'reaction', 'repeatedly', 'reporter', 'residential', 
+   'shareholders', 'she', 'some', 'something', 'that', 'the', 'there', 
+   'they', 'third-quarter', 'this', 'those', 'through', 'to', 
+   'total', 'universally', 'was', 'we', 'will', 'yesterday'] 
+
+Notice that this list contains two different grammatical forms of
+the lexeme `BE`:LX:, and both singular and plural forms of
+`EXPORT`:LX:. In order to gain a slightly more abstract view of the
+words occurring to the right of `said`:LX:, therefore, we might want to
+replace grammatical forms by their lemmas. 
+
+.. Not sure if this line of argument is worth pursuing [EK]
+
 This section should discuss how we define types.  I.e., how do we
 decide whether two tokens have the same type or not.  Note that this
 is a more general concept than normalization & stemming, but it's
-certainly related.  This section should talk about:
+certainly related.
+
+.. Is this notion of type the same as lexeme, or something else?
+
+ This section should talk about:
 
 - normalization (eg case normalization)
 - stemming
@@ -502,6 +533,7 @@ is a collection of frequency distributions for the same
 experiment, run under different conditions.  The individual
 frequency distributions are indexed by the condition.
 
+  >>> from nltk_lite.corpora import genesis
   >>> from nltk_lite.probability import ConditionalFreqDist
   >>> cfdist = ConditionalFreqDist()
 
@@ -549,6 +581,7 @@ We will now use a ``ConditionalFreqDist`` to predict the most likely
 next word in a text.  To begin, we load a corpus from a text file, and
 create an empty ``ConditionalFreqDist``::
 
+  >>> from nltk_lite.corpora import genesis
   >>> from nltk_lite.probability import ConditionalFreqDist
   >>> cfdist = ConditionalFreqDist()
 
@@ -573,7 +606,7 @@ given context. For example, taking the word ``living`` as our context,
 we can inspect all the words that occurred in that context.
 
   >>> word = 'living'
-  >>> cfdist['living'].samples()
+  >>> cfdist[word].samples()
   ['creature,', 'substance', 'soul.', 'thing', 'thing,', 'creature']
 
 We can set up a simple loop to generate text: we set an initial
