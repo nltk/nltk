@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Read tokens from the Wordlist Corpus.
+Read tokens from the Stopwords Corpus.
 """       
 
 from nltk_lite.corpora import get_basedir
