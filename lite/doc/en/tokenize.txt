@@ -47,13 +47,13 @@ example text::
   yesterday, Sea Containers closed at $62.625, up 62.5 cents.
 
 .. Should we use a smaller example, where we can include the whole
-   text?  I picked this example by serching for a variety of
+   text?  I picked this example by searching for a variety of
    interesting features (contains '--', contractions, numbers,
    quotes, the same word used in lower case & capitalized, etc).
 
 To count the number of words in this article, we can simply divide it
 up into a list of individual word strings, and check the length of
-that list.  They most obvious way to divide the article up is to split
+that list.  The most obvious way to divide the article up is to split
 its text string on any sequence of spaces, newlines, or other
 "whitespace" characters:
 
@@ -63,7 +63,7 @@ its text string on any sequence of spaces, newlines, or other
   >>> len(words)
   426
 
-However, there are a few issues with this solution.  First, it is not
+However, there are a few problems with this solution.  First, it is not
 clear that every sequence of non-whitespace characters should be
 considered a word.  For example, our example article contains the
 following sentence::
@@ -72,8 +72,8 @@ following sentence::
   the asset sales materialize -- would result in shareholders
   receiving only $36 to $45 a share in cash.
 
-Our simple algorithm treats each occurance of the sequence "``--``" as
-a word; but most humans would consider them to be punctuation marks,
+Our simple algorithm treats each occurrence of the sequence "``--``" as
+a word; but most people would consider them to be punctuation marks,
 not words.
 
 Second, there may be some character sequences that are not separated
@@ -89,11 +89,11 @@ it seems quite unnatural to say that "``pro-New``" is a single word.
    I can't think of one right now..
    
 Finally, there may be times when we want to treat a character sequence
-that contains whitespace as a single word.  For example, it it
+that contains whitespace as a single word.  For example, it is
 sometimes useful to treat proper names such as "John Smith" or "New
 York" as individual words, even though they contain spaces.
 
-As an expecially subtle example, consider the numeric expressions in
+As an especially subtle example, consider the numeric expressions in
 the following sentence (drawn from the MedLine corpus)::
 
   The corresponding free cortisol fractions in these sera were 4.53
@@ -131,7 +131,7 @@ following sentence contains seven "word uses," but only uses four
 
 Two distinguish between these two interpretations, we will define two
 new terms, "token" and "type."  A word *token* is an individual
-occurance of a word in a concrete context.  A word *type* is a
+occurrence of a word in a concrete context.  A word *type* is a
 "dictionary entry" for a word.  A word type is somewhat abstract; it's
 what we're talking about when we say that we know the meaning of the
 word ``deprecate``, or when we say that the words ``barf`` and
@@ -174,7 +174,7 @@ use a ``set`` instead of a ``list`` to collect the words:
 
 A quick glance at the contents of ``word_types`` reveals some of the
 shortcomings of this approach.  These shortcomings can be divided into
-to categories:
+two categories:
 
 - *Tokenization*: Which substrings of the original text contain
   word tokens?
@@ -188,7 +188,7 @@ algorithm's ignorance about punctuation can cause it to count the same
 word type multiple times.  For example, the substrings "``price.``"
 and "``price``" will be treated as two different word types. When we
 were counting tokens, this didn't affect our overall answer, since
-both "``price.``" and "price" count as a single token.  But since the
+both "``price.``" and "``price``" count as a single token.  But since the
 two strings are not identical, our algorithm counts them as two
 separate types.  These tokenization issues could be addressed by
 defining a more advanced algorithm for splitting the text into word
@@ -214,14 +214,14 @@ Example: Stylistics
 So far, we've seen how to count the number of tokens or types in a
 document.  But it's much more interesting to look at *which* tokens or
 types appear in a document.  We can use a dictionary to count the
-number of occurances of each word type in a document:
+number of occurrences of each word type in a document:
 
   >>> counts = {}
   >>> for word in text.split():
   ...     counts[word] = counts.get(word, 0) + 1
 
 In the expression ``counts.get(word, 0)``, ``0`` is a default value:
-the expression will return ``counts[word]`` if word is alreay in the
+the expression will return ``counts[word]`` if word is already in the
 dictionary, or 0 if it is not.  To view the contents of the
 dictionary, we can iterate over its keys and print each entry:
     
@@ -242,7 +242,7 @@ interested in appeared:
   3
 
 Applying this same approach to document collections that are
-categorized by genre, we cn learn something about the patterns of word
+categorized by genre, we can learn something about the patterns of word
 usage in those genres.  For example, the following table was
 constructed by counting the number of times various modal words appear
 in different genres in the Brown Corpus:
@@ -259,6 +259,8 @@ press: reportage    94   86     66   36     50    387
 fiction: romance    79   195    11   51     46    43 
 religion            84   59     79   12     54    64 
 ==================  ===  =====  ===  =====  ====  ====
+
+.. Discuss the table?
 
 .. This might be a good place to put a couple exercises, to let them
    wet their feet.  E.g., look at the ratio of types:tokens in
@@ -280,14 +282,16 @@ words.
    to different modalities, such as speech (or even sign language);
    and to different levels, such as phonemes or sentences.
 
+.. tokenization of speech is a bit odd - this is usually called segmentation
+
 .. I don't approve of defining a 'regexp' function inside a
    'regexp' module and then importing it into the parent package
    so that it's impossible to access the module. :-/
 
 .. I strongly object to having the regexp tokenizer need an
-   advanced=True arugment to deal with standard regexps.
+   advanced=True argument to deal with standard regexps.
 
-The function ``epydoc.tokenize.regexp()`` takes a text string and a
+The function ``tokenize.regexp()`` takes a text string and a
 regular expression, and returns the list of substrings that match the
 regular expression.  To define a tokenizer that includes punctuation
 as separate tokens, we could use:
@@ -312,7 +316,7 @@ as separate tokens, we could use:
 
 There are a number of ways we might want to improve this regular
 expression.  For example, it currently breaks the string
-``'$22.50'`` into four tokens; but we might want it to include this
+``'$22.50'`` into four tokens; but we might want it to treat this
 as a single token.  One approach to making this change would be
 to add a new clause to the tokenizer's regular expression, which
 is specialized for handling strings of this form:
@@ -324,13 +328,15 @@ is specialized for handling strings of this form:
 
 It is sometimes more convenient to write a regular expression
 matching the material that appears *between* tokens, such as whitespace
-and punctuation.  The ``tokenize()`` function constructor permits
+and punctuation.  The ``tokenize.regexp()`` function permits
 an optional boolean parameter ``gaps``; when set to ``True`` the
 pattern is matched against the gaps.  For example, here is how
-``whitespaceTokenize()`` is defined:
+``tokenize.whitespace()`` is defined:
 
   >>> list(tokenize.regexp(text, pattern=r'\s+', gaps=True))
   ['That', 'poster', 'costs', '$22.40.']
+
+.. exercises here
 
 ---------------
 Type Definition
@@ -358,7 +364,7 @@ Discuss lexical resources:
   - examples
     - finding rhyming words
     - using cmudict
-    - prononciation variation
+    - pronunciation variation
 
 -----------------------------
 Simple Statistics with Tokens
@@ -366,7 +372,7 @@ Simple Statistics with Tokens
 
 We can do more sophisticated counting using *frequency distributions*.
 Abstractly, a frequency distribution is a record of the number of
-times each *outcome* of an *experiment* has occured.  For instance, a
+times each *outcome* of an *experiment* has occurred.  For instance, a
 frequency distribution could be used to record the frequency of each
 word in a document (where the "experiment" is examining a word, and
 the "outcome" is the word's type).  Frequency distributions are
@@ -466,11 +472,11 @@ the text of the word that it follows (context).
 To predict the outcomes of an experiment, we first examine a
 representative *training corpus*, where the context and outcome for
 each run of the experiment are known.  When presented with a new run
-of the experiment, we simply choose the outcome that occured most
+of the experiment, we simply choose the outcome that occurred most
 frequently for the experiment's context.
 
 We can use a ``ConditionalFreqDist`` to find the most frequent
-occurence for each context.  First, we record each outcome in the
+occurrence for each context.  First, we record each outcome in the
 training corpus, using the context that the experiment was run under
 as the condition.  Then, we can access the frequency distribution for
 a given context with the indexing operator, and use the ``max()``
@@ -534,7 +540,7 @@ Exercises
    common word type should occur three times as frequently as the
    150th most common word type.
 
-   a) Write a Python function to process a large text and plot word
+   a) Write a function to process a large text and plot word
       frequency against word rank using the nltk_lite.draw.plot module. Do
       you confirm Zipf's law? (Hint: it helps to set the axes to log-log.) 
       What is going on at the extreme ends of the plotted line?
@@ -554,10 +560,10 @@ Exercises
    ``random.choice()``.)
 
    a) Select a particular genre, such as a section of the Brown Corpus,
-      or a genesis translation, or one of the newsgroups corpora.  Train
+      or a genesis translation, or one of the Gutenberg texts.  Train
       your system on this corpus and get it to generate random text.  You
       may have to experiment with different start words. How intelligible
-      is the text?  Examine the strengths and weaknesses of this method of
+      is the text?  Discuss the strengths and weaknesses of this method of
       generating random text.
 
    #) Try the same approach with different genres, and with different
@@ -647,7 +653,7 @@ NLTK_
    .. We can make a similar point about ``1992's``. We might want to run
       a small program over our text to extract all words which express
       dates. In this case, we would get achieve more generality by first
-      stripping oexcept in this case, we would not expect to find
+      stripping except in this case, we would not expect to find
       ``1992`` in a dictionary.
    
    If we take our naive definition of word literally (as we should, if we
@@ -747,7 +753,7 @@ NLTK_
    string representing the text into a list of strings, each of which
    corresponds to a word.
    
-   Some of this could maybe be dicussed in the programming chapter?
+   Some of this could maybe be discussed in the programming chapter?
    ----------------------------------------------------------------
    Many natural language processing tasks involve analyzing texts of
    varying sizes, ranging from single sentences to very large corpora.
@@ -759,7 +765,7 @@ NLTK_
      >>> text_str
      'Hello world.  This is a test file.\n'
    
-   However, as noted above, it is usually preferrable to represent a text
+   However, as noted above, it is usually preferable to represent a text
    as a list of tokens.  These lists are typically created using a
    *tokenizer*, such as ``tokenize.whitespace`` which splits strings into
    words at whitespaces:
