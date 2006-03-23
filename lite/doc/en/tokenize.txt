@@ -113,7 +113,11 @@ trying to solve.
    morphemes are words in their own right, but many words contain more
    than one morpheme; most of them consist of two morphemes. However,
    there is no visual representation of word boundaries in Chinese
-   text. Does this work? |zh-ding|
+   text. For example, consider the following three-character string:
+   |ai4| |guo3| |ren2| (in pinyin plus tones: ai4 'love' (verb), guo3
+   'country', ren2 'person'). This could either be segmented as
+   [|ai4| |guo3|] |ren2| |mdash| 'country-loving person' or as 
+   |ai4| [|guo3| |ren2|] |mdash| 'love country-person'.
 
 ----------------
 Tokens and Types
