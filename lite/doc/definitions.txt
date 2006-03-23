@@ -23,6 +23,15 @@
 .. |guo3| unicode:: U+56FD .. zh guo (country)
 .. |ren2| unicode:: U+4EBA .. zh ren (person)
     
+.. role:: LX
+   :class: example .. Linguistic eXample - cited form in running text
+
+.. role:: DT
+   :class: term .. Defined Term - first or canonical use of technical term
+
+.. role:: GC
+   :class: category .. Grammatical Category - e.g. NP and verb as technical terms
+
 .. role:: glossterm(emphasis)
    :class: indexed
 
