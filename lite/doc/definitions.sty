@@ -24,6 +24,21 @@
 \cfoot{\it\thepage}
 \rfoot{\it nltk.sourceforge.net}
 
+%%%%%%%% PYTHON SOURCE CODE MARKUP %%%%%%%%
+
+% Note -- there is no bold tt font, so currently most of these commands
+% don't really do anything. :-/
+
+% Prompt
+\renewcommand{\pysrcprompt}[1]{\textbf{#1}}
+% Source code
+\renewcommand{\pysrckeyword}[1]{\textbf{#1}}
+\renewcommand{\pysrcstring}[1]{\textit{#1}}
+\renewcommand{\pysrcother}[1]{\textbf{#1}}
+% Comments
+\renewcommand{\pysrccomment}[1]{\textrm{#1}}
+% Output
+\renewcommand{\pysrcoutput}[1]{#1}
 
 %%%%%%%% HYPHENATION CONTROL %%%%%%%%
 
