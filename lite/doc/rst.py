@@ -66,7 +66,7 @@ LATEX_SETTINGS = {
     'output_encoding': 'utf-8',
     'output_encoding_error_handler': 'backslahsreplace',
     'use_latex_docinfo': True,
-    'font_encoding': 'T1',
+    'font_encoding': 'C10,T1',
     'stylesheet': '../definitions.sty'
     }
 
@@ -83,8 +83,11 @@ class CustomizedLaTeXTranslator(LaTeXTranslator):
     
     def __init__(self, document):
         LaTeXTranslator.__init__(self, document)
+        # This needs to go before the \usepackage{inputenc}:
+        self.head_prefix.insert(1, '\\usepackage[cjkgb]{ucs}\n')
         # Make sure we put these *before* the stylesheet include line.
         self.head_prefix.insert(-2, textwrap.dedent("""\
+            % For Python source code:
             \\usepackage{alltt}
             % Python source code: Prompt
             \\newcommand{\\pysrcprompt}[1]{\\textbf{#1}}
