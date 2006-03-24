@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-=======
-Parsing
-=======
+====================
+Grammars and Parsing
+====================
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
@@ -18,34 +18,56 @@ Parsing
 Introduction 
 ------------
 
-Native speakers of any language have strong intuitions about the
-well-formedness of putative sentences in that language.  These
-intuitions are surprisingly detailed.  For example, consider the
-following six sentences involving three semantically similar verbs *loaded*,
-*dumped*, and *filled*.
+Early experiences with grammar are often confusing.  Written work
+may be graded by a teacher who red-lines all the grammar errors they
+won't put up with.  Like the dangling preposition in the last
+sentence, or sentences like this one which lack a main verb.  Learning
+English as a second language, it may be difficult to discover
+which of these errors needs to be fixed.  Correct punctuation is
+something of an obsession for many writers and editors (as our own
+students have observed).  Of course, it is all in the name of
+effective communication.  In the following example, the interpretation
+of a relative clause as restrictive or non-restrictive, depends on the
+presence of commas alone:
 
-#. The farmer *loaded* sand into the cart
-#. The farmer *loaded* the cart with sand
-#. The farmer *dumped* sand into the cart
-#. \*The farmer *dumped* the cart with sand
-#. \*The farmer *filled* sand into the cart
-#. The farmer *filled* the cart with sand
+1. a) My dog, Bonus, has black and white spots.  (I have one dog.)
+   b) My dog Bonus has black and white spots.  (I have more than one dog.)
 
-Two of the sentences (starred) are ill-formed.  As we shall see,
-patterns of well-formedness and ill-formedness in a sequence of words
-can be understood with respect to the internal :glossterm:`phrase structure` of
-the sentences.  We can develop formal models of these structures using
-grammars and parsers.
+It is clear that some of thes rules are important, while others seem
+to be vestiges of antiquated style that preoccupy only the most crusty
+curmudgeons (or over-eager grammar checkers included in some word
+processors).  However, it is *not* clear where to draw the line
+between the two, hence the confusion noted above.
 
-In the context of formal and computational modelling, a language is
-often viewed as a set of well-formed sentences.  Sequences of words
-which are not grammatical are excluded from this set.  Now, since
-there is no upper-bound on the length of a sentence, the number of
-possible sentences is unbounded.  For example, it is possible to add
-an unlimited amount of material to a sentence by using ``and`` or by
-chaining relative clauses, as illustrated in the following example
-from a children's story:
+When reading, we sometimes find that we have to stop and re-read a
+sentence in order to resolve an ambiguity.  Curiously, it seems possible
+to combine unambiguous words to create an ambiguous sentences:
 
+2. a) Fighting animals could be dangerous.
+   b) Visiting relatives can be tiresome.
+
+Perhaps another kind of variation, word order, is easier to understand.
+We know that the two sentences *Kim likes Sandy* and *Sandy likes Kim*
+have different meanings, and that *likes Sandy Kim* is simply ungrammatical.
+Similarly, we know that the following two sentences are equivalent:
+
+3. a) The farmer *loaded* the cart with sand
+   b) The farmer *loaded* sand into the cart
+
+However, consider the semantically similar verbs *filled* and *dumped*.
+Now the word order cannot be altered (ungrammatical sentences are starred.)
+
+4. a) The farmer *filled* the cart with sand
+   b) \*The farmer *filled* sand into the cart
+   c) \*The farmer *dumped* the cart with sand
+   d) The farmer *dumped* sand into the cart
+
+A further curious fact is that we are able to access the meaning of
+sentences we have not encountered.  It is not difficult to concoct an
+entirely novel sentence, one that has probably never been used before
+in the history of the language, and yet all speakers of the language
+will agree about its meaning.  In fact, the set of possible sentences would
+seem to be infinite, given that there is no upper bound on length:
 
    You can imagine Piglet's joy when at last the ship came in sight of
    him. In after-years he liked to think that he had been in Very
@@ -66,6 +88,39 @@ from a children's story:
    coming over the sea to rescue him...  (from A.A. Milne *In which
    Piglet is Entirely Surrounded by Water*)
 
+This chapter presents grammars and parsing, as the formal and
+computational methods for investigating and modelling the linguistic
+phenomena we have been touch on (or which have been tripping us over).
+
+As before, the motivation is natural language *understanding*.  How
+much more of the meaning of a text can we access when we can reliably
+recognize the linguistic structures it contains?  Having read in a
+text, can a program 'understand' it enough to be able to answer simple
+questions about "what happened?" or "who did what to whom?"  Also as
+before, we will develop simple programs to process annotated corpora
+and perform useful tasks.
+
+Before reviewing the linguistic fundamentals, we take a closer
+look at the ambiguity problem mentioned above.
+
+Motivational problem: PP attachment
+
+Exercises?
+
+------------------------
+Bits of Old Introduction
+------------------------
+
+As we shall see, patterns of well-formedness and ill-formedness in a
+sequence of words can be understood with respect to the internal
+:glossterm:`phrase structure` of the sentences.  We can develop formal
+models of these structures using grammars and parsers.
+
+In the context of formal and computational modelling, a language is
+often viewed as a set of well-formed sentences.  Sequences of words
+which are not grammatical are excluded from this set.  Now, since
+there is no upper-bound on the length of a sentence, the number of
+possible sentences is unbounded.
 
 Given that the resources of a computer, however large, are still
 finite, it is necessary to devise a finite description of this
@@ -84,6 +139,9 @@ representations of their meaning.  Thus, even if we were to impose an
 upper bound on sentence length to ensure the language was finite, we
 would still want to come up with a compact representation in the form
 of a grammar.
+
+Constituency
+------------
 
 A well-formed sentence of a language is more than an arbitrary
 sequence of words from the language.  Certain kinds of words usually
