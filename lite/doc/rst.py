@@ -64,7 +64,7 @@ class CustomizedHTMLTranslator(HTMLTranslator):
 
 LATEX_SETTINGS = {
     'output_encoding': 'utf-8',
-    'output-encoding_error_handler': 'backslahsreplace',
+    'output_encoding_error_handler': 'backslahsreplace',
     'use_latex_docinfo': True,
     'font_encoding': 'T1',
     'stylesheet': '../definitions.sty'
@@ -76,6 +76,11 @@ class CustomizedLaTeXWriter(LaTeXWriter):
         self.translator_class = CustomizedLaTeXTranslator
 
 class CustomizedLaTeXTranslator(LaTeXTranslator):
+    
+    # Not sure why we need this, but the old Makefile did it so I will
+    # to:
+    encoding = '\\usepackage[%s,utf8x]{inputenc}\n'
+    
     def __init__(self, document):
         LaTeXTranslator.__init__(self, document)
         # Make sure we put these *before* the stylesheet include line.
@@ -104,11 +109,6 @@ class CustomizedLaTeXTranslator(LaTeXTranslator):
 
     def _markup_pysrc(self, s, tag):
         return '\\pysrc%s{%s}' % (tag, self.encode(s))
-        
-    def to_latex_encoding(self,enc):
-        enc = LaTeXTranslator.to_latex_encoding(self, enc)
-        if enc == 'utf8': enc = 'utf8,utf8x'
-        return enc
         
 ######################################################################
 #{ Source Code Highlighting
