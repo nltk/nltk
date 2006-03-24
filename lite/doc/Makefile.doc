@@ -6,16 +6,16 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-TUTORIALS = index.txt  preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt  parse.txt  chunk.txt  chart.txt  pcfg.txt  field.txt  projects.txt
-HTML =      index.html preface.html introduction.html programming.html tokenize.html tag.html parse.html chunk.html chart.html pcfg.html field.html projects.html
-PDF =       index.pdf  preface.pdf  introduction.pdf  programming.pdf  tokenize.pdf  tag.pdf  parse.pdf  chunk.pdf  chart.pdf  pcfg.pdf  field.pdf  projects.pdf
-ERRS =      index.errs preface.errs introduction.errs programming.errs tokenize.errs tag.errs parse.errs chunk.errs chart.errs pcfg.errs field.errs projects.errs
+TUTORIALS = simple.txt
+
+PDF := $(TUTORIALS:.txt=.pdf)
+HTML := $(TUTORIALS:.txt=.html)
+ERRS := $(TUTORIALS:.txt=.errs)
 
 PYTHON = python
-PDFLATEX = pdflatex -halt-on-error
-RST2HTML = rst2html.py
-RST2LATEX = rst2latex.py --output-encoding=utf-8 --output-encoding-error-handler "backslashreplace" --use-latex-docinfo --font-encoding=T1
-FILTER = sed 's/\[utf8\]/[utf8,utf8x]/'
+PDFLATEX = pdflatex #-halt-on-error
+RST2HTML = ../rst.py --html
+RST2LATEX = ../rst.py --latex
 
 WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
@@ -47,10 +47,10 @@ clean_up:
 	rm -f *.log *.aux *.tex *.out *.errs
 
 .txt.html:
-	$(RST2HTML) --stylesheet-path=$(CSS_STYLESHEET_PATH) $< > $@
+	$(RST2HTML) $<
 
 .txt.tex:
-	$(RST2LATEX) --stylesheet-path=$(LATEX_STYLESHEET_PATH) $< | $(FILTER) > $@
+	$(RST2LATEX) $<
 
 .tex.pdf:
 	$(PDFLATEX) $<

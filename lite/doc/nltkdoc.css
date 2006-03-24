@@ -1,0 +1,21 @@
+/*
+:Author: Edward Loper
+:Copyright: This stylesheet has been placed in the public domain.
+
+Stylesheet for use with Docutils.
+
+This stylesheet defines new css classes used by NLTK.
+*/
+
+/* Include the standard docutils stylesheet. */
+@import url(default.css);
+
+/* Python souce code listings */
+pre.doctest-block   { font-weight: bold; 
+  padding: .5em 1em .5em 1em; border: 1px solid black;
+                      background-color: #eeeeee; }
+span.pysrc-prompt   { color: #006070; }
+span.pysrc-keyword  { color: #600000; }
+span.pysrc-string   { color: #006030; }
+span.pysrc-comment  { color: #003060; }
+span.pysrc-output   { color: #000000; font-weight: normal; }
