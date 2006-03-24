@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-TUTORIALS = simple.txt
+TUTORIALS = index.txt  preface.txt  introduction.txt  programming.txt  tokenize.txt  tag.txt  parse.txt  chunk.txt  chart.txt  pcfg.txt  field.txt  projects.txt
 
 PDF := $(TUTORIALS:.txt=.pdf)
 HTML := $(TUTORIALS:.txt=.html)
