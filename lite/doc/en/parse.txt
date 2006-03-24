@@ -33,8 +33,8 @@ presence of commas alone:
 1. a) My dog, Bonus, has black and white spots.  (I have one dog.)
    b) My dog Bonus has black and white spots.  (I have more than one dog.)
 
-It is clear that some of thes rules are important, while others seem
-to be vestiges of antiquated style that preoccupy only the most crusty
+It is clear that some of these rules are important, while others seem
+to be vestiges of antiquated style that preoccupies only the most crusty
 curmudgeons (or over-eager grammar checkers included in some word
 processors).  However, it is *not* clear where to draw the line
 between the two, hence the confusion noted above.
@@ -67,7 +67,9 @@ sentences we have not encountered.  It is not difficult to concoct an
 entirely novel sentence, one that has probably never been used before
 in the history of the language, and yet all speakers of the language
 will agree about its meaning.  In fact, the set of possible sentences would
-seem to be infinite, given that there is no upper bound on length:
+seem to be infinite, given that there is no upper bound on length.
+Consider the following passage from a children's story, containing a
+rather impressive sentence:
 
    You can imagine Piglet's joy when at last the ship came in sight of
    him. In after-years he liked to think that he had been in Very
