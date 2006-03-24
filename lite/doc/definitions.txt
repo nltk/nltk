@@ -1,3 +1,4 @@
+.. -*- mode: rst -*-
 .. |version| replace:: 0.6.3
 .. |copyrightinfo| replace:: 2001-2006 University of Pennsylvania
 .. |license| replace:: Creative Commons Attribution-ShareAlike License
@@ -24,15 +25,15 @@
 .. |ren2| unicode:: U+4EBA .. zh ren (person)
     
 .. Linguistic eXample - cited form in running text
-.. role:: LX
+.. role:: lx
    :class: example
 
 .. Defined Term - first or canonical use of technical term
-.. role:: DT
+.. role:: dt
    :class: term
 
 .. Grammatical Category - e.g. NP and verb as technical terms
-.. role:: GC
+.. role:: gc
    :class: category
 
 .. role:: glossterm(emphasis)
