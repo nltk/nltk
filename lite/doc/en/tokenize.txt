@@ -1,6 +1,6 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
-
+   
 =====
 Words
 =====
@@ -72,18 +72,18 @@ following sentence::
   the asset sales materialize -- would result in shareholders
   receiving only $36 to $45 a share in cash.
 
-Our simple algorithm treats each occurrence of the sequence "``--``" as
+Our simple algorithm treats each occurrence of the sequence `--`:lx: as
 a word; but most people would consider them to be punctuation marks,
 not words.
 
 Second, there may be some character sequences that are not separated
 by whitespace, but which we still want to consider separate words.
-One example of this is contractions, such as "``didn't``."  If we're
+One example of this is contractions, such as `didn't`:lx:.  If we're
 analyzing the meaning of a sentence, it might be more useful to treat
-this character string as two separate words, "``did``" and "``not``."
+this character string as two separate words, `did`:lx: and `not`:lx:.
 Similarly, it sometimes makes more sense to treat hyphenated strings
-as two words.  For example, in the expression "``pro-New York``,"
-it seems quite unnatural to say that "``pro-New``" is a single word.
+as two words.  For example, in the expression `pro-New York`:lx:,
+it seems quite unnatural to say that `pro-New`:lx: is a single word.
 
 .. I know I've seen better examples of this than "pro-New York, but
    I can't think of one right now..
@@ -138,13 +138,13 @@ new terms, "token" and "type."  A word *token* is an individual
 occurrence of a word in a concrete context.  A word *type* is a
 "dictionary entry" for a word.  A word type is somewhat abstract; it's
 what we're talking about when we say that we know the meaning of the
-word ``deprecate``, or when we say that the words ``barf`` and
-``vomit`` are synonyms. On the other hand, a word token is something
+word `deprecate`:lx:, or when we say that the words `barf`:lx: and
+`vomit`:lx: are synonyms. On the other hand, a word token is something
 which exists in time and space. For example, we could talk about my
-uttering a token of the word ``grunge`` in Edinburgh on July 14, 2003;
+uttering a token of the word `grunge`:lx: in Edinburgh on July 14, 2003;
 equally, we can say that the last word token in the WSJ text is a
-token of the word type ``cents``, or that there are four tokens of
-the type ``Sea`` in the text.
+token of the word type `cents`:lx:, or that there are four tokens of
+the type `Sea`:lx: in the text.
 
 The terms *token* and *type* can also be applied to other linguistic
 entities.  For example, a *sentence token* is an individual occurrence
@@ -165,7 +165,7 @@ first of these tasks; now, let's turn our attention to the second
 task, that of counting word types.  Again, we will start with a simple
 approach: split the article's text on any sequence of whitespace, and
 count the number of times each substring occurs.  But this time, we'll
-use a ``set`` instead of a ``list`` to collect the words:
+use a `set`:lx: instead of a `list`:lx: to collect the words:
 
   >>> word_types = set()
   >>> for word in text.split():
@@ -176,7 +176,7 @@ use a ``set`` instead of a ``list`` to collect the words:
   >>> print len(word_types)
   252
 
-A quick glance at the contents of ``word_types`` reveals some of the
+A quick glance at the contents of `word_types`:lx: reveals some of the
 shortcomings of this approach.  These shortcomings can be divided into
 two categories:
 
@@ -186,25 +186,25 @@ two categories:
   same type?
 
 We encountered many of the issues with tokenization when we looked at
-the task of counting tokens.  For example, should "``--``" be counted
+the task of counting tokens.  For example, should `--`:lx: be counted
 as a word token?  In addition to the issues we've already seen, our
 algorithm's ignorance about punctuation can cause it to count the same
-word type multiple times.  For example, the substrings "``price.``"
-and "``price``" will be treated as two different word types. When we
+word type multiple times.  For example, the substrings `price.`:lx:
+and `price`:lx: will be treated as two different word types. When we
 were counting tokens, this didn't affect our overall answer, since
-both "``price.``" and "``price``" count as a single token.  But since the
+both `price.`:lx: and `price`:lx: count as a single token.  But since the
 two strings are not identical, our algorithm counts them as two
 separate types.  These tokenization issues could be addressed by
 defining a more advanced algorithm for splitting the text into word
 tokens (i.e., a *tokenizer*).
 
-The type definition issues are exemplified by the fact that "``the``"
-and "``The``" are listed as two separate word types.  We would like to
+The type definition issues are exemplified by the fact that `the`:lx:
+and `The`:lx: are listed as two separate word types.  We would like to
 say that these two tokens have the same type, but just happen to be
 written differently.  But since our simple algorithm uses strict
 equality to divide word tokens into types, it treats them as two
 distinct types.  A more subtle question is whether the two tokens
-"``asset``" and "``assets``" should be considered to share a type or
+`asset`:lx: and `assets`:lx: should be considered to share a type or
 not.  On the one hand, they would both be listed under the same entry
 in a dictionary; but on the other hand, there is a definite semantic
 difference between them.  As with some of the questions about
@@ -367,9 +367,9 @@ conversational speech. Nevertheless, spoken words can and do occur in
 isolation. Using a variety of (sometime language-dependent) criteria,
 certain phonological units are classed as `phonological words`, and
 these units need not correspond to orthographic words: an example is
-the utterance ``wanna`` as a contraction of the words ``want`` and ``to``.
+the utterance `wanna`:lx: as a contraction of the words `want`:lx: and `to`:lx:.
 Returning to an example
-mentioned before,    note that the form  "``n't``" in "``didn't``" cannot
+mentioned before,    note that the form  `n't`:lx: in `didn't`:lx: cannot
 form a phonological word by itself, and is sometimes called a `clitic`
 or `leaner`; it needs to to combine with a 'host' word before it can be
 uttered in normal speech.
@@ -378,12 +378,12 @@ Independent of the distinction between spoken and written language,
 an important notion is that of a `lexeme` or `lexical item`. This
 corresponds broadly to the notion of a word that you might look up in
 a dictionary of English or some other language. For example, in order
-to find the meaning of the word ``said``, you need to know first that
-it is a particular `grammatical form` of the lexeme ``SAY``. (We adopt
+to find the meaning of the word `said`:lx:, you need to know first that
+it is a particular `grammatical form` of the lexeme `SAY`:lx:. (We adopt
 the standard convention of representing lexemes with upper-case
-forms.) Similarly,  ``say``, ``says`` and ``saying`` are also
-grammatical forms of ``SAY``. While ``said``, ``says`` and ``saying``
-are morphologically inflected, ``say`` lacks any morphological
+forms.) Similarly,  `say`:lx:, `says`:lx: and `saying`:lx: are also
+grammatical forms of `SAY`:lx:. While `said`:lx:, `says`:lx: and `saying`:lx:
+are morphologically inflected, `say`:lx: lacks any morphological
 inflection and is therefore termed the `base` form. In English, the
 base form is conventionally used as the `lemma` (or `citation form`)
 for a word. It is the lemma that is chosen to represent the
@@ -393,9 +393,9 @@ will be listed under the word's lemma.)
 Many of the word-like forms that occur in text have received little
 attention from linguists but are nevertheless so prevalent that they
 need to be dealt with in many NLP applications. These include
-abbreviations such as `Dept.` or `Mr.` and acronyms such as `NATO` ,
-`Interpol` or `SQL`. Also of interest are symbols such as $ (`dollar`)
-and @ (`at`). Unlike ordinary punctuation marks, these symbols
+abbreviations such as `Dept.`:lx: or `Mr.`:lx: and acronyms such as `NATO`:lx:,
+`Interpol`:lx: or `SQL`:lx:. Also of interest are symbols such as $ (`dollar`:lx:)
+and @ (`at`:lx:). Unlike ordinary punctuation marks, these symbols
 (sometimes called `logograms`) stand for words, and would be spoken as
 such if the text were read aloud.
 
@@ -602,7 +602,7 @@ the previous word.
 
 Once we have constructed a conditional frequency distribution for the
 training corpus, we can use it to find the most likely word for any
-given context. For example, taking the word ``living`` as our context,
+given context. For example, taking the word `living`:lx: as our context,
 we can inspect all the words that occurred in that context.
 
   >>> word = 'living'
@@ -670,7 +670,7 @@ Exercises
       observations.
 
 #. Write a program to implement one or more text readability scores
-   (see ``http://en.wikipedia.org/wiki/Readability``).
+   (see http://en.wikipedia.org/wiki/Readability ).
 
 #. (Advanced) **Statistically Improbable Phrases:**
    Design an algorithm to find the statistically improbable
@@ -738,19 +738,19 @@ NLTK_
    a flavour of the problems, consider the following text from the Wall
    Street Journal::
    
-     Let's start with the string ``aren't``. According to our naive
+     Let's start with the string `aren't`:lx:. According to our naive
      definition, it counts as only one word. But consider a situation where
      we wanted to check whether all the words in our text occurred in a
-     dictionary, and our dictionary had entries for ``are`` and ``not``,
-     but not for ``aren't``.  In this case, we would probably be happy to
-     say that ``aren't`` is a contraction of two distinct words.
+     dictionary, and our dictionary had entries for `are`:lx: and `not`:lx:,
+     but not for `aren't`:lx:.  In this case, we would probably be happy to
+     say that `aren't`:lx: is a contraction of two distinct words.
    
    
-   .. We can make a similar point about ``1992's``. We might want to run
+   .. We can make a similar point about `1992's`:lx:. We might want to run
       a small program over our text to extract all words which express
       dates. In this case, we would get achieve more generality by first
       stripping except in this case, we would not expect to find
-      ``1992`` in a dictionary.
+      `1992`:lx: in a dictionary.
    
    If we take our naive definition of word literally (as we should, if we
    are thinking of implementing it in code), then there are some other
@@ -759,11 +759,11 @@ NLTK_
    words which come at the beginning of a line will fail to be preceded
    by whitespace (unless we treat the newline character as a
    whitespace). Second, according to our criterion, punctuation symbols
-   will form part of words; that is, a string like ``investors,`` will
+   will form part of words; that is, a string like `investors,`:lx: will
    also count as a word, since there is no whitespace between
-   ``investors`` and the following comma. Consequently, we run the risk
-   of failing to recognise that ``investors,`` (with appended comma) is a
-   token of the same type as ``investors`` (without appended comma). More
+   `investors`:lx: and the following comma. Consequently, we run the risk
+   of failing to recognise that `investors,`:lx: (with appended comma) is a
+   token of the same type as `investors`:lx: (without appended comma). More
    importantly, we would like punctuation to be a "first-class citizen"
    for tokenization and subsequent processing. For example, we might want
    to implement a rule which says that a word followed by a period is
@@ -784,8 +784,8 @@ NLTK_
    in trying to syntactically analyse these strings using a standard
    grammar of English. Now for some applications, we would like to
    "bundle up" expressions such as
-   ``alpha-galactosyl-1,4-beta-galactosyl-specific adhesin`` and ``4.53
-   +/- 0.15%`` so that they are presented as unanalysable atoms to the
+   `alpha-galactosyl-1,4-beta-galactosyl-specific adhesin`:lx: and `4.53
+   +/- 0.15%`:lx: so that they are presented as unanalysable atoms to the
    parser. That is, we want to treat them as single "words" for the
    purposes of subsequent processing.  The upshot is that, even if we
    confine our attention to English text, the question of what we treat
@@ -828,7 +828,7 @@ NLTK_
    parser, we need to explicitly indicate which substrings are words. One
    convenient way to do this in Python is to split the string into a
    *list* of words, where each word is a string, such as
-   ``'dog'``. [#]_ 
+   `'dog'`:lx:. [#]_ 
    In Python, lists are printed as a series of objects
    (in this case, strings), surrounded by square brackets and separated
    by commas:
@@ -840,7 +840,7 @@ NLTK_
    .. [#] We say "convenient" because Python makes it easy to iterate
           through a list, processing the items one by one.
    
-   Notice that we have introduced a new variable ``words`` which is bound
+   Notice that we have introduced a new variable `words`:lx: which is bound
    to the list, and that we entered the variable on a new line to check
    its value.
    
@@ -863,7 +863,7 @@ NLTK_
    
    However, as noted above, it is usually preferable to represent a text
    as a list of tokens.  These lists are typically created using a
-   *tokenizer*, such as ``tokenize.whitespace`` which splits strings into
+   *tokenizer*, such as `tokenize.whitespace`:lx: which splits strings into
    words at whitespaces:
    
      >>> from nltk_lite import tokenize
@@ -889,7 +889,7 @@ NLTK_
    applications; for instance, it fails to separate the last word of a
    phrase or sentence from punctuation characters, such as comma, period,
    exclamation mark and question mark.  As its name suggests,
-   ``tokenize.regexp`` employs a regular expression to determine how text
+   `tokenize.regexp`:lx: employs a regular expression to determine how text
    should be split up.  This regular expression specifies the characters
    that can be included in a valid word.  To define a tokenizer that
    includes punctuation as separate tokens, we could use:
