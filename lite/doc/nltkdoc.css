@@ -10,6 +10,11 @@ This stylesheet defines new css classes used by NLTK.
 /* Include the standard docutils stylesheet. */
 @import url(default.css);
 
+/* Custom inline roles */
+span.example        { font-style: italic; }
+span.term           { font-style: bold; }
+span.category       {  }
+
 /* Python souce code listings */
 pre.doctest-block   { font-weight: bold; 
   padding: .5em 1em .5em 1em; border: 1px solid black;
@@ -19,3 +24,4 @@ span.pysrc-keyword  { color: #600000; }
 span.pysrc-string   { color: #006030; }
 span.pysrc-comment  { color: #003060; }
 span.pysrc-output   { color: #000000; font-weight: normal; }
+
