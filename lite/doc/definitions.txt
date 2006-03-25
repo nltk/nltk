@@ -40,7 +40,4 @@
 .. role:: math
    :class: math
 
-.. role:: glossterm(emphasis)
-   :class: indexed
-
 .. sectnum::
