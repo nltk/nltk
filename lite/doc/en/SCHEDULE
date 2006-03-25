@@ -2,57 +2,53 @@
 WRITING SCHEDULE
 ----------------
 
-First group of chapters, due ASAP (mid March?)
-All of us now need to be checking these thoroughly
 
-0. Preface 90% [All]
+0. Preface 90%
 
-1. Introduction 75% [All]
-
-2. Programming 50% [James, 2006-03-24; Edward]
-
-3. Tokenization 90% [All]
-   + sentence tokenization (port MXTerminator?)
-
-4. Tagging 90% [Steven, 2006-03-10]
+1. Introduction 75%
 
 ------------------------------------------
 
-Please sign up to take one of these chapters from draft to final-draft
-during April and May.
+PART I: Basics [March]
 
-5. Advanced Programming 50% [Edward]
+2. Programming 50% [James, 2006-03-24; Edward]
+
+3. Tokenization 90% [Edward]
+   + sentence tokenization (port MXTerminator?)
+
+4. Tagging 90% [Ewan]
+
+5. Chunk Parsing 75% [Steven, 2006-03-14]
+
+------------------------------------------
+
+PART II: Parsing [April]
+
+6. Advanced Programming 50% [Edward]
    + pywordnet
    + XML
    + collocations?
    + simple extractive summarization?
 
-6. Chunk Parsing 75% [Steven, 2006-03-14]
-
-7. Parsing 75% [Ewan]
+7. Grammars and Parsing 75% [Ewan]
    + feature-based grammars
 
 8. Chart Parsing 75% [Edward]
 
-9. Probabilistic Grammars and Parsing 25%
+9. Probabilistic Grammars and Parsing 25% [James?]
 
-10. Fieldwork 75% [Steven]
-    + OLAC
-    + language identification, spearman rank correlation
+------------------------------------------
 
-11. Regular Expressions 90% [Ewan]
-    + chatbots
+PART III: Advanced Topics [May-July]
 
-12. Project Topics
+* Software design
+* Lexicon, semantics, quantification [Ewan?]
+* Language modelling, maxent [James?]
+* morphology [Steven?]
+* Text classification [Edward?]
+   + question classification
+* Asian languages [Ewan?, Steven?]
+* linguistic exploration [Steven]
+    + OLAC, language identification, spearman rank correlation
 
 -------------------------------------------
-
-Other chapters?
-
-a) Maximum entropy modelling (James?)
-b) Lexicon (Ewan?)
-c) Text classification (Edward?)
-   + question classification
-d) Finite state morphology (Steven?)
-e) Asian languages (Ewan?, Steven?)
-f) Language modelling
