@@ -36,6 +36,10 @@
 .. role:: gc
    :class: category
 
+.. Math expression - e.g. especially for variables
+.. role:: math
+   :class: math
+
 .. role:: glossterm(emphasis)
    :class: indexed
 
