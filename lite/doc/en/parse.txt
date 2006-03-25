@@ -92,7 +92,11 @@ rather impressive sentence:
 
 This chapter presents grammars and parsing, as the formal and
 computational methods for investigating and modelling the linguistic
-phenomena we have been touch on (or which have been tripping us over).
+phenomena we have been touching on (or tripping over).
+As we shall see, patterns of well-formedness and ill-formedness in a
+sequence of words can be understood with respect to the internal
+:dt:`phrase structure` of the sentences.  We can develop formal
+models of these structures using grammars and parsers.
 
 As before, the motivation is natural language *understanding*.  How
 much more of the meaning of a text can we access when we can reliably
@@ -103,20 +107,71 @@ before, we will develop simple programs to process annotated corpora
 and perform useful tasks.
 
 Before reviewing the linguistic fundamentals, we take a closer
-look at the ambiguity problem mentioned above.
+look at the ambiguity problem mentioned above.  Consider a sentence
+like: :lx:`I saw the man with a telescope`.  Who has the telescope?
+To clarify what is going on here, consider the following pair of sentences:
 
-Motivational problem: PP attachment
+5. a) The policeman saw a burglar with a gun.       (not some other burglar)
+   b) The policeman saw a burglar with binoculars.  (not with his naked eye)
 
-Exercises?
+In both cases, there is a prepositional phrase introduced by
+:lx:`with`.  In the first case, this phrase modifies the noun
+:lx:`burglar`, and in the second case, it modifies the verb :lx:`saw`.
+In general, how can we determine whether a prepositional phrase
+modifies the preceding noun or verb?
+The *Prepositional Phrase Attachment Corpus*, included with NLTK-Lite,
+facilitates systematic study of this question.
+It contains lines of the following form::
+
+  47830 allow visits between families N
+  47830 allow visits on peninsula V
+  47828 announced reduction in formalities N
+  46487 announced plan in September V
+  42457 acquired interest in firm N
+  42457 acquired interest in 1986 V
+
+Each line consists of a sentence identifier, a verb, a noun, a
+preposition, another noun (the head noun from the prepositional
+phrase), and finally an "attachment" (``N`` or ``V``) to indicate
+whether the prepositional phrase attaches to (modifies) the noun phrase or the
+verb phrase.  The above examples correspond to the following phrasal
+groupings.
+
+  | allow (NP visits (PP between families))
+  | allow (NP visits) (PP on peninsula)
+  | announced (NP reduction (PP in formalities)
+  | announced (NP plan) (PP in September)
+  | acquired (NP interest (PP in firm))
+  | acquired (NP interest) (PP in 1986)
+
+Observe in each case that the argument of the verb is either a single
+complex expression ``(visits (between families))`` or a pair of
+simpler expressions ``(visits) (on peninsula)``.
+We can access this corpus from NLTK-Lite as follows:
+
+  >>> from nltk_lite.corpora import ppattach, extract
+  >>> from pprint import pprint
+  >>> item = extract(2, ppattach.dictionary('training'))
+  >>> pprint(item)
+  {'attachment': 'N',
+   'noun1': 'director',
+   'noun2': 'conglomerate',
+   'prep': 'of',
+   'sent': '2',
+   'verb': 'named'}
+
+From the above examples, it would appear that the attachment of the
+prepositional phrase is determined by the noun it contains.  However,
+we can use this corpus to find examples where other factors come in to play.
+
+.. Program to find cases where conditioning is on preposition, or verb
+
+.. Exercises: Spoof headlines
 
 ------------------------
 Bits of Old Introduction
 ------------------------
 
-As we shall see, patterns of well-formedness and ill-formedness in a
-sequence of words can be understood with respect to the internal
-:glossterm:`phrase structure` of the sentences.  We can develop formal
-models of these structures using grammars and parsers.
 
 In the context of formal and computational modelling, a language is
 often viewed as a set of well-formed sentences.  Sequences of words
@@ -127,7 +182,7 @@ possible sentences is unbounded.
 Given that the resources of a computer, however large, are still
 finite, it is necessary to devise a finite description of this
 infinite set.  Such descriptions are called
-:glossterm:`grammars`. That is, a grammar of a language is a means of
+:dt:`grammars`. That is, a grammar of a language is a means of
 specifying which strings belong to the language, and as we have just
 remarked, it needs to be a finite specification (rather than, say,
 just a list of all the grammatical sentences). We have already
@@ -149,7 +204,7 @@ A well-formed sentence of a language is more than an arbitrary
 sequence of words from the language.  Certain kinds of words usually
 go together.  For instance, determiners like ``the`` are typically
 followed by adjectives or nouns, but not by verbs.  Groups of words
-form intermediate structures called phrases or :glossterm:`constituents`.
+form intermediate structures called phrases or :dt:`constituents`.
 These constituents can be identified using standard syntactic tests,
 such as substitution, movement and coordination.  For example, if a
 sequence of words can be replaced with a pronoun, then that sequence
@@ -183,7 +238,7 @@ for discussion).
 A grammar is a formal system which specifies which sequences of words
 are well-formed in the language, and which provides one or more phrase
 structures for the sequence.  We will focus our attention on a
-particular kind of grammar called a :glossterm:`context-free grammar`
+particular kind of grammar called a :dt:`context-free grammar`
 (CFG), which is a collection of rules or *productions* of the form
 ``S`` |rarr| ``NP VP``.  We interpret this production as saying that a
 constituent of category ``S`` can consist of subconstituents of
@@ -193,7 +248,7 @@ of the string ``help``.  For a phrase structure tree to be well-formed
 relative to a grammar, each non-terminal node and its children must
 correspond to such a production in the grammar.
 
-A :glossterm:`parser` is a computational system which processes input sentences
+A :dt:`parser` is a computational system which processes input sentences
 according to the productions of a grammar, and builds one or more
 constituent structures which conform to the grammar. While a
 grammar is a declarative specification of well-formedness,  a
@@ -292,16 +347,16 @@ _`G1`
  | P |rarr| 'in' | 'with'
 
 The productions are presented in two groups which we will call
-:glossterm:`grammatical productions` and :glossterm:`lexical
+:dt:`grammatical productions` and :dt:`lexical
 productions` respectively.  The labels in the grammatical productions
-(e.g., ``S``, ``NP``, ``VP``, ``Det``, etc) are all :glossterm:`nonterminal
+(e.g., ``S``, ``NP``, ``VP``, ``Det``, etc) are all :dt:`nonterminal
 symbols`, as are the labels on the lefthand side of the lexical
 productions.  Nonterminal symbols correspond to the grammatical
 categories we use to label constituents.  By contrast,
-:glossterm:`terminal symbols` are what we call the words (e.g., `the`,
+:dt:`terminal symbols` are what we call the words (e.g., `the`,
 `a`, `man` and so on) whose syntactic behaviour is defined by the
 grammar. Sometimes we also refer to these words as
-:glossterm:`lexical items`; these are the strings which will be
+:dt:`lexical items`; these are the strings which will be
 listed in a lexicon.
 
 Notice that in the lexical productions, we have used
@@ -312,8 +367,8 @@ that a ``P`` (preposition) can be realized as either `in` or
 
 The categories ``S``, ``NP``, ``VP`` and ``PP`` on the righthand side of the
 grammatical productions in `G1`_ are sometimes called
-:glossterm:`phrasal categories`. The remaining categories, ``Det``,
-``N``, ``V`` and ``P`` are :glossterm:`lexical categories`, in that they introduce
+:dt:`phrasal categories`. The remaining categories, ``Det``,
+``N``, ``V`` and ``P`` are :dt:`lexical categories`, in that they introduce
 lexical items. 
 
 ======    ====================    =====================
@@ -350,8 +405,8 @@ VP modification      NP modification
 
 
 The fact that our grammar admits two distinct structures for this
-sentence indicates that the sentence is :glossterm:`structurally ambiguous`.
-The ambiguity in question is often called a :glossterm:`PP attachment
+sentence indicates that the sentence is :dt:`structurally ambiguous`.
+The ambiguity in question is often called a :dt:`PP attachment
 ambiguity`, since the issue at hand is how the ``PP`` (prepositional
 phrase) `in the park` should be attached to the phrase structure
 tree. In this case, we can see that the grammar admits just two
@@ -369,70 +424,17 @@ else (e.g., sitting on the balcony of an apartment overlooking the
 park).  As we will see, dealing with ambiguity is a key challenge in
 parsing.
 
-Prepositional Phrase Attachment Corpus
---------------------------------------
-
-The *Prepositional Phrase Attachment Corpus*, included with NLTK-Lite,
-facilitates systematic study of the attachment of prepositional phrases.
-It contains lines of the following form::
-
-  47830 allow visits between families N
-  47830 allow visits on peninsula V
-  47828 announced reduction in formalities N
-  46487 announced plan in September V
-  42457 acquired interest in firm N
-  42457 acquired interest in 1986 V
-
-Each line consists of a sentence identifier, a verb, a noun, a
-preposition, another noun (the head noun from the prepositional
-phrase), and finally an "attachment" (``N`` or ``V``) to indicate
-whether the prepositional phrase attaches to the noun phrase or the
-verb phrase.  The above examples correspond to the following tree
-fragments:
-
-  | (VP allow (NP visits (PP between families)))
-  | (VP allow (NP visits) (PP on peninsula))
-  | (VP announced (NP reduction (PP in formalities))
-  | (VP announced (NP plan) (PP in September))
-  | (VP acquired (NP interest (PP in firm)))
-  | (VP acquired (NP interest) (PP in 1986))
-
-We can access the PP Attachment Corpus as follows:
-
-  >>> from nltk_lite.corpora import ppattach
-  >>> from pprint import pprint
-  >>> from itertools import islice
-  >>> pprint(list(islice(ppattach.raw('training'), 0, 5)))
-  [('0', 'join', 'board', 'as', 'director', 'V'),
-   ('1', 'is', 'chairman', 'of', 'N.V.', 'N'),
-   ('2', 'named', 'director', 'of', 'conglomerate', 'N'),
-   ('3', 'caused', 'percentage', 'of', 'deaths', 'N'),
-   ('5', 'using', 'crocidolite', 'in', 'filters', 'V')]
-
-There is also a ``dictionary()`` method which may be more convenient
-in some cases, e.g.:
-
-  >>> from nltk_lite.corpora import extract
-  >>> item = extract(2, ppattach.dictionary('training'))
-  >>> pprint(item)
-  {'attachment': 'N',
-   'noun1': 'director',
-   'noun2': 'conglomerate',
-   'prep': 'of',
-   'sent': '2',
-   'verb': 'named'}
-
 Recursion
 ---------
 
 We remarked earlier that there is no upper bound on the length of
 sentences of a natural language. Within context-free grammars, the
-main mechanism which allows this unboundedness is :glossterm:`recursion`. A
-grammar is said to be :glossterm:`recursive` if a category occurring on the
+main mechanism which allows this unboundedness is :dt:`recursion`. A
+grammar is said to be :dt:`recursive` if a category occurring on the
 lefthand side of a production also appears on the righthand side of a
 production. If this dual occurrence takes place in *one and the same
-production*, then we have :glossterm:`direct recursion`; otherwise we have
-:glossterm:`indirect recursion`. These two cases are both illustrated in the
+production*, then we have :dt:`direct recursion`; otherwise we have
+:dt:`indirect recursion`. These two cases are both illustrated in the
 following grammar:
 
 _`G2`
@@ -490,9 +492,9 @@ That is, `gave` can occur with a following ``NP`` and ``PP``;
 `saw` can occur with a following ``NP``; 
 `said` can occur with a following ``S``; 
 and `barked` can occur with no following phrase.
-In these cases, ``NP``, ``PP`` and ``S`` are called :glossterm:`complements`
+In these cases, ``NP``, ``PP`` and ``S`` are called :dt:`complements`
 of the respective verbs, and the verbs themselves are called
-:glossterm:`heads` of the verb phrase.
+:dt:`heads` of the verb phrase.
 
 However, there are fairly strong constraints on what verbs can occur
 with what complements. Thus, we would like our grammars to mark the
@@ -514,7 +516,7 @@ ungrammatical examples above?  We need some way of constraining
 grammar productions which expand ``VP`` so that verbs *only* cooccur
 with their correct complements. We do this by dividing the class of
 verbs into \'subcategories\', each of which is associated with a
-different set of complements. For example, :glossterm:`transitive
+different set of complements. For example, :dt:`transitive
 verbs` such as `saw`, `kissed` and `hit` require a following ``NP``
 object complement. Let's introduce a new label for such verbs, namely
 ``V_tr``, and use it in the following productions:
@@ -596,7 +598,7 @@ We have argued that lexical categories need to be subdivided into
 subcategories to account for the fact that different lexical items
 select different sequences of following complements. That is, it is a
 distinguishing property of complements that they co-occur with some
-lexical items but not others. By contrast, :glossterm:`modifiers` can
+lexical items but not others. By contrast, :dt:`modifiers` can
 occur with pretty much any instance of the relevant lexical class. For
 example, consider the temporal adverbial *last Thursday*:
 
@@ -884,7 +886,7 @@ Nonterminals
 
 ``Nonterminal`` is a simple class that's used to let NLTK distinguish
 terminals from nonterminals.  Each ``Nonterminal`` is defined by a
-:glossterm:`symbol`, which is represented by a case-sensitive string.  Typical
+:dt:`symbol`, which is represented by a case-sensitive string.  Typical
 symbols for ``Nonterminals`` are ``"S"`` (for sentence) and ``"NP"``
 (for noun phrases).  To construct a ``Nonterminal``, use the
 ``Nonterminal`` constructor::
@@ -918,9 +920,9 @@ Productions
 -----------
 
 CFG productions are represented with the ``cfg.Production`` class.
-Each ``Production`` specifies that a nonterminal (the :glossterm:`left-hand
+Each ``Production`` specifies that a nonterminal (the :dt:`left-hand
 side`) can be expanded to a sequence of terminals and nonterminals
-(the :glossterm:`right-hand side`).  Productions are created with the
+(the :dt:`right-hand side`).  Productions are created with the
 ``cfg.Production`` constructor, which takes a nonterminal left-hand
 side, and zero or more terminals and nonterminals for the right-hand
 side::
@@ -933,9 +935,9 @@ side::
   NP -> 'the' Adj N
 
 The right-hand side may contain any number of elements.  In
-particular, for so-called :glossterm:`epsilon productions`, the right-hand side
+particular, for so-called :dt:`epsilon productions`, the right-hand side
 is empty.  When parsing natural language, epsilon productions are
-often used for :glossterm:`traces`, which mark the position from which a
+often used for :dt:`traces`, which mark the position from which a
 constituent moved::
 
   >>> trace = cfg.Nonterminal('t')
@@ -951,7 +953,7 @@ CFGs
 ----
 
 Context free grammars are encoded by the ``Grammar`` class.  A ``Grammar``
-consists of a special :glossterm:`start` nonterminal, and an ordered list of
+consists of a special :dt:`start` nonterminal, and an ordered list of
 productions.  ``Grammars`` are created with the constructor::
 
   >>> grammar = cfg.Grammar(S, [prod1, prod2, prod3])
