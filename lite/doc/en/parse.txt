@@ -106,27 +106,33 @@ questions about "what happened?" or "who did what to whom?"  Also as
 before, we will develop simple programs to process annotated corpora
 and perform useful tasks.
 
-Before reviewing the linguistic fundamentals, we take a closer
-look at the ambiguity problem mentioned above.  Consider a sentence
-like: :lx:`I saw the man with a telescope`.  Who has the telescope?
-To clarify what is going on here, consider the following pair of sentences:
+-------------------
+Syntactic Ambiguity
+-------------------
 
-5. a) The policeman saw a burglar with a gun.       (not some other burglar)
-   b) The policeman saw a burglar with binoculars.  (not with his naked eye)
+We have seen that sentences can be ambiguous.  If we overheard someone
+saying :lx:`I went to the bank`, we wouldn't know whether it was
+a river bank or a financial institution.  This ambiguity concerns
+the meaning of the word :lx:`bank`, and is a kind of :dt:`lexical ambiguity`.
+There is another kind of ambiguity which cannot be explained in this way.
+Consider a sentence like: :lx:`I saw the man with a telescope`.  Who
+has the telescope?  To clarify what is going on here, consider the
+following pair of sentences:
+
+5. a) The policeman saw a burglar *with a gun*.       (not some other burglar)
+   b) The policeman saw a burglar *with binoculars*.  (not with his naked eye)
 
 In both cases, there is a prepositional phrase introduced by
-:lx:`with`.  In the first case, this phrase modifies the noun
-:lx:`burglar`, and in the second case, it modifies the verb :lx:`saw`.
+:lx:`with`.  In the first case this phrase modifies the noun
+:lx:`burglar`, and in the second case it modifies the verb :lx:`saw`.
 In general, how can we determine whether a prepositional phrase
 modifies the preceding noun or verb?
-The *Prepositional Phrase Attachment Corpus*, included with NLTK-Lite,
+The :dt:`Prepositional Phrase Attachment Corpus`, included with NLTK-Lite,
 facilitates systematic study of this question.
 It contains lines of the following form::
 
   47830 allow visits between families N
   47830 allow visits on peninsula V
-  47828 announced reduction in formalities N
-  46487 announced plan in September V
   42457 acquired interest in firm N
   42457 acquired interest in 1986 V
 
@@ -134,13 +140,11 @@ Each line consists of a sentence identifier, a verb, a noun, a
 preposition, another noun (the head noun from the prepositional
 phrase), and finally an "attachment" (``N`` or ``V``) to indicate
 whether the prepositional phrase attaches to (modifies) the noun phrase or the
-verb phrase.  The above examples correspond to the following phrasal
+verb phrase.  The above examples correspond to the following phrase
 groupings.
 
   | allow (NP visits (PP between families))
   | allow (NP visits) (PP on peninsula)
-  | announced (NP reduction (PP in formalities)
-  | announced (NP plan) (PP in September)
   | acquired (NP interest (PP in firm))
   | acquired (NP interest) (PP in 1986)
 
@@ -163,10 +167,221 @@ We can access this corpus from NLTK-Lite as follows:
 From the above examples, it would appear that the attachment of the
 prepositional phrase is determined by the noun it contains.  However,
 we can use this corpus to find examples where other factors come in to play.
+The following program uses ``MinimalSet`` to find pairs of entries in the
+corpus which have different attachments based on the *verb* only.
 
-.. Program to find cases where conditioning is on preposition, or verb
+  >>> from nltk_lite.utilities import MinimalSet
+  >>> ms = MinimalSet()
+  >>> for entry in ppattach.dictionary('training'):
+  ...     target  = entry['attachment']
+  ...     context = (entry['noun1'], entry['prep'], entry['noun2'])
+  ...     display = (target, entry['verb'])
+  ...     ms.add(context, target, display)
+  >>> for context in ms.contexts():
+  ...     print context, ms.display_all(context)
 
-.. Exercises: Spoof headlines
+Here is one of the pairs found by the program.
+
+  | received (NP offer) (PP from group)
+  | rejected (NP offer (PP from group))
+
+This finding gives us clues to a structural difference: the verb
+:lx:`receive` usually comes with two following arguments; we receive
+something *from* someone.  In contrast, the verb :lx:`reject` only
+needs a single following argument; we can reject something without
+needing to say where it originated from.
+
+
+--------------------------------
+Representing Syntactic Structure
+--------------------------------
+
+Recursion
+---------
+
+
+ | Jodie won the 100m freestyle
+
+ | The Age reported that
+ |   Jodie won the 100m freestyle
+
+ | Sandy said
+ |   The Age reported that
+ |     Jodie won the 100m freestyle
+
+ | I think
+ |   Sandy said
+ |     The Age reported that
+ |       Jodie won the 100m freestyle
+
+Phrase Structure Trees
+----------------------
+
+Phrase structure is typically represented using a tree.  Consider the
+following example:
+
+.. figure:: ../images.parsing/trees_tree.png
+
+The tree is a set of connected nodes, each of which is labeled with a category.
+Linguistic trees grow upside down: the
+node labeled ``S`` is the *root* of the tree, while the *leaves* of the
+tree are labeled with the words 'Lee', 'saw', 'the' and 'dog'. It also
+common to use
+a family metaphor to talk about the relationships of nodes in a tree: for example, ``S`` is the
+*parent* of ``VP``; conversely ``VP`` is a *daughter*  (or *child*) of
+``S``.  Also, since ``NP`` and ``VP`` are both daughters of ``S``,
+they are also *sisters*. 
+
+Although it is helpful to represent trees in a graphical format, for
+computational purposes we usually need a more text-oriented
+representation. One standard method is to use a combination of bracket
+and labels to indicate the structure, as shown here::
+
+   (S 
+       (NP  'Lee')
+       (VP 
+             (V 'saw')
+             (NP 
+                   (Det 'the')
+                   (N  'dog'))))
+
+Trees in NLTK-Lite
+------------------
+
+The ``nltk_lite.tree`` module defines classes and functions for
+working with trees.
+
+.. Note:: The ``nltk_lite.tree`` module currently has no direct
+   support for representing movement, traces, and co-indexing.  We plan
+   to extend the class to support these features more fully in the
+   future.
+
+1.  The node value is a string containing
+    the tree's constituent type (e.g., ``NP`` or ``VP``).
+#.  The children encode the hierarchical contents of the tree.
+
+.. Note:: Although the ``Tree`` class is usually used for encoding
+   syntax trees, it can be used to encode *any* homogeneous hierarchical
+   structure that spans a text (such as morphological structure or
+   discourse structure).  In the general case, leaves and node values do
+   not have to be strings.
+
+A ``Tree`` with node value
+`n` and children
+`c`:subscript:`1`,
+`c`:subscript:`2`, ...
+`c`:subscript:`n` is
+written ``(n``:
+`c`:subscript:`1`
+`c`:subscript:`2` ...
+`c`:subscript:`n`\ ``)``.
+
+``Tree``\ s are created with the ``Tree constructor``, which takes a
+node value and zero or more children.
+Here we see a simple tree with a single child node, itself a token::
+
+  >>> from nltk_lite.parse.tree import Tree
+  >>> tree1 = Tree('NP', ['John'])
+  >>> tree1
+  (NP: 'John')
+
+Here is an example with two children::
+
+  >>> tree2 = Tree('NP', ['the', 'man'])
+  >>> tree2
+  (NP: 'the' 'man')
+
+Finally, here is a more complex example, where one of the
+children is itself a tree::
+
+  >>> tree3 = Tree('VP', ['saw', tree2])
+  >>> tree3
+  (VP: 'saw' (NP: 'the' 'man'))
+
+A tree's node value is accessed with the ``node`` property:: 
+
+  >>> tree1.node
+  'NP'
+
+A tree's children are accessed by indexing:: 
+
+  >>> tree3[0]
+  'saw'
+  >>> tree3[1]
+  (NP: 'the' 'man')
+  >>> for child in tree3:
+  ...     print child
+  saw
+  (NP: 'the' 'man')
+
+The printed representation for complex trees can be difficult to read.
+In these cases, the ``draw`` method can be very useful.  This method
+opens a new window, containing a graphical representation of the tree::
+
+  tree3.draw()
+
+The tree display window allows you to zoom in and out;
+to collapse and expand subtrees; and to print the graphical
+representation to a postscript file. 
+
+To compare multiple trees in a single window, use the ``draw_trees()``
+method, from the ``nltk_lite.draw.tree`` module::
+
+  from nltk_lite.draw.tree import draw_trees
+  draw_trees(tree1, tree2, tree3)
+
+The ``Tree`` class implements a number of other useful methods.  See
+the ``Tree`` reference documentation for more information about these
+methods.
+
+  >>> tree3.leaves()
+  ['saw', 'the', 'man']
+  >>> tree3.height()
+  3
+
+..  Mention tree positions? -->
+
+Initializing Trees from Strings 
+-------------------------------
+
+A convenient way to initialize a large tree is from a labelled
+bracketing::
+
+  >>> from nltk_lite.parse import bracket_parse
+  >>> sent = '(VP (VBD saw) (NP (DT the) (NN man)))'
+  >>> tree = bracket_parse(sent)
+  >>> tree
+  (VP: (VBD: 'saw') (NP: (DT: 'the') (NN: 'man')))
+
+Reading Trees from the Treebank Corpus
+--------------------------------------
+
+The ``nltk_lite.corpora`` module defines the ``treebank`` corpus,
+which contains a collection of hand-annotated parse trees for English
+text.
+
+..  Add a reference to LDC here?
+
+  >>> from nltk_lite.corpora import treebank, extract
+  >>> print extract(0, treebank.parsed())
+  (S:
+    (NP-SBJ:
+      (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
+      (,: ',')
+      (ADJP: (NP: (CD: '61') (NNS: 'years')) (JJ: 'old'))
+      (,: ','))
+    (VP:
+      (MD: 'will')
+      (VP:
+        (VB: 'join')
+        (NP: (DT: 'the') (NN: 'board'))
+        (PP-CLR:
+          (IN: 'as')
+          (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
+        (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
+    (.: '.'))
+
+
 
 ------------------------
 Bits of Old Introduction
@@ -235,6 +450,11 @@ for discussion).
 
    _`Example Tree 1`
 
+
+--------------------
+Context Free Grammar
+--------------------
+
 A grammar is a formal system which specifies which sequences of words
 are well-formed in the language, and which provides one or more phrase
 structures for the sequence.  We will focus our attention on a
@@ -270,60 +490,6 @@ sentences).  There are many NL applications which involve parsing at
 some point; for example, we would expect the natural language input to
 a question-answering system to undergo parsing as an initial step.
 
-
-.. --------------------
-.. Linguistic Overview 
-.. --------------------
-
-.. X.2 linguistic overview (for non-linguist readers)
-   - how have linguists addressed the problem?
-   - what are the shortcomings of the non-computational approach?
-   - cover structural ambiguity and PP attachment
-   - cover subcategorization, Levin classes
-
-.. Parsing has a long and interesting history in computational
-   linguistics.  [NOTES: the perspective of early generative grammar;
-   early NLP approaches including ATNs and DCGs; grammar formalisms and
-   development environments.]
-
-.. Context-free grammars: CFG productions and their interpretation.
-
-.. Discussion about how CFGs are created by hand.
-
-Phrase Structure Trees
-----------------------
-
-As we saw above, linguistic structure is typically represented using
-in terms of tree, and we take this opportunity to briefly go over some
-concepts and terminology. Consider the following example:
-
-.. figure:: ../images.parsing/trees_tree.png
-
-Abstractly, the tree is a set of connected nodes, each of which is labeled with a category.
-We note that linguistic trees grow upside down: the
-node labeled ``S`` is the *root* of the tree, while the *leaves* of the
-tree are labeled with the words 'Lee', 'saw', 'the' and 'dog'. It also
-common to use
-a family metaphor to talk about the relationships of nodes in a tree: for example, ``S`` is the
-*mother* of ``VP``, while conversely ``VP`` is a *daughter*  (or child) of
-``S``. Moreover, since ``NP`` and ``VP`` are both daughters of ``S``,
-they are also *sisters*. 
-
-Although it is helpful to represent trees in a graphical format, for
-computational purposes we usually need a more text-oriented
-representation. One standard method is to use a combination of bracket
-and labels to indicate the structure, as shown here::
-
-   (S 
-       (NP  'Lee')
-       (VP 
-             (V 'saw')
-             (NP 
-                   (Det 'the')
-                   (N  'dog'))))
-
-As we will see later, NLTK-Lite employs a similar approach for printing out
-trees.
 
 Structural Ambiguity
 --------------------
@@ -579,7 +745,8 @@ while *home* and *forwards* forbid them.
 #. Brent stepped one pace forwards.
 #. \*Brent stepped one pace forwards the house.
 
-Adopting this approach, we can also analyse certain prepositions as allowing ``PP`` complements:
+Adopting this approach, we can also analyse certain prepositions as
+allowing ``PP`` complements:
 
 #. Kim ran away **from the house**.
 #. Lee jumped down **into the boat**.
@@ -655,21 +822,6 @@ Functional Grammar (LFG) Pargram project
 Phrase Structure Grammar (HPSG) LinGO Matrix framework
 (http://www.delph-in.net/matrix/), and the Lexicalized Tree Adjoining
 Grammar XTAG Project (http://www.cis.upenn.edu/~xtag/).
-
-
------------------------------------
-Computational Approaches to Parsing 
------------------------------------
-
-..  
- To do: general introduction to TD and BU -->
-
- X.3 computational model (gentle for linguistics ugrads)
- - what are some good data structures and algorithms?
- - just pick one or two approaches, not encyclopedic
- - NLTK demo - watch the execution of the algorithm
- (screen shots to show execution, side bars to say how
- to do it)
 
 
 -------------------------
@@ -838,34 +990,6 @@ e.g. ``NP(Det(the), N(man))`` is only built and pushed onto the stack
 a single time, regardless of whether it will later be used by the ``V``
 |rarr| ``V NP PP`` reduction or the ``NP`` |rarr| ``NP PP`` reduction.
 
-.. 
- --------------------
- Advanced Topics in Parsing (optional) 
- --------------------
-
- Some of the following is out of date.  See the reference
- documentation for ``nltk_lite.parse`` for more up-to-date
- information.
-
- Parsing as a search problem.  Finding the right parse.
-
- late closure etc
-
- X.4 advanced topics (optional)
- - other approaches, evaluation, problems
- - challenges for particular languages / language families
- - research questions
-
---------------------
-Parsing in NLTK Lite
---------------------
-
-.. 
- X.5 implementation
- - how does NLTK do it?
- - simple problems and worked solutions
- - suggested projects (e.g. for your MSc students)
-
 ---------------------
 Context Free Grammars
 ---------------------
@@ -879,7 +1003,6 @@ define context free grammars:
 
 #. The ``cfg.Grammar`` class is used to represent CFGs.
 
-------------
 Nonterminals
 ------------
 
@@ -915,7 +1038,6 @@ When using the ``nonterminals()`` function, you should be always be
 careful to make sure that the order of the variables you define
 matches the order of the nonterminals in the string.
 
------------
 Productions
 -----------
 
@@ -948,7 +1070,6 @@ constituent moved::
   >>> prod3
   t ->
 
-----
 CFGs
 ----
 
@@ -1016,146 +1137,6 @@ grammars, using the ``cfg.parse_grammar()`` method::
   ...      print p
   (S: (NP: 'Mary') (VP: (V: 'saw') (NP: 'Bob')))
   
------
-Trees 
------
-
-The ``nltk_lite.tree`` module defines classes and functions for
-working with trees.
-
-.. Note:: The ``nltk_lite.tree`` module currently has no direct
-   support for representing movement, traces, and co-indexing.  We plan
-   to extend the class to support these features more fully in the
-   future.
-
-1.  The node value is a string containing
-    the tree's constituent type (e.g., ``NP`` or ``VP``).
-#.  The children encode the hierarchical contents of the tree.
-
-.. Note:: Although the ``Tree`` class is usually used for encoding
-   syntax trees, it can be used to encode *any* homogeneous hierarchical
-   structure that spans a text (such as morphological structure or
-   discourse structure).  In the general case, leaves and node values do
-   not have to be strings.
-
-A ``Tree`` with node value
-`n` and children
-`c`:subscript:`1`,
-`c`:subscript:`2`, ...
-`c`:subscript:`n` is
-written ``(n``:
-`c`:subscript:`1`
-`c`:subscript:`2` ...
-`c`:subscript:`n`\ ``)``.
-
-``Tree``\ s are created with the ``Tree constructor``, which takes a
-node value and zero or more children.
-Here we see a simple tree with a single child node, itself a token::
-
-  >>> from nltk_lite.parse.tree import Tree
-  >>> tree1 = Tree('NP', ['John'])
-  >>> tree1
-  (NP: 'John')
-
-Here is an example with two children::
-
-  >>> tree2 = Tree('NP', ['the', 'man'])
-  >>> tree2
-  (NP: 'the' 'man')
-
-Finally, here is a more complex example, where one of the
-children is itself a tree::
-
-  >>> tree3 = Tree('VP', ['saw', tree2])
-  >>> tree3
-  (VP: 'saw' (NP: 'the' 'man'))
-
-A tree's node value is accessed with the ``node`` property:: 
-
-  >>> tree1.node
-  'NP'
-
-A tree's children are accessed by indexing:: 
-
-  >>> tree3[0]
-  'saw'
-  >>> tree3[1]
-  (NP: 'the' 'man')
-  >>> for child in tree3:
-  ...     print child
-  saw
-  (NP: 'the' 'man')
-
-The printed representation for complex trees can be difficult to read.
-In these cases, the ``draw`` method can be very useful.  This method
-opens a new window, containing a graphical representation of the tree::
-
-  tree3.draw()
-
-The tree display window allows you to zoom in and out;
-to collapse and expand subtrees; and to print the graphical
-representation to a postscript file. 
-
-To compare multiple trees in a single window, use the ``draw_trees()``
-method, from the ``nltk_lite.draw.tree`` module::
-
-  from nltk_lite.draw.tree import draw_trees
-  draw_trees(tree1, tree2, tree3)
-
-The ``Tree`` class implements a number of other useful methods.  See
-the ``Tree`` reference documentation for more information about these
-methods.
-
-  >>> tree3.leaves()
-  ['saw', 'the', 'man']
-  >>> tree3.height()
-  3
-
-..  Mention tree positions? -->
-
---------------------------------
- Initializing Trees from Strings 
---------------------------------
-
-A convenient way to initialize a large tree is from a labelled
-bracketing::
-
-  >>> from nltk_lite.parse import bracket_parse
-  >>> sent = '(VP (VBD saw) (NP (DT the) (NN man)))'
-  >>> tree = bracket_parse(sent)
-  >>> tree
-  (VP: (VBD: 'saw') (NP: (DT: 'the') (NN: 'man')))
-
----------------------------------------
- Reading Trees from the Treebank Corpus 
----------------------------------------
-
-The ``nltk_lite.corpora`` module defines the ``treebank`` corpus,
-which contains a collection of hand-annotated parse trees for English
-text.
-
-..  Add a reference to LDC here?
-
-  >>> from nltk_lite.corpora import treebank, extract
-  >>> print extract(0, treebank.parsed())
-  (S:
-    (NP-SBJ:
-      (NP: (NNP: 'Pierre') (NNP: 'Vinken'))
-      (,: ',')
-      (ADJP: (NP: (CD: '61') (NNS: 'years')) (JJ: 'old'))
-      (,: ','))
-    (VP:
-      (MD: 'will')
-      (VP:
-        (VB: 'join')
-        (NP: (DT: 'the') (NN: 'board'))
-        (PP-CLR:
-          (IN: 'as')
-          (NP: (DT: 'a') (JJ: 'nonexecutive') (NN: 'director')))
-        (NP-TMP: (NNP: 'Nov.') (CD: '29'))))
-    (.: '.'))
-
-
 --------------------
 The Parser Interface 
 --------------------
