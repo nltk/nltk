@@ -199,6 +199,7 @@ Representing Syntactic Structure
 Recursion
 ---------
 
+Sentences embedded within sentences, no limit to depth.
 
  | Jodie won the 100m freestyle
 
@@ -214,6 +215,47 @@ Recursion
  |     The Age reported that
  |       Jodie won the 100m freestyle
 
+
+
+
+Constituency
+------------
+
+A well-formed sentence of a language is more than an arbitrary
+sequence of words from the language.  Certain kinds of words usually
+go together.  For instance, determiners like ``the`` are typically
+followed by adjectives or nouns, but not by verbs.  Groups of words
+form intermediate structures called phrases or :dt:`constituents`.
+These constituents can be identified using standard syntactic tests,
+such as substitution, movement and coordination.  For example, if a
+sequence of words can be replaced with a pronoun, then that sequence
+is likely to be a constituent.  According to this test, we can infer
+that the italicised string in the following example is a constituent:
+
+
+1. *Ordinary daily multivitamin and mineral supplements* could 
+   help adults with diabetes fight off some minor infections.
+#. *They* could help adults with diabetes fight off some minor infections.
+
+.. note:: Readers are referred to any introductory text on syntax for
+   fuller treatment of constituency, e.g. McCawley (1998) The Syntactic
+   Phenomena of English.
+
+The structure of a sentence may be represented using a phrase
+structure tree, in which the terminal symbols are the words of the
+sentence, the pre-terminal symbols are parts of speech, and the
+remaining non-terminals are syntactic constituents.  An example of
+such a tree is shown below. For those trained in
+theoretical linguistics, the lexical categories (i.e., the nonterminal
+symbols immediately dominating the words of the tree) may appear
+strange.  This is because we have used used labels drawn from the
+Brown Corpus part-of-speech tag set (please see the chapter on tagging
+for discussion).
+
+.. figure:: ../images.parsing/parse_tree.png
+
+   _`Example Tree 1`
+
 Phrase Structure Trees
 ----------------------
 
@@ -221,6 +263,7 @@ Phrase structure is typically represented using a tree.  Consider the
 following example:
 
 .. figure:: ../images.parsing/trees_tree.png
+   :scale: 50
 
 The tree is a set of connected nodes, each of which is labeled with a category.
 Linguistic trees grow upside down: the
@@ -383,21 +426,20 @@ text.
 
 
 
-------------------------
-Bits of Old Introduction
-------------------------
-
+--------------------
+Context Free Grammar
+--------------------
 
 In the context of formal and computational modelling, a language is
 often viewed as a set of well-formed sentences.  Sequences of words
 which are not grammatical are excluded from this set.  Now, since
 there is no upper-bound on the length of a sentence, the number of
-possible sentences is unbounded.
+possible sentences is unbounded.  Given that the resources of a
+computer, however large, are still finite, it is necessary to devise a
+finite description of this infinite set.  Such descriptions are called
+:dt:`grammars`.
 
-Given that the resources of a computer, however large, are still
-finite, it is necessary to devise a finite description of this
-infinite set.  Such descriptions are called
-:dt:`grammars`. That is, a grammar of a language is a means of
+That is, a grammar of a language is a means of
 specifying which strings belong to the language, and as we have just
 remarked, it needs to be a finite specification (rather than, say,
 just a list of all the grammatical sentences). We have already
@@ -412,49 +454,6 @@ upper bound on sentence length to ensure the language was finite, we
 would still want to come up with a compact representation in the form
 of a grammar.
 
-Constituency
-------------
-
-A well-formed sentence of a language is more than an arbitrary
-sequence of words from the language.  Certain kinds of words usually
-go together.  For instance, determiners like ``the`` are typically
-followed by adjectives or nouns, but not by verbs.  Groups of words
-form intermediate structures called phrases or :dt:`constituents`.
-These constituents can be identified using standard syntactic tests,
-such as substitution, movement and coordination.  For example, if a
-sequence of words can be replaced with a pronoun, then that sequence
-is likely to be a constituent.  According to this test, we can infer
-that the italicised string in the following example is a constituent:
-
-
-1. *Ordinary daily multivitamin and mineral supplements* could 
-   help adults with diabetes fight off some minor infections.
-#. *They* could help adults with diabetes fight off some minor infections.
-
-.. note:: Readers are referred to any introductory text on syntax for
-   fuller treatment of constituency, e.g. McCawley (1998) The Syntactic
-   Phenomena of English.
-
-The structure of a sentence may be represented using a phrase
-structure tree, in which the terminal symbols are the words of the
-sentence, the pre-terminal symbols are parts of speech, and the
-remaining non-terminals are syntactic constituents.  An example of
-such a tree is shown below. For those trained in
-theoretical linguistics, the lexical categories (i.e., the nonterminal
-symbols immediately dominating the words of the tree) may appear
-strange.  This is because we have used used labels drawn from the
-Brown Corpus part-of-speech tag set (please see the chapter on tagging
-for discussion).
-
-.. figure:: ../images.parsing/parse_tree.png
-
-   _`Example Tree 1`
-
-
---------------------
-Context Free Grammar
---------------------
-
 A grammar is a formal system which specifies which sequences of words
 are well-formed in the language, and which provides one or more phrase
 structures for the sequence.  We will focus our attention on a
@@ -468,27 +467,6 @@ of the string ``help``.  For a phrase structure tree to be well-formed
 relative to a grammar, each non-terminal node and its children must
 correspond to such a production in the grammar.
 
-A :dt:`parser` is a computational system which processes input sentences
-according to the productions of a grammar, and builds one or more
-constituent structures which conform to the grammar. While a
-grammar is a declarative specification of well-formedness,  a
-parser is a procedural interpretation of the grammar.  In this
-chapter we will present context-free grammars, and describe some
-simple parsers that work with them.
-
-
-..  EXPAND THE ABOVE DISCUSSION 
-
-Parsing is important in linguistics and natural language processing
-for a variety of reasons.  A parser permits a grammar to be evaluated
-against a potentially large collection of test sentences, helping the
-linguist to identify shortcomings in their analysis.  A parser can
-also be used as a model of psycholinguistic processing, with the goal
-of explaining the processing difficulties that humans have with
-certain syntactic constructions (e.g., the so-called "garden path"
-sentences).  There are many NL applications which involve parsing at
-some point; for example, we would expect the natural language input to
-a question-answering system to undergo parsing as an initial step.
 
 
 Structural Ambiguity
@@ -567,7 +545,10 @@ VP modification      NP modification
 ===================  ==================
 
 .. |parse_tree2| image:: ../images.parsing/parse_tree2.png
+                 :scale: 50
+
 .. |parse_tree3| image:: ../images.parsing/parse_tree3.png
+                 :scale: 50
 
 
 The fact that our grammar admits two distinct structures for this
@@ -721,278 +702,9 @@ Notice that on this approach, a given lexical item can belong to more
 than one subcategory. For example, `sang` can occur both with and
 without a following ``NP`` complement.
 
-Lexical heads other than ``V`` can be subcategorized for particular complements:
 
-*Nouns*
-   #. The rumour **that Kim was bald** circulated widely.
-   #. \*The picture **that Kim was bald** circulated widely.
-*Adjectives*
-   #. Lee was afraid **to leave**.
-   #. \*Lee was tall **to leave**.
-
-It has also been suggested that 'ordinary' prepositions are
-transitive, and that many so-called adverb are in fact intransitive
-prepositions. For example, *towards* requires an ``NP`` complement,
-while *home* and *forwards* forbid them.
-
-
-#. Lee ran towards the house.
-#. \*Lee ran towards.
-
-#. Sammy walked home.
-#. \*Sammy walked home the house.
-
-#. Brent stepped one pace forwards.
-#. \*Brent stepped one pace forwards the house.
-
-Adopting this approach, we can also analyse certain prepositions as
-allowing ``PP`` complements:
-
-#. Kim ran away **from the house**.
-#. Lee jumped down **into the boat**.
-
-In general, the lexical categories ``V``, ``N``, ``A`` and ``P`` are
-taken to be the heads of the respective phrases ``VP``, ``NP``,
-``AP`` and ``PP``. Abstracting over the identity of these phrases, we
-can say that a lexical category ``X`` is the head of its immediate
-``XP`` phrase, and moreover that the complements `C`:subscript:`1` ... `C`:subscript:`n` of
-``X`` will occur as sisters of ``X`` within that ``XP``. This is
-illustrated in the following schema:
-
-.. figure:: ../images.parsing/xp.png
-
-We have argued that lexical categories need to be subdivided into
-subcategories to account for the fact that different lexical items
-select different sequences of following complements. That is, it is a
-distinguishing property of complements that they co-occur with some
-lexical items but not others. By contrast, :dt:`modifiers` can
-occur with pretty much any instance of the relevant lexical class. For
-example, consider the temporal adverbial *last Thursday*:
-
-#. The woman gave the telescope to the dog last Thursday.
-#. The woman saw a man last Thursday.
-#. The dog barked last Thursday.
-
-Moreover, modifiers are always optional, whereas complements are at
-least sometimes obligatory. We can use the phrase structure
-geometry to draw a structural distinction between complements, which
-occur as sisters of the lexical head, versus modifiers, which occur as
-sisters of the phrase which encloses the head:
-
-.. figure:: ../images.parsing/xp-mod.png
-
-Manually Constructed Grammars
------------------------------
-
-In this chapter, we only consider very small ('toy') context-free
-grammars, in order to illustrate the key aspects of parsing such
-grammars. But there is an obvious question as to whether the general
-approach can be scaled up to cover large corpora of natural
-languages. How hard would it be to construct such a set of rules by
-hand? In general, the answer is: Very hard. Even if we allow ourselves
-to use various formal devices that give much more succinct
-representations of phrase structure rules (some of which will be
-discussed in the next chapter), it is still extremely difficult to
-keep control of the complex interactions between the many rules
-required to cover the major constructions of a language. That is, it
-is hard to modularize grammars, so that one portion can be worked on
-independently of the other parts. This in turn means that it is
-difficult to distribute the task of grammar writing across a team of
-linguists. Another difficulty is that as the grammar expands to cover
-a wider and wider range of constructions, there is a corresponding
-increase in the number of analyses which are admitted for any one
-sentence. In other words, ambiguity increases proportionally with
-coverage.
-
-.. 
- that w a broad coverage grammar
- . But we may want to ask how
- Shortcomings of this approach: unreliable, doesn't scale,
- complex interactions amongst productions makes manual debugging
- almost impossible.  Consequently linguists are unable to
- work with large-coverage grammars.-->
-
-
-Despite the problems just alluded to, there are a number of
-large-scale collaborative projects ongoing which appear to have
-achieved interesting and often impressive results in developing
-rule-based grammars for several languages. Examples are the Lexical
-Functional Grammar (LFG) Pargram project
-(http://www2.parc.com/istl/groups/nltt/pargram/), the Head-Driven
-Phrase Structure Grammar (HPSG) LinGO Matrix framework
-(http://www.delph-in.net/matrix/), and the Lexicalized Tree Adjoining
-Grammar XTAG Project (http://www.cis.upenn.edu/~xtag/).
-
-
--------------------------
-Recursive Descent Parsing 
--------------------------
-
-The simplest kind of parser interprets the grammar as a specification
-of how to break a high-level goal into several lower-level subgoals.
-The top-level goal is to find an ``S``.  The ``S`` |rarr| ``NP VP``
-production permits the parser to replace this goal with two subgoals:
-find an ``NP``, then find a ``VP``.  Each of these subgoals can be
-replaced in turn by sub-sub-goals, using productions that have ``NP``
-and ``VP`` on their left-hand side.  Eventually, this expansion
-process leads to subgoals such as: find the word ``telescope``.  Such
-subgoals can be directly compared against the input string, and
-succeed if the next word is matched.  If there is no match the parser
-must back up and try a different alternative.
-
-The recursive descent parser builds a parse tree during the above
-process.  With the initial goal (find an ``S``), the ``S`` root node
-is created.  As the above process recursively expands its goals using
-the productions of the grammar, the parse tree is extended downwards
-(hence the name *recursive descent*).  We can see this in action using
-the parser demonstration ``nltk_lite.draw.rdparser``.  To run this
-demonstration, use the following commands::
-
-  >> from nltk_lite.draw.rdparser import demo
-  >> demo()
-
-Six stages of the execution of this parser are shown below:
-
-+----------------------------------------------------------------------------------+
-|                        Six Stages of a Recursive Descent Parser                  |
-+===========================+==========================+===========================+
-| 1. Initial stage          | 2. After two productions | 3. After matching "the"   |
-|                           |                          |                           |
-| |rdparser1|               | |rdparser2|              | |rdparser3|               |
-+---------------------------+--------------------------+---------------------------+
-| 4. Failing to match "man" | 5. Completed parse       | 6. Backtracking           |
-|                           |                          |                           |
-| |rdparser4|               | |rdparser5|              | |rdparser6|               |
-+---------------------------+--------------------------+---------------------------+
-
-.. |rdparser1| image:: ../images.parsing/rdparser1.png
-.. |rdparser2| image:: ../images.parsing/rdparser2.png
-.. |rdparser3| image:: ../images.parsing/rdparser3.png
-.. |rdparser4| image:: ../images.parsing/rdparser4.png
-.. |rdparser5| image:: ../images.parsing/rdparser5.png
-.. |rdparser6| image:: ../images.parsing/rdparser6.png
-
-
-.. Discussion: choosing which of several possible productions to apply;
-   backtracking; termination.
-
-Problems with recursive descent parsing: considers structures and
-words that are not attested; backtracking may discard parsed
-constituents that need to be rebuilt; for example, backtracking over
-``VP`` |rarr| ``V NP`` will discard the structures created for the ``V``
-and ``NP`` non-terminals.  If the parser then proceeds with ``VP``
-|rarr| ``V NP PP``, then the structures for the ``V`` and ``NP`` must be
-created again.
-
-Recursive descent parsing is a kind of *top-down parsing*.  These use
-the grammar to *predict* what the input will be, before inspecting any
-input.  However, since the input is available to the parser all along,
-it would be more sensible to consider the input sentence from the very
-beginning.  Such an approach is called *bottom-up parsing*, and is the
-topic of the next section.
-
-
---------------------
-Shift-Reduce Parsing 
---------------------
-
-The simplest kind of bottom-up parsing is known as shift-reduce
-parsing.  The parser repeatedly pushes the next input word onto a stack;
-this is the *shift* operation.  If the top *n* items on the stack
-match the *n* items on the right-hand side of some production, then
-they are all popped off the stack, and the item on the left-hand side
-of the production is pushed on the stack.  This replacement of the top
-*n* items with a single item is the *reduce* operation.  The parser
-finishes when all the input is consumed and there is only one item
-remaining on the stack, a parse tree with an ``S`` node as its root.
-
-
-.. 
- To do: add examples and motivate more - what are we doing with
- bottom up - find little pieces and expand...
-
-
-.. note::
- Note that the reduce operation may only be applied to the top of the stack.
- Reducing items lower in the stack must be done before later items are pushed onto
- the stack.
-
-
-The shift-reduce parser builds a parse tree during the above process.
-If the top of stack holds the word ``dog`` and if the grammar has a
-production ``N`` |rarr| ``dog`` then the reduce operation causes the word
-to be replaced with the parse tree for this production.  For
-convenience we will represent this tree as ``N(dog)``.  At a later
-stage, if the top of the stack holds two items ``Det(the) N(dog)`` and
-if the grammar has a production ``NP`` |rarr| ``Det N`` then the reduce
-operation causes these two items to be replaced with ``NP(Det(the),
-N(dog))``.  This process continues until a parse tree for the entire
-sentence has been constructed.  We can see this in action using the
-parser demonstration ``nltk_lite.draw.srparser``.  To run this
-demonstration, use the following commands::
-
- from nltk_lite.draw.srparser import demo
- demo()
-
-Six stages of the execution of this parser are shown below:
-
-.. 
-   To do: use letter identifiers for subfigures.
-
-.. figure::../images.parsing/empty.png
-
-   Six Stages of a Shift-Reduce Parser: initial, after one shift,
-   after shift reduce shift reduce, after recognizing the second NP,
-   complex NP, final step. 
-
-.. image:: ../images.parsing/srparser1.png
-.. image:: ../images.parsing/srparser2.png
-.. image:: ../images.parsing/srparser3.png
-.. image:: ../images.parsing/srparser4.png
-.. image:: ../images.parsing/srparser5.png
-.. image:: ../images.parsing/srparser6.png
-
-
-A shift-reduce parser may fail to parse the sentence, even though the
-sentence is well-formed according to the grammar.  In such cases,
-there are no remaining input words to shift, and there is no way to
-reduce the remaining items on the stack, as exemplified in the left
-example below.  The parser entered this blind alley at an earlier
-stage shown in the middle example below, when it reduced instead of
-shifted.  This situation is called a *shift-reduce conflict*.  At
-another possible stage of processing shown in the right example below,
-the parser must choose between two possible reductions, both matching
-the top items on the stack: ``V`` |rarr| ``V NP PP`` or ``NP`` |rarr|
-``NP PP``.  This situation is called a *reduce-reduce conflict*.
-
-.. figure::../images.parsing/empty.png
-
-   Conflict in Shift-Reduce Parsing
-
-.. image:: ../images.parsing/srparser7.png 
-.. image:: ../images.parsing/srparser8.png
-.. image:: ../images.parsing/srparser9.png
-
- 
-
-.. To do: diagram showing search tree with success and failure.
-
-Shift-reduce parsers may implement policies for resolving such
-conflicts.  For example, they may address shift-reduce conflicts by
-shifting only when no reductions are possible, and they may address
-reduce-reduce conflicts by favouring the reduction operation that removes
-the most items from the stack.  No such policies are failsafe however.
-
-The advantages of shift-reduce parsers over recursive descent parsers
-is that they only build structure that corresponds to the words in the
-input.  Furthermore, they only build each substructure once,
-e.g. ``NP(Det(the), N(man))`` is only built and pushed onto the stack
-a single time, regardless of whether it will later be used by the ``V``
-|rarr| ``V NP PP`` reduction or the ``NP`` |rarr| ``NP PP`` reduction.
-
----------------------
-Context Free Grammars
----------------------
+Context Free Grammars in NLTK-Lite
+----------------------------------
 
 The ``nltk_lite.cfg`` module defines a set of classes that are used to
 define context free grammars:
@@ -1004,8 +716,7 @@ define context free grammars:
 #. The ``cfg.Grammar`` class is used to represent CFGs.
 
 Nonterminals
-------------
-
+~~~~~~~~~~~~
 
 ``Nonterminal`` is a simple class that's used to let NLTK distinguish
 terminals from nonterminals.  Each ``Nonterminal`` is defined by a
@@ -1039,7 +750,7 @@ careful to make sure that the order of the variables you define
 matches the order of the nonterminals in the string.
 
 Productions
------------
+~~~~~~~~~~~
 
 CFG productions are represented with the ``cfg.Production`` class.
 Each ``Production`` specifies that a nonterminal (the :dt:`left-hand
@@ -1071,7 +782,7 @@ constituent moved::
   t ->
 
 CFGs
-----
+~~~~
 
 Context free grammars are encoded by the ``Grammar`` class.  A ``Grammar``
 consists of a special :dt:`start` nonterminal, and an ordered list of
@@ -1137,7 +848,62 @@ grammars, using the ``cfg.parse_grammar()`` method::
   ...      print p
   (S: (NP: 'Mary') (VP: (V: 'saw') (NP: 'Bob')))
   
---------------------
+
+Exercises
+---------
+
+1. a) Encode `Example Tree 1`_ as a labeled bracketing and use the
+      ``nltk_lite.parse`` module's ``bracket_parse()`` method to
+      check that it is well-formed. Now use the ``draw()``
+      method from the ``Tree`` class in module
+      ``nltk_lite.parse.tree`` to display the tree.
+
+   b) Extend `G2`_ with rules which expand prepositions as
+      intransitive, transitive and requiring a ``PP``
+      complement. Based on these rules, use the method of the
+      preceding exercise to draw
+      a tree for the sentence `Lee ran away home`\.
+
+   c) As in (a) above, draw a tree for `The woman saw a man last Thursday`.
+
+2. Pick some common verbs.
+
+  a) Write a program to find those verbs in the PP Attachment Corpus
+     included with NLTK-Lite.  Find any cases where the same verb
+     exhibits two different attachments, but where the first noun,
+     or second noun, or preposition, stay unchanged (as we saw in
+     the PP Attachment Corpus example data above).
+
+  b) Devise CFG grammar rules to cover some of these cases.
+
+
+
+-------
+Parsing
+-------
+
+A :dt:`parser` is a computational system which processes input sentences
+according to the productions of a grammar, and builds one or more
+constituent structures which conform to the grammar. While a
+grammar is a declarative specification of well-formedness,  a
+parser is a procedural interpretation of the grammar.  In this
+chapter we will present context-free grammars, and describe some
+simple parsers that work with them.
+
+
+..  EXPAND THE ABOVE DISCUSSION 
+
+Parsing is important in linguistics and natural language processing
+for a variety of reasons.  A parser permits a grammar to be evaluated
+against a potentially large collection of test sentences, helping the
+linguist to identify shortcomings in their analysis.  A parser can
+also be used as a model of psycholinguistic processing, with the goal
+of explaining the processing difficulties that humans have with
+certain syntactic constructions (e.g., the so-called "garden path"
+sentences).  There are many NL applications which involve parsing at
+some point; for example, we would expect the natural language input to
+a question-answering system to undergo parsing as an initial step.
+
 The Parser Interface 
 --------------------
 
@@ -1184,7 +950,79 @@ simple sentence and grammar::
       (PP: (P: 'in') (NP: (Det: 'the') (N: 'park')))))
 
 
-----------------------------
+-------------------------
+Recursive Descent Parsing 
+-------------------------
+
+The simplest kind of parser interprets the grammar as a specification
+of how to break a high-level goal into several lower-level subgoals.
+The top-level goal is to find an ``S``.  The ``S`` |rarr| ``NP VP``
+production permits the parser to replace this goal with two subgoals:
+find an ``NP``, then find a ``VP``.  Each of these subgoals can be
+replaced in turn by sub-sub-goals, using productions that have ``NP``
+and ``VP`` on their left-hand side.  Eventually, this expansion
+process leads to subgoals such as: find the word ``telescope``.  Such
+subgoals can be directly compared against the input string, and
+succeed if the next word is matched.  If there is no match the parser
+must back up and try a different alternative.
+
+The recursive descent parser builds a parse tree during the above
+process.  With the initial goal (find an ``S``), the ``S`` root node
+is created.  As the above process recursively expands its goals using
+the productions of the grammar, the parse tree is extended downwards
+(hence the name *recursive descent*).  We can see this in action using
+the parser demonstration ``nltk_lite.draw.rdparser``.  To run this
+demonstration, use the following commands::
+
+  >> from nltk_lite.draw.rdparser import demo
+  >> demo()
+
+Six stages of the execution of this parser are shown below:
+
++----------------------------------------------------------------------------------+
+|                        Six Stages of a Recursive Descent Parser                  |
++===========================+==========================+===========================+
+| 1. Initial stage          | 2. After two productions | 3. After matching "the"   |
+|                           |                          |                           |
+| |rdparser1|               | |rdparser2|              | |rdparser3|               |
++---------------------------+--------------------------+---------------------------+
+| 4. Failing to match "man" | 5. Completed parse       | 6. Backtracking           |
+|                           |                          |                           |
+| |rdparser4|               | |rdparser5|              | |rdparser6|               |
++---------------------------+--------------------------+---------------------------+
+
+.. |rdparser1| image:: ../images.parsing/rdparser1.png
+   :scale: 50
+.. |rdparser2| image:: ../images.parsing/rdparser2.png
+   :scale: 50
+.. |rdparser3| image:: ../images.parsing/rdparser3.png
+   :scale: 50
+.. |rdparser4| image:: ../images.parsing/rdparser4.png
+   :scale: 50
+.. |rdparser5| image:: ../images.parsing/rdparser5.png
+   :scale: 50
+.. |rdparser6| image:: ../images.parsing/rdparser6.png
+   :scale: 50
+
+
+.. Discussion: choosing which of several possible productions to apply;
+   backtracking; termination.
+
+Problems with recursive descent parsing: considers structures and
+words that are not attested; backtracking may discard parsed
+constituents that need to be rebuilt; for example, backtracking over
+``VP`` |rarr| ``V NP`` will discard the structures created for the ``V``
+and ``NP`` non-terminals.  If the parser then proceeds with ``VP``
+|rarr| ``V NP PP``, then the structures for the ``V`` and ``NP`` must be
+created again.
+
+Recursive descent parsing is a kind of *top-down parsing*.  These use
+the grammar to *predict* what the input will be, before inspecting any
+input.  However, since the input is available to the parser all along,
+it would be more sensible to consider the input sentence from the very
+beginning.  Such an approach is called *bottom-up parsing*, and is the
+topic of the next section.
+
 The Recursive Descent Parser 
 ----------------------------
 
@@ -1289,8 +1127,104 @@ recursive descent parser::
   demo()
 
 
+--------------------
+Shift-Reduce Parsing 
+--------------------
 
------------------------
+The simplest kind of bottom-up parsing is known as shift-reduce
+parsing.  The parser repeatedly pushes the next input word onto a stack;
+this is the *shift* operation.  If the top *n* items on the stack
+match the *n* items on the right-hand side of some production, then
+they are all popped off the stack, and the item on the left-hand side
+of the production is pushed on the stack.  This replacement of the top
+*n* items with a single item is the *reduce* operation.  The parser
+finishes when all the input is consumed and there is only one item
+remaining on the stack, a parse tree with an ``S`` node as its root.
+
+
+.. 
+ To do: add examples and motivate more - what are we doing with
+ bottom up - find little pieces and expand...
+
+
+.. note::
+ Note that the reduce operation may only be applied to the top of the stack.
+ Reducing items lower in the stack must be done before later items are pushed onto
+ the stack.
+
+
+The shift-reduce parser builds a parse tree during the above process.
+If the top of stack holds the word ``dog`` and if the grammar has a
+production ``N`` |rarr| ``dog`` then the reduce operation causes the word
+to be replaced with the parse tree for this production.  For
+convenience we will represent this tree as ``N(dog)``.  At a later
+stage, if the top of the stack holds two items ``Det(the) N(dog)`` and
+if the grammar has a production ``NP`` |rarr| ``Det N`` then the reduce
+operation causes these two items to be replaced with ``NP(Det(the),
+N(dog))``.  This process continues until a parse tree for the entire
+sentence has been constructed.  We can see this in action using the
+parser demonstration ``nltk_lite.draw.srparser``.  To run this
+demonstration, use the following commands::
+
+ from nltk_lite.draw.srparser import demo
+ demo()
+
+Six stages of the execution of this parser are shown below:
+
+.. 
+   To do: use letter identifiers for subfigures.
+
+.. figure::../images.parsing/empty.png
+
+   Six Stages of a Shift-Reduce Parser: initial, after one shift,
+   after shift reduce shift reduce, after recognizing the second NP,
+   complex NP, final step. 
+
+.. image:: ../images.parsing/srparser1.png
+.. image:: ../images.parsing/srparser2.png
+.. image:: ../images.parsing/srparser3.png
+.. image:: ../images.parsing/srparser4.png
+.. image:: ../images.parsing/srparser5.png
+.. image:: ../images.parsing/srparser6.png
+
+
+A shift-reduce parser may fail to parse the sentence, even though the
+sentence is well-formed according to the grammar.  In such cases,
+there are no remaining input words to shift, and there is no way to
+reduce the remaining items on the stack, as exemplified in the left
+example below.  The parser entered this blind alley at an earlier
+stage shown in the middle example below, when it reduced instead of
+shifted.  This situation is called a *shift-reduce conflict*.  At
+another possible stage of processing shown in the right example below,
+the parser must choose between two possible reductions, both matching
+the top items on the stack: ``V`` |rarr| ``V NP PP`` or ``NP`` |rarr|
+``NP PP``.  This situation is called a *reduce-reduce conflict*.
+
+.. figure::../images.parsing/empty.png
+
+   Conflict in Shift-Reduce Parsing
+
+.. image:: ../images.parsing/srparser7.png 
+.. image:: ../images.parsing/srparser8.png
+.. image:: ../images.parsing/srparser9.png
+
+ 
+
+.. To do: diagram showing search tree with success and failure.
+
+Shift-reduce parsers may implement policies for resolving such
+conflicts.  For example, they may address shift-reduce conflicts by
+shifting only when no reductions are possible, and they may address
+reduce-reduce conflicts by favouring the reduction operation that removes
+the most items from the stack.  No such policies are failsafe however.
+
+The advantages of shift-reduce parsers over recursive descent parsers
+is that they only build structure that corresponds to the words in the
+input.  Furthermore, they only build each substructure once,
+e.g. ``NP(Det(the), N(man))`` is only built and pushed onto the stack
+a single time, regardless of whether it will later be used by the ``V``
+|rarr| ``V NP PP`` reduction or the ``NP`` |rarr| ``NP PP`` reduction.
+
 The Shift Reduce Parser
 -----------------------
 
@@ -1337,26 +1271,121 @@ shift reduce parser::
  demo()
 
 
+------------
+More Grammar
+------------
+
+Lexical heads other than ``V`` can be subcategorized for particular complements:
+
+*Nouns*
+   #. The rumour **that Kim was bald** circulated widely.
+   #. \*The picture **that Kim was bald** circulated widely.
+*Adjectives*
+   #. Lee was afraid **to leave**.
+   #. \*Lee was tall **to leave**.
+
+It has also been suggested that 'ordinary' prepositions are
+transitive, and that many so-called adverb are in fact intransitive
+prepositions. For example, *towards* requires an ``NP`` complement,
+while *home* and *forwards* forbid them.
+
+
+#. Lee ran towards the house.
+#. \*Lee ran towards.
+
+#. Sammy walked home.
+#. \*Sammy walked home the house.
+
+#. Brent stepped one pace forwards.
+#. \*Brent stepped one pace forwards the house.
+
+Adopting this approach, we can also analyse certain prepositions as
+allowing ``PP`` complements:
+
+#. Kim ran away **from the house**.
+#. Lee jumped down **into the boat**.
+
+In general, the lexical categories ``V``, ``N``, ``A`` and ``P`` are
+taken to be the heads of the respective phrases ``VP``, ``NP``,
+``AP`` and ``PP``. Abstracting over the identity of these phrases, we
+can say that a lexical category ``X`` is the head of its immediate
+``XP`` phrase, and moreover that the complements `C`:subscript:`1` ... `C`:subscript:`n` of
+``X`` will occur as sisters of ``X`` within that ``XP``. This is
+illustrated in the following schema:
+
+.. figure:: ../images.parsing/xp.png
+   :scale: 75
+
+We have argued that lexical categories need to be subdivided into
+subcategories to account for the fact that different lexical items
+select different sequences of following complements. That is, it is a
+distinguishing property of complements that they co-occur with some
+lexical items but not others. By contrast, :dt:`modifiers` can
+occur with pretty much any instance of the relevant lexical class. For
+example, consider the temporal adverbial *last Thursday*:
+
+#. The woman gave the telescope to the dog last Thursday.
+#. The woman saw a man last Thursday.
+#. The dog barked last Thursday.
+
+Moreover, modifiers are always optional, whereas complements are at
+least sometimes obligatory. We can use the phrase structure
+geometry to draw a structural distinction between complements, which
+occur as sisters of the lexical head, versus modifiers, which occur as
+sisters of the phrase which encloses the head:
+
+.. figure:: ../images.parsing/xp-mod.png
+   :scale: 75
+
+----------
+Conclusion
+----------
+
+
+In this chapter, we only consider very small ('toy') context-free
+grammars, in order to illustrate the key aspects of parsing such
+grammars. But there is an obvious question as to whether the general
+approach can be scaled up to cover large corpora of natural
+languages. How hard would it be to construct such a set of rules by
+hand? In general, the answer is: Very hard. Even if we allow ourselves
+to use various formal devices that give much more succinct
+representations of phrase structure rules (some of which will be
+discussed in the next chapter), it is still extremely difficult to
+keep control of the complex interactions between the many rules
+required to cover the major constructions of a language. That is, it
+is hard to modularize grammars, so that one portion can be worked on
+independently of the other parts. This in turn means that it is
+difficult to distribute the task of grammar writing across a team of
+linguists. Another difficulty is that as the grammar expands to cover
+a wider and wider range of constructions, there is a corresponding
+increase in the number of analyses which are admitted for any one
+sentence. In other words, ambiguity increases proportionally with
+coverage.
+
+.. 
+ that w a broad coverage grammar
+ . But we may want to ask how
+ Shortcomings of this approach: unreliable, doesn't scale,
+ complex interactions amongst productions makes manual debugging
+ almost impossible.  Consequently linguists are unable to
+ work with large-coverage grammars.-->
+
+
+Despite the problems just alluded to, there are a number of
+large-scale collaborative projects ongoing which appear to have
+achieved interesting and often impressive results in developing
+rule-based grammars for several languages. Examples are the Lexical
+Functional Grammar (LFG) Pargram project
+(http://www2.parc.com/istl/groups/nltt/pargram/), the Head-Driven
+Phrase Structure Grammar (HPSG) LinGO Matrix framework
+(http://www.delph-in.net/matrix/), and the Lexicalized Tree Adjoining
+Grammar XTAG Project (http://www.cis.upenn.edu/~xtag/).
+
 ---------
 Exercises
 ---------
 
-1. a) Encode `Example Tree 1`_ as a labeled bracketing and use the
-      ``nltk_lite.parse`` module's ``bracket_parse()`` method to
-      check that it is well-formed. Now use the ``draw()``
-      method from the ``Tree`` class in module
-      ``nltk_lite.parse.tree`` to display the tree.
-
-   b) Extend `G2`_ with rules which expand prepositions as
-      intransitive, transitive and requiring a ``PP``
-      complement. Based on these rules, use the method of the
-      preceding exercise to draw
-      a tree for the sentence `Lee ran away home`\.
-
-   c) As in (a) above, draw a tree for `The woman saw a man last Thursday`.
-
-
-2. Pick some of the syntactic constructions described in any
+#. Pick some of the syntactic constructions described in any
    introductory syntax text (e.g. Jurafsky and Martin, Chapter 9) and
    create a set of 15 sentences.  Five sentences should be unambiguous
    (have a unique parse), five should be ambiguous, and a further five
@@ -1377,7 +1406,7 @@ Exercises
      grammar accepts?  Now use this information to help you improve your
      grammar.  Discuss your findings.
 
-3. A left-corner parser is a top-down parser with bottom-up filtering.
+#. A left-corner parser is a top-down parser with bottom-up filtering.
    Unlike an ordinary recursive descent parser, it does not get trapped
    in left-recursive productions.  Suppose `X` is a non-terminal that
    expands to some sequence `Y`:subscript:`1` |cdots| `Y`:subscript:`n`
@@ -1396,22 +1425,12 @@ Exercises
      compatible with at least one of the pre-terminal categories in
      the left-corner table.
 
-4. Compare the performance of the top-down, bottom-up, and left-corner
+#. Compare the performance of the top-down, bottom-up, and left-corner
    parsers using the same grammar and three grammatical test
    sentences. Use ``time.time()`` to log the amount of time each
    parser takes on the same sentence.  Write a function which runs all
    three parsers on all three sentences, and prints a 3-by-3 grid of
    times, as well as row and column totals. Discuss your findings.
-
-5. Pick some common verbs.
-
-  a) Write a program to find those verbs in the PP Attachment Corpus
-     included with NLTK-Lite.  Find any cases where the same verb
-     exhibits two different attachments, but where the first noun,
-     or second noun, or preposition, stay unchanged (as we saw in
-     the PP Attachment Corpus example data above).
-
-  b) Devise CFG grammar rules to cover some of these cases.
 
 
 ----
