@@ -1,9 +1,9 @@
 .. -*- mode: rst -*-
 .. include:: ../definitions.txt
 
-=======
-Tagging
-=======
+==============================
+Categorising and Tagging Words
+==============================
 
 :Authors: Steven Bird, Ewan Klein, Edward Loper
 :Version: |version|
@@ -18,21 +18,87 @@ Tagging
 Introduction
 ------------
 
-In the last chapter, we treated all words alike: things are either
-tokens or not. However, for many applications, we want to distinguish
-between *different kinds* of words. For example, we want to be able to
-make explicit that we have recognized one string as an ordinary
-lexical item, another as numerical expression, and yet another as a
-punctuation character. Morever, we want to distinguish different kinds
-of lexical items.  In fact, there is a long tradition within
-linguistics of classifying words into categories called *parts of
-speech*. These are sometimes also called word classes or *lexical
-categories*.  Familiar examples are *noun*, *verb*, *preposition*,
-*adjective* and *adverb*.  In this section we present the standard
-criteria for categorising words in this way, then discuss the main
-classes of words in English.
+In the last chapter, we focussed primarily on words in their own
+right. Although we pointed out that some distinctions between words
+can be collapsed by operations such as lemmatisation and
+normalisation, we did not make any further abstractions over groups of
+words. Recall, however, that we looked briefly at the distribution of
+`often`:lx: by enumerating the words that it could immediately
+precede. We observed informally that `often`:lx: frequently modifies
+verbs, but we did not attempt to make this claim more explicit. We
+did, however, take it for granted that you knew that words like
+`was`:lx:, `called`:lx: and `appears`:lx: are all examples of verbs,
+and that you knew that `often`:lx: is an adverb. That is, we took it
+for granted that most people have at least a rough idea about how to
+group words into different categories.
 
-**OPENING EXAMPLE**
+.. 
+  In the last chapter, we treated all words alike: things are either
+  tokens or not. However, for many applications, we want to distinguish
+  between *different kinds* of words. For example, we want to be able to
+  make explicit that we have recognized one string as an ordinary
+  lexical item, another as numerical expression, and yet another as a
+  punctuation character. Morever, we want to distinguish different kinds
+  of lexical items.  
+
+In fact, there is a long tradition within linguistics of classifying
+words into categories called `parts of speech`:dt:. These are
+sometimes also called word classes or `lexical categories`:dt:.  Apart
+from verb and adverb, other familiar examples are *noun*,
+*preposition*, and *adjective*. One of the notable features of the
+Brown corpus is that all the words have been `tagged`:dt: for their
+part-of-speech. As a result, instead of looking at the *words* that
+immediately follow `often`:lx:, we can look at the *part-of-speech tags*
+of the words that immediately follow it. Here's a list of the top
+eight, ordered by frequency::
+
+  vbn     61
+  vb      51
+  vbd     36
+  jj      30
+  vbz     24
+  in      18
+  at      18
+  ,       16 
+
+A few words of explanation about the tags are necessary. All
+the tags which start with `vb`:gc: are kinds of verb. More
+specifically, `vb`:gc: itself is the tag for a base form verb,
+`vbn`:gc: is the tag for past participle forms (`burnt`:lx:,
+`gone`:lx:), `vbd`:gc: is the tag for simple past tense form
+(`saw`:lx:, `looked`:lx:), while `vbz`:gc: is the tag for third-person
+singular present forms (`sees`:lx:, `goes`:lx:). Thus by far the
+greatest proportion of words following `often`:lx: can be classed as
+verbs. Of the remaining tags,
+`jj`:gc: indicates an adjective,  `in`:gc: a preposition,  `at`:gc: 
+an article. Finally,  `','`:gc: is the tag for a comma!
+
+The process of classifying words into their parts-of-speech, and
+labelling them accordingly, is known as `part-of-speech tagging`:dt:,
+`POS-tagging`:dt:, or simply `tagging`:dt:.  The collection of tags
+used for a particular task is known as a `tag set`:dt:. As we have
+just mentioned, tagging may require human intervention in some
+cases. Nevertheless, within the context of computational linguistics,
+our emphasis is primarily on developing tools to carry out *automatic*
+tagging. 
+
+Automatic tagging can bring a number of benefits. One is that it helps
+us predict the behaviour of a previously unseen word.  For example, if
+we encounter the word `blogging`:lx: we might be able to infer that it
+is a verb, with the root `blog`:lx:, and likely to occur after forms
+of the auxiliary ``to be`` (e.g. `he was blogging`:lx:), and unlikely
+to occur after adjectives.
+
+Parts of speech are also used in speech synthesis and
+recognition.  For example, ``wind/nn``, as in `the wind blew`:lx:, is
+pronounced with a short vowel, whereas ``wind/vb``, 
+as in `wind the clock`:lx:, 
+is pronounced with a long vowel.  Other examples can be
+found where the stress pattern differs depending on whether the word
+is a noun or a verb, e.g. `contest`:lx:, `insult`:lx:, `present`:lx:, `protest`:lx:,
+`rebel`:lx:, `suspect`:lx:.
+
+
 
 Categorising Words
 ------------------
@@ -40,141 +106,137 @@ Categorising Words
 How do we decide what category a word should belong to? In general,
 linguists invoke three kinds of criteria for making the decision:
 morphological (or formal); syntactic (or distributional); semantic (or
-notional).  A *morphological* criterion is one which looks at the
-internal structure of a word. For example, ``-ness`` is a suffix which
-combines with an adjective to produce a noun. Examples are ``happy`` >
-``happiness``, ``ill`` > ``illness``. [#]_ So if we encounter a word
-which ends in ``-ness``, this is very likely to be a noun.  </para>
+notional).  A `morphological`:dt" criterion is one which looks at the
+internal structure of a word. For example, `-ness`:lx: is a suffix which
+combines with an adjective to produce a noun. Examples are `happy`:lx: >
+``happiness``, `ill`:lx: > `illness``. [#]_ So if we encounter a word
+which ends in `-ness``, this is very likely to be a noun.  </para>
 
 .. [#] We use > to mean 'is derived from'.
 
-A *syntactic* criterion refers to the syntactic contexts in which a
-word can occur. For example, assume that we have already determined
+A `syntactic`:dt: criterion refers to the syntactic contexts in which
+a word can occur. For example, assume that we have already determined
 the category of nouns. Then we might say that a syntactic criterion
 for an adjective in English is that it can occur immediately before a
-noun, or immediately following the words ``be`` or
-``very``. According to these tests,
-``near`` should be categorized as an adjective:
+noun, or immediately following the words `be`:lx: or
+`very`:lx:. According to these tests, `near`:lx: should be categorized
+as an adjective:
 
 #. the near window
 #. The end is (very) near.
 
-A familiar example of a *semantic* criterion is that a noun is "the
+A familiar example of a `semantic`:dt: criterion is that a noun is "the
 name of a person, place or thing". Within modern linguistics, notional
 criteria for word classes have be viewed with considerable suspicion,
 mainly because they are hard to formalize. Nevertheless, notional
 criteria underpin many of our intuitions about word classes, and
 enable us to make a good guess about the categorisation of words in
 languages that we are unfamiliar with; that is, if we all we know
-about the Dutch ``verjaardag`` is that it means the same as the
-English word ``birthday``, then we can guess that ``verjaardag`` is a
+about the Dutch `verjaardag`:lx: is that it means the same as the
+English word `birthday``, then we can guess that `verjaardag`:lx: is a
 noun in Dutch. However, some care is needed: although we might
-translate ``zij is vandaag jarig`` as ``it's her birthday today``, the
-word ``jarig`` is in fact an adjective in Dutch, and has no exact
+translate `zij is vandaag jarig`:lx: as `it's her birthday today``, the
+word `jarig`:lx: is in fact an adjective in Dutch, and has no exact
 equivalent in English.
 
 .. http://www.askoxford.com/pressroom/archive/odelaunch/
 
 All languages acquire new lexical items. A list of words recently
-added to the Oxford Dictionary of English includes ``cyberslacker,
-fatoush, blamestorm, SARS, cantopop, bupkis, noughties, muggle``, and
-``robata``. Notice that all these new words are nouns, and this is
-reflected in calling nouns an *open class*. By contrast, prepositions
-are regarded as a *closed class*. That is, there is a limited set of
-words belonging to the class (e.g., ``above, along, at, below, beside,
+added to the Oxford Dictionary of English includes `cyberslacker,
+fatoush, blamestorm, SARS, cantopop, bupkis, noughties, muggle`:lx:, and
+`robata`:lx:. Notice that all these new words are nouns, and this is
+reflected in calling nouns an `open class`. By contrast, prepositions
+are regarded as a `closed class`:dt:. That is, there is a limited set of
+words belonging to the class (e.g., `above, along, at, below, beside,
 between, during, for, from, in, near, on, outside, over, past,
-through, towards, under, up, with``), and membership of the set only
+through, towards, under, up, with`:lx:), and membership of the set only
 changes very gradually over time.
 
-..  Some word classes consist of a limited set of so-called
-    *function* words. Prepositions are one such class, comprising
-    items like etc.  These are called *closed classes*, in the sense
-    that although languages acquire new lexical items.  Content words
-    such as nouns are not limited in this way, and are continually
-    being extended with the invention of new words.  These are called
-    *open classes*.
 
 English Word Classes
 --------------------
 
 Linguists commonly recognize four major categories of open class words
 in English, namely nouns, verbs, adjectives and adverbs.  Nouns
-generally refer to people, places, things, or concepts, e.g.: *woman,
-Scotland, book, intelligence*.  In the context of a sentence, nouns
+generally refer to people, places, things, or concepts, e.g.: `woman,
+Scotland, book, intelligence`:lx:.  In the context of a sentence, nouns
 can appear after determiners and adjectives, and can be the subject or
 object of the verb:
 
-============  =============================================  ===================================
-Syntactic Patterns involving some Nouns
-------------------------------------------------------------------------------------------------
-Word          After a determiner                             Subject of the verb
-woman         *the* woman who I saw yesterday ...             the woman *sat* down
-Scotland      *the* Scotland I remember as a child ...        Scotland *has* five million people
-book          *the* book I bought yesterday ...               this book *recounts* the colonisation of Australia
-intelligence  *the* intelligence displayed by the child ...   Mary's intelligence *impressed* her teachers
-============  =============================================  ===================================
+.. table:: Syntactic Patterns involving some Nouns
+
+  ============  =============================================  ===================================
+  Word          After a determiner                             Subject of the verb
+  ============  =============================================  ===================================  
+  woman         *the* woman who I saw yesterday ...             the woman *sat* down
+  Scotland      *the* Scotland I remember as a child ...        Scotland *has* five million people
+  book          *the* book I bought yesterday ...               this book *recounts* the colonisation of Australia
+  intelligence  *the* intelligence displayed by the child ...   Mary's intelligence *impressed* her teachers
+  ============  =============================================  ===================================
 
 English nouns can be morphologically complex.  For example, words like
-``books`` and ``women`` are plural.  As we saw earlier, words with the
-``-ness`` suffix are nouns that have been derived from adjectives,
-e.g. ``happiness`` and ``illness``.  The ``-ment`` suffix appears on
-certain nouns derived from verbs, e.g. ``government`` and
-``establishment``.
+`books`:lx: and `women`:lx: are plural.  As we saw earlier, words with the
+`-ness`:lx: suffix are nouns that have been derived from adjectives,
+e.g. `happiness`:lx: and `illness`:lx:.  The `-ment`:lx: suffix appears on
+certain nouns derived from verbs, e.g. `government`:lx: and
+`establishment`:lx:.
 
-Nouns are usually further classified as *common nouns* and
-*proper nouns*.  Proper nouns identify particular individuals or entities,
-e.g. ``Moses`` and ``Scotland``, while common nouns are all the rest.
-Another important distinction exists between *count nouns* and
-*mass nouns*. Count nouns are thought of as distinct entities which can be
-counted, such as ``pig`` (e.g. ``one pig, two pigs, many pigs``).
-They cannot occur with the word ``much`` (i.e. \*\ ``much pigs``).  Mass
+Nouns are usually further classified as `common nouns`:dt: and
+`proper nouns`:dt:.  Proper nouns identify particular individuals or entities,
+e.g. `Moses`:lx: and `Scotland`:lx:, while common nouns are all the rest.
+Another important distinction exists between `count nouns`:dt: and
+`mass nouns`:dt:. Count nouns are thought of as distinct entities which can be
+counted, such as `pig`:lx: (e.g. `one pig, two pigs, many pigs`:lx:).
+They cannot occur with the word `much`:lx: (i.e. \*\ `much pigs`:lx:).  Mass
 nouns, on the other hand, are not thought of as distinct entities
-(e.g.  ``sand``).  They cannot be pluralized, and do not occur with
-numbers (e.g. \*\ ``two sands``, \*\ ``many sands``).  However, they can
-occur with ``much`` (i.e. ``much sand``).
+(e.g.  `sand`:lx:).  They cannot be pluralized, and do not occur with
+numbers (e.g. \*\ `two sands`:lx:, \*\ `many sands`:lx:).  However, they can
+occur with `much`:lx: (i.e. `much sand`:lx:).
     
-Verbs are words which describe events and actions, e.g. ``fall``,
-``eat``.  In the context of a sentence, verbs express a relation
+Verbs are words which describe events and actions, e.g. `fall`:lx:,
+`eat`:lx:.  In the context of a sentence, verbs express a relation
 involving the referents of one or more noun phrases.
 
-=======  =================  ===============================================
-Syntactic Patterns involving some Verbs
----------------------------------------------------------------------------
-Word     Simple             With modifiers and adjuncts (italicized)
-fall     Rome fell          Dot com stocks *suddenly* fell *like a stone*
-eat      Mice eat cheese    John ate the pizza *with gusto*
-=======  =================  ===============================================
+.. table:: Syntactic Patterns involving some Verbs
+
+  =======    =================    ===============================================
+  Word       Simple               With modifiers and adjuncts (italicized)
+  =======    =================    ===============================================
+  fall       Rome fell            Dot com stocks *suddenly* fell *like a stone*
+  eat        Mice eat cheese      John ate the pizza *with gusto*
+  =======    =================    ===============================================
 
 Verbs can be classified according to the number of arguments (usually
-noun phrases) that they co-occur with.  The word ``fall`` is
-*intransitive*, requiring exactly one argument (the entity which
-falls).  The word ``eat`` is *transitive*, requiring two arguments
+noun phrases) that they co-occur with.  The word `fall`:lx: is
+`intransitive`:dt:, requiring exactly one argument (the entity which
+falls).  The word `eat`:lx: is `transitive`:dt, requiring two arguments
 (the eater and the eaten).  Other verbs are more complex; for instance
-``put`` requires three arguments, the agent doing the putting, the
-entity being put somewhere, and a location.  The ``-ing`` suffix
-appears on nouns derived from verbs, e.g. ``the falling of the
-leaves`` (this is known as the *gerund*).
+`put`:lx: requires three arguments, the agent doing the putting, the
+entity being put somewhere, and a location.  The `-ing`:lx: suffix
+appears on nouns derived from verbs, e.g. `the falling of the
+leaves`:lx: (this is known as the `gerund`:dt:).
 
-English verbs can be morphologically complex.  For instance, the
-*present participle* of a verb ends in ``-ing``, and expresses the
-idea of ongoing, incomplete action (e.g. ``falling, eating``).  The
-*past participle* of a verb often ends in ``-ed``, and expresses the
-idea of a completed action (e.g. ``fell, ate``).
+As we have already observed, English verbs can be morphologically
+complex.  For instance, the `present participle`:dt: of a verb ends in
+`-ing`:lx:, and expresses the idea of ongoing, incomplete action
+(e.g. `falling, eating`:lx:).  The `past participle`:dt: of a verb
+often ends in `-ed`:lx:, and expresses the idea of a completed action
+(e.g. `fell, ate`:lx:).
 
-Two other important word classes are *adjectives* and *adverbs*.
+Two other important word classes are `adjectives`:dt: and `adverbs`:dt`.
 Adjectives describe nouns, and can be used as modifiers
-(e.g. ``large`` in ``the large pizza``), or in predicates (e.g. ``the
-pizza is large``).  English adjectives can be morphologically complex
-(e.g.  ``fall``:subscript:`V`\ ``+ing`` in ``the falling
-stocks``).  Adverbs modify verbs to specify the time, manner, place or
-direction of the event described by the verb (e.g. ``quickly`` in
-``the stocks fell quickly``).  Adverbs may also modify adjectives
-(e.g. ``really`` in ``Mary's teacher was really nice``).
+(e.g. `large`:lx: in `the large pizza`:lx:), or in predicates (e.g. `the
+pizza is large`:lx:).  English adjectives can be morphologically complex
+(e.g.  `fall`:lx::subscript:`V`\ `+ing`:lx: in `the falling
+stocks`:lx:).  Adverbs modify verbs to specify the time, manner, place or
+direction of the event described by the verb (e.g. `quickly`:lx: in
+`the stocks fell quickly`:lx:).  Adverbs may also modify adjectives
+(e.g. `really`:lx: in `Mary's teacher was really nice`:lx:).
 
 English has several categories of closed class words in addition to
-prepositions, such as *articles* or *determiners* (e.g. ``the``, ``a``),
-*modals* (e.g. ``should``, ``may``),
-and *personal pronouns* (e.g. ``she``, ``they``).
+prepositions, such as `articles`:dt: (also often called `determiners`:dt:)
+(e.g., `the`:lx:, `a`:lx:), `modals`:dt: (e.g., `should`:lx:,
+`may`:lx:), and `personal pronouns`:dt: (e.g., `she`:lx:, `they`:lx:).
 Each dictionary and grammar classifies these words differently.
 
 We have already noted that part-of-speech tags are closely related to
@@ -182,190 +244,91 @@ the notion of word class used in syntax.  The assumption in
 theoretical linguistics is that every distinct word type will be
 listed in a lexicon (or dictionary), with information about its
 pronunciation, syntactic properties and meaning. A key component of
-the word's syntactic properties will be its class. When we carry out a
-syntactic analysis of our earlier example ``fruit flies like a
-banana``, we will look up each word in the lexicon, determine its word
+the word's syntactic and semantic properties will be its class. When we carry out a
+analysis of an example like `fruit flies like a banana`:lx:, 
+we will look up each word in the lexicon, determine its word
 class, and then group it into a hierarchy of phrases, as illustrated
 in the following parse tree.
 
 .. figure:: ../images/syntax-tree.png
+   :width: 350
 
    Syntactic Parse Tree
 
-Part-of-Speech Tag Sets
------------------------
+Syntactic analysis will be dealt with in more detail in later chapters.
+
+
+Brown Corpus Tags and other Tag Sets
+------------------------------------
+
+We mentioned earlier that the Brown corpus has been labeled with part-of-speech tags. This labeling involved
+human judgment, based on the kinds of criteria we have discussed above. 
+Here is an example of the way in which tags are formatted in the corpus:
+
+  ``The/at Pantheon's/np$ interior/nn
+  ,/, still/rb in/in its/pp$ original/jj form/nn ,/, is/bez truly/ql
+  majestic/jj and/cc an/at architectural/jj triumph/nn ./.``
+
+.. According to our table later on, ./. should actually be ./end
+
+The sequence ``The/at`` means that the word token `The`:lx: is
+tagged `at`:gc:, which is the Brown Corpus tag for article.
+
+.. [#] The reader may be puzzled by strings like ``,/,``. Recall that the tag for a comma is `','`:gc:.)
 
 In the syntax tree we saw in the last section, we have used standard
 syntactic abbreviations for word classes. These are shown in the
 following table, together with their counterparts from the Brown tag
 set.
 
-================   =========     ============================
-Word Class Labels and Brown Corpus Tags
--------------------------------------------------------------
-Word Class Label   Brown Tag     Word Class 
-================   =========     ============================
-Det                at            Article 
-N                  nn            Noun 
-V                  vb            Verb 
-Adj                jj            Adjective 
-P                  in            Preposition 
-Card               cd            Number 
--                  end           Sentence-ending punctuation 
-================   =========     ============================
+.. table:: Word Class Labels and Brown Corpus Tags
+
+  ================   =========     ============================
+  Word Class Label   Brown Tag     Word Class 
+  ================   =========     ============================
+  Det                `at`:gc:            article 
+  N                  `nn`:gc:            noun 
+  V                  `vb`:gc:            verb 
+  Adj                `jj`:gc:            adjective 
+  P                  `in`:gc:            preposition 
+  Card               `cd`:gc:            cardinal number 
+  --                 `.`:gc:             Sentence-ending punctuation 
+  ================   =========     ============================
+
+.. Previously we had 
+   --                 `end`:gc:             Sentence-ending punctuation 
+   But the Brown corpus which is distributed with NLTK has './.'
 
 Most part-of-speech tag sets make use of the same basic categories,
 such as noun, verb, adjective, and preposition. However, tag sets
 differ both in how finely they divide words into categories; and in
-how they define their categories. For example, ``is`` might be tagged
-as a verb in one tag set; but as a distinct form of ``to be`` in
-another tag set -- in fact, we just observed the latter situation
+how they define their categories. For example, `is`:lx: might be just tagged
+as a verb in one tag set; but as a distinct form of the lexeme `BE`:lx: in
+another tag set |mdash| in fact, this is the case
 in the Brown Corpus tag set.  This variation in tag sets is
 unavoidable, since part-of-speech tags are used in different ways for
 different tasks. In other words, there is no one 'right way' to assign
 tags, only more or less useful ways, depending on one's goals.
 
-..  There are several part-of-speech tag sets in widespread
-    use, because there are different schemes for classifying words
-    (owing to the different weight given to formal, syntactic and
-    notional criteria), and because different processing tasks call for
-    finer or coarser classification.
 
 Observe that the tagging process simultaneously collapses distinctions
 (i.e., lexical identity is usually lost when all personal pronouns are
-tagged ``prp``), while introducing distinctions and removing
-ambiguities (e.g. ``deal`` tagged as ``vb`` or ``nn``).  This move
-facilitates classification and prediction.  Observe that when we
+tagged `prp`:gc:), while introducing distinctions and removing
+ambiguities (e.g. `deal`:lx: tagged as `vb`:gc: or `nn`:gc:).  This move
+facilitates classification and prediction.  Observe also that when we
 introduce finer distinctions in a tag set, we get better information
 about linguistic context, but we have to do more work to classify the
 current token (there are more tags to choose from).  Conversely, with
 fewer distinctions, we have less work to do for classifying the
 current token, but less information about the context to draw on.
 
-In this tutorial, we will use the following tags: ``at`` (article)
-``nn`` (Noun), ``vb`` (Verb), ``jj`` (Adjective), ``in``
-(Preposition), ``cd`` (Number), and ``end`` (Sentence-ending
-punctuation).  As we mentioned, this is a radically simplified version
-of the Brown Corpus tag set, which in its entirety has 87 basic tags
-plus many combinations.
-
-
-
-A piece to be relocated
------------------------
-
-The following table gives a sample of closed class words, following
-the classification of the Brown Corpus. [#]_
-
-.. [#] Note that part-of-speech tags may be presented as either
-       upper-case or lower-case strings -- there is no significance
-       attached to this difference.
-
-
-====  =========================================  ==========================================================
-Some English Closed Class Words, with Brown Tag
------------------------------------------------------------------------------------------------------------
-ap    determiner/pronoun, post-determiner        many other next more last former little several enough most least only very few fewer past same
-at    article                                    the an no a every th' ever' ye
-cc    conjunction, coordinating                  and or but plus & either neither nor yet 'n' and/or minus an'
-cs    conjunction, subordinating                 that as after whether before while like because if since for than until so unless though providing once lest till whereas whereupon supposing albeit then
-in    preposition                                of in for by considering to on among at through with under into regarding than since despite ...
-md    modal auxiliary                            should may might will would must can could shall ought need wilt
-pn    pronoun, nominal                           none something everything one anyone nothing nobody everybody everyone anybody anything someone no-one nothin'
-ppl   pronoun, singular, reflexive               itself himself myself yourself herself oneself ownself
-pp$   determiner, possessive                     our its his their my your her out thy mine thine
-pp$$  pronoun, possessive                        ours mine his hers theirs yours
-pps   pronoun, personal, nom, 3rd pers sng       it he she thee
-ppss  pronoun, personal, nom, not 3rd pers sng   they we I you ye thou you'uns
-wdt   WH-determiner                              which what whatever whichever
-wps   WH-pronoun, nominative                     that who whoever whosoever what whatsoever
-====  =========================================  ==========================================================
-
-
-
-
-A piece to be relocated
------------------------
-
-Many natural language expressions are ambiguous, and we need to draw
-on other sources of information to aid interpretation.  For instance,
-our preferred interpretation of ``fruit flies like a
-banana`` depends on the presence of contextual cues that cause
-us to expect ``flies`` to be a noun or a verb.  Before
-we can even address such issues, we need to be able to represent the
-required linguistic information.  Here is a possible representation:
-
-
-=========  =========  ========  =====  ==========
-``Fruit``  ``flies``  ``like``  ``a``  ``banana``
-noun       verb       prep      det    noun
-=========  =========  ========  =====  ==========
-
-=========  =========  ========  =====  ==========
-``Fruit``  ``flies``  ``like``  ``a``  ``banana``
-noun       noun       verb      det    noun
-=========  =========  ========  =====  ==========
-
-Most language processing systems must recognize and interpret the
-linguistic structures that exist in a sequence of words.  This task is
-virtually impossible if all we know about each word is its text
-representation.  To determine whether a given string of words has the
-structure of, say, a noun phrase, it is infeasible to check through a
-(possibly infinite) list of all strings which can be classed as noun
-phrases.  Instead we want to be able to generalize over *classes* of
-words. These word classes are commonly given labels such as
-'determiner', 'adjective' and 'noun'.  Conversely, to interpret words
-we need to be able to discriminate between different usages, such as
-``deal`` as a noun or a verb.  The process of classifying words in
-this way, and labelling them accordingly, is known as *part-of-speech
-tagging*, *POS-tagging*, or simply *tagging*.  The collection of tags
-used for a particular task is known as a *tag set*.
-
-We earlier presented two interpretations of *Fruit flies like a
-banana* as examples of how a string of word tokens can be augmented
-with information about the word classes that the words belong to. In
-effect, we carried out tagging for the string ``fruit flies like a
-banana``. However, tags are more usually attached inline to the text
-they are associated with. This is illustrated in the following
-sentence from the Brown Corpus: `` The/at Pantheon's/np$ interior/nn
-,/, still/rb in/in its/pp$ original/jj form/nn ,/, is/bez truly/ql
-majestic/jj and/cc an/at architectural/jj triumph/nn ./.  ``
-
-.. According to our table later on, ./. should actually be ./end
-
-Here, the sequence ``The/at`` means that the word token ``The`` is
-tagged ``at``, which is the Brown Corpus tag for article.
-(The reader may be initially puzzled by strings like
-``,/,``. This just means that the tag for a comma is '``,``'.)
-	
-A piece to be relocated
------------------------
-
-Another motivation for tagging is that it helps us predict the
-behaviour of a previously unseen word.  For example, if we encounter
-the word ``blogging`` we might be able to infer that it is a verb, with
-the root ``blog``, and likely to occur after forms of the auxiliary
-``to be`` (e.g. ``he was blogging``), and unlikely to occur after adjectives.
-
-Parts of speech are also used in speech synthesis and
-recognition.  For example, ``wind/nn``, as in ``the wind blew``, is
-pronounced with a short vowel, whereas ``wind/vb``, as in ``wind the
-clock``, is pronounced with a long vowel.  Other examples can be
-found where the stress pattern differs depending on whether the word
-is a noun or a verb, e.g. ``contest``, ``insult``, ``present``, ``protest``,
-``rebel``, ``suspect``.
-
-
-
-
-A piece to be relocated
------------------------
-
 So far, we have only looked at tags as capturing information about
 word class. However, common tag sets like those used in the Brown
-Corpus also capture a certain amount of *morpho-syntactic*
+Corpus also capture a certain amount of `morpho-syntactic`:dt:
 information. Consider, for example, the selection of distinct forms of
-the word ``be`` illustrated in the following sentences:
+the word `be`:lx: illustrated in the following sentences:
+
+ ::
 
   Be still!
   Being still is hard.
@@ -378,6 +341,8 @@ exhibit different morphological inflections and different
 co-occurrence restrictions with neighbouring words. For example,
 ``am`` cannot replace either of the first two examples:
 
+ :: 
+
   \*Am still!
   \*Am still is hard.
 
@@ -387,6 +352,58 @@ means that an automatic tagger which uses this tag set is in effect
 carrying out a limited amount of morphological analysis.
 
 
+In the remainder of this chapter, we will use the following tags: `at`:gc: (article)
+`nn`:gc: (Noun), `vb`:gc: (Verb), `jj`:gc: (Adjective), `in`:gc:
+(Preposition), `cd`:gc: (Number), and `end`:gc: (Sentence-ending
+punctuation).  As we mentioned, this is a radically simplified version
+of the Brown Corpus tag set, which in its entirety has 87 basic tags
+plus many combinations. More details can be found in the `Appendix`_.
+
+
+
+.. 
+  A piece to be relocated
+  -----------------------
+
+  Many natural language expressions are ambiguous, and we need to draw
+  on other sources of information to aid interpretation.  For instance,
+  our preferred interpretation of `fruit flies like a
+  banana`:lx: depends on the presence of contextual cues that cause
+  us to expect `flies`:lx: to be a noun or a verb.  Before
+  we can even address such issues, we need to be able to represent the
+  required linguistic information.  Here is a possible representation:
+
+
+  =========  =========  ========  =====  ==========
+  ``Fruit``  `flies``  `like``  `a``  `banana``
+  noun       verb       prep      det    noun
+  =========  =========  ========  =====  ==========
+
+  =========  =========  ========  =====  ==========
+  ``Fruit``  `flies``  `like``  `a``  `banana``
+  noun       noun       verb      det    noun
+  =========  =========  ========  =====  ==========
+
+  Most language processing systems must recognize and interpret the
+  linguistic structures that exist in a sequence of words.  This task is
+  virtually impossible if all we know about each word is its text
+  representation.  To determine whether a given string of words has the
+  structure of, say, a noun phrase, it is infeasible to check through a
+  (possibly infinite) list of all strings which can be classed as noun
+  phrases.  Instead we want to be able to generalize over *classes`:dt: of
+  words. These word classes are commonly given labels such as
+  'determiner', 'adjective' and 'noun'.  Conversely, to interpret words
+  we need to be able to discriminate between different usages, such as
+  ``deal`` as a noun or a verb.  
+
+  We earlier presented two interpretations of `Fruit flies like a
+  banana`:lx: as examples of how a string of word tokens can be augmented
+  with information about the word classes that the words belong to. In
+  effect, we carried out tagging for the string `fruit flies like a
+  banana`:lx:. However, tags are more usually attached inline to the text
+  they are associated with. 
+	
+
 
 
 
@@ -395,8 +412,8 @@ Exercises
 
 1. **Ambiguity resolved by part-of-speech tags**:
    Scour the web for examples of spoof newspaper headlines, such as
-   ``British Left Waffles on Falkland Islands``, and
-   ``Juvenile Court to Try Shooting Defendant``.
+   `British Left Waffles on Falkland Islands``, and
+   `Juvenile Court to Try Shooting Defendant``.
    Manually tag these headlines to see if knowledge of the part-of-speech
    tags removes the ambiguity.
 
@@ -413,12 +430,12 @@ Exercises
    #)  What percentage of word *occurrences* in the Brown Corpus involve
        these ambiguous words?
    #)  Which nouns are more common in their plural form, rather than their singular form?
-       (Only consider regular plurals, formed with the ``-s`` suffix.)
+       (Only consider regular plurals, formed with the `-s`` suffix.)
    #)  Produce an alphabetically sorted list of the distinct words tagged as ``md``.
    #)  Identify words which can be plural nouns or third person singular verbs
-       (e.g. ``deals``, ``flies``).
+       (e.g. `deals``, `flies``).
    #)  Identify three-word prepositional phrases of the form IN + DET + NN
-       (eg. ``in the lab``).
+       (eg. `in the lab``).
    #)  There are 264 distinct words having exactly three possible tags.
        Print a table with the integers 1..10 in one column, and the
        number of distinct words in the corpus having 1..10 distinct tags.
@@ -428,7 +445,7 @@ Exercises
 
 #. **Competition:**
    Working with someone else, take turns to pick a word which can be
-   either a noun or a verb (e.g. ``contest``); the opponent has to
+   either a noun or a verb (e.g. `contest``); the opponent has to
    predict which one is likely to be the most frequent; check the
    opponents prediction, and tally the score over several turns.
 
@@ -552,7 +569,7 @@ else::
 
 We can generalize this method to guess the correct tag for words based
 on the presence of certain prefix or suffix strings.  For instance,
-English words beginning with ``un-`` are likely to be adjectives.
+English words beginning with `un-`` are likely to be adjectives.
 
 The Unigram Tagger
 ------------------
@@ -560,9 +577,9 @@ The Unigram Tagger
 The ``UnigramTagger`` class implements a simple statistical tagging
 algorithm: for each token, it assigns the tag that is most likely for
 that token's text. For example, it will assign the tag ``jj`` to any
-occurrence of the word ``frequent``, since ``frequent`` is used as an
-adjective (e.g. ``a frequent word``) more often than it is used as a
-verb (e.g. ``I frequent this cafe``).
+occurrence of the word `frequent``, since `frequent`` is used as an
+adjective (e.g. `a frequent word``) more often than it is used as a
+verb (e.g. `I frequent this cafe``).
 
 Before a ``UnigramTagger`` can be used to tag data, it must be trained
 on a *training corpus*. It uses this corpus to determine which tags
@@ -616,7 +633,7 @@ Exercises
    as a fall-back tagger for unknown words.  This tagger only checks for
    cardinal numbers.  By testing for particular prefix or suffix strings,
    it should be possible to guess other tags.  For example, 
-   we could tag any word that ends with ``-s``
+   we could tag any word that ends with `-s``
    as a plural noun.
    Define a regular expression tagger (using ``tag.Regexp``
    which tests for at least five other patterns in the spelling of words.
@@ -795,11 +812,11 @@ tag.
 Bigram Taggers
 --------------
 
-As their name suggests, :glossterm:`bigram taggers` use two
+As their name suggests, :dt:`bigram taggers` use two
 pieces of information for each tagging decision.  Usually this
 information is the text of the current word together with the tag of
 the previous word. These two pieces of information constitute the
-:glossterm:`context` for the token to be tagged. Given the
+:dt:`context` for the token to be tagged. Given the
 context, the tagger assigns the most likely tag.  We can visualize
 this process with the help of the following bigram table, a tiny
 fragment of the internal data structure built by a bigram tagger.
@@ -846,19 +863,19 @@ jj                     to                nns      to    nns
        print
     
 The best way to understand the table is to work through an example.
-Suppose we have already processed the sentence ``The President will
+Suppose we have already processed the sentence `The President will
 ask Congress to increase grants to states for vocational
 rehabilitation .`` as far as ``will/md``.  We can use the table to
 simply read off the tags that should be assigned to the remainder of
 the sentence.  When preceded by ``md``, the tagger guesses that the
-word ``ask`` has the tag ``vb`` (italicized in the table).  Moving to
+word `ask`` has the tag ``vb`` (italicized in the table).  Moving to
 the next word, we know it is preceded by ``vb``, and looking across
-this row we see that ``Congress`` is assigned the tag ``np``.  The
+this row we see that `Congress`` is assigned the tag ``np``.  The
 process continues through the rest of the sentence.  When we encounter
-the word ``increase``, we correctly assign it the tag ``vb`` (unlike
+the word `increase``, we correctly assign it the tag ``vb`` (unlike
 the unigram tagger which assigned it ``nn``).  However, the bigram
-tagger mistakenly assigns the infinitival tag to the word ``to``
-immediately preceding ``states``, and not the preposition tag.  This
+tagger mistakenly assigns the infinitival tag to the word `to``
+immediately preceding `states``, and not the preposition tag.  This
 suggests that we may need to consider even more context in order to
 get the correct tag.
 
@@ -866,14 +883,15 @@ N-Gram Taggers
 --------------
 
 As we have just seen, it may be desirable to look at more than just
-the preceding word's tag when making a tagging decision.  An *n-gram
-tagger* is a generalisation of a bigram tagger whose context is the
-current token's text together with the part-of-speech tags of the *n*
-preceding tokens, as shown in the following diagram. It then picks the
-tag which is most likely for that context. The tag to be chosen, *t*
-:subscript:`k`, is circled, and the context is shaded in grey. In this
-example of an n-gram tagger, we have *n=3*; that is, we consider the
-tags of the two preceding words in addition to the current word.
+the preceding word's tag when making a tagging decision.  An `N-gram
+tagger`:dt: is a generalisation of a bigram tagger whose context is
+the current token's text together with the part-of-speech tags of the
+`n`:math: preceding tokens, as shown in the following diagram. It then
+picks the tag which is most likely for that context. The tag to be
+chosen, `t`:math:\ `n`:subscript:, is circled, and the context is shaded
+in grey. In this example of an N-gram tagger, we have `n=3`:math:;
+that is, we consider the tags of the two preceding words in addition
+to the current word.
 
 .. figure:: ../images/tag-context.png
 
@@ -883,11 +901,11 @@ tags of the two preceding words in addition to the current word.
    the context used to tag a token is just the text of the token itself.
    2-gram taggers are also called *bigram taggers*, and 3-gram taggers
    are called *trigram taggers*.  We have defined bigram and trigram
-   taggers as special cases of n-gram taggers.
+   taggers as special cases of N-gram taggers.
 
 ``tag.Ngram`` uses a tagged training corpus to determine which
 part-of-speech tag is most likely for each context.  Here we see
-a special case of n-gram tagger, namely a bigram tagger::
+a special case of N-gram tagger, namely a bigram tagger::
 
   >>> bigram_tagger = tag.Bigram()
   >>> bigram_tagger.train(brown.tagged(['a','b']))
@@ -900,19 +918,20 @@ corpora:
   >>> list(bigram_tagger.tag(tokens))
   [('John', 'np'), ('saw', 'vbd'), ('the', 'at'), ('book', 'nn'), ('on', 'in'), ('the', 'at'), ('table', None)]
 
-As with the other taggers considered earlier, n-gram taggers will
-assign the default tag ``None`` to any token whose context was not
-encountered in the training data.  Note that as *n* gets larger, the
+As with the other taggers considered earlier, N-gram taggers will
+assign the default tag `None`:gc: to any token whose context was not
+encountered in the training data.  Note that as `n`:math: gets larger, the
 specificity of the contexts increases; and with it, the chance that
 the data we wish to tag will contain contexts that were not present in
 the training data. This is sometimes referred to as a *sparse data*
 problem. Thus, there is a trade-off between the accuracy and the
 coverage of our results. This is a common type of trade-off in natural
-language processing. It is closely related to the *precision/recall
-trade-off* that we'll encounter later when we discuss information
+language processing. It is closely related to the `precision/recall
+trade-off`:dt: 
+that we'll encounter later when we discuss information
 retrieval.
 
-.. Note:: n-gram taggers should not consider context that crosses a
+.. Note:: N-gram taggers should not consider context that crosses a
    sentence boundary.  Accordingly, NLTK taggers are designed to work
    with lists of sentences, where each sentence is a list of words, a
    doubly-nested structure.
@@ -982,7 +1001,7 @@ Exercises
    argument of the tagger initializer permits us to address this
    problem by trying taggers with more specific contexts first; and
    falling back to the more general taggers when necessary. Create a
-   default tagger and various unigram and n-gram taggers,
+   default tagger and various unigram and N-gram taggers,
    incorporating backoff, and train them on part of the Brown corpus.
 
    a) Create three different combinations of the taggers. Test the
@@ -1315,8 +1334,8 @@ List of available taggers:
 Further Exercises
 -----------------
 
-1. **Comparing n-gram taggers and Brill taggers**:
-   Investigate the relative performance of n-gram taggers with backoff
+1. **Comparing N-gram taggers and Brill taggers**:
+   Investigate the relative performance of N-gram taggers with backoff
    and Brill taggers as the size of the training data is increased.
    Consider the training time, running time, memory usage, and accuracy,
    for a range of different parameterizations of each technique.
@@ -1350,6 +1369,42 @@ Further Exercises
    contexts encountered during testing were not seen during training.
    Read up on the TnT tagger, since this provides useful technical
    background: ``http://www.aclweb.org/anthology/A00-1031``
+
+-----------------------
+Appendix: Brown Tag Set
+-----------------------
+
+.. _Appendix:
+
+The following table gives a sample of closed class words, following
+the classification of the Brown Corpus. [#]_
+
+.. [#] Note that part-of-speech tags may be presented as either
+       upper-case or lower-case strings -- there is no significance
+       attached to this difference.
+
+
+====  =========================================  ==========================================================
+Some English Closed Class Words, with Brown Tag
+-----------------------------------------------------------------------------------------------------------
+ap    determiner/pronoun, post-determiner        many other next more last former little several enough most least only very few fewer past same
+at    article                                    the an no a every th' ever' ye
+cc    conjunction, coordinating                  and or but plus & either neither nor yet 'n' and/or minus an'
+cs    conjunction, subordinating                 that as after whether before while like because if since for than until so unless though providing once lest till whereas whereupon supposing albeit then
+in    preposition                                of in for by considering to on among at through with under into regarding than since despite ...
+md    modal auxiliary                            should may might will would must can could shall ought need wilt
+pn    pronoun, nominal                           none something everything one anyone nothing nobody everybody everyone anybody anything someone no-one nothin'
+ppl   pronoun, singular, reflexive               itself himself myself yourself herself oneself ownself
+pp$   determiner, possessive                     our its his their my your her out thy mine thine
+pp$$  pronoun, possessive                        ours mine his hers theirs yours
+pps   pronoun, personal, nom, 3rd pers sng       it he she thee
+ppss  pronoun, personal, nom, not 3rd pers sng   they we I you ye thou you'uns
+wdt   WH-determiner                              which what whatever whichever
+wps   WH-pronoun, nominative                     that who whoever whosoever what whatsoever
+====  =========================================  ==========================================================
+
+
+
 
 ----
 
