@@ -12,6 +12,7 @@
 .. |alpha| unicode:: U+03B1
 .. |beta| unicode:: U+03B2
 .. |gamma| unicode:: U+03B3
+.. |kappa| unicode:: U+03BA
 .. |mu| unicode:: U+03BC
 .. |cdots| unicode:: U+22EF .. cdots
 .. |leq| unicode:: U+2264
