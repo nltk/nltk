@@ -400,51 +400,140 @@ and @ (`at`:lx:). Unlike ordinary punctuation marks, these symbols
 such if the text were read aloud.
 
 
----------------
-Type Definition
----------------
+-------------
+Normalisation
+-------------
 
-Suppose we are interested in the linguistic distribution of the word
-`said`:LX:.  As we will see later in this chapter, we can use a
-Conditional Frequency Distribution to find out all the words that
-immediately follow it. Suppose, for example, that we look at all the
-words which immediately follow the word. Here are the final 59 items
-(from a list of 138) that follow `said`:LX: in the NLTK `treebank`
-corpus::
+Earlier in this chapter, we talked about counting occurrences of word
+in a text.  However, we may also be interesting in counting sequences
+of words. Given any sequence of entities (e.g., letters, words,
+numbers), an `N-gram`:dt: is any subsequence of length
+`n`:math:. An N-gram of length 1 is called a `unigram`:dt:, 
+of length 2 is a `bigram`:dt:, of length 3 is a `trigram`:dt:, and so
+on. For example, in the sentence `She sells sea shells on the sea
+shore`:lx:,
+the unigrams are 
+`She`:lx:,
+`sells`:lx:,
+`sea`:lx:,
+`shells`:lx:,
+`on`:lx:,
+`the`:lx:,
+`shore`:lx:;
+the bigrams are
+`She sells`:lx:,
+`sells sea`:lx:,
+`sea shells`:lx:,
+`shells on`:lx:,
+`on the`:lx:,
+`the sea`:lx:,
+`sea shore`:lx:;
+and the trigrams are
+`She sells sea`:lx:,
+`sells sea shells`:lx:,
+`sea shells on`:lx:,
+`shells on the`:lx:,
+`on the sea`:lx:,
+`the sea shore`:lx:.
 
-  ['each', 'early', 'elections', 'employees', 'excess', 
-   'export', 'exports', 'factory', 'final', 'first-half', 
-   'had', 'he', 'his', 'holders', 'in', 'income', 'institutions', 
-   'insurance', 'is', 'it', 'its', 'last', 'local', 'manufacturing',
-   'many', 'more', 'most', 'net', 'one', 'operations', 'orders', 
-   'person', 'potential', 'prices', 'profit', 'profit-taking', 
-   'reaction', 'repeatedly', 'reporter', 'residential', 
-   'shareholders', 'she', 'some', 'something', 'that', 'the', 'there', 
-   'they', 'third-quarter', 'this', 'those', 'through', 'to', 
-   'total', 'universally', 'was', 'we', 'will', 'yesterday'] 
+As a first approximation to discovering the distribution of a word, we
+can look all the N-grams it occurs in.  More specifically, let's
+consider all bigrams from the Brown Corpus which have the word
+`often`:lx: as first element; that is, all the words which
+are immediately preceded by `often`:lx:.
+A small selection of these, ordered by their counts, is shown below::
 
-Notice that this list contains two different grammatical forms of
-the lexeme `BE`:LX:, and both singular and plural forms of
-`EXPORT`:LX:. In order to gain a slightly more abstract view of the
-words occurring to the right of `said`:LX:, therefore, we might want to
-replace grammatical forms by their lemmas. 
+  ,		16
+  a		10
+  in		8
+  than		7
+  the		7
+  been		6
+  do		5
+  called  	4
+  appear	3
+  were		3
+  appeared	2
+  are		2
+  did		2
+  is		2
+  appears	1
+  call   	1
 
-.. Not sure if this line of argument is worth pursuing [EK]
+We can make a number of inferences from information like this. For
+instance, the fact that `often`:lx: is frequently followed by a comma
+suggests that it frequently occurs at the end of phrases. Not surprisingly, we
+also see that `often`:lx: precedes verbs, presumably as an
+adverbial modifier. Note, however, that although the list shows us how
+many tokens of a specific type follow `often`:lx:, distinct
+grammatical forms are treated as distinct types; for example,
+`been`:lx:, `were`:lx:, `are`:lx: and `is`:lx: are listed
+separately. If we were interested in what verbs can be modified by a
+particular adverb, we might want to `lemmatise`:dt: them; that is,
+replace the inflected forms by their lemma. Applied to the above list,
+lemmatisation would yield the following results, which gives us a more compact
+picture of the distribution of `often`:lx:. (As before, lexemes have
+been represented as upper-case forms.)
 
-This section should discuss how we define types.  I.e., how do we
-decide whether two tokens have the same type or not.  Note that this
-is a more general concept than normalization & stemming, but it's
-certainly related.
+  ::
+
+   ,		16
+   a		10
+   BE		13
+   in		8
+   than		7
+   the		7
+   DO		7
+   APPEAR	6
+   CALL   	5
+
+Lemmatisation is a relatively sophisticated process which requires a
+mixture of rules for regular inflections and table look-up for irregular
+morphological patterns. Within NLTK, a simpler approach is offered by
+the Porter stemmer, which strips inflectional suffixes from words, but
+does not attempt, for example, to identify `was`:lx: as a form of the
+lexeme `BE`:lx:. Stemming in this fashion will succeed in collapsing
+the different forms of `APPEAR`:lx: and `CALL`:lx:.
+
+Lemmatisation and stemming can be regarded as special cases of
+`normalisation`:dt:, in the sense of choosing one linguistic
+expression as the canonical representative of a group of variants.  By
+its nature, normalisation collapses distinctions. An example is case
+normalisation, where all variants are mapped into a single
+format. What counts as the normalised form will vary according to
+context. Often, we convert everything into lower case, so that words
+which were capitalized by virtue of being sentence-initial are treated
+the same as those which occur elsewhere in the sentence. Case
+normlisation will also collapse the `New`:lx: of `New York`:lx: with
+the `new`:lx: of `my new car`:lx:.
+
+Term variation is a particularly pervasive, and challenging, factor in
+biomedical texts. To give just one example, the following are just
+some of the possible
+variants for nuclear factor |kappa| B, the name for a family of proteins::
+
+  nuclear factor kappa B, nuclear factor Kappa-B, nuclear factor kappaB,
+  nuclear factor kB, NF-KB, NF-kb, NF-kB, NFKB, NFkB, NF kappa-B
+
+Although work is ongoing to standardise biomedical nomenclature, the
+rate at which new entities are discovered and described vastly
+outstrips these efforts at present.
+
+
+.. This section should discuss how we define types.  I.e., how do we
+   decide whether two tokens have the same type or not.  Note that this
+   is a more general concept than normalization & stemming, but it's
+   certainly related.
 
 .. Is this notion of type the same as lexeme, or something else?
 
- This section should talk about:
+.. This section should talk about:
 
-- normalization (eg case normalization)
-- stemming
-- roots & inflection
-- porter stemmer
-- morphology?
+   - normalization (eg case normalization)
+   - stemming
+   - roots & inflection
+   - porter stemmer
+   - morphology?
 
 .. Why is stemming stuff in the tokenization module?  Tokenization 
    and normalization are two totally separate concepts in my mind.
