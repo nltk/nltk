@@ -37,6 +37,7 @@ from docutils.writers.latex2e import LaTeXTranslator, Writer as LaTeXWriter
 
 HTML_SETTINGS = {
     'stylesheet': '../nltkdoc.css',
+    'stylesheet_path': None,
     }
 
 class CustomizedHTMLWriter(HTMLWriter):
