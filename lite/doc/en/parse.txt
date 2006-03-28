@@ -15,7 +15,7 @@ Grammars and Parsing
 .. note:: This is a draft.  Please send any feedback to the authors.
 
 ------------
-Introduction 
+Introduction
 ------------
 
 Early experiences with grammar are often confusing.  Written work
@@ -33,11 +33,13 @@ presence of commas alone:
 1. a) My dog, Bonus, has black and white spots.  (I have one dog.)
    b) My dog Bonus has black and white spots.  (I have more than one dog.)
 
-It is clear that some of these rules are important, while others seem
+It is clear that some of these rules are important.  Others seem
 to be vestiges of antiquated style that preoccupies only the most crusty
-curmudgeons (or over-eager grammar checkers included in some word
-processors).  However, it is *not* clear where to draw the line
-between the two, hence the confusion noted above.
+curmudgeons.  As an example, consider the injunction that :lx:`however` -- when
+used to mean *nevertheless* -- must not appear at the start of a sentence.
+Pullum argues that Strunk and White were merely insisting that English usage should
+conform to "an utterly unimportant minor statistical detail of style
+concerning adverb placement in the literature they knew" [languagelog.org].
 
 When reading, we sometimes find that we have to stop and re-read a
 sentence in order to resolve an ambiguity.  Curiously, it seems possible
@@ -90,6 +92,10 @@ rather impressive sentence:
    coming over the sea to rescue him...  (from A.A. Milne *In which
    Piglet is Entirely Surrounded by Water*)
 
+Our ability to produce and understand entirely new sentences, of
+arbitrary length, demonstrates that the set of well-formed sentences
+in English (and any other language) is infinite.
+
 This chapter presents grammars and parsing, as the formal and
 computational methods for investigating and modelling the linguistic
 phenomena we have been touching on (or tripping over).
@@ -111,7 +117,7 @@ Syntactic Ambiguity
 -------------------
 
 We have seen that sentences can be ambiguous.  If we overheard someone
-saying :lx:`I went to the bank`, we wouldn't know whether it was
+say :lx:`I went to the bank`, we wouldn't know whether it was
 a river bank or a financial institution.  This ambiguity concerns
 the meaning of the word :lx:`bank`, and is a kind of :dt:`lexical ambiguity`.
 There is another kind of ambiguity which cannot be explained in this way.
@@ -439,20 +445,19 @@ computer, however large, are still finite, it is necessary to devise a
 finite description of this infinite set.  Such descriptions are called
 :dt:`grammars`.
 
-That is, a grammar of a language is a means of
-specifying which strings belong to the language, and as we have just
-remarked, it needs to be a finite specification (rather than, say,
-just a list of all the grammatical sentences). We have already
-encountered this idea of a finite specification in the context of
-regular expressions.  For example, the expression ``a+`` describes the
-infinite set ``{a, aa, aaa, aaaa, ...}``.  Apart from their
-compactness, grammars usually capture important structural and
-distributional properties of the language being studied, and can be
-used to systematically map between sequences of words and abstract
-representations of their meaning.  Thus, even if we were to impose an
-upper bound on sentence length to ensure the language was finite, we
-would still want to come up with a compact representation in the form
-of a grammar.
+A grammar of a language is a means of specifying which strings belong
+to the language, and as we have just remarked, it needs to be a finite
+specification (rather than, say, just a list of all the grammatical
+sentences). We have already encountered this idea of a finite
+specification in the context of regular expressions.  For example, the
+expression ``a+`` describes the infinite set ``{a, aa, aaa, aaaa,
+...}``.  Apart from their compactness, grammars usually capture
+important structural and distributional properties of the language
+being studied, and can be used to systematically map between sequences
+of words and abstract representations of their meaning.  Thus, even if
+we were to impose an upper bound on sentence length to ensure the
+language was finite, we would still want to come up with a compact
+representation in the form of a grammar.
 
 A grammar is a formal system which specifies which sequences of words
 are well-formed in the language, and which provides one or more phrase
@@ -468,9 +473,8 @@ relative to a grammar, each non-terminal node and its children must
 correspond to such a production in the grammar.
 
 
-
-Structural Ambiguity
---------------------
+A Simple Grammar
+----------------
 
 Let's start off by looking at a simple context-free grammar, `G1`_:
 
