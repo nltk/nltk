@@ -35,6 +35,10 @@ elif sys.platform.startswith('win'):
         set_basedir(os.path.join(sys.prefix, 'lib', 'nltk_lite'))
     else:
         set_basedir(os.path.join(sys.prefix, 'nltk_lite'))
+elif os.path.isdir('/usr/share/nltk_lite'):
+   set_basedir('/usr/share/nltk_lite')
+elif os.path.isdir('/usr/local/share/nltk_lite'):
+   set_basedir('/usr/local/share/nltk_lite')
 elif os.path.isdir('/usr/lib/nltk_lite'):
     set_basedir('/usr/lib/nltk_lite')
 elif os.path.isdir('/usr/local/lib/nltk_lite'):
