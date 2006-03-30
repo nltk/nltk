@@ -106,11 +106,11 @@ Categorising Words
 How do we decide what category a word should belong to? In general,
 linguists invoke three kinds of criteria for making the decision:
 morphological (or formal); syntactic (or distributional); semantic (or
-notional).  A `morphological`:dt" criterion is one which looks at the
+notional).  A `morphological`:dt: criterion is one which looks at the
 internal structure of a word. For example, `-ness`:lx: is a suffix which
 combines with an adjective to produce a noun. Examples are `happy`:lx: >
 ``happiness``, `ill`:lx: > `illness``. [#]_ So if we encounter a word
-which ends in `-ness``, this is very likely to be a noun.  </para>
+which ends in `-ness``, this is very likely to be a noun.
 
 .. [#] We use > to mean 'is derived from'.
 
@@ -133,9 +133,9 @@ criteria underpin many of our intuitions about word classes, and
 enable us to make a good guess about the categorisation of words in
 languages that we are unfamiliar with; that is, if we all we know
 about the Dutch `verjaardag`:lx: is that it means the same as the
-English word `birthday``, then we can guess that `verjaardag`:lx: is a
+English word `birthday`:lx:, then we can guess that `verjaardag`:lx: is a
 noun in Dutch. However, some care is needed: although we might
-translate `zij is vandaag jarig`:lx: as `it's her birthday today``, the
+translate `zij is vandaag jarig`:lx: as `it's her birthday today`:lx:, the
 word `jarig`:lx: is in fact an adjective in Dutch, and has no exact
 equivalent in English.
 
@@ -209,7 +209,7 @@ involving the referents of one or more noun phrases.
 Verbs can be classified according to the number of arguments (usually
 noun phrases) that they co-occur with.  The word `fall`:lx: is
 `intransitive`:dt:, requiring exactly one argument (the entity which
-falls).  The word `eat`:lx: is `transitive`:dt, requiring two arguments
+falls).  The word `eat`:lx: is `transitive`:dt:, requiring two arguments
 (the eater and the eaten).  Other verbs are more complex; for instance
 `put`:lx: requires three arguments, the agent doing the putting, the
 entity being put somewhere, and a location.  The `-ing`:lx: suffix
@@ -223,7 +223,7 @@ complex.  For instance, the `present participle`:dt: of a verb ends in
 often ends in `-ed`:lx:, and expresses the idea of a completed action
 (e.g. `fell, ate`:lx:).
 
-Two other important word classes are `adjectives`:dt: and `adverbs`:dt`.
+Two other important word classes are `adjectives`:dt: and `adverbs`:dt:.
 Adjectives describe nouns, and can be used as modifiers
 (e.g. `large`:lx: in `the large pizza`:lx:), or in predicates (e.g. `the
 pizza is large`:lx:).  English adjectives can be morphologically complex
@@ -304,18 +304,16 @@ such as noun, verb, adjective, and preposition. However, tag sets
 differ both in how finely they divide words into categories; and in
 how they define their categories. For example, `is`:lx: might be just tagged
 as a verb in one tag set; but as a distinct form of the lexeme `BE`:lx: in
-another tag set |mdash| in fact, this is the case
-in the Brown Corpus tag set.  This variation in tag sets is
+another tag set (as in the Brown Corpus).  This variation in tag sets is
 unavoidable, since part-of-speech tags are used in different ways for
 different tasks. In other words, there is no one 'right way' to assign
-tags, only more or less useful ways, depending on one's goals.
-
+tags, only more or less useful ways depending on one's goals.
 
 Observe that the tagging process simultaneously collapses distinctions
 (i.e., lexical identity is usually lost when all personal pronouns are
 tagged `prp`:gc:), while introducing distinctions and removing
 ambiguities (e.g. `deal`:lx: tagged as `vb`:gc: or `nn`:gc:).  This move
-facilitates classification and prediction.  Observe also that when we
+facilitates classification and prediction.  When we
 introduce finer distinctions in a tag set, we get better information
 about linguistic context, but we have to do more work to classify the
 current token (there are more tags to choose from).  Conversely, with
@@ -411,7 +409,7 @@ Exercises
 ---------
 
 1. **Ambiguity resolved by part-of-speech tags**:
-   Scour the web for examples of spoof newspaper headlines, such as
+   Search the web for "spoof newspaper headlines", to find such gems as:
    `British Left Waffles on Falkland Islands``, and
    `Juvenile Court to Try Shooting Defendant``.
    Manually tag these headlines to see if knowledge of the part-of-speech
@@ -445,7 +443,7 @@ Exercises
 
 #. **Competition:**
    Working with someone else, take turns to pick a word which can be
-   either a noun or a verb (e.g. `contest``); the opponent has to
+   either a noun or a verb (e.g. `contest`:lx:); the opponent has to
    predict which one is likely to be the most frequent; check the
    opponents prediction, and tally the score over several turns.
 
@@ -489,6 +487,10 @@ whitespace-separated tokens, where each token is of the form
   accepted/vbn practices/nns which/wdt inure/vb to/in the/at best/jjt
   interest/nn of/in both/abx governments/nns ''/'' ./.
 
+  >>> from nltk_lite.corpora import brown, extract
+  >>> extract(3, brown.tagged('a'))
+  [('``', '``'), ('Only', 'rb'), ('a', 'at'), ('relative', 'jj'), ('handful', 'nn'), ('of', 'in'), ('such', 'jj'), ('reports', 'nns'), ('was', 'bedz'), ('received', 'vbn'), ("''", "''"), (',', ','), ('the', 'at'), ('jury', 'nn'), ('said', 'vbd'), (',', ','), ('``', '``'), ('considering', 'in'), ('the', 'at'), ('widespread', 'jj'), ('interest', 'nn'), ('in', 'in'), ('the', 'at'), ('election', 'nn'), (',', ','), ('the', 'at'), ('number', 'nn'), ('of', 'in'), ('voters', 'nns'), ('and', 'cc'), ('the', 'at'), ('size', 'nn'), ('of', 'in'), ('this', 'dt'), ('city', 'nn'), ("''", "''"), ('.', '.')]
+
 Here is another example which constructs tokens from a string::
 
   >>> sent = """
@@ -508,6 +510,10 @@ Exercises
 
 #. Write programs to access the various tagged corpora included with NLTK:
    ``brown``, ``conll2000``, and ``treebank``.
+
+#. Write a program to classify contexts involving the word `must`:lx: according
+   to the tag of the following word.  Can this be used to discriminate between the
+   epistemic and deontic uses of `must`:lx:?
 
 --------------
 Simple Taggers
@@ -532,10 +538,9 @@ tokenized text as follows::
 The Default Tagger
 ------------------
 
-The simplest possible tagger assigns the same tag to each token
-regardless of the token's text.  The ``DefaultTagger`` class
-implements this kind of tagger.  In the following program, we create a
-tagger called ``my_tagger`` which tags everything as a noun.
+The simplest possible tagger assigns the same tag to each token.  The
+``DefaultTagger`` class implements this kind of tagger.  Here we
+create a tagger called ``my_tagger`` which tags everything as a noun.
 
   >>> from nltk_lite import tag
   >>> my_tagger = tag.Default('nn')
@@ -545,7 +550,7 @@ tagger called ``my_tagger`` which tags everything as a noun.
 This is a simple algorithm, and it performs poorly when used on its
 own. On a typical corpus, it will tag only 20%-30% of the tokens
 correctly. However, it is a very reasonable tagger to use as a
-default, if a more advanced tagger fails to determine a token's
+default, just in case a more sophisticated tagger fails to determine a token's
 tag. When used in conjunction with other taggers, a ``DefaultTagger``
 can significantly improve performance.
 
@@ -571,15 +576,17 @@ We can generalize this method to guess the correct tag for words based
 on the presence of certain prefix or suffix strings.  For instance,
 English words beginning with `un-`` are likely to be adjectives.
 
+ANOTHER EXAMPLE HERE
+
 The Unigram Tagger
 ------------------
 
 The ``UnigramTagger`` class implements a simple statistical tagging
 algorithm: for each token, it assigns the tag that is most likely for
 that token's text. For example, it will assign the tag ``jj`` to any
-occurrence of the word `frequent``, since `frequent`` is used as an
-adjective (e.g. `a frequent word``) more often than it is used as a
-verb (e.g. `I frequent this cafe``).
+occurrence of the word `frequent`:lx:, since `frequent`:lx: is used as an
+adjective (e.g. `a frequent word`:lx:) more often than it is used as a
+verb (e.g. `I frequent this cafe`:lx:).
 
 Before a ``UnigramTagger`` can be used to tag data, it must be trained
 on a *training corpus*. It uses this corpus to determine which tags
@@ -602,7 +609,7 @@ used to tag new text::
 
 As we noted earlier, ``Unigram`` will assign the default tag
 ``None`` to any token that was not encountered in the training data.
-We can instruct it to *backoff* to our default ``nn_cd_tagger`` when
+We can instruct it to :dt:`backoff` to our default ``nn_cd_tagger`` when
 it cannot assign a tag itself::
 
   >>> unigram_tagger = tag.Unigram(backoff=nn_cd_tagger)
@@ -696,13 +703,12 @@ can test the tagger using the same data it was trained on:
   >>> print 'Accuracy = %4.1f%%' % (100 * acc)
   Accuracy = 84.7%
 
-However, testing a language processing system using the same data it
-was trained on is unwise.  A system which simply memorized the
-training data would get a perfect score without doing any linguistic
-modelling.  Instead, we would like to reward systems that make good
-generalizations, so we should test against *unseen data*, and replace
-``train_sents`` above with ``unseen_sents``.  We can then define the
-two sets of data as follows:
+However, testing a language processing system over its training data.
+A system which simply memorized the training data would get a perfect
+score without doing any linguistic modelling.  Instead, we would like
+to reward systems that make good generalizations, so we should test
+against *unseen data*, and replace ``train_sents`` above with
+``unseen_sents``.  We can then define the two sets of data as follows:
 
   >>> train_sents  = list(brown.tagged('a'))[:500]
   >>> unseen_sents = list(brown.tagged('a'))[500:600] # sents 500-599
@@ -734,8 +740,10 @@ While the accuracy score is certainly useful, it does not tell us how
 to improve the tagger.  For this we need to undertake error analysis.
 For instance, we could construct a *confusion matrix*, with a row and
 a column for every possible tag, and entries that record how often a
-word with tag *T* :subscript:`i` is incorrectly tagged as *T*
-:subscript:`j`.  Another approach is to analyse the context of errors.
+word with tag *T*\ :subscript:`i` is incorrectly tagged as *T*\ :subscript:`j`
+Another approach is to analyse the context of errors.
+Consider the following program, which catalogs all errors
+along with the tag on the left and their frequency of occurrence.
 
   >>> errors = {}
   >>> for i in range(len(unseen_sents)):
@@ -750,8 +758,7 @@ word with tag *T* :subscript:`i` is incorrectly tagged as *T*
   ...                 pair = (tuple(test_context), tuple(gold_context))
   ...                 errors[pair] = errors.get(pair, 0) + 1
 
-The above program catalogs all errors, along with the tag on the left
-and their frequency of occurrence.  The ``errors`` dictionary has keys
+The ``errors`` dictionary has keys
 of the form ``((t1,t2),(g1,g2))``, where ``(t1,t2)`` are the test
 tags, and ``(g1,g2)`` are the gold-standard tags.  The values in the
 ``errors`` dictionary are simple counts of how often the error
@@ -800,9 +807,9 @@ Exercises
    What parameter values give the best overall performance?  Why do
    you think this is the case?
 
---------------------
-Higher Order Taggers
---------------------
+--------------
+N-Gram Taggers
+--------------
 
 Earlier we encountered the ``UnigramTagger``, which assigns a tag to a
 word based on the identity of that word.  In this section we will look
