@@ -1,0 +1,14 @@
+SENSEVAL 2 CORPUS: Sense Tagged Text
+
+SENSEVAL [http://www.senseval.org/]
+Evaluation exercises for Word Sense Disambiguation,
+organized by ACL-SIGLEX [http://www.siglex.org/]
+
+Contents: POS-tagged, sense-tagged data for four words:
+"hard", "interest", "line", "serve".
+
+Ted Pedersen <tpederse@umn.edu>
+University of Minnesota
+http://www.d.umn.edu/~tpederse/data.html
+Distributed with permission.
+
