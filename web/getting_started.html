@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Getting Started with NLTK</title>
+    <link rel="stylesheet" href="nltk.css" type="text/css"/>
+  </head>
+<body>
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr><th class="navtitle" colspan="6">Natural Language Toolkit</th></tr>
+  <tr>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="index.html">Home</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="install.html">Installation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="docs.html">Documentation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="teach.html">Teaching</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="contrib.html">Contributing</a></td>
+  <td align="center" width="16.6%">
+    <a href="http://sourceforge.net/projects/nltk"> 
+    <img src="sflogo.png" width="88" height="26" border="0"
+    alt="SourceForge" align="top"/></a></td>
+    </tr>
+</table>
+<div class="body">
+
+  <h1> Getting Started with NLTK </h1>
+
+    <h2> Programming with NLTK </h2>
+
+    <p> The NLTK libraries consists of a set of Python <i>modules</i>,
+    each of which defines classes and functions related to a single
+    data structure or task.  Before you can use a module, you must
+    import its contents.  The simplest way to import the contents of a
+    module is to use the "<code>from <i>module</i> import *</code>"
+    command. For example, to import the contents of the tagging
+    module, type:</p>
+
+<pre class="screen">
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">from nltk_lite.tag import *</code>
+</pre>
+
+    <p> For more information on importing modules, and for a general
+    introduction to NLTK-Lite, see the <a href="/lite/doc/en/">tutorials</a>. </p>
+ 
+    <h2> Demonstrations </h2>
+
+    <p> NLTK includes three graphical parser demonstrations: </p>
+    <ul>
+      <li> <code>nltk_lite.draw.rdparser</code>: A top-down
+      recursive-descent parser demo.</li>
+      <li> <code>nltk_lite.draw.srparser</code>: A bottom-up shift-reduce
+      parser demo.</li>
+      <li> <code>nltk_lite.draw.chart</code>: A chart-parser demo. </li>
+    </ul>
+
+    <p> These can be run from Python by importing them and calling the
+    <code>demo()</code> function: </p>
+    
+<pre class="screen">
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">from nltk_lite.draw.rdparser import *</code>
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">demo()</code>
+</pre>
+
+    <p> Alternatively, the demonstrations can be run from Windows by
+    double-clicking on their Python source files; or from UNIX or OS X
+    by running Python on their source files: </p>
+
+<pre class="screen">
+<code class="prompt">$</code> <code class="user">python <code class="replaceable">&lt;path-to-nltk&gt;</code>/nltk_lite/draw/rdparser.py</code>
+</pre>
+
+  <h2> Running Python </h2>
+
+    <p> There are three typical ways to use NLTK with Python: </p>
+
+    <ul>
+      <li> <p> Run the Python interpreter, and use NLTK
+	  interactively: </p>
+
+<pre class="screen">
+<code class="prompt">$</code> <code class="user">python</code>
+Python 2.2.2 (#1, 02/19/03, 17:56:57) 
+[GCC Apple cpp-precomp 6.14] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">from nltk_lite.corpora import brown</code>
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">text = brown.raw('a')</code>
+...
+</pre>
+      </li>
+
+      <li> <p> Use a text editor <!-- (such as Notepad, Emacs, or vi)
+      --> to create a program; and execute it (either from the command
+      line, or by double-clicking on its icon). </p>
+
+<pre class="screen">
+<code class="prompt">$</code> <code class="user">python <code class="replaceable">my_program.py</code></code>
+...
+</pre>
+      </li>
+
+      <li> <p> Use an integrated development enviroment, such as IDLE
+      or Emacs' Python Mode. </li>
+    </ul>
+
+    <p> How you prefer to interact with Python and NLTK is a personal
+    choice.  If you are new to Python, we suggest that you try using
+    an integrated development enviroment, such as IDLE.  IDLE is
+    included with Python on most systems. </p>
+
+    <h3> Running IDLE </h3>
+
+    <p> <!-- IDLE is an integrated development environment that
+    simplifies the task of creating and debugging Python programs. -->
+    On Windows, IDLE is located in the start menu
+    ("Programs&#8594;Python&nbsp;2.4&#8594;Idle").  On unix, you can
+    run IDLE from the command line, with the command
+    "<code>idle</code>". </p>
+
+    <p> Within IDLE, you can use the interactive interpreter; or you
+    can create a new Python file ("File&#8594;New&nbsp;Window").  To execute the
+    new Python file, use "Edit&#8594;Run&nbsp;script" (or Ctrl-F5).  To save the
+    new Python file, use "File&#8594;Save" (or Ctrl-S).  When you save your
+    Python file, use the extension "<code>.py</code>".  You can open
+    an existing Python program with "File&#8594;Open" (or Ctrl-O). </p>
+
+</div>
+<table class="transparent" width="100%">
+<tr><td align="left"><font size="-1">
+<!-- hhmts start -->
+Last modified: Sat Jan 21 22:16:24 EST 2006
+<!-- hhmts end -->
+</font></td><td align="right"><font size="-1">
+<address><a href="mailto:sb@csse.unimelb.edu.au">Steven Bird</a></address>
+</font></td></tr></table>
+</body> </html>

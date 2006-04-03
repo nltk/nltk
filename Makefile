@@ -1,111 +1,116 @@
-# Natural Language Toolkit: Primary Makefile
+# Natural Language Toolkit: source Makefile
 #
-# Copyright (C) 2001 University of Pennsylvania
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2005 University of Pennsylvania
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
+#	 Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-#
-# $Id$
 
-DISTRIBUTIONS = distributions
+# Python executable
+PYTHON = python
 
-# What's the version of the corpora?
-CORPORA_VERSION = 0.3
+# Get the version of nltk
+NLTK_VERSION=$(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 
-# Get the current version of NLTK
-NLTK_VERSION=$(shell export PYTHONPATH=src; \
-	       python -c 'import nltk; print nltk.__version__')
+# CVS snapshot build directory
+DATE = $(shell date +%F)
+CVS_SNAPSHOT = nltk_lite_$(DATE)
+
+# Sourceforge mirror
+SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
 
 .PHONY: all usage help doc documentation webpage test
-.PHONY: distributions clean
+.PHONY: distributions clean iso python .python.done tgz
 
-usage: help
-help:
-	@echo "Usage:"
-	@echo "    make all            -- Build documentation and"\
-	                                 "distributions;"
-	@echo "                           and run test cases"
-	@echo "    make clean          -- Remove all built files"
-	@echo
-	@echo "    make documentation  -- Build all documentation"
-	@echo
-	@echo "    make distributions  -- Build source and binary"\
-	                                 "distributions"
-	@echo "                           (output to distributions/)"
-	@echo "    make test           -- Run test cases"
-	@echo
-	@echo "    make webpage        -- Build the web page"
-	@echo "                           (output to doc/built_webpage/)"
-	@echo "    make xfer           -- Build and upload the web page"
-	@echo
-	@echo "    make webpage.tar.gz -- Build documentation archive"
-	@echo "                           (output to doc/webpage.tar.gz)"
-	@echo
+all: distributions
 
-# (distributions builds webpage)
-all: test distributions
+usage:
+	@echo "make distributions -- Build distributions (output to dist/)"
+	@echo "make test -- Run unit tests"
+	@echo "make checkdocs -- Check docstrings for completeness"
+	@echo "make clean -- Remove temporary and built files"
 
-doc: documentation
-docs: documentation
-documentation:
-	$(MAKE) -C doc
-	$(MAKE) -C psets
-
-webpage.tgz:
-webpage.tar.gz:
-	$(MAKE) -C doc webpage.tar.gz
-
-web: webpage
-html: webpage
-webpage:
-	$(MAKE) -C doc webpage
-
-xfer:
-	$(MAKE) -C doc xfer
-
-test:
-	$(MAKE) -C src test
-
-distributions: distributions.init distributions.nltk distributions.corpora \
-	       distributions.contrib distributions.webpage
-
-distributions.init:
-	rm -rf $(DISTRIBUTIONS)
-	mkdir -p $(DISTRIBUTIONS)
-
-distributions.nltk:
-	@echo "Building nltk distributions..."
-	$(MAKE) -C src distributions
-	cp src/dist/* $(DISTRIBUTIONS)
-
-NLTK_DATA = nltk-data-$(CORPORA_VERSION)
-distributions.corpora:
-	@echo "Building nltk_corpora distributions..."
-	rm -f $(NLTK_DATA)
-	ln -s data $(NLTK_DATA)
-	tar -cvzhf $(DISTRIBUTIONS)/nltk-data-$(CORPORA_VERSION).tgz \
-	    $(NLTK_DATA)/*.readme $(NLTK_DATA)/*.zip
-	zip -rq $(DISTRIBUTIONS)/nltk-data-$(CORPORA_VERSION).zip $(NLTK_DATA)
-	rm -f $(NLTK_DATA)
-
-distributions.contrib:
-	@echo "Building nltk_contrib distributions..."
-	$(MAKE) -C contrib distributions
-	cp contrib/dist/* $(DISTRIBUTIONS)
-
-NLTK_DOCS = nltk-docs-$(NLTK_VERSION)
-distributions.webpage:
-	@echo "Packaging nltk webpage..."
-	$(MAKE) -C doc webpage
-	rm -f $(NLTK_DOCS)
-	ln -s doc/built_webpage $(NLTK_DOCS)
-	tar -czhf $(DISTRIBUTIONS)/nltk-$(NLTK_VERSION)-docs.tgz $(NLTK_DOCS)
-	zip -rq $(DISTRIBUTIONS)/nltk-$(NLTK_VERSION)-docs.zip $(NLTK_DOCS)
-	rm -f $(NLTK_DOCS)
+# Tests.
+test: 
+	$(PYTHON) runtests.py -v -c coverage
 
 clean:
+	rm -f `find . -name '*.pyc'`
+	rm -f `find . -name '*.pyo'`
 	$(MAKE) -C doc clean
-	$(MAKE) -C psets clean
-	$(MAKE) -C src clean
-	$(MAKE) -C contrib clean
-	rm -rf $(DISTRIBUTIONS)
+	rm -rf build dist MANIFEST
+
+# Distributions. Build all from scratch.
+distributions: clean sdist bdist docdist corporadist
+
+# Source distributions
+sdist: gztardist zipdist
+
+# Built distributions
+bdist: rpmdist windist
+
+# Produce dist/$(NAME)-$(VERSION).tar.gz
+gztardist: INSTALL.TXT
+	python setup.py -q sdist --format=gztar
+
+# Produce dist/$(NAME)-$(VERSION).tar.gz
+zipdist: INSTALL.TXT
+	python setup.py -q sdist --format=zip
+
+# Produce dist/$(NAME)-$(VERSION)-1.noarch.rpm
+# Produce dist/$(NAME)-$(VERSION)-1.src.rpm
+rpmdist: INSTALL.TXT
+	python setup.py -q bdist --format=rpm
+
+# Produce dist/$(NAME)-$(VERSION).win32.exe
+windist: INSTALL.TXT
+	python setup.py -q bdist --format=wininst
+
+docdist:
+	$(MAKE) -C doc all
+	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x CVS
+#	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
+
+corporadist:
+	zip -r dist/nltk_lite-corpora-$(NLTK_VERSION).zip corpora -x CVS
+#	tar czvf corpora.tgz --exclude=CVS corpora
+
+# Automatically add the appropriate version number.
+INSTALL.TXT: INSTALL.TXT.in
+	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
+
+# CVS snapshot
+tgz:
+	echo "build apidocs and tutorials manually"
+	rm -rf $(CVS_SNAPSHOT)
+	cvs -d:ext:stevenbird@cvs.sourceforge.net:/cvsroot/nltk co nltk/lite
+	mv nltk $(CVS_SNAPSHOT)
+#	cp -r doc/api $(CVS_SNAPSHOT)/lite/doc/api
+	cp doc/en/*.html $(CVS_SNAPSHOT)/lite/doc/en
+	tar cvzf $(CVS_SNAPSHOT).tgz $(CVS_SNAPSHOT)
+
+python:	.python.done
+	mkdir -p iso/{mac,win,unix}
+	wget -N -O iso/mac/MacPython-OSX-2.4.1-1.dmg http://undefined.org/python/MacPython-OSX-2.4.1-1.dmg
+	wget -N -O iso/mac/numarray-1.1.1-py2.4-macosx10.3.zip http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
+	wget -N -O iso/win/Python-2.4.2.msi http://www.python.org/ftp/python/2.4.2/python-2.4.2.msi
+	wget -N -O iso/win/numarray-1.5.0.exe $(SFNETMIRROR)/numpy/numarray-1.5.0.win32-py2.4.exe?download
+	wget -N -O iso/unix/Python-2.4.2.tgz http://www.python.org/ftp/python/2.4.2/Python-2.4.2.tgz
+	wget -N -O iso/unix/numarray-1.5.0.tar.gz $(SFNETMIRROR)/numpy/numarray-1.5.0.tar.gz?download
+	touch .python.done
+
+iso:	dist
+	echo "get Python distro?"
+	rm -rf iso/webpage iso/nltk* iso/*/nltk*
+	mkdir -p iso/webpage iso/webpage/screenshots/
+	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
+	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
+	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/unix/
+	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm	iso/unix/
+	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
+	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
+	cp *.txt *.TXT					iso
+	cp ../doc/webpage/*.{html,css,png}              iso/webpage/
+	cp ../doc/webpage/screenshots/*.jpg             iso/webpage/screenshots
+	ln -f -s iso/ nltk_lite-$(NLTK_VERSION)
+	mkisofs -f -r -o dist/nltk_lite-$(NLTK_VERSION).iso nltk_lite-$(NLTK_VERSION)

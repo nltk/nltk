@@ -1,4 +1,0 @@
-include LICENSE.txt
-include INSTALL.txt
-include README.txt
-recursive-include nltk_contrib LICENSE* INSTALL* CHANGELOG* README* *.*
