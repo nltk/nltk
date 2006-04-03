@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<document><metaproperties>
+	<source>Hayward 1998:638</source>
+	<copyright/>
+	<title>Mood in Qafar</title>
+</metaproperties>
+
+
+
+<attributes>
+  <name name="person">
+    <value value="1sg"/>
+    <value value="2sg"/>
+    <value value="3m.sg"/>
+    <value value="3f.sg"/>
+    <value value="1pl"/>
+    <value value="2pl"/>
+    <value value="3pl"/>
+  </name><name name="case">
+    <value value="requestive"/>
+    <value value="imperative"/>
+    <value value="jussive"/>
+  </name><name name="class">
+    <value value="class I"/>
+    <value value="class II"/>
+  </name><name name="content">
+    <value value="arday"/>
+    <value value="ardoo"/>
+    <value value="ered"/>
+    <value value="ereda"/>
+    <value value="nak"/>
+    <value value="naka"/>
+    <value value="nakay"/>
+    <value value="naknay"/>
+    <value value="naknoo"/>
+    <value value="nakoo"/>
+    <value value="nakoonay"/>
+    <value value="naktay"/>
+    <value value="narday"/>
+    <value value="nardoo"/>
+    <value value="tarday"/>
+    <value value="yarday"/>
+    <value value="yardoonay"/>
+  </name></attributes>
+<paradigm>
+  <form>
+    <attribute name="person" value="1sg"/>
+    <attribute name="case" value="requestive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="ardoo"/>
+  </form>
+  <form>
+    <attribute name="person" value="1sg"/>
+    <attribute name="case" value="requestive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="nakoo"/>
+  </form>
+  <form>
+    <attribute name="person" value="1sg"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="arday"/>
+  </form>
+  <form>
+    <attribute name="person" value="1sg"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="nakay"/>
+  </form>
+  <form>
+    <attribute name="person" value="2sg"/>
+    <attribute name="case" value="imperative"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="ered"/>
+  </form>
+  <form>
+    <attribute name="person" value="2sg"/>
+    <attribute name="case" value="imperative"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="nak"/>
+  </form>
+  <form>
+    <attribute name="person" value="3m.sg"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="yarday"/>
+  </form>
+  <form>
+    <attribute name="person" value="3m.sg"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="nakay"/>
+  </form>  <form>
+    <attribute name="person" value="3f.sg"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="tarday"/>
+  </form>
+  <form>
+    <attribute name="person" value="3f.sg"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="naktay"/>
+  </form>
+  <form>
+    <attribute name="person" value="1pl"/>
+    <attribute name="case" value="requestive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="nardoo"/>
+  </form>
+  <form>
+    <attribute name="person" value="1pl"/>
+    <attribute name="case" value="requestive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="naknoo"/>
+  </form>
+  <form>
+    <attribute name="person" value="1pl"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="narday"/>
+  </form>
+  <form>
+    <attribute name="person" value="1pl"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="naknay"/>
+  </form>
+  <form>
+    <attribute name="person" value="2pl"/>
+    <attribute name="case" value="imperative"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="ereda"/>
+  </form>
+  <form>
+    <attribute name="person" value="2pl"/>
+    <attribute name="case" value="imperative"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="naka"/>
+  </form>
+  <form>
+    <attribute name="person" value="3pl"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class I"/>
+    <attribute name="content" value="yardoonay"/>
+  </form>
+  <form>
+    <attribute name="person" value="3pl"/>
+    <attribute name="case" value="jussive"/>
+    <attribute name="class" value="class II"/>
+    <attribute name="content" value="nakoonay"/>
+  </form>
+</paradigm></document>

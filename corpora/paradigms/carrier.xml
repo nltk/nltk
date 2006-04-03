@@ -1,0 +1,2650 @@
+<?xml version="1.0"?>
+<document>
+<metaproperties>
+	<source>http://www.ydli.org/</source>
+	<copyright>Bill Poser</copyright>
+	<title>Carrier Inflection</title>
+</metaproperties>
+
+<attributes>
+  <name name="number">
+    <value value="singular"/>
+    <value value="dual"/>
+    <value value="plural"/>
+  </name>
+  <name name="type">
+    <value value="value1"/>
+    <value value="value2"/>
+    <value value="value3"/>
+    <value value="value4"/>
+  </name>
+  <name name="aspect"> <!--mood?-->
+    <value value="imperfective"/>
+    <value value="perfective"/>
+    <value value="future"/>
+    <value value="optative"/>
+  </name>
+  <name name="person">
+    <value value="1"/>    
+    <value value="2"/>
+    <value value="3"/>
+  </name>
+  <name name="polarity">
+    <value value="affirmative"/>
+    <value value="negative"/>
+  </name>  <name name="content">
+    <value value="'a'alh"/>
+    <value value="'ah'alh"/>
+    <value value="'aha'alh"/>
+    <value value="'an'al"/>
+    <value value="'at'al"/>
+    <value value="'ih'al"/>
+    <value value="'in'alh"/>
+    <value value="'is'al"/>
+    <value value="'it'alh"/>
+    <value value="'on'alh"/>
+    <value value="'oo'alh"/>
+    <value value="'ooh'alh"/>
+    <value value="'oos'alh"/>
+    <value value="'ot'alh"/>
+    <value value="'oti'ulh"/>
+    <value value="'uhan'al"/>
+    <value value="'uhoo'alh"/>
+    <value value="'us'alh"/>
+    <value value="'utan'ulh"/>
+    <value value="'utat'ulh"/>
+    <value value="'uti'ulh"/>
+    <value value="'utih'ulh"/>
+    <value value="'utis'ulh"/>
+    <value value="'uts'a'alh"/>
+    <value value="'uts'an'al"/>
+    <value value="'uts'oo'alh"/>
+    <value value="'uzti'ulh"/>
+    <value value="a'alh"/>
+    <value value="ah'al"/>
+    <value value="ah'alh"/>
+    <value value="an'al"/>
+    <value value="ha'alh"/>
+    <value value="han'al"/>
+    <value value="hoo'alh"/>
+    <value value="huti'ulh"/>
+    <value value="in'al"/>
+    <value value="in'alh"/>
+    <value value="it'al"/>
+    <value value="it'alh"/>
+    <value value="lhah'ulh"/>
+    <value value="lhe'ah'ulh"/>
+    <value value="lhe'hi'ulh"/>
+    <value value="lhe'hoos'al"/>
+    <value value="lhe'hus'al"/>
+    <value value="lhe'hutis'ulh"/>
+    <value value="lhe'i'ulh"/>
+    <value value="lhe'in'ulh"/>
+    <value value="lhe'it'ulh"/>
+    <value value="lhe'oos'al"/>
+    <value value="lhe'tis'ulh"/>
+    <value value="lhe'ts'i'ulh"/>
+    <value value="lhe'ts'oos'al"/>
+    <value value="lhe'ts'us'al"/>
+    <value value="lhe'ts'utis'ulh"/>
+    <value value="lhe'tuzah'ulh"/>
+    <value value="lhe'tuzan'ulh"/>
+    <value value="lhe'tuzat'ulh"/>
+    <value value="lhe'tuzis'ulh"/>
+    <value value="lhe'us'al"/>
+    <value value="lhe'us'ulh"/>
+    <value value="lhe'zah'al"/>
+    <value value="lhe'zin'al"/>
+    <value value="lhe'zit'al"/>
+    <value value="lhe'zon'al"/>
+    <value value="lhe'zooh'al"/>
+    <value value="lhe'zoos'al"/>
+    <value value="lhe'zot'al"/>
+    <value value="lhe'zus'al"/>
+    <value value="lhi'ulh"/>
+    <value value="lhin'ulh"/>
+    <value value="lhit'ulh"/>
+    <value value="lhoos'al"/>
+    <value value="lhotis'ulh"/>
+    <value value="lhtis'ulh"/>
+    <value value="lhts'i'ulh"/>
+    <value value="lhts'oos'al"/>
+    <value value="lhts'us'al"/>
+    <value value="lhts'utis'ulh"/>
+    <value value="lhtuzah'ulh"/>
+    <value value="lhtuzan'ulh"/>
+    <value value="lhtuzat'ulh"/>
+    <value value="lhtuzis'ulh"/>
+    <value value="lhuhi'ulh"/>
+    <value value="lhuhoos'al"/>
+    <value value="lhuhus'al"/>
+    <value value="lhus'al"/>
+    <value value="lhus'ulh"/>
+    <value value="lhuzah'al"/>
+    <value value="lhuzin'al"/>
+    <value value="lhuzit'al"/>
+    <value value="lhuzon'al"/>
+    <value value="lhuzooh'al"/>
+    <value value="lhuzoos'al"/>
+    <value value="lhuzot'al"/>
+    <value value="lhuzus'al"/>
+    <value value="na'ant'al"/>
+    <value value="na'at'al"/>
+    <value value="na'hant'al"/>
+    <value value="na'hoot'alh"/>
+    <value value="na'hut'alh"/>
+    <value value="na'hutit'ulh"/>
+    <value value="na'iht'al"/>
+    <value value="na'int'alh"/>
+    <value value="na'ist'al"/>
+    <value value="na'it'alh"/>
+    <value value="na'ont'alh"/>
+    <value value="na'ooht'alh"/>
+    <value value="na'oost'alh"/>
+    <value value="na'oot'alh"/>
+    <value value="na'ot'alh"/>
+    <value value="na'tant'ulh"/>
+    <value value="na'tat'ulh"/>
+    <value value="na'tiht'ulh"/>
+    <value value="na'tist'ulh"/>
+    <value value="na'tit'ulh"/>
+    <value value="na'ts'ant'al"/>
+    <value value="na'ts'oot'alh"/>
+    <value value="na'ts'ut'alh"/>
+    <value value="na'uht'alh"/>
+    <value value="na'ust'alh"/>
+    <value value="na'ut'alh"/>
+    <value value="na'uztit'ulh"/>
+    <value value="naant'al"/>
+    <value value="naat'al"/>
+    <value value="nahant'al"/>
+    <value value="nahoot'alh"/>
+    <value value="naht'alh"/>
+    <value value="nahut'alh"/>
+    <value value="nahutit'ulh"/>
+    <value value="naiht'al"/>
+    <value value="naint'alh"/>
+    <value value="naist'al"/>
+    <value value="nait'alh"/>
+    <value value="nalhaht'ulh"/>
+    <value value="nalhe'aht'ulh"/>
+    <value value="nalhe'hit'ulh"/>
+    <value value="nalhe'hoost'al"/>
+    <value value="nalhe'hust'al"/>
+    <value value="nalhe'hutist'ulh"/>
+    <value value="nalhe'int'ulh"/>
+    <value value="nalhe'it'ulh"/>
+    <value value="nalhe'oost'al"/>
+    <value value="nalhe'tist'ulh"/>
+    <value value="nalhe'ts'it'ulh"/>
+    <value value="nalhe'ts'oost'al"/>
+    <value value="nalhe'ts'ust'al"/>
+    <value value="nalhe'tuzaht'ulh"/>
+    <value value="nalhe'tuzant'ulh"/>
+    <value value="nalhe'tuzat'ulh"/>
+    <value value="nalhe'tuzist'ulh"/>
+    <value value="nalhe'ust'al"/>
+    <value value="nalhe'ust'ulh"/>
+    <value value="nalhe'uztist'ulh"/>
+    <value value="nalhe'zaht'al"/>
+    <value value="nalhe'zint'al"/>
+    <value value="nalhe'zit'al"/>
+    <value value="nalhe'zont'al"/>
+    <value value="nalhe'zooht'al"/>
+    <value value="nalhe'zoost'al"/>
+    <value value="nalhe'zot'al"/>
+    <value value="nalhe'zust'al"/>
+    <value value="nalhint'ulh"/>
+    <value value="nalhit'ulh"/>
+    <value value="nalhoost'al"/>
+    <value value="nalhotist'ulh"/>
+    <value value="nalhtist'ulh"/>
+    <value value="nalhts'it'ulh"/>
+    <value value="nalhts'oost'al"/>
+    <value value="nalhts'ust'al"/>
+    <value value="nalhtuzaht'ulh"/>
+    <value value="nalhtuzant'ulh"/>
+    <value value="nalhtuzat'ulh"/>
+    <value value="nalhtuzist'ulh"/>
+    <value value="nalhuhit'ulh"/>
+    <value value="nalhuhoost'al"/>
+    <value value="nalhuhust'al"/>
+    <value value="nalhust'al"/>
+    <value value="nalhust'ulh"/>
+    <value value="nalhuzaht'al"/>
+    <value value="nalhuzint'al"/>
+    <value value="nalhuzit'al"/>
+    <value value="nalhuzont'al"/>
+    <value value="nalhuzooht'al"/>
+    <value value="nalhuzoost'al"/>
+    <value value="nalhuzot'al"/>
+    <value value="nalhuztist'ulh"/>
+    <value value="nalhuzust'al"/>
+    <value value="naont'alh"/>
+    <value value="naooht'alh"/>
+    <value value="naoost'alh"/>
+    <value value="naoot'alh"/>
+    <value value="naot'alh"/>
+    <value value="nast'alh"/>
+    <value value="nat'alh"/>
+    <value value="natant'ulh"/>
+    <value value="natat'ulh"/>
+    <value value="natiht'ulh"/>
+    <value value="natist'ulh"/>
+    <value value="natit'ulh"/>
+    <value value="nats'ant'al"/>
+    <value value="nats'oot'alh"/>
+    <value value="nats'ut'alh"/>
+    <value value="naztit'ulh"/>
+    <value value="on'alh"/>
+    <value value="oo'alh"/>
+    <value value="ooh'alh"/>
+    <value value="oos'alh"/>
+    <value value="ot'alh"/>
+    <value value="tan'ulh"/>
+    <value value="tat'ulh"/>
+    <value value="ti'ulh"/>
+    <value value="tih'ulh"/>
+    <value value="tis'ulh"/>
+    <value value="ts'a'alh"/>
+    <value value="ts'an'al"/>
+    <value value="ts'oo'alh"/>
+    <value value="us'al"/>
+    <value value="us'alh"/>
+    <value value="uzti'ulh"/>
+  </name>
+</attributes>
+<paradigm>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'us'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'it'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'uts'a'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'in'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'ah'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'ah'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'a'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'aha'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'aha'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'is'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'at'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'uts'an'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'an'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'ih'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'ih'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'an'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'uhan'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'uhan'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'utis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'utat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'uzti'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'utan'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'utih'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'utih'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'uti'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'oti'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'oti'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'oos'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'ot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'uts'oo'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'on'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'ooh'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'ooh'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="'oo'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="'uhoo'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="'uhoo'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'zus'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'zit'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'ts'us'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'zin'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'zah'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'zah'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'us'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'hus'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'hus'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'us'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'it'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'ts'i'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'in'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'ah'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'ah'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'i'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'hi'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'hi'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'tuzis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'tuzat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'ts'utis'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'tuzan'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'tuzah'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'tuzah'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'tis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'hutis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'hutis'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'zoos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'zot'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'ts'oos'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'zon'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'zooh'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'zooh'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhe'oos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhe'hoos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value1"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhe'hoos'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="us'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="it'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ts'a'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="in'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="ah'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ah'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="a'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="ha'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ha'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="us'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="it'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ts'an'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="in'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="ah'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ah'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="an'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="han'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="han'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="tis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="tat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="uzti'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="tan'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="tih'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="tih'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="ti'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="huti'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="huti'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="oos'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="ot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ts'oo'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="on'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="ooh'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="ooh'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="oo'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="hoo'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="hoo'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhuzus'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuzit'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhts'us'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhuzin'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuzah'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhuzah'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhus'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuhus'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhuhus'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhus'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhts'i'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhin'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhah'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhah'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhi'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuhi'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhuhi'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhtuzis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhtuzat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhts'utis'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhtuzan'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhtuzah'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhtuzah'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhtis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhotis'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhotis'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhuzoos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuzot'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhts'oos'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhuzon'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuzooh'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhuzooh'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="lhoos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="lhuhoos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value2"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="lhuhoos'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'ust'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'it'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'ts'ut'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'int'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'uht'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'uht'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'ut'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'hut'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'hut'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'ist'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'at'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'ts'ant'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'ant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'iht'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'iht'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'ant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'hant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'hant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'tist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'tat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'uztit'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'tant'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'tiht'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'tiht'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'tit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'hutit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'hutit'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'oost'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'ot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'ts'oot'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'ont'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'ooht'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'ooht'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="na'oot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="na'hoot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="na'hoot'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'zust'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'zit'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'ts'ust'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'zint'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'zaht'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'zaht'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'ust'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'hust'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'hust'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'ust'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'it'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'ts'it'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'int'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'aht'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'aht'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'it'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'hit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'hit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'tuzist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'tuzat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'uztist'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'tuzant'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'tuzaht'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'tuzaht'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'tist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'hutist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'hutist'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'zoost'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'zot'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'ts'oost'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'zont'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'zooht'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'zooht'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhe'oost'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhe'hoost'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value3"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhe'hoost'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nast'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nait'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nats'ut'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naint'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="naht'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="naht'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nat'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nahut'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nahut'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naist'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="naat'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nats'ant'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="naiht'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="naiht'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nahant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nahant'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="natist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="natat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="naztit'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="natant'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="natiht'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="natiht'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="natit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nahutit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nahutit'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naoost'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="naot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nats'oot'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naont'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="naooht'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="naooht'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="naoot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nahoot'alh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="affirmative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nahoot'alh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhuzust'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuzit'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhts'ust'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhuzint'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuzaht'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhuzaht'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhust'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuhust'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="imperfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhuhust'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhust'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhts'it'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhint'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhaht'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhaht'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuhit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="perfective"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhuhit'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhtuzist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhtuzat'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhuztist'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhtuzant'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhtuzaht'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhtuzaht'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhtist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhotist'ulh"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="future"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhotist'ulh"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhuzoost'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuzot'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="1"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhts'oost'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhuzont'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuzooht'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhuzooht'al"/>
+  </form>
+  
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="nalhoost'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="nalhuhoost'al"/>
+  </form>
+  <form>
+    <attribute name="type" value="value4"/>
+    <attribute name="polarity" value="negative"/>
+    <attribute name="aspect" value="optative"/>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="nalhuhoost'al"/>
+  </form>
+
+
+</paradigm></document>

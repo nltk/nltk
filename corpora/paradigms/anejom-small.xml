@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document><metaproperties>
+	<source>Lynch (1998:106)</source>
+	<copyright/>
+	<title>Anejom pronouns - Possessive </title>
+</metaproperties>
+
+<attributes>
+	<name name="person">
+		<value value="1.INC"/>
+		<value value="1.EXC"/>
+		<value value="2"/>
+		<value value="3"/>
+	</name>
+	<name name="number">
+		<value value="singular"/>
+		<value value="dual"/>
+		<value value="trial"/>
+		<value value="plural"/>
+	</name>
+	<name name="content">
+		<value value="-"/>
+		<value value="-jau"/>
+		<value value="-taj"/>
+		<value value="-ja"/>
+		<value value="-k"/>
+		<value value="-mrau"/>
+		<value value="-mtaj"/>
+		<value value="-ma"/>
+		<value value="-m͂"/>
+		<value value="-mirau"/>
+		<value value="-mitaj"/>
+		<value value="-mia"/>
+		<value value="-n"/>
+		<value value="-rau"/>
+		<value value="-ttaj"/>
+		<value value="-ra"/>
+	</name>
+</attributes>
+
+<paradigm>
+  <form>
+    <attribute name="person" value="1.INC"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="-"/>
+  </form>
+  <form>
+    <attribute name="person" value="1.INC"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="-jau"/>
+  </form>
+  <form>
+    <attribute name="person" value="1.INC"/>
+    <attribute name="number" value="trial"/>
+    <attribute name="content" value="-taj"/>
+  </form>
+  <form>
+    <attribute name="person" value="1.INC"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="-ja"/>
+  </form>
+
+  <form>
+    <attribute name="person" value="1.EXC"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="-k"/>
+  </form>
+  <form>
+    <attribute name="person" value="1.EXC"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="-mrau"/>
+  </form>
+  <form>
+    <attribute name="person" value="1.EXC"/>
+    <attribute name="number" value="trial"/>
+    <attribute name="content" value="-mtaj"/>
+  </form>
+  <form>
+    <attribute name="person" value="1.EXC"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="-ma"/>
+  </form>
+  <form>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="-m͂"/>
+  </form>
+  <form>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="-mirau"/>
+  </form>
+  <form>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="trial"/>
+    <attribute name="content" value="-mitaj"/>
+  </form>
+  <form>
+    <attribute name="person" value="2"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="-mia"/>
+  </form>
+  <form>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="singular"/>
+    <attribute name="content" value="-n"/>
+  </form>
+  <form>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="dual"/>
+    <attribute name="content" value="-rau"/>
+  </form>
+  <form>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="trial"/>
+    <attribute name="content" value="-ttaj"/>
+  </form>
+  <form>
+    <attribute name="person" value="3"/>
+    <attribute name="number" value="plural"/>
+    <attribute name="content" value="-ra"/>
+  </form>
+
+</paradigm></document>

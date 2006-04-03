@@ -1,0 +1,571 @@
+<?xml version="1.0"?>
+<document><metaproperties>
+	<source/>
+	<copyright/>
+	<title/>
+</metaproperties><attributes>
+
+<name name="position">
+		<value value="initial"/>
+		<value value="medial"/>
+		<value value="final"/>
+	</name>
+	<name name="letter">
+		<value value="tS, c^"/>
+		<value value="m"/>
+		<value value="n"/>
+		<value value="ng"/>
+		<value value="dZ, j^"/>
+		<value value="v"/>
+		<value value="D"/>
+		<value value="z"/>
+		<value value="Z, z^"/>
+		<value value="f"/> 
+		<value value="T"/>
+		<value value="s"/>
+		<value value="S, s^"/>
+		<value value="h"/>
+		<value value="b"/>
+		<value value="d"/>
+		<value value="g"/>
+		<value value="p"/>
+		<value value="t"/>
+		<value value="k"/>
+		<value value="l"/>
+		<value value="r, r, r,"/>
+		<value value="w"/>
+		<value value="j, y"/>
+	</name>
+	<name name="consonant">
+		<value value="voiceless plosive"/>
+		<value value="voiced plosive"/>
+		<value value="voiceless affricate"/>
+		<value value="voiced affricate"/>
+		<value value="voiceless fricative"/>
+		<value value="voiced fricative"/>
+		<value value="nasal"/>
+		<value value="approximant"/>
+	</name>
+	<name name="content">
+		<value value="peer, paw"/>
+		<value value="tier, tore"/>
+		<value value="core, keel"/>
+		<value value="leper, rapid"/>
+		<value value="letter, baton"/>
+		<value value="wrecker, icon"/>
+		<value value="rip, loop"/>
+		<value value="writ, loot"/>
+		<value value="rick, Luke"/>
+		<value value="beer, bore"/>
+		<value value="dear, door"/>
+		<value value="gear, gore"/>
+		<value value="pebble, rabid"/>
+		<value value="redder, idol"/>
+		<value value="beggar, eagle"/>
+		<value value="rib, cube"/>
+		<value value="rid, rude"/>
+		<value value="rig, dog"/>
+		<value value="cheer, chore"/>
+		<value value="lecher, catcher"/>
+		<value value="rich, pouch"/>
+		<value value="jeer, jaw"/>
+		<value value="ledger, badger"/>
+		<value value="ridge, rage"/>
+		<value value="fear, four"/>
+		<value value="thaw, theme"/>
+		<value value="sear, saw"/>
+		<value value="sheer, shore"/>
+		<value value="hear, hoar"/>
+		<value value="heifer, offer"/>
+		<value value="method, Ethel"/>
+		<value value="lesser, acid"/>
+		<value value="pressure, ration"/>
+		<value value="-"/>
+		<value value="whiff, roof"/>
+		<value value="myth, tooth"/>
+		<value value="miss, loose"/>
+		<value value="dish, gauche"/>
+		<value value="veer, vaunt"/>
+		<value value="there, thy"/>
+		<value value="zeal, zone"/>
+		<value value="ever, liver"/>
+		<value value="leather, other"/>
+		<value value="resin, dozen"/>
+		<value value="measure, closure"/>
+		<value value="live, move"/>
+		<value value="lithe, soothe"/>
+		<value value="fizz, lose"/>
+		<value value="mere, more"/>
+		<value value="near, nor"/>
+		<value value="lemon, simmer"/>
+		<value value="venom, sinner"/>
+		<value value="hanger, singer"/>
+		<value value="rim, room"/>
+		<value value="win, spoon"/>
+		<value value="ring, rang"/>
+		<value value="leer, law"/>
+		<value value="rear, raw"/>
+		<value value="weir, war"/>
+		<value value="year, your"/>
+		<value value="melon, miller"/>
+		<value value="heron, mirror"/>
+		<value value="away, bewilder"/>
+		<value value="beyond"/>
+		<value value="will, rule"/>
+	</name>
+</attributes>
+<paradigm>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="p"/>
+		<attribute name="content" value="peer, paw"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="t"/>
+		<attribute name="content" value="tier, tore"/>
+	</form> 
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="k"/>
+		<attribute name="content" value="core, keel"/>
+	</form>		
+	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="p"/>
+		<attribute name="content" value="leper, rapid"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="t"/>
+		<attribute name="content" value="letter, baton"/>
+	</form> 
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="k"/>
+		<attribute name="content" value="wrecker, icon"/>
+	</form>	
+	
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="p"/>
+		<attribute name="content" value="rip, loop"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="t"/>
+		<attribute name="content" value="writ, loot"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless plosive"/>
+		<attribute name="letter" value="k"/>
+		<attribute name="content" value="rick, Luke"/>
+	</form>	
+	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="b"/>
+		<attribute name="content" value="beer, bore"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="d"/>
+		<attribute name="content" value="deer, door"/>
+	</form> 
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="g"/>
+		<attribute name="content" value="gear, gore"/>
+	</form> 
+
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="b"/>
+		<attribute name="content" value="pebble, rabid"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="d"/>
+		<attribute name="content" value="redder, idol"/>
+	</form> 
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="g"/>
+		<attribute name="content" value="beggar, eagle"/>
+	</form> 
+
+  <form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="b"/>
+		<attribute name="content" value="rib, cube"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="d"/>
+		<attribute name="content" value="rid, rude"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced plosive"/>
+		<attribute name="letter" value="g"/>
+		<attribute name="content" value="rig, dog"/>
+	</form> 
+
+  <form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless affricate"/>
+		<attribute name="letter" value="tS, c^"/>
+		<attribute name="content" value="cheer, chore"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless affricate"/>
+		<attribute name="letter" value="tS, c^"/>
+		<attribute name="content" value="letcher, catcher"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless affricate"/>
+		<attribute name="letter" value="tS, c^"/>
+		<attribute name="content" value="rich, pouch"/>
+	</form> 
+
+  <form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced affricate"/>
+		<attribute name="letter" value="dZ, j^"/>
+		<attribute name="content" value="jeer, jaw"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced affricate"/>
+		<attribute name="letter" value="dZ, j^"/>
+		<attribute name="content" value="ledger, badger"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced affricate"/>
+		<attribute name="letter" value="dZ, j^"/>
+		<attribute name="content" value="ridge, rage"/>
+	</form> 
+	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="f"/>
+		<attribute name="content" value="fear, four"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="T"/>
+		<attribute name="content" value="thaw, theme"/>
+	</form> 
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="s"/>
+		<attribute name="content" value="sear, saw"/>
+	</form>	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="S, s^"/>
+		<attribute name="content" value="sheer, shore"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="h"/>
+		<attribute name="content" value="hear, hoar"/>
+	</form> 
+	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="f"/>
+		<attribute name="content" value="heifer, offer"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="T"/>
+		<attribute name="content" value="method, Ethel"/>
+	</form> 
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="s"/>
+		<attribute name="content" value="lesser, acid"/>
+	</form>	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="S, s^"/>
+		<attribute name="content" value="pressure, ration"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="h"/>
+		<attribute name="content" value="-"/>
+	</form> 
+
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="f"/>
+		<attribute name="content" value="whiff, roof"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="T"/>
+		<attribute name="content" value="myth, tooth"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="s"/>
+		<attribute name="content" value="miss, loose"/>
+	</form>	
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="S, s^"/>
+		<attribute name="content" value="dish, gauche"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiceless fricative"/>
+		<attribute name="letter" value="h"/>
+		<attribute name="content" value="-"/>
+	</form> 
+	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="v"/>
+		<attribute name="content" value="veer, vaunt"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="D"/>
+		<attribute name="content" value="there, thy"/>
+	</form> 
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="z"/>
+		<attribute name="content" value="zeal, zone"/>
+	</form>	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="Z, z^"/>
+		<attribute name="content" value="-"/>
+	</form>
+
+		<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="v"/>
+		<attribute name="content" value="ever, liver"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="D"/>
+		<attribute name="content" value="leather, other"/>
+	</form> 
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="z"/>
+		<attribute name="content" value="resin, dozen"/>
+	</form>	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="Z, z^"/>
+		<attribute name="content" value="measure, closure"/>
+	</form>
+
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="v"/>
+		<attribute name="content" value="live, move"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="D"/>
+		<attribute name="content" value="lithe, soothe"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="z"/>
+		<attribute name="content" value="fizz, lose"/>
+	</form>	
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="voiced fricative"/>
+		<attribute name="letter" value="Z, z^"/>
+		<attribute name="content" value="-"/>
+	</form>
+	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="m"/>
+		<attribute name="content" value="mere, more"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="n"/>
+		<attribute name="content" value="near, nor"/>
+	</form> 
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="ng"/>
+		<attribute name="content" value="-"/>
+	</form>		
+	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="m"/>
+		<attribute name="content" value="lemon, simmer"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="n"/>
+		<attribute name="content" value="venom, sinner"/>
+	</form> 
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="ng"/>
+		<attribute name="content" value="hanger, singer"/>
+	</form>	
+	
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="m"/>
+		<attribute name="content" value="rim, room"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="n"/>
+		<attribute name="content" value="win, spoon"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="nasal"/>
+		<attribute name="letter" value="ng"/>
+		<attribute name="content" value="ring, rang"/>
+	</form>	
+	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="l"/>
+		<attribute name="content" value="leer, law"/>
+	</form>
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="r, r, r,"/>
+		<attribute name="content" value="rear, raw"/>
+	</form> 
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="w"/>
+		<attribute name="content" value="weir, war"/>
+	</form>	
+	<form>
+		<attribute name="position" value="initial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="j, y"/>
+		<attribute name="content" value="year, your"/>
+	</form>			
+	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="l"/>
+		<attribute name="content" value="melon, miller"/>
+	</form>
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="r, r, r,"/>
+		<attribute name="content" value="heron, mirror"/>
+	</form> 
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="w"/>
+		<attribute name="content" value="away, bewilder"/>
+	</form>	
+	<form>
+		<attribute name="position" value="medial"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="j, y"/>
+		<attribute name="content" value="beyond"/>
+	</form>	
+	
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="l"/>
+		<attribute name="content" value="will, rule"/>
+	</form>
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="r, r, r,"/>
+		<attribute name="content" value="-"/>
+	</form> 
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="w"/>
+		<attribute name="content" value="-"/>
+	</form>	
+	<form>
+		<attribute name="position" value="final"/>
+		<attribute name="consonant" value="approximant"/>
+		<attribute name="letter" value="j, y"/>
+		<attribute name="content" value="-"/>
+	</form>	
+
+
+</paradigm></document>
