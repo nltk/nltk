@@ -110,7 +110,7 @@ iso:	dist
 	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
 	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
 	cp *.txt *.TXT					iso
-	cp ../doc/webpage/*.{html,css,png}              iso/webpage/
-	cp ../doc/webpage/screenshots/*.jpg             iso/webpage/screenshots
+	cp web/*.{html,css,png}                         iso/web/
+	cp web/screenshots/*.jpg                        iso/web/screenshots
 	ln -f -s iso/ nltk_lite-$(NLTK_VERSION)
 	mkisofs -f -r -o dist/nltk_lite-$(NLTK_VERSION).iso nltk_lite-$(NLTK_VERSION)
