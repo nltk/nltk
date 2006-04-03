@@ -1,0 +1,1759 @@
+Project Gutenberg Etext Songs of Innocence and Experience by Blake
+#2 in our series by William Blake
+
+
+Copyright laws are changing all over the world, be sure to check
+the copyright laws for your country before posting these files!!
+
+Please take a look at the important information in this header.
+We encourage you to keep this file on your own disk, keeping an
+electronic path open for the next readers.  Do not remove this.
+
+
+**Welcome To The World of Free Plain Vanilla Electronic Texts**
+
+**Etexts Readable By Both Humans and By Computers, Since 1971**
+
+*These Etexts Prepared By Hundreds of Volunteers and Donations*
+
+Information on contacting Project Gutenberg to get Etexts, and
+further information is included below.  We need your donations.
+
+
+Songs of Innocence and Songs of Experience
+
+by William Blake
+
+October, 1999  [Etext #1934]
+
+
+Project Gutenberg Etext Songs of Innocence and Experience by Blake
+*******This file should be named sinex10.txt or sinex10.zip******
+
+Corrected EDITIONS of our etexts get a new NUMBER, sinex11.txt
+VERSIONS based on separate sources get new LETTER, sinex10a.txt
+
+
+This etext was prepared by David Price, email ccx074@coventry.ac.uk
+from the 1901 R. Brimley Johnson edition.
+
+Project Gutenberg Etexts are usually created from multiple editions,
+all of which are in the Public Domain in the United States, unless a
+copyright notice is included.  Therefore, we do usually do NOT! keep
+these books in compliance with any particular paper edition.
+
+
+We are now trying to release all our books one month in advance
+of the official release dates, leaving time for better editing.
+
+Please note:  neither this list nor its contents are final till
+midnight of the last day of the month of any such announcement.
+The official release date of all Project Gutenberg Etexts is at
+Midnight, Central Time, of the last day of the stated month.  A
+preliminary version may often be posted for suggestion, comment
+and editing by those who wish to do so.  To be sure you have an
+up to date first edition [xxxxx10x.xxx] please check file sizes
+in the first week of the next month.  Since our ftp program has
+a bug in it that scrambles the date [tried to fix and failed] a
+look at the file size will have to do, but we will try to see a
+new copy has at least one byte more or less.
+
+
+Information about Project Gutenberg (one page)
+
+We produce about two million dollars for each hour we work.  The
+time it takes us, a rather conservative estimate, is fifty hours
+to get any etext selected, entered, proofread, edited, copyright
+searched and analyzed, the copyright letters written, etc.  This
+projected audience is one hundred million readers.  If our value
+per text is nominally estimated at one dollar then we produce $2
+million dollars per hour this year as we release thirty-six text
+files per month, or 432 more Etexts in 1999 for a total of 2000+
+If these reach just 10% of the computerized population, then the
+total should reach over 200 billion Etexts given away this year.
+
+The Goal of Project Gutenberg is to Give Away One Trillion Etext
+Files by December 31, 2001.  [10,000 x 100,000,000 = 1 Trillion]
+This is ten thousand titles each to one hundred million readers,
+which is only ~5% of the present number of computer users.
+
+At our revised rates of production, we will reach only one-third
+of that goal by the end of 2001, or about 3,333 Etexts unless we
+manage to get some real funding; currently our funding is mostly
+from Michael Hart's salary at Carnegie-Mellon University, and an
+assortment of sporadic gifts; this salary is only good for a few
+more years, so we are looking for something to replace it, as we
+don't want Project Gutenberg to be so dependent on one person.
+
+We need your donations more than ever!
+
+
+All donations should be made to "Project Gutenberg/CMU": and are
+tax deductible to the extent allowable by law.  (CMU = Carnegie-
+Mellon University).
+
+For these and other matters, please mail to:
+
+Project Gutenberg
+P. O. Box  2782
+Champaign, IL 61825
+
+When all other email fails. . .try our Executive Director:
+Michael S. Hart <hart@pobox.com>
+hart@pobox.com forwards to hart@prairienet.org and archive.org
+if your mail bounces from archive.org, I will still see it, if
+it bounces from prairienet.org, better resend later on. . . .
+
+We would prefer to send you this information by email.
+
+******
+
+To access Project Gutenberg etexts, use any Web browser
+to view http://promo.net/pg.  This site lists Etexts by
+author and by title, and includes information about how
+to get involved with Project Gutenberg.  You could also
+download our past Newsletters, or subscribe here.  This
+is one of our major sites, please email hart@pobox.com,
+for a more complete list of our various sites.
+
+To go directly to the etext collections, use FTP or any
+Web browser to visit a Project Gutenberg mirror (mirror
+sites are available on 7 continents; mirrors are listed
+at http://promo.net/pg).
+
+Mac users, do NOT point and click, typing works better.
+
+Example FTP session:
+
+ftp sunsite.unc.edu
+login: anonymous
+password: your@login
+cd pub/docs/books/gutenberg
+cd etext90 through etext99
+dir [to see files]
+get or mget [to get files. . .set bin for zip files]
+GET GUTINDEX.??  [to get a year's listing of books, e.g., GUTINDEX.99]
+GET GUTINDEX.ALL [to get a listing of ALL books]
+
+***
+
+**Information prepared by the Project Gutenberg legal advisor**
+
+(Three Pages)
+
+
+***START**THE SMALL PRINT!**FOR PUBLIC DOMAIN ETEXTS**START***
+Why is this "Small Print!" statement here?  You know: lawyers.
+They tell us you might sue us if there is something wrong with
+your copy of this etext, even if you got it for free from
+someone other than us, and even if what's wrong is not our
+fault.  So, among other things, this "Small Print!" statement
+disclaims most of our liability to you.  It also tells you how
+you can distribute copies of this etext if you want to.
+
+*BEFORE!* YOU USE OR READ THIS ETEXT
+By using or reading any part of this PROJECT GUTENBERG-tm
+etext, you indicate that you understand, agree to and accept
+this "Small Print!" statement.  If you do not, you can receive
+a refund of the money (if any) you paid for this etext by
+sending a request within 30 days of receiving it to the person
+you got it from.  If you received this etext on a physical
+medium (such as a disk), you must return it with your request.
+
+ABOUT PROJECT GUTENBERG-TM ETEXTS
+This PROJECT GUTENBERG-tm etext, like most PROJECT GUTENBERG-
+tm etexts, is a "public domain" work distributed by Professor
+Michael S. Hart through the Project Gutenberg Association at
+Carnegie-Mellon University (the "Project").  Among other
+things, this means that no one owns a United States copyright
+on or for this work, so the Project (and you!) can copy and
+distribute it in the United States without permission and
+without paying copyright royalties.  Special rules, set forth
+below, apply if you wish to copy and distribute this etext
+under the Project's "PROJECT GUTENBERG" trademark.
+
+To create these etexts, the Project expends considerable
+efforts to identify, transcribe and proofread public domain
+works.  Despite these efforts, the Project's etexts and any
+medium they may be on may contain "Defects".  Among other
+things, Defects may take the form of incomplete, inaccurate or
+corrupt data, transcription errors, a copyright or other
+intellectual property infringement, a defective or damaged
+disk or other etext medium, a computer virus, or computer
+codes that damage or cannot be read by your equipment.
+
+LIMITED WARRANTY; DISCLAIMER OF DAMAGES
+But for the "Right of Replacement or Refund" described below,
+[1] the Project (and any other party you may receive this
+etext from as a PROJECT GUTENBERG-tm etext) disclaims all
+liability to you for damages, costs and expenses, including
+legal fees, and [2] YOU HAVE NO REMEDIES FOR NEGLIGENCE OR
+UNDER STRICT LIABILITY, OR FOR BREACH OF WARRANTY OR CONTRACT,
+INCLUDING BUT NOT LIMITED TO INDIRECT, CONSEQUENTIAL, PUNITIVE
+OR INCIDENTAL DAMAGES, EVEN IF YOU GIVE NOTICE OF THE
+POSSIBILITY OF SUCH DAMAGES.
+
+If you discover a Defect in this etext within 90 days of
+receiving it, you can receive a refund of the money (if any)
+you paid for it by sending an explanatory note within that
+time to the person you received it from.  If you received it
+on a physical medium, you must return it with your note, and
+such person may choose to alternatively give you a replacement
+copy.  If you received it electronically, such person may
+choose to alternatively give you a second opportunity to
+receive it electronically.
+
+THIS ETEXT IS OTHERWISE PROVIDED TO YOU "AS-IS".  NO OTHER
+WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, ARE MADE TO YOU AS
+TO THE ETEXT OR ANY MEDIUM IT MAY BE ON, INCLUDING BUT NOT
+LIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A
+PARTICULAR PURPOSE.
+
+Some states do not allow disclaimers of implied warranties or
+the exclusion or limitation of consequential damages, so the
+above disclaimers and exclusions may not apply to you, and you
+may have other legal rights.
+
+INDEMNITY
+You will indemnify and hold the Project, its directors,
+officers, members and agents harmless from all liability, cost
+and expense, including legal fees, that arise directly or
+indirectly from any of the following that you do or cause:
+[1] distribution of this etext, [2] alteration, modification,
+or addition to the etext, or [3] any Defect.
+
+DISTRIBUTION UNDER "PROJECT GUTENBERG-tm"
+You may distribute copies of this etext electronically, or by
+disk, book or any other medium if you either delete this
+"Small Print!" and all other references to Project Gutenberg,
+or:
+
+[1]  Only give exact copies of it.  Among other things, this
+     requires that you do not remove, alter or modify the
+     etext or this "small print!" statement.  You may however,
+     if you wish, distribute this etext in machine readable
+     binary, compressed, mark-up, or proprietary form,
+     including any form resulting from conversion by word pro-
+     cessing or hypertext software, but only so long as
+     *EITHER*:
+
+     [*]  The etext, when displayed, is clearly readable, and
+          does *not* contain characters other than those
+          intended by the author of the work, although tilde
+          (~), asterisk (*) and underline (_) characters may
+          be used to convey punctuation intended by the
+          author, and additional characters may be used to
+          indicate hypertext links; OR
+
+     [*]  The etext may be readily converted by the reader at
+          no expense into plain ASCII, EBCDIC or equivalent
+          form by the program that displays the etext (as is
+          the case, for instance, with most word processors);
+          OR
+
+     [*]  You provide, or agree to also provide on request at
+          no additional cost, fee or expense, a copy of the
+          etext in its original plain ASCII form (or in EBCDIC
+          or other equivalent proprietary form).
+
+[2]  Honor the etext refund and replacement provisions of this
+     "Small Print!" statement.
+
+[3]  Pay a trademark license fee to the Project of 20% of the
+     net profits you derive calculated using the method you
+     already use to calculate your applicable taxes.  If you
+     don't derive profits, no royalty is due.  Royalties are
+     payable to "Project Gutenberg Association/Carnegie-Mellon
+     University" within the 60 days following each
+     date you prepare (or were legally required to prepare)
+     your annual (or equivalent periodic) tax return.
+
+WHAT IF YOU *WANT* TO SEND MONEY EVEN IF YOU DON'T HAVE TO?
+The Project gratefully accepts contributions in money, time,
+scanning machines, OCR software, public domain etexts, royalty
+free copyright licenses, and every other sort of contribution
+you can think of.  Money should be paid to "Project Gutenberg
+Association / Carnegie-Mellon University".
+
+*END*THE SMALL PRINT! FOR PUBLIC DOMAIN ETEXTS*Ver.04.29.93*END*
+
+
+
+
+
+This etext was prepared by David Price, email ccx074@coventry.ac.uk
+from the 1901 R. Brimley Johnson edition.
+
+
+
+
+
+Songs of Innocence and Songs of Experience
+
+by William Blake
+
+
+
+
+Contents:
+
+SONGS OF INNOCENCE
+
+Introduction
+The Shepherd
+The Echoing Green
+The Lamb
+The Little Black Boy
+The Blossom
+The Chimney-Sweeper
+The Little Boy Lost
+The Little Boy Pound
+Laughing Song
+A Cradle Song
+The Divine Image
+Holy Thursday
+Night
+Spring
+Nurse's Song
+Infant Joy
+A Dream
+On Another's Sorrow
+
+SONGS OF EXPERIENCE
+
+Introduction
+Earth's Answer
+The Clod and the Pebble
+Holy Thursday
+The Little Girl Lost
+The Little Girl Found
+The Chimney-Sweeper
+Nurse's Song
+The Sick Rose
+The Fly
+The Angel
+The Tiger
+My Pretty Rose-Tree
+Ah, Sunflower
+The Lily
+The Garden of Love
+The Little Vagabond
+London
+The Human Abstract
+Infant Sorrow
+A Poison Tree
+A Little Boy Lost
+A Little Girl Lost
+A Divine Image
+A Cradle Song
+The Schoolboy
+To Tirzah
+The Voice of the Ancient Bard
+
+
+
+
+SONGS OF INNOCENCE
+
+
+
+
+INTRODUCTION
+
+
+
+Piping down the valleys wild,
+Piping songs of pleasant glee,
+On a cloud I saw a child,
+And he laughing said to me:
+
+'Pipe a song about a Lamb!'
+So I piped with merry cheer.
+'Piper, pipe that song again.'
+So I piped:  he wept to hear.
+
+'Drop thy pipe, thy happy pipe;
+Sing thy songs of happy cheer!'
+So I sung the same again,
+While he wept with joy to hear.
+
+'Piper, sit thee down and write
+In a book, that all may read.'
+So he vanished from my sight;
+And I plucked a hollow reed,
+
+And I made a rural pen,
+And I stained the water clear,
+And I wrote my happy songs
+Every child may joy to hear.
+
+
+
+THE SHEPHERD
+
+
+
+How sweet is the shepherd's sweet lot!
+From the morn to the evening he strays;
+He shall follow his sheep all the day,
+And his tongue shall be filled with praise.
+
+For he hears the lambs' innocent call,
+And he hears the ewes' tender reply;
+He is watchful while they are in peace,
+For they know when their shepherd is nigh.
+
+
+
+THE ECHOING GREEN
+
+
+
+The sun does arise,
+And make happy the skies;
+The merry bells ring
+To welcome the Spring;
+The skylark and thrush,
+The birds of the bush,
+Sing louder around
+To the bells' cheerful sound;
+While our sports shall be seen
+On the echoing green.
+
+Old John, with white hair,
+Does laugh away care,
+Sitting under the oak,
+Among the old folk.
+They laugh at our play,
+And soon they all say,
+'Such, such were the joys
+When we all--girls and boys -
+In our youth-time were seen
+On the echoing green.'
+
+Till the little ones, weary,
+No more can be merry:
+The sun does descend,
+And our sports have an end.
+Round the laps of their mothers
+Many sisters and brothers,
+Like birds in their nest,
+Are ready for rest,
+And sport no more seen
+On the darkening green.
+
+
+
+THE LAMB
+
+
+
+Little lamb, who made thee?
+Does thou know who made thee,
+Gave thee life, and bid thee feed
+By the stream and o'er the mead;
+Gave thee clothing of delight,
+Softest clothing, woolly, bright;
+Gave thee such a tender voice,
+Making all the vales rejoice?
+Little lamb, who made thee?
+Does thou know who made thee?
+
+Little lamb, I'll tell thee;
+Little lamb, I'll tell thee:
+He is called by thy name,
+For He calls Himself a Lamb.
+He is meek, and He is mild,
+He became a little child.
+I a child, and thou a lamb,
+We are called by His name.
+Little lamb, God bless thee!
+Little lamb, God bless thee!
+
+
+
+THE LITTLE BLACK BOY
+
+
+
+My mother bore me in the southern wild,
+And I am black, but O my soul is white!
+White as an angel is the English child,
+But I am black, as if bereaved of light.
+
+My mother taught me underneath a tree,
+And, sitting down before the heat of day,
+She took me on her lap and kissed me,
+And, pointing to the East, began to say:
+
+'Look on the rising sun:  there God does live,
+And gives His light, and gives His heat away,
+And flowers and trees and beasts and men receive
+Comfort in morning, joy in the noonday.
+
+'And we are put on earth a little space,
+That we may learn to bear the beams of love;
+And these black bodies and this sunburnt face
+Are but a cloud, and like a shady grove.
+
+'For, when our souls have learned the heat to bear,
+The cloud will vanish, we shall hear His voice,
+Saying, "Come out from the grove, my love and care,
+And round my golden tent like lambs rejoice."'
+
+Thus did my mother say, and kissed me,
+And thus I say to little English boy.
+When I from black, and he from white cloud free,
+And round the tent of God like lambs we joy,
+
+I'll shade him from the heat till he can bear
+To lean in joy upon our Father's knee;
+And then I'll stand and stroke his silver hair,
+And be like him, and he will then love me.
+
+
+
+THE BLOSSOM
+
+
+
+Merry, merry sparrow!
+Under leaves so green
+A happy blossom
+Sees you, swift as arrow,
+Seek your cradle narrow,
+Near my bosom.
+Pretty, pretty robin!
+Under leaves so green
+A happy blossom
+Hears you sobbing, sobbing,
+Pretty, pretty robin,
+Near my bosom.
+
+
+
+THE CHIMNEY-SWEEPER
+
+
+
+When my mother died I was very young,
+And my father sold me while yet my tongue
+Could scarcely cry 'Weep! weep! weep! weep!'
+So your chimneys I sweep, and in soot I sleep.
+
+There's little Tom Dacre, who cried when his head,
+That curled like a lamb's back, was shaved; so I said,
+'Hush, Tom! never mind it, for, when your head's bare,
+You know that the soot cannot spoil your white hair.'
+
+And so he was quiet, and that very night,
+As Tom was a-sleeping, he had such a sight! -
+That thousands of sweepers, Dick, Joe, Ned, and Jack,
+Were all of them locked up in coffins of black.
+
+And by came an angel, who had a bright key,
+And he opened the coffins, and set them all free;
+Then down a green plain, leaping, laughing, they run
+And wash in a river, and shine in the sun.
+
+Then naked and white, all their bags left behind,
+They rise upon clouds, and sport in the wind:
+And the angel told Tom, if he'd be a good boy,
+He'd have God for his father, and never want joy.
+
+And so Tom awoke, and we rose in the dark,
+And got with our bags and our brushes to work.
+Though the morning was cold, Tom was happy and warm:
+So, if all do their duty, they need not fear harm.
+
+
+
+THE LITTLE BOY LOST
+
+
+
+'Father, father, where are you going?
+O do not walk so fast!
+Speak, father, speak to your little boy,
+Or else I shall be lost.'
+
+The night was dark, no father was there,
+The child was wet with dew;
+The mire was deep, and the child did weep,
+And away the vapour flew.
+
+
+
+THE LITTLE BOY FOUND
+
+
+
+The little boy lost in the lonely fen,
+Led by the wandering light,
+Began to cry, but God, ever nigh,
+Appeared like his father, in white.
+
+He kissed the child, and by the hand led,
+And to his mother brought,
+Who in sorrow pale, through the lonely dale,
+Her little boy weeping sought.
+
+
+
+LAUGHING SONG
+
+
+
+When the green woods laugh with the voice of joy,
+And the dimpling stream runs laughing by;
+When the air does laugh with our merry wit,
+And the green hill laughs with the noise of it;
+
+When the meadows laugh with lively green,
+And the grasshopper laughs in the merry scene;
+When Mary and Susan and Emily
+With their sweet round mouths sing 'Ha ha he!'
+
+When the painted birds laugh in the shade,
+Where our table with cherries and nuts is spread:
+Come live, and be merry, and join with me,
+To sing the sweet chorus of 'Ha ha he!'
+
+
+
+A CRADLE SONG
+
+
+
+Sweet dreams, form a shade
+O'er my lovely infant's head!
+Sweet dreams of pleasant streams
+By happy, silent, moony beams!
+
+Sweet Sleep, with soft down
+Weave thy brows an infant crown!
+Sweet Sleep, angel mild,
+Hover o'er my happy child!
+
+Sweet smiles, in the night
+Hover over my delight!
+Sweet smiles, mother's smiles,
+All the livelong night beguiles.
+
+Sweet moans, dovelike sighs,
+Chase not slumber from thy eyes!
+Sweet moans, sweeter smiles,
+All the dovelike moans beguiles.
+
+Sleep, sleep, happy child!
+All creation slept and smiled.
+Sleep, sleep, happy sleep,
+While o'er thee thy mother weep.
+
+Sweet babe, in thy face
+Holy image I can trace;
+Sweet babe, once like thee
+Thy Maker lay, and wept for me:
+
+Wept for me, for thee, for all,
+When He was an infant small.
+Thou His image ever see,
+Heavenly face that smiles on thee!
+
+Smiles on thee, on me, on all,
+Who became an infant small;
+Infant smiles are His own smiles;
+Heaven and earth to peace beguiles.
+
+
+
+THE DIVINE IMAGE
+
+
+
+To Mercy, Pity, Peace, and Love,
+All pray in their distress,
+And to these virtues of delight
+Return their thankfulness.
+
+For Mercy, Pity, Peace, and Love,
+Is God our Father dear;
+And Mercy, Pity, Peace, and Love,
+Is man, His child and care.
+
+For Mercy has a human heart;
+Pity, a human face;
+And Love, the human form divine:
+And Peace the human dress.
+
+Then every man, of every clime,
+That prays in his distress,
+Prays to the human form divine:
+Love, Mercy, Pity, Peace.
+
+And all must love the human form,
+In heathen, Turk, or Jew.
+Where Mercy, Love, and Pity dwell,
+There God is dwelling too.
+
+
+
+HOLY THURSDAY
+
+
+
+'Twas on a holy Thursday, their innocent faces clean,
+The children walking two and two, in red, and blue, and green:
+Grey-headed beadles walked before, with wands as white as snow,
+Till into the high dome of Paul's they like Thames waters flow.
+
+O what a multitude they seemed, these flowers of London town!
+Seated in companies they sit, with radiance all their own.
+The hum of multitudes was there, but multitudes of lambs,
+Thousands of little boys and girls raising their innocent hands.
+
+Now like a mighty wind they raise to heaven the voice of song,
+Or like harmonious thunderings the seats of heaven among:
+Beneath them sit the aged men, wise guardians of the poor.
+Then cherish pity, lest you drive an angel from your door.
+
+
+
+NIGHT
+
+
+
+The sun descending in the West,
+The evening star does shine;
+The birds are silent in their nest,
+And I must seek for mine.
+The moon, like a flower
+In heaven's high bower,
+With silent delight,
+Sits and smiles on the night.
+
+Farewell, green fields and happy groves,
+Where flocks have took delight,
+Where lambs have nibbled, silent moves
+The feet of angels bright;
+Unseen, they pour blessing,
+And joy without ceasing,
+On each bud and blossom,
+And each sleeping bosom.
+
+They look in every thoughtless nest
+Where birds are covered warm;
+They visit caves of every beast,
+To keep them all from harm:
+If they see any weeping
+That should have been sleeping,
+They pour sleep on their head,
+And sit down by their bed.
+
+When wolves and tigers howl for prey,
+They pitying stand and weep;
+Seeking to drive their thirst away,
+And keep them from the sheep.
+But, if they rush dreadful,
+The angels, most heedful,
+Receive each mild spirit,
+New worlds to inherit.
+
+And there the lion's ruddy eyes
+Shall flow with tears of gold:
+And pitying the tender cries,
+And walking round the fold:
+Saying:  'Wrath by His meekness,
+And, by His health, sickness,
+Is driven away
+From our immortal day.
+
+'And now beside thee, bleating lamb,
+I can lie down and sleep,
+Or think on Him who bore thy name,
+Graze after thee, and weep.
+For, washed in life's river,
+My bright mane for ever
+Shall shine like the gold,
+As I guard o'er the fold.'
+
+
+
+SPRING
+
+
+
+Sound the flute!
+Now it's mute!
+Birds delight,
+Day and night,
+Nightingale,
+In the dale,
+Lark in sky, -
+Merrily,
+Merrily, merrily to welcome in the year.
+
+Little boy,
+Full of joy;
+Little girl,
+Sweet and small;
+Cock does crow,
+So do you;
+Merry voice,
+Infant noise;
+Merrily, merrily to welcome in the year.
+
+Little lamb,
+Here I am;
+Come and lick
+My white neck;
+Let me pull
+Your soft wool;
+Let me kiss
+Your soft face;
+Merrily, merrily we welcome in the year.
+
+
+
+NURSE'S SONG
+
+
+
+When voices of children are heard on the green,
+And laughing is heard on the hill,
+My heart is at rest within my breast,
+And everything else is still.
+'Then come home, my children, the sun is gone down,
+And the dews of night arise;
+Come, come, leave off play, and let us away,
+Till the morning appears in the skies.'
+
+'No, no, let us play, for it is yet day,
+And we cannot go to sleep;
+Besides, in the sky the little birds fly,
+And the hills are all covered with sheep.'
+'Well, well, go and play till the light fades away,
+And then go home to bed.'
+The little ones leaped, and shouted, and laughed,
+And all the hills echoed.
+
+
+
+INFANT JOY
+
+
+
+'I have no name;
+I am but two days old.'
+What shall I call thee?
+'I happy am,
+Joy is my name.'
+Sweet joy befall thee!
+
+Pretty joy!
+Sweet joy, but two days old.
+Sweet joy I call thee:
+Thou dost smile,
+I sing the while;
+Sweet joy befall thee!
+
+
+
+A DREAM
+
+
+
+Once a dream did weave a shade
+O'er my angel-guarded bed,
+That an emmet lost its way
+Where on grass methought I lay.
+
+Troubled, wildered, and forlorn,
+Dark, benighted, travel-worn,
+Over many a tangled spray,
+All heart-broke, I heard her say:
+
+'O my children! do they cry,
+Do they hear their father sigh?
+Now they look abroad to see,
+Now return and weep for me.'
+
+Pitying, I dropped a tear:
+But I saw a glow-worm near,
+Who replied, 'What wailing wight
+Calls the watchman of the night?'
+
+'I am set to light the ground,
+While the beetle goes his round:
+Follow now the beetle's hum;
+Little wanderer, hie thee home!'
+
+
+
+ON ANOTHER'S SORROW
+
+
+
+Can I see another's woe,
+And not be in sorrow too?
+Can I see another's grief,
+And not seek for kind relief?
+
+Can I see a falling tear,
+And not feel my sorrow's share?
+Can a father see his child
+Weep, nor be with sorrow filled?
+
+Can a mother sit and hear
+An infant groan, an infant fear?
+No, no! never can it be!
+Never, never can it be!
+
+And can He who smiles on all
+Hear the wren with sorrows small,
+Hear the small bird's grief and care,
+Hear the woes that infants bear -
+
+And not sit beside the nest,
+Pouring pity in their breast,
+And not sit the cradle near,
+Weeping tear on infant's tear?
+
+And not sit both night and day,
+Wiping all our tears away?
+O no! never can it be!
+Never, never can it be!
+
+He doth give His joy to all:
+He becomes an infant small,
+He becomes a man of woe,
+He doth feel the sorrow too.
+
+Think not thou canst sigh a sigh,
+And thy Maker is not by:
+Think not thou canst weep a tear,
+And thy Maker is not near.
+
+O He gives to us His joy,
+That our grief He may destroy:
+Till our grief is fled and gone
+He doth sit by us and moan.
+
+
+
+
+SONGS OF EXPERIENCE
+
+
+
+
+INTRODUCTION
+
+
+
+Hear the voice of the Bard,
+Who present, past, and future, sees;
+Whose ears have heard
+The Holy Word
+That walked among the ancient trees;
+
+Calling the lapsed soul,
+And weeping in the evening dew;
+That might control
+The starry pole,
+And fallen, fallen light renew!
+
+'O Earth, O Earth, return!
+Arise from out the dewy grass!
+Night is worn,
+And the morn
+Rises from the slumbrous mass.
+
+'Turn away no more;
+Why wilt thou turn away?
+The starry floor,
+The watery shore,
+Is given thee till the break of day.'
+
+
+
+EARTH'S ANSWER
+
+
+
+Earth raised up her head
+From the darkness dread and drear,
+Her light fled,
+Stony, dread,
+And her locks covered with grey despair.
+
+'Prisoned on watery shore,
+Starry jealousy does keep my den
+Cold and hoar;
+Weeping o'er,
+I hear the father of the ancient men.
+
+'Selfish father of men!
+Cruel, jealous, selfish fear!
+Can delight,
+Chained in night,
+The virgins of youth and morning bear.
+
+'Does spring hide its joy,
+When buds and blossoms grow?
+Does the sower
+Sow by night,
+Or the ploughman in darkness plough?
+
+'Break this heavy chain,
+That does freeze my bones around!
+Selfish, vain,
+Eternal bane,
+That free love with bondage bound.'
+
+
+
+THE CLOD AND THE PEBBLE
+
+
+
+'Love seeketh not itself to please,
+Nor for itself hath any care,
+But for another gives its ease,
+And builds a heaven in hell's despair.'
+
+So sung a little clod of clay,
+Trodden with the cattle's feet,
+But a pebble of the brook
+Warbled out these metres meet:
+
+'Love seeketh only Self to please,
+To bind another to its delight,
+Joys in another's loss of ease,
+And builds a hell in heaven's despite.'
+
+
+
+HOLY THURSDAY
+
+
+
+Is this a holy thing to see
+In a rich and fruitful land, -
+Babes reduced to misery,
+Fed with cold and usurous hand?
+
+Is that trembling cry a song?
+Can it be a song of joy?
+And so many children poor?
+It is a land of poverty!
+
+And their sun does never shine,
+And their fields are bleak and bare,
+And their ways are filled with thorns,
+It is eternal winter there.
+
+For where'er the sun does shine,
+And where'er the rain does fall,
+Babe can never hunger there,
+Nor poverty the mind appal.
+
+
+
+THE LITTLE GIRL LOST
+
+
+
+In futurity
+I prophesy
+That the earth from sleep
+(Grave the sentence deep)
+
+Shall arise, and seek
+For her Maker meek;
+And the desert wild
+Become a garden mild.
+
+In the southern clime,
+Where the summer's prime
+Never fades away,
+Lovely Lyca lay.
+
+Seven summers old
+Lovely Lyca told.
+She had wandered long,
+Hearing wild birds' song.
+
+'Sweet sleep, come to me,
+Underneath this tree;
+Do father, mother, weep?
+Where can Lyca sleep?
+
+'Lost in desert wild
+Is your little child.
+How can Lyca sleep
+If her mother weep?
+
+'If her heart does ache,
+Then let Lyca wake;
+If my mother sleep,
+Lyca shall not weep.
+
+'Frowning, frowning night,
+O'er this desert bright
+Let thy moon arise,
+While I close my eyes.'
+
+Sleeping Lyca lay,
+While the beasts of prey,
+Come from caverns deep,
+Viewed the maid asleep.
+
+The kingly lion stood,
+And the virgin viewed:
+Then he gambolled round
+O'er the hallowed ground.
+
+Leopards, tigers, play
+Round her as she lay;
+While the lion old
+Bowed his mane of gold,
+
+And her bosom lick,
+And upon her neck,
+From his eyes of flame,
+Ruby tears there came;
+
+While the lioness
+Loosed her slender dress,
+And naked they conveyed
+To caves the sleeping maid.
+
+
+
+THE LITTLE GIRL FOUND
+
+
+
+All the night in woe
+Lyca's parents go
+Over valleys deep,
+While the deserts weep.
+
+Tired and woe-begone,
+Hoarse with making moan,
+Arm in arm, seven days
+They traced the desert ways.
+
+Seven nights they sleep
+Among shadows deep,
+And dream they see their child
+Starved in desert wild.
+
+Pale through pathless ways
+The fancied image strays,
+Famished, weeping, weak,
+With hollow piteous shriek.
+
+Rising from unrest,
+The trembling woman pressed
+With feet of weary woe;
+She could no further go.
+
+In his arms he bore
+Her, armed with sorrow sore;
+Till before their way
+A couching lion lay.
+
+Turning back was vain:
+Soon his heavy mane
+Bore them to the ground,
+Then he stalked around,
+
+Smelling to his prey;
+But their fears allay
+When he licks their hands,
+And silent by them stands.
+
+They look upon his eyes,
+Filled with deep surprise;
+And wondering behold
+A spirit armed in gold.
+
+On his head a crown,
+On his shoulders down
+Flowed his golden hair.
+Gone was all their care.
+
+'Follow me,' he said;
+'Weep not for the maid;
+In my palace deep,
+Lyca lies asleep.'
+
+Then they followed
+Where the vision led,
+And saw their sleeping child
+Among tigers wild.
+
+To this day they dwell
+In a lonely dell,
+Nor fear the wolvish howl
+Nor the lion's growl.
+
+
+
+THE CHIMNEY-SWEEPER
+
+
+
+A little black thing among the snow,
+Crying! 'weep! weep!' in notes of woe!
+'Where are thy father and mother?  Say!' -
+'They are both gone up to the church to pray.
+
+'Because I was happy upon the heath,
+And smiled among the winter's snow,
+They clothed me in the clothes of death,
+And taught me to sing the notes of woe.
+
+'And because I am happy and dance and sing,
+They think they have done me no injury,
+And are gone to praise God and His priest and king,
+Who made up a heaven of our misery.'
+
+
+
+NURSE'S SONG
+
+
+
+When the voices of children are heard on the green,
+And whisperings are in the dale,
+The days of my youth rise fresh in my mind,
+My face turns green and pale.
+
+Then come home, my children, the sun is gone down,
+And the dews of night arise;
+Your spring and your day are wasted in play,
+And your winter and night in disguise.
+
+
+
+THE SICK ROSE
+
+
+
+O rose, thou art sick!
+The invisible worm,
+That flies in the night,
+In the howling storm,
+
+Has found out thy bed
+Of crimson joy,
+And his dark secret love
+Does thy life destroy.
+
+
+
+THE FLY
+
+
+
+Little Fly,
+Thy summer's play
+My thoughtless hand
+Has brushed away.
+
+Am not I
+A fly like thee?
+Or art not thou
+A man like me?
+
+For I dance,
+And drink, and sing,
+Till some blind hand
+Shall brush my wing.
+
+If thought is life
+And strength and breath,
+And the want
+Of thought is death;
+
+Then am I
+A happy fly.
+If I live,
+Or if I die.
+
+
+
+THE ANGEL
+
+
+
+I dreamt a dream!  What can it mean?
+And that I was a maiden Queen
+Guarded by an Angel mild:
+Witless woe was ne'er beguiled!
+
+And I wept both night and day,
+And he wiped my tears away;
+And I wept both day and night,
+And hid from him my heart's delight.
+
+So he took his wings, and fled;
+Then the morn blushed rosy red.
+I dried my tears, and armed my fears
+With ten thousand shields and spears.
+
+Soon my Angel came again;
+I was armed, he came in vain;
+For the time of youth was fled,
+And grey hairs were on my head.
+
+
+
+THE TIGER
+
+
+
+Tiger, tiger, burning bright
+In the forests of the night,
+What immortal hand or eye
+Could frame thy fearful symmetry?
+
+In what distant deeps or skies
+Burnt the fire of thine eyes?
+On what wings dare he aspire?
+What the hand dare seize the fire?
+
+And what shoulder and what art
+Could twist the sinews of thy heart?
+And, when thy heart began to beat,
+What dread hand and what dread feet?
+
+What the hammer? what the chain?
+In what furnace was thy brain?
+What the anvil? what dread grasp
+Dare its deadly terrors clasp?
+
+When the stars threw down their spears,
+And watered heaven with their tears,
+Did He smile His work to see?
+Did He who made the lamb make thee?
+
+Tiger, tiger, burning bright
+In the forests of the night,
+What immortal hand or eye
+Dare frame thy fearful symmetry?
+
+
+
+MY PRETTY ROSE TREE
+
+
+
+A flower was offered to me,
+Such a flower as May never bore;
+But I said, 'I've a pretty rose tree,'
+And I passed the sweet flower o'er.
+
+Then I went to my pretty rose tree,
+To tend her by day and by night;
+But my rose turned away with jealousy,
+And her thorns were my only delight.
+
+
+
+AH, SUNFLOWER
+
+
+
+Ah, sunflower, weary of time,
+Who countest the steps of the sun;
+Seeking after that sweet golden clime
+Where the traveller's journey is done;
+
+Where the Youth pined away with desire,
+And the pale virgin shrouded in snow,
+Arise from their graves, and aspire
+Where my Sunflower wishes to go!
+
+
+
+THE LILY
+
+
+
+The modest Rose puts forth a thorn,
+The humble sheep a threat'ning horn:
+While the Lily white shall in love delight,
+Nor a thorn nor a threat stain her beauty bright.
+
+
+
+THE GARDEN OF LOVE
+
+
+
+I went to the Garden of Love,
+And saw what I never had seen;
+A Chapel was built in the midst,
+Where I used to play on the green.
+
+And the gates of this Chapel were shut,
+And 'Thou shalt not' writ over the door;
+So I turned to the Garden of Love
+That so many sweet flowers bore.
+
+And I saw it was filled with graves,
+And tombstones where flowers should be;
+And priests in black gowns were walking their rounds,
+And binding with briars my joys and desires.
+
+
+
+THE LITTLE VAGABOND
+
+
+
+Dear mother, dear mother, the Church is cold;
+But the Alehouse is healthy, and pleasant, and warm.
+Besides, I can tell where I am used well;
+Such usage in heaven will never do well.
+
+But, if at the Church they would give us some ale,
+And a pleasant fire our souls to regale,
+We'd sing and we'd pray all the livelong day,
+Nor ever once wish from the Church to stray.
+
+Then the Parson might preach, and drink, and sing,
+And we'd be as happy as birds in the spring;
+And modest Dame Lurch, who is always at church,
+Would not have bandy children, nor fasting, nor birch.
+
+And God, like a father, rejoicing to see
+His children as pleasant and happy as He,
+Would have no more quarrel with the Devil or the barrel,
+But kiss him, and give him both drink and apparel.
+
+
+
+LONDON
+
+
+
+I wander through each chartered street,
+Near where the chartered Thames does flow,
+A mark in every face I meet,
+Marks of weakness, marks of woe.
+
+In every cry of every man,
+In every infant's cry of fear,
+In every voice, in every ban,
+The mind-forged manacles I hear:
+
+How the chimney-sweeper's cry
+Every blackening church appals,
+And the hapless soldier's sigh
+Runs in blood down palace-walls.
+
+But most, through midnight streets I hear
+How the youthful harlot's curse
+Blasts the new-born infant's tear,
+And blights with plagues the marriage hearse.
+
+
+
+THE HUMAN ABSTRACT
+
+
+
+Pity would be no more
+If we did not make somebody poor,
+And Mercy no more could be
+If all were as happy as we.
+
+And mutual fear brings Peace,
+Till the selfish loves increase;
+Then Cruelty knits a snare,
+And spreads his baits with care.
+
+He sits down with holy fears,
+And waters the ground with tears;
+Then Humility takes its root
+Underneath his foot.
+
+Soon spreads the dismal shade
+Of Mystery over his head,
+And the caterpillar and fly
+Feed on the Mystery.
+
+And it bears the fruit of Deceit,
+Ruddy and sweet to eat,
+And the raven his nest has made
+In its thickest shade.
+
+The gods of the earth and sea
+Sought through nature to find this tree,
+But their search was all in vain:
+There grows one in the human Brain.
+
+
+
+INFANT SORROW
+
+
+
+My mother groaned, my father wept:
+Into the dangerous world I leapt,
+Helpless, naked, piping loud,
+Like a fiend hid in a cloud.
+
+Struggling in my father's hands,
+Striving against my swaddling bands,
+Bound and weary, I thought best
+To sulk upon my mother's breast.
+
+
+
+A POISON TREE
+
+
+
+I was angry with my friend:
+I told my wrath, my wrath did end.
+I was angry with my foe:
+I told it not, my wrath did grow.
+
+And I watered it in fears
+Night and morning with my tears,
+And I sunned it with smiles
+And with soft deceitful wiles.
+
+And it grew both day and night,
+Till it bore an apple bright,
+And my foe beheld it shine,
+And he knew that it was mine, -
+
+And into my garden stole
+When the night had veiled the pole;
+In the morning, glad, I see
+My foe outstretched beneath the tree.
+
+
+
+A LITTLE BOY LOST
+
+
+
+'Nought loves another as itself,
+Nor venerates another so,
+Nor is it possible to thought
+A greater than itself to know.
+
+'And, father, how can I love you
+Or any of my brothers more?
+I love you like the little bird
+That picks up crumbs around the door.'
+
+The Priest sat by and heard the child;
+In trembling zeal he seized his hair,
+He led him by his little coat,
+And all admired his priestly care.
+
+And standing on the altar high,
+'Lo, what a fiend is here!' said he:
+'One who sets reason up for judge
+Of our most holy mystery.'
+
+The weeping child could not be heard,
+The weeping parents wept in vain:
+They stripped him to his little shirt,
+And bound him in an iron chain,
+
+And burned him in a holy place
+Where many had been burned before;
+The weeping parents wept in vain.
+Are such things done on Albion's shore?
+
+
+
+A LITTLE GIRL LOST
+
+
+
+Children of the future age,
+Reading this indignant page,
+Know that in a former time
+Love, sweet love, was thought a crime.
+
+In the age of gold,
+Free from winter's cold,
+Youth and maiden bright,
+To the holy light,
+Naked in the sunny beams delight.
+
+Once a youthful pair,
+Filled with softest care,
+Met in garden bright
+Where the holy light
+Had just removed the curtains of the night.
+
+There, in rising day,
+On the grass they play;
+Parents were afar,
+Strangers came not near,
+And the maiden soon forgot her fear.
+
+Tired with kisses sweet,
+They agree to meet
+When the silent sleep
+Waves o'er heaven's deep,
+And the weary tired wanderers weep.
+
+To her father white
+Came the maiden bright;
+But his loving look,
+Like the holy book,
+All her tender limbs with terror shook.
+
+Ona, pale and weak,
+To thy father speak!
+O the trembling fear!
+O the dismal care
+That shakes the blossoms of my hoary hair!'
+
+
+
+A DIVINE IMAGE
+
+
+
+Cruelty has a human heart,
+And Jealousy a human face;
+Terror the human form divine,
+And Secrecy the human dress.
+
+The human dress is forged iron,
+The human form a fiery forge,
+The human face a furnace sealed,
+The human heart its hungry gorge.
+
+
+
+A CRADLE SONG
+
+
+
+Sleep, sleep, beauty bright,
+Dreaming in the joys of night;
+Sleep, sleep; in thy sleep
+Little sorrows sit and weep.
+
+Sweet babe, in thy face
+Soft desires I can trace,
+Secret joys and secret smiles,
+Little pretty infant wiles.
+
+As thy softest limbs I feel,
+Smiles as of the morning steal
+O'er thy cheek, and o'er thy breast
+Where thy little heart doth rest.
+
+O the cunning wiles that creep
+In thy little heart asleep!
+When thy little heart doth wake,
+Then the dreadful light shall break.
+
+
+
+THE SCHOOLBOY
+
+
+
+I love to rise in a summer morn,
+When the birds sing on every tree;
+The distant huntsman winds his horn,
+And the skylark sings with me:
+O what sweet company!
+
+But to go to school in a summer morn, -
+O it drives all joy away!
+Under a cruel eye outworn,
+The little ones spend the day
+In sighing and dismay.
+
+Ah then at times I drooping sit,
+And spend many an anxious hour;
+Nor in my book can I take delight,
+Nor sit in learning's bower,
+Worn through with the dreary shower.
+
+How can the bird that is born for joy
+Sit in a cage and sing?
+How can a child, when fears annoy,
+But droop his tender wing,
+And forget his youthful spring!
+
+O father and mother if buds are nipped,
+And blossoms blown away;
+And if the tender plants are stripped
+Of their joy in the springing day,
+By sorrow and care's dismay, -
+
+How shall the summer arise in joy,
+Or the summer fruits appear?
+Or how shall we gather what griefs destroy,
+Or bless the mellowing year,
+When the blasts of winter appear?
+
+
+
+TO TIRZAH
+
+
+
+Whate'er is born of mortal birth
+Must be consumed with the earth,
+To rise from generation free:
+Then what have I to do with thee?
+
+The sexes sprung from shame and pride,
+Blowed in the morn, in evening died;
+But mercy changed death into sleep;
+The sexes rose to work and weep.
+
+Thou, mother of my mortal part,
+With cruelty didst mould my heart,
+And with false self-deceiving tears
+Didst blind my nostrils, eyes, and ears,
+
+Didst close my tongue in senseless clay,
+And me to mortal life betray.
+The death of Jesus set me free:
+Then what have I to do with thee?
+
+
+
+THE VOICE OF THE ANCIENT BARD
+
+
+
+Youth of delight! come hither
+And see the opening morn,
+Image of Truth new-born.
+Doubt is fled, and clouds of reason,
+Dark disputes and artful teazing.
+Folly is an endless maze;
+Tangled roots perplex her ways;
+How many have fallen there!
+They stumble all night over bones of the dead;
+And feel--they know not what but care;
+And wish to lead others, when they should be led.
+
+
+
+
+
+End of Project Gutenberg Etext Songs of Innocence and Experience by Blake
+

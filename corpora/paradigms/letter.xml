@@ -1,0 +1,3447 @@
+<?xml version="1.0"?>
+<document>
+<metaproperties>
+	<source>Crowley, Siegel et al 1995:322</source>
+	<copyright/>
+	<title>French concord</title>
+</metaproperties>
+<parse-tree>
+  <operator opcode="table" instruction="1">
+	 <operand type="branch" arg="vertical">2</operand>
+	 <operand type="domain" arg="horizontal">following</operand>
+	 <operand type="domain" arg="cell">frequency</operand>
+  </operator>
+  <operator opcode="hierarchy" instruction="2">
+	 <operand type="domain" arg="root">type</operand>
+	 <operand type="domain" arg="leaf">letter</operand>
+  </operator>
+</parse-tree>
+<attributes>
+	<name name="type">
+		<value value="vowel"/>
+		<value value="consonant"/>
+	</name>
+	<name name="letter">
+		<value value="a"/>
+		<value value="ae"/>
+		<value value="b"/>
+		<value value="c"/>
+		<value value="d"/>
+		<value value="e"/>
+		<value value="f"/>
+		<value value="g"/>
+		<value value="h"/>
+		<value value="i"/>
+		<value value="j"/>
+		<value value="k"/>
+		<value value="l"/>
+		<value value="m"/>
+		<value value="n"/>
+		<value value="o"/>
+		<value value="p"/>
+		<value value="q"/>
+		<value value="r"/>
+		<value value="s"/>
+		<value value="t"/>
+		<value value="u"/>
+		<value value="v"/>
+		<value value="w"/>
+		<value value="x"/>
+		<value value="y"/>
+		<value value="z"/>
+	</name>
+	<name name="following">
+		<value value="a"/>
+		<value value="ae"/>
+		<value value="b"/>
+		<value value="c"/>
+		<value value="d"/>
+		<value value="e"/>
+		<value value="f"/>
+		<value value="g"/>
+		<value value="h"/>
+		<value value="i"/>
+		<value value="j"/>
+		<value value="k"/>
+		<value value="l"/>
+		<value value="m"/>
+		<value value="n"/>
+		<value value="o"/>
+		<value value="p"/>
+		<value value="q"/>
+		<value value="r"/>
+		<value value="s"/>
+		<value value="t"/>
+		<value value="u"/>
+		<value value="v"/>
+		<value value="w"/>
+		<value value="x"/>
+		<value value="y"/>
+		<value value="z"/>	
+	</name>
+	<name name="frequency">
+		<value value="1"/>
+		<value value="10"/>
+		<value value="102"/>
+		<value value="103"/>
+		<value value="104"/>
+		<value value="105"/>
+		<value value="107"/>
+		<value value="108"/>
+		<value value="1080"/>
+		<value value="1084"/>
+		<value value="11"/>
+		<value value="110"/>
+		<value value="1103"/>
+		<value value="111"/>
+		<value value="112"/>
+		<value value="1125"/>
+		<value value="113"/>
+		<value value="114"/>
+		<value value="1145"/>
+		<value value="1149"/>
+		<value value="118"/>
+		<value value="1187"/>
+		<value value="12"/>
+		<value value="120"/>
+		<value value="121"/>
+		<value value="1212"/>
+		<value value="122"/>
+		<value value="125"/>
+		<value value="126"/>
+		<value value="127"/>
+		<value value="128"/>
+		<value value="13"/>
+		<value value="132"/>
+		<value value="134"/>
+		<value value="1351"/>
+		<value value="136"/>
+		<value value="138"/>
+		<value value="14"/>
+		<value value="140"/>
+		<value value="143"/>
+		<value value="144"/>
+		<value value="1461"/>
+		<value value="1462"/>
+		<value value="1472"/>
+		<value value="15"/>
+		<value value="150"/>
+		<value value="154"/>
+		<value value="155"/>
+		<value value="157"/>
+		<value value="159"/>
+		<value value="1595"/>
+		<value value="16"/>
+		<value value="160"/>
+		<value value="162"/>
+		<value value="163"/>
+		<value value="164"/>
+		<value value="165"/>
+		<value value="166"/>
+		<value value="169"/>
+		<value value="17"/>
+		<value value="172"/>
+		<value value="174"/>
+		<value value="176"/>
+		<value value="18"/>
+		<value value="181"/>
+		<value value="185"/>
+		<value value="186"/>
+		<value value="19"/>
+		<value value="190"/>
+		<value value="191"/>
+		<value value="192"/>
+		<value value="193"/>
+		<value value="196"/>
+		<value value="1960"/>
+		<value value="198"/>
+		<value value="2"/>
+		<value value="20"/>
+		<value value="200"/>
+		<value value="205"/>
+		<value value="208"/>
+		<value value="21"/>
+		<value value="210"/>
+		<value value="213"/>
+		<value value="217"/>
+		<value value="219"/>
+		<value value="22"/>
+		<value value="220"/>
+		<value value="223"/>
+		<value value="225"/>
+		<value value="226"/>
+		<value value="229"/>
+		<value value="23"/>
+		<value value="234"/>
+		<value value="237"/>
+		<value value="239"/>
+		<value value="24"/>
+		<value value="241"/>
+		<value value="245"/>
+		<value value="246"/>
+		<value value="248"/>
+		<value value="25"/>
+		<value value="253"/>
+		<value value="26"/>
+		<value value="264"/>
+		<value value="265"/>
+		<value value="269"/>
+		<value value="27"/>
+		<value value="272"/>
+		<value value="273"/>
+		<value value="275"/>
+		<value value="28"/>
+		<value value="2803"/>
+		<value value="286"/>
+		<value value="288"/>
+		<value value="289"/>
+		<value value="29"/>
+		<value value="291"/>
+		<value value="293"/>
+		<value value="294"/>
+		<value value="3"/>
+		<value value="30"/>
+		<value value="302"/>
+		<value value="305"/>
+		<value value="306"/>
+		<value value="307"/>
+		<value value="309"/>
+		<value value="31"/>
+		<value value="312"/>
+		<value value="316"/>
+		<value value="317"/>
+		<value value="318"/>
+		<value value="32"/>
+		<value value="324"/>
+		<value value="326"/>
+		<value value="33"/>
+		<value value="34"/>
+		<value value="35"/>
+		<value value="36"/>
+		<value value="377"/>
+		<value value="378"/>
+		<value value="38"/>
+		<value value="381"/>
+		<value value="39"/>
+		<value value="391"/>
+		<value value="393"/>
+		<value value="4"/>
+		<value value="40"/>
+		<value value="417"/>
+		<value value="42"/>
+		<value value="423"/>
+		<value value="424"/>
+		<value value="43"/>
+		<value value="439"/>
+		<value value="44"/>
+		<value value="441"/>
+		<value value="442"/>
+		<value value="446"/>
+		<value value="447"/>
+		<value value="45"/>
+		<value value="451"/>
+		<value value="457"/>
+		<value value="46"/>
+		<value value="464"/>
+		<value value="467"/>
+		<value value="476"/>
+		<value value="478"/>
+		<value value="48"/>
+		<value value="480"/>
+		<value value="485"/>
+		<value value="49"/>
+		<value value="493"/>
+		<value value="5"/>
+		<value value="50"/>
+		<value value="506"/>
+		<value value="507"/>
+		<value value="509"/>
+		<value value="51"/>
+		<value value="512"/>
+		<value value="513"/>
+		<value value="52"/>
+		<value value="53"/>
+		<value value="531"/>
+		<value value="532"/>
+		<value value="536"/>
+		<value value="54"/>
+		<value value="543"/>
+		<value value="546"/>
+		<value value="549"/>
+		<value value="55"/>
+		<value value="56"/>
+		<value value="569"/>
+		<value value="57"/>
+		<value value="579"/>
+		<value value="58"/>
+		<value value="587"/>
+		<value value="59"/>
+		<value value="598"/>
+		<value value="6"/>
+		<value value="60"/>
+		<value value="606"/>
+		<value value="61"/>
+		<value value="63"/>
+		<value value="632"/>
+		<value value="633"/>
+		<value value="635"/>
+		<value value="64"/>
+		<value value="647"/>
+		<value value="65"/>
+		<value value="656"/>
+		<value value="66"/>
+		<value value="69"/>
+		<value value="7"/>
+		<value value="71"/>
+		<value value="713"/>
+		<value value="72"/>
+		<value value="73"/>
+		<value value="731"/>
+		<value value="745"/>
+		<value value="746"/>
+		<value value="75"/>
+		<value value="76"/>
+		<value value="771"/>
+		<value value="777"/>
+		<value value="779"/>
+		<value value="78"/>
+		<value value="788"/>
+		<value value="79"/>
+		<value value="8"/>
+		<value value="80"/>
+		<value value="800"/>
+		<value value="808"/>
+		<value value="81"/>
+		<value value="82"/>
+		<value value="823"/>
+		<value value="83"/>
+		<value value="85"/>
+		<value value="88"/>
+		<value value="887"/>
+		<value value="89"/>
+		<value value="895"/>
+		<value value="9"/>
+		<value value="90"/>
+		<value value="91"/>
+		<value value="92"/>
+		<value value="925"/>
+		<value value="926"/>
+		<value value="93"/>
+		<value value="94"/>
+		<value value="945"/>
+		<value value="95"/>
+		<value value="956"/>
+		<value value="96"/>
+		<value value="97"/>
+		<value value="970"/>
+		<value value="99"/>
+		<value value="993"/>
+	</name>	
+
+</attributes>
+
+<paradigm>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="2803"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="64"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="746"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="993"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="90"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="309"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="713"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="140"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="512"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="467"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="316"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="49"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="114"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="80"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="16"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="85"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="143"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="157"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="213"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="174"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="114"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="245"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="t"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="1960"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="1125"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="887"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="269"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="531"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="52"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="65"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="43"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="18"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="56"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="150"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="29"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="34"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="44"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="35"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="28"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="9"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="18"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="24"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="12"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="h"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="264"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="476"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="1103"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="1351"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="1145"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="144"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="1595"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="1212"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="513"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="305"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="647"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="493"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="446"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="289"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="289"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="543"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="480"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="309"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="165"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="39"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="307"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="154"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="95"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="e"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="21"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="220"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="302"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="122"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="24"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="200"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="54"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="134"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="150"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="89"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="56"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="13"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="42"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="p"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="546"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="72"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="1462"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="439"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="417"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="467"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="163"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="275"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="451"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="92"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="159"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="162"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="140"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="92"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="105"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="85"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="63"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="81"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="18"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="103"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="506"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="113"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="r"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="38"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="569"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="208"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="598"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="1461"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="945"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="275"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="128"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="32"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="956"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="166"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="326"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="88"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="457"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="549"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="48"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="239"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="140"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="85"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="56"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="78"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="122"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="o"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="85"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="j"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="38"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="j"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="9"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="j"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="j"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="191"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="771"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="424"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="312"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="103"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="318"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="80"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="83"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="45"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="155"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="19"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="ae"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="c"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="58"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="65"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="241"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="226"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="112"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="111"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="72"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="12"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="25"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="28"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="112"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="219"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="20"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="15"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="28"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="24"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="36"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="24"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="g"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="587"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="245"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="779"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="532"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="229"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="110"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="118"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="121"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="85"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="229"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="96"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="53"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="29"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="635"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="21"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="127"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="69"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="34"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="28"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="24"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="u"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="79"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="788"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="1187"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="506"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="823"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="53"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="293"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="223"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="210"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="656"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="19"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="272"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="241"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="26"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="30"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="50"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="95"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="66"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="26"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="60"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="94"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="n"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="464"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="193"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="128"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="138"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="75"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="190"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="65"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="442"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="11"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="13"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="b"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="745"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="509"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="237"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="120"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="1080"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="253"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="808"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="633"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="536"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="579"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="128"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="91"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="127"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="246"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="27"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="58"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="186"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="132"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="99"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="64"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="154"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="38"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="s"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="9"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="81"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="16"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="31"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="14"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="x"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="29"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="185"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="393"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="53"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="164"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="92"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="169"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="64"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="164"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="39"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="273"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="54"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="26"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="42"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="71"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="f"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="12"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="181"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="1084"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="113"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="286"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="306"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="108"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="1472"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="606"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="800"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="970"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="225"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="205"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="126"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="220"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="217"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="102"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="36"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="326"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="72"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="19"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="22"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="a"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="9"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="485"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="15"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="55"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="6"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="61"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="114"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="16"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="9"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="k"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="248"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="225"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="265"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="423"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="925"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="777"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="1149"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="196"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="447"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="317"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="220"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="136"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="52"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="273"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="16"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="x"/>
+<attribute name="frequency" value="7"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="43"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="174"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="63"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="91"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="78"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="32"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="73"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="7"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="i"/>
+<attribute name="following" value="j"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="377"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="307"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="926"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="381"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="288"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="632"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="60"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="164"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="198"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="172"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="27"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="53"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="57"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="46"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="104"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="64"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="94"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="36"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="13"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="39"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="29"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="l"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="20"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="446"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="507"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="160"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="391"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="324"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="111"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="291"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="71"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="97"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="121"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="113"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="294"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="49"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="79"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="120"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="46"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="38"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="122"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="79"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="107"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="43"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="d"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="8"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="237"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="82"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="478"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="895"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="61"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="99"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="54"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="96"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="192"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="27"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="25"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="69"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="237"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="33"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="20"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="14"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="20"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="q"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="m"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="136"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="51"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="731"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="99"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="93"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="83"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="75"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="205"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="72"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="49"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="78"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="12"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="176"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="60"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="125"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="21"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="96"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="95"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="29"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="44"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="y"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="27"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="217"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="378"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="96"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="w"/>
+<attribute name="frequency" value="17"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="464"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="14"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="h"/>
+<attribute name="frequency" value="441"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="55"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="c"/>
+<attribute name="frequency" value="29"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="46"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="234"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="m"/>
+<attribute name="frequency" value="24"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="y"/>
+<attribute name="frequency" value="23"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="18"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="3"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="10"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="b"/>
+<attribute name="frequency" value="15"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="k"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="w"/>
+<attribute name="following" value="g"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="111"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="36"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="o"/>
+<attribute name="frequency" value="28"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="40"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="n"/>
+<attribute name="frequency" value="59"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="v"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="f"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="76"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="p"/>
+<attribute name="frequency" value="85"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="t"/>
+<attribute name="frequency" value="7"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="r"/>
+<attribute name="frequency" value="5"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="v"/>
+<attribute name="following" value="l"/>
+<attribute name="frequency" value="1"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="z"/>
+<attribute name="following" value="i"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="z"/>
+<attribute name="following" value="e"/>
+<attribute name="frequency" value="19"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="z"/>
+<attribute name="following" value="a"/>
+<attribute name="frequency" value="4"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="z"/>
+<attribute name="following" value="d"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="z"/>
+<attribute name="following" value="z"/>
+<attribute name="frequency" value="2"/>
+</form>
+<form>
+<attribute name="type" value="consonant"/>
+<attribute name="letter" value="q"/>
+<attribute name="following" value="u"/>
+<attribute name="frequency" value="45"/>
+</form>
+<form>
+<attribute name="type" value="vowel"/>
+<attribute name="letter" value="ae"/>
+<attribute name="following" value="s"/>
+<attribute name="frequency" value="2"/>
+</form>
+</paradigm>
+</document>
