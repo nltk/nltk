@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>NLP Toolkit Timetable</title>
+  </head>
+
+<body bgcolor='white' text='black' link='blue' vlink='#204080' alink='#204080'>
+    <h2>NLP Toolkit Timetable</h2>
+
+    <p> This page indicates the current and projected status of the
+    toolkit.  For this purpose, the toolkit is broken up into units,
+    each of which includes contains several Python modules and
+    tutorials.  The <b>core unit</b> provides basic data types and
+    processing systems that are used througout the toolkit.  Each of
+    the other units is focused on a specific task or domain: </p>
+
+    <ul>
+      <li> <b>Tagging</b>: Augmenting each token of a text with
+      supplementary information, such as its part of speech or its
+      WordNet synset tag. </li>
+
+      <li> <b>Parsing</b>: Producing trees that represent the
+      structures of texts. </li>
+
+      <li> <b>Text Classification</b>: Assigning categories to texts,
+      based on their content. </li>
+
+      <li> <b>Machine Translation</b>: Mapping a text to a
+      semantically equivalant text in a different language.</li>
+
+      <li> <b>Information Retrieval</b>: Determining which documents
+      are most relevant for a given query.</li>
+
+      <li> <b>Language Modelling</b>: Predicting the likelihood of a
+      text. </li>
+
+      <li> <b>Speech Processing</b>: Speech recognition and
+      generation, signal processing, filtering, etc. </li>
+
+    </ul>
+
+    <!-- What should count as a unit?  One unit/tutorial?? -->
+
+    <p> The following table shows the estimated completion dates for
+    each unit. </p>
+  
+    <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" 
+      BGCOLOR="white" WIDTH="100%">
+      <!-- ================================ -->
+      <TR BGCOLOR="#70b0f0">
+        <th>Unit</th>
+        <th>Interfaces</th>
+        <th>Data Structures</th>
+        <th>Implementations</th>
+        <th>Tutorials</th></tr>
+      <!-- ================================ -->
+      <tr bgcolor="#d0f0ff"><td>Core</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>Tagging</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>Parsing</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>7/30/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>Text Classification</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>Machine Translation
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <tr bgcolor="#d0f0ff"><td>Information Retrieval
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <tr bgcolor="#d0f0ff"><td>Language Modelling
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <tr bgcolor="#d0f0ff"><td>Speech Processing
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+    </table>
+
+    <hr>
+    <a name="modules"></a>
+    <h3>NLTK Modules</h3>
+
+    <p> The following table lists the Python modules and tutorials
+    that are currently included in each unit.</p>
+
+    <TABLE BORDER="1" CELLPADDING="6" CELLSPACING="0" 
+      BGCOLOR="white" WIDTH="100%">
+      <!-- ================================ -->
+      <TR BGCOLOR="#70b0f0">
+        <th width="10%">Unit</th>
+        <th>Modules</th>
+        <th>Tutorials</th></tr>
+      <!-- ================================ -->
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Core</i></th>
+        <td valign="top">
+          <code>nltk.token</code><br/>
+          <code>nltk.tree</code><br/>
+          <code>nltk.draw.tree</code><br/>
+          <code>nltk.probability</code><br/>
+          <code>nltk.set</code><br/>
+          <code>nltk.fsa</code><br/>
+          <code>nltk.draw.fsa</code><br/></td>
+        <td align="center" valign="top">
+          Basics<br/>
+          Modeling Probablistic Systems<br/>
+          Writing Classes for NLTK</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Tagging</i></th>
+        <td valign="top">
+          <code>nltk.tagger</code></td>
+        <td align="center" valign="top">
+          Tagging</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Language&nbsp;Modelling</i></th>
+        <td valign="top">
+          <code>nltk.modeler</code></td>
+        <td align="center" valign="top">&nbsp;</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Parsing</i></th>
+        <td valign="top">
+          <code>nltk.cfg</code><br/>
+          <code>nltk.parser</code><br/>
+          <code>nltk.parser.chart</code><br/>
+          <code>nltk.parser.probabilistic</code><br/>
+          <code>nltk.parser.chunk</code><br/>
+          <code>nltk.draw.chart</code></td>
+        <td align="center" valign="top">
+          Basic Parsing<br/>
+          Chart Parsing<br/>
+          Chunk Parsing<br/>
+          Probabilistic Parsing</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Text&nbsp;Classification</i></th>
+        <td valign="top">
+          <code>nltk.classifier</code><br/>
+          <code>nltk.classifier.feature</code><br/>
+          <code>nltk.classifier.maxent</code><br/>
+          <code>nltk.classifier.naivebayes</code><br/>
+          <code>nltk.classifier.featureselection</code></td>
+        <td align="center" valign="top">
+          Classifying</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Machine&nbsp;Translation</i></th>
+        <td valign="top">
+          <code>nltk.translator</code></td>
+        <td align="center" valign="top">&nbsp;</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Information&nbsp;Retrieval</i></th>
+        <td valign="top">&nbsp;</td>
+        <td align="center" valign="top">&nbsp;</td></tr>
+
+      <tr bgcolor="#d0f0ff"><th valign="top" align="left"><i>Speech&nbsp;Processing</i></th>
+        <td valign="top">&nbsp;</td>
+        <td align="center" valign="top">&nbsp;</td></tr>
+    </table>
+
+    <p> The current status of each module is given in the following
+    table.</p>
+
+    <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" 
+      BGCOLOR="white" WIDTH="100%">
+      <!-- ================================ -->
+      <TR BGCOLOR="#70b0f0">
+        <td><b>Module</b></td>
+        <td><b>Est. date: Designed</b></td>
+        <td><b>Est. date: Prototyped</b></td>
+        <td><b>Est. date: Coded</b></td>
+        <td><b>Est. date: Tested</b></td>
+        <td><b>Est. date: Documented</b></td></tr>
+      <!-- ================================ -->
+      <tr bgcolor="#d0f0ff"><td colspan=6><I>
+            <B>Data-Oriented Modules</B></I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.token</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.set</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.tree</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td>7/30/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.probability</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td>7/30/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.cfg</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td>7/30/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.fsa</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>7/30/02</td>
+        <td>&nbsp;</td>
+        <td>8/30/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.classifier.feature</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+
+      <tr bgcolor="#d0f0ff"><td>wordnet</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <tr bgcolor="#d0f0ff"><td>hmm</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <!-- ================================ -->
+      <tr bgcolor="#d0f0ff"><td colspan=6><I>
+            <B>Task-Oriented Modules</B></I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.tagger</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.modeler</td>
+        <td>8/15/02</td>
+        <td>8/15/02</td>
+        <td>8/30/02</td>
+        <td>&nbsp;</td>
+        <td>9/15/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>parser</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>parser.chart</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>parser.probabilistic</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>parser.chunk</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>8/15/02</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.classifier</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.classifier.naivebayes</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.classifier.maxent</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.classifier.featureselection</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.translator</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.modeler</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td></tr>
+      <!-- ================================ -->
+      <tr bgcolor="#d0f0ff"><td colspan=6><I>
+            <B>Visualization Modules</B></I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.draw</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.draw.tree</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.draw.srparser</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.draw.rdparser</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td><I>Finished</I></td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.draw.chart</td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td><I>Finished</I></td>
+        <td>&nbsp;</td>
+        <td>8/15/02</td></tr>
+      <tr bgcolor="#d0f0ff"><td>nltk.draw.plot</td>
+        <td>8/15/02</td>
+        <td>8/15/02</td>
+        <td>8/15/02</td>
+        <td>&nbsp;</td>
+        <td>8/30/02</td></tr>
+      <!-- ================================ -->
+      <tr bgcolor="#d0f0ff"><td colspan=6>
+          <dl><dt><B><I>Key:</B></I>
+            <dd><B>Designed</B>: Preliminary definitions for the interfaces
+              provided by the module have been worked out.
+            <dd><B>Prototyped</B>: A preliminary version of the module has
+              been implemented.
+            <dd><B>Coded</B>: The module has been implemented.
+            <dd><B>Tested</B>: Test code has been written, and the module
+              passes all of its tests.
+            <dd><B>Documented</B>: The reference documentation for the
+              module is complete.
+          </dl></td></tr>
+    </table>
+
+    <hr>
+    <address><a href="mailto:edloper@gradient.cis.upenn.edu">Edward Loper</a></address>
+<!-- Created: Sat Jul 14 17:33:37 EDT 2001 -->
+<!-- hhmts start -->
+Last modified: Sat Jul  6 04:23:00 EDT 2002
+<!-- hhmts end -->
+  </body>
+</html>
