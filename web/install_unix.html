@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Installing NLTK on Unix or Macintosh (OS X)</title>
+<link rel="stylesheet" href="nltk.css" type="text/css"/>
+</head>
+<body>
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr><th class="navtitle" colspan="6">Natural Language Toolkit</th></tr>
+  <tr>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="index.html">Home</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="install.html">Installation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="docs.html">Documentation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="teach.html">Teaching</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="contrib.html">Contributing</a></td>
+  <td align="center" width="16.6%">
+    <a href="http://sourceforge.net/projects/nltk"> 
+    <img src="sflogo.png" width="88" height="26" border="0"
+    alt="SourceForge" align="top"/></a></td>
+    </tr>
+</table>
+<div class="body">
+
+<h1>Installing NLTK on Unix or Macintosh (OS X)</h1>
+
+<a name="nltk"></a>
+<h2> Installing NLTK </h2>
+
+<p> Download the NLTK source distribution (<a target="nltk_download"
+href="http://sourceforge.net/project/showfiles.php?group_id=30982"
+>nltk-??.??.tar.gz</a>), and use <code>setup.py</code> to install
+it: </p>
+
+<pre class="screen">
+<code class="prompt">[/tmp]$</code> <code class="user">gunzip nltk-??.??.tar.gz </code>
+<code class="prompt">[/tmp]$</code> <code class="user">tar -xf nltk-??.??.tar</code>
+<code class="prompt">[/tmp]$</code> <code class="user">cd nltk-??.??</code>
+<code class="prompt">[/tmp/nltk-??.??]$</code> <code class="user">su</code>
+Password:
+<code class="prompt">[/tmp/nltk-??.??]#</code> <code class="user">python setup.py install</code>
+</pre>
+
+<a name="data"></a>
+<h2> Installing the NLTK Data Package </h2>
+
+<ol>
+  <li> Download the NLTK data package (<a target="nltk_download"
+    href="http://sourceforge.net/project/showfiles.php?group_id=30982"
+    ><code>nltk-data-??.??.zip</code></a>). </li>
+
+  <li> Uncompress the NLTK data package. </li>
+
+<pre class="screen">
+<code class="prompt">[/tmp]#</code> <code class="user">unzip nltk-data-??.??.zip </code>
+<code class="prompt">[/tmp]#</code> <code class="user">cd nltk-data-??.??</code>
+<code class="prompt">[/tmp/nltk-data-??.??]#</code>
+</pre>
+
+  <li> Create a directory to hold the NLTK corpus set.  A common path
+       for this directory is /usr/share/nltk.  If you are not a system
+       administrator, you can put this directory in your home
+       (e.g. ~/nltk).
+<pre class="screen">
+<code class="prompt">[/tmp/nltk-data-??.??]#</code> <code class="user">mkdir /usr/share/nltk</code>
+</pre>
+  </li>
+  <li> Uncompress each corpus that you'd like to use to into the
+       NLTK corpus directory that you created.
+<pre class="screen">
+<code class="prompt">[/tmp/nltk-data-??.??]#</code> <code class="user">unzip <code class="replaceable">&lt;corpus&gt;</code>.zip -d /usr/share/nltk</code>
+</pre>
+  </li>
+  <li> If the NLTK corpus directory that you created is not in
+       /usr/lib/nltk, /usr/local/lib/nltk, or /usr/share/nltk, then
+       you will need to tell NLTK where to find the data.  You can
+       do this by setting the NLTK_CORPORA environment variable:
+<pre class="screen">
+For sh or bash:
+  <code class="prompt">[/tmp]#</code> <code class="user">export NLTK_CORPORA=/some/where/nltk</code>
+
+For csh or tcsh:
+  <code class="prompt">[/tmp]#</code> <code class="user">setenv NLTK_CORPORA /some/where/nltk</code>
+</pre>
+
+       To make this change persistent, you will need to edit your
+       shell's startup file:
+
+<pre class="screen">
+For sh or bash:
+  <code class="prompt">[/tmp]#</code> <code class="user">echo 'export NLTK_CORPORA=/some/where/nltk' &gt;&gt;~/.profile</code>
+
+For csh or tcsh:
+  <code class="prompt">[/tmp]#</code> <code class="user">echo 'setenv NLTK_CORPORA /some/where/nltk' &gt;&gt;~/.cshrc</code>
+</pre>
+
+       Alternatively, you can also use the function set_basedir() in
+       the module nltk.corpus:
+<pre class="screen">
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">from nltk.corpus import set_basedir</code>
+<code class="prompt">&gt;&gt;&gt;</code> <code class="user">set_basedir('/some/where/nltk')</code>
+</pre>
+  </li>
+</ol>
+
+<a name="contrib"></a>
+<h2> Installing the NLTK Contributions Package </h2>
+
+<p> Download the source distribution for the NLTK contributions
+package (<a target="nltk_download"
+href="http://sourceforge.net/project/showfiles.php?group_id=30982"
+>nltk-contrib-??.??.tar.gz</a>), and use <code>setup.py</code> to
+install it: </p>
+
+<pre class="screen">
+<code class="prompt">[/tmp]$</code> <code class="user">gunzip nltk-contrib-??.??.tar.gz </code>
+<code class="prompt">[/tmp]$</code> <code class="user">tar -xf nltk-contrib-??.??.tar</code>
+<code class="prompt">[/tmp]$</code> <code class="user">cd nltk-contrib-??.??</code>
+<code class="prompt">[/tmp/nltk-contrib-??.??]$</code> <code class="user">su</code>
+Password:
+<code class="prompt">[/tmp/nltk-contrib-??.??]#</code> <code class="user">python setup.py install</code>
+</pre>
+
+</div>
+<table class="transparent" width="100%">
+<tr><td align="left"><font size="-1">
+<!-- hhmts start -->
+Last modified: Tue Aug 12 14:28:21 EST 2003
+<!-- hhmts end -->
+</font></td><td align="right"><font size="-1">
+<address><a href="mailto:edloper@gradient.cis.upenn.edu,sb@cs.mu.oz.au">Edward D. Loper, Steven Bird</a></address>
+</font></td></tr></table>
+</body> </html>

@@ -1,0 +1,147 @@
+/* 
+ * Cascading Style Sheet for NLTK
+ * Copyright (C) 2003 Edward Loper
+ *
+ */
+
+/*===================================================================*/
+/* Default body appearance */
+
+body    { background: #c8c8c8; color: #000000; }
+
+@media print {
+  body { font-family: times,serif; font-size: 10pt; 
+         background: #ffffff; color: #000000; }
+}
+
+/*===================================================================*/
+/* Headlines. */
+
+h1 { color: #000060; background: transparent; 
+     font-size: 180%; font-weight: bold; text-align: center; }
+h2 { font-size: 150%; font-weight: bold; }
+h3 { font-size: 140%; font-weight: bold; font-style: italic; }
+h4 { font-size: 130%; font-weight: bold; font-style: italic; }
+
+/*===================================================================*/
+/* Font alignment. */
+
+.left { text-align: left; }
+.center { text-align: center; }
+.right { text-align: right; }
+
+/*===================================================================*/
+/* Tables. */
+
+td.tech { color: #000000; background: #d0e8f0; }
+th.tech { color: #ffffff; background: #102040; }
+
+td.screenshot { color: #000000; background: #d0e8f0; }
+th.screenshot { color: #ffffff; background: #102040; }
+
+/* Sometimes we want transparent tables, for positioning. */
+.transparent { background: transparent; }
+
+/*===================================================================*/
+/* Link colors. */
+
+a:link        { background: transparent; color: #0000c0; } 
+a:visited     { background: transparent; color: #000060; } 
+
+/*===================================================================*/
+/* Screen output. */
+/*     - prompt: a command prompt or program prompt */
+/*     - user: user input */
+/*     - (more will be added as I use them) */
+
+.screen {
+    background: #d0e8f0; color: #000000;
+    border: 2px solid #000000;
+    margin: 1em 0em 1em 0em;
+    padding: 0.3em 0em 0.3em 1em;
+    font-family: monospace;
+}
+
+code.prompt { font-weight: bold; }
+code.user { 
+    background: transparent; color: #103020;
+    font-style: italic; font-weight: bold;
+}
+code.replaceable {
+    background: transparent; color: #101040;
+    font-style: italic; font-weight: normal;
+}
+
+/*===================================================================*/
+/* Boxes for the index page. */
+
+h2.indexbox {
+    border-style: solid;
+    border-width: 0 0 2px 0; 
+    border-color: #000000;
+    margin: 0 0 0 0;
+    font-size: 130%;
+}
+
+div.indexbox {
+    background: #d0e8f0; color: #000000;
+    border: 2px solid #000000;
+    margin: 0 0 1em 0;
+    padding: 0em 0.3em 0em 0.3em;
+    font-size: 90%;
+}
+
+/*===================================================================*/
+/* Generic box.  Usually used with DIV. */
+
+.box {
+    background: #d0e8f0; color: #000000;
+    border: 2px solid #000000;
+    margin: 1em 0em 1em 0em;
+    padding: 0em 1em 0em 1em;
+}
+
+/*===================================================================*/
+/* Navigation box (used as a footer).  Implemented with a table. */
+
+table.navbox { 
+    background: #002080; color: #ffffff;
+}
+
+th.navtitle {
+    border-style: solid;
+    border-width: 0 0 1px 0; 
+    border-color: #6080c0;
+    font-weight: bold;
+    background: #000060; color: #ffffff;
+    font-size: 110%;
+}
+
+td.navbutton {
+    border-style: solid;
+    border-width: 0 1px 0 0; 
+    border-color: #6080c0;
+    font-weight: bold;
+}
+
+td.selected {
+    border-style: solid;
+    border-width: 0 1px 0 0; 
+    border-color: #6080c0;
+    font-weight: bold;
+    background: #0000d0; color: #ffffff;
+}
+
+a.nav:link    { background: transparent; color: #ffffff; }
+a.nav:visited { background: transparent; color: #ffffff; }
+
+.body {
+    border-style: solid;
+    border-width: 1px 2px 2px 2px;
+    border-color: #000060;
+    padding: 0em 0.5em 0em 0.5em;
+    background: #ffffff;
+}
+
+/*===================================================================*/
+/* End of stylesheet */
