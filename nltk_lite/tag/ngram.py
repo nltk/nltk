@@ -32,7 +32,7 @@ class Queue(object):
     def set(self, items):
         if len(items) >= self._length:
             # restrict to required length
-            self._queue = items[self._length:]
+            self._queue = items[-self._length:]
         else:
             # pad to required length
             self._queue = items + (None,) * (self._length - 1 - len(items))
