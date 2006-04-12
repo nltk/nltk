@@ -153,6 +153,14 @@ class Tree(list):
                 leaves.append(child)
         return leaves
 
+    def flatten(self):
+        """
+        @return: a tree consisting of this tree's root connected directly to
+            its leaves, omitting all intervening non-terminal nodes.
+        @rtype: C{Tree}
+        """
+        return Tree(self.node, self.leaves())
+
     def height(self):
         """
         @return: The height of this tree.  The height of a tree
