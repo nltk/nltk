@@ -468,9 +468,8 @@ class ChunkString(object):
 
             {<DT><JJ><NN>}<VBN><IN>{<DT><NN>}<.>{<DT><NN>}<VBD><.>
 
-    @type _ttoks: C{list} of C{Token}
-    @ivar _ttoks: The text whose chunking is encoded by this
-        C{ChunkString}.
+    @type _pieces: C{list} of pieces (tagged tokens and chunks)
+    @ivar _pieces: The tagged tokens and chunks encoded by this C{ChunkString}.
     @ivar _debug: The debug level.  See the constructor docs.
                
     @cvar IN_CHUNK_PATTERN: A zero-width regexp pattern string that
@@ -488,14 +487,13 @@ class ChunkString(object):
     _BRACKETS = re.compile('[^\{\}]+')
     _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
     
-    def __init__(self, tagged_tokens, debug_level=3):
+    def __init__(self, chunk_struct, debug_level=3):
         """
         Construct a new C{ChunkString} that encodes the chunking of
         the text C{tagged_tokens}.
 
-        @type tagged_tokens: C{list} of C{Token} with C{TaggedType}s
-        @param tagged_tokens: The text whose chunking is encoded by
-            this C{ChunkString}.  
+        @type chunk_struct: C{Tree}
+        @param chunk_struct: The chunk structured to be further chunked.
         @type debug_level: int
         @param debug_level: The level of debugging which should be
             applied to transformations on the C{ChunkString}.  The
@@ -510,8 +508,9 @@ class ChunkString(object):
             probably use level 3 if you use any non-standard
             subclasses of C{RegexpChunkRule}.
         """
-        self._ttoks = tagged_tokens
-        tags = [self._tag(tok) for tok in tagged_tokens]
+        self._top_node = chunk_struct.node
+        self._pieces = chunk_struct[:]
+        tags = [self._tag(tok) for tok in self._pieces]
         self._str = '<' + '><'.join(tags) + '>'
         self._debug = debug_level
 
@@ -521,12 +520,12 @@ class ChunkString(object):
         elif isinstance(tok, Tree):
             return tok.node
         else:
-            raise ValueError, 'tagged_tokens must contain tokens and trees'
+            raise ValueError, 'chunk structures must contain tokens and trees'
                       
     def _verify(self, verify_tags):
         """
         Check to make sure that C{_str} still corresponds to some chunked
-        version of C{_ttoks}.
+        version of C{_pieces}.
 
         @type verify_tags: C{boolean}
         @param verify_tags: Whether the individual tags should be
@@ -534,10 +533,10 @@ class ChunkString(object):
             sure that C{_str} encodes a chunked version of I{some}
             list of tokens.  If this is true, then C{_verify} will
             check to make sure that the tags in C{_str} match those in
-            C{_ttoks}.
+            C{_pieces}.
         
         @raise ValueError: if this C{ChunkString}'s internal string
-            representation is invalid or not consistant with _ttoks.
+            representation is invalid or not consistent with _pieces.
         """
         # Check overall form
         if not ChunkString._VALID.match(self._str):
@@ -555,46 +554,40 @@ class ChunkString(object):
         if verify_tags<=0: return
         
         tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
-        tags2 = [self._tag(tok) for tok in self._ttoks]
+        tags2 = [self._tag(piece) for piece in self._pieces]
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid chunkstring')
 
-    def to_chunkstruct(self, chunk_node='CHUNK', top_node='TEXT'):
+    def to_chunkstruct(self, chunk_node='CHUNK'):
         """
         @return: the chunk structure encoded by this C{ChunkString}.
-            A chunk structure is a C{list} containing tagged tokens
-            and sublists of tagged tokens, where each sublist
-            represents a single chunk.
-        @rtype: chunk structure
+        @rtype: C{Tree}
         @raise ValueError: If a transformation has generated an
             invalid chunkstring.
         """
         if self._debug > 0: self._verify(1)
             
-        # Extract a list of alternating chinks & chunks
-        pieces = re.split('[{}]', self._str)
-
         # Use this alternating list to create the chunkstruct.
-        chunkstruct = []
+        pieces = []
         index = 0
         piece_in_chunk = 0
-        for piece in pieces:
+        for piece in re.split('[{}]', self._str):
 
             # Find the list of tokens contained in this piece.
             length = piece.count('<')
-            subsequence = self._ttoks[index:index+length]
+            subsequence = self._pieces[index:index+length]
 
-            # Add this list of tokens to our chunkstruct.
+            # Add this list of tokens to our pieces.
             if piece_in_chunk:
-                chunkstruct.append(Tree(chunk_node, subsequence))
+                pieces.append(Tree(chunk_node, subsequence))
             else:
-                chunkstruct += subsequence
+                pieces += subsequence
 
             # Update index, piece_in_chunk
             index += length
             piece_in_chunk = not piece_in_chunk
 
-        return Tree(top_node, chunkstruct)
+        return Tree(self._top_node, pieces)
                 
     def xform(self, regexp, repl):
         """
@@ -1194,12 +1187,8 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         
     def parse(self, tokens, trace=None):
         """
-        @rtype: chunk structure
-        @return: a chunk structure that encodes the chunks in a given
-            tagged sentence.  A chunk is a non-overlapping linguistic
-            group, such as a noun phrase.  The set of chunks
-            identified in the chunk structure depends on the rules
-            used to define this C{RegexpChunk}.
+        @type chunk_struct: C{Tree}
+        @param chunk_struct: the chunk structure to be (further) chunked
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -1207,6 +1196,12 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             highter will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor. 
+        @rtype: C{Tree}
+        @return: a chunk structure that encodes the chunks in a given
+            tagged sentence.  A chunk is a non-overlapping linguistic
+            group, such as a noun phrase.  The set of chunks
+            identified in the chunk structure depends on the rules
+            used to define this C{RegexpChunk}.
         """
         if len(tokens) == 0:
             print 'Warning: parsing empty text'
@@ -1226,7 +1221,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             self._notrace_apply(chunkstr)
 
         # Use the chunkstring to create a chunk structure.
-        return chunkstr.to_chunkstruct(self._chunk_node, self._top_node)
+        return chunkstr.to_chunkstruct(self._chunk_node)
 
     def rules(self):
         """
@@ -1294,7 +1289,7 @@ def demo_eval(chunkparser, text):
         if not sentence: continue
         gold = tree.chunk(sentence)
         tokens = gold.leaves()
-        test = chunkparser.parse(tokens)
+        test = chunkparser.parse(tree.Tree('S', tokens))
         chunkscore.score(gold, test)
 
     print '/'+('='*75)+'\\'
@@ -1325,6 +1320,29 @@ def demo_eval(chunkparser, text):
     
     print '\\'+('='*75)+'/'
 
+def demo_cascade(chunkparsers, text):
+    """
+    Demonstration code for cascading chunk parsers.
+
+    @param chunkparser: The chunkparsers to be tested
+    @type chunkparser: C{ChunkParseI}
+    @param text: The chunked tagged text that should be used for evaluation.
+    @type text: C{string}
+    """
+    
+    from nltk_lite.parse import tree
+    
+    for sentence in text.split('\n'):
+        print sentence
+        sentence = sentence.strip()
+        if not sentence: continue
+        gold = tree.chunk(sentence)
+        pieces = gold.leaves()
+        for chunkparser in chunkparsers:
+            pieces = chunkparser.parse(tree.Tree('S', pieces))
+            print pieces
+        print
+
 def demo():
     """
     A demonstration for the C{RegexpChunk} class.  A single text is
@@ -1347,14 +1365,14 @@ def demo():
 
     # Use a simple regexp to define regular expressions.
     r1 = chunk.ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
-    cp = chunk.RegexpChunk([r1], chunk_node='NP', top_node='S', trace=1)
+    cp = chunk.RegexpChunk([r1], chunk_node='NP', trace=1)
     chunk.demo_eval(cp, text)
     print
 
     # Use a chink rule to remove everything that's *not* an NP
     r1 = chunk.ChunkRule(r'<.*>+', 'Chunk everything')
     r2 = chunk.ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
-    cp = chunk.RegexpChunk([r1, r2], chunk_node='NP', top_node='S', trace=1)
+    cp = chunk.RegexpChunk([r1, r2], chunk_node='NP', trace=1)
     chunk.demo_eval(cp, text)
     print
 
@@ -1362,15 +1380,31 @@ def demo():
     r1 = chunk.ChunkRule(r'(<.*>)', 'Chunk each tag')
     r2 = chunk.UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
     r3 = chunk.MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
-    cp = chunk.RegexpChunk([r1,r2,r3], chunk_node='NP', top_node='S', trace=1)
+    cp = chunk.RegexpChunk([r1,r2,r3], chunk_node='NP', trace=1)
     chunk.demo_eval(cp, text)
     print
 
     # Chunk sequences of NP words, and split them at determiners
     r1 = chunk.ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
     r2 = chunk.SplitRule('', r'<DT>', 'Split before DT')
-    cp = chunk.RegexpChunk([r1,r2], chunk_node='NP', top_node='S', trace=1)
+    cp = chunk.RegexpChunk([r1,r2], chunk_node='NP', trace=1)
     chunk.demo_eval(cp, text)
+    print
+
+    print "============== Cascaded Chunking =============="
+    print
+
+    text = """\
+    John/NNP thinks/VBD Mary/NN saw/VBD the/DT cat/NN on/IN the/DT mat/NN ./."""
+
+    # Chunk sequences of NP words, and split them at determiners
+    np = chunk.ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
+    cp_np = chunk.RegexpChunk([np], chunk_node='NP', trace=1)
+    pp = chunk.ChunkRule(r'(<IN><NP>)', 'Chunk sequences of IN&NP')
+    cp_pp = chunk.RegexpChunk([pp], chunk_node='PP', trace=1)
+    vp = chunk.ChunkRule(r'(<VB.*><[NP]P>*)', 'Chunk sequences of VB&NP/PP')
+    cp_vp = chunk.RegexpChunk([vp], chunk_node='VP', trace=1)
+    chunk.demo_cascade([cp_np,cp_pp,cp_vp], text)
     print
 
 if __name__ == '__main__':
