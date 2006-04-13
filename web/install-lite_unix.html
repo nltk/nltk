@@ -33,20 +33,20 @@
 
 <P>NLTK-Lite requires the Python scripting language interpreter to be installed on your machine.
 
-<P>Download the Python source distribution from <A HREF="http://www.python.org/ftp/python/2.4.2/Python-2.4.2.tgz">http://www.python.org/ftp/python/2.4.2/Python-2.4.2.tgz</A> to /tmp.
+<P>Download the Python source distribution from <A HREF="http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz">http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz</A> to /tmp.
 
 <P>Open a terminal session, and uncompress the Python source distribution:
 
 <pre>
 	cd /tmp
-	gunzip Python-2.4.2.tar.gz
-	tar -xvf Python-2.4.2.tar
+	gunzip Python-2.4.3.tar.gz
+	tar -xvf Python-2.4.3.tar
 </pre>
 
 <P>Compile and install the Python source distribution:
 
 <pre>
-	cd Python-2.4.2
+	cd Python-2.4.3
 	./configure
 	make
 	sudo make install
@@ -64,7 +64,7 @@
 <P>NLTK also requires a Python module called Numarray, which provides a range of mathematical
 functions.
 
-<P>Download the Numarray source distribution from <A HREF="http://prdownloads.sourceforge.net/numpy/numarray-1.5.0.tar.gz?download">http://prdownloads.sourceforge.net/numpy/numarray-1.5.0.tar.gz?download</A>
+<P>Download the Numarray source distribution from <A HREF="http://prdownloads.sourceforge.net/numpy/numarray-1.5.1.tar.gz?download">http://prdownloads.sourceforge.net/numpy/numarray-1.5.1.tar.gz?download</A>
 to /tmp.
 
 <P>Uncompress the Numarray source distribution:
@@ -85,35 +85,35 @@ to /tmp.
 <a name="nltk-lite"></a>
 <h2> Installing NLTK-Lite </h2>
 
-<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.3.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.3.tar.gz?download</A>
+<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.4.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.4.tar.gz?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite source distribution:
 
 <pre>
 	cd /tmp
-	gunzip nltk_lite-0.6.3.tar.gz
-	tar -xvf nltk_lite-0.6.3.tar
+	gunzip nltk_lite-0.6.4.tar.gz
+	tar -xvf nltk_lite-0.6.4.tar
 </pre>
 
 <P>Install the NLTK-Lite module:
 
 <pre>
-	cd nltk_lite-0.6.3
+	cd nltk_lite-0.6.4
 	sudo python setup.py install
 </pre>
 
-<a name="nltk-lite-data"></a>
-<h2> Installing the NLTK-Lite Data Package </h2>
+<a name="nltk-lite-corpora"></a>
+<h2> Installing the NLTK-Lite Corpora Package </h2>
 
-<P>Download the NLTK-Lite Data distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.3.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.3.zip?download</A>
+<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.4.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.4.zip?download</A>
 to /tmp.
 
-<P>Uncompress the NLTK-Lite Data distribution:
+<P>Uncompress the NLTK-Lite Corpora distribution:
 
 <pre>
 	cd /tmp
-	unzip nltk_lite-corpora-0.6.3.zip
+	unzip nltk_lite-corpora-0.6.4.zip
 </pre>
 
 <P>Move the corpora to a standard directory, e.g. /usr/share/nltk_lite or /usr/local/share/nltk_lite.
@@ -123,7 +123,7 @@ If you are not a system administrator, you can put this directory in your home d
 	mv /tmp/nltk_lite-corpora /usr/share/nltk_lite
 </pre>
 
-<P>Set an environment variable for the NLTK-Lite Data
+<P>Set an environment variable for the NLTK-Lite Corpora
 
 <pre>
 	export NLTK_LITE_CORPORA=/usr/share/nltk_lite
@@ -152,7 +152,7 @@ is loaded every time you start a terminal session:
 <table class="transparent" width="100%">
 <tr><td align="left"><font size="-1">
 <!-- hhmts start -->
-Last modified: Thu Mar 30 20:39:43 EST 2006
+Last modified: Thu Apr 13 05:24:14 EST 2006
 <!-- hhmts end -->
 </font></td><td align="right"><font size="-1">
 <address><a href="mailto:badenh@csse.unimelb.edu.au,sb@csse.unimelb.edu.au">Baden Hughes, Steven Bird</a></address>
