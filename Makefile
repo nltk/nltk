@@ -81,10 +81,15 @@ python:	.python.done
 	mkdir -p iso/{mac,win,unix}
 	wget -N -P iso/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
 	wget -N -P iso/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
+	wget -N -P iso/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
+	wget -N -P iso/mac/  http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz
 	wget -N -P iso/win/  http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi
 	wget -N -P iso/win/  $(SFNETMIRROR)/numpy/numarray-1.5.1.win32-py2.4.exe?download
+	wget -N -P iso/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
+	wget -N -P iso/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
 	wget -N -P iso/unix/ http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz
 	wget -N -P iso/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
+	cp iso/mac/pywordnet-2.0.1.tar.gz iso/mac/WordNet-2.0.tar.gz iso/unix
 	touch .python.done
 
 iso:	dist
