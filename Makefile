@@ -1,6 +1,6 @@
 # Natural Language Toolkit: source Makefile
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #	 Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -79,24 +79,14 @@ corporadist:
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
 
-# CVS snapshot
-tgz:
-	echo "build apidocs and tutorials manually"
-	rm -rf $(CVS_SNAPSHOT)
-	cvs -d:ext:stevenbird@cvs.sourceforge.net:/cvsroot/nltk co nltk/lite
-	mv nltk $(CVS_SNAPSHOT)
-#	cp -r doc/api $(CVS_SNAPSHOT)/lite/doc/api
-	cp doc/en/*.html $(CVS_SNAPSHOT)/lite/doc/en
-	tar cvzf $(CVS_SNAPSHOT).tgz $(CVS_SNAPSHOT)
-
 python:	.python.done
 	mkdir -p iso/{mac,win,unix}
-	wget -N -O iso/mac/MacPython-OSX-2.4.1-1.dmg http://undefined.org/python/MacPython-OSX-2.4.1-1.dmg
-	wget -N -O iso/mac/numarray-1.1.1-py2.4-macosx10.3.zip http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
-	wget -N -O iso/win/Python-2.4.2.msi http://www.python.org/ftp/python/2.4.2/python-2.4.2.msi
-	wget -N -O iso/win/numarray-1.5.0.exe $(SFNETMIRROR)/numpy/numarray-1.5.0.win32-py2.4.exe?download
-	wget -N -O iso/unix/Python-2.4.2.tgz http://www.python.org/ftp/python/2.4.2/Python-2.4.2.tgz
-	wget -N -O iso/unix/numarray-1.5.0.tar.gz $(SFNETMIRROR)/numpy/numarray-1.5.0.tar.gz?download
+	wget -N -P iso/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
+	wget -N -P iso/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
+	wget -N -P iso/win/  http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi
+	wget -N -P iso/win/  $(SFNETMIRROR)/numpy/numarray-1.5.1.win32-py2.4.exe?download
+	wget -N -P iso/unix/ http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz
+	wget -N -P iso/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
 	touch .python.done
 
 iso:	dist
