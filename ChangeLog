@@ -1,7 +1,7 @@
 Version 0.6.4 DATE?
 
 * CombinedTagger tagger and marshalling taggers, contributed by Tiago Tresoldi
-* names, stopwords, senseval and TIMIT sample corpora
+* senseval and TIMIT sample corpora
 * bugfix suggested by Brent Payne
 * expanded tutorials, colorized program examples
 * ported cluster package (from old NLTK)
@@ -19,7 +19,8 @@ Version 0.6.3 2006-03-09
 * replaced classeq with isinstance, for efficiency improvement, as suggested by Martin Ranang
 * bugfixes in chunk eval
 * simplified call to draw_trees
-
+* names, stopwords corpora
+	
 Version 0.6.2 2006-01-29
 
 * Peter Spiller's concordancer
