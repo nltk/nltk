@@ -1,0 +1,33 @@
+Version 0.6.4 DATE?
+
+* CombinedTagger tagger and marshalling taggers, contributed by Tiago Tresoldi
+* names, stopwords, senseval and TIMIT sample corpora
+* bugfix suggested by Brent Payne
+* expanded tutorials, colorized program examples
+* ported cluster package (from old NLTK)
+* fixed problem with testing on training data reported by Jason Baldridge
+* added support for cascaded chunkers
+	
+Version 0.6.3 2006-03-09
+
+* switch to new style classes
+* repair FSA model sufficiently for Kimmo module to work	
+* port of MIT Kimmo morphological analyzer; still needs lots of code clean-up and inline docs
+* expanded support for shoebox format, developed with Stuart Robinson
+* fixed bug in indexing CFG productions, for empty right-hand-sides
+* efficiency improvements, suggested by Martin Ranang
+* replaced classeq with isinstance, for efficiency improvement, as suggested by Martin Ranang
+* bugfixes in chunk eval
+* simplified call to draw_trees
+
+Version 0.6.2 2006-01-29
+
+* Peter Spiller's concordancer
+* Will Hardy's implementation of Penton's paradigm visualization system
+* corpus readers for presidential speeches
+* removed NLTK dependency
+* generalized CFG terminals to permit full range of characters
+* used fully qualified names in demo code, for portability
+* bugfixes from Yoav Goldberg, Eduardo Pereira Habkost
+* fixed obscure quoting bug in tree displays and conversions
+* simplified demo code, fixed import bug
