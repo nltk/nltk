@@ -68,14 +68,12 @@ windist: INSTALL.TXT
 
 docdist:
 	$(MAKE) -C doc all
-	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x CVS
-#	tar czvf tutorials.tgz --exclude=CVS --exclude==api doc
+	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x .svn
 
 corporadist:
-	zip -r dist/nltk_lite-corpora-$(NLTK_VERSION).zip corpora -x CVS
-#	tar czvf corpora.tgz --exclude=CVS corpora
+	zip -r dist/nltk_lite-corpora-$(NLTK_VERSION).zip corpora -x .svn
 
-# Automatically add the appropriate version number.
+# Get the version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
 

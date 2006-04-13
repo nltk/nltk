@@ -7,12 +7,11 @@ the tutorial code samples all work (cd nltk/lite/doc/en; make errs)
 
 A. VERSION NUMBER
 
-1. cd nltk/lite
-2. Modify nltk_lite/__init__.py with the version number (2 places)
-3. Edit doc/definitions.txt with new version number
-4. Edit web/install*.html with new version number
-5. Edit web/index.html with new release announcement
-6. Commit all the above changes
+1. Modify nltk_lite/__init__.py with the version number (2 places)
+2. Edit doc/definitions.txt with new version number
+3. Edit web/install*.html with new version number
+4. Edit web/index.html with new release announcement
+5. Commit all the above changes
 
 
 B. BUILD
@@ -20,7 +19,7 @@ B. BUILD
 The build requires docutils, pdflatex
 
 1. Check out a clean copy of the CVS tree (or make clean)
-2. cd nltk/lite/doc; make all
+2. cd nltk/doc; make all
 3. cd nltk/lite; make distributions (see dist/ for the results)
 
 
