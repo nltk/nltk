@@ -147,12 +147,54 @@ is loaded every time you start a terminal session:
 	>>> set_basedir('/some/other/path')
 </pre>
 
+<a name="wordnet"></a>
+<h2> Installing WordNet (optional)</h2>
+
+<P>Download the WordNet source distribution from <A HREF="http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz">http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz</A> to /tmp.
+
+<P>Open a terminal session, and uncompress the distribution:
+
+<pre>
+	cd /tmp
+	gunzip WordNet-2.0.tar.gz
+	tar -xvf WordNet-2.0.tar
+</pre>
+
+<P>Compile and install the Wordnet source distribution:
+
+<pre>
+	cd Wordnet-2.0
+	./configure
+	make
+	sudo make install
+</pre>
+
+<P>Next, download and install the pywordnet source distribution from
+<A HREF="http://prdownloads.sourceforge.net/pywordnet/pywordnet-2.0.1.tar.gz?download">http://prdownloads.sourceforge.net/pywordnet/pywordnet-2.0.1.tar.gz?download</a> 
+to /tmp.
+
+<P>Open a terminal session, and uncompress the distribution:
+
+<pre>
+	cd /tmp
+	gunzip pywordnet-2.0.1.tar.gz
+	tar -xvf pywordnet-2.0.1.tar
+</pre>
+
+<P>Now install the pywordnet source distribution:
+
+<pre>
+	cd pywordnet-2.0.1
+	python ./setup.py install
+</pre>
+
+<P>Problem - this does not install centrally!
 
 </div>
 <table class="transparent" width="100%">
 <tr><td align="left"><font size="-1">
 <!-- hhmts start -->
-Last modified: Thu Apr 13 05:24:14 EST 2006
+Last modified: Thu Apr 13 08:04:49 EST 2006
 <!-- hhmts end -->
 </font></td><td align="right"><font size="-1">
 <address><a href="mailto:badenh@csse.unimelb.edu.au,sb@csse.unimelb.edu.au">Baden Hughes, Steven Bird</a></address>
