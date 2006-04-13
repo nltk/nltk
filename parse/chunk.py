@@ -540,7 +540,7 @@ class ChunkString(object):
         """
         # Check overall form
         if not ChunkString._VALID.match(self._str):
-            raise ValueError('Transformation generated invalid chunkstring')
+            raise ValueError('Transformation generated invalid chunkstring: %s' % self._str)
 
         # Check that parens are balanced.  If the string is long, we
         # have to do this in pieces, to avoid a maximum recursion
@@ -549,14 +549,14 @@ class ChunkString(object):
         for i in range(1+len(brackets)/5000):
             substr = brackets[i*5000:i*5000+5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
-                raise ValueError('Transformation generated invalid chunkstring')
+                raise ValueError('Transformation generated invalid chunkstring: %s' % substr)
 
         if verify_tags<=0: return
         
         tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
         tags2 = [self._tag(piece) for piece in self._pieces]
         if tags1 != tags2:
-            raise ValueError('Transformation generated invalid chunkstring')
+            raise ValueError('Transformation generated invalid chunkstring: %s / %s' % (tags1,tags2))
 
     def to_chunkstruct(self, chunk_node='CHUNK'):
         """
@@ -611,10 +611,11 @@ class ChunkString(object):
             matched substring.  Typically, this will include a named
             replacement group, specified by C{regexp}.
         @rtype: C{None}
-        @raise ValueError: If this transformation generateds an
+        @raise ValueError: If this transformation generated an
             invalid chunkstring.
         """
         # Do the actual substitution
+
         self._str = re.sub(regexp, repl, self._str)
 
         # The substitution might have generated "empty chunks"
@@ -648,7 +649,7 @@ class ChunkString(object):
             matched substring.  Typically, this will include a named
             replacement group, specified by C{regexp}.
         @rtype: C{None}
-        @raise ValueError: If this transformation generateds an
+        @raise ValueError: If this transformation generated an
             invalid chunkstring.
         """
         if type(pattern).__name__ == 'SRE_Pattern': pattern = pattern.pattern
@@ -677,7 +678,7 @@ class ChunkString(object):
             matched substring.  Typically, this will include a named
             replacement group, specified by C{regexp}.
         @rtype: C{None}
-        @raise ValueError: If this transformation generateds an
+        @raise ValueError: If this transformation generated an
             invalid chunkstring.
         """
         if type(pattern).__name__ == 'SRE_Pattern': pattern = pattern.pattern
@@ -716,7 +717,7 @@ class ChunkString(object):
 def tag_pattern2re_pattern(tag_pattern):
     """
     Convert a tag pattern to a regular expression pattern.  A X{tag
-    pattern} is a modified verison of a regular expression, designed
+    pattern} is a modified version of a regular expression, designed
     for matching sequences of tags.  The differences between regular
     expression patterns and tag patterns are:
 
@@ -838,7 +839,7 @@ class RegexpChunkRule(object):
         @param chunkstr: The chunkstring to which this rule is
             applied. 
         @rtype: C{None}
-        @raise ValueError: If this transformation generateds an
+        @raise ValueError: If this transformation generated an
             invalid chunkstring.
         """
         chunkstr.xform(self._regexp, self._repl)
@@ -875,6 +876,7 @@ class ChunkRule(RegexpChunkRule):
     substring.
     """
     def __init__(self, tag_pattern, descr):
+
         """
         Construct a new C{ChunkRule}.
         
@@ -1040,6 +1042,114 @@ class MergeRule(RegexpChunkRule):
              separately with the C{descr} method.
         """
         return ('<MergeRule: '+`self._left_tag_pattern`+', '+
+                `self._right_tag_pattern`+'>')
+
+class ExpandRightRule(RegexpChunkRule):
+    """
+    A rule specifying how to expand chunks in a C{ChunkString} to the right,
+    using two matching tag patterns: a left pattern, and a right pattern.
+    When applied to a C{ChunkString}, it will find any chunk whose end
+    matches left pattern, and immediately followed by a chink whose
+    beginning matches right pattern.  It will then expand the chunk to incorporate
+    the new material on the right.
+    """
+    def __init__(self, left_tag_pattern, right_tag_pattern, descr):
+        """
+        Construct a new C{ExpandRightRule}.
+
+        @type right_tag_pattern: C{string}
+        @param right_tag_pattern: This rule's right tag
+            pattern.  When applied to a C{ChunkString}, this
+            rule will find any chunk whose end matches
+            C{left_tag_pattern}, and immediately followed by a chink
+            whose beginning matches this pattern.  It will
+            then merge those two chunks into a single chunk.
+        @type left_tag_pattern: C{string}
+        @param left_tag_pattern: This rule's left tag
+            pattern.  When applied to a C{ChunkString}, this
+            rule will find any chunk whose end matches
+            this pattern, and immediately followed by a chink
+            whose beginning matches C{right_tag_pattern}.  It will
+            then expand the chunk to incorporate the new material on the right.
+            
+        @type descr: C{string}
+        @param descr: A short description of the purpose and/or effect
+            of this rule.
+        """
+        self._left_tag_pattern = left_tag_pattern
+        self._right_tag_pattern = right_tag_pattern
+        regexp = re.compile('(?P<left>%s)\}(?P<right>%s)' %
+                            (tag_pattern2re_pattern(left_tag_pattern),
+                             tag_pattern2re_pattern(right_tag_pattern)))
+        RegexpChunkRule.__init__(self, regexp, '\g<left>\g<right>}', descr)
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this rule.  This
+             string representation has the form::
+
+                 <ExpandRightRule: '<NN|DT|JJ>', '<NN|JJ>'>
+
+             Note that this representation does not include the
+             description string; that string can be accessed
+             separately with the C{descr} method.
+        """
+        return ('<ExpandRightRule: '+`self._left_tag_pattern`+', '+
+                `self._right_tag_pattern`+'>')
+
+class ExpandLeftRule(RegexpChunkRule):
+    """
+    A rule specifying how to expand chunks in a C{ChunkString} to the left,
+    using two matching tag patterns: a left pattern, and a right pattern.
+    When applied to a C{ChunkString}, it will find any chunk whose beginning
+    matches right pattern, and immediately preceded by a chink whose
+    end matches left pattern.  It will then expand the chunk to incorporate
+    the new material on the left.
+    """
+    def __init__(self, left_tag_pattern, right_tag_pattern, descr):
+        """
+        Construct a new C{ExpandRightRule}.
+
+        @type right_tag_pattern: C{string}
+        @param right_tag_pattern: This rule's right tag
+            pattern.  When applied to a C{ChunkString}, this
+            rule will find any chunk whose beginning matches
+            C{right_tag_pattern}, and immediately preceded by a chink
+            whose end matches this pattern.  It will
+            then merge those two chunks into a single chunk.
+        @type left_tag_pattern: C{string}
+        @param left_tag_pattern: This rule's left tag
+            pattern.  When applied to a C{ChunkString}, this
+            rule will find any chunk whose beginning matches
+            this pattern, and immediately preceded by a chink
+            whose end matches C{left_tag_pattern}.  It will
+            then expand the chunk to incorporate the new material on the left.
+            
+        @type descr: C{string}
+        @param descr: A short description of the purpose and/or effect
+            of this rule.
+        """
+        self._left_tag_pattern = left_tag_pattern
+        self._right_tag_pattern = right_tag_pattern
+        regexp = re.compile('(?P<left>%s)\{(?P<right>%s)' %
+                            (tag_pattern2re_pattern(left_tag_pattern),
+                             tag_pattern2re_pattern(right_tag_pattern)))
+        RegexpChunkRule.__init__(self, regexp, '{\g<left>\g<right>', descr)
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this rule.  This
+             string representation has the form::
+
+                 <ExpandRightRule: '<NN|DT|JJ>', '<NN|JJ>'>
+
+             Note that this representation does not include the
+             description string; that string can be accessed
+             separately with the C{descr} method.
+        """
+        return ('<ExpandRightRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
 class SplitRule(RegexpChunkRule):
@@ -1409,5 +1519,4 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-
 
