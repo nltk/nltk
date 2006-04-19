@@ -19,8 +19,13 @@ CVS_SNAPSHOT = nltk_lite_$(DATE)
 # Sourceforge mirror
 SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
 
-.PHONY: all usage help doc documentation webpage test
-.PHONY: distributions clean iso python .python.done tgz
+WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
+RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
+
+.PHONY: all usage help doc test rsync
+.PHONY: clean clean_up iso python
+.PHONY: .python.done .doc.done .rsync.done
+.PHONY: distributions codedist docdist corporadist
 
 all: distributions
 
@@ -28,46 +33,45 @@ usage:
 	@echo "make distributions -- Build distributions (output to dist/)"
 	@echo "make test -- Run unit tests"
 	@echo "make checkdocs -- Check docstrings for completeness"
-	@echo "make clean -- Remove temporary and built files"
+	@echo "make clean -- Remove temporary files"
+	@echo "make rsync -- Upload files to NLTK website"
 
 # Tests.
 test: 
 	$(PYTHON) runtests.py -v -c coverage
 
-clean:
+clean:	clean_up
+	$(MAKE) -C doc clean
+
+clean_up:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
-	$(MAKE) -C doc clean
-	rm -rf build dist MANIFEST
+	$(MAKE) -C doc clean_up
+
+doc:	.doc.done
+	$(MAKE) -C doc all
+	touch .doc.done
+
+rsync:	.rsync.done clean_up
+	$(MAKE) -C web rsync
+	$(MAKE) -C doc rsync
+       	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
+	touch .rsync.done
+
+########################################################################
+# DISTRIBUTIONS
+########################################################################
 
 # Distributions. Build all from scratch.
-distributions: clean sdist bdist docdist corporadist
+distributions: codedist docdist corporadist
 
-# Source distributions
-sdist: gztardist zipdist
-
-# Built distributions
-bdist: rpmdist windist
-
-# Produce dist/$(NAME)-$(VERSION).tar.gz
-gztardist: INSTALL.TXT
+codedist: clean INSTALL.TXT
 	python setup.py -q sdist --format=gztar
-
-# Produce dist/$(NAME)-$(VERSION).tar.gz
-zipdist: INSTALL.TXT
 	python setup.py -q sdist --format=zip
-
-# Produce dist/$(NAME)-$(VERSION)-1.noarch.rpm
-# Produce dist/$(NAME)-$(VERSION)-1.src.rpm
-rpmdist: INSTALL.TXT
 	python setup.py -q bdist --format=rpm
-
-# Produce dist/$(NAME)-$(VERSION).win32.exe
-windist: INSTALL.TXT
 	python setup.py -q bdist --format=wininst
 
-docdist:
-	$(MAKE) -C doc all
+docdist:	.doc.done
 	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x .svn
 
 corporadist:
@@ -76,6 +80,10 @@ corporadist:
 # Get the version number.
 INSTALL.TXT: INSTALL.TXT.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
+
+########################################################################
+# ISO Image
+########################################################################
 
 python:	.python.done
 	mkdir -p iso/{mac,win,unix}
