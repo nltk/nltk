@@ -45,6 +45,27 @@ def print_string(s, width=70):
         print s[:i]
         s = s[i:]
 
+class SortedDict(dict):
+    """
+    A very rudamentary sorted dictionary, whose main purpose is to
+    allow dictionaries to be displayed in a consistent order in
+    regression tests.  keys(), items(), values(), iter*(), and
+    __repr__ all sort their return values before returning them.
+    (note that the sort order for values() does *not* correspond to
+    the sort order for keys().  I.e., zip(d.keys(), d.values()) is not
+    necessarily equal to d.items().
+    """
+    def keys(self): return sorted(dict.keys(self))
+    def items(self): return sorted(dict.items(self))
+    def values(self): return sorted(dict.values(self))
+    def iterkeys(self): return iter(sorted(dict.keys(self)))
+    def iteritems(self): return iter(sorted(dict.items(self)))
+    def itervalues(self): return iter(sorted(dict.values(self)))
+    def __iter__(self): return iter(sorted(dict.keys(self)))
+    def repr(self):
+        items = ['%s=%s' % t for t in sorted(self.items())]
+        return '{%s}' % ', '.join(items)
+    
 ##########################################################################
 # EDIT DISTANCE (LEVENSHTEIN)
 ##########################################################################
