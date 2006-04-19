@@ -5,7 +5,7 @@ Prepare for the build by checking that all code demonstrations work, and that
 the tutorial code samples all work (cd nltk/lite/doc/en; make errs)
 
 
-A. VERSION NUMBER
+A. VERSION NUMBER AND RELEASE ANNOUNCEMENT
 
 1. Modify nltk_lite/__init__.py with the version number (2 places)
 2. Edit doc/definitions.txt with new version number
@@ -14,25 +14,26 @@ A. VERSION NUMBER
 5. Commit all the above changes
 
 
-B. BUILD
+B. PYTHON AND NUMERIC VERSIONS
+
+1. Check for new versions of Python and Numeric
+2. Modify top level Makefile and commit
+3. Modify web/install*.html with new URLs and commit
+4. make python  (to download)
+
+
+C. BUILD
 
 The build requires docutils, pdflatex
 
-1. Check out a clean copy of the CVS tree (or make clean)
-2. cd nltk/doc; make all
-3. cd nltk/lite; make distributions (see dist/ for the results)
-
-
-C. ISO IMAGE
-
-1. Check for new versions of Python and Numeric
-   (if so, modify top level Makefile and commit; make python)
-2. make iso (see dist/ for the iso image)
+1. Check out a clean copy of the subversion repository (or make clean)
+2. make distributions (see dist/ for the results)
+3. make iso (see dist/ for the iso image)
 
 
 D. UPLOAD
 
-1. cd nltk/lite/dist/
+1. cd nltk/dist/
 2. ftp upload.sourceforge.net (anonymous)
 3. cd incoming; binary; mput * (wait...)
 4. visit https://sourceforge.net/project/admin/editpackages.php?group_id=30982
@@ -42,8 +43,8 @@ D. UPLOAD
 
 E. WEBSITE
 
-1. rsync the docs, code, and webpage (remove .pyc and .pyo files)
-2. add a news item
+1. cd web; make rsync
+2. rsync code and docs (remove .pyc and .pyo files)
 3. post to one or more of the mailing lists, including course mailing lists
 
 
