@@ -28,9 +28,10 @@ doc:
 # DISTRIBUTIONS
 ########################################################################
 
-.PHONY: dist codedist docdist corporadist
+.PHONY: dist codedist docdist corporadist .dist.done
 
 dist: codedist docdist corporadist
+	touch .dist.done
 
 codedist: clean INSTALL.TXT
 	python setup.py -q sdist --format=gztar
@@ -93,9 +94,9 @@ pywordnet:
 	cp python/mac/pywordnet-2.0.1.tar.gz python/unix
 	touch .pywordnet.done
 
-iso:	dist .python.done .numarray.done .wordnet.done .pywordnet.done
-	rm -rf iso
-	mkdir -p iso/webpage iso/webpage/screenshots/
+iso:	.dist.done .python.done .numarray.done .wordnet.done .pywordnet.done
+	rm -rf iso nltk_lite-$(NLTK_VERSION)
+	mkdir -p iso/web iso/web/screenshots/ iso/mac iso/win iso/unix
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
 	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/unix/
@@ -105,7 +106,10 @@ iso:	dist .python.done .numarray.done .wordnet.done .pywordnet.done
 	cp *.txt *.TXT					iso
 	cp web/*.{html,css,png}                         iso/web/
 	cp web/screenshots/*.jpg                        iso/web/screenshots
-	ln -f -s iso/ nltk_lite-$(NLTK_VERSION)
+	cp python/mac/*                                 iso/mac/
+	cp python/win/*                                 iso/win/
+	cp python/unix/*                                iso/unix/
+	ln -f -s iso nltk_lite-$(NLTK_VERSION)
 	mkisofs -f -r -o dist/nltk_lite-$(NLTK_VERSION).iso nltk_lite-$(NLTK_VERSION)
 
 ########################################################################
@@ -130,7 +134,7 @@ rsync:	clean_up
 .PHONY: clean clean_up
 
 clean:	clean_up
-	rm -rf build iso dist .*.done
+	rm -rf build iso dist
 	$(MAKE) -C doc clean
 
 clean_up:
