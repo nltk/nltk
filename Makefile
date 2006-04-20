@@ -14,7 +14,7 @@ WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
 .PHONY: all usage help doc rsync
-.PHONY: clean clean_up iso python
+.PHONY: clean clean_up iso python wordnet
 .PHONY: .python.done .doc.done .rsync.done
 .PHONY: distributions codedist docdist corporadist
 
@@ -62,18 +62,21 @@ python:	.python.done
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
 	wget -N -P python/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
-	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
 	wget -N -P python/mac/  http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz
 	wget -N -P python/win/  http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi
 	wget -N -P python/win/  $(SFNETMIRROR)/numpy/numarray-1.5.1.win32-py2.4.exe?download
-	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
-	wget -N -P python/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
 	wget -N -P python/unix/ http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz
 	wget -N -P python/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
-	cp python/mac/pywordnet-2.0.1.tar.gz python/mac/WordNet-2.0.tar.gz python/unix
 	touch .python.done
 
-iso:	distributions .python.done
+wordnet:	.wordnet.done
+	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
+	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
+	wget -N -P python/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
+	cp python/mac/pywordnet-2.0.1.tar.gz python/mac/WordNet-2.0.tar.gz python/unix
+	touch .wordnet.done
+
+iso:	distributions .python.done .wordnet.done
 	rm -rf iso
 	mkdir -p iso/webpage iso/webpage/screenshots/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
@@ -103,7 +106,7 @@ rsync:	.rsync.done clean_up
 ########################################################################
 
 clean:	clean_up
-	rm -rf build iso distributions
+	rm -rf build iso distributions .*.done
 	$(MAKE) -C doc clean
 
 clean_up:
