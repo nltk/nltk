@@ -10,7 +10,7 @@
 Classes and interfaces for tagging each token of a document with
 supplementary information, such as its part of speech or its WordNet
 synset tag.  This task, which is known as X{tagging}, is defined by
-the L{TaggerI} interface.
+the L{TagI} interface.
 """
 
 class TagI(object):
@@ -107,7 +107,7 @@ def accuracy(tagger, gold):
     Strip the tags from the gold standard text, retag it using
     the tagger, then compute the accuracy score.
 
-    @type tagger: C{Tagger}
+    @type tagger: C{TagI}
     @param tagger: The tagger being evaluated.
     @type gold: C{list} of C{Token}
     @param gold: The list of tagged tokens to score the tagger on.
