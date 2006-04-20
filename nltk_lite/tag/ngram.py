@@ -10,7 +10,7 @@
 Classes and interfaces for tagging each token of a document with
 supplementary information, such as its part of speech or its WordNet
 synset tag.  This task, which is known as X{tagging}, is defined by
-the L{TaggerI} interface.
+the L{TagI} interface.
 """
 
 import types, re
@@ -191,7 +191,7 @@ def demo():
     test_tokens = []
     num_words = 0
 
-    # Run the taggers.  For t0, t1, and t2, back-off to DefaultTagger.
+    # Run the taggers.  For t0, t1, and t2, back-off to the default tagger.
     # This is especially important for t1 and t2, which count on
     # having known tags as contexts; if they get a context containing
     # None, then they will generate an output of None, and so all
