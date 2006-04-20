@@ -8,15 +8,8 @@
 
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
-#SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
-SFNETMIRROR = http://easynews.dl.sourceforge.net/sourceforge
-WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
-RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
-.PHONY: all usage help doc rsync
-.PHONY: clean clean_up iso python wordnet
-.PHONY: .python.done .rsync.done .wordnet.done
-.PHONY: distributions codedist docdist corporadist
+.PHONY: usage all doc
 
 usage:
 	@echo "make distributions -- Build distributions (output to dist/)"
@@ -34,7 +27,8 @@ doc:
 # DISTRIBUTIONS
 ########################################################################
 
-# Distributions. Build all from scratch.
+.PHONY: distributions codedist docdist corporadist
+
 distributions: codedist docdist corporadist
 
 codedist: clean INSTALL.TXT
@@ -57,25 +51,48 @@ INSTALL.TXT: INSTALL.TXT.in
 # ISO Image
 ########################################################################
 
+.PHONY: iso python wordnet pywordnet numarray
+.PHONY: .python.done .rsync.done .wordnet.done .pywordnet .numarray.done
+
+SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
+PYTHON = http://www.python.org/ftp/python/2.4.3
+NUMPY = $(SFNETMIRROR)/numpy
+MACPY = http://www.pythonmac.org/packages
+WN20 = http://wordnet.princeton.edu/2.0/
+
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
-	wget -N -P python/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
-	wget -N -P python/mac/  http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz
-	wget -N -P python/win/  http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi
-	wget -N -P python/win/  $(SFNETMIRROR)/numpy/numarray-1.5.1.win32-py2.4.exe?download
-	wget -N -P python/unix/ http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz
-	wget -N -P python/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
+	wget -N -P python/mac/  $(PYTHON)/Universal-MacPython-2.4.3.dmg
+	wget -N -P python/win/  $(PYTHON)/python-2.4.3.msi
+	wget -N -P python/unix/ $(PYTHON)/Python-2.4.3.tgz
 	touch .python.done
 
+numarray:
+	mkdir -p python/{mac,win,unix}
+	wget -N -P python/mac/  $(MACPY)/numarray-1.1.1-py2.4-macosx10.3.zip
+	wget -N -P python/win/  $(NUMPY)/numarray-1.5.1.win32-py2.4.exe?download
+	wget -N -P python/unix/ $(NUMPY)/numarray-1.5.1.tar.gz?download
+	mv python/win/numarray-1.5.1.win32-py2.4.exe?download python/win/numarray-1.5.1.win32-py2.4.exe
+	mv python/unix/numarray-1.5.1.tar.gz?download python/unix/numarray-1.5.1.tar.gz
+	touch .numarray.done
+
 wordnet:
-	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
-	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
-	wget -N -P python/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
-	cp python/mac/pywordnet-2.0.1.tar.gz python/mac/WordNet-2.0.tar.gz python/unix
+	mkdir -p python/{mac,win,unix}
+	wget -N -P python/mac/  $(WN20)/WordNet-2.0.tar.gz
+	wget -N -P python/win/  $(WN20)/WordNet-2.0.exe
+	cp python/mac/WordNet-2.0.tar.gz python/unix
 	touch .wordnet.done
 
-iso:	distributions .python.done .wordnet.done
+pywordnet:
+	mkdir -p python/{mac,win,unix}
+	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
+	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
+	mv python/mac/pywordnet-2.0.1.tar.gz?download python/mac/pywordnet-2.0.1.tar.gz
+	mv python/win/pywordnet-2.0.1.win32.exe?download python/win/pywordnet-2.0.1.win32.exe
+	cp python/mac/pywordnet-2.0.1.tar.gz python/unix
+	touch .pywordnet.done
+
+iso:	distributions .python.done .numarray.done .wordnet.done .pywordnet.done
 	rm -rf iso
 	mkdir -p iso/webpage iso/webpage/screenshots/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
@@ -94,15 +111,22 @@ iso:	distributions .python.done .wordnet.done
 # RSYNC
 ########################################################################
 
+.PHONY: rsync
+
+WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
+RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
+
 rsync:	clean_up
 	$(MAKE) -C web rsync
 	$(MAKE) -C doc rsync
-       	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
+	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
 	touch .rsync.done
 
 ########################################################################
 # CLEAN
 ########################################################################
+
+.PHONY: clean clean_up
 
 clean:	clean_up
 	rm -rf build iso distributions .*.done
