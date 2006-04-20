@@ -12,13 +12,13 @@ NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__'
 .PHONY: usage all doc
 
 usage:
-	@echo "make distributions -- Build distributions (output to dist/)"
+	@echo "make dist -- Build distributions (output to dist/)"
 	@echo "make python -- Fetch Python distributions"
 	@echo "make rsync -- Upload files to NLTK website"
 	@echo "make clean -- Remove all built files and temporary files"
 	@echo "make clean_up -- Remove temporary files"
 
-all: distributions
+all: dist
 
 doc:
 	$(MAKE) -C doc all
@@ -27,9 +27,9 @@ doc:
 # DISTRIBUTIONS
 ########################################################################
 
-.PHONY: distributions codedist docdist corporadist
+.PHONY: dist codedist docdist corporadist
 
-distributions: codedist docdist corporadist
+dist: codedist docdist corporadist
 
 codedist: clean INSTALL.TXT
 	python setup.py -q sdist --format=gztar
@@ -37,8 +37,8 @@ codedist: clean INSTALL.TXT
 	python setup.py -q bdist --format=rpm
 	python setup.py -q bdist --format=wininst
 
-docdist:
-	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x .svn
+docdist:	doc
+	find doc -name "*.{txt,pdf,html,css,png,tex}" -print | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
 
 corporadist:
 	zip -r dist/nltk_lite-corpora-$(NLTK_VERSION).zip corpora -x .svn
@@ -92,7 +92,7 @@ pywordnet:
 	cp python/mac/pywordnet-2.0.1.tar.gz python/unix
 	touch .pywordnet.done
 
-iso:	distributions .python.done .numarray.done .wordnet.done .pywordnet.done
+iso:	dist .python.done .numarray.done .wordnet.done .pywordnet.done
 	rm -rf iso
 	mkdir -p iso/webpage iso/webpage/screenshots/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
@@ -129,7 +129,7 @@ rsync:	clean_up
 .PHONY: clean clean_up
 
 clean:	clean_up
-	rm -rf build iso distributions .*.done
+	rm -rf build iso dist .*.done
 	$(MAKE) -C doc clean
 
 clean_up:
