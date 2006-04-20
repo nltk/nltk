@@ -64,6 +64,7 @@ B. WEBSITE
   2. cd doc; make rsync
   3. rsync code (remove .pyc and .pyo files)
   4. post to one or more of the mailing lists, including course mailing lists
+  5. post a news item
 
 C. INSTALLATION
 
