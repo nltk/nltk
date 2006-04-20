@@ -8,7 +8,8 @@
 
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
-SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
+#SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
+SFNETMIRROR = http://easynews.dl.sourceforge.net/sourceforge
 WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
