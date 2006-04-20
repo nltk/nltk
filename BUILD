@@ -61,8 +61,9 @@ A. UPLOAD DISTRIBUTIONS
 B. WEBSITE
 
   1. cd web; make rsync
-  2. rsync code and docs (remove .pyc and .pyo files)
-  3. post to one or more of the mailing lists, including course mailing lists
+  2. cd doc; make rsync
+  3. rsync code (remove .pyc and .pyo files)
+  4. post to one or more of the mailing lists, including course mailing lists
 
 C. INSTALLATION
 
