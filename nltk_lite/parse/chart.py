@@ -384,9 +384,8 @@ class Chart(object):
         """
         Construct a new empty chart.
 
-        @type tokens: L{Token}
-        @param tokens: The sentence that this chart will be used to
-            parse.
+        @type tokens: L{list}
+        @param tokens: The sentence that this chart will be used to parse.
         """
         # Record the sentence token and the sentence length.
         self._tokens = list(tokens)
@@ -594,7 +593,7 @@ class Chart(object):
 
     def _trees(self, edge, complete, memo, tree_class):
         """
-        A helper function for L{edge_to_trees}.
+        A helper function for L{trees}.
         @param memo: A dictionary used to record the trees that we've
             generated for each edge, so that when we see an edge more
             than once, we can reuse the same trees.
