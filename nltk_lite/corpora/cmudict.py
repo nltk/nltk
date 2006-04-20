@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Genesis Corpus Reader
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

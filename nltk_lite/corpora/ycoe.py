@@ -1,7 +1,7 @@
 # coding: UTF-8
 # Natural Language Toolkit: York-Toronto-Helsinki Parsed Corpus of Old English Prose (YCOE)
 #
-# Copyright (C) 2005 University of Melbourne
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Selina Dennis <selina@tranzfusion.net>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
