@@ -15,7 +15,7 @@ RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
 .PHONY: all usage help doc rsync
 .PHONY: clean clean_up iso python wordnet
-.PHONY: .python.done .doc.done .rsync.done
+.PHONY: .python.done .rsync.done .wordnet.done
 .PHONY: distributions codedist docdist corporadist
 
 usage:
@@ -27,9 +27,8 @@ usage:
 
 all: distributions
 
-doc:	.doc.done
+doc:
 	$(MAKE) -C doc all
-	touch .doc.done
 
 ########################################################################
 # DISTRIBUTIONS
@@ -44,7 +43,7 @@ codedist: clean INSTALL.TXT
 	python setup.py -q bdist --format=rpm
 	python setup.py -q bdist --format=wininst
 
-docdist:	.doc.done
+docdist:
 	zip -r dist/nltk_lite-doc-$(NLTK_VERSION).zip doc -x .svn
 
 corporadist:
@@ -58,7 +57,7 @@ INSTALL.TXT: INSTALL.TXT.in
 # ISO Image
 ########################################################################
 
-python:	.python.done
+python:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
 	wget -N -P python/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
@@ -69,7 +68,7 @@ python:	.python.done
 	wget -N -P python/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
 	touch .python.done
 
-wordnet:	.wordnet.done
+wordnet:
 	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
 	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
 	wget -N -P python/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
@@ -95,7 +94,7 @@ iso:	distributions .python.done .wordnet.done
 # RSYNC
 ########################################################################
 
-rsync:	.rsync.done clean_up
+rsync:	clean_up
 	$(MAKE) -C web rsync
 	$(MAKE) -C doc rsync
        	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
