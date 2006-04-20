@@ -6,57 +6,29 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-# Python executable
 PYTHON = python
-
-# Get the version of nltk
-NLTK_VERSION=$(shell python -c 'import nltk_lite; print nltk_lite.__version__')
-
-# CVS snapshot build directory
-DATE = $(shell date +%F)
-CVS_SNAPSHOT = nltk_lite_$(DATE)
-
-# Sourceforge mirror
+NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 SFNETMIRROR = http://optusnet.dl.sourceforge.net/sourceforge
-
 WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
-.PHONY: all usage help doc test rsync
+.PHONY: all usage help doc rsync
 .PHONY: clean clean_up iso python
 .PHONY: .python.done .doc.done .rsync.done
 .PHONY: distributions codedist docdist corporadist
 
-all: distributions
-
 usage:
 	@echo "make distributions -- Build distributions (output to dist/)"
-	@echo "make test -- Run unit tests"
-	@echo "make checkdocs -- Check docstrings for completeness"
-	@echo "make clean -- Remove temporary files"
+	@echo "make python -- Fetch Python distributions"
 	@echo "make rsync -- Upload files to NLTK website"
+	@echo "make clean -- Remove all built files and temporary files"
+	@echo "make clean_up -- Remove temporary files"
 
-# Tests.
-test: 
-	$(PYTHON) runtests.py -v -c coverage
-
-clean:	clean_up
-	$(MAKE) -C doc clean
-
-clean_up:
-	rm -f `find . -name '*.pyc'`
-	rm -f `find . -name '*.pyo'`
-	$(MAKE) -C doc clean_up
+all: distributions
 
 doc:	.doc.done
 	$(MAKE) -C doc all
 	touch .doc.done
-
-rsync:	.rsync.done clean_up
-	$(MAKE) -C web rsync
-	$(MAKE) -C doc rsync
-       	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
-	touch .rsync.done
 
 ########################################################################
 # DISTRIBUTIONS
@@ -86,23 +58,22 @@ INSTALL.TXT: INSTALL.TXT.in
 ########################################################################
 
 python:	.python.done
-	mkdir -p iso/{mac,win,unix}
-	wget -N -P iso/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
-	wget -N -P iso/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
-	wget -N -P iso/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
-	wget -N -P iso/mac/  http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz
-	wget -N -P iso/win/  http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi
-	wget -N -P iso/win/  $(SFNETMIRROR)/numpy/numarray-1.5.1.win32-py2.4.exe?download
-	wget -N -P iso/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
-	wget -N -P iso/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
-	wget -N -P iso/unix/ http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz
-	wget -N -P iso/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
-	cp iso/mac/pywordnet-2.0.1.tar.gz iso/mac/WordNet-2.0.tar.gz iso/unix
+	mkdir -p python/{mac,win,unix}
+	wget -N -P python/mac/  http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg
+	wget -N -P python/mac/  http://www.pythonmac.org/packages/numarray-1.1.1-py2.4-macosx10.3.zip
+	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
+	wget -N -P python/mac/  http://wordnet.princeton.edu/2.0/WordNet-2.0.tar.gz
+	wget -N -P python/win/  http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi
+	wget -N -P python/win/  $(SFNETMIRROR)/numpy/numarray-1.5.1.win32-py2.4.exe?download
+	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
+	wget -N -P python/win/  http://wordnet.princeton.edu/2.0/WordNet-2.0.exe
+	wget -N -P python/unix/ http://www.python.org/ftp/python/2.4.3/Python-2.4.3.tgz
+	wget -N -P python/unix/ $(SFNETMIRROR)/numpy/numarray-1.5.1.tar.gz?download
+	cp python/mac/pywordnet-2.0.1.tar.gz python/mac/WordNet-2.0.tar.gz python/unix
 	touch .python.done
 
-iso:	dist
-	echo "get Python distro?"
-	rm -rf iso/webpage iso/nltk* iso/*/nltk*
+iso:	distributions .python.done
+	rm -rf iso
 	mkdir -p iso/webpage iso/webpage/screenshots/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
 	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
@@ -115,3 +86,28 @@ iso:	dist
 	cp web/screenshots/*.jpg                        iso/web/screenshots
 	ln -f -s iso/ nltk_lite-$(NLTK_VERSION)
 	mkisofs -f -r -o dist/nltk_lite-$(NLTK_VERSION).iso nltk_lite-$(NLTK_VERSION)
+
+########################################################################
+# RSYNC
+########################################################################
+
+rsync:	.rsync.done clean_up
+	$(MAKE) -C web rsync
+	$(MAKE) -C doc rsync
+       	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
+	touch .rsync.done
+
+########################################################################
+# CLEAN
+########################################################################
+
+clean:	clean_up
+	rm -rf build iso distributions
+	$(MAKE) -C doc clean
+
+clean_up:
+	rm -f `find . -name '*.pyc'`
+	rm -f `find . -name '*.pyo'`
+	rm -f `find . -name '*~'`
+	$(MAKE) -C doc clean_up
+
