@@ -1,12 +1,20 @@
-Version 0.6.4 DATE?
+Version 0.6.4 2006-04-20
 
-* CombinedTagger tagger and marshalling taggers, contributed by Tiago Tresoldi
-* senseval and TIMIT sample corpora
-* bugfix suggested by Brent Payne
-* expanded tutorials, colorized program examples
-* ported cluster package (from old NLTK)
-* fixed problem with testing on training data reported by Jason Baldridge
-* added support for cascaded chunkers
+* Code:
+  - corpus readers for Senseval 2 and TIMIT
+  - clusterer (ported from old NLTK)
+  - support for cascaded chunkers
+  - bugfix suggested by Brent Payne
+  - new SortedDict class for regression testing
+* Contrib:
+  - CombinedTagger tagger and marshalling taggers, contributed by Tiago Tresoldi
+* Corpora:
+  - new: Senseval 2, TIMIT sample
+* Tutorials:
+  - major revisions to programming, words, tagging, chunking, and parsing tutorials
+  - many new exercises
+  - formatting improvements, including colorized program examples
+  - fixed problem with testing on training data, reported by Jason Baldridge
 	
 Version 0.6.3 2006-03-09
 
