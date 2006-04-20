@@ -9,7 +9,7 @@
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 
-.PHONY: usage all doc
+.PHONY: usage all doc .doc.done
 
 usage:
 	@echo "make dist -- Build distributions (output to dist/)"
@@ -22,6 +22,7 @@ all: dist
 
 doc:
 	$(MAKE) -C doc all
+	touch .doc.done
 
 ########################################################################
 # DISTRIBUTIONS
@@ -37,11 +38,11 @@ codedist: clean INSTALL.TXT
 	python setup.py -q bdist --format=rpm
 	python setup.py -q bdist --format=wininst
 
-docdist:	doc
-	find doc -name "*.{txt,pdf,html,css,png,tex}" -print | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
+docdist:	.doc.done
+	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
 
 corporadist:
-	zip -r dist/nltk_lite-corpora-$(NLTK_VERSION).zip corpora -x .svn
+	find corpora -print | egrep -v '.svn' | zip dist/nltk_lite-corpora-$(NLTK_VERSION).zip -@
 
 # Get the version number.
 INSTALL.TXT: INSTALL.TXT.in
