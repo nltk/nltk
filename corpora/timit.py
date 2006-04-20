@@ -3,7 +3,6 @@
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
