@@ -37,19 +37,32 @@
 
 <P>Mount the dmg, double click and follow the OSX Packager install instructions.
 
-<P>Then open a terminal session, and modify the system's linkages from
-the standard Python 2.4.x to the new version:
+<P>You will now have 2 versions of Python installed on your Mac:
+	<ul>
+	<li>Python 2.2, installed with Mac OS X by default in <pre>/usr/bin/python</pre>
+	<li>Python 2.4, installed by the previous step in <pre>/usr/local/bin/python</pre>
+	</ul>
+
+The version difference is significant since NLTK requires Python 2.4 to run.
+
+<P>To make it easier to differentiate between versions, we can create a link at the system level.
+Open a terminal session, then type:
 
 <pre>
-	sudo rm /usr/bin/python
-	sudo ln -s /usr/local/bin/python /usr/bin/python
+	sudo ln -s /usr/local/bin/python /usr/bin/python2.4
 </pre>
+
+<P>Now, when you want to use Python 2.4, you can simply type <pre>python2.4 on the command line</pre>/
 
 <P> Check the Python installation:
 
 <pre>
-	python -V
+	python2.4 -V
 </pre>
+
+which should return something similar to:
+
+<pre>Python 2.4.1</pre>.
 
 <a name="numarray"></a>
 <h2> 2. Installing Numarray </h2>
