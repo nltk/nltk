@@ -44,7 +44,7 @@ The timit module provides 4 functions and 4 data items.
 
 * speakers
 
-  List of speakers.  An example:
+  List of speaker IDs.  An example of speaker ID:
 
       dr1-fvmh0
 
@@ -87,7 +87,7 @@ The timit module provides 4 functions and 4 data items.
                PHD:doctorate degree (PhD,JD,MD), ??:unknown)
     comments   comments by the recorder
   
-The 4 functions are as follows are as follows.
+The 4 functions are as follows.
 
 * raw(sentences=items, offset=False)
 
@@ -233,12 +233,13 @@ def audiodata(item, start=0, end=None):
     @return: string of sequence of bytes of audio samples
     """
     assert(end is None or end > start)
+    headersize = 44
     fnam = os.path.join(PREFIX,item.replace(':',os.path.sep)) + '.wav'
     if end is None:
         data = open(fnam).read()
     else:
-        data = open(fnam).read(1024+end*2)
-    return data[1024+start*2:]
+        data = open(fnam).read(headersize+end*2)
+    return data[headersize+start*2:]
 
 def play(data):
     """
