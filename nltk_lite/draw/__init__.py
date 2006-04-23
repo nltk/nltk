@@ -1497,8 +1497,8 @@ class SpaceWidget(CanvasWidget):
         @type width: C{int}
         @rtype: C{None}
         """
-        [x1, y1, x2, y2] = self._tag.bbox()
-        self._canvas.coords(self._tag, x1, y1, x1+width, y2)
+        [x1, y1, x2, y2] = self.bbox()
+        self.canvas().coords(self._tag, x1, y1, x1+width, y2)
 
     def set_height(self, height):
         """
@@ -1508,8 +1508,8 @@ class SpaceWidget(CanvasWidget):
         @type height: C{int}
         @rtype: C{None}
         """
-        [x1, y1, x2, y2] = self._tag.bbox()
-        self._canvas.coords(self._tag, x1, y1, x2, y1+height)
+        [x1, y1, x2, y2] = self.bbox()
+        self.canvas().coords(self._tag, x1, y1, x2, y1+height)
         
     def _tags(self): return [self._tag]
     
