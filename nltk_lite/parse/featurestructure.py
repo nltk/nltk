@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Rob Speer (original code)
@@ -818,8 +818,14 @@ class FeatureStructure(object):
             elif isinstance(fval, FeatureStructure):
                 fval._rebind_aliased_variables(bindings, visited)
 
+    def subsumes(self, other):
+        """
+        Check if this feature structure subsumes another feature structure.
+        """
+        return other.equal_values(self.unify(other))
+
     #################################################################
-    ## String Represenations
+    ## String Representations
     #################################################################
 
     def __repr__(self):
