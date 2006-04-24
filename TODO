@@ -1,21 +1,16 @@
 KEY: "-" = not done; "~" = started; "+" = done; "?" = maybe
 
 -------------------
-Version 0.7 (March)
+Version 0.7 (May)
 -------------------
-
-? rework programming chapter [JC]
-? send first 4 chapters to reviewer (intro, prog, tokenization, tagging)
-? colourising program examples [JC]
 
 + port MIT Kimmo system [SB]
 + add presidential speeches corpus and tutorial example [SB]
 + shoebox fixes [SB]
++ consecutive numbering of examples in a chapter [EL]
 
 - add Li & Roth question classification data? [SB]
 - port more of the NLTK corpus readers [SB]
-- expand coverage of Brazilian Portuguese translations [TT]
-- consecutive numbering of examples in a chapter?
 - document recommended methods for saving models (pickle, shelve) [SB]
 - fix misc.quicksort [SB]
 - interpolated and backoff language models [SB]
@@ -27,6 +22,7 @@ Version 0.7 (March)
   - TAG, textcat, paradigms
 - make more use of sidebars
 - add Chinese treebank and corpus reader
+- add sequence values to FeatureStructure
 
 - decision list classifier
 - Unicode compliance [SB]
