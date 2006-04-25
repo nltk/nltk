@@ -16,7 +16,7 @@ __license__ = 'GPL'
 class Error(Exception): pass
 
 
-class Variable(object):
+class Variable:
     """A variable, either free or bound."""
     
     def __init__(self, name):
@@ -29,8 +29,9 @@ class Variable(object):
         
     def __str__(self): return self.name
 
+    def __repr__(self): return "Variable('%s')" % self.name
 
-class Expression(object):
+class Expression:
     """The abstract class of a lambda calculus expression."""
     def __init__(self):
         if self.__class__ is Expression:
@@ -77,15 +78,13 @@ class VariableExpression(Expression):
             return 0
 
     def variables(self):
-        set = Set([self.variable])
-        return set
+        return set([self.variable])
 
     def free(self):
-        set = Set([self.variable])
-        return set
+        return set([self.variable])
 
     def subterms(self):
-        return Set([self])
+        return set([self])
 
     def replace(self, variable, expression):
         if self.variable.equals(variable):
@@ -98,7 +97,7 @@ class VariableExpression(Expression):
 
     def __str__(self): return '%s' % self.variable
 
-    def __repr__(self): return '%s' % self.variable
+    def __repr__(self): return "VariableExpression('%s')" % self.variable
 
 class LambdaExpression(Expression):
     """A lambda expression: \\x.M."""
@@ -117,19 +116,13 @@ class LambdaExpression(Expression):
             return 0
 
     def variables(self):
-        set = Set([self.variable])
-        set.unionWith(self.term.variables())
-        return set
+        return set([self.variable]).union(self.term.variables())
 
     def free(self):
-        set = self.term.free()
-        set.remove(self.variable)
-        return set
+        return self.term.free().difference(set([self.variable]))
 
     def subterms(self):
-        set = self.term.subterms()
-        set.add(self)
-        return set
+        return self.term.subterms().union([self])
 
     def replace(self, variable, expression):
         return LambdaExpression(self.variable, \
@@ -149,6 +142,9 @@ class LambdaExpression(Expression):
         else:
             return '%s%s.%s' % (prefix, self.variable, self.term)
 
+    def __repr__(self): return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+
+
 class ApplicationExpression(Expression):
     """An application expression: (M N)."""
     def __init__(self, first, second):
@@ -166,23 +162,15 @@ class ApplicationExpression(Expression):
             return 0
 
     def variables(self):
-        set = Set()
-        set.unionWith(self.first.variables())
-        set.unionWith(self.second.variables())
-        return set
+        return self.first.variables().union(self.second.variables())
 
     def free(self):
-        set = Set()
-        set.unionWith(self.first.free())
-        set.unionWith(self.second.free())
-        return set
+        return self.first.free().union(self.second.free())
 
     def subterms(self):
-        set = Set()
-        set.unionWith(self.first.subterms())
-        set.unionWith(self.second.subterms())
-        set.add(self)
-        return set
+        first = self.first.subterms()
+        second = self.second.subterms()
+        return first.union(second).union(set([self]))
 
     def replace(self, variable, expression):
         return ApplicationExpression(self.first.replace(variable, expression),\
@@ -205,11 +193,9 @@ class ApplicationExpression(Expression):
             strFirst = strFirst[1:-1]
         return '(%s %s)' % (strFirst, self.second)
 
-    def __repr__(self):
-        return self.__str__()
+    def __repr__(self): return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
 
-
-class Parser(object):
+class Parser:
     """A lambda calculus expression parser."""
 
     # Tokens.
@@ -341,18 +327,11 @@ def main():
     P = VariableExpression(p)
     Q = VariableExpression(q)
     for l in expressions():
-        print "Expression: %s" % l
-        v = l.variables()
-        v.sort()
-        print "Variables: %s" % v
-        f = l.free()
-        f.sort()
-        print "Free: %s" % f
-        s = l.subterms()
-        s.sort()
-        print "Subterms: %s" % s
-        ls = l.simplify()
-        print "Simplify: %s" % ls
+        print "Expression:", l
+        print "Variables:", l.variables()
+        print "Free:", l.free()
+        print "Subterms:", l.subterms()
+        print "Simplify:",l.simplify()
         la = ApplicationExpression(ApplicationExpression(l, P), Q)
         las = la.simplify()
         print "Apply and simplify: %s -> %s" % (la, las)
