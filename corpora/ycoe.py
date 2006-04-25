@@ -1,4 +1,3 @@
-# coding: UTF-8
 # Natural Language Toolkit: York-Toronto-Helsinki Parsed Corpus of Old English Prose (YCOE)
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
