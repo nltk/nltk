@@ -1679,7 +1679,10 @@ class CanvasFrame(object):
             if not filename: return
         (x0, y0, w, h) = self.scrollregion()
         self._canvas.postscript(file=filename, x=x0, y=y0,
-                                width=w+2, height=h+2)
+                                width=w+2, height=h+2,
+                                pagewidth=w+2, # points = 1/72 inch
+                                pageheight=h+2, # points = 1/72 inch
+                                pagex=0, pagey=0)
 
     def scrollregion(self):
         """
