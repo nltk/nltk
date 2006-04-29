@@ -10,8 +10,8 @@
   <tr>
   <td align="center" width="16.6%" class="navbutton">
     <a class="nav" href="index.html">Home</a></td>
-  <td align="center" width="16.6%" class="selected">
-    Installation</td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="install.html">Installation</a></td>
   <td align="center" width="16.6%" class="navbutton">
     <a class="nav" href="docs.html">Documentation</a></td>
   <td align="center" width="16.6%" class="navbutton">
@@ -28,7 +28,7 @@
 
 <h1>NLTK Development Schedule</h1>
 
-<h2>0.6.5 (May)</h2>
+<h2>Version 0.6.5 (May)</h2>
 
 <ul>
 <li> Extended Shoebox support
@@ -36,88 +36,81 @@
 <li> Chinese treebank sample and corpus reader
 <li> Streamline Windows corpus installation
 <li> Words tutorial: Pywordnet discussion
-<li> Advanced programming tutorial: recommended methods for saving models (pickle?, shelve?),
-       reading and writing XML
+<li> Advanced programming tutorial: recommended methods for saving models (pickle?, shelve?);
+       reading and writing XML; formatting output, tabulation; urllib
+<li> Parsing tutorial: discuss parse tree navigation
 </ul>
 
-<h2>0.7 (June)</h2>
+<h2>Version 0.7 (June)</h2>
 
 <ul>
 <li> Improved corpus modeling and interfaces
-<li> Marshalling?
 <li> Feature-based grammars and parsers
+<li> Marshalling?
+<li> ...
 </ul>
 
 <h2>Unprioritised</h2>
 
+<h3>Software</h3>
+
 <ul>
-<li> add Li & Roth question classification data
-<li> port more NLTK corpus readers
 <li> fix misc.quicksort
 <li> interpolated and backoff language models
-<li> get epydoc docstrings to compile cleanly
-<li> port NLTK feature detectors
+<li> port NLTK feature detectors and classifiers
 <li> integrate more student projects (incl TAG, textcat, paradigms)
 <li> add sequence values to FeatureStructure
 <li> decision list classifier
-<li> Unicode compliance
-<li> check graphical demos on windows machines (add cf.mainloop()?)
-<li> produce latex-beamer slides for tutorials
 <li> add OLAC support: read and write an OLAC static repository
-<li> urllib
-<li> single PDF aggregate
-<li> port MXTerminator, and get James' fixes
-<li> collocation tutorial or in prog chapter
+<li> port MXTerminator (incl James' fixes)
 <li> collocation support (chi-sq, PMI, spearman rank correlation, etc)
-<li> Hindi materials?
 <li> new material on data modelling (interlinear text, paradigms)
 <li> maxent package and tutorial
-<li> more lexical semantics
-<li> more non-English examples and exercises throughout
-<li> feature-based syntax chapter, incl semantics
+<li> lexical semantics
+<li> good off-the-shelf tagger and chunker
+<li> more contributed materials
+<li> material on writing (adapting?) a corpus reader
+<li> information extraction (e.g. from biomedical literature)
+<li> regular expressions for extracting temporal expressions
+<li> coverage of other languages
 </ul>
 
--------------
-Uncategorized
--------------
+<h3>Corpora</h3>
 
-Most of these require code and tutorials:
+<ul>
+<li> port more NLTK corpus readers
+<li> more LDC corpus samples
+<li> Hindi materials?
+<li> add Li & Roth question classification data
+<li> SRL corpus and reader
+</ul>
 
-- port NLTK classifiers to NLTK Lite
-- permit multiple corpus locations; allow corpus readers to be pointed at user's local files
-- language modelling
-- SRL corpus and reader
-- good off-the-shelf tagger and chunker
-- instructor's manual including solutions to exercises
-- more contributed materials
-- material on writing (adapting?) a corpus reader
-- explanation of functions of distribution scripts and the parameters that scripts in the distribution take
-- add short section about formatting output - tabulation etc
-- lexical semantics
-- statistical parsing
-- information extraction (e.g. from biomedical literature)
-  - regular expressions for extracting temporal expressions
+<h3>Teaching materials</h3>
 
-- better (some?) coverage of parse tree navigation - currently can only really work this out from the API or reading the tree.py source code
+<ul>
+<li> single PDF aggregate
+<li> collect all references into a final bibliography
+<li> instructor's manual?
+<li> produce latex-beamer slides for tutorials
+<li> more non-English examples and exercises throughout
+</ul>
 
------
-BOOK
------
+<h3>Housekeeping</h3>
 
-The following rendering/organizational features would be helpful:
-- allow consecutive numbering of examples within a chapter
-- develop a 'house-style' for call-outs (e.g., Note, Tip, etc)
-   - which ones are allowed?
-   - when do we use which?
-   - how should they be rendered?
-- agree a method for cross-references between chapters
-- collect all references into a final bibliography
-- once PDF versions are available, add rule to Makefile which compiles a single PDF for all chapters
+<ul>
+<li> get epydoc docstrings to compile cleanly
+<li> Unicode compliance
+<li> permit multiple corpus locations; allow corpus readers to be pointed at user's local files
+<li> check graphical demos on windows machines (add cf.mainloop()?)
+</ul>
 
-More substantive:
-- what is the final inventory of chapters for the first edition?
-    - can we just make do with what's there plus a chapter on feature-based syntax and semantics?
-- proposed draft cycle for book
-    - produce and internally review a complete draft of all chapters at the end of each month, Sept - Dec
-
-
+</div>
+<table class="transparent" width="100%">
+<tr><td align="left"><font size="-1">
+<!-- hhmts start -->
+Last modified: Sat Apr 29 16:38:18 EST 2006
+<!-- hhmts end -->
+</font></td><td align="right"><font size="-1">
+<address><a href="mailto:sb@csse.unimelb.edu.au">Steven Bird</a></address>
+</font></td></tr></table>
+</body> </html>
