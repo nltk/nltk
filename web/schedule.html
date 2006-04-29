@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>NLTK Development Schedule</title>
+<link rel="stylesheet" href="nltk.css" type="text/css"/>
+</head>
+<body>
+
+<table width="100%" class="navbox" cellpadding="1" cellspacing="0">
+  <tr><th class="navtitle" colspan="6">Natural Language Toolkit</th></tr>
+  <tr>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="index.html">Home</a></td>
+  <td align="center" width="16.6%" class="selected">
+    Installation</td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="docs.html">Documentation</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="teach.html">Teaching</a></td>
+  <td align="center" width="16.6%" class="navbutton">
+    <a class="nav" href="contrib.html">Contributing</a></td>
+  <td align="center" width="16.6%">
+    <a href="http://sourceforge.net/projects/nltk"> 
+    <img src="sflogo.png" width="88" height="26" border="0"
+    alt="SourceForge" align="top"/></a></td>
+    </tr>
+</table>
+<div class="body">
+
+<h1>NLTK Development Schedule</h1>
+
+<h2>0.6.5 (May)</h2>
+
+<ul>
+<li> Extended Shoebox support
+<li> Simple n-gram language modeling
+<li> Chinese treebank sample and corpus reader
+<li> Streamline Windows corpus installation
+<li> Words tutorial: Pywordnet discussion
+<li> Advanced programming tutorial: recommended methods for saving models (pickle?, shelve?),
+       reading and writing XML
+</ul>
+
+<h2>0.7 (June)</h2>
+
+<ul>
+<li> Improved corpus modeling and interfaces
+<li> Marshalling?
+<li> Feature-based grammars and parsers
+</ul>
+
+<h2>Unprioritised</h2>
+
+<ul>
+<li> add Li & Roth question classification data
+<li> port more NLTK corpus readers
+<li> fix misc.quicksort
+<li> interpolated and backoff language models
+<li> get epydoc docstrings to compile cleanly
+<li> port NLTK feature detectors
+<li> integrate more student projects (incl TAG, textcat, paradigms)
+<li> add sequence values to FeatureStructure
+<li> decision list classifier
+<li> Unicode compliance
+<li> check graphical demos on windows machines (add cf.mainloop()?)
+<li> produce latex-beamer slides for tutorials
+<li> add OLAC support: read and write an OLAC static repository
+<li> urllib
+<li> single PDF aggregate
+<li> port MXTerminator, and get James' fixes
+<li> collocation tutorial or in prog chapter
+<li> collocation support (chi-sq, PMI, spearman rank correlation, etc)
+<li> Hindi materials?
+<li> new material on data modelling (interlinear text, paradigms)
+<li> maxent package and tutorial
+<li> more lexical semantics
+<li> more non-English examples and exercises throughout
+<li> feature-based syntax chapter, incl semantics
+</ul>
+
+-------------
+Uncategorized
+-------------
+
+Most of these require code and tutorials:
+
+- port NLTK classifiers to NLTK Lite
+- permit multiple corpus locations; allow corpus readers to be pointed at user's local files
+- language modelling
+- SRL corpus and reader
+- good off-the-shelf tagger and chunker
+- instructor's manual including solutions to exercises
+- more contributed materials
+- material on writing (adapting?) a corpus reader
+- explanation of functions of distribution scripts and the parameters that scripts in the distribution take
+- add short section about formatting output - tabulation etc
+- lexical semantics
+- statistical parsing
+- information extraction (e.g. from biomedical literature)
+  - regular expressions for extracting temporal expressions
+
+- better (some?) coverage of parse tree navigation - currently can only really work this out from the API or reading the tree.py source code
+
+-----
+BOOK
+-----
+
+The following rendering/organizational features would be helpful:
+- allow consecutive numbering of examples within a chapter
+- develop a 'house-style' for call-outs (e.g., Note, Tip, etc)
+   - which ones are allowed?
+   - when do we use which?
+   - how should they be rendered?
+- agree a method for cross-references between chapters
+- collect all references into a final bibliography
+- once PDF versions are available, add rule to Makefile which compiles a single PDF for all chapters
+
+More substantive:
+- what is the final inventory of chapters for the first edition?
+    - can we just make do with what's there plus a chapter on feature-based syntax and semantics?
+- proposed draft cycle for book
+    - produce and internally review a complete draft of all chapters at the end of each month, Sept - Dec
+
+
