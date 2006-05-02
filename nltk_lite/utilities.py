@@ -212,7 +212,7 @@ def re_show(regexp, string):
 def filestring(f):
     if hasattr(f, 'read'):
         return f.read()
-    elif type(f) in (StringType, UnicodeType):
+    elif isinstance(f, basestring):
         return open(f).read()
     else:
         raise ValueError, "Must be called with a filename or file-like object"
