@@ -217,6 +217,9 @@ class Tree(list):
         @rtype: list of C{cfg.Production}s
         """
 
+        if not isinstance(self.node, str):
+            raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
+
         prods = [cfg.Production(cfg.Nonterminal(self.node), _child_names(self))]
         for child in self:
             if isinstance(child, Tree):
@@ -230,15 +233,8 @@ class Tree(list):
     # [classmethod]
     def convert(cls, val):
         """
-        Convert a tree between different types.  C{cls} determines
-        which class will be used to encode the new tree.  E.g.:
-
-           >>> # Convert tree into a Tree:
-           >>> tree = Tree.convert(tree)
-           >>> # Convert tree into a ParentedTree:
-           >>> tree = ParentedTree.convert(tree)
-           >>> # Convert tree into a MultiParentedTree:
-           >>> tree = MultiParentedTree.convert(tree)
+        Convert a tree between different subtypes of Tree.  C{cls} determines
+        which class will be used to encode the new tree.
 
         @type val: L{Tree}
         @param val: The tree that should be converted.
@@ -281,7 +277,7 @@ class Tree(list):
 
     def __repr__(self):
         childstr = ' '.join([repr(c) for c in self])
-        return '(%s: %s)' % (self.node, childstr)
+        return '(%s: %s)' % (repr(self.node), childstr)
 
     def __str__(self):
         return self.pp()
@@ -764,6 +760,9 @@ better JJR I-ADJP
 """
     print conll_chunk(s, chunk_types=('NP', 'PP', 'VP')).pp()
 
+    # Demonstrate tree nodes containing objects other than strings
+    t.node = ('test', 3)
+    print t
 
 if __name__ == '__main__':
     demo()
