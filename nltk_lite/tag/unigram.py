@@ -212,7 +212,8 @@ class Regexp(SequentialBackoff):
         @param regexps: A list of C{(regexp,tag)} pairs, each of
             which indicates that a word matching C{regexp} should
             be tagged with C{tag}.  The pairs will be evalutated in
-            order.  If none of the regexps match a word, then it is
+            order.  If none of the regexps match a word, then the
+            optional backoff tagger is invoked, else it is
             assigned the tag C{None}.
         """
         self._regexps = regexps
@@ -229,6 +230,35 @@ class Regexp(SequentialBackoff):
 
     def __repr__(self):
         return '<Regexp Tagger: size=%d>' % len(self._regexps)
+
+class Lookup(SequentialBackoff):
+    """
+    A tagger that assigns tags to words based on a lookup table.
+    """
+    def __init__(self, table, backoff=None):
+        """
+        Construct a new lookup tagger.
+
+        @type table: C{dict} from C{string} to C{string}
+        @param table: A dictionary mapping words to tags,
+            which indicates that a particular Cword should be assigned
+            a given Ctag.  If none of the regexps match a word, then the
+            optional backoff tagger is invoked, else it is
+            assigned the tag C{None}.
+        """
+        self._table = table
+        self._backoff = backoff
+        self._history = None
+
+    def tag_one(self, token, history=None):
+        if token in self._table:
+            return self._table[token]
+        if self._backoff:
+            return self._backoff.tag_one(token, history)
+        return None
+
+    def __repr__(self):
+        return '<Lookup Tagger: size=%d>' % len(self._table)
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration
@@ -247,30 +277,26 @@ def demo():
     tagger using the Brown corpus.
     """
     from nltk_lite.corpora import brown
+    from nltk_lite import tag
     import sys
 
     print 'Training taggers.'
 
     # Create a default tagger
-    t0 = Default('nn')
+    t0 = tag.Default('nn')
 
-    t1 = Unigram(cutoff=1, backoff=t0)
+    t1 = tag.Unigram(cutoff=1, backoff=t0)
     t1.train(brown.tagged('a'), verbose=True)
 
-    t2 = Affix(-3, 5, cutoff=2, backoff=t0)
+    t2 = tag.Affix(-3, 5, cutoff=2, backoff=t0)
     t2.train(brown.tagged('a'), verbose=True)
 
-    t3 = Regexp([(r'.*ed', 'vbd')], backoff=t0)  # no training
+    t3 = tag.Regexp([(r'.*ed', 'vbd')], backoff=t0)  # no training
 
-    # Tokenize the testing files
+    t4 = tag.Lookup({'the': 'dt'}, backoff=t0)
+
     test_tokens = []
     num_words = 0
-
-    # Run the taggers.  For t0, t1, and t2, back-off to the default tagger.
-    # This is especially important for t1 and t2, which count on
-    # having known tags as contexts; if they get a context containing
-    # None, then they will generate an output of None, and so all
-    # words will get tagged a None.
 
     print '='*75
     print 'Running the taggers on test data...'
@@ -289,6 +315,10 @@ def demo():
     print '  Regexp tagger:       ',
     sys.stdout.flush()
     _demo_tagger(t3, list(brown.tagged('b'))[:1000])
+
+    print '  Lookup tagger:       ',
+    sys.stdout.flush()
+    _demo_tagger(t4, list(brown.tagged('b'))[:1000])
 
 if __name__ == '__main__':
     demo()
