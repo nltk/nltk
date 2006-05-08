@@ -1269,7 +1269,7 @@ class EarleyChartParse(AbstractParse):
         self._trace = trace
         AbstractParse.__init__(self)
 
-    def get_parse_list(self, tokens):
+    def get_parse_list(self, tokens, tree_class=Tree):
         chart = Chart(tokens)
         grammar = self._grammar
 
@@ -1304,7 +1304,7 @@ class EarleyChartParse(AbstractParse):
                             print 'Completer', chart.pp_edge(e,w)
 
         # Output a list of complete parses.
-        return chart.parses(grammar.start())
+        return chart.parses(grammar.start(), tree_class=tree_class)
             
 ########################################################################
 ##  Generic Chart Parser
@@ -1348,7 +1348,7 @@ class ChartParse(AbstractParse):
         self._trace = trace
         AbstractParse.__init__(self)
 
-    def get_parse_list(self, tokens):
+    def get_parse_list(self, tokens, tree_class=Tree):
         chart = Chart(tokens)
         grammar = self._grammar
 
@@ -1371,7 +1371,7 @@ class ChartParse(AbstractParse):
                 edges_added += edges_added_by_rule
         
         # Return a list of complete parses.
-        return chart.parses(grammar.start())
+        return chart.parses(grammar.start(), tree_class=tree_class)
 
 ########################################################################
 ##  Stepping Chart Parser
@@ -1479,10 +1479,10 @@ class SteppingChartParse(ChartParse):
         "@return: The chart rule used to generate the most recent edge."
         return self._current_chartrule
 
-    def parses(self):
+    def parses(self, tree_class=Tree):
         "@return: The parse trees currently contained in the chart."
-        return self._chart.parses(self._grammar.start())
-
+        return self._chart.parses(self._grammar.start(), tree_class)
+    
     #////////////////////////////////////////////////////////////
     # Parser modification
     #////////////////////////////////////////////////////////////
@@ -1515,7 +1515,7 @@ class SteppingChartParse(ChartParse):
     # Standard parser methods
     #////////////////////////////////////////////////////////////
 
-    def get_parse_list(self, token):
+    def get_parse_list(self, token, tree_class=Tree):
         # Initialize ourselves.
         self.initialize(token)
 
@@ -1524,7 +1524,7 @@ class SteppingChartParse(ChartParse):
             if e is None: break
             
         # Return a list of complete parses.
-        return self.parses()
+        return self.parses(tree_class=tree_class)
 
 ########################################################################
 ##  Demo Code
