@@ -22,6 +22,12 @@ class Variable:
     def __init__(self, name):
         self.name = name
 
+    def __eq__(self, other):
+	return self.equals(other)
+
+    def __ne__(self, other):
+	return not self.equals(other)
+
     def equals(self, other):
         """A comparison function."""
         assert isinstance(other, Variable)
@@ -31,11 +37,19 @@ class Variable:
 
     def __repr__(self): return "Variable('%s')" % self.name
 
+    def __hash__(self): return hash(repr(self))
+
 class Expression:
     """The abstract class of a lambda calculus expression."""
     def __init__(self):
         if self.__class__ is Expression:
             raise NotImplementedError
+
+    def __eq__(self, other):
+	return self.equals(other)
+
+    def __ne__(self, other):
+	return not self.equals(other)
 
     def equals(self, other):
         """Are the two expressions equal?"""
@@ -62,6 +76,12 @@ class Expression:
         raise NotImplementedError
         
     def __str__(self):
+        raise NotImplementedError
+
+    def __repr__(self):
+        raise NotImplementedError
+
+    def __hash__(self):
         raise NotImplementedError
 
 class VariableExpression(Expression):
@@ -98,6 +118,8 @@ class VariableExpression(Expression):
     def __str__(self): return '%s' % self.variable
 
     def __repr__(self): return "VariableExpression('%s')" % self.variable
+
+    def __hash__(self): return hash(repr(self))
 
 class LambdaExpression(Expression):
     """A lambda expression: \\x.M."""
@@ -144,6 +166,7 @@ class LambdaExpression(Expression):
 
     def __repr__(self): return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
 
+    def __hash__(self): return hash(repr(self))
 
 class ApplicationExpression(Expression):
     """An application expression: (M N)."""
@@ -194,6 +217,8 @@ class ApplicationExpression(Expression):
         return '(%s %s)' % (strFirst, self.second)
 
     def __repr__(self): return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
+
+    def __hash__(self): return hash(repr(self))
 
 class Parser:
     """A lambda calculus expression parser."""
