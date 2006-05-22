@@ -2,12 +2,9 @@
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
+#         Stuart Robinson <Stuart.Robinson@mpi.nl>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-
-# For a more sophisticated, validating Shoebox parser,
-# please see the nltk_contrib.misc.shoebox package,
-# contributed by Stuart Robinson <Stuart.Robinson@mpi.nl>
 
 """
 Read entries from the Shoebox corpus sample, returning a list
@@ -35,7 +32,13 @@ from string import split
 from itertools import imap
 import os
 
-def _parse_entry(s):
+def _parse_record(s):
+    """
+    @param s: shoebox record as a string
+    @type  s: L{string}
+    @rtype: iterator over L{list(string)}
+    """
+
     s = "\n" + s
     for field in split(s.rstrip(), sep="\n\\")[1:]:
         field = tuple(split(field, sep=" ", maxsplit=1))
@@ -65,11 +68,11 @@ def raw(files='rotokas', include_header=False):
         hfm = split(ff, sep=" ", maxsplit=1)[0] # raw marker of first field
 
         # Handle header
-        if include_header: yield list(_parse_entry(header))
+        if include_header: yield list(_parse_record(header))
 
         # Parse entries
         for entry in split("\n\n"+entries, sep="\n\n"+hfm)[1:]:
-            yield list(_parse_entry(hfm+entry))
+            yield list(_parse_record(hfm+entry))
 
 # assumes headwords are unique
 def dictionary(files='rotokas', include_header=False) :
