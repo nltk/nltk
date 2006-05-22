@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@csse.unimelb.edu.au> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -947,6 +948,11 @@ class GoodTuringProbDist(ProbDistI):
         c = self._freqdist.count(sample)
         nc = self._freqdist.Nr(c, self._bins)
         ncn = self._freqdist.Nr(c + 1, self._bins)
+
+        # avoid divide-by-zero errors for sparse datasets
+        if nc == 0 or self._freqdist.N() == 0:
+            return 0.0
+
         return float(c + 1) * ncn / (nc * self._freqdist.N())
 
     def max(self):
@@ -1066,11 +1072,10 @@ class ConditionalFreqDist(object):
     distributions are used to record the number of times each sample
     occured, given the condition under which the experiment was run.
     For example, a conditional frequency distribution could be used to
-    record the frequency of each word type in a document, given the
-    length of the word type.  Formally, a conditional frequency
-    distribution can be defined as a function that maps from each
-    condition to the C{FreqDist} for the experiment under that
-    condition.
+    record the frequency of each word (type) in a document, given its
+    length.  Formally, a conditional frequency distribution can be
+    defined as a function that maps from each condition to the
+    C{FreqDist} for the experiment under that condition.
 
     The frequency distribution for each condition is accessed using
     the indexing operator:
