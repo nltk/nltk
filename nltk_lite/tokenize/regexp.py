@@ -227,20 +227,12 @@ def _display(tokens):
     A helper function for L{demo} that displays a list of tokens.
     """
 
-    text = []
-    for t in tokens:
-        text.append(t)
+    str = '    '+`list(tokens)`+' '   # an indented string representation
+    str = re.sub(r"(.{,70})\s", r'\1\n     ', str).rstrip()   # wrap at 70 characters
 
-    # Get the string representation:
-    str = '    '+`text`+' '
-    
-    # Word wrap the string at 70 characters:
-    str = re.sub(r"(.{,70})\s", r'\1\n     ', str).rstrip()
-
-    # Truncate the string at 3 lines:
+    # Truncate after three lines:
     str = re.sub(r'(.+\n.+\n.+)\s\S+\n[\s\S]+(?!$)', r'\1 ...]', str)
 
-    # Print the string
     print str
 
 def demo():
@@ -263,16 +255,16 @@ def demo():
     _display(tokenize.regexp(s, pattern=r'\w+', gaps=False))
     print
     print 'Tokenize sequences of letters and sequences of nonletters:'
-    _display(tokenize.regexp(s, pattern=WORDPUNCT))
+    _display(tokenize.wordpunct(s))
+    print
+    print 'Tokenize by lines:'
+    _display(tokenize.line(s))
+    print
+    print 'Tokenize by blank lines:'
+    _display(tokenize.blankline(s))
     print
     print 'A simple sentence tokenizer:'
     _display(tokenize.regexp(s, pattern=r'\.(\s+|$)', gaps=True))
-    print
-    print 'Tokenize by lines:'
-    _display(tokenize.regexp(s, pattern=NEWLINE, gaps=True))
-    print
-    print 'Tokenize by blank lines:'
-    _display(tokenize.regexp(s, pattern=BLANKLINE, gaps=True))
     print
     
 if __name__ == '__main__':
