@@ -14,7 +14,7 @@ functionality that handles metadata, use the module I{metadata}.
 
 import re
 from nltk_lite.corpora import shoebox
-from shutil import Field, SequentialDictionary
+from utilities import Field, SequentialDictionary
 
 
 class LexiconParser:
