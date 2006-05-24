@@ -46,7 +46,7 @@ def _parse_record(s):
             field = (field[0], '')
         yield field
 
-def raw(files='rotokas', include_header=False):
+def raw(files='rotokas.dic', include_header=False):
     """
     @param files: One or more shoebox files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -59,7 +59,7 @@ def raw(files='rotokas', include_header=False):
     if type(files) is str : files = (files,)
 
     for file in files:
-        path = os.path.join(get_basedir(), "shoebox", file + ".dic")
+        path = os.path.join(get_basedir(), "shoebox", file)
         f = open(path, "U").read()
         (header, entries) = split(f, sep="\n\n", maxsplit=1)
 
@@ -75,7 +75,7 @@ def raw(files='rotokas', include_header=False):
             yield list(_parse_record(hfm+entry))
 
 # assumes headwords are unique
-def dictionary(files='rotokas', include_header=False) :
+def dictionary(files='rotokas.dic', include_header=False) :
     """
     @param files: One or more shoebox files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -96,7 +96,7 @@ def _dict_list_entry(entry):
     return d
 
 # if two entries have the same headword this key maps to a list of entries
-def dict_list(files='rotokas', include_header=False) :
+def dict_list(files='rotokas.dic', include_header=False) :
     """
     @param files: One or more shoebox files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -126,16 +126,16 @@ def demo():
     pprint(list(islice(shoebox.dict_list(), 3)))
 
     print 'Complex test cases, no header'
-    pprint(list(shoebox.raw("test")))
+    pprint(list(shoebox.raw("test.dic")))
 
     print 'Complex test cases, no header, dictionary'
-    pprint(list(shoebox.dictionary("test")))
+    pprint(list(shoebox.dictionary("test.dic")))
 
     print 'Complex test cases, no header, dictionary list'
-    pprint(list(shoebox.dict_list("test")))
+    pprint(list(shoebox.dict_list("test.dic")))
 
     print 'Complex test cases, with header'
-    pprint(list(shoebox.raw("test", include_header=True)))
+    pprint(list(shoebox.raw("test.dic", include_header=True)))
 
 if __name__ == '__main__':
     demo()
