@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Hidden Markov Model
 #
-# Copyright (C) 2003 University of Melbourne
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Philip Blunsom <pcbl@cs.mu.oz.au>
 # URL: <http://nltk.sf.net>
@@ -845,7 +845,7 @@ def load_pos():
         
     sequences = []
     sequence = []
-    symbols = Set()
+    symbols = set()
     start_re = re.compile(r'[^-*+]*')
     for sentence in sentences:
         for i in range(len(sentence)):
@@ -907,7 +907,7 @@ def demo_pos_bw():
 
     print 'Training HMM (supervised)...'
     sentences, tag_set, symbols = load_pos()
-    symbols = Set()
+    symbols = set()
     for sentence in sentences:
         for token in sentence:
             symbols.add(token[_TEXT])
