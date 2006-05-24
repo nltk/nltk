@@ -211,7 +211,6 @@ class Category(FeatureStructure, cfg.Nonterminal):
                         var = FeatureVariable.parse(varstr)
                         if bindings.is_bound(var):
                             newval = newval.replace(semvar, bindings.lookup(var))
-                #pdb.set_trace()
                 self._features[fname] = newval                  
             elif isinstance(fval, FeatureStructure):
                 fval._apply_bindings(bindings, visited)               
@@ -227,7 +226,6 @@ class Category(FeatureStructure, cfg.Nonterminal):
         _UnificationFailureError is raised, and the values of C{self}
         and C{other} are undefined.
         """
-        trace = True
         if trace:
             print '  '+'|   '*depth+'?', `self`, '==', `other`
         
