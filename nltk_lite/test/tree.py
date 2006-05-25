@@ -1,29 +1,13 @@
 # Natural Language Toolkit: Test Code for Trees
 #
-# Copyright (C) 2001 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
 # $Id$
 
-"""
-Unit testing for L{nltk.tree}.
-
-@todo: Test L{nltk.tree.ProbabilisticTreeToken}
-@todo: Test L{nltk.tree.parse_treebank}
-"""
-
-from nltk.tree import *
-from nltk.tokenizer import WhitespaceTokenizer
-from nltk.tokenreader import TreebankTokenReader
-
-##//////////////////////////////////////////////////////
-##  Test code
-##//////////////////////////////////////////////////////
-
-
-def test_Tree(): r"""
+r"""
 Unit test cases for L{tree.Tree}.
 
 C{Trees} are used to encode hierarchical structures.  Each C{Tree}
@@ -240,67 +224,3 @@ Trees can be compared for equality:
     >>> tree < tree2 or tree > tree2
     True
 """
-
-def test_TreebankTokenReader(): r"""
-Unit tests for L{TreebankTokenReader}.
-
-The treebank token reader reads a treebank-style tree into a single
-token, with the TREE and WORDS properties:
-
-    >>> s = '(S (NP I) (VP (V enjoyed) (NP my cookie)))'
-    >>> treetok = TreebankTokenReader(SUBTOKENS='WORDS').read_token(s)
-    >>> print treetok.properties()
-    ['TREE', 'WORDS']
-    >>> print treetok['TREE']
-    (S: (NP: <I>) (VP: (V: <enjoyed>) (NP: <my> <cookie>)))
-    >>> print treetok['WORDS']
-    [<I>, <enjoyed>, <my>, <cookie>]
-
-With an optional argument (C{add_subtoks}), the token reader constructor
-can be told not to include the WORDS property:
-
-    >>> treetok = TreebankTokenReader(add_subtoks=False).read_token(s)
-    >>> print treetok.properties()
-    ['TREE', 'SUBTOKENS']
-
-Another optional argument (C{add_locs}), can be used to tell the token
-reader constructor to add LOC properties to each leaf:
-
-    >>> tb_reader = TreebankTokenReader(SUBTOKENS='WORDS')
-    >>> treetok = tb_reader.read_token(s, add_locs=True)
-    >>> print treetok['TREE']
-    (S:
-      (NP: <I>@[7:8c])
-      (VP: (V: <enjoyed>@[17:24c]) (NP: <my>@[30:32c] <cookie>@[33:39c])))
-    >>> print treetok['WORDS']
-    [<I>@[7:8c], <enjoyed>@[17:24c], <my>@[30:32c], <cookie>@[33:39c]]
-    >>> loc = treetok['WORDS'][1]['LOC']
-    >>> print loc.select(s)
-    enjoyed
-
-Another optional argument (C{add_contexts}), can be used to tell the
-token reader constructor to add LOC properties to each leaf:
-    
-    >>> treetok = TreebankTokenReader(add_contexts=True).read_token(s)
-    >>> # [XX] Finish this test!
-"""
-
-#######################################################################
-# Test Runner
-#######################################################################
-
-import sys, os, os.path
-if __name__ == '__main__': sys.path[0] = None
-import unittest, doctest, trace
-
-def testsuite(reload_module=False):
-    import doctest, nltk.test.tree
-    if reload_module: reload(nltk.test.tree)
-    return doctest.DocTestSuite(nltk.test.tree)
-
-def test(verbosity=2, reload_module=False):
-    runner = unittest.TextTestRunner(verbosity=verbosity)
-    runner.run(testsuite(reload_module))
-
-if __name__ == '__main__':
-    test(reload_module=True)
