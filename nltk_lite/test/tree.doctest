@@ -1,14 +1,6 @@
-# Natural Language Toolkit: Test Code for Trees
-#
-# Copyright (C) 2001-2006 University of Pennsylvania
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.sf.net>
-# For license information, see LICENSE.TXT
-#
-# $Id$
-
-r"""
 Unit test cases for L{tree.Tree}.
+
+    >>> from nltk_lite.parse.tree import *
 
 C{Trees} are used to encode hierarchical structures.  Each C{Tree}
 object encodes a single grouping in the hierarchy.  A C{Tree} is
@@ -32,7 +24,7 @@ children:
     >>> Tree('S', [Tree('NP', ['I']), 
     ...            Tree('VP', [Tree('V', ['saw']),
     ...                        Tree('NP', ['him'])])])
-    (S: (NP: 'I') (VP: (V: 'saw') (NP: 'him')))
+    ('S': ('NP': 'I') ('VP': ('V': 'saw') ('NP': 'him')))
 
 One exception to \"any iterable\": in order to avoid confusion,
 strings are I{not} accepted as children lists:
@@ -55,8 +47,8 @@ Some trees to run tests on:
     >>> tree = Tree('s', [dp1, vp])
     >>> print tree
     (s:
-      (dp: (d: the) (np: dog))
-      (vp: (v: chased) (dp: (d: the) (np: cat))))
+      (dp: (d: 'the') (np: 'dog'))
+      (vp: (v: 'chased') (dp: (d: 'the') (np: 'cat'))))
 
 The node value is stored using the C{node} attribute:
 
@@ -69,37 +61,37 @@ This attribute can be modified directly:
     >>> dp2.node = 'np'
     >>> print tree
     (s:
-      (np: (d: the) (np: dog))
-      (vp: (v: chased) (np: (d: the) (np: cat))))
+      (np: (d: 'the') (np: 'dog'))
+      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
 
 Children can be accessed with indexing, just as with normal lists:
 
     >>> tree[0]
-    (np: (d: 'the') (np: 'dog'))
+    ('np': ('d': 'the') ('np': 'dog'))
     >>> tree[1][1]
-    (np: (d: 'the') (np: 'cat'))
+    ('np': ('d': 'the') ('np': 'cat'))
 
 Children can be modified directly, as well:
 
     >>> tree[0], tree[1][1] = tree[1][1], tree[0]
     >>> print tree
     (s:
-      (np: (d: the) (np: cat))
-      (vp: (v: chased) (np: (d: the) (np: dog))))
+      (np: (d: 'the') (np: 'cat'))
+      (vp: (v: 'chased') (np: (d: 'the') (np: 'dog'))))
 
 The C{Tree} class adds a new method of indexing, using tuples rather
 than ints.  C{t[a,b,c]} is equivalant to C{t[a][b][c]}.  The sequence
 C{(a,b,c)} is called a \"tree path\".
 
     >>> print tree[1,1][0]
-    (d: the)
+    (d: 'the')
 
     >>> # Switch the cat & dog back the way they were.
     >>> tree[1,1], tree[0] = tree[0], tree[1,1]
     >>> print tree
     (s:
-      (np: (d: the) (np: dog))
-      (vp: (v: chased) (np: (d: the) (np: cat))))
+      (np: (d: 'the') (np: 'dog'))
+      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
 
     >>> path = (1,1,1,0)
     >>> print tree[path]
@@ -115,15 +107,15 @@ The length of a tree is the number of children it has.
 The current repr for trees looks like this:
 
     >>> print repr(tree)
-    (s: (np: (d: 'the') (np: 'dog')) (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
+    ('s': ('np': ('d': 'the') ('np': 'dog')) ('vp': ('v': 'chased') ('np': ('d': 'the') ('np': 'cat'))))
 
 But this might change in the future.  Similarly, the current str looks
 like:
 
     >>> print str(tree)
     (s:
-      (np: (d: the) (np: dog))
-      (vp: (v: chased) (np: (d: the) (np: cat))))
+      (np: (d: 'the') (np: 'dog'))
+      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
     
 (Note line-wrapping).  But the details of both reprs might change.
 
@@ -177,8 +169,8 @@ could upper-case all leaves with:
     ...     tree[pos] = tree[pos].upper()
     >>> print tree
     (s:
-      (np: (d: THE) (np: DOG))
-      (vp: (v: CHASED) (np: (d: THE) (np: CAT))))
+      (np: (d: 'THE') (np: 'DOG'))
+      (vp: (v: 'CHASED') (np: (d: 'THE') (np: 'CAT'))))
 
 In addition to C{str} and C{repr}, several methods exist to convert a
 tree object to one of several standard tree encodings:
@@ -187,8 +179,8 @@ tree object to one of several standard tree encodings:
     (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
     >>> print tree.pp_latex_qtree()
     \Tree [.s
-            [.np [.d THE ] [.np DOG ] ]
-            [.vp [.v CHASED ] [.np [.d THE ] [.np CAT ] ] ] ]
+            [.np [.d 'THE' ] [.np 'DOG' ] ]
+            [.vp [.v 'CHASED' ] [.np [.d 'THE' ] [.np 'CAT' ] ] ] ]
 
 Trees can be parsed from treebank strings with the static
 C{Tree.parse} method:
@@ -223,4 +215,3 @@ Trees can be compared for equality:
     
     >>> tree < tree2 or tree > tree2
     True
-"""
