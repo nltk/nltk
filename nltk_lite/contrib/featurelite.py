@@ -8,6 +8,7 @@ things that need to be specialized objects are variables.
 
 from copy import copy, deepcopy
 import re
+import pdb
 
 class UnificationFailure(Exception): pass
 
@@ -34,7 +35,6 @@ class Variable(object):
         if name is None: name = self._uid
         self._name = name
         self._value = value
-        self._bindings = {}
     def name(self):
         return self._name
     def value(self):
@@ -46,17 +46,14 @@ class Variable(object):
         if isinstance(self._value, Variable):
             return self._value.forwarded_self()
         else: return self
-    def bindings(self):
-        return self._bindings
-    def bindValue(self, value, bindings=None):
+    def bindValue(self, value, ourbindings, otherbindings):
         if isinstance(self._value, Variable):
-            return self._value.bindValue(value, bindings)
-        if bindings is None: bindings = {}
+            return self._value.bindValue(value, ourbindings, otherbindings)
         if self._value is None: self._value = value
         else:
-            self._value = unify(self._value, value, self._bindings, bindings)
-    def become(self, other):
-        other.bindValue(self.value(), self.bindings())
+            self._value = unify(self._value, value, ourbindings, otherbindings)
+    def become(self, other, ourbindings, otherbindings):
+        other.bindValue(self.value(), ourbindings, otherbindings)
         self._value = other
         return other
         
@@ -123,6 +120,8 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     _apply_bindings(unified, {})
 
     print feature1, feature2, '=>', unified
+    print "\t", bindings1
+    print "\t", bindings2
     return unified
 
 def _destructively_unify(feature1, feature2, bindings1, bindings2, memo):
@@ -150,17 +149,19 @@ def _nontrivial_unify(feature1, feature2, bindings1, bindings2, memo):
     
     if isinstance(feature1, Variable):
         if isinstance(feature2, Variable):
-            return feature1.become(feature2)
+            return feature1.become(feature2, bindings1, bindings2)
         else:
-            feature1.bindValue(feature2)
+            feature1.bindValue(feature2, bindings1, bindings2)
             return feature1
     if isinstance(feature2, Variable):
-        feature2.bindValue(feature1)
+        feature2.bindValue(feature1, bindings2, bindings1)
         return feature2
     
     if not isinstance(feature1, dict):
         if feature1 == feature2: return feature1
-        else: raise UnificationFailure
+        else: 
+            pdb.set_trace()
+            raise UnificationFailure
     if not isinstance(feature2, dict): raise UnificationFailure
     
     # At this point, we know they're both dictionaries.
@@ -290,9 +291,17 @@ class FeatureTestCase(unittest.TestCase):
         f2 = {'b': Variable('y'), 'c': Variable('y')}
         u12 = unify(f1, f2)
         f3 = {'a': 3, 'b': Variable('y'), 'c': Variable('y')}
-        self.assert_(u12['a'] == u12['b'])
-        self.assert_(u12['b'] == u12['c'])
+        self.assertEqual(u12['a'], u12['b'])
+        self.assertEqual(u12['b'], u12['c'])
         unify(f1, f3)
+
+    def testAsymmetry(self):
+        'Asymmetric variable values'
+        f1 = {'a': Variable('x'), 'b': True}
+        f2 = {'a': False, 'b': Variable('x')}
+        u12 = unify(f1, f2)
+        f3 = {'a': False, 'b': True}
+        self.assertEqual(u12, f3)
 
 def testsuite():
     t1 = unittest.makeSuite(FeatureTestCase)
