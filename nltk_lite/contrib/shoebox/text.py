@@ -9,7 +9,7 @@ TODO
 """
 
 import re
-from shutil import FieldParser, SequentialDictionary
+from utilities import FieldParser, SequentialDictionary
 
 
 # --------------------------------------------------------
