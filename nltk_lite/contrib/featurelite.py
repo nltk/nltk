@@ -8,13 +8,12 @@ things that need to be specialized objects are variables.
 
 from copy import copy, deepcopy
 import re
-import pdb
 
 class UnificationFailure(Exception): pass
 
-class FORWARD(object):
+class _FORWARD(object):
     """
-    FORWARD is a singleton value, used in unification as a flag that a value
+    _FORWARD is a singleton value, used in unification as a flag that a value
     has been forwarded to another object. An empty class is a quick way to
     get a singleton.
     """
@@ -107,8 +106,12 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     The value 'None' unifies with anything. It's more general than {}:
     {} unifies with any dictionary, but None unifies with anything at all.
     """
-    if bindings1 is None: bindings1 = {}
-    if bindings2 is None: bindings2 = bindings1
+    if bindings1 is None and bindings2 is None:
+        bindings1 = {}
+        bindings2 = {}
+    else:
+        if bindings1 is None: bindings1 = {}
+        if bindings2 is None: bindings2 = bindings1
     
     copy1, copy2 = (_copy_and_bind(feature1, bindings1),
                    _copy_and_bind(feature2, bindings2))
@@ -135,8 +138,10 @@ def _destructively_unify(feature1, feature2, bindings1, bindings2, memo):
     """
     if memo.has_key((id(feature1), id(feature2))):
         return memo[id(feature1), id(feature2)]
+    print "Unifying:", feature1, feature2
     unified = _nontrivial_unify(feature1, feature2, bindings1, bindings2, memo)
     memo[id(feature1), id(feature2)] = unified
+    print "Result:", unified
     return unified
 
 def _nontrivial_unify(feature1, feature2, bindings1, bindings2, memo):
@@ -160,17 +165,16 @@ def _nontrivial_unify(feature1, feature2, bindings1, bindings2, memo):
     if not isinstance(feature1, dict):
         if feature1 == feature2: return feature1
         else: 
-            pdb.set_trace()
             raise UnificationFailure
     if not isinstance(feature2, dict): raise UnificationFailure
     
     # At this point, we know they're both dictionaries.
     # Start destroying stuff.
 
-    while feature2.has_key(FORWARD): feature2 = feature2[FORWARD]
-    feature2[FORWARD] = feature1
+    while feature2.has_key(_FORWARD): feature2 = feature2[_FORWARD]
+    feature2[_FORWARD] = feature1
     for (fname, val2) in feature2.items():
-        if fname == FORWARD: continue
+        if fname == _FORWARD: continue
         val1 = feature1.get(fname)
         feature1[fname] = _destructively_unify(val1, val2, bindings1, bindings2, memo)
     return feature1
@@ -186,8 +190,8 @@ def _apply_forwards(feature, visited):
 
     for fname, fval in feature.items():
         if isinstance(fval, dict):
-            while fval.has_key(FORWARD):
-                fval = fval[FORWARD]
+            while fval.has_key(_FORWARD):
+                fval = fval[_FORWARD]
                 feature[fname] = fval
             _apply_forwards(fval, visited)
 
@@ -209,9 +213,9 @@ def _apply_bindings(feature, visited):
 
 def _apply_forwards_to_bindings(bindings):
     for (key, value) in bindings.items():
-        if isinstance(value, dict) and value.has_key(FORWARD):
-            while value.has_key(FORWARD):
-                value = value[FORWARD]
+        if isinstance(value, dict) and value.has_key(_FORWARD):
+            while value.has_key(_FORWARD):
+                value = value[_FORWARD]
             bindings[key] = value
 
 import unittest
@@ -264,11 +268,7 @@ class FeatureTestCase(unittest.TestCase):
         f1 = {'F': base, 'G': base}
         f2 = {'F': {'H': base2}, 'G': base2}
         u12 = unify(f1, f2)
-        f3 = {'F': {}}
-        f3['F']['H'] = f3['F']
-        f3['G'] = f3['F']
 
-        self.assertEquals(u12, f3)
         self.assert_(u12['F'] is u12['G'])
         self.assert_(u12['F'] is u12['G']['H'])
         self.assert_(u12['F'] is u12['G']['H']['H'])
@@ -294,6 +294,14 @@ class FeatureTestCase(unittest.TestCase):
         self.assertEqual(u12['a'], u12['b'])
         self.assertEqual(u12['b'], u12['c'])
         unify(f1, f3)
+        
+    def testAsymmetry(self):
+        'Asymmetry in variable merging'
+        f1 = {'a': Variable('x'), 'b': True}
+        f2 = {'a': False, 'b': Variable('x')}
+        u12 = unify(f1, f2)
+        self.assertEqual(u12['a'], False)
+        self.assertEqual(u12['b'], True)
 
     def testAsymmetry(self):
         'Asymmetric variable values'
