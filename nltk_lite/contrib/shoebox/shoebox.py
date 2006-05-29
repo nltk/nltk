@@ -11,20 +11,19 @@ Read entries from the Shoebox corpus sample, returning a list
 of pairs (where each pair consists of a field name and value),
 or a list of dictionaries (one per Shoebox entry).
 
-Contents: lexicons for various languages, with entries of the form:
-
-\\lx kaakauko
-\\ps N.M
-\\ge gray weevil
-\\sf FAUNA.INSECT
-\\nt pictured on PNG postage stamp
-\\dt 28/Jan/2005
-\\ex Kaakauko ira toupareveira aue-ia niugini stemp.
-\\xp Kaakauko em insect em i istap long niugini.
-\\xe The gray weevil is found on the PNG stamp.
-\\ex Kaakauko iria toupaeveira niugini stamia.
-\\xp Weevil i stap long niguini stamp.
-\\xe The gray weevil is on the New Guinea stamp.
+Contents: lexicons for various languages, with entries of the form::
+ \\lx kaakauko
+ \\ps N.M
+ \\ge gray weevil
+ \\sf FAUNA.INSECT
+ \\nt pictured on PNG postage stamp
+ \\dt 28/Jan/2005
+ \\ex Kaakauko ira toupareveira aue-ia niugini stemp.
+ \\xp Kaakauko em insect em i istap long niugini.
+ \\xe The gray weevil is found on the PNG stamp.
+ \\ex Kaakauko iria toupaeveira niugini stamia.
+ \\xp Weevil i stap long niguini stamp.
+ \\xe The gray weevil is on the New Guinea stamp.
 """
 
 from nltk_lite.corpora import get_basedir
@@ -53,8 +52,12 @@ def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
     """
     @param files: One or more shoebox files to be processed
     @type files: L{string} or L{tuple(string)}
-    @param include_header: treat header as entry?
+    @param include_header: flag that determines whether to treat header as record (default is no)
     @type include_header: boolean
+    @param head_field_marker: option for explicitly setting which marker to use as the head field
+                              when parsing the file (default is automatically determining it from
+                              the first field of the first record)
+    @type head_field_marker: string
     @rtype: iterator over L{list(string)}
     """       
 
