@@ -35,7 +35,7 @@ defines three chart parsers:
   - C{SteppingChartParse} is a subclass of C{ChartParse} that can
     be used to step through the parsing process.
 
-  - C{EarleyParse} is an implementation of the Earley chart parsing
+  - C{EarleyChartParse} is an implementation of the Earley chart parsing
     algorithm.  It makes a single left-to-right pass through the
     chart, and applies one of three rules (predictor, scanner, and
     completer) to each edge it encounters.
@@ -277,11 +277,11 @@ class TreeEdge(EdgeI):
 
     # Comparisons & hashing
     def __cmp__(self, other):
-        if not isinstance(other, TreeEdge): return -1
-        return cmp((self._span, self._lhs, self._rhs, self._dot),
-                   (other._span, other._lhs, other._rhs, other._dot))
+	if self.__class__ != other.__class__: return -1
+        return cmp((self._span, self.lhs(), self.rhs(), self._dot),
+                   (other._span, other.lhs(), other.rhs(), other._dot))
     def __hash__(self):
-        return hash((self._lhs, self._rhs, self._span, self._dot))
+        return hash((self.lhs(), self.rhs(), self._span, self._dot))
 
     # String representation
     def __str__(self):

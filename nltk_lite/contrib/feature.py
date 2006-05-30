@@ -1,11 +1,34 @@
-# Contributed by Rob Speer
+# Contributed by Rob Speer (NLTK version)
+# Initial port to NLTK-Lite by Steven Bird
+# Overhauled by Peter Wang
 
 from nltk_lite.parse.featurestructure import *
 from nltk_lite.parse import cfg
 from nltk_lite.contrib import church
-import string
 
-import pdb
+class ChurchParserSubst(church.Parser):
+    """
+    A lambda calculus expression parser, extended to create application
+    expressions which support the SubstituteBindingsI interface.
+    """
+    def make_ApplicationExpression(self, first, second):
+        return ApplicationExpressionSubst(first, second)
+
+class ApplicationExpressionSubst(church.ApplicationExpression, SubstituteBindingsI):
+    """
+    A lambda application expression, extended to implement the
+    SubstituteBindingsI interface.
+    """
+    def substitute_bindings(self, bindings):
+        newval = self
+        for semvar in self.variables():
+            varstr = str(semvar)
+            # discard church Variables which are not FeatureVariables
+            if varstr.startswith('?'): 
+                var = FeatureVariable.parse(varstr)
+                if bindings.is_bound(var):
+                    newval = newval.replace(semvar, bindings.lookup(var))
+        return newval
 
 class Category(FeatureStructure, cfg.Nonterminal):
     """
@@ -43,7 +66,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
     requiredFeatures = []
     
     def __init__(self, **features):
-        self._features = features
+        FeatureStructure.__init__(self, **features)
         self._required = self.__class__.requiredFeatures
         for name in self._required:
             if not self._features.has_key(name):
@@ -125,12 +148,10 @@ class Category(FeatureStructure, cfg.Nonterminal):
     
     def symbol(self):
         """
-        @return: the one-line string representation of the Category.
-        @rtype: C{str}
-
-        If you want the symbol for the head of the category, use C{head()}.
+        @return: The node value corresponding to this C{Category}. 
+        @rtype: C{Category}
         """
-        return repr(self)
+        return self
 
     def head(self):
         """
@@ -176,6 +197,10 @@ class Category(FeatureStructure, cfg.Nonterminal):
     def has_feature(self, name):
         return (name in self.feature_names())
 
+    #################################################################
+    ## Variables
+    #################################################################
+    
     def remove_unbound_vars(self):
         selfcopy = self.deepcopy()
         selfcopy._remove_unbound_vars()
@@ -188,123 +213,25 @@ class Category(FeatureStructure, cfg.Nonterminal):
             elif isinstance(fval, Category):
                 fval._remove_unbound_vars()
 
-                
-    # EK: adapted from nltk.featurestructure
-    # We need to deal with cases where the LHS of a rule
-    # has a value which is an ApplicationExpression containing FeatureVariables
-    def _apply_bindings(self, bindings, visited):
-        # Visit each node only once:
-        if visited.has_key(id(self)): return
-        visited[id(self)] = 1
-      
-        for (fname, fval) in self._features.items():
-            if isinstance(fval, FeatureVariable):
-                if bindings.is_bound(fval):
-                    self._features[fname] = bindings.lookup(fval)
-            # fval is a church Expression of the form 'app(?x ?y)
-            elif isinstance(fval, church.ApplicationExpression):
-                newval = fval
-                for semvar in fval.variables():
-                    varstr = semvar.__str__()
-                    # discard church Variables which are not FeatureVariables
-                    if varstr.startswith('?'): 
-                        var = FeatureVariable.parse(varstr)
-                        if bindings.is_bound(var):
-                            newval = newval.replace(semvar, bindings.lookup(var))
-                self._features[fname] = newval                  
-            elif isinstance(fval, FeatureStructure):
-                fval._apply_bindings(bindings, visited)               
-    
-    # All this is unlikely to be necessary. All I've changed is to make
-    # strings case-insensitive.
+    #################################################################
+    ## Unification
+    #################################################################
+ 
     def _destructively_unify(self, other, bindings, trace=False, depth=0):
-        """
-        Attempt to unify C{self} and C{other} by modifying them
-        in-place.  If the unification succeeds, then C{self} will
-        contain the unified value, and the value of C{other} is
-        undefined.  If the unification fails, then a
-        _UnificationFailureError is raised, and the values of C{self}
-        and C{other} are undefined.
-        """
-        if trace:
-            print '  '+'|   '*depth+'?', `self`, '==', `other`
-        
-        for (fname, otherval) in other._features.items():
-            if trace:
-                trace_otherval = otherval
-                trace_selfval_defined = self._features.has_key(fname)
-                trace_selfval = self._features.get(fname)
-            if self._features.has_key(fname):
-                selfval = self._features[fname]
-                # If selfval or otherval is a bound variable, then
-                # replace it by the variable's bound value.
-                if isinstance(selfval, FeatureVariable):
-                    selfval = bindings.lookup(selfval)
-                    if trace:
-                        print '  | Bound var:', bindings.lookup(selfval)
-                if isinstance(otherval, FeatureVariable):
-                    otherval = bindings.lookup(otherval)
+        FeatureStructure._destructively_unify(self, other, bindings, \
+            trace=trace, ci_str_cmp=True, depth=depth)
+  
+    #################################################################
+    ## String Representations
+    #################################################################
 
-                if trace:
-                    print '  '+'|   '*(depth+1)
-                    print '  '+'%s| Unify "%s" feature:' % ('|   '*(depth),fname)
-                    
-                # Case 1: unify 2 feature structures (recursive case)
-                if (isinstance(selfval, FeatureStructure) and
-                    isinstance(otherval, FeatureStructure)):
-                    selfval._destructively_unify(otherval, bindings,
-                                                 trace, depth+1)
 
-                # Case 2: unify 2 variables
-                elif (isinstance(selfval, FeatureVariable) and
-                      isinstance(otherval, FeatureVariable)):
-                    self._features[fname] = selfval.alias(otherval)
-                
-                # Case 3: unify a variable with a value
-                elif isinstance(selfval, FeatureVariable):
-                    bindings.bind(selfval, otherval)
-                elif isinstance(otherval, FeatureVariable):
-                    bindings.bind(otherval, selfval)
-
-                # Case 4A: unify two strings.
-                elif isinstance(selfval, str) and isinstance(otherval, str)\
-                and selfval.upper() == otherval.upper(): pass
-                    
-                # Case 4: unify 2 non-equal values (failure case)
-                elif selfval != otherval:
-                    if trace: print '  '+'|   '*depth + 'X <-- FAIL'
-                    raise FeatureStructure._UnificationFailureError()
-
-                # Case 5: unify 2 equal values
-                else: pass
-
-                if trace and not isinstance(selfval, FeatureStructure):
-                    # apply_forwards to get reentrancy links right:
-                    if isinstance(trace_selfval, FeatureStructure):
-                        trace_selfval._apply_forwards({})
-                    if isinstance(trace_otherval, FeatureStructure):
-                        trace_otherval._apply_forwards({})
-                    print '  '+'%s|   ? %r == %r' % ('|   '*(depth), trace_selfval, trace_otherval)
-                    print '  '+'%s|   > %r' % ('|   '*(depth),
-                                            self._features[fname])
-                    
-            # Case 5: copy from other
-            else:
-                self._features[fname] = otherval
-
-        if trace:
-            print '  '+'|   '*depth+'|'
-            print '  '+'|   '*depth+'>', `self`
-            if len(bindings.bound_variables()) > 0:
-                print '  '+'|   '*depth+'    '+`bindings`
-    
     def __repr__(self):
         """
         @return: A string representation of this feature structure.
         """
         if self._memorepr is not None: return self._memorepr
         else: return self._repr({}, {})
-        return self._memorepr
     
     def _repr(self, reentrances, reentrance_ids):
         segments = []
@@ -330,6 +257,10 @@ class Category(FeatureStructure, cfg.Nonterminal):
         return '%s[%s]' % (head, ', '.join(segments))
 
     def _str(self, reentrances, reentrance_ids):
+        # This code is very similar to FeatureStructure._str but
+        # we print the head feature very differently, so it's hard to
+        # combine the two methods.
+
         # Special case:
         if len(self.feature_names()) == 0:
             return ['[]']
@@ -385,7 +316,8 @@ class Category(FeatureStructure, cfg.Nonterminal):
         headline = (len(lines) - 1)/2
         if self.has_feature(self.__class__.headname):
             head = self[self.__class__.headname]
-        else: head = ''
+        else:
+            head = ''
         maxlen = max([len(line) for line in lines])
         for l in range(len(lines)):
             line = lines[l]
@@ -396,52 +328,23 @@ class Category(FeatureStructure, cfg.Nonterminal):
 
         return lines
 
+    #################################################################
+    ## Parsing
+    #################################################################
+
     # Regular expressions for parsing.
-    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]]+)\s*'),
-                 'categorystart': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]]*)\s*\['),
+    # Extend the expressions already present in FeatureStructure._PARSE_RE
+    _PARSE_RE = {'categorystart': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]]*)\s*\['),
                  'bool': re.compile(r'\s*([-\+])'),
-                 'ident': re.compile(r'\s*\((\d+)\)\s*'),
                  'arrow': re.compile(r'\s*->\s*'),
-                 'assign': re.compile(r'\s*=\s*'),
-                 'bracket': re.compile(r'\s*]\s*'),
-                 'comma': re.compile(r'\s*,\s*'),
-                 'none': re.compile(r'None(?=\s|\]|,)'),
-                 'int': re.compile(r'-?\d+(?=\s|\]|,)'),
-                 'var': re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*'+'|'+
-                                   r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
-                                   r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>'),
-                 'symbol': re.compile(r'\w+'),
-#                 'application': re.compile(r'(app)\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)'),
+                #'application': re.compile(r'(app)\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)'),
                  'disjunct': re.compile(r'\s*\|\s*'),
-                 'whitespace': re.compile(r'\s*'),
-                 'stringmarker': re.compile("['\"\\\\]")}
+                 'whitespace': re.compile(r'\s*')}
+    for (k, v) in FeatureStructure._PARSE_RE.iteritems():
+        assert k not in _PARSE_RE
+        _PARSE_RE[k] = v
     
-    def parse(cls, s):
-        """
-        Convert a string representation of a feature structure (as
-        displayed by C{repr}) into a C{Category}.   This parse
-        imposes the following restrictions on the string
-        representation:
-          - Feature names cannot contain any of the following:
-            whitespace, parenthases, quote marks, equals signs,
-            dashes, plus signs, and square brackets.
-          - Only the following basic feature value are supported:
-            strings, integers, variables, C{None}, C{True}, C{False},
-            and unquoted alphanumeric strings.
-          - A feature named C{foo} with a value of C{True} or C{False} should
-            be expressed as C{+foo} or C{-foo} respectively, not as
-            C{foo=True} or C{foo=False}.
-        """
-        try:
-            value, position = cls._parse(s, 0, {})
-        except ValueError, e:
-            estr = ('Error parsing field structure\n\n\t' +
-                    s + '\n\t' + ' '*e.args[1] + '^ ' +
-                    'Expected %s\n' % e.args[0])
-            raise ValueError, estr
-        if position != len(s): raise ValueError()
-        return value
-    
+    # [classmethod]
     def _parse(cls, s, position=0, reentrances=None):
         """
         Helper function that parses a Category.
@@ -519,6 +422,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
         # We never saw a close bracket.
         raise ValueError('close bracket', position)
 
+    # [classmethod]
     def _parseval(cls, s, position, reentrances):
         """
         Helper function that parses a feature value.  Currently
@@ -536,17 +440,17 @@ class Category(FeatureStructure, cfg.Nonterminal):
         # End of string (error)
         if position == len(s): raise ValueError('value', position)
 
-        # EK: Semantic value, of the form <app(?x, ?y) >'; return an ApplicationExpression
- 	match = _PARSE_RE['application'].match(s, position)
+        # Semantic value of the form <app(?x, ?y) >'; return an ApplicationExpression
+        match = _PARSE_RE['application'].match(s, position)
         if match is not None:
-            fun = church.Parser(match.group(2)).next()
-            arg = church.Parser(match.group(3)).next()
-            return church.ApplicationExpression(fun, arg), match.end()	
+            fun = ChurchParserSubst(match.group(2)).next()
+            arg = ChurchParserSubst(match.group(3)).next()
+            return ApplicationExpressionSubst(fun, arg), match.end()       
 
- 	# EK: Other semantic value enclosed by '< >'; return value given by the church parser
- 	match = _PARSE_RE['semantics'].match(s, position)
+        # other semantic value enclosed by '< >'; return value given by the church parser
+        match = _PARSE_RE['semantics'].match(s, position)
         if match is not None:
-            return church.Parser(match.group(1)).next(), match.end()	
+            return ChurchParserSubst(match.group(1)).next(), match.end()	
         
         # String value
         if s[position] in "'\"":
@@ -588,6 +492,8 @@ class Category(FeatureStructure, cfg.Nonterminal):
         # We don't know how to parse this value.
         raise ValueError('value', position)
     
+    # [classmethod]
+    # Used by GrammarFile
     def parse_rules(cls, s):
         """
         Parse a L{CFG} line involving C{Categories}. A line has this form:
@@ -640,7 +546,6 @@ class Category(FeatureStructure, cfg.Nonterminal):
 
     _parseval=classmethod(_parseval)
     _parse=classmethod(_parse)
-    parse=classmethod(parse)
     parse_rules=classmethod(parse_rules)
 
 
@@ -694,28 +599,20 @@ class GrammarCategory(Category):
         
         return '%s%s%s' % (head, features, slash)
 
-    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/]+)\s*'),
-                 'categorystart': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/]*)\s*(\[|/)'),
-                 'bool': re.compile(r'\s*([-\+])'),
-                 'ident': re.compile(r'\s*\((\d+)\)\s*'),
-                 'arrow': re.compile(r'\s*->\s*'),
-                 'assign': re.compile(r'\s*=\s*'),
-                 'bracket': re.compile(r'\s*]\s*'),
-                 'comma': re.compile(r'\s*,\s*'),
-                 'none': re.compile(r'None(?=\s|\]|,)'),
-                 'int': re.compile(r'-?\d+(?=\s|\]|,)'),
-                 'var': re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*'+'|'+
-                                   r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
-                                   r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>'),
-                 'symbol': re.compile(r'\w+'),
-                 'semantics': re.compile(r'<([^>]+)>'), # EK
+    # Regular expressions for parsing.
+    # Extend the expressions from Category and FeatureStructure.
+    _PARSE_RE = {'semantics': re.compile(r'<([^>]+)>'), # EK
                  #EK: Assumes that Applications in sem always take FeatureVariable arguments
                  'application': re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)>'),
-                 'disjunct': re.compile(r'\s*\|\s*'),
-                 'slash': re.compile(r'\s*/\s*'),
-                 'whitespace': re.compile(r'\s*'),
-                 'stringmarker': re.compile("['\"\\\\]")}
+                 'slash': re.compile(r'\s*/\s*')}
+    for (k, v) in Category._PARSE_RE.iteritems():
+        assert k not in _PARSE_RE
+        _PARSE_RE[k] = v
+    # These we actually do want to override.
+    _PARSE_RE['name'] = re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/]+)\s*')
+    _PARSE_RE['categorystart'] = re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/]*)\s*(\[|/)')
     
+    # [classmethod]
     def _parse(cls, s, position=0, reentrances=None):
         # A set of useful regular expressions (precompiled)
         _PARSE_RE = cls._PARSE_RE
