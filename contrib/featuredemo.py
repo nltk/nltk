@@ -17,14 +17,14 @@ def demo():
 	cp = gfile.earley_parser()
 	sent = 'the police read the solutions that Poirot sent'
 	tokens = list(tokenize.whitespace(sent))
-	trees = cp.parse_n(tokens)
+	trees = cp.get_parse_list(tokens)
 	for tree in trees: print tree
 
 def text_parse(grammar, sent, trace=2, drawtrees=False, latex=False):
 	parser = grammar.earley_parser(trace=trace)
 	print parser._grammar
 	tokens = list(tokenize.whitespace(sent))
-	trees = parser.parse_n(tokens)
+	trees = parser.get_parse_list(tokens)
 	if drawtrees:
 		from treeview import TreeView
 		TreeView(trees)
@@ -60,7 +60,7 @@ Distributed under the GPL. See LICENSE.TXT for information.""" % globals()
 	help="show parse trees in a GUI window")
 
 	(options, args) = opts.parse_args()
-	trace = 2
+	trace = 0
 	batch = False
 	
 	if options.batchfile is not None:
