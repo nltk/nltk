@@ -70,7 +70,20 @@ from types import NoneType
 # Variables and variable bindings
 #//////////////////////////////////////////////////////////////////////
 
-class FeatureVariable(object):
+class SubstituteBindingsI:
+    """
+    An interface for classes that can perform substitutions for feature
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        @rtype: (any)
+        """
+        raise NotImplementedError
+
+class FeatureVariable(SubstituteBindingsI):
     """
     A variable that can stand for a single feature value in a feature
     structure.  Each variable is defined by a unique identifier, which
@@ -141,6 +154,18 @@ class FeatureVariable(object):
         if self == variable: return self
         return AliasedFeatureVariable(self, variable)
 
+    def substitute_bindings(self, bindings):
+        """
+	@return: The value that is bound to this variable if it appears in
+	    @C{bindings} otherwise just return self.
+        @rtype: (any)
+        """
+        if bindings.is_bound(self):
+            return bindings.lookup(self)
+        else:
+            return self
+
+    # [staticmethod]
     def parse(s):
         """
         Given a string that encodes a feature variable, return that
@@ -582,10 +607,8 @@ class FeatureStructure(object):
         if visited.has_key(id(self)): return
         visited[id(self)] = 1
         for (fname, fval) in self._features.items():
-            if isinstance(fval, FeatureVariable):
-                if bindings.is_bound(fval):
-                    fval = bindings.lookup(fval)
-                    self._features[fname] = fval
+            if isinstance(fval, SubstituteBindingsI):
+                self._features[fname] = fval.substitute_bindings(bindings)
             if isinstance(fval, FeatureStructure):
                 fval._apply_bindings(bindings, visited)
 
@@ -677,7 +700,8 @@ class FeatureStructure(object):
         abort unification when a failure is encountered.  """
 
     # unify a cyclic self with another structure???
-    def _destructively_unify(self, other, bindings, trace=False, depth=0):
+    def _destructively_unify(self, other, bindings, trace=False,
+                             ci_str_cmp=False, depth=0):
         """
         Attempt to unify C{self} and C{other} by modifying them
         in-place.  If the unification succeeds, then C{self} will
@@ -746,6 +770,12 @@ class FeatureStructure(object):
                     bindings.bind(selfval, otherval)
                 elif isinstance(otherval, FeatureVariable):
                     bindings.bind(otherval, selfval)
+
+                # Case 4A: unify two strings, case-insensitively.
+                elif ci_str_cmp and \
+                    isinstance(selfval, str) and isinstance(otherval, str)\
+                    and selfval.upper() == otherval.upper():
+                    pass
                     
                 # Case 4: unify 2 non-equal values (failure case)
                 elif selfval != otherval:
@@ -909,7 +939,7 @@ class FeatureStructure(object):
                 return ['[]']
         
         # What's the longest feature name?  Use this to align names.
-        maxfnamelen = max([len(k) for k in self._features.keys()])
+        maxfnamelen = max([len(k) for k in self.feature_names()])
 
         lines = []
         items = self._features.items()
@@ -995,7 +1025,8 @@ class FeatureStructure(object):
     ## Parsing
     #################################################################
 
-    def parse(s):
+    # [classmethod]
+    def parse(cls, s):
         """
         Convert a string representation of a feature structure (as
         displayed by repr) into a C{FeatureStructure}.  This parse
@@ -1013,7 +1044,7 @@ class FeatureStructure(object):
             reentrance identifier.
         """
         try:
-            value, position = FeatureStructure._parse(s, 0, {})
+            value, position = cls._parse(s, 0, {})
         except ValueError, e:
             estr = ('Error parsing field structure\n\n    ' +
                     s + '\n    ' + ' '*e.args[1] + '^ ' +
@@ -1037,7 +1068,8 @@ class FeatureStructure(object):
                  'symbol': re.compile(r'\w+'),
                  'stringmarker': re.compile("['\"\\\\]")}
 
-    def _parse(s, position=0, reentrances=None):
+    # [classmethod]
+    def _parse(cls, s, position=0, reentrances=None):
         """
         Helper function that parses a feature structure.
         @param s: The string to parse.
@@ -1048,7 +1080,7 @@ class FeatureStructure(object):
             structure ends.
         """
         # A set of useful regular expressions (precompiled)
-        _PARSE_RE = FeatureStructure._PARSE_RE
+        _PARSE_RE = cls._PARSE_RE
 
         # Check that the string starts with an open bracket.
         if s[position] != '[': raise ValueError('open bracket', position)
@@ -1057,7 +1089,7 @@ class FeatureStructure(object):
         # If it's immediately followed by a close bracket, then just
         # return an empty feature structure.
         match = _PARSE_RE['bracket'].match(s, position)
-        if match is not None: return FeatureStructure(), match.end()
+        if match is not None: return cls(), match.end()
 
         # Build a list of the features defined by the structure.
         # Each feature has one of the three following forms:
@@ -1100,8 +1132,7 @@ class FeatureStructure(object):
                         raise ValueError('new identifier', position+1)
                     position = match.end()
                 
-                val, position = FeatureStructure._parseval(s, position,
-                                                           reentrances)
+                val, position = cls._parseval(s, position, reentrances)
                 features[name] = val
                 if id is not None:
                     reentrances[id] = val
@@ -1109,7 +1140,7 @@ class FeatureStructure(object):
             # Check for a close bracket
             match = _PARSE_RE['bracket'].match(s, position)
             if match is not None:
-                return FeatureStructure(**features), match.end()
+                return cls(**features), match.end()
 
             # Otherwise, there should be a comma
             match = _PARSE_RE['comma'].match(s, position)
@@ -1119,7 +1150,8 @@ class FeatureStructure(object):
         # We never saw a close bracket.
         raise ValueError('close bracket', position)
 
-    def _parseval(s, position, reentrances):
+    # [classmethod]
+    def _parseval(cls, s, position, reentrances):
         """
         Helper function that parses a feature value.  Currently
         supports: None, integers, variables, strings, nested feature
@@ -1131,7 +1163,7 @@ class FeatureStructure(object):
             and the position where the parsed value ends.
         """
         # A set of useful regular expressions (precompiled)
-        _PARSE_RE = FeatureStructure._PARSE_RE
+        _PARSE_RE = cls._PARSE_RE
 
         # End of string (error)
         if position == len(s): raise ValueError('value', position)
@@ -1151,7 +1183,7 @@ class FeatureStructure(object):
 
         # Nested feature structure
         if s[position] == '[':
-            return FeatureStructure._parse(s, position, reentrances)
+            return cls._parse(s, position, reentrances)
 
         # Variable
         match = _PARSE_RE['var'].match(s, position)
@@ -1176,9 +1208,9 @@ class FeatureStructure(object):
         # We don't know how to parse this value.
         raise ValueError('value', position)
 
-    _parseval=staticmethod(_parseval)
-    _parse=staticmethod(_parse)
-    parse=staticmethod(parse)
+    _parseval=classmethod(_parseval)
+    _parse=classmethod(_parse)
+    parse=classmethod(parse)
 
 #//////////////////////////////////////////////////////////////////////
 # TESTING...

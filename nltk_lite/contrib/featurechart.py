@@ -28,16 +28,16 @@ class FeatureTreeEdge(TreeEdge):
     """
     def __init__(self, span, lhs, rhs, dot=0, vars=None):
         """
-        Construct a new C{TreeEdge}.
+        Construct a new C{FeatureTreeEdge}.
         
         @type span: C{(int, int)}
         @param span: A tuple C{(s,e)}, where C{subtokens[s:e]} is the
             portion of the sentence that is consistent with the new
             edge's structure.
-        @type lhs: L{Nonterminal}
+        @type lhs: L{Category}
         @param lhs: The new edge's left-hand side, specifying the
             hypothesized tree's node value.
-        @type rhs: C{list} of (L{Nonterminal} and C{string})
+        @type rhs: C{list} of (L{Category} and C{string})
         @param rhs: The new edge's right-hand side, specifying the
             hypothesized tree's children.
         @type dot: C{int}
@@ -54,6 +54,8 @@ class FeatureTreeEdge(TreeEdge):
         TreeEdge.__init__(self, span, lhs, rhs, dot)
         if vars is None: vars = FeatureBindings()
         self._vars = vars
+
+    # [staticmethod]
     def from_production(production, index, bindings=None):
         """
         @return: A new C{FeatureTreeEdge} formed from the given production.
@@ -67,6 +69,7 @@ class FeatureTreeEdge(TreeEdge):
                         rhs=production.rhs(), dot=0, vars=bindings)
     from_production = staticmethod(from_production)
     
+    # Accessors
     def vars(self):
         """
         @return: the L{VariableBindings} mapping L{FeatureVariable}s to values.
@@ -74,6 +77,10 @@ class FeatureTreeEdge(TreeEdge):
         """
         return self._vars.copy()
     def lhs(self):
+        """
+        @return: the value of the left-hand side with variables set.
+        @rtype: C{Category}
+        """
         return TreeEdge.lhs(self).apply_bindings(self._vars)
     def orig_lhs(self):
         """
@@ -82,6 +89,10 @@ class FeatureTreeEdge(TreeEdge):
         """
         return TreeEdge.lhs(self)
     def rhs(self):
+        """
+        @return: the value of the right-hand side with variables set.
+        @rtype: C{Category}
+        """
         return tuple([apply(x, self._vars) for x in TreeEdge.rhs(self)])
     def orig_rhs(self):
         """
@@ -89,6 +100,8 @@ class FeatureTreeEdge(TreeEdge):
         @rtype: C{Category}
         """
         return TreeEdge.rhs(self)
+
+    # String representation
     def __str__(self):
         str = '%r ->' % self.lhs()
 
@@ -97,18 +110,8 @@ class FeatureTreeEdge(TreeEdge):
             str += ' %r' % (self.rhs()[i],)
         if len(self._rhs) == self._dot: str += ' *'
         return str
-    def __cmp__(self, other):
-        if not isinstance(other, FeatureTreeEdge): return -1
-        return cmp(str(self), str(other))
-        # This stopped working for some reason.
-        #return cmp((self._span, self.lhs(), self.rhs(), self._dot),
-        #          (other._span, other.lhs(), other.rhs(), other._dot))
-        
-    def __hash__(self):
-        return hash((self._span, self.lhs(), self.rhs(), self._dot))
 
 class FeatureFundamentalRule(FundamentalRule):
-    NUM_EDGES=2
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
@@ -136,8 +139,6 @@ class FeatureFundamentalRule(FundamentalRule):
         if changed_chart: yield new_edge
 
 class SingleEdgeFeatureFundamentalRule(SingleEdgeFundamentalRule):
-    NUM_EDGES=1
-
     _fundamental_rule = FeatureFundamentalRule()
     
     def apply_iter(self, chart, grammar, edge1):
@@ -145,9 +146,8 @@ class SingleEdgeFeatureFundamentalRule(SingleEdgeFundamentalRule):
         if edge1.is_incomplete():
             # edge1 = left_edge; edge2 = right_edge
             for edge2 in chart.select(start=edge1.end(), is_complete=True):
-                if isinstance(edge2, FeatureTreeEdge):
-                    for new_edge in fr.apply_iter(chart, grammar, edge1, edge2):
-                        yield new_edge
+                for new_edge in fr.apply_iter(chart, grammar, edge1, edge2):
+                    yield new_edge
         else:
             # edge2 = left_edge; edge1 = right_edge
             for edge2 in chart.select(end=edge1.start(), is_complete=False):
@@ -155,7 +155,9 @@ class SingleEdgeFeatureFundamentalRule(SingleEdgeFundamentalRule):
                     yield new_edge
 
 class FeatureTopDownExpandRule(TopDownExpandRule):
-    NUM_EDGES=1
+    """
+    The @C{TopDownExpandRule} specialised for feature-based grammars.
+    """
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
         for prod in grammar.productions():
@@ -191,33 +193,12 @@ class FeatureEarleyChartParse(EarleyChartParse):
     case-insensitive.
     """
     def __init__(self, grammar, lexicon, trace=0):
-        """
-        Create a new Earley chart parser, that uses C{grammar} to
-        parse texts.
-        
-        @type grammar: C{CFG}
-        @param grammar: The grammar used to parse texts.
-        @type lexicon: C{dict} from C{string} to (C{list} of C{string})
-        @param lexicon: A lexicon of words that records the parts of
-            speech that each word can have.  Each key is a word, and
-            the corresponding value is a list of parts of speech.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            and higher numbers will produce more verbose tracing
-            output.
-        """
-        self._grammar = grammar
-        #self._lexicon = lexicon
-        
         # Build a case-insensitive lexicon.
-        self._lexicon = {}
-        for (name, value) in lexicon.items():
-            self._lexicon[name.upper()] = value
-        self._trace = trace
-        AbstractParse.__init__(self)
+        ci_lexicon = dict([(k.upper(), v) for k, v in lexicon.iteritems()])
+        # Call the super constructor.
+        EarleyChartParse.__init__(self, grammar, ci_lexicon, trace)
 
-    def parse_n(self, tokens):
+    def get_parse_list(self, tokens):
         chart = Chart(tokens)
         grammar = self._grammar
 
@@ -229,28 +210,29 @@ class FeatureEarleyChartParse(EarleyChartParse):
         # Initialize the chart with a special "starter" edge.
         root = GrammarCategory(pos='[INIT]')
         edge = FeatureTreeEdge((0,0), root, (grammar.start(),), 0,
-        FeatureBindings())
+                FeatureBindings())
         chart.insert(edge, ())
 
         # Create the 3 rules:
         predictor = FeatureTopDownExpandRule()
         completer = SingleEdgeFeatureFundamentalRule()
-        #scanner = ScannerRule(self._lexicon)
+        #scanner = FeatureScannerRule(self._lexicon)
 
         for end in range(chart.num_leaves()+1):
             if self._trace > 1: print 'Processing queue %d' % end
             
-            # Scanner rule substitute
+            # Scanner rule substitute, i.e. this is being used in place
+            # of a proper FeatureScannerRule at the moment.
             if end > 0 and end-1 < chart.num_leaves():
                 leaf = chart.leaf(end-1)
                 for pos in self._lexicon.get(leaf.upper(), []):
-                    newedge = FeatureTreeEdge((end-1, end), pos, [leaf], 1,
-                    FeatureBindings())
-                    leafedge = LeafEdge(leaf, end-1)
-                    chart.insert(leafedge, ())
-                    chart.insert(newedge, (leafedge,))
+                    new_leaf_edge = LeafEdge(leaf, end-1)
+                    chart.insert(new_leaf_edge, ())
+                    new_pos_edge = FeatureTreeEdge((end-1, end), pos, [leaf], 1,
+                        FeatureBindings())
+                    chart.insert(new_pos_edge, (new_leaf_edge,))
                     if self._trace > 0:
-                        print  'Scanner  ', chart.pp_edge(newedge,w)
+                        print  'Scanner  ', chart.pp_edge(new_leaf_edge,w)
             
             for edge in chart.select(end=end):
                 if edge.is_incomplete():
@@ -268,10 +250,6 @@ class FeatureEarleyChartParse(EarleyChartParse):
 
         # Output a list of complete parses.
         return chart.parses(root)
-        
-    def parse(self, tokens):
-        # Delegate to parse_n
-        return self._parse_from_parse_n(tokens)
 
 def demo():
     import sys, time
@@ -319,7 +297,7 @@ def demo():
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
     cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon, trace=1)
-    trees = cp.parse_n(tokens)
+    trees = cp.get_parse_list(tokens)
     print "Time: %s" % (time.time() - t)
     for tree in trees: print tree
 

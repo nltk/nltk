@@ -16,6 +16,17 @@ __license__ = 'GPL'
 class Error(Exception): pass
 
 
+class Counter:
+    """
+    A counter that auto-increments each time its value is read.
+    """
+    def __init__(self, initial_value=0):
+	self._value = initial_value
+    def get(self):
+	self._value += 1
+	return self._value
+
+
 class Variable:
     """A variable, either free or bound."""
     
@@ -52,7 +63,7 @@ class Expression:
 	return not self.equals(other)
 
     def equals(self, other):
-        """Are the two expressions equal?"""
+        """Are the two expressions equal, modulo alpha conversion?"""
         return NotImplementedError
 
     def variables(self):
@@ -68,13 +79,25 @@ class Expression:
         raise NotImplementedError
 
     def replace(self, variable, expression):
-        """Replace all instances of variable with expression."""
+        """Replace all instances of variable v with expression E in self,
+        where v is free in self."""
         raise NotImplementedError
 
     def simplify(self):
         """Evaluate the form by repeatedly applying applications."""
         raise NotImplementedError
-        
+
+    def skolemise(self):
+        """
+        Perform a simple Skolemisation operation.  Existential quantifiers are
+        simply dropped and all variables they introduce are renamed so that
+        they are unique.
+        """
+	return self._skolemise(set(), Counter())
+
+    def _skolemise(self, bound_vars, counter):
+        raise NotImplementedError
+
     def __str__(self):
         raise NotImplementedError
 
@@ -115,14 +138,22 @@ class VariableExpression(Expression):
     def simplify(self):
         return self
 
+    def _skolemise(self, bound_vars, counter):
+	return self
+
     def __str__(self): return '%s' % self.variable
 
     def __repr__(self): return "VariableExpression('%s')" % self.variable
 
     def __hash__(self): return hash(repr(self))
 
-class LambdaExpression(Expression):
-    """A lambda expression: \\x.M."""
+class VariableBinderExpression(Expression):
+    """A variable binding expression: e.g. \\x.M."""
+
+    # A counter used for generating "unique" variable names during alpha
+    # conversion.
+    _counter = Counter()
+
     def __init__(self, variable, term):
         Expression.__init__(self)
         assert isinstance(variable, Variable)
@@ -132,8 +163,13 @@ class LambdaExpression(Expression):
 
     def equals(self, other):
         if self.__class__ is other.__class__:
-            return self.variable.equals(other.variable) and \
-                   self.term.equals(other.term)
+            if self.variable == other.variable:
+                return self.term == other.term
+            else:
+                # Comparing \x.M  and \y.N.
+                # Rename y to x in N and continue.
+                return self.term == other.term.replace(other.variable,
+                                        VariableExpression(self.variable))
         else:
             return 0
 
@@ -147,26 +183,67 @@ class LambdaExpression(Expression):
         return self.term.subterms().union([self])
 
     def replace(self, variable, expression):
-        return LambdaExpression(self.variable, \
+        if self.variable == variable:
+            return self
+        if self.variable in expression.free():
+            v = '_g' + str(self._counter.get())
+            self = self.alpha_convert(Variable(v))
+        return self.__class__(self.variable, \
                                 self.term.replace(variable, expression))
 
+    def alpha_convert(self, newvar):
+        """
+        Rename all occurrences of the variable introduced by this variable
+        binder in the expression to @C{newvar}.
+        """
+        term = self.term.replace(self.variable, VariableExpression(newvar))
+        return self.__class__(newvar, term)
+
     def simplify(self):
-        return LambdaExpression(self.variable, self.term.simplify())
-    
+        return self.__class__(self.variable, self.term.simplify())
+
     def __str__(self, continuation=0):
         # Print \x.\y.M as \x y.M.
         if continuation:
             prefix = ' '
         else:
-            prefix = '\\'
-        if isinstance(self.term, LambdaExpression):
+            prefix = self.__class__.PREFIX
+        if self.term.__class__ == self.__class__:
             return '%s%s%s' % (prefix, self.variable, self.term.__str__(1))
         else:
             return '%s%s.%s' % (prefix, self.variable, self.term)
 
-    def __repr__(self): return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+    def __hash__(self):
+	return hash(repr(self))
 
-    def __hash__(self): return hash(repr(self))
+class LambdaExpression(VariableBinderExpression):
+    """A lambda expression: \\x.M."""
+    PREFIX = '\\'
+
+    def _skolemise(self, bound_vars, counter):
+	bv = bound_vars.copy()
+	bv.add(self.variable)
+	return self.__class__(self.variable, self.term._skolemise(bv, counter))
+
+    def __repr__(self):
+	return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+
+class SomeExpression(VariableBinderExpression):
+    """An existential quantification expression: some x.M."""
+    PREFIX = 'some '
+
+    def _skolemise(self, bound_vars, counter):
+	if self.variable in bound_vars:
+	    var = Variable("_s" + str(counter.get()))
+	    term = self.term.replace(self.variable, VariableExpression(var))
+	else:
+	    var = self.variable
+	    term = self.term
+	bound_vars.add(var)
+	return term._skolemise(bound_vars, counter)
+
+    def __repr__(self):
+	return "SomeExpression('%s', '%s')" % (self.variable, self.term)
 
 class ApplicationExpression(Expression):
     """An application expression: (M N)."""
@@ -196,18 +273,23 @@ class ApplicationExpression(Expression):
         return first.union(second).union(set([self]))
 
     def replace(self, variable, expression):
-        return ApplicationExpression(self.first.replace(variable, expression),\
-                                     self.second.replace(variable, expression))
+        return self.__class__(self.first.replace(variable, expression),\
+                              self.second.replace(variable, expression))
 
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
         if isinstance(first, LambdaExpression):
-            variable = first.variable
-            term = first.term
-            return term.replace(variable, second).simplify()
+	    variable = first.variable
+	    term = first.term
+	    return term.replace(variable, second).simplify()
         else:
-            return self
+            return self.__class__(first, second)
+
+    def _skolemise(self, bound_vars, counter):
+	first = self.first._skolemise(bound_vars, counter)
+	second = self.second._skolemise(bound_vars, counter)
+	return self.__class__(first, second)
 
     def __str__(self):
         # Print ((M N) P) as (M N P).
@@ -225,6 +307,7 @@ class Parser:
 
     # Tokens.
     LAMBDA = '\\'
+    SOME = 'some'
     DOT = '.'
     OPEN = '('
     CLOSE = ')'
@@ -275,25 +358,36 @@ class Parser:
     def isVariable(self, token):
         """Is this token a variable (that is, not one of the other types)?"""
         return token not in \
-               [Parser.LAMBDA, Parser.DOT, Parser.OPEN, Parser.CLOSE]
+               [Parser.LAMBDA, Parser.SOME,
+	       Parser.DOT, Parser.OPEN, Parser.CLOSE]
 
     def next(self):
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
-        if tok == Parser.LAMBDA:
+	if tok in [Parser.LAMBDA, Parser.SOME]:
             # Expression is a lambda expression: \x.M
+	    # or a some expression: some x.M
+	    if tok == Parser.LAMBDA:
+		factory = LambdaExpression
+	    elif tok == Parser.SOME:
+		factory = SomeExpression
+	    else:
+		raise ValueError(tok)
+
             vars = [self.token()]
             while self.isVariable(self.token(0)):
                 # Support expressions like: \x y.M == \x.\y.M
+		# and: some x y.M == some x.some y.M
                 vars.append(self.token())
             tok = self.token()
             if tok != Parser.DOT:
                 raise Error, "parse error, unexpected token: %s" % tok
             term = self.next()
-            accum = LambdaExpression(Variable(vars.pop()), term)
+            accum = factory(Variable(vars.pop()), term)
             while vars:
-                accum = LambdaExpression(Variable(vars.pop()), accum)
+                accum = factory(Variable(vars.pop()), accum)
             return accum
+	    
         elif tok == Parser.OPEN:
             # Expression is an application expression: (M N)
             first = self.next()
@@ -304,10 +398,10 @@ class Parser:
                 exps.append(self.next())
             tok = self.token() # swallow the close token
             assert tok == Parser.CLOSE
-            accum = ApplicationExpression(first, second)
+            accum = self.make_ApplicationExpression(first, second)
             while exps:
                 exp, exps = exps[0], exps[1:]
-                accum = ApplicationExpression(accum, exp)
+                accum = self.make_ApplicationExpression(accum, exp)
             return accum
         else:
             if self.isVariable(tok):
@@ -315,6 +409,13 @@ class Parser:
                 return VariableExpression(Variable(tok))
             else:
                 raise Error, "parse error, unexpected token: %s" % tok
+    
+    # This is intended to be overridden, so that you can derive a Parser class
+    # that constructs expressions using your subclasses.  So far we only need
+    # to overridde ApplicationExpression, but the same thing could be done for
+    # other expression types.
+    def make_ApplicationExpression(self, first, second):
+        return ApplicationExpression(first, second)
 
 
 def expressions():
@@ -365,4 +466,116 @@ def main():
         print "Serialize and reparse: %s -> %s" % (l, ll)
         print
 
-if __name__ == '__main__': main()
+def runtests():
+    # Test a beta-reduction which used to be wrong
+    l = Parser(r'(\x.\x.(x x) 1)').next().simplify()
+    id = Parser(r'\x.(x x)').next()
+    assert l == id
+
+    # Test Church numerals
+    zero = Parser(r'\f x.x').next()
+    one = Parser(r'\f x.(f x)').next()
+    two = Parser(r'\f x.(f (f x))').next()
+    three = Parser(r'\f x.(f (f (f x)))').next()
+    four = Parser(r'\f x.(f (f (f (f x))))').next()
+    succ = Parser(r'\n f x.(f (n f x))').next()
+    plus = Parser(r'\m n f x.(m f (n f x))').next()
+    mult = Parser(r'\m n f.(m (n f))').next()
+    pred = Parser(r'\n f x.(n \g h.(h (g f)) \u.x \u.u)').next()
+    v1 = ApplicationExpression(succ, zero).simplify()
+    assert v1 == one
+    v2 = ApplicationExpression(succ, v1).simplify()
+    assert v2 == two
+    v3 = ApplicationExpression(ApplicationExpression(plus, v1), v2).simplify()
+    assert v3 == three
+    v4 = ApplicationExpression(ApplicationExpression(mult, v2), v2).simplify()
+    assert v4 == four
+    v5 = ApplicationExpression(pred, ApplicationExpression(pred, v4)).simplify()
+    assert v5 == two
+
+    # betaConversionTestSuite.pl from
+    # _Representation and Inference for Natural Language_
+    #
+    x1 = Parser(r'(\p.(p mia) \x.(walk x))').next().simplify()
+    x2 = Parser(r'(walk mia)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'some x.(and (man x) (\p.some x.(and (woman x) (p x)) \y.(love x y)))').next().simplify()
+    x2 = Parser(r'some x.(and (man x) some y.(and (woman y) (love x y)))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.(sleep a) mia)').next().simplify()
+    x2 = Parser(r'(sleep mia)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.(like b a) mia)').next().simplify()
+    x2 = Parser(r'\b.(like b mia)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'\a.(\b.(like b a) vincent)').next().simplify()
+    x2 = Parser(r'\a.(like vincent a)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'\a.(and (\b.(like b a) vincent) (sleep a))').next().simplify()
+    x2 = Parser(r'\a.(and (like vincent a) (sleep a))').next().simplify()
+    assert x1 == x2
+    
+    x1 = Parser(r'(\a.\b.(like b a) mia vincent)').next().simplify()
+    x2 = Parser(r'(like vincent mia)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(p (\a.(sleep a) vincent))').next().simplify()
+    x2 = Parser(r'(p (sleep vincent))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'\a.(a (\b.(sleep b) vincent))').next().simplify()
+    x2 = Parser(r'\a.(a (sleep vincent))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'\a.(a (sleep vincent))').next().simplify()
+    x2 = Parser(r'\a.(a (sleep vincent))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.(a vincent) \b.(sleep b))').next().simplify()
+    x2 = Parser(r'(sleep vincent)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.(believe mia (a vincent)) \b.(sleep b))').next().simplify()
+    x2 = Parser(r'(believe mia (sleep vincent))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.(and (a vincent) (a mia)) \b.(sleep b))').next().simplify()
+    x2 = Parser(r'(and (sleep vincent) (sleep mia))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.(and (\c.(c (a vincent)) \d.(probably d)) (\c.(c (b mia)) \d.(improbably d))) \e.(walk e) \e.(talk e)))').next().simplify()
+    x2 = Parser(r'(and (probably (walk vincent)) (improbably (talk mia)))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.(\c.(c a b) \d.\e.(love d e)) jules mia)').next().simplify()
+    x2 = Parser(r'(love jules mia)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.some c.(and (a c) (b c)) \d.(boxer d) \d.(sleep d))').next().simplify()
+    x2 = Parser(r'some c.(and (boxer c) (sleep c))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.(z a) \c.\a.(like a c))').next().simplify()
+    x2 = Parser(r'(z \c.\a.(like a c))').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.(a b) \c.\b.(like b c))').next().simplify()
+    x2 = Parser(r'\b.(\c.\b.(like b c) b)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.(\c.(c a b) \b.\a.(loves b a)) jules mia)').next().simplify()
+    x2 = Parser(r'(loves jules mia)').next().simplify()
+    assert x1 == x2
+
+    x1 = Parser(r'(\a.\b.(and some b.(a b) (a b)) \c.(boxer c) vincent)').next().simplify()
+    x2 = Parser(r'(and some b.(boxer b) (boxer vincent))').next().simplify()
+    assert x1 == x2
+
+if __name__ == '__main__':
+    runtests()
+    main()
