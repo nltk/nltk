@@ -8,6 +8,8 @@ things that need to be specialized objects are variables.
 
 from copy import copy, deepcopy
 import re
+import yaml
+import unittest
 
 class UnificationFailure(Exception): pass
 
@@ -32,7 +34,7 @@ class Variable(object):
         self._uid = Variable._next_numbered_id
         Variable._next_numbered_id += 1
         if name is None: name = self._uid
-        self._name = name
+        self._name = str(name)
         self._value = value
     def name(self):
         return self._name
@@ -62,24 +64,24 @@ class Variable(object):
         if isinstance(self._value, Variable): return cmp(self._value, other)
         else: return cmp(self._uid, other._uid)
     def __repr__(self):
-        if self._value is None: return '?%s: <%x>' % (self._name, self._uid)
+        if self._value is None: return '?%s: <#%d>' % (self._name, self._uid)
         else: return '?%s: %r' % (self._name, self._value)
 
 #Commenting this for now, as yaml isn't part of NLTK.
 #Using YAML, you can get some nice, formatted output of these dictionaries
 #for free.
-#
-#import yaml
-#def variable_representer(dumper, var):
-#    return dumper.represent_scalar(u'!var', u'?%s' % var.name())
-#yaml.add_representer(Variable, variable_representer)
-#
-#def variable_constructor(loader, node):
-#    value = loader.construct_scalar(node)
-#    name = value[1:]
-#    return Variable(name)
-#yaml.add_constructor(u'!var', variable_constructor)
-#yaml.add_implicit_resolver(u'!var', re.compile(r'^\?\w+$'))
+
+import yaml
+def variable_representer(dumper, var):
+    return dumper.represent_scalar(u'!var', u'?%s' % var.name())
+yaml.add_representer(Variable, variable_representer)
+
+def variable_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    name = value[1:]
+    return Variable(name)
+yaml.add_constructor(u'!var', variable_constructor)
+yaml.add_implicit_resolver(u'!var', re.compile(r'^\?\w+$'))
 
 def _copy_and_bind(feature, bindings, memo=None):
     "Make a deep copy of a feature dictionary. Copy variables, too."
@@ -100,11 +102,119 @@ def _copy_and_bind(feature, bindings, memo=None):
 
 def unify(feature1, feature2, bindings1=None, bindings2=None):
     """
-    The main procedure for unifying two values. These values can be anything,
-    but the interesting case is where they are dictionaries.
+    In general, the 'unify' procedure takes two values, and either returns a
+    value that satisfies properties of both or fails.
+    
+    These values can have any type, but the interesting case is where they
+    are dictionaries, in which case they represent feature structures.
 
-    The value 'None' unifies with anything. It's more general than {}:
-    {} unifies with any dictionary, but None unifies with anything at all.
+    The value 'None' specifies no properties. It acts as the identity.
+    >>> unify(3, None)
+    3
+
+    >>> unify(None, 'fish')
+    'fish'
+
+    A non-dictionary value unifies with itself, but not much else:
+    >>> unify(True, True)
+    True
+
+    >>> unify([], [])
+    []
+
+    >>> unify('a', 'b')
+    Traceback (most recent call last):
+        ...
+    UnificationFailure
+
+    When two dictionaries are unified, any chain of keys that accesses a value
+    in either dictionary will access an equivalent or more specific value
+    in the unified dictionary. If this is not possible, UnificationFailure
+    is raised.
+
+    >>> f1 = dict(A=dict(B='b'))
+    >>> f2 = dict(A=dict(C='c'))
+    >>> unify(f1, f2) == dict(A=dict(B='b', C='c'))
+    True
+    
+    The empty dictionary specifies no features, It unifies with any dictionary.
+    >>> unify({}, dict(foo='bar'))
+    {'foo': 'bar'}
+
+    >>> unify({}, True)
+    Traceback (most recent call last):
+        ...
+    UnificationFailure
+    
+    Representing dictionaries in YAML form is useful for making feature
+    structures readable:
+    
+    >>> f1 = yaml.load("number: singular")
+    >>> f2 = yaml.load("person: 3")
+    >>> print yaml.show(unify(f1, f2))
+    number: singular
+    person: 3
+
+    >>> f1 = yaml.load('''
+    ... A:
+    ...   B: b
+    ...   D: d
+    ... ''')
+    >>> f2 = yaml.load('''
+    ... A:
+    ...   C: c
+    ...   D: d
+    ... ''')
+    >>> print yaml.show(unify(f1, f2))
+    A:
+      B: b
+      C: c
+      D: d
+    
+    Variables are names for unknown values. Variables are assigned values
+    that will make unification succeed. The values of variables can be reused
+    in later unifications if you provide a dictionary of _bindings_ from
+    variables to their values.
+    >>> bindings = {}
+    >>> print unify(Variable('x'), 5, bindings)
+    5
+    
+    >>> print bindings
+    {'x': 5}
+    
+    >>> print unify({'a': Variable('x')}, {}, bindings)
+    {'a': 5}
+    
+    The same variable name can be reused in different binding dictionaries
+    without collision. In some cases, you may want to provide two separate
+    binding dictionaries to _unify_ -- one for each feature structure, so
+    their variables do not collide.
+
+    >>> f1 = yaml.load('''
+    ... a: 1
+    ... b: 1
+    ... c: ?x
+    ... d: ?x
+    ... ''')
+    >>> f2 = yaml.load('''
+    ... a: ?x
+    ... b: ?x
+    ... c: 2
+    ... d: 2
+    ... ''')
+    >>> bindings1 = {}
+    >>> bindings2 = {}
+    >>> print yaml.show(unify(f1, f2, bindings1, bindings2))
+    a: 1
+    b: 1
+    c: 2
+    d: 2
+    
+    >>> print bindings1
+    {'x': 2}
+    
+    >>> print bindings2
+    {'x': 1}
     """
     if bindings1 is None and bindings2 is None:
         bindings1 = {}
@@ -120,11 +230,10 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     _apply_forwards_to_bindings(bindings1)
     _apply_forwards_to_bindings(bindings2)
     _apply_forwards(unified, {})
-    _apply_bindings(unified, {})
+    unified = _lookup_values(unified, {}, remove=False)
+    _lookup_values(bindings1, {}, remove=True)
+    _lookup_values(bindings2, {}, remove=True)
 
-    print feature1, feature2, '=>', unified
-    print "\t", bindings1
-    print "\t", bindings2
     return unified
 
 def _destructively_unify(feature1, feature2, bindings1, bindings2, memo):
@@ -138,10 +247,8 @@ def _destructively_unify(feature1, feature2, bindings1, bindings2, memo):
     """
     if memo.has_key((id(feature1), id(feature2))):
         return memo[id(feature1), id(feature2)]
-    print "Unifying:", feature1, feature2
     unified = _nontrivial_unify(feature1, feature2, bindings1, bindings2, memo)
     memo[id(feature1), id(feature2)] = unified
-    print "Result:", unified
     return unified
 
 def _nontrivial_unify(feature1, feature2, bindings1, bindings2, memo):
@@ -195,21 +302,32 @@ def _apply_forwards(feature, visited):
                 feature[fname] = fval
             _apply_forwards(fval, visited)
 
-def _apply_bindings(feature, visited):
-    if not isinstance(feature, dict): return
-    if visited.has_key(id(feature)): return
-    visited[id(feature)] = True
+def _lookup_values(thedict, visited, remove=False):
+    if isinstance(thedict, Variable):
+        var = thedict
+        if remove: return var.value()
+        else:
+            result = var.value()
+            if result is None: return var.forwarded_self()
+            else: return result
+    if not isinstance(thedict, dict): return thedict
+    if visited.has_key(id(thedict)): return thedict
+    visited[id(thedict)] = True
 
-    for fname, fval in feature.items():
+    for fname, fval in thedict.items():
         if isinstance(fval, dict):
-            _apply_bindings(fval, visited)
+            _lookup_values(fval, visited)
         elif isinstance(fval, Variable):
             if fval.value() is not None:
-                feature[fname] = fval.value()
-                if isinstance(feature[fname], dict):
-                    _apply_bindings(feature[fname], visited)
+                thedict[fname] = fval.value()
+                if isinstance(thedict[fname], dict):
+                    _lookup_values(thedict[fname], visited)
             else:
-                feature[fname] = fval.forwarded_self()
+                newval = fval.forwarded_self()
+                if fval is newval and remove: del thedict[fname]
+                else:
+                    thedict[fname] = fval.forwarded_self()
+    return thedict
 
 def _apply_forwards_to_bindings(bindings):
     for (key, value) in bindings.items():
@@ -217,8 +335,6 @@ def _apply_forwards_to_bindings(bindings):
             while value.has_key(_FORWARD):
                 value = value[_FORWARD]
             bindings[key] = value
-
-import unittest
 
 class FeatureTestCase(unittest.TestCase):
     'Unit testing for the featurelite package'
@@ -278,8 +394,7 @@ class FeatureTestCase(unittest.TestCase):
         x = Variable('x')
         f1 = {'F': {'H': x}}
         f2 = {'F': x}
-        u12 = unify(f1, f2)
-        
+        u12 = unify(f1, f2, {})
         self.assertEqual(u12['F'], u12['F']['H'])
         self.assertEqual(u12['F'], u12['F']['H']['H'])
 
@@ -311,14 +426,10 @@ class FeatureTestCase(unittest.TestCase):
         f3 = {'a': False, 'b': True}
         self.assertEqual(u12, f3)
 
-def testsuite():
-    t1 = unittest.makeSuite(FeatureTestCase)
-    return unittest.TestSuite( (t1,) )
+def test():
+    import doctest
+    doctest.testmod()
 
-def test(verbosity):
-    runner = unittest.TextTestRunner(verbosity=verbosity)
-    runner.run(testsuite())
-
-if __name__ == '__main__':
-    test(verbosity=1)
+if __name__ == "__main__":
+    test()
 
