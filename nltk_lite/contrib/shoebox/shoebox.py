@@ -3,33 +3,114 @@
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
+#         Greg Aumann <greg_aumann@sil.org>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
 """
-Read entries from the Shoebox corpus sample, returning a list
-of pairs (where each pair consists of a field name and value),
-or a list of dictionaries (one per Shoebox entry).
-
-Contents: lexicons for various languages, with entries of the form::
- \\lx kaakauko
- \\ps N.M
- \\ge gray weevil
- \\sf FAUNA.INSECT
- \\nt pictured on PNG postage stamp
- \\dt 28/Jan/2005
- \\ex Kaakauko ira toupareveira aue-ia niugini stemp.
- \\xp Kaakauko em insect em i istap long niugini.
- \\xe The gray weevil is found on the PNG stamp.
- \\ex Kaakauko iria toupaeveira niugini stamia.
- \\xp Weevil i stap long niguini stamp.
- \\xe The gray weevil is on the New Guinea stamp.
+Module for reading, writing and manipulating Shoebox databases.
 """
 
+import os, re
 from nltk_lite.corpora import get_basedir
 from string import split
 from itertools import imap
-import os
+from StringIO import StringIO
+
+class ShoeboxFile(object):
+    """Base class for Shoebox database and settings files."""
+
+    def open(self, sfm_file):
+        """Open a standard format marker file for sequential reading. 
+        
+        @param sfm_file: name of the standard format marker input file
+        @type sfm_file: string
+        """
+        self._file = file(sfm_file, 'rU')
+
+    def open_string(self, s):
+        """Open a standard format marker file for sequential reading. 
+        
+        @param s: string to parse as a standard format marker input file
+        @type s: string
+        """
+        self._file = StringIO(s)
+
+    def raw_fields(self):
+        """Return an iterator for the fields in the SFM file.
+        
+        @return: an iterator that returns the next field in a (marker, value) 
+            tuple. Linebreaks and trailing white space are preserved except 
+            for the final newline in each field.
+        @rtype: iterator over C{(marker, value)} tuples
+        """
+        join_string = '\n'
+        line_pat = re.compile(r'^(?:\\(\S+)[^\S\n]*)?(.*)$')
+        # need to get first line outside the loop for correct handling
+        # of the first marker if it spans multiple lines
+        file_iter = iter(self._file)
+        line = file_iter.next()
+        mobj = re.match(line_pat, line)
+        mkr, line_value = mobj.groups()
+        value_lines = [line_value,]
+        self.line_num = 0
+        for line in file_iter:
+            self.line_num += 1
+            mobj = re.match(line_pat, line)
+            line_mkr, line_value = mobj.groups()
+            if line_mkr:
+                yield (mkr, join_string.join(value_lines))
+                mkr = line_mkr
+                value_lines = [line_value,]
+            else:
+                value_lines.append(line_value)
+        self.line_num += 1
+        yield (mkr, join_string.join(value_lines))
+
+    def fields(self, strip=True, unwrap=True, encoding=None, unicode_fields=None):
+        """Return an iterator for the fields in the SFM file.
+        
+        @param strip: strip trailing whitespace from the last line of each field
+        @type strip: boolean
+        @param unwrap: Convert newlines in a field to spaces.
+        @type unwrap: boolean
+        @param encoding: Name of an encoding to use. If it is specified then 
+            C{fields} method returns unicode strings rather than non unicode 
+            strings.
+        @type encoding: string or None
+        @param unicode_fields: Set of marker names whose values are in 
+            unicode. Ignored if encoding is None.
+        @type unicode_fields: set or dictionary (actually any sequence that 
+            supports the 'in' operator).
+        @return: an iterator that returns the next field in a (marker, value) 
+            tuple. C{marker} and C{value} are unicode strings if an C{encoding} was specified in the 
+            C{open} method. Otherwise they are nonunicode strings.
+        @rtype: iterator over C{(marker, value)} tuples
+        """
+        if encoding is None and unicode_fields is not None:
+            raise ValueError, 'unicode_fields is set but not encoding.'
+        unwrap_pat = re.compile(r'\n+')
+        for mkr, val in self.raw_fields():
+            if encoding:
+                if mkr in unicode_fields:
+                    val = val.decode('utf8')
+                else:
+                    val = val.decode(encoding)
+                mkr = mkr.decode(encoding)
+            if unwrap:
+                val = unwrap_pat.sub(' ', val)
+            if strip:
+                val = val.rstrip()
+            yield (mkr, val)
+
+    def close(self):
+        """Close a previously opened SFM file."""
+        self._file.close()
+        try:
+            del self.line_num
+        except AttributeError:
+            pass
+
 
 def _parse_record(s):
     """
