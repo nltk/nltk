@@ -1,0 +1,18 @@
+PyYAML 3000 - The next generation YAML parser and emitter for Python.
+
+To install, type 'python setup.py install'.
+
+For more information, check the PyYAML homepage:
+'http://pyyaml.org/wiki/PyYAML'.
+
+Documentation (rough and incomplete though):
+'http://pyyaml.org/wiki/PyYAMLDocumentation'.
+
+Post your questions and opinions to the YAML-Core mailing list:
+'http://lists.sourceforge.net/lists/listinfo/yaml-core'.
+
+Submit bug reports and feature requests to the PyYAML bug tracker:
+'http://pyyaml.org/newticket?component=pyyaml'.
+
+PyYAML 3000 is written by Kirill Simonov <xi@resolvent.net>. It is released
+under the MIT license. See the file LICENSE for more details.
