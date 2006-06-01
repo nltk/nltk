@@ -1,0 +1,441 @@
+.. role:: raw-latex(raw)
+    :format: latex
+
+.. raw:: latex
+
+    \newcommand\sym[1]{\mathrm{\textsc{#1}}}
+
+
+=================================
+Building semantic representations
+=================================
+
+Peter Wang
+==========
+
+
+------------
+Introduction
+------------
+
+The aim of this project is to build a system to assign semantic
+representations to simple sentences.  The semantic representation will
+be in the form of first-order logic formulas.  The approach will be to
+build the representation during parsing, so that the process is driven
+by the syntax.
+
+The idea that lets us proceed along these lines is the *principle of
+compositionality*.  It assumes that the meaning of a sentence is made
+up of the meanings of its constituents and the way they are combined.
+Idiomatic language obviously contradicts this principle but,
+intuitively, it seems sound for at least simpler language and it's
+worth investigating.  Further, it was interesting to me that we
+actually could assign a *semantic* representation based on the syntax
+of a sentence.
+
+As an example of what the representations look like, the
+sentence "John hits Mary" might be assigned:
+:raw-latex:`$\sym{Hits}(\sym{John}, \sym{Mary})$`.  A slightly more
+complex example might be:
+:raw-latex:`$\forall x (\sym{Monkey}(x)~\rightarrow~\exists y.(\sym{Crowbar}(y) \wedge \sym{Have}(x, y)))$`.
+
+Semantic representations could have application in question answering
+systems, information retrieval, machine translation, etc.  Have a
+machine "know" at some level the meaning of a sentence could lead to
+better performance of these applications, although it seems like that
+goal is still a while off.
+
+Using first-order logic gives us the backing of a well known and
+understood mathematical theory.  It is not the most expressive logic
+but it is computationally tractable, which is important if we actually
+want to do something with the representations.
+
+It turns out that building semantic representations is not completely
+straightforward, due to the problem of scope ambiguities.  Tackling
+this problem is the major focus of this project.  Without solving this
+problem we may not get the interpretation(s) of a sentence that we
+would like.
+
+
+------
+Method
+------
+
+Features and parsing
+--------------------
+
+In this project I made use of a feature-based parser available in the
+NLTK-Lite contrib area.  Features are key-value pairs associated with
+symbols in the grammar, and the semantics will be stored as a feature.
+Parsing is done with chart parsing, with the only difference being
+that the feature structures (sets of features) of two edges in the
+chart must unify before a new edge is licensed to be added to the
+chart.  Unification allows both information in feature structures to
+propagate.
+
+Lambda calculus
+---------------
+
+To combine the semantics of two child trees at their parent node,
+we make use of lambda calculus as a notational extension to first
+order logic.  For example, if the semantics of the verb `hits` is
+:raw-latex:`$\lambda y \lambda x.\sym{Hits}(x,y)$` and the semantics
+of the noun `Mary` is :raw-latex:`$\sym{Mary}$`, then we could apply
+the noun's semantics to the verb's semantics results in:
+:raw-latex:`$((\lambda y \lambda x.\sym{Hits}(x,y)) ~\sym{Mary})
+\Longrightarrow \lambda x.\sym{Hits}(x, \sym{Mary})$`.
+This is not the exact form that our rules will take but we will
+follow the same principle.
+
+Scope ambiguity
+---------------
+
+A problem that one quickly runs into when building semantic
+representations is scope ambiguities.  From a single parse of a
+sentence, an 'obvious' way to build semantic representations will lead
+to only a single representation of a sentence.  However, some
+sentences are semantically ambiguous but syntactically unambiguous.
+As an example, take the sentence "Every dog bites a boxer".  There
+are two interpretations that we would want to capture, namely:
+
+.. raw:: latex
+
+  \begin{enumerate}
+  \item 
+    $\forall x ( \sym{Dog}(x) \rightarrow \exists y ( \sym{Boxer}(y) \wedge \sym{Bites}(x,y) ) )$
+  \item
+    $\exists y ( \sym{Boxer}(y) \wedge \forall x ( \sym{Dog}(x) \rightarrow \sym{Bites}(x,y) ) ) $
+  \end{enumerate}
+
+In this project I followed the *Hole Semantics* model presented in
+Blackburn & Bos [BB] to solve this problem.  Hole semantics is an
+example of an *underspecified representation*.  The idea is that the
+semantic representation built is not itself a complete FOL formula,
+but fragments of formula with *holes* left in some places, and a set
+of constraints which indicate which fragments can be "plugged" into
+which holes.  Plugging in different ways results in different possible
+interpretations.
+
+The hole semantics representation of the sentence "Every dog bites a
+boxer" is:
+
+.. raw:: latex
+
+  \newcommand\and{~\wedge~}
+  \begin{eqnarray*}
+  && (l_2: \forall x. l_3) \and
+  (l_3: l_1 \rightarrow h_1) \and
+  (l_1: \sym{Dog}(x)) \and
+  (s_3: \exists g_3 s_4) \and
+  (s_4: s_2 \wedge s_1) \\
+  &\and&
+  (s_2: \sym{Boxer}(g3)) \and
+  (l_x: \sym{Bite}(x,g_3)) \and
+  (l_x \le h_1) \and
+  (l_2 \le \sym{Top}) \and
+  (l_1 \le \sym{Top}) \\
+  &\and&
+  (l_x \le s_1) \and
+  (s_3 \le \sym{Top}) \and
+  (s_2 \le \sym{Top}) \and
+  (l_x \le \sym{Top})
+  \end{eqnarray*}
+
+The variables to the left of colons are *labels*.  They give names to
+the fragments of formula to the right of the colon.  The notation
+:raw-latex:`$l \le h$` is a constraint that the label *l* must appear
+somewhere below the hole *h* in the formula tree.  (Most of the names
+of the variables above have been automatically generated; they do not
+have any inherent meaning.)
+
+The semantic representation above is more easily interpreted as a
+graph.  Constraints are indicated by dashed lines.
+
+.. image:: hole1.png
+   :align: center
+
+It is easy now to see that there are two ways to satisfy the
+constraints.  Starting from the top we can either plug the subgraph
+beginning with the label *l2* into the hole *TOP*, or plug *s3* into
+*TOP*.  If we plug *l2* into *TOP* then *s3* must be plugged into the
+hole *h1*, and *s1* must be filled by *lx*.  This gives us the first
+reading, that all dogs bite some boxer, who may be different per dog.
+If, instead, we start by plugging *s3* into *TOP* then we get the
+second reading, that there is a particular boxer whom all dogs bite.
+
+
+--------------
+Implementation
+--------------
+
+The implementation can be divided into three parts.
+
+* work on the infrastructure (feature parser and lambda calculus
+  interpreter)
+
+* a small grammar that follows the hole semantics model (``hole.cfg``)
+
+* the driver program and plugging algorithm (``hole.py``)
+
+The work on the feature parser was to try to integrate it better with
+NLTK-Lite.  I have attempted some of this, although it's not clear
+that it's particularly better.  I think more extensive changes need to
+be made to reduce code duplication.
+
+The work on the lambda calculus interpreter was firstly to fix it (it
+was not doing :raw-latex:`$\alpha$`-conversion before
+:raw-latex:`$\beta$`-conversion!), and secondly to add existential
+quantifier notation and Skolemisation.  Existential quantification is
+written with the syntax ``some x.phi``, which stands for
+:raw-latex:`$\exists x~\phi$`.  The work on the infrastructure is
+submitted as a patch.
+
+The grammar follows the method described earlier.  The semantic rules
+themselves are mostly adapted from Blackburn & Bos' BB1 sample
+implementation.  The format of the grammar file is fairly
+straightforward, but I'll describe briefly the connection between the
+semantics rules in the grammar and the generated hole semantics
+representation.  For a full exposition, please see [BB].
+
+Grammar rules for nouns are of the form::
+
+   Noun[sem=<\v h l.(and (: l (DOG v)) (leq l h))>] -> 'dog'
+
+That is ASCII for:
+
+.. raw:: latex
+
+   \par
+   \medskip
+   Noun[~sem~=~$\lambda v.\lambda h.\lambda l.(
+        (l: \sym{Dog}(v)) \wedge (l \le h) )$~] $\rightarrow$ 'dog'
+   \medskip
+   \par
+
+The semantic representation of the noun 'dog' is a three argument
+function.  The first argument is for a variable name.  The next two
+arguments are for a hole and label name respectively.  The
+contribution of the word 'dog' to the semantics is a labelled formula
+fragment, plus a constraint that the label *l* needs to appear under
+the hole *h*.  The variable *v* that 'dog' asserts is a dog will be
+passed in, after having been introduced by a quantifier elsewhere in
+the grammar.
+
+All the semantic representations have hole and label arguments,
+but some of them introduce new holes and labels.  Now we look at
+the semantics of the determiner 'every'.
+
+.. raw:: latex
+
+   \newcommand\hole{\mathrm{hole}}
+   \newcommand\lab{\mathrm{label}}
+   \renewcommand\and{\wedge}
+   \begin{align*}
+     & \lambda n.\lambda v.\lambda h.\lambda l.
+       \exists h_1 \exists l_1 \exists l_2 \exists l_3 \exists x \\
+     & \hole(h_1)  \and
+       \lab(l_1) \and
+       \lab(l_2) \and
+       \lab(l_3) \\
+     \and~ &
+       \left[ l_2: (\forall x. l_3) \right] \and
+       \left[ l_3: (l_1 \rightarrow h_1) \right] \\
+     \and~ &
+       (l \le h_1) \and
+       (l_2 \le h) \\
+     \and~ &
+       (n~x~h~l_1) \and (v~x~h~l)
+   \end{align*}
+
+It takes a noun representation and a verb representation, then the
+usual hole and label arguments.  It introduces one new hole, three new
+labels and a new variable in its scope.  (hole *h1*) simply
+asserts that *h1* is a hole and likewise for labels.  Then two formula
+fragments are introduced (the "for all *x*" part, and the "this
+implies that" part).  One constraint says that *l2*, being the
+outermost formula fragment, must appear beneath the hole *h* which was
+passed in.  The noun representation *n*, which will be a lambda
+expression, is applied with the new variable *x* and the hole *h* and
+label *l1*.  This associates the label *l1* with the noun makes sure
+that *l1* is below the top hole *h* (which is guaranteed in this case
+anyway, but this is what allows quantifiers to "float" out of
+their positions in the syntax tree).
+
+After the hole semantics representation has been built, we may want to
+produce all the possible FOL formulas.  I implemented a simple
+generate-and-test algorithm to perform the plugging.  It fills holes
+with labels in a breadth-first order, so long as constraints are not
+violated.  When there are no more holes left, it has found a legal
+plugging, i.e. a mapping of labels to holes.  It attempts all possible
+labels in every hole so all legal pluggings are found.
+
+
+Running
+-------
+
+The program currently requires a patch to be applied to NLTK-Lite.
+After that the program can be executed using ``python hole.py``.  By
+default it reads the grammar from the file ``hole.cfg`` but it can
+selected at the command line.  ``python hole.py -h`` gives the usage.
+
+Once started the program will prompt the user for a sentence.  After
+parsing (there may be multiple parses if the grammar is ambiguous) the
+plugging algorithm is invoked and all the interpretations of the
+sentence will be printed in the form of FOL formulas.  With the ``-d``
+option the formulas are drawn graphically.
+
+
+-------
+Results
+-------
+
+Here is some trimmed output for a sample sentence, demonstrating
+roughly the level of complexity in the sentence allowed by the
+grammar.  Most sentences take this form.
+::
+
+    Sentence: every white dog of some rabid cat bites a sheep of all boxers
+
+    1. (SOME _g9 ((SHEEP(_g9) /\ (ALL _g6 (BOXER(_g6) -> OF(_g6,
+       _g9)))) /\ (ALL x (((DOG(x) /\ (SOME _g2 ((CAT(_g2) /\
+       RABID(_g2)) /\ OF(_g2, x)))) /\ WHITE(x)) -> BITE(x, _g9)))))
+
+    2. (SOME _g9 ((SHEEP(_g9) /\ (ALL _g6 (BOXER(_g6) -> OF(_g6,
+       _g9)))) /\ (SOME _g2 ((CAT(_g2) /\ RABID(_g2)) /\ (ALL x
+       (((DOG(x) /\ OF(_g2, x)) /\ WHITE(x)) -> BITE(x, _g9)))))))
+    ...
+    9. (SOME _g2 ((CAT(_g2) /\ RABID(_g2)) /\ (ALL _g6 (BOXER(_g6) ->
+       (SOME _g9 ((SHEEP(_g9) /\ OF(_g6, _g9)) /\ (ALL x (((DOG(x) /\
+       OF(_g2, x)) /\ WHITE(x)) -> BITE(x, _g9)))))))))
+    ...
+    14. (ALL x (((DOG(x) /\ (SOME _g2 ((CAT(_g2) /\ RABID(_g2)) /\
+        OF(_g2, x)))) /\ WHITE(x)) -> (ALL _g6 (BOXER(_g6) -> (SOME
+        _g9 ((SHEEP(_g9) /\ OF(_g6, _g9)) /\ BITE(x, _g9)))))))
+
+The textual output is hard to read directly, but if we indent one
+formula nicely, we can see that it gives the interpretation "there is
+one specific rabid cat that, for all boxers, there is a sheep of each
+boxer that all white dogs of that one specific cat bite".
+::
+
+ 9. (SOME _g2 ((CAT(_g2) /\ RABID(_g2))
+          /\  (ALL _g6 (BOXER(_g6)
+                   ->  (SOME _g9 ((SHEEP(_g9) /\ OF(_g6, _g9))
+                             /\  (ALL x  (((DOG(x) /\ OF(_g2, x)) /\ WHITE(x))
+                                      -> BITE(x, _g9)))))))))
+
+Graphical formula trees are easier to read::
+
+    Sentence: some white rabid cat of every boxer who growls growls
+
+.. image:: hole2.png
+   :scale: 60
+
+Note that I have chosen to represent "x of y" as OF(y,x) so both trees
+above are correct.
+
+
+----------
+Evaluation
+----------
+
+Some criteria to evaluate the system could be:
+
+- coverage and correctness of the grammar
+- correctness and completeness of the semantic representations
+  (do they match our intuition?)
+
+The coverage of the grammar is small.  It only accepts sentences in
+third-person, present tense.  I have not found examples of
+ungrammatical sentence being accepted, but there are obviously many
+grammatical sentences not accepted.
+
+For the semantics, it is an arduous task to read every logic formula
+produced for a relatively complex sentence (more than two quantifiers)
+to make sure it is correct, and it is even harder to check whether
+every possible interpretation has been covered.  I have implemented a
+sanity check to make sure the plugging algorithm is not violating any
+of the hole semantics constraints though.
+
+Sometimes the semantic representations don't capture the meaning of
+the sentence.  For example:
+
+* Neither of the formulas for the sentence "Every dog is a cat" are
+  intuitive, although they are not wrong::
+
+    1. (ALL x (DOG(x) -> (SOME _g1 (CAT(_g1) /\ EQ(_g1, x)))))
+    2. (SOME _g1 (CAT(_g1) /\ (ALL x (DOG(x) -> EQ(_g1, x)))))
+
+  I would expect :raw-latex:`$\forall x (\sym{Dog}(x) \rightarrow
+  \sym{Cat}(x))$` to be present.  Similarly for the sentence "All dogs
+  are cats".
+
+* "Dogs bite cats."::
+
+    1. (SOME x (DOG(x) /\ (SOME _g1 (CAT(_g1) /\ BITE(x, _g1)))))
+    2. (SOME _g1 (CAT(_g1) /\ (SOME x (DOG(x) /\ BITE(x, _g1)))))
+
+  The intuitive meaning is not captured.  I chose to make
+  determinerless nouns be existentially quantified, but it's not
+  really right.  One interpretation of "dogs bite cats" is
+  :raw-latex:`$\forall x (\sym{Dog}(x) \to \exists y.(\sym{Cat}(y)
+  \wedge \sym{Bite}(x,y)))$` but that requires quantifying the nouns
+  in two different ways.  I think the problem is that the we are
+  looking for is something like "dogs in general have a habit of
+  biting cats" which is outside of the scope of this toy system.
+
+* "A cat doesn't growl."::
+
+    1. (SOME x (CAT(x) /\ NOT(GROWL(x))))
+    2. NOT((SOME x (CAT(x) /\ GROWL(x))))
+
+  This sentence also has the meaning "cats don't growl" (again,
+  speaking about cats in general rather than any specific cats) which
+  is not captured.
+
+* The semantic representation of "a small elephant" would be
+  :raw-latex:`$\exists x (\sym{Small}(x) \wedge \sym{Elephant}(x))$`.
+  This doesn't seem quite right, as even a small elephant is probably
+  not "small" by most standards.  This gets into the problem of
+  lexical semantics.  (Unfortunately I can't remember where I read
+  this example from.)
+
+Apart from the grammar and semantics, there are some limitations in
+the infrastructure.
+
+* Every rule in the grammar file must be written on a single line,
+  which makes semantic rules unwiedly.  Also, if there is a mistake in
+  the input (in the grammar or in lambda expressions) the error
+  messages are bad or non-existant.
+
+* The grammar doesn't support multiple terminals on the right hand
+  side of a production, which makes multi-word lexemes cumbersome.
+
+* Feature variables are not being substituted into lambda expressions,
+  except for lambda applications at the top level.  I have worked
+  around this in a few places, e.g. writing
+
+  ``(\sym.\v h l.(v sym h l) ?sym)``
+  instead of
+  ``\v h l.(v ?sym h l)``.
+
+* I was going to implement the Minimal Recursion Semantics model, but
+  didn't because the algorithm presented in [MRS] makes use of lists
+  in feature structures.  It would be useful to support lists in
+  feature structures.
+
+
+----------
+References
+----------
+
+[BB]
+ Patrick Blackburn and Johan Bos.
+ *Representation and Inference for Natural Language. 
+ A First Course in Computational Semantics.*
+ CSLI, 2005.
+
+[MRS]
+ Ann Copestake, Dan Flickinger, Carl Pollard, and Ivan A. Sag.
+ *Minimal recursion semantics: An introduction.*
+ L&C. Vol. 1 -- No. 3, 2001.
