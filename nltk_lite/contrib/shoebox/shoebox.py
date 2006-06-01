@@ -45,7 +45,7 @@ class ShoeboxFile(object):
         @rtype: iterator over C{(marker, value)} tuples
         """
         join_string = '\n'
-        line_pat = re.compile(r'^(?:\\(\S+)[^\S\n]*)?(.*)$')
+        line_pat = re.compile(r'^(?:\\(\S+)\s*)?(.*)$')
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
