@@ -16,18 +16,13 @@ Each module in this package tests a specific aspect of NLTK.  Modules
 are typically named for the module or class that they test (e.g.,
 L{nltk_lite.test.tree} performs tests on the L{nltk_lite.parse.tree}
 module).
+
+Use doctest_driver.py to run the tests:
+
+  doctest_driver.py --help
+
+NB. Popular options for NLTK documentation are:
+
+  --ellipsis --normalize_whitespace
+
 """
-
-import sys, doctest
-
-#######################################################################
-# Test runner
-#######################################################################
-
-
-
-def test(file):
-    doctest.testfile(file, optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
-
-for file in sys.argv[1:]:
-    test(file)
