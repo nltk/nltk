@@ -217,3 +217,18 @@ def filestring(f):
     else:
         raise ValueError, "Must be called with a filename or file-like object"
 
+##########################################################################
+# COUNTER, FOR UNIQUE NAMING
+##########################################################################
+
+class Counter:
+    """
+    A counter that auto-increments each time its value is read.
+    """
+    def __init__(self, initial_value=0):
+	self._value = initial_value
+    def get(self):
+	self._value += 1
+	return self._value
+
+
