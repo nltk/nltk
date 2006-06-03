@@ -16,10 +16,10 @@ import os
 Penn Treebank corpus sample: tagged, NP-chunked, and parsed data from
 Wall Street Journal for 3700 sentences.
 
-This is a ~10% fragment of Penn Treebank, (C) LDC 1995.  It is made
-available under fair use for the purposes of illustrating NLTK
-tools for tokenizing, tagging, chunking and parsing.  This data is
-for non-commercial use only.
+This is a ~10% fragment of the Wall Street Journal section of the Penn
+Treebank, (C) LDC 1995.  It is distributed with the Natural Language Toolkit
+under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike License
+[http://creativecommons.org/licenses/by-nc-sa/2.5/].
 
 Raw:
 
