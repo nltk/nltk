@@ -1,8 +1,8 @@
 # Contributed by Rob Speer
 
 from nltk_lite.parse.chart import *
+from nltk_lite.parse.category import *
 from nltk_lite.parse import cfg
-from feature import *
 
 def apply(obj, vars):
     """A helper function to determine the value of an object when variables
