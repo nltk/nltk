@@ -1,8 +1,8 @@
 # Contributed by Rob Speer
 
-from nltk_lite.contrib.feature import *
-from nltk_lite.contrib.featurechart import *
+from nltk_lite.parse.category import *
 from nltk_lite.parse import cfg
+from nltk_lite.contrib.featurechart import *
 
 """A module to read a grammar from a *.cfg file."""
 

@@ -1,34 +1,16 @@
-# Contributed by Rob Speer (NLTK version)
-# Initial port to NLTK-Lite by Steven Bird
-# Overhauled by Peter Wang
+# Natural Language Toolkit: Categories
+#
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Contributed by Rob Speer (NLTK version)
+#         Steven Bird <sb@csse.unimelb.edu.au> (NLTK-Lite Port)
+#         Peter Wang <wangp@csse.unimelb.edu.au> (Overhaul)
+# URL: <http://nltk.sourceforge.net>
+# For license information, see LICENSE.TXT
+#
+# $Id$
 
 from nltk_lite.parse.featurestructure import *
-from nltk_lite.parse import cfg
-from nltk_lite.contrib import church
-
-class ChurchParserSubst(church.Parser):
-    """
-    A lambda calculus expression parser, extended to create application
-    expressions which support the SubstituteBindingsI interface.
-    """
-    def make_ApplicationExpression(self, first, second):
-        return ApplicationExpressionSubst(first, second)
-
-class ApplicationExpressionSubst(church.ApplicationExpression, SubstituteBindingsI):
-    """
-    A lambda application expression, extended to implement the
-    SubstituteBindingsI interface.
-    """
-    def substitute_bindings(self, bindings):
-        newval = self
-        for semvar in self.variables():
-            varstr = str(semvar)
-            # discard church Variables which are not FeatureVariables
-            if varstr.startswith('?'): 
-                var = FeatureVariable.parse(varstr)
-                if bindings.is_bound(var):
-                    newval = newval.replace(semvar, bindings.lookup(var))
-        return newval
+from nltk_lite.parse import cfg, lambdacalculus
 
 class Category(FeatureStructure, cfg.Nonterminal):
     """
@@ -36,6 +18,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
     parsing.  It can act as a C{Nonterminal}.
 
     A C{Category} differs from a C{FeatureStructure} in these ways:
+
         - Categories may not be re-entrant.
         
         - Categories use value-based equality, while FeatureStructures use
@@ -443,14 +426,14 @@ class Category(FeatureStructure, cfg.Nonterminal):
         # Semantic value of the form <app(?x, ?y) >'; return an ApplicationExpression
         match = _PARSE_RE['application'].match(s, position)
         if match is not None:
-            fun = ChurchParserSubst(match.group(2)).next()
-            arg = ChurchParserSubst(match.group(3)).next()
+            fun = ParserSubstitute(match.group(2)).next()
+            arg = ParserSubstitute(match.group(3)).next()
             return ApplicationExpressionSubst(fun, arg), match.end()       
 
-        # other semantic value enclosed by '< >'; return value given by the church parser
+        # other semantic value enclosed by '< >'; return value given by the lambda expr parser
         match = _PARSE_RE['semantics'].match(s, position)
         if match is not None:
-            return ChurchParserSubst(match.group(1)).next(), match.end()	
+            return ParserSubstitute(match.group(1)).next(), match.end()	
         
         # String value
         if s[position] in "'\"":
@@ -581,7 +564,7 @@ class GrammarCategory(Category):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
- 	    elif isinstance(fval, church.Expression): # EK: Use the church repr for expressions
+ 	    elif isinstance(fval, lambdacalculus.Expression):
  		segments.append('%s=%r' % (fname, fval.__str__()))
             elif not isinstance(fval, Category):
                 segments.append('%s=%r' % (fname, fval))
@@ -694,3 +677,40 @@ class GrammarCategory(Category):
         
     _parse = classmethod(_parse)
 
+class ParserSubstitute(lambdacalculus.Parser):
+    """
+    A lambda calculus expression parser, extended to create application
+    expressions which support the SubstituteBindingsI interface.
+    """
+    def make_ApplicationExpression(self, first, second):
+        return ApplicationExpressionSubst(first, second)
+
+class ApplicationExpressionSubst(lambdacalculus.ApplicationExpression, SubstituteBindingsI):
+    """
+    A lambda application expression, extended to implement the
+    SubstituteBindingsI interface.
+    """
+    def substitute_bindings(self, bindings):
+        newval = self
+        for semvar in self.variables():
+            varstr = str(semvar)
+            # discard Variables which are not FeatureVariables
+            if varstr.startswith('?'): 
+                var = FeatureVariable.parse(varstr)
+                if bindings.is_bound(var):
+                    newval = newval.replace(semvar, bindings.lookup(var))
+        return newval
+
+def demo():
+    print "Category(pos='n', agr=Category(number='pl', gender='f')):"
+    print
+    print Category(pos='n', agr=Category(number='pl', gender='f'))
+    print
+    print "GrammarCategory.parse('VP[+fin]/NP[+pl]'):"
+    print
+    print GrammarCategory.parse('VP[+fin]/NP[+pl]')
+    print
+    
+if __name__ == '__main__':
+    demo()
+    
