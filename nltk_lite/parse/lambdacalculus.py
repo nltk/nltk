@@ -1,36 +1,28 @@
-#!/usr/local/bin/python
+# Natural Language Toolkit: Lambda Calculus
 #
-# $Id$ $Date$
+# Copyright (C) 2001-2002 Erik Max Francis
+# Author: Erik Max Francis <max@alcyone.com>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
 """
-Lambda calculus system in Python.
+Lambda calculus system.
 """
 
-__version__ = '1.0a'
-__program__ = 'church'
-__author__ = 'Erik Max Francis <max@alcyone.com>'
-__copyright__ = 'Copyright (C) 2001-2002 Erik Max Francis'
-__license__ = 'GPL'
-
+from nltk_lite.utilities import Counter
 
 class Error(Exception): pass
-
-
-class Counter:
-    """
-    A counter that auto-increments each time its value is read.
-    """
-    def __init__(self, initial_value=0):
-	self._value = initial_value
-    def get(self):
-	self._value += 1
-	return self._value
-
 
 class Variable:
     """A variable, either free or bound."""
     
     def __init__(self, name):
+        """
+        Create a new C{Variable}.
+
+        @type name: C{string}
+        @param name: The name of the variable.
+        """
         self.name = name
 
     def __eq__(self, other):
@@ -150,8 +142,7 @@ class VariableExpression(Expression):
 class VariableBinderExpression(Expression):
     """A variable binding expression: e.g. \\x.M."""
 
-    # A counter used for generating "unique" variable names during alpha
-    # conversion.
+    # for generating "unique" variable names during alpha conversion.
     _counter = Counter()
 
     def __init__(self, variable, term):
@@ -472,7 +463,7 @@ def runtests():
     id = Parser(r'\x.(x x)').next()
     assert l == id
 
-    # Test Church numerals
+    # Test numerals
     zero = Parser(r'\f x.x').next()
     one = Parser(r'\f x.(f x)').next()
     two = Parser(r'\f x.(f (f x))').next()
