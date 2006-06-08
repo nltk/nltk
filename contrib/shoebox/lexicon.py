@@ -11,7 +11,6 @@ lexicon without reference to its metadata. For more sophisticated
 functionality that handles metadata, use the module I{metadata}.
 """
 
-
 import re
 from nltk_lite.corpora import shoebox
 from utilities import Field, SequentialDictionary
@@ -49,9 +48,9 @@ class LexiconParser:
   
   def parse(self, subentry_field_marker=None):
     """
-    This method does the actual parsing of Shoebox lexicon(s). It
-    will also parse subentries provided that the field marker 
-    identifying subentries is passed to it.
+    This method does the actual parsing of Shoebox lexicon(s). It will also
+    parse subentries provided that the field marker identifying subentries
+    is passed to it.
     
     @param subentry_field_marker: field marker that identifies subentries
     @type  subentry_field_marker: string
@@ -71,8 +70,6 @@ class LexiconParser:
         for f in raw_entry:
           marker = f[0]
           value = f[1]
-          #print "<%s>" % insideSubentry
-          #print "[%s][%s]" % (marker, value)
           if marker == subentryFieldMarker:
             if se:
               e.add_subentry(se)
@@ -103,8 +100,9 @@ class LexiconParser:
 class Lexicon(ShoeboxFile):
 
   """
-  This class represents a Shoebox lexicon consisting of a raw and a
-  dictionary of Entry objects, with keys as determined by the parser.
+  This class represents a Shoebox lexicon, which consists of an
+  optional header and one or more Entry objects, saved in a dictionary
+  whose keys are passed as a parameter to the parse() method.
   """
 
   def __init__(self, file):
@@ -151,83 +149,94 @@ class Lexicon(ShoeboxFile):
     """
     return self._entries.values()
 
-  def add_entry(self, entry, key_fields):
-    """
-    This method adds an Entry object to a Lexicon object. It adds the
-    entry to the Lexicon keyed by the values of the fields specified
-    by the I{key_fields} argument.
+  def add_entry(self, entry, key_fields, unique=False):
+      """
+      This method adds an Entry object to a Lexicon object. It adds the
+      entry to the Lexicon keyed by the values of the fields specified
+      by the I{key_fields} argument.
 
-    @param entry: a parsed entry from a Shoebox lexicon
-    @type entry: Entry object
-    @param key_fields: list of fields to use to build the key for an entry
-    @type key_fields: list of strings
-    """
-    key = ""
-    for field_marker in key_fields:
-      f = entry.get_field(field_marker)
-      if f:
-        values = f.get_values("")
-        key = key + "-" + values
-      else:
-        # Should this throw an error if a field with no values
-        # is used in the list of key fields?
-        pass
-    self._entries[key] = entry
+      @param entry: a parsed entry from a Shoebox lexicon
+      @type entry: Entry object
+      @param key_fields: list of fields to use to build the key for an entry
+      @type key_fields: list of strings
+      @param unique: raise exception if entry key already exists
+      @type unique: boolean
+      """
+      key = ""
+      for field_marker in key_fields:
+          f = entry.get_field(field_marker)
+          if f:
+              values = f.get_values("")
+              key = key + "-" + values
+          else:
+              # Should this throw an error if a field with no values
+              # is used in the list of key fields?
+              pass
+      if unique :
+          if self._entries.has_key(key) :
+              pass # TODO: Raise NonUniqueEntryKeyError
+          else :
+              self._entries[key] = entry
+      else :
+          self._entries[key] = entry
 
-  def parse(self, subentry_field_marker=None, head_field_marker='lx', key_fields=['lx']):
-    """
-    This method parses a Shoebox file in a Lexicon object. It will also parse
-    subentries provided that the field marker identifying subentries is passed to it.
+
+  def parse(self, head_field_marker='lx', subentry_field_marker=None, entry_key_fields=['lx'], unique_entry=True):
+      """
+      This method parses a Shoebox file in a Lexicon object. It will also parse
+      subentries provided that the field marker identifying subentries is passed to it.
     
-    @param head_field_marker: field marker that identifies the start of an entry
-    @type  head_field_marker: string
-    @param key_fields:        the field(s) to which entries are keyed
-    @type  key_fields:        list of strings
-    @param subentry_field_marker: field marker that identifies subentries
-    @type  subentry_field_marker: string
-    @return: a parsed Lexicon object
-    @rtype: dictionary object
-    """
+      @param head_field_marker:     field marker that identifies the start of an entry
+      @type  head_field_marker:     string
+      @param key_fields:            the field(s) to which entries are keyed
+      @type  key_fields:            list of strings
+      @param subentry_field_marker: field marker that identifies subentries
+      @type  subentry_field_marker: string
+      @param unique_entry:          raise warning if entries are non-unique according
+                                      to I{key_fields} parameter
+      @type  unique_entry:          boolean
+      @param unique_subentry:       raise warning if entries are non-unique according to
+                                      I{key_fields} parameter
+      @type  unique_subentry:       boolean    
+      @return:                      a parsed Lexicon object
+      @rtype:                       dictionary object
+      """
 
-    # Set up variables
-    inside_entry = False
-    inside_subentry = False
-    e = None
-    se = None
-    
-    # Use low-level functionality to get raw fields and walk
-    # through them
-    sf = ShoeboxFile()
-    sf.open(self._file)
-    for f in sf.raw_fields() :
-        fmarker, fvalue = f
-        if fmarker.startswith("_") :
-            # TODO: Add field to header
-            pass
-        elif fmarker == head_field_marker :
-            inside_entry = True
-            inside_subentry = False
-            if e :
-                self.add_entry(e, key_fields)
-            e = Entry()
-        elif subentry_field_marker and fmarker == subentry_field_marker :
-            inside_subentry = True
-            if se :
-                e.add_subentry(se)
-            se = Entry()               
-
-        # Add field to entry or subentry
-        if inside_subentry :
-            se.add_field(fmarker, fvalue)
-        elif inside_entry :
-            e.add_field(fmarker, fvalue)
-        else :
-            pass
-    # Deal with last entry
-    if e :
-      self.add_entry(e, key_fields)
-    sf.close()
-
+      # Set up variables
+      inside_entry = False
+      inside_subentry = False
+      e = None
+      se = None
+      # Use low-level functionality to get raw fields and walk through them
+      self.open(self._file)
+      for f in self.raw_fields() :
+          fmarker, fvalue = f
+          # What kind of field marker is it?
+          if fmarker.startswith("_") :
+              # TODO: Add field to header
+              pass
+          elif fmarker == head_field_marker :
+              inside_entry = True
+              inside_subentry = False
+              if e :
+                  self.add_entry(e, entry_key_fields, unique_entry)
+              e = Entry()
+          elif subentry_field_marker and fmarker == subentry_field_marker :
+              inside_subentry = True
+              if se :
+                  e.add_subentry(se)
+              se = Entry()               
+          # Add field to entry or subentry
+          if inside_subentry :
+              se.add_field(fmarker, fvalue)
+          elif inside_entry :
+              e.add_field(fmarker, fvalue)
+          else :
+              pass
+      # Deal with last entry
+      if e :
+          self.add_entry(e, entry_key_fields, unique_entry)
+      self.close()
 
 class Entry:
   """
