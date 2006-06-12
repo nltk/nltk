@@ -147,7 +147,12 @@ class Lexicon(ShoeboxFile):
     @return: all of the entries in the Lexicon
     @rtype: list of Entry objects
     """
-    return self._entries.values()
+    keys = self._entries.keys()
+    keys.sort()
+    for k in keys :
+      v = self._entries[k]
+      for e in v :
+        yield e
 
   def add_entry(self, entry, key_fields, unique=False):
       """
@@ -166,19 +171,21 @@ class Lexicon(ShoeboxFile):
       for field_marker in key_fields:
           f = entry.get_field(field_marker)
           if f:
-              values = f.get_values("")
+              values = f.get_values("/")
               key = key + "-" + values
           else:
               # Should this throw an error if a field with no values
               # is used in the list of key fields?
               pass
-      if unique :
-          if self._entries.has_key(key) :
-              pass # TODO: Raise NonUniqueEntryKeyError
-          else :
-              self._entries[key] = entry
+      if self._entries.has_key(key) :
+          print key
+          if unique :
+              msg = "Non-unique entry! \nEntry: \n%s\nKey Fields: %s\nKey: '%s'\n" % (entry, key_fields, key)    
+              raise ValueError, msg
       else :
-          self._entries[key] = entry
+          self._entries[key] = []
+      # Now append entry to list of entries for key
+      self._entries[key].append(entry)
 
 
   def parse(self, head_field_marker='lx', subentry_field_marker=None, entry_key_fields=['lx'], unique_entry=True):
