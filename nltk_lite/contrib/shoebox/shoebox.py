@@ -205,30 +205,29 @@ def dict_list(files='rotokas.dic', include_header=False) :
         yield _dict_list_entry(entry)
 
 def demo():
-    from nltk_lite.corpora import shoebox
     from itertools import islice
     from pprint import pprint
 
     print 'Raw:'
-    pprint(list(islice(shoebox.raw(), 3)))
+    pprint(list(islice(raw(), 3)))
 
     print 'Dictionary:'
-    pprint(list(islice(shoebox.dictionary(), 3)))
+    pprint(list(islice(dictionary(), 3)))
 
     print 'Dictionary-List:'
-    pprint(list(islice(shoebox.dict_list(), 3)))
+    pprint(list(islice(dict_list(), 3)))
 
     print 'Complex test cases, no header'
-    pprint(list(shoebox.raw("test.dic")))
+    pprint(list(raw("test.dic")))
 
     print 'Complex test cases, no header, dictionary'
-    pprint(list(shoebox.dictionary("test.dic")))
+    pprint(list(dictionary("test.dic")))
 
     print 'Complex test cases, no header, dictionary list'
-    pprint(list(shoebox.dict_list("test.dic")))
+    pprint(list(dict_list("test.dic")))
 
     print 'Complex test cases, with header'
-    pprint(list(shoebox.raw("test.dic", include_header=True)))
+    pprint(list(raw("test.dic", include_header=True)))
 
 if __name__ == '__main__':
     demo()
