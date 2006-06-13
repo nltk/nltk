@@ -27,7 +27,14 @@ class ShoeboxError(Exception):
 # DESC:   ???
 # ---------------------------------------------
 
-class ValidationError(ShoeboxError):
+class NonUniqueEntryError(ShoeboxError):
+    """
+    ???
+    """
+    def __init__(self) :
+        pass
+
+class ValidationError(ShoeboxError):    
 
     def __init__(self):
         pass
