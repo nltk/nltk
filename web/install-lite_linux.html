@@ -36,7 +36,7 @@
 <P>NLTK-Lite requires the Python scripting language interpreter to be installed on your machine.
 
 <h3>Installing Python from RPMs</h3>
-<P>Download and install the basic Python package directly from the web:</P>
+<P>Download and install the basic Python package with RPM:</P>
 
 <pre>
         rpm -Uvh http://download.fedora.redhat.com/pub/fedora/linux/core/4/i386/os/Fedora/RPMS/python-2.4.1-2.i386.rpm
@@ -85,12 +85,13 @@ functions.
 
 <h3>Installing Numarray from RPMs</h3>
 
-<P>The module Nummary is not available as an RPM since it is being replaced by NumPy. It will have to be installed from source (see below).</p>
+<P>Download the Numarray source distribution from <A HREF="http://prdownloads.sourceforge.net/numpy/numarray-1.5.1.tar.gz?download">http://prdownloads.sourceforge.net/numpy/numarray-1.5.1.tar.gz?download</A>
+to /tmp.
 
-<P>You can download and install NumPy as follows:</P>
+<P>You can now install the RPM as follows:</P>
 
 <pre>
-        rpm -Uvh http://prdownloads.sourceforge.net/numpy/numpy-0.9.8-1.i586.rpm?download
+        rpm -Uv /tmp/numpy-0.9.8-1.i586.rpm
 </pre>
 
 
@@ -121,10 +122,12 @@ to /tmp.
 
 <h3>Installing NLTK-Lite from RPMs</h3>
 
-<P>You can download and install NLTK-Lite as follows:</P>
+<p>Download the NLTK-Lite RPM from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.4-1.noarch.rpm?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.4-1.noarch.rpm?download</A> to /tmp.</P>
+
+<P>You can now install the RPM as follows:</P>
 
 <pre>
-        rpm -Uvh http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.4-1.noarch.rpm?download
+        rpm -Uv /tmp/nltk_lite-0.6.4-1.noarch.rpm
 </pre>
 
 
