@@ -11,7 +11,8 @@ lexicon without reference to its metadata. For more sophisticated
 functionality that handles metadata, use the module I{metadata}.
 """
 
-import re
+import os, re, sys
+from nltk_lite.corpora import get_basedir
 from nltk_lite.corpora import shoebox
 from utilities import Field, SequentialDictionary
 from shoebox import ShoeboxFile
@@ -178,7 +179,6 @@ class Lexicon(ShoeboxFile):
               # is used in the list of key fields?
               pass
       if self._entries.has_key(key) :
-          print key
           if unique :
               msg = "Non-unique entry! \nEntry: \n%s\nKey Fields: %s\nKey: '%s'\n" % (entry, key_fields, key)    
               raise ValueError, msg
@@ -453,3 +453,17 @@ class Entry:
     """
     if self._fields.has_key(fieldMarker):
       del self._fields[fieldMarker]
+
+def demo() :
+    path = os.path.join(get_basedir(), "shoebox", "rotokas.dic")
+    l = Lexicon(path)
+    l.parse(entry_key_fields=['lx','ps','sn'], unique_entry=False)
+    h = l.get_header()
+    for e in l.get_entries() :
+        print "<%s><%s><%s>" % (e.get_field_as_string("lx", ""),
+                                e.get_field_as_string("ps", ""),
+                                e.get_field_as_string("sn", ""))
+  
+if __name__ == '__main__':
+    demo()
+
