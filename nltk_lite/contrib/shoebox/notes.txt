@@ -31,6 +31,7 @@ approach advocated by Greg.
 
 3. Functionality Desiderata
 ---------------------------
+Greg points out that there are at least 4 things we want our Shoebox functionality to do:
 
 1. *Error Reporting* 
 This means keeping track of
@@ -73,3 +74,27 @@ fields. This makes it simpler to test the value contained in a field.
 This is important for validation, e.g. testing you don't have two
 homonyms with the same homonym numbers, or senses with the same sense
 numbers, or missing numbers etc.
+
+
+4. Issues
+---------
+There are a number of unresolved issues.
+
+1. *Uniqueness*
+Shoebox does not impose any sort of uniqueness on entries but users may
+want to have tools for validating it.
+
+2. *Standards*
+Shoebox users differ widely in the way that they use Shoebox. We need to see
+what sort of standards exist (e.g., MDF) and see to what extent people's data
+conforms to these standards.
+
+
+5. Bugs
+-------
+A list of known bugs will go here.
+
+
+6. TODO
+-------
+A list of things to do in the future will go here.
