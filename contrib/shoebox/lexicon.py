@@ -111,6 +111,7 @@ class Lexicon(ShoeboxFile):
     This method construct a Lexicon object with a header and a dictionary of
     entries.
     """
+    self._entry_key_fields = ['lx']
     self._header  = ''
     self._entries = {}
     self._file = file
@@ -155,7 +156,7 @@ class Lexicon(ShoeboxFile):
       for e in v :
         yield e
 
-  def add_entry(self, entry, key_fields, unique=False):
+  def add_entry(self, entry, unique=False):
       """
       This method adds an Entry object to a Lexicon object. It adds the
       entry to the Lexicon keyed by the values of the fields specified
@@ -169,7 +170,7 @@ class Lexicon(ShoeboxFile):
       @type unique: boolean
       """
       key = ""
-      for field_marker in key_fields:
+      for field_marker in self._entry_key_fields:
           f = entry.get_field(field_marker)
           if f:
               values = f.get_values("/")
@@ -188,7 +189,7 @@ class Lexicon(ShoeboxFile):
       self._entries[key].append(entry)
 
 
-  def parse(self, head_field_marker='lx', subentry_field_marker=None, entry_key_fields=['lx'], unique_entry=True):
+  def parse(self, head_field_marker='lx', subentry_field_marker=None, entry_key_fields=None, unique_entry=True):
       """
       This method parses a Shoebox file in a Lexicon object. It will also parse
       subentries provided that the field marker identifying subentries is passed to it.
@@ -209,6 +210,9 @@ class Lexicon(ShoeboxFile):
       @rtype:                       dictionary object
       """
 
+      if entry_key_fields :
+        self._entry_key_fields = entry_key_fields
+        
       # Set up variables
       inside_entry = False
       inside_subentry = False
@@ -226,7 +230,7 @@ class Lexicon(ShoeboxFile):
               inside_entry = True
               inside_subentry = False
               if e :
-                  self.add_entry(e, entry_key_fields, unique_entry)
+                  self.add_entry(e, unique_entry)
               e = Entry()
           elif subentry_field_marker and fmarker == subentry_field_marker :
               inside_subentry = True
@@ -242,7 +246,7 @@ class Lexicon(ShoeboxFile):
               pass
       # Deal with last entry
       if e :
-          self.add_entry(e, entry_key_fields, unique_entry)
+          self.add_entry(e, unique_entry)
       self.close()
 
 class Entry:
