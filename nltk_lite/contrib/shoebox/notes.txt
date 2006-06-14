@@ -11,7 +11,7 @@ The Shoebox functionality consists of three levels:
 
 Level 1 -- The lowest level of functionality. It simply parses fields of a Shoebox file.
            Doesn't pay any attention to file type (setting vs. database, lexicon vs. text 
-           database).
+           database). In other words, Level 1 only knows about Standard Format.
 
 Level 2 -- A higher level of functionality which recognizes file types. Level 2 functionality
            is divided into two modules to reflect the three main file types: settings, 
@@ -27,6 +27,13 @@ class (with Steve's low-level functionality) and another using a Lexicon class w
 method (with Greg's low-level functionality). The former is being phased out in favor of the latter.
 The current Level 2 functionality will probably be replaced by a more sophisticated hierarchical
 approach advocated by Greg.
+
+Standard Format, like XML, can have two levels of "goodness", *well-formed* and *valid*:
+
+* **well-formed** Shoebox files merely conform to Standard Format
+* **valid** Shoebox files are well-formed and conform to their associated settings files (metadata)
+
+Well-formedness is therefore a necessary (but not sufficient) condition for validity.
 
 
 3. Functionality Desiderata
@@ -92,9 +99,17 @@ conforms to these standards.
 
 5. Bugs
 -------
-A list of known bugs will go here.
+* Font information for markers ignored
+* File sets, jump sets, templates, and (RTF) export sets ignored
+* Interlinearized texts do not always parse properly (\id in metadata, but \ref is actual head field)
 
 
 6. TODO
 -------
-A list of things to do in the future will go here.
+* tutorial
+* extensive unit-tests
+* more comprehensive handling of encodings
+* error handling model
+* interlinearized texts
+
+
