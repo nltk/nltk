@@ -877,9 +877,9 @@ def test_pos(model, sentences, display=False):
         else:
             print '\b.',
             stdout.flush()
-        for token, tag in zip(sentences, pts):
+        for token, tag in zip(sentence, pts):
             count += 1
-            if tag == token[_TAG]:
+            if tag == token[TAG]:
                 correct += 1
 
     print 'accuracy over', count, 'tokens %.1f' % (100.0 * correct / count)
