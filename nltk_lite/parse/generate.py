@@ -1,21 +1,21 @@
 from nltk_lite.parse import cfg
 
-def generate(self, start=None):
+def generate(grammar, start=None):
     if not start:
-        start = self._start
-    return self._generate_all([start])[0]
+        start = grammar.start()
+    return _generate_all(grammar, [start])[0]
 
-def _generate_all(self, items):
+def _generate_all(grammar, items):
     frags = []
     if len(items) == 1:
-        if isinstance(items[0], Nonterminal):
-            for prod in self.productions(lhs=items[0]):
-                frags.append(self._generate_all(prod.rhs()))
+        if isinstance(items[0], cfg.Nonterminal):
+            for prod in grammar.productions(lhs=items[0]):
+                frags.append(_generate_all(grammar, prod.rhs()))
         else:
             frags.append(items[0])
     else:
-        for frag1 in self._generate_all([items[0]]):
-            for frag2 in self._generate_all(items[1:]):
+        for frag1 in _generate_all(grammar, [items[0]]):
+            for frag2 in _generate_all(grammar, items[1:]):
                 for frag in _multiply(frag1, frag2):
                     frags.append(frag)
     return frags
