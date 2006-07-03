@@ -13,9 +13,9 @@ generated and any resulting parse trees.
 """
 
 def demo():
-	gfile = GrammarFile.read_file('test.cfg')
+	gfile = GrammarFile.read_file('feat0.cfg')
 	cp = gfile.earley_parser()
-	sent = 'the police read the solutions that Poirot sent'
+	sent = 'Kim likes children'
 	tokens = list(tokenize.whitespace(sent))
 	trees = cp.get_parse_list(tokens)
 	for tree in trees: print tree
@@ -98,5 +98,5 @@ Distributed under the GPL. See LICENSE.TXT for information.""" % globals()
 		infile.close()
 
 if __name__ == '__main__':
-	main()
+	demo()
 
