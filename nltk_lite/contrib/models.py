@@ -300,10 +300,10 @@ class Model:
 
         
     def __repr__(self):
-        return "(%s, %s)" % (self.domain, self.valuation)
+        return "(%r, %r)" % (self.domain, self.valuation)
 
     def __str__(self):
-        return "Domain = %s,\nValuation = \n%s" % (self.domain, pformat(self.valuation))
+        return "Domain = %s,\nValuation = \n%s" % (self.domain, self.valuation)
 
     def i(self, phi):
         """
@@ -336,30 +336,13 @@ def demo():
     m = Model(dom, val)
     print m
     s = logic.Parser(r'(boy b)').next()
-##     print s, s.__class__.__name__
     m.i(s)
     
 
+if __name__ == "__main__":
+    demo()
 
 
-## if __name__ == "__main__":
-##     demo()
-
-v = [('j', 'b1'), ('m', 'g1'),\
-     ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),\
-     ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1'),]))]
-val = Valuation()
-val.parse(v)
-dom = val.domain
-m = Model(dom, val)
-print m
-s = logic.Parser(r'(boy j)').next()
-## print s, s.__class__.__name__
-fun = s.first.name()
-arg = s.second.name()
-funsem = m.valuation[fun]
-argsem = m.valuation[arg]
-m.i(s)
     
         
         
