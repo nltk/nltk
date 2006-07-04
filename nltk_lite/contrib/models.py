@@ -136,7 +136,10 @@ The C{Model} constructor takes two parameters, a C{set} and a C{Valuation}.
 """
 
 import logic
+
 from pprint import pformat
+
+class Error(Exception): pass
 
 class CharFun(dict):
     """
@@ -192,7 +195,7 @@ class CharFun(dict):
     def parse(self, s):
         """
         Convert an n-ary relation into its corresponding characteristic function.
-        @return: C{CharFun}
+        @rtype: C{CharFun}
         @type s: set
         """
 
@@ -281,7 +284,22 @@ class Valuation(dict):
     symbols = property(_getSymbols,
               doc='The non-logical constants which the Valuation applies to')
 
-    
+
+class Assignment(dict):
+    """
+    A dictionary which represents an assignment of values to variables..
+    """
+
+    def __init__(self, assignment=None):
+        dict.__init__(self)
+        if assignment:
+            self.update(assignment)
+
+    def add(self, pair):
+        """Add a new variable-value pair to the assignment"""
+        
+        self[pair[0]] = pair[1]
+        
     
 class Model:
     """A first order model is a domain M{D} of discourse and a valuation M{V}.
@@ -293,10 +311,12 @@ class Model:
     
     
     def __init__(self, domain, valuation):
-  ##       assert isinstance(domain, set)
-##         assert isinstance(valuation, Valuation)
+        assert isinstance(domain, set)
+#        assert isinstance(valuation, __main__.Valuation)
         self.domain = domain
         self.valuation = valuation
+        if not domain.issuperset(valuation.domain):
+            raise Error, "The domain of the valuation, %s, should be a subset of the model's domain, %s" % (valuation.domain, domain)
 
         
     def __repr__(self):
@@ -305,46 +325,167 @@ class Model:
     def __str__(self):
         return "Domain = %s,\nValuation = \n%s" % (self.domain, self.valuation)
 
-    def i(self, phi):
+    def satisfy(self, expr, g):
         """
-        Recursive interpretation function for an expression of first-order logic.
+        Recursive interpretation function for a formula of first-order logic.
 
-        @return: Returns a truth value or a function
-        @param phi: An expression of 
+        @return: Returns a truth value
+        @param fmla: An expression of L{logic}. 
         
         """
-        if isinstance(phi, logic.ApplicationExpression):
-            fun = phi.first.name()
-            repr(fun)
-            arg = phi.second.name()
-            repr(arg)
-            funsem = self.valuation[fun]
-            argsem = self.valuation[arg]
-            result = funsem[argsem]
-        else: print 'failed to parse'
-        print result
+
+        try:
+            first, second = decompose(expr)
+
+            if first == 'and':
+                phi = second[0]
+                psi = second[1]
+                return self.satisfy(phi, g) and self.satisfy(psi, g)
+
+        except ValueError:
+            return self.i(expr, g)
+        
+##         if isinstance(phi, logic.ApplicationExpression):
+##             fun = phi.first.name()
+##             repr(fun)
+##             arg = phi.second.name()
+##             repr(arg)
+##             funsem = self.valuation[fun]
+##             argsem = self.valuation[arg]
+##             result = funsem[argsem]
+##         else: print 'failed to parse'
+##         print result
+
+    def i(self, expr, g):
+        """
+        An interpretation function.
+
+        Assuming that C{expr} is atomic, M{i} calls M{V} if
+        C{expr} is a non-logical constant, and M{g} if C{expr}
+        is a free variable.
+        @param expr: C{Expression} from L{logic}
+        @param g: C{Assignment}
+        @return: a semantic value
+        """
+        try:
+            return self.valuation[expr]
+        except KeyError:
+            try:
+                return g[expr]
+            except KeyError:
+                print "Sorry, expression '%s' can't be evaluated." % expr
 
 
+def decompose(expr):
+    """
+    Function to communicate with a first-order functional language.
+
+    This function tries to make weak assumptions about the parse structure
+    provided by the logic module.
+
+    The (binder, body) pair is for decomposing quantifier formulae.
+    The (op, args) pair is for decomposing formulae with a boolean operator.
+    The (fun, args) pair should catch other relevant cases.
+
+    @param expr: A string representation of a first-order formula.
+    """
+
+    parsed = logic.Parser().parse(expr)
+    try:
+        first, second = parsed.binder, parsed.body
+        return (first, second)
+    except AttributeError:
+        pass
+    try: 
+        first, second = parsed.op, parsed.args
+        return (first, second)
+    except AttributeError:
+        pass
+    try: 
+        first, second = parsed.fun, parsed.args
+        return (first, second)
+    except (AttributeError, TypeError):
+        return expr
+
+#//////////////////////////////////////////////////////////////////////
+# TESTING...
+#//////////////////////////////////////////////////////////////////////
+
+import unittest
+
+class TestModels(unittest.TestCase):
+
+    def testLogicSelectors(self):
+        'Tests for properties of formulae from C{logic}.'
+
+        # Existential quantification
+        pair = decompose('some x.(M N)')
+        self.assertEqual(pair[0], ('some', 'x'))
+        self.assertEqual(pair[1], '(M N)')
+
+        # Universal quantification
+        pair = decompose('all x.(M N)')
+        self.assertEqual(pair[0], ('all', 'x'))
+        self.assertEqual(pair[1], '(M N)')
+
+
+        # Boolean operators
+        pair = decompose('(and (M N) (P Q))')
+        self.assertEqual(pair[0], 'and')
+        self.assertEqual(pair[1], ['(M N)', '(P Q)'])
+
+        pair = decompose('(not M N P Q)')
+        self.assertEqual(pair[0], 'not')
+        self.assertEqual(pair[1], ['M', 'N', 'P', 'Q'])
+
+
+def testsuite():
+    suite = unittest.makeSuite(TestModels)
+    return unittest.TestSuite(suite)
+
+def test(verbosity):
+    runner = unittest.TextTestRunner(verbosity=verbosity)
+    runner.run(testsuite())
+        
+       
+        
+#//////////////////////////////////////////////////////////////////////
+# Demo..
+#//////////////////////////////////////////////////////////////////////        
+
+    
 def demo():
     """Trivial example of a model."""
+    val = Valuation({'p': True, 'q': True, 'r': False})
     v = [('j', 'b1'), ('m', 'g1'),\
          ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),\
          ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1'),]))]
-    val = Valuation()
     val.parse(v)
     dom = val.domain
     m = Model(dom, val)
+    print "*****************************"
     print m
-    s = logic.Parser(r'(boy b)').next()
-    m.i(s)
+    print "*****************************"
+    g = Assignment()
+    p = 'p'
+    q = 'q'
+    r = 'r'
+    sent1 = '(and p q)'
+    sent2 = '(and p r)'
     
+    print "The value of '%s' is: %s" % (p, m.satisfy(p, g))
+    print "The value of '%s' is: %s" % (q, m.satisfy(q, g))
+    print "The value of '%s' is: %s" % (r, m.satisfy(r, g))
+    print "The value of '%s' is: %s" % (sent1, m.satisfy(sent1, g))
+    print "The value of '%s' is: %s" % (sent2, m.satisfy(sent2, g))
+    print "*****************************\n"
+    
+
+
 
 if __name__ == "__main__":
     demo()
-
-
-    
-        
+    test(verbosity=2) 
         
         
         
