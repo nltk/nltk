@@ -12,8 +12,12 @@
 # For license information, see LICENSE.TXT
 
 """
-A version of first order logic, 
-built on top of the untyped lambda calculus.
+A version of first order logic, built on top of the untyped lambda calculus.
+
+The class of C{Expression} has various subclasses:
+
+  - C{VariableExpression}
+  
 """
 
 from nltk_lite.utilities import Counter
@@ -106,6 +110,7 @@ class Expression:
         """Set of all subterms (including self)."""
         raise NotImplementedError
 
+
     def replace(self, variable, expression):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
@@ -177,6 +182,7 @@ class VariableExpression(Expression):
     def __repr__(self): return "VariableExpression('%s')" % self.variable
 
     def __hash__(self): return hash(repr(self))
+    
 
 class ConstantExpression(Expression):
     """A constant expression, consisting solely of a constant."""
@@ -200,11 +206,8 @@ class ConstantExpression(Expression):
     def subterms(self):
         return set([self])
 
-##     def replace(self, variable, expression):
-##         if self.variable.equals(variable):
-##             return expression
-##         else:
-##             return self
+    def replace(self, variable, expression):
+        return self
         
     def simplify(self):
         return self
@@ -221,18 +224,23 @@ class ConstantExpression(Expression):
 
     def __hash__(self): return hash(repr(self))
 
+
 class Operator(ConstantExpression):
     """A boolean operator, such as 'not' or 'and'."""
     def __init__(self, operator):
         Expression.__init__(self)
         assert operator in Parser.OPS
+        self.constant = operator
         self.operator = operator
 
-##     def equals(self, other):
-##         if self.__class__ is other.__class__:
-##             return self.constant.equals(other.constant)
-##         else:
-##             return 0
+    def equals(self, other):
+        if self.__class__ is other.__class__:
+            return self.constant == other.constant
+        else:
+            return 0
+
+# all the following should be inherited
+################################        
 
 ##     def variables(self):
 ##         return set()
@@ -249,8 +257,8 @@ class Operator(ConstantExpression):
 ##         else:
 ##             return self
         
-##     def simplify(self):
-##         return self
+    def simplify(self):
+        return self
 
 ##     def name(self):
 ##         return self.__str__()
@@ -277,6 +285,9 @@ class VariableBinderExpression(Expression):
         assert isinstance(term, Expression)
         self.variable = variable
         self.term = term
+        self.prefix = self.__class__.PREFIX.rstrip()
+        self.binder = (self.prefix, self.variable.name)
+        self.body = str(self.term)
 
     def equals(self, other):
         if self.__class__ is other.__class__:
@@ -362,6 +373,21 @@ class SomeExpression(VariableBinderExpression):
     def __repr__(self):
 	return "SomeExpression('%s', '%s')" % (self.variable, self.term)
 
+
+class AllExpression(VariableBinderExpression):
+    """A universal quantification expression: all x.M."""
+    PREFIX = 'all '
+
+    def _skolemise(self, bound_vars, counter):
+	bv = bound_vars.copy()
+	bv.add(self.variable)
+	return self.__class__(self.variable, self.term._skolemise(bv, counter))
+
+    def __repr__(self):
+	return "AllExpression('%s', '%s')" % (self.variable, self.term)
+
+
+
 class ApplicationExpression(Expression):
     """An application expression: (M N)."""
     def __init__(self, first, second):
@@ -383,6 +409,41 @@ class ApplicationExpression(Expression):
 
     def free(self):
         return self.first.free().union(self.second.free())
+
+    def _functor(self):
+        if isinstance(self.first, ApplicationExpression):
+            return self.first._functor()
+        else:
+            return self.first
+
+    fun = property(_functor,
+                   doc="Every ApplicationExpression has a functor.")
+
+
+    def _operator(self):
+        functor = self._functor()
+        if isinstance(functor, Operator):
+            return str(functor)
+        else: 
+            raise AttributeError
+
+    op = property(_operator,
+                  doc="Only some ApplicationExpressions have operators." )
+
+    def _arglist(self):
+        """Uncurry the argument list."""
+        arglist = [str(self.second)]
+        if isinstance(self.first, ApplicationExpression):
+            arglist.extend(self.first._arglist())
+        return arglist
+
+    def _args(self):
+        arglist = self._arglist()
+        arglist.reverse()
+        return arglist
+
+    args = property(_args,
+                   doc="Every ApplicationExpression has args.")
 
     def subterms(self):
         first = self.first.subterms()
@@ -426,6 +487,7 @@ class Parser:
     # Tokens.
     LAMBDA = '\\'
     SOME = 'some'
+    ALL = 'all'
     DOT = '.'
     OPEN = '('
     CLOSE = ')'
@@ -449,7 +511,12 @@ class Parser:
         self.process()
 
     def parse(self, data):
-        """Provides a method similar to other NLTK parsers."""
+        """
+        Provides a method similar to other NLTK parsers.
+
+        @type data: str
+        @returns: a parsed Expression
+        """
         self.feed(data)
         result = self.next()
         return result
@@ -497,13 +564,15 @@ class Parser:
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-	if tok in [Parser.LAMBDA, Parser.SOME]:
+	if tok in [Parser.LAMBDA, Parser.SOME, Parser.ALL]:
             # Expression is a lambda expression: \x.M
 	    # or a some expression: some x.M
 	    if tok == Parser.LAMBDA:
 		factory = LambdaExpression
 	    elif tok == Parser.SOME:
 		factory = SomeExpression
+            elif tok == Parser.ALL:
+		factory = AllExpression
 	    else:
 		raise ValueError(tok)
 
