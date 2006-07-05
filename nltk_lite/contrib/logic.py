@@ -491,7 +491,7 @@ class Parser:
     DOT = '.'
     OPEN = '('
     CLOSE = ')'
-    OPS = ['and', 'or', 'not', 'implies']
+    OPS = ['and', 'or', 'not', 'implies', 'iff']
     
     def __init__(self, data=None, constants=None):
         if data is not None:
@@ -554,7 +554,7 @@ class Parser:
 
     def isVariable(self, token):
         """Is this token a variable (that is, not one of the other types)?"""
-        TOKENS = [Parser.LAMBDA, Parser.SOME,
+        TOKENS = [Parser.LAMBDA, Parser.SOME, Parser.ALL,
 	       Parser.DOT, Parser.OPEN, Parser.CLOSE]
         TOKENS.extend(self.constants)
         TOKENS.extend(Parser.OPS)
