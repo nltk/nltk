@@ -310,13 +310,16 @@ class Model:
 
     
     
-    def __init__(self, domain, valuation):
+    def __init__(self, domain, valuation, prop=None):
         assert isinstance(domain, set)
-#        assert isinstance(valuation, __main__.Valuation)
+#        assert isinstance(valuation, Valuation)
         self.domain = domain
         self.valuation = valuation
-        if not domain.issuperset(valuation.domain):
-            raise Error, "The domain of the valuation, %s, should be a subset of the model's domain, %s" % (valuation.domain, domain)
+        if prop is None:
+            if not domain.issuperset(valuation.domain):
+                raise Error,\
+                "The valuation domain, %s, must be a subset of the model's domain, %s"\
+                % (valuation.domain, domain)
 
         
     def __repr__(self):
@@ -336,14 +339,34 @@ class Model:
 
         try:
             first, second = decompose(expr)
-
-            if first == 'and':
-                phi = second[0]
+            phi = second[0]
+            try:
                 psi = second[1]
+            except IndexError:
+                pass
+
+            if first == 'not':
+                return not self.satisfy(phi, g)
+            if first == 'and':
                 return self.satisfy(phi, g) and self.satisfy(psi, g)
+
+            if first == 'or':
+                return self.satisfy(phi, g) or self.satisfy(psi, g)
+
+            if first == 'implies':
+                return not self.satisfy(phi, g) or self.satisfy(psi, g)
+
+            if first == 'iff':
+                return self.satisfy(phi, g) is self.satisfy(psi, g)
 
         except ValueError:
             return self.i(expr, g)
+
+## why doesn't this work?        
+##             try:
+##                 self.i(expr, g)
+##             except:
+##                 print "Undefined"
         
 ##         if isinstance(phi, logic.ApplicationExpression):
 ##             fun = phi.first.name()
@@ -370,10 +393,13 @@ class Model:
         try:
             return self.valuation[expr]
         except KeyError:
-            try:
-                return g[expr]
-            except KeyError:
-                print "Sorry, expression '%s' can't be evaluated." % expr
+            pass
+        try:
+            return g[expr]
+        except KeyError:
+            print "    Expression '%s' can't be evaluated by i." % expr
+            return "Undefined"
+
 
 
 def decompose(expr):
@@ -455,33 +481,57 @@ def test(verbosity):
 
     
 def demo():
-    """Trivial example of a model."""
-    val = Valuation({'p': True, 'q': True, 'r': False})
-    v = [('j', 'b1'), ('m', 'g1'),\
-         ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),\
-         ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1'),]))]
-    val.parse(v)
-    dom = val.domain
-    m = Model(dom, val)
+    """Example of a propositional model."""
+    val1 = Valuation({'p': True, 'q': True, 'r': False})
+    dom1 = set([])
+    m1 = Model(dom1, val1, prop=True)
     print "*****************************"
-    print m
+    print "Model m1:\n", m1
     print "*****************************"
     g = Assignment()
-    p = 'p'
-    q = 'q'
-    r = 'r'
-    sent1 = '(and p q)'
-    sent2 = '(and p r)'
-    
-    print "The value of '%s' is: %s" % (p, m.satisfy(p, g))
-    print "The value of '%s' is: %s" % (q, m.satisfy(q, g))
-    print "The value of '%s' is: %s" % (r, m.satisfy(r, g))
-    print "The value of '%s' is: %s" % (sent1, m.satisfy(sent1, g))
-    print "The value of '%s' is: %s" % (sent2, m.satisfy(sent2, g))
+    sentences = [
+    'p',
+    'q',
+    'r',
+    '(p and q)',
+    '(p and r)',
+    '(not p)',
+    '(not r)',
+    '(not (not p))',
+    '(not (p and r))',
+    '(p or r)',
+    '(or (not p) r))',
+    '(p or (not p))',
+    '(p implies q)',
+    '(p implies r)',
+    '(r implies r)',
+    '(p iff p)',
+    '(r iff r)',
+    '(p iff r)',
+    ]
+
     print "*****************************\n"
     
+    for sent in sentences:
+        print "The value of '%s' is: %s" % (sent, m1.satisfy(sent, g))
 
+    """Example of a first-order model."""
+    val2 = Valuation()
+    v = [('j', 'b1'), ('m', 'g1'),\
+         ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),\
+         ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
+    val2.parse(v)
+    dom2 = val2.domain
+    m2 = Model(dom2, val2)
+    g = Assignment({'x': 'b1'})   
+    print "*****************************"
+    print "Model m2\n", m2
+    print "*****************************"
+    symbols = ['j', 'girl', 'love', 'walks', 'x', 'y']
+    for s in symbols:
+        print "The interpretation of '%s' in m2 is %s" % (s, m2.i(s, g))
 
+    print "*****************************\n"
 
 if __name__ == "__main__":
     demo()
