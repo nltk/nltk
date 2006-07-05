@@ -154,6 +154,8 @@ class CharFun(dict):
     def __getitem__(self, key):
         if key in self:
             return dict.__getitem__(self, key)
+        elif key == 'Undefined':
+            return 'Undefined'
         else:
             return False
         
@@ -347,17 +349,31 @@ class Model:
 
             if first == 'not':
                 return not self.satisfy(phi, g)
-            if first == 'and':
+            
+            elif first == 'and':
                 return self.satisfy(phi, g) and self.satisfy(psi, g)
 
-            if first == 'or':
+            elif first == 'or':
                 return self.satisfy(phi, g) or self.satisfy(psi, g)
 
-            if first == 'implies':
+            elif first == 'implies':
                 return not self.satisfy(phi, g) or self.satisfy(psi, g)
 
-            if first == 'iff':
+            elif first == 'iff':
                 return self.satisfy(phi, g) is self.satisfy(psi, g)
+
+            elif first[0] == 'some':
+                var = first[1]
+                phi = second
+                return len(self.satisfiers(phi, var, g)) > 1
+
+            elif first[0] == 'all':
+                var = first[1]
+                phi = second
+                return self.domain.issubset(self.satisfiers(phi, var, g))
+            
+            else:
+                return self.satisfy(first, g)[ self.satisfy(second, g)]
 
         except ValueError:
             return self.i(expr, g)
@@ -368,16 +384,7 @@ class Model:
 ##             except:
 ##                 print "Undefined"
         
-##         if isinstance(phi, logic.ApplicationExpression):
-##             fun = phi.first.name()
-##             repr(fun)
-##             arg = phi.second.name()
-##             repr(arg)
-##             funsem = self.valuation[fun]
-##             argsem = self.valuation[arg]
-##             result = funsem[argsem]
-##         else: print 'failed to parse'
-##         print result
+
 
     def i(self, expr, g):
         """
@@ -397,9 +404,18 @@ class Model:
         try:
             return g[expr]
         except KeyError:
-            print "    Expression '%s' can't be evaluated by i." % expr
+            #print "    Expression '%s' can't be evaluated by i." % expr
             return "Undefined"
 
+
+    def satisfiers(self, expr, var, g):
+        list = []
+        for u in self.domain:
+            g.update({var: u})
+            if self.satisfy(expr, g):
+                list.append(u)
+        result = set(list)
+        return result
 
 
 def decompose(expr):
@@ -419,16 +435,19 @@ def decompose(expr):
     parsed = logic.Parser().parse(expr)
     try:
         first, second = parsed.binder, parsed.body
+        #print 'first is %s, second is %s' % (first, second)
         return (first, second)
     except AttributeError:
         pass
     try: 
         first, second = parsed.op, parsed.args
+        #print 'first is %s, second is %s' % (first, second)
         return (first, second)
     except AttributeError:
         pass
     try: 
-        first, second = parsed.fun, parsed.args
+        first, second = str(parsed.first), str(parsed.second)
+        #print 'first is %s, second is %s' % (first, second)
         return (first, second)
     except (AttributeError, TypeError):
         return expr
@@ -531,6 +550,22 @@ def demo():
     for s in symbols:
         print "The interpretation of '%s' in m2 is %s" % (s, m2.i(s, g))
 
+    sentences = [
+    '(boy x)',
+    '(boy y)',
+    '(love j m)',
+    'some x. (boy x)',
+    'all x. ((boy x) or (girl x))'
+    ]
+
+    print "*****************************\n"
+    
+    for sent in sentences:
+        print "The value of '%s' is: %s" % (sent, m2.satisfy(sent, g))
+
+###    boys =  m2.satisfiers('(boy x)', 'x', g)
+    
+    
     print "*****************************\n"
 
 if __name__ == "__main__":
