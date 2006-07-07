@@ -1,3 +1,12 @@
+# Natural Language Toolkit: Models
+#
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>,
+# URL: <http://nltk.sourceforge.net>
+# For license information, see LICENSE.TXT
+#
+# $Id:$
+
 """
 Overview
 ========
@@ -154,8 +163,8 @@ class CharFun(dict):
     def __getitem__(self, key):
         if key in self:
             return dict.__getitem__(self, key)
-        elif key == 'Undefined':
-            return 'Undefined'
+##         elif key == 'Undefined':
+##             return 'Undefined'
         else:
             return False
         
@@ -250,6 +259,12 @@ class Valuation(dict):
         if valuation:
             self.update(valuation)
 
+    def __getitem__(self, key):
+        if key in self:
+            return dict.__getitem__(self, key)
+        else:
+            return None
+
     def parse(self, seq):
         """
         Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a C{Valuation}.
@@ -292,15 +307,28 @@ class Assignment(dict):
     A dictionary which represents an assignment of values to variables..
     """
 
-    def __init__(self, assignment=None):
+    def __init__(self, domain, assignment=None):
         dict.__init__(self)
+        self.domain = domain
         if assignment:
             self.update(assignment)
+
+    def __getitem__(self, key):
+        if key in self:
+            return dict.__getitem__(self, key)
+        else:
+            return self.choose()
 
     def add(self, pair):
         """Add a new variable-value pair to the assignment"""
         
         self[pair[0]] = pair[1]
+
+    def choose(self):
+        domaincopy = self.domain.copy()
+        chosen = domaincopy.pop()
+        return chosen
+    
         
     
 class Model:
@@ -330,7 +358,7 @@ class Model:
     def __str__(self):
         return "Domain = %s,\nValuation = \n%s" % (self.domain, self.valuation)
 
-    def satisfy(self, expr, g):
+    def satisfy(self, expr, g, trace=False):
         """
         Recursive interpretation function for a formula of first-order logic.
 
@@ -348,35 +376,106 @@ class Model:
                 pass
 
             if first == 'not':
-                return not self.satisfy(phi, g)
+                if trace:
+                    print "'%s' evaluates to %s under M, g" %  (expr, self.satisfy(expr, g))
+                    print "since '%s' evaluates to %s under M, g." % (phi, self.satisfy(phi, g))
+                return not self.satisfy(phi, g, trace)
             
             elif first == 'and':
-                return self.satisfy(phi, g) and self.satisfy(psi, g)
+                if trace:
+                    print "'%s' evaluates to %s under M, g" % (expr, self.satisfy(expr, g))
+                    if self.satisfy(expr, g):
+                        print "since '%s' and '%s' both evaluate to %s under M, g."\
+                              % (phi, psi, self.satisfy(psi, g))
+                    else:
+                        if self.satisfy(phi, g):
+                            print "since although '%s' evaluates to %s under M, g, '%s' evaluates to %s."\
+                                % (phi, self.satisfy(phi, g), psi, self.satisfy(psi, g))
+                        else:
+                            print "since '%s' evaluates to %s under M, g."\
+                                % (phi, self.satisfy(phi, g))
+                return self.satisfy(phi, g, trace) and self.satisfy(psi, g, trace)
 
             elif first == 'or':
-                return self.satisfy(phi, g) or self.satisfy(psi, g)
+                if trace:
+                    print "'%s' evaluates to %s under M, g" % (expr, self.satisfy(expr, g))
+                    if self.satisfy(expr, g):
+                        if self.satisfy(phi, g):
+                            print "since '%s' evaluates to %s under M, g."\
+                                % (phi, self.satisfy(phi, g))
+                        else:
+                            print "since '%s' evaluates to %s under M, g."\
+                              % (psi, self.satisfy(psi, g))
+                    else:
+                            print "since both '%s' and '%s' evaluate to %s under M, g."\
+                              % (phi, psi, self.satisfy(phi, g)) 
+                return self.satisfy(phi, g, trace) or self.satisfy(psi, g, trace)
 
             elif first == 'implies':
-                return not self.satisfy(phi, g) or self.satisfy(psi, g)
+                if trace:
+                    print "'%s' evaluates to %s under M, g" % (expr, self.satisfy(expr, g))
+                    if self.satisfy(expr, g):
+                        if self.satisfy(psi, g):
+                            print "since '%s' evaluates to %s under M, g."\
+                                  % (psi, self.satisfy(psi, g))
+                        else:
+                            print "since '%s' evaluates to %s under M, g."\
+                                  % (phi, self.satisfy(phi, g))
+                    else:
+                        print "since '%s' evaluates to %s under M, g but '%s' evaluates to %s."\
+                                  % (phi, self.satisfy(phi, g), psi, self.satisfy(psi, g))
+                return not self.satisfy(phi, g, trace) or self.satisfy(psi, g, trace)
 
             elif first == 'iff':
-                return self.satisfy(phi, g) is self.satisfy(psi, g)
+                if trace:
+                    print "'%s' evaluates to %s under M, g" % (expr, self.satisfy(expr, g))
+                    if self.satisfy(expr, g):
+                        print "since the value of '%s' under M, g = %s = the value of '%s' under M, g."\
+                        % (phi, self.satisfy(phi, g), psi)
+                    else:
+                       print "since the value of '%s' under M, g = %s =/= the value of '%s' under M, g."\
+                              % (phi, self.satisfy(phi, g), psi) 
+                return self.satisfy(phi, g, trace) is self.satisfy(psi, g, trace)
 
             elif first[0] == 'some':
                 var = first[1]
                 phi = second
+                if trace:
+                    print "'%s' evaluates to %s under M, g" % (expr, self.satisfy(expr, g))
+                    if self.satisfy(expr, g):
+                        print "since there is some u in M's domain such that '%s' evaluates to true under M, g[%s/u]."\
+                        % (phi, var)
+                    else:
+                        print "since  is no u in M's domain such that '%s' evaluates to true under M, g[%s/u]."\
+                              % (phi, var) 
                 return len(self.satisfiers(phi, var, g)) > 1
 
             elif first[0] == 'all':
                 var = first[1]
                 phi = second
-                return self.domain.issubset(self.satisfiers(phi, var, g))
+                if trace:
+                    print "'%s' evaluates to %s under M, g" % (expr, self.satisfy(expr, g))
+                    if self.satisfy(expr, g):
+                        print "since for every u in M's domain, '%s' evaluates to True under M, g[%s/u]."\
+                        % (phi, var)
+                    else:
+                        print "since is some u in M's domain such that '%s' evaluates to False under M, g[%s/u]."\
+                              % (phi, var)                 
+                return self.domain.issubset(self.satisfiers(phi, var, g, trace))
             
             else:
-                return self.satisfy(first, g)[ self.satisfy(second, g)]
+                if trace > 1:
+                    print "'%s': %s applied to %s yields %s"\
+                    %  (expr, self.satisfy(first, g, trace), self.satisfy(second, g, trace), self.satisfy(first, g)[self.satisfy(second, g)])
+                elif trace:
+                    print "'%s': %s" % (expr, self.satisfy(first, g)[self.satisfy(second, g)])
+                try: 
+                    return self.satisfy(first, g)[self.satisfy(second, g)]
+                except TypeError:
+                    print "%s evaluates to %s, which isn't a function." % (expr, self.satisfy(first, g))
 
         except ValueError:
-            return self.i(expr, g)
+            return self.i(expr, g, trace)
 
 ## why doesn't this work?        
 ##             try:
@@ -386,7 +485,7 @@ class Model:
         
 
 
-    def i(self, expr, g):
+    def i(self, expr, g, trace=False):
         """
         An interpretation function.
 
@@ -398,17 +497,22 @@ class Model:
         @return: a semantic value
         """
         try:
+            if trace > 1:
+                print "   i, g('%s') = %s" % (expr, self.valuation[expr])
+            #print 'valuation is :', self.valuation
             return self.valuation[expr]
         except KeyError:
             pass
         try:
+            if trace > 1:
+                print "   i, g('%s') = %s" % (expr, g[expr])
             return g[expr]
         except KeyError:
-            #print "    Expression '%s' can't be evaluated by i." % expr
-            return "Undefined"
+            print "Expression '%s' can't be evaluated by i." % expr
+            #return "Undefined"
 
 
-    def satisfiers(self, expr, var, g):
+    def satisfiers(self, expr, var, g, trace=False):
         list = []
         for u in self.domain:
             g.update({var: u})
@@ -507,11 +611,8 @@ def demo():
     print "*****************************"
     print "Model m1:\n", m1
     print "*****************************"
-    g = Assignment()
+    g = Assignment(dom1)
     sentences = [
-    'p',
-    'q',
-    'r',
     '(p and q)',
     '(p and r)',
     '(not p)',
@@ -519,20 +620,27 @@ def demo():
     '(not (not p))',
     '(not (p and r))',
     '(p or r)',
-    '(or (not p) r))',
+    '(r or p)',
+    '(r or r)',
+    '((not p) or r))',
     '(p or (not p))',
     '(p implies q)',
     '(p implies r)',
-    '(r implies r)',
+    '(r implies p)',
     '(p iff p)',
     '(r iff r)',
     '(p iff r)',
     ]
 
-    print "*****************************\n"
+    trace = True
     
     for sent in sentences:
-        print "The value of '%s' is: %s" % (sent, m1.satisfy(sent, g))
+        if trace:
+            print
+            m1.satisfy(sent, g, trace)
+        else:
+            #print "The value of '%s' is: %s" % (sent, m1.satisfy(sent, g))
+            m1.satisfy(sent, g)
 
     """Example of a first-order model."""
     val2 = Valuation()
@@ -542,11 +650,12 @@ def demo():
     val2.parse(v)
     dom2 = val2.domain
     m2 = Model(dom2, val2)
-    g = Assignment({'x': 'b1'})   
+    g = Assignment(dom2)
+    g.add(('x', 'b1'))
     print "*****************************"
     print "Model m2\n", m2
     print "*****************************"
-    symbols = ['j', 'girl', 'love', 'walks', 'x', 'y']
+    symbols = ['j', 'girl', 'love', 'walks', 'x', 'y', 'z']
     for s in symbols:
         print "The interpretation of '%s' in m2 is %s" % (s, m2.i(s, g))
 
@@ -559,9 +668,16 @@ def demo():
     ]
 
     print "*****************************\n"
+
+    trace = True
     
     for sent in sentences:
-        print "The value of '%s' is: %s" % (sent, m2.satisfy(sent, g))
+        if trace:
+            print
+            m2.satisfy(sent, g, trace)
+        else:
+            print "The value of '%s' is: %s" % (sent, m2.satisfy(sent, g))
+
 
 ###    boys =  m2.satisfiers('(boy x)', 'x', g)
     
