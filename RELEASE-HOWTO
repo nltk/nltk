@@ -38,7 +38,8 @@ D. PYTHON AND NUMERIC VERSIONS
 The build requires docutils, pdflatex
 
   1. Check out a clean copy of the subversion repository (or make clean)
-  2. make distributions (see dist/ for the results)
+       (install locally?  python setup.py install; make clean)
+  2. make dist (see dist/ for the results)
   3. make python  (to download all python distros if necessary)
   4. make iso (see dist/ for the iso image)
 
