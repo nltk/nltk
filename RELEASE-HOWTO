@@ -39,10 +39,11 @@ The build requires docutils, pdflatex
 
   1. Check out a clean copy of the subversion repository (or make clean)
        (install locally?  python setup.py install; make clean)
-  2. make dist (see dist/ for the results)
-  3. make python  (to download all python distros if necessary)
-  4. make iso (see dist/ for the iso image)
-  5. list distributions:
+  2. make doc (slow; see doc/ for the results)
+  3. make dist (fast; see dist/ for the results)
+  4. make python  (potentially slow; to download all python distros if necessary)
+  5. make iso (fast; see dist/ for the iso image)
+  6. list distributions:
 
   -rw-r--r--  1 sb users    588609 2006-07-09 17:52 nltk_lite-0.6.5-1.noarch.rpm
   -rw-r--r--  1 sb users    354350 2006-07-09 17:52 nltk_lite-0.6.5-1.src.rpm
@@ -74,8 +75,12 @@ B. WEBSITE
   1. cd web; make rsync
   2. cd doc; make rsync
   3. rsync code (remove .pyc and .pyo files)
-  4. post to one or more of the mailing lists, including course mailing lists
-  5. post a news item
+  4. post to one or more of the mailing lists
+       nltk-announce@lists.sourceforge.net
+       CORPORA@uib.no, linguist@linguistlist.org
+       mailing lists for any local courses using NLTK
+  5. post a news item on the sourceforge site
+       http://sourceforge.net/news/?group_id=30982
 
 C. INSTALLATION
 
