@@ -9,7 +9,7 @@
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 
-.PHONY: usage all doc .doc.done clean clean_code clean_up
+.PHONY: usage all doc clean clean_code clean_up
 
 usage:
 	@echo "make dist -- Build distributions (output to dist/)"
@@ -22,7 +22,6 @@ all: dist
 
 doc:
 	$(MAKE) -C doc all
-	touch .doc.done
 
 ########################################################################
 # DISTRIBUTIONS
@@ -39,7 +38,7 @@ codedist: clean_code INSTALL.TXT
 	python setup.py -q bdist --format=rpm
 	python setup.py -q bdist --format=wininst
 
-docdist:	.doc.done
+docdist: doc
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
 
 corporadist:
