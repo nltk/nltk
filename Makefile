@@ -9,7 +9,7 @@
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
 
-.PHONY: usage all doc .doc.done
+.PHONY: usage all doc .doc.done clean clean_code clean_up
 
 usage:
 	@echo "make dist -- Build distributions (output to dist/)"
@@ -33,7 +33,7 @@ doc:
 dist: codedist docdist corporadist
 	touch .dist.done
 
-codedist: clean INSTALL.TXT
+codedist: clean_code INSTALL.TXT
 	python setup.py -q sdist --format=gztar
 	python setup.py -q sdist --format=zip
 	python setup.py -q bdist --format=rpm
@@ -137,9 +137,10 @@ clean:	clean_up
 	rm -rf build iso dist
 	$(MAKE) -C doc clean
 
-clean_up:
+clean_up: clean_code
+	$(MAKE) -C doc clean_up
+
+clean_code:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
 	rm -f `find . -name '*~'`
-	$(MAKE) -C doc clean_up
-
