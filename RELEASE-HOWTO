@@ -42,6 +42,16 @@ The build requires docutils, pdflatex
   2. make dist (see dist/ for the results)
   3. make python  (to download all python distros if necessary)
   4. make iso (see dist/ for the iso image)
+  5. list distributions:
+
+  -rw-r--r--  1 sb users    588609 2006-07-09 17:52 nltk_lite-0.6.5-1.noarch.rpm
+  -rw-r--r--  1 sb users    354350 2006-07-09 17:52 nltk_lite-0.6.5-1.src.rpm
+  -rw-r--r--  1 sb users 108124160 2006-07-09 17:57 nltk_lite-0.6.5.iso
+  -rw-r--r--  1 sb users    351690 2006-07-09 17:52 nltk_lite-0.6.5.tar.gz
+  -rw-r--r--  1 sb users    454620 2006-07-09 17:52 nltk_lite-0.6.5.win32.exe
+  -rw-r--r--  1 sb users    403826 2006-07-09 17:52 nltk_lite-0.6.5.zip
+  -rw-r--r--  1 sb users  25888420 2006-07-09 17:52 nltk_lite-corpora-0.6.5.zip
+  -rw-r--r--  1 sb users   1619673 2006-07-09 17:52 nltk_lite-doc-0.6.5.zip
 
   (test the distributions?)
 
