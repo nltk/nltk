@@ -1,14 +1,14 @@
 Version 0.6.5 2006-06-14	
 
 * Code:
-  - improvements to shoebox module
+  - improvements to shoebox module (Stuart Robinson, Greg Aumann)
   - incorporated feature-based parsing into core NLTK-Lite
   - corpus reader for Sinica treebank sample
   - new stemmer package
 * Contrib:
   - hole semantics implementation (Peter Wang)
   - Incorporating yaml
-  - new work on feature structures and unification
+  - new work on feature structures, unification, lambda calculus
   - new work on shoebox package (Stuart Robinson, Greg Aumann)
 * Corpora:
   - Sinica treebank sample	
