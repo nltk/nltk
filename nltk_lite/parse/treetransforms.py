@@ -315,6 +315,7 @@ def demo():
       
     from nltk_lite.draw.tree import draw_trees
     from nltk_lite.parse import bracket_parse
+    from nltk_lite.parse import treetransforms
     from copy import deepcopy
     
     # original tree from WSJ bracketed text
@@ -323,22 +324,22 @@ def demo():
     
     # collapse subtrees with only one child
     collapsedTree = deepcopy(tree)
-    collapseUnary(collapsedTree)
+    treetransforms.collapseUnary(collapsedTree)
     
     # convert the tree to CNF
     cnfTree = deepcopy(collapsedTree)
-    chomskyNormalForm(cnfTree)
+    treetransforms.chomskyNormalForm(cnfTree)
     
     # convert the tree to CNF with parent annotation (one level) and horizontal smoothing of order two
     parentTree = deepcopy(collapsedTree)
-    chomskyNormalForm(parentTree, horzMarkov = 2, vertMarkov = 1)
+    treetransforms.chomskyNormalForm(parentTree, horzMarkov=2, vertMarkov=1)
     
     # convert the tree back to its original form (used to make CYK results comparable)
     original = deepcopy(parentTree)
-    unChomskyNormalForm(original)
+    treetransforms.unChomskyNormalForm(original)
     
     # convert tree back to bracketed text
-    sentence2 = toTreebank(original)
+    sentence2 = treetransforms.toTreebank(original)
     print "Sentences the same? ", sentence == sentence2
     
     draw_trees(tree, collapsedTree, cnfTree, parentTree, original)
