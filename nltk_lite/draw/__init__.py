@@ -990,6 +990,7 @@ class OvalWidget(AbstractContainerWidget):
       - C{margin}: The number of pixels space left between the child
         and the oval.
       - C{draggable}: whether the text can be dragged by the user.
+      - C{double}: If true, then a double-oval is drawn.
     """
     def __init__(self, canvas, child, **attribs):
         """
@@ -1005,18 +1006,35 @@ class OvalWidget(AbstractContainerWidget):
         self._child = child
         self._margin = 1
         self._oval = canvas.create_oval(1,1,1,1)
+        self._oval2 = None # used for double.
         canvas.tag_lower(self._oval)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
         
     def __setitem__(self, attr, value):
+        c = self.canvas()
         if attr == 'margin': self._margin = value
+        elif attr == 'double':
+            if value==True and self._oval2 is None:
+                # Copy attributes & position from self._oval.
+                x1, y1, x2, y2 = c.bbox(self._oval)
+                w = self['width']*2
+                self._oval2 = c.create_oval(x1-w, y1-w, x2+w, y2+w,
+                                outline=c.itemcget(self._oval, 'outline'),
+                                width=c.itemcget(self._oval, 'width'))
+                c.tag_lower(self._oval2)
+            if value==False and self._oval2 is not None:
+                c.delete(self._oval2)
+                self._oval2 = None
         elif attr in ('outline', 'fill', 'width'):
-            self.canvas().itemconfig(self._oval, {attr:value})
+            c.itemconfig(self._oval, {attr:value})
+            if self._oval2 is not None and attr!='fill':
+                c.itemconfig(self._oval2, {attr:value})
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
         if attr == 'margin': return self._margin
+        elif attr == 'double': return self._double is not None
         elif attr == 'width':
             return float(self.canvas().itemcget(self._oval, attr))
         elif attr in ('outline', 'fill', 'width'):
@@ -1030,14 +1048,25 @@ class OvalWidget(AbstractContainerWidget):
     def _update(self, child):
         R = OvalWidget.RATIO
         (x1, y1, x2, y2) = child.bbox()
-        margin = self._margin + self['width']/2
-        left = int(( x1*(1+R) + x2*(1-R) ) / 2 - margin)
-        right = left + int((x2-x1)*R)
-        top = int(( y1*(1+R) + y2*(1-R) ) / 2 - margin)
-        bot = top + int((y2-y1)*R)
-        self.canvas().coords(self._oval, left, top, right, bot)
+        margin = self._margin
 
-    def _tags(self): return [self._oval]
+        # Find the four corners.
+        left = int(( x1*(1+R) + x2*(1-R) ) / 2)
+        right = left + int((x2-x1)*R) 
+        top = int(( y1*(1+R) + y2*(1-R) ) / 2)
+        bot = top + int((y2-y1)*R)
+        self.canvas().coords(self._oval, left-margin, top-margin,
+                             right+margin, bot+margin)
+        if self._oval2 is not None:
+            w = self['width']*2
+            self.canvas().coords(self._oval2, left-margin-w, top-margin-w,
+                                 right+margin+w, bot+margin+w)
+
+    def _tags(self):
+        if self._oval2 is None:
+            return [self._oval]
+        else:
+            return [self._oval, self._oval2]
 
 class ParenWidget(AbstractContainerWidget):
     """
@@ -1619,7 +1648,7 @@ class CanvasFrame(object):
         if parent is None:
             self._parent = Tk()
             self._parent.title('NLTK')
-            self._parent.bind('<Control-p>', self.print_to_file)
+            self._parent.bind('<Control-p>', lambda e: self.print_to_file())
             self._parent.bind('<Control-x>', self.destroy)
             self._parent.bind('<Control-q>', self.destroy)
         else:
@@ -1721,7 +1750,7 @@ class CanvasFrame(object):
             space. 
         """
         if x is None or y is None:
-            (x, y) = self._find_room(canvaswidget)
+            (x, y) = self._find_room(canvaswidget, x, y)
         
         # Move to (x,y)
         (x1,y1,x2,y2) = canvaswidget.bbox()
@@ -1730,7 +1759,7 @@ class CanvasFrame(object):
         # Register with scrollwatcher.
         self._scrollwatcher.add_child(canvaswidget)
 
-    def _find_room(self, widget):
+    def _find_room(self, widget, desired_x, desired_y):
         """
         Try to find a space for a given widget.
         """
@@ -1744,6 +1773,18 @@ class CanvasFrame(object):
         # Move the widget out of the way, for now.
         (x1,y1,x2,y2) = widget.bbox()
         widget.move(left-x2-50, top-y2-50)
+
+        if desired_x is not None:
+            x = desired_x
+            for y in range(top, bot-h, (bot-top-h)/10):
+                if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
+                    return (x,y)
+
+        if desired_y is not None:
+            y = desired_y
+            for x in range(left, right-w, (right-left-w)/10):
+                if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
+                    return (x,y)
 
         for y in range(top, bot-h, (bot-top-h)/10):
             for x in range(left, right-w, (right-left-w)/10):
