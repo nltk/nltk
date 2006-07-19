@@ -91,15 +91,20 @@ class Ngram(SequentialBackoff):
             for (token, tag) in sentence:
                 token_count += 1
                 history = self._history.get()
-                backoff_tag = self._backoff_tag_one(token, history)
-                if tag != backoff_tag:
-                    hit_count += 1
-                    fd[(history, token)].inc(tag)
+                fd[(history, token)].inc(tag)
                 self._history.enqueue(tag)
         for context in fd.conditions():
             best_tag = fd[context].max()
-            if fd[context].count(best_tag) > self._cutoff:
+            history = self._history.get()
+            backoff_tag = self._backoff_tag_one(token, history)
+            hits = fd[context].count(best_tag)
+
+            # is the tag we would assign different from the backoff tagger
+            # and do we have sufficient evidence?
+            if best_tag != backoff_tag and hits > self._cutoff:
                 self._model[context] = best_tag
+                hit_count += hits
+
         # generate stats
         if verbose:
             size = len(self._model)

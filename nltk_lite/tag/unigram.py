@@ -64,14 +64,18 @@ class Unigram(SequentialBackoff):
         for sentence in tagged_corpus:
             for (token, tag) in sentence:
                 token_count += 1
-                backoff_tag = self._backoff_tag_one(token)
-                if tag != backoff_tag:
-                    hit_count += 1
-                    fd[token].inc(tag)
+                fd[token].inc(tag)
         for token in fd.conditions():
             best_tag = fd[token].max()
-            if fd[token].count(best_tag) > self._cutoff:
+            backoff_tag = self._backoff_tag_one(token)
+            hits = fd[token].count(best_tag)
+
+            # is the tag we would assign different from the backoff tagger
+            # and do we have sufficient evidence?
+            if best_tag != backoff_tag and hits > self._cutoff:
                 self._model[token] = best_tag
+                hit_count += hits
+            
         # generate stats
         if verbose:
             size = len(self._model)
