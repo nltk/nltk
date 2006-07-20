@@ -15,21 +15,27 @@ class Regexp(StemI):
     affixes.  Any substrings that matches the regular expressions will
     be removed.
     """
-    def __init__(self, regexp):
+    def __init__(self, regexp, min=0):
         """
         Create a new regexp stemmer.
 
         @type regexp: C{string} or C{regexp}
         @param regexp: The regular expression that should be used to
             identify morphological affixes.
+        @type min: int
+        @param min: The minimum length of string to stem
         """
 
         if not hasattr(regexp, 'pattern'):
             regexp = re.compile(regexp)
         self._regexp = regexp
+        self._min = min
 
     def stem(self, word):
-        return self._regexp.sub('', word)
+        if len(word) < self._min:
+            return word
+        else:
+            return self._regexp.sub('', word)
 
     def __repr__(self):
         return '<Regexp Stemmer: %r>' % self._regexp.pattern
@@ -38,7 +44,7 @@ def demo():
     from nltk_lite import tokenize, stem
 
     # Create a simple regular expression based stemmer
-    stemmer = stem.Regexp('ing$|s$|e$')
+    stemmer = stem.Regexp('ing$|s$|e$', min=4)
     text = "John was eating icecream"
     tokens = tokenize.whitespace(text)
 
