@@ -5,7 +5,7 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 #
-# $Id:$
+# $Id$
 
 """
 Overview
@@ -52,7 +52,7 @@ Characteristic Functions
 Within C{models}, Curried characteristic functions are implemented as
 a subclass of dictionaries, using the C{CharFun()} constructor.
 
-   >>> cf = CharFun({'d1' : {'d2': True}, 'd2' : {'d1': True}})
+   >>> cf = CharFun({'d1' : CharFun({'d2': True}), 'd2' : CharFun({'d1': True})})
    >>> cf['d1']
    {'d2': True}
 
@@ -144,11 +144,14 @@ The C{Model} constructor takes two parameters, a C{set} and a C{Valuation}.
 
 """
 
-from nltk_lite.contrib import logic
+#from nltk_lite.contrib import logic
+import logic
 from random import choice
 from pprint import pformat
 
 class Error(Exception): pass
+
+class Undefined(Error): pass
 
 class CharFun(dict):
     """
@@ -158,20 +161,26 @@ class CharFun(dict):
     def __init__(self, charfun=None):
         dict.__init__(self)
         if charfun:
+            #assert isinstance(charfun, dict)
             self.update(charfun)
  
         
     def _isrel(self, s):
-        """check whether a set represents a relation (of any arity)"""
+        """Check whether a set represents a relation (of any arity)."""
         
         assert isinstance(s, set), "Argument is not a set"
-        if not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
+        if len(s) == 0:
+            return True
+        elif not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
             return True
         else:
             raise ValueError, "Set contains sequences of different lengths"
 
     def _item2dict(self, item):
         """
+        Given an input such as the triple ('a', 'b', 'c'), return the C{CharFun}
+        {'a': {'b': {'c' : True}}}
+        
         @return: A characteristic function corresponding to the input.
         @rtype: C{CharFun}
         @param item: a literal or a tuple
@@ -196,6 +205,8 @@ class CharFun(dict):
             self._merge(chf1[k], chf2[k])
         return chf1
 
+
+                           
     def parse(self, s):
         """
         Convert an n-ary relation into its corresponding characteristic function.
@@ -209,8 +220,24 @@ class CharFun(dict):
         for item in s:
             charfuns.append(self._item2dict(item))
             
-        chf = reduce(self._merge, charfuns)
+        chf = reduce(self._merge, charfuns, {})
         self.update(chf)
+
+    def tuples(self):
+        """
+        Convert a C{CharFun} back into a set of tuples.
+        """
+        n = depth(self)
+        if n == 1:
+            tuples = self.domain
+        elif n == 2:
+            tuples = [(k1, k2) for k1 in self.keys() for k2 in self[k1].keys()]
+        elif n == 3:
+            tuples = [(k1, k2, k3) for k1 in self.keys() for k2 in self[k1].keys() for k3 in self[k1][k2].keys()]
+        else:
+            raise Error, "Only defined for CharFuns of depth <= 3"
+        result = set(tuples)
+        return result
 
         
     def _getDomain(self):
@@ -219,6 +246,7 @@ class CharFun(dict):
     domain = property(_getDomain, doc='Set-theoretic domain of a curried function')
 
 
+    
 
 def flatten(d):
     """
@@ -241,19 +269,62 @@ def flatten(d):
     result.discard(True)
     return result
 
+
+
+def depth(cf):
+    """
+    Calculate the depth of a C{CharFun}.
+
+    @return: Int
+    @type cf: C{CharFun}
+    """
+    
+    if True in cf.values():
+        return 1
+    else:
+        key = cf.keys()[0]
+        return 1+depth(cf[key])
+    
+
+
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
 
-    C{Valuation} will just raise a KeyError exception if indexed with an expression that
+    
+    An attempt to initialize a C{Valuation} with an individual
+    variable expression (e.g., 'x3') will raise an error, as will an
+    attemp to parse a list containing an individual variable
+    expression.
+    
+    An instance of C{Valuation} will raise a KeyError exception (i.e.,
+    just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
 
     def __init__(self, valuation=None):
         dict.__init__(self)
         if valuation:
-            self.update(valuation)
+            for k in valuation.keys():
+                print k
+                if logic.is_indvar(k):
+                    raise Error, "This looks like an individual variable: '%s'" % k
+                # Check if the valuation is of the form {'p': True}
+                if isinstance(valuation[k], bool):
+                    self[k] = valuation[k]
+                else:
+                    try:
+                        cf = CharFun(valuation[k])
+                        self[k] = cf
+                    except (TypeError, ValueError):
+                        self[k] = valuation[k]
 
+    def __getitem__(self, key):
+        if key in self:
+            return dict.__getitem__(self, key)
+        else:
+            raise Undefined
+                    
     def parse(self, seq):
         """
         Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a C{Valuation}.
@@ -262,6 +333,8 @@ class Valuation(dict):
         """
         d = dict(seq)
         for k in d.keys():
+            if logic.is_indvar(k):
+                raise Error, "This looks like an individual variable: '%s'" % k
             val = d[k]
             if isinstance(val, str):
                 pass
@@ -313,6 +386,8 @@ class Assignment(dict):
         dict.__init__(self)
         self.domain = domain
         if assignment:
+            for k in assignment.keys():
+                assert logic.is_indvar(k), "Wrong format for an Individual Variable: %s" % variable
             self.update(assignment)
         self.variant = []
 
@@ -320,8 +395,8 @@ class Assignment(dict):
         if key in self:
             return dict.__getitem__(self, key)
         else:
-            return self.choose()
-
+            raise Undefined
+        
     def purge(self, var=None):
         """
         Remove one or all keys (i.e. logic variables) from an assignment, and update C{self.variant}.
@@ -335,6 +410,7 @@ class Assignment(dict):
             self.clear()
         self._addvariant()
         return None
+
 
     def __str__(self):
         """
@@ -384,6 +460,8 @@ class Model:
     A domain M{D} is a set, and a valuation M{V} is a map that associates
     expressions with values in the model.
     The domain of M{V} should be a subset of M{D}.
+
+    @param prop: If this is set, then we are building a propositional model and can relax some constraints.
     """
     
     def __init__(self, domain, valuation, prop=None):
@@ -440,21 +518,42 @@ class Model:
                 False: {True: True, False: True}}
     IFF =      {True: {True: True, False: False},
                 False: {True: False, False: True}}
-
+    
 
     def evaluate(self, expr, g, trace=False):
         """
+        Provides a handler for C{satisfy()}
+        that blocks further propagation of C{Undefined} error.
+        """
+        try:
+            value = self.satisfy(expr, g)
+            g.purge()
+            if trace:
+                 print "'%s' evaluates to %s under M, %s" %  (expr, value, g)
+            return self.satisfy(expr, g, trace=trace)
+        except Undefined:
+            return 'Undefined'
+
+
+    def satisfy(self, expr, g, trace=False):
+        """
         Recursive interpretation function for a formula of first-order logic.
 
-        @return: Returns a truth value
-        @param expr: An expression of L{logic}. 
+        Raises an C{Undefined} error when C{expr} is an atomic string but is not a symbol or an
+        individual variable. 
+
+        @return: Returns a truth value or C{Undefined} if C{expr} is
+        complex, and calls the interpretation function C{i} is C{expr} is atomic.
         
+        @param expr: An expression of L{logic}.
         """
 
         OPS = {'and': Model.AND,
                'or': Model.OR,
                'implies': Model.IMPLIES,
                'iff': Model.IFF}
+
+       # print 'satisfy trace is', trace
 
         try:
             first, second = self.decompose(expr)
@@ -467,52 +566,45 @@ class Model:
 
             if first == 'not':
                 if trace:
-                    print "'%s' evaluates to %s under M, %s" %  (expr, self.evaluate(expr, g), g)
-                    print "since '%s' evaluates to %s under M, %s." % (phi, self.evaluate(phi, g), g)
-                return not self.evaluate(phi, g, trace)
+
+                    print "    '%s' evaluates to %s under M, %s." % (phi, self.satisfy(phi, g), g)
+                return not self.satisfy(phi, g, trace)
 
             elif first in OPS:
-                value = OPS[first][self.evaluate(phi, g, trace)][self.evaluate(psi, g, trace)]
+                value = OPS[first][self.satisfy(phi, g, trace)][self.satisfy(psi, g, trace)]
                 if trace:
-                    print "'%s' evaluates to %s under M, %s" %  (expr, value, g)
-                    print "   since '%s' evaluates to %s under M, %s %s" %  (phi, self.evaluate(phi, g), g, first)
-                    print "   '%s' evaluates to %s under M, %s" %  (psi, self.evaluate(psi, g), g)
+
+                    print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                    print "   '%s' evaluates to %s under M, %s" %  (psi, self.satisfy(psi, g, trace), g)
                 return value
             
 
             elif first[0] == 'some':
                 var = first[1]
                 phi = second
-#                 if trace:
-#                     if self.evaluate(expr, g):
-#                         print "'%s' evaluates to True under M, g" % expr
-#                         print "since there is some u in M's domain such that '%s'\nevaluates to True under M, %s."\
-#                         % (phi, g.add('u', var))
-#                     else:
-#                         print "'%s' evaluates to False under M, g" % expr
-#                         print "since  is no u in M's domain such that '%s'\nevaluates to True under M, %s."\
-#                               % (phi, g.add('u', var))
-                return len(self.satisfiers(phi, var, g)) > 1
+                value = len(self.satisfiers(phi, var, g)) > 1
+                if trace:
+                    if value:
+                        witness = self.satisfiers(phi, var, g).pop()
+                        g.add(witness, var)
+                        print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                    else:
+                        print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                return value
 
             elif first[0] == 'all':
                 var = first[1]
                 phi = second
-#                 if trace:
-#                    print "'%s' evaluates to %s under M, %s" % (expr, self.evaluate(expr, g), g)
-#                     if self.evaluate(expr, g):
-#                         print "'%s' evaluates to True under M, g" % expr
-#                         print "since for every u in M's domain, '%s'\nevaluates to True under M, %s."\
-#                         % (phi, g.add('u', var))
-#                     else:
-#                         print "'%s' evaluates to False under M, g" % expr
-#                         print "since there is some u in M's domain such that '%s'\nevaluates to False under M, %s."\
-#                               % (phi, g.add('u', var))
-                return self.domain.issubset(self.satisfiers(phi, var, g))
+                value = self.domain.issubset(self.satisfiers(phi, var, g))
+                if trace:
+
+                    print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)               
+                return value
             
             else:
                 try:
-                    funval = self.evaluate(first, g, trace)
-                    argval =  self.evaluate(second, g, trace)
+                    funval = self.satisfy(first, g, trace)
+                    argval =  self.satisfy(second, g, trace)
                     app = self.app(funval, argval)
                     if trace > 1:
                         print "'%s': %s applied to %s yields %s"\
@@ -528,15 +620,18 @@ class Model:
         except ValueError:
             # expr is an atomic expression
             return self.i(expr, g, trace)
+        
 
 
     def i(self, expr, g, trace=False):
         """
         An interpretation function.
 
-        Assuming that C{expr} is atomic, M{i} calls the valuation M{V} if
-        C{expr} is a non-logical constant, and assignment M{g} if C{expr}
-        is a free variable.
+        Assuming that C{expr} is atomic:
+
+         - if C{expr} is a non-logical constant, calls the valuation M{V} 
+         - else if C{expr} is an individual variable, calls assignment M{g}
+         - else returns C{Undefined}.
 
         
         @param expr: C{Expression} from L{logic}
@@ -546,9 +641,9 @@ class Model:
         try:
             if trace > 1:
                 print "   i, g('%s') = %s" % (expr, self.valuation[expr])
-            # expr is a non-logical constant, i.e. in self.valuation.symbols
+            # expr is a non-logical constant, i.e., in self.valuation.symbols
             return self.valuation[expr]
-        except KeyError:
+        except Undefined:
             if trace > 1:
                 print "   ... assuming that '%s' is an individual variable" % expr
             pass
@@ -557,10 +652,11 @@ class Model:
                 print "   i, g('%s') = %s" % (expr, g[expr])
             # expr wasn't a constant; maybe a variable that g knows about?
             return g[expr]
-        # Currently, we never get to this point.
-        except KeyError:
+        # We should only get to this point if expr is not an
+        # individual variable or not assigned a value by g
+        except Undefined:
             print "Expression '%s' can't be evaluated by i." % expr
-
+            raise
 
     def freevar(self, var, expr):
         """
@@ -584,23 +680,23 @@ class Model:
                 g.add(u, var)
                 if trace:
                     print "   ...trying assignment %s" % g
-                    print "   value of '%s' under %s is %s" % (expr, g, self.evaluate(expr, g))
+                    print "   value of '%s' under %s is %s" % (expr, g, self.satisfy(expr, g))
                 # is expr == True under g[u/var]?
                 # if not, throw away this variant
-                if not self.evaluate(expr, g):
+                if not self.satisfy(expr, g):
                     #g.purge(var)
                     pass
                     
                 # so g[u/var] is a satisfying assignment
                 else:
                     if trace:
-                         self.evaluate(expr, g, trace)
+                         self.satisfy(expr, g, trace)
                     list.append(u)
             result = set(list)
         # var isn't free in expr
         else:
             # so expr is true whatever the assigment
-            if self.evaluate(expr, g):
+            if self.satisfy(expr, g):
                 result = self.domain
             # some kind of error?
             else:
@@ -693,10 +789,14 @@ class TestModels(unittest.TestCase):
         self.assertEqual(flatten(cf), set(['d1', 'd2']))
         self.assertEqual(flatten(cf), cf.domain)
 
+
         s1 = set([('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
         cf1 = CharFun()
         cf1.parse(s1)
         self.assertEqual(cf, cf1)
+        
+        self.assertEqual(cf1.tuples(), s1)
+        
         s2 = set([('d1', 'd2'), ('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
         cf2 = CharFun()
         cf2.parse(s2)
@@ -719,6 +819,14 @@ class TestModels(unittest.TestCase):
         val1 = Valuation()
         val1.parse(setval)
         self.assertEqual(val, val1)
+
+        val = Valuation({'love': {'g1': {'b1': True}, 'b1': {'g1': True}, 'b2': {'g2': True}, 'g2': {'b1': True}}})
+        love = val['love']
+        relation = set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')])
+        self.assertEqual(love.tuples(), relation)
+                        
+
+        
 
     def testFunArgApp(self):
         "Tests for function argument application in a Model"
@@ -791,7 +899,7 @@ def folmodel(trace=None):
     val2.parse(v2)
     dom2 = val2.domain
     m2 = Model(dom2, val2)
-    g2 = Assignment(dom2)
+    g2 = Assignment(dom2, {'x': 'b1', 'y': 'g2'})
 
     if trace:
         print "*****************************"
@@ -802,7 +910,10 @@ def folmodel(trace=None):
 
     if trace:
         for s in symbols:
-            print "The interpretation of '%s' in m2 is %s" % (s, m2.i(s, g2))
+            try:
+                print "The interpretation of '%s' in m2 is %s" % (s, m2.i(s, g2))
+            except Undefined:
+                print 'Undefined'
     
 def foldemo(trace=None):
 
@@ -814,19 +925,19 @@ def foldemo(trace=None):
     'all x. ((boy x) or (girl x))',
     'all x. ((boy x) implies some y. (girl y) and (love x y))',
     'some y. ((girl y) and all x. ((boy x) implies (love x y)))',
-    'all x. some y . (love x y)',
+    'all x. ((boy x) implies some y . ((girl y) and (love x y)))',
     'all x. all y. ((love x y) implies (love y x))'
     ]
 
     print "*****************************"
 
     for sent in sentences:
-        g.purge()
+        g2.purge()
         if trace:
             print
-            m2.evaluate(sent, g, trace)
+            m2.evaluate(sent, g2, trace)
         else:
-            print "The value of '%s' is: %s" % (sent, m2.evaluate(sent, g))
+            print "The value of '%s' is: %s" % (sent, m2.evaluate(sent, g2))
 
 
 def satdemo(trace=None):
@@ -847,16 +958,89 @@ def satdemo(trace=None):
         print 
         print "***> The satisfiers of '%s' are: %s" % (clause, m2.satisfiers(clause, 'x', g2, trace))
         
+
+def bbdemo():
+    val1 = Valuation()
+    v1 = [('jules', 'd1'), ('vincent', 'd2'), ('pumpkin', 'd3'),
+          ('honey_bunny', 'd4'), ('yolanda', 'd5'),
+          ('customer', set(['d1', 'd2'])),
+          ('robber', set(['d3', 'd4'])),
+          ('love', set([('d3', 'd4')]))]
+    val1.parse(v1)
+    dom1 = val1.domain
+    m1 = Model(dom1, val1)
+    g1 = Assignment(dom1)
+
+    val2 = Valuation()
+    v2 = [('jules', 'd1'), ('vincent', 'd2'), ('pumpkin', 'd3'),
+          ('honey_bunny', 'd4'), ('yolanda', 'd5'),
+          ('customer', set(['d1', 'd2', 'd5', 'd6'])),
+          ('robber', set(['d3', 'd4'])),
+          ('love', set())]
+    val2.parse(v2)
+    dom2 = set(['d1', 'd2', 'd3', 'd4', 'd5', 'd6'])
+    m2 = Model(dom2, val2)
+    g2 = Assignment(dom2)
+
+    val3 = Valuation()
+    v3 = [('mia', 'd1'), ('jody', 'd2'), ('jules', 'd3'),
+          ('vincent', 'd4'),
+          ('woman', set(['d1', 'd2'])), ('man', set(['d3', 'd4'])),
+          ('joke', set(['d5', 'd6'])), ('episode', set(['d7', 'd8'])),
+          ('in', set([('d5', 'd7'), ('d5', 'd8')])),
+          ('tell', set([('d1', 'd5'), ('d2', 'd6')]))]
+    val3.parse(v3)
+    dom3 = set(['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8'])
+    m3 = Model(dom3, val3)
+    g3 = Assignment(dom3)
+
+    tests = [
+        ('some x. (robber x)', m1, g1, True),
+        ('some x. some y. (love x y)', m1, g1, True),
+        ('some x. some y. (love x y)', m2, g2, False),
+        ('all x. all y. (love x y)', m2, g2, False),
+        ('not (all x. all y. (love x y))', m2, g2, True),
+        ('all x. all y. (not (love x y))', m2, g2, True),
+        ('is (yolanda, honey_bunny)', m2, g2, True),
+        ('is (mia, honey_bunny)', m2, g2, 'Undefined'),
+        ('not (is (yolanda, honey_bunny))', m2, g2, False),
+        ('not (is (mia, honey_bunny))', m2, g2, 'Undefined'),
+        ('all x. ((robber x) or (customer x))', m2, g2, True),
+        ('not (all x. ((robber x) or (customer x)))', m2, g2, False),
+        ('((robber x) or (customer x))', m2, g2, 'Undefined'),
+        ('((robber x) or (customer x))', m2, g2.add('d3', 'x'), True),
+        ('some x. ((man x) and some x. (woman x))', m3, g3, True),
+        ('(some x. (man x) and some x. (woman x))', m3, g3, True),
+        ('not (some x. (woman x))', m3, g3, False),
+        ('some x. ((tasty x) and (burger x))', m3, g3, 'Undefined'),
+        ('not (some x. ((tasty x) and (burger x)))', m3, g3, 'Undefined'),
+        ('some x. ((man x) and (not (some y. (woman(Y)))))', m3, g3, False),
+        ('some x. ((man x) and (not (some x. (woman x))))', m3, g3, False),
+        ('some x. ((woman x) and (not (some x. (customer x))))', m2, g2, 'Undefined'),
+    ]
+
+    for stuff in tests:
+        sentence, model, assignment, value = stuff
+        print "Current sentence is %s:" % sentence
+        model.evaluate(sentence, assignment)
         
-def demo(trace=None):
-    propdemo(trace=trace)
-    foldemo(trace=trace)
-    satdemo(trace=trace)
+def demo(degree='all', trace=None):
+    if degree == 1 or degree == 'all':
+        propdemo(trace=trace)
+    elif degree == 2 or degree == 'all':
+        folmodel(trace=trace)
+    elif degree == 3 or degree == 'all':
+        foldemo(trace=trace)
+    elif degree == 4 or degree == 'all':
+        satdemo(trace=trace)
+    elif degree == 5 or degree == 'all':
+        bbdemo(trace=trace)
+    elif degree == 0:
+        pass
 
 
 if __name__ == "__main__":
-    satdemo(trace=1)
-    #propdemo(1)
+    foldemo(1)
     #test(verbosity=2) 
         
         
