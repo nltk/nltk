@@ -10,6 +10,8 @@
 #                   Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+#
+# $Iid:$
 
 """
 A version of first order logic, built on top of the untyped lambda calculus.
@@ -182,7 +184,36 @@ class VariableExpression(Expression):
     def __repr__(self): return "VariableExpression('%s')" % self.variable
 
     def __hash__(self): return hash(repr(self))
+
+
+def is_indvar(expr):
+    """
+    Check whether an expression has the form of an individual variable.
     
+    An individual variable matches the following regex:
+    C{'^[xywz](\d*)'}.
+    
+    @rtype: Boolean
+    @param expr: String
+    """
+    result = expr[0] in ['x', 'y', 'w', 'z']
+    if len(expr) > 1:
+        return result and expr[1:].isdigit()
+    else:
+        return result
+    
+class IndVariableExpression(VariableExpression):
+    """
+    An individual variable expression, as determined by C{is_indvar()}.
+    """
+    def __init__(self, variable):
+        Expression.__init__(self)
+        assert isinstance(variable, Variable), "Not a Variable: %s" % variable
+        assert is_indvar(str(variable)), "Wrong format for an Individual Variable: %s" % variable
+        self.variable = variable
+
+    def __repr__(self): return "IndVariableExpression('%s')" % self.variable 
+        
 
 class ConstantExpression(Expression):
     """A constant expression, consisting solely of a constant."""
