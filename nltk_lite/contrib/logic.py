@@ -257,7 +257,10 @@ class ConstantExpression(Expression):
 
 
 class Operator(ConstantExpression):
-    """A boolean operator, such as 'not' or 'and'."""
+    """
+    A boolean operator, such as 'not' or 'and', or the equality
+    relation ('=').
+    """
     def __init__(self, operator):
         Expression.__init__(self)
         assert operator in Parser.OPS
@@ -270,38 +273,13 @@ class Operator(ConstantExpression):
         else:
             return 0
 
-# all the following should be inherited
-################################        
-
-##     def variables(self):
-##         return set()
-
-##     def free(self):
-##         return set()
-
-##     def subterms(self):
-##         return set([self])
-
-##     def replace(self, variable, expression):
-##         if self.variable.equals(variable):
-##             return expression
-##         else:
-##             return self
-        
     def simplify(self):
         return self
-
-##     def name(self):
-##         return self.__str__()
-
-##     def _skolemise(self, bound_vars, counter):
-## 	return self
 
     def __str__(self): return '%s' % self.operator
 
     def __repr__(self): return "Operator('%s')" % self.operator
 
-##     def __hash__(self): return hash(repr(self))
 
 
 class VariableBinderExpression(Expression):
@@ -522,7 +500,10 @@ class Parser:
     DOT = '.'
     OPEN = '('
     CLOSE = ')'
-    OPS = ['and', 'or', 'not', 'implies', 'iff']
+    BOOL = ['and', 'or', 'not', 'implies', 'iff']
+    EQ = '='
+    OPS = BOOL
+    OPS.append(EQ)
     
     def __init__(self, data=None, constants=None):
         if data is not None:
@@ -586,9 +567,9 @@ class Parser:
     def isVariable(self, token):
         """Is this token a variable (that is, not one of the other types)?"""
         TOKENS = [Parser.LAMBDA, Parser.SOME, Parser.ALL,
-	       Parser.DOT, Parser.OPEN, Parser.CLOSE]
+	       Parser.DOT, Parser.OPEN, Parser.CLOSE, Parser.EQ]
         TOKENS.extend(self.constants)
-        TOKENS.extend(Parser.OPS)
+        TOKENS.extend(Parser.BOOL)
         return token not in TOKENS 
 
     def next(self):
@@ -646,7 +627,7 @@ class Parser:
             return ConstantExpression(Constant(tok))
 
         elif tok in Parser.OPS:
-            # Expression is a boolean operator
+            # Expression is a boolean operator or the equality symbol
             return Operator(tok)
         
         else:
