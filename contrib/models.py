@@ -18,7 +18,7 @@ first-order language. We assume that the language is based on the
 lambda calculus, in the style of Montague grammar.
 
 
-We assume that non-logical constants are either individual constants
+We also assume that non-logical constants are either individual constants
 or functors. In particular, rather than interpreting a one-place
 predicate M{P} as a set M{S}, we interpret it as the corresponding
 characteristic function M{f}, where M{f(a) = True} iff M{a} is in
@@ -27,9 +27,9 @@ individuals M{{'d1', 'd2', 'd3'}}, we interpret it as the function
 which maps 'd1', 'd2' and 'd3' to M{True} and every other entity to
 M{False}.
 
-Thus, as a first approximation, non-logical constants are interpreted as
-follows (note that M{e} is the type of I{entities} and M{t} is the
-type of truth values):
+Thus, as a first approximation, non-logical constants are interpreted
+by the valuation M{V} as follows (note that M{e} is the type of
+I{entities} and M{t} is the type of truth values):
 
   - if M{alpha} is an individual constant, then M{V(alpha)}
     is an element of M{D}.
@@ -53,26 +53,41 @@ Within C{models}, Curried characteristic functions are implemented as
 a subclass of dictionaries, using the C{CharFun()} constructor.
 
    >>> cf = CharFun({'d1' : CharFun({'d2': True}), 'd2' : CharFun({'d1': True})})
-   >>> cf['d1']
-   {'d2': True}
 
 Values of a C{CharFun} are accessed by indexing in the usual way:
 
+   >>> cf['d1']
+   {'d2': True}
    >>> cf['d1']['d2']
    True
-   >>> cf['not in domain']
-   False
 
-In practise, it may be more convenient to specify interpretations as
+C{CharFun}s are 'sparse' data structures in the sense that they omit
+entries of the form C{e: False}. In fact, they
+behave just like ordinary dictionaries on keys which are
+out of their domain, rather than yielding the value C{False}:
+
+   >>> cf['not in domain']
+   Traceback (most recent call last):
+   ...
+   KeyError: 'not in domain'
+
+The assignment of C{False} values is delegated to a wrapper method
+C{app} of the C{Model} class; e.g., where C{m} is an instance of C{Model}:
+
+   >>> m.app(cf,'not in domain')
+   False
+   
+In practise, it will often be more convenient for a user to specify interpretations as
 n-ary relations (i.e., sets of n-tuples) rather than as n-ary
 functions. C{CharFun} provides a C{parse()} method which will convert
 such relations into Curried characteristic functions:
 
-   >>> s = set([('d1', 'd2'), ('d2', 'd1')])
+   >>> s = set([('d1', 'd2'), ('d3', 'd4')])
    >>> cf = CharFun()
    >>> cf.parse(s)
    >>> cf
-   {'d2': {'d1': True}, 'd1': {'d2': True}}
+   {'d2': {'d1': True}, 'd4': {'d3': True}}
+
 
 C{parse()} will raise an exception if the set is not in fact a
 relation (i.e., contains tuples of different lengths:
@@ -100,8 +115,8 @@ C{domain} attribute of C{CharFun}.
    >>> cf.domain
    set(['d2', 'd1'])
 
-Valuations and Models
-=====================
+Valuations and Assignments
+==========================
 
 A I{Valuation} is a mapping from non-logical constants to appropriate semantic
 values in the model. Valuations are created using the C{Valuation} constructor.
@@ -123,11 +138,9 @@ relations rather than characteristic functions as interpretations.
    'betty': 'g1',
    'boy': {'b1': True, 'b2': True},
    'girl': {'g2': True, 'g1': True},
-   'love': {'b1': {'g1': True},
-            'b2': {'g2': True},
+   'love': {'b1': {'g2': True, 'g1': True},
             'g1': {'b1': True},
-            'g2': {'b1': True}}}
-
+            'g2': {'b2': True}}}
 
 Valuations have a C{domain} attribute, like C{CharFun}, and also a C{symbols}
 attribute.
@@ -137,14 +150,52 @@ attribute.
    >>> val.symbols
    ['boy', 'girl', 'love', 'adam', 'betty']   
 
+
+A variable I{Assignment} is a mapping from individual variables to
+entities in the domain. Individual variables are indicated with the
+letters 'x', 'y', 'w' and 'z', optionally followed by an integer
+(e.g., 'x0', 'y332').  Assignments are created using the C{Assignment}
+constructor, which also takes the domain as a parameter.
+
+   >>> dom = set(['u1', 'u2', 'u3', 'u4'])
+   >>> g = Assignment(dom, {'x': 'u1', 'y': 'u2'})
+   >>> g
+   {'y': 'u2', 'x': 'u1'}
+
+There is also a print format for assignments which uses a notation
+closer to that in logic textbooks:
+   
+   >>> print g
+   g[u2/y][u1/x]
+
+Initialization of an C{Assignment} instance checks that the variable
+really is an individual variable and also that the value belongs to
+the domain of discourse:
+
+    >>> Assignment(dom, {'xxx': 'u1', 'y': 'u2'})
+    Traceback (most recent call last):
+    ...
+    AssertionError: Wrong format for an Individual Variable: 'xxx'
+    >>> Assignment(dom, {'x': 'u5', 'y': 'u2'})
+    Traceback (most recent call last):
+    ...
+    AssertionError: 'u5' is not in the domain: set(['u4', 'u1', 'u3', 'u2'])
+
+It is also possible to update an assignment using the C{add} method:
+
+
+
+Models
+======
+
 The C{Model} constructor takes two parameters, a C{set} and a C{Valuation}.
 
    >>> m = Model(val.domain, val)
 
-
 """
 
-from nltk_lite.contrib import logic
+#from nltk_lite.contrib import logic
+import logic
 from pprint import pformat
 
 class Error(Exception): pass
@@ -185,9 +236,6 @@ class CharFun(dict):
         """
         
         chf = {}
-
-        
-        
         if isinstance(item, tuple):
             # reverse the tuple
             l = list(item)
@@ -201,7 +249,6 @@ class CharFun(dict):
             chf[item] = True
         return chf
 
-
     def _merge(self, chf1, chf2):
         k = chf2.keys()[0]
         if k not in chf1:
@@ -209,8 +256,6 @@ class CharFun(dict):
         else:
             self._merge(chf1[k], chf2[k])
         return chf1
-
-
                            
     def parse(self, s):
         """
@@ -260,7 +305,6 @@ def flatten(d):
     @rtype: set
     @type d: dict
     """
-    
     flat = []
     try:
         flat.extend(d.keys())
@@ -276,7 +320,6 @@ def flatten(d):
     return result
 
 
-
 def depth(cf):
     """
     Calculate the depth of a C{CharFun}.
@@ -284,14 +327,12 @@ def depth(cf):
     @return: Int
     @type cf: C{CharFun}
     """
-    
     if True in cf.values():
         return 1
     else:
         key = cf.keys()[0]
         return 1+depth(cf[key])
     
-
 
 class Valuation(dict):
     """
@@ -307,7 +348,6 @@ class Valuation(dict):
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
-
     def __init__(self, valuation=None):
         dict.__init__(self)
         if valuation:
@@ -375,26 +415,31 @@ class Assignment(dict):
 
     An assigment can only assign values from its domain.
 
-    Although an assignment M{g} is finite, it is not I{partial}, in the following sense:
-    if a variable M{x} is not one of M{g}'s keys, M{g} will choose an arbitrary member of
-    the model's domain and use that as the value of M{x}. A downside of this approach
-    is that if a unknown expression M{a} is passed to a model M{M}'s interpretation function M{i},
-    M{i} will first check whether M{M}'s valuation assigns an interpretation to M{a} as a constant,
-    and if this fails, M{i} will delegate the interpretation of M{a} to M{g}. Since we have no way at
-    present of telling whether M{a} is in fact an individual variable, the behaviour of M{g} just
-    described will by default treat it as one.
-    An alternative would be to raise an exception in this case.
-    
+    Although an assignment M{g} is finite, it is not I{partial}, in
+    the following sense: if a variable M{x} is not one of M{g}'s keys,
+    M{g} will choose an arbitrary member of the model's domain and use
+    that as the value of M{x}. A downside of this approach is that if
+    a unknown expression M{a} is passed to a model M{M}'s
+    interpretation function M{i}, M{i} will first check whether M{M}'s
+    valuation assigns an interpretation to M{a} as a constant, and if
+    this fails, M{i} will delegate the interpretation of M{a} to
+    M{g}. Since we have no way at present of telling whether M{a} is
+    in fact an individual variable, the behaviour of M{g} just
+    described will by default treat it as one.  An alternative would
+    be to raise an exception in this case.
     """
-
     def __init__(self, domain, assignment=None):
         dict.__init__(self)
         self.domain = domain
         if assignment:
-            for k in assignment.keys():
-                assert logic.is_indvar(k), "Wrong format for an Individual Variable: %s" % variable
+            for var in assignment.keys():
+                val = assignment[var]
+                assert val in self.domain,\
+                       "'%s' is not in the domain: %s" % (val, self.domain)
+                assert logic.is_indvar(var),\
+                       "Wrong format for an Individual Variable: '%s'" % var
             self.update(assignment)
-        self.variant = []
+        self._addvariant()
 
     def __getitem__(self, key):
         if key in self:
@@ -404,7 +449,8 @@ class Assignment(dict):
         
     def purge(self, var=None):
         """
-        Remove one or all keys (i.e. logic variables) from an assignment, and update C{self.variant}.
+        Remove one or all keys (i.e. logic variables) from an
+        assignment, and update C{self.variant}.
 
         @param var: a Variable acting as a key for the assignment.
         """
@@ -415,7 +461,6 @@ class Assignment(dict):
             self.clear()
         self._addvariant()
         return None
-
 
     def __str__(self):
         """
@@ -436,7 +481,7 @@ class Assignment(dict):
             list.append(pair)
         self.variant = list
         return None
-        
+
     def add(self, val, var):
         """
         Add a new variable-value pair to the assignment, and update C{self.variant}.
@@ -444,7 +489,8 @@ class Assignment(dict):
         We write the arguments in the order 'val, var' by analogy with the
         notation 'g[u/x]'.
         """
-        assert val in self.domain
+        assert val in self.domain, "%s is not in the domain %s" % (val, self.domain)
+        assert logic.is_indvar(var), "Wrong format for an Individual Variable: '%s'" % var
         self[var] = val
         self._addvariant()
         return self
