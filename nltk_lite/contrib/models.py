@@ -76,7 +76,15 @@ C{app} of the C{Model} class; e.g., where C{m} is an instance of C{Model}:
 
    >>> m.app(cf,'not in domain')
    False
-   
+
+C{app()} embodies the Closed World assumption. (It might be asked why
+we don't modify instances of C{CharFun} to give the value C{False} in
+place of a C{KeyError} for some entity 'd3' which is not a key for the
+dictionary. The reason is that this would implement a behaviour
+equivalent to C{cf2} below, which yields C{False} for the entity 'd3'
+rather than a function which yields C{False} for every entity in the
+domain: C{cf2 = {'d1': {'d2': True}, {'d3': False}}}.)
+
 In practise, it will often be more convenient for a user to specify interpretations as
 n-ary relations (i.e., sets of n-tuples) rather than as n-ary
 functions. C{CharFun} provides a C{parse()} method which will convert
@@ -181,7 +189,38 @@ the domain of discourse:
     ...
     AssertionError: 'u5' is not in the domain: set(['u4', 'u1', 'u3', 'u2'])
 
-It is also possible to update an assignment using the C{add} method:
+It is also possible to update an assignment using the C{add()} method:
+
+    >>> dom = set(['u1', 'u2', 'u3', 'u4'])
+    >>> g = models.Assignment(dom, {})
+    >>> g.add('u1', 'x')
+    {'x': 'u1'}
+    >>> g.add('u5', 'x')
+    Traceback (most recent call last):
+    ...
+    AssertionError: u5 is not in the domain set(['u4', 'u1', 'u3', 'u2'])
+    >>> g.add('u1', 'xyz')
+    Traceback (most recent call last):
+    ...
+    AssertionError: Wrong format for an Individual Variable: 'xyz'
+    >>> g.add('u2', 'x').add('u3', 'y').add('u4', 'x0')
+    {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
+
+Variables (and their values) can be selectively removed from an
+assignment with the C{purge()} method:
+
+    >>> g
+    {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
+    >>> g.purge('x')
+    >>> g
+    {'y': 'u3', 'x0': 'u4'}
+
+With no arguments,  C{purge()} is equivalent to C{clear()} on a dictionary:
+
+    >>> g.purge()
+    >>> g
+    {}
+
 
 
 
@@ -191,6 +230,40 @@ Models
 The C{Model} constructor takes two parameters, a C{set} and a C{Valuation}.
 
    >>> m = Model(val.domain, val)
+
+The top-level method of a C{Model} instance is C{evaluate()}, which
+assigns a semantic value to expressions of the L{logic} module, under an assignment C{g}:
+
+    >>> m.evaluate('all x. ((boy x) implies (not (girl x)))', g)
+    True
+
+C{evaluate} calls a recursive function C{satisfy()}, which in turn
+calls a function C{i} to interpret non-logical constants and
+individual variables. C{i} in turn first tries to call the model's C{Valuation} and
+if that fails, calls the variable assignment C{g}. Any atomic expression which cannot be
+assigned a value by C{i} raises an C{Undefined} exception; this is
+caught by C{evaluate()}, which returns the string 'Undefined'.
+
+    >>> m.evaluate('(walk adam)', g, trace=2)
+       ... assuming that 'walk' is an individual variable
+    Expression 'walk' can't be evaluated by i and g.
+    'Undefined'
+
+Boolean operators such as M{not}, M{qand} and M{implies} are implemented as dictionaries. For example:
+
+    >>> m.AND
+    {False: {False: False, True: False}, True: {False: False, True: True}}
+
+A formula such as '(p and q)' is interpreted by indexing
+the value of 'and' with the values of the two propositional arguments,
+in the following manner:
+
+   >>> m.AND[m.evaluate('p', g)][m.evaluate('q', g)]
+
+
+
+
+
 
 """
 
@@ -484,25 +557,20 @@ class Assignment(dict):
 
     def add(self, val, var):
         """
-        Add a new variable-value pair to the assignment, and update C{self.variant}.
+        Add a new variable-value pair to the assignment, and update
+        C{self.variant}.
 
         We write the arguments in the order 'val, var' by analogy with the
         notation 'g[u/x]'.
         """
-        assert val in self.domain, "%s is not in the domain %s" % (val, self.domain)
-        assert logic.is_indvar(var), "Wrong format for an Individual Variable: '%s'" % var
+        assert val in self.domain,\
+               "%s is not in the domain %s" % (val, self.domain)
+        assert logic.is_indvar(var),\
+               "Wrong format for an Individual Variable: '%s'" % var
         self[var] = val
         self._addvariant()
         return self
 
-    def choose(self):
-        """
-        Choose a member of C{self.domain} as a value for variables we don't know about.
-        """
-        seq = [x for x in self.domain]
-        chosen = choice(seq)
-        return chosen
-    
     
 class Model:
     """
@@ -512,7 +580,8 @@ class Model:
     expressions with values in the model.
     The domain of M{V} should be a subset of M{D}.
 
-    @param prop: If this is set, then we are building a propositional model and can relax some constraints.
+    @param prop: If this is set, then we are building a propositional\
+    model and don't require the domain of M{V} to be subset of M{D}.
     """
     
     def __init__(self, domain, valuation, prop=None):
@@ -534,7 +603,8 @@ class Model:
 
     def app(self, fun, arg):
         """
-        Wrapper for handling KeyErrors raised by function application.
+        Wrapper for handling KeyErrors and TypeErrors raised by
+        function application.
         
         This constrains instances of C{CharFun} to return C{False} in
         the right circumstances.
@@ -542,7 +612,8 @@ class Model:
         @param fun: an instance of CharFun
         @param arg: an arbitrary object
         @return: If C{arg} is in C{fun}'s domain, then returns C{fun[arg]},\
-                 else if C{arg} is in C{self.domain}, returns C{False}, else raises\
+                 else if C{arg} is in C{self.domain}, returns C{False},\
+                 else raises\
                  Undefined.
         """
         
@@ -552,12 +623,14 @@ class Model:
             if arg in self.domain:
                 return False
             else:
-                raise Undefined, "%s can't be applied as a function to %s" % (fun, arg)
+                raise Undefined,\
+                      "%s can't be applied as a function to %s" % (fun, arg)
         except TypeError:
             if fun == False:
                 return False
             else:
-                raise Undefined, "%s can't be applied as a function to %s" % (fun, arg)
+                raise Undefined,\
+                      "%s can't be applied as a function to %s" % (fun, arg)
             
 
 
@@ -591,11 +664,12 @@ class Model:
         """
         Recursive interpretation function for a formula of first-order logic.
 
-        Raises an C{Undefined} error when C{expr} is an atomic string but is not a symbol or an
-        individual variable. 
+        Raises an C{Undefined} error when C{expr} is an atomic string
+        but is not a symbol or an individual variable.
 
-        @return: Returns a truth value or C{Undefined} if C{expr} is
-        complex, and calls the interpretation function C{i} is C{expr} is atomic.
+        @return: Returns a truth value or C{Undefined} if C{expr} is\
+        complex, and calls the interpretation function C{i} if C{expr}\
+        is atomic.
         
         @param expr: An expression of L{logic}.
         """
@@ -604,8 +678,6 @@ class Model:
                'or': Model.OR,
                'implies': Model.IMPLIES,
                'iff': Model.IFF}
-
-        
 
         try:
             parsed = self.decompose(expr)
@@ -785,7 +857,6 @@ class Model:
                     candidates.append(u)
                     if trace:
                         print indent + "value of '%s' under %s is %s" % (expr, g, value)
-                        print indent + "list is :", candidates
                     
             result = set(candidates)
 
@@ -1117,7 +1188,6 @@ def foldemo(trace=None):
     'all x. ((dog x) implies (not (girl x)))',
     'some x. some y. ((love y x) and (love y x))'
     ]
-
 
 
     for sent in sentences:
