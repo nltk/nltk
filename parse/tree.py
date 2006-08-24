@@ -493,8 +493,7 @@ def bracket_parse(s):
                 # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
                 if tree.node == '':
                     tree = tree[0]
-                else:
-                    return tree
+                return tree
             stack[-2].append(stack[-1])
             stack.pop()
 
