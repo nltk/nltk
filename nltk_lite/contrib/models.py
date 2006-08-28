@@ -31,37 +31,37 @@ Thus, as a first approximation, non-logical constants are interpreted
 by the valuation M{V} as follows (note that M{e} is the type of
 I{entities} and M{t} is the type of truth values):
 
-  - if M{alpha} is an individual constant, then M{V(alpha)}
+  - if S{alpha} is an individual constant, then M{V}(S{alpha})
     is an element of M{D}.
-  - If M{gamma} is a functor of type (M{e} x ... x M{e}) -> M{t}, then
-    M{V(gamma)} is a function M{f} from  M{D} x ... x M{D} to M{{True, False}}.
+  - If S{gamma} is a functor of type (M{e} x ... x M{e}) -> M{t}, then
+    M{V}(S{gamma}) is a function M{f} from  M{D} x ... x M{D} to M{{True, False}}.
 
 However, since we are basing our language on the lambda calculus (see
 L{logic}), a binary relation such as 'like' will not in fact be
 associated with the type (M{e} x M{e}) -> M{t}, but rather the type
-(M{e} -> (M{e} -> M{t}); i.e., a function from entities to a function
+(M{e} -> (M{e} -> M{t})); i.e., a function from entities to a function
 from entities to truth values. In other words, functors are assigned
-'Curried' functions as their values. We should also point out that
-expressions of our languge are not explicitly typed.  We leave it to
+'Curried' functions as their values. It should also be noted that
+expressions of the language are not explicitly typed.  We leave it to
 the grammar writer to assign 'sensible' values to expressions rather
 than enforcing any type-to-denotation consistency.
 
 Characteristic Functions
 ========================
 
-Within C{models}, Curried characteristic functions are implemented as
-a subclass of dictionaries, using the C{CharFun()} constructor.
+Within L{models}, Curried characteristic functions are implemented as
+a subclass of dictionaries, using the L{CharFun} constructor.
 
    >>> cf = CharFun({'d1' : CharFun({'d2': True}), 'd2' : CharFun({'d1': True})})
 
-Values of a C{CharFun} are accessed by indexing in the usual way:
+Values of a L{CharFun} are accessed by indexing in the usual way:
 
    >>> cf['d1']
    {'d2': True}
    >>> cf['d1']['d2']
    True
 
-C{CharFun}s are 'sparse' data structures in the sense that they omit
+L{CharFun}s are 'sparse' data structures in the sense that they omit
 entries of the form C{e: False}. In fact, they
 behave just like ordinary dictionaries on keys which are
 out of their domain, rather than yielding the value C{False}:
@@ -72,23 +72,28 @@ out of their domain, rather than yielding the value C{False}:
    KeyError: 'not in domain'
 
 The assignment of C{False} values is delegated to a wrapper method
-C{app} of the C{Model} class; e.g., where C{m} is an instance of C{Model}:
+L{app} of the L{Model} class. L{app} embodies the Closed World
+assumption; i.e., where C{m} is an instance of L{Model}:
 
    >>> m.app(cf,'not in domain')
    False
 
-C{app()} embodies the Closed World assumption. (It might be asked why
-we don't modify instances of C{CharFun} to give the value C{False} in
-place of a C{KeyError} for some entity 'd3' which is not a key for the
-dictionary. The reason is that this would implement a behaviour
-equivalent to C{cf2} below, which yields C{False} for the entity 'd3'
-rather than a function which yields C{False} for every entity in the
-domain: C{cf2 = {'d1': {'d2': True}, {'d3': False}}}.)
+It might be asked why we don't modify instances of L{CharFun} to give
+the value C{False} in place of a C{KeyError} for some entity 'd3'
+which is not a key for the dictionary. The reason is that this would
+implement a behaviour equivalent to C{cf2} below, which yields the Boolean
+C{False} for the entity 'd3' rather than a I{function} which yields
+C{False} for every entity in the domain:
 
-In practise, it will often be more convenient for a user to specify interpretations as
-n-ary relations (i.e., sets of n-tuples) rather than as n-ary
-functions. C{CharFun} provides a C{parse()} method which will convert
-such relations into Curried characteristic functions:
+   >>> cf2 = {'d1': {'d2': True}, {'d3': False}}
+
+As a result, trying to evaluate something like C{cf2['d3']['d2']} would yield a
+C{TypeError} rather than C{False}, as required.
+
+In practise, it will often be more convenient for a user to specify
+interpretations as M{n}-ary relations (i.e., sets of M{n}-tuples) rather
+than as M{n}-ary functions. L{CharFun} provides a C{parse} method which
+will convert such relations into Curried characteristic functions:
 
    >>> s = set([('d1', 'd2'), ('d3', 'd4')])
    >>> cf = CharFun()
@@ -97,8 +102,8 @@ such relations into Curried characteristic functions:
    {'d2': {'d1': True}, 'd4': {'d3': True}}
 
 
-C{parse()} will raise an exception if the set is not in fact a
-relation (i.e., contains tuples of different lengths:
+C{parse} will raise an exception if the set is not in fact a
+relation (i.e., contains tuples of different lengths):
 
   >>> wrong = set([('d1', 'd2'), ('d2', 'd1', 'd3')])
   >>> cf.parse(wrong)
@@ -113,9 +118,9 @@ However, unary relations can be parsed to characteristic functions.
   >>> cf
   {'d2': True, 'd1': True}
 
-The function C{flatten} returns a set of the entities used as keys in
-a C{CharFun} instance. The same information can be accessed via the
-C{domain} attribute of C{CharFun}.
+The function L{flatten} returns a set of the entities used as keys in
+a L{CharFun} instance. The same information can be accessed via the
+C{domain} attribute of L{CharFun}.
 
    >>> cf = CharFun({'d1' : {'d2': True}, 'd2' : {'d1': True}})
    >>> flatten(cf)
@@ -126,14 +131,17 @@ C{domain} attribute of C{CharFun}.
 Valuations and Assignments
 ==========================
 
+Valuations
+----------
+
 A I{Valuation} is a mapping from non-logical constants to appropriate semantic
-values in the model. Valuations are created using the C{Valuation} constructor.
+values in the model. Valuations are created using the L{Valuation} constructor.
 
    >>> val = Valuation({'Fido' : 'd1', 'dog' : {'d1' : True, 'd2' : True}})
    >>> val
    {'Fido': 'd1', 'dog': {'d2': True, 'd1': True}}
 
-As with C{CharFun}, C{Valuation} will also parse valuations using
+As with L{CharFun}, an instance of L{Valuation} will parse valuations using
 relations rather than characteristic functions as interpretations.
 
    >>> setval = [('adam', 'b1'), ('betty', 'g1'),\
@@ -150,7 +158,7 @@ relations rather than characteristic functions as interpretations.
             'g1': {'b1': True},
             'g2': {'b2': True}}}
 
-Valuations have a C{domain} attribute, like C{CharFun}, and also a C{symbols}
+Valuations have a C{domain} attribute, like L{CharFun}, and also a C{symbols}
 attribute.
 
    >>> val.domain
@@ -159,10 +167,13 @@ attribute.
    ['boy', 'girl', 'love', 'adam', 'betty']   
 
 
+Assignments
+-----------
+
 A variable I{Assignment} is a mapping from individual variables to
 entities in the domain. Individual variables are indicated with the
 letters 'x', 'y', 'w' and 'z', optionally followed by an integer
-(e.g., 'x0', 'y332').  Assignments are created using the C{Assignment}
+(e.g., 'x0', 'y332').  Assignments are created using the L{Assignment}
 constructor, which also takes the domain as a parameter.
 
    >>> dom = set(['u1', 'u2', 'u3', 'u4'])
@@ -170,13 +181,13 @@ constructor, which also takes the domain as a parameter.
    >>> g
    {'y': 'u2', 'x': 'u1'}
 
-There is also a print format for assignments which uses a notation
+There is also a C{print} format for assignments which uses a notation
 closer to that in logic textbooks:
    
    >>> print g
    g[u2/y][u1/x]
 
-Initialization of an C{Assignment} instance checks that the variable
+Initialization of an L{Assignment} instance checks that the variable
 really is an individual variable and also that the value belongs to
 the domain of discourse:
 
@@ -189,25 +200,25 @@ the domain of discourse:
     ...
     AssertionError: 'u5' is not in the domain: set(['u4', 'u1', 'u3', 'u2'])
 
-It is also possible to update an assignment using the C{add()} method:
+It is also possible to update an assignment using the L{add} method:
 
     >>> dom = set(['u1', 'u2', 'u3', 'u4'])
     >>> g = models.Assignment(dom, {})
     >>> g.add('u1', 'x')
     {'x': 'u1'}
-    >>> g.add('u5', 'x')
-    Traceback (most recent call last):
-    ...
-    AssertionError: u5 is not in the domain set(['u4', 'u1', 'u3', 'u2'])
     >>> g.add('u1', 'xyz')
     Traceback (most recent call last):
     ...
     AssertionError: Wrong format for an Individual Variable: 'xyz'
     >>> g.add('u2', 'x').add('u3', 'y').add('u4', 'x0')
     {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
+    >>> g.add('u5', 'x')
+    Traceback (most recent call last):
+    ...
+    AssertionError: u5 is not in the domain set(['u4', 'u1', 'u3', 'u2'])
 
 Variables (and their values) can be selectively removed from an
-assignment with the C{purge()} method:
+assignment with the L{purge} method:
 
     >>> g
     {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
@@ -215,7 +226,7 @@ assignment with the C{purge()} method:
     >>> g
     {'y': 'u3', 'x0': 'u4'}
 
-With no arguments,  C{purge()} is equivalent to C{clear()} on a dictionary:
+With no arguments,  L{purge} is equivalent to C{clear} on a dictionary:
 
     >>> g.purge()
     >>> g
@@ -227,29 +238,35 @@ With no arguments,  C{purge()} is equivalent to C{clear()} on a dictionary:
 Models
 ======
 
-The C{Model} constructor takes two parameters, a C{set} and a C{Valuation}.
+The L{Model} constructor takes two parameters, a C{set} and a L{Valuation}.
 
    >>> m = Model(val.domain, val)
 
-The top-level method of a C{Model} instance is C{evaluate()}, which
+The top-level method of a L{Model} instance is L{evaluate}, which
 assigns a semantic value to expressions of the L{logic} module, under an assignment C{g}:
 
     >>> m.evaluate('all x. ((boy x) implies (not (girl x)))', g)
     True
 
-C{evaluate} calls a recursive function C{satisfy()}, which in turn
-calls a function C{i} to interpret non-logical constants and
-individual variables. C{i} in turn first tries to call the model's C{Valuation} and
+evaluate
+--------
+
+L{evaluate} calls a recursive function L{satisfy}, which in turn
+calls a function L{i} to interpret non-logical constants and
+individual variables. L{i} first tries to call the model's L{Valuation} and
 if that fails, calls the variable assignment C{g}. Any atomic expression which cannot be
-assigned a value by C{i} raises an C{Undefined} exception; this is
-caught by C{evaluate()}, which returns the string 'Undefined'.
+assigned a value by L{i} raises an C{Undefined} exception; this is
+caught by L{evaluate}, which returns the string 'Undefined'.
 
     >>> m.evaluate('(walk adam)', g, trace=2)
-       ... assuming that 'walk' is an individual variable
+       ... checking whether 'walk' is an individual variable
     Expression 'walk' can't be evaluated by i and g.
     'Undefined'
 
-Boolean operators such as M{not}, M{qand} and M{implies} are implemented as dictionaries. For example:
+
+
+Boolean operators such as M{not}, M{and} and M{implies} are
+implemented as dictionaries. For example:
 
     >>> m.AND
     {False: {False: False, True: False}, True: {False: False, True: True}}
@@ -261,8 +278,11 @@ in the following manner:
    >>> m.AND[m.evaluate('p', g)][m.evaluate('q', g)]
 
 
+satisfy
+-------
 
-
+The L{satisfy} method assigns semantic values to arbitrary expressions
+according to their syntactic structure, as determined by L{decompose}.
 
 
 """
@@ -300,11 +320,11 @@ class CharFun(dict):
 
     def _item2dict(self, item):
         """
-        Given an input such as the triple ('a', 'b', 'c'), return the C{CharFun}
+        Given an input such as the triple ('a', 'b', 'c'), return the L{CharFun}
         {'c': {'b': {'a' : True}}}
         
         @return: A characteristic function corresponding to the input.
-        @rtype: C{CharFun}
+        @rtype: L{CharFun}
         @param item: a literal or a tuple
         """
         
@@ -332,8 +352,8 @@ class CharFun(dict):
                            
     def parse(self, s):
         """
-        Convert an n-ary relation into its corresponding characteristic function.
-        @rtype: C{CharFun}
+        Convert an M{n}-ary relation into its corresponding characteristic function.
+        @rtype: L{CharFun}
         @type s: set
         """
 
@@ -348,9 +368,9 @@ class CharFun(dict):
 
     def tuples(self):
         """
-        Convert a C{CharFun} back into a set of tuples.
+        Convert a L{CharFun} back into a set of tuples.
 
-        Given an input such as the C{CharFun} {'c': {'b': {'a': True}}},
+        Given an input such as the L{CharFun} {'c': {'b': {'a': True}}},
         return set([('a', 'b', 'c')])
         """
         n = depth(self)
@@ -374,7 +394,7 @@ class CharFun(dict):
 
 def flatten(d):
     """
-    @return: The set of keys of a C{CharFun} instance.
+    @return: The set of keys of a L{CharFun} instance.
     @rtype: set
     @type d: dict
     """
@@ -395,10 +415,10 @@ def flatten(d):
 
 def depth(cf):
     """
-    Calculate the depth of a C{CharFun}.
+    Calculate the depth of a L{CharFun}.
 
     @return: Int
-    @type cf: C{CharFun}
+    @type cf: L{CharFun}
     """
     if True in cf.values():
         return 1
@@ -412,12 +432,12 @@ class Valuation(dict):
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
 
     
-    An attempt to initialize a C{Valuation} with an individual
+    An attempt to initialize a L{Valuation} with an individual
     variable expression (e.g., 'x3') will raise an error, as will an
     attemp to parse a list containing an individual variable
     expression.
     
-    An instance of C{Valuation} will raise a KeyError exception (i.e.,
+    An instance of L{Valuation} will raise a KeyError exception (i.e.,
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
@@ -445,8 +465,8 @@ class Valuation(dict):
                     
     def parse(self, seq):
         """
-        Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a C{Valuation}.
-        @rtype: C{Valuation}
+        Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a L{Valuation}.
+        @rtype: L{Valuation}
         @param seq: A list of tuples of the form (I{constant}, I{relation}), where I{relation} is a set of tuples.
         """
         d = dict(seq)
@@ -580,11 +600,20 @@ class Model:
     expressions with values in the model.
     The domain of M{V} should be a subset of M{D}.
 
-    @param prop: If this is set, then we are building a propositional\
-    model and don't require the domain of M{V} to be subset of M{D}.
+   
     """
     
     def __init__(self, domain, valuation, prop=None):
+        """
+        Construct a new L{Model}.
+        
+        @type domain: C{set}
+        @param domain: A set of entities representing the domain of discourse of the model.
+        @type valuation: L{Valuation}
+        @param valuation: the valuation of the model.
+        @param prop: If this is set, then we are building a propositional\
+        model and don't require the domain of M{V} to be subset of M{D}.
+        """
         assert isinstance(domain, set)
         self.domain = domain
         self.valuation = valuation
@@ -606,15 +635,14 @@ class Model:
         Wrapper for handling KeyErrors and TypeErrors raised by
         function application.
         
-        This constrains instances of C{CharFun} to return C{False} in
+        This constrains instances of L{CharFun} to return C{False} in
         the right circumstances.
 
-        @param fun: an instance of CharFun
-        @param arg: an arbitrary object
+        @param fun: an instance of L{CharFun}.
+        @param arg: an arbitrary semantic object
         @return: If C{arg} is in C{fun}'s domain, then returns C{fun[arg]},\
                  else if C{arg} is in C{self.domain}, returns C{False},\
-                 else raises\
-                 Undefined.
+                 else raises C{Undefined} error.
         """
         
         try:
@@ -647,8 +675,12 @@ class Model:
 
     def evaluate(self, expr, g, trace=None):
         """
-        Provides a handler for C{satisfy()}
+        Provides a handler for L{satisfy}
         that blocks further propagation of C{Undefined} error.
+        @param expr: An C{Expression} of L{logic}.
+        @type g: L{Assignment}
+        @param g: an assignment to individual variables.
+        @return: C{bool} or 'Undefined'
         """
         try:
             value = self.satisfy(expr, g, trace=trace)
@@ -672,6 +704,8 @@ class Model:
         is atomic.
         
         @param expr: An expression of L{logic}.
+        @type g: L{Assignment}
+        @param g: an assignment to individual variables.
         """
 
         OPS = {'and': Model.AND,
@@ -782,8 +816,9 @@ class Model:
          - else returns C{Undefined}.
 
         
-        @param expr: C{Expression} from L{logic}
-        @param g: C{Assignment}
+        @param expr: an C{Expression} of L{logic}.
+        @type g: L{Assignment}
+        @param g: an assignment to individual variables.
         @return: a semantic value
         """
         try:
@@ -793,7 +828,7 @@ class Model:
             return self.valuation[expr]
         except Undefined:
             if trace > 1:
-                print "   ... assuming that '%s' is an individual variable" % expr
+                print "   ... checking whether '%s' is an individual variable" % expr
             pass
         try:
             if trace > 1:
@@ -804,14 +839,17 @@ class Model:
         # individual variable or not assigned a value by g
         except Undefined:
             if trace:
-                print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
+                print "C{Expression} '%s' can't be evaluated by i and %s." % (expr, g)
             raise
 
     def freevar(self, var, expr):
         """
         Is C{var} one of the free variables in C{expr}?
 
-        @return: Boolean
+        @type var: an C{Indvar} of L{logic}
+        @param var: the variable to test for.
+        @param expr: an C{Expression} of L{logic}.
+        @return: C{bool}
         """
         parsed = logic.Parser().parse(expr)
         variable = logic.Variable(var)
@@ -822,9 +860,10 @@ class Model:
         Show the entities from the model's domain that satisfy an open formula.
 
         @param expr: the open formula
-        @param var: the relevant free variable in C{expr}
+        @param var: the relevant free variable in C{expr}.
         @param g: the variable assignment
-        @rtype: set
+        @return: the set of entities that satisfy C{expr}.
+        @rtype: C{set}
         """
 
         spacer = '   '
@@ -872,11 +911,12 @@ class Model:
         Function to communicate with a first-order functional language.
 
         This function tries to make weak assumptions about the parse structure
-        provided by the logic module.
+        provided by the logic module. It makes the assumption that an expression
+        can be broken down into a pair of subexpressions:
 
-        The (binder, body) pair is for decomposing quantifier formulae.
-        The (op, args) pair is for decomposing formulae with a boolean operator.
-        The (fun, args) pair should catch other relevant cases.
+          - The C{(binder, body)} pair is for decomposing quantified formulae.
+          - The C{(op, args)} pair is for decomposing formulae with a boolean operator.
+          - The C{(fun, args)} pair should catch other relevant cases.
 
         @param expr: A string representation of a first-order formula.
         """
@@ -908,6 +948,9 @@ class Model:
 import unittest
 
 class TestModels(unittest.TestCase):
+    """
+    Unit tests for the L{Model} class.
+    """
 
     def testLogicSelectors(self):
         "Tests for properties of formulae from 'logic' module."
