@@ -185,32 +185,32 @@ tree object to one of several standard tree encodings:
 Trees can be parsed from treebank strings with the static
 C{Tree.parse} method:
 
-    >>> tree2 = Tree.parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
+    >>> tree2 = Tree.bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
     (S: (NP: I) (VP: (V: enjoyed) (NP: my cookie)))
 
 Trees can be compared for equality:
 
-    >>> tree == Tree.parse(tree.pp_treebank())
+    >>> tree == Tree.bracket_parse(tree.pp_treebank())
     True
-    >>> tree2 == Tree.parse(tree2.pp_treebank())
+    >>> tree2 == Tree.bracket_parse(tree2.pp_treebank())
     True
     >>> tree == tree2
     False
-    >>> tree == Tree.parse(tree2.pp_treebank())
+    >>> tree == Tree.bracket_parse(tree2.pp_treebank())
     False
-    >>> tree2 == Tree.parse(tree.pp_treebank())
+    >>> tree2 == Tree.bracket_parse(tree.pp_treebank())
     False
 
-    >>> tree != Tree.parse(tree.pp_treebank())
+    >>> tree != Tree.bracket_parse(tree.pp_treebank())
     False
-    >>> tree2 != Tree.parse(tree2.pp_treebank())
+    >>> tree2 != Tree.bracket_parse(tree2.pp_treebank())
     False
     >>> tree != tree2
     True
-    >>> tree != Tree.parse(tree2.pp_treebank())
+    >>> tree != Tree.bracket_parse(tree2.pp_treebank())
     True
-    >>> tree2 != Tree.parse(tree.pp_treebank())
+    >>> tree2 != Tree.bracket_parse(tree.pp_treebank())
     True
     
     >>> tree < tree2 or tree > tree2
