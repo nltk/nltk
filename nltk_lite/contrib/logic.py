@@ -629,6 +629,10 @@ class Parser:
         elif tok in Parser.OPS:
             # Expression is a boolean operator or the equality symbol
             return Operator(tok)
+
+        elif is_indvar(tok):
+            # Expression is a boolean operator or the equality symbol
+            return IndVariableExpression(Variable(tok))
         
         else:
             if self.isVariable(tok):
