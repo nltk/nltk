@@ -5,11 +5,14 @@
 # For license information, see LICENSE.TXT
 
 """
-TODO
+Functionality for parsing and manipulating the contents of a Shoebox
+text without reference to its metadata.
 """
 
 import re
-from utilities import FieldParser, SequentialDictionary
+from utilities import Field, SequentialDictionary
+from nltk_lite.corpora import shoebox
+from shoebox import ShoeboxFile
 
 
 # --------------------------------------------------------
@@ -18,6 +21,11 @@ from utilities import FieldParser, SequentialDictionary
 # --------------------------------------------------------
 
 class Word:
+  """
+  This class defines a word object, which consists of fixed number
+  of attributes: a wordform, a gloss, a part of speech, and a list
+  of morphemes.
+  """
 
   def __init__(self):
     self._form = None
@@ -29,46 +37,46 @@ class Word:
     self._rawPartOfSpeech = None
     return
 
-  def getForm(self):
+  def get_form(self):
     return self._form
 
-  def setForm(self, form):
+  def set_form(self, form):
     self._form = form
 
-  def getGloss(self):
+  def get_gloss(self):
     return self._gloss
 
-  def setGloss(self, gloss):
+  def set_gloss(self, gloss):
     self._gloss = gloss
 
-  def getMorphemes(self):
+  def get_morphemes(self):
     return self._morphemes
 
-  def setMorphemes(self, morphemes):
+  def set_morphemes(self, morphemes):
     self._morphemes = morphemes
 
-  def getPartOfSpeech(self):
+  def get_part_of_speech(self):
     return self._partOfSpeech
 
-  def setPartOfSpeech(self, partOfSpeech):
+  def set_part_of_speech(self, partOfSpeech):
     self._partOfSpeech = partOfSpeech
 
-  def getRawGloss(self):
+  def get_raw_gloss(self):
     return self._rawGloss
 
-  def setRawGloss(self, rawGloss):
+  def set_raw_gloss(self, rawGloss):
     self._rawGloss = rawGloss
 
-  def getRawMorphemes(self):
+  def get_raw_morphemes(self):
     return self._rawMorphemes
 
-  def setRawMorphemes(self, rawMorphemes):
+  def set_raw_morphemes(self, rawMorphemes):
     self._rawMorphemes = rawMorphemes
 
-  def getRawPartOfSpeech(self):
+  def get_raw_part_of_speech(self):
     return self._rawPartOfSpeech
 
-  def setRawPartOfSpeech(self, rawPartOfSpeech):
+  def set_raw_part_of_speech(self, rawPartOfSpeech):
     self._rawPartOfSpeech = rawPartOfSpeech
 
 
@@ -79,28 +87,34 @@ class Word:
 # --------------------------------------------------------
 
 class Morpheme:
-
+  """
+  This class defines a morpheme object, which consists of fixed number
+  of attributes: a surface form, an underlying form, a gloss, and a
+  part of speech.
+  """
+  
   def __init__(self):
     self._form = None
     self._gloss = None
+    self._partOfSpeech = None
     return
 
-  def getForm(self):
+  def get_form(self):
     return self._form
 
-  def setForm(self, form):
+  def set_form(self, form):
     self._form = form
 
-  def getGloss(self):
+  def get_gloss(self):
     return self._gloss
 
-  def setGloss(self, gloss):
+  def set_gloss(self, gloss):
     self._gloss = gloss
 
-  def getPartOfSpeech(self):
+  def get_part_of_speech(self):
     return self._partOfSpeech
 
-  def setPartOfSpeech(self, partOfSpeech):
+  def set_part_of_speech(self, partOfSpeech):
     self._partOfSpeech = partOfSpeech
 
 
@@ -111,19 +125,24 @@ class Morpheme:
 # --------------------------------------------------------
 
 class Line:
-
-  def __init__(self, rawtext):
+  """
+  This class defines a line of interlinear glossing, which consists
+  of a line of raw text and a sequential dictionary with all of its
+  associated fields (some interlinearized, some not).
+  """
+  
+  def __init__(self, rawtext=None):
     self._fields = SequentialDictionary()
     self._label = None
     self._rawtext = rawtext
     return
 
-  def addField(self, field):
-    fm = field.getMarker()
-    fv = field.getValue()
+  def add_field(self, field):
+    fm = field.get_marker()
+    fv = field.get_values()
     self._fields[fm] = fv
 
-  def getFieldMarkers(self):
+  def get_field_markers(self):
     return self._fields.keys()
 
   def get_field_values_by_field_marker(self, fieldMarker, sep=None):
@@ -167,19 +186,19 @@ class Line:
     morphemeGlossSlices = getSlicesByIndices(morphemeGlossField, indices)
     for i in range(0, len(morphemeFormSlices)):
       m = Morpheme()
-      m.setForm(morphemeFormSlices[i].strip(" ").strip("-"))
-      m.setGloss(morphemeGlossSlices[i].strip(" ").strip("-"))
+      m.set_form(morphemeFormSlices[i].strip(" ").strip("-"))
+      m.set_gloss(morphemeGlossSlices[i].strip(" ").strip("-"))
       morphemes.append(m)
     return morphemes
     
-  def getWords(self, flagParseMorphemes=True):
+  def get_words(self, flagParseMorphemes=True):
     words = []
 
     # Obtain raw field values
-    lineWordFormField      = self.getFieldValueByFieldMarker("t")
-    lineMorphemeFormField  = self.getFieldValueByFieldMarker("m")
-    lineMorphemeGlossField = self.getFieldValueByFieldMarker("g")
-    linePOSField           = self.getFieldValueByFieldMarker("p")
+    lineWordFormField      = self.get_field_values_by_field_marker("t")
+    lineMorphemeFormField  = self.get_field_values_by_field_marker("m")
+    lineMorphemeGlossField = self.get_field_values_by_field_marker("g")
+    linePOSField           = self.get_field_values_by_field_marker("p")
 
     wordIndices = getIndices(lineWordFormField)
     
@@ -198,10 +217,10 @@ class Line:
 
       # Initialize word object and set raw fields
       w = Word()
-      w.setForm(wordForm.strip(" ").strip("-"))
-      w.setRawMorphemes(wordMorphemeForms.strip(" ").strip("-"))
-      w.setRawGloss(wordMorphemeGlosses.strip(" ").strip("-"))
-      w.setPartOfSpeech(wordPOS.strip(" ").strip("-"))
+      w.set_form(wordForm.strip(" ").strip("-"))
+      w.set_raw_morphemes(wordMorphemeForms.strip(" ").strip("-"))
+      w.set_raw_gloss(wordMorphemeGlosses.strip(" ").strip("-"))
+      w.set_part_of_speech(wordPOS.strip(" ").strip("-"))
 
       # Should the word be inflated with morpheme objects?
       # If so, build morpheme object for each morpheme in word
@@ -222,15 +241,15 @@ class Line:
 
           # Construct morpheme object from slices
           m = Morpheme()
-          m.setForm(morphemeForm)
-          m.setGloss(morphemeGloss)
-          m.setPartOfSpeech(morphemePOS)
+          m.set_form(morphemeForm)
+          m.set_gloss(morphemeGloss)
+          m.set_part_of_speech(morphemePOS)
 
           # Add cooked morpheme to temporary collection for word
           morphemes.append(m)
 
         # Inflate word with cooked morphemes
-        w.setMorphemes(morphemes)
+        w.set_morphemes(morphemes)
 
       words.append(w)
     return words
@@ -245,51 +264,6 @@ class Line:
     return slices[columnIndex-1]
 
 
-    
-# --------------------------------------------------------
-# CLASS: LineParser
-# DESC:  Parses a raw line of text into a line object.
-# --------------------------------------------------------
-
-class LineParser:
-
-  def __init__(self, rawtext):
-    self._rawtext = rawtext
-    self._fields = {}
-    return
-
-  def getRawText(self):
-    return self._rawtext
-
-  def setRawText(self, rawtext):
-    self._rawtext = rawtext
-
-  def parse(self):
-    # Get raw fields from raw text
-    rawText = self.getRawText()
-    lines = rawText.split("\n")
-    rawField = None
-    rawFields = []
-    for i in range(0, len(lines)):
-      line = lines[i]
-      if line.startswith("\\"):
-        if rawField:
-          rawFields.append(rawField)
-        rawField = line
-      elif rawField:
-          rawField = rawField + "\n" + line
-    if rawField:
-      rawFields.append(rawField)
-
-    # Parse raw fields into field objects
-    l = Line(rawText)
-    for rawField in rawFields:
-      fp = FieldParser(rawField)
-      f = fp.parse()
-      l.addField(f)
-    return l
-
-
 # --------------------------------------------------------
 # CLASS: Paragraph
 # DESC:  Object that represents a paragraph (i.e., a unit
@@ -297,20 +271,25 @@ class LineParser:
 # --------------------------------------------------------
 
 class Paragraph:
+  """
+  This class defines a unit of analysis above the line and below
+  the text. Every text will have at least one paragraph and some
+  will have more.
+  """
 
-  def __init__(self, rawtext):
+  def __init__(self, rawtext=None):
     self._rawtext = rawtext
     self._lines = []
     self._label = None
     return
 
-  def addLine(self, line):
+  def add_line(self, line):
     self._lines.append(line)
 
   def getLabel(self):
     return self._label
 
-  def getLines(self):
+  def get_lines(self):
     return self._lines
 
   def getRawText(self):
@@ -324,264 +303,163 @@ class Paragraph:
 
 
 # --------------------------------------------------------
-# CLASS: ParagraphParser
-# DESC:  Parses a raw text paragraph into a paragraph
-#         object.
-# --------------------------------------------------------
-
-class ParagraphParser:
-
-  def __init__(self, rawtext,
-               lineHeadFieldMarker="ref",
-               paragraphHeadFieldMarker="id"):
-    self._rawtext = rawtext
-    self._lineHeadFieldMarker = lineHeadFieldMarker
-    self._paragraphHeadFieldMarker = paragraphHeadFieldMarker
-    return
-
-  def getLineHeadFieldMarker(self):
-    return self._lineHeadFieldMarker
-
-  def setLineHeadFieldMarker(self, lineHeadFieldMarker):
-    self._lineHeadFieldMarker = lineHeadFieldMarker
-
-  def getParagraphHeadFieldMarker(self):
-    return self._paragraphHeadFieldMarker
-
-  def setParagraphHeadFieldMarker(self, paragraphHeadFieldMarker):
-    self._paragraphHeadFieldMarker = paragraphHeadFieldMarker
-
-  def getRawText(self):
-    return self._rawtext
-
-  def setRawText(self, rawtext):
-    self._rawtext = rawtext
-
-  def extractRawLines(self, fileContents):
-    lines = fileContents.split("\n")
-    rawLines = []
-    rawLine = None
-    for i in range(0, len(lines)):
-      line = lines[i]
-      if line.startswith("\\" + self.getLineHeadFieldMarker()):
-        if rawLine:
-          rawLines.append(rawLine)
-        rawLine = line
-      elif rawLine:
-          rawLine = "%s\n%s" % (rawLine, line)
-    if rawLine:
-      rawLines.append(rawLine)
-    return rawLines
-
-  def extractCookedLines(self, rawLines):
-    cookedLines = []
-    for rl in rawLines:
-      lp = LineParser(rl)
-      l = lp.parse()
-      cookedLines.append(l)
-    return cookedLines
-  
-  def parse(self):
-    # Extract and parse raw text
-    rawText = self.getRawText()
-    regex = r"\\" + self.getParagraphHeadFieldMarker() + " (.*)"
-    mo = re.search(regex, rawText)
-    label = mo.group(1)
-    rawLines = self.extractRawLines(rawText)
-    cookedLines = self.extractCookedLines(rawLines)
-
-    # Create paragraph object from cooked lines
-    p = Paragraph(rawText)
-    p.setLabel(label)
-    for cl in cookedLines:
-      p.addLine(cl)
-    return p
-
-
-# --------------------------------------------------------
 # CLASS: InterlinearText
 # DESC:  Object that represents an interlinear text and
 #         provides functionality for its querying and
 #         manipulation.
 # --------------------------------------------------------
 
-class Text:
-
-  def __init__(self, rawtext):
-    self._rawtext = rawtext
-    self._paragraphs = []
-    return
-
-  def getLines(self):
-    lines = []
-    for p in self.getParagraphs():
-      for l in p.getLines():
-        lines.append(l)
-    return lines
-      
-  def getParagraphs(self):
-    return self._paragraphs
-
-  def setParagraphs(self, paragraphs):
-    self._paragraphs = paragraphs
-
-  def addParagraph(self, paragraph):
-    self._paragraphs.append(paragraph)
-    
-  def getRawText(self):
-    return self._rawtext
-
-  def setRawText(self, rawtext):
-    self._rawtext = rawtext
-
-
-# --------------------------------------------------------
-# CLASS: TextParser
-# DESC:  Parser that takes an interlinear text file and
-#         returns an Text object.
-# --------------------------------------------------------
-
-class TextParser:
-
-  def __init__(self, filePath):
-    self._filePath                 = filePath
-    self._lineHeadFieldMarker      = "ref"
-    self._paragraphHeadFieldMarker = "id"
-    self._morphemeFieldMarker      = "m"
-    self._morphemeGlossFieldMarker = "g"
-    self._wordFieldMarker          = "w"
-    return
-
-  def getLineHeadFieldMarker(self):
-    return self._lineHeadFieldMarker
-
-  def setLineHeadFieldMarker(self, lineHeadFieldMarker):
-    self._lineHeadFieldMarker = lineHeadFieldMarker
-
-  def getParagraphHeadFieldMarker(self):
-    return self._paragraphHeadFieldMarker
-
-  def setParagraphHeadFieldMarker(self, paragraphHeadFieldMarker):
-    self._paragraphHeadFieldMarker = paragraphHeadFieldMarker
-
-  def getWordFieldMarker(self):
-    return self._wordFieldMarker
-
-  def setWordFieldMarker(self, wordFieldMarker):
-    self._wordFieldMarker = wordFieldMarker
-
-  def getMorphemeFieldMarker(self):
-    return self._morphemeFieldMarker
-
-  def setMorphemeFieldMarker(self, morphemeFieldMarker):
-    self._morphemeFieldMarker = morphemeFieldMarker
-
-  def getMorphemeGlossFieldMarker(self):
-    return self._morphemeGlossFieldMarker
-
-  def setMorphemeGlossFieldMarker(self, morphemeGlossFieldMarker):
-    self._morphemeGlossFieldMarker = morphemeGlossFieldMarker    
-
-  def getFilePath(self):
-    return self._filePath
-
-  def setFilePath(self, filePath):
-    self._filePath = filePath
-
-  def extractRawParagraphs(self, fileContents):
-    rawLines = fileContents.split("\n")
-    rawParagraphs = []
-    rawParagraph = None
-    for i in range(0, len(rawLines)):
-      line = rawLines[i]
-      paragraphFieldMarker = "\\" + self.getParagraphHeadFieldMarker()
-      if line.startswith(paragraphFieldMarker):
-        if rawParagraph:
-          rawParagraphs.append(rawParagraph)
-        rawParagraph = line
-      elif rawParagraph:
-          rawParagraph = "%s\n%s" % (rawParagraph, line)
-    if rawParagraph:
-      rawParagraphs.append(rawParagraph)      
-    return rawParagraphs
-
-  def extractCookedParagraphs(self, rawParagraphs):
-    cookedParagraphs = []
-    for rp in rawParagraphs:
-      pp = ParagraphParser(rp)
-      pp.setLineHeadFieldMarker(self.getLineHeadFieldMarker())
-      pp.setParagraphHeadFieldMarker(self.getParagraphHeadFieldMarker())
-      p = pp.parse()
-      cookedParagraphs.append(p)
-    return cookedParagraphs
+class Text(ShoeboxFile) :
+    """
+    This class defines an interlinearized text.
+    """
   
-  def parse(self):
-    fo = open(self.getFilePath(), 'rU')
-    fileContents = fo.read()
-    fo.close()
-    ilt = Text(fileContents)
-    rawParagraphs = self.extractRawParagraphs(fileContents)
-    cookedParagraphs = self.extractCookedParagraphs(rawParagraphs)
-    for cp in cookedParagraphs:
-      ilt.addParagraph(cp)
-    return ilt
+    def __init__(self, file):
+      self._file                     = file
+      self._lineHeadFieldMarker      = "ref"
+      self._paragraphHeadFieldMarker = "id"
+      self._morphemeFieldMarker      = "m"
+      self._morphemeGlossFieldMarker = "g"
+      self._wordFieldMarker          = "w"
+      #self._rawtext = rawtext
+      self._paragraphs = []
+      return
 
+    def get_lines(self):
+      lines = []
+      for p in self.get_paragraphs():
+        for l in p.get_lines():
+          lines.append(l)
+      return lines
+        
+    def get_paragraphs(self):
+      return self._paragraphs
 
+    def set_paragraphs(self, paragraphs):
+      self._paragraphs = paragraphs
 
-# --------------------------------------------------------
-# UTILITY FUNCTIONS
-# --------------------------------------------------------
+    def add_paragraph(self, paragraph):
+      self._paragraphs.append(paragraph)
+      
+    def getRawText(self):
+      return self._rawtext
+
+    def setRawText(self, rawtext):
+      self._rawtext = rawtext
+
+    def getLineHeadFieldMarker(self):
+      return self._lineHeadFieldMarker
+
+    def setLineHeadFieldMarker(self, lineHeadFieldMarker):
+      self._lineHeadFieldMarker = lineHeadFieldMarker
+
+    def getParagraphHeadFieldMarker(self):
+      return self._paragraphHeadFieldMarker
+
+    def setParagraphHeadFieldMarker(self, paragraphHeadFieldMarker):
+      self._paragraphHeadFieldMarker = paragraphHeadFieldMarker
+
+    def getWordFieldMarker(self):
+      return self._wordFieldMarker
+
+    def setWordFieldMarker(self, wordFieldMarker):
+      self._wordFieldMarker = wordFieldMarker
+
+    def getMorphemeFieldMarker(self):
+      return self._morphemeFieldMarker
+
+    def setMorphemeFieldMarker(self, morphemeFieldMarker):
+      self._morphemeFieldMarker = morphemeFieldMarker
+
+    def getMorphemeGlossFieldMarker(self):
+      return self._morphemeGlossFieldMarker
+
+    def setMorphemeGlossFieldMarker(self, morphemeGlossFieldMarker):
+      self._morphemeGlossFieldMarker = morphemeGlossFieldMarker    
+
+    def getFilePath(self):
+      return self._filePath
+
+    def setFilePath(self, filePath):
+      self._filePath = filePath
+
+    def parse(self) :
+      # Use low-level functionality to get raw fields and walk through them
+      self.open(self._file)
+      p, l = None, None
+      for f in self.raw_fields() :
+          fmarker, fvalue = f
+          if fmarker == self.getParagraphHeadFieldMarker() :
+              if p :
+                  self.add_paragraph(p)
+              p = Paragraph()
+          elif fmarker == self.getLineHeadFieldMarker() :
+              if l :
+                  p.add_line(l)
+              l = Line()
+          else :
+              if l :
+                  l.add_field(Field(fmarker, fvalue))
+      p.add_line(l)
+      self.add_paragraph(p)
 
 
 # -------------------------------------------------------------
-# FUNCTION: getIndices 
-# DESC:     Given a line of text that is morpheme aligned, the
-#            indices for each left word boundary is returned.
+# FUNCTION: getIndices
+# DESC:     Given the field \um, this function will find the
+#           indices identifing leftmost word boundaries, as
+#           follows:
 #
-#         0    5  8   12              <- indices
-#         |    |  |   |               
-#         |||||||||||||||||||||||||||
-#     \sf dit  is een goede           <- surface form
-#     \um dit  is een goed      -e    <- underlying morphemes
-#     \mg this is a   good      -ADJ  <- morpheme gloss
-#     \gc DEM  V  ART ADJECTIVE -SUFF <- grammatical categories
-#     \ft This is a good explanation. <- free translation
+#               0    5  8   12              <- indices
+#               |    |  |   |               
+#               |||||||||||||||||||||||||||
+#           \sf dit  is een goede           <- surface form
+#           \um dit  is een goed      -e    <- underlying morphemes
+#           \mg this is a   good      -ADJ  <- morpheme gloss
+#           \gc DEM  V  ART ADJECTIVE -SUFF <- grammatical categories
+#           \ft This is a good explanation. <- free translation
+#
+#           The function walks through the line char by char:
 # 
-#            c  flag.before  flag.after  index?
-#            -- -----------  ----------  ------
-#            0  1            0           yes
-#            1  0            1           no
-#            2  1            0           no
-#            3  0            1           no
-#            4  1            0           no   
-#            5  1            0           yes
-#            ...         
+#           c   flag.before  flag.after  index?
+#           --  -----------  ----------  ------
+#           0   1            0           yes
+#           1   0            1           no
+#           2   1            0           no
+#           3   0            1           no
+#           4   1            0           no   
+#           5   1            0           yes
+#           ... ...          ...         ...
+#           ...         
 # ------------------------------------------------------------
 def getIndices(str):
-  indices = []
-  flag = 1
-  for i in range(0, len(str)):
-    c = str[i]
-    if flag and c != ' ':
-      indices.append(i)
-      flag = 0
-    elif not flag and c == ' ':
-      flag = 1
-  return indices
+    """This method finds the indices for each leftmost word
+    boundary in a line of morpheme-aligned text.
+           
+    @param str: morpheme-aligned text
+    @type str: string
+    """
+    indices = []
+    flag = 1
+    for i in range(0, len(str)):
+      c = str[i]
+      if flag and c != ' ':
+        indices.append(i)
+        flag = 0
+      elif not flag and c == ' ':
+        flag = 1
+    return indices
 
 
-# --------------------------------------------------------
+# -------------------------------------------------------------
 # FUNCTION: getSlicesByIndices
-# DESC:     Given a string a list of indices, this
-#            function returns a list the substrings
-#            defined by those indices.
-#            For example, given the arguments 
-#             'antidisestablishmentarianism',
-#             [4, 7, 16, 20, 25]
-#            this function returns
-#             ['anti', 'dis', 'establish', 'ment',
-#              arian', 'ism']
-# --------------------------------------------------------
+# DESC:     Given a string a list of indices, this function returns
+#           a list the substrings defined by those indices.
+#           For example, given the arguments 
+#             'antidisestablishmentarianism', [4, 7, 16, 20, 25]
+#           this function returns
+#             ['anti', 'dis', 'establish', 'ment', arian', 'ism']
+# -------------------------------------------------------------
 def getSlicesByIndices(str, indices):
   slices = []
   for i in range(0, len(indices)):
