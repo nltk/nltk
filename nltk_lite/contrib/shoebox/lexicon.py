@@ -164,8 +164,6 @@ class Lexicon(ShoeboxFile):
 
       @param entry: a parsed entry from a Shoebox lexicon
       @type entry: Entry object
-      @param key_fields: list of fields to use to build the key for an entry
-      @type key_fields: list of strings
       @param unique: raise exception if entry key already exists
       @type unique: boolean
       """
@@ -189,7 +187,12 @@ class Lexicon(ShoeboxFile):
       self._entries[key].append(entry)
 
 
-  def parse(self, head_field_marker='lx', subentry_field_marker=None, entry_key_fields=None, unique_entry=True):
+  def parse(self,
+            head_field_marker     = 'lx',
+            subentry_field_marker = None,
+            key_fields            = None,
+            unique_entry          = False,
+            unique_subentry       = False):
       """
       This method parses a Shoebox file in a Lexicon object. It will also parse
       subentries provided that the field marker identifying subentries is passed to it.
@@ -383,7 +386,7 @@ class Entry:
     @param field_marker: marker of desired field
     @type  field_marker: string
     @param join_string: string used to join field values
-    @type  field_marker: string
+    @type  join_string: string
     @rtype: string
     """
     try:
