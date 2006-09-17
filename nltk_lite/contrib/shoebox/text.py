@@ -5,8 +5,8 @@
 # For license information, see LICENSE.TXT
 
 """
-Functionality for parsing and manipulating the contents of a Shoebox
-text without reference to its metadata.
+This module provides tools for parsing and manipulating the contents
+of a Shoebox text without reference to its metadata.
 """
 
 import re
@@ -38,24 +38,29 @@ class Word:
         return
 
     def get_form(self):
+        """Gives the surface form of a word."""
         return self._form
 
     def set_form(self, form):
+        """Changes the surface form of a word."""
         self._form = form
 
     def get_gloss(self):
+        """Gives the gloss for a word as a string (without alignment spacing)."""
         return self._gloss
 
     def set_gloss(self, gloss):
         self._gloss = gloss
 
     def get_morphemes(self):
+        """Gives a list of morpheme objects for a word."""
         return self._morphemes
 
     def set_morphemes(self, morphemes):
         self._morphemes = morphemes
 
     def get_part_of_speech(self):
+        """Gives the part of speech for a word as a string (without alignment spacing)."""
         return self._partOfSpeech
 
     def set_part_of_speech(self, partOfSpeech):
@@ -127,7 +132,8 @@ class Line:
     """
     This class defines a line of interlinear glossing, which consists
     of a line of raw text and a sequential dictionary with all of its
-    associated fields (some interlinearized, some not).
+    associated fields (some interlinearized, some not). Identified by
+    the field marker \ref by default.
     """
     
     def __init__(self, label=None):
@@ -185,12 +191,12 @@ class Line:
     def get_morphemes(self):
         """Obtain a list of morpheme objects for the line."""
         morphemes = []
-        indices = getIndices(self.getFieldValueByFieldMarker("m"))
+        indices = get_indices(self.getFieldValueByFieldMarker("m"))
         print "%s" % indices
         morphemeFormField = self.getFieldValueByFieldMarker("m")
         morphemeGlossField = self.getFieldValueByFieldMarker("g")
-        morphemeFormSlices = getSlicesByIndices(morphemeFormField, indices)
-        morphemeGlossSlices = getSlicesByIndices(morphemeGlossField, indices)
+        morphemeFormSlices = getslices_by_indices(morphemeFormField, indices)
+        morphemeGlossSlices = getslices_by_indices(morphemeGlossField, indices)
         for i in range(0, len(morphemeFormSlices)):
             m = Morpheme()
             m.set_form(morphemeFormSlices[i].strip(" ").strip("-"))
@@ -211,10 +217,10 @@ class Line:
         wordIndices = getIndices(lineWordFormField)
       
         # Slice raw field values by indices
-        lineWordFormSlices      = getSlicesByIndices(lineWordFormField,      wordIndices)
-        lineMorphemeFormSlices  = getSlicesByIndices(lineMorphemeFormField,  wordIndices)
-        lineMorphemeGlossSlices = getSlicesByIndices(lineMorphemeGlossField, wordIndices)
-        linePOSSlices           = getSlicesByIndices(linePOSField,           wordIndices)
+        lineWordFormSlices      = getslices_by_indices(lineWordFormField,      wordIndices)
+        lineMorphemeFormSlices  = getslices_by_indices(lineMorphemeFormField,  wordIndices)
+        lineMorphemeGlossSlices = getslices_by_indices(lineMorphemeGlossField, wordIndices)
+        linePOSSlices           = getslices_by_indices(linePOSField,           wordIndices)
           
         # Go through each slice
         for i in range(0, len(lineWordFormSlices)):
@@ -237,9 +243,9 @@ class Line:
 
                 # Get indices from morpheme-breakdown line in order to make slices
                 morphemeIndices     = getIndices(wordMorphemeForms)
-                morphemeFormSlices  = getSlicesByIndices(wordMorphemeForms,   morphemeIndices)
-                morphemeGlossSlices = getSlicesByIndices(wordMorphemeGlosses, morphemeIndices)
-                morphemePOSSlices   = getSlicesByIndices(wordPOS,             morphemeIndices)
+                morphemeFormSlices  = getslices_by_indices(wordMorphemeForms,   morphemeIndices)
+                morphemeGlossSlices = getslices_by_indices(wordMorphemeGlosses, morphemeIndices)
+                morphemePOSSlices   = getslices_by_indices(wordPOS,             morphemeIndices)
 
                 # Go through each morpheme
                 for i in range(0, len(morphemeFormSlices)):
@@ -268,7 +274,7 @@ class Line:
         field_markers = self.getFieldMarkers()
         sliceFieldMarker = field_markers[columnIndex-1]    
         indices = getIndices(self.getFieldValueByFieldMarker(field_marker))
-        slices = getSlicesByIndices(fv, indices)
+        slices = getslices_by_indices(fv, indices)
         return slices[columnIndex-1]
 
 
@@ -282,7 +288,7 @@ class Paragraph:
     """
     This class defines a unit of analysis above the line and below
     the text. Every text will have at least one paragraph and some
-    will have more.
+    will have more. Identified by the field marker \id by default.
     """
 
     def __init__(self, label=None):
@@ -316,7 +322,7 @@ class Paragraph:
 
 class Text(ShoeboxFile) :
     """
-    This class defines an interlinearized text.
+    This class defines an interlinearized text, which consists of a collection of Paragraph objects.
     """
   
     def __init__(self,
@@ -368,6 +374,10 @@ class Text(ShoeboxFile) :
 #       self._paragraphs = paragraphs
 
     def add_paragraph(self, paragraph):
+        """Add paragraph object to list of paragraph objects.
+        @param paragraph: paragraph to be added to text
+        @type paragraph: Paragraph
+        """
         self._paragraphs.append(paragraph)
       
 #     def getRawText(self):
@@ -376,41 +386,53 @@ class Text(ShoeboxFile) :
 #     def setRawText(self, rawtext):
 #       self._rawtext = rawtext
 
-    def getLineHeadFieldMarker(self):
+    def getLineFM(self):
+        """Get field marker that identifies a new line."""
         return self._fm_line
 
-    def setLineHeadFieldMarker(self, lineHeadFieldMarker):
+    def setLineFM(self, lineHeadFieldMarker):
+        """Change default field marker that identifies new line."""
         self._fm_line = lineHeadFieldMarker
 
-    def getParagraphHeadFieldMarker(self):
+    def getParagraphFM(self):
+        """Get field marker that identifies a new paragraph."""
         return self._fm_paragraph
   
-    def setParagraphHeadFieldMarker(self, paragraphHeadFieldMarker):
+    def setParagraphFM(self, paragraphHeadFieldMarker):
+        """Change default field marker that identifies new paragraph."""
         self._fm_paragraph = paragraphHeadFieldMarker
 
-    def getWordFieldMarker(self):
+    def getWordFM(self):
+        """Get field marker that identifies word tier."""
         return self._wordFieldMarker
 
-    def setWordFieldMarker(self, wordFieldMarker):
+    def setWordFM(self, wordFieldMarker):
+        """Change default field marker that identifies word tier."""
         self._wordFieldMarker = wordFieldMarker
 
-    def getMorphemeFieldMarker(self):
+    def getMorphemeFM(self):
+        """Get field marker that identifies morpheme tier."""
         return self._morphemeFieldMarker
 
-    def setMorphemeFieldMarker(self, morphemeFieldMarker):
+    def setMorphemeFM(self, morphemeFieldMarker):
+        """Change default field marker that identifies morpheme tier."""
         self._morphemeFieldMarker = morphemeFieldMarker
 
-    def getMorphemeGlossFieldMarker(self):
+    def getMorphemeGlossFM(self):
+        """Get field marker that identifies morpheme gloss tier."""
         return self._morphemeGlossFieldMarker
 
-    def setMorphemeGlossFieldMarker(self, morphemeGlossFieldMarker):
+    def setMorphemeGlossFM(self, morphemeGlossFieldMarker):
+        """Change default field marker that identifies morpheme gloss tier."""
         self._morphemeGlossFieldMarker = morphemeGlossFieldMarker    
 
-    def getFilePath(self):
-        return self._filePath
+    def get_file(self):
+        """Get file path as string."""
+        return self._file
 
-    def setFilePath(self, filePath):
-        self._filePath = filePath
+    def set_file(self, file):
+        """Change file path set upon initialization."""
+        self._file = file
 
     def parse(self) :
         """Parse specified Shoebox file into Text object."""
@@ -419,11 +441,11 @@ class Text(ShoeboxFile) :
         p, l = None, None
         for f in self.raw_fields() :
             fmarker, fvalue = f
-            if fmarker == self.getParagraphHeadFieldMarker() :
+            if fmarker == self.getParagraphFM() :
                 if p :
                     self.add_paragraph(p)
                 p = Paragraph(fvalue)
-            elif fmarker == self.getLineHeadFieldMarker() :
+            elif fmarker == self.getLineFM() :
                 if l :
                     p.add_line(l)
                 l = Line(fvalue)
@@ -435,38 +457,37 @@ class Text(ShoeboxFile) :
 
 
 # -------------------------------------------------------------
-# FUNCTION: getIndices
-# NOTES:    Given the field \um, this function will find the
-#           indices identifing leftmost word boundaries, as
-#           follows:
-#
-#               0    5  8   12              <- indices
-#               |    |  |   |               
-#               |||||||||||||||||||||||||||
-#           \sf dit  is een goede           <- surface form
-#           \um dit  is een goed      -e    <- underlying morphemes
-#           \mg this is a   good      -ADJ  <- morpheme gloss
-#           \gc DEM  V  ART ADJECTIVE -SUFF <- grammatical categories
-#           \ft This is a good explanation. <- free translation
-#
-#           The function walks through the line char by char:
-# 
-#           c   flag.before  flag.after  index?
-#           --  -----------  ----------  ------
-#           0   1            0           yes
-#           1   0            1           no
-#           2   1            0           no
-#           3   0            1           no
-#           4   1            0           no   
-#           5   1            0           yes
-#           ... ...          ...         ...
-#           ...         
+# FUNCTION: get_indices
 # ------------------------------------------------------------
-def getIndices(str):
-    """This method finds the indices for each leftmost word
-    boundary in a line of morpheme-aligned text.
-           
-    @param str: morpheme-aligned text
+def get_indices(str):
+    """This method finds the indices for the leftmost boundaries
+    of the units in a line of aligned text.
+
+    Given the field \um, this function will find the
+    indices identifing leftmost word boundaries, as
+    follows::
+
+            0    5  8   12              <- indices
+            |    |  |   |               
+            |||||||||||||||||||||||||||
+        \sf dit  is een goede           <- surface form
+        \um dit  is een goed      -e    <- underlying morphemes
+        \mg this is a   good      -ADJ  <- morpheme gloss
+        \gc DEM  V  ART ADJECTIVE -SUFF <- grammatical categories
+        \ft This is a good explanation. <- free translation
+
+    The function walks through the line char by char::
+  
+        c   flag.before  flag.after  index?
+        --  -----------  ----------  ------
+        0   1            0           yes
+        1   0            1           no
+        2   1            0           no
+        3   0            1           no
+        4   1            0           no   
+        5   1            0           yes
+
+    @param str: aligned text
     @type str: string
     """
     indices = []
@@ -482,15 +503,21 @@ def getIndices(str):
 
 
 # -------------------------------------------------------------
-# FUNCTION: getSlicesByIndices
-# NOTES:    Given the arguments 
-#             'antidisestablishmentarianism', [4, 7, 16, 20, 25]
-#           this function returns
-#             ['anti', 'dis', 'establish', 'ment', arian', 'ism']
+# FUNCTION: get_slices_by_indices
 # -------------------------------------------------------------
-def getSlicesByIndices(str, indices):
-    """Given a string a list of indices, this function returns
-    a list the substrings defined by those indices."""
+def get_slices_by_indices(str, indices):
+    """Given a string and a list of indices, this function returns
+    a list of the substrings defined by those indices. For example,
+    given the arguments::
+        str='antidisestablishmentarianism', indices=[4, 7, 16, 20, 25]
+    this function returns the list::
+        ['anti', 'dis', 'establish', 'ment', arian', 'ism']
+
+    @param str: text
+    @type str: string
+    @param indices: indices 
+    @type indices: list of integers
+    """
     slices = []
     for i in range(0, len(indices)):
         slice = None
