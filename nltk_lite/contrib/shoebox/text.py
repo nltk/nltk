@@ -28,12 +28,12 @@ class Word:
     """
 
     def __init__(self):
-        self._form = None
-        self._gloss = None
-        self._morphemes = None
-        self._partOfSpeech = None
-        self._rawGloss = None
-        self._rawMorphemes = None
+        self._form            = None
+        self._gloss           = None
+        self._morphemes       = None
+        self._partOfSpeech    = None
+        self._rawGloss        = None
+        self._rawMorphemes    = None
         self._rawPartOfSpeech = None
         return
 
@@ -50,6 +50,7 @@ class Word:
         return self._gloss
 
     def set_gloss(self, gloss):
+        """Change the gloss for a word."""
         self._gloss = gloss
 
     def get_morphemes(self):
@@ -57,6 +58,7 @@ class Word:
         return self._morphemes
 
     def set_morphemes(self, morphemes):
+        """Change a list of morpheme objects for a word."""
         self._morphemes = morphemes
 
     def get_part_of_speech(self):
@@ -64,7 +66,8 @@ class Word:
         return self._partOfSpeech
 
     def set_part_of_speech(self, partOfSpeech):
-      self._partOfSpeech = partOfSpeech
+        """Change the part of speech for a word."""
+        self._partOfSpeech = partOfSpeech
 
     def get_raw_gloss(self):
       return self._rawGloss
@@ -97,28 +100,38 @@ class Morpheme:
     part of speech.
     """
   
-    def __init__(self):
-        self._form = None
-        self._gloss = None
-        self._partOfSpeech = None
+    def __init__(self,
+                 form         = None,
+                 gloss        = None,
+                 partOfSpeech = None):
+        """Constructor that creates morpheme object."""        
+        self._form = form
+        self._gloss = gloss
+        self._partOfSpeech = partOfSpeech
         return
 
     def get_form(self):
+        """Returns form for morpheme."""
         return self._form
 
     def set_form(self, form):
+        """Change form for morpheme."""
         self._form = form
 
     def get_gloss(self):
+        """Returns gloss for morpheme."""        
         return self._gloss
 
     def set_gloss(self, gloss):
+        """Change gloss for morpheme."""        
         self._gloss = gloss
 
     def get_part_of_speech(self):
+        """Returns part of speech for morpheme."""        
         return self._partOfSpeech
 
     def set_part_of_speech(self, partOfSpeech):
+        """Change part of speech for morpheme."""
         self._partOfSpeech = partOfSpeech
 
 
@@ -136,7 +149,8 @@ class Line:
     the field marker \ref by default.
     """
     
-    def __init__(self, label=None):
+    def __init__(self,
+                 label=None):
         self._fields = SequentialDictionary()
         self._label = label
         return
@@ -291,7 +305,8 @@ class Paragraph:
     will have more. Identified by the field marker \id by default.
     """
 
-    def __init__(self, label=None):
+    def __init__(self,
+                 label=None):
         self._lines = []
         self._label = label
         return
