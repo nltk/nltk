@@ -27,11 +27,26 @@ class Word:
     of morphemes.
     """
 
-    def __init__(self):
-        self._form            = None
-        self._gloss           = None
-        self._morphemes       = None
-        self._partOfSpeech    = None
+    def __init__(self,
+                 form         = None,
+                 gloss        = None,
+                 morphemes    = None,
+                 partOfSpeech = None):
+        """Constructor that initializes Word object.
+
+        @param form: the surface form for a word
+        @type form: string
+        @param gloss: the gloss for a word
+        @type gloss: string
+        @param morphemes: list of Morpheme objects for a word
+        @type morphemes: list
+        @param partOfSpeech: the part of speech for a word
+        @type partOfSpeech: string
+        """
+        self._form            = form
+        self._gloss           = gloss
+        self._morphemes       = morphemes
+        self._partOfSpeech    = partOfSpeech
         self._rawGloss        = None
         self._rawMorphemes    = None
         self._rawPartOfSpeech = None
@@ -54,11 +69,11 @@ class Word:
         self._gloss = gloss
 
     def get_morphemes(self):
-        """Gives a list of morpheme objects for a word."""
+        """Gives a list of Morpheme objects for a word."""
         return self._morphemes
 
     def set_morphemes(self, morphemes):
-        """Change a list of morpheme objects for a word."""
+        """Change a list of Morpheme objects for a word."""
         self._morphemes = morphemes
 
     def get_part_of_speech(self):
@@ -104,7 +119,7 @@ class Morpheme:
                  form         = None,
                  gloss        = None,
                  partOfSpeech = None):
-        """Constructor that creates morpheme object."""        
+        """Constructor that creates Morpheme object."""        
         self._form = form
         self._gloss = gloss
         self._partOfSpeech = partOfSpeech
@@ -142,15 +157,23 @@ class Morpheme:
 # --------------------------------------------------------
 
 class Line:
-    """
-    This class defines a line of interlinear glossing, which consists
-    of a line of raw text and a sequential dictionary with all of its
-    associated fields (some interlinearized, some not). Identified by
-    the field marker \ref by default.
-    """
+    """This class defines a line of interlinear glossing, such as::
+
+        \ref 9
+        \t Vigei    avapaviei                           atarisia.
+        \m vigei    ava -pa       -vi        -ei        atari -sia
+        \g 1.PL.INC go  -PROG     -1.PL.INCL -PRES      fish  -PURP
+        \p PRO.PERS V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.I   -SUFF.V.4
+        \fp Yumi bai go kisim pis.
+        \fe We're going fishing.
+
+    The tiers of a line are saved as a sequential dictionary with
+    all of its associated fields. Identified by the field marker \ref
+    by default."""
     
     def __init__(self,
                  label=None):
+        """Constructor that initializes Line object."""
         self._fields = SequentialDictionary()
         self._label = label
         return
@@ -283,7 +306,7 @@ class Line:
         return words
 
     def get_field_value_by_field_marker_and_column(self, field_marker, columnIndex):
-        """Get values, given a field and column index,  for line."""
+        """Get values for line, given a field and column index."""
         fv = self.getFieldValueByFieldMarker(field_marker)
         field_markers = self.getFieldMarkers()
         sliceFieldMarker = field_markers[columnIndex-1]    
@@ -307,6 +330,7 @@ class Paragraph:
 
     def __init__(self,
                  label=None):
+        """Constructor that initializes Paragraph object."""
         self._lines = []
         self._label = label
         return
