@@ -195,8 +195,8 @@ class Line:
         print "%s" % indices
         morphemeFormField = self.getFieldValueByFieldMarker("m")
         morphemeGlossField = self.getFieldValueByFieldMarker("g")
-        morphemeFormSlices = getslices_by_indices(morphemeFormField, indices)
-        morphemeGlossSlices = getslices_by_indices(morphemeGlossField, indices)
+        morphemeFormSlices = get_slices_by_indices(morphemeFormField, indices)
+        morphemeGlossSlices = get_slices_by_indices(morphemeGlossField, indices)
         for i in range(0, len(morphemeFormSlices)):
             m = Morpheme()
             m.set_form(morphemeFormSlices[i].strip(" ").strip("-"))
@@ -214,13 +214,13 @@ class Line:
         lineMorphemeGlossField = self.get_field_values_by_field_marker("g")
         linePOSField           = self.get_field_values_by_field_marker("p")
 
-        wordIndices = getIndices(lineWordFormField)
+        wordIndices = get_indices(lineWordFormField)
       
         # Slice raw field values by indices
-        lineWordFormSlices      = getslices_by_indices(lineWordFormField,      wordIndices)
-        lineMorphemeFormSlices  = getslices_by_indices(lineMorphemeFormField,  wordIndices)
-        lineMorphemeGlossSlices = getslices_by_indices(lineMorphemeGlossField, wordIndices)
-        linePOSSlices           = getslices_by_indices(linePOSField,           wordIndices)
+        lineWordFormSlices      = get_slices_by_indices(lineWordFormField,      wordIndices)
+        lineMorphemeFormSlices  = get_slices_by_indices(lineMorphemeFormField,  wordIndices)
+        lineMorphemeGlossSlices = get_slices_by_indices(lineMorphemeGlossField, wordIndices)
+        linePOSSlices           = get_slices_by_indices(linePOSField,           wordIndices)
           
         # Go through each slice
         for i in range(0, len(lineWordFormSlices)):
@@ -242,10 +242,10 @@ class Line:
                 morphemes = []
 
                 # Get indices from morpheme-breakdown line in order to make slices
-                morphemeIndices     = getIndices(wordMorphemeForms)
-                morphemeFormSlices  = getslices_by_indices(wordMorphemeForms,   morphemeIndices)
-                morphemeGlossSlices = getslices_by_indices(wordMorphemeGlosses, morphemeIndices)
-                morphemePOSSlices   = getslices_by_indices(wordPOS,             morphemeIndices)
+                morphemeIndices     = get_indices(wordMorphemeForms)
+                morphemeFormSlices  = get_slices_by_indices(wordMorphemeForms,   morphemeIndices)
+                morphemeGlossSlices = get_slices_by_indices(wordMorphemeGlosses, morphemeIndices)
+                morphemePOSSlices   = get_slices_by_indices(wordPOS,             morphemeIndices)
 
                 # Go through each morpheme
                 for i in range(0, len(morphemeFormSlices)):
@@ -274,7 +274,7 @@ class Line:
         field_markers = self.getFieldMarkers()
         sliceFieldMarker = field_markers[columnIndex-1]    
         indices = getIndices(self.getFieldValueByFieldMarker(field_marker))
-        slices = getslices_by_indices(fv, indices)
+        slices = get_slices_by_indices(fv, indices)
         return slices[columnIndex-1]
 
 
