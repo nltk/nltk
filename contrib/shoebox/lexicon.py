@@ -6,9 +6,19 @@
 # For license information, see LICENSE.TXT
 
 """
-Functionality for parsing and manipulating the contents of a Shoebox
-lexicon without reference to its metadata. For more sophisticated
-functionality that handles metadata, use the module I{metadata}.
+This modules provides functionality for parsing and manipulating the
+contents of a Shoebox lexicon without reference to its metadata.
+
+For example::
+
+  import nltk_lite.contrib.shoebox.lexicon as shoebox
+  t = shoebox.Text("foo.dic")
+  t.parse()
+  for e in t.get_entries() :
+      print e.get_field_as_string("lx")
+  
+For more sophisticated functionality that handles metadata, use the
+module I{metadata}.
 """
 
 import os, re, sys
@@ -17,85 +27,89 @@ from nltk_lite.corpora import shoebox
 from utilities import Field, SequentialDictionary
 from shoebox import ShoeboxFile
 
-class LexiconParser:
-  """
-  Class for parsing a Shoebox lexicon file into a Lexicon object, which
-  provides an interface to the file contents formatted in standard format.
-  """
-  def __init__(self, files, head_field_marker='lx', key_fields=['lx']):
-    """
-    This method construct a LexiconParser object, which is a factory object
-    that can be used to parse a Shoebox lexicon file in standard format
-    into a Lexicon object.
+# class LexiconParser:
+#   """
+#   Class for parsing a Shoebox lexicon file into a Lexicon object, which
+#   provides an interface to the file contents formatted in standard format.
+#   """
+#   def __init__(self,
+#                files,
+#                head_field_marker='lx',
+#                key_fields=['lx']):
+#     """
+#     This method construct a LexiconParser object, which is a factory object
+#     that can be used to parse a Shoebox lexicon file in standard format
+#     into a Lexicon object.
 
-    @param head_field_marker: field marker that identifies the start of an entry
-    @type  head_field_marker: string
-    @param key_fields:        the field(s) to which entries are keyed
-    @type  key_fields:        list of strings
-    """
-    self._files = files
-    self._head_field_marker = head_field_marker
-    self._key_fields = key_fields
+#     @param head_field_marker: field marker that identifies the start of an entry
+#     @type  head_field_marker: string
+#     @param key_fields:        the field(s) to which entries are keyed
+#     @type  key_fields:        list of strings
+#     """
+#     self._files = files
+#     self._head_field_marker = head_field_marker
+#     self._key_fields = key_fields
 
-  def get_key_fields(self):
-    """
-    This method returns the fields that will be used to build
-    the key for entries when they are added to the lexicon.
+#   def get_key_fields(self):
+#     """
+#     This method returns the fields that will be used to build
+#     the key for entries when they are added to the lexicon.
     
-    @returns: list of fields to use as a key
-    @rtype: list
-    """
-    return self._key_fields
+#     @returns: list of fields to use as a key
+#     @rtype: list
+#     """
+#     return self._key_fields
   
-  def parse(self, subentry_field_marker=None):
-    """
-    This method does the actual parsing of Shoebox lexicon(s). It will also
-    parse subentries provided that the field marker identifying subentries
-    is passed to it.
+#   def parse(self,
+#             subentry_field_marker=None):
+#     """
+#     This method does the actual parsing of Shoebox lexicon(s). It will also
+#     parse subentries provided that the field marker identifying subentries
+#     is passed to it.
     
-    @param subentry_field_marker: field marker that identifies subentries
-    @type  subentry_field_marker: string
-    @return: a parsed Lexicon object
-    @rtype: dictionary object
-    """
-    l = Lexicon()
-    rawEntries = shoebox.raw(self._files, include_header=True)
-    i = 0
-    for raw_entry in rawEntries:
-      e = Entry()
-      if raw_entry[0][0].startswith("_"):
-        pass
-      elif subentry_field_marker:
-        i = i + 1
-        insideSubentry = 0
-        for f in raw_entry:
-          marker = f[0]
-          value = f[1]
-          if marker == subentryFieldMarker:
-            if se:
-              e.add_subentry(se)
-            se = Entry()
-            se.add_field(marker, value)
-            insideSubentry = 1
-          elif insideSubentry:
-            se.add_field(marker, value)
-          elif not insideSubentry:
-            e.add_field(marker, value)
-        if se:
-          e.add_subentry(se)
-        e.set_number(i)
-        key_fields = self.get_key_fields()
-        l.add_entry(e, key_fields)
-      else:
-        i = i + 1
-        for f in raw_entry:
-          marker = f[0]
-          value = f[1]
-          e.add_field(marker, value)
-        e.set_number(i)
-        key_fields = self.get_key_fields()
-        l.add_entry(e, key_fields)
-    return l
+#     @param subentry_field_marker: field marker that identifies subentries
+#     @type  subentry_field_marker: string
+#     @return: a parsed Lexicon object
+#     @rtype: dictionary object
+#     """
+#     l = Lexicon()
+#     rawEntries = shoebox.raw(self._files, include_header=True)
+#     i = 0
+#     for raw_entry in rawEntries:
+#       e = Entry()
+#       if raw_entry[0][0].startswith("_"):
+#         pass
+#       elif subentry_field_marker:
+#         i = i + 1
+#         insideSubentry = 0
+#         for f in raw_entry:
+#           marker = f[0]
+#           value = f[1]
+#           if marker == subentryFieldMarker:
+#             if se:
+#               e.add_subentry(se)
+#             se = Entry()
+#             se.add_field(marker, value)
+#             insideSubentry = 1
+#           elif insideSubentry:
+#             se.add_field(marker, value)
+#           elif not insideSubentry:
+#             e.add_field(marker, value)
+#         if se:
+#           e.add_subentry(se)
+#         e.set_number(i)
+#         key_fields = self.get_key_fields()
+#         l.add_entry(e, key_fields)
+#       else:
+#         i = i + 1
+#         for f in raw_entry:
+#           marker = f[0]
+#           value = f[1]
+#           e.add_field(marker, value)
+#         e.set_number(i)
+#         key_fields = self.get_key_fields()
+#         l.add_entry(e, key_fields)
+#     return l
 
 
 class Lexicon(ShoeboxFile):
@@ -378,7 +392,9 @@ class Entry:
     except KeyError:
       return None
 
-  def get_field_as_string(self, field_marker, join_string):
+  def get_field_as_string(self,
+                          field_marker,
+                          join_string):
     """
     This method returns a particular field given a field marker.
     Returns a blank string if field is not found.
