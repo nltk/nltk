@@ -54,6 +54,9 @@ class MarkerSet :
     def __init__(self) :
         self._dict = {}
 
+    def get_markers(self) :
+        return self._dict.keys()
+
     def add_field_metadata(self, fmd) :
         self._dict[fmd.get_marker()] = fmd
         
@@ -76,19 +79,23 @@ class FieldMetadata :
     """
     
     def __init__(self,
-                 marker   = None,
-                 name     = None,
-                 desc     = None,
-                 lang     = None,
-                 rangeset = None,
-                 parent   = None) :
-        self._marker   = marker
-        self._name     = name
-        self._desc     = desc
-        self._lang     = lang
-        self._rangeset = rangeset
-        self._parent   = parent
-
+                 marker    = None,
+                 name      = None,
+                 desc      = None,
+                 lang      = None,
+                 rangeset  = None,
+                 multiword = None,
+                 required  = None,
+                 parent    = None) :
+        self._marker    = marker
+        self._name      = name
+        self._desc      = desc
+        self._lang      = lang
+        self._rangeset  = rangeset
+        self._parent    = parent
+        self._multiword = multiword
+        self._required  = required
+        
     def get_marker(self) :
         """Obtain the marker for this field (e.g., 'dx').
         @returns: marker for field
@@ -122,17 +129,35 @@ class FieldMetadata :
         @returns: list of possible values for field
         @rtype: list of strings
         """
-        try :
-            return self._rangeset.split()
-        except :
-            return []
+        return self._rangeset
+
+    def set_rangeset(self, rangeset) :
+        """Set list of valid values for field.
+        @param rangeset: list of valid values for the field
+        @type  rangeset: list
+        """
+        self._rangeset = rangeset
     
     def get_parent(self) :
-        """Obtain the marker for this field (e.g., 'lx').
+        """Obtain the marker for the parent of this field (e.g., 'lx').
         @returns: marker for parent field
         @rtype: string
         """
         return self._parent
+
+    def is_multiword(self) :
+        """Determine whether the value of the field consits of multiple words.
+        @returns: whether field values can be multiword
+        @rtype: boolean
+        """
+        return self._multiword
+
+    def requires_value(self) :
+        """Determine whether the field requires a value.
+        @returns: whether field requires a value
+        @rtype: boolean
+        """
+        return self._required
 
 
 class LexiconSettings(Settings) :
@@ -145,40 +170,53 @@ class LexiconSettings(Settings) :
         self._tree      = None
         
     def parse(self, encoding=None) :
+        """Parse a Shoebox settings file with lexicon metadata."""
         s = Settings()
         s.open(self._file)
         self._tree = s.parse(encoding=encoding)
-        for mkr in self._tree.findall('mkrset/mkr') :
-            fm = mkr.text
-            fname = parse_marker(mkr, "nam")
-            fdesc = parse_marker(mkr, "desc")
-            flang = parse_marker(mkr, "lng")
-            frangeset = parse_marker(mkr, "rngset")
-            fparent = parse_marker(mkr, "mkrOverThis")
-            fm = FieldMetadata(marker   = fm,
-                               name     = fname,
-                               desc     = fdesc,
-                               lang     = flang,
-                               rangeset = frangeset,
-                               parent   = fparent)
-            self._markerset.add_field_metadata(fm)
-            
         s.close()
         
+        # Handle metadata for field markers (aka, marker set)
+        for mkr in self._tree.findall('mkrset/mkr') :
+            rangeset = None
+            if parse_value(mkr, "rngset") :
+                rangeset = parse_value(mkr, "rngset").split()
+            fm = FieldMetadata(marker    = mkr.text,
+                               name      = parse_value(mkr, "nam"),
+                               desc      = parse_value(mkr, "desc"),
+                               lang      = parse_value(mkr, "lng"),
+                               rangeset  = rangeset,
+                               multiword = parse_boolean(mkr, "MultipleWordItems"),
+                               required  = parse_boolean(mkr, "MustHaveData"),
+                               parent    = parse_value(mkr, "mkrOverThis"))
+            self._markerset.add_field_metadata(fm)
+
+        # Handle range sets defined outside of marker set
+        # WARNING: Range sets outside the marker set override those inside the
+        #          marker set
+        for rs in self._tree.findall("rngset") :
+            mkr = rs.findtext("mkr")
+            fm = self._markerset.get_metadata_by_marker(mkr)
+            fm.set_rangeset([d.text for d in rs.findall("dat") ])
+            self._markerset.add_field_metadata(fm)
+            
     def get_record_marker(self) :
         return self._tree.find('mkrset/mkrRecord').text
 
     def get_marker_set(self) :
         return self._markerset
 
-        
-def parse_marker(mkr, name) :
-    """Convenience function."""
+def parse_boolean(mkr, name) :
+    if mkr.find(name) == None :
+        return False
+    else :
+        return True
+
+def parse_value(mkr, name) :
     try :
         return mkr.find(name).text
     except :
         return None
-
 
 def demo():
     settings = Settings()
