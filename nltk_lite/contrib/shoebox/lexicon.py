@@ -227,8 +227,8 @@ class Lexicon(ShoeboxFile):
       @rtype:                       dictionary object
       """
 
-      if entry_key_fields :
-        self._entry_key_fields = entry_key_fields
+      if key_fields :
+        self._key_fields = key_fields
         
       # Set up variables
       inside_entry = False
@@ -371,7 +371,10 @@ class Entry:
     """
     return self._fields.keys()
 
-  def get_field_values_by_field_marker(self, fieldMarker, sep=None):
+  def get_values_by_marker(self, field_marker, sep=None) :
+    return self.get_field_values_by_field_marker(field_marker, sep)
+
+  def get_field_values_by_field_marker(self, field_marker, sep=None):
     """
     This method returns all of the field values for a given field marker.
     If the L(sep) is set, it will return a string; otherwise, it will
@@ -384,7 +387,7 @@ class Entry:
     @rtype: string (if sep); otherwise, list of Field objects
     """
     try:
-      values = self._fields[fieldMarker]
+      values = self._fields[field_marker]
       if sep == None:
         return values
       else:
