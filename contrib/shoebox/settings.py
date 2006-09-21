@@ -48,6 +48,19 @@ class Settings(ShoeboxFile):
         return ElementTree.ElementTree(builder.close())
 
 
+class MarkerSet :
+    """This class is a container for FieldMetadata objects."""
+    
+    def __init__(self) :
+        self._dict = {}
+
+    def add_field_metadata(self, fmd) :
+        self._dict[fmd.get_marker()] = fmd
+        
+    def get_metadata_by_marker(self, fm) :
+        return self._dict[fm]
+
+        
 class FieldMetadata :
     """This class is a container for metadata concerning a field type, including
     the field marker, name, description, language, and parent of the field. In a
@@ -109,7 +122,10 @@ class FieldMetadata :
         @returns: list of possible values for field
         @rtype: list of strings
         """
-        return self._lang.split()
+        try :
+            return self._rangeset.split()
+        except :
+            return []
     
     def get_parent(self) :
         """Obtain the marker for this field (e.g., 'lx').
@@ -124,39 +140,36 @@ class LexiconSettings(Settings) :
     lexicons in Shoebox SFM."""
 
     def __init__(self, file):
-        self._file = file
+        self._file      = file
+        self._markerset = MarkerSet()
+        self._tree      = None
         
-    def parse(self, encoding) :
+    def parse(self, encoding=None) :
         s = Settings()
         s.open(self._file)
-        self.tree = s.parse(encoding=encoding)
-        for mkr in self.tree.findall('mkrset/mkr') :
+        self._tree = s.parse(encoding=encoding)
+        for mkr in self._tree.findall('mkrset/mkr') :
             fm = mkr.text
             fname = parse_marker(mkr, "nam")
             fdesc = parse_marker(mkr, "desc")
             flang = parse_marker(mkr, "lng")
             frangeset = parse_marker(mkr, "rngset")
             fparent = parse_marker(mkr, "mkrOverThis")
-            print fm
-            print fname
-            print fdesc
-            print flang
-            print frangeset
-            print fparent
-            print
             fm = FieldMetadata(marker   = fm,
                                name     = fname,
                                desc     = fdesc,
                                lang     = flang,
                                rangeset = frangeset,
                                parent   = fparent)
+            self._markerset.add_field_metadata(fm)
+            
         s.close()
         
     def get_record_marker(self) :
-        return self.tree.find('mkrset/mkrRecord').text
+        return self._tree.find('mkrset/mkrRecord').text
 
     def get_marker_set(self) :
-        return self.markerset
+        return self._markerset
 
         
 def parse_marker(mkr, name) :
