@@ -35,7 +35,7 @@ D. PYTHON AND NUMERIC VERSIONS
 @@@ BUILD
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-The build requires docutils, pdflatex
+The build requires docutils, pdflatex, bdist_mpkg
 
   1. Check out a clean copy of the subversion repository (or make clean)
        (install locally?  python setup.py install; make clean)
