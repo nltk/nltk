@@ -8,7 +8,7 @@
 """
 This module provides basic functionality for handling shoebox format files.
 These feed into the more sophisticated Shoebox tools available in the
-modules I{shlex}, I{shtext}, and I{shmetadata}.
+modules I{lexicon}, I{text}, and I{metadata}.
 """
 
 import re
@@ -18,6 +18,8 @@ from UserDict import UserDict
 def parse_field(line):
   """
   This function returns the field marker and field value of a Shoebox field.
+
+  @return: parses field as string and returns tuple with field marker and field value
   @rtype: tuple
   """
   mo = re.match(r"\\(.*?) (.*)", line)
@@ -105,39 +107,39 @@ class Field:
       return sep.join(values)
 
 
-class FieldParser:
-  """
-  Parses raw Shoebox field into a field object.
-  """
-  def __init__(self, rawText):
-    self._rawText = rawText
+# class FieldParser:
+#   """
+#   Parses raw Shoebox field into a field object.
+#   """
+#   def __init__(self, rawText):
+#     self._rawText = rawText
 
-  def getRawText(self):
-    """
-    This method returns the raw text to be parsed as a field by the parser.
+#   def getRawText(self):
+#     """
+#     This method returns the raw text to be parsed as a field by the parser.
     
-    @return: string
-    @rtype: a string with a standard format field as raw text
-    """    
-    return self._rawText
+#     @return: string
+#     @rtype: a string with a standard format field as raw text
+#     """    
+#     return self._rawText
 
-  def setRawText(self, rawtext):
-    """
-    This method constructs a Field object as a tuple of a field
-    marker and a field value.
-    @param rawtext: the raw text to be parsed into a field object
-    @type  rawtext: string
-    """
-    self._rawtext = rawtext
-    return self._rawtext
+#   def setRawText(self, rawtext):
+#     """
+#     This method constructs a Field object as a tuple of a field
+#     marker and a field value.
+#     @param rawtext: the raw text to be parsed into a field object
+#     @type  rawtext: string
+#     """
+#     self._rawtext = rawtext
+#     return self._rawtext
 
-  def parse(self):
-    regex = r"\\([A-Za-z][A-Za-z0-9\_\-]*) (.*)"
-    mo = re.search(regex,
-                   self.getRawText())
-    fm = mo.group(1)
-    fv = mo.group(2)
-    return Field(fm, fv)
+#   def parse(self):
+#     regex = r"\\([A-Za-z][A-Za-z0-9\_\-]*) (.*)"
+#     mo = re.search(regex,
+#                    self.getRawText())
+#     fm = mo.group(1)
+#     fv = mo.group(2)
+#     return Field(fm, fv)
 
 
 class SequentialDictionary(UserDict):
