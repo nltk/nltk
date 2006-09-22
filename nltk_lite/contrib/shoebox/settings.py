@@ -50,7 +50,28 @@ class Settings(ShoeboxFile):
 
 
 class MarkerSet :
-    """This class is a container for FieldMetadata objects."""
+    """This class is a container for FieldMetadata objects. A marker set
+    contains a list of the fields in a database together with information
+    about those files.
+
+    The raw SFB looks like this::
+
+        \\+mkrset 
+        \\lngDefault Default
+        \\mkrRecord lx
+
+        \\+mkr dt
+        \\nam Date Last Edited
+        \\lng Default
+        \\mkrOverThis lx
+        \\-mkr
+
+        \\+mkr lx
+        \\nam Rotokas Word
+        \\lng Rotokas
+        \\-mkr
+        \\-mkrset
+        """             
     
     def __init__(self) :
         self._dict = {}
@@ -78,8 +99,9 @@ class MarkerSet :
         
 class FieldMetadata :
     """This class is a container for metadata concerning a field type, including
-    the field marker, name, description, language, and parent of the field. In a
-    settings file, the raw data looks something like this::
+    the field marker, name, description, language, range set, and parent of the field.
+
+    The raw SFB looks like this::
 
       \\+mkr dx
       \\nam Dialect
