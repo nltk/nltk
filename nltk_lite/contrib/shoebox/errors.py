@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Module with all of the possible Shoebox-related exceptions.
+This module provides Shoebox exceptions.
 """
 
 # ---------------------------------------------------------------------

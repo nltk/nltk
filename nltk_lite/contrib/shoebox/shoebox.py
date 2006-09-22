@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Module for reading, writing and manipulating Shoebox databases.
+This module provides low-level functionality for reading, writing, and manipulating the Standard Format (SFB) of Shoebox/Toolbox databases .
 """
 
 import os, re
