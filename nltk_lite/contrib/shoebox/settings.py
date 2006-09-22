@@ -17,6 +17,7 @@ from elementtree import ElementTree
 from nltk_lite.corpora.shoebox import ShoeboxFile
 
 class Settings(ShoeboxFile):
+    """This class is the base class for Shoebox settings files."""
     
     def __init__(self):
         super(Settings, self).__init__()
@@ -55,13 +56,24 @@ class MarkerSet :
         self._dict = {}
 
     def get_markers(self) :
+        """Obtain a list of all of the field markers for the marker set.
+        @returns: list of field markers
+        @rtype: list of strings"""
         return self._dict.keys()
 
-    def add_field_metadata(self, fmd) :
-        self._dict[fmd.get_marker()] = fmd
+    def add_field_metadata(self, fmeta) :
+        """Add FieldMetadata object to dictionary of marker sets, keyed by field marker.
+        @param fmeta: field metadata to be added to collection for marker set
+        @type  fmeta: FieldMetadata"""
+        self._dict[fmeta.get_marker()] = fmeta
         
-    def get_metadata_by_marker(self, fm) :
-        return self._dict[fm]
+    def get_metadata_by_marker(self, mkr) :
+        """Obtain a FieldMetadata object for the field marker provided.
+        @param mkr: field to obtain metadata for
+        @type  mkr: string
+        @returns: metadata for field type associated with marker
+        @rtype: FieldMetadata"""
+        return self._dict[mkr]
 
         
 class FieldMetadata :
