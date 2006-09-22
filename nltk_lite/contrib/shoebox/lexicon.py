@@ -380,10 +380,10 @@ class Entry:
     If the L(sep) is set, it will return a string; otherwise, it will
     return a list of Field objects.
     
-    @param fieldMarker: marker of desired field
-    @type  fieldMarker: string
-    @param sep        : separator for field values
-    @type  sep        : string    
+    @param field_marker: marker of desired field
+    @type  field_marker: string
+    @param sep: separator for field values
+    @type  sep: string    
     @rtype: string (if sep); otherwise, list of Field objects
     """
     try:
