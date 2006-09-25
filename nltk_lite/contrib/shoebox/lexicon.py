@@ -397,14 +397,14 @@ class Entry:
 
   def get_field_as_string(self,
                           field_marker,
-                          join_string):
+                          join_string=""):
     """
     This method returns a particular field given a field marker.
     Returns a blank string if field is not found.
     
     @param field_marker: marker of desired field
     @type  field_marker: string
-    @param join_string: string used to join field values
+    @param join_string: string used to join field values (default to blank string)
     @type  join_string: string
     @rtype: string
     """
