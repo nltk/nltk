@@ -67,7 +67,7 @@ class ShoeboxFile(object):
         self.line_num += 1
         yield (mkr, join_string.join(value_lines))
 
-    def fields(self, strip=True, unwrap=True, encoding=None, unicode_fields=None):
+    def fields(self, strip=True, unwrap=True, encoding=None, errors='strict', unicode_fields=None):
         """Return an iterator for the fields in the SFM file.
         
         @param strip: strip trailing whitespace from the last line of each field
@@ -78,8 +78,11 @@ class ShoeboxFile(object):
             C{fields} method returns unicode strings rather than non unicode 
             strings.
         @type encoding: string or None
-        @param unicode_fields: Set of marker names whose values are in 
-            unicode. Ignored if encoding is None.
+        @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
+        @type errors: string
+        @param unicode_fields: Set of marker names whose values are UTF-8 encoded.
+            Ignored if encoding is None. If the whole file is UTF-8 encoded leave
+            as the default value of None.
         @type unicode_fields: set or dictionary (actually any sequence that 
             supports the 'in' operator).
         @return: an iterator that returns the next field in a (marker, value) 
@@ -92,11 +95,11 @@ class ShoeboxFile(object):
         unwrap_pat = re.compile(r'\n+')
         for mkr, val in self.raw_fields():
             if encoding:
-                if mkr in unicode_fields:
-                    val = val.decode('utf8')
+                if unicode_fields is not None and mkr in unicode_fields:
+                    val = val.decode('utf8', errors)
                 else:
-                    val = val.decode(encoding)
-                mkr = mkr.decode(encoding)
+                    val = val.decode(encoding, errors)
+                mkr = mkr.decode(encoding, errors)
             if unwrap:
                 val = unwrap_pat.sub(' ', val)
             if strip:
