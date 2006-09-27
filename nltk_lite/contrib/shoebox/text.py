@@ -188,6 +188,24 @@ class Line:
         """Obtain list of unique fields for the line."""
         return self._fields.keys()
 
+    def get_field_as_string(self,
+                            field_marker,
+                            join_string=""):
+        """
+        This method returns a particular field given a field marker.
+        Returns a blank string if field is not found.
+        
+        @param field_marker: marker of desired field
+        @type  field_marker: string
+        @param join_string: string used to join field values (default to blank string)
+        @type  join_string: string
+        @rtype: string
+        """
+        try:
+            return join_string.join(self._fields[field_marker])
+        except KeyError:
+            return ""
+
     def get_field_values_by_field_marker(self, field_marker, sep=None):
         """Obtain all fields for a line, given a field marker."""
         try:
