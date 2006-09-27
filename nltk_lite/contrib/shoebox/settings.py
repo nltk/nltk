@@ -9,21 +9,20 @@
 # For license information, see LICENSE.TXT
 
 """
-This module provides functionality for reading Shoebox settings files,
-which provide metadata for Shoebox lexicons and texts.
+This module provides functionality for reading settings files for Shoebox/Toolbox. Settings files provides information (metadata) concerning lexicons and texts, such as which fields are found within them and what kind of values those fields can have.
 """
 
 from elementtree import ElementTree
 from nltk_lite.corpora.shoebox import ShoeboxFile
 
 class Settings(ShoeboxFile):
-    """This class is the base class for Shoebox settings files."""
+    """This class is the base class for settings files."""
     
     def __init__(self):
         super(Settings, self).__init__()
 
     def parse(self, encoding=None):
-        """Parses a Shoebox settings file using ElementTree.
+        """Parses a settings file using ElementTree.
         @param encoding: encoding used by settings file
         @type  encoding: string
         """
@@ -98,10 +97,10 @@ class MarkerSet :
 
         
 class FieldMetadata :
-    """This class is a container for metadata concerning a field type, including
-    the field marker, name, description, language, range set, and parent of the field.
+    """This class is a container for information about a field, including its marker, name,
+    description, language, range set (valid values), and parent marker.
 
-    The raw SFB looks like this::
+    The raw field metadata looks like this::
 
       \\+mkr dx
       \\nam Dialect
@@ -180,7 +179,7 @@ class FieldMetadata :
         return self._parent
 
     def is_multiword(self) :
-        """Determine whether the value of the field consits of multiple words.
+        """Determine whether the value of the field consists of multiple words.
         @returns: whether field values can be multiword
         @rtype: boolean
         """
@@ -196,7 +195,7 @@ class FieldMetadata :
 
 class LexiconSettings(Settings) :
     """This class is used to parse and manipulate settings file for
-    lexicons in Shoebox SFM."""
+    lexicons."""
 
     def __init__(self, file):
         self._file      = file
@@ -204,7 +203,7 @@ class LexiconSettings(Settings) :
         self._tree      = None
         
     def parse(self, encoding=None) :
-        """Parse a Shoebox settings file with lexicon metadata."""
+        """Parse a settings file with lexicon metadata."""
         s = Settings()
         s.open(self._file)
         self._tree = s.parse(encoding=encoding)
