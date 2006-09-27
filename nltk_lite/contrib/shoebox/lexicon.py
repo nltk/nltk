@@ -205,7 +205,7 @@ class Lexicon(ShoeboxFile):
             head_field_marker     = 'lx',
             subentry_field_marker = None,
             key_fields            = None,
-            unique_entry          = False,
+            unique_entry          = True,
             unique_subentry       = False):
       """
       This method parses a Shoebox file in a Lexicon object. It will also parse
