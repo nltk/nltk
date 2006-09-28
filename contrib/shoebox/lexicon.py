@@ -11,11 +11,12 @@ contents of a Shoebox lexicon without reference to its metadata.
 
 For example::
 
-  import nltk_lite.contrib.shoebox.lexicon as shoebox
-  t = shoebox.Text("foo.dic")
-  t.parse()
-  for e in t.get_entries() :
-      print e.get_field_as_string("lx")
+    from nltk_lite.contrib.shoebox.lexicon import Lexicon
+    l = Lexicon("rotrt.dic")
+    l.parse(key_fields=['lx','ps','ge'])
+    h = l.get_header()
+    for e in l.get_entries() :
+        print e.get_field_as_string("lx")
   
 For more sophisticated functionality that handles metadata, use the
 module I{metadata}.
