@@ -24,9 +24,8 @@ module I{metadata}.
 
 import os, re, sys
 from nltk_lite.corpora import get_basedir
-from nltk_lite.corpora import shoebox
+from nltk_lite.corpora.shoebox import ShoeboxFile
 from utilities import Field, SequentialDictionary
-from shoebox import ShoeboxFile
 
 # class LexiconParser:
 #   """
