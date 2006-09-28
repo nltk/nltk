@@ -125,7 +125,7 @@ class Lexicon(ShoeboxFile):
     This method construct a Lexicon object with a header and a dictionary of
     entries.
     """
-    self._entry_key_fields = ['lx']
+    self._key_fields = ['lx']
     self._header  = ''
     self._entries = {}
     self._file = file
@@ -182,7 +182,7 @@ class Lexicon(ShoeboxFile):
       @type unique: boolean
       """
       key = ""
-      for field_marker in self._entry_key_fields:
+      for field_marker in self._key_fields:
           f = entry.get_field(field_marker)
           if f:
               values = f.get_values("/")
@@ -193,7 +193,7 @@ class Lexicon(ShoeboxFile):
               pass
       if self._entries.has_key(key) :
           if unique :
-              msg = "Non-unique entry! \nEntry: \n%s\nKey Fields: %s\nKey: '%s'\n" % (entry, key_fields, key)    
+              msg = "Non-unique entry! \nEntry: \n%s\nKey Fields: %s\nKey: '%s'\n" % (entry, self._key_fields, key)    
               raise ValueError, msg
       else :
           self._entries[key] = []
@@ -483,7 +483,7 @@ class Entry:
 def demo() :
     path = os.path.join(get_basedir(), "shoebox", "rotokas.dic")
     l = Lexicon(path)
-    l.parse(entry_key_fields=['lx','ps','sn'], unique_entry=False)
+    l.parse(key_fields=['lx','ps','sn'], unique_entry=False)
     h = l.get_header()
     for e in l.get_entries() :
         print "<%s><%s><%s>" % (e.get_field_as_string("lx", ""),
