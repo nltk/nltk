@@ -212,16 +212,16 @@ class LexiconSettings(Settings) :
         # Handle metadata for field markers (aka, marker set)
         for mkr in self._tree.findall('mkrset/mkr') :
             rangeset = None
-            if parse_value(mkr, "rngset") :
-                rangeset = parse_value(mkr, "rngset").split()
+            if self.__parse_value(mkr, "rngset") :
+                rangeset = self.__parse_value(mkr, "rngset").split()
             fm = FieldMetadata(marker    = mkr.text,
-                               name      = parse_value(mkr, "nam"),
-                               desc      = parse_value(mkr, "desc"),
-                               lang      = parse_value(mkr, "lng"),
+                               name      = self.__parse_value(mkr, "nam"),
+                               desc      = self.__parse_value(mkr, "desc"),
+                               lang      = self.__parse_value(mkr, "lng"),
                                rangeset  = rangeset,
-                               multiword = parse_boolean(mkr, "MultipleWordItems"),
-                               required  = parse_boolean(mkr, "MustHaveData"),
-                               parent    = parse_value(mkr, "mkrOverThis"))
+                               multiword = self.__parse_boolean(mkr, "MultipleWordItems"),
+                               required  = self.__parse_boolean(mkr, "MustHaveData"),
+                               parent    = self.__parse_value(mkr, "mkrOverThis"))
             self._markerset.add_field_metadata(fm)
 
         # Handle range sets defined outside of marker set
@@ -239,17 +239,17 @@ class LexiconSettings(Settings) :
     def get_marker_set(self) :
         return self._markerset
 
-def parse_boolean(mkr, name) :
-    if mkr.find(name) == None :
-        return False
-    else :
-        return True
+    def __parse_boolean(self, mkr, name) :
+        if mkr.find(name) == None :
+            return False
+        else :
+            return True
 
-def parse_value(mkr, name) :
-    try :
-        return mkr.find(name).text
-    except :
-        return None
+    def __parse_value(self, mkr, name) :
+        try :
+            return mkr.find(name).text
+        except :
+            return None
 
 def demo():
     settings = Settings()
