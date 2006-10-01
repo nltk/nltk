@@ -9,6 +9,8 @@
 #
 # $Id$
 
+_NINF = float('-1e300')
+
 """
 Classes for representing and processing probabilistic information.
 
@@ -300,7 +302,7 @@ class ProbDistI(object):
         if p == 0:
             # Use some approximation to infinity.  What this does
             # depends on your system's float implementation.
-            return -1e1000
+            return _NINF
         else:
             return math.log(p)
 
@@ -374,7 +376,7 @@ class DictionaryProbDist(ProbDistI):
         if normalize:
             if log:
                 value_sum = sum_logs(self._prob_dict.values())
-                if value_sum <= -1e1000:
+                if value_sum <= _NINF:
                     logp = math.log(1.0/len(prob_dict.keys()))
                     for x in prob_dict.keys():
                         self._prob_dict[x] = logp
@@ -401,9 +403,9 @@ class DictionaryProbDist(ProbDistI):
 
     def logprob(self, sample):
         if self._log:
-            return self._prob_dict.get(sample, 1e-1000)
+            return self._prob_dict.get(sample, _NINF)
         else:
-            if sample not in self._prob_dict: return 1e-1000
+            if sample not in self._prob_dict: return _NINF
             else: return math.log(self._prob_dict[sample])
 
     def max(self):
@@ -1333,7 +1335,7 @@ def sum_logs(logs):
     if len(logs) == 0:
         # Use some approximation to infinity.  What this does
         # depends on your system's float implementation.
-        return -1e1000
+        return _NINF
     else:
         return reduce(add_logs, logs[1:], logs[0])
 
