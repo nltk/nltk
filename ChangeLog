@@ -1,4 +1,14 @@
-Version 0.6.5 2006-06-14	
+Version 0.6.6 2006-10-06
+
+* Code:
+  - bugfixes (probability, shoebox, draw)
+* Contrib:
+  - new work on shoebox package (Stuart Robinson)
+* Tutorials:
+  - continual expansion and revision, especially on introduction to
+    programming, advanced programming and the feature-based grammar chapters.
+	
+Version 0.6.5 2006-07-09
 
 * Code:
   - improvements to shoebox module (Stuart Robinson, Greg Aumann)
