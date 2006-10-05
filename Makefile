@@ -37,6 +37,7 @@ codedist: clean_code INSTALL.TXT
 	python setup.py -q sdist --format=zip
 	python setup.py -q bdist --format=rpm
 	python setup.py -q bdist --format=wininst
+	python setup.py -q bdist --format=mpkg
 
 docdist: doc
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
@@ -56,25 +57,26 @@ INSTALL.TXT: INSTALL.TXT.in
 .PHONY: .python.done .rsync.done .wordnet.done .pywordnet .numarray.done
 
 SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
-PYTHON = http://www.python.org/ftp/python/2.4.3
+PYTHON = http://www.python.org/ftp/python/2.5
+PYTHON24 = http://www.python.org/ftp/python/2.4.3
 NUMPY = $(SFNETMIRROR)/numpy
 MACPY = http://www.pythonmac.org/packages
 WN20 = http://wordnet.princeton.edu/2.0/
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(PYTHON)/Universal-MacPython-2.4.3.dmg
-	wget -N -P python/win/  $(PYTHON)/python-2.4.3.msi
-	wget -N -P python/unix/ $(PYTHON)/Python-2.4.3.tgz
+	wget -N -P python/mac/  $(PYTHON24)/Universal-MacPython-2.4.3.dmg
+	wget -N -P python/win/  $(PYTHON)/python-2.5.msi
+	wget -N -P python/unix/ $(PYTHON)/Python-2.5.tgz
 	touch .python.done
 
 numarray:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(MACPY)/numarray-1.1.1-py2.4-macosx10.3.zip
-	wget -N -P python/win/  $(NUMPY)/numarray-1.5.1.win32-py2.4.exe?download
-	wget -N -P python/unix/ $(NUMPY)/numarray-1.5.1.tar.gz?download
-	mv python/win/numarray-1.5.1.win32-py2.4.exe?download python/win/numarray-1.5.1.win32-py2.4.exe
-	mv python/unix/numarray-1.5.1.tar.gz?download python/unix/numarray-1.5.1.tar.gz
+	wget -N -P python/mac/  $(MACPY)/py24-fat/mpkg/numarray-1.5.1-py2.4-macosx10.4.mpkg.zip
+	wget -N -P python/win/  $(NUMPY)/numarray-1.5.2.win32-py2.5.exe?download
+	wget -N -P python/unix/ $(NUMPY)/numarray-1.5.2.tar.gz?download
+	mv python/win/numarray-1.5.2.win32-py2.5.exe?download python/win/numarray-1.5.2.win32-py2.5.exe
+	mv python/unix/numarray-1.5.2.tar.gz?download python/unix/numarray-1.5.2.tar.gz
 	touch .numarray.done
 
 wordnet:
@@ -123,7 +125,7 @@ RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 rsync:	clean_up
 	$(MAKE) -C web rsync
 	$(MAKE) -C doc rsync
-	rsync $(RSYNC_OPTS) nltk_lite $(WEB)/nltk_lite
+	rsync $(RSYNC_OPTS) nltk_lite $(WEB)
 	touch .rsync.done
 
 ########################################################################
