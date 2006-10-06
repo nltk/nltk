@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
-# Author: Steven Bird <sb@ldc.upenn.edu>
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -327,6 +327,9 @@ class Grammar(object):
     def start(self):
         return self._start
 
+    # buggy: needs to cope with both lhs and rhs specified
+    # needs to raise an error if *hs is specified but not in index
+    # check nothing breaks when this is fixed...
     def productions(self, lhs=None, rhs=None):
         if lhs and lhs in self._lhs_index:
                 return self._lhs_index[lhs]

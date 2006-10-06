@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Brill Tagger
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
-#          Steven Bird <sb@ldc.upenn.edu>
+#          Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
