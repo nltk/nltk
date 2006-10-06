@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tree Transformations
 #
-# Copyright (C) 2005 Oregon Graduate Institute
+# Copyright (C) 2005-2006 Oregon Graduate Institute
 # Author: Nathan Bodenstab <bodenstab@cslu.ogi.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

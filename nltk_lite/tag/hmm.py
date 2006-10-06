@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Hidden Markov Model
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
-# Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-#         Philip Blunsom <pcbl@cs.mu.oz.au>
+# Author: Trevor Cohn <tacohn@csse.unimelb.edu.au>
+#         Philip Blunsom <pcbl@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
