@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Graphical Representations for Trees
 #
-# Copyright (C) 2001 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

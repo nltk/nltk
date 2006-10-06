@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@ldc.upenn.edu> (minor additions)
+#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 

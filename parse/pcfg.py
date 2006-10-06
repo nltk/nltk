@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Probabilistic Context Free Grammars
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
-# Author: Steven Bird <sb@ldc.upenn.edu>
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@ldc.upenn.edu> (minor additions)
 #         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (induction)
 # URL: <http://nltk.sf.net>
