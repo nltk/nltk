@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2005 University of Pennsylvania
+# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@ldc.upenn.edu>
-#         Trevor Cohn <tacohn@cs.mu.oz.au>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Trevor Cohn <tacohn@csse.unimelb.edu.au>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
