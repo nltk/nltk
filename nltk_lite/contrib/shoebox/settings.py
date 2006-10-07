@@ -21,13 +21,16 @@ class Settings(ShoeboxFile):
     def __init__(self):
         super(Settings, self).__init__()
 
-    def parse(self, encoding=None):
+    def parse(self, encoding=None, errors='strict'):
         """Parses a settings file using ElementTree.
+        
         @param encoding: encoding used by settings file
-        @type  encoding: string
+        @type  encoding: string        
+        @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
+        @type errors: string
         """
         builder = ElementTree.TreeBuilder()
-        for mkr, value in self.fields(encoding, unwrap=False):
+        for mkr, value in self.fields(unwrap=False, encoding=encoding, errors=errors):
             # Check whether the first char of the field marker
             # indicates a block start (+) or end (-)
             block=mkr[0]
