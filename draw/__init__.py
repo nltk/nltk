@@ -1006,7 +1006,12 @@ class OvalWidget(AbstractContainerWidget):
         self._child = child
         self._margin = 1
         self._oval = canvas.create_oval(1,1,1,1)
-        self._oval2 = None # used for double.
+        self._circle = attribs.pop('circle', False)
+        self._double = attribs.pop('double', False)
+        if self._double:
+            self._oval2 = canvas.create_oval(1,1,1,1)
+        else:
+            self._oval2 = None
         canvas.tag_lower(self._oval)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
         
@@ -1029,6 +1034,8 @@ class OvalWidget(AbstractContainerWidget):
             c.itemconfig(self._oval, {attr:value})
             if self._oval2 is not None and attr!='fill':
                 c.itemconfig(self._oval2, {attr:value})
+            if self._oval2 is not None and attr!='fill':
+                self.canvas().itemconfig(self._oval2, {attr:value})
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
@@ -1050,6 +1057,16 @@ class OvalWidget(AbstractContainerWidget):
         (x1, y1, x2, y2) = child.bbox()
         margin = self._margin
 
+        # If we're a circle, pretend our contents are square.
+        if self._circle:
+            dx, dy = abs(x1-x2), abs(y1-y2)
+            if dx > dy:
+                y = (y1+y2)/2
+                y1, y2 = y-dx/2, y+dx/2
+            elif dy > dx:
+                x = (x1+x2)/2
+                x1, x2 = x-dy/2, x+dy/2
+
         # Find the four corners.
         left = int(( x1*(1+R) + x2*(1-R) ) / 2)
         right = left + int((x2-x1)*R) 
@@ -1058,9 +1075,8 @@ class OvalWidget(AbstractContainerWidget):
         self.canvas().coords(self._oval, left-margin, top-margin,
                              right+margin, bot+margin)
         if self._oval2 is not None:
-            w = self['width']*2
-            self.canvas().coords(self._oval2, left-margin-w, top-margin-w,
-                                 right+margin+w, bot+margin+w)
+            self.canvas().coords(self._oval2, left-margin+2, top-margin+2,
+                                 right+margin-2, bot+margin-2)
 
     def _tags(self):
         if self._oval2 is None:
