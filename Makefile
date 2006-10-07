@@ -37,7 +37,6 @@ codedist: clean_code INSTALL.TXT
 	python setup.py -q sdist --format=zip
 	python setup.py -q bdist --format=rpm
 	python setup.py -q bdist --format=wininst
-	python setup.py -q bdist --format=mpkg
 
 docdist: doc
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
