@@ -14,6 +14,7 @@ This module provides functionality for reading settings files for Shoebox/Toolbo
 
 from elementtree import ElementTree
 from nltk_lite.corpora.shoebox import ShoeboxFile
+#from nltk_lite.parse.tree import Tree
 
 class Settings(ShoeboxFile):
     """This class is the base class for settings files."""
@@ -98,6 +99,27 @@ class MarkerSet :
         @rtype: FieldMetadata"""
         return self._dict[mkr]
 
+    def get_field_marker_hierarchy(self) :
+        root = None
+        for fm in self.get_markers() :
+            fmmd = self.get_metadata_by_marker(fm)            
+            if not fmmd.get_parent_marker() :
+                root = fm
+        print "[%s] is root!" % root
+        t = self.build_tree(root)
+        return t
+    
+    def build_tree(self, root) :
+        children = []
+        for fm in self.get_markers() :
+            fmmd = self.get_metadata_by_marker(fm)
+            parent = fmmd.get_parent_marker()
+            if parent == root :
+                print "[%s] is child of [%s]!" % (fm, parent)
+                t = self.build_tree(fm)
+                children.append(t)
+        #t = Tree(root, children)
+        #return t
         
 class FieldMetadata :
     """This class is a container for information about a field, including its marker, name,
@@ -115,22 +137,22 @@ class FieldMetadata :
     """
     
     def __init__(self,
-                 marker    = None,
-                 name      = None,
-                 desc      = None,
-                 lang      = None,
-                 rangeset  = None,
-                 multiword = None,
-                 required  = None,
-                 parent    = None) :
-        self._marker    = marker
-        self._name      = name
-        self._desc      = desc
-        self._lang      = lang
-        self._rangeset  = rangeset
-        self._parent    = parent
-        self._multiword = multiword
-        self._required  = required
+                 marker     = None,
+                 name       = None,
+                 desc       = None,
+                 lang       = None,
+                 rangeset   = None,
+                 multiword  = None,
+                 required   = None,
+                 parent_mkr = None) :
+        self._marker     = marker
+        self._name       = name
+        self._desc       = desc
+        self._lang       = lang
+        self._rangeset   = rangeset
+        self._parent_mkr = parent_mkr
+        self._multiword  = multiword
+        self._required   = required
         
     def get_marker(self) :
         """Obtain the marker for this field (e.g., 'dx').
@@ -174,12 +196,12 @@ class FieldMetadata :
         """
         self._rangeset = rangeset
     
-    def get_parent(self) :
+    def get_parent_marker(self) :
         """Obtain the marker for the parent of this field (e.g., 'lx').
         @returns: marker for parent field
         @rtype: string
         """
-        return self._parent
+        return self._parent_mkr
 
     def is_multiword(self) :
         """Determine whether the value of the field consists of multiple words.
@@ -217,14 +239,14 @@ class LexiconSettings(Settings) :
             rangeset = None
             if self.__parse_value(mkr, "rngset") :
                 rangeset = self.__parse_value(mkr, "rngset").split()
-            fm = FieldMetadata(marker    = mkr.text,
-                               name      = self.__parse_value(mkr, "nam"),
-                               desc      = self.__parse_value(mkr, "desc"),
-                               lang      = self.__parse_value(mkr, "lng"),
-                               rangeset  = rangeset,
-                               multiword = self.__parse_boolean(mkr, "MultipleWordItems"),
-                               required  = self.__parse_boolean(mkr, "MustHaveData"),
-                               parent    = self.__parse_value(mkr, "mkrOverThis"))
+            fm = FieldMetadata(marker     = mkr.text,
+                               name       = self.__parse_value(mkr, "nam"),
+                               desc       = self.__parse_value(mkr, "desc"),
+                               lang       = self.__parse_value(mkr, "lng"),
+                               rangeset   = rangeset,
+                               multiword  = self.__parse_boolean(mkr, "MultipleWordItems"),
+                               required   = self.__parse_boolean(mkr, "MustHaveData"),
+                               parent_mkr = self.__parse_value(mkr, "mkrOverThis"))
             self._markerset.add_field_metadata(fm)
 
         # Handle range sets defined outside of marker set
@@ -238,6 +260,203 @@ class LexiconSettings(Settings) :
             
     def get_record_marker(self) :
         return self._tree.find('mkrset/mkrRecord').text
+
+    def get_marker_set(self) :
+        return self._markerset
+
+    def __parse_boolean(self, mkr, name) :
+        if mkr.find(name) == None :
+            return False
+        else :
+            return True
+
+    def __parse_value(self, mkr, name) :
+        try :
+            return mkr.find(name).text
+        except :
+            return None
+
+class InterlinearProcess :
+    """This class represents a process for text interlinearization."""
+
+    def __init__(self,
+                 from_mkr        = None,
+                 to_mkr          = None,
+                 out_mkr         = None,
+                 gloss_sep       = None,
+                 fail_mark       = None,
+                 parse_proc      = None,
+                 show_fail_mark  = None,
+                 show_root_guess = None) :
+        self.__from_mkr        = from_mkr
+        self.__to_mkr          = to_mkr
+        self.__out_mkr         = out_mkr
+        self.__gloss_sep       = gloss_sep
+        self.__fail_mark       = fail_mark
+        self.__parse_proc      = parse_proc
+        self.__show_fail_mark  = show_fail_mark
+        self.__show_root_guess = show_root_guess
+
+    def get_output_marker(self) :
+        return self.__out_mkr
+    
+    def get_from_marker(self) :
+        """The marker searched for in the lookup process."""
+        return self.__from_mkr
+
+    def get_to_marker(self) :
+        """The marker found in the lookup process."""
+        return self.__to_mkr
+
+    def get_gloss_separator(self) :
+        """???"""
+        return self.__gloss_sep
+
+    def get_failure_marker(self) :
+        """The string used in the case of lookup failure,""" 
+        return self.__fail_mark
+
+    def is_parse_process(self) :
+        """Determine whether this process is a parse process (as opposed to a lookup process)."""
+        return self.__parse_proc
+
+    def show_failure_marker(self) :
+        """???"""
+        return self.__show_fail_mark
+
+    def show_root_guess(self) :
+        """???"""
+        return self.__show_root_guess
+
+
+class LookupProcess(InterlinearProcess) :
+    pass
+
+
+class ParseProcess(InterlinearProcess) :
+    pass
+
+
+class TextSettings(Settings) :
+    """This class is used to parse and manipulate settings file for
+    lexicons."""
+
+    def __init__(self, file):
+        self._file      = file
+        self._markerset = MarkerSet()
+        self._tree      = None
+        
+    def parse(self, encoding=None) :
+        """Parse a settings file with lexicon metadata."""
+        s = Settings()
+        s.open(self._file)
+        self._tree = s.parse(encoding=encoding)
+        s.close()
+
+        # Handle interlinear process list
+        for proc in self._tree.findall("intprclst/intprc") :
+            parseProcess  = self.__parse_boolean(proc, "bParseProc")
+            showRootGuess = self.__parse_boolean(proc, "bShowRootGuess")
+            showFailMark  = self.__parse_boolean(proc, "bShowFailMark")
+            fromMkr       = self.__parse_value(proc, "mkrFrom")
+            outMkr        = self.__parse_value(proc, "mkrOut")
+            toMkr         = self.__parse_value(proc, "mkrTo").strip()
+            glossSep      = self.__parse_value(proc, "GlossSeparator")
+            failMark      = self.__parse_value(proc, "FailMark")
+            ip = ParseProcess(from_mkr        = fromMkr,
+                              to_mkr          = toMkr,
+                              gloss_sep       = glossSep,
+                              fail_mark       = failMark,
+                              parse_proc      = parseProcess,
+                              show_fail_mark  = showFailMark,
+                              show_root_guess = showRootGuess,
+                              out_mkr         = outMkr)                
+            if parseProcess :
+                pass
+            else :
+                pass
+
+            print "----- Interlinear Process -----"
+            print "  FROM:            [%s]" % ip.get_from_marker()
+            print "  TO:              [%s]" % ip.get_to_marker()
+            print "  GLOSS SEP:       [%s]" % ip.get_gloss_separator()
+            print "  FAIL MARK:       [%s]" % ip.get_failure_marker()
+            print "  SHOW FAIL MARK:  [%s]" % ip.show_failure_marker()
+            print "  SHOW ROOT GUESS: [%s]" % ip.show_root_guess()
+            print "  PARSE PROCESS:   [%s]" % ip.is_parse_process()            
+
+            trilook = proc.find("triLook")
+            if trilook :
+                print "  -- trilook --"
+                print "    DB TYPE:       [%s]" % self.__parse_value(trilook, "dbtyp")            
+                print "    MKR OUTPUT:    [%s]" % self.__parse_value(trilook, "mkrOut")
+
+            tripref = proc.find("triPref")
+            if tripref :
+                print "  -- tripref --"
+                print "    DB TYPE:       [%s]" % self.__parse_value(tripref, "dbtyp")            
+                print "    MKR OUTPUT:    [%s]" % self.__parse_value(tripref, "mkrOut")
+                try :
+                    for d in tripref.findall("drflst/drf") :
+                        print "    DB:            [%s]" % self.__parse_value(d, "File")
+                except :
+                    pass
+                try :
+                    for d in tripref.find("mrflst") :
+                        print "    MKR:           [%s]" % d.text
+                except :
+                    pass
+
+            triroot = proc.find("triRoot")
+            if triroot :
+                print "  -- triroot --"
+                print "    DB TYPE:       [%s]" % self.__parse_value(triroot, "dbtyp")
+                print "    MKR OUTPUT:    [%s]" % self.__parse_value(triroot, "mkrOut")
+                try :
+                    for d in triroot.findall("drflst/drf") :
+                        print "    DB:            [%s]" % self.__parse_value(d, "File")
+                except :
+                    pass
+                try :
+                    for d in triroot.find("mrflst") :
+                        print "    MKR:           [%s]" % d.text
+                except :
+                    pass
+
+            print ""
+            
+        # Handle metadata for field markers (aka, marker set)
+        for mkr in self._tree.findall('mkrset/mkr') :
+            rangeset = None
+            if self.__parse_value(mkr, "rngset") :
+                rangeset = self.__parse_value(mkr, "rngset").split()
+            fm = FieldMetadata(marker     = mkr.text,
+                               name       = self.__parse_value(mkr, "nam"),
+                               desc       = self.__parse_value(mkr, "desc"),
+                               lang       = self.__parse_value(mkr, "lng"),
+                               rangeset   = rangeset,
+                               multiword  = self.__parse_boolean(mkr, "MultipleWordItems"),
+                               required   = self.__parse_boolean(mkr, "MustHaveData"),
+                               parent_mkr = self.__parse_value(mkr, "mkrOverThis"))
+            self._markerset.add_field_metadata(fm)
+
+        # Handle range sets defined outside of marker set
+        # WARNING: Range sets outside the marker set override those inside the
+        #          marker set
+        for rs in self._tree.findall("rngset") :
+            mkr = rs.findtext("mkr")
+            fm = self._markerset.get_metadata_by_marker(mkr)
+            fm.set_rangeset([d.text for d in rs.findall("dat") ])
+            self._markerset.add_field_metadata(fm)
+            
+    def get_record_marker(self) :
+        return self._tree.find('mkrset/mkrRecord').text
+
+    def get_version(self) :
+        return self._tree.find('ver').text
+
+    def get_description(self) :
+        return self._tree.find('desc').text    
 
     def get_marker_set(self) :
         return self._markerset
