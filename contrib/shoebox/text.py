@@ -158,16 +158,16 @@ class Morpheme:
 class Line:
     """This class defines a line of interlinear glossing, such as::
 
-        \ref 9
-        \t Vigei    avapaviei                           atarisia.
-        \m vigei    ava -pa       -vi        -ei        atari -sia
-        \g 1.PL.INC go  -PROG     -1.PL.INCL -PRES      fish  -PURP
-        \p PRO.PERS V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.I   -SUFF.V.4
-        \fp Yumi bai go kisim pis.
-        \fe We're going fishing.
+        \\ref 9
+        \\t Vigei    avapaviei                           atarisia.
+        \\m vigei    ava -pa       -vi        -ei        atari -sia
+        \\g 1.PL.INC go  -PROG     -1.PL.INCL -PRES      fish  -PURP
+        \\p PRO.PERS V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.I   -SUFF.V.4
+        \\fp Yumi bai go kisim pis.
+        \\fe We're going fishing.
 
     The tiers of a line are saved as a sequential dictionary with
-    all of its associated fields. Identified by the field marker \ref
+    all of its associated fields. Identified by the field marker \\ref
     by default."""
     
     def __init__(self,
