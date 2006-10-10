@@ -153,17 +153,18 @@ class Data(ShoeboxFile):
         in the first part of the tuple they do not need to all appear in a parse.
         The fields in the second part of the tuple can occur in any order.
 
-        C{grammar = {
-            'shoebox':     (('_sh',), ('_DateStampHasFourDigitYear', 'entry')),
-            'entry':          (('lx',), ('hm', 'sense', 'dt')),
-            'sense':         (('sn', 'ps'), ('pn', 'gv', 'dv',
-                                       'gn', 'gp', 'dn', 'rn',
-                                       'ge', 'de', 're',
-                                       'example', 'lexfunc')),
-            'example':     (('rf', 'xv',), ('xn', 'xe')),
-            'lexfunc':       (('lf',), ('lexvalue',)),
-            'lexvalue':      (('lv',), ('ln', 'le')),
-        }}
+        Sample grammar::
+            C{grammar = {
+                'shoebox':     (('_sh',), ('_DateStampHasFourDigitYear', 'entry')),
+                'entry':          (('lx',), ('hm', 'sense', 'dt')),
+                'sense':         (('sn', 'ps'), ('pn', 'gv', 'dv',
+                                           'gn', 'gp', 'dn', 'rn',
+                                           'ge', 'de', 're',
+                                           'example', 'lexfunc')),
+                'example':     (('rf', 'xv',), ('xn', 'xe')),
+                'lexfunc':       (('lf',), ('lexvalue',)),
+                'lexvalue':      (('lv',), ('ln', 'le')),
+            }
         """
         parse_table, first = self._make_parse_table(grammar)
         builder = ElementTree.TreeBuilder()
