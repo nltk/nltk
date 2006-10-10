@@ -1,0 +1,78 @@
+--------------------------------------------------------------------------------
+Unit test cases for the simple tokenizer class
+--------------------------------------------------------------------------------
+
+    >>> from nltk_lite.tokenize.simple import *
+
+Perform some simple tokenizing tests: split the example string at
+whitespace, at newlines, and at paragraphs (two consecutive newline
+characters.
+
+    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+
+    >>> space(s)
+    ['Good', 'muffins', 'cost', '$3.88\nin', 'New', 'York.', '', 'Please', 'buy', 'me\ntwo', 'of', 'them.\n\nThanks.']
+
+    >>> token_list = line(s)
+    >>> list(token_list)
+    ['Good muffins cost $3.88', 'in New York.  Please buy me', 'two of them.', '', 'Thanks.']
+
+    >>> token_list = blankline(s)
+    >>> list(token_list)
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.', 'Thanks.']
+
+    >>> token_list = shoebox(s)
+    >>> list(token_list)
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks.']
+
+--------------------------------------------------------------------------------
+Unit test cases for the regexp tokenizer class
+--------------------------------------------------------------------------------
+
+    >>> import re, sre_parse, sre_constants, sre_compile
+    >>> from nltk_lite.tokenize.regexp import *
+
+    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+
+Tokenize on whitespace '\s+'
+
+    >>> token_list = whitespace(s)
+    >>> list(token_list)
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
+
+Tokenize on sequences of alphanumeric characters '\w+'
+
+    >>> token_list = regexp(s, pattern=r'\w+', gaps=False)
+    >>> list(token_list)
+    ['Good', 'muffins', 'cost', '3', '88', 'in', 'New', 'York', 'Please', 'buy', 'me', 'two', 'of', 'them', 'Thanks']
+
+Tokenize sequences of letters and sequences of nonletters
+'[a-zA-Z]+|[^a-zA-Z\s]+'
+
+    >>> token_list = wordpunct(s)
+    >>> list(token_list)
+    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    
+Tokenize by lines '\n'
+
+    >>> token_list = line(s)
+    >>> list(token_list)
+    ['Good muffins cost $3.88', 'in New York.  Please buy me', 'two of them.', 'Thanks.']
+
+Tokenize by blank lines '\s*\n\s*\n\s*'
+
+    >>> token_list = blankline(s)
+    >>> list(token_list)
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.', 'Thanks.']
+
+Tokenize on backslashes (aka shoebox for reasons unknown to me) '\\'
+
+    >>> token_list = shoebox(s)
+    >>> list(token_list)
+    ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks.']
+
+A simple sentence tokenizer '\.(\s+|$)'
+
+    >>> token_list = regexp(s, pattern=r'\.(\s+|$)', gaps=True)
+    >>> list(token_list)
+    ['Good muffins cost $3.88\nin New York', 'Please buy me\ntwo of them', 'Thanks']
