@@ -100,26 +100,54 @@ class MarkerSet :
         return self._dict[mkr]
 
     def get_field_marker_hierarchy(self) :
+        # Find root field marker
         root = None
         for fm in self.get_markers() :
             fmmd = self.get_metadata_by_marker(fm)            
             if not fmmd.get_parent_marker() :
                 root = fm
-        print "[%s] is root!" % root
-        t = self.build_tree(root)
-        return t
-    
-    def build_tree(self, root) :
-        children = []
-        for fm in self.get_markers() :
-            fmmd = self.get_metadata_by_marker(fm)
-            parent = fmmd.get_parent_marker()
-            if parent == root :
-                print "[%s] is child of [%s]!" % (fm, parent)
-                t = self.build_tree(fm)
-                children.append(t)
-        #t = Tree(root, children)
-        #return t
+
+        # Build tree for field markers
+        builder = ElementTree.TreeBuilder()
+        builder.start(root, {})
+        self.build_tree(root, builder)
+        builder.end(root)
+        return ElementTree.ElementTree(builder.close())
+        
+    def build_tree(self, mkr, builder) :
+        markers = self.get_markers()
+        markers.sort()
+        for tmpmkr in markers :
+            fmmd = self.get_metadata_by_marker(tmpmkr)
+            # Field is child of current field
+            if fmmd.get_parent_marker() == mkr :
+                # Handle rangeset
+                rangeset = fmmd.get_rangeset()
+                if rangeset :
+                    builder.start("rangeset", {})
+                    for rsi in rangeset :
+                        builder.start("value", {})
+                        builder.data(rsi)
+                        builder.end("value")
+                    builder.end("rangeset")
+
+                # Handle rangeset
+                name = fmmd.get_name()
+                if not name :
+                    name = ""
+                desc = fmmd.get_description()
+                if not desc :
+                    desc = ""
+                d = {"name" : name,
+                     "desc" : desc}
+                #print fmmd.get_language()
+                #print fmmd.is_multiword()
+                #print fmmd.requires_value()
+                builder.start(tmpmkr, d)
+                self.build_tree(tmpmkr, builder)
+                builder.end(tmpmkr)
+        return builder
+        
         
 class FieldMetadata :
     """This class is a container for information about a field, including its marker, name,
