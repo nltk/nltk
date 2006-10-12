@@ -12,14 +12,6 @@ the command line) and for a sentence to parse, then display the edges being
 generated and any resulting parse trees.
 """
 
-def demo():
-	gfile = GrammarFile.read_file('feat0.cfg')
-	cp = gfile.earley_parser()
-	sent = 'Kim likes children'
-	tokens = list(tokenize.whitespace(sent))
-	trees = cp.get_parse_list(tokens)
-	for tree in trees: print tree
-
 def text_parse(grammar, sent, trace=2, drawtrees=False, latex=False):
 	parser = grammar.earley_parser(trace=trace)
 	print parser._grammar
@@ -98,5 +90,5 @@ Distributed under the GPL. See LICENSE.TXT for information.""" % globals()
 		infile.close()
 
 if __name__ == '__main__':
-	demo()
+	main()
 
