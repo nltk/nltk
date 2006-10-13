@@ -191,12 +191,12 @@ def is_indvar(expr):
     Check whether an expression has the form of an individual variable.
     
     An individual variable matches the following regex:
-    C{'^[xywz](\d*)'}.
+    C{'^[wxyz](\d*)'}.
     
     @rtype: Boolean
     @param expr: String
     """
-    result = expr[0] in ['x', 'y', 'w', 'z']
+    result = expr[0] in ['w', 'x', 'y', 'z']
     if len(expr) > 1:
         return result and expr[1:].isdigit()
     else:
@@ -323,7 +323,7 @@ class VariableBinderExpression(Expression):
         if self.variable == variable:
             return self
         if self.variable in expression.free():
-            v = '_g' + str(self._counter.get())
+            v = 'z' + str(self._counter.get())
             self = self.alpha_convert(Variable(v))
         return self.__class__(self.variable, \
                                 self.term.replace(variable, expression))
