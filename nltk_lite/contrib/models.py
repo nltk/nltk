@@ -508,18 +508,14 @@ class Assignment(dict):
 
     An assigment can only assign values from its domain.
 
-    Although an assignment M{g} is finite, it is not I{partial}, in
-    the following sense: if a variable M{x} is not one of M{g}'s keys,
-    M{g} will choose an arbitrary member of the model's domain and use
-    that as the value of M{x}. A downside of this approach is that if
-    a unknown expression M{a} is passed to a model M{M}'s
+    If an unknown expression M{a} is passed to a model M{M}'s
     interpretation function M{i}, M{i} will first check whether M{M}'s
     valuation assigns an interpretation to M{a} as a constant, and if
     this fails, M{i} will delegate the interpretation of M{a} to
-    M{g}. Since we have no way at present of telling whether M{a} is
-    in fact an individual variable, the behaviour of M{g} just
-    described will by default treat it as one.  An alternative would
-    be to raise an exception in this case.
+    M{g}. M{g} only assigns values to individual variables (i.e.,
+    members of the class L{IndVariableExpression} in the L{logic}
+    module. If a variable is not assigned a value by M{g}, it will raise
+    an C{Undefined} exception.
     """
     def __init__(self, domain, assignment=None):
         dict.__init__(self)
@@ -839,7 +835,7 @@ class Model:
         # individual variable or not assigned a value by g
         except Undefined:
             if trace:
-                print "C{Expression} '%s' can't be evaluated by i and %s." % (expr, g)
+                print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
             raise
 
     def freevar(self, var, expr):
@@ -889,7 +885,7 @@ class Model:
                 if value == False:
                     if trace:
                         print  indent + "value of '%s' under %s is False" % (expr, g)
-                    #g.purge(var)
+                 
                     
                 # so g[u/var] is a satisfying assignment
                 else:
@@ -921,7 +917,11 @@ class Model:
         @param expr: A string representation of a first-order formula.
         """
 
-        parsed = logic.Parser(constants=self.valuation.symbols).parse(expr)
+        try:
+            parsed = logic.Parser(constants=self.valuation.symbols).parse(expr)
+        except TypeError:
+            print "Cannot parse %s" % expr
+            
         try:
             first, second = parsed.binder, parsed.body
             #print 'first is %s, second is %s' % (first, second)
@@ -1220,7 +1220,7 @@ def foldemo(trace=None):
 
     sentences = [
     '(love adam betty)',
-    '(adam = betty)',
+    '(adam = mia)',
     'some z1. (boy z1)',
     'some x. ((boy x) and (not (x = adam)))',
     'some x. ((boy x) and all y. (love x y))',
@@ -1307,7 +1307,7 @@ def demo(num, trace=None):
 
 
 if __name__ == "__main__":
-    demo(0, trace=None)
+    demo(3, trace=1)
     print '*' * mult 
     test(verbosity=2) 
         
