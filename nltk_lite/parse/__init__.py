@@ -102,7 +102,7 @@ class ParseI(object):
         @type sent: L{list} of L{string}
         """
 
-    def get_parse_list(self, sent):
+    def get_parse_dict(self, sent):
         """
         @return: A dictionary mapping from the parse trees for the
         sentence to numeric scores.
