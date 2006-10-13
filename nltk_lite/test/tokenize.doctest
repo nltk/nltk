@@ -32,19 +32,28 @@ Unit test cases for the regexp tokenizer class
     >>> import re, sre_parse, sre_constants, sre_compile
     >>> from nltk_lite.tokenize.regexp import *
 
-    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+Some additional test strings.
+
+    >>> s2 = "Alas, it has not rained today. When, do you think, will it rain again?"
+    >>> s3 = "<p>Although this is <b>not</b> the case here, we must not relax our vigilance!</p>"
+
+Test token_split, in both simple and advanced modes. First use a simple regular expression that splits a string into clauses. Next use a more complex string that splits html code on element delimiters (more complex because it uses parentheses).
+
+    >>> token_list = token_split(s2, r'[,\.\?!"]\s*')
+    >>> list(token_list)
+    ['Alas', ', ', 'it has not rained today', '. ', 'When', ', ', 'do you think', ', ', 'will it rain again', '?']
+
+    >>> token_list = token_split(s3, r'</?(b|p)>', True)
+    >>> list(token_list)
+    ['', '<p>', 'Although this is ', '<b>', 'not', '</b>', ' the case here, we must not relax our vigilance!', '</p>']
+
+Test each of the supplied convenience functions.
 
 Tokenize on whitespace '\s+'
 
     >>> token_list = whitespace(s)
     >>> list(token_list)
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
-
-Tokenize on sequences of alphanumeric characters '\w+'
-
-    >>> token_list = regexp(s, pattern=r'\w+', gaps=False)
-    >>> list(token_list)
-    ['Good', 'muffins', 'cost', '3', '88', 'in', 'New', 'York', 'Please', 'buy', 'me', 'two', 'of', 'them', 'Thanks']
 
 Tokenize sequences of letters and sequences of nonletters
 '[a-zA-Z]+|[^a-zA-Z\s]+'
@@ -70,6 +79,12 @@ Tokenize on backslashes (aka shoebox for reasons unknown to me) '\\'
     >>> token_list = shoebox(s)
     >>> list(token_list)
     ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks.']
+
+Tokenize treebank data
+
+    >>> tb = "Pierre/NNP Vinken/NNP ,/, 61/CD years/NNS old/JJ ,/, will/MD join/VB the/DT board/NN as/IN a/DT nonexecutive/JJ director/NN Nov./NNP 29/CD ./."
+    >>> token_list = treebank(tb)
+    >>> list(token_list)
 
 A simple sentence tokenizer '\.(\s+|$)'
 
