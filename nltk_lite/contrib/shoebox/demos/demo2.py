@@ -14,13 +14,9 @@ corresponds to
 in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
-from nltk_lite.corpora import get_basedir
-import os.path
-from nltk_lite.contrib.shoebox import Data
+from nltk_lite.contrib.shoebox.data import flat_parse_data
 
-db = Data()
-db.open(os.path.join(get_basedir(), 'shoebox', 'rotokas.dic'))
-lexicon = db.flat_parse('lx')
+lexicon = flat_parse_data('rotokas.dic', 'lx')
 lexemes = []
 for lexeme in lexicon.findall('record/lx'):
     normalised_lexeme = lexeme.text.lower()
