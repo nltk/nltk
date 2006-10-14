@@ -13,11 +13,16 @@
 
 from elementtree import ElementTree
 from nltk_lite.corpora.shoebox import ShoeboxFile
+import os.path
+from nltk_lite.corpora import get_basedir
 
 def flat_parse_data(file_name, key, **kwargs):
     """
     Return an element tree resulting from parsing the toolbox datafile.
-
+    
+    A convenience function that creates a Data object, opens and parses 
+    the shoebox data file. The data file is assumed to be in the shoebox 
+    subdirectory of the directory where NLTK looks for corpora L{get_base_dir}.
     @param file_name: Name of file in shoebox corpus directory
     @type file_name: string
     @param key: marker at the start of each record
