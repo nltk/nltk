@@ -30,7 +30,7 @@ class GroupAverageAgglomerative(VectorSpace):
     def cluster(self, vectors, assign_clusters=False, trace=False):
         # stores the merge order
         self._dendogram = Dendogram(
-            [array(vector, numarray.Float64) for vector in vectors])
+            [array(vector, numpy.float64) for vector in vectors])
         return VectorSpace.cluster(self, vectors, assign_clusters, trace)
 
     def cluster_vectorspace(self, vectors, trace=False):
@@ -106,7 +106,7 @@ class GroupAverageAgglomerative(VectorSpace):
     def _average_similarity(self, v1, l1, v2, l2):
         sum = v1 + v2
         length = l1 + l2
-        return (numarray.dot(sum, sum) - length) / (length * (length - 1))
+        return (numpy.dot(sum, sum) - length) / (length * (length - 1))
 
     def __repr__(self):
         return '<GroupAverageAgglomerative Clusterer n=%d>' % self._num_clusters
