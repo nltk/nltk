@@ -22,11 +22,14 @@ def flat_parse_data(file_name, key, **kwargs):
     
     A convenience function that creates a Data object, opens and parses 
     the shoebox data file. The data file is assumed to be in the shoebox 
-    subdirectory of the directory where NLTK looks for corpora L{get_base_dir}.
+    subdirectory of the directory where NLTK looks for corpora, 
+    see L{corpora.get_basedir()}.
     @param file_name: Name of file in shoebox corpus directory
     @type file_name: string
     @param key: marker at the start of each record
     @type key: string
+    @param kwargs: Keyword arguments passed to L{Data.flat_parse()}
+    @type kwargs: keyword arguments dictionary
     @rtype:   ElementTree._ElementInterface
     @return:  contents of toolbox data divided into header and records
     """ 
@@ -84,6 +87,8 @@ class Data(ShoeboxFile):
 
         @param key: Name of key marker at the start of each record
         @type key: string
+        @param kwargs: Keyword arguments passed to L{ShoeboxFile.fields()}
+        @type kwargs: keyword arguments dictionary
         @rtype:   ElementTree._ElementInterface
         @return:  contents of toolbox data divided into header and records
         """
@@ -142,6 +147,8 @@ class Data(ShoeboxFile):
         @type grammar: dictionary of tuple of tuples
         @param grammar: Contains the set of rewrite rules used to parse the 
         database.  See the description below.
+        @param kwargs: Keyword arguments passed to L{ShoeboxFile.fields()}
+        @type kwargs: keyword arguments dictionary
         @rtype:   ElementTree._ElementInterface
         @return:  Contents of toolbox data parsed according to rules in grammar
         
