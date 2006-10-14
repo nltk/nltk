@@ -31,11 +31,11 @@ class EM(VectorSpace):
         convergence threshold and vector mangling parameters.
 
         @param  initial_means: the means of the gaussian cluster centers
-        @type   initial_means: [seq of] numarray array or seq of SparseArray
+        @type   initial_means: [seq of] numpy array or seq of SparseArray
         @param  priors: the prior probability for each cluster
-        @type   priors: numarray array or seq of float
+        @type   priors: numpy array or seq of float
         @param  covariance_matrices: the covariance matrix for each cluster
-        @type   covariance_matrices: [seq of] numarray array 
+        @type   covariance_matrices: [seq of] numpy array 
         @param  conv_threshold: maximum change in likelihood before deemed
                     convergent
         @type   conv_threshold: int or float
@@ -49,7 +49,7 @@ class EM(VectorSpace):
         @type   svd_dimensions: int 
         """
         VectorSpace.__init__(self, normalise, svd_dimensions)
-        self._means = array(initial_means, numarray.Float64)
+        self._means = array(initial_means, numpy.float64)
         self._num_clusters = len(initial_means)
         self._conv_threshold = conv_threshold
         self._covariance_matrices = covariance_matrices
@@ -67,12 +67,12 @@ class EM(VectorSpace):
         means = self._means
         priors = self._priors
         if not priors:
-            priors = self._priors = numarray.ones(self._num_clusters,
-                                        numarray.Float64) / self._num_clusters
+            priors = self._priors = numpy.ones(self._num_clusters,
+                                        numpy.float64) / self._num_clusters
         covariances = self._covariance_matrices 
         if not covariances:
             covariances = self._covariance_matrices = \
-                [ numarray.identity(dimensions, numarray.Float64) 
+                [ numpy.identity(dimensions, numpy.float64) 
                   for i in range(self._num_clusters) ]
             
         # do the E and M steps until the likelihood plateaus
@@ -82,8 +82,8 @@ class EM(VectorSpace):
         while not converged:
             if trace: print 'iteration; loglikelihood', lastl
             # E-step, calculate hidden variables, h[i,j]
-            h = numarray.zeros((len(vectors), self._num_clusters),
-                numarray.Float64)
+            h = numpy.zeros((len(vectors), self._num_clusters),
+                numpy.float64)
             for i in range(len(vectors)):
                 for j in range(self._num_clusters):
                     h[i,j] = priors[j] * self._gaussian(means[j],
@@ -93,14 +93,14 @@ class EM(VectorSpace):
             # M-step, update parameters - cvm, p, mean
             for j in range(self._num_clusters):
                 covariance_before = covariances[j]
-                new_covariance = numarray.zeros((dimensions, dimensions),
-                            numarray.Float64)
-                new_mean = numarray.zeros(dimensions, numarray.Float64)
+                new_covariance = numpy.zeros((dimensions, dimensions),
+                            numpy.float64)
+                new_mean = numpy.zeros(dimensions, numpy.float64)
                 sum_hj = 0.0
                 for i in range(len(vectors)):
                     delta = vectors[i] - means[j]
                     new_covariance += h[i,j] * \
-                        numarray.multiply.outer(delta, delta)
+                        numpy.multiply.outer(delta, delta)
                     sum_hj += h[i,j]
                     new_mean += h[i,j] * vectors[i]
                 covariances[j] = new_covariance / sum_hj
@@ -109,7 +109,7 @@ class EM(VectorSpace):
 
                 # bias term to stop covariance matrix being singular
                 covariances[j] += self._bias * \
-                    numarray.identity(dimensions, numarray.Float64)
+                    numpy.identity(dimensions, numpy.float64)
 
             # calculate likelihood - FIXME: may be broken
             l = self._loglikelihood(vectors, priors, means, covariances)
@@ -138,13 +138,13 @@ class EM(VectorSpace):
         assert cvm.shape == (m, m), \
             'bad sized covariance matrix, %s' % str(cvm.shape)
         try:
-            det = linear_algebra.determinant(cvm)
-            inv = linear_algebra.inverse(cvm)
-            a = det ** -0.5 * (2 * numarray.pi) ** (-m / 2.0) 
+            det = linalg.det(cvm)
+            inv = linalg.inv(cvm)
+            a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0) 
             dx = x - mean
-            b = -0.5 * numarray.matrixmultiply( \
-                    numarray.matrixmultiply(dx, inv), dx)
-            return a * numarray.exp(b) 
+            b = -0.5 * numpy.matrixmultiply( \
+                    numpy.matrixmultiply(dx, inv), dx)
+            return a * numpy.exp(b) 
         except OverflowError:
             # happens when the exponent is negative infinity - i.e. b = 0
             # i.e. the inverse of cvm is huge (cvm is almost zero)
@@ -157,7 +157,7 @@ class EM(VectorSpace):
             for j in range(len(priors)):
                 p += priors[j] * \
                          self._gaussian(means[j], covariances[j], vector)
-            llh += numarray.log(p)
+            llh += numpy.log(p)
         return llh
 
     def __repr__(self):
@@ -169,14 +169,14 @@ def euclidean_distance(u, v):
     to the length of the vector (u - v).
     """
     diff = u - v
-    return math.sqrt(numarray.dot(diff, diff))
+    return math.sqrt(numpy.dot(diff, diff))
 
 def cosine_distance(u, v):
     """
     Returns the cosine of the angle between vectors v and u. This is equal to
     u.v / |u||v|.
     """
-    return numarray.dot(u, v) / (math.sqrt(numarray.dot(u, u)) * math.sqrt(numarray.dot(v, v)))
+    return numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v)))
 
 def demo():
     """

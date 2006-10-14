@@ -16,7 +16,7 @@ in http://nltk.sourceforge.net/lite/doc/en/data.html
 
 from nltk_lite.corpora import get_basedir
 import os.path
-from nltk_lite.contrib.shoebox.data import Data
+from nltk_lite.contrib.shoebox import Data
 
 db = Data()
 db.open(os.path.join(get_basedir(), 'shoebox', 'rotokas.dic'))

@@ -65,7 +65,7 @@ of EM.
 """
 
 from nltk_lite.probability import *
-from numarray import *
+from numpy import *
 import re
 
 # _NINF = float('-inf')  # won't work on Windows
@@ -198,7 +198,7 @@ class HiddenMarkovModel(object):
 
         T = len(unlabelled_sequence)
         N = len(self._states)
-        V = zeros((T, N), Float64)
+        V = zeros((T, N), float64)
         B = {}
 
         # find the starting log probabilities for each state
@@ -365,8 +365,8 @@ class HiddenMarkovModel(object):
         beta = self._backward_probability(unlabelled_sequence)
         normalisation = _log_add(*alpha[T-1, :])
     
-        entropies = zeros(T, Float64)
-        probs = zeros(N, Float64)
+        entropies = zeros(T, float64)
+        probs = zeros(N, float64)
         for t in range(T):
             for s in range(N):
                 probs[s] = alpha[t, s] + beta[t, s] - normalisation
@@ -397,7 +397,7 @@ class HiddenMarkovModel(object):
             log_probs.append(lp)
         normalisation = _log_add(*log_probs)
 
-        #ps = zeros((T, N), Float64)
+        #ps = zeros((T, N), float64)
         #for labelling, lp in zip(labellings, log_probs):
             #for t in range(T):
                 #ps[t, self._states.index(labelling[t])] += exp(lp - normalisation)
@@ -434,7 +434,7 @@ class HiddenMarkovModel(object):
 
         normalisation = _log_add(*log_probs)
 
-        probabilities = zeros((T, N), Float64)
+        probabilities = zeros((T, N), float64)
         probabilities[:] = _NINF
         for labelling, lp in zip(labellings, log_probs):
             lp -= normalisation
@@ -442,7 +442,7 @@ class HiddenMarkovModel(object):
                 index = self._states.index(label)
                 probabilities[t, index] = _log_add(probabilities[t, index], lp)
 
-        entropies = zeros(T, Float64)
+        entropies = zeros(T, float64)
         for t in range(T):
             for s in range(N):
                 entropies[t] -= exp(probabilities[t, s]) * probabilities[t, s]
@@ -464,7 +464,7 @@ class HiddenMarkovModel(object):
         """
         T = len(unlabelled_sequence)
         N = len(self._states)
-        alpha = zeros((T, N), Float64)
+        alpha = zeros((T, N), float64)
 
         symbol = unlabelled_sequence[0][_TEXT]
         for i, state in enumerate(self._states):
@@ -498,7 +498,7 @@ class HiddenMarkovModel(object):
         """
         T = len(unlabelled_sequence)
         N = len(self._states)
-        beta = zeros((T, N), Float64)
+        beta = zeros((T, N), float64)
 
         # initialise the backward values
         beta[T-1, :] = log(1)
@@ -627,10 +627,10 @@ class HiddenMarkovModelTrainer(object):
         max_iterations = kwargs.get('max_iterations', 1000)
         epsilon = kwargs.get('convergence_logprob', 1e-6)
         while not converged and iteration < max_iterations:
-            A_numer = ones((N, N), Float64) * _NINF
-            B_numer = ones((N, M), Float64) * _NINF
-            A_denom = ones(N, Float64) * _NINF
-            B_denom = ones(N, Float64) * _NINF
+            A_numer = ones((N, N), float64) * _NINF
+            B_numer = ones((N, M), float64) * _NINF
+            A_denom = ones(N, float64) * _NINF
+            B_denom = ones(N, float64) * _NINF
 
             logprob = 0
             for sequence in unlabelled_sequences:
@@ -646,10 +646,10 @@ class HiddenMarkovModelTrainer(object):
                 # now update A and B (transition and output probabilities)
                 # using the alpha and beta values. Please refer to Rabiner's
                 # paper for details, it's too hard to explain in comments
-                local_A_numer = ones((N, N), Float64) * _NINF
-                local_B_numer = ones((N, M), Float64) * _NINF
-                local_A_denom = ones(N, Float64) * _NINF
-                local_B_denom = ones(N, Float64) * _NINF
+                local_A_numer = ones((N, N), float64) * _NINF
+                local_B_numer = ones((N, M), float64) * _NINF
+                local_A_denom = ones(N, float64) * _NINF
+                local_B_denom = ones(N, float64) * _NINF
 
                 # for each position, accumulate sums for A and B
                 for t in range(T):
@@ -799,11 +799,11 @@ def demo():
             d[condition] = pd(values, samples)
         return DictionaryConditionalProbDist(d)
 
-    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], Float64)
+    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], float64)
     A = cpd(A, states, states)
-    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], Float64)
+    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], float64)
     B = cpd(B, states, symbols)
-    pi = array([0.5, 0.2, 0.3], Float64)
+    pi = array([0.5, 0.2, 0.3], float64)
     pi = pd(pi, states)
 
     model = HiddenMarkovModel(symbols=symbols, states=states,
@@ -941,11 +941,11 @@ def demo_bw():
             d[condition] = pd(values, samples)
         return DictionaryConditionalProbDist(d)
 
-    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], Float64)
+    A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], float64)
     A = cpd(A, states, states)
-    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], Float64)
+    B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], float64)
     B = cpd(B, states, symbols)
-    pi = array([0.5, 0.2, 0.3], Float64)
+    pi = array([0.5, 0.2, 0.3], float64)
     pi = pd(pi, states)
 
     model = HiddenMarkovModel(symbols=symbols, states=states,
