@@ -71,14 +71,14 @@ Usage example (see also demo())::
     # classify a new vector
     print clusterer.classify(array([3, 3]))
 
-Note that the vectors must use numarray array-like
+Note that the vectors must use numpy array-like
 objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
 from nltk_lite.probability import DictionaryProbDist
-import copy, numarray, math, random, sys, types
-from numarray import array, linear_algebra
+import copy, numpy, math, random, sys, types
+from numpy import array, linalg
 
 #======================================================================
 # Generic interfaces
@@ -172,14 +172,13 @@ class VectorSpace(ClusterI):
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
-            [u, d, vt] = linear_algebra.singular_value_decomposition(
-                            numarray.transpose(array(vectors)))
+            [u, d, vt] = linalg.svd(numpy.transpose(array(vectors)))
             S = d[:self._svd_dimensions] * \
-                numarray.identity(self._svd_dimensions, numarray.Float64)
+                numpy.identity(self._svd_dimensions, numpy.Float64)
             T = u[:,:self._svd_dimensions]
             Dt = vt[:self._svd_dimensions,:]
-            vectors = numarray.transpose(numarray.matrixmultiply(S, Dt))
-            self._Tt = numarray.transpose(T)
+            vectors = numpy.transpose(numpy.matrixmultiply(S, Dt))
+            self._Tt = numpy.transpose(T)
             
         # call abstract method to cluster the vectors
         self.cluster_vectorspace(vectors, trace)
@@ -199,7 +198,7 @@ class VectorSpace(ClusterI):
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt != None:
-            vector = numarray.matrixmultiply(self._Tt, vector)
+            vector = numpy.matrixmultiply(self._Tt, vector)
         cluster = self.classify_vectorspace(vector)
         return self.cluster_name(cluster)
 
@@ -213,7 +212,7 @@ class VectorSpace(ClusterI):
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt != None:
-            vector = numarray.matrixmultiply(self._Tt, vector)
+            vector = numpy.matrixmultiply(self._Tt, vector)
         return self.likelihood_vectorspace(vector, label)
 
     def likelihood_vectorspace(self, vector, cluster):
@@ -231,14 +230,14 @@ class VectorSpace(ClusterI):
         if self._should_normalise:
             vector = self._normalise(vector)
         if self._Tt != None:
-            vector = numarray.matrixmultiply(self._Tt, vector)
+            vector = numpy.matrixmultiply(self._Tt, vector)
         return vector
 
     def _normalise(self, vector):
         """
         Normalises the vector to unit length.
         """
-        return vector / math.sqrt(numarray.dot(vector, vector))
+        return vector / math.sqrt(numpy.dot(vector, vector))
 
 class _DendogramNode:
     """ Tree node of a dendogram. """
