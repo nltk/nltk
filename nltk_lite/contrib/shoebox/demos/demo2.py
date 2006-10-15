@@ -14,9 +14,9 @@ corresponds to
 in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
-from nltk_lite.contrib.shoebox.data import flat_parse_data
+from nltk_lite.contrib.shoebox import data
 
-lexicon = flat_parse_data('rotokas.dic', 'lx')
+lexicon = data.record_parse_data('rotokas.dic', 'lx')
 lexemes = []
 for lexeme in lexicon.findall('record/lx'):
     normalised_lexeme = lexeme.text.lower()
