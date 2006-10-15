@@ -15,6 +15,7 @@ from nltk_lite.etree import ElementTree
 from nltk_lite.corpora.shoebox import ShoeboxFile
 import os.path
 from nltk_lite.corpora import get_basedir
+import re
 
 def record_parse_data(file_name, key, **kwargs):
     """
@@ -36,6 +37,29 @@ def record_parse_data(file_name, key, **kwargs):
     db = Data()
     db.open(os.path.join(get_basedir(), 'shoebox', file_name))
     return db.record_parse(key, **kwargs)
+
+_is_value = re.compile(r"\S")
+
+def to_sfm_string(tree):
+    """Return a string with a standard format representation of the shoebox
+    data in tree.
+    
+    @type tree: ElementTree._ElementInterface
+    @param tree: flat representation of shoebox data
+    @rtype:   string
+    @return:  string using standard format markup
+    """
+    # todo encoding, unicode fields, errors?
+    l = list()
+    for rec in tree:
+        l.append('\n')
+        for field in rec:
+            value = field.text
+            if re.search(_is_value, value):
+                l.append("\\%s %s\n" % (field.tag, value))
+            else:
+                l.append("\\%s%s\n" % (field.tag, value))
+    return ''.join(l[1:])
 
 
 class Data(ShoeboxFile):
