@@ -1,1 +1,3 @@
-__all__ = ["data", "errors", "lexicon", "settings", "text", "utilities"]
+# __all__ = ["data", "errors", "lexicon", "settings", "text", "utilities"]
+
+from data import *
