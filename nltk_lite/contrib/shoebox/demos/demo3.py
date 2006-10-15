@@ -27,7 +27,7 @@ grammar = {
         'lexvalue':    (('lv',), ('ln', 'le')),
 }
 
-db = shoebox.data.Data()
+db = shoebox.Data()
 db.open('iu_mien_samp.db')
 lexicon = db.grammar_parse('shoebox', grammar, encoding='utf8')
 tree = ElementTree.ElementTree(lexicon)
