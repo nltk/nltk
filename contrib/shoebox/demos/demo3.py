@@ -13,7 +13,7 @@ demonstration of grammar parsing
 """
 
 from nltk_lite.etree import ElementTree
-from nltk_lite.contrib.shoebox import data
+from nltk_lite.contrib import shoebox
 
 grammar = {
         'shoebox':      (('_sh',), ('_DateStampHasFourDigitYear', 'entry')),
@@ -27,7 +27,7 @@ grammar = {
         'lexvalue':    (('lv',), ('ln', 'le')),
 }
 
-db = data.Data()
+db = shoebox.data.Data()
 db.open('iu_mien_samp.db')
 lexicon = db.grammar_parse('shoebox', grammar, encoding='utf8')
 tree = ElementTree.ElementTree(lexicon)
