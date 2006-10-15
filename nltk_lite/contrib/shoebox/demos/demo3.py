@@ -9,11 +9,11 @@
 # For license information, see LICENSE.TXT
 
 """
-demonstration of tree parsing
+demonstration of grammar parsing
 """
 
 from nltk_lite.etree import ElementTree
-from nltk_lite.contrib.shoebox.data import Data
+from nltk_lite.contrib.shoebox import data
 
 grammar = {
         'shoebox':      (('_sh',), ('_DateStampHasFourDigitYear', 'entry')),
@@ -27,9 +27,9 @@ grammar = {
         'lexvalue':    (('lv',), ('ln', 'le')),
 }
 
-db = Data()
+db = data.Data()
 db.open('iu_mien_samp.db')
-lexicon = db.tree_parse('shoebox', grammar, encoding='utf8')
+lexicon = db.grammar_parse('shoebox', grammar, encoding='utf8')
 tree = ElementTree.ElementTree(lexicon)
 tree.write('iu_mien_samp.xml', encoding='utf8')
 num_lexemes = 0
