@@ -16,7 +16,7 @@ from nltk_lite.corpora.shoebox import ShoeboxFile
 import os.path
 from nltk_lite.corpora import get_basedir
 
-def flat_parse_data(file_name, key, **kwargs):
+def record_parse_data(file_name, key, **kwargs):
     """
     Return an element tree resulting from parsing the toolbox datafile.
     
@@ -35,14 +35,14 @@ def flat_parse_data(file_name, key, **kwargs):
     """ 
     db = Data()
     db.open(os.path.join(get_basedir(), 'shoebox', file_name))
-    return db.flat_parse(key, **kwargs)
+    return db.record_parse(key, **kwargs)
 
 
 class Data(ShoeboxFile):
     def __init__(self):
         super(Data, self).__init__()
 
-    def flat_parse(self, key, **kwargs):
+    def record_parse(self, key, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file with
         all markers at the same level.
@@ -64,7 +64,7 @@ class Data(ShoeboxFile):
         after parsing will end up with the same structure (ignoring the extra 
         whitespace) as the following XML fragment after being parsed by 
         ElementTree::
-            <data>
+            <shoebox_data>
                 <header>
                     <_sh>v3.0  400  Rotokas Dictionary</_sh>
                     <_DateStampHasFourDigitYear/>
@@ -93,7 +93,7 @@ class Data(ShoeboxFile):
         @return:  contents of toolbox data divided into header and records
         """
         builder = ElementTree.TreeBuilder()
-        builder.start('data', {})
+        builder.start('shoebox_data', {})
         builder.start('header', {})
         in_records = False
         for mkr, value in self.fields(**kwargs):
@@ -111,7 +111,7 @@ class Data(ShoeboxFile):
             builder.end('record')
         else:
             builder.end('header')
-        builder.end('data')
+        builder.end('shoebox_data')
         return builder.close()
 
     def _make_parse_table(self, grammar):
@@ -137,7 +137,7 @@ class Data(ShoeboxFile):
                     parse_table[state][to_sym] = to_sym
         return (parse_table, first)
 
-    def tree_parse(self, startsym, grammar, **kwargs):
+    def grammar_parse(self, startsym, grammar, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the grammar.
