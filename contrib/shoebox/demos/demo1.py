@@ -15,7 +15,7 @@ in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
 from nltk_lite.contrib.shoebox.data import flat_parse_data
-from elementtree import ElementTree
+from nltk_lite.etree import ElementTree
 import sys
 
 lexicon = flat_parse_data('rotokas.dic', 'lx')

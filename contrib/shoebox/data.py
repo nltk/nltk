@@ -11,7 +11,7 @@
 """module for reading Shoebox data files
 """
 
-from elementtree import ElementTree
+from nltk_lite.etree import ElementTree
 from nltk_lite.corpora.shoebox import ShoeboxFile
 import os.path
 from nltk_lite.corpora import get_basedir
