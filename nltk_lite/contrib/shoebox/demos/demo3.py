@@ -12,7 +12,7 @@
 demonstration of tree parsing
 """
 
-from elementtree import ElementTree
+from nltk_lite.etree import ElementTree
 from nltk_lite.contrib.shoebox.data import Data
 
 grammar = {
