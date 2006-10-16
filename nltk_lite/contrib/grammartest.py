@@ -104,18 +104,21 @@ def model_init():
     global m, g 
     val = models.Valuation()
     v = [('john', 'b1'),
-         ('mary', 'g1'),
-         ('fido', 'd1'),
-         ('noosa', 'n'),
-         ('girl', set(['g1', 'g2'])),
-         ('boy', set(['b1', 'b2'])),
-         ('dog', set(['d1'])),
-         ('bark', set(['d1'])),
-         ('walk', set(['b1', 'g2', 'd1'])),
-         ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')])),
-         ('see', set([('b1', 'g1'), ('b2', 'd2'), ('g1', 'b1'), ('d2', 'b1'), ('g2', 'n')])),
-         ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
-         ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))]
+        ('mary', 'g1'),
+        ('suzie', 'g2'),
+        ('fido', 'd1'),
+        ('tess', 'd2'),
+        ('noosa', 'n'),
+        ('girl', set(['g1', 'g2'])),
+        ('boy', set(['b1', 'b2'])),
+        ('dog', set(['d1', 'd2'])),
+        ('bark', set(['d1', 'd2'])),
+        ('walk', set(['b1', 'g2', 'd1'])),
+        ('chase', set([('b1', 'g1'), ('b2', 'g1'), ('g1', 'd1'), ('g2', 'd2')])),
+        ('see', set([('b1', 'g1'), ('b2', 'd2'), ('g1', 'b1'),('d2', 'b1'), ('g2', 'n')])),
+        ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
+        ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
+     ]
     val.parse(v)
     dom = val.domain
     m = models.Model(dom, val)
@@ -124,13 +127,15 @@ def model_init():
 
 sents = ['Fido sees a boy with Mary',
          'John sees Mary',
+         'every girl chases a dog',
+         'every boy chases a girl',
          'John walks with a girl in Noosa'
          ]
 
 def demo():
     model_init()
     SPACER = '-' * 30
-    filename = mygramdir + 'semtest.cfg'
+    filename = mygramdir + 'feat2.cfg'
     model = m
     assignment = g
     grammar = GrammarFile.read_file(filename)
@@ -138,10 +143,9 @@ def demo():
     interpreter = SemanticInterpreter()
     evaluations = interpreter.text_evaluate(inputs, grammar, model, assignment)
     
-    for sent in evaluations:
+    for sent in inputs:
         n = 1
-        print
-        print 'Sentence: %s' % sent
+        print '\nSentence: %s' % sent
         print SPACER
         for (syntree, semrep, value) in evaluations[sent]:
             print '%d:  %s' % (n, semrep.infixify())
