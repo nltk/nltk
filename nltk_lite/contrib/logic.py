@@ -486,7 +486,7 @@ class ApplicationExpression(Expression):
     def infixify(self):
         first = self.first.infixify()
         second = self.second.infixify()
-        if isinstance(first, Operator):
+        if isinstance(first, Operator) and not str(first) == 'not':
 	    return self.__class__(second, first)
         else:
             return self.__class__(first, second)    
