@@ -1218,7 +1218,7 @@ def foldemo(trace=None):
     print "FOL Formulas Demo"
     print '*' * mult
 
-    sentences = [
+    formulas = [
     '(love adam betty)',
     '(adam = mia)',
     'some z1. (boy z1)',
@@ -1233,13 +1233,13 @@ def foldemo(trace=None):
     ]
 
 
-    for sent in sentences:
+    for fmla in formulas:
         g2.purge()
         if trace:
             print
-            m2.evaluate(sent, g2, trace)
+            m2.evaluate(fmla, g2, trace)
         else:
-            print "The value of '%s' is: %s" % (sent, m2.evaluate(sent, g2))
+            print "The value of '%s' is: %s" % (fmla, m2.evaluate(fmla, g2))
 
 
 def satdemo(trace=None):
@@ -1252,7 +1252,7 @@ def satdemo(trace=None):
 
     folmodel()
     
-    clauses = [
+    formulas = [
                '(boy x)',
                '(x = x)',
                '((boy x) or (girl x))',
@@ -1264,6 +1264,7 @@ def satdemo(trace=None):
                'some y. (love x y)',
                'all y. ((girl y) implies (love y x))',
                'all y. ((girl y) implies (love x y))',
+               'all y. ((girl y) implies ((boy x) and (love x y)))',
                '((boy x) and all y. ((girl y) implies (love y x)))',
                '((boy x) and all y. ((girl y) implies (love x y)))',
                '((boy x) and some y. ((girl y) and (love x y)))',
@@ -1276,9 +1277,9 @@ def satdemo(trace=None):
     if trace:
         print m2
         
-    for clause in clauses:
+    for fmla in formulas:
         g2.purge()
-        print "The satisfiers of '%s' are: %s" % (clause, m2.satisfiers(clause, 'x', g2, trace))
+        print "The satisfiers of '%s' are: %s" % (fmla, m2.satisfiers(fmla, 'x', g2, trace))
 
         
 def demo(num, trace=None):
@@ -1289,6 +1290,7 @@ def demo(num, trace=None):
      - num = 2: first order model demo (only if trace is set)
      - num = 3: first order sentences demo
      - num = 4: satisfaction of open formulas demo
+     - any other value: run all the demos
 
     @param trace: trace = 1, or trace = 2 for more verbose tracing
     """
@@ -1307,7 +1309,7 @@ def demo(num, trace=None):
 
 
 if __name__ == "__main__":
-    demo(3, trace=1)
+    demo(5, trace=0)
     print '*' * mult 
     test(verbosity=2) 
         
