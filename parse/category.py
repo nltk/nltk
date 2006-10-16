@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Contributed by Rob Speer (NLTK version)
 #         Steven Bird <sb@csse.unimelb.edu.au> (NLTK-Lite Port)
+#         Ewan Klein <ewan@inf.ed.ac.uk> (Hooks for semantics)
 #         Peter Wang <wangp@csse.unimelb.edu.au> (Overhaul)
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -10,7 +11,9 @@
 # $Id$
 
 from nltk_lite.parse.featurestructure import *
-from nltk_lite.parse import cfg, lambdacalculus
+
+from nltk_lite.parse import cfg
+from nltk_lite.contrib import logic
 
 class Category(FeatureStructure, cfg.Nonterminal):
     """
@@ -564,7 +567,7 @@ class GrammarCategory(Category):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
- 	    elif isinstance(fval, lambdacalculus.Expression):
+ 	    elif isinstance(fval, logic.Expression):
  		segments.append('%s=%r' % (fname, fval.__str__()))
             elif not isinstance(fval, Category):
                 segments.append('%s=%r' % (fname, fval))
@@ -584,8 +587,8 @@ class GrammarCategory(Category):
 
     # Regular expressions for parsing.
     # Extend the expressions from Category and FeatureStructure.
-    _PARSE_RE = {'semantics': re.compile(r'<([^>]+)>'), # EK
-                 #EK: Assumes that Applications in sem always take FeatureVariable arguments
+    # Assumes that Applications in sem always take FeatureVariable arguments
+    _PARSE_RE = {'semantics': re.compile(r'<([^>]+)>'), 
                  'application': re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)>'),
                  'slash': re.compile(r'\s*/\s*')}
     for (k, v) in Category._PARSE_RE.iteritems():
@@ -677,7 +680,7 @@ class GrammarCategory(Category):
         
     _parse = classmethod(_parse)
 
-class ParserSubstitute(lambdacalculus.Parser):
+class ParserSubstitute(logic.Parser):
     """
     A lambda calculus expression parser, extended to create application
     expressions which support the SubstituteBindingsI interface.
@@ -685,7 +688,7 @@ class ParserSubstitute(lambdacalculus.Parser):
     def make_ApplicationExpression(self, first, second):
         return ApplicationExpressionSubst(first, second)
 
-class ApplicationExpressionSubst(lambdacalculus.ApplicationExpression, SubstituteBindingsI):
+class ApplicationExpressionSubst(logic.ApplicationExpression, SubstituteBindingsI):
     """
     A lambda application expression, extended to implement the
     SubstituteBindingsI interface.
