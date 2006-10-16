@@ -173,6 +173,9 @@ class VariableExpression(Expression):
     def simplify(self):
         return self
 
+    def infixify(self):
+        return self
+
     def name(self):
         return self.__str__()
 
@@ -241,6 +244,9 @@ class ConstantExpression(Expression):
         return self
         
     def simplify(self):
+        return self
+
+    def infixify(self):
         return self
 
     def name(self):
@@ -338,6 +344,9 @@ class VariableBinderExpression(Expression):
 
     def simplify(self):
         return self.__class__(self.variable, self.term.simplify())
+
+    def infixify(self):
+        return self.__class__(self.variable, self.term.infixify())
 
     def __str__(self, continuation=0):
         # Print \x.\y.M as \x y.M.
@@ -456,6 +465,7 @@ class ApplicationExpression(Expression):
 
     def subterms(self):
         first = self.first.subterms()
+
         second = self.second.subterms()
         return first.union(second).union(set([self]))
 
@@ -473,6 +483,14 @@ class ApplicationExpression(Expression):
         else:
             return self.__class__(first, second)
 
+    def infixify(self):
+        first = self.first.infixify()
+        second = self.second.infixify()
+        if isinstance(first, Operator):
+	    return self.__class__(second, first)
+        else:
+            return self.__class__(first, second)    
+
     def _skolemise(self, bound_vars, counter):
 	first = self.first._skolemise(bound_vars, counter)
 	second = self.second._skolemise(bound_vars, counter)
@@ -482,7 +500,8 @@ class ApplicationExpression(Expression):
         # Print ((M N) P) as (M N P).
         strFirst = str(self.first)
         if isinstance(self.first, ApplicationExpression):
-            strFirst = strFirst[1:-1]
+            if not isinstance(self.second, Operator):
+                strFirst = strFirst[1:-1]
         return '(%s %s)' % (strFirst, self.second)
 
     def __repr__(self): return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
@@ -656,9 +675,9 @@ def expressions():
     y = Variable('y')
     z = Variable('z')
     A = VariableExpression(a)
-    X = VariableExpression(x)
-    Y = VariableExpression(y)
-    Z = VariableExpression(z)
+    X = IndVariableExpression(x)
+    Y = IndVariableExpression(y)
+    Z = IndVariableExpression(z)
     XA = ApplicationExpression(X, A)
     XY = ApplicationExpression(X, Y)
     XZ = ApplicationExpression(X, Z)
@@ -693,6 +712,8 @@ def main():
         las = la.simplify()
         print "Apply and simplify: %s -> %s" % (la, las)
         ll = Parser(str(l)).next()
+        print 'l is:', l
+        print 'll is:', ll
         assert l.equals(ll)
         print "Serialize and reparse: %s -> %s" % (l, ll)
         print
