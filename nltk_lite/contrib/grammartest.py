@@ -16,7 +16,7 @@ mygramdir = '/Users/ewan/svn/nltk/doc/en/'
 trace = 0
 beta = True
 
-class SemanticInterpreter:
+class SemanticInterpreter(object):
     """
     A set of methods to help combine syntactic parse output with semantic
     representation and model-checking.
@@ -137,17 +137,17 @@ def demo():
     inputs = sents
     interpreter = SemanticInterpreter()
     evaluations = interpreter.text_evaluate(inputs, grammar, model, assignment)
-
+    
     for sent in evaluations:
         n = 1
         print
         print 'Sentence: %s' % sent
         print SPACER
         for (syntree, semrep, value) in evaluations[sent]:
-            print '%d:  %s' % (n, semrep)
+            print '%d:  %s' % (n, semrep.infixify())
             print '%9s in Model m' % value
             n += 1
-    
+                
 if __name__ == "__main__":
     demo()
 
