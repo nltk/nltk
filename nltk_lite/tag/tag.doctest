@@ -1,0 +1,306 @@
+--------------------------------------------------------------------------------
+Unit tests for the utility tag functions.
+--------------------------------------------------------------------------------
+
+    >>> from nltk_lite.tag import *
+
+The base Tag class is an interface and trying to use it should result in an
+error.
+
+    >>> token_list = ['How', 'very', 'suddenly', 'you', 'all', 'quitted', 'Netherfield', 'last', 'November', ',', 'Mr', 'Darcy', '!']
+
+    >>> simple_tagger = TagI()
+    >>> simple_tagger.tag(token_list)
+    Traceback (most recent call last):
+    ...
+    NotImplementedError
+
+The SequentialBackoff class is abstract and cannot be used either.
+
+#    >>> backoff_tagger = SequentialBackoff()
+#    >>> tagged_tokens = backoff_tagger.tag(token_list)
+#    >>> list(tagged_tokens)
+#    ...
+#    AttributeError: 'SequentialBackoff' object has no attribute 'tag_one'
+
+The Default class is the simplest usable tagger inheriting from the
+SequentialBackoff class; it tags all tokens the same.
+
+    >>> naive_tagger = Default('NN')
+    >>> tagged_tokens = naive_tagger.tag(token_list)
+    >>> list(tagged_tokens)
+    [('How', 'NN'), ('very', 'NN'), ('suddenly', 'NN'), ('you', 'NN'), ('all', 'NN'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'NN'), ('November', 'NN'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', 'NN')]
+    
+Test the utility methods.
+
+    >>> token = "how"
+    >>> tagged_token = "how/RB"
+
+    >>> tag2tuple(token)
+    ('how', None)
+
+    >>> tag2tuple(tagged_token)
+    ('how', 'RB')
+
+    >>> tag2tuple(tagged_token, sep='?')
+    ('how/RB', None)
+
+    >>> tagged_sentence = "Sense/NN and/CC Sensibility/NN"
+
+    >>> tupled_sentence = string2tags(tagged_sentence)
+    >>> list(tupled_sentence)
+    [('Sense', 'NN'), ('and', 'CC'), ('Sensibility', 'NN')]
+
+    >>> tags2string(tupled_sentence)
+    'Sense/NN and/CC Sensibility/NN'
+
+    >>> untagged_sentence = untag(tupled_sentence)
+    >>> list(untagged_sentence)
+    ['Sense', 'and', 'Sensibility']
+
+    >>> untagged_sentence = string2words(tagged_sentence)
+    >>> list(untagged_sentence)
+    ['Sense', 'and', 'Sensibility']
+
+Test the accuracy() method using the naive Default tagger.
+
+    >>> gold_standard = [tupled_sentence]
+    >>> acc = accuracy(naive_tagger, gold_standard)
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 66.7%
+
+--------------------------------------------------------------------------------
+Unit tests for the Unigram, Affix, Regexp and Lookup taggers
+--------------------------------------------------------------------------------
+
+    >>> from nltk_lite.tag.unigram import *
+    >>> from nltk_lite.corpora import brown 
+
+Unigram tagger
+
+    >>> uni_tagger = Unigram(backoff=naive_tagger)
+    >>> uni_tagger.train(brown.tagged('a'))
+
+    >>> uni_tagger.size()
+    6363
+
+    >>> tagged_tokens = uni_tagger.tag(token_list)
+    >>> list(tagged_tokens)
+    [('How', 'wrb'), ('very', 'ql'), ('suddenly', 'rb'), ('you', 'ppss'), ('all', 'abn'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'ap'), ('November', 'np'), (',', ','), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', '.')]
+
+    >>> acc = accuracy(uni_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 77.4%
+
+Affix tagger
+
+    >>> affix_tagger = Affix(-2, 3, backoff=naive_tagger)
+    >>> affix_tagger.train(brown.tagged('a'))
+
+    >>> affix_tagger.size()
+    380
+
+    >>> tagged_tokens = affix_tagger.tag(token_list)
+    >>> list(tagged_tokens)
+    [('How', 'rb'), ('very', 'nn'), ('suddenly', 'rb'), ('you', 'ppss'), ('all', 'md'), ('quitted', 'vbn'), ('Netherfield', 'md'), ('last', 'ap'), ('November', 'nn'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'nn'), ('!', 'NN')]
+
+    >>> acc = accuracy(affix_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 39.0%
+
+Regexp tagger
+
+    >>> patterns = [
+    ...	(r'^-?[0-9]+(.[0-9]+)?$', 'cd'),	# cardinal numbers
+    ...	(r'(The|the|A|a|An|an)$', 'at'),	# articles
+    ...	(r'.*able$', 'jj'),			# adjectives
+    ... (r'.*ness$', 'nn'),			# nouns formed from adjectives
+    ... (r'.*ly$', 'rb'),			# adverbs
+    ...	(r'.*s$', 'nns'),			# plural nouns
+    ...	(r'.*ing$', 'vbg'),			# gerunds
+    ...	(r'.*ed$', 'vbd'),			# past tense verbs
+    ... (r'.*', 'nn')				# nouns (default)
+    ... ]
+
+    >>> regexp_tagger = Regexp(patterns)
+
+    >>> tagged_tokens = regexp_tagger.tag(token_list)
+    >>> list(tagged_tokens)
+    [('How', 'nn'), ('very', 'nn'), ('suddenly', 'rb'), ('you', 'nn'), ('all', 'nn'), ('quitted', 'vbd'), ('Netherfield', 'nn'), ('last', 'nn'), ('November', 'nn'), (',', 'nn'), ('Mr', 'nn'), ('Darcy', 'nn'), ('!', 'nn')]
+
+    >>> acc = accuracy(regexp_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 28.5%
+
+Lookup tagger (possibly extend the dictionary later for more effective testing)
+
+    >>> dict = {'all': 'jj', 'he': 'pps', 'she': 'pps', 'the': 'at', 'very': 'rb', 'you': 'pps'}
+
+    >>> lookup_tagger = Lookup(dict, backoff=naive_tagger)
+
+    >>> tagged_tokens = lookup_tagger.tag(token_list)
+    >>> list(tagged_tokens)
+    [('How', 'NN'), ('very', 'rb'), ('suddenly', 'NN'), ('you', 'pps'), ('all', 'jj'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'NN'), ('November', 'NN'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', 'NN')]
+
+    >>> acc = accuracy(lookup_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy  6.1%
+
+--------------------------------------------------------------------------------
+Unit tests for N-gram taggers.
+--------------------------------------------------------------------------------
+
+Test the queuing methods that are used to store context for a given word.
+
+    >>> queue = Queue(2)
+    >>> queue.enqueue('Sense')
+    >>> queue.enqueue('and')
+    >>> queue.enqueue('Sensibility')
+    >>> queue.get()
+    ('Sensibility', 'and')
+
+    >>> queue.set(('Sense', 'and', 'Sensibility'))
+    >>> queue.get()
+    ('and', 'Sensibility')
+
+    >>> queue.clear()
+    >>> queue.get()
+    (None, None)
+
+Create a default, unigram, bigram and trigram tagger.
+
+    >>> base_tagger = Default('nn')
+    >>> uni_tagger = Unigram(cutoff=2, backoff=base_tagger)
+    >>> bi_tagger = Bigram(cutoff=1, backoff=uni_tagger)
+    >>> tri_tagger = Trigram(cutoff=0, backoff=bi_tagger)
+
+Train the taggers on the Brown corpus.
+
+    >>> uni_tagger.train(brown.tagged('a'))
+    >>> bi_tagger.train(brown.tagged('a'))
+    >>> tri_tagger.train(brown.tagged('a'))
+
+Attempting to train a tagger a second time should raise an error.
+
+#    >>> uni_tagger.train(brown.tagged('a'))
+#    ...
+#    ValueError: Tagger is already trained
+
+Run the taggers on a different section of the Brown corpus. In each case report the accuracy of the tagger.
+
+    >>> acc = accuracy(base_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 12.5%
+
+    >>> acc = accuracy(uni_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 79.0%
+
+    >>> acc = accuracy(bi_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 80.1%
+
+    >>> acc = accuracy(tri_tagger, brown.tagged('b'))
+    >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
+    Accuracy 79.8%
+
+--------------------------------------------------------------------------------
+Unit tests for the Brill tagger
+--------------------------------------------------------------------------------
+
+    >>> from itertools import islice
+    >>> from nltk_lite.tag.brill import *
+
+Flatten the test data from a list of lists into a single list, and split it
+into training and evaluating sections.
+
+    >>> tagged_data = [t for s in list(brown.tagged('a')) for t in s]
+    >>> training_data = tagged_data[:20000]
+    >>> gold_data = tagged_data[20000:]
+
+Create some Brill tagger rule templates.
+
+    >>> templates = [
+    ... SymmetricProximateTokensTemplate(ProximateTagsRule, (1, 1)),
+    ... SymmetricProximateTokensTemplate(ProximateTagsRule, (1, 2)),
+    ... SymmetricProximateTokensTemplate(ProximateWordsRule, (1, 1)),
+    ... SymmetricProximateTokensTemplate(ProximateWordsRule, (1, 2)),
+    ... ProximateTokensTemplate(ProximateTagsRule, (-1, -1), (1, 1)),
+    ... ProximateTokensTemplate(ProximateWordsRule, (-1, -1), (1, 1))
+    ... ]
+
+Create and train the Brill tagger.
+
+    >>> brill_trainer = BrillTrainer(uni_tagger, templates, 0)
+    >>> brill_tagger = brill_trainer.train(training_data, 10, 5)
+
+    >>> for rule in brill_tagger.rules():
+    ...     print(str(rule))
+    nn -> vb if the tag of the preceding word is 'to'
+    to -> in if the tag of the following word is 'at'
+    nn -> vb if the tag of words i-2...i-1 is 'md'
+    nn -> np if the tag of the following word is 'np'
+    nn -> np if the tag of the preceding word is 'np', and the tag of the following word is ','
+    np -> np-tl if the tag of the following word is 'nn-tl'
+    vbd -> vbn if the tag of words i-2...i-1 is 'bedz'
+    to -> in if the tag of the following word is 'cd'
+    nn -> nn-tl if the tag of the following word is 'nn-tl'
+    np -> np-hl if the tag of words i+1...i+2 is '--'
+
+
+--------------------------------------------------------------------------------
+Unit tests for the HMM tagger
+--------------------------------------------------------------------------------
+
+    >>> from nltk_lite.tag.hmm import *
+
+Demo code lifted more or less directly from the HMM class.
+
+    >>> symbols = ['up', 'down', 'unchanged']
+    >>> states = ['bull', 'bear', 'static']
+
+    >>> def probdist(values, samples):
+    ...     d = {}
+    ...     for value, item in zip(values, samples):
+    ...         d[item] = value
+    ...     return DictionaryProbDist(d)
+
+    >>> def conditionalprobdist(array, conditions, samples):
+    ...     d = {}
+    ...     for values, condition in zip(array, conditions):
+    ...         d[condition] = probdist(values, samples)
+    ...     return DictionaryConditionalProbDist(d)
+
+    >>> A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], Float64)
+    >>> A = conditionalprobdist(A, states, states)
+
+    >>> B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], Float64)
+    >>> B = conditionalprobdist(B, states, symbols)
+
+    >>> pi = array([0.5, 0.2, 0.3], Float64)
+    >>> pi = probdist(pi, states)
+
+    >>> model = HiddenMarkovModel(symbols=symbols, states=states,
+    ...                           transitions=A, outputs=B, priors=pi)
+
+    >>> test = ['up', 'down', 'up']
+    >>> sequence = [(t, None) for t in test]
+
+    >>> print '%.3f' % (model.probability(sequence))
+    0.051
+
+    >>> model.tag(sequence)
+    [('up', 'bull'), ('down', 'bear'), ('up', 'bull')]
+
+    >>> print '%.3f' % (model.entropy(sequence))
+    2.357
+
+    >>> print '%.3f' % (model._exhaustive_entropy(sequence))
+    2.243
+
+    >>> model.point_entropy(sequence)
+    array([ 0.68893883,  1.07097261,  0.67317762])
+
+    >>> model._exhaustive_point_entropy(sequence)
+    array([ 0.65365674,  1.05892585,  0.59648465])
+
