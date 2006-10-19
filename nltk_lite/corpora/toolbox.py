@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
 # Natural Language Toolkit: Toolbox Reader
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
@@ -19,7 +22,9 @@ from StringIO import StringIO
 from nltk_lite.etree import ElementTree
 
 class StandardFormat(object):
-    """Base class for Standard Format files."""
+    """
+    Class for reading and processing standard format marker files and strings.
+    """
 
     def open(self, sfm_file):
         """Open a standard format marker file for sequential reading. 
@@ -30,7 +35,7 @@ class StandardFormat(object):
         self._file = file(sfm_file, 'rU')
 
     def open_string(self, s):
-        """Open a standard format marker file for sequential reading. 
+        """Open a standard format marker string for sequential reading. 
         
         @param s: string to parse as a standard format marker input file
         @type s: string
@@ -38,7 +43,8 @@ class StandardFormat(object):
         self._file = StringIO(s)
 
     def raw_fields(self):
-        """Return an iterator for the fields in the SFM file.
+        """Return an iterator for the fields in the standard format marker
+        file.
         
         @return: an iterator that returns the next field in a (marker, value) 
             tuple. Linebreaks and trailing white space are preserved except 
@@ -69,26 +75,28 @@ class StandardFormat(object):
         yield (mkr, join_string.join(value_lines))
 
     def fields(self, strip=True, unwrap=True, encoding=None, errors='strict', unicode_fields=None):
-        """Return an iterator for the fields in the SFM file.
+        """Return an iterator for the fields in the standard format marker file.
         
         @param strip: strip trailing whitespace from the last line of each field
         @type strip: boolean
         @param unwrap: Convert newlines in a field to spaces.
         @type unwrap: boolean
         @param encoding: Name of an encoding to use. If it is specified then 
-            C{fields} method returns unicode strings rather than non unicode 
-            strings.
+            the C{fields} method returns unicode strings rather than non 
+            unicode strings.
         @type encoding: string or None
-        @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
+        @param errors: Error handling scheme for codec. Same as the C{decode} 
+        inbuilt string method.
         @type errors: string
         @param unicode_fields: Set of marker names whose values are UTF-8 encoded.
-            Ignored if encoding is None. If the whole file is UTF-8 encoded leave
-            as the default value of None.
+            Ignored if encoding is None. If the whole file is UTF-8 encoded set 
+            C{encoding='utf8'} and leave C{unicode_fields} with its default
+            value of None.
         @type unicode_fields: set or dictionary (actually any sequence that 
             supports the 'in' operator).
-        @return: an iterator that returns the next field in a (marker, value) 
+        @return: an iterator that returns the next field in a C{(marker, value)} 
             tuple. C{marker} and C{value} are unicode strings if an C{encoding} was specified in the 
-            C{open} method. Otherwise they are nonunicode strings.
+            C{fields} method. Otherwise they are nonunicode strings.
         @rtype: iterator over C{(marker, value)} tuples
         """
         if encoding is None and unicode_fields is not None:
@@ -108,7 +116,7 @@ class StandardFormat(object):
             yield (mkr, val)
 
     def close(self):
-        """Close a previously opened Standard Format file."""
+        """Close a previously opened standard format marker file or string."""
         self._file.close()
         try:
             del self.line_num
@@ -199,8 +207,8 @@ def parse_corpus(file_name, key=None, **kwargs):
     """
     Return an element tree resulting from parsing the toolbox datafile.
     
-    A convenience function that creates a ToolboxData object, opens and parses 
-    the toolbox data file. The data file is assumed to be in the toolbox 
+    A convenience function that creates a C{ToolboxData} object, opens and 
+    parses the toolbox data file. The data file is assumed to be in the toolbox 
     subdirectory of the directory where NLTK looks for corpora, 
     see L{corpora.get_basedir()}.
     @param file_name: Name of file in toolbox corpus directory
@@ -245,6 +253,8 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
 
 def _parse_record(s):
     """
+    Deprecated: use C{StandardFormat.fields()}
+    
     @param s: toolbox record as a string
     @type  s: L{string}
     @rtype: iterator over L{list(string)}
@@ -262,6 +272,8 @@ def _parse_record(s):
 
 def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
     """
+    Deprecated: use C{StandardFormat.fields()}
+    
     @param files: One or more toolbox files to be processed
     @type files: L{string} or L{tuple(string)}
     @param include_header: flag that determines whether to treat header as record (default is no)
@@ -301,6 +313,8 @@ def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
 # assumes headwords are unique
 def dictionary(files='rotokas.dic', include_header=False) :
     """
+    Deprecated: use C{ToolboxData.parse()}
+    
     @param files: One or more toolbox files to be processed
     @type files: L{string} or L{tuple(string)}
     @param include_header: treat header as entry?
@@ -322,6 +336,8 @@ def _dict_list_entry(entry):
 # if two entries have the same headword this key maps to a list of entries
 def dict_list(files='rotokas.dic', include_header=False) :
     """
+    Deprecated: use C{ToolboxData.parse()}
+    
     @param files: One or more toolbox files to be processed
     @type files: L{string} or L{tuple(string)}
     @param include_header: treat header as entry?
