@@ -195,7 +195,7 @@ class ToolboxData(StandardFormat):
         return builder.close()
 
 
-def parse_corpus(file_name, key='lx', **kwargs):
+def parse_corpus(file_name, key=None, **kwargs):
     """
     Return an element tree resulting from parsing the toolbox datafile.
     
@@ -207,7 +207,7 @@ def parse_corpus(file_name, key='lx', **kwargs):
     @type file_name: string
     @param key: marker at the start of each record
     @type key: string
-    @param kwargs: Keyword arguments passed to L{Data.flat_parse()}
+    @param kwargs: Keyword arguments passed to L{ToolboxData.parse()}
     @type kwargs: keyword arguments dictionary
     @rtype:   ElementTree._ElementInterface
     @return:  contents of toolbox data divided into header and records
