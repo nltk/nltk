@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# Natural Language Toolkit: Shoebox Settings Parser
+# Natural Language Toolkit: Toolbox Settings Parser
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Greg Aumann <greg_aumann@sil.org>/Stuart Robinson <stuart@zapata.org>
@@ -9,14 +9,17 @@
 # For license information, see LICENSE.TXT
 
 """
-This module provides functionality for reading settings files for Shoebox/Toolbox. Settings files provides information (metadata) concerning lexicons and texts, such as which fields are found within them and what kind of values those fields can have.
+This module provides functionality for reading settings files for Toolbox. 
+Settings files provide information (metadata) concerning lexicons and texts, 
+such as which fields are found within them and what kind of values those 
+fields can have.
 """
 
 from elementtree import ElementTree
-from nltk_lite.corpora.shoebox import ShoeboxFile
+from nltk_lite.corpora.toolbox import ToolboxFile
 #from nltk_lite.parse.tree import Tree
 
-class Settings(ShoeboxFile):
+class Settings(ToolboxFile):
     """This class is the base class for settings files."""
     
     def __init__(self):
