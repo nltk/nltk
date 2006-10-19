@@ -92,21 +92,21 @@ C{TypeError} rather than C{False}, as required.
 
 In practise, it will often be more convenient for a user to specify
 interpretations as M{n}-ary relations (i.e., sets of M{n}-tuples) rather
-than as M{n}-ary functions. L{CharFun} provides a C{parse} method which
+than as M{n}-ary functions. L{CharFun} provides a C{read} method which
 will convert such relations into Curried characteristic functions:
 
    >>> s = set([('d1', 'd2'), ('d3', 'd4')])
    >>> cf = CharFun()
-   >>> cf.parse(s)
+   >>> cf.read(s)
    >>> cf
    {'d2': {'d1': True}, 'd4': {'d3': True}}
 
 
-C{parse} will raise an exception if the set is not in fact a
+C{read} will raise an exception if the set is not in fact a
 relation (i.e., contains tuples of different lengths):
 
   >>> wrong = set([('d1', 'd2'), ('d2', 'd1', 'd3')])
-  >>> cf.parse(wrong)
+  >>> cf.read(wrong)
   Traceback (most recent call last):
   ...
   ValueError: Set contains sequences of different lengths
@@ -114,7 +114,7 @@ relation (i.e., contains tuples of different lengths):
 However, unary relations can be parsed to characteristic functions.
 
   >>> unary = set(['d1', 'd2'])
-  >>> cf.parse(unary)
+  >>> cf.read(unary)
   >>> cf
   {'d2': True, 'd1': True}
 
@@ -141,14 +141,14 @@ values in the model. Valuations are created using the L{Valuation} constructor.
    >>> val
    {'Fido': 'd1', 'dog': {'d2': True, 'd1': True}}
 
-As with L{CharFun}, an instance of L{Valuation} will parse valuations using
+As with L{CharFun}, an instance of L{Valuation} will read valuations using
 relations rather than characteristic functions as interpretations.
 
    >>> setval = [('adam', 'b1'), ('betty', 'g1'),\
    ('girl', set(['g2', 'g1'])), ('boy', set(['b1', 'b2'])),\
    ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
    >>> val = Valuation()
-   >>> val.parse(setval)
+   >>> val.read(setval)
    >>> print val
    {'adam': 'b1',
    'betty': 'g1',
@@ -350,7 +350,7 @@ class CharFun(dict):
             self._merge(chf1[k], chf2[k])
         return chf1
                            
-    def parse(self, s):
+    def read(self, s):
         """
         Convert an M{n}-ary relation into its corresponding characteristic function.
         @rtype: L{CharFun}
@@ -434,7 +434,7 @@ class Valuation(dict):
     
     An attempt to initialize a L{Valuation} with an individual
     variable expression (e.g., 'x3') will raise an error, as will an
-    attemp to parse a list containing an individual variable
+    attemp to read a list containing an individual variable
     expression.
     
     An instance of L{Valuation} will raise a KeyError exception (i.e.,
@@ -463,7 +463,7 @@ class Valuation(dict):
         else:
             raise Undefined,  "Unknown expression: '%s'" % key
                     
-    def parse(self, seq):
+    def read(self, seq):
         """
         Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a L{Valuation}.
         @rtype: L{Valuation}
@@ -478,7 +478,7 @@ class Valuation(dict):
                 pass
             else:
                 cf = CharFun()
-                cf.parse(d[k])        
+                cf.read(d[k])        
                 d[k] = cf
         self.update(d)
 
@@ -999,22 +999,22 @@ class TestModels(unittest.TestCase):
 
         s1 = set([('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
         cf1 = CharFun()
-        cf1.parse(s1)
+        cf1.read(s1)
         self.assertEqual(cf, cf1)
         
         self.assertEqual(cf1.tuples(), s1)
         
         s2 = set([('d1', 'd2'), ('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
         cf2 = CharFun()
-        cf2.parse(s2)
+        cf2.read(s2)
         self.assertEqual(cf1, cf2)
 
         unary = set(['d1', 'd2'])
-        cf.parse(unary)
+        cf.read(unary)
         self.assertEqual(cf, {'d2': True, 'd1': True})
 
         wrong = set([('d1', 'd2'), ('d2', 'd1', 'd3')])
-        self.assertRaises(ValueError, cf.parse, wrong)
+        self.assertRaises(ValueError, cf.read, wrong)
 
         val = Valuation({'Fido' : 'd1', 'dog' : {'d1' : True, 'd2' : True}})
         self.assertEqual(val['dog'], cf)
@@ -1024,7 +1024,7 @@ class TestModels(unittest.TestCase):
         
         setval = [('Fido', 'd1'), ('dog', set(['d1', 'd2']))]
         val1 = Valuation()
-        val1.parse(setval)
+        val1.read(setval)
         self.assertEqual(val, val1)
 
         val1 = Valuation({'love': {'g1': {'b1': True}, 'b1': {'g1': True}, 'b2': {'g2': True}, 'g2': {'b1': True}}})
@@ -1032,7 +1032,7 @@ class TestModels(unittest.TestCase):
         relation = set([('b1', 'g1'),  ('g1', 'b1'), ('g2', 'b2'), ('b1', 'g2')])
         self.assertEqual(love1.tuples(), relation)
         val2 = Valuation()
-        val2.parse([('love', set([('b1', 'g1'), ('g1', 'b1'), ('g2', 'b2'), ('b1', 'g2')]))])
+        val2.read([('love', set([('b1', 'g1'), ('g1', 'b1'), ('g2', 'b2'), ('b1', 'g2')]))])
         love2 = val2['love']
         self.assertEqual(love1.tuples(), love2.tuples())
                         
@@ -1043,7 +1043,7 @@ class TestModels(unittest.TestCase):
         v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
              ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
              ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-        val.parse(v)
+        val.read(v)
         dom = val.domain
         m = Model(dom, val)
         g = Assignment(dom)
@@ -1061,7 +1061,7 @@ class TestModels(unittest.TestCase):
               ('customer', set(['d1', 'd2'])),
               ('robber', set(['d3', 'd4'])),
               ('love', set([('d3', 'd4')]))]
-        val1.parse(v1)
+        val1.read(v1)
         dom1 = val1.domain
         m1 = Model(dom1, val1)
         g1 = Assignment(dom1)
@@ -1072,7 +1072,7 @@ class TestModels(unittest.TestCase):
               ('customer', set(['d1', 'd2', 'd5', 'd6'])),
               ('robber', set(['d3', 'd4'])),
               ('love', set())]
-        val2.parse(v2)
+        val2.read(v2)
         dom2 = set(['d1', 'd2', 'd3', 'd4', 'd5', 'd6'])
         m2 = Model(dom2, val2)
         g2 = Assignment(dom2)
@@ -1086,7 +1086,7 @@ class TestModels(unittest.TestCase):
               ('joke', set(['d5', 'd6'])), ('episode', set(['d7', 'd8'])),
               ('in', set([('d5', 'd7'), ('d5', 'd8')])),
               ('tell', set([('d1', 'd5'), ('d2', 'd6')]))]
-        val3.parse(v3)
+        val3.read(v3)
         dom3 = set(['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8'])
         m3 = Model(dom3, val3)
         g3 = Assignment(dom3)
@@ -1190,7 +1190,7 @@ def folmodel(trace=None):
     v2 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
          ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
          ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-    val2.parse(v2)
+    val2.read(v2)
     dom2 = val2.domain
     m2 = Model(dom2, val2)
     g2 = Assignment(dom2, {'x': 'b1', 'y': 'g2'})
