@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Shoebox Reader
+# Natural Language Toolkit: Toolbox Reader
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Module for reading, writing and manipulating Shoebox databases.
+Module for reading, writing and manipulating Toolbox databases.
 """
 
 import os, re
@@ -17,8 +17,8 @@ from string import split
 from itertools import imap
 from StringIO import StringIO
 
-class ShoeboxFile(object):
-    """Base class for Shoebox database and settings files."""
+class ToolboxFile(object):
+    """Base class for Toolbox database and settings files."""
 
     def open(self, sfm_file):
         """Open a standard format marker file for sequential reading. 
@@ -117,7 +117,7 @@ class ShoeboxFile(object):
 
 def _parse_record(s):
     """
-    @param s: shoebox record as a string
+    @param s: toolbox record as a string
     @type  s: L{string}
     @rtype: iterator over L{list(string)}
     """
@@ -134,7 +134,7 @@ def _parse_record(s):
 
 def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
     """
-    @param files: One or more shoebox files to be processed
+    @param files: One or more toolbox files to be processed
     @type files: L{string} or L{tuple(string)}
     @param include_header: flag that determines whether to treat header as record (default is no)
     @type include_header: boolean
@@ -149,7 +149,7 @@ def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
     if type(files) is str : files = (files,)
 
     for file in files:
-        path = os.path.join(get_basedir(), "shoebox", file)
+        path = os.path.join(get_basedir(), "toolbox", file)
         fc = open(path, "U").read()
         if fc.strip().startswith(r"\_") :
             (header, body) = split(fc, sep="\n\n", maxsplit=1)
@@ -173,7 +173,7 @@ def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
 # assumes headwords are unique
 def dictionary(files='rotokas.dic', include_header=False) :
     """
-    @param files: One or more shoebox files to be processed
+    @param files: One or more toolbox files to be processed
     @type files: L{string} or L{tuple(string)}
     @param include_header: treat header as entry?
     @type include_header: boolean
@@ -194,7 +194,7 @@ def _dict_list_entry(entry):
 # if two entries have the same headword this key maps to a list of entries
 def dict_list(files='rotokas.dic', include_header=False) :
     """
-    @param files: One or more shoebox files to be processed
+    @param files: One or more toolbox files to be processed
     @type files: L{string} or L{tuple(string)}
     @param include_header: treat header as entry?
     @type include_header: boolean
@@ -208,30 +208,30 @@ def dict_list(files='rotokas.dic', include_header=False) :
         yield _dict_list_entry(entry)
 
 def demo():
-    from nltk_lite.corpora import shoebox
+    from nltk_lite.corpora import toolbox
     from itertools import islice
     from pprint import pprint
 
     print 'Raw:'
-    pprint(list(islice(shoebox.raw(), 3)))
+    pprint(list(islice(toolbox.raw(), 3)))
 
     print 'Dictionary:'
-    pprint(list(islice(shoebox.dictionary(), 3)))
+    pprint(list(islice(toolbox.dictionary(), 3)))
 
     print 'Dictionary-List:'
-    pprint(list(islice(shoebox.dict_list(), 3)))
+    pprint(list(islice(toolbox.dict_list(), 3)))
 
     print 'Complex test cases, no header'
-    pprint(list(shoebox.raw("test.dic")))
+    pprint(list(toolbox.raw("test.dic")))
 
     print 'Complex test cases, no header, dictionary'
-    pprint(list(shoebox.dictionary("test.dic")))
+    pprint(list(toolbox.dictionary("test.dic")))
 
     print 'Complex test cases, no header, dictionary list'
-    pprint(list(shoebox.dict_list("test.dic")))
+    pprint(list(toolbox.dict_list("test.dic")))
 
     print 'Complex test cases, with header'
-    pprint(list(shoebox.raw("test.dic", include_header=True)))
+    pprint(list(toolbox.raw("test.dic", include_header=True)))
 
 if __name__ == '__main__':
     demo()
