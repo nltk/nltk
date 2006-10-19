@@ -29,7 +29,7 @@ grammar = {
         'lexvalue':    (('lv',), ('ln', 'le')),
 }
 
-db = toolbox.Data()
+db = toolbox.ToolboxData()
 db.open(os.path.join(get_basedir(), 'toolbox', 'iu_mien_samp.db'))
 lexicon = db.grammar_parse('toolbox', grammar, encoding='utf8')
 tree = ElementTree.ElementTree(lexicon)

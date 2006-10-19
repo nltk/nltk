@@ -16,10 +16,10 @@ fields can have.
 """
 
 from elementtree import ElementTree
-from nltk_lite.corpora.toolbox import ToolboxFile
+from nltk_lite.corpora.toolbox import StandardFormat
 #from nltk_lite.parse.tree import Tree
 
-class Settings(ToolboxFile):
+class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
     
     def __init__(self):

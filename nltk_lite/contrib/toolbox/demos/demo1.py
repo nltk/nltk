@@ -14,11 +14,11 @@ corresponds to
 in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
-from nltk_lite.contrib.toolbox import data
+from nltk_lite.corpora import toolbox
 from nltk_lite.etree import ElementTree
 import sys
 
-lexicon = data.record_parse_data('rotokas.dic', 'lx')
+lexicon = toolbox.parse_corpus('rotokas.dic', key='lx')
 
 sum_size = num_entries = 0
 for entry in lexicon.findall('record'):
