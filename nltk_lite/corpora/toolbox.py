@@ -16,9 +16,10 @@ from nltk_lite.corpora import get_basedir
 from string import split
 from itertools import imap
 from StringIO import StringIO
+from nltk_lite.etree import ElementTree
 
-class ToolboxFile(object):
-    """Base class for Toolbox database and settings files."""
+class StandardFormat(object):
+    """Base class for Standard Format files."""
 
     def open(self, sfm_file):
         """Open a standard format marker file for sequential reading. 
@@ -107,13 +108,140 @@ class ToolboxFile(object):
             yield (mkr, val)
 
     def close(self):
-        """Close a previously opened SFM file."""
+        """Close a previously opened Standard Format file."""
         self._file.close()
         try:
             del self.line_num
         except AttributeError:
             pass
 
+class ToolboxData(StandardFormat):
+    def __init__(self):
+        super(ToolboxData, self).__init__()
+
+    def parse(self, *args, **kwargs):
+        return self._record_parse(*args, **kwargs)
+
+    def _record_parse(self, key, **kwargs):
+        """
+        Returns an element tree structure corresponding to a toolbox data file with
+        all markers at the same level.
+       
+        Thus the following Toolbox database::
+            \_sh v3.0  400  Rotokas Dictionary
+            \_DateStampHasFourDigitYear
+            
+            \lx kaa
+            \ps V.A
+            \ge gag
+            \gp nek i pas
+            
+            \lx kaa
+            \ps V.B
+            \ge strangle
+            \gp pasim nek
+
+        after parsing will end up with the same structure (ignoring the extra 
+        whitespace) as the following XML fragment after being parsed by 
+        ElementTree::
+            <toolbox_data>
+                <header>
+                    <_sh>v3.0  400  Rotokas Dictionary</_sh>
+                    <_DateStampHasFourDigitYear/>
+                </header>
+    
+                <record>
+                    <lx>kaa</lx>
+                    <ps>V.A</ps>
+                    <ge>gag</ge>
+                    <gp>nek i pas</gp>
+                </record>
+                
+                <record>
+                    <lx>kaa</lx>
+                    <ps>V.B</ps>
+                    <ge>strangle</ge>
+                    <gp>pasim nek</gp>
+                </record>
+            </toolbox_data>
+
+        @param key: Name of key marker at the start of each record
+        @type key: string
+        @param kwargs: Keyword arguments passed to L{ToolboxFile.fields()}
+        @type kwargs: keyword arguments dictionary
+        @rtype:   ElementTree._ElementInterface
+        @return:  contents of toolbox data divided into header and records
+        """
+        builder = ElementTree.TreeBuilder()
+        builder.start('toolbox_data', {})
+        builder.start('header', {})
+        in_records = False
+        for mkr, value in self.fields(**kwargs):
+            if mkr == key:
+                if in_records:
+                    builder.end('record')
+                else:
+                    builder.end('header')
+                    in_records = True
+                builder.start('record', {})
+            builder.start(mkr, {})
+            builder.data(value)
+            builder.end(mkr)
+        if in_records:
+            builder.end('record')
+        else:
+            builder.end('header')
+        builder.end('toolbox_data')
+        return builder.close()
+
+
+def parse_corpus(file_name, key='lx', **kwargs):
+    """
+    Return an element tree resulting from parsing the toolbox datafile.
+    
+    A convenience function that creates a ToolboxData object, opens and parses 
+    the toolbox data file. The data file is assumed to be in the toolbox 
+    subdirectory of the directory where NLTK looks for corpora, 
+    see L{corpora.get_basedir()}.
+    @param file_name: Name of file in toolbox corpus directory
+    @type file_name: string
+    @param key: marker at the start of each record
+    @type key: string
+    @param kwargs: Keyword arguments passed to L{Data.flat_parse()}
+    @type kwargs: keyword arguments dictionary
+    @rtype:   ElementTree._ElementInterface
+    @return:  contents of toolbox data divided into header and records
+    """ 
+    db = ToolboxData()
+    db.open(os.path.join(get_basedir(), 'toolbox', file_name))
+    return db.parse(key, **kwargs)
+
+import re
+
+_is_value = re.compile(r"\S")
+
+def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
+    """Return a string with a standard format representation of the toolbox
+    data in tree.
+    
+    @type tree: ElementTree._ElementInterface
+    @param tree: flat representation of toolbox data
+    @rtype:   string
+    @return:  string using standard format markup
+    """
+    # todo encoding, unicode fields, errors?
+    if tree.tag != 'toolbox_data':
+        raise ValueError, "not a toolbox_data element structure"
+    l = list()
+    for rec in tree:
+        l.append('\n')
+        for field in rec:
+            value = field.text
+            if re.search(_is_value, value):
+                l.append("\\%s %s\n" % (field.tag, value))
+            else:
+                l.append("\\%s%s\n" % (field.tag, value))
+    return ''.join(l[1:])
 
 def _parse_record(s):
     """
