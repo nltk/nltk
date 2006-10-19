@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# Natural Language Toolkit: Toolbox Settings Parser
+# Natural Language Toolkit: Toolbox data file parser
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Greg Aumann <greg_aumann@sil.org>
@@ -12,131 +12,11 @@
 """
 
 from nltk_lite.etree import ElementTree
-from nltk_lite.corpora.toolbox import ToolboxFile
-import os.path
-from nltk_lite.corpora import get_basedir
-import re
+from nltk_lite.corpora import toolbox
 
-def record_parse_data(file_name, key, **kwargs):
-    """
-    Return an element tree resulting from parsing the toolbox datafile.
-    
-    A convenience function that creates a Data object, opens and parses 
-    the toolbox data file. The data file is assumed to be in the toolbox 
-    subdirectory of the directory where NLTK looks for corpora, 
-    see L{corpora.get_basedir()}.
-    @param file_name: Name of file in toolbox corpus directory
-    @type file_name: string
-    @param key: marker at the start of each record
-    @type key: string
-    @param kwargs: Keyword arguments passed to L{Data.flat_parse()}
-    @type kwargs: keyword arguments dictionary
-    @rtype:   ElementTree._ElementInterface
-    @return:  contents of toolbox data divided into header and records
-    """ 
-    db = Data()
-    db.open(os.path.join(get_basedir(), 'toolbox', file_name))
-    return db.record_parse(key, **kwargs)
-
-_is_value = re.compile(r"\S")
-
-def to_sfm_string(tree):
-    """Return a string with a standard format representation of the toolbox
-    data in tree.
-    
-    @type tree: ElementTree._ElementInterface
-    @param tree: flat representation of toolbox data
-    @rtype:   string
-    @return:  string using standard format markup
-    """
-    # todo encoding, unicode fields, errors?
-    l = list()
-    for rec in tree:
-        l.append('\n')
-        for field in rec:
-            value = field.text
-            if re.search(_is_value, value):
-                l.append("\\%s %s\n" % (field.tag, value))
-            else:
-                l.append("\\%s%s\n" % (field.tag, value))
-    return ''.join(l[1:])
-
-
-class Data(ToolboxFile):
+class ToolboxData(toolbox.ToolboxData):
     def __init__(self):
-        super(Data, self).__init__()
-
-    def record_parse(self, key, **kwargs):
-        """
-        Returns an element tree structure corresponding to a toolbox data file with
-        all markers at the same level.
-       
-        Thus the following Toolbox database::
-            \_sh v3.0  400  Rotokas Dictionary
-            \_DateStampHasFourDigitYear
-            
-            \lx kaa
-            \ps V.A
-            \ge gag
-            \gp nek i pas
-            
-            \lx kaa
-            \ps V.B
-            \ge strangle
-            \gp pasim nek
-
-        after parsing will end up with the same structure (ignoring the extra 
-        whitespace) as the following XML fragment after being parsed by 
-        ElementTree::
-            <toolbox_data>
-                <header>
-                    <_sh>v3.0  400  Rotokas Dictionary</_sh>
-                    <_DateStampHasFourDigitYear/>
-                </header>
-    
-                <record>
-                    <lx>kaa</lx>
-                    <ps>V.A</ps>
-                    <ge>gag</ge>
-                    <gp>nek i pas</gp>
-                </record>
-                
-                <record>
-                    <lx>kaa</lx>
-                    <ps>V.B</ps>
-                    <ge>strangle</ge>
-                    <gp>pasim nek</gp>
-                </record>
-            </toolbox_data>
-
-        @param key: Name of key marker at the start of each record
-        @type key: string
-        @param kwargs: Keyword arguments passed to L{ToolboxFile.fields()}
-        @type kwargs: keyword arguments dictionary
-        @rtype:   ElementTree._ElementInterface
-        @return:  contents of toolbox data divided into header and records
-        """
-        builder = ElementTree.TreeBuilder()
-        builder.start('toolbox_data', {})
-        builder.start('header', {})
-        in_records = False
-        for mkr, value in self.fields(**kwargs):
-            if mkr == key:
-                if in_records:
-                    builder.end('record')
-                else:
-                    builder.end('header')
-                    in_records = True
-                builder.start('record', {})
-            builder.start(mkr, {})
-            builder.data(value)
-            builder.end(mkr)
-        if in_records:
-            builder.end('record')
-        else:
-            builder.end('header')
-        builder.end('toolbox_data')
-        return builder.close()
+        super(toolbox.ToolboxData, self).__init__()
 
     def _make_parse_table(self, grammar):
         """
@@ -266,13 +146,9 @@ class Data(ToolboxFile):
 
 import sys
 
-fn = 'demos/iu_mien_samp.db'
-
 def demo_flat():
     
-    data = Data()
-    data.open(fn)
-    tree = ElementTree.ElementTree(data.flat_parse('lx', encoding='utf8'))
+    tree = ElementTree.ElementTree(toolbox.parse_corpus('iu_mien_samp.db', key='lx', encoding='utf8'))
     tree.write(sys.stdout)
     
 
