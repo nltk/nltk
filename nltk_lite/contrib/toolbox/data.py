@@ -51,7 +51,7 @@ class ToolboxData(toolbox.ToolboxData):
         @type grammar: dictionary of tuple of tuples
         @param grammar: Contains the set of rewrite rules used to parse the 
         database.  See the description below.
-        @param kwargs: Keyword arguments passed to L{ToolboxFile.fields()}
+        @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
         @type kwargs: keyword arguments dictionary
         @rtype:   ElementTree._ElementInterface
         @return:  Contents of toolbox data parsed according to rules in grammar

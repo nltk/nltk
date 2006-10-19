@@ -167,7 +167,7 @@ class ToolboxData(StandardFormat):
 
         @param key: Name of key marker at the start of each record
         @type key: string
-        @param kwargs: Keyword arguments passed to L{ToolboxFile.fields()}
+        @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
         @type kwargs: keyword arguments dictionary
         @rtype:   ElementTree._ElementInterface
         @return:  contents of toolbox data divided into header and records
