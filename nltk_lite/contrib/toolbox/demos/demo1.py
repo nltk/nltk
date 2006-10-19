@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# Natural Language Toolkit: Shoebox Data demonstration
+# Natural Language Toolkit: Toolbox Data demonstration
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Greg Aumann <greg_aumann@sil.org>
@@ -10,11 +10,11 @@
 
 """
 corresponds to 
-12.3.1   Accessing Shoebox Data
+12.3.1   Accessing Toolbox Data
 in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
-from nltk_lite.contrib.shoebox import data
+from nltk_lite.contrib.toolbox import data
 from nltk_lite.etree import ElementTree
 import sys
 
