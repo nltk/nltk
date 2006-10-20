@@ -1,10 +1,21 @@
-# Contributed by Rob Speer
+# Natural Language Toolkit: Reader for Grammar Files
+#
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Rob Speer <rspeer@mit.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id:$
+
+"""
+A module to read a grammar from a *.cfg file.
+"""
 
 from nltk_lite.parse.category import *
 from nltk_lite.parse import cfg
-from nltk_lite.contrib.featurechart import *
+from nltk_lite.parse.featurechart import *
 
-"""A module to read a grammar from a *.cfg file."""
+
 
 class GrammarFile(object):
 	def __init__(self):
