@@ -150,10 +150,15 @@ class VariableExpression(Expression):
         self.variable = variable
 
     def equals(self, other):
-        if self.__class__ is other.__class__:
+        """
+        Allow equality between instances of C{VariableExpression} and
+        C{IndVariableExpression.
+        """
+        if isinstance(self, VariableExpression) and \
+           isinstance(other, VariableExpression):
             return self.variable.equals(other.variable)
         else:
-            return 0
+            return False
 
     def variables(self):
         return set([self.variable])
@@ -226,10 +231,10 @@ class ConstantExpression(Expression):
         self.constant = constant
 
     def equals(self, other):
-        if self.__class__ is other.__class__:
+        if self.__class__ == other.__class__:
             return self.constant.equals(other.constant)
         else:
-            return 0
+            return False
 
     def variables(self):
         return set()
@@ -274,10 +279,10 @@ class Operator(ConstantExpression):
         self.operator = operator
 
     def equals(self, other):
-        if self.__class__ is other.__class__:
+        if self.__class__ == other.__class__:
             return self.constant == other.constant
         else:
-            return 0
+            return False
 
     def simplify(self):
         return self
@@ -305,16 +310,30 @@ class VariableBinderExpression(Expression):
         self.body = str(self.term)
 
     def equals(self, other):
-        if self.__class__ is other.__class__:
+        """
+        Defines equality modulo alphabetic variance.
+
+        If we are comparing \x.M  and \y.N, then
+        check equality of M and N[x/y].
+        """
+        if self.__class__ == other.__class__:
             if self.variable == other.variable:
                 return self.term == other.term
             else:
                 # Comparing \x.M  and \y.N.
-                # Rename y to x in N and continue.
-                return self.term == other.term.replace(other.variable,
-                                        VariableExpression(self.variable))
+                # Relabel y in N with x and continue.
+                relabeled = self._relabel(other)
+                return self.term == relabeled
         else:
-            return 0
+            return False
+
+    def _relabel(self, other):
+        """
+        Relabel C{other}'s bound variables to be the same as C{self}'s
+        variable.
+        """
+        var = VariableExpression(self.variable)
+        return other.term.replace(other.variable, var)
 
     def variables(self):
         return set([self.variable]).union(self.term.variables())
@@ -416,11 +435,11 @@ class ApplicationExpression(Expression):
         self.second = second
 
     def equals(self, other):
-        if self.__class__ is other.__class__:
+        if self.__class__ == other.__class__:
             return self.first.equals(other.first) and \
                    self.second.equals(other.second)
         else:
-            return 0
+            return False
 
     def variables(self):
         return self.first.variables().union(self.second.variables())
@@ -831,3 +850,4 @@ def runtests():
 if __name__ == '__main__':
     runtests()
     main()
+
