@@ -70,16 +70,17 @@ class ToolboxData(toolbox.ToolboxData):
         The fields in the second part of the tuple can occur in any order.
 
         Sample grammar::
-            C{grammar = {
-                'toolbox':      (('_sh',), ('_DateStampHasFourDigitYear', 'entry')),
-                'entry':          (('lx',), ('hm', 'sense', 'dt')),
-                'sense':         (('sn', 'ps'), ('pn', 'gv', 'dv',
-                                           'gn', 'gp', 'dn', 'rn',
-                                           'ge', 'de', 're',
-                                           'example', 'lexfunc')),
-                'example':     (('rf', 'xv',), ('xn', 'xe')),
-                'lexfunc':       (('lf',), ('lexvalue',)),
-                'lexvalue':      (('lv',), ('ln', 'le')),
+        
+            grammar = {
+                'toolbox':  (('_sh',),      ('_DateStampHasFourDigitYear', 'entry')),
+                'entry':    (('lx',),       ('hm', 'sense', 'dt')),
+                'sense':    (('sn', 'ps'),  ('pn', 'gv', 'dv',
+                                             'gn', 'gp', 'dn', 'rn',
+                                             'ge', 'de', 're',
+                                             'example', 'lexfunc')),
+                'example':  (('rf', 'xv',), ('xn', 'xe')),
+                'lexfunc':  (('lf',),       ('lexvalue',)),
+                'lexvalue': (('lv',),       ('ln', 'le')),
             }
         """
         parse_table, first = self._make_parse_table(grammar)
