@@ -1,6 +1,5 @@
-# Natural Language Toolkit: Models
+# Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -287,8 +286,7 @@ according to their syntactic structure, as determined by L{decompose}.
 
 """
 
-#from nltk_lite.contrib import logic
-import logic
+from nltk_lite.semantics import logic
 from pprint import pformat
 
 class Error(Exception): pass
