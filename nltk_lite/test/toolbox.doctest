@@ -3,132 +3,151 @@ Unit test cases for L{toolbox.StandardFormat}.
     >>> from nltk_lite.corpora import toolbox
 
 toolbox.StandardFormat.raw_fields()
------------------
+-----------------------------------
 raw_fields returns an iterator over tuples of two strings representing the
 marker and its value. The marker is given without the backslash and the value
-without its trailing newline
+without its trailing newline:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx a value\n\lx another value\n')
+    >>> f.open_string('\\lx a value\n\\lx another value\n')
     >>> list(f.raw_fields())
     [('lx', 'a value'), ('lx', 'another value')]
 
-Field.line_num contains line number of the last line returned
+Field.line_num contains the line number of the last line returned:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx a value\n\lx another value\n\lx a third value\n')
+    >>> f.open_string('\\lx a value\n\\lx another value\n\\lx a third value\n')
     >>> line_nums = []
     >>> for l in f.raw_fields():
     ...     line_nums.append(f.line_num)
     >>> line_nums
     [1, 2, 3]
 
-Field.line_num contains line number of the last line returned
+Field.line_num contains the line number of the last line returned:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx two\nlines\n\lx three\nlines\n\n\lx two\nlines\n')
+    >>> f.open_string('\\lx two\nlines\n\\lx three\nlines\n\n\\lx two\nlines\n')
     >>> line_nums = []
     >>> for l in f.raw_fields():
     ...     line_nums.append(f.line_num)
     >>> line_nums
     [2, 5, 7]
 
-an empty file returns nothing
+an empty file returns nothing:
+
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('')
     >>> list(f.raw_fields())
     []
 
-file with only a newline returns WHAT SHOULD IT RETURN???
+file with only a newline returns WHAT SHOULD IT RETURN???:
+
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\n')
     >>> list(f.raw_fields())
     [(None, '')]
     
-file with only one field should be parsed ok
+file with only one field should be parsed ok:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx one value\n')
+    >>> f.open_string('\\lx one value\n')
     >>> list(f.raw_fields())
     [('lx', 'one value')]
 
-file without a trailing newline should be parsed ok
+file without a trailing newline should be parsed ok:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx a value\n\lx another value')
+    >>> f.open_string('\\lx a value\n\\lx another value')
     >>> list(f.raw_fields())
     [('lx', 'a value'), ('lx', 'another value')]
 
-trailing white space is preserved except for the final newline
+trailing white space is preserved except for the final newline:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx trailing space \n\lx trailing tab\t\n\lx extra newline\n\n')
+    >>> f.open_string('\\lx trailing space \n\\lx trailing tab\t\n\\lx extra newline\n\n')
     >>> list(f.raw_fields())
     [('lx', 'trailing space '), ('lx', 'trailing tab\t'), ('lx', 'extra newline\n')]
 
-line wrapping is preserved
+line wrapping is preserved:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx a value\nmore of the value\nand still more\n\lc another val\n')
+    >>> f.open_string('\\lx a value\nmore of the value\nand still more\n\\lc another val\n')
     >>> list(f.raw_fields())
     [('lx', 'a value\nmore of the value\nand still more'), ('lc', 'another val')]
 
-file beginning with a multiline record should be parsed ok
+file beginning with a multiline record should be parsed ok:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx a value\nmore of the value\nand still more\n\lc another val\n')
+    >>> f.open_string('\\lx a value\nmore of the value\nand still more\n\\lc another val\n')
     >>> list(f.raw_fields())
     [('lx', 'a value\nmore of the value\nand still more'), ('lc', 'another val')]
 
-file ending with a multiline record should be parsed ok
+file ending with a multiline record should be parsed ok:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lc a value\n\lx another value\nmore of the value\nand still more\n')
+    >>> f.open_string('\\lc a value\n\\lx another value\nmore of the value\nand still more\n')
     >>> list(f.raw_fields())
     [('lc', 'a value'), ('lx', 'another value\nmore of the value\nand still more')]
 
 toolbox.StandardFormat.fields()
--------------
-trailing white space is not preserved
+-------------------------------
+trailing white space is not preserved:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx trailing space \n\lx trailing tab\t\n\lx extra newline\n\n')
+    >>> f.open_string('\\lx trailing space \n\\lx trailing tab\t\n\\lx extra newline\n\n')
     >>> list(f.fields())
     [('lx', 'trailing space'), ('lx', 'trailing tab'), ('lx', 'extra newline')]
 
-multiline fields are unwrapped
+multiline fields are unwrapped:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\lx a value\nmore of the value\nand still more\n\lc another val\n')
+    >>> f.open_string('\\lx a value\nmore of the value\nand still more\n\\lc another val\n')
     >>> list(f.fields())
     [('lx', 'a value more of the value and still more'), ('lc', 'another val')]
     
 markers
 -------
 A backslash in the first position on a new line indicates the start of a 
-marker. The backslash is not part of the marker
+marker. The backslash is not part of the marker:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\mk a value\n')
+    >>> f.open_string('\\mk a value\n')
     >>> list(f.fields())
     [('mk', 'a value')]
     
 If the backslash occurs later in the line it does not indicate the start
-of a marker
+of a marker:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\mk a value\n \mk another one\n')
+    >>> f.open_string('\\mk a value\n \\mk another one\n')
     >>> list(f.raw_fields())
     [('mk', 'a value\n \\mk another one')]
 
-There is no specific limit to the length of a marker 
+There is no specific limit to the length of a marker:
+
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\\this_is_an_extremely_long_marker value\n')
     >>> list(f.fields())
     [('this_is_an_extremely_long_marker', 'value')]
 
-A marker can contain any non white space character.
+A marker can contain any non white space character:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\`~!@#$%^&*()_-=+[{]}\|,<.>/?;:"0123456789 value\n')
+    >>> f.open_string('\\`~!@#$%^&*()_-=+[{]}\|,<.>/?;:"0123456789 value\n')
     >>> list(f.fields())
     [('`~!@#$%^&*()_-=+[{]}\\|,<.>/?;:"0123456789', 'value')]
 
-A marker is terminated by any white space character
+A marker is terminated by any white space character:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\mk a value\n\mk\tanother one\n\mk\rthird one\n\mk\ffourth one')
+    >>> f.open_string('\\mk a value\n\\mk\tanother one\n\\mk\rthird one\n\\mk\ffourth one')
     >>> list(f.fields())
     [('mk', 'a value'), ('mk', 'another one'), ('mk', 'third one'), ('mk', 'fourth one')]
     
-Consecutive whitespace characters (except newline) are treated the same as one
+Consecutive whitespace characters (except newline) are treated the same as one:
+
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\mk \t\r\fa value\n')
+    >>> f.open_string('\\mk \t\r\fa value\n')
     >>> list(f.fields())
     [('mk', 'a value')]
     
