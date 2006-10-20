@@ -13,7 +13,7 @@
 from nltk_lite.parse.featurestructure import *
 
 from nltk_lite.parse import cfg
-from nltk_lite.contrib import logic
+from nltk_lite.semantics import logic
 
 class Category(FeatureStructure, cfg.Nonterminal):
     """
