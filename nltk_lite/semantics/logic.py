@@ -310,7 +310,7 @@ class VariableBinderExpression(Expression):
         self.body = str(self.term)
 
     def equals(self, other):
-        """
+        r"""
         Defines equality modulo alphabetic variance.
 
         If we are comparing \x.M  and \y.N, then
