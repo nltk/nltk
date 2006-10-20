@@ -1,19 +1,47 @@
-Unit test cases for L{toolbox.StandardFormat}.
-
+===============================
+Unit test cases for ``toolbox``
+===============================
     >>> from nltk_lite.corpora import toolbox
 
-toolbox.StandardFormat.raw_fields()
------------------------------------
-raw_fields returns an iterator over tuples of two strings representing the
-marker and its value. The marker is given without the backslash and the value
-without its trailing newline:
+--------------------------
+``toolbox.StandardFormat``
+--------------------------
+    >>> f = toolbox.StandardFormat()
 
+``toolbox.StandardFormat.open()``
+---------------------------------
+    >>> import os, tempfile
+    >>> (fd, fname) = tempfile.mkstemp()
+    >>> tf = os.fdopen(fd, "w")
+    >>> tf.write('\\lx a value\n\\lx another value\n')
+    >>> tf.close()
+    >>> f = toolbox.StandardFormat()
+    >>> f.open(fname)
+    >>> list(f.fields())
+    [('lx', 'a value'), ('lx', 'another value')]
+    >>> f.close()
+    >>> os.unlink(fname)
+
+``toolbox.StandardFormat.open_string()``
+----------------------------------------
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\\lx a value\n\\lx another value\n')
-    >>> list(f.raw_fields())
+    >>> list(f.fields())
     [('lx', 'a value'), ('lx', 'another value')]
+    >>> f.close()
 
-Field.line_num contains the line number of the last line returned:
+``toolbox.StandardFormat.close()``
+----------------------------------
+    >>> f = toolbox.StandardFormat()
+    >>> f.open_string('\\lx a value\n\\lx another value\n')
+    >>> list(f.fields())
+    [('lx', 'a value'), ('lx', 'another value')]
+    >>> f.close()
+
+``toolbox.StandardFormat.line_num``
+---------------------------------------
+
+``StandardFormat.line_num`` contains the line number of the last line returned:
 
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\\lx a value\n\\lx another value\n\\lx a third value\n')
@@ -23,7 +51,7 @@ Field.line_num contains the line number of the last line returned:
     >>> line_nums
     [1, 2, 3]
 
-Field.line_num contains the line number of the last line returned:
+``StandardFormat.line_num`` contains the line number of the last line returned:
 
     >>> f = toolbox.StandardFormat()
     >>> f.open_string('\\lx two\nlines\n\\lx three\nlines\n\n\\lx two\nlines\n')
@@ -32,6 +60,37 @@ Field.line_num contains the line number of the last line returned:
     ...     line_nums.append(f.line_num)
     >>> line_nums
     [2, 5, 7]
+
+``StandardFormat.line_num`` doesn't exist before openning or after closing 
+a file or string:
+
+    >>> f = toolbox.StandardFormat()
+    >>> f.line_num
+    Traceback (most recent call last):
+        ...
+    AttributeError: 'StandardFormat' object has no attribute 'line_num'
+    >>> f.open_string('\\lx two\nlines\n\\lx three\nlines\n\n\\lx two\nlines\n')
+    >>> line_nums = []
+    >>> for l in f.raw_fields():
+    ...     line_nums.append(f.line_num)
+    >>> line_nums
+    [2, 5, 7]
+    >>> f.close()
+    >>> f.line_num
+    Traceback (most recent call last):
+        ...
+    AttributeError: 'StandardFormat' object has no attribute 'line_num'
+
+``toolbox.StandardFormat.raw_fields()``
+---------------------------------------
+``raw_fields()`` returns an iterator over tuples of two strings representing the
+marker and its value. The marker is given without the backslash and the value
+without its trailing newline:
+
+    >>> f = toolbox.StandardFormat()
+    >>> f.open_string('\\lx a value\n\\lx another value\n')
+    >>> list(f.raw_fields())
+    [('lx', 'a value'), ('lx', 'another value')]
 
 an empty file returns nothing:
 
@@ -89,8 +148,8 @@ file ending with a multiline record should be parsed ok:
     >>> list(f.raw_fields())
     [('lc', 'a value'), ('lx', 'another value\nmore of the value\nand still more')]
 
-toolbox.StandardFormat.fields()
--------------------------------
+``toolbox.StandardFormat.fields()``
+-----------------------------------
 trailing white space is not preserved:
 
     >>> f = toolbox.StandardFormat()
@@ -151,3 +210,19 @@ Consecutive whitespace characters (except newline) are treated the same as one:
     >>> list(f.fields())
     [('mk', 'a value')]
     
+-----------------------
+``toolbox.ToolboxData``
+-----------------------
+
+    >>> db = toolbox.ToolboxData()
+
+``toolbox.ToolboxData.parse()``
+-------------------------------
+
+-----------------------
+``toolbox`` functions
+-----------------------
+
+``toolbox.to_sfm_string()``
+-------------------------------
+
