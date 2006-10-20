@@ -14,7 +14,7 @@ mygramdir = '/Users/ewan/svn/nltk/doc/en/'
 
 
 trace = 0
-beta = True
+beta = 0
 
 class SemanticInterpreter(object):
     """
@@ -39,7 +39,7 @@ class SemanticInterpreter(object):
         """
         # check that we have a tree
         assert isinstance(syntree, Tree)
-        # in Speer's chart parser, the root node is '[INIT]'
+        # in the featurechart parser, the root node is '[INIT]'
         # so go down to the first child if necessary
         if syntree.node.head() == start:
             return syntree.node
@@ -48,7 +48,7 @@ class SemanticInterpreter(object):
         else:
             raise ValueError("Tree not rooted in %s node" % start)
 
-    def semrep(self, node, beta_reduce=True):
+    def semrep(self, node, beta_reduce=beta):
         """
         Find the semantic representation at a given tree node.
         """
@@ -63,7 +63,7 @@ class SemanticInterpreter(object):
             print "Node has no 'sem' feature specification"
         raise
 
-    def root_semrep(self, syntree, beta_reduce=True):
+    def root_semrep(self, syntree, beta_reduce=beta):
         """
         Find the semantic representation at the root of a tree.
         """
@@ -132,24 +132,33 @@ sents = ['Fido sees a boy with Mary',
          'John walks with a girl in Noosa'
          ]
 
-def demo():
+sents0 = ['a dog barks']
+
+def demo(evaluate=0):
     model_init()
     SPACER = '-' * 30
-    filename = mygramdir + 'feat2.cfg'
+    filename = mygramdir + 'sem1.cfg'
     model = m
     assignment = g
     grammar = GrammarFile.read_file(filename)
-    inputs = sents
+    inputs = sents0
     interpreter = SemanticInterpreter()
-    evaluations = interpreter.text_evaluate(inputs, grammar, model, assignment)
     
     for sent in inputs:
         n = 1
         print '\nSentence: %s' % sent
         print SPACER
-        for (syntree, semrep, value) in evaluations[sent]:
-            print '%d:  %s' % (n, semrep.infixify())
-            print '%9s in Model m' % value
+        if evaluate:
+            evaluations =\
+            interpreter.text_evaluate(inputs, grammar, model, assignment)
+            for (syntree, semrep, value) in evaluations[sent]:
+                print '%d:  %s' % (n, semrep.infixify())
+                print '%9s in Model m' % value
+            n += 1
+        else:
+            semreps = interpreter.text_interpret(inputs, grammar)
+            for (syntree, semrep) in semreps[sent]:
+                print '%d:  %s' % (n, semrep.infixify())
             n += 1
                 
 if __name__ == "__main__":
@@ -157,4 +166,3 @@ if __name__ == "__main__":
 
 
 
-    
