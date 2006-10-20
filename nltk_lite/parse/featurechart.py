@@ -1,4 +1,17 @@
-# Contributed by Rob Speer
+# Natural Language Toolkit: Chart Parser for Feature-Based Grammars
+#
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Rob Speer <rspeer@mit.edu>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+# $Id:$
+
+"""
+Extension of chart parsing implementation to handle grammars with
+feature structgures as nodes.
+"""
+
 
 from nltk_lite.parse.chart import *
 from nltk_lite.parse.category import *
