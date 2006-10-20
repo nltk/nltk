@@ -1,8 +1,8 @@
 # Contributed by Peter Wang
 
 from nltk_lite import tokenize
-from nltk_lite.contrib.featurechart import *
-from nltk_lite.contrib.grammarfile import GrammarFile
+from nltk_lite.parse.featurechart import *
+from nltk_lite.parse.grammarfile import GrammarFile
 from nltk_lite.draw.tree import draw_trees
 from nltk_lite.parse import bracket_parse
 from nltk_lite.parse import tree
