@@ -11,7 +11,7 @@
 """module for reading Toolbox data files
 """
 
-from nltk_lite.etree import ElementTree
+from nltk_lite.etree.ElementTree import TreeBuilder
 from nltk_lite.corpora import toolbox
 
 class ToolboxData(toolbox.ToolboxData):
@@ -84,7 +84,7 @@ class ToolboxData(toolbox.ToolboxData):
             }
         """
         parse_table, first = self._make_parse_table(grammar)
-        builder = ElementTree.TreeBuilder()
+        builder = TreeBuilder()
         pstack = list()
         state = startsym
         first_elems = list()
@@ -145,11 +145,11 @@ class ToolboxData(toolbox.ToolboxData):
         return builder.close()
 
 
-import sys
-
 def demo_flat():
-    
-    tree = ElementTree.ElementTree(toolbox.parse_corpus('iu_mien_samp.db', key='lx', encoding='utf8'))
+    from nltk_lite.etree.ElementTree import ElementTree    
+    import sys
+
+    tree = ElementTree(toolbox.parse_corpus('iu_mien_samp.db', key='lx', encoding='utf8'))
     tree.write(sys.stdout)
     
 
