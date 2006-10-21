@@ -19,7 +19,7 @@ from nltk_lite.corpora import get_basedir
 from string import split
 from itertools import imap
 from StringIO import StringIO
-from nltk_lite.etree import ElementTree
+from nltk_lite.etree.ElementTree import TreeBuilder
 
 class StandardFormat(object):
     """
@@ -180,7 +180,7 @@ class ToolboxData(StandardFormat):
         @rtype:   ElementTree._ElementInterface
         @return:  contents of toolbox data divided into header and records
         """
-        builder = ElementTree.TreeBuilder()
+        builder = TreeBuilder()
         builder.start('toolbox_data', {})
         builder.start('header', {})
         in_records = False
@@ -240,7 +240,7 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     # todo encoding, unicode fields, errors?
     if tree.tag != 'toolbox_data':
         raise ValueError, "not a toolbox_data element structure"
-    l = list()
+    l = []
     for rec in tree:
         l.append('\n')
         for field in rec:
