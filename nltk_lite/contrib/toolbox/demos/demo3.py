@@ -12,7 +12,7 @@
 demonstration of grammar parsing
 """
 
-from nltk_lite.etree import ElementTree
+from nltk_lite.etree.ElementTree import ElementTree
 from nltk_lite.contrib import toolbox
 from nltk_lite.corpora import get_basedir
 import os.path
@@ -32,7 +32,7 @@ grammar = {
 db = toolbox.ToolboxData()
 db.open(os.path.join(get_basedir(), 'toolbox', 'iu_mien_samp.db'))
 lexicon = db.grammar_parse('toolbox', grammar, encoding='utf8')
-tree = ElementTree.ElementTree(lexicon)
+tree = ElementTree(lexicon)
 tree.write('iu_mien_samp.xml', encoding='utf8')
 num_lexemes = 0
 num_senses = 0
