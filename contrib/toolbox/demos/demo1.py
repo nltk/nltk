@@ -15,8 +15,6 @@ in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
 from nltk_lite.corpora import toolbox
-from nltk_lite.etree import ElementTree
-import sys
 
 lexicon = toolbox.parse_corpus('rotokas.dic', key='lx')
 
@@ -26,6 +24,9 @@ for entry in lexicon.findall('record'):
     sum_size += len(entry)
 print sum_size/num_entries
 
-forth_entry = lexicon.findall('record')[3]
-tree = ElementTree.ElementTree(forth_entry)
+
+from nltk_lite.etree.ElementTree import ElementTree
+import sys
+fourth_entry = lexicon.findall('record')[3]
+tree = ElementTree(fourth_entry)
 tree.write(sys.stdout)
