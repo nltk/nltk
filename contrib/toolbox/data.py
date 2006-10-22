@@ -145,6 +145,32 @@ class ToolboxData(toolbox.ToolboxData):
         return builder.close()
 
 
+def indent(elem, level=0):
+    """
+    Recursive function to indent an ElementTree._ElementInterface
+    used for pretty printing. Code from 
+    U{http://www.effbot.org/zone/element-lib.htm}. To use run indent
+    on elem and then output in the normal way. 
+    
+    @param elem: element to be indented. will be modified. 
+    @type elem: ElementTree._ElementInterface
+    @param level: level of indentation for this element
+    @type level: nonnegative integer
+    @rtype:   ElementTree._ElementInterface
+    @return:  Contents of elem indented to reflect its structure
+    """
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+            
 def demo_flat():
     from nltk_lite.etree.ElementTree import ElementTree    
     import sys

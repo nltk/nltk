@@ -130,7 +130,7 @@ class ToolboxData(StandardFormat):
     def parse(self, *args, **kwargs):
         return self._record_parse(*args, **kwargs)
 
-    def _record_parse(self, key, **kwargs):
+    def _record_parse(self, key=None, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file with
         all markers at the same level.
@@ -173,7 +173,9 @@ class ToolboxData(StandardFormat):
                 </record>
             </toolbox_data>
 
-        @param key: Name of key marker at the start of each record
+        @param key: Name of key marker at the start of each record. If set to 
+        None (the default value) the first marker that doesn't begin with an 
+        underscore is assumed to be the key.
         @type key: string
         @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
         @type kwargs: keyword arguments dictionary
@@ -185,6 +187,8 @@ class ToolboxData(StandardFormat):
         builder.start('header', {})
         in_records = False
         for mkr, value in self.fields(**kwargs):
+            if key is None and not in_records and mkr[0] != '_':
+                key = mkr
             if mkr == key:
                 if in_records:
                     builder.end('record')
