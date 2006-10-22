@@ -23,18 +23,22 @@ class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
     
     def __init__(self):
-        super(Settings, self).__init__()
+        super(ToolboxSettings, self).__init__()
 
-    def parse(self, encoding=None, errors='strict'):
+    def parse(self, encoding=None, errors='strict', **kwargs):
         """Parses a settings file using ElementTree.
         
         @param encoding: encoding used by settings file
         @type  encoding: string        
         @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
         @type errors: string
+        @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
+        @type kwargs: keyword arguments dictionary
+        @rtype:   ElementTree._ElementInterface
+        @return:  contents of toolbox settings file with a nested structure
         """
         builder = ElementTree.TreeBuilder()
-        for mkr, value in self.fields(unwrap=False, encoding=encoding, errors=errors):
+        for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
             # Check whether the first char of the field marker
             # indicates a block start (+) or end (-)
             block=mkr[0]
@@ -54,6 +58,31 @@ class ToolboxSettings(StandardFormat):
                 builder.end(mkr)
         return ElementTree.ElementTree(builder.close())
 
+def to_settings_string(tree, encoding=None, errors='strict', unicode_fields=None):
+    # write XML to file
+    l = list()
+    _to_settings_string(tree.getroot(), l, encoding, errors, unicode_fields)
+    return ''.join(l)
+
+def _to_settings_string(node, l, **kwargs):
+    # write XML to file
+    tag = node.tag
+    text = node.text
+    if len(node) == 0:
+        if text:
+            l.append('\\%s %s\n' % (tag, text))
+        else:
+            l.append('\\%s\n' % tag)
+    else:
+        l.append('\n')
+        if text:
+            l.append('\\+%s %s\n' % (tag, text))
+        else:
+            l.append('\\+%s\n' % tag)
+        for n in node:
+            _to_settings_string(n, l, **kwargs)
+        l.append('\\-%s\n' % tag)
+    return ''.join(l)
 
 class MarkerSet :
     """This class is a container for FieldMetadata objects. A marker set
@@ -249,7 +278,7 @@ class FieldMetadata :
         return self._required
 
 
-class LexiconSettings(Settings) :
+class LexiconSettings(ToolboxSettings) :
     """This class is used to parse and manipulate settings file for
     lexicons."""
 
@@ -368,7 +397,7 @@ class ParseProcess(InterlinearProcess) :
     pass
 
 
-class TextSettings(Settings) :
+class TextSettings(ToolboxSettings) :
     """This class is used to parse and manipulate settings file for
     lexicons."""
 
@@ -505,11 +534,12 @@ class TextSettings(Settings) :
             return None
 
 def demo():
-    settings = Settings()
-    settings.open('MDF_AltH.typ')
-    tree = settings.parse(encoding='gbk')
+    settings = ToolboxSettings()
+    settings.open('demos/MDF_AltH.typ')
+    tree = settings.parse(unwrap=False, encoding='gbk')
     print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
     tree.write('test.xml')
+    print to_settings_string(tree).encode('gbk')
 
 if __name__ == '__main__':
     demo()
