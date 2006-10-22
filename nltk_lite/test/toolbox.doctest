@@ -218,6 +218,59 @@ Consecutive whitespace characters (except newline) are treated the same as one:
 
 ``toolbox.ToolboxData.parse()``
 -------------------------------
+check that normal parsing works:
+
+    >>> from nltk_lite.etree import ElementTree
+    >>> td = toolbox.ToolboxData()
+    >>> s = """\\_sh v3.0  400  Rotokas Dictionary
+    ... \\_DateStampHasFourDigitYear
+    ... 
+    ... \\lx kaa
+    ... \\ps V.A
+    ... \\ge gag
+    ... \\gp nek i pas
+    ... 
+    ... \\lx kaa
+    ... \\ps V.B
+    ... \\ge strangle
+    ... \\gp pasim nek
+    ... """
+    >>> td.open_string(s)
+    >>> tree = td.parse(key='lx')
+    >>> tree.tag
+    'toolbox_data'
+    >>> ElementTree.tostring(tree.getchildren()[0])
+    '<header><_sh>v3.0  400  Rotokas Dictionary</_sh><_DateStampHasFourDigitYear /></header>'
+    >>> ElementTree.tostring(tree.getchildren()[1])
+    '<record><lx>kaa</lx><ps>V.A</ps><ge>gag</ge><gp>nek i pas</gp></record>'
+    >>> ElementTree.tostring(tree.getchildren()[2])
+    '<record><lx>kaa</lx><ps>V.B</ps><ge>strangle</ge><gp>pasim nek</gp></record>'
+
+check that guessing the key marker works:
+
+    >>> from nltk_lite.etree import ElementTree
+    >>> td = toolbox.ToolboxData()
+    >>> s = """\\_sh v3.0  400  Rotokas Dictionary
+    ... \\_DateStampHasFourDigitYear
+    ... 
+    ... \\lx kaa
+    ... \\ps V.A
+    ... \\ge gag
+    ... \\gp nek i pas
+    ... 
+    ... \\lx kaa
+    ... \\ps V.B
+    ... \\ge strangle
+    ... \\gp pasim nek
+    ... """
+    >>> td.open_string(s)
+    >>> tree = td.parse()
+    >>> ElementTree.tostring(tree.getchildren()[0])
+    '<header><_sh>v3.0  400  Rotokas Dictionary</_sh><_DateStampHasFourDigitYear /></header>'
+    >>> ElementTree.tostring(tree.getchildren()[1])
+    '<record><lx>kaa</lx><ps>V.A</ps><ge>gag</ge><gp>nek i pas</gp></record>'
+    >>> ElementTree.tostring(tree.getchildren()[2])
+    '<record><lx>kaa</lx><ps>V.B</ps><ge>strangle</ge><gp>pasim nek</gp></record>'
 
 -----------------------
 ``toolbox`` functions
