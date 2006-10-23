@@ -236,23 +236,43 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     """Return a string with a standard format representation of the toolbox
     data in tree.
     
-    @type tree: ElementTree._ElementInterface
     @param tree: flat representation of toolbox data
+    @type tree: ElementTree._ElementInterface
+    @param encoding: Name of an encoding to use.
+    @type encoding: string
+    @param errors: Error handling scheme for codec. Same as the C{encode} 
+        inbuilt string method.
+    @type errors: string
+    @param unicode_fields:
+    @type unicode_fields: string
     @rtype:   string
     @return:  string using standard format markup
     """
-    # todo encoding, unicode fields, errors?
     if tree.tag != 'toolbox_data':
         raise ValueError, "not a toolbox_data element structure"
+    if encoding is None and unicode_fields is not None:
+        raise ValueError, \
+            "if encoding is not specified then neither should unicode_fields"
     l = []
     for rec in tree:
         l.append('\n')
         for field in rec:
+            mkr = field.tag
             value = field.text
-            if re.search(_is_value, value):
-                l.append("\\%s %s\n" % (field.tag, value))
+            if encoding is not None:
+                if unicode_fields is not None and mkr in unicode_fields:
+                    cur_encoding = 'utf8'
+                else:
+                    cur_encoding = encoding
+                if re.search(_is_value, value):
+                    l.append((u"\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors))
+                else:
+                    l.append((u"\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors))
             else:
-                l.append("\\%s%s\n" % (field.tag, value))
+                if re.search(_is_value, value):
+                    l.append("\\%s %s\n" % (mkr, value))
+                else:
+                    l.append("\\%s%s\n" % (mkr, value))
     return ''.join(l[1:])
 
 def _parse_record(s):
