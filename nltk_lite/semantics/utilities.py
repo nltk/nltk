@@ -99,6 +99,6 @@ def text_evaluate(inputs, grammar, model, assignment):
         syn_sem_val = \
           [(syn, sem, m.evaluate(str(sem), g)) for (syn, sem) in semreps[sent]]
         evaluations[sent] = syn_sem_val
-        return evaluations
+    return evaluations
     
 

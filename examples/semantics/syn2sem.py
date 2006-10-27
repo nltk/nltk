@@ -27,23 +27,23 @@ sents = ['Fido sees a boy with Mary',
          'John walks with a girl in Noosa'
          ]
 
-sents0 = ['a dog barks']
 
-def main(evaluate=0):
+def main(inputs = sents, evaluate=1, filename = 'sem2.cfg'):
     SPACER = '-' * 30
-    filename = 'sem1.cfg'
+    
     model = m
     assignment = g
-    # GrammarFile is imported indirectly via nltk_lite.semantics
-    grammar = GrammarFile.read_file(filename)
-    inputs = sents0
     
+    # NB. GrammarFile is imported indirectly via nltk_lite.semantics
+    grammar = GrammarFile.read_file(filename)
+    
+    evaluations = text_evaluate(inputs, grammar, model, assignment)
+
     for sent in inputs:
         n = 1
         print '\nSentence: %s' % sent
         print SPACER
-        if evaluate:
-            evaluations = text_evaluate(inputs, grammar, model, assignment)
+        if evaluate: 
             for (syntree, semrep, value) in evaluations[sent]:
                 print '%d:  %s' % (n, semrep.infixify())
                 print '%9s in Model m' % value
@@ -55,7 +55,7 @@ def main(evaluate=0):
             n += 1
                 
 if __name__ == "__main__":
-    main(evaluate=1)
+    main()
 
 
 
