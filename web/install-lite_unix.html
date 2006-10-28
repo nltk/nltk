@@ -58,62 +58,66 @@
 	python -V
 </pre>
 	
-<a name="numarray"></a>
-<h2> 2. Installing Numarray </h2>
+<a name="numpy"></a>
+<h2> 2. Installing Numpy </h2>
 
-<P>NLTK also requires a Python module called Numarray, which provides a range of mathematical
+<P>NLTK also requires a Python module called Numpy, which provides a range of mathematical
 functions.
 
-<P>Download the Numarray source distribution from <A HREF="http://prdownloads.sourceforge.net/numpy/numarray-1.5.2.tar.gz?download">http://prdownloads.sourceforge.net/numpy/numarray-1.5.2.tar.gz?download</A>
+<P>Download the Numpy source distribution from <A HREF="http://prdownloads.sourceforge.net/numpy/numpy-1.0.tar.gz?download">http://prdownloads.sourceforge.net/numpy/numpy-1.0.tar.gz?download</A>
 to /tmp.
 
-<P>Uncompress the Numarray source distribution:
+NUMPY = $(SFNETMIRROR)/numpy
+	wget -N -P python/unix/ $(NUMPY)/
+
+
+<P>Uncompress the Numpy source distribution:
 
 <pre>
 	cd /tmp
-	gunzip numarray-1.5.2.tar.gz
-	tar -xvf numarray-1.5.2.tar.gz
+	gunzip numpy-1.0.tar.gz
+	tar -xvf numpy-1.0.tar
 </pre>
 
-<P>Install the Numarray module:
+<P>Install the Numpy module:
 
 <pre>
-	cd numarray-1.5.2
+	cd numpy-1.0
 	sudo python setup.py install
 </pre>
 
 <a name="nltk-lite"></a>
 <h2> 3. Installing NLTK-Lite </h2>
 
-<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.6.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.6.tar.gz?download</A>
+<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7a1.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7a1.tar.gz?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite source distribution:
 
 <pre>
 	cd /tmp
-	gunzip nltk_lite-0.6.6.tar.gz
-	tar -xvf nltk_lite-0.6.6.tar
+	gunzip nltk_lite-0.7a1.tar.gz
+	tar -xvf nltk_lite-0.7a1.tar
 </pre>
 
 <P>Install the NLTK-Lite module:
 
 <pre>
-	cd nltk_lite-0.6.6
+	cd nltk_lite-0.7a1
 	sudo python setup.py install
 </pre>
 
 <a name="nltk-lite-corpora"></a>
 <h2> 4. Installing the NLTK-Lite Corpora Package </h2>
 
-<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.6.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.6.zip?download</A>
+<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7a1.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7a1.zip?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite Corpora distribution:
 
 <pre>
 	cd /tmp
-	unzip nltk_lite-corpora-0.6.6.zip
+	unzip nltk_lite-corpora-0.7a1.zip
 </pre>
 
 <P>Move the corpora to a standard directory, e.g. /usr/share/nltk_lite or /usr/local/share/nltk_lite.
@@ -169,30 +173,11 @@ is loaded every time you start a terminal session:
 	sudo make install
 </pre>
 
-<P>Next, download and install the pywordnet source distribution from
-<A HREF="http://prdownloads.sourceforge.net/pywordnet/pywordnet-2.0.1.tar.gz?download">http://prdownloads.sourceforge.net/pywordnet/pywordnet-2.0.1.tar.gz?download</a> 
-to /tmp.
-
-<P>Open a terminal session, and uncompress the distribution:
-
-<pre>
-	cd /tmp
-	gunzip pywordnet-2.0.1.tar.gz
-	tar -xvf pywordnet-2.0.1.tar
-</pre>
-
-<P>Now install the pywordnet source distribution:
-
-<pre>
-	cd pywordnet-2.0.1
-	python ./setup.py install
-</pre>
-
 </div>
 <table class="transparent" width="100%">
 <tr><td align="left"><font size="-1">
 <!-- hhmts start -->
-Last modified: Thu Oct  5 16:59:29 EST 2006
+Last modified: Sun Oct  29 16:59:29 EST 2006
 <!-- hhmts end -->
 </font></td><td align="right"><font size="-1">
 <address><a href="mailto:sb@csse.unimelb.edu.au,badenh@csse.unimelb.edu.au">Steven Bird, Baden Hughes</a></address>

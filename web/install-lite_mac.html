@@ -33,79 +33,89 @@
 
 <P>NLTK-Lite requires the Python scripting language interpreter to be installed on your machine.
 
-<P>Download the Python binary from <A HREF="http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg">http://www.python.org/ftp/python/2.4.3/Universal-MacPython-2.4.3.dmg</A> to /tmp.
+<P>Download the Python binary from <A HREF="http://www.python.org/ftp/python/2.5/python-2.5-macosx.dmg">http://www.python.org/ftp/python/2.5/python-2.5-macosx.dmg</a> to /tmp.
 
 <P>Mount the dmg, double click and follow the OSX Packager install instructions.
 
-<P>You will now have 2 versions of Python installed on your Mac:
+<P>You may now have 2 versions of Python installed on your Mac:
 	<ul>
-	<li>Python 2.3, installed with Mac OS X by default in <pre>/usr/bin/python</pre>
-	<li>Python 2.4, installed by the previous step in <pre>/usr/local/bin/python</pre>
+	<li>Python 2.3 or 2.4, installed with Mac OS X by default in <pre>/usr/bin/python</pre>
+	<li>Python 2.5, installed by the previous step in <pre>/usr/local/bin/python</pre>
 	</ul>
 
-The version difference is significant since NLTK requires Python 2.4 to run.
-
-<P>To make it easier to differentiate between versions, we can create a link at the system level.
-Open a terminal session, then type:
-
-<pre>
-	sudo ln -s /usr/local/bin/python /usr/bin/python2.4
-</pre>
-
-<P>Now, when you want to use Python 2.4, you can simply type <pre>python2.4</pre> on the command line.
+This is significant since NLTK requires Python 2.4 or later to run.
 
 <P> Check the Python installation:
 
 <pre>
-	python2.4 -V
+	python -V
 </pre>
 
 which should return something similar to:
 
-<pre>Python 2.4.3</pre>.
+<pre>Python 2.5</pre>.
 
-<a name="numarray"></a>
-<h2> 2. Installing Numarray </h2>
+<P> (You may need to add a symbolic link in order to get the correct version of Python.)
 
-<P>NLTK also requires a Python module called Numarray, which provides a range of mathematical
-functions.
+<a name="numpy"></a>
+<h2> 2. Installing Numpy </h2>
 
-<P>Download the appropriate Numarray binary from <A HREF="http://www.pythonmac.org/packages/py24-fat/mpkg/numarray-1.5.1-py2.4-macosx10.4.mpkg.zip">http://www.pythonmac.org/packages/py24-fat/mpkg/numarray-1.5.1-py2.4-macosx10.4.mpkg.zip</A> to /tmp.
+<P>NLTK also requires a Python module called Numpy, which provides a range of mathematical
+functions.  This must be installed from source.
 
-<P>Open the distribution and follow the OSX Packager install instructions.
+<P>Download the Numpy source distribution from <A HREF="http://prdownloads.sourceforge.net/numpy/numpy-1.0.tar.gz?download">http://prdownloads.sourceforge.net/numpy/numpy-1.0.tar.gz?download</A>
+to /tmp.
+
+NUMPY = $(SFNETMIRROR)/numpy
+	wget -N -P python/unix/ $(NUMPY)/
+
+<P>Uncompress the Numpy source distribution:
+
+<pre>
+	cd /tmp
+	gunzip numpy-1.0.tar.gz
+	tar -xvf numpy-1.0.tar
+</pre>
+
+<P>Install the Numpy module:
+
+<pre>
+	cd numpy-1.0
+	sudo python setup.py install
+</pre>
 
 <a name="nltk-lite"></a>
 <h2> 3. Installing NLTK-Lite </h2>
 
-<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.6.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.6.6.tar.gz?download</A>
+<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7a1.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7a1.tar.gz?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite source distribution:
 
 <pre>
 	cd /tmp
-	gunzip nltk_lite-0.6.6.tar.gz
-	tar -xvf nltk_lite-0.6.6.tar
+	gunzip nltk_lite-0.7a1.tar.gz
+	tar -xvf nltk_lite-0.7a1.tar
 </pre>
 
 <P>Install the NLTK-Lite module:
 
 <pre>
-	cd nltk_lite-0.6.6
+	cd nltk_lite-0.7a1
 	sudo python setup.py install
 </pre>
 
 <a name="nltk-lite-corpora"></a>
 <h2> 4. Installing the NLTK-Lite Corpora Package</h2>
 
-<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.6.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.6.6.zip?download</A>
+<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7a1.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7a1.zip?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite Corpora distribution:
 
 <pre>
 	cd /tmp
-	unzip nltk_lite-corpora-0.6.6.zip
+	unzip nltk_lite-corpora-0.7a1.zip
 </pre>
 
 <P>Move the corpora to a standard directory, e.g. /usr/share/nltk_lite, or /usr/local/share/nltk_lite.
@@ -160,25 +170,6 @@ is loaded every time you start a terminal session:
 	./configure
 	make
 	sudo make install
-</pre>
-
-<P>Next, download and install the pywordnet source distribution from
-<A HREF="http://prdownloads.sourceforge.net/pywordnet/pywordnet-2.0.1.tar.gz?download">http://prdownloads.sourceforge.net/pywordnet/pywordnet-2.0.1.tar.gz?download</a> 
-to /tmp.
-
-<P>Open a terminal session, and uncompress the distribution:
-
-<pre>
-	cd /tmp
-	gunzip pywordnet-2.0.1.tar.gz
-	tar -xvf pywordnet-2.0.1.tar
-</pre>
-
-<P>Now install the pywordnet source distribution:
-
-<pre>
-	cd pywordnet-2.0.1
-	python ./setup.py install
 </pre>
 
 </div>
