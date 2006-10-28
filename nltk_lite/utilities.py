@@ -125,14 +125,20 @@ class MinimalSet(object):
     cases like wind (noun) 'air in rapid motion', vs wind (verb)
     'coil, wrap'.
     """
-    def __init__(self):
+    def __init__(self, parameters=None):
         """
         Create a new minimal set.
+
+        @param parameters: The (context, target, display) tuples for the item
+        @type parameters: C{list} of C{tuple} of C{string}
         """
         self._targets = set()  # the contrastive information
         self._contexts = set() # what we are controlling for
         self._seen = {}        # to record what we have seen
         self._displays = {}    # what we will display
+
+        for context, target, display in parameters:
+            self.add(context, target, display)
 
     def add(self, context, target, display):
         """
