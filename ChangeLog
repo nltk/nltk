@@ -1,3 +1,13 @@
+Version 0.7a1 2006-10-29
+
+* Code:
+  - new toolbox module (Greg Aumann)
+  - new semantics package (Ewan Klein)
+  - bugfixes
+* Tutorials
+  - substantial revision, especially in preface, introduction, words,
+    and semantics chapters.
+	
 Version 0.6.6 2006-10-06
 
 * Code:
