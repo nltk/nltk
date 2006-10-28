@@ -55,31 +55,29 @@ INSTALL.TXT: INSTALL.TXT.in
 # ISO Image
 ########################################################################
 
-.PHONY: iso python wordnet pywordnet numarray
-.PHONY: .python.done .rsync.done .wordnet.done .pywordnet .numarray.done
+.PHONY: iso python wordnet pywordnet numpy
+.PHONY: .python.done .rsync.done .wordnet.done .pywordnet .numpy.done
 
 SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
 PYTHON = http://www.python.org/ftp/python/2.5
-PYTHON24 = http://www.python.org/ftp/python/2.4.3
 NUMPY = $(SFNETMIRROR)/numpy
-MACPY = http://www.pythonmac.org/packages
 WN20 = http://wordnet.princeton.edu/2.0/
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(PYTHON24)/Universal-MacPython-2.4.3.dmg
+	wget -N -P python/win/  $(PYTHON)/python-2.5-macosx.dmg
 	wget -N -P python/win/  $(PYTHON)/python-2.5.msi
 	wget -N -P python/unix/ $(PYTHON)/Python-2.5.tgz
 	touch .python.done
 
-numarray:
+numpy:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(MACPY)/py24-fat/mpkg/numarray-1.5.1-py2.4-macosx10.4.mpkg.zip
-	wget -N -P python/win/  $(NUMPY)/numarray-1.5.2.win32-py2.5.exe?download
-	wget -N -P python/unix/ $(NUMPY)/numarray-1.5.2.tar.gz?download
-	mv python/win/numarray-1.5.2.win32-py2.5.exe?download python/win/numarray-1.5.2.win32-py2.5.exe
-	mv python/unix/numarray-1.5.2.tar.gz?download python/unix/numarray-1.5.2.tar.gz
-	touch .numarray.done
+	wget -N -P python/win/  $(NUMPY)/numpy-1.0.win32-py2.5.exe?download
+	wget -N -P python/unix/ $(NUMPY)/numpy-1.0.tar.gz?download
+	mv python/win/numpy-1.0.win32-py2.5.exe?download python/win/numpy-1.0.win32-py2.5.exe
+	mv python/unix/numpy-1.0.tar.gz?download python/unix/numpy-1.0.tar.gz
+	cp python/unix/numpy-1.0.tar.gz python/mac/numpy-1.0.tar.gz
+	touch .numpy.done
 
 wordnet:
 	mkdir -p python/{mac,win,unix}
@@ -88,16 +86,7 @@ wordnet:
 	cp python/mac/WordNet-2.0.tar.gz python/unix
 	touch .wordnet.done
 
-pywordnet:
-	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.tar.gz?download
-	wget -N -P python/win/  $(SFNETMIRROR)/pywordnet/pywordnet-2.0.1.win32.exe?download
-	mv python/mac/pywordnet-2.0.1.tar.gz?download python/mac/pywordnet-2.0.1.tar.gz
-	mv python/win/pywordnet-2.0.1.win32.exe?download python/win/pywordnet-2.0.1.win32.exe
-	cp python/mac/pywordnet-2.0.1.tar.gz python/unix
-	touch .pywordnet.done
-
-iso:	.dist.done .python.done .numarray.done .wordnet.done .pywordnet.done
+iso:	.dist.done .python.done .numpy.done .wordnet.done .pywordnet.done
 	rm -rf iso nltk_lite-$(NLTK_VERSION)
 	mkdir -p iso/web iso/web/screenshots/ iso/mac iso/win iso/unix
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
