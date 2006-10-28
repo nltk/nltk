@@ -29,7 +29,7 @@ doc:
 
 .PHONY: dist codedist docdist corporadist .dist.done
 
-dist: codedist docdist corporadist
+dist: codedist docdist exampledist corporadist
 	touch .dist.done
 
 codedist: clean_code INSTALL.TXT
@@ -40,6 +40,9 @@ codedist: clean_code INSTALL.TXT
 
 docdist: doc
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
+
+exampledist: doc
+	find examples -print | egrep -v '.svn' | zip dist/nltk_lite-examples-$(NLTK_VERSION).zip -@
 
 corporadist:
 	find corpora -print | egrep -v '.svn' | zip dist/nltk_lite-corpora-$(NLTK_VERSION).zip -@
