@@ -65,7 +65,7 @@ WN20 = http://wordnet.princeton.edu/2.0/
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/win/  $(PYTHON)/python-2.5-macosx.dmg
+	wget -N -P python/mac/  $(PYTHON)/python-2.5-macosx.dmg
 	wget -N -P python/win/  $(PYTHON)/python-2.5.msi
 	wget -N -P python/unix/ $(PYTHON)/Python-2.5.tgz
 	touch .python.done
