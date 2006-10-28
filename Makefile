@@ -27,7 +27,7 @@ doc:
 # DISTRIBUTIONS
 ########################################################################
 
-.PHONY: dist codedist docdist corporadist .dist.done
+.PHONY: dist codedist docdist corporadist exampledist .dist.done
 
 dist: codedist docdist exampledist corporadist
 	touch .dist.done
@@ -55,8 +55,8 @@ INSTALL.TXT: INSTALL.TXT.in
 # ISO Image
 ########################################################################
 
-.PHONY: iso python wordnet pywordnet numpy
-.PHONY: .python.done .rsync.done .wordnet.done .pywordnet .numpy.done
+.PHONY: iso python wordnet numpy
+.PHONY: .python.done .rsync.done .wordnet.done .numpy.done
 
 SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
 PYTHON = http://www.python.org/ftp/python/2.5
