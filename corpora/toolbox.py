@@ -19,7 +19,7 @@ from nltk_lite.corpora import get_basedir
 from string import split
 from itertools import imap
 from StringIO import StringIO
-from nltk_lite.etree.ElementTree import TreeBuilder
+from nltk_lite.etree.ElementTree import TreeBuilder, Element
 
 class StandardFormat(object):
     """
@@ -234,9 +234,9 @@ _is_value = re.compile(r"\S")
 
 def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     """Return a string with a standard format representation of the toolbox
-    data in tree.
+    data in tree (tree can be a toolbox database or a single record).
     
-    @param tree: flat representation of toolbox data
+    @param tree: flat representation of toolbox data (whole database or single record)
     @type tree: ElementTree._ElementInterface
     @param encoding: Name of an encoding to use.
     @type encoding: string
@@ -248,6 +248,11 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     @rtype:   string
     @return:  string using standard format markup
     """
+    if tree.tag == 'record':
+        root = Element('toolbox_data')
+        root.append(tree)
+        tree = root
+
     if tree.tag != 'toolbox_data':
         raise ValueError, "not a toolbox_data element structure"
     if encoding is None and unicode_fields is not None:
