@@ -876,8 +876,8 @@ def draw_trees(*trees):
 ##  Demo Code
 ##//////////////////////////////////////////////////////
 
-import random
-if __name__ == '__main__':
+def demo():
+    import random
     def fill(cw):
         cw['fill'] = '#%06d' % random.randint(0,999999)
     
@@ -967,3 +967,6 @@ built from tree_to_treesegment."""
 
     # Run mainloop
     cf.mainloop()
+
+if __name__ == '__main__':
+    demo()
