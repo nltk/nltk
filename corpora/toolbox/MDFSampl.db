@@ -1,0 +1,1685 @@
+\_sh v3.0  400  MDF 4.0
+\_DateStampHasFourDigitYear
+
+\lx a
+\ps disc
+\pn
+\ge listen
+\ge come_on
+\ge ummm
+\gn mari
+\re *
+\rn *
+
+\rf n1.029.05
+\xv A klwosu ti o.
+\xe Come on, I'll tell you.
+\xn Mari, saya bilang kepada anda.
+
+\nt
+
+\dt 24/Mar/1997
+
+\lx -a
+\hm 1
+\ps pos
+\pn punya
+\ge his ; hers ; its 
+\gn nya
+
+\rf
+\xv
+\xe
+\xn
+
+\cf -kw
+\ce my
+\cf -mw
+\ce your
+\cf -na
+\ce his/her
+\ng This is the uc:genitive_possessive marker.
+\nt
+\dt 06/Apr/1990
+
+\lx -a
+\hm 2
+\ps disc
+\pn
+\ge 0
+\gn 0
+\re *
+\rn *
+
+\rf d1.103.03
+\xv Aramyait desikeo kpwacula boke ode enamua ihlawar.
+\xe After we arrived, I cultivated the garden and your mom burned (it).
+\xn Setelah kami tiba, saya cangkul kebun dan ibumu membakar (kebun).
+
+\rf d1.103.11
+\xv Ilebu umak ode kbwa ti a kpwacul.
+\xe She heated the rocks (for cooking) and I went to cultivate.
+\xn Dia bakar batu dan saya pergi cangkul.
+
+\ng Transitivity marker.
+\nt It was explained that if the OBJ is there it is '±-a', but if the OBJ is not
+there, -a canNOT appear. ub:Hypothesis: If the object on a ±OBJ verb
+exists, the verb must take a '-a' to mark the transitivity to the object.
+Otherwise the verb stands alone and the object is implied.
+
+\dt 08/Aug/1990
+
+\lx -abana
+\lc
+\ps vt
+\pn kkt
+\ge heat
+\gn masak
+\pd 1
+\pdl 1s
+\pdv kabana
+
+\rf n2.019.20
+\xv Yabana wermanaske.
+\xe He's heating water.
+\xn Dia masak air panas.
+
+\nt
+\dt 22/Jan/1990
+
+\lx abat
+\ps n
+\pn kb
+\ge grove
+\gn dusun
+\pdl sg
+\pdv abatke
+\pdl pl
+\pdv
+
+\rf d2.077.03
+\xv Kbwai abatke ti ksweruk nurare.
+\xe I went to the coconut groves to clear the grass.
+\xn Saya pergi menyiangi dusun kelapa.
+
+\rf d4.079.16
+\xv Kbwa ti ktwan nurke o abatke.
+\xe I'm going to plant coconut trees in the grove.
+\xn Saya pergi tanam kelapa di dusun.
+
+\ee This is uc:not limited to coconut groves but is used for mangoes, etc.
+\nt
+
+\dt 26/Feb/1990
+
+\lx -abili
+\ps v
+\pn kk
+\ge wail
+\gn meratap
+\rn ratap, me-*
+\pd 1
+\pdl 1s
+\pdv kabili
+
+\rf n2.113.30
+\xv Kswer ma kabili yaw ti lasmyerke.
+\xe I wailed prostrate on the ground.
+\xn Saya meratap di tanah.
+
+\cf -ser
+\ce cry
+\cn menangis
+\nt
+\dt 01/Feb/1990
+
+\lx abu
+\ps n
+\pn kb
+\ge bean
+\de a red or beige bean, like a 'black eyed pea'
+\gn kacang merah
+\gn kacang abu
+\pdl sg
+\pdv abuke
+\pdl pl
+\pdv abuare
+
+\rf
+\xv
+\xe
+\xn
+
+\cf lahlurw
+\ce mung bean
+\dt 08/Jun/1990
+
+\lx -abuk
+\ps vt
+\pn kkt
+\ge call ; sing
+\gn memanggil
+\rn panggil, mem-*
+\gn menyanyi
+\rn nyanyi, me-*
+\pd 1
+
+\rf d1.071.15
+\xv Akasy, amoi yabuk o.
+\xe Sis, father called you.
+\xn Nona dipanggil oleh ayah.
+
+\rf d2.097.13
+\xv Amoswoke yabuk bew sew kyaki bo.
+\xe The old man just sang traditional songs every day.
+\xn Orang tua itu menyanyi lagu-lagu adat setiap hari.
+
+\rf d1.047.09
+\xv Sawaku ine ania Naomi keskye kyalamo rabuk io Omi.
+\xe My wife's name is Naomi, but usually they call her Omi.
+\xn Istri saya namanya Naomi, tetapi dipendekan dipanggil Omi.
+
+\cf -eik
+\ce yell
+\cf -hoak
+\ce announce
+\nt
+\dt 20/Feb/1990
+
+\lx -abutak
+\ps v
+\pn kk
+\ge make_narrower
+\re narrow, to make
+\gn mempersempit
+\rn sempit, memper-*
+\pd 1
+\pdl 1s
+\pdv
+
+\rf d2.089.03
+\xv Wasimw boke helhela lanidik de mabutak.
+\xe Your garden is too wide, so make it narrower.
+\xn Kebun mu terlalu lebar jadi diperkecilkan.
+
+\cf helhela
+\ce wide
+\cf butbut
+\ce narrow
+\cf -sikar
+\ce widen
+\nt
+\dt 20/Feb/1990
+
+\lx -adai
+\ps v
+\pn kk
+\ge stretch
+\gn timbang
+\gn gantung_tindis
+\pd 1
+
+\rf d2.089.01
+\xv Rhas taisa Tnebarke ma kteio, radai.
+\xe When they're done washing hand woven cloth from
+Tanimbar, they hang it taut (with rocks).
+\xn Setelah mereka cuci kain tenun Tanimbar, mereka
+timbang dengan batu.
+
+\cf -solar
+\ce stretch
+\ee This is used to stretch thread or cloth that is wet so
+that it doesn't shrink or knot.  This verb is used only
+for this operation, i.e. this method of stretching cloth.
+
+\pc See d2.21 for drawing of the basic method, including
+hanging with rocks.
+
+\dt 30/Oct/1989
+
+\lx adar
+\ps n
+\pn kb
+\ge statue
+\gn patung
+
+\pdl sg
+\pdv adarke
+\pdl pl
+\pdv adarare
+\ee Identified by native speaker as an "fn:adat statue" and by Drabbe as a
+wooden statue in the gardens to indicate that something is forbidden.
+
+\ps v
+\pn kk
+\ge pray
+\gn kasi_hasil
+\rn hasil, kasi
+\pd 1
+\pdl 1s
+\pdv kadar
+
+\rf n3.057.08
+\xv
+\xe
+\xn
+
+\ee This involves praying that others may be successful in the hunt.  The
+one who does the praying gets the jawbone of the pig from the one who
+caught it.
+\va mwadar
+\ve The 2s form?
+\va kwadar
+\ve The 1s form?
+\va myadar
+\ve The 2p form?
+\vn
+\nt
+\dt 17/Mar/1990
+
+\lx -aditi
+\ps v
+\pn kk
+\ge move ; get_rid_of ; dismiss ; put_out
+\gn keluarkan ; pindah ; isut
+\rn luar, ke-*-kan ; pindah ; isut
+\pd 1
+\pdl 1s
+\pdv kaditi
+
+\rf n2.035.27
+\xv Kaditi lanare dum.
+\xe I shifted the stuff a little.
+\xn Saya mengisut barang sebagian.
+
+\rf n2.053.07
+\xv Yaditi nyeke toha koture.
+\xe I weeded among the food plants.
+\xn Saya cabut rumput dari makanan.
+
+\rf n3.017.07
+\xv Raditi sir toha tahananke.
+\xe They released them from being held./Freedom.
+\xn Mereka keluarkan mereka dari tahanan./Kemerdekaan.
+
+\cf -suri
+\ce push forward
+\cf -wai2
+\ce move
+\va
+\ve
+\nt What is fv:dum??
+\dt 14/Mar/1990
+
+\lx -ahel
+\ps vi
+\pn kk
+\ge handsome ; pretty ; improve ; enhance
+\gn gagah ; cantik ; membagusi
+\rn gagah ; cantik ; bagus, mem-*-i
+\pd 1
+\pdl 3s
+\pdv yahel
+\pdl 3p
+\pdv rahel
+
+\rf d2.099.10
+\xv Warar neke yahel dakun.
+\xe This girl is really pretty.
+\xn Gadis ini dia cantik sekali.
+
+\sy snyohy
+\ng The 1st and 2nd person form of this verb is rare (it may be too
+forthright).  3rd person singular and plural forms are both common.
+\nt
+\va
+\dt 20/Feb/1990
+
+\lx ahw
+\lc afw, ahw
+\ps n
+\pn kb
+\ge ash
+\ge dust
+\gn abu
+\pdl sg
+\pdv afkwe, ahkwe
+\pdl pl
+\pdv Ø
+
+\rf
+\xv
+\xe
+\xn
+
+\cf kusman
+\ce ash
+\cf ahwahw
+\ce dusty
+\ee This is used mostly for ash from a fire and for fn:abu-abu, i.e.
+anything which looks like dust.
+\ng This noun has no plural form.
+\nt
+\dt 10/Jul/1990
+
+\lx ahwahw
+\ps vi
+\pn kk
+\ge dusty
+\ge dirty
+\ge cloudy
+\gn kotor
+\gn abu-abu
+\gn kabur
+
+\rf d2.089.02
+\xv
+\xe
+\xn
+
+\se mata ahwahw
+\ps ph
+\pn ucapan
+\ge bad eyes
+\gn mata kabur
+\gn rabun
+
+\ng Reduplicated form from root fv:ahw.
+\nt
+\dt 13/Mar/1990
+
+\lx -ahy
+\ps vt
+\pn kkt
+\ge tear
+\gn menyobek
+\rn sobek, meny-*
+\pd 1
+\pdl 1s
+\pdv kahy
+
+\rf n2.033.09
+\xv Kahy taharke.
+\xe I tore the coconut branch (down the middle).
+\xn Saya menyobek daun kelapa.
+
+\sy -sin
+\va kimahy
+\ve Usually the inanimate form is fv:kyahy. Where was this form
+found?
+\nt
+\dt 24/Jan/1990
+
+\lx -ai
+\ps vt
+\pn kkt
+\ge nauseate
+\gn buat_pencernaan
+\rn cerna, buat pen-*-an
+\gn pusing
+\rn pusing, buat *
+\gr hati_naik
+\pd 1
+
+\rf d3.015.16
+\xv Taknam ma tbesur lanidik ode healnekre kele rai ity de.
+\xe We ate until we were too full, and this type of fish has made us sick.
+\xn Kita makan terlalu kenyang sehingga ikan macam ini buat kita pusing.
+
+\nt
+
+\dt 04/Dec/1989
+
+\lx ail
+\ps vt
+\pn kkt
+\ge go_fishing
+\re fish
+\gn mengail
+\rn kail
+\pd 1
+\pdl 1s
+\pdv
+
+\rf d2.63.4
+\xv Yail maskye.
+\xe He went fishing for fish.
+\xn Dia mengail ikan.
+
+\cf -susw2
+\ce torch fishing
+\cf -tetah
+\ce fishing
+
+\ps n
+\pn kb
+\ge fishing_line
+\gn kail
+\pdl sg
+\pdv ailke
+\pdl pl
+\pdv
+
+\rf d2.63.2
+\xv Ailke kisike
+\xe Bait on a fish hook.
+\xn Isi mata kail.
+
+\sy tasi
+\nt I'm not sure of the English translation for the example sentence.
+
+\dt 12/Mar/1990
+
+\lx ailhat
+\ps n
+\pn kb
+\ge driftwood
+\gn kayu_di_laut
+\pdl sg
+\pdv
+\pdl pl
+\pdv
+
+\rf dr.011.11
+\xv
+\xe
+\xn
+
+\cf -manw
+\ce float
+\nt Drabbe:  "a felled tree."
+\dt 17/Mar/1990
+
+\lx asw
+\hm 1
+\ps n:an
+\pn kb
+\ge dog
+\gn anjing
+\pdl sg
+\pdv askwe
+\pdl pl
+\pdv asure
+
+\rf d2.011.06
+\xv Asure radoha i.
+\xe The dogs chased it.
+\xn Anjing-anjing kejar dia.
+
+\rf n2.063.14
+\xv Askwe nya kotkwe toha mejake khahake.
+\xe The dog ate the food from the top of the table.
+\xn Anjing makan makanan dari atas meja.
+
+\nt
+
+\dt 25/Jan/1990
+
+\lx asw
+\hm 2
+\ps n
+\pn kb
+\ge pestle
+\gn alu
+\pdl sg
+\pdv askwe
+\pdl pl
+\pdv asure
+
+\rf d2.093.06
+\xv Mal askwe ma mhwaw alyakwe ti neskwe.
+\xe Get the pestle so you can pound the rice in the mortar.
+\xn Ambil alu tumbuk padi di lesung.
+
+\cf nesw
+\ce mortar
+\cf -haw
+\ce pound
+\nt Historical reconstruction: *l~s, *u#~w.
+
+\dt 13/Nov/1989
+
+\lx -asw
+\ps vt
+\pn kkt
+\ge draw (water)
+\ge dip
+\gn timba
+\pd 1
+\pdl 1s
+\pdv kasw
+
+\rf n1.111.13
+\xv Yaso yaw ma ti kasw werke.
+\xe He told me to go draw water.
+\xn Dia suruh saya timba air.
+
+\sy -kasw
+\cf -tol
+\ce draw water
+\nt
+\dt 19/Jan/1990
+
+\lx aswasw
+\ps n
+\pn kb
+\ge blown_leaf
+\re leaf, blown
+\gn daun
+\rn daun, semacam-macam
+\pdl sg
+\pdv
+\pdl pl
+\pdv aswasure
+
+\rf n3.003.02
+\xv
+\xe
+\xn
+
+\cf aswasw_khaha
+\ce high water mark
+\ee This is fn:daun_yang_merayap_di_tanah.
+\nt
+\dt 19/Jan/1990
+
+\lx aswasw khaha
+\ps ph
+\pn ucapan
+\ge high_water_mark
+\gn batas_ombak_pecah
+
+\rf d2.093.07
+\xv Aswaskwe khaha desike rawai tasisi ti.
+\xe At the high water mark they dry salt.
+\xn Batas ombak pecah itu mereka menjemur garam di situ.
+
+\lf Syn
+\lv asumwany2
+\le high water mark
+\cf mety2
+\ce low tide
+\cf rean
+\ce high tide
+\cf manahma
+\ce rising tide
+\cf aswasw
+\ce blown leaves
+\nt
+
+\dt 19/Jan/1990
+
+\lx -ayela
+\ps vt
+\pn kkt
+\ge scatter
+\ge sow
+\gn menghamburkan
+\rn hambur, meng-*-kan
+\gn menyebarkan
+\rn sebar, meny-*-kan
+\pd 1?
+\pdl 1s
+\pdv kwayela
+
+\rf d2.093.11
+\xv Atiahire kyayela i ti sekye lulkwe.
+\xe The leaves are scattered about in front of the house.
+\xn Daun-daun berhamburan di depan rumah.
+
+\rf d2.095.04
+\xv Kwayela hettilkye ti sihire rtuky.
+\xe I scattered the corn for the chickens to eat.
+\xn Saya menghamburkan jagung untuk ayam makan.
+
+\rf n2.023.17
+\xv Mwayela makinire.
+\xe You scattered the garbage.
+\xn Anda menyebarkan kotoran.
+
+\rf n2.033.28
+\xv Kwayela o khatunare.
+\xe I broadcast the mango seeds.
+\xn Saya menebarkan bibit mangga.
+
+\ee Seeds sown in this way include mango, rice and millet.
+\nt
+\dt 24/Jan/1990
+
+\lx ba
+\ps prep
+\pn
+\ge away
+\gn keluar
+\rn luar, ke
+
+\rf d2.101.01
+\xv Ti kotuk makinire ba.
+\xe I'm going to throw away the garbage.
+\xn Saya pergi buang sampah.
+
+\rf d1.055.03
+\xv Ktulis suratke ma bolbolo kosa ba ti Camatke.
+\xe I'm writing a letter so that tomorrow I can send it to the fn:Camat.
+\xn Saya tulis surat supaya besok saya kirim kepada Camat.
+
+\sy ei, kita, ti1
+\an ma3
+\cf -ba
+\ce go
+\ng Used with motion verbs, this is a directional/preposition.
+\nt The "fv:ba_ti" of d1.055.03 = fn:kepada or fn:keluar. Does fv:-osa
+require a fv:ba?
+\dt 03/Jul/1990
+
+\lx -ba
+\ps vi
+\pn kk
+\ge go
+\gn pergi
+\pd 3
+\pdl 1s
+\pdv kbwa
+
+\rf n2.063.01
+\xv Mbwa mana hekyabeo mwade?
+\xe You're going and then when are you coming back?
+\xn Anda pergi, nanti kapan kembali?
+
+\rf d4.037.15
+\xv Mubrai keskye ana mubake bo.
+\xe You don't want to, but you will go.
+\xn Kamu tidak mau, tetapi nanti kamu pergi saja.
+
+\rf d5.029.12
+\xv Kbwa ti kuris.
+\xe I'm going to bathe.
+\xn Saya pergi mandi.
+
+\rf d1.085.07
+\xv Mmya ma miknam ma miba.
+\xe You came and ate and then left.
+\xn Anda sekalian datang makan lalu pergi.
+
+\an -ma
+\cf ba
+\ce away
+\dt 03/Jul/1990
+
+\lx baba
+\ps n
+\pn kb
+\ge journey
+\ge trip
+\gn perjalanan
+\rn jalan, per-*-an
+
+\rf d3.070
+\xv Dace wasi baba neke byai a Teba kmuna.
+\xe David went on a trip first to Tepa. 
+\xn Dace punya perjalanan ke Tepa duluan.
+
+\cf ba
+\ce
+\dt 12/Mar/1990
+
+\lx babaf
+\lc babaf, babah
+\ps adj
+\pn ks
+\ge short
+\gn pendek
+\gn rendah
+
+\rf d2.093.10
+\xv Toto Dace atata o ode babaha yaw.
+\xe You're tall David, while I'm short.
+\xn Dace tinggi sedang saya rendah.
+
+\rf n1.043.14
+\xv Babaf yaw.
+\xe I'm short.
+\xn Saya pendek.
+
+\rf d2.029.10
+\xv Nurke babaf.
+\xe The cocounut tree is short.
+\xn Kelapa rendah.
+
+\an atat
+\sy kdusa
+\cf narnarw
+\ce long
+\cf ktura
+\ce too short
+\ee This is for vertical measurements; for horizontal, use fv:kdusa.
+\nt
+\dt 05/Apr/1996
+
+\lx babah
+\ge short
+\gn pendek
+
+\mn babaf
+\dt 13/Mar/1990
+
+\lx babyay
+\ps n
+\pn kb
+\ge scoop
+\ge dipper
+\gn gayung
+\pdl sg
+\pdv babyakye
+\pdl pl
+\pdv
+
+\rf n1.111.09
+\xv
+\xe
+\xn
+
+\cf -bay
+\ce serve
+\ng Reduplicated form from root fv:-bay.
+\nt
+\dt 19/Jan/1990
+
+\lx -baca
+\ps vt
+\pn kkt
+\ge read
+\gn membaca
+\rn baca, mem-*
+\bw Indonesian
+\pd 3
+
+\rf d2.095.07
+\xv Totoi byaca suratke kosy Yabun.
+\xe He reads a letter from Ambon.
+\xn Anak laki-laki membaca surat dari Ambon.
+
+\nt
+
+\dt 14/Mar/1990
+
+\lx -bai
+\ps v
+\pn kk
+\ge go_to (s.w.)
+\gn pergi_ke (tempat)
+\pd 3
+
+\rf d2.095.08
+\xv Kyamwane mubai namwatake nede?
+\xe Why did you go to the beach?
+\xn Bagaimana sampai kamu pergi ke pantai?
+
+\rf n2.109.06
+\xv Mlwakut bai serkya?
+\xe Which field are you going to?
+\xn Anda pergi kebun ke sebelah mana?
+
+\sy -ei
+\cf -ba
+\ce go
+\ng This form of "go" requires a Locative NP after it.
+\nt Mystery: why didn't it metathesize in (d1.073.04, d1.049.03-04,
+d1.085.07)?  Is this really fv:ba-i with the fv:-i being a directional
+i.e. is the 'i' a separate thing, or is it a part of the root?
+In d1.073.04, the stress pattern is written, and it is clearly
+fv:mu_ba_i.  Consider: d1.031.12: 'fv:Katja_bai_so.'  Which could be
+'fv:Katja_ba_iso' or 'fv:Katja_ba_i_so.'
+\dt 03/Jul/1990
+
+\lx -bail
+\ps v
+\pn kk
+\ge flow
+\ge drip
+\gn berlinang
+\rn linang, ber-*
+\pd
+
+\rf n2.115.08
+\xv Suanare kibail kibail ti matana khatunare.
+\xe His tears flowed to his eyes./He burst into tears.
+\xn Air matanya berlinang-linang mata biji.
+
+\cf bubuas
+\ce drip
+\cf ktyurw
+\ce drip
+\nt
+\dt 01/Feb/1990
+
+\lx bailola
+\ps n
+\pn kb
+\sn 1
+\ge spider
+\gn laba-laba_hutan
+
+\rf d2.095.09
+\xv Lalsoke nyenma tyebata bailolake.
+\xe That fly flew and was caught by the spider.
+\xn Lalat itu terbang tangkap oleh laba-laba.
+
+\cf simrakrakat
+\ce spider
+\ee This is a large, black spider with bright yellow markings that makes
+its web in trees (usually outside of the village).
+\nt
+
+\sn 2
+\ge web
+\gn sarang_laba-laba
+\nt
+\dt 14/Mar/1990
+
+\lx bain
+\ps adv
+\pn
+\ge true
+\gn betul
+\gn benar
+
+\rf d2.095.10
+\xv Bain e?  Mlay.
+\xe Is this true?  Yes, it's true.
+\xn Betul ka?  Betul.
+
+\rf d4.065.04
+\xv Mutanuk neke kele bain bain bo.
+\xe You only speak truth.
+\xn Bicaramu ini macam betul-betul saja.
+
+\cf koikay
+\ce fake
+\lf Syn
+\lv mlay
+\le true
+\lf Ant
+\lv sal
+\le wrong, false
+\nt
+
+\dt 24/Feb/1990
+
+\lx -cukur
+\ps vt
+\pn kkt
+\ge shave
+\gn mencukur
+\rn cukur, men-*
+\bw Indonesian
+\pd 2
+\pdl 1s
+\pdv kucukur
+
+\rf n2.027.026
+\xv Mbwa ti mliw siletke ma kucukur nunuku khusinare.
+\xe Go buy a razor blade so I can shave my beard.
+\xn Pergi beli silet untuk saya mencukur buluku.
+
+\cf -atlyosy
+\ce shave
+\nt
+\dt 23/Jan/1990
+
+\lx dahu
+\ps vi
+\pn kk
+\ge urinate
+\gn kencing
+\pd 2
+\pdl 1s
+\pdv kudahu
+
+\rf d1.041.15
+\xv Bya ti idahu.
+\xe He went to urinate.
+\xn Dia pergi kencing.
+
+\rf n2.073.18
+\xv Ksob ti hulawokwe ma idahua ida tia lasmyerne.
+\xe I pray to God that he urinate and defecate on this ground.
+\xn Saya sembahyang pada Tuhan untuk buang air di tanah.
+
+\cf -dai
+\ce defecate
+\ee This is not rude, just the facts.
+
+\ps n
+\pn kb
+\ge urine
+\gn kencing
+\pdl sg
+\pdv dahuke
+\pdl pl
+\pdv Ø
+
+\rf n4.009.29
+\xv
+\xe
+\xn
+
+\cf iliain1
+\ce feces
+\nt
+
+\dt 12/Mar/1990
+
+\lx dai
+\ps adv:tm
+\pn adv
+\ge earlier
+\gn tadi
+
+\rf d1.061.01
+\xv Dai senweke mala saide?
+\xe What did you do earlier today?
+\xn Tadi ini hari bikin apa?
+
+\rf d1.029.07
+\xv Akas, daike menaf de?
+\xe Did you sleep earlier?
+\xn Nona, tadi sudah tidur?
+
+\an ana
+\nt
+
+\dt 12/Mar/1990
+
+\lx -dai
+\ps vi
+\pn kk
+\ge defecate
+\gn berak
+\pd 2
+\pdl 1s
+\pdv kudai
+
+\rf d1.013.11
+\xv Kbwa ti kudai aduk.
+\xe I'm going to go to the bathroom.
+\xn Saya pergi buang air besar.
+
+\rf n2.073.18
+\xv Ksob ti hulawokwe ma idahua ida tia lasmyerne.
+\xe I pray to God that he urinate and defecate on this ground.
+\xn Saya sembahyang pada Tuhan untuk buang air di tanah.
+
+\cf dahu
+\ce urinate
+\cf keta
+\ce trash dump
+\ee This is a bit blunt.  Most people don't say this directly, but like
+English they refer to where they are going: "WC" or "fn:pantai."  In
+Selaru they use fv:keta to refer to "outside the village," but fv:-dai
+is used in familiar settings.
+\nt
+
+\dt 12/Mar/1990
+
+\lx -dakin
+\ps vt
+\pn kkt
+\ge like
+\ge enjoy
+\gn menyukai
+\rn suka, meny-*-i
+\gn senang
+\rn senang
+\pd 3
+\pdl 1s
+\pdv kdwakin
+
+\rf d1.039.10
+\xv Lema kdwakin ma ku klahke.
+\xe I don't like eating mice.
+\xn Saya tidak senang makan tikus.
+
+\rf n2.110.08
+\xv Kdwakin ma ku rotkye kali mtelas.
+\xe I like to eat bread because it's delicious.
+\xn Saya suka makan roti karena itu enak.
+
+\rf n1.075.01
+\xv Dyakin miru.
+\xe He likes you two.
+\xn Dia suka anda berdua.
+
+\an -mnisik
+\sy -buma, -senan
+\cf -brai
+\ce refuse
+
+\se lema kdwakin irire wait eraske
+\ps ph
+\pn ucapan
+\ge envious
+\gn iri_hati
+
+\nt
+\dt 01/Feb/1990
+
+\lx -dur
+\ps vi
+\pn kk
+\sn 1
+\ge sit
+\ge squat
+\ge rest
+\ge leave
+\gn duduk
+\rn duduk
+\gn jongkok
+\rn jongkok
+\gn istirahat
+\rn istirahat
+\gn meninggalkan
+\rn tinggal, men-*-kan
+\pd 2
+\pdl 1s
+\pdv kudur
+
+\rf d4.015.14
+\xv Mudurnak ne.
+\xe Sit here.
+\xn Duduk disini.
+
+\rf n2.023.19
+\xv Senterke kidur.
+\xe The flashlight was left.
+\xn Senter ditinggalkan.
+
+\cf -taklulw
+\ce sit
+\cf indurak
+\ce short stool
+\cf -tutuk
+\ce leave
+\ee This often involves sitting on a low stool (fv:indurak), but also
+includes squatting on ones haunches.
+\ng The relation between fv:indurak and fv:-dur is very telling.  The fv:-ak
+"indicates the place."  Seems to convert a verb to a noun-instrument.
+See fv:-bren.
+
+\sn 2
+\ge give_birth
+\gn melahirkan
+\rn lahir, me-*-kan
+
+\rf d3.013.04
+\xv Wamfwetke mdedana i ma kyarasy tia wasia hulosew mana idur haf.
+\xe The woman was pregnant and soon her time came to give birth.
+\xn Wanita mengandung itu sudah dekat waktu untuk melahirkan.
+
+\rf n2.061.18
+\xv Radur o ti ain kabeide?
+\xe What year were you born?
+\xn Lahir tahun berapa?
+
+\cf -tesu
+\ce lay eggs
+\ee Women give birth in a semi-reclining position (like squatting).
+
+\sn 3
+\ge remain
+\ge stay
+\gn tinggal
+
+\rf d2.013.07
+\xv Mbwa mamak.  Mudur mamak.
+\xe Goodbye. So long.
+\xn Selamat jalan.  Selamat tinggal.
+
+\ee A leave-taking, given in response to "fv:Mbwa_mamak."  Its origin is
+clear in that it invites the people to remain seated while the speaker
+departs.
+\nt
+\dt 01/Mar/1990
+
+\lx e
+\hm 1
+\ps pro
+\pn
+\ge you_all
+\gn anda_sekalian
+\pd
+
+\rf d5.027.03
+\xv Aramy myabuk e.
+\xe We called you (all).
+\xn Kita panggil kamu-kamu.
+
+\rf d1.033.008
+\xv Eke daike myenah de?
+\xe Did you all sleep earlier?
+\xn Kamu-kamu tidur tadi?
+
+\nt
+\va ea
+\ve Used in Subject position only.
+\vn
+\dt 19/Mar/1990
+
+\lx e
+\hm 2
+\ps qmrk
+\pn
+\ge (question mark)
+\gn (tanda tanya)
+
+\rf d2.003.02
+\xv Enamu iso e?
+\xe Is your mother there?
+\xn Ibumu ada?
+
+\rf d1.017.06,7
+\xv Msweaka amoi e?  Ou, kmwa ma ksweaka amoi.
+\xe Do you want to see father?  Yes, I've come to see father.
+\xn Mau lihat bapak?  Ya, saya datang untuk lihat bapak.
+
+\rf d1.017.11
+\xv Amo muris ma ktei da?
+\xe Father, are you finished bathing?
+\xn Bapak, sudah mandi?
+
+\sy de
+\ng The marker fv:e is used when making a statement a question (much like
+the tag fn:ka in Ambonese).  The question marker fv:de is used with
+wh-words.
+\np If fv:de (fn:sudah) occurs at the end of a sentence which would take a
+fv:e (question mark) the two are combined and pronounced [fv:da].
+\nt Check grammar statement here.
+
+\dt 05/Apr/1996
+
+\lx e
+\hm 3
+\ps n
+\pn kb
+\ge mast
+\gn tiang_perahu
+\rn tiang perahu
+\rn perahu, tiang
+\pdl sg
+\pdv eke
+\pdl pl
+\pdv eare
+
+\rf dr.014.22
+\xv
+\xe
+\xn
+
+\nt
+\dt 19/Mar/1990
+
+\lx -ebat
+\ps v
+\pn kk
+\ge clean_with_a_broom
+\gn membersihkan_dgn_sapu
+\rn bersih, mem-*-kan dgn sapu
+\pd 1
+\pdl 1s
+\pdv kebat
+
+\rf n2.065.26
+\xv Yebat bailola.
+\xe He cleaned the spiderwebs (with a broom).
+\xn Dia membersihkan lawa-lawa dengan sapu.
+
+\cf -soly
+\ce sweep
+\cf -ury
+\ce rub
+\cf -kur
+\ce brush
+\nt
+\dt 26/Jan/1990
+
+\lx ebelurun
+\ps n:an
+\pn kb
+\ge pelican
+\gn burung_undan
+\pdl sg
+\pdv ebelurunke
+\pdl pl
+\pdv ebelurunare
+
+\rf d2.083.04
+\xv
+\xe
+\xn
+
+\cf manu
+\ce bird
+\va ebelurungke, ebelurungare
+\ve Younger speakers use 'ng'.
+\vn Bahasa pemuda-pemudi.
+\nt
+\dt 19/Feb/1990
+
+\lx ebnomatruma
+\ps n
+\pn kb
+\ge ancestors
+\ge descendant
+\gn nenek_moyang
+\rn moyang, nenek
+\gn keturunan
+\rn turun, ke-*-an
+
+\rf d2.091.14
+\xv Ebnomatrumakw rmatdye, ode lea kmwesan bo.
+\xe All of my ancestors have died, I am left all alone.
+\xn Tete nenek moyang saya sudah meninggal, tinggal saya sendiri saja.
+
+\rf d2.091.15
+\xv Ara ebnomatruman.
+\xe Our ancestors.
+\xn Kami punya tete nenek moyang.
+
+\cf ebu
+\ce master
+\cf matruma
+\ce ancestors
+\ng Unique possessive form for 1px.
+\nt
+
+\dt 02/Feb/1990
+
+\lx hatw
+\hm
+\ps n
+\pn kb
+\sn 1
+\ge rock
+\gn batu
+\pdl sg
+\pdv hatkwe
+\pdl pl
+\pdv hature
+
+\rf d1.031.14
+\xv Kal hatkwe ma katya askwe.
+\xe I grabbed a rock and threw it at the dog.
+\xn Aku ambil batu dan lempar anjing.
+
+\nt
+
+\sn 2
+\ge magic_artifact
+\ge talisman
+\ge charm
+\gn pegangan_ilmu
+\rn pegangan ilmu
+\rn ilmu, pegangan
+\gn jimat
+\rn jimat
+
+\pdl 1s
+\pdv hatukkwe
+\sy sok
+\ee This is not restricted to just stones, can be
+gotten from all animals (kidney stones).  Some people get pearls.
+\ng genitive-possession.
+
+\sn 3
+\ge baking_form
+\re form, baking
+\re baking form
+\gn porna
+
+\rf d4.107.16
+\xv Hatw raskyer ti ke.
+\xe The baking form.
+\xn Porna.
+
+\sy
+\ee A fired, earthen baking form used to make fv:skyerker.  Often today, 
+this is replaced by a cast iron griddle, much like a waffle iron,
+that is in the shape of four hearts.
+\pc .G.sago.pcx;1.25";1.1";PCX
+\dt 14/Jan/1990
+
+\lx -haw
+\ps vt
+\pn kkt
+\sn 1
+\ge pound
+\gn tumbuk
+\pd 3
+\pdl 1s
+\pdv khwaw
+
+\rf d1.105.07
+\xv Tawai ma kimakwet, desike bonyo tal ma thaw.
+\xe We dry it until it is almost dry, then we take it and pound it.
+\xn Setelah kita jemur sedikit kering, baru kita ambil tumbuk.
+
+\rf d2.093.06
+\xv Mal askwe ma mhwaw alyakwe ti neskwe.
+\xe Get the pestle so you can pound the rice in the mortar.
+\xn Ambil alu tumbuk padi di lesun.
+
+\sy -tutu
+\cf asw
+\ce pestle
+\cf nesw
+\ce mortar
+\nt fv:Thaw looks like an aspirated 't', but the 2s and 3p conjugations with
+their voiceless 'm' and aspirated 'r' make it clear that the root is
+really fv:-haw.  So, 1p is fv:t-haw, and 1s is fv:kw~haw.
+
+\sn 2
+\ge to_stick
+\re stick, to
+\ge poke
+\re poke, to
+\ge prick
+\re prick, to
+\gn tikam
+
+\rf d2.113.13
+\xv Mseak!  Kali kbat desike kamnasanare ribun, mana khyaw o.
+\xe Look out!  That lemon tree has a lot of thorns and they'll prick you.
+\xn Awas!  Sebab pohon lemon itu durinya banyuak, nanti tikam kamu.
+
+\rf d4.043.09
+\xv Knwaik nam mahaw lwawkkwe.
+\xe I pulled out whatever stuck in my foot.
+\xn Saya cabut apa yang tikam kaki saya.
+
+\rf d4.109.02
+\xv Maskye hyawa yaw.
+\xe The fish stuck me.
+\xn Ikan tikam saya.
+
+\cf kamnasan
+\ce thorn
+\cf hanar
+\ce thorn
+\ee This includes any prick whether from sharp fish spines or fins, or plant
+thorns.
+\dt 27/Feb/1990
+
+\lx haya
+\ps v
+\pn kk
+\ge row
+\ge paddle
+\gn berdayung
+\rn dayung, ber-*
+\pd 3?
+\pdl 1s
+\pdv
+
+\rf dr.015.44
+\xv
+\xe
+\xn
+
+\ps n
+\pn kb
+\ge paddle
+\gn dayung
+
+\pdl sg
+\pdv hayake
+\pdl pl
+\pdv
+\cf -hesi
+\ce paddle
+\cf hesy2
+\ce oar
+\nt Check spelling and forms.
+\dt 20/Mar/1990
+
+\lx -he tel
+\ps vi
+\pn kk
+\ge smart
+\gn pintar
+\lt to know language
+\pd 3
+\pdl 1s
+\pdv khwe tel
+
+\rf n1.099.11
+\xv Sitke hye telke yobak klahke ma nya i.
+\xe The cat is clever at looking for mice to eat.
+\xn Kucing pintar cari tikus mau makan dia.
+
+\rf d3.022.00
+\xv Ibai kleti so mane rahetelke ma rabilak i ti a Tnebarne.
+\xe They went to the west and they became smart, smarter than us here in
+Tanimbar.
+\xn Mereka ke barat dan mereka jadi pintar, mereka lebih dari kita di
+Tanimbar ini.
+
+\cf tel
+\ce language
+\cf hehe tun
+\ce etiquette
+\cf hehe tel
+\ce knowledge
+\nt
+
+\dt 28/Feb/1990
+
+\lx hesy
+\hm 1
+\ps n
+\pn kb
+\ge bridewealth
+\ge dowry
+\gn harta
+
+\rf n1.111.08
+\xv Mmwa ma tba ti siel waimw heskye.
+\xe Come on and we'll go pay your brother's bridewealth.
+\xn Mari, kita pergi bayar saudaramu punya harta.
+
+\cf hesi
+\ce price
+\cf dolan
+\ce treasure
+\cf iliary
+\ce antiques
+\ee This was explained as: "fn:Hal_perkawinan_bicara_adat."
+\nt Could this be fv:hesi and related to fv:khesi?
+
+\dt 11/Dec/1991
+
+\lx hesy
+\hm 2
+\ps n
+\pn kb
+\ge oar
+\ge paddle
+\gn dayung
+\pdl sg
+\pdv heskye
+\pdl pl
+\pdv
+
+\rf n1.111.06
+\xv Mal heskye ma khwesi aroke.
+\xe Bring the oar so I can paddle the boat.
+\xn Bawa dayung untuk saya berdayung.
+
+\rf d4.109.16
+\xv Hesy ma lahametkye.
+\xe A fast oar.
+\xn Dayung laju.
+
+\cf -hesi
+\ce paddle
+\cf haya
+\ce row
+\nt
+\dt 20/Mar/1990
+
+\lx -het
+\ps vt
+\pn kkt
+\ge chop
+\gn potong
+\pd 3
+\pdl 1s
+\pdv khwet
+
+\rf d2.031.02
+\xv Ana mhwet laranke o mtubal.
+\xe If you chop the ground (with your machete, it) will become dull.
+\xn Nanti potong pasir jadi tumpul.
+
+\rf d1.021.06
+\xv Mal turike ma khwet akwe.
+\xe Give me the machete so I can chop wood.
+\xn Ambil parang untuk saya potong kayu.
+
+\rf n3.027.21
+\xv Simatare ode lwawtare itde khyeta ity.
+\xe They chop at one another with their arms and legs.
+\xn Mereka bersilat.
+
+\lf Syn
+\lv -sin
+\le split
+\lf Syn
+\lv -dew
+\le chop on end
+\cf hetheta
+\ce beater bar (in weaving)
+\ee This is a chopping or hacking motion usually done with a machete.  It is
+not a very controlled cut.
+\tb The summary of "cutting" motions for Selaru:
+|fvlink{-akrina}:|{tab}split in two lengthwise
+|fvlink{-boras}:|{tab}cut s.t. in small pieces with a knife
+|fvlink{-dew}:|{tab}chop s.t. into smaller pieces while standing it on end
+|fvlink{-het}:|{tab}chop or hack with a machete
+|fvlink{-kety}:|{tab}slice open and clean an animal
+|fvlink{-lary}:|{tab}slice (like chiles, etc.)
+|fvlink{-lilit}:|{tab}shave or carve
+|fvlink{-mair}:|{tab}to adze wood
+|fvlink{-simat}:|{tab}pop out or cut out coconut meat
+|fvlink{-sin}:|{tab}chop in two; split
+|fvlink{-tasy}:|{tab}knick with the point of a machete
+|fvlink{-tef}:|{tab}slice with one motion
+|fvlink{-tetak}:|{tab}notch
+|fvlink{-tetal}:|{tab}chop up
+|fvlink{-tusy}:|{tab}slice, carve or cut something small that is laid down.
+\ng Reduplicated form fv:hetheta.
+\va -hety
+\ve Occasional form.
+\vn Kadang-kadang bentuknya begini.
+\nt Test if this end in a fv:y?
+\dt 04/Dec/1997
+
+\lx sima
+\ps n
+\pn kb
+\sn 1
+\ge hand
+\ge arm
+\gn tangan
+\pdl 1s
+\pdv simakkwe
+
+\rf d1.063.02
+\xv Simamkwe kirai.
+\xe My hand is dirty.
+\xn Tangan saya kotor.
+
+\cf lena
+\ce upper arm
+\cf tanura
+\ce forearm
+\ee This includes the lower arm as well as the hand.  Note the relation
+between hand and five (fv:sim).
+\ng genitive-possession
+
+\sn 2
+\ge souvenir
+\ge gift
+\gn oleh-oleh
+\gn buat_tangan
+
+\rf d2.091.09
+\xv Ara simamkye ti toto Dace.
+\xe We have a gift for David.
+\xn Kami punya oleh-oleh untuk anak laki-laki Dace.
+
+\rf d2.091.10
+\xv Met simamkye ti kalkal so.
+\xe You brought our present to that party over there.
+\xn Kamu bawa buat tangan kami ke pesta sana.
+
+\nt
+
+\se simake kekewanke
+\ge wrist
+\gn pergelangan tangan
+\rn tangan, pergelangan
+
+\se simake klarake
+\ge palm
+\gn telapak tangan
+\rn tangan, telapak
+
+\se simake lema narnarw
+\ps id
+\pn ucapan
+\ge he's not a thief/his hands are not long
+\re thief, he's not a *
+\re hands, his * are not long
+\gn tangannya tidak panjang
+
+\nt Does this mean: 'he doesn't have "sticky fingers"'?
+
+\se simake nelnyely
+\ps ph
+\pn ucapan
+\ge he's not a thief/his hands are clean
+\re thief, he's not a *
+\re hands, his * are clean
+\gn tangannya bersih
+
+\se simake eras
+\ps ph
+\pn ucapan
+\ge he's not a thief/his hands are good
+\re thief, he's not a *
+\re hands, his * are good
+\gn tangannya baik
+
+\dt 06/Apr/1990
+
+\lx -simat
+\ps vt
+\pn kkt
+\ge remove_coconut_meat
+\gn lepas_isi_dari_kelapa
+\gn sisik
+\pd 3
+\pdl 1s
+\pdv
+
+\rf d4.047.07
+\xv Mswimat nurke ma ta.
+\xe Remove the meat from the coconut so we can eat it.
+\xn Lepas isi dari kelapa untuk kita makan.
+
+\cf -het
+\ce
+\cf -lilit
+\ce
+\nt
+\dt 10/Jan/1992
