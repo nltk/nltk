@@ -26,13 +26,18 @@ def selection(a):
     element smaller; apply the same method to this list, and so on.
     """
     count = 0
-    for i in range(len(a)-1):
+
+    for i in range(len(a) - 1):
         min = i
-        for j in range(i+1, len(a)):
+
+	for j in range(i+1, len(a)):
             if a[j] < a[min]:
                 min = j
-                a[min],a[i] = a[i],a[min]
-                count += 1
+
+            count += 1
+
+        a[min],a[i] = a[i],a[min]
+
     return count
 
 ##################################################################
