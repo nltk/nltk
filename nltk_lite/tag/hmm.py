@@ -568,7 +568,7 @@ class HiddenMarkovModelTrainer(object):
             model = self.train_supervised(labelled_sequences, **kwargs)
         if unlabelled_sequences:
             if model: kwargs['model'] = model
-            model = self.train_unsupervised(labelled_sequences, **kwargs)
+            model = self.train_unsupervised(unlabelled_sequences, **kwargs)
         return model
 
     def train_unsupervised(self, unlabelled_sequences, **kwargs):
