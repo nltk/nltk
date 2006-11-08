@@ -1,0 +1,51 @@
+--------------------------------------------------------------------------------
+Unit tests for the miscellaneous sort functions.
+--------------------------------------------------------------------------------
+
+    >>> from copy import deepcopy
+    >>> from nltk_lite.misc.sort import *
+
+A (very) small list of unsorted integers.
+
+    >>> test_data = [12, 67, 7, 28, 92, 56, 53, 720, 91, 57, 20, 20]
+
+Test each sorting method - each method returns the number of operations
+required to sort the data, and sorts in-place (desctructively - hence the need
+for multiple copies).
+
+    >>> sorted_data = deepcopy(test_data)
+    >>> selection(sorted_data)
+    66
+
+    >>> sorted_data
+    [7, 12, 20, 20, 28, 53, 56, 57, 67, 91, 92, 720]
+
+    >>> sorted_data = deepcopy(test_data)
+    >>> bubble(sorted_data)
+    30
+
+    >>> sorted_data
+    [7, 12, 20, 20, 28, 53, 56, 57, 67, 91, 92, 720]
+
+Note that mergesort DOES NOT WORK at the current time, and we expect it to
+return the list to remain unsorted.
+
+    >>> sorted_data = deepcopy(test_data)
+    >>> merge(sorted_data)
+    24
+
+    >>> sorted_data
+    [12, 67, 7, 28, 92, 56, 53, 720, 91, 57, 20, 20]
+
+    >>> sorted_data = deepcopy(test_data)
+    >>> quick(sorted_data)
+    13
+
+    >>> sorted_data
+    [7, 12, 20, 20, 28, 53, 56, 57, 67, 91, 92, 720]
+
+--------------------------------------------------------------------------------
+Unit tests for Wordfinder class
+--------------------------------------------------------------------------------
+
+Wordfinder behaves in a random fashion and thus cannot be effectively doctested.
