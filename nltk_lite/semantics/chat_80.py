@@ -8,8 +8,34 @@
 # $Id:$
 
 """
-A Concept class, based on SKOS (L{http://www.w3.org/TR/swbp-skos-core-guide/}).
+This script extracts data from the Chat-80 relation files and converts
+them into a format that can be used in the FOL models of
+L{semantics.evaluate}. It assumes that the input files are available
+on the current path.
 
+The Chat-80 relations are like tables in a relational database. The
+relation acts as the name of the table; the first argument acts as the
+'primary key'; and subsequent arguments are further fields in the
+table. In general, the name of the table provides a label for a unary
+predicate whose extension is all the primary keys. For example,
+relations in 'cities.pl' are of the following form::
+
+   'city(athens,greece,1368).'
+
+Here, C{'athens'} is the key, and will be mapped to a member of the
+unary predicate M{city}.
+
+The fields in the table are mapped to binary predicates. The first
+argument of the predicate is the primary key, while the second
+argument is the data in the relevant field. Thus, in the above
+example, the third field is mapped to the binary predicate
+M{population_of}, whose extension is a set of pairs such as C{'(athens,
+1368)'}.
+
+In order to store the results of the conversion, a class of
+L{Concept}s is introduced. A L{Concept} provides a kind of wrapper
+around the extension, which makes it easier to then incorporate the
+extension into a L{Valuation} object.
 
 """
 
@@ -29,8 +55,8 @@ class Concept(object):
         @type arity: int
         @param altLabels: other (related) labels
         @type altLabels: list
-        @param extension: the value of the concept
-        @type extension: object
+        @param extension: the extensional value of the concept
+        @type extension: set
         """
         self.prefLabel = prefLabel
         self.arity = arity
@@ -51,16 +77,24 @@ class Concept(object):
         return self.extension
 
 
-path = '/Users/ewan/svn/nltk/nltk_lite/semantics/'
-filenames = ['cities.pl']
-
-
 def make_concept(fn, rel, label, field=None):
+    """
+    Make a concept object out of a Prolog relation.
+
+    @param fn: filename containing the relations
+    @type fn: string
+    @param rel: name of the relation 
+    @type rel: string
+    @param label: provides the C{prefLabel} of the L{Concept} object.
+    @type label: string
+    @param field: the position of the additional argument, if any
+    @type field: int
+    """
     if field:
         arity = 2
     else: arity = 1
     c = Concept(label, arity, extension=set())
-    for line in open(path+fn):
+    for line in open(fn):
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
