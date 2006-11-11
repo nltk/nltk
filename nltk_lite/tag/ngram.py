@@ -14,6 +14,7 @@ the L{TagI} interface.
 """
 
 import types, re
+from collections import deque
 from nltk_lite.probability import FreqDist, ConditionalFreqDist
 from nltk_lite.tag import *
 
@@ -21,23 +22,24 @@ from nltk_lite.tag import *
 # N-GRAM TAGGERS: these make use of history
 ##############################################################
 
-class Queue(object):
-    def __init__(self, length):
-        self._length = length
-        self.clear()
+class Window(deque):
+    def __init__(self, width):
+        deque.__init__(self, (None,) * width)
+        self._width = width
     def clear(self):
-        self._queue = (None,) * self._length
-    def enqueue(self, item):
-        self._queue = (item,) + self._queue[:self._length-1]
+        deque.clear(self)
+        self.extend((None,) * self._width)
+    def append(self, item):
+        self.rotate(-1)
+        self[-1] = item
     def set(self, items):
-        if len(items) >= self._length:
-            # restrict to required length
-            self._queue = items[-self._length:]
+        deque.clear(self)
+        if len(items) >= self._width:
+            # restrict to required width
+            self.extend(items[-self._width:])
         else:
-            # pad to required length
-            self._queue = items + (None,) * (self._length - 1 - len(items))
-    def get(self):
-        return self._queue
+            # pad to required width
+            self.extend(items + (None,) * (self._width - 1 - len(items)))
 
 class Ngram(SequentialBackoff):
     """
@@ -69,7 +71,7 @@ class Ngram(SequentialBackoff):
         self._model = {}
         self._n = n
         self._cutoff = cutoff
-        self._history = Queue(n-1)
+        self._history = Window(n-1)
         self._backoff = backoff
 
     def train(self, tagged_corpus, verbose=False):
@@ -90,12 +92,12 @@ class Ngram(SequentialBackoff):
             self._history.clear()
             for (token, tag) in sentence:
                 token_count += 1
-                history = self._history.get()
+                history = tuple(self._history)
                 fd[(history, token)].inc(tag)
-                self._history.enqueue(tag)
+                self._history.append(tag)
         for context in fd.conditions():
             best_tag = fd[context].max()
-            history = self._history.get()
+            history = tuple(self._history)
             backoff_tag = self._backoff_tag_one(token, history)
             hits = fd[context].count(best_tag)
 
@@ -119,7 +121,7 @@ class Ngram(SequentialBackoff):
             raise ValueError, 'Tagger is not trained'
         if history:
             self._history.set(history) # NB this may truncate history
-        history = self._history.get()
+        history = tuple(self._history)
         context = (history, token)
 
         if self._model.has_key(context):
