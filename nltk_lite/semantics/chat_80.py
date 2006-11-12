@@ -77,7 +77,38 @@ class Concept(object):
         return self.extension
 
 
-def make_concept(fn, rel, label, field=None):
+## def extract(fn, rel, schema):
+##     """
+##     Make a concept object out of a Prolog relation.
+
+##     @param fn: filename containing the relations
+##     @type fn: string
+##     @param rel: name of the relation 
+##     @type rel: string
+##     @param label: provides the C{prefLabel} of the L{Concept} object.
+##     @type label: string
+##     @param field: the position of the additional argument, if any
+##     @type field: int
+##     """
+##     if field:
+##         arity = 2
+##     else: arity = 1
+##     c = Concept(label, arity, extension=set())
+##     for line in open(fn):
+##         if line.startswith(rel):
+##             line = re.sub(rel+r'\(', '', line)
+##             line = re.sub(r'\)\.$', '', line)
+##             line = line[:-1]
+##             l = line.split(',')
+##             key = l[0]
+##             if field:
+##                 data = (key, l[field])
+##             else:
+##                 data = key
+##             c.augment(data)
+##     return c
+
+def extract(fn, rel, schema):
     """
     Make a concept object out of a Prolog relation.
 
@@ -90,36 +121,75 @@ def make_concept(fn, rel, label, field=None):
     @param field: the position of the additional argument, if any
     @type field: int
     """
-    if field:
-        arity = 2
-    else: arity = 1
-    c = Concept(label, arity, extension=set())
-    for line in open(fn):
+    concepts = []
+    subj = 0
+    pkey = schema[0]
+    fields = schema[1:]
+
+    records = str2records(fn, rel)
+    concepts.append(unary_concept(pkey, subj, records))
+    for field in fields:
+        obj = schema.index(field)
+        concepts.append(binary_concept(field, subj, obj, records))
+
+    return concepts
+
+def str2records(filename, rel):
+    recs = []
+    for line in open(filename):
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
             line = line[:-1]
-            l = line.split(',')
-            key = l[0]
-            if field:
-                data = (key, l[field])
-            else:
-                data = key
-            c.augment(data)
+            record = line.split(',')
+            recs.append(record)
+    return recs
+
+def unary_concept(label, subj, records):
+    c = Concept(label, arity=1, extension=set())
+    for record in records:
+        c.augment(record[subj])
     return c
-            
 
+def binary_concept(field, subj, obj, records):
+    label = field + '_of'
+    c = Concept(label, arity=2, extension=set())
+    for record in records:
+        c.augment((record[subj], record[obj]))
+    return c
 
-city_c = \
-  make_concept(fn = 'cities.pl', rel = 'city', label = 'city')
+city = {'label': 'city',
+        'schema': ['city', 'country', 'population'],
+        'filename': 'cities.pl'}
 
-country_of_c =  \
- make_concept(fn = 'cities.pl', rel = 'city', label = 'country_of', field = 1)
+rels = [city]
 
-area_of_c =  \
- make_concept(fn = 'cities.pl', rel = 'city', label = 'area_of', field = 2)
+def make_concepts(rels):
+    concepts = []
+    for rel in rels:
+        fn = rel['filename']
+        label = rel['label']
+        schema = rel['schema']
+                     
+        concepts.extend(extract(fn, label, schema))
+                     
+    return concepts
+                     
+concepts = make_concepts(rels)
+for concept in concepts:
+    print concept
 
-print area_of_c
+        
+## city_c = \
+##   make_concept(fn = 'cities.pl', rel = 'city', label = 'city')
+
+## country_of_c =  \
+##  make_concept(fn = 'cities.pl', rel = 'city', label = 'country_of', field = 1)
+
+## area_of_c =  \
+##  make_concept(fn = 'cities.pl', rel = 'city', label = 'area_of', field = 2)
+
+## print area_of_c
         
         
         
