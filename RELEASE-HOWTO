@@ -73,14 +73,12 @@ A. UPLOAD DISTRIBUTIONS
 
 B. WEBSITE
 
-  1. cd web; make rsync
-  2. cd doc; make rsync
-  3. rsync code (remove .pyc and .pyo files)
-  4. post to one or more of the mailing lists
+  1. make rsync
+  2. post to one or more of the mailing lists
        nltk-announce@lists.sourceforge.net
        CORPORA@uib.no, linguist@linguistlist.org
        mailing lists for any local courses using NLTK
-  5. post a news item on the sourceforge site
+  3. post a news item on the sourceforge site
        http://sourceforge.net/news/?group_id=30982
 
 C. INSTALLATION
