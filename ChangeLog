@@ -1,3 +1,14 @@
+Version 0.7a2 2006-11-13
+
+* Code:
+  - more doctest
+  - code to read Chat-80 data
+  - HMM bugfix
+* Tutorials:
+  - continued updates and polishing
+* Corpora:
+  - toolbox MDF sample data
+
 Version 0.7a1 2006-10-29
 
 * Code:
