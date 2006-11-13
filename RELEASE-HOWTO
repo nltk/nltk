@@ -45,14 +45,15 @@ The build requires docutils, pdflatex, bdist_mpkg
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions:
 
-  -rw-r--r--  1 sb users    588838 2006-07-09 21:03 nltk_lite-0.6.5-1.noarch.rpm
-  -rw-r--r--  1 sb users    354340 2006-07-09 21:03 nltk_lite-0.6.5-1.src.rpm
-  -rw-r--r--  1 sb users 117577728 2006-07-09 21:15 nltk_lite-0.6.5.iso
-  -rw-r--r--  1 sb users    351686 2006-07-09 21:03 nltk_lite-0.6.5.tar.gz
-  -rw-r--r--  1 sb users    454620 2006-07-09 21:03 nltk_lite-0.6.5.win32.exe
-  -rw-r--r--  1 sb users    403826 2006-07-09 21:03 nltk_lite-0.6.5.zip
-  -rw-r--r--  1 sb users  25888420 2006-07-09 21:14 nltk_lite-corpora-0.6.5.zip
-  -rw-r--r--  1 sb users  11072598 2006-07-09 21:14 nltk_lite-doc-0.6.5.zip
+  -rw-r--r--  1 sb users   677639 2006-11-13 11:52 nltk_lite-0.7a2-1.noarch.rpm
+  -rw-r--r--  1 sb users   404689 2006-11-13 11:52 nltk_lite-0.7a2-1.src.rpm
+  -rw-r--r--  1 sb users 90808320 2006-11-13 11:56 nltk_lite-0.7a2.iso
+  -rw-r--r--  1 sb users   402174 2006-11-13 11:52 nltk_lite-0.7a2.tar.gz
+  -rw-r--r--  1 sb users   514971 2006-11-13 11:52 nltk_lite-0.7a2.win32.exe
+  -rw-r--r--  1 sb users   462741 2006-11-13 11:52 nltk_lite-0.7a2.zip
+  -rw-r--r--  1 sb users 25938939 2006-11-13 11:54 nltk_lite-corpora-0.7a2.zip
+  -rw-r--r--  1 sb users 16857497 2006-11-13 11:54 nltk_lite-doc-0.7a2.zip
+  -rw-r--r--  1 sb users     4674 2006-11-13 11:54 nltk_lite-examples-0.7a2.zip
 
   (test the distributions?)
 
