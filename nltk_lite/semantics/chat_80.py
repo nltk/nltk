@@ -8,8 +8,6 @@
 # $Id:$
 
 """
-
-
 Chat-80 was a natural language system which allowed the user to
 interrogate a Prolog knowledge base in the domain of world
 geography. It was developed in the early '80s by Warren and Pereira; see
@@ -20,7 +18,7 @@ files.
 This module contains functions to extract data from the Chat-80
 relation files ('the world database'), and convert then into a format
 that can be incorporated in the FOL models of
-L{nltk_lite.semantics.evaluate}. The codes assumes that the Prolog
+L{nltk_lite.semantics.evaluate}. The code assumes that the Prolog
 input files are available on the current path.
 
 Chat-80 relations are like tables in a relational database. The
@@ -42,7 +40,7 @@ example, the third field is mapped to the binary predicate
 M{population_of}, whose extension is a set of pairs such as C{'(athens,
 1368)'}.
 
-In order to drive the extraction process, we use 'relation bundles'
+In order to drive the extraction process, we use 'relation metadata bundles'
 which are Python dictionaries such as the following::
 
   city = {'label': 'city',
@@ -192,9 +190,10 @@ def binary_concept(label, subj, obj, records):
 
 def _process_bundle(rels):
     """
-    Given a list of relation bundles, make a corresponding list of concepts.
+    Given a list of relation metadata bundles, make a corresponding
+    list of concepts.
 
-    @param rels: bundle of data needed for constructing a concept
+    @param rels: bundle of metadata needed for constructing a concept
     @type rels: list of dictionaries
     """
     concepts = []
@@ -229,10 +228,10 @@ def make_valuation(concepts, read=False):
 
 def val_dump(rels, db):
     """
-    Make a L{Valuation} from a list of relation bundles and dump to
+    Make a L{Valuation} from a list of relation metadata bundles and dump to
     persistent database.
 
-    @param rels: bundle of data needed for constructing a concept
+    @param rels: bundle of metadata needed for constructing a concept
     @type rels: list of dictionaries
     @param db: name of file to which data is written
     @type db: string
@@ -260,7 +259,7 @@ def val_load(db):
     return val
 
 ###########################################################################
-# Chat-80 relation bundles needed to build the valuation
+# Chat-80 relation metadata bundles needed to build the valuation
 ###########################################################################
 
 
@@ -296,15 +295,32 @@ sea = {'label': 'sea',
 _rels = [city, country, circle_of_lat, continent, region, ocean, sea]
 
 
-## # write the valuation to a persistent database
-val_dump(_rels, 'chatmodel')
+# write the valuation to a persistent database
+#val_dump(_rels, 'chatmodel')
 
-## # load the valuation from a persistent database
-val_load('chatmodel')
+# load the valuation from a persistent database
+#val_load('chatmodel')
 
 
-    
-    
+concepts = _process_bundle(rels)
+valuation = make_valuation(concepts, read=True)
+
+domain = valuation.domain
+
+def alpha(str):
+    try:
+        int(str)
+        return False
+    except ValueError:
+        if not str == '?':
+            return True
+
+
+entities = sorted([e for e in domain if alpha(e)])
+
+pairs = [(e, e) for e in entities]
+
+valuation.read(pairs)
 
         
 
