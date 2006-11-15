@@ -1,5 +1,6 @@
 
 from nltk_lite.wordnet import *
+from math import *
 
 class SimilarityI(object):
 
@@ -20,7 +21,30 @@ class SimilarityI(object):
         """
         raise NotImplementedError()
 
+class LeacockChodorowSimilarity(SimilarityI):
+
+    taxonomy_depths = {'noun': 19, 'verb': 13}
+
+    def get_similarity(self, word1, word2):
+
+        if word1.pos not in self.taxonomy_depths.keys():
+				raise TypeError, "Input words must be either nouns or verbs"
+
+        depth = self.taxonomy_depths[word1.pos]
+
+        pds = PathDistanceSimilarity()
+        similarity = pds.get_similarity(word1, word2)
+
+        if similarity > 0:
+            path_distance = pds.path_distance + 1
+            return - log(path_distance / (2.0 * depth))
+
+	else:
+            return -1
+
 class PathDistanceSimilarity(SimilarityI):
+
+    path_distance = -1
 
     def get_similarity(self, word1, word2):
 
@@ -36,7 +60,7 @@ class PathDistanceSimilarity(SimilarityI):
         # the sum of the heights of the two trees.
         path_distance = hypernym_tree1.height() + hypernym_tree2.height()
 
-        # It is possible that no matches will be found (i.e. if a noun and a
+        # It is possible that no matches will be found (e.g. if a noun and a
         # verb are compared); we need to keep track of this.
         match_found = False
 
@@ -52,7 +76,12 @@ class PathDistanceSimilarity(SimilarityI):
                 if matches[0].depth + hypernym.depth < path_distance:
                     path_distance = matches[0].depth + hypernym.depth
 
-        return 1.0 / (path_distance + 1)
+	if match_found:
+            self.path_distance = path_distance
+            return 1.0 / (path_distance + 1)
+
+        else:
+            return -1
 
 def build_hypernym_tree(synset, depth):
 
