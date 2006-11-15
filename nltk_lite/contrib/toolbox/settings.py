@@ -15,7 +15,7 @@ such as which fields are found within them and what kind of values those
 fields can have.
 """
 
-from elementtree import ElementTree
+from nltk_lite.etree.ElementTree import TreeBuilder
 from nltk_lite.corpora.toolbox import StandardFormat
 #from nltk_lite.parse.tree import Tree
 
@@ -37,7 +37,7 @@ class ToolboxSettings(StandardFormat):
         @rtype:   ElementTree._ElementInterface
         @return:  contents of toolbox settings file with a nested structure
         """
-        builder = ElementTree.TreeBuilder()
+        builder = TreeBuilder()
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
             # Check whether the first char of the field marker
             # indicates a block start (+) or end (-)
@@ -56,12 +56,12 @@ class ToolboxSettings(StandardFormat):
                 builder.start(mkr, {})
                 builder.data(value)
                 builder.end(mkr)
-        return ElementTree.ElementTree(builder.close())
+        return builder.close()
 
 def to_settings_string(tree, encoding=None, errors='strict', unicode_fields=None):
     # write XML to file
     l = list()
-    _to_settings_string(tree.getroot(), l, encoding, errors, unicode_fields)
+    _to_settings_string(tree.getroot(), l, encoding=encoding, errors=errors, unicode_fields=unicode_fields)
     return ''.join(l)
 
 def _to_settings_string(node, l, **kwargs):
@@ -82,7 +82,7 @@ def _to_settings_string(node, l, **kwargs):
         for n in node:
             _to_settings_string(n, l, **kwargs)
         l.append('\\-%s\n' % tag)
-    return ''.join(l)
+    return
 
 class MarkerSet :
     """This class is a container for FieldMetadata objects. A marker set
@@ -140,11 +140,11 @@ class MarkerSet :
                 root = fm
 
         # Build tree for field markers
-        builder = ElementTree.TreeBuilder()
+        builder = TreeBuilder()
         builder.start(root, {})
         self.build_tree(root, builder)
         builder.end(root)
-        return ElementTree.ElementTree(builder.close())
+        return builder.close()
         
     def build_tree(self, mkr, builder) :
         markers = self.get_markers()
@@ -534,12 +534,15 @@ class TextSettings(ToolboxSettings) :
             return None
 
 def demo():
+    from nltk_lite.etree.ElementTree import ElementTree
+    
     settings = ToolboxSettings()
     settings.open('demos/MDF_AltH.typ')
     tree = settings.parse(unwrap=False, encoding='gbk')
     print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
-    tree.write('test.xml')
-    print to_settings_string(tree).encode('gbk')
+    settings_tree = ElementTree(tree)
+    settings_tree.write('test.xml')
+    print to_settings_string(settings_tree).encode('gbk')
 
 if __name__ == '__main__':
     demo()
