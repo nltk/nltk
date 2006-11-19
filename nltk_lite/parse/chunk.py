@@ -596,7 +596,7 @@ class ChunkString(object):
     def xform(self, regexp, repl):
         """
         Apply the given transformation to this C{ChunkString}'s string
-        encoding.  In particular, find all occurances that match
+        encoding.  In particular, find all occurrences that match
         C{regexp}, and replace them using C{repl} (as done by
         C{re.sub}).
 
@@ -629,64 +629,6 @@ class ChunkString(object):
 
         # Make sure that the transformation was legal.
         if self._debug > 1: self._verify(self._debug-2)
-
-    def xform_chunk(self, pattern, repl):
-        # Docstring adopted from xform's docstring.
-        """
-        Apply the given transformation to the chunks in this
-        C{ChunkString}'s string encoding.  In particular, find all
-        occurances within chunks that match C{regexp}, and replace
-        them using C{repl} (as done by C{re.sub}).
-
-        This transformation should only add and remove braces; it
-        should I{not} modify the sequence of angle-bracket delimited
-        tags.  Furthermore, this transformation may not result in
-        improper bracketing.  Note, in particular, that bracketing may
-        not be nested.
-
-        @type pattern: C{string} 
-        @param pattern: A regular expression pattern matching the substring
-            that should be replaced.  This will typically include a
-            named group, which can be used by C{repl}.
-        @type repl: C{string}
-        @param repl: An expression specifying what should replace the
-            matched substring.  Typically, this will include a named
-            replacement group, specified by C{regexp}.
-        @rtype: C{None}
-        @raise ValueError: If this transformation generated an
-            invalid chunkstring.
-        """
-        if type(pattern).__name__ == 'SRE_Pattern': pattern = pattern.pattern
-        self.xform(pattern+ChunkString.IN_CHUNK_PATTERN, repl)
-
-    def xform_chink(self, pattern, repl):
-        # Docstring adopted from xform's docstring.
-        """
-        Apply the given transformation to the chinks in this
-        C{ChinkString}'s string encoding.  In particular, find all
-        occurances within chinks that match C{regexp}, and replace
-        them using C{repl} (as done by C{re.sub}).
-
-        This transformation should only add and remove braces; it
-        should I{not} modify the sequence of angle-bracket delimited
-        tags.  Furthermore, this transformation may not result in
-        improper bracketing.  Note, in particular, that bracketing may
-        not be nested.
-
-        @type pattern: C{string} or C{regexp}
-        @param pattern: A regular expression pattern matching the substring
-            that should be replaced.  This will typically include a
-            named group, which can be used by C{repl}.
-        @type repl: C{string}
-        @param repl: An expression specifying what should replace the
-            matched substring.  Typically, this will include a named
-            replacement group, specified by C{regexp}.
-        @rtype: C{None}
-        @raise ValueError: If this transformation generated an
-            invalid chunkstring.
-        """
-        if type(pattern).__name__ == 'SRE_Pattern': pattern = pattern.pattern
-        self.xform(pattern+ChunkString.IN_CHINK_PATTERN, repl)
 
     def __repr__(self):
         """
@@ -1506,6 +1448,14 @@ def demo():
     cp = parse.RegexpChunk([r1,r2], chunk_node='NP', trace=1)
     parse.demo_eval(cp, text)
     print
+
+    print "============== Higher Level Interface =============="
+    print
+
+    patterns = [r'<DT>?<JJ>*<NN>', r'<NNP>+']
+    rules = [parse.ChunkRule(pattern, pattern) for pattern in patterns]
+    cp = parse.RegexpChunk(rules, chunk_node='NP', trace=1)
+    parse.demo_eval(cp, text)
 
     print "============== Cascaded Chunking =============="
     print
