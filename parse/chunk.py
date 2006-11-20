@@ -1325,17 +1325,10 @@ class GrammarChunk(object):
     A grammar contains one or more clauses in the following form:
 
     NP:
-      {<DT|JJ>}
-      }<[\.VI].*>+{
-      <.*>}{<DT>
-      <DT|JJ>{}<NN.*>
-
-    This clause says that:
-    * any sequence of DT or JJ should be chunked
-    * any tag starting with period, I, or V should be chinked
-    * any chunk containing DT should be split before the DT
-    * a chunk ending with DT or JJ should be merged with a following
-        chunk beginning with NN.*
+      {<DT|JJ>}          # chunk determiners and adjectives
+      }<[\.VI].*>+{      # chink any tag beginning with V, I, or .
+      <.*>}{<DT>         # split a chunk at a determiner
+      <DT|JJ>{}<NN.*>    # merge chunk ending with det/adj with one starting with a noun
 
     The patterns of a clause are executed in order.  An earlier
     pattern may introduce a chunk boundary that prevents a later
@@ -1349,6 +1342,9 @@ class GrammarChunk(object):
     chunk parser is one having more than one clause.  The maximum depth
     of a parse tree created by this chunk parser is the same as the
     number of clauses in the grammar.
+
+    When tracing is turned on, the comment portion of a line is displayed
+    each time the corresponding pattern is applied.
 
     @type _start: C{string}
     @ivar _start: The start symbol of the grammar (the root node of resulting trees)
