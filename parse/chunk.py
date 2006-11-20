@@ -423,10 +423,10 @@ def _chunksets(t, count):
     pos = 0
     chunks = []
     for child in t:
-        if isinstance(child, Tree):
+        try:
             chunks.append(((count, pos), tuple(child.freeze())))
             pos += len(child)
-        else:
+        except AttributeError:
             pos += 1
     return set(chunks)
 
@@ -1313,6 +1313,64 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         return s[:-1]
             
 ##//////////////////////////////////////////////////////
+##  Chunk Grammar
+##//////////////////////////////////////////////////////
+
+class ChunkGrammar(object):
+    def __init__(self, start, patterns):
+        """
+        Create a new chunk, from the given start state
+        and set of chunk patterns.
+        
+        @param start: The start symbol
+        @type start: L{Nonterminal}
+        @param productions: The list of patterns that defines the grammar
+        @type productions: C{list} of C{string}
+        """
+        from nltk_lite import parse
+        self._start = start
+	self._parsers = []
+	rules = []
+        for pattern in patterns.split('\n'):
+	    pattern = pattern.strip()
+            if not pattern: continue
+	    if pattern[-1] == ':':  # new block
+	        if rules != []:
+                    parser = RegexpChunk(rules, chunk_node=lhs, trace=1)
+                    self._parsers.append(parser)
+                lhs = pattern[:-1]
+	        rules = []
+            elif pattern[0] == '{' and pattern[-1] == '}':
+	        rules.append(ChunkRule(pattern[1:-1], pattern))
+            elif pattern[0] == '}' and pattern[-1] == '{':
+	        rules.append(ChinkRule(pattern[1:-1], pattern))
+            elif '}{' in pattern:
+	        left, right = pattern.split('}{')
+	        rules.append(SplitRule(left, right, pattern))
+            elif '{}' in pattern:
+	        left, right = pattern.split('{}')
+	        rules.append(MergeRule(left, right, pattern))
+	    else:
+	        raise ValueError, 'Illegal chunk pattern'
+        if rules != []:
+            parser = RegexpChunk(rules, chunk_node=lhs, trace=1)
+            self._parsers.append(parser)
+
+    def parse(self, t):
+        for parser in self._parsers:
+            t = parser.parse(t)
+        return t
+
+    def __repr__(self):
+        """
+        @return: a concise string representation of this
+            C{RegexpChunk}.
+        @rtype: C{string}
+        """
+        return "<ChunkGrammar with %d parsers>" % len(self._parsers)
+
+
+##//////////////////////////////////////////////////////
 ##  Demonstration code
 ##//////////////////////////////////////////////////////
 
@@ -1449,14 +1507,6 @@ def demo():
     parse.demo_eval(cp, text)
     print
 
-    print "============== Higher Level Interface =============="
-    print
-
-    patterns = [r'<DT>?<JJ>*<NN>', r'<NNP>+']
-    rules = [parse.ChunkRule(pattern, pattern) for pattern in patterns]
-    cp = parse.RegexpChunk(rules, chunk_node='NP', trace=1)
-    parse.demo_eval(cp, text)
-
     print "============== Cascaded Chunking =============="
     print
 
@@ -1477,6 +1527,48 @@ def demo():
     for chunkparser in chunkparsers:
         sent = chunkparser.parse(sent)
         print sent
+
+    print "============== Higher Level Interface =============="
+    print
+
+    text = """\
+    [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
+    [ The/DT cats/NNS ] ./.
+    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
+    [ John/NNP ] saw/VBD [the/DT cat/NN] the/DT cat/NN liked/VBD ./."""
+
+#    patterns = [r'<DT>?<JJ>*<NN>', r'<NNP>+']
+#    rules = [parse.ChunkRule(pattern, pattern) for pattern in patterns]
+#    cp = parse.RegexpChunk(rules, chunk_node='NP', trace=1)
+#    parse.demo_eval(cp, text)
+
+    grammar = r"""
+NP:
+  {<DT>?<JJ>*<NN>}
+  {<NNP>+}
+"""
+    cp = ChunkGrammar('S', grammar)
+    parse.demo_eval(cp, text)
+
+    grammar = r"""
+NP:
+  {<DT|JJ>}
+  {<NN.*>}
+  <DT|JJ>{}<NN.*>
+"""
+    cp = ChunkGrammar('S', grammar)
+    parse.demo_eval(cp, text)
+
+
+    grammar = r"""
+NP:
+  {<.*>*}
+  }<[\.VI].*>+{
+  <.*>}{<DT>
+"""
+    cp = ChunkGrammar('S', grammar)
+    parse.demo_eval(cp, text)
+
 
 if __name__ == '__main__':
     demo()
