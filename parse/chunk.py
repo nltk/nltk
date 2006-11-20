@@ -1158,7 +1158,7 @@ class ExpandRightRule(RegexpChunkRule):
 class RegexpChunk(ChunkParseI, AbstractParse):
     """
     A regular expression based chunk parser.  C{RegexpChunk} uses a
-    sequence X{rules} to find chunks within a text.  The chunking of
+    sequence of X{rules} to find chunks within a text.  The chunking of
     the text is encoded using a C{ChunkString}, and each rule acts by
     modifying the chunking in the C{ChunkString}.  The rules are all
     implemented using regular expression matching and substitution.
@@ -1316,10 +1316,39 @@ class RegexpChunk(ChunkParseI, AbstractParse):
 ##  Chunk Grammar
 ##//////////////////////////////////////////////////////
 
-class ChunkGrammar(object):
+class GrammarChunk(object):
+    """
+    A grammar based chunk parser.  C{GrammarChunk} uses a set of
+    regular expression patterns to specify the behavior of the parser.
+    The chunking of the text is encoded using a C{ChunkString}, and
+    each rule acts by modifying the chunking in the C{ChunkString}.
+    The rules are all implemented using regular expression matching
+    and substitution.
+
+    A grammar contains one or more clauses in the following form:
+
+    NP:
+      {<DT|JJ>}
+      }<[\.VI].*>+{
+      <.*>}{<DT>
+      <DT|JJ>{}<NN.*>
+
+    This clause says that:
+    * any sequence of DT or JJ should be chunked
+    * any tag starting with period, I, or V should be chinked
+    * any chunk containing DT should be split before the DT
+    * a chunk ending with DT or JJ should be merged with a following
+        chunk beginning with NN.*
+
+    @type _start: C{string}
+    @ivar _start: The start symbol of the grammar (the root node of resulting trees)
+    @type _parsers: C{int}
+    @ivar _parsers: The list of parsers corresponding to the grammar
+        
+    """
     def __init__(self, start, patterns):
         """
-        Create a new chunk, from the given start state
+        Create a new chunk parser, from the given start state
         and set of chunk patterns.
         
         @param start: The start symbol
@@ -1367,7 +1396,7 @@ class ChunkGrammar(object):
             C{RegexpChunk}.
         @rtype: C{string}
         """
-        return "<ChunkGrammar with %d parsers>" % len(self._parsers)
+        return "<GrammarChunk with %d parsers>" % len(self._parsers)
 
 
 ##//////////////////////////////////////////////////////
@@ -1547,7 +1576,7 @@ NP:
   {<DT>?<JJ>*<NN>}
   {<NNP>+}
 """
-    cp = ChunkGrammar('S', grammar)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
     grammar = r"""
@@ -1556,7 +1585,7 @@ NP:
   {<NN.*>}
   <DT|JJ>{}<NN.*>
 """
-    cp = ChunkGrammar('S', grammar)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
 
@@ -1566,7 +1595,7 @@ NP:
   }<[\.VI].*>+{
   <.*>}{<DT>
 """
-    cp = ChunkGrammar('S', grammar)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
 
