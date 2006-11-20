@@ -1358,15 +1358,15 @@ class GrammarChunk(object):
     @ivar _stages: The list of parsing stages corresponding to the grammar
         
     """
-    def __init__(self, start, patterns, trace=0):
+    def __init__(self, start, grammar, trace=0):
         """
         Create a new chunk parser, from the given start state
         and set of chunk patterns.
         
         @param start: The start symbol
         @type start: L{Nonterminal}
-        @param patterns: The list of patterns that defines the grammar
-        @type patterns: C{list} of C{string}
+        @param grammar: The list of patterns that defines the grammar
+        @type grammar: C{list} of C{string}
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -1377,25 +1377,35 @@ class GrammarChunk(object):
         self._start = start
 	self._stages = []
 	rules = []
-        for pattern in patterns.split('\n'):
-	    pattern = pattern.strip()
-            if not pattern: continue
-	    if pattern[-1] == ':':  # new block
+        for line in grammar.split('\n'):
+            # Process any comments
+            if '#' in line:
+                line, comment = line.split('#')
+            else:
+                comment = ''
+	    line = line.strip()
+            comment = comment.strip()
+            if not line: continue
+
+            # New stage begins
+	    if line[-1] == ':':
 	        if rules != []:
                     parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
                     self._stages.append(parser)
-                lhs = pattern[:-1]
+                lhs = line[:-1]
 	        rules = []
-            elif pattern[0] == '{' and pattern[-1] == '}':
-	        rules.append(ChunkRule(pattern[1:-1], pattern))
-            elif pattern[0] == '}' and pattern[-1] == '{':
-	        rules.append(ChinkRule(pattern[1:-1], pattern))
-            elif '}{' in pattern:
-	        left, right = pattern.split('}{')
-	        rules.append(SplitRule(left, right, pattern))
-            elif '{}' in pattern:
-	        left, right = pattern.split('{}')
-	        rules.append(MergeRule(left, right, pattern))
+
+            # Pattern bodies: chunk, chink, split, merge
+            elif line[0] == '{' and line[-1] == '}':
+	        rules.append(ChunkRule(line[1:-1], comment))
+            elif line[0] == '}' and line[-1] == '{':
+	        rules.append(ChinkRule(line[1:-1], comment))
+            elif '}{' in line:
+	        left, right = line.split('}{')
+	        rules.append(SplitRule(left, right, comment))
+            elif '{}' in line:
+	        left, right = line.split('{}')
+	        rules.append(MergeRule(left, right, comment))
 	    else:
 	        raise ValueError, 'Illegal chunk pattern'
         if rules != []:
@@ -1599,40 +1609,38 @@ def demo():
     [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
     [ John/NNP ] saw/VBD [the/DT cat/NN] the/DT cat/NN liked/VBD ./."""
 
-#    patterns = [r'<DT>?<JJ>*<NN>', r'<NNP>+']
-#    rules = [parse.ChunkRule(pattern, pattern) for pattern in patterns]
-#    cp = parse.RegexpChunk(rules, chunk_node='NP', trace=1)
-#    parse.demo_eval(cp, text)
 
     grammar = r"""
-NP:
-  {<DT>?<JJ>*<NN>}
-  {<NNP>+}
+NP:                   # NP stage
+  {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
+  {<NNP>+}            # chunk proper nouns
 """
-    cp = GrammarChunk('S', grammar)
-    parse.demo_eval(cp, text)
-
-    grammar = r"""
-NP:
-  {<DT|JJ>}
-  {<NN.*>}
-  <DT|JJ>{}<NN.*>
-"""
-    cp = GrammarChunk('S', grammar)
+    cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
 
     grammar = r"""
 NP:
-  {<.*>*}
-  }<[\.VI].*>+{
-  <.*>}{<DT>
+  {<.*>}              # start by chunking each tag
+  }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
+  <DT|JJ>{}<NN.*>     # merge det/adj with nouns
+"""
+    cp = GrammarChunk('S', grammar, trace=1)
+    parse.demo_eval(cp, text)
+
+
+    grammar = r"""
+NP:
+  {<.*>*}             # start by chunking everything
+  }<[\.VI].*>+{       # chink any verbs, prepositions or periods
+  <.*>}{<DT>          # separate on determiners
 PP:
-  {<IN><NP>}
+  {<IN><NP>}          # PP = preposition + noun phrase
 VP:
-  {<VB.*><NP|PP>*}
+  {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
 """
-    cp = GrammarChunk('S', grammar)
+
+    cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
 
