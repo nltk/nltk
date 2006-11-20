@@ -497,7 +497,7 @@ class ChunkString(object):
         the text C{tagged_tokens}.
 
         @type chunk_struct: C{Tree}
-        @param chunk_struct: The chunk structured to be further chunked.
+        @param chunk_struct: The chunk structure to be further chunked.
         @type debug_level: int
         @param debug_level: The level of debugging which should be
             applied to transformations on the C{ChunkString}.  The
@@ -1194,7 +1194,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
             C{1} will generate normal tracing output; and C{2} or
-            highter will generate verbose tracing output.
+            higher will generate verbose tracing output.
         """
         self._rules = rules
         self._trace = trace
@@ -1266,7 +1266,6 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         # Use the default trace value?
         if trace == None: trace = self._trace
 
-        # Create the chunkstring, using the same properties as the parser
         chunkstr = ChunkString(tokens)
 
         # Apply the sequence of rules to the chunkstring.
@@ -1340,33 +1339,51 @@ class GrammarChunk(object):
     * a chunk ending with DT or JJ should be merged with a following
         chunk beginning with NN.*
 
+    The patterns of a clause are executed in order.  An earlier
+    pattern may introduce a chunk boundary that prevents a later
+    pattern from executing.  Sometimes an individual pattern will
+    match on multiple, overlapping extents of the input.  As with
+    regular expression substitution more generally, the chunker will
+    identify the first match possible, then continue looking for matches
+    after this one has ended.
+
+    The clauses of a grammar are also executed in order.  A cascaded
+    chunk parser is one having more than one clause.  The maximum depth
+    of a parse tree created by this chunk parser is the same as the
+    number of clauses in the grammar.
+
     @type _start: C{string}
     @ivar _start: The start symbol of the grammar (the root node of resulting trees)
-    @type _parsers: C{int}
-    @ivar _parsers: The list of parsers corresponding to the grammar
+    @type _stages: C{int}
+    @ivar _stages: The list of parsing stages corresponding to the grammar
         
     """
-    def __init__(self, start, patterns):
+    def __init__(self, start, patterns, trace=0):
         """
         Create a new chunk parser, from the given start state
         and set of chunk patterns.
         
         @param start: The start symbol
         @type start: L{Nonterminal}
-        @param productions: The list of patterns that defines the grammar
-        @type productions: C{list} of C{string}
+        @param patterns: The list of patterns that defines the grammar
+        @type patterns: C{list} of C{string}
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            C{1} will generate normal tracing output; and C{2} or
+            higher will generate verbose tracing output.
         """
         from nltk_lite import parse
         self._start = start
-	self._parsers = []
+	self._stages = []
 	rules = []
         for pattern in patterns.split('\n'):
 	    pattern = pattern.strip()
             if not pattern: continue
 	    if pattern[-1] == ':':  # new block
 	        if rules != []:
-                    parser = RegexpChunk(rules, chunk_node=lhs, trace=1)
-                    self._parsers.append(parser)
+                    parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
+                    self._stages.append(parser)
                 lhs = pattern[:-1]
 	        rules = []
             elif pattern[0] == '{' and pattern[-1] == '}':
@@ -1382,22 +1399,38 @@ class GrammarChunk(object):
 	    else:
 	        raise ValueError, 'Illegal chunk pattern'
         if rules != []:
-            parser = RegexpChunk(rules, chunk_node=lhs, trace=1)
-            self._parsers.append(parser)
+            parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
+            self._stages.append(parser)
 
-    def parse(self, t):
-        for parser in self._parsers:
-            t = parser.parse(t)
-        return t
+    def parse(self, chunk_struct):
+        """
+        Apply the chunk parser to this input.
+        
+        @type chunk_struct: C{Tree}
+        @param chunk_struct: the chunk structure to be (further) chunked
+        """
+        for parser in self._stages:
+            chunk_struct = parser.parse(chunk_struct)
+        return chunk_struct
 
     def __repr__(self):
         """
-        @return: a concise string representation of this
+        @return: a concise string representation of this C{GrammarChunk}.
+        @rtype: C{string}
+        """
+        return "<GrammarChunk with %d stages>" % len(self._stages)
+
+    def __str__(self):
+        """
+        @return: a verbose string representation of this
             C{RegexpChunk}.
         @rtype: C{string}
         """
-        return "<GrammarChunk with %d parsers>" % len(self._parsers)
-
+        s = "GrammarChunk with %d stages:\n" % len(self._stages)
+        margin = 0
+        for parser in self._stages:
+            s += parser.__str__() + "\n"
+        return s[:-1]
 
 ##//////////////////////////////////////////////////////
 ##  Demonstration code
@@ -1594,6 +1627,10 @@ NP:
   {<.*>*}
   }<[\.VI].*>+{
   <.*>}{<DT>
+PP:
+  {<IN><NP>}
+VP:
+  {<VB.*><NP|PP>*}
 """
     cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
