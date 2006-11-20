@@ -1215,17 +1215,15 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         @param verbose: Whether output should be verbose.
         @rtype: C{None}
         """
-        indent = ' '*(35-len(str(chunkstr))/2)
-        
-        print 'Input:'
-        print indent, chunkstr
+        print '# Input:'
+        print chunkstr
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print rule.descr()+' ('+`rule`+'):'
+                print '#', rule.descr()+' ('+`rule`+'):'
             else:
-                print rule.descr()+':'
-            print indent, chunkstr
+                print '#', rule.descr()+':'
+            print chunkstr
         
     def _notrace_apply(self, chunkstr):
         """
@@ -1477,6 +1475,7 @@ def demo_eval(chunkparser, text):
         tokens = gold.leaves()
         test = chunkparser.parse(tree.Tree('S', tokens))
         chunkscore.score(gold, test)
+        print
 
     print '/'+('='*75)+'\\'
     print 'Scoring', chunkparser
@@ -1505,29 +1504,7 @@ def demo_eval(chunkparser, text):
                print '  ...'
     
     print '\\'+('='*75)+'/'
-
-def demo_cascade(chunkparsers, text):
-    """
-    Demonstration code for cascading chunk parsers.
-
-    @param chunkparser: The chunkparsers to be tested
-    @type chunkparser: C{ChunkParseI}
-    @param text: The chunked tagged text that should be used for evaluation.
-    @type text: C{string}
-    """
-    
-    from nltk_lite.parse.tree import Tree
-    
-    for sentence in text.split('\n'):
-        print sentence
-        sentence = sentence.strip()
-        if not sentence: continue
-        gold = tree.chunk(sentence)
-        pieces = gold.leaves()
-        for chunkparser in chunkparsers:
-            pieces = chunkparser.parse(Tree('S', pieces))
-            print pieces
-        print
+    print
 
 def demo():
     """
@@ -1542,103 +1519,45 @@ def demo():
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
-    [ The/DT cats/NNS ] ./.
-    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
-    [ John/NNP ] saw/VBD [the/DT cat/NN] the/DT cat/NN liked/VBD ./."""
+    [ John/NNP ] saw/VBD [the/DT cats/NNS] [the/DT dog/NN] chased/VBD ./.
+    [ John/NNP ] thinks/VBZ [ Mary/NN ] saw/VBD [ the/DT cat/NN ] sit/VB on/IN [ the/DT mat/NN ]./.
+    """
 
     print '*'*75
     print 'Evaluation text:'
     print text
     print '*'*75
-
-    # Use a simple regexp to define regular expressions.
-    r1 = parse.ChunkRule(r'<DT>?<JJ>*<NN.*>', 'Chunk NPs')
-    cp = parse.RegexpChunk([r1], chunk_node='NP', trace=1)
-    parse.demo_eval(cp, text)
     print
-
-    # Use a chink rule to remove everything that's *not* an NP
-    r1 = parse.ChunkRule(r'<.*>+', 'Chunk everything')
-    r2 = parse.ChinkRule(r'<VB.*>|<IN>|<\.>', 'Unchunk VB and IN and .')
-    cp = parse.RegexpChunk([r1, r2], chunk_node='NP', trace=1)
-    parse.demo_eval(cp, text)
-    print
-
-    # Unchunk non-NP words, and then merge consecutive NPs
-    r1 = parse.ChunkRule(r'(<.*>)', 'Chunk each tag')
-    r2 = parse.UnChunkRule(r'<VB.*>|<IN>|<.>', 'Unchunk VB? and IN and .')
-    r3 = parse.MergeRule(r'<DT|JJ|NN.*>', r'<DT|JJ|NN.*>', 'Merge NPs')
-    cp = parse.RegexpChunk([r1,r2,r3], chunk_node='NP', trace=1)
-    parse.demo_eval(cp, text)
-    print
-
-    # Chunk sequences of NP words, and split them at determiners
-    r1 = parse.ChunkRule(r'(<DT|JJ|NN.*>+)', 'Chunk sequences of DT&JJ&NN')
-    r2 = parse.SplitRule('', r'<DT>', 'Split before DT')
-    cp = parse.RegexpChunk([r1,r2], chunk_node='NP', trace=1)
-    parse.demo_eval(cp, text)
-    print
-
-    print "============== Cascaded Chunking =============="
-    print
-
-    np_chunk = parse.ChunkRule(r'<DT|JJ|NN.*>+', 'Chunk sequences of DT, JJ, NN')
-    np_parse = parse.RegexpChunk([np_chunk], chunk_node='NP')
-    pp_chunk = parse.ChunkRule(r'<IN><NP>', 'Chunk prepositions followed by NP')
-    pp_parse = parse.RegexpChunk([pp_chunk], chunk_node='PP')
-    vp_chunk = parse.ChunkRule(r'<VB.*><NP|PP|S>+$', 'Chunk verbs and arguments/adjuncts')
-    vp_parse = parse.RegexpChunk([vp_chunk], chunk_node='VP')
-    s_chunk = parse.ChunkRule(r'<NP><VP>$', 'Chunk NP, VP')
-    s_parse = parse.RegexpChunk([s_chunk], chunk_node='S')
-    chunkparsers = [np_parse, pp_parse, vp_parse, s_parse, vp_parse, s_parse]
-
-    text = """John/NNP thinks/VBZ Mary/NN saw/VBD the/DT cat/NN
-              sit/VB on/IN the/DT mat/NN"""
-    ttoks = string2tags(text)
-    sent = Tree('S', ttoks)
-    for chunkparser in chunkparsers:
-        sent = chunkparser.parse(sent)
-        print sent
-
-    print "============== Higher Level Interface =============="
-    print
-
-    text = """\
-    [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
-    [ The/DT cats/NNS ] ./.
-    [ John/NNP ] saw/VBD [the/DT cat/NN] [the/DT dog/NN] liked/VBD ./.
-    [ John/NNP ] saw/VBD [the/DT cat/NN] the/DT cat/NN liked/VBD ./."""
-
 
     grammar = r"""
-NP:                   # NP stage
-  {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
-  {<NNP>+}            # chunk proper nouns
-"""
+    NP:                   # NP stage
+      {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
+      {<NNP>+}            # chunk proper nouns
+    """
     cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
 
     grammar = r"""
-NP:
-  {<.*>}              # start by chunking each tag
-  }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
-  <DT|JJ>{}<NN.*>     # merge det/adj with nouns
-"""
+    NP:
+      {<.*>}              # start by chunking each tag
+      }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
+      <DT|JJ>{}<NN.*>     # merge det/adj with nouns
+    """
     cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
 
     grammar = r"""
-NP:
-  {<.*>*}             # start by chunking everything
-  }<[\.VI].*>+{       # chink any verbs, prepositions or periods
-  <.*>}{<DT>          # separate on determiners
-PP:
-  {<IN><NP>}          # PP = preposition + noun phrase
-VP:
-  {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
-"""
+    NP:
+      {<.*>*}             # start by chunking everything
+      }<[\.VI].*>+{       # chink any verbs, prepositions or periods
+      <.*>}{<DT>          # separate on determiners
+    PP:
+      {<IN><NP>}          # PP = preposition + noun phrase
+    VP:
+      {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
+    """
 
     cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
