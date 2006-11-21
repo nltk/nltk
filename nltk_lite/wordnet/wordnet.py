@@ -41,6 +41,7 @@ __version__ = "2.0.1"
 
 import string
 import os
+from math import *
 from os import environ
 from types import IntType, ListType, StringType, TupleType
 
@@ -661,6 +662,136 @@ class Sense:
 	    return _index(sense, synset.getSenses(), testfn=lambda a,b: a.form == b.form)
 	return _compareInstances(self, other, ('synset',)) or cmp(senseIndex(self), senseIndex(other))
 
+    # Here follow the new similarity metrics and helper functions. 
+    # TODO: Add some comments/doctest strings.
+
+    def path_distance_similarity(self, other_sense, extended_results=False):
+
+        synset1 = self.synset
+        synset2 = other_sense.synset
+
+        if synset1 == synset2:
+
+            if extended_results: return (synset1, 1)
+            else: return 1
+
+        path_distance = -1
+
+        dist_dict1 = {}
+        dist_dict2 = {}
+
+        dist_list1 = get_hypernym_distances(synset1, 0)
+        dist_list2 = get_hypernym_distances(synset2, 0)
+
+        for (l, d) in [(dist_list1, dist_dict1), (dist_list2, dist_dict2)]:
+
+            for (key, value) in l:
+
+                if d.has_key(key):
+
+                    if value < d[key]:
+                        d[key] = value 
+
+                else:
+                    d[key] = value
+
+        for key in dist_dict1.keys():
+
+            if dist_dict2.has_key(key):
+
+                distance1 = dist_dict1[key].order
+                distance2 = dist_dict2[key].order
+
+                new_distance = distance1 + distance2
+
+                if path_distance < 0 or new_distance < path_distance:
+                    path_distance = new_distance
+                    lcs = dist_dict1[key].synset
+
+        if extended_results:
+            return (lcs, 1.0 / (path_distance + 1))
+
+        else:
+            return 1.0 / (path_distance + 1)
+
+    def leacock_chodorow_similarity(self, other_sense):
+
+        taxonomy_depths = {'noun': 19, 'verb': 13}
+
+        if self.pos not in self.taxonomy_depths.keys():
+            raise TypeError, "Can only calculate similarity for nouns or verbs"
+
+        depth = taxonomy_depths[self.pos]
+        pds = self.path_distance_similarity(other_sense)
+
+        if pds > 0:
+            path_distance = round(1.0 / pds)
+            return -log(path_distance / (2.0 * depth))
+
+        else: return -1
+
+    def wu_palmer_similarity(self, other_sense):
+
+        root_key = "{noun: entity}"
+        (lcs, pds) = self.path_distance_similarity(other_sense, True)
+
+        # If no LCS was found, return -1
+        if pds < 0: return -1
+
+        dist_list = get_hypernym_distances(lcs, 1)
+        dist_dict = hypernym_distance_list2dict(dist_list)
+
+        # The path distance, or distance from sense1 to the LCS to sense2
+        lcs_dist = round(1.0 / pds)
+        # Distance from the root to the LCS
+        root_dist = dist_dict[root_key].order
+
+        return (2.0 * root_dist) / (2 * root_dist + lcs_dist - 1)
+
+# Simple container object containing a synset and it's 'order'.
+
+class OrderedSynset:
+
+    def __init__(self, synset, order):
+        self.synset = synset
+        self.order = order
+
+    def __cmp__(self, other):
+        if not isinstance(other, OrderedSynset):
+            raise TypeError, "OrderedSynsets can only be compared with other OrderedSynsets"
+
+        return cmp(self.order, other.order)
+
+    def __repr__(self):
+        return `(self.synset, self.order)`
+
+# Utility functions... possibly move these to wntools.py
+
+def get_hypernym_distances(synset, distance):
+
+    distances = [(str(synset), OrderedSynset(synset, distance))]
+    hypernyms = synset.getPointerTargets("hypernym")
+
+    for hypernym in hypernyms:
+        distances.extend(get_hypernym_distances(hypernym, distance+1))
+
+    return distances
+
+def hypernym_distance_list2dict(distance_list):
+
+    distance_dict = {}
+    
+    for (key, value) in distance_list:
+
+        if distance_dict.has_key(key):
+
+            if value < distance_dict[key]:
+                distance_dict[key] = value
+
+        else:
+            distance_dict[key] = value
+
+    return distance_dict
 
 class Pointer:
     """ A typed directional relationship between Senses or Synsets.
