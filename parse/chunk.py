@@ -90,7 +90,7 @@ RegexpChunk
       The differences between regular expression patterns and tag
       patterns are:
 
-        - In tag patterns, C{'<'} and C{'>'} act as parenthases; so
+        - In tag patterns, C{'<'} and C{'>'} act as parentheses; so
           C{'<NN>+'} matches one or more repetitions of C{'<NN>'}, not
           C{'<NN'} followed by one or more repetitions of C{'>'}.
         - Whitespace in tag patterns is ignored.  So
@@ -128,7 +128,7 @@ RegexpChunk
         (add-hook 'comint-mode-hook (lambda () (turn-on-font-lock))))
 
     You can evaluate this code by copying it to a temporary buffer,
-    placing the cursor after the last close parenthasis, and typing
+    placing the cursor after the last close parenthesis, and typing
     "C{C-x C-e}".  You should evaluate it before running the interactive
     session.  The change will last until you close emacs.
 
@@ -667,7 +667,7 @@ def tag_pattern2re_pattern(tag_pattern):
     for matching sequences of tags.  The differences between regular
     expression patterns and tag patterns are:
 
-        - In tag patterns, C{'<'} and C{'>'} act as parenthases; so 
+        - In tag patterns, C{'<'} and C{'>'} act as parentheses; so 
           C{'<NN>+'} matches one or more repetitions of C{'<NN>'}, not
           C{'<NN'} followed by one or more repetitions of C{'>'}.
         - Whitespace in tag patterns is ignored.  So
@@ -681,7 +681,7 @@ def tag_pattern2re_pattern(tag_pattern):
         - Replace '.' with '[^<>{}]'
         - Remove any whitespace
         - Add extra parens around '<' and '>', to make '<' and '>' act
-          like parenthases.  E.g., so that in '<NN>+', the '+' has scope
+          like parentheses.  E.g., so that in '<NN>+', the '+' has scope
           over the entire '<NN>'; and so that in '<NN|IN>', the '|' has
           scope over 'NN' and 'IN', but not '<' or '>'.
         - Check to make sure the resulting pattern is valid.
@@ -1377,20 +1377,22 @@ class GrammarChunk(object):
                 line, comment = line.split('#')
             else:
                 comment = ''
-	    line = line.strip()
             comment = comment.strip()
-            if not line: continue
 
             # New stage begins
-	    if line[-1] == ':':
+            if ':' in line:
 	        if rules != []:
                     parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
                     self._stages.append(parser)
-                lhs = line[:-1]
+                lhs, line = line.split(":")
+                lhs = lhs.strip()
 	        rules = []
 
+            line = line.strip()
+            if not line: continue
+
             # Pattern bodies: chunk, chink, split, merge
-            elif line[0] == '{' and line[-1] == '}':
+            if line[0] == '{' and line[-1] == '}':
 	        rules.append(ChunkRule(line[1:-1], comment))
             elif line[0] == '}' and line[-1] == '{':
 	        rules.append(ChinkRule(line[1:-1], comment))
@@ -1401,7 +1403,7 @@ class GrammarChunk(object):
 	        left, right = line.split('{}')
 	        rules.append(MergeRule(left, right, comment))
 	    else:
-	        raise ValueError, 'Illegal chunk pattern'
+	        raise ValueError, 'Illegal chunk pattern: %s' % line
         if rules != []:
             parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
             self._stages.append(parser)
@@ -1545,14 +1547,11 @@ def demo():
 
 
     grammar = r"""
-    NP:
-      {<.*>*}             # start by chunking everything
-      }<[\.VI].*>+{       # chink any verbs, prepositions or periods
-      <.*>}{<DT>          # separate on determiners
-    PP:
-      {<IN><NP>}          # PP = preposition + noun phrase
-    VP:
-      {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
+    NP: {<.*>*}             # start by chunking everything
+        }<[\.VI].*>+{       # chink any verbs, prepositions or periods
+        <.*>}{<DT>          # separate on determiners
+    PP: {<IN><NP>}          # PP = preposition + noun phrase
+    VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
 
     cp = GrammarChunk('S', grammar, trace=1)
