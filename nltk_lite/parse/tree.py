@@ -317,10 +317,10 @@ class Tree(list):
         # If it doesn't fit on one line, then write it on multi-lines.
         s = '%s%s%s' % (parens[0], self.node, nodesep)
         for child in self:
-            if isinstance(child, Tree):
+            try:
                 s += '\n'+' '*(indent+2)+child.pp(margin, indent+2,
                                                   nodesep, parens, quotes)
-            else:
+            except AttributeError:
                 s += '\n'+' '*(indent+2)+repr(child)
         return s+parens[1]
 
@@ -347,6 +347,18 @@ class Tree(list):
         """
         return r'\Tree ' + self.pp(indent=6, nodesep='', parens=('[.', ' ]'))
     
+    def pp_conll(self):
+        for child in self:
+            try:
+                category = child.node
+                prefix = "B-"
+                for contents in child:
+                    if isinstance(contents, Tree):
+                        raise ValueError, "Tree is too deeply nested to be printed in CoNLL format"
+                    print contents[0], contents[1], prefix+category
+                    prefix = "I-"
+            except AttributeError:
+                print child[0], child[1], "O"
 
 class ImmutableTree(Tree):
     def __setitem__(self):
@@ -757,7 +769,13 @@ still RB B-ADJP
 better JJR I-ADJP
 . . O
 """
-    print conll_chunk(s, chunk_types=('NP', 'PP', 'VP')).pp()
+    conll_tree = conll_chunk(s, chunk_types=('NP', 'PP', 'VP'))
+    print conll_tree.pp()
+
+    # Demonstrate CoNLL output
+    print "CoNLL output:"
+    print conll_tree.pp_conll()
+    print
 
     # Demonstrate tree nodes containing objects other than strings
     t.node = ('test', 3)
