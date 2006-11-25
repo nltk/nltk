@@ -347,7 +347,8 @@ class Tree(list):
         """
         return r'\Tree ' + self.pp(indent=6, nodesep='', parens=('[.', ' ]'))
     
-    def pp_conll(self):
+    def conll_tags(self):
+        tags = []
         for child in self:
             try:
                 category = child.node
@@ -355,10 +356,15 @@ class Tree(list):
                 for contents in child:
                     if isinstance(contents, Tree):
                         raise ValueError, "Tree is too deeply nested to be printed in CoNLL format"
-                    print contents[0], contents[1], prefix+category
+                    tags.append((contents[0], contents[1], prefix+category))
                     prefix = "I-"
             except AttributeError:
-                print child[0], child[1], "O"
+                tags.append((child[0], child[1], "O"))
+        return tags
+
+    def pp_conll(self):
+        lines = [' '.join(token) for token in self.conll_tags()]
+        return '\n'.join(lines)
 
 class ImmutableTree(Tree):
     def __setitem__(self):
