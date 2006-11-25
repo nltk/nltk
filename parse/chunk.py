@@ -1438,6 +1438,35 @@ class GrammarChunk(object):
             s += parser.__str__() + "\n"
         return s[:-1]
 
+##################################################################
+# EVALUATION
+##################################################################
+
+from nltk_lite import evaluate
+def accuracy(chunker, gold):
+    """
+    Score the accuracy of the chunker against the gold standard.
+    Strip the chunk information from the gold standard and rechunk it using
+    the chunker, then compute the accuracy score.
+
+    @type chunker: C{ChunkParseI}
+    @param tagger: The chunker being evaluated.
+    @type gold: C{tree}
+    @param gold: The chunk structures to score the chunker on.
+    @rtype: C{float}
+    """
+
+    gold_tags = []
+    test_tags = []
+    for gold_tree in gold:
+        test_tree = chunker.parse(gold_tree.flatten())
+        gold_tags += gold_tree.conll_tags()
+        test_tags += test_tree.conll_tags()
+
+#    print 'GOLD:', gold_tags[:50]
+#    print 'TEST:', test_tags[:50]
+    return evaluate.accuracy(gold_tags, test_tags)
+
 ##//////////////////////////////////////////////////////
 ##  Demonstration code
 ##//////////////////////////////////////////////////////
@@ -1535,7 +1564,6 @@ def demo():
     cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
-
     grammar = r"""
     NP:
       {<.*>}              # start by chunking each tag
@@ -1545,6 +1573,12 @@ def demo():
     cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
+    grammar = r"""
+    NP: {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
+    VP: {<TO>?<VB.*>}       # VP = verb words
+    """
+    cp = GrammarChunk('S', grammar, trace=1)
+    parse.demo_eval(cp, text)
 
     grammar = r"""
     NP: {<.*>*}             # start by chunking everything
@@ -1553,10 +1587,25 @@ def demo():
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
-
     cp = GrammarChunk('S', grammar, trace=1)
     parse.demo_eval(cp, text)
 
+# Evaluation
+
+    print
+    print "Demonstration of accuracy evaluation using CoNLL tags"
+
+    from nltk_lite.corpora import conll2000
+    from itertools import islice
+
+    grammar = r"""
+    NP:
+      {<.*>}              # start by chunking each tag
+      }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
+      <DT|JJ>{}<NN.*>     # merge det/adj with nouns
+    """
+    cp = GrammarChunk('S', grammar)
+    print parse.accuracy(cp, islice(conll2000.chunked(chunk_types=('NP', 'PP', 'VP')), 0, 5))
 
 if __name__ == '__main__':
     demo()
