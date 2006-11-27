@@ -295,7 +295,7 @@ class Undefined(Error): pass
 
 class CharFun(dict):
     """
-    A dictionary which represents a Curried characteristic function.
+    A dictionary which represents a curryed characteristic function.
     """
 
     def __init__(self, charfun=None):
@@ -743,6 +743,20 @@ class Model:
                     return value
 
                 
+                # _first_ is something like '\\ x' and _second_ is something like '(boy x)'
+                elif first[0] == '\\':
+                    var = first[1]
+                    phi = second
+                    cf = {}
+                    for u in self.domain:
+                        val = self.satisfy(phi, g.add(u, var), trace)
+                        if val:
+                            cf[u] = val
+                               
+                    if trace:
+                        print "   '%s' evaluates to %s under M, %s" %  (expr, cf, g)
+                    return cf
+
                 # _first_ is something like 'some x' and _second_ is something like '(boy x)'
                 elif first[0] == 'some':
                     var = first[1]
