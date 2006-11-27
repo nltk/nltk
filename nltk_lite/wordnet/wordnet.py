@@ -513,6 +513,86 @@ class Synset:
     def __getslice__(self, i, j):
 	return self.getSenses()[i:j]
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
+    # Get the parent hypernyms of this synset.
+
+    def parent_hypernyms(self):
+
+        gpt = self.getPointerTargets
+        return set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
+
+    # Get all ancestor hypernyms of this synset.
+
+    def hypernyms(self, include_self=False):
+
+        gpt = self.getPointerTargets
+
+        hypernyms = set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
+
+        for hypernym in hypernyms:
+            ancestor_hypernyms = set(hypernym.hypernyms())
+	    hypernyms = hypernyms.union(ancestor_hypernyms)
+
+	if include_self: hypernyms.add(self)
+
+        return hypernyms
+
+    # Get the path(s) from this synset to the root, where each path is a list
+    # of the synset nodes traversed on the way to the root.
+
+    def hypernym_paths(self):
+
+        paths = []
+
+        gpt = self.getPointerTargets
+        hypernyms = set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
+
+	if len(hypernyms) == 0: paths = [[self]]
+
+        for hypernym in hypernyms:
+            ancestor_lists = hypernym.hypernym_paths()
+
+            for ancestor_list in ancestor_lists:
+                ancestor_list.append(self)
+            	paths.append(ancestor_list)
+
+        return paths
+
+    # Returns the distance of the shortest path linking the two synsets (if
+    # one exists). For each synset, all the ancestor nodes and their distances
+    # are recorded and compared. The ancestor node common to both synsets that
+    # can be reached with the minimum number of traversals is returned.
+
+    # If no ancestor nodes are common, -1 is returned. If a node is compared
+    # with itself 0 is returned.
+
+    def shortest_path_distance(self, other_synset):
+
+        if self == other_synset: return 0
+
+        path_distance = -1
+
+        dist_list1 = get_hypernym_distances(self, 0)
+	dist_dict1 = hypernym_distance_list2dict(dist_list1)
+
+        dist_list2 = get_hypernym_distances(other_synset, 0)
+	dist_dict2 = hypernym_distance_list2dict(dist_list2)
+
+        for key in dist_dict1.keys():
+
+            if dist_dict2.has_key(key):
+
+                distance1 = dist_dict1[key].order
+                distance2 = dist_dict2[key].order
+
+                new_distance = distance1 + distance2
+
+                if path_distance < 0 or new_distance < path_distance:
+                    path_distance = new_distance
+
+        return path_distance
 
 class Sense:
     """A specific meaning of a specific word -- the intersection of a Word and a Synset.
@@ -665,54 +745,18 @@ class Sense:
     # Here follow the new similarity metrics and helper functions. 
     # TODO: Add some comments/doctest strings.
 
-    def path_distance_similarity(self, other_sense, extended_results=False):
+    def hypernyms(self):
+        return self.synset.hypernyms()
+
+    def path_distance_similarity(self, other_sense):
 
         synset1 = self.synset
         synset2 = other_sense.synset
 
-        if synset1 == synset2:
+        path_distance = synset1.shortest_path_distance(synset2)
 
-            if extended_results: return (synset1, 1)
-            else: return 1
-
-        path_distance = -1
-
-        dist_dict1 = {}
-        dist_dict2 = {}
-
-        dist_list1 = get_hypernym_distances(synset1, 0)
-        dist_list2 = get_hypernym_distances(synset2, 0)
-
-        for (l, d) in [(dist_list1, dist_dict1), (dist_list2, dist_dict2)]:
-
-            for (key, value) in l:
-
-                if d.has_key(key):
-
-                    if value < d[key]:
-                        d[key] = value 
-
-                else:
-                    d[key] = value
-
-        for key in dist_dict1.keys():
-
-            if dist_dict2.has_key(key):
-
-                distance1 = dist_dict1[key].order
-                distance2 = dist_dict2[key].order
-
-                new_distance = distance1 + distance2
-
-                if path_distance < 0 or new_distance < path_distance:
-                    path_distance = new_distance
-                    lcs = dist_dict1[key].synset
-
-        if extended_results:
-            return (lcs, 1.0 / (path_distance + 1))
-
-        else:
-            return 1.0 / (path_distance + 1)
+	if path_distance < 0: return -1
+        else: return 1.0 / (path_distance + 1)
 
     def leacock_chodorow_similarity(self, other_sense):
 
@@ -722,31 +766,43 @@ class Sense:
             raise TypeError, "Can only calculate similarity for nouns or verbs"
 
         depth = taxonomy_depths[self.pos]
-        pds = self.path_distance_similarity(other_sense)
+        path_distance = self.synset.shortest_path_distance(other_sense.synset)
 
-        if pds > 0:
-            path_distance = round(1.0 / pds)
+        if path_distance > 0:
             return -log(path_distance / (2.0 * depth))
 
         else: return -1
 
     def wu_palmer_similarity(self, other_sense):
 
-        root_key = "{noun: entity}"
-        (lcs, pds) = self.path_distance_similarity(other_sense, True)
+        synset1 = self.synset
+        synset2 = other_sense.synset
 
-        # If no LCS was found, return -1
-        if pds < 0: return -1
+        subsumer = lcs(synset1, synset2)
 
-        dist_list = get_hypernym_distances(lcs, 1)
-        dist_dict = hypernym_distance_list2dict(dist_list)
+        # If no LCS was found return -1
+        if subsumer == None: return -1
 
-        # The path distance, or distance from sense1 to the LCS to sense2
-        lcs_dist = round(1.0 / pds)
-        # Distance from the root to the LCS
-        root_dist = dist_dict[root_key].order
+        # Get the longest path from the LCS to the root.
+	lcs_path = []
+	lcs_paths = subsumer.hypernym_paths()
 
-        return (2.0 * root_dist) / (2 * root_dist + lcs_dist - 1)
+        for candidate_path in lcs_paths:
+
+            if len(candidate_path) > len(lcs_path):
+                lcs_path = candidate_path
+
+        # Get the shortest path from the LCS to each of the synsets its
+	# subsuming. Add this to the LCS path length to get the path from
+	# each synset to the root.
+
+        synset1_path_len = subsumer.shortest_path_distance(synset1)
+        synset1_path_len += len(lcs_path)
+
+        synset2_path_len = subsumer.shortest_path_distance(synset2)
+        synset2_path_len += len(lcs_path)
+
+        return (2.0 * (len(lcs_path)+1)) / (synset1_path_len + synset2_path_len + 2)
 
 # Simple container object containing a synset and it's 'order'.
 
@@ -792,6 +848,39 @@ def hypernym_distance_list2dict(distance_list):
             distance_dict[key] = value
 
     return distance_dict
+
+def lcs(synset1, synset2):
+
+    subsumer = None
+    max_min_path_length = -1
+
+    eliminated = set()
+    subsumers = synset1.hypernyms(True) & synset2.hypernyms(True)
+
+    for candidate in subsumers:
+
+        for subcandidate in subsumers:
+
+            if subcandidate in candidate.hypernyms():
+                eliminated.add(subcandidate)
+
+    subsumers -= eliminated
+
+    for candidate in subsumers:
+
+        paths_to_root = candidate.hypernym_paths()
+        min_path_length = -1
+
+        for path in paths_to_root:
+
+             if min_path_length < 0 or len(path) < min_path_length:
+                 min_path_length = len(path)
+
+        if min_path_length > max_min_path_length:
+            max_min_path_length = min_path_length
+            subsumer = candidate
+
+    return subsumer
 
 class Pointer:
     """ A typed directional relationship between Senses or Synsets.
