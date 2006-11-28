@@ -86,7 +86,7 @@ def text_interpret(inputs, grammar, beta_reduce=True, start='S'):
         semreps[sent] = syn_sem
     return semreps
 
-def text_evaluate(inputs, grammar, model, assignment):
+def text_evaluate(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
@@ -97,7 +97,7 @@ def text_evaluate(inputs, grammar, model, assignment):
     evaluations = {}
     for sent in inputs:
         syn_sem_val = \
-          [(syn, sem, m.evaluate(str(sem), g)) for (syn, sem) in semreps[sent]]
+          [(syn, sem, m.evaluate(str(sem), g, trace=trace)) for (syn, sem) in semreps[sent]]
         evaluations[sent] = syn_sem_val
     return evaluations
     
