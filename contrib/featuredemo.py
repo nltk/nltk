@@ -1,5 +1,5 @@
-from grammarfile import GrammarFile
-from featurechart import *
+from nltk_lite.parse.grammarfile import GrammarFile
+from nltk_lite.parse.featurechart import *
 from nltk_lite import tokenize
 
 """
