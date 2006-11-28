@@ -17,20 +17,14 @@ Requires two inputs:
 """
 
 from nltk_lite.semantics import *
-from model0 import *
+from chat_model import *
 
 
-sents = ['Fido sees a boy with Mary',
-         'John sees Mary',
-         'every girl chases a dog',
-         'every boy chases a girl',
-         'John walks with a girl in Noosa',
-         'who walks'
-         ]
 
-chat = ['France is a country']
+sents = ['France is a country', 'Paris is the capital of France']
 
-def main(inputs = chat, evaluate=1, filename = 'chat_80.cfg'):
+
+def main(inputs = sents, evaluate=1, filename = 'chat_80.cfg'):
     SPACER = '-' * 30
     
     model = m
@@ -39,13 +33,14 @@ def main(inputs = chat, evaluate=1, filename = 'chat_80.cfg'):
     # NB. GrammarFile is imported indirectly via nltk_lite.semantics
     grammar = GrammarFile.read_file(filename)
     
-    evaluations = text_evaluate(inputs, grammar, model, assignment)
+    
 
     for sent in inputs:
         n = 1
         print '\nSentence: %s' % sent
         print SPACER
         if evaluate: 
+            evaluations = text_evaluate(inputs, grammar, model, assignment, trace=2)
             for (syntree, semrep, value) in evaluations[sent]:
                 if isinstance(value, dict):
                     value = set(value.keys())
@@ -53,7 +48,7 @@ def main(inputs = chat, evaluate=1, filename = 'chat_80.cfg'):
                 print '%9s in Model m' % value
             n += 1
         else:
-            semreps = text_interpret(inputs, grammar)
+            semreps = text_interpret(inputs, grammar, beta_reduce=True, start='S')
             for (syntree, semrep) in semreps[sent]:
                 print '%d:  %s' % (n, semrep.infixify())
             n += 1
