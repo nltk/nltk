@@ -25,7 +25,7 @@ item_name = {
 def _list_sent(sent):
     return [tokenize.whitespace(line) for line in tokenize.line(sent)]
 
-def raw(files = items):
+def raw(files = ['train']):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
@@ -33,7 +33,7 @@ def raw(files = items):
         for sent in tokenize.blankline(s):
             yield [word for (word, tag, chunk) in _list_sent(sent)]
 
-def tagged(files = items):
+def tagged(files = ['train']):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
@@ -41,7 +41,7 @@ def tagged(files = items):
         for sent in tokenize.blankline(s):
             yield [(word, tag) for (word, tag, chunk) in _list_sent(sent)]
 
-def chunked(files = items, chunk_types=('NP',)):
+def chunked(files = ['train'], chunk_types=('NP',)):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
