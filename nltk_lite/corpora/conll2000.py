@@ -41,7 +41,7 @@ def tagged(files = ['train']):
         for sent in tokenize.blankline(s):
             yield [(word, tag) for (word, tag, chunk) in _list_sent(sent)]
 
-def chunked(files = ['train'], chunk_types=('NP',)):
+def chunked(files = ['train'], chunk_types=('NP','VP','PP')):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
@@ -66,7 +66,7 @@ def demo():
     print
 
     print "Chunked text:"
-    for tree in islice(conll2000.chunked(chunk_types=('NP', 'PP', 'VP')), 0, 5):
+    for tree in islice(conll2000.chunked(chunk_types=('NP','PP')), 0, 5):
         print tree.pp()
     print
 
