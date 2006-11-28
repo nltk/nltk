@@ -60,8 +60,9 @@ extension into a L{Valuation} object.
 """
 
 import re
-from nltk_lite.semantics.evaluate import *
-import shelve, anydbm
+import nltk_lite.semantics.evaluate as evaluate
+import shelve, os, sys
+
 
 class Concept(object):
     """
@@ -183,12 +184,12 @@ def binary_concept(label, subj, obj, records):
     label = label + '_of'
     c = Concept(label, arity=2, extension=set())
     for record in records:
-        c.augment((record[subj], record[obj]))
+        c.augment((record[obj], record[subj]))
     return c
 
 
 
-def _process_bundle(rels):
+def process_bundle(rels):
     """
     Given a list of relation metadata bundles, make a corresponding
     list of concepts.
@@ -206,9 +207,10 @@ def _process_bundle(rels):
                      
     return concepts
 
-def make_valuation(concepts, read=False):
+def make_valuation(concepts, read=False, lexicon=False):
     """
-    Convert a list of concepts into a L{Valuation} object.
+    Convert a list of C{Concept}s into a list of (label, extension) pairs;
+    optionally create a C{Valuation} object.
 
     @param concepts: concepts
     @type concepts: list of L{Concept}s
@@ -218,10 +220,13 @@ def make_valuation(concepts, read=False):
     vals = []
     
     for c in concepts:
-        vals.append((c.prefLabel, c.extension))
+         vals.append((c.prefLabel, c.extension))
+    if lexicon: read = True
     if read:
-        val = Valuation()
+        val = evaluate.Valuation()
         val.read(vals)
+        # add labels for individuals
+        val = label_indivs(val, lexicon=lexicon)
         return val
     else: return vals
     
@@ -236,7 +241,7 @@ def val_dump(rels, db):
     @param db: name of file to which data is written
     @type db: string
     """
-    concepts = _process_bundle(rels)
+    concepts = process_bundle(rels)
     valuation = make_valuation(concepts)
     db_out = shelve.open(db, 'n')
 
@@ -253,10 +258,76 @@ def val_load(db):
     @param db: name of file to which data is written
     @type db: string
     """
-    db_in = shelve.open(db)
-    val = Valuation()
-    val.read(db_in.items())
-    return val
+    dbname = db+".db"
+
+    if not os.access(dbname, os.R_OK):
+        sys.exit("Cannot read file: %s" % dbname)
+    else:
+        db_in = shelve.open(db)
+        val = evaluate.Valuation()
+        val.read(db_in.items())
+        return val
+
+
+def alpha(str):
+    """
+    Utility to filter out non-alphabetic constants.
+
+    @param str: candidate constant
+    @type str: string    
+    """
+    try:
+        int(str)
+        return False
+    except ValueError:
+        # some unknown values in records are labeled '?'
+        if not str == '?':
+            return True
+
+
+def label_indivs(valuation, lexicon=False):
+    """
+    Assign individual constants to the individuals in the domain of a C{Valuation}.
+
+    Given a valuation with an entry of the form {'rel': {'a': True}},
+    add a new entry {'a': 'a'}.
+
+    @type db: Valuation
+    """
+    # collect all the individuals into a domain
+    domain = valuation.domain
+    # convert the domain into a sorted list of alphabetic terms
+    entities = sorted([e for e in domain if alpha(e)])
+    # use the same string as a label
+    pairs = [(e, e) for e in entities]
+    if lexicon:
+        lex = make_lex(entities)
+        open("chat_pnames.cfg", mode='w').writelines(lex)
+    # read the pairs into the valuation
+    valuation.read(pairs)
+    return valuation
+
+def make_lex(symbols):
+    """
+    Create lexical rules for each individual symbol.
+
+    Given a valuation with an entry of the form {'zloty': 'zloty'},
+    create a lexical rule for the proper name 'Zloty'. 
+
+    @param symbols: a list of individual constants in the semantic representation
+    @type symbols: sequence
+    """
+    lex = []
+    template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
+    
+    for s in symbols:
+        parts = s.split('_')
+        caps = [p.capitalize() for p in parts]
+        pname = ('_').join(caps)
+        rule = template % (s, pname)
+        lex.append(rule)
+    return lex
+        
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -292,46 +363,79 @@ sea = {'label': 'sea',
        'schema': ['sea'],
        'filename': 'world1.pl'}
 
-_rels = [city, country, circle_of_lat, continent, region, ocean, sea]
+rels = [city, country, circle_of_lat, continent, region, ocean, sea]
+
+###########################################################################
 
 
-# write the valuation to a persistent database
-#val_dump(_rels, 'chatmodel')
+def main():
+    import sys
+    from optparse import OptionParser
+    description = \
+    """
+    Extract data from the Chat-80 Prolog files and convert them into a
+    Valuation object for use in the NLTK semantics package.
+    """
 
-# load the valuation from a persistent database
-#val_load('chatmodel')
+    opts = OptionParser(description=description)
+    opts.set_defaults(verbose=True, lex=False, vocab=False)
+    opts.add_option("-s", "--store", dest="outdb",
+                    help="store a valuation in DB", metavar="DB")
+    opts.add_option("-l", "--load", dest="indb",
+                    help="load a stored valuation from DB", metavar="DB")
+    opts.add_option("-c", "--concepts", action="store_true",
+                    help="print out concepts instead of a valuation")
+    opts.add_option("-q", "--quiet", action="store_false", dest="verbose",
+                    help="be quiet")
+    opts.add_option("-x", "--lex", action="store_true", dest="lex",
+                    help="write a file of lexical entries for country names, then exit")
+    opts.add_option("-v", "--vocab", action="store_true", dest="vocab",
+                        help="print out the vocabulary and its arity, then exit")
 
-
-concepts = _process_bundle(rels)
-valuation = make_valuation(concepts, read=True)
-
-domain = valuation.domain
-
-def alpha(str):
-    try:
-        int(str)
-        return False
-    except ValueError:
-        if not str == '?':
-            return True
-
-
-entities = sorted([e for e in domain if alpha(e)])
-
-pairs = [(e, e) for e in entities]
-
-valuation.read(pairs)
-
-        
-
-        
-        
-        
-
-
-
+    (options, args) = opts.parse_args()
+    if options.outdb and options.indb:
+        opts.error("Options --store and --load are mutually exclusive")
 
         
+    if options.outdb:
+        # write the valuation to a persistent database
+        if options.verbose:
+            outdb = options.outdb+".db"
+            print "Dumping a valuation to %s" % outdb
+        val_dump(rels, options.outdb)
 
-    
-    
+    else:
+        if options.indb is not None:
+            dbname = options.indb+".db"
+            if not os.access(dbname, os.R_OK):
+                sys.exit("Cannot read file: %s" % dbname)
+            else:
+                valuation = val_load(options.indb)
+        else:
+            # build some concepts
+            concepts = process_bundle(rels)
+            if options.vocab:
+                items = [(c.arity, c.prefLabel) for c in concepts]
+                items.sort()
+                for (arity, label) in items:
+                    print label, arity
+
+            elif options.concepts:
+                for c in concepts:
+                    print c
+                    print
+            else:
+                # turn the concepts into a Valuation
+                if options.lex:
+                    if options.verbose:
+                        print "Writing out lexical rules"
+                    make_valuation(concepts, lexicon=True)
+                else:
+                    valuation = make_valuation(concepts, read=True)
+                    print valuation
+        
+        
+
+if __name__ == '__main__':
+    main()
+
