@@ -1369,6 +1369,7 @@ class GrammarChunk(object):
         """
         from nltk_lite import parse
         self._start = start
+        self._trace = trace
 	self._stages = []
 	rules = []
         for line in grammar.split('\n'):
@@ -1408,15 +1409,23 @@ class GrammarChunk(object):
             parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
             self._stages.append(parser)
 
-    def parse(self, chunk_struct):
+    def parse(self, chunk_struct, trace=None):
         """
         Apply the chunk parser to this input.
         
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            C{1} will generate normal tracing output; and C{2} or
+            highter will generate verbose tracing output.  This value
+            overrides the trace level value that was given to the
+            constructor. 
         """
+        if trace == None: trace = self._trace
         for parser in self._stages:
-            chunk_struct = parser.parse(chunk_struct)
+            chunk_struct = parser.parse(chunk_struct, trace=trace)
         return chunk_struct
 
     def __repr__(self):
@@ -1500,7 +1509,7 @@ def demo_eval(chunkparser, text):
         if not sentence: continue
         gold = tree.chunk(sentence)
         tokens = gold.leaves()
-        test = chunkparser.parse(tree.Tree('S', tokens))
+        test = chunkparser.parse(tree.Tree('S', tokens), trace=1)
         chunkscore.score(gold, test)
         print
 
@@ -1561,7 +1570,7 @@ def demo():
       {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
       {<NNP>+}            # chunk proper nouns
     """
-    cp = GrammarChunk('S', grammar, trace=1)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
     grammar = r"""
@@ -1570,14 +1579,14 @@ def demo():
       }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
-    cp = GrammarChunk('S', grammar, trace=1)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
     grammar = r"""
     NP: {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
     VP: {<TO>?<VB.*>}       # VP = verb words
     """
-    cp = GrammarChunk('S', grammar, trace=1)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
     grammar = r"""
@@ -1587,7 +1596,7 @@ def demo():
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
-    cp = GrammarChunk('S', grammar, trace=1)
+    cp = GrammarChunk('S', grammar)
     parse.demo_eval(cp, text)
 
 # Evaluation
