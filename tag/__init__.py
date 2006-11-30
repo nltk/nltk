@@ -39,7 +39,7 @@ class SequentialBackoff(TagI):
                 if tag == None and self._backoff:
                     tag = self._backoff.tag_one(token)
                 if self._history:
-                    self._history.enqueue(tag)
+                    self._history.append(tag)
                 yield (token, tag)
 
     def tag_sents(self, sents, verbose=False):
