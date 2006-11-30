@@ -150,21 +150,21 @@ Lookup tagger (possibly extend the dictionary later for more effective testing)
 Unit tests for N-gram taggers.
 --------------------------------------------------------------------------------
 
-Test the queuing methods that are used to store context for a given word.
+Test the windowing methods that are used to store context for a given word.
 
-    >>> queue = Queue(2)
-    >>> queue.enqueue('Sense')
-    >>> queue.enqueue('and')
-    >>> queue.enqueue('Sensibility')
-    >>> queue.get()
-    ('Sensibility', 'and')
-
-    >>> queue.set(('Sense', 'and', 'Sensibility'))
-    >>> queue.get()
+    >>> window = Window(2)
+    >>> window.append('Sense')
+    >>> window.append('and')
+    >>> window.append('Sensibility')
+    >>> tuple(window)
     ('and', 'Sensibility')
 
-    >>> queue.clear()
-    >>> queue.get()
+    >>> window.set(('Sense', 'and', 'Sensibility'))
+    >>> tuple(window)
+    ('and', 'Sensibility')
+
+    >>> window.clear()
+    >>> tuple(window)
     (None, None)
 
 Create a default, unigram, bigram and trigram tagger.
@@ -202,7 +202,7 @@ Run the taggers on a different section of the Brown corpus. In each case report 
 
     >>> acc = accuracy(tri_tagger, brown.tagged('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
-    Accuracy 79.8%
+    Accuracy 80.2%
 
 --------------------------------------------------------------------------------
 Unit tests for the Brill tagger
@@ -271,13 +271,13 @@ Demo code lifted more or less directly from the HMM class.
     ...         d[condition] = probdist(values, samples)
     ...     return DictionaryConditionalProbDist(d)
 
-    >>> A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], Float64)
+    >>> A = array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], float64)
     >>> A = conditionalprobdist(A, states, states)
 
-    >>> B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], Float64)
+    >>> B = array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], float64)
     >>> B = conditionalprobdist(B, states, symbols)
 
-    >>> pi = array([0.5, 0.2, 0.3], Float64)
+    >>> pi = array([0.5, 0.2, 0.3], float64)
     >>> pi = probdist(pi, states)
 
     >>> model = HiddenMarkovModel(symbols=symbols, states=states,
