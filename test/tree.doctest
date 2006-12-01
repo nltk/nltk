@@ -187,7 +187,7 @@ C{Tree.parse} method:
 
     >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
-    (S: (NP: I) (VP: (V: enjoyed) (NP: my cookie)))
+    (S: (NP: 'I') (VP: (V: 'enjoyed') (NP: 'my' 'cookie')))
 
 Trees can be compared for equality:
 
