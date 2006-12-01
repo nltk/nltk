@@ -150,8 +150,10 @@ RegexpChunk
      pattern is valid.
 """
 
+import re, types
+import types
 from nltk_lite.parse import ParseI
-import re
+from convert import tree2conlltags
 
 ##//////////////////////////////////////////////////////
 ##  Chunk Parser Interface
@@ -197,11 +199,10 @@ class ChunkParseI(ParseI):
 ##  Precompiled regular expressions
 ##//////////////////////////////////////////////////////
 
+
 CHUNK_TAG_CHAR = r'[^\{\}<>]'
 CHUNK_TAG = r'(<%s+?>)' % CHUNK_TAG_CHAR
-CHUNK_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
-                                ('[^\{\}<>]+',
-                                 '[^\{\}<>]+'))
+
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
@@ -442,8 +443,8 @@ def accuracy(chunker, gold):
     test_tags = []
     for gold_tree in gold:
         test_tree = chunker.parse(gold_tree.flatten())
-        gold_tags += gold_tree.conll_tags()
-        test_tags += test_tree.conll_tags()
+        gold_tags += tree2conlltags(gold_tree)
+        test_tags += tree2conlltags(test_tree)
 
 #    print 'GOLD:', gold_tags[:50]
 #    print 'TEST:', test_tags[:50]
@@ -683,5 +684,6 @@ def _chunksets(t, count):
     return set(chunks)
 
 
-from convert import *
+
 from regexp import *
+from convert import *
