@@ -769,7 +769,7 @@ def demo_eval(chunkparser, text):
         print sentence
         sentence = sentence.strip()
         if not sentence: continue
-        gold = tree.chunk(sentence)
+        gold = chunk.tagstr2tree(sentence)
         tokens = gold.leaves()
         test = chunkparser.parse(tree.Tree('S', tokens), trace=1)
         chunkscore.score(gold, test)
