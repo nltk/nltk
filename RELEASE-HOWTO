@@ -7,9 +7,10 @@ Building an NLTK-Lite distribution
 
 A. ERROR CHECKING
 
-  1. Code demos, graphical demonstrations
+  1. make doctest
   2. API docs (cd doc; make api)
   3. Tutorial examples (cd doc/en; make errs)
+  4. Code demos, graphical demonstrations (execute module.py)
 
 B. CHANGELOG AND RELEASE ANNOUNCEMENT
 
@@ -80,6 +81,8 @@ B. WEBSITE
        mailing lists for any local courses using NLTK
   3. post a news item on the sourceforge site
        http://sourceforge.net/news/?group_id=30982
+  4. register with Python Cheeseshop
+       python setup.py register
 
 C. INSTALLATION
 
