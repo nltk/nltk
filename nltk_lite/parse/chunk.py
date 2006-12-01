@@ -1374,10 +1374,12 @@ class GrammarChunk(object):
 	rules = []
         for line in grammar.split('\n'):
             # Process any comments
+            line = re.sub(r'\\#', r'_HASH_', line)
             if '#' in line:
                 line, comment = line.split('#')
             else:
                 comment = ''
+            line = re.sub(r'_HASH_', r'\\#', line)
             comment = comment.strip()
 
             # New stage begins
@@ -1601,10 +1603,17 @@ def demo():
 
 # Evaluation
 
-    print
-    print "Demonstration of accuracy evaluation using CoNLL tags"
-
     from nltk_lite.corpora import conll2000
+
+    print
+    print "Demonstration of empty grammar:"
+    
+    cp = GrammarChunk('S', "")
+    print parse.accuracy(cp, conll2000.chunked(files='test', chunk_types=('NP',)))
+
+    print
+    print "Demonstration of accuracy evaluation using CoNLL tags:"
+
     from itertools import islice
 
     grammar = r"""
