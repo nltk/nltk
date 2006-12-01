@@ -22,7 +22,7 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
 from nltk_lite.corpora import get_basedir, extract
-from nltk_lite.parse.tree import ieer_chunk
+from nltk_lite import chunk
 import os
 
 items = ['APW_19980314', 'APW_19980424', 'APW_19980429',
@@ -49,7 +49,7 @@ def raw(files = items):
 
 def dictionary(files = items):
     for doc in raw(files):
-        yield ieer_chunk(doc)
+        yield ieerstr2tree(doc)
 
 def demo():
     from nltk_lite.corpora import ieer

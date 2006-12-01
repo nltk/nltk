@@ -11,7 +11,7 @@ Read chunk structures from the CONLL-2000 Corpus
 """       
 
 from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk_lite import tokenize, chunk
 from nltk_lite.parse import tree
 import os
 
@@ -47,7 +47,7 @@ def chunked(files = ['train'], chunk_types=('NP','VP','PP')):
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
         s = open(path).read()
         for sent in tokenize.blankline(s):
-            yield tree.conll_chunk(sent, chunk_types)
+            yield chunk.conllstr2tree(sent, chunk_types)
 
 def demo():
     from nltk_lite.corpora import conll2000

@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk_lite import tokenize, chunk
 from nltk_lite.tag import tag2tuple
 from nltk_lite.parse import tree
 import os
@@ -92,8 +92,7 @@ def chunked(files = 'chunked'):
         path = os.path.join(get_basedir(), "treebank", file)
         s = open(path).read()
         for t in tokenize.blankline(s):
-            yield tree.chunk(t)
-
+            yield chunk.tagstr2tree(t)
 
 def tagged(files = 'chunked'):
     """
