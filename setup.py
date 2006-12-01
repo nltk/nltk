@@ -32,7 +32,7 @@ setup(
     ## Package List
     packages = ['nltk_lite', 'nltk_lite.corpora', 'nltk_lite.test',
                 'nltk_lite.tokenize', 'nltk_lite.stem', 'nltk_lite.tag',
-                'nltk_lite.parse', 'nltk_lite.chat', 'nltk_lite.draw',
+                'nltk_lite.parse', 'nltk_lite.chunk', 'nltk_lite.chat', 'nltk_lite.draw',
                 'nltk_lite.misc', 'nltk_lite.model', 'nltk_lite.cluster',
                 'nltk_lite.semantics', 'nltk_lite.wordnet', 'nltk_lite.etree',
                 'nltk_lite.contrib', 'nltk_lite.contrib.toolbox',
