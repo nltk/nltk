@@ -37,8 +37,6 @@ three sub-modules for specialized kinds of parsing:
 
   - C{nltk.parser.chart} defines chart parsing, which uses dynamic
     programming to efficiently parse texts.
-  - C{nltk.parser.chunk} defines chunk parsing, which identifies
-    non-overlapping linguistic groups in a text.
   - C{nltk.parser.probabilistic} defines probabilistic parsing, which
     associates a probability with each parse.
 """
@@ -157,6 +155,5 @@ from pcfg import *
 from featurestructure import *
 from sr import *
 from rd import *
-from chunk import *
 from chart import *
 from viterbi import *
