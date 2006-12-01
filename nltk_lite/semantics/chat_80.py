@@ -40,6 +40,14 @@ example, the third field is mapped to the binary predicate
 M{population_of}, whose extension is a set of pairs such as C{'(athens,
 1368)'}.
 
+One exception to this general framework is required by the relations in
+the file C{borders.pl}, which are of the following form::
+
+    'borders(albania,greece).'
+
+In this case we do not want to form a unary
+concept out the element in the first field of these records, and we want the label of the binary relation just to be C{'border'}
+
 In order to drive the extraction process, we use 'relation metadata bundles'
 which are Python dictionaries such as the following::
 
@@ -51,6 +59,8 @@ According to this, the file C{city['filename']} contains a list of
 relational tuples (or more accurately, the corresponding strings in Prolog
 form) whose predicate symbol is C{city['label']} and whose relational
 schema is C{city['schema']}.
+
+
 
 In order to store the results of the conversion, a class of
 L{Concept}s is introduced. A L{Concept} provides a kind of wrapper
@@ -122,8 +132,9 @@ def clause2concepts(fn, rel, schema):
     records = _str2records(fn, rel)
 
     # add a unary concept corresponding to the set of entities
-    # in the primary key position 
-    concepts.append(unary_concept(pkey, subj, records))
+    # in the primary key position
+    if not fn == 'borders.pl':
+        concepts.append(unary_concept(pkey, subj, records))
     
     # add a binary concept for each non-key field
     for field in fields:
@@ -150,6 +161,10 @@ def unary_concept(label, subj, records):
     """
     Make a unary concept out of the primary key in a record.
 
+    A record is a list of entities in some relation, such as
+    C{['france', 'paris']}, where C{'france'} is acting as the primary
+    key.
+
     @param label: the preferred label for the concept
     @type label: string
     @param subj: position in the record of the subject of the predicate
@@ -166,10 +181,15 @@ def binary_concept(label, subj, obj, records):
     """
     Make a binary concept out of the primary key and another field in a record.
 
-    Given a record such as C{['a', 'b', 'c']}, where label is bound to
-    C{'B'}, and C{obj} bound to 1, the derived binary concept will
-    have label C{'B_of'}, and its extension will be a set of pairs
-    such as C{('a', 'b')}.
+    A record is a list of entities in some relation, such as
+    C{['france', 'paris']}, where C{'france'} is acting as the primary
+    key, and C{'paris'} stands in the C{'capital_of'} relation to
+    C{'france'}.
+
+    More generally, given a record such as C{['a', 'b', 'c']}, where
+    label is bound to C{'B'}, and C{obj} bound to 1, the derived
+    binary concept will have label C{'B_of'}, and its extension will
+    be a set of pairs such as C{('a', 'b')}.
     
 
     @param label: the base part of the preferred label for the concept
@@ -181,12 +201,12 @@ def binary_concept(label, subj, obj, records):
     @param records: a list of records
     @type records: list of lists
     """
-    label = label + '_of'
+    if not label == 'border':
+        label = label + '_of'
     c = Concept(label, arity=2, extension=set())
     for record in records:
         c.augment((record[obj], record[subj]))
     return c
-
 
 
 def process_bundle(rels):
@@ -200,12 +220,14 @@ def process_bundle(rels):
     concepts = []
     for rel in rels:
         fn = rel['filename']
-        label = rel['label']
+        rel_name = rel['rel_name']
         schema = rel['schema']
                      
-        concepts.extend(clause2concepts(fn, label, schema))
+        concepts.extend(clause2concepts(fn, rel_name, schema))
                      
     return concepts
+
+
 
 def make_valuation(concepts, read=False, lexicon=False):
     """
@@ -242,11 +264,10 @@ def val_dump(rels, db):
     @type db: string
     """
     concepts = process_bundle(rels)
-    valuation = make_valuation(concepts)
+    valuation = make_valuation(concepts, read=True)
     db_out = shelve.open(db, 'n')
 
-    for (symbol, value) in valuation:
-        db_out[symbol] = value
+    db_out.update(valuation)
         
     db_out.close()
     
@@ -264,8 +285,8 @@ def val_load(db):
         sys.exit("Cannot read file: %s" % dbname)
     else:
         db_in = shelve.open(db)
-        val = evaluate.Valuation()
-        val.read(db_in.items())
+        val = evaluate.Valuation(db_in)
+#        val.read(db_in.items())
         return val
 
 
@@ -333,37 +354,40 @@ def make_lex(symbols):
 # Chat-80 relation metadata bundles needed to build the valuation
 ###########################################################################
 
+borders = {'rel_name': 'borders',
+           'schema': ['region', 'border'],
+           'filename': 'borders.pl'}
 
-city = {'label': 'city',
+city = {'rel_name': 'city',
         'schema': ['city', 'country', 'population'],
         'filename': 'cities.pl'}
 
-country = {'label': 'country',
+country = {'rel_name': 'country',
            'schema': ['country', 'region', 'latitude', 'longitude',
                       'area', 'population', 'capital', 'currency'],
            'filename': 'countries.pl'}
 
-circle_of_lat = {'label': 'circle_of_latitude',
+circle_of_lat = {'rel_name': 'circle_of_latitude',
                  'schema': ['circle_of_latitude', 'degrees'],
                  'filename': 'world1.pl'}
 
-continent = {'label': 'continent',
+continent = {'rel_name': 'continent',
              'schema': ['continent'],
              'filename': 'world1.pl'}
 
-region = {'label': 'in_continent',
+region = {'rel_name': 'in_continent',
           'schema': ['region', 'continent'],
           'filename': 'world1.pl'}
 
-ocean = {'label': 'ocean',
+ocean = {'rel_name': 'ocean',
          'schema': ['ocean'],
          'filename': 'world1.pl'}
 
-sea = {'label': 'sea',
+sea = {'rel_name': 'sea',
        'schema': ['sea'],
        'filename': 'world1.pl'}
 
-rels = [city, country, circle_of_lat, continent, region, ocean, sea]
+rels = [borders, city, country, circle_of_lat, continent, region, ocean, sea]
 
 ###########################################################################
 
