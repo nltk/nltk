@@ -24,6 +24,17 @@ doc:
 	$(MAKE) -C doc all
 
 ########################################################################
+# TESTING
+########################################################################
+
+DOCTEST_DRIVER = nltk_lite/test/doctest_driver.py
+DOCTEST_FLAGS = --ellipsis --normalize_whitespace
+DOCTEST_FILES = nltk_lite/test/*.doctest
+
+doctest:
+	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
+
+########################################################################
 # DISTRIBUTIONS
 ########################################################################
 
@@ -33,10 +44,10 @@ dist: codedist docdist exampledist corporadist
 	touch .dist.done
 
 codedist: clean_code INSTALL.TXT
-	python setup.py -q sdist --format=gztar
-	python setup.py -q sdist --format=zip
-	python setup.py -q bdist --format=rpm
-	python setup.py -q bdist --format=wininst
+	$(python) setup.py -q sdist --format=gztar
+	$(python) setup.py -q sdist --format=zip
+	$(python) setup.py -q bdist --format=rpm
+	$(python) setup.py -q bdist --format=wininst
 
 docdist: doc
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
@@ -59,15 +70,15 @@ INSTALL.TXT: INSTALL.TXT.in
 .PHONY: .python.done .rsync.done .wordnet.done .numpy.done
 
 SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
-PYTHON = http://www.python.org/ftp/python/2.5
+PYTHON25 = http://www.python.org/ftp/python/2.5
 NUMPY = $(SFNETMIRROR)/numpy
 WN20 = http://wordnet.princeton.edu/2.0/
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(PYTHON)/python-2.5-macosx.dmg
-	wget -N -P python/win/  $(PYTHON)/python-2.5.msi
-	wget -N -P python/unix/ $(PYTHON)/Python-2.5.tgz
+	wget -N -P python/mac/  $(PYTHON25)/python-2.5-macosx.dmg
+	wget -N -P python/win/  $(PYTHON25)/python-2.5.msi
+	wget -N -P python/unix/ $(PYTHON25)/Python-2.5.tgz
 	touch .python.done
 
 numpy:
