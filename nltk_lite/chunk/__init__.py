@@ -683,9 +683,5 @@ def _chunksets(t, count):
     return set(chunks)
 
 
-from chunkstring import *
 from convert import *
 from regexp import *
-
-
-
