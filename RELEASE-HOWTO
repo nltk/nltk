@@ -32,6 +32,9 @@ D. PYTHON AND NUMERIC VERSIONS
   3. Modify web/install*.html with new URLs and commit
   4. Commit these changes
 
+E. LINK CHECKING
+  1. do a preliminary build of web content and check links
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@ BUILD
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
