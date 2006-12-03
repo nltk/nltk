@@ -738,7 +738,7 @@ class Regexp(ChunkParseI, AbstractParse):
             # Process any comments
             line = re.sub(r'\\#', r'_HASH_', line)
             if '#' in line:
-                line, comment = line.split('#')
+                line, comment = line.split('#', 1)   # split at first hash
             else:
                 comment = ''
             line = re.sub(r'_HASH_', r'\\#', line)
