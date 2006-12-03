@@ -535,7 +535,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
     @ivar _trace: The default level of tracing.
         
     """
-    def __init__(self, rules, chunk_node='CHUNK', top_node='TEXT', trace=0):
+    def __init__(self, rules, chunk_node='NP', top_node='S', trace=0):
         """
         Construct a new C{RegexpChunk}.
         
@@ -653,8 +653,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
 
     def __str__(self):
         """
-        @return: a verbose string representation of this
-            C{RegexpChunk}.
+        @return: a verbose string representation of this C{RegexpChunk}.
         @rtype: C{string}
         """
         s = "RegexpChunk with %d rules:\n" % len(self._rules)
@@ -712,7 +711,7 @@ class Regexp(ChunkParseI, AbstractParse):
     @ivar _stages: The list of parsing stages corresponding to the grammar
         
     """
-    def __init__(self, grammar, top_node='S', trace=0):
+    def __init__(self, grammar, top_node='S', loop=1, trace=0):
         """
         Create a new chunk parser, from the given start state
         and set of chunk patterns.
@@ -721,6 +720,8 @@ class Regexp(ChunkParseI, AbstractParse):
         @type grammar: C{list} of C{string}
         @param top_node: The top node of the tree being created
         @type top_node: L{string} or L{Nonterminal}
+        @param loop: The number of times to run through the patterns
+        @type loop: L{int}
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -731,6 +732,7 @@ class Regexp(ChunkParseI, AbstractParse):
         self._trace = trace
 	self._stages = []
         self._grammar = grammar
+        self._loop = loop
 	rules = []
         for line in grammar.split('\n'):
             # Process any comments
@@ -777,6 +779,7 @@ class Regexp(ChunkParseI, AbstractParse):
         
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked
+            (this tree is modified, and is also returned)
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -784,10 +787,13 @@ class Regexp(ChunkParseI, AbstractParse):
             highter will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor. 
+        @return: the chunked output.
+        @rtype: C{Tree}
         """
         if trace == None: trace = self._trace
-        for parser in self._stages:
-            chunk_struct = parser.parse(chunk_struct, trace=trace)
+        for i in range(self._loop):
+            for parser in self._stages:
+                chunk_struct = parser.parse(chunk_struct, trace=trace)
         return chunk_struct
 
     def __repr__(self):
