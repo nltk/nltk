@@ -712,15 +712,15 @@ class Regexp(ChunkParseI, AbstractParse):
     @ivar _stages: The list of parsing stages corresponding to the grammar
         
     """
-    def __init__(self, start, grammar, trace=0):
+    def __init__(self, grammar, top_node='S', trace=0):
         """
         Create a new chunk parser, from the given start state
         and set of chunk patterns.
         
-        @param start: The start symbol
-        @type start: L{Nonterminal}
         @param grammar: The list of patterns that defines the grammar
         @type grammar: C{list} of C{string}
+        @param top_node: The top node of the tree being created
+        @type top_node: L{string} or L{Nonterminal}
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -728,7 +728,6 @@ class Regexp(ChunkParseI, AbstractParse):
             higher will generate verbose tracing output.
         """
         from nltk_lite import chunk
-        self._start = start
         self._trace = trace
 	self._stages = []
         self._grammar = grammar
@@ -769,7 +768,7 @@ class Regexp(ChunkParseI, AbstractParse):
 	    else:
 	        raise ValueError, 'Illegal chunk pattern: %s' % line
         if rules != []:
-            parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
+            parser = RegexpChunk(rules, chunk_node=lhs, top_node=top_node, trace=trace)
             self._stages.append(parser)
 
     def parse(self, chunk_struct, trace=None):
@@ -906,7 +905,7 @@ def demo():
       {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
       {<NNP>+}            # chunk proper nouns
     """
-    cp = chunk.Regexp('S', grammar)
+    cp = chunk.Regexp(grammar)
     chunk.demo_eval(cp, text)
 
     grammar = r"""
@@ -915,14 +914,14 @@ def demo():
       }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
-    cp = chunk.Regexp('S', grammar)
+    cp = chunk.Regexp(grammar)
     chunk.demo_eval(cp, text)
 
     grammar = r"""
     NP: {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
     VP: {<TO>?<VB.*>}       # VP = verb words
     """
-    cp = chunk.Regexp('S', grammar)
+    cp = chunk.Regexp(grammar)
     chunk.demo_eval(cp, text)
 
     grammar = r"""
@@ -932,7 +931,7 @@ def demo():
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
-    cp = chunk.Regexp('S', grammar)
+    cp = chunk.Regexp(grammar)
     chunk.demo_eval(cp, text)
 
 # Evaluation
@@ -942,7 +941,7 @@ def demo():
     print
     print "Demonstration of empty grammar:"
     
-    cp = chunk.Regexp('S', "")
+    cp = chunk.Regexp("")
     print chunk.accuracy(cp, conll2000.chunked(files='test', chunk_types=('NP',)))
 
     print
@@ -956,7 +955,7 @@ def demo():
       }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
-    cp = chunk.Regexp('S', grammar)
+    cp = chunk.Regexp(grammar)
     print chunk.accuracy(cp, islice(conll2000.chunked(chunk_types=('NP', 'PP', 'VP')), 0, 5))
 
 if __name__ == '__main__':
