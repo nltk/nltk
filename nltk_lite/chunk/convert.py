@@ -58,7 +58,7 @@ def tagstr2tree(s, chunk_node="NP", top_node="S"):
 ### CONLL
 
 _LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
-def conllstr2tree(s, chunk_types=("NP",), top_node="S"):
+def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
     """
     @return: A chunk structure for a single sentence
         encoded in the given CONLL 2000 style string.
@@ -220,7 +220,7 @@ better JJR I-ADJP
 . . O
 """
 
-    conll_tree = conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'))
+    conll_tree = conllstr2tree(s, chunk_types=('NP', 'PP'))
     print conll_tree.pp()
 
     # Demonstrate CoNLL output
