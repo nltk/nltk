@@ -79,44 +79,116 @@ class Concept(object):
     A Concept class, loosely
     based on SKOS (U{http://www.w3.org/TR/swbp-skos-core-guide/}).
     """
-    def __init__(self, prefLabel, arity, altLabels=[], definition='', extension=set()):
+    def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):
         """
         @param prefLabel: the preferred label for the concept
         @type prefLabel: str
         @param arity: the arity of the concept
         @type arity: int
-        @param altLabels: other (related) labels
+        @keyword altLabels: other (related) labels
         @type altLabels: list
-        @param extension: the extensional value of the concept
+        @keyword closures: closure properties of the extension \
+            (list items can be C{symmetric}, C{reflexive}, C{transitive})
+        @type closures: list 
+        @keyword extension: the extensional value of the concept
         @type extension: set
         """
         self.prefLabel = prefLabel
         self.arity = arity
         self.altLabels = altLabels
-        assert isinstance(altLabels, list)
-        self.definition = definition
+        self.closures = closures
         self.extension = extension
 
     def __str__(self):
+        
         return "Label = '%s'\nArity = %s\nExtension = %s" % \
-               (self.prefLabel, self.arity, self.extension)
+               (self.prefLabel, self.arity, sorted(self.extension))
 
     def __repr__(self):
         return "Concept('%s')" % self.prefLabel
 
     def augment(self, data):
+        """
+        Add more data to the C{Concept}'s extension set.
+
+        @param data: a new semantic value
+        @type data: string or pair of strings
+        @rtype: set
+
+        """
         self.extension.add(data)
         return self.extension
 
 
-def clause2concepts(fn, rel, schema):
+    def _make_graph(self, s):
+        """
+        Convert a set of pairs into an adjacency linked list encoding of a graph.
+        """
+        g = {}
+        for (x, y) in s:
+            if x in g:
+                g[x].append(y)
+            else:
+                g[x] = [y]
+        return g
+
+    def _transclose(self, g):
+        """
+        Compute the transitive closure of a graph represented as a linked list.
+        """
+        for x in g:
+            for adjacent in g[x]:
+                # check that adjacent is a key
+                if adjacent in g:
+                    for y in g[adjacent]:
+                        if y not in g[x]:
+                            g[x].append(y)
+        return g
+
+    def _make_pairs(self, g):
+        """
+        Convert an adjacency linked list back into a set of pairs.
+        """
+        pairs = []
+        for node in g:
+            for adjacent in g[node]:
+                pairs.append((node, adjacent))
+        return set(pairs)
+                
+        
+    def close(self):
+        """
+        Close a binary relation in the C{Concept}'s extension set.
+
+        @return: a new extension in which the relation is closed under
+                 a given property 
+        @rtype: set
+
+        """
+        assert evaluate.isrel(self.extension)
+        if 'symmetric' in self.closures:
+            pairs = []
+            for (x, y) in self.extension:
+                pairs.append((y, x))
+            sym = set(pairs)
+            self.extension = self.extension.union(sym)
+        if 'transitive' in self.closures:
+            all =  self._make_graph(self.extension)
+            closed =  self._transclose(all)
+            trans = self._make_pairs(closed)
+            #print sorted(trans)
+            self.extension = self.extension.union(trans)
+
+                    
+
+def clause2concepts(filename, rel_name, closures, schema):
     """
     Convert a file of Prolog clauses into L{Concept} objects.
 
-    @param fn: filename containing the relations
-    @type fn: string
-    @param rel: name of the relation 
-    @type rel: string
+    @param filename: filename containing the relations
+    @type filename: string
+    @param rel_name: name of the relation 
+    @type rel_name: string
     @param schema: the schema used in a set of relational tuples
     @type schema: list
     """
@@ -129,17 +201,18 @@ def clause2concepts(fn, rel, schema):
     fields = schema[1:]
 
     # convert a file into a list of lists
-    records = _str2records(fn, rel)
+    records = _str2records(filename, rel_name)
 
     # add a unary concept corresponding to the set of entities
     # in the primary key position
-    if not fn == 'borders.pl':
+    # relations in 'not_unary' are more like ordinary binary relations
+    if not filename in not_unary:
         concepts.append(unary_concept(pkey, subj, records))
     
     # add a binary concept for each non-key field
     for field in fields:
         obj = schema.index(field)
-        concepts.append(binary_concept(field, subj, obj, records))
+        concepts.append(binary_concept(field, closures, subj, obj, records))
 
     return concepts
 
@@ -177,7 +250,7 @@ def unary_concept(label, subj, records):
         c.augment(record[subj])
     return c
 
-def binary_concept(label, subj, obj, records):
+def binary_concept(label, closures, subj, obj, records):
     """
     Make a binary concept out of the primary key and another field in a record.
 
@@ -194,6 +267,8 @@ def binary_concept(label, subj, obj, records):
 
     @param label: the base part of the preferred label for the concept
     @type label: string
+    @param closures: closure properties for the extension of the concept
+    @type closures: list
     @param subj: position in the record of the subject of the predicate
     @type subj: int
     @param obj: position in the record of the object of the predicate
@@ -201,11 +276,13 @@ def binary_concept(label, subj, obj, records):
     @param records: a list of records
     @type records: list of lists
     """
-    if not label == 'border':
+    if not label == 'border' and not label == 'contain':
         label = label + '_of'
-    c = Concept(label, arity=2, extension=set())
+    c = Concept(label, arity=2, closures=closures, extension=set())
     for record in records:
         c.augment((record[obj], record[subj]))
+    # close the concept's extension according to the properties in closures
+    c.close()
     return c
 
 
@@ -219,11 +296,12 @@ def process_bundle(rels):
     """
     concepts = []
     for rel in rels:
-        fn = rel['filename']
         rel_name = rel['rel_name']
+        closures = rel['closures']
         schema = rel['schema']
+        filename = rel['filename']
                      
-        concepts.extend(clause2concepts(fn, rel_name, schema))
+        concepts.extend(clause2concepts(filename, rel_name, closures, schema))
                      
     return concepts
 
@@ -355,39 +433,55 @@ def make_lex(symbols):
 ###########################################################################
 
 borders = {'rel_name': 'borders',
+           'closures': ['symmetric'],
            'schema': ['region', 'border'],
            'filename': 'borders.pl'}
 
+contains = {'rel_name': 'contains0',
+            'closures': ['transitive'],
+            'schema': ['region', 'contain'],
+            'filename': 'contain.pl'}
+
 city = {'rel_name': 'city',
+        'closures': [],
         'schema': ['city', 'country', 'population'],
         'filename': 'cities.pl'}
 
 country = {'rel_name': 'country',
+           'closures': [],
            'schema': ['country', 'region', 'latitude', 'longitude',
                       'area', 'population', 'capital', 'currency'],
            'filename': 'countries.pl'}
 
 circle_of_lat = {'rel_name': 'circle_of_latitude',
+                 'closures': [],
                  'schema': ['circle_of_latitude', 'degrees'],
                  'filename': 'world1.pl'}
 
 continent = {'rel_name': 'continent',
+             'closures': [],
              'schema': ['continent'],
              'filename': 'world1.pl'}
 
 region = {'rel_name': 'in_continent',
+          'closures': [],
           'schema': ['region', 'continent'],
           'filename': 'world1.pl'}
 
 ocean = {'rel_name': 'ocean',
+         'closures': [],
          'schema': ['ocean'],
          'filename': 'world1.pl'}
 
 sea = {'rel_name': 'sea',
+       'closures': [],
        'schema': ['sea'],
        'filename': 'world1.pl'}
 
-rels = [borders, city, country, circle_of_lat, continent, region, ocean, sea]
+rels = [borders, contains, city, country, circle_of_lat, continent, region, ocean, sea]
+#rels = [contains]
+
+not_unary = ['borders.pl', 'contain.pl'] 
 
 ###########################################################################
 
@@ -429,6 +523,7 @@ def main():
         val_dump(rels, options.outdb)
 
     else:
+        # read in a valuation from a database
         if options.indb is not None:
             dbname = options.indb+".db"
             if not os.access(dbname, os.R_OK):
@@ -438,6 +533,7 @@ def main():
         else:
             # build some concepts
             concepts = process_bundle(rels)
+            # just print out the vocabulary
             if options.vocab:
                 items = [(c.arity, c.prefLabel) for c in concepts]
                 items.sort()
