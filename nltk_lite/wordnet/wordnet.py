@@ -742,11 +742,36 @@ class Sense:
 	    return _index(sense, synset.getSenses(), testfn=lambda a,b: a.form == b.form)
 	return _compareInstances(self, other, ('synset',)) or cmp(senseIndex(self), senseIndex(other))
 
-    # Here follow the new similarity metrics and helper functions. 
-    # TODO: Add some comments/doctest strings.
+    # Here follow the new similarity metrics and helper functions.
+    # TODO: Add in the option to manually add a new root node; this will be
+    # useful for verb similarity as there exist multiple verb taxonomies.
+
+    # More information about the metrics is available at
+    # http://marimba.d.umn.edu/similarity/measures.html
 
     def hypernyms(self):
         return self.synset.hypernyms()
+
+    """
+    Return a score denoting how similar two word senses are, based on the
+    shortest path that connects the senses in the is-a (hypernym/hypnoym)
+    taxonomy. The score is in the range 0 - 1, except in those case
+    where a path cannot be found (will only be true for verbs as there are
+    many distinct verb taxonomies), in which case -1 is returned. A score of
+    1 represents identity i.e. comparing a sense with itself will return 1.
+
+    >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
+    0.33333333333333331
+
+    >>> N['dog'][0].path_distance_similarity(N['cat'][0])
+    0.20000000000000001
+
+    >>> V['run'][0].path_distance_similarity(V['walk'][0])
+    0.25
+
+    >>> V['run'][0].path_distance_similarity(V['think'][0])
+    -1
+    """
 
     def path_distance_similarity(self, other_sense):
 
@@ -758,11 +783,31 @@ class Sense:
 	if path_distance < 0: return -1
         else: return 1.0 / (path_distance + 1)
 
+    """
+    Return a score denoting how similar two word senses are, based on the
+    shortest path that connects the senses (as above) and the maximum depth
+    of the taxonomy in which the senses occur. The relationship is given
+    as -log(p/2d) where p is the shortest path length and d the taxonomy
+    depth.
+
+    >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
+    2.9444389791664407
+
+    >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
+    2.2512917986064953
+
+    >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
+    2.1594842493533721
+
+    >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
+    -1
+    """
+
     def leacock_chodorow_similarity(self, other_sense):
 
         taxonomy_depths = {'noun': 19, 'verb': 13}
 
-        if self.pos not in self.taxonomy_depths.keys():
+        if self.pos not in taxonomy_depths.keys():
             raise TypeError, "Can only calculate similarity for nouns or verbs"
 
         depth = taxonomy_depths[self.pos]
@@ -772,6 +817,34 @@ class Sense:
             return -log(path_distance / (2.0 * depth))
 
         else: return -1
+
+    """
+    Return a score denoting how similar two word senses are, based on the
+    depth of the two senses in the taxonomy and that of their Least Common
+    Subsumer (most specific ancestor node). Note that at this time the scores
+    given do _not_ always agree with those given by Pedersen's Perl
+    implementation of Wordnet Similarity.
+
+    The LCS does not necessarily feature in the shortest path connecting the
+    two senses, as it is by definition the common ancestor deepest in the
+    taxonomy, not closest to the two senses. Typically, however, it will so
+    feature. Where multiple candidates for the LCS exist, that whose shortest
+    path to the root node is the longest will be selected. Where a LCS has
+    multiple paths to the root, the longer path is used for the purposes of
+    the calculation.
+
+    >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
+    0.93333333333333335
+
+    >>> N['dog'][0].path_distance_similarity(N['cat'][0])
+    0.8571428571428571
+
+    >>> V['run'][0].path_distance_similarity(V['walk'][0])
+    0.5714285714285714
+
+    >>> V['run'][0].path_distance_similarity(V['think'][0])
+    -1
+    """
 
     def wu_palmer_similarity(self, other_sense):
 
@@ -792,7 +865,7 @@ class Sense:
             if len(candidate_path) > len(lcs_path):
                 lcs_path = candidate_path
 
-        # Get the shortest path from the LCS to each of the synsets its
+        # Get the shortest path from the LCS to each of the synsets it is
 	# subsuming. Add this to the LCS path length to get the path from
 	# each synset to the root.
 
@@ -802,7 +875,7 @@ class Sense:
         synset2_path_len = subsumer.shortest_path_distance(synset2)
         synset2_path_len += len(lcs_path)
 
-        return (2.0 * (len(lcs_path)+1)) / (synset1_path_len + synset2_path_len + 2)
+        return (2.0 * (len(lcs_path))) / (synset1_path_len + synset2_path_len)
 
 # Simple container object containing a synset and it's 'order'.
 
@@ -1161,7 +1234,6 @@ class Dictionary:
 		self[key]
 	file.close()
 	print "done."
-
 
 class _IndexFile:
     """An _IndexFile is an implementation class that presents a
