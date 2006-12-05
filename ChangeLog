@@ -1,3 +1,22 @@
+Version 0.7b1 2006-12-06
+	
+* Code:
+  - expanded semantic interpretation package
+  - new high-level chunking interface, with cascaded chunking
+  - split chunking code into new chunk package
+  - prototyped basic wordnet similarity measures
+    (path distance, Wu + Palmer and Leacock + Chodorow similarity measures.)
+  - bugfixes (tag.Window, tag.ngram)
+  - more doctests
+* Contrib:	
+  - toolbox language settings module
+* Tutorials:
+  - rewrite of chunking chapter, switched from Treebank to CoNLL format as main focus,
+    simplified evaluation framework, added ngram chunking section
+  - substantial updates throughout (esp programming and semantics chapters)
+* Corpora:
+  - Chat-80 Prolog data files provided as corpora, plus corpus reader
+	
 Version 0.7a2 2006-11-13
 
 * Code:
