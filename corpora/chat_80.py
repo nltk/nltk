@@ -127,6 +127,79 @@ import nltk_lite.semantics.evaluate as evaluate
 import shelve, os, sys
 from nltk_lite.corpora import get_basedir
 
+###########################################################################
+# Chat-80 relation metadata bundles needed to build the valuation
+###########################################################################
+
+borders = {'rel_name': 'borders',
+           'closures': ['symmetric'],
+           'schema': ['region', 'border'],
+           'filename': 'borders.pl'}
+
+contains = {'rel_name': 'contains0',
+            'closures': ['transitive'],
+            'schema': ['region', 'contain'],
+            'filename': 'contain.pl'}
+
+city = {'rel_name': 'city',
+        'closures': [],
+        'schema': ['city', 'country', 'population'],
+        'filename': 'cities.pl'}
+
+country = {'rel_name': 'country',
+           'closures': [],
+           'schema': ['country', 'region', 'latitude', 'longitude',
+                      'area', 'population', 'capital', 'currency'],
+           'filename': 'countries.pl'}
+
+circle_of_lat = {'rel_name': 'circle_of_latitude',
+                 'closures': [],
+                 'schema': ['circle_of_latitude', 'degrees'],
+                 'filename': 'world1.pl'}
+
+continent = {'rel_name': 'continent',
+             'closures': [],
+             'schema': ['continent'],
+             'filename': 'world1.pl'}
+
+region = {'rel_name': 'in_continent',
+          'closures': [],
+          'schema': ['region', 'continent'],
+          'filename': 'world1.pl'}
+
+ocean = {'rel_name': 'ocean',
+         'closures': [],
+         'schema': ['ocean'],
+         'filename': 'world1.pl'}
+
+sea = {'rel_name': 'sea',
+       'closures': [],
+       'schema': ['sea'],
+       'filename': 'world1.pl'}
+
+
+
+items = ['borders', 'contains', 'city', 'country', 'circle_of_lat',
+         'continent', 'region', 'ocean', 'sea']
+
+item_metadata = {
+    'borders': borders,
+    'contains': contains,
+    'city': city,
+    'country': country,
+    'circle_of_lat': circle_of_lat,
+    'continent': continent,
+    'region': region,
+    'ocean': ocean,
+    'sea': sea
+    }
+
+rels = item_metadata.values()
+
+not_unary = ['borders.pl', 'contain.pl'] 
+
+###########################################################################
+
 class Concept(object):
     """
     A Concept class, loosely
@@ -497,63 +570,31 @@ def make_lex(symbols):
         rule = template % (s, pname)
         lex.append(rule)
     return lex
-        
+
 
 ###########################################################################
-# Chat-80 relation metadata bundles needed to build the valuation
+# Interface function to emulate other corpus readers
 ###########################################################################
-
-borders = {'rel_name': 'borders',
-           'closures': ['symmetric'],
-           'schema': ['region', 'border'],
-           'filename': 'borders.pl'}
-
-contains = {'rel_name': 'contains0',
-            'closures': ['transitive'],
-            'schema': ['region', 'contain'],
-            'filename': 'contain.pl'}
-
-city = {'rel_name': 'city',
-        'closures': [],
-        'schema': ['city', 'country', 'population'],
-        'filename': 'cities.pl'}
-
-country = {'rel_name': 'country',
-           'closures': [],
-           'schema': ['country', 'region', 'latitude', 'longitude',
-                      'area', 'population', 'capital', 'currency'],
-           'filename': 'countries.pl'}
-
-circle_of_lat = {'rel_name': 'circle_of_latitude',
-                 'closures': [],
-                 'schema': ['circle_of_latitude', 'degrees'],
-                 'filename': 'world1.pl'}
-
-continent = {'rel_name': 'continent',
-             'closures': [],
-             'schema': ['continent'],
-             'filename': 'world1.pl'}
-
-region = {'rel_name': 'in_continent',
-          'closures': [],
-          'schema': ['region', 'continent'],
-          'filename': 'world1.pl'}
-
-ocean = {'rel_name': 'ocean',
-         'closures': [],
-         'schema': ['ocean'],
-         'filename': 'world1.pl'}
-
-sea = {'rel_name': 'sea',
-       'closures': [],
-       'schema': ['sea'],
-       'filename': 'world1.pl'}
-
-rels = [borders, contains, city, country, circle_of_lat, continent, region, ocean, sea]
+       
+def concepts(items = items):
+    """
+    Build a list of concepts corresponding to the relation names in C{items}.
+    
+    @param items: names of the Chat-80 relations to extract
+    @type items: list of strings
+    @return: the L{Concept}s which are extracted from the relations
+    @rtype: list 
+    """
+    if type(items) is str: items = (items,)
+    
+    rels = [item_metadata[r] for r in items]
+    print rels
+    concept_map = process_bundle(rels)
+    return concept_map.values()
 
 
-not_unary = ['borders.pl', 'contain.pl'] 
-
+    
+    
 ###########################################################################
 
 
