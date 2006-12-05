@@ -6,6 +6,9 @@
 # For license information, see LICENSE.TXT
 
 """
+Overview
+========
+
 Chat-80 was a natural language system which allowed the user to
 interrogate a Prolog knowledge base in the domain of world
 geography. It was developed in the early '80s by Warren and Pereira; see
@@ -17,14 +20,31 @@ This module contains functions to extract data from the Chat-80
 relation files ('the world database'), and convert then into a format
 that can be incorporated in the FOL models of
 L{nltk_lite.semantics.evaluate}. The code assumes that the Prolog
-input files are available on the current path.
+input files are available in the NLTK corpora directory.
+
+The Chat-80 World Database consists of the following files::
+
+    world0.pl
+    rivers.pl
+    cities.pl
+    countries.pl
+    contain.pl
+    borders.pl
+
+This module uses a slightly modified version of C{world0.pl}, in which
+a set of Prolog rules have been omitted. The modified file is named
+C{world1.pl}. Currently, the file C{rivers.pl} is not read in, since
+it uses a list rather than a string in the second field.
+
+Reading Chat-80 Files
+=====================
 
 Chat-80 relations are like tables in a relational database. The
 relation acts as the name of the table; the first argument acts as the
 'primary key'; and subsequent arguments are further fields in the
 table. In general, the name of the table provides a label for a unary
 predicate whose extension is all the primary keys. For example,
-relations in 'cities.pl' are of the following form::
+relations in C{cities.pl} are of the following form::
 
    'city(athens,greece,1368).'
 
@@ -38,32 +58,67 @@ example, the third field is mapped to the binary predicate
 M{population_of}, whose extension is a set of pairs such as C{'(athens,
 1368)'}.
 
-One exception to this general framework is required by the relations in
-the file C{borders.pl}, which are of the following form::
+An exception to this general framework is required by the relations in
+the files C{borders.pl} and C{contains.pl}. These contain facts of the
+following form::
 
     'borders(albania,greece).'
+    
+    'contains0(africa,central_africa).'
 
-In this case we do not want to form a unary
-concept out the element in the first field of these records, and we want the label of the binary relation just to be C{'border'}
+We do not want to form a unary concept out the element in
+the first field of these records, and we want the label of the binary
+relation just to be C{'border'}/C{'contain'} respectively.
 
 In order to drive the extraction process, we use 'relation metadata bundles'
 which are Python dictionaries such as the following::
 
   city = {'label': 'city',
+          'closures': [],
           'schema': ['city', 'country', 'population'],
           'filename': 'cities.pl'}
 
-According to this, the file C{city['filename]} contains a list of
-relational tuples (or more accurately, the corresponding strings in Prolog
-form) whose predicate symbol is C{city['label']} and whose relational
-schema is C{city['schema']}.
+According to this, the file C{city['filename']} contains a list of
+relational tuples (or more accurately, the corresponding strings in
+Prolog form) whose predicate symbol is C{city['label']} and whose
+relational schema is C{city['schema']}. The notion of a C{closure} is
+discussed in the next section.
 
+Concepts
+========
+In order to encapsulate the results of the extraction, a class of
+L{Concept}s is introduced.  A L{Concept} object has a number of
+attributes, in particular a C{prefLabel} and C{extension}, which make
+it easier to inspect the output of the extraction. In addition, the
+C{extension} can be further processed: in the case of the C{'border'}
+relation, we check that the relation is B{symmetric}, and in the case
+of the C{'contain'} relation, we carry out the B{transitive
+closure}. The closure properties associated with a concept is
+indicated in the relation metadata, as indicated earlier.
 
+The C{extension} of a L{Concept} object is then incorporated into a
+L{Valuation} object.
 
-In order to store the results of the conversion, a class of
-L{Concept}s is introduced. A L{Concept} provides a kind of wrapper
-around the extension, which makes it easier to then incorporate the
-extension into a L{Valuation} object.
+Persistence
+===========
+The functions L{val_dump} and L{val_load} are provided to allow a
+valuation to be stored in a persistent database and re-loaded, rather
+than having to be re-computed each time.
+
+Individuals and Lexical Items 
+=============================
+As well as deriving relations from the Chat-80 data, we also create a
+set of individual constants, one for each entity in the domain. The
+individual constants are string-identical to the entities. For
+example, given a data item such as C{'zloty'}, we add to the valuation
+a pair C{('zloty', 'zloty')}. In order to parse English sentences that
+refer to these entities, we also create a lexical item such as the
+following for each individual constant::
+
+   PropN[num=sg, sem=<\P.(P zloty)>] -> 'Zloty'
+
+The set of rules is written to the file C{chat_pnames.cfg} in the
+current directory.
 
 """
 
@@ -158,9 +213,9 @@ class Concept(object):
         """
         Close a binary relation in the C{Concept}'s extension set.
 
-        @return: a new extension in which the relation is closed under
-                 a given property 
-        @rtype: set
+        @return: a new extension for the C{Concept} in which the
+                 relation is closed under a given property
+
 
         """
         assert evaluate.isrel(self.extension)
