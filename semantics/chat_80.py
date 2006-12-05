@@ -183,7 +183,7 @@ class Concept(object):
 
 def clause2concepts(filename, rel_name, closures, schema):
     """
-    Convert a file of Prolog clauses into L{Concept} objects.
+    Convert a file of Prolog clauses into a list of L{Concept} objects.
 
     @param filename: filename containing the relations
     @type filename: string
@@ -191,6 +191,8 @@ def clause2concepts(filename, rel_name, closures, schema):
     @type rel_name: string
     @param schema: the schema used in a set of relational tuples
     @type schema: list
+    @return: a list of L{Concept}s
+    @rtype: list
     """
     concepts = []
     # position of the subject of a binary relation
@@ -244,6 +246,8 @@ def unary_concept(label, subj, records):
     @type subj: int
     @param records: a list of records
     @type records: list of lists
+    @return: L{Concept} of arity 1
+    @rtype: L{Concept}
     """
     c = Concept(label, arity=1, extension=set())
     for record in records:
@@ -275,12 +279,14 @@ def binary_concept(label, closures, subj, obj, records):
     @type obj: int
     @param records: a list of records
     @type records: list of lists
+    @return: L{Concept} of arity 2
+    @rtype: L{Concept}
     """
     if not label == 'border' and not label == 'contain':
         label = label + '_of'
     c = Concept(label, arity=2, closures=closures, extension=set())
     for record in records:
-        c.augment((record[obj], record[subj]))
+        c.augment((record[subj], record[obj]))
     # close the concept's extension according to the properties in closures
     c.close()
     return c
@@ -289,19 +295,24 @@ def binary_concept(label, closures, subj, obj, records):
 def process_bundle(rels):
     """
     Given a list of relation metadata bundles, make a corresponding
-    list of concepts.
+    dictionary of concepts, indexed by the relation name.
 
     @param rels: bundle of metadata needed for constructing a concept
     @type rels: list of dictionaries
+    @return: a dictionary of concepts, indexed by the relation name.
+    @rtype: dict
     """
-    concepts = []
+    concepts = {}
     for rel in rels:
         rel_name = rel['rel_name']
         closures = rel['closures']
         schema = rel['schema']
         filename = rel['filename']
-                     
-        concepts.extend(clause2concepts(filename, rel_name, closures, schema))
+
+        concept_list = clause2concepts(filename, rel_name, closures, schema)
+        for c in concept_list:
+            label = c.prefLabel
+            concepts[label] = c
                      
     return concepts
 
@@ -316,6 +327,7 @@ def make_valuation(concepts, read=False, lexicon=False):
     @type concepts: list of L{Concept}s
     @param read: if C{True}, C{(symbol, set)} pairs are read into a C{Valuation}
     @type read: bool
+    @rtype: list or a L{Valuation}
     """
     vals = []
     
@@ -338,10 +350,11 @@ def val_dump(rels, db):
 
     @param rels: bundle of metadata needed for constructing a concept
     @type rels: list of dictionaries
-    @param db: name of file to which data is written
+    @param db: name of file to which data is written.
+               The suffix '.db' will be automatically appended.
     @type db: string
     """
-    concepts = process_bundle(rels)
+    concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
     db_out = shelve.open(db, 'n')
 
@@ -354,7 +367,8 @@ def val_load(db):
     """
     Load a L{Valuation} from a persistent database.
 
-    @param db: name of file to which data is written
+    @param db: name of file from which data is read.
+               The suffix '.db' should be omitted from the name.
     @type db: string
     """
     dbname = db+".db"
@@ -373,7 +387,8 @@ def alpha(str):
     Utility to filter out non-alphabetic constants.
 
     @param str: candidate constant
-    @type str: string    
+    @type str: string
+    @rtype: bool
     """
     try:
         int(str)
@@ -391,7 +406,8 @@ def label_indivs(valuation, lexicon=False):
     Given a valuation with an entry of the form {'rel': {'a': True}},
     add a new entry {'a': 'a'}.
 
-    @type db: Valuation
+    @type valuation: L{Valuation}
+    @rtype: L{Valuation}
     """
     # collect all the individuals into a domain
     domain = valuation.domain
@@ -408,13 +424,14 @@ def label_indivs(valuation, lexicon=False):
 
 def make_lex(symbols):
     """
-    Create lexical rules for each individual symbol.
+    Create lexical CFG rules for each individual symbol.
 
     Given a valuation with an entry of the form {'zloty': 'zloty'},
     create a lexical rule for the proper name 'Zloty'. 
 
     @param symbols: a list of individual constants in the semantic representation
     @type symbols: sequence
+    @rtype: list
     """
     lex = []
     template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
@@ -491,8 +508,8 @@ def main():
     from optparse import OptionParser
     description = \
     """
-    Extract data from the Chat-80 Prolog files and convert them into a
-    Valuation object for use in the NLTK semantics package.
+Extract data from the Chat-80 Prolog files and convert them into a
+Valuation object for use in the NLTK semantics package.
     """
 
     opts = OptionParser(description=description)
@@ -502,13 +519,15 @@ def main():
     opts.add_option("-l", "--load", dest="indb",
                     help="load a stored valuation from DB", metavar="DB")
     opts.add_option("-c", "--concepts", action="store_true",
-                    help="print out concepts instead of a valuation")
+                    help="print concepts instead of a valuation")
+    opts.add_option("-r", "--relation", dest="label",
+                    help="print concept with label REL (check possible labels with '-v' option)", metavar="REL")
     opts.add_option("-q", "--quiet", action="store_false", dest="verbose",
-                    help="be quiet")
+                    help="don't print out progress info")
     opts.add_option("-x", "--lex", action="store_true", dest="lex",
                     help="write a file of lexical entries for country names, then exit")
     opts.add_option("-v", "--vocab", action="store_true", dest="vocab",
-                        help="print out the vocabulary and its arity, then exit")
+                        help="print out the vocabulary of concept labels and their arity, then exit")
 
     (options, args) = opts.parse_args()
     if options.outdb and options.indb:
@@ -521,29 +540,35 @@ def main():
             outdb = options.outdb+".db"
             print "Dumping a valuation to %s" % outdb
         val_dump(rels, options.outdb)
-
+        sys.exit(0)
     else:
-        # read in a valuation from a database
+        # try to read in a valuation from a database
         if options.indb is not None:
             dbname = options.indb+".db"
             if not os.access(dbname, os.R_OK):
                 sys.exit("Cannot read file: %s" % dbname)
             else:
                 valuation = val_load(options.indb)
+        # we need to create the valuation from scratch
         else:
             # build some concepts
-            concepts = process_bundle(rels)
+            concept_map = process_bundle(rels)
+            concepts = concept_map.values()
             # just print out the vocabulary
             if options.vocab:
                 items = [(c.arity, c.prefLabel) for c in concepts]
                 items.sort()
                 for (arity, label) in items:
                     print label, arity
-
-            elif options.concepts:
+                sys.exit(0)
+            # show all the concepts
+            if options.concepts:
                 for c in concepts:
                     print c
                     print
+            if options.label:
+                print concept_map[options.label]
+                sys.exit(0)
             else:
                 # turn the concepts into a Valuation
                 if options.lex:
