@@ -1,11 +1,9 @@
-# Natural Language Toolkit: Tools for using the Chat-80 knowledge base
+# Natural Language Toolkit: Chat-80 KB Reader
 # See http://www.w3.org/TR/swbp-skos-core-guide/
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
-#
-# $Id:$
 
 """
 Chat-80 was a natural language system which allowed the user to
@@ -55,7 +53,7 @@ which are Python dictionaries such as the following::
           'schema': ['city', 'country', 'population'],
           'filename': 'cities.pl'}
 
-According to this, the file C{city['filename']} contains a list of
+According to this, the file C{city['filename]} contains a list of
 relational tuples (or more accurately, the corresponding strings in Prolog
 form) whose predicate symbol is C{city['label']} and whose relational
 schema is C{city['schema']}.
@@ -72,7 +70,7 @@ extension into a L{Valuation} object.
 import re
 import nltk_lite.semantics.evaluate as evaluate
 import shelve, os, sys
-
+from nltk_lite.corpora import get_basedir
 
 class Concept(object):
     """
@@ -223,7 +221,8 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """ 
     recs = []
-    for line in open(filename):
+    path = os.path.join(get_basedir(), "chat_80", filename)
+    for line in open(path):
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
@@ -496,7 +495,7 @@ sea = {'rel_name': 'sea',
        'filename': 'world1.pl'}
 
 rels = [borders, contains, city, country, circle_of_lat, continent, region, ocean, sea]
-#rels = [contains]
+
 
 not_unary = ['borders.pl', 'contain.pl'] 
 
