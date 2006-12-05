@@ -7,7 +7,8 @@
 # the Artistic License
 # <http://www.opensource.org/licenses/artistic-license.html>
 
-"""An OO interface to the WordNet database.
+
+"""An interface to the WordNet database.
 
 Usage
 -----
@@ -35,9 +36,6 @@ clearly(adv.)
 >>> dog.getPointerTargets(MEMBER_MERONYM)
 [{noun: Canis, genus Canis}, {noun: pack}]
 """
-
-__author__  = "Oliver Steele <steele@osteele.com>"
-__version__ = "2.0.1"
 
 import string
 import os
@@ -560,15 +558,15 @@ class Synset:
 
         return paths
 
-    # Returns the distance of the shortest path linking the two synsets (if
-    # one exists). For each synset, all the ancestor nodes and their distances
-    # are recorded and compared. The ancestor node common to both synsets that
-    # can be reached with the minimum number of traversals is returned.
-
-    # If no ancestor nodes are common, -1 is returned. If a node is compared
-    # with itself 0 is returned.
-
     def shortest_path_distance(self, other_synset):
+        """
+	Returns the distance of the shortest path linking the two synsets (if
+        one exists). For each synset, all the ancestor nodes and their distances
+        are recorded and compared. The ancestor node common to both synsets that
+        can be reached with the minimum number of traversals is returned.
+        If no ancestor nodes are common, -1 is returned. If a node is compared
+        with itself 0 is returned.
+	"""
 
         if self == other_synset: return 0
 
@@ -742,7 +740,10 @@ class Sense:
 	    return _index(sense, synset.getSenses(), testfn=lambda a,b: a.form == b.form)
 	return _compareInstances(self, other, ('synset',)) or cmp(senseIndex(self), senseIndex(other))
 
-    # Here follow the new similarity metrics and helper functions.
+##//////////////////////////////////////////////////////
+##  Similarity Metrics
+##//////////////////////////////////////////////////////
+
     # TODO: Add in the option to manually add a new root node; this will be
     # useful for verb similarity as there exist multiple verb taxonomies.
 
@@ -752,28 +753,28 @@ class Sense:
     def hypernyms(self):
         return self.synset.hypernyms()
 
-    """
-    Return a score denoting how similar two word senses are, based on the
-    shortest path that connects the senses in the is-a (hypernym/hypnoym)
-    taxonomy. The score is in the range 0 - 1, except in those case
-    where a path cannot be found (will only be true for verbs as there are
-    many distinct verb taxonomies), in which case -1 is returned. A score of
-    1 represents identity i.e. comparing a sense with itself will return 1.
-
-    >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
-    0.33333333333333331
-
-    >>> N['dog'][0].path_distance_similarity(N['cat'][0])
-    0.20000000000000001
-
-    >>> V['run'][0].path_distance_similarity(V['walk'][0])
-    0.25
-
-    >>> V['run'][0].path_distance_similarity(V['think'][0])
-    -1
-    """
 
     def path_distance_similarity(self, other_sense):
+        """
+        Return a score denoting how similar two word senses are, based on the
+        shortest path that connects the senses in the is-a (hypernym/hypnoym)
+        taxonomy. The score is in the range 0 - 1, except in those case
+        where a path cannot be found (will only be true for verbs as there are
+        many distinct verb taxonomies), in which case -1 is returned. A score of
+        1 represents identity i.e. comparing a sense with itself will return 1.
+    
+        >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
+        0.33333333333333331
+    
+        >>> N['dog'][0].path_distance_similarity(N['cat'][0])
+        0.20000000000000001
+    
+        >>> V['run'][0].path_distance_similarity(V['walk'][0])
+        0.25
+    
+        >>> V['run'][0].path_distance_similarity(V['think'][0])
+        -1
+        """
 
         synset1 = self.synset
         synset2 = other_sense.synset
@@ -783,27 +784,27 @@ class Sense:
 	if path_distance < 0: return -1
         else: return 1.0 / (path_distance + 1)
 
-    """
-    Return a score denoting how similar two word senses are, based on the
-    shortest path that connects the senses (as above) and the maximum depth
-    of the taxonomy in which the senses occur. The relationship is given
-    as -log(p/2d) where p is the shortest path length and d the taxonomy
-    depth.
-
-    >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
-    2.9444389791664407
-
-    >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
-    2.2512917986064953
-
-    >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
-    2.1594842493533721
-
-    >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
-    -1
-    """
 
     def leacock_chodorow_similarity(self, other_sense):
+        """
+        Return a score denoting how similar two word senses are, based on the
+        shortest path that connects the senses (as above) and the maximum depth
+        of the taxonomy in which the senses occur. The relationship is given
+        as -log(p/2d) where p is the shortest path length and d the taxonomy
+        depth.
+    
+        >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
+        2.9444389791664407
+    
+        >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
+        2.2512917986064953
+    
+        >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
+        2.1594842493533721
+    
+        >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
+        -1
+        """
 
         taxonomy_depths = {'noun': 19, 'verb': 13}
 
@@ -818,35 +819,35 @@ class Sense:
 
         else: return -1
 
-    """
-    Return a score denoting how similar two word senses are, based on the
-    depth of the two senses in the taxonomy and that of their Least Common
-    Subsumer (most specific ancestor node). Note that at this time the scores
-    given do _not_ always agree with those given by Pedersen's Perl
-    implementation of Wordnet Similarity.
-
-    The LCS does not necessarily feature in the shortest path connecting the
-    two senses, as it is by definition the common ancestor deepest in the
-    taxonomy, not closest to the two senses. Typically, however, it will so
-    feature. Where multiple candidates for the LCS exist, that whose shortest
-    path to the root node is the longest will be selected. Where a LCS has
-    multiple paths to the root, the longer path is used for the purposes of
-    the calculation.
-
-    >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
-    0.93333333333333335
-
-    >>> N['dog'][0].path_distance_similarity(N['cat'][0])
-    0.8571428571428571
-
-    >>> V['run'][0].path_distance_similarity(V['walk'][0])
-    0.5714285714285714
-
-    >>> V['run'][0].path_distance_similarity(V['think'][0])
-    -1
-    """
 
     def wu_palmer_similarity(self, other_sense):
+        """
+        Return a score denoting how similar two word senses are, based on the
+        depth of the two senses in the taxonomy and that of their Least Common
+        Subsumer (most specific ancestor node). Note that at this time the scores
+        given do _not_ always agree with those given by Pedersen's Perl
+        implementation of Wordnet Similarity.
+    
+        The LCS does not necessarily feature in the shortest path connecting the
+        two senses, as it is by definition the common ancestor deepest in the
+        taxonomy, not closest to the two senses. Typically, however, it will so
+        feature. Where multiple candidates for the LCS exist, that whose shortest
+        path to the root node is the longest will be selected. Where a LCS has
+        multiple paths to the root, the longer path is used for the purposes of
+        the calculation.
+    
+        >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
+        0.93333333333333335
+    
+        >>> N['dog'][0].path_distance_similarity(N['cat'][0])
+        0.8571428571428571
+    
+        >>> V['run'][0].path_distance_similarity(V['walk'][0])
+        0.5714285714285714
+    
+        >>> V['run'][0].path_distance_similarity(V['think'][0])
+        -1
+        """
 
         synset1 = self.synset
         synset2 = other_sense.synset
