@@ -355,7 +355,7 @@ class CharFun(dict):
         @type s: set
         """
 
-        assert self._isrel(s)
+        assert isrel(s)
 
         charfuns = []
         for item in s:
@@ -389,7 +389,22 @@ class CharFun(dict):
     domain = property(_getDomain, doc='Set-theoretic domain of a curried function')
 
     
-
+def isrel(s):
+    """
+    Check whether a set represents a relation (of any arity).
+    
+    @param s: a set containing tuples
+    @type s: set
+    """
+    
+    assert isinstance(s, set), "Argument is not a set"
+    if len(s) == 0:
+        return True
+    elif not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
+        return True
+    else:
+        raise ValueError, "Set contains sequences of different lengths"
+        
 def flatten(d):
     """
     @return: The set of keys of a L{CharFun} instance.
@@ -747,7 +762,7 @@ class Model:
                 elif first[0] == '\\':
                     var = first[1]
                     phi = second
-                    cf = {}
+                    cf = CharFun()
                     for u in self.domain:
                         val = self.satisfy(phi, g.add(u, var), trace)
                         if val:
