@@ -34,11 +34,10 @@ g = evaluate.Assignment(dom)
 
 
 
-sents = ['France is a country', 'Paris is the capital of France', 'what is the capital of France']
+sents = ['France is a country', 'Paris is the capital of France',
+         'what is the capital of France', 'which sea borders France']
 
-# sents = ['which country borders France', 'which sea borders France']
-# sents = ['which country that borders the_Mediterranean borders Turkey']
-
+sents = ['which Asian countries border the_Mediterranean']
 
 
 
@@ -79,6 +78,7 @@ option '-g' is not set, the file 'chat-80.cfg' is used. If the option
         inputs = [l.rstrip() for l in open(options.sentences)]
         # get rid of blank lines
         inputs = [l for l in inputs if len(l) > 0]
+        inputs = [l for l in inputs if not l[0] == '#']
     else:
         inputs = sents
         
