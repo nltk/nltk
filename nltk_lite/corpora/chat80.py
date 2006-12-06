@@ -349,7 +349,7 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """ 
     recs = []
-    path = os.path.join(get_basedir(), "chat_80", filename)
+    path = os.path.join(get_basedir(), "chat80", filename)
     for line in open(path):
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
