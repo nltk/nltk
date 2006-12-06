@@ -30,7 +30,7 @@ sents = ['Fido sees a boy with Mary',
 
 chat = ['France is a country']
 
-def main(inputs = chat, evaluate=1, filename = 'chat_80.cfg'):
+def main(inputs = chat, evaluate=1, filename = 'chat80.cfg'):
     SPACER = '-' * 30
     
     model = m

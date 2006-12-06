@@ -18,7 +18,7 @@ Requires two inputs:
 
 
 import nltk_lite.semantics.evaluate as evaluate
-from nltk_lite.semantics.chat_80 import val_load
+from nltk_lite.semantics.chat80 import val_load
 from nltk_lite.semantics.utilities import *
 
 val = val_load('chat')
@@ -54,7 +54,7 @@ option '-g' is not set, the file 'chat-80.cfg' is used. If the option
 
     opts = OptionParser(description=description)
     opts.set_defaults(evaluate=True, beta=True, syntrace=0, semtrace=0,
-                      grammar='chat_80.cfg', sentences=None)
+                      grammar='chat80.cfg', sentences=None)
 
     opts.add_option("-e", "--no-eval", action="store_false", dest="evaluate",
                     help="just do a syntactic analysis")
