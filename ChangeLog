@@ -4,6 +4,7 @@ Version 0.7b1 2006-12-06
   - expanded semantic interpretation package
   - new high-level chunking interface, with cascaded chunking
   - split chunking code into new chunk package
+  - updated wordnet package to support version 2.1 of Wordnet.
   - prototyped basic wordnet similarity measures
     (path distance, Wu + Palmer and Leacock + Chodorow similarity measures.)
   - bugfixes (tag.Window, tag.ngram)
