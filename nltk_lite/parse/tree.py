@@ -13,8 +13,8 @@ syntax trees and morphological trees.
 
 import re, types
 from nltk_lite import tokenize
-from nltk_lite.parse import cfg
 from nltk_lite.probability import ProbabilisticMixIn
+from nltk_lite.parse import *
 
 ######################################################################
 ## Trees
@@ -214,13 +214,13 @@ class Tree(list):
         For each subtree of the form (P: C1 C2 ... Cn) this produces a production of the
         form P -> C1 C2 ... Cn.
 
-        @rtype: list of C{cfg.Production}s
+        @rtype: list of C{Production}s
         """
 
         if not isinstance(self.node, str):
             raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
 
-        prods = [cfg.Production(cfg.Nonterminal(self.node), _child_names(self))]
+        prods = [Production(Nonterminal(self.node), _child_names(self))]
         for child in self:
             if isinstance(child, Tree):
                 prods += child.productions()
@@ -448,7 +448,7 @@ def _child_names(tree):
     names = []
     for child in tree:
         if isinstance(child, Tree):
-            names.append(cfg.Nonterminal(child.node))
+            names.append(Nonterminal(child.node))
         else:
             names.append(child)
     return names
