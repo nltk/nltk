@@ -45,7 +45,7 @@ The build requires docutils, pdflatex, bdist_mpkg
        (install locally?  python setup.py install; make clean)
   2. make doc (slow; see doc/ for the results)
   3. make dist (fast; see dist/ for the results)
-  4. make python  (potentially slow; to download all python distros if necessary)
+  4. make python numpy wordnet (potentially slow; to download all python distros if necessary)
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions:
 
