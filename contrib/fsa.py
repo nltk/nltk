@@ -297,21 +297,21 @@ class FSA:
 
 def grammar(terminals):
     (S, Star, Plus, Qmk, Paren) = [cfg.Nonterminal(s) for s in 'S*+?(']
-    rules = [pcfg.Production(S, [Star], prob=0.2),
-             pcfg.Production(S, [Plus], prob=0.2),
-             pcfg.Production(S, [Qmk], prob=0.2),
-             pcfg.Production(S, [Paren], prob=0.2),
-             pcfg.Production(S, [S, S], prob=0.1),
-             pcfg.Production(Star, [S, '*'], prob=1),
-             pcfg.Production(Plus, [S, '+'], prob=1),
-             pcfg.Production(Qmk, [S, '?'], prob=1),
-             pcfg.Production(Paren, ['(', S, ')'], prob=1)]
+    rules = [pcfg.WeightedProduction(S, [Star], prob=0.2),
+             pcfg.WeightedProduction(S, [Plus], prob=0.2),
+             pcfg.WeightedProduction(S, [Qmk], prob=0.2),
+             pcfg.WeightedProduction(S, [Paren], prob=0.2),
+             pcfg.WeightedProduction(S, [S, S], prob=0.1),
+             pcfg.WeightedProduction(Star, [S, '*'], prob=1),
+             pcfg.WeightedProduction(Plus, [S, '+'], prob=1),
+             pcfg.WeightedProduction(Qmk, [S, '?'], prob=1),
+             pcfg.WeightedProduction(Paren, ['(', S, ')'], prob=1)]
 
     prob_term = 0.1/len(terminals) # divide remaining pr. mass
     for terminal in terminals:
-        rules.append(pcfg.Production(S, [terminal], prob=prob_term))
+        rules.append(pcfg.WeightedProduction(S, [terminal], prob=prob_term))
 
-    return pcfg.Grammar(S, rules)
+    return pcfg.WeightedGrammar(S, rules)
 
 _parser = pchart.InsideParse(grammar('abcde'))
 
