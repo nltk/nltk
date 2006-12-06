@@ -6,11 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.parse import cfg
-from tree import *
-from nltk_lite import tokenize
-from nltk_lite.parse import AbstractParse
 from types import *
+from nltk_lite import tokenize
+from nltk_lite.parse import *
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
