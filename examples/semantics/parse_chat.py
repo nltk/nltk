@@ -18,7 +18,7 @@ Requires two inputs:
 
 
 import nltk_lite.semantics.evaluate as evaluate
-from nltk_lite.semantics.chat80 import val_load
+from nltk_lite.corpora.chat80 import val_load
 from nltk_lite.semantics.utilities import *
 
 val = val_load('chat')
