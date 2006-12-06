@@ -7,21 +7,22 @@
 
 """
 Demo of how to combine the output of parsing with evaluation in a model.
-Requires two inputs:
+Requires the following inputs:
 
- - C{sem2.cfg}: a toy grammar with some syntactic and semantic rules.
- - C{model0.py}: a small first-order model to interpret outputs of the grammar.
-
-
+ - C{chat80.cfg}: a toy grammar with some syntactic and semantic rules.
+ - C{chat_pnames.cfg}: a lexicon of proper names.
 
 """
 
 
 import nltk_lite.semantics.evaluate as evaluate
-from nltk_lite.corpora.chat80 import val_load
+import nltk_lite.corpora.chat80 as chat80
 from nltk_lite.semantics.utilities import *
 
-val = val_load('chat')
+rels = chat80.rels
+concept_map = chat80.process_bundle(rels)
+concepts = concept_map.values()
+val = chat80.make_valuation(concepts, read=True)
 
 dom = val.domain
 #Bind C{dom} to the C{domain} property of C{val}."""
@@ -32,12 +33,8 @@ m = evaluate.Model(dom, val)
 g = evaluate.Assignment(dom)
 #Initialize a variable assignment with parameter C{dom}."""
 
-
-
-sents = ['France is a country', 'Paris is the capital of France',
-         'what is the capital of France', 'which sea borders France']
-
-sents = ['which Asian countries border the_Mediterranean']
+sents = ['what is the capital of France', 'which sea borders France',
+         'which Asian countries border the_Mediterranean']
 
 
 
@@ -48,7 +45,7 @@ def main():
     """
 Parse and evaluate some sentences in the Chat-80 model. The valuation
 for the model is read in from a shelved database, 'chat.db'. If the
-option '-g' is not set, the file 'chat-80.cfg' is used. If the option
+option '-g' is not set, the file 'chat80.cfg' is used. If the option
 '-s' is not set, some example sentences are provided automatically.
     """
 
