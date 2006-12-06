@@ -595,7 +595,7 @@ def concepts(items = items):
     if type(items) is str: items = (items,)
     
     rels = [item_metadata[r] for r in items]
-    print rels
+
     concept_map = process_bundle(rels)
     return concept_map.values()
 
