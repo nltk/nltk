@@ -11,17 +11,17 @@ import re
 from nltk_lite.parse import *
 from nltk_lite.probability import ImmutableProbabilisticMixIn
 
-class WeightedProduction(cfg.Production, ImmutableProbabilisticMixIn):
+class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
-    PCFG C{WeightedProduction}s are essentially just C{cfg.Production}s that
+    PCFG C{WeightedProduction}s are essentially just C{Production}s that
     have probabilities associated with them.  These probabilities are
     used to record how likely it is that a given production will
     be used.  In particular, the probability of a C{WeightedProduction}
     records the likelihood that its right-hand side is the correct
     instantiation for any given occurance of its left-hand side.
 
-    @see: L{cfg.Production}
+    @see: L{Production}
     """
     def __init__(self, lhs, rhs, **prob_kwarg):
         """
@@ -34,10 +34,10 @@ class WeightedProduction(cfg.Production, ImmutableProbabilisticMixIn):
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         ImmutableProbabilisticMixIn.__init__(self, **prob_kwarg)
-        cfg.Production.__init__(self, lhs, rhs)
+        Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return cfg.Production.__str__(self) + ' (p=%s)' % self.prob()
+        return Production.__str__(self) + ' (p=%s)' % self.prob()
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -48,7 +48,7 @@ class WeightedProduction(cfg.Production, ImmutableProbabilisticMixIn):
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
 
-class WeightedGrammar(cfg.Grammar):
+class WeightedGrammar(Grammar):
     """
     A probabilistic context-free grammar.  A Weighted Grammar consists of a start
     state and a set of weighted productions.  The set of terminals and
@@ -81,7 +81,7 @@ class WeightedGrammar(cfg.Grammar):
             do not have probabilities that sum to a value within
             EPSILON of 1.
         """
-        cfg.Grammar.__init__(self, start, productions)
+        Grammar.__init__(self, start, productions)
 
         # Make sure that the probabilities sum to one.
         probs = {}
@@ -90,7 +90,7 @@ class WeightedGrammar(cfg.Grammar):
                                        production.prob())
         for (lhs, p) in probs.items():
             if not ((1-WeightedGrammar.EPSILON) < p < (1+WeightedGrammar.EPSILON)):
-                raise ValueError("cfg.Productions for %r do not sum to 1" % lhs)
+                raise ValueError("Productions for %r do not sum to 1" % lhs)
 
 def induce(start, productions):
     """
@@ -124,8 +124,8 @@ def induce(start, productions):
 # Toy PCFGs
 #################################################################
 
-_S, _VP, _NP, _PP = cfg.nonterminals('S, VP, NP, PP')
-_V, _N, _P, _Name, _Det = cfg.nonterminals('V, N, P, Name, Det')
+_S, _VP, _NP, _PP = nonterminals('S, VP, NP, PP')
+_V, _N, _P, _Name, _Det = nonterminals('V, N, P, Name, Det')
 
 toy1 = WeightedGrammar(_S, [
     WeightedProduction(_NP, [_Det, _N], prob=0.5),

@@ -150,10 +150,10 @@ class AbstractParse(ParseI):
         else: return [tree]
 
 from cfg import *
+from tree import *
 from category import *
 from chart import *
 from featurechart import *
-from tree import *
 from treetransforms import *
 from pcfg import *
 from sr import *
