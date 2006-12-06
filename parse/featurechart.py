@@ -5,17 +5,15 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
-# $Id:$
+# $Id$
 
 """
 Extension of chart parsing implementation to handle grammars with
-feature structgures as nodes.
+feature structures as nodes.
 """
 
 
-from nltk_lite.parse.chart import *
-from nltk_lite.parse.category import *
-from nltk_lite.parse import cfg
+from nltk_lite.parse import *
 
 def apply(obj, vars):
     """A helper function to determine the value of an object when variables

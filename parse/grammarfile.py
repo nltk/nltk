@@ -5,17 +5,13 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
-# $Id:$
+# $Id$
 
 """
 A module to read a grammar from a *.cfg file.
 """
 
-from nltk_lite.parse.category import *
-from nltk_lite.parse import cfg
-from nltk_lite.parse.featurechart import *
-
-
+from nltk_lite.parse import *
 
 class GrammarFile(object):
 	def __init__(self):

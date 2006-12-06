@@ -10,12 +10,11 @@
 #
 # $Id$
 
-from nltk_lite.parse.featurestructure import *
-
-from nltk_lite.parse import cfg
+from nltk_lite.parse import *
+from nltk_lite.featurestructure import *
 from nltk_lite.semantics import logic
 
-class Category(FeatureStructure, cfg.Nonterminal):
+class Category(FeatureStructure, Nonterminal):
     """
     A C{Category} is a specialized feature structure, intended for use in
     parsing.  It can act as a C{Nonterminal}.
@@ -519,7 +518,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
                 if isinstance(val, Category): val.freeze()
                 rhs.append(val)
                 position = _PARSE_RE['whitespace'].match(s, position).end()
-            rules.append(cfg.Production(lhs, rhs))
+            rules.append(Production(lhs, rhs))
             
             if position < len(s):
                 match = _PARSE_RE['disjunct'].match(s, position)
@@ -527,7 +526,7 @@ class Category(FeatureStructure, cfg.Nonterminal):
         
         # Special case: if there's nothing after the arrow, it is one rule with
         # an empty RHS, instead of no rules.
-        if len(rules) == 0: rules = [cfg.Production(lhs, ())]
+        if len(rules) == 0: rules = [Production(lhs, ())]
         return rules
 
     _parseval=classmethod(_parseval)
@@ -705,13 +704,14 @@ class ApplicationExpressionSubst(logic.ApplicationExpression, SubstituteBindings
         return newval
 
 def demo():
+    from nltk_lite.parse import category
     print "Category(pos='n', agr=Category(number='pl', gender='f')):"
     print
-    print Category(pos='n', agr=Category(number='pl', gender='f'))
+    print category.Category(pos='n', agr=Category(number='pl', gender='f'))
     print
     print "GrammarCategory.parse('VP[+fin]/NP[+pl]'):"
     print
-    print GrammarCategory.parse('VP[+fin]/NP[+pl]')
+    print category.GrammarCategory.parse('VP[+fin]/NP[+pl]')
     print
     
 if __name__ == '__main__':
