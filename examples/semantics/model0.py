@@ -1,11 +1,15 @@
-"""
-This is a sample model to accompany U{sem2.cfg grammar}, and is
-intended to be imported as a module.
+# Natural Language Toolkit: Example Model
+#
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
-It presupposes that the L{nltk_lite.semantics} module has already been
-imported.
 """
-from nltk_lite.semantics.evaluate import *
+This is a sample model to accompany the U{sem2.cfg} grammar, and is
+intended to be imported as a module.
+"""
+
+from nltk_lite.semantics import *
 
 val = Valuation()
 #Initialize a valuation of non-logical constants."""
@@ -27,14 +31,15 @@ v = [('john', 'b1'),
     ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
  ]
 
+
+#Read in the data from C{v}
 val.read(v)
-#Read in the data from C{v}."""
 
+#Bind C{dom} to the C{domain} property of C{val}
 dom = val.domain
-#Bind C{dom} to the C{domain} property of C{val}."""
 
-m = Model(dom, val)
 #Initialize a model with parameters C{dom} and C{val}.
+m = Model(dom, val)
 
+#Initialize a variable assignment with parameter C{dom}
 g = Assignment(dom)
-#Initialize a variable assignment with parameter C{dom}."""
