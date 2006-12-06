@@ -75,7 +75,7 @@ class BottomUpPredictRule(AbstractChartRule):
                 if chart.insert(new_edge, ()):
                     yield new_edge
                     
-class FundamentalRule(AbstractChartRule):
+class ProbabilisticFundamentalRule(AbstractChartRule):
     NUM_EDGES=2
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
@@ -100,10 +100,10 @@ class FundamentalRule(AbstractChartRule):
         # If we changed the chart, then generate the edge.
         if changed_chart: yield new_edge
 
-class SingleEdgeFundamentalRule(AbstractChartRule):
+class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
     NUM_EDGES=1
 
-    _fundamental_rule = FundamentalRule()
+    _fundamental_rule = ProbabilisticFundamentalRule()
     
     def apply_iter(self, chart, grammar, edge1):
         fr = self._fundamental_rule
@@ -185,7 +185,7 @@ class BottomUpChartParse(AbstractParse):
         # Chart parser rules.
         bu_init = BottomUpInitRule()
         bu = BottomUpPredictRule()
-        fr = SingleEdgeFundamentalRule()
+        fr = SingleEdgeProbabilisticFundamentalRule()
 
         # Our queue!
         queue = []

@@ -6,11 +6,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.parse import ParseI, AbstractParse
-from nltk_lite.parse import cfg, pcfg
-from nltk_lite.parse.tree import Tree, ProbabilisticTree
-from nltk_lite.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
 import types
+from nltk_lite.parse import *
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser

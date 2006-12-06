@@ -6,10 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from tree import *
-from nltk_lite import tokenize
-from nltk_lite.parse import AbstractParse, cfg
 from types import *
+from nltk_lite import tokenize
+from nltk_lite.parse import *
 #
 
 ##//////////////////////////////////////////////////////
