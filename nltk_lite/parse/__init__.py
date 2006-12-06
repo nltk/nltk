@@ -149,11 +149,15 @@ class AbstractParse(ParseI):
         if tree is None: return []
         else: return [tree]
 
-from tree import *
 from cfg import *
+from category import *
+from chart import *
+from featurechart import *
+from tree import *
+from treetransforms import *
 from pcfg import *
-from featurestructure import *
 from sr import *
 from rd import *
-from chart import *
+from pchart import *
 from viterbi import *
+from grammarfile import *

@@ -8,16 +8,16 @@
 # For license information, see LICENSE.TXT
 
 import re
-from nltk_lite.parse import cfg
+from nltk_lite.parse import *
 from nltk_lite.probability import ImmutableProbabilisticMixIn
 
-class Production(cfg.Production, ImmutableProbabilisticMixIn):
+class WeightedProduction(cfg.Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
-    PCFG C{Production}s are essentially just C{cfg.Production}s that
+    PCFG C{WeightedProduction}s are essentially just C{cfg.Production}s that
     have probabilities associated with them.  These probabilities are
     used to record how likely it is that a given production will
-    be used.  In particular, the probability of a C{Production}
+    be used.  In particular, the probability of a C{WeightedProduction}
     records the likelihood that its right-hand side is the correct
     instantiation for any given occurance of its left-hand side.
 
@@ -25,12 +25,12 @@ class Production(cfg.Production, ImmutableProbabilisticMixIn):
     """
     def __init__(self, lhs, rhs, **prob_kwarg):
         """
-        Construct a new C{Production}.
+        Construct a new C{WeightedProduction}.
 
-        @param prob: The probability of the new C{Production}.
-        @param lhs: The left-hand side of the new C{Production}.
+        @param prob: The probability of the new C{WeightedProduction}.
+        @param lhs: The left-hand side of the new C{WeightedProduction}.
         @type lhs: L{Nonterminal}
-        @param rhs: The right-hand side of the new C{Production}.
+        @param rhs: The right-hand side of the new C{WeightedProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         ImmutableProbabilisticMixIn.__init__(self, **prob_kwarg)
@@ -48,13 +48,13 @@ class Production(cfg.Production, ImmutableProbabilisticMixIn):
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
 
-class Grammar(cfg.Grammar):
+class WeightedGrammar(cfg.Grammar):
     """
-    A probabilistic context-free grammar.  A PCFG Grammar consists of a start
-    state and a set of productions.  The set of terminals and
+    A probabilistic context-free grammar.  A Weighted Grammar consists of a start
+    state and a set of weighted productions.  The set of terminals and
     nonterminals is implicitly specified by the productions.
 
-    PCFG productions should be C{Production}s.  C{PCFG} Grammars impose
+    PCFG productions should be C{WeightedProduction}s.  C{WeightedGrammar}s impose
     the constraint that the set of productions with any given
     left-hand-side must have probabilities that sum to 1.
 
@@ -71,7 +71,7 @@ class Grammar(cfg.Grammar):
     def __init__(self, start, productions):
         """
         Create a new context-free grammar, from the given start state
-        and set of C{cfg.Production}s.
+        and set of C{WeightedProduction}s.
 
         @param start: The start symbol
         @type start: L{Nonterminal}
@@ -89,7 +89,7 @@ class Grammar(cfg.Grammar):
             probs[production.lhs()] = (probs.get(production.lhs(), 0) +
                                        production.prob())
         for (lhs, p) in probs.items():
-            if not ((1-Grammar.EPSILON) < p < (1+Grammar.EPSILON)):
+            if not ((1-WeightedGrammar.EPSILON) < p < (1+WeightedGrammar.EPSILON)):
                 raise ValueError("cfg.Productions for %r do not sum to 1" % lhs)
 
 def induce(start, productions):
@@ -115,9 +115,9 @@ def induce(start, productions):
         lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
         pcount[prod]       = pcount.get(prod,       0) + 1
 
-    prods = [Production(p.lhs(), p.rhs(), prob=float(pcount[p]) / lcount[p.lhs()])\
+    prods = [WeightedProduction(p.lhs(), p.rhs(), prob=float(pcount[p]) / lcount[p.lhs()])\
              for p in pcount]
-    return Grammar(start, prods)
+    return WeightedGrammar(start, prods)
 
 
 #################################################################
@@ -127,49 +127,49 @@ def induce(start, productions):
 _S, _VP, _NP, _PP = cfg.nonterminals('S, VP, NP, PP')
 _V, _N, _P, _Name, _Det = cfg.nonterminals('V, N, P, Name, Det')
 
-toy1 = Grammar(_S, [
-    Production(_NP, [_Det, _N], prob=0.5),
-    Production(_NP, [_NP, _PP], prob=0.25),
-    Production(_NP, ['John'], prob=0.1),
-    Production(_NP, ['I'], prob=0.15),
-    Production(_Det, ['the'], prob=0.8),
-    Production(_Det, ['my'], prob=0.2),
-    Production(_N, ['dog'], prob=0.5),
-    Production(_N, ['cookie'], prob=0.5),
-    Production(_VP, [_VP, _PP], prob=0.1),
-    Production(_VP, [_V, _NP], prob=0.7),
-    Production(_VP, [_V], prob=0.2),
-    Production(_V, ['ate'], prob=0.35),
-    Production(_V, ['saw'], prob=0.65),
-    Production(_S, [_NP, _VP], prob=1.0),
-    Production(_PP, [_P, _NP], prob=1.0),
-    Production(_P, ['with'], prob=0.61),
-    Production(_P, ['under'], prob=0.39)])
+toy1 = WeightedGrammar(_S, [
+    WeightedProduction(_NP, [_Det, _N], prob=0.5),
+    WeightedProduction(_NP, [_NP, _PP], prob=0.25),
+    WeightedProduction(_NP, ['John'], prob=0.1),
+    WeightedProduction(_NP, ['I'], prob=0.15),
+    WeightedProduction(_Det, ['the'], prob=0.8),
+    WeightedProduction(_Det, ['my'], prob=0.2),
+    WeightedProduction(_N, ['dog'], prob=0.5),
+    WeightedProduction(_N, ['cookie'], prob=0.5),
+    WeightedProduction(_VP, [_VP, _PP], prob=0.1),
+    WeightedProduction(_VP, [_V, _NP], prob=0.7),
+    WeightedProduction(_VP, [_V], prob=0.2),
+    WeightedProduction(_V, ['ate'], prob=0.35),
+    WeightedProduction(_V, ['saw'], prob=0.65),
+    WeightedProduction(_S, [_NP, _VP], prob=1.0),
+    WeightedProduction(_PP, [_P, _NP], prob=1.0),
+    WeightedProduction(_P, ['with'], prob=0.61),
+    WeightedProduction(_P, ['under'], prob=0.39)])
 
 toy2 = Grammar(_S, [
-    Production(_V, ['saw'], prob=0.21),
-    Production(_V, ['ate'], prob=0.51),
-    Production(_V, ['ran'], prob=0.28),
-    Production(_N, ['boy'], prob=0.11),
-    Production(_N, ['cookie'], prob=0.12),
-    Production(_N, ['table'], prob=0.13),
-    Production(_N, ['telescope'], prob=0.14),
-    Production(_N, ['hill'], prob=0.50),
-    Production(_Name, ['Jack'], prob=0.52),
-    Production(_Name, ['Bob'], prob=0.48),
-    Production(_P, ['with'], prob=0.61),
-    Production(_P, ['under'], prob=0.39),
-    Production(_Det, ['the'], prob=0.41),
-    Production(_Det, ['a'], prob=0.31),
-    Production(_Det, ['my'], prob=0.28),
-    Production(_S, [_NP, _VP], prob=1.00),
-    Production(_VP, [_V, _NP], prob=0.59),
-    Production(_VP, [_V], prob=0.40),
-    Production(_VP, [_VP, _PP], prob=0.01),
-    Production(_NP, [_Det, _N], prob=0.41),
-    Production(_NP, [_Name], prob=0.28),
-    Production(_NP, [_NP, _PP], prob=0.31),
-    Production(_PP, [_P, _NP], prob=1.00)])
+    WeightedProduction(_V, ['saw'], prob=0.21),
+    WeightedProduction(_V, ['ate'], prob=0.51),
+    WeightedProduction(_V, ['ran'], prob=0.28),
+    WeightedProduction(_N, ['boy'], prob=0.11),
+    WeightedProduction(_N, ['cookie'], prob=0.12),
+    WeightedProduction(_N, ['table'], prob=0.13),
+    WeightedProduction(_N, ['telescope'], prob=0.14),
+    WeightedProduction(_N, ['hill'], prob=0.50),
+    WeightedProduction(_Name, ['Jack'], prob=0.52),
+    WeightedProduction(_Name, ['Bob'], prob=0.48),
+    WeightedProduction(_P, ['with'], prob=0.61),
+    WeightedProduction(_P, ['under'], prob=0.39),
+    WeightedProduction(_Det, ['the'], prob=0.41),
+    WeightedProduction(_Det, ['a'], prob=0.31),
+    WeightedProduction(_Det, ['my'], prob=0.28),
+    WeightedProduction(_S, [_NP, _VP], prob=1.00),
+    WeightedProduction(_VP, [_V, _NP], prob=0.59),
+    WeightedProduction(_VP, [_V], prob=0.40),
+    WeightedProduction(_VP, [_VP, _PP], prob=0.01),
+    WeightedProduction(_NP, [_Det, _N], prob=0.41),
+    WeightedProduction(_NP, [_Name], prob=0.28),
+    WeightedProduction(_NP, [_NP, _PP], prob=0.31),
+    WeightedProduction(_PP, [_P, _NP], prob=1.00)])
 
 #################################################################
 # Demonstration
@@ -186,12 +186,12 @@ def demo():
 
     # Create some probabilistic CFG Productions
     S, A, B, C = cfg.nonterminals('S A B C')
-    pcfg_prods = [pcfg.Production(A, [B, B], prob=0.3),
-                  pcfg.Production(A, [C, B, C], prob=0.7),
-                  pcfg.Production(B, [B, 'b'], prob=0.5),
-                  pcfg.Production(B, [C], prob=0.5),
-                  pcfg.Production(C, ['a'], prob=0.1),
-                  pcfg.Production(C, ['b'], prob=0.9)]
+    pcfg_prods = [pcfg.WeightedProduction(A, [B, B], prob=0.3),
+                  pcfg.WeightedProduction(A, [C, B, C], prob=0.7),
+                  pcfg.WeightedProduction(B, [B, 'b'], prob=0.5),
+                  pcfg.WeightedProduction(B, [C], prob=0.5),
+                  pcfg.WeightedProduction(C, ['a'], prob=0.1),
+                  pcfg.WeightedProduction(C, ['b'], prob=0.9)]
 
     pcfg_prod = pcfg_prods[2]
     print 'A PCFG production:', `pcfg_prod`
@@ -201,7 +201,7 @@ def demo():
     print
 
     # Create and print a PCFG
-    grammar = pcfg.Grammar(S, pcfg_prods)
+    grammar = pcfg.WeightedGrammar(S, pcfg_prods)
     print 'A PCFG grammar:', `grammar`
     print '    grammar.start()       =>', `grammar.start()`
     print '    grammar.productions() =>',

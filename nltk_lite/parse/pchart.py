@@ -37,9 +37,7 @@ search strategies.  Currently the following subclasses are defined:
 # [XX] This might not be implemented quite right -- it would be better
 # to associate probabilities with child pointer lists.
 
-from nltk_lite.parse.chart import *
-from nltk_lite.parse.tree import ProbabilisticTree
-from nltk_lite.parse.cfg import Nonterminal
+from nltk_lite.parse import *
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
