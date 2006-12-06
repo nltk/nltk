@@ -10,34 +10,38 @@
 
 Introduction
 ~~~~~~~~~~~~
-    NLTK is a Python package that simplifies the construction of
-    programs that process natural language; and defines standard
-    interfaces between the different components of an NLP system.  It
-    was designed primarily to help teach graduate and undergraduate
-    students about computational linguistics; but it is also useful as
-    a framework for implementing research projects.
 
+    NLTK, the Natural Language Toolkit, is a suite of program
+    modules, data sets and tutorials supporting research and teaching in
+    computational linguistics and natural language processing.</p>
+
+    NLTK is ideally suited to students who are learning NLP (natural
+    language processing) or conducting research in NLP or closely
+    related areas, including empirical linguistics, cognitive science,
+    artificial intelligence, information retrieval, and machine
+    learning.  NLTK has been used successfully as a teaching tool, as an
+    individual study tool, and as a platform for prototyping and
+    building research systems. </p>
 
 Documentation
 ~~~~~~~~~~~~~
+
     A substantial amount of documentation about how to use NLTK is
-    available from the nltk home page:
+    available from the nltk homepage: http://nltk.sourceforge.net
 
-        <http://nltk.sourceforge.net>
-
-    In particular, the NLTK home page contains three types of
+    In particular, the NLTK homepage contains three types of
     documentation:
 
       - Tutorials teach students how to use the toolkit, in the
         context of performing specific tasks. They are appropriate for
         anyone who wishes to learn how to use the toolkit.
-        <http://nltk.sourceforge.net/tutorial/>
+        http://nltk.sourceforge.net/lite/doc/en/
 
       - The toolkit's reference documentation describes every module,
         interface, class, method, function, and variable in the
         toolkit. This documentation should be useful to both users and
         developers.  
-        <http://nltk.sourceforge.net/ref/nltk.html>
+        http://nltk.sourceforge.net/lite/doc/api/
 
       - A number of technical reports are available. These reports
         explain and justify the toolkit's design and
@@ -46,8 +50,7 @@ Documentation
         consult these reports if they would like further information
         about how the toolkit is designed and why it is designed that
         way.  
-        <http://nltk.sourceforge.net/tech/>
-
+        http://nltk.sourceforge.net/tech/
 
 Mailing Lists
 ~~~~~~~~~~~~~
@@ -55,8 +58,8 @@ Mailing Lists
       - nltk-announce: Public information and announcements
         about NLTK (very low volume)
       - nltk-devel: Discussions between NLTK developers
-      - nltk-commits: CVS commit logs for NLTK
-      - nltk-teach: Discussions between people teaching courses using NLTK
+      - nltk-commits: Subversion commit logs for NLTK
+      - nltk-teach: Discussions between people teaching courses using NLTK (closed list)
 
     To subscribe:
       - <http://lists.sourceforge.net/lists/listinfo/nltk-announce>
@@ -72,6 +75,7 @@ Mailing Lists
 
 Contributing
 ~~~~~~~~~~~~
+
     If you are interested in contributing to NLTK, please email
     Steven Bird <sb@csse.unimelb.edu.au> and Edward Loper
     <edloper@gradient.cis.upenn.edu>
@@ -79,6 +83,7 @@ Contributing
 
 Redistributing
 ~~~~~~~~~~~~~~
+
     NLTK source code is distributed under the Gnu Public License.
     NLTK documentation is distributed under the Creative Commons
     Sharealike License.  NLTK may be freely redistributed, subject to
@@ -86,6 +91,7 @@ Redistributing
 
 Citing
 ~~~~~~
+
     Please cite NLTK as follows:
     Bird, Steven and Edward Loper (2006).  Natural Language Toolkit.
     http://nltk.sourceforge.net/
