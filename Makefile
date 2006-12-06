@@ -94,7 +94,7 @@ wordnet:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac/  $(WN21)/WordNet-2.1.tar.gz
 	wget -N -P python/win/  $(WN21)/WordNet-2.1.exe
-	cp python/mac/WordNet-2.0.tar.gz python/unix
+	cp python/mac/WordNet-2.1.tar.gz python/unix
 	touch .wordnet.done
 
 iso:	.dist.done .python.done .numpy.done .wordnet.done .pywordnet.done
