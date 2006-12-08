@@ -939,7 +939,7 @@ class FeatureStructure(object):
                 return ['[]']
         
         # What's the longest feature name?  Use this to align names.
-        maxfnamelen = max([len(k) for k in self.feature_names()])
+        maxfnamelen = max(len(k) for k in self.feature_names())
 
         lines = []
         items = self._features.items()
@@ -984,7 +984,7 @@ class FeatureStructure(object):
         if lines[-1] == '': lines = lines[:-1]
         
         # Add brackets around everything.
-        maxlen = max([len(line) for line in lines])
+        maxlen = max(len(line) for line in lines)
         lines = ['[ %s%s ]' % (line, ' '*(maxlen-len(line))) for line in lines]
 
         # If it's reentrant, then add on an identifier tag.
@@ -1383,8 +1383,8 @@ def display_unification(fs1, fs2, indent='  '):
     if result is None:
         print indent+'(FAILED)'.center(linelen)
     else:
-        print '\n'.join([indent+l.center(linelen)
-                         for l in str(result).split('\n')])
+        print '\n'.join(indent+l.center(linelen)
+                         for l in str(result).split('\n'))
         if bindings and len(bindings.bound_variables()) > 0:
             print repr(bindings).center(linelen)
     return result

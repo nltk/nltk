@@ -741,7 +741,7 @@ class Chart(object):
         edges = [e for (_,_,e) in edges]
         
         return (self.pp_leaves(width) + '\n' +
-                '\n'.join([self.pp_edge(edge, width) for edge in edges]))
+                '\n'.join(self.pp_edge(edge, width) for edge in edges))
                 
     #////////////////////////////////////////////////////////////
     # Display: Dot (AT&T Graphviz)
@@ -1636,7 +1636,7 @@ def demo():
         for parse in cp.parses(): print parse
 
     # Print the times of all parsers:
-    maxlen = max([len(key) for key in times.keys()])
+    maxlen = max(len(key) for key in times.keys())
     format = '%' + `maxlen` + 's parser: %6.3fsec'
     times_items = times.items()
     times_items.sort(lambda a,b:cmp(a[1], b[1]))

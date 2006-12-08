@@ -126,7 +126,7 @@ def demo():
             seen.add(senses)
             print "senses:", senses
             print "position:", position
-            print "context:", ' '.join(['%s/%s' % ttok for ttok in context])
+            print "context:", ' '.join('%s/%s' % ttok for ttok in context)
             print
         
 if __name__ == '__main__':
