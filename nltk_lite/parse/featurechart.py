@@ -104,7 +104,7 @@ class FeatureTreeEdge(TreeEdge):
         @return: the value of the right-hand side with variables set.
         @rtype: C{Category}
         """
-        return tuple([apply(x, self._vars) for x in TreeEdge.rhs(self)])
+        return tuple(apply(x, self._vars) for x in TreeEdge.rhs(self))
     def orig_rhs(self):
         """
         @return: the value of the right-hand side with no variables set.
@@ -205,7 +205,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
     """
     def __init__(self, grammar, lexicon, trace=0):
         # Build a case-insensitive lexicon.
-        ci_lexicon = dict([(k.upper(), v) for k, v in lexicon.iteritems()])
+        ci_lexicon = dict((k.upper(), v) for k, v in lexicon.iteritems())
         # Call the super constructor.
         EarleyChartParse.__init__(self, grammar, ci_lexicon, trace)
 

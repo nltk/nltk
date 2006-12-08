@@ -114,8 +114,8 @@ def log_likelihood(reference, test):
         raise ValueError("Lists must have the same length.")
 
     # Return the average value of dist.logprob(val).
-    total_likelihood = sum([dist.logprob(val)
-                            for (val, dist) in zip(reference, test)])
+    total_likelihood = sum(dist.logprob(val)
+                            for (val, dist) in zip(reference, test))
     return total_likelihood/len(reference)
 
 class ConfusionMatrix(object):
@@ -152,10 +152,10 @@ class ConfusionMatrix(object):
             raise ValueError('Lists must have the same length.')
             
         # Get a list of all values.
-        values = dict([(val,1) for val in reference+test]).keys()
+        values = dict((val,1) for val in reference+test).keys()
 
         # Construct a value->index dictionary
-        indices = dict([(val,i) for (i,val) in enumerate(values)])
+        indices = dict((val,i) for (i,val) in enumerate(values))
 
         # Make a confusion matrix table.
         confusion = [[0 for val in values] for val in values]
@@ -175,7 +175,7 @@ class ConfusionMatrix(object):
         #: The total number of values in the confusion matrix.
         self._total = len(reference)
         #: The number of correct (on-diagonal) values in the matrix.
-        self._correct = sum([confusion[i][i] for i in range(len(values))])
+        self._correct = sum(confusion[i][i] for i in range(len(values)))
 
     def __getitem__(self, (li,lj)):
         """
@@ -208,7 +208,7 @@ class ConfusionMatrix(object):
             values = range(len(self._values))
 
         # Construct a format string for row values
-        valuelen = max([len(str(val)) for val in values])
+        valuelen = max(len(str(val)) for val in values)
         value_format = '%' + `valuelen` + 's |'
         # Construct a format string for matrix entries
         if show_percents:

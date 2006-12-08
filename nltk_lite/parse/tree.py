@@ -188,7 +188,7 @@ class Tree(list):
         for i, child in enumerate(self):
             if isinstance(child, Tree):
                 childpos = child.treepositions(order)
-                positions.extend([(i,)+p for p in childpos])
+                positions.extend((i,)+p for p in childpos)
             else:
                 positions.append( (i,) )
         if order in ('postorder', 'bothorder'): positions.append( () )
@@ -276,7 +276,7 @@ class Tree(list):
         draw_trees(self)
 
     def __repr__(self):
-        childstr = ' '.join([repr(c) for c in self])
+        childstr = ' '.join(repr(c) for c in self)
         return '(%s: %s)' % (repr(self.node), childstr)
 
     def __str__(self):

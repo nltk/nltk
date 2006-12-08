@@ -465,7 +465,7 @@ class Plot(object):
         >>> Plot(points)
 
     Plot a list of values, at x=0, x=1, x=2, ..., x=n:
-        >>> Plot([x**2 for x in range(20)])
+        >>> Plot(x**2 for x in range(20))
     """
     def __init__(self, vals, rng=None, **kwargs):
         """
