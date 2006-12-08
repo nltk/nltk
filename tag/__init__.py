@@ -94,7 +94,7 @@ def string2tags(s, sep='/'):
     return [tag2tuple(t, sep) for t in tokenize.whitespace(s)]
 
 def tags2string(t, sep='/'):
-    return " ".join([token + sep + str(tag) for (token, tag) in t])
+    return " ".join(token + sep + str(tag) for (token, tag) in t)
 
 def string2words(s, sep='/'):
     return [tag2tuple(t, sep)[0] for t in tokenize.whitespace(s)]

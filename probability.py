@@ -410,7 +410,7 @@ class DictionaryProbDist(ProbDistI):
 
     def max(self):
         if not hasattr(self, '_max'):
-            self._max = max([(p,v) for (v,p) in self._prob_dict.items()])[1]
+            self._max = max((p,v) for (v,p) in self._prob_dict.items())[1]
         return self._max
     def samples(self):
         return self._prob_dict.keys()
@@ -995,7 +995,7 @@ class MutableProbDist(ProbDistI):
         @type store_logs: bool
         """
         self._samples = samples
-        self._sample_dict = dict([(samples[i], i) for i in range(len(samples))])
+        self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
         self._data = numpy.zeros(len(samples), numpy.Float64)
         for i in range(len(samples)):
             if store_logs:
@@ -1060,8 +1060,8 @@ class MutableProbDist(ProbDistI):
 
 def log_likelihood(test_pdist, actual_pdist):
     # Is this right?
-    return sum([actual_pdist.prob(s) * math.log(test_pdist.prob(s))
-                for s in actual_pdist.samples()])
+    return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s))
+                for s in actual_pdist.samples())
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
@@ -1515,7 +1515,7 @@ def demo(numsamples=6, numoutcomes=500):
            (numsamples, numsamples, numoutcomes))
     print '='*9*(len(pdists)+2)
     FORMATSTR = '      FreqDist '+ '%8s '*(len(pdists)-1) + '|  Actual'
-    print FORMATSTR % tuple([`pdist`[1:9] for pdist in pdists[:-1]])
+    print FORMATSTR % tuple(`pdist`[1:9] for pdist in pdists[:-1])
     print '-'*9*(len(pdists)+2)
     FORMATSTR = '%3d   %8.6f ' + '%8.6f '*(len(pdists)-1) + '| %8.6f'
     for val in vals:
