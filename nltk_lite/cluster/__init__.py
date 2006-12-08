@@ -381,7 +381,7 @@ class Dendogram:
             display('\n')
 
         # finally, display the last line
-        display(''.join([item.center(width) for item in last_row]))
+        display(''.join(item.center(width) for item in last_row))
         display('\n')
         
     def __repr__(self):

@@ -160,7 +160,7 @@ for l in open(os.path.join(PREFIX,"spkrinfo.txt")):
     if l[0] == ';': continue
     rec = l[:54].split() + [l[54:].strip()]
     key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
-    spkrinfo[key] = dict([(header[i],rec[i]) for i in range(10)])
+    spkrinfo[key] = dict((header[i],rec[i]) for i in range(10))
     
 def _prim(ext, sentences=items, offset=False):
     if isinstance(sentences,str):

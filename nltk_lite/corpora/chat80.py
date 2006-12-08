@@ -539,7 +539,7 @@ def label_indivs(valuation, lexicon=False):
     # collect all the individuals into a domain
     domain = valuation.domain
     # convert the domain into a sorted list of alphabetic terms
-    entities = sorted([e for e in domain if alpha(e)])
+    entities = sorted(e for e in domain if alpha(e))
     # use the same string as a label
     pairs = [(e, e) for e in entities]
     if lexicon:

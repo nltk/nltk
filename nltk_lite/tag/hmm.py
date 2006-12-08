@@ -595,7 +595,7 @@ class HiddenMarkovModelTrainer(object):
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_dict = dict([(self._symbols[i], i) for i in range(M)])
+        symbol_dict = dict((self._symbols[i], i) for i in range(M))
 
         # create a uniform HMM, which will be iteratively refined, unless
         # given an existing model
@@ -603,22 +603,22 @@ class HiddenMarkovModelTrainer(object):
         if not model:
             priors = UniformProbDist(self._states)
             transitions = DictionaryConditionalProbDist(
-                            dict([(state, UniformProbDist(self._states))
-                                  for state in self._states]))
+                            dict((state, UniformProbDist(self._states))
+                                  for state in self._states))
             output = DictionaryConditionalProbDist(
-                            dict([(state, UniformProbDist(self._symbols))
-                                  for state in self._states]))
+                            dict((state, UniformProbDist(self._symbols))
+                                  for state in self._states))
             model = HiddenMarkovModel(self._symbols, self._states, 
                             transitions, output, priors)
 
         # update model prob dists so that they can be modified
         model._priors = MutableProbDist(model._priors, self._states)
         model._transitions = DictionaryConditionalProbDist(
-            dict([(s, MutableProbDist(model._transitions[s], self._states))
-                 for s in self._states]))
+            dict((s, MutableProbDist(model._transitions[s], self._states))
+                 for s in self._states))
         model._outputs = DictionaryConditionalProbDist(
-            dict([(s, MutableProbDist(model._outputs[s], self._symbols))
-                 for s in self._states]))
+            dict((s, MutableProbDist(model._outputs[s], self._symbols))
+                 for s in self._states))
 
         # iterate until convergence
         converged = False
@@ -899,7 +899,7 @@ def demo_pos():
 def _untag(sentences):
     unlabelled = []
     for sentence in sentences:
-        unlabelled.append([(token[0], None) for token in sentence])
+        unlabelled.append((token[0], None) for token in sentence)
     return unlabelled
 
 def demo_pos_bw():
@@ -957,7 +957,7 @@ def demo_bw():
     rng = random.Random()
     for i in range(10):
         item = model.random_sample(rng, 5)
-        training.append([(i[0], None) for i in item])
+        training.append((i[0], None) for i in item)
 
     # train on those examples, starting with the model that generated them
     trainer = HiddenMarkovModelTrainer(states, symbols)
