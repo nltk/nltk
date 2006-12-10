@@ -286,7 +286,7 @@ according to their syntactic structure, as determined by L{decompose}.
 
 """
 
-from nltk_lite.semantics import logic
+from nltk_lite.semantics import *
 from pprint import pformat
 
 class Error(Exception): pass
@@ -680,7 +680,11 @@ class Model:
                 False: {True: True, False: True}}
     IFF =      {True: {True: True, False: False},
                 False: {True: False, False: True}}
-    
+
+    OPS = {'and': AND,
+           'or': OR,
+           'implies': IMPLIES,
+           'iff': IFF}
 
     def evaluate(self, expr, g, trace=None):
         """
@@ -717,10 +721,13 @@ class Model:
         @param g: an assignment to individual variables.
         """
 
-        OPS = {'and': Model.AND,
-               'or': Model.OR,
-               'implies': Model.IMPLIES,
-               'iff': Model.IFF}
+        OPS = Model.OPS
+
+#         OPS = {'and': Model.AND,
+#                'or': Model.OR,
+#                'implies': Model.IMPLIES,
+#                'iff': Model.IFF}
+
 
         try:
             parsed = self.decompose(expr)
@@ -1237,7 +1244,7 @@ def folmodel(trace=None):
                 print "The interpretation of '%s' in m2 is Undefined" % s
     
 def foldemo(trace=None):
-    """Interpretation of formulas in a first-order model."""
+    """Interpretation of closed expressions in a first-order model."""
     folmodel()
 
     print
@@ -1248,6 +1255,9 @@ def foldemo(trace=None):
     formulas = [
     '(love adam betty)',
     '(adam = mia)',
+    '\\x. ((boy x) or (girl x))',
+    '\\x y. ((boy x) and (love y x))',
+    '\\x. some y. ((boy x) and (love y x))',
     'some z1. (boy z1)',
     'some x. ((boy x) and (not (x = adam)))',
     'some x. ((boy x) and all y. (love x y))',
