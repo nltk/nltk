@@ -14,9 +14,7 @@ Brill's transformational rule-based tagger.
 from nltk_lite.tag import TagI
 
 import bisect        # for binary search through a subset of indices
-import os            # for finding WSJ files
 import random        # for shuffling WSJ files
-import sys           # for getting command-line arguments
 
 ######################################################################
 ## The Brill Tagger
