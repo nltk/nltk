@@ -1,7 +1,7 @@
 
 __all__ = ['Mark', 'YAMLError', 'MarkedYAMLError']
 
-class Mark(object):
+class Mark:
 
     def __init__(self, name, index, line, column, buffer, pointer):
         self.name = name

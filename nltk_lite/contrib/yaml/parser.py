@@ -1,30 +1,45 @@
 
-# YAML can be parsed by an LL(1) parser!
+# The following YAML grammar is LL(1) and is parsed by a recursive descent
+# parser.
 #
-# We use the following production rules:
 # stream            ::= STREAM-START implicit_document? explicit_document* STREAM-END
-# explicit_document ::= DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END?
-# implicit_document ::= block_node DOCUMENT-END?
-# block_node    ::= ALIAS | properties? block_content
-# flow_node     ::= ALIAS | properties? flow_content
-# properties    ::= TAG ANCHOR? | ANCHOR TAG?
+# implicit_document ::= block_node DOCUMENT-END*
+# explicit_document ::= DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
+# block_node_or_indentless_sequence ::=
+#                       ALIAS
+#                       | properties (block_content | indentless_block_sequence)?
+#                       | block_content
+#                       | indentless_block_sequence
+# block_node        ::= ALIAS
+#                       | properties block_content?
+#                       | block_content
+# flow_node         ::= ALIAS
+#                       | properties flow_content?
+#                       | flow_content
+# properties        ::= TAG ANCHOR? | ANCHOR TAG?
 # block_content     ::= block_collection | flow_collection | SCALAR
 # flow_content      ::= flow_collection | SCALAR
 # block_collection  ::= block_sequence | block_mapping
-# block_sequence    ::= BLOCK-SEQUENCE-START (BLOCK-ENTRY block_node?)* BLOCK-END
-# block_mapping     ::= BLOCK-MAPPING_START ((KEY block_node_or_indentless_sequence?)? (VALUE block_node_or_indentless_sequence?)?)* BLOCK-END
-# block_node_or_indentless_sequence ::= ALIAS | properties? (block_content | indentless_block_sequence)
-# indentless_block_sequence         ::= (BLOCK-ENTRY block_node?)+
 # flow_collection   ::= flow_sequence | flow_mapping
-# flow_sequence     ::= FLOW-SEQUENCE-START (flow_sequence_entry FLOW-ENTRY)* flow_sequence_entry? FLOW-SEQUENCE-END
-# flow_mapping      ::= FLOW-MAPPING-START (flow_mapping_entry FLOW-ENTRY)* flow_mapping_entry? FLOW-MAPPING-END
+# block_sequence    ::= BLOCK-SEQUENCE-START (BLOCK-ENTRY block_node?)* BLOCK-END
+# indentless_sequence   ::= (BLOCK-ENTRY block_node?)+
+# block_mapping     ::= BLOCK-MAPPING_START
+#                       ((KEY block_node_or_indentless_sequence?)?
+#                       (VALUE block_node_or_indentless_sequence?)?)*
+#                       BLOCK-END
+# flow_sequence     ::= FLOW-SEQUENCE-START
+#                       (flow_sequence_entry FLOW-ENTRY)*
+#                       flow_sequence_entry?
+#                       FLOW-SEQUENCE-END
 # flow_sequence_entry   ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+# flow_mapping      ::= FLOW-MAPPING-START
+#                       (flow_mapping_entry FLOW-ENTRY)*
+#                       flow_mapping_entry?
+#                       FLOW-MAPPING-END
 # flow_mapping_entry    ::= flow_node | KEY flow_node? (VALUE flow_node?)?
-
-# TODO: support for BOM within a stream.
-# stream ::= (BOM? implicit_document)? (BOM? explicit_document)* STREAM-END
-
+#
 # FIRST sets:
+#
 # stream: { STREAM-START }
 # explicit_document: { DIRECTIVE DOCUMENT-START }
 # implicit_document: FIRST(block_node)
@@ -54,7 +69,7 @@ from scanner import *
 class ParserError(MarkedYAMLError):
     pass
 
-class Parser:
+class Parser(object):
     # Since writing a recursive-descendant parser is a straightforward task, we
     # do not give many comments here.
     # Note that we use Python generators. If you rewrite the parser in another
@@ -69,15 +84,15 @@ class Parser:
         self.current_event = None
         self.yaml_version = None
         self.tag_handles = {}
-        self.event_generator = self.parse_stream()
+        self.states = []
+        self.marks = []
+        self.state = self.parse_stream_start
 
     def check_event(self, *choices):
         # Check the type of the next event.
         if self.current_event is None:
-            try:
-                self.current_event = self.event_generator.next()
-            except StopIteration:
-                pass
+            if self.state:
+                self.current_event = self.state()
         if self.current_event is not None:
             if not choices:
                 return True
@@ -89,57 +104,59 @@ class Parser:
     def peek_event(self):
         # Get the next event.
         if self.current_event is None:
-            try:
-                self.current_event = self.event_generator.next()
-            except StopIteration:
-                pass
+            if self.state:
+                self.current_event = self.state()
         return self.current_event
 
     def get_event(self):
-        # Get the next event.
+        # Get the next event and proceed further.
         if self.current_event is None:
-            try:
-                self.current_event = self.event_generator.next()
-            except StopIteration:
-                pass
+            if self.state:
+                self.current_event = self.state()
         value = self.current_event
         self.current_event = None
         return value
 
-    def __iter__(self):
-        # Iterator protocol.
-        return self.event_generator
+    # stream    ::= STREAM-START implicit_document? explicit_document* STREAM-END
+    # implicit_document ::= block_node DOCUMENT-END*
+    # explicit_document ::= DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
 
-    def parse_stream(self):
-        # STREAM-START implicit_document? explicit_document* STREAM-END
+    def parse_stream_start(self):
 
-        # Parse start of stream.
+        # Parse the stream start.
         token = self.get_token()
-        yield StreamStartEvent(token.start_mark, token.end_mark,
+        event = StreamStartEvent(token.start_mark, token.end_mark,
                 encoding=token.encoding)
 
-        # Parse implicit document.
+        # Prepare the next state.
+        self.state = self.parse_implicit_document_start
+
+        return event
+
+    def parse_implicit_document_start(self):
+
+        # Parse an implicit document.
         if not self.check_token(DirectiveToken, DocumentStartToken,
                 StreamEndToken):
             self.tag_handles = self.DEFAULT_TAGS
             token = self.peek_token()
             start_mark = end_mark = token.start_mark
-            yield DocumentStartEvent(start_mark, end_mark,
+            event = DocumentStartEvent(start_mark, end_mark,
                     explicit=False)
-            for event in self.parse_block_node():
-                yield event
-            token = self.peek_token()
-            start_mark = end_mark = token.start_mark
-            explicit = False
-            while self.check_token(DocumentEndToken):
-                token = self.get_token()
-                end_mark = token.end_mark
-                explicit = True
-            yield DocumentEndEvent(start_mark, end_mark,
-                    explicit=explicit)
 
-        # Parse explicit documents.
-        while not self.check_token(StreamEndToken):
+            # Prepare the next state.
+            self.states.append(self.parse_document_end)
+            self.state = self.parse_block_node
+
+            return event
+
+        else:
+            return self.parse_document_start()
+
+    def parse_document_start(self):
+
+        # Parse an explicit document.
+        if not self.check_token(StreamEndToken):
             token = self.peek_token()
             start_mark = token.start_mark
             version, tags = self.process_directives()
@@ -150,30 +167,47 @@ class Parser:
                         self.peek_token().start_mark)
             token = self.get_token()
             end_mark = token.end_mark
-            yield DocumentStartEvent(start_mark, end_mark,
+            event = DocumentStartEvent(start_mark, end_mark,
                     explicit=True, version=version, tags=tags)
-            if self.check_token(DirectiveToken,
-                    DocumentStartToken, DocumentEndToken, StreamEndToken):
-                yield self.process_empty_scalar(token.end_mark)
-            else:
-                for event in self.parse_block_node():
-                    yield event
-            token = self.peek_token()
-            start_mark = end_mark = token.start_mark
-            explicit = False
-            while self.check_token(DocumentEndToken):
-                token = self.get_token()
-                end_mark = token.end_mark
-                explicit=True
-            yield DocumentEndEvent(start_mark, end_mark,
-                    explicit=explicit)
+            self.states.append(self.parse_document_end)
+            self.state = self.parse_document_content
+        else:
+            # Parse the end of the stream.
+            token = self.get_token()
+            event = StreamEndEvent(token.start_mark, token.end_mark)
+            assert not self.states
+            assert not self.marks
+            self.state = None
+        return event
 
-        # Parse end of stream.
-        token = self.get_token()
-        yield StreamEndEvent(token.start_mark, token.end_mark)
+    def parse_document_end(self):
+
+        # Parse the document end.
+        token = self.peek_token()
+        start_mark = end_mark = token.start_mark
+        explicit = False
+        while self.check_token(DocumentEndToken):
+            token = self.get_token()
+            end_mark = token.end_mark
+            explicit = True
+        event = DocumentEndEvent(start_mark, end_mark,
+                explicit=explicit)
+
+        # Prepare the next state.
+        self.state = self.parse_document_start
+
+        return event
+
+    def parse_document_content(self):
+        if self.check_token(DirectiveToken,
+                DocumentStartToken, DocumentEndToken, StreamEndToken):
+            event = self.process_empty_scalar(self.peek_token().start_mark)
+            self.state = self.states.pop()
+            return event
+        else:
+            return self.parse_block_node()
 
     def process_directives(self):
-        # DIRECTIVE*
         self.yaml_version = None
         self.tag_handles = {}
         while self.check_token(DirectiveToken):
@@ -204,6 +238,22 @@ class Parser:
                 self.tag_handles[key] = self.DEFAULT_TAGS[key]
         return value
 
+    # block_node_or_indentless_sequence ::= ALIAS
+    #               | properties (block_content | indentless_block_sequence)?
+    #               | block_content
+    #               | indentless_block_sequence
+    # block_node    ::= ALIAS
+    #                   | properties block_content?
+    #                   | block_content
+    # flow_node     ::= ALIAS
+    #                   | properties flow_content?
+    #                   | flow_content
+    # properties    ::= TAG ANCHOR? | ANCHOR TAG?
+    # block_content     ::= block_collection | flow_collection | SCALAR
+    # flow_content      ::= flow_collection | SCALAR
+    # block_collection  ::= block_sequence | block_mapping
+    # flow_collection   ::= flow_sequence | flow_mapping
+
     def parse_block_node(self):
         return self.parse_node(block=True)
 
@@ -214,17 +264,10 @@ class Parser:
         return self.parse_node(block=True, indentless_sequence=True)
 
     def parse_node(self, block=False, indentless_sequence=False):
-        # block_node    ::= ALIAS | properties? block_content
-        # flow_node     ::= ALIAS | properties? flow_content
-        # properties    ::= TAG ANCHOR? | ANCHOR TAG?
-        # block_content     ::= block_collection | flow_collection | SCALAR
-        # flow_content      ::= flow_collection | SCALAR
-        # block_collection  ::= block_sequence | block_mapping
-        # block_node_or_indentless_sequence ::= ALIAS | properties?
-        #                                       (block_content | indentless_block_sequence)
         if self.check_token(AliasToken):
             token = self.get_token()
-            yield AliasEvent(token.value, token.start_mark, token.end_mark)
+            event = AliasEvent(token.value, token.start_mark, token.end_mark)
+            self.state = self.states.pop()
         else:
             anchor = None
             tag = None
@@ -265,13 +308,12 @@ class Parser:
             if start_mark is None:
                 start_mark = end_mark = self.peek_token().start_mark
             event = None
-            collection_events = None
             implicit = (tag is None or tag == u'!')
             if indentless_sequence and self.check_token(BlockEntryToken):
                 end_mark = self.peek_token().end_mark
                 event = SequenceStartEvent(anchor, tag, implicit,
                         start_mark, end_mark)
-                collection_events = self.parse_indentless_sequence()
+                self.state = self.parse_indentless_sequence_entry
             else:
                 if self.check_token(ScalarToken):
                     token = self.get_token()
@@ -284,200 +326,256 @@ class Parser:
                         implicit = (False, False)
                     event = ScalarEvent(anchor, tag, implicit, token.value,
                             start_mark, end_mark, style=token.style)
+                    self.state = self.states.pop()
                 elif self.check_token(FlowSequenceStartToken):
                     end_mark = self.peek_token().end_mark
                     event = SequenceStartEvent(anchor, tag, implicit,
                             start_mark, end_mark, flow_style=True)
-                    collection_events = self.parse_flow_sequence()
+                    self.state = self.parse_flow_sequence_first_entry
                 elif self.check_token(FlowMappingStartToken):
                     end_mark = self.peek_token().end_mark
                     event = MappingStartEvent(anchor, tag, implicit,
                             start_mark, end_mark, flow_style=True)
-                    collection_events = self.parse_flow_mapping()
+                    self.state = self.parse_flow_mapping_first_key
                 elif block and self.check_token(BlockSequenceStartToken):
                     end_mark = self.peek_token().start_mark
                     event = SequenceStartEvent(anchor, tag, implicit,
                             start_mark, end_mark, flow_style=False)
-                    collection_events = self.parse_block_sequence()
+                    self.state = self.parse_block_sequence_first_entry
                 elif block and self.check_token(BlockMappingStartToken):
                     end_mark = self.peek_token().start_mark
                     event = MappingStartEvent(anchor, tag, implicit,
                             start_mark, end_mark, flow_style=False)
-                    collection_events = self.parse_block_mapping()
+                    self.state = self.parse_block_mapping_first_key
                 elif anchor is not None or tag is not None:
                     # Empty scalars are allowed even if a tag or an anchor is
                     # specified.
                     event = ScalarEvent(anchor, tag, (implicit, False), u'',
                             start_mark, end_mark)
+                    self.state = self.states.pop()
                 else:
                     if block:
                         node = 'block'
                     else:
                         node = 'flow'
                     token = self.peek_token()
-                    raise ParserError("while scanning a %s node" % node, start_mark,
+                    raise ParserError("while parsing a %s node" % node, start_mark,
                             "expected the node content, but found %r" % token.id,
                             token.start_mark)
-            yield event
-            if collection_events is not None:
-                for event in collection_events:
-                    yield event
+        return event
 
-    def parse_block_sequence(self):
-        # BLOCK-SEQUENCE-START (BLOCK-ENTRY block_node?)* BLOCK-END
+    # block_sequence ::= BLOCK-SEQUENCE-START (BLOCK-ENTRY block_node?)* BLOCK-END
+
+    def parse_block_sequence_first_entry(self):
         token = self.get_token()
-        start_mark = token.start_mark
-        while self.check_token(BlockEntryToken):
+        self.marks.append(token.start_mark)
+        return self.parse_block_sequence_entry()
+
+    def parse_block_sequence_entry(self):
+        if self.check_token(BlockEntryToken):
             token = self.get_token()
             if not self.check_token(BlockEntryToken, BlockEndToken):
-                for event in self.parse_block_node():
-                    yield event
+                self.states.append(self.parse_block_sequence_entry)
+                return self.parse_block_node()
             else:
-                yield self.process_empty_scalar(token.end_mark)
+                self.state = self.parse_block_sequence_entry
+                return self.process_empty_scalar(token.end_mark)
         if not self.check_token(BlockEndToken):
             token = self.peek_token()
-            raise ParserError("while scanning a block collection", start_mark,
+            raise ParserError("while parsing a block collection", self.marks[-1],
                     "expected <block end>, but found %r" % token.id, token.start_mark)
         token = self.get_token()
-        yield SequenceEndEvent(token.start_mark, token.end_mark)
+        event = SequenceEndEvent(token.start_mark, token.end_mark)
+        self.state = self.states.pop()
+        self.marks.pop()
+        return event
 
-    def parse_indentless_sequence(self):
-        # (BLOCK-ENTRY block_node?)+
-        while self.check_token(BlockEntryToken):
+    # indentless_sequence ::= (BLOCK-ENTRY block_node?)+
+
+    def parse_indentless_sequence_entry(self):
+        if self.check_token(BlockEntryToken):
             token = self.get_token()
             if not self.check_token(BlockEntryToken,
                     KeyToken, ValueToken, BlockEndToken):
-                for event in self.parse_block_node():
-                    yield event
+                self.states.append(self.parse_indentless_sequence_entry)
+                return self.parse_block_node()
             else:
-                yield self.process_empty_scalar(token.end_mark)
+                self.state = self.parse_indentless_sequence_entry
+                return self.process_empty_scalar(token.end_mark)
         token = self.peek_token()
-        yield SequenceEndEvent(token.start_mark, token.start_mark)
+        event = SequenceEndEvent(token.start_mark, token.start_mark)
+        self.state = self.states.pop()
+        return event
 
-    def parse_block_mapping(self):
-        # BLOCK-MAPPING_START
-        #   ((KEY block_node_or_indentless_sequence?)?
-        #   (VALUE block_node_or_indentless_sequence?)?)*
-        # BLOCK-END
+    # block_mapping     ::= BLOCK-MAPPING_START
+    #                       ((KEY block_node_or_indentless_sequence?)?
+    #                       (VALUE block_node_or_indentless_sequence?)?)*
+    #                       BLOCK-END
+
+    def parse_block_mapping_first_key(self):
         token = self.get_token()
-        start_mark = token.start_mark
-        while self.check_token(KeyToken, ValueToken):
-            if self.check_token(KeyToken):
-                token = self.get_token()
-                if not self.check_token(KeyToken, ValueToken, BlockEndToken):
-                    for event in self.parse_block_node_or_indentless_sequence():
-                        yield event
-                else:
-                    yield self.process_empty_scalar(token.end_mark)
-            if self.check_token(ValueToken):
-                token = self.get_token()
-                if not self.check_token(KeyToken, ValueToken, BlockEndToken):
-                    for event in self.parse_block_node_or_indentless_sequence():
-                        yield event
-                else:
-                    yield self.process_empty_scalar(token.end_mark)
+        self.marks.append(token.start_mark)
+        return self.parse_block_mapping_key()
+
+    def parse_block_mapping_key(self):
+        if self.check_token(KeyToken):
+            token = self.get_token()
+            if not self.check_token(KeyToken, ValueToken, BlockEndToken):
+                self.states.append(self.parse_block_mapping_value)
+                return self.parse_block_node_or_indentless_sequence()
             else:
-                token = self.peek_token()
-                yield self.process_empty_scalar(token.start_mark)
+                self.state = self.parse_block_mapping_value
+                return self.process_empty_scalar(token.end_mark)
         if not self.check_token(BlockEndToken):
             token = self.peek_token()
-            raise ParserError("while scanning a block mapping", start_mark,
+            raise ParserError("while parsing a block mapping", self.marks[-1],
                     "expected <block end>, but found %r" % token.id, token.start_mark)
         token = self.get_token()
-        yield MappingEndEvent(token.start_mark, token.end_mark)
+        event = MappingEndEvent(token.start_mark, token.end_mark)
+        self.state = self.states.pop()
+        self.marks.pop()
+        return event
 
-    def parse_flow_sequence(self):
-        # flow_sequence     ::= FLOW-SEQUENCE-START
-        #                       (flow_sequence_entry FLOW-ENTRY)*
-        #                       flow_sequence_entry?
-        #                       FLOW-SEQUENCE-END
-        # flow_sequence_entry   ::= flow_node | KEY flow_node? (VALUE flow_node?)?
-        #
-        # Note that while production rules for both flow_sequence_entry and
-        # flow_mapping_entry are equal, their interpretations are different.
-        # For `flow_sequence_entry`, the part `KEY flow_node? (VALUE flow_node?)?`
-        # generate an inline mapping (set syntax).
+    def parse_block_mapping_value(self):
+        if self.check_token(ValueToken):
+            token = self.get_token()
+            if not self.check_token(KeyToken, ValueToken, BlockEndToken):
+                self.states.append(self.parse_block_mapping_key)
+                return self.parse_block_node_or_indentless_sequence()
+            else:
+                self.state = self.parse_block_mapping_key
+                return self.process_empty_scalar(token.end_mark)
+        else:
+            self.state = self.parse_block_mapping_key
+            token = self.peek_token()
+            return self.process_empty_scalar(token.start_mark)
+
+    # flow_sequence     ::= FLOW-SEQUENCE-START
+    #                       (flow_sequence_entry FLOW-ENTRY)*
+    #                       flow_sequence_entry?
+    #                       FLOW-SEQUENCE-END
+    # flow_sequence_entry   ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+    #
+    # Note that while production rules for both flow_sequence_entry and
+    # flow_mapping_entry are equal, their interpretations are different.
+    # For `flow_sequence_entry`, the part `KEY flow_node? (VALUE flow_node?)?`
+    # generate an inline mapping (set syntax).
+
+    def parse_flow_sequence_first_entry(self):
         token = self.get_token()
-        start_mark = token.start_mark
-        while not self.check_token(FlowSequenceEndToken):
-            if self.check_token(KeyToken):
-                token = self.get_token()
-                yield MappingStartEvent(None, None, True,
-                        token.start_mark, token.end_mark,
-                        flow_style=True)
-                if not self.check_token(ValueToken,
-                        FlowEntryToken, FlowSequenceEndToken):
-                    for event in self.parse_flow_node():
-                        yield event
-                else:
-                    yield self.process_empty_scalar(token.end_mark)
-                if self.check_token(ValueToken):
-                    token = self.get_token()
-                    if not self.check_token(FlowEntryToken, FlowSequenceEndToken):
-                        for event in self.parse_flow_node():
-                            yield event
-                    else:
-                        yield self.process_empty_scalar(token.end_mark)
+        self.marks.append(token.start_mark)
+        return self.parse_flow_sequence_entry(first=True)
+
+    def parse_flow_sequence_entry(self, first=False):
+        if not self.check_token(FlowSequenceEndToken):
+            if not first:
+                if self.check_token(FlowEntryToken):
+                    self.get_token()
                 else:
                     token = self.peek_token()
-                    yield self.process_empty_scalar(token.start_mark)
+                    raise ParserError("while parsing a flow sequence", self.marks[-1],
+                            "expected ',' or ']', but got %r" % token.id, token.start_mark)
+            
+            if self.check_token(KeyToken):
                 token = self.peek_token()
-                yield MappingEndEvent(token.start_mark, token.start_mark)
-            else:
-                for event in self.parse_flow_node():
-                    yield event
-            if not self.check_token(FlowEntryToken, FlowSequenceEndToken):
-                token = self.peek_token()
-                raise ParserError("while scanning a flow sequence", start_mark,
-                        "expected ',' or ']', but got %r" % token.id, token.start_mark)
-            if self.check_token(FlowEntryToken):
-                self.get_token()
+                event = MappingStartEvent(None, None, True,
+                        token.start_mark, token.end_mark,
+                        flow_style=True)
+                self.state = self.parse_flow_sequence_entry_mapping_key
+                return event
+            elif not self.check_token(FlowSequenceEndToken):
+                self.states.append(self.parse_flow_sequence_entry)
+                return self.parse_flow_node()
         token = self.get_token()
-        yield SequenceEndEvent(token.start_mark, token.end_mark)
+        event = SequenceEndEvent(token.start_mark, token.end_mark)
+        self.state = self.states.pop()
+        self.marks.pop()
+        return event
 
-    def parse_flow_mapping(self):
-        # flow_mapping      ::= FLOW-MAPPING-START
-        #                       (flow_mapping_entry FLOW-ENTRY)*
-        #                       flow_mapping_entry?
-        #                       FLOW-MAPPING-END
-        # flow_mapping_entry    ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+    def parse_flow_sequence_entry_mapping_key(self):
         token = self.get_token()
-        start_mark = token.start_mark
-        while not self.check_token(FlowMappingEndToken):
+        if not self.check_token(ValueToken,
+                FlowEntryToken, FlowSequenceEndToken):
+            self.states.append(self.parse_flow_sequence_entry_mapping_value)
+            return self.parse_flow_node()
+        else:
+            self.state = self.parse_flow_sequence_entry_mapping_value
+            return self.process_empty_scalar(token.end_mark)
+
+    def parse_flow_sequence_entry_mapping_value(self):
+        if self.check_token(ValueToken):
+            token = self.get_token()
+            if not self.check_token(FlowEntryToken, FlowSequenceEndToken):
+                self.states.append(self.parse_flow_sequence_entry_mapping_end)
+                return self.parse_flow_node()
+            else:
+                self.state = self.parse_flow_sequence_entry_mapping_end
+                return self.process_empty_scalar(token.end_mark)
+        else:
+            self.state = self.parse_flow_sequence_entry_mapping_end
+            token = self.peek_token()
+            return self.process_empty_scalar(token.start_mark)
+
+    def parse_flow_sequence_entry_mapping_end(self):
+        self.state = self.parse_flow_sequence_entry
+        token = self.peek_token()
+        return MappingEndEvent(token.start_mark, token.start_mark)
+
+    # flow_mapping  ::= FLOW-MAPPING-START
+    #                   (flow_mapping_entry FLOW-ENTRY)*
+    #                   flow_mapping_entry?
+    #                   FLOW-MAPPING-END
+    # flow_mapping_entry    ::= flow_node | KEY flow_node? (VALUE flow_node?)?
+
+    def parse_flow_mapping_first_key(self):
+        token = self.get_token()
+        self.marks.append(token.start_mark)
+        return self.parse_flow_mapping_key(first=True)
+
+    def parse_flow_mapping_key(self, first=False):
+        if not self.check_token(FlowMappingEndToken):
+            if not first:
+                if self.check_token(FlowEntryToken):
+                    self.get_token()
+                else:
+                    token = self.peek_token()
+                    raise ParserError("while parsing a flow mapping", self.marks[-1],
+                            "expected ',' or '}', but got %r" % token.id, token.start_mark)
             if self.check_token(KeyToken):
                 token = self.get_token()
                 if not self.check_token(ValueToken,
                         FlowEntryToken, FlowMappingEndToken):
-                    for event in self.parse_flow_node():
-                        yield event
+                    self.states.append(self.parse_flow_mapping_value)
+                    return self.parse_flow_node()
                 else:
-                    yield self.process_empty_scalar(token.end_mark)
-                if self.check_token(ValueToken):
-                    token = self.get_token()
-                    if not self.check_token(FlowEntryToken, FlowMappingEndToken):
-                        for event in self.parse_flow_node():
-                            yield event
-                    else:
-                        yield self.process_empty_scalar(token.end_mark)
-                else:
-                    token = self.peek_token()
-                    yield self.process_empty_scalar(token.start_mark)
-            else:
-                for event in self.parse_flow_node():
-                    yield event
-                yield self.process_empty_scalar(self.peek_token().start_mark)
-            if not self.check_token(FlowEntryToken, FlowMappingEndToken):
-                token = self.peek_token()
-                raise ParserError("while scanning a flow mapping", start_mark,
-                        "expected ',' or '}', but got %r" % token.id, token.start_mark)
-            if self.check_token(FlowEntryToken):
-                self.get_token()
-        if not self.check_token(FlowMappingEndToken):
-            token = self.peek_token()
-            raise ParserError("while scanning a flow mapping", start_mark,
-                    "expected '}', but found %r" % token.id, token.start_mark)
+                    self.state = self.parse_flow_mapping_value
+                    return self.process_empty_scalar(token.end_mark)
+            elif not self.check_token(FlowMappingEndToken):
+                self.states.append(self.parse_flow_mapping_empty_value)
+                return self.parse_flow_node()
         token = self.get_token()
-        yield MappingEndEvent(token.start_mark, token.end_mark)
+        event = MappingEndEvent(token.start_mark, token.end_mark)
+        self.state = self.states.pop()
+        self.marks.pop()
+        return event
+
+    def parse_flow_mapping_value(self):
+        if self.check_token(ValueToken):
+            token = self.get_token()
+            if not self.check_token(FlowEntryToken, FlowMappingEndToken):
+                self.states.append(self.parse_flow_mapping_key)
+                return self.parse_flow_node()
+            else:
+                self.state = self.parse_flow_mapping_key
+                return self.process_empty_scalar(token.end_mark)
+        else:
+            self.state = self.parse_flow_mapping_key
+            token = self.peek_token()
+            return self.process_empty_scalar(token.start_mark)
+
+    def parse_flow_mapping_empty_value(self):
+        self.state = self.parse_flow_mapping_key
+        return self.process_empty_scalar(self.peek_token().start_mark)
 
     def process_empty_scalar(self, mark):
         return ScalarEvent(None, None, (True, False), u'', mark, mark)
