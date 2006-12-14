@@ -8,11 +8,6 @@ from nodes import *
 from loader import *
 from dumper import *
 
-try:
-    from cyaml import *
-except ImportError:
-    pass
-
 def scan(stream, Loader=Loader):
     """
     Scan a YAML stream and produce scanning tokens.
@@ -175,6 +170,13 @@ def dump(data, stream=None, Dumper=Dumper, **kwds):
     If stream is None, return the produced string instead.
     """
     return dump_all([data], stream, Dumper=Dumper, **kwds)
+
+def show(data):
+    """
+    Works like dump(), but with output suited for doctests. Flow style
+    is always off, and there is no blank line at the end.
+    """
+    return dump(data, default_flow_style=False).strip()
 
 def safe_dump_all(documents, stream=None, **kwds):
     """

@@ -19,7 +19,7 @@
 # ALIAS(value)
 # ANCHOR(value)
 # TAG(value)
-# SCALAR(value, plain, style)
+# SCALAR(value, plain)
 #
 # Read comments in the Scanner code for more details.
 #
@@ -32,7 +32,7 @@ from tokens import *
 class ScannerError(MarkedYAMLError):
     pass
 
-class SimpleKey(object):
+class SimpleKey:
     # See below simple keys treatment.
 
     def __init__(self, token_number, required, index, line, column, mark):
@@ -43,7 +43,7 @@ class SimpleKey(object):
         self.column = column
         self.mark = mark
 
-class Scanner(object):
+class Scanner:
 
     def __init__(self):
         """Initialize the scanner."""
@@ -137,6 +137,16 @@ class Scanner(object):
             self.tokens_taken += 1
             return self.tokens.pop(0)
 
+    def __iter__(self):
+        # Iterator protocol.
+        while self.need_more_tokens():
+            self.fetch_more_tokens()
+        while self.tokens:
+            self.tokens_taken += 1
+            yield self.tokens.pop(0)
+            while self.need_more_tokens():
+                self.fetch_more_tokens()
+
     # Private methods.
 
     def need_more_tokens(self):
@@ -204,11 +214,11 @@ class Scanner(object):
             return self.fetch_flow_mapping_end()
 
         # Is it the flow entry indicator?
-        if ch == u',':
+        if ch in u',':
             return self.fetch_flow_entry()
 
         # Is it the block entry indicator?
-        if ch == u'-' and self.check_block_entry():
+        if ch in u'-' and self.check_block_entry():
             return self.fetch_block_entry()
 
         # Is it the key indicator?
@@ -315,11 +325,11 @@ class Scanner(object):
         if self.flow_level in self.possible_simple_keys:
             key = self.possible_simple_keys[self.flow_level]
             
-            if key.required:
-                raise ScannerError("while scanning a simple key", key.mark,
-                        "could not found expected ':'", self.get_mark())
-
-            del self.possible_simple_keys[self.flow_level]
+            # I don't think it's possible, but I could be wrong.
+            assert not key.required
+            #if key.required:
+            #    raise ScannerError("while scanning a simple key", key.mark,
+            #            "could not found expected ':'", self.get_mark())
 
     # Indentation functions.
 
@@ -577,14 +587,6 @@ class Scanner(object):
                     raise ScannerError(None, None,
                             "mapping values are not allowed here",
                             self.get_mark())
-
-            # If this value starts a new block mapping, we need to add
-            # BLOCK-MAPPING-START.  It will be detected as an error later by
-            # the parser.
-            if not self.flow_level:
-                if self.add_indent(self.column):
-                    mark = self.get_mark()
-                    self.tokens.append(BlockMappingStartToken(mark, mark))
 
             # Simple keys are allowed after ':' in the block context.
             self.allow_simple_key = not self.flow_level
@@ -1295,13 +1297,13 @@ class Scanner(object):
                 ch = self.peek(length)
                 if ch in u'\0 \t\r\n\x85\u2028\u2029'   \
                         or (not self.flow_level and ch == u':' and
-                                self.peek(length+1) in u'\0 \t\r\n\x85\u2028\u2029') \
+                                self.peek(length+1) in u'\0 \t\r\n\x28\u2028\u2029') \
                         or (self.flow_level and ch in u',:?[]{}'):
                     break
                 length += 1
             # It's not clear what we should do with ':' in the flow context.
             if (self.flow_level and ch == u':'
-                    and self.peek(length+1) not in u'\0 \t\r\n\x85\u2028\u2029,[]{}'):
+                    and self.peek(length+1) not in u'\0 \t\r\n\x28\u2028\u2029,[]{}'):
                 self.forward(length)
                 raise ScannerError("while scanning a plain scalar", start_mark,
                     "found unexpected ':'", self.get_mark(),

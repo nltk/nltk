@@ -9,7 +9,7 @@ import re
 class ResolverError(YAMLError):
     pass
 
-class BaseResolver(object):
+class BaseResolver:
 
     DEFAULT_SCALAR_TAG = u'tag:yaml.org,2002:str'
     DEFAULT_SEQUENCE_TAG = u'tag:yaml.org,2002:seq'
@@ -74,8 +74,6 @@ class BaseResolver(object):
     add_path_resolver = classmethod(add_path_resolver)
 
     def descend_resolver(self, current_node, current_index):
-        if not self.yaml_path_resolvers:
-            return
         exact_paths = {}
         prefix_paths = []
         if current_node:
@@ -97,8 +95,6 @@ class BaseResolver(object):
         self.resolver_prefix_paths.append(prefix_paths)
 
     def ascend_resolver(self):
-        if not self.yaml_path_resolvers:
-            return
         self.resolver_exact_paths.pop()
         self.resolver_prefix_paths.pop()
 
@@ -135,12 +131,11 @@ class BaseResolver(object):
                 if regexp.match(value):
                     return tag
             implicit = implicit[1]
-        if self.yaml_path_resolvers:
-            exact_paths = self.resolver_exact_paths[-1]
-            if kind in exact_paths:
-                return exact_paths[kind]
-            if None in exact_paths:
-                return exact_paths[None]
+        exact_paths = self.resolver_exact_paths[-1]
+        if kind in exact_paths:
+            return exact_paths[kind]
+        if None in exact_paths:
+            return exact_paths[None]
         if kind is ScalarNode:
             return self.DEFAULT_SCALAR_TAG
         elif kind is SequenceNode:
@@ -153,7 +148,7 @@ class Resolver(BaseResolver):
 
 Resolver.add_implicit_resolver(
         u'tag:yaml.org,2002:bool',
-        re.compile(ur'''^(?:yes|Yes|YES|no|No|NO
+        re.compile(ur'''^(?:yes|Yes|YES|n|N|no|No|NO
                     |true|True|TRUE|false|False|FALSE
                     |on|On|ON|off|Off|OFF)$''', re.X),
         list(u'yYnNtTfFoO'))

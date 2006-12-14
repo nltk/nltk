@@ -26,7 +26,7 @@ structures intuitively:
 ...   C: c
 ...   D: d
 ... ''')
->>> print yaml.show(unify(f1, f2))
+>>> print show(unify(f1, f2))
 A:
   B: b
   C: c
@@ -60,7 +60,7 @@ to ensure that variables with the same name get the same value.
 from copy import copy, deepcopy
 import re
 import yaml
-import unittest
+#import unittest
 import sys
 
 class UnificationFailure(Exception):
@@ -228,6 +228,13 @@ class Variable(object):
         if self._value is None: return '?%s' % self._name
         else: return '?%s: %r' % (self._name, self._value)
 
+def show(data):
+    """
+    Works like yaml.dump(), but with output suited for doctests. Flow style
+    is always off, and there is no blank line at the end.
+    """
+    return yaml.dump(data, default_flow_style=False).strip()
+
 def variable_representer(dumper, var):
     "Output variables in YAML as ?name."
     return dumper.represent_scalar(u'!var', u'?%s' % var.name())
@@ -324,7 +331,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     
     >>> f1 = yaml.load("number: singular")
     >>> f2 = yaml.load("person: 3")
-    >>> print yaml.show(unify(f1, f2))
+    >>> print show(unify(f1, f2))
     number: singular
     person: 3
 
@@ -338,7 +345,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     ...   C: c
     ...   D: d
     ... ''')
-    >>> print yaml.show(unify(f1, f2))
+    >>> print show(unify(f1, f2))
     A:
       B: b
       C: c
@@ -382,7 +389,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     ... ''')
     >>> bindings1 = {}
     >>> bindings2 = {}
-    >>> print yaml.show(unify(f1, f2, bindings1, bindings2))
+    >>> print show(unify(f1, f2, bindings1, bindings2))
     a: 1
     b: 1
     c: 2
@@ -401,8 +408,8 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     
     Unification preserves the properties of reentrance. So if a reentrant value
     is changed by unification, it is changed everywhere it occurs, and it is
-    still reentrant. Reentrant features can even form cycles, although these
-    cycles currently cannot be printed through the current YAML library.
+    still reentrant. Reentrant features can even form cycles; these
+    cycles can now be printed through the current YAML library.
 
     >>> f1 = yaml.load('''
     ... A: &1                # &1 defines a reference in YAML...
@@ -422,13 +429,13 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     ...     D: d
     ... ''')
     >>> f3 = unify(f1, f2)
-    >>> print yaml.show(f3)
-    A: &1
+    >>> print show(f3)
+    A: &id001
       B: b
       C: c
       D: d
     E:
-      F: *1
+      F: *id001
     >>> f3['A'] is f3['E']['F']    # Showing that the reentrance still holds.
     True
     
@@ -494,7 +501,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     >>> # We could avoid defining two empty dictionaries by simply using the
     >>> # defaults, with unify(f1, f2) -- but we want to be able to examine
     >>> # the bindings afterward.
-    >>> print yaml.show(unify(f1, f2, bindings1, bindings2))
+    >>> print show(unify(f1, f2, bindings1, bindings2))
     a: 1
     b: 1
     c: 2
@@ -517,10 +524,10 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     ... c: ?y
     ... ''')
     >>> bindings = {}
-    >>> print yaml.show(unify(f1, f2, bindings))
-    a: &1 ?y
-    b: *1
-    c: *1
+    >>> print show(unify(f1, f2, bindings))
+    a: &id001 ?y
+    b: *id001
+    c: *id001
     >>> print bindings
     {'x': ?y}
 
@@ -530,9 +537,9 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     >>> f1 = {'a': Variable('x')}
     >>> f2 = unify(f1, {'a': {}}, bindings)
     >>> f3 = unify(f2, {'b': Variable('x')}, bindings)
-    >>> print yaml.show(f3)
-    a: &1 {}
-    b: *1
+    >>> print show(f3)
+    a: &id001 {}
+    b: *id001
     >>> print bindings
     {'x': {}}
 
