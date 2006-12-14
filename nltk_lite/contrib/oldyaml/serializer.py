@@ -8,9 +8,9 @@ from nodes import *
 class SerializerError(YAMLError):
     pass
 
-class Serializer(object):
+class Serializer:
 
-    ANCHOR_TEMPLATE = u'id%03d'
+    ANCHOR_TEMPLATE = u'%d'
 
     def __init__(self, encoding=None,
             explicit_start=None, explicit_end=None, version=None, tags=None):
@@ -67,9 +67,16 @@ class Serializer(object):
                 for item in node.value:
                     self.anchor_node(item)
             elif isinstance(node, MappingNode):
-                for key, value in node.value:
-                    self.anchor_node(key)
-                    self.anchor_node(value)
+                if hasattr(node.value, 'keys'):
+                    keys = node.value.keys()
+                    keys.sort()
+                    for key in keys:
+                        self.anchor_node(key)
+                        self.anchor_node(node.value[key])
+                else:
+                    for key, value in node.value:
+                        self.anchor_node(key)
+                        self.anchor_node(value)
 
     def generate_anchor(self, node):
         self.last_anchor_id += 1
@@ -103,9 +110,16 @@ class Serializer(object):
                             == self.resolve(MappingNode, node.value, True))
                 self.emit(MappingStartEvent(alias, node.tag, implicit,
                     flow_style=node.flow_style))
-                for key, value in node.value:
-                    self.serialize_node(key, node, None)
-                    self.serialize_node(value, node, key)
+                if hasattr(node.value, 'keys'):
+                    keys = node.value.keys()
+                    keys.sort()
+                    for key in keys:
+                        self.serialize_node(key, node, None)
+                        self.serialize_node(node.value[key], node, key)
+                else:
+                    for key, value in node.value:
+                        self.serialize_node(key, node, None)
+                        self.serialize_node(value, node, key)
                 self.emit(MappingEndEvent())
             self.ascend_resolver()
 

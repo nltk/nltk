@@ -16,7 +16,7 @@ import re
 class EmitterError(YAMLError):
     pass
 
-class ScalarAnalysis(object):
+class ScalarAnalysis:
     def __init__(self, scalar, empty, multiline,
             allow_flow_plain, allow_block_plain,
             allow_single_quoted, allow_double_quoted,
@@ -30,7 +30,7 @@ class ScalarAnalysis(object):
         self.allow_double_quoted = allow_double_quoted
         self.allow_block = allow_block
 
-class Emitter(object):
+class Emitter:
 
     DEFAULT_TAG_PREFIXES = {
         u'!' : u'!',
@@ -492,8 +492,7 @@ class Emitter(object):
                     or (not self.flow_level and self.analysis.allow_block_plain))):
                 return ''
         if self.event.style and self.event.style in '|>':
-            if (not self.flow_level and not self.simple_key_context
-                    and self.analysis.allow_block):
+            if not self.flow_level and self.analysis.allow_block:
                 return self.event.style
         if not self.event.style or self.event.style == '\'':
             if (self.analysis.allow_single_quoted and
@@ -671,7 +670,7 @@ class Emitter(object):
 
             if index == 0:
                 # Leading indicators are special characters.
-                if ch in u'#,[]{}&*!|>\'\"%@`': 
+                if ch in u'#,[]{}#&*!|>\'\"%@`': 
                     flow_indicators = True
                     block_indicators = True
                 if ch in u'?:':
@@ -923,13 +922,13 @@ class Emitter(object):
                             data = data.encode(self.encoding)
                         self.stream.write(data)
                         start = end
-            if ch == u'\'':
-                data = u'\'\''
-                self.column += 2
-                if self.encoding:
-                    data = data.encode(self.encoding)
-                self.stream.write(data)
-                start = end + 1
+                    if ch == u'\'':
+                        data = u'\'\''
+                        self.column += 2
+                        if self.encoding:
+                            data = data.encode(self.encoding)
+                        self.stream.write(data)
+                        start = end + 1
             if ch is not None:
                 spaces = (ch == u' ')
                 breaks = (ch in u'\n\x85\u2028\u2029')

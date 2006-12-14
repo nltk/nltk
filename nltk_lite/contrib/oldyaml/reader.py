@@ -77,7 +77,7 @@ class ReaderError(YAMLError):
                     % (ord(self.character), self.reason,
                             self.name, self.position)
 
-class Reader(object):
+class Reader:
     # Reader:
     # - determines the data encoding and converts it to unicode,
     # - checks if characters are in allowed range,
@@ -120,11 +120,9 @@ class Reader(object):
             self.determine_encoding()
 
     def peek(self, index=0):
-        try:
-            return self.buffer[self.pointer+index]
-        except IndexError:
+        if self.pointer+index+1 >= len(self.buffer):
             self.update(index+1)
-            return self.buffer[self.pointer+index]
+        return self.buffer[self.pointer+index]
 
     def prefix(self, length=1):
         if self.pointer+length >= len(self.buffer):
@@ -134,17 +132,16 @@ class Reader(object):
     def forward(self, length=1):
         if self.pointer+length+1 >= len(self.buffer):
             self.update(length+1)
-        while length:
+        for k in range(length):
             ch = self.buffer[self.pointer]
             self.pointer += 1
             self.index += 1
             if ch in u'\n\x85\u2028\u2029'  \
-                    or (ch == u'\r' and self.buffer[self.pointer] != u'\n'):
+                    or (ch == u'\r' and self.buffer[self.pointer+1] != u'\n'):
                 self.line += 1
                 self.column = 0
             elif ch != u'\uFEFF':
                 self.column += 1
-            length -= 1
 
     def get_mark(self):
         if self.stream is None:

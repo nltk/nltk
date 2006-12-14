@@ -8,7 +8,7 @@ from nodes import *
 class ComposerError(MarkedYAMLError):
     pass
 
-class Composer(object):
+class Composer:
 
     def __init__(self):
         self.anchors = {}
@@ -21,6 +21,11 @@ class Composer(object):
         # Get the root node of the next document.
         if not self.check_event(StreamEndEvent):
             return self.compose_document()
+
+    def __iter__(self):
+        # Iterator protocol.
+        while not self.check_event(StreamEndEvent):
+            yield self.compose_document()
 
     def compose_document(self):
 
@@ -37,7 +42,7 @@ class Composer(object):
         # Drop the DOCUMENT-END event.
         self.get_event()
 
-        self.anchors = {}
+        self.complete_anchors = {}
         return node
 
     def compose_node(self, parent, index):
@@ -99,20 +104,19 @@ class Composer(object):
         tag = start_event.tag
         if tag is None or tag == u'!':
             tag = self.resolve(MappingNode, None, start_event.implicit)
-        node = MappingNode(tag, [],
+        node = MappingNode(tag, {},
                 start_event.start_mark, None,
                 flow_style=start_event.flow_style)
         if anchor is not None:
             self.anchors[anchor] = node
         while not self.check_event(MappingEndEvent):
-            #key_event = self.peek_event()
+            key_event = self.peek_event()
             item_key = self.compose_node(node, None)
-            #if item_key in node.value:
-            #    raise ComposerError("while composing a mapping", start_event.start_mark,
-            #            "found duplicate key", key_event.start_mark)
+            if item_key in node.value:
+                raise ComposerError("while composing a mapping", start_event.start_mark,
+                        "found duplicate key", key_event.start_mark)
             item_value = self.compose_node(node, item_key)
-            #node.value[item_key] = item_value
-            node.value.append((item_key, item_value))
+            node.value[item_key] = item_value
         end_event = self.get_event()
         node.end_mark = end_event.end_mark
         return node
