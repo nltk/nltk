@@ -1,5 +1,5 @@
 
-class Node(object):
+class Node:
     def __init__(self, tag, value, start_mark, end_mark):
         self.tag = tag
         self.value = value
@@ -31,6 +31,11 @@ class ScalarNode(Node):
         self.start_mark = start_mark
         self.end_mark = end_mark
         self.style = style
+    def __cmp__(self, other):
+        if not isinstance(other, Node): return -1
+        return cmp((self.value, id(self)), (other.value, id(other)))
+    def __hash__(self):
+        return hash(id(self))
 
 class CollectionNode(Node):
     def __init__(self, tag, value,

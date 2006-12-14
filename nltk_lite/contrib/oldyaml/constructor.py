@@ -4,8 +4,13 @@ __all__ = ['BaseConstructor', 'SafeConstructor', 'Constructor',
 
 from error import *
 from nodes import *
+from composer import *
 
-import datetime
+try:
+    import datetime
+    datetime_available = True
+except ImportError:
+    datetime_available = False
 
 try:
     set
@@ -17,7 +22,7 @@ import binascii, re, sys
 class ConstructorError(MarkedYAMLError):
     pass
 
-class BaseConstructor(object):
+class BaseConstructor(Composer):
 
     yaml_constructors = {}
     yaml_multi_constructors = {}
@@ -25,8 +30,6 @@ class BaseConstructor(object):
     def __init__(self):
         self.constructed_objects = {}
         self.recursive_objects = {}
-        self.state_generators = []
-        self.deep_construct = False
 
     def check_data(self):
         # If there are more documents available?
@@ -37,115 +40,135 @@ class BaseConstructor(object):
         if self.check_node():
             return self.construct_document(self.get_node())
 
-    def g(): yield None
-    generator_type = type(g())
-    del g
+    def __iter__(self):
+        # Iterator protocol.
+        while self.check_node():
+            yield self.construct_document(self.get_node())
 
     def construct_document(self, node):
         data = self.construct_object(node)
-        while self.state_generators:
-            state_generators = self.state_generators
-            self.state_generators = []
-            for generator in state_generators:
-                for dummy in generator:
-                    pass
         self.constructed_objects = {}
         self.recursive_objects = {}
-        self.deep_construct = False
         return data
 
-    def construct_object(self, node, deep=False):
-        if deep:
-            old_deep = self.deep_construct
-            self.deep_construct = True
+    def construct_object(self, node):
         if node in self.constructed_objects:
             return self.constructed_objects[node]
         if node in self.recursive_objects:
             raise ConstructorError(None, None,
-                    "found unconstructable recursive node", node.start_mark)
+                    "found recursive node", node.start_mark)
         self.recursive_objects[node] = None
         constructor = None
-        state_constructor = None
-        tag_suffix = None
         if node.tag in self.yaml_constructors:
-            constructor = self.yaml_constructors[node.tag]
+            constructor = lambda node: self.yaml_constructors[node.tag](self, node)
         else:
             for tag_prefix in self.yaml_multi_constructors:
                 if node.tag.startswith(tag_prefix):
                     tag_suffix = node.tag[len(tag_prefix):]
-                    constructor = self.yaml_multi_constructors[tag_prefix]
+                    constructor = lambda node:  \
+                            self.yaml_multi_constructors[tag_prefix](self, tag_suffix, node)
                     break
             else:
                 if None in self.yaml_multi_constructors:
-                    tag_suffix = node.tag
-                    constructor = self.yaml_multi_constructors[None]
+                    constructor = lambda node:  \
+                            self.yaml_multi_constructors[None](self, node.tag, node)
                 elif None in self.yaml_constructors:
-                    constructor = self.yaml_constructors[None]
+                    constructor = lambda node:  \
+                            self.yaml_constructors[None](self, node)
                 elif isinstance(node, ScalarNode):
-                    constructor = self.__class__.construct_scalar
+                    constructor = self.construct_scalar
                 elif isinstance(node, SequenceNode):
-                    constructor = self.__class__.construct_sequence
+                    constructor = self.construct_sequence
                 elif isinstance(node, MappingNode):
-                    constructor = self.__class__.construct_mapping
-        if tag_suffix is None:
-            data = constructor(self, node)
-        else:
-            data = constructor(self, tag_suffix, node)
-        if isinstance(data, self.generator_type):
-            generator = data
-            data = generator.next()
-            if self.deep_construct:
-                for dummy in generator:
-                    pass
-            else:
-                self.state_generators.append(generator)
+                    constructor = self.construct_mapping
+                else:
+                    print node.tag
+        data = constructor(node)
         self.constructed_objects[node] = data
         del self.recursive_objects[node]
-        if deep:
-            self.deep_construct = old_deep
         return data
 
     def construct_scalar(self, node):
         if not isinstance(node, ScalarNode):
+            if isinstance(node, MappingNode):
+                for key_node in node.value:
+                    if key_node.tag == u'tag:yaml.org,2002:value':
+                        return self.construct_scalar(node.value[key_node])
             raise ConstructorError(None, None,
                     "expected a scalar node, but found %s" % node.id,
                     node.start_mark)
         return node.value
 
-    def construct_sequence(self, node, deep=False):
+    def construct_sequence(self, node):
         if not isinstance(node, SequenceNode):
             raise ConstructorError(None, None,
                     "expected a sequence node, but found %s" % node.id,
                     node.start_mark)
-        return [self.construct_object(child, deep=deep)
-                for child in node.value]
+        return [self.construct_object(child) for child in node.value]
 
-    def construct_mapping(self, node, deep=False):
+    def construct_mapping(self, node):
         if not isinstance(node, MappingNode):
             raise ConstructorError(None, None,
                     "expected a mapping node, but found %s" % node.id,
                     node.start_mark)
         mapping = {}
-        for key_node, value_node in node.value:
-            key = self.construct_object(key_node, deep=deep)
-            try:
-                hash(key)
-            except TypeError, exc:
-                raise ConstructorError("while constructing a mapping", node.start_mark,
-                        "found unacceptable key (%s)" % exc, key_node.start_mark)
-            value = self.construct_object(value_node, deep=deep)
-            mapping[key] = value
+        merge = None
+        for key_node in node.value:
+            if key_node.tag == u'tag:yaml.org,2002:merge':
+                if merge is not None:
+                    raise ConstructorError("while constructing a mapping", node.start_mark,
+                            "found duplicate merge key", key_node.start_mark)
+                value_node = node.value[key_node]
+                if isinstance(value_node, MappingNode):
+                    merge = [self.construct_mapping(value_node)]
+                elif isinstance(value_node, SequenceNode):
+                    merge = []
+                    for subnode in value_node.value:
+                        if not isinstance(subnode, MappingNode):
+                            raise ConstructorError("while constructing a mapping",
+                                    node.start_mark,
+                                    "expected a mapping for merging, but found %s"
+                                    % subnode.id, subnode.start_mark)
+                        merge.append(self.construct_mapping(subnode))
+                    merge.reverse()
+                else:
+                    raise ConstructorError("while constructing a mapping", node.start_mark,
+                            "expected a mapping or list of mappings for merging, but found %s"
+                            % value_node.id, value_node.start_mark)
+            elif key_node.tag == u'tag:yaml.org,2002:value':
+                if '=' in mapping:
+                    raise ConstructorError("while construction a mapping", node.start_mark,
+                            "found duplicate value key", key_node.start_mark)
+                value = self.construct_object(node.value[key_node])
+                mapping['='] = value
+            else:
+                key = self.construct_object(key_node)
+                try:
+                    duplicate_key = key in mapping
+                except TypeError, exc:
+                    raise ConstructorError("while constructing a mapping", node.start_mark,
+                            "found unacceptable key (%s)" % exc, key_node.start_mark)
+                if duplicate_key:
+                    raise ConstructorError("while constructing a mapping", node.start_mark,
+                            "found duplicate key", key_node.start_mark)
+                value = self.construct_object(node.value[key_node])
+                mapping[key] = value
+        if merge is not None:
+            merge.append(mapping)
+            mapping = {}
+            for submapping in merge:
+                mapping.update(submapping)
         return mapping
 
-    def construct_pairs(self, node, deep=False):
+    def construct_pairs(self, node):
         if not isinstance(node, MappingNode):
             raise ConstructorError(None, None,
                     "expected a mapping node, but found %s" % node.id,
                     node.start_mark)
         pairs = []
-        for key_node, value_node in node.value:
-            key = self.construct_object(key_node, deep=deep)
-            value = self.construct_object(value_node, deep=deep)
+        for key_node in node.value:
+            key = self.construct_object(key_node)
+            value = self.construct_object(node.value[key_node])
             pairs.append((key, value))
         return pairs
 
@@ -162,53 +185,6 @@ class BaseConstructor(object):
     add_multi_constructor = classmethod(add_multi_constructor)
 
 class SafeConstructor(BaseConstructor):
-
-    def construct_scalar(self, node):
-        if isinstance(node, MappingNode):
-            for key_node, value_node in node.value:
-                if key_node.tag == u'tag:yaml.org,2002:value':
-                    return self.construct_scalar(value_node)
-        return BaseConstructor.construct_scalar(self, node)
-
-    def flatten_mapping(self, node):
-        merge = []
-        index = 0
-        while index < len(node.value):
-            key_node, value_node = node.value[index]
-            if key_node.tag == u'tag:yaml.org,2002:merge':
-                del node.value[index]
-                if isinstance(value_node, MappingNode):
-                    self.flatten_mapping(value_node)
-                    merge.extend(value_node.value)
-                elif isinstance(value_node, SequenceNode):
-                    submerge = []
-                    for subnode in value_node.value:
-                        if not isinstance(subnode, MappingNode):
-                            raise ConstructorError("while constructing a mapping",
-                                    node.start_mark,
-                                    "expected a mapping for merging, but found %s"
-                                    % subnode.id, subnode.start_mark)
-                        self.flatten_mapping(subnode)
-                        submerge.append(subnode.value)
-                    submerge.reverse()
-                    for value in submerge:
-                        merge.extend(value)
-                else:
-                    raise ConstructorError("while constructing a mapping", node.start_mark,
-                            "expected a mapping or list of mappings for merging, but found %s"
-                            % value_node.id, value_node.start_mark)
-            elif key_node.tag == u'tag:yaml.org,2002:value':
-                key_node.tag = u'tag:yaml.org,2002:str'
-                index += 1
-            else:
-                index += 1
-        if merge:
-            node.value = merge + node.value
-
-    def construct_mapping(self, node, deep=False):
-        if isinstance(node, MappingNode):
-            self.flatten_mapping(node)
-        return BaseConstructor.construct_mapping(self, node, deep=deep)
 
     def construct_yaml_null(self, node):
         self.construct_scalar(node)
@@ -255,22 +231,20 @@ class SafeConstructor(BaseConstructor):
         else:
             return sign*int(value)
 
-    inf_value = 1e300
-    while inf_value != inf_value*inf_value:
-        inf_value *= inf_value
-    nan_value = -inf_value/inf_value   # Trying to make a quiet NaN (like C99).
+    inf_value = 1e300000
+    nan_value = inf_value/inf_value
 
     def construct_yaml_float(self, node):
         value = str(self.construct_scalar(node))
-        value = value.replace('_', '').lower()
+        value = value.replace('_', '')
         sign = +1
         if value[0] == '-':
             sign = -1
         if value[0] in '+-':
             value = value[1:]
-        if value == '.inf':
+        if value.lower() == '.inf':
             return sign*self.inf_value
-        elif value == '.nan':
+        elif value.lower() == '.nan':
             return self.nan_value
         elif ':' in value:
             digits = [float(part) for part in value.split(':')]
@@ -282,7 +256,7 @@ class SafeConstructor(BaseConstructor):
                 base *= 60
             return sign*value
         else:
-            return sign*float(value)
+            return float(value)
 
     def construct_yaml_binary(self, node):
         value = self.construct_scalar(node)
@@ -300,45 +274,36 @@ class SafeConstructor(BaseConstructor):
                 (?P<hour>[0-9][0-9]?)
                 :(?P<minute>[0-9][0-9])
                 :(?P<second>[0-9][0-9])
-                (?:(?P<fraction>\.[0-9]*))?
-                (?:[ \t]*(?P<tz>Z|(?P<tz_sign>[-+])(?P<tz_hour>[0-9][0-9]?)
-                (?::(?P<tz_minute>[0-9][0-9]))?))?)?$''', re.X)
+                (?:\.(?P<fraction>[0-9]*))?
+                (?:[ \t]*(?:Z|(?P<tz_hour>[-+][0-9][0-9]?)
+                (?::(?P<tz_minute>[0-9][0-9])?)?))?)?$''', re.X)
 
     def construct_yaml_timestamp(self, node):
         value = self.construct_scalar(node)
         match = self.timestamp_regexp.match(node.value)
         values = match.groupdict()
-        year = int(values['year'])
-        month = int(values['month'])
-        day = int(values['day'])
-        if not values['hour']:
-            return datetime.date(year, month, day)
-        hour = int(values['hour'])
-        minute = int(values['minute'])
-        second = int(values['second'])
-        fraction = 0
-        if values['fraction']:
-            fraction = int(float(values['fraction'])*1000000)
-        delta = None
-        if values['tz_sign']:
-            tz_hour = int(values['tz_hour'])
-            tz_minute = int(values['tz_minute'] or 0)
-            delta = datetime.timedelta(hours=tz_hour, minutes=tz_minute)
-            if values['tz_sign'] == '-':
-                delta = -delta
-        data = datetime.datetime(year, month, day, hour, minute, second, fraction)
-        if delta:
-            data -= delta
-        return data
+        for key in values:
+            if values[key]:
+                values[key] = int(values[key])
+            else:
+                values[key] = 0
+        fraction = values['fraction']
+        if fraction:
+            while 10*fraction < 1000000:
+                fraction *= 10
+            values['fraction'] = fraction
+        stamp = datetime.datetime(values['year'], values['month'], values['day'],
+                values['hour'], values['minute'], values['second'], values['fraction'])
+        diff = datetime.timedelta(hours=values['tz_hour'], minutes=values['tz_minute'])
+        return stamp-diff
 
     def construct_yaml_omap(self, node):
         # Note: we do not check for duplicate keys, because it's too
         # CPU-expensive.
-        omap = []
-        yield omap
         if not isinstance(node, SequenceNode):
             raise ConstructorError("while constructing an ordered map", node.start_mark,
                     "expected a sequence, but found %s" % node.id, node.start_mark)
+        omap = []
         for subnode in node.value:
             if not isinstance(subnode, MappingNode):
                 raise ConstructorError("while constructing an ordered map", node.start_mark,
@@ -348,18 +313,18 @@ class SafeConstructor(BaseConstructor):
                 raise ConstructorError("while constructing an ordered map", node.start_mark,
                         "expected a single mapping item, but found %d items" % len(subnode.value),
                         subnode.start_mark)
-            key_node, value_node = subnode.value[0]
+            key_node = subnode.value.keys()[0]
             key = self.construct_object(key_node)
-            value = self.construct_object(value_node)
+            value = self.construct_object(subnode.value[key_node])
             omap.append((key, value))
+        return omap
 
     def construct_yaml_pairs(self, node):
         # Note: the same code as `construct_yaml_omap`.
-        pairs = []
-        yield pairs
         if not isinstance(node, SequenceNode):
             raise ConstructorError("while constructing pairs", node.start_mark,
                     "expected a sequence, but found %s" % node.id, node.start_mark)
+        pairs = []
         for subnode in node.value:
             if not isinstance(subnode, MappingNode):
                 raise ConstructorError("while constructing pairs", node.start_mark,
@@ -369,16 +334,15 @@ class SafeConstructor(BaseConstructor):
                 raise ConstructorError("while constructing pairs", node.start_mark,
                         "expected a single mapping item, but found %d items" % len(subnode.value),
                         subnode.start_mark)
-            key_node, value_node = subnode.value[0]
+            key_node = subnode.value.keys()[0]
             key = self.construct_object(key_node)
-            value = self.construct_object(value_node)
+            value = self.construct_object(subnode.value[key_node])
             pairs.append((key, value))
+        return pairs
 
     def construct_yaml_set(self, node):
-        data = set()
-        yield data
         value = self.construct_mapping(node)
-        data.update(value)
+        return set(value)
 
     def construct_yaml_str(self, node):
         value = self.construct_scalar(node)
@@ -388,25 +352,19 @@ class SafeConstructor(BaseConstructor):
             return value
 
     def construct_yaml_seq(self, node):
-        data = []
-        yield data
-        data.extend(self.construct_sequence(node))
+        return self.construct_sequence(node)
 
     def construct_yaml_map(self, node):
-        data = {}
-        yield data
-        value = self.construct_mapping(node)
-        data.update(value)
+        return self.construct_mapping(node)
 
     def construct_yaml_object(self, node, cls):
+        state = self.construct_mapping(node)
         data = cls.__new__(cls)
-        yield data
         if hasattr(data, '__setstate__'):
-            state = self.construct_mapping(node, deep=True)
             data.__setstate__(state)
         else:
-            state = self.construct_mapping(node)
             data.__dict__.update(state)
+        return data
 
     def construct_undefined(self, node):
         raise ConstructorError(None, None,
@@ -433,9 +391,10 @@ SafeConstructor.add_constructor(
         u'tag:yaml.org,2002:binary',
         SafeConstructor.construct_yaml_binary)
 
-SafeConstructor.add_constructor(
-        u'tag:yaml.org,2002:timestamp',
-        SafeConstructor.construct_yaml_timestamp)
+if datetime_available:
+    SafeConstructor.add_constructor(
+            u'tag:yaml.org,2002:timestamp',
+            SafeConstructor.construct_yaml_timestamp)
 
 SafeConstructor.add_constructor(
         u'tag:yaml.org,2002:omap',
@@ -479,7 +438,7 @@ class Constructor(SafeConstructor):
        return complex(self.construct_scalar(node))
 
     def construct_python_tuple(self, node):
-        return tuple(self.construct_sequence(node))
+        return tuple(self.construct_yaml_seq(node))
 
     def find_python_module(self, name, mark):
         if not name:
@@ -570,10 +529,9 @@ class Constructor(SafeConstructor):
         # Format:
         #   !!python/object:module.name { ... state ... }
         instance = self.make_python_instance(suffix, node, newobj=True)
-        yield instance
-        deep = hasattr(instance, '__setstate__')
-        state = self.construct_mapping(node, deep=deep)
+        state = self.construct_mapping(node)
         self.set_python_instance_state(instance, state)
+        return instance
 
     def construct_python_object_apply(self, suffix, node, newobj=False):
         # Format:
@@ -588,13 +546,13 @@ class Constructor(SafeConstructor):
         # The difference between !!python/object/apply and !!python/object/new
         # is how an object is created, check make_python_instance for details.
         if isinstance(node, SequenceNode):
-            args = self.construct_sequence(node, deep=True)
+            args = self.construct_sequence(node)
             kwds = {}
             state = {}
             listitems = []
             dictitems = {}
         else:
-            value = self.construct_mapping(node, deep=True)
+            value = self.construct_mapping(node)
             args = value.get('args', [])
             kwds = value.get('kwds', {})
             state = value.get('state', {})
@@ -612,6 +570,7 @@ class Constructor(SafeConstructor):
 
     def construct_python_object_new(self, suffix, node):
         return self.construct_python_object_apply(suffix, node, newobj=True)
+
 
 Constructor.add_constructor(
     u'tag:yaml.org,2002:python/none',
