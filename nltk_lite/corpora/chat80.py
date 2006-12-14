@@ -157,6 +157,11 @@ circle_of_lat = {'rel_name': 'circle_of_latitude',
                  'schema': ['circle_of_latitude', 'degrees'],
                  'filename': 'world1.pl'}
 
+circle_of_long = {'rel_name': 'circle_of_longitude',
+                 'closures': [],
+                 'schema': ['circle_of_longitude', 'degrees'],
+                 'filename': 'world1.pl'}
+
 continent = {'rel_name': 'continent',
              'closures': [],
              'schema': ['continent'],
@@ -180,7 +185,7 @@ sea = {'rel_name': 'sea',
 
 
 items = ['borders', 'contains', 'city', 'country', 'circle_of_lat',
-         'continent', 'region', 'ocean', 'sea']
+         'circle_of_long', 'continent', 'region', 'ocean', 'sea']
 
 item_metadata = {
     'borders': borders,
