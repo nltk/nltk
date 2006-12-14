@@ -1,4 +1,6 @@
 from nltk_lite.semantics import *
+from nltk_lite.semantics import logic
+
 import unittest
 
 class TestModels(unittest.TestCase):
