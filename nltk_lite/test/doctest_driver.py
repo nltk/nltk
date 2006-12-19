@@ -70,6 +70,28 @@ class _SpoofOut(StringIO):
             del self.softspace
 
 ###########################################################################
+# MyParser
+###########################################################################
+
+class MyDocTestParser(DocTestParser):
+    def get_examples(self, string, name='<string>'):
+        examples = []
+        ignore = False
+        print 'parsing'
+        for x in self.parse(string, name):
+            if isinstance(x, Example):
+                if not ignore:
+                    examples.append(x)
+                else:
+                    print '.. doctest-ignore:: %s' % x.source.strip()[:50]
+            else:
+                if re.search(r'\.\.\s*doctest-ignore::?\s*$', x):
+                    ignore = True
+                elif x.strip():
+                    ignore = False
+        return examples
+                
+###########################################################################
 # Update Runner
 ###########################################################################
 
@@ -251,7 +273,7 @@ class Debugger:
     def _script_from_examples(self, s):
         output = []
         examplenum = 0
-        for piece in DocTestParser().parse(s):
+        for piece in MyDocTestParser().parse(s):
             if isinstance(piece, Example):
                 self._script_from_example(piece, examplenum, output)
                 examplenum += 1
@@ -458,7 +480,7 @@ def find(name):
                 raise ValueError("test names can't be specified "
                                  "for text files")
             s = open(filename).read()
-            test = DocTestParser().get_doctest(s, {}, name, filename, 0)
+            test = MyDocTestParser().get_doctest(s, {}, name, filename, 0)
             return [test]
         else:
             # It's a python file; import it.  Make sure to set the
@@ -546,7 +568,7 @@ def debug(names, optionflags, verbosity, pm=True):
                                  (sys.argv[0], name, e))
 
 def update(names, optionflags, verbosity):
-    parser = DocTestParser()
+    parser = MyDocTestParser()
     runner = UpdateRunner(verbose=True)
     for name in names:
         try:
