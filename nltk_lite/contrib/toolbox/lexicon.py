@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Shoebox Lexicon
+# Natural Language Toolkit: Toolbox Lexicon
 #
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Stuart Robinson <stuart@zapata.org>
@@ -7,19 +7,19 @@
 
 """
 This modules provides functionality for parsing and manipulating the
-contents of a Shoebox lexicon without reference to its metadata.
+contents of a Toolbox lexicon without reference to its metadata.
 """
 
 import os, re, sys
 from nltk_lite.corpora import get_basedir
-from nltk_lite.corpora.shoebox import ShoeboxFile
+from nltk_lite.corpora.toolbox import StandardFormat
 from utilities import Field, SequentialDictionary
 
 
-class Lexicon(ShoeboxFile):
+class Lexicon(StandardFormat):
 
   """
-  This class represents a Shoebox lexicon, which consists of an
+  This class represents a Toolbox lexicon, which consists of an
   optional header and one or more Entry objects, saved in a dictionary
   whose keys are passed as a parameter to the parse() method.
   """
@@ -62,7 +62,7 @@ class Lexicon(ShoeboxFile):
   def get_entries(self):
     """
     This method obtains all of the entries found in a
-    parsed Shoebox lexicon.
+    parsed Toolbox lexicon.
     
     @return: all of the entries in the Lexicon
     @rtype: list of Entry objects
@@ -80,7 +80,7 @@ class Lexicon(ShoeboxFile):
       entry to the Lexicon keyed by the values of the fields specified
       by the I{key_fields} argument.
 
-      @param entry: a parsed entry from a Shoebox lexicon
+      @param entry: a parsed entry from a Toolbox lexicon
       @type entry: Entry object
       @param unique: raise exception if entry key already exists
       @type unique: boolean
@@ -112,7 +112,7 @@ class Lexicon(ShoeboxFile):
             unique_entry          = True,
             unique_subentry       = False):
       """
-      This method parses a Shoebox file in a Lexicon object. It will also parse
+      This method parses a Toolbox file in a Lexicon object. It will also parse
       subentries provided that the field marker identifying subentries is passed to it.
     
       @param head_field_marker:     field marker that identifies the start of an entry
@@ -172,7 +172,7 @@ class Lexicon(ShoeboxFile):
 
 class Entry:
   """
-  This class represents an entry (record) from a Shoebox lexicon. Each entry
+  This class represents an entry (record) from a Toolbox lexicon. Each entry
   consists of a collection of fields, stored as a special type of dictionary
   which keeps track of the sequence in which its keys were entered.
   """
@@ -205,7 +205,7 @@ class Entry:
     This method provides access to the raw text from which the
     Entry object was parsed.
     
-    @param rawText: raw Shoebox text from which entry was parsed
+    @param rawText: raw Toolbox text from which entry was parsed
     @type  rawText: string
     """
     self._rawText = rawText
@@ -385,7 +385,7 @@ class Entry:
       del self._fields[fieldMarker]
 
 def demo() :
-    path = os.path.join(get_basedir(), "shoebox", "rotokas.dic")
+    path = os.path.join(get_basedir(), "toolbox", "rotokas.dic")
     l = Lexicon(path)
     l.parse(key_fields=['lx','ps','sn'], unique_entry=False)
     h = l.get_header()
