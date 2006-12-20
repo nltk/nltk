@@ -25,17 +25,15 @@ class Word(object):
     the supplied word string. These senses can be accessed via index
     notation ``word[n]`` or via the ``word.getSenses()`` method.
     
-    Fields
-    ------
-      form : string
-          The orthographic representation of the word.
-      pos : string
-          The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
-      taggedSenseCount : integer
-          The number of senses that are tagged.
+    @type  form: string
+    @param form: The orthographic representation of the word.
+
+    @type  pos: string
+    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
+
+    @type  taggedSenseCount: integer
+    @param taggedSenseCount: The number of senses that are tagged.
     
-    Examples
-    --------
     >>> from nltk_lite.wordnet import *
     >>> N['dog'].pos
     'noun'
@@ -88,11 +86,11 @@ class Word(object):
         """
         Get a sequence of the L{sense}s of this word.
 
-        @return: A list of this L{Word}'s L{Sense}s
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'].getSenses()
         ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron}]
+
+        @return: A list of this L{Word}'s L{Sense}s
         """
 
         if not hasattr(self, '_senses'):
@@ -107,22 +105,22 @@ class Word(object):
 
     def isTagged(self):
         """
-        @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'].isTagged()
         1
+
+        @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
         """
         return self.taggedSenseCount > 0
     
     def getAdjectivePositions(self):
         """
-        @return: Return a list of adjective positions that this word can
-        appear in. These are elements of ADJECTIVE_POSITIONS.
-
         >>> from nltk_lite.wordnet import *
         >>> ADJ['clear'].getAdjectivePositions()
         [None, 'predicative']
+
+        @return: Return a list of adjective positions that this word can
+        appear in. These are elements of ADJECTIVE_POSITIONS.
         """
         positions = set()
 
@@ -154,7 +152,8 @@ class Word(object):
         return "%s(%s)" % (self.form, abbrs[self.pos])
     
     def __repr__(self):
-        """If ReadableRepresentations is true, return a human-readable
+        """
+        If ReadableRepresentations is true, return a human-readable
         representation, e.g. 'dog(n.)'.
         
         If ReadableRepresentations is false, return a machine-readable
@@ -193,25 +192,26 @@ class Synset(object):
     synset.getPointerTargets() or
     synset.getPointerTargets(pointerType), which are equivalent to
     map(Pointer.getTarget(), synset.getPointerTargets(...)).
-    
-    Fields
-    ------
-      pos : string
-          The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
-      offset : integer
-          An integer offset into the part-of-speech file.  Together
-          with pos, this can be used as a unique id.
-      gloss : string
-          A gloss for the sense.
-      verbFrames : [integer]
-          A sequence of integers that index into
-          VERB_FRAME_STRINGS. These list the verb frames that any
-          Sense in this synset participates in.  (See also
-          Sense.verbFrames.) Defined only for verbs.
 
-      >>> from nltk_lite.wordnet import *
-      >>> V['think'][0].synset.verbFrames
-      (5, 9)
+    >>> from nltk_lite.wordnet import *
+    >>> V['think'][0].synset.verbFrames
+    (5, 9)
+
+    @type  pos: string
+    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
+
+    @type  offset: integer
+    @param offset: An integer offset into the part-of-speech file. Together
+        with pos, this can be used as a unique id.
+
+    @type  gloss: string
+    @param gloss: A gloss (dictionary definition) for the sense.
+
+    @type  verbFrames: [integer]
+    @param verbFrames: A sequence of integers that index into
+        VERB_FRAME_STRINGS. These list the verb frames that any
+        Sense in this synset participates in. (See also
+        Sense.verbFrames.) Defined only for verbs.
     """
     
     def __init__(self, pos, offset, line):
@@ -257,12 +257,11 @@ class Synset(object):
         """
         Return a sequence of Senses.
 
-        @return: A list of the L{Sense}s in this L{Synset}.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].synset.getSenses()
         ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
-        
+
+        @return: A list of the L{Sense}s in this L{Synset}.
         """
 
         # Load the senses from the Wordnet files if necessary.
@@ -288,18 +287,18 @@ class Synset(object):
         returned. In this case, pointerType should be an element of
         POINTER_TYPES.
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A sequence of L{Pointer}s to L{Synset}s immediately
-            connected to this L{Synset}.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointers()[:5]
         [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointers(HYPERNYM)
         [hypernym -> {noun: canine, canid}]
+
+        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @param pointerType: a relation linking two synsets e.g. 'hypernym'
+
+        @return: A sequence of L{Pointer}s to L{Synset}s immediately
+            connected to this L{Synset}.
         """
 
         # Load the pointers from the Wordnet files if necessary.
@@ -328,30 +327,30 @@ class Synset(object):
         type are returned.  In this case, pointerType should be an
         element of POINTER_TYPES.
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A list of L{Synsets} connected to this L{Synset}.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointerTargets()[:5]
         [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointerTargets(HYPERNYM)
         [{noun: canine, canid}]
+
+        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @param pointerType: a relation linking two synsets e.g. 'hypernym'
+
+        @return: A list of L{Synsets} connected to this L{Synset}.
         """
         return map(Pointer.getTarget, self.getPointers(pointerType))
 
     def isTagged(self):
         """
-        @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].isTagged()
         1
 
         >>> N['dog'][1].isTagged()
         0
+
+        @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
         """
         return len(filter(Sense.isTagged, self.getSenses())) > 0
     
@@ -366,7 +365,8 @@ class Synset(object):
         return "{" + self.pos + ": " + string.join(map(lambda sense:sense.form, self.getSenses()), ", ") + "}"
     
     def __repr__(self):
-        """If ReadableRepresentations is true, return a human-readable
+        """
+        If ReadableRepresentations is true, return a human-readable
         representation, e.g. 'dog(n.)'.
         
         If ReadableRepresentations is false, return a machine-readable
@@ -555,7 +555,18 @@ class Synset(object):
         return path_distance
 
     def getIC(self, freq_data):
+        """
+        Get the Information Content (IC) value of this L{Synset}, using
+        the supplied dict 'freq_data'.
 
+        @type  freq_data: Dict
+        @param freq_data: Dictionary mapping synset identifiers (offsets) to
+            a tuple containing the frequency count of the synset, and the
+            frequency count of the root synset.
+
+        @return: The IC value of this L{Synset}, or -1 if no IC value can be
+            computed.
+        """
         key = self.offset
 
         if freq_data.has_key(key):
@@ -569,18 +580,19 @@ class Sense(object):
     A specific meaning of a specific word -- the intersection of a Word and a
     Synset.
     
-    Fields
-    ------
-      form : string
-          The orthographic representation of the Word this is a Sense of.
-      pos : string
-          The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB
-      synset : Synset
-          The Synset that this Sense is a sense of.
-      verbFrames : [integer]
-          A sequence of integers that index into
-          VERB_FRAME_STRINGS. These list the verb frames that this
-          Sense partipates in.  Defined only for verbs.
+    @type  form: string
+    @param form: The orthographic representation of the Word this is a Sense of
+
+    @type  pos: string
+    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB
+    
+    @type  synset: L{Synset}
+    @param synset: The Synset that this Sense is a sense of.
+
+    @type  verbFrames: [integer]
+    @param verbFrames: A sequence of integers that index into
+        VERB_FRAME_STRINGS. These list the verb frames that this
+        Sense partipates in.  Defined only for verbs.
     """
     
     def __init__(self, synset, senseTuple, verbFrames=None):
@@ -671,18 +683,18 @@ class Sense(object):
         returned.  In this case, pointerType should be an element of
         POINTER_TYPES.
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A sequence of L{Pointer}s from the L{Synset} of which this
-        L{Sense} is a member.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointers()[:5]
         [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointers(HYPERNYM)
         [hypernym -> {noun: canine, canid}]
+
+        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @param pointerType: a relation linking two synsets e.g. 'hypernym'
+
+        @return: A sequence of L{Pointer}s from the L{Synset} of which this
+        L{Sense} is a member.
         """
         senseIndex = _index(self, self.synset.getSenses())
         pointers = []
@@ -703,18 +715,18 @@ class Sense(object):
         type are returned. In this case, pointerType should be an
         element of POINTER_TYPES.
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A sequence of L{Synset}s connected to the L{Synset} of which
-            this L{Sense} is a member.
-
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointerTargets()[:5]
         [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointerTargets(HYPERNYM)
         [{noun: canine, canid}]
+
+        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @param pointerType: a relation linking two synsets e.g. 'hypernym'
+
+        @return: A sequence of L{Synset}s connected to the L{Synset} of which
+            this L{Sense} is a member.
         """
         return map(Pointer.getTarget, self.getPointers(pointerType))
 
@@ -933,11 +945,11 @@ class Sense(object):
         synset1 = self.synset
         synset2 = other_sense.synset
 
-	if datafile is "":
-	    print("You must supply the path of a datafile containing frequency")
-	    print("information, as generated by brown_information_content() in")
-	    print("'brown_ic.py'")
-	    return
+        if datafile is "":
+            print("You must supply the path of a datafile containing frequency")
+            print("information, as generated by brown_information_content() in")
+            print("'brown_ic.py'")
+            return
 
         # TODO: Once this data has been loaded for the first time preserve it
         # in memory in some way to prevent unnecessary recomputation.
@@ -977,22 +989,22 @@ class Sense(object):
         synset1 = self.synset
         synset2 = other_sense.synset
 
-	if datafile is "":
-	    print("You must supply the path of a datafile containing frequency")
-	    print("information, as generated by brown_information_content() in")
-	    print("'brown_ic.py'")
-    	    return
+        if datafile is "":
+            print("You must supply the path of a datafile containing frequency")
+            print("information, as generated by brown_information_content() in")
+            print("'brown_ic.py'")
+                return
 
-	if synset1 == synset2: return inf
+        if synset1 == synset2: return inf
 
         # TODO: Once this data has been loaded for the first time preserve it
         # in memory in some way to prevent unnecessary recomputation.
         (noun_freqs, verb_freqs) = _load_ic_data(datafile)
 
         # Get the correct frequency dict as dependent on the input synsets'
-	# pos (Part of Speech) attribute.
+        # pos (Part of Speech) attribute.
         if synset1.pos is 'noun': freqs = noun_freqs
-	elif synset1.pos is 'verb': freqs = verb_freqs
+        elif synset1.pos is 'verb': freqs = verb_freqs
         else: return -1
 
         ic1 = synset1.getIC(freqs)
@@ -1000,8 +1012,8 @@ class Sense(object):
         (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, freqs)
 
         # If either of the input synsets are the root synset, or have a
-	# frequency of 0 (sparse data problem), return 0.
-	if ic1 is 0 or ic2 is 0: return 0
+        # frequency of 0 (sparse data problem), return 0.
+        if ic1 is 0 or ic2 is 0: return 0
 
         return 1 / (ic1 + ic2 - 2 * lcs_ic)
 
@@ -1026,26 +1038,24 @@ class Sense(object):
             compared to.
 
         @return: A float score denoting the similarity of the two L{Sense}s,
-            in the range 0 to 1. Synsets whose LCS is the root node of the
-            taxonomy will have a score of 0 (e.g. N['dog'][0] and
-            N['table'][0]). If no path exists between the two synsets a score
-            of -1 is returned.
+            in the range 0 to 1. If no path exists between the two synsets a
+            score of -1 is returned.
         """
         synset1 = self.synset
         synset2 = other_sense.synset
 
-	if datafile is "":
-	    print("You must supply the path of a datafile containing frequency")
-	    print("information, as generated by brown_information_content() in")
-	    print("'brown_ic.py'")
-	    return
+        if datafile is "":
+            print("You must supply the path of a datafile containing frequency")
+            print("information, as generated by brown_information_content() in")
+            print("'brown_ic.py'")
+            return
 
         # TODO: Once this data has been loaded for the first time preserve it
         # in memory in some way to prevent unnecessary recomputation.
         (noun_freqs, verb_freqs) = _load_ic_data(datafile)
 
         if synset1.pos is 'noun': freqs = noun_freqs
-	elif synset1.pos is 'verb': freqs = verb_freqs
+        elif synset1.pos is 'verb': freqs = verb_freqs
         else: return -1
 
         ic1 = synset1.getIC(freqs)
@@ -1058,12 +1068,11 @@ class Pointer(object):
     """
     A typed directional relationship between Senses or Synsets.
     
-    Fields
-    ------
-      type : string
-          One of POINTER_TYPES.
-      pos : string
-          The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
+    @type  type: string
+    @param type: One of POINTER_TYPES.
+
+    @type  pos: string
+    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
     """
     
     _POINTER_TYPE_TABLE = {
@@ -1307,8 +1316,8 @@ def _lcs_by_content(synset1, synset2, freqs):
 
     subsumers = synset1.hypernyms(True) & synset2.hypernyms(True)
 
-    # For each candidate, calculate its IC value.
-
+    # For each candidate, calculate its IC value. Keep track of the candidate
+    # with the highest score.
     for candidate in subsumers:
 
         ic = candidate.getIC(freqs)
@@ -1327,7 +1336,6 @@ def _load_ic_data(filename):
     TODO: Possibly place the dicts into a global variable or something so
     that they don't have to be repeatedly loaded from disk.
     """
-
     infile = open(filename, "rb")
     noun_freqs = pickle.load(infile)
     verb_freqs = pickle.load(infile)
