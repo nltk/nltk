@@ -11,7 +11,7 @@ of a Shoebox text without reference to its metadata.
 
 import re
 from utilities import Field, SequentialDictionary
-from nltk_lite.corpora.shoebox import ShoeboxFile
+from nltk_lite.corpora.toolbox import StandardFormat
 
 
 # --------------------------------------------------------
@@ -376,7 +376,7 @@ class Paragraph:
 #         manipulation.
 # --------------------------------------------------------
 
-class Text(ShoeboxFile) :
+class Text(StandardFormat) :
     """
     This class defines an interlinearized text, which consists of a collection of Paragraph objects.
     """
