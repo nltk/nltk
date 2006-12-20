@@ -36,13 +36,13 @@ The following is a short tutorial on the available transformations.
   factoring and right factoring.  The following example demonstrates
   the difference between them.
 
-            Original       Right-Factored     Left-Factored
-
-  Example:     A              A                      A 
-             / | \          /   \                  /   \
-            B  C  D   ==>  B    A|<C-D>   OR   A|<B-C>  D 
-                                 /  \          /  \
-                                C    D        B    C
+  |          Original       Right-Factored     Left-Factored
+  |
+  |  Example:     A              A                      A 
+  |             / | \          /   \                  /   \
+  |            B  C  D   ==>  B    A|<C-D>   OR   A|<B-C>  D 
+  |                                 /  \          /  \
+  |                                C    D        B    C
 
 2) Parent Annotation
 
@@ -58,13 +58,13 @@ The following is a short tutorial on the available transformations.
   tradeoff becomes accuracy gain vs. computational complexity.  We
   must also keep in mind data sparcity issues.
 
-            Original       Parent Annotation 
-
-  Example:     A                A^<?>            
-             / | \             /   \            
-            B  C  D   ==>  B^<A>    A|<C-D>^<?>     where ? is the parent of A
-                                      /  \        
-                                  C^<A>   D^<A>   
+  |          Original       Parent Annotation 
+  |
+  |  Example:     A                A^<?>            
+  |             / | \             /   \            
+  |            B  C  D   ==>  B^<A>    A|<C-D>^<?>     where ? is the parent of A
+  |                                      /  \        
+  |                                  C^<A>   D^<A>   
 
 
 3) Markov order-N smoothing
@@ -74,13 +74,13 @@ The following is a short tutorial on the available transformations.
   included in artificial nodes.  In practice, most people use an order
   2 grammar.
 
-             Original          No Smoothing        Markov order 1     Markov order 2   etc...
-
-  Example:       A                A                       A                A 
-            /  / | \  \         /   \                   /   \            /   \
-           B  C  D  E  F  ==>  B    A|<C-D-E-F>   ==>  B   A|<C>  ==>   B  A|<C-D>
-                                      /   \                /   \            /   \
-                                     C    ...             C    ...         C    ...
+  |             Original          No Smoothing        Markov order 1     Markov order 2   etc...
+  |
+  |  Example:       A                A                       A                A 
+  |            /  / | \  \         /   \                   /   \            /   \
+  |           B  C  D  E  F  ==>  B    A|<C-D-E-F>   ==>  B   A|<C>  ==>   B  A|<C-D>
+  |                                      /   \                /   \            /   \
+  |                                     C    ...             C    ...         C    ...
 
   Annotation decisions can be thought about in the vertical direction
   (parent, grandparent, etc) and the horizontal direction (number of
@@ -97,11 +97,11 @@ The following is a short tutorial on the available transformations.
   algorithms that do not allow unary productions, yet you do not wish
   to lose the parent information.
 
-              A         
-              |
-  Example:    B   ==>   A+B
-             / \        / \
-            C   D      C   D    
+  |              A         
+  |              |
+  |  Example:    B   ==>   A+B
+  |             / \        / \
+  |            C   D      C   D    
 
 """
 
@@ -110,13 +110,12 @@ from nltk_lite.parse import *
 def chomskyNormalForm(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
     """
     This method can modify a tree in three ways:
-      1. Convert a tree into its Chomsky Normal Form (CNF) equivalent -- Every subtree
-         has either two non-terminals or one terminal as its children.  This process
-         requires the creation of more "artificial" non-terminal nodes.
-      2. Markov (vertical) smoothing of children in new artificial nodes
-      3. Horizontal (parent) annotation of nodes
-      
-      see documentation in code for more information
+    1. Convert a tree into its Chomsky Normal Form (CNF) equivalent -- Every subtree
+    has either two non-terminals or one terminal as its children.  This process
+    requires the creation of more "artificial" non-terminal nodes.
+    2. Markov (vertical) smoothing of children in new artificial nodes
+    3. Horizontal (parent) annotation of nodes
+    (see documentation in code for more information)
       
     @param tree: The Tree to be modified
     @type  tree: C{Tree}

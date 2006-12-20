@@ -152,7 +152,7 @@ class VariableExpression(Expression):
     def equals(self, other):
         """
         Allow equality between instances of C{VariableExpression} and
-        C{IndVariableExpression.
+        C{IndVariableExpression}.
         """
         if isinstance(self, VariableExpression) and \
            isinstance(other, VariableExpression):
