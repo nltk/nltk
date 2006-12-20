@@ -22,7 +22,6 @@ from wordnet import *
 _FILE_OPEN_MODE = os.name in ('dos', 'nt') and 'rb' or 'r'
 
 class Dictionary:
-    
     """
     A Dictionary contains all the Words in a given part of speech. Four
     dictionaries, bound to N, V, ADJ, and ADV, are bound by default in
@@ -36,15 +35,11 @@ class Dictionary:
     range of a for statement and as the sequence argument to map and
     filter.
 
-    Example
-    -------
     >>> N['dog']
     dog(n.)
     
-    Public Fields
-    ------
-      pos : string
-          The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
+    @type  pos: string
+    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
     """
     
     def __init__(self, pos, filenameroot):

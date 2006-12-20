@@ -27,27 +27,28 @@ class _LRUCache:
     """
     A cache of values such that least recently used element is flushed when
     the cache fills.
+
+    This lets us retrieve the key given the timestamp, and the
+    timestamp given the key. (Also the value given either one.)
+    That's necessary so that we can reorder the history given a key,
+    and also manipulate the values dict given a timestamp. 
     
-    Private fields
-    --------------
-    entities
-      a dict from key -> (value, timestamp)
-    history
-      is a dict from timestamp -> key
-    nextTimeStamp
-      is the timestamp to use with the next value that's added.
-    oldestTimeStamp
-      The timestamp of the oldest element (the next one to remove),
-      or slightly lower than that.
-    
-      This lets us retrieve the key given the timestamp, and the
-      timestamp given the key. (Also the value given either one.)
-      That's necessary so that we can reorder the history given a key,
-      and also manipulate the values dict given a timestamp.  #
-    
-      I haven't tried changing history to a List. An earlier
-      implementation of history as a List was slower than what's here,
-      but the two implementations aren't directly comparable.
+    I haven't tried changing history to a List. An earlier
+    implementation of history as a List was slower than what's here,
+    but the two implementations aren't directly comparable.
+
+    @type  entities: Dict
+    @param entities: A dict from key -> (value, timestamp)
+
+    @type  history: Dict
+    @param history: A dict from timestamp -> key
+
+    @type  nextTimeStamp: int
+    @param nextTimeStamp: Timestamp to use with the next value that's added.
+
+    @type  oldestTimeStamp: int
+    @param oldestTimeStamp: Timestamp of the oldest element (the next one to
+        remove), or slightly lower than that.
     """
 
     def __init__(self, capacity):
