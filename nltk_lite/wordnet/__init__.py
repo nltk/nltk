@@ -182,14 +182,57 @@ from cache import *
 from dictionary import *
 from wordnet import *
 
-# Create Lexname objects from the lexnames file in the dict directory of the
-# base Wordnet install.
+# Create Lexname objects, originally sourced from the lexnames file available
+# as a patch from the Pywordnet sourceforge site. This list may be updated by
+# the creators of Wordnet at any time.
 
-for l in open(WNSEARCHDIR+'/lexnames').readlines():
-    i,name,category = string.split(l)
-    Lexname(name,PartsOfSpeech[int(category)-1])
+Lexname("adj.all", PartsOfSpeech[2])
+Lexname("adj.pert", PartsOfSpeech[2])
+Lexname("adj.ppl", PartsOfSpeech[2])
+Lexname("adv.all", PartsOfSpeech[3])
+Lexname("noun.Tops", PartsOfSpeech[0])
+Lexname("noun.act", PartsOfSpeech[0])
+Lexname("noun.animal", PartsOfSpeech[0])
+Lexname("noun.artifcact", PartsOfSpeech[0])
+Lexname("noun.attribute", PartsOfSpeech[0])
+Lexname("noun.body", PartsOfSpeech[0])
+Lexname("noun.cognition", PartsOfSpeech[0])
+Lexname("noun.communication", PartsOfSpeech[0])
+Lexname("noun.event", PartsOfSpeech[0])
+Lexname("noun.feeling", PartsOfSpeech[0])
+Lexname("noun.food", PartsOfSpeech[0])
+Lexname("noun.group", PartsOfSpeech[0])
+Lexname("noun.location", PartsOfSpeech[0])
+Lexname("noun.motive", PartsOfSpeech[0])
+Lexname("noun.object", PartsOfSpeech[0])
+Lexname("noun.person", PartsOfSpeech[0])
+Lexname("noun.phenomenon", PartsOfSpeech[0])
+Lexname("noun.plant", PartsOfSpeech[0])
+Lexname("noun.possession", PartsOfSpeech[0])
+Lexname("noun.process", PartsOfSpeech[0])
+Lexname("noun.quantity", PartsOfSpeech[0])
+Lexname("noun.relation", PartsOfSpeech[0])
+Lexname("noun.shape", PartsOfSpeech[0])
+Lexname("noun.state", PartsOfSpeech[0])
+Lexname("noun.substance", PartsOfSpeech[0])
+Lexname("noun.time", PartsOfSpeech[0])
+Lexname("verb.body", PartsOfSpeech[1])
+Lexname("verb.change", PartsOfSpeech[1])
+Lexname("verb.cognition", PartsOfSpeech[1])
+Lexname("verb.communication", PartsOfSpeech[1])
+Lexname("verb.competition", PartsOfSpeech[1])
+Lexname("verb.consumption", PartsOfSpeech[1])
+Lexname("verb.contact", PartsOfSpeech[1])
+Lexname("verb.creation", PartsOfSpeech[1])
+Lexname("verb.emotion", PartsOfSpeech[1])
+Lexname("verb.motion", PartsOfSpeech[1])
+Lexname("verb.perception", PartsOfSpeech[1])
+Lexname("verb.possession", PartsOfSpeech[1])
+Lexname("verb.social", PartsOfSpeech[1])
+Lexname("verb.stative", PartsOfSpeech[1])
+Lexname("verb.weather", PartsOfSpeech[1])
 
-# PoS Dictionaries (must be initialized after file utilities)
+# PoS mapping tables (must be initialized after file utilities)
 
 N = Dictionary(NOUN, 'noun')
 V = Dictionary(VERB, 'verb')
