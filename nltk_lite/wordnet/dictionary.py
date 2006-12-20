@@ -48,14 +48,18 @@ class Dictionary:
     """
     
     def __init__(self, pos, filenameroot):
-        # Part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB
+        """
+        @type  pos: string
+        @param pos: This L{Dictionary}'s part of speech ('noun', 'verb' etc.)
+
+        @type  filenameroot: string
+        @param filenameroot: filename of the relevant Wordnet dictionary file
+        """
         self.pos = pos
         self.indexFile = _IndexFile(pos, filenameroot)
         self.dataFile = open(_dataFilePathname(filenameroot), _FILE_OPEN_MODE)
     
     def __repr__(self):
-
-	# dictionaryVariables = {N: 'N', V: 'V', ADJ: 'ADJ', ADV: 'ADV'}
         dictionaryVariables = {}
 
         if dictionaryVariables.get(self):
@@ -65,8 +69,16 @@ class Dictionary:
             (self.__module__, "Dictionary", self.pos)
     
     def getWord(self, form, line=None):
+        """
+        @type  form: string
+        @param form: word string e.g, 'dog'
 
-        key = string.replace(string.lower(form), ' ', '_')
+        @type  line: string
+        @param line: appropriate line sourced from the index file (optional)
+
+        @return: The L{Word} object with the supplied form, if present.
+        """
+        key = form.lower().replace(' ', '_')
         pos = self.pos
 
         def loader(key=key, line=line, indexFile=self.indexFile):
@@ -79,6 +91,14 @@ class Dictionary:
         else: raise KeyError, "%s is not in the %s database" % (`form`, `pos`)
     
     def getSynset(self, offset):
+        """
+        @type  offset: int
+        @param offset: integer offset into a Wordnet file, at which the
+            desired L{Synset} can be found.
+
+        @return: The relevant L{Synset}, if present.
+        """
+
         pos = self.pos
 
         def loader(pos=pos, offset=offset, dataFile=self.dataFile):
@@ -92,16 +112,15 @@ class Dictionary:
     # Sequence protocol (a Dictionary's items are its Words)
 
     def __nonzero__(self):
-        """Return false.  (This is to avoid scanning the whole index file
-        to compute len when a Dictionary is used in test position.)
-        
+        """
         >>> N and 'true'
         'true'
         """
         return 1
     
     def __len__(self):
-        """Return the number of index entries.
+        """
+	Return the number of index entries.
         
         >>> len(ADJ)
         21435
@@ -152,8 +171,17 @@ class Dictionary:
 
     def get(self, key, default=None):
         """
-        Return the Word whose form is _key_, or _default_.
-        
+        Return the Word whose form is key, or default.
+
+        @type  key: string
+        @param key: the string form of a L{Word} e.g. 'dog'
+
+        @type  default: (Ideally) L{Word}
+        @param default: An optional L{Word} to return if no entry can be found
+            with the supplied key.
+
+        @return: The L{Word} whose form is given by 'key'
+
         >>> N.get('dog')
         dog(n.)
         >>> N.get('inu')
@@ -166,14 +194,19 @@ class Dictionary:
     
     def keys(self):
         """
-        Return a sorted list of strings that index words in this
+        @return: A sorted list of strings that index words in this
         dictionary.
         """
         return self.indexFile.keys()
     
     def has_key(self, form):
         """
-        Return true iff the argument indexes a word in this dictionary.
+        Checks if the supplied argument is an index into this dictionary.
+
+        @type  form: string
+        @param form: a word string e.g. 'dog'
+
+        @return: true iff the argument indexes a word in this dictionary.
         
         >>> N.has_key('dog')
         1
@@ -216,6 +249,13 @@ class _IndexFile:
     """
     
     def __init__(self, pos, filenameroot):
+        """
+        @type  pos: string
+        @param pos: The part of speech of this index file e.g. 'noun'
+
+        @type  filenameroot: string
+        @param filenameroot: The base filename of the index file.
+        """
         self.pos = pos
         self.file = open(_indexFilePathname(filenameroot), _FILE_OPEN_MODE)
 
@@ -224,10 +264,9 @@ class _IndexFile:
 
         self.rewind()
 
-        # I suspect that the import errors that we get when loading the
-        # Wordnet package originate here. As fas as I can understand this
-        # code checks to see if the required data already exists as a
-        # serialised Python object. More investigation required.
+        # The following code gives errors on import. As far as I can
+        # understand, this code checks to see if the required data already
+        # exists as a serialised Python object. More investigation required.
 
         # self.shelfname = os.path.join(WNSEARCHDIR, pos + ".pyidx")
 
@@ -239,6 +278,10 @@ class _IndexFile:
             # pass
     
     def rewind(self):
+        """
+        Rewind to the beginning of the file. Place the file pointer at the
+        beginning of the first line whose first character is not whitespace.
+        """
         self.file.seek(0)
 
         while 1:
@@ -311,7 +354,12 @@ class _IndexFile:
     # the first word.
     
     def get(self, key, default=None):
+        """
+        @type  key: string
+        @param key: first word of a line from an index file.
 
+        @param default: Return this if no entry exists for 'key'.
+        """
         try:
             return self[key]
 
@@ -319,6 +367,9 @@ class _IndexFile:
             return default
     
     def keys(self):
+        """
+        @return: a list of the keys of this index file.
+        """
 
         if hasattr(self, 'indexCache'):
             keys = self.indexCache.keys()
@@ -340,6 +391,12 @@ class _IndexFile:
             return keys
     
     def has_key(self, key):
+        """
+        @type  key: string
+        @param key: the first word of a line in this index file.
+
+        @return: True/false if this key is a valid index into the file.
+        """
         key = key.replace(' ', '_') # test case: V['haze over']
 
         if hasattr(self, 'indexCache'):
@@ -347,8 +404,6 @@ class _IndexFile:
 
         return self.get(key) != None
     
-    # Index file
-
     def _buildIndexCacheFile(self):
 
         import shelve
@@ -385,6 +440,12 @@ class _IndexFile:
 # File utilities
 
 def _dataFilePathname(filenameroot):
+    """
+    @type  filenameroot: string
+    @param filenameroot: base form of the data file's filename.
+
+    @return: the full path to the data file.
+    """
 
     if os.name in ('dos', 'nt'):
         path = os.path.join(WNSEARCHDIR, filenameroot + ".dat")
@@ -395,6 +456,12 @@ def _dataFilePathname(filenameroot):
     return os.path.join(WNSEARCHDIR, "data." + filenameroot)
 
 def _indexFilePathname(filenameroot):
+    """
+    @type  filenameroot: string
+    @param filenameroot: base form of the index file's filename.
+
+    @return: the full path to the index file.
+    """
 
     if os.name in ('dos', 'nt'):
         path = os.path.join(WNSEARCHDIR, filenameroot + ".idx")
@@ -405,6 +472,17 @@ def _indexFilePathname(filenameroot):
     return os.path.join(WNSEARCHDIR, "index." + filenameroot)
 
 def binarySearchFile(file, key, cache={}, cacheDepth=-1):
+    """
+    Searches through a sorted file using the binary search algorithm.
+
+    @type  file: file
+    @param file: the file to be searched through.
+
+    @type  key: string
+    @param key: the identifier we are searching for.
+
+    @return: The line from the file with first word key.
+    """
     from stat import ST_SIZE
     
     key = key + ' '
