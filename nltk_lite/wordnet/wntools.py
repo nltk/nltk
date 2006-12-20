@@ -113,7 +113,6 @@ def meet(a, b, pointerType=HYPERNYM):
     """
     return (intersection(closure(a, pointerType), closure(b, pointerType)) + [None])[0]
 
-
 #
 # String Utility Functions
 #
