@@ -17,7 +17,7 @@ english-web - Genesis, World English Bible (Project Gutenberg)
 french - Genesis, Louis Segond 1910
 german - Genesis, Luther Translation
 swedish - Genesis, Gamla och Nya Testamentet, 1917 (Project Runeberg)
-finnish - Genesis, Suomen evankelis-luterilaisen kirkon kirkolliskokouksen vuonna 1992 käyttöön ottama suomennos
+finnish - Genesis, Suomen evankelis-luterilaisen kirkon kirkolliskokouksen vuonna 1992 kayttoon ottama suomennos
 """
 
 from nltk_lite.corpora import get_basedir
@@ -38,7 +38,7 @@ item_name = {
     'french': 'Genesis, Louis Segond 1910',
     'german': 'Genesis, Luther Translation',
     'swedish': 'Genesis, Gamla och Nya Testamentet, 1917 (Project Runeberg)',
-    'finnish': 'Genesis, Suomen evankelis-luterilaisen kirkon kirkolliskokouksen vuonna 1992 käyttöön ottama suomennos'
+    'finnish': 'Genesis, Suomen evankelis-luterilaisen kirkon kirkolliskokouksen vuonna 1992 kayttoon ottama suomennos'
 }
 
 def raw(files = 'english-kjv'):
