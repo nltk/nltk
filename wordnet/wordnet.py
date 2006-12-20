@@ -560,7 +560,7 @@ class Synset(object):
 
         if freq_data.has_key(key):
             prob = float(freq_data[key][0]) / freq_data[key][1]
-            return -log(prob)
+            return -math.log(prob)
 
         else: return -1
 
