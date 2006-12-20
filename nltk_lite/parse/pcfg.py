@@ -23,17 +23,17 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 
     @see: L{Production}
     """
-    def __init__(self, lhs, rhs, **prob_kwarg):
+    def __init__(self, lhs, rhs, **prob):
         """
         Construct a new C{WeightedProduction}.
 
-        @param prob: The probability of the new C{WeightedProduction}.
         @param lhs: The left-hand side of the new C{WeightedProduction}.
         @type lhs: L{Nonterminal}
         @param rhs: The right-hand side of the new C{WeightedProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
+        @param **prob: Probability parameters of the new C{WeightedProduction}.
         """
-        ImmutableProbabilisticMixIn.__init__(self, **prob_kwarg)
+        ImmutableProbabilisticMixIn.__init__(self, **prob)
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
@@ -98,9 +98,9 @@ def induce(start, productions):
 
     The probability of a production A -> B C in a PCFG is:
 
-                    count(A -> B C)
-      P(B, C | A) = ---------------       where * is any right hand side
-                     count(A -> *)
+    |                count(A -> B C)
+    |  P(B, C | A) = ---------------       where * is any right hand side
+    |                 count(A -> *)
 
     @param start: The start symbol
     @type start: L{Nonterminal}

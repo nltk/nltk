@@ -11,25 +11,24 @@ Read lines from the Prepositional Phrase Attachment Corpus.
 
 The PP Attachment Corpus contains several files having the format:
 
-  sentence_id verb noun1 preposition noun2 attachment
+sentence_id verb noun1 preposition noun2 attachment
 
-E.g.:
+For example:
 
-  42960 gives authority to administration V
-  46742 gives inventors of microchip N
+42960 gives authority to administration V
+46742 gives inventors of microchip N
 
 The PP attachment is to the verb phrase (V) or noun phrase (N), i.e.:
 
-  (VP gives (NP authority) (PP to administration))
-  (VP gives (NP inventors (PP of microchip)))
+(VP gives (NP authority) (PP to administration))
+(VP gives (NP inventors (PP of microchip)))
 
 The corpus contains the following files:
 
 training:   training set
 devset:     development test set, used for algorithm development.
 test:       test set, used to report results
-bitstrings: word classes derived from Mutual Information
-            Clustering for the Wall Street Journal.
+bitstrings: word classes derived from Mutual Information Clustering for the Wall Street Journal.
 
 Ratnaparkhi, Adwait (1994). A Maximum Entropy Model for Prepositional
 Phrase Attachment.  Proceedings of the ARPA Human Language Technology

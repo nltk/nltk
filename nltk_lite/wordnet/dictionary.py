@@ -37,17 +37,13 @@ class Dictionary:
 
     >>> N['dog']
     dog(n.)
-    
-    @type  pos: string
-    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
     """
     
     def __init__(self, pos, filenameroot):
         """
-        @type  pos: string
+        @type  pos: C{string}
         @param pos: This L{Dictionary}'s part of speech ('noun', 'verb' etc.)
-
-        @type  filenameroot: string
+        @type  filenameroot: C{string}
         @param filenameroot: filename of the relevant Wordnet dictionary file
         """
         self.pos = pos
@@ -65,12 +61,10 @@ class Dictionary:
     
     def getWord(self, form, line=None):
         """
-        @type  form: string
+        @type  form: C{string}
         @param form: word string e.g, 'dog'
-
-        @type  line: string
+        @type  line: C{string}
         @param line: appropriate line sourced from the index file (optional)
-
         @return: The L{Word} object with the supplied form, if present.
         """
         key = form.lower().replace(' ', '_')
@@ -87,7 +81,7 @@ class Dictionary:
     
     def getSynset(self, offset):
         """
-        @type  offset: int
+        @type  offset: C{int}
         @param offset: integer offset into a Wordnet file, at which the
             desired L{Synset} can be found.
 
@@ -168,18 +162,15 @@ class Dictionary:
         """
         Return the Word whose form is key, or default.
 
-        @type  key: string
-        @param key: the string form of a L{Word} e.g. 'dog'
-
-        @type  default: (Ideally) L{Word}
-        @param default: An optional L{Word} to return if no entry can be found
-            with the supplied key.
-
-        @return: The L{Word} whose form is given by 'key'
-
         >>> N.get('dog')
         dog(n.)
-        >>> N.get('inu')
+
+        @type  key: C{string}
+        @param key: the string form of a L{Word} e.g. 'dog'
+        @type  default: L{Word}
+        @param default: An optional L{Word} to return if no entry can be found
+            with the supplied key.
+        @return: The L{Word} whose form is given by 'key'
         """
         try:
             return self[key]
@@ -198,15 +189,14 @@ class Dictionary:
         """
         Checks if the supplied argument is an index into this dictionary.
 
-        @type  form: string
-        @param form: a word string e.g. 'dog'
-
-        @return: true iff the argument indexes a word in this dictionary.
-        
         >>> N.has_key('dog')
         1
         >>> N.has_key('inu')
         0
+
+        @type  form: C{string}
+        @param form: a word string e.g. 'dog'
+        @return: true iff the argument indexes a word in this dictionary.
         """
         return self.indexFile.has_key(form)
     
@@ -245,10 +235,9 @@ class _IndexFile:
     
     def __init__(self, pos, filenameroot):
         """
-        @type  pos: string
+        @type  pos: {string}
         @param pos: The part of speech of this index file e.g. 'noun'
-
-        @type  filenameroot: string
+        @type  filenameroot: {string}
         @param filenameroot: The base filename of the index file.
         """
         self.pos = pos
@@ -350,9 +339,8 @@ class _IndexFile:
     
     def get(self, key, default=None):
         """
-        @type  key: string
+        @type  key: {string}
         @param key: first word of a line from an index file.
-
         @param default: Return this if no entry exists for 'key'.
         """
         try:
@@ -387,9 +375,8 @@ class _IndexFile:
     
     def has_key(self, key):
         """
-        @type  key: string
+        @type  key: {string}
         @param key: the first word of a line in this index file.
-
         @return: True/false if this key is a valid index into the file.
         """
         key = key.replace(' ', '_') # test case: V['haze over']
@@ -436,9 +423,8 @@ class _IndexFile:
 
 def _dataFilePathname(filenameroot):
     """
-    @type  filenameroot: string
+    @type  filenameroot: {string}
     @param filenameroot: base form of the data file's filename.
-
     @return: the full path to the data file.
     """
 
@@ -452,9 +438,8 @@ def _dataFilePathname(filenameroot):
 
 def _indexFilePathname(filenameroot):
     """
-    @type  filenameroot: string
+    @type  filenameroot: {string}
     @param filenameroot: base form of the index file's filename.
-
     @return: the full path to the index file.
     """
 
@@ -472,10 +457,8 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
 
     @type  file: file
     @param file: the file to be searched through.
-
-    @type  key: string
+    @type  key: {string}
     @param key: the identifier we are searching for.
-
     @return: The line from the file with first word key.
     """
     from stat import ST_SIZE

@@ -1,35 +1,36 @@
-# Module wordnet.py
+# Natural Language Toolkit: Wordnet Interface: Tools
 #
-# Original author: Oliver Steele <steele@osteele.com>
-# Project Page: http://sourceforge.net/projects/pywordnet
-#
-# Copyright (c) 1998-2004 by Oliver Steele.  Use is permitted under
-# the Artistic License
-# <http://www.opensource.org/licenses/artistic-license.html>
+# Copyright (C) 2001-2006 University of Pennsylvania
+# Author: Oliver Steele <steele@osteele.com>
+#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
 """
 Utility functions to use with the wordnet module.
 
     >>> dog = N['dog'][0]
 
-    # (First 10) adjectives that are transitively SIMILAR to the main sense of 'red'
+(First 10) adjectives that are transitively SIMILAR to the main sense of 'red'
+
     >>> closure(ADJ['red'][0], SIMILAR)[:10]
     ['red' in {adjective: red, reddish, ruddy, blood-red, carmine, cerise, cherry, cherry-red, crimson, ruby, ruby-red, scarlet}, {adjective: chromatic}, {adjective: amber, brownish-yellow, yellow-brown}, {adjective: amethyst}, {adjective: aureate, gilded, gilt, gold, golden}, {adjective: azure, cerulean, sky-blue, bright blue}, {adjective: blue, bluish, blueish, light-blue, dark-blue, blue-black}, {adjective: bluish green, blue-green, cyan, teal}, {adjective: blushful, rosy}, {adjective: bottle-green}]
 
-    >>> # Adjectives that are transitively SIMILAR to any of the senses of 'red'
+Adjectives that are transitively SIMILAR to any of the senses of 'red'
+
     >>> #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
 
-    >>> # Hyponyms of the main sense of 'dog'(n.) that are homophonous with verbs
+Hyponyms of the main sense of 'dog'(n.) that are homophonous with verbs
+
     >>> filter(lambda sense:V.get(sense.form), flatten1(map(lambda e:e.getSenses(), hyponyms(N['dog'][0]))))
     ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'pooch' in {noun: pooch, doggie, doggy, barker, bow-wow}, 'toy' in {noun: toy dog, toy}, 'hound' in {noun: hound, hound dog}, 'basset' in {noun: basset, basset hound}, 'cocker' in {noun: cocker spaniel, English cocker spaniel, cocker}, 'bulldog' in {noun: bulldog, English bulldog}]
 
-    >>> # Find the senses of 'raise'(v.) and 'lower'(v.) that are antonyms
+Find the senses of 'raise'(v.) and 'lower'(v.) that are antonyms
+
     >>> filter(lambda p:p[0] in p[1].pointerTargets(ANTONYM), product(V['raise'].getSenses(), V['lower'].getSenses()))
     [('raise' in {verb: raise, lift, elevate, get up, bring up}, 'lower' in {verb: lower, take down, let down, get down, bring down})]
 """
-
-__author__  = "Oliver Steele <steele@osteele.com>"
-__version__ = "2.0"
 
 from wordnet import *
 from dictionary import *
