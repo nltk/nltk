@@ -7,10 +7,9 @@
 # the Artistic License
 # <http://www.opensource.org/licenses/artistic-license.html>
 
-"""Utility functions to use with the wordnet module.
+"""
+Utility functions to use with the wordnet module.
 
-Usage
------
     >>> dog = N['dog'][0]
 
     # (First 10) adjectives that are transitively SIMILAR to the main sense of 'red'
