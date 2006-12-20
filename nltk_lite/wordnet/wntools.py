@@ -33,6 +33,8 @@ __author__  = "Oliver Steele <steele@osteele.com>"
 __version__ = "2.0"
 
 from wordnet import *
+from dictionary import *
+from cache import *
 
 #
 # Domain utilities
