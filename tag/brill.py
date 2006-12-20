@@ -394,8 +394,8 @@ class BrillTemplateI(object):
         C{tagged_tokens[i][1]} == C{correctTag}), then
         C{applicable_rules} should return the empty list.
         
-        @param token: The tagged tokens being tagged.
-        @type token: C{list} of C{tuple}
+        @param tokens: The tagged tokens being tagged.
+        @type tokens: C{list} of C{tuple}
         @param i: The index of the token whose tag should be corrected.
         @type i: C{int}
         @param correctTag: The correct tag for the C{i}th token.
@@ -1076,7 +1076,7 @@ def demo(num_sents=100, max_rules=200, min_score=2, error_output = "errors.out",
     @param train: the fraction of the the corpus to be used for training (1=all)
     @type train: L{float}
     @param trace: the level of diagnostic tracing output to produce (0-3)
-    @type train: L{int}
+    @type trace: L{int}
     """
 
     from nltk_lite.corpora import treebank

@@ -1377,7 +1377,7 @@ class ProbabilisticMixIn(object):
         @type prob: C{float}
         @kwparam logprob: The log of the probability associated with
             the object.
-        @type logrpob: C{float}
+        @type logprob: C{float}
         """
         if 'prob' in kwargs:
             if 'logprob' in kwargs:
