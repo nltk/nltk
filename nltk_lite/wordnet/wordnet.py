@@ -24,16 +24,7 @@ class Word(object):
     An index into the database. More specifically, a list of the Senses of
     the supplied word string. These senses can be accessed via index
     notation ``word[n]`` or via the ``word.getSenses()`` method.
-    
-    @type  form: string
-    @param form: The orthographic representation of the word.
 
-    @type  pos: string
-    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
-
-    @type  taggedSenseCount: integer
-    @param taggedSenseCount: The number of senses that are tagged.
-    
     >>> from nltk_lite.wordnet import *
     >>> N['dog'].pos
     'noun'
@@ -43,6 +34,15 @@ class Word(object):
 
     >>> N['dog'].taggedSenseCount
     1
+
+    @type  form: string
+    @param form: The orthographic representation of the word.
+
+    @type  pos: string
+    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
+
+    @type  taggedSenseCount: integer
+    @param taggedSenseCount: The number of senses that are tagged.
     """
     
     def __init__(self, line):
@@ -168,10 +168,10 @@ class Word(object):
 
     def __nonzero__(self):
         return 1
-    
+
     def __len__(self):
         return len(self.getSenses())
-    
+
     def __getitem__(self, index):
         return self.getSenses()[index]
     
@@ -777,15 +777,6 @@ class Sense(object):
         many distinct verb taxonomies), in which case -1 is returned. A score of
         1 represents identity i.e. comparing a sense with itself will return 1.
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
-        @return: A score denoting the similarity of the two L{Sense}s,
-            normally between 0 and 1. -1 is returned if no connecting path
-            could be found. 1 is returned if a L{Sense} is compared with
-            itself.
-
         >>> from nltk_lite.wordnet import *
         >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
         0.33333333333333331
@@ -798,6 +789,15 @@ class Sense(object):
     
         >>> V['run'][0].path_distance_similarity(V['think'][0])
         -1
+
+        @type  other_sense: L{Sense}
+        @param other_sense: The L{Sense} that this L{Sense} is being
+            compared to.
+
+        @return: A score denoting the similarity of the two L{Sense}s,
+            normally between 0 and 1. -1 is returned if no connecting path
+            could be found. 1 is returned if a L{Sense} is compared with
+            itself.
         """
 
         synset1 = self.synset
@@ -817,16 +817,6 @@ class Sense(object):
         as -log(p/2d) where p is the shortest path length and d the taxonomy
         depth.
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
-        @return: A score denoting the similarity of the two L{Sense}s,
-            normally greater than 0. -1 is returned if no connecting path
-            could be found. If a L{Sense} is compared with itself, the
-            maximum score is returned, which varies depending on the taxonomy
-            depth.
-
         >>> from nltk_lite.wordnet import *
         >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
         2.5389738710582761
@@ -839,6 +829,16 @@ class Sense(object):
     
         >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
         -1
+
+        @type  other_sense: L{Sense}
+        @param other_sense: The L{Sense} that this L{Sense} is being
+            compared to.
+
+        @return: A score denoting the similarity of the two L{Sense}s,
+            normally greater than 0. -1 is returned if no connecting path
+            could be found. If a L{Sense} is compared with itself, the
+            maximum score is returned, which varies depending on the taxonomy
+            depth.
         """
 
         taxonomy_depths = {'noun': 19, 'verb': 13}
@@ -870,13 +870,6 @@ class Sense(object):
         the LCS has multiple paths to the root, the longer path is used for
         the purposes of the calculation.
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
-        @return: A float score denoting the similarity of the two L{Sense}s,
-            normally greater than zero. If no connecting path between the two
-            senses can be found, -1 is returned.
 
         >>> from nltk_lite.wordnet import *
         >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
@@ -890,6 +883,14 @@ class Sense(object):
     
         >>> V['run'][0].wu_palmer_similarity(V['think'][0])
         -1
+
+        @type  other_sense: L{Sense}
+        @param other_sense: The L{Sense} that this L{Sense} is being
+            compared to.
+
+        @return: A float score denoting the similarity of the two L{Sense}s,
+            normally greater than zero. If no connecting path between the two
+            senses can be found, -1 is returned.
         """
 
         synset1 = self.synset
@@ -993,7 +994,7 @@ class Sense(object):
             print("You must supply the path of a datafile containing frequency")
             print("information, as generated by brown_information_content() in")
             print("'brown_ic.py'")
-                return
+            return
 
         if synset1 == synset2: return inf
 
