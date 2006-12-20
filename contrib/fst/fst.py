@@ -77,11 +77,11 @@ The current FST class does not provide support for:
 
 Possible future changes:
 
-- Define several classes, in a class hierarchy?  E.g., FSA is a base
-  class, FST inherits from it.  And maybe a further subclass to add
-  finalizing sequences.  I would need to be more careful to only
-  access the private variables when necessary, and to usually go
-  through the accessor functions.
+  - Define several classes, in a class hierarchy?  E.g., FSA is a base
+    class, FST inherits from it.  And maybe a further subclass to add
+    finalizing sequences.  I would need to be more careful to only
+    access the private variables when necessary, and to usually go
+    through the accessor functions.
 """
 
 import re, os, random, tempfile
