@@ -599,7 +599,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         for rule in self._rules:
             rule.apply(chunkstr)
         
-    def parse(self, tokens, trace=None):
+    def parse(self, chunk_struct, trace=None):
         """
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked
@@ -617,14 +617,14 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             identified in the chunk structure depends on the rules
             used to define this C{RegexpChunk}.
         """
-        if len(tokens) == 0:
+        if len(chunk_struct) == 0:
             print 'Warning: parsing empty text'
             return Tree(self._top_node, [])
         
         # Use the default trace value?
         if trace == None: trace = self._trace
 
-        chunkstr = ChunkString(tokens)
+        chunkstr = ChunkString(chunk_struct)
 
         # Apply the sequence of rules to the chunkstring.
         if trace:
