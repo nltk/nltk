@@ -77,20 +77,10 @@ class ParadigmQuery(object):
         # Store the query string
         self.string = p_string
 
-        """
-        1. Tokenize
-        ------------------------------------------------------------------------
-        """
-
         # Tokenize the query string, allowing only strings, parentheses,
         # forward slashes and commas.
         re_all = r'table[(]|\,|[)]|[/]|\w+'
         data_tokens = tokenize.regexp(self.string, re_all)
-
-        """
-        2. Develop a context free grammar
-        ------------------------------------------------------------------------
-        """
 
         # Develop a context free grammar
         # S = sentence, T = table, H = hierarchy, D = domain
@@ -130,10 +120,6 @@ class ParadigmQuery(object):
         tokens = tokenize.regexp(self.string, re_all)
         toklist = list(tokens)
 
-        """
-        3. Parse using the context free grammar
-        ------------------------------------------------------------------------
-        """
         # Store the parsing. 
         # Only the first one, as the grammar should be completely nonambiguous.
         try:
@@ -142,11 +128,6 @@ class ParadigmQuery(object):
             print "Could not parse query."
             return
 
-
-        """
-        4. Refine and convert to a Tree representation
-        ------------------------------------------------------------------------
-        """
         # Set the nltk_lite.parse.tree tree for this query to the global sentence
         string = str(self.parseList)
         string2 = string.replace(":","").replace("')'","").replace("table(","").replace("','","").replace("'","").replace("/","")
@@ -167,11 +148,6 @@ class ParadigmQuery(object):
         return self.nltktree
 
     def getXML(self):
-        """
-        This XML is written without the use of SAX or DOM, it is a straight
-        translation of the parsed string. This may be slightly dangerous, but
-        the document is very simple. If I have time, this may be reimplemented.
-        """
         if self.string == None:
             print "No string has been parsed. Please use parse(string)."
             return None

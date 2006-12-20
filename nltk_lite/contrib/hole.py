@@ -40,17 +40,8 @@ class HoleSemantics:
     def __init__(self, usr):
         """
         Constructor.  `usr' is a tree of nodes that can take the forms:
-
-            (and t t')
-            (hole v)
-            (label v)
-            (: v phi)
-            (leq v v)
-
-        where
-            t, t' are subtrees
-            v is a variable
-            phi is a formula fragment
+        (and t t'), (hole v), (label v), (: v phi), (leq v v)
+        where t, t' are subtrees, v is a variable, and phi is a formula fragment.
         """
         self.holes = set()      # set of variables which were asserted hole(x)
         self.labels = set()     # set of variables which were asserted label(x)
