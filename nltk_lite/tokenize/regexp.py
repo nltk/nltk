@@ -93,9 +93,9 @@ def token_split(text, pattern, advanced=False):
         """
 
         if advanced:
-            regexp = _compile(pattern)   # pattern contains ()
+            regex = _compile(pattern)   # pattern contains ()
         else:
-            regexp = re.compile(pattern, re.UNICODE | re.MULTILINE | re.DOTALL)
+            regex = re.compile(pattern, re.UNICODE | re.MULTILINE | re.DOTALL)
 
         # If it's a single string, then convert it to a tuple
         # (which we can iterate over, just like an iterator.)
@@ -111,7 +111,7 @@ def token_split(text, pattern, advanced=False):
             position = 0  # The position within the substring
             
             # Skip any matching material in the substring:
-            match = regexp.match(substring)
+            match = regex.match(substring)
             if match:
                 yield leftover+substring[position:match.start()]
                 yield substring[match.start():match.end()]
@@ -120,7 +120,7 @@ def token_split(text, pattern, advanced=False):
 
             # Walk through the substring, looking for matches.
             while position < len(substring):
-                match = regexp.search(substring, position)
+                match = regex.search(substring, position)
                 if match:
                     yield leftover+substring[position:match.start()]
                     yield substring[match.start():match.end()]
