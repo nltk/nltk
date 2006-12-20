@@ -21,6 +21,8 @@
 
 from nltk_lite.wordnet import *
 
+DEFAULT_CACHE_CAPACITY = 1000
+
 class _LRUCache:
     """
     A cache of values such that least recently used element is flushed when
@@ -48,59 +50,86 @@ class _LRUCache:
       but the two implementations aren't directly comparable.
     """
 
-    def __init__(this, capacity):
-        this.capacity = capacity
-        this.clear()
-    
-    def clear(this):
-        this.values = {}
-        this.history = {}
-        this.oldestTimestamp = 0
-        this.nextTimestamp = 1
-    
-    def removeOldestEntry(this):
+    def __init__(self, capacity):
+        """
+        Initialize a new cache
 
-        while this.oldestTimestamp < this.nextTimestamp:
+        @type  capacity: int
+        @param capacity: Size of the cache (number of Sense -> Synset mappings)
+        """
+        self.capacity = capacity
+        self.clear()
+    
+    def clear(self):
+        """
+        Flush the cache
+        """
+        self.values = {}
+        self.history = {}
+        self.oldestTimestamp = 0
+        self.nextTimestamp = 1
+    
+    def removeOldestEntry(self):
+        """
+        Remove the oldest entry from the cache.
+        """
+        while self.oldestTimestamp < self.nextTimestamp:
 
-            if this.history.get(this.oldestTimestamp):
-                key = this.history[this.oldestTimestamp]
-                del this.history[this.oldestTimestamp]
-                del this.values[key]
+            if self.history.get(self.oldestTimestamp):
+                key = self.history[self.oldestTimestamp]
+                del self.history[self.oldestTimestamp]
+                del self.values[key]
                 return
 
-            this.oldestTimestamp = this.oldestTimestamp + 1
+            self.oldestTimestamp = self.oldestTimestamp + 1
     
-    def setCapacity(this, capacity):
+    def setCapacity(self, capacity):
+        """
+        Set the capacity of the cache.
 
-        if capacity == 0: this.clear()
+        @type  capacity: int
+        @param capacity: new size of the cache
+        """
+        if capacity == 0: self.clear()
 
         else:
-            this.capacity = capacity
+            self.capacity = capacity
 
-            while len(this.values) > this.capacity:
-                this.removeOldestEntry()    
+            while len(self.values) > self.capacity:
+                self.removeOldestEntry()    
     
-    def get(this, key, loadfn=None):
+    def get(self, key, loadfn=None):
+        """
+        Get an item from the cache.
+
+        @type  key: unknown
+        @param key: identifier of a cache entry
+
+        @type  loadfn: function reference
+        @param loadfn: a function used to load the cached entry
+
+	@return: a cached item
+        """
         value = None
 
-        if this.values:
-            pair = this.values.get(key)
+        if self.values:
+            pair = self.values.get(key)
 
             if pair:
                 (value, timestamp) = pair
-                del this.history[timestamp]
+                del self.history[timestamp]
 
         if value == None:
             value = loadfn and loadfn()
 
-        if this.values != None:
-            timestamp = this.nextTimestamp
-            this.nextTimestamp = this.nextTimestamp + 1
-            this.values[key] = (value, timestamp)
-            this.history[timestamp] = key
+        if self.values != None:
+            timestamp = self.nextTimestamp
+            self.nextTimestamp = self.nextTimestamp + 1
+            self.values[key] = (value, timestamp)
+            self.history[timestamp] = key
 
-            if len(this.values) > this.capacity:
-                this.removeOldestEntry()
+            if len(self.values) > self.capacity:
+                self.removeOldestEntry()
 
         return value
 
@@ -113,34 +142,36 @@ class _NullCache:
     def clear():
         pass
     
-    def get(this, key, loadfn=None):
+    def get(self, key, loadfn=None):
         return loadfn and loadfn()
-
-DEFAULT_CACHE_CAPACITY = 1000
-entityCache = _LRUCache(DEFAULT_CACHE_CAPACITY)
 
 def disableCache():
     """Disable the entity cache."""
-    _entityCache = _NullCache()
+    entityCache = _NullCache()
 
 def enableCache():
     """Enable the entity cache."""
-    if not isinstance(_entityCache, LRUCache):
-        _entityCache = _LRUCache(DEFAULT_CACHE_CAPACITY)
+    if not isinstance(entityCache, LRUCache):
+        entityCache = _LRUCache(DEFAULT_CACHE_CAPACITY)
 
 def clearCache():
     """Clear the entity cache."""
-    _entityCache.clear()
+    entityCache.clear()
 
 def setCacheCapacity(capacity=DEFAULT_CACHE_CAPACITY):
-    """Set the capacity of the entity cache."""
-    enableCache()
-    _entityCache.setCapacity(capacity)
+    """
+    Set the capacity of the entity cache.
 
-setCacheSize = setCacheCapacity # for compatability with version 1.0
+    @type  capacity: int
+    @param capacity: new size of the cache.
+    """
+    enableCache()
+    entityCache.setCapacity(capacity)
 
 def buildIndexFiles():
 
     for dict in Dictionaries:
         dict._buildIndexCacheFile()
 
+# Create a default cache
+entityCache = _LRUCache(DEFAULT_CACHE_CAPACITY)
