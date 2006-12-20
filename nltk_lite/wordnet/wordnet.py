@@ -7,6 +7,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import pickle
 import string
 from math import *
 
@@ -37,6 +38,7 @@ class Word(object):
     
     Examples
     --------
+    >>> from nltk_lite.wordnet import *
     >>> N['dog'].pos
     'noun'
 
@@ -90,6 +92,7 @@ class Word(object):
 
         @return: A list of this L{Word}'s L{Sense}s
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'].getSenses()
         ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron}]
         """
@@ -108,6 +111,7 @@ class Word(object):
         """
         @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'].isTagged()
         1
         """
@@ -117,7 +121,8 @@ class Word(object):
         """
         @return: Return a list of adjective positions that this word can
         appear in. These are elements of ADJECTIVE_POSITIONS.
-        
+
+        >>> from nltk_lite.wordnet import *
         >>> ADJ['clear'].getAdjectivePositions()
         [None, 'predicative']
         """
@@ -130,6 +135,7 @@ class Word(object):
 
     def __cmp__(self, other):
         """
+        >>> from nltk_lite.wordnet import *
         >>> N['cat'] < N['dog']
         1
 
@@ -141,7 +147,8 @@ class Word(object):
     def __str__(self):
         """
         Return a human-readable representation.
-        
+
+        >>> from nltk_lite.wordnet import *
         >>> str(N['dog'])
         'dog(n.)'
         """
@@ -204,6 +211,7 @@ class Synset(object):
           Sense in this synset participates in.  (See also
           Sense.verbFrames.) Defined only for verbs.
 
+      >>> from nltk_lite.wordnet import *
       >>> V['think'][0].synset.verbFrames
       (5, 9)
     """
@@ -253,8 +261,10 @@ class Synset(object):
 
         @return: A list of the L{Sense}s in this L{Synset}.
 
-        >>> N['dog'][0].getSenses()
-        # Fill this example in!
+        >>> from nltk_lite.wordnet import *
+        >>> N['dog'][0].synset.getSenses()
+        ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
+        
         """
 
         # Load the senses from the Wordnet files if necessary.
@@ -286,11 +296,12 @@ class Synset(object):
         @return: A sequence of L{Pointer}s to L{Synset}s immediately
             connected to this L{Synset}.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointers()[:5]
-        (hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}, hyponym -> {noun: cur, mongrel, mutt})
+        [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointers(HYPERNYM)
-        (hypernym -> {noun: canine, canid},)
+        [hypernym -> {noun: canine, canid}]
         """
 
         # Load the pointers from the Wordnet files if necessary.
@@ -324,8 +335,9 @@ class Synset(object):
 
         @return: A list of L{Synsets} connected to this L{Synset}.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointerTargets()[:5]
-        [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: pooch, doggie, doggy, barker, bow-wow}, {noun: cur, mongrel, mutt}]
+        [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointerTargets(HYPERNYM)
         [{noun: canine, canid}]
@@ -336,6 +348,7 @@ class Synset(object):
         """
         @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].isTagged()
         1
 
@@ -347,7 +360,8 @@ class Synset(object):
     def __str__(self):
         """
         Return a human-readable representation.
-        
+
+        >>> from nltk_lite.wordnet import *
         >>> str(N['dog'][0].synset)
         '{noun: dog, domestic dog, Canis familiaris}'
         """
@@ -375,6 +389,7 @@ class Synset(object):
     
     def __len__(self):
         """
+        >>> from nltk_lite.wordnet import *
         >>> len(N['dog'][0].synset)
         3
         """
@@ -382,6 +397,7 @@ class Synset(object):
     
     def __getitem__(self, idx):
         """
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].synset[0] == N['dog'][0]
         1
         >>> N['dog'][0].synset['dog'] == N['dog'][0]
@@ -540,6 +556,16 @@ class Synset(object):
 
         return path_distance
 
+    def getIC(self, freq_data):
+
+        key = self.offset
+
+        if freq_data.has_key(key):
+            prob = float(freq_data[key][0]) / freq_data[key][1]
+            return -log(prob)
+
+        else: return -1
+
 class Sense(object):
     """
     A specific meaning of a specific word -- the intersection of a Word and a
@@ -557,14 +583,6 @@ class Sense(object):
           A sequence of integers that index into
           VERB_FRAME_STRINGS. These list the verb frames that this
           Sense partipates in.  Defined only for verbs.
-
-          >>> decide = V['decide'][0].synset
-          >>> decide[0].verbFrames
-          (8, 2, 26, 29)
-          >>> decide[1].verbFrames
-          (8, 2)
-          >>> decide[2].verbFrames
-          (8, 26, 29)
     """
     
     def __init__(self, synset, senseTuple, verbFrames=None):
@@ -627,7 +645,8 @@ class Sense(object):
     def __str__(self):
         """
         Return a human-readable representation.
-        
+
+        >>> from nltk_lite.wordnet import *
         >>> str(N['dog'])
         'dog(n.)'
         """
@@ -660,11 +679,12 @@ class Sense(object):
         @return: A sequence of L{Pointer}s from the L{Synset} of which this
         L{Sense} is a member.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointers()[:5]
-        (hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}, hyponym -> {noun: cur, mongrel, mutt})
+        [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
 
         >>> N['dog'][0].getPointers(HYPERNYM)
-        (hypernym -> {noun: canine, canid},)
+        [hypernym -> {noun: canine, canid}]
         """
         senseIndex = _index(self, self.synset.getSenses())
         pointers = []
@@ -691,8 +711,10 @@ class Sense(object):
         @return: A sequence of L{Synset}s connected to the L{Synset} of which
             this L{Sense} is a member.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].getPointerTargets()[:5]
-        [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: pooch, doggie, doggy, barker, bow-wow}, {noun: cur, mongrel, mutt}]
+        [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
+
         >>> N['dog'][0].getPointerTargets(HYPERNYM)
         [{noun: canine, canid}]
         """
@@ -708,12 +730,13 @@ class Sense(object):
         """
         @return: True/false (1/0) if any L{Sense} is tagged.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].isTagged()
         1
         >>> N['dog'][1].isTagged()
         0
         """
-        word = self.word()
+        word = self.getWord()
         return _index(self, word.getSenses()) < word.taggedSenseCount
     
     def getWord(self):
@@ -753,6 +776,7 @@ class Sense(object):
             could be found. 1 is returned if a L{Sense} is compared with
             itself.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
         0.33333333333333331
     
@@ -789,17 +813,19 @@ class Sense(object):
 
         @return: A score denoting the similarity of the two L{Sense}s,
             normally greater than 0. -1 is returned if no connecting path
-            could be found. 1 is returned if a L{Sense} is compared with
-            itself.
+            could be found. If a L{Sense} is compared with itself, the
+            maximum score is returned, which varies depending on the taxonomy
+            depth.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
-        2.9444389791664407
+        2.5389738710582761
     
         >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
-        2.2512917986064953
+        2.0281482472922856
     
         >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
-        2.1594842493533721
+        1.8718021769015913
     
         >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
         -1
@@ -813,8 +839,8 @@ class Sense(object):
         depth = taxonomy_depths[self.pos]
         path_distance = self.synset.shortest_path_distance(other_sense.synset)
 
-        if path_distance > 0:
-            return -log(path_distance / (2.0 * depth))
+        if path_distance >= 0:
+            return -log((path_distance + 1) / (2.0 * depth))
 
         else: return -1
 
@@ -842,14 +868,15 @@ class Sense(object):
             normally greater than zero. If no connecting path between the two
             senses can be found, -1 is returned.
 
+        >>> from nltk_lite.wordnet import *
         >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
-        0.93333333333333335
+        0.9285714285714286
     
         >>> N['dog'][0].wu_palmer_similarity(N['cat'][0])
-        0.8571428571428571
+        0.84615384615384615
     
         >>> V['run'][0].wu_palmer_similarity(V['walk'][0])
-        0.5714285714285714
+        0.40000000000000002
     
         >>> V['run'][0].wu_palmer_similarity(V['think'][0])
         -1
@@ -858,7 +885,7 @@ class Sense(object):
         synset1 = self.synset
         synset2 = other_sense.synset
 
-        subsumer = lcs_by_depth(synset1, synset2)
+        subsumer = _lcs_by_depth(synset1, synset2)
 
         # If no LCS was found return -1
         if subsumer == None: return -1
@@ -885,8 +912,82 @@ class Sense(object):
         return (2.0 * (len(lcs_path))) / (synset1_path_len + synset2_path_len)
 
     def resnik_similarity(self, other_sense, datafile=""):
-        # Do some stuff
-        return
+        """
+        Return a score denoting how similar two word senses are, based on the
+        Information Content (IC) of the Least Common Subsumer (most specific
+        ancestor node). Note that at this time the scores given do _not_
+        always agree with those given by Pedersen's Perl implementation of
+        Wordnet Similarity, although they are mostly very similar.
+
+        The required IC values are precomputed and stored in a file, the name
+        of which should be passed as the 'datafile' argument. For more
+        information on how they are calculated, check brown_ic.py.
+
+        @type  other_sense: L{Sense}
+        @param other_sense: The L{Sense} that this L{Sense} is being
+            compared to.
+
+        @return: A float score denoting the similarity of the two L{Sense}s.
+            Synsets whose LCS is the root node of the taxonomy will have a
+            score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
+            between the two synsets a score of -1 is returned.
+        """
+        synset1 = self.synset
+        synset2 = other_sense.synset
+
+        # TODO: Once this data has been loaded for the first time preserve it
+        # in memory in some way to prevent unnecessary recomputation.
+        (noun_freqs, verb_freqs) = load_ic_data(datafile)
+
+        if synset1.pos is 'noun':
+            (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, noun_freqs)
+
+        elif synset1.pos is 'verb':
+            (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, verb_freqs)
+
+        return lcs_ic
+
+    def lin_similarity(self, other_sense, datafile=""):
+        """
+        Return a score denoting how similar two word senses are, based on the
+        Information Content (IC) of the Least Common Subsumer (most specific
+        ancestor node) and that of the two input Synsets. The relationship is
+        given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
+
+        Note that at this time the scores given do _not_ always agree with
+        those given by Pedersen's Perl implementation of Wordnet Similarity,
+        although they are mostly very similar.
+
+        The required IC values are calculated using precomputed frequency
+        counts, which are accessed from the 'datafile' file which is supplied
+        as an argument. For more information on how they are calculated,
+        check brown_ic.py.
+
+        @type  other_sense: L{Sense}
+        @param other_sense: The L{Sense} that this L{Sense} is being
+            compared to.
+
+        @return: A float score denoting the similarity of the two L{Sense}s,
+            in the range 0 to 1. Synsets whose LCS is the root node of the
+            taxonomy will have a score of 0 (e.g. N['dog'][0] and
+            N['table'][0]). If no path exists between the two synsets a score
+            of -1 is returned.
+        """
+        synset1 = self.synset
+        synset2 = other_sense.synset
+
+        # TODO: Once this data has been loaded for the first time preserve it
+        # in memory in some way to prevent unnecessary recomputation.
+        (noun_freqs, verb_freqs) = load_ic_data(datafile)
+
+        if synset1.pos is 'noun': freqs = noun_freqs
+        else: freqs = verb_freqs
+
+        ic1 = synset1.getIC(freqs)
+        ic2 = synset2.getIC(freqs)
+        (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, freqs)
+
+        return (2 * lcs_ic) / (ic1 + ic2)
 
 class Pointer(object):
     """
@@ -987,7 +1088,7 @@ class Lexname(object):
    dict = {}
    lexnames = []
    
-   def __init__(self,name,category):
+   def __init__(self, name, category):
        self.name = name
        self.category = category
        Lexname.dict[name] = self
@@ -1066,7 +1167,7 @@ def getSynset(pos, offset):
 
 # Utility functions... possibly move these to wntools.py
 
-def lcs_by_depth(synset1, synset2):
+def _lcs_by_depth(synset1, synset2):
     """
     Finds the least common subsumer of two synsets in a Wordnet taxonomy,
     where the least common subsumer is defined as the ancestor node common
@@ -1119,7 +1220,7 @@ def lcs_by_depth(synset1, synset2):
 
     return subsumer
 
-def lcs_by_content(synset1, synset2, probabilities):
+def _lcs_by_content(synset1, synset2, freqs):
     """
     Get the least common subsumer of the two input synsets, where the least
     common subsumer is defined as the ancestor synset common to both input
@@ -1137,7 +1238,7 @@ def lcs_by_content(synset1, synset2, probabilities):
         the LCS.
     """
     subsumer = None
-    subsumer_ic = 0
+    subsumer_ic = -1
 
     subsumers = synset1.hypernyms(True) & synset2.hypernyms(True)
 
@@ -1145,10 +1246,7 @@ def lcs_by_content(synset1, synset2, probabilities):
 
     for candidate in subsumers:
 
-        offset = candidate.offset
-
-        if probabilities.has_key(offset): ic = -log(probabilities[offset]) 
-        else: ic = -1
+        ic = candidate.getIC(freqs)
 
         if (subsumer == None and ic > 0) or ic > subsumer_ic:
             subsumer = candidate
@@ -1156,12 +1254,19 @@ def lcs_by_content(synset1, synset2, probabilities):
 
     return (subsumer, subsumer_ic)
 
-def load_ic_data(filename):
+def _load_ic_data(filename):
+    """
+    Load in some precomputed frequency distribution data from a file. It is
+    expected that this data has been stored as two pickled dicts.
+
+    TODO: Possibly place the dicts into a global variable or something so
+    that they don't have to be repeatedly loaded from disk.
+    """
 
     infile = open(filename, "rb")
-    noun_freqs = unpickle(infile)
-    verb_freqs = unpickle(infile)
-    close(infile)
+    noun_freqs = pickle.load(infile)
+    verb_freqs = pickle.load(infile)
+    infile.close()
 
     return (noun_freqs, verb_freqs)
 
