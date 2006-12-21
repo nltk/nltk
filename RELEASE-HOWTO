@@ -80,8 +80,9 @@ B. WEBSITE
 
   1. make rsync
   2. post to one or more of the mailing lists
-       nltk-announce@lists.sourceforge.net
-       CORPORA@uib.no, linguist@linguistlist.org
+       nltk-announce@lists.sourceforge.net,
+       CORPORA@uib.no, linguist@linguistlist.org,
+       PythonSIL@lists.sil.org
        mailing lists for any local courses using NLTK
   3. post a news item on the sourceforge site
        http://sourceforge.net/news/?group_id=30982
