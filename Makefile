@@ -34,6 +34,9 @@ DOCTEST_FILES = nltk_lite/test/*.doctest
 doctest:
 	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
 
+demotest:
+	find nltk_lite -name "*.py" -exec python '{}' \;
+
 ########################################################################
 # DISTRIBUTIONS
 ########################################################################
