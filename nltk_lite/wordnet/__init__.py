@@ -13,39 +13,44 @@ with an implementation of Ted Pedersen's Wordnet::Similarity package.
 
 Usage
 -----
->>> from nltk_lite.wordnet import *
+
+    >>> from nltk_lite.wordnet import *
 
 Retrieve words from the database
->>> N['dog']
-dog(n.)
->>> V['dog']
-dog(v.)
->>> ADJ['clear']
-clear(adj.)
->>> ADV['clearly']
-clearly(adv.)
+
+    >>> N['dog']
+    dog(n.)
+    >>> V['dog']
+    dog(v.)
+    >>> ADJ['clear']
+    clear(adj.)
+    >>> ADV['clearly']
+    clearly(adv.)
 
 Examine a word's senses and pointers:
->>> N['dog'].getSenses()
-('dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron})
 
-Extract the first sense
->>> N['dog'][0] # aka N['dog'].getSenses()[0]
-'dog' in {noun: dog, domestic dog, Canis familiaris}
+    >>> N['dog'].getSenses()
+    ('dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron})
 
-Get the first five pointers (relationships) from dog to other synsets.
->>> N['dog'][0].getPointers()[:5]
-(hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}, hyponym -> {noun: cur, mongrel, mutt})
+Extract the first sense:
 
-Get those synsets of which 'dog' is a member meronym.
->>> N['dog'][0].getPointerTargets(MEMBER_MERONYM)
-[{noun: Canis, genus Canis}, {noun: pack}]
+    >>> N['dog'][0] # aka N['dog'].getSenses()[0]
+    'dog' in {noun: dog, domestic dog, Canis familiaris}
+
+Get the first five pointers (relationships) from dog to other synsets:
+
+    >>> N['dog'][0].getPointers()[:5]
+    (hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}, hyponym -> {noun: cur, mongrel, mutt})
+
+Get those synsets of which 'dog' is a member meronym:
+
+    >>> N['dog'][0].getPointerTargets(MEMBER_MERONYM)
+    [{noun: Canis, genus Canis}, {noun: pack}]
 
 """
 
 import os
 import string
-
 from os import environ
 
 # Configuration variables
