@@ -220,7 +220,7 @@ assigned a value by L{i} raises an C{Undefined} exception; this is
 caught by L{evaluate}, which returns the string 'Undefined'.
 
     >>> m.evaluate('(walk adam)', g, trace=2)
-       ... checking whether 'walk' is an individual variable
+        (checking whether 'walk' is an individual variable)
     Expression 'walk' can't be evaluated by i and g[b1/y][b1/x].
     'Undefined'
 
