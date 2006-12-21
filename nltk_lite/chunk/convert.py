@@ -60,6 +60,16 @@ def tagstr2tree(s, chunk_node="NP", top_node="S"):
 _LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
 def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
     """
+    Convert a CoNLL IOB string into a tree.  Uses the specified chunk types
+    (defaults to NP, PP and VP), and creates a tree rooted at a node
+    labeled S (by default).
+
+    @param s: The CoNLL string to be converted.
+    @type s: C{string}
+    @param chunk_types: The chunk types to be converted.
+    @type chunk_types: C{tuple}
+    @param top_node: The node label to use for the root.
+    @type chunk_types: C{string}
     @return: A chunk structure for a single sentence
         encoded in the given CONLL 2000 style string.
     @rtype: L{Tree}
@@ -97,9 +107,18 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
 
     return stack[0]
 
-def tree2conlltags(self):
+def tree2conlltags(t):
+    """
+    Convert a tree to the CoNLL IOB tag format
+
+    @param t: The tree to be converted.
+    @type t: C{Tree}
+    @return: A list of 3-tuples containing word, tag and IOB tag.
+    @rtype: C{list} of C{tuple}
+    """
+
     tags = []
-    for child in self:
+    for child in t:
         try:
             category = child.node
             prefix = "B-"
@@ -112,8 +131,16 @@ def tree2conlltags(self):
             tags.append((child[0], child[1], "O"))
     return tags
 
-def tree2conllstr(self):
-    lines = [' '.join(token) for token in self.conll_tags()]
+def tree2conllstr(t):
+    """
+    Convert a tree to the CoNLL IOB string format
+
+    @param t: The tree to be converted.
+    @type t: C{Tree}
+    @return: A multiline string where each line contains a word, tag and IOB tag.
+    @rtype: C{string}
+    """
+    lines = [' '.join(token) for token in tree2conlltags(t)]
     return '\n'.join(lines)
 
 ### IEER
