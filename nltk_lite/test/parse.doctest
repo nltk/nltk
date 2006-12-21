@@ -3,12 +3,11 @@ Unit tests for the utility parse functions.
 --------------------------------------------------------------------------------
 
     >>> from nltk_lite.parse import *
+    >>> from nltk_lite.tokenize import *
 
 --------------------------------------------------------------------------------
 Unit tests for the CFG (Context Free Grammar) class
 --------------------------------------------------------------------------------
-
-    >>> from nltk_lite.parse.cfg import *
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -64,8 +63,6 @@ Unit tests for the CFG (Context Free Grammar) class
 Unit tests for the rd (Recursive Descent Parser) class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.tokenize import *
-    >>> from nltk_lite.parse.rd import *
 
 Create and run a recursive descent parser over both a syntactically ambiguous
 and unambiguous sentence.
@@ -84,9 +81,6 @@ and unambiguous sentence.
 --------------------------------------------------------------------------------
 Unit tests for the sr (Shift Reduce Parser) class
 --------------------------------------------------------------------------------
-
-    >>> from nltk_lite.tokenize import *
-    >>> from nltk_lite.parse.sr import *
 
 Create and run a shift reduce parser over both a syntactically ambiguous
 and unambiguous sentence. Note that unlike the recursive descent parser, one
@@ -201,7 +195,6 @@ Create and test the Earley variant chart parser. This requires a lexicon.
 Unit tests for the Probabilistic CFG class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse.pcfg import *
     >>> from nltk_lite.corpora import treebank
     >>> from itertools import islice
 
@@ -229,7 +222,7 @@ Create a set of probabilistic CFG productions.
     >>> productions[0].prob()
     0.29999999999999999
 
-    >>> grammar = Grammar(S, productions)
+    >>> grammar = WeightedGrammar(S, productions)
 
     >>> grammar.start()
     <S>
@@ -253,9 +246,6 @@ Induce some productions using parsed Treebank data.
 --------------------------------------------------------------------------------
 Unit tests for the Probabilistic Chart Parse classes
 --------------------------------------------------------------------------------
-
-    >>> from nltk_lite.parse.pchart import *
-    >>> from nltk_lite.tokenize import *
 
     >>> tokens = list(whitespace("I saw John with my cookie"))
     >>> grammar = toy1
@@ -287,8 +277,6 @@ resulting parses.
 Unit tests for the Viterbi Parse classes
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse.viterbi import *
-
     >>> tokens = list(whitespace("I saw John with my cookie"))
     >>> grammar = toy1
 
@@ -301,8 +289,6 @@ Parse the tokenized sentence.
 --------------------------------------------------------------------------------
 Unit tests for the Tree class
 --------------------------------------------------------------------------------
-
-    >>> from nltk_lite.parse.tree import *
 
 C{Trees} are used to encode hierarchical structures.  Each C{Tree}
 object encodes a single grouping in the hierarchy.  A C{Tree} is
@@ -522,8 +508,6 @@ Trees can be compared for equality:
 Unit tests for the TreeTransformation class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse.treetransforms import *
-    >>> from nltk_lite.parse import bracket_parse
     >>> from copy import deepcopy
 
     >>> sentence = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
@@ -576,11 +560,6 @@ Convert the transformed tree back to its original form
 Unit tests for the Category class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse.category import *
-
-I don't understand this class (or its purpose) as yet so I have merely
-replicated the demo() code.
-
     >>> Category(pos='n', agr=Category(number='pl', gender='f'))
     [agr=[gender='f', number='pl'], pos='n']
 
@@ -590,8 +569,6 @@ replicated the demo() code.
 --------------------------------------------------------------------------------
 Unit tests for FeatureStructure classes
 --------------------------------------------------------------------------------
-
-    >>> from nltk_lite.parse.featurestructure import *
 
 Copying from self to other.
 
@@ -750,8 +727,6 @@ Aliased variable tests
 --------------------------------------------------------------------------------
 Unit tests for the Feature Chart Parser classes
 --------------------------------------------------------------------------------
-
-    >>> from nltk_lite.parse.featurechart import *
 
     >>> S = GrammarCategory.parse('S')
     >>> VP = GrammarCategory.parse('VP')
