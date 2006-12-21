@@ -137,8 +137,9 @@ class MinimalSet(object):
         self._seen = {}        # to record what we have seen
         self._displays = {}    # what we will display
 
-        for context, target, display in parameters:
-            self.add(context, target, display)
+        if parameters:
+            for context, target, display in parameters:
+                self.add(context, target, display)
 
     def add(self, context, target, display):
         """
