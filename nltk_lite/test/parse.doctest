@@ -210,12 +210,12 @@ Create a set of probabilistic CFG productions.
     >>> S, A, B, C = nonterminals('S A B C')
 
     >>> productions = [
-    ... Production(A, [B, B], prob=0.3),
-    ... Production(A, [C, B, C], prob=0.7),
-    ... Production(B, [B, 'b'], prob=0.5),
-    ... Production(B, [C], prob=0.5),
-    ... Production(C, ['a'], prob=0.1),
-    ... Production(C, ['b'], prob=0.9)]
+    ... WeightedProduction(A, [B, B], prob=0.3),
+    ... WeightedProduction(A, [C, B, C], prob=0.7),
+    ... WeightedProduction(B, [B, 'b'], prob=0.5),
+    ... WeightedProduction(B, [C], prob=0.5),
+    ... WeightedProduction(C, ['a'], prob=0.1),
+    ... WeightedProduction(C, ['b'], prob=0.9)]
 
     >>> productions[0]
     A -> B B (p=0.3)
