@@ -61,7 +61,7 @@ Parsed:
       (. .) ))
 """
 
-def parsed(files = 'parsed'):
+def parsed(files = 'parsed', basedir = None):
     """
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -70,15 +70,21 @@ def parsed(files = 'parsed'):
 
     # Just one file to process?  If so convert to a tuple so we can iterate
     if type(files) is str: files = (files,)
+
+    if not basedir: basedir = get_basedir()
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
         s = open(path).read()
-        for t in tokenize.blankline(s):
-            yield tree.bracket_parse(t)
+        for t in tokenize.sexpr(s):
+            try:
+                yield tree.bracket_parse(t)
+            except IndexError:
+                # in case it's the real treebank format, 
+                # strip first and last brackets before parsing
+                yield tree.bracket_parse(t[1:-1]) 
 
-
-def chunked(files = 'chunked'):
+def chunked(files = 'chunked', basedir = None):
     """
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -88,13 +94,15 @@ def chunked(files = 'chunked'):
     # Just one file to process?  If so convert to a tuple so we can iterate
     if type(files) is str: files = (files,)
 
+    if not basedir: basedir = get_basedir()
+
     for file in files:
-        path = os.path.join(get_basedir(), "treebank", file)
+        path = os.path.join(basedir, "treebank", file)
         s = open(path).read()
         for t in tokenize.blankline(s):
             yield chunk.tagstr2tree(t)
 
-def tagged(files = 'chunked'):
+def tagged(files = 'chunked', basedir = None):
     """
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -103,6 +111,8 @@ def tagged(files = 'chunked'):
 
     # Just one file to process?  If so convert to a tuple so we can iterate
     if type(files) is str: files = (files,)
+
+    if not basedir: basedir = get_basedir()
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
@@ -114,7 +124,7 @@ def tagged(files = 'chunked'):
                     l.append(tag2tuple(t))
             yield l
 
-def raw(files = 'raw'):
+def raw(files = 'raw', basedir = None):
     """
     @param files: One or more treebank files to be processed
     @type files: L{string} or L{tuple(string)}
@@ -123,6 +133,8 @@ def raw(files = 'raw'):
 
     # Just one file to process?  If so convert to a tuple so we can iterate
     if type(files) is str: files = (files,)
+
+    if not basedir: basedir = get_basedir()
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
