@@ -35,13 +35,13 @@ class Word(object):
     >>> N['dog'].taggedSenseCount
     1
 
-    @type  form: string
+    @type  form: C{string}
     @param form: The orthographic representation of the word.
 
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
 
-    @type  taggedSenseCount: integer
+    @type  taggedSenseCount: C{int}
     @param taggedSenseCount: The number of senses that are tagged.
     """
     
@@ -49,7 +49,7 @@ class Word(object):
         """
         Initialize the word from a line of a WordNet POS file.
 
-        @type  line: string
+        @type  line: C{string}
         @param line: The appropriate line taken from the Wordnet data files.
         """
 
@@ -123,10 +123,8 @@ class Word(object):
         appear in. These are elements of ADJECTIVE_POSITIONS.
         """
         positions = set()
-
         for sense in self.getSenses():
             positions.add(sense.position)
-
         return list(positions)
 
     def __cmp__(self, other):
@@ -197,17 +195,17 @@ class Synset(object):
     >>> V['think'][0].synset.verbFrames
     (5, 9)
 
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
 
-    @type  offset: integer
+    @type  offset: C{int}
     @param offset: An integer offset into the part-of-speech file. Together
         with pos, this can be used as a unique id.
 
-    @type  gloss: string
+    @type  gloss: C{string}
     @param gloss: A gloss (dictionary definition) for the sense.
 
-    @type  verbFrames: [integer]
+    @type  verbFrames: C{list} of C{integer}
     @param verbFrames: A sequence of integers that index into
         VERB_FRAME_STRINGS. These list the verb frames that any
         Sense in this synset participates in. (See also
@@ -260,7 +258,6 @@ class Synset(object):
         >>> from nltk_lite.wordnet import *
         >>> N['dog'][0].synset.getSenses()
         ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
-
         @return: A list of the L{Sense}s in this L{Synset}.
         """
 
@@ -294,7 +291,7 @@ class Synset(object):
         >>> N['dog'][0].getPointers(HYPERNYM)
         [hypernym -> {noun: canine, canid}]
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
         @param pointerType: a relation linking two synsets e.g. 'hypernym'
 
         @return: A sequence of L{Pointer}s to L{Synset}s immediately
@@ -307,7 +304,6 @@ class Synset(object):
 
             for tuple in self._pointerTuples:
                 self._pointers.append(Pointer(self.offset, tuple))
-
             del self._pointerTuples
 
         if pointerType == None:
@@ -334,9 +330,8 @@ class Synset(object):
         >>> N['dog'][0].getPointerTargets(HYPERNYM)
         [{noun: canine, canid}]
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
         @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
         @return: A list of L{Synsets} connected to this L{Synset}.
         """
         return map(Pointer.getTarget, self.getPointers(pointerType))
@@ -435,7 +430,6 @@ class Synset(object):
         @type  include_self: boolean
         @param include_self: flag whether to include the source synset in the
             result list
-
         @return: The set of all hypernym L{Synset}s of the original L{Synset}.
         """
         gpt = self.getPointerTargets
@@ -480,10 +474,9 @@ class Synset(object):
         of each node from the initial node on the way. A list of
         (synset, distance) tuples is returned.
 
-        @type  distance: int
+        @type  distance: C{int}
         @param distance: the distance (number of edges) from this hypernym to
             the original hypernym L{Synset} on which this method was called.
-        
         @return: A list of (L{Synset}, int) tuples where each L{Synset} is
            a hypernym of the first L{Synset}.
         """
@@ -507,9 +500,7 @@ class Synset(object):
         itself 0 is returned.
 
         @type  other_synset: L{Synset}
-        @param other_synset: The Synset to which the shortest path will be
-            found.
-        
+        @param other_synset: The Synset to which the shortest path will be found.
         @return: The number of edges in the shortest path connecting the two
             nodes, or -1 if no path exists.
         """
@@ -532,12 +523,9 @@ class Synset(object):
         for (l, d) in ((dist_list1, dist_dict1), (dist_list2, dist_dict2)):
 
             for (key, value) in l:
-
                 if d.has_key(key):
-
                     if value < d[key]:
                         d[key] = value
-
                 else:
                     d[key] = value
 
@@ -545,10 +533,8 @@ class Synset(object):
         # connecting path length. Return the shortest of these.
 
         for synset in dist_dict1.keys():
-
             if dist_dict2.has_key(synset):
                 new_distance = dist_dict1[synset] + dist_dict2[synset]
-
                 if path_distance < 0 or new_distance < path_distance:
                     path_distance = new_distance
 
@@ -559,11 +545,10 @@ class Synset(object):
         Get the Information Content (IC) value of this L{Synset}, using
         the supplied dict 'freq_data'.
 
-        @type  freq_data: Dict
+        @type  freq_data: C{dict}
         @param freq_data: Dictionary mapping synset identifiers (offsets) to
             a tuple containing the frequency count of the synset, and the
             frequency count of the root synset.
-
         @return: The IC value of this L{Synset}, or -1 if no IC value can be
             computed.
         """
@@ -580,15 +565,12 @@ class Sense(object):
     A specific meaning of a specific word -- the intersection of a Word and a
     Synset.
     
-    @type  form: string
+    @type  form: C{string}
     @param form: The orthographic representation of the Word this is a Sense of
-
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB
-    
     @type  synset: L{Synset}
     @param synset: The Synset that this Sense is a sense of.
-
     @type  verbFrames: [integer]
     @param verbFrames: A sequence of integers that index into
         VERB_FRAME_STRINGS. These list the verb frames that this
@@ -601,13 +583,11 @@ class Sense(object):
 
         @type  synset: L{Synset}
         @param synset: The L{Synset} of which this L{Sense} is a member.
-
         @type  senseTuple: (String, String)
         @param senseTuple: A tuple containing this L{Sense}'s form
             (string representation) and an id string (not used anywhere -
             should probably be removed at some point)
-        
-        @type  verbFrames: List of ints
+        @type  verbFrames: C{list} of C{int}
         @param verbFrames: An optional list of integers, which are indices
             into VERB_FRAME_STRINGS. Only supplied for verbs.
         """
@@ -690,7 +670,7 @@ class Sense(object):
         >>> N['dog'][0].getPointers(HYPERNYM)
         [hypernym -> {noun: canine, canid}]
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
         @param pointerType: a relation linking two synsets e.g. 'hypernym'
 
         @return: A sequence of L{Pointer}s from the L{Synset} of which this
@@ -700,10 +680,8 @@ class Sense(object):
         pointers = []
 
         for ptr in self.synset.getPointers(pointerType):
-
             if ptr.sourceIndex == 0 or ptr.sourceIndex - 1 == selfIndex: 
                 pointers.append(ptr)
-
         return pointers
         
     def getPointerTargets(self, pointerType=None):
@@ -722,7 +700,7 @@ class Sense(object):
         >>> N['dog'][0].getPointerTargets(HYPERNYM)
         [{noun: canine, canid}]
 
-        @type  pointerType: string or constant (one of POINTER_TYPES)
+        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
         @param pointerType: a relation linking two synsets e.g. 'hypernym'
 
         @return: A sequence of L{Synset}s connected to the L{Synset} of which
@@ -802,12 +780,11 @@ class Sense(object):
 
         synset1 = self.synset
         synset2 = other_sense.synset
-
         path_distance = synset1.shortest_path_distance(synset2)
-
-        if path_distance < 0: return -1
-        else: return 1.0 / (path_distance + 1)
-
+        if path_distance < 0:
+            return -1
+        else:
+            return 1.0 / (path_distance + 1)
 
     def leacock_chodorow_similarity(self, other_sense):
         """
@@ -831,8 +808,7 @@ class Sense(object):
         -1
 
         @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
+        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
 
         @return: A score denoting the similarity of the two L{Sense}s,
             normally greater than 0. -1 is returned if no connecting path
@@ -851,8 +827,8 @@ class Sense(object):
 
         if path_distance >= 0:
             return -log((path_distance + 1) / (2.0 * depth))
-
-        else: return -1
+        else:
+            return -1
 
     def wu_palmer_similarity(self, other_sense):
         """
@@ -885,9 +861,7 @@ class Sense(object):
         -1
 
         @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
+        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s,
             normally greater than zero. If no connecting path between the two
             senses can be found, -1 is returned.
@@ -935,9 +909,7 @@ class Sense(object):
         information on how they are calculated, check brown_ic.py.
 
         @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
+        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s.
             Synsets whose LCS is the root node of the taxonomy will have a
             score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
@@ -981,9 +953,7 @@ class Sense(object):
         check brown_ic.py.
 
         @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
+        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s.
             If no path exists between the two synsets a score of -1 is returned.
         """
@@ -1035,9 +1005,7 @@ class Sense(object):
         check brown_ic.py.
 
         @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
+        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s,
             in the range 0 to 1. If no path exists between the two synsets a
             score of -1 is returned.
@@ -1069,10 +1037,9 @@ class Pointer(object):
     """
     A typed directional relationship between Senses or Synsets.
     
-    @type  type: string
+    @type  type: C{string}
     @param type: One of POINTER_TYPES.
-
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
     """
     
@@ -1198,10 +1165,10 @@ def getWord(form, pos='noun'):
     """
     Return a word with the given lexical form and pos.
 
-    @type  form: string
+    @type  form: C{string}
     @param form: the sought-after word string e.g. 'dog'
 
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: the desired part of speech. Defaults to 'noun'.
 
     @return: the L{Word} object corresponding to form and pos, if it exists.
@@ -1212,17 +1179,13 @@ def getSense(form, pos='noun', senseno=0):
     """
     Lookup a sense by its sense number. Used by repr(sense).
 
-    @type  form: string
+    @type  form: C{string}
     @param form: the sought-after word string e.g. 'dog'
-
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: the desired part of speech. Defaults to 'noun'.
-
-    @type  senseno: int
+    @type  senseno: C{int}
     @param senseno: the id of the desired word sense. Defaults to 0.
-
-    @return: the L{Sense} object corresponding to form, pos and senseno, if
-        it exists.
+    @return: the L{Sense} object corresponding to form, pos and senseno, if it exists.
     """
     return getWord(form, pos)[senseno]
 
@@ -1230,12 +1193,10 @@ def getSynset(pos, offset):
     """
     Lookup a synset by its offset. Used by repr(synset).
 
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: the desired part of speech.
-
-    @type  offset: int
+    @type  offset: C{int}
     @param offset: the offset into the relevant Wordnet dictionary file.
-
     @return: the L{Synset} object extracted from the Wordnet dictionary file.
     """
     return _dictionaryFor(pos).getSynset(offset)
@@ -1246,17 +1207,13 @@ def _lcs_by_depth(synset1, synset2):
     """
     Finds the least common subsumer of two synsets in a Wordnet taxonomy,
     where the least common subsumer is defined as the ancestor node common
-    to both input synsets whose shortest path to the root node is the
-    longest.
+    to both input synsets whose shortest path to the root node is the longest.
 
     @type  synset1: L{Synset}
     @param synset1: First input synset.
-
     @type  synset2: L{Synset}
     @param synset2: Second input synset.
-
-    @return: The ancestor synset common to both input synsets which is also
-        the LCS.
+    @return: The ancestor synset common to both input synsets which is also the LCS.
     """
     subsumer = None
     max_min_path_length = -1
@@ -1285,9 +1242,8 @@ def _lcs_by_depth(synset1, synset2):
         min_path_length = -1
 
         for path in paths_to_root:
-
-             if min_path_length < 0 or len(path) < min_path_length:
-                 min_path_length = len(path)
+            if min_path_length < 0 or len(path) < min_path_length:
+                min_path_length = len(path)
 
         if min_path_length > max_min_path_length:
             max_min_path_length = min_path_length
@@ -1320,13 +1276,10 @@ def _lcs_by_content(synset1, synset2, freqs):
     # For each candidate, calculate its IC value. Keep track of the candidate
     # with the highest score.
     for candidate in subsumers:
-
         ic = candidate.getIC(freqs)
-
         if (subsumer == None and ic > 0) or ic > subsumer_ic:
             subsumer = candidate
             subsumer_ic = ic
-
     return (subsumer, subsumer_ic)
 
 def _load_ic_data(filename):
@@ -1378,19 +1331,16 @@ def _partition(sequence, size, count):
     """
 
     partitions = []
-
     for index in range(0, size * count, size):
         partitions.append(sequence[index:index + size])
-
     return (partitions, sequence[size * count:])
 
 def _normalizePOS(pos):
     """
     Return the standard form of the supplied part of speech.
 
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: A (non-standard) part of speech string.
-
     @return: A standard form part of speech string.
     """
     norm = _POSNormalizationTable.get(pos)
@@ -1402,7 +1352,7 @@ def _dictionaryFor(pos):
     """
     Return the dictionary for the supplied part of speech.
 
-    @type  pos: string
+    @type  pos: C{string}
     @param pos: The part of speech of the desired dictionary.
 
     @return: The desired dictionary.
@@ -1423,13 +1373,11 @@ def _compareInstances(a, b, fields):
     """
     if not hasattr(b, '__class__'):
         return cmp(type(a), type(b))
-
     elif a.__class__ != b.__class__:
         return cmp(a.__class__, b.__class__)
 
     for field in fields:
         diff = cmp(getattr(a, field), getattr(b, field))
-
         if diff: return diff
 
     return 0
