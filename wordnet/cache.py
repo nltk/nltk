@@ -37,16 +37,16 @@ class _LRUCache:
     implementation of history as a List was slower than what's here,
     but the two implementations aren't directly comparable.
 
-    @type  entities: Dict
+    @type  entities: C{dict}
     @param entities: A dict from key -> (value, timestamp)
 
-    @type  history: Dict
+    @type  history: C{dict}
     @param history: A dict from timestamp -> key
 
-    @type  nextTimeStamp: int
+    @type  nextTimeStamp: C{int}
     @param nextTimeStamp: Timestamp to use with the next value that's added.
 
-    @type  oldestTimeStamp: int
+    @type  oldestTimeStamp: C{int}
     @param oldestTimeStamp: Timestamp of the oldest element (the next one to
         remove), or slightly lower than that.
     """
