@@ -1,3 +1,14 @@
+Version 0.7 2006-12-22
+
+* Code:
+  - bugfixes, including fixed bug in Brown corpus reader
+  - cleaned up wordnet 2.1 interface code and similarity measures
+  - support for full Penn treebank format contributed by Yoav Goldberg
+* Tutorials:
+  - expanded tutorials on advanced parsing and structured programming
+  - checked all doctest code
+  - improved images for chart parsing
+	
 Version 0.7b1 2006-12-06
 	
 * Code:
@@ -6,7 +17,7 @@ Version 0.7b1 2006-12-06
   - split chunking code into new chunk package
   - updated wordnet package to support version 2.1 of Wordnet.
   - prototyped basic wordnet similarity measures
-    (path distance, Wu + Palmer and Leacock + Chodorow similarity measures.)
+    (path distance, Wu + Palmer and Leacock + Chodorow, Resnik similarity measures.)
   - bugfixes (tag.Window, tag.ngram)
   - more doctests
 * Contrib:	
