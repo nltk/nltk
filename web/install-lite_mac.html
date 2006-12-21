@@ -163,14 +163,25 @@ is loaded every time you start a terminal session:
 	tar -xvf WordNet-2.1.tar
 </pre>
 
-<P>Compile and install the Wordnet source distribution:
+<P>Compile and install the WordNet source distribution.
 
 <pre>
-	cd Wordnet-2.1
+	cd WordNet-2.1
 	./configure
 	make
 	sudo make install
 </pre>
+
+<P>To install WordNet somewhere other than /usr/local, e.g. /Library/WordNet
+
+<pre>
+        cd WordNet-2.1
+        ./configure --prefix=/Library/WordNet
+        make install
+</pre>
+
+<P>If WordNet is not installed in /usr/local, set environment
+variable <tt>WNHOME=/Library/WordNet</tt>
 
 </div>
 <table class="transparent" width="100%">
