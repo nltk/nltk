@@ -589,7 +589,7 @@ class Model:
             return self.valuation[expr]
         except Undefined:
             if trace > 1:
-                print "   ... checking whether '%s' is an individual variable" % expr
+                print "    (checking whether '%s' is an individual variable)" % expr
             pass
         try:
             if trace > 1:
@@ -644,7 +644,7 @@ class Model:
                 value = self.satisfy(expr, g, lowtrace)
                 
                 if trace:
-                    print indent + "...trying assignment %s" % g
+                    print indent + "(trying assignment %s)" % g
                     
                 # expr == False under g[u/var]?
                 if value == False:
