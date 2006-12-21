@@ -49,7 +49,7 @@ def raw(files = items):
 
 def dictionary(files = items):
     for doc in raw(files):
-        yield ieerstr2tree(doc)
+        yield chunk.ieerstr2tree(doc)
 
 def demo():
     from nltk_lite.corpora import ieer
