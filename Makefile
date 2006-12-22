@@ -55,7 +55,7 @@ codedist: clean_code INSTALL.TXT
 docdist: doc
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
 
-exampledist: doc
+exampledist:
 	find examples -print | egrep -v '.svn' | zip dist/nltk_lite-examples-$(NLTK_VERSION).zip -@
 
 corporadist:
