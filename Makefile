@@ -62,7 +62,7 @@ corporadist:
 	find corpora -print | egrep -v '.svn' | zip dist/nltk_lite-corpora-$(NLTK_VERSION).zip -@
 
 # Get the version number.
-INSTALL.TXT: INSTALL.TXT.in
+INSTALL.txt: INSTALL.txt.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
 
 ########################################################################
