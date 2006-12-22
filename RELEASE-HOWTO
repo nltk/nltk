@@ -40,7 +40,7 @@ E. LINK CHECKING
 @@@ BUILD
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-The build requires docutils, pdflatex, bdist_mpkg
+The build requires docutils, pdflatex, python imaging library, epydoc
 
   1. Check out a clean copy of the subversion repository (or make clean)
        (install locally?  python setup.py install; make clean)
