@@ -100,7 +100,7 @@ wordnet:
 	cp python/mac/WordNet-2.1.tar.gz python/unix
 	touch .wordnet.done
 
-iso:	.dist.done .python.done .numpy.done .wordnet.done .pywordnet.done
+iso:	.dist.done .python.done .numpy.done .wordnet.done
 	rm -rf iso nltk_lite-$(NLTK_VERSION)
 	mkdir -p iso/web iso/web/screenshots/ iso/mac iso/win iso/unix
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
