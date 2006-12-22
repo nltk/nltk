@@ -50,15 +50,15 @@ The build requires docutils, pdflatex, python imaging library, epydoc
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions and compare size with previous distribution:
 
--rw-r--r--  1 sb users    806387 2006-12-06 20:51 nltk_lite-0.7b1-1.noarch.rpm
--rw-r--r--  1 sb users    476975 2006-12-06 20:51 nltk_lite-0.7b1-1.src.rpm
--rw-r--r--  1 sb users 134195200 2006-12-06 21:14 nltk_lite-0.7b1.iso
--rw-r--r--  1 sb users    474260 2006-12-06 20:51 nltk_lite-0.7b1.tar.gz
--rw-r--r--  1 sb users    595653 2006-12-06 20:51 nltk_lite-0.7b1.win32.exe
--rw-r--r--  1 sb users    545578 2006-12-06 20:51 nltk_lite-0.7b1.zip
--rw-r--r--  1 sb users  25958278 2006-12-06 20:53 nltk_lite-corpora-0.7b1.zip
--rw-r--r--  1 sb users  18436397 2006-12-06 20:53 nltk_lite-doc-0.7b1.zip
--rw-r--r--  1 sb users     79440 2006-12-06 20:53 nltk_lite-examples-0.7b1.zip
+-rw-r--r-- 1 root root   1024759 2006-12-22 16:38 nltk_lite-0.7-1.noarch.rpm
+-rw-r--r-- 1 root root    470788 2006-12-22 16:38 nltk_lite-0.7-1.src.rpm
+-rw-r--r-- 1 sb   sb   140171264 2006-12-22 16:42 nltk_lite-0.7.iso
+-rw-r--r-- 1 root root    467192 2006-12-22 16:37 nltk_lite-0.7.tar.gz
+-rw-r--r-- 1 root root    610783 2006-12-22 16:38 nltk_lite-0.7.win32.exe
+-rw-r--r-- 1 sb   sb      538426 2006-12-22 16:37 nltk_lite-0.7.zip
+-rw-r--r-- 1 root root  25958278 2006-12-22 16:40 nltk_lite-corpora-0.7.zip
+-rw-r--r-- 1 root root  24181402 2006-12-22 16:40 nltk_lite-doc-0.7.zip
+-rw-r--r-- 1 root root     79869 2006-12-22 16:40 nltk_lite-examples-0.7.zip
 
   (test the distributions?)
 
