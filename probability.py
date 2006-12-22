@@ -996,7 +996,7 @@ class MutableProbDist(ProbDistI):
         """
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
-        self._data = numpy.zeros(len(samples), numpy.Float64)
+        self._data = numpy.zeros(len(samples), numpy.float64)
         for i in range(len(samples)):
             if store_logs:
                 self._data[i] = prob_dist.logprob(samples[i])
