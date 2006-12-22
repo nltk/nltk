@@ -46,7 +46,7 @@ demotest:
 dist: codedist docdist exampledist corporadist
 	touch .dist.done
 
-codedist: clean_code INSTALL.TXT
+codedist: clean_code INSTALL.txt
 	$(PYTHON) setup.py -q sdist --format=gztar
 	$(PYTHON) setup.py -q sdist --format=zip
 	$(PYTHON) setup.py -q bdist --format=rpm
@@ -109,7 +109,7 @@ iso:	.dist.done .python.done .numpy.done .wordnet.done
 	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm	iso/unix/
 	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
 	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
-	cp *.TXT					iso
+	cp *.txt					iso
 	cp web/*.{html,css,png}                         iso/web/
 	cp web/screenshots/*.jpg                        iso/web/screenshots
 	cp python/mac/*                                 iso/mac/
