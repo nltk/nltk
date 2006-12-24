@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2006 University of Pennsylvania
 # Author: Trevor Cohn <tacohn@csse.unimelb.edu.au>
 #         Philip Blunsom <pcbl@csse.unimelb.edu.au>
+#         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -783,6 +784,10 @@ def _log_add(*values):
 def demo():
     # demonstrates HMM probability calculation
 
+    print
+    print "HMM probability calculation demo"
+    print
+
     # example taken from page 381, Huang et al
     symbols = ['up', 'down', 'unchanged']
     states = ['bull', 'bear', 'static']
@@ -827,11 +832,11 @@ def demo():
         print
 
 
-def load_pos():
+def load_pos(num_sents):
     from nltk_lite.corpora import brown
     from itertools import islice
 
-    sentences = list(islice(brown.tagged(), 100))
+    sentences = list(islice(brown.tagged(), num_sents))
 
     tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
         'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',
@@ -887,8 +892,12 @@ def test_pos(model, sentences, display=False):
 def demo_pos():
     # demonstrates POS tagging using supervised training
 
+    print
+    print "HMM POS tagging demo"
+    print
+
     print 'Training HMM...'
-    labelled_sequences, tag_set, symbols = load_pos()
+    labelled_sequences, tag_set, symbols = load_pos(200)
     trainer = HiddenMarkovModelTrainer(tag_set, symbols)
     hmm = trainer.train_supervised(labelled_sequences[100:],
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
@@ -905,8 +914,12 @@ def _untag(sentences):
 def demo_pos_bw():
     # demonstrates the Baum-Welch algorithm in POS tagging
 
+    print
+    print "Baum-Welch demo for POS tagging"
+    print
+
     print 'Training HMM (supervised)...'
-    sentences, tag_set, symbols = load_pos()
+    sentences, tag_set, symbols = load_pos(310)
     symbols = set()
     for sentence in sentences:
         for token in sentence:
@@ -917,13 +930,17 @@ def demo_pos_bw():
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
     print 'Training (unsupervised)...'
     # it's rather slow - so only use 10 samples
-    unlabelled = _untag(sentences[301:311])
+    unlabelled = _untag(sentences[300:310])
     hmm = trainer.train_unsupervised(unlabelled, model=hmm, max_iterations=5)
     test_pos(hmm, sentences[:100], True)
 
 def demo_bw():
     # demo Baum Welch by generating some sequences and then performing
     # unsupervised training on them
+
+    print
+    print "Baum-Welch demo for market example"
+    print
 
     # example taken from page 381, Huang et al
     symbols = ['up', 'down', 'unchanged']
@@ -965,7 +982,7 @@ def demo_bw():
     
 if __name__ == '__main__':
     demo()
-    #demo_pos()
-    #demo_pos_bw()
-    #demo_bw()
+    demo_pos()
+    demo_pos_bw()
+#    demo_bw()
 
