@@ -296,11 +296,11 @@ Demo code lifted more or less directly from the HMM class.
     2.357
 
     >>> print '%.3f' % (model._exhaustive_entropy(sequence))
-    2.243
+    2.357
 
     >>> model.point_entropy(sequence)
     array([ 0.68893883,  1.07097261,  0.67317762])
 
     >>> model._exhaustive_point_entropy(sequence)
-    array([ 0.65365674,  1.05892585,  0.59648465])
+    array([ 0.68893883,  1.07097261,  0.67317762])
 
