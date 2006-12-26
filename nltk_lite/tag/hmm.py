@@ -155,6 +155,7 @@ class HiddenMarkovModel(object):
                 state = sequence[t][_TAG]
                 p += self._transitions[last_state].logprob(state) + \
                      self._outputs[state].logprob(sequence[t][_TEXT])
+                last_state = state
             return p
         else:
             alpha = self._forward_probability(sequence)
