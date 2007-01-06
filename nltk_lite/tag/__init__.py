@@ -13,7 +13,9 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TagI} interface.
 """
 
-class TagI(object):
+import yaml
+
+class TagI(yaml.YAMLObject):
     """
     A processing interface for assigning a tag to each token in a list.
     Tags are case sensitive strings that identify some property of each
@@ -56,6 +58,7 @@ class Default(SequentialBackoff):
     """
     A tagger that assigns the same tag to every token.
     """
+    yaml_tag = '!tag.Default'
     def __init__(self, tag):
         """
         Construct a new default tagger.

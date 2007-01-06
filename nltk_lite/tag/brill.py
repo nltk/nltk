@@ -15,12 +15,13 @@ from nltk_lite.tag import TagI
 
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
+import yaml          # to save and load taggers in files
 
 ######################################################################
 ## The Brill Tagger
 ######################################################################
 
-class Brill(TagI):
+class Brill(TagI, yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     X{initial tagger} (such as L{tag.Default}) to assign an intial
@@ -34,6 +35,8 @@ class Brill(TagI):
     are created by learning rules from a training corpus, using either
     L{BrillTrainer} or L{FastBrillTrainer}.
     """
+    
+    yaml_tag = '!tag.Brill'
     def __init__(self, initial_tagger, rules):
         """
         @param initial_tagger: The initial tagger
@@ -85,7 +88,7 @@ class Brill(TagI):
 ## Brill Rules
 ######################################################################
 
-class BrillRuleI(object):
+class BrillRuleI(yaml.YAMLObject):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by brill taggers.  Each transformation finds all tokens
@@ -166,6 +169,7 @@ class BrillRuleI(object):
         assert False, "Brill rules must be comparable"
     def __hash__(self):
         assert False, "Brill rules must be hashable"
+    
 
 class ProximateTokensRule(BrillRuleI):
     """
@@ -218,6 +222,21 @@ class ProximateTokensRule(BrillRuleI):
             if s>e:
                 raise ValueError('Condition %s has an invalid range' %
                                  ((s,e,v),))
+    
+    # Make Brill rules look nice in YAML.
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        node = dumper.represent_mapping(cls.yaml_tag, dict(
+            description=str(data),
+            conditions=list(list(x) for x in data._conditions),
+            original=data._original,
+            replacement=data._replacement))
+        return node
+    @classmethod
+    def from_yaml(cls, loader, node):
+        map = loader.construct_mapping(node)
+        return cls(map['original'], map['replacement'],
+        *(tuple(x) for x in map['conditions']))
 
     def extract_property(token): # [staticmethod]
         """
@@ -294,10 +313,8 @@ class ProximateTokensRule(BrillRuleI):
                 self._conditions == other._conditions)
 
     def __hash__(self):
-        # Needs to include extract_property in order to distinguish subclasses
-        # A nicer way would be welcome.
         return hash( (self._original, self._replacement, self._conditions,
-                      self.extract_property.func_code) )
+                      self.__class__.__name__) )
 
     def __repr__(self):
         conditions = ' and '.join(['%s in %d...%d' % (v,s,e)
@@ -352,6 +369,7 @@ class ProximateTagsRule(ProximateTokensRule):
     @see: L{ProximateTagsTemplate}, which generates these rules.
     """
     PROPERTY_NAME = 'tag' # for printing.
+    yaml_tag = '!ProximateTagsRule'
     def extract_property(token): # [staticmethod]
         """@return: The given token's tag."""
         return token[1]
@@ -364,6 +382,7 @@ class ProximateWordsRule(ProximateTokensRule):
     @see: L{ProximateWordsTemplate}, which generates these rules.
     """
     PROPERTY_NAME = 'text' # for printing.
+    yaml_tag = '!ProximateWordsRule'
     def extract_property(token): # [staticmethod]
         """@return: The given token's text."""
         return token[0]
@@ -1056,8 +1075,8 @@ def errorList (train_tokens, tokens, radius=2):
 # Demonstration
 #####################################################################################
 
-def demo(num_sents=100, max_rules=200, min_score=2, error_output = "errors.out",
-         rule_output="rules.out", randomize=False, train=.8, trace=3):
+def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
+         rule_output="rules.yaml", randomize=False, train=.8, trace=3):
     """
     Brill Tagger Demonstration
 
@@ -1135,11 +1154,13 @@ def demo(num_sents=100, max_rules=200, min_score=2, error_output = "errors.out",
     print("Brill accuracy: %f" % tag.accuracy(b, [gold_data]))
 
     print("\nRules: ")
-    printRules = file(rule_output, 'w')
     for rule in b.rules():
         print(str(rule))
-        printRules.write(str(rule)+"\n\n")
 
+    printRules = file(rule_output, 'w')
+    yaml.dump(b, printRules)
+    printRules.close()
+    
     testing_data = list(b.tag(testing_data))
     el = errorList(gold_data, testing_data)
     errorFile = file(error_output, 'w')
