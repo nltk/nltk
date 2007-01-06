@@ -13,7 +13,6 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TagI} interface.
 """
 
-import re
 from nltk_lite.probability import FreqDist, ConditionalFreqDist
 
 ##############################################################
@@ -21,6 +20,7 @@ from nltk_lite.probability import FreqDist, ConditionalFreqDist
 ##############################################################
 
 from nltk_lite.tag import *
+import re
 
 class Unigram(SequentialBackoff):
     """
@@ -32,6 +32,7 @@ class Unigram(SequentialBackoff):
     word which it has no data, it will assign it the
     tag C{None}.
     """
+    yaml_tag = '!tag.Unigram'
     def __init__(self, cutoff=1, backoff=None):
         """
         Construct a new unigram stochastic tagger.  The new tagger
@@ -208,6 +209,7 @@ class Regexp(SequentialBackoff):
     """
     A tagger that assigns tags to words based on regular expressions.
     """
+    yaml_tag = '!tag.Regexp'
     def __init__(self, regexps, backoff=None):
         """
         Construct a new regexp tagger.
