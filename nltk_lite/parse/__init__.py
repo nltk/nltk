@@ -160,4 +160,3 @@ from sr import *
 from rd import *
 from pchart import *
 from viterbi import *
-from grammarfile import *
