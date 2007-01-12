@@ -680,7 +680,7 @@ class Sense(object):
         pointers = []
 
         for ptr in self.synset.getPointers(pointerType):
-            if ptr.sourceIndex == 0 or ptr.sourceIndex - 1 == selfIndex: 
+            if ptr.sourceIndex == 0 or ptr.sourceIndex - 1 == senseIndex: 
                 pointers.append(ptr)
         return pointers
         
@@ -1126,7 +1126,6 @@ class Pointer(object):
 # Lexname class
 
 class Lexname(object):
-
    dict = {}
    lexnames = []
    

@@ -15,7 +15,7 @@ Utility functions to use with the wordnet module.
 (First 10) adjectives that are transitively SIMILAR to the main sense of 'red'
 
     >>> closure(ADJ['red'][0], SIMILAR)[:10]
-    ['red' in {adjective: red, reddish, ruddy, blood-red, carmine, cerise, cherry, cherry-red, crimson, ruby, ruby-red, scarlet}, {adjective: chromatic}, {adjective: amber, brownish-yellow, yellow-brown}, {adjective: amethyst}, {adjective: aureate, gilded, gilt, gold, golden}, {adjective: azure, cerulean, sky-blue, bright blue}, {adjective: blue, bluish, blueish, light-blue, dark-blue, blue-black}, {adjective: bluish green, blue-green, cyan, teal}, {adjective: blushful, rosy}, {adjective: bottle-green}]
+    ['red' in {adjective: red, reddish, ruddy, blood-red, carmine, cerise, cherry, cherry-red, crimson, ruby, ruby-red, scarlet}, {adjective: chromatic}, {adjective: amber, brownish-yellow, yellow-brown}, {adjective: amber-green}, {adjective: amethyst}, {adjective: auburn}, {adjective: aureate, gilded, gilt, gold, golden}, {adjective: avocado}, {adjective: azure, cerulean, sky-blue, bright blue}, {adjective: beige}]
 
 Adjectives that are transitively SIMILAR to any of the senses of 'red'
 
@@ -28,7 +28,7 @@ Hyponyms of the main sense of 'dog'(n.) that are homophonous with verbs
 
 Find the senses of 'raise'(v.) and 'lower'(v.) that are antonyms
 
-    >>> filter(lambda p:p[0] in p[1].pointerTargets(ANTONYM), product(V['raise'].getSenses(), V['lower'].getSenses()))
+    >>> filter(lambda p:p[0] in p[1].getPointerTargets(ANTONYM), product(V['raise'].getSenses(), V['lower'].getSenses()))
     [('raise' in {verb: raise, lift, elevate, get up, bring up}, 'lower' in {verb: lower, take down, let down, get down, bring down})]
 """
 
@@ -40,12 +40,12 @@ from cache import *
 # Domain utilities
 #
 
-def _requireSource(entity):
-    if not hasattr(entity, 'pointers'):
-        if isinstance(entity, Word):
-            raise TypeError, `entity` + " is not a Sense or Synset.  Try " + `entity` + "[0] instead."
-        else:
-            raise TypeError, `entity` + " is not a Sense or Synset"
+# def _requireSource(entity):
+#     if not hasattr(entity, 'pointers'):
+#         if isinstance(entity, Word):
+#             raise TypeError, `entity` + " is not a Sense or Synset.  Try " + `entity` + "[0] instead."
+#         else:
+#             raise TypeError, `entity` + " is not a Sense or Synset"
 
 def tree(source, pointerType):
     """
@@ -56,19 +56,20 @@ def tree(source, pointerType):
      [{noun: canine, canid},
       [{noun: carnivore},
        [{noun: placental, placental mammal, eutherian, eutherian mammal},
-        [{noun: mammal},
+        [{noun: mammal, mammalian},
          [{noun: vertebrate, craniate},
           [{noun: chordate},
            [{noun: animal, animate being, beast, brute, creature, fauna},
             [{noun: organism, being},
              [{noun: living thing, animate thing},
-              [{noun: object, physical object}, [{noun: entity}]]]]]]]]]]]]
+              [{noun: object, physical object},
+               [{noun: physical entity}, [{noun: entity}]]]]]]]]]]]]]
     >>> #pprint(tree(dog, HYPONYM)) # too verbose to include here
     """
     if isinstance(source,  Word):
         return map(lambda s, t=pointerType:tree(s,t), source.getSenses())
-    _requireSource(source)
-    return [source] + map(lambda s, t=pointerType:tree(s,t), source.pointerTargets(pointerType))
+#    _requireSource(source)
+    return [source] + map(lambda s, t=pointerType:tree(s,t), source.getPointerTargets(pointerType))
 
 def closure(source, pointerType, accumulator=None):
     """Return the transitive closure of source under the pointerType
@@ -77,16 +78,16 @@ def closure(source, pointerType, accumulator=None):
     
     >>> dog = N['dog'][0]
     >>> closure(dog, HYPERNYM)
-    ['dog' in {noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: entity}]
+    ['dog' in {noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
     """
     if isinstance(source, Word):
         return reduce(union, map(lambda s, t=pointerType:tree(s,t), source.getSenses()))
-    _requireSource(source)
+#    _requireSource(source)
     if accumulator is None:
         accumulator = []
     if source not in accumulator:
         accumulator.append(source)
-        for target in source.pointerTargets(pointerType):
+        for target in source.getPointerTargets(pointerType):
             closure(target, pointerType, accumulator)
     return accumulator
 
@@ -202,7 +203,8 @@ def removeDuplicates(sequence):
     >>> removeDuplicates("this is a test")
     ['t', 'h', 'i', 's', ' ', 'a', 'e']
     >>> removeDuplicates(map(lambda tuple:apply(meet, tuple), product(N['story'].getSenses(), N['joke'].getSenses())))
-    [{noun: message, content, subject matter, substance}, None, {noun: abstraction}, {noun: communication}]
+    [{noun: message, content, subject matter, substance}, {noun: abstraction}, {noun: communication}, {noun: entity}]
+
     """
     accumulator = []
     for item in sequence:
@@ -342,3 +344,6 @@ def _test(reset=0):
     if reset:
         doctest.master = None # This keeps doctest from complaining after a reload.
     return doctest.testmod(wntools)
+
+if __name__ == '__main__':
+    _test()
