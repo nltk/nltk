@@ -15,7 +15,7 @@ Utility functions to use with the wordnet module.
 (First 10) adjectives that are transitively SIMILAR to the main sense of 'red'
 
     >>> closure(ADJ['red'][0], SIMILAR)[:10]
-    ['red' in {adjective: red, reddish, ruddy, blood-red, carmine, cerise, cherry, cherry-red, crimson, ruby, ruby-red, scarlet}, {adjective: chromatic}, {adjective: amber, brownish-yellow, yellow-brown}, {adjective: amber-green}, {adjective: amethyst}, {adjective: auburn}, {adjective: aureate, gilded, gilt, gold, golden}, {adjective: avocado}, {adjective: azure, cerulean, sky-blue, bright blue}, {adjective: beige}]
+    ['red' in {adj: red, reddish, ruddy, blood-red, carmine, cerise, cherry, cherry-red, crimson, ruby, ruby-red, scarlet}, {adj: chromatic}, {adj: amber, brownish-yellow, yellow-brown}, {adj: amber-green}, {adj: amethyst}, {adj: auburn}, {adj: aureate, gilded, gilt, gold, golden}, {adj: avocado}, {adj: azure, cerulean, sky-blue, bright blue}, {adj: beige}]
 
 Adjectives that are transitively SIMILAR to any of the senses of 'red'
 
@@ -32,9 +32,8 @@ Find the senses of 'raise'(v.) and 'lower'(v.) that are antonyms
     [('raise' in {verb: raise, lift, elevate, get up, bring up}, 'lower' in {verb: lower, take down, let down, get down, bring down})]
 """
 
-from wordnet import *
-from dictionary import *
-from cache import *
+from pos import *
+from nltk_lite.wordnet import *
 
 #
 # Domain utilities
@@ -235,7 +234,7 @@ def flatten1(sequence):
 
 GET_INDEX_SUBSTITUTIONS = ((' ', '-'), ('-', ' '), ('-', ''), (' ', ''), ('.', ''))
 
-def getIndex(form, pos='noun'):
+def getIndex(form, pos=NOUN):
     """Search for _form_ in the index file corresponding to
     _pos_. getIndex applies to _form_ an algorithm that replaces
     underscores with hyphens, hyphens with underscores, removes
@@ -284,7 +283,7 @@ MORPHOLOGICAL_SUBSTITUTIONS = {
      ('est', 'e')],
     ADVERB: []}
 
-def morphy(form, pos='noun', collect=0):
+def morphy(form, pos=NOUN, collect=0):
     """Recursively uninflect _form_, and return the first form found
     in the dictionary.  If _collect_ is true, a sequence of all forms
     is returned, instead of just the first one.
@@ -297,18 +296,17 @@ def morphy(form, pos='noun', collect=0):
     'aardwolf'
     >>> morphy('abaci')
     'abacus'
-    >>> morphy('hardrock', 'adv')
+    >>> morphy('hardrock', ADVERB)
     """
-    from wordnet import _normalizePOS, _dictionaryFor
-    pos = _normalizePOS(pos)
-    fname = os.path.join(WNSEARCHDIR, {NOUN: 'noun', VERB: 'verb', ADJECTIVE: 'adj', ADVERB: 'adv'}[pos] + '.exc')
+    pos = normalizePOS(pos)
+    fname = os.path.join(WNSEARCHDIR, {NOUN: NOUN, VERB: VERB, ADJECTIVE: ADJECTIVE, ADVERB: ADVERB}[pos] + '.exc')
     excfile = open(fname)
     substitutions = MORPHOLOGICAL_SUBSTITUTIONS[pos]
     def trySubstitutions(trySubstitutions,	# workaround for lack of nested closures in Python < 2.1
                          form,		  	# reduced form
                          substitutions,		# remaining substitutions
                          lookup=1,
-                         dictionary=_dictionaryFor(pos),
+                         dictionary=dictionaryFor(pos),
                          excfile=excfile,
                          collect=collect,
                          collection=[]):
