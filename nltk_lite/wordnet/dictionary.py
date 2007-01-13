@@ -16,7 +16,7 @@
 from types import IntType, ListType, StringType, TupleType
 
 from nltk_lite.wordnet import *
-from wordnet import *
+from pos import *
 
 # Work around a Windows Python bug
 _FILE_OPEN_MODE = os.name in ('dos', 'nt') and 'rb' or 'r'
@@ -513,4 +513,32 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
 def _lineAt(file, offset):
     file.seek(offset)
     return file.readline()
+
+N = Dictionary(NOUN, NOUN)
+V = Dictionary(VERB, VERB)
+ADJ = Dictionary(ADJECTIVE, ADJECTIVE)
+ADV = Dictionary(ADVERB, ADJECTIVE)
+Dictionaries = (N, V, ADJ, ADV)
+
+_POStoDictionaryTable = {}
+for dict in Dictionaries:
+    _POStoDictionaryTable[dict.pos] = dict
+#    _POSNormalizationTable[dict] = dict.pos
+
+def dictionaryFor(pos):
+    """
+    Return the dictionary for the supplied part of speech.
+
+    @type  pos: C{string}
+    @param pos: The part of speech of the desired dictionary.
+
+    @return: The desired dictionary.
+    """
+    pos = normalizePOS(pos)
+    dict = _POStoDictionaryTable.get(pos)
+
+    if dict == None:
+        raise RuntimeError, "The " + `pos` + " dictionary has not been created"
+
+    return dict
 
