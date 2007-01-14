@@ -533,7 +533,6 @@ class HiddenMarkovModel(object):
         for i, state in enumerate(self._states):
             alpha[0, i] = self._priors.logprob(state) + \
                           self._outputs[state].logprob(symbol)
-
         for t in range(1, T):
             symbol = unlabeled_sequence[t][_TEXT]
             for i, si in enumerate(self._states):
@@ -542,7 +541,6 @@ class HiddenMarkovModel(object):
                     alpha[t, i] = _log_add(alpha[t, i], alpha[t-1, j] +
                                            self._transitions[sj].logprob(si))
                 alpha[t, i] += self._outputs[si].logprob(symbol)
-
 
         return alpha
 
@@ -697,8 +695,11 @@ class HiddenMarkovModelTrainer(object):
 
             logprob = 0
             for sequence in unlabeled_sequences:
-                # compute forward and backward probabilities
 		sequence = list(sequence)
+		if not sequence:
+		    continue
+
+                # compute forward and backward probabilities
                 alpha = model._forward_probability(sequence)
                 beta = model._backward_probability(sequence)
 
