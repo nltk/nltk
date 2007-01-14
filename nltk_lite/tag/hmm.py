@@ -4,6 +4,7 @@
 # Author: Trevor Cohn <tacohn@csse.unimelb.edu.au>
 #         Philip Blunsom <pcbl@csse.unimelb.edu.au>
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
+#         Steven Bird <sb@csse.unimelb.edu.au> (fixes)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -872,20 +873,21 @@ def test_pos(model, sentences, display=False):
 
     count = correct = 0
     for sentence in sentences:
-        sentence = [(token[0], None) for token in sentence]
-        pts = model.best_path(sentence)
+	orig_tags = [token[_TAG] for token in sentence]
+        sentence = [(token[_TEXT], None) for token in sentence]
+        new_tags = model.best_path(sentence)
         if display:
             print sentence
             print 'HMM >>>'
-            print pts
-            print model.entropy(sentences)
+            print new_tags
+            print model.entropy(sentence)
             print '-' * 60
         else:
             print '\b.',
             stdout.flush()
-        for token, tag in zip(sentence, pts):
+        for orig_tag, new_tag in zip(orig_tags, new_tags):
             count += 1
-            if tag == token[_TAG]:
+            if orig_tag == new_tag:
                 correct += 1
 
     print 'accuracy over', count, 'tokens %.1f' % (100.0 * correct / count)
@@ -909,7 +911,7 @@ def demo_pos():
 def _untag(sentences):
     unlabelled = []
     for sentence in sentences:
-        unlabelled.append((token[0], None) for token in sentence)
+        unlabelled.append((token[_TEXT], None) for token in sentence)
     return unlabelled
 
 def demo_pos_bw():
@@ -982,7 +984,7 @@ def demo_bw():
     hmm = trainer.train_unsupervised(training, model=model, max_iterations=1000)
     
 if __name__ == '__main__':
-    demo()
+    demo() 
     demo_pos()
     demo_pos_bw()
 #    demo_bw()
