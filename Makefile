@@ -88,7 +88,7 @@ numpy:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/win/  $(NUMPY)/numpy-1.0.1.win32-py2.5.exe?download
 	wget -N -P python/unix/ $(NUMPY)/numpy-1.0.1.tar.gz?download
-	mv python/win/numpy-1.0.1.win32-py2.5.exe?download python/win/numpy-1.0.win32-py2.5.exe
+	mv python/win/numpy-1.0.1.win32-py2.5.exe?download python/win/numpy-1.0.1.win32-py2.5.exe
 	mv python/unix/numpy-1.0.1.tar.gz?download python/unix/numpy-1.0.1.tar.gz
 	cp python/unix/numpy-1.0.1.tar.gz python/mac/numpy-1.0.1.tar.gz
 	touch .numpy.done
