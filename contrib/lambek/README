@@ -1,0 +1,9 @@
+To run the lambek calculus theorem prover, type:
+
+  ./lambek.py lexicon.txt
+
+or:
+
+  python lambek.py lexicon.txt
+
+For help, type "help" at the theorem prover prompt.
