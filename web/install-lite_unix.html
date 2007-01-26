@@ -164,14 +164,6 @@ is loaded every time you start a terminal session:
 	tar -xvf WordNet-2.1.tar
 </pre>
 
-<P>Compile and install the WordNet source distribution:
-
-<pre>
- 	cd Wordnet-2.1
-	./configure
-	make
-	sudo make install
-</pre>
 
 <P>Compile and install the WordNet source distribution.
 
@@ -182,7 +174,13 @@ is loaded every time you start a terminal session:
 	sudo make install
 </pre>
 
-<P>To install WordNet somewhere other than /usr/local, e.g. /Library/WordNet
+<P>By default, WordNet will be installed in /usr/local. You will need
+to ensure that your <code>PATH</code> environment variable is extended
+to include <code>/usr/local/WordNet-2.1/bin</code>.
+
+
+<P>To install WordNet somewhere other than <code>/usr/local</code>,
+e.g. <code>/Library/WordNet</code>:
 
 <pre>
         cd WordNet-2.1
@@ -190,8 +188,8 @@ is loaded every time you start a terminal session:
         make install
 </pre>
 
-<P>If WordNet is not installed in /usr/local, set environment
-variable <tt>WNHOME=/Library/WordNet</tt>
+<P>If WordNet is not installed in <code>/usr/local</code>, set environment
+variable <tt>WNHOME=/Library/WordNet</tt>.
 
 </div>
 <table class="transparent" width="100%">
