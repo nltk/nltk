@@ -170,7 +170,48 @@ def indent(elem, level=0):
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
-            
+
+def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
+    """Return a string with a standard format representation of the toolbox
+    data in tree (tree can be a toolbox database or a single record). Should work for trees
+    parsed by grammar_parse too.
+    
+    @param tree: flat representation of toolbox data (whole database or single record)
+    @type tree: ElementTree._ElementInterface
+    @param encoding: Name of an encoding to use.
+    @type encoding: string
+    @param errors: Error handling scheme for codec. Same as the C{encode} 
+        inbuilt string method.
+    @type errors: string
+    @param unicode_fields:
+    @type unicode_fields: string
+    @rtype:   string
+    @return:  string using standard format markup
+    """
+    # write SFM to file
+    # unicode_fields parameter does nothing as yet
+    l = list()
+    _to_sfm_string(tree, l, encoding=encoding, errors=errors, unicode_fields=unicode_fields)
+    s = ''.join(l)
+    if encoding is not None:
+        s = s.encode(encoding, errors)
+    return s
+
+def _to_sfm_string(node, l, **kwargs):
+    # write SFM to file
+    tag = node.tag
+    text = node.text
+    if len(node) == 0:
+        if text:
+            l.append('\\%s %s\n' % (tag, text))
+        else:
+            l.append('\\%s\n' % tag)
+    else:
+        #l.append('\n')
+        for n in node:
+            _to_sfm_string(n, l, **kwargs)
+    return
+
 def demo_flat():
     from nltk_lite.etree.ElementTree import ElementTree    
     import sys
