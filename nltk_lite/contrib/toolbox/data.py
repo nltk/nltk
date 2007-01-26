@@ -41,7 +41,7 @@ class ToolboxData(toolbox.ToolboxData):
                     parse_table[state][to_sym] = to_sym
         return (parse_table, first)
 
-    def grammar_parse(self, startsym, grammar, **kwargs):
+    def grammar_parse(self, startsym, grammar, no_blanks=True, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the grammar.
@@ -51,8 +51,10 @@ class ToolboxData(toolbox.ToolboxData):
         @type grammar: dictionary of tuple of tuples
         @param grammar: Contains the set of rewrite rules used to parse the 
         database.  See the description below.
-        @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
+        @type no_blanks: boolean
+        @param no_blanks: blank fields that are not important to the structure are deleted
         @type kwargs: keyword arguments dictionary
+        @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
         @rtype:   ElementTree._ElementInterface
         @return:  Contents of toolbox data parsed according to rules in grammar
         
@@ -120,7 +122,7 @@ class ToolboxData(toolbox.ToolboxData):
                         # start of terminal marker
                         add = True
                     if add:
-                        if value:
+                        if not no_blanks or value:
                             builder.start(mkr, dict())
                             builder.data(value)
                             builder.end(mkr)
