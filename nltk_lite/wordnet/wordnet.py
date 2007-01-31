@@ -818,7 +818,7 @@ class Sense(object):
         path_distance = self.synset.shortest_path_distance(other_sense.synset)
 
         if path_distance >= 0:
-            return -log((path_distance + 1) / (2.0 * depth))
+            return -math.log((path_distance + 1) / (2.0 * depth))
         else:
             return -1
 
