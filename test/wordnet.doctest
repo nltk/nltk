@@ -1,0 +1,357 @@
+Tested with WordNet 3.0
+
+---------------------------------------------------------------------------
+Words
+---------------------------------------------------------------------------
+
+A L{Word} is an index into the database. More specifically, a list of
+the Senses of the supplied word string. These senses can be accessed
+via index notation ``word[n]`` or via the ``word.getSenses()`` method.
+
+    >>> from nltk_lite.wordnet import *
+
+    >>> N['dog'].pos
+    'noun'
+    >>> N['dog'].form
+    'dog'
+    >>> N['dog'].taggedSenseCount
+    1
+    >>> N['dog'].getSenses()
+    ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron}]
+
+    >>> N['dog'].isTagged()
+    True
+    >>> ADJ['clear'].getAdjectivePositions()
+    [None, 'predicative']
+    >>> N['cat'] < N['dog']
+    True
+    >>> N['dog'] < V['dog']
+    True
+    >>> str(N['dog'])
+    'dog(n.)'
+
+If ReadableRepresentations is true, return a human-readable
+representation, e.g. 'dog(n.)'.
+
+If ReadableRepresentations is false, return a machine-readable
+representation, e.g. "getWord('dog', 'noun')".
+
+---------------------------------------------------------------------------
+Synsets
+---------------------------------------------------------------------------
+
+L{Synset}: a set of synonyms that share a common meaning.
+
+Each synset contains one or more Senses, which represent a specific
+sense of a specific word.  Senses can be retrieved via
+synset.getSenses() or through the index notations synset[0],
+synset[string], or synset[word]. Synsets also originate zero or more
+typed pointers, which can be accessed via synset.getPointers() or
+synset.getPointers(pointerType). The targets of a synset pointer can
+be retrieved via synset.getPointerTargets() or
+synset.getPointerTargets(pointerType), which are equivalent to
+map(Pointer.getTarget(), synset.getPointerTargets(...)).
+
+    >>> from nltk_lite.wordnet import *
+    >>> V['think'][0].synset.verbFrames
+    (5, 9)
+
+    >>> N['dog'][0].synset.getSenses()
+    ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
+
+    >>> N['dog'][0].getPointers()[:5]
+    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}]
+
+    >>> N['dog'][0].getPointers(HYPERNYM)
+    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}]
+
+getPointerTargets(self, pointerType=None):
+Return a sequence of Senses or Synsets.
+
+If pointerType is specified, only targets of pointers of that type are
+returned.  In this case, pointerType should be an element of
+POINTER_TYPES.
+
+    >>> N['dog'][0].getPointerTargets()[:5]
+    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}]
+
+    >>> N['dog'][0].getPointerTargets(HYPERNYM)
+    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}]
+
+    >>> N['dog'][0].isTagged()
+    True
+    >>> N['dog'][1].isTagged()
+    False
+
+    >>> str(N['dog'][0].synset)
+    '{noun: dog, domestic dog, Canis familiaris}'
+
+If ReadableRepresentations is true, return a human-readable
+representation, e.g. 'dog(n.)'.
+
+If ReadableRepresentations is false, return a machine-readable
+representation, e.g. "getSynset(pos, 1234)".
+ 
+    >>> len(N['dog'][0].synset)
+    3
+    >>> N['dog'][0].synset[0] == N['dog'][0]
+    True
+    >>> N['dog'][0].synset['dog'] == N['dog'][0]
+    True
+    >>> N['dog'][0].synset[N['dog']] == N['dog'][0]
+    True
+    >>> N['cat'][6]
+    'cat' in {noun: big cat, cat}
+
+parent_hypernyms(self):
+Get the set of parent hypernym synsets of this synset.
+
+hypernyms(self, include_self=False):
+Get the set of all ancestor hypernym synsets of this synset.
+
+hypernym_paths(self):
+Get the path(s) from this synset to the root, where each path is a
+list of the synset nodes traversed on the way to the root.
+
+hypernym_distances(self, distance):
+Get the path(s) from this synset to the root, counting the distance
+of each node from the initial node on the way. A list of
+(synset, distance) tuples is returned.
+
+shortest_path_distance(self, other_synset):
+Returns the distance of the shortest path linking the two synsets (if
+one exists). For each synset, all the ancestor nodes and their distances
+are recorded and compared. The ancestor node common to both synsets that
+can be reached with the minimum number of traversals is used. If no
+ancestor nodes are common, -1 is returned. If a node is compared with
+itself 0 is returned.
+
+getIC(self, freq_data):
+Get the Information Content (IC) value of this L{Synset}, using
+the supplied dict 'freq_data'.
+
+---------------------------------------------------------------------------
+Senses
+---------------------------------------------------------------------------
+
+L{Sense}: A specific meaning of a specific word -- the intersection
+of a Word and a Synset.
+
+    >>> str(N['dog'])
+    'dog(n.)'
+
+If ReadableRepresentations is true, return a human-readable
+representation, e.g. dog(n.).
+
+Otherwise return a machine-readable form, e.g. getWord('dog', 'noun').
+
+getPointers(self, pointerType=None):
+Return a sequence of L{Pointer}s from the synset of which this
+L{Sense} is a member.
+
+If pointerType is specified, only pointers of that type are
+returned.  In this case, pointerType should be an element of
+POINTER_TYPES.
+
+    >>> N['dog'][0].getPointers()[:5]
+    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}]
+    >>> N['dog'][0].getPointers(HYPERNYM)
+    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}]
+
+
+getPointerTargets(self, pointerType=None):
+Return a sequence of L{Synset}s connected to the L{Synset} of which
+this L{Sense} is a member.
+
+If pointerType is specified, only targets of pointers of that
+type are returned. In this case, pointerType should be an
+element of POINTER_TYPES.
+
+    >>> N['dog'][0].getPointerTargets()[:5]
+    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}]
+
+    >>> N['dog'][0].getPointerTargets(HYPERNYM)
+    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}]
+
+
+isTagged(self):
+
+    >>> N['dog'][0].isTagged()
+    True
+    >>> N['dog'][1].isTagged()
+    False
+
+
+---------------------------------------------------------------------------
+Similarity
+---------------------------------------------------------------------------
+
+path_distance_similarity(self, other_sense):
+Return a score denoting how similar two word senses are, based on the
+shortest path that connects the senses in the is-a (hypernym/hypnoym)
+taxonomy. The score is in the range 0 to 1, except in those cases
+where a path cannot be found (will only be true for verbs as there are
+many distinct verb taxonomies), in which case -1 is returned. A score of
+1 represents identity i.e. comparing a sense with itself will return 1.
+
+    >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
+    0.33333333333333331
+
+    >>> N['dog'][0].path_distance_similarity(N['cat'][0])
+    0.20000000000000001
+
+    >>> V['run'][0].path_distance_similarity(V['walk'][0])
+    0.25
+
+    >>> V['run'][0].path_distance_similarity(V['think'][0])
+    -1
+
+
+leacock_chodorow_similarity(self, other_sense):
+Return a score denoting how similar two word senses are, based on the
+shortest path that connects the senses (as above) and the maximum depth
+of the taxonomy in which the senses occur. The relationship is given
+as -log(p/2d) where p is the shortest path length and d the taxonomy
+depth.
+
+    >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
+    2.5389738710582761
+
+    >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
+    2.0281482472922856
+
+    >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
+    1.8718021769015913
+
+    >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
+    -1
+
+wu_palmer_similarity(self, other_sense):
+Return a score denoting how similar two word senses are, based on the
+depth of the two senses in the taxonomy and that of their Least Common
+Subsumer (most specific ancestor node). Note that at this time the
+scores given do _not_ always agree with those given by Pedersen's Perl
+implementation of Wordnet Similarity.
+
+The LCS does not necessarily feature in the shortest path connecting the
+two senses, as it is by definition the common ancestor deepest in the
+taxonomy, not closest to the two senses. Typically, however, it will so
+feature. Where multiple candidates for the LCS exist, that whose
+shortest path to the root node is the longest will be selected. Where
+the LCS has multiple paths to the root, the longer path is used for
+the purposes of the calculation.
+
+    >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
+    0.93333333333333335
+
+    >>> N['dog'][0].wu_palmer_similarity(N['cat'][0])
+    0.8571428571428571
+
+    >>> V['run'][0].wu_palmer_similarity(V['walk'][0])
+    0.40000000000000002
+
+    >>> V['run'][0].wu_palmer_similarity(V['think'][0])
+    -1
+
+resnik_similarity(self, other_sense, datafile=""):
+Return a score denoting how similar two word senses are, based on the
+Information Content (IC) of the Least Common Subsumer (most specific
+ancestor node). Note that at this time the scores given do _not_
+always agree with those given by Pedersen's Perl implementation of
+Wordnet Similarity, although they are mostly very similar.
+
+The required IC values are precomputed and stored in a file, the name
+of which should be passed as the 'datafile' argument. For more
+information on how they are calculated, check brown_ic.py.
+
+jiang_conrath_similarity(self, other_sense, datafile=""):
+Return a score denoting how similar two word senses are, based on the
+Information Content (IC) of the Least Common Subsumer (most specific
+ancestor node) and that of the two input Synsets. The relationship is
+given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
+
+Note that at this time the scores given do _not_ always agree with
+those given by Pedersen's Perl implementation of Wordnet Similarity,
+although they are mostly very similar.
+
+The required IC values are calculated using precomputed frequency
+counts, which are accessed from the 'datafile' file which is supplied
+as an argument. For more information on how they are calculated,
+check brown_ic.py.
+
+lin_similarity(self, other_sense, datafile=""):
+Return a score denoting how similar two word senses are, based on the
+Information Content (IC) of the Least Common Subsumer (most specific
+ancestor node) and that of the two input Synsets. The relationship is
+given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
+
+Note that at this time the scores given do _not_ always agree with
+those given by Pedersen's Perl implementation of Wordnet Similarity,
+although they are mostly very similar.
+
+The required IC values are calculated using precomputed frequency
+counts, which are accessed from the 'datafile' file which is supplied
+as an argument. For more information on how they are calculated,
+check brown_ic.py.
+
+
+
+getWord(form, pos=NOUN):
+Return a word with the given lexical form and pos.
+
+getSense(form, pos=NOUN, senseno=0):
+Lookup a sense by its sense number. Used by repr(sense).
+
+getSynset(pos, offset):
+Lookup a synset by its offset. Used by repr(synset).
+
+
+---------------------------------------------------------------------------
+N, V, ADJ and ADV Dictionaries
+---------------------------------------------------------------------------
+
+Dictionary classes, which allow users to access
+Wordnet data via a handy dict notation (see below). Also defined are the
+low level _IndexFile class and various file utilities, which do the actual
+lookups in the Wordnet database files.
+
+Dictionary:
+A Dictionary contains all the Words in a given part of speech. Four
+dictionaries, bound to N, V, ADJ, and ADV, are bound by default in
+__init.py__.
+
+Indexing a dictionary by a string retrieves the word named by that
+string, e.g. dict['dog'].  Indexing by an integer n retrieves the
+nth word, e.g.  dict[0].  Access by an arbitrary integer is very
+slow except in the special case where the words are accessed
+sequentially; this is to support the use of dictionaries as the
+range of a for statement and as the sequence argument to map and
+filter.
+
+    >>> N['dog']
+    dog(n.)
+
+If index is a String, return the Word whose form is
+index.  If index is an integer n, return the Word
+indexed by the n'th Word in the Index file.
+        
+    >>> N['dog']
+    dog(n.)
+    >>> N[0]
+    'hood(n.)
+ 
+get(self, key, default=None): Return the Word whose form is key, or default.
+
+    >>> N.get('dog')
+    dog(n.)
+
+has_key(self, form): Checks if the supplied argument is an index into
+this dictionary. 
+
+    >>> N.has_key('dog')
+    True
+    >>> N.has_key('inu')
+    False
+
+
+
