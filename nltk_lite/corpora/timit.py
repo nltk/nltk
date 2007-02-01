@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TIMIT Corpus Reader
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>

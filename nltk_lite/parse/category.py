@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Categories
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Contributed by Rob Speer (NLTK version)
 #         Steven Bird <sb@csse.unimelb.edu.au> (NLTK-Lite Port)
 #         Ewan Klein <ewan@inf.ed.ac.uk> (Hooks for semantics)

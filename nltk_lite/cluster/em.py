@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Expectation Maximization Clusterer
 #
-# Copyright (C) 2004-2006 University of Melbourne
+# Copyright (C) 2004-2007 University of Melbourne
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
