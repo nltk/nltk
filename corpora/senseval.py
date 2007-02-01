@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
 # URL: <http://nltk.sf.net>
