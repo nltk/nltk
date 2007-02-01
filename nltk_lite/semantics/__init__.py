@@ -1,5 +1,6 @@
 # Natural Language Toolkit: Semantic Interpretation
 #
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

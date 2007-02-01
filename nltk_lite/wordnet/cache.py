@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Wordnet Interface: Cache Module
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Oliver Steele <steele@osteele.com>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Steven Bird <sb@csse.unimelb.edu.au>

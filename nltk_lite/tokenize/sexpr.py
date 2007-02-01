@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Yoav Goldberg <yoavg@cs.bgu.ac.il>
 #         Steven Bird <sb@csse.unimelb.edu.au> (minor edits)
 # URL: <http://nltk.sourceforge.net>

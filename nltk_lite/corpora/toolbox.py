@@ -3,7 +3,7 @@
 
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
 #         Steven Bird <sb@csse.unimelb.edu.au>

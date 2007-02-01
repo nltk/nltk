@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>

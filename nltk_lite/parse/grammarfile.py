@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Reader for Grammar Files
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Rob Speer <rspeer@mit.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

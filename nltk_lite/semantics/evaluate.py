@@ -1,5 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
