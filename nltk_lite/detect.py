@@ -16,9 +16,6 @@ translate the feature dictionary into a homogenous representation
 processing tasks.)
 """
 
-def _extract_one(token, functions):
-    return dict((feature, function(token)) for (feature, function) in functions.items())
-
 def feature(functions):
     """
     Return a feature detector that applies the supplied functions
@@ -29,7 +26,15 @@ def feature(functions):
     the features.
     """
         
-    return lambda tokens: [_extract_one(token, functions) for token in tokens]
+    return lambda tokens: list((feature,function(tokens)) for (feature, function) in functions.items())
+
+
+def get_features(str):
+    """
+    takes a string
+    returns a list of tuples (feature type, feature value)
+    """
+
 
 def text_feature():
     return feature({'text': lambda t:t})
@@ -49,7 +54,7 @@ def demo():
     from nltk_lite.corpora import brown
     from nltk_lite import detect
 
-    detector = detect.feature({'initial': lambda t:t[0], 'len': lambda t:len(t)})
+    detector = detect.feature({'initial': lambda t:[t[0]], 'len': lambda t:[len(t)]})
 
     for sent in list(brown.raw('a'))[:10]:
         print detector(sent)
