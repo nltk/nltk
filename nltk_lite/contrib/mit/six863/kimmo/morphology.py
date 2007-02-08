@@ -1,4 +1,4 @@
-from nltk_lite.contrib.fsa import FSA
+from fsa import FSA
 import yaml
 
 class KimmoMorphology(object):
