@@ -1,0 +1,64 @@
+lexicon: english.lex
+subsets:
+  "@": "a b c d e f g h i j k l m n o p q r s t u v w x y z ' ` + # 0"
+  "C": b c d f g h j k l m n p q r s t v w x y z
+  "CnoY": b c d f g h j k l m n p q r s t v w x z
+  "Csib": s x z
+  "Cpal": c g
+  "V": a e i o u
+  "Vy": a e i o u y
+  "Vbk": a o u
+  "I": "i '"
+  "Empty": "` +"
+defaults: "a b c d e f g h i j k l m n o p q r s t u v w x y z +:0 `:0 #"
+rules:  
+  elision:
+    start: 1
+    states:
+      1:
+        'e:0': [1]
+        'e:@': [2]
+        'V': [2]
+        '@': [1]
+      2:
+        'e:0': [1]
+        'Cpal': [3]
+        'C': [6]
+        'e:@': [2]
+        'V': [2]
+        '@': [1]
+      3:
+        'e:0': [1]
+        'Cpal': [3]
+        'C': [6]
+        'e:@': [4]
+        'V': [2]
+        '@': [1]
+      4:
+        'e:0': [1]
+        'e:@': [2]
+        '+:@': [5]
+        'V': [2]
+        '@': [1]
+      5:
+        'e:0': [1]
+        'e:@': []
+        'Vbk': [2]
+        'V': []
+        '@': [1]
+      6:
+        'e:0': [1]
+        'e:@': [7]
+        'V': [2]
+        '@': [1]
+      7:
+        'e:0': [1]
+        'e:@': [2]
+        'V': [2]
+        '+:@': [8]
+        '@': [1]
+      8:
+        'e:@': []
+        'V': []
+        '@': [1]
+
