@@ -27,8 +27,8 @@ class FSA(yaml.YAMLObject):
     A class for finite state automata. In general, it represents
     nondetermnistic finite state automata, with DFAs being a special case.
     """
-    yaml_tag = 'FSA'
-    def __init__(self, sigma, transitions=None, start=0, finals=None):
+    yaml_tag = '!FSA'
+    def __init__(self, sigma='', transitions=None, start=0, finals=None):
         """Set up the FSA.
 
         @param sigma: the alphabet of the FSA
@@ -69,6 +69,14 @@ class FSA(yaml.YAMLObject):
                 for target in targets:
                     yield (state, symbol, target)
 
+    def labels(self, s1, s2):
+        """
+        A generator for all possible labels taking state s1 to state s2.
+        """
+        map = self._transitions.get(s1, {})
+        for (symbol, targets) in map.items():
+            if s2 in targets: yield symbol
+    
     def sigma(self):
         "The alphabet of the FSA."
         return self._sigma
@@ -94,6 +102,11 @@ class FSA(yaml.YAMLObject):
         self._transitions[self._next_state_num] = {}
         self._reverse[self._next_state_num] = {}
         return self._next_state_num
+
+    def add_state(self, name):
+        self._transitions[name] = {}
+        self._reverse[name] = {}
+        return name
 
     def start(self):
         """
@@ -148,6 +161,13 @@ class FSA(yaml.YAMLObject):
         return [state for state in list
                 if state in self.finals()] != []
 
+    def insert_safe(self, s1, label, s2):
+        if s1 not in self.states():
+            self.add_state(s1)
+        if s2 not in self.states():
+            self.add_state(s2)
+        self.insert(s1, label, s2)
+
     def insert(self, s1, label, s2):
         """
         Add a new transition to the FSA.
@@ -173,7 +193,7 @@ class FSA(yaml.YAMLObject):
         targets = mapping.setdefault(label, set())
         targets.remove(s2)
         if len(targets) == 0: del mapping[label]
-        
+
     def delete(self, s1, label, s2):
         """
         Removes a transition from the FSA.
@@ -239,7 +259,7 @@ class FSA(yaml.YAMLObject):
 
     def next(self, state, symbol):
         "The set of states reached from a certain state via a given symbol."
-        return self._transitions[state].get(symbol, set())
+        return self.e_closure(self._transitions[state].get(symbol, set()))
     nextStates = next
     
     def move(self, states, symbol):
@@ -247,8 +267,18 @@ class FSA(yaml.YAMLObject):
         result = set()
         for state in states:
             result = result.union(self.next(state, symbol))
-        return result
+        return self.e_closure(result)
 
+    def is_deterministic(self):
+        """
+        Return whether this is a DFA
+        (every symbol leads from a state to at most one target state).
+        """
+        for map in self._transitions.values():
+            for targets in map.values():
+                if len(targets) > 1: return False
+        return True
+    
     def nextState(self, state, symbol):
         """
         The single state reached from a state via a given symbol.
@@ -396,7 +426,7 @@ class FSA(yaml.YAMLObject):
     @classmethod
     def from_yaml(cls, loader, node):
         map = loader.construct_mapping(node)
-        result = cls(map['sigma'], {}, map['finals'])
+        result = cls(map.get('sigma', []), {}, map.get('finals', []))
         for (s1, map1) in map['transitions'].items():
             for (symbol, targets) in map1.items():
                 for s2 in targets:
@@ -419,6 +449,9 @@ class FSA(yaml.YAMLObject):
             start = data._start,
             transitions = transitions))
         return node
+
+    def __str__(self):
+        return yaml.dump(self)
 
 ### FUNCTIONS TO BUILD FSA FROM REGEXP
 
@@ -511,13 +544,13 @@ def demo():
     A demonstration showing how FSAs can be created and used.
     """
     # Define an alphabet.
-    alphabet = "ab"
+    alphabet = "abcd"
 
     # Create a new FSA.
     fsa = FSA(alphabet)
     
     # Use a regular expression to initialize the FSA.
-    re = 'ab*'
+    re = 'abcd'
     print 'Regular Expression:', re
     re2nfa(fsa, re)
     print "NFA:"
