@@ -1,5 +1,5 @@
 from nltk_lite.parse import Tree
-from nltk_lite.contrib.fsa import FSA
+from fsa import FSA
 from nltk_lite import tokenize
 from pairs import KimmoPair
 from copy import deepcopy
@@ -256,22 +256,33 @@ class KimmoArrowRule(KimmoFSARule):
         fsa.insert(node3, epsilon, node4)
         return node4
 
-    def _merge_fsa(self):
+    def _merge_fsas(self):
+        # Merge the left and right DFAs into a highly nontraditional NFA.
         left = deepcopy(self._left_fsa)
         right = deepcopy(self._right_fsa)
         states = left.states()
         for state in states:
             left.relabel_state(state, 'L%s' % state)
-        states = left.states()
+        states = right.states()
         for state in states:
             right.relabel_state(state, 'R%s' % state)
+        left.add_state('Trash')
+
         midpoints = left.finals()
         finals = right.finals()
         for source, label, target in right.generate_transitions():
             left.insert_safe(source, label, target)
         for midpoint in midpoints:
-            left.insert_safe(midpoint, self._lhpair, right.start())
-            
+            left.insert(midpoint, self._lhpair, right.start())
+            left.insert(midpoint, KimmoPair.make('@'), 'Trash')
+        left.insert('Trash', KimmoPair.make('@'), 'Trash')
+        
+        # Over the new list of states, add lots of epsilon transitions to the
+        # start.
+        start = left.start()
+        for state in left.states():
+        if state != start:
+            left.insert(state, None, start)
 
 def demo():
     rule = KimmoArrowRule("elision-e", "e:0 <== CN u _ +:@ VO")
@@ -281,3 +292,5 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+# vim:et:ts=4:sts=4:sw=4:
