@@ -60,10 +60,10 @@ map(Pointer.getTarget(), synset.getPointerTargets(...)).
     ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
 
     >>> N['dog'][0].getPointers()[:5]
-    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}]
+    [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
 
     >>> N['dog'][0].getPointers(HYPERNYM)
-    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}]
+    [hypernym -> {noun: canine, canid}]
 
 getPointerTargets(self, pointerType=None):
 Return a sequence of Senses or Synsets.
@@ -73,10 +73,10 @@ returned.  In this case, pointerType should be an element of
 POINTER_TYPES.
 
     >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}]
+    [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
 
     >>> N['dog'][0].getPointerTargets(HYPERNYM)
-    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}]
+    [{noun: canine, canid}]
 
     >>> N['dog'][0].isTagged()
     True
@@ -154,9 +154,9 @@ returned.  In this case, pointerType should be an element of
 POINTER_TYPES.
 
     >>> N['dog'][0].getPointers()[:5]
-    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}]
+    [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
     >>> N['dog'][0].getPointers(HYPERNYM)
-    [hypernym -> {noun: canine, canid}, hypernym -> {noun: domestic animal, domesticated animal}]
+    [hypernym -> {noun: canine, canid}]
 
 
 getPointerTargets(self, pointerType=None):
@@ -168,10 +168,10 @@ type are returned. In this case, pointerType should be an
 element of POINTER_TYPES.
 
     >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}]
+    [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
 
     >>> N['dog'][0].getPointerTargets(HYPERNYM)
-    [{noun: canine, canid}, {noun: domestic animal, domesticated animal}]
+    [{noun: canine, canid}]
 
 
 isTagged(self):
@@ -242,10 +242,10 @@ the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
     >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
-    0.93333333333333335
+    0.9285714285714286
 
     >>> N['dog'][0].wu_palmer_similarity(N['cat'][0])
-    0.8571428571428571
+    0.84615384615384615
 
     >>> V['run'][0].wu_palmer_similarity(V['walk'][0])
     0.40000000000000002
