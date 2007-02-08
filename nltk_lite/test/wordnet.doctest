@@ -1,4 +1,4 @@
-Tested with WordNet 3.0
+Tested with WordNet 2.1
 
 ---------------------------------------------------------------------------
 Words
@@ -9,7 +9,11 @@ the Senses of the supplied word string. These senses can be accessed
 via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 
     >>> from nltk_lite.wordnet import *
-
+    
+    >>> N['dog']
+    dog(n.)
+    >>> N.getWord('dog')
+    dog(n.)
     >>> N['dog'].pos
     'noun'
     >>> N['dog'].form
@@ -52,7 +56,7 @@ be retrieved via synset.getPointerTargets() or
 synset.getPointerTargets(pointerType), which are equivalent to
 map(Pointer.getTarget(), synset.getPointerTargets(...)).
 
-    >>> from nltk_lite.wordnet import *
+    >>> from nltk_lite.contrib.wn import *
     >>> V['think'][0].synset.verbFrames
     (5, 9)
 
@@ -328,9 +332,15 @@ sequentially; this is to support the use of dictionaries as the
 range of a for statement and as the sequence argument to map and
 filter.
 
-    >>> N['dog']
+    >>> N.pos
+    'noun'
+    >>> N.getWord('dog')
     dog(n.)
-
+    >>> N.getWord('inu')
+    Traceback (most recent call last):
+       ...
+    KeyError: "'inu' is not in the 'noun' database"
+        
 If index is a String, return the Word whose form is
 index.  If index is an integer n, return the Word
 indexed by the n'th Word in the Index file.
@@ -344,6 +354,7 @@ get(self, key, default=None): Return the Word whose form is key, or default.
 
     >>> N.get('dog')
     dog(n.)
+    >>> N.get('inu')
 
 has_key(self, form): Checks if the supplied argument is an index into
 this dictionary. 
