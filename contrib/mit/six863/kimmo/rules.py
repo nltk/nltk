@@ -1,9 +1,9 @@
 from nltk_lite.parse import Tree
 from fsa import FSA
 from nltk_lite import tokenize
-from pairs import KimmoPair
+from pairs import KimmoPair, sort_subsets
 from copy import deepcopy
-import yaml
+import re
 
 _kimmo_terminal_regexp    = '[a-zA-Z0-9\+\'\-\#\@\$\%\!\^\`\}\{]+' # \}\{\<\>\,\.\~ # (^|\s)?\*(\s|$) !!! * is already covered in the re tokenizer
 _kimmo_terminal_regexp_fsa    = '[^:\s]+' # for FSA, only invalid chars are whitespace and :
@@ -20,28 +20,86 @@ _special_tokens = ['(', ')', '[', ']', '*', '&', '_', ':']
 _special_tokens.extend(_arrows)
 _non_list_initial_special_tokens = [')', ']', '*', '&', '_', ':']
 _non_list_initial_special_tokens.extend(_arrows)
+epsilon = None
 
 class KimmoFSARule(object):
-    def __init__(self, name, fsa):
+    def __init__(self, name, fsa, subsets):
         self._name = name
         self._fsa = fsa
         self._pairs = set()
+        self._subsets = subsets
         for (start, pair, finish) in self._fsa.generate_transitions():
             self._pairs.add(pair)
 
     def fsa(self): return self._fsa
     def pairs(self): return self._pairs
     def name(self): return self._name
+    
+    def complete_fsa(self, fsa, fail_state=None):
+        fsa = deepcopy(fsa)
+        if fail_state is None:
+            fail_state = fsa.add_state('Fail')
+            fsa.insert('Fail', KimmoPair.make('@'), 'Fail')
+        sorted_pairs = sort_subsets(self._pairs, self._subsets)
+        for state in fsa.states():
+            trans = fsa._transitions[state]
+            for pair in self._pairs:
+                if pair not in trans:
+                    for sp in sorted_pairs:
+                        if sp in trans and sp.includes(pair, self._subsets):
+                            trans[pair] = trans[sp]
+                            break
+                    trans[pair] = [fail_state]
+                if trans[pair] == []: trans[pair] = [fail_state]
+        fsa._build_reverse_transitions()
+        return fsa
+
+    @staticmethod
+    def parse_table(name, table, subsets):
+        lines = table.split('\n')
+        if len(lines) < 4:
+            raise ValueError,\
+            "Rule %s has too few lines to be an FSA table." % name
+        pairs1 = lines[1].strip().split()
+        pairs2 = lines[2].strip().split()
+        if len(pairs1) != len(pairs2):
+            raise ValueError,\
+            "Rule %s has pair definitions that don't line up." % name
+        pairs = [KimmoPair(p1, p2) for p1, p2 in zip(pairs1, pairs2)]
+        finals = []
+        fsa = FSA()
+        for line in lines[3:]:
+            line = line.strip()
+            if not line: continue
+            groups = re.match(r'(\w+)(\.|:)\s*(.*)', line)
+            if groups is None:
+                raise ValueError,\
+                "Can't parse this line of the state table for rule %s:\n%s"\
+                % (name, line)
+            state, char, morestates = groups.groups()
+            if fsa.start() == 0: fsa.set_start(state)
+            if char == ':': finals.append(state)
+            fsa.add_state(state)
+            morestates = morestates.split()
+            if len(morestates) != len(pairs):
+                raise ValueError,\
+                "Rule %s has a row of the wrong length:\n%s\ngot %d items, should be %d"\
+                % (name, line, len(morestates), len(pairs))
+            for pair, nextstate in zip(pairs, morestates):
+                fsa.insert_safe(state, pair, nextstate)
+        fsa.set_final(finals)
+        return KimmoFSARule(name, fsa, subsets)
 
 class KimmoArrowRule(KimmoFSARule):
     def arrow(self): return self._arrow
     def lhpair(self): return self._lhpair
 
-    def __init__(self, name, description):
+    def __init__(self, name, description, subsets):
         self._name = name
         self._description = description
         self._negated = False
         self._pairs = set()
+        self._subsets = subsets
         desc = list(tokenize.regexp(description, _kimmo_rule))
         self._parse(desc)
 
@@ -49,7 +107,6 @@ class KimmoArrowRule(KimmoFSARule):
         return '<KimmoArrowRule %s: %s>' % (self._name, self._description)
 
     def _parse(self, tokens):
-
         (end_pair, tree)  = self._parse_pair(tokens, 0)
         lhpair = self._pair_from_tree(tree)
         self._lhpair = lhpair
@@ -64,6 +121,7 @@ class KimmoArrowRule(KimmoFSARule):
 
         self._left_fsa  = lfsa
         self._right_fsa = rfsa
+        self._merge_fsas()
 
     def _next_token(self, tokens, i, raise_error=False):
         if i >= len(tokens):
@@ -255,40 +313,25 @@ class KimmoArrowRule(KimmoFSARule):
         fsa.insert(node2, epsilon, node4)
         fsa.insert(node3, epsilon, node4)
         return node4
-
-    def _merge_fsas(self):
-        # Merge the left and right DFAs into a highly nontraditional NFA.
-        left = deepcopy(self._left_fsa)
-        right = deepcopy(self._right_fsa)
-        states = left.states()
-        for state in states:
-            left.relabel_state(state, 'L%s' % state)
-        states = right.states()
-        for state in states:
-            right.relabel_state(state, 'R%s' % state)
-        left.add_state('Trash')
-
-        midpoints = left.finals()
-        finals = right.finals()
-        for source, label, target in right.generate_transitions():
-            left.insert_safe(source, label, target)
-        for midpoint in midpoints:
-            left.insert(midpoint, self._lhpair, right.start())
-            left.insert(midpoint, KimmoPair.make('@'), 'Trash')
-        left.insert('Trash', KimmoPair.make('@'), 'Trash')
         
-        # Over the new list of states, add lots of epsilon transitions to the
-        # start.
-        start = left.start()
-        for state in left.states():
-        if state != start:
-            left.insert(state, None, start)
-
+    def left_arrow(self):
+        working = deepcopy(self._left_fsa)
+        right = self._right_fsa.dfa()
+        lstates = left.states()
+        for state in lstates:
+            working.relabel_state(state, 'L%s' % state)
+        working.add_state('Trash')
+        for state in working.finals():
+            workng.insert_safe(source, KimmoPair)
+        
 def demo():
-    rule = KimmoArrowRule("elision-e", "e:0 <== CN u _ +:@ VO")
+    rule = KimmoArrowRule("elision-e", "e:0 <== CN u _ +:@ VO", {'@':
+    'aeiouhklmnpw', 'VO': 'aeiou', 'CN': 'hklmnpw'})
     print rule
     print rule._left_fsa
     print rule._right_fsa
+    print
+    print rule._fsa
 
 if __name__ == '__main__':
     demo()

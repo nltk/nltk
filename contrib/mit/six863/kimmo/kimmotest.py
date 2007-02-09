@@ -1,4 +1,4 @@
 from kimmo import *
-k = KimmoRuleSet.load('simple.yaml')
-print list(k.generate('have+ing'))
-print list(k.recognize('having'))
+k = KimmoRuleSet.load('english.yaml')
+print list(k.generate('`slip+ed', TextTrace(1)))
+print list(k.recognize('slipped', TextTrace(1)))
