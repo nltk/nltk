@@ -1,3 +1,15 @@
+def sort_subsets(pairs, subsets):
+    def subset_size(pair):
+        if pair.input() in subsets: size1 = len(subsets[pair.input()])
+        else: size1 = 1
+        if pair.output() in subsets: size2 = len(subsets[pair.output()])
+        else: size2 = 1
+        return (min(size1, size2), max(size1, size2))
+        
+    sort_order = [(subset_size(pair), pair) for pair in pairs]
+    sort_order.sort()
+    return [item[1] for item in sort_order]
+
 class KimmoPair(object):
     """
     Input/Output character pair
