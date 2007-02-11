@@ -1,0 +1,46 @@
+boundary: '#'
+lexicon: spanish.lex
+defaults: "a e i o u a' e' i' o' u' b c d f g h j k l m n n~ p q r s t v w x y z J C + ` + # 0"
+subsets:
+  "C_NOT_S":  "b c d f g h j k l m n n~ p q r t v w x y z"
+  "CONSONANTS": "b c d f g h j k l m n n~ p q r s t v w x y z J C"
+  "FRONT": "e i e' i'"
+  "BACK": "u o a u' o' a'"
+  "@": "u o a u' o' a' e i e' i' b c d f g h j k l m n n~ p q r s t v w x y z J C + ' ` + # 0"
+rules:
+  g-j mutation: |
+    FSA
+       J J J @     @    @ @
+       J g j 0 FRONT BACK @
+    1: 0 2 3 1     1    1 1
+    2. 0 0 0 2     1    0 0
+    3. 0 0 0 3     0    1 0
+
+  z-c mutation: |
+    FSA
+       z z     @ @ @
+       c z FRONT 0 @
+    1: 2 3     1 1 1
+    2. 0 0     1 2 0
+    3: 2 3     0 3 1
+
+  pluralization: |
+    FSA
+             @ s 0 + @
+       C_NOT_S s e 0 @
+    1:       2 2 0 1 1
+    2:       2 2 0 3 1
+    3:       2 0 4 1 1
+    4.       0 1 0 0 0
+
+  c-zc irregularity pattern in -cer and -cir verbs: |
+    FSA
+       C C C 0 +     @    @ @
+       C c z c 0 FRONT BACK @
+    1: 0 2 4 0 1     1    1 1
+    2. 0 0 0 0 3     0    0 0
+    3. 0 0 0 0 0     1    0 0
+    4. 0 0 0 5 0     0    0 0
+    5. 0 0 0 0 6     0    0 0
+    6. 0 0 0 0 0     0    1 0
+
