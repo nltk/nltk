@@ -85,6 +85,10 @@ class KimmoRuleSet(yaml.YAMLObject):
     def null(self): return self._null
     def morphology(self): return self._morphology
     
+    def pairtext(self, char):
+        if char == self._null: return ''
+        else: return char
+    
     def _generate(self, pairs, state_list, morphology_state=None, word='',
     lexical=None, surface=None, features='', log=None):
         if morphology_state:
@@ -100,7 +104,7 @@ class KimmoRuleSet(yaml.YAMLObject):
                     morphed = True
             if morphed: return
             lexical_chars = list(morph.valid_lexical(morphology_state,
-            word)) + list(self._null)
+            word, self._pair_alphabet)) + list(self._null)
         else: lexical_chars = None
         if lexical == '' or surface == '':
             if log:
@@ -108,10 +112,11 @@ class KimmoRuleSet(yaml.YAMLObject):
             yield pairs, features
             return
         next_pairs = [p for p in self._pair_alphabet if
-          (lexical is None or p.input() == self._null or p.input() == lexical[0]) and
-          (surface is None or p.output() == self._null or p.output() == surface[0])]
-                
+          (lexical is None or lexical.startswith(self.pairtext(p.input()))) and
+          (surface is None or surface.startswith(self.pairtext(p.output())))]
         for pair in next_pairs:
+            if pair.input() == self._null and pair.output() == self._null:
+                continue
             if lexical_chars is not None and pair.input() not in lexical_chars:
                 continue
             new_states = state_list[:]
@@ -121,9 +126,7 @@ class KimmoRuleSet(yaml.YAMLObject):
                 next_state = self.advance_rule(rule, state, pair)
                 new_states[r] = next_state
             
-            newword = word
-            if pair.input() != self._null:
-                newword = word + pair.input()
+            newword = word + self.pairtext(pair.input())
 
             if log:
                 log.step(pairs, pair, self._rules, state_list, new_states,
@@ -134,12 +137,9 @@ class KimmoRuleSet(yaml.YAMLObject):
                     fail = True
                     break
             if fail: continue
-
             newlex, newsurf = lexical, surface
-            if lexical and pair.input() != self._null:
-                newlex = lexical[1:]
-            if surface and pair.output() != self._null:
-                newsurf = surface[1:]
+            if lexical: newlex = lexical[len(self.pairtext(pair.input())):]
+            if surface: newsurf = surface[len(self.pairtext(pair.output())):]
             for result in self._generate(pairs+[pair], new_states,
             morphology_state, newword, newlex, newsurf, features, log):
                 yield result
@@ -148,15 +148,14 @@ class KimmoRuleSet(yaml.YAMLObject):
         got = self._generate([], [rule.fsa().start() for rule in
         self._rules], lexical=lexical, log=log)
         for (pairs, features) in got:
-            yield ''.join(pair.output() if pair.output() != self._null else '' for pair
-            in pairs)
+            yield ''.join(self.pairtext(pair.output()) for pair in pairs)
     
     def recognize(self, surface, log=None):
         got = self._generate([], [rule.fsa().start() for rule in
         self._rules], morphology_state='Begin', surface=surface, log=log)
         for (pairs, features) in got:
-            yield (''.join(pair.input() if pair.input() != self._null else '' for pair
-            in pairs), features)
+            yield (''.join(self.pairtext(pair.input()) for pair in pairs),
+                   features)
 
     def advance_rule(self, rule, state, pair):
         trans = rule.fsa()._transitions[state]
