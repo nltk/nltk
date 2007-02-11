@@ -3,7 +3,7 @@ from fsa import FSA
 from nltk_lite import tokenize
 from pairs import KimmoPair, sort_subsets
 from copy import deepcopy
-import re
+import re, yaml
 
 _kimmo_terminal_regexp    = '[a-zA-Z0-9\+\'\-\#\@\$\%\!\^\`\}\{]+' # \}\{\<\>\,\.\~ # (^|\s)?\*(\s|$) !!! * is already covered in the re tokenizer
 _kimmo_terminal_regexp_fsa    = '[^:\s]+' # for FSA, only invalid chars are whitespace and :
@@ -88,6 +88,37 @@ class KimmoFSARule(object):
             for pair, nextstate in zip(pairs, morestates):
                 fsa.insert_safe(state, pair, nextstate)
         fsa.set_final(finals)
+        return KimmoFSARule(name, fsa, subsets)
+    
+    @staticmethod 
+    def from_dfa_dict(name, states, subsets):
+        fsa = FSA()
+        pairs = set([KimmoPair.make('@')])
+        for (statename, trans) in states.items():
+            for label in trans:
+                if label != 'others':
+                    pairs.add(KimmoPair.make(label))
+        for (statename, trans) in states.items():
+            parts = statename.split()
+            source = parts[-1]
+            if not parts[0].startswith('rej'):
+                fsa.add_final(source)
+            
+            if fsa.start() == 0 and source in ['begin', 'Begin', '1', 1]:
+                fsa.set_start(source)
+            if source in ['start', 'Start']:
+                fsa.set_start(source)
+                
+            used_pairs = set()
+            for label in trans:
+                if label != 'others':
+                    used_pairs.add(KimmoPair.make(label))
+            for label, target in trans.items():
+                if label.lower() in ['other', 'others', 'else']:
+                    for pair in pairs.difference(used_pairs):
+                        fsa.insert_safe(source, pair, target)
+                else:
+                    fsa.insert_safe(source, KimmoPair.make(label), target)
         return KimmoFSARule(name, fsa, subsets)
 
 class KimmoArrowRule(KimmoFSARule):
