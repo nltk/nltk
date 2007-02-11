@@ -35,13 +35,25 @@ class TextTrace(object):
             z = zip(prev_state_sets, state_sets)
             if morphology_state:
                 z.append((word, morphology_state))
-            print " ".join('%s->%s' % (old, new) for old, new in z)
+            print indent + (" ".join('%s>%s' % (old, new) for old, new in z))
+            blocked = []
+            for rule, state in zip(rules, state_sets):
+                if str(state).lower() in ['0', 'reject']:
+                    blocked.append(rule.name())
+            if blocked:
+                print '%s[blocked by %s]' % (indent, ", ".join(blocked))
             print
         else:
             print '%s%s<%s> | %s<%s>' % (indent, lexical, curr.input(),
               surface, curr.output()),
             if morphology_state:
                 print '\t%r => %s' % (word, morphology_state),
+            blocked = []
+            for rule, state in zip(rules, state_sets):
+                if str(state).lower() in ['0', 'reject']:
+                    blocked.append(rule.name())
+            if blocked:
+                print ' [blocked by %s]' % (", ".join(blocked)),
             print
 
     def succeed(self, pairs):
@@ -106,11 +118,14 @@ class KimmoRuleSet(yaml.YAMLObject):
             lexical_chars = list(morph.valid_lexical(morphology_state,
             word, self._pair_alphabet)) + list(self._null)
         else: lexical_chars = None
+        
         if lexical == '' or surface == '':
-            if log:
-                log.succeed(pairs)
-            yield pairs, features
-            return
+            if morphology_state is None or morphology_state.lower() == 'end':
+                if log:
+                    log.succeed(pairs)
+                yield pairs, features
+                return
+            
         next_pairs = [p for p in self._pair_alphabet if
           (lexical is None or lexical.startswith(self.pairtext(p.input()))) and
           (surface is None or surface.startswith(self.pairtext(p.output())))]
@@ -194,11 +209,7 @@ class KimmoRuleSet(yaml.YAMLObject):
         rules = []
         for (name, rule) in ruledic.items():
             if isinstance(rule, dict):
-                states = rule['states']
-                for (key, value) in states.items():
-                    states[key] = pairify(value)
-                rules.append(KimmoFSARule(name, FSA([], states,
-                rule['start']), subsets))
+                rules.append(KimmoFSARule.from_dfa_dict(name, rule, subsets))
             elif isinstance(rule, basestring):
                 if rule.strip().startswith('FSA'):
                     rules.append(KimmoFSARule.parse_table(name, rule, subsets))

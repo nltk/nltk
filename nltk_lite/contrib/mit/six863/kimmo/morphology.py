@@ -48,8 +48,8 @@ class KimmoMorphology(object):
                 elif len(line.split()) > 2:
                     # this is a lexicon entry
                     word, next, features = line.split(None, 2)
-                    if word == "''":
-                        word = ''
+                    if word.startswith("'") or word.startswith('"'):
+                        word = eval(word)
                     if features and features[0] in '\'"{' or features == 'None':
                         features = eval(features)
                     fsa.insert_safe(state, (word, features), next)
