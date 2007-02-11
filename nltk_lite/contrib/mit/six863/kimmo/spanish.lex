@@ -24,7 +24,7 @@ cruz v_root_ar Verb(cruzar-"cross" )
 V_ROOT_ER:
 coJ v_root_er Verb(coger)
 conoC v_root_er Verb(conocer-"know")
-pareC v_root_er Verb(paracer-"seem")
+pareC v_root_er Verb(parecer-"seem")
 venz v_root_er Verb(vencer-"conquer/defeat")
 ejerz v_root_er Verb(ejercer-"exercise/practice")
 cuez v_root_er Verb(cocer-"cook")
@@ -84,4 +84,4 @@ NUMBER:
 '' number ,singular
 
 End:
-'#' Begin None
+# End None
