@@ -1,0 +1,51 @@
+ALPHABET u o a > * ^ e i < { b c d f g h j k l m n ~ p q r s t v w x y z J C +
+NULL 0
+ANY @
+BOUNDARY #
+SUBSET C_NOT_S b c d f g h j k l m n ~ p q r t v w x y z
+SUBSET CONSONANTS b c d f g h j k l m n ~ p q r s t v w x y z J C
+SUBSET FRONT e i < {
+SUBSET BACK u o a > * ^
+
+RULE "Default Character Pairings" 1 36
+ u o a > * ^ e i < { b c d f g h j k l m n ~ p q r s t v w x y z J C + @
+ u o a > * ^ e i < { b c d f g h j k l m n ~ p q r s t v w x y z J C + @
+1:  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+RULE "other defaults"   1 4
+     + # + @
+     0 # + @
+  1: 1 1 0 1
+
+RULE "g-j mutation"   3 7
+     J J J @     @    @ @
+     J g j 0 FRONT BACK @
+  1: 0 2 3 1     1    1 1
+  2. 0 0 0 2     1    0 0
+  3. 0 0 0 3     0    1 0
+
+RULE "z-c mutation"   3 5
+     z z     @ @ @
+     c z FRONT 0 @
+  1: 2 3     1 1 1
+  2. 0 0     1 2 0
+  3: 2 3     0 3 1
+
+RULE "pluralization"   4 5
+           @ s 0 + @
+     C_NOT_S s e 0 @
+  1:       2 2 0 1 1
+  2:       2 2 0 3 1
+  3:       2 0 4 1 1
+  4.       0 1 0 0 0
+
+RULE "c-zc irregularity pattern in -cer and -cir verbs"   6 8
+     C C C 0 +     @    @ @
+     C c z c 0 FRONT BACK @
+  1: 0 2 4 0 1     1    1 1
+  2. 0 0 0 0 3     0    0 0
+  3. 0 0 0 0 0     1    0 0
+  4. 0 0 0 5 0     0    0 0
+  5. 0 0 0 0 6     0    0 0
+  6. 0 0 0 0 0     0    1 0
+END
