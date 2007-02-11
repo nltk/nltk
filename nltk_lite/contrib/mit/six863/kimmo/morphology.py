@@ -5,11 +5,13 @@ class KimmoMorphology(object):
     def __init__(self, fsa):
         self._fsa = fsa
     def fsa(self): return self._fsa
-    def valid_lexical(self, state, word):
+    def valid_lexical(self, state, word, alphabet):
         trans = self.fsa()._transitions[state]
         for label in trans.keys():
             if label is not None and label[0].startswith(word) and len(label[0]) > len(word):
-                yield label[0][len(word)]
+                next = label[0][len(word):]
+                for pair in alphabet:
+                    if next.startswith(pair.input()): yield pair.input()
     def next_states(self, state, word):
         choices = self.fsa()._transitions[state]
         for (key, value) in choices.items():
@@ -33,7 +35,7 @@ class KimmoMorphology(object):
         state = 'Begin'
         for line in text.split('\n'):
             line = line.strip()
-            if not line: continue
+            if not line or line.startswith(';'): continue
             if line[-1] == ':':
                 state = line[:-1]
             else:
