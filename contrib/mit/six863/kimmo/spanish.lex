@@ -74,7 +74,7 @@ V_SUFFIX_AR:
 
 
 N_ROOT:
-l^piz n_root Noun(l^piz-"pencil")
+la'piz n_root Noun(la'piz-"pencil")
 ciudad n_root Noun(cuidad-"city")
 bota n_root Noun(bota-"boat")
 cosa n_root Noun(cosa-"thing")
