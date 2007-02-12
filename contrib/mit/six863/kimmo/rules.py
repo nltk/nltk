@@ -34,6 +34,9 @@ class KimmoFSARule(object):
     def fsa(self): return self._fsa
     def pairs(self): return self._pairs
     def name(self): return self._name
+
+    def show_pygraph(self, root=None):
+        return self.fsa().show_pygraph(self.name(), root=root)
     
     def complete_fsa(self, fsa, fail_state=None):
         fsa = deepcopy(fsa)
@@ -114,7 +117,8 @@ class KimmoFSARule(object):
                 if label != 'others':
                     used_pairs.add(KimmoPair.make(label))
             for label, target in trans.items():
-                if label.lower() in ['other', 'others', 'else']:
+                if label.lower() == 'others':
+                    fsa.insert_safe(source, KimmoPair.make('@'), target)
                     for pair in pairs.difference(used_pairs):
                         fsa.insert_safe(source, pair, target)
                 else:
