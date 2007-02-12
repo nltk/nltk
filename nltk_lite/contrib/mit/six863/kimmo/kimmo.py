@@ -217,4 +217,17 @@ class KimmoRuleSet(yaml.YAMLObject):
             else:
                 raise ValueError, "Can't recognize the data structure in '%s' as a rule: %s" % (name, rule)
         return cls(subsets, defaults, rules, lexicon)
-        
+    
+    def draw_graphs(self, startTk=True):
+        import draw
+        return draw.GraphGUI(self, startTk)
+
+def load(filename):
+    return KimmoRuleSet.load(filename)
+
+def guidemo():
+    rules = load('spanish.yaml')
+    rules.draw_graphs()
+
+if __name__ == '__main__': guidemo()
+

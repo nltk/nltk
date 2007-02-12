@@ -43,7 +43,7 @@ class FSA(yaml.YAMLObject):
         @param finals: The identifiers of the accept states
         @type finals: sequence
         """
-        self._transitions = transitions or {0: {}}
+        self._transitions = transitions or {}
         self._start = start
         self._reverse = {}
         self._build_reverse_transitions()
@@ -461,6 +461,35 @@ class FSA(yaml.YAMLObject):
             transitions = transitions))
         return node
 
+    def show_pygraph(self, title='FSA', outfile=None, labels=True, root=None):
+        from pygraph import pygraph, tkgraphview
+        graph = pygraph.Grapher('directed')
+
+        for state in self.states():
+            color = '#eee'
+            if state in self.finals():
+                shape = 'oval'
+            else:
+                shape = 'rect'
+            if state == self.start():
+                color = '#afa'
+            term = ''
+            if state == self.start(): term = 'start'
+            elif state == 'End': term = 'end'
+            if state in [0, '0', 'reject', 'Reject']: color='#e99'
+            
+            graph.addNode(state, state, color, shape, term)
+
+        #for source, trans in self._transitions.items():
+        for source, label, target in self.generate_transitions():
+            if not labels: label = ''
+            graph.addEdge(source, target, label, color='black', dup=False)
+        
+        if outfile is None: outfile = title
+        
+        return tkgraphview.tkGraphView(graph, title, outfile, root=root,
+        startTk=(not root))
+        
     def __str__(self):
         return yaml.dump(self)
 
