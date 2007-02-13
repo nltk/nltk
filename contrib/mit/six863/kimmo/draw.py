@@ -1,22 +1,48 @@
 import Tkinter as tk
 from morphology import KimmoMorphology
 
-class GraphGUI(object):
+class KimmoGUI(object):
     def __init__(self, ruleset, startTk=False):
         import Tkinter as tk
         if startTk: self._root = tk.Tk()
         else: self._root = tk.Toplevel()
+        
+        self.ruleset = ruleset
+        self.rules = ruleset.rules()
+        self.lexicon = ruleset.morphology()
 
         frame = tk.Frame(self._root)
+        tk.Label(frame, text='Rules').pack(side=tk.TOP)
         scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL)
         self.listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
         scrollbar.config(command=self.listbox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-        frame.pack(side=tk.LEFT, fill=tk.Y, expand=1)
         
-        self.rules = ruleset.rules()
-        self.lexicon = ruleset.morphology()
+        frame2 = tk.Frame(self._root)
+        tk.Label(frame2, text='Steps').pack(side=tk.TOP)
+        scrollbar2 = tk.Scrollbar(frame2, orient=tk.VERTICAL)
+        self.steplist = tk.Listbox(frame2, yscrollcommand=scrollbar2.set,
+        font='Sans 10', width='40')
+        scrollbar2.config(command=self.steplist.yview)
+        scrollbar2.pack(side=tk.RIGHT, fill=tk.Y)
+        self.steplist.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+
+        wordbar = tk.Frame(self._root)
+        self.genbox = tk.Entry(wordbar, width=30, font="Courier 14")
+        genbutton = tk.Button(wordbar, text="Generate ->",
+        command=self.generate)
+        recbutton = tk.Button(wordbar, text="<- Recognize",
+        command=self.recognize)
+        self.recbox = tk.Entry(wordbar, width=30, font="Courier 14")
+        
+        self.genbox.pack(side=tk.LEFT)
+        genbutton.pack(side=tk.LEFT)
+        self.recbox.pack(side=tk.RIGHT)
+        recbutton.pack(side=tk.RIGHT)
+        wordbar.pack(side=tk.TOP, fill=tk.X, expand=1)
+        frame.pack(side=tk.LEFT, fill=tk.Y, expand=1)
+        frame2.pack(side=tk.LEFT, fill=tk.Y, expand=1)
         
         self.listbox.insert(tk.END, 'Lexicon')
         for rule in self.rules:
@@ -26,13 +52,25 @@ class GraphGUI(object):
         self.rframe.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         
         self.graph_widget = None
-        self.listbox.bind("<ButtonRelease-1>", self.list_has_changed)
+        self.listbox.bind("<ButtonRelease-1>", self.graph_selected)
+        self.steplist.bind("<ButtonRelease-1>", self.step_selected)
         
         self.widget_store = {}
+        self.steps = []
+        for i in range(len(self.rules), -1, -1): # yes, including the last one.
+            self.draw_rule(i)
+        
         if startTk:
             tk.mainloop()
 
-    def list_has_changed(self, value):
+    def step_selected(self, value):
+        values = self.steplist.curselection()
+        if len(values) == 0: return
+        index = int(values[0])
+        self.highlight_states(self.steps[index][1], self.steps[index][2])
+        #self.draw_rule(index)
+        
+    def graph_selected(self, value):
         values = self.listbox.curselection()
         if len(values) == 0: return
         index = int(values[0])
@@ -43,13 +81,13 @@ class GraphGUI(object):
             self.graph_widget.pack_forget()
         if index == 0: rule = self.lexicon
         else: rule = self.rules[index-1]
-        if index in self.widget_store:
-            self.graph, self.graph_widget = self.widget_store[index]
+        if index-1 in self.widget_store:
+            self.graph, self.graph_widget = self.widget_store[index-1]
             self.graph_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         else:
             self.graph_widget = self.wrap_pygraph(rule)
             self.graph_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-            self.widget_store[index] = (self.graph, self.graph_widget)
+            self.widget_store[index-1] = (self.graph, self.graph_widget)
     
     def wrap_pygraph(self, rule):
         if isinstance(rule, KimmoMorphology):
@@ -61,3 +99,47 @@ class GraphGUI(object):
         frame = tk.Frame(self.rframe)
         self.graph = rule.fsa().show_pygraph(title=title, labels=labels, root=frame)
         return frame
+    
+    def highlight_states(self, states, morph):
+        for (index, stored) in self.widget_store.items():
+            graph, widget = stored
+            if index == -1: state = morph
+            else: state = states[index]
+            graph.deHighlightNodes()
+            graph.HighlightNode(state, None)
+    
+    def step(self, pairs, curr, rules, prev_states, states, morphology_state,
+    word):
+        lexical = ''.join(p.input() for p in pairs)
+        surface = ''.join(p.output() for p in pairs)
+        text = '%s<%s> | %s<%s>'%(lexical, curr.input(), surface, curr.output())
+        blocked = []
+        for rule, state in zip(rules, states):
+            if str(state).lower() in ['0', 'reject']:
+                blocked.append(rule.name())
+        if blocked:
+             text +=' [%s failed]' % (', '.join(blocked))
+        self.steplist.insert(tk.END, text)
+        self.steps.append((text, states, morphology_state, word))
+
+    def generate(self):
+        if not self.genbox.get(): return
+        gentext = self.genbox.get().split()[0]
+        result = " ".join(self.ruleset.generate(gentext, self))
+        self.recbox.delete(0, tk.END)
+        self.recbox.insert(0, result)
+
+    def recognize(self):
+        if not self.recbox.get(): return
+        rectext = self.recbox.get().split()[0]
+        result = ", ".join('%s (%s)' % (word, feat) for (word, feat) in
+          self.ruleset.recognize(rectext, self))
+        self.genbox.delete(0, tk.END)
+        self.genbox.insert(0, result)
+
+    def succeed(self, pairs):
+        pass
+        
+    def reset(self):
+        self.steplist.delete(0, tk.END)
+        self.steps = []
