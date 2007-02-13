@@ -16,7 +16,8 @@ def mixfeatures(a, b):
 class TextTrace(object):
     def __init__(self, verbosity):
         self.verbosity = verbosity
-    def step(self, pairs, curr, rules, prev_state_sets, state_sets,
+    def reset(self): pass
+    def step(self, pairs, curr, rules, prev_states, states,
     morphology_state, word):
         lexical = ''.join(p.input() for p in pairs)
         surface = ''.join(p.output() for p in pairs)
@@ -24,20 +25,20 @@ class TextTrace(object):
         if self.verbosity > 2:
             print '%s%s<%s>' % (indent, lexical, curr.input())
             print '%s%s<%s>' % (indent, surface, curr.output())
-            for rule, states1, states2 in zip(rules, prev_state_sets, state_sets):
-                print '%s%s: %s => %s' % (indent, rule.name(), states1, states2)
+            for rule, state1, state2 in zip(rules, prev_states, states):
+                print '%s%s: %s => %s' % (indent, rule.name(), state1, state2)
             if morphology_state:
                 print '%sMorphology: %r => %s' % (indent, word, morphology_state)
             print
         elif self.verbosity > 1:
             print '%s%s<%s>' % (indent, lexical, curr.input())
             print '%s%s<%s>' % (indent, surface, curr.output())
-            z = zip(prev_state_sets, state_sets)
+            z = zip(prev_states, states)
             if morphology_state:
                 z.append((word, morphology_state))
             print indent + (" ".join('%s>%s' % (old, new) for old, new in z))
             blocked = []
-            for rule, state in zip(rules, state_sets):
+            for rule, state in zip(rules, states):
                 if str(state).lower() in ['0', 'reject']:
                     blocked.append(rule.name())
             if blocked:
@@ -49,7 +50,7 @@ class TextTrace(object):
             if morphology_state:
                 print '\t%r => %s' % (word, morphology_state),
             blocked = []
-            for rule, state in zip(rules, state_sets):
+            for rule, state in zip(rules, states):
                 if str(state).lower() in ['0', 'reject']:
                     blocked.append(rule.name())
             if blocked:
@@ -160,17 +161,26 @@ class KimmoRuleSet(yaml.YAMLObject):
                 yield result
         
     def generate(self, lexical, log=None):
+        if log: log.reset()
+        if not lexical.endswith(self._boundary):
+            lexical += self._boundary
         got = self._generate([], [rule.fsa().start() for rule in
         self._rules], lexical=lexical, log=log)
+        results = []
         for (pairs, features) in got:
-            yield ''.join(self.pairtext(pair.output()) for pair in pairs)
+            results.append(''.join(self.pairtext(pair.output()).strip(self._boundary) for pair in pairs))
+        return results
     
     def recognize(self, surface, log=None):
+        if log: log.reset()
+        if not surface.endswith(self._boundary):
+            surface += self._boundary
         got = self._generate([], [rule.fsa().start() for rule in
         self._rules], morphology_state='Begin', surface=surface, log=log)
+        results = []
         for (pairs, features) in got:
-            yield (''.join(self.pairtext(pair.input()) for pair in pairs),
-                   features)
+            results.append((''.join(self.pairtext(pair.input()).strip(self._boundary) for pair in pairs), features))
+        return results
 
     def advance_rule(self, rule, state, pair):
         trans = rule.fsa()._transitions[state]
@@ -179,6 +189,51 @@ class KimmoRuleSet(yaml.YAMLObject):
             if comppair.includes(pair, self._subsets):
                 return rule.fsa().nextState(state, comppair)
         return None
+    
+    def test_case(self, input, outputs, arrow, method):
+        outputs.sort()
+        if arrow == '<=':
+            print '%s %s %s' % (', '.join(outputs), arrow, input)
+        else:
+            print '%s %s %s' % (input, arrow, ', '.join(outputs))
+        value = method(input)
+        if len(value) and isinstance(value[0], tuple):
+            results = [v[0] for v in value]
+        else: results = value
+        results.sort()
+        if outputs != results:
+            print '  Failed: got %s' % (', '.join(results) or 'no results')
+            return False
+        else: return True
+    
+    def batch_test(self, filename):
+        f = open(filename)
+        try:
+            for line in f:
+                line = line[:line.find(';')].strip()
+                if not line: continue
+                arrow = None
+                for arrow_to_try in ['<=>', '=>', '<=']:
+                    if line.find(arrow_to_try) >= 0:
+                        lexicals, surfaces = line.split(arrow_to_try)
+                        arrow = arrow_to_try
+                        break
+                if arrow is None:
+                    raise ValueError, "Can't find arrow in line: %s" % line
+                lexicals = lexicals.strip().split(', ')
+                surfaces = surfaces.strip().split(', ')
+                if lexicals == ['']: lexicals = []
+                if surfaces == ['']: surfaces = []
+                if arrow == '=>' or arrow == '<=>':
+                    outputs = surfaces
+                    for input in lexicals:
+                        self.test_case(input, outputs, '=>', self.generate)
+                if arrow == '<=' or arrow == '<=>':
+                    outputs = lexicals
+                    for input in surfaces:
+                        self.test_case(input, outputs, '<=', self.recognize)
+        finally:
+            f.close()
     
     @classmethod
     def from_yaml(cls, loader, node):
@@ -218,16 +273,26 @@ class KimmoRuleSet(yaml.YAMLObject):
                 raise ValueError, "Can't recognize the data structure in '%s' as a rule: %s" % (name, rule)
         return cls(subsets, defaults, rules, lexicon)
     
-    def draw_graphs(self, startTk=True):
+    def gui(self, startTk=True):
         import draw
-        return draw.GraphGUI(self, startTk)
+        return draw.KimmoGUI(self, startTk)
+    draw_graphs = gui
 
 def load(filename):
     return KimmoRuleSet.load(filename)
 
 def guidemo():
     rules = load('spanish.yaml')
-    rules.draw_graphs()
+    rules.gui()
 
-if __name__ == '__main__': guidemo()
+def batchdemo():
+    rules = load('spanish.yaml')
+    rules.batch_test('spanish.test')
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+        k = load(filename)
+        k.gui()
 
