@@ -12,52 +12,52 @@ rules:
     state start:
       'J:g': front
       'J:j': back
-      others: start
+      '@': start
     rejecting state front:
       '@:0': front
       '@:FRONT': start
-      others: reject
+      '@': reject
     rejecting state back:
       '@:0': back
       '@:BACK': start
-      others: reject
+      '@': reject
 
   z-c mutation:   # illustrating abbreviated state labels
     start:
       'z:c': front
       'z': nonfront
-      others: start
+      '@': start
     rej front:
       '@:FRONT': start
       '@:0': front
-      others: reject
+      '@': reject
     rej nonfront:
       '@:FRONT': reject
       'z:c': front
       'z': nonfront
       '@:0': nonfront
-      others: start
+      '@': start
 
   pluralization:
     start:
       '@:C_NOT_S': consonant
       's': consonant
       '0:e': reject
-      others: start
+      '@': start
     consonant:
       '@:C_NOT_S': consonant
       's': consonant
       '0:e': reject
       '+:0': guess_e
-      others: start
+      '@': start
     guess_e:
       '0:e': require_s
       '@:C_NOT_S': consonant
       's': reject
-      others: start
+      '@': start
     rejecting require_s:
-      s: start
-      others: reject
+      's': start
+      '@': reject
       
   c-zc irregularity: |
     FSA
