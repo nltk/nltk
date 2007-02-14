@@ -149,7 +149,8 @@ class KimmoRuleSet(yaml.YAMLObject):
                 morphology_state, newword)
             fail = False
             for new_state in new_states:
-                if new_state is None or str(new_state) == '0':
+                if new_state is None or str(new_state) == '0'\
+		or str(new_state) == 'reject':
                     fail = True
                     break
             if fail: continue
