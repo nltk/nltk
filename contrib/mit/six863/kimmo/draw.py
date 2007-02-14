@@ -127,12 +127,28 @@ class KimmoGUI(object):
         return frame
     
     def highlight_states(self, states, morph):
+        select = self.listbox.curselection() or 0
+        self.listbox.delete(0, tk.END)
         for (index, stored) in self.widget_store.items():
             graph, widget = stored
             if index == -1: state = morph
             else: state = states[index]
             graph.deHighlightNodes()
             graph.HighlightNode(state, None)
+        for index in range(-1, len(self.rules)):
+            if index == -1:
+                if self.lexicon:
+                    state = morph
+                    name = 'Lexicon'
+                    text = '%s [%s]' % (name, state)
+                else: text = '(no lexicon)'
+            else:
+                state = states[index]
+                name = self.rules[index].name()
+                text = '%s [%s]' % (name, state)
+            self.listbox.insert(tk.END, text)
+        self.listbox.selection_clear(0, tk.END)
+        self.listbox.selection_set(select)
     
     def step(self, pairs, curr, rules, prev_states, states, morphology_state,
     word):
@@ -164,7 +180,8 @@ class KimmoGUI(object):
         self.genbox.insert(0, result)
 
     def succeed(self, pairs):
-        pass
+        self.steplist.insert(tk.END, 'SUCCESS')
+        self.steps.append(self.steps[-1])
         
     def reset(self):
         self.steplist.delete(0, tk.END)

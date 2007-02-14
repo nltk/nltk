@@ -1,3 +1,7 @@
+# pykimmo 3.0.0 -- a two-level morphology tool for nltk_lite 1.7
+# by Rab Speer (rspeer@mit.edu)
+# based on code from Carl de Marcken, Beracah Yankama, and Rob Speer
+
 from rules import KimmoArrowRule, KimmoFSARule
 from pairs import KimmoPair, sort_subsets
 from morphology import KimmoMorphology
