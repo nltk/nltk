@@ -1,5 +1,6 @@
 import Tkinter as tk
 from morphology import KimmoMorphology
+from fsa import FSA
 
 class KimmoGUI(object):
     def __init__(self, ruleset, startTk=False):
@@ -14,7 +15,8 @@ class KimmoGUI(object):
         frame = tk.Frame(self._root)
         tk.Label(frame, text='Rules').pack(side=tk.TOP)
         scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL)
-        self.listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set)
+        self.listbox = tk.Listbox(frame, yscrollcommand=scrollbar.set,
+        exportselection=0)
         scrollbar.config(command=self.listbox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
@@ -23,7 +25,7 @@ class KimmoGUI(object):
         tk.Label(frame2, text='Steps').pack(side=tk.TOP)
         scrollbar2 = tk.Scrollbar(frame2, orient=tk.VERTICAL)
         self.steplist = tk.Listbox(frame2, yscrollcommand=scrollbar2.set,
-        font='Sans 10', width='40')
+        font='Sans 10', width='40', exportselection=0)
         scrollbar2.config(command=self.steplist.yview)
         scrollbar2.pack(side=tk.RIGHT, fill=tk.Y)
         self.steplist.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
@@ -44,7 +46,8 @@ class KimmoGUI(object):
         frame.pack(side=tk.LEFT, fill=tk.Y, expand=1)
         frame2.pack(side=tk.LEFT, fill=tk.Y, expand=1)
         
-        self.listbox.insert(tk.END, 'Lexicon')
+        if self.lexicon: self.listbox.insert(tk.END, 'Lexicon')
+        else: self.listbox.insert(tk.END, '(no lexicon)')
         for rule in self.rules:
             self.listbox.insert(tk.END, rule.name())
         
@@ -54,6 +57,9 @@ class KimmoGUI(object):
         self.graph_widget = None
         self.listbox.bind("<ButtonRelease-1>", self.graph_selected)
         self.steplist.bind("<ButtonRelease-1>", self.step_selected)
+
+        self._root.bind('<Up>', self.select_up)
+        self._root.bind('<Down>', self.select_down)
         
         self.widget_store = {}
         self.steps = []
@@ -63,24 +69,44 @@ class KimmoGUI(object):
         if startTk:
             tk.mainloop()
 
-    def step_selected(self, value):
+    def step_selected(self, event):
         values = self.steplist.curselection()
         if len(values) == 0: return
         index = int(values[0])
         self.highlight_states(self.steps[index][1], self.steps[index][2])
         #self.draw_rule(index)
         
-    def graph_selected(self, value):
+    def graph_selected(self, event):
         values = self.listbox.curselection()
         if len(values) == 0: return
         index = int(values[0])
         self.draw_rule(index)
 
+    def select_up(self, event):
+        values = self.steplist.curselection()
+        if len(values) == 0: values = [0]
+        index = int(values[0])
+        if index == 0: return
+        self.steplist.selection_clear(0, tk.END)
+        self.steplist.selection_set(index-1)
+        self.step_selected(event)
+
+    def select_down(self, event):
+        values = self.steplist.curselection()
+        if len(values) == 0: values = [0]
+        index = int(values[0])
+        if index == len(self.steps) - 1: return
+        self.steplist.selection_clear(0, tk.END)
+        self.steplist.selection_set(index+1)
+        self.step_selected(event)
+
     def draw_rule(self, index):
+        if index == 0:
+            rule = self.lexicon
+        else: rule = self.rules[index-1]
+        if rule is None: return
         if self.graph_widget is not None:
             self.graph_widget.pack_forget()
-        if index == 0: rule = self.lexicon
-        else: rule = self.rules[index-1]
         if index-1 in self.widget_store:
             self.graph, self.graph_widget = self.widget_store[index-1]
             self.graph_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
@@ -143,3 +169,5 @@ class KimmoGUI(object):
     def reset(self):
         self.steplist.delete(0, tk.END)
         self.steps = []
+
+# vim:et:ts=4:sts=4:sw=4:
