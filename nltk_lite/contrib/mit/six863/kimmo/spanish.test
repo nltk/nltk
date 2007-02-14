@@ -1,8 +1,0 @@
-; Test cases for Spanish
-lleg+ar <=> llegar
-la'piz+s <=> la'pices
-pag+a <= paga
-coJ+es <=> coges
-conoC+a => conozca
-conoC+a, conoC+a <= conozca    ; two different conjugations
- <= conoca
