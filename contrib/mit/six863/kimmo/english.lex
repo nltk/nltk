@@ -53,13 +53,13 @@ un+  Adj_Prefix1 NEG1+
 ''   Adj_Prefix1 None
 
 ADJ_ROOT1:
-clear Adj_Root1 Adj(clear)
-happy Adj_Root1 Adj(happy)
-real  Adj_Root1 Adj(real)
+`clear Adj_Root1 Adj(clear)
+`happy Adj_Root1 Adj(happy)
+`real  Adj_Root1 Adj(real)
 
 ADJ_ROOT2:
 `big   Adj_Root2 Adj(big)
-cool  Adj_Root2 Adj(cool)
+`cool  Adj_Root2 Adj(cool)
 `red   Adj_Root2 Adj(red)
 
 ADJ_SUFFIX1:
@@ -100,13 +100,7 @@ N_ROOT:
 `axe    N_Root1 Noun(axe)
 `spot   N_Root1 Noun(spot)
 `spy   N_Root1 Noun(spy)
-person  N_Root2 Noun(person)
-bob  N_Root2 "Noun(person - Bob)"
-rob  N_Root2 "Noun(person - Rob)"
-catherine  N_Root2 "Noun(person - Catherine)"
-beracah  N_Root2 "Noun(person - Beracah)"
-sheep  N_Root3 Noun(sheep)
-
+`sheep  N_Root3 Noun(sheep)
 
 
 
@@ -118,6 +112,7 @@ V_ROOT_NO_PREF:
 `tie  V_Root4 Verb(tie)
 `slip V_Root4 Verb(slip)
 `fly V_Root4 Verb(fly)
+se`lect V_Root4 Verb(select)
 
 End:
 '#' Begin None
