@@ -23,6 +23,10 @@ _non_list_initial_special_tokens.extend(_arrows)
 epsilon = None
 
 class KimmoFSARule(object):
+    """
+    A rule for two-level morphology, expressed as a deterministic finite
+    automaton.
+    """
     def __init__(self, name, fsa, subsets):
         self._name = name
         self._fsa = fsa
