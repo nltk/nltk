@@ -37,9 +37,11 @@ class KimmoGUI(object):
         recbutton = tk.Button(wordbar, text="<- Recognize",
         command=self.recognize)
         self.recbox = tk.Entry(wordbar, width=30, font="Courier 14")
+        self.resultlabel = tk.Label(wordbar, justify=tk.CENTER, text='')
         
         self.genbox.pack(side=tk.LEFT)
         genbutton.pack(side=tk.LEFT)
+        self.resultlabel.pack(side=tk.LEFT, fill=tk.X, expand=1)
         self.recbox.pack(side=tk.RIGHT)
         recbutton.pack(side=tk.RIGHT)
         wordbar.pack(side=tk.TOP, fill=tk.X, expand=1)
@@ -181,10 +183,16 @@ class KimmoGUI(object):
 
     def succeed(self, pairs):
         self.steplist.insert(tk.END, 'SUCCESS')
+        self.num_results += 1
+        if self.num_results == 1:
+            self.resultlabel.configure(text='1 result')
+        else:
+            self.resultlabel.configure(text='%d results' % self.num_results)
         self.steps.append(self.steps[-1])
         
     def reset(self):
         self.steplist.delete(0, tk.END)
+        self.num_results = 0
         self.steps = []
 
 # vim:et:ts=4:sts=4:sw=4:

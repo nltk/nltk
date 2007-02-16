@@ -101,7 +101,8 @@ N_ROOT:
 `spot   N_Root1 Noun(spot)
 `spy   N_Root1 Noun(spy)
 `sheep  N_Root3 Noun(sheep)
-
+`fly    N_Root1 Noun(fly)
+`tie  V_Root4 Verb(tie)
 
 
 V_ROOT_NO_PREF:
