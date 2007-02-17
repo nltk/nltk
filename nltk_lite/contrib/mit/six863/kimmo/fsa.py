@@ -195,12 +195,12 @@ class FSA(yaml.YAMLObject):
 
     def _add_transition(self, map, s1, label, s2):
         mapping = map[s1]
-        targets = mapping.setdefault(label, set())
-        targets.add(s2)
+        targets = mapping.setdefault(label, [])
+        targets.append(s2)
 
     def _del_transition(self, map, s1, label, s2):
         mapping = map[s1]
-        targets = mapping.setdefault(label, set())
+        targets = mapping.setdefault(label, [])
         targets.remove(s2)
         if len(targets) == 0: del mapping[label]
 
