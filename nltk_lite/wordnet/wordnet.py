@@ -1826,7 +1826,7 @@ def _lineAt(file, offset):
 N = Dictionary(NOUN, NOUN)
 V = Dictionary(VERB, VERB)
 ADJ = Dictionary(ADJECTIVE, ADJECTIVE)
-ADV = Dictionary(ADVERB, ADJECTIVE)
+ADV = Dictionary(ADVERB, ADVERB)
 Dictionaries = (N, V, ADJ, ADV)
 
 _POStoDictionaryTable = {}
