@@ -61,7 +61,6 @@ class KimmoMorphology(object):
                     fsa.insert_safe(state, (word, features), next)
                 else:
                     print "Ignoring line in morphology: %r" % line
-        print fsa
         return KimmoMorphology(fsa)
 
 def demo():
