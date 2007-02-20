@@ -182,13 +182,15 @@ class KimmoGUI(object):
         self.genbox.insert(0, result)
 
     def succeed(self, pairs):
-        self.steplist.insert(tk.END, 'SUCCESS')
+        lexical = ''.join(p.input() for p in pairs)
+        surface = ''.join(p.output() for p in pairs)
+        self.steplist.insert(tk.END, 'SUCCESS: %s / %s' % (lexical, surface))
         self.num_results += 1
         if self.num_results == 1:
             self.resultlabel.configure(text='1 result')
         else:
             self.resultlabel.configure(text='%d results' % self.num_results)
-        self.steps.append(self.steps[-1])
+        self.steps.append((lexical, [None]*len(self.rules), None, ''))
         
     def reset(self):
         self.steplist.delete(0, tk.END)
