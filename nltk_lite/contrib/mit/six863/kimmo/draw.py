@@ -196,5 +196,6 @@ class KimmoGUI(object):
         self.steplist.delete(0, tk.END)
         self.num_results = 0
         self.steps = []
+        self.resultlabel.configure(text='')
 
 # vim:et:ts=4:sts=4:sw=4:
