@@ -228,7 +228,7 @@ Create a set of probabilistic CFG productions.
     <S>
 
     >>> grammar.productions()
-    (A -> B B (p=0.3), A -> C B C (p=0.7), B -> B 'b' (p=0.5), B -> C (p=0.5), C -> 'a' (p=0.1), C -> 'b' (p=0.9))
+    [A -> B B (p=0.3), A -> C B C (p=0.7), B -> B 'b' (p=0.5), B -> C (p=0.5), C -> 'a' (p=0.1), C -> 'b' (p=0.9)]
 
 Induce some productions using parsed Treebank data.
 
@@ -240,7 +240,7 @@ Induce some productions using parsed Treebank data.
     >>> grammar
     <Grammar with 71 productions>
 
-    >>> list(islice(grammar.productions(), 5))
+    >>> grammar.productions()[:5]
     [PP -> IN NP (p=1.0), NNP -> 'Nov.' (p=0.0714285714286), NNP -> 'Agnew' (p=0.0714285714286), JJ -> 'industrial' (p=0.142857142857), NP -> CD NNS (p=0.133333333333)]
 
 --------------------------------------------------------------------------------
