@@ -312,7 +312,7 @@ class Grammar(object):
         @type productions: C{list} of L{Production}
         """
         self._start = start
-        self._productions = tuple(productions)
+        self._productions = productions
         self._lhs_index = {}
         self._rhs_index = {}
         for prod in self._productions:
@@ -327,16 +327,34 @@ class Grammar(object):
     def start(self):
         return self._start
 
-    # buggy: needs to cope with both lhs and rhs specified
-    # needs to raise an error if *hs is specified but not in index
-    # check nothing breaks when this is fixed...
+    # tricky to balance readability and efficiency here!
+    # can't use set operations as they don't preserve ordering
     def productions(self, lhs=None, rhs=None):
-        if lhs and lhs in self._lhs_index:
-                return self._lhs_index[lhs]
-        elif rhs and rhs in self._rhs_index:
-                return self._rhs_index[rhs]
-        else:
+        # no constraints so return everything
+        if not lhs and not rhs:
             return self._productions
+
+        # only lhs specified so look up its index
+        elif lhs and not rhs:
+            if lhs in self._lhs_index:
+                return self._lhs_index[lhs]
+            else:
+                return []
+
+        # only rhs specified so look up its index
+        elif rhs and not lhs:
+            if rhs in self._rhs_index:
+                return self._rhs_index[rhs]
+            else:
+                return []
+
+        # intersect
+        else:
+            if lhs in self._lhs_index:
+                return [prod for prod in self._lhs_index[lhs]
+                        if prod in self._rhs_index[rhs]]
+            else:
+                return []
 
     def __repr__(self):
         return '<Grammar with %d productions>' % len(self._productions)
