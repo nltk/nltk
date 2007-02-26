@@ -11,8 +11,8 @@ Prefix: ADJ_PREFIX V_PREFIX
 Root: N_ROOT ADJ_ROOT V_ROOT_PREF V_ROOT_NO_PREF
 AfterNoun: NounSuffix
 NounSuffix: End GENITIVE PLURAL N_TO_ADJ
-AfterGenitive: End PLURAL
-AfterPlural: End
+AfterPlural: End GENITIVE
+AfterGenitive: End
 
 AfterAdj: ADVERB ADJ_SUFFIX End
 Adj-NoAdverb: ADJ_SUFFIX End
