@@ -133,19 +133,19 @@ class AbstractParse(ParseI):
         if self.__class__ == AbstractParse:
             raise AssertionError, "Abstract classes can't be instantiated"
 
-    def parse(self, token):
-        return self.get_parse(token)
+    def parse(self, tokens):
+        return self.get_parse(list(tokens))
 
     def grammar(self):
         return self._grammar
 
-    def get_parse(self, token):
-        trees = self.get_parse_list(token)
+    def get_parse(self, tokens):
+        trees = self.get_parse_list(list(tokens))
         if len(trees) == 0: return None
         else: return trees[0]
     
-    def get_parse_list(self, token):
-        tree = self.get_parse(token)
+    def get_parse_list(self, tokens):
+        tree = self.get_parse(tokens)
         if tree is None: return []
         else: return [tree]
 
