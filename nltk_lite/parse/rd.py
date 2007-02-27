@@ -70,6 +70,7 @@ class RecursiveDescent(AbstractParse):
 
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
+        tokens = list(tokens)
         start = self._grammar.start().symbol()
         initial_tree = Tree(start, [])
         frontier = [()]
@@ -368,6 +369,7 @@ class SteppingRecursiveDescent(RecursiveDescent):
         return ImmutableTree.convert(c)
     
     def get_parse_list(self, tokens):
+        tokens = list(tokens)
         self.initialize(tokens)
         while self.step() is not None: pass
 
@@ -632,34 +634,19 @@ def demo():
     """
 
     from nltk_lite.parse import cfg
-
-    # Define some nonterminals
-    S, VP, NP, PP = cfg.nonterminals('S, VP, NP, PP')
-    V, N, P, Name, Det = cfg.nonterminals('V, N, P, Name, Det')
-
-    # Define a grammar.
-    productions = (
-        # Syntactic Productions
-        cfg.Production(S, [NP, 'saw', NP]),
-        cfg.Production(S, [NP, VP]),
-        cfg.Production(NP, [Det, N]),
-        cfg.Production(VP, [V, NP, PP]),
-        cfg.Production(NP, [Det, N, PP]),
-        cfg.Production(PP, [P, NP]),
-
-        # Lexical Productions
-        cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
-        cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
-        cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
-        cfg.Production(P, ['with']), cfg.Production(N, ['park']),
-        cfg.Production(N, ['dog']),  cfg.Production(N, ['telescope'])
-        )
-    grammar = cfg.Grammar(S, productions)
-
-    # Tokenize a sample sentence.
-    sent = list(tokenize.whitespace('I saw a man in the park'))
-
-    # Define a list of parsers.
+    
+    grammar = cfg.parse_grammar("""
+    S -> NP 'saw' NP | NP VP
+    NP -> Det N | Det N PP
+    VP -> V NP PP
+    PP -> P, NP
+    NP -> 'I' | 'man' | 'park' | 'telescope' | 'dog'
+    Det -> 'the' | 'a'
+    P -> 'in' | 'with'
+    V -> 'saw'
+    """)
+    
+    sent = tokenize.whitespace('I saw a man in the park')
     parser = RecursiveDescent(grammar)
     parser.trace()
     for p in parser.get_parse_list(sent):
