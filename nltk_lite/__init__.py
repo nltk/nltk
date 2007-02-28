@@ -23,7 +23,7 @@ having limited programming experience.  The focus is on teaching
 Python together with the help of NLP recipes, instead of teaching
 students to use a large set of specialized classes.
 
-@version: 0.7.1
+@version: 0.7.2
 
 """
 
@@ -33,11 +33,11 @@ students to use a large set of specialized classes.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2006 University of Pennsylvania.
+Copyright (C) 2001-2007 University of Pennsylvania.
 
 Distributed and Licensed under provisions of the GNU Public
 License, which is included by reference.
