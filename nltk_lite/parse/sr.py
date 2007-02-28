@@ -440,7 +440,8 @@ def demo():
     NP -> Det N | Det N PP
     VP -> V NP PP
     PP -> P NP
-    NP -> 'I' | 'man' | 'park' | 'telescope' | 'dog'
+    NP -> 'I'
+    N -> 'man' | 'park' | 'telescope' | 'dog'
     Det -> 'the' | 'a'
     P -> 'in' | 'with'
     V -> 'saw'
