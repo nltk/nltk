@@ -179,7 +179,7 @@ class BottomUpChartParse(AbstractParse):
         self._trace = trace
         
     def get_parse_list(self, tokens):
-        chart = Chart(tokens)
+        chart = Chart(list(tokens))
         grammar = self._grammar
 
         # Chart parser rules.
