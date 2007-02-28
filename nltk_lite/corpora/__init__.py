@@ -29,24 +29,28 @@ def get_basedir():
 if os.environ.has_key('NLTK_LITE_CORPORA'):
     set_basedir(os.environ['NLTK_LITE_CORPORA'])
 elif sys.platform.startswith('win'):
-    if os.path.isdir(os.path.join(sys.prefix, 'nltk_lite')):
+    if os.path.isdir('C:\\corpora'):
+        set_basedir('C:\\corpora')
+    elif os.path.isdir(os.path.join(sys.prefix, 'nltk_lite', 'corpora')):
+        set_basedir(os.path.join(sys.prefix, 'nltk_lite', 'corpora'))
+    elif os.path.isdir(os.path.join(sys.prefix, 'lib', 'nltk_lite', 'corpora')):
+        set_basedir(os.path.join(sys.prefix, 'lib', 'nltk_lite', 'corpora'))
+    elif os.path.isdir(os.path.join(sys.prefix, 'nltk_lite')):
         set_basedir(os.path.join(sys.prefix, 'nltk_lite'))
     elif os.path.isdir(os.path.join(sys.prefix, 'lib', 'nltk_lite')):
         set_basedir(os.path.join(sys.prefix, 'lib', 'nltk_lite'))
     else:
-        set_basedir(os.path.join(sys.prefix, 'nltk_lite'))
+        set_basedir('C:\\corpora')
+elif os.path.isdir('/usr/share/nltk_lite/corpora'):
+   set_basedir('/usr/share/nltk_lite/corpora')
+elif os.path.isdir('/usr/local/share/nltk_lite/corpora'):
+   set_basedir('/usr/local/share/nltk_lite/corpora')
 elif os.path.isdir('/usr/share/nltk_lite'):
    set_basedir('/usr/share/nltk_lite')
 elif os.path.isdir('/usr/local/share/nltk_lite'):
    set_basedir('/usr/local/share/nltk_lite')
-elif os.path.isdir('/usr/lib/nltk_lite'):
-    set_basedir('/usr/lib/nltk_lite')
-elif os.path.isdir('/usr/local/lib/nltk_lite'):
-    set_basedir('/usr/local/lib/nltk_lite')
-elif os.path.isdir('/usr/share/nltk_lite'):
-    set_basedir('/usr/share/nltk_lite')
 else:
-    set_basedir('/usr/lib/nltk_lite')
+    set_basedir('/usr/share/nltk_lite/corpora')
 
 # Access to individual corpus items
 
