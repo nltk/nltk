@@ -77,6 +77,7 @@ class ShiftReduce(AbstractParse):
 
         # initialize the stack.
         stack = []
+        tokens = list(tokens)
         remaining_text = tokens
         
         # Trace output.
@@ -293,10 +294,11 @@ class SteppingShiftReduce(ShiftReduce):
         self._history = []
         AbstractParse.__init__(self)
 
-    def get_parse_list(self, token):
-        self.initialize(token)
+    def get_parse_list(self, tokens):
+        tokens = list(tokens)
+        self.initialize(tokens)
         while self.step(): pass
-        
+
         return self.parses()
 
     def stack(self):
@@ -314,13 +316,13 @@ class SteppingShiftReduce(ShiftReduce):
         """
         return self._remaining_text
         
-    def initialize(self, token):
+    def initialize(self, tokens):
         """
         Start parsing a given text.  This sets the parser's stack to
-        C{[]} and sets its remaining text to C{token['SUBTOKENS']}.
+        C{[]} and sets its remaining text to C{tokens}.
         """
         self._stack = []
-        self._remaining_text = token
+        self._remaining_text = tokens
         self._history = []
 
     def step(self):
@@ -431,35 +433,22 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk_lite.parse import cfg
+    from nltk_lite import parse
 
-    # Define some nonterminals
-    S, VP, NP, PP = cfg.nonterminals('S, VP, NP, PP')
-    V, N, P, Name, Det = cfg.nonterminals('V, N, P, Name, Det')
+    grammar = parse.cfg.parse_grammar("""
+    S -> NP 'saw' NP | NP VP
+    NP -> Det N | Det N PP
+    VP -> V NP PP
+    PP -> P NP
+    NP -> 'I' | 'man' | 'park' | 'telescope' | 'dog'
+    Det -> 'the' | 'a'
+    P -> 'in' | 'with'
+    V -> 'saw'
+    """)
 
-    # Define a grammar.
-    productions = (
-        # Syntactic Productions
-        cfg.Production(S, [NP, 'saw', NP]),
-        cfg.Production(S, [NP, VP]),
-        cfg.Production(NP, [Det, N]),
-        cfg.Production(VP, [V, NP, PP]),
-        cfg.Production(NP, [Det, N, PP]),
-        cfg.Production(PP, [P, NP]),
+    sent = tokenize.whitespace('I saw a man in the park')
 
-        # Lexical Productions
-        cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
-        cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
-        cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
-        cfg.Production(P, ['with']), cfg.Production(N, ['park']),
-        cfg.Production(N, ['dog']),  cfg.Production(N, ['telescope'])
-        )
-    grammar = cfg.Grammar(S, productions)
-
-    # Tokenize a sample sentence.
-    sent = list(tokenize.whitespace('I saw a man in the park'))
-
-    parser = ShiftReduce(grammar)
+    parser = parse.ShiftReduce(grammar)
     parser.trace()
     for p in parser.get_parse_list(sent):
         print p
