@@ -1268,7 +1268,7 @@ class EarleyChartParse(AbstractParse):
         AbstractParse.__init__(self)
 
     def get_parse_list(self, tokens, tree_class=Tree):
-        chart = Chart(tokens)
+        chart = Chart(list(tokens))
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1347,7 +1347,7 @@ class ChartParse(AbstractParse):
         AbstractParse.__init__(self)
 
     def get_parse_list(self, tokens, tree_class=Tree):
-        chart = Chart(tokens)
+        chart = Chart(list(tokens))
         grammar = self._grammar
 
         # Width, for printing trace edges.
@@ -1403,7 +1403,7 @@ class SteppingChartParse(ChartParse):
 
     def initialize(self, tokens):
         "Begin parsing the given tokens."
-        self._chart = Chart(tokens)
+        self._chart = Chart(list(tokens))
         self._restart = True
 
     #////////////////////////////////////////////////////////////

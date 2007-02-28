@@ -633,13 +633,13 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk_lite.parse import cfg
+    from nltk_lite import parse
     
-    grammar = cfg.parse_grammar("""
+    grammar = parse.cfg.parse_grammar("""
     S -> NP 'saw' NP | NP VP
     NP -> Det N | Det N PP
     VP -> V NP PP
-    PP -> P, NP
+    PP -> P NP
     NP -> 'I' | 'man' | 'park' | 'telescope' | 'dog'
     Det -> 'the' | 'a'
     P -> 'in' | 'with'
@@ -647,7 +647,7 @@ def demo():
     """)
     
     sent = tokenize.whitespace('I saw a man in the park')
-    parser = RecursiveDescent(grammar)
+    parser = parse.RecursiveDescent(grammar)
     parser.trace()
     for p in parser.get_parse_list(sent):
         print p
