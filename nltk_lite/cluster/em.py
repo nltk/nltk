@@ -142,8 +142,8 @@ class EM(VectorSpace):
             inv = linalg.inv(cvm)
             a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0) 
             dx = x - mean
-            b = -0.5 * numpy.matrixmultiply( \
-                    numpy.matrixmultiply(dx, inv), dx)
+            print dx, inv
+            b = -0.5 * numpy.dot( numpy.dot(dx, inv), dx)
             return a * numpy.exp(b) 
         except OverflowError:
             # happens when the exponent is negative infinity - i.e. b = 0
