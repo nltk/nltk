@@ -8,6 +8,8 @@
 #
 
 """
+Cosine Classifier -- Beta version
+"""
 
 from math import sqrt, pow
 from nltk_lite.probability import *
@@ -17,10 +19,9 @@ class Cosine(AbstractClassify):
     """
     The Cosine Classifier uses the cosine distance algorithm to compute
     the distance between the sample document and each of the specified classes.
-    Cosine classification is a supervised classifier. It needs to be trained
-    with representative examples of each class. From these examples the classifier
+    A cosine classifier needs to be trained with representative examples
+    of each class. From these examples the classifier
     calculates the most probable classification of the sample.
-
   
                      C . S
     D(C|S) = -------------------------
@@ -41,21 +42,18 @@ class Cosine(AbstractClassify):
 
     def __init__(self, feature_detector):
         """
-        @param feature_detector: feature detector produced function
-            @param of feature detector: sample of object to be classified
-                                    eg: string or list of words
-            @ret of feature detector: list of tuples
-                   (feature_type_name, list of values of this feature type)
+        @param feature_detector: feature detector produced function, which takes
+        a sample of object to be classified (eg: string or list of words) and returns
+        a list of tuples (feature_type_name, list of values of this feature type)
         """
         self._feature_detector = feature_detector
-
    
     def train(self, gold):
-        """
-        @param classes: dictionary of class names to representative examples
+        """     
+        Train classifier using representative examples of classes;
+        creates frequency distributions of these classes
             
-            function takes representative examples of classes
-            then creates frequency distributions of these classes
+        @param gold: dictionary mapping class names to representative examples
         """
         self._classes = []
         self._cls_freq_dist = {}
@@ -70,15 +68,16 @@ class Cosine(AbstractClassify):
 
     def get_class_dict(self, sample):
         """
-        @param text: sample to be classified
-        @ret: Dictionary (class to probability)
+        @type sample: (any)
+        @param sample: sample to be classified
+        @return: Dictionary (class to probability)
         """
         return self._cosine(sample)
 
     def _cosine(self, sample):
         """
-        @param text: sample to be classified
-        @ret: Dictionary class to probability
+        @param salmple: sample to be classified
+        @return: Dictionary class to probability
             
             function uses sample to create a frequency distribution
             cosine distance is computed between each of the class distribustions
@@ -127,7 +126,9 @@ class Cosine(AbstractClassify):
     def __repr__(self):
         return '<CosineClassifier: classes=%d>' % len(self._classes)  
 
-###########################################################
+##//////////////////////////////////////////////////////
+##  Demonstration code
+##//////////////////////////////////////////////////////
 
 def demo():
     from nltk_lite import detect, classify
