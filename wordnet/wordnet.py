@@ -225,14 +225,35 @@ class Synset(object):
         self.lexname = Lexname.lexnames[int(tokens[1])]
 
         # TODO: This next code is dense and confusing. Clean up at some point.
+        # line is of the form: 
+        # synset_offset lex_filenum ss_type w_cnt word lex_id [word lex_id...] p_cnt [ptr...] [frames...] | gloss 
+        
+        synset_cnt = int(tokens[3], 16) # hex integer representing number of items in the synset; same as w_cnt above
+        
+        #extract all pairs of the form (sense, sense_index), plus a remainder
+        (self._senseTuples, remainder1) = _partition(tokens[4:], 2, synset_cnt)
+        #extract all pointer quadruples, plus a remainder
+        (self._pointerTuples, remainder2) = _partition(remainder1[1:], 4, int(remainder1[0]))
 
-        (self._senseTuples, remainder) = _partition(tokens[4:], 2, int(tokens[3], 16))
-        (self._pointerTuples, remainder) = _partition(remainder[1:], 4, int(remainder[0]))
-
+        #frames: In data.verb only, a list of numbers corresponding to the
+        #generic verb sentence frames for word s in the synset. frames is of
+        #the form:
+        #f_cnt   +   f_num  w_num  [ +   f_num  w_num...]
+        #where f_cnt is a two digit decimal integer indicating the number of
+        #generic frames listed, f_num is a two digit decimal integer frame
+        #number, and w_num is a two digit hexadecimal integer indicating the
+        #word in the synset that the frame applies to. As with pointers, if
+        #this number is 00 , f_num applies to all word s in the synset. If
+        #non-zero, it is applicable only to the word indicated. Word numbers
+        #are assigned as described for pointers.
+        
         if pos == VERB:
-            (vfTuples, remainder) = _partition(remainder[1:], 3, int(remainder[0]))
+            (vfTuples, remainder3) = _partition(remainder2[1:], 3, int(remainder2[0]))
+            
+            #now only used for senseVerbFrames
             def extractVerbFrames(index, vfTuples):
                 return tuple(map(lambda t:int(t[1]), filter(lambda t,i=index:int(t[2],16) in (0, i), vfTuples)))
+                
             senseVerbFrames = []
             for index in range(1, len(self._senseTuples) + 1):
                 senseVerbFrames.append(extractVerbFrames(index, vfTuples))
@@ -241,8 +262,27 @@ class Synset(object):
             # A sequence of integers that index into VERB_FRAME_STRINGS. These
             # list the verb frames that any Sense in this synset participates
             # in (see also Sense.verbFrames). Defined only for verbs.
+            
             self.verbFrames = tuple(extractVerbFrames(None, vfTuples))
+            
+            #A list of verb frame strings for this synset
+            self.verbFrameStrings = self.extractVerbFrameStrings(vfTuples)
     
+    def extractVerbFrameStrings(self, vfTuples):
+        """
+        Return a list of verb frame strings for this synset.
+        """
+        # extract a frame index if 3rd item is 00
+        frame_indices = [int(t[1], 16) for t in vfTuples if int(t[2], 16) == 0]
+        try:
+            verbFrames = [VERB_FRAME_STRINGS[i] for i in frame_indices]
+        except IndexError:
+            return []
+        #ideally we should build 3rd person morphology for this form
+        form = self[0].form
+        verbFrameStrings = [vf % form for vf in verbFrames]
+        return verbFrameStrings
+            
     def getSenses(self):
         """
         Return a sequence of Senses.
@@ -258,12 +298,15 @@ class Synset(object):
             self._senses = []
             senseVerbFrames = None
 
-            if self.pos == VERB: senseVerbFrames = self._senseVerbFrames
+            if self.pos == VERB: 
+                senseVerbFrames = self._senseVerbFrames
 
             for tuple in self._senseTuples:
                 self._senses.append(Sense(self, tuple, senseVerbFrames))
 
-            if self.pos == VERB: del self._senseVerbFrames
+            if self.pos == VERB: 
+                del self._senseVerbFrames
+                
             del self._senseTuples
 
         return self._senses
@@ -340,7 +383,7 @@ class Synset(object):
         @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
         """
         return len(filter(Sense.isTagged, self.getSenses())) > 0
-    
+  
     def __str__(self):
         """
         Return a human-readable representation.
@@ -1276,12 +1319,12 @@ def _index(key, sequence, testfn=None, keyfn=None):
 
 def _partition(sequence, size, count):
     """
-    Partition sequence into count subsequences of size
-    length, and a remainder.
+    Partition sequence into C{count} subsequences of
+    length C{size}, and a remainder.
     
-    Return (partitions, remainder), where partitions is a sequence of
-    count subsequences of cardinality count, and
-    apply(append, partitions) + remainder == sequence.
+    Return C{(partitions, remainder)}, where C{partitions} is a sequence of
+    C{count} subsequences of cardinality C{size}, and
+    C{apply(append, partitions) + remainder == sequence}.
     """
 
     partitions = []
