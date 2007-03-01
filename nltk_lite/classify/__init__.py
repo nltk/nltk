@@ -42,6 +42,8 @@ class ClassifyI:
         @ret: dictionary of class names to probability
         """
         raise NotImplementedError()
+        
+        
 
 class AbstractClassify(ClassifyI):
 
@@ -72,9 +74,19 @@ class AbstractClassify(ClassifyI):
         @param text: sample to be classified
         @ret: an ordered list of tuples
         """
-        tmp = self.get_class_probs(text)
-        return sorted([(cls, tmp.prob(cls)) for cls in tmp.samples()],
+        tmp = self.get_class_dict(text)
+        return sorted([(cls, tmp[cls]) for cls in tmp],
                       key=itemgetter(1), reverse=True)
+
+    def get_class_probs(self, text):
+        """
+        @param text: sample to be classified
+        @ret: a normalised probability dictionary
+        see probability.py
+        """
+    
+        return DictionaryProbDist(self.get_class_dict(text), normalize=True)
+    
 
 
 ##//////////////////////////////////////////////////////
@@ -93,3 +105,4 @@ def classifier_accuracy(classifier, gold):
 
 from cosine import *
 from naivebayes import *
+from spearman import *
