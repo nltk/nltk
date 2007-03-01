@@ -1,3 +1,14 @@
+# Natural Language Toolkit: Cosine Classifier
+#
+# Copyright (C) 2001-2007 University of Pennsylvania
+# Author: Sam Huston <shuston@csse.unimelb.edu.au>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+
+"""
+
 from math import sqrt, pow
 from nltk_lite.probability import *
 from nltk_lite.classify import *
@@ -15,105 +26,233 @@ class Cosine(AbstractClassify):
     D(C|S) = -------------------------
              sqroot(C^2) * sqroot (S^2)
   
+    Internal data structures:
+    _feature_dectector:
+        holds a feature detector function
+    _classes:
+        holds a list of classes supplied during training
+    _cls_freq_dist:
+        holds a dictionary of Frequency Distributions,
+        this structure is defined in probabilty.py in nltk_lite
+        this structure is indexed by class names and feature types
+        the frequency distributions are indexed by feature values
 
     """
 
     def __init__(self, feature_detector):
         """
         @param feature_detector: feature detector produced function
-        @param of feature detector: sample of object to be classified
+            @param of feature detector: sample of object to be classified
                                     eg: string or list of words
-        @ret of feature detector: list of tuples
-                   (feature_name, list of values of this feature type)
+            @ret of feature detector: list of tuples
+                   (feature_type_name, list of values of this feature type)
         """
         self._feature_detector = feature_detector
+
    
     def train(self, gold):
         """
-        trains the classifier
         @param classes: dictionary of class names to representative examples
+            
+            function takes representative examples of classes
+            then creates frequency distributions of these classes
         """
         self._classes = []
         self._cls_freq_dist = {}
         for cls in gold:
             self._classes.append(cls)
-            self._cls_freq_dist[cls] = FreqDist() 
-            feats_list = []
             for (fname, fvals) in self._feature_detector(gold[cls]):
-                for feature in fvals:
-                    self._cls_freq_dist[cls].inc(feature)
+                self._cls_freq_dist[cls, fname] = FreqDist()
+                for fval in fvals:
+                    self._cls_freq_dist[cls, fname].inc(fval)
 
 
-    def get_class_probs(self, sample):
+
+    def get_class_dict(self, sample):
         """
         @param text: sample to be classified
-        @ret: DictionaryProbDist (class to probability)
-              see probability.py
+        @ret: Dictionary (class to probability)
         """
         return self._cosine(sample)
 
     def _cosine(self, sample):
         """
         @param text: sample to be classified
-        @ret: DictionaryProbDist (class to probability)
+        @ret: Dictionary class to probability
+            
+            function uses sample to create a frequency distribution
+            cosine distance is computed between each of the class distribustions
+            and the sample's distribution
         """
-        sample_word_count = 0
+        sample_vector_len = 0
         dot_prod = {}
-        class_word_count = {}
         score = {}
-        sample_dist = FreqDist()
+
+        sample_dist = {}
 
         for (fname, fvals) in self._feature_detector(sample):
-            for feature in fvals:
-                sample_dist.inc(feature)
-
-        for feature in sample_dist.samples():
-            #calculate the length of the sample vector
-            sample_word_count += pow(sample_dist.freq(feature), 2)
-
-            for cls in self._classes:
-                dot_prod[cls] = 0
-                if feature in self._cls_freq_dist[cls].samples():
-                    #calculate the dot product of the sample to each class
-                    dot_prod[cls] += sample_dist.freq(feature) * self._cls_freq_dist[cls].freq(feature)
-    
+            sample_dist[fname] = FreqDist()
+            for fval in fvals:
+                sample_dist[fname].inc(fval)
+         
         for cls in self._classes:
-            cls_word_count = 0
-            for feature in self._cls_freq_dist[cls].samples():
-                #calculate the length of the example vector
-                cls_word_count += pow(self._cls_freq_dist[cls].freq(feature), 2)
-            score[cls] = dot_prod[cls] / (sqrt(sample_word_count) * sqrt(cls_word_count))
+            dot_prod[cls] = 0
 
-        return DictionaryProbDist(score, normalize=True)
+        for fname in sample_dist:
+            for fval in sample_dist[fname].samples():
+                #calculate the length of the sample vector
+                sample_vector_len += pow(sample_dist[fname].count(fval), 2)
+
+                for cls in self._classes:
+                    if fval in self._cls_freq_dist[cls, fname].samples():
+                        #calculate the dot product of the sample to each class
+                        dot_prod[cls] += sample_dist[fname].count(fval) * self._cls_freq_dist[cls,fname].count(fval)
+
+
+        for cls in self._classes:
+            cls_vector_len = 0
+            for fname in sample_dist:
+                for fval in self._cls_freq_dist[cls, fname].samples():
+                    #calculate the length of the class vector
+                    cls_vector_len += pow(self._cls_freq_dist[cls, fname].count(fval), 2)
+            
+            #calculate the final score for this class 
+            if sample_vector_len == 0 or cls_vector_len == 0:
+                score[cls] = 0
+            else :
+                score[cls] = float(dot_prod[cls]) / (sqrt(sample_vector_len) * sqrt(cls_vector_len))
+            
+        return score
+
+    def __repr__(self):
+        return '<CosineClassifier: classes=%d>' % len(self._classes)  
 
 ###########################################################
 
 def demo():
     from nltk_lite import detect, classify
-    from nltk_lite.corpora import genesis
-    from itertools import islice
-
+    
     fd = detect.feature({"1-tup": lambda t: [t[n] for n in range(len(t))]})
 
-    classifier = classify.Cosine(fd)
-    training_data = {"class a": "a a a a a a b",
-                     "class b": "b b b b b b a"}
+    classifier = classify.cosine.Cosine(fd)
+    training_data = {"class a": "aaaaaab",
+                      "class b": "bbbbbba"}
     classifier.train(training_data)
 
-    result = classifier.get_class_probs("a")
+    result = classifier.get_class_dict("a")
 
-    print 'class a :', result.prob('class a')
-    print 'class b :', result.prob('class b')
+    for cls in result:
+        print cls, ':', result[cls]
+    
+    """
+    expected values:
+    class a: 'a' = 6
+             'b' = 1
+         vector = 6^2 + 1^2 = 37
+      b: 'a' = 1
+         'b' = 6
+         vector = 1^2 + 6^2 = 37
+    sample: 'a' = 1
+            vector = 1^2 = 1
+    
+    dot_prod a: 6*1
+             b: 1*1
 
+    score a: 6 / (sqrt(37) * sqrt(1)) = 0.98~
+    score b: 1 / (sqrt(37) * sqrt(1)) =  0.16~
+    """
+
+   
 
 
 def demo2():
+    from nltk_lite import detect, classify
+  
+    fd = detect.feature({"2-tup": lambda t: [t[n:n+2] for n in range(len(t)-1)]})
+
+    classifier = classify.Cosine(fd)
+    training_data = {"class a": "aaaaaab",
+                      "class b": "bbbbbba"}
+    classifier.train(training_data)
+
+    result = classifier.get_class_dict("aaababb")
+
+    for cls in result:
+        print cls, ':', result[cls]
+    """
+    expected values:
+    class a: 'aa' = 5
+             'ab' = 1
+         vector = 5^2 + 1^2 = 26
+      b: 'bb' = 5
+         'ba' = 1
+         vector = 5^2 + 1^2 = 26
+    sample: 'aa' = 2
+            'ab' = 2
+            'ba' = 1
+            'bb' = 1
+            vector = 2^2 + 2^2 + 1^2 + 1^2 = 10
+    
+    dot_prod a: 5*2 + 1*2
+             b: 5*1 + 1*1
+
+    score a: 12 / (sqrt(26) * sqrt(10)) = 0.74~
+    score b: 6 / (sqrt(26) * sqrt(10))  = 0.37~
+    """
+    
+
+
+def demo3():
+    from nltk_lite import detect, classify
+  
+    fd = detect.feature({"1-tup": lambda t: [t[n] for n in range(len(t))],
+                          "2-tup": lambda t: [t[n:n+2] for n in range(len(t)-1)]})
+
+    classifier = classify.Cosine(fd)
+    training_data = {"class a": "aaaaaab",
+                      "class b": "bbbbbba"}
+    classifier.train(training_data)
+
+    result = classifier.get_class_dict("aaababb")
+
+    for cls in result:
+        print cls, ':', result[cls]
+
+    """
+    expected values:
+    class a: 'a' = 6
+             'b' = 1
+             'aa' = 5
+             'ab' = 1
+         vector = 6^2 + 5^2 + 1 + 1 = 63
+      b: 'a' = 1
+         'b' = 6
+         'bb' = 5
+         'ba' = 1
+         vector = 6^2 + 5^2 + 1 + 1 = 63
+    sample: 'a' = 4
+            'b' = 3
+            'aa' = 2
+            'ab' = 2
+            'ba' = 1
+            'bb' = 1
+            vector = 4^2 + 3^2 + 2^2 + 2^2 + 1 + 1 = 35
+    
+    dot_prod a: 4*6 + 3*1 + 5*2 + 2*1 = 39
+             b: 4*1 + 3*6 + 5*1 + 1*1 = 28
+
+    score a: 39 / (sqrt(63) * sqrt(35)) = 0.83~
+    score b: 28 / (sqrt(63) * sqrt(35)) = 0.59~
+    """
+
+
+def demo4():
     from nltk_lite import detect, classify
     from nltk_lite.corpora import genesis
     from itertools import islice
 
     fd = detect.feature({"2-tup": lambda t: [' '.join(t)[n:n+2] for n in range(len(' '.join(t))-1)],
-	                 "words": lambda t: t})
+                     "words": lambda t: t})
 
     classifier = classify.Cosine(fd)
     training_data = {}
