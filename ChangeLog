@@ -1,3 +1,25 @@
+Version 0.7.2 2007-03-01
+
+* Code:
+ - simple feature detectors (detect module)
+ - fixed problem when token generators are passed to a parser (parse package)
+ - fixed bug in Grammar.productions() (identified by Lucas Champollion and Mitch Marcus)
+ - fixed import bug in category.GrammarFile.earley_parser
+ - added utilities.OrderedDict
+ - initial port of old NLTK classifier package (by Sam Huston)
+
+* Tutorials:
+ - improved images
+ - improved book formatting, including new support for:
+   - javascript to copy program examples to clipboard in HTML version,
+   - bibliography, chapter cross-references, colorization, index, table-of-contents
+
+* Contrib:
+  - new Kimmo system: contrib.mit.six863.kimmo (Rob Speer)
+  - new Lambek calculus system: contrib.lambek (Edward Loper)
+  - fixes for: contrib.fsa (Rob Speer)
+  - new tree implementation based on elementtree: contrib.tree (Edward Loper)
+  
 Version 0.7.1 2007-01-14
 
 * Code:
