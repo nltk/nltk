@@ -87,55 +87,56 @@ NUMPY = $(SFNETMIRROR)/numpy
 <a name="nltk-lite"></a>
 <h2> 3. Installing NLTK-Lite </h2>
 
-<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.1.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.1.tar.gz?download</A>
+<p>Download the NLTK-Lite source distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.2.tar.gz?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.2.tar.gz?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite source distribution:
 
 <pre>
 	cd /tmp
-	gunzip nltk_lite-0.7.1.tar.gz
-	tar -xvf nltk_lite-0.7.1.tar
+	gunzip nltk_lite-0.7.2.tar.gz
+	tar -xvf nltk_lite-0.7.2.tar
 </pre>
 
 <P>Install the NLTK-Lite module:
 
 <pre>
-	cd nltk_lite-0.7.1
+	cd nltk_lite-0.7.2
 	sudo python setup.py install
 </pre>
 
 <a name="nltk-lite-corpora"></a>
 <h2> 4. Installing the NLTK-Lite Corpora Package</h2>
 
-<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.1.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.1.zip?download</A>
+<P>Download the NLTK-Lite Corpora distribution from <A HREF="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.2.zip?download">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.2.zip?download</A>
 to /tmp.
 
 <P>Uncompress the NLTK-Lite Corpora distribution:
 
 <pre>
 	cd /tmp
-	unzip nltk_lite-corpora-0.7.1.zip
+	unzip nltk_lite-corpora-0.7.2.zip
 </pre>
 
-<P>Move the corpora to a standard directory, e.g. /usr/share/nltk_lite, or /usr/local/share/nltk_lite.
+<P>Move the corpora to a standard directory, e.g. /usr/share/nltk_lite or /usr/local/share/nltk_lite.
 If you are not a system administrator, you can put this directory in your home directory (e.g. ~/nltk_lite).
 
 <pre>
-	mv /tmp/corpora /usr/share/nltk_lite
+	mkdir /usr/share/nltk_lite
+	mv /tmp/corpora /usr/share/nltk_lite/
 </pre>
 
 <P>Set an environment variable for the NLTK-Lite Corpora
 
 <pre>
-	export NLTK_LITE_CORPORA=/usr/share/nltk_lite
+	export NLTK_LITE_CORPORA=/usr/share/nltk_lite/corpora/
 </pre>
 
 <P>For convenience this environment variable can be set in your $HOME/.bash_profile so it
 is loaded every time you start a terminal session:
 
 <pre>
-	echo "export NLTK_LITE_CORPORA=/usr/share/nltk_lite" >> $HOME/.bash_profile
+	echo "export NLTK_LITE_CORPORA=/usr/share/nltk_lite/corpora/" >> $HOME/.bash_profile
 </pre>
 
 <P>Alternatively, you can also use the function set_basedir() in the module nltk_lite.corpora:
