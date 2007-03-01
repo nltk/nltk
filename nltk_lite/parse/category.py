@@ -727,6 +727,7 @@ class GrammarFile(object):
         return lexicon
 
     def earley_parser(self, trace=1):
+        from nltk_lite.parse.featurechart import FeatureEarleyChartParse
         return FeatureEarleyChartParse(self.earley_grammar(),
                            self.earley_lexicon(), trace=trace)
 
