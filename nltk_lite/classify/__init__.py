@@ -1,9 +1,16 @@
+# Natural Language Toolkit: Classifiers
+#
+# Copyright (C) 2001-2007 University of Pennsylvania
+# Author: Sam Huston <shuston@csse.unimelb.edu.au>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+
+"""
+"""
 
 from operator import itemgetter
-
-"""
-new structure for ClassifyI
-"""
 
 class ClassifyI:
 

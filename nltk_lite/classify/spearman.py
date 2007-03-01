@@ -7,6 +7,10 @@
 # For license information, see LICENSE.TXT
 #
 
+"""
+Spearman Classifier -- Beta version
+"""
+
 from math import pow
 from nltk_lite.probability import *
 from nltk_lite.classify import *
@@ -18,7 +22,6 @@ class Spearman(AbstractClassify):
     Spearman-rho classification is a supervised classifier. It needs to be trained
     with representative examples of each class. From these examples the classifier
     calculates the most probable classification of the sample.
-
   
                     6 * sum((Ai - Bi)^2)
     p = 1   -     -------------------------
@@ -116,19 +119,12 @@ class Spearman(AbstractClassify):
                 # take the union of the the class and sample lists, append each in alphabetical order
                 
                 tmp_clslist.extend(list(set(tmp_smplist).difference(set(tmp_clslist))))
-                tmp_smplist.extend(list(set(tmp_clslist).difference(set(tmp_smplist))))
-                
-#                print "unions: ", cls
-#                print tmp_clslist
-#                print tmp_smplist                
+                tmp_smplist.extend(list(set(tmp_clslist).difference(set(tmp_smplist))))            
                 
                 totalfvals[cls] += len(tmp_clslist)
                 
                 for fval in tmp_smplist:
                     rank_diff[cls] += pow(tmp_smplist.index(fval) - tmp_clslist.index(fval), 2)
-                
-#                print cls, ": rank :", rank_diff[cls]
-    
 
         for cls in self._classes:
             score[cls] = 1 - (float(6 * rank_diff[cls]) / (pow(totalfvals[cls], 3) - totalfvals[cls]))
@@ -144,14 +140,8 @@ class Spearman(AbstractClassify):
         """
 
         samples = sample_dist.samples()
-    
-        ordered_list = [item for (freq, item) in sorted([(sample_dist.count(item),item) for item in samples], reverse=True)]
-
-#        print ordered_list
-        
-        return ordered_list[:self._crop_data]
-        
-        
+        ordered_list = [item for (freq, item) in sorted([(sample_dist.count(item),item) for item in samples], reverse=True)]      
+        return ordered_list[:self._crop_data] 
         
     def __repr__(self):
         return '<SpearmanClassifier: classes=%d>' % len(self._classes)          
@@ -183,8 +173,6 @@ def demo():
     score a: 6*(0^2) / 8-2= 0
     score b: 6*(1^2) / 8-2 = 1
     """
-
-   
 
 
 def demo2():

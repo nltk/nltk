@@ -8,6 +8,10 @@
 # For license information, see LICENSE.TXT
 #
 
+"""
+Naive Bayes Classifier -- Beta version
+"""
+
 from operator import itemgetter
 from nltk_lite.probability import *
 from nltk_lite.classify import *
@@ -42,17 +46,15 @@ class NaiveBayes(AbstractClassify):
 
     def __init__(self, feature_detector):
         """
-        @param feature_detector: feature detector produced function
-            @param of feature detector: sample of object to be classified
-                                    eg: string or list of words
-            @ret of feature detector: list of tuples
-                   (feature_type_name, list of values of this feature type)
+        @param feature_detector: feature detector produced function, which takes
+        a sample of object to be classified (eg: string or list of words) and returns
+        a list of tuples (feature_type_name, list of values of this feature type)
         """
         self._feature_detector = feature_detector
 
     def train(self, gold):
         """
-        @param classes: dictionary of class names to representative examples
+        @param gold: dictionary of class names to representative examples
             function takes representative examples of classes
             then creates frequency distributions of these classes
             these freqdists are used to create probability distributions
@@ -86,7 +88,7 @@ class NaiveBayes(AbstractClassify):
         
     def get_class_dict(self, sample):
         """
-        @param text: sample to be classified
+        @param sample: sample to be classified
         @ret: Dictionary (class to probability)
         """
         return self._naivebayes(sample)
@@ -116,28 +118,21 @@ class NaiveBayes(AbstractClassify):
                 probdist = self._feat_prob_dist[cls, fname]
                 for fval in fvals:
                     if fval in probdist.samples():
-                        # add the log probability of each 
-                        # feature in both the sample and the class
                         logprob_dict[cls] += probdist.logprob(fval)
-#                        print cls, fval, probdist.prob(fval)
-        
-#        print "final value : in log form"
-#        for cls in self._classes:
-#            print cls, logprob_dict[cls]
 
         dicttmp = DictionaryProbDist(logprob_dict, normalize=True, log=True)
-
         for sample in dicttmp.samples():
             score[sample] = dicttmp.prob(sample) 
             
         return score
 
-
     def __repr__(self):
         return '<NaiveBayesClassifier: classes=%d>' % len(self._classes)  
 
 
-################################################################
+##//////////////////////////////////////////////////////
+##  Demonstration code
+##//////////////////////////////////////////////////////
 
 
 def demo():
