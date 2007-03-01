@@ -105,7 +105,7 @@ class Abstr(Term):
             return '(\\' + `self.var` + '.' + `self.body`+')'
         else:
             return '\\' + `self.var` + '.' + `self.body`
-    def pp(self, pp_varmap):
+    def pp(self, pp_varmap=None):
         if pp_varmap == None: pp_varmap = make_pp_varmap(self)
         if isinstance(self.body, Abstr) or \
            isinstance(self.body, Appl):
