@@ -19,10 +19,12 @@ Version 0.7.2 2007-03-01
 
 * Contrib:
   - new Kimmo system: contrib.mit.six863.kimmo (Rob Speer)
-  - new Lambek calculus system: contrib.lambek (Edward Loper)
   - fixes for: contrib.fsa (Rob Speer)
-  - new tree implementation based on elementtree: contrib.tree (Edward Loper)
-  
+  - demonstration of text classifiers trained on UDHR corpus for
+      language identification: contrib.langid (Sam Huston)
+  - new Lambek calculus system: contrib.lambek
+  - new tree implementation based on elementtree: contrib.tree
+	
 Version 0.7.1 2007-01-14
 
 * Code:
