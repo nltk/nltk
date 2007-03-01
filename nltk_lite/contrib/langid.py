@@ -13,20 +13,11 @@ Cosine distance, NaiveBayes, and Spearman-rho
 
 """
 
-
 from nltk_lite import classify, detect
 from nltk_lite.corpora import udhr
 
-def get_result(classifier):
-
-    training_data = udhr.langs()
-    gold_data = {}
-    for lang in training_data:
-        gold_data[lang] = training_data[lang][:100]
-        training_data[lang] = training_data[lang][100:]
-
+def run(classifier, training_data, gold_data):
     classifier.train(training_data)
-
     correct = 0
     for lang in gold_data:
         cls = classifier.get_class(gold_data[lang])
@@ -34,17 +25,20 @@ def get_result(classifier):
             correct += 1
     print correct, "in", len(gold_data), "correct"
 
-fd = detect.feature({"3-tuples" : lambda t: [' '.join(t)[n:n+3] for n in range(len(t)-2)]})
+# features: character bigrams
+fd = detect.feature({"char-bigrams" : lambda t: [' '.join(t)[n:n+2] for n in range(len(t)-1)]})
 
-classifier = classify.Cosine(fd)
+training_data = udhr.langs(['English-Latin1', 'French_Francais-Latin1', 'Indonesian-Latin1', 'Zapoteco-Latin1'])
+gold_data = {}
+for lang in training_data:
+    gold_data[lang] = training_data[lang][:50]
+    training_data[lang] = training_data[lang][100:200]
+
 print "Cosine classifier: ",
-get_result(classifier)
+run(classify.Cosine(fd), training_data, gold_data)
 
-'''classifier = classify.NaiveBayes(fd)
 print "Naivebayes classifier: ",
-get_result(classifier)
-'''
+run(classify.NaiveBayes(fd), training_data, gold_data)
 
-classifier = classify.Spearman(fd)
 print "Spearman classifier: ",
-get_result(classifier)
+run(classify.Spearman(fd), training_data, gold_data)
