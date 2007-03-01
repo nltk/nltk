@@ -7,7 +7,10 @@ Version 0.7.2 2007-03-01
  - fixed import bug in category.GrammarFile.earley_parser
  - added utilities.OrderedDict
  - initial port of old NLTK classifier package (by Sam Huston)
-
+ - UDHR corpus reader
+* Corpora:
+ - added UDHR corpus (Universal Declaration of Human Rights)
+     with 10k text samples in 300+ languages
 * Tutorials:
  - improved images
  - improved book formatting, including new support for:
