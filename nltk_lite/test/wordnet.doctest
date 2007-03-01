@@ -56,7 +56,6 @@ be retrieved via synset.getPointerTargets() or
 synset.getPointerTargets(pointerType), which are equivalent to
 map(Pointer.getTarget(), synset.getPointerTargets(...)).
 
-    >>> from nltk_lite.contrib.wn import *
     >>> V['think'][0].synset.verbFrames
     (5, 9)
 
