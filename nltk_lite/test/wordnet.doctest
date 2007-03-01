@@ -46,7 +46,8 @@ Synsets
 
 L{Synset}: a set of synonyms that share a common meaning.
 
-Each synset contains one or more Senses, which represent a specific
+Synsets are attributes of L{Sense}s.
+Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.  Senses can be retrieved via
 synset.getSenses() or through the index notations synset[0],
 synset[string], or synset[word]. Synsets also originate zero or more
@@ -58,6 +59,9 @@ map(Pointer.getTarget(), synset.getPointerTargets(...)).
 
     >>> V['think'][0].synset.verbFrames
     (5, 9)
+
+    >>> V['think'][0].synset.verbFrameStrings
+    ['Something think something Adjective/Noun', 'Somebody think somebody']
 
     >>> N['dog'][0].synset.getSenses()
     ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
