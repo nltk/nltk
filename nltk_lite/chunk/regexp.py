@@ -600,6 +600,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             rule.apply(chunkstr)
         
     def parse(self, chunk_struct, trace=None):
+        from nltk_lite.parse.tree import Tree
         """
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked

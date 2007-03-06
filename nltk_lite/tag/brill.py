@@ -16,12 +16,13 @@ from nltk_lite.tag import TagI
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
+from nltk_lite import yamltags
 
 ######################################################################
 ## The Brill Tagger
 ######################################################################
 
-class Brill(TagI, yaml.YAMLObject):
+class Brill(yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     X{initial tagger} (such as L{tag.Default}) to assign an intial
@@ -235,6 +236,9 @@ class ProximateTokensRule(BrillRuleI):
     @classmethod
     def from_yaml(cls, loader, node):
         map = loader.construct_mapping(node)
+        print node
+        print repr(map)
+        print repr(map['conditions'])
         return cls(map['original'], map['replacement'],
         *(tuple(x) for x in map['conditions']))
 
