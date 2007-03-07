@@ -941,7 +941,7 @@ class ChartView(object):
 
         # Create the chart canvas.
         (self._chart_sb, self._chart_canvas) = self._sb_canvas(self._root)
-        self._chart_canvas['height'] = 400
+        self._chart_canvas['height'] = 300
         self._chart_canvas['closeenough'] = 15
 
         # Create the sentence canvas.
