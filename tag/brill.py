@@ -235,10 +235,7 @@ class ProximateTokensRule(BrillRuleI):
         return node
     @classmethod
     def from_yaml(cls, loader, node):
-        map = loader.construct_mapping(node)
-        print node
-        print repr(map)
-        print repr(map['conditions'])
+        map = loader.construct_mapping(node, deep=True)
         return cls(map['original'], map['replacement'],
         *(tuple(x) for x in map['conditions']))
 
