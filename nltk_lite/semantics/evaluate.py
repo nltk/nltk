@@ -12,7 +12,6 @@ This module provides data structures for representing first-order
 models. 
 """
 
-from nltk_lite.semantics import *
 from nltk_lite.semantics import logic
 
 from pprint import pformat
@@ -281,6 +280,11 @@ class Assignment(dict):
         else:
             raise Undefined, "Unknown expression: '%s'" % key
         
+    def copy(self):
+        new = Assignment(self.domain)
+        new.update(self)
+        return new
+        
     def purge(self, var=None):
         """
         Remove one or all keys (i.e. logic variables) from an
@@ -393,7 +397,7 @@ class Model:
                 return False
             else:
                 raise Undefined,\
-                      "%s can't be applied as a function to %s" % (fun, arg)
+                      "%s can't be applied as a function to '%s'" % (fun, arg)
         except TypeError:
             if fun == False:
                 return False
@@ -592,17 +596,26 @@ class Model:
             if trace > 1:
                 print "    (checking whether '%s' is an individual variable)" % expr
             pass
-        try:
-            if trace > 1:
-                print "   i, %s('%s') = %s" % (g, expr, g[expr])
+        #try:
+            #if trace > 1:
+                #print "   i, %s('%s') = %s" % (g, expr, g[expr])
+            ## expr wasn't a constant; maybe a variable that g knows about?
+            #return g[expr]
+        ## We should only get to this point if expr is not an
+        ## individual variable or not assigned a value by g
+        #except Undefined:
+            #if trace:
+                #print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
+ 
+        if trace > 1:
+            print "   i, %s('%s') = %s" % (g, expr, g[expr])
             # expr wasn't a constant; maybe a variable that g knows about?
-            return g[expr]
+        return g[expr]
         # We should only get to this point if expr is not an
         # individual variable or not assigned a value by g
-        except Undefined:
-            if trace:
-                print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
-            raise
+        if trace:
+            print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
+ 
 
     def freevar(self, var, expr):
         """
@@ -637,27 +650,28 @@ class Model:
                 print
                 print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (expr, g)
             for u in self.domain:
-                g.add(u, var)
+                new_g = g.copy()
+                new_g.add(u, var)
                 if trace > 1:
                     lowtrace = trace-1
                 else:
                     lowtrace = 0
-                value = self.satisfy(expr, g, lowtrace)
+                value = self.satisfy(expr, new_g, lowtrace)
                 
                 if trace:
-                    print indent + "(trying assignment %s)" % g
+                    print indent + "(trying assignment %s)" % new_g
                     
                 # expr == False under g[u/var]?
                 if value == False:
                     if trace:
-                        print  indent + "value of '%s' under %s is False" % (expr, g)
+                        print  indent + "value of '%s' under %s is False" % (expr, new_g)
                  
                     
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print indent + "value of '%s' under %s is %s" % (expr, g, value)
+                        print indent + "value of '%s' under %s is %s" % (expr, new_g, value)
                     
             result = set(candidates)
 
@@ -888,8 +902,7 @@ def demo(num, trace=None):
 
 if __name__ == "__main__":
     demo(5, trace=0)
-    print '*' * mult 
-    test(verbosity=2) 
+
         
         
         
