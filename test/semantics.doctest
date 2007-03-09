@@ -27,7 +27,10 @@ out of their domain, rather than yielding the value C{False}:
 
 The assignment of C{False} values is delegated to a wrapper method
 L{app} of the L{Model} class. L{app} embodies the Closed World
-assumption; i.e., where C{m} is an instance of L{Model}:
+assumption; i.e., where C{m} is an instance of L{Model}. In the
+following example, C{m.app(cf, 'd1')} yields the value C{False} since
+although C{'d1'} belongs to the domain of the model, it is not in the
+extension of the value of 'boy'. 
 
    >>> val = Valuation()
    >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
@@ -38,9 +41,19 @@ assumption; i.e., where C{m} is an instance of L{Model}:
    >>> m = Model(dom, val)
    >>> g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
    >>> symbols = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
-   >>> m.app(cf,'not in domain')
+   >>> cf = val['boy']
+   >>> cf
+   {'b1': True, 'b2': True}
+   >>> m.app(cf, 'd1')
    False
 
+If however we apply a function to an object that is not in the domain,
+an 'Undefined' exception is raised.
+
+   >>> m.app(cf, 'not in domain')
+   Traceback (most recent call last):
+   ...
+   Undefined: {'b1': True, 'b2': True} can't be applied as a function to 'not in domain'
 
 In practise, it will often be more convenient for a user to specify
 interpretations as M{n}-ary relations (i.e., sets of M{n}-tuples) rather
@@ -51,7 +64,7 @@ will convert such relations into Curried characteristic functions:
    >>> cf = CharFun()
    >>> cf.read(s)
    >>> cf
-   {'d2': {'d1': True}, 'd4': {'d3': True}}
+   {'d4': {'d3': True}, 'd2': {'d1': True}}
 
 
 C{read} will raise an exception if the set is not in fact a
@@ -117,7 +130,7 @@ attribute.
    >>> val.domain
    set(['g1', 'g2', 'b2', 'b1'])
    >>> val.symbols
-   ['boy', 'girl', 'love', 'adam', 'betty']   
+   ['boy', 'girl', 'love', 'adam', 'betty']
 
 
 Assignments
@@ -221,7 +234,6 @@ caught by L{evaluate}, which returns the string 'Undefined'.
 
     >>> m.evaluate('(walk adam)', g, trace=2)
         (checking whether 'walk' is an individual variable)
-    Expression 'walk' can't be evaluated by i and g[b1/y][b1/x].
     'Undefined'
 
 
@@ -239,7 +251,7 @@ in the following manner:
    >>> dom1 = set([])
    >>> m1 = Model(dom1, val1, prop=True)
    >>> g1 = Assignment(dom1)
-   >>> m1.AND[m.evaluate('p', g)][m1.evaluate('q', g)]
+   >>> m1.AND[m1.evaluate('p', g)][m1.evaluate('q', g)]
    True
 
 satisfy

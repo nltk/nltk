@@ -187,6 +187,8 @@ def test(verbosity):
     runner = unittest.TextTestRunner(verbosity=verbosity)
     runner.run(testsuite())
 
+test(verbosity=2)
+
 if __name__ == "__main__":
 
     test(verbosity=2) 
