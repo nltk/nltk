@@ -225,12 +225,13 @@ assigns a semantic value to expressions of the L{logic} module, under an assignm
 evaluate
 --------
 
-L{evaluate} calls a recursive function L{satisfy}, which in turn
-calls a function L{i} to interpret non-logical constants and
-individual variables. L{i} first tries to call the model's L{Valuation} and
-if that fails, calls the variable assignment C{g}. Any atomic expression which cannot be
-assigned a value by L{i} raises an C{Undefined} exception; this is
-caught by L{evaluate}, which returns the string 'Undefined'.
+L{evaluate} calls a recursive function L{satisfy}, which in turn calls
+a function L{i} to interpret non-logical constants and individual
+variables. L{i} first tries to call the model's L{Valuation} and if
+that fails, calls the variable assignment C{g}. Any atomic expression
+which cannot be assigned a value by L{i} raises an C{Undefined}
+exception; this is caught by L{evaluate}, which returns the string
+'Undefined'.
 
     >>> m.evaluate('(walk adam)', g, trace=2)
         (checking whether 'walk' is an individual variable)
