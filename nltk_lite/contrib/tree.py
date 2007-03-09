@@ -43,6 +43,9 @@ may result in incorrect parent pointers and ValueError exceptions.
 
 from nltk_lite.etree import ElementTree as ET
 
+__all__ = ['Tree',
+           'ParentedTree',
+           'MultiParentedTree']
 
 ######################################################################
 # Trees
@@ -100,7 +103,6 @@ class _AbstractElement(ET._ElementInterface):
     # Basic tree operations
     #////////////////////////////////////////////////////////////
 
-    # BROKEN:
     def leaves(self):
         """
         @return: a list containing this tree's leaves.
@@ -108,10 +110,14 @@ class _AbstractElement(ET._ElementInterface):
         """
         leaves = []
         for child in self:
-	    try:
+            if isinstance(child, _AbstractElement):
                 leaves.extend(child.leaves())
-            except AttributeError:
+                if child.tail:
+                    leaves.append(child.tail)
+            else:
                 leaves.append(child)
+        if self.text:
+            leaves.append(self.text)
         return leaves
 
     def flatten(self):
@@ -397,7 +403,7 @@ class ElementTreeImplementation(object):
     class _ElementTree(ET.ElementTree):
         def __init__(self, etbase, element, file):
             self.__default_parser_class = etbase.XMLTreeBuilder
-            ET.ElementTree.__init__(element, file)
+            ET.ElementTree.__init__(self, element, file)
         def parse(self, source, parser=None):
             if not parser:
                 parser = self.__default_parser_class()
@@ -452,11 +458,14 @@ class ElementTreeImplementation(object):
     fromstring = XML
 
 
+Tree = ElementTreeImplementation(_AbstractElement)
 ParentedTree = ElementTreeImplementation(_ParentedElement)
 MultiParentedTree = ElementTreeImplementation(_MultiParentedElement)
 
 
 def demo():
+    import nltk_lite.contrib.tree
+    reload(nltk_lite.contrib.tree)
     from nltk_lite.contrib.tree import ParentedTree as PT
 
     TREE = ("<s><np><jj>Snow</jj><nn>flakes</nn></np>"
