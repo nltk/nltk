@@ -161,7 +161,7 @@ def depth(cf):
     """
     Calculate the depth of a L{CharFun}.
 
-    @return: Int
+    @rtype: C{int}
     @type cf: L{CharFun}
     """
     if True in cf.values():
@@ -278,7 +278,7 @@ class Assignment(dict):
         if key in self:
             return dict.__getitem__(self, key)
         else:
-            raise Undefined, "Unknown expression: '%s'" % key
+            raise Undefined, "Not recognized as a variable: '%s'" % key
         
     def copy(self):
         new = Assignment(self.domain)
@@ -429,7 +429,7 @@ class Model:
         @param expr: An C{Expression} of L{logic}.
         @type g: L{Assignment}
         @param g: an assignment to individual variables.
-        @return: C{bool} or 'Undefined'
+        @rtype: C{bool} or 'Undefined'
         """
         try:
             value = self.satisfy(expr, g, trace=trace)
@@ -519,8 +519,10 @@ class Model:
                 elif first[0] == 'some':
                     var = first[1]
                     phi = second
-                    sat = self.satisfiers(phi, var, g, trace, nesting=1)
-                    value = len(sat) > 0
+                    # seq is an iterator
+                    seq = self.satisfiers(phi, var, g, trace, nesting=1)
+                    #any returns True if seq is nonempty
+                    value = self.any(seq)
                     if trace:
                         if value:
                             print "   '%s' evaluates to %s under M, %s" %  (phi, value, g)
@@ -536,6 +538,7 @@ class Model:
                     var = first[1]
                     phi = second
                     sat = self.satisfiers(phi, var, g, trace, nesting=1)
+                    #issubset can take an iterator as argument
                     value = self.domain.issubset(sat)
                     if trace:
                         if value:
@@ -595,26 +598,10 @@ class Model:
         except Undefined:
             if trace > 1:
                 print "    (checking whether '%s' is an individual variable)" % expr
-            pass
-        #try:
-            #if trace > 1:
-                #print "   i, %s('%s') = %s" % (g, expr, g[expr])
-            ## expr wasn't a constant; maybe a variable that g knows about?
-            #return g[expr]
-        ## We should only get to this point if expr is not an
-        ## individual variable or not assigned a value by g
-        #except Undefined:
-            #if trace:
-                #print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
  
-        if trace > 1:
-            print "   i, %s('%s') = %s" % (g, expr, g[expr])
             # expr wasn't a constant; maybe a variable that g knows about?
-        return g[expr]
-        # We should only get to this point if expr is not an
-        # individual variable or not assigned a value by g
-        if trace:
-            print "Expression '%s' can't be evaluated by i and %s." % (expr, g)
+            return g[expr]
+        
  
 
     def freevar(self, var, expr):
@@ -624,7 +611,7 @@ class Model:
         @type var: an C{Indvar} of L{logic}
         @param var: the variable to test for.
         @param expr: an C{Expression} of L{logic}.
-        @return: C{bool}
+        @rtype: C{bool}
         """
         parsed = logic.Parser().parse(expr)
         variable = logic.Variable(var)
@@ -632,13 +619,12 @@ class Model:
         
     def satisfiers(self, expr, var, g, trace=False, nesting=0):
         """
-        Show the entities from the model's domain that satisfy an open formula.
+        Generate the entities from the model's domain that satisfy an open formula.
 
         @param expr: the open formula
         @param var: the relevant free variable in C{expr}.
         @param g: the variable assignment
-        @return: the set of entities that satisfy C{expr}.
-        @rtype: C{set}
+        @return: an iterator over the entities that satisfy C{expr}.
         """
 
         spacer = '   '
@@ -672,9 +658,8 @@ class Model:
                     candidates.append(u)
                     if trace:
                         print indent + "value of '%s' under %s is %s" % (expr, new_g, value)
-                    
-            result = set(candidates)
-
+                   
+            result = (c for c in candidates)
         # var isn't free in expr
         else:
             raise Undefined, "%s is not free in %s" % (var, expr)
@@ -720,6 +705,18 @@ class Model:
             return (first, second)
         except (AttributeError, TypeError):
             return expr
+
+    def any(self, seq):
+        """
+        Returns True if there is at least one element in the iterable.
+        
+        @param seq: an iterator
+        @rtype: C{bool}
+        """
+        for elem in seq:
+            return True
+        return False
+    
 
         
 #//////////////////////////////////////////////////////////////////////
@@ -871,7 +868,7 @@ def satdemo(trace=None):
         
     for fmla in formulas:
         g2.purge()
-        print "The satisfiers of '%s' are: %s" % (fmla, m2.satisfiers(fmla, 'x', g2, trace))
+        print "The satisfiers of '%s' are: %s" % (fmla, list(m2.satisfiers(fmla, 'x', g2, trace)))
 
         
 def demo(num, trace=None):
