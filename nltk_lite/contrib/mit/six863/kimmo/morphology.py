@@ -1,5 +1,36 @@
 from fsa import FSA
 import yaml
+from featurelite import unify
+
+class YAMLwrapper(object):
+    def __init__(self, yamlstr):
+        self.yamlstr = yamlstr
+        self._cache = None
+    def value(self):
+        if self._cache is not None: return self._cache
+        self._cache = yaml.load(self.yamlstr)
+        return self._cache
+
+def combine_features(a, b):
+    """
+    Return an object that combines the feature labels a and b.
+    
+    For now, this only does string concatenation; it can be extended
+    to unify 'featurelite' style dictionaries.
+    """
+    def override_features(a, b):
+        return b
+
+    if isinstance(a, YAMLwrapper): a = a.value()
+    if isinstance(b, YAMLwrapper): b = b.value()
+    if isinstance(a, str) and isinstance(b, str):
+        return a+b
+    else:
+        d = {}
+        vars = {}
+
+        return unify(a, b, vars, fail=override_features)
+    return '%s%s' % (a, b)
 
 class KimmoMorphology(object):
     def __init__(self, fsa):
@@ -51,8 +82,10 @@ class KimmoMorphology(object):
                     if word.startswith('"') or\
                     word.startswith("'") and word.endswith("'"):
                         word = eval(word)
-                    if features and features[0] in '\'"{' or features == 'None':
-                        features = eval(features)
+                    if features:
+                        if features == 'None': features = None
+                        elif features[0] in '\'"{':
+                            features = YAMLwrapper(features)
                     fsa.insert_safe(state, (word, features), next)
                 elif len(line.split()) == 2:
                     word, next = line.split()
