@@ -4,7 +4,7 @@
 
 from rules import KimmoArrowRule, KimmoFSARule
 from pairs import KimmoPair, sort_subsets
-from morphology import KimmoMorphology
+from morphology import *
 from fsa import FSA
 import yaml
 
@@ -14,14 +14,6 @@ def _pairify(state):
         newstate[KimmoPair.make(label)] = targets
     return newstate
 
-def combine_features(a, b):
-    """
-    Return an object that combines the feature labels a and b.
-    
-    For now, this only does string concatenation; it can be extended
-    to unify 'featurelite' style dictionaries.
-    """
-    return '%s%s' % (a, b)
 
 class KimmoRuleSet(yaml.YAMLObject):
     """
