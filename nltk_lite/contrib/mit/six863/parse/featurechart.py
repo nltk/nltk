@@ -12,9 +12,12 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
+import yaml
+from chart import *
+from category import *
+import cfg
 
-from nltk_lite.parse import *
-from nltk_lite.contrib.featurelite import *
+from featurelite import *
 
 class FeatureTreeEdge(TreeEdge):
     """
@@ -81,7 +84,7 @@ class FeatureTreeEdge(TreeEdge):
         @return: the L{VariableBindings} mapping L{FeatureVariable}s to values.
         @rtype: L{VariableBindings}
         """
-        return dict(self._vars)
+        return self._vars
         
     def lhs(self):
         """
@@ -113,13 +116,13 @@ class FeatureTreeEdge(TreeEdge):
 
     # String representation
     def __str__(self):
-        str = '%r ->' % self.lhs()
+        str = '%s ->' % self.lhs()
 
         for i in range(len(self._rhs)):
             if i == self._dot: str += ' *'
-            str += ' %r' % (self.rhs()[i],)
+            str += ' %s' % (self.rhs()[i],)
         if len(self._rhs) == self._dot: str += ' *'
-        return str
+        return '%s %s' % (str, yaml.dump(self._vars, default_flow_style=True).strip())
 
 class FeatureFundamentalRule(FundamentalRule):
     def apply_iter(self, chart, grammar, left_edge, right_edge):
@@ -130,14 +133,17 @@ class FeatureFundamentalRule(FundamentalRule):
                 isinstance(right_edge, FeatureTreeEdge)
                ):
             return
-        bindings = left_edge.vars()
-        unify = left_edge.next().unify(right_edge.lhs().remove_unbound_vars(), bindings)
-        if unify is None: return
+        left_bindings = left_edge.vars().copy()
+        right_bindings = right_edge.vars().copy()
+        try:
+            unified = unify(left_edge.next(), right_edge.lhs(), left_bindings,
+            right_bindings)
+        except UnificationFailure: return
 
         # Construct the new edge.
         new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
                             lhs=left_edge.lhs(), rhs=left_edge.rhs(),
-                            dot=left_edge.dot()+1, vars=bindings)
+                            dot=left_edge.dot()+1, vars=left_bindings)
         
         # Add it to the chart, with appropraite child pointers.
         changed_chart = False
@@ -154,7 +160,7 @@ class SingleEdgeFeatureFundamentalRule(SingleEdgeFundamentalRule):
     def apply_iter(self, chart, grammar, edge1):
         fr = self._fundamental_rule
         if edge1.is_incomplete():
-            # edge1 = left_edge; edge2 = right_edge
+            # edge1 =   left_edge; edge2 = right_edge
             for edge2 in chart.select(start=edge1.end(), is_complete=True):
                 for new_edge in fr.apply_iter(chart, grammar, edge1, edge2):
                     yield new_edge
@@ -171,13 +177,14 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
         for prod in grammar.productions():
-            bindings = FeatureBindings()
-            unify = edge.next().unify(prod.lhs(), bindings)
-            # Bindings are not preserved here. Should they be?
-            if unify is not None:
-                new_edge = FeatureTreeEdge.from_production(prod, edge.end())
-                if chart.insert(new_edge, ()):
-                    yield new_edge
+            bindings = edge.vars().copy()
+            try:
+                unified = unify(edge.next(), prod.lhs(), bindings, {})
+            except UnificationFailure:
+                continue
+            new_edge = FeatureTreeEdge.from_production(prod, edge.end())
+            if chart.insert(new_edge, ()):
+                yield new_edge
 
 class FeatureEarleyChartParse(EarleyChartParse):
     """
@@ -220,7 +227,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
         # Initialize the chart with a special "starter" edge.
         root = GrammarCategory(pos='[INIT]')
         edge = FeatureTreeEdge((0,0), root, (grammar.start(),), 0,
-                FeatureBindings())
+                {})
         chart.insert(edge, ())
 
         # Create the 3 rules:
@@ -239,7 +246,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
                     new_leaf_edge = LeafEdge(leaf, end-1)
                     chart.insert(new_leaf_edge, ())
                     new_pos_edge = FeatureTreeEdge((end-1, end), pos, [leaf], 1,
-                        FeatureBindings())
+                        {})
                     chart.insert(new_pos_edge, (new_leaf_edge,))
                     if self._trace > 0:
                         print  'Scanner  ', chart.pp_edge(new_leaf_edge,w)
@@ -318,6 +325,10 @@ def run_profile():
     p = pstats.Stats('/tmp/profile.out')
     p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
     p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
+
+def load_earley(filename):
+    grammar = GrammarFile.read_file("speer.cfg")
+    return FeatureEarleyChartParse(grammar.earley_grammar(), grammar.earley_lexicon(), trace=1)
 
 if __name__ == '__main__':
     demo()
