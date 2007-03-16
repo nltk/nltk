@@ -10,11 +10,19 @@
 #
 # $Id: category.py 4162 2007-03-01 00:46:05Z stevenbird $
 
-from nltk_lite.parse import *
 from nltk_lite.semantics import logic
+from cfg import *
 
-from nltk_lite.contrib.featurelite import *
-import yaml, nltk_lite.yamltags
+from featurelite import *
+import yaml
+# import nltk_lite.yamltags
+
+def makevar(varname):
+    """
+    Given a variable representation such as C{?x}, construct a corresponding
+    Variable object.
+    """
+    return Variable(varname[1:])
 
 class Category(Nonterminal):
     """
@@ -114,7 +122,7 @@ class Category(Nonterminal):
         return self._features.get(key)
 
     def __getitem__(self, key):
-        return self._features[key]
+        return self._features.get(key)
     
     def __setitem__(self, key, value):
         if self._frozen: raise "Cannot modify a frozen Category"
@@ -190,7 +198,7 @@ class Category(Nonterminal):
         """
         #FIXME: don't show /
         if self._memorepr is not None: return self._memorepr
-        else: return yaml.dump(self, default_flow_style=True)
+        else: return yaml.dump(self)
     
     def __str__(self):
         """
@@ -218,7 +226,7 @@ class Category(Nonterminal):
 
         head = obj.get(cls.headname)
         if head is None: head = ''
-        if head and not len(segments): return head
+        if head and not len(segments): return str(head)
         return '%s[%s]' % (head, ', '.join(segments))
     
     yaml_tag = '!parse.Category'
@@ -238,8 +246,7 @@ class Category(Nonterminal):
     #################################################################
 
     # Regular expressions for parsing.
-    # Extend the expressions already present in FeatureStructure._PARSE_RE
-    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/]+)\s*'),
+    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/\?]+)\s*'),
                  'ident': re.compile(r'\s*\((\d+)\)\s*'),
                  'reentrance': re.compile(r'\s*->\s*'),
                  'assign': re.compile(r'\s*=\s*'),
@@ -253,7 +260,7 @@ class Category(Nonterminal):
                  'symbol': re.compile(r'\w+'),
                  'stringmarker': re.compile("['\"\\\\]"),
     
-                 'categorystart':re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/]+)\s*'),
+                 'categorystart':re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/\?]+)\s*\['),
                  'bool': re.compile(r'\s*([-\+])'),
                  'arrow': re.compile(r'\s*->\s*'),
                  'disjunct': re.compile(r'\s*\|\s*'),
@@ -265,10 +272,18 @@ class Category(Nonterminal):
     
     @classmethod
     def parse(cls, s):
-        parsed, position = cls._parse(s)
+        parsed, position = cls._parse(s, position)
         if position != len(s):
-            raise ValueError('unexpected end of string', position)
+            # 'Expected the string not to end here' -- I wish there was
+            # a better way to say this within the error framework.
+            raise ValueError('the string not to end here', position)
         return cls(parsed)
+
+    @classmethod
+    def inner_parse(cls, s, position, reentrances={}):
+        if reentrances is None: reentrances = {}
+        parsed, position = cls._parse(s, position)
+        return cls(parsed), position
     
     @classmethod
     def _parse(cls, s, position=0, reentrances=None):
@@ -291,6 +306,12 @@ class Category(Nonterminal):
         if match is not None:
             features[cls.headname] = match.group(1)
             position = match.end()
+        else:
+            match = _PARSE_RE['var'].match(s, position)
+            if match is not None:
+                features[cls.headname] = makevar(match.group(0))
+                position = match.end()
+
         
         # If the name is followed by an open bracket, start looking for
         # features.
@@ -389,7 +410,7 @@ class Category(Nonterminal):
             quotemark = s[position:position+1]
             position += 1
             while 1: 
-                match = _PARSE_RE['stringmarker'].search(s, position)
+                match = cls._PARSE_RE['stringmarker'].search(s, position)
                 if not match: raise ValueError('close quote', position)
                 position = match.end()
                 if match.group() == '\\': position += 1
@@ -403,7 +424,7 @@ class Category(Nonterminal):
         # Variable
         match = _PARSE_RE['var'].match(s, position)
         if match is not None:
-            return Variable.parse(match.group()), match.end()
+            return makevar(match.group()), match.end()
 
         # None
         match = _PARSE_RE['none'].match(s, position)
@@ -418,7 +439,7 @@ class Category(Nonterminal):
         # Alphanumeric symbol (must be checked after integer)
         match = _PARSE_RE['symbol'].match(s, position)
         if match is not None:
-            return {cls.headname: match.group()}, match.end()
+            return match.group(), match.end()
 
         # We don't know how to parse this value.
         raise ValueError('value', position)
@@ -438,9 +459,9 @@ class Category(Nonterminal):
         _PARSE_RE = cls._PARSE_RE
         position = 0
         try:
-            lhs, position = cls._parse(s, position)
+            lhs, position = cls.inner_parse(s, position)
             lhs = cls(lhs)
-        except ValueError, e:
+        except IOError, e:
             estr = ('Error parsing field structure\n\n\t' +
                     s + '\n\t' + ' '*e.args[1] + '^ ' +
                     'Expected %s\n' % e.args[0])
@@ -448,14 +469,16 @@ class Category(Nonterminal):
         lhs.freeze()
 
         match = _PARSE_RE['arrow'].match(s, position)
-        if match is None: raise ValueError('arrow', position)
+        if match is None:
+            raise ValueError('expected arrow', s[position:])
         else: position = match.end()
         rules = []
         while position < len(s):
             rhs = []
             while position < len(s) and _PARSE_RE['disjunct'].match(s, position) is None:
                 try:
-                    val, position = cls._parseval(s, position, {})
+                    val, position = cls.inner_parse(s, position, {})
+                    if isinstance(val, dict): val = cls(val)
                 except ValueError, e:
                     estr = ('Error parsing field structure\n\n\t' +
                         s + '\n\t' + ' '*e.args[1] + '^ ' +
@@ -496,6 +519,7 @@ class GrammarCategory(Category):
     """
     
     headname = 'pos'
+    yaml_tag = '!parse.GrammarCategory'
     
     @classmethod
     def _str(cls, obj, reentrances, reentrance_ids):
@@ -520,29 +544,71 @@ class GrammarCategory(Category):
         else: features = ''
         head = obj.get(cls.headname)
         if head is None: head = ''
-        if head and not len(segments): return head
         slash = None
         if isinstance(obj, GrammarCategory): slash = obj.get('/')
         if not slash: slash = ''
-        else: slash = '/%s' % cls._str(slash, reentrances, reentrance_ids)
+        else:
+            if isMapping(slash):
+                slash = '/%s' % cls._str(slash, reentrances, reentrance_ids)
+            else:
+                slash = '/%s' % slash
+
         
         return '%s%s%s' % (head, features, slash)
     
     @staticmethod
-    def parse(s):
-        body, position = GrammarCategory._parse(s)
+    def parse(s, position=0):
+        reentrances = {}
+        body, position = GrammarCategory._parse(s, position, reentrances)
         slash_match = Category._PARSE_RE['slash'].match(s, position)
         if slash_match is not None:
             position = slash_match.end()
-            slash, position = GrammarCategory._parseval(s, position, 0)
+            slash, position = GrammarCategory._parseval(s, position, reentrances)
             body['/'] = slash
         else:
             body['/'] = False
         
-        if position != len(s):
+        if position != len(s) and check_end:
             raise ValueError('unexpected end of string', position)
         return GrammarCategory(body)
     
+    @classmethod
+    def inner_parse(cls, s, position, reentrances=None):
+        if reentrances is None: reentrances = {}
+        if s[position] in "'\"":
+            start = position
+            quotemark = s[position:position+1]
+            position += 1
+            while 1: 
+                match = cls._PARSE_RE['stringmarker'].search(s, position)
+                if not match: raise ValueError('close quote', position)
+                position = match.end()
+                if match.group() == '\\': position += 1
+                elif match.group() == quotemark:
+                    return s[start+1:position-1], position
+
+        body, position = GrammarCategory._parse(s, position, reentrances)
+        slash_match = Category._PARSE_RE['slash'].match(s, position)
+        if slash_match is not None:
+            position = slash_match.end()
+            slash, position = GrammarCategory._parseval(s, position, reentrances)
+            body['/'] = slash
+        else:
+            body['/'] = False
+        return cls(body), position
+    
+class SubstituteBindingsI:
+    """
+    An interface for classes that can perform substitutions for feature
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        @rtype: (any)
+        """
+        raise NotImplementedError
 
 class ParserSubstitute(logic.Parser):
     """
@@ -563,7 +629,7 @@ class ApplicationExpressionSubst(logic.ApplicationExpression, SubstituteBindings
             varstr = str(semvar)
             # discard Variables which are not FeatureVariables
             if varstr.startswith('?'): 
-                var = Variable.parse(varstr)
+                var = makevar(varstr)
                 if bindings.is_bound(var):
                     newval = newval.replace(semvar, bindings.lookup(var))
         return newval
@@ -587,11 +653,11 @@ class GrammarFile(object):
         self.tagproc = None
         
     def grammar(self):
-        return cfg.Grammar(self.start, self.grammatical_productions +\
+        return Grammar(self.start, self.grammatical_productions +\
         self.lexical_productions)
         
     def earley_grammar(self):
-        return cfg.Grammar(self.start, self.grammatical_productions)
+        return Grammar(self.start, self.grammatical_productions)
     
     def earley_lexicon(self):
         lexicon = {}
@@ -600,7 +666,7 @@ class GrammarFile(object):
         return lexicon
 
     def earley_parser(self, trace=1):
-        from nltk_lite.parse.featurechart import FeatureEarleyChartParse
+        from featurechart import FeatureEarleyChartParse
         return FeatureEarleyChartParse(self.earley_grammar(),
                            self.earley_lexicon(), trace=trace)
 
@@ -652,13 +718,18 @@ def demo():
     print Category(pos='n', agr=dict(number='pl', gender='f'))
     print repr(Category(pos='n', agr=dict(number='pl', gender='f')))
     print
-    print "GrammarCategory.parse('VP[+fin]/NP[+pl]'):"
+    print "GrammarCategory.parse('?x/?x'):"
     print
-    print GrammarCategory.parse('VP[+fin]/NP[+pl]')
-    print repr(GrammarCategory.parse('VP[+fin]/NP[+pl]'))
+    print GrammarCategory.parse('?x/?x')
+    print repr(GrammarCategory.parse('?x/?x'))
     print
-    #g = GrammarFile.read_file("test.cfg")
-    #print g.grammar()
+    print "GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'):"
+    print
+    print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
+    print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
+    print
+    g = GrammarFile.read_file("speer.cfg")
+    print g.grammar()
     
 if __name__ == '__main__':
     demo()

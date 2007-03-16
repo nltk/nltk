@@ -9,6 +9,9 @@
 #
 # $Id: chart.py 4157 2007-02-28 09:56:25Z stevenbird $
 
+from __init__ import *
+from tree import Tree
+
 """
 Data classes and parser implementations for \"chart parsers\", which
 use dynamic programming to efficiently parse a text.  A X{chart
@@ -42,7 +45,6 @@ defines three chart parsers:
 """
 
 import re
-from nltk_lite.parse import *
 
 ########################################################################
 ##  Edges

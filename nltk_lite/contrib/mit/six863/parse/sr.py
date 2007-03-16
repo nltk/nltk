@@ -8,7 +8,7 @@
 
 from types import *
 from nltk_lite import tokenize
-from nltk_lite.parse import *
+from __init__ import *
 #
 
 ##//////////////////////////////////////////////////////
