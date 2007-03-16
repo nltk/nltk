@@ -105,8 +105,6 @@ The following is a short tutorial on the available transformations.
 
 """
 
-from nltk_lite.parse import *
-
 def chomskyNormalForm(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
     """
     This method can modify a tree in three ways:
