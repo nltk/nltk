@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import types
-from nltk_lite.parse import *
+from __init__ import *
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
