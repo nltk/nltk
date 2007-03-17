@@ -44,5 +44,11 @@ class OneRTrainingInstances(ins.TrainingInstances):
                 min = decisionStump
         return min
 
-class OneRTestInstances:
-    pass
+class OneRTestInstances(ins.TestInstances):
+    def __init__(self, path):
+        ins.TestInstances.__init__(self, path)
+    
+    def classify(self, decisionStump):
+        for instance in self.instances:
+            klass = decisionStump.klass(instance)
+            instance.setClass(klass)
