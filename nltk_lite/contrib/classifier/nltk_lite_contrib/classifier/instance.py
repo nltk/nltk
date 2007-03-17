@@ -18,6 +18,9 @@ class Instance:
     def isValid(self, klass, attributes):
         return AssertionError()
     
+    def valueAt(self, attributeIndex):
+        return self.attrs[attributeIndex]
+    
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
