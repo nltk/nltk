@@ -1,0 +1,42 @@
+# Natural Language Toolkit - Attributes
+#  Understands that attributes are created in order from a '.names' file
+#
+# Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
+#
+# URL: <http://nltk.sf.net>
+# This software is distributed under GPL, for license information see LICENSE.TXT
+
+import nameitem as ni, attribute as a, file
+
+class Attributes:
+    def __init__(self, path):
+        self.attributes = []
+        file.File(path, file.NAMES).execute(self, 'createAndAppendValues')
+                
+    def createAndAppendValues(self, l):
+        nameitem = ni.NameItem(l)      
+        processed = nameitem.processed()
+        if not len(processed) == 0 and nameitem.isAttribute():
+            self.attributes.append(a.Attribute(processed))                    
+
+    def hasValues(self, testValues):
+        if len(testValues) != len(self): return False
+        for i in range(len(testValues)):
+            testValue = testValues[i]
+            if not self.attributes[i].hasValue(testValue): return False
+        return True
+
+    def __len__(self):
+        return len(self.attributes)
+    
+    def __getitem__(self, index):
+        return self.attributes[index]
+    
+    def __contains__(self, other):
+        return self.attributes.__contains__(other)
+
+    def __eq__(self, other):
+        if other is None: return False
+        if self.__class__ != other.__class__: return False
+        if self.attributes == other.attributes: return True
+        return False
