@@ -9,12 +9,15 @@
 
 class DecisionStump:
     def __init__(self, attribute, index, klass):
-        self.index, self.counts, self.name = index, {}, attribute.name
+        self.index, self.counts, self.name, self.maxCounts = index, {}, attribute.name, {}
         for value in attribute.values:
             self.counts[value] = klass.valuesWith0Count()
+            self.maxCounts[value] = MaxKlassCount(None, 0)
             
     def updateCount(self, instance):
-        self.counts[instance.attrs[self.index]][instance.klassValue] += 1
+        attr_value = instance.valueAt(self.index)
+        self.counts[attr_value][instance.klassValue] += 1
+        self.maxCounts[attr_value].setHigher(instance.klassValue, self.counts[attr_value][instance.klassValue])
     
     def error(self):
         classCountForEachAttribute = self.counts.values()
@@ -29,15 +32,26 @@ class DecisionStump:
         return float(errors)/ total
     
     def klass(self, instance):
-        classCounts = self.counts[instance.attrs[index]]
-        max, maxClass = 0, None
-        classValues = classCounts.keys()
-        for classValue in classValues:
-            count = classCounts[classValue]
-            if count > max:
-                max = count
-                maxClass = classValue
-        return maxClass
-                
+        return self.maxCounts[instance.valueAt(self.index)].klassValue
         
+            
+class MaxKlassCount:
+    def __init__(self, klassValue, count):
+        self.klassValue = klassValue
+        self.count = count
+        
+    def setHigher(self, otherKlassValue, count):
+        if otherKlassValue is None: return
+        if otherKlassValue is self.klassValue:
+            if count > self.count: self.count = count
+        else:
+            if count > self.count:
+                self.count = count
+                self.klassValue = otherKlassValue
+    
+    def __eq__(self, other):
+        if other is None: return False
+        if self.__class__ != other.__class__: return False
+        if self.klassValue == other.klassValue and self.count == other.count: return True
+        return False
             

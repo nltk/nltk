@@ -37,3 +37,22 @@ class DecisionStumpTestCase(unittest.TestCase):
             self.stump.updateCount(instance)
         self.assertAlmostEqual(0.2222222, self.stump.error())
         self.assertEqual('outlook', self.stump.name)
+        
+    def testUpdatesAMapOfTheMostFrequentlyOccuringClassAtEveryBranchOfTheTree(self):
+        instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['sunny'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['overcast'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
+        self.stump.updateCount(instances.instances[0])
+        self.assertEqual(ds.MaxKlassCount('no', 1), self.stump.maxCounts['sunny'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['overcast'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
+        self.stump.updateCount(instances.instances[1])
+        self.assertEqual(ds.MaxKlassCount('no', 2), self.stump.maxCounts['sunny'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['overcast'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
+        self.stump.updateCount(instances.instances[2])
+        self.assertEqual(ds.MaxKlassCount('no', 2), self.stump.maxCounts['sunny'])
+        self.assertEqual(ds.MaxKlassCount('yes', 1), self.stump.maxCounts['overcast'])
+        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
+
