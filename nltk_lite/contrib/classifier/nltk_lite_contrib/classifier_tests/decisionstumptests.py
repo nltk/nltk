@@ -56,3 +56,20 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertEqual(ds.MaxKlassCount('yes', 1), self.stump.maxCounts['overcast'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
 
+    def testMaxKlassCountUpdatesWhenItFindsANewClassValueCountHighest(self):
+        klassCount = ds.MaxKlassCount(None, 0)
+        klassCount.setHigher('yes', 1)
+        self.assertEqual('yes', klassCount.klassValue)
+        self.assertEqual(1, klassCount.count)
+
+        klassCount.setHigher('yes', 2)        
+        self.assertEqual('yes', klassCount.klassValue)
+        self.assertEqual(2, klassCount.count)
+
+        klassCount.setHigher('no', 1)        
+        self.assertEqual('yes', klassCount.klassValue)
+        self.assertEqual(2, klassCount.count)
+
+        klassCount.setHigher('no', 3)        
+        self.assertEqual('no', klassCount.klassValue)
+        self.assertEqual(3, klassCount.count)
