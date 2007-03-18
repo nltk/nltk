@@ -202,8 +202,8 @@ class BottomUpChartParse(AbstractParse):
             # Get the best edge.
             edge = queue.pop()
             if self._trace>0:
-                print '  %-50s prob=%s' % (chart.pp_edge(edge,width=2),
-                                           edge.prob())
+                print '  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                                        edge.prob())
             
             # Apply BU & FR to it.
             queue.extend(bu.apply(chart, grammar, edge))
