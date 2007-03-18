@@ -37,7 +37,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__str__(self) + ' (p=%s)' % self.prob()
+        return Production.__str__(self) + ' [%s]' % self.prob()
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -119,57 +119,101 @@ def induce(start, productions):
              for p in pcount]
     return WeightedGrammar(start, prods)
 
-
 #################################################################
-# Toy PCFGs
+# Parsing PCFGs
 #################################################################
 
-_S, _VP, _NP, _PP = nonterminals('S, VP, NP, PP')
-_V, _N, _P, _Name, _Det = nonterminals('V, N, P, Name, Det')
+_PARSE_RE = re.compile(r'''^(\w+(?:/\w+)?)\s*   # lhs
+                          (?:[-=]+>)\s*         # arrow
+                          (?:(                  # rhs:
+                               "[^"]+"          # doubled-quoted terminal
+                             | '[^']+'          # single-quoted terminal
+                             | \w+(?:/\w+)?     # non-terminal
+                             | \[[01]?\.\d+\]   # probability
+                             | \|               # disjunction
+                             )
+                             \s*)               # trailing space
+                             *$''',             # zero or more copies
+                       re.VERBOSE)
+_SPLIT_RE = re.compile(r'''(\w+(?:/\w+)?|\[[01]?\.\d+\]|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
-toy1 = WeightedGrammar(_S, [
-    WeightedProduction(_NP, [_Det, _N], prob=0.5),
-    WeightedProduction(_NP, [_NP, _PP], prob=0.25),
-    WeightedProduction(_NP, ['John'], prob=0.1),
-    WeightedProduction(_NP, ['I'], prob=0.15),
-    WeightedProduction(_Det, ['the'], prob=0.8),
-    WeightedProduction(_Det, ['my'], prob=0.2),
-    WeightedProduction(_N, ['dog'], prob=0.5),
-    WeightedProduction(_N, ['cookie'], prob=0.5),
-    WeightedProduction(_VP, [_VP, _PP], prob=0.1),
-    WeightedProduction(_VP, [_V, _NP], prob=0.7),
-    WeightedProduction(_VP, [_V], prob=0.2),
-    WeightedProduction(_V, ['ate'], prob=0.35),
-    WeightedProduction(_V, ['saw'], prob=0.65),
-    WeightedProduction(_S, [_NP, _VP], prob=1.0),
-    WeightedProduction(_PP, [_P, _NP], prob=1.0),
-    WeightedProduction(_P, ['with'], prob=0.61),
-    WeightedProduction(_P, ['under'], prob=0.39)])
+def parse_production(s):
+    """
+    Returns a list of productions
+    """
+    # Use _PARSE_RE to check that it's valid.
+    if not _PARSE_RE.match(s):
+        raise ValueError, 'Bad production string'
+    # Use _SPLIT_RE to process it.
+    pieces = _SPLIT_RE.split(s)
+    pieces = [p for i,p in enumerate(pieces) if i%2==1]
+    lhside = Nonterminal(pieces[0])
+    rhsides = [[]]
+    probabilities = [0.0]
+    for piece in pieces[2:]:
+        if piece == '|':
+            rhsides.append([])                     # Vertical bar
+            probabilities.append(0.0)
+        elif piece[0] in ('"', "'"):
+            rhsides[-1].append(piece[1:-1])        # Terminal
+        elif piece[0] in "[":
+            probabilities[-1] = float(piece[1:-1]) # Probability
+        else:
+            rhsides[-1].append(Nonterminal(piece)) # Nonterminal
+    return [WeightedProduction(lhside, rhside, prob=probability)
+            for (rhside, probability) in zip(rhsides, probabilities)]
 
-toy2 = Grammar(_S, [
-    WeightedProduction(_V, ['saw'], prob=0.21),
-    WeightedProduction(_V, ['ate'], prob=0.51),
-    WeightedProduction(_V, ['ran'], prob=0.28),
-    WeightedProduction(_N, ['boy'], prob=0.11),
-    WeightedProduction(_N, ['cookie'], prob=0.12),
-    WeightedProduction(_N, ['table'], prob=0.13),
-    WeightedProduction(_N, ['telescope'], prob=0.14),
-    WeightedProduction(_N, ['hill'], prob=0.50),
-    WeightedProduction(_Name, ['Jack'], prob=0.52),
-    WeightedProduction(_Name, ['Bob'], prob=0.48),
-    WeightedProduction(_P, ['with'], prob=0.61),
-    WeightedProduction(_P, ['under'], prob=0.39),
-    WeightedProduction(_Det, ['the'], prob=0.41),
-    WeightedProduction(_Det, ['a'], prob=0.31),
-    WeightedProduction(_Det, ['my'], prob=0.28),
-    WeightedProduction(_S, [_NP, _VP], prob=1.00),
-    WeightedProduction(_VP, [_V, _NP], prob=0.59),
-    WeightedProduction(_VP, [_V], prob=0.40),
-    WeightedProduction(_VP, [_VP, _PP], prob=0.01),
-    WeightedProduction(_NP, [_Det, _N], prob=0.41),
-    WeightedProduction(_NP, [_Name], prob=0.28),
-    WeightedProduction(_NP, [_NP, _PP], prob=0.31),
-    WeightedProduction(_PP, [_P, _NP], prob=1.00)])
+def parse_grammar(s):
+    productions = []
+    for linenum, line in enumerate(s.split('\n')):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try: productions += parse_production(line)
+        except ValueError:
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    if len(productions) == 0:
+        raise ValueError, 'No productions found!'
+    start = productions[0].lhs()
+    print productions
+    return WeightedGrammar(start, productions)
+
+
+toy1 = parse_grammar("""
+    S -> NP VP [1.0]
+    NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
+    Det -> 'the' [0.8] | 'my' [0.2]
+    N -> 'dog' [0.5] | 'cookie' [0.5]
+    VP -> VP PP [0.1] | V NP [0.7] | V [0.2]
+    V -> 'ate' [0.35] | 'saw' [0.65]
+    PP -> P NP [1.0]
+    P -> 'with' [0.61] | 'under' [0.39]
+    """)
+
+toy2 = parse_grammar("""
+    S    -> NP VP         [1.0]
+    VP   -> V NP          [.59]
+    VP   -> V             [.40]
+    VP   -> VP PP         [.01]
+    NP   -> Det N         [.41]
+    NP   -> Name          [.28]
+    NP   -> NP PP         [.31]
+    PP   -> P NP          [1.0]
+    V    -> 'saw'         [.21]
+    V    -> 'ate'         [.51]
+    V    -> 'ran'         [.28]
+    N    -> 'boy'         [.11]
+    N    -> 'cookie'      [.12]
+    N    -> 'table'       [.13]
+    N    -> 'telescope'   [.14]
+    N    -> 'hill'        [.5]
+    Name -> 'Jack'        [.52]
+    Name -> 'Bob'         [.48]
+    P    -> 'with'        [.61]
+    P    -> 'under'       [.39]
+    Det  -> 'the'         [.41]
+    Det  -> 'a'           [.31]
+    Det  -> 'my'          [.28]
+    """)
 
 #################################################################
 # Demonstration
@@ -184,14 +228,7 @@ def demo():
     from nltk_lite.parse import cfg, pcfg, pchart, treetransforms
     from itertools import islice
 
-    # Create some probabilistic CFG Productions
-    S, A, B, C = cfg.nonterminals('S A B C')
-    pcfg_prods = [pcfg.WeightedProduction(A, [B, B], prob=0.3),
-                  pcfg.WeightedProduction(A, [C, B, C], prob=0.7),
-                  pcfg.WeightedProduction(B, [B, 'b'], prob=0.5),
-                  pcfg.WeightedProduction(B, [C], prob=0.5),
-                  pcfg.WeightedProduction(C, ['a'], prob=0.1),
-                  pcfg.WeightedProduction(C, ['b'], prob=0.9)]
+    pcfg_prods = pcfg.toy1.productions()
 
     pcfg_prod = pcfg_prods[2]
     print 'A PCFG production:', `pcfg_prod`
@@ -200,8 +237,7 @@ def demo():
     print '    pcfg_prod.prob() =>', `pcfg_prod.prob()`
     print
 
-    # Create and print a PCFG
-    grammar = pcfg.WeightedGrammar(S, pcfg_prods)
+    grammar = pcfg.toy2
     print 'A PCFG grammar:', `grammar`
     print '    grammar.start()       =>', `grammar.start()`
     print '    grammar.productions() =>',
@@ -220,6 +256,7 @@ def demo():
 
         productions += tree.productions()
 
+    S = Nonterminal('S')
     grammar = pcfg.induce(S, productions)
     print grammar
     print
