@@ -366,18 +366,18 @@ class Grammar(object):
             str += '\n    %s' % production
         return str
 
-_PARSE_RE = re.compile(r'''^(\w+)\s*           # lhs
-                          (?:-+>|=+>)\s*       # arrow
+_PARSE_RE = re.compile(r'''^(\w+(?:/\w+)?)\s*  # lhs
+                          (?:[-=]+>)\s*        # arrow
                           (?:(                 # rhs:
                                "[^"]+"         # doubled-quoted terminal
-                               |'[^']+'        # single-quoted terminal
-                               |\w+|           # non-terminal
-                               \|              # disjunction
+                             | '[^']+'         # single-quoted terminal
+                             | \w+(?:/\w+)?    # non-terminal
+                             | \|              # disjunction
                              )
                              \s*)              # trailing space
-                             *$''',
+                             *$''',            # zero or more copies
                        re.VERBOSE)
-_SPLIT_RE = re.compile(r'''(\w+|-+>|=+>|"[^"]+"|'[^']+'|\|)''')
+_SPLIT_RE = re.compile(r'''(\w+(?:/\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
 def parse_production(s):
     """
@@ -407,7 +407,7 @@ def parse_grammar(s):
         if line.startswith('#') or line=='': continue
         try: productions += parse_production(line)
         except ValueError:
-            raise ValueError, 'Unable to parse line %s' % linenum
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
     if len(productions) == 0:
         raise ValueError, 'No productions found!'
     start = productions[0].lhs()
@@ -439,18 +439,12 @@ def demo():
     grammar = cfg.parse_grammar("""
     S -> NP VP
     PP -> P NP
-    NP -> Det N
-    NP -> NP PP
-    VP -> V NP
-    VP -> VP PP
-    Det -> 'a'
-    Det -> 'the'
-    N -> 'dog'
-    N -> 'cat'
-    V -> 'chased'
-    V -> 'sat'
-    P -> 'on'
-    P -> 'in'
+    NP -> Det N | NP PP
+    VP -> V NP | VP PP
+    Det -> 'a' | 'the'
+    N -> 'dog' | 'cat'
+    V -> 'chased' | 'sat'
+    P -> 'on' | 'in'
     """)
 
     print 'A Grammar:', `grammar`
