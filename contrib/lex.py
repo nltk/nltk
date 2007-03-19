@@ -90,7 +90,7 @@ Unifying a stem and a phonological output:
 >>> print f3
 {'form': walk + s, 'stem': 'walk'}
 
-In the next example, we follow B&B in using 'sym' as the name of the semantic constant in the lexical entry. We might want to have a semantic constructor like Phon so that we could write things lke '\x. (?sem x)'. Or perhaps not.
+In the next example, we follow B&B in using 'sym' as the name of the semantic constant in the lexical entry. We might want to have a semantic constructor like Phon so that we could write things like '\\x. (?sem x)'. Or perhaps not.
 
 >>> lex_walk = yaml.load('''
 ...      sym: 'walk'
