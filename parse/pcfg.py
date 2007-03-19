@@ -174,7 +174,6 @@ def parse_grammar(s):
     if len(productions) == 0:
         raise ValueError, 'No productions found!'
     start = productions[0].lhs()
-    print productions
     return WeightedGrammar(start, productions)
 
 
