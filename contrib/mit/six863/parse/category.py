@@ -12,8 +12,10 @@
 
 from nltk_lite.semantics import logic
 from cfg import *
+from ..kimmo import kimmo
 
 from featurelite import *
+from copy import deepcopy
 import yaml
 # import nltk_lite.yamltags
 
@@ -161,7 +163,7 @@ class Category(Nonterminal):
         @return: A deep copy of C{self}.
         """
         # Create a reentrant deep copy by round-tripping it through YAML.
-        return yaml.load(yaml.dump(self))
+        return deepcopy(self)
     
     def feature_names(self):
         """
@@ -638,19 +640,12 @@ class ApplicationExpressionSubst(logic.ApplicationExpression, SubstituteBindings
 # Read a grammar from a file
 ############################################################################
 
-def tagger_edges(tagger):
-    def edges(tokens):
-        tagged_tokens = tagger.tag(tokens)
-        for i in range(len(tagged_tokens)):
-            word, tag = tagged_tokens[i]
-            yield TreeEdge((i, i+1), GrammarCategory(pos=tag), [word])
-
 class GrammarFile(object):
     def __init__(self):
         self.grammatical_productions = []
         self.lexical_productions = []
         self.start = GrammarCategory(pos='Start')
-        self.tagproc = None
+        self.kimmo = None
         
     def grammar(self):
         return Grammar(self.start, self.grammatical_productions +\
@@ -662,13 +657,24 @@ class GrammarFile(object):
     def earley_lexicon(self):
         lexicon = {}
         for prod in self.lexical_productions:
-            lexicon.setdefault(prod.rhs()[0], []).append(prod.lhs())
-        return lexicon
+            lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
+        def lookup(word):
+            return lexicon.get(word.upper(), [])
+        return lookup
+
+    def kimmo_lexicon(self):
+        def lookup(word):
+            kimmo_results = self.kimmo.recognize(word.lower())
+            return [GrammarCategory(k[1]) for k in kimmo_results]
+        return lookup
 
     def earley_parser(self, trace=1):
         from featurechart import FeatureEarleyChartParse
+        if self.kimmo is None: lexicon = self.earley_lexicon()
+        else: lexicon = self.kimmo_lexicon()
+        
         return FeatureEarleyChartParse(self.earley_grammar(),
-                           self.earley_lexicon(), trace=trace)
+                           lexicon, trace=trace)
 
     def apply_lines(self, lines):
         for line in lines:
@@ -688,7 +694,11 @@ class GrammarFile(object):
                     import yaml, nltk_lite.yamltags
                     filename = args.strip('"')
                     tagger = yaml.load(filename)
-                    self.tagproc = tagger_edges(tagger)
+                    self.tagproc = chart_tagger(tagger)
+                elif directive == 'kimmo':
+                    filename = args.strip('"')
+                    kimmorules = kimmo.load(filename)
+                    self.kimmo = kimmorules
             else:
                 rules = GrammarCategory.parse_rules(line)
                 for rule in rules:
