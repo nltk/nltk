@@ -1012,9 +1012,25 @@ class SingleEdgeFundamentalRule(AbstractChartRule):
 
     def __str__(self): return 'Fundamental Rule'
     
+class BottomUpInitRule(AbstractChartRule):
+    """
+    A rule licensing any edges corresponding to terminals in the
+    text.  In particular, this rule licenses the leaf edge:
+        - [wS{->}*][i:i+1]
+    for C{w} is a word in the text, where C{i} is C{w}'s index.
+    """
+    NUM_EDGES = 0
+    def apply_iter(self, chart, grammar):
+        for index in range(chart.num_leaves()):
+            new_edge = LeafEdge(chart.leaf(index), index)
+            if chart.insert(new_edge, ()):
+                yield new_edge
+
 #////////////////////////////////////////////////////////////
 # Top-Down Parsing
 #////////////////////////////////////////////////////////////
+    
+
 class TopDownInitRule(AbstractChartRule):
     """
     A rule licensing edges corresponding to the grammar productions for

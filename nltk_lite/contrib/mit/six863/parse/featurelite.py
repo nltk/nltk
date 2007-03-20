@@ -278,7 +278,7 @@ def apply(feature, bindings):
     """
     return _copy_and_bind(feature, bindings.copy())
 
-def unify(feature1, feature2, bindings1=None, bindings2=None):
+def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
     """
     In general, the 'unify' procedure takes two values, and either returns a
     value that provides the information provided by both values, or fails if
@@ -562,6 +562,11 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
     @rtype: C{object} (probably a mapping)
     """
 
+    if fail is None:
+        def failerror(f1, f2):
+            raise UnificationFailure
+        fail = failerror
+        
     if bindings1 is None and bindings2 is None:
         bindings1 = {}
         bindings2 = {}
@@ -583,7 +588,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
                 b[vname] = copymemo[value_id]
 
     # Go on to doing the unification.
-    unified = _destructively_unify(copy1, copy2, bindings1, bindings2, {})
+    unified = _destructively_unify(copy1, copy2, bindings1, bindings2, {}, fail)
 
     _apply_forwards_to_bindings(bindings1)
     _apply_forwards_to_bindings(bindings2)
@@ -594,7 +599,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None):
 
     return unified
 
-def _destructively_unify(feature1, feature2, bindings1, bindings2, memo):
+def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail):
     """
     Attempt to unify C{self} and C{other} by modifying them
     in-place.  If the unification succeeds, then C{self} will
@@ -605,11 +610,11 @@ def _destructively_unify(feature1, feature2, bindings1, bindings2, memo):
     """
     if memo.has_key((id(feature1), id(feature2))):
         return memo[id(feature1), id(feature2)]
-    unified = _do_unify(feature1, feature2, bindings1, bindings2, memo)
+    unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail)
     memo[id(feature1), id(feature2)] = unified
     return unified
 
-def _do_unify(feature1, feature2, bindings1, bindings2, memo):
+def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail):
     """
     Do the actual work of _destructively_unify when the result isn't memoized.
     """
@@ -637,8 +642,9 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo):
     if not isMapping(feature1):
         if feature1 == feature2: return feature1
         else: 
-            raise UnificationFailure
-    if not isMapping(feature2): raise UnificationFailure
+            return fail(feature1, feature2)
+    if not isMapping(feature2):
+        return fail(feature1, feature2)
     
     # At this point, we know they're both mappings.
     # Do the destructive part of unification.
@@ -648,7 +654,8 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo):
     for (fname, val2) in feature2.items():
         if fname == _FORWARD: continue
         val1 = feature1.get(fname)
-        feature1[fname] = _destructively_unify(val1, val2, bindings1, bindings2, memo)
+        feature1[fname] = _destructively_unify(val1, val2, bindings1,
+        bindings2, memo, fail)
     return feature1
 
 def _apply_forwards(feature, visited):
