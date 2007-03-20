@@ -2,8 +2,8 @@
 from nltk_lite.parse import chart, cfg
 from drawchart import ChartDemo
 from nltk_lite.tokenize.regexp import wordpunct
-from nltk_lite.contrib.mit.six863.kimmo import *
-import yaml, nltk_lite.yamltags, re, pickle
+#from nltk_lite.contrib.mit.six863.kimmo import *
+import re, pickle
 
 def chart_tagger(tagger):
     def insert_tags(thechart, tokens):
