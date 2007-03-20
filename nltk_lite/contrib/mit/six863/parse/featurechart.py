@@ -138,6 +138,7 @@ class FeatureFundamentalRule(FundamentalRule):
         try:
             unified = unify(left_edge.next(), right_edge.lhs(), left_bindings,
             right_bindings)
+            if isinstance(unified, Category): unified.freeze()
         except UnificationFailure: return
 
         # Construct the new edge.
@@ -180,6 +181,7 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
             bindings = edge.vars().copy()
             try:
                 unified = unify(edge.next(), prod.lhs(), bindings, {})
+                if isinstance(unified, Category): unified.freeze()
             except UnificationFailure:
                 continue
             new_edge = FeatureTreeEdge.from_production(prod, edge.end())
@@ -211,10 +213,10 @@ class FeatureEarleyChartParse(EarleyChartParse):
     """
     def __init__(self, grammar, lexicon, trace=0):
         # Build a case-insensitive lexicon.
-        ci_lexicon = dict((k.upper(), v) for k, v in lexicon.iteritems())
+        #ci_lexicon = dict((k.upper(), v) for k, v in lexicon.iteritems())
         # Call the super constructor.
-        EarleyChartParse.__init__(self, grammar, ci_lexicon, trace)
-
+        EarleyChartParse.__init__(self, grammar, lexicon, trace)
+        
     def get_parse_list(self, tokens):
         chart = Chart(tokens)
         grammar = self._grammar
@@ -242,7 +244,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
             # of a proper FeatureScannerRule at the moment.
             if end > 0 and end-1 < chart.num_leaves():
                 leaf = chart.leaf(end-1)
-                for pos in self._lexicon.get(leaf.upper(), []):
+                for pos in self._lexicon(leaf):
                     new_leaf_edge = LeafEdge(leaf, end-1)
                     chart.insert(new_leaf_edge, ())
                     new_pos_edge = FeatureTreeEdge((end-1, end), pos, [leaf], 1,
@@ -250,6 +252,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
                     chart.insert(new_pos_edge, (new_leaf_edge,))
                     if self._trace > 0:
                         print  'Scanner  ', chart.pp_edge(new_leaf_edge,w)
+            
             
             for edge in chart.select(end=end):
                 if edge.is_incomplete():
@@ -327,8 +330,8 @@ def run_profile():
     p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
 
 def load_earley(filename):
-    grammar = GrammarFile.read_file("speer.cfg")
-    return FeatureEarleyChartParse(grammar.earley_grammar(), grammar.earley_lexicon(), trace=1)
+    grammar = GrammarFile.read_file(filename)
+    return grammar.earley_parser()
 
 if __name__ == '__main__':
     demo()
