@@ -6,23 +6,29 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import exceptions.invaliddataerror as inv
-import instances as ins
+from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv
+from nltk_lite_contrib.classifier import instances as ins, Classifier
 
-class ZeroR:
+class ZeroR(Classifier):
     def __init__(self, path):
         self.training = ZeroRTrainingInstances(path)
         if not self.training.areValid(): raise inv.InvalidDataError('Training data invalid')
         self.majorityClass = None
-    
-    def classify(self, testInstances):
-        if self.majorityClass == None: self.majorityClass = self.training.majorityClass()
-        testInstances.setAllClasses(self.majorityClass)
         
-    def verify(self, goldInstances):
-        self.classify(goldInstances)
-        return goldInstances.confusionMatrix()
-            
+    def test(self, path, printResults=True):
+        self.testInstances = ZeroRTestInstances(path)
+        self.classify(self.testInstances)
+        if printResults: self.testInstances.print_all()
+    
+    def classify(self, instances):
+        if self.majorityClass == None: self.majorityClass = self.training.majorityClass()
+        instances.setAllClasses(self.majorityClass)
+        
+    def verify(self, path):
+        self.goldInstances = ZeroRGoldInstances(path)
+        self.classify(self.goldInstances)
+        return self.goldInstances.confusionMatrix()
+
 class ZeroRTrainingInstances(ins.TrainingInstances):
     def __init__(self, path):
         ins.TrainingInstances.__init__(self, path)
