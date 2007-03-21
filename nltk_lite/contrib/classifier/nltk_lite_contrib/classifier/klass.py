@@ -6,18 +6,19 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import nameitem as ni, file, exceptions.systemerror as system
+from nltk_lite_contrib.classifier import nameitem as ni, file
+
 class Klass:
     def __init__(self, path):
         self.__processed, self.__byValue = False, {}
-        file.File(path, file.NAMES).execute(self, 'createKlass')
+        file.File(path, file.NAMES).execute(self, 'create_klass')
         
-    def createKlass(self, l):
+    def create_klass(self, l):
         if not self.__processed:
             self.values = ni.NameItem(l).processed().split(',')
             self.__processed = True
             
-    def hasValue(self, toTest):
+    def has_value(self, toTest):
         return self.values.__contains__(toTest)
     
     def valuesWith0Count(self):
