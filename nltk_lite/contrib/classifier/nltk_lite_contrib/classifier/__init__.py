@@ -11,5 +11,5 @@ class Classifier:
     
     def verify(self, path):
         raise AssertionError()
-    
+
     
