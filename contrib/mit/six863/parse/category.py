@@ -12,7 +12,7 @@
 
 from nltk_lite.semantics import logic
 from cfg import *
-from ..kimmo import kimmo
+from nltk_lite.contrib.mit.six863 import kimmo
 
 from featurelite import *
 from copy import deepcopy
@@ -26,7 +26,7 @@ def makevar(varname):
     """
     return Variable(varname[1:])
 
-class Category(Nonterminal):
+class Category(Nonterminal, FeatureI):
     """
     A C{Category} is a wrapper for feature dictionaries, intended for use in
     parsing. It can act as a C{Nonterminal}.
@@ -64,7 +64,7 @@ class Category(Nonterminal):
         self._features = unify(features, morefeatures)
         self._hash = None
         self._frozen = False
-        self._memorepr = None
+        self._memostr = None
 
     def __cmp__(self, other):
         return cmp(repr(self), repr(other))
@@ -89,7 +89,6 @@ class Category(Nonterminal):
         not a nested Category).
         @rtype: C{bool}
         """
-
         if not other.__class__ == self.__class__: return False
         return self._features == other._features
 
@@ -98,7 +97,7 @@ class Category(Nonterminal):
 
     def __hash__(self):
         if self._hash is not None: return self._hash
-        return hash(repr(self))
+        return hash(str(self))
     
     def freeze(self):
         """
@@ -107,7 +106,7 @@ class Category(Nonterminal):
 
         @return: self
         """
-        self._memorepr = repr(self)
+        self._memostr = str(self)
         self._hash = hash(self)
         self._frozen = True
         return self
@@ -199,13 +198,13 @@ class Category(Nonterminal):
         @return: A string representation of this feature structure.
         """
         #FIXME: don't show /
-        if self._memorepr is not None: return self._memorepr
-        else: return yaml.dump(self)
+        return yaml.dump(self)
     
     def __str__(self):
         """
         @return: A string representation of this feature structure.
         """
+        if self._memostr is not None: return self._memostr
         return self.__class__._str(self, {}, {})
     
     @classmethod
@@ -220,7 +219,7 @@ class Category(Nonterminal):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
-            elif not isMapping(fval):
+            elif not isinstance(fval, dict):
                 segments.append('%s=%r' % (fname, fval))
             else:
                 fval_repr = cls._str(fval, reentrances, reentrance_ids)
@@ -248,10 +247,10 @@ class Category(Nonterminal):
     #################################################################
 
     # Regular expressions for parsing.
-    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/\?]+)\s*'),
+    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'=,\[\]/\?]+)\s*'),
                  'ident': re.compile(r'\s*\((\d+)\)\s*'),
                  'reentrance': re.compile(r'\s*->\s*'),
-                 'assign': re.compile(r'\s*=\s*'),
+                 'assign': re.compile(r'\s*=?\s*'),
                  'bracket': re.compile(r'\s*]\s*'),
                  'comma': re.compile(r'\s*,\s*'),
                  'none': re.compile(r'None(?=\s|\]|,)'),
@@ -262,7 +261,7 @@ class Category(Nonterminal):
                  'symbol': re.compile(r'\w+'),
                  'stringmarker': re.compile("['\"\\\\]"),
     
-                 'categorystart':re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/\?]+)\s*\['),
+                 'categorystart':re.compile(r'\s*([^\s\(\)"\'\-=,\[\]/\?]*)\s*\['),
                  'bool': re.compile(r'\s*([-\+])'),
                  'arrow': re.compile(r'\s*->\s*'),
                  'disjunct': re.compile(r'\s*\|\s*'),
@@ -274,11 +273,9 @@ class Category(Nonterminal):
     
     @classmethod
     def parse(cls, s):
-        parsed, position = cls._parse(s, position)
+        parsed, position = cls._parse(s, 0)
         if position != len(s):
-            # 'Expected the string not to end here' -- I wish there was
-            # a better way to say this within the error framework.
-            raise ValueError('the string not to end here', position)
+            raise ValueError('end of string', position)
         return cls(parsed)
 
     @classmethod
@@ -336,7 +333,6 @@ class Category(Nonterminal):
                 match = _PARSE_RE['bracket'].match(s, position)
                 if match is not None:
                     position = match.end()
-                    # Get out and check for a slash value.
                     break   
                     
                 # Is this a shorthand boolean value?
@@ -365,7 +361,6 @@ class Category(Nonterminal):
                 match = _PARSE_RE['bracket'].match(s, position)
                 if match is not None:
                     position = match.end()
-                    # Get out and check for a slash value.
                     break   
                     
                 # Otherwise, there should be a comma
@@ -463,7 +458,7 @@ class Category(Nonterminal):
         try:
             lhs, position = cls.inner_parse(s, position)
             lhs = cls(lhs)
-        except IOError, e:
+        except ValueError, e:
             estr = ('Error parsing field structure\n\n\t' +
                     s + '\n\t' + ' '*e.args[1] + '^ ' +
                     'Expected %s\n' % e.args[0])
@@ -472,7 +467,7 @@ class Category(Nonterminal):
 
         match = _PARSE_RE['arrow'].match(s, position)
         if match is None:
-            raise ValueError('expected arrow', s[position:])
+            raise ValueError('expected arrow', s, s[position:])
         else: position = match.end()
         rules = []
         while position < len(s):
@@ -536,7 +531,7 @@ class GrammarCategory(Category):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
-            elif not isMapping(fval):
+            elif not isinstance(fval, dict):
                 segments.append('%s=%r' % (fname, fval))
             else:
                 fval_repr = cls._str(fval, reentrances, reentrance_ids)
@@ -550,29 +545,17 @@ class GrammarCategory(Category):
         if isinstance(obj, GrammarCategory): slash = obj.get('/')
         if not slash: slash = ''
         else:
-            if isMapping(slash):
+            if isinstance(slash, dict):
                 slash = '/%s' % cls._str(slash, reentrances, reentrance_ids)
             else:
-                slash = '/%s' % slash
+                slash = '/%r' % slash
 
         
         return '%s%s%s' % (head, features, slash)
     
     @staticmethod
     def parse(s, position=0):
-        reentrances = {}
-        body, position = GrammarCategory._parse(s, position, reentrances)
-        slash_match = Category._PARSE_RE['slash'].match(s, position)
-        if slash_match is not None:
-            position = slash_match.end()
-            slash, position = GrammarCategory._parseval(s, position, reentrances)
-            body['/'] = slash
-        else:
-            body['/'] = False
-        
-        if position != len(s) and check_end:
-            raise ValueError('unexpected end of string', position)
-        return GrammarCategory(body)
+        return GrammarCategory.inner_parse(s, position)[0]
     
     @classmethod
     def inner_parse(cls, s, position, reentrances=None):
@@ -594,8 +577,9 @@ class GrammarCategory(Category):
         if slash_match is not None:
             position = slash_match.end()
             slash, position = GrammarCategory._parseval(s, position, reentrances)
-            body['/'] = slash
-        else:
+            if isinstance(slash, basestring): slash = {'pos': slash}
+            body['/'] = unify(body.get('/'), slash)
+        elif not body.has_key('/'):
             body['/'] = False
         return cls(body), position
     
@@ -727,6 +711,11 @@ def demo():
     print
     print Category(pos='n', agr=dict(number='pl', gender='f'))
     print repr(Category(pos='n', agr=dict(number='pl', gender='f')))
+    print
+    print "GrammarCategory.parse('NP/NP'):"
+    print
+    print GrammarCategory.parse('NP/NP')
+    print repr(GrammarCategory.parse('NP/NP'))
     print
     print "GrammarCategory.parse('?x/?x'):"
     print
