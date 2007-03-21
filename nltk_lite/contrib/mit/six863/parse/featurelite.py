@@ -80,7 +80,11 @@ def isMapping(obj):
     @return: True iff the object can be treated as a feature structure
     @rtype: C{bool}
     """
-    return ('has_key' in dir(obj)) and ('_no_feature' not in dir(obj)) 
+    return isinstance(obj, dict) or isinstance(obj, FeatureI)
+
+class FeatureI(object):
+    def __init__(self):
+        raise TypeError, "FeatureI is an abstract interface"
 
 class _FORWARD(object):
     """
