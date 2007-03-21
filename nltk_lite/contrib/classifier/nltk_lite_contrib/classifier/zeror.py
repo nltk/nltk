@@ -36,10 +36,10 @@ class ZeroRTrainingInstances(ins.TrainingInstances):
 
     def majorityClass(self):
         for instance in self.instances:
-            self.__updateCount(instance.klassValue)
+            self.__update_count(instance.klassValue)
         return self.__max()
     
-    def __updateCount(self, klassValue):
+    def __update_count(self, klassValue):
         if self.__klassCount.has_key(klassValue):
             self.__klassCount[klassValue] += 1
         else:

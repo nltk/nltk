@@ -21,8 +21,8 @@ class KlassTestCase(unittest.TestCase):
         self.assertEqual(['a', 'b', 'c'], self.phoney.values, 'the three class values should be a, b and c')
         
     def testIfClassIsValid(self):
-        self.assertTrue(self.phoney.hasValue('b'))
-        self.assertFalse(self.phoney.hasValue('d'))
+        self.assertTrue(self.phoney.has_value('b'))
+        self.assertFalse(self.phoney.has_value('d'))
         
     def testReturnsMapOfAllValuesWithCountAs0(self):
         values = self.phoney.valuesWith0Count();

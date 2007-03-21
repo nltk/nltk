@@ -13,23 +13,23 @@ class AttributesTestCase(unittest.TestCase):
         #make sure you run all tests from the tests directory
         self.attrs = a.Attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')    
     
-    def testCountsCorrectNumberOfAttributes(self):
+    def test_counts_correct_number_of_attributes(self):
         self.assertEqual(5, len(self.attrs), 'there should be 5 attributes')
         
-    def testAttributesAreValid(self):
-        self.assertTrue(self.attrs.hasValues(['dual', 'big', 'symbian', 'y', 'y']))
+    def test_attributes_are_valid(self):
+        self.assertTrue(self.attrs.has_values(['dual', 'big', 'symbian', 'y', 'y']))
 
-    def testAttributesAreInOrder(self):
+    def test_attributes_are_in_order(self):
         self.assertEqual('band', self.attrs[0].name)
         self.assertEqual('size', self.attrs[1].name)
         self.assertEqual('os', self.attrs[2].name)
         self.assertEqual('pda', self.attrs[3].name)
         self.assertEqual('mp3', self.attrs[4].name)
         
-    def testAttributesContainAnAttribute(self):
+    def test_attributes_contain_an_attribute(self):
         self.assertTrue(self.attrs.__contains__(attr.Attribute('band:dual,tri,quad')))
 
-    def testAttributesAreEqual(self):
+    def test_attributes_are_equal(self):
         same = a.Attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertEqual(self.attrs, same, 'they should be the same')
         other = a.Attributes(datasetsDir(self) + 'test_faulty' + SEP + 'invalid_attributes')

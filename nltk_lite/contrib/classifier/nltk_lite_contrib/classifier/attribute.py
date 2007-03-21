@@ -11,19 +11,19 @@ import re
 class Attribute:
     #line is cleansed of newline, whitespace and dots in attributes
     def __init__(self, line):
-        self.name = self.__getName(line)
-        self.values = self.__getValues(line)
+        self.name = self.__get_name(line)
+        self.values = self.__get_values(line)
 
-    def __getName(self, line):
-        return line[:self.__posOfColon(line)]
+    def __get_name(self, line):
+        return line[:self.__pos_of_colon(line)]
     
-    def __posOfColon(self, line):
+    def __pos_of_colon(self, line):
         return re.compile(':').search(line).start()
     
-    def __getValues(self, line):
-        return line[self.__posOfColon(line) + 1:].split(',')
+    def __get_values(self, line):
+        return line[self.__pos_of_colon(line) + 1:].split(',')
     
-    def hasValue(self, toTest):
+    def has_value(self, toTest):
         return self.values.__contains__(toTest)
     
     def __eq__(self, other):
