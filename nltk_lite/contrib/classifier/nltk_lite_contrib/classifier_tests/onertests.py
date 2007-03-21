@@ -24,9 +24,14 @@ class OneRTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.2222222, minError.error())
         
     def testClassifiesTestWithStump(self):
-        test = oner.OneRTestInstances(self.WEATHER)
         classifier = oner.OneR(self.WEATHER)
-        classifier.classify(test)
-        self.assertTrue(test.instances[0].classifiedKlass is not None)
-        self.assertEqual('yes', test.instances[0].classifiedKlass)
+        classifier.test(self.WEATHER, False)
+        self.assertTrue(classifier.testInstances.instances[0].classifiedKlass is not None)
+        self.assertEqual('yes', classifier.testInstances.instances[0].classifiedKlass)
+        
+    def testVerifiesClassification(self):
+        classifier = oner.OneR(self.WEATHER)
+        cm = classifier.verify(self.WEATHER)
+        self.assertEqual(0.5, cm.accuracy())
+        self.assertAlmostEqual(0.6666667, cm.fscore())
         

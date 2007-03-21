@@ -62,4 +62,17 @@ class InstanceTestCase(unittest.TestCase):
         gold.setClass(self.b)
         self.assertEqual(self.a, gold.klassValue)
         self.assertEqual(self.b, gold.classifiedKlass)
+        
+    def testStringRepresentation(self):
+        instance = ins.TrainingInstance('bar,two,a')
+        self.assertEqual("Attributes: ['bar', 'two'] Class: a", instance.__str__());
+        
+        instance = ins.TestInstance('bar,two')
+        self.assertEqual("Attributes: ['bar', 'two'] Classified as:  ", instance.__str__());
+        instance.setClass('b')
+        self.assertEqual("Attributes: ['bar', 'two'] Classified as: b", instance.__str__());
                 
+        instance = ins.GoldInstance('bar,two,a')
+        self.assertEqual("Attributes: ['bar', 'two'] Class: a Classified as:  ", instance.__str__());
+        instance.setClass('b')
+        self.assertEqual("Attributes: ['bar', 'two'] Class: a Classified as: b", instance.__str__());
