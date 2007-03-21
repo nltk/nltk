@@ -23,7 +23,7 @@ class DecisionStumpTestCase(unittest.TestCase):
     
     def testUpdatesCountWithInstanceValues(self):
         instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.stump.updateCount(instances.instances[0])
+        self.stump.update_count(instances.instances[0])
         for attr_value in self.attribute.values:
             for class_value in self.klass.values:
                 #sunny,hot,high,false,no
@@ -34,7 +34,7 @@ class DecisionStumpTestCase(unittest.TestCase):
     def testErrorCount(self):
         instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         for instance in instances.instances:
-            self.stump.updateCount(instance)
+            self.stump.update_count(instance)
         self.assertAlmostEqual(0.2222222, self.stump.error())
         self.assertEqual('outlook', self.stump.name)
         
@@ -43,15 +43,15 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['sunny'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['overcast'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
-        self.stump.updateCount(instances.instances[0])
+        self.stump.update_count(instances.instances[0])
         self.assertEqual(ds.MaxKlassCount('no', 1), self.stump.maxCounts['sunny'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['overcast'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
-        self.stump.updateCount(instances.instances[1])
+        self.stump.update_count(instances.instances[1])
         self.assertEqual(ds.MaxKlassCount('no', 2), self.stump.maxCounts['sunny'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['overcast'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])
-        self.stump.updateCount(instances.instances[2])
+        self.stump.update_count(instances.instances[2])
         self.assertEqual(ds.MaxKlassCount('no', 2), self.stump.maxCounts['sunny'])
         self.assertEqual(ds.MaxKlassCount('yes', 1), self.stump.maxCounts['overcast'])
         self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.maxCounts['rainy'])

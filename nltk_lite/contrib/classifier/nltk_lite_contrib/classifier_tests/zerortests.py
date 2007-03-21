@@ -37,7 +37,7 @@ class ZeroRTestCase(unittest.TestCase):
         zeror = z.ZeroR(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         confusionMatrix = zeror.verify(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.assertEqual(0.75, confusionMatrix.accuracy())
-        self.assertEqual(0.25, confusionMatrix.errorRate())
+        self.assertEqual(0.25, confusionMatrix.error())
         self.assertEqual(1, confusionMatrix.tpr())
         self.assertEqual(0, confusionMatrix.tnr())
         self.assertEqual(1, confusionMatrix.fpr())

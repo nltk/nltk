@@ -9,17 +9,17 @@ from nltk_lite_contrib.classifier import attribute as a
 from nltk_lite_contrib.classifier_tests import *
 
 class AttributeTestCase(unittest.TestCase):
-    def testAttributeCreation(self):
+    def test_attribute_creation(self):
         attr = a.Attribute('foo:a,b,c')
         self.assertEqual('foo', attr.name)
         self.assertEqual(['a', 'b', 'c'], attr.values)
     
-    def testHasValueReturnsTrueIfValueIsPresent(self):
+    def test_returns_true_if_value_is_present(self):
         attr = a.Attribute('foo:a,b,c')
-        self.assertTrue(attr.hasValue('c'))
-        self.assertFalse(attr.hasValue('d'))
+        self.assertTrue(attr.has_value('c'))
+        self.assertFalse(attr.has_value('d'))
         
-    def testEquality(self):
+    def test_equality(self):
         attr = a.Attribute('foo:a,b,c')
         same = a.Attribute('foo:a,b,c')
         othername = a.Attribute('foobar:a,b,c')

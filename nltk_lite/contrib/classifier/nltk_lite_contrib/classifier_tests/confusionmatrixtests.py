@@ -16,45 +16,45 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.pos = 'yes'
         self.neg = 'no'
         
-    def testInitialConfusionMatrixHasAllZeroCounts(self):
-        self.assertMatrix(0, 0, 0, 0)
+    def test_initial_confusion_matrix_has_all_zero_counts(self):
+        self.__assert_matrix(0, 0, 0, 0)
         
-    def testDivideByZeroErrorThrownIfDenIsZero(self):
+    def test_divide_by_zero_error_thrown_if_den_is_zero(self):
         try:
             self.c.accuracy()
-            fail('should have thrown system exception')
+            self.fail('should have thrown system exception')
         except se.SystemError:
             pass
     
-    def testConfusionMatrixUpdatesOnEachCount(self):
-        self.assertMatrix(0, 0, 0, 0)
+    def test_confusion_matrix_updates_on_each_count(self):
+        self.__assert_matrix(0, 0, 0, 0)
         self.c.count(self.pos, self.pos)
-        self.assertMatrix(1, 0, 0, 0)
+        self.__assert_matrix(1, 0, 0, 0)
         self.c.count(self.pos, self.pos)
-        self.assertMatrix(2, 0, 0, 0)
+        self.__assert_matrix(2, 0, 0, 0)
         self.c.count(self.pos, self.neg)
-        self.assertMatrix(2, 1, 0, 0)
+        self.__assert_matrix(2, 1, 0, 0)
         self.c.count(self.neg, self.pos)
-        self.assertMatrix(2, 1, 1, 0)
+        self.__assert_matrix(2, 1, 1, 0)
         self.c.count(self.neg, self.neg)
-        self.assertMatrix(2, 1, 1, 1)
+        self.__assert_matrix(2, 1, 1, 1)
         
-    def testCalculationOfAccuracyAndError(self):
+    def test_calculation_of_accuracy_and_error(self):
         self.c.count(self.pos, self.pos)
         self.c.count(self.pos, self.neg)
         self.c.count(self.neg, self.pos)
         self.c.count(self.neg, self.pos)
         self.assertEqual(0.25, self.c.accuracy())
-        self.assertEqual(0.75, self.c.errorRate())
+        self.assertEqual(0.75, self.c.error())
         
-    def testTruePositiveRate(self):
+    def test_true_positive_rate(self):
         self.c.count(self.pos, self.pos)
         self.c.count(self.pos, self.neg)
         self.c.count(self.neg, self.pos)
         self.assertEqual(0.5, self.c.tpr())
         self.assertEqual(0.5, self.c.sensitivity())
         
-    def testTrueNegativeRate(self):
+    def test_true_negative_rate(self):
         self.c.count(self.pos, self.neg)
         self.c.count(self.neg, self.pos)
         self.c.count(self.neg, self.neg)
@@ -62,13 +62,13 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.66666667, self.c.tnr(), 8)
         self.assertAlmostEqual(0.66666667, self.c.specificity(), 8)
         
-    def testFalsePositiveRate(self):
+    def test_false_positive_rate(self):
         self.c.count(self.neg, self.pos)
         self.c.count(self.neg, self.neg)
         self.c.count(self.neg, self.neg)
         self.assertAlmostEqual(0.33333333, self.c.fpr(), 8)
         
-    def testPrecision(self):
+    def test_precision(self):
         self.c.count(self.pos, self.pos)
         self.c.count(self.pos, self.neg)
         self.c.count(self.neg, self.pos)
@@ -76,7 +76,7 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.c.count(self.neg, self.pos)
         self.assertEqual(0.25, self.c.precision())
         
-    def testRecall(self):
+    def test_recall(self):
         self.c.count(self.pos, self.pos)
         self.c.count(self.pos, self.pos)
         self.c.count(self.pos, self.neg)
@@ -84,7 +84,7 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.c.count(self.neg, self.neg)
         self.assertAlmostEqual(0.66666667, self.c.recall(), 8)
         
-    def testFscore(self):
+    def test_fscore(self):
         self.c.count(self.pos, self.pos)
         self.c.count(self.pos, self.neg)
         self.c.count(self.neg, self.pos)
@@ -94,7 +94,7 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.5, self.c.recall(), 8)
         self.assertAlmostEqual(0.33333333, self.c.fscore(), 8)
         
-    def assertMatrix(self, tp, fn, fp, tn):
+    def __assert_matrix(self, tp, fn, fp, tn):
         self.assertEqual(tp, self.c.tp())
         self.assertEqual(fn, self.c.fn())
         self.assertEqual(fp, self.c.fp())

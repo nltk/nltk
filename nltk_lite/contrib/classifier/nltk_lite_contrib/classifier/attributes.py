@@ -11,19 +11,19 @@ import nameitem as ni, attribute as a, file
 class Attributes:
     def __init__(self, path):
         self.attributes = []
-        file.File(path, file.NAMES).execute(self, 'createAndAppendValues')
+        file.File(path, file.NAMES).execute(self, 'create_and_append_values')
                 
-    def createAndAppendValues(self, l):
+    def create_and_append_values(self, l):
         nameitem = ni.NameItem(l)      
         processed = nameitem.processed()
         if not len(processed) == 0 and nameitem.isAttribute():
             self.attributes.append(a.Attribute(processed))                    
 
-    def hasValues(self, testValues):
-        if len(testValues) != len(self): return False
-        for i in range(len(testValues)):
-            testValue = testValues[i]
-            if not self.attributes[i].hasValue(testValue): return False
+    def has_values(self, test_values):
+        if len(test_values) != len(self): return False
+        for i in range(len(test_values)):
+            test_value = test_values[i]
+            if not self.attributes[i].has_value(test_value): return False
         return True
 
     def __len__(self):
