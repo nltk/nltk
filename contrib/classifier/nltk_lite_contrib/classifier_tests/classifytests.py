@@ -4,7 +4,7 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite_contrib.classifier import classify as c
+from nltk_lite_contrib import classify as c
 from nltk_lite_contrib.classifier_tests import *
 
 class ClassifyTestCase(unittest.TestCase):
