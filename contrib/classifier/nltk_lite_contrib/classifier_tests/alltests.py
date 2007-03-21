@@ -10,7 +10,8 @@ from nltk_lite_contrib.classifier_tests import klasstests as klass, nameitemtest
         attributetests as attribute, instancetests as instance, \
         itemtests as item, zerortests as zeror, \
         filetests as file, confusionmatrixtests as confusionmatrix, \
-        decisionstumptests as decisionstump, onertests as oner
+        decisionstumptests as decisionstump, onertests as oner, \
+        classifytests as classify
 import unittest
 
 def allTestsSuite():
@@ -25,7 +26,8 @@ def allTestsSuite():
                                unittest.makeSuite(file.FileTestCase), \
                                unittest.makeSuite(confusionmatrix.ConfusionMatrixTestCase), \
                                unittest.makeSuite(decisionstump.DecisionStumpTestCase), \
-                               unittest.makeSuite(oner.OneRTestCase)))
+                               unittest.makeSuite(oner.OneRTestCase), \
+                               unittest.makeSuite(classify.ClassifyTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

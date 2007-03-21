@@ -6,17 +6,28 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import instances as ins, decisionstump as ds
-class OneR:
+from nltk_lite_contrib.classifier import instances as ins, decisionstump as ds, Classifier
+from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv
+
+class OneR(Classifier):
     def __init__(self, path):
         self.training = OneRTrainingInstances(path)
         if not self.training.areValid(): raise inv.InvalidDataError('Training data invalid')
         self.bestDecisionStump = self.training.bestDecisionStump()
         
-    def classify(self, testInstances):
-        testInstances.classify(self.bestDecisionStump)
-
-
+    def test(self, path, printResults=True):
+        self.testInstances = OneRTestInstances(path)
+        self.classify(self.testInstances)
+        if printResults: self.testInstances.print_all()
+        
+    def classify(self, instances):
+        instances.classify(self.bestDecisionStump)
+        
+    def verify(self, path):
+        self.goldInstances = OneRGoldInstances(path)
+        self.classify(self.goldInstances)
+        return self.goldInstances.confusionMatrix()
+    
 class OneRTrainingInstances(ins.TrainingInstances):
     def __init__(self, path):
         ins.TrainingInstances.__init__(self, path)
@@ -52,3 +63,8 @@ class OneRTestInstances(ins.TestInstances):
         for instance in self.instances:
             klass = decisionStump.klass(instance)
             instance.setClass(klass)
+            
+class OneRGoldInstances(ins.GoldInstances,OneRTestInstances):
+    def __init__(self, path):
+        ins.GoldInstances.__init__(self, path)
+    
