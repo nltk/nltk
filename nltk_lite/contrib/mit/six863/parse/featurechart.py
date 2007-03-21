@@ -122,7 +122,7 @@ class FeatureTreeEdge(TreeEdge):
             if i == self._dot: str += ' *'
             str += ' %s' % (self.rhs()[i],)
         if len(self._rhs) == self._dot: str += ' *'
-        return '%s %s' % (str, yaml.dump(self._vars, default_flow_style=True).strip())
+        return '%s %s' % (str, self._vars)
 
 class FeatureFundamentalRule(FundamentalRule):
     def apply_iter(self, chart, grammar, left_edge, right_edge):
@@ -251,7 +251,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
                         {})
                     chart.insert(new_pos_edge, (new_leaf_edge,))
                     if self._trace > 0:
-                        print  'Scanner  ', chart.pp_edge(new_leaf_edge,w)
+                        print  'Scanner  ', chart.pp_edge(new_pos_edge,w)
             
             
             for edge in chart.select(end=end):
@@ -310,20 +310,22 @@ def demo():
     earley_lexicon = {}
     for prod in lexical_productions:
         earley_lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
+    def lexicon(word):
+        return earley_lexicon.get(word.upper(), [])
 
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
     from nltk_lite import tokenize
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
-    cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon, trace=1)
+    cp = FeatureEarleyChartParse(earley_grammar, lexicon, trace=1)
     trees = cp.get_parse_list(tokens)
     print "Time: %s" % (time.time() - t)
     for tree in trees: print tree
 
 def run_profile():
     import profile
-    profile.run('for i in range(10): demo()', '/tmp/profile.out')
+    profile.run('for i in range(1): demo()', '/tmp/profile.out')
     import pstats
     p = pstats.Stats('/tmp/profile.out')
     p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
