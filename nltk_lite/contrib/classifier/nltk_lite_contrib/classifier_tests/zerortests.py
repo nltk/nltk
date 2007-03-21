@@ -26,19 +26,16 @@ class ZeroRTestCase(unittest.TestCase):
         self.assertEqual('b', tinstances.majorityClass())
         
     def testMajorityClassIsSetOnTestInstances(self):
-        test = z.ZeroRTestInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         zeror = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        self.assertEqual(None, test.instances[0].klassValue)
-        zeror.classify(test)
+        zeror.test(datasetsDir(self) + 'test_phones' + SEP + 'phoney', False)
         i = 0
         for i in range(4):
-            self.assertEqual('b', test.instances[i].classifiedKlass)
-            self.assertEqual(None, test.instances[i].klassValue)
+            self.assertEqual('b', zeror.testInstances.instances[i].classifiedKlass)
+            self.assertEqual(None, zeror.testInstances.instances[i].klassValue)
             
     def testVerifyReturnsCorrectConfusionMatrix(self):
         zeror = z.ZeroR(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        gold = z.ZeroRGoldInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        confusionMatrix = zeror.verify(gold)
+        confusionMatrix = zeror.verify(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.assertEqual(0.75, confusionMatrix.accuracy())
         self.assertEqual(0.25, confusionMatrix.errorRate())
         self.assertEqual(1, confusionMatrix.tpr())

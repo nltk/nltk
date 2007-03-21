@@ -6,7 +6,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import klass as k, attributes as attrs, instance as ins, item, file, exceptions.systemerror as system, confusionmatrix as cm
+import klass as k, attributes as attrs, instance as ins, item, file, confusionmatrix as cm
+from nltk_lite_contrib.classifier.exceptions import systemerror as system
 
 class Instances:
     def __init__(self, path, suffix):
@@ -59,6 +60,10 @@ class TestInstances(Instances):
         
     def createInstance(self, ln):
         return ins.TestInstance(ln)
+    
+    def print_all(self):
+        for instance in self.instances:
+            print instance
     
 class GoldInstances(TrainingInstances):
     def __init__(self, path):

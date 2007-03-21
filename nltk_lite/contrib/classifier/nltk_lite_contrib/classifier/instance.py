@@ -9,7 +9,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import item, exceptions.systemerror as system
+from nltk_lite_contrib.classifier.exceptions import systemerror as system
+import item
 
 class Instance:
     def __init__(self):
@@ -28,7 +29,21 @@ class Instance:
         return False
     
     def __str__(self):
-        return 'Attrs: ' + self.attrs.__str__() + ' Class: ' + self.klassValue.__str__() + ' Classified Class: ' + self.classifiedKlass.__str__()
+        return self.str_attrs() + self.str_class() + self.str_klassified_klass()
+
+    def str_klassified_klass(self):
+        return ' Classified as: ' + self.check_none(self.classifiedKlass)
+
+    def check_none(self, var):
+        if var is None: 
+            return ' '
+        return var.__str__()
+
+    def str_class(self):
+        return ' Class: ' + self.check_none(self.klassValue)
+
+    def str_attrs(self):
+        return 'Attributes: ' + self.check_none(self.attrs)
     
 class TrainingInstance(Instance):
     def __init__(self, line):
@@ -38,6 +53,9 @@ class TrainingInstance(Instance):
         
     def isValid(self, klass, attributes):
         return klass.hasValue(self.klassValue) and attributes.hasValues(self.attrs)
+    
+    def __str__(self):
+        return self.str_attrs() + self.str_class()
         
 class TestInstance(Instance):
     def __init__(self, line):
@@ -50,6 +68,9 @@ class TestInstance(Instance):
     def isValid(self, klass, attributes):
         return attributes.hasValues(self.attrs)
     
+    def __str__(self):
+        return self.str_attrs() + self.str_klassified_klass()
+    
 class GoldInstance(TrainingInstance, TestInstance):
     def __init__(self, line):
         TrainingInstance.__init__(self, line)
@@ -59,4 +80,7 @@ class GoldInstance(TrainingInstance, TestInstance):
     
     def classificationType(self):
         if self.classifiedKlass == None: raise system.SystemError('Cannot find classification type for instance that has not been classified')
+        
+    def __str__(self):
+        return Instance.__str__(self)
         
