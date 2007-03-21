@@ -14,7 +14,7 @@ class DecisionStump:
             self.counts[value] = klass.valuesWith0Count()
             self.maxCounts[value] = MaxKlassCount(None, 0)
             
-    def updateCount(self, instance):
+    def update_count(self, instance):
         attr_value = instance.valueAt(self.index)
         self.counts[attr_value][instance.klassValue] += 1
         self.maxCounts[attr_value].setHigher(instance.klassValue, self.counts[attr_value][instance.klassValue])

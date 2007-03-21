@@ -52,7 +52,7 @@ class TrainingInstance(Instance):
         self.klassValue, self.attrs = values[-1], values[:-1]
         
     def isValid(self, klass, attributes):
-        return klass.hasValue(self.klassValue) and attributes.hasValues(self.attrs)
+        return klass.has_value(self.klassValue) and attributes.has_values(self.attrs)
     
     def __str__(self):
         return self.str_attrs() + self.str_class()
@@ -66,7 +66,7 @@ class TestInstance(Instance):
         self.classifiedKlass = klass
         
     def isValid(self, klass, attributes):
-        return attributes.hasValues(self.attrs)
+        return attributes.has_values(self.attrs)
     
     def __str__(self):
         return self.str_attrs() + self.str_klassified_klass()

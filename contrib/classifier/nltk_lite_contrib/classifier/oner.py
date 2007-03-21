@@ -43,7 +43,7 @@ class OneRTrainingInstances(ins.TrainingInstances):
         stumps = self.createEmptyDecisionStumps();
         for instance in self.instances:
             for stump in stumps:
-                stump.updateCount(instance)
+                stump.update_count(instance)
         return self.__minimumError(stumps)
         
     def __minimumError(self, decisionStumps):
