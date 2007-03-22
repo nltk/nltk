@@ -592,7 +592,8 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
                 b[vname] = copymemo[value_id]
 
     # Go on to doing the unification.
-    unified = _destructively_unify(copy1, copy2, bindings1, bindings2, {}, fail)
+    unified = _destructively_unify(copy1, copy2, bindings1, bindings2, {},
+    fail)
 
     _apply_forwards_to_bindings(bindings1)
     _apply_forwards_to_bindings(bindings2)
@@ -603,7 +604,8 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
 
     return unified
 
-def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail):
+def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail,
+depth=0):
     """
     Attempt to unify C{self} and C{other} by modifying them
     in-place.  If the unification succeeds, then C{self} will
@@ -612,13 +614,18 @@ def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail):
     UnificationFailure is raised, and the values of C{self}
     and C{other} are undefined.
     """
+    if depth > 10:
+        print show(dict(feature1=feature1, feature2=feature2,
+        bindings1=bindings1, bindings2=bindings2, memo=memo))
+        raise ValueError
     if memo.has_key((id(feature1), id(feature2))):
         return memo[id(feature1), id(feature2)]
-    unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail)
+    unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail,
+    depth)
     memo[id(feature1), id(feature2)] = unified
     return unified
 
-def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail):
+def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     """
     Do the actual work of _destructively_unify when the result isn't memoized.
     """
@@ -659,7 +666,7 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail):
         if fname == _FORWARD: continue
         val1 = feature1.get(fname)
         feature1[fname] = _destructively_unify(val1, val2, bindings1,
-        bindings2, memo, fail)
+        bindings2, memo, fail, depth+1)
     return feature1
 
 def _apply_forwards(feature, visited):
