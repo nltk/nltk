@@ -1,9 +1,10 @@
 from featurechart import *
+from treeview import *
 
 def demo():
-    cp = load_earley('gazdar.cfg')
-    trees = cp.parse('who did john see')
-    for tree in trees: print tree
+    cp = load_earley('gazdar4.cfg')
+    trees = cp.parse('which guy does Mary see')
+    TreeView(trees)
 
 def run_profile():
     import profile
