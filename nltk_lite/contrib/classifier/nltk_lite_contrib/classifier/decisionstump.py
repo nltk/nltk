@@ -9,21 +9,21 @@
 
 class DecisionStump:
     def __init__(self, attribute, index, klass):
-        self.index, self.counts, self.name, self.maxCounts = index, {}, attribute.name, {}
+        self.index, self.counts, self.name, self.max_counts = index, {}, attribute.name, {}
         for value in attribute.values:
             self.counts[value] = klass.valuesWith0Count()
-            self.maxCounts[value] = MaxKlassCount(None, 0)
+            self.max_counts[value] = MaxKlassCount(None, 0)
             
     def update_count(self, instance):
         attr_value = instance.valueAt(self.index)
-        self.counts[attr_value][instance.klassValue] += 1
-        self.maxCounts[attr_value].setHigher(instance.klassValue, self.counts[attr_value][instance.klassValue])
+        self.counts[attr_value][instance.klass_value] += 1
+        self.max_counts[attr_value].set_higher(instance.klass_value, self.counts[attr_value][instance.klass_value])
     
     def error(self):
-        classCountForEachAttribute = self.counts.values()
-        total,errors = 0, 0
-        for classCount in classCountForEachAttribute:
-            subtotal, counts = 0, classCount.values()
+        class_count_for_each_attribute = self.counts.values()
+        total, errors = 0, 0
+        for class_count in class_count_for_each_attribute:
+            subtotal, counts = 0, class_count.values()
             counts.sort()
             counts.reverse()
             for count in counts: subtotal += count
@@ -32,26 +32,26 @@ class DecisionStump:
         return float(errors)/ total
     
     def klass(self, instance):
-        return self.maxCounts[instance.valueAt(self.index)].klassValue
+        return self.max_counts[instance.valueAt(self.index)].klass_value
         
             
 class MaxKlassCount:
-    def __init__(self, klassValue, count):
-        self.klassValue = klassValue
+    def __init__(self, klass_value, count):
+        self.klass_value = klass_value
         self.count = count
         
-    def setHigher(self, otherKlassValue, count):
+    def set_higher(self, otherKlassValue, count):
         if otherKlassValue is None: return
-        if otherKlassValue is self.klassValue:
+        if otherKlassValue is self.klass_value:
             if count > self.count: self.count = count
         else:
             if count > self.count:
                 self.count = count
-                self.klassValue = otherKlassValue
+                self.klass_value = otherKlassValue
     
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
-        if self.klassValue == other.klassValue and self.count == other.count: return True
+        if self.klass_value == other.klass_value and self.count == other.count: return True
         return False
             
