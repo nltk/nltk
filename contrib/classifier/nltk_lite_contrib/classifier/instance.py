@@ -14,7 +14,7 @@ import item
 
 class Instance:
     def __init__(self):
-        self.klassValue, self.attrs, self.classifiedKlass = None, None, None
+        self.klass_value, self.attrs, self.classifiedKlass = None, None, None
         
     def isValid(self, klass, attributes):
         return AssertionError()
@@ -25,7 +25,7 @@ class Instance:
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
-        if self.klassValue == other.klassValue and self.attrs == other.attrs and self.classifiedKlass == other.classifiedKlass: return True
+        if self.klass_value == other.klass_value and self.attrs == other.attrs and self.classifiedKlass == other.classifiedKlass: return True
         return False
     
     def __str__(self):
@@ -40,7 +40,7 @@ class Instance:
         return var.__str__()
 
     def str_class(self):
-        return ' Class: ' + self.check_none(self.klassValue)
+        return ' Class: ' + self.check_none(self.klass_value)
 
     def str_attrs(self):
         return 'Attributes: ' + self.check_none(self.attrs)
@@ -49,10 +49,10 @@ class TrainingInstance(Instance):
     def __init__(self, line):
         Instance.__init__(self)
         values = line.split(',')
-        self.klassValue, self.attrs = values[-1], values[:-1]
+        self.klass_value, self.attrs = values[-1], values[:-1]
         
     def isValid(self, klass, attributes):
-        return klass.has_value(self.klassValue) and attributes.has_values(self.attrs)
+        return klass.has_value(self.klass_value) and attributes.has_values(self.attrs)
     
     def __str__(self):
         return self.str_attrs() + self.str_class()
