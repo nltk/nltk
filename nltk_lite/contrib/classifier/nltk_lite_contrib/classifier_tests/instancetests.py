@@ -22,12 +22,12 @@ class InstanceTestCase(unittest.TestCase):
         
     def testTrainingInstanceHasClassAndAttributes(self):
         instance = ins.TrainingInstance('bar,two,a')
-        self.assertEqual(self.a, instance.klassValue)
+        self.assertEqual(self.a, instance.klass_value)
         self.assertEqual(['bar', 'two'], instance.attrs)
         
     def testTestInstanceHasOnlyAttributesAndNoneAsClass(self):
         instance = ins.TestInstance('bar,two')
-        self.assertEqual(None, instance.klassValue)
+        self.assertEqual(None, instance.klass_value)
         self.assertEqual(['bar', 'two'], instance.attrs)
         
     def testCannotSetClassInTrainingInstance(self):
@@ -36,14 +36,14 @@ class InstanceTestCase(unittest.TestCase):
             instance.setClass(self.b)
             fail('should not be able to set a class on a Training Instance')
         except AttributeError:
-            self.assertEqual(self.a, instance.klassValue, 'should not have changed the original class')
+            self.assertEqual(self.a, instance.klass_value, 'should not have changed the original class')
         
     def testShouldBeAbleToSetClassOnTestInstance(self):
         instance = ins.TestInstance('bar,two')
         try:
             instance.setClass('c')
             self.assertEqual('c', instance.classifiedKlass)
-            self.assertEqual(None, instance.klassValue)
+            self.assertEqual(None, instance.klass_value)
         except AttributeError:
             fail('should be able to set class in Test Instance')
         
@@ -52,15 +52,15 @@ class InstanceTestCase(unittest.TestCase):
         self.assertEqual(2, len(gold.attrs))
         self.assertEqual('bar', gold.attrs[0])
         self.assertEqual('two', gold.attrs[1])
-        self.assertEqual(self.a, gold.klassValue)
+        self.assertEqual(self.a, gold.klass_value)
         self.assertEqual(None, gold.classifiedKlass)
         
     def testClassesCanBeSetOnGoldInstance(self):
         gold = ins.GoldInstance('bar,two,a')
-        self.assertEqual(self.a, gold.klassValue)
+        self.assertEqual(self.a, gold.klass_value)
         self.assertEqual(None, gold.classifiedKlass)
         gold.setClass(self.b)
-        self.assertEqual(self.a, gold.klassValue)
+        self.assertEqual(self.a, gold.klass_value)
         self.assertEqual(self.b, gold.classifiedKlass)
         
     def testStringRepresentation(self):

@@ -77,7 +77,7 @@ class GoldInstances(TrainingInstances):
             if i.classifiedKlass == None: raise system.SystemError('Cannot calculate accuracy as one or more instance(s) are not classified')
         c = cm.ConfusionMatrix(self.klass)
         for i in self.instances:
-            c.count(i.klassValue, i.classifiedKlass)
+            c.count(i.klass_value, i.classifiedKlass)
         return c
         
          
