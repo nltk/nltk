@@ -22,6 +22,9 @@ class Instance:
     def valueAt(self, attributeIndex):
         return self.attrs[attributeIndex]
     
+    def value(self, attribute):
+        return self.attrs[attribute.index]
+    
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
@@ -62,7 +65,7 @@ class TestInstance(Instance):
         Instance.__init__(self)
         self.attrs = line.split(',')
         
-    def setClass(self, klass):
+    def set_klass(self, klass):
         self.classifiedKlass = klass
         
     def isValid(self, klass, attributes):

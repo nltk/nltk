@@ -5,71 +5,51 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite_contrib.classifier import decisionstump as ds, attributes as attrs, attribute as attr, klass as k, instances as ins
+from nltk_lite_contrib.classifier import decisionstump as ds, attributes as attrs, attribute as attr, klass as k, instances as ins, instance
 from nltk_lite_contrib.classifier_tests import *
 
 class DecisionStumpTestCase(unittest.TestCase):
     def setUp(self):
         attributes = attrs.Attributes(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.attribute = attributes[0]
+        self.outlook_attr = attributes[0]
         self.klass = k.Klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.stump = ds.DecisionStump(self.attribute, 0, self.klass)
+        self.outlook_stump = ds.DecisionStump(self.outlook_attr, self.klass)
+        self.instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
     
     def test_creates_count_map(self): 
-        self.assertEqual(3, len(self.stump.counts))
-        for attr_value in self.attribute.values:
+        self.assertEqual(3, len(self.outlook_stump.counts))
+        for attr_value in self.outlook_attr.values:
             for class_value in self.klass.values:
-                self.assertEqual(0, self.stump.counts[attr_value][class_value])
+                self.assertEqual(0, self.outlook_stump.counts[attr_value][class_value])
     
     def test_updates_count_with_instance_values(self):
-        instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.stump.update_count(instances.instances[0])
-        for attr_value in self.attribute.values:
+        self.outlook_stump.update_count(self.instances.instances[0])
+        for attr_value in self.outlook_attr.values:
             for class_value in self.klass.values:
-                #sunny,hot,high,false,no
                 if attr_value == 'sunny' and class_value == 'no': continue
-                self.assertEqual(0, self.stump.counts[attr_value][class_value])
-        self.assertEqual(1, self.stump.counts['sunny']['no'])
+                self.assertEqual(0, self.outlook_stump.counts[attr_value][class_value])
+        self.assertEqual(1, self.outlook_stump.counts['sunny']['no'])
 
     def test_error_count(self):
-        instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        for instance in instances.instances:
-            self.stump.update_count(instance)
-        self.assertAlmostEqual(0.2222222, self.stump.error())
-        self.assertEqual('outlook', self.stump.name)
+        self.__update_stump()
+        self.assertAlmostEqual(0.2222222, self.outlook_stump.error())
+        self.assertEqual('outlook', self.outlook_stump.attribute.name)
         
-    def test_updates_a_map_of_the_most_frequently_occuring_class_at_every_branch_of_the_tree(self):
-        instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['sunny'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['overcast'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['rainy'])
-        self.stump.update_count(instances.instances[0])
-        self.assertEqual(ds.MaxKlassCount('no', 1), self.stump.max_counts['sunny'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['overcast'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['rainy'])
-        self.stump.update_count(instances.instances[1])
-        self.assertEqual(ds.MaxKlassCount('no', 2), self.stump.max_counts['sunny'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['overcast'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['rainy'])
-        self.stump.update_count(instances.instances[2])
-        self.assertEqual(ds.MaxKlassCount('no', 2), self.stump.max_counts['sunny'])
-        self.assertEqual(ds.MaxKlassCount('yes', 1), self.stump.max_counts['overcast'])
-        self.assertEqual(ds.MaxKlassCount(None, 0), self.stump.max_counts['rainy'])
-
-    def test_max_klass_count_updates_when_it_finds_a_new_class_value_count_highest(self):
-        klass_count = ds.MaxKlassCount(None, 0)
-        klass_count.set_higher('yes', 1)
-        self.assertEqual('yes', klass_count.klass_value)
-        self.assertEqual(1, klass_count.count)
-
-        klass_count.set_higher('yes', 2)        
-        self.assertEqual('yes', klass_count.klass_value)
-        self.assertEqual(2, klass_count.count)
-
-        klass_count.set_higher('no', 1)        
-        self.assertEqual('yes', klass_count.klass_value)
-        self.assertEqual(2, klass_count.count)
-
-        klass_count.set_higher('no', 3)        
-        self.assertEqual('no', klass_count.klass_value)
-        self.assertEqual(3, klass_count.count)
+    def __update_stump(self):
+        for instance in self.instances.instances:
+            self.outlook_stump.update_count(instance)
+        
+    def test_majority_class_for_attr_value(self):
+        self.__update_stump()
+        self.assertEqual('no', self.outlook_stump.majority_klass_for('sunny'))
+        self.assertEqual('yes', self.outlook_stump.majority_klass_for('overcast'))
+        self.assertEqual('yes', self.outlook_stump.majority_klass_for('rainy'))
+        
+    def test_classifies_instance_correctly(self):
+        self.__update_stump()
+        self.assertEqual('no', self.outlook_stump.klass(instance.GoldInstance('sunny,mild,normal,true,yes')))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.GoldInstance('overcast,mild,normal,true,yes')))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.GoldInstance('rainy,mild,normal,true,yes')))
+        self.assertEqual('no', self.outlook_stump.klass(instance.TestInstance('sunny,mild,normal,true,yes')))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('overcast,mild,normal,true,yes')))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('rainy,mild,normal,true,yes')))

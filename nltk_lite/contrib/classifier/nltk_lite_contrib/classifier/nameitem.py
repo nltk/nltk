@@ -18,4 +18,4 @@ class NameItem(item.Item):
         return re.compile('\.').sub('', self.stripNewLineAndWhitespace())
     
     def isAttribute(self):
-        return re.compile(':').search(self.line) != None
+        return self.line.find(':') != -1

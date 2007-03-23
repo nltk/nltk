@@ -27,10 +27,15 @@ class AttributesTestCase(unittest.TestCase):
         self.assertEqual('mp3', self.attrs[4].name)
         
     def test_attributes_contain_an_attribute(self):
-        self.assertTrue(self.attrs.__contains__(attr.Attribute('band:dual,tri,quad')))
+        self.assertTrue(self.attrs.__contains__(attr.Attribute('band:dual,tri,quad', 0)))
 
     def test_attributes_are_equal(self):
         same = a.Attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertEqual(self.attrs, same, 'they should be the same')
         other = a.Attributes(datasetsDir(self) + 'test_faulty' + SEP + 'invalid_attributes')
         self.assertNotEqual(self.attrs, other, 'shouldnt be the same')
+
+    def test_index_stored_in_attributes(self):
+        for i in range(len(self.attrs)):
+            self.assertEqual(i, self.attrs[i].index)
+        

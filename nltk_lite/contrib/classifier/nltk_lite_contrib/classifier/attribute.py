@@ -10,9 +10,10 @@ import re
 
 class Attribute:
     #line is cleansed of newline, whitespace and dots in attributes
-    def __init__(self, line):
+    def __init__(self, line, index):
         self.name = self.__get_name(line)
         self.values = self.__get_values(line)
+        self.index = index
 
     def __get_name(self, line):
         return line[:self.__pos_of_colon(line)]
@@ -29,5 +30,8 @@ class Attribute:
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
-        if self.name == other.name and self.values == other.values: return True
+        if self.name == other.name and \
+           self.values == other.values and \
+           self.index == other.index: 
+            return True
         return False

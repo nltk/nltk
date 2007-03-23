@@ -13,23 +13,23 @@ class OneRTestCase(unittest.TestCase):
     def setUp(self):
         self.WEATHER = datasetsDir(self) + 'minigolf' + SEP + 'weather'
     
-    def testCreatesDecisionStumpsForEachAttribute(self):
+    def test_creates_decision_stumps_for_each_attribute(self):
         training = oner.OneRTrainingInstances(self.WEATHER)
-        decisionStumps = training.createEmptyDecisionStumps()
-        self.assertEqual(4, len(decisionStumps))
+        decision_stumps = training.create_empty_decision_stumps()
+        self.assertEqual(4, len(decision_stumps))
         
-    def testReturnsDecisionStumpWithMinimumError(self):
+    def test_returns_decision_stump_with_minimum_error(self):
         training = oner.OneRTrainingInstances(self.WEATHER)
-        minError = training.bestDecisionStump()
+        minError = training.best_decision_stump()
         self.assertAlmostEqual(0.2222222, minError.error())
         
-    def testClassifiesTestWithStump(self):
+    def test_classifies_test_with_stump(self):
         classifier = oner.OneR(self.WEATHER)
         classifier.test(self.WEATHER, False)
-        self.assertTrue(classifier.testInstances.instances[0].classifiedKlass is not None)
-        self.assertEqual('yes', classifier.testInstances.instances[0].classifiedKlass)
+        self.assertTrue(classifier.test_instances.instances[0].classifiedKlass is not None)
+        self.assertEqual('yes', classifier.test_instances.instances[0].classifiedKlass)
         
-    def testVerifiesClassification(self):
+    def test_verifies_classification(self):
         classifier = oner.OneR(self.WEATHER)
         cm = classifier.verify(self.WEATHER)
         self.assertEqual(0.5, cm.accuracy())
