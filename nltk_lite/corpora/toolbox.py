@@ -52,12 +52,14 @@ class StandardFormat(object):
         @rtype: iterator over C{(marker, value)} tuples
         """
         join_string = '\n'
-        line_pat = re.compile(r'^(?:\\(\S+)\s*)?(.*)$')
+        line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
+        first_line_pat = re.compile(line_regexp % u'\ufeff?')
+        line_pat = re.compile(line_regexp % '')
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
         line = file_iter.next()
-        mobj = re.match(line_pat, line)
+        mobj = re.match(first_line_pat, line)
         mkr, line_value = mobj.groups()
         value_lines = [line_value,]
         self.line_num = 0
