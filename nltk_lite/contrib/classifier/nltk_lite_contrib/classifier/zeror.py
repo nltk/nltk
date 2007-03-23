@@ -6,13 +6,11 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv
 from nltk_lite_contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
     def __init__(self, path):
-        self.training = ZeroRTrainingInstances(path)
-        if not self.training.areValid(): raise inv.InvalidDataError('Training data invalid')
+        Classifier.__init__(self, ZeroRTrainingInstances(path))
         self.majorityClass = None
         
     def test(self, path, printResults=True):
