@@ -11,7 +11,7 @@ from nltk_lite_contrib.classifier_tests import klasstests as klass, nameitemtest
         itemtests as item, zerortests as zeror, \
         filetests as file, confusionmatrixtests as confusionmatrix, \
         decisionstumptests as decisionstump, onertests as oner, \
-        classifytests as classify
+        classifytests as classify, decisiontreetests as decisiontree
 import unittest
 
 def allTestsSuite():
@@ -27,7 +27,8 @@ def allTestsSuite():
                                unittest.makeSuite(confusionmatrix.ConfusionMatrixTestCase), \
                                unittest.makeSuite(decisionstump.DecisionStumpTestCase), \
                                unittest.makeSuite(oner.OneRTestCase), \
-                               unittest.makeSuite(classify.ClassifyTestCase)))
+                               unittest.makeSuite(classify.ClassifyTestCase),
+                               unittest.makeSuite(decisiontree.DecisionTreeTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
