@@ -40,7 +40,7 @@ class InstancesTestCase(unittest.TestCase):
         gold = ins.GoldInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         try:
             gold.confusionMatrix()
-            fail('Should throw exception as it is not classified yet')
+            self.fail('Should throw exception as it is not classified yet')
         except system.SystemError:
             pass
 

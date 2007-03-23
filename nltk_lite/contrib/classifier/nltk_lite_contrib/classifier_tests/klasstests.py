@@ -25,7 +25,7 @@ class KlassTestCase(unittest.TestCase):
         self.assertFalse(self.phoney.has_value('d'))
         
     def testReturnsMapOfAllValuesWithCountAs0(self):
-        values = self.phoney.valuesWith0Count();
+        values = self.phoney.dictionary_of_values();
         self.assertEqual(3, len(values))
         for i in ['a', 'b', 'c']:
             self.assertTrue(values.has_key(i))

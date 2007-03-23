@@ -60,7 +60,7 @@ class ZeroRTestInstances(ins.TestInstances):
     
     def setAllClasses(self, majorityClass):
         for instance in self.instances:
-            instance.setClass(majorityClass)
+            instance.set_klass(majorityClass)
 
 class ZeroRGoldInstances(ins.GoldInstances, ZeroRTestInstances):
     def __init__(self, path):
