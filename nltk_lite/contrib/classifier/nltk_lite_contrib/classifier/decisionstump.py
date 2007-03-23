@@ -1,6 +1,8 @@
 # Natural Language Toolkit - Decision Stump
 #  Understands the procedure of creating a decision stump and 
 #     calculating the number of errors
+#  Is generally created at the attribute level
+#   ie. each attribute will have a decision stump of its own
 #
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
@@ -8,16 +10,15 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 class DecisionStump:
-    def __init__(self, attribute, index, klass):
-        self.index, self.counts, self.name, self.max_counts = index, {}, attribute.name, {}
+    def __init__(self, attribute, klass):
+        self.counts = {} #, self.max_counts = {}, {}
+        self.attribute = attribute
         for value in attribute.values:
-            self.counts[value] = klass.valuesWith0Count()
-            self.max_counts[value] = MaxKlassCount(None, 0)
+            self.counts[value] = klass.dictionary_of_values()
             
     def update_count(self, instance):
-        attr_value = instance.valueAt(self.index)
+        attr_value = instance.value(self.attribute)
         self.counts[attr_value][instance.klass_value] += 1
-        self.max_counts[attr_value].set_higher(instance.klass_value, self.counts[attr_value][instance.klass_value])
     
     def error(self):
         class_count_for_each_attribute = self.counts.values()
@@ -32,26 +33,19 @@ class DecisionStump:
         return float(errors)/ total
     
     def klass(self, instance):
-        return self.max_counts[instance.valueAt(self.index)].klass_value
-        
-            
-class MaxKlassCount:
-    def __init__(self, klass_value, count):
-        self.klass_value = klass_value
-        self.count = count
-        
-    def set_higher(self, otherKlassValue, count):
-        if otherKlassValue is None: return
-        if otherKlassValue is self.klass_value:
-            if count > self.count: self.count = count
-        else:
-            if count > self.count:
-                self.count = count
-                self.klass_value = otherKlassValue
+        return self.majority_klass_for(instance.value(self.attribute))
     
-    def __eq__(self, other):
-        if other is None: return False
-        if self.__class__ != other.__class__: return False
-        if self.klass_value == other.klass_value and self.count == other.count: return True
-        return False
-            
+    def majority_klass_for(self, attr_value):
+        klass_values_with_count = self.counts[attr_value]
+        max, klass_value = 0, None
+        for key, value in klass_values_with_count.items():
+            if klass_values_with_count[key] > max:
+                max, klass_value = value, key
+        return klass_value
+    
+    def __str__(self):
+        str = 'Decision stump for attribute ' + self.attribute.name
+        for key, value in self.counts.items():
+            str = str + '\nAttr value: ' + key + '; counts: ' + value.__str__()
+        return str
+        

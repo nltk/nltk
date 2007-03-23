@@ -21,7 +21,7 @@ class Klass:
     def has_value(self, toTest):
         return self.values.__contains__(toTest)
     
-    def valuesWith0Count(self):
+    def dictionary_of_values(self):
         map = {}
         for value in self.values:
             map[value] = 0
