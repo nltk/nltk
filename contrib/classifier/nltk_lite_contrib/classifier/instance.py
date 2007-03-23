@@ -19,9 +19,6 @@ class Instance:
     def isValid(self, klass, attributes):
         return AssertionError()
     
-    def valueAt(self, attributeIndex):
-        return self.attrs[attributeIndex]
-    
     def value(self, attribute):
         return self.attrs[attribute.index]
     

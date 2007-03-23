@@ -7,12 +7,10 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite_contrib.classifier import instances as ins, decisionstump as ds, Classifier
-from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
     def __init__(self, path):
-        self.training = OneRTrainingInstances(path)
-        if not self.training.areValid(): raise inv.InvalidDataError('Training data invalid')
+        Classifier.__init__(self, OneRTrainingInstances(path))
         self.best_decision_stump = self.training.best_decision_stump()
         
     def test(self, path, printResults=True):
