@@ -53,3 +53,40 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertEqual('no', self.outlook_stump.klass(instance.TestInstance('sunny,mild,normal,true,yes')))
         self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('overcast,mild,normal,true,yes')))
         self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('rainy,mild,normal,true,yes')))
+        
+    def test_entropy(self):
+        dictionary_of_klass_counts = {}
+        dictionary_of_klass_counts['yes'] = 2
+        dictionary_of_klass_counts['no'] = 0
+        self.assertEqual(0, ds.entropy(dictionary_of_klass_counts))
+        
+        dictionary_of_klass_counts['yes'] = 3
+        dictionary_of_klass_counts['no'] = 3
+        self.assertAlmostEqual(1, ds.entropy(dictionary_of_klass_counts))
+        
+        dictionary_of_klass_counts['yes'] = 9
+        dictionary_of_klass_counts['no'] = 5
+        self.assertAlmostEqual(0.94, ds.entropy(dictionary_of_klass_counts), 2)
+        
+        dictionary_of_klass_counts['yes'] = 1
+        dictionary_of_klass_counts['no'] = 3
+        self.assertAlmostEqual(0.81, ds.entropy(dictionary_of_klass_counts), 2)
+
+        dictionary_of_klass_counts['yes'] = 2
+        dictionary_of_klass_counts['no'] = 1
+        self.assertAlmostEqual(0.92, ds.entropy(dictionary_of_klass_counts), 2)
+        
+    def test_total_counts(self):
+        dictionary_of_klass_counts = {}
+        dictionary_of_klass_counts['yes'] = 2
+        dictionary_of_klass_counts['no'] = 0
+        self.assertEqual(2, ds.total_counts(dictionary_of_klass_counts))
+
+        dictionary_of_klass_counts['yes'] = 9
+        dictionary_of_klass_counts['no'] = 5
+        self.assertEqual(14, ds.total_counts(dictionary_of_klass_counts))
+        
+    def test_mean_information(self):
+        self.__update_stump()
+        self.assertAlmostEqual(0.6666, self.outlook_stump.mean_information(), 3)
+                
