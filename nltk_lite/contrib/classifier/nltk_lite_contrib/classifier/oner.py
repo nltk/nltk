@@ -7,6 +7,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite_contrib.classifier import instances as ins, decisionstump as ds, Classifier
+from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
     def __init__(self, path):
@@ -43,7 +44,10 @@ class OneRTrainingInstances(ins.TrainingInstances):
         for instance in self.instances:
             for stump in stumps:
                 stump.update_count(instance)
-        return getattr(self, algorithm)(stumps)
+        try:
+            return getattr(self, algorithm)(stumps)
+        except AttributeError:
+            raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + algorithm.__str__() + ' is not defined.')
         
     def minimum_error(self, decision_stumps):
         error, min_error_stump = 1, None

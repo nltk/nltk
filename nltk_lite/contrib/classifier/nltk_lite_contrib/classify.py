@@ -1,12 +1,13 @@
 from optparse import OptionParser
-from nltk_lite_contrib.classifier import oner, zeror
+from nltk_lite_contrib.classifier import oner, zeror, decisiontree
 import sys
 
 class Classify(OptionParser):    
     def __init__(self):
 
         a_help = "Selects the classification algorithm                  " \
-                + "Options: 0R for Zero R, 1R for One R                 " \
+                + "Options: 0R for Zero R, 1R for One R, DT for Decision" \
+                + " Trees.                                              " \
                 + "Default: 0R."
         f_help = "Specifies the common name of test, training or gold files." \
                 + "By default it searches for training and test files, look at the verify option for more details."
@@ -36,9 +37,10 @@ class Classify(OptionParser):
         r_help = "Used to enable calculation of Recall.                 "\
                 + "Options: True/False or yes/no."
         
+        self.__klasses = {'0R':zeror.ZeroR, '1R':oner.OneR, 'DT':decisiontree.DecisionTree}
         OptionParser.__init__(self)
         self.add_option("-a", "--algorithm", dest="algorithm", type="choice", \
-                        choices=["0R", "1R"], default="0R", help= a_help)
+                        choices=self.__klasses.keys(), default="0R", help= a_help)
         self.add_option("-f", "--files", dest="files", type="string", help=f_help)
         self.add_option("-v", "--verify", dest="verify", action="store_true", default=False, help=v_help)
         self.add_option("-t", "--training-file", dest="training", type="string", help=t_help)
@@ -49,7 +51,6 @@ class Classify(OptionParser):
         self.add_option("-F", "--f-score", dest="fscore", action="store_false", default=True, help=F_help)
         self.add_option("-p", "--precision", dest="precision", action="store_true", default=False, help=p_help)
         self.add_option("-r", "--recall", dest="recall", action="store_true", default=False, help=r_help)
-        self.__klasses = {'0R':zeror.ZeroR, '1R':oner.OneR}
         
     def parse(self, args):
         self.parse_args(args, None)
