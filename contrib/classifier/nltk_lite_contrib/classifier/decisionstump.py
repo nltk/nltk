@@ -37,9 +37,9 @@ class DecisionStump:
         return float(errors)/ total
     
     def klass(self, instance):
-        return self.majority_klass_for(instance.value(self.attribute))
+        return self.majority_klass(instance.value(self.attribute))
     
-    def majority_klass_for(self, attr_value):
+    def majority_klass(self, attr_value):
         klass_values_with_count = self.counts[attr_value]
         _max, klass_value = 0, None
         for klass, count in klass_values_with_count.items():
@@ -47,11 +47,16 @@ class DecisionStump:
                 _max, klass_value = count, klass
         return klass_value
     
+    def entropy(self, attr_value):
+        return entropy(self.counts[attr_value])
+    
     def mean_information(self):
         total, total_num_of_instances = 0, 0
         for attr_value in self.attribute.values:
             count = self.counts[attr_value]
             instance_count = total_counts(count)
+            if instance_count == 0: 
+                continue 
             _entropy = entropy(count)
             total += (instance_count * _entropy)
             total_num_of_instances += instance_count
@@ -63,7 +68,10 @@ class DecisionStump:
     def __str__(self):
         _str = 'Decision stump for attribute ' + self.attribute.name
         for key, value in self.counts.items():
-            _str = _str + '\nAttr value: ' + key + '; counts: ' + value.__str__()
+            _str += '\nAttr value: ' + key + '; counts: ' + value.__str__()
+        if dir(self).__contains__('children'):
+            for child in self.children:     
+                _str += child.__str__()
         return _str
         
 def total_counts(dictionary_of_klass_counts):
@@ -78,6 +86,6 @@ def entropy(dictionary_of_klass_counts):
         if count is not 0:
             _entropy = _entropy + (-1 * count * log(count, 2))
             total += count
-    _entropy = (_entropy/total) + log(total, 2)
+    _entropy = (float(_entropy)/total) + log(total, 2)
     return _entropy
     

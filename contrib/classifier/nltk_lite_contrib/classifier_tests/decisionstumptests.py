@@ -41,9 +41,9 @@ class DecisionStumpTestCase(unittest.TestCase):
         
     def test_majority_class_for_attr_value(self):
         self.__update_stump()
-        self.assertEqual('no', self.outlook_stump.majority_klass_for('sunny'))
-        self.assertEqual('yes', self.outlook_stump.majority_klass_for('overcast'))
-        self.assertEqual('yes', self.outlook_stump.majority_klass_for('rainy'))
+        self.assertEqual('no', self.outlook_stump.majority_klass('sunny'))
+        self.assertEqual('yes', self.outlook_stump.majority_klass('overcast'))
+        self.assertEqual('yes', self.outlook_stump.majority_klass('rainy'))
         
     def test_classifies_instance_correctly(self):
         self.__update_stump()
@@ -112,3 +112,8 @@ class DecisionStumpTestCase(unittest.TestCase):
     def test_information_gain(self):
         self.__update_stump()
         self.assertAlmostEqual(0.32440939, self.outlook_stump.information_gain(), 6)
+        
+    def test_returns_entropy_for_each_attribute_value(self):
+        self.__update_stump()
+        self.assertEqual(0, self.outlook_stump.entropy('overcast'))
+        self.assertAlmostEqual(0.811278, self.outlook_stump.entropy('sunny'), 6)
