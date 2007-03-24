@@ -182,23 +182,6 @@ class ChunkParseI(ParseI):
         """
         assert 0, "ChunkParseI is an abstract interface"
 
-    def parse_n(self, tokens, n=None):
-        """
-        Find a list of the C{n} most likely chunk structures for the
-        tokens, and return a tree.  If there are fewer than C{n}
-        chunk structures, then find them all.  The chunk structures
-        should be stored in descending order of estimated likelihood.
-        
-        @type n: C{int}
-        @param n: The number of chunk structures to generate.  At most
-           C{n} chunk structures will be generated.  If C{n} is not
-           specified, generate all chunk structures.
-        @type tokens: L{list} of L{tuple}
-        @param tokens: The list of (word, tag) tokens to be chunked.
-        """
-        assert 0, "ChunkParseI is an abstract interface"
-        
-
 ##//////////////////////////////////////////////////////
 ##  Precompiled regular expressions
 ##//////////////////////////////////////////////////////
