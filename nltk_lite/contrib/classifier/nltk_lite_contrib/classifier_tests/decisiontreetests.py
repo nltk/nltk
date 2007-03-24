@@ -8,7 +8,7 @@ class DecisionTreeTestCase(unittest.TestCase):
         self.assertNotEqual(None, tree.root)
         self.assertEqual('band', tree.root.attribute.name)
         self.assertEqual(1, len(tree.root.children))
-        self.assertEqual('size', tree.root.children[0].attribute.name)
+        self.assertEqual('size', tree.root.children['tri'].attribute.name)
         
     def test_filter_does_not_affect_the_original_training(self):
         tree = decisiontree.DecisionTree(datasetsDir(self) + 'minigolf' + SEP + 'weather')
