@@ -9,14 +9,14 @@ class DecisionTree(Classifier):
         
     def build_tree(self, instances):
         decision_stump = instances.best_decision_stump(self.__used_attributes, 'maximum_information_gain')
-        decision_stump.children = []
+        decision_stump.children = {}
         self.__used_attributes.append(decision_stump.attribute)
         for attr_value in decision_stump.attribute.values:
             if decision_stump.entropy(attr_value) == 0:
                 continue
             new_instances = instances.filter(decision_stump.attribute, attr_value)
             new_child = self.build_tree(new_instances)
-            if new_child is not None: decision_stump.children.append(new_child)
+            if new_child is not None: decision_stump.children[attr_value] = new_child
         return decision_stump
     
     def test(self, path, printResults=True):
