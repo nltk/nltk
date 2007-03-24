@@ -30,20 +30,22 @@ class OneRTrainingInstances(ins.TrainingInstances):
     def __init__(self, path):
         ins.TrainingInstances.__init__(self, path)
             
-    def create_empty_decision_stumps(self):
+    def create_empty_decision_stumps(self, ignore_attributes = []):
         decision_stumps = []
         for attribute in self.attributes:
+            if attribute in ignore_attributes:
+                continue
             decision_stumps.append(ds.DecisionStump(attribute, self.klass))
         return decision_stumps
     
-    def best_decision_stump(self):
-        stumps = self.create_empty_decision_stumps();
+    def best_decision_stump(self, ignore_attributes = [], algorithm = 'minimum_error'):
+        stumps = self.create_empty_decision_stumps(ignore_attributes);
         for instance in self.instances:
             for stump in stumps:
                 stump.update_count(instance)
-        return self.__minimumError(stumps)
+        return getattr(self, algorithm)(stumps)
         
-    def __minimumError(self, decision_stumps):
+    def minimum_error(self, decision_stumps):
         error, min_error_stump = 1, None
         for decision_stump in decision_stumps:
             new_error = decision_stump.error()
