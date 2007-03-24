@@ -68,13 +68,15 @@ class DecisionStumpTestCase(unittest.TestCase):
         dictionary_of_klass_counts['no'] = 5
         self.assertAlmostEqual(0.94, ds.entropy(dictionary_of_klass_counts), 2)
         
+        # verify : -(1.0/4 * log(1.0/4, 2)) + -(3.0/4 * log(3.0/4, 2))
         dictionary_of_klass_counts['yes'] = 1
         dictionary_of_klass_counts['no'] = 3
-        self.assertAlmostEqual(0.81, ds.entropy(dictionary_of_klass_counts), 2)
+        self.assertAlmostEqual(0.811278, ds.entropy(dictionary_of_klass_counts), 6)
 
+        # verify: -(2.0/3 * log(2.0/3, 2))  + -(1.0/3 * log(1.0/3, 2))
         dictionary_of_klass_counts['yes'] = 2
         dictionary_of_klass_counts['no'] = 1
-        self.assertAlmostEqual(0.92, ds.entropy(dictionary_of_klass_counts), 2)
+        self.assertAlmostEqual(0.918296, ds.entropy(dictionary_of_klass_counts), 6)
         
     def test_total_counts(self):
         dictionary_of_klass_counts = {}
@@ -86,7 +88,27 @@ class DecisionStumpTestCase(unittest.TestCase):
         dictionary_of_klass_counts['no'] = 5
         self.assertEqual(14, ds.total_counts(dictionary_of_klass_counts))
         
+    # root - yes 5
+    #  |     no  4
+    #  |
+    #  |------sunny----- yes 1
+    #  |                 no  3
+    #  | 
+    #  |------rainy------yes 2
+    #  |                 no  1
+    #  |
+    #  |------overcast---yes 2
+    #                    no  0
+    #
+    # mean info = 4.0/9 * (-(1.0/4 * log(1.0/4, 2)) + -(3.0/4 * log(3.0/4, 2))) + 3.0/9 * (-(2.0/3 * log(2.0/3, 2))  + -(1.0/3 * log(1.0/3, 2))) 
+    #           = 0.666666              
     def test_mean_information(self):
         self.__update_stump()
-        self.assertAlmostEqual(0.6666, self.outlook_stump.mean_information(), 3)
-                
+        self.assertAlmostEqual(0.6666666, self.outlook_stump.mean_information(), 6)
+
+    # info_gain = entropy(root) - mean_information()
+    # entropy(root) = -(5.0/9 * log(5.0/9, 2))  + -(4.0/9 * log(4.0/9, 2)) = 0.99107605983822222
+    # mean_info = 0.666666666
+    def test_information_gain(self):
+        self.__update_stump()
+        self.assertAlmostEqual(0.32440939, self.outlook_stump.information_gain(), 6)
