@@ -52,9 +52,13 @@ class DecisionStump:
         for attr_value in self.attribute.values:
             count = self.counts[attr_value]
             instance_count = total_counts(count)
-            total += instance_count * entropy(count)
+            _entropy = entropy(count)
+            total += (instance_count * _entropy)
             total_num_of_instances += instance_count
         return float(total) / total_num_of_instances
+    
+    def information_gain(self):
+        return entropy(self.root) - self.mean_information()
     
     def __str__(self):
         _str = 'Decision stump for attribute ' + self.attribute.name
@@ -70,7 +74,7 @@ def total_counts(dictionary_of_klass_counts):
     
 def entropy(dictionary_of_klass_counts):
     total, _entropy = 0, 0.0
-    for klass, count in dictionary_of_klass_counts.items():
+    for count in dictionary_of_klass_counts.values():
         if count is not 0:
             _entropy = _entropy + (-1 * count * log(count, 2))
             total += count
