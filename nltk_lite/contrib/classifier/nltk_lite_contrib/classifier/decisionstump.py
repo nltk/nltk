@@ -14,7 +14,7 @@ from math import log
 class DecisionStump:
     def __init__(self, attribute, klass):
         self.attribute = attribute
-        self.counts = {}
+        self.counts, self.children = {}, {} #it has children only in decision trees
         self.root = klass.dictionary_of_values()
         for value in attribute.values:
             self.counts[value] = klass.dictionary_of_values()
@@ -37,7 +37,10 @@ class DecisionStump:
         return float(errors)/ total
     
     def klass(self, instance):
-        return self.majority_klass(instance.value(self.attribute))
+        attr_value = instance.value(self.attribute)
+        if not self.children.has_key(attr_value):
+            return self.majority_klass(attr_value)
+        return self.children[attr_value].klass(instance)
     
     def majority_klass(self, attr_value):
         klass_values_with_count = self.counts[attr_value]
@@ -69,9 +72,8 @@ class DecisionStump:
         _str = 'Decision stump for attribute ' + self.attribute.name
         for key, value in self.counts.items():
             _str += '\nAttr value: ' + key + '; counts: ' + value.__str__()
-        if dir(self).__contains__('children'):
-            for child in self.children:     
-                _str += child.__str__()
+        for child in self.children:
+            _str += child.__str__()
         return _str
         
 def total_counts(dictionary_of_klass_counts):

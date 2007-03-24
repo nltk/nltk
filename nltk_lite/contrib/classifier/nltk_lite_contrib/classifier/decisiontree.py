@@ -1,7 +1,7 @@
 from nltk_lite_contrib.classifier import Classifier, oner
 import copy
 
-class DecisionTree(Classifier):
+class DecisionTree(oner.OneR):
     def __init__(self, path):
         Classifier.__init__(self, DecisionTreeTrainingInstances(path))
         self.__used_attributes = []
@@ -9,7 +9,6 @@ class DecisionTree(Classifier):
         
     def build_tree(self, instances):
         decision_stump = instances.best_decision_stump(self.__used_attributes, 'maximum_information_gain')
-        decision_stump.children = {}
         self.__used_attributes.append(decision_stump.attribute)
         for attr_value in decision_stump.attribute.values:
             if decision_stump.entropy(attr_value) == 0:
@@ -19,12 +18,10 @@ class DecisionTree(Classifier):
             if new_child is not None: decision_stump.children[attr_value] = new_child
         return decision_stump
     
-    def test(self, path, printResults=True):
-        pass
-    
-    def verify(self, path):
-        pass
-        
+    def classify(self, instances):
+        instances.classify(self.root)
+
+            
 class DecisionTreeTrainingInstances(oner.OneRTrainingInstances):
     #if path is None we are trying to make a copy
     def __init__(self, path):
