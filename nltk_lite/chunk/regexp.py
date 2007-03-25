@@ -622,6 +622,11 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             print 'Warning: parsing empty text'
             return Tree(self._top_node, [])
         
+        try:
+            chunk_struct.node
+        except AttributeError:
+            chunk_struct = Tree(self._top_node, chunk_struct)
+        
         # Use the default trace value?
         if trace == None: trace = self._trace
 
@@ -731,10 +736,10 @@ class Regexp(ChunkParseI, AbstractParse):
         """
         from nltk_lite import chunk
         self._trace = trace
-	self._stages = []
+        self._stages = []
         self._grammar = grammar
         self._loop = loop
-	rules = []
+        rules = []
         for line in grammar.split('\n'):
             # Process any comments
             line = re.sub(r'\\#', r'_HASH_', line)
@@ -965,6 +970,18 @@ def demo():
     cp = chunk.Regexp(grammar)
     print chunk.accuracy(cp, islice(conll2000.chunked(chunk_types=('NP', 'PP', 'VP')), 0, 5))
 
+    print
+    print "Demonstration of tagged token input"
+    
+    grammar = r"""
+    NP: {<.*>*}             # start by chunking everything
+        }<[\.VI].*>+{       # chink any verbs, prepositions or periods
+        <.*>}{<DT>          # separate on determiners
+    PP: {<IN><NP>}          # PP = preposition + noun phrase
+    VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
+    """
+    cp = chunk.Regexp(grammar)
+    print cp.parse([("the","DT"), ("little","JJ"), ("cat", "NN"), ("sat", "VBD"), ("on", "IN"), ("the", "DT"), ("mat", "NN"), (".", ".")])
+
 if __name__ == '__main__':
     demo()
-
