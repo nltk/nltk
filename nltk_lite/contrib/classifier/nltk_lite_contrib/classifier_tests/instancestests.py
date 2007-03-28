@@ -10,15 +10,15 @@ from nltk_lite_contrib.classifier.exceptions import systemerror as system
 from nltk_lite_contrib.classifier_tests import *
 
 class InstancesTestCase(unittest.TestCase):
-    def testTheNumberOfInstances(self):
+    def test_the_number_of_instances(self):
         instances = ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertEqual(7, len(instances), '7 instances should be present')
         
-    def testValidatiyOfAttributeValues(self):
+    def test_validatiy_of_attribute_values(self):
         instances = ins.TrainingInstances(datasetsDir(self) + 'test_faulty' + SEP + 'invalid_attributes')
-        self.assertFalse(instances.areValid())
+        self.assertFalse(instances.are_valid())
         
-    def testEquality(self):
+    def test_equality(self):
         instances = ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         same = ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertEqual(instances, same, 'should be same')
@@ -31,18 +31,21 @@ class InstancesTestCase(unittest.TestCase):
         other = ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertNotEqual(instances, other, 'should not be same')
         
-    def testGoldInstancesAreCreatedFromGoldFiles(self):
+    def test_gold_instances_are_created_from_gold_files(self):
         gold = ins.GoldInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertEqual(7, len(gold))
         self.assertEqual(instance.GoldInstance, gold.instances[0].__class__)
 
-    def testGoldInstancesThrowSystemExceptionIfConfusionMatrixIsAskedForBeforeClassification(self):
+    def test_gold_insts_thrws_system_error_if_confusion_matrix_is_invoked_bfore_classification(self):
         gold = ins.GoldInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         try:
-            gold.confusionMatrix()
+            gold.confusion_matrix()
             self.fail('Should throw exception as it is not classified yet')
         except system.SystemError:
             pass
+
+#    def test_naive_unsupervised_discretization(self):
+#        training = ins.TrainingInstances()
 
         
         
