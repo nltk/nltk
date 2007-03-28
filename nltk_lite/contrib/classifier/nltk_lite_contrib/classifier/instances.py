@@ -11,25 +11,28 @@ from nltk_lite_contrib.classifier.exceptions import systemerror as system
 
 class Instances:
     def __init__(self, path, suffix):
-        self.klass, self.instances = self.createClass(path), []
+        self.klass, self.instances = self.create_class(path), []
         self.attributes = attrs.Attributes(path)
-        file.File(path, suffix).execute(self, 'createAndAppendInstance')
+        file.File(path, suffix).execute(self, 'create_and_append_instance')
             
-    def createAndAppendInstance(self, l):
+    def create_and_append_instance(self, l):
         ln = item.Item(l).stripNewLineAndWhitespace()
         if not len(ln) == 0:
-            self.instances.append(self.createInstance(ln))
+            self.instances.append(self.create_instance(ln))
             
-    def createClass(self, path):
+    def create_class(self, path):
         return None
         
-    def createInstance(self, ln):
+    def create_instance(self, ln):
         return AssertionError()
 
-    def areValid(self):
+    def are_valid(self):
         for instance in self.instances:
             if not instance.isValid(self.klass, self.attributes): return False
         return True
+    
+    def discretise(self, method):
+        pass
     
     def __len__(self):
         return len(self.instances)
@@ -48,17 +51,17 @@ class TrainingInstances(Instances):
     def __init__(self, path, ext = file.DATA):
         Instances.__init__(self, path, ext)
         
-    def createClass(self, path):
+    def create_class(self, path):
         return k.Klass(path)
     
-    def createInstance(self, ln):
+    def create_instance(self, ln):
         return ins.TrainingInstance(ln)
     
 class TestInstances(Instances):
     def __init__(self, path):
         Instances.__init__(self, path, file.TEST)
         
-    def createInstance(self, ln):
+    def create_instance(self, ln):
         return ins.TestInstance(ln)
     
     def print_all(self):
@@ -69,10 +72,10 @@ class GoldInstances(TrainingInstances):
     def __init__(self, path):
         TrainingInstances.__init__(self, path, file.GOLD)
         
-    def createInstance(self, ln):
+    def create_instance(self, ln):
         return ins.GoldInstance(ln)
     
-    def confusionMatrix(self):
+    def confusion_matrix(self):
         for i in self.instances:
             if i.classifiedKlass == None: raise system.SystemError('Cannot calculate accuracy as one or more instance(s) are not classified')
         c = cm.ConfusionMatrix(self.klass)

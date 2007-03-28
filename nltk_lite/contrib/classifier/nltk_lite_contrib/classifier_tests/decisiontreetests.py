@@ -1,3 +1,10 @@
+# Natural Language Toolkit
+#
+# Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
+#
+# URL: <http://nltk.sf.net>
+# This software is distributed under GPL, for license information see LICENSE.TXT
+
 from nltk_lite_contrib.classifier_tests import *
 from nltk_lite_contrib.classifier import decisiontree, decisionstump as ds, attributes as attrs, klass as k, instances as ins
 

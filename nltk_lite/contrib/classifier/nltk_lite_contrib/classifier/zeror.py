@@ -25,7 +25,7 @@ class ZeroR(Classifier):
     def verify(self, path):
         self.goldInstances = ZeroRGoldInstances(path)
         self.classify(self.goldInstances)
-        return self.goldInstances.confusionMatrix()
+        return self.goldInstances.confusion_matrix()
 
 class ZeroRTrainingInstances(ins.TrainingInstances):
     def __init__(self, path):
