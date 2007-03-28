@@ -25,7 +25,7 @@ class OneR(Classifier):
     def verify(self, path):
         self.gold_instances = OneRGoldInstances(path)
         self.classify(self.gold_instances)
-        return self.gold_instances.confusionMatrix()
+        return self.gold_instances.confusion_matrix()
     
 class OneRTrainingInstances(ins.TrainingInstances):
     def __init__(self, path):

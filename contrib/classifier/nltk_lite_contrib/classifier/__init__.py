@@ -12,7 +12,7 @@ class Classifier:
         self.validate_training()
         
     def validate_training(self):
-        if not self.training.areValid(): raise inv.InvalidDataError('Training data invalid')
+        if not self.training.are_valid(): raise inv.InvalidDataError('Training data invalid')
     
     def test(self, path, printResults=True):
         raise AssertionError()
