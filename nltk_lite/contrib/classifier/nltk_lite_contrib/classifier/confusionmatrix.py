@@ -47,6 +47,7 @@ class ConfusionMatrix:
         return (1 + beta * beta) * self.__div(p * r, r + beta * beta * p)
     
     def __div(self, num, den):
+        if num == 0: return 0;
         if den == 0: raise se.SystemError('Divide by Zero Error')
         return float(num)/ den
     
