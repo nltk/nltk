@@ -18,14 +18,7 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         
     def test_initial_confusion_matrix_has_all_zero_counts(self):
         self.__assert_matrix(0, 0, 0, 0)
-        
-    def test_divide_by_zero_error_thrown_if_den_is_zero(self):
-        try:
-            self.c.accuracy()
-            self.fail('should have thrown system exception')
-        except se.SystemError:
-            pass
-    
+            
     def test_confusion_matrix_updates_on_each_count(self):
         self.__assert_matrix(0, 0, 0, 0)
         self.c.count(self.pos, self.pos)
@@ -93,6 +86,16 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.assertEqual(0.25, self.c.precision())
         self.assertAlmostEqual(0.5, self.c.recall(), 8)
         self.assertAlmostEqual(0.33333333, self.c.fscore(), 8)
+    
+    def test_no_divide_by_zero_error_when_numerators_are_zero(self):
+        self.c.count(self.pos, self.neg)
+        self.c.count(self.pos, self.neg)
+        self.c.count(self.neg, self.neg)
+        self.c.count(self.neg, self.neg)
+        self.assertEqual(0, self.c.precision())
+        self.assertEqual(0, self.c.recall())
+        self.assertEqual(0, self.c.fscore())
+        self.assertEqual(0.5, self.c.accuracy())
         
     def __assert_matrix(self, tp, fn, fp, tn):
         self.assertEqual(tp, self.c.tp())
