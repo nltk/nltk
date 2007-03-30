@@ -136,7 +136,8 @@ class NaiveBayes(AbstractClassify):
 
 
 def demo():
-    from nltk_lite import detect, classify
+    from nltk_lite.contrib import classify
+    from nltk_lite import detect
   
     fd = detect.feature({"1-tup": lambda t: list(t)})
 
@@ -166,7 +167,8 @@ def demo():
 
 
 def demo2():
-    from nltk_lite import detect, classify
+    from nltk_lite.contrib import classify
+    from nltk_lite import detect
  
     fd = detect.feature({"2-tup": lambda t: [t[n:n+2] for n in range(len(t))]})
 
@@ -199,7 +201,8 @@ def demo2():
 
 
 def demo3():
-    from nltk_lite import detect, classify
+    from nltk_lite.contrib import classify
+    from nltk_lite import detect
   
     fd = detect.feature({"1-tup": lambda t: [t[n] for n in range(len(t))],
                           "2-tup": lambda t: [t[n:n+2] for n in range(len(t))]})
@@ -238,7 +241,9 @@ def demo3():
     """
 
 def demo4():
-    from nltk_lite import detect, classify
+    from nltk_lite.contrib import classify
+    from nltk_lite import detect
+
     from nltk_lite.corpora import genesis
     from itertools import islice
   
