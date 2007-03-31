@@ -1,0 +1,20 @@
+Shakespeare XML Corpus Sample
+
+http://www.andrew.cmu.edu/user/akj/shakespeare/
+
+Marked up in XML by Jon Bosak, CSS stylesheet by Ajay Juneja.
+
+Contents:
+
+  DTD and Stylesheet: play.dtd, shakes.css
+
+  Books:
+
+  a_and_c.xml - Antony and Cleopatra
+  dream.xml - A Midsummer Night's Dream
+  hamlet.xml - Hamlet
+  j_caesar.xml - Julius Caesar
+  macbeth.xml - Macbeth
+  merchant.xml - The Merchant of Venice
+  othello.xml - Othello
+  r_and_j.xml - Romeo and Juliet
