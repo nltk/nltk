@@ -1,3 +1,24 @@
+Version 0.7.3 2007-04-02
+	
+* Code:
+ - made chunk.Regexp.parse() more flexible about its input
+ - developed new syntax for PCFG grammars, e.g. A -> B C [0.3] | D [0.7]
+ - fixed CFG parser to support grammars with slash categories
+ - moved beta classify package from main NLTK to contrib
+ - Brill taggers loaded correctly
+ - misc bugfixes
+* Corpora:
+ - Shakespeare XML corpus sample and corpus reader
+* Tutorials:
+ - improvements to prose, exercises, plots, images
+ - expanded and reorganized tutorial on structured programming
+ - formatting improvements for Python listings
+ - improved plots (using pylab)
+ - categorization of problems by difficulty
+Contrib:
+ - more work on kimmo lexicon and grammar
+ - more work on classifiers
+
 Version 0.7.2 2007-03-01
 
 * Code:
