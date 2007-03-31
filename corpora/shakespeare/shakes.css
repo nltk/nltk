@@ -1,0 +1,12 @@
+TITLE	{ display: block; font-size: large; text-align: center; font-style: italic; font-family: Veranda, Helevetica, Geneva, sans-serif; color: blue;}
+P { display: block; font-size: small; font-weight: bold; font-family: Courier, "Courier New", Monospace }
+SYNOPSIS { display: block; font-size: small; font-style: normal; color: black}
+SPEAKER {display: block; line-height: 175%; font-size: small; font-weight: bold; font-style: italic; font-family: Veranda, Helevetica, Geneva, sans-serif; color: black}
+STAGEDIR {display: inline; font-size: small; font-style: italic; font-weight: bold; font-family: Veranda, Helevetica, Geneva, sans-serif; color: black}
+SCENE { display: block; font-size: medium; color: green}
+ACT, ACT_NUMBER, SCENE_NUMBER {display: inline; font-family: Veranda, Helevetica, Geneva, sans-serif }
+LOCATION
+CHARACTER
+LINE { display: block; margin-left: 1cm; font-size: small; font-family: Courier, "Courier New", Monospace }
+PGROUP {display: block; margin-top: .7cm; margin-bottom: .5cm}
+PERSONA { display: block; font-size: small; font-weight: bold; font-style: normal; color: black}
