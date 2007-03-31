@@ -9,7 +9,7 @@ A. ERROR CHECKING
 
   1. make doctest
   2. make demotest
-  3. API docs (cd doc; make api)
+  3. API docs (cd doc; make api)  (check latest version of epydoc is installed)
   4. Tutorial examples (cd doc/en; make errs)
   5. Code demos, graphical demonstrations (execute module.py)
   6. Check trackers: http://sourceforge.net/tracker/?group_id=30982
