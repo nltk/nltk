@@ -419,9 +419,9 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
     def __repr__(self):
-        return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
+        return '%s [%s]' % (Tree.__repr__(self), self.prob())
     def __str__(self):
-        return '%s (p=%s)' % (self.pp(margin=60), self.prob())
+        return '%s [%s]' % (self.pp(margin=60), self.prob())
     def __cmp__(self, other):
         c = Tree.__cmp__(self, other)
         if c != 0: return c

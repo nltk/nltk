@@ -7,12 +7,11 @@ Building an NLTK-Lite distribution
 
 A. ERROR CHECKING
 
-  1. make doctest
-  2. make demotest
+  1. make doctest (run the tests in nltk_lite.test)
+  2. make demotest (run the demonstration code included in many modules)
   3. API docs (cd doc; make api)  (check latest version of epydoc is installed)
   4. Tutorial examples (cd doc/en; make errs)
-  5. Code demos, graphical demonstrations (execute module.py)
-  6. Check trackers: http://sourceforge.net/tracker/?group_id=30982
+  5. Check trackers: http://sourceforge.net/tracker/?group_id=30982
 
 B. CHANGELOG AND RELEASE ANNOUNCEMENT
 
