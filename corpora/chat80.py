@@ -445,10 +445,13 @@ def process_bundle(rels):
         concept_list = clause2concepts(filename, rel_name, closures, schema)
         for c in concept_list:
             label = c.prefLabel
-            concepts[label] = c
-                     
+            if(label in concepts.keys()):
+                for data in c.extension:
+                    concepts[label].augment(data)
+                concepts[label].close()
+            else:
+                concepts[label] = c
     return concepts
-
 
 
 def make_valuation(concepts, read=False, lexicon=False):
