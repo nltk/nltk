@@ -11,63 +11,52 @@ from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
     def __init__(self, path):
-        Classifier.__init__(self, OneRTrainingInstances(path))
-        self.best_decision_stump = self.training.best_decision_stump()
+        Classifier.__init__(self, path)
+        self.__best_decision_stump = None
         
     def test(self, path, printResults=True):
-        self.test_instances = OneRTestInstances(path)
+        self.test_instances = ins.TestInstances(path)
         self.classify(self.test_instances)
         if printResults: self.test_instances.print_all()
         
     def classify(self, instances):
-        instances.classify(self.best_decision_stump)
+        if self.__best_decision_stump == None:
+            self.__best_decision_stump = self.best_decision_stump(self.training)
+        instances.for_each(self.set_klass_on_test_or_gold)
+        
+    def set_klass_on_test_or_gold(self, instance):
+        klass = self.__best_decision_stump.klass(instance)
+        instance.set_klass(klass)
         
     def verify(self, path):
-        self.gold_instances = OneRGoldInstances(path)
+        self.gold_instances = ins.GoldInstances(path)
         self.classify(self.gold_instances)
-        return self.gold_instances.confusion_matrix()
-    
-class OneRTrainingInstances(ins.TrainingInstances):
-    def __init__(self, path):
-        ins.TrainingInstances.__init__(self, path)
-            
-    def create_empty_decision_stumps(self, ignore_attributes = []):
-        decision_stumps = []
+        return self.gold_instances.confusion_matrix(self.klass)
+
+    def create_empty_decision_stumps(self, ignore_attributes):
+        self.decision_stumps = []
         for attribute in self.attributes:
             if attribute in ignore_attributes:
                 continue
-            decision_stumps.append(ds.DecisionStump(attribute, self.klass))
-        return decision_stumps
-    
-    def best_decision_stump(self, ignore_attributes = [], algorithm = 'minimum_error'):
-        stumps = self.create_empty_decision_stumps(ignore_attributes);
-        for instance in self.instances:
-            for stump in stumps:
-                stump.update_count(instance)
+            self.decision_stumps.append(ds.DecisionStump(attribute, self.klass))
+            
+    def best_decision_stump(self, instances, ignore_attributes = [], algorithm = 'minimum_error'):
+        self.create_empty_decision_stumps(ignore_attributes);
+        instances.for_each(self.update_count_in_decision_stumps)
         try:
-            return getattr(self, algorithm)(stumps)
+            return getattr(self, algorithm)()
         except AttributeError:
             raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + algorithm.__str__() + ' is not defined.')
         
-    def minimum_error(self, decision_stumps):
+    def update_count_in_decision_stumps(self, instance):
+        for stump in self.decision_stumps:
+            stump.update_count(instance)
+
+    def minimum_error(self):
         error, min_error_stump = 1, None
-        for decision_stump in decision_stumps:
+        for decision_stump in self.decision_stumps:
             new_error = decision_stump.error()
             if new_error < error: 
                 error = new_error
                 min_error_stump = decision_stump
         return min_error_stump
-
-class OneRTestInstances(ins.TestInstances):
-    def __init__(self, path):
-        ins.TestInstances.__init__(self, path)
-    
-    def classify(self, decision_stump):
-        for instance in self.instances:
-            klass = decision_stump.klass(instance)
-            instance.set_klass(klass)
-            
-class OneRGoldInstances(ins.GoldInstances,OneRTestInstances):
-    def __init__(self, path):
-        ins.GoldInstances.__init__(self, path)
-    

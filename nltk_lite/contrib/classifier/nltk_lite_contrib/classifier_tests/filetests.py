@@ -12,7 +12,7 @@ class FileTestCase(unittest.TestCase):
     def testFileOperation(self):
         self.contents = ""
         f = file.File(datasetsDir(self) + 'test_phones' + SEP + 'phoney', file.NAMES)
-        f.execute(self, 'printline')
+        f.execute(self.printline)
         
         verificationContents = ""
         check = open(datasetsDir(self) + 'test_phones' + SEP + 'phoney.names', 'r')

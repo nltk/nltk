@@ -12,7 +12,7 @@ class Attributes:
     def __init__(self, path):
         self.attributes = []
         self.__index = 0
-        file.File(path, file.NAMES).execute(self, 'create_and_append_values')
+        file.File(path, file.NAMES).execute(self.create_and_append_values)
                 
     def create_and_append_values(self, l):
         nameitem = ni.NameItem(l)      
