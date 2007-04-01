@@ -2,30 +2,31 @@
 Unit tests for the utility parse functions.
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse import *
-    >>> from nltk_lite.tokenize import *
+    >>> from nltk_lite import tokenize
 
 --------------------------------------------------------------------------------
 Unit tests for the CFG (Context Free Grammar) class
 --------------------------------------------------------------------------------
 
-    >>> nt1 = Nonterminal('NP')
-    >>> nt2 = Nonterminal('VP')
+    >>> from nltk_lite.parse import cfg
+
+    >>> nt1 = cfg.Nonterminal('NP')
+    >>> nt2 = cfg.Nonterminal('VP')
 
     >>> nt1.symbol()
     'NP'
 
-    >>> nt1 == Nonterminal('NP')
+    >>> nt1 == cfg.Nonterminal('NP')
     True
 
     >>> nt1 == nt2
     False
 
-    >>> S, NP, VP, PP = nonterminals('S, NP, VP, PP')
-    >>> N, V, P, DT = nonterminals('N, V, P, DT') 
+    >>> S, NP, VP, PP = cfg.nonterminals('S, NP, VP, PP')
+    >>> N, V, P, DT = cfg.nonterminals('N, V, P, DT') 
 
-    >>> prod1 = Production(S, [NP, VP])
-    >>> prod2 = Production(NP, [DT, NP])
+    >>> prod1 = cfg.Production(S, [NP, VP])
+    >>> prod2 = cfg.Production(NP, [DT, NP])
 
     >>> prod1.lhs()
     <S>
@@ -33,21 +34,17 @@ Unit tests for the CFG (Context Free Grammar) class
     >>> prod1.rhs()
     (<NP>, <VP>)
 
-    >>> prod1 == Production(S, [NP, VP])
+    >>> prod1 == cfg.Production(S, [NP, VP])
     True
 
     >>> prod1 == prod2
     False
 
-    >>> grammar = parse_grammar("""
+    >>> grammar = cfg.parse_grammar("""
     ... S -> NP VP
     ... PP -> P NP
-    ... NP -> DT N
-    ... NP -> N PP
-    ... NP -> DT N PP
-    ... VP -> V NP
-    ... VP -> V PP
-    ... VP -> V NP PP
+    ... NP -> DT N | N PP | DT N PP
+    ... VP -> V NP | V PP | V NP PP
     ... DT -> 'a'
     ... DT -> 'the'
     ... N -> 'cat'
@@ -67,10 +64,11 @@ Unit tests for the rd (Recursive Descent Parser) class
 Create and run a recursive descent parser over both a syntactically ambiguous
 and unambiguous sentence.
 
+    >>> from nltk_lite.parse import RecursiveDescent
     >>> rd = RecursiveDescent(grammar)
 
-    >>> sentence1 = list(whitespace('the cat chased the dog'))
-    >>> sentence2 = list(whitespace('the cat chased the dog on the rug'))
+    >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
+    >>> sentence2 = list(tokenize.whitespace('the cat chased the dog on the rug'))
 
     >>> rd.get_parse_list(sentence1)
     [('S': ('NP': ('DT': 'the') ('N': 'cat')) ('VP': ('V': 'chased') ('NP': ('DT': 'the') ('N': 'dog'))))]
@@ -86,10 +84,11 @@ Create and run a shift reduce parser over both a syntactically ambiguous
 and unambiguous sentence. Note that unlike the recursive descent parser, one
 and only one parse is ever returned.
 
+    >>> from nltk_lite.parse import ShiftReduce
     >>> sr = ShiftReduce(grammar)
 
-    >>> sentence1 = list(whitespace('the cat chased the dog'))
-    >>> sentence2 = list(whitespace('the cat chased the dog on the rug'))
+    >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
+    >>> sentence2 = list(tokenize.whitespace('the cat chased the dog on the rug'))
 
     >>> sr.get_parse_list(sentence1)
     [('S': ('NP': ('DT': 'the') ('N': 'cat')) ('VP': ('V': 'chased') ('NP': ('DT': 'the') ('N': 'dog'))))]
@@ -105,11 +104,11 @@ grammar clearly the wrong operation is selected.
 Unit tests for the Chart parser class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse.chart import *
+    >>> from nltk_lite.parse import ChartParse, EarleyChartParse, BU_STRATEGY, TD_STRATEGY
 
 Define a grammar.
 
-    >>> grammar = parse_grammar("""
+    >>> grammar = cfg.parse_grammar("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> DT N | N | NP PP
@@ -122,8 +121,8 @@ Define a grammar.
 
 Some example sentences, one ambiguous and one unambiguous.
 
-    >>> sentence1 = list(whitespace("Marc has a telescope"))
-    >>> sentence2 = list(whitespace("Marc saw a man in the park"))
+    >>> sentence1 = list(tokenize.whitespace("Marc has a telescope"))
+    >>> sentence2 = list(tokenize.whitespace("Marc saw a man in the park"))
 
 Create a chart parser. First give it a bottom-up strategy.
 
@@ -148,27 +147,27 @@ Redefine the chart parser to use a top-down strategy.
 Create and test the Earley variant chart parser. This requires a lexicon.
 
     >>> syntactic_productions = [
-    ... Production(S, [NP, VP]),
-    ... Production(PP, [P, NP]),
-    ... Production(NP, [DT, N]),
-    ... Production(NP, [N]),
-    ... Production(NP, [NP, PP]),
-    ... Production(VP, [V, NP]),
-    ... Production(VP, [VP, PP])
+    ... cfg.Production(S, [NP, VP]),
+    ... cfg.Production(PP, [P, NP]),
+    ... cfg.Production(NP, [DT, N]),
+    ... cfg.Production(NP, [N]),
+    ... cfg.Production(NP, [NP, PP]),
+    ... cfg.Production(VP, [V, NP]),
+    ... cfg.Production(VP, [VP, PP])
     ... ]
 
-    >>> grammar = Grammar(S, syntactic_productions)
+    >>> grammar = cfg.Grammar(S, syntactic_productions)
 
     >>> lexical_productions = [
-    ... Production(DT, ['a']),
-    ... Production(DT, ['the']),
-    ... Production(N, ['man']),
-    ... Production(N, ['Marc']),
-    ... Production(N, ['park']),
-    ... Production(N, ['telescope']),
-    ... Production(V, ['has']),
-    ... Production(V, ['saw']),
-    ... Production(P, ['in'])
+    ... cfg.Production(DT, ['a']),
+    ... cfg.Production(DT, ['the']),
+    ... cfg.Production(N, ['man']),
+    ... cfg.Production(N, ['Marc']),
+    ... cfg.Production(N, ['park']),
+    ... cfg.Production(N, ['telescope']),
+    ... cfg.Production(V, ['has']),
+    ... cfg.Production(V, ['saw']),
+    ... cfg.Production(P, ['in'])
     ... ]
 
     >>> lexicon = {}
@@ -204,38 +203,33 @@ Unit tests for the Probabilistic CFG class
 
     >>> from nltk_lite.corpora import treebank
     >>> from itertools import islice
+    >>> from nltk_lite.parse import pcfg
 
 Create a set of probabilistic CFG productions.
 
-    >>> S, A, B, C = nonterminals('S A B C')
+    >>> grammar = pcfg.parse_grammar("""
+    ... A -> B B [.3] | C B C [.7]
+    ... B -> B 'b' [.5] | C [.5]
+    ... C -> 'a' [.1] | 'b' [0.9]
+    ... """)
+    >>> prod = grammar.productions()[0]
+    >>> prod
+    A -> B B [0.3]
 
-    >>> productions = [
-    ... WeightedProduction(A, [B, B], prob=0.3),
-    ... WeightedProduction(A, [C, B, C], prob=0.7),
-    ... WeightedProduction(B, [B, 'b'], prob=0.5),
-    ... WeightedProduction(B, [C], prob=0.5),
-    ... WeightedProduction(C, ['a'], prob=0.1),
-    ... WeightedProduction(C, ['b'], prob=0.9)]
-
-    >>> productions[0]
-    A -> B B (p=0.3)
-
-    >>> productions[0].lhs()
+    >>> prod.lhs()
     <A>
 
-    >>> productions[0].rhs()
+    >>> prod.rhs()
     (<B>, <B>)
 
-    >>> productions[0].prob()
+    >>> prod.prob()
     0.29999999999999999
 
-    >>> grammar = WeightedGrammar(S, productions)
-
     >>> grammar.start()
-    <S>
+    <A>
 
     >>> grammar.productions()
-    [A -> B B (p=0.3), A -> C B C (p=0.7), B -> B 'b' (p=0.5), B -> C (p=0.5), C -> 'a' (p=0.1), C -> 'b' (p=0.9)]
+    [A -> B B [0.3], A -> C B C [0.7], B -> B 'b' [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9]]
 
 Induce some productions using parsed Treebank data.
 
@@ -243,59 +237,62 @@ Induce some productions using parsed Treebank data.
     >>> for tree in islice(treebank.parsed(), 3):
     ...     productions += tree.productions()
 
-    >>> grammar = induce(S, productions)
+    >>> grammar = pcfg.induce(S, productions)
     >>> grammar
     <Grammar with 71 productions>
 
     >>> grammar.productions()[:5]
-    [PP -> IN NP (p=1.0), NNP -> 'Nov.' (p=0.0714285714286), NNP -> 'Agnew' (p=0.0714285714286), JJ -> 'industrial' (p=0.142857142857), NP -> CD NNS (p=0.133333333333)]
+    [PP -> IN NP [1.0], NNP -> 'Nov.' [0.0714285714286], NNP -> 'Agnew' [0.0714285714286], JJ -> 'industrial' [0.142857142857], NP -> CD NNS [0.133333333333]]
 
 --------------------------------------------------------------------------------
 Unit tests for the Probabilistic Chart Parse classes
 --------------------------------------------------------------------------------
 
-    >>> tokens = list(whitespace("I saw John with my cookie"))
-    >>> grammar = toy1
+    >>> tokens = list(tokenize.whitespace("I saw John with my cookie"))
+    >>> grammar = pcfg.toy1
 
 Create several parsers using different queuing strategies and show the
 resulting parses.
 
-    >>> parser = InsideParse(grammar)
+    >>> from nltk_lite.parse import pchart
+    
+    >>> parser = pchart.InsideParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') (p=0.15) ('VP': ('V': 'saw') (p=0.65) ('NP': ('NP': 'John') (p=0.1) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.0007625)) (p=0.0003469375)) (p=5.2040625e-05), ('S': ('NP': 'I') (p=0.15) ('VP': ('VP': ('V': 'saw') (p=0.65) ('NP': 'John') (p=0.1)) (p=0.0455) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.000138775)) (p=2.081625e-05)]
+    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
 
-    >>> parser = RandomParse(grammar)
+    >>> parser = pchart.RandomParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') (p=0.15) ('VP': ('V': 'saw') (p=0.65) ('NP': ('NP': 'John') (p=0.1) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.0007625)) (p=0.0003469375)) (p=5.2040625e-05), ('S': ('NP': 'I') (p=0.15) ('VP': ('VP': ('V': 'saw') (p=0.65) ('NP': 'John') (p=0.1)) (p=0.0455) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.000138775)) (p=2.081625e-05)]
+    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
 
-    >>> parser = UnsortedParse(grammar)
+    >>> parser = pchart.UnsortedParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') (p=0.15) ('VP': ('V': 'saw') (p=0.65) ('NP': ('NP': 'John') (p=0.1) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.0007625)) (p=0.0003469375)) (p=5.2040625e-05), ('S': ('NP': 'I') (p=0.15) ('VP': ('VP': ('V': 'saw') (p=0.65) ('NP': 'John') (p=0.1)) (p=0.0455) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.000138775)) (p=2.081625e-05)]
+    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
 
-    >>> parser = LongestParse(grammar)
+    >>> parser = pchart.LongestParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') (p=0.15) ('VP': ('V': 'saw') (p=0.65) ('NP': ('NP': 'John') (p=0.1) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.0007625)) (p=0.0003469375)) (p=5.2040625e-05), ('S': ('NP': 'I') (p=0.15) ('VP': ('VP': ('V': 'saw') (p=0.65) ('NP': 'John') (p=0.1)) (p=0.0455) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.000138775)) (p=2.081625e-05)]
+    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
 
-    >>> parser = BeamParse(len(tokens)+1, grammar)
+    >>> parser = pchart.BeamParse(len(tokens)+1, grammar)
     >>> parser.get_parse_list(tokens)
     []
 
---------------------------------------------------------------------------------
+----------------------------------------
 Unit tests for the Viterbi Parse classes
---------------------------------------------------------------------------------
+----------------------------------------
 
-    >>> tokens = list(whitespace("I saw John with my cookie"))
-    >>> grammar = toy1
+    >>> from nltk_lite.parse import ViterbiParse
+    >>> tokens = list(tokenize.whitespace("I saw John with my cookie"))
+    >>> grammar = pcfg.toy1
 
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') (p=0.15) ('VP': ('V': 'saw') (p=0.65) ('NP': ('NP': 'John') (p=0.1) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.2) ('N': 'cookie') (p=0.5)) (p=0.05)) (p=0.0305)) (p=0.0007625)) (p=0.0003469375)) (p=5.2040625e-05)]
+    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05]]
 
---------------------------------------------------------------------------------
+-----------------------------
 Unit tests for the Tree class
---------------------------------------------------------------------------------
+-----------------------------
 
 C{Trees} are used to encode hierarchical structures.  Each C{Tree}
 object encodes a single grouping in the hierarchy.  A C{Tree} is
@@ -314,6 +311,7 @@ actually a specialized subclass of C{list} that:
 Trees are created from a node and a list (or any iterable) of
 children:
 
+    >>> from nltk_lite.parse import Tree
     >>> Tree(1, [2, 3, 4])
     (1: 2 3 4)
     >>> Tree('S', [Tree('NP', ['I']), 
@@ -477,9 +475,9 @@ tree object to one of several standard tree encodings:
             [.np [.d 'THE' ] [.np 'DOG' ] ]
             [.vp [.v 'CHASED' ] [.np [.d 'THE' ] [.np 'CAT' ] ] ] ]
 
-Trees can be parsed from treebank strings with the static
-C{Tree.parse} method:
+Trees can be parsed from treebank strings with the C{bracket_parse} method:
 
+    >>> from nltk_lite.parse import bracket_parse
     >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
     (S: (NP: 'I') (VP: (V: 'enjoyed') (NP: 'my' 'cookie')))
@@ -516,6 +514,7 @@ Unit tests for the TreeTransformation class
 --------------------------------------------------------------------------------
 
     >>> from copy import deepcopy
+    >>> from nltk_lite.parse.treetransforms import *
 
     >>> sentence = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
 
@@ -567,6 +566,7 @@ Convert the transformed tree back to its original form
 Unit tests for the Category class
 --------------------------------------------------------------------------------
 
+    >>> from nltk_lite.parse import Category, GrammarCategory
     >>> Category(pos='n', agr=Category(number='pl', gender='f'))
     [agr=[gender='f', number='pl'], pos='n']
 
@@ -576,6 +576,8 @@ Unit tests for the Category class
 --------------------------------------------------------------------------------
 Unit tests for FeatureStructure classes
 --------------------------------------------------------------------------------
+
+    >>> from nltk_lite.featurestructure import *
 
 Copying from self to other.
 
@@ -774,7 +776,7 @@ Define some lexical productions.
     >>> for prod in lexical_productions:
     ...     earley_lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
 
-    >>> tokens = list(whitespace('I saw John with a dog with my cookie'))
+    >>> tokens = list(tokenize.whitespace('I saw John with a dog with my cookie'))
     >>> cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon)
     >>> trees = cp.get_parse_list(tokens)
     >>> for tree in trees:
