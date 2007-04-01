@@ -12,7 +12,7 @@ from nltk_lite_contrib.classifier_tests import *
 class ZeroRTestCase(unittest.TestCase):
     def testZeroRInstanceIsCreatedWithTrainingData(self):
         classifier = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        self.assertEqual(z.ZeroRTrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney'), classifier.training, 'should have created training instances')
+        self.assertEqual(ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney'), classifier.training, 'should have created training instances')
     
     def testZeroRVerifiesValidityOfTrainingData(self):
         try:
@@ -22,16 +22,16 @@ class ZeroRTestCase(unittest.TestCase):
             pass
         
     def testMajorityClass(self):
-        tinstances = z.ZeroRTrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        self.assertEqual('b', tinstances.majorityClass())
+        classifier = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        self.assertEqual('b', classifier.majority_class())
         
     def testMajorityClassIsSetOnTestInstances(self):
         zeror = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         zeror.test(datasetsDir(self) + 'test_phones' + SEP + 'phoney', False)
         i = 0
         for i in range(4):
-            self.assertEqual('b', zeror.testInstances.instances[i].classifiedKlass)
-            self.assertEqual(None, zeror.testInstances.instances[i].klass_value)
+            self.assertEqual('b', zeror.test_instances[i].classifiedKlass)
+            self.assertEqual(None, zeror.test_instances[i].klass_value)
             
     def testVerifyReturnsCorrectConfusionMatrix(self):
         zeror = z.ZeroR(datasetsDir(self) + 'minigolf' + SEP + 'weather')

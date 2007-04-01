@@ -11,28 +11,36 @@ from nltk_lite_contrib.classifier.exceptions import systemerror as system
 
 class Instances:
     def __init__(self, path, suffix):
-        self.klass, self.instances = self.create_class(path), []
-        self.attributes = attrs.Attributes(path)
-        file.File(path, suffix).execute(self, 'create_and_append_instance')
+        self.instances = []
+        if path is not None:
+            file.File(path, suffix).execute(self.create_and_append_instance)
             
     def create_and_append_instance(self, l):
         ln = item.Item(l).stripNewLineAndWhitespace()
         if not len(ln) == 0:
             self.instances.append(self.create_instance(ln))
             
-    def create_class(self, path):
-        return None
-        
-    def create_instance(self, ln):
+    def create_instance(self, line):
         return AssertionError()
 
-    def are_valid(self):
+    def are_valid(self, klass, attributes):
         for instance in self.instances:
-            if not instance.isValid(self.klass, self.attributes): return False
+            if not instance.isValid(klass, attributes): 
+                return False
         return True
     
+    def for_each(self, method):
+        for instance in self.instances:
+            method(instance)
+                    
     def discretise(self, method):
         pass
+    
+    def __getitem__(self, index):
+        return self.instances[index]
+    
+    def __contains__(self, other):
+        return self.instances.__contains__(other)
     
     def __len__(self):
         return len(self.instances)
@@ -40,10 +48,7 @@ class Instances:
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
-        if self.klass == other.klass and \
-            self.attributes == other.attributes and \
-            self.instances == other.instances:
-                return True
+        if self.instances == other.instances: return True
         return False
 
     
@@ -51,36 +56,42 @@ class TrainingInstances(Instances):
     def __init__(self, path, ext = file.DATA):
         Instances.__init__(self, path, ext)
         
-    def create_class(self, path):
-        return k.Klass(path)
+    def create_instance(self, line):
+        return ins.TrainingInstance(line)
     
-    def create_instance(self, ln):
-        return ins.TrainingInstance(ln)
+    def filter(self, attribute, attr_value):
+        new_instances = TrainingInstances(None)
+        for instance in self.instances:
+            if(instance.value(attribute) == attr_value):
+                new_instances.instances.append(instance)
+        return new_instances
+
     
 class TestInstances(Instances):
     def __init__(self, path):
         Instances.__init__(self, path, file.TEST)
         
-    def create_instance(self, ln):
-        return ins.TestInstance(ln)
+    def create_instance(self, line):
+        return ins.TestInstance(line)
     
     def print_all(self):
         for instance in self.instances:
             print instance
     
-class GoldInstances(TrainingInstances):
+class GoldInstances(Instances):
     def __init__(self, path):
-        TrainingInstances.__init__(self, path, file.GOLD)
+        Instances.__init__(self, path, file.GOLD)
         
-    def create_instance(self, ln):
-        return ins.GoldInstance(ln)
+    def create_instance(self, line):
+        return ins.GoldInstance(line)
     
-    def confusion_matrix(self):
+    def confusion_matrix(self, klass):
         for i in self.instances:
-            if i.classifiedKlass == None: raise system.SystemError('Cannot calculate accuracy as one or more instance(s) are not classified')
-        c = cm.ConfusionMatrix(self.klass)
+            if i.classifiedKlass == None: 
+                raise system.SystemError('Cannot calculate accuracy as one or more instance(s) are not classified')
+        matrix = cm.ConfusionMatrix(klass)
         for i in self.instances:
-            c.count(i.klass_value, i.classifiedKlass)
-        return c
+            matrix.count(i.klass_value, i.classifiedKlass)
+        return matrix
         
          
