@@ -19,24 +19,14 @@ class DecisionTreeTestCase(unittest.TestCase):
         
     def test_filter_does_not_affect_the_original_training(self):
         tree = decisiontree.DecisionTree(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        outlook = tree.training.attributes[0]
-        self.assertEqual(9, len(tree.training.instances))
+        outlook = tree.attributes[0]
+        self.assertEqual(9, len(tree.training))
         filtered = tree.training.filter(outlook, 'sunny')
-        self.assertEqual(9, len(tree.training.instances))
-        self.assertEqual(4, len(filtered.instances))
+        self.assertEqual(9, len(tree.training))
+        self.assertEqual(4, len(filtered))
         
     def test_maximum_informaition_gain_stump_is_selected(self):
         tree = decisiontree.DecisionTree(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        attributes = attrs.Attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        klass = k.Klass(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        stumps = []
-        instances = ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        for attribute in attributes:
-            stump = ds.DecisionStump(attribute, klass)
-            stumps.append(stump)
-            for instance in instances.instances:
-                stump.update_count(instance)
-
-        max_ig_stump = tree.training.maximum_information_gain(stumps)
-        self.assertEqual('band', max_ig_stump.attribute.name)
+        max_ig_stump = tree.maximum_information_gain()
+        self.assertEqual('size', max_ig_stump.attribute.name)
         
