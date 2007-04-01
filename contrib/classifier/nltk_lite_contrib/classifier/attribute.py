@@ -5,8 +5,8 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite_contrib.classifier.exceptions import invaliddataerror as inv, systemerror as se
-import copy
+from nltk_lite_contrib.classifier.exceptions import systemerror as se
+from nltk_lite_contrib.classifier import nameitem as ni, file
 
 class Attribute:
     #line is cleansed of newline, whitespace and dots in attributes

@@ -6,7 +6,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import item, os, exceptions.filenotfounderror as fnf
+from nltk_lite_contrib.classifier.exceptions import filenotfounderror as fnf
+import os
 
 DOT = '.'
 DATA = 'data'
@@ -18,9 +19,10 @@ class File:
     def __init__(self, path, extension):
         self.path = path + DOT + extension
         
-    def execute(self, obj, methodName, rW = 'r'):
-        if not os.path.isfile(self.path): raise fnf.FileNotFoundError(self.path)
-        f = open(self.path, rW)
-        for l in f:
-            getattr(obj, methodName)(l)
-        f.close()
+    def execute(self, method, r_w = 'r'):
+        if not os.path.isfile(self.path): 
+            raise fnf.FileNotFoundError(self.path)
+        fil = open(self.path, r_w)
+        for line in fil:
+            method(line)
+        fil.close()

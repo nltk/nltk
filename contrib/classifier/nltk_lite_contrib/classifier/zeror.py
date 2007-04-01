@@ -10,34 +10,31 @@ from nltk_lite_contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
     def __init__(self, path):
-        Classifier.__init__(self, ZeroRTrainingInstances(path))
-        self.majorityClass = None
+        Classifier.__init__(self, path)
+        self.__majority_class = None
+        self.__klassCount = {}
         
     def test(self, path, printResults=True):
-        self.testInstances = ZeroRTestInstances(path)
-        self.classify(self.testInstances)
-        if printResults: self.testInstances.print_all()
+        self.test_instances = ins.TestInstances(path)
+        self.classify(self.test_instances)
+        if printResults: self.test_instances.print_all()
     
     def classify(self, instances):
-        if self.majorityClass == None: self.majorityClass = self.training.majorityClass()
-        instances.setAllClasses(self.majorityClass)
+        if self.__majority_class == None: 
+            self.__majority_class = self.majority_class()
+        instances.for_each(self.set_majority_klass)
         
     def verify(self, path):
-        self.goldInstances = ZeroRGoldInstances(path)
-        self.classify(self.goldInstances)
-        return self.goldInstances.confusion_matrix()
+        self.gold_instances = ins.GoldInstances(path)
+        self.classify(self.gold_instances)
+        return self.gold_instances.confusion_matrix(self.klass)
 
-class ZeroRTrainingInstances(ins.TrainingInstances):
-    def __init__(self, path):
-        ins.TrainingInstances.__init__(self, path)
-        self.__klassCount = {}
-
-    def majorityClass(self):
-        for instance in self.instances:
-            self.__update_count(instance.klass_value)
+    def majority_class(self):
+        self.training.for_each(self.update_count)
         return self.__max()
     
-    def __update_count(self, klass_value):
+    def update_count(self, instance):
+        klass_value = instance.klass_value
         if self.__klassCount.has_key(klass_value):
             self.__klassCount[klass_value] += 1
         else:
@@ -52,16 +49,7 @@ class ZeroRTrainingInstances(ins.TrainingInstances):
                 klass_value = key
         return klass_value
     
-class ZeroRTestInstances(ins.TestInstances):
-    def __init__(self, path):
-        ins.TestInstances.__init__(self, path)
-    
-    def setAllClasses(self, majorityClass):
-        for instance in self.instances:
-            instance.set_klass(majorityClass)
-
-class ZeroRGoldInstances(ins.GoldInstances, ZeroRTestInstances):
-    def __init__(self, path):
-        ins.GoldInstances.__init__(self, path)
-        
+    def set_majority_klass(self, instance):
+        instance.set_klass(self.__majority_class)
+            
     
