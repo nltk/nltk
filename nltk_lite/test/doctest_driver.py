@@ -87,6 +87,11 @@ class MyDocTestParser(DocTestParser):
                [ ]+.*\n)*)                 #   indented line
         ''', re.VERBOSE+re.MULTILINE)
 
+    DOCTEST_OPTION_RE = re.compile(r'''
+        ^[ ]*:\w+:.*\n                     # :option:
+        (.*\S.*)*                          # non-blank lines
+        ''', re.VERBOSE+re.MULTILINE)
+
     def parse(self, string, name='<string>'):
         output = []
         lineno_offset = 0
@@ -101,7 +106,11 @@ class MyDocTestParser(DocTestParser):
                 # subpieces that are not marked by python prompts into
                 # examples with an expected output of ''.
                 elif piecenum%2 == 1 and example.strip():
-                    pysrc = textwrap.dedent(example[example.find('\n'):])
+                    # order matters here:
+                    pysrc = example[example.find('\n'):]
+                    pysrc = self.DOCTEST_OPTION_RE.sub('', pysrc)
+                    pysrc = textwrap.dedent(pysrc)
+
                     for ex in self.PYLISTING_EX.findall(pysrc):
                         source = ex.strip()
                         if not source: continue
