@@ -25,6 +25,7 @@ A number of other flags can be given; call the driver with the
 """
 
 import os, os.path, sys, unittest, pdb, bdb, re, tempfile, traceback
+import textwrap
 from doctest import *
 from doctest import DocTestCase
 from optparse import OptionParser, OptionGroup, Option
@@ -74,10 +75,59 @@ class _SpoofOut(StringIO):
 ###########################################################################
 
 class MyDocTestParser(DocTestParser):
+    PYLISTING_RE = re.compile(r'''
+       (^\.\.[ ]*pylisting::[ ]?\S*\n    # directive
+            (?:[ ]*\n|                   # blank line or
+               [ ]+.*\n)*)               #   indented line
+        ''', re.VERBOSE+re.MULTILINE)
+
+    PYLISTING_EX = re.compile(r'''
+        (?:^[^ ].*\n                       # non-blank line
+            (?:[ ]*\n |                    # blank line or
+               [ ]+.*\n)*)                 #   indented line
+        ''', re.VERBOSE+re.MULTILINE)
+
+    def parse(self, string, name='<string>'):
+        output = []
+        lineno_offset = 0
+        
+        for piecenum, piece in enumerate(self.PYLISTING_RE.split(string)):
+            for example in DocTestParser.parse(self, piece, name):
+                if isinstance(example, Example):
+                    example.lineno += lineno_offset
+                    output.append(example)
+
+                # If we're inside a pylisting, then convert any
+                # subpieces that are not marked by python prompts into
+                # examples with an expected output of ''.
+                elif piecenum%2 == 1 and example.strip():
+                    pysrc = textwrap.dedent(example[example.find('\n'):])
+                    for ex in self.PYLISTING_EX.findall(pysrc):
+                        source = ex.strip()
+                        if not source: continue
+                        want = ''
+                        exc_msg = None
+                        indent = 4 # close enough.
+                        lineno = lineno_offset # Not quite right!
+                        options = self._find_options(source, name, lineno)
+                        output.append(Example(source, want, exc_msg,
+                                              lineno, indent, options))
+
+                lineno_offset += piece.count('\n')
+
+        # For debugging:
+        #for ex in output:
+        #    if isinstance(ex, Example):
+        #        print '-'*70
+        #        print ex.source
+        #output = []
+
+        return output
+    
     def get_examples(self, string, name='<string>'):
         examples = []
         ignore = False
-        print 'parsing'
+        
         for x in self.parse(string, name):
             if isinstance(x, Example):
                 if not ignore:
