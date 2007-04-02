@@ -123,7 +123,8 @@ def induce(start, productions):
 # Parsing PCFGs
 #################################################################
 
-_PARSE_RE = re.compile(r'''^(\w+(?:/\w+)?)\s*   # lhs
+_PARSE_RE = re.compile(r'''^\s*                 # leading whitespace
+                          (\w+(?:/\w+)?)\s*     # lhs
                           (?:[-=]+>)\s*         # arrow
                           (?:(                  # rhs:
                                "[^"]+"          # doubled-quoted terminal
