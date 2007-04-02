@@ -370,7 +370,8 @@ class Grammar(object):
 # Parsing CFGs
 #################################################################
 
-_PARSE_RE = re.compile(r'''^(\w+(?:/\w+)?)\s*  # lhs
+_PARSE_RE = re.compile(r'''^\s*                # leading whitespace
+                          (\w+(?:/\w+)?)\s*    # lhs
                           (?:[-=]+>)\s*        # arrow
                           (?:(                 # rhs:
                                "[^"]+"         # doubled-quoted terminal
@@ -441,14 +442,14 @@ def demo():
 
     # Create some Grammar Productions
     grammar = cfg.parse_grammar("""
-    S -> NP VP
-    PP -> P NP
-    NP -> Det N | NP PP
-    VP -> V NP | VP PP
-    Det -> 'a' | 'the'
-    N -> 'dog' | 'cat'
-    V -> 'chased' | 'sat'
-    P -> 'on' | 'in'
+      S -> NP VP
+      PP -> P NP
+      NP -> Det N | NP PP
+      VP -> V NP | VP PP
+      Det -> 'a' | 'the'
+      N -> 'dog' | 'cat'
+      V -> 'chased' | 'sat'
+      P -> 'on' | 'in'
     """)
 
     print 'A Grammar:', `grammar`
