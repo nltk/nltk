@@ -149,3 +149,15 @@ class AbstractParse(ParseI):
         if tree is None: return []
         else: return [tree]
 
+    def batch_test(self, filename):
+        f = open(filename)
+        for line in f:
+            line = line.strip()
+            if not line: continue 
+            if line.startswith('#'):
+                print line
+                continue
+            print "Sentence:", line
+            parses = self.parse(line)
+            print "%d parses." % len(parses)
+            for tree in parses: print tree
