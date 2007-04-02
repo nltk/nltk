@@ -106,6 +106,7 @@ class MyDocTestParser(DocTestParser):
                 # subpieces that are not marked by python prompts into
                 # examples with an expected output of ''.
                 elif piecenum%2 == 1 and example.strip():
+                    output.append(example[:example.find('\n')])
                     # order matters here:
                     pysrc = example[example.find('\n'):]
                     pysrc = self.DOCTEST_OPTION_RE.sub('', pysrc)
@@ -121,6 +122,8 @@ class MyDocTestParser(DocTestParser):
                         options = self._find_options(source, name, lineno)
                         output.append(Example(source, want, exc_msg,
                                               lineno, indent, options))
+                else:
+                    output.append(example)
 
                 lineno_offset += piece.count('\n')
 
