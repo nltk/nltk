@@ -114,37 +114,6 @@ def meet(a, b, pointerType=HYPERNYM):
     return (intersection(closure(a, pointerType), closure(b, pointerType)) + [None])[0]
 
 #
-# String Utility Functions
-#
-def startsWith(str, prefix):
-    """Return true iff _str_ starts with _prefix_.
-    
-    >>> startsWith('unclear', 'un')
-    1
-    """
-    return str[:len(prefix)] == prefix
-
-def endsWith(str, suffix):
-    """Return true iff _str_ ends with _suffix_.
-    
-    >>> endsWith('clearly', 'ly')
-    1
-    """
-    return str[-len(suffix):] == suffix
-
-def equalsIgnoreCase(a, b):
-    """Return true iff a and b have the same lowercase representation.
-    
-    >>> equalsIgnoreCase('dog', 'Dog')
-    1
-    >>> equalsIgnoreCase('dOg', 'DOG')
-    1
-    """
-    # test a == b first as an optimization where they're equal
-    return a == b or string.lower(a) == string.lower(b)
-
-
-#
 # Sequence Utility Functions
 #
 def issequence(item):
@@ -194,39 +163,7 @@ def product(u, v):
     >>> product("123", "abc")
     [('1', 'a'), ('1', 'b'), ('1', 'c'), ('2', 'a'), ('2', 'b'), ('2', 'c'), ('3', 'a'), ('3', 'b'), ('3', 'c')]
     """
-    return flatten1(map(lambda a, v=v:map(lambda b, a=a:(a,b), v), u))
-
-def removeDuplicates(sequence):
-    """Return a copy of _sequence_ with equal items removed.
-    
-    >>> removeDuplicates("this is a test")
-    ['t', 'h', 'i', 's', ' ', 'a', 'e']
-    >>> removeDuplicates(map(lambda tuple:apply(meet, tuple), product(N['story'].getSenses(), N['joke'].getSenses())))
-    [{noun: message, content, subject matter, substance}, {noun: abstraction}, {noun: communication}, {noun: entity}]
-
-    """
-    accumulator = []
-    for item in sequence:
-        if item not in accumulator:
-            accumulator.append(item)
-    return accumulator
-
-
-#
-# Tree Utility Functions
-#
-
-def flatten1(sequence):
-    accumulator = []
-    for item in sequence:
-        if type(item) == TupleType:
-            item = list(item)
-        if type(item) == ListType:
-            accumulator.extend(item)
-        else:
-            accumulator.append(item)
-    return accumulator
-
+    return [(a,b) for a in u for b in v]
 
 #
 # WordNet utilities
@@ -323,7 +260,7 @@ def morphy(form, pos=NOUN, collect=0):
             old, new = substitutions[0]
             substitutions = substitutions[1:]
             substitute = None
-            if endsWith(form, old):
+            if form.endswith(old):
                 substitute = form[:-len(old)] + new
                 #if dictionary.has_key(substitute):
                 #   return substitute
