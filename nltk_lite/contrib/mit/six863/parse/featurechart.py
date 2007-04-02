@@ -19,6 +19,26 @@ import cfg
 
 from featurelite import *
 
+def load_earley(filename, trace=1):
+    """
+    Load a grammar from a file, and build an Earley feature parser based on
+    that grammar.
+
+    You can optionally specify a tracing level, for how much output you
+    want to see:
+
+    0: No output.
+    1: Show edges from scanner and completer rules (not predictor).
+    2 (default): Show all edges as they are added to the chart.
+    3: Show all edges, plus the results of successful unifications.
+    4: Show all edges, plus the results of all attempted unifications.
+    5: Show all edges, plus the results of all attempted unifications,
+       including those with cached results.
+    """
+
+    grammar = GrammarFile.read_file(filename)
+    return grammar.earley_parser(trace)
+
 class FeatureTreeEdge(TreeEdge):
     """
     FIXME: out of date documentation
@@ -125,6 +145,10 @@ class FeatureTreeEdge(TreeEdge):
         return '%s %s' % (str, self._vars)
 
 class FeatureFundamentalRule(FundamentalRule):
+    def __init__(self, trace=0):
+        FundamentalRule.__init__(self)
+        self.trace = trace
+        self.unify_memo = {}
     def apply_iter(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
@@ -137,7 +161,7 @@ class FeatureFundamentalRule(FundamentalRule):
         right_bindings = right_edge.vars().copy()
         try:
             unified = unify(left_edge.next(), right_edge.lhs(), left_bindings,
-            right_bindings)
+            right_bindings, memo=self.unify_memo, trace=self.trace-2)
             if isinstance(unified, Category): unified.freeze()
         except UnificationFailure: return
 
@@ -156,7 +180,9 @@ class FeatureFundamentalRule(FundamentalRule):
         if changed_chart: yield new_edge
 
 class SingleEdgeFeatureFundamentalRule(SingleEdgeFundamentalRule):
-    _fundamental_rule = FeatureFundamentalRule()
+    def __init__(self, trace=0):
+        self.trace = trace
+        self._fundamental_rule = FeatureFundamentalRule(trace)
     
     def apply_iter(self, chart, grammar, edge1):
         fr = self._fundamental_rule
@@ -175,12 +201,17 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
     """
     The @C{TopDownExpandRule} specialised for feature-based grammars.
     """
+    def __init__(self, trace=0):
+        TopDownExpandRule.__init__(self)
+        self.unify_memo = {}
+        self.trace = trace
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
         for prod in grammar.productions():
             bindings = edge.vars().copy()
             try:
-                unified = unify(edge.next(), prod.lhs(), bindings, {})
+                unified = unify(edge.next(), prod.lhs(), bindings, {},
+                memo=self.unify_memo, trace=self.trace-2)
                 if isinstance(unified, Category): unified.freeze()
             except UnificationFailure:
                 continue
@@ -233,8 +264,8 @@ class FeatureEarleyChartParse(EarleyChartParse):
         chart.insert(edge, ())
 
         # Create the 3 rules:
-        predictor = FeatureTopDownExpandRule()
-        completer = SingleEdgeFeatureFundamentalRule()
+        predictor = FeatureTopDownExpandRule(self._trace)
+        completer = SingleEdgeFeatureFundamentalRule(self._trace)
         #scanner = FeatureScannerRule(self._lexicon)
 
         for end in range(chart.num_leaves()+1):
@@ -257,7 +288,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
             for edge in chart.select(end=end):
                 if edge.is_incomplete():
                     for e in predictor.apply(chart, grammar, edge):
-                        if self._trace > 0:
+                        if self._trace > 1:
                             print 'Predictor', chart.pp_edge(e,w)
                 #if edge.is_incomplete():
                 #    for e in scanner.apply(chart, grammar, edge):
@@ -330,10 +361,6 @@ def run_profile():
     p = pstats.Stats('/tmp/profile.out')
     p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
     p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
-
-def load_earley(filename):
-    grammar = GrammarFile.read_file(filename)
-    return grammar.earley_parser()
 
 if __name__ == '__main__':
     demo()

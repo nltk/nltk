@@ -282,7 +282,7 @@ def apply(feature, bindings):
     """
     return _copy_and_bind(feature, bindings.copy())
 
-def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
+def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
     """
     In general, the 'unify' procedure takes two values, and either returns a
     value that provides the information provided by both values, or fails if
@@ -565,7 +565,6 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
     @return: The result of unifying the two objects.
     @rtype: C{object} (probably a mapping)
     """
-
     if fail is None:
         def failerror(f1, f2):
             raise UnificationFailure
@@ -577,11 +576,26 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
     else:
         if bindings1 is None: bindings1 = {}
         if bindings2 is None: bindings2 = bindings1
+
+    if memo is None: memo = {}
+    copymemo = {}
+    if memo.has_key((id(feature1), id(feature2))):
+        result = memo[id(feature1), id(feature2)]
+        if result is UnificationFailure:
+            if trace > 2:
+                print '(cached) Unifying: %r + %r --> [fail]' % (feature1, feature2)
+            raise result()
+        if trace > 2:
+            print '(cached) Unifying: %r + %r --> ' % (feature1, feature2),
+            print repr(result)
+        return result
+
+    if trace > 1:
+        print 'Unifying: %r + %r --> ' % (feature1, feature2),
     
     # Make copies of the two structures (since the unification algorithm is
     # destructive). Use the same memo, to preserve reentrance links between
     # them.
-    copymemo = {}
     copy1 = _copy_and_bind(feature1, bindings1, copymemo)
     copy2 = _copy_and_bind(feature2, bindings2, copymemo)
     # Preserve links between bound variables and the two feature structures.
@@ -592,8 +606,13 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
                 b[vname] = copymemo[value_id]
 
     # Go on to doing the unification.
-    unified = _destructively_unify(copy1, copy2, bindings1, bindings2, {},
-    fail)
+    try:
+        unified = _destructively_unify(copy1, copy2, bindings1, bindings2, memo,
+        fail)
+    except UnificationFailure:
+        if trace > 1: print '[fail]'
+        memo[id(feature1), id(feature2)] = UnificationFailure
+        raise
 
     _apply_forwards_to_bindings(bindings1)
     _apply_forwards_to_bindings(bindings2)
@@ -602,6 +621,12 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, fail=None):
     _lookup_values(bindings1, {}, remove=True)
     _lookup_values(bindings2, {}, remove=True)
 
+    if trace > 1:
+        print repr(unified)
+    elif trace > 0:
+        print 'Unifying: %r + %r --> %r' % (feature1, feature2, repr(unified))
+    
+    memo[id(feature1), id(feature2)] = unified
     return unified
 
 def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail,
@@ -614,12 +639,14 @@ depth=0):
     UnificationFailure is raised, and the values of C{self}
     and C{other} are undefined.
     """
-    if depth > 10:
+    if depth > 50:
+        print "Infinite recursion in this unification:"
         print show(dict(feature1=feature1, feature2=feature2,
         bindings1=bindings1, bindings2=bindings2, memo=memo))
-        raise ValueError
+        raise ValueError, "Infinite recursion in unification"
     if memo.has_key((id(feature1), id(feature2))):
-        return memo[id(feature1), id(feature2)]
+        result = memo[id(feature1), id(feature2)]
+        if result is UnificationFailure: raise result()
     unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail,
     depth)
     memo[id(feature1), id(feature2)] = unified
@@ -661,7 +688,7 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     # Do the destructive part of unification.
 
     while feature2.has_key(_FORWARD): feature2 = feature2[_FORWARD]
-    feature2[_FORWARD] = feature1
+    if feature1 is not feature2: feature2[_FORWARD] = feature1
     for (fname, val2) in feature2.items():
         if fname == _FORWARD: continue
         val1 = feature1.get(fname)

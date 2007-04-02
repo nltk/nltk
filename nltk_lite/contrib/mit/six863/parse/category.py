@@ -12,7 +12,7 @@
 
 from nltk_lite.semantics import logic
 from cfg import *
-from nltk_lite.contrib.mit.six863 import kimmo
+from kimmo import kimmo
 
 from featurelite import *
 from copy import deepcopy
@@ -36,8 +36,8 @@ class Category(Nonterminal, FeatureI):
         - Categories can be "frozen" so that they can act as hash keys;
           before they are frozen, they are mutable.
 
-        - In addition to being hashable, Categories have consistent repr()
-          and str() representations.
+        - In addition to being hashable, Categories have consistent str()
+          representations.
 
         - Categories have one feature marked as the 'head', which prints
           differently than other features if it has a value. For example,
@@ -197,8 +197,7 @@ class Category(Nonterminal, FeatureI):
         """
         @return: A string representation of this feature structure.
         """
-        #FIXME: don't show /
-        return yaml.dump(self)
+        return str(self)
     
     def __str__(self):
         """
