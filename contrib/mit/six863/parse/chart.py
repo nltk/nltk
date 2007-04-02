@@ -11,6 +11,7 @@
 
 from __init__ import *
 from tree import Tree
+import cfg
 
 """
 Data classes and parser implementations for \"chart parsers\", which
@@ -888,15 +889,6 @@ class AbstractChartRule(object):
       - A default implementation for C{__str__}, which returns a
         name basd on the rule's class name.
     """
-    def __init__(self):
-        # This is a sanity check, to make sure that NUM_EDGES is
-        # consistant with apply() and  apply_iter():
-        for method in self.apply, self.apply_iter:
-            num_args = method.im_func.func_code.co_argcount
-            has_vararg = method.im_func.func_code.co_flags & 4
-            if num_args != self.NUM_EDGES+3 and not has_vararg:
-                raise AssertionError('NUM_EDGES is incorrect in for %s.%s' %
-                                     (self.__class__, func.__name__))
 
     # Subclasses must define apply_iter.
     def apply_iter(self, chart, grammar, *edges):
