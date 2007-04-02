@@ -51,14 +51,14 @@ The build requires docutils, pdflatex, python imaging library, epydoc
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions and compare size with previous distribution
 
--rw-r--r-- 1 sb sb   1089735 2007-03-02 17:48 nltk_lite-0.7.2-1.noarch.rpm
--rw-r--r-- 1 sb sb 150046720 2007-03-02 17:53 nltk_lite-0.7.2.iso
--rw-r--r-- 1 sb sb    501488 2007-03-02 17:48 nltk_lite-0.7.2.tar.gz
--rw-r--r-- 1 sb sb    630178 2007-03-02 17:48 nltk_lite-0.7.2.win32.exe
--rw-r--r-- 1 sb sb    579942 2007-03-02 17:48 nltk_lite-0.7.2.zip
--rw-r--r-- 1 sb sb  27130839 2007-03-02 17:52 nltk_lite-corpora-0.7.2.zip
--rw-r--r-- 1 sb sb  30218302 2007-03-02 17:51 nltk_lite-doc-0.7.2.zip
--rw-r--r-- 1 sb sb     79869 2007-03-02 17:51 nltk_lite-examples-0.7.2.zip
+-rw-r--r-- 1 sb sb   1093121 2007-04-02 13:13 nltk_lite-0.7.3-1.noarch.rpm
+-rw-r--r-- 1 sb sb 154634240 2007-04-02 13:16 nltk_lite-0.7.3.iso
+-rw-r--r-- 1 sb sb    504299 2007-04-02 13:13 nltk_lite-0.7.3.tar.gz
+-rw-r--r-- 1 sb sb    631066 2007-04-02 13:13 nltk_lite-0.7.3.win32.exe
+-rw-r--r-- 1 sb sb    580840 2007-04-02 13:13 nltk_lite-0.7.3.zip
+-rw-r--r-- 1 sb sb  27606467 2007-04-02 13:14 nltk_lite-corpora-0.7.3.zip
+-rw-r--r-- 1 sb sb  34318563 2007-04-02 13:16 nltk_lite-doc-0.7.3.zip
+-rw-r--r-- 1 sb sb     79869 2007-04-02 13:14 nltk_lite-examples-0.7.3.zip
 
   (test the distributions?)
 
