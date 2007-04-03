@@ -46,7 +46,7 @@ class OneR(Classifier):
         try:
             return getattr(self, algorithm)()
         except AttributeError:
-            raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + algorithm.__str__() + ' is not defined.')
+            raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + str(algorithm) + ' is not defined.')
         
     def update_count_in_decision_stumps(self, instance):
         for stump in self.decision_stumps:

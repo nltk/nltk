@@ -30,3 +30,22 @@ class DecisionTreeTestCase(unittest.TestCase):
         max_ig_stump = tree.maximum_information_gain()
         self.assertEqual('size', max_ig_stump.attribute.name)
         
+
+        #                     outlook
+        #               sunny  / | \ rainy
+        #                     /  |  \
+        #           temperature       windy
+        #             
+    def test_ignores_selected_attributes_in_next_recursive_iteration(self):
+        tree = decisiontree.DecisionTree(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.assertEqual('outlook', tree.root.attribute.name)
+        children = tree.root.children
+        self.assertEqual(2, len(children))
+        
+        sunny = children['sunny']
+        self.assertEqual('temperature', sunny.attribute.name)
+        self.assertEqual(0, len(sunny.children))
+        
+        rainy = children['rainy']
+        self.assertEqual('windy', rainy.attribute.name)
+        self.assertEqual(0, len(rainy.children))
