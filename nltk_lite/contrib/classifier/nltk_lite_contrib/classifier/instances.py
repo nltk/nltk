@@ -6,26 +6,26 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import klass as k, attributes as attrs, instance as ins, item, file, confusionmatrix as cm
+from nltk_lite_contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm
 from nltk_lite_contrib.classifier.exceptions import systemerror as system
 
 class Instances:
     def __init__(self, path, suffix):
         self.instances = []
         if path is not None:
-            file.File(path, suffix).execute(self.create_and_append_instance)
+            cfile.File(path, suffix).execute(self.create_and_append_instance)
             
-    def create_and_append_instance(self, l):
-        ln = item.Item(l).stripNewLineAndWhitespace()
-        if not len(ln) == 0:
-            self.instances.append(self.create_instance(ln))
+    def create_and_append_instance(self, line):
+        _line = item.Item(line).stripNewLineAndWhitespace()
+        if not len(_line) == 0:
+            self.instances.append(self.create_instance(_line))
             
     def create_instance(self, line):
         return AssertionError()
 
     def are_valid(self, klass, attributes):
         for instance in self.instances:
-            if not instance.isValid(klass, attributes): 
+            if not instance.is_valid(klass, attributes): 
                 return False
         return True
     
@@ -53,7 +53,7 @@ class Instances:
 
     
 class TrainingInstances(Instances):
-    def __init__(self, path, ext = file.DATA):
+    def __init__(self, path, ext = cfile.DATA):
         Instances.__init__(self, path, ext)
         
     def create_instance(self, line):
@@ -69,7 +69,7 @@ class TrainingInstances(Instances):
     
 class TestInstances(Instances):
     def __init__(self, path):
-        Instances.__init__(self, path, file.TEST)
+        Instances.__init__(self, path, cfile.TEST)
         
     def create_instance(self, line):
         return ins.TestInstance(line)
@@ -80,7 +80,7 @@ class TestInstances(Instances):
     
 class GoldInstances(Instances):
     def __init__(self, path):
-        Instances.__init__(self, path, file.GOLD)
+        Instances.__init__(self, path, cfile.GOLD)
         
     def create_instance(self, line):
         return ins.GoldInstance(line)

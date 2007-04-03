@@ -14,6 +14,11 @@ from math import log
 class DecisionStump:
     def __init__(self, attribute, klass):
         self.attribute = attribute
+        """
+        counts is a dictionary in which 
+        each key is an attribute value
+        and each value is a dictionary of class distribution for that attribute value
+        """
         self.counts, self.children = {}, {} #it has children only in decision trees
         self.root = klass.dictionary_of_values()
         for value in attribute.values:

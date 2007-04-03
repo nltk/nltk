@@ -6,13 +6,13 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-import nameitem as ni, attribute as a, file
+import nameitem as ni, attribute as a, cfile
 
 class Attributes:
     def __init__(self, path):
         self.attributes = []
         self.__index = 0
-        file.File(path, file.NAMES).execute(self.create_and_append_values)
+        cfile.File(path, cfile.NAMES).execute(self.create_and_append_values)
                 
     def create_and_append_values(self, l):
         nameitem = ni.NameItem(l)      

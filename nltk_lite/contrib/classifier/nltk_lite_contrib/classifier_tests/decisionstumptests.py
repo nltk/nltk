@@ -5,8 +5,9 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite_contrib.classifier import decisionstump as ds, attributes as attrs, attribute as attr, klass as k, instances as ins, instance
+from nltk_lite_contrib.classifier import decisionstump as ds, attributes as attrs, klass as k, instances as ins, instance
 from nltk_lite_contrib.classifier_tests import *
+import math
 
 class DecisionStumpTestCase(unittest.TestCase):
     def setUp(self):
@@ -54,7 +55,7 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('overcast,mild,normal,true,yes')))
         self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('rainy,mild,normal,true,yes')))
         
-    def test_entropy(self):
+    def test_entropy_function(self):
         dictionary_of_klass_counts = {}
         dictionary_of_klass_counts['yes'] = 2
         dictionary_of_klass_counts['no'] = 0
@@ -68,16 +69,16 @@ class DecisionStumpTestCase(unittest.TestCase):
         dictionary_of_klass_counts['no'] = 5
         self.assertAlmostEqual(0.94, ds.entropy(dictionary_of_klass_counts), 2)
         
-        # verify : -(1.0/4 * log(1.0/4, 2)) + -(3.0/4 * log(3.0/4, 2))
         dictionary_of_klass_counts['yes'] = 1
         dictionary_of_klass_counts['no'] = 3
-        self.assertAlmostEqual(0.811278, ds.entropy(dictionary_of_klass_counts), 6)
+        expected = -(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))
+        self.assertAlmostEqual(expected, ds.entropy(dictionary_of_klass_counts), 6)
 
-        # verify: -(2.0/3 * log(2.0/3, 2))  + -(1.0/3 * log(1.0/3, 2))
         dictionary_of_klass_counts['yes'] = 2
         dictionary_of_klass_counts['no'] = 1
-        self.assertAlmostEqual(0.918296, ds.entropy(dictionary_of_klass_counts), 6)
-        
+        expected = -(2.0/3 * math.log(2.0/3, 2))  + -(1.0/3 * math.log(1.0/3, 2))
+        self.assertAlmostEqual(expected, ds.entropy(dictionary_of_klass_counts), 6)
+                
     def test_total_counts(self):
         dictionary_of_klass_counts = {}
         dictionary_of_klass_counts['yes'] = 2
@@ -101,19 +102,32 @@ class DecisionStumpTestCase(unittest.TestCase):
     #                    no  0
     #
     # mean info = 4.0/9 * (-(1.0/4 * log(1.0/4, 2)) + -(3.0/4 * log(3.0/4, 2))) + 3.0/9 * (-(2.0/3 * log(2.0/3, 2))  + -(1.0/3 * log(1.0/3, 2))) 
-    #           = 0.666666              
     def test_mean_information(self):
         self.__update_stump()
-        self.assertAlmostEqual(0.6666666, self.outlook_stump.mean_information(), 6)
+        expected = 4.0/9 * (-(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))) + 3.0/9 * (-(2.0/3 * math.log(2.0/3, 2))  + -(1.0/3 * math.log(1.0/3, 2))) 
+        self.assertAlmostEqual(expected, self.outlook_stump.mean_information(), 6)
 
     # info_gain = entropy(root) - mean_information()
     # entropy(root) = -(5.0/9 * log(5.0/9, 2))  + -(4.0/9 * log(4.0/9, 2)) = 0.99107605983822222
     # mean_info = 0.666666666
     def test_information_gain(self):
         self.__update_stump()
-        self.assertAlmostEqual(0.32440939, self.outlook_stump.information_gain(), 6)
+        entropy = -(5.0/9 * math.log(5.0/9, 2))  + -(4.0/9 * math.log(4.0/9, 2))
+        mean_info = 4.0/9 * (-(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))) + 3.0/9 * (-(2.0/3 * math.log(2.0/3, 2))  + -(1.0/3 * math.log(1.0/3, 2))) 
+        expected = entropy - mean_info
+        self.assertAlmostEqual(expected, self.outlook_stump.information_gain(), 6)
         
     def test_returns_entropy_for_each_attribute_value(self):
         self.__update_stump()
-        self.assertEqual(0, self.outlook_stump.entropy('overcast'))
-        self.assertAlmostEqual(0.811278, self.outlook_stump.entropy('sunny'), 6)
+
+        # there are 4 training instances in all out of which 
+        # 3 training instances have their class assigned as no and
+        # 1 training instance has its class assigned as yes
+        expected = -(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))
+        self.assertAlmostEqual(expected, self.outlook_stump.entropy('sunny'), 6)
+        
+        expected = -(2.0/2 * math.log(2.0/2, 2)) + 0
+        self.assertAlmostEqual(0, self.outlook_stump.entropy('overcast'))
+        
+        expected = -(2.0/3 * math.log(2.0/3, 2)) + -(1.0/3 * math.log(1.0/3, 2))
+        self.assertAlmostEqual(expected, self.outlook_stump.entropy('rainy'))
