@@ -16,7 +16,7 @@ class Instance:
     def __init__(self):
         self.klass_value, self.attrs, self.classifiedKlass = None, None, None
         
-    def isValid(self, klass, attributes):
+    def is_valid(self, klass, attributes):
         return AssertionError()
     
     def value(self, attribute):
@@ -51,7 +51,7 @@ class TrainingInstance(Instance):
         values = line.split(',')
         self.klass_value, self.attrs = values[-1], values[:-1]
         
-    def isValid(self, klass, attributes):
+    def is_valid(self, klass, attributes):
         return klass.has_value(self.klass_value) and attributes.has_values(self.attrs)
     
     def __str__(self):
@@ -65,7 +65,7 @@ class TestInstance(Instance):
     def set_klass(self, klass):
         self.classifiedKlass = klass
         
-    def isValid(self, klass, attributes):
+    def is_valid(self, klass, attributes):
         return attributes.has_values(self.attrs)
     
     def __str__(self):
@@ -75,8 +75,8 @@ class GoldInstance(TrainingInstance, TestInstance):
     def __init__(self, line):
         TrainingInstance.__init__(self, line)
         
-    def isValid(self, klass, attributes):
-        return TrainingInstance.isValid(self, klass, attributes)
+    def is_valid(self, klass, attributes):
+        return TrainingInstance.is_valid(self, klass, attributes)
     
     def classificationType(self):
         if self.classifiedKlass == None: raise system.SystemError('Cannot find classification type for instance that has not been classified')

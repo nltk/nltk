@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite_contrib.classifier.exceptions import systemerror as se
-from nltk_lite_contrib.classifier import nameitem as ni, file
+from nltk_lite_contrib.classifier import autoclass as ac
 
 class Attribute:
     #line is cleansed of newline, whitespace and dots in attributes
@@ -87,30 +87,9 @@ def __pos_of_colon(line):
 
 def create_values(number):
     values = []
-    current = 'a'
+    current = ac.FIRST
     for index in range(number):
-        values.append(current)
-        current = next(current)
+        values.append(current.name)
+        current = current.next()
     return values
 
-def next(current):
-    base26 = __base26(current)
-    base26 += 1
-    return __string(base26)
-
-def __base26(string):
-    base26 = 0
-    length = len(string)
-    for index in range(length):
-        numeric = ord(string[index]) - 97
-        if (index == length - 1): base26 += numeric
-        else: base26 += numeric * 26 * (length - index - 1)
-    return base26
-
-def __string(base26):
-    string = ''
-    while (base26 /26 > 0):
-        string = chr((base26 % 26) + 97) + string
-        base26 = base26 / 26
-    string = chr((base26 % 26) + 97) + string
-    return string

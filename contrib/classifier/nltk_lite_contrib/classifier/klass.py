@@ -6,26 +6,26 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite_contrib.classifier import nameitem as ni, file
+from nltk_lite_contrib.classifier import nameitem as ni, cfile
 
 class Klass:
     def __init__(self, path):
-        self.__processed, self.__byValue = False, {}
-        file.File(path, file.NAMES).execute(self.create_klass)
+        self.__processed, self.values = False, None
+        cfile.File(path, cfile.NAMES).execute(self.create_klass)
         
-    def create_klass(self, l):
+    def create_klass(self, line):
         if not self.__processed:
-            self.values = ni.NameItem(l).processed().split(',')
+            self.values = ni.NameItem(line).processed().split(',')
             self.__processed = True
             
-    def has_value(self, toTest):
-        return self.values.__contains__(toTest)
+    def has_value(self, to_test):
+        return self.values.__contains__(to_test)
     
     def dictionary_of_values(self):
-        map = {}
+        _values = {}
         for value in self.values:
-            map[value] = 0
-        return map
+            _values[value] = 0
+        return _values
     
     def __len__(self):
         return len(self.values)
