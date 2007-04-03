@@ -9,6 +9,12 @@ from nltk_lite_contrib.classifier import attribute as a
 from nltk_lite_contrib.classifier_tests import *
 
 class AttributeTestCase(unittest.TestCase):
+    def test_get_name(self):
+        self.assertEqual('foo', a.get_name('foo:a,b,c'))
+
+    def test_get_values(self):
+        self.assertEqual(['a', 'b', 'c'], a.get_values('foo:a,b,c'))
+    
     def test_attribute_creation(self):
         attr = a.Attribute('foo:a,b,c', 0)
         self.assertEqual('foo', attr.name)
@@ -27,16 +33,7 @@ class AttributeTestCase(unittest.TestCase):
         self.assertEqual(attr, same, 'they should be equal')
         self.assertNotEqual(attr, othername, 'they are not equal')
         self.assertNotEqual(attr, otherval, 'they are not equal')
-    
-    def test_next(self):
-        self.assertEqual('b', a.next('a'))    
-        self.assertEqual('c', a.next('b'))    
-        self.assertEqual('z', a.next('y'))    
-        self.assertEqual('ba', a.next('z'))    
-        self.assertEqual('bb', a.next('ba'))
-        self.assertEqual('bc', a.next('bb'))    
-        self.assertEqual('ca', a.next('bz'))
-        
+            
     def test_create_values(self):
         self.assertEqual(['a', 'b', 'c', 'd', 'e'], a.create_values(5))
         
