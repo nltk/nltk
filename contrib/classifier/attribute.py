@@ -27,6 +27,9 @@ class Attribute:
     def has_value(self, to_test):
         return self.values.__contains__(to_test)
     
+    def is_continuous(self):
+        return self.type == CONTINUOUS
+
     def unsupervised_equal_width(self, number):
         values = []
         for value in self.values:
@@ -35,9 +38,6 @@ class Attribute:
         first, last = float(values[0]), float(values[len(values) - 1])
         ranges = self.__create_ranges(number, first, last)
         return self.__mapping(ranges, create_values(number))
-    
-    def is_continuous(self):
-        return self.type == CONTINUOUS
 
     def __create_ranges(self, number_of_splits, first, last):
         """

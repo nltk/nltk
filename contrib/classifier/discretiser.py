@@ -35,4 +35,3 @@ class Discretiser:
             attribute = self.attributes[attribute_index]
             attribute.unsupervised_equal_width(widths[index])
             
-        
