@@ -1,0 +1,5 @@
+yes,no.
+outlook: sunny,overcast,rainy.
+temperature: continuous.
+humidity: high,normal.
+windy: true,false.

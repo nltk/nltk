@@ -36,6 +36,8 @@ setup(
                 'nltk_lite.misc', 'nltk_lite.model', 'nltk_lite.cluster',
                 'nltk_lite.semantics', 'nltk_lite.wordnet', 'nltk_lite.etree',
                 'nltk_lite.contrib', 'nltk_lite.contrib.toolbox',
-                'nltk_lite.contrib.fst', 'yaml'
+                'nltk_lite.contrib.fst', 'yaml',
+                'nltk_lite.contrib.classifier', 'nltk_lite.contrib.classifier.exceptions',
+                'nltk_lite.contrib.classifier_tests'
                 ],
     )
