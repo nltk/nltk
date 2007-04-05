@@ -6,7 +6,7 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-
+from nltk_lite.contrib.classifier.exceptions import systemerror as se
 DELTA = 0.000001
 
 class Range:
@@ -15,14 +15,19 @@ class Range:
         any number within this range should be greater than or equal to self.lower and 
         less than (or less than equal to depending on whether it includes the max) self.upper
         """
-        self.lower = lower
-        self.upper = upper
-        self.__delta_added = False
+        if upper < lower: raise se.SystemError('Lower limit cannot be greater than the Upper limit in a range')
+        self.__uninitialized = False
+        if upper == lower == 0: 
+            self.__uninitialized = True
+        self.lower, self.upper, self.__delta_added = lower, upper, False
         if upper_includes_max:
             self.upper += DELTA
             self.__delta_added = True
     
     def include(self, number):
+        if self.__uninitialized:
+            self.lower, self.upper = number, number
+            self.__uninitialized = False
         if number < self.lower:
             self.lower = number
         elif number >= self.upper:

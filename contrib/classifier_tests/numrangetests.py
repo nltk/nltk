@@ -3,12 +3,12 @@
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
 # URL: <http://nltk.sf.net>
-from nltk_lite.contrib.classifier import range
+from nltk_lite.contrib.classifier import numrange as r
 from nltk_lite.contrib.classifier_tests import *
 
 class RangeTestCase(unittest.TestCase):
     def test_within_range(self):
-        _range = range.Range(0, 4)
+        _range = r.Range(0, 4)
         self.assertTrue(_range.includes(0))
         self.assertTrue(_range.includes(1))
         self.assertTrue(_range.includes(3))
@@ -16,28 +16,34 @@ class RangeTestCase(unittest.TestCase):
         self.assertFalse(_range.includes(4))
         self.assertFalse(_range.includes(4.1))
         
-        _new_range = range.Range(0, 4, True)
+        _new_range = r.Range(0, 4, True)
         self.assertTrue(_new_range.includes(4))
         self.assertFalse(_range.includes(4.1))
                 
     def test_range_equality(self):
-        _range = range.Range(0, 4)
-        _same = range.Range(0, 4)
+        _range = r.Range(0, 4)
+        _same = r.Range(0, 4)
         self.assertEqual(_range, _same)
         self.assertEqual(hash(_range), hash(_same))
-        _other = range.Range(0, 4.1)
+        _other = r.Range(0, 4.1)
         self.assertNotEqual(_range, _other)
         
     def test_include_expands_range(self):
-        _range = range.Range()
+        _range = r.Range()
         _range.include(4)
+        self.assertFalse(_range.includes(0))
+        self.assertFalse(_range.includes(3.99999))
+        self.assertTrue(_range.includes(4))
+        self.assertFalse(_range.includes(4.000002))
+        
+        _range.include(0)
         self.assertTrue(_range.includes(0))
         self.assertTrue(_range.includes(1))
         self.assertTrue(_range.includes(4))
         
-        _other = range.Range(0, 4)
+        _other = r.Range(0, 4)
         self.assertTrue(_range, _other)
-        _same = range.Range(0, 4, True)
+        _same = r.Range(0, 4, True)
         self.assertTrue(_range, _same)
         
         _other.include(4)
@@ -49,15 +55,16 @@ class RangeTestCase(unittest.TestCase):
         self.assertTrue(_range.includes(5))
         
     def test_split_returns_none_when_lower_eq_upper(self):
-        _range = range.Range()
+        _range = r.Range()
         self.assertEquals(None, _range.split(2))
         
     def test_split_returns_none_if_size_of_each_split_is_less_than_delta(self):
-        _range = range.Range(0, 0.000005)
+        _range = r.Range(0, 0.000005)
         self.assertEquals(None, _range.split(7))
         
     def test_split_includes_the_highest_and_lowest(self):
-        _range = range.Range()
+        _range = r.Range()
+        _range.include(0)
         _range.include(4)
         splits = _range.split(4)
         self.assertEqual(0, splits[0].lower)

@@ -6,8 +6,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm
-from nltk_lite.contrib.classifier.exceptions import systemerror as system
+from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
+from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 
 class Instances:
     def __init__(self, path, suffix):
@@ -32,7 +32,7 @@ class Instances:
     def for_each(self, method):
         for instance in self.instances:
             method(instance)
-                    
+            
     def discretise(self, method):
         pass
     
@@ -65,8 +65,21 @@ class TrainingInstances(Instances):
             if(instance.value(attribute) == attr_value):
                 new_instances.instances.append(instance)
         return new_instances
-
     
+    def as_ranges(self, attributes):
+        ranges = []
+        for attribute in attributes:
+            if attribute.is_continuous():
+                ranges.append(r.Range())
+            else:
+                raise inv.InvalidDataError('Cannot discretise non continuous attribute ' + attribute.name)
+        for instance in self.instances:
+            values = instance.values(attributes)
+            for index in range(len(values)):
+                ranges[index].include(float(values[index]))
+        return ranges
+                    
+
 class TestInstances(Instances):
     def __init__(self, path):
         Instances.__init__(self, path, cfile.TEST)
@@ -77,6 +90,7 @@ class TestInstances(Instances):
     def print_all(self):
         for instance in self.instances:
             print instance
+
     
 class GoldInstances(Instances):
     def __init__(self, path):

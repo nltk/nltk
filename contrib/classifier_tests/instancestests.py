@@ -6,7 +6,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier import instances as ins, instance, klass as k, attributes as attrs
-from nltk_lite.contrib.classifier.exceptions import systemerror as system
+from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk_lite.contrib.classifier_tests import *
 
 class InstancesTestCase(unittest.TestCase):
@@ -53,7 +53,46 @@ class InstancesTestCase(unittest.TestCase):
         filtered = training.filter(attributes[1], 'big')
         self.assertEqual(3, len(filtered))
         self.assertEqual(7, len(training))
- 
+
+    def test_ranges_of_attribute_values(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'weather'
+        training = ins.TrainingInstances(path)
+        attributes = attrs.Attributes(path)
+        ranges = training.as_ranges([attributes[1]])
+        self.assertEqual(1, len(ranges))
+        self.assertEqual(6.0, ranges[0].lower)
+        self.assertAlmostEqual(33.100001, ranges[0].upper, 6)
+        
+    def test_ranges_of_multiple_attribute_values(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = ins.TrainingInstances(path)
+        attributes = attrs.Attributes(path)
+        ranges = training.as_ranges([attributes[0], attributes[1], attributes[4], attributes[5], attributes[6]])
+        self.assertEqual(5, len(ranges))
+        self.assertEqual(0, ranges[0].lower)
+        self.assertAlmostEqual(5.000001, ranges[0].upper)
+        self.assertEqual(19, ranges[1].lower)
+        self.assertAlmostEqual(42.000001, ranges[1].upper)
+        self.assertEqual(0, ranges[2].lower)
+        self.assertAlmostEqual(2.000001, ranges[2].upper)
+        self.assertEqual(0, ranges[3].lower)
+        self.assertAlmostEqual(6.000001, ranges[3].upper)
+        self.assertEqual(0, ranges[4].lower)
+        self.assertAlmostEqual(120000.000001, ranges[4].upper)
+
+    def test_attempt_to_discretise_non_continuous_attribute_raises_error(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'weather'
+        training = ins.TrainingInstances(path)
+        attributes = attrs.Attributes(path)
+        try:
+            ranges = training.as_ranges([attributes[0]])
+            self.fail('should throw error')
+        except inv.InvalidDataError:
+            pass
+        
+
+        
+        
 #    def test_naive_unsupervised_discretization(self):
 #        training = ins.TrainingInstances()
 

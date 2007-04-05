@@ -22,6 +22,12 @@ class Instance:
     def value(self, attribute):
         return self.attrs[attribute.index]
     
+    def values(self, attributes):
+        _values = []
+        for attribute in attributes:
+            _values.append(self.attrs[attribute.index])
+        return _values
+    
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
