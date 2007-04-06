@@ -41,6 +41,7 @@ class SequentialBackoff(TagI):
                 if tag == None and self._backoff:
                     tag = self._backoff.tag_one(token)
                 if self._history:
+                    del self._history[0]
                     self._history.append(tag)
                 yield (token, tag)
 
