@@ -150,23 +150,6 @@ Lookup tagger (possibly extend the dictionary later for more effective testing)
 Unit tests for N-gram taggers.
 --------------------------------------------------------------------------------
 
-Test the windowing methods that are used to store context for a given word.
-
-    >>> window = Window(2)
-    >>> window.append('Sense')
-    >>> window.append('and')
-    >>> window.append('Sensibility')
-    >>> tuple(window)
-    ('and', 'Sensibility')
-
-    >>> window.set(('Sense', 'and', 'Sensibility'))
-    >>> tuple(window)
-    ('and', 'Sensibility')
-
-    >>> window.clear()
-    >>> tuple(window)
-    (None, None)
-
 Create a default, unigram, bigram and trigram tagger.
 
     >>> base_tagger = Default('nn')
