@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import attributes as a, attribute as attr
+from nltk_lite.contrib.classifier import attributes as a, attribute as attr, discretisedattribute as da, numrange as nr
 from nltk_lite.contrib.classifier_tests import *
 
 class AttributesTestCase(unittest.TestCase):
@@ -49,6 +49,33 @@ class AttributesTestCase(unittest.TestCase):
     def test_does_not_check_continuous_attribute_for_validity(self):
         has_cont = a.Attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
         self.assertTrue(has_cont.has_values(['sunny','21','normal','true']))
+        
+    def test_return_subset_as_requested_by_index_array(self):
+        attrs = a.Attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
+        subset = attrs.subset([2, 4, 5])
+        self.assertEqual(3, len(subset))
+        self.assertEqual(2, subset[0].index)
+        self.assertEqual(4, subset[1].index)
+        self.assertEqual(5, subset[2].index)
+
+    def test_discretise_replaces_cont_attrs_in_args_with_disc_ones(self):
+        attrs = a.Attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
+        self.assertTrue(attrs[0].is_continuous())
+        self.assertTrue(attrs[4].is_continuous())
+        self.assertTrue(attrs[6].is_continuous())
+        self.assertTrue(attrs[7].is_continuous())
+        
+        attrs.discretise([da.DiscretisedAttribute('dependents', nr.Range(0, 2, True).split(2), 4), \
+                          da.DiscretisedAttribute('annualincome', nr.Range(0, 120000, True).split(5), 6)])
+        
+        self.assertFalse(attrs[4].is_continuous())
+        self.assertFalse(attrs[6].is_continuous())
+        
+        self.assertTrue(attrs[0].is_continuous())
+        self.assertTrue(attrs[7].is_continuous())
+        
+        self.assertEqual(['a', 'b'], attrs[4].values)
+        self.assertEqual(['a', 'b', 'c', 'd', 'e'], attrs[6].values)
         
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
