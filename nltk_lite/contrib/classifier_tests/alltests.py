@@ -12,7 +12,9 @@ from nltk_lite.contrib.classifier_tests import klasstests as klass, nameitemtest
         cfiletests as cfile, confusionmatrixtests as confusionmatrix, \
         decisionstumptests as decisionstump, onertests as oner, \
         classifytests as classify, decisiontreetests as decisiontree, \
-        autoclasstests as autoclass, numrangetests as numrange
+        autoclasstests as autoclass, numrangetests as numrange, \
+        discretisertests as discretiser, discretisedattributetests as discretisedattribute, \
+        discretisetests as discretise
 import unittest
 
 def allTestsSuite():
@@ -31,7 +33,10 @@ def allTestsSuite():
                                unittest.makeSuite(classify.ClassifyTestCase),
                                unittest.makeSuite(decisiontree.DecisionTreeTestCase),
                                unittest.makeSuite(autoclass.AutoClassTestCase), \
-                               unittest.makeSuite(numrange.RangeTestCase)))
+                               unittest.makeSuite(numrange.RangeTestCase), \
+                               unittest.makeSuite(discretiser.DiscretiserTestCase), \
+                               unittest.makeSuite(discretisedattribute.DiscretisedAttributeTestCase), \
+                               unittest.makeSuite(discretise.DiscretiseTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

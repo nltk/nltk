@@ -30,43 +30,6 @@ class Attribute:
     def is_continuous(self):
         return self.type == CONTINUOUS
 
-    def unsupervised_equal_width(self, number):
-        values = []
-        for value in self.values:
-            values.append(float(value))
-        values.sort()
-        first, last = float(values[0]), float(values[len(values) - 1])
-        ranges = self.__create_ranges(number, first, last)
-        return self.__mapping(ranges, create_values(number))
-
-    def __create_ranges(self, number_of_splits, first, last):
-        """
-        creates an array of range tuples, where the first element in each tuple 
-        is the starting value of the range while the second element is the end 
-        value for the range
-        A number is in a range if it is greater than or equal to the start value
-        and less than the end value
-        """
-        ranges = []
-        value_span = last - first
-        width = value_span / number_of_splits
-        for index in range(number_of_splits):
-            if index == number_of_splits - 1: 
-                ranges.append((first, last + 0.000001))
-            else:
-                ranges.append((first, first + width))
-            first = first + width
-        return ranges
-    
-    def __mapping(self, ranges, new_values):
-        mapping = {}
-        for value in self.values:
-            range_index = binary_search(ranges, float(value))
-            if range_index == -1: 
-                raise se.SystemError('Value ' + value + ' not found in any of the ranges.')
-            mapping[float(value)] = new_values[range_index]
-        return mapping
-    
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
@@ -76,18 +39,6 @@ class Attribute:
             return True
         return False
     
-def binary_search(ranges, value):
-    length = len(ranges)
-    mid = length / 2;
-    while not (ranges[mid][0] <= value and ranges[mid][1] > value) and not (mid == 0 or mid == length - 1):
-        if ranges[mid][1] < value: # search upper half
-            mid = (mid + length) / 2
-        else: # search lower half
-            mid = mid / 2
-    if ranges[mid][0] <= value and ranges[mid][1] > value: 
-        return mid
-    return -1
-            
 def get_name(line):
     return line[:__pos_of_colon(line)]
         
@@ -96,12 +47,3 @@ def get_values(line):
     
 def __pos_of_colon(line):
     return line.find(':')
-
-def create_values(number):
-    values = []
-    current = ac.FIRST
-    for index in range(number):
-        values.append(current.name)
-        current = current.next()
-    return values
-
