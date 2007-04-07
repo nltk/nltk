@@ -7,31 +7,42 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
-from nltk_lite.contrib.classifier import instances as ins, attributes as attrs
+from nltk_lite.contrib.classifier import instances as ins, attributes as attrs, discretisedattribute as da
 
 class Discretiser:
-    def __init__(self, path):
-        self.files = [None, None, None]
-        self.classes = [ins.TrainingInstances, ins.TestInstances, ins.GoldInstances]
-        self.initialize(path)
-        
-    def initialize(self, path):
+    def __init__(self, path, test_files, attribute_indices, options):
+        self.training = ins.TrainingInstances(path)
         self.attributes = attrs.Attributes(path)
-        for index in range(len(self.files)):
-            try:
-                self.files[index] = self.classes[index](path)
-            except fnf.FileNotFoundError:
-                self.files[index] = None
+        self.files = self.__test_files(test_files)
+        self.attribute_indices = self.__as_integers('Attribute indices', attribute_indices)
+        self.options = self.__as_integers('Options', options)
         
-    def check_validity(self):
-        for instances in self.files:
-            if instances is None: continue
-            if not instances.are_valid(): raise inv.InvalidDataError('Data invalid')
+    def __test_files(self, file_names):
+        _file_names = []
+        for name in file_names.split(','):
+            _file_names.append(name.strip())
+        return _file_names
     
-    def unsupervised_equal_width(self, attribute_indices, widths):
-        self.check_validity()
-        for index in range(len(attribute_indices)):
-            attribute_index = attribute_indices[index]
+    def __as_integers(self, name, attribute_indices):
+        indices = []
+        for attribute_index in attribute_indices.split(','):
+            try:
+                indices.append(int(attribute_index.strip()))
+            except ValueError:
+                raise inv.InvalidDataError('Invalid Data. ' + name + ' should be integers.')
+        return indices
+                    
+    def unsupervised_equal_width(self):
+        to_be_discretized = self.attributes.subset(self.attribute_indices)
+        ranges = self.training.as_ranges(to_be_discretized)
+        self.attributes.discretise(self.discretised_attributes(ranges))
+
+    def discretised_attributes(self, ranges):
+        discretised_attributes = []
+        for index in range(len(self.options)):
+            _range, width = ranges[index], self.options[index]
+            attribute_index = self.attribute_indices[index]
             attribute = self.attributes[attribute_index]
-            attribute.unsupervised_equal_width(widths[index])
+            discretised_attributes.append(da.DiscretisedAttribute(attribute.name, _range.split(width), attribute.index))
+        return discretised_attributes
             

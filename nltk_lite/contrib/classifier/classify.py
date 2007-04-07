@@ -63,9 +63,13 @@ class Classify(OptionParser):
         gold = self.__get_value('gold')
         
         if algorithm is None or files is None and (training is None or (test is None and gold is None)): 
-            self.error("Invalid attributes")
+            self.error("Invalid arguments. One or more required arguments are not present.")
         if files is not None and (training is not None or test is not None or gold is not None):
-            self.error("Invalid attributes")
+            self.error("Invalid arguments. The files parameter should not be followed by training, test or gold parameters.")
+        if test is not None and gold is not None:
+            self.error('Invalid arguments. Test and gold files are mutually exclusive.')
+        if files is None and test is not None and self.__get_value('verify'):
+            self.error('Invalid arguments. Cannot verify classification for test data.')
         if files is not None:
             training = files
             test, gold = self.__test_and_gold(files)
