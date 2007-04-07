@@ -18,8 +18,8 @@ class ClassifyTestCase(unittest.TestCase):
         self.classify.parse(['-a', '1R']) #One R classifier
         self.assertEqual('1R', self.classify.values.ensure_value('algorithm', None))
         
-        #self.classify.parse(['-a', 'DT']) #Decision Tree classifier
-        #self.assertEqual('DT', self.classify.values.ensure_value('algorithm', None))
+        self.classify.parse(['-a', 'DT']) #Decision Tree classifier
+        self.assertEqual('DT', self.classify.values.ensure_value('algorithm', None))
 
     def test_accuracy_and_fscore_are_true_by_default(self):
         self.classify.parse(None)
@@ -33,7 +33,7 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertEqual(False, self.classify.values.ensure_value('accuracy', None))
         self.assertEqual(False, self.classify.values.ensure_value('fscore', None))
 
-    def testClassifyDoesNotThrowErrorIfRequiredComponentsArePresent(self):
+    def test_classifyDoesNotThrowErrorIfRequiredComponentsArePresent(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         classify = StubClassify()
         self.assertFalse(classify.classifyCalled)
@@ -57,7 +57,7 @@ class ClassifyTestCase(unittest.TestCase):
         classify.execute()
         self.assertTrue(classify.errorCalled)
         self.assertTrue(classify.classifyCalled)#in reality it will never be called as it exits in the error method
-        self.assertEqual('Invalid attributes', classify.message)
+        self.assertEqual('Invalid arguments. One or more required arguments are not present.', classify.message)
         
     def testOnlyFilesImpliesTrainingAndTest(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
@@ -79,7 +79,33 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertEqual(None, classify.testSet)
         self.assertEqual(path, classify.goldSet)
 
+    def test_throws_error_if_both_files_and_other_options_are_present(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        classify = StubClassify()
+        self.assertFalse(classify.classifyCalled)
+        classify.parse(['-a', '1R', '-f', path, '-t', path])
+        classify.execute()
+        self.assertTrue(classify.errorCalled)
+        self.assertEqual('Invalid arguments. The files parameter should not be followed by training, test or gold parameters.', classify.message)
 
+    def test_throws_error_if_both_test_and_gold_files_are_present(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        classify = StubClassify()
+        self.assertFalse(classify.classifyCalled)
+        classify.parse(['-a', '1R', '-t', path, '-T', path, '-g', path])
+        classify.execute()
+        self.assertTrue(classify.errorCalled)
+        self.assertEqual('Invalid arguments. Test and gold files are mutually exclusive.', classify.message)
+
+    def test_throws_error_if_verify_options_are_present_for_a_test_file(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        classify = StubClassify()
+        self.assertFalse(classify.classifyCalled)
+        classify.parse(['-a', '1R', '-v', '-t', path, '-T', path])
+        classify.execute()
+        self.assertTrue(classify.errorCalled)
+        self.assertEqual('Invalid arguments. Cannot verify classification for test data.', classify.message)
+        
 class StubClassify(c.Classify):
     def __init__(self):
         c.Classify.__init__(self)

@@ -34,6 +34,16 @@ class Attributes:
             if attribute.is_continuous(): 
                 return True
         return False
+    
+    def subset(self, indices):
+        subset = []
+        for index in indices:
+            subset.append(self.attributes[index])
+        return subset
+
+    def discretise(self, discretised_attributes):
+        for disc_attr in discretised_attributes:
+            self.attributes[disc_attr.index] = disc_attr
 
     def __len__(self):
         return len(self.attributes)
