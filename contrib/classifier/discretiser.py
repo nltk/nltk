@@ -35,7 +35,9 @@ class Discretiser:
     def unsupervised_equal_width(self):
         to_be_discretized = self.attributes.subset(self.attribute_indices)
         ranges = self.training.as_ranges(to_be_discretized)
-        self.attributes.discretise(self.discretised_attributes(ranges))
+        disc_attrs = self.discretised_attributes(ranges)
+        self.attributes.discretise(disc_attrs)
+        self.training.discretise(disc_attrs)
 
     def discretised_attributes(self, ranges):
         discretised_attributes = []

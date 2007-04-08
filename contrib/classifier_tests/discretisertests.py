@@ -20,10 +20,21 @@ class DiscretiserTestCase(unittest.TestCase):
         
     def test_unsupervised_equal_width_discretisation(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        disc = d.Discretiser(path, path + '.test', '0,1,4,5,6,7', '2,3,2,3,4,2')
-        self.assertTrue(disc.attributes.has_continuous_attributes())
+        disc = d.Discretiser(path, path + '.test', '1,4,5,6,7', '3,2,3,4,2')
+        self.assertTrue(disc.attributes[0].is_continuous())
+        self.assertTrue(disc.attributes[1].is_continuous())
+        self.assertTrue(disc.attributes[4].is_continuous())
+        self.assertTrue(disc.attributes[5].is_continuous())
+        self.assertTrue(disc.attributes[6].is_continuous())
+        self.assertTrue(disc.attributes[7].is_continuous())
         disc.unsupervised_equal_width()
-        self.assertFalse(disc.attributes.has_continuous_attributes())
+        self.assertTrue(disc.attributes[0].is_continuous())
+        self.assertFalse(disc.attributes[1].is_continuous())
+        self.assertFalse(disc.attributes[4].is_continuous())
+        self.assertFalse(disc.attributes[5].is_continuous())
+        self.assertFalse(disc.attributes[6].is_continuous())
+        self.assertFalse(disc.attributes[7].is_continuous())
+        
         
     def test_returns_array_of_discretised_attributes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'

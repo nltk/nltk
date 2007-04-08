@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instance as ins, klass as k, attribute
+from nltk_lite.contrib.classifier import instance as ins, klass as k, attribute, discretisedattribute as da, numrange as r
 import unittest
 
 class InstanceTestCase(unittest.TestCase):
@@ -87,3 +87,19 @@ class InstanceTestCase(unittest.TestCase):
 
         gold = ins.GoldInstance('bar,two,a')
         self.assertEqual('two', gold.value(attr))
+
+    def test_discretise_using_discretised_attributes(self):
+        dependents = attribute.Attribute('dependents:continuous', 4)
+        annual_salary = attribute.Attribute('annualsalary:continuous', 6)
+        disc_dependents = da.DiscretisedAttribute('dependents', r.Range(0, 2, True).split(2), 4)
+        disc_annual_salary = da.DiscretisedAttribute('annualsalary', r.Range(0, 120000, True).split(5), 6)
+        discretised_attributes = [disc_dependents, disc_annual_salary]
+        
+        instance = ins.TrainingInstance('3,34,self-employed,married,2,3,120000,2,yes')
+        self.assertEqual('2', instance.value(dependents))
+        self.assertEqual('120000', instance.value(annual_salary))
+        instance.discretise(discretised_attributes)
+        
+        self.assertEqual('b', instance.value(disc_dependents))
+        self.assertEqual('e', instance.value(disc_annual_salary))
+        

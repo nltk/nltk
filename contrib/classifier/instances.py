@@ -33,8 +33,9 @@ class Instances:
         for instance in self.instances:
             method(instance)
             
-    def discretise(self, method):
-        pass
+    def discretise(self, discretised_attributes):
+        for instance in self.instances:
+            instance.discretise(discretised_attributes)
     
     def __getitem__(self, index):
         return self.instances[index]
@@ -69,10 +70,9 @@ class TrainingInstances(Instances):
     def as_ranges(self, attributes):
         ranges = []
         for attribute in attributes:
-            if attribute.is_continuous():
-                ranges.append(r.Range())
-            else:
+            if not attribute.is_continuous():
                 raise inv.InvalidDataError('Cannot discretise non continuous attribute ' + attribute.name)
+            ranges.append(r.Range())
         for instance in self.instances:
             values = instance.values(attributes)
             for index in range(len(values)):
