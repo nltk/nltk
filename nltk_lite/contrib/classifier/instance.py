@@ -9,7 +9,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier.exceptions import systemerror as system
+from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 import item
 
 class Instance:
@@ -27,6 +27,11 @@ class Instance:
         for attribute in attributes:
             _values.append(self.attrs[attribute.index])
         return _values
+
+    def discretise(self, discretised_attributes):
+        for discretised_attribute in discretised_attributes:
+            index = discretised_attribute.index
+            self.attrs[index] = discretised_attribute.mapping(float(self.attrs[index]))
     
     def __eq__(self, other):
         if other is None: return False
