@@ -76,6 +76,31 @@ class RangeTestCase(unittest.TestCase):
         self.assertEqual(3, splits[3].lower)
         self.assertEqual(4.000001, splits[3].upper)
         
-
-
+        _range = r.Range()
+        _range.include(2)    
+        _range.include(8)
+        splits = _range.split(2)
+        self.assertEqual(2, splits[0].lower)
+        self.assertEqual(5, splits[0].upper)
+        self.assertEqual(5, splits[1].lower)
+        self.assertAlmostEqual(8.000001, splits[1].upper, 6)
         
+        
+    def test_string_reprn(self):
+        _range = r.Range()
+        _range.include(0)
+        _range.include(4)
+        self.assertEqual('[0,4.000001]', str(_range))
+        
+    def test_include_adds_the_max(self):
+        _range = r.Range(5,8.0)
+        self.assertFalse(_range.includes(8))
+        
+        _range.include(8.0)
+        self.assertTrue(_range.includes(8))
+        self.assertAlmostEqual(8.000001, _range.upper)
+
+
+if __name__ == '__main__':
+        runner = unittest.TextTestRunner()
+        runner.run(unittest.TestSuite(unittest.makeSuite(RangeTestCase)))

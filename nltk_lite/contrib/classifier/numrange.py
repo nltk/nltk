@@ -15,6 +15,7 @@ class Range:
         any number within this range should be greater than or equal to self.lower and 
         less than (or less than equal to depending on whether it includes the max) self.upper
         """
+        self.__delta_added = False
         if upper < lower: raise se.SystemError('Lower limit cannot be greater than the Upper limit in a range')
         self.__uninitialized = False
         if upper == lower == 0: 
@@ -28,11 +29,11 @@ class Range:
         if self.__uninitialized:
             self.lower, self.upper = number, number
             self.__uninitialized = False
-        if number < self.lower:
-            self.lower = number
-        elif number >= self.upper:
-            self.upper = number + DELTA
+        if number >= self.upper:
             self.__delta_added = True
+            self.upper = number + DELTA
+        elif number < self.lower:
+            self.lower = number
             
     def includes(self, number):
         return self.lower <= number and self.upper > number
@@ -47,10 +48,10 @@ class Range:
         each = len / parts
         if each < DELTA: return None
         lower, ranges = self.lower, []
-        for i in range(parts):
+        for i in range(parts - 1):
             ranges.append(Range(lower, lower + each))
             lower += each
-        ranges[parts - 1].include(max)
+        ranges.append(Range(lower, self.upper))
         return ranges
 
     def __eq__(self, other):
@@ -61,3 +62,6 @@ class Range:
     
     def __hash__(self):
         return hash(self.lower) + hash(self.upper)
+    
+    def __str__(self):
+        return '[' + str(self.lower) + ',' + str(self.upper) + ']'

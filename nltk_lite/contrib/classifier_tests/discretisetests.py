@@ -25,7 +25,7 @@ class DiscretiseTestCase(unittest.TestCase):
         self.assertEqual('3,2,4', options)
         
     def test_throws_error_when_any_of_the_attributes_are_missing(self):
-        path = datasetsDir(self) + SEP + 'numerical' + SEP + 'person'
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
         disc = MockDiscretise()
         self.assertFalse(disc.error_called)
         disc.parse(['-a', 'UEW', '-t', path, '-T', path + '.test,' + path + 'extra.test', '-A', '3,4,5'])
@@ -38,7 +38,6 @@ class MockDiscretise(discretise.Discretise):
     def __init__(self):
         discretise.Discretise.__init__(self)
         self.error_called = False
-        self.invoke_called = False
         self.message = None
         
     def error(self, message):

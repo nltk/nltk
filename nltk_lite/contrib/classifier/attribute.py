@@ -39,6 +39,9 @@ class Attribute:
             return True
         return False
     
+    def __str__(self):
+        return self.name +':' + str(self.values) + ' index:' + str(self.index)
+    
 def get_name(line):
     return line[:__pos_of_colon(line)]
         

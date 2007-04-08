@@ -22,18 +22,29 @@ class DiscretisedAttribute(attribute.Attribute):
     def mapping(self, continuous_value):
         range_index = binary_search(self.ranges, continuous_value)
         if range_index == -1: 
-            raise inv.InvalidDataError('Value ' + str(continuous_value) + ' not found in any of the ranges.')
+            raise inv.InvalidDataError('Value ' + str(continuous_value) + ' of type ' +  str(type(continuous_value)) + ' not found in any of the ranges ' + self.__ranges_as_string())
         return self.values[range_index]
+    
+    def __ranges_as_string(self):
+        str_ranges = []
+        for _range in self.ranges:
+            str_ranges.append(str(_range))
+        return str(str_ranges)
+    
+    def __str__(self):
+        return attribute.Attribute.__str__(self) + self.__ranges_as_string()
 
 def binary_search(ranges, value):
     length = len(ranges)
-    mid = length / 2;
-    while not ranges[mid].includes(value) and not (mid == 0 or mid == length - 1):
-        if ranges[mid].upper < value: # search upper half
-            mid = (mid + length) / 2
-        else: # search lower half
-            mid = mid / 2
-    if ranges[mid].includes(value): 
-        return mid
+    low, high = 0, length - 1
+    mid = low + (high - low) / 2;
+    while low <= high:
+        if ranges[mid].includes(value):
+            return mid
+        elif ranges[mid].lower > value: # search lower half
+            high = mid - 1
+        else: # search upper half
+            low = mid + 1
+        mid = low + (high - low) / 2
     return -1
             

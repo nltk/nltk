@@ -90,11 +90,7 @@ class InstancesTestCase(unittest.TestCase):
         except inv.InvalidDataError:
             pass
         
-
-        
-        
-#    def test_naive_unsupervised_discretization(self):
-#        training = ins.TrainingInstances()
-
+    def test_discretise_using_discretised_attributes(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
         
         
