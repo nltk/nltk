@@ -24,6 +24,9 @@ class DiscretisedAttributeTestCase(unittest.TestCase):
         ranges = nr.Range(6, 32, True).split(3)
         self.assertEqual(0, da.binary_search(ranges, 12))
         
+        ranges = nr.Range(0, 2, True).split(2)
+        self.assertEqual(0, da.binary_search(ranges, 0))
+        
     def test_creates_class_values_for_ranges(self):
         ranges = nr.Range(-10, 40, True).split(5)
         disc_attr = da.DiscretisedAttribute('temperature', ranges, 1)
