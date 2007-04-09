@@ -88,7 +88,24 @@ class TrainingInstances(Instances):
             for index in range(len(values)):
                 ranges[index].include(float(values[index]))
         return ranges
-                    
+    
+    def values_grouped_by_attribute(self, attributes):
+        values = []
+        for attribute in attributes:
+            _vals_in_attr = []
+            for instance in self.instances:
+                if attribute.is_continuous():
+                    _vals_in_attr.append(float(instance.value(attribute)))
+                else:
+                    _vals_in_attr.append(instance.value(attribute))
+            values.append(_vals_in_attr)
+        return values
+        
+    def __as_float(self, values):
+        floats = []
+        for value in values:
+            floats.append(float(value))
+        return floats
 
 class TestInstances(Instances):
     def __init__(self, path):
