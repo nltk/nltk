@@ -42,3 +42,7 @@ class AttributeTestCase(unittest.TestCase):
         disc_attr = a.Attribute('foo:a,b,c', 0)
         self.assertEqual(a.DISCRETE, disc_attr.type)
         self.assertFalse(disc_attr.is_continuous())
+        
+    def test_as_line(self):
+        attr = a.Attribute('foo:a,b,c', 0)
+        self.assertEqual('foo:a,b,c', attr.as_line())

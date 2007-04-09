@@ -11,7 +11,7 @@ from nltk_lite.contrib.classifier import nameitem as ni, cfile
 class Klass:
     def __init__(self, path):
         self.__processed, self.values = False, None
-        cfile.File(path, cfile.NAMES).execute(self.create_klass)
+        cfile.File(path, cfile.NAMES).for_each_line(self.create_klass)
         
     def create_klass(self, line):
         if not self.__processed:

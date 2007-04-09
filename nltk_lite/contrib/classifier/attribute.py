@@ -42,6 +42,12 @@ class Attribute:
     def __str__(self):
         return self.name +':' + str(self.values) + ' index:' + str(self.index)
     
+    def as_line(self):
+        values_str = ''
+        for value in self.values:
+            values_str += value + ','
+        return self.name + ':' + values_str[:-1]
+    
 def get_name(line):
     return line[:__pos_of_colon(line)]
         
