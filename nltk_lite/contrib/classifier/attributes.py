@@ -10,9 +10,10 @@ import nameitem as ni, attribute as a, cfile
 
 class Attributes:
     def __init__(self, path):
+        self.path = path
         self.attributes = []
         self.__index = 0
-        cfile.File(path, cfile.NAMES).execute(self.create_and_append_values)
+        cfile.File(path, cfile.NAMES).for_each_line(self.create_and_append_values)
                 
     def create_and_append_values(self, l):
         nameitem = ni.NameItem(l)      
@@ -45,6 +46,15 @@ class Attributes:
         for disc_attr in discretised_attributes:
             self.attributes[disc_attr.index] = disc_attr
 
+    def write_to_file(self, suffix):
+        _new_file = cfile.File(self.path + suffix, cfile.NAMES)
+        _new_file.create(True)
+        lines = []
+        for attribute in self.attributes:
+            lines.append(attribute.as_line())
+        _new_file.write(lines)
+
+    
     def __len__(self):
         return len(self.attributes)
     

@@ -10,10 +10,12 @@ from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusion
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 
 class Instances:
-    def __init__(self, path, suffix):
+    def __init__(self, path, ext):
+        self.path = path
+        self.extension = ext
         self.instances = []
         if path is not None:
-            cfile.File(path, suffix).execute(self.create_and_append_instance)
+            cfile.File(path, ext).for_each_line(self.create_and_append_instance)
             
     def create_and_append_instance(self, line):
         _line = item.Item(line).stripNewLineAndWhitespace()
@@ -52,6 +54,13 @@ class Instances:
         if self.instances == other.instances: return True
         return False
 
+    def write_to_file(self, suffix):
+        _new_file = cfile.File(self.path + suffix, self.extension)
+        _new_file.create(True)
+        lines = []
+        for instance in self.instances:
+            lines.append(instance.as_line())
+        _new_file.write(lines)
     
 class TrainingInstances(Instances):
     def __init__(self, path, ext = cfile.DATA):

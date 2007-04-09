@@ -102,4 +102,16 @@ class InstanceTestCase(unittest.TestCase):
         
         self.assertEqual('b', instance.value(disc_dependents))
         self.assertEqual('e', instance.value(disc_annual_salary))
+
+    def test_as_line(self):
+        training = ins.TrainingInstance('3,34,self-employed,married,2,3,120000,2,yes')
+        self.assertEqual('3,34,self-employed,married,2,3,120000,2,yes', training.as_line())
+        
+        test = ins.TestInstance('3,34,self-employed,married,2,3,120000,2')
+        test.classifiedKlass = 'yes'
+        self.assertEqual('3,34,self-employed,married,2,3,120000,2,yes', test.as_line())
+ 
+        gold = ins.GoldInstance('3,34,self-employed,married,2,3,120000,2,yes')
+        gold.classifiedKlass = 'yes'
+        self.assertEqual('3,34,self-employed,married,2,3,120000,2,yes,yes', gold.as_line())
         
