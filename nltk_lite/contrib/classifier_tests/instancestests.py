@@ -93,4 +93,9 @@ class InstancesTestCase(unittest.TestCase):
     def test_discretise_using_discretised_attributes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
         
+    def test_values_grouped_by_attribute(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'weather'
+        training = ins.TrainingInstances(path)
+        attributes = attrs.Attributes(path)
+        self.assertEqual([[27.5, 33.1, 32, 18, 12, 10.7, 6, 14.1, 9, 9, 12, 12]] ,training.values_grouped_by_attribute([attributes[1]]))
         

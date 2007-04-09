@@ -45,4 +45,4 @@ class AttributeTestCase(unittest.TestCase):
         
     def test_as_line(self):
         attr = a.Attribute('foo:a,b,c', 0)
-        self.assertEqual('foo:a,b,c', attr.as_line())
+        self.assertEqual('foo:a,b,c.', attr.as_line())

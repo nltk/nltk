@@ -7,7 +7,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
-from nltk_lite.contrib.classifier import instances as ins, attributes as attrs, discretisedattribute as da, cfile as f
+from nltk_lite.contrib.classifier import instances as ins, attributes as attrs, discretisedattribute as da, cfile as f, numrange as r
 
 class Discretiser:
     def __init__(self, path, test_files, attribute_indices, options):
@@ -16,6 +16,9 @@ class Discretiser:
         self.instances = self.create_instances(self.__test_files(test_files))
         self.attribute_indices = self.__as_integers('Attribute indices', attribute_indices)
         self.options = self.__as_integers('Options', options)
+        for option in self.options:
+            if option == 0:
+                raise inv.InvalidDataError('Option cannt be equal to zero.')
         
     def __test_files(self, file_names):
         _file_names = []
@@ -36,12 +39,46 @@ class Discretiser:
         attrs = self.attributes.subset(self.attribute_indices)
         ranges = self.training.as_ranges(attrs)
         disc_attrs = self.discretised_attributes(ranges)
+        return self.__discretise(disc_attrs)
+    
+    def __discretise(self, disc_attrs):
         to_be_discretised = [self.attributes, self.training] + self.instances
         files_written, suffix = [], self.get_suffix()
         for each in to_be_discretised:
             each.discretise(disc_attrs)
             files_written.append(each.write_to_file(suffix))
         return files_written
+    
+    def unsupervised_equal_frequency(self):
+        attrs = self.attributes.subset(self.attribute_indices)
+        values_array = self.training.values_grouped_by_attribute(attrs)
+        disc_attrs = []
+        for index in range(len(values_array)):
+            values = values_array[index]
+            values.sort()
+            attribute = attrs[index] 
+            chunks = self.get_chunks_with_frequency(values, self.options[index])
+            ranges = self.ranges_from_chunks(chunks)
+            disc_attrs.append(da.DiscretisedAttribute(attribute.name, ranges, attribute.index))
+        return self.__discretise(disc_attrs)
+
+    def get_chunks_with_frequency(self, values, freq):
+        chunks = []
+        while len(values) > 0:
+            chunk = values[:freq]
+            chunks.append(chunk)
+            values = values[freq:]
+            while(len(values) > 0 and chunk[-1] == values[0]):
+                values = values[1:]
+        return chunks
+
+    def ranges_from_chunks(self, chunks):
+        lower = chunks[0][0]
+        ranges = []
+        for index in range(len(chunks) - 1):
+            ranges.append(r.Range(chunks[index][0], chunks[index + 1][0]))
+        ranges.append(r.Range(chunks[-1][0], chunks[-1][-1], True))
+        return ranges
 
     def discretised_attributes(self, ranges):
         discretised_attributes = []

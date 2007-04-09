@@ -46,7 +46,7 @@ class Attribute:
         values_str = ''
         for value in self.values:
             values_str += value + ','
-        return self.name + ':' + values_str[:-1]
+        return self.name + ':' + values_str[:-1] + '.'
     
 def get_name(line):
     return line[:__pos_of_colon(line)]
