@@ -61,6 +61,7 @@ class Instances:
         for instance in self.instances:
             lines.append(instance.as_line())
         _new_file.write(lines)
+        return self.path + suffix + '.' + self.extension
     
 class TrainingInstances(Instances):
     def __init__(self, path, ext = cfile.DATA):
