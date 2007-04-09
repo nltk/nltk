@@ -37,10 +37,11 @@ class Discretiser:
         ranges = self.training.as_ranges(attrs)
         disc_attrs = self.discretised_attributes(ranges)
         to_be_discretised = [self.attributes, self.training] + self.instances
-        
+        files_written, suffix = [], self.get_suffix()
         for each in to_be_discretised:
             each.discretise(disc_attrs)
-            each.write_to_file('d')
+            files_written.append(each.write_to_file(suffix))
+        return files_written
 
     def discretised_attributes(self, ranges):
         discretised_attributes = []
@@ -64,3 +65,9 @@ class Discretiser:
             else:
                 raise fnf.FileNotFoundError(file_name)
         return instances
+    
+    def get_suffix(self):
+        indices_str = ''
+        for index in self.attribute_indices:
+            indices_str+= '_' + str(index)
+        return '-d' + indices_str
