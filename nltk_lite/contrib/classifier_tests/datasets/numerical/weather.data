@@ -7,3 +7,6 @@ rainy,10.7,normal,true,no
 overcast,6,normal,true,yes
 sunny,14.1,high,false,no
 sunny,9,normal,false,yes
+overcast,9,normal,true,no
+sunny,12,normal,false,yes
+overcast,12,normal,false,yes
