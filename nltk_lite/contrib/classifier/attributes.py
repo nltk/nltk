@@ -53,7 +53,7 @@ class Attributes:
         for attribute in self.attributes:
             lines.append(attribute.as_line())
         _new_file.write(lines)
-
+        return self.path + suffix + '.' +cfile.NAMES
     
     def __len__(self):
         return len(self.attributes)

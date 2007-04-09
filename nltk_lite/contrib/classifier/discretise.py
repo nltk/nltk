@@ -37,7 +37,7 @@ class Discretise(OptionParser):
         self.parse_args(args, None)
         
     def execute(self):
-        algorithm = self.__get_value('algorithm')
+        algorithm = self.__algorithms[self.__get_value('algorithm')]
         training = self.__get_value('training')
         test = self.__get_value('test')
         attributes = self.__get_value('attributes')
@@ -51,7 +51,10 @@ class Discretise(OptionParser):
     
     def invoke(self, training, test, attributes, options, algorithm):
         disc = discretiser.Discretiser(training, test, attributes, options)
-        getattr(disc, algorithm)()
+        files_written = getattr(disc, algorithm)()
+        print 'The following files were created with discretised values...'
+        for file_name in files_written:
+            print file_name
     
     def run(self, args):
         self.parse(args)
