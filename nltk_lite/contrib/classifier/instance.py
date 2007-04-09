@@ -56,6 +56,16 @@ class Instance:
     def str_attrs(self):
         return 'Attributes: ' + self.check_none(self.attrs)
     
+    def as_line(self):
+        AssertionError()
+        
+    def attr_values_as_str(self):
+        strn = ''
+        for attr in self.attrs:
+            strn += attr
+            strn += ','
+        return strn
+
 class TrainingInstance(Instance):
     def __init__(self, line):
         Instance.__init__(self)
@@ -67,6 +77,9 @@ class TrainingInstance(Instance):
     
     def __str__(self):
         return self.str_attrs() + self.str_class()
+    
+    def as_line(self):
+        return self.attr_values_as_str() + str(self.klass_value)
         
 class TestInstance(Instance):
     def __init__(self, line):
@@ -82,6 +95,9 @@ class TestInstance(Instance):
     def __str__(self):
         return self.str_attrs() + self.str_klassified_klass()
     
+    def as_line(self):
+        return self.attr_values_as_str() + str(self.classifiedKlass)
+    
 class GoldInstance(TrainingInstance, TestInstance):
     def __init__(self, line):
         TrainingInstance.__init__(self, line)
@@ -95,3 +111,5 @@ class GoldInstance(TrainingInstance, TestInstance):
     def __str__(self):
         return Instance.__str__(self)
         
+    def as_line(self):
+        return self.attr_values_as_str() + str(self.klass_value) + ',' +str(self.classifiedKlass)
