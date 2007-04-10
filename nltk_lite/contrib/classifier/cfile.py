@@ -23,8 +23,12 @@ class File:
         self.__check_for_existence()
         fil = open(self.path, 'r')
         for line in fil:
-            method(line)
+            filtered = filter_comments(line)
+            if len(filtered) == 0:
+                continue
+            method(filtered)
         fil.close()
+
 
     def __check_for_existence(self):
         if not os.path.isfile(self.path): 
@@ -49,6 +53,12 @@ class File:
             fil.write('\n')
         fil.close()
         
+def filter_comments(line):
+    index = line.find('|')
+    if index == -1:
+        return line.strip()
+    return line[:index].strip()
+
 def name_extension(file_name):
     dot_index = file_name.rfind(DOT)
     if dot_index == -1:
