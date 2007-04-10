@@ -8,6 +8,7 @@
 
 from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
+import operator
 
 class Instances:
     def __init__(self, path, ext):
@@ -106,6 +107,29 @@ class TrainingInstances(Instances):
         for value in values:
             floats.append(float(value))
         return floats
+    
+    def klass_values(self):
+        values = []
+        for instance in self.instances:
+            values.append(instance.klass_value)
+        return values
+    
+    def breakpoints_in_class_membership(self):
+        breakpoints, _klass_values = [], self.klass_values()
+        for index in range(len(_klass_values) - 1):
+            if _klass_values[index] != _klass_values[index + 1]:
+                breakpoints.append(index)
+        return breakpoints
+    
+    def attribute_values(self, attribute):
+        values = []
+        for instance in self.instances:
+            values.append(instance.value(attribute))
+        return values
+    
+    def sort_by(self, attribute):
+        comparator = ins.AttributeComparator(attribute)
+        self.instances.sort(cmp=comparator.compare)
 
 class TestInstances(Instances):
     def __init__(self, path):

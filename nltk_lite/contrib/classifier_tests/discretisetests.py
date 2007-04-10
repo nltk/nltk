@@ -32,7 +32,16 @@ class DiscretiseTestCase(unittest.TestCase):
         disc.execute()
         self.assertTrue(disc.error_called)
         self.assertEqual('Invalid arguments. One or more required arguments are not present.', disc.message)
+
+    def test_options_are_optional_for_naive_supervised_algorithm(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        disc = MockDiscretise()
+        self.assertFalse(disc.error_called)
         
+        disc.parse(['-a', 'NS', '-t', path, '-T', path + '.test,' + path + 'extra.test', '-A', '3,4,5'])
+        disc.execute()
+        
+        self.assertFalse(disc.error_called)
 
 class MockDiscretise(discretise.Discretise):
     def __init__(self):

@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, instance, klass as k, attributes as attrs
+from nltk_lite.contrib.classifier import instances as ins, instance, klass as k, attributes as attrs, discretisedattribute as da, numrange as nr
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk_lite.contrib.classifier_tests import *
 
@@ -92,6 +92,16 @@ class InstancesTestCase(unittest.TestCase):
         
     def test_discretise_using_discretised_attributes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = ins.TrainingInstances(path)
+        attributes = attrs.Attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
+        self.assertEqual(0.0, training[0].value(attributes[4]))
+        self.assertEqual(65000.0, training[0].value(attributes[6]))
+        disc_dependents = da.DiscretisedAttribute('dependents', nr.Range(0, 2, True).split(2), 4)
+        disc_annual_income = da.DiscretisedAttribute('annualincome', nr.Range(0, 120000, True).split(5), 6)
+        training.discretise([disc_dependents, disc_annual_income])
+        
+        self.assertEqual('a', training[0].value(disc_dependents))
+        self.assertEqual('c', training[0].value(disc_annual_income))
         
     def test_values_grouped_by_attribute(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'weather'
@@ -99,3 +109,36 @@ class InstancesTestCase(unittest.TestCase):
         attributes = attrs.Attributes(path)
         self.assertEqual([[27.5, 33.1, 32, 18, 12, 10.7, 6, 14.1, 9, 9, 12, 12]] ,training.values_grouped_by_attribute([attributes[1]]))
         
+    def test_returns_array_of_all_klass_values(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = ins.TrainingInstances(path)
+        klass_values = training.klass_values()
+        
+        self.assertEqual(len(training), len(klass_values))
+        for index in range(len(klass_values)):
+            self.assertEqual(klass_values[index], training[index].klass_value)
+
+    def test_breakpoints_in_class_membership(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = ins.TrainingInstances(path)
+        klass_values = training.klass_values()
+        self.assertEqual(['yes', 'no', 'yes', 'yes', 'yes', 'no'], klass_values)
+
+        breakpoints = training.breakpoints_in_class_membership()
+        self.assertEqual(3, len(breakpoints))
+        self.assertEqual([0, 1, 4], breakpoints)
+
+    def test_sort_by_attribute(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = ins.TrainingInstances(path)
+        attributes = attrs.Attributes(path)
+        attr_values = training.values_grouped_by_attribute([attributes[1]])
+        self.assertEqual([25.0, 19.0, 21.0, 34.0, 31.0, 42.0], attr_values[0])
+        klass_values = training.klass_values()
+        self.assertEqual(['yes', 'no', 'yes', 'yes', 'yes', 'no'], klass_values)
+        
+        training.sort_by(attributes[1])
+        attr_values = training.values_grouped_by_attribute([attributes[1]])
+        self.assertEqual([19.0, 21.0, 25.0, 31.0, 34.0, 42.0], attr_values[0])
+        klass_values = training.klass_values()
+        self.assertEqual(['no', 'yes', 'yes', 'yes', 'yes', 'no'], klass_values)
