@@ -96,8 +96,8 @@ class InstanceTestCase(unittest.TestCase):
         discretised_attributes = [disc_dependents, disc_annual_salary]
         
         instance = ins.TrainingInstance('3,34,self-employed,married,2,3,120000,2,yes')
-        self.assertEqual('2', instance.value(dependents))
-        self.assertEqual('120000', instance.value(annual_salary))
+        self.assertEqual(2, instance.value(dependents))
+        self.assertEqual(120000, instance.value(annual_salary))
         instance.discretise(discretised_attributes)
         
         self.assertEqual('b', instance.value(disc_dependents))
@@ -121,3 +121,19 @@ class InstanceTestCase(unittest.TestCase):
         annual_salary = attribute.Attribute('annualsalary:continuous', 6)
         self.assertEqual(['2','120000'], training.values([dependents, annual_salary]))
         
+    def test_attribute_comparator(self):
+        ins1 = ins.TrainingInstance('3,34,self-employed,married,2,3,120000,2,yes')
+        ins2 = ins.TrainingInstance('2,27,salaried,married,0,3,185000,1,yes')
+        
+        id = attribute.Attribute('id:continuous', 0)
+        annual_salary = attribute.Attribute('annualsalary:continuous', 6)
+        maritial_status = attribute.Attribute('maritalstatus:single,married,divorced', 3)
+        
+        id_comparator = ins.AttributeComparator(id)
+        self.assertEqual(1, id_comparator.compare(ins1, ins2))
+
+        salary_comparator = ins.AttributeComparator(annual_salary)
+        self.assertEqual(-1, salary_comparator.compare(ins1, ins2))
+        
+        maritial_status_comparator = ins.AttributeComparator(maritial_status)
+        self.assertEqual(0, maritial_status_comparator.compare(ins1, ins2))

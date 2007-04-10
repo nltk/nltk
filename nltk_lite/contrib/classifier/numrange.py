@@ -16,7 +16,7 @@ class Range:
         less than (or less than equal to depending on whether it includes the max) self.upper
         """
         self.__delta_added = False
-        if upper < lower: raise se.SystemError('Lower limit cannot be greater than the Upper limit in a range')
+        if upper < lower: raise se.SystemError('Lower limit ' + str(lower) + ' cannot be greater than the Upper limit ' + str(upper) + ' in a range')
         self.__uninitialized = False
         if upper == lower == 0: 
             self.__uninitialized = True

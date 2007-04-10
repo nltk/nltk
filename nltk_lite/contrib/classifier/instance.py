@@ -20,6 +20,8 @@ class Instance:
         return AssertionError()
     
     def value(self, attribute):
+        if attribute.is_continuous():
+            return float(self.attrs[attribute.index])
         return self.attrs[attribute.index]
     
     def values(self, attributes):
@@ -65,7 +67,7 @@ class Instance:
             strn += attr
             strn += ','
         return strn[:-1]
-
+    
 class TrainingInstance(Instance):
     def __init__(self, line):
         Instance.__init__(self)
@@ -118,3 +120,14 @@ class GoldInstance(TrainingInstance, TestInstance):
         if self.classifiedKlass == None:
             return training_as_line
         return training_as_line + ',' + self.classifiedKlass
+    
+class AttributeComparator:
+    def __init__(self, attribute):
+        self.attribute = attribute
+        
+    def compare(self, x, y):
+        if x.value(self.attribute) > y.value(self.attribute): 
+            return 1
+        elif x.value(self.attribute) == y.value(self.attribute): 
+            return 0
+        return -1

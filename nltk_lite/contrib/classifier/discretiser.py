@@ -6,11 +6,11 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 from nltk_lite.contrib.classifier import instances as ins, attributes as attrs, discretisedattribute as da, cfile as f, numrange as r
+from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 
 class Discretiser:
-    def __init__(self, path, test_files, attribute_indices, options):
+    def __init__(self, path, test_files, attribute_indices, options = None):
         self.training = ins.TrainingInstances(path)
         self.attributes = attrs.Attributes(path)
         self.instances = self.create_instances(self.__test_files(test_files))
@@ -26,13 +26,14 @@ class Discretiser:
             _file_names.append(name.strip())
         return _file_names
     
-    def __as_integers(self, name, attribute_indices):
+    def __as_integers(self, name, str_array):
         indices = []
-        for attribute_index in attribute_indices.split(','):
-            try:
-                indices.append(int(attribute_index.strip()))
-            except ValueError:
-                raise inv.InvalidDataError('Invalid Data. ' + name + ' should be integers.')
+        if str_array is not None:
+            for element in str_array.split(','):
+                try:
+                    indices.append(int(element.strip()))
+                except ValueError:
+                    raise inv.InvalidDataError('Invalid Data. ' + name + ' should be integers.')
         return indices
                     
     def unsupervised_equal_width(self):
@@ -61,6 +62,36 @@ class Discretiser:
             ranges = self.ranges_from_chunks(chunks)
             disc_attrs.append(da.DiscretisedAttribute(attribute.name, ranges, attribute.index))
         return self.__discretise(disc_attrs)
+    
+    def naive_supervised(self):
+        attrs = self.attributes.subset(self.attribute_indices)
+        disc_attrs = []
+        for attribute in attrs:
+            self.training.sort_by(attribute)
+            breakpoints = self.training.breakpoints_in_class_membership()
+            attr_values = self.training.attribute_values(attribute)
+            for index in range(len(breakpoints)):
+                while self.__same_values_on_either_side_of_breakpoint(attr_values, breakpoints[index]) and not (index == len(breakpoints) - 1 or breakpoints[index] >= breakpoints[index + 1]):
+                    breakpoints[index] += 1
+                if index != len(breakpoints) - 1 and breakpoints[index] >= breakpoints[index + 1]:
+                    breakpoints.remove(breakpoints[index])
+            ranges = self.ranges_from_breakpoints(attr_values, breakpoints)
+            disc_attrs.append(da.DiscretisedAttribute(attribute.name, ranges, attribute.index))
+        return self.__discretise(disc_attrs)
+            
+    def __same_values_on_either_side_of_breakpoint(self, values, breakpoint):
+        if breakpoint == len(values) - 1:
+            return False
+        return values[breakpoint] == values[breakpoint + 1]
+                
+    def ranges_from_breakpoints(self, attr_values, breakpoints):
+        ranges, lower = [], attr_values[0]
+        for breakpoint in breakpoints:
+            mid = (attr_values[breakpoint] + attr_values[breakpoint + 1]) / 2.0
+            ranges.append(r.Range(lower, mid))
+            lower = mid
+        ranges.append(r.Range(lower, attr_values[-1], True))
+        return ranges
 
     def get_chunks_with_frequency(self, values, freq):
         chunks = []
@@ -68,7 +99,7 @@ class Discretiser:
             chunk = values[:freq]
             chunks.append(chunk)
             values = values[freq:]
-            while(len(values) > 0 and chunk[-1] == values[0]):
+            while len(values) > 0 and chunk[-1] == values[0]:
                 values = values[1:]
         return chunks
 
