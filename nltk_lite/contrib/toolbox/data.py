@@ -11,12 +11,54 @@
 """module for reading Toolbox data files
 """
 
-from nltk_lite.etree.ElementTree import TreeBuilder
+from nltk_lite.etree.ElementTree import Element, SubElement, TreeBuilder
 from nltk_lite.corpora import toolbox
+import re
 
 class ToolboxData(toolbox.ToolboxData):
     def __init__(self):
         super(toolbox.ToolboxData, self).__init__()
+
+    def _tree2etree(self, parent, no_blanks):
+        from nltk_lite.parse import Tree
+
+        root = Element(parent.node)
+        for child in parent:
+            if isinstance(child, Tree):
+                root.append(self._tree2etree(child, no_blanks))
+            else:
+                text, tag = child
+                if no_blanks == False or text:
+                    e = SubElement(root, tag)
+                    e.text = text
+        return root
+
+    def chunk_parse(self, grammar, no_blanks=True, **kwargs):
+        """
+        Returns an element tree structure corresponding to a toolbox data file
+        parsed according to the chunk grammar.
+        
+        @type grammar: string
+        @param grammar: Contains the chunking rules used to parse the 
+        database.  See L{chunk.RegExp} for documentation.
+        @type no_blanks: boolean
+        @param no_blanks: blank fields that are not important to the structure are deleted
+        @type kwargs: keyword arguments dictionary
+        @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
+        @rtype:   ElementTree._ElementInterface
+        @return:  Contents of toolbox data parsed according to the rules in grammar
+        """
+        from nltk_lite import chunk
+
+        cp = chunk.Regexp(grammar)
+        db = self.parse(**kwargs)
+        tb_etree = Element('toolbox_data')
+        header = db.find('header')
+        tb_etree.append(header)
+        for record in db.findall('record'):
+            parsed = cp.parse([(elem.text, elem.tag) for elem in record])
+            tb_etree.append(self._tree2etree(parsed[0], no_blanks))
+        return tb_etree
 
     def _make_parse_table(self, grammar):
         """
@@ -146,7 +188,6 @@ class ToolboxData(toolbox.ToolboxData):
             builder.end(state)
         return builder.close()
 
-
 def indent(elem, level=0):
     """
     Recursive function to indent an ElementTree._ElementInterface
@@ -198,16 +239,18 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     if encoding is not None:
         s = s.encode(encoding, errors)
     return s
+    
+_is_value = re.compile(r"\S")
 
 def _to_sfm_string(node, l, **kwargs):
     # write SFM to file
     tag = node.tag
     text = node.text
     if len(node) == 0:
-        if text:
+        if re.search(_is_value, text):
             l.append('\\%s %s\n' % (tag, text))
         else:
-            l.append('\\%s\n' % tag)
+            l.append('\\%s%s\n' % (tag, text))
     else:
         #l.append('\n')
         for n in node:
