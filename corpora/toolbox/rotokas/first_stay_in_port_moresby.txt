@@ -1,0 +1,205 @@
+\_sh v3.0  400  Rotokas Text
+
+\id First Stay in Port Moresby
+\au Nelson Benala
+
+\ref Paragraph 1
+\t Ovokivuia       Siori urioroepa                  Port  Moresby  iare    eisiva                   Goroka         rovopa             vuutaia.
+\m ovokivu -ia     Siori urio -ro        -epa       *Port *Moresby iare    eisi               -va   *Gorok -a      rovopa             vuuta -ia
+\g one day -at     name  come -3.SG.M    -RP        ***   ***      towards that way/like that -FEM  ***    -N      main/primary/first time  -at
+\p N.???   -SUFF.N N.PN  V.I  -SUFF.VI.4 -SUFF.VI.5 ***   ***      PREP    DEM                -SUFF ***    -SUFF.N ADJ?               LOC   -SUFF.N
+\f xxx
+\fe One day John came to Port Moresby from Goroka for the first time.
+
+\ref 2
+\t Pouroviropa                  eisi               papapa                     garikoia           uva  avaroepa                  uusisia         tavere              uusipiepa         kepaia.
+\m pourovi -ro        -pa       eisi               papa                -pa    gariko     -ia     uva  ava -ro        -epa       uusi  -sia      -ta       -vere     uusipie    -pa    kepa           -ia
+\g arrive  -3.SG.M    -RP       that way/like that fly through the air -DERIV place/area -at     so   go  -3.SG.M    -RP        sleep -PURP     -2PL      -NF       make sleep -DERIV house/building -at
+\p V.I     -SUFF.VI.4 -SUFF.V.5 DEM                V.T                 -SUFF  N.N        -SUFF.N CONJ V.I -SUFF.VI.4 -SUFF.VI.5 V.I   -SUFF.V.4 -SUFF.V.4 -SUFF.V.5 V.T        -SUFF  N.N            -SUFF.N
+\f xxx
+\fe He arrived at the Port Moresby Airport and went to the hotel to sleep.
+
+\ref 3
+\t Viapau oisio              osia voa  kekepareve                          vovu              rovoro                      uva  osia vegoaro        toupareve.
+\m viapau oisio              osia voa  keke -pa       -re        -ve       vo        -vu     rovo             -ro        uva  osia vego   -aro    tou     -pa       -re        -ve
+\g NEG    this way/like this as   here look -PROG     -3.SG.M    -SUB      this/here -other  precede/go first -3.SG.M    so   as   jungle -POSS   be/stay -PROG     -3.SG.M    -SUB
+\p NEG    ???                CONJ LOC  V.T  -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 ???       -SUFF.N V.I              -SUFF.VI.4 CONJ CONJ N.???  -SUFF.N V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe He was nervous since he lived in the bush.
+
+\ref Paragraph 4
+\t Eraopa vokia             eisire                       avasia        aue        paroepa            Waigani      opisi.
+\m eraopa voki      -a      eisi               -re       ava -sia      aue        paro    -epa       *Waigan -i   opisi
+\g second day/ time -N      that way/like that -ALLATIVE go  -PURP     connective wander? -RP        ***     -??? office
+\p ADJ    N.N       -SUFF.N DEM                -SUFF     V.I -SUFF.V.4 CONN       V.I     -SUFF.VI.5 ***     -??? N.???
+\f xxx
+\fe The next day he wanted to go to the Waigani office.
+
+\ref 5
+\t Vateirara      oisio              puraaepa                   voresiuru                vatarupava                                                                         iriaia             ora  kotouvere.
+\m vate   -irara  oisio              pura -a         -epa       vo-   *resiur -u         vata                                 - ru                     -pa       -va        iria       -ia     ora  koto -u         -vere
+\g friend -PL     this way/like this say  -3PL       -RP        SING- ***     -2SG       place/village/inhabitants of a place - enclose/enwrap/envelop -PROG     -RP        PRO.3.SG.F -at     and  hang -2SG       -NF
+\p N.N2   -SUFF.N ???                V.I  -SUFF.VI.4 -SUFF.VI.5 PRE-  ***     -SUFF.VI.4 N.N                                  - V.???                  -SUFF.V.3 -SUFF.VT.5 PRO        -SUFF.N CONJ ADJ  -SUFF.VI.4 -SUFF.V.5
+\f xxx
+\fe Friends had told him he must take Bus Number 8.
+\nt What does 'voresiuru' mean? Where is 'eight' in this?
+
+\ref 6
+\t Oire uva  avaroepa                  vasi            tuepa                               tavuki         iare    voresiura vatarapa                                                  vaia            ora  kotosia        vasi.
+\m oire uva  ava -ro        -epa       vasi            tu                       -epa       tavuki         iare    voresiura vata                                 -ra        -pa       va      -ia     ora  koto -sia      vasi
+\g okay so   go  -3.SG.M    -RP        emphasis marker fasten/strap on the back -RP        space/position towards four      place/village/inhabitants of a place -1.SG      -RP       3.SG.N  -at     and  hang -PURP     emphasis marker
+\p EXCL CONJ V.I -SUFF.VI.4 -SUFF.VI.5 GR              V.T                      -SUFF.VI.5 N.N            PREP    ???       N.N                                  -SUFF.VI.4 -SUFF.V.5 PRO.PER -SUFF.N CONJ ADJ  -SUFF.V.4 GR
+\f xxx
+\fe So he went early to the bus stop to catch Bus 8.
+
+\ref Paragraph 7
+\t Avaroepa                  torevokovira                putesia                               vosi                 kuruia                     pausia                utupaua               paia                             paupa.
+\m ava -ro        -epa       torevokovira                pute                        -sia      vosi                 kuru               -ia     pau         -sia      utupaua               pai                      -a      paupa
+\g go  -3.SG.M    -RP        straightforwardly/correctly pass by/cut short/excel/win -PURP     warn/caution against strip off branches -at     plant/build -PURP     following after/later confused/difficult/stuck -N      chair
+\p V.I -SUFF.VI.4 -SUFF.VI.5 ADV                         V.???                       -SUFF.V.4 V.T                  V.T                -SUFF.N V.T         -SUFF.V.4 TEMP                  V.I                      -SUFF.N N.N
+\f xxx
+\fe He went straight into the bus, passed the ``boss crew'' and took a back seat.
+
+\ref Paragraph 8
+\t Uva  vasi            ora  vasike             opa            Waigani            opisi  iare    siori                           va      ora  oiavu                vasi            siovaraia.
+\m uva  vasi            ora  vasike             o    -pa       *Waigan -i         opisi  iare    si        -o         -ri        va      ora  o    -ia     -vu     vasi            siovaraia
+\g so   emphasis marker and  leave/allow/let go oh   -PROG     ***     -1.PL.EXCL office towards cut hair  -3.SG.F    -2.SG      3.SG.N  and  oh   -at     -other  emphasis marker inside
+\p CONJ GR              CONJ V.T                EXCL -SUFF.V.3 ***     -SUFF.V.4  N.???  PREP    V.???     -SUFF.VI.4 -SUFF.VT.4 PRO.PER CONJ EXCL -SUFF.N -SUFF.N GR              POST
+\f xxx
+\fe The bus took off for Waigani office with John and all of the other passengers.
+
+\ref 9
+\t Oire vosi                 kuru               siori                            vurareva                              uva  rera    akereva                   ae   araoko                      vii.
+\m oire vosi                 kuru               si          -o        -ri        vura            -re        -va        uva  rera    ake -re        -va        ae   araoko                      vii
+\g okay warn/caution against strip off branches to cut hair -3.SG.F   -2.SG      look at/gaze at -3.SG.M    -RP        so   3.SG.M  ask -3.SG.M    -RP        ???  brother of male/male cousin 2.SG
+\p EXCL V.T                  V.T                V.???       -SUFF.V.4 -SUFF.VT.4 V.T             -SUFF.VT.4 -SUFF.VT.5 CONJ PRO.PER V.T -SUFF.VT.4 -SUFF.VT.5 EXCL N.M                         PRO.PER
+\f xxx
+\fe Soon the ``boss crew'' looked at John and asked, ``Hey Bro, you?''
+
+\ref Paragraph 10
+\t Siori oisio              puraroepa,                 ``Waigina       opisi'', uva  kiuvupa         ratao iava       vurareva.
+\m Siori oisio              pura -ro        -epa       *Waigin -a      opisi    uva  kiuvu -pa       ratao iava       vura            -re        -va
+\g name  this way/like this say  -3.SG.M    -RP        ***     -N      office   so   wind  -RP       door  from/about look at/gaze at -3.SG.M    -RP
+\p N.PN  ???                V.I  -SUFF.VI.4 -SUFF.VI.5 ***     -SUFF.N N.???    CONJ N.M   -SUFF.V.5 N.N   PREP       V.T             -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe John replied, ``Waigani office'', and looked out the window.
+
+\ref 11
+\t Eva        vosi                 kuru               kasipupieva             uva  voreroepa                     vasi            utupaua               revoreroepa.
+\m eva        vosi                 kuru               kasipupie    -va        uva  vore    -ro        -epa       vasi            utupaua               -re -vo -re -ro -epa
+\g MED.3.SG.N warn/caution against strip off branches anger/enrage -RP        so   go back -3.SG.M    -RP        emphasis marker following after/later
+\p DEM        V.T                  V.T                V.T          -SUFF.VT.5 CONJ IV      -SUFF.VI.4 -SUFF.VI.5 GR              TEMP
+\f xxx
+\fe The made the ``boss crew'' angry so he went to the back of the bus.
+
+\ref Paragraph 12
+\t Oire vavaea        irareva                                 auere                      vasi            voripa                 vori.
+\m oire vavae -a      ira               -re        -va        auere                      vasi            vori         -pa       vori
+\g okay hand  -N      go ahead/go first -3.SG.M    -RP        so that/for the purpose of emphasis marker cost/pay/buy -for/with cost/pay/buy
+\p EXCL N.??? -SUFF.N V.I               -SUFF.VT.4 -SUFF.VT.5 CONJ                       GR              V.T          -SUFF.N   V.T
+\f xxx
+\fe He reached out his hand for the bus fare.
+
+\ref 13
+\t Siori vavae vateroepa                  vosi                 kuruto                     tapo.
+\m Siori vavae vate -ro        -epa       vosi                 kuru               -to     tapo
+\g name  hand  give -3.SG.M    -RP        warn/caution against strip off branches -MASC   also/too/with
+\p N.PN  N.??? V.T  -SUFF.VI.4 -SUFF.VI.5 V.T                  V.T                -SUFF.N POST
+\f xxx
+\fe John shook hands with the boss crew.
+
+\ref 14
+\t Oisio              rugoparoepa                                       vosi                 kuruto                     rera    ia      tarairoere                      ouruiia                     tuariri         visivi.
+\m oisio              rugo              -pa       -ro        -epa       vosi                 kuru               -to     rera    -ia     tarai      -ro        -ere      o-          urui    -ia     tuariri         visivi
+\g this way/like this think/hope/reason -PROG     -3.SG.M    -RP        warn/caution against strip off branches -MASC   3.SG.M  -at     understand -3.SG.M    -2/3DL.F  this/these- village -at     before/long ago diminutive marker
+\p ???                V.???             -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.T                  V.T                -SUFF.N PRO.PER -SUFF.N V.I        -SUFF.VI.4 -SUFF.V.4 PRE.N-      N.???   -SUFF.N TEMP            GR
+\f xxx
+\fe He thought that the boss crew must have known him from some place before.
+
+\ref 15
+\t Oeavu                    vasi            siovaraia agesi-aepa.
+\m oea            -vu       vasi            siovaraia agesi -a          -epa
+\g PRO.???.3.PL.M -ALT      emphasis marker inside    laugh -3.PL       -RP
+\p PRO.???        -SUFF.N.4 ???             POST      V.A   -SUFF.V.A.4 -SUFF.V.A.5
+\f xxx
+\fe The other passengers laughed.
+
+\ref Paragraph 16
+\t Oire, oisio              puraroepa                  vosi                 kuruto                     kasipuvira,          ``Ae, e      airepau              vopa                Port  Moresby?''
+\m oire  oisio              pura -ro        -epa       vosi                 kuru               -to     kasipuvira           ae    e      airepa    -u         vo        -pa       *Port *Moresby
+\g okay  this way/like this say  -3.SG.M    -RP        warn/caution against strip off branches -MASC   sharp flavor/angrily ???   hey/eh new/fresh -2SG       this/here -for/with ***   ***
+\p EXCL  ???                V.I  -SUFF.VI.4 -SUFF.VI.5 V.T                  V.T                -SUFF.N ADV                  EXCL  EXCL   ADJ       -SUFF.VI.4 ???       -SUFF.N   ***   ***
+\f xxx
+\fe The boss crew said angrily, ``Hey, are you new to Port Moresby?''
+
+\ref Paragraph 17
+\t ``Iu, eva        torevokipai,''                           osia atoreva                       Siori.
+\m iu    eva        tore      - voki     -pa       -i        osia ato     -re        -va        Siori
+\g yes   MED.3.SG.N stand up  - day/time -PROG     -PRES     as   harvest -3.SG.M    -RP        name
+\p EXCL  DEM        V.I       - N.N      -SUFF.V.3 -SUFF.V.5 CONJ V.I     -SUFF.VT.4 -SUFF.VT.5 N.PN
+\f xxx
+\fe John answered, ``Yes, that's right.''
+
+\ref Paragraph 18
+\t Oiavu                           oirara         vasi            siovaraia oia          agesipa         epa       Siori vuripavi                                        agesipaora                           vaiterei ora  vosi                 kuru.
+\m o               -ia     -vu     oirara         vasi            siovaraia o    -ia     agesi -pa       epa       Siori vuri                       -pa       -vi        agesi -pa       -o        -ra        vaiterei ora  vosi                 kuru
+\g this female/her -at     -other  people/mankind emphasis marker inside    oh   -at     laugh -RP       peel/husk name  bad/inferior/spoiled/wrong -PROG     -1.PL.INCL laugh -PROG     -3.SG.F   -1.SG      2.DL.M   and  warn/caution against strip off branches
+\p NDF             -SUFF.N -SUFF.N N.???          GR              POST      EXCL -SUFF.N V.I   -SUFF.V.5 V.T       N.PN  ADJ                        -SUFF.V.3 -SUFF.VI.4 V.I   -SUFF.V.3 -SUFF.V.4 -SUFF.VI.4 PRO.PER  CONJ V.T                  V.T
+\f xxx
+\fe The other passengers laughed as they watched poor John and the boss crew.
+
+\ref Paragraph 19
+\t Oire uva  vosi                 kuruto                     voreroepa                     reravo            tavukiaro              iare    paupa tavuki         oisio              purapaoro                uvuri                 vii     pukui         touto                  Port  Moresby  ia      voo                 voia      ro    rutu       aia        vasi            siovaraia toupai                      oia          50 toea                   vatepaoro                koatapave.
+\m oire uva  vosi                 kuru               -to     vore    -ro        -epa       rera    -vo       tavuki         -aro    iare    paupa tavuki         oisio              pura -pa       -oro      uvu        -ri        vii     pukui         touto                  *Port *Moresby -ia     vo        -o        voia      ro    rutu       aia        vasi            siovaraia tou     -pa       -i        o    -ia     50 toea                   vate -pa       -oro      koata -pa       -ve
+\g okay so   warn/caution against strip off branches -MASC   go back -3.SG.M    -RP        3.SG.M  -IP       space/position -POSS   towards chair space/position this way/like this say  -PROG     -SIM      hear/smell -2.SG      2.SG    mountain/hill adulterer/sitting room ***   ***      -at     this/here -3.SG.F   here/this 3SG.M very/truly more/again emphasis marker inside    be/stay -PROG     -PRES     oh   -at     50 cut/wound from a knife give -PROG     -SIM      enter -PROG     -SUB
+\p EXCL CONJ V.T                  V.T                -SUFF.N IV      -SUFF.VI.4 -SUFF.VI.5 PRO.PER -SUFF.V.5 N.N            -SUFF.N PREP    N.N   N.N            ???                V.I  -SUFF.V.3 -SUFF.V.4 V.T        -SUFF.VT.4 PRO.PER N.???         N.N2                   ***   ***      -SUFF.N ???       -SUFF.V.4 ???       PRO   PH         ADV        GR              POST      V.I     -SUFF.V.3 -SUFF.V.5 EXCL -SUFF.N 50 N.N                    V.T  -SUFF.V.3 -SUFF.V.4 V.I   -SUFF.V.3 -SUFF.V.5
+\f xxx
+\fe The boss crew returned to his seat saying, ``Listen, Highlander, this is Port Moresby, every passenger that travels in this busy must pay 50 toea as they enter.''
+
+\ref Paragraph 20
+\t ``O  e      eva        torevokopai?
+\m o    e      eva        torevoko -pa       -i
+\g oh   hey/eh MED.3.SG.N correct  -PROG     -EPEN
+\p EXCL EXCL   DEM        V.T      -SUFF.V.3 -INFIX
+\f xxx
+\fe ``Oh, is that right?
+
+\ref 21
+\t Eisia                      eva        isio                     oisio              eisi               Goroka.
+\m eisi               -a      eva        isio                     oisio              eisi               Goroka
+\g that way/like that -N      MED.3.SG.N bush spirit/mask of wood this way/like this that way/like that name
+\p DEM                -SUFF.N DEM        N.PN?                    ???                DEM                N.PN
+\f xxx
+\fe It is not like that in Goroka.
+
+\ref 22
+\t Evoa     uva  voripaioveira                               osia kosiviropaio                    vasi            iava.
+\m evoa     uva  vori         -pa       -io        -veira    osia kosiviro    -pa       -io       vasi            iava
+\g DEIC.MED so   cost/pay/buy -PROG     -1.PL.EXCL -ANIM.HAB as   go out/exit -PROG     -1PL.EXCL emphasis marker from/about
+\p LOC      CONJ V.T          -SUFF.V.3 -SUFF.V.4  -SUFF.V.5 CONJ V.???       -SUFF.V.3 -SUFF.N   GR              PREP
+\f xxx
+\fe There we pay as we go out of the bus.''
+
+\ref Paragraph 23
+\t Uva  vasi            gotopa                      Waigani      opisiia        vosia   Siori vasi            iava       rerereva.
+\m uva  vasi            goto              -pa       *Waigan -i   opisi  -ia     vosia   Siori vasi            iava       rerere                                   -va
+\g so   emphasis marker hung up/lodged in -RP       ***     -??? office -at     when/if name  emphasis marker from/about shellfish, cone shell with striped bands -RP
+\p CONJ GR              ADJ               -SUFF.V.5 ***     -??? N.???  -SUFF.N CONJ    N.PN  GR              PREP       N.PN?                                    -SUFF.VT.5
+\f xxx
+\fe The bus stopped in front of the Waigani office.
+
+\ref 24
+\t Uva  50 toea  vatereva.
+\m uva  50 toea  vate -re        -va
+\g so   50 toea  give -3.SG.M    -RP
+\p CONJ 50 N.??? V.T  -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe As John left the bus he paid 50 toea.
+
+\ref 25
+\t ``Vearovira  vosi,"               Siori osia puraoro        vokaoro                            avaroepa.
+\m vearovira    vosi                 Siori osia pura -oro      voka                     -oro      ava -ro        -epa
+\g thank you/ok warn/caution against name  as   say  -SIM      walk/scan/glance through -SIM      go  -3.SG.M    -RP
+\p ID           V.T                  N.PN  CONJ V.I  -SUFF.V.4 V.T                      -SUFF.V.4 V.I -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe ``Thank you, boss,'' John said as he walked away.

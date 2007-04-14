@@ -1,0 +1,278 @@
+\_sh v3.0  400  Rotokas Text
+
+\id How Snake Lost Its Feet
+\au Maggie Guria
+
+\ref Paragraph 1
+\t Voari    tuariri uva  oisoa    toupaeve                            rokoroko uukova      ruvaraia.
+\m voari    tuariri uva  oisoa    tou -pa       -e          -ve       rokoroko uukova      ruvara -ia
+\g before   before  so   always   be  -PROG     -3.SG.F.B   -SUB      frog     large river near   -LOC
+\p TIME/LOC TIME    PART ADV.TEMP V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5 N.F      N.F         N.LOC  -ENC.N.6
+\f Wanpela taim rokrok i bin save stap klostu long wara.    
+\fe Once upon a time a Frog lived beside a lake.
+
+\ref 2
+\t Vearopie  kekeva         rutu ora       riro kovova.
+\m vearopie  keke -va       rutu ora       riro kovo -va
+\g make.good look -SG.F     very and       very work -SG.F
+\p V.B       V.A  -SUFF.N.2 ADV  PART.CONJ ADV  V.B  -SUFF.N.2
+\f Em i bin naispela na em i save wok hat.
+\fe She was beautiful and a hard worker.
+
+\ref 3
+\t Oira        raga oisoa    toupaeve.
+\m oira        raga oisoa    tou -pa       -e          -ve
+\g PPRO.3.SG.F only always   be  -PROG     -3.SG.F.B   -SUB
+\p PPRO        ADV  ADV.TEMP V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5
+\f Rokrok i bin save stap em wanpela tasol.
+\fe Frog was living alone 
+
+\ref 3a
+\t Oire rugorugooopa                      oisio ra   vatuatoavaire                       taraeve.
+\m oire rugorugoo -o          -epa        oisio ra   vatua  -to       -vai      -re      tara -e          -ve
+\g okay remember  -3.SG.F.A   -RP.A       like  COMP spouse -SG.M     -INDEF    -ALL     seek -3.SG.F.B   -SUB
+\p EXCL V.A       -SUFF.V.A.3 -SUFF.V.A.5 COMP  COMP N.HUM  -SUFF.N.2 -SUFF.N.6 -ENC.N.6 V.B  -SUFF.V.B.3 -SUFF.V.5
+\f Na em i bin tingting long painim wanpela man bilong em.
+\fe So she decided to look for a husband.
+
+\ref Paragraph 4
+\t Vo-pukuia           ruvaraia        uukova      ruvaraia        rakoru oisoa    toupaive.
+\m vo-   puku -ia      ruvara -ia      uukova      ruvara -ia      rakoru oisoa    tou -pa       -i          -ve
+\g SING- hump -LOC     near   -LOC     large river near   -LOC     snake  always   be  -PROG     -3.PL.B     -SUB
+\p PRE-  V.B  -ENC.N.6 N.LOC  -ENC.N.6 N.F         N.LOC  -ENC.N.6 N.F    ADV.TEMP V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5
+\f Long maunten klostu long wara wanpela snek i save stap.
+\fe On a hill near the lake lived a snake.
+
+\ref 5
+\t Vearopieto          rutu rakoruto.
+\m vearopie  -to       rutu rakoruto
+\g make.good -SG.M     very snake
+\p V.B       -SUFF.N.2 ADV  N.M
+\f Em i naispela snek.
+\fe He was a handsome snake.
+
+\ref 6
+\t Evo   vuutaia        oaia                 rakoru kokotopavira           oisoa    toupaive                            oisio osia      okarerovu                           korekare.
+\m evo   vuuta -ia      oa          -ia      rakoru kokoto -pa       -vira oisoa    tou -pa       -i          -ve       oisio osia      o-     kare    -ro        -vu       korekare
+\g DEM.N time  -LOC     RPRO.3.SG.N -LOC     snake  leg    -DERIV    -ADV  always   be  -PROG     -3.PL.B     -SUB      like  as        SPEC-  animals -PL.CL     -ALT      animals
+\p DEM   N.N   -ENC.N.6 RPRO        -ENC.N.6 N.F    N.N    -SUFF.N.1 -SUFF ADV.TEMP V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5 COMP  PART.CONJ PRE.N- FFP     -SUFF.CL.1 -SUFF.N.5 N.???
+\nt Seems that the 'oaia' is optional.
+\f Long dispela taim snek i gat lek olsem ol narapela animal.
+\fe In those days snakes had feet like other animals.
+
+\ref Paragraph 7
+\t Ovokivuia                      rokoroko aivaroeva                         vearotoava               rakoruto.
+\m o-     voki -vu       -ia      rokoroko aivaro    -e          -va         vearo -to       -va      rakoruto
+\g SPEC-  day  -ALT      -LOC     frog     meet.with -3.SG.F.B   -RP.B       good  -SG.M     -ABL     snake
+\p PRE.N- N.N  -SUFF.N.5 -ENC.N.6 N.???    V.B       -SUFF.V.B.3 -SUFF.V.B.5 V.A   -SUFF.N.2 -ENC.N.6 N.M
+\f Wanpela dei Rokrok i bungim naispela snek.
+\fe One day Frog met the handsome snake.
+
+\ref 8
+\t Rera        varaaropa                      ruipaopa                      rokoroko sirusirupa         vara.
+\m rera        vara        -aro      -pa      ruipa -o          -epa        rokoroko sirusiru -pa       vara
+\g PPRO.3.SG.M PPRO.3.PL.F -POSS     -BEN     want  -3.SG.F.A   -RP.A       frog     shiny    -DERIV    body
+\p PPRO        PPRO        -SUFF.N.3 -ENC.N.6 V.A   -SUFF.V.A.3 -SUFF.V.A.5 N.???    V.B      -SUFF.N.1 N.N
+\nt Syntax here is a bit strange. Need to double-check it.
+\f Rokrok i bin laikim bodi bilong em i bin sain.
+\fe She liked his shiny scales.
+
+\ref 9
+\t Rakoruto oira        varaaropa                      ruiparoepa                    sirusirupa         vara kokovara rakari.
+\m rakoruto oira        vara        -aro      -pa      ruipa -ro         -epa        sirusiru -pa       vara kokovara rakari
+\g snake    PPRO.3.SG.F PPRO.3.PL.F -POSS     -BEN     want  -3.SG.M.A   -RP.A       shiny    -DERIV    body green    skin
+\p N.M      PPRO        PPRO        -SUFF.N.3 -ENC.N.6 V.A   -SUFF.V.A.3 -SUFF.V.A.5 V.B      -SUFF.N.1 N.N  V.A      N.N
+\f Na snek i bin laikim grinpela skin bilong em.
+\fe He liked her shiny green skin.
+
+\ref Paragraph 10
+\t Rakoruto vearopieva          rokoroko akereva,                    ``Ee uvuipau                       ra   ragai     ouri?''
+\m rakoruto vearopie  -va       rokoroko ake -re         -va         ee   uvui    -pa       -u          ra   ragai     ou  -ri
+\g snake    make.good -SG.F     frog     ask -3.SG.M.B   -RP.B       eh   be.able -PROG     -2.SG.A     COMP PPRO.1.SG get -2.SG.B
+\p N.M      V.B       -SUFF.N.2 N.???    V.B -SUFF.V.B.3 -SUFF.V.B.5 EXCL V.A     -SUFF.V.2 -SUFF.V.A.3 COMP PPRO      V.B -SUFF.V.B.3
+\f Snek i bin askim dispela naispela rokrok, ``Yu inap maritim mi?''
+\fe Snake asked the beautiful Frog, ``Will you marry me?''
+
+\ref 11
+\t Rokoroko ariipaopa                                    uva  orapuaaro           tavurupaopa                                vavae-areiia.
+\m rokoroko arii       -pa       -o          -epa        uva  ora- pua  -aro      tavuru   -pa       -o          -epa        vavae -arei     -ia
+\g frog     be ashamed -PROG     -3.SG.F.A   -RP.A       so   RR-  face -POSS     cover up -PROG     -3.SG.F.A   -RP.A       hand  -DL.N     -LOC
+\p N.???    V.A        -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 PART PRE- N.N  -SUFF.N.3 V.B      -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 N.N   -SUFF.N.2 -ENC.N.6
+\f Rokrok i bin sem na em i bin karapim pes bilong em wantaim han bilong em.
+\fe Frog was shy and she covered her face with her hands.
+
+\ref 12
+\t Rakoruto       tueparoepa                           tueparoepa                           uva  rovoroepa                              ora  viruparo                  avaparoepa.
+\m rakoru -to     tue  -pa       -ro        -epa       tue  -pa       -ro        -epa       uva  rovo             -ro        -epa       ora  viru -pa       -ro        ava -pa       -ro        -epa
+\g snake  -MASC   wait -PROG     -3.SG.M    -RP        wait -PROG     -3.SG.M    -RP        so   precede/go first -3.SG.M    -RP        and  move -PROG     -3.SG.M    go  -PROG     -3.SG.M    -RP
+\p N.???  -SUFF.N V.I  -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.I  -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 CONJ V.I              -SUFF.VI.4 -SUFF.VI.5 CONJ V.I  -SUFF.V.3 -SUFF.VI.4 V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f Snek em i bin wait na wait, na em i bin stat long wakabaut.
+\fe Snake waited and waited, then began to walk away.
+
+\ref 13
+\t Voaviva                 rokoroko vavaearei       veraeva                        uva  garevisivi oisio puraopa,                     ``Iiu''.
+\m voa  -vi       -va      rokoroko vavae -arei     vera   -e          -va         uva  garevisivi oisio pura -o          -epa        iiu
+\g here -DIM      -ABL     frog     hand  -DL.N     remove -3.SG.F.B   -RP.B       so   carefully  like  say  -3.SG.F.A   -RP.A       yes
+\p LOC  -SUFF.N.4 -ENC.N.6 N.???    N.N   -SUFF.N.2 V.B    -SUFF.V.B.3 -SUFF.V.B.5 PART ADV        COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 EXCL
+\f Na Rokrok em i stat rausim han bilong em na em i isi na tok yes.
+\fe Suddenly Frog removed her hands and said quietly, ``Yes''.
+
+\ref Paragraph 14
+\t Tutupieva           ra   oraousi.
+\m tutupie -va         ra   oraou    -si
+\g near    -RP.B       COMP marry    -3.DL.M
+\p V.B     -SUFF.V.B.5 COMP V.A.REFL -SUFF.V.3
+\f I no longtaim na tupela i bin marit.
+\fe Soon they were married.
+
+\ref 15
+\t Ovokipakouvuia                      rokoroko toreopa                       voari    rutu aio  vatatoposia.
+\m o-     vokipakou -vu       -ia      rokoroko tore  -o          -epa        voari    rutu aio  vatatopo -sia
+\g SPEC-  morning   -ALT      -LOC     frog     stand -3.SG.F.A   -RP.A       before   very food ready    -DEP.PURP
+\p PRE.N- TIME      -SUFF.N.5 -ENC.N.6 N.???    V.A   -SUFF.V.A.3 -SUFF.V.A.5 TIME/LOC ADV  N.N  V.B      -SUFF.V.4
+\f Wanpela dei Rokrok i kirap long moning taim tru na redim kaikai.
+\fe One day Frog got up early and prepared breakfast.
+
+\ref 16
+\t Kaukau       aioopa                      uva  aisivu                 kavueva                              gavutaia        tuitui kasi  ruvaraia.
+\m kaukau       aio -o          -epa        uva  aisi         -vu       kavu         -e          -va         gavuta -ia      tuitui kasi  ruvara -ia
+\g sweet potato eat -3.SG.F.A   -RP.A       so   round object -ALT      leave.behind -3.SG.F.B   -RP.B       ash    -LOC     fire   fire  near   -LOC
+\p N.???        V.B -SUFF.V.A.3 -SUFF.V.A.5 PART CLASS        -SUFF.N.5 V.B          -SUFF.V.B.3 -SUFF.V.B.5 N.N    -ENC.N.6 N.M    N.??? N.LOC  -ENC.N.6
+\f Em i bin kaikai kaukau bilong em na em i bin lusim kaukau bilong man bilong em long paia.
+\fe She ate her kaukau and left her husband's kaukau on the ashes of the fire.
+
+\ref Paragraph 17
+\t Ava-opa                     kovoa  iare    kovosia        vovoki     rutuia        kovoeva                      riro kasiraotoaia               ravireo.
+\m ava -o          -epa        kovoa  iare    kovo -sia      vo-   voki rutu -ia      kovo -e          -va         riro kasirao -to       -ia      ravireo
+\g go  -3.SG.F.A   -RP.A       garden towards work -DEP.PURP SING- day  very -LOC     work -3.SG.F.B   -RP.B       big  hot     -SG.M     -LOC     sun
+\p V.A -SUFF.V.A.3 -SUFF.V.A.5 N.N    POST    V.B  -SUFF.V.4 PRE-  N.N  ADV  -ENC.N.6 V.B  -SUFF.V.B.3 -SUFF.V.B.5 ADJ  V.A     -SUFF.N.2 -ENC.N.6 N.M
+\f Em i bin go long gaden na em i wok wanpela dei olgeta long hotpela sun.
+\fe She went to the garden and worked all day in the hot sun.
+
+\ref 18
+\t Osia      viapau   vatuato          avaroepa                    varu tarasia.
+\m osia      viapau   vatua  -to       ava -ro         -epa        varu tara -sia
+\g as        NEG      spouse -SG.M     go  -3.SG.M.A   -RP.A       meat seek -DEP.PURP
+\p PART.CONJ PART.NEG N.HUM  -SUFF.N.2 V.A -SUFF.V.A.3 -SUFF.V.A.5 N.N  V.B  -SUFF.V.4
+\f Tasol man bilong em i no bin go painim abus o pis.
+\fe But her husband didn't go hunting or fishing.
+
+\ref 19
+\t Viapau,  rooia                  pokapokato  rakoruto ira         vovoki     rutuia        uusiragaparoepa.
+\m viapau   roo           -ia      pokapokato  rakoruto ira         vo-   voki rutu -ia      uusi  -raga     -pa       -ro         -epa
+\g NEG      DEM.PROX.SG.M -LOC     lazy person snake    RPRO.3.SG.M SING- day  very -LOC     sleep -only     -PROG     -3.SG.M.A   -RP.A
+\p PART.NEG DEM           -ENC.N.6 N.HUM       N.M      RPRO        PRE-  N.N  ADV  -ENC.N.6 V.A   -SUFF.V.1 -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f Nogat, dispela les snek i bin slip wanpela dei olgeta.
+\fe No, the lazy snake slept all day.
+
+\ref Paragraph 20
+\t Vokiarovi kare-opa                       rokoroko aio  orisia         ita.
+\m vokiarovi kare   -o          -epa        rokoroko aio  ori  -sia      ita
+\g afternoon return -3.SG.F.A   -RP.A       frog     food cook -DEP.PURP again
+\p TIME      V.A    -SUFF.V.A.3 -SUFF.V.A.5 N.???    N.N  V.B  -SUFF.V.4 ADV.TEMP
+\f Long apinun Rokrok i kam bek long ples na kukim gen kaikai.
+\fe In the evening Frog came home and cooked a meal.
+
+\ref 21
+\t Rakoruto oira        situeragapareva                                   osia      kovoara          rutu purapaeva.
+\m rakoruto oira        situe -raga     -pa       -re         -va         osia      kovo   -ara      rutu pura -pa       -e          -va
+\g snake    PPRO.3.SG.F look  -only     -PROG     -3.SG.M.B   -RP.B       as        garden -PL.N     very make -PROG     -3.SG.F.B   -RP.B
+\p N.M      PPRO        V.B   -SUFF.V.1 -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 PART.CONJ N.N    -SUFF.N.2 ADV  V.B  -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5
+\f Snek i bin sindaun tasol na lukluk long rokrok i wokim olgeta wok.
+\fe Snake just sat and watched her do all the work.
+
+\ref 22
+\t Rokoroko vatuatoaro                 viapau   oira        oisoa    tauvapareve                           kovoaraia                 kepa  sovaraia.
+\m rokoroko vatua  -to       -aro      viapau   oira        oisoa    tauva -pa       -re         -ve       kovo   -ara      -ia      kepa  siovara -ia
+\g frog     spouse -SG.M     -POSS     NEG      PPRO.3.SG.F always   help  -PROG     -3.SG.M.B   -SUB      garden -PL.N     -LOC     house inside  -LOC
+\p N.???    N.HUM  -SUFF.N.2 -SUFF.N.3 PART.NEG PPRO        ADV.TEMP V.B   -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5 N.N    -SUFF.N.2 -ENC.N.6 N.N   N.LOC   -ENC.N.6
+\f Man bilong Rokrok i no save halavim em long wokim ol wok bilong haus.
+\fe Frog's husband never helped her with her jobs in the house.
+
+\ref Paragraph 23
+\t Viapau   oisio rokoroko rorupaeva.
+\m viapau   oisio rokoroko roru -pa       -e          -va
+\g NEG      like  frog     glad -PROG     -3.SG.F.B   -RP.B
+\p PART.NEG COMP  N.???    V.B  -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5
+\f Rokrok i no bin hamamas.
+\fe Frog was not happy.
+
+\ref 24
+\t Rugorugoopaopa                              oisio ra   oavuavuvai          puraeve                    evai            iava.
+\m rugorugoo -pa       -o          -epa        oisio ra   oavuavu   -vai      pura -e          -ve       eva        -i   iava
+\g remember  -PROG     -3.SG.F.A   -RP.A       like  COMP something -INDEF    make -3.SG.F.B   -SUB      MED.3.SG.N -??? ABL
+\p V.A       -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP  COMP N.???     -SUFF.N.6 V.B  -SUFF.V.B.3 -SUFF.V.5 DEM        -??? POST
+\f Em i tingting long wokim wanpela samting long em.
+\fe She decided to do something about it.
+
+\ref 25
+\t Oisio puraopa                      oraoirare,                ''Ragai   uvuiparai                                 ra   roo           taraipiea          ra   kokotoara        kovopiepareve''.
+\m oisio pura -o          -epa        ora- oira        -re      ragai     uvui    -pa       -ra         -ei         ra   roo           taraipie -a        ra   kokoto -ara      kovopie   -pa       -re         -ve
+\g like  say  -3.SG.F.A   -RP.A       RR-  PPRO.3.SG.F -ALL     PPRO.1.SG be.able -PROG     -1.SG.A     -PRES.A     COMP DEM.PROX.SG.M teach    -SG.N     COMP leg    -PL.N     make work -PROG     -3.SG.M.B   -SUB
+\p COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 PRE- PPRO        -ENC.N.6 PPRO      V.A     -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP DEM           V.B      -SUFF.N.2 COMP N.???  -SUFF.N.2 V.B       -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5
+\f Em i tok long em yet, ``Mi mas lainim dispela man long usim lek bilong em''.
+\fe She said to herself, ``I must teach this man to use his feet.''
+
+\ref Paragraph 26
+\t Ovuutavuia         ovokivuia                      rakoruto uusiparoepa                             kepa  sovaraia         osia      rokoroko rerare               kepa  kasieva.
+\m ovuutavu  -ia      o-     voki -vu       -ia      rakoruto uusi  -pa       -ro         -epa        kepa  siovara -ia      osia      rokoroko rera        -re      kepa  kasi -e          -va
+\g next time -LOC     SPEC-  day  -ALT      -LOC     snake    sleep -PROG     -3.SG.M.A   -RP.A       house inside  -LOC     as        frog     PPRO.3.SG.M -ALL     house burn -3.SG.F.B   -RP.B
+\p TIME      -ENC.N.6 PRE.N- N.N  -SUFF.N.5 -ENC.N.6 N.M      V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 N.N   N.LOC   -ENC.N.6 PART.CONJ N.???    PPRO        -ENC.N.6 N.N   V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f Long narapela de taim Snek i bin wok long slip insait long haus, Rokrok i bin paiaim haus.
+\fe The next day while the Snake was sleeping in the house, Frog set fire to the house.
+
+\ref 27
+\t Rakoruto tapurisiroepa                       oa          iava viapau   tuitui kasi  kasiraoaro        sovopareva.
+\m rakoruto tapurisi    -ro         -epa        oa          iava viapau   tuitui kasi  kasirao -aro      siovo -pa       -re         -va
+\g snake    unconscious -3.SG.M.A   -RP.A       RPRO.3.SG.N ABL  NEG      fire   fire  hot     -POSS     feel  -PROG     -3.SG.M.B   -RP.B
+\p N.M      V.A         -SUFF.V.A.3 -SUFF.V.A.5 RPRO        POST PART.NEG N.M    N.??? V.A     -SUFF.N.3 V.B   -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5
+\f Snek i bin slip strong tru olsem na em i no bin pilim hot bilong paia.
+\fe Snake was sound asleep so he didn't feel the heat of the fire.
+
+\ref Paragraph 28
+\t Rakoruto iava kokotoara        oara        tuuke-vira   topaiva                            kepa  iava tuutaaraia.
+\m rakoruto iava kokoto -ara      oara        tuuke  -vira topa       -i          -va         kepa  iava tuuta -ara      -ia
+\g snake    ABL  leg    -PL.N     RPRO.3.PL.N fasten -ADV  knock.down -3.PL.B     -RP.B       house ABL  post  -PL.N     -LOC
+\p N.M      POST N.???  -SUFF.N.2 RPRO        V.B    -SUFF V.B        -SUFF.V.B.3 -SUFF.V.B.5 N.N   POST N.N   -SUFF.N.2 -ENC.N.6
+\f Lek bilong Snek i bin raunim pos bilong haus.
+\fe Snake's feet were curled around the poles in the house.
+
+\ref 29
+\t Tuutaara        oara        rovaepa.
+\m tuuta -ara      oara        rova   -epa
+\g post  -PL.N     RPRO.3.PL.N burned -RP.A
+\p N.N   -SUFF.N.2 RPRO        V.A    -SUFF.V.A.5
+\f Na pos i bin paia.
+\fe The poles were on fire.
+
+\ref 30
+\t Rakoruto iava kokotoara        rovaepa.
+\m rakoruto iava kokoto -ara      rova   -epa
+\g snake    ABL  leg    -PL.N     burned -RP.A
+\p N.M      POST N.???  -SUFF.N.2 V.A    -SUFF.V.A.5
+\f Ol lek bilong snek i bin paia.
+\fe Snake's feet were burning.
+
+\ref Paragraph 31
+\t Utupaua toreroepa                     rakoruto.
+\m utupaua tore  -ro         -epa        rakoruto
+\g later   stand -3.SG.M.A   -RP.A       snake
+\p TIME    V.A   -SUFF.V.A.3 -SUFF.V.A.5 N.M
+\f Bihain Snek i bin kirap.
+\fe At last Snake woke up.
+
+\ref 32
+\t Toripaoro                kosiroviropa                           kepa  sovarai iava osia      tuariri votoepa           rovaoro          tuutaaraia.
+\m tori -pa       -oro      kosi -ro         -viro     -epa        kepa  siovara iava osia      tuariri voto  -epa        rova   -oro      tuuta -ara      -ia
+\g flee -PROG     -DEP.SIM  exit -3.SG.M.A   -COMPL    -RP.A       house inside  ABL  as        before  stuck -RP.A       burned -DEP.SIM  post  -PL.N     -LOC
+\p V.B  -SUFF.V.2 -SUFF.V.3 V.A  -SUFF.V.A.3 -SUFF.V.4 -SUFF.V.A.5 N.N   N.LOC   POST PART.CONJ TIME    V.A   -SUFF.V.A.5 V.A    -SUFF.V.3 N.N   -SUFF.N.2 -ENC.N.6
+\f Em i go autsait long haus hariap kwiktaim, tasol lek bilong em i bin pas i stap long pos.
+\fe He rushed out of the house, but his feet stayed stuck to the burning poles.
+
+\ref 33
+\t Vao             siposipoa          aue  iava osia      ragavira rakoruto viapau   kokotoaravai               vovokioia.
+\m vao             siposipo -a        aue  iava osia      ragavira rakoruto viapau   kokoto -ara      -vai      vovokio -ia
+\g DEM.PROX.3.SG.N story    -SG.N     CONN ABL  as        just     snake    NEG      leg    -PL.N     -INDEF    today   -LOC
+\p DEM             N.N      -SUFF.N.2 CONN POST PART.CONJ ADV      N.M      PART.NEG N.???  -SUFF.N.2 -SUFF.N.6 TEMP    -ENC.N.6
+\f Dispela em stori bilong as bilong ol snek i no gat lek.
+\fe That is the story of why snakes have no feet today.

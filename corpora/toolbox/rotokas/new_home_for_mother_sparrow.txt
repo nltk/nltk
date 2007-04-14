@@ -1,0 +1,334 @@
+\_sh v3.0  400  Rotokas Text
+
+\id A New Home for Mother Sparrow
+\au Ivy Pagolu
+
+\ref Paragraph 1
+\t Aakova siuura  rugorugoopaopa                                            epita iava.
+\m aakova siuura  rugorugoo               -pa       -o          -epa        epita iava
+\g mother sparrow think/remember/meditate -PROG     -3.SG.F     -RP         nest  from/about
+\p N.F    N.???   V.A                     -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5 N.N   PREP
+\f xxx
+\fe Mother Sparrow was worried.
+
+\ref 2
+\t Oa      toputopupiropa                 ora  oisoa  erupape.
+\m oa      toputopu   -piro     -pa       ora  oisoa  eru               -pa       -pe
+\g 3.SG.N  have holes -COMPL    -RP       and  always stink/spoil/decay -PROG     -SUB
+\p PRO.REL N.???      -SUFF.V.3 -SUFF.V.5 CONJ TEMP   V.I               -SUFF.V.3 -V.SUFF
+\nt It looks like toputopu is only a verb with -piro. Not sure what to make of that...
+\f xxx
+\fe Her nest had a hole in it.
+
+\ref 3
+\t Rirovira        tupitupiepa.
+\m rirovira        tupitupi       -epa
+\g largely/greatly wet/moist/damp -RP
+\p ADV             V.I            -SUFF.VI.5
+\f xxx
+\fe It was very wet.
+
+\ref 4
+\t Eake  uvui-pai                    ra   va      puraeve                             voepita                         tavariosia?
+\m eake  uvui    -pa       -i        ra   va      pura           -e         -ve       vo-   epita                     tavario                -sia
+\g what  be able -PROG     -PRES     COMP 3.SG.N  make/do/create -3.SG.F    -SUB      SING- nest that hangs from limb exchange/change places -DEP.PURP
+\p INTER V.I     -SUFF.V.3 -SUFF.V.5 COMP PRO.PER V.T            -SUFF.VT.4 -SUFF.V.5 PRE-  N.N                       V.I                    -SUFF.V.4
+\f xxx
+\fe What was she going to do to repair her nest?
+
+\ref Paragraph 5
+\t Aakova      siiura  rugorugopaopa                                         evao  raoia         paupaoro                epitapa.
+\m aakova      siiura  rugorugo                -pa       -o        -pa       evao  rao   -ia     pau -pa       -oro      epita -pa
+\g mother/aunt sparrow think/remember/meditate -PROG     -3.SG.F   -RP       tree  drain -at     sit -PROG     -DEP.SIM  nest  -for/with
+\p N.F         N.F     V.???                   -SUFF.V.3 -SUFF.V.4 -SUFF.V.5 N.??? V.??? -SUFF.N V.I -SUFF.V.3 -SUFF.V.4 N.N   -SUFF.N
+\f xxx
+\fe Mother Sparrow sat on the tree branch and thought about her nest. 
+
+\ref 6
+\t ``Eake uvuipai                     ra   va      puraa?
+\m eake   uvui    -pa       -i        ra   va      pura           -a
+\g what   be able -PROG     -PRES     COMP 3.SG.N  make/do/create -1.SG
+\p INTER  V.I     -SUFF.V.3 -SUFF.V.5 COMP PRO.PER V.T            -SUFF.VT.4
+\f xxx
+\fe ``What shall I do? 
+
+\ref 7
+\t Ee,    uvuiparai                              ra   airepavai             puraa?
+\m ee     uvui    -pa       -ra        -i        ra   airepa    -vai        pura           -a
+\g hey/eh be able -PROG     -1.SG      -PRES     COMP new/fresh -NABS       make/do/create -1SG
+\p EXCL   V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 COMP V.I       -SUFF.N.??? V.T            -SUFF.VT.4
+\f xxx
+\fe Shall I build a new nest? 
+
+\ref 8
+\t Iuu, vuuta vao             airepa    epitavai          purasia.''
+\m iuu  vuuta vao             airepa    epita -vai        pura           -sia
+\g yes  time  DEM.PROX.3.SG.N new/fresh nest  -NABS       make/do/create -DEP.PURP
+\p EXCL N.??? PRO.DEM         V.I       N.N   -SUFF.N.??? V.T            -SUFF.V.4
+\f xxx
+\fe Yes, it is time to build a new nest. 
+
+\ref 9
+\t ``Vavoisore       irapievira                      uvuiparai                              ra   vatatopora,''                  osia rugorugopaopa                                          aakova      siiura.
+\m vavoiso -re       irapievira                      uvui    -pa       -ra        -i        ra   vatatopo            -ra        osia rugorugo                -pa       -o         -pa       aakova      siiura
+\g to      -ALLATIVE ahead of time/in advance/before be able -PROG     -1.SG      -PRES     COMP be ready/be careful -1.SG      as   think/remember/meditate -PROG     -3.SG.F    -RP       mother/aunt sparrow
+\p ???     -SUFF     ADV                             V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 COMP V.I                 -SUFF.VI.4 CONJ V.I                     -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.F         N.F
+\f xxx
+\fe I must prepare for the future,'' thought Mother Sparrow.
+
+\ref Paragraph 10
+\t Aakova      siiura  papaoro        ava-opa                  kapiu          rao-ro                        kavosia                    ora  isisio kouro              ora  iroara     oira    varo    purasia                  epita.
+\m aakova      siiura  papa -oro      ava -o         -pa       kapiu          rao               -ro         kavo             -sia      ora  isisio kou    -ro         ora  iro  -ara  oira    varo    pura           -sia      epita
+\g mother/aunt sparrow fly  -DEP.SIM  go  -3.SG.F    -RP       twigs/kindling branch/stick/twig -PL         scavenge/pick up -DEP.PURP and  grass  heap   -PL         and  belt -PL   3.SG.F  clothes make/do/create -DEP.PURP nest
+\p N.F         N.F     V.T  -SUFF.V.4 V.I -SUFF.VI.4 -SUFF.V.5 N.???          N.N               -SUFF.N.??? V.T              -SUFF.V.4 CONJ N.???  CLASS? -SUFF.N.??? CONJ N.N  -SUFF PRO.PER N.N     V.T            -SUFF.V.4 N.N
+\f xxx
+\fe Mother Sparrow flew off to collect sticks, grass and bits of string to build her nest. 
+
+\ref 11
+\t Uva  papaeva                    uruia             iare.
+\m uva  papa -e         -va        uruia             iare
+\g so   fly  -3.SG.F    -RP        village/town/city towards
+\p CONJ V.T  -SUFF.VT.4 -SUFF.VT.5 N.N               PREP
+\f xxx
+\fe She flew into a village.
+
+\ref 12
+\t Avuto                agesipievira       oira    situepareva                                osa     vuravurapaeva                                      auerova           oira    vaaro             purasia                  epita.
+\m avuto                agesipie   -vira   oira    situe      -pa       -re        -va        osa     vuravura           -pa       -e         -va        auero -va         oira    vaaro             pura           -sia      epita
+\g grandfather/grandson make laugh -ADV    3.SG.F  look/watch -PROG     -3.SG.M    -RP        as/like scan/gaze/to watch -PROG     -3.SG.F    -RP        ???   -with       3.SG.F  that person/thing make/do/create -DEP.PURP nest
+\p N.M                  V.T        -SUFF.N PRO.PER V.T        -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ    V.T                -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 NP    -SUFF.N.??? PRO.PER NDM?              V.T            -SUFF.V.4 N.N
+\nt What the hell does 'auero' mean?
+\f xxx
+\fe A grandfather had fun watching her look for build materials for her nest.
+
+\ref Paragraph 13
+\t Avutoa                       avukaroepa                  ora  viapau oruaravai.
+\m avuto                -a      avuka -ro        -epa       ora  viapau orui         -ara  -vai
+\g grandfather/grandson -N      age   -3.SG.M    -RP        and  NEG    hair of head -PL   -NABS
+\p N.M                  -SUFF.N V.I   -SUFF.VI.4 -SUFF.VI.5 CONJ NEG    N.F          -SUFF -SUFF.N.???
+\f xxx
+\fe Grandfather was old and he had no hair.
+
+\ref 14
+\t Auero raga      oruara             oara          orapuraepa                          kokitoarei        ruvaraia.
+\m auero raga      orui         -ara  oara          ora-      pura           -epa       kokito    -arei   ruvaraia
+\g ???   only/just hair of head -PL   PRO.REL.3PL.N REF-      make/do/create -RP        ear canal -DL     near/close
+\p NP    ADV       N.F          -SUFF PRO.REL.3PL.N SUFF.N/V- V.T            -SUFF.VI.5 N.M       -SUFF.N POST
+\f xxx
+\fe Only a patch of hair grew above each ear.
+
+\ref 15
+\t Aueia              kukuvaipa oisioa kukuvaipaaro      oa      purareva                             aueia              kerio        rao.
+\m aue        -ia     kukuvaipa oisioa kukuvaipa -aro    oa      pura           -re        -va        aue        -ia     kerio        rao
+\g connective -at     hat       always hat       -POSS   3.SG.N  make/do/create -3.SG.M    -RP        connective -at     coconut leaf branch/stick/twig
+\p CONN       -SUFF.N N.N       TEMP   N.N       -SUFF.N PRO.REL V.T            -SUFF.VT.4 -SUFF.VT.5 CONN       -SUFF.N N.???        N.N
+\f xxx
+\fe He wore a hat made of coconut leaves.
+
+\ref 16
+\t Oisioa reasiparo                             oisio              ra   ravireo      rera    rivoaro      rovapiepareve.
+\m oisioa reasi            -pa       -ro        oisio              ra   ravireo      rera    rivo -aro    rova   -pe     -epa       -re        -ve
+\g always tired of/dislike -PROG     -3.SG.M    this way/like this COMP sun/sunshine 3.SG.M  bald -POSS   burned -SUB    -RP        -3.SG.M    -SUB
+\p TEMP   V.I              -SUFF.V.3 -SUFF.VI.4 ???                COMP N.M          PRO.PER V.I  -SUFF.N V.I    -V.SUFF -SUFF.VI.5 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe He didn't want the sun to burn his bald head.
+
+\ref Paragraph 17
+\t Ovokivuia                            uukova      sirova           vokapareva.
+\m o-          voki     -vu     -ia     uukova      sirova           voka                     -pa       -re        -va
+\g this/these- day/time -other  -at     large river behind/alongside walk/scan/glance through -PROG     -3.SG.M    -RP
+\p PRE.N-      N.N      -SUFF.N -SUFF.N N.F         LOC              V.T                      -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe One day, he walked by the river.
+
+\ref 18
+\t Evo voki     kiuvupa      voki.
+\m evo voki     kiuvu -pa    voki
+\g ??? day/time wind  -DERIV day/time
+\p DEM N.N      N.M   -SUFF  N.N
+\f xxx
+\fe It was a windy day.
+
+\ref 19
+\t Riro goruto                    kiuvu guruvara                     vuvurereva                   evaovaro           iava.
+\m riro goru              -to     kiuvu guruva           -ra         vuvure -re        -va        evaova -ro         iava
+\g big  strong/tight/firm -MASC   wind  leaf/paper money -PL         blow   -3.SG.M    -RP        tree   -PL         from/about
+\p V.I  V.I               -SUFF.N N.M   N.N              -SUFF.N.??? V.T    -SUFF.VT.4 -SUFF.VT.5 N.F    -SUFF.N.??? PREP
+\f xxx
+\fe The strong wind blew some leaves off the trees.
+
+\ref Paragraph 20
+\t Riro goruto                    kiuvu avuto                kukuearo           iava       kukuvaipa vuvurereva.
+\m riro goru              -to     kiuvu avuto                kukue      -aro    iava       kukuvaipa vuvure -re        -va
+\g big  strong/tight/firm -MASC   wind  grandfather/grandson head/skull -POSS   from/about hat       blow   -3.SG.M    -RP
+\p ADJ  ADJ               -SUFF.N N.M   N.M                  N.F        -SUFF.N PREP       N.N       V.T    -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe The strong wind blew grandfather's hat off his head.
+
+\ref 21
+\t Avuto                keeraroepa,                              ``Voreu,          kukuvaipa!
+\m avuto                keera              -ro        -epa       vore   -u         kukuvaipa
+\g grandfather/grandson call for/beckon to -3.SG.M    -RP        return -2.SG      hat
+\p N.M                  V.I                -SUFF.VI.4 -SUFF.VI.5 V.I    -SUFF.VI.4 N.N
+\f xxx
+\fe Grandfather called out, ``Come back, hat! 
+
+\ref 22
+\t Voreu!''
+\m vore   -u
+\g return -2.SG
+\p V.I    -SUFF.VI.4
+\f xxx
+\fe Come back!'' 
+
+\ref 23
+\t Akeakepareva                              vaia            pouvirosia.
+\m akeake    -pa       -re        -va        va      -ia     pou    -viro     -sia
+\g try/tempt -PROG     -3.SG.M    -RP        3.SG.N  -at     arrive -COMPL    -DEP.PURP
+\p V.T       -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 PRO.PER -SUFF.N V.I    -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe He tried to reach it. 
+
+\ref 24
+\t Viapau uvuipaepa                    oavuavuvai            purasia.
+\m viapau uvui    -pa       -epa       oavuavu   -vai        pura           -sia
+\g NEG    be able -PROG     -RP        something -NABS       make/do/create -DEP.PURP
+\p NEG    V.I     -SUFF.V.3 -SUFF.VI.5 N.???     -SUFF.N.??? V.T            -SUFF.V.4
+\f xxx
+\fe It was no use.
+
+\ref 25
+\t Kukuvaipa papava          viaraia rutu
+\m kukuvaipa papa -va        viaraia rutu
+\g hat       fly  -RP        high up very/truly
+\p N.N       V.T  -SUFF.VT.5 ???     PH
+\f xxx
+\fe The hat flew higher and higher.
+
+\ref Paragraph 26
+\t Voaviva          kukuvaipa pauepa         evao  rao               ivaraia.
+\m voa  -vi   -va   kukuvaipa pau -epa       evao  rao               ivaraia
+\g here -DIM  -FEM  hat       sit -RP        tree  branch/stick/twig on
+\p LOC  -SUFF -SUFF N.N       V.I -SUFF.VI.5 N.??? N.N               POST
+\f xxx
+\fe Finally the hat sat on the branch of a tree.
+
+\ref 27
+\t Avuto                vurapareva                                      viaraia evaovaia.
+\m avuto                vura            -pa       -re        -va        viaraia evaova -ia
+\g grandfather/grandson look at/gaze at -PROG     -3.SG.M    -RP        high up tree   -at
+\p N.M                  V.T             -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ???     N.F    -SUFF.N
+\f xxx
+\fe Grandfather looked up the tree.
+
+\ref 28
+\t Riro kaekaepaepa                 rerapa.
+\m riro kaekae -pa       -epa       rera    -pa
+\g big  long   -PROG     -RP        3.SG.M  -for/with
+\p V.I  N.???  -SUFF.V.3 -SUFF.VI.5 PRO.PER -SUFF.N
+\f xxx
+\fe It was too high for him.
+
+\ref 29
+\t Rirovira        rutu       sirao-roepa                                        uvare   kukuvaipa oparireva.
+\m rirovira        rutu       sirao                        -ro        -epa       uvare   kukuvaipa opari -re        -va
+\g largely/greatly very/truly pity/feel sorry for/care for -3.SG.M    -RP        because hat       lose  -3.SG.M    -RP
+\p ADV             PH         V.I                          -SUFF.VI.4 -SUFF.VI.5 CONJ    N.N       V.??? -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe He was sad to lose hit hat.
+
+\ref 30
+\t Garevisivi           vokapaoro                                    voreroepa                    eisire                       atoia.
+\m garevisivi           voka                     -pa       -oro      vore   -ro        -epa       eisi               -re       atoia
+\g very small/carefully walk/scan/glance through -PROG     -DEP.SIM  return -3.SG.M    -RP        that way/like that -ALLATIVE village/home/banana
+\p ???                  V.T                      -SUFF.V.3 -SUFF.V.4 V.I    -SUFF.VI.4 -SUFF.VI.5 DEM                -SUFF     N.N
+\f xxx
+\fe He slowly walked back to the village.
+
+\ref Paragraph 31
+\t Ovokivuia                            aakova      siuura  papaeva                    evaova iare.
+\m o-          voki     -vu     -ia     aakova      siuura  papa -e         -va        evaova iare
+\g this/these- day/time -other  -at     mother/aunt sparrow fly  -3.SG.F    -RP        tree   towards
+\p PRE.N-      N.N      -SUFF.N -SUFF.N N.F         N.???   V.T  -SUFF.VT.4 -SUFF.VT.5 N.F    PREP
+\f xxx
+\fe The next day, Mother Sparrow flew to the tree. 
+
+\ref 32
+\t Paupaopa                           kukuvaipa siovaraia.
+\m pau -pa       -o         -pa       kukuvaipa siovaraia
+\g sit -PROG     -3.SG.F    -RP       hat       inside
+\p V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.N       POST
+\f xxx
+\fe She sat inside the hat. 
+
+\ref 33
+\t ``Vearopai                vao!''          osia puraopa                   aakova      siuura.
+\m vearo -pa       -i        vao             osia pura -o         -pa       aakova      siuura
+\g good  -PROG     -PRES     DEM.PROX.3.SG.N as   say  -3.SG.F    -RP       mother/aunt sparrow
+\p V.I   -SUFF.V.3 -SUFF.V.5 PRO.DEM         CONJ V.I  -SUFF.VI.4 -SUFF.V.5 N.F         N.???
+\f xxx
+\fe ``This is good!'' said Mother Sparrow.
+
+\ref 34
+\t ``Vovuutaoia                   ragai   vearopieaia                rutu       epita.''
+\m vo-   vuuta -o         -ia     ragai   vearopie   -a      -ia     rutu       epita
+\g SING- time  -3.SG.F    -at     1.SG    fix/repair -N      -at     very/truly nest
+\p PRE-  N.??? -SUFF.VI.4 -SUFF.N PRO.PER V.T        -SUFF.N -SUFF.N PH         N.N
+\f xxx
+\fe ``Now I have a much better nest.
+
+\ref 35
+\t Vovuutaoia                     ragai   viapau uvuiparai                              ra   repi     kavopara,                             isisio ora  iro  vorerivira         vovuutaoia                     vatatopoparai.
+\m vo-   vuuta -o         -ia     ragai   viapau uvui    -pa       -ra        -i        ra   repi     kavo             -pa       -ra        isisio ora  iro  vorerivira         vo-   vuuta -o         -ia     vatatopo            -pa       -ra        -i
+\g SING- time  -3.SG.F    -at     1.SG    NEG    be able -PROG     -1.SG      -PRES     COMP kindling scavenge/pick up -PROG     -1.SG      grass  and  belt another time/again SING- time  -3.SG.F    -at     be ready/be careful -PROG     -1.SG      -PRES
+\p PRE-  N.??? -SUFF.VI.4 -SUFF.N PRO.PER NEG    V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 COMP N.N      V.T              -SUFF.V.3 -SUFF.VI.4 N.???  CONJ N.N  TEMP               PRE-  N.??? -SUFF.VI.4 -SUFF.N V.I                 -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5
+\f xxx
+\fe Now I don't have to collect sticks, grass, and bits of string any more. 
+
+\ref 36
+\t Ragai   oviiraraaropa.
+\m ragai   oviirara -aro    -pa
+\g 1.SG    children -POSS   -for/with
+\p PRO.PER N.???    -SUFF.N -SUFF.N
+\f xxx
+\fe Now I am ready for my family.''
+
+\ref Paragraph 37
+\t Voava      kukuvaipaia       epita toupaiva                                takuraara.
+\m voa  -va   kukuvaipa -ia     epita tou     -pa       -i         -va        takura -ara
+\g here -FEM  hat       -at     nest  be/stay -PROG     -3.PL      -RP        egg    -PL
+\p LOC  -SUFF N.N       -SUFF.N N.N   V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.N    -SUFF
+\f xxx
+\fe Soon there were eggs in the new hat nest.
+
+\ref Paragraph 38
+\t Ovokirovu                                isivaroia                            vopeva siiura  kakaero           kakiva                               kukuvaipa siovaraia.
+\m o-          voki     -ro         -vu     isivaro                      -ia     vopeva siiura  kakae -ro         kaki                      -va        kukuvaipa siovaraia
+\g this/these- day/time -PL         -other  after/reverse side/back side -at     three  sparrow child -PL         opened/cracked/split open -RP        hat       inside
+\p PRE.N-      N.N      -SUFF.N.??? -SUFF.N ???                          -SUFF.N NUM    N.F     N.N2  -SUFF.N.??? V.I                       -SUFF.VT.5 N.N       POST
+\f xxx
+\fe Some days later, three baby sparrows hatched inside the hat.
+
+\ref 39
+\t Kokio kakaeropa                   avekataepa.
+\m kokio kakae -ro         -pa       avekata     -epa
+\g bird  child -PL         -for/with easy/simple -RP
+\p N.??? N.N2  -SUFF.N.??? -SUFF.N   V.I         -SUFF.VI.5
+\f xxx
+\fe The birds were very lucky.
+
+\ref 40
+\t Kasiiraopaepa                           voea   vaaro             sovaraia epita.
+\m kasi         -irao -pa       -epa       voea   vaaro             sovaraia epita
+\g build a fire -EMP  -PROG     -RP        3.PL.M that person/thing inside   nest
+\p V.I          -EMP  -SUFF.V.3 -SUFF.VI.5 PRO    NDM?              POST     N.N
+\f xxx
+\fe They felt warm inside their nest.
+
+\ref Paragraph 41
+\t Vovuripa          avuto                vuripa      ira     airepa    purarevere                          kukuvaipavai          opita   raovaia.
+\m vo-   vuri -pa    avuto                vuri -pa    ira     airepa    pura           -re        -vere     kukuvaipa -vai        opita   rao               -va   -ia
+\g SING- bad  -DERIV grandfather/grandson bad  -DERIV 3.SG.M  new/fresh make/do/create -3.SG.M    -NF       hat       -NABS       coconut branch/stick/twig -FEM  -at
+\p PRE-  V.I  -SUFF  N.M                  V.I  -SUFF  PRO.REL V.I       V.T            -SUFF.VT.4 -SUFF.V.5 N.N       -SUFF.N.??? N.N     N.N               -SUFF -SUFF.N
+\f xxx
+\fe Poor grandfather had to make a new coconut hat.

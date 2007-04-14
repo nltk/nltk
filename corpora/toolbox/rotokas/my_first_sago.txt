@@ -1,0 +1,475 @@
+\_sh v3.0  400  Rotokas Text
+
+\id My First Sago
+\au David Kelly
+
+\ref Paragraph 1
+\t Igei      aao               oisio              ruipapaiei                                       ra   viaa         puraio                    vovokioia.
+\m igei      aao               oisio              ruipa            -pa       -i         -ei        ra   viaa         pura           -io        vovokio -ia
+\g 1.PL.EXCL extended families this way/like this like/want/desire -PROG     -1.PL.EXCL -PRES      COMP sago pudding make/do/create -1.PL.EXCL today   -at
+\p PRO       N.N               ???                V.I              -SUFF.V.3 -SUFF.V.4  -SUFF.VI.5 COMP N.N          V.T            -SUFF.V.4  ???     -SUFF.N
+\f Ol pamili bilong mi laik go wokim saksak tude.
+\fe My family is going to make sago today.
+
+\ref Paragraph 2
+\t ``Tavauruuerao,''                   osia puraoi                   ragai   aakoaro.
+\m tavauru        -u         -erao     osia pura -o        -i        ragai   aako        -aro
+\g teenage girl   -2.SG      -NP       as   say  -3.SG.F   -PRES     1.SG    mother/aunt -POSS
+\p N.???          -SUFF.VI.4 -SUFF.V.5 CONJ V.I  -SUFF.V.4 -SUFF.V.5 PRO.PER N.F         -SUFF.N
+\f ``Yu bikpela meri nau,'' mama i bin tok olsem long mi.
+\fe ``You are a big girl now,'' my mother says to me. 
+
+\ref 3
+\t Ragaire           uvuipauei                               ra   rovou                       viaa         purapaoro.
+\m ragai   -re       uvui    -pa       -u         -ei        ra   rovo             -u         viaa         pura           -pa       -oro
+\g 1.SG    -ALLATIVE be able -PROG     -2.SG      -PRES      COMP precede/go first -2.SG      sago pudding make/do/create -PROG     -DEP.SIM
+\p PRO.PER -SUFF     V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 COMP V.I              -SUFF.VI.4 N.N          V.T            -SUFF.V.3 -SUFF.V.4
+\f ``Yu ken stat long wokim saksak tu.''
+\fe ``You can start making sago too.''
+
+\ref Paragraph 4
+\t Katai tau erao igei      igoa             vatatopoiei
+\m katai tau erao igei      igoa             vatatopo            -i         -ei
+\g one   ten two  1.PL.EXCL PRO.REL.1.PL.EXC be ready/be careful -1.PL.EXCL -PRES
+\p NUM   ADJ NUM  PRO       PRO.REL          V.I                 -SUFF.V.4  -SUFF.VI.5
+\f Mipela twelpela i bin redi.
+\fe Twelve of us get ready.
+
+\ref 5
+\t Voia      ragai   aakoaro,            aiteto, kauovariako,           paapaato vasiie, taataairara     taeva  ora  ragai.
+\m voia      ragai   aako        -aro    aiteto  kauo -va   -riako      paapaato vasiie  taataa  -irara  taeva  ora  ragai
+\g here/this 1.SG    mother/aunt -POSS   father  jump -FEM  -???.PL     uncle    ???     sibling -PL     sister and  1.SG
+\p ???       PRO.PER N.F         -SUFF.N N.M     V.I  -SUFF -SUFF.N.??? N.M      ???     N.N2    -SUFF.N N.F    CONJ PRO.PER
+\f Hia em mama, papa, anti, ankol, brata, susa, na mi.
+\fe There is my mother, father, aunts, uncles, brothers, sister, and me.
+
+\ref Paragraph 6
+\t auero ouiovo                                oarapa                  ruipapaiei.
+\m auero ou               -io        -vo       oara          -pa       ruipa            -pa       -i         -ei
+\g ???   get/take/receive -1.PL.EXCL -IP       PRO.REL.3PL.N -for/with like/want/desire -PROG     -1.PL.EXCL -PRES
+\p NP    V.T              -SUFF.V.4  -SUFF.V.5 PRO.REL.3PL.N -SUFF.N   V.I              -SUFF.V.3 -SUFF.V.4  -SUFF.VI.5
+\f Mipela kisim ol samting mipela laikim.
+\fe We get the things we need.
+
+\ref 7
+\t Oirara         voea   vararo                 ouivoi                                tetevu tatupaara.
+\m oirara         voea   vara       -ro         ou               -i         -voi      tetevu tatupa         -ara
+\g people/mankind 3.PL.M 3.PL.F     -PL         get/take/receive -3.PL      -PRES     sago   pliers/grinder -PL
+\p N.???          PRO    PRO.3.PL.F -SUFF.N.??? V.T              -SUFF.VT.4 -SUFF.V.5 N.???  N.N            -SUFF
+\f Ol man i kisim samting bilong katkatim saksak.
+\fe The men get their sago choppers.
+
+\ref 8
+\t Ragai   aitearo        rera    oiraaro         ourevoi                  torara.
+\m ragai   aite   -aro    rera    oira    -aro    ou  -re        -voi      torara
+\g 1.SG    father -POSS   3.SG.M  3.SG.F  -POSS   get -3.SG.M    -PRES     axe
+\p PRO.PER N.M    -SUFF.N PRO.PER PRO.PER -SUFF.N V.T -SUFF.VT.4 -SUFF.V.5 N.N2
+\f Papa bilong mi em i kisim akis bilong em.
+\fe My father also gets his axe.
+
+\ref 9
+\t Riakora           vairoo        varaaro            riropara                aio   tovopara                              aue        iava       purara                     parastikiara    oapara            sovaraia.
+\m riako -ra         vairoo        vara       -aro    riro -pa    -ra         aio   tovo               -pa    -ra         aue        iava       pura           -ra         parastiki -ara  oapa  -ra         sovaraia
+\g woman -PL         DEM.PROX.PL.F 3.PL.F     -POSS   big  -DERIV -PL         food  put/place/position -DERIV -PL         connective from/about make/do/create -PL         plastic   -PL   carry -PL         inside
+\p N.F   -SUFF.N.??? PRO.DEM       PRO.3.PL.F -SUFF.N V.I  -SUFF  -SUFF.N.??? N.??? V.T                -SUFF  -SUFF.N.??? CONN       PREP       V.T            -SUFF.N.??? N.???     -SUFF V.T   -SUFF.N.??? POST
+\f Ol meri kisim ol bikpela kontaina ol i wokim long plastik o metal, na plenti bek nogat plaua.
+\fe The women get big containers made of plastic or metal, and lots of empty flour bags.
+
+\ref 10
+\t Igei      vaaro             tovoiovere                              viaaara.
+\m igei      vaaro             tovo               -io        -vere     viaa         -ara
+\g 1.PL.EXCL that person/thing put/place/position -1.PL.EXCL -NF       sago pudding -PL
+\p PRO       NDM?              V.T                -SUFF.V.4  -SUFF.V.5 N.N          -SUFF
+\nt What happens phonetically and phonologically when you have an underlying 'aaa' due to aa + -a?
+\f Mipela bai putim saksak long ol bek.
+\fe We will put sago into the bags.
+
+\ref Paragraph 11
+\t Ovirovuia        rugoopauei                                        oapa  oa      agasipierivere?,''                  ragai   aakoaro             ragai   akeevoi.
+\m ovirovu  -ia     rugoo             -pa       -u         -ei        oapa  oa      agasipie       -ri        -vere     ragai   aako        -aro    ragai   ake -e         -voi
+\g how many -at     think/reason/hope -PROG     -2.SG      -PRES      carry 3.SG.N  fill something -2.SG      -NF       1.SG    mother/aunt -POSS   1.SG    ask -3.SG.F    -PRES
+\p INTER    -SUFF.N V.I               -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.T   PRO.REL V.T            -SUFF.VT.4 -SUFF.V.5 PRO.PER N.F         -SUFF.N PRO.PER V.T -SUFF.VT.4 -SUFF.V.5
+\f ``Hamaspela bek yu ting bai yu pulamapim?'' mama bin askim mi.
+\fe ``How many bags do you think you will fill?'' my mother asks me.
+
+\ref Paragraph 12
+\t Orakotoiei                           votoia        eisire                       tuvuto           uva  tetevu kou    toupaivoi.
+\m ora-      koto -i         -ei        voto  -ia     eisi               -re       tuvuto           uva  tetevu kou    tou     -pa       -i         -voi
+\g REF-      hang -1.PL.EXCL -PRES      boat  -at     that way/like that -ALLATIVE swamp/muddy area so   sago   heap   be/stay -PROG     -1.PL.EXCL -PRES
+\p SUFF.N/V- V.I  -SUFF.V.4  -SUFF.VI.5 N.??? -SUFF.N DEM                -SUFF     N.M              CONJ N.???  CLASS? V.I     -SUFF.V.3 -SUFF.V.4  -SUFF.V.5
+\f Mipela i bin kalap long bot na go long tais i gat saksak.
+\fe We get on the boat and go to the sago swamp.
+
+\ref 13
+\t Uva  oirara         voto  peoivoi                               osia uukova      rakavira         toupaevoi.
+\m uva  oirara         voto  peo              -i         -voi      osia uukova      raka     -vira   tou     -pa       -e         -voi
+\g so   people/mankind boat  push/shove/heave -3.PL      -PRES     as   large river dry/reef -ADV    be/stay -PROG     -3.SG.F    -PRES
+\p CONJ N.???          N.??? V.T              -SUFF.VT.4 -SUFF.V.5 CONJ N.F         ???      -SUFF.N V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f Ol man i pusim bot taim wara i drai.
+\fe The men push the boat when the water is shallow.
+
+\ref 14
+\t Eva      riro kaekae vuuta ouvo.
+\m eva      riro kaekae vuuta ou  -vo
+\g MED.SG.N big  long   time  get -IP
+\p PRO.DEM  V.I  N.???  N.??? V.T -SUFF.V.5
+\f Em i bin kisim longpela taim.
+\fe It takes a long time.
+
+\ref Paragraph 15
+\t Tuvua            agasivira       toupaiva                                aue        iava       tetevuara    iava       rokarokaara.
+\m tuvua            agasi   -vira   tou     -pa       -i         -va        aue        iava       tetevu -ara  iava       rokaroka         -ara
+\g swamp/muddy area be full -ADV    be/stay -PROG     -3.PL      -RP        connective from/about sago   -PL   from/about thorn/spike/nail -PL
+\p N.N              ADJ     -SUFF.N V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONN       PREP       N.???  -SUFF PREP       N.???            -SUFF
+\f Tais em i pulap long ol nil bilong saksak.
+\fe The swamp is full of sago thorns.
+
+\ref 16
+\t Ragai   rorupaavoi                                        uvare   tasipareiia                tasipa-avoi.
+\m ragai   roru               -pa       -a         -voi      uvare   tasipa -rei        -ia     tasi       -pa       -a         -voi
+\g 1.SG    happy/glad/pleased -PROG     -1.SG      -PRES     because foot   -N.DL       -at     wear shoes -PROG     -1.SG      -PRES
+\p PRO.PER V.T                -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 CONJ    N.N    -SUFF.N.CL1 -SUFF.N V.I        -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\nt ???
+\f Mi hamamas mi putim su bilong mi.
+\fe I am glad I am wearing my shoes.
+
+\ref 17
+\t Ragai   vareiaro             oa      iava       rokarokara                   viapau uvuipai                     ra   ragai   togatogave                                osia rivukokare       varaua              rutu       aiopaivoi                          ragai   iava.
+\m ragai   varei        -aro    oa      iava       rokaroka         -ra         viapau uvui    -pa       -i        ra   ragai   DUP-   toga                     -ve       osia rivuko   -kare   vara -ua            rutu       aio -pa       -i         -voi      ragai   iava
+\g 1.SG    DEM.MED.DL.N -POSS   3.SG.N  from/about thorn/spike/nail -PL         NEG    be able -PROG     -PRES     COMP 1.SG    REDUP- spear/shoot with a spear -SUB      as   mosquito -PL     body -narrow object very/truly eat -PROG     -3.PL      -PRES     1.SG    from/about
+\p PRO.PER PRO.DEM      -SUFF.N PRO.REL PREP       N.???            -SUFF.N.??? NEG    V.I     -SUFF.V.3 -SUFF.V.5 COMP PRO.PER REDUP- V.T                      -SUFF.V.5 CONJ N.F      -N.SUFF N.N  -SUFF.N.CLASS  PH         V.T -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 PRO.PER PREP
+\f Ol nil i no inap sutim mi, tasol moskito bai kaikai olgeta skin bilong mi.
+\fe The thorns don't hurt me, but mosquitoes are biting my whole body.
+
+\ref Paragraph 18
+\t Ragai   taataatoaro             riro-to      erakopa             guruvaro                     tetevu ourevoi                  varaia             tuitui kasi         purasia.
+\m ragai   taataa  -to     -aro    riro -to     erako        -pa    guruva           -ro         tetevu ou  -re        -voi      vara       -ia     tuitui kasi         pura           -sia
+\g 1.SG    sibling -MASC   -POSS   big  -MASC   dry/firewood -DERIV leaf/paper money -PL         sago   get -3.SG.M    -PRES     3.PL.F     -at     fire   build a fire make/do/create -DEP.PURP
+\p PRO.PER N.N2    -SUFF.N -SUFF.N V.I  -SUFF.N N.N          -SUFF  N.N              -SUFF.N.??? N.???  V.T -SUFF.VT.4 -SUFF.V.5 PRO.3.PL.F -SUFF.N N.M    V.I          V.T            -SUFF.V.4
+\f Bipela brata bilong mi em i kisim sampela lip bilong saksak i drai na wokim paia.
+\fe My big brother gets some dry sago leaves and makes a fire.
+
+\ref 19
+\t Uva  kupareto rivukokare       tariore.
+\m uva  kupareto rivuko   -kare   tario        -re
+\g so   smoke    mosquito -PL     chase/pursue -3.SG.M
+\p CONJ N.M      N.F      -N.SUFF V.T          -SUFF.VT.4
+\f Smok bilong paia i rausim ol moskito.
+\fe The smoke gets rid of the mosquitoes.
+
+\ref Paragraph 20
+\t Ragai   aitearo        taraiparoi                                tetevutoaia                    roira  uvuiparo                                ra   rera    toereve                         
+\m ragai   aite   -aro    tarai      -pa       -ro        -i        tetevu -to     -a      -ia     roira  uvuipa                       -ro        ra   rera    toe        -re        -ve       aruvea    urio -ro        -erao     vara       tara                -sia      -aro    vata                                 *top -o         -vira   tou     -pa       -re
+\g 1.SG    father -POSS   understand -PROG     -3.SG.M    -PRES     sago   -MASC   -N      -at     he/him tape measure/yardstick/ruler -3.SG.M    COMP 3.SG.M  chop/slice -3.SG.M    -SUB      yesterday come -3.SG.M    -NP       3.PL.F     look for/search for -PURP     -POSS   place/village/inhabitants of a place ***  -3.SG.F    -ADV    be/stay -PROG     -3.SG.M
+\p PRO.PER N.M    -SUFF.N V.I        -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.???  -SUFF.N -SUFF.N -SUFF.N NPM    N.N                          -SUFF.VI.4 COMP PRO.PER V.T        -SUFF.VT.4 -SUFF.V.5 TEMP      V.I  -SUFF.VI.4 -SUFF.V.5 PRO.3.PL.F V.T                 -SUFF.V.4 -SUFF.N N.N                                  ***  -SUFF.VI.4 -SUFF.N V.I     -SUFF.V.3 -SUFF.VT.4
+\f Papa bilong mi em i save wanem saksak bilong katim i go daun.
+\fe My father knows what sago palm to cut down.
+
+\ref 21
+\t Aruvea    urioroerao                vara       tarasia                       aaro              vatatoparoi                        toesia.
+\m aruvea    urio -ro        -erao     vara       tara                -sia      aa     -ro        vatatopa      -ro        -i        toe        -sia
+\g yesterday come -3.SG.M    -NP       3.PL.F     look for/search for -DEP.PURP which  -3.SG.M    prepare/ready -3.SG.M    -PRES     chop/slice -DEP.PURP
+\p TEMP      V.I  -SUFF.VI.4 -SUFF.V.5 PRO.3.PL.F V.T                 -SUFF.V.4 INTERR -SUFF.VI.4 V.???         -SUFF.VI.4 -SUFF.V.5 V.T        -SUFF.V.4
+\nt ???
+\f Em i bin go asde bilong painim wanem dispela i redi bilong katim.
+\fe He came here yesterday to find one that is ready.
+
+\ref 22
+\t Rera    oiraaro         oure                        torara tetevuto       toesia.
+\m rera    oira    -aro    ou               -re        torara tetevu -to     toe        -sia
+\g 3.SG.M  3.SG.F  -POSS   get/take/receive -3.SG.M    axe    sago   -MASC   chop/slice -PURP
+\p PRO.PER PRO.PER -SUFF.N V.T              -SUFF.VT.4 N.N2   N.???  -SUFF.N V.T        -SUFF.V.4
+\f Em i kisim akis bilong em na katim saksak i go daun.
+\fe He gets his axe and cuts down the sago palm.
+
+\ref Paragraph 23
+\t Uva  rakariara       toerevoiva.
+\m uva  rakari    -ara  toe        -re        -voi      -va
+\g so   skin/hide -PL   chop/slice -3.SG.M    -PRES     -RP
+\p CONJ N.N       -SUFF V.T        -SUFF.VT.4 -SUFF.V.5 -SUFF.VT.5
+\nt What's up with the verb's conjugation?
+\f Na em i katim ol skin klostu long pangal.
+\fe Then he cuts the bark along the trunk.
+
+\ref 24
+\t Rakariara      koakoare                               vorevira
+\m rakari    -ara koakoa                      -re        vorevira
+\g skin/hide -PL  bark a tree/remove the skin -3.SG.M    backward
+\p N.N       -SUFFV.T.REDUP                   -SUFF.VT.4 ADV
+\f Em i rausim skin i go bek.
+\fe He peels the bark back.
+
+\ref 25
+\t Eva      oa      oisio                   koakoapapiroveira                                         osia riroisi      tapiako oue
+\m eva      oa      oisio                   koakoa                      -pa       -piro     -veira    osia riro -isi    tapiako ou  -e
+\g MED.SG.N 3.SG.N  this way/like this      bark a tree/remove the skin -PROG     -COMPL    -ANIM.HAB as   big  -CLASS  cassava get -3.SG.F
+\p PRO.DEM  PRO.REL ???                     V.T.REDUP                   -SUFF.V.3 -SUFF.V.3 -SUFF.V.5 CONJ ADJ  -SUFF.N N.???   V.T -SUFF.VT.4
+\f Em olsem rausim skin bilong bikpela tapiok.
+\fe It is like peeling a giant cassava.
+
+\ref 26
+\t Govukoa     sovaraia oa      viapau gorupapeira.
+\m govukoa     sovaraia oa      viapau gorupa -peira
+\g stalk/trunk inside   3.SG.N  NEG    lock   -HAB
+\p N.N         POST     PRO.REL NEG    N.N    -SUFF.V.5
+\f Insait bilong dispela pangal i no strong.
+\fe The inside of the trunk is very soft.
+
+\ref Paragraph 27
+\t Oire uva  oirara         vara       toeiva.
+\m oire uva  oirara         vara       toe        -i         -va
+\g okay so   people/mankind 3.PL.F     chop/slice -3.PL      -RP
+\p EXCL CONJ N.???          PRO.3.PL.F V.T        -SUFF.VT.4 -SUFF.VT.5
+\nt I think the first 'a' of 'vara' should be long.
+\f Nau ol man i mas katkatim.
+\fe Now the men have to chop it up.
+
+\ref 28
+\t Vooia             varaaro            ouiva                     tatu            uva  pauaepa                   govukoa     ruvaraia.
+\m voo       -ia     vara       -aro    ou  -i         -va        tatu            uva  pau -a         -epa       govukoa     ruvaraia
+\g this/here -at     3.PL.F     -POSS   get -3.PL      -RP        hit/shoot arrow so   sit -3.PL      -RP        stalk/trunk near/close
+\p ???       -SUFF.N PRO.3.PL.F -SUFF.N V.T -SUFF.VT.4 -SUFF.VT.5 V.T             CONJ V.I -SUFF.VI.4 -SUFF.VI.5 N.N         POST
+\f Ol i kisim ol samting bilong katkatim na sindaun klostu long pangal.
+\fe They get their choppers and sit next to the trunk.
+
+\ref 29
+\t Rovoaepa                               toepaoro.
+\m rovo             -a         -epa       toe        -pa       -oro
+\g precede/go first -3.PL      -RP        chop/slice -PROG     -DEP.SIM
+\p V.I              -SUFF.VI.4 -SUFF.VI.5 V.T        -SUFF.V.3 -SUFF.V.4
+\f Ol i stat long katkatim.
+\fe They start chopping.
+
+\ref 30
+\t Oire uva  virikasiaepa.
+\m oire uva  virikasi           -a         -epa
+\g okay so   very hot/difficult -3.PL      -RP
+\p EXCL CONJ V.I                -SUFF.VI.4 -SUFF.VI.5
+\f Klostu ol i swet.
+\fe Soon they are sweating.
+
+\ref 31
+\t Rirovira        rutu       kasiiraoepa                   tuvuaia.
+\m rirovira        rutu       kasi         -irao -epa       tuvua            -ia
+\g largely/greatly very/truly build a fire -EMP  -RP        swamp/muddy area -at
+\p ADV             PH         V.I          -EMP  -SUFF.VI.5 N.N              -SUFF.N
+\f Em i hot tru insait long tais.
+\fe It is very hot in the swamp.
+
+\ref Paragraph 32
+\t Vosia   ragai   aitearo        toepareva                   uva  kuuriparoepa.
+\m vosia   ragai   aite   -aro    toepa -re        -va        uva  kuuri -pa       -ro        -epa
+\g when/if 1.SG    father -POSS   right -3.SG.M    -RP        so   grunt -PROG     -3.SG.M    -RP
+\p CONJ    PRO.PER N.M    -SUFF.N ???   -SUFF.VT.4 -SUFF.VT.5 CONJ V.I   -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f Taim papa bilong mi em i kutim, em i ???.
+\fe When my father chops, he grunts.
+
+\ref 33
+\t Vosia   ragai   taataatoaro             riro-to      toepareva                                  uva  viokekeparoepa.
+\m vosia   ragai   taataa  -to     -aro    riro -to     toe        -pa       -re        -va        uva  viokeke                  -pa       -ro        -epa
+\g when/if 1.SG    sibling -MASC   -POSS   big  -MASC   chop/slice -PROG     -3.SG.M    -RP        so   whistle with pursed lips -PROG     -3.SG.M    -RP
+\p CONJ    PRO.PER N.N2    -SUFF.N -SUFF.N V.I  -SUFF.N V.T        -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ V.I                      -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f Taim bikpela brata bilong mi em i kutim, em i wisal.
+\fe When my big brother chops, he whistles.
+
+\ref 34
+\t Ari     vosia   ragai   paapaaaro      toe-pareva,                                uva  vagotoparoepa.
+\m ari     vosia   ragai   paapaa -aro    toe        -pa       -re        -va        uva  vagoto               -pa       -ro        -epa
+\g yes/but when/if 1.SG    uncle  -POSS   chop/slice -PROG     -3.SG.M    -RP        so   cough/cold (illness) -PROG     -3.SG.M    -RP
+\p CONJ    CONJ    PRO.PER N.M    -SUFF.N V.T        -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ V.I                  -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f Taim ankol bilong mi em i kutim, em i kus.
+\fe When my uncle chops, he coughs.
+
+\ref Paragraph 35
+\t Agesipievira       gurukopai.
+\m agesipie   -vira   guruko     -pa       -i
+\g make laugh -ADV    make noise -PROG     -PRES
+\p V.T        -SUFF.N V.T        -SUFF.V.3 -SUFF.V.5
+\f Dispela nois em i puni.
+\fe It sounds funny.
+
+\ref 36
+\t Toetoe,                kuuri.
+\m toetoe                 kuuri
+\g chop or cut repeatedly grunt
+\p V.T                    V.I
+\f Kutim, kutim, pulim win strong..
+\fe Chop, chop, grunt.
+
+\ref 37
+\t Toetoe                 viokeke.
+\m toetoe                 viokeke
+\g chop or cut repeatedly whistle with pursed lips
+\p V.T                    V.I
+\f Kutim, kutim, wisol.
+\fe Chop, chop, whistle.
+
+\ref 38
+\t Toetoe                 vagoto.
+\m toetoe                 vagoto
+\g chop or cut repeatedly cough/cold (illness)
+\p V.T                    V.I
+\f Kus, kus, kus.
+\fe Chop, chop, cough.
+
+\ref Paragraph 39
+\t Oire uva  oirato          oaravu                toereva                          govukoa     garepa              visivi.
+\m oire uva  oira    -to     oara          -vu     toe        -re        -va        govukoa     gare         -pa    visivi
+\g okay so   3.SG.F  -MASC   PRO.REL.3PL.N -other  chop/slice -3.SG.M    -RP        stalk/trunk small/little -DERIV diminutive marker
+\p EXCL CONJ PRO.PER -SUFF.N PRO.REL.3PL.N -SUFF.N V.T        -SUFF.VT.4 -SUFF.VT.5 N.N         V.I          -SUFF  GR
+\nt Follow up on 'visivi'.
+\f Nau ol man i kutim sampela pangal i go long ol liklik hap.
+\fe Now the men have chopped some of the trunk into very small pieces.
+
+\ref 40
+\t Oire riakora           ora  oviiriako         oaravu                ouiva                     toetoepara                                govukoara               vara       pigisia                           aue        tapo          uuko.
+\m oire riako -ra         ora  ovii  -riako      oara          -vu     ou  -i         -va        toetoe                 -pa    -ra         govukoa     -ra         vara       pigi                    -sia      aue        tapo          uuko
+\g okay woman -PL         and  child -???.PL     PRO.REL.3PL.N -other  get -3.PL      -RP        chop or cut repeatedly -DERIV -PL         stalk/trunk -PL         3.PL.F     twist/squeeze/wring out -DEP.PURP connective also/too/with water
+\p EXCL N.F   -SUFF.N.??? CONJ N.N2  -SUFF.N.??? PRO.REL.3PL.N -SUFF.N V.T -SUFF.VT.4 -SUFF.VT.5 V.T                    -SUFF  -SUFF.N.??? N.N         -SUFF.N.??? PRO.3.PL.F V.T                     -SUFF.V.4 CONN       POST          N.???
+\f Na ol meri wantaim ol pikinini meri i kisim ol pangal na skwisim wantaim wara.
+\fe The women and girls take some of the chopped trunk and squeeze it with water.
+
+\ref 41
+\t Uva  uukoa turuepavira orapore-pa.
+\m uva  uukoa turuepavira orapore  -pa
+\g so   water red         become   -RP
+\p CONJ N.N   ADV         V.I.REFL -SUFF.V.5
+\f Wara em i kamap ret.
+\fe The water turns red.
+
+\ref 42
+\t Uva  varapaepa                              riroa        iare    koriteira.
+\m uva  vara              -pa       -epa       riro -a      iare    koriteira
+\g so   come down/descend -PROG     -RP        big  -N      towards container
+\p CONJ V.I               -SUFF.V.3 -SUFF.VI.5 V.I  -SUFF.N PREP    N.???
+\f Em i pundaun i go insait long ol bikpela kontaina.
+\fe It runs down into the big containers.
+
+\ref Paragraph 43
+\t Vapa              ruipaparai.
+\m va      -pa       ruipa            -pa       -ra        -i
+\g 3.SG.N  -for/with like/want/desire -PROG     -1.SG      -PRES
+\p PRO.PER -SUFF.N   V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5
+\nt What's up w/ the verb? It's a misspelling, no? And 'vapa'?
+\f Mi laikim dispela long numbawan taim.
+\fe I like this at first.
+
+\ref 44
+\t Eva        agesipiea.
+\m eva        agesipie   -a
+\g MED.3.SG.N make laugh -N
+\p DEM        V.T        -SUFF.N
+\f Em i bin gutpela.
+\fe It is fun.
+
+\ref 45
+\t Osia utupaua               visivi            ragaiva             vavaeara    upiai.
+\m osia utupaua               visivi            ragai   -va         vavae -ara  upia         -i
+\g as   following after/later diminutive marker 1.SG    -with       hand  -PL   in pain/sick -PRES
+\p CONJ TEMP                  GR                PRO.PER -SUFF.N.??? N.??? -SUFF V.I          -SUFF.V.5
+\f Tasol i no longtaim na han bilong mi i soa.
+\fe But soon my arms are sore.
+
+\ref 46
+\t Ragai   eva      puraavo                             katai vokiia            vaoia.
+\m ragai   eva      pura           -a         -vo       katai voki      -ia     vao             -ia
+\g 1.SG    MED.SG.N make/do/create -1.SG      -IP       one   day/ time -at     DEM.PROX.3.SG.N -at
+\p PRO.PER PRO.DEM  V.T            -SUFF.VT.4 -SUFF.V.5 NUM   N.N       -SUFF.N PRO.DEM         -SUFF.N
+\f Mi mas wokim dispela long wanpela de olgeta.
+\fe I have to do this all day.
+
+\ref 47
+\t Ragai   vovuripaviaro                                         vavae.
+\m ragai   vo-   vuri                       -pa    -vi   -aro    vavae
+\g 1.SG    SING- bad/inferior/spoiled/wrong -DERIV -DIM  -POSS   hand
+\p PRO.PER PRE-  V.I                        -SUFF  -SUFF -SUFF.N N.???
+\f Ol trangu han bilong mi.
+\fe My poor arms.
+
+\ref Paragraph 48
+\t Uva  utupaua               revasipa      petoavo                            uukoa.
+\m uva  utupaua               revasi -pa    peto          -a         -vo       uukoa
+\g so   following after/later bleed  -DERIV overturn/pour -1.SG      -IP       water
+\p CONJ TEMP                  V.I    -SUFF  V.T           -SUFF.VT.4 -SUFF.V.5 N.N
+\f Bihain mi kapsaitim retpela wara i go insait long kontaina bilong mi.
+\fe After a while I pour the red water out of my container.
+
+\ref 49
+\t Koriteira iava       uva  va     vituaroia             riroara    rutu       vearopara                popotepara                           viaa.
+\m koriteira iava       uva  va     vituaro       -ia     riroara    rutu       vearo -pa    -ra         popote            -pa    -ra         viaa
+\g container from/about so   3.SG.N origin/source -at     plenty/may very/truly good  -DERIV -PL         whiten/turn white -DERIV -PL         sago pudding
+\p N.???     PREP       CONJ PRO.PERN.N           -SUFF.N ADV        PH         V.I   -SUFF  -SUFF.N.??? V.I               -SUFF  -SUFF.N.??? N.N
+\f Long as bilong kontaina i bin gat plenti naispela waitpela saksak.
+\fe At the bottom is lots of nice white sago!
+
+\ref 50
+\t Uva  va      tovoavo                                 voo       ragai   varoia          paraupa      oapaa.
+\m uva  va      tovo               -a         -vo       voo       ragai   varo    -ia     parau -pa    oapaa
+\g so   3.SG.N  put/place/position -1.SG      -IP       this/here 1.SG    clothes -at     flour -DERIV sack
+\p CONJ PRO.PER V.T                -SUFF.VT.4 -SUFF.V.5 ???       PRO.PER N.N     -SUFF.N N.??? -SUFF  N.N
+\f Mi putim insait long plaua bek bilong mi.
+\fe I put it into my flour bag.
+
+\ref 51
+\t Ragai   vaaro           rovopa             viaa.
+\m ragai   va      -aro    rovopa             viaa
+\g 1.SG    3.SG.N  -POSS   main/primary/first sago pudding
+\p PRO.PER PRO.PER -SUFF.N V.I?               N.N
+\f Numbawan saksak bilong mi!
+\fe My first sago!
+
+\ref Paragraph 52
+\t Uva  vokia            opesiaroia                    kareiei.
+\m uva  voki     -a      opesiaro              -ia     kare   -i         -ei
+\g so   day/time -N      end/finish/conclusion -at     return -1.PL.EXCL -PRES
+\p CONJ N.N      -SUFF.N N.N                   -SUFF.N V.I    -SUFF.V.4  -SUFF.VI.5
+\f Long pinis bilong de mipela i go long ples.
+\fe At the end of the day we go home.
+
+\ref 53
+\t Vurivira     rutu       raveraverai.
+\m vurivira     rutu       raverave     -ra        -i
+\g badly/ruined very/truly weaken/tired -1.SG      -PRES
+\p ADV          PH         V.I          -SUFF.VI.4 -SUFF.V.5
+\f Mi tait nogut tru.
+\fe I am very tired.
+
+\ref 54
+\t Ragai   viapau uvuiparai                              ra   ragai   vo-oapareiaro                   kaepiea                     viaa         oaparei.
+\m ragai   viapau uvui    -pa       -ra        -i        ra   ragai   vo-   oapa  -rei        -aro    kaepie           -a         viaa         oapa  -rei
+\g 1.SG    NEG    be able -PROG     -1.SG      -PRES     COMP 1.SG    SING- carry -N.DL       -POSS   hoist/lift/raise -1.SG      sago pudding carry -N.DL
+\p PRO.PER NEG    V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 COMP PRO.PER PRE-  V.T   -SUFF.N.CL1 -SUFF.N V.T              -SUFF.VT.4 N.N          V.T   -SUFF.N.CL1
+\f Mi no inap long liftimapim tupela bek saksak bilong mi.
+\fe I can hardly lift my two bags of sago.
+
+\ref Paragraph 55
+\t Uva  vokie                      osia kareiei.
+\m uva  voki         -e            osia kare   -i         -ei
+\g so   become night -IP           as   return -1.PL.EXCL -PRES
+\p CONJ V.I          -SUFF.VI???.5 CONJ V.I    -SUFF.V.4  -SUFF.VI.5
+\f I bin tudak taim mipela kamap long ples.
+\fe It is dark when we get home.
+
+\ref 56
+\t Uva  ragai   aakoaro             vooapaarei          rutu       vateevo                   upiapavapa.
+\m uva  ragai   aako        -aro    vo-   oapa  -arei   rutu       vate -e         -vo       upia         -pa       -va   -pa
+\g so   1.SG    mother/aunt -POSS   SING- carry -DL     very/truly give -3.SG.F    -IP       in pain/sick -PROG     -FEM  -for/with
+\p CONJ PRO.PER N.F         -SUFF.N PRE-  V.T   -SUFF.N PH         V.T  -SUFF.VT.4 -SUFF.V.5 V.I          -SUFF.V.3 -SUFF -SUFF.N
+\f Mama bilong mi em i givim tupela bek saksak bilong mi long wanpela sik meri.
+\fe My mother gives both my bags of sago to a woman who is sick.
+
+\ref Paragraph 57
+\t Eva        ragai   vaaro             rovopa             viaa.
+\m eva        ragai   vaaro             rovopa             viaa
+\g MED.3.SG.N 1.SG    that person/thing main/primary/first sago pudding
+\p DEM        PRO.PER NDM?              ADJ?               N.N
+\f ``Em numbawan saksak bilong mi,'' mi tokim meri.
+\fe ``It is my first sago,'' I tell the woman.
+
+\ref 58
+\t Ragai   riakova     taviavo             oisio              rugooparai                                   evapa              ruipapau.
+\m ragai   riako -va   tavi -a         -vo oisio              rugoo             -pa       -ra        -i    eva      -pa       ruipa            -pa       -u
+\g 1.SG    woman -FEM  tell -1.SG      -IP this way/like this think/reason/hope -PROG     -1.SG      -PRES MED.SG.N -for/with like/want/desire -PROG     -2.SG
+\p PRO.PER N.F   -SUFF V.I  -SUFF.VT.4 -SUF???                V.I               -SUFF.V.3 -SUFF.VI.4 -SUFF.PRO.DEM  -SUFF.N   V.I              -SUFF.V.3 -SUFF.VI.4
+\f ``Mi ting yu laikim.''
+\fe ``I hope you like it.''
