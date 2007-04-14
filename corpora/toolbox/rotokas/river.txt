@@ -1,0 +1,332 @@
+\_sh v3.0  400  Rotokas Text
+
+\id The River
+\au Maggie Guria
+
+\ref Paragraph 1
+\t ``Viapau oisio              ra   ovaupasi                   varao         oaraia                aite   taviparoveira,''                    oiveopa                              Raovi.
+\m viapau   oisio              ra   ovau   -pa       -si       varao         oara          -ia     aite   tavi -pa       -ro        -veira    oive             -o        -pa       Raovi
+\g NEG      this way/like this and  forget -PROG     -2/3.DL.M DEM.PROX.PL.N PRO.REL.3PL.N -at     father tell -PROG     -3.SG.M    -ANIM.HAB shout/yodel/yell -3.SG.F   -RP       name
+\p NEG      ???                CONJ V.I    -SUFF.V.3 -SUFF.V.4 DEM           PRO.REL.3PL.N -SUFF.N N.???  V.I  -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 V.T              -SUFF.V.4 -SUFF.V.5 N.PN
+\f ``No ken lus tingting wanema samting papa i bin tok,'' Naomi i bin singaut.
+\fe ``Don't forget what Dad said,'' yelled Naomi.
+
+\ref 2
+\t Osa     Ira  ora  Reviti viapau uvupasiva.
+\m osa     Ira  ora  Reviti viapau uvu        -pa       -si       -va
+\g as/like name and  name   NEG    hear/smell -PROG     -2/3.DL.M -RP
+\p CONJ    N.PN CONJ N.PN   NEG    V.T        -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5
+\f Tasol Ila na David no bin harim toktok.
+\fe But Ila and David took no notice.
+
+\ref 3
+\t Ikaupaoro                     rokosiva                     eisire                       uukova.
+\m ikau      -pa       -oro      roko    -si       -va        eisi               -re       uukova
+\g run/hurry -PROG     -SIM      go down -2/3.DL.M -RP        that way/like that -ALLATIVE large river
+\p V.T       -SUFF.V.3 -SUFF.V.4 ADV     -SUFF.V.4 -SUFF.VT.5 DEM                -SUFF     N.F
+\f Tupela i bin hariap i go long wara .
+\fe They raced to the river.
+
+\ref Paragraph 4
+\t Reviti kuvupato          verareva.
+\m Reviti kuvupato          vera   -re        -va
+\g name   shirt/jacket/coat remove -3.SG.M    -RP
+\p N.PN   N.M               V.T    -SUFF.VT.4 -SUFF.VT.5
+\f David i bin rausim siot bilong em.
+\fe David pulled his shirt off.
+
+\ref 5
+\t ``Eakere        tuepauei?
+\m eake  -re       tue  -pa       -u         -ei
+\g what  -ALLATIVE wait -PROG     -2.SG      -PRES
+\p INTER -SUFF     V.I  -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f ``Yu waitim wanem samting?
+\fe ``What are you waiting for?
+
+\ref 6
+\t Ee     viia            riakova
+\m ee     vii     -a      riako -va
+\g hey/eh 2.SG    -N      woman -FEM
+\p EXCL   PRO.PER -SUFF.N N.F   -SUFF
+\f ???
+\fe Girlie, girlie!''
+
+\ref Paragraph 7
+\t Ira  ikauvira             avakaisiro kuvupatoa                 iava       verareva.
+\m Ira  ikauvira             avakaisiro kuvupato          -a      iava       vera   -re        -va
+\g name quickly/fast/rapidly button     shirt/jacket/coat -N      from/about remove -3.SG.M    -RP
+\p N.PN ADV                  N.???      N.M               -SUFF.N PREP       V.T    -SUFF.VT.4 -SUFF.VT.5
+\f Ila em i rausim buton long siot bilong em hariap.
+\fe Ila unbottoned his shirt quickly.
+
+\ref 8
+\t Vaiterei rutu       iipasiepa                      raoaia                            kotopasia                     uukova     ivaraia.
+\m vaiterei rutu       iipa      -si       -epa       rao               -a      -ia     kotopa               -sia     uukova     ivaraia
+\g 2.DL.M   very/truly go on top -2/3.DL.M -RP        branch/stick/twig -N      -at     fishhook/hook/hanger -PURP    large riveron
+\p PRO.PER  PH         ???       -SUFF.V.4 -SUFF.VI.5 N.N               -SUFF.N -SUFF.N N.N                  -SUFF.V.4N.F        POST
+\f Tupela kalap antap long han bilong diwai i hangamap i go daun long wara.
+\fe They both climbed onto a branch hanging over the water.
+
+\ref Paragraph 9
+\t Katai, erao, vopeva!''
+\m katai  erao  vopeva
+\g one    two   three
+\p NUM    NUM   NUM
+\f ``Wan, tu, tri!''
+\fe ``One, two, three!''
+
+\ref 10
+\t Pikapie!
+\m pikapie
+\g splash
+\p V.T
+\f xxx
+\fe Splash!
+
+\ref 11
+\t Ora  vasikesiepa                      uukova      sovaraia akeakepaoro                   tokoa          iare    uukova      vuruvuruia               roia.
+\m ora  vasike      -si       -epa       uukova      sovaraia akeake    -pa       -oro      tokoa          iare    uukova      vuruvuruia               ro            -ia
+\g and  allow/leave -2/3.DL.M -RP        large river inside   try/tempt -PROG     -SIM      island/country towards large river between/in the middle of DEM.PROX.SG.M -at
+\p CONJ V.T         -SUFF.V.4 -SUFF.VI.5 N.F         POST     V.T       -SUFF.V.3 -SUFF.V.4 N.N            PREP    N.F         V.I                      PRO.DEM       -SUFF.N
+\f Tupela i bin kalap na suim insait long wara; tupela i bin laik kamap long ailan long namel bilong wara.
+\fe They dived in the water and headed for an island in the middle of the river.
+
+\ref Paragraph 12
+\t Osia vosia   tauaipaoro                          avasiepa                 uva  pirutu     kou  riro goruvira vusiva.
+\m osia vosia   tauai           -pa       -oro      ava -si       -epa       uva  pirutu     kou  riro goruvira vusi                        -va
+\g as   when/if distant/far off -PROG     -SIM      go  -2/3.DL.M -RP        so   tide/flood heap big  strongly burst forth/erupt/break out -RP
+\p CONJ CONJ    LOC             -SUFF.V.3 -SUFF.V.4 V.I -SUFF.V.4 -SUFF.VI.5 CONJ N.???      ???  ADJ  ADV      V.T                         -SUFF.VT.5
+\f Tasol taim tupela i bin go mo yet wara i bin strong mo yet.
+\fe But as they got further out the current became strong.
+
+\ref Paragraph 13
+\t ``Riro goruvira aatari.
+\m riro   goruvira aata -ri
+\g big    strongly swim -2.SG
+\p ADJ    ADV      V.T  -SUFF.VT.4
+\f ``Suim strong.
+\fe ``Swim hard.
+
+\ref 14
+\t Vosia   takauuvere                              ra   ragaiia        piturivere,''                    osa     puraroepa                  Reviti.
+\m vosia   takau              -u         -vere     ra   ragai   -ia    pitu        -ri        -vere     osa     pura -ro        -epa       Reviti
+\g when/if tired/disappointed -2.SG      -NF       and  1.SG    -at    hold/alight -2.SG      -NF       as/like say  -3.SG.M    -RP        name
+\p CONJ    V.I                -SUFF.VI.4 -SUFF.V.5 CONJ PRO.PER -SUFF.NV.T         -SUFF.VT.4 -SUFF.V.5 CONJ    V.I  -SUFF.VI.4 -SUFF.VI.5 N.PN
+\f Sapos yu tait, bai yu holim mi,'' David i bin tok.
+\fe If you get tired, hold onto me,'' David said.
+
+\ref 15
+\t Uva  aatapasiva                          osia riro varivaripaepa                pirutu     kou.
+\m uva  aata -pa       -si       -va        osia riro varivari      -pa       -epa pirutu     kou
+\g so   swim -PROG     -2/3.DL.M -RP        as   big  mighty/strong -PROG     -RP  tide/flood heap
+\p CONJ V.T  -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 CONJ V.I  V.I           -SUFF.V.3 -SUFFN.???      ???
+\f Tupela boi i bin suim tasol wara i bin strong.
+\fe The boys swam but the current was strong.
+
+\ref Paragraph 16
+\t ``Ragaiia       pitu.
+\m ragai   -ia     pitu
+\g 1.SG    -at     hold/alight
+\p PRO.PER -SUFF.N V.T
+\f Holim mi.
+\fe ``Hold on to me.
+
+\ref 17
+\t Goruvira pitu,''     osia puraroepa             Reviti.
+\m goruvira pitu        osia pura -ro        -epa  Reviti
+\g strongly hold/alight as   say  -3.SG.M    -RP   name
+\p ADV      V.T         CONJ V.I  -SUFF.VI.4 -SUFF.N.PN
+\f Holim mi strong,'' David i bin tok.
+\fe Hold tight,'' said David.
+
+\ref 18
+\t Reviti aatapareva                           oisio              rutu       osia siaka.
+\m Reviti aata -pa       -re        -va        oisio              rutu       osia siaka
+\g name   swim -PROG     -3.SG.M    -RP        this way/like this very/truly as   shark
+\p N.PN   V.T  -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ???                PH         CONJ N.???
+\f David i bin suim olsem sak.
+\fe David swam like a shark.
+
+\ref Paragraph 19
+\t Ovuutavu                  rutuia             uva  pousiviropa                          tokoaia.
+\m o-          vuuta -vu     rutu       -ia     uva  pou    -si       -viro     -pa       tokoa          -ia
+\g this/these- time  -other  very/truly -at     so   arrive -2/3.DL.M -COMPL    -RP       island/country -at
+\p PRE.N-      LOC   -SUFF.N PH         -SUFF.N CONJ V.I    -SUFF.V.4 -SUFF.V.3 -SUFF.V.5 N.N            -SUFF.N
+\f I no long taim na tupela i kamap long ailan.
+\fe At last they reached the island.
+
+\ref 20
+\t Uva  vekavekapaoro                           orageresiepa                                  voa  rogaraua,   vavaeara    ora  kokotoara    takauepa                      ora  upiaepa.
+\m uva  vekaveka            -pa       -oro      oragere                  -si       -epa       voa  rogaraua    vavae -ara  ora  kokoto -ara  takau              -epa       ora  upia         -epa
+\g so   gasp/breath heavily -PROG     -SIM      recline/lay oneself down -2/3.DL.M -RP        here shore/beach hand  -PL   and  leg    -PL   tired/disappointed -RP        and  in pain/sick -RP
+\p CONJ V.T                 -SUFF.V.3 -SUFF.V.4 V.I.REFL                 -SUFF.V.4 -SUFF.VI.5 LOC  N.N         N.??? -SUFF CONJ N.???  -SUFF V.I                -SUFF.VI.5 CONJ V.I          -SUFF.VI.5
+\f Tupela i ???; han na lek bilong tupela i bin tait na soa.
+\fe They lay exhausted on the beach, their arms and legs were tired and sore.
+
+\ref Paragraph 21
+\t Rearea     isivaroia,                           Reviti oiso               puraroepa,
+\m rearea     isivaro                      -ia     Reviti oiso               pura -ro        -epa
+\g rest/relax after/reverse side/back side -at     name   this way/like this say  -3.SG.M    -RP
+\p V.I        ???                          -SUFF.N N.PN   NPN                V.I  -SUFF.VI.4 -SUFF.VI.5
+\f Bihain long tupela i bin malolo liklik, David i bin tok olsem, 
+\fe After resting for a while, David said, 
+
+\ref 21a
+\t ``Aikara                            oarai                     vuavuvare                 tarave                        oarai                     aiosia.
+\m aika                     -ra        oara          -i          vuavu     -va   -re       tara                -ve       oara          -i          aio -sia
+\g Wait!/Hold on!/Be quiet! -1.SG      PRO.REL.3PL.N -ABS        something -FEM  -ALLATIVE look for/search for -SUB      PRO.REL.3PL.N -ABS        eat -PURP
+\p EXCL                     -SUFF.VI.4 PRO.REL.3PL.N -N.SUFF.??? N.???     -SUFF -SUFF     V.T                 -SUFF.V.5 PRO.REL.3PL.N -N.SUFF.??? V.T -SUFF.V.4
+\f ``Yumi tupela mas painim samting bilong kaikai.
+\fe ``Let's find something to eat.
+
+\ref 22
+\t Vaaroia                   iipara               etekuuto       opitato.''
+\m vaaro             -ia     iipa      -ra        etekuu -to     opita   -to
+\g that person/thing -at     go on top -1.SG      short  -MASC   coconut -MASC
+\p NDM?              -SUFF.N V.I       -SUFF.VI.4 V.I    -SUFF.N N.N     -SUFF.N
+\f Bai mi go antap long sotpela kokonas long hap.''
+\fe I'll climb the short coconut tree over there.''
+
+\ref 23
+\t Ira     takauvira                  toupareva                               tore-arapa            Reviti.
+\m ira     takau              -vira   tou     -pa       -re        -va        tore      -arapa      Reviti
+\g 3.SG.M  tired/disappointed -ADV    be/stay -PROG     -3.SG.M    -RP        stand up  -???        name
+\p PRO.REL V.I                -SUFF.N V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 V.I       -SUFF.V.??? N.PN
+\f Ila i bin tait tumas long go antap.
+\fe Ila was too tired to get up.
+
+\ref 24
+\t Voresiurava           kooru          voreroepa.
+\m voresiura -va         kooru          vore    -ro        -epa
+\g four      -with       unripe coconut go back -3.SG.M    -RP
+\p NUM       -SUFF.N.??? N.N            IV      -SUFF.VI.4 -SUFF.VI.5
+\f David i bin kisim i kam fopela kulau.
+\fe David brought four young coconuts.
+
+\ref 25
+\t Voava      va-isi-reivuia                              uukaiosiepa              uva  kooruara             aiosiva.
+\m voa  -va   va      -isi    -rei        -vu     -ia     uukaio -si       -epa    uva  kooru          -ara  aio -si       -va
+\g here -FEM  3.SG.N  -CLASS  -N.DL       -other  -at     drink  -2/3.DL.M -RP     so   unripe coconut -PL   eat -2/3.DL.M -RP
+\p LOC  -SUFF PRO.PER -SUFF.N -SUFF.N.CL1 -SUFF.N -SUFF.N V.I    -SUFF.V.4 -SUFF.VICONJ N.N            -SUFF V.T -SUFF.V.4 -SUFF.VT.5
+\f Tupela i bin dringim wara bilong ol na kaikaim mit bilong ol.
+\fe They drank the juice and ate the white flesh.
+
+\ref Paragraph 26
+\t ``Auoro voreve,''         osa     puraroepa                  Reviti.
+\m auoro   vore    -ve       osa     pura -ro        -epa       Reviti
+\g Hey!    go back -1.DL     as/like say  -3.SG.M    -RP        name
+\p EXCL    IV      -SUFF.V.4 CONJ    V.I  -SUFF.VI.4 -SUFF.VI.5 N.PN
+\f ``Yumi tupela mas go bek hariap,'' David i bin tok.
+\fe ``We better get back soon,'' said David.
+
+\ref 27
+\t ``Vosia aite   taraipa,             ra   vegei     upo-reve.''
+\m vosia   aite   tarai      -pa       ra   vegei     upo                 -re        -ve
+\g when/if father understand -PROG     and  1.DL.EXCL strike/fight/murder -3.SG.M    -SUB
+\p CONJ    N.???  V.I        -SUFF.V.3 CONJ PRO.PERS  V.T                 -SUFF.VT.4 -SUFF.V.5
+\f ``Sapos papa painim aut, em bai kilim yumi tupela.''
+\fe ``If papa finds out, he's going to kill us.''
+
+\ref Paragraph 28
+\t ``Auevai               ouve          tatagavai              ovusa pirutuva          varavira       toueve,''                    osa     puraroepa                  Reviti.
+\m aue        -vai        ou  -ve       tataga     -vai        ovusa pirutuva          varavira       tou     -e         -ve       osa     pura -ro        -epa       Reviti
+\g connective -NABS       get -SUB      corpse/log -NABS       while flash flood/flood downward/below be/stay -3.SG.F    -SUB      as/like say  -3.SG.M    -RP        name
+\p CONN       -SUFF.N.??? V.T -SUFF.V.5 N.N        -SUFF.N.??? CONJ  N.F               ADV            V.I     -SUFF.VT.4 -SUFF.V.5 CONJ    V.I  -SUFF.VI.4 -SUFF.VI.5 N.PN
+\f ``Yumi kisim hap diwai taim ei wara i go daun,'' David i bin tok olsem.
+\fe ``Let's get a log, while the tide's low,'' said David.
+
+\ref 29
+\t ``Ra ivirove.''
+\m ra   iviro      -ve
+\g COMP cross over -1.DL
+\p COMP V.T        -SUFF.V.4
+\f ``Bai yumi kalapim wara.''
+\fe ``We'll get across.''
+
+\ref 30
+\t Uva  tataga     kekesiva                  uva  ivusiva                   varapievira               uukova      iare.
+\m uva  tataga     keke -si       -va        uva  ivu  -si       -va        varapie           -vira   uukova      iare
+\g so   corpse/log look -2/3.DL.M -RP        so   pull -2/3.DL.M -RP        let down/put down -ADV    large river towards
+\p CONJ N.N        V.T  -SUFF.V.4 -SUFF.VT.5 CONJ V.T  -SUFF.V.4 -SUFF.VT.5 V.T               -SUFF.N N.F         PREP
+\f Tupela i bin painim hap diwai long arere, na tupela i bin kisim i go daun long wara.
+\fe They found a log along the shore, and dragged it down to the water.
+
+\ref Paragraph 31
+\t ``Uvui-paveiei                                ra   ikauvira             avave,''      osia puraroepa                  Reviti.
+\m uvui    -pa       -ve       -i     -ei        ra   ikauvira             ava -ve       osia pura -ro        -epa       Reviti
+\g be able -PROG     -1.DL     -EPEN  -PRES      COMP quickly/fast/rapidly go  -1.DL     as   say  -3.SG.M    -RP        name
+\p V.I     -SUFF.V.3 -SUFF.V.4 -INFIX -SUFF.VI.5 COMP ADV                  V.I -SUFF.V.4 CONJ V.I  -SUFF.VI.4 -SUFF.VI.5 N.PN
+\f ``Yumi mas hariap'', David i bin tok.
+\fe ``We must hurry,'' said David.
+
+\ref 32
+\t ``Pirutuva        epao     viaraia.
+\m pirutuva          epao     viaraia
+\g flash flood/flood exist/be high up
+\p N.F               V.STAT   ???
+\f ``Ei wara em i antap nau.
+\fe ``The tide is high now.
+
+\ref 33
+\t Osia pirutu     kou  tavariopapere                              ra   aatare.''
+\m osia pirutu     kou  tavario                -pa       -pere     ra   aata -re
+\g as   tide/flood heap exchange/change places -PROG     -NF       and  swim -3.SG.M
+\p CONJ N.???      ???  V.I                    -SUFF.V.3 -SUFF.V.5 CONJ V.T  -SUFF.VT.4
+\f Tasol strong bilong wara bai senis klostu.''
+\fe But the current will change its direction soon.''
+
+\ref Paragraph 34
+\t Tatagaua                                          peoro                  avasiepa                 voarire                              uva  akeakepasiva                             pausia.
+\m tataga                             -ua            pe           -oro      ava -si       -epa       voari                      -re       uva  akeake    -pa       -si       -va        pau         -sia
+\g corpse/rotten log laying on ground -narrow object leave/let be -SIM      go  -2/3.DL.M -RP        before/long ago/back there -ALLATIVE so   try/tempt -PROG     -2/3.DL.M -RP        plant/build -PURP
+\p N.N                                -CLASS         V.I          -SUFF.V.4 V.I -SUFF.V.4 -SUFF.VI.5 TEMP                       -SUFF     CONJ V.T       -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 V.T         -SUFF.V.4
+\f Tupela i bin mekim trip hap diwai i go long pinis bilong ailan na traim long sindaun antap long em.
+\fe They floated the log to the end of the island and tried sitting on it.
+
+\ref 35
+\t Vurukoarei          ouisiva                             uva  vareiia          puurupaoro                       avasiepa                 tokoa          iava.
+\m vuruko      -arei   ou               -isi    -va        uva  varei    -ia     puuru        -pa       -oro      ava -si       -epa       tokoa          iava
+\g section off -DL     get/take/receive -CLASS  -RP        so   MED.DL.N -at     paddle canoe -PROG     -SIM      go  -2/3.DL.M -RP        island/country from/about
+\p V.T         -SUFF.N V.T              -SUFF.N -SUFF.VT.5 CONJ DEM      -SUFF.N V.T          -SUFF.V.3 -SUFF.V.4 V.I -SUFF.V.4 -SUFF.VI.5 N.N            PREP
+\f Tupela i bin kisim tupela hap stik na pul i go bek lusim ailan.
+\fe They took two sticks and paddled away from the island.
+
+\ref 36
+\t Riro varivarivira puurupaoro                       avasiepa.
+\m riro varivarivira puuru        -pa       -oro      ava -si       -epa
+\g big  forcefully   paddle canoe -PROG     -SIM      go  -2/3.DL.M -RP
+\p ADJ  ADV          V.T          -SUFF.V.3 -SUFF.V.4 V.I -SUFF.V.4 -SUFF.VI.5
+\f Tupela i bin strong tru.
+\fe They paddled hard and strong.
+
+\ref 37
+\t Voava      pousiviropa                          oisiri                uukova      rekasiaro.
+\m voa  -va   pou    -si       -viro     -pa       oisiri                uukova      rekasi                               -aro
+\g here -FEM  arrive -2/3.DL.M -COMPL    -RP       over there/back there large river mark the end/portion out/section off -POSS
+\p LOC  -SUFF V.I    -SUFF.V.4 -SUFF.V.3 -SUFF.V.5 LOC                   N.F         V.T                                  -SUFF.N
+\f I no long taim na tupela i bin kamap long arere bilong wara.
+\fe At last they reached the side of the river.
+
+\ref 38
+\t Osia aiteto         ira     rokopareva                              raivaia                    eisire                       uukova,     uva  vaiterei kekereva.
+\m osia aite   -to     ira     roko    -pa       -re        -va        raiva              -ia     eisi               -re       uukova      uva  vaiterei keke -re        -va
+\g as   father -MASC   3.SG.M  go down -PROG     -3.SG.M    -RP        road/path/way/line -at     that way/like that -ALLATIVE large river so   2.DL.M   look -3.SG.M    -RP
+\p CONJ N.???  -SUFF.N PRO.REL ADV     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.???              -SUFF.N DEM                -SUFF     N.F         CONJ PRO.PER  V.T  -SUFF.VT.4 -SUFF.VT.5
+\f Tasol papa i bin kam daun long rot i go long wara na em i lukim tupela.
+\fe But papa was coming down the track to the river and saw them.
+
+\ref 39
+\t ``Vovuutao             iava       viapau irai         voore,              rokopareve                             voore               uukova,''   osa     oiveroepa.
+\m vo-   vuuta -o         iava       viapau ira     -i   voo       -re       roko    -pa       -re        -ve       voo       -re       uukova      osa     oive             -ro        -epa
+\g SING- time  -3.SG.F    from/about NEG    3.SG.M  -??? this/here -ALLATIVE go down -PROG     -3.SG.M    -SUB      this/here -ALLATIVE large river as/like shout/yodel/yell -3.SG.M    -RP
+\p PRE-  LOC   -SUFF.VI.4 PREP       NEG    PRO.REL -??? ???       -SUFF     V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 ???       -SUFF     N.F         CONJ    V.T              -SUFF.VI.4 -SUFF.VI.5
+\f ``Long dispela taim nau nogat wanpela bai kam long wara,'' em i bin singaut.
+\fe ``From now on no one will come to the river,'' he shouted.
+
+\ref 40
+\t ``Tutuu    raga      voo       ra   tootooara    opesipe          vei     iava.''
+\m tutuu      raga      voo       ra   tootoo -ara  opesi      -pe   vei     iava
+\g come close only/just this/here COMP live   -PL   end/finish -SUB  2.DL    from/about
+\p V.???      ADV       ???       COMP V.???  -SUFF V.I        -V.SUFPRO.PER PREP
+\f ``Yutupela i bin klostu i dai.''
+\fe ``You almost lost your lives.''

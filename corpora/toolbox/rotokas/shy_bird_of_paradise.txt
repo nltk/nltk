@@ -1,0 +1,181 @@
+\_sh v3.0  400  Rotokas Text
+
+\id The Shy Bird of Paradise
+\au Esther Kindo
+
+\ref Paragraph 1
+\t Kokiokare     rutu       oraguru-aepa                                          voea   varaaro      karekepiesia        vearopa      varaaro.
+\m kokio -kare   rutu       ora-      guru                  -a         -epa       voea   vara -aro    karekepie -sia      vearo -pa    vara -aro
+\g bird  -PL     very/truly REF-      meet/heap up/assemble -3.PL      -RP        3.PL.M body -POSS   show      -PURP     good  -DERIV body -POSS
+\p N.??? -N.SUFF PH         SUFF.N/V- V.T                   -SUFF.VI.4 -SUFF.VI.5 PRO    N.N  -SUFF.N V.T       -SUFF.V.4 V.I   -SUFF  N.N  -SUFF.N
+\f xxx
+\fe All the bird came together to show off their beauty.
+
+\ref 2
+\t Voea   rutu       orapugupiepaaepa                           vateirara      agiagipaoro                                    ora  agesipaoro.
+\m voea   rutu       orapugupie -pa       -a         -epa       vate   -irara  agiagi                     -pa       -oro      ora  agesi -pa       -oro
+\g 3.PL.M very/truly be busy    -PROG     -3.PL      -RP        friend -PL     welcome back/be reconciled -PROG     -SIM      and  laugh -PROG     -SIM
+\p PRO    PH         V.I.REFL   -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 N.N2   -SUFF.N V.T                        -SUFF.V.3 -SUFF.V.4 CONJ V.I   -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe Everyone was busy greeting their friends and laughing.
+
+\ref Paragraph 3
+\t Kokioto vaitatoa               rutu       pauparoepa                  ora  tapepiepaoro                   okarerovu                                 situepaoro                     kokiokare     osia vateirara      tapo          orareopaaepa.
+\m kokioto vaita  -to     -a      rutu       paupa -ro        -epa       ora  tapepie    -pa       -oro      o             -kare   -ro         -vu     situe      -pa       -oro      kokio -kare   osia vate   -irara  tapo          ora-      reo        -pa       -a         -epa
+\g bird    pretty -MASC   -N      very/truly chair -3.SG.M    -RP        and  sush/quiet -PROG     -SIM      DEM.PROX.SG.F -PL     -PL         -other  look/watch -PROG     -SIM      bird  -PL     as   friend -PL     also/too/with REF-      speak/talk -PROG     -3.PL      -RP
+\p N.M     N.N2   -SUFF.N -SUFF.N PH         N.N   -SUFF.VI.4 -SUFF.VI.5 CONJ V.T        -SUFF.V.3 -SUFF.V.4 PRO.DEM       -N.SUFF -SUFF.N.??? -SUFF.N V.T        -SUFF.V.3 -SUFF.V.4 N.??? -N.SUFF CONJ N.N2   -SUFF.N POST          SUFF.N/V- V.I        -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe Bird of Paradise sat quietly watching the other birds talking with their friends.
+
+\ref 4
+\t Rirovira        ariiparoepa                                rera    vearopie   vara karekepiearapa.
+\m rirovira        arii       -pa       -ro        -epa       rera    vearopie   vara karekepie -arapa
+\g largely/greatly be ashamed -PROG     -3.SG.M    -RP        3.SG.M  fix/repair body show      -DEP.DIS
+\p ADV             V.???      -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 PRO.PER V.T        N.N  V.T       -SUFF.V.4
+\f xxx
+\fe He was very shy about showing off his beautiful coloured feathers.
+
+\ref 5
+\t Vosia   vateirara      vurapareva                                      uva  rera    iava       kukue      takuvira toupaeva                                ora  kuuvuvavagisipiepaoro                oisio              viapau voea   vurapare.
+\m vosia   vate   -irara  vura            -pa       -re        -va        uva  rera    iava       kukue      takuvira tou     -pa       -e         -va        ora  kuuvuvavagisipie -pa       -oro      oisio              viapau voea   vura            -pa       -re
+\g when/if friend -PL     look at/gaze at -PROG     -3.SG.M    -RP        so   3.SG.M  from/about head/skull bowed    be/stay -PROG     -3.SG.F    -RP        and  pretend          -PROG     -DEP.SIM  this way/like this NEG    3.PL.M look at/gaze at -PROG     -3.SG.M
+\p CONJ    N.N2   -SUFF.N V.T             -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ PRO.PER PREP       N.F        ADV      V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ V.T              -SUFF.V.3 -SUFF.V.4 ???                NEG    PRO    V.T             -SUFF.V.3 -SUFF.VT.4
+\nt Need to figure out how to put something in dictionary like 'kuuvu vavagisipie' without glomming it all together as one word...
+\f xxx
+\fe When he saw his friends he put his head down and pretended that he did not see them.
+
+\ref Paragraph 6
+\t Rera    vatevaaro            rutu       kakata   uriopa         oisio              purasia        rerare,
+\m rera    vate   -va   -aro    rutu       kakata   urio -pa       oisio              pura -sia      rera    -re
+\g 3.SG.M  friend -FEM  -POSS   very/truly cockatoo come -RP       this way/like this say  -DEP.PURP 3.SG.M  -ALLATIVE
+\p PRO.PER N.N2   -SUFF -SUFF.N PH         N.F      V.I  -SUFF.V.5 ???                V.I  -SUFF.V.4 PRO.PER -SUFF
+\f xxx
+\fe His best friend Cockatoo came along and said to him, 
+
+\ref 6a
+\t ``Ai, vatetoa                oaa,      eakere          voo       vataupau?''
+\m ai    vate   -to     -a      oaa       eake  -re       voo       vatau -pa       -u
+\g oh    friend -MASC   -N      POSS.1.SG what  -ALLATIVE this/here hide  -PROG     -2.SG
+\p EXCL  N.N2   -SUFF.N -SUFF.N PRO.POSS  INTER -SUFF     ???       V.T   -SUFF.V.3 -SUFF.VI.4
+\f xxx
+\fe ``Hey friend, why are you hiding here?
+
+\ref 7
+\t Ragai   viire             tararagapaavo                                                  voraro            rutu.
+\m ragai   vii     -re       tara                - raga      -pa       -a         -vo       voraro            rutu
+\g 1.SG    2.SG    -ALLATIVE look for/search for - only/just -PROG     -1.SG      -IP       everywhere/around very/truly
+\p PRO.PER PRO.PER -SUFF     V.T                 - ADV       -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 LOC               PH
+\f xxx
+\fe I have been searching for you everywhere.
+
+\ref 8
+\t Uriou           viia            vuritoa                                raga      ragai   vatetoaro              ragai   sirova           utuu                    ra   avave
+\m urio -u         vii     -a      vurito                         -a      raga      ragai   vate   -to     -aro    ragai   sirova           utu          -u         ra   ava -ve
+\g come -2.SG      2.SG    -N      trouble maker/good-for-nothing -N      only/just 1.SG    friend -MASC   -POSS   1.SG    behind/alongside watch/follow -2.SG      COMP go  -1.DL
+\p V.I  -SUFF.VI.4 PRO.PER -SUFF.N N.N2                           -SUFF.N ADV       PRO.PER N.N2   -SUFF.N -SUFF.N PRO.PER LOC              V.I          -SUFF.VI.4 COMP V.I -SUFF.V.4
+\f xxx
+\fe Come on, you silly friend of mine, follow me and we'll go meet some new friends.''
+
+\ref Paragraph 9
+\t Vaitato        kokioto       rera    vatevaaro            sirova           uturoepa                          osa     kukueva          takuvira raga      toupaeva.
+\m vaita  -to     kokio -to     rera    vate   -va   -aro    sirova           uturo                  -epa       osa     kukue      -va   takuvira raga      tou     -pa       -e         -va
+\g pretty -MASC   bird  -MASC   3.SG.M  friend -FEM  -POSS   behind/alongside toddle/walk hesitantly -RP        as/like head/skull -FEM  bowed    only/just be/stay -PROG     -3.SG.F    -RP
+\p N.N2   -SUFF.N N.??? -SUFF.N PRO.PER N.N2   -SUFF -SUFF.N LOC              V.I                    -SUFF.VI.5 CONJ    N.F        -SUFF ADV      ADV       V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe Bird of Paradise followed his friend with his head down.
+
+\ref 10
+\t Ra   avave         airepairarava                 aivarosia                          vateirara.
+\m ra   ava -ve       airepa    -irara  -va         aivaro                   -sia      vate   -irara
+\g COMP go  -SUB      new/fresh -PL     -with       meet with/go directly to -DEP.PURP friend -PL
+\p COMP V.I -SUFF.V.5 V.I       -SUFF.N -SUFF.N.??? V.T                      -SUFF.V.4 N.N2   -SUFF.N
+\f xxx
+\fe They walked through the crowds meeting some new friends.
+
+\ref 11
+\t Kokiokare     rutu       vaitato        vurapaiva                                       osireiara    iava       oara          karuvira rutu       toupaiva.
+\m kokio -kare   rutu       vaita  -to     vura            -pa       -i         -va        osirei -ara  iava       oara          karuvira rutu       tou     -pa       -i         -va
+\g bird  -PL     very/truly pretty -MASC   look at/gaze at -PROG     -3.PL      -RP        eye    -PL   from/about PRO.REL.3PL.N open     very/truly be/stay -PROG     -3.PL      -RP
+\p N.??? -N.SUFF PH         N.N2   -SUFF.N V.T             -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.M    -SUFF PREP       PRO.REL.3PL.N ADV      PH         V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe All the birds looked at Bird of Paradise with their eyes wide open.
+
+\ref Paragraph 12
+\t ``Oo, rera    keketa         oisio              osia vearopie   keketoa.''
+\m oo    rera    keke -ta       oisio              osia vearopie   keke -to     -a
+\g oh    3.SG.M  look -2PL      this way/like this as   fix/repair look -MASC   -N
+\p EXCL  PRO.PER V.T  -SUFF.V.4 ???                CONJ V.T        V.T  -SUFF.N -SUFF.N
+\f xxx
+\fe ``Wao-o! Look how beautiful he is.
+
+\ref 13
+\t Vearopa      kaekaero           rutu       orupa   kaekaero           oarava                    toupare.
+\m vearo -pa    kaekae -ro         rutu       orupa   kaekae -ro         oara          -va         tou     -pa       -re
+\g good  -DERIV long   -PL         very/truly feather long   -PL         PRO.REL.3PL.N -with       be/stay -PROG     -3.SG.M
+\p V.I   -SUFF  ???    -SUFF.N.??? PH         N.N     ???    -SUFF.N.??? PRO.REL.3PL.N -SUFF.N.??? V.I     -SUFF.V.3 -SUFF.VT.4
+\f xxx
+\fe He's got very long colourful feathers.''
+
+\ref 14
+\t Vearopie   kekevira     rutu       toupareva                               uva  kokioriako        rerapa            ruipairaopaaepa.
+\m vearopie   keke -vira   rutu       tou     -pa       -re        -va        uva  kokio -riako      rera    -pa       ruipa            -irao -pa       -a         -epa
+\g fix/repair look -ADV    very/truly be/stay -PROG     -3.SG.M    -RP        so   bird  -???.PL     3.SG.M  -for/with like/want/desire -EMP  -PROG     -3.PL      -RP
+\p V.T        V.T  -SUFF.N PH         V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ N.??? -SUFF.N.??? PRO.PER -SUFF.N   V.I              -EMP  -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe He was so beautiful that all the female birds fell in love with him.
+
+\ref 15
+\t Rera    sirova           utupaaepa                   agesipaoro                ora  visivisivira orareopaoro.
+\m rera    sirova           utupa -a         -epa       agesi -pa       -oro      ora  visivisivira ora-      reo        -pa       -oro
+\g 3.SG.M  behind/alongside next  -3.PL      -RP        laugh -PROG     -DEP.SIM  and  softly       REF-      speak/talk -PROG     -DEP.SIM
+\p PRO.PER LOC              V.I   -SUFF.VI.4 -SUFF.VI.5 V.I   -SUFF.V.3 -SUFF.V.4 CONJ ADV          SUFF.N/V- V.I        -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe They followed him, laughing and whispering.
+
+\ref 16
+\t Oriakovu                  kokioriako        oriakoa                   akeakeragapaiva                                       oisio              ra   rera   tapo          ora  reoave.
+\m o-          riako -vu     kokio -riako      o-          riako -a      akeake    - raga      -pa       -i         -va        oisio              ra   rera   tapo          ora  reoa     -ve
+\g this/these- woman -other  bird  -???.PL     this/these- woman -N      try/tempt - only/just -PROG     -3.PL      -RP        this way/like this and  3.SG.M also/too/with and  work/law -SUB
+\p PRE.N-      N.F   -SUFF.N N.??? -SUFF.N.??? PRE.N-      N.F   -SUFF.N V.T       - ADV       -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ???                CONJ PRO.PERPOST          CONJ N.N      -SUFF.V.5
+\f xxx
+\fe Some female birds tried to talk to him.
+
+\ref 17
+\t Rooia                 vaitato        kokioto       viapau oisio              kukue      kaepiepareva                                     riakora          taporo       ora  reosia.
+\m roo           -ia     vaita  -to     kokio -to     viapau oisio              kukue      kaepie           -pa       -re        -va        riako -ra        taporo       ora  reo        -sia
+\g DEM.PROX.SG.M -at     pretty -MASC   bird  -MASC   NEG    this way/like this head/skull hoist/lift/raise -PROG     -3.SG.M    -RP        woman -1.SG      conceal talk and  speak/talk -PURP
+\p PRO.DEM       -SUFF.N N.N2   -SUFF.N N.??? -SUFF.N NEG    ???                N.F        V.T              -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.F   -SUFF.VI.4 V.T          CONJ V.I        -SUFF.V.4
+\f xxx
+\fe Bird of Paradise would not lift his head and talk to the ladies.
+
+\ref Paragraph 18
+\t Vaitato        kokioto       uririparoepa                                   oisio              teapi       tavaururiako               kokioriako        rera    ruvitako-ive                  ora  rera    karikarive           garepa                 visivi            vosia   viapau reoreoparo                            voriako     tapo.
+\m vaita  -to     kokio -to     uriri          -pa       -ro        -epa       oisio              teapi       tavauru        -riako      kokio -riako      rera    ruvitako -i         -ve       ora  rera    karikari   -ve       gare         -pa       visivi            vosia   viapau reoreo           -pa       -ro        vo-   riako tapo
+\g pretty -MASC   bird  -MASC   frighten/scare -PROG     -3.SG.M    -RP        this way/like this don't!/lest teenage girl   -???.PL     bird  -???.PL     3.SG.M  squeeze  -3.PL      -SUB      and  3.SG.M  tear/shred -SUB      small/little -for/with diminutive marker when/if NEG    converse/discuss -PROG     -3.SG.M    SING- woman also/too/with
+\p N.N2   -SUFF.N N.??? -SUFF.N V.T            -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 ???                EXCL        N.???          -SUFF.N.??? N.??? -SUFF.N.??? PRO.PER V.T      -SUFF.VT.4 -SUFF.V.5 CONJ PRO.PER V.T        -SUFF.V.5 V.I          -SUFF.N   GR                CONJ    NEG    V.I              -SUFF.V.3 -SUFF.VI.4 PRE-  N.F   POST
+\f xxx
+\fe Bird of Paradise was afraid that the girls might squeeze him and tear him to pieces if he didn't talk to them.
+
+\ref 19
+\t Oa      iava       ikauvira             papareva                   riro vego   sovarai iare    evoa     raga.
+\m oa      iava       ikauvira             papa -re        -va        riro vego   sovarai iare    evoa     raga
+\g 3.SG.N  from/about quickly/fast/rapidly fly  -3.SG.M    -RP        big  jungle inside  towards DEIC.MED only/just
+\p PRO.REL PREP       ADV                  V.T  -SUFF.VT.4 -SUFF.VT.5 V.I  N.???  POST    PREP    LOC      ADV
+\f xxx
+\fe So he flew quicly into the thick bush.
+
+\ref 20
+\t Toupareveira                           voruture                    rera    varoia          tootooa ora  viapau uvui-paroi                             ora  karekeparo                                    riropa         uvururo                         iare    vorerivira.
+\m tou     -pa       -re        -veira    vo-   rutu       -re        rera    varo    -ia     tootooa ora  viapau uvui    -pa       -ro        -i        ora  kareke                   -pa       -ro        riro -pa       uvuru                -ro        iare    vorerivira
+\g be/stay -PROG     -3.SG.M    -ANIM.HAB SING- very/truly -3.SG.M    3.SG.M  clothes -at     life    and  NEG    be able -PROG     -3.SG.M    -PRES     and  appear/happen/come to be -PROG     -3.SG.M    big  -RP       meet/gather/assemble -3.SG.M    towards another time/again
+\p V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 PRE-  PH         -SUFF.VT.4 PRO.PER N.N     -SUFF.N ???     CONJ NEG    V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 CONJ V.I                      -SUFF.V.3 -SUFF.VI.4 V.I  -SUFF.V.5 V.I                  -SUFF.VI.4 PREP    TEMP
+\f xxx
+\fe He stayed there all his life and never came out in public again.
+
+\ref Paragraph 21
+\t Oa      iava       vovokio oirara         avapaveira              vaitatoa-re                      kokioto       tarapasia                               tuura  vego-ro            sovaraia tarapasia                               rerare            vuravurapaoro                          evaovaro.
+\m oa      iava       vovokio oirara         ava -pa       -veira    vaita  -to     -a      -re       kokio -to     tara                -pa       -sia      tuura  vego   -ro         sovaraia tara                -pa       -sia      rera    -re       vuravura           -pa       -oro      evaova -ro
+\g 3.SG.N  from/about today   people/mankind go  -PROG     -ANIM.HAB pretty -MASC   -N      -ALLATIVE bird  -MASC   look for/search for -PROG     -DEP.PURP jungle jungle -PL         inside   look for/search for -PROG     -DEP.PURP 3.SG.M  -ALLATIVE scan/gaze/to watch -PROG     -DEP.SIM  tree   -PL
+\p PRO.REL PREP       ???     N.???          V.I -SUFF.V.3 -SUFF.V.5 N.N2   -SUFF.N -SUFF.N -SUFF     N.??? -SUFF.N V.T                 -SUFF.V.3 -SUFF.V.4 N.???  N.???  -SUFF.N.??? POST     V.T                 -SUFF.V.3 -SUFF.V.4 PRO.PER -SUFF     V.T                -SUFF.V.3 -SUFF.V.4 N.F    -SUFF.N.???
+\f xxx
+\fe So today when people want to see the Bird of Paradise, they have to go into the thick bush and search for him in the highest trees.

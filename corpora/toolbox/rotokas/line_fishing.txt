@@ -1,0 +1,486 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Line Fishing
+\au Lahia Gubu
+
+\ref Paragraph 1
+\t Roia! Roia!
+\m Roia! Roia!
+\g name  name
+\p N.PN  N.PN
+\f xxx
+\fe ``Lohia! Lohia!
+
+\ref 2
+\t Paapaato Gava viipa              ruipaparoi                              ra   kore                     karevai           rauri.
+\m paapaato Gava vii       -pa      ruipa -pa       -ro         -ei         ra   *k  -o          -re      kare    -vai      rau  -ri
+\g uncle    name PPRO.2.SG -BEN     want  -CONT     -3.SG.M.A   -PRES.A     COMP *** -3.SG.F.A   -ALL     animals -INDEF    grab -2.SG.B
+\p N.M      N.PN PPRO      -ENC.N.6 V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP *** -SUFF.V.A.3 -ENC.N.6 FFP     -SUFF.N.6 V.B  -SUFF.V.B.3
+\f xxx
+\fe Uncle Gaba wants you to catch bait.
+
+\ref 3
+\t ``Ikauvira,'' Raka oiveroepa.
+\m ikauvira      Raka oive  -ro         -epa
+\g fast          name shout -3.SG.M.A   -RP.A
+\p ADV           N.PN V.A   -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe Hurry up,'' Raka shouted.
+
+\ref Paragraph 4
+\t ``Eake?''
+\m eake
+\g what
+\p INTER
+\f ``Wanem samting?''
+\fe ``What?''
+
+\ref 5
+\t Ragai     oiveraepa                     osia      oiveraepa                     touvira raga gita-ia         toitoipaoro                oira        vokerarore                                    ora       kuvuvava                   gisipie-paoro.
+\m ragai     oive  -ra         -epa        osia      oive  -ra         -epa        touvira raga gita   -ia      toitoi -pa       -oro      oira        vo-   kera                -ro        -re      ora       kuvu    -va       -va      gisi  -pie      -pa       -oro
+\g PPRO.1.SG shout -1.SG.A     -RP.A       as        shout -1.SG.A     -RP.A       still   only guitar -LOC     pluck  -CONT     -DEP.SIM  PPRO.3.SG.F SING- albatross-like bird -PL.CL     -ALL     and       fill.up -SG.F     -ABL     drown -CAUS     -CONT     -DEP.SIM
+\p PPRO      V.A   -SUFF.V.A.3 -SUFF.V.A.5 PART.CONJ V.A   -SUFF.V.A.3 -SUFF.V.A.5 ADV     ADV  N.???  -ENC.N.6 V.B    -SUFF.V.2 -SUFF.V.3 PPRO        PRE-  N.M                 -SUFF.CL.1 -ENC.N.6 PART.CONJ V.B     -SUFF.N.2 -ENC.N.6 V.A   -SUFF.V.1 -SUFF.V.2 -SUFF.V.3
+\f xxx
+\fe I shouted as I carried on playing the guitar, ignoring her call.
+
+\ref Paragraph 6
+\t ``Roia,       ikauvira,            paapaato rera    vo        karearopa               ruipaparoi                                      korekare.
+\m ro    -ia     ikauvira             paapaato rera    vo        kare  -aro    -pa       ruipa            -pa       -ro        -i        korekare
+\g 3SG.M -at     quickly/fast/rapidly uncle    3.SG.M  this/here ???   -POSS   -for/with like/want/desire -PROG     -3.SG.M    -PRES     ???
+\p PRO   -SUFF.N ADV                  N.M      PRO.PER ???       CLASS -SUFF.N -SUFF.N   V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.???
+\nt Why does korekare show up twice? Is it a mistake?
+\f xxx
+\fe ``Lohia, hurry, Uncle wants his bait quickly.''
+
+\ref Paragraph 7
+\t ``Opeita  kuuvupau,''                 ragai     osia      purarai.
+\m opeita    kuuvu -pa       -u          ragai     osia      pura -ra         -ei
+\g forbid    lie   -CONT     -2.SG.A     PPRO.1.SG as        say  -1.SG.A     -PRES.A
+\p PART.PROH V.A   -SUFF.V.2 -SUFF.V.A.3 PPRO      PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe ``Don't tell lies,'' I said.
+
+\ref Paragraph 8
+\t Taraiparai                                   rera        vopitupituaroia.
+\m tarai      -pa       -ra         -ei         rera        vo-   pitupitu -aro      -ia
+\g understand -CONT     -1.SG.A     -PRES.A     PPRO.3.SG.M SING- custom   -POSS     -LOC
+\p V.A        -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 PPRO        PRE-  N.N      -SUFF.N.3 -ENC.N.6
+\f xxx
+\fe ``I know his ways.
+
+\ref 9
+\t Vigei         avapaviei                            atarisia.
+\m vigei         ava -pa       -vi        -ei         atari -sia
+\g PPRO.1.PL.INC go  -CONT     -1.PL.INCL -PRES.A     fish  -DEP.PURP
+\p PPRO          V.A -SUFF.V.2 -SUFF.V.3  -SUFF.V.A.5 V.A   -SUFF.V.4
+\f Yumi bai go kisim pis.
+\fe We're going fishing.
+
+\ref 10
+\t Vigei         avapaviei                            vo-rupao                rutuia.
+\m vigei         ava -pa       -vi        -ei         vo-   rupa  -o          rutu -ia
+\g PPRO.1.PL.INC go  -CONT     -1.PL.INCL -PRES.A     SING- night -???        very -LOC
+\p PPRO          V.A -SUFF.V.2 -SUFF.V.3  -SUFF.V.A.5 PRE-  N.N   -SUFF.N.??? ADV  -ENC.N.6
+\f Yumi bai stap olgeta nait tru.
+\fe We'll be out all night.''
+
+\ref 11
+\t Ragai     sivapiepaa                    oisio vurivira toupae                    avakava         oaia                 touvira regeriparai.
+\m ragai     sivapie -pa       -a          oisio vurivira tou -pa       -e          avaka -va       oa          -ia      touvira regeri -pa       -ra         -ei
+\g PPRO.1.SG foresee -CONT     -1.SG.B     like  bad      be  -CONT     -3.SG.F.B   ocean -SG.F     RPRO.3.SG.N -LOC     still   play   -CONT     -1.SG.A     -PRES.A
+\p PPRO      V.B     -SUFF.V.2 -SUFF.V.B.3 COMP  ADV      V.B -SUFF.V.2 -SUFF.V.B.3 N.F   -SUFF.N.2 RPRO        -ENC.N.6 ADV     V.A    -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe I gazed at the rough sea and played on.
+
+\ref Paragraph 12
+\t Paapaato urioroe                   uva  oisio              puraroe,                      ``Ikauvira,          Roia.''
+\m paapaato urio -ro        -e        uva  oisio              pura -ro        -e            ikauvira             ro    -ia
+\g uncle    come -3.SG.M    -3.SG.F   so   this way/like this say  -3.SG.M    -IP           quickly/fast/rapidly 3SG.M -at
+\p N.M      V.I  -SUFF.VI.4 -SUFF.V.4 CONJ ???                V.I  -SUFF.VI.4 -SUFF.VI???.5 ADV                  PRO   -SUFF.N
+\f xxx
+\fe Uncle came and said, ``Hurry up, Lohia.
+
+\ref 13
+\t Vigei    avapaviei                           atarisia.''
+\m vigei    ava -pa       -vi        -ei        atari -sia
+\g 1.PL.INC go  -PROG     -1.PL.INCL -PRES      fish  -PURP
+\p PRO.PERS V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.I   -SUFF.V.4
+\f xxx
+\fe We're going fishing.''
+
+\ref Paragraph 14
+\t Paapaato iravivu               rutu       riro vaisito       igei      vouruiaaroia.
+\m paapaato ira     -vi   -vu     rutu       riro vaisi -to     igei      vo-   uruia             -aro    -ia
+\g uncle    3.SG.M  -DIM  -other  very/truly big  name  -MASC   1.PL.EXCL SING- village/town/city -POSS   -at
+\p N.M      PRO.REL -SUFF -SUFF.N PH         ADJ  N.??? -SUFF.N PRO       PRE-  N.N               -SUFF.N -SUFF.N
+\f xxx
+\fe Uncle is an important man in our village.
+
+\ref 15
+\t Ragai   vaaro             tovoavo                                 gita   rera    sirova           utusia.
+\m ragai   vaaro             tovo               -a         -vo       gita   rera    sirova           utu          -sia
+\g 1.SG    that person/thing put/place/position -1SG       -IP       guitar 3.SG.M  behind/alongside watch/follow -PURP
+\p PRO.PER NDM?              V.T                -SUFF.VT.4 -SUFF.V.5 N.???  PRO.PER LOC              V.I          -SUFF.V.4
+\f xxx
+\fe I put my guitar down and followed him.
+
+\ref Paragraph 16
+\t ``Vearoto              kakaeto,''           osa     puraroe.
+\m vearo          -to     kakae        -to     osa     pura -ro        -e
+\g good/fine/well -MASC   small/little -MASC   as/like say  -3.SG.M    -3.SG.F
+\p V.I            -SUFF.N ADJ          -SUFF.N CONJ    V.I  -SUFF.VI.4 -SUFF.V.4
+\f xxx
+\fe ``Good boy,'' he said.
+
+\ref 17
+\t ``Igei    vatatopoiei                                avasia.''
+\m igei      vatatopo             -i         -ei        ava -sia
+\g 1.PL.EXCL take care/be careful -1.PL.EXCL -PRES      go  -PURP
+\p PRO       V.T                  -SUFF.V.4  -SUFF.VI.5 V.I -SUFF.V.4
+\f xxx
+\fe ``We're ready to go.''
+
+\ref Paragraph 18
+\t ``Ovu atari ivupaara         epao?''  ragai   akeavo.
+\m ovu   atari ivu  -pa    -ara epao     ragai   ake -a         -vo
+\g where fish  pull -DERIV -PL  exist/be 1.SG    ask -1.SG      -IP
+\p INTER V.I   V.T  -SUFF  -SUFFV.STAT   PRO.PER V.T -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe ``Where's all the gear?'' I asked.
+
+\ref Paragraph 19
+\t ``Evara  rutu       epao     evoa     opuuruva sovaraia,'' osa     puraroe.
+\m evara    rutu       epao     evoa     opuuruva sovaraia    osa     pura -ro        -e
+\g MED.PL.N very/truly exist/be DEIC.MED canoe    inside      as/like say  -3.SG.M    -3.SG.F
+\p DEM      PH         V.STAT   LOC      N.F      POST        CONJ    V.I  -SUFF.VI.4 -SUFF.V.4
+\f xxx
+\fe ``It's all in the canoe,'' he said.
+
+\ref Paragraph 20
+\t Igei      ora  kotoie              opuuruvaia       uva  puurupaoro                       avaie.
+\m igei      ora  koto -i   -e        opuuruva -ia     uva  puuru        -pa       -oro      ava -i         -e
+\g 1.PL.EXCL and  hang -??? -3.SG.F   canoe    -at     so   paddle canoe -PROG     -SIM      go  -1.PL.EXCL -IP
+\p PRO       CONJ ADJ  -??? -SUFF.V.4 N.F      -SUFF.N CONJ V.T          -SUFF.V.3 -SUFF.V.4 V.I -SUFF.V.4  -SUFF.VI???.5
+\f xxx
+\fe We got in the canoe and paddled out.
+
+\ref 21
+\t Ragai   opuuruvaia       puurupaavo                                  osa     rera    korekareia       togaroe.
+\m ragai   opuuruva -ia     puuru        -pa       -a         -vo       osa     rera    korekare -ia     toga                     -ro        -e
+\g 1.SG    canoe    -at     paddle canoe -PROG     -1.SG      -IP       as/like 3.SG.M  ???      -at     spear/shoot with a spear -3.SG.M    -3.SG.F
+\p PRO.PER N.F      -SUFF.N V.T          -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 CONJ    PRO.PER N.???    -SUFF.N V.T                      -SUFF.VI.4 -SUFF.V.4
+\f xxx
+\fe I paddled the canoe while he speared bait.
+
+\ref 22
+\t Ragai   iava       tukeru        upiaoe.
+\m ragai   iava       tukeru        upia         -o        -e
+\g 1.SG    from/about small of back in pain/sick -3.SG.F   -3.SG.F
+\p PRO.PER PREP       N.N           V.I          -SUFF.V.4 -SUFF.V.4
+\f xxx
+\fe My back ached.
+
+\ref 23
+\t Oa      iava       uusito        sovoavo.
+\m oa      iava       uusi  -to     sovo             -a         -vo
+\g 3.SG.N  from/about sleep -MASC   feel/touch/sense -1SG       -IP
+\p PRO.REL PREP       V.I   -SUFF.N V.T              -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe I felt sleepy.
+
+\ref 24
+\t Viapau reoreoparae.
+\m viapau reoreo           -pa       -ra        -e
+\g NEG    converse/discuss -PROG     -1.SG      -3.SG.F
+\p NEG    V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.V.4
+\f xxx
+\fe I said nothing.
+
+\ref 25
+\t Ragai   taraiparae                                paapaato vo        pitupituaroia.
+\m ragai   tarai      -pa       -ra        -e        paapaato vo        pitupitu       -aro    -ia
+\g 1.SG    understand -PROG     -1.SG      -3.SG.F   uncle    this/here fashion/custom -POSS   -at
+\p PRO.PER V.I        -SUFF.V.3 -SUFF.VI.4 -SUFF.V.4 N.M      ???       N.N            -SUFF.N -SUFF.N
+\f xxx
+\fe I knew Uncle Gaba's ways.
+
+\ref 26
+\t Oisio      osia rorovira                reoreoparae                                     osia roro                             kaekaevira     touiovo.
+\m oisio      osia rorovira                reoreo           -pa       -ra        -e        osia roro                             kaekae -vira   tou     -io       -vo
+\g this way/lias   similarly/comparatively converse/discuss -PROG     -1.SG      -3.SG.F   as   fallen out of/separated out from tempt  -ADV    be/stay -1PL.EXCL -IP
+\p ???        CONJ ADV                     V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.V.4 CONJ ADJ                              V.T    -SUFF.N V.I     -SUFF.N   -SUFF.V.5
+\f xxx
+\fe The more I complained, the longer we'd stay.
+
+\ref Paragraph 27
+\t Vo        osia vokisia             auepaepa                               uva  kuritarirei         ouiova.
+\m vo        osia voki      -sia      au               -epa       -epa       uva  kurita  -rirei      ou               -io       -va
+\g this/here as   day/ time -PURP     blinded by light -RP        -RP        so   octopus -N.???.DL   get/take/receive -1PL.EXCL -RP
+\p ???       CONJ N.N       -SUFF.V.4 ???              -SUFF.VI.5 -SUFF.VI.5 CONJ N.???   -SUFF.N.CL1 V.T              -SUFF.N   -SUFF.VT.5
+\f xxx
+\fe Just before midnight we caught two octopuses.
+
+\ref 28
+\t ``Uvuiei           vaireovio,''              osia puraroepa                  paapaato.
+\m uvui    -ei        vaireo          -vio      osia pura -ro        -epa       paapaato
+\g be able -PRES      DEM.PROX.DL.FEM -1.PL.INC as   say  -3.SG.M    -RP        uncle
+\p V.I     -SUFF.VI.5 PRO.DEM         -SUFF     CONJ V.I  -SUFF.VI.4 -SUFF.VI.5 N.M
+\f xxx
+\fe ``This is enough,'' Uncle said.
+
+\ref Paragraph 29
+\t Gurukorevo                         vasiri.
+\m guruko     -re         -vo         vasiri
+\g make noise -3.SG.M.B   -IP.B       engine
+\p V.B        -SUFF.V.B.3 -SUFF.V.B.5 N.N
+\f xxx
+\fe ``Brr, brr,'' the engine roared.
+
+\ref 30
+\t Viapau karepaviei                             atoiare.
+\m viapau kare   -pa       -vi        -ei        atoi                -are
+\g NEG    return -PROG     -1.PL.INCL -PRES      village/home/banana -DL
+\p NEG    V.I    -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 N.N                 -SUFF.N
+\f xxx
+\fe We were not going home.
+
+\ref 31
+\t Ari       vigei         avapaviei                            ataripa         resi  iare.
+\m ari       vigei         ava -pa       -vi        -ei         atari -pa       resi  iare
+\g but       PPRO.1.PL.INC go  -CONT     -1.PL.INCL -PRES.A     fish  -DERIV    place towards
+\p PART.CONJ PPRO          V.A -SUFF.V.2 -SUFF.V.3  -SUFF.V.A.5 N.M   -SUFF.N.1 N.??? POST
+\f xxx
+\fe We went on our way to the fishing spot.
+
+\ref 32
+\t ``Vearopievira  toreu,''          osia      oiveroepa                     aue  guruko     ivaraia        koropera                                   guruko.
+\m vearopie  -vira tore  -u          osia      oive  -ro         -epa        aue  guruko     ivara -ia      koro                    -pe     -ra        guruko
+\g make.good -ADV  stand -2.SG.A     as        shout -3.SG.M.A   -RP.A       CONN make noise on    -LOC     blind/go inside the eye -SUB    -1.SG      make noise
+\p V.B       -SUFF V.A   -SUFF.V.A.3 PART.CONJ V.A   -SUFF.V.A.3 -SUFF.V.A.5 CONN V.B        N.LOC -ENC.N.6 V.I                     -V.SUFF -SUFF.VI.4 V.B
+\f xxx
+\fe ``Stand properly!'' he shouted above the roaring engine.
+
+\ref Paragraph 33
+\t ``Raka    vaoia,''        osia puraroepa                  paapaato.
+\m raka      vao         -ia osia pura -ro        -epa       paapaato
+\g dry, reef PROX.3.SG.N -at as   say  -3.SG.M    -RP        uncle
+\p ???       DEM         -SUFCONJ V.I  -SUFF.VI.4 -SUFF.VI.5 N.M
+\f xxx
+\fe ``This is the reef,'' Uncle said.
+
+\ref 34
+\t Uva  vasiri eakeapiereva.
+\m uva  vasiri eake  - api         -ere      -va
+\g so   engine what  - embarrassed -2/3DL.F  -RP
+\p CONJ N.N    INTER - V.I         -SUFF.V.4 -SUFF.VT.5
+\f xxx
+\fe He stopped the engine.
+
+\ref 35
+\t ``Agaa vikita                        varavira,''    osa     voea   tavireva.
+\m agaa   viki                -ta       varavira       osa     voea   tavi -re        -va
+\g anchor toss out/throw away -2PL      downward/below as/like 3.PL.M tell -3.SG.M    -RP
+\p N.???  V.I                 -SUFF.V.4 ADV            CONJ    PRO    V.I  -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe ``Throw the anchor down,'' he ordered.
+
+\ref Paragraph 36
+\t Pauiepa                    aiosia.
+\m pau -i         -epa        aio -sia
+\g sit -1.PL.EXCL -RP.A       eat -DEP.PURP
+\p V.A -SUFF.V.3  -SUFF.V.A.5 V.A -SUFF.V.4
+\f xxx
+\fe We sat down to eat.
+
+\ref 37
+\t Vosia     aio opesiiepa                     uva  atari ivupai                    roro  vikiiova                          oisiri     avakava.
+\m vosia     aio opesi  -i         -epa        uva  atari ivu  -pa       -i         roro  viki       -io        -va         oisiri     avaka -va
+\g when      eat finish -1.PL.EXCL -RP.A       so   fish  pull -CONT     -1.PL.EXCL shine throw.away -1.PL.EXCL -RP.B       over there ocean -RP.B
+\p PART.CONJ V.A V.A    -SUFF.V.3  -SUFF.V.A.5 PART N.M   V.B  -SUFF.V.2 -SUFF.V.3  V.B   V.A        -SUFF.V.3  -SUFF.V.B.5 LOC        N.F   -SUFF.V.B.5
+\f xxx
+\fe When we finished we threw our lines into the rough sea.
+
+\ref Paragraph 38
+\t ``Aa,'' paapaato koikoireva.
+\m aa      paapaato koikoi          -re         -va
+\g which   uncle    groan with pain -3.SG.M.B   -RP.B
+\p INTER   N.M      V.B             -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe ``Ahaa,'' Uncle cried.
+
+\ref 39
+\t ``Riro-toa     rutu ivuavoi                      atarito.''
+\m riro -to       rutu ivu  -a          -voi        atarito
+\g big  -SG.M     very pull -1.SG.B     -PRES.B     fish
+\p ADJ  -SUFF.N.2 ADV  V.B  -SUFF.V.B.3 -SUFF.V.B.5 N.M
+\f xxx
+\fe ``I've got a big fish on my line.''
+
+\ref 40
+\t Uva  rera        ivureva.
+\m uva  rera        ivu  -re         -va
+\g so   PPRO.3.SG.M pull -3.SG.M.B   -RP.B
+\p PART PPRO        V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe He pulled it up.
+
+\ref 41
+\t ``Aa, riro-to        eera         atarito.''
+\m aa    riro -to       eera         atarito
+\g which big  -SG.M     DEM.MED.SG.M fish
+\p INTER ADJ  -SUFF.N.2 DEM          N.M
+\f xxx
+\fe ``Ah, that's a big fish.
+
+\ref 42
+\t Irapa                ruiparai,''                   osia      puraraepa.
+\m ira         -pa      ruipa -ra         -ei         osia      pura -ra         -epa
+\g RPRO.3.SG.M -BEN     want  -1.SG.A     -PRES.A     as        say  -1.SG.A     -RP.A
+\p RPRO        -ENC.N.6 V.A   -SUFF.V.A.3 -SUFF.V.A.5 PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe I like it,'' I said.
+
+\ref Paragraph 43
+\t ``Oire, vokipakouei,''        osia      puraroepa                    paapaato.
+\m oire    vokipakou -ei         osia      pura -ro         -epa        paapaato
+\g okay    morning   -PRES.A     as        say  -3.SG.M.A   -RP.A       uncle
+\p EXCL    TIME      -SUFF.V.A.5 PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5 N.M
+\f xxx
+\fe ``Okay, it's morning,'' Uncle said.
+
+\ref 44
+\t Karevio          eisi               atoia.
+\m kare   -vio      eisi               atoia
+\g return -1.PL.INC that way/like that village/home/banana
+\p V.I    -SUFF     DEM                N.N
+\f xxx
+\fe ``We'll go home.''
+
+\ref Paragraph 45
+\t ``Viapau oisio rugooparai                              aviei,''           osia      puraraepa                    ora       ragaire            osia      paapaato atari ivu  pairo ivupareva.
+\m viapau   oisio rugoo -pa       -ra         -ei         avi    -ei         osia      pura -ra         -epa        ora       ragai     -re      osia      paapaato atari ivu  pairo ivu  -pa       -re         -va
+\g NEG      like  think -CONT     -1.SG.A     -PRES.A     sunset -PRES.A     as        say  -1.SG.A     -RP.A       and       PPRO.1.SG -ALL     as        uncle    fish  pull line  pull -CONT     -3.SG.M.B   -RP.B
+\p PART.NEG COMP  V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 V.A    -SUFF.V.A.5 PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5 PART.CONJ PPRO      -ENC.N.6 PART.CONJ N.M      V.A   V.B  N.??? V.B  -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe ``I thought the dawn would never come,'' I said to myself as Uncle pulled up his line.
+
+\ref Paragraph 46
+\t ``Atarikare   vieiri,               Roia,'' paapaato osia puraroepa.
+\m atari -kare   viei       -ri        Roia    paapaato osia pura -ro        -epa
+\g fish  -PL     count/read -2.SG      name    uncle    as   say  -3.SG.M    -RP
+\p V.I   -N.SUFF V.T        -SUFF.VT.4 N.PN    N.M      CONJ V.I  -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe ``Count the fish, Lohia,'' Uncle said.
+
+\ref Paragraph 47
+\t ``Riro kare    rutu voeao         viapau   uvuipai                       vo-kare       rutu vieisia.''
+\m riro   kare    rutu voeao         viapau   uvui    -pa       -ei         vo-   kare    rutu viei  -sia
+\g big    animals very DEM.PROX.PL.M NEG      be.able -CONT     -PRES.A     SING- animals very count -DEP.PURP
+\p ADJ    FFP     ADV  DEM           PART.NEG V.A     -SUFF.V.2 -SUFF.V.A.5 PRE-  FFP     ADV  V.B   -SUFF.V.4
+\f xxx
+\fe ``There are too many to count,'' I said.
+
+\ref Paragraph 48
+\t ``Riro kare?'' paapaato ragai     akereva.
+\m riro   kare    paapaato ragai     ake -re         -va
+\g big    animals uncle    PPRO.1.SG ask -3.SG.M.B   -RP.B
+\p ADJ    FFP     N.M      PPRO      V.B -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe ``Plenty?'' Uncle asked me.
+
+\ref Paragraph 49
+\t ``Iiu,'' osia      rera        ato-avoi.
+\m iiu      osia      rera        ato     -a          -voi
+\g yes      as        PPRO.3.SG.M harvest -1.SG.B     -PRES.B
+\p EXCL     PART.CONJ PPRO        V.B     -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe ``Yes, I replied.''
+
+\ref Paragraph 50
+\t ``Agaa ivuri,''         osia      puraroepa                    paapaato.
+\m agaa   ivu  -ri         osia      pura -ro         -epa        paapaato
+\g anchor pull -2.SG.B     as        say  -3.SG.M.A   -RP.A       uncle
+\p N.???  V.B  -SUFF.V.B.3 PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5 N.M
+\f xxx
+\fe ``Pull up the anchor,'' Uncle said.
+
+\ref Paragraph 51
+\t Agaa   ivuava                       uva  vorevira voreiepa                      verauavore.
+\m agaa   ivu  -a          -va         uva  vorevira vore   -i         -epa        verau{V.???} -a -vo -re
+\g anchor pull -1.SG.B     -RP.B       so   backward return -1.PL.EXCL -RP.A       beach
+\p N.???  V.B  -SUFF.V.B.3 -SUFF.V.B.5 PART ADV      V.A    -SUFF.V.3  -SUFF.V.A.5
+\f xxx
+\fe I pulled up the anchor and we started back to shore.
+
+\ref 52
+\t Igei           atari kare    vore   ravireo vuutaia        ora       vokiarovi.
+\m igei           atari kare    vore   ravireo vuuta -ia      ora       vokiarovi
+\g PPRO.1.PL.EXCL fish  animals return sun     time  -LOC     and       afternoon
+\p PPRO           V.A   FFP     V.A    N.M     N.N   -ENC.N.6 PART.CONJ TIME
+\f xxx
+\fe We had fish for lunch and dinner.
+
+\ref 53
+\t Evo   kare    vearopie  kare.
+\m evo   kare    vearopie  kare
+\g DEM.N animals make.good animals
+\p DEM   FFP     V.B       FFP
+\f xxx
+\fe They were delicious.
+
+\ref 54
+\t Ragai     rorupaavoi                             uvare     vovutao                       rutu iava avaierao                 oaraia                viapau ataripaio.
+\m ragai     roru -pa       -a          -voi        uvare     vo-   vuta        -o          rutu iava ava -i         -erao     oara          -ia     viapau atari -pa       -io
+\g PPRO.1.SG glad -CONT     -1.SG.B     -PRES.B     because   SING- sweet taste -???        very ABL  go  -3.PL      -NP       PRO.REL.3PL.N -at     NEG    fish  -PROG     -1.PL.EXCL
+\p PPRO      V.B  -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 PART.CONJ PRE-  N.N         -SUFF.N.??? ADV  POST V.I -SUFF.VT.4 -SUFF.V.5 PRO.REL.3PL.N -SUFF.N NEG    V.I   -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe I was glad that I went fishing after all.
+
+\ref Paragraph 55
+\t Paapaato vatuavaaro            riro kare    rutu sipoevo                      uupa             tavukiia.
+\m paapaato vatua{N.HUM} -va -aro riro kare    rutu sipo -e          -vo         uu     -pa       tavuki -ia
+\g uncle    spouse                big  animals very send -3.SG.F.B   -IP.B       gather -DERIV    space  -LOC
+\p N.M                            ADJ  FFP     ADV  V.B  -SUFF.V.B.3 -SUFF.V.B.5 V.A    -SUFF.N.1 N.N    -ENC.N.6
+\f xxx
+\fe Uncle's wife sold most of the fish at the marker.
+
+\ref 56
+\t ``Ie,         viipa              tau kira paapaato,'' osia      puraroepa                    kova tapaoro.
+\m ie            vii       -pa      tau kira paapaato    osia      pura -ro         -epa        kova tapa -oro
+\g Here take it! PPRO.2.SG -BEN     ten kina uncle       as        say  -3.SG.M.A   -RP.A       grow hit  -DEP.SIM
+\p EXCL          PPRO      -ENC.N.6 NUM N.N  N.M         PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5 V.A  V.B  -SUFF.V.3
+\f xxx
+\fe ``Here's ten kina for you,'' Uncle said smiling to me.
+
+\ref Paragraph 57
+\t ``Vearovira paapaato.''
+\m vearovira   paapaato
+\g good        uncle
+\p ADV         N.M
+\f xxx
+\fe ``Thank you, Uncle.''
+
+\ref 58
+\t Ragai     airepaara                vori-avo                     iroara         gita   iare    ovokivuia.
+\m ragai     aire -pa       -ara      vori -a          -vo         iro  -ara      gita   iare    o-     voki -vu       -ia
+\g PPRO.1.SG new  -DERIV    -PL.N     buy  -1.SG.B     -IP.B       belt -PL.N     guitar towards SPEC-  day  -ALT      -LOC
+\p PPRO      V.A  -SUFF.N.1 -SUFF.N.2 V.B  -SUFF.V.B.3 -SUFF.V.B.5 N.N  -SUFF.N.2 N.???  POST    PRE.N- N.N  -SUFF.N.5 -ENC.N.6
+\f xxx
+\fe I bought new strings for my guitar the next day.
+
+\ref 59
+\t Eagara osia      vearopie  vokoi                    atari pavoka,                       ragai   touvira                   paapaato vo        vara       taroia                       toupavere.
+\m eagara osia      vearopie  vo-   koi                atari pa-  voka                     ragai   touvira                   paapaato vo        vara       -ta       -ro        -ia     tou     -pa       -vere
+\g ???    as        make.good SING- high pitched sound fish  ???- walk/scan/glance through 1.SG    yet/still/eternally/later uncle    this/here 3.PL.F     -2PL      -3.SG.M    -at     be/stay -PROG     -NF
+\p EXCL   PART.CONJ V.B       PRE-  ADJ                V.I   ???- V.T                      PRO.PER ADV                       N.M      ???       PRO.3.PL.F -SUFF.V.4 -SUFF.VI.4 -SUFF.N V.I     -SUFF.V.3 -SUFF.V.5
+
+\f xxx
+\fe Even though it was a good fishing trip, I still keep out of Uncle's sight.
+
+\ref 60
+\t Ragai     taraiparai                                   oisio ragai     ita      akerevere                 rera        taporo atarisia        avasia        vosia     ragai     kekereve.
+\m ragai     tarai      -pa       -ra         -ei         oisio ragai     ita      ake -re         -vere     rera        taporo atari -sia      ava -sia      vosia     ragai     keke    -re         -ve
+\g PPRO.1.SG understand -CONT     -1.SG.A     -PRES.A     like  PPRO.1.SG again    ask -3.SG.M.B   -NF       PPRO.3.SG.M also   fish  -DEP.PURP go  -DEP.PURP when      PPRO.1.SG look.at -3.SG.M.B   -SUB
+\p PPRO      V.A        -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP  PPRO      ADV.TEMP V.B -SUFF.V.B.3 -SUFF.V.5 PPRO        POST   V.A   -SUFF.V.4 V.A -SUFF.V.4 PART.CONJ PPRO      V.B     -SUFF.V.B.3 -SUFF.V.5
+\f xxx
+\fe I knew he will ask me to go fishing again if he sees me.

@@ -1,0 +1,220 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Mini Helps to Make Pariwa
+\au Kila Vele-Kila
+
+\ref Paragraph 1
+\t Viri ikaupaoro                     ava-opa                  eisire                       kepa           uuko  tarasia                       ukaiosia.
+\m Viri ikau      -pa       -oro      ava -o         -pa       eisi               -re       kepa           uuko  tara                -sia      ukaio             -sia
+\g name run/hurry -PROG     -SIM      go  -3.SG.F    -RP       that way/like that -ALLATIVE house/building water look for/search for -PURP     drink cool liquid -PURP
+\p N.PN V.T       -SUFF.V.3 -SUFF.V.4 V.I -SUFF.VI.4 -SUFF.V.5 DEM                -SUFF     N.N            N.??? V.T                 -SUFF.V.4 V.I               -SUFF.V.4
+\f xxx
+\fe Mini ran to the house to drink some water.
+
+\ref 2
+\t Uva  aakova kekeva          osia puguvira              rutu       toupaeva.
+\m uva  aakova keke -va        osia pugu          -vira   rutu       tou     -pa       -e        -va
+\g so   mother look -RP        as   busy/occupied -ADV    very/truly be/stay -PROG     -3.SG.F   -RP
+\p CONJ N.F    V.T  -SUFF.VT.5 CONJ V.I           -SUFF.N PH         V.I     -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5
+\f xxx
+\fe She saw her mother was busy.
+
+\ref 3
+\t ``Aakova, eake  purapari?''                         osia akeeva.
+\m aakova    eake  pura           -pa       -ri        osia ake -e         -va
+\g mother    what  make/do/create -PROG     -2.SG      as   ask -3.SG.F    -RP
+\p N.F       INTER V.T            -SUFF.V.3 -SUFF.VT.4 CONJ V.T -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe ``Mum, what are you doing?'' she asked.
+
+\ref Paragraph 4
+\t ``aue      puraparai                                     pariua,'' osia oira    aatoeva                      aakova.
+\m aue        pura           -pa       -ra        -i        pariua    osia oira    aato   -e         -va        aakova
+\g connective make/do/create -PROG     -1.SG      -PRES     pariwa    as   3.SG.F  answer -3.SG.F    -RP        mother
+\p CONN       V.T            -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.???     CONJ PRO.PER V.T    -SUFF.VT.4 -SUFF.VT.5 N.F
+\f xxx
+\fe ``I'm going to make pariwa,'' answered mum.
+
+\ref Paragraph 5
+\t ``aue-pa             ruipaparaveira                                  pariua,'' Viri osia puraopa.
+\m aue        -pa       ruipa            -pa       -ra        -veira    pariua    Viri osia pura -o         -pa
+\g connective -for/with like/want/desire -PROG     -1.SG      -ANIM.HAB pariwa    name as   say  -3.SG.F    -RP
+\p CONN       -SUFF.N   V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.???     N.PN CONJ V.I  -SUFF.VI.4 -SUFF.V.5
+\f xxx
+\fe ``Yummy, I love pariwa,'' Mini said.
+
+\ref Paragraph 6
+\t Vii     varo    vavaea        sisiuri          ra   ragai   tauvari,"              osia puraoi                    aakova.
+\m vii     varo    vavae -a      sisiu -ri        ra   ragai   tauva       -ri        osia pura -o         -i        aakova
+\g 2.SG    clothes hand  -N      wash  -2.SG      COMP 1.SG    help/assist -2.SG      as   say  -3.SG.F    -PRES     mother
+\p PRO.PER N.N     N.??? -SUFF.N V.T   -SUFF.VT.4 COMP PRO.PER V.T         -SUFF.VT.4 CONJ V.I  -SUFF.VI.4 -SUFF.V.5 N.F
+\f xxx
+\fe ``Wash your hands and you can help me,'' Mum said.
+
+\ref Paragraph 7
+\t Rovopavira,                tetevu ora  ouri                        ora  vioropa            aue        itoo,  opita   isivai                     ora  itoo   guruvaro.
+\m rovopa             -vira   tetevu ora  ou               -ri        ora  vioro       -pa    aue        itoo   opita   isi            -vai        ora  itoo   guruva           -ro
+\g main/primary/first -ADV    sago   and  get/take/receive -2.SG      and  ripe/mature -DERIV connective banana coconut group of ferns -NABS       and  banana leaf/paper money -PL
+\p ADJ?               -SUFF.N N.???  CONJ V.T              -SUFF.VT.4 CONJ V.I         -SUFF  CONN       N.N2   N.N     CLASS          -SUFF.N.??? CONJ N.N2   N.N              -SUFF.N.???
+\f xxx
+\fe ``First, you get some sago, ripe cooking bananas, a coconut, and some banana leaves, then prepare the banana leaves and coconut cream.
+
+\ref 8
+\t Ra   auero vatatopo            itoo   guruvaro                     ora  aue        roviva.        Ito    guruva           rataratarivore                                                        osia raveravepe.
+\m ra   auero vatatopo            itoo   guruva           -ro         ora  aue        roviva         ito    guruva           DUP-   rata                           -ri        -vo       -re        osia raverave     -pe
+\g and  these be ready/be careful banana leaf/paper money -PL         and  connective coconut grease banana leaf/paper money REDUP- heat up/sear/singe/lie/deceive -2.SG      -IP       -3.SG.M    as   weaken/tired -SUB
+\p CONJ N.N   V.I                 N.N2   N.N              -SUFF.N.??? CONJ CONN       N.F            N.N2   N.N              REDUP- V.T                            -SUFF.VT.4 -SUFF.V.5 -SUFF.VT.4 CONJ V.I          -V.SUFF
+\f xxx
+\fe Hold the banana leaves over the flame like this until their colour changes.''
+
+\ref Paragraph 9
+\t Viri, uvuipau                      ra   opita   isi   kuriri.
+\m Viri  uvui    -pa       -u         ra   opita   isi   kuri   -ri
+\g name  be able -PROG     -2SG       and  coconut round scrape -2.SG
+\p N.PN  V.I     -SUFF.V.3 -SUFF.VI.4 CONJ N.N     CLASS V.T    -SUFF.VT.4
+\f xxx
+\fe ``Mini, please scrap the coconut.
+
+\ref 10
+\t Uuko  kapuvai           tovori                        opita   kuriia         ra   roviri                                     aueia              opita   gotapaa.
+\m uuko  kapu  -vai        tovo               -ri        opita   kuri   -ia     ra   rovi                            -ri        aue        -ia     opita   gotapaa
+\g water cup   -NABS       put/place/position -2.SG      coconut scrape -at     COMP mix with coconut milk or grease -2.SG      connective -at     coconut strainer
+\p N.??? N.??? -SUFF.N.??? V.T                -SUFF.VT.4 N.N     V.T    -SUFF.N COMP V.???                           -SUFF.VT.4 CONN       -SUFF.N N.N     N.???
+\f xxx
+\fe Add one cup water and squeeze the milk out into a bowl through the strainer.
+
+\ref 11
+\t Vosia   roviva         pura           opesiuvere                      ra   uuko  rovu   tovori                        tuituikasiia.
+\m vosia   roviva         pura           opesi      -u         -vere     ra   uuko  rovu   tovo               -ri        tuitui - kasi         -ia
+\g when/if coconut grease make/do/create end/finish -2.SG      -NF       COMP water water  put/place/position -2.SG      fire   - build a fire -at
+\p CONJ    N.F            V.T            V.I        -SUFF.VI.4 -SUFF.V.5 COMP N.??? N.N??? V.T                -SUFF.VT.4 N.M    - V.I          -SUFF.N
+\f xxx
+\fe When you finish the coconut, put a pot of water on the fire.''
+
+\ref Paragraph 12
+\t ``Viri, uvuipau                      ra   vioropara                      itooara      taritari?''
+\m Viri    uvui    -pa       -u         ra   vioro       -pa    -ra         itoo   -ara  tarita           -ri
+\g name    be able -PROG     -2.SG      COMP ripe/mature -DERIV -PL         banana -PL   smash/mash/mince -2.SG
+\p N.PN    V.I     -SUFF.V.3 -SUFF.VI.4 COMP V.I         -SUFF  -SUFF.N.??? N.N2   -SUFF V.T              -SUFF.VT.4
+\f xxx
+\fe ``Mini, can you mash the ripe bananas?''
+
+\ref 13
+\t ``Iuu,          aakova, va      purapaa,''                          osa     puraopa                  Viri.
+\m iu   -u         aakova  va      pura           -pa       -a         osa     pura -o        -pa       Viri
+\g yes  -2SG       mother  3.SG.N  make/do/create -PROG     -1SG       as/like say  -3.SG.F   -RP       name
+\p EXCL -SUFF.VI.4 N.F     PRO.PER V.T            -SUFF.V.3 -SUFF.VT.4 CONJ    V.I  -SUFF.V.4 -SUFF.V.5 N.PN
+\f xxx
+\fe ``Yes, mum, I can do that,'' said Mini.
+
+\ref 14
+\t ``Ra tetevuara    tovori                        vara       poresia        aueva                  itooarava.''
+\m ra   tetevu -ara  tovo               -ri        vara       pore -sia      aue        -va         itoo   -ara  -va
+\g and  sago   -PL   put/place/position -2.SG      3.PL.F     turn -PURP     connective -with       banana -PL   -with
+\p CONJ N.???  -SUFF V.T                -SUFF.VT.4 PRO.3.PL.F V.I  -SUFF.V.4 CONN       -SUFF.N.??? N.N2   -SUFF -SUFF.N.???
+\f xxx
+\fe ``Then add the sago to the mashed bananas and mix well.''
+
+\ref Paragraph 15
+\t ``Rovivaia             aue        kipuri                            karirapa          guruva           sirusirupa      varata iava.
+\m roviva         -ia     aue        kipu                   -ri        karirapa          guruva           sirusiru -pa    varata iava
+\g coconut grease -at     connective paint/smear on surface -2.SG      young banana leaf leaf/paper money shiny    -DERIV side   from/about
+\p N.F            -SUFF.N CONN       V.T                    -SUFF.VT.4 N.???             N.N              V.I      -SUFF  N.N    PREP
+\f xxx
+\fe ``Rub coconut cream onto the shiny side of the banana leaves.
+
+\ref 16
+\t Ra   aue        tovo               vopeva vore    voresiura sipururo          aue        tetevu ora  itoo   pore.
+\m ra   aue        tovo               vopeva vore    voresiura sipuru -ro        aue        tetevu ora  itoo   pore
+\g COMP connective put/place/position three  go back four      spoon  -3.SG.M    connective sago   and  banana turn
+\p COMP CONN       V.T                NUM    IV      NUM       N.M    -SUFF.VI.4 CONN       N.???  CONJ N.N2   V.I
+\f xxx
+\fe Then add 3 to 4 tablespoon of the sago and banana mixture.''
+
+\ref Paragraph 17
+\t Vurari,                    Viri, ra   vii     vurapiea                            oisio              osa  aue        ruupaiveira                                           pariua.
+\m vura            -ri        Viri  ra   vii     vura            -pie     -a         oisio              osia aue        ruu                    -pa       -i         -veira    pariua
+\g look at/gaze at -2.SG      name  COMP 2.SG    look at/gaze at -CAUS    -1.SG      this way/like this as   connective enclose/enwrap/envelop -PROG     -3.PL      -ANIM.HAB pariwa
+\p V.T             -SUFF.VT.4 N.PN  COMP PRO.PER V.T             -SUFF.VI -SUFF.VT.4 ???                CONJ CONN       V.T                    -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 N.???
+\f xxx
+\fe ``Watch, Mini, and I'll show you how to wrap the pariwa.
+
+\ref 18
+\t Rovovira         itoo   pore tovori                        karirapaia.
+\m rovovira         itoo   pore tovo               -ri        karirapa          -ia
+\g firstly/at first banana turn put/place/position -2.SG      young banana leaf -at
+\p ADV              N.N2   V.I  V.T                -SUFF.VT.4 N.???             -SUFF.N
+\f xxx
+\fe First, put the mixture on the banana leaf.
+
+\ref 19
+\t Oire ra   guruva           vikori                            va      vatuaro        iava.
+\m oire ra   guruva           viko                   -ri        va      vatuaro        iava
+\g okay COMP leaf/paper money fold/bend over/roll up -2.SG      3.SG.N  edge/alongside from/about
+\p EXCL COMP N.N              V.T                    -SUFF.VT.4 PRO.PER ???            PREP
+\f xxx
+\fe Then fold the sides in first and then fold the ends.
+
+\ref 20
+\t Vo        ruu                    tukeri.
+\m vo-   *   ruu                    tuke                      -ri
+\g SING- *** enclose/enwrap/envelop fasten/lock/imprison/nail -2.SG
+\p PRE-  *** V.T                    V.T                       -SUFF.VT.4
+\f xxx
+\fe Tie the parcel.
+
+\ref 21
+\t Vara   vorevoreriparivere                                    vore   osa  itooara      ora  tetevuara    opesipere.
+\m vara   vorevoreri             -pa       -ri        -vere     vore   osia itoo   -ara  ora  tetevu -ara  opesi      -pere
+\g 3.PL.F repeat again and again -PROG     -2.SG      -NF       return as   banana -PL   and  sago   -PL   end/finish -NF
+\p PRO.3.PV.I                    -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 V.I    CONJ N.N2   -SUFF CONJ N.???  -SUFF V.I        -SUFF.V.5
+\f xxx
+\fe Repeat this until all the banana and sago is used up.''
+
+\ref Paragraph 22
+\t ``Vurari,                  aakova,     oavu    puraa,''                  osia puraopa                  Viri roruvira.
+\m vura            -ri        aakova      oavu    pura           -a         osia pura -o        -pa       Viri roruvira
+\g look at/gaze at -2.SG      mother/aunt another make/do/create -1.SG      as   say  -3.SG.F   -RP       name joyfully/happily
+\p V.T             -SUFF.VT.4 N.F         V.I     V.T            -SUFF.VT.4 CONJ V.I  -SUFF.V.4 -SUFF.V.5 N.PN ADV
+\f xxx
+\fe ``Look, Mum, I've made one!'' said Mini proudly.
+
+\ref 23
+\t ``Voava    vo        ruuro                              tovori                        evoa     goagoaraparovuia                            uuko  rovu.
+\m voa  -va   -vo       ruu                    -ro         tovo               -ri        evoa     goagoara -pa    -ro         -vu     -ia     uuko  rovu
+\g here -FEM  -IP       enclose/enwrap/envelop -PL         put/place/position -2.SG      DEIC.MED boiling  -DERIV -PL         -other  -at     water water
+\p LOC  -SUFF -SUFF.V.5 V.T                    -SUFF.N.??? V.T                -SUFF.VT.4 LOC      V.I      -SUFF  -SUFF.N.??? -SUFF.N -SUFF.N N.??? N.N???
+\f xxx
+\fe ``Finally, you put the wrapped pariwa into the boiling water.
+
+\ref 24
+\t Pariua oa      vatatopopai                              aiosia.''
+\m pariua oa      vatatopo             -pa       -i        aio -sia
+\g pariwa 3.SG.N  take care/be careful -PROG     -PRES     eat -PURP
+\p N.???  PRO.REL V.T                  -SUFF.V.3 -SUFF.V.5 V.T -SUFF.V.4
+\f xxx
+\fe The pariwa should be ready in half an hour.''
+
+\ref Paragraph 25
+\t ``Oa    vearopapeira              aue        tapo          opita   roviro,''                                   osia puraopa                   Viri.
+\m oa      vearo -pa       -peira    aue        tapo          opita   rovi                            -ro         osia pura -o         -pa       Viri
+\g 3.SG.N  good  -PROG     -HAB      connective also/too/with coconut mix with coconut milk or grease -PL         as   say  -3.SG.F    -RP       name
+\p PRO.REL V.I   -SUFF.V.3 -SUFF.V.5 CONN       POST          N.N     V.???                           -SUFF.N.??? CONJ V.I  -SUFF.VI.4 -SUFF.V.5 N.PN
+\f xxx
+\fe ``Yummy, these are delicious with coconut cream,'' says Mini.
+
+\ref Paragraph 26
+\t Ragai ruipaparai                                  aue-pa               pariua aue        tapo          opita   roviro.
+\m ragai ruipa            -pa       -ra        -i    aue        -pa       pariua aue        tapo          opita   rovi                            -ro
+\g 1.SG  like/want/desire -PROG     -1.SG      -PRES connective -for/with pariwa connective also/too/with coconut mix with coconut milk or grease -PL
+\p PRO.PEV.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.CONN       -SUFF.N   N.???  CONN       POST          N.N     V.???                           -SUFF.N.???
+\f xxx
+\fe ``I like my pariwa with coconut oil.
+
+\ref Paragraph 27
+\t Pasii          uvui-pauei                              ratarai                                             oou                 aueia              purapasia                          opita   korovo        ovuutavuia                        ita,'' osa     puraopa                   aakova.
+\m pasii          uvui    -pa       -u         -ei        rata                           -ra        -i        oo       -u         aue        -ia     pura           -pa       -sia      opita   korovo        o-          vuuta -vu     -ia     ita    osa     pura -o         -pa       aakova
+\g Maybe/I think! be able -PROG     -2.SG      -PRES      heat up/sear/singe/lie/deceive -1.SG      -PRES     hers     -2.SG      connective -at     make/do/create -PROG     -PURP     coconut oil/lubricate this/these- time  -other  -at     again  as/like say  -3.SG.F    -PROG     mother
+\p EXCL           V.I     -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 V.T                            -SUFF.VI.4 -SUFF.V.5 N.POSS.F -SUFF.VI.4 CONN       -SUFF.N V.T            -SUFF.V.3 -SUFF.V.4 N.N     V.T           PRE.N-      N.??? -SUFF.N -SUFF.N TEMP   CONJ    V.I  -SUFF.VI.4 -SUFF.V.3 N.F
+\f xxx
+\fe Maybe you'll learn how to make coconut oil next,'' said Mum.

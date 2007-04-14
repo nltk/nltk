@@ -1,0 +1,261 @@
+\_sh v3.0  400  Rotokas Text
+
+\id The Good Brothers
+\au Harold Ure
+
+\ref Paragraph 1
+\t Voari    tuariri uva  oisoa    ravireo vaio    ora       kekira toupasi.
+\m voari    tuariri uva  oisoa    ravireo vaio    ora       kekira tou -pa       -si
+\g before   before  so   always   sun     DL.ANIM and       moon   be  -CONT     -3.DL.M
+\p TIME/LOC TIME    PART ADV.TEMP N.M     FFP     PART.CONJ N.M    V.B -SUFF.V.2 -SUFF.V.3
+\f xxx
+\fe A long time ago, Sun and Moon lived togher.
+
+\ref 2
+\t Vearopie  araorei.
+\m vearopie  araorei
+\g make.good brothers
+\p V.B       N.M
+\f xxx
+\fe They were good brothers.
+
+\ref 3
+\t Pukui-a            ruvaraia        oisoa    toupasi                 riro kaekaevira avakava         iava.
+\m pukui    -a        ruvara -ia      oisoa    tou -pa       -si       riro kaekaevira avaka -va       iava
+\g mountain -SG.N     near   -LOC     always   be  -CONT     -3.DL.M   big  long       ocean -SG.F     ABL
+\p N.N      -SUFF.N.2 N.LOC  -ENC.N.6 ADV.TEMP V.B -SUFF.V.2 -SUFF.V.3 ADJ  ADV        N.F   -SUFF.N.2 POST
+\f xxx
+\fe They lived near the mountains far from the sea.
+
+\ref Paragraph 4
+\t O-voki-vu-ia                   ravireo avaroepa                    atarisia        uukovaia.
+\m o-     voki -vu       -ia      ravireo ava -ro         -epa        atari -sia      uukova      -ia
+\g SPEC-  day  -ALT      -LOC     sun     go  -3.SG.M.A   -RP.A       fish  -DEP.PURP large river -LOC
+\p PRE.N- N.N  -SUFF.N.5 -ENC.N.6 N.M     V.A -SUFF.V.A.3 -SUFF.V.A.5 V.A   -SUFF.V.4 N.F         -ENC.N.6
+\f xxx
+\fe One day, Sun went fishing in the river.
+
+\ref 5
+\t Garetoarei      uuko-reva                     ataritoarei.
+\m gare  -toarei   uuko  -re         -va         atari -toarei
+\g small -MASC.DL  catch -3.SG.M.B   -RP.B       fish  -MASC.DL
+\p V.A   -SUFF.N.2 V.B   -SUFF.V.B.3 -SUFF.V.B.5 V.A   -SUFF.N.2
+\f xxx
+\fe He caught two small fish.
+
+\ref 6
+\t Kekira ataritoarei     kekereva.
+\m kekira atari -toarei   keke    -re         -va
+\g moon   fish  -MASC.DL  look.at -3.SG.M.B   -RP.B
+\p N.M    V.A   -SUFF.N.2 V.B     -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe Moon saw the fish.
+
+\ref 7
+\t Oisio puraroepa,                   ``Vii     garetoarei      ataritoarei.''
+\m oisio pura -ro         -epa        vii       gare  -toarei   atari -toarei
+\g like  say  -3.SG.M.A   -RP.A       PPRO.2.SG small -MASC.DL  fish  -MASC.DL
+\p COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 PPRO      V.A   -SUFF.N.2 V.A   -SUFF.N.2
+\f xxx
+\fe He said, ``You have two small fish.
+
+\ref 8
+\t Ragaipa            irai                    vateri.''
+\m ragai     -pa      ira         -i          vate -ri
+\g PPRO.1.SG -BEN     RPRO.3.SG.M -ABS        give -2.SG.B
+\p PPRO      -ENC.N.6 RPRO        -SUFF.N.??? V.B  -SUFF.V.B.3
+\f xxx
+\fe Please give me one.''
+
+\ref Paragraph 9
+\t Ravireo oisio puraroepa,                   ``Ae, viapau,  uvui-parai                                raga irai                    vate-a           viipa.''
+\m ravireo oisio pura -ro         -epa        ai    viapau   uvui    -pa       -ra         -ei         raga ira         -i          vate -a          vii       -pa
+\g sun     like  say  -3.SG.M.A   -RP.A       hey   NEG      be.able -CONT     -1.SG.A     -PRES.A     only RPRO.3.SG.M -ABS        give -1.SG.B     PPRO.2.SG -BEN
+\p N.M     COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 EXCL  PART.NEG V.A     -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 ADV  RPRO        -SUFF.N.??? V.B  -SUFF.V.B.3 PPRO      -ENC.N.6
+\f xx
+\fe Sun said, ``Oh no, I will not give you any.
+
+\ref 10
+\t Ragai     iravu                 aioavere                  vokipaua ra   iravu                 ravireo vuutaia.''
+\m ragai     ira         -vu       aio -a          -vere     vokipaua ra   ira         -vu       ravireo vuuta -ia
+\g PPRO.1.SG RPRO.3.SG.M -ALT      eat -1.SG.B     -NF       morning  COMP RPRO.3.SG.M -ALT      sun     time  -LOC
+\p PPRO      RPRO        -SUFF.N.5 V.B -SUFF.V.B.3 -SUFF.V.5 TIME     COMP RPRO        -SUFF.N.5 N.M     N.N   -ENC.N.6
+\f xxx
+\fe I will eat one for breakfast and the other for lunch.''
+
+\ref Paragraph 11
+\t Kekira rirovira siraoroepa.
+\m kekira rirovira sirao -ro         -epa
+\g moon   big-time pity  -3.SG.M.A   -RP.A
+\p N.M    ADV      V.A   -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe Moon was very sad.
+
+\ref 12
+\t Aue  aioroepa                    kaukau       ora       aue  itoo     evo   vokiia.
+\m aue  aio -ro         -epa        kaukau       ora       aue  itoo     evo   voki -ia
+\g CONN eat -3.SG.M.A   -RP.A       sweet potato and       CONN banana   DEM.N day  -LOC
+\p CONN V.B -SUFF.V.A.3 -SUFF.V.A.5 N.???        PART.CONJ CONN N.HYBRID DEM   N.N  -ENC.N.6
+\cmt What's the story with 'aue aioroepa'? Is 'aue' the object? If so, is it incorporated? What Class A agreement?
+\fp xxx
+\fe He ate kaukau and banana that day.
+
+\ref Paragraph 13
+\t Vovokiarovi             kekira avaroepa                    atarisia.
+\m vo-   vokiaro -vi       kekira ava -ro         -epa        atari -sia
+\g SING- night   -DIM      moon   go  -3.SG.M.A   -RP.A       fish  -DEP.PURP
+\p PRE-  TIME    -SUFF.N.4 N.M    V.A -SUFF.V.A.3 -SUFF.V.A.5 V.A   -SUFF.V.4
+\f xxx
+\fe In the afternoon, Moon went fishing.
+
+\ref 14
+\t Rirotoarei     uukoreva                      ataritoarei.
+\m riro -toarei   uuko  -re         -va         atari -toarei
+\g big  -MASC.DL  catch -3.SG.M.B   -RP.B       fish  -MASC.DL
+\p ADJ  -SUFF.N.2 V.B   -SUFF.V.B.3 -SUFF.V.B.5 V.A   -SUFF.N.2
+\f xxx
+\fe He caught two big fish.
+
+\ref 15
+\t Ravireo rirotoarei     kekereva                        ataritoarei.
+\m ravireo riro -toarei   keke    -re         -va         atari -toarei
+\g sun     big  -MASC.DL  look.at -3.SG.M.B   -RP.B       fish  -MASC.DL
+\p N.M     ADJ  -SUFF.N.2 V.B     -SUFF.V.B.3 -SUFF.V.B.5 V.A   -SUFF.N.2
+\f xxx
+\fe Sun saw the big fish.
+
+\ref 16
+\t Oisio puraroepa,                   ``Vii     rirotoarei     ataritoarei.
+\m oisio pura -ro         -epa        vii       riro -toarei   atari -toarei
+\g like  say  -3.SG.M.A   -RP.A       PPRO.2.SG big  -MASC.DL  fish  -MASC.DL
+\p COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 PPRO      ADJ  -SUFF.N.2 V.A   -SUFF.N.2
+\f xxx
+\fe He said, ``You have two big fish.
+
+\ref 17
+\t Ragaipa            irai                    vateri.''
+\m ragai     -pa      ira         -i          vate -ri
+\g PPRO.1.SG -BEN     RPRO.3.SG.M -ABS        give -2.SG.B
+\p PPRO      -ENC.N.6 RPRO        -SUFF.N.??? V.B  -SUFF.V.B.3
+\f xxx
+\fe Please give me one.''
+
+\ref Paragraph 18
+\t Kekira oisio puraroepa,                   ``Ae, viapau,  vegei          rutu atari kare    aiosia.''
+\m kekira oisio pura -ro         -epa        ai    viapau   vegei          rutu atari kare    aio -sia
+\g moon   like  say  -3.SG.M.A   -RP.A       oh    NEG      PPRO.1.DL.EXCL very fish  animals eat -DEP.PURP
+\p N.M    COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 EXCL  PART.NEG PPRO           ADV  V.A   FFP     V.B -SUFF.V.4
+\f xxx
+\fe Moon said, ``Oh no, we both have fish to eat.
+
+\ref 19
+\t Ragai     ruipaparai                              atari aiosia        ovaiarovi.''
+\m ragai     ruipa -pa       -ra         -ei         atari aio -sia      ovaiarovi
+\g PPRO.1.SG want  -CONT     -1.SG.A     -PRES.A     fish  eat -DEP.PURP early afternoon
+\p PPRO      V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 V.A   V.B -SUFF.V.4 TIME
+\f xxx
+\fe I need my fish for dinner.''
+
+\ref Paragraph 20
+\t Ravireo rirovira kasipuroepa.
+\m ravireo rirovira kasipu -ro         -epa
+\g sun     big-time angry  -3.SG.M.A   -RP.A
+\p N.M     ADV      V.A    -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe Sun was very angry.
+
+\ref 21
+\t Vurukoa          oureva.
+\m vuruko -a        ou  -re         -va
+\g log    -SG.N     get -3.SG.M.B   -RP.B
+\p N.N    -SUFF.N.2 V.B -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe He got a stick.
+
+\ref 22
+\t Kekira ravireo kekereva                        uva  torireva.
+\m kekira ravireo keke    -re         -va         uva  tori -re         -va
+\g month  sun     look.at -3.SG.M.B   -RP.B       so   flee -3.SG.M.B   -RP.B
+\p N.M    N.M     V.B     -SUFF.V.B.3 -SUFF.V.B.5 PART V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f xxx
+\fe Moon saw Sun and ran away.
+
+\ref 23
+\t Ravireo riro ikauroepa                    kekira sirova.
+\m ravireo riro ikau -ro         -epa        kekira sirova
+\g sun     big  run  -3.SG.M.A   -RP.A       moon   behind
+\p N.M     ADJ  V.B  -SUFF.V.A.3 -SUFF.V.A.5 N.M    LOC
+\f xxx
+\fe Sun ran fast after Moon.
+
+\ref Paragraph 24
+\t Pukuiara           ivaraia        ikaupasiva.
+\m pukui    -ara      ivara -ia      ikau -pa       -si       -va
+\g mountain -PL.N     on    -LOC     run  -CONT     -3.DL.M   -RP.B
+\p N.N      -SUFF.N.2 N.LOC -ENC.N.6 V.B  -SUFF.V.2 -SUFF.V.3 -SUFF.V.B.5
+\f xxx
+\fe They ran over the mountains.
+
+\ref 25
+\t Vuvuiuaia        kovuruvira ikaupasiva.
+\m vuvuiua -ia      kovuruvira ikau -pa       -si       -va
+\g sky     -LOC     horizontal run  -CONT     -3.DL.M   -RP.B
+\p N.N     -ENC.N.6 ADV        V.B  -SUFF.V.2 -SUFF.V.3 -SUFF.V.B.5
+\f xxx
+\fe They ran across the sky.
+
+\ref 26
+\t Avakava         sovaraia         ikaupasiva.
+\m avaka -va       siovara -ia      ikau -pa       -si       -va
+\g ocean -SG.F     inside  -LOC     run  -CONT     -3.DL.M   -RP.B
+\p N.F   -SUFF.N.2 N.LOC   -ENC.N.6 V.B  -SUFF.V.2 -SUFF.V.3 -SUFF.V.B.5
+\f xxx
+\fe They ran into the sea.
+
+\ref Paragraph 27
+\t Kekira oisio puraroepa,                   ``Ragai   riro ikauparai.''
+\m kekira oisio pura -ro         -epa        ragai     riro ikau -pa       -ra         -ei
+\g moon   like  say  -3.SG.M.A   -RP.A       PPRO.1.SG big  run  -CONT     -1.SG.A     -PRES.A
+\p N.M    COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 PPRO      ADJ  V.B  -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f xxx
+\fe Moon said, ``I am very fast.
+
+\ref 28
+\t Viapau   uvuipau                       ra   ragai     varovarori.''
+\m viapau   uvui    -pa       -u          ra   ragai     varovaro -ri
+\g NEG      be.able -CONT     -2.SG.A     COMP PPRO.1.SG pursue   -2.SG.B
+\p PART.NEG V.A     -SUFF.V.2 -SUFF.V.A.3 COMP PPRO      V.B      -SUFF.V.B.3
+\f xxx
+\fe You will never catch me.''
+
+\ref Paragraph 29
+\t Ovokio                          ravireo      touvira                   kekira     tarioparevoi                                pukuiara            ivaraia,     viaraia vuvuiuaia,        ora  avakava           sovaraia.
+\m o-          voki      -o        ravireo      touvira                   kekira     tario        -pa       -re        -voi      pukui         -ara  ivaraia      viaraia vuvuiua   -ia,    ora  avakava           sovaraia
+\g this/these- day/ time -3.SG.F   sun/sunshine yet/still/eternally/later moon/month chase/pursue -PROG     -3.SG.M    -PRES     mountain/hill -PL   on top/above high up sky/heven -at     and  ocean/beach/shore inside
+\p PRE.N-      N.N       -SUFF.V.4 N.M          ADV                       N.M        V.T          -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 N.???         -SUFF POST         ???     N.N       -SUFF.N CONJ N.F               POST
+\f xxx
+\fe Today sun is still chasing Moon over the mountains, up the sky and into the sea.
+
+\ref 30
+\t Vokiara        rutuia        oratariopasiveira                        kekira vaio    ora       ravireo vokiaro ora       aviaviaro.
+\m voki -ara      rutu -ia      ora- tario -pa       -si       -veira    kekira vaio    ora       ravireo vokiaro ora       aviavi -aro
+\g day  -PL.N     very -LOC     RR-  chase -CONT     -3.DL.M   -HAB.ANIM moon   DL.ANIM and       sun     night   and       dawn   -POSS
+\p N.N  -SUFF.N.2 ADV  -ENC.N.6 PRE- V.B   -SUFF.V.2 -SUFF.V.3 -SUFF.V.5 N.M    FFP     PART.CONJ N.M     TIME    PART.CONJ V.???  -SUFF.N.3
+\f xxx
+\fe Day after day, night after night, Sun and Moon run without stopping.
+
+\ref Paragraph 31
+\t Uvuipauei                                 ra   vovuutaoia                       ravireo kasipuaro        sovopari.
+\m uvui    -pa       -u          -ei         ra   vo-   vuuta -o          -ia      ravireo kasipu -aro      siovo -pa       -ri
+\g be.able -CONT     -2.SG.A     -PRES.A     COMP SING- time  -???        -LOC     sun     angry  -POSS     feel  -CONT     -2.SG.B
+\p V.A     -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP PRE-  N.N   -SUFF.N.??? -ENC.N.6 N.M     V.A    -SUFF.N.3 V.B   -SUFF.V.2 -SUFF.V.B.3
+\f xxx
+\fe You can feel now how angry the Sun is.
+
+\ref 32
+\t Kosiuviro                  ovaiarovi       ra   rera        sovori.
+\m kosi -u          -viro     ovaiarovi       ra   rera        siovo -ri
+\g exit -2.SG.A     -COMPL    early afternoon COMP PPRO.3.SG.M feel  -2.SG.B
+\p V.A  -SUFF.V.A.3 -SUFF.V.4 TIME            COMP PPRO        V.B   -SUFF.V.B.3
+\f xxx
+\fe Go outside at noon and you can feel him.

@@ -1,0 +1,407 @@
+\_sh v3.0  400  Rotokas Text
+
+\id How Kika Galuc Mountain Got Its Name
+\au Steven Naop Yaling
+
+\ref Paragraph 1
+\t Ovuutavuia                        voari                      tuariri         kasiu     ora  kokai   oisoa  vearopievira       toupasi                     oisoa  oaravu                rutu       purapasi.
+\m o-          vuuta -vu     -ia     voari                      tuariri         kasiu     ora  kokai   oisoa  vearopie   -vira   tou     -pa       -si       oisoa  oara          -vu     rutu       pura           -pa       -si
+\g this/these- time  -other  -at     before/long ago/back there before/long ago cassowary and  rooster always fix/repair -ADV    be/stay -PROG     -2/3.DL.M always POSS.2.SG.M/F -other  very/truly make/do/create -PROG     -2/3.DL.M
+\p PRE.N-      LOC   -SUFF.N -SUFF.N TEMP                       TEMP            N.???     CONJ ???     TEMP   V.T        -SUFF.N V.I     -SUFF.V.3 -SUFF.V.4 TEMP   PRO.POSS      -SUFF.N PH         V.T            -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe Once upon a time Cassowary and Rooster were very good friends and did many things together.
+\nt What's up with 'oara'? Do I have that glossed
+right? Need to double-check the pronouns.
+
+\ref 2
+\t Ovokipakouvuia                        kasiu     oisio              puraopa,                 ``Ae, vatetoaua,                            viapau ra   avave         gaegaerepasia?''
+\m o-          vokipakou -vu     -ia     kasiu     oisio              pura -o        -pa       ae    vate   -to     -a      -ua            viapau ra   ava -ve       gaegaere -pa       -sia
+\g this/these- morning   -other  -at     cassowary this way/like this say  -3.SG.F   -RP       ???   friend -MASC   -N      -narrow object NEG    and  go  -1.DL     drift    -PROG     -PURP
+\p PRE.N-      TEMP      -SUFF.N -SUFF.N N.???     ???                V.I  -SUFF.V.4 -SUFF.V.5 EXCL  N.N2   -SUFF.N -SUFF.N -CLASS         NEG    CONJ V.I -SUFF.V.4 V.T      -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe One morning Cassowary replied, ``Hey friend, why don't we go out sailing?''
+
+\ref Paragraph 3
+\t Kokai   rerava              katai vovouroepa                  oa      iava       avasiepa                 Rei                 iava       eisire                       Pisaperi.
+\m kokai   rera    -va         katai vovou -ro        -epa       oa      iava       ava -si       -epa       rei                 iava       eisi               -re       Pisaperi
+\g rooster 3.SG.M  -with       one   DES   -3.SG.M    -RP        3.SG.N  from/about go  -2/3.DL.M -RP        big/large/important from/about that way/like that -ALLATIVE name
+\p ???     PRO.PER -SUFF.N.??? ADJ   GR    -SUFF.VI.4 -SUFF.VI.5 PRO.REL PREP       V.I -SUFF.V.4 -SUFF.VI.5 ADJ                 PREP       DEM                -SUFF     N.PN
+\f xxx
+\fe Rooster agreed so they set sail from Lae to Finchhaffen.
+
+\ref Paragraph 4
+\t ``Vo      pauparai                   rasiuaro           opuruva ra   vii     irapauvere                             purupaoro,''                     osa     puraopa                  kasiu.
+\m vo        paupa -ra        -i        rasiuaro           opuruva ra   vii     irapa             -u         -vere     puru         -pa       -oro      osa     pura -o        -pa       kasiu
+\g this/here chair -1.SG      -PRES     below/ground level canoe   and  2.SG    go ahead/go first -2.SG      -NF       paddle canoe -PROG     -SIM      as/like say  -3.SG.F   -RP       cassowary
+\p ???       N.N   -SUFF.VI.4 -SUFF.V.5 LOC                N.F     CONJ PRO.PER V.I               -SUFF.VI.4 -SUFF.V.5 V.???        -SUFF.V.3 -SUFF.V.4 CONJ    V.I  -SUFF.V.4 -SUFF.V.5 N.???
+\f xxx
+\fe ``I'll sit on the bottom of the canoe and you do the steering,'' said Cassowary.
+
+\ref Paragraph 5
+\t Vosia   opuruvaia       gaegaerepaoro                avasiepa                 uva  uruiaia                   putesiva                                         kakaevureia       ora  tavauru      riako
+\m vosia   opuruva -ia     gaegaere -pa       -oro      ava -si       -epa       uva  uruia             -ia     pute                        -si       -va        kakaevure -ia     ora  tavauru      riako
+\g when/if canoe   -at     drift    -PROG     -SIM      go  -2/3.DL.M -RP        so   village/town/city -at     pass by/cut short/excel/win -2/3.DL.M -RP        children  -at     and  teenage girl woman
+\p CONJ    N.F     -SUFF.N V.T      -SUFF.V.3 -SUFF.V.4 V.I -SUFF.V.4 -SUFF.VI.5 CONJ N.N               -SUFF.N V.???                       -SUFF.V.4 -SUFF.VT.5 ???       -SUFF.N CONJ N.???        N.F
+\f xxx
+\fe As they were sailing past a village the children and young girls shouted, 
+
+\ref 5b
+\t Uva  oivepaepa,                            ``Ae, vii     eva      vigoa    purupari,                         viiia           vearopie   keketo       viipa             ruipaiei."
+\m uva  oive             -pa       -epa       ae    vii     eva      vigoa    puru         -pa       -ri        vii     -ia     vearopie   keke -to     vii     -pa       ruipa            -i         -ei
+\g so   shout/yodel/yell -PROG     -RP        hey   2.SG    MED.SG.N 1.PL.INC paddle canoe -PROG     -2.SG      2.SG    -at     fix/repair look -MASC   2.SG    -for/with like/want/desire -1.PL.EXCL -PRES
+\p CONJ V.T              -SUFF.V.3 -SUFF.VI.5 EXCL  PRO.PER PRO.DEM  PRO      V.???        -SUFF.V.3 -SUFF.VT.4 PRO.PER -SUFF.N V.T        V.T  -SUFF.N PRO.PER -SUFF.N   V.I              -SUFF.V.4  -SUFF.VI.5
+\f xxx
+\fe ``Hey, you at the steering, you are really handsome.
+
+\ref 6
+\t Viipa             ruipaiei.''
+\m vii     -pa       ruipa            -i         -ei
+\g 2.SG    -for/with like/want/desire -1.PL.EXCL -PRES
+\p PRO.PER -SUFF.N   V.I              -SUFF.V.4  -SUFF.VI.5
+\f xxx
+\fe We love you.''
+
+\ref Paragraph 7
+\t Kasiu     oisio              puraopa,                 ``Vatetoaua,                      viapau ra   reareau               osia vii     tauva.''
+\m kasiu     oisio              pura -o        -pa       vateto -a      -u         -a      viapau ra   rearea     -u         osia vii     tauva
+\g cassowary this way/like this say  -3.SG.F   -RP       friend -N      -2SG       -N      NEG    and  rest/relax -2SG       as   2.SG    help/assist
+\p N.???     ???                V.I  -SUFF.V.4 -SUFF.V.5 N.N2   -SUFF.N -SUFF.VI.4 -SUFF.N NEG    CONJ V.I        -SUFF.VI.4 CONJ PRO.PER V.T
+\f xxx
+\fe Cassowary said, ``My friend, why don't you come and have a rest while I come and help you.''
+
+\ref Paragraph 8
+\t Kokai   rerereva                                       opuruva sovaraia pausia                asi       urapaoro.
+\m kokai   rerere                                   -va   opuruva sovaraia pau         -sia      asi       ura              -pa       -oro
+\g rooster shellfish, cone shell with striped bands -FEM  canoe   inside   plant/build -PURP     of course chew (betel nut) -PROG     -SIM
+\p ???     N.PN?                                    -SUFF N.F     POST     V.T         -SUFF.V.4 EXCL      V.T              -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe Rooster went and sat on the bottom of the canoe chewing his buai.
+
+\ref 9
+\t Uva  oirara         ouruiviia                         oiveaepa                               era  rasiuaro           pauparoi                   vearopie   keketoa                 rutu.
+\m uva  oirara         o-          urui    -vi   -ia     oive             -a         -epa       era  rasiuaro           paupa -ro        -i        vearopie   keke -to     -a         rutu
+\g so   people/mankind this/these- village -DIM  -at     shout/yodel/yell -3PL       -RP        sing below/ground level chair -3.SG.M    -PRES     fix/repair look -MASC   -1SG       very/truly
+\p CONJ N.???          PRE.N-      N.???   -SUFF -SUFF.N V.T              -SUFF.VI.4 -SUFF.VI.5 V.I  LOC                N.N   -SUFF.VI.4 -SUFF.V.5 V.T        V.T  -SUFF.N -SUFF.VT.4 PH
+\f xxx
+\fe The people at the next village shouted, ``Oh, the one sitting on the bottom is so handsome.
+
+\ref 10
+\t Viipa             ruipapaiei.
+\m vii     -pa       ruipa            -pa       -i         -ei
+\g 2.SG    -for/with like/want/desire -PROG     -1.PL.EXCL -PRES
+\p PRO.PER -SUFF.N   V.I              -SUFF.V.3 -SUFF.V.4  -SUFF.VI.5
+\f xxx
+\fe We love you!''
+
+\ref Paragraph 11
+\t Vatetoaua                         uvuipaveiei                                                  ra   tavukiara            tavariove                        ita.
+\m vateto -a      -u         -a      uvuipa                       -ve       -i         -ei        ra   tavuki         -ara  tavario                -ve       ita
+\g friend -N      -2SG       -N      tape measure/yardstick/ruler -SUB      -3.PL      -PRES      and  space/position -PL   exchange/change places -1.DL     again
+\p N.N2   -SUFF.N -SUFF.VI.4 -SUFF.N N.N                          -SUFF.V.5 -SUFF.VT.4 -SUFF.VI.5 CONJ N.N            -SUFF V.I                    -SUFF.V.4 TEMP
+\f xxx
+\fe Again Cassowary said, ''My friend, let's change places again.
+
+\ref 12
+\t Urio ita   sitia                     poresia        osia rearea     raita.''
+\m urio ita   si          - ti  -a      pore -sia      osia rearea     ra   -i   -ta
+\g come again to cut hair - tea -N      turn -PURP     as   rest/relax and  -??? -2PL
+\p V.I  TEMP  V.???       - ??? -SUFF.N V.I  -SUFF.V.4 CONJ V.I        CONJ -??? -SUFF.V.4
+\f xxx
+\fe You come and steer while I have a rest.''
+
+\ref Paragraph 13
+\t Uruiaara                rutu       oisi                    raga      voreo             poupiepaiva.
+\m Uruia             -ara  rutu       o               -isi    raga      vore    -o        pou    -pie     -pa       -i         -va
+\g village/town/city -PL   very/truly this female/her -CLASS  only/just go back -3.SG.F   arrive -CAUS    -PROG     -3.PL      -RP
+\p N.N               -SUFF PH         NDF             -SUFF.N ADV       IV      -SUFF.V.4 V.I    -SUFF.VI -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe Every village they came to the same thing happened.
+
+\ref 14
+\t Kasiu     oisio              rugorugoparoepa,                                        ``Aveoao                                  kokai   riroresi                    ouiraorevoi.''
+\m kasiu     oisio              rugorugo                -pa       -ro        -epa       *A  -ve       -o        -a      -o        kokai   rirore            -si       ou               -irao -re       -voi
+\g cassowary this way/like this think/remember/meditate -PROG     -3.SG.M    -RP        *** -SUB      -3.SG.F   -N      -3.SG.F   rooster fence in/surround -2/3.DL.M get/take/receive -EMP  -ALLATIVE -PRES
+\p N.???     ???                V.???                   -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 *** -SUFF.V.5 -SUFF.V.4 -SUFF.N -SUFF.V.4 ???     V.???             -SUFF.V.4 V.T              -EMP  -SUFF     -SUFF.V.5
+\f xxx
+\fe Cassowary thought, ``Rooster is getting too popular.
+
+\ref 15
+\t Voea   rutu       rerapa            ruipapai                             osia ragai   viapau.''
+\m voea   rutu       rera    -pa       ruipa            -pa       -i        osia ragai   viapau
+\g 3.PL.M very/truly 3.SG.M  -for/with like/want/desire -PROG     -PRES     as   1.SG    NEG
+\p PRO    PH         PRO.PER -SUFF.N   V.I              -SUFF.V.3 -SUFF.V.5 CONJ PRO.PER NEG
+\f xxx
+\fe Everyone loves him and not me.''
+
+\ref 16
+\t Vosia   kasiu     uruia             iava       oirara         uvureva                          osia oivepaepa                             ita,  ``Igei    kokaipa           ruipairaopaiei                                         vearopie   toa                           rutu,''    otuotupara                       sipareoara       itorokopiereva                         opuruva togasia.
+\m vosia   kasiu     uruia             iava       oirara         uvu        -re        -va        osia oive             -pa       -epa       ita   igei      kokai   -pa       ruipa            -irao -pa       -i         -ei        vearopie   toa                           rutu       otuotu      -pa       -ra        sipareo    -ara  itoroko -pie     -re        -va        opuruva toga                     -sia
+\g when/if cassowary village/town/city from/about people/mankind hear/smell -3.SG.M    -RP        as   shout/yodel/yell -PROG     -RP        again 1.PL.EXCL rooster -for/with like/want/desire -EMP  -PROG     -3.PL      -PRES      fix/repair look toward other side/facing very/truly sharp point -PROG     -1.SG      toe/finger -PL   stiff   -CAUS    -3.SG.M    -RP        canoe   spear/shoot with a spear -PURP
+\p CONJ    N.???     N.N               PREP       N.???          V.T        -SUFF.VT.4 -SUFF.VT.5 CONJ V.T              -SUFF.V.3 -SUFF.VI.5 TEMP  PRO       ???     -SUFF.N   V.I              -EMP  -SUFF.V.3 -SUFF.VT.4 -SUFF.VI.5 V.T        V?                            PH         N.N         -SUFF.V.3 -SUFF.VI.4 N.N        -SUFF ADJ     -SUFF.VI -SUFF.VT.4 -SUFF.VT.5 N.F     V.T                      -SUFF.V.4
+\f xxx
+\fe When Cassowary heard the village people shouting again, ``We love Rooster, he is so handsome,'' he was so angry that he pushed his sharp pointede claws into the canoe.
+
+\ref 17
+\t Eva        oa      riroa        pegea purava                    opuruva sovaraia oa      iava       uukoviara          kiukiuepa.
+\m eva        oa      riro -a      pegea pura           -va        opuruva sovaraia oa      iava       uukovi       -ara  kiu                       - kiu                       -epa
+\g MED.3.SG.N 3.SG.N  big  -N      crack make/do/create -RP        canoe   inside   3.SG.N  from/about river/stream -PL   put in first/insert first - put in first/insert first -RP
+\p DEM        PRO.REL ADJ  -SUFF.N N.??? V.T            -SUFF.VT.5 N.F     POST     PRO.REL PREP       N.???        -SUFF V.T                       - V.T                       -SUFF.VI.5
+\f xxx
+\fe This made a big split in the canoe and water rushed in and filled up the canoe.
+
+\ref 18
+\t Kasiu     ovauroepa                    oisio              ragai   viapau putaeareivai                                                  ora viapau uvuiparai ra papa.
+\m kasiu     ovau   -ro        -epa       oisio              ragai   viapau pu{V.???}     -ta{SUFF.V.4} -e{SUFF.V.4} -arei{SUFF.N} -va -i
+\g cassowary forget -3.SG.M    -RP        this way/like this 1.SG    NEG    to break wind -2PL          -3.SG.F      -DL
+\p N.???     V.I    -SUFF.VI.4 -SUFF.VI.5 ???                PRO.PER NEG
+\f xxx
+\fe Cassowary forgot that he had no wings and could not fly.
+
+\ref Paragraph 19
+\t Kasiu     orapugupieparoepa                                                        uukova      veraverapaoro                         opuruva iava.
+\m kasiu     ora-      pugupie                        -pa       -ro        -epa       uukova      veravera          -pa       -oro      opuruva iava
+\g cassowary REF-      interrupt/waste someone's time -PROG     -3.SG.M    -RP        large river change/get rid of -PROG     -SIM      canoe   from/about
+\p N.???     SUFF.N/V- V.T                            -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 N.F         V.T               -SUFF.V.3 -SUFF.V.4 N.F     PREP
+\f xxx
+\fe Cassowary was busy trying to empty the water from the canoe.
+
+\ref 20
+\t Kokai   putaeuarei          itorokopiereva                         papasia                       pasipasi              rasiare                   kaso           kavuoro.
+\m kokai   putaeua -rei        itoroko -pie     -re        -va        papa                -sia      DUP-   pasi           rasi              -are    *kas -o        kavu                  -oro
+\g rooster wing    -N.DL       stiff   -CAUS    -3.SG.M    -RP        fly through the air -PURP     REDUP- Maybe/I think! ground/soil/earth -DL     ***  -3.SG.F   left behind/left over -SIM
+\p ???     N.N     -SUFF.N.CL1 ADJ     -SUFF.VI -SUFF.VT.4 -SUFF.VT.5 V.T                 -SUFF.V.4 REDUP- EXCL           N.???             -SUFF.N ***  -SUFF.V.4 ADJ                   -SUFF.V.4
+\f xxx
+\fe Rooster stretched his wings and flew away to the dry lang leaving his friend Cassowary behind.
+
+\ref Paragraph 21
+\t Opuruva rovo-pa                    rokopaoro                                      avakava           sovaraia.
+\m opuruva rovo             -pa       roko                       -pa       -oro      avakava           sovaraia
+\g canoe   precede/go first -PROG     go into the bush/penetrate -PROG     -SIM      ocean/beach/shore inside
+\p N.F     V.I              -SUFF.V.3 V.???                      -SUFF.V.3 -SUFF.V.4 N.F               POST
+\f xxx
+\fe The canoe started to sink down into the sea.
+
+\ref 22
+\t Osa     kasiu     akeake    regapareva                                 oisio              ra   ora  virivariro,                                     ``Ragai kopiipa                varataia       toupavoi.''
+\m osa     kasiu     akeake    rega       -pa       -re        -va        oisio              ra   ora  virivari                             -ro        ragai   kopii        -pa       varata -ia     tou     -pa       -voi
+\g as/like cassowary try/tempt thirst for -PROG     -3.SG.M    -RP        this way/like this and  and  protecting/shielding/averting danger -3.SG.M    1.SG    die/very ill -PROG     side   -at     be/stay -PROG     -PRES
+\p CONJ    N.???     V.T       V.I        -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ???                CONJ CONJ V.I                                  -SUFF.VI.4 PRO.PER V.I          -SUFF.V.3 N.N    -SUFF.N V.I     -SUFF.V.3 -SUFF.V.5
+\f xxx
+\fe While Cassowary was struggling to save himself, he thought, ``I deserve to die.''
+
+\ref Paragraph 23
+\t Voaviva          okoeto urioroepa                  uva  akereva                   ``E  vii     epao     vurivira?''
+\m voa  -vi   -va   okoeto urio -ro        -epa       uva  ake -re        -va        e    vii     epao     vurivira
+\g here -DIM  -FEM  crab   come -3.SG.M    -RP        so   ask -3.SG.M    -RP        hey  2.SG    exist/be badly/ruined
+\p LOC  -SUFF -SUFF N.M    V.I  -SUFF.VI.4 -SUFF.VI.5 CONJ V.T -SUFF.VT.4 -SUFF.VT.5 EXCL PRO.PER V.STAT   ADV
+\f xxx
+\fe Suddenly along came Crab and asked, ``Are you in trouble?''
+
+\ref Paragraph 24
+\t Kasiu     oisio              puraroepa,                 ``Iu, vearoto                ragai   vatetoaro.''
+\m kasiu     oisio              pura -ro        -epa       iu    vearo          -to     ragai   vateto -aro
+\g cassowary this way/like this say  -3.SG.M    -RP        yes   good/fine/well -MASC   1.SG    friend -POSS
+\p N.???     ???                V.I  -SUFF.VI.4 -SUFF.VI.5 EXCL  V.I            -SUFF.N PRO.PER N.N2   -SUFF.N
+\f xxx
+\fe Cassowary said, ``Yes, my good friend.
+
+\ref 25
+\t Ragai   vatetoaroia            oiraopiepavo,                                kokai,  osa     riro riku       rutu       purarevo                            opuruvaia.
+\m ragai   vateto -aro    -ia     oiraopie                 -pa       -vo       kokai   osa     riro riku       rutu       pura           -re        -vo       opuruva -ia
+\g 1.SG    friend -POSS   -at     to believe, to make true -PROG     -IP       rooster as/like big  dig a hole very/truly make/do/create -3.SG.M    -IP       canoe   -at
+\p PRO.PER N.N2   -SUFF.N -SUFF.N V.???                    -SUFF.V.3 -SUFF.V.5 ???     CONJ    ADJ  V.T        PH         V.T            -SUFF.VT.4 -SUFF.V.5 N.F     -SUFF.N
+\f xxx
+\fe I trusted my friend, Rooster, and he put a great big hole in the canoe.
+
+\ref 26
+\t Uva  paparevo                                 ragai   kavuoro                         voia      oisio              ra   kopiira.''
+\m uva  papa                -re        -vo       ragai   kavu                  -oro      voia      oisio              ra   kopii        -ra
+\g so   fly through the air -3.SG.M    -IP       1.SG    left behind/left over -SIM      here/this this way/like this and  die/very ill -1.SG
+\p CONJ V.T                 -SUFF.VT.4 -SUFF.V.5 PRO.PER ADJ                   -SUFF.V.4 ???       ???                CONJ V.I          -SUFF.VI.4
+\f xxx
+\fe He flew away and left me here to die.''
+
+\ref Paragraph 27
+\t Okoeto siraoparoepa                                                 kasiupa.
+\m okoeto sirao                        -pa       -ro        -epa       kasiu     -pa
+\g crab   pity/feel sorry for/care for -PROG     -3.SG.M    -RP        cassowary -for/with
+\p N.M    V.I                          -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 N.???     -SUFF.N
+\f xxx
+\fe Crab felt sorry for Cassowary.
+
+\ref 28
+\t ``Opeita      rugorugopau                                  vatetoaua.''
+\m opeita        rugorugo                -pa       -u         vateto -a      -u         -a
+\g do not/forbid think/remember/meditate -PROG     -2SG       friend -N      -2SG       -N
+\p GR            V.???                   -SUFF.V.3 -SUFF.VI.4 N.N2   -SUFF.N -SUFF.VI.4 -SUFF.N
+\f xxx
+\fe ``Do not worry, my friend.
+
+\ref 29
+\t ???
+\m *???
+\g ***
+\p ***
+\f xxx
+\fe I'll help you and take you to safety.
+
+\ref 30
+\t Pauu                   vo        ragai   ekoraro                                                                               ivaraia.
+\m pau         -u         vo        ragai   e    - kora                                                                -ro        ivaraia
+\g plant/build -2.SG      this/here 1.SG    hey  - vent anger or frustration on an object (in place of inflicting pain -3.SG.M    on top/above
+\p V.T         -SUFF.VI.4 ???       PRO.PER EXCL - V.I                                                                 -SUFF.VI.4 POST
+\nt What's the word for shell used here?
+\f xxx
+\fe Sit here on top of my shell.''
+
+\ref Paragraph 31
+\t ``O  vearovira.''
+\m o    vearovira
+\g oh   thank you/ok
+\p EXCL ID
+\f xxx
+\fe ``Oh thank you.''
+
+\ref Paragraph 32
+\t Voaviva          pousiviropa                          verauaro.
+\m voa  -vi   -va   pou    -si       -viro     -pa       vera  -u         -aro
+\g here -DIM  -FEM  arrive -2/3.DL.M -COMPL    -RP       leave -2SG       -POSS
+\p LOC  -SUFF -SUFF V.I    -SUFF.V.4 -SUFF.V.3 -SUFF.V.5 V.I   -SUFF.VI.4 -SUFF.N
+\f xxx
+\fe Soon they arrived at the shore.
+
+\ref Paragraph 33
+\t ``Oire, vearopai                           vatetoaua                         virivariuei                                                vo        rogara ivaraia.
+\m oire    vearo          -pa       -i        vateto -a      -u         -a      virivari                             -u         -ei        vo        rogara ivaraia
+\g okay    good/fine/well -PROG     -PRES     friend -N      -2SG       -N      protecting/shielding/averting danger -2SG       -PRES      this/here sand   on top/above
+\p EXCL    V.I            -SUFF.V.3 -SUFF.V.5 N.N2   -SUFF.N -SUFF.VI.4 -SUFF.N V.I                                  -SUFF.VI.4 -SUFF.VI.5 ???       N.N    POST
+\f xxx
+\fe ``All right, my friend, you are safe on the beach.
+
+\ref 34
+\t Oire, ragai   isivaro                      iava       verau.''
+\m oire  ragai   isivaro                      iava       vera  -u
+\g okay  1.SG    after/reverse side/back side from/about leave -2SG
+\p EXCL  PRO.PER ???                          PREP       V.I   -SUFF.VI.4
+\f xxx
+\fe Now you may get off my back.''
+
+\ref Paragraph 35
+\t ``O  vearoto       vateto, viapau oisio              virivaripai                                               voia      rogara ivaraia.
+\m o    vearo -to     vateto  viapau oisio              virivari                             -pa       -i         voia      rogara ivaraia
+\g oh   good  -MASC   friend  NEG    this way/like this protecting/shielding/averting danger -PROG     -3.PL      here/this sand   on top/above
+\p EXCL V.I   -SUFF.N N.N2    NEG    ???                V.I                                  -SUFF.V.3 -SUFF.VT.4 ???       N.N    POST
+\f xxx
+\fe ``Oh, good friend, this is not safe here on the beach.
+
+\ref 36
+\t Ragai   kopiiravere                       vosia   ragai   kavuri                           voia.
+\m ragai   kopii        -ra        -vere     vosia   ragai   kavu                  -ri        voia
+\g 1.SG    die/very ill -1.SG      -NF       when/if 1.SG    left behind/left over -2.SG      here/this
+\p PRO.PER V.I          -SUFF.VI.4 -SUFF.V.5 CONJ    PRO.PER ADJ                   -SUFF.VT.4 ???
+\f xxx
+\fe I will be killed if you leave me here.
+
+\ref 37
+\t Uvuipauei                                          ra   ragai   topapieri                                       pukuia                kukuearo           iare?''
+\m uvuipa                       -u         -ei        ra   ragai   topapie                              -ri        puku          -ia     kukue      -aro    iare
+\g tape measure/yardstick/ruler -2SG       -PRES      and  1.SG    to continue on to sustain to send on -2.SG      swell up/hump -at     head/skull -POSS   towards
+\p N.N                          -SUFF.VI.4 -SUFF.VI.5 CONJ PRO.PER V.???                                -SUFF.VT.4 V.T           -SUFF.N N.F        -SUFF.N PREP
+\f xxx
+\fe Will you please take me further up on the top of the mountain?''
+
+\ref Paragraph 38
+\t Okoeto vuripa                               rugorugo                rovoroepa.
+\m okoeto vuri                       -pa       rugorugo                rovo             -ro        -epa
+\g crab   bad/inferior/spoiled/wrong -PROG     think/remember/meditate precede/go first -3.SG.M    -RP
+\p N.M    ADJ                        -SUFF.V.3 V.???                   V.I              -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe Poor Crab thought for a while.
+
+\ref 39
+\t Oire, vearopai                           ragai   vii     kaepavoi                     vii     topapieoro                                     pukuia                iare.
+\m oire  vearo          -pa       -i        ragai   vii     kaepa              -voi      vii     topapie                              -oro      puku          -ia     iare
+\g okay  good/fine/well -PROG     -PRES     1.SG    2.SG    wheelbarrow/basket -PRES     2.SG    to continue on to sustain to send on -SIM      swell up/hump -at     towards
+\p EXCL  V.I            -SUFF.V.3 -SUFF.V.5 PRO.PER PRO.PER N.N                -SUFF.V.5 PRO.PER V.???                                -SUFF.V.4 V.T           -SUFF.N PREP
+\f xxx
+\fe ``Alright, I'll carry you further up the mountain.''
+
+\ref 40
+\t Okoeto kasiu     kaereva                     pukuia                iare    kukuearo           iare.
+\m okoeto kasiu     kae   -re        -va        puku          -ia     iare    kukue      -aro    iare
+\g crab   cassowary carry -3.SG.M    -RP        swell up/hump -at     towards head/skull -POSS   towards
+\p N.M    N.???     V.T   -SUFF.VT.4 -SUFF.VT.5 V.T           -SUFF.N PREP    N.F        -SUFF.N PREP
+\f xxx
+\fe Crab carried Cassowary up to the very top of the mountain.
+
+\ref 41
+\t Oisio              rugoparai                                        uvuiei             oisio              osia roro                             kaekaevira     avaveiei                        vatetoaua.
+\m oisio              rugo              -pa       -ra        -i        uvui    -ei        oisio              osia roro                             kaekae -vira   ava -ve       -i     -ei        vateto -aua
+\g this way/like this think/hope/reason -PROG     -1.SG      -PRES     measure -PRES      this way/like this as   fallen out of/separated out from tempt  -ADV    go  -1.DL     -EPEN  -PRES      friend -???
+\p ???                V.???             -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 V.T     -SUFF.VI.5 ???                CONJ ADJ                              V.T    -SUFF.N V.I -SUFF.V.4 -INFIX -SUFF.VI.5 N.N2   -???
+\f xxx
+\fe ``I think this is as far as we can go, friend.''
+
+\ref Paragraph 42
+\t Vearovira    rutu.
+\m vearovira    rutu
+\g thank you/ok very/truly
+\p ID           PH
+\f xxx
+\fe ``Thank you very much.
+
+\ref 43
+\t Via            vearo          vovouto       ora  siraopa                                vovouto.
+\m via            vearo          vovou -to     ora  sirao                        -pa       vovou -to
+\g make something good/fine/well DES   -MASC   and  pity/feel sorry for/care for -PROG     DES   -MASC
+\p V.T            V.I            GR    -SUFF.N CONJ V.I                          -SUFF.V.3 GR    -SUFF.N
+\f xxx
+\fe You are very kind and loving.
+
+\ref 44
+\t Aue        ragaia            ragai   siraoparai                                                  vii     kekepaoro                osia vorepauei                               ragai   ava osirovu                                      siposipopasia                               agesipie   purapasia                          ragai   iava.
+\m aue        raga      -ia     ragai   sirao                        -pa       -ra        -i        vii     keke -pa       -oro      osia vore    -pa       -u         -ei        ragai   ava o               -si       -ro        -vu     siposipo                -pa       -sia      agesipie   pura           -pa       -sia      ragai   iava
+\g connective only/just -at     1.SG    pity/feel sorry for/care for -PROG     -1.SG      -PRES     2.SG    look -PROG     -SIM      as   go back -PROG     -2SG       -PRES      1.SG    go  this female/her -2/3.DL.M -3.SG.M    -other  tell story/teach/inform -PROG     -PURP     make laugh make/do/create -PROG     -PURP     1.SG    from/about
+\p CONN       ADV       -SUFF.N PRO.PER V.I                          -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 PRO.PER V.T  -SUFF.V.3 -SUFF.V.4 CONJ IV      -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 PRO.PER V.I NDF             -SUFF.V.4 -SUFF.VI.4 -SUFF.N V.T                     -SUFF.V.3 -SUFF.V.4 V.T        V.T            -SUFF.V.3 -SUFF.V.4 PRO.PER PREP
+\f xxx
+\fe But I am sorry to see you go back to your kind and make fun of me.''
+
+\ref 45
+\t Evo            vaisiro          puraoro        kasiu     togaroepa                                      riro otuotuaraia               sipareoara       okoeto isivaro                      togasia                            ora  rera    kopiipiereva.
+\m e    -vo       vaisi -ro        pura -oro      kasiu     toga                     -ro        -epa       riro otuotu      -ara  -ia     sipareo    -ara  okoeto isivaro                      toga                     -sia      ora  rera    kopiipie    -re        -va
+\g hey  -IP       name  -3.SG.M    say  -SIM      cassowary spear/shoot with a spear -3.SG.M    -RP        big  sharp point -PL   -at     toe/finger -PL   crab   after/reverse side/back side spear/shoot with a spear -PURP     and  3.SG.M  murder/kill -3.SG.M    -RP
+\p EXCL -SUFF.V.5 N.??? -SUFF.VI.4 V.I  -SUFF.V.4 N.???     V.T                      -SUFF.VI.4 -SUFF.VI.5 ADJ  N.N         -SUFF -SUFF.N N.N        -SUFF N.M    ???                          V.T                      -SUFF.V.4 CONJ PRO.PER V.T         -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe With these words Cassowary drove his sharp claws into Crab's back and killed him.
+
+\ref Paragraph 46
+\t Voava      kasiu     siraoroepa                                         uvare   oisi               eisi               vara       purareva.
+\m voa  -va   kasiu     sirao                        -ro        -epa       uvare   oisio              eisi               vara       pura           -re        -va
+\g here -FEM  cassowary pity/feel sorry for/care for -3.SG.M    -RP        because this way/like this that way/like that 3.PL.F     make/do/create -3.SG.M    -RP
+\p LOC  -SUFF N.???     V.I                          -SUFF.VI.4 -SUFF.VI.5 CONJ    ???                DEM                PRO.3.PL.F V.T            -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe Then Cassowary felt sorry because he had done these terrible things.
+
+\ref 47
+\t Oa      iava       varaua        vatausia        avaroepa                  voea   rutu       asavira.
+\m oa      iava       varaua        vatau -sia      ava -ro        -epa       voea   rutu       asa             -vira
+\g 3.SG.N  from/about body exterior hide  -PURP     go  -3.SG.M    -RP        3.PL.M very/truly dislike/without -ADV
+\p PRO.REL PREP       N.N           V.T   -SUFF.V.4 V.I -SUFF.VI.4 -SUFF.VI.5 PRO    PH         V.I             -SUFF.N
+\f xxx
+\fe He went and hid himself from everyone.
+
+\ref Paragraph 48
+\t Vovokioia       vopukuiia                   uva  kasiu     okoeto kopiipiereva               oa      touvira                   oisio              vaisipai                  ``Okoe Kakiaki''.
+\m vovokio -ia     vo-   pukui         -ia     uva  kasiu     okoeto kopiipie    -re        -va oa      touvira                   oisio              vaisi     -pa       -i    ``Okoe        kakiaki
+\g today   -at     SING- mountain/hill -at     so   cassowary crab   murder/kill -3.SG.M    -RP 3.SG.N  yet/still/eternally/later this way/like this name/call -PROG     -PRES ***     crabs crack open/fracture
+\p ???     -SUFF.N PRE-  N.???         -SUFF.N CONJ N.???     N.M    V.T         -SUFF.VT.4 -SUFPRO.REL ADV                       ???                V.T       -SUFF.V.3 -SUFF.***           V.T
+\f xxx
+\fe Today the mountain where Cassowary killed crab is still called `Crushing Crab'.
+
+\ref 49
+\t Voia      Yabim  reoia              oisio              vaisipai                       ``Kika       Galuc".
+\m voia      *Yabim reo        -ia     oisio              vaisi     -pa       -i         *Kik -a      *Galuc
+\g here/this ***    speak/talk -at     this way/like this name/call -PROG     -3.PL      ***  -N      ***
+\p ???       ***    V.I        -SUFF.N ???                V.T       -SUFF.V.3 -SUFF.VT.4 ***  -SUFF.N ***
+\f xxx
+\fe In the Yabim language, `Kika Galuc'.

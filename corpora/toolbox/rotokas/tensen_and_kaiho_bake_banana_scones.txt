@@ -1,0 +1,324 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Tensen and Kaiho Bake Banana Scones
+\au Ruth Ray
+
+\ref Paragraph 1
+\t Teise ora  Kaio oisio              ruipapaereiepa                                         ra   sikoru oriere.
+\m Teise ora  Kaio oisio              ruipa            -pa       -ere      -i     -epa       ra   sikoru ori  -ere
+\g name  and  name this way/like this like/want/desire -PROG     -2/3DL.F  -EPEN  -RP        and  scone  cook -2/3DL.F
+\p N.PN  CONJ N.PN ???                V.I              -SUFF.V.3 -SUFF.V.4 -INFIX -SUFF.VI.5 CONJ N.PN   V.T  -SUFF.V.4
+\f xxx
+\fe Tensen and Kaiho waited to bake scones.
+
+\ref 2
+\t Teise oisio              puraopa,
+\m Teise oisio              pura -o         -pa
+\g name  this way/like this say  -3.SG.F    -RP
+\p N.PN  ???                V.I  -SUFF.VI.4 -SUFF.V.5
+\f xxx
+\fe Tensen said,
+
+\ref 2a
+\t ``Avave       eisire                       raga      vokepaaro.
+\m ava -ve       eisi               -re       raga      vo-   kepa  -aro
+\g go  -1.DL     that way/like that -ALLATIVE only/just SING- house -POSS
+\p V.I -SUFF.V.4 DEM                -SUFF     ADV       PRE-  N.N   -SUFF.N
+\f xxx
+\fe ``Let's go to my house.
+
+\ref 3
+\t Igei      vioropaara               epao     itoara.
+\m igei      vioro       -pa    -ara  epao     ito    -ara
+\g 1.PL.EXCL ripe/mature -DERIV -PL   exist/be banana -PL
+\p PRO       V.I         -SUFF  -SUFF V.STAT   N.N2   -SUFF
+\f xxx
+\fe We have some ripe bananas.
+
+\ref 4
+\t Ra   itoopaaravai                    purave                   sikoru.''
+\m ra   itoo   -pa    -ara  -vai        pura           -ve       sikoru
+\g and  banana -DERIV -PL   -NABS       make/do/create -1.DL     scone
+\p CONJ N.N2   -SUFF  -SUFF -SUFF.N.??? V.T            -SUFF.V.4 N.PN
+\f xxx
+\fe We can make banana scones.''
+
+\ref Paragraph 5
+\t Riakorirei        avaereiepa                      uva  pouereviropa                         kepaia.
+\m riako -rirei      ava -ere      -i     -epa       uva  pou    -ere      -viro     -pa       kepa  -ia
+\g woman -N.???.DL   go  -2/3DL.F  -EPEN  -RP        so   arrive -2/3DL.F  -COMPL    -RP       house -at
+\p N.F   -SUFF.N.CL1 V.I -SUFF.V.4 -INFIX -SUFF.VI.5 CONJ V.I    -SUFF.V.4 -SUFF.V.3 -SUFF.V.5 N.N   -SUFF.N
+\f xxx
+\fe The two girls arrived at the house.
+
+\ref 6
+\t ``Aakova, Kaio ora  ragai   igoa             sikoru ori  ruipapaveiei.
+\m aakova    Kaio ora  ragai   igoa             sikoru ori  ruipa            -pa       -ve       -i     -ei
+\g mother    name and  1.SG    PRO.REL.1.PL.EXC scone  cook like/want/desire -PROG     -1.DL     -EPEN  -PRES
+\p N.F       N.PN CONJ PRO.PER PRO.REL          N.PN   V.T  V.I              -SUFF.V.3 -SUFF.V.4 -INFIX -SUFF.VI.5
+\f xxx
+\fe ``Mum, Kaiho and I want to bake scones.
+
+\ref 7
+\t Ee,  uvuipaiei                               ra   vioropaaravai                           itooaravai               ouio?''
+\m ee   uvui    -pa       -i         -ei        ra   vioro       -pa       -ara  -vai        itoo   -ara  -vai        ou  -io
+\g hey  be able -PROG     -1.PL.EXCL -PRES      COMP ripe/mature -PROG     -PL   -NABS       banana -PL   -NABS       get -1.PL.EXCL
+\p EXCL V.I     -SUFF.V.3 -SUFF.V.4  -SUFF.VI.5 COMP ADJ         -SUFF.V.3 -SUFF -SUFF.N.??? N.N2   -SUFF -SUFF.N.??? V.T -SUFF.V.4
+\f xxx
+\fe May we have the ripe bananas?''
+
+\ref Paragraph 8
+\t ``Iuu, paraua eva        ora  suka  tapo.
+\m iuu    paraua eva        ora  suka  tapo
+\g yes    flour  MED.3.SG.N and  sugar also/too/with
+\p EXCL   N.???  DEM        CONJ N.??? POST
+\f xxx
+\fe ``Yes, there is flour and sugar too.
+
+\ref 9
+\t Itoopaaravai                    puraere.
+\m itoo   -pa    -ara  -vai        pura           -ere
+\g banana -DERIV -PL   -NABS       make/do/create -2/3DL.F
+\p N.N2   -SUFF  -SUFF -SUFF.N.??? V.T            -SUFF.V.4
+\f xxx
+\fe Make banana scones.''
+
+\ref Paragraph 10
+\t Teise ora  Kaio ikauereva                      uukoa iare    vavae sisiusia.
+\m Teise ora  Kaio ikau      -ere      -va        uukoa iare    vavae sisiu -sia
+\g name  and  name run/hurry -2/3.DL.F -RP        water towards hand  wash  -DEP.PURP
+\p N.PN  CONJ N.PN V.T       -SUFF.V.4 -SUFF.VT.5 N.N   PREP    N.??? V.T   -SUFF.V.4
+\f xxx
+\fe Tensen and Kaiho ran to the tap to wash their hands.
+
+\ref 11
+\t Oisio              tarai-pa-ere-iepa                                vavae sisiu rovopaveira                  ra   oripave                  ora  aiopaive.
+\m oisio              tarai      -pa       -ere      -i     -epa       vavae sisiu rovopa             -veira    ra   ori  -pa       -ve       ora  aio -pa       -i         -ve
+\g this way/like this understand -PROG     -2/3.DL.F -EPEN  -RP        hand  wash  main/primary/first -ANIM.HAB and  cook -PROG     -1.DL     and  eat -PROG     -3.PL      -SUB
+\p ???                V.I        -SUFF.V.3 -SUFF.V.4 -INFIX -SUFF.VI.5 N.??? V.T   ADJ?               -SUFF.V.5 CONJ V.T  -SUFF.V.3 -SUFF.V.4 CONJ V.T -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe They knew it was important to wash before cooking or eating.
+
+\ref 12
+\t Oara          iava       oisoa  reoreopaave                                     eisi               sikurua.
+\m oara          iava       oisoa  reoreo           -pa       -a         -ve       eisi               sikurua
+\g PRO.REL.3PL.N from/about always converse/discuss -PROG     -3.PL      -SUB      that way/like that school
+\p PRO.REL.3PL.N PREP       TEMP   V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 DEM                N.???
+\f xxx
+\fe They had talked about that at school.
+
+\ref Paragraph 13
+\t Teise auero tovoeva                                 paraua ora  aue        suka  tauoia.
+\m Teise auero tovo               -e        -va        paraua ora  aue        suka  tauo       -ia
+\g name  ???   put/place/position -3.SG.F   -RP        flour  and  connective sugar plate/bowl -at
+\p N.PN  NP    V.T                -SUFF.V.4 -SUFF.VT.5 N.???  CONJ CONN       N.??? N.M        -SUFF.N
+\f xxx
+\fe Tensen put the flour and sugar in the bowl.
+
+\ref 14
+\t ``Aakova, eake  tapo          tovo-pave                              aue        isivaroia                            paraua ora  aue        suka?''
+\m aakova    eake  tapo          tovo               -pa       -ve       aue        isivaro                      -ia     paraua ora  aue        suka
+\g mother    what  also/too/with put/place/position -PROG     -1.DL     connective after/reverse side/back side -at     flour  and  connective sugar
+\p N.F       INTER POST          V.T                -SUFF.V.3 -SUFF.V.4 CONN       ???                          -SUFF.N N.???  CONJ CONN       N.???
+\f xxx
+\fe ``Mum, what do we put into the bowl after the flour and the sugar?''
+
+\ref Paragraph 15
+\t ``Aue          vieiri                tavitaviia.
+\m Au   -e        viei       -ri        tavitavi -ia
+\g name -3.SG.F   count/read -2.SG      tell     -at
+\p N.PN -SUFF.V.4 V.T        -SUFF.VT.4 V.I      -SUFF.N
+\f xxx
+\fe ``Read your recipe.
+
+\ref 16
+\t Ra   vii     tavive         ra   auero tovori                        korovo        itoo   ora  aue        uuko
+\m ra   vii     tavi -ve       ra   auero tovo               -ri        korovo        itoo   ora  aue        uuko
+\g COMP 2.SG    tell -SUB      COMP ???   put/place/position -2.SG      oil/lubricate banana and  connective water
+\p COMP PRO.PER V.I  -SUFF.V.5 COMP NP    V.T                -SUFF.VT.4 V.T           N.N2   CONJ CONN       N.???
+\f xxx
+\fe It tells you to put the oil, bananas, and water.
+
+\ref 17
+\t Rugopauvere                                      itooara      taritasia.
+\m rugo              -pa       -u         -vere     itoo   -ara  tarita           -sia
+\g think/hope/reason -PROG     -2SG       -NF       banana -PL   smash/mash/mince -PURP
+\p V.???             -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 N.N2   -SUFF V.T              -SUFF.V.4
+\f xxx
+\fe Be sure to mash the bananas.''
+
+\ref Paragraph 18
+\t Auero rutuei                tauoia.
+\m auero rutu       -ei        tauo  -ia
+\g these very/truly -PRES      plate -at
+\p N.N   PH         -SUFF.VI.5 N.M   -SUFF.N
+\f xxx
+\fe ``Everything is in the bowl.
+
+\ref 19
+\t Kaio, tuitui kasi         purari.
+\m Kaio  tuitui kasi         pura           -ri
+\g name  fire   build a fire make/do/create -2.SG
+\p N.PN  N.M    V.I          V.T            -SUFF.VT.4
+\f xxx
+\fe Kaiho, you make the fire.
+
+\ref 20
+\t Ari     ragai   auero uverepaavoi.
+\m ari     ragai   auero uvere                      -pa       -a         -voi
+\g yes/but 1.SG    these join together/mix together -PROG     -1.SG      -PRES
+\p CONJ    PRO.PER N.N   V.T                        -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe I'll mix everything together.''
+
+\ref Paragraph 21
+\t Kaio etokasi puraeva                             uva  paraepari tovoeva                                  oisio              ra   kasiirao.
+\m Kaio etokasi pura           -e        -va        uva  paraepari tovo               -e         -va        oisio              ra   kasi         -irao
+\g name fire    make/do/create -3.SG.F   -RP        so   frying panput/place/position -3.SG.F    -RP        this way/like this COMP build a fire -EMP
+\p N.PN ???     V.T            -SUFF.V.4 -SUFF.VT.5 CONJ N.???     V.T                -SUFF.VT.4 -SUFF.VT.5 ???                COMP V.I          -EMP
+\f xxx
+\fe Kaiho made the fire and put the frying pan on to get hot.
+
+\ref 22
+\t ``Teise, paraepari  ita   vatatopoi.''
+\m Teise    paraepari  ita   vatatopo             -i
+\g name     frying pan again take care/be careful -PRES
+\p N.PN     N.???      TEMP  V.T                  -SUFF.V.5
+\f xxx
+\fe ``Tensen, the frying pan is ready.''
+
+\ref Paragraph 23
+\t Teise sikoru isiro                      tovoeva                                  korovo        rovuia         paraepariia.
+\m Teise sikoru isi            -ro         tovo               -e         -va        korovo        rovu   -ia     paraepari  -ia
+\g name  scone  group of ferns -PL         put/place/position -3.SG.F    -RP        oil/lubricate water  -at     frying pan -at
+\p N.PN  N.PN   CLASS          -SUFF.N.??? V.T                -SUFF.VT.4 -SUFF.VT.5 V.T           N.N??? -SUFF.N N.???      -SUFF.N
+\f xxx
+\fe Tensen put a few drops of oil in the frying pan.
+
+\ref 24
+\t ``Oire Kaio,
+\m oire   Kaio
+\g okay   name
+\p EXCL   N.PN
+\f xxx
+\fe ``All right, Kaiho.
+
+\ref 25
+\t auero sikoruara    tovove                       ra   oripiro.''
+\m auero sikoru -ara  tovo               -ve       ra   ori  -piro
+\g these scone  -PL   put/place/position -1.DL     COMP cook -COMPL
+\p N.N   N.PN   -SUFF V.T                -SUFF.V.4 COMP V.T  -SUFF.V.3
+\f xxx
+\fe Let's put the dough in to bake.''
+
+\ref 26
+\t Vairei   rutu       vaisiro           tovotovoereva                                  paraepariia.
+\m vairei   rutu       vaisi -ro         DUP-   tovo               -ere      -va        paraepari  -ia
+\g 2/3.DL.F very/truly ball  -PL         REDUP- put/place/position -2/3DL.F  -RP        frying pan -at
+\p PRO.PERS PH         CLASS -SUFF.N.??? REDUP- V.T                -SUFF.V.4 -SUFF.VT.5 N.???      -SUFF.N
+\f xxx
+\fe They both put balls of dough in the frying pan.
+
+\ref 27
+\t Voava      vara       rakuereva                    ivitaia.
+\m voa  -va   vara       raku       -ere      va      ivita                  -ia
+\g here -FEM  3.PL.F     cover over -2/3DL.F  3.SG.N  put lid on pot/cork up -at
+\p LOC  -SUFF PRO.3.PL.F V.T        -SUFF.V.4 PRO.PER V.T                    -SUFF.N
+\f xxx
+\fe They pressed the balls of dough down and covered them with a lid.
+
+\ref Paragraph 28
+\t Vosia   vara       rakuereva                       uva  tuepieereva.
+\m vosia   vara       raku       -ere      -va        uva  tue  -pie     -ere      -va
+\g when/if 3.PL.F     cover over -2/3.DL.F -RP        so   wait -CAUS    -2/3.DL.F -RP
+\p CONJ    PRO.3.PL.F V.T        -SUFF.V.4 -SUFF.VT.5 CONJ V.I  -SUFF.VI -SUFF.V.4 -SUFF.VT.5
+\f xxx
+\fe They waited about four or five minutes.
+
+\ref 29
+\t ``auero gesi-ei          vearopievira,''   osia puraopa                   Teise.
+\m auero   gesi  -ei        vearopie   -vira  osia pura -o         -pa       Teise
+\g these   smell -PRES      fix/repair -ADV   as   say  -3.SG.F    -RP       name
+\p N.N     V.I   -SUFF.VI.5 V.T        -SUFF.NCONJ V.I  -SUFF.VI.4 -SUFF.V.5 N.PN
+\f xxx
+\fe ``Yum, I can smell them already,'' said Tensen.
+
+\ref 30
+\t ``Vatatopopaai                                  poresia.''
+\m vatatopo            -pa       -a         -i     pore -sia
+\g be ready/be careful -PROG     -3.PL      -PRES  turn -PURP
+\p V.I                 -SUFF.V.3 -SUFF.VI.4 -SUFF.VV.I  -SUFF.V.4
+\f xxx
+\fe ``They must be ready to turn.''
+
+\ref Paragraph 31
+\t ``Aika ra   uukoavai          kasiraopiea,''        osia puraopa                  Kaio.
+\m aika   ra   uukoa -vai        kasiraopie    -a      osia pura -o        -pa       Kaio
+\g wait   COMP water -NABS       heat/make hot -N      as   say  -3.SG.F   -RP       name
+\p EXCL   COMP N.N   -SUFF.N.??? V.???         -SUFF.N CONJ V.I  -SUFF.V.4 -SUFF.V.5 N.PN
+\f xxx
+\fe ``I'll boil the tea,'' said Kaiho.
+
+\ref Paragraph 32
+\t ``Oo vearo          kekeiraopai.
+\m oo   vearo          keke -irao -pa       -i
+\g oh   good/fine/well look -EMP  -PROG     -PRES
+\p EXCL V.I            V.T  -EMP  -SUFF.V.3 -SUFF.V.5
+\f xxx
+\fe ``Oh, they look good.
+
+\ref 33
+\t Ora  vatatopoi                     aiosia.
+\m ora  vatatopo            -i        aio -sia
+\g and  be ready/be careful -PRES     eat -PURP
+\p CONJ V.I                 -SUFF.V.5 V.T -SUFF.V.4
+\f xxx
+\fe They are lightly brown and almost ready to eat.
+
+\ref 34
+\t Aika ra   aakovare              keerara,''                    osia puraopa                   Teise.
+\m aika ra   aakova      -re       keera              -ra        osia pura -o         -pa       Teise
+\g wait COMP mother/aunt -ALLATIVE call for/beckon to -1.SG      as   say  -3.SG.F    -RP       name
+\p EXCL COMP N.F         -SUFF     V.I                -SUFF.VI.4 CONJ V.I  -SUFF.VI.4 -SUFF.V.5 N.PN
+\f xxx
+\fe I'll call Mum,'' said Tensen.
+
+\ref Paragraph 35
+\t Voea   rutu       pauaepa                   uuko  tapisia                    aue        iare    sikoru.
+\m voea   rutu       pau -a         -epa       uuko  tapi             -sia      aue        iare    sikoru
+\g 3.PL.M very/truly sit -3.PL      -RP        water drink hot liquid -PURP     connective towards scone
+\p PRO    PH         V.I -SUFF.VI.4 -SUFF.VI.5 N.??? V.T              -SUFF.V.4 CONN       PREP    N.PN
+\f xxx
+\fe They all sat down to eat the scones and drink tea.
+
+\ref 36
+\t ``Vearovira    kakaerirei        oaa,''    osia puraopa                   aakova.
+\m vearovira      kakae -rirei      oaa       osia pura -o         -pa       aakova
+\g thank you/okay child -FEM.DL     POSS.1.SG as   say  -3.SG.F    -RP       mother
+\p ADV            N.N2  -SUFF.N.??? PRO.POSS  CONJ V.I  -SUFF.VI.4 -SUFF.V.5 N.F
+\f xxx
+\fe ``Thank you, girls,'' said Mum.
+
+\ref 37
+\t ``Vearovira  aakova,'' osia pura-ere-iepa                    kakaerirei.
+\m vearovira    aakova    osia pura -ere      -i     -epa       kakae       -rirei
+\g thank you/ok mother    as   say  -2/3.DL.F -EPEN  -RP        small child -FEM.DL
+\p ID           N.F       CONJ V.I  -SUFF.V.4 -INFIX -SUFF.VI.5 N.N2        -SUFF.N.???
+\f xxx
+\fe ``Thank you, Mum,'' said the girls.
+
+\ref 38
+\t Rereiia             eva.
+\m rerei       -ia     eva
+\g play around -at     MED.3.SG.N
+\p V.I         -SUFF.N DEM
+\f xxx
+\fe ``That was fun.
+
+\ref 39
+\t Ovuutaia                  ita   sikoru purapaviei.
+\m o-          vuuta -ia     ita   sikoru pura           -pa       -vi        -ei
+\g this/these- time  -at     again scone  make/do/create -PROG     -1.PL.INCL -PRES
+\p PRE.N-      LOC   -SUFF.N TEMP  N.PN   V.T            -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe We'll have to bake scones again soon.''

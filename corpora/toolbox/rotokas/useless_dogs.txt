@@ -1,0 +1,244 @@
+\_sh v3.0  400  Rotokas Text
+
+\id The Useless Dogs
+\au Ivy Pagolu
+
+\ref Paragraph 1
+\t Sasa ora  Poega vavarai             rugootoarei                       kaakau vaio.
+\m Sasa ora  Poega vavarai             rugoo             -to     -arei   kaakau vaio
+\g name and  name  wild/undomesticated think/reason/hope -MASC   -DL     dog    dual of animate beings
+\p N.PN CONJ N.PN  ADJ                 V.I               -SUFF.N -SUFF.N N.F    GR
+\f Janja na Poega ol i bin tupela ??? dok.
+\fe Janja and Poega were two very fierce dogs.
+
+\ref 2
+\t Sasa oirato          kaakau ari     Poega riakova          kaakau.
+\m Sasa oira    -to     kaakau ari     Poega riako -va        kaakau
+\g name 3.SG.F  -MASC   dog    yes/but name  woman -RP        dog
+\p N.PN PRO.PER -SUFF.N N.F    CONJ    N.PN  N.F   -SUFF.VT.5 N.F
+\f Janja em i dok man na Poega em i dok meri.
+\fe Janja was a male dog and Poega was a female dog.
+
+\ref Paragraph 3
+\t Vaitereo kaakau vaio                   aiterea    oisoa  ruipapasi                            ra   pegupasi                 ora  gurugurupasi                                        oirarare                 ora  riakova.
+\m vaitereo kaakau vaio                   aiterea    oisoa  ruipa            -pa       -si       ra   pegu -pa       -si       ora  guruguru                        -pa       -si       oirara         -re       ora  riako -va
+\g 2/3.DL.M dog    dual of animate beings 2.DL.M     always like/want/desire -PROG     -2/3.DL.M and  bark -PROG     -2/3.DL.M and  gather in a heap/bunch together -PROG     -2/3.DL.M people/mankind -ALLATIVE and  woman -FEM
+\p DEM      N.F    GR                     PRO.3.M.DL TEMP   V.I              -SUFF.V.3 -SUFF.V.4 CONJ V.T  -SUFF.V.3 -SUFF.V.4 CONJ V.T                             -SUFF.V.3 -SUFF.V.4 N.???          -SUFF     CONJ N.F   -SUFF
+\f Tupela dok i save laik singaut na ??? long ol man meri.
+\fe The dogs loved to bark and growl at the people. 
+
+\ref 4
+\t Osia viapau oisioa koiekarevai               upopasi                                 vosia   avapasi                 vegoarorei                 varu               tarapasia.
+\m osia viapau oisioa koie  -kare   -vai        upo                 -pa       -si       vosia   ava -pa       -si       vego   -aro    -rei        varu               tara                -pa       -sia
+\g as   NEG    always pig   -PL     -NABS       strike/fight/murder -PROG     -2/3.DL.M when/if go  -PROG     -2/3.DL.M jungle -POSS   -N.DL       go up/ascend/loose look for/search for -PROG     -PURP
+\p CONJ NEG    TEMP   N.??? -N.SUFF -SUFF.N.??? V.T                 -SUFF.V.3 -SUFF.V.4 CONJ    V.I -SUFF.V.3 -SUFF.V.4 N.???  -SUFF.N -SUFF.N.CL1 V.I                V.T                 -SUFF.V.3 -SUFF.V.4
+\f Tasol tupela i no save kilim sampela pik long ol taim tupela i save go painim pik.
+\fe But they could not kill any pig whenever they went hunting.
+
+\ref 5
+\t Oa      iava       oirara         oisioa rirovira        kasipupave                      vaitereire         ra   vaiterei vaisipaive                               oisio              viovotoarei                         kaakau vaio.
+\m oa      iava       oirara         oisioa rirovira        kasipu      -pa       -ve       vaiterei -re       ra   vaiterei vaisi     -pa       -i         -ve       oisio              -vio      -vo       -to     -arei   kaakau vaio
+\g 3.SG.N  from/about people/mankind always largely/greatly angry/cross -PROG     -SUB      2.DL.M   -ALLATIVE and  2.DL.M   name/call -PROG     -3.PL      -SUB      this way/like this -1.PL.INC -IP       -MASC   -DL     dog    dual of animate beings
+\p PRO.REL PREP       N.???          TEMP   ADV             V.I         -SUFF.V.3 -SUFF.V.5 PRO.PER  -SUFF     CONJ PRO.PER  V.T       -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 ???                -SUFF     -SUFF.V.5 -SUFF.N -SUFF.N N.F    GR
+\f Ol man bilong ples i bin save kros long ol dok na kolim ol olsem ol i rabis dok.
+\fe The village people became angry with the dogs and called them useless.
+
+\ref Paragraph 6
+\t Evo vaisi oa      oisioa touvira                   avapape               riro      kakae        kaevira.
+\m evo vaisi oa      oisioa touvira                   ava -pa       -pe     riro      kakae        kae   -vira
+\g ??? name  3.SG.N  always yet/still/eternally/later go  -PROG     -SUB    grow up   small/little carry -ADV
+\p DEM N.??? PRO.REL TEMP   ADV                       V.I -SUFF.V.3 -V.SUFF V.I       ADJ          V.T   -SUFF.N
+\f Dispela i bin go olsem tasol longpela taim.
+\fe This went on a for a long time.
+
+\ref 7
+\t Vesoso, kaakau vaio                   aitearo,       ira     oisioa rirovira        ariparo,                     uvare   oisioa vaiterei vaisipaive                               oisio              viovotoarei                         voari    rutu.
+\m Vesoso  kaakau vaio                   aite   -aro    ira     oisioa rirovira        ari     -pa       -ro        uvare   oisioa vaiterei vaisi     -pa       -i         -ve       oisio              -vio      -vo       -to     -arei   voari    rutu
+\g name    dog    dual of animate beings father -POSS   3.SG.M  always largely/greatly yes/but -PROG     -3.SG.M    because always 2.DL.M   name/call -PROG     -3.PL      -SUB      this way/like this -1.PL.INC -IP       -MASC   -DL     way back very/truly
+\p N.PN    N.F    GR                     V.T    -SUFF.N PRO.REL TEMP   ADV             CONJ    -SUFF.V.3 -SUFF.VI.4 CONJ    TEMP   PRO.PER  V.T       -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 ???                -SUFF     -SUFF.V.5 -SUFF.N -SUFF.N TEMP     PH
+\f Besoso, bos man bilong ol dok, i bin sem bikos ol man i asve kolim ol dok bilong em olsem i rabis dok.
+\fe Besoso, the owner of the dogs, felt ashamed because people called his dogs useless. 
+
+\ref 8
+\t Ovokipa                         kouvuia                          Vesoso Sasa vaio                   ora  Poega va      vokiroepa                               eisire                       vegoaro.
+\m o-          voki      -pa       kou              -vu     -ia     Vesoso Sasa vaio                   ora  Poega va      voki              -ro        -epa       eisi               -re       vego   -aro
+\g this/these- day/ time -for/with lay egg/defecate -other  -at     name   name dual of animate beings and  name  3.SG.N  get up from sleep -3.SG.M    -RP        that way/like that -ALLATIVE jungle -POSS
+\p PRE.N-      N.N       -SUFF.N   V.T              -SUFF.N -SUFF.N N.PN   N.PN GR                     CONJ N.PN  PRO.PER V.I               -SUFF.VI.4 -SUFF.VI.5 DEM                -SUFF     N.???  -SUFF.N
+\f Wanpela de long moning tru em i bin kisim Janja na Poega i go long bus.
+\fe Early one morning he took Janja and Poega to the jungle. 
+
+\ref 9
+\t Viapau oisio              tauai-ia                vopa                atoia.
+\m viapau oisio              tauai           -ia     vo        -pa       atoia
+\g NEG    this way/like this distant/far off -at     this/here -for/with village/home/banana
+\p NEG    ???                LOC             -SUFF.N ???       -SUFF.N   N.N
+\f Bus i no bin longwe tumas long ples.
+\fe The jungle was not far from the village.
+
+\ref Paragraph 10
+\t Voa  vegoaro        uva  tuura  toupai                      oaia            rirovira        aue        tetevu              kouro                       toupai.
+\m voa  vego   -aro    uva  tuura  tou     -pa       -i        oa      -ia     rirovira        aue        tetevu              kou              -ro        tou     -pa       -i
+\g here jungle -POSS   so   jungle be/stay -PROG     -PRES     3.SG.N  -at     largely/greatly connective collect sago leaves lay egg/defecate -3.SG.M    be/stay -PROG     -PRES
+\p LOC  N.???  -SUFF.N CONJ N.???  V.I     -SUFF.V.3 -SUFF.V.5 PRO.REL -SUFF.N ADV             CONN       V.I                 V.T              -SUFF.VI.4 V.I     -SUFF.V.3 -SUFF.V.5
+\f Long bus i bin gat tais i pulap long ol saksak.
+\fe In the jungle there was a swamp full of sago palm trees.
+
+\ref 11
+\t Iravu           tetevuto                                                   ira     koveroepa                       kiuvupa         vuutaia.
+\m ira     -vu     tetevu                                             -to     ira     kove      -ro        -epa       kiuvu -pa       vuuta                                    -ia
+\g 3.SG.M  -other  collect sago leaves/prepare sago leaves for sewing -MASC   3.SG.M  fall/drop -3.SG.M    -RP        wind  -for/with space/crack/opening/period of time/verse -at
+\p PRO.REL -SUFF.N V.I                                                -SUFF.N PRO.REL V.I       -SUFF.VI.4 -SUFF.VI.5 N.M   -SUFF.N   LOC                                      -SUFF.N
+\f Wanpela saksak i bin pundaun long taim nogut long win.
+\fe One sago tree had fallen during the bad weather.
+
+\ref 12
+\t Uva  rovoparoepa                                      erusia.
+\m uva  rovo             -pa       -ro        -epa       eru               -sia
+\g so   precede/go first -PROG     -3.SG.M    -RP        stink/spoil/decay -PURP
+\p CONJ V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 ADJ               -SUFF.V.4
+\f Em i bin stat long sting.
+\fe It was beginning to rot away.
+
+\ref 13
+\t Uva  ogoeopa                        aakova koue  aiopaeva                           aue        tetevu vopeva            taporo       ovi          kakae        ero                  aue        koue.
+\m uva  ogoe      -o         -pa       aakova koue  aio -pa       -e        -va        aue        tetevu vopeva            taporo       ovi          kakae        -e        -ro        aue        koue
+\g so   be hungry -3.SG.F    -RP       mother pig   eat -PROG     -3.SG.F   -RP        connective sago   three more common conceal talk liquid/juice small/little -3.SG.F   -3.SG.M    connective pig
+\p CONJ V.I       -SUFF.VI.4 -SUFF.V.5 N.F    N.??? V.T -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 CONN       N.???  ???               V.T          CLASS        ADJ          -SUFF.V.4 -SUFF.VI.4 CONN       N.???
+\f Wanpela hangre pik meri wantaim tripela pikinini pik i wok long pinisim laik long kaikaiim mit bilong saksak i bin pundaun.
+\fe A hungry sow with her three little piglets enjoyed their breakfast eating the sago stalk from the fallen tree.
+
+\ref Paragraph 14
+\t Vosia   vaitereo kaakau vaio                   oraivavu                          raga      tariosiva,                        Vesoso tapevisi              raga      avaroepa                  voarire                              tetevu                                             tataga.
+\m vosia   vaitereo kaakau vaio                   oraivavu                          raga      tario        -si       -va        Vesoso tape  -vi   -si       raga      ava -ro        -epa       voari                      -re       tetevu                                             tataga
+\g when/if 2/3.DL.M dog    dual of animate beings another way/another road or route only/just chase/pursue -2/3.DL.M -RP        name   Stop! -DIM  -2/3.DL.M only/just go  -3.SG.M    -RP        before/long ago/back there -ALLATIVE collect sago leaves/prepare sago leaves for sewing corpse/rotten log laying on ground
+\p CONJ    DEM      N.F    GR                     N.N                               ADV       V.T          -SUFF.V.4 -SUFF.VT.5 N.PN   EXCL  -SUFF -SUFF.V.4 ADV       V.I -SUFF.VI.4 -SUFF.VI.5 TEMP                       -SUFF     V.I                                                N.N
+\f Taim tupela dok i bin bihainim narapela han rot, Besoso i bin isiisi long go kamap long saksak i bin pundaun.
+\fe While the two dogs took another track, Besoso crept quietly towards the fallen tree.
+
+\ref 15
+\t Uva  koue  avao             kekereva                   osia aipaiva.
+\m uva  koue  avao             keke -re        -va        osia ai  -pa       -i         -va
+\g so   pig   mother and child look -3.SG.M    -RP        as   ??? -PROG     -3.PL      -RP
+\p CONJ N.??? N.???            V.T  -SUFF.VT.4 -SUFF.VT.5 CONJ ??? -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f Em i bin lukim mama pik wantaim ol pikinini pik bilong em taim ol i wok long kaikai.
+\fe He saw the mother and her piglets busy with their food.
+
+\ref Paragraph 16
+\t Vesoso ogaoga                                visivi            raga      togava                     kaepiereva                             ora  rera    vutuoaro                   iare    uva  togavaia                           togaroepa                                      koue  avaore.
+\m Vesoso o-          ga        - oga           visivi            raga      togava                     kaepie           -re        -va        ora  rera    vutuo              -aro    iare    uva  togava                     -ia     toga                     -ro        -epa       koue  avao             -re
+\g name   this/these- wedge/pry - follow behind diminutive marker only/just spear used for pigs or man hoist/lift/raise -3.SG.M    -RP        and  3.SG.M  carry on shoulders -POSS   towards so   spear used for pigs or man -at     spear/shoot with a spear -3.SG.M    -RP        pig   mother and child -ALLATIVE
+\p N.PN   PRE.N-      V.T       - V.I           GR                ADV       N.F                        V.T              -SUFF.VT.4 -SUFF.VT.5 CONJ PRO.PER V.T                -SUFF.N PREP    CONJ N.F                        -SUFF.N V.T                      -SUFF.VI.4 -SUFF.VI.5 N.??? N.???            -SUFF
+\f Besoso isi-isi antapim sappela spa bilong em antap long solda bilong em na troim em wantaim olgeta strong bilong em long pik.
+\fe Besoso slowly lifted his sharp pointed spear up above his shoulder and threw it with all his strength at the pigs.
+
+\ref 17
+\t Uva  oivepaoro                            toriva              oisirire           tuvutoa                               iare.
+\m uva  oive             -pa       -oro      tori     -va        oisirire           tuvu                  -to     -a      iare
+\g so   shout/yodel/yell -PROG     -SIM      run away -RP        towards over there approach/get close to -MASC   -N      towards
+\p CONJ V.T              -SUFF.V.3 -SUFF.V.4 V.T      -SUFF.VT.5 LOC                V.T                   -SUFF.N -SUFF.N PREP
+\f Ol i singaut na ranawe longlong insait long tais.
+\fe They squealed and ran wildly in the swampy area.
+
+\ref Paragraph 18
+\t Uva  giigiiraupaoro                riro guruko     purapaiva                                      oa      iava       kaakau vaio                   vo        guruko     uvusia               uva  ikausiva                       voa  ragavira.
+\m uva  giigiirau -pa       -oro      riro guruko     pura           -pa       -i         -va        oa      iava       kaakau vaio                   vo        guruko     uvu        -sia      uva  ikau      -si       -va        voa  raga      -vira
+\g so   groan     -PROG     -SIM      big  make noise make/do/create -PROG     -3.PL      -RP        3.SG.N  from/about dog    dual of animate beings this/here make noise hear/smell -PURP     so   run/hurry -2/3.DL.M -RP        here only/just -ADV
+\p CONJ V.I       -SUFF.V.3 -SUFF.V.4 ADJ  V.T        V.T            -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 PRO.REL PREP       N.F    GR                     ???       V.T        V.T        -SUFF.V.4 CONJ V.T       -SUFF.V.4 -SUFF.VT.5 LOC  ADV       -SUFF.N
+\f Krai bilong pik i bin bikpela tru na tupela dok i bin harim em na ol i ran i go long em.
+\fe The squealing sound was so loud that the two dogs heard it and ran towards it.
+
+\ref 19
+\t Oire kaakau vaio                   aakova koue  rausiva.
+\m oire kaakau vaio                   aakova koue  rau           -si       -va
+\g okay dog    dual of animate beings mother pig   grab/hug/hold -2/3.DL.M -RP
+\p EXCL N.F    GR                     N.F    N.??? V.T           -SUFF.V.4 -SUFF.VT.5
+\f Klostu, tupela dok i bin kamap klostu long mama pik.
+\fe Soon, the dogs caught up with the mother pig.
+
+\ref 20
+\t Koueia        ora  vikipasiepa                                        oira    avupasiva                            vorevoreripavira.
+\m koue  -ia     ora  viki                -pa       -si       -epa       oira    avupa           -si       -va        vorevoreri             -pa       -vira
+\g pig   -at     and  toss out/throw away -PROG     -2/3.DL.M -RP        3.SG.F  mouthful/a bite -2/3.DL.M -RP        repeat again and again -???      -ADV
+\p N.??? -SUFF.N CONJ V.I                 -SUFF.V.3 -SUFF.V.4 -SUFF.VI.5 PRO.PER N.N             -SUFF.V.4 -SUFF.VT.5 V.I                    -SUFF.??? -SUFF.N
+\f Ol i bin kalap antap long em na kaikaiim em na kaikaiim em.
+\fe They jumped on it and bit it again and again.
+
+\ref 21
+\t Oa      iava       rirova     rutu       koue  koveopa                       uva  kopiiopa.
+\m oa      iava       riro -va   rutu       koue  kove      -o        -pa       uva  kopii        -o        -pa
+\g 3.SG.N  from/about big  -FEM  very/truly pig   fall/drop -3.SG.F   -RP       so   die/very ill -3.SG.F   -RP
+\p PRO.REL PREP       ADJ  -SUFF PH         N.??? V.I       -SUFF.V.4 -SUFF.V.5 CONJ V.I          -SUFF.V.4 -SUFF.V.5
+\f Na dispela bikpela mama pik i bin pundaun na i dai.
+\fe The huge pig finaly fell and died.
+
+\ref Paragraph 22
+\t Oa      iava       kaakau vaio    ikausiva                       koue  kakaero                 sirova.
+\m oa      iava       kaakau vaio    ikau      -si       -va        koue  kakae        -ro        sirova
+\g 3.SG.N  from/about dog    DL.ANIM run/hurry -2/3.DL.M -RP        pig   small/little -3.SG.M    behind/alongside
+\p PRO.REL PREP       N.F    GR      V.T       -SUFF.V.4 -SUFF.VT.5 N.??? ADJ          -SUFF.VI.4 LOC
+\f Bihain ol dok i bin ran bihainim ol liklik pikinini pik.
+\fe The dogs then ran after the piglets.
+
+\ref 23
+\t Oisio              ruipapasiepa                                    koue  kakaero                 rausi.
+\m oisio              ruipa            -pa       -si       -epa       koue  kakae        -ro        rau           -si
+\g this way/like this like/want/desire -PROG     -2/3.DL.M -RP        pig   small/little -3.SG.M    grab/hug/hold -2/3.DL.M
+\p ???                V.I              -SUFF.V.3 -SUFF.V.4 -SUFF.VI.5 N.??? ADJ          -SUFF.VI.4 V.T           -SUFF.V.4
+\f Ol i bin laik holim ol pas gut tru.
+\fe They wanted to catch them as well.
+
+\ref Paragraph 24
+\t Vesoso kaakau vaio                   kekereva                   osia koue  kakaero                 tariopasiva.
+\m Vesoso kaakau vaio                   keke -re        -va        osia koue  kakae        -ro        tario        -pa       -si       -va
+\g name   dog    dual of animate beings look -3.SG.M    -RP        as   pig   small/little -3.SG.M    chase/pursue -PROG     -2/3.DL.M -RP
+\p N.PN   N.F    GR                     V.T  -SUFF.VT.4 -SUFF.VT.5 CONJ N.??? ADJ          -SUFF.VI.4 V.T          -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5
+\f Besoso i bin lukim ol dok i bin raunim ol liklik pik.
+\fe Besoso saw the dogs chasing the piglets.
+
+\ref 25
+\t Oa      iava       vaiterei va      tarioroepa,                            oisio              ra   koue  kakaero                 raureve.
+\m oa      iava       vaiterei va      tari              -oro      -epa       oisio              ra   koue  kakae        -ro        rau           -re        -ve
+\g 3.SG.N  from/about 2.DL.M   3.SG.N  surround/encircle -SIM      -RP        this way/like this and  pig   small/little -3.SG.M    grab/hug/hold -3.SG.M    -SUB
+\p PRO.REL PREP       PRO.PER  PRO.PER V.T               -SUFF.V.4 -SUFF.VI.5 ???                CONJ N.??? ADJ          -SUFF.VI.4 V.T           -SUFF.VT.4 -SUFF.V.5
+\f Em i bin raunim ol dok na em i holim pas tripela liklik pik.
+\fe The chased the dogs away and caught the three piglets.
+
+\ref 26
+\t Aakova koue  kavuoro                         avaroepa                  evaova reroaro          uva  ikauvira             rutu       kareroepa                    eisire                       atoia.
+\m aakova koue  kavu                  -oro      ava -ro        -epa       evaova reroaro          uva  ikauvira             rutu       kare   -ro        -epa       eisi               -re       atoia
+\g mother pig   left behind/left over -SIM      go  -3.SG.M    -RP        tree   underneath/under so   quickly/fast/rapidly very/truly return -3.SG.M    -RP        that way/like that -ALLATIVE village/home/banana
+\p N.F    N.??? ADJ                   -SUFF.V.4 V.I -SUFF.VI.4 -SUFF.VI.5 N.F    LOC              CONJ ADV                  PH         V.I    -SUFF.VI.4 -SUFF.VI.5 DEM                -SUFF     N.N
+\f Em i bin lusim mama pik undanit long diwai na wakabaut hariap kwik i go long ples.
+\fe He left the mother pig under a tree and walked as quickly as he could to the village.
+
+\ref Paragraph 27
+\t Vesoso oirara         siposia        kareroepa                    eisire                       vegoaro        uva  koue  kaesia          avaepa         voore               atoia.
+\m Vesoso oirara         sipo -sia      kare   -ro        -epa       eisi               -re       vego   -aro    uva  koue  kae   -sia      ava -epa       voo       -re       atoia
+\g name   people/mankind send -PURP     return -3.SG.M    -RP        that way/like that -ALLATIVE jungle -POSS   so   pig   carry -PURP     go  -RP        this/here -ALLATIVE village/home/banana
+\p N.PN   N.???          V.T  -SUFF.V.4 V.I    -SUFF.VI.4 -SUFF.VI.5 DEM                -SUFF     N.???  -SUFF.N CONJ N.??? V.T   -SUFF.V.4 V.I -SUFF.VI.5 ???       -SUFF     N.N
+\f Em i bin salim sampela man i go long bus bilong karim pik i kam long ples.
+\fe He sent some men to the bush and they carried the pig to the village.
+
+\ref 28
+\t Evo ova   roia                  uva  uruia             rutu       rorupa                       koue  aiopaoro.
+\m evo ova   ro            -ia     uva  uruia             rutu       roru               -pa       koue  aio -pa       -oro
+\g ??? brown DEM.PROX.SG.M -at     so   village/town/city very/truly happy/glad/pleased -PROG     pig   eat -PROG     -SIM
+\p DEM ADJ   PRO.DEM       -SUFF.N CONJ N.N               PH         V.T                -SUFF.V.3 N.??? V.T -SUFF.V.3 -SUFF.V.4
+\f Long dispela apinun, olgeta man bilong ples i hamamas tru long kaikaiim abus.
+\fe That evening, the whole village enjoyed their meal of pig meat.
+
+\ref Paragraph 29
+\t Sasa vaio                   ora  Poega aiterea    tapo          rorupasiva                                        keru             aiopaoro.
+\m Sasa vaio                   ora  Poega aiterea    tapo          roru               -pa       -si       -va        keru             aio -pa       -oro
+\g name dual of animate beings and  name  2.DL.M     also/too/with happy/glad/pleased -PROG     -2/3.DL.M -RP        harden like bone eat -PROG     -SIM
+\p N.PN GR                     CONJ N.PN  PRO.3.M.DL POST          V.T                -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 V.I              V.T -SUFF.V.3 -SUFF.V.4
+\f Janja na Poega ol tu ol i bin hamamas long kaikai bun.
+\fe Janja and Poega also enjoyed their meal of bones.
+
+\ref 30
+\t Evo vuutaia                                          uva  viapau oisoa  oiso               vateirei              vaisipaive                           viovotoarei.
+\m evo vuuta                                    -ia     uva  viapau oisoa  oiso               vate -i   -rei        vaisi -pa       -i         -ve       -vio      -vo       -to     -arei
+\g ??? space/crack/opening/period of time/verse -at     so   NEG    always this way/like this give -??? -N.DL       name  -PROG     -3.PL      -SUB      -1.PL.INC -IP       -MASC   -DL
+\p DEM LOC                                      -SUFF.N CONJ NEG    TEMP   NPN                V.T  -??? -SUFF.N.CL1 N.??? -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 -SUFF     -SUFF.V.5 -SUFF.N -SUFF.N
+\f Bihain long dispela de, tupela dok ol man i no kolim ol mo olsem ol rabis dok.
+\fe From then on the two dogs were no longer called useless.
