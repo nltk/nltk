@@ -1,0 +1,293 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Leaves Will Help You
+\au Maggie Guria
+
+\ref Paragraph 1
+\t Vosia   ruipapau                              ra   goruvira riropau                        ora  vearopievira       guruvara                    uvuipai                                ravi       tauvapaive.
+\m vosia   ruipa            -pa       -u         ra   goruvira riro      -pa       -u         ora  vearopie   -vira   guruva           -ra        uvuipa                       -i        ra   -vi   tauva       -pa       -i         -ve
+\g when/if like/want/desire -PROG     -2SG       and  strongly grow up   -PROG     -2SG       and  fix/repair -ADV    leaf/paper money -1.SG      tape measure/yardstick/ruler -PRES     and  -DIM  help/assist -PROG     -3.PL      -SUB
+\p CONJ    V.I              -SUFF.V.3 -SUFF.VI.4 CONJ ADV      V.I       -SUFF.V.3 -SUFF.VI.4 CONJ V.T        -SUFF.N N.N              -SUFF.VI.4 N.N                          -SUFF.V.5 CONJ -SUFF V.T         -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe If you want to grow strong and healthy, leaves will help you.
+
+\ref 2
+\t Ruveara     guruvaro                    aiopari.
+\m ruve  -ara  guruva           -ro        aio -pa       -ri
+\g slimy -PL   leaf/paper money -3.SG.M    eat -PROG     -2.SG
+\p ADJ   -SUFF N.N              -SUFF.VI.4 V.T -SUFF.V.3 -SUFF.VT.4
+\f xxx
+\fe Eat aibika leaves.
+
+\ref 3
+\t Oara          vearopai                           viipa.
+\m oara          vearo          -pa       -i        vii     -pa
+\g PRO.REL.3PL.N good/fine/well -PROG     -PRES     2.SG    -for/with
+\p PRO.REL.3PL.N V.I            -SUFF.V.3 -SUFF.V.5 PRO.PER -SUFF.N
+\f xxx
+\fe They are good for you.
+
+\ref Paragraph 4
+\t E      kokepai?
+\m e      koke      -pa       -i
+\g hey/eh make rain -PROG     -PRES
+\p EXCL   V.T       -SUFF.V.3 -SUFF.V.5
+\f xxx
+\fe Is it raining?
+
+\ref 5
+\t Ovu   vii     oiraro             kavurivo                                   vararava?
+\m ovu   vii     oira    -ro        kavu                  -ri        -vo       vara       -ra        -va
+\g where 2.SG    3.SG.F  -3.SG.M    left behind/left over -2.SG      -IP       3.PL.F     -1.SG      -FEM
+\p INTER PRO.PER PRO.PER -SUFF.VI.4 ADJ                   -SUFF.VT.4 -SUFF.V.5 PRO.3.PL.F -SUFF.VI.4 -SUFF
+\f xxx
+\fe Where did you leave your umbrella?
+\nt Where is the word 'umbrella'? What's up with 'oiraro' and 'vararava'?
+
+\ref 6
+\t Guruvara                    vii     tauvavere.
+\m guruva           -ra        vii     tauva       -vere
+\g leaf/paper money -1.SG      2.SG    help/assist -NF
+\p N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe Leaves will help you.
+
+\ref 7
+\t Ito    guruvavai                    pakori
+\m ito    guruva           -vai        pako      -ri
+\g banana leaf/paper money -NABS       pull down -2.SG
+\p N.N2   N.N              -SUFF.N.??? V.T       -SUFF.VT.4
+\f xxx
+\fe Grab a banana leaf.
+
+\ref 8
+\t Eva        oa      vii     tauvavere             raipioro.
+\m eva        oa      vii     tauva       -vere     raipi                   -oro.
+\g MED.3.SG.N 3.SG.N  2.SG    help/assist -NF       hide from rain/stay dry -SIM
+\p DEM        PRO.REL PRO.PER V.T         -SUFF.V.5 V.I                     -SUFF.V.4
+\f xxx
+\fe It will keep you dry.
+
+\ref Paragraph 9
+\t Vosia   upiava                   toupari                      vovavaea            ora  vokokotoa,    guruvaara              vii     tauvavere.
+\m vosia   upia         -va         tou     -pa       -ri        vo-   vavae -a      ora  vo-   kokotoa guruva           -ara  vii     tauva       -vere
+\g when/if in pain/sick -with       be/stay -PROG     -2.SG      SING- hand  -N      and  SING- leg     leaf/paper money -PL   2.SG    help/assist -NF
+\p CONJ    V.I          -SUFF.N.??? V.I     -SUFF.V.3 -SUFF.VT.4 PRE-  N.??? -SUFF.N CONJ PRE-  N.M     N.N              -SUFF PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If you have pain in your arms or legs, leaves will help you.
+
+\ref 10
+\t Vii     varo    kipukipuri                   kapuapa                        varaua              aue        tapo          akavi           guruvaro.
+\m vii     varo    kipukipu                -ri  kapua                -pa       vara -ua            aue        tapo          akavi           guruva           -ro.
+\g 2.SG    clothes rub on/smear on/massage -2.SGsore/infection/wound -for/with body -narrow object connective also/too/with stinging nettle leaf/paper money -3.SG.M
+\p PRO.PER N.N     V.T                     -SUFFN.N                  -SUFF.N   N.N  -SUFF.N.CLASS  CONN       POST          N.???           N.N              -SUFF.VI.4
+\f xxx
+\fe Rub your sore body with stinging nettle leaves.
+
+\ref 11
+\t Evara    upia  opesipievere.
+\m evara    upia  opesipie                    -vere
+\g MED.PL.N pain  end/finish/conclude/destroy -NF
+\p DEM      N.??? V.T                         -SUFF.V.5
+\f xxx
+\fe They'll stop the pan.
+
+\ref Paragraph 12
+\t Vosia   aueva     toupari                      toea                   kapua                ra viapau parasita,       guruvara                    vii     tauvavere.
+\m vosia   aueva     tou     -pa       -ri        toea                   kapua                ra viapau parasita        guruva           -ra        vii     tauva       -vere
+\g when/if with/from be/stay -PROG     -2.SG      cut/wound from a knife sore/infection/wound andNEG    bandaid/plaster leaf/paper money -1.SG      2.SG    help/assist -NF
+\p CONJ    PREP      V.I     -SUFF.V.3 -SUFF.VT.4 N.N                    N.N                  CONNEG    N.???           N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If you have an open sore and there's no Band Aid, leaves will help you.
+
+\ref 13
+\t Aue        ratari                                    rupiea              aporo guruva           etokasi-ia.
+\m aue        rata                           -ri        rupie       -a      aporo guruva           etokasi -ia
+\g connective heat up/sear/singe/lie/deceive -2.SG      young/fresh -N      apple leaf/paper money fire    -at
+\p CONN       V.T                            -SUFF.VT.4 ???         -SUFF.N N.??? N.N              ???     -SUFF.N
+\f xxx
+\fe Soften a new custard apple leaf over the fire.
+
+\ref 14
+\t Va      tupitupipie           vii     varo    ivaraia      kapua.
+\m va      tupitupipie           vii     varo    ivaraia      kapua
+\g 3.SG.N  wet something/moisten 2.SG    clothes on top/above sore/infection/wound
+\p PRO.PER V.???                 PRO.PER N.N     POST         N.N
+\f xxx
+\fe Wet it and cover your sore.
+
+\ref 15
+\t Eva        avurukare     verapaivere                          kapua                iava.
+\m eva        avuru -kare   vera  -pa       -i         -vere     kapua                iava
+\g MED.3.SG.N fly   -PL     leave -PROG     -3.PL      -NF       sore/infection/wound from/about
+\p DEM        N.??? -N.SUFF V.I   -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 N.N                  PREP
+\f xxx
+\fe It will keep the flies off the sore.
+
+\ref Paragraph 16
+\t Kukuvaipa vearopai                           voravireopa               vokiia.
+\m kukuvaipa vearo          -pa       -i        vo-   ravireo      -pa    voki      -ia
+\g hat       good/fine/well -PROG     -PRES     SING- sun/sunshine -DERIV day/ time -at
+\p N.N       V.I            -SUFF.V.3 -SUFF.V.5 PRE-  N.M          -SUFF  N.N       -SUFF.N
+\f xxx
+\fe Hats are good on sunny days.
+
+\ref 17
+\t Vosia   viapau vii     oai,         guruvara                    vii     tauvavere.
+\m vosia   viapau vii     oa      -i   guruva           -ra        vii     tauva       -vere
+\g when/if NEG    2.SG    3.SG.N  -??? leaf/paper money -1.SG      2.SG    help/assist -NF
+\p CONJ    NEG    PRO.PER PRO.REL -??? N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If you don't have one, leaves will help you.
+
+\ref 18
+\t Oai          purari                    aue        iava       opita   guruvaro.
+\m oa      -i   pura           -ri        aue        iava       opita   guruva           -ro
+\g 3.SG.N  -??? make/do/create -2.SG      connective from/about coconut leaf/paper money -3.SG.M
+\p PRO.REL -??? V.T            -SUFF.VT.4 CONN       PREP       N.N     N.N              -SUFF.VI.4
+\f xxx
+\fe Make one from coconuts leaves.
+
+\ref 19
+\t Eva        vii     kukuearo           tauvapaivere.
+\m eva        vii     kukue      -aro    tauva       -pa       -i         -vere
+\g MED.3.SG.N 2.SG    head/skull -POSS   help/assist -PROG     -3.PL      -NF
+\p DEM        PRO.PER N.F        -SUFF.N V.T         -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe It will protect your head.
+
+\ref Paragraph 20
+\t Vosia   viapau aue        vataa  auere                      pitokava                       vituaro       kipukipusia                       sikoru purasia                  guruvara                    vii     tauvavere.
+\m vosia   viapau aue        vataa  auere                      pitokava                       vituaro       kipukipu                -sia      sikoru pura           -sia      guruva           -ra        vii     tauva       -vere
+\g when/if NEG    connective butter so that/for the purpose of pot/pan/clay used to make pots origin/source rub on/smear on/massage -PURP     scone  make/do/create -PURP     leaf/paper money -1.SG      2.SG    help/assist -NF
+\p CONJ    NEG    CONN       N.???  CONJ                       N.F                            N.N           V.T                     -SUFF.V.4 N.PN   V.T            -SUFF.V.4 N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If you have no butter to rub the bottom of the pot when you bake scones, leaves will help you.
+
+\ref 21
+\t Pitokava                       vituaro       rakurakuri            aueia              rupie       guruva           okari                              guruva.
+\m pitokava                       vituaro       rakuraku   -ri        aue        -ia     rupie       guruva           o-          *k  -a      -ri        guruva
+\g pot/pan/clay used to make pots origin/source cover over -2.SG      connective -at     young/fresh leaf/paper money this/these- *** -N      -2.SG      leaf/paper money
+\p N.F                            N.N           V.T        -SUFF.VT.4 CONN       -SUFF.N ???         N.N              PRE.N-      *** -SUFF.N -SUFF.VT.4 N.N
+\f xxx
+\fe Cover the bottom of the pot with new okari leaves.
+
+\ref 22
+\t Evara    oara          sikoruara    tauvavere             votoarapa                  pitokavaia.
+\m evara    oara          sikoru -ara  tauva       -vere     voto           -arapa      pitokava                       -ia
+\g MED.PL.N PRO.REL.3PL.N scone  -PL   help/assist -NF       stuck together -???        pot/pan/clay used to make pots -at
+\p DEM      PRO.REL.3PL.N N.PN   -SUFF V.T         -SUFF.V.5 ADJ            -SUFF.V.??? N.F                            -SUFF.N
+\f xxx
+\fe They'll help the scones not to stick to the pot.
+
+\ref Paragraph 23
+\t Vosia   pakete agasio            aue        iava       uuko  ra   viapau ruipapau                              ra   kosikosiopaive                                                    guruvara                    vii     tauvavere
+\m vosia   pakete agasi   -o        aue        iava       uuko  ra   viapau ruipa            -pa       -u         ra   kosikosi                 -o        -pa       -i         -ve       guruva           -ra        vii     tauva       -vere
+\g when/if bucket be full -3.SG.F   connective from/about water and  NEG    like/want/desire -PROG     -2SG       and  cut off sago palm leaves -3.SG.F   -PROG     -3.PL      -SUB      leaf/paper money -1.SG      2.SG    help/assist -NF
+\p CONJ    N.???  ADJ     -SUFF.V.4 CONN       PREP       N.??? CONJ NEG    V.I              -SUFF.V.3 -SUFF.VI.4 CONJ V.T                      -SUFF.V.4 -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If the bucket is full of water and you don't want it to spill, leaves will help you.
+
+\ref 24
+\t Goava guruvaro                    tovori                        uukoa sovaraia.
+\m goava guruva           -ro        tovo               -ri        uukoa sovaraia
+\g guava leaf/paper money -3.SG.M    put/place/position -2.SG      water inside
+\p N.??? N.N              -SUFF.VI.4 V.T                -SUFF.VT.4 N.N   POST
+\f xxx
+\fe Put guava leaves in the water.
+
+\ref 25
+\t Evara    uukoaia       pitupaivere.
+\m evara    uukoa -ia     pitupa -i         -vere
+\g MED.PL.N water -at     handle -3.PL      -NF
+\p DEM      N.N   -SUFF.N N.N    -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe They'll hold the water.
+
+\ref Paragraph 26
+\t Vosia   aio   ruipapau                              kovoaia                      guruvara                    vii     tauvavere.
+\m vosia   aio   ruipa            -pa       -u         kovoa                -ia     guruva           -ra        vii     tauva       -vere
+\g when/if food  like/want/desire -PROG     -2SG       garden/work/week/day -at     leaf/paper money -1.SG      2.SG    help/assist -NF
+\p CONJ    N.??? V.I              -SUFF.V.3 -SUFF.VI.4 N.N                  -SUFF.N N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If you want food for your garden, leaves will help you.
+
+\ref 27
+\t Kovoa                rakurakupari                    erakopa             guruvaaroia.
+\m kovoa                rakuraku   -pa       -ri        erako        -pa    guruva           -aro    -ia.
+\g garden/work/week/day cover over -PROG     -2.SG      dry/firewood -DERIV leaf/paper money -POSS   -at
+\p N.N                  V.T        -SUFF.V.3 -SUFF.VT.4 N.N          -SUFF  N.N              -SUFF.N -SUFF.N
+\f xxx
+\fe Cover the garden with dead leaves.
+
+\ref 28
+\t Evara    oara          rasito            purapaiveira.
+\m evara    oara          rasito            pura           -pa       -i         -veira
+\g MED.PL.N PRO.REL.3PL.N ground/soil/earth make/do/create -PROG     -3.PL      -ANIM.HAB
+\p DEM      PRO.REL.3PL.N N.M               V.T            -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe They're food for the ground.
+
+\ref Paragraph 29
+\t Vosia   viapau perete aueia              kovoa                rugorugopau.
+\m vosia   viapau perete aue        -ia     kovoa                rugorugo                -pa       -u
+\g when/if NEG    plate  connective -at     garden/work/week/day think/remember/meditate -PROG     -2SG
+\p CONJ    NEG    N.???  CONN       -SUFF.N N.N                  V.???                   -SUFF.V.3 -SUFF.VI.4
+\f xxx
+\fe If you don't have plates in the garden, be sensible.
+
+\ref 30
+\t Aue        iusi opoa            guruvaaro.
+\m aue        iusi opoa            guruva           -aro.
+\g connective use  taro/bread/cake leaf/paper money -POSS
+\p CONN       V.T  N.N             N.N              -SUFF.N
+\f xxx
+\fe Use taro leaves.
+
+\ref 31
+\t Evara    vearopieara      pereteara.
+\m evara    vearopie   -ara  perete -ara
+\g MED.PL.N fix/repair -PL   plate  -PL
+\p DEM      V.T        -SUFF N.???  -SUFF
+\f xxx
+\fe They are good plates.
+
+\ref Paragraph 32
+\t Vosia   vii     gagoago      ora  aue        kapua                vii     vaaroia                   varaua ra viapau varasiri, guruvara                    vii     tauvavere.
+\m vosia   vii     gagoago      ora  aue        kapua                vii     vaaro             -ia     varaua ra viapau varasiri  guruva           -ra        vii     tauva       -vere
+\g when/if 2.SG    scratch/rash and  connective sore/infection/wound 2.SG    that person/thing -at     body   andNEG    medicine  leaf/paper money -1.SG      2.SG    help/assist -NF
+\p CONJ    PRO.PER N.???        CONJ CONN       N.N                  PRO.PER NDM?              -SUFF.N N.N    CONNEG    N.???     N.N              -SUFF.VI.4 PRO.PER V.T         -SUFF.V.5
+\f xxx
+\fe If you have a rash or sores on your body and there's no medicine, leaves will help you.
+
+\ref 33
+\t Airepaara       goava guruvaaro                tovori                        kasiraopaia               uukoa aueia              tauopava              aue        iusipari                            uukoa auere                      vara       sisiupasia.
+\m Airepa    -ara  goava guruva           -aro    tovo               -ri        kasirao -pa       -ia     uukoa aue        -ia     tauo  -pa       -va   aue        iu   -si       -pa       -ri        uukoa auere                      vara       sisiu -pa       -sia
+\g new/fresh -PL   guava leaf/paper money -POSS   put/place/position -2.SG      hot     -???      -at     water connective -at     plate -for/with -FEM  connective yes  -2/3.DL.M -PROG     -2.SG      water so that/for the purpose of 3.PL.F     wash  -PROG     -PURP
+\p ADJ       -SUFF N.??? N.N              -SUFF.N V.T                -SUFF.VT.4 ADJ     -SUFF.??? -SUFF.N N.N   CONN       -SUFF.N N.M   -SUFF.N   -SUFF CONN       EXCL -SUFF.V.4 -SUFF.V.3 -SUFF.VT.4 N.N   CONJ                       PRO.3.PL.F V.??? -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe Put new guava leaves in hot water in a dish.
+
+\ref 34
+\t Eva        vii     tauvapaivere                               kapua                ruvaru                 pasia.
+\m eva        vii     tauva       -pa       -i         -vere     kapua                ruvaru                 pasi           -a
+\g MED.3.SG.N 2.SG    help/assist -PROG     -3.PL      -NF       sore/infection/wound medicate/give medicine Maybe/I think! -N
+\p DEM        PRO.PER V.T         -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 N.N                  V.T                    EXCL           -SUFF.N
+\f xxx
+\fe Use the water to wash, it will help to heal the sore.
+
+\ref Paragraph 35
+\t Oa      iava       uvuipauei                                          ra   riro guruvaaro                kekepari                  tauvapiepa                     guruvaro.
+\m oa      iava       uvuipa                       -u         -ei        ra   riro guruva           -aro    keke -pa       -ri        tauva       -pie     -pa       guruva           -ro
+\g 3.SG.N  from/about tape measure/yardstick/ruler -2SG       -PRES      and  big  leaf/paper money -POSS   look -PROG     -2.SG      help/assist -CAUS    -???      leaf/paper money -3.SG.M
+\p PRO.REL PREP       N.N                          -SUFF.VI.4 -SUFF.VI.5 CONJ ADJ  N.N              -SUFF.N V.T  -SUFF.V.3 -SUFF.VT.4 V.T         -SUFF.VI -SUFF.??? N.N              -SUFF.VI.4
+\f xxx
+\fe So you can see there are many leaves that are useful.
+
+\ref 36
+\t E      uvuipauei                                          ra   o               guruvaire                       ora  rugopieu                              oara          o               tauva       rovuva              toupaivoi                              vituiva?
+\m e      uvuipa                       -u         -ei        ra   o               guruva           -i   -re       ora  rugo              -pie     -u         oara          o               tauva       ro    -vu     -va   tou     -pa       -i         -voi      vitu             -i         -va
+\g hey/eh tape measure/yardstick/ruler -2SG       -PRES      and  this female/her leaf/paper money -??? -ALLATIVE and  think/hope/reason -CAUS    -2SG       PRO.REL.3PL.N this female/her help/assist 3SG.M -other  -FEM  be/stay -PROG     -3.PL      -PRES     excrete/defecate -3.PL      -RP
+\p EXCL   N.N                          -SUFF.VI.4 -SUFF.VI.5 CONJ NDF             N.N              -??? -SUFF     CONJ V.???             -SUFF.VI -SUFF.VI.4 PRO.REL.3PL.N NDF             V.T         PRO   -SUFF.N -SUFF V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5 V.T              -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe Can you think of another leave that has a useful purpose?

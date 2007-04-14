@@ -1,0 +1,279 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Why dogs don't talk
+\au Robert G. Ure
+
+\ref Paragraph 1
+\t Gaurai raga oisoa    toupareve                           vegoaro.
+\m Gaurai raga oisoa    tou -pa       -re         -ve       vego   -aro
+\g name   only always   be  -PROG     -3.SG.M     -SUB      jungle -POSS
+\p N.PN   ADV  ADV.TEMP V.B -SUFF.V.3 -SUFF.V.B.4 -SUFF.V.5 N.N    -SUFF.N.5
+\f Gaurai em wanpela i save stap long bus.
+\fe Gaurai lived alone in the bush.
+
+\ref 2
+\t Vaiterei       kaakau vaio    rera           vaitereiaro              taporo       oisoa    toupareve.
+\m vaiterei       kaakau vaio    rera           vaiterei       -aro      taporo       oisoa    tou -pa       -re         -ve
+\g PRO.PER.2.DL.M dog    DL.ANIM PRO.PER.3.SG.M PRO.PER.2.DL.M -POSS     conceal talk always   be  -PROG     -3.SG.M     -SUB
+\p PRO.PER        N.F    FFP     PRO.PER        PRO.PER        -SUFF.N.5 V.B          ADV.TEMP V.B -SUFF.V.3 -SUFF.V.B.4 -SUFF.V.5
+\f Em i save stap wantaim long tupela dok bilong em.
+\fe He lived with his two dogs.
+
+\ref 3
+\t Rera           raga oisoa    toupareve                           uva  viapau oisoa    rorupareve.
+\m rera           raga oisoa    tou -pa       -re         -ve       uva  viapau oisoa    roru  -pa       -re         -ve
+\g PRO.PER.3.SG.M only always   be  -PROG     -3.SG.M     -SUB      so   NEG    always   happy -PROG     -3.SG.M     -SUB
+\p PRO.PER        ADV  ADV.TEMP V.B -SUFF.V.3 -SUFF.V.B.4 -SUFF.V.5 PART NEG    ADV.TEMP V.B   -SUFF.V.3 -SUFF.V.B.4 -SUFF.V.5
+\f Em wanpela i save stap and em i no save hamamas.
+\fe He was very lonely and unhappy.
+
+\ref 4
+\t Viapau irai                       oiratoavai                           ra   irai                       tapo orareoparo.
+\m viapau ira            -i          oira           -to       -vai        ra   ira            -i          tapo ora-  reo  -pa       -ro
+\g NEG    PRO.REL.3.SG.M -ABS        PRO.PER.3.SG.F -MASC.SG  -NABS       COMP PRO.REL.3.SG.M -ABS        also RR-   talk -PROG     -3.SG.M
+\p NEG    PRO.REL        -SUFF.N.??? PRO.PER        -SUFF.N.2 -SUFF.N.??? COMP PRO.REL        -SUFF.N.??? POST SUFF- V.A  -SUFF.V.3 -SUFF.V.A.4
+\f Nogat narapela man long toktok wantaim.
+\fe He had no one to talk to.
+
+\ref Paragraph 5
+\t Ovokivuia                      Gaurai avaroepa                    vegoarore                   aue  ousia         guruvara           auere     ruvarua  purasia.
+\m o-     voki -vu       -ia      Gaurai ava -ro         -epa        vegoa  -ro         -re      aue  ou  -sia      guruva -ra         auere     ruvarua  pura -sia
+\g SPEC-  day  -ALT      -LOC     name   go  -3.SG.M     -RP         jungle -PL         -ALL     CONN get -DEP.PURP leaf   -PL         in order  medicine make -DEP.PURP
+\p PRE.N- N.N  -SUFF.N.4 -ENC.N.6 N.PN   V.A -SUFF.V.A.4 -SUFF.V.A.5 N.N    -SUFF.N.??? -ENC.N.6 CONN V.B -SUFF.V.4 N.N    -SUFF.N.??? PART.CONJ N.N      V.B  -SUFF.V.4
+\f Wanpela dei Gaurai bin go long bus na kisim lip bilong wokim marasin.
+\fe One day, Gaurai went to the bush to get some magic leaves.
+
+\ref 6
+\t Ruipaparoepa                            oisio ra   guruvara         vatereve                   rera           vaitereiaropa                     kaakau vaio.
+\m ruipa -pa       -ro         -epa        oisio ra   guruva -ra       vate -re         -ve       rera           vaiterei       -aro      -pa      kaakau vaio
+\g want  -PROG     -3.SG.M     -RP         like  COMP leaf   -PL       give -3.SG.M     -SUB      PRO.PER.3.SG.M PRO.PER.2.DL.M -POSS     -BEN     dog    DL.ANIM
+\p V.A   -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5 COMP  COMP N.N    -SUFF.N.1 V.B  -SUFF.V.B.4 -SUFF.V.5 PRO.PER        PRO.PER        -SUFF.N.5 -ENC.N.6 N.F    FFP
+\f Em i bin laik givim lip long ol dok bilong em.
+\fe He wanted to give the leaves to his dogs.
+
+\ref Paragraph 7
+\t Gaurai guruvara           goagoarapiereva                     uva  vara           vatereva                     kaakau vaiopa           uva  vara           aiosiva.
+\m Gaurai guruva -ra         goagoarapie -re         -va         uva  vara           vate -re         -va         kaakau vaio    -pa      uva  vara           aio -si       -va
+\g name   leaf   -PL         make boil   -3.SG.M     -RP         so   PRO.PER.3.PL.F give -3.SG.M     -RP         dog    DL.ANIM -BEN     so   PRO.PER.3.PL.F eat -3.DL.M   -RP
+\p N.PN   N.N    -SUFF.N.??? V.B         -SUFF.V.B.4 -SUFF.V.B.5 PART PRO.PER        V.B  -SUFF.V.B.4 -SUFF.V.B.5 N.F    FFP     -ENC.N.6 PART PRO.PER        V.B -SUFF.V.4 -SUFF.V.B.5
+\f Gaurai i bin boilim ol lip na givim ol long dok bilong em na ol i kaikaiim.
+\fe Gaurai boiled the leaves and gave them to the dogs to eat.
+
+\ref 8
+\t Oa             iava kaakau vaio    rovosiepa              reoreopaoro                 uvare     guruvara           aiosiva.
+\m oa             iava kaakau vaio    rovosi     -epa        reoreo  -pa       -oro      uvare     guruva -ra         aio -si       -va
+\g PRO.REL.3.SG.N ABL  dog    DL.ANIM sufficient -RP         discuss -PROG     -DEP.SIM  because   leaf   -PL         eat -3.DL.M   -RP
+\p PRO.REL        POST N.F    FFP     V.A        -SUFF.V.A.5 V.A     -SUFF.V.3 -SUFF.V.4 PART.CONJ N.N    -SUFF.N.??? V.B -SUFF.V.4 -SUFF.V.B.5
+\f Ol dok i bin stat long toktok bihain long ol i bin kaikaiim ol lip.
+\fe The dogs began to talk after eating all the leaves.
+
+\ref 9
+\t Gaurai rorureva                      uvare     oisio vaitereo          tapo orareoparavere                             kaakau vaio.
+\m Gaurai roru  -re         -va         uvare     oisio vaitereo          tapo ora-  reo  -pa       -ra         -vere     kaakau vaio
+\g name   happy -3.SG.M     -RP         because   like  PRO.DEM.PROX.DL.M also RR-   talk -PROG     -1.SG       -NF       dog    DL.ANIM
+\p N.PN   V.B   -SUFF.V.B.4 -SUFF.V.B.5 PART.CONJ COMP  PRO.DEM           POST SUFF- V.A  -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.5 N.F    FFP
+\f Gaurai i bin hamamas nau bikos em i bin inap long toktok wantaim ol dok bilong em.
+\fe Gauarai was now happy because he could talk with his dogs.
+
+\ref Paragraph 10
+\t Ovokivuia                      avukato    oisio puraroepa                    rera           vaitereiarore                     kaakau vaio,
+\m o-     voki -vu       -ia      avukato    oisio pura -ro         -epa        rera           vaiterei       -aro      -re      kaakau vaio
+\g SPEC-  day  -ALT      -LOC     old person like  say  -3.SG.M     -RP         PRO.PER.3.SG.M PRO.PER.2.DL.M -POSS     -ALL     dog    DL.ANIM
+\p PRE.N- N.N  -SUFF.N.4 -ENC.N.6 N.N2       COMP  V.A  -SUFF.V.A.4 -SUFF.V.A.5 PRO.PER        PRO.PER        -SUFF.N.5 -ENC.N.6 N.F    FFP
+\f Wanpela dei dispela lapun man i bin tokim ol dok bilong em olsem, 
+\fe One day, the old man said to his dogs, 
+
+\ref Paragraph 10.5
+\t ``Toupasivere                     kepa  tokipaoro                      vigei            vaaro''.
+\m tou -pa       -si       -vere     kepa  toki       -pa       -oro      vigei            va             -aro
+\g be  -PROG     -3.DL.M   -NF       house look.after -PROG     -DEP.SIM  PRO.PER.1.PL.INC PRO.PER.3.SG.N -POSS
+\p V.B -SUFF.V.3 -SUFF.V.4 -SUFF.V.5 N.N   V.B        -SUFF.V.3 -SUFF.V.4 PRO.PER          PRO.PER        -SUFF.N.5
+\f ``Mobeta bai yupela i lukautim haus bilong yumi.''
+\fe ``Please look after our house.
+
+\ref 11
+\t Ragai        avaparai                              voroosia.''
+\m ragai        ava -pa       -ra         -ei         voroo -sia
+\g PRO.PER.1.SG go  -PROG     -1.SG       -PRES       hunt  -DEP.PURP
+\p PRO.PER      V.A -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5 V.B   -SUFF.V.4
+\f Bai mi go lukaut pik.''
+\fe I will go hunting.''
+
+\ref 12
+\t Kaakau vaio    viapau rorupasiva                            osa       tosivai          ita      kepa  tokipaoro.
+\m kaakau vaio    viapau roru  -pa       -si       -va         osia      tosi -vai        ita      kepa  toki       -pa       -oro
+\g dog    DL.ANIM NEG    happy -PROG     -3.DL.M   -RP         as        cut  -NABS       again    house look.after -PROG     -DEP.SIM
+\p N.F    FFP     NEG    V.B   -SUFF.V.3 -SUFF.V.4 -SUFF.V.B.5 PART.CONJ V.B  -SUFF.N.??? ADV.TEMP N.N   V.B        -SUFF.V.3 -SUFF.V.4
+\nt What's the story with 'tosivai'?
+\f Tupela dok i bin sori tasol ol i bin stap bek na lukautim haus.
+\fe The two dogs were sad but they stayed back to look after the house.
+
+\ref Paragraph 13
+\t Oire oeavu                oirara urioaepa                     kepa  iare.
+\m oire oea        -vu       oirara urio -a          -epa        kepa  iare
+\g okay PRO.3.PL.M -ALT      people come -3.PL       -RP         house towards
+\p EXCL PRO.PER    -SUFF.N.4 N.N.PL V.A  -SUFF.V.A.4 -SUFF.V.A.5 N.N   POST
+\f Bihain nau sampela man i bin kamap long haus.
+\fe Then some men came to the house.
+
+\ref 14
+\t Igeia                     voroopairara         vavo  uruio               iava.
+\m igei              -a      voroo -pa    -irara  vavo  urui    -o          iava
+\g PRO.PER.1.PL.EXCL -???    hunt  -DERIV -PL     there village -???        ABL
+\p PRO.PER           -SUFF.N V.B   -SUFF  -SUFF.N LOC   N.N     -SUFF.N.??? POST
+\f Mipela ol man bilong lukaut pik bilong narapela ples.
+\fe ``We are hunters from the next village.
+
+\ref 15
+\t Igei              uuko  regapaiei.
+\m igei              uuko  rega       -pa       -i         -ei
+\g PRO.PER.1.PL.EXCL water thirst for -PROG     -1.PL.EXCL -PRES
+\p PRO.PER           N.N   V.A        -SUFF.V.3 -SUFF.V.4  -SUFF.V.A.5
+\f Mipela i nek drai.
+\fe We are thirsty.
+
+\ref 16
+\t Igei              uukaio ruipapaiei.
+\m igei              uukaio ruipa -pa       -i         -ei
+\g PRO.PER.1.PL.EXCL drink  want  -PROG     -1.PL.EXCL -PRES
+\p PRO.PER           V.A    V.A   -SUFF.V.3 -SUFF.V.4  -SUFF.V.A.5
+\f Mipela i laik dring wara.
+\fe We want to drink some water.''
+
+\ref Paragraphs 17
+\t ``Viapau, teapi     koatapata                 kepa  sovaraia,"       osia      purasiepa                  kaakau vaio.
+\m viapau    teapi     koata -pa       -ta       kepa  siovara -ia      osia      pura -si       -epa        kaakau vaio
+\g NEG       lest      enter -PROG     -2.PL     house inside  -LOC     as        make -3.DL.M   -RP         dog    DL.ANIM
+\p NEG       PART.APPR V.A   -SUFF.V.3 -SUFF.V.4 N.N   N.LOC   -ENC.N.6 PART.CONJ V.B  -SUFF.V.4 -SUFF.V.A.5 N.F    FFP
+\f ``Nogat, yupela i no ken go insait long haus,'' ol dok i bin singaut.
+\fe ``No, don't go inside the house,'' the dogs shouted.
+
+\ref 18
+\t ``Vegei           visii        vatepave                 aue  uuko.''
+\m vegei             visii        vate -pa       -ve       aue  uuko
+\g PRO.PER.1.DL.EXCL PRO.PER.2.PL give -PROG     -1.DL     CONN water
+\p PRO.PER           PRO.PER      V.B  -SUFF.V.3 -SUFF.V.4 CONN N.N
+\f ``Bai mipela givim yupela wara.''
+\fe ``We will give you some water.''
+
+\ref Paragraph 19
+\t Osia      viapau reo  uvuaepa                      oirara.
+\m osia      viapau reo  uvu  -a          -epa        oirara
+\g as        NEG    talk hear -3.PL       -RP         people
+\p PART.CONJ NEG    V.A  V.B  -SUFF.V.A.4 -SUFF.V.A.5 N.N.PL
+\f Tasol ol man i no bin harim tok.
+\fe But the men didn't listen.
+
+\ref 20
+\t ``Avata,      visii        vuriirara    kaakau kare,'' osia      puraaepa.
+\m ava -ta       visii        vuri -irara  kaakau kare    osia      pura -a          -epa
+\g go  -2.PL     PRO.PER.2.PL bad  -PL     dog    animals as        say  -3.PL       -RP
+\p V.A -SUFF.V.4 PRO.PER      V.A  -SUFF.N N.F    FFP     PART.CONJ V.A  -SUFF.V.A.4 -SUFF.V.A.5
+\f ``Yupela i go, ol rabis dok,'' ol i bin singaut.
+\fe ``Go away, you silly dogs,'' they shouted.
+
+\ref 21
+\t Oirara vurukoara    ouiva                       uva  kaakau vaio    gisipoaro        ragipaiva                              uva  tuvuusiepa.
+\m oirara vuruko -ara  ou  -i          -va         uva  kaakau vaio    gisipo -aro      ragi -pa       -i          -va         uva  tuvu -u -si -epa
+\g people log    -PL   get -3.PL       -RP         so   dog    DL.ANIM mouth  -POSS     beat -PROG     -3.PL       -RP         so
+\p N.N.PL N.???  -SUFF V.B -SUFF.V.B.4 -SUFF.V.B.5 PART N.F    FFP     N.F    -SUFF.N.5 V.B  -SUFF.V.3 -SUFF.V.B.4 -SUFF.V.B.5 PART
+\nt What's the story with 'tuvuusiepa'?
+\f Ol man i bin kisim stik na paitim ol dok inap maus bilong ol i bin solap.
+\fe The men got sticks and hit the dogs until their mouths were swollen.
+
+\ref Paragraph 22
+\t Oirara koataiepa                     kepa  sovaraia         uva  oara           rutu ouiva                       gaurai                      vaararo           uva  varava                  toriiva.
+\m oirara koata -i          -epa        kepa  siovara -ia      uva  oara           rutu ou  -i          -va         gau -ra         -ei         vaara -ro         uva  vara           -va      tori     -i          -va
+\g people enter -3.PL       -RP         house inside  -LOC     so   PRO.REL.3.PL.N very get -3.PL       -RP         cry -1.SG       -PRES       cured -PL         so   PRO.PER.3.PL.F -ABL     run away -3.PL       -RP
+\p N.N.PL V.A   -SUFF.V.B.4 -SUFF.V.A.5 N.N   N.LOC   -ENC.N.6 PART PRO.REL        ADV  V.B -SUFF.V.B.4 -SUFF.V.B.5 V.B -SUFF.V.A.4 -SUFF.V.A.5 V.??? -SUFF.N.??? PART PRO.PER        -ENC.N.6 V.B      -SUFF.V.B.4 -SUFF.V.B.5
+\nt Check all intransitive stems ending with 'i' in the third person plural. What happens to vowel length?
+\f Ol man i go insait long hause na kisim olgeta samting bilong Gaurai na ranawe wantaim.
+\fe The men went into the house and took all of Gaurai's belongings and went away.
+
+\ref Paragraph 23
+\t Kaakau vaio    rirovira siraosiepa.
+\m kaakau vaio    rirovira sirao -si       -epa
+\g dog    DL.ANIM big-time pity  -3.DL.M   -RP
+\p N.F    FFP     ADV      V.A   -SUFF.V.4 -SUFF.V.A.5
+\f Ol dok i bin sori tru.
+\fe The dogs were very sad.
+
+\ref 24
+\t Garevisivi oravirupaoro                     avasiepa                  reeta  iare    kepaia.
+\m garevisivi oraviru      -pa       -oro      ava -si       -epa        reeta  iare    kepa  -ia
+\g carefully  shift itself -PROG     -DEP.SIM  go  -3.DL.M   -RP         ladder towards house -LOC
+\p ???        V.A.REFL     -SUFF.V.3 -SUFF.V.4 V.A -SUFF.V.4 -SUFF.V.A.5 N.N    POST    N.N   -ENC.N.6
+\f Ol i bin go isiisi na slip klostu long ol step bilong haus.
+\fe They crept away and slept near the step of the house.
+
+\ref Paragraph 25
+\t Vokiarovi kareroepa                      Gaurai voroopa      tapiva.
+\m vokiarovi kare   -ro         -epa        Gaurai voroo -pa    tapi  -va
+\g afternoon return -3.SG.M     -RP         name   hunt  -DERIV place -ABL
+\p TIME      V.A    -SUFF.V.A.4 -SUFF.V.A.5 N.PN   V.B   -SUFF  N.N   -ENC.N.6
+\f Long apinun Gaurai i bin kam bek long painim pik.
+\fe In the afternoon Gaurai arrived back from hunting.
+
+\ref 26
+\t Uva  kaakau vaio    kekereva                     tuuvuuarava             kagaveia          ora       gisipoaraia.
+\m uva  kaakau vaio    keke -re         -va         tuuvuu   -ara  -va      kagave   -ia      ora       gisipo -ara  -ia
+\g so   dog    DL.ANIM look -3.SG.M     -RP         swelling -PL   -ABL     forehead -LOC     and       mouth  -PL   -LOC
+\p PART N.F    FFP     V.B  -SUFF.V.B.4 -SUFF.V.B.5 N.N      -SUFF -ENC.N.6 N.F      -ENC.N.6 PART.CONJ N.F    -SUFF -ENC.N.6
+\f Em i bin lukim ol dok wantaim ol maus na pes bilong ol i solap.
+\fe He saw the dogs with swollen faces and mouths.
+
+\ref 27
+\t ``Eake kareke?'' osia      akereva.
+\m eake   kareke    osia      ake -re         -va
+\g what   appear    as        ask -3.SG.M     -RP
+\p INTER  V.A       PART.CONJ V.B -SUFF.V.B.4 -SUFF.V.B.5
+\f ``Wanem samting i bin kamap?'' em i bin askim ol.
+\fe ``What happened?'' he asked.
+
+\ref 28
+\t Viapau kaakau vaio    oreovuavuvai                                        purasiva.
+\m viapau kaakau vaio    o-     reo  -vu       -a      -vu       -vai        pura -si       -va
+\g NEG    dog    DL.ANIM SPEC-  talk -ALT      -???    -ALT      -NABS       make -3.DL.M   -RP
+\p NEG    N.F    FFP     PRE.N- V.A  -SUFF.N.4 -SUFF.N -SUFF.N.4 -SUFF.N.??? V.B  -SUFF.V.4 -SUFF.V.B.5
+\f Tasol ol dok i no bin tokim wanpela samting.
+\fe But the dogs would not say anything.
+
+\ref 29
+\t Aiterea         rirovira upiapasiepa.
+\m aiterei -a      rirovira upia    -pa       -si       -epa
+\g 3.DL.M  -???    big-time in pain -PROG     -3.DL.M   -RP
+\p PRO.PER -SUFF.N ADV      V.A     -SUFF.V.3 -SUFF.V.4 -SUFF.V.A.5
+\f Ol i bin gat bikpela pen.
+\fe They were in pain.
+
+\ref Paragraph 30
+\t Viapau uvuiparoi                                 Gaurai ra   variia                     tarairo                oa             karekepa           kaakau vaioia.
+\m viapau uvui    -pa       -ro         -ei         Gaurai ra   vari              -ia      tarai      -ro         oa             kareke -epa        kaakau vaio    -ia
+\g NEG    be.able -PROG     -3.SG.M     -PRES       name   COMP PRO.DEM.DIST.SG.N -LOC     understand -3.SG.M     PRO.REL.3.SG.N appear -RP         dog    DL.ANIM -LOC
+\p NEG    V.A     -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5 N.PN   COMP PRO.DEM           -ENC.N.6 V.A        -SUFF.V.A.4 PRO.REL        V.A    -SUFF.V.A.5 N.F    FFP     -ENC.N.6
+\f Gaurai i no inap painim wanem samting i bin kamap long ol dok.
+\fe Gaurai never found out what happened to the dogs.
+
+\ref 31
+\t Osia      taraiparoepa                                 oisio iravu                    kaakau vaio    uporevo                     ora       auero rutu kavirurevo.
+\m osia      tarai      -pa       -ro         -epa        oisio ira            -vu       kaakau vaio    upo -re         -vo         ora       auero rutu kaviru -re         -vo
+\g as        understand -PROG     -3.SG.M     -RP         like  PRO.REL.3.SG.M -ALT      dog    DL.ANIM hit -3.SG.M     -IP         and       these very steal  -3.SG.M     -IP
+\p PART.CONJ V.A        -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5 COMP  PRO.REL        -SUFF.N.4 N.F    FFP     V.B -SUFF.V.B.4 -SUFF.V.B.5 PART.CONJ N.N   ADV  V.B    -SUFF.V.B.4 -SUFF.V.B.5
+\f Tasol em i bin save olsem sampela man i bin paitim ol dok bilong em na stilim olgeta samting bilong em.
+\fe But he knew someone had beaten his dogs and stolen his belongings.
+
+\ref 32
+\t Evo       vuuta iava eaka    ovoisiepa                    reoreopaarapa.
+\m evo       vuuta iava eaka    ovoi   -si       -epa        reoreo   -pa       -arapa
+\g PRO.DEM.N time  ABL  give.up finish -3.DL.M   -RP         converse -PROG     -DEP.DIS
+\p PRO.DEM   N.N   POST V.B     V.A    -SUFF.V.4 -SUFF.V.A.5 V.A      -SUFF.V.3 -SUFF.V.4
+\f Long dispela taim, ol dok i bin pinis long toktok.
+\fe Since then, all dogs have stopped talking.
+
+\ref 33
+\t Reoreo   ruiparagapasiepa                             osia      gisiporirei      riro vavatapaereiepa.
+\m reoreo   ruipa - raga -pa       -si       -epa        osia      gisipo -rirei    riro vavata -pa       -ere      -i     -epa
+\g converse want  - only -PROG     -3.DL.M   -RP         as        mouth  -FEM.DL   very heavy  -PROG     -3.DL.F   -EPEN  -RP
+\p V.A      V.A   - ADV  -SUFF.V.3 -SUFF.V.4 -SUFF.V.A.5 PART.CONJ N.F    -SUFF.N.1 ADV  V.A    -SUFF.V.3 -SUFF.V.4 -INFIX -SUFF.V.A.5
+\f Ol i bin laik toktok, tasol maus bilong ol i bin hevi.
+\fe They wanted to talk, but their mouths were heavy.

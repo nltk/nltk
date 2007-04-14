@@ -1,0 +1,324 @@
+\_sh v3.0  400  Rotokas Text
+
+\id How Snakes Came To Be
+\au Julianna Ageva
+
+\ref Paragraph 1
+\t Voari    rutu tuariri uva  oisioa   oaraoreivu                toupasi.
+\m voari    rutu tuariri uva  oisioa   o-     araorei  -vu       tou -pa       -si
+\g before   very before  so   always   SPEC-  brothers -ALT      be  -PROG     -3.DL.M
+\p TIME/LOC ADV  TIME    PART ADV.TEMP PRE.N- N.M      -SUFF.N.5 V.B -SUFF.V.2 -SUFF.V.3
+\f Long taim bipo i bin gat tupela brata.
+\fe Long ago there lived two brothers.
+
+\ref 2
+\t Ragi oisioa   kovo   puraparo                   ari       Pevarasi oisioa   touragapareve.
+\m Ragi oisioa   kovo   pura -pa       -ro         ari       Pevarasi oisioa   tou -raga     -pa       -re         -ve
+\g name always   garden make -PROG     -3.SG.M.A   but       name     always   be  -only     -PROG     -3.SG.M.B   -SUB
+\p N.PN ADV.TEMP N.N    V.B  -SUFF.V.2 -SUFF.V.A.3 PART.CONJ N.PN     ADV.TEMP V.B -SUFF.V.1 -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.5
+\f Ragi em man bilong wok na Pevarasi em i les man.
+\fe Ragi was hard-working and Pevarasi was lazy.
+
+\ref Paragraph 3
+\t Ovokipakouvuia                      viapau aue        varuavai        aiosia.
+\m o-     vokipakou -vu       -ia      viapau aue        varua -vai      aio -sia
+\g SPEC-  morning   -ALT      -LOC     NEG    connective meat  -INDEF    eat -DEP.PURP
+\p PRE.N- TIME      -SUFF.N.5 -ENC.N.6 NEG    CONN       N.N   -SUFF.N.6 V.B -SUFF.V.4
+\f Wanpela moning i no bin gat abus bilong kaikai.
+\fe One morning, there was no meat to eat.
+
+\ref 4
+\t Oa          iava Ragi avaroepa                    varu tarasia.
+\m oa          iava Ragi ava -ro         -epa        varu tara -sia
+\g RPRO.3.SG.N ABL  name go  -3.SG.M.A   -RP.A       meat seek -DEP.PURP
+\p RPRO        POST N.PN V.A -SUFF.V.A.3 -SUFF.V.A.5 N.N  V.B  -SUFF.V.4
+\f Olsem na Ragi em i go painim abus.
+\fe So Ragi went hunting.
+
+\ref Paragraph 5
+\t Avukavava           aivaroreva.
+\m avukava   -va       aivaro    -re         -va
+\g old woman -SG.F     meet.with -3.SG.M.B   -RP.B
+\p N.HUM     -SUFF.N.2 V.B       -SUFF.V.B.3 -SUFF.V.B.5
+\f Em i bungim wanpela lapun meri.
+\fe He met an old woman.
+
+\ref 6
+\t Ragai     tauvari           varao         kaeoro          erakoara,          oisio puraopa                      avukava.
+\m ragai     tauva -ri         varao         kae   -oro      erako    -ara      oisio pura -o          -epa        avukava
+\g PPRO.1.SG help  -2.SG.B     DEM.PROX.PL.N carry -DEP.SIM  firewood -PL.N     like  say  -3.SG.F.A   -RP.A       old woman
+\p PPRO      V.B   -SUFF.V.B.3 DEM           V.B   -SUFF.V.3 N.N      -SUFF.N.2 COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 N.HUM
+\f ``Yu halapim mi long karim dispela paia wut,'' lapun i tok.
+\fe ``Help me carry this firewood,'' said the old woman.
+
+\ref 7
+\t Ragi erakoara           kaereva                       avukava              varaaro.
+\m Ragi erako    -ara      kae   -re         -va         avuka      -va       vara        -aro
+\g name firewood -PL.N     carry -3.SG.M.B   -RP.B       old.person -SG.F     PPRO.3.PL.F -POSS
+\p N.PN N.N      -SUFF.N.2 V.B   -SUFF.V.B.3 -SUFF.V.B.5 N.HUM      -SUFF.N.2 PPRO        -SUFF.N.3
+\f Ragi i karim ol paia wut bilong lapun meri.
+\fe Ragi carried the old woman's firewood.
+
+\ref Paragraph 8
+\t Voavukava                  vokepaaroia                    uva  rera        tavieva,
+\m vo-   avuka      -va       vo-   kepa  -aro      -ia      uva  rera        tavi -e          -va
+\g SING- old.person -SG.F     SING- house -POSS     -LOC     so   PPRO.3.SG.M tell -3.SG.F.B   -RP.B
+\p PRE-  N.HUM      -SUFF.N.2 PRE-  N.N   -SUFF.N.3 -ENC.N.6 PART PPRO        V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f Long haus bilong lapun meri, em i bin tok olsem, 
+\fe At the old woman's house she said,
+
+\ref 8b
+\t ``Voo iipau             roia   riro kaekaeto         opitatato                 ra   aisirevi                           raga ourivere                 kooruisire                       vai''.
+\m voo   iipa  -u          roi -a riro kaekae -to       opita   -ta       -to     ra   aisi              -re        -vi   raga ou  -ri        -vere     kooru          -isi    -re       vai
+\g here  go.up -2.SG.A            big  long   -SG.M     coconut -2PL      -MASC   and  ball/round object -3.SG.M    -DIM  only get -2.SG      -NF       unripe coconut -CLASS  -ALLATIVE maybe/probably/some
+\p DEIC  V.A   -SUFF.V.A.3        ADJ  ???    -SUFF.N.2 N.N     -SUFF.V.4 -SUFF.N CONJ ???               -SUFF.VT.4 -SUFF ADV  V.T -SUFF.VT.4 -SUFF.V.5 N.N            -SUFF.N -SUFF     GR
+\f ``Go antap long dispela longpela kokonas na kisim tupela kulau.''
+\fe ``Climb the tallest coconut tree and pick only two cocunts.
+
+\ref 9
+\t Aisi         raga aiopari                   ra   aisivu                 aiorivere                 utupaua.
+\m aisi         raga aio -pa       -ri         ra   aisi         -vu       aio -ri         -vere     utupaua
+\g round object only eat -PROG     -2.SG.B     COMP round object -ALT      eat -2.SG.B     -NF       later
+\p CLASS        ADV  V.B -SUFF.V.2 -SUFF.V.B.3 COMP CLASS        -SUFF.N.5 V.B -SUFF.V.B.3 -SUFF.V.5 TIME
+\f Bai yu kaikai wanpela nau na bihain yu kaikai narapela.
+\fe Eat one now and the other later.'' 
+
+\ref 10
+\t Ragi aisivu                 aioreva                     aisivu                 kavuoro                utupauare.
+\m Ragi aisi         -vu       aio -re         -va         aisi         -vu       kavu         -oro      utupaua -re
+\g name round object -ALT      eat -3.SG.M.B   -RP.B       round object -ALT      leave.behind -DEP.SIM  later   -ALL
+\p N.PN CLASS        -SUFF.N.5 V.B -SUFF.V.B.3 -SUFF.V.B.5 CLASS        -SUFF.N.5 V.B          -SUFF.V.3 TIME    -ENC.N.6
+\f Ragi i bin kaikai wanpela na em i bin lusim narapela bilong kaikaiim bihain.
+\fe Ragi had one and kept the other.
+
+\ref 11
+\t Ragi oira        avauereva                         uva  voreroepa                      eisire             vegoaro          voroosia.
+\m Ragi oira        avau        -ere      -va         uva  vore   -ro         -epa        eisi      -re      vego   -aro      voroo -sia
+\g name PPRO.3.SG.F say.goodbye -3.DL.F   -RP.B       so   return -3.SG.M.A   -RP.A       like.this -ALL     jungle -POSS     hunt  -DEP.PURP
+\p N.PN PPRO        V.A         -SUFF.V.3 -SUFF.V.B.5 PART V.A    -SUFF.V.A.3 -SUFF.V.A.5 PART.MNR  -ENC.N.6 N.N    -SUFF.N.3 V.B   -SUFF.V.4
+\f Ragi i bin tok gutbai na em i bin go bek long bus.
+\fe Ragi said goodbye and went back hunting.
+
+\ref Paragraph 12
+\t Viapau   oisio vearovira orasiovoparoepa.
+\m viapau   oisio vearovira ora- siovo -pa       -ro         -epa
+\g NEG      like  good      RR-  feel  -PROG     -3.SG.M.A   -RP.A
+\p PART.NEG COMP  ADV       PRE- V.B   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f Em i no bin laki.
+\fe But he was not lucky.
+
+\ref 13
+\t Uvare     ravireo kasikasivira   rutu roropareva                              uva  takauroepa                    ora       uuko  ruiparoepa.
+\m uvare     ravireo kasikasi -vira rutu roro  -pa       -re         -va         uva  takau -ro         -epa        ora       uuko  ruipa -ro         -epa
+\g because   sun     angry    -ADV  very shine -PROG     -3.SG.M.B   -RP.B       so   tired -3.SG.M.A   -RP.A       and       water want  -3.SG.M.A   -RP.A
+\p PART.CONJ N.M     V.A      -SUFF ADV  V.B   -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 PART V.A   -SUFF.V.A.3 -SUFF.V.A.5 PART.CONJ N.N   V.A   -SUFF.V.A.3 -SUFF.V.A.5
+\f Sun em i bin hot nau na Ragi em i bin tait na em i bin nek drai.
+\fe The sun was hot now and Ragi was tired and thirsty too.
+
+\ref Paragraph 14
+\t ``Va        isi-oia                    uukaioparai                              ovoiopa           isi   kooru          isi,'' osia puraroepa.
+\m va          isi   -o          -ia      uukaio -pa       -ra         -ei         ovoio   -pa       isi   kooru          isi    osia pura -ro         -epa
+\g PPRO.3.SG.N round -???        -LOC     drink  -PROG     -1.SG.A     -PRES.A     be.last -DERIV    round unripe.coconut round  as   say  -3.SG.M.A   -RP.A
+\p PPRO        CLASS -SUFF.N.??? -ENC.N.6 V.A    -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 V.A     -SUFF.N.1 CLASS N.N            CLASS  CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5
+\f ``Bai mi dring dispela laspela kulau,'' em i bin tok.
+\fe ``I'll drink my last coconut,'' he said.
+
+\ref 15
+\t Vosia     Ragi sigoa              oupareva                              kooru          isi   toesia        uva  oavu    uvureva                      gurukoa.
+\m vosia     Ragi sigo     -a        ou  -pa       -re         -va         kooru          isi   toe -sia      uva  oavu    uvu  -re         -va         gurukoa
+\g when      name knife    -SG.N     get -PROG     -3.SG.M.B   -RP.B       unripe.coconut round cut -DEP.PURP so   another hear -3.SG.M.B   -RP.B       sound
+\p PART.CONJ N.PN N.HYBRID -SUFF.N.2 V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 N.N            CLASS V.B -SUFF.V.4 PART ???     V.B  -SUFF.V.B.3 -SUFF.V.B.5 N.N
+\f Taim Ragi em i kisim naip na i laik katim kulau em i harim wanpela nois.
+\fe When Ragi got his kife to cut the coconut he heard a voice.
+
+\ref 16
+\t ``Viapau, viapau,  teapi     ragai     vuripieri.''
+\m viapau    viapau   teapi     ragai     vuripie -ri
+\g NEG       NEG      lest      PPRO.1.SG ruin    -2.SG.B
+\p PART.NEG  PART.NEG PART.APPR PPRO      V.B     -SUFF.V.B.3
+\f ``No ken, no ken, nogut yu bagarapim mi.''
+\fe ``Don't! Don't! You'll hurt me.''
+
+\ref Paragraph 17
+\t Va          isi   sovarai iava kooru          isi   iriavu                vearopieva            riakova         kosioviropa.
+\m va          isi   siovara iava kooru          isi   iria        -vu       vearopie  -va         riako -va       kosi -o          -viro     -epa
+\g PPRO.3.SG.N round inside  ABL  unripe.coconut round RPRO.3.SG.F -ALT      make.good -RP.B       woman -SG.F     exit -3.SG.F.A   -COMPL    -RP.A
+\p PPRO        CLASS N.LOC   POST N.N            CLASS RPRO        -SUFF.N.5 V.B       -SUFF.V.B.5 N.F   -SUFF.N.2 V.A  -SUFF.V.A.3 -SUFF.V.4 -SUFF.V.A.5
+\f Insait long kulau wanpela naispela meri i bin kam autsait.
+\fe Out of the coconut appeared a very beautiful girl.
+
+\ref 18
+\t Ragi oira        oureva                      uva  oirava               kareroepa.
+\m Ragi oira        ou  -re         -va         uva  oira        -va      kare   -ro         -epa
+\g name PPRO.3.SG.F get -3.SG.M.B   -RP.B       so   PPRO.3.SG.F -ABL     return -3.SG.M.A   -RP.A
+\p N.PN PPRO        V.B -SUFF.V.B.3 -SUFF.V.B.5 PART PPRO        -ENC.N.6 V.A    -SUFF.V.A.3 -SUFF.V.A.5
+\f Ragi em i kisim dispela meri i go long ples.
+\fe Ragi took the girl and went home.
+
+\ref Paragraph 19
+\t Vosia     Pevarasi oira        kekereva,                       uva  orasitaroepa                        uva  akereva,
+\m vosia     Pevarasi oira        keke    -re         -va         uva  orasita     -ro         -epa        uva  ake -re         -va
+\g when      name     PPRO.3.SG.F look.at -3.SG.M.B   -RP.B       so   be.startled -3.SG.M.A   -RP.A       so   ask -3.SG.M.B   -RP.B
+\p PART.CONJ N.PN     PPRO        V.B     -SUFF.V.B.3 -SUFF.V.B.5 PART V.A.REFL    -SUFF.V.A.3 -SUFF.V.A.5 PART V.B -SUFF.V.B.3 -SUFF.V.B.5
+\f Taim Pevarasi i lukim dispela meri, em i kirap nogut na em i askim, 
+\fe When Pevarasi saw this girl, he was surprised and he asked, 
+
+\ref 19b
+\t ``Apeisi ragavira oo            ourivo                      riakova?''
+\m apeisi   ragavira oo            ou  -ri         -vo         riako -va
+\g how      just     DEM.PROX.SG.F get -2.SG.B     -IP.B       woman -SG.F
+\p INTER    ADV      DEM           V.B -SUFF.V.B.3 -SUFF.V.B.5 N.F   -SUFF.N.2
+\f ``Yu kisim em olsem wanem?''
+\fe ``How did you get her?''
+
+\ref Paragraph 20
+\t ``Iriavu              avukava              tauvaavo,                     iria        ragai     tavievo                      kooru          atosia,           uva  aisi-vu                iava oo            vearopieva          riakova         karekeoe,''                    Ragi rera        aviavipiereva.
+\m iria        -vu       avuka      -va       tauva -a          -vo         iria        ragai     tavi -e          -vo         kooru          ato     -sia      uva  aisi         -vu       iava oo            vearopie  -va       riako -va       kareke -o          -e          Ragi rera        aviavipie -re         -va
+\g RPRO.3.SG.F -ALT      old.person -SG.F     help  -1.SG.B     -IP.B       RPRO.3.SG.F PPRO.1.SG tell -3.SG.F.B   -IP.B       unripe.coconut harvest -DEP.PURP so   round object -ALT      ABL  DEM.PROX.SG.F make.good -SG.F     woman -SG.F     appear -3.SG.F.A   -IP.A       name PPRO.3.SG.M explain   -3.SG.M.B   -RP.B
+\p RPRO        -SUFF.N.5 N.HUM      -SUFF.N.2 V.B   -SUFF.V.B.3 -SUFF.V.B.5 RPRO        PPRO      V.B  -SUFF.V.B.3 -SUFF.V.B.5 N.N            V.B     -SUFF.V.4 PART CLASS        -SUFF.N.5 POST DEM           V.B       -SUFF.N.2 N.F   -SUFF.N.2 V.A    -SUFF.V.A.3 -SUFF.V.A.5 N.PN PPRO        V.B       -SUFF.V.B.3 -SUFF.V.B.5
+\f ``Mi bin halavim wanpela lapun meri, em i bin tokim mi long kisim tupela kulau, na insait long wanpela kulau dispela naispela meri kam autsait, Ragi em i kliaim.
+\fe ``I helped an old woman, she told me to get two coconuts, and out of one of them appeared this wonderful girl,'' explained Ragi.
+
+\ref Paragraph 21
+\t ``Avaparai                            eisire             vegoaro          vokipavira varu tarasia,''     osia      puraroepa                    Pevarasi.
+\m ava -pa       -ra         -ei         eisi      -re      vego   -aro      vokipavira varu tara -sia      osia      pura -ro         -epa        Pevarasi
+\g go  -PROG     -1.SG.A     -PRES.A     like.this -ALL     jungle -POSS     morning    meat seek -DEP.PURP as        say  -3.SG.M.A   -RP.A       name
+\p V.A -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 PART.MNR  -ENC.N.6 N.N    -SUFF.N.3 TIME       N.N  V.B  -SUFF.V.4 PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5 N.PN
+\f ``Bai mi go painim abus tumora,'' Pevarasi tok.
+\fe ``I'm going hunting tomorrow,'' said Pevarasi.
+
+\ref Paragraph 22
+\t Ovokipakouvuia                      ovokivu               iava Pevarasi avaroepa                    varu tarasia.
+\m o-     vokipakou -vu       -ia      o-     voki -vu       iava Pevarasi ava -ro         -epa        varu tara -sia
+\g SPEC-  morning   -ALT      -LOC     SPEC-  day  -ALT      ABL  name     go  -3.SG.M.A   -RP.A       meat seek -DEP.PURP
+\p PRE.N- TIME      -SUFF.N.5 -ENC.N.6 PRE.N- N.N  -SUFF.N.5 POST N.PN     V.A -SUFF.V.A.3 -SUFF.V.A.5 N.N  V.B  -SUFF.V.4
+\f Long moning taim bilong narapela dei, Pevarasi em i go painim abus.
+\fe Next morning, Pevarasi went hunting.
+
+\ref 23
+\t Voraivaaro            uva  avukava              aivaroreva.
+\m vo-   raiva -aro      uva  avuka      -va       aivaro    -re         -va
+\g SING- road  -POSS     so   old.person -SG.F     meet.with -3.SG.M.B   -RP.B
+\p PRE-  N.N   -SUFF.N.3 PART N.HUM      -SUFF.N.2 V.B       -SUFF.V.B.3 -SUFF.V.B.5
+\f Long rot em i bungim wankain lapun meri.
+\fe On the way he met the same old woman.
+
+\ref Paragraph 24
+\t Ragai     tauvari,          varau                 kaeoro          erakoara,''        oisio puraopa                      avukava.
+\m ragai     tauva -ri         vara      -u          kae   -oro      erako    -ara      oisio pura -o          -epa        avuka      -va
+\g PPRO.1.SG help  -2.SG.B     come.down -2.SG.A     carry -DEP.SIM  firewood -PL.N     like  say  -3.SG.F.A   -RP.A       old.person -SG.F
+\p PPRO      V.B   -SUFF.V.B.3 V.A       -SUFF.V.A.3 V.B   -SUFF.V.3 N.N      -SUFF.N.2 COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 N.HUM      -SUFF.N.2
+\f ``Yu halavim mi long karim dispela paia wut,'' lapun meri tok.
+\fe ``Help me carry this firewood,'' said the old woman.
+
+\ref Paragraph 25
+\t ``Riroara      rutu varau                 erakoara,''        Pevarasi osia      puraroepa.
+\m riro -ara      rutu vara      -u          erako    -ara      Pevarasi osia      pura -ro         -epa
+\g big  -PL.N     very come.down -2.SG.A     firewood -PL.N     name     as        say  -3.SG.M.A   -RP.A
+\p ADJ  -SUFF.N.2 ADV  V.A       -SUFF.V.A.3 N.N      -SUFF.N.2 N.PN     PART.CONJ V.A  -SUFF.V.A.3 -SUFF.V.A.5
+\f ``Em planti tumas,'' Pevarasi i tok.
+\fe ``This is too much for you,'' said Pevarasi.
+
+\ref 26
+\t Oa          iava oaravuia                       vikiroepa,                         oaravu                raga kaesia.
+\m oa          iava oara        -vu       -ia      viki       -ro         -epa        oara        -vu       raga kae   -sia
+\g RPRO.3.SG.N ABL  RPRO.3.PL.N -ALT      -LOC     throw.away -3.SG.M.A   -RP.A       RPRO.3.PL.N -ALT      only carry -DEP.PURP
+\p RPRO        POST RPRO        -SUFF.N.5 -ENC.N.6 V.A        -SUFF.V.A.3 -SUFF.V.A.5 RPRO        -SUFF.N.5 ADV  V.B   -SUFF.V.4
+\f Na em i troim sampela paia wut na karim sampela tasol.
+\fe And he threw half of it away and carried a small load.
+
+\ref Paragraph 27
+\t Voavukava                  vokepaaroia                    uva  Pevarasi tavieva,
+\m vo-   avuka      -va       vo-   kepa  -aro      -ia      uva  Pevarasi tavi -e          -va
+\g SING- old.person -SG.F     SING- house -POSS     -LOC     so   name     tell -3.SG.F.B   -RP.B
+\p PRE-  N.HUM      -SUFF.N.2 PRE-  N.N   -SUFF.N.3 -ENC.N.6 PART N.PN     V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f Long haus bilong lapun meri, em i tokim Pevarasi olsem, 
+\fe At the old woman's house she said to Pevarasi, 
+
+\ref Paragraph 27.5
+\t ``Voo iipau             rooia                riro kaekaeto         opitato            ra   aisirei                 ouri            kooru          isireivai''.
+\m voo   iipa  -u          roo         -ia      riro kaekae -to       opita    -to       ra   aisi         -rei       ou  -ri         kooru          isi   -rei       -vai
+\g here  go.up -2.SG.A     PPRO.3.SG.M -LOC     big  long   -SG.M     coconut  -SG.M     COMP round object -DL.CL     get -2.SG.B     unripe.coconut round -DL.CL     -INDEF
+\p DEIC  V.A   -SUFF.V.A.3 PPRO        -ENC.N.6 ADJ  ???    -SUFF.N.2 N.HYBRID -SUFF.N.2 COMP CLASS        -SUFF.CL.1 V.B -SUFF.V.B.3 N.N            CLASS -SUFF.CL.1 -SUFF.N.6
+\f ``Go antap long dispela longpela kokonas na kisim tupela kulau.
+\fe ``Climb the tallest coconut tree and get only two nuts.
+
+\ref 28
+\t Aisi-a               uukaiouvere                 ra   aisi         kavuri                           aisi-a-ia                         uukaiovere       utupaua.
+\m aisi         -a      uukaio -u         -vere     ra   aisi         kavu                  -ri        aisi              -a      -ia     uukaio -vere     utupaua
+\g round object -N      drink  -2.SG      -NF       COMP round object left behind/left over -2.SG      ball/round object -N      -at     drink  -NF       following after/later
+\p ???          -SUFF.N V.I    -SUFF.VI.4 -SUFF.V.5 COMP ???          ADJ                   -SUFF.VT.4 ???               -SUFF.N -SUFF.N V.I    -SUFF.V.5 TEMP
+\f Kaikai wanpela nau na bihain kaikai narapela.''
+\fe Eat one now and one later.''
+
+\ref Paragraph 29
+\t Osia      Pevarasi viapau   oisio oira        uvureva.
+\m osia      Pevarasi viapau   oisio oira        uvu  -re         -va
+\g as        name     NEG      like  PPRO.3.SG.F hear -3.SG.M.B   -RP.B
+\p PART.CONJ N.PN     PART.NEG COMP  PPRO        V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f Tasol Pevarasi i no bin harim.
+\fe But Pevarasi didn't listen.
+
+\ref 30
+\t Vosia     iipa-paroepa                            etekutoaia               opitato            uva  rugorugooparoepa                            oisio,
+\m vosia     iipa  -pa       -ro         -epa        eteku -to       -ia      opita    -to       uva  rugorugoo -pa       -ro         -epa        oisio
+\g when      go.up -PROG     -3.SG.M.A   -RP.A       short -SG.M     -LOC     coconut  -SG.M     so   remember  -PROG     -3.SG.M.A   -RP.A       like
+\p PART.CONJ V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 V.A   -SUFF.N.2 -ENC.N.6 N.HYBRID -SUFF.N.2 PART V.A       -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP
+\f Taim em i wok long go antap long sortpela kokonas, em i tingting olsem, 
+\fe While he was climbing the shortest coconut tree, he thought to himself, 
+
+\ref 31
+\t ``Vovuuta   via            vaoia                    oaia                 ragai     riro riakovai        vatua               riakovai        ari       viapau oisio              ra   vovuutao            ropiragaa''.
+\m vo-   vuuta via            vao             -ia      oa          -ia      ragai     riro riako -vai      va{PPRO}    - tu -a riako -vai      ari       viapau oisio              ra   vo-   vuuta -o      ropi            - raga      -a
+\g SING- time  make something DEM.PROX.3.SG.N -LOC     RPRO.3.SG.N -LOC     PPRO.1.SG big  woman -INDEF    PPRO.3.SG.N -       woman -INDEF    but       NEG    this way/like this COMP SING- time  -3.SG.F waste something - only/just -1.SG
+\p PRE-  N.N   V.T            DEM             -ENC.N.6 RPRO        -ENC.N.6 PPRO      ADJ  N.F   -SUFF.N.6                     N.F   -SUFF.N.6 PART.CONJ NEG    ???                COMP PRE-  LOC   -SUFF.VIV.T             - ADV       -SUFF.VT.4
+\f ``Dispela em i taim bilong mi long gat plenti naispela meri na mi no inap misim''.
+\fe ``This is my only chance to have many beautiful wives and I'm not going to miss out on it.'' 
+
+\ref 31
+\t Uva  riroara        rutu atoreva                         kooruara.
+\m uva  riro -ara      rutu ato     -re         -va         kooru          -ara
+\g so   big  -PL.N     very harvest -3.SG.M.B   -RP.B       unripe.coconut -PL.N
+\p PART ADJ  -SUFF.N.2 ADV  V.B     -SUFF.V.B.3 -SUFF.V.B.5 N.N            -SUFF.N.2
+\f Na em i daunim plenti kulau.
+\fe And he brought many nuts down.
+
+\ref 32
+\t Sigoa              ivureva                      uva  rogoroepa                     kooruara                 rutu toepaoro.
+\m sigo     -a        ivu  -re         -va         uva  rogo  -ro         -epa        kooru          -ara      rutu toe -pa       -oro
+\g knife    -SG.N     pull -3.SG.M.B   -RP.B       so   start -3.SG.M.A   -RP.A       unripe.coconut -PL.N     very cut -PROG     -DEP.SIM
+\p N.HYBRID -SUFF.N.2 V.B  -SUFF.V.B.3 -SUFF.V.B.5 PART V.A   -SUFF.V.A.3 -SUFF.V.A.5 N.N            -SUFF.N.2 ADV  V.B -SUFF.V.2 -SUFF.V.3
+\f Em i pulim naip na stat long katim olgeta kulau.
+\fe He grabbed a bush knife and started to cut all of them open.
+
+\ref Paragraph 33
+\t Aue  vapapie-reva                                     uva  kearoepa                         oisio tavauruva              osia      rakoru kare    kosiaviropa                            okarea                        pisiapie       gasiroia                  toupaiva                              ora       oo            varaarovu                       rutu toupaiva                              oea        kosiaviropa                            kooru      isiro            sovarai             iava.
+\m aue  va      -pa       -pie     -re        -va        uva  kea      -ro         -epa        oisio tavauru      -va       osia      rakoru kare    kosi -a          -viro     -epa        o             -kare   -a      pisiapie       gasi  -ro        -ia      tou -pa       -i          -va         ora       oo            vara        -aro      -vu       rutu tou -pa       -i          -va         oea        kosi -a          -viro     -epa        kooru      isi   -ro        siovara -i          iava
+\g CONN 3.SG.N  -PROG     -CAUS    -3.SG.M    -RP        so   confused -3.SG.M.A   -RP.A       like  teenage.girl -SG.F     as        snake  animals exit -3.PL.A     -COMPL    -RP.A       DEM.PROX.SG.F -PL     -N      make.different break -PL.CL     -LOC     be  -PROG     -3.PL.B     -RP.B       and       DEM.PROX.SG.F PPRO.3.PL.F -POSS     -ALT      very be  -PROG     -3.PL.B     -RP.B       PRO.3.PL.M exit -3.PL.A     -COMPL    -RP.A       unripe.cocoround -PL.CL     inside  -ABS        ABL
+\p CONN PRO.PER -SUFF.V.3 -SUFF.VI -SUFF.VT.4 -SUFF.VT.5 PART V.A      -SUFF.V.A.3 -SUFF.V.A.5 COMP  N.F          -SUFF.N.2 PART.CONJ N.F    FFP     V.A  -SUFF.V.A.3 -SUFF.V.4 -SUFF.V.A.5 PRO.DEM       -N.SUFF -SUFF.N V.B            V.B   -SUFF.CL.1 -ENC.N.6 V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 PART.CONJ DEM           PPRO        -SUFF.N.3 -SUFF.N.5 ADV  V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 PPRO       V.A  -SUFF.V.A.3 -SUFF.V.4 -SUFF.V.A.5 N.N        CLASS -SUFF.CL.1 N.LOC   -SUFF.N.??? POST
+\f Abrus long kisim naispela meri, plenti snek bilong ol sais, shaip, na kala i kam autsait long kulau.
+\fe Instead of beautiful girls, out of the coconuts came snakes of all sizes, shapes, and colors.
+
+\ref 34
+\t Pevarasi torireva.
+\m Pevarasi tori -re         -va
+\g name     flee -3.SG.M.B   -RP.B
+\p N.PN     V.B  -SUFF.V.B.3 -SUFF.V.B.5
+\f Pevarasi i bin ranawe.
+\fe Pevarasi ran away.
+
+\ref 35
+\t Rakoru kare    oea        raivaara        rutuia        uvuipievira       avaaepa                     vegoaro.
+\m rakoru kare    oea        raiva -ara      rutu -ia      uvuipie     -vira ava -a          -epa        vego   -aro
+\g snake  animals PRO.3.PL.M road  -PL.N     very -LOC     make enough -ADV  go  -3.PL.A     -RP.A       jungle -POSS
+\p N.F    FFP     PPRO       N.N   -SUFF.N.2 ADV  -ENC.N.6 V.B         -SUFF V.A -SUFF.V.A.3 -SUFF.V.A.5 N.N    -SUFF.N.3
+\f Ol snek i bin go long olgeta hap rot insait long bus.
+\fe The snakes went in all direction into the bush.
+
+\ref Paragraph 36
+\t Eva          vituaro oa          iava rakoru kare    karekeaepa                     Irian  Jaya-ia.
+\m eva          vituaro oa          iava rakoru kare    kareke -a          -epa        Irian J*Jay -a          -ia
+\g DEM.MED.SG.N source  RPRO.3.SG.N ABL  snake  animals appear -3.PL.A     -RP.A       Irian J***  -???        -LOC
+\p DEM          N.N     RPRO        POST N.F    FFP     V.A    -SUFF.V.A.3 -SUFF.V.A.5 N.PN   ***  -SUFF.N.??? -ENC.N.6
+\f Em as bilong ol snek i bin kamap long Irian Jaya.
+\fe That is how snakes came to Irian Jaya.

@@ -1,0 +1,355 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Greedy Boy
+\au Inara Gogima
+
+\ref Paragraph 1
+\t Gutua        gareto          ari       Gosiea        riroto.
+\m Gutu -a      gare  -to       ari       Gosie -a      riro -to
+\g name -N      small -MASC.SG  but       name  -N      big  -MASC.SG
+\p N.PN -SUFF.N V.A   -SUFF.N.2 PART.CONJ N.PN  -SUFF.N ADJ  -SUFF.N.2
+\f Gudu i bin liklik mangi na Gose em i bikpela mangi.
+\fe Gudu was a small boy and Gose a big boy.
+
+\ref 2
+\t Ovokivuia                      oisio ruipapasiepa                          ra   oveu       aiosi.
+\m o-     voki -vu       -ia      oisio ruipa -pa       -si       -epa        ra   oveu       aio -si
+\g SPEC-  day  -ALT      -LOC     like  want  -PROG     -3.DL.M   -RP         COMP breadfruit eat -3.DL.M
+\p PRE.N- N.N  -SUFF.N.4 -ENC.N.6 COMP  V.A   -SUFF.V.3 -SUFF.V.3 -SUFF.V.A.5 COMP N.HYBRID   V.B -SUFF.V.3
+\f Wanpela de tupela i bin laik kaikai kapiak.
+\fe One day they wanted to eat breadfruit.
+
+\ref 3
+\t Oire, sigoara     ousiva                                uva  vaiterei rutu       avasiepa                 vegoarore.
+\m oire  sigo  -ara  ou               -si       -va        uva  vaiterei rutu       ava -si       -epa       vego   -aro    -re
+\g okay  knife -PL   get/take/receive -2/3.DL.M -RP        so   2.DL.M   very/truly go  -2/3.DL.M -RP        jungle -POSS   -ALLATIVE
+\p EXCL  N.N   -SUFF V.T              -SUFF.V.4 -SUFF.VT.5 CONJ PRO.PER  PH         V.I -SUFF.V.4 -SUFF.VI.5 N.???  -SUFF.N -SUFF
+\f Tupela i bin kisim ol naip bilong tupela na go long bus.
+\fe They both got their knives and went into the bush.
+
+\ref Paragraph 4
+\t Vosia   pousiviropa                          oveu            vaia            Gosie Gutu akereva,                  ``Euvui                          pau         ra   oveuvaia                      ipau?''
+\m Vosia   pou    -si       -viro     -pa       oveu            va      -ia     Gosie Gutu ake -re        -va,       ``E -u         -vu     -i        pau         ra   oveu            -va   -ia     ipa              -u?''
+\g when/if arrive -2/3.DL.M -COMPL    -RP       breadfruit tree 3.SG.N  -at     name  name ask -3.SG.M    -RP        *** -2.SG      -other  -PRES     plant/build COMP breadfruit tree -FEM  -at     climb/rise/breed -2.SG         ***
+\p CONJ    V.I    -SUFF.V.4 -SUFF.V.3 -SUFF.V.5 N.N             PRO.PER -SUFF.N N.PN  N.PN V.T -SUFF.VT.4 -SUFF.VT.5 *** -SUFF.VI.4 -SUFF.N -SUFF.V.5 V.T         COMP N.N             -SUFF -SUFF.N V.I              -SUFF.VI.4 ***
+\f Taim ol i bin kamap long diwai kapiak Gose i bin askim Gudu, ``Yu inap go antap long diwai kapiak?''
+\fe When they arrived at the breadfruit tree Gose asked Gudu, ``Can you climb the breadfruit tree?''
+
+\ref Paragraph 5
+\t ``Ai, viapau! Ragai-a         garetoavi.
+\m ai    viapau  ragai   -a      gare         -to     -a      -vi
+\g oh    NEG     1.SG    -N      small/little -MASC   -N      -DIM
+\p EXCL  NEG     PRO.PER -SUFF.N ADJ          -SUFF.N -SUFF.N -SUFF
+\f Nogat! Mi liklik mangi tumas.
+\fe ``Oh no! I'm too small.
+
+\ref 6
+\t Viapau ragai   uvuipauparai                                                           ra   ipara,                      osia rera    atoreva                       Gutu.
+\m viapau ragai   uvuipa                       -u         -pa       -ra        -i        ra   ipa              -ra        osia rera    ato     -re        -va        *Gut -u
+\g NEG    1.SG    tape measure/yardstick/ruler -2SG       -PROG     -1.SG      -PRES     and  climb/rise/breed -1.SG      as   3.SG.M  harvest -3.SG.M    -RP        ***  -2SG
+\p NEG    PRO.PER N.N                          -SUFF.VI.4 -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 CONJ V.I              -SUFF.VI.4 CONJ PRO.PER V.I     -SUFF.VT.4 -SUFF.VT.5 ***  -SUFF.VI.4
+\f Mi no inap go antap long diwai kapiak,'' Gudu em i bekim. 
+\fe I can't climb the breadfruit tree,'' replied Gudu.
+
+\ref Paragraph 7
+\t Gosie iparoepa                               eveuvaia.
+\m Gosie ipa              -ro        -epa       eveu            -va   -ia
+\g name  climb/rise/breed -3.SG.M    -RP        breadfruit tree -FEM  -at
+\p N.PN  V.I              -SUFF.VI.4 -SUFF.VI.5 N.N             -SUFF -SUFF.N
+\f Gose i bin go antap long diwai kapiak.
+\fe Gose climbed the breadfruit tree.
+
+\ref 8
+\t Va-isi-re                 atoreva,                      aisivua                      riroisi      ari     aisivua                      gareisi.
+\m va      -isi    -re       ato     -re        -va        aisi         -vu     -a      riro -isi    ari     aisi         -vu     -a      gare         -isi
+\g 3.SG.N  -CLASS  -ALLATIVE harvest -3.SG.M    -RP        round object -other  -N      big  -CLASS  yes/but round object -other  -N      small/little -CLASS
+\p PRO.PER -SUFF.N -SUFF     V.I     -SUFF.VT.4 -SUFF.VT.5 ???          -SUFF.N -SUFF.N ADJ  -SUFF.N CONJ    ???          -SUFF.N -SUFF.N ADJ          -SUFF.N
+\nt Need to double-check vaisire...
+\f Em i daunim tupela kapiak, wanpela em i bikpela na narapela em i liklik.
+\fe He dropped two breadfruit, a big and a small one.
+
+\ref 9
+\t ``Vaisio                  riroisi      ragai   vaisiaro.
+\m va      -isi    -o        riro -isi    ragai   va      -isi    -aro
+\g 3.SG.N  -CLASS  -3.SG.F   big  -CLASS  1.SG    3.SG.N  -CLASS  -POSS
+\p PRO.PER -SUFF.N -SUFF.V.4 ADJ  -SUFF.N PRO.PER PRO.PER -SUFF.N -SUFF.N
+\f ``Bikpela em bilong mi.
+\fe ``The big one is for me.
+
+\ref 10
+\t Vii     garesivi                     oupari,''                             osia puraroepa                  Gosie.
+\m vii     gare         -si       -vi   ou               -pa       -ri        osia pura -ro        -epa       Gosie
+\g 2.SG    small/little -2/3.DL.M -DIM  get/take/receive -PROG     -2.SG      as   say  -3.SG.M    -RP        name
+\p PRO.PER ADJ          -SUFF.V.4 -SUFF V.T              -SUFF.V.3 -SUFF.VT.4 CONJ V.I  -SUFF.VI.4 -SUFF.VI.5 N.PN
+\f Yu kisim liklik,'' Gose i tok.
+\fe You get the small one,'' said Gose.
+
+\ref 11
+\t ``Tuitui kasi         purari                    ra   vaisire             oriri.
+\m tuitui   kasi         pura           -ri        ra   vaisi     -re       ori  -ri
+\g fire     build a fire make/do/create -2.SG      and  name/call -ALLATIVE cook -2.SG
+\p N.M      V.I          V.T            -SUFF.VT.4 CONJ V.T       -SUFF     V.T  -SUFF.VT.4
+\nt Is the -re in 'vaisire' really the -re suffix or is it simply part of a different pronominal paradigm...
+\f ``Laitim paia na kukim ol kapiak.
+\fe ``Light the fire and cook the breadfruit.
+
+\ref 12
+\t Ragai   tosipavoi                          oveuva                      reroaro          iava.''
+\m ragai   tosi           -pa       -voi      oveu            -va         reroaro          iava
+\g 1.SG    cut with blade -PROG     -PRES     breadfruit tree -with       underneath/under from/about
+\p PRO.PER V.T            -SUFF.V.3 -SUFF.V.5 N.N             -SUFF.N.??? LOC              PREP
+\f Bai mi katim gras undanit long diwai kapiak.''
+\fe I'll cut the grass under the breadfruit tree.''
+
+\ref Paragraph 13
+\t Oripiropa                oveuisire.
+\m Ori  -piro     -pa       oveu            -isi    -re.
+\g cook -COMPL    -RP       breadfruit tree -CLASS  -ALLATIVE
+\p V.T  -SUFF.V.3 -SUFF.V.5 N.N             -SUFF.N -SUFF
+\f Ol kapiak i bin tan.
+\fe The breadfruits were cooked.
+
+\ref 14
+\t Gutu riroisi      aioreva                   garesivi                     kavuoro                         Gosiepa.
+\m Gutu riro -isi    aio -re        -va        gare         -si       -vi   kavu                  -oro      Gosie -pa
+\g name big  -CLASS  eat -3.SG.M    -RP        small/little -2/3.DL.M -DIM  left behind/left over -SIM      name  -for/with
+\p N.PN ADJ  -SUFF.N V.T -SUFF.VT.4 -SUFF.VT.5 ADJ          -SUFF.V.4 -SUFF ADJ                   -SUFF.V.4 N.PN  -SUFF.N
+\f Gudu i bin kaikaim bikpela kapiak na lusim liklik kapiak long Gose.
+\fe Gudu ate the big breadfruit and left the small one for Gose.
+
+\ref Paragraph 15
+\t Vosia   Gosie voreroepa                     tosipa                   tapiva,                Gutu akereva,                  
+\m vosia   Gosie vore    -ro        -epa       tosi           -pa       tapi             -va   Gutu ake -re        -va        ovu   ragai   vaisi -aro    epao     rivo -isi    eveu            isi
+\g when/if name  go back -3.SG.M    -RP        cut with blade -for/with drink hot liquid -FEM  name ask -3.SG.M    -RP        where 1.SG    name  -POSS   exist/be bald -CLASS  breadfruit tree group of ferns
+\p CONJ    N.PN  IV      -SUFF.VI.4 -SUFF.VI.5 V.T            -SUFF.N   V.T              -SUFF N.PN V.T -SUFF.VT.4 -SUFF.VT.5 INTER PRO.PER N.??? -SUFF.N V.STAT   ADJ  -SUFF.N N.N             CLASS
+\f Na taim Gose kam bek long katim gras, em i bin askim Gudu, 
+\fe When Gose came back from cutting the grass he asked Gudu, 
+
+\ref 15b
+\t ``Ovu ragai   va-isiaro               epao     riroisi      oveuisi?''
+\m ovu   ragai   va      -isi    -aro    epao     riro -isi    oveu            -isi?''
+\g where 1.SG    3.SG.N  -CLASS  -POSS   exist/be big  -CLASS  breadfruit tree -CLASS     ***
+\p INTER PRO.PER PRO.PER -SUFF.N -SUFF.N V.STAT   ADJ  -SUFF.N N.N             -SUFF.N ***
+\f ``We stap bikpela kapiak bilong mi?''
+\fe ``Where is my big breadfuit?''
+
+\ref Paragraph 16
+\t ``Vaisioia.''
+\m va      -isi    -o        -ia
+\g 3.SG.N  -CLASS  -3.SG.F   -at
+\p PRO.PER -SUFF.N -SUFF.V.4 -SUFF.N
+\f ``Em i stap.''
+\fe ``Here it is.''
+
+\ref 17
+\t Gutu gare  isiviia                   piiroopareva                                  oveu       isi.
+\m Gutu gare  isi   -vi       -ia       piiroo        -pa       -re        -va        oveu       isi
+\g name small round -DIM      -at       point towards -PROG     -3.SG.M    -RP        breadfruit round
+\p N.PN V.A   CLASS -SUFF.N.4 -SUFF.N.6 V.T           -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.N        CLASS
+\nt Check argument structure of verb 'piiro'. Also, check the vowel length. Is it the same as finger 'piro'? Finally, make sure that the final a in gareisivia is really locative.
+\f Gudu i bin pointim long liklik kapiak.
+\fe Gudu pointed to the small breadfruit.
+
+\ref Paragraph 18
+\t Gosie va         isi   vurapareva.
+\m Gosie va         isi   vura            -pa       -re        -va
+\g name  PRO.PER.3.Sround look at/gaze at -PROG     -3.SG.M    -RP
+\p N.PN  PRO.PER    CLASS V.T             -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f Gose i lukluk long em.
+\fe Gose looked at it.
+
+\ref 19
+\t Uva  gareisi              vurareva.
+\m uva  gare         -isi    vura            -re        -va
+\g so   small/little -CLASS  look at/gaze at -3.SG.M    -RP
+\p CONJ ADJ          -SUFF.N V.T             -SUFF.VT.4 -SUFF.VT.5
+\f Em i lukim liklik.
+\fe He saw the small one.
+
+\ref 20
+\t Rirovira kasipuroepa                    osia      viapau oisio oreo        vuavuvai              purareva.
+\m rirovira kasipu -ro         -epa        osia      viapau oisio o-     reo  vuavu     -vai        pura -re         -va
+\g big-time angry  -3.SG.M     -RP         as        NEG    like  SPEC-  talk something -NABS       say  -3.SG.M     -RP
+\p ADV      V.A    -SUFF.V.A.3 -SUFF.V.A.5 PART.CONJ NEG    COMP  PRE.N- V.A  N.???     -SUFF.N.??? V.A  -SUFF.V.B.3 -SUFF.V.B.5
+\nt Is 'oreo' stand-alone or part of what follows?
+\f Em i bin kros tasol em i no bin toktok.
+\fe He was angry but he didn't say anything.
+
+\ref 21
+\t Vaisi           aioragareva.
+\m va      -isi    aio - raga      -re        -va
+\g 3.SG.N  -CLASS  eat - only/just -3.SG.M    -RP
+\p PRO.PER -SUFF.N V.T - ADV       -SUFF.VT.4 -SUFF.VT.5
+\f Em i bin kaikaiim tasol.
+\fe He just ate it.
+
+\ref Paragraph 22
+\t Vosia   Gosie aio   opesiroepa                       uva  avasiepa                 uukova      iare    gaegaerepaoro                rokosia           atoiare.
+\m vosia   Gosie aio   opesi      -ro        -epa       uva  ava -si       -epa       uukova      iare    gaegaere -pa       -oro      roko    -sia      atoi                -are
+\g when/if name  food  end/finish -3.SG.M    -RP        so   go  -2/3.DL.M -RP        large river towards drift    -PROG     -SIM      go down -PURP     village/home/banana -DL
+\p CONJ    N.PN  N.??? V.I        -SUFF.VI.4 -SUFF.VI.5 CONJ V.I -SUFF.V.4 -SUFF.VI.5 N.F         PREP    V.T      -SUFF.V.3 -SUFF.V.4 ADV     -SUFF.V.4 N.N                 -SUFF.N
+\f Taim Gose pinis kaikai, tupela i bin go long wara na trip bek i go daun long ples.
+\fe When Gose finished eating they went to the river to float back down to their village.
+
+\ref 23
+\t Evao  vurukorei                     peosiva                               uukova      iare.
+\m evao  vuruko            -rei        peo              -si       -va        uukova      iare
+\g tree  section/stick/log -N.DL       push/shove/heave -2/3.DL.M -RP        large river towards
+\p N.??? N.???             -SUFF.N.CL1 V.T              -SUFF.V.4 -SUFF.VT.5 N.F         PREP
+\f Tupela i bin pusim tupela hap diwai i go long wara.
+\fe They pushed two logs into the river.
+
+\ref 24
+\t Oavua           riroa        ari     oavua           garea.
+\m oavu    -a      riro -a      ari     oavu    -a      garea
+\g another -N      big  -N      yes/but another -N      small object
+\p ADJ     -SUFF.N ADJ  -SUFF.N CONJ    ADJ     -SUFF.N N.N
+\f Wanpela i bin bikpela na narapela em i liklik.
+\fe One was a big one and the other was small.
+
+\ref 25
+\t ``Eva      riroa        ragai   vaaro             ari     eva        garea        vii     vaaro.''
+\m eva        riro -a      ragai   vaaro             ari     eva        garea        vii     vaaro
+\g MED.3.SG.N big  -N      1.SG    that person/thing yes/but MED.3.SG.N small object 2.SG    that person/thing
+\p DEM        ADJ  -SUFF.N PRO.PER NDM?              CONJ    DEM        N.N          PRO.PER NDM?
+\nt Need to follow up on 'vaaro'. Is it only for possession? Another element in the pronoun puzzle? Or what?
+\f ``Bikpela em bilong mi na liklik em bilong yu,'' Gose i tok.
+\fe ``The big one is for me and the small one is for you,'' said Gose.
+
+\ref Paragraph 26
+\t Osia Gosie ukaioparoepa,                                     Gutu oratovoroepa                                       riroa        ivaraia      vurukoa             uva  gaegaereoro        rokoreva.
+\m osia Gosie ukaio             -pa       -ro        -epa       Gutu ora-      tovo               -ro        -epa       riro -a      ivaraia      vuruko      -a      uva  gaegaere -oro      roko    -re        -va
+\g as   name  drink cool liquid -PROG     -3.SG.M    -RP        name REF-      put/place/position -3.SG.M    -RP        big  -N      on top/above section off -N      so   drift    -SIM      go down -3.SG.M    -RP
+\p CONJ N.PN  V.I               -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 N.PN SUFF.N/V- V.T                -SUFF.VI.4 -SUFF.VI.5 ADJ  -SUFF.N POST         V.T         -SUFF.N CONJ V.T      -SUFF.V.4 ADV     -SUFF.VT.4 -SUFF.VT.5
+\f Taim Gose em dring wara, Gudu i bin go antap long bikpela hap diwai na trip i go.
+\fe While Gose was drinking water, Gudu got on the big log and floated away.
+
+\ref 27
+\t Oire Gosie vurareva                              ipavira,            uva  Gutu kekereva                   osia riroaia              vurukoa                   gaegaereparoepa avaroepa.
+\m oire Gosie vura            -re        -va        ipavira             uva  Gutu keke -re        -va        osia riro -a      -ia     vuruko            -a      gaegaere -pa    ava -ro        -epa.
+\g okay name  look at/gaze at -3.SG.M    -RP        upward/high/upwards so   name look -3.SG.M    -RP        as   big  -N      -at     section/stick/log -N      drift    -PROG  go  -3.SG.M    -RP
+\p EXCL N.PN  V.T             -SUFF.VT.4 -SUFF.VT.5 ???                 CONJ N.PN V.T  -SUFF.VT.4 -SUFF.VT.5 CONJ ADJ  -SUFF.N -SUFF.N N.???             -SUFF.N V.T      -SUFF.VV.I -SUFF.VI.4 -SUFF.VI.5
+\f Taim Gose lukluk i go antap, em i bin lukim Gudu trip long bikpela hap diwai.
+\fe When Gose looked up, he saw Gudu floating on the big log.
+
+\ref Paragraph 28
+\t Uva  kasipuroepa                       osia viapau reoreoparoepa.
+\m uva  kasipu      -ro        -epa       osia viapau reoreo           -pa       -ro        -epa
+\g so   angry/cross -3.SG.M    -RP        as   NEG    converse/discuss -PROG     -3.SG.M    -RP
+\p CONJ V.I         -SUFF.VI.4 -SUFF.VI.5 CONJ NEG    V.I              -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f Em i bin kros tasol em no bin toktok.
+\fe He was angry but he didn't say anything.
+
+\ref 29
+\t Oire gareavi       ivaraia      pauroepa                          vurukoa                   uva  gaegaereoro        rokoreva.
+\m oire gareavi       ivaraia      pau         -ro        -epa       vuruko            -a      uva  gaegaere -oro      roko    -re        -va
+\g okay almost/nearly on top/above plant/build -3.SG.M    -RP        section/stick/log -N      so   drift    -SIM      go down -3.SG.M    -RP
+\p EXCL ADV           POST         V.T         -SUFF.VI.4 -SUFF.VI.5 N.???             -SUFF.N CONJ V.T      -SUFF.V.4 ADV     -SUFF.VT.4 -SUFF.VT.5
+\f Em i bin sindaun tasol long liklik hap diwai na em i trip i go.
+\fe He just sat on the small log and floated away.
+
+\ref 30
+\t Uva  rokosiva                     gaegaerepaoro                uukovaia            vore    osia pouvirosiepa                          voatoia.
+\m uva  roko    -si       -va        gaegaere -pa       -oro      uukova      -ia     vore    osia pou    -viro     -si       -epa       vo-   atoia
+\g so   go down -2/3.DL.M -RP        drift    -PROG     -SIM      large river -at     go back as   arrive -COMPL    -2/3.DL.M -RP        SING- village/home/banana
+\p CONJ ADV     -SUFF.V.4 -SUFF.VT.5 V.T      -SUFF.V.3 -SUFF.V.4 N.F         -SUFF.N IV      CONJ V.I    -SUFF.V.3 -SUFF.V.4 -SUFF.VI.5 PRE-  N.N
+\f Tupela mangi i bin trip i go daun long wara inap tupela i bin kamap long ples bilong tupela.
+\fe The boys floated down the river until they arrived at their village.
+
+\ref Paragraph 31
+\t Gutu akeakeragapareva                                      gotosia                     vo        uukova      sirova,          osia vurukoa                   oa      riro vatavatapaepa.
+\m Gutu akeake    - raga      -pa       -re        -va        goto              -sia      vo        uukova      sirova           osia vuruko            -a      oa      riro vatavata          -pa       -epa
+\g name try/tempt - only/just -PROG     -3.SG.M    -RP        hung up/lodged in -PURP     this/here large river behind/alongside as   section/stick/log -N      3.SG.N  big  go around/by pass -PROG     -RP
+\p N.PN V.T       - ADV       -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ADJ               -SUFF.V.4 ???       N.F         LOC              CONJ N.???             -SUFF.N PRO.REL ADJ  V.T               -SUFF.V.3 -SUFF.VI.5
+\f Gudu i bin traim long stop long arere bilong wara, tasol hap diwai i bin hevi tru.
+\fe Gudu tried to stop at the river bank, but the log was too heavy.
+
+\ref 32
+\t Uva  touvira                   gaegaerepaoro                rokopareva                              uukovaia,           osia Gosie gotoroepa                               vouukova          sirova.
+\m uva  touvira                   gaegaere -pa       -oro      roko    -pa       -re        -va        uukova      -ia     osia Gosie goto              -ro        -epa       vo-   uukova      sirova
+\g so   yet/still/eternally/later drift    -PROG     -SIM      go down -PROG     -3.SG.M    -RP        large river -at     as   name  hung up/lodged in -3.SG.M    -RP        SING- large river behind/alongside
+\p CONJ ADV                       V.T      -SUFF.V.3 -SUFF.V.4 ADV     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.F         -SUFF.N CONJ N.PN  ADJ               -SUFF.VI.4 -SUFF.VI.5 PRE-  N.F         LOC
+\f Em i bin trip i go yet long wara taim Gose i bin stop long arere bilong wara.
+\fe He kept floating down the river, while Gose stopped at the river bank.
+
+\ref 33
+\t Gutu keeraroepa,
+\m Gutu keera    -ro         -epa
+\g name call.for -3.SG.M     -RP
+\p N.PN V.A      -SUFF.V.A.3 -SUFF.V.A.5
+\f Gudu i bin singaut, 
+\fe Gudu shouted, 
+
+
+\ref 33.5
+\t ``Gosie, ragai        araokoaro         ragai        virivariri.''
+\m Gosie    ragai        araoko  -aro      ragai        virivari   -ri
+\g name     PRO.PER.1.SG brother -POSS     PRO.PER.1.SG protecting -2.SG
+\p N.PN     PRO.PER      N.M     -SUFF.N.5 PRO.PER      V.A        -SUFF.V.B.3
+\fp ``Gose, brata bilong mi, halavim mi.''
+\fe ``Gose, my brother, save me.
+
+\ref 34
+\t Ragai     gisirai.
+\m ragai     gisi  -ra         -ei
+\g PPRO.1.SG drown -1.SG.A     -PRES.A
+\p PPRO      V.A   -SUFF.V.A.3 -SUFF.V.A.5
+\f Mi dring wara nau.
+\fe I'm drowning.''
+
+\ref Paragraph 35
+\t Uva  Gosie oisio puraroepa,                   ``Vii     rirovira vairupaue.''
+\m uva  Gosie oisio pura -ro         -epa        vii       rirovira vairu  -pa       -u          -e
+\g so   name  like  say  -3.SG.M.A   -RP.A       PPRO.2.SG big-time greedy -CONT     -2.SG.A     -IP.A
+\p PART N.PN  COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 PPRO      ADV      V.B    -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f Gose i bin bekim em, ``Yu bin gridi tumas.''
+\fe Gose replied, ``You have been very greedy.
+
+\ref 36
+\t Vii     ragai   vaisiaro                aiorivo                  riro isi   oveu       isi.
+\m vii     ragai   va      -isi    -aro    aio -ri        -vo       riro isi   oveu       isi
+\g 2.SG    1.SG    3.SG.N  -CLASS  -POSS   eat -2.SG      -IP       big  round breadfruit round
+\p PRO.PER PRO.PER PRO.PER -SUFF.N -SUFF.N V.T -SUFF.VT.4 -SUFF.V.5 ADJ  CLASS N.HYBRID   CLASS
+\f Yu bin kaikaiim bikpela kapiak bilong mi.
+\fe You ate my big breadfruit.
+
+\ref 37
+\t Uva  vii       riroa          ourivo                      vurukoa.
+\m uva  vii       riro -a        ou  -ri         -vo         vuruko -a
+\g so   PPRO.2.SG big  -SG.N     get -2.SG.B     -IP.B       log    -SG.N
+\p PART PPRO      ADJ  -SUFF.N.2 V.B -SUFF.V.B.3 -SUFF.V.B.5 N.N    -SUFF.N.2
+\f Na yu bin kisim bikpela hap diwai bilong mi.
+\fe Then you got the big log.
+
+\ref 38
+\t Ragai     viapau   uvuiparai                                 ra   vii       tauva-a.
+\m ragai     viapau   uvui    -pa       -ra         -ei         ra   vii       tauva -a
+\g PPRO.1.SG NEG      be.able -CONT     -1.SG.A     -PRES.A     COMP PPRO.2.SG help  -1.SG.B
+\p PPRO      PART.NEG V.A     -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 COMP PPRO      V.B   -SUFF.V.B.3
+\f Mi no inap halavim yu.
+\fe I can't help you.
+
+\ref 39
+\t Vao         vurukoa             riroa        rutu       ora  uukova      riro varivariva          ragaipa.''
+\m vao         vuruko      -a      riro -a      rutu       ora  uukova      riro varivari      -va   ragai   -pa
+\g PROX.3.SG.N section off -N      big  -N      very/truly and  large river big  mighty/strong -FEM  1.SG    -for/with
+\p DEM         V.T         -SUFF.N ADJ  -SUFF.N PH         CONJ N.F         ADJ  ADJ           -SUFF PRO.PER -SUFF.N
+\f Hap diwai em i bikpela tumas na wara em i strong tumas long mi.''
+\fe The log is too big and the water is too strong for me.''
+
+\ref Paragraph 40
+\t Gutu touvira gaegaerepaoro                rokopareva,                               rokopareva                                uukovaia                       vore    osia gaegaereroepa                  vore    toru kou rutu iare    toru kou.
+\m Gutu touvira gaegaere -pa       -oro      roko    -pa       -re         -va         roko    -pa       -re         -va         uuko        -va       -ia      vore    osia gaegaere -ro        -epa       vore    toru kou rutu iare    toru kou
+\g name still   drift    -CONT     -DEP.SIM  go down -CONT     -3.SG.M.B   -RP.B       go down -CONT     -3.SG.M.B   -RP.B       large river -SG.F     -LOC     go back as   drift    -3.SG.M    -RP        go back wave     very towards wave
+\p N.PN ADV     V.B      -SUFF.V.2 -SUFF.V.3 V.A     -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 V.A     -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 N.F         -SUFF.N.2 -ENC.N.6 IV      CONJ V.T      -SUFF.VI.4 -SUFF.VI.5 IV      N.CL     ADV  POST    N.CL
+\f Gudu i trip yet i go daun na go daun long wara inap em i trip i go long ol bikpela si bruk.
+\fe Gudu kept floating down and down the river until he floated out to the big waves.
+
+\ref 41
+\t Uva  viapau   rera        kekereva.
+\m uva  viapau   rera        keke    -re         -va
+\g so   NEG      PPRO.3.SG.M look.at -3.SG.M.B   -RP.B
+\p PART PART.NEG PPRO        V.B     -SUFF.V.B.3 -SUFF.V.B.5
+\nt Is this an adequate translation? How do you express a passive meaning of this sort?
+\f I no inap yumi lukim em gen.
+\fe He was never seen again.

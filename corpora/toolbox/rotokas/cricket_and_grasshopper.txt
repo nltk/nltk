@@ -1,0 +1,313 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Cricket and Grasshopper
+\au Nelson Benala
+
+\ref Paragraph 1
+\t Voari                      tuariri         uva  oisioa toupasi                     apakoi  vaio    ora  siikooto.
+\m voari                      tuariri         uva  oisioa tou     -pa       -si       apakoi  vaio    ora  siikooto
+\g before/long ago/back there before/long ago so   always be/stay -PROG     -2/3.DL.M cricket DL.ANIM and  grasshopper
+\p TEMP                       TEMP            CONJ TEMP   V.I     -SUFF.V.3 -SUFF.V.4 N.???   GR      CONJ N.M
+\f xxx
+\fe Long ago there lived a Cricket and a Grasshopper.
+
+\ref 2
+\t Vearopietoarei             rutu       vatetoarei.
+\m vearopie   -to     -arei   rutu       vate   -to     -arei
+\g fix/repair -MASC   -DL     very/truly friend -MASC   -DL
+\p V.T        -SUFF.N -SUFF.N PH         N.N2   -SUFF.N -SUFF.N
+\f xxx
+\fe They were very good friends.
+
+\ref 3
+\t Oisoa  toupasi                     gare         uruiviia              oa      oisio              vaisipai                       Topua        eisi               pukuiara            vova      Papua         Niugini.
+\m oisoa  tou     -pa       -si       gare         urui    -vi   -ia     oa      oisio              vaisi     -pa       -i         topua        eisi               pukui         -ara  vova      Papua Niugini
+\g always be/stay -PROG     -2/3.DL.M small/little village -DIM  -at     3.SG.N  this way/like this name/call -PROG     -3.PL      hole/opening that way/like that mountain/hill -PL   from here name
+\p TEMP   V.I     -SUFF.V.3 -SUFF.V.4 ADJ          N.???   -SUFF -SUFF.N PRO.REL ???                V.T       -SUFF.V.3 -SUFF.VT.4 N.N          DEM                N.???         -SUFF LOC       N.???
+\f xxx
+\fe They lived in a small village called Topua, in the Highlands of Papua New Guinea.
+
+\ref 4
+\t Vaiterei vokepaaro                    oa      oisoa  gare         kovo        vuruvuruia                     roia          toupaive                           uva oisoa  riro goruva                  kasiura toupaeve.
+\m vaiterei vo-   kepa           -aro    oa      oisoa  gare         kovo        vuruvuruia                     ro    -ia     tou     -pa       -i     -ve       uva oisoa  riro goru              -va   kasiura tou     -pa       -e         -ve.
+\g 2.DL.M   SING- house/building -POSS   3.SG.N  always small/little garden/work be between or in the middle of 3SG.M -at     be/stay -PROG     -EPEN  -SUB      so  always big  strong/tight/firm -FEM  fence   be/stay -PROG     -3.SG.F    -SUB
+\p PRO.PER  PRE-  N.N            -SUFF.N PRO.REL TEMP   ADJ          N.???       V.I                            PRO   -SUFF.N V.I     -SUFF.V.3 -INFIX -SUFF.V.5 CONJTEMP   ADJ  ADJ               -SUFF N.N     V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.V.5
+\f xxx
+\fe Their house was in the middle of a small garden which had a very strong fence.
+
+\ref Paragraph 5
+\t Vovokiaro     uva  oisoa  oravaiterei        ruvaraia   uusipasi.
+\m vo-   vokiaro uva  oisoa  ora-      vaiterei ruvaraia   uusi  -pa       -si
+\g SING- night   so   always REF-      2.DL.M   near/close sleep -PROG     -2/3.DL.M
+\p PRE-  TEMP    CONJ TEMP   SUFF.N/V- PRO.PER  POST       V.I   -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe During the night they slept next to each other.
+
+\ref 6
+\t Apakoi  oisoa  rasito            ivaraia      uusipao                   ari     siikooto    oisoa  vurivuri kouro           erakopaara                   sovarai uusiparo.
+\m apakoi  oisoa  rasito            ivaraia      uusi  -pa       -o        ari     siikooto    oisoa  vurivuri kou  -ro        erako        -pa       -ara  sovarai uusi  -pa       -ro
+\g cricket always ground/soil/earth on top/above sleep -PROG     -3.SG.F   yes/but grasshopper always tan      heap -3.SG.M    dry/firewood -???      -PL   inside  sleep -PROG     -3.SG.M
+\p N.???   TEMP   N.M               POST         V.I   -SUFF.V.3 -SUFF.V.4 CONJ    N.M         TEMP   ADJ      ???  -SUFF.VI.4 N.N          -SUFF.??? -SUFF POST    V.I   -SUFF.V.3 -SUFF.VI.4
+\f xxx
+\nt vurivuri kouro--I think the 'ro' is plural. Need to follow up on this.
+\fe Cricket slept on the ground and Grasshopper slept among the dry banana leaves.
+
+\ref Paragraph 7
+\t Ovokivuia                             apakoi  oisio              puraopa,
+\m o-          voki      -vu     -ia     apakoi  oisio              pura -o        -pa
+\g this/these- day/ time -other  -at     cricket this way/like this say  -3.SG.F   -RP
+\p PRE.N-      N.N       -SUFF.N -SUFF.N N.???   ???                V.I  -SUFF.V.4 -SUFF.V.5
+\f xxx
+\fe One day Cricket said, 
+
+\ref 7b
+\t ``Vuuta epao     oaia            rirova          takiva urioovere                kokeva kiuvupava.
+\m vuuta   epao     oa      -ia     riro -va        takiva urio -o        -vere     kokeva kiuvu -pa       -va
+\g time    exist/be 3.SG.N  -at     big  -RP        storm  come -3.SG.F   -NF       rain   wind  -PROG     -RP
+\p LOC     V.STAT   PRO.REL -SUFF.N ADJ  -SUFF.VT.5 N.F    V.I  -SUFF.V.4 -SUFF.V.5 N.F    N.M   -SUFF.V.3 -SUFF.VT.5
+\f xxx
+\fe ``There will be a big storm with heavy rain and wind.
+
+\ref 8
+\t Oraviipa                    kepavai                    purarivere                          riro goru              kepavai                    ora  aioaravai               vatatoporivere                            oraviipa.
+\m ora-      vii     -pa       kepa           -vai        pura           -ri        -vere     riro goru              kepa           -vai        ora  aio   -ara  -vai        vatatopo             -ri        -vere     ora-      vii     -pa
+\g REF-      2.SG    -for/with house/building -NABS       make/do/create -2.SG      -NF       big  strong/tight/firm house/building -NABS       and  food  -PL   -NABS       take care/be careful -2.SG      -NF       REF-      2.SG    -for/with
+\p SUFF.N/V- PRO.PER -SUFF.N   N.N            -SUFF.N.??? V.T            -SUFF.VT.4 -SUFF.V.5 ADJ  ADJ               N.N            -SUFF.N.??? CONJ N.??? -SUFF -SUFF.N.??? V.T                  -SUFF.VT.4 -SUFF.V.5 SUFF.N/V- PRO.PER -SUFF.N
+\f xxx
+\fe You must build yourself a strong house and prepare your food.''
+
+\ref Paragraph 9
+\t Siikooto    ora  rera    varearo                 vearo          kekearei     putaearei     kaepieoro                  oisio              puraroepa,
+\m siikooto    ora  rera    va      -are    -aro    vearo          keke -arei   putae -arei   kaepie           -oro      oisio              pura -ro        -epa,
+\g grasshopper and  3.SG.M  3.SG.N  -DL     -POSS   good/fine/well look -DL     wing  -DL     hoist/lift/raise -SIM      this way/like this say  -3.SG.M    -RP
+\p N.M         CONJ PRO.PER PRO.PER -SUFF.N -SUFF.N V.I            V.T  -SUFF.N N.??? -SUFF.N V.T              -SUFF.V.4 ???                V.I  -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe Grasshopper lifted his beautiful wings and replied, 
+
+\ref 9b
+\t ``Ae, vatevaoa,                kekeri,         ragai   vearopiearei       riro goruarei                  putaearei.''
+\m ae    vate   -vao      -a      keke -ri        ragai   vearopie   -arei   riro goru              -arei   putae -arei
+\g hey   friend -???      -N      look -2.SG      1.SG    fix/repair -DL     big  strong/tight/firm -DL     wing  -DL
+\p EXCL  N.N2   -SUFF.V.5 -SUFF.N V.T  -SUFF.VT.4 PRO.PER V.T        -SUFF.N ADJ  ADJ               -SUFF.N N.??? -SUFF.N
+\f xxx
+\fe ``Hey, friend, see, I have two beautiful strong wings.
+
+
+\ref 10
+\t Vosia   takiva uriovere,      uva  papapavere                              ra   vataupara                  aueia              evao  vaaro.''
+\m vosia   takiva urio -vere     uva  papa                -pa       -vere     ra   vatau -pa       -ra        aue        -ia     evao  vaaro
+\g when/if storm  come -NF       so   fly through the air -PROG     -NF       and  hide  -PROG     -1.SG      connective -at     tree  that person/thing
+\p CONJ    N.F    V.I  -SUFF.V.5 CONJ V.T                 -SUFF.V.3 -SUFF.V.5 CONJ V.T   -SUFF.V.3 -SUFF.VI.4 CONN       -SUFF.N N.??? NDM?
+\f xxx
+\fe When the big storm comes I will fly and hide in the trees.''
+
+\ref Paragraph 11
+\t Apakoi  vavatapaopa                          aue        iava       takiva.
+\m apakoi  vavata -pa       -o        -pa       aue        iava       takiva
+\g cricket heavy  -PROG     -3.SG.F   -RP       connective from/about storm
+\p N.???   ADJ    -SUFF.V.3 -SUFF.V.4 -SUFF.V.5 CONN       PREP       N.F
+\f xxx
+\fe The cricket was worried about the storm.
+
+\ref 12
+\t Oa      iava       riro kepa           puraeva.
+\m oa      iava       riro kepa           pura           -e        -va
+\g 3.SG.N  from/about big  house/building make/do/create -3.SG.F   -RP
+\p PRO.REL PREP       ADJ  N.N            V.T            -SUFF.V.4 -SUFF.VT.5
+\f xxx
+\fe She built a big house.
+
+\ref 13
+\t Riroara    uvuivira        vatatopoeva                               aioara      aiopasia                vosia   uteopa              vuuta                                    ora  tupitupi       vuuta                                    uriope.
+\m riroara    uvui    -vira   vatatopo             -e        -va        aio   -ara  aio -pa       -sia      vosia   uteo      -pa       vuuta                                    ora  tupitupi       vuuta                                    urio -pe
+\g plenty/may measure -ADV    take care/be careful -3.SG.F   -RP        food  -PL   eat -PROG     -PURP     when/if cold/cool -RP       space/crack/opening/period of time/verse and  wet/moist/damp space/crack/opening/period of time/verse come -SUB
+\p ADV        V.T     -SUFF.N V.T                  -SUFF.V.4 -SUFF.VT.5 N.??? -SUFF V.T -SUFF.V.3 -SUFF.V.4 CONJ    ADJ       -SUFF.V.5 LOC                                      CONJ ADJ            LOC                                      V.I  -V.SUFF
+\f xxx
+\fe She prepared enough food to feed herself during the cold and wet season.
+
+\ref 14
+\t Siikooto    pokapokaragaparoepa                                             uva  viriragapareva.
+\m siikooto    pokapoka            - raga      -pa       -ro        -epa       uva  viri            - raga      -pa       -re        -va
+\g grasshopper lazy/unenthusiastic - only/just -PROG     -3.SG.M    -RP        so   twist something - only/just -PROG     -3.SG.M    -RP
+\p N.M         V.I                 - ADV       -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 CONJ V.T             - ADV       -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe Grasshopper was lazy so he lay about and did nothing.
+\nt What exactly does 'viriviri' mean here?
+
+\ref Paragraph 15
+\t Oire, takiva pouviropa.
+\m oire  takiva pou    -viro     -pa
+\g okay  storm  arrive -COMPL    -RP
+\p EXCL  N.F    V.I    -SUFF.V.3 -SUFF.V.5
+\f xxx
+\fe Finally the storm came.
+
+\ref 16
+\t Apakoi  koataopa                  oira    vokeparo                        iare,   uva  rataoa tupaeva,                        uva  toupaeva                               atoaro.
+\m apakoi  koata -o        -pa       oira    vo-   kepa           -ro        iare    uva  rataoa tupa       -e        -va        uva  tou     -pa       -e        -va        atoaro
+\g cricket enter -3.SG.F   -RP       3.SG.F  SING- house/building -3.SG.M    towards so   door   close/lock -3.SG.F   -RP        so   be/stay -PROG     -3.SG.F   -RP        inside
+\p N.???   V.I   -SUFF.V.4 -SUFF.V.5 PRO.PER PRE-  N.N            -SUFF.VI.4 PREP    CONJ N.N    V.T        -SUFF.V.4 -SUFF.VT.5 CONJ V.I     -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 LOC
+\f xxx
+\fe Cricket went into her house, closed the door, and stayed inside.
+
+\ref 17
+\t Kasiraovira                  toupaeva                               ora  posiposivira     aioara      aiopaoro.
+\m kasiraovira                  tou     -pa       -e        -va        ora  posiposi -vira   aio   -ara  aio -pa       -oro
+\g hot/energetically/diligently be/stay -PROG     -3.SG.F   -RP        and  dry      -ADV    food  -PL   eat -PROG     -SIM
+\p ADV                          V.I     -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 CONJ ADJ      -SUFF.N N.??? -SUFF V.T -SUFF.V.3 -SUFF.V.4
+\f xxx
+\fe She was warm and dry and she had food to eat.
+
+\ref Paragraph 18
+\t Kiuvu urioroepa                  ora  kokeva tapo          koveopa.
+\m kiuvu urio -ro        -epa       ora  kokeva tapo          kove      -o        -pa
+\g wind  come -3.SG.M    -RP        and  rain   also/too/with fall/drop -3.SG.F   -RP
+\p N.M   V.I  -SUFF.VI.4 -SUFF.VI.5 CONJ N.F    POST          V.I       -SUFF.V.4 -SUFF.V.5
+\f xxx
+\fe The wind blew and the rain came down.
+
+\ref 19
+\t Siikooto    vatauparoepa                          aue        roia          ito    guruvaro.
+\m siikooto    vatau -pa       -ro        -epa       aue        ro    -ia     ito    guruva           -ro
+\g grasshopper hide  -PROG     -3.SG.M    -RP        connective 3SG.M -at     banana leaf/paper money -3.SG.M
+\p N.M         V.T   -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 CONN       PRO   -SUFF.N N.N2   N.N              -SUFF.VI.4
+\f xxx
+\fe The Grasshopper hid among the banana leaves.
+
+\ref 20
+\t Akeakepareva                              oisio              ra   kotorevira              toureve                      ito    guruvaaro                sovaraia varao         tupitupiara.
+\m akeake    -pa       -re        -va        oisio              ra   koto -re        -vira   tou     -re        -ve       ito    guruva           -aro    sovaraia varao         tupitupi       -ara
+\g try/tempt -PROG     -3.SG.M    -RP        this way/like this and  hang -3.SG.M    -ADV    be/stay -3.SG.M    -SUB      banana leaf/paper money -POSS   inside   DEM.PROX.PL.N wet/moist/damp -PL
+\p V.T       -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ???                CONJ ADJ  -SUFF.VT.4 -SUFF.N V.I     -SUFF.VT.4 -SUFF.V.5 N.N2   N.N              -SUFF.N POST     DEM           ADJ            -SUFF
+\f xxx
+\fe He was finding it hard to hang on to the banana leaves which were wet.
+
+\ref 21
+\t Rera    vuvureoro                           rera    kovereva                        kiuvu.
+\m rera    vuvure                    -oro      rera    kove      -re        -va        kiuvu
+\g 3.SG.M  blow instrument for sound -SIM      3.SG.M  fall/drop -3.SG.M    -RP        wind
+\p PRO.PER V.T                       -SUFF.V.4 PRO.PER V.I       -SUFF.VT.4 -SUFF.VT.5 N.M
+\f xxx
+\fe He was blown down by the wind.
+\nt Why is 'rera' in here twice? Answer: Because there are two objects.
+
+\ref 22
+\t Oa      iava       oisio              puraroepa                  orarerare,                  ``Aikara                            avara          eisire                       ragai   vatevaaro            vokeparo.''
+\m oa      iava       oisio              pura -ro        -epa       ora-      rera    -re       aika                     -ra        ava -ra        eisi               -re       ragai   vate   -va   -aro    vo-   kepa           -ro
+\g 3.SG.N  from/about this way/like this say  -3.SG.M    -RP        REF-      3.SG.M  -ALLATIVE Wait!/Hold on!/Be quiet! -1.SG      go  -1.SG      that way/like that -ALLATIVE 1.SG    friend -FEM  -POSS   SING- house/building -3.SG.M
+\p PRO.REL PREP       ???                V.I  -SUFF.VI.4 -SUFF.VI.5 SUFF.N/V- PRO.PER -SUFF     EXCL                     -SUFF.VI.4 V.I -SUFF.VI.4 DEM                -SUFF     PRO.PER N.N2   -SUFF -SUFF.N PRE-  N.N            -SUFF.VI.4
+\f xxx
+\fe He said to himself, ``I will go to my friend Cricket's house.''
+
+\ref 23
+\t Oa      iava       avaroepa                  apakoi  vokepaaro                    iare.
+\m oa      iava       ava -ro        -epa       apakoi  vo-   kepa           -aro    iare
+\g 3.SG.N  from/about go  -3.SG.M    -RP        cricket SING- house/building -POSS   towards
+\p PRO.REL PREP       V.I -SUFF.VI.4 -SUFF.VI.5 N.???   PRE-  N.N            -SUFF.N PREP
+\f xxx
+\fe So he went to Cricket's house.
+
+\ref Paragraph 24
+\t Uva  totopareva                            rataoaia.
+\m uva  toto  -pa       -re        -va        rataoa -ia
+\g so   knock -PROG     -3.SG.M    -RP        door   -at
+\p CONJ V.I   -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.N    -SUFF.N
+\f xxx
+\fe He knocked on the door.
+
+\ref 25
+\t Osia rera    vatevaro                oisiri                rutu       toupaeva                               rasito            sovaraia rikuia        uva  viapau oisio              siikooto    uvupaeva                                  osia totopareva.
+\m osia rera    vate   -va   -ro        oisiri                rutu       tou     -pa       -e        -va        rasito            sovaraia riku  -ia     uva  viapau oisio              siikooto    uvu        -pa       -e        -va        osia toto  -pa       -re        -va
+\g as   3.SG.M  friend -FEM  -3.SG.M    over there/back there very/truly be/stay -PROG     -3.SG.F   -RP        ground/soil/earth inside   hole  -at     so   NEG    this way/like this grasshopper hear/smell -PROG     -3.SG.F   -RP        as   knock -PROG     -3.SG.M    -RP
+\p CONJ PRO.PER N.N2   -SUFF -SUFF.VI.4 LOC                   PH         V.I     -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 N.M               POST     N.??? -SUFF.N CONJ NEG    ???                N.M         V.T        -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 CONJ V.I   -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f xxx
+\fe But his friend was right down at the bottom of the hole and didn't hear Grasshopper knocking.
+
+\ref Paragraph 26
+\t Uva  kokeva riro vavatavira     kovepaopa                               ora  kiuvu tapo          vusipareva,                                                 uva  uteopaepa                      uruia.
+\m uva  kokeva riro vavata -vira   kove      -pa       -o        -pa       ora  kiuvu tapo          vusi                        -pa       -re        -va        uva  uteo      -pa       -epa       uruia
+\g so   rain   big  heavy  -ADV    fall/drop -PROG     -3.SG.F   -RP       and  wind  also/too/with burst forth/erupt/break out -PROG     -3.SG.M    -RP        so   cold/cool -PROG     -RP        village/town/city
+\p CONJ N.F    ADJ  ADJ    -SUFF.N V.I       -SUFF.V.3 -SUFF.V.4 -SUFF.V.5 CONJ N.M   POST          V.T                         -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ ADJ       -SUFF.V.3 -SUFF.VI.5 N.N
+\f xxx
+\fe The rain was heavy, the wind blew, and the place was very cold.
+
+\ref 27
+\t Siikooto    kopiiroepa                         rataoa ruvaraia.
+\m siikooto    kopii        -ro        -epa       rataoa ruvaraia
+\g grasshopper die/very ill -3.SG.M    -RP        door   near/close
+\p N.M         V.I          -SUFF.VI.4 -SUFF.VI.5 N.N    POST
+\f xxx
+\fe Grasshopper died near the door.
+
+\ref 28
+\t Varaua              oa      rakupiropa                     aueia              tuvu.
+\m vara -ua            oa      raku       -piro     -pa       aue        -ia     tuvu
+\g body -narrow object 3.SG.N  cover over -COMPL    -RP       connective -at     mud
+\p N.N  -CLASS         PRO.REL V.T        -SUFF.V.3 -SUFF.V.5 CONN       -SUFF.N N.???
+\f xxx
+\fe His body was covered with mud.
+
+\ref Paragraph 29
+\t Takiva isivaroia                            kosioviropa                               apakoi.
+\m takiva isivaro                      -ia     kosi        -o        -viro     -pa       apakoi
+\g storm  after/reverse side/back side -at     go out/exit -3.SG.F   -COMPL    -RP       cricket
+\p N.F    ???                          -SUFF.N V.I         -SUFF.V.4 -SUFF.V.3 -SUFF.V.5 N.???
+\f xxx
+\fe After the storm Cricket came out.
+
+\ref 30
+\t Uva  siikooto    kopii        kekeva.
+\m uva  siikooto    kopii        keke -va
+\g so   grasshopper die/very ill look -RP
+\p CONJ N.M         V.I          V.T  -SUFF.VT.5
+\f xxx
+\fe She found Grasshopper dead.
+
+\ref 31
+\t Oisio              puraopa,                 ``Ae, vatetoaua,                            ragai   taviriva                   oisio              vii     riro goruarei                  vearopiearei       putaearei.
+\m oisio              pura -o        -pa       ae    vate   -to     -a      -ua            ragai   tavi -ri        -va        oisio              vii     riro goru              -arei   vearopie   -arei   putae -arei
+\g this way/like this say  -3.SG.F   -RP       hey   friend -MASC   -N      -narrow object 1.SG    tell -2.SG      -RP        this way/like this 2.SG    big  strong/tight/firm -DL     fix/repair -DL     wing  -DL
+\p ???                V.I  -SUFF.V.4 -SUFF.V.5 EXCL  N.N2   -SUFF.N -SUFF.N -CLASS         PRO.PER V.I  -SUFF.VT.4 -SUFF.VT.5 ???                PRO.PER ADJ  ADJ               -SUFF.N V.T        -SUFF.N N.??? -SUFF.N
+\f xxx
+\fe She said, ``Hey, friend, you told me that you had strong beautiful wings.
+
+\ref 32
+\t Eake  iava       tuvu  aiopau                   voia?
+\m eake  iava       tuvu  aio -pa       -u         voia
+\g what  from/about mud   eat -PROG     -2SG       here/this
+\p INTER PREP       N.??? V.T -SUFF.V.3 -SUFF.VI.4 ???
+\f xxx
+\nt Alternatively, Eake iava tuvua aiopari voia?
+\fe Why are you eating mud here?
+
+\ref 33
+\t Toreu                ra   avau.''
+\m tore      -u         ra   ava -u
+\g stand up  -2.SG      and  go  -2.SG
+\p V.I       -SUFF.VI.4 CONJ V.I -SUFF.VI.4
+\f xxx
+\fe Get up and go.''
+
+\ref 34
+\t Osia siikooto    ira     kopiiroepa.
+\m osia siikooto    ira     kopii        -ro        -epa
+\g as   grasshopper 3.SG.M  die/very ill -3.SG.M    -RP
+\p CONJ N.M         PRO.REL V.I          -SUFF.VI.4 -SUFF.VI.5
+\f xxx
+\fe But Grasshopper was dead.
+
+\ref Paragraph 35
+\t Va      isivaro                      iava       apakoi  siikooto    kaeeva                     rera    tovasia.
+\m va      isivaro                      iava       apakoi  siikooto    kae   -e        -va        rera    tova -sia
+\g 3.SG.N  after/reverse side/back side from/about cricket grasshopper carry -3.SG.F   -RP        3.SG.M  bury -PURP
+\p PRO.PER ???                          PREP       N.???   N.M         V.T   -SUFF.V.4 -SUFF.VT.5 PRO.PER V.T  -SUFF.V.4
+\f xxx
+\fe Later, Cricket took Grasshopper and buried him.
+
+\ref 36
+\t ``Siraovira,          siikooto,   viapau oisio              ragai   votaviaro          uvupariva''
+\m siraovira             siikooto    viapau oisio              ragai   vo-   tavi -aro    uvu        -pa       -ri        -va''
+\g pitifully/sorrowfully grasshopper NEG    this way/like this 1.SG    SING- tell -POSS   hear/smell -PROG     -2.SG      -RP           ***
+\p ADV                   N.M         NEG    ???                PRO.PER PRE-  V.I  -SUFF.N V.T        -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 ***
+\f xxx
+\fe ``Sorry, Grasshopper, you didn't listen to my warning.''

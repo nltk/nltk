@@ -1,0 +1,196 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Little Kana
+\au Jayne Auboti
+
+\ref Paragraph 1
+\t Gareto               Kara vegoaia        vokasia                            avaroepa.
+\m gare         -to     kara vegoa  -ia     voka                     -sia      ava -ro        -epa
+\g small/little -MASC   leaf jungle -at     walk/scan/glance through -PURP     go  -3.SG.M    -RP
+\p ADJ          -SUFF.N N.N  N.N    -SUFF.N V.T                      -SUFF.V.4 V.I -SUFF.VI.4 -SUFF.VI.5
+\f Liklik Kana i bin go lukluk raun long bus.
+\fe Little Kana went to explore the bush.
+
+\ref 2
+\t Turavego                             sovaraia kokovara isiro                     takuraisiro               kekereva.
+\m tura                        - vego   sovaraia kokovara isi            -ro        takura -isi    -ro        keke -re        -va
+\g shingle of sewn sago leaves - jungle inside   unripe   group of ferns -3.SG.M    egg    -CLASS  -3.SG.M    look -3.SG.M    -RP
+\p N.???                       - N.???  POST     ADJ      CLASS          -SUFF.VI.4 N.N    -SUFF.N -SUFF.VI.4 V.T  -SUFF.VT.4 -SUFF.VT.5
+\f Insait long bik bus em i bin lukim grinpela kiau.
+\fe In the jungle he saw green eggs.
+
+\ref 3
+\t ``Ee             kokovarara          vaorao                           avekeara?
+\m e      -e        kokovara -ra        vao         -ra        -o        aveke      -ara
+\g hey/eh -3.SG.F   unripe   -1.SG      PROX.3.SG.N -1.SG      -3.SG.F   stone/rock -PL
+\p EXCL   -SUFF.V.4 ADJ      -SUFF.VI.4 DEM         -SUFF.VI.4 -SUFF.V.4 N.F        -SUFF
+\f ``Em ol dispela grinpela ston?
+\fe ``Are these green stones?
+
+\ref 4
+\t Vara       oupavoi                              vara       karekepiesia        ragai   vateiraraaropa.
+\m vara       ou               -pa       -voi      vara       karekepie -sia      ragai   vate   -irara  -aro    -pa
+\g 3.PL.F     get/take/receive -PROG     -PRES     3.PL.F     show      -PURP     1.SG    friend -PL     -POSS   -for/with
+\p PRO.3.PL.F V.T              -SUFF.V.3 -SUFF.V.5 PRO.3.PL.F V.T       -SUFF.V.4 PRO.PER N.N2   -SUFF.N -SUFF.N -SUFF.N
+\f Bai mi kisim ol i go na soim long pren bilong mi.
+\fe I'll take them and show them to my friends.
+
+\ref Paragraph 5
+\t Kasiu     uriopa         rerava              tariosia.
+\m kasiu     urio -pa       rera    -va         tario        -sia
+\g cassowary come -RP       3.SG.M  -with       chase/pursue -PURP
+\p N.???     V.I  -SUFF.V.5 PRO.PER -SUFF.N.??? V.T          -SUFF.V.4
+\f Murok i bin kam na raunim em.
+\fe A cassowary came and chased him away.
+
+\ref 6
+\t Gareto               Kara torireva                       riro ikauvira.
+\m gare         -to     Kara tori     -re        -va        riro ikauvira
+\g small/little -MASC   name run away -3.SG.M    -RP        big  quickly/fast/rapidly
+\p ADJ          -SUFF.N N.PN V.T      -SUFF.VT.4 -SUFF.VT.5 ADJ  ADV
+\f Liklik Kana i bin ranawe hariap kwik.
+\fe Little Kana ran very fast.
+
+\ref Paragraph 7
+\t Gareto               Kara iparoepa         gareavia              vaesia.
+\m gare         -to     Kara iparo -epa       gareavi       -a      vaesia
+\g small/little -MASC   name ridge -RP        almost/nearly -N      slope/steep area
+\p ADJ          -SUFF.N N.PN ???   -SUFF.VI.5 ADV           -SUFF.N N.N
+\f Liklik Kana i go antap long liklik maunten.
+\fe Little Kana climbed up a hill.
+
+\ref 8
+\t Aue            kekereva                   erakopakou                                         isisiokou                           oa      guruvira             toupaiva                                vegoa  vuruvuruiaroia.
+\m Au   -e        keke -re        -va        erako            - pako                 -u         isi            - sioko   -u         oa      guruvira             tou     -pa       -i         -va        vegoa  vuruvuruia                     -ro        -ia
+\g name -3.SG.F   look -3.SG.M    -RP        collect firewood - break/raze/tear down -2SG       group of ferns - chayote -2SG       3.SG.N  stacked/heaped/piled be/stay -PROG     -3.PL      -RP        jungle be between or in the middle of -3.SG.M    -at
+\p N.PN -SUFF.V.4 V.T  -SUFF.VT.4 -SUFF.VT.5 V.I              - V.T                  -SUFF.VI.4 CLASS          - ???     -SUFF.VI.4 PRO.REL ADV                  V.I     -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.N    V.I                            -SUFF.VI.4 -SUFF.N
+\f Em i bin lukim ol drai gras i hip namel long bus.
+\fe He saw dried grass heaped in the middle of the bush.
+
+\ref Paragraph 9
+\t ``E    resio                 kepa           vaoia?
+\m e      resi       -o         kepa           vao         -ia
+\g hey/eh place/spot -3.SG.F    house/building PROX.3.SG.N -at
+\p EXCL   N.???      -SUFF.VI.4 N.N            DEM         -SUFF.N
+\f ``Dispela em i kunai gras?
+\fe ``Is this a kunai house? 
+
+\ref 10
+\t Ragai   avaparai                           va      kekesia.
+\m ragai   ava -pa       -ra        -i        va      keke -sia
+\g 1.SG    go  -PROG     -1.SG      -PRES     3.SG.N  look -PURP
+\p PRO.PER V.I -SUFF.V.3 -SUFF.VI.4 -SUFF.V.5 PRO.PER V.T  -SUFF.V.4
+\f Bai mi go na lukim.''
+\fe I'll go and see.''
+
+\ref 11
+\t Tutupieereva                    va      vurasia.
+\m tutupie    -ere      -va        va      vura            -sia
+\g come close -2/3DL.F  -RP        3.SG.N  look at/gaze at -PURP
+\p V.T        -SUFF.V.4 -SUFF.VT.5 PRO.PER V.T             -SUFF.V.4
+\f Em i go klostu na lukim.
+\fe He went close to see it.
+
+\ref Paragraph 12
+\t Aakova koue  kosioviropa                                oira    vo     kakaeroarova                             koue  kakaero              uva  rera   tarioeva.
+\m aakova koue  kosi        -o         -viro     -pa       oira    vo     kakae        -ro        -aro    -va      koue  kakae        -ro     uva  rera   tario        -e         -va
+\g mother pig   go out/exit -3.SG.F    -COMPL    -RP       3.SG.F  this/hesmall/little -3.SG.M    -POSS   -with    pig   small/little -3.SG.M so   3.SG.M chase/pursue -3.SG.F    -RP
+\p N.F    N.??? V.I         -SUFF.VI.4 -SUFF.V.3 -SUFF.V.5 PRO.PER ???    ADJ          -SUFF.VI.4 -SUFF.N -SUFF.N.?N.??? ADJ          -SUFF.VICONJ PRO.PERV.T          -SUFF.VT.4 -SUFF.VT.5
+\f Mama pik i bin kam autsait wantaim ol liklik pikini pik na raunim em.
+\fe A mother pig came out with her piglets and chased him away.
+
+\ref Paragraph 13
+\t Gareto               Kara kareroepa                    atoiare.
+\m gare         -to     Kara kare   -ro        -epa       atoi                -are
+\g small/little -MASC   name return -3.SG.M    -RP        village/home/banana -DL
+\p ADJ          -SUFF.N N.PN V.I    -SUFF.VI.4 -SUFF.VI.5 N.N                 -SUFF.N
+\f Liklik Kana i bin go long ples.
+\fe Little Kana went to the village.
+
+\ref 14
+\t Uva  vurivuriva     kokotu               kekereva                   osia paupaopa                  vuavuapaova                           evao  va      reroaro.
+\m uva  vurivuri -va   kokotu               keke -re        -va        osia paupa -o        -pa       vuavua -pa       -o        -va        evao  va      reroaro
+\g so   tan      -FEM  sucker of taro plant look -3.SG.M    -RP        as   chair -3.SG.F   -RP       cool   -PROG     -3.SG.F   -RP        tree  3.SG.N  underneath/under
+\p CONJ ADJ      -SUFF N.N                  V.T  -SUFF.VT.4 -SUFF.VT.5 CONJ N.N   -SUFF.V.4 -SUFF.V.5 ADJ    -SUFF.V.3 -SUFF.V.4 -SUFF.VT.5 N.??? PRO.PER LOC
+\f Em i bin lukim braunpela kakaruk sindaun andanit long diwai.
+\fe He saw a brown hen sitting under a shady tree.
+
+\ref Paragraph 15
+\t ``Eee,                     opita   guruvaro                    iava       tuariripava               o               pekuri?''
+\m e      -e        -e        opita   guruva           -ro        iava       tuariripa      -va        o               pe           - ku                           -ri
+\g hey/eh -3.SG.F   -3.SG.F   coconut leaf/paper money -3.SG.M    from/about relic/artifact -RP        this female/her leave/let be - satisfied with/finished with -2.SG
+\p EXCL   -SUFF.V.4 -SUFF.V.4 N.N     N.N              -SUFF.VI.4 PREP       N.N            -SUFF.VT.5 NDF             V.I          - V.I                          -SUFF.VT.4
+\f ``Dispela em i olpela basket bilong kokonas?
+\fe ``Is this an old coconut basket?
+
+\ref 16
+\t Oira    oupavoi                              ragai   vararore                        kaukauara.''
+\m oira    ou               -pa       -voi      ragai   vara       -ro        -re       kaukau       -ara
+\g 3.SG.F  get/take/receive -PROG     -PRES     1.SG    3.PL.F     -3.SG.M    -ALLATIVE sweet potato -PL
+\p PRO.PER V.T              -SUFF.V.3 -SUFF.V.5 PRO.PER PRO.3.PL.F -SUFF.VI.4 -SUFF     N.???        -SUFF
+\f Bai mi kisim em bilong kaukau long mi.''
+\fe I'll get it for my kaukau.''
+
+\ref Paragraph 17
+\t ``Ko, ko, ko, ko,'' osia gaueva                        kokotu               ora  oira    vokarearo                 kakaekare.
+\m                     osia gau      -e        -va        kokotu               ora  oira    vo        -kare   -aro    kakae        -kare
+\g                     as   cry/weep -3.SG.F   -RP        sucker of taro plant and  3.SG.F  this/here -PL     -POSS   small/little -PL
+\p                     CONJ V.T      -SUFF.V.4 -SUFF.VT.5 N.N                  CONJ PRO.PER ???       -N.SUFF -SUFF.N ADJ          -N.SUFF
+\f ``Ko, ko, ko, ko,'' kakaruk i bin krai wantaim ol liklik pikinini kakaruk.
+\fe ``Ko, ko, ko, ko,'' cried the chicken and her chicks.
+
+\ref 18
+\t Uva  rerava              tariopa.
+\m uva  rera    -va         tario        -pa
+\g so   3.SG.M  -with       chase/pursue -RP
+\p CONJ PRO.PER -SUFF.N.??? V.T          -SUFF.V.5
+\f Em i bin raunim em.
+\fe She chased him away.
+
+\ref Paragraph 19
+\t Gareto               Kara avaroepa                  uukova      iare    ukaiosia.
+\m gare         -to     kara ava -ro        -epa       uukova      iare    ukaio             -sia
+\g small/little -MASC   leaf go  -3.SG.M    -RP        large river towards drink cool liquid -PURP
+\p ADJ          -SUFF.N N.N  V.I -SUFF.VI.4 -SUFF.VI.5 N.F         PREP    V.I               -SUFF.V.4
+\f Liklik Kana i bin go long wara long dring wara.
+\fe Little Kana went to the river to drink water.
+
+\ref 20
+\t Uva  kasiputo            oteote    kekereva                   osia uusiparoepa                           uukova      vatuaroia.
+\m uva  kasipu      -to     oteote    keke -re        -va        osia uusi  -pa       -ro        -epa       uukova      vatuaro        -ia
+\g so   angry/cross -MASC   crocodile look -3.SG.M    -RP        as   sleep -PROG     -3.SG.M    -RP        large river edge/alongside -at
+\p CONJ V.I         -SUFF.N N.M       V.T  -SUFF.VT.4 -SUFF.VT.5 CONJ V.I   -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 N.F         ???            -SUFF.N
+\f Em i bin lukim bikpela pukpuk i bin slip long arere bilong wara.
+\fe He saw a huge crocodile sleeping on the bank.
+
+\ref Paragraph 21
+\t ``Ee             kariava oia?''
+\m e      -e        kariava o               -ia
+\g hey/eh -3.SG.F   lizard  this female/her -at
+\p EXCL   -SUFF.V.4 N.F     NDF             -SUFF.N
+\f ``Dispela em i palai?
+\fe ``Is this a lizard?
+
+\ref 22
+\t Oira    upoeavoi                                           ra   raaria                      oua                         ragai   varo    iare    kututou.
+\m oira    upo                 -e        -a         -voi      ra   raa      -ri        -a      ou               -a         ragai   varo    iare    ku                           - tu                       -to     -u
+\g 3.SG.F  strike/fight/murder -3.SG.F   -1SG       -PRES     and  Eh!/So?! -2.SG      -N      get/take/receive -1SG       1.SG    clothes towards satisfied with/finished with - fasten/strap on the back -MASC   -2SG
+\p PRO.PER V.T                 -SUFF.V.4 -SUFF.VT.4 -SUFF.V.5 CONJ EXCL     -SUFF.VT.4 -SUFF.N V.T              -SUFF.VT.4 PRO.PER N.N     PREP    V.I                          - V.T                      -SUFF.N -SUFF.VI.4
+\f Bai mi kilim em na kisim skin bilong em i go long kundu bilong mi.''
+\fe I'll kill it and get the skin for my kundu.''
+
+\ref Paragraph 23
+\t Kasiputo            oteote    gisipo           karureva                                       uva  garetoava                                Kara tarioroepa.
+\m kasipu      -to     oteote    gisipo           karu                     -re        -va        uva  gare         -to     -a      -va         Kara tari              -oro      -epa
+\g angry/cross -MASC   crocodile mouth/talk/words open/unlock/untie/unhook -3.SG.M    -RP        so   small/little -MASC   -N      -with       name surround/encircle -SIM      -RP
+\p V.I         -SUFF.N N.M       N.F              V.T                      -SUFF.VT.4 -SUFF.VT.5 CONJ ADJ          -SUFF.N -SUFF.N -SUFF.N.??? N.PN V.T               -SUFF.V.4 -SUFF.VI.5
+\f Bikpela pukpuk em i opim maus bilong em na raunim liklik Kana i go.
+\fe The hudge crocodile opened its mouth and chased Little Kana away.
+
+\ref 24
+\t Uva  gaureva                        oisio,             ``Aioi,  aio,  oteote    roia,''       uva  ikaureva                        atoiare                     kepa           iare.
+\m uva  gau      -re        -va        oisio              aio -i   aio   oteote    ro    -ia     uva  ikau      -re        -va        atoi                -are    kepa           iare
+\g so   cry/weep -3.SG.M    -RP        this way/like this eat -??? food  crocodile 3SG.M -at     so   run/hurry -3.SG.M    -RP        village/home/banana -DL     house/building towards
+\p CONJ V.T      -SUFF.VT.4 -SUFF.VT.5 ???                V.T -??? N.??? N.M       PRO   -SUFF.N CONJ V.T       -SUFF.VT.4 -SUFF.VT.5 N.N                 -SUFF.N N.N            PREP
+\f Em i bin krai, ``Aiyo! Aii! Aiyo! Pukpuk!'' na ranawe i go long haus bilong em.
+\fe He cried ``Aiyoi! Aii! Aiyo! A crocodile!'' and ran all the way to his home.

@@ -1,0 +1,188 @@
+\_sh v3.0  400  Rotokas Text
+
+\id Ahu Couldn't Go to Sleep
+\au Jayne Auboti
+
+\ref Paragraph 1
+\t Au   viapau uusiparoepa                             osia      aakova ava-opa                     kovoa  iare.
+\m Au   viapau uusi  -pa       -ro         -epa        osia      aakova ava -o          -epa        kovoa  iare
+\g name NEG    sleep -PROG     -3.SG.M     -RP         as        mother go  -3.SG.F     -RP         garden towards
+\p N.PN NEG    V.A   -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5 PART.CONJ N.F    V.A -SUFF.V.A.4 -SUFF.V.A.5 N.N    POST
+\f Ahu i no bin inap slip taim mama bilong em i bin stap long gaden.
+\fe Ahu couldn't go to sleep while his mother was away in the garden.
+
+\ref 2
+\t Rera           araokotoaro                         riroto         Uari ira     rera    tokipareva.
+\m rera           araoko          -to       -aro      riro -to       Uari ira     rera    toki       -pa       -re         -va
+\g PRO.PER.3.SG.M brother of male -MASC.SG  -POSS     big  -MASC.SG  name 3.SG.M  3.SG.M  look.after -PROG     -3.SG.M     -RP
+\p PRO.PER        N.M             -SUFF.N.2 -SUFF.N.5 ADJ  -SUFF.N.2 N.PN PRO.REL PRO.PER V.B        -SUFF.V.3 -SUFF.V.B.4 -SUFF.V.B.5
+\f Bikpela brata bilong em, Wali, em i bin lukautim em.
+\fe His big brother, Wali, was looking after him.
+
+\ref Paragraph 2
+\t Uari koovaparoepa                            Au   uusipiesia.
+\m Uari koova -pa       -ro         -epa        Au   uusipie    -sia
+\g name sing  -PROG     -3.SG.M.A   -RP.A       name make sleep -DEP.PURP
+\p N.PN V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 N.PN V.B        -SUFF.V.4
+\f Wali i bin singim wanpela singsing bilong mekim slip Ahu.
+\fe Wali sang songs to make Ahu go to sleep.
+
+\ref 4
+\t ``Uusiu,         Au,'' osia koovaparoepa.
+\m uusi  -u         Au    osia koova -pa       -ro         -epa
+\g sleep -2SG       name  as   sing  -PROG     -3.SG.M.A   -RP.A
+\p V.I   -SUFF.VI.4 N.PN  CONJ V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f ``Yu slip nau, Ahu,'' em i bin sing olsem.
+\fe ``Go to sleep, Ahu'', he sang.
+
+\ref 5
+\t ``Uusiu.''
+\m uusi  -u
+\g sleep -2SG
+\p V.I   -SUFF.VI.4
+\f ``Yu slip nau.''
+\fe ``Go to sleep.''
+
+\ref 6
+\t Osa       viapau Au   uusiparoepa.
+\m osia      viapau Au   uusi  -pa       -ro         -epa
+\g as        NEG    name sleep -PROG     -3.SG.M     -RP
+\p PART.CONJ NEG    N.PN V.A   -SUFF.V.3 -SUFF.V.A.4 -SUFF.V.A.5
+\f Ahu i no bin slip.
+\fe Ahu didn't sleep.
+
+\ref Paragraph 7
+\t Uari Au   vatereva                   ataripa         siupu rovu.
+\m Uari Au   vate -re        -va        atari -pa       siupu rovu
+\g name name give -3.SG.M    -RP        fish  -DERIV    soup  water
+\p N.PN N.PN V.T  -SUFF.VT.4 -SUFF.VT.5 V.A   -SUFF.N.1 N.??? CLASS
+\f Wali i bin givim sup bilong pis long Ahu.
+\fe Wali gave Ahu some fish soup.
+
+\ref 8
+\t Oire oisio puraoepa,                    ``Uusiu,         Au''.
+\m oire oisio pura -o          -epa        uusi  -u         Au
+\g okay like  say  -3.SG.F.A   -RP.A       sleep -2SG       name
+\p EXCL COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 V.I   -SUFF.VI.4 N.PN
+\f Em i bin tok olsem, ``Slip nau, Ahu, slip nau.''
+\fe He said, ``Go to sleep, Ahu, go to sleep.''
+
+\ref 9
+\t Osia Au   viapau uusiparoepa.
+\m osia Au   viapau uusi  -pa       -ro        -epa
+\g as   name NEG    sleep -PROG     -3.SG.M    -RP
+\p CONJ N.PN NEG    V.I   -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5
+\f Ahu i no bin slip yet.
+\fe Ahu still didn't sleep.
+
+\ref Paragraph 10
+\t Uari reasiroepa                             oaravu                    rutu akeakeragapaoro                      oaraia               rugooparoepa.
+\m Uari reasi          -ro         -epa        oara            -vu       rutu akeake -raga     -pa       -oro      oara        -ia      rugoo -pa       -ro         -epa
+\g name be.disinclined -3.SG.M.A   -RP.A       PRO.POSS.2.SG.M -ALT      very try    -only     -PROG     -DEP.SIM  RPRO.3.PL.N -LOC     think -PROG     -3.SG.M.A   -RP.A
+\p N.PN V.A            -SUFF.V.A.3 -SUFF.V.A.5 PRO.POSS        -SUFF.N.5 ADV  V.B    -SUFF.V.1 -SUFF.V.2 -SUFF.V.3 RPRO        -ENC.N.6 V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f Wali i bin traim olgeta samting em i bin tingim.
+\fe Wali tried everything he could think of.
+
+\ref 11
+\t Au   touvira viapau uusiparoepa.
+\m Au   touvira viapau uusi  -pa       -ro         -epa
+\g name still   NEG    sleep -PROG     -3.SG.M.A   -RP.A
+\p N.PN ADV     NEG    V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f Ahu i no bin slip yet.
+\fe Ahu still didn't sleep.
+
+\ref 12
+\t Rerapa            kiuvu vatepareva                           kupekupepaia        oa          puraiva                      aue  iava opita    guruvaaro.
+\m rera    -pa       kiuvu vate -pa       -re        -va        kupekupepa -ia      oa          pura -i          -va         aue  iava opita    guruva -aro
+\g 3.SG.M  -for/with wind  give -PROG     -3.SG.M    -RP        fan        -LOC     RPRO.3.SG.N make -3.PL.B     -RP.B       CONN ABL  coconut  leaf   -POSS
+\p PRO.PER -SUFF.N   N.M   V.T  -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 N.???      -ENC.N.6 RPRO        V.B  -SUFF.V.B.3 -SUFF.V.B.5 CONN POST N.HYBRID N.N    -SUFF.N.3
+\f Em i bin givim col win long em wantaim lip kokonas ol i bin wokim.
+\fe He fanned him with woven coconut leaves.
+
+\ref Paragraph 13
+\t Rera        uriripiereva                     aueia         kuuvuva           rakoru.
+\m rera        uriripie -re         -va         aue  -ia      kuuvu   -va       rakoru
+\g PPRO.3.SG.M frighten -3.SG.M.B   -RP.B       CONN -LOC     deceive -SG.F     snake
+\p PPRO        V.B      -SUFF.V.B.3 -SUFF.V.B.5 CONN -ENC.N.6 V.A     -SUFF.N.2 N.F
+\f Em i bin poretim em wantaim giaman snek.
+\fe He frightened him with a rubber snake.
+
+\ref 14
+\t Osia      viapau   uusiparoepa                             oa          iava Uari rera        eakareva                        uva  rera    tokipareva                                                osia rereiparoepa.
+\m osia      viapau   uusi  -pa       -ro         -epa        oa          iava Uari rera        eaka    -re         -va         uva  rera    toki                      -pa       -re        -va        osia rerei -pa       -ro         -epa
+\g as        NEG      sleep -PROG     -3.SG.M.A   -RP.A       RPRO.3.SG.N ABL  name PPRO.3.SG.M give.up -3.SG.M.B   -RP.B       so   3.SG.M  guard/look after/care for -PROG     -3.SG.M    -RP        as   play  -PROG     -3.SG.M.A   -RP.A
+\p PART.CONJ PART.NEG V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5 RPRO        POST N.PN PPRO        V.B     -SUFF.V.B.3 -SUFF.V.B.5 CONJ PRO.PER V.T                       -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f Tasol Ahu i no bin inap slip olsem na Wali i bin larim em i pilai taim em i lukluk long em.
+\fe But Ahu couldn't sleep so Wali let him play as he watched him.
+
+\ref Paragraph 15
+\t Kokioto papaoro        putereva                        tavute     ovaaia         pausia        voea        vokepaaro             ruvaraia.
+\m kokioto papa -oro      pute    -re         -va         tavute     ovaa  -ia      pau -sia      voea        vo-   kepa  -aro      ruvara -ia
+\g bird    fly  -DEP.SIM  surpass -3.SG.M.B   -RP.B       mango tree tree  -LOC     sit -DEP.PURP PPRO.3.PL.M SING- house -POSS     near   -LOC
+\p N.M     V.B  -SUFF.V.3 V.B     -SUFF.V.B.3 -SUFF.V.B.5 N.HYBRID   N.??? -ENC.N.6 V.A -SUFF.V.4 PPRO        PRE-  N.N   -SUFF.N.3 N.LOC  -ENC.N.6
+\f Pisin i bin palai na sindaun long diwai mango klostu long haus.
+\fe A bird flew past and sat on a mango tree near the house.
+
+\ref 16
+\t Uva  rovoroepa                     gauoro,       ''Takoua   kuu, takoua     kuu.''
+\m uva  rovo  -ro         -epa        gau -oro      Takoua kuu      takoua kuu
+\g so   start -3.SG.M.A   -RP.A       cry -DEP.SIM  bird's cry      bird's cry
+\p PART V.A   -SUFF.V.A.3 -SUFF.V.A.5 V.B -SUFF.V.3 MIM             MIM
+\f Em i stat long krai, ``Takowa kuu, takowa kuu.''
+\fe It began to cry, ``Takowa kuu, takowa kuu.''
+
+\ref Paragraph 17
+\t Gareto          kakaeto         rera        uvureva                      uva  oisio puraroepa,                   ``Takoua                                         kuu''.
+\m gare  -to       kakae -to       rera        uvu  -re         -va         uva  oisio pura -ro         -epa        takou                                 -a         kuu
+\g small -SG.M     child -SG.M     PPRO.3.SG.M hear -3.SG.M.B   -RP.B       so   like  say  -3.SG.M.A   -RP.A       cover up/package/cook in an enclosure -1SG       talk   of dead man/dead person's talk
+\p V.A   -SUFF.N.2 N.HUM -SUFF.N.2 PPRO        V.B  -SUFF.V.B.3 -SUFF.V.B.5 PART COMP  V.A  -SUFF.V.A.3 -SUFF.V.A.5 V.T                                   -SUFF.VT.4 N.N
+\f Na liklik mangi i harim na em i bin tok, ``Takowa kuu.''
+\fe The little boy heard it and said, ``Takowa kuu.''
+
+\ref 18
+\t Uva  vorerivira kokioto          gaureva                     ``Takoua kuu takoua kuu,'' gareto               kakaeto              Au   oisio              puraroepa,                 ``Takoua kuu''.
+\m uva  vorerivira kokio  -to       gau -re         -va         takoua kuu   takoua kuu    gare         -to     kakae        -to     Au   oisio              pura -ro        -epa       takoua   kuu
+\g so   again      bird   -SG.M     cry -3.SG.M.B   -RP.B       bird's cry   bird's cry    small/little -MASC   small/little -MASC   name this way/like this say  -3.SG.M    -RP        bird's   talk of dead man/dead person's talk
+\p PART ADV        N.ANIM -SUFF.N.2 V.B -SUFF.V.B.3 -SUFF.V.B.5 MIM          MIM           ADJ          -SUFF.N ADJ          -SUFF.N N.PN ???                V.I  -SUFF.VI.4 -SUFF.VI.5 MIM      N.N
+\f Pisin i bin krai gen, ``Takowa kuu, takowa kuu,'' na liklik Ahu i bin tok olsem gen, ``Takowa kuu.''
+\fe The bird cried again, ``Takowa kuu, takowa kuu,'' and again little Ahu said, ``Takowa kuu.''
+
+\ref Paragraph 19
+\t Uari situeparoepa                               ora  urupiepareva                                         osia kokioto gaupareva,                               ``Takoua kuu,''                              osia garetoavi                          araokoto                            kokioto aatopareva.
+\m Uari situe      -pa       -ro        -epa       ora  urupie               -pa       -re        -va        osia kokioto gau      -pa       -re        -va        takoua   kuu                                 osia gare         -to     -a      -vi   araoko                      -to     kokioto aato   -pa       -re        -va
+\g name look/watch -PROG     -3.SG.M    -RP        and  listen/pay attention -PROG     -3.SG.M    -RP        as   bird    cry/weep -PROG     -3.SG.M    -RP        bird's   talk of dead man/dead person's talk as   small/little -MASC   -N      -DIM  brother of male/male cousin -MASC   bird    answer -PROG     -3.SG.M    -RP
+\p N.PN V.T        -SUFF.V.3 -SUFF.VI.4 -SUFF.VI.5 CONJ V.T                  -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ N.M     V.T      -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 MIM      N.N                                 CONJ ADJ          -SUFF.N -SUFF.N -SUFF N.M                         -SUFF.N N.M     V.T    -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5
+\f Wali in bin lukluk na harim pisin i bin singaut, ``Takowa kuu,'' na liklik brata bilong em i bekim.
+\fe Wali watched and listened to the bird calling, ``Takowa kuu,'' and his little brother answering.
+
+\ref 20
+\t Ee   pasiva                                        kokioto          Au   taviparevoi,''                         orarera          raga eisi      rugooparoepa.
+\m ee   *   -pa       -a          -si       -va       kokio  -to       Au   tavi -pa       -re         -voi        ora- rera        raga eisi      rugoo -pa       -ro         -epa
+\g hey  *** -DERIV    -???        -2.DL.M   -SG.F     bird   -SG.M     name tell -PROG     -3.SG.M.B   -PRES.B     RR-  PPRO.3.SG.M only like.this think -PROG     -3.SG.M.A   -RP.A
+\p EXCL *** -SUFF.N.1 -SUFF.N.??? -SUFF.V.3 -SUFF.N.2 N.ANIM -SUFF.N.2 N.PN V.B  -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 PRE- PPRO        ADV  PART.MNR  V.A   -SUFF.V.2 -SUFF.V.A.3 -SUFF.V.A.5
+\f ``Ating pisin i wok long tokim Ahu long slip,'' em i bin ting olsem em yet.
+\fe ``Perhaps the bird is telling Ahu to sleep,'' he thought to himself.
+
+\ref Paragraph 21
+\t Eva        isivaro   iava kokioto touvira gaupareva                             gaupareva                                gaupareva,                               osia viapau gurukoavai        gareto          kakaeto         oaiaro.
+\m eva        isivaro   iava kokioto touvira gau -pa       -re         -va         gau      -pa       -re        -va        gau      -pa       -re        -va        osia viapau gurukoa -vai      gare  -to       kakae -to       oa      -i   -aro
+\g MED.3.SG.N back side ABL  bird    still   cry -PROG     -3.SG.M     -RP         cry/weep -PROG     -3.SG.M    -RP        cry/weep -PROG     -3.SG.M    -RP        as   NEG    sound   -INDEF    small -M.SG     child -M.SG     3.SG.N  -??? -POSS
+\p DEM        N.N       POST N.M     ADV     V.B -SUFF.V.2 -SUFF.V.B.3 -SUFF.V.B.5 V.T      -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 V.T      -SUFF.V.3 -SUFF.VT.4 -SUFF.VT.5 CONJ NEG    N.N     -SUFF.N.6 V.A   -SUFF.N.2 N.HUM -SUFF.N.2 PRO.REL -??? -SUFF.N
+\f Bihain liklik na pisin em i wok long singaut, singaut, singaut olsem, tasol i no bin gat wanpela nois i bin kam long liklik mangi.
+\fe After a while the bird kept on calling, calling, and calling, but there was no voice from the little boy.
+
+\ref Paragraph 22
+\t Oire kokioto          papaoro        avaroepa                    vegoarore.
+\m oire kokio  -to       papa -oro      ava -ro         -epa        vego   -aro      -re
+\g okay bird   -SG.M     fly  -DEP.SIM  go  -3.SG.M.A   -RP.A       jungle -POSS     -ALL
+\p EXCL N.ANIM -SUFF.N.2 V.B  -SUFF.V.3 V.A -SUFF.V.A.3 -SUFF.V.A.5 N.N    -SUFF.N.3 -ENC.N.6
+\f Olsem na pisin i bin palai i go bek long bus.
+\fe So the bird flew away into the bush.
+
+\ref 23
+\t Au   uusiroepa.
+\m Au   uusi  -ro         -epa
+\g name sleep -3.SG.M.A   -RP.A
+\p N.PN V.A   -SUFF.V.A.3 -SUFF.V.A.5
+\f Ahu i bin slip.
+\fe Ahu was asleep.
