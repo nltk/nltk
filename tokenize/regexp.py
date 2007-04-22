@@ -17,6 +17,7 @@ import re, sre_parse, sre_constants, sre_compile
 WHITESPACE = r'\s+'
 NEWLINE    = r'\n'
 BLANKLINE  = r'\s*\n\s*\n\s*'
+WORD       = r'\w+'
 WORDPUNCT  = r'[a-zA-Z]+|[^a-zA-Z\s]+'
 SHOEBOXSEP = r'^\\'
 TREEBANK   = r'^\(.*?(?=^\(|\Z)'
@@ -185,6 +186,16 @@ def blankline(s):
     @return: An iterator over tokens
     """
     return regexp(s, pattern=BLANKLINE, gaps=True)
+
+def word(s):
+    """
+    Tokenize the text into sequences of word characters (a-zA-Z0-9).
+
+    @param s: the string or string iterator to be tokenized
+    @type s: C{string} or C{iter(string)}
+    @return: An iterator over tokens
+    """
+    return regexp(s, pattern=WORD)
 
 def wordpunct(s):
     """
