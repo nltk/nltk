@@ -16,7 +16,8 @@ class Range:
         less than (or less than equal to depending on whether it includes the max) self.upper
         """
         self.__delta_added = False
-        if upper < lower: raise se.SystemError('Lower limit ' + str(lower) + ' cannot be greater than the Upper limit ' + str(upper) + ' in a range')
+        if upper < lower: 
+            raise se.SystemError('Lower limit ' + str(lower) + ' cannot be greater than the Upper limit ' + str(upper) + ' in a range')
         self.__uninitialized = False
         if upper == lower == 0: 
             self.__uninitialized = True
@@ -40,13 +41,14 @@ class Range:
     
     def split(self, parts):
         if self.lower == self.upper: return None
-        len = self.upper - self.lower
-        max = self.upper
+        size = self.upper - self.lower
+        max_limit = self.upper
         if self.__delta_added:
-            len -= DELTA
-            max -= DELTA
-        each = len / parts
-        if each < DELTA: return None
+            size -= DELTA
+            max_limit -= DELTA
+        each = size / parts
+        if each < DELTA: 
+            return None
         lower, ranges = self.lower, []
         for i in range(parts - 1):
             ranges.append(Range(lower, lower + each))

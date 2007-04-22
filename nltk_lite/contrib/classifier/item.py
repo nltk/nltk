@@ -15,3 +15,13 @@ class Item:
     def stripNewLineAndWhitespace(self):
         nonewline = self.line.strip()
         return re.compile(' ').sub('', nonewline)
+
+class NameItem(Item):
+    def __init__(self, line):
+        Item.__init__(self, line)
+    
+    def processed(self):
+        return re.compile('\.').sub('', self.stripNewLineAndWhitespace())
+    
+    def isAttribute(self):
+        return self.line.find(':') != -1

@@ -5,28 +5,28 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import decisionstump as ds, attributes as attrs, klass as k, instances as ins, instance
+from nltk_lite.contrib.classifier import decisionstump as ds, instances as ins, instance, format
 from nltk_lite.contrib.classifier_tests import *
 import math
 
 class DecisionStumpTestCase(unittest.TestCase):
     def setUp(self):
-        attributes = attrs.Attributes(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        attributes = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.outlook_attr = attributes[0]
-        self.klass = k.Klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.klass = format.C45_FORMAT.get_klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.outlook_stump = ds.DecisionStump(self.outlook_attr, self.klass)
-        self.instances = ins.TrainingInstances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.instances = format.C45_FORMAT.get_training_instances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
     
     def test_creates_count_map(self): 
         self.assertEqual(3, len(self.outlook_stump.counts))
         for attr_value in self.outlook_attr.values:
-            for class_value in self.klass.values:
+            for class_value in self.klass:
                 self.assertEqual(0, self.outlook_stump.counts[attr_value][class_value])
     
     def test_updates_count_with_instance_values(self):
-        self.outlook_stump.update_count(self.instances.instances[0])
+        self.outlook_stump.update_count(self.instances[0])
         for attr_value in self.outlook_attr.values:
-            for class_value in self.klass.values:
+            for class_value in self.klass:
                 if attr_value == 'sunny' and class_value == 'no': continue
                 self.assertEqual(0, self.outlook_stump.counts[attr_value][class_value])
         self.assertEqual(1, self.outlook_stump.counts['sunny']['no'])
@@ -37,7 +37,7 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertEqual('outlook', self.outlook_stump.attribute.name)
         
     def __update_stump(self):
-        for instance in self.instances.instances:
+        for instance in self.instances:
             self.outlook_stump.update_count(instance)
         
     def test_majority_class_for_attr_value(self):
@@ -48,12 +48,12 @@ class DecisionStumpTestCase(unittest.TestCase):
         
     def test_classifies_instance_correctly(self):
         self.__update_stump()
-        self.assertEqual('no', self.outlook_stump.klass(instance.GoldInstance('sunny,mild,normal,true,yes')))
-        self.assertEqual('yes', self.outlook_stump.klass(instance.GoldInstance('overcast,mild,normal,true,yes')))
-        self.assertEqual('yes', self.outlook_stump.klass(instance.GoldInstance('rainy,mild,normal,true,yes')))
-        self.assertEqual('no', self.outlook_stump.klass(instance.TestInstance('sunny,mild,normal,true,yes')))
-        self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('overcast,mild,normal,true,yes')))
-        self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance('rainy,mild,normal,true,yes')))
+        self.assertEqual('no', self.outlook_stump.klass(instance.GoldInstance(['sunny','mild','normal','true'],'yes')))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.GoldInstance(['overcast','mild','normal','true'],'yes')))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.GoldInstance(['rainy','mild','normal','true'],'yes')))
+        self.assertEqual('no', self.outlook_stump.klass(instance.TestInstance(['sunny','mild','normal','true'])))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance(['overcast','mild','normal','true'])))
+        self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance(['rainy','mild','normal','true'])))
         
     def test_entropy_function(self):
         dictionary_of_klass_counts = {}
@@ -131,3 +131,11 @@ class DecisionStumpTestCase(unittest.TestCase):
         
         expected = -(2.0/3 * math.log(2.0/3, 2)) + -(1.0/3 * math.log(1.0/3, 2))
         self.assertAlmostEqual(expected, self.outlook_stump.entropy('rainy'))
+        
+    def test_dictionary_of_all_values_with_count_0(self):
+        phoney = format.C45_FORMAT.get_klass(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        values = ds.dictionary_of_values(phoney);
+        self.assertEqual(3, len(values))
+        for i in ['a', 'b', 'c']:
+            self.assertTrue(values.has_key(i))
+            self.assertEqual(0, values[i])

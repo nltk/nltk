@@ -1,3 +1,11 @@
+# Natural Language Toolkit - Attribute
+#  can extract the name and values from a line and operate on them
+#
+# Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
+#
+# URL: <http://nltk.sf.net>
+# This software is distributed under GPL, for license information see LICENSE.TXT
+
 from nltk_lite.contrib.classifier import autoclass
 from nltk_lite.contrib.classifier_tests import *
 

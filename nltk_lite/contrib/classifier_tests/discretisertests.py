@@ -65,9 +65,7 @@ class DiscretiserTestCase(unittest.TestCase):
             pass
         
     def test_ranges_from_chunks(self):
-        path = datasetsDir(self) + 'numerical' + SEP + 'weather'
-        disc = d.Discretiser(path, path + '.test,'+ path + '.gold', '1', '3')
-        ranges = disc.ranges_from_chunks([[6, 6, 7, 7, 8], [9, 10, 10, 13, 14], [15, 16, 16, 16, 19]])
+        ranges = d.ranges_from_chunks([[6, 6, 7, 7, 8], [9, 10, 10, 13, 14], [15, 16, 16, 16, 19]])
         self.assertEqual(3, len(ranges))
         self.assertTrue(ranges[0].includes(6))
         self.assertTrue(ranges[0].includes(8))
@@ -78,9 +76,7 @@ class DiscretiserTestCase(unittest.TestCase):
         self.assertTrue(ranges[2].includes(19))
         
     def test_get_chunks_with_frequency(self):
-        path = datasetsDir(self) + 'numerical' + SEP + 'weather'
-        disc = d.Discretiser(path, path + '.test,'+ path + '.gold', '1', '3')
-        chunks = disc.get_chunks_with_frequency([6, 6, 7, 7, 8, 8, 8, 9, 10, 10, 13, 14, 14, 15, 16, 16, 16, 19], 5)
+        chunks = d.get_chunks_with_frequency([6, 6, 7, 7, 8, 8, 8, 9, 10, 10, 13, 14, 14, 15, 16, 16, 16, 19], 5)
         self.assertEqual(3, len(chunks))
         self.assertEqual([[6, 6, 7, 7, 8], [9, 10, 10, 13, 14], [15, 16, 16, 16, 19]], chunks)
 
@@ -103,26 +99,6 @@ class DiscretiserTestCase(unittest.TestCase):
         self.assertEqual('d', disc.training[2].value(disc.attributes[1]))
         self.assertEqual('c', disc.instances[0][0].value(disc.attributes[1]))
         
-    def test_ranges_from_breakpoints(self):
-        path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        disc = d.Discretiser(path, path + '.test', '1')
-        attrs = disc.attributes
-        training = disc.training
-        training.sort_by(attrs[1])
-        attr_values = training.attribute_values(attrs[1])
-        breakpoints = training.breakpoints_in_class_membership()
-        self.assertEqual([0, 4], breakpoints)
-        self.assertEqual([19.0, 21.0, 25.0, 31.0, 34.0, 42.0], attr_values)
-        
-        ranges = disc.ranges_from_breakpoints(attr_values, breakpoints)
-        self.assertEqual(3, len(ranges))
-        self.assertEqual(19.0, ranges[0].lower)
-        self.assertEqual(20.0, ranges[0].upper)
-        self.assertEqual(20.0, ranges[1].lower)
-        self.assertEqual(38.0, ranges[1].upper)
-        self.assertEqual(38.0, ranges[2].lower)
-        self.assertEqual(42.000001, ranges[2].upper)
-        
     def test_naive_supervised_discretisation(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
         disc = d.Discretiser(path, path + '.test', '1')
@@ -132,3 +108,9 @@ class DiscretiserTestCase(unittest.TestCase):
         
         self.assertEqual(3, len(disc.attributes[1].values))
         
+    def test_stores_subset(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        disc = d.Discretiser(path, path + '.test', '4,6', '2,2')
+        self.assertEqual(2, len(disc.subset))
+        self.assertEqual(4, disc.subset[0].index)
+        self.assertEqual(6, disc.subset[1].index)

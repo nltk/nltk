@@ -11,9 +11,9 @@ from nltk_lite.contrib.classifier.exceptions import systemerror as se
 class ConfusionMatrix:
     def __init__(self, klass):
         self.index, self.matrix = {}, []
-        self.__num_class_vals = len(klass.values)
+        self.__num_class_vals = len(klass)
         for i in range(self.__num_class_vals): 
-            self.index[klass.values[i]] = i
+            self.index[klass[i]] = i
             self.matrix.append([0] * self.__num_class_vals)
         
     def count(self, actual, predicted):
