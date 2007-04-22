@@ -73,26 +73,26 @@ INSTALL.txt: INSTALL.txt.in
 .PHONY: .python.done .rsync.done .wordnet.done .numpy.done
 
 SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
-PYTHON25 = http://www.python.org/ftp/python/2.5
+PYTHON25 = http://www.python.org/ftp/python/2.5.1
 NUMPY = $(SFNETMIRROR)/numpy
 WN21 = http://wordnet.princeton.edu/2.1/
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(PYTHON25)/python-2.5-macosx.dmg
-	wget -N -P python/win/  $(PYTHON25)/python-2.5.msi
-	wget -N -P python/unix/ $(PYTHON25)/Python-2.5.tgz
+	wget -N -P python/mac/  $(PYTHON25)/python-2.5.1-macosx.dmg
+	wget -N -P python/win/  $(PYTHON25)/python-2.5.1.msi
+	wget -N -P python/unix/ $(PYTHON25)/Python-2.5.1.tgz
 	touch .python.done
 
 numpy:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/win/  $(NUMPY)/numpy-1.0.1.win32-py2.5.exe?download
-	wget -N -P python/unix/ $(NUMPY)/numpy-1.0.1.tar.gz?download
-	mv python/win/numpy-1.0.1.win32-py2.5.exe?download python/win/numpy-1.0.1.win32-py2.5.exe
-	mv python/unix/numpy-1.0.1.tar.gz?download python/unix/numpy-1.0.1.tar.gz
-	cp python/unix/numpy-1.0.1.tar.gz python/mac/numpy-1.0.1.tar.gz
+	wget -N -P python/mac/  http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg
+	wget -N -P python/win/  $(NUMPY)/numpy-1.0.2.win32-py2.5.exe?download
+	wget -N -P python/unix/ $(NUMPY)/numpy-1.0.2.tar.gz?download
+	mv python/win/numpy-1.0.2.win32-py2.5.exe?download python/win/numpy-1.0.2.win32-py2.5.exe
+	mv python/unix/numpy-1.0.2.tar.gz?download python/unix/numpy-1.0.2.tar.gz
 	touch .numpy.done
-
+	
 wordnet:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac/  $(WN21)/WordNet-2.1.tar.gz
