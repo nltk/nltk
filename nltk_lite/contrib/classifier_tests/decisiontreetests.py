@@ -6,7 +6,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import decisiontree, decisionstump as ds, attributes as attrs, klass as k, instances as ins
+from nltk_lite.contrib.classifier import decisiontree, decisionstump as ds, instances as ins
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class DecisionTreeTestCase(unittest.TestCase):

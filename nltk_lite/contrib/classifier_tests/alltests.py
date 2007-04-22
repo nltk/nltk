@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier_tests import klasstests as klass, nameitemtests as nameitem, \
+from nltk_lite.contrib.classifier_tests import \
         attributestests as attributes, instancestests as instances, \
         attributetests as attribute, instancetests as instance, \
         itemtests as item, zerortests as zeror, \
@@ -14,13 +14,11 @@ from nltk_lite.contrib.classifier_tests import klasstests as klass, nameitemtest
         classifytests as classify, decisiontreetests as decisiontree, \
         autoclasstests as autoclass, numrangetests as numrange, \
         discretisertests as discretiser, discretisedattributetests as discretisedattribute, \
-        discretisetests as discretise
+        discretisetests as discretise, formattests as format
 import unittest
 
 def allTestsSuite():
-    return unittest.TestSuite((unittest.makeSuite(klass.KlassTestCase), \
-                               unittest.makeSuite(nameitem.NameItemTestCase), \
-                               unittest.makeSuite(attributes.AttributesTestCase), \
+    return unittest.TestSuite((unittest.makeSuite(attributes.AttributesTestCase), \
                                unittest.makeSuite(instances.InstancesTestCase), \
                                unittest.makeSuite(attribute.AttributeTestCase), \
                                unittest.makeSuite(instance.InstanceTestCase), \
@@ -36,7 +34,8 @@ def allTestsSuite():
                                unittest.makeSuite(numrange.RangeTestCase), \
                                unittest.makeSuite(discretiser.DiscretiserTestCase), \
                                unittest.makeSuite(discretisedattribute.DiscretisedAttributeTestCase), \
-                               unittest.makeSuite(discretise.DiscretiseTestCase)))
+                               unittest.makeSuite(discretise.DiscretiseTestCase), \
+                               unittest.makeSuite(format.FormatTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

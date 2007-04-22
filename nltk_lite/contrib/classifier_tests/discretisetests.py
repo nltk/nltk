@@ -1,5 +1,4 @@
-# Natural Language Toolkit - Discretise
-#  The command line entry point to discretisers
+# Natural Language Toolkit - Discretise tests
 #
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #

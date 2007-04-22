@@ -5,14 +5,14 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import zeror as z, instances as ins
+from nltk_lite.contrib.classifier import zeror as z, instances as ins, format
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 from nltk_lite.contrib.classifier_tests import *
 
 class ZeroRTestCase(unittest.TestCase):
     def test_zeroR_instance_is_created_with_training_data(self):
         classifier = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        self.assertEqual(ins.TrainingInstances(datasetsDir(self) + 'test_phones' + SEP + 'phoney'), classifier.training, 'should have created training instances')
+        self.assertEqual(format.C45_FORMAT.get_training_instances(datasetsDir(self) + 'test_phones' + SEP + 'phoney'), classifier.training, 'should have created training instances')
     
     def test_zeroR_verifies_validity_of_training_data(self):
         try:

@@ -10,10 +10,6 @@ from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, in
 import os, os.path
 
 DOT = '.'
-DATA = 'data'
-TEST = 'test'
-GOLD = 'gold'
-NAMES = 'names'
 
 class File:
     def __init__(self, path, extension):
@@ -22,13 +18,14 @@ class File:
     def for_each_line(self, method):
         self.__check_for_existence()
         fil = open(self.path, 'r')
+        returned = []
         for line in fil:
             filtered = filter_comments(line)
             if len(filtered) == 0:
                 continue
-            method(filtered)
+            returned.append(method(filtered))
         fil.close()
-
+        return returned
 
     def __check_for_existence(self):
         if not os.path.isfile(self.path): 
