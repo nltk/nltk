@@ -5,13 +5,13 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import confusionmatrix as cm, klass as k
+from nltk_lite.contrib.classifier import confusionmatrix as cm, format
 from nltk_lite.contrib.classifier.exceptions import systemerror as se
 from nltk_lite.contrib.classifier_tests import *
 
 class ConfusionMatrixTestCase(unittest.TestCase):
     def setUp(self):
-        weather = k.Klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        weather = format.C45_FORMAT.get_klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.c = cm.ConfusionMatrix(weather)
         self.pos = 'yes'
         self.neg = 'no'

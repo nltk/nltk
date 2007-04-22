@@ -16,3 +16,23 @@ class ItemTestCase(unittest.TestCase):
         self.assertEqual('f,g,h', i.stripNewLineAndWhitespace())
         i = item.Item('f, g, h\n')
         self.assertEqual('f,g,h', i.stripNewLineAndWhitespace())
+        
+    def testNameItemRemovesDotAndNewLine(self):
+        i = item.NameItem('a,b,c.\n')
+        self.assertEqual('a,b,c', i.processed(), 'dot and slash should be removed')
+        
+    def testIsAttributeReturnsFalseForClasses(self):
+        i = item.NameItem('a,b,c.\n')
+        self.assertFalse(i.isAttribute(), 'it is not an attribute')
+        
+    def testIsAttributeReturnsTrueForAttribute(self):
+        i = item.NameItem('temp: high, low.\n')
+        self.assertTrue(i.isAttribute(), 'it is an attribute')
+        
+    def testClassValueDoesNotIncludeSpace(self):
+        i = item.NameItem('a ,b,c')
+        self.assertEqual('a,b,c', i.processed(), 'should not have whitespaces in the string')
+        
+    def testAttributeValuesDoNotHaveWhitespace(self):
+        i = item.NameItem('foo : a , b, c')
+        self.assertEqual('foo:a,b,c', i.processed(), 'should not have whitespaces in the string')

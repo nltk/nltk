@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, Classifier
+from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, Classifier, format
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
@@ -15,7 +15,7 @@ class OneR(Classifier):
         self.__best_decision_stump = None
         
     def test(self, path, printResults=True):
-        self.test_instances = ins.TestInstances(path)
+        self.test_instances = format.C45_FORMAT.get_test_instances(path)
         self.classify(self.test_instances)
         if printResults: self.test_instances.print_all()
         
@@ -29,7 +29,7 @@ class OneR(Classifier):
         instance.set_klass(klass)
         
     def verify(self, path):
-        self.gold_instances = ins.GoldInstances(path)
+        self.gold_instances = format.C45_FORMAT.get_gold_instances(path)
         self.classify(self.gold_instances)
         return self.gold_instances.confusion_matrix(self.klass)
 

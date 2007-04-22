@@ -6,16 +6,16 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier.exceptions import systemerror as se
-from nltk_lite.contrib.classifier import autoclass as ac
+from nltk_lite.contrib.classifier import autoclass as ac, cfile
+import UserList
 
 CONTINUOUS = 'continuous'
 DISCRETE = 'discrete'
 
 class Attribute:
-    #line is cleansed of newline, whitespace and dots in attributes
-    def __init__(self, line, index):
-        self.name = get_name(line)
-        self.values = get_values(line)
+    def __init__(self, name, values, index):
+        self.name = name
+        self.values = values
         self.type = self.__get_type()
         self.index = index
     
@@ -48,11 +48,39 @@ class Attribute:
             values_str += value + ','
         return self.name + ':' + values_str[:-1] + '.'
     
-def get_name(line):
-    return line[:__pos_of_colon(line)]
-        
-def get_values(line):
-    return line[__pos_of_colon(line) + 1:].split(',')
+class Attributes(UserList.UserList):
+    def __init__(self, attributes = []):
+        self.data = attributes
+
+    def has_values(self, test_values):
+        if len(test_values) != len(self): return False
+        for i in range(len(test_values)):
+            test_value = test_values[i]
+            if self.data[i].is_continuous(): continue #do not test continuous attributes
+            if not self.data[i].has_value(test_value): return False
+        return True
     
-def __pos_of_colon(line):
-    return line.find(':')
+    def has_continuous_attributes(self):
+        for attribute in self.data:
+            if attribute.is_continuous(): 
+                return True
+        return False
+    
+    def subset(self, indices):
+        subset = []
+        for index in indices:
+            subset.append(self.data[index])
+        return subset
+
+    def discretise(self, discretised_attributes):
+        for disc_attr in discretised_attributes:
+            self.data[disc_attr.index] = disc_attr
+
+    def write_to_file(self, path, suffix, format):
+        _new_file = cfile.File(path + suffix, format.NAMES)
+        _new_file.create(True)
+        lines = []
+        for attribute in self.data:
+            lines.append(attribute.as_line())
+        _new_file.write(lines)
+        return path + suffix + '.' + format.NAMES
