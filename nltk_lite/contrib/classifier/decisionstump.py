@@ -20,9 +20,9 @@ class DecisionStump:
         and each value is a dictionary of class distribution for that attribute value
         """
         self.counts, self.children = {}, {} #it has children only in decision trees
-        self.root = klass.dictionary_of_values()
+        self.root = dictionary_of_values(klass)
         for value in attribute.values:
-            self.counts[value] = klass.dictionary_of_values()
+            self.counts[value] = dictionary_of_values(klass)
             
     def update_count(self, instance):
         attr_value = instance.value(self.attribute)
@@ -96,3 +96,8 @@ def entropy(dictionary_of_klass_counts):
     _entropy = (float(_entropy)/total) + log(total, 2)
     return _entropy
     
+def dictionary_of_values(klass):
+    _values = {}
+    for value in klass:
+        _values[value] = 0
+    return _values

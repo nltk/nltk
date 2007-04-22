@@ -69,13 +69,12 @@ class Instance:
         return strn[:-1]
     
 class TrainingInstance(Instance):
-    def __init__(self, line):
+    def __init__(self, attr_values, klass_value):
         Instance.__init__(self)
-        values = line.split(',')
-        self.klass_value, self.attrs = values[-1], values[:-1]
+        self.klass_value, self.attrs = klass_value, attr_values #values[-1], values[:-1]
         
     def is_valid(self, klass, attributes):
-        return klass.has_value(self.klass_value) and attributes.has_values(self.attrs)
+        return klass.__contains__(self.klass_value) and attributes.has_values(self.attrs)
     
     def __str__(self):
         return self.str_attrs() + self.str_class()
@@ -84,9 +83,9 @@ class TrainingInstance(Instance):
         return self.attr_values_as_str() + ',' + self.klass_value
         
 class TestInstance(Instance):
-    def __init__(self, line):
+    def __init__(self, attr_values):
         Instance.__init__(self)
-        self.attrs = line.split(',')
+        self.attrs = attr_values#line.split(',')
         
     def set_klass(self, klass):
         self.classifiedKlass = klass
@@ -103,8 +102,8 @@ class TestInstance(Instance):
         return self.attr_values_as_str() + ',' +self.classifiedKlass
     
 class GoldInstance(TrainingInstance, TestInstance):
-    def __init__(self, line):
-        TrainingInstance.__init__(self, line)
+    def __init__(self, attr_values, klass_value):
+        TrainingInstance.__init__(self, attr_values, klass_value)
         
     def is_valid(self, klass, attributes):
         return TrainingInstance.is_valid(self, klass, attributes)

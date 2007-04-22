@@ -5,17 +5,13 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
-from nltk_lite.contrib.classifier import instances as ins
-from nltk_lite.contrib.classifier import attributes as attrs
-
-from nltk_lite.contrib.classifier import klass as k
+from nltk_lite.contrib.classifier import instances as ins, format
 
 class Classifier:
     def __init__(self, path):
-        self.attributes = attrs.Attributes(path)
-        self.klass = k.Klass(path)
-
-        self.training = ins.TrainingInstances(path)
+        self.attributes = format.C45_FORMAT.get_attributes(path)
+        self.klass = format.C45_FORMAT.get_klass(path)
+        self.training = format.C45_FORMAT.get_training_instances(path)
         self.validate_training()
         
     def validate_training(self):

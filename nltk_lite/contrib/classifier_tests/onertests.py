@@ -28,7 +28,7 @@ class OneRTestCase(unittest.TestCase):
         classifier = oner.OneR(self.WEATHER)
         classifier.test(self.WEATHER, False)
         self.assertTrue(classifier.test_instances[0].classifiedKlass is not None)
-        self.assertEqual('yes', classifier.test_instances.instances[0].classifiedKlass)
+        self.assertEqual('yes', classifier.test_instances[0].classifiedKlass)
         
     def test_verifies_classification(self):
         classifier = oner.OneR(self.WEATHER)
