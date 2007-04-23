@@ -1,27 +1,4 @@
 # Natural Language Toolkit: Logic
-#
-# Based on church.py, Version 1.0
-# Available from http://www.alcyone.com/pyos/church/
-# Copyright (C) 2001-2002 Erik Max Francis
-# Author: Erik Max Francis <max@alcyone.com>
-#
-# Modifications by: Steven Bird <sb@csse.unimelb.edu.au>
-#                   Peter Wang
-#                   Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.sf.net>
-# For license information, see LICENSE.TXT
-#
-# $Iid:$
-
-"""
-A version of first order logic, built on top of the untyped lambda calculus.
-
-The class of C{Expression} has various subclasses:
-
-  - C{VariableExpression}
-  
-"""
-
 from nltk_lite.utilities import Counter
 
 class Error(Exception): pass
@@ -132,6 +109,9 @@ class Expression(object):
 
     def _skolemise(self, bound_vars, counter):
         raise NotImplementedError
+
+    def clauses(self):
+        return [self]
 
     def __str__(self):
         raise NotImplementedError
@@ -538,6 +518,12 @@ class ApplicationExpression(Expression):
         second = self.second._skolemise(bound_vars, counter)
         return self.__class__(first, second)
 
+    def clauses(self):
+        if isinstance(self.first, ApplicationExpression) and\
+           isinstance(self.first.first, Operator) and\
+           self.first.first.operator == 'and':
+           return self.first.second.clauses() + self.second.clauses()
+        else: return [self]
     def __str__(self):
         # Print ((M N) P) as (M N P).
         strFirst = str(self.first)
