@@ -3,7 +3,7 @@ from treeview import *
 
 def demo():
     cp = load_earley('lab3-slash.cfg', trace=0)
-    trees = cp.parse('Mary sees a dog in Noosa')
+    trees = cp.parse('Mary sees a boy with a dog')
     for tree in trees:
         print tree
         sem = tree[0].node['sem']
@@ -13,3 +13,4 @@ def demo():
 
 #run_profile()
 if __name__ == '__main__': demo()
+
