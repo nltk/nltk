@@ -118,16 +118,6 @@ class InstancesTestCase(unittest.TestCase):
         for index in range(len(klass_values)):
             self.assertEqual(klass_values[index], training[index].klass_value)
 
-    def test_breakpoints_in_class_membership(self):
-        path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        training = format.C45_FORMAT.get_training_instances(path)
-        klass_values = training.klass_values()
-        self.assertEqual(['yes', 'no', 'yes', 'yes', 'yes', 'no'], klass_values)
-
-        breakpoints = training.breakpoints_in_class_membership()
-        self.assertEqual(3, len(breakpoints))
-        self.assertEqual([0, 1, 4], breakpoints)
-
     def test_sort_by_attribute(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
         training = format.C45_FORMAT.get_training_instances(path)
@@ -144,8 +134,8 @@ class InstancesTestCase(unittest.TestCase):
         self.assertEqual(['no', 'yes', 'yes', 'yes', 'yes', 'no'], klass_values)
         
     def test_ranges_from_breakpoints(self):
-        brkpts = ins.SupervisedBreakpoints([0, 4], [19.0, 21.0, 25.0, 31.0, 34.0, 42.0])
-        
+        brkpts = ins.SupervisedBreakpoints(['no', 'yes', 'yes', 'yes', 'yes', 'no'], [19.0, 21.0, 25.0, 31.0, 34.0, 42.0])
+        brkpts.find_naive()
         ranges = brkpts.as_ranges()
         self.assertEqual(3, len(ranges))
         self.assertEqual(19.0, ranges[0].lower)
@@ -155,3 +145,37 @@ class InstancesTestCase(unittest.TestCase):
         self.assertEqual(38.0, ranges[2].lower)
         self.assertEqual(42.000001, ranges[2].upper)
         
+    def test_simple_naive_breakpoints(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        attributes = format.C45_FORMAT.get_attributes(path)
+        
+        breakpoints = training.supervised_breakpoints(attributes[1])
+        breakpoints.find_naive()
+        self.assertEqual(['no', 'yes', 'yes', 'yes', 'yes', 'no'], training.klass_values())
+        self.assertEqual([19.0, 21.0, 25.0, 31.0, 34.0, 42.0], training.attribute_values(attributes[1]))
+        self.assertEqual(2, len(breakpoints))
+        self.assertEqual([0,4], breakpoints)
+        
+    def test_naive_breakpoints_with_shifting(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        attributes = format.C45_FORMAT.get_attributes(path)
+        training = format.C45_FORMAT.get_training_instances(path)
+        breakpoints = training.supervised_breakpoints(attributes[4])
+        breakpoints.find_naive()
+        
+        self.assertEqual(['yes', 'no', 'yes', 'yes', 'yes', 'no'], training.klass_values())
+        self.assertEqual([0.0, 0.0, 0.0, 2.0, 2.0, 2.0], training.attribute_values(attributes[4]))
+        self.assertEqual(1, len(breakpoints))
+        self.assertEqual([2], breakpoints)
+
+    def test_breakpoints_in_class_membership(self):
+        breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no'], [19.0, 21.0, 25.0, 31.0, 34.0, 42.0])
+
+        breakpoints = breakpoints.breakpoints_in_class_membership()
+        self.assertEqual(3, len(breakpoints))
+        self.assertEqual([0, 1, 4], breakpoints)
+        
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(unittest.TestSuite(unittest.makeSuite(InstancesTestCase)))
