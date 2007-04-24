@@ -1,4 +1,4 @@
-﻿#1:1.[4257] NP(Head:Neu:一)#。(PERIODCATEGORY)
+#1:1.[4257] NP(Head:Neu:一)#。(PERIODCATEGORY)
 #2:2.[39028] NP(Head:Nad:友情)#。(PERIODCATEGORY)
 #3:3.[39029] S(theme:NP(Head:N(DUMMY1:Nba:嘉珍|Head:Caa:和|DUMMY2:Nhaa:我))|Head:VC1:住在|goal:NP(quantifier:DM:同一條|Head:Nab:巷子))#，(COMMACATEGORY)
 #4:4.[39030] S(theme:NP(Head:Nhaa:我們)|Head:V_11:是|range:NP(Head:Nab:鄰居))#，(COMMACATEGORY)
