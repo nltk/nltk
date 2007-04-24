@@ -58,7 +58,6 @@ to ensure that variables with the same name get the same value.
 """
 
 from copy import copy, deepcopy
-import logic
 import re
 import yaml
 #import unittest
@@ -93,7 +92,29 @@ def isMapping(obj):
 class FeatureI(object):
     def __init__(self):
         raise TypeError, "FeatureI is an abstract interface"
+    
+    def __getitem__(self, key):
+        raise NotImplementedError
+    
+    def __setitem__(self, key, value):
+        raise NotImplementedError
+    
+    def keys(self):
+        raise NotImplementedError
+    
+    def get(self, key, default=None):
+        if key in self.keys(): return self[key]
+        else: return default
 
+    def has_key(self, key):
+        return key in self.keys()
+
+    def items(self):
+        lst = []
+        for key in self.keys():
+            lst.append((key, self[key]))
+        return lst
+        
 class _FORWARD(object):
     """
     _FORWARD is a singleton value, used in unification as a flag that a value
@@ -264,18 +285,6 @@ class SubstituteBindingsMixin(SubstituteBindingsI):
                 if bindings.has_key(var.name()):
                     newval = newval.replace(semvar, bindings[var.name()])
         return newval
-
-class ApplicationExpressionSubst(logic.ApplicationExpression, SubstituteBindingsMixin):
-    pass
-
-class LambdaExpressionSubst(logic.LambdaExpression, SubstituteBindingsMixin):
-    pass
-
-class SomeExpressionSubst(logic.SomeExpression, SubstituteBindingsMixin):
-    pass
-
-class AllExpressionSubst(logic.AllExpression, SubstituteBindingsMixin):
-    pass
 
 def show(data):
     """
