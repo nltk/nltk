@@ -9,6 +9,8 @@
 from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 import operator, UserList
+from nltk_lite import probability as prob
+import math
 
 class Instances(UserList.UserList):
     def __init__(self, instances):
@@ -155,11 +157,11 @@ class SupervisedBreakpoints(UserList.UserList):
         self.adjust_for_equal_values()
         
     def find_entropy_based(self):
-        self.append(item)
+        self.extend(self.find_breakpoint(self.klass_values))
         
     def find_breakpoint(self, klass_values):
         breakpoints = []
-        position, entropy = self.min_entropy(klass_values)
+        position, entropy = min_entropy(klass_values)
         if entropy == 0: return
         breakpoints.append(breakpoint)
         first, second = klass_values[:position+1], klass_values[position+1:]
@@ -209,3 +211,23 @@ class SupervisedBreakpoints(UserList.UserList):
             lower = mid
         ranges.append(r.Range(lower, self.attr_values[-1], True))
         return ranges
+
+def min_entropy(values):
+    position, min_entropy = 0, None
+    for index in range(len(values) -1):
+        first, second = values[:index + 1], values[index + 1:]
+        e = entropy(first) + entropy(second)
+        if min_entropy is None: min_entropy = e
+        if e < min_entropy:
+            min_entropy = e
+            position = index
+    return [position, min_entropy]
+    
+def entropy(values):
+    freq_dist = prob.FreqDist()
+    for value in values: freq_dist.inc(value)
+    sum = 0
+    for sample in freq_dist.samples():
+        freq = freq_dist.freq(sample)
+        sum += (freq * math.log(freq, 2))
+    return sum *  -1

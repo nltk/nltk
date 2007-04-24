@@ -8,6 +8,7 @@
 from nltk_lite.contrib.classifier import instances as ins, instance, attribute as a, discretisedattribute as da, numrange as nr, format
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk_lite.contrib.classifier_tests import *
+import math
 
 class InstancesTestCase(unittest.TestCase):
     def test_the_number_of_instances(self):
@@ -171,11 +172,19 @@ class InstancesTestCase(unittest.TestCase):
 
     def test_breakpoints_in_class_membership(self):
         breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no'], [19.0, 21.0, 25.0, 31.0, 34.0, 42.0])
-
         breakpoints = breakpoints.breakpoints_in_class_membership()
         self.assertEqual(3, len(breakpoints))
         self.assertEqual([0, 1, 4], breakpoints)
-        
+    
+    def test_entropy_of_elements(self):
+        entropy = ins.entropy(['yes', 'no', 'yes', 'yes', 'yes', 'no'])
+        self.assertEqual(-1 * (4.0/6 * math.log( 4.0/6, 2) + 2.0/6 * math.log(2.0/6, 2)), entropy)
+    
+    def test_min_entropy(self):
+        position, min_ent = ins.min_entropy(['yes', 'no', 'yes', 'yes', 'yes', 'no'])
+        self.assertEqual(4, position)
+        self.assertEqual(-1 * (4.0/5 * math.log(4.0/5, 2) + 1.0/5 * math.log(1.0/5, 2)), min_ent)
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(unittest.TestSuite(unittest.makeSuite(InstancesTestCase)))
