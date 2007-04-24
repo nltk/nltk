@@ -56,12 +56,18 @@ class Discretiser:
         return self.__discretise(disc_attrs)
     
     def naive_supervised(self):
+        return self.__supervised_discretisation(lambda breakpoints: breakpoints.find_naive())
+    
+    def __supervised_discretisation(self, action):
         disc_attrs = []
         for attribute in self.subset:
-            breakpoints = self.training.breakpoints(attribute)
-            breakpoints.adjust_for_equal_values()
+            breakpoints = self.training.supervised_breakpoints(attribute)
+            action(breakpoints)
             disc_attrs.append(da.DiscretisedAttribute(attribute.name, breakpoints.as_ranges(), attribute.index))
         return self.__discretise(disc_attrs)
+
+    def entropy_based_supervised(self):
+        return self.__supervised_discretisation(lambda breakpoints: breakpoints.find_entropy_based())
 
     def discretised_attributes(self, ranges):
         discretised_attributes = []
