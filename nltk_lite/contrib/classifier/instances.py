@@ -96,19 +96,11 @@ class TrainingInstances(Instances):
             values.append(instance.klass_value)
         return values
     
-    def breakpoints(self, attribute):
+    def supervised_breakpoints(self, attribute):
         self.sort_by(attribute)
-        class_breakpoints = self.breakpoints_in_class_membership()
         attr_values = self.attribute_values(attribute)
-        return SupervisedBreakpoints(class_breakpoints, attr_values)
-    
-    def breakpoints_in_class_membership(self):
-        breakpoints, _klass_values = [], self.klass_values()
-        for index in range(len(_klass_values) - 1):
-            if _klass_values[index] != _klass_values[index + 1]:
-                breakpoints.append(index)
-        return breakpoints
-    
+        return SupervisedBreakpoints(self.klass_values(), attr_values)
+       
     def attribute_values(self, attribute):
         values = []
         for instance in self.data:
@@ -149,39 +141,69 @@ class GoldInstances(Instances):
     def get_extension(self, format):
         return format.GOLD
         
-class SupervisedBreakpoints:
-    def __init__(self, class_breakpoints, attr_values):
-        self.class_breakpoints = class_breakpoints
+class SupervisedBreakpoints(UserList.UserList):
+    """
+    Used to find breakpoints for discretisation
+    """
+    def __init__(self, klass_values, attr_values):
+        UserList.UserList.__init__(self, [])
         self.attr_values = attr_values
+        self.klass_values = klass_values
+        
+    def find_naive(self):
+        self.data[:] = self.breakpoints_in_class_membership()
+        self.adjust_for_equal_values()
+        
+    def find_entropy_based(self):
+        self.append(item)
+        
+    def find_breakpoint(self, klass_values):
+        breakpoints = []
+        position, entropy = self.min_entropy(klass_values)
+        if entropy == 0: return
+        breakpoints.append(breakpoint)
+        first, second = klass_values[:position+1], klass_values[position+1:]
+        breakpoints.extend(self.find_breakpoint(first))
+        breakpoints.extend([position + 1 + x for x in self.find_breakpoints(second)])
+        return breakpoints
+        
+        
+    def breakpoints_in_class_membership(self):
+        """
+        Returns an array of indices where the class membership changes from one value to another
+        the indicies will always lie between 0 and one less than number of instance, both inclusive.
+        """
+        breakpoints= []
+        for index in range(len(self.klass_values) - 1):
+            if self.klass_values[index] != self.klass_values[index + 1]:
+                breakpoints.append(index)
+        return breakpoints
     
     def adjust_for_equal_values(self):
-        for index in range(len(self.class_breakpoints)):
-            while self.same_values_on_either_side(index) and not self.has_crossed_next_breakpoint(index):
-                self.class_breakpoints[index] += 1
-            if index != len(self.class_breakpoints) - 1 and self.class_breakpoints[index] >= self.class_breakpoints[index + 1]:
-                self.class_breakpoints.remove(self.class_breakpoints[index])
+        to_be_removed = []
+        for index in range(len(self.data)):
+            i = index
+            while i < len(self.data) - 1 and (self.attr_values[self.data[i]] == self.attr_values[self.data[i] + 1]):
+                #The last and second last elements have the same attribute value or is equal to next breakpoint?
+                if self.data[i] == len(self.attr_values) - 2 or (index < len(self.data) - 1 and self.data[i] == self.data[index + 1]):
+                    to_be_removed.append(self.data[i])
+                    break
+                self.data[i] += 1
+                i += 1
+            if index == len(self.data) - 1:#last breakpoint
+                breakpoint = self.data[index]
+                while breakpoint < len(self.attr_values) - 1 and self.attr_values[breakpoint] == self.attr_values[breakpoint + 1]:
+                    self.data[index] += 1
+                    if self.data[index] == len(self.attr_values) - 1:
+                        to_be_removed.append(self.data[index])
+                        break
+                    breakpoint = self.data[index]    
+        for breakpoint in to_be_removed:
+            self.data.remove(breakpoint)
     
-    def same_values_on_either_side(self, index):
-        breakpoint = self.class_breakpoints[index]
-        if breakpoint == len(self.attr_values) - 1:
-            return False
-        return self.attr_values[breakpoint] == self.attr_values[breakpoint + 1]
-    
-    def has_crossed_next_breakpoint(self, index):
-        """
-        Checks if the breakpoint at index is greater than or equal to that at index + 1 for all index 0..len(breakpoints) - 1
-        
-        consider [2,4,6,8] as the list of breakpoints in class membership
-        if the values of a particular attribute are the same on either side of the breakpoint 4 then the breakpoint is 
-        moved to a position where the value changes.
-        While moving the breakpoint if the new value 6 is greater than or equal to the next breakpoint 6 then, the current 
-        breakpoint should be removed, and hence this method checks to see if this condition is true.
-        """
-        return index == len(self.class_breakpoints) - 1 or self.class_breakpoints[index] >= self.class_breakpoints[index + 1]
-
     def as_ranges(self):
         ranges, lower = [], self.attr_values[0]
-        for breakpoint in self.class_breakpoints:
+        for breakpoint in self.data:
             mid = (self.attr_values[breakpoint] + self.attr_values[breakpoint + 1]) / 2.0
             ranges.append(r.Range(lower, mid))
             lower = mid
