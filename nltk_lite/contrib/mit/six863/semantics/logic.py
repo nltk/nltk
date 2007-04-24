@@ -1,36 +1,16 @@
 # Natural Language Toolkit: Logic
 from nltk_lite.utilities import Counter
+from featurelite import SubstituteBindingsMixin, FeatureI
+from featurelite import Variable as FeatureVariable
+_counter = Counter()
+
+def unique_variable(template, counter=None):
+    letter = str(template).strip('0123456789')
+    if counter is None: counter = _counter
+    unique = counter.get()
+    return VariableExpression(Variable(letter+str(unique)))
 
 class Error(Exception): pass
-
-class Variable(object):
-    """A variable, either free or bound."""
-    
-    def __init__(self, name):
-        """
-        Create a new C{Variable}.
-
-        @type name: C{string}
-        @param name: The name of the variable.
-        """
-        self.name = name
-
-    def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        if not isinstance(other, Variable): return False
-        return self.name == other.name
-        
-    def __str__(self): return self.name
-
-    def __repr__(self): return "Variable('%s')" % self.name
-
-    def __hash__(self): return hash(repr(self))
 
 class Constant:
     """A nonlogical constant."""
@@ -58,6 +38,35 @@ class Constant:
     def __str__(self): return self.name
 
     def __repr__(self): return "Constant('%s')" % self.name
+
+    def __hash__(self): return hash(repr(self))
+
+class Variable:
+    """A variable, either free or bound."""
+    
+    def __init__(self, name):
+        """
+        Create a new C{Variable}.
+
+        @type name: C{string}
+        @param name: The name of the variable.
+        """
+        self.name = name
+
+    def __eq__(self, other):
+        return self.equals(other)
+
+    def __ne__(self, other):
+        return not self.equals(other)
+
+    def equals(self, other):
+        """A comparison function."""
+        assert isinstance(other, Variable)
+        return self.name == other.name
+        
+    def __str__(self): return self.name
+
+    def __repr__(self): return "Variable('%s')" % self.name
 
     def __hash__(self): return hash(repr(self))
 
@@ -89,11 +98,17 @@ class Expression(object):
         """Set of all subterms (including self)."""
         raise NotImplementedError
 
-
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         raise NotImplementedError
+
+    def replace_unique(self, variable, counter=None, replace_bound=False):
+        """
+        Replace a variable v with a new, uniquely-named variable.
+        """
+        return self.replace(variable, unique_variable(variable, counter),
+        replace_bound)
 
     def simplify(self):
         """Evaluate the form by repeatedly applying applications."""
@@ -106,6 +121,7 @@ class Expression(object):
         they are unique.
         """
         return self._skolemise(set(), Counter())
+    skolemize = skolemise
 
     def _skolemise(self, bound_vars, counter):
         raise NotImplementedError
@@ -291,7 +307,6 @@ class VariableBinderExpression(Expression):
     """A variable binding expression: e.g. \\x.M."""
 
     # for generating "unique" variable names during alpha conversion.
-    _counter = Counter()
 
     def __init__(self, variable, term):
         Expression.__init__(self)
@@ -347,7 +362,7 @@ class VariableBinderExpression(Expression):
             else: return self.__class__(expression,
                 self.term.replace(variable, expression, True))
         if replace_bound or self.variable in expression.free():
-            v = 'z' + str(self._counter.get())
+            v = self.variable.name + str(_counter.get())
             if not replace_bound: self = self.alpha_convert(Variable(v))
         return self.__class__(self.variable,
             self.term.replace(variable, expression, replace_bound))
@@ -390,7 +405,8 @@ class LambdaExpression(VariableBinderExpression):
         return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-        return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+        return str(self)
+        #return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
 
 class SomeExpression(VariableBinderExpression):
     """An existential quantification expression: some x.M."""
@@ -407,7 +423,8 @@ class SomeExpression(VariableBinderExpression):
         return term._skolemise(bound_vars, counter)
 
     def __repr__(self):
-        return "SomeExpression('%s', '%s')" % (self.variable, self.term)
+        return str(self)
+        #return "SomeExpression('%s', '%s')" % (self.variable, self.term)
 
 
 class AllExpression(VariableBinderExpression):
@@ -420,18 +437,44 @@ class AllExpression(VariableBinderExpression):
         return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-        return "AllExpression('%s', '%s')" % (self.variable, self.term)
+        return str(self)
+        #return "AllExpression('%s', '%s')" % (self.variable, self.term)
 
 
 
-class ApplicationExpression(Expression):
+class ApplicationExpression(Expression, FeatureI):
     """An application expression: (M N)."""
-    def __init__(self, first, second):
+    def __init__(self, first=None, second=None):
         Expression.__init__(self)
-        assert isinstance(first, Expression)
-        assert isinstance(second, Expression)
+        if first is not None: assert isinstance(first, Expression)
+        if second is not None: assert isinstance(second, Expression)
         self.first = first
         self.second = second
+        self._forward = None
+
+    # Let this expression be unified, by implementing FeatureI.
+    def __getitem__(self, key):
+        if key == 'first': value = self.first
+        elif key == 'second': value = self.second
+        elif key == '_FORWARD': value = self._forward
+        else: raise KeyError
+
+        if str(value).startswith('??'):
+            return FeatureVariable(str(value)[1:])
+        else: return value
+
+    def __setitem__(self, key, value):
+        if key == 'first': self.first = value
+        elif key == 'second': self.second = value
+        elif key == '_FORWARD': self._forward = value
+        else: raise KeyError
+    
+    def keys(self):
+        lst = []
+        if self.first: lst.append('first')
+        if self.second: lst.append('second')
+        if self._forward: lst.append('_FORWARD')
+        return lst
 
     def equals(self, other):
         if self.__class__ == other.__class__:
@@ -532,7 +575,9 @@ class ApplicationExpression(Expression):
                 strFirst = strFirst[1:-1]
         return '(%s %s)' % (strFirst, self.second)
 
-    def __repr__(self): return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
+    def __repr__(self):
+        return str(self)
+        #return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
 
     def __hash__(self):
         return hash(str(self.normalize()))
@@ -701,6 +746,19 @@ class Parser:
         return SomeExpression(first, second)
     def make_AllExpression(self, first, second):
         return AllExpression(first, second)
+
+class ApplicationExpressionSubst(ApplicationExpression, SubstituteBindingsMixin):
+    pass
+
+class LambdaExpressionSubst(LambdaExpression, SubstituteBindingsMixin):
+    pass
+
+class SomeExpressionSubst(SomeExpression, SubstituteBindingsMixin):
+    pass
+
+class AllExpressionSubst(AllExpression, SubstituteBindingsMixin):
+    pass
+
 
 def expressions():
     """Return a sequence of test expressions."""

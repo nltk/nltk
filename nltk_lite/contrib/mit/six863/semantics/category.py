@@ -391,7 +391,7 @@ class Category(Nonterminal, FeatureI, SubstituteBindingsI):
         if match is not None:
             fun = ParserSubstitute(match.group(2)).next()
             arg = ParserSubstitute(match.group(3)).next()
-            return ApplicationExpressionSubst(fun, arg), match.end()       
+            return logic.ApplicationExpressionSubst(fun, arg), match.end()       
 
         # other semantic value enclosed by '< >'; return value given by the lambda expr parser
         match = _PARSE_RE['semantics'].match(s, position)
@@ -589,14 +589,13 @@ class ParserSubstitute(logic.Parser):
     expressions which support the SubstituteBindingsI interface.
     """
     def make_ApplicationExpression(self, first, second):
-        return ApplicationExpressionSubst(first, second)
+        return logic.ApplicationExpressionSubst(first, second)
     def make_LambdaExpression(self, first, second):
-        return LambdaExpressionSubst(first, second)
+        return logic.LambdaExpressionSubst(first, second)
     def make_SomeExpression(self, first, second):
-        return SomeExpressionSubst(first, second)
+        return logic.SomeExpressionSubst(first, second)
     def make_AllExpression(self, first, second):
-        return AllExpressionSubst(first, second)
-    
+        return logic.AllExpressionSubst(first, second)
 
 
 ############################################################################
