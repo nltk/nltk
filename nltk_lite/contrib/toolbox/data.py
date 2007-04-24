@@ -33,7 +33,7 @@ class ToolboxData(toolbox.ToolboxData):
                     e.text = text
         return root
 
-    def chunk_parse(self, grammar, no_blanks=True, **kwargs):
+    def chunk_parse(self, grammar, no_blanks=True, incomplete='record', **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
@@ -44,11 +44,14 @@ class ToolboxData(toolbox.ToolboxData):
         @type no_blanks: boolean
         @param no_blanks: blank fields that are not important to the structure are deleted
         @type kwargs: keyword arguments dictionary
+        @param incomplete: name of element used if parse doesn't result in one toplevel element
+        @rtype: string
         @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
         @rtype:   ElementTree._ElementInterface
         @return:  Contents of toolbox data parsed according to the rules in grammar
         """
         from nltk_lite import chunk
+        from nltk_lite.parse import Tree
 
         cp = chunk.Regexp(grammar)
         db = self.parse(**kwargs)
@@ -57,7 +60,12 @@ class ToolboxData(toolbox.ToolboxData):
         tb_etree.append(header)
         for record in db.findall('record'):
             parsed = cp.parse([(elem.text, elem.tag) for elem in record])
-            tb_etree.append(self._tree2etree(parsed[0], no_blanks))
+            top = parsed[0]
+            if not isinstance(top, Tree) or len(parsed) != 1:
+                # didn't get a full parse
+                parsed.node = incomplete
+                top = parsed
+            tb_etree.append(self._tree2etree(top, no_blanks))
         return tb_etree
 
     def _make_parse_table(self, grammar):
