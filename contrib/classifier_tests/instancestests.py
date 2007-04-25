@@ -184,6 +184,34 @@ class InstancesTestCase(unittest.TestCase):
         position, min_ent = ins.min_entropy(['yes', 'no', 'yes', 'yes', 'yes', 'no'])
         self.assertEqual(4, position)
         self.assertEqual(-1 * (4.0/5 * math.log(4.0/5, 2) + 1.0/5 * math.log(1.0/5, 2)), min_ent)
+        
+    def test_entropy_based_breakpoints(self):
+        breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no'], [19.0, 21.0, 25.0, 31.0, 34.0, 42.0])
+        breakpoints.find_entropy_based_max_depth(2)
+        self.assertEqual(2, len(breakpoints))
+        self.assertEqual([4,0], breakpoints.data)
+        
+    def test_adjust_for_min_freq(self):
+        breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'yes', 'yes'], [64, 65, 68, 69, 70, 71, 72, 72, 75])
+        breakpoints.find_naive()
+        self.assertEqual(4, len(breakpoints))
+        self.assertEqual([0, 1, 4, 7], breakpoints)
+        
+        breakpoints.adjust_for_min_freq(4)
+        self.assertEqual(1, len(breakpoints))
+        self.assertEqual([4], breakpoints)
+        
+    def test_naive_discretisation_version1(self):
+        breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'yes', 'yes'], [64, 65, 68, 69, 70, 71, 72, 72, 75])
+        breakpoints.find_naive_v1(3)
+        self.assertEqual(1, len(breakpoints))
+        self.assertEqual([3], breakpoints)
+        
+    def test_naive_discretisation_version2(self):
+        breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no', 'no', 'yes', 'yes'], [64, 65, 68, 69, 70, 71, 72, 72, 75])
+        breakpoints.find_naive_v2(3)
+        self.assertEqual(2, len(breakpoints))
+        self.assertEqual([4, 7], breakpoints)
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
