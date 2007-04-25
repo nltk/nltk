@@ -20,4 +20,10 @@ echo 'Unsupervised Equal Frequency'
 python ../classifier/discretise.py -a UEF -t datasets/numerical/person -T datasets/numerical/person.test -A 1 -o 3
 echo 'Naive supervised'
 python ../classifier/discretise.py -a NS -t datasets/numerical/weather -T datasets/numerical/weather.test,datasets/numerical/weather.gold -A 1
+echo 'Naive supervised modified version 1'
+python ../classifier/discretise.py -a NS1 -t datasets/numerical/person -T datasets/numerical/person.test -A 1,4,5,6,7 -o 2,3,2,3,4
+echo 'Naive supervised modified version 2'
+python ../classifier/discretise.py -a NS2 -t datasets/numerical/person -T datasets/numerical/person.test -A 1,4,5,6,7 -o 2,3,2,3,4
+echo 'Entropy based supervised'
+python ../classifier/discretise.py -a ES -t datasets/numerical/person -T datasets/numerical/person.test -A 1,4,5,6,7 -o 2,2,2,2,2
 

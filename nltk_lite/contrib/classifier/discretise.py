@@ -25,7 +25,12 @@ class Discretise(OptionParser):
                + "UEW: Comma separated list of number of parts in which" \
                + "     each attribute should be split.                 "
         
-        self.__algorithms = {'UEW':'unsupervised_equal_width', 'UEF':'unsupervised_equal_frequency', 'NS' : 'naive_supervised'}
+        self.__algorithms = {'UEW':'unsupervised_equal_width', \
+                             'UEF':'unsupervised_equal_frequency', \
+                             'NS' :'naive_supervised', \
+                             'NS1':'naive_supervised_v1', \
+                             'NS2':'naive_supervised_v2', \
+                             'ES' :'entropy_based_supervised'}
         OptionParser.__init__(self)
         self.add_option("-a", "--algorithm", dest="algorithm", type="choice", \
                         choices=self.__algorithms.keys(), default="UEW", help= a_help)
@@ -44,7 +49,7 @@ class Discretise(OptionParser):
         attributes = self.__get_value('attributes')
         options = self.__get_value('options')
         if algorithm is None or test is None or training is None or attributes is None or \
-           ((algorithm == self.__algorithms['UEW'] or algorithm == self.__algorithms['UEF']) and options is None): 
+           ( not algorithm == self.__algorithms['NS'] and options is None): 
             self.error("Invalid arguments. One or more required arguments are not present.")
         self.invoke(training, test, attributes, options, algorithm)
         
