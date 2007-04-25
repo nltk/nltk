@@ -155,21 +155,35 @@ class SupervisedBreakpoints(UserList.UserList):
     def find_naive(self):
         self.data[:] = self.breakpoints_in_class_membership()
         self.adjust_for_equal_values()
+
+    def find_naive_v1(self, min_size):
+        frequencies = prob.FreqDist()
+        for index in range(len(self.klass_values) - 1):
+            frequencies.inc(self.klass_values[index])
+            if frequencies.count(frequencies.max()) >= min_size:
+                self.append(index)
+                frequencies = prob.FreqDist()
         
-    def find_entropy_based(self):
-        self.extend(self.find_breakpoint(self.klass_values))
+    def find_naive_v2(self, min_size):
+        self.find_naive()
+        self.adjust_for_min_freq(min_size)
         
-    def find_breakpoint(self, klass_values):
+    def find_entropy_based_max_depth(self, max_depth):
+        self.max_depth = max_depth
+        self.extend(self.__find_breakpoints(self.klass_values))
+        
+    def __find_breakpoints(self, klass_values, depth = 0):
         breakpoints = []
+        if len(klass_values) <= 1: return breakpoints
         position, entropy = min_entropy(klass_values)
-        if entropy == 0: return
-        breakpoints.append(breakpoint)
+        if abs(entropy) == 0: return breakpoints
+        breakpoints.append(position)
         first, second = klass_values[:position+1], klass_values[position+1:]
-        breakpoints.extend(self.find_breakpoint(first))
-        breakpoints.extend([position + 1 + x for x in self.find_breakpoints(second)])
+        if depth < self.max_depth:
+            breakpoints.extend(self.__find_breakpoints(first, depth + 1))
+            breakpoints.extend([position + 1 + x for x in self.__find_breakpoints(second, depth + 1)])
         return breakpoints
-        
-        
+    
     def breakpoints_in_class_membership(self):
         """
         Returns an array of indices where the class membership changes from one value to another
@@ -180,6 +194,20 @@ class SupervisedBreakpoints(UserList.UserList):
             if self.klass_values[index] != self.klass_values[index + 1]:
                 breakpoints.append(index)
         return breakpoints
+    
+    def adjust_for_min_freq(self, min_size):
+        prev = -1
+        self.sort()
+        to_remove,frequencies = [], prob.FreqDist()
+        for breakpoint in self.data:
+            frequencies.inc(self.klass_values[breakpoint], breakpoint - prev)
+            if frequencies.count(frequencies.max()) < min_size:
+                to_remove.append(breakpoint)
+            else:
+                frequencies = prob.FreqDist()
+            prev = breakpoint    
+        for item in to_remove:
+            self.remove(item)
     
     def adjust_for_equal_values(self):
         to_be_removed = []
@@ -205,6 +233,7 @@ class SupervisedBreakpoints(UserList.UserList):
     
     def as_ranges(self):
         ranges, lower = [], self.attr_values[0]
+        self.sort()
         for breakpoint in self.data:
             mid = (self.attr_values[breakpoint] + self.attr_values[breakpoint + 1]) / 2.0
             ranges.append(r.Range(lower, mid))
