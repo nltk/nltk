@@ -272,7 +272,7 @@ resulting parses.
     >>> parser.get_parse_list(tokens)
     [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
 
-    >>> parser = pchart.BeamParse(len(tokens)+1, grammar)
+    >>> parser = pchart.InsideParse(grammar, beam_size = len(tokens)+1)
     >>> parser.get_parse_list(tokens)
     []
 
