@@ -24,10 +24,10 @@ search strategies.  Currently the following subclasses are defined:
   - C{RandomParse} searches edges in random order.
   - C{LongestParse} searches edges in decreasing order of their
     location's length.
-  - C{BeamParse} limits the number of edges in the queue, and
-    searches edges in decreasing order of their trees' inside
-    probabilities.
 
+The C{BottomUpChartParse} constructor has an optional argument beam_size.
+If non-zero, this controls the size of the beam (aka the edge queue).
+This option is most useful with InsideParse.
 """
 
 ##//////////////////////////////////////////////////////
@@ -148,13 +148,15 @@ class BottomUpChartParse(AbstractParse):
     @ivar _trace: The level of tracing output that should be generated
         when parsing a text.
     """
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, beam_size=0, trace=0):
         """
         Create a new C{BottomUpChartParse}, that uses C{grammar}
         to parse texts.
 
         @type grammar: C{PCFG}
         @param grammar: The grammar used to parse texts.
+        @type beam_size: C{int}
+        @param beam_size: The maximum length for the parser's edge queue.
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -162,6 +164,7 @@ class BottomUpChartParse(AbstractParse):
             output.
         """
         self._grammar = grammar
+        self.beam_size = beam_size
         self._trace = trace
         AbstractParse.__init__(self)
 
@@ -199,12 +202,16 @@ class BottomUpChartParse(AbstractParse):
             # Re-sort the queue.
             self.sort_queue(queue, chart)
 
+            # Prune the queue to the correct size if a beam was defined
+            if self.beam_size:
+                self._prune(queue, chart)
+
             # Get the best edge.
             edge = queue.pop()
             if self._trace>0:
                 print '  %-50s [%s]' % (chart.pp_edge(edge,width=2),
                                         edge.prob())
-            
+
             # Apply BU & FR to it.
             queue.extend(bu.apply(chart, grammar, edge))
             queue.extend(fr.apply(chart, grammar, edge))
@@ -262,6 +269,15 @@ class BottomUpChartParse(AbstractParse):
         @rtype: C{None}
         """
         raise AssertionError, "BottomUpChartParse is an abstract class"
+
+    def _prune(self, queue, chart):
+        """ Discard items in the queue if the queue is longer than the beam."""
+        if len(queue) > self.beam_size:
+            split = len(queue)-self.beam_size
+            if self._trace > 2:
+                for edge in queue[:split]:
+                    print '  %-50s [DISCARDED]' % chart.pp_edge(edge,2)
+            del queue[:split]
 
 class InsideParse(BottomUpChartParse):
     """
@@ -352,38 +368,6 @@ class LongestParse(BottomUpChartParse):
     def sort_queue(self, queue, chart):
         queue.sort(lambda e1,e2: cmp(e1.length(), e2.length()))
 
-class BeamParse(BottomUpChartParse):
-    """
-    A bottom-up parser for C{PCFG}s that limits the number of edges in
-    its edge queue.
-    """
-    def __init__(self, beam_size, grammar, trace=0):
-        """
-        Create a new C{BottomUpChartParse}, that uses C{grammar}
-        to parse texts.
-
-        @type beam_size: C{int}
-        @param beam_size: The maximum length for the parser's edge queue.
-        @type grammar: C{pcfg.Grammar}
-        @param grammar: The grammar used to parse texts.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            and higher numbers will produce more verbose tracing
-            output.
-        """
-        BottomUpChartParse.__init__(self, grammar, trace)
-        self._beam_size = beam_size
-        
-    def sort_queue(self, queue, chart):
-        queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))
-        if len(queue) > self._beam_size:
-            split = len(queue)-self._beam_size
-            if self._trace > 2:
-                for edge in queue[:split]:
-                    print '  %-50s [DISCARDED]' % chart.pp_edge(edge,2)
-            queue[:] = queue[split:]
-
 ##//////////////////////////////////////////////////////
 ##  Test Code
 ##//////////////////////////////////////////////////////
@@ -427,7 +411,7 @@ def demo():
         pchart.RandomParse(grammar),
         pchart.UnsortedParse(grammar),
         pchart.LongestParse(grammar),
-        pchart.BeamParse(len(tokens)+1, grammar)
+        pchart.InsideParse(grammar, beam_size = len(tokens)+1)   # was BeamParse
         ]
 
     # Run the parsers on the tokenized sentence.
@@ -449,16 +433,17 @@ def demo():
 
     # Print some summary statistics
     print
-    print '       Parser      | Time (secs)   # Parses   Average P(parse)'
-    print '-------------------+------------------------------------------'
+    print '       Parser      Beam | Time (secs)   # Parses   Average P(parse)'
+    print '------------------------+------------------------------------------'
     for i in range(len(parsers)):
-        print '%18s |%11.4f%11d%19.14f' % (parsers[i].__class__.__name__,
-                                         times[i],num_parses[i],average_p[i])
+        print '%18s %4d |%11.4f%11d%19.14f' % (parsers[i].__class__.__name__,
+                                             parsers[i].beam_size,
+                                             times[i],num_parses[i],average_p[i])
     parses = all_parses.keys()
     if parses: p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
     else: p = 0
-    print '-------------------+------------------------------------------'
-    print '%18s |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
+    print '------------------------+------------------------------------------'
+    print '%18s      |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p)
 
     # Ask the user if we should draw the parses.
     print
