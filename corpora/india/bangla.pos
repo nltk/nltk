@@ -1,4 +1,4 @@
-﻿<Corpora type=”Monolingual-POS-TAGGED” Language=”Bangla”
+<Corpora type="Monolingual-POS-TAGGED" Language="Bangla">
 <Sentence id=1>
 মহিষের_NN সন্তান_NN :_SYM তোড়া_NNP উপজাতি_NN ৷_SYM 
 </Sentence>
