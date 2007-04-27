@@ -6,6 +6,7 @@ Code:
 - tag package now supports pickling
 Corpora:
 - Rotokas texts
+- POS-tagged corpora for several Indian languages
 Tutorials:
 - Substantial work on Part II of book on
   structured programming, parsing and grammar
