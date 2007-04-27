@@ -1,5 +1,4 @@
-﻿<Corpora type=“Monolingual-POS-TAGGED” Language= “Hindi”
-
+<Corpora type="Monolingual-POS-TAGGED" Language="Hindi">
 <Sentence id=1>
 पूर्ण_JJ प्रतिबंध_NN हटाओ_VFM :_SYM इराक_NNP 
 </Sentence>
