@@ -10,12 +10,12 @@ from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, 
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
-    def __init__(self, path):
-        Classifier.__init__(self, path)
+    def __init__(self, training, attributes, klass, format):
+        Classifier.__init__(self, training, attributes, klass, format)
         self.__best_decision_stump = None
         
-    def test(self, path, printResults=True):
-        self.test_instances = format.C45_FORMAT.get_test_instances(path)
+    def test(self, test_instances, printResults=True):
+        self.test_instances = test_instances
         self.classify(self.test_instances)
         if printResults: self.test_instances.print_all()
         
@@ -28,8 +28,8 @@ class OneR(Classifier):
         klass = self.__best_decision_stump.klass(instance)
         instance.set_klass(klass)
         
-    def verify(self, path):
-        self.gold_instances = format.C45_FORMAT.get_gold_instances(path)
+    def verify(self, gold_instances):
+        self.gold_instances = gold_instances
         self.classify(self.gold_instances)
         return self.gold_instances.confusion_matrix(self.klass)
 

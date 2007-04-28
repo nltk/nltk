@@ -17,8 +17,9 @@ class DecisionStump:
         """
         counts is a dictionary in which 
         each key is an attribute value
-        and each value is a dictionary of class distribution for that attribute value
+        and each value is a dictionary of class frequencies for that attribute value
         """
+        #TODO refactor to use nltk_lite.probability.FreqDist for self.counts
         self.counts, self.children = {}, {} #it has children only in decision trees
         self.root = dictionary_of_values(klass)
         for value in attribute.values:

@@ -6,12 +6,13 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import decisiontree, decisionstump as ds, instances as ins
+from nltk_lite.contrib.classifier import decisiontree, decisionstump as ds, instances as ins, format
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class DecisionTreeTestCase(unittest.TestCase):
     def test_tree_creation(self):
-        tree = decisiontree.DecisionTree(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
+        tree = decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
         self.assertNotEqual(None, tree)
         self.assertNotEqual(None, tree.root)
         self.assertEqual('band', tree.root.attribute.name)
@@ -19,7 +20,8 @@ class DecisionTreeTestCase(unittest.TestCase):
         self.assertEqual('size', tree.root.children['tri'].attribute.name)
         
     def test_filter_does_not_affect_the_original_training(self):
-        tree = decisiontree.DecisionTree(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        tree = decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
         outlook = tree.attributes[0]
         self.assertEqual(9, len(tree.training))
         filtered = tree.training.filter(outlook, 'sunny')
@@ -27,7 +29,8 @@ class DecisionTreeTestCase(unittest.TestCase):
         self.assertEqual(4, len(filtered))
         
     def test_maximum_informaition_gain_stump_is_selected(self):
-        tree = decisiontree.DecisionTree(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
+        tree = decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
         max_ig_stump = tree.maximum_information_gain()
         self.assertEqual('size', max_ig_stump.attribute.name)
         
@@ -38,7 +41,8 @@ class DecisionTreeTestCase(unittest.TestCase):
         #           temperature       windy
         #             
     def test_ignores_selected_attributes_in_next_recursive_iteration(self):
-        tree = decisiontree.DecisionTree(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        tree = decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
         self.assertEqual('outlook', tree.root.attribute.name)
         children = tree.root.children
         self.assertEqual(2, len(children))
@@ -53,7 +57,8 @@ class DecisionTreeTestCase(unittest.TestCase):
 
     def test_throws_error_if_conitinuous_atributes_are_present(self):
         try:
-            decisiontree.DecisionTree(datasetsDir(self) + 'numerical' + SEP + 'weather')
+            path = datasetsDir(self) + 'numerical' + SEP + 'weather'
+            decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
             self.fail('should have thrown an error')
         except inv.InvalidDataError:
             pass
