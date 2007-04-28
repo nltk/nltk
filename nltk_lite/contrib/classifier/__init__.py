@@ -8,10 +8,11 @@ from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 from nltk_lite.contrib.classifier import instances as ins, format
 
 class Classifier:
-    def __init__(self, path):
-        self.attributes = format.C45_FORMAT.get_attributes(path)
-        self.klass = format.C45_FORMAT.get_klass(path)
-        self.training = format.C45_FORMAT.get_training_instances(path)
+    def __init__(self, training, attributes, klass, format):
+        self.attributes = attributes
+        self.klass = klass
+        self.training = training
+        self.format = format
         self.validate_training()
         
     def validate_training(self):

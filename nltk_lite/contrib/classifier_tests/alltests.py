@@ -13,7 +13,7 @@ from nltk_lite.contrib.classifier_tests import \
         decisionstumptests as decisionstump, onertests as oner, \
         classifytests as classify, decisiontreetests as decisiontree, \
         autoclasstests as autoclass, numrangetests as numrange, \
-        discretisertests as discretiser, discretisedattributetests as discretisedattribute, \
+        discretisedattributetests as discretisedattribute, \
         discretisetests as discretise, formattests as format
 import unittest
 
@@ -32,7 +32,6 @@ def allTestsSuite():
                                unittest.makeSuite(decisiontree.DecisionTreeTestCase),
                                unittest.makeSuite(autoclass.AutoClassTestCase), \
                                unittest.makeSuite(numrange.RangeTestCase), \
-                               unittest.makeSuite(discretiser.DiscretiserTestCase), \
                                unittest.makeSuite(discretisedattribute.DiscretisedAttributeTestCase), \
                                unittest.makeSuite(discretise.DiscretiseTestCase), \
                                unittest.makeSuite(format.FormatTestCase)))
