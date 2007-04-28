@@ -49,7 +49,7 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertTrue(classify.classifyCalled)
         self.assertFalse(classify.errorCalled)
         
-    def testClassifyThrowsErrorIfNeitherTestNorGoldIsPresent(self):
+    def test_classify_throws_error_if_neither_test_nor_gold_is_present(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         classify = StubClassify()
         self.assertFalse(classify.classifyCalled)
@@ -59,17 +59,17 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertTrue(classify.classifyCalled)#in reality it will never be called as it exits in the error method
         self.assertEqual('Invalid arguments. One or more required arguments are not present.', classify.message)
         
-    def testOnlyFilesImpliesTrainingAndTest(self):
+    def test_only_files_implies_training_and_test(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         classify = StubClassify()
         self.assertFalse(classify.classifyCalled)
         classify.parse(['-a', '1R', '-f', path])
         classify.execute()
         self.assertTrue(classify.classifyCalled)
-        self.assertEqual(path, classify.testSet)
+        self.assertEqual(1, len(classify.testSet))
         self.assertEqual(None, classify.goldSet)
 
-    def testFilesWithVerifyImpliesTrainingAndGold(self):
+    def test_files_with_verify_implies_training_and_gold(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         classify = StubClassify()
         self.assertFalse(classify.classifyCalled)
@@ -77,7 +77,7 @@ class ClassifyTestCase(unittest.TestCase):
         classify.execute()
         self.assertTrue(classify.classifyCalled)
         self.assertEqual(None, classify.testSet)
-        self.assertEqual(path, classify.goldSet)
+        self.assertEqual(4, len(classify.goldSet))
 
     def test_throws_error_if_both_files_and_other_options_are_present(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'

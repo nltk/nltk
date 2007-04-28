@@ -1,5 +1,5 @@
 from optparse import OptionParser
-from nltk_lite.contrib.classifier import oner, zeror, decisiontree
+from nltk_lite.contrib.classifier import oner, zeror, decisiontree, format
 import sys
 
 class Classify(OptionParser):    
@@ -36,8 +36,13 @@ class Classify(OptionParser):
                 + "Options: True/False or yes/no."
         r_help = "Used to enable calculation of Recall.                 "\
                 + "Options: True/False or yes/no."
+        r_help = "Used to enable calculation of Recall.                 "\
+                + "Options: True/False or yes/no."
+        D_help = "Used to specify the data format                       " \
+                + "Options: C45 for C4.5 format (default)               "
         
         self.__klasses = {'0R':zeror.ZeroR, '1R':oner.OneR, 'DT':decisiontree.DecisionTree}
+        self.__data_formats = {'C45': format.C45_FORMAT}
         OptionParser.__init__(self)
         self.add_option("-a", "--algorithm", dest="algorithm", type="choice", \
                         choices=self.__klasses.keys(), default="0R", help= a_help)
@@ -51,6 +56,8 @@ class Classify(OptionParser):
         self.add_option("-F", "--f-score", dest="fscore", action="store_false", default=True, help=F_help)
         self.add_option("-p", "--precision", dest="precision", action="store_true", default=False, help=p_help)
         self.add_option("-r", "--recall", dest="recall", action="store_true", default=False, help=r_help)
+        self.add_option("-D", "--data-format", dest="data_format", type="choice", choices=self.__data_formats.keys(), \
+                        default="C45", help=D_help)
         
     def parse(self, args):
         self.parse_args(args, None)
@@ -58,22 +65,28 @@ class Classify(OptionParser):
     def execute(self):
         algorithm = self.__get_value('algorithm')
         files = self.__get_value('files')
-        training = self.__get_value('training')
-        test = self.__get_value('test')
-        gold = self.__get_value('gold')
-        
-        if algorithm is None or files is None and (training is None or (test is None and gold is None)): 
+        training_path = self.__get_value('training')
+        test_path = self.__get_value('test')
+        gold_path = self.__get_value('gold')
+        test = gold = None
+        if algorithm is None or files is None and (training_path is None or (test_path is None and gold_path is None)): 
             self.error("Invalid arguments. One or more required arguments are not present.")
-        if files is not None and (training is not None or test is not None or gold is not None):
+        if files is not None and (training_path is not None or test_path is not None or gold_path is not None):
             self.error("Invalid arguments. The files parameter should not be followed by training, test or gold parameters.")
-        if test is not None and gold is not None:
+        if test_path is not None and gold_path is not None:
             self.error('Invalid arguments. Test and gold files are mutually exclusive.')
-        if files is None and test is not None and self.__get_value('verify'):
+        if files is None and test_path is not None and self.__get_value('verify'):
             self.error('Invalid arguments. Cannot verify classification for test data.')
+        data_format = self.__data_formats[self.__get_value("data_format")]
         if files is not None:
-            training = files
-            test, gold = self.__test_and_gold(files)
-        classifier = self.__klasses[algorithm](training)
+            training_path = files
+            test_path, gold_path = self.__test_and_gold(files)
+        training = data_format.get_training_instances(training_path)
+        attributes = data_format.get_attributes(training_path)
+        klass = data_format.get_klass(training_path)
+        if test_path is not None: test = data_format.get_test_instances(test_path)
+        if gold_path is not None: gold = data_format.get_gold_instances(gold_path)
+        classifier = self.__klasses[algorithm](training, attributes, klass, format)
         self.classify(classifier, test, gold)
         
     def __test_and_gold(self, files):

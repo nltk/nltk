@@ -11,31 +11,37 @@ from nltk_lite.contrib.classifier_tests import *
 
 class ZeroRTestCase(unittest.TestCase):
     def test_zeroR_instance_is_created_with_training_data(self):
-        classifier = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
+        classifier = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
         self.assertEqual(format.C45_FORMAT.get_training_instances(datasetsDir(self) + 'test_phones' + SEP + 'phoney'), classifier.training, 'should have created training instances')
     
     def test_zeroR_verifies_validity_of_training_data(self):
         try:
-            z.ZeroR(datasetsDir(self) + 'test_faulty' + SEP + 'invalid_attributes')
+            path = datasetsDir(self) + 'test_faulty' + SEP + 'invalid_attributes'
+            classifier = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
             self.fail('should throw invalid data error')
         except inv.InvalidDataError:
             pass
         
     def test_majority_class(self):
-        classifier = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
+        classifier = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
         self.assertEqual('b', classifier.majority_class())
         
     def test_majority_class_is_set_on_test_instances(self):
-        zeror = z.ZeroR(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        zeror.test(datasetsDir(self) + 'test_phones' + SEP + 'phoney', False)
+        path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
+        zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
+
+        zeror.test(format.C45_FORMAT.get_test_instances(path), False)
         i = 0
         for i in range(4):
             self.assertEqual('b', zeror.test_instances[i].classifiedKlass)
             self.assertEqual(None, zeror.test_instances[i].klass_value)
             
     def test_verify_returns_correct_confusion_matrix(self):
-        zeror = z.ZeroR(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        confusion_matrix = zeror.verify(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
+        confusion_matrix = zeror.verify(format.C45_FORMAT.get_gold_instances(path))
         self.assertEqual(0.75, confusion_matrix.accuracy())
         self.assertEqual(0.25, confusion_matrix.error())
         self.assertEqual(1, confusion_matrix.tpr())
@@ -46,8 +52,9 @@ class ZeroRTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.85714286, confusion_matrix.fscore(), 8)
 
     def test_can_classify_data_having_continuous_attributes(self):
-        zeror = z.ZeroR(datasetsDir(self) + 'numerical' + SEP + 'weather')
-        zeror.verify(datasetsDir(self) + 'numerical' + SEP + 'weather')
+        path = datasetsDir(self) + 'numerical' + SEP + 'weather'
+        zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path), format.C45_FORMAT)
+        zeror.verify(format.C45_FORMAT.get_gold_instances(path))
         
         
         
