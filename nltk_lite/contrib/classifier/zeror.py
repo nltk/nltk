@@ -6,16 +6,16 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, Classifier, format
+from nltk_lite.contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
-    def __init__(self, path):
-        Classifier.__init__(self, path)
+    def __init__(self, training, attributes, klass, format):
+        Classifier.__init__(self, training, attributes, klass, format)
         self.__majority_class = None
         self.__klassCount = {}
         
-    def test(self, path, printResults=True):
-        self.test_instances = format.C45_FORMAT.get_test_instances(path)
+    def test(self, test_instances, printResults=True):
+        self.test_instances = test_instances
         self.classify(self.test_instances)
         if printResults: self.test_instances.print_all()
     
@@ -24,8 +24,8 @@ class ZeroR(Classifier):
             self.__majority_class = self.majority_class()
         instances.for_each(self.set_majority_klass)
         
-    def verify(self, path):
-        self.gold_instances = format.C45_FORMAT.get_gold_instances(path)
+    def verify(self, gold_instances):
+        self.gold_instances = gold_instances
         self.classify(self.gold_instances)
         return self.gold_instances.confusion_matrix(self.klass)
 

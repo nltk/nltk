@@ -9,8 +9,8 @@
 from nltk_lite.contrib.classifier import oner
 
 class DecisionTree(oner.OneR):
-    def __init__(self, path):
-        oner.OneR.__init__(self, path)
+    def __init__(self, training, attributes, klass, format):
+        oner.OneR.__init__(self, training, attributes, klass, format)
         self.root = self.build_tree(self.training, [])
         
     def build_tree(self, instances, used_attributes):
