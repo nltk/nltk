@@ -1,10 +1,10 @@
-from optparse import OptionParser
+from nltk_lite.contrib.classifier.__init__ import CommandLineInterface
 from nltk_lite.contrib.classifier import oner, zeror, decisiontree, format
 import sys
 
-class Classify(OptionParser):    
+class Classify(CommandLineInterface):    
     def __init__(self):
-
+        CommandLineInterface.__init__(self)
         a_help = "Selects the classification algorithm                  " \
                 + "Options: 0R for Zero R, 1R for One R, DT for Decision" \
                 + " Trees.                                              " \
@@ -43,7 +43,6 @@ class Classify(OptionParser):
         
         self.__klasses = {'0R':zeror.ZeroR, '1R':oner.OneR, 'DT':decisiontree.DecisionTree}
         self.__data_formats = {'C45': format.C45_FORMAT}
-        OptionParser.__init__(self)
         self.add_option("-a", "--algorithm", dest="algorithm", type="choice", \
                         choices=self.__klasses.keys(), default="0R", help= a_help)
         self.add_option("-f", "--files", dest="files", type="string", help=f_help)
@@ -59,15 +58,12 @@ class Classify(OptionParser):
         self.add_option("-D", "--data-format", dest="data_format", type="choice", choices=self.__data_formats.keys(), \
                         default="C45", help=D_help)
         
-    def parse(self, args):
-        self.parse_args(args, None)
-        
     def execute(self):
-        algorithm = self.__get_value('algorithm')
-        files = self.__get_value('files')
-        training_path = self.__get_value('training')
-        test_path = self.__get_value('test')
-        gold_path = self.__get_value('gold')
+        algorithm = self.get_value('algorithm')
+        files = self.get_value('files')
+        training_path = self.get_value('training')
+        test_path = self.get_value('test')
+        gold_path = self.get_value('gold')
         test = gold = None
         if algorithm is None or files is None and (training_path is None or (test_path is None and gold_path is None)): 
             self.error("Invalid arguments. One or more required arguments are not present.")
@@ -75,9 +71,9 @@ class Classify(OptionParser):
             self.error("Invalid arguments. The files parameter should not be followed by training, test or gold parameters.")
         if test_path is not None and gold_path is not None:
             self.error('Invalid arguments. Test and gold files are mutually exclusive.')
-        if files is None and test_path is not None and self.__get_value('verify'):
+        if files is None and test_path is not None and self.get_value('verify'):
             self.error('Invalid arguments. Cannot verify classification for test data.')
-        data_format = self.__data_formats[self.__get_value("data_format")]
+        data_format = self.__data_formats[self.get_value("data_format")]
         if files is not None:
             training_path = files
             test_path, gold_path = self.__test_and_gold(files)
@@ -90,10 +86,9 @@ class Classify(OptionParser):
         self.classify(classifier, test, gold)
         
     def __test_and_gold(self, files):
-        if self.__get_value('verify'):
+        if self.get_value('verify'):
             return [None, files]
         return [files, None]
-        
         
     def classify(self, classifier, test, gold):
         if (test is not None):
@@ -107,15 +102,8 @@ class Classify(OptionParser):
             self.print_value('recall', 'Recall')
 
     def print_value(self, attribute, str_repn):
-        if (self.__get_value(attribute)): 
+        if (self.get_value(attribute)): 
             print str_repn + ': ' + getattr(self.confusion_matrix, attribute)().__str__()
-
-    def __get_value(self, name):
-        return self.values.ensure_value(name, None)
-    
-    def run(self, args):
-        self.parse(args)
-        self.execute()
 
 if __name__ == "__main__":
     Classify().run(sys.argv[1:])
