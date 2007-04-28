@@ -5,14 +5,15 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from optparse import OptionParser
+from nltk_lite.contrib.classifier import CommandLineInterface
 from nltk_lite.contrib.classifier import instances as ins, discretisedattribute as da, cfile as f, numrange as r, format
 from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 
 import sys
 
-class Discretise(OptionParser):    
+class Discretise(CommandLineInterface):    
     def __init__(self):
+        CommandLineInterface.__init__(self)
 
         a_help = "Selects the discretisation algorithm                 " \
                + "Options: UEW for Unsupervised Equal Width            " \
@@ -36,7 +37,6 @@ class Discretise(OptionParser):
                              'NS1':'naive_supervised_v1', \
                              'NS2':'naive_supervised_v2', \
                              'ES' :'entropy_based_supervised'}
-        OptionParser.__init__(self)
         self.add_option("-a", "--algorithm", dest="algorithm", type="choice", \
                         choices=self.__algorithms.keys(), default="UEW", help= a_help)
         self.add_option("-t", "--training-file", dest="training", type="string", help=t_help)
@@ -44,23 +44,17 @@ class Discretise(OptionParser):
         self.add_option("-A", "--attributes", dest="attributes", type="string", help=A_help)
         self.add_option("-o", "--options", dest="options", type="string", help=o_help)
         
-    def parse(self, args):
-        self.parse_args(args, None)
-        
     def execute(self):
-        algorithm = self.__algorithms[self.__get_value('algorithm')]
-        training = self.__get_value('training')
-        test = self.__get_value('test')
-        attributes = self.__get_value('attributes')
-        options = self.__get_value('options')
+        algorithm = self.__algorithms[self.get_value('algorithm')]
+        training = self.get_value('training')
+        test = self.get_value('test')
+        attributes = self.get_value('attributes')
+        options = self.get_value('options')
         if algorithm is None or test is None or training is None or attributes is None or \
            ( not algorithm == self.__algorithms['NS'] and options is None): 
             self.error("Invalid arguments. One or more required arguments are not present.")
         self.invoke(training, test, attributes, options, algorithm)
         
-    def __get_value(self, name):
-        return self.values.ensure_value(name, None)
-    
     def invoke(self, training, test, attributes, options, algorithm):
         disc = Discretiser(training, test, attributes, options)
         files_written = getattr(disc, algorithm)()
@@ -68,9 +62,6 @@ class Discretise(OptionParser):
         for file_name in files_written:
             print file_name
     
-    def run(self, args):
-        self.parse(args)
-        self.execute()
 
 class Discretiser:
     def __init__(self, path, test_files, attribute_indices, options = None):

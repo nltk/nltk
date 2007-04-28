@@ -6,6 +6,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 from nltk_lite.contrib.classifier import instances as ins, format
+from optparse import OptionParser
 
 class Classifier:
     def __init__(self, training, attributes, klass, format):
@@ -30,5 +31,22 @@ class Classifier:
     def can_handle_continuous_attributes(self):
         return False
 
-
+class CommandLineInterface(OptionParser):
+    def __init__(self):
+        OptionParser.__init__(self)
+        
+    def get_value(self, name):
+        return self.values.ensure_value(name, None)
     
+    def parse(self, args):
+        self.parse_args(args, None)
+
+    def execute(self):
+        raise AssertionError()
+
+    def run(self, args):
+        self.parse(args)
+        self.execute()
+
+
+
