@@ -26,4 +26,6 @@ echo 'Naive supervised modified version 2'
 python ../classifier/discretise.py -a NS2 -t datasets/numerical/person -T datasets/numerical/person.test -A 1,4,5,6,7 -o 2,3,2,3,4
 echo 'Entropy based supervised'
 python ../classifier/discretise.py -a ES -t datasets/numerical/person -T datasets/numerical/person.test -A 1,4,5,6,7 -o 2,2,2,2,2
+echo 'Rank based feature selection'
+python ../classifier/featureselect.py -a RNK -t datasets/minigolf/weather -T datasets/minigolf/weather.test,datasets/minigolf/weather.gold -o IG,2
 

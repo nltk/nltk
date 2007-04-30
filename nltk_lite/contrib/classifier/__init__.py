@@ -48,5 +48,12 @@ class CommandLineInterface(OptionParser):
         self.parse(args)
         self.execute()
 
+def split_ignore_space(comma_sep_string):
+    _file_names = []
+    for name in comma_sep_string.split(','):
+        _file_names.append(name.strip())
+    return _file_names
+
+
 
 

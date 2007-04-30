@@ -35,6 +35,13 @@ class Instance:
             index = discretised_attribute.index
             self.attrs[index] = discretised_attribute.mapping(float(self.attrs[index]))
     
+    def remove_attributes(self, attributes):
+        to_be_removed = []
+        for attribute in attributes:
+            to_be_removed.append(self.attrs[attribute.index])
+        for r in to_be_removed:
+            self.attrs.remove(r)
+    
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
@@ -125,8 +132,4 @@ class AttributeComparator:
         self.attribute = attribute
         
     def compare(self, x, y):
-        if x.value(self.attribute) > y.value(self.attribute): 
-            return 1
-        elif x.value(self.attribute) == y.value(self.attribute): 
-            return 0
-        return -1
+        return cmp(x.value(self.attribute), y.value(self.attribute))
