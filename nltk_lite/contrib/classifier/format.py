@@ -1,5 +1,5 @@
 from nltk_lite.contrib.classifier import cfile, item, attribute as a, instance as ins, instances as inss
-from nltk_lite.contrib.classifier.exceptions import systemerror as se
+from nltk_lite.contrib.classifier.exceptions import systemerror as se, filenotfounderror as fnf
 
 class FormatI:    
     def __init__(self, name):
@@ -93,3 +93,17 @@ class C45Format(FormatI):
         return line.find(':')
 
 C45_FORMAT = C45Format()
+
+def create_instances(file_names, format):
+    instances = []
+    for file_name in file_names:
+        name, extension = cfile.name_extension(file_name)
+        if extension == format.TEST:
+            instances.append(format.get_test_instances(name))
+        elif extension == format.GOLD:
+            instances.append(format.get_gold_instances(name))
+        elif extension == format.DATA:
+            instances.append(format.get_training_instances(name))
+        else:
+            raise fnf.FileNotFoundError(file_name)
+    return instances
