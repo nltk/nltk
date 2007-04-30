@@ -33,25 +33,15 @@ class OneR(Classifier):
         self.classify(self.gold_instances)
         return self.gold_instances.confusion_matrix(self.klass)
 
-    def create_empty_decision_stumps(self, ignore_attributes):
-        self.decision_stumps = []
-        for attribute in self.attributes:
-            if attribute in ignore_attributes:
-                continue
-            self.decision_stumps.append(ds.DecisionStump(attribute, self.klass))
-            
     def best_decision_stump(self, instances, ignore_attributes = [], algorithm = 'minimum_error'):
-        self.create_empty_decision_stumps(ignore_attributes);
-        instances.for_each(self.update_count_in_decision_stumps)
+        self.decision_stumps = self.attributes.empty_decision_stumps(ignore_attributes, self.klass);
+        for stump in self.decision_stumps:
+            instances.for_each(lambda instance: stump.update_count(instance))
         try:
             return getattr(self, algorithm)()
         except AttributeError:
             raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + str(algorithm) + ' is not defined.')
         
-    def update_count_in_decision_stumps(self, instance):
-        for stump in self.decision_stumps:
-            stump.update_count(instance)
-
     def minimum_error(self):
         error, min_error_stump = 1, None
         for decision_stump in self.decision_stumps:

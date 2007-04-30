@@ -14,7 +14,8 @@ from nltk_lite.contrib.classifier_tests import \
         classifytests as classify, decisiontreetests as decisiontree, \
         autoclasstests as autoclass, numrangetests as numrange, \
         discretisedattributetests as discretisedattribute, \
-        discretisetests as discretise, formattests as format
+        discretisetests as discretise, formattests as format, \
+        featureselecttests as featureselect
 import unittest
 
 def allTestsSuite():
@@ -34,7 +35,8 @@ def allTestsSuite():
                                unittest.makeSuite(numrange.RangeTestCase), \
                                unittest.makeSuite(discretisedattribute.DiscretisedAttributeTestCase), \
                                unittest.makeSuite(discretise.DiscretiseTestCase), \
-                               unittest.makeSuite(format.FormatTestCase)))
+                               unittest.makeSuite(format.FormatTestCase), \
+                               unittest.makeSuite(featureselect.FeatureSelectTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

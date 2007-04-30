@@ -76,6 +76,27 @@ class AttributesTestCase(unittest.TestCase):
         
         self.assertEqual(['a', 'b'], attrs[4].values)
         self.assertEqual(['a', 'b', 'c', 'd', 'e'], attrs[6].values)
+
+    def test_empty_decision_stumps(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        attrs = format.C45_FORMAT.get_attributes(path)
+        klass = format.C45_FORMAT.get_klass(path)
+
+        decision_stumps = attrs.empty_decision_stumps([], klass)
+        self.assertEqual(8, len(decision_stumps))
+        
+        decision_stumps = attrs.empty_decision_stumps([attrs[0], attrs[3]], klass)
+        self.assertEqual(6, len(decision_stumps))
+        
+    def test_remove_attributes(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        attrs = format.C45_FORMAT.get_attributes(path)
+        
+        self.assertEqual(8, len(attrs))
+        attr1 = attrs[1]
+        attrs.remove_attributes([attrs[0], attrs[6]])
+        self.assertEqual(6, len(attrs))
+        self.assertEqual(attr1, attrs[0])
         
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

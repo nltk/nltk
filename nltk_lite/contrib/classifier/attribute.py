@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier.exceptions import systemerror as se
-from nltk_lite.contrib.classifier import autoclass as ac, cfile
+from nltk_lite.contrib.classifier import autoclass as ac, cfile, decisionstump as ds
 import UserList
 
 CONTINUOUS = 'continuous'
@@ -75,11 +75,30 @@ class Attributes(UserList.UserList):
     def discretise(self, discretised_attributes):
         for disc_attr in discretised_attributes:
             self.data[disc_attr.index] = disc_attr
+            
+    def empty_decision_stumps(self, ignore_attributes, klass):
+        decision_stumps = []
+        for attribute in self.data:
+            if attribute in ignore_attributes:
+                continue
+            decision_stumps.append(ds.DecisionStump(attribute, klass))
+        return decision_stumps
 
-    def write_to_file(self, path, suffix, format):
+    def remove_attributes(self, attributes):
+        for attribute in attributes:
+            self.remove(attribute)
+        #reset indices
+        for i in range(len(self.data)):
+            self.data[i].index = i
+
+    def write_to_file(self, klass, path, suffix, format):
         _new_file = cfile.File(path + suffix, format.NAMES)
         _new_file.create(True)
         lines = []
+        klass_as_line = ''
+        for value in klass:
+            klass_as_line += str(value) + ','
+        lines.append(klass_as_line[:-1] + '.')
         for attribute in self.data:
             lines.append(attribute.as_line())
         _new_file.write(lines)

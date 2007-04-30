@@ -137,3 +137,11 @@ class InstanceTestCase(unittest.TestCase):
         
         maritial_status_comparator = ins.AttributeComparator(marital_status)
         self.assertEqual(0, maritial_status_comparator.compare(ins1, ins2))
+        
+    def test_remove_attrbutes(self):
+        training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
+        id = attribute.Attribute('id', ['continuous'], 0)
+        annual_salary = attribute.Attribute('annualsalary', ['continuous'], 6)
+        training.remove_attributes([id, annual_salary])
+        self.assertEqual(6, len(training.attrs))
+        self.assertEqual('34', training.attrs[0])

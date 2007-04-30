@@ -16,10 +16,6 @@ class OneRTestCase(unittest.TestCase):
         c45 = format.C45_FORMAT
         self.classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path), c45)
                 
-    def test_creates_decision_stumps_for_each_attribute(self):
-        self.classifier.create_empty_decision_stumps([])
-        self.assertEqual(4, len(self.classifier.decision_stumps))
-        
     def test_best_decision_stump_returns_minimum_error_stump_by_default(self):
         minError = self.classifier.best_decision_stump(self.classifier.training)
         self.assertAlmostEqual(0.2222222, minError.error())
