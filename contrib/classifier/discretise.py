@@ -5,7 +5,7 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier import CommandLineInterface
+from nltk_lite.contrib.classifier import CommandLineInterface, split_ignore_space
 from nltk_lite.contrib.classifier import instances as ins, discretisedattribute as da, cfile as f, numrange as r, format
 from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 
@@ -68,8 +68,9 @@ class Discretiser:
         self.path = path
         self.training = format.C45_FORMAT.get_training_instances(path)
         self.attributes = format.C45_FORMAT.get_attributes(path)
-        file_names = get_test_files(test_files)
-        self.instances = create_instances(file_names)
+        self.klass = format.C45_FORMAT.get_klass(path)
+        file_names = split_ignore_space(test_files)
+        self.instances = format.create_instances(file_names, format.C45_FORMAT)
         self.attribute_indices = as_integers('Attribute indices', attribute_indices)
         self.options = as_integers('Options', options)
         for option in self.options:
@@ -95,7 +96,7 @@ class Discretiser:
             _instances.discretise(disc_attrs)
             files_written.append(_instances.write_to_file(self.test_file_names[index], suffix, format.C45_FORMAT))
         self.attributes.discretise(disc_attrs)
-        files_written.append(self.attributes.write_to_file(self.path, suffix, format.C45_FORMAT))
+        files_written.append(self.attributes.write_to_file(self.klass, self.path, suffix, format.C45_FORMAT))
         return files_written
     
     def unsupervised_equal_frequency(self):
@@ -160,12 +161,6 @@ def ranges_from_chunks(chunks):
     ranges.append(r.Range(chunks[-1][0], chunks[-1][-1], True))
     return ranges
 
-def get_test_files(file_names):
-    _file_names = []
-    for name in file_names.split(','):
-        _file_names.append(name.strip())
-    return _file_names
-
 def as_integers(name, str_array):
     indices = []
     if str_array is not None:
@@ -175,20 +170,6 @@ def as_integers(name, str_array):
             except ValueError:
                 raise inv.InvalidDataError('Invalid Data. ' + name + ' should be integers.')
     return indices
-
-def create_instances(files):
-    instances = []
-    for file_name in files:
-        name, extension = f.name_extension(file_name)
-        if extension == format.C45_FORMAT.TEST:
-            instances.append(format.C45_FORMAT.get_test_instances(name))
-        elif extension == format.C45_FORMAT.GOLD:
-            instances.append(format.C45_FORMAT.get_gold_instances(name))
-        elif extension == format.C45_FORMAT.DATA:
-            instances.append(format.C45_FORMAT.get_training_instances(name))
-        else:
-            raise fnf.FileNotFoundError(file_name)
-    return instances
 
 if __name__ == "__main__":
     Discretise().run(sys.argv[1:])

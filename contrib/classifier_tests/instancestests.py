@@ -213,6 +213,16 @@ class InstancesTestCase(unittest.TestCase):
         self.assertEqual(2, len(breakpoints))
         self.assertEqual([4, 7], breakpoints)
 
+    def test_remove_attributes(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        attributes = format.C45_FORMAT.get_attributes(path)
+        training = format.C45_FORMAT.get_training_instances(path)
+        self.assertEqual(8, len(training[0].attrs))
+        self.assertEqual(8, len(training[-1].attrs))
+        training.remove_attributes([attributes[0], attributes[3]])
+        self.assertEqual(6, len(training[0].attrs))
+        self.assertEqual(6, len(training[-1].attrs))
+        
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(unittest.TestSuite(unittest.makeSuite(InstancesTestCase)))

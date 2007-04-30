@@ -29,7 +29,11 @@ class Instances(UserList.UserList):
     def discretise(self, discretised_attributes):
         for instance in self.data:
             instance.discretise(discretised_attributes)
-    
+
+    def remove_attributes(self, attributes):
+        for instance in self.data:
+            instance.remove_attributes(attributes)
+
     def write_to_file(self, path, suffix, format):
         _new_file = cfile.File(path + suffix, self.get_extension(format))
         _new_file.create(True)
