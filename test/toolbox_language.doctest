@@ -8,4 +8,4 @@ Unit test cases for ``toolbox``
 --------------------------
     >>> from nltk_lite.corpora import get_basedir
     >>> import os.path
-    >>> lang = Language(os.path.join(get_basedir(), 'toolbox', 'English.lng'))
+    >>> lang = Language(os.path.join(get_basedir(), 'toolbox', 'MDF', 'English.lng'))
