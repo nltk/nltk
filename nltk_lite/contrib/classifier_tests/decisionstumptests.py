@@ -55,30 +55,6 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance(['overcast','mild','normal','true'])))
         self.assertEqual('yes', self.outlook_stump.klass(instance.TestInstance(['rainy','mild','normal','true'])))
         
-    def test_entropy_function(self):
-        dictionary_of_klass_counts = {}
-        dictionary_of_klass_counts['yes'] = 2
-        dictionary_of_klass_counts['no'] = 0
-        self.assertEqual(0, ds.entropy(dictionary_of_klass_counts))
-        
-        dictionary_of_klass_counts['yes'] = 3
-        dictionary_of_klass_counts['no'] = 3
-        self.assertAlmostEqual(1, ds.entropy(dictionary_of_klass_counts))
-        
-        dictionary_of_klass_counts['yes'] = 9
-        dictionary_of_klass_counts['no'] = 5
-        self.assertAlmostEqual(0.94, ds.entropy(dictionary_of_klass_counts), 2)
-        
-        dictionary_of_klass_counts['yes'] = 1
-        dictionary_of_klass_counts['no'] = 3
-        expected = -(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))
-        self.assertAlmostEqual(expected, ds.entropy(dictionary_of_klass_counts), 6)
-
-        dictionary_of_klass_counts['yes'] = 2
-        dictionary_of_klass_counts['no'] = 1
-        expected = -(2.0/3 * math.log(2.0/3, 2))  + -(1.0/3 * math.log(1.0/3, 2))
-        self.assertAlmostEqual(expected, ds.entropy(dictionary_of_klass_counts), 6)
-                
     def test_total_counts(self):
         dictionary_of_klass_counts = {}
         dictionary_of_klass_counts['yes'] = 2

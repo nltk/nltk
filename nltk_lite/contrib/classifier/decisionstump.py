@@ -10,6 +10,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from math import log
+from nltk_lite.probability import FreqDist
 
 class DecisionStump:
     def __init__(self, attribute, klass):
@@ -19,7 +20,6 @@ class DecisionStump:
         each key is an attribute value
         and each value is a dictionary of class frequencies for that attribute value
         """
-        #TODO refactor to use nltk_lite.probability.FreqDist for self.counts
         self.counts, self.children = {}, {} #it has children only in decision trees
         self.root = dictionary_of_values(klass)
         for value in attribute.values:
@@ -57,22 +57,25 @@ class DecisionStump:
         return klass_value
     
     def entropy(self, attr_value):
-        return entropy(self.counts[attr_value])
+        """
+        Returns the entropy of class disctribution for a particular attribute value
+        """
+        from nltk_lite.contrib.classifier import entropy_of_key_counts
+        return entropy_of_key_counts(self.counts[attr_value])
     
     def mean_information(self):
         total, total_num_of_instances = 0, 0
         for attr_value in self.attribute.values:
-            count = self.counts[attr_value]
-            instance_count = total_counts(count)
+            instance_count = total_counts(self.counts[attr_value])
             if instance_count == 0: 
-                continue 
-            _entropy = entropy(count)
-            total += (instance_count * _entropy)
+                continue
+            total += (instance_count * self.entropy(attr_value))
             total_num_of_instances += instance_count
         return float(total) / total_num_of_instances
     
     def information_gain(self):
-        return entropy(self.root) - self.mean_information()
+        from nltk_lite.contrib.classifier import entropy_of_key_counts
+        return entropy_of_key_counts(self.root) - self.mean_information()
     
     def __str__(self):
         _str = 'Decision stump for attribute ' + self.attribute.name
@@ -82,21 +85,12 @@ class DecisionStump:
             _str += child.__str__()
         return _str
         
-def total_counts(dictionary_of_klass_counts):
+def total_counts(dictionary_of_klass_freq):
     total = 0
-    for count in dictionary_of_klass_counts.values():
+    for count in dictionary_of_klass_freq.values():
         total += count
     return total    
-    
-def entropy(dictionary_of_klass_counts):
-    total, _entropy = 0, 0.0
-    for count in dictionary_of_klass_counts.values():
-        if count is not 0:
-            _entropy = _entropy + (-1 * count * log(count, 2))
-            total += count
-    _entropy = (float(_entropy)/total) + log(total, 2)
-    return _entropy
-    
+        
 def dictionary_of_values(klass):
     _values = {}
     for value in klass:

@@ -5,17 +5,12 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import discretise, split_ignore_space
+from nltk_lite.contrib.classifier import discretise
 from nltk_lite.contrib.classifier import numrange as nr, instances as ins
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 
-class DiscretiseTestCase(unittest.TestCase):
-    def test_split_file_names(self):
-        returnvalue = split_ignore_space('foo , bar, foobar')
-        self.assertEqual(3, len(returnvalue))
-        self.assertEqual(['foo', 'bar', 'foobar'], returnvalue)
-    
+class DiscretiseTestCase(unittest.TestCase):    
     def test_decodes_algorithm_training_other_files_attributes_options(self):
         disc = discretise.Discretise()
         disc.parse(['-a', 'UEW', '-t', 'path', '-T', 'path1,path2', '-A', '3,4,5', '-o', '3,2,4'])

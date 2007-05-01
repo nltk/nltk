@@ -176,15 +176,6 @@ class InstancesTestCase(unittest.TestCase):
         self.assertEqual(3, len(breakpoints))
         self.assertEqual([0, 1, 4], breakpoints)
     
-    def test_entropy_of_elements(self):
-        entropy = ins.entropy(['yes', 'no', 'yes', 'yes', 'yes', 'no'])
-        self.assertEqual(-1 * (4.0/6 * math.log( 4.0/6, 2) + 2.0/6 * math.log(2.0/6, 2)), entropy)
-    
-    def test_min_entropy(self):
-        position, min_ent = ins.min_entropy(['yes', 'no', 'yes', 'yes', 'yes', 'no'])
-        self.assertEqual(4, position)
-        self.assertEqual(-1 * (4.0/5 * math.log(4.0/5, 2) + 1.0/5 * math.log(1.0/5, 2)), min_ent)
-        
     def test_entropy_based_breakpoints(self):
         breakpoints = ins.SupervisedBreakpoints(['yes', 'no', 'yes', 'yes', 'yes', 'no'], [19.0, 21.0, 25.0, 31.0, 34.0, 42.0])
         breakpoints.find_entropy_based_max_depth(2)
