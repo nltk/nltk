@@ -48,31 +48,20 @@ def raw(files = items):
 def tagged(files = items):
     return _read(files, lambda s: string2tags(s, sep="_"))
 
-def demo():
+
+def sample(language):
     from nltk_lite.corpora import indian, extract
-
-    print "Bangla: ",
-    for word, tag in extract(4, indian.tagged('bangla')):
-        print word + "/" + `tag`,
-    print
-    
-    print "Hindi:  ",
-    for word, tag in extract(4, indian.tagged('hindi')):
-        print word + "/" + `tag`,
-    print
-    
-    print "Marathi:",
-    for word, tag in extract(4, indian.tagged('marathi')):
-        print word + "/" + `tag`,
-    print
-    
-    print "Telugu: ",
-    for word, tag in extract(4, indian.tagged('telugu')):
+    print language.capitalize() + ":",
+    for word, tag in extract(8, indian.tagged(language)):
         print word + "/" + `tag`,
     print
 
-#    print list(indian.xreadlines('bangla'))
+def demo():
 
+    sample('bangla')
+    sample('hindi')
+    sample('marathi')
+    sample('telugu')
 
 if __name__ == '__main__':
     demo()
