@@ -92,29 +92,7 @@ def isMapping(obj):
 class FeatureI(object):
     def __init__(self):
         raise TypeError, "FeatureI is an abstract interface"
-    
-    def __getitem__(self, key):
-        raise NotImplementedError
-    
-    def __setitem__(self, key, value):
-        raise NotImplementedError
-    
-    def keys(self):
-        raise NotImplementedError
-    
-    def get(self, key, default=None):
-        if key in self.keys(): return self[key]
-        else: return default
 
-    def has_key(self, key):
-        return key in self.keys()
-
-    def items(self):
-        lst = []
-        for key in self.keys():
-            lst.append((key, self[key]))
-        return lst
-        
 class _FORWARD(object):
     """
     _FORWARD is a singleton value, used in unification as a flag that a value
@@ -279,8 +257,8 @@ class SubstituteBindingsMixin(SubstituteBindingsI):
         newval = self
         for semvar in self.variables():
             varstr = str(semvar)
-            # discard Variables which are not FeatureVariables
-            if varstr.startswith('?'): 
+            # discard Variables which don't look like FeatureVariables
+            if varstr.startswith('?'):
                 var = makevar(varstr)
                 if bindings.has_key(var.name()):
                     newval = newval.replace(semvar, bindings[var.name()])
@@ -292,6 +270,17 @@ def show(data):
     is always off, and there is no blank line at the end.
     """
     return yaml.dump(data, default_flow_style=False).strip()
+
+def object_to_features(obj):
+    if not hasattr(obj, '__dict__'): return obj
+    if str(obj).startswith('?'):
+        return Variable(str(obj)[1:])
+    if isMapping(obj): return obj
+    dict = {}
+    dict['__class__'] = obj.__class__.__name__
+    for (key, value) in obj.__dict__.items():
+        dict[key] = object_to_features(value)
+    return dict
 
 def variable_representer(dumper, var):
     "Output variables in YAML as ?name."

@@ -596,6 +596,7 @@ class ParserSubstitute(logic.Parser):
         return logic.SomeExpressionSubst(first, second)
     def make_AllExpression(self, first, second):
         return logic.AllExpressionSubst(first, second)
+    
 
 
 ############################################################################
