@@ -19,19 +19,20 @@ B. CHANGELOG AND RELEASE ANNOUNCEMENT
   2. Edit web/index.html with new release announcement
   3. Commit these changes
 
-C. VERSION NUMBER
+C. NLTK VERSION NUMBERS
 
   1. Modify nltk_lite/__init__.py with the version number (2 places)
   2. Edit doc/definitions.txt with new version number
-  3. Edit web/install*.html with new version number
-  4. Commit these changes
+  3. Edit wiki installation instructions with new version number
+  5. Commit these changes
 
 D. PYTHON AND NUMERIC VERSIONS
 
   1. Check for new versions of Python and Numeric
   2. Modify top level Makefile and commit
-  3. Modify web/install*.html with new URLs and commit
-  4. Commit these changes
+  3. Modify wiki installation instructions
+  4. Save wiki installation page and FAQ in HTML format to /nltk
+  5. Commit these changes
 
 E. LINK CHECKING
   1. do a preliminary build of web content and check links

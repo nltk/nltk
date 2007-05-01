@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="keywords" content="FAQ,Development" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link title="Creative Commons" type="application/rdf+xml" href="/wiki/index.php?title=FAQ&amp;action=creativecommons" rel="meta" />
+<link rel="copyright" href="http://creativecommons.org/licenses/by-sa/2.5/" />
+		<title>FAQ - NLTK</title>
+		<style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "/wiki/skins/monobook/main.css?7"; /*]]>*/</style>
+		<link rel="stylesheet" type="text/css"  href="/wiki/skins/common/commonPrint.css" />
+		<!--[if lt IE 5.5000]><style type="text/css">@import "/wiki/skins/monobook/IE50Fixes.css";</style><![endif]-->
+		<!--[if IE 5.5000]><style type="text/css">@import "/wiki/skins/monobook/IE55Fixes.css";</style><![endif]-->
+		<!--[if IE 6]><style type="text/css">@import "/wiki/skins/monobook/IE60Fixes.css";</style><![endif]-->
+		<!--[if IE 7]><style type="text/css">@import "/wiki/skins/monobook/IE70Fixes.css?1";</style><![endif]-->
+		<!--[if lt IE 7]><script type="text/javascript" src="/wiki/skins/common/IEFixes.js"></script>
+		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+		<script type="text/javascript">var skin = 'monobook';var stylepath = '/wiki/skins';</script>
+		<script type="text/javascript" src="/wiki/skins/common/wikibits.js"><!-- wikibits js --></script>
+		<script type="text/javascript" src="/wiki/index.php?title=-&amp;action=raw&amp;smaxage=0&amp;gen=js"><!-- site js --></script>
+		<style type="text/css">/*<![CDATA[*/
+@import "/wiki/index.php?title=MediaWiki:Common.css&action=raw&ctype=text/css&smaxage=18000";
+@import "/wiki/index.php?title=MediaWiki:Monobook.css&action=raw&ctype=text/css&smaxage=18000";
+@import "/wiki/index.php?title=-&action=raw&gen=css&maxage=18000";
+/*]]>*/</style>
+		<!-- Head Scripts -->
+			</head>
+<body  class="ns-0 ltr">
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+				<h1 class="firstHeading">FAQ</h1>
+		<div id="bodyContent">
+			<h3 id="siteSub">From NLTK</h3>
+			<div id="contentSub"></div>
+									<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>			<!-- start content -->
+			<p><i>Do you have a question that is not answered here?  Please send it to sb@csse.unimelb.edu.au</i>
+</p>
+<table id="toc" class="toc" summary="Contents"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class='toclevel-1'><a href="#What_are_the_plans_for_further_development_of_NLTK.3F"><span class="tocnumber">1</span> <span class="toctext">What are the plans for further development of NLTK?</span></a></li>
+<li class='toclevel-1'><a href="#What_is_the_difference_between_NLTK_and_NLTK-Lite.3F"><span class="tocnumber">2</span> <span class="toctext">What is the difference between NLTK and NLTK-Lite?</span></a></li>
+<li class='toclevel-1'><a href="#I.27m_planning_some_long-term_research_using_NLTK.3B_how_long_is_the_toolkit_going_to_be_supported.3F"><span class="tocnumber">3</span> <span class="toctext">I'm planning some long-term research using NLTK; how long is the toolkit going to be supported?</span></a></li>
+<li class='toclevel-1'><a href="#I_think_I_found_a_bug.3B_where_do_I_report_it.3F"><span class="tocnumber">4</span> <span class="toctext">I think I found a bug; where do I report it?</span></a></li>
+<li class='toclevel-1'><a href="#Why_is_Python_giving_me_a_syntax_error_when_I_use_NLTK.3F"><span class="tocnumber">5</span> <span class="toctext">Why is Python giving me a syntax error when I use NLTK?</span></a></li>
+<li class='toclevel-1'><a href="#How_can_I_install_NLTK_from_the_source_code_repository.3F"><span class="tocnumber">6</span> <span class="toctext">How can I install NLTK from the source code repository?</span></a></li>
+<li class='toclevel-1'><a href="#What_papers_have_been_published_about_NLTK.3F"><span class="tocnumber">7</span> <span class="toctext">What papers have been published about NLTK?</span></a></li>
+<li class='toclevel-1'><a href="#How_is_NLTK_development_supported.3F"><span class="tocnumber">8</span> <span class="toctext">How is NLTK development supported?</span></a></li>
+<li class='toclevel-1'><a href="#How_did_NLTK_start.3F"><span class="tocnumber">9</span> <span class="toctext">How did NLTK start?</span></a></li>
+</ul>
+</td></tr></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=1" title="Edit section: What are the plans for further development of NLTK?">edit</a>]</div><a name="What_are_the_plans_for_further_development_of_NLTK.3F"></a><h3> What are the plans for further development of NLTK? </h3>
+<p>In 2007 there will be releases every 1-2 months, according to the <a href="/wiki/index.php/Development" title="Development"> NLTK development schedule</a>.  The toolkit will be continued to be supported in 2008 and beyond with bugfixes and additional functionality, at a rate depending on the level of community support.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=2" title="Edit section: What is the difference between NLTK and NLTK-Lite?">edit</a>]</div><a name="What_is_the_difference_between_NLTK_and_NLTK-Lite.3F"></a><h3> What is the difference between NLTK and NLTK-Lite? </h3>
+<p>Since mid-2005, the NLTK developers have been creating a lightweight version of NLTK, called NLTK-Lite. NLTK-Lite is simpler and faster than NLTK. Once it is complete, NLTK-Lite will provide the same functionality as NLTK (>95% of NLTK functionality is in NLTK-Lite 0.7.2). However, unlike NLTK, NLTK-Lite does not impose such a heavy burden on the programmer. Wherever possible, standard Python objects are used instead of custom NLP versions, so that students learning to program for the first time will be learning to program in Python with some useful libraries, rather than learning to program in NLTK.  Once it reaches version 1.0 (in late 2007), NLTK-Lite will take over the original NLTK name, and become NLTK 2.0.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=3" title="Edit section: I'm planning some long-term research using NLTK; how long is the toolkit going to be supported?">edit</a>]</div><a name="I.27m_planning_some_long-term_research_using_NLTK.3B_how_long_is_the_toolkit_going_to_be_supported.3F"></a><h3> I'm planning some long-term research using NLTK; how long is the toolkit going to be supported? </h3>
+<p>We plan to continue supporting the toolkit for as long as possible.  We're publishing a book on NLTK in 2007
+and plan to support the toolkit for several years while the book is in active use, and while the developers
+are employed to teach natural language processing.  In particular, bug reports
+will be attended to as quickly as possible.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=4" title="Edit section: I think I found a bug; where do I report it?">edit</a>]</div><a name="I_think_I_found_a_bug.3B_where_do_I_report_it.3F"></a><h3> I think I found a bug; where do I report it? </h3>
+<p>Please report any bugs to the
+<a href="http://sourceforge.net/tracker/?atid=400896&amp;group_id=30982&amp;func=browse" class='external text' title="http://sourceforge.net/tracker/?atid=400896&amp;group_id=30982&amp;func=browse" rel="nofollow">NLTK Bug Tracker</a>,
+giving as much detail as possible.  Please include a code sample that permits us
+to replicate the problem.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=5" title="Edit section: Why is Python giving me a syntax error when I use NLTK?">edit</a>]</div><a name="Why_is_Python_giving_me_a_syntax_error_when_I_use_NLTK.3F"></a><h3> Why is Python giving me a syntax error when I use NLTK? </h3>
+<p>NLTK requires Python version 2.4 or later.  If you use an earlier version of Python
+you will see lots of syntax errors.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=6" title="Edit section: How can I install NLTK from the source code repository?">edit</a>]</div><a name="How_can_I_install_NLTK_from_the_source_code_repository.3F"></a><h3> How can I install NLTK from the source code repository? </h3>
+<p>Most users should install NLTK from a distribution.  Please see the
+<a href="http://nltk.sourceforge.net/install.html" class='external text' title="http://nltk.sourceforge.net/install.html" rel="nofollow">installation instructions</a>.
+However, if you need an up-to-the-minute version, then you will have to install
+NLTK from the source repository.
+You'll need to have a Subversion client installed on your machine, then check out
+the main branch from <a href="https://svn.sourceforge.net/svnroot/nltk/trunk/nltk" class='external free' title="https://svn.sourceforge.net/svnroot/nltk/trunk/nltk" rel="nofollow">https://svn.sourceforge.net/svnroot/nltk/trunk/nltk</a>.
+For more details, please see the
+<a href="http://sourceforge.net/svn/?group_id=30982" class='external text' title="http://sourceforge.net/svn/?group_id=30982" rel="nofollow">NLTK Subversion Instructions</a>.
+Once you've downloaded this, you'll need to run the top level setup.py
+program to install this version of NLTK on your machine.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=7" title="Edit section: What papers have been published about NLTK?">edit</a>]</div><a name="What_papers_have_been_published_about_NLTK.3F"></a><h3> What papers have been published about NLTK? </h3>
+<ul><li> NLTK: The Natural Language Toolkit (Edward Loper and Steven Bird, 2002) In <i>Proceedings of the ACL Workshop on Effective Tools and Methodologies for Teaching Natural Language Processing and Computational Linguistics</i>, Somerset, NJ: Association for Computational Linguistics, pp. 62-69, <a href="http://arXiv.org/abs/cs/0205028" class='external free' title="http://arXiv.org/abs/cs/0205028" rel="nofollow">http://arXiv.org/abs/cs/0205028</a>
+</li><li> NLTK: The Natural Language Toolkit (Steven Bird and Edward Loper, 2004), In <i>Proceedings of the ACL demonstration session</i>, pp 214-217. <a href="http://eprints.unimelb.edu.au/archive/00001448/" class='external free' title="http://eprints.unimelb.edu.au/archive/00001448/" rel="nofollow">http://eprints.unimelb.edu.au/archive/00001448/</a>
+</li><li> NLTK-Lite: Efficient Scripting for Natural Language Processing (Steven Bird, 2005), <i>4th International Conference on Natural Language Processing</i>, pp 1-8. <a href="http://eprints.unimelb.edu.au/archive/00001453/" class='external free' title="http://eprints.unimelb.edu.au/archive/00001453/" rel="nofollow">http://eprints.unimelb.edu.au/archive/00001453/</a>
+</li><li> NLTK: The Natural Language Toolkit (Steven Bird 2006), Proceedings of the ACL demonstration session <a href="http://www.ldc.upenn.edu/sb/home/papers/nltk-demo-06.pdf" class='external free' title="http://www.ldc.upenn.edu/sb/home/papers/nltk-demo-06.pdf" rel="nofollow">http://www.ldc.upenn.edu/sb/home/papers/nltk-demo-06.pdf</a>
+</li><li> NLTK: Building a Pedagogical Toolkit in Python (Edward Loper, 2004), <i>PyCon DC 2004</i> Python Software Foundation, <a href="http://www.python.org/pycon/dc2004/papers/" class='external free' title="http://www.python.org/pycon/dc2004/papers/" rel="nofollow">http://www.python.org/pycon/dc2004/papers/</a>
+</li><li> Computational Semantics in the Natural Language Toolkit (Ewan Klein, 2006), In <i>Proceedings of the Australian Language Technology Workshop.</i> <a href="http://www.alta.asn.au/events/altw2006/proceedings/Klein.pdf" class='external free' title="http://www.alta.asn.au/events/altw2006/proceedings/Klein.pdf" rel="nofollow">http://www.alta.asn.au/events/altw2006/proceedings/Klein.pdf</a>
+</li></ul>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=8" title="Edit section: How is NLTK development supported?">edit</a>]</div><a name="How_is_NLTK_development_supported.3F"></a><h3> How is NLTK development supported? </h3>
+<p>NLTK is an open source project that depends mainly on the efforts of volunteers.  Occasionally we have funds for a summer intern or TA to work on specified projects.  Students and teachers also donate code.  We strongly encourage volunteers to get involved: find out more about
+<a href="http://nltk.sourceforge.net/contrib.html" class='external text' title="http://nltk.sourceforge.net/contrib.html" rel="nofollow">contributing to NLTK</a>.
+</p>
+<div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=FAQ&amp;action=edit&amp;section=9" title="Edit section: How did NLTK start?">edit</a>]</div><a name="How_did_NLTK_start.3F"></a><h3> How did NLTK start? </h3>
+<p>The NLTK project began when Steven Bird was teaching CIS-530 at the University of Pennsylvania in 2001, and hired his star student, Edward Loper, from the previous offering of the course to be the teaching assistant (TA).  They agreed a plan for developing software infrastructure for NLP teaching that could be easily maintained over time.  Edward wrote up
+<a href="http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk-old/doc/technical/proposal/proposal.tex?revision=2975&amp;content-type=text%2Fplain" class='external text' title="http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk-old/doc/technical/proposal/proposal.tex?revision=2975&amp;content-type=text%2Fplain" rel="nofollow">the plan</a>, and both began work on it right away.  Here is the
+<a href="http://sourceforge.net/mailarchive/forum.php?thread_id=22772&amp;forum_id=960" class='external text' title="http://sourceforge.net/mailarchive/forum.php?thread_id=22772&amp;forum_id=960" rel="nofollow">Version 0.2 release announcement</a>
+that appeared in September 2001.
+</p>
+<!-- Saved in parser cache with key n30982_wikidb:pcache:idhash:1376-0!1!0!0!!en!2 and timestamp 20070501053543 -->
+<div class="printfooter">
+Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/FAQ">http://nltk.sourceforge.net/wiki/index.php/FAQ</a>"</div>
+						<!-- end content -->
+			<div class="visualClear"></div>
+		</div>
+	</div>
+		</div>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wiki/index.php/FAQ">Article</a></li>
+				 <li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:FAQ&amp;action=edit">Discussion</a></li>
+				 <li id="ca-edit"><a href="/wiki/index.php?title=FAQ&amp;action=edit">Edit</a></li>
+				 <li id="ca-history"><a href="/wiki/index.php?title=FAQ&amp;action=history">History</a></li>
+				 <li id="ca-protect"><a href="/wiki/index.php?title=FAQ&amp;action=protect">Protect</a></li>
+				 <li id="ca-delete"><a href="/wiki/index.php?title=FAQ&amp;action=delete">Delete</a></li>
+				 <li id="ca-move"><a href="/wiki/index.php/Special:Movepage/FAQ">Move</a></li>
+				 <li id="ca-watch"><a href="/wiki/index.php?title=FAQ&amp;action=watch">Watch</a></li>
+		</ul>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-userpage"><a href="/wiki/index.php/User:StevenBird" class="new">StevenBird</a></li>
+				<li id="pt-mytalk"><a href="/wiki/index.php/User_talk:StevenBird" class="new">My talk</a></li>
+				<li id="pt-preferences"><a href="/wiki/index.php/Special:Preferences">Preferences</a></li>
+				<li id="pt-watchlist"><a href="/wiki/index.php/Special:Watchlist">My watchlist</a></li>
+				<li id="pt-mycontris"><a href="/wiki/index.php/Special:Contributions/StevenBird">My contributions</a></li>
+				<li id="pt-logout"><a href="/wiki/index.php?title=Special:Userlogout&amp;returnto=FAQ">Log out</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(http://sourceforge.net/sflogo.php?group_id=30982&amp;type=1);" href="/wiki/index.php/Main_Page" title="Main Page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+		<div class='portlet' id='p-navigation'>
+		<h5>Navigation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-mainpage"><a href="/wiki/index.php/Main_Page">Main Page</a></li>
+				<li id="n-Cookbook"><a href="/wiki/index.php/Cookbook">Cookbook</a></li>
+				<li id="n-Courses"><a href="/wiki/index.php/Courses">Courses</a></li>
+				<li id="n-Development"><a href="/wiki/index.php/Development">Development</a></li>
+				<li id="n-FAQ"><a href="/wiki/index.php/FAQ">FAQ</a></li>
+				<li id="n-Installation"><a href="/wiki/index.php/Installation">Installation</a></li>
+				<li id="n-Projects"><a href="/wiki/index.php/Projects">Projects</a></li>
+				<li id="n-recentchanges"><a href="/wiki/index.php/Special:Recentchanges">Recent changes</a></li>
+				<li id="n-randompage"><a href="/wiki/index.php/Special:Random">Random page</a></li>
+				<li id="n-help"><a href="/wiki/index.php/Help:Contents">Help</a></li>
+				<li id="n-sitesupport"><a href="/wiki/index.php/NLTK:Site_support">Donations</a></li>
+			</ul>
+		</div>
+	</div>
+		<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/wiki/index.php/Special:Search" id="searchform"><div>
+				<input id="searchInput" name="search" type="text" accesskey="f" value="" />
+				<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="Go" />&nbsp;
+				<input type='submit' name="fulltext" class="searchButton" value="Search" />
+			</div></form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/wiki/index.php/Special:Whatlinkshere/FAQ">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/wiki/index.php/Special:Recentchangeslinked/FAQ">Related changes</a></li>
+<li id="t-specialpages"><a href="/wiki/index.php/Special:Specialpages">Special pages</a></li>
+				<li id="t-print"><a href="/wiki/index.php?title=FAQ&amp;printable=yes&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/wiki/index.php?title=FAQ&amp;oldid=1574">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+		</div><!-- end of the left (by default at least) column -->
+			<div class="visualClear"></div>
+			<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="MediaWiki" /></a></div>
+				<div id="f-copyrightico"><a href="http://creativecommons.org/licenses/by-sa/2.5/"><img src="http://i.creativecommons.org/l/by-sa/2.5/88x31.png" alt='Attribution-Share Alike 2.5 ' /></a></div>
+			<ul id="f-list">
+				<li id="lastmod"> This page was last modified 10:00, 6 April 2007.</li>
+				<li id="viewcount">This page has been accessed 578 times.</li>
+				<li id="copyright">Content is available under <a href="http://creativecommons.org/licenses/by-sa/2.5/" class='external ' title="http://creativecommons.org/licenses/by-sa/2.5/" rel="nofollow">Attribution-Share Alike 2.5 </a>.</li>
+				<li id="privacy"><a href="/wiki/index.php/NLTK:Privacy_policy" title="NLTK:Privacy policy">Privacy policy</a></li>
+				<li id="about"><a href="/wiki/index.php/NLTK:About" title="NLTK:About">About NLTK</a></li>
+				<li id="disclaimer"><a href="/wiki/index.php/NLTK:General_disclaimer" title="NLTK:General disclaimer">Disclaimers</a></li>
+			</ul>
+		</div>
+	<script type="text/javascript"> if (window.runOnloadHook) runOnloadHook();</script>
+</div>
+<!-- Served by sc8-pr-web5.sourceforge.net in 1.90 secs. -->
+</body></html>
