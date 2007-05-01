@@ -14,6 +14,7 @@ Distributed with permission
 Contents:
 - Bangla: IIT Kharagpur
 - Hindi: Microsoft Research India
+- Marathi: IIT Bombay
 - Telugu: IIIT Hyderabad
 """       
 
@@ -22,7 +23,7 @@ from nltk_lite import tokenize
 from nltk_lite.tag import string2tags, string2words
 import os
 
-items = list(['bangla', 'hindi', 'telugu'])
+items = list(['bangla', 'hindi', 'marathi', 'telugu'])
 
 def _read(files, conversion_function):
     if type(files) is str: files = (files,)
@@ -50,33 +51,28 @@ def tagged(files = items):
 def demo():
     from nltk_lite.corpora import indian, extract
 
-
-    print "Bangla:"
-    print extract(4, indian.raw('bangla'))
-    print extract(4, indian.tagged('bangla'))
+    print "Bangla: ",
+    for word, tag in extract(4, indian.tagged('bangla')):
+        print word + "/" + `tag`,
     print
     
-    print "Hindi:"
-    print `extract(4, indian.raw('hindi'))`.decode('utf8')
-    print `extract(4, indian.tagged('hindi'))`.decode('utf8')
+    print "Hindi:  ",
+    for word, tag in extract(4, indian.tagged('hindi')):
+        print word + "/" + `tag`,
+    print
+    
+    print "Marathi:",
+    for word, tag in extract(4, indian.tagged('marathi')):
+        print word + "/" + `tag`,
+    print
+    
+    print "Telugu: ",
+    for word, tag in extract(4, indian.tagged('telugu')):
+        print word + "/" + `tag`,
     print
 
-    print "Telugu:"
-    print `extract(4, indian.raw('telugu'))`.decode('utf8')
-    print `extract(4, indian.tagged('telugu'))`.decode('utf8')
-    print
-
-    print "TESTING:"
-    
-    for word in extract(4, indian.raw('bangla')):
-        print word,
-    for word in extract(4, indian.raw('hindi')):
-        print word,
-    for word in extract(4, indian.raw('telugu')):
-        print word,
-    
 #    print list(indian.xreadlines('bangla'))
 
-    
+
 if __name__ == '__main__':
     demo()
