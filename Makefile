@@ -109,7 +109,7 @@ iso:	.dist.done .python.done .numpy.done .wordnet.done
 	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm	iso/unix/
 	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
 	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
-	cp *.txt					iso
+	cp *.txt *.html					iso
 	cp web/*.{html,css,png}                         iso/web/
 	cp web/screenshots/*.jpg                        iso/web/screenshots
 	cp python/mac/*                                 iso/mac/

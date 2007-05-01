@@ -1,15 +1,20 @@
-Version 0.7.4 2007-04-0?
+Version 0.7.4 2007-05-01
 
 Code:
-- Sinica Treebank corpus reader
-- new web corpus reader
+- Indian POS tagged corpus reader: corpora.indian
+- Sinica Treebank corpus reader: corpora.sinica_treebank
+- new web corpus reader corpora.web
 - tag package now supports pickling
+- added function to utilities.py to guess character encoding
 Corpora:
-- Rotokas texts
-- POS-tagged corpora for several Indian languages
+- Rotokas texts from Stuart Robinson
+- POS-tagged corpora for several Indian languages (Bangla, Hindi, Marathi, Telugu) from A Kumaran
 Tutorials:
-- Substantial work on Part II of book on
-  structured programming, parsing and grammar
+- Substantial work on Part II of book on structured programming, parsing and grammar
+- More bibliographic citations
+- Improvements in typesetting, cross references
+- Redimensioned images and tables for better use of page space
+- Moved project list to wiki
 Contrib:
 - validation of toolbox entries using chunking
 - improved classifiers
