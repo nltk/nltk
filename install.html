@@ -55,10 +55,10 @@ only being required for some visualizations in the book.
 </li></ul>
 <p>Download and install NLTK:
 </p>
-<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.win32.exe" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.win32.exe" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.win32.exe</a>
+<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.win32.exe" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.win32.exe" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.win32.exe</a>
 </li></ul>
 <p>Download the NLTK corpora distribution:
-<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip</a>
+<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip</a>
 </p><p>Unpack the corpora using a utility such as Winzip, and move the corpora folder to <tt>C:\corpora</tt>
 (or some other central location).
 </p><p>If the corpora folder that you created is not in this location then you will need to set the <tt>NLTK_LITE_CORPORA</tt> environment variable: right click on "My Computer", select Properties &gt; Advanced &gt; Environment Variables &gt; User Variables &gt; New..., then type <tt>NLTK_LITE_CORPORA</tt> into the Variable field, and type the path to the NLTK corpora folder that you created into the Value field.
@@ -92,13 +92,13 @@ sudo python setup.py install
 <p><i>These instructions are for Mac, Linux and Unix platforms.</i>
 </p><p>Check your Python installation is adequate: open a terminal and type <tt>python -V</tt> to see what version you get; once you get the python prompt type <tt>import numpy</tt> to check you can load the numerical library (set your <tt>PATH</tt> and <tt>PYTHONPATH</tt> environment variables if necessary).
 </p><p>1. Download the NLTK source distribution:
-<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.tar.gz</a>
+<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.tar.gz</a>
 </p><p>Unpack the archive (e.g. with gunzip or Stuffit Expander).
 Open the terminal and cd into this new folder, and type
 </p>
 <pre>sudo python setup.py install</pre>
 <p>2. Next, download the NLTK Corpora distribution:
-<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip</a>
+<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip</a>
 </p><p>Unpack this archive to extract a folder called <tt>corpora</tt>, and move this into
 <tt>/usr/share/nltk_lite</tt> or <tt>~/nltk_lite</tt>.
 </p><p>Set an environment variable to refer to this location, e.g.
@@ -126,14 +126,14 @@ Open the terminal and cd into this new folder, and type
 <p>If you don't want to install NLTK in a central location, download and unpack the
 zip distributions:
 </p>
-<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.3.zip</a>
-</li><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.3.zip</a>
+<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.zip</a>
+</li><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip</a>
 </li></ul>
 <p>Move NLTK to the desired location, then add this location to your <tt>PYTHONPATH</tt>.
 Similarly, move the NLTK Corpora to the desired location, and set this location
 as the value of <tt>NLTK_LITE_CORPORA</tt>
 </p>
-<!-- Saved in parser cache with key n30982_wikidb:pcache:idhash:1379-0!1!0!0!!en!2 and timestamp 20070501102203 -->
+<!-- Saved in parser cache with key n30982_wikidb:pcache:idhash:1379-0!1!0!0!!en!2 and timestamp 20070501104133 -->
 <div class="printfooter">
 Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation">http://nltk.sourceforge.net/wiki/index.php/Installation</a>"</div>
 						<!-- end content -->
@@ -207,7 +207,7 @@ Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation
 				<li id="t-whatlinkshere"><a href="/wiki/index.php/Special:Whatlinkshere/Installation">What links here</a></li>
 				<li id="t-recentchangeslinked"><a href="/wiki/index.php/Special:Recentchangeslinked/Installation">Related changes</a></li>
 <li id="t-specialpages"><a href="/wiki/index.php/Special:Specialpages">Special pages</a></li>
-				<li id="t-print"><a href="/wiki/index.php?title=Installation&amp;printable=yes&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/wiki/index.php?title=Installation&amp;oldid=1576">Permanent link</a></li>			</ul>
+				<li id="t-print"><a href="/wiki/index.php?title=Installation&amp;printable=yes&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/wiki/index.php?title=Installation&amp;oldid=1577">Permanent link</a></li>			</ul>
 		</div>
 	</div>
 		</div><!-- end of the left (by default at least) column -->
@@ -216,8 +216,8 @@ Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation
 				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="MediaWiki" /></a></div>
 				<div id="f-copyrightico"><a href="http://creativecommons.org/licenses/by-sa/2.5/"><img src="http://i.creativecommons.org/l/by-sa/2.5/88x31.png" alt='Attribution-Share Alike 2.5 ' /></a></div>
 			<ul id="f-list">
-				<li id="lastmod"> This page was last modified 09:39, 1 May 2007.</li>
-				<li id="viewcount">This page has been accessed 93 times.</li>
+				<li id="lastmod"> This page was last modified 10:22, 1 May 2007.</li>
+				<li id="viewcount">This page has been accessed 95 times.</li>
 				<li id="copyright">Content is available under <a href="http://creativecommons.org/licenses/by-sa/2.5/" class='external ' title="http://creativecommons.org/licenses/by-sa/2.5/" rel="nofollow">Attribution-Share Alike 2.5 </a>.</li>
 				<li id="privacy"><a href="/wiki/index.php/NLTK:Privacy_policy" title="NLTK:Privacy policy">Privacy policy</a></li>
 				<li id="about"><a href="/wiki/index.php/NLTK:About" title="NLTK:About">About NLTK</a></li>
@@ -226,5 +226,5 @@ Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation
 		</div>
 	<script type="text/javascript"> if (window.runOnloadHook) runOnloadHook();</script>
 </div>
-<!-- Served by sc8-pr-web5.sourceforge.net in 0.67 secs. -->
+<!-- Served by sc8-pr-web5.sourceforge.net in 0.78 secs. -->
 </body></html>
