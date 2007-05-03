@@ -12,14 +12,13 @@ Subsequent processing can try to identify interesting relations expressed in
 C{filler}.
 """
 
-from nltk_lite.corpora import ieer, extract
+from nltk_lite.corpora import ieer
 from nltk_lite.parse import tree, Tree
 from string import join
 import re
+from itertools import islice
+
     
-
-
-
 def check_words(s):
     """
     Filter out strings which introduce unwanted noise.
@@ -53,11 +52,13 @@ def ne_fillers(t, stype= None, otype=None):
     """
     Search through a chunk structure, looking for relational triples.
     These consist of
-      - a Named Entity (i.e subtree), 
-      - a string of words (i.e. leaves),
-      - another Named Entity.
-    To help debugging, we also identify a fourth item, C{rcon}, i.e., a few 
-    words of right context immediately following the second Named Entity.
+      - a Named Entity (i.e subtree), called the 'subject' of the triple, 
+      - a string of words (i.e. leaves), called the 'filler' of the triple,
+      - another Named Entity, called the 'object' of the triple.
+      
+    To help in data analysis, we also identify a fourth item, C{rcon},
+    i.e., a few words of right context immediately following the
+    second Named Entity.
      
     Apart from the first and last, every Named Entity can occur as both the
     subject and the object of a triple.
@@ -109,28 +110,91 @@ def ne_fillers(t, stype= None, otype=None):
                     # current triple is no good; carry on with the tail
                     else: 
                         return ne_fillers(tail, stype, otype)
-    
+    return []
+
+
+def relextract(stype, otype, pattern = None, rcontext = None):
+    """
+    Extract a relation by filtering the results of C{ne_fillers}.
+
+    @param stype: the type of the subject Named Entity.
+    @type stype: C{string}
+    @param otype: the type of the object Named Entity.
+    @type otype: C{string}
+    @param pattern: a regular expression for filtering the fillers of
+    retrieved triples.
+    @type pattern: C{SRE_Pattern}
+    @param rcontext: if C{True}, a few words of right context are added
+    to the output triples.
+    @type rcontext: C{bool}
+    @return: generates 3-tuples or 4-tuples <subj, filler, obj, rcontext>.
+    @rtype: C{generator}
+    """
+    for d in ieer.dictionary():
+        tree = d['text']
+        rels = ne_fillers(tree, stype=stype, otype=otype)
+        if pattern:
+            rels = [r for r in rels if pattern.match(r[1])]
+        for (subj, filler, obj, rcon)  in rels:
+            if rcontext:
+                yield subj, filler, obj, rcon
+            else:
+                yield subj, filler, obj                
 
 def demo():
     """
-    A demonstration showing how to look for pairs of ORGANIZATIONs
-    and LOCATIONs, where there is some evidence that the former is located
-    in the latter.
+    A demonstration of two relations extracted by simple regexps:
     
-    The regexp does some simple matching against the fillers returned by 
-    L{ne_fillers}, and could usefully be expanded. 
-    It would also be helpful to merge together sequences of LOCATIONs in
-    the object slot.
-    """
-    IN = re.compile(r'(.*(chain|store)\s+)?in|at|,')
-    for d in ieer.dictionary():
-        tree = d['text']
-        rels = ne_fillers(tree, stype='ORGANIZATION', otype='LOCATION')
-        if rels: 
-            for (subj, filler, obj, rcon) in rels:
-                if IN.match(filler):
-                    print subj, filler, obj
+      - in(ORG, LOC), and
+      - has_role(PERS, ORG)
 
+    """
+
+    ############################################################
+    # Example of in(ORG, LOC)
+    ############################################################
+    IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
+
+    print "in(ORG, LOC):"
+    for r in islice(relextract('ORGANIZATION', 'LOCATION', pattern = IN), 29, 39): 
+        print r
+    print
+    
+    ############################################################
+    # Example of has_role(PERS, LOC)
+    ############################################################  
+    roles = """
+    (.*(                   # assorted roles
+    analyst|
+    chair(wo)?man|
+    commissioner|
+    counsel|
+    director|
+    economist|
+    editor|
+    executive|         
+    foreman|
+    governor|
+    head|
+    lawyer|
+    leader|
+    librarian).*)|
+    manager|
+    partner|
+    president|
+    producer|
+    professor|
+    researcher|
+    spokes(wo)?man|
+    writer|
+    ,\sof\sthe?\s*  # "X, of (the) Y"
+    """
+    ROLES = re.compile(roles, re.VERBOSE)
+
+    print "has_role(PERS, ORG):"
+    for r in islice(relextract('PERSON', 'ORGANIZATION', pattern = ROLES), 10): 
+        print r
+    print
 
 if __name__ == '__main__':
     demo()
