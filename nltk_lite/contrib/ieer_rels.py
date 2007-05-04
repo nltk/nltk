@@ -18,7 +18,12 @@ from string import join
 import re
 from itertools import islice
 
-    
+ne_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
+                    'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE']
+
+short2long = dict(LOC = 'LOCATION', ORG = 'ORGANIZATION', PERS = 'PERSON')
+long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PERS')
+
 def check_words(s):
     """
     Filter out strings which introduce unwanted noise.
@@ -46,8 +51,7 @@ def check_type(tree, type=None):
         return True
     else:
         return tree.node == type
-        
-        
+          
 def ne_fillers(t, stype= None, otype=None):
     """
     Search through a chunk structure, looking for relational triples.
@@ -112,6 +116,11 @@ def ne_fillers(t, stype= None, otype=None):
                         return ne_fillers(tail, stype, otype)
     return []
 
+def _expand(type):
+    try:
+        return short2long[type]
+    except KeyError:
+        return ''
 
 def relextract(stype, otype, pattern = None, rcontext = None):
     """
@@ -130,6 +139,16 @@ def relextract(stype, otype, pattern = None, rcontext = None):
     @return: generates 3-tuples or 4-tuples <subj, filler, obj, rcontext>.
     @rtype: C{generator}
     """
+    if stype not in ne_types:
+        if _expand(stype) in ne_types:
+            stype = _expand(stype)
+        else:
+            raise ValueError, "your value for the subject type has not been recognized: %s" % stype
+    if otype not in ne_types:
+        if _expand(otype) in ne_types:
+            otype = _expand(otype)
+        else:
+            raise ValueError, "your value for the object type has not been recognized: %s" % otype
     for d in ieer.dictionary():
         tree = d['text']
         rels = ne_fillers(tree, stype=stype, otype=otype)
@@ -141,28 +160,55 @@ def relextract(stype, otype, pattern = None, rcontext = None):
             else:
                 yield subj, filler, obj                
 
+def _shorten(type):
+    try:
+        return long2short[type]
+    except KeyError:
+        return type
+
+def _show(item):
+    if isinstance(item, Tree):
+        label = _shorten(item.node)
+        text = join(item.leaves())
+        return '[%s: %s]' % (label, text)
+    elif isinstance(item, list):
+        return join([_show(e) for e in item])
+    else:
+        return item
+
+def show_tuple(t):
+    """
+    Utility function for displaying tuples in succinct format.
+    
+    @param t: a (subj, filler, obj) tuple (possibly with right context as a fourth item).
+    @type t: C{tuple}
+    """
+    l = [_show(t[0]), t[1], _show(t[2])]
+    if len(t) > 3:
+        l.append(_show(t[3]))
+        return '%s %s %s (%s...' % tuple(l)
+    return '%s %s %s' % tuple(l)
+    
 def demo():
     """
     A demonstration of two relations extracted by simple regexps:
-    
-      - in(ORG, LOC), and
+       - in(ORG, LOC), and
       - has_role(PERS, ORG)
-
     """
-
-    ############################################################
+    ############################################
     # Example of in(ORG, LOC)
-    ############################################################
+    ############################################
     IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
 
     print "in(ORG, LOC):"
+    print "=" * 30
     for r in islice(relextract('ORGANIZATION', 'LOCATION', pattern = IN), 29, 39): 
-        print r
+        print show_tuple(r)
     print
     
-    ############################################################
+    ############################################
     # Example of has_role(PERS, LOC)
-    ############################################################  
+    ############################################
     roles = """
     (.*(                   # assorted roles
     analyst|
@@ -192,8 +238,9 @@ def demo():
     ROLES = re.compile(roles, re.VERBOSE)
 
     print "has_role(PERS, ORG):"
-    for r in islice(relextract('PERSON', 'ORGANIZATION', pattern = ROLES), 10): 
-        print r
+    print "=" * 30
+    for r in islice(relextract('PER', 'ORG', pattern = ROLES, rcontext = True), 10): 
+        print show_tuple(r)
     print
 
 if __name__ == '__main__':
