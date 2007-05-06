@@ -86,7 +86,7 @@ class ClassifyTestCase(unittest.TestCase):
         classify.parse(['-a', '1R', '-f', path, '-t', path])
         classify.execute()
         self.assertTrue(classify.errorCalled)
-        self.assertEqual('Invalid arguments. The files parameter should not be followed by training, test or gold parameters.', classify.message)
+        self.assertEqual('Invalid arguments. The files argument cannot exist with training, test or gold arguments.', classify.message)
 
     def test_throws_error_if_both_test_and_gold_files_are_present(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'

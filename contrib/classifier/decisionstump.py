@@ -36,9 +36,8 @@ class DecisionStump:
         for class_count in count_for_each_attr_value:
             subtotal, counts = 0, class_count.values()
             counts.sort()
-            counts.reverse()
             for count in counts: subtotal += count
-            errors += (subtotal - counts[0])
+            errors += (subtotal - counts[-1])
             total += subtotal
         return float(errors)/ total
     
@@ -76,6 +75,9 @@ class DecisionStump:
     def information_gain(self):
         from nltk_lite.contrib.classifier import entropy_of_key_counts
         return entropy_of_key_counts(self.root) - self.mean_information()
+    
+    def gain_ratio(self):
+        return float(self.information_gain()) / self.attribute.split_info()
     
     def __str__(self):
         _str = 'Decision stump for attribute ' + self.attribute.name

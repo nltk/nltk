@@ -14,7 +14,7 @@ class OneRTestCase(unittest.TestCase):
     def setUp(self):
         path = self.WEATHER = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         c45 = format.C45_FORMAT
-        self.classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path), c45)
+        self.classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path))
                 
     def test_best_decision_stump_returns_minimum_error_stump_by_default(self):
         minError = self.classifier.best_decision_stump(self.classifier.training)
@@ -22,8 +22,8 @@ class OneRTestCase(unittest.TestCase):
         
     def test_classifies_test_with_stump(self):
         self.classifier.test(format.C45_FORMAT.get_test_instances(self.WEATHER), False)
-        self.assertTrue(self.classifier.test_instances[0].classifiedKlass is not None)
-        self.assertEqual('yes', self.classifier.test_instances[0].classifiedKlass)
+        self.assertTrue(self.classifier.test_instances[0].classified_klass is not None)
+        self.assertEqual('yes', self.classifier.test_instances[0].classified_klass)
         
     def test_verifies_classification(self):
         cm = self.classifier.verify(format.C45_FORMAT.get_gold_instances(self.WEATHER))
@@ -33,7 +33,7 @@ class OneRTestCase(unittest.TestCase):
     def test_best_decision_stump_uses_the_passed_in_algorithm(self):
         path = self.WEATHER
         c45 = format.C45_FORMAT
-        classifier = OneRStub(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path), c45)
+        classifier = OneRStub(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path))
         self.assertEqual("dummy Best Decision stump", classifier.best_decision_stump(classifier.training, [], 'dummy_algorithm'))
         
     def test_throws_error_for_invalid_algorithm(self):
@@ -47,15 +47,15 @@ class OneRTestCase(unittest.TestCase):
         try:
             path = datasetsDir(self) + 'numerical' + SEP + 'weather'
             c45 = format.C45_FORMAT
-            classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path), c45)
+            classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path))
             self.fail('should have thrown error')
         except inv.InvalidDataError:
             pass
         
         
 class OneRStub(oner.OneR):
-    def __init__(self, instances, attributes, klass, format):
-        oner.OneR.__init__(self, instances, attributes, klass, format)
+    def __init__(self, instances, attributes, klass):
+        oner.OneR.__init__(self, instances, attributes, klass)
         
     def dummy_algorithm(self):
         return "dummy Best Decision stump"

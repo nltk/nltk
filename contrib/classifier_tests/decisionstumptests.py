@@ -11,8 +11,8 @@ import math
 
 class DecisionStumpTestCase(unittest.TestCase):
     def setUp(self):
-        attributes = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.outlook_attr = attributes[0]
+        self.attributes = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.outlook_attr = self.attributes[0]
         self.klass = format.C45_FORMAT.get_klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.outlook_stump = ds.DecisionStump(self.outlook_attr, self.klass)
         self.instances = format.C45_FORMAT.get_training_instances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
@@ -115,3 +115,34 @@ class DecisionStumpTestCase(unittest.TestCase):
         for i in ['a', 'b', 'c']:
             self.assertTrue(values.has_key(i))
             self.assertEqual(0, values[i])
+            
+    def test_gain_ratio(self):
+        self.__update_stump()
+        
+        entropy = -(5.0/9 * math.log(5.0/9, 2))  + -(4.0/9 * math.log(4.0/9, 2))
+        mean_info = 4.0/9 * (-(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))) + 3.0/9 * (-(2.0/3 * math.log(2.0/3, 2))  + -(1.0/3 * math.log(1.0/3, 2))) 
+        info_gain = entropy - mean_info
+        split_info = -(1.0/3 * math.log(1.0/3, 2)) * 3 # outlook attribute has 3 values
+        expected = float(info_gain) / split_info
+        
+        self.assertAlmostEqual(expected, self.outlook_stump.gain_ratio(), 6)
+        
+    def test_sorting_of_decision_stumps(self):
+        stumps = []
+        for attribute in self.attributes:
+            stumps.append(ds.DecisionStump(attribute, self.klass))
+        for instance in self.instances:
+            for stump in stumps:
+                stump.update_count(instance)
+        
+        self.assertAlmostEqual(0.324409, stumps[0].information_gain(), 6)
+        self.assertAlmostEqual(0.102187, stumps[1].information_gain(), 6)
+        self.assertAlmostEqual(0.091091, stumps[2].information_gain(), 6)
+        self.assertAlmostEqual(0.072780, stumps[3].information_gain(), 6)
+
+        stumps.sort(lambda x, y: cmp(getattr(x, 'information_gain'), getattr(y, 'information_gain')))
+
+        self.assertAlmostEqual(0.324409, stumps[0].information_gain(), 6)
+        self.assertAlmostEqual(0.102187, stumps[1].information_gain(), 6)
+        self.assertAlmostEqual(0.091091, stumps[2].information_gain(), 6)
+        self.assertAlmostEqual(0.072780, stumps[3].information_gain(), 6)
