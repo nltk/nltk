@@ -7,6 +7,7 @@
 
 from nltk_lite.contrib.classifier import attribute as a
 from nltk_lite.contrib.classifier_tests import *
+import math
 
 class AttributeTestCase(unittest.TestCase):
     def test_attribute_creation(self):
@@ -36,7 +37,14 @@ class AttributeTestCase(unittest.TestCase):
         disc_attr = a.Attribute('foo',['a','b','c'], 0)
         self.assertEqual(a.DISCRETE, disc_attr.type)
         self.assertFalse(disc_attr.is_continuous())
-        
-    def test_as_line(self):
+                
+    def test_split_info(self):
         attr = a.Attribute('foo', ['a','b','c'], 0)
-        self.assertEqual('foo:a,b,c.', attr.as_line())
+        expected = -(1.0/3 * math.log(1.0/3, 2)) * 3
+        self.assertAlmostEqual(expected, attr.split_info(), 6)
+        
+    def test_split_info_is_higher_for_higher_arity_attributes(self):
+        attr = a.Attribute('foo', ['a','b','c'], 0)
+        higher_arity = a.Attribute('foo', ['a','b','c', 'd', 'e', 'f', 'g', 'h'], 0)
+        self.assertTrue(higher_arity.split_info() > attr.split_info())
+        

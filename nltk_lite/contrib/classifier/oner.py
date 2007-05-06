@@ -6,12 +6,12 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, Classifier, format
+from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, Classifier
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
-    def __init__(self, training, attributes, klass, format):
-        Classifier.__init__(self, training, attributes, klass, format)
+    def __init__(self, training, attributes, klass):
+        Classifier.__init__(self, training, attributes, klass)
         self.__best_decision_stump = None
         
     def test(self, test_instances, printResults=True):
@@ -22,12 +22,10 @@ class OneR(Classifier):
     def classify(self, instances):
         if self.__best_decision_stump == None:
             self.__best_decision_stump = self.best_decision_stump(self.training)
-        instances.for_each(self.set_klass_on_test_or_gold)
-        
-    def set_klass_on_test_or_gold(self, instance):
-        klass = self.__best_decision_stump.klass(instance)
-        instance.set_klass(klass)
-        
+        for instance in instances:
+            klass = self.__best_decision_stump.klass(instance)
+            instance.set_klass(klass)
+
     def verify(self, gold_instances):
         self.gold_instances = gold_instances
         self.classify(self.gold_instances)
@@ -36,7 +34,8 @@ class OneR(Classifier):
     def best_decision_stump(self, instances, ignore_attributes = [], algorithm = 'minimum_error'):
         self.decision_stumps = self.attributes.empty_decision_stumps(ignore_attributes, self.klass);
         for stump in self.decision_stumps:
-            instances.for_each(lambda instance: stump.update_count(instance))
+            for instance in instances:
+                stump.update_count(instance)
         try:
             return getattr(self, algorithm)()
         except AttributeError:

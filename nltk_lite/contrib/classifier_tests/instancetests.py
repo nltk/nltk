@@ -42,7 +42,7 @@ class InstanceTestCase(unittest.TestCase):
         instance = ins.TestInstance(['bar','two'])
         try:
             instance.set_klass('c')
-            self.assertEqual('c', instance.classifiedKlass)
+            self.assertEqual('c', instance.classified_klass)
             self.assertEqual(None, instance.klass_value)
         except AttributeError:
             self.fail('should be able to set class in Test Instance')
@@ -53,15 +53,15 @@ class InstanceTestCase(unittest.TestCase):
         self.assertEqual('bar', gold.attrs[0])
         self.assertEqual('two', gold.attrs[1])
         self.assertEqual(self.a, gold.klass_value)
-        self.assertEqual(None, gold.classifiedKlass)
+        self.assertEqual(None, gold.classified_klass)
         
     def test_classes_can_be_set_on_gold_instance(self):
         gold = ins.GoldInstance(['bar','two'],'a')
         self.assertEqual(self.a, gold.klass_value)
-        self.assertEqual(None, gold.classifiedKlass)
+        self.assertEqual(None, gold.classified_klass)
         gold.set_klass(self.b)
         self.assertEqual(self.a, gold.klass_value)
-        self.assertEqual(self.b, gold.classifiedKlass)
+        self.assertEqual(self.b, gold.classified_klass)
         
     def test_string_representation(self):
         instance = ins.TrainingInstance(['bar','two'],'a')
@@ -103,40 +103,11 @@ class InstanceTestCase(unittest.TestCase):
         self.assertEqual('b', instance.value(disc_dependents))
         self.assertEqual('e', instance.value(disc_annual_salary))
 
-    def test_as_line(self):
-        training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
-        self.assertEqual('3,34,self-employed,married,2,3,120000,2,yes', training.as_line())
-        
-        test = ins.TestInstance(['3','34','self-employed','married','2','3','120000','2'])
-        test.classifiedKlass = 'yes'
-        self.assertEqual('3,34,self-employed,married,2,3,120000,2,yes', test.as_line())
- 
-        gold = ins.GoldInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
-        gold.classifiedKlass = 'yes'
-        self.assertEqual('3,34,self-employed,married,2,3,120000,2,yes,yes', gold.as_line())
-        
     def test_values_of_atrributes(self):
         training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
         dependents = attribute.Attribute('dependents', ['continuous'], 4)
         annual_salary = attribute.Attribute('annualsalary', ['continuous'], 6)
         self.assertEqual(['2','120000'], training.values([dependents, annual_salary]))
-        
-    def test_attribute_comparator(self):
-        ins1 = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
-        ins2 = ins.TrainingInstance(['2','27','salaried','married','0','3','185000','1'],'yes')
-        
-        id = attribute.Attribute('id', ['continuous'], 0)
-        annual_salary = attribute.Attribute('annualsalary', ['continuous'], 6)
-        marital_status = attribute.Attribute('maritalstatus', ['single','married','divorced'], 3)
-        
-        id_comparator = ins.AttributeComparator(id)
-        self.assertEqual(1, id_comparator.compare(ins1, ins2))
-
-        salary_comparator = ins.AttributeComparator(annual_salary)
-        self.assertEqual(-1, salary_comparator.compare(ins1, ins2))
-        
-        maritial_status_comparator = ins.AttributeComparator(marital_status)
-        self.assertEqual(0, maritial_status_comparator.compare(ins1, ins2))
         
     def test_remove_attrbutes(self):
         training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')

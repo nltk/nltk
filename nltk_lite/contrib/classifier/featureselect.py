@@ -5,101 +5,110 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier import CommandLineInterface, split_ignore_space
-from nltk_lite.contrib.classifier import format, cfile
+from nltk_lite.contrib.classifier import split_ignore_space
+from nltk_lite.contrib.classifier import format, cfile, commandline as cl
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 import sys
 
-OPTIONS = {"IG": 'information_gain'}
+a_help = "Selects the feature selection algorithm                 " \
+       + "Options: RNK for Ranking(Filter based Feature Selection)" \
+       + "Default: RNK.                                           "
+       
+f_help = "Base name of attribute, klass, training, test and gold  " \
+       + " files.                                                 "
 
-class FeatureSelectCommandInterface(CommandLineInterface):
+t_help = "Base name of training file for feature selection.       "
+
+T_help = "Base name of test file for feature selection.           "
+
+g_help = "Base name of gold file for feature selection.           "
+
+o_help = "Algorithm specific options                              " \
+       + "For rank based feature selection the options should     " \
+       + "include the method to calculate the rank:               " \
+       + "  IG: for Information gain                              " \
+       + "  GR: for Gain ratio                                    " \
+       + "followed by a number which indicates the number of      " \
+       + "attributes which should be chosen.                      "
+
+OPTION_MAPPINGS = {'IG': 'information_gain', 'GR': 'gain_ratio'}
+
+RANK='RNK'
+
+ALGORITHM_MAPPINGS = {RANK:'by_rank'}
+
+class FeatureSelect(cl.CommandLineInterface):
     def __init__(self):
-        CommandLineInterface.__init__(self)
-
-        a_help = "Selects the feature selection algorithm                 " \
-               + "Options: RNK for Ranking(Filter based Feature Selection)" \
-               + "Default: RNK."
-        t_help = "Training file for feature selection.                    "
-        T_help = "Comma separated list of files to discterise based on " \
-               + "the Training data."
-        o_help = "Algorithm specific options                              " \
-               + "For rank based feature selection the options should     " \
-               + "include the method to calculate the rank:               " \
-               + "  IG: for Information gain                              " \
-               + "followed by a number which indicates the number of      " \
-               + "attributes which should be chosen"
-        
-        self.__algorithms = {'RNK':'by_rank'}
-        self.add_option("-a", "--algorithm", dest="algorithm", type="choice", \
-                        choices=self.__algorithms.keys(), default="RNK", help= a_help)
-        self.add_option("-t", "--training-file", dest="training", type="string", help=t_help)
-        self.add_option("-T", "--test-files", dest="test", type="string", help=T_help)
+        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), RANK, a_help, f_help, t_help, T_help, g_help)        
         self.add_option("-o", "--options", dest="options", type="string", help=o_help)
-
         
     def execute(self):
-        algorithm = self.__algorithms[self.get_value('algorithm')]
-        training = self.get_value('training')
-        test = self.get_value('test')
-        options = self.get_value('options')
-        if algorithm is None or test is None or training is None or options is None: 
-            self.error("Invalid arguments. One or more required arguments are not present.")
-        options = split_ignore_space(options)
-        if self.get_value('algorithm') == 'RNK' and (len(options) != 2 or not OPTIONS.has_key(options[0]) or not int(options[1])):
-            self.error("Invalid options for Rank based feature selection. Options Found: " + str(options))
-        self.invoke(training, test, options, algorithm)
+        cl.CommandLineInterface.execute(self)
+        self.validate_basic_arguments_are_present()
+        self.validate_files_arg_is_exclusive()
+        if self.get_value('options') is None:
+            self.required_arguments_not_present_error()
+        self.options = split_ignore_space(self.get_value('options'))
+        if self.algorithm == RANK and (len(self.options) != 2 or not OPTION_MAPPINGS.has_key(self.options[0]) or not int(self.options[1])):
+            self.error("Invalid options for Rank based feature selection. Options Found: " + str(self.options))
+        self.select_features_and_write_to_file()
         
-    def invoke(self, training, test, options, algorithm):
-        disc = FeatureSelect(training, test, options)
-        files_written = getattr(disc, algorithm)()
+    def select_features_and_write_to_file(self):
+        ignore_missing = False
+        #duplicate code and not tested!!
+        if self.files is not None:
+            self.training_path, self.test_path, self.gold_path = [self.files] * 3
+            ignore_missing = True
+        training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, ignore_missing)
+
+        feature_sel = FeatureSelection(training, attributes, klass, test, gold, self.options)
+        getattr(feature_sel, ALGORITHM_MAPPINGS[self.algorithm])()
+        
+        files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold)
         print 'The following files were created after feature selection...'
         for file_name in files_written:
             print file_name
+            
+    def get_suffix(self):
+        if self.options is None: return '-' + self.algorithm
+        suf = '-' + self.algorithm
+        for option in self.options:
+            suf += '_' + option
+        return suf
 
-class FeatureSelect:
-    def __init__(self, training, test, options):
-        self.training_path = training
-        self.training = format.C45_FORMAT.get_training_instances(training)
-        self.attributes = format.C45_FORMAT.get_attributes(training)
-        self.klass = format.C45_FORMAT.get_klass(training)
-        self.test_files = split_ignore_space(test)
-        self.test = format.create_instances(self.test_files, format.C45_FORMAT)
+class FeatureSelection:
+    def __init__(self, training, attributes, klass, test, gold, options):
+        self.training, self.attributes, self.klass, self.test, self.gold = training, attributes, klass, test, gold
         self.options = options
         
     def by_rank(self):
         if self.attributes.has_continuous_attributes():
             raise inv.InvalidDataError("Rank based feature selection cannot be performed on continuous attributes.")
-        rem_attributes = self.find_attributes_by_ranking(OPTIONS[self.options[0]], int(self.options[1]))
+        if len(self.options) != 2 or not OPTION_MAPPINGS.has_key(self.options[0]) or not int(self.options[1]):
+            raise inv.InvalidDataError("Invalid options for Rank based feature selection.")#Additional validation when not used from command prompt
+        rem_attributes = self.find_attributes_by_ranking(OPTION_MAPPINGS[self.options[0]], int(self.options[1]))
         self.remove(rem_attributes)
-        return self.write_files('-RNK-' + str(self.options[0]) + str(self.options[1]))
     
     def find_attributes_by_ranking(self, method, number):
         decision_stumps = self.attributes.empty_decision_stumps([], self.klass)
         for decision_stump in decision_stumps:
-            self.training.for_each(lambda instance: decision_stump.update_count(instance))
-        decision_stumps.sort(lambda x, y: cmp(getattr(x, method), getattr(y, method)))
-        attributes_to_remove = []
+            for instance in self.training:
+                decision_stump.update_count(instance)
+        decision_stumps.sort(lambda x, y: cmp(getattr(x, method)(), getattr(y, method)()))
+        
         if number > len(decision_stumps): number = len(decision_stumps)
-        to_remove = decision_stumps[number:]
+        to_remove, attributes_to_remove = decision_stumps[:number * -1], []
         for stump in to_remove:
             attributes_to_remove.append(stump.attribute)
         return attributes_to_remove
     
     def remove(self, attributes):
-        input_data = [self.attributes, self.training] + self.test
-        for input in input_data:
-            input.remove_attributes(attributes)
-    
-    def write_files(self, suffix):
-        files_written = []
-        files_written.append(self.attributes.write_to_file(self.klass, self.training_path, suffix, format.C45_FORMAT))
-        files_written.append(self.training.write_to_file(self.training_path, suffix, format.C45_FORMAT))
-        for index in range(len(self.test)):
-            base_name, extension = cfile.name_extension(self.test_files[index])
-            files_written.append(self.test[index].write_to_file(base_name, suffix, format.C45_FORMAT))
-        return files_written
-            
+        self.training.remove_attributes(attributes)
+        if self.test is not None: self.test.remove_attributes(attributes)
+        if self.gold is not None: self.gold.remove_attributes(attributes)
+        self.attributes.remove_attributes(attributes)
+                
 if __name__ == "__main__":
-    FeatureSelectCommandInterface().run(sys.argv[1:])
+    FeatureSelect().run(sys.argv[1:])
 
