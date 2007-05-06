@@ -14,7 +14,7 @@ import item
 
 class Instance:
     def __init__(self):
-        self.klass_value, self.attrs, self.classifiedKlass = None, None, None
+        self.klass_value, self.attrs, self.classified_klass = None, None, None
         
     def is_valid(self, klass, attributes):
         return AssertionError()
@@ -45,14 +45,14 @@ class Instance:
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False
-        if self.klass_value == other.klass_value and self.attrs == other.attrs and self.classifiedKlass == other.classifiedKlass: return True
+        if self.klass_value == other.klass_value and self.attrs == other.attrs and self.classified_klass == other.classified_klass: return True
         return False
     
     def __str__(self):
         return self.str_attrs() + self.str_class() + self.str_klassified_klass()
 
     def str_klassified_klass(self):
-        return ' Classified as: ' + self.check_none(self.classifiedKlass)
+        return ' Classified as: ' + self.check_none(self.classified_klass)
 
     def check_none(self, var):
         if var is None: 
@@ -65,9 +65,6 @@ class Instance:
     def str_attrs(self):
         return 'Attributes: ' + self.check_none(self.attrs)
     
-    def as_line(self):
-        AssertionError()
-        
     def attr_values_as_str(self):
         strn = ''
         for attr in self.attrs:
@@ -78,7 +75,7 @@ class Instance:
 class TrainingInstance(Instance):
     def __init__(self, attr_values, klass_value):
         Instance.__init__(self)
-        self.klass_value, self.attrs = klass_value, attr_values #values[-1], values[:-1]
+        self.klass_value, self.attrs = klass_value, attr_values
         
     def is_valid(self, klass, attributes):
         return klass.__contains__(self.klass_value) and attributes.has_values(self.attrs)
@@ -86,28 +83,20 @@ class TrainingInstance(Instance):
     def __str__(self):
         return self.str_attrs() + self.str_class()
     
-    def as_line(self):
-        return self.attr_values_as_str() + ',' + self.klass_value
-        
 class TestInstance(Instance):
     def __init__(self, attr_values):
         Instance.__init__(self)
-        self.attrs = attr_values#line.split(',')
+        self.attrs = attr_values
         
     def set_klass(self, klass):
-        self.classifiedKlass = klass
+        self.classified_klass = klass
         
     def is_valid(self, klass, attributes):
         return attributes.has_values(self.attrs)
     
     def __str__(self):
         return self.str_attrs() + self.str_klassified_klass()
-    
-    def as_line(self):
-        if self.classifiedKlass == None:
-            return self.attr_values_as_str()
-        return self.attr_values_as_str() + ',' +self.classifiedKlass
-    
+        
 class GoldInstance(TrainingInstance, TestInstance):
     def __init__(self, attr_values, klass_value):
         TrainingInstance.__init__(self, attr_values, klass_value)
@@ -116,20 +105,7 @@ class GoldInstance(TrainingInstance, TestInstance):
         return TrainingInstance.is_valid(self, klass, attributes)
     
     def classificationType(self):
-        if self.classifiedKlass == None: raise system.SystemError('Cannot find classification type for instance that has not been classified')
+        if self.classified_klass == None: raise system.SystemError('Cannot find classification type for instance that has not been classified')
         
     def __str__(self):
         return Instance.__str__(self)
-        
-    def as_line(self):
-        training_as_line = TrainingInstance.as_line(self)
-        if self.classifiedKlass == None:
-            return training_as_line
-        return training_as_line + ',' + self.classifiedKlass
-    
-class AttributeComparator:
-    def __init__(self, attribute):
-        self.attribute = attribute
-        
-    def compare(self, x, y):
-        return cmp(x.value(self.attribute), y.value(self.attribute))
