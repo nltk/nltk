@@ -21,10 +21,6 @@ class Instances(UserList.UserList):
                 return False
         return True
     
-    def for_each(self, method):
-        for instance in self.data:
-            method(instance)
-            
     def discretise(self, discretised_attributes):
         for instance in self.data:
             instance.discretise(discretised_attributes)
@@ -33,18 +29,6 @@ class Instances(UserList.UserList):
         for instance in self.data:
             instance.remove_attributes(attributes)
 
-    def write_to_file(self, path, suffix, format):
-        _new_file = cfile.File(path + suffix, self.get_extension(format))
-        _new_file.create(True)
-        lines = []
-        for instance in self.data:
-            lines.append(instance.as_line())
-        _new_file.write(lines)
-        return path + suffix + '.' + self.get_extension(format)
-    
-    def get_extension(self, format):
-        return AssertionError()
-    
 class TrainingInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
@@ -67,8 +51,7 @@ class TrainingInstances(Instances):
             if not attribute.is_continuous():
                 raise inv.InvalidDataError('Cannot discretise non continuous attribute ' + attribute.name)
         values = self.values_grouped_by_attribute(attributes)
-        for index in range(len(attributes)):
-            value = values[index]
+        for value in values: #each entry in values is the range of values for a particular attribute
             value.sort()
             ranges.append(r.Range(value[0], value[-1], True))
         return ranges
@@ -113,12 +96,8 @@ class TrainingInstances(Instances):
         return values
     
     def sort_by(self, attribute):
-        comparator = ins.AttributeComparator(attribute)
-        self.data.sort(cmp=comparator.compare)
+        self.data.sort(lambda x, y: cmp(x.value(attribute), y.value(attribute)))
         
-    def get_extension(self, format):
-        return format.DATA
-
 class TestInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
@@ -127,25 +106,19 @@ class TestInstances(Instances):
         for instance in self.data:
             print instance
             
-    def get_extension(self, format):
-        return format.TEST
-
 class GoldInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
             
     def confusion_matrix(self, klass):
         for i in self.data:
-            if i.classifiedKlass == None: 
+            if i.classified_klass == None: 
                 raise system.SystemError('Cannot calculate accuracy as one or more instance(s) are not classified')
         matrix = cm.ConfusionMatrix(klass)
         for i in self.data:
-            matrix.count(i.klass_value, i.classifiedKlass)
+            matrix.count(i.klass_value, i.classified_klass)
         return matrix
     
-    def get_extension(self, format):
-        return format.GOLD
-        
 class SupervisedBreakpoints(UserList.UserList):
     """
     Used to find breakpoints for discretisation

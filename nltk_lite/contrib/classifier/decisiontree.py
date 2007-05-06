@@ -9,8 +9,8 @@
 from nltk_lite.contrib.classifier import oner
 
 class DecisionTree(oner.OneR):
-    def __init__(self, training, attributes, klass, format):
-        oner.OneR.__init__(self, training, attributes, klass, format)
+    def __init__(self, training, attributes, klass):
+        oner.OneR.__init__(self, training, attributes, klass)
         self.root = self.build_tree(self.training, [])
         
     def build_tree(self, instances, used_attributes):
@@ -25,17 +25,20 @@ class DecisionTree(oner.OneR):
         return decision_stump
     
     def classify(self, instances):
-        instances.for_each(self.set_klass_on_test_or_gold)
+        for instance in instances:
+            klass = self.root.klass(instance)
+            instance.set_klass(klass)
         
-    def set_klass_on_test_or_gold(self, instance):
-        klass = self.root.klass(instance)
-        instance.set_klass(klass)
-
     def maximum_information_gain(self):
-        info_gain, max_info_gain_stump = -1, None
+        return self.higher_value_preferred(lambda decision_stump: decision_stump.information_gain())
+    
+    def maximum_gain_ratio(self):
+        return self.higher_value_preferred(lambda decision_stump: decision_stump.gain_ratio())
+    
+    def higher_value_preferred(self, method):
+        highest, max_stump = -1, None
         for decision_stump in self.decision_stumps:
-            new_info_gain = decision_stump.information_gain()
-            if new_info_gain > info_gain: 
-                info_gain = new_info_gain
-                max_info_gain_stump = decision_stump
-        return max_info_gain_stump
+            new = method(decision_stump)
+            if new > highest: highest, max_stump = new, decision_stump
+        return max_stump
+        

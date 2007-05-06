@@ -5,17 +5,14 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
-from nltk_lite.contrib.classifier import instances as ins, format
 from nltk_lite import probability as prob
-from optparse import OptionParser
 import math
 
 class Classifier:
-    def __init__(self, training, attributes, klass, format):
+    def __init__(self, training, attributes, klass):
         self.attributes = attributes
         self.klass = klass
         self.training = training
-        self.format = format
         self.validate_training()
         
     def validate_training(self):
@@ -32,23 +29,6 @@ class Classifier:
     
     def can_handle_continuous_attributes(self):
         return False
-
-class CommandLineInterface(OptionParser):
-    def __init__(self):
-        OptionParser.__init__(self)
-        
-    def get_value(self, name):
-        return self.values.ensure_value(name, None)
-    
-    def parse(self, args):
-        self.parse_args(args, None)
-
-    def execute(self):
-        raise AssertionError()
-
-    def run(self, args):
-        self.parse(args)
-        self.execute()
 
 def split_ignore_space(comma_sep_string):
     _file_names = []

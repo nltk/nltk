@@ -29,6 +29,10 @@ class Attribute:
     
     def is_continuous(self):
         return self.type == CONTINUOUS
+    
+    def split_info(self):
+        from nltk_lite.contrib.classifier import entropy
+        return entropy(self.values)
 
     def __eq__(self, other):
         if other is None: return False
@@ -42,12 +46,12 @@ class Attribute:
     def __str__(self):
         return self.name +':' + str(self.values) + ' index:' + str(self.index)
     
-    def as_line(self):
+    def values_as_str(self):
         values_str = ''
         for value in self.values:
             values_str += value + ','
-        return self.name + ':' + values_str[:-1] + '.'
-    
+        return values_str[:-1]
+            
 class Attributes(UserList.UserList):
     def __init__(self, attributes = []):
         self.data = attributes
@@ -90,16 +94,3 @@ class Attributes(UserList.UserList):
         #reset indices
         for i in range(len(self.data)):
             self.data[i].index = i
-
-    def write_to_file(self, klass, path, suffix, format):
-        _new_file = cfile.File(path + suffix, format.NAMES)
-        _new_file.create(True)
-        lines = []
-        klass_as_line = ''
-        for value in klass:
-            klass_as_line += str(value) + ','
-        lines.append(klass_as_line[:-1] + '.')
-        for attribute in self.data:
-            lines.append(attribute.as_line())
-        _new_file.write(lines)
-        return path + suffix + '.' + format.NAMES

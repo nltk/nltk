@@ -9,8 +9,8 @@
 from nltk_lite.contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
-    def __init__(self, training, attributes, klass, format):
-        Classifier.__init__(self, training, attributes, klass, format)
+    def __init__(self, training, attributes, klass):
+        Classifier.__init__(self, training, attributes, klass)
         self.__majority_class = None
         self.__klassCount = {}
         
@@ -22,7 +22,8 @@ class ZeroR(Classifier):
     def classify(self, instances):
         if self.__majority_class == None: 
             self.__majority_class = self.majority_class()
-        instances.for_each(self.set_majority_klass)
+        for instance in instances:
+            instance.set_klass(self.__majority_class)
         
     def verify(self, gold_instances):
         self.gold_instances = gold_instances
@@ -30,7 +31,8 @@ class ZeroR(Classifier):
         return self.gold_instances.confusion_matrix(self.klass)
 
     def majority_class(self):
-        self.training.for_each(self.update_count)
+        for instance in self.training:
+            self.update_count(instance)
         return self.__max()
     
     def update_count(self, instance):
@@ -49,9 +51,6 @@ class ZeroR(Classifier):
                 klass_value = key
         return klass_value
     
-    def set_majority_klass(self, instance):
-        instance.set_klass(self.__majority_class)
-
     def can_handle_continuous_attributes(self):
         return True
     
