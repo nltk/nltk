@@ -12,17 +12,20 @@ Subsequent processing can try to identify interesting relations expressed in
 C{filler}.
 """
 
-from nltk_lite.corpora import ieer
+from nltk_lite.corpora import ieer, conll2002
 from nltk_lite.parse import tree, Tree
+from nltk_lite.tag import tag2tuple
 from string import join
 import re
 from itertools import islice
 
-ne_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
-                    'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE']
+ne_types = {'ieer': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
+                               'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
+                     'conll2002': ['LOC', 'PER', 'ORG']}
+                    
 
-short2long = dict(LOC = 'LOCATION', ORG = 'ORGANIZATION', PERS = 'PERSON')
-long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PERS')
+short2long = dict(LOC = 'LOCATION', ORG = 'ORGANIZATION', PER = 'PERSON')
+long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PER')
 
 def check_words(s):
     """
@@ -94,6 +97,9 @@ def ne_fillers(t, stype= None, otype=None):
             for next in tail:
                 # accumulate some words
                 if not isinstance(next, Tree):
+                    if isinstance(next, tuple): 
+                        (token, tag) = next
+                        next = "".join(token + "/" + str(tag))
                     words.append(next)
                 # next is another NE; it's a potential object
                 else:
@@ -122,10 +128,12 @@ def _expand(type):
     except KeyError:
         return ''
 
-def relextract(stype, otype, pattern = None, rcontext = None):
+def relextract(stype, otype, corpus = 'ieer', pattern = None, rcontext = None):
     """
     Extract a relation by filtering the results of C{ne_fillers}.
 
+    @param trees: the syntax trees to be processed
+    @type trees: list of C{Tree}
     @param stype: the type of the subject Named Entity.
     @type stype: C{string}
     @param otype: the type of the object Named Entity.
@@ -139,18 +147,25 @@ def relextract(stype, otype, pattern = None, rcontext = None):
     @return: generates 3-tuples or 4-tuples <subj, filler, obj, rcontext>.
     @rtype: C{generator}
     """
-    if stype not in ne_types:
-        if _expand(stype) in ne_types:
+    if corpus == 'ieer':
+        trees = [d['text'] for d in ieer.dictionary()]
+    elif corpus == 'conll2002':
+        trees = [tree for tree in conll2002.ne_chunked()]
+    else:
+        raise ValueError, "corpus not recognized: '%s'" % corpus
+    
+    if stype not in ne_types[corpus]:
+        if _expand(stype) in ne_types[corpus]:
             stype = _expand(stype)
         else:
             raise ValueError, "your value for the subject type has not been recognized: %s" % stype
-    if otype not in ne_types:
-        if _expand(otype) in ne_types:
+    if otype not in ne_types[corpus]:
+        if _expand(otype) in ne_types[corpus]:
             otype = _expand(otype)
         else:
             raise ValueError, "your value for the object type has not been recognized: %s" % otype
-    for d in ieer.dictionary():
-        tree = d['text']
+
+    for tree in trees:
         rels = ne_fillers(tree, stype=stype, otype=otype)
         if pattern:
             rels = [r for r in rels if pattern.match(r[1])]
@@ -159,22 +174,30 @@ def relextract(stype, otype, pattern = None, rcontext = None):
                 yield subj, filler, obj, rcon
             else:
                 yield subj, filler, obj                
-
+        
 def _shorten(type):
     try:
         return long2short[type]
     except KeyError:
         return type
 
-def _show(item):
+def _show(item, tags=None):
     if isinstance(item, Tree):
         label = _shorten(item.node)
-        text = join(item.leaves())
+        try:
+            words = [word for (word, tag) in item.leaves()]
+        except ValueError:
+            words = item.leaves()
+        text = join(words)
         return '[%s: %s]' % (label, text)
     elif isinstance(item, list):
         return join([_show(e) for e in item])
     else:
-        return item
+        if tags:
+            return item
+        else:
+            item = tag2tuple(item)
+            return item[0]
 
 def show_tuple(t):
     """
@@ -190,6 +213,8 @@ def show_tuple(t):
     return '%s %s %s' % tuple(l)
     
 def demo():
+    
+    ieer_trees = [d['text'] for d in ieer.dictionary()]
     """
     A demonstration of two relations extracted by simple regexps:
        - in(ORG, LOC), and
@@ -202,12 +227,12 @@ def demo():
 
     print "in(ORG, LOC):"
     print "=" * 30
-    for r in islice(relextract('ORGANIZATION', 'LOCATION', pattern = IN), 29, 39): 
-        print show_tuple(r)
+    for r in islice(relextract('ORG', 'LOC', pattern = IN), 29, 39): 
+       print show_tuple(r)
     print
     
     ############################################
-    # Example of has_role(PERS, LOC)
+    # Example of has_role(PER, LOC)
     ############################################
     roles = """
     (.*(                   # assorted roles
@@ -237,12 +262,19 @@ def demo():
     """
     ROLES = re.compile(roles, re.VERBOSE)
 
-    print "has_role(PERS, ORG):"
+    print "has_role(PER, ORG):"
     print "=" * 30
     for r in islice(relextract('PER', 'ORG', pattern = ROLES, rcontext = True), 10): 
         print show_tuple(r)
     print
-
+    
+    UIT = re.compile(r'.*\uit/Prep\b(?!\b.+ing\b)')
+    print "in(ORG, LOC):"
+    print "=" * 30
+    for r in relextract('PER', 'LOC', corpus='conll2002', pattern =UIT): 
+        print show_tuple(r)
+    print
+    
 if __name__ == '__main__':
     demo()
 
