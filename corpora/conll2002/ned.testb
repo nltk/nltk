@@ -2,7 +2,7 @@
 Dat Pron O
 is V O
 in Prep O
-Italië N B-LOC
+ItaliÃ« N B-LOC
 , Punc O
 Spanje N B-LOC
 of Conj O
@@ -24,7 +24,7 @@ wel Adv O
 
 sectie N O
 
-Zürich Adj B-LOC
+ZÃ¼rich Adj B-LOC
 
 editie N O
 
@@ -101,7 +101,7 @@ van Prep O
 elke Pron O
 vorm N O
 van Prep O
-financiële Adj O
+financiÃ«le Adj O
 schadeloosstelling N O
 . Punc O
 
@@ -311,7 +311,7 @@ van Prep O
 de Art O
 voetbalbonzen N O
 in Prep O
-Zürich N B-LOC
+ZÃ¼rich N B-LOC
 gisteren Adv O
 voorzat V O
 , Punc O
@@ -345,7 +345,7 @@ de Art O
 voorzitter N O
 van Prep O
 Bayern N B-ORG
-München N I-ORG
+MÃ¼nchen N I-ORG
 , Punc O
 zei V O
 te Prep O
@@ -714,7 +714,7 @@ D'Hoop N B-PER
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 Bedrijven N O
@@ -851,7 +851,7 @@ zusteronderneming N O
 in Prep O
 het Art O
 Franse Adj B-MISC
-Châteauroux N B-LOC
+ChÃ¢teauroux N B-LOC
 , Punc O
 werden V O
 ondergebracht V O
@@ -1176,7 +1176,7 @@ beteugelen V O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 , Punc O
 
@@ -1210,7 +1210,7 @@ deelnemers N O
 zijn V O
 onder Prep O
 meer Num O
-Régis N B-PER
+RÃ©gis N B-PER
 Wargnier N I-PER
 en Conj O
 Stijn N B-PER
@@ -1222,7 +1222,7 @@ Patrick N B-PER
 Doyle N I-PER
 en Conj O
 Dirk N B-PER
-Brossé N I-PER
+BrossÃ© N I-PER
 als Conj O
 componisten N O
 . Punc O
@@ -1532,7 +1532,7 @@ overladen V O
 , Punc O
 maar Conj O
 tevens Adv O
-controversiële Adj O
+controversiÃ«le Adj O
 Shakespeare-verfilming N B-MISC
 Titus N B-MISC
 , Punc O
@@ -1608,7 +1608,7 @@ zal V O
 zelf Pron O
 bij Prep O
 de Art O
-officiële Adj O
+officiÃ«le Adj O
 opening N O
 op Prep O
 woensdag N O
@@ -2054,7 +2054,7 @@ wordt V O
 nu Adv O
 op Prep O
 een Art O
-geïntegreerde V O
+geÃ¯ntegreerde V O
 manier N O
 overgebracht V O
 . Punc O
@@ -2242,7 +2242,7 @@ Intel N B-ORG
 
 pagina N O
 
-Eén N O
+EÃ©n N O
 ding N O
 hebben V O
 ze Pron O
@@ -2262,7 +2262,7 @@ Beide Num O
 zijn V O
 holdings N O
 die Pron O
-geïnvesteerd V O
+geÃ¯nvesteerd V O
 zijn V O
 in Prep O
 een Art O
@@ -2347,7 +2347,7 @@ portefeuille N O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 publicatiedatum Adj O
@@ -2474,7 +2474,7 @@ verzoeken N O
 tot Prep O
 uitlevering N O
 vanuit Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 niet Adv O
 ingewilligd V O
 en Conj O
@@ -2531,7 +2531,7 @@ samenwerking N O
 : Punc O
 Frankrijk N B-LOC
 en Conj O
-België N B-LOC
+BelgiÃ« N B-LOC
 . Punc O
 
 Brussel N B-LOC
@@ -2571,7 +2571,7 @@ Spaanse Adj B-MISC
 Europees Adj B-MISC
 parlementslid N O
 Javier N B-PER
-Pomés N I-PER
+PomÃ©s N I-PER
 Ruiz N I-PER
 , Punc O
 die Pron O
@@ -2640,7 +2640,7 @@ niveau N O
 wordt V O
 de Art O
 gerechtelijke Adj O
-coöperatie N O
+coÃ¶peratie N O
 gaandeweg Adv O
 verstevigd V O
 . Punc O
@@ -2668,7 +2668,7 @@ in Prep O
 eigen Pron O
 regio N O
 nummer N O
-één V O
+Ã©Ã©n V O
 zijn V O
 . Punc O
 " Punc O
@@ -2710,7 +2710,7 @@ inspanningen N O
 geleverd V O
 om Conj O
 de Art O
-overheidsfinanciën N O
+overheidsfinanciÃ«n N O
 te Prep O
 saneren V O
 , Punc O
@@ -3132,7 +3132,7 @@ belastingverlaging N O
 die Pron O
 minister N O
 van Prep O
-Financiën N B-ORG
+FinanciÃ«n N B-ORG
 Didier N B-PER
 Reynders N I-PER
 ( Punc O
@@ -3319,7 +3319,7 @@ verschil N O
 tussen Prep O
 Vlaanderen N B-LOC
 en Conj O
-Wallonië N B-LOC
+WalloniÃ« N B-LOC
 ) Punc O
 , Punc O
 meer Num O
@@ -3714,7 +3714,7 @@ De Art B-ORG
 Morgen Adv I-ORG
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 De Art O
@@ -4097,7 +4097,7 @@ opstelt V O
 Minister N O
 van Prep O
 Economie N B-MISC
-Picqué N B-PER
+PicquÃ© N B-PER
 liet V O
 weten V O
 dat Conj O
@@ -4124,7 +4124,7 @@ minister N O
 van Prep O
 Landbouw N B-ORG
 Jaak N B-PER
-Gabriëls N I-PER
+GabriÃ«ls N I-PER
 ( Punc O
 VLD N B-ORG
 ) Punc O
@@ -4161,7 +4161,7 @@ Brussel N B-LOC
 
 Verder Adj O
 wil V O
-Picqué N B-PER
+PicquÃ© N B-PER
 een Art O
 tijdelijke Adj O
 opheffing N O
@@ -4228,7 +4228,7 @@ auteur N O
 Ten Prep O
 tweede Num O
 denkt V O
-Picqué N B-PER
+PicquÃ© N B-PER
 aan Prep O
 een Art O
 belastingkrediet N O
@@ -4252,7 +4252,7 @@ een Art O
 tijdelijke Adj O
 oplossing N O
 en Conj O
-Gabriëls N B-PER
+GabriÃ«ls N B-PER
 waarschuwde V O
 dat Conj O
 een Art O
@@ -4268,7 +4268,7 @@ worden V O
 
 Daarvoor Adv O
 zal V O
-Gabriëls N B-PER
+GabriÃ«ls N B-PER
 het Art O
 probleem N O
 aankaarten N O
@@ -4307,7 +4307,7 @@ pagina N O
 10 Num O
 ) Punc O
 moest V O
-Gabriëls N B-PER
+GabriÃ«ls N B-PER
 gisteren Adv O
 nog Adv O
 aan Prep O
@@ -4319,7 +4319,7 @@ beginnen V O
 Na Prep O
 afloop N O
 maakte V O
-Gabriëls N B-PER
+GabriÃ«ls N B-PER
 bekend Adj O
 dat Conj O
 hij Pron O
@@ -4367,7 +4367,7 @@ minister N O
 van Prep O
 Economie N B-MISC
 Charles N B-PER
-Picqué N I-PER
+PicquÃ© N I-PER
 ( Punc O
 PS N B-ORG
 ) Punc O
@@ -4400,7 +4400,7 @@ van Prep O
 federaal Adj O
 minister N O
 van Prep O
-Financiën N B-ORG
+FinanciÃ«n N B-ORG
 Didier N B-PER
 Reynders N I-PER
 ( Punc O
@@ -4418,7 +4418,7 @@ om Conj O
 vervangende V O
 heffingen N O
 die Pron O
-België N B-LOC
+BelgiÃ« N B-LOC
 samen Adv O
 met Prep O
 Luxemburg N B-LOC
@@ -4461,7 +4461,7 @@ twee Num O
 kabinetten N O
 . Punc O
 
-Picqué N B-PER
+PicquÃ© N B-PER
 dacht V O
 eveneens Adv O
 aan Prep O
@@ -4498,12 +4498,12 @@ van Prep O
 de Art O
 ministers N O
 van Prep O
-Financiën N B-ORG
+FinanciÃ«n N B-ORG
 . Punc O
 
 pagina N O
 
-Picqué N B-PER
+PicquÃ© N B-PER
 wil V O
 laagste Adj O
 inkomens N O
@@ -4629,7 +4629,7 @@ over Prep O
 het Art O
 voorstel N O
 van Prep O
-Picqué N B-PER
+PicquÃ© N B-PER
 om Conj O
 het Art O
 betalen V O
@@ -4657,7 +4657,7 @@ dieselprijzen N O
 Ten Prep O
 slotte N O
 stelde V O
-Picqué N B-PER
+PicquÃ© N B-PER
 voor Prep O
 om Adv O
 energiecheques N O
@@ -4668,7 +4668,7 @@ reiken V O
 
 Concreet V O
 denkt V O
-Picqué N B-PER
+PicquÃ© N B-PER
 aan Prep O
 zes Num O
 concrete Adj O
@@ -5223,7 +5223,7 @@ regering N O
 om Prep O
 de Art O
 burger N O
-één V O
+Ã©Ã©n V O
 loket N O
 aan Adv O
 te Prep O
@@ -5349,7 +5349,7 @@ huisvesting N O
 via Prep O
 het Art O
 netwerk N O
-efficiëntere Adj O
+efficiÃ«ntere Adj O
 informatie N O
 kunnen V O
 helpen V O
@@ -5586,7 +5586,7 @@ BBM N B-ORG
 , Punc O
 een Art O
 van Prep O
-Belgiës N B-MISC
+BelgiÃ«s N B-MISC
 grootste Adj O
 bouwbedrijven N O
 , Punc O
@@ -5596,7 +5596,7 @@ vertoond V O
 . Punc O
 
 Jean N B-PER
-Stéphanne N I-PER
+StÃ©phanne N I-PER
 , Punc O
 een Art O
 vice-president N O
@@ -5732,7 +5732,7 @@ overblijft V O
 is V O
 het Pron O
 wat Pron O
-gênante V O
+gÃªnante V O
 spektakel N O
 van Prep O
 bestuurders N O
@@ -5909,7 +5909,7 @@ bekend Adj O
 is V O
 onder Prep O
 zijn Pron O
-commerciële Adj O
+commerciÃ«le Adj O
 naam N O
 Besix N B-ORG
 , Punc O
@@ -5931,7 +5931,7 @@ Jan N B-PER
 Scheidtweiler N I-PER
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 " Punc O
@@ -6142,7 +6142,7 @@ komt V O
 normaal Adj O
 niet Adv O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 voor Adv O
 . Punc O
 
@@ -6228,7 +6228,7 @@ eerste Num O
 kraamkolonie N O
 meervleermuizen N O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 was V O
 een Art O
 feit N O
@@ -6339,7 +6339,7 @@ eerste Num O
 kolonie N O
 meervleermuizen N O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 gevonden V O
 . Punc O
 
@@ -6410,7 +6410,7 @@ kolonie N O
 meervleermuizen N O
 ontdekt V O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 
 Hun Pron O
 uitverkoren V O
@@ -6458,7 +6458,7 @@ sluis N O
 Boezinge-dorp N B-LOC
 . Punc O
 
-Eén N O
+EÃ©n N O
 exemplaar N O
 kreeg V O
 een Art O
@@ -6923,7 +6923,7 @@ Union Misc I-MISC
 ' Punc O
 aankondigen V O
 dat Conj O
-België N B-LOC
+BelgiÃ« N B-LOC
 start V O
 met Prep O
 de Art O
@@ -7119,7 +7119,7 @@ de Art O
 sanering N O
 van Prep O
 de Art O
-overheidsfinanciën N O
+overheidsfinanciÃ«n N O
 gereserveerd V O
 wordt V O
 voor Prep O
@@ -7199,7 +7199,7 @@ Milosevic N B-PER
 die Pron O
 door Prep O
 het Art O
-Joegoslavië-Tribunaal N B-ORG
+JoegoslaviÃ«-Tribunaal N B-ORG
 wegens Prep O
 misdaden N O
 tegen Prep O
@@ -7245,7 +7245,7 @@ besloten V O
 of Conj O
 ook Adv O
 de Art O
-Serviërs N B-MISC
+ServiÃ«rs N B-MISC
 in Prep O
 Kosovo N B-LOC
 mogen V O
@@ -7342,7 +7342,7 @@ kiezen V O
 de Art O
 inwoners N O
 van Prep O
-Joegoslavië N B-LOC
+JoegoslaviÃ« N B-LOC
 een Art O
 nieuwe Adj O
 president N O
@@ -7372,7 +7372,7 @@ verkiezing N O
 als Conj O
 president N O
 van Prep O
-Joegoslavië N B-LOC
+JoegoslaviÃ« N B-LOC
 door Prep O
 het Art O
 federale Adj O
@@ -7440,7 +7440,7 @@ de Art O
 aanklacht N O
 door Prep O
 het Art O
-Joegoslavië-Tribunaal N B-ORG
+JoegoslaviÃ«-Tribunaal N B-ORG
 door Prep O
 de Art O
 Navo N B-ORG
@@ -7595,7 +7595,7 @@ raad N O
 moet V O
 oprichten V O
 als Conj O
-één N O
+Ã©Ã©n N O
 derde Num O
 van Prep O
 de Art O
@@ -8036,7 +8036,7 @@ vertragen V O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 De Art B-ORG
@@ -8281,7 +8281,7 @@ die Pron O
 collega-operatoren N O
 bijvoorbeeld Adv O
 in Prep O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 en Conj O
 Duitsland N B-LOC
 betaalden V O
@@ -8305,7 +8305,7 @@ grootste Adj O
 mobiele Adj O
 operator N O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 die Pron O
 reeds Adv O
 een Art O
@@ -8632,14 +8632,14 @@ Ik Pron O
 heb V O
 weet V O
 van Prep O
-één N O
+Ã©Ã©n N O
 bedrijf N O
 dat Conj O
 een Art O
 businessplan N O
 had V O
 voor Prep O
-één N O
+Ã©Ã©n N O
 land N O
 en Conj O
 vijfmaal Adv O
@@ -8752,7 +8752,7 @@ jaar N O
 is V O
 acteur-regisseur N O
 Jeroen N B-PER
-Krabbé N I-PER
+KrabbÃ© N I-PER
 gisteren Adv O
 in Prep O
 het Art O
@@ -8849,7 +8849,7 @@ wiskunde N O
 , Punc O
 getallenleer N O
 , Punc O
-linguïstiek N O
+linguÃ¯stiek N O
 , Punc O
 architectuur N O
 en Conj O
@@ -8865,7 +8865,7 @@ zijn V O
 met Prep O
 de Art O
 algemene Adj O
-én N O
+Ã©n N O
 met Prep O
 Mulisch N B-PER
 ' Punc O
@@ -8932,7 +8932,7 @@ beslissing N O
 zal V O
 ook Adv O
 wel Adv O
-beïnvloed V O
+beÃ¯nvloed V O
 zijn Pron O
 door Prep O
 het Art O
@@ -8950,7 +8950,7 @@ regeling N O
 opvallend V O
 veel Num O
 Nederlands Adj B-MISC
-privé-geld N O
+privÃ©-geld N O
 beschikbaar Adj O
 is V O
 voor Prep O
@@ -8981,7 +8981,7 @@ hemel N O
 Zelf Pron O
 debuteerde V O
 Jeroen N B-PER
-Krabbé N I-PER
+KrabbÃ© N I-PER
 als Conj O
 regisseur N O
 in Prep O
@@ -9015,7 +9015,7 @@ Friedman N I-PER
 auteur N O
 
 Jeroen N B-PER
-Krabbé N I-PER
+KrabbÃ© N I-PER
 filmt V O
 zich Pron O
 de Art O
@@ -9135,7 +9135,7 @@ bioscopen N O
 verwacht V O
 . Punc O
 
-Wél N O
+WÃ©l N O
 is V O
 op Prep O
 zijn Pron O
@@ -9205,7 +9205,7 @@ werken V O
 " Punc O
 , Punc O
 aldus Adv O
-Krabbé N B-PER
+KrabbÃ© N B-PER
 volgens Prep O
 het Art O
 Nederlandse Adj B-MISC
@@ -9360,7 +9360,7 @@ voor Prep O
 koersstijging N O
 -- N O
 te Prep O
-creëren V O
+creÃ«ren V O
 . Punc O
 
 vrijdag N O
@@ -9449,7 +9449,7 @@ zijn V O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 De Art O
@@ -9655,7 +9655,7 @@ duidelijk Adj O
 wie Pron O
 in Prep O
 Franstalig N B-MISC
-België N B-LOC
+BelgiÃ« N B-LOC
 een Art O
 andere Pron O
 gemeentepolitiek N O
@@ -10184,7 +10184,7 @@ loopt V O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 Vorige Adj O
@@ -10450,7 +10450,7 @@ Vaak Adv O
 heb V O
 je Pron O
 om Prep O
-één N O
+Ã©Ã©n N O
 persoon N O
 te Prep O
 vervangen V O
@@ -10711,7 +10711,7 @@ hier Adv O
 al Adv O
 een Art O
 job N O
-vóór N O
+vÃ³Ã³r N O
 hij Pron O
 zijn Pron O
 diploma N O
@@ -11028,7 +11028,7 @@ zijn V O
 tot Prep O
 ver Adj O
 buiten Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 merkbaar Adj O
 . Punc O
 
@@ -11223,7 +11223,7 @@ hun Pron O
 kaarten N O
 op Prep O
 de Art O
-officiële Adj O
+officiÃ«le Adj O
 voorverkooppunten N O
 aanschaffen V O
 . Punc O
@@ -11698,7 +11698,7 @@ procent N O
 Algemeen Adj O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 Het Pron O
@@ -11782,11 +11782,11 @@ te Prep O
 lezen V O
 in Prep O
 een Art O
-perscommuniqué N O
+perscommuniquÃ© N O
 . Punc O
 
 De Art O
-industriële Adj O
+industriÃ«le Adj O
 productie N O
 ging V O
 in Prep O
@@ -12459,7 +12459,7 @@ Aris N I-PER
 in Prep O
 '98 Num O
 terminaal N O
-kankerpatiënt Adv O
+kankerpatiÃ«nt Adv O
 was V O
 , Punc O
 mocht V O
@@ -12552,7 +12552,7 @@ hun Pron O
 Amerikaanse Adj B-MISC
 collega's N O
 niet Adv O
-álles N O
+Ã¡lles N O
 verteld V O
 hebben V O
 ... Punc O
@@ -12599,14 +12599,14 @@ Op Prep O
 het Art O
 Festival N B-MISC
 van Prep I-MISC
-Venetië N I-MISC
+VenetiÃ« N I-MISC
 , Punc O
 waar Adv O
 Space N B-MISC
 Cowboys N I-MISC
 in Prep O
 Europese Adj B-MISC
-première N O
+premiÃ¨re N O
 werd V O
 voorgesteld V O
 , Punc O
@@ -12627,7 +12627,7 @@ Leeuw N I-MISC
 voor Prep O
 zijn Pron O
 hele Adj O
-carrière N O
+carriÃ¨re N O
 overhandigd V O
 . Punc O
 
@@ -12669,11 +12669,11 @@ dat Conj O
 het Pron O
 eigenlijk Adj O
 in Prep O
-Italië N B-LOC
+ItaliÃ« N B-LOC
 was V O
 dat Conj O
 de Art O
-carrière N O
+carriÃ¨re N O
 van Prep O
 Clint N B-PER
 Eastwood N I-PER
@@ -12755,7 +12755,7 @@ catastrofe N O
 met Prep O
 de Art O
 Russische Adj B-MISC
-kernonderzeeër N O
+kernonderzeeÃ«r N O
 Koersk N B-MISC
 te Prep O
 denken V O
@@ -12793,7 +12793,7 @@ technologie N O
 
 Filmfestival N B-MISC
 van Prep I-MISC
-Venetië N I-MISC
+VenetiÃ« N I-MISC
 opent V O
 met Prep O
 Clint N B-MISC
@@ -12916,7 +12916,7 @@ centrale N O
 ) Punc O
 indertijd Adv O
 gedraaid V O
-vóór N O
+vÃ³Ã³r N O
 het Art O
 effectief Adj O
 misliep V O
@@ -13044,7 +13044,7 @@ het Art O
 57ste Num B-MISC
 Filmfestival N I-MISC
 van Prep I-MISC
-Venetië N I-MISC
+VenetiÃ« N I-MISC
 officieel Adj O
 geopend V O
 werd V O
@@ -13094,7 +13094,7 @@ Daedalus-project N B-MISC
 
 Wat Pron O
 ze Pron O
-wél Adj O
+wÃ©l Adj O
 ontdekken V O
 , Punc O
 is V O
@@ -13410,7 +13410,7 @@ ING-groep N B-ORG
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 Voorzitter N O
@@ -13747,7 +13747,7 @@ Rome N B-LOC
 , Punc O
 Oslo N B-LOC
 , Punc O
-Zürich N B-LOC
+ZÃ¼rich N B-LOC
 , Punc O
 Monte N B-LOC
 Carlo N I-LOC
@@ -14194,7 +14194,7 @@ opgelegd V O
 Van Prep O
 de Art O
 293 Num O
-geïnspecteerde Adj O
+geÃ¯nspecteerde Adj O
 gemeentelijke Adj O
 containerparken N O
 werd V O
@@ -14264,7 +14264,7 @@ opslagplaatsen N O
 van Prep O
 vetten N O
 en Conj O
-oliën N O
+oliÃ«n N O
 gecontroleerd V O
 worden V O
 om Conj O
@@ -14357,7 +14357,7 @@ dioxine-uitstoot N O
 publicatie N O
 
 -DOCSTART- -DOCSTART- O
-Caïro N B-LOC
+CaÃ¯ro N B-LOC
 / Punc O
 Brussel N B-LOC
 . Punc O
@@ -14380,7 +14380,7 @@ maken V O
 auteur N O
 
 Nieuwe Adj O
-Palestijns-Israëlische Adj B-MISC
+Palestijns-IsraÃ«lische Adj B-MISC
 topontmoeting N O
 in Prep O
 de Art O
@@ -14390,7 +14390,7 @@ Volgens Prep O
 de Art O
 visie N O
 van Prep O
-Caïro N B-LOC
+CaÃ¯ro N B-LOC
 moet V O
 de Art O
 stad N O
@@ -14398,7 +14398,7 @@ volledig Adj O
 worden V O
 gedeeld V O
 tussen Prep O
-Israël N B-LOC
+IsraÃ«l N B-LOC
 en Conj O
 het Art O
 te Prep O
@@ -14455,7 +14455,7 @@ Jeruzalem N B-LOC
 , Punc O
 die Pron O
 de Art O
-Israëlische Adj B-MISC
+IsraÃ«lische Adj B-MISC
 minister N O
 van Prep O
 Justitie N B-ORG
@@ -14470,7 +14470,7 @@ Egypte N B-LOC
 heeft V O
 voorgesteld V O
 dat Conj O
-Israël N B-LOC
+IsraÃ«l N B-LOC
 en Conj O
 de Art O
 Palestijnen N B-MISC
@@ -14570,7 +14570,7 @@ Yasser N B-PER
 Arafat N I-PER
 en Conj O
 de Art O
-Israëlische Adj B-MISC
+IsraÃ«lische Adj B-MISC
 premier N O
 Ehud N B-PER
 Barak N I-PER
@@ -14580,7 +14580,7 @@ Egypte N B-LOC
 heeft V O
 voorgesteld V O
 dat Conj O
-Israël N B-LOC
+IsraÃ«l N B-LOC
 en Conj O
 de Art O
 Palestijnen N B-MISC
@@ -14682,7 +14682,7 @@ quo N O
 wat Pron O
 inhoudt V O
 dat Conj O
-Israël N B-LOC
+IsraÃ«l N B-LOC
 de Art O
 volledige Adj O
 veiligheidscontrole Adj O
@@ -14721,7 +14721,7 @@ staat N O
 circuleren N O
 in Prep O
 de Art O
-Israëlische Adj B-MISC
+IsraÃ«lische Adj B-MISC
 media N O
 verhalen V O
 dat Conj O
@@ -14755,7 +14755,7 @@ in Prep O
 het Art O
 conflict N O
 tussen Prep O
-Israël N B-LOC
+IsraÃ«l N B-LOC
 en Conj O
 de Art O
 Palestijnen N B-MISC
@@ -14822,7 +14822,7 @@ uitriep V O
 . Punc O
 
 Frank N B-PER
-Schlömer N I-PER
+SchlÃ¶mer N I-PER
 
 Daardoor Adv O
 hebben V O
@@ -14845,7 +14845,7 @@ symbolische Adj O
 betekenis N O
 . Punc O
 
-Israël N B-LOC
+IsraÃ«l N B-LOC
 , Punc O
 dat Conj O
 het Art O
@@ -14871,7 +14871,7 @@ Een Art O
 woordvoerder N O
 van Prep O
 de Art O
-Israëlische Adj B-MISC
+IsraÃ«lische Adj B-MISC
 regering N O
 heeft V O
 wel Adv O
@@ -14937,7 +14937,7 @@ over Prep O
 de Art O
 Tempelberg N B-LOC
 aan Prep O
-Israël N B-LOC
+IsraÃ«l N B-LOC
 overlaten V O
 . Punc O
 
@@ -15034,7 +15034,7 @@ naar Prep O
 uit Prep O
 dat Conj O
 er Adv O
-überhaupt V O
+Ã¼berhaupt V O
 een Art O
 Soeharto-proces N B-MISC
 zou V O
@@ -15273,7 +15273,7 @@ als Conj O
 een Art O
 test N O
 voor Prep O
-Indonesiës N B-MISC
+IndonesiÃ«s N B-MISC
 fragiele N O
 democratie N O
 en Conj O
@@ -15332,7 +15332,7 @@ september N O
 . Punc O
 
 Miljoenen N O
-Indonesiërs N B-MISC
+IndonesiÃ«rs N B-MISC
 zaten V O
 gisteren Adv O
 voor Prep O
@@ -15671,7 +15671,7 @@ conclusies N O
 . Punc O
 
 De Art O
-Zuid-Israëlische Adj B-MISC
+Zuid-IsraÃ«lische Adj B-MISC
 stad N O
 Beersheba N B-LOC
 gaat V O
@@ -15964,7 +15964,7 @@ file N O
 staan V O
 . Punc O
 
-Geërgerde V O
+GeÃ«rgerde V O
 Engelse Adj B-MISC
 toeristen N O
 gingen V O
@@ -16158,7 +16158,7 @@ pikt V O
 het Pron O
 niet Adv O
 dat Conj O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 het Art O
 slachtoffer N O
 wordt V O
@@ -16495,7 +16495,7 @@ de Art O
 Franse Adj B-MISC
 vissersbond N O
 , Punc O
-André N B-PER
+AndrÃ© N B-PER
 Fauchet N I-PER
 , Punc O
 niet Adv O
@@ -17645,7 +17645,7 @@ dat Conj O
 er Adv O
 al Adv O
 enkele Pron O
-commerciële Adj O
+commerciÃ«le Adj O
 medewerkers N O
 werden V O
 aangetrokken V O
@@ -17686,7 +17686,7 @@ situeren V O
 is V O
 , Punc O
 maar Conj O
-één N O
+Ã©Ã©n N O
 keer N O
 per Prep O
 week N O
@@ -17717,7 +17717,7 @@ in Prep O
 de Art O
 VS N B-LOC
 en Conj O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 een Art O
 groot Adj O
 succes N O
@@ -18061,7 +18061,7 @@ Eeckhout N I-PER
 " Punc O
 Wij Pron O
 hebben V O
-één V O
+Ã©Ã©n V O
 grote Adj O
 ambitie N O
 " Punc O
@@ -18278,7 +18278,7 @@ raadsleden N O
 die Pron O
 in Prep O
 de Art O
-privé-sector N O
+privÃ©-sector N O
 werken V O
 en Conj O
 zij Pron O
@@ -18404,9 +18404,9 @@ miljard Num O
 frank N O
 . Punc O
 
-België N B-LOC
+BelgiÃ« N B-LOC
 wordt V O
-één V O
+Ã©Ã©n V O
 grote Adj O
 telefoonzone N O
 
@@ -18452,7 +18452,7 @@ worden V O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 , Punc O
 pagina N O
@@ -18475,8 +18475,8 @@ wilde V O
 , Punc O
 was V O
 dat Conj O
-België N B-LOC
-één V O
+BelgiÃ« N B-LOC
+Ã©Ã©n V O
 grote Adj O
 zone N O
 wordt V O
@@ -18572,7 +18572,7 @@ niet Adv O
 , Punc O
 legt V O
 netwerkverantwoordelijke Adj O
-René N B-PER
+RenÃ© N B-PER
 Van N I-PER
 der Art I-PER
 Vlist N I-PER
@@ -18994,7 +18994,7 @@ waar Adj O
 " Punc O
 , Punc O
 vindt V O
-René N B-PER
+RenÃ© N B-PER
 Van N I-PER
 der Art I-PER
 Vlist N I-PER
@@ -19164,7 +19164,7 @@ een Art O
 oude Adj O
 man N O
 uit Prep O
-Alexandrië N B-LOC
+AlexandriÃ« N B-LOC
 die Pron O
 een Art O
 aantal N O
@@ -20131,14 +20131,14 @@ bol N O
 staat V O
 van Prep O
 de Art O
-archaïsmen N O
+archaÃ¯smen N O
 en Conj O
 afwisselend V O
 op Prep O
 verschillende Pron O
 streektalen N O
 is V O
-geënt N O
+geÃ«nt N O
 . Punc O
 
 Denkt V O
@@ -20314,7 +20314,7 @@ gaf V O
 u Pron O
 de Art O
 rectoren N O
-één V O
+Ã©Ã©n V O
 jaar N O
 tijd N O
 om Conj O
@@ -20600,7 +20600,7 @@ om Conj O
 netoverschrijdende V O
 scholengemeenschappen N O
 te Prep O
-creëren V O
+creÃ«ren V O
 . Punc O
 
 publicatiedatum Adj O
@@ -20731,7 +20731,7 @@ een Art O
 aantal N O
 mogelijkheden N O
 moeten V O
-creëren V O
+creÃ«ren V O
 en Conj O
 die Pron O
 moet V O
@@ -20740,7 +20740,7 @@ stimuleren V O
 eventueel Adj O
 op Prep O
 een Art O
-financiële Adj O
+financiÃ«le Adj O
 manier N O
 . Punc O
 
@@ -20754,7 +20754,7 @@ praktische Adj O
 vakken N O
 en Conj O
 daar Adv O
-één V O
+Ã©Ã©n V O
 leerplan V O
 voor Prep O
 uitwerken V O
@@ -20996,7 +20996,7 @@ het Art O
 liefst Adj O
 komen V O
 tot Prep O
-één N O
+Ã©Ã©n N O
 decreet N O
 rechtspositie N O
 voor Prep O
@@ -21106,7 +21106,7 @@ netten N O
 niet Adv O
 afschaffen V O
 , Punc O
-hé N O
+hÃ© N O
 . Punc O
 
 Tegen Prep O
@@ -21291,7 +21291,7 @@ en Conj O
 beroepsonderwijs N O
 voor Prep O
 leerlingen N O
-én V O
+Ã©n V O
 leerkrachten N O
 . Punc O
 
@@ -21375,7 +21375,7 @@ later Adj O
 stadium N O
 zal V O
 het Pron O
-financiële V O
+financiÃ«le V O
 en Conj O
 economische Adj O
 nieuws N O
@@ -21462,7 +21462,7 @@ betrouwbare Adj O
 informatie N O
 over Prep O
 de Art O
-financiële Adj O
+financiÃ«le Adj O
 en Conj O
 economische Adj O
 actualiteit N O
@@ -21536,7 +21536,7 @@ achterwege Adv O
 We Pron O
 willen V O
 de Art O
-financiële Adj O
+financiÃ«le Adj O
 en Conj O
 economische Adj O
 berichtgeving N O
@@ -21618,7 +21618,7 @@ het Art O
 belangrijkste Adj O
 economische Adj O
 en Conj O
-financiële Adj O
+financiÃ«le Adj O
 nieuws N O
 . Punc O
 
@@ -21962,7 +21962,7 @@ doet V O
 men Pron O
 hen Pron O
 het Art O
-reële Adj O
+reÃ«le Adj O
 trauma N O
 aan Adv O
 van Prep O
@@ -22174,7 +22174,7 @@ verspreiden V O
 , Punc O
 zodat Conj O
 alle Pron O
-geïnteresseerden N O
+geÃ¯nteresseerden N O
 weten V O
 wat Pron O
 de Art O
@@ -22405,7 +22405,7 @@ auteur N O
 Nu Adv O
 alleen Adv O
 de Art O
-privé-zender N O
+privÃ©-zender N O
 NTV Num B-ORG
 er Adv O
 nog Adv O
@@ -22922,7 +22922,7 @@ zien V O
 . Punc O
 
 Frank N B-PER
-Schlömer N I-PER
+SchlÃ¶mer N I-PER
 
 vrijdag N O
 , Punc O
@@ -23650,9 +23650,9 @@ september N O
 2000 Num O
 
 Mijn Pron O
-privé-leven N O
+privÃ©-leven N O
 is V O
-níet Adj O
+nÃ­et Adj O
 gezond Adj O
 . Punc O
 
@@ -23757,7 +23757,7 @@ zaken N O
 . Punc O
 
 Ik Pron O
-wéét V O
+wÃ©Ã©t V O
 dat Conj O
 ik Pron O
 een Art O
@@ -23809,7 +23809,7 @@ familie N O
 
 Dat Pron O
 is V O
-níet Adj O
+nÃ­et Adj O
 normaal Adj O
 . Punc O
 
@@ -24154,7 +24154,7 @@ pagina N O
 SS N B-PER
 ) Punc O
 
-Tweeëntwintig Num O
+TweeÃ«ntwintig Num O
 feiten N O
 werden V O
 hem Pron O
@@ -24285,7 +24285,7 @@ Leven N I-MISC
 
 Hij Pron O
 zal V O
-geïnterneerd V O
+geÃ¯nterneerd V O
 worden V O
 , Punc O
 wat Pron O
@@ -24451,7 +24451,7 @@ Eindhoven N B-LOC
 Gent N B-LOC
 en Conj O
 zelfs Adv O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 . Punc O
 
 De Art O
@@ -24607,7 +24607,7 @@ van Prep O
 het Art O
 Internationaal Adj B-ORG
 Olympisch Adj I-ORG
-Comité N I-ORG
+ComitÃ© N I-ORG
 het Art O
 licht N O
 op Prep O
@@ -24639,7 +24639,7 @@ In Prep O
 het Art O
 wielrennen V O
 , Punc O
-skiën N O
+skiÃ«n N O
 en Conj O
 schaatsen V O
 worden V O
@@ -24854,13 +24854,13 @@ doorgelicht V O
 in Prep O
 landen N O
 als Conj O
-Argentinië N B-LOC
+ArgentiniÃ« N B-LOC
 , Punc O
-Bosnië N B-LOC
+BosniÃ« N B-LOC
 , Punc O
 Kameroen N B-LOC
 , Punc O
-Indonesië N B-LOC
+IndonesiÃ« N B-LOC
 , Punc O
 Nicaragua N B-LOC
 , Punc O
@@ -25129,7 +25129,7 @@ al Adv O
 jaren N O
 op Prep O
 nummer N O
-één V O
+Ã©Ã©n V O
 staat V O
 van Prep O
 de Art O
@@ -25280,11 +25280,11 @@ waren V O
 Volgens Prep O
 prof. N O
 dr. N O
-André N B-PER
+AndrÃ© N B-PER
 Vansteirteghem N I-PER
 , Punc O
 wetenschappelijk Adj O
-coördinator N O
+coÃ¶rdinator N O
 van Prep O
 het Art O
 Centrum N B-ORG
@@ -25663,7 +25663,7 @@ achterhouden N O
 van Prep O
 informatie N O
 ) Punc O
-creëerde Adj O
+creÃ«erde Adj O
 een Art O
 waas N O
 van Prep O
@@ -25956,14 +25956,14 @@ en Conj O
 betreft V O
 KID-kinderen N B-MISC
 uit Prep O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 , Punc O
 de Art O
 VS N B-LOC
 , Punc O
 Canada N B-LOC
 en Conj O
-Australië N B-LOC
+AustraliÃ« N B-LOC
 , Punc O
 allemaal Pron O
 landen N O
@@ -26001,7 +26001,7 @@ de Art O
 leeftijd N O
 van Prep O
 3 Num O
-à N O
+Ã  N O
 4 Num O
 jaar N O
 , Punc O
@@ -26596,7 +26596,7 @@ Amin N B-PER
 Maalouf N I-PER
 in Prep O
 Belgische Adj B-MISC
-première N O
+premiÃ¨re N O
 . Punc O
 
 Televisie N B-MISC
@@ -26935,7 +26935,7 @@ de Art O
 olympische Adj O
 fakkel N O
 doorheen Adv O
-Australië N B-LOC
+AustraliÃ« N B-LOC
 , Punc O
 is V O
 donderdag N O
@@ -26997,7 +26997,7 @@ publicatie N O
 De Art O
 prostituees N O
 in Prep O
-Australië N B-LOC
+AustraliÃ« N B-LOC
 gaan V O
 volgens Prep O
 kenners N O
@@ -27084,7 +27084,7 @@ Dat Pron O
 was V O
 de Art O
 oudste Adj O
-Australiër N B-MISC
+AustraliÃ«r N B-MISC
 , Punc O
 109 Num O
 jaar N O
@@ -27165,7 +27165,7 @@ van Prep O
 het Art O
 Australisch Adj B-ORG
 Olympisch Adj I-ORG
-Comité N I-ORG
+ComitÃ© N I-ORG
 , Punc O
 John N B-PER
 Coates N I-PER
@@ -27347,7 +27347,7 @@ seksindustrie N O
 , Punc O
 die Pron O
 in Prep O
-Australië N B-LOC
+AustraliÃ« N B-LOC
 gelegaliseerd V O
 is V O
 . Punc O
@@ -27389,7 +27389,7 @@ de Art O
 199 Num O
 nationale Adj O
 olympische Adj O
-comités N O
+comitÃ©s N O
 en Conj O
 het Art O
 IOC N B-ORG
@@ -27413,7 +27413,7 @@ maakte V O
 het Pron O
 Internationaal Adj B-ORG
 Olympisch Adj I-ORG
-Comité N I-ORG
+ComitÃ© N I-ORG
 gisteren Adv O
 bekend Adj O
 . Punc O
@@ -27834,7 +27834,7 @@ Zwe N B-LOC
 - Punc O
 4 Num O
 -- N O
-Sébastien N B-PER
+SÃ©bastien N B-PER
 Grosjean N I-PER
 ( Punc O
 Fra N B-LOC
@@ -28902,7 +28902,7 @@ eerst Adj O
 opgeroepen V O
 voor Prep O
 de Art O
-Azië-trip N B-MISC
+AziÃ«-trip N B-MISC
 . Punc O
 
 Rode Adj B-ORG
@@ -28925,7 +28925,7 @@ palmares N O
 Er Adv O
 is V O
 maar Adv O
-één V O
+Ã©Ã©n V O
 wedstrijd N O
 " Punc O
 , Punc O
@@ -29087,7 +29087,7 @@ tevreden Adj O
 Morgen Adv O
 start V O
 voor Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 de Art O
 voorronde N O
 van Prep O
@@ -29288,9 +29288,9 @@ tactische Adj O
 besprekingen N O
 . Punc O
 
-Kroatië N B-LOC
+KroatiÃ« N B-LOC
 en Conj O
-België N B-LOC
+BelgiÃ« N B-LOC
 zijn V O
 de Art O
 favorieten N O
@@ -29742,7 +29742,7 @@ straat N O
 optrekken V O
 met Prep O
 hun Pron O
-artificiële Adj O
+artificiÃ«le Adj O
 neus N O
 . Punc O
 
@@ -30064,12 +30064,12 @@ samengesteld V O
 " Punc O
 Criminelen N O
 zullen V O
-óók N O
+Ã³Ã³k N O
 meer Adv O
 gebruikmaken V O
 van Prep O
 nieuwe Adj O
-technologieën N O
+technologieÃ«n N O
 " Punc O
 , Punc O
 zegt V O
@@ -30417,7 +30417,7 @@ spelen V O
 Spaans Adj B-MISC
 europarlementslid N O
 Javier N B-PER
-Pomés N I-PER
+PomÃ©s N I-PER
 Ruiz N I-PER
 optimistisch Adj O
 over Prep O
@@ -30462,7 +30462,7 @@ verzoeken N O
 tot Prep O
 uitlevering N O
 vanuit Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 niet Adv O
 ingewilligd V O
 en Conj O
@@ -30613,7 +30613,7 @@ ETA-gevangenen N B-MISC
 door Prep O
 Frankrijk N B-LOC
 of Conj O
-België N B-LOC
+BelgiÃ« N B-LOC
 uitgeleverd V O
 wil V O
 krijgen V O
@@ -30624,7 +30624,7 @@ publicatiedatum Adj O
 Een Art O
 van Prep O
 de Art O
-theorieën N O
+theorieÃ«n N O
 over Prep O
 de Art O
 wapenstilstand N O
@@ -30646,14 +30646,14 @@ ETA N B-ORG
 
 Toch Adv O
 relativeert V O
-Pomés N B-PER
+PomÃ©s N B-PER
 Ruiz N I-PER
 het Art O
 effect N O
 daarvan Adv O
 op Prep O
 zijn Pron O
-privé-leven N O
+privÃ©-leven N O
 . Punc O
 
 Daar Adv O
@@ -30666,9 +30666,9 @@ worden V O
 
 De Art O
 Spaanse Adj B-MISC
-europarlementariër N O
+europarlementariÃ«r N O
 Javier N B-PER
-Pomés N I-PER
+PomÃ©s N I-PER
 Ruiz N I-PER
 , Punc O
 die Pron O
@@ -30756,7 +30756,7 @@ De Art O
 48-jarige Adj O
 politicus N O
 Javier N B-PER
-Pomés N I-PER
+PomÃ©s N I-PER
 Ruiz N I-PER
 is V O
 europarlementslid V O
@@ -30781,8 +30781,8 @@ Partido N B-ORG
 Popular N I-ORG
 van Prep O
 premier N O
-José N B-PER
-María N I-PER
+JosÃ© N B-PER
+MarÃ­a N I-PER
 Aznar N I-PER
 . Punc O
 
@@ -30933,7 +30933,7 @@ afgeslagen V O
 omdat Conj O
 ze Pron O
 zijn V O
-privé-leven N O
+privÃ©-leven N O
 te Adv O
 zeer Adv O
 bemoeilijkte Adj O
@@ -31003,7 +31003,7 @@ niet Adv O
 in Prep O
 de Art O
 dialoog N O
-geïnteresseerd V O
+geÃ¯nteresseerd V O
 is V O
 . Punc O
 
@@ -31084,7 +31084,7 @@ professionele Adj O
 criminelen N O
 met Prep O
 solide Adj O
-financiële N O
+financiÃ«le N O
 middelen N O
 die Pron O
 ze Pron O
@@ -31092,7 +31092,7 @@ uit Prep O
 de Art O
 afpersing N O
 van Prep O
-industriëlen N O
+industriÃ«len N O
 betrekken V O
 . Punc O
 
@@ -31105,7 +31105,7 @@ het Art O
 29-jarige Adj O
 gemeenteraadslid N O
 van Prep O
-Zumárraga N B-LOC
+ZumÃ¡rraga N B-LOC
 dat Conj O
 deze Pron O
 week N O
@@ -31295,7 +31295,7 @@ vertederde V O
 ouders N O
 , Punc O
 de Art O
-clichés N O
+clichÃ©s N O
 zullen V O
 vanavond Adv O
 rijkelijk Adj O
@@ -31317,7 +31317,7 @@ dat Conj O
 er Adv O
 naast Prep O
 dat Pron O
-reële Adj O
+reÃ«le Adj O
 tekort N O
 ook Adv O
 een Art O
@@ -31499,7 +31499,7 @@ gaan V O
 , Punc O
 werd V O
 meteen Adv O
-geïnterpreteerd V O
+geÃ¯nterpreteerd V O
 als Conj O
 een Art O
 oproep N O
@@ -31539,7 +31539,7 @@ toestanden N O
 , Punc O
 instituten N O
 en Conj O
-baronieën N O
+baronieÃ«n N O
 . Punc O
 
 Je Pron O
@@ -31615,7 +31615,7 @@ afkomt V O
 Op Prep O
 een Art O
 echte Adj O
-substantiële Adj O
+substantiÃ«le Adj O
 doorbraak N O
 moet V O
 ze Pron O
@@ -32277,7 +32277,7 @@ directieleden N O
 rechten N O
 krijgen V O
 op Prep O
-financiële Adj O
+financiÃ«le Adj O
 vergoedingen N O
 gebaseerd V O
 op Prep O
@@ -32397,7 +32397,7 @@ zijn V O
 er Adv O
 veel Num O
 bedrijven N O
-geïnteresseerd V O
+geÃ¯nteresseerd V O
 in Prep O
 Belgacom N B-ORG
 . Punc O
@@ -32625,7 +32625,7 @@ dat Conj O
 de Art O
 verhouding N O
 tussen Prep O
-privé- N O
+privÃ©- N O
 en Conj O
 publieke Adj O
 partners N O
@@ -32667,7 +32667,7 @@ telefoonmaatschappij N O
 50 Num O
 procent N O
 plus Conj O
-één N O
+Ã©Ã©n N O
 aandeel N O
 ) Punc O
 . Punc O
@@ -32793,7 +32793,7 @@ praten V O
 -- N O
 praten V O
 met Prep O
-potentiële Adj O
+potentiÃ«le Adj O
 partners N O
 over Prep O
 alle Pron O
@@ -32876,7 +32876,7 @@ meerwaardes N O
 voor Prep O
 de Art O
 aandeelhouder N O
-gecreëerd V O
+gecreÃ«erd V O
 . Punc O
 
 Het Pron O
@@ -32891,7 +32891,7 @@ British N B-ORG
 Telecom N I-ORG
 of Conj O
 France N B-ORG
-Télécom N I-ORG
+TÃ©lÃ©com N I-ORG
 . Punc O
 
 " Punc O
@@ -32918,7 +32918,7 @@ wedden V O
 sectie N O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 " Punc O
@@ -32966,7 +32966,7 @@ tegenstelling N O
 tot Prep O
 andere Pron O
 niet Adv O
-geïnteresseerd V O
+geÃ¯nteresseerd V O
 in Prep O
 de Art O
 overname N O
@@ -33037,13 +33037,13 @@ scholen N O
 , Punc O
 zegt V O
 Engin N B-PER
-Özdemir Adj I-PER
+Ã–zdemir Adj I-PER
 , Punc O
 de Art O
 voorzitter N O
 van Prep O
 het Art O
-comité N O
+comitÃ© N O
 van Adv O
 betrokken V O
 ouders N O
@@ -33239,7 +33239,7 @@ Berkenbos N B-LOC
 , Punc O
 zegt V O
 Engin N B-PER
-Özdemir Adj I-PER
+Ã–zdemir Adj I-PER
 , Punc O
 wiens Pron O
 twee Num O
@@ -33823,7 +33823,7 @@ scholen N O
 was V O
 dat Conj O
 maar Adv O
-één V O
+Ã©Ã©n V O
 uur N O
 en Conj O
 werden V O
@@ -33956,7 +33956,7 @@ boven Prep O
 het Art O
 zuidwesten N O
 van Prep O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 , Punc O
 beweegt V O
 naar Prep O
@@ -34518,7 +34518,7 @@ is V O
 een Art O
 van Prep O
 de Art O
-coördinatoren N O
+coÃ¶rdinatoren N O
 aan Prep O
 Toneel N B-ORG
 Dora N I-ORG
@@ -34749,7 +34749,7 @@ publicatie N O
 
 auteur N O
 
-Première Adj O
+PremiÃ¨re Adj O
 op Prep O
 11 Num O
 januari N O
@@ -34814,7 +34814,7 @@ Riet N I-PER
 Katelijne N B-PER
 Verbeke N I-PER
 , Punc O
-Gène N B-PER
+GÃ¨ne N B-PER
 Bervoets N I-PER
 , Punc O
 Wim N B-PER
@@ -34843,7 +34843,7 @@ Brandstifter Misc I-MISC
 luidt V O
 trouwens Adv O
 Ein Misc O
-Lehrstück Misc O
+LehrstÃ¼ck Misc O
 ohne Misc O
 Lehre Misc O
 ( Punc O
@@ -34853,7 +34853,7 @@ vertaald V O
 ' Punc O
 Een Art O
 leerstuk N O
-à N O
+Ã  N O
 la N O
 Brecht N B-PER
 zonder Prep O
@@ -34915,7 +34915,7 @@ epische Adj O
 theater N O
 hij Pron O
 duidelijk Adj O
-beïnvloed N O
+beÃ¯nvloed N O
 was V O
 , Punc O
 geloofde V O
@@ -35044,7 +35044,7 @@ evenwel Adv O
 Beloften N O
 vanavond Adv O
 tegen Prep O
-Kroatië N B-LOC
+KroatiÃ« N B-LOC
 
 De Art O
 Italiaan N B-MISC
@@ -35165,7 +35165,7 @@ de Art O
 Rode N B-ORG
 Duivels N I-ORG
 en Conj O
-Kroatië N B-LOC
+KroatiÃ« N B-LOC
 spelen V O
 vanavond Adv O
 de Art O
@@ -35357,7 +35357,7 @@ wedstrijd N O
 . Punc O
 
 Aan Prep O
-één N O
+Ã©Ã©n N O
 break V O
 in Prep O
 de Art O
@@ -35393,7 +35393,7 @@ Davenport N B-PER
 vier Num O
 keer N O
 op Prep O
-één N O
+Ã©Ã©n N O
 slag N O
 van Prep O
 5 Num O
@@ -35725,13 +35725,13 @@ kenners N O
 samen Adv O
 met Prep O
 Justine N B-PER
-Hénin N I-PER
+HÃ©nin N I-PER
 . Punc O
 
 Kim N B-PER
 Clijsters N I-PER
 zorgt V O
-één Adv O
+Ã©Ã©n Adv O
 set N O
 voor Prep O
 stuntwerk N O
@@ -35860,7 +35860,7 @@ het Art O
 eerst Adj O
 in Prep O
 haar Pron O
-carrière Adj O
+carriÃ¨re Adj O
 de Art O
 vierde Num O
 ronde N O
@@ -35937,7 +35937,7 @@ rondes N O
 met Prep O
 verliescijfers N O
 te Prep O
-beëindigen V O
+beÃ«indigen V O
 . Punc O
 
 Dominique Adj B-PER
@@ -36056,7 +36056,7 @@ hoofddoel N O
 ' Punc O
 
 Justine N B-PER
-Hénin N I-PER
+HÃ©nin N I-PER
 , Punc O
 die Pron O
 met Prep O
@@ -36446,7 +36446,7 @@ medewerking N O
 rekenen V O
 van Prep O
 de Art O
-officiële Adj O
+officiÃ«le Adj O
 instanties N O
 . Punc O
 
@@ -36568,7 +36568,7 @@ vrijdag N O
 september N O
 2000 Num O
 
-Eén N O
+EÃ©n N O
 van Prep O
 de Art O
 voorstellen N O
@@ -36706,7 +36706,7 @@ dienst N O
 zijn V O
 onder Prep O
 meer Num O
-Daniël N B-PER
+DaniÃ«l N B-PER
 Van N I-PER
 Avermaet N I-PER
 , Punc O
@@ -36720,7 +36720,7 @@ Leman N I-PER
 Johan N B-PER
 Tielemans N I-PER
 en Conj O
-François N B-PER
+FranÃ§ois N B-PER
 Beukelaers N I-PER
 . Punc O
 
@@ -36811,9 +36811,9 @@ de Art O
 noodzakelijke Adj O
 partners N O
 haakten V O
-één N O
+Ã©Ã©n N O
 voor Prep O
-één N O
+Ã©Ã©n N O
 af Adv O
 , Punc O
 zodat Conj O
@@ -36858,7 +36858,7 @@ III N I-PER
 muziek N O
 van Prep O
 de Art O
-trouvère Adj O
+trouvÃ¨re Adj O
 Gilbert N B-PER
 de Art I-PER
 Berneville N I-PER
@@ -36908,7 +36908,7 @@ van Prep O
 het Art O
 werk N O
 waarmee Adv O
-Daniël N B-PER
+DaniÃ«l N B-PER
 Sternefeld N I-PER
 in Prep O
 1979 Num O
@@ -37070,7 +37070,7 @@ zege N O
 in Prep O
 zijn Pron O
 tweejarige Adj O
-profcarrière N O
+profcarriÃ¨re N O
 . Punc O
 
 De Art O
@@ -37137,7 +37137,7 @@ Spa N B-LOC
 4 Num O
 . Punc O
 
-Zülle Adj B-PER
+ZÃ¼lle Adj B-PER
 ( Punc O
 Zwi N B-LOC
 ) Punc O
@@ -37438,7 +37438,7 @@ op Prep O
 . Punc O
 
 Alex N B-PER
-Zülle N I-PER
+ZÃ¼lle N I-PER
 liet V O
 zich Pron O
 evenmin Adv O
@@ -37483,7 +37483,7 @@ Ita N B-LOC
 Ik Pron O
 denk V O
 dat Conj O
-Zülle N B-PER
+ZÃ¼lle N B-PER
 nog Adv O
 de Art O
 enige Adj O
@@ -37655,7 +37655,7 @@ de Art O
 belangrijkste Adj O
 favorieten N O
 zoals Conj O
-Zülle N B-PER
+ZÃ¼lle N B-PER
 , Punc O
 Olano N B-PER
 , Punc O
@@ -37700,7 +37700,7 @@ het Art O
 bezit N O
 van Prep O
 Alex N B-PER
-Zülle N I-PER
+ZÃ¼lle N I-PER
 . Punc O
 
 Zoals Conj O
@@ -37753,7 +37753,7 @@ Manolo N B-PER
 Saiz N I-PER
 : Punc O
 ' Punc O
-Zülle N B-PER
+ZÃ¼lle N B-PER
 is V O
 nog Adv O
 de Art O
@@ -37786,7 +37786,7 @@ liet V O
 zelf Pron O
 weten V O
 niet Adv O
-geïnteresseerd V O
+geÃ¯nteresseerd V O
 te Prep O
 zijn V O
 in Prep O
@@ -37808,7 +37808,7 @@ Once N B-ORG
 het Art O
 ex-team N O
 van Prep O
-Zülle N B-PER
+ZÃ¼lle N B-PER
 , Punc O
 Manolo N B-PER
 Saiz N I-PER
@@ -37875,7 +37875,7 @@ enorme Adj O
 inzinking N O
 . Punc O
 
-Zülle N B-PER
+ZÃ¼lle N B-PER
 en Conj O
 Ullrich N B-PER
 attent Adj O
@@ -37975,7 +37975,7 @@ nerveuze Adj O
 slot N O
 . Punc O
 
-Zülle Adj B-PER
+ZÃ¼lle Adj B-PER
 ( Punc O
 Zwi N B-LOC
 ) Punc O
@@ -38017,7 +38017,7 @@ gecharmeerd V O
 door Prep O
 de Art O
 jonge Adj O
-Guineeër N B-MISC
+GuineeÃ«r N B-MISC
 . Punc O
 
 Door Prep O
@@ -38555,7 +38555,7 @@ de Art O
 transfer N O
 af Adv O
 wegens Prep O
-financiële Adj O
+financiÃ«le Adj O
 redenen N O
 . Punc O
 
@@ -38712,7 +38712,7 @@ spelers N O
 
 Voor Prep O
 Anderlecht-trainer N B-MISC
-Aimé N B-PER
+AimÃ© N B-PER
 Anthuenis N I-PER
 moet V O
 het Pron O
@@ -38819,7 +38819,7 @@ Geert N B-PER
 Stroobants N I-PER
 
 Anderlecht-trainer N B-MISC
-Aimé N B-PER
+AimÃ© N B-PER
 Anthuenis N I-PER
 , Punc O
 die Pron O
@@ -39080,7 +39080,7 @@ De Art O
 vzw N O
 riep V O
 alle Pron O
-coördinatoren N O
+coÃ¶rdinatoren N O
 op Adv O
 om Conj O
 opmerkingen N O
@@ -39130,7 +39130,7 @@ de Art O
 rol N O
 van Prep O
 de Art O
-coördinator N O
+coÃ¶rdinator N O
 is V O
 een Art O
 heet Adj O
@@ -39237,7 +39237,7 @@ de Art O
 wet N O
 op Prep O
 de Art O
-privé-milities N O
+privÃ©-milities N O
 en Conj O
 zijn Pron O
 bij Prep O
@@ -39961,7 +39961,7 @@ de Art O
 stilstaande V O
 fases N O
 tegen Prep O
-Italië N B-LOC
+ItaliÃ« N B-LOC
 waren V O
 een Art O
 teken N O
@@ -39986,7 +39986,7 @@ auteur N O
 " Punc O
 Schotland N B-LOC
 en Conj O
-België N B-LOC
+BelgiÃ« N B-LOC
 zijn V O
 de Art O
 outsiders N O
@@ -40141,7 +40141,7 @@ De Art B-ORG
 Morgen Adv I-ORG
 
 Met Prep O
-Kroatië N B-LOC
+KroatiÃ« N B-LOC
 krijgen V O
 de Art O
 Rode N B-ORG
@@ -40163,7 +40163,7 @@ eerst Adv O
 dient V O
 er Adv O
 tegen Prep O
-Kroatië N B-LOC
+KroatiÃ« N B-LOC
 gevoetbald V O
 te Prep O
 worden V O
@@ -40414,7 +40414,7 @@ het Art O
 Joegoslavische Adj B-MISC
 voetbal N O
 en Conj O
-Kroatië N B-LOC
+KroatiÃ« N B-LOC
 komt V O
 uit Prep O
 dezelfde Pron O
@@ -40548,7 +40548,7 @@ rond Prep O
 Antwerpen N B-LOC
 , Punc O
 momenteel Adj O
-hét V O
+hÃ©t V O
 knelpunt N O
 voor Prep O
 het Art O
@@ -40600,7 +40600,7 @@ morgens N O
 en Conj O
 's Art O
 avonds N O
-geëxperimenteerd V O
+geÃ«xperimenteerd V O
 op Prep O
 een Art O
 korte Adj O
@@ -40998,7 +40998,7 @@ een Art O
 akkoord N O
 over Prep O
 het Art O
-tracé N O
+tracÃ© N O
 . Punc O
 
 Voordelen N O
@@ -41280,7 +41280,7 @@ Vlaanderen N B-LOC
 procent N O
 ) Punc O
 en Conj O
-Wallonië N B-LOC
+WalloniÃ« N B-LOC
 ( Punc O
 40 Num O
 procen N O
@@ -41443,7 +41443,7 @@ steentje N O
 bijgedragen V O
 door Prep O
 de Art O
-tracékeuze N O
+tracÃ©keuze N O
 voor Prep O
 een Art O
 tweede Num O
@@ -41746,7 +41746,7 @@ de Art O
 bakkersfederatie N O
 heeft V O
 minister N O
-Picqué N B-PER
+PicquÃ© N B-PER
 om Conj O
 bijkomende V O
 informatie N O
@@ -41758,7 +41758,7 @@ minister N O
 van Prep O
 Economie N B-MISC
 Charles N B-PER
-Picqué N I-PER
+PicquÃ© N I-PER
 ( Punc O
 PS N B-ORG
 ) Punc O
@@ -41788,7 +41788,7 @@ september N O
 Zaterdag N O
 in Prep O
 De N B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 : Punc O
 de Art O
@@ -41895,7 +41895,7 @@ duurder Adj O
 publicatie N O
 
 Minister N O
-Picqué N B-PER
+PicquÃ© N B-PER
 besliste V O
 gisteren Adv O
 dat Conj O
@@ -41929,7 +41929,7 @@ vele Num O
 andere Pron O
 levensmiddelen N O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 onderworpen V O
 aan Prep O
 een Art O
@@ -42158,7 +42158,7 @@ meestal Adv O
 via Prep O
 hun Pron O
 kinderen N O
-geïnformeerd V O
+geÃ¯nformeerd V O
 over Prep O
 de Art O
 school N O
@@ -42277,7 +42277,7 @@ richtte V O
 zich Pron O
 in Prep O
 de Art O
-enquête Adj O
+enquÃªte Adj O
 enkel Pron O
 op Prep O
 ASO-scholen N B-MISC
@@ -42444,7 +42444,7 @@ de Art O
 resultaten N O
 van Prep O
 de Art O
-baccalauréat N O
+baccalaurÃ©at N O
 bekend Adj O
 , Punc O
 het Art O
@@ -42672,7 +42672,7 @@ net N O
 , Punc O
 volgens Prep O
 de Art O
-enquêteurs N O
+enquÃªteurs N O
 een Art O
 representatief Adj O
 staal N O
@@ -42715,7 +42715,7 @@ rekest N O
 . Punc O
 
 In Prep O
-Wallonië N B-LOC
+WalloniÃ« N B-LOC
 bleven V O
 ministers N O
 Onkelinx N B-PER
@@ -42874,7 +42874,7 @@ van Prep O
 een Art O
 voorafgaande V O
 kleine Adj O
-enquête N O
+enquÃªte N O
 . Punc O
 
 Discipline N O
@@ -42899,7 +42899,7 @@ positieve Adj O
 uitkomst N O
 aan Prep O
 de Art O
-enquête Adj O
+enquÃªte Adj O
 hebben V O
 deelgenomen V O
 . Punc O
@@ -43028,11 +43028,11 @@ Vlaanderen N B-LOC
 kan V O
 ook Adv O
 de Art O
-initiële Adj O
+initiÃ«le Adj O
 verwarring N O
 rond Prep O
 de Art O
-enquête Adj O
+enquÃªte Adj O
 een Art O
 aantal N O
 scholen N O
@@ -43089,7 +43089,7 @@ Test-Aankoop N B-ORG
 in Prep O
 het Art O
 voorjaar N O
-enquêteformulieren V O
+enquÃªteformulieren V O
 toestuurde V O
 , Punc O
 kregen V O
@@ -43248,7 +43248,7 @@ de Art O
 massale Adj O
 weigering N O
 in Prep O
-Wallonië N B-LOC
+WalloniÃ« N B-LOC
 ? Punc O
 
 Het Art O
@@ -43945,7 +43945,7 @@ veenbaas N O
 dat Conj O
 zijn V O
 de Art O
-ingrediënten N O
+ingrediÃ«nten N O
 van Prep O
 deze Pron O
 eerste Num O
@@ -44032,7 +44032,7 @@ kandidaten N O
 is V O
 blijkbaar Adv O
 mee Adv O
-geëvolueerd V O
+geÃ«volueerd V O
 met Prep O
 het Art O
 programma N O
@@ -44079,7 +44079,7 @@ bijzonder Adj O
 drukke Adj O
 tijden N O
 voor Prep O
-Dré N B-PER
+DrÃ© N B-PER
 Steemans N I-PER
 . Punc O
 
@@ -44087,7 +44087,7 @@ Vorig Adj O
 jaar N O
 probeerde V O
 de Art O
-commerciële Adj O
+commerciÃ«le Adj O
 zender N O
 met Prep O
 de Art O
@@ -44144,7 +44144,7 @@ In Prep O
 oktober N O
 trekt V O
 Felice's N B-MISC
-Feestcomité N I-MISC
+FeestcomitÃ© N I-MISC
 terug Adv O
 door Prep O
 Vlaanderen N B-LOC
@@ -44448,7 +44448,7 @@ een Art O
 omzet N O
 van Prep O
 460 Num O
-à N O
+Ã  N O
 490 Num O
 miljoen Num O
 euro Adv O
@@ -44682,7 +44682,7 @@ goodwill N O
 . Punc O
 
 De Art B-MISC
-Financiële N I-MISC
+FinanciÃ«le N I-MISC
 Morgen Adv I-MISC
 
 Atenor-dochter N B-MISC
@@ -44766,7 +44766,7 @@ uit Adv O
 De Art O
 omzet N O
 steeg V O
-wél Adj O
+wÃ©l Adj O
 met Prep O
 32 Num O
 procent N O
@@ -45128,7 +45128,7 @@ de Art O
 strijd N O
 tegen Prep O
 de Art O
-cocaïnebendes N O
+cocaÃ¯nebendes N O
 . Punc O
 
 Colombia N B-LOC
@@ -45138,7 +45138,7 @@ de Art O
 grootste Adj O
 leverancier N O
 van Prep O
-cocaïne N O
+cocaÃ¯ne N O
 ter Prep O
 wereld N O
 . Punc O
@@ -45147,7 +45147,7 @@ Lode N B-PER
 Delputte N I-PER
 
 Clinton N B-PER
-beëindigde V O
+beÃ«indigde V O
 woensdagavond N O
 het Art O
 bezoek N O
@@ -45304,7 +45304,7 @@ Colombia N B-LOC
 de Art O
 invoer N O
 van Prep O
-cocaïne N O
+cocaÃ¯ne N O
 in Prep O
 eigen Pron O
 land N O
@@ -45633,7 +45633,7 @@ precies Adj O
 inhielden V O
 . Punc O
 
-Eén N O
+EÃ©n N O
 keer N O
 zelfs Adv O
 vijf Num O
@@ -45842,7 +45842,7 @@ even Adv O
 was V O
 hij Pron O
 ook Adv O
-milieucoördinator N O
+milieucoÃ¶rdinator N O
 . Punc O
 
 De Art O
@@ -45885,7 +45885,7 @@ deed V O
 kiezen V O
 voor Prep O
 een Art O
-carrière N O
+carriÃ¨re N O
 in Prep O
 het Art O
 onderwijs N O
@@ -46107,7 +46107,7 @@ als Conj O
 marketeer N O
 voor Prep O
 een Art O
-privé-firma N O
+privÃ©-firma N O
 . Punc O
 
 vrijdag N O
@@ -46260,7 +46260,7 @@ wil V O
 ik Pron O
 een Art O
 levenslange Adj O
-carrière N O
+carriÃ¨re N O
 van Adv O
 maken V O
 . Punc O
@@ -46390,7 +46390,7 @@ wil V O
 ik Pron O
 een Art O
 levenslange Adj O
-carrière N O
+carriÃ¨re N O
 maken V O
 ' Punc O
 
@@ -46557,7 +46557,7 @@ stonden V O
 , Punc O
 maar Conj O
 hun Pron O
-schoolcarrière N O
+schoolcarriÃ¨re N O
 opgaven N O
 voor Prep O
 een Art O
@@ -46624,7 +46624,7 @@ Ik Pron O
 heb V O
 me Pron O
 goed Adj O
-geïnformeerd V O
+geÃ¯nformeerd V O
 bij Prep O
 vrienden N O
 in Prep O
@@ -47041,7 +47041,7 @@ procent N O
 later Adj O
 in Prep O
 hun Pron O
-carrière N O
+carriÃ¨re N O
 nog Adv O
 de Art O
 gemiddelde Adj O
@@ -47119,7 +47119,7 @@ plek N O
 zijn V O
 waar Adv O
 kinderen N O
-alléén V O
+allÃ©Ã©n V O
 maar Conj O
 naartoe Adv O
 gaan V O
@@ -47435,7 +47435,7 @@ noodzaak N O
 
 Vele Num O
 kinderen N O
-én V O
+Ã©n V O
 hun Pron O
 ouders N O
 zijn V O
@@ -47859,7 +47859,7 @@ uit Prep O
 een Art O
 schommeling N O
 van Prep O
-één N O
+Ã©Ã©n N O
 procent N O
 niet Adv O
 zoveel Num O
@@ -47986,7 +47986,7 @@ zijn V O
 
 Een Art O
 aantal N O
-ideeën V O
+ideeÃ«n V O
 die Pron O
 leefden V O
 , Punc O
@@ -48349,7 +48349,7 @@ Leugenpaleis N I-MISC
 ook Adv O
 niet Adv O
 op Prep O
-één N O
+Ã©Ã©n N O
 dag N O
 gebouwd V O
 is V O
@@ -48570,7 +48570,7 @@ bijvoorbeeld Adv O
 wel Adv O
 perfect Adj O
 mee Adv O
-geëvolueerd V O
+geÃ«volueerd V O
 . Punc O
 
 Af Adv O
@@ -48771,7 +48771,7 @@ te Prep O
 leggen V O
 om Conj O
 de Art O
-coryfeeën N O
+coryfeeÃ«n N O
 van Prep O
 tien Num O
 jaar N O
@@ -48855,7 +48855,7 @@ profiel N O
 gaven V O
 . Punc O
 
-Carrièreplanning Adj O
+CarriÃ¨replanning Adj O
 heb V O
 ik Pron O
 nooit Adv O
@@ -48984,7 +48984,7 @@ leemte N O
 op Prep O
 die Pron O
 jullie Pron O
-gecreëerd N O
+gecreÃ«erd N O
 hebben V O
 . Punc O
 
@@ -49219,7 +49219,7 @@ het Art O
 eerst Adj O
 in Prep O
 mijn Pron O
-carrière N O
+carriÃ¨re N O
 als Conj O
 nethoofd N O
 van Prep O
@@ -49246,7 +49246,7 @@ strategisch Adj O
 aan Adv O
 vooraleer Conj O
 de Art O
-commerciële Adj O
+commerciÃ«le Adj O
 concurrenten N O
 over Prep O
 een Art O
@@ -49718,7 +49718,7 @@ gerenommeerde Adj O
 pedagogische Adj O
 breinen N O
 in Prep O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 niet Adv O
 konden V O
 . Punc O
@@ -49860,7 +49860,7 @@ kwamen V O
 , Punc O
 vooral Adv O
 in Prep O
-Groot-Brittannië N B-LOC
+Groot-BrittanniÃ« N B-LOC
 , Punc O
 de Art O
 jongste Adj O
@@ -50297,7 +50297,7 @@ teweegbrengen V O
 " Punc O
 
 Dare Adj B-MISC
-beïnvloedde N O
+beÃ¯nvloedde N O
 hun Pron O
 perceptie N O
 over Prep O
@@ -50411,7 +50411,7 @@ te Prep O
 bieden V O
 . Punc O
 
-VAD-coördinatrice N B-MISC
+VAD-coÃ¶rdinatrice N B-MISC
 Marijs N B-PER
 Geirnaert N I-PER
 : Punc O
@@ -50419,7 +50419,7 @@ Geirnaert N I-PER
 Dat Pron O
 programma N O
 is V O
-geëvalueerd V O
+geÃ«valueerd V O
 door Prep O
 de Art O
 KUL N B-ORG
@@ -50453,7 +50453,7 @@ over Prep O
 de Art O
 invloed N O
 van Prep O
-cocaïne N O
+cocaÃ¯ne N O
 op Prep O
 zijn Pron O
 seksleven N O
@@ -50582,7 +50582,7 @@ Dare N B-MISC
 ook Adv O
 al Adv O
 negatief Adj O
-geëvalueerd N O
+geÃ«valueerd N O
 in Prep O
 een Art O
 studie N O
@@ -51556,7 +51556,7 @@ heel Adv O
 wat Pron O
 voor Adv O
 op Adv O
-één V O
+Ã©Ã©n V O
 die Pron O
 doet V O
 alsof Conj O
@@ -51583,7 +51583,7 @@ rekening N O
 houden V O
 met Prep O
 de Art O
-reële Adj O
+reÃ«le Adj O
 beperkingen N O
 van Prep O
 een Art O
@@ -51685,7 +51685,7 @@ begeleiden V O
 Integendeel Int O
 , Punc O
 jongeren Adj O
-appreciëren V O
+appreciÃ«ren V O
 duidelijke Adj O
 afspraken N O
 en Conj O
@@ -51809,7 +51809,7 @@ beroepsonderwijs N O
 , Punc O
 een Art O
 hecht Adj O
-geëngageerd V O
+geÃ«ngageerd V O
 leerkrachtenteam N O
 , Punc O
 goede Adj O
@@ -51941,7 +51941,7 @@ eenmalige Adj O
 sneeuwklas N O
 als Conj O
 ' Punc O
-geïntegreerde V O
+geÃ¯ntegreerde V O
 werkperiode N O
 ' Punc O
 in Prep O
@@ -52269,7 +52269,7 @@ commentaar N O
 of Conj O
 enkel Adv O
 voor Prep O
-één N O
+Ã©Ã©n N O
 enkel Pron O
 cijfer N O
 per Prep O
@@ -53452,7 +53452,7 @@ versus Prep O
 zachtheid N O
 : Punc O
 rollenpatroon N O
-beïnvloedt V O
+beÃ¯nvloedt V O
 schoolcijfers N O
 
 Rumoerige Adj O
@@ -53463,7 +53463,7 @@ moeten V O
 stilgehouden N O
 worden V O
 , Punc O
-én N O
+Ã©n N O
 geboeid V O
 . Punc O
 " Punc O
@@ -53590,7 +53590,7 @@ schooljaar N O
 worden V O
 een Art O
 pak N O
-clichés N O
+clichÃ©s N O
 de Art O
 wereld N O
 ingestuurd V O
@@ -54188,7 +54188,7 @@ probleem N O
 is V O
 dat Conj O
 de Art O
-financiële Adj O
+financiÃ«le Adj O
 middelen N O
 niet Adv O
 voorhanden Adj O
@@ -54318,12 +54318,12 @@ en Conj O
 stellen V O
 ze Pron O
 zich Pron O
-überhaupt V O
+Ã¼berhaupt V O
 die Pron O
 vraag N O
 ? Punc O
 
-Eén N O
+EÃ©n N O
 tiener N O
 vatte V O
 de Art O
@@ -54578,7 +54578,7 @@ Vlaamse Adj I-ORG
 Gemeenschap N I-ORG
 georganiseerde V O
 inhoudelijke Adj O
-enquête N O
+enquÃªte N O
 . Punc O
 
 Directies N O
@@ -54633,7 +54633,7 @@ te Prep O
 verwijzen V O
 . Punc O
 
-Dé N O
+DÃ© N O
 mening N O
 van Prep O
 jongeren Adj O
@@ -54798,7 +54798,7 @@ om Prep O
 drugsgebruik N O
 niet Adv O
 au Adv O
-sérieux Adv O
+sÃ©rieux Adv O
 genomen V O
 . Punc O
 
@@ -55203,7 +55203,7 @@ september N O
 2000 Num O
 
 Volgens Prep O
-VAD-coördinatrice N B-MISC
+VAD-coÃ¶rdinatrice N B-MISC
 Marijs N B-PER
 Geirnaert N I-PER
 wordt V O
@@ -55824,7 +55824,7 @@ de Art O
 WGO N B-ORG
 dat Conj O
 een Art O
-efficiënt N O
+efficiÃ«nt N O
 samengaan V O
 van Prep O
 de Art O
@@ -56178,7 +56178,7 @@ dat Conj O
 er Adv O
 ook Adv O
 maar Adv O
-één V O
+Ã©Ã©n V O
 boom N O
 voor Prep O
 in Prep O
@@ -56287,7 +56287,7 @@ klaagt V O
 Hans N B-PER
 Scheirlinck N I-PER
 , Punc O
-projectcoördinator N O
+projectcoÃ¶rdinator N O
 van Prep O
 het Art O
 VBV N B-ORG
@@ -57707,7 +57707,7 @@ zegt V O
 Peter N B-PER
 Michielssens N I-PER
 , Punc O
-coördinerend V O
+coÃ¶rdinerend V O
 inspecteur-generaal N O
 op Prep O
 het Art O
@@ -57913,7 +57913,7 @@ Vanderpoorten N B-PER
 lanceerde V O
 het Art O
 ( Punc O
-financiële Adj O
+financiÃ«le Adj O
 ) Punc O
 ondersteuningsprogramma N O
 PC N B-MISC
@@ -57951,7 +57951,7 @@ moeten V O
 hebben V O
 over Prep O
 minstens Adv O
-één V O
+Ã©Ã©n V O
 computer N O
 . Punc O
 
@@ -58698,7 +58698,7 @@ ouders N O
 
 Dat Pron O
 wordt V O
-dé N O
+dÃ© N O
 discussie N O
 van Prep O
 de Art O
@@ -58794,12 +58794,12 @@ dagplanning N O
 zo Adv O
 ruim Adj O
 mogelijk Adj O
-geïnterpreteerd N O
+geÃ¯nterpreteerd N O
 " Punc O
 , Punc O
 zegt V O
 directeur N O
-André N B-PER
+AndrÃ© N B-PER
 Lemeire N I-PER
 . Punc O
 
@@ -59011,7 +59011,7 @@ jonge Adj O
 volkje N O
 echter Adv O
 weleens Adv O
-beïnvloed V O
+beÃ¯nvloed V O
 kunnen V O
 worden V O
 door Prep O
@@ -59652,7 +59652,7 @@ we Pron O
 het Art O
 bewustzijn N O
 te Prep O
-beïnvloeden V O
+beÃ¯nvloeden V O
 . Punc O
 
 Repetitio N O
@@ -59970,7 +59970,7 @@ om Conj O
 hun Pron O
 doelpubliek N O
 te Prep O
-beïnvloeden V O
+beÃ¯nvloeden V O
 en Conj O
 soms Adv O
 te Prep O
@@ -60047,7 +60047,7 @@ berichtgeving N O
 Daarom Adv O
 hebben V O
 we Pron O
-één V O
+Ã©Ã©n V O
 les N O
 in Prep O
 het Art O
@@ -60099,7 +60099,7 @@ om Conj O
 de Art O
 lezer N O
 te Prep O
-beïnvloeden V O
+beÃ¯nvloeden V O
 of Conj O
 botweg Adv O
 te Prep O
@@ -60122,7 +60122,7 @@ om Conj O
 de Art O
 lezer N O
 te Prep O
-beïnvloeden V O
+beÃ¯nvloeden V O
 
 Deze Pron O
 techniek N O
@@ -60305,7 +60305,7 @@ linkse Adj O
 , Punc O
 mondialistische Adj O
 ' Punc O
-ideeën N O
+ideeÃ«n N O
 : Punc O
 Ga V O
 jij Pron O
@@ -61038,7 +61038,7 @@ opgewassen V O
 . Punc O
 
 De Art O
-openingsscène N O
+openingsscÃ¨ne N O
 werd V O
 een Art O
 klassieker N O
@@ -61743,7 +61743,7 @@ had V O
 , Punc O
 worden V O
 paginagroot V O
-geïnterviewd N O
+geÃ¯nterviewd N O
 . Punc O
 
 sectie N O
@@ -61803,7 +61803,7 @@ blijven V O
 
 Ook Adv O
 de Art O
-Brontë N B-ORG
+BrontÃ« N B-ORG
 Sisters N I-ORG
 debuteerden V O
 in Prep O
@@ -62545,7 +62545,7 @@ op Prep O
 zijn Pron O
 vette Adj O
 buik N O
-getatoeëerd V O
+getatoeÃ«erd V O
 met Prep O
 daaronder Adv O
 : Punc O
@@ -62857,7 +62857,7 @@ zijn Pron O
 naam N O
 heeft V O
 laten V O
-tatoeëren V O
+tatoeÃ«ren V O
 en Conj O
 van Prep O
 de Art O
@@ -63669,7 +63669,7 @@ film N O
 , Punc O
 die Pron O
 vrij Adj O
-poëtisch Adj O
+poÃ«tisch Adj O
 aandoet V O
 en Conj O
 waarin Adv O
@@ -63918,7 +63918,7 @@ ironie N O
 is V O
 dat Conj O
 zijn Pron O
-carrière Adj O
+carriÃ¨re Adj O
 pas N O
 echt Adj O
 van Prep O
@@ -64039,7 +64039,7 @@ is V O
 voor Prep O
 passie N O
 en Conj O
-poëzie N O
+poÃ«zie N O
 , Punc O
 voor Prep O
 emotionaliteit N O
@@ -64396,7 +64396,7 @@ verwacht V O
 : Punc O
 als Conj O
 je Pron O
-carrière Adj O
+carriÃ¨re Adj O
 wilt V O
 maken V O
 en Conj O
@@ -64510,7 +64510,7 @@ van Prep O
 de Art O
 lessen N O
 na Prep O
-één N O
+Ã©Ã©n N O
 jaar N O
 ministerschap N O
 ? Punc O
@@ -64519,7 +64519,7 @@ Daarom Adv O
 moet V O
 men Pron O
 genoeg Pron O
-financiële V O
+financiÃ«le V O
 middelen N O
 ter Prep O
 beschikking N O
@@ -64994,7 +64994,7 @@ september N O
 Eigenlijk Adj O
 zou V O
 een Art O
-officiële Adj O
+officiÃ«le Adj O
 school N O
 sowieso N O
 de Art O
@@ -65130,7 +65130,7 @@ forceren V O
 Maar Conj O
 voor Prep O
 we Pron O
-één V O
+Ã©Ã©n V O
 keer N O
 samen Adv O
 hadden V O
@@ -65469,7 +65469,7 @@ jaloers Adj O
 is V O
 op Prep O
 de Art O
-privé-sector N O
+privÃ©-sector N O
 . Punc O
 
 sectie N O
@@ -65792,7 +65792,7 @@ of Conj O
 / Punc O
 of Conj O
 , Punc O
-hé N O
+hÃ© N O
 . Punc O
 
 Het Pron O
@@ -65815,7 +65815,7 @@ geen Pron O
 nieuwe Adj O
 eis N O
 , Punc O
-hé N O
+hÃ© N O
 . Punc O
 
 Is V O
@@ -65825,8 +65825,8 @@ zo Adv O
 dat Conj O
 men Pron O
 in Prep O
-dé N O
-privé-sector N O
+dÃ© N O
+privÃ©-sector N O
 zoveel Num O
 beter Adj O
 betaalt V O
@@ -65881,7 +65881,7 @@ acties N O
 aankondigt V O
 voor Prep O
 we Pron O
-één V O
+Ã©Ã©n V O
 keer N O
 rond Prep O
 de Art O
@@ -65989,7 +65989,7 @@ verzekert V O
 Peter N B-PER
 Michielssens N I-PER
 , Punc O
-coördinerend V O
+coÃ¶rdinerend V O
 inspecteur-generaal N O
 op Prep O
 het Art O
@@ -66102,7 +66102,7 @@ begeleidende V O
 artikel N O
 . Punc O
 
-Eén N O
+EÃ©n N O
 jaar N O
 lang Adj O
 werd V O
@@ -66508,7 +66508,7 @@ altijd Adv O
 die Pron O
 een Art O
 hele Adj O
-carrière N O
+carriÃ¨re N O
 lang Adj O
 met Prep O
 hetzelfde Pron O
@@ -66591,7 +66591,7 @@ week N O
 nog Adv O
 uit Prep O
 een Art O
-enquête N O
+enquÃªte N O
 van Prep O
 het Art O
 consumentenmagazine V O
@@ -67051,7 +67051,7 @@ waar Adv O
 het Art O
 kind N O
 van Prep O
-één N O
+Ã©Ã©n N O
 ouder Adj O
 , Punc O
 veelal Adv O
@@ -67458,7 +67458,7 @@ weten V O
 
 In Prep O
 haar Pron O
-carrière Adj O
+carriÃ¨re Adj O
 als Conj O
 kinderpsychologe Adj O
 krijgt V O
@@ -68004,7 +68004,7 @@ wat Pron O
 leraren N O
 raken V O
 er Adv O
-geïrriteerd V O
+geÃ¯rriteerd V O
 door Prep O
 : Punc O
 in Prep O
@@ -68012,7 +68012,7 @@ het Art O
 midden N O
 van Prep O
 hun Pron O
-exposé N O
+exposÃ© N O
 gaat V O
 plots Adv O
 een Art O
@@ -68771,7 +68771,7 @@ Jonckheer N I-PER
 is V O
 kinderarts N O
 en Conj O
-geneesheer-coördinator N O
+geneesheer-coÃ¶rdinator N O
 van Prep O
 het Art O
 ' Punc O
@@ -68800,7 +68800,7 @@ zal V O
 enorm Adj O
 moeten V O
 worden V O
-geïnvesteerd V O
+geÃ¯nvesteerd V O
 om Conj O
 de Art O
 schandalige Adj O
@@ -68916,7 +68916,7 @@ percentage N O
 seropositieve Pron O
 volwassenen Adj O
 in Prep O
-Azië N B-LOC
+AziÃ« N B-LOC
 vindt V O
 men Pron O
 in Prep O
@@ -69116,7 +69116,7 @@ Dit Pron O
 is V O
 voor Prep O
 vele Num O
-patiënten N O
+patiÃ«nten N O
 in Prep O
 rijke Adj O
 landen N O
@@ -69293,7 +69293,7 @@ hetzelfde Pron O
 scenario N O
 binnen Prep O
 vijf Num O
-à N O
+Ã  N O
 tien Num O
 jaar N O
 toepasbaar Adj O
@@ -69380,7 +69380,7 @@ als Conj O
 rijk N O
 Vlaanderen N B-LOC
 en Conj O
-België N B-LOC
+BelgiÃ« N B-LOC
 , Punc O
 met Prep O
 een Art O
@@ -69473,7 +69473,7 @@ Het Art O
 Westen N B-LOC
 moet V O
 er Adv O
-álles N O
+Ã¡lles N O
 aan Prep O
 doen V O
 om Conj O
@@ -69591,13 +69591,13 @@ Zuid-Amerika N B-LOC
 Centraal-Amerika N B-LOC
 en Conj O
 de Art O
-Caraïben N B-LOC
+CaraÃ¯ben N B-LOC
 hebben V O
 percentages N O
 die Pron O
 soms Adv O
 0,5 Num O
-à N O
+Ã  N O
 1 Num O
 bereiken V O
 , Punc O
@@ -69640,7 +69640,7 @@ sluiten V O
 Slaap V O
 wel Adv O
 , Punc O
-België N B-LOC
+BelgiÃ« N B-LOC
 . Punc O
 
 Enkele Pron O
@@ -69708,7 +69708,7 @@ wij Pron O
 als Conj O
 rijk Adj O
 land N O
-nú N O
+nÃº N O
 de N O
 basis N O
 leggen V O
@@ -70218,7 +70218,7 @@ vervangen V O
 door Prep O
 Intermot N B-MISC
 in Prep O
-München N B-LOC
+MÃ¼nchen N B-LOC
 . Punc O
 
 Het Art O
@@ -70255,18 +70255,18 @@ publicatiedatum Adj O
 Tweede N O
 Intermot N B-MISC
 in Prep O
-München N B-LOC
+MÃ¼nchen N B-LOC
 
 Service N B-MISC
 
 Adres N O
 : Punc O
 Messe N B-LOC
-München N I-LOC
+MÃ¼nchen N I-LOC
 , Punc O
-Messegelände N B-LOC
+MessegelÃ¤nde N B-LOC
 , Punc O
-München N B-LOC
+MÃ¼nchen N B-LOC
 . Punc O
 
 -DOCSTART- -DOCSTART- O
@@ -70369,7 +70369,7 @@ werelds N O
 grootste Adj O
 en Conj O
 indrukwekkendste Adj O
-coupés N O
+coupÃ©s N O
 en Conj O
 cabrio's N O
 bouwde V O
@@ -70432,7 +70432,7 @@ Evoq N B-MISC
 
 Met Prep O
 de Art O
-Allanté N B-MISC
+AllantÃ© N B-MISC
 probeerde V O
 het Pron O
 daar Adv O
@@ -70770,7 +70770,7 @@ Hessing N B-ORG
 dat Pron O
 ook Adv O
 in Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 een Art O
 heleboel N O
 Amerikaanse Adj B-MISC
@@ -70791,7 +70791,7 @@ verkrijgbaar Adj O
 Amerikaanse Adj B-MISC
 topper N O
 naar Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 
 De Art B-ORG
 Morgen Adv I-ORG
@@ -70841,7 +70841,7 @@ wat Pron O
 hem Pron O
 in Prep O
 de Art O
-officiële Adj O
+officiÃ«le Adj O
 crashtests N O
 van Prep O
 de Art O
@@ -70949,7 +70949,7 @@ begin N O
 vorig Adj O
 jaar N O
 in Prep O
-Genève N B-LOC
+GenÃ¨ve N B-LOC
 zijn V O
 Opel N B-MISC
 Speedster N I-MISC
@@ -71125,7 +71125,7 @@ al Adv O
 van Prep O
 de Art O
 Astra N B-MISC
-Coupé N I-MISC
+CoupÃ© N I-MISC
 bekende Adj O
 2,2-liter N O
 van Prep O
@@ -71408,7 +71408,7 @@ immers Adv O
 deze Pron O
 ervan Adv O
 afgeleide V O
-sportcoupé N O
+sportcoupÃ© N O
 op Prep O
 de Art O
 markt N O
@@ -71630,7 +71630,7 @@ stellen V O
 Mercedes N B-ORG
 gaat V O
 met Prep O
-sportcoupé N O
+sportcoupÃ© N O
 op Prep O
 zoek Adv O
 naar Prep O
@@ -71638,7 +71638,7 @@ jonge Adj O
 klanten N O
 
 De Art O
-sportcoupé N O
+sportcoupÃ© N O
 zal V O
 eind N O
 september N O
@@ -73313,7 +73313,7 @@ Morgen Adv I-ORG
 Maar Conj O
 Peugeot N B-ORG
 , Punc O
-Citroën N B-ORG
+CitroÃ«n N B-ORG
 en Conj O
 ook Adv O
 Renault N B-ORG
@@ -73487,7 +73487,7 @@ de Art O
 voor Prep O
 september N O
 geplande V O
-officiële Adj O
+officiÃ«le Adj O
 lancering N O
 van Prep O
 de Art O
@@ -73499,7 +73499,7 @@ afgewacht V O
 
 Renault N B-ORG
 levert V O
-Scénic N B-MISC
+ScÃ©nic N B-MISC
 nu Adv O
 ook Adv O
 met Prep O
@@ -73571,7 +73571,7 @@ Audi N B-ORG
 de Art O
 JTD's N B-MISC
 uit Prep O
-Italië N B-LOC
+ItaliÃ« N B-LOC
 , Punc O
 de Art O
 CDI's N B-MISC
@@ -73653,7 +73653,7 @@ de Art O
 ' Punc O
 gewone Adj O
 ' Punc O
-Scénic N B-MISC
+ScÃ©nic N B-MISC
 en Conj O
 is V O
 nu Adv O
@@ -73671,7 +73671,7 @@ als Conj O
 een Art O
 terreinwagen N O
 uitgedoste V O
-Scénic N B-MISC
+ScÃ©nic N B-MISC
 RX4 Num I-MISC
 . Punc O
 
@@ -73762,7 +73762,7 @@ op Prep O
 de Art O
 voorwielen N O
 aangedreven V O
-Scénic N B-MISC
+ScÃ©nic N B-MISC
 dus Adv O
 , Punc O
 want Conj O
@@ -73946,7 +73946,7 @@ een Art O
 nieuwe Adj O
 jas N O
 en Conj O
-efficiëntere Adj O
+efficiÃ«ntere Adj O
 motoren N O
 . Punc O
 
@@ -74102,7 +74102,7 @@ publicatiedatum Adj O
 publicatie N O
 
 In Prep O
-België N B-LOC
+BelgiÃ« N B-LOC
 komt V O
 de Art O
 Passat N B-MISC
@@ -74141,7 +74141,7 @@ nieuwe Adj O
 concurrenten N O
 als Conj O
 de Art O
-Citroën N B-MISC
+CitroÃ«n N B-MISC
 C5 N I-MISC
 , Punc O
 de Art O
