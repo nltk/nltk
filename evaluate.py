@@ -152,7 +152,7 @@ class ConfusionMatrix(object):
             raise ValueError('Lists must have the same length.')
             
         # Get a list of all values.
-        values = dict((val,1) for val in reference+test).keys()
+        values = sorted(set(reference+test))
 
         # Construct a value->index dictionary
         indices = dict((val,i) for (i,val) in enumerate(values))
