@@ -158,6 +158,10 @@ _IEER_TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
 
 def _ieer_read_text(s, top_node):
     stack = [Tree(top_node, [])]
+    # s will be None if there is no headline in the text
+    # return the empty list in place of a Tree
+    if s is None:
+        return []
     for piece_m in re.finditer('<[^>]+>|[^\s<]+', s):
         piece = piece_m.group()
         try:
@@ -203,7 +207,9 @@ def ieerstr2tree(s, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATI
             'docno': m.group('docno'),
             'doctype': m.group('doctype'),
             'date_time': m.group('date_time'),
-            'headline': m.group('headline')
+            #'headline': m.group('headline')
+            # we want to capture NEs in the headline too!
+            'headline': _ieer_read_text(m.group('headline'), top_node),
             }
     else:
         return _ieer_read_text(s, top_node)
