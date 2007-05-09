@@ -20,12 +20,22 @@ import re
 from itertools import islice
 
 ne_types = {'ieer': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
-                               'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
-                     'conll2002': ['LOC', 'PER', 'ORG']}
+                    'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
+            'conll2002': ['LOC', 'PER', 'ORG'],
+            'conll2002-ned': ['LOC', 'PER', 'ORG'],
+            'conll2002-esp': ['LOC', 'PER', 'ORG']
+                }
                     
 
 short2long = dict(LOC = 'LOCATION', ORG = 'ORGANIZATION', PER = 'PERSON')
 long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PER')
+
+corpora = {
+    'ieer': (d[key] for key in ['text','headline'] for d in ieer.dictionary()),
+    'conll2002': (tree for tree in conll2002.ne_chunked()),
+    'conll2002-ned': (tree for tree in conll2002.ne_chunked(files = ['ned.train'])),
+    'conll2002-esp': (tree for tree in conll2002.ne_chunked(files = ['esp.train']))
+}
 
 def check_words(s):
     """
@@ -54,6 +64,12 @@ def check_type(tree, type=None):
         return True
     else:
         return tree.node == type
+    
+def _tuple2tag(item):
+    if isinstance(item, tuple): 
+        (token, tag) = item
+        return "".join(token + "/" + str(tag))
+    else: return item
           
 def ne_fillers(t, stype= None, otype=None):
     """
@@ -97,9 +113,10 @@ def ne_fillers(t, stype= None, otype=None):
             for next in tail:
                 # accumulate some words
                 if not isinstance(next, Tree):
-                    if isinstance(next, tuple): 
-                        (token, tag) = next
-                        next = "".join(token + "/" + str(tag))
+                    next = _tuple2tag(next)
+                    #if isinstance(next, tuple): 
+                        #(token, tag) = next
+                        #next = "".join(token + "/" + str(tag))
                     words.append(next)
                 # next is another NE; it's a potential object
                 else:
@@ -110,7 +127,7 @@ def ne_fillers(t, stype= None, otype=None):
                         filler = None
                     if check_type(obj, otype) and filler:
                         pos = tail.index(obj)
-                        rcon= tail[pos+1:pos+5]
+                        rcon= [_tuple2tag(item) for item in tail[pos+1:pos+5]]
                         triple = (subj, filler, obj, rcon)
                         try:
                             return [triple] + ne_fillers(tail, stype, otype)
@@ -120,6 +137,7 @@ def ne_fillers(t, stype= None, otype=None):
                     # current triple is no good; carry on with the tail
                     else: 
                         return ne_fillers(tail, stype, otype)
+    # nothing to loop over
     return []
 
 def _expand(type):
@@ -147,12 +165,10 @@ def relextract(stype, otype, corpus = 'ieer', pattern = None, rcontext = None):
     @return: generates 3-tuples or 4-tuples <subj, filler, obj, rcontext>.
     @rtype: C{generator}
     """
-    if corpus == 'ieer':
-        trees = [d['text'] for d in ieer.dictionary()]
-    elif corpus == 'conll2002':
-        trees = [tree for tree in conll2002.ne_chunked()]
-    else:
-        raise ValueError, "corpus not recognized: '%s'" % corpus
+    try:
+        trees = corpora[corpus]
+    except KeyError:
+        print "corpus not recognized: '%s'" % corpus
     
     if stype not in ne_types[corpus]:
         if _expand(stype) in ne_types[corpus]:
@@ -268,13 +284,60 @@ def demo():
         print show_tuple(r)
     print
     
-    UIT = re.compile(r'.*\uit/Prep\b(?!\b.+ing\b)')
-    print "in(ORG, LOC):"
+    ############################################
+    # Show what's in the IEER Headlines
+    ############################################
+    
+    print "NER in Headlines"
     print "=" * 30
-    for r in relextract('PER', 'LOC', corpus='conll2002', pattern =UIT): 
+    for d in ieer.dictionary():
+        tree = d['headline']
+        for r in ne_fillers(tree):
+            print show_tuple(r[:-1])
+    print
+        
+    ############################################
+    # Dutch CONLL2002: take_on_role(PER, ORG
+    ############################################
+    
+    vnv = """
+    (
+    is/V|
+    was/V|
+    werd/V|
+    wordt/V
+    )
+    .*
+    van/Prep
+    """
+    VAN = re.compile(vnv, re.VERBOSE)
+     
+    print "van(PER, ORG):"
+    print "=" * 30
+    for r in relextract('PER', 'ORG', corpus='conll2002-ned', pattern = VAN): 
         print show_tuple(r)
     print
     
+    ############################################
+    # Spanish CONLL2002: (PER, ORG)
+    ############################################
+    
+    de = """
+    .*
+    (
+    de/SP|
+    del/SP
+    )
+    """
+    DE = re.compile(de, re.VERBOSE)
+     
+    print "de(ORG, LOC):"
+    print "=" * 30
+    for r in islice(relextract('ORG', 'LOC', corpus='conll2002-esp', pattern = DE), 10): 
+        print show_tuple(r)
+    print
+    
+
 if __name__ == '__main__':
     demo()
 
