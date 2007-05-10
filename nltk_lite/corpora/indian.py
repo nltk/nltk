@@ -39,7 +39,7 @@ def xreadlines(files = items):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "indian", file + ".pos")
-        for line in open(path).readlines():
+        for line in open(path):
             yield line
 
 def raw(files = items):

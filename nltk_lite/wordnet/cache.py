@@ -113,17 +113,20 @@ class _LRUCache:
         """
         value = None
 
+        # Look up the cache
         if self.values:
-            pair = self.values.get(key)
-
-            if pair:
-                (value, timestamp) = pair
+            try:
+                value, timestamp = self.values.get(key)
                 del self.history[timestamp]
+            except KeyError:
+                value = None
 
+        # Load the value if it wasn't cached
         if value == None:
             value = loadfn and loadfn()
 
-        if self.values != None:
+        # Cache the value we loaded
+        if self.values:
             timestamp = self.nextTimestamp
             self.nextTimestamp = self.nextTimestamp + 1
             self.values[key] = (value, timestamp)
