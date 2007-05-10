@@ -4,7 +4,8 @@ http://rocling.iis.sinica.edu.tw/CKIP/engversion/treebank.htm
 
 10,000 parsed sentences, drawn from the Academia Sinica Balanced
 Corpus of Modern Chinese.  Parse tree notation is based on
-Information-based Case Grammar.
+Information-based Case Grammar.  Tagset documentation is available
+at http://www.sinica.edu.tw/SinicaCorpus/modern_e_wordtype.html
 
 Language and Knowledge Processing Group, Institute of Information
 Science, Academia Sinica
