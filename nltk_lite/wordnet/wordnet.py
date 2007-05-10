@@ -7,41 +7,15 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import math, pickle, string
+import math, pickle, string, re
 
 from pos import *
 from nltk_lite.wordnet import *
 
 class Word(object):
-    """
-    An index into the database. More specifically, a list of the Senses of
-    the supplied word string. These senses can be accessed via index
-    notation ``word[n]`` or via the ``word.getSenses()`` method.
-
-    >>> from nltk_lite.wordnet import *
-    >>> N['dog'].pos
-    'noun'
-
-    >>> N['dog'].form
-    'dog'
-
-    >>> N['dog'].taggedSenseCount
-    1
-
-    @type  form: C{string}
-    @param form: The orthographic representation of the word.
-
-    @type  pos: C{string}
-    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
-
-    @type  taggedSenseCount: C{int}
-    @param taggedSenseCount: The number of senses that are tagged.
-    """
-    
     def __init__(self, line):
         """
-        Initialize the word from a line of a WordNet POS file.
-
+        Extract a word from a line of a WordNet POS file.
         @type  line: C{string}
         @param line: The appropriate line taken from the Wordnet data files.
         """
@@ -49,52 +23,29 @@ class Word(object):
         tokens = line.split()
         ints = map(int, tokens[int(tokens[3]) + 4:])
 
-        # Orthographic representation of the word.
-        self.form = tokens[0].replace('_', ' ')
+        self.form = tokens[0].replace('_', ' ')   # orthography
+        self.pos = normalizePOS(tokens[1])        # NOUN, VERB, ADJECTIVE, ADVERB
+        self.taggedSenseCount = ints[1]           # Number of senses tagged
+        self._synsetOffsets = ints[2:ints[0]+2]   # Offsets of this word's synsets
 
-        # Part of speech.  One of NOUN, VERB, ADJECTIVE, ADVERB. 
-        self.pos = normalizePOS(tokens[1])
-
-        # Number of senses that are tagged.
-        self.taggedSenseCount = ints[1]
-
-        # Offsets of those synsets belonging to the senses of this word.
-        self._synsetOffsets = ints[2:ints[0]+2]
-    
-    def getPointers(self, pointerType=None):
+    def synsets(self):
         """
-        Pointers connect senses and synsets, not words. Try
-        word[0].getPointers() instead.
-        """
-        raise self.getPointers.__doc__
-
-    def getPointerTargets(self, pointerType=None):
-        """
-        Pointers connect senses and synsets, not words. Try
-        word[0].getPointerTargets() instead.
-        """
-        raise self.getPointers.__doc__
-
-    def getSenses(self):
-        """
-        Get a sequence of the L{sense}s of this word.
+        Get a sequence of the L{synsets}s of this word.
 
         >>> from nltk_lite.wordnet import *
-        >>> N['dog'].getSenses()
-        ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron}]
+        >>> N['dog'].synsets()
+        [{noun: dog, domestic dog, Canis familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
 
-        @return: A list of this L{Word}'s L{Sense}s
+        @return: A list of this L{Word}'s L{Synsets}s
         """
 
-        if not hasattr(self, '_senses'):
-            self._senses = []
-
-            for offset in self._synsetOffsets:
-                self._senses.append(getSynset(self.pos, offset)[self.form])
-         
+        try:
+            return self._synsets
+        except AttributeError:
+            self._synsets = [getSynset(self.pos, offset)
+                             for offset in self._synsetOffsets]
             del self._synsetOffsets
-
-        return self._senses
+            return self._synsets
 
     def isTagged(self):
         """
@@ -115,62 +66,25 @@ class Word(object):
         @return: Return a list of adjective positions that this word can
         appear in. These are elements of ADJECTIVE_POSITIONS.
         """
-        positions = set()
-        for sense in self.getSenses():
-            positions.add(sense.position)
-        return list(positions)
 
-    def __cmp__(self, other):
-        """
-        >>> from nltk_lite.wordnet import *
-        >>> N['cat'] < N['dog']
-        1
+        return list(set(synset.position for synset in word))
 
-        >>> N['dog'] < V['dog']
-        1
-        """
-        return _compareInstances(self, other, ('pos', 'form'))
-    
-    def __str__(self):
-        """
-        Return a human-readable representation.
-
-        >>> from nltk_lite.wordnet import *
-        >>> str(N['dog'])
-        'dog(n.)'
-        """
-        return "%s(%s)" % (self.form, pos_abbrs[self.pos])
-    
-    def __repr__(self):
-        """
-        If ReadableRepresentations is true, return a human-readable
-        representation, e.g. 'dog(n.)'.
-        
-        If ReadableRepresentations is false, return a machine-readable
-        representation, e.g. "getWord('dog', 'noun')".
-        """
-        if ReadableRepresentations:
-            return str(self)
-
-        return "getWord" + `(self.form, self.pos)`
-        
-    # Sequence protocol (a Word's elements are its Senses)
-
-    def __nonzero__(self):
-        return 1
-
-    def __len__(self):
-        return len(self.getSenses())
-
-    def __getitem__(self, index):
-        return self.getSenses()[index]
+    def __getitem__(self, idx):
+        return self.synsets()[idx]
     
     def __getslice__(self, i, j):
-        return self.getSenses()[i:j]
+        return self.synsets()[i:j]
 
+    def __repr__(self):
+#        return "<Word:" + self.form + '/' + self.pos + ">"
+        return self.__str__()
+
+    def __str__(self):
+        return self.form + ' (' + self.pos + ")"
+    
 class Synset(object):
     """
-    A set of synonyms that share a common meaning.
+    A set of synonyms.
     
     Each synset contains one or more Senses, which represent a
     specific sense of a specific word.  Senses can be retrieved via
@@ -231,7 +145,8 @@ class Synset(object):
         synset_cnt = int(tokens[3], 16) # hex integer representing number of items in the synset; same as w_cnt above
         
         #extract all pairs of the form (sense, sense_index), plus a remainder
-        (self._senseTuples, remainder1) = _partition(tokens[4:], 2, synset_cnt)
+        (senseTuples, remainder1) = _partition(tokens[4:], 2, synset_cnt)
+        self.words = [form for form, i in senseTuples]
         #extract all pointer quadruples, plus a remainder
         (self._pointerTuples, remainder2) = _partition(remainder1[1:], 4, int(remainder1[0]))
 
@@ -255,7 +170,7 @@ class Synset(object):
                 return tuple(map(lambda t:int(t[1]), filter(lambda t,i=index:int(t[2],16) in (0, i), vfTuples)))
                 
             senseVerbFrames = []
-            for index in range(1, len(self._senseTuples) + 1):
+            for index in range(1, len(self.words) + 1):
                 senseVerbFrames.append(extractVerbFrames(index, vfTuples))
             self._senseVerbFrames = senseVerbFrames
 
@@ -279,37 +194,44 @@ class Synset(object):
         except IndexError:
             return []
         #ideally we should build 3rd person morphology for this form
-        form = self[0].form
+        form = self[0]
         verbFrameStrings = [vf % form for vf in verbFrames]
         return verbFrameStrings
             
-    def getSenses(self):
-        """
-        Return a sequence of Senses.
+#    def words(self):
+#        """
+#        Return a sequence of Words.
+#
+#         >>> from nltk_lite.wordnet import *
+#         >>> N['dog'].words
+#         ['dog', 'domestic dog', 'Canis familiaris']
+#         @return: A list of the L{Word}s in this L{Synset}.
+#         """
 
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].synset.getSenses()
-        ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
-        @return: A list of the L{Sense}s in this L{Synset}.
-        """
+#         # Load the senses from the Wordnet files if necessary.
+#         if not hasattr(self, '_senses'):
+#             self._senses = []
+#             senseVerbFrames = None
 
-        # Load the senses from the Wordnet files if necessary.
-        if not hasattr(self, '_senses'):
-            self._senses = []
-            senseVerbFrames = None
+#             if self.pos == VERB: 
+#                 senseVerbFrames = self._senseVerbFrames
 
-            if self.pos == VERB: 
-                senseVerbFrames = self._senseVerbFrames
+#             for word in self.words:
+#                 position = None
+#                 m = re.match(r'.*(\(.*\))$', word)
+#                 if m:
+#                     if m.group(1) == 'a': position = ATTRIBUTIVE
+#                     elif m.group(1) == 'p': position = PREDICATIVE
+#                     elif m.group(1) == 'ip': position = IMMEDIATE_POSTNOMINAL
+#                     else: raise "Unknown attribute '%s'" % (key)
+#                 self._senses.append(position)
 
-            for tuple in self._senseTuples:
-                self._senses.append(Sense(self, tuple, senseVerbFrames))
-
-            if self.pos == VERB: 
-                del self._senseVerbFrames
+#             if self.pos == VERB: 
+#                 del self._senseVerbFrames
                 
-            del self._senseTuples
+#             del self.words
 
-        return self._senses
+#         return self._senses
 
     def getPointers(self, pointerType=None):
         """
@@ -371,6 +293,7 @@ class Synset(object):
         """
         return map(Pointer.getTarget, self.getPointers(pointerType))
 
+    ### BROKEN:
     def isTagged(self):
         """
         >>> from nltk_lite.wordnet import *
@@ -382,7 +305,7 @@ class Synset(object):
 
         @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
         """
-        return len(filter(Sense.isTagged, self.getSenses())) > 0
+        return len(filter(Word.isTagged, self.words)) > 0
   
     def __str__(self):
         """
@@ -392,7 +315,7 @@ class Synset(object):
         >>> str(N['dog'][0].synset)
         '{noun: dog, domestic dog, Canis familiaris}'
         """
-        return "{" + self.pos + ": " + string.join(map(lambda sense:sense.form, self.getSenses()), ", ") + "}"
+        return "{" + self.pos + ": " + string.join(self.words, ", ") + "}"
     
     def __repr__(self):
         """
@@ -410,8 +333,15 @@ class Synset(object):
     def __cmp__(self, other):
         return _compareInstances(self, other, ('pos', 'offset'))
     
-    # Sequence protocol (a Synset's elements are its senses).
-  
+    def __eq__(self, other):
+        return _compareInstances(self, other, ('pos', 'offset')) == 0
+    
+    def __getitem__(self, idx):
+        return self.words[idx]
+    
+    def __getslice__(self, i, j):
+        return self.words[i:j]
+
     def __nonzero__(self):
         return 1
     
@@ -421,44 +351,9 @@ class Synset(object):
         >>> len(N['dog'][0].synset)
         3
         """
-        return len(self.getSenses())
+        return len(self.words())
     
-    def __getitem__(self, idx):
-        """
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].synset[0] == N['dog'][0]
-        1
-        >>> N['dog'][0].synset['dog'] == N['dog'][0]
-        1
-        >>> N['dog'][0].synset[N['dog']] == N['dog'][0]
-        1
-        >>> N['cat'][6]
-        'cat' in {noun: big cat, cat}
-        """
-        senses = self.getSenses()
-        if isinstance(idx, Word):
-            idx = idx.form
-        if isinstance(idx, StringType):
-            idx = _index(idx, map(lambda sense:sense.form, senses)) or \
-                  _index(idx, map(lambda sense:sense.form, senses), _equalsIgnoreCase)
-        return senses[idx]
-    
-    def __getslice__(self, i, j):
-        return self.getSenses()[i:j]
-
-    def __hash__(self):
-        return hash(self.__repr__())
-
-    def parent_hypernyms(self):
-        """
-        Get the set of parent hypernym synsets of this synset.
-
-        @return: The set of hypernyms that are parent nodes of this L{Synset}.
-        """
-        gpt = self.getPointerTargets
-        return set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
-
-    def hypernyms(self, include_self=False):
+    def hypernyms(self):
         """
         Get the set of all ancestor hypernym synsets of this synset.
 
@@ -467,17 +362,13 @@ class Synset(object):
             result list
         @return: The set of all hypernym L{Synset}s of the original L{Synset}.
         """
-        gpt = self.getPointerTargets
 
-        hypernyms = set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
-
-        for hypernym in hypernyms:
-            ancestor_hypernyms = set(hypernym.hypernyms())
-            hypernyms = hypernyms.union(ancestor_hypernyms)
-
-        if include_self: hypernyms.add(self)
-
-        return hypernyms
+        try:
+            self._hypernyms
+        except AttributeError:
+            self._hypernyms = set(self.getPointerTargets('hypernym') +
+                        self.getPointerTargets('hypernym (instance)'))
+        return self._hypernyms
 
     def hypernym_paths(self):
         """
@@ -489,18 +380,13 @@ class Synset(object):
         """
         paths = []
 
-        gpt = self.getPointerTargets
-        hypernyms = set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
-
+        hypernyms = self.hypernyms()
         if len(hypernyms) == 0: paths = [[self]]
 
         for hypernym in hypernyms:
-            ancestor_lists = hypernym.hypernym_paths()
-
-            for ancestor_list in ancestor_lists:
+            for ancestor_list in hypernym.hypernym_paths():
                 ancestor_list.append(self)
                 paths.append(ancestor_list)
-
         return paths
 
     def hypernym_distances(self, distance):
@@ -517,10 +403,7 @@ class Synset(object):
         """
         distances = [(self, distance)]
 
-        gpt = self.getPointerTargets
-        hypernyms = set(gpt('hypernym')) | set(gpt(('hypernym (instance)')))
-
-        for hypernym in hypernyms:
+        for hypernym in self.hypernyms():
             distances.extend(hypernym.hypernym_distances(distance+1))
 
         return distances
@@ -555,10 +438,9 @@ class Synset(object):
         # paths to the root) the duplicate with the shortest distance from
         # the original node is entered.
 
-        for (l, d) in ((dist_list1, dist_dict1), (dist_list2, dist_dict2)):
-
+        for (l, d) in [(dist_list1, dist_dict1), (dist_list2, dist_dict2)]:
             for (key, value) in l:
-                if d.has_key(key):
+                if key in d:
                     if value < d[key]:
                         d[key] = value
                 else:
@@ -567,11 +449,12 @@ class Synset(object):
         # For each ancestor synset common to both subject synsets, find the
         # connecting path length. Return the shortest of these.
 
-        for synset in dist_dict1.keys():
-            if dist_dict2.has_key(synset):
-                new_distance = dist_dict1[synset] + dist_dict2[synset]
-                if path_distance < 0 or new_distance < path_distance:
-                    path_distance = new_distance
+        for synset1 in dist_dict1.keys():
+            for synset2 in dist_dict2.keys():
+                if synset1 == synset2:
+                    new_distance = dist_dict1[synset1] + dist_dict2[synset2]
+                    if path_distance < 0 or new_distance < path_distance:
+                        path_distance = new_distance
 
         return path_distance
 
@@ -595,181 +478,6 @@ class Synset(object):
 
         else: return -1
 
-class Sense(object):
-    """
-    A specific meaning of a specific word -- the intersection of a Word and a
-    Synset.
-    
-    @type  form: C{string}
-    @param form: The orthographic representation of the Word this is a Sense of
-    @type  pos: C{string}
-    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB
-    @type  synset: L{Synset}
-    @param synset: The Synset that this Sense is a sense of.
-    @type  verbFrames: [integer]
-    @param verbFrames: A sequence of integers that index into
-        VERB_FRAME_STRINGS. These list the verb frames that this
-        Sense partipates in.  Defined only for verbs.
-    """
-    
-    def __init__(self, synset, senseTuple, verbFrames=None):
-        """
-        Initialize a Sense from a Synset's senseTuple.
-
-        @type  synset: L{Synset}
-        @param synset: The L{Synset} of which this L{Sense} is a member.
-        @type  senseTuple: (String, String)
-        @param senseTuple: A tuple containing this L{Sense}'s form
-            (string representation) and an id string (not used anywhere -
-            should probably be removed at some point)
-        @type  verbFrames: C{list} of C{int}
-        @param verbFrames: An optional list of integers, which are indices
-            into VERB_FRAME_STRINGS. Only supplied for verbs.
-        """
-
-        # The synset is referenced using the tuple (pos, offset) rather than
-        # via a direct object reference, to avoid creating a circular
-        # reference between Senses and Synsets that will prevent the VM from
-        # garbage-collecting them.
-
-        # Part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
-        self.pos = synset.pos
-
-        # Synset key. This is used to retrieve the sense.
-        self.synsetOffset = synset.offset
-
-        # A sequence of integers that index into VERB_FRAME_STRINGS. These
-        # list the verb frames that this Sense partipates in. Defined only
-        # for verbs.
-        self.verbFrames = verbFrames
-
-        (form, idString) = senseTuple
-        self.position = None
-        dividerIndex = form.find('(')
-
-        if dividerIndex >= 0:
-            key = form[dividerIndex + 1:-1]
-            form = form[:dividerIndex]
-
-            if key == 'a': self.position = ATTRIBUTIVE
-            elif key == 'p': self.position = PREDICATIVE
-            elif key == 'ip': self.position = IMMEDIATE_POSTNOMINAL
-            else: raise "Unknown attribute '%s'" % (key)
-
-        # Orthographic representation of the Word that this is a Sense of.
-        self.form = form.replace('_', ' ')
-    
-    def __getattr__(self, name):
-
-        # See the note in __init__ about why 'synset' is provided as a
-        # 'virtual' slot.
-        if name == 'synset': return getSynset(self.pos, self.synsetOffset)
-        elif name == 'lexname': return self.synset.lexname
-        else: raise AttributeError, name
-    
-    def __str__(self):
-        """
-        Return a human-readable representation.
-
-        >>> from nltk_lite.wordnet import *
-        >>> str(N['dog'])
-        'dog(n.)'
-        """
-        return "'%s' in %s" % (self.form, str(self.synset))
-    
-    def __repr__(self):
-        """
-        If ReadableRepresentations is true, return a human-readable
-        representation, e.g. dog(n.).
-        
-        Otherwise return a machine-readable form, e.g. getWord('dog', 'noun').
-        """
-        if ReadableRepresentations:
-            return str(self)
-
-        return "%s[%s]" % (`self.synset`, `self.form`)
-    
-    def getPointers(self, pointerType=None):
-        """
-        Return a sequence of L{Pointer}s from the synset of which this
-        L{Sense} is a member.
-        
-        If pointerType is specified, only pointers of that type are
-        returned.  In this case, pointerType should be an element of
-        POINTER_TYPES.
-
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].getPointers()[:5]
-        [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-        >>> N['dog'][0].getPointers(HYPERNYM)
-        [hypernym -> {noun: canine, canid}]
-
-        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A sequence of L{Pointer}s from the L{Synset} of which this
-        L{Sense} is a member.
-        """
-        senseIndex = _index(self, self.synset.getSenses())
-        pointers = []
-
-        for ptr in self.synset.getPointers(pointerType):
-            if ptr.sourceIndex == 0 or ptr.sourceIndex - 1 == senseIndex: 
-                pointers.append(ptr)
-        return pointers
-        
-    def getPointerTargets(self, pointerType=None):
-        """
-        Return a sequence of L{Synset}s connected to the L{Synset} of which
-        this L{Sense} is a member.
-        
-        If pointerType is specified, only targets of pointers of that
-        type are returned. In this case, pointerType should be an
-        element of POINTER_TYPES.
-
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].getPointerTargets()[:5]
-        [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-        >>> N['dog'][0].getPointerTargets(HYPERNYM)
-        [{noun: canine, canid}]
-
-        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A sequence of L{Synset}s connected to the L{Synset} of which
-            this L{Sense} is a member.
-        """
-        return map(Pointer.getTarget, self.getPointers(pointerType))
-
-    def getSenses(self):
-        """
-        @return: As this is a L{Sense}, return this object.
-        """
-        return self
-
-    def isTagged(self):
-        """
-        @return: True/false (1/0) if any L{Sense} is tagged.
-
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].isTagged()
-        1
-        >>> N['dog'][1].isTagged()
-        0
-        """
-        word = self.getWord()
-        return _index(self, word.getSenses()) < word.taggedSenseCount
-    
-    def getWord(self):
-        return getWord(self.form, self.pos)
-
-    def __cmp__(self, other):
-        def senseIndex(sense, synset=self.synset):
-            return _index(sense, synset.getSenses(), testfn=lambda a,b: a.form == b.form)
-        return _compareInstances(self, other, ('synset',)) or cmp(senseIndex(self), senseIndex(other))
-
     # Similarity metrics
 
     # TODO: Add in the option to manually add a new root node; this will be
@@ -778,10 +486,7 @@ class Sense(object):
     # More information about the metrics is available at
     # http://marimba.d.umn.edu/similarity/measures.html
 
-    def hypernyms(self):
-        return self.synset.hypernyms()
-
-    def path_distance_similarity(self, other_sense):
+    def path_distance_similarity(self, other):
         """
         Return a score denoting how similar two word senses are, based on the
         shortest path that connects the senses in the is-a (hypernym/hypnoym)
@@ -813,15 +518,13 @@ class Sense(object):
             itself.
         """
 
-        synset1 = self.synset
-        synset2 = other_sense.synset
-        path_distance = synset1.shortest_path_distance(synset2)
+        path_distance = self.shortest_path_distance(other)
         if path_distance < 0:
             return -1
         else:
             return 1.0 / (path_distance + 1)
 
-    def leacock_chodorow_similarity(self, other_sense):
+    def leacock_chodorow_similarity(self, other):
         """
         Return a score denoting how similar two word senses are, based on the
         shortest path that connects the senses (as above) and the maximum depth
@@ -842,8 +545,8 @@ class Sense(object):
         >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
         -1
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
+        @type  other: L{Sense}
+        @param other: The L{Sense} that this L{Sense} is being compared to.
 
         @return: A score denoting the similarity of the two L{Sense}s,
             normally greater than 0. -1 is returned if no connecting path
@@ -858,14 +561,14 @@ class Sense(object):
             raise TypeError, "Can only calculate similarity for nouns or verbs"
 
         depth = taxonomy_depths[self.pos]
-        path_distance = self.synset.shortest_path_distance(other_sense.synset)
+        path_distance = self.shortest_path_distance(other)
 
         if path_distance >= 0:
             return -math.log((path_distance + 1) / (2.0 * depth))
         else:
             return -1
 
-    def wu_palmer_similarity(self, other_sense):
+    def wu_palmer_similarity(self, other):
         """
         Return a score denoting how similar two word senses are, based on the
         depth of the two senses in the taxonomy and that of their Least Common
@@ -895,17 +598,14 @@ class Sense(object):
         >>> V['run'][0].wu_palmer_similarity(V['think'][0])
         -1
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
+        @type  other: L{Sense}
+        @param other: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s,
             normally greater than zero. If no connecting path between the two
             senses can be found, -1 is returned.
         """
 
-        synset1 = self.synset
-        synset2 = other_sense.synset
-
-        subsumer = _lcs_by_depth(synset1, synset2)
+        subsumer = _lcs_by_depth(self, other)
 
         # If no LCS was found return -1
         if subsumer == None: return -1
@@ -915,7 +615,6 @@ class Sense(object):
         lcs_paths = subsumer.hypernym_paths()
 
         for candidate_path in lcs_paths:
-
             if len(candidate_path) > len(lcs_path):
                 lcs_path = candidate_path
 
@@ -923,15 +622,11 @@ class Sense(object):
         # subsuming. Add this to the LCS path length to get the path length
         # from each synset to the root.
 
-        synset1_path_len = subsumer.shortest_path_distance(synset1)
-        synset1_path_len += len(lcs_path)
+        len1 = self.shortest_path_distance(subsumer) + len(lcs_path)
+        len2 = other.shortest_path_distance(subsumer) + len(lcs_path)
+        return (2.0 * len(lcs_path)) / (len1 + len2)
 
-        synset2_path_len = subsumer.shortest_path_distance(synset2)
-        synset2_path_len += len(lcs_path)
-
-        return (2.0 * (len(lcs_path))) / (synset1_path_len + synset2_path_len)
-
-    def resnik_similarity(self, other_sense, datafile=""):
+    def resnik_similarity(self, other, datafile=""):
         """
         Return a score denoting how similar two word senses are, based on the
         Information Content (IC) of the Least Common Subsumer (most specific
@@ -943,15 +638,13 @@ class Sense(object):
         of which should be passed as the 'datafile' argument. For more
         information on how they are calculated, check brown_ic.py.
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
+        @type  other: L{Sense}
+        @param other: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s.
             Synsets whose LCS is the root node of the taxonomy will have a
             score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
             between the two synsets a score of -1 is returned.
         """
-        synset1 = self.synset
-        synset2 = other_sense.synset
 
         if datafile is "":
             print("You must supply the path of a datafile containing frequency")
@@ -963,15 +656,15 @@ class Sense(object):
         # in memory in some way to prevent unnecessary recomputation.
         (noun_freqs, verb_freqs) = _load_ic_data(datafile)
 
-        if synset1.pos is NOUN:
-            (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, noun_freqs)
+        if self.pos is NOUN:
+            (lcs, lcs_ic) = _lcs_by_content(self, other, noun_freqs)
 
-        elif synset1.pos is VERB:
-            (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, verb_freqs)
+        elif self.pos is VERB:
+            (lcs, lcs_ic) = _lcs_by_content(self, other, verb_freqs)
 
         return lcs_ic
 
-    def jiang_conrath_similarity(self, other_sense, datafile=""):
+    def jiang_conrath_similarity(self, other, datafile=""):
         """
         Return a score denoting how similar two word senses are, based on the
         Information Content (IC) of the Least Common Subsumer (most specific
@@ -987,13 +680,11 @@ class Sense(object):
         as an argument. For more information on how they are calculated,
         check brown_ic.py.
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
+        @type  other: L{Sense}
+        @param other: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s.
             If no path exists between the two synsets a score of -1 is returned.
         """
-        synset1 = self.synset
-        synset2 = other_sense.synset
 
         if datafile is "":
             print("You must supply the path of a datafile containing frequency")
@@ -1001,7 +692,8 @@ class Sense(object):
             print("'brown_ic.py'")
             return
 
-        if synset1 == synset2: return inf
+        if self == other:
+            return inf
 
         # TODO: Once this data has been loaded for the first time preserve it
         # in memory in some way to prevent unnecessary recomputation.
@@ -1009,13 +701,13 @@ class Sense(object):
 
         # Get the correct frequency dict as dependent on the input synsets'
         # pos (Part of Speech) attribute.
-        if synset1.pos is NOUN: freqs = noun_freqs
-        elif synset1.pos is VERB: freqs = verb_freqs
+        if self.pos is NOUN: freqs = noun_freqs
+        elif self.pos is VERB: freqs = verb_freqs
         else: return -1
 
-        ic1 = synset1.getIC(freqs)
-        ic2 = synset2.getIC(freqs)
-        (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, freqs)
+        ic1 = self.getIC(freqs)
+        ic2 = other.getIC(freqs)
+        (lcs, lcs_ic) = _lcs_by_content(self, other, freqs)
 
         # If either of the input synsets are the root synset, or have a
         # frequency of 0 (sparse data problem), return 0.
@@ -1023,7 +715,7 @@ class Sense(object):
 
         return 1 / (ic1 + ic2 - 2 * lcs_ic)
 
-    def lin_similarity(self, other_sense, datafile=""):
+    def lin_similarity(self, other, datafile=""):
         """
         Return a score denoting how similar two word senses are, based on the
         Information Content (IC) of the Least Common Subsumer (most specific
@@ -1039,14 +731,12 @@ class Sense(object):
         as an argument. For more information on how they are calculated,
         check brown_ic.py.
 
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being compared to.
+        @type  other: L{Sense}
+        @param other: The L{Sense} that this L{Sense} is being compared to.
         @return: A float score denoting the similarity of the two L{Sense}s,
             in the range 0 to 1. If no path exists between the two synsets a
             score of -1 is returned.
         """
-        synset1 = self.synset
-        synset2 = other_sense.synset
 
         if datafile is "":
             print("You must supply the path of a datafile containing frequency")
@@ -1058,19 +748,19 @@ class Sense(object):
         # in memory in some way to prevent unnecessary recomputation.
         (noun_freqs, verb_freqs) = _load_ic_data(datafile)
 
-        if synset1.pos is NOUN: freqs = noun_freqs
-        elif synset1.pos is VERB: freqs = verb_freqs
+        if self.pos is NOUN: freqs = noun_freqs
+        elif self.pos is VERB: freqs = verb_freqs
         else: return -1
 
-        ic1 = synset1.getIC(freqs)
-        ic2 = synset2.getIC(freqs)
-        (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, freqs)
+        ic1 = self.getIC(freqs)
+        ic2 = other.getIC(freqs)
+        (lcs, lcs_ic) = _lcs_by_content(self, other, freqs)
 
         return (2 * lcs_ic) / (ic1 + ic2)
 
 class Pointer(object):
     """
-    A typed directional relationship between Senses or Synsets.
+    A typed directional relationship between Synsets.
     
     @type  type: C{string}
     @param type: One of POINTER_TYPES.
@@ -1190,7 +880,7 @@ def getSense(form, pos=NOUN, senseno=0):
 
 def getSynset(pos, offset):
     """
-    Lookup a synset by its offset. Used by repr(synset).
+    Lookup a synset by its offset.
 
     @type  pos: C{string}
     @param pos: the desired part of speech.
@@ -1218,7 +908,9 @@ def _lcs_by_depth(synset1, synset2):
     max_min_path_length = -1
 
     eliminated = set()
-    subsumers = synset1.hypernyms(True) & synset2.hypernyms(True)
+    subsumers = synset1.hypernyms() & synset2.hypernyms()
+    subsumers.add(synset1)
+    subsumers.add(synset2)
 
     # Eliminate those synsets which are ancestors of other synsets in the
     # set of subsumers.
@@ -1268,7 +960,9 @@ def _lcs_by_content(synset1, synset2, freqs):
     subsumer = None
     subsumer_ic = -1
 
-    subsumers = synset1.hypernyms(True) & synset2.hypernyms(True)
+    subsumers = synset1.hypernyms() & synset2.hypernyms()
+    subsumers.add(synset1)
+    subsumers.add(synset2)
 
     # For each candidate, calculate its IC value. Keep track of the candidate
     # with the highest score.
@@ -1373,7 +1067,7 @@ from types import IntType, ListType, StringType, TupleType
 # Work around a Windows Python bug
 _FILE_OPEN_MODE = os.name in ('dos', 'nt') and 'rb' or 'r'
 
-class Dictionary:
+class Dictionary(object):
     """
     A Dictionary contains all the Words in a given part of speech. Four
     dictionaries, bound to N, V, ADJ, and ADV, are bound by default in
@@ -1384,8 +1078,7 @@ class Dictionary:
     nth word, e.g.  dict[0].  Access by an arbitrary integer is very
     slow except in the special case where the words are accessed
     sequentially; this is to support the use of dictionaries as the
-    range of a for statement and as the sequence argument to map and
-    filter.
+    range of a for statement and as the sequence argument to map and filter.
 
     >>> N['dog']
     dog(n.)
@@ -1440,18 +1133,16 @@ class Dictionary:
         @return: The relevant L{Synset}, if present.
         """
 
-        pos = self.pos
+        def loader(pos=self.pos, offset=offset, dataFile=self.dataFile):
+            dataFile.seek(offset)
+            line = dataFile.readline()
+            return Synset(pos, offset, line)
 
-        def loader(pos=pos, offset=offset, dataFile=self.dataFile):
-            return Synset(pos, offset, _lineAt(dataFile, offset))
-
-        return entityCache.get((pos, offset), loader)
+        return entityCache.get((self.pos, offset), loader)
     
     def _buildIndexCacheFile(self):
         self.indexFile._buildIndexCacheFile()
     
-    # Sequence protocol (a Dictionary's items are its Words)
-
     def __nonzero__(self):
         """
         >>> N and 'true'
@@ -1507,9 +1198,6 @@ class Dictionary:
         else:
             raise TypeError, "%s is not a String or Int" % `index`
     
-    # Dictionary protocol - a Dictionary's values are its words, keyed by
-    # their form
-
     def get(self, key, default=None):
         """
         Return the Word whose form is key, or default.
@@ -1579,7 +1267,7 @@ class Dictionary:
         file.close()
         print "done."
 
-class _IndexFile:
+class _IndexFile(object):
     """
     An _IndexFile is an implementation class that presents a
     Sequence and Dictionary interface to a sorted index file.
@@ -1630,7 +1318,6 @@ class _IndexFile:
         self.nextIndex = 0
         self.nextOffset = offset
     
-    # Sequence protocol (an _IndexFile's items are its lines)
     def __nonzero__(self):
         return 1
     
@@ -1686,9 +1373,6 @@ class _IndexFile:
 
         else: raise TypeError, "%s is not a String or Int" % `index`
         
-    # Dictionary protocol - an _IndexFile's values are its lines, keyed by
-    # the first word.
-    
     def get(self, key, default=None):
         """
         @type  key: {string}
@@ -1862,20 +1546,14 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
 
     return None
 
-def _lineAt(file, offset):
-    file.seek(offset)
-    return file.readline()
+# Dictionaries
 
 N = Dictionary(NOUN, NOUN)
 V = Dictionary(VERB, VERB)
 ADJ = Dictionary(ADJECTIVE, ADJECTIVE)
 ADV = Dictionary(ADVERB, ADVERB)
-Dictionaries = (N, V, ADJ, ADV)
 
-_POStoDictionaryTable = {}
-for dict in Dictionaries:
-    _POStoDictionaryTable[dict.pos] = dict
-#    _POSNormalizationTable[dict] = dict.pos
+Dictionaries = {NOUN: N, VERB: V, ADJECTIVE: ADJ, ADVERB: ADV}
 
 def dictionaryFor(pos):
     """
@@ -1887,11 +1565,57 @@ def dictionaryFor(pos):
     @return: The desired dictionary.
     """
     pos = normalizePOS(pos)
-    dict = _POStoDictionaryTable.get(pos)
-
-    if dict == None:
+    try:
+        d = Dictionaries[pos]
+    except KeyError:
         raise RuntimeError, "The " + `pos` + " dictionary has not been created"
 
-    return dict
+    return d
 
 
+def demo():
+    from nltk_lite.wordnet import N, V, HYPERNYM
+    
+    print "N['dog']"
+    print N['dog']
+    print N['dog'].pos
+    print N['dog'].form
+    print N['dog'].taggedSenseCount
+    print N['dog'].synsets()
+    print N['dog'].isTagged()
+    # ADJ['clear'].getAdjectivePositions()
+    # N['cat'] < N['dog']
+    # N['dog'] < V['dog']
+
+    print "Verb Frames:",
+    print V['think'][0].verbFrameStrings
+
+    print "Pointers:"
+    print N['dog'][0].getPointers()[:5]
+    print N['dog'][0].getPointers(HYPERNYM)
+
+    print N['dog'][0].getPointerTargets()[:5]
+    print N['dog'][0].getPointerTargets(HYPERNYM)
+
+    print
+    print "Paths and Distances:"
+    print
+
+    print N['dog'][0].hypernym_paths()
+    print N['dog'][0].hypernym_distances(0)
+    print N['dog'][0].shortest_path_distance(N['cat'][0])
+    
+    print
+    print "Similarity:"
+    print
+    
+    print "Path Distance Similarity:",
+    print N['dog'][0].path_distance_similarity(N['cat'][0])
+    print "Leacock Chodorow Similarity:"
+    print N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
+    print "Wu Palmer Similarity:"
+    print N['dog'][0].wu_palmer_similarity(N['cat'][0])
+
+if __name__ == '__main__':
+    demo()
+    

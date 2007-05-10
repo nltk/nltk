@@ -31,7 +31,7 @@ def raw(files = ['female', 'male']):
 
     for file in files:
         path = os.path.join(get_basedir(), "names", file+".txt")
-        for word in open(path).readlines():
+        for word in open(path):
             yield word.strip()
 
 def demo():

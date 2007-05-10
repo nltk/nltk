@@ -11,17 +11,17 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     >>> from nltk_lite.wordnet import *
     
     >>> N['dog']
-    dog(n.)
+    dog (noun)
     >>> N.getWord('dog')
-    dog(n.)
+    dog (noun)
     >>> N['dog'].pos
     'noun'
     >>> N['dog'].form
     'dog'
     >>> N['dog'].taggedSenseCount
     1
-    >>> N['dog'].getSenses()
-    ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron}]
+    >>> N['dog'].synsets()
+    [{noun: dog, domestic dog, Canis familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
 
     >>> N['dog'].isTagged()
     True
@@ -32,7 +32,7 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     >>> N['dog'] < V['dog']
     True
     >>> str(N['dog'])
-    'dog(n.)'
+    'dog (noun)'
 
 If ReadableRepresentations is true, return a human-readable
 representation, e.g. 'dog(n.)'.
@@ -63,8 +63,8 @@ map(Pointer.getTarget(), synset.getPointerTargets(...)).
     >>> V['think'][0].synset.verbFrameStrings
     ['Something think something Adjective/Noun', 'Somebody think somebody']
 
-    >>> N['dog'][0].synset.getSenses()
-    ['dog' in {noun: dog, domestic dog, Canis familiaris}, 'domestic dog' in {noun: dog, domestic dog, Canis familiaris}, 'Canis familiaris' in {noun: dog, domestic dog, Canis familiaris}]
+    >>> N['dog'][0].synsets()
+    [{noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}]
 
     >>> N['dog'][0].getPointers()[:5]
     [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
@@ -80,7 +80,7 @@ returned.  In this case, pointerType should be an element of
 POINTER_TYPES.
 
     >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
+    [{noun: canine, canid}, {noun: Canis, genus_Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
 
     >>> N['dog'][0].getPointerTargets(HYPERNYM)
     [{noun: canine, canid}]
@@ -90,7 +90,7 @@ POINTER_TYPES.
     >>> N['dog'][1].isTagged()
     False
 
-    >>> str(N['dog'][0].synset)
+    >>> str(N['dog'][0])
     '{noun: dog, domestic dog, Canis familiaris}'
 
 If ReadableRepresentations is true, return a human-readable
@@ -99,16 +99,10 @@ representation, e.g. 'dog(n.)'.
 If ReadableRepresentations is false, return a machine-readable
 representation, e.g. "getSynset(pos, 1234)".
  
-    >>> len(N['dog'][0].synset)
+    >>> len(N['dog'][0])
     3
-    >>> N['dog'][0].synset[0] == N['dog'][0]
-    True
-    >>> N['dog'][0].synset['dog'] == N['dog'][0]
-    True
-    >>> N['dog'][0].synset[N['dog']] == N['dog'][0]
-    True
     >>> N['cat'][6]
-    'cat' in {noun: big cat, cat}
+    {noun: big cat, cat}
 
 parent_hypernyms(self):
 Get the set of parent hypernym synsets of this synset.
@@ -338,7 +332,7 @@ filter.
     >>> N.pos
     'noun'
     >>> N.getWord('dog')
-    dog(n.)
+    dog (noun)
     >>> N.getWord('inu')
     Traceback (most recent call last):
        ...
@@ -351,12 +345,12 @@ indexed by the n'th Word in the Index file.
     >>> N['dog']
     dog(n.)
     >>> N[0]
-    'hood(n.)
+    'hood (noun)
  
 get(self, key, default=None): Return the Word whose form is key, or default.
 
     >>> N.get('dog')
-    dog(n.)
+    dog (noun)
     >>> N.get('inu')
 
 has_key(self, form): Checks if the supplied argument is an index into

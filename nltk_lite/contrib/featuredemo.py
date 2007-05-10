@@ -80,14 +80,12 @@ Distributed under the GPL. See LICENSE.TXT for information.""" % globals()
 		if sentence == '': return
 		text_parse(grammar, sentence, trace, options.drawtrees, options.latex)
 	else:
-		infile = open(options.batchfile)
-		for line in infile.readlines():
+		for line in open(options.batchfile):
 			sentence = line.strip()
 			if sentence == '': continue
 			if sentence[0] == '#': continue
 			print "Sentence: %s" % sentence
 			text_parse(grammar, sentence, trace, False, options.latex)
-		infile.close()
 
 if __name__ == '__main__':
 	main()
