@@ -35,7 +35,7 @@ def raw(files = 'english'):
 
     for file in files:
         path = os.path.join(get_basedir(), "stopwords", file)
-        for word in open(path).readlines():
+        for word in open(path):
             yield word.strip()
 
 def demo():
