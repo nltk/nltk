@@ -60,7 +60,7 @@ def raw(files = 'raw'):
 
     for file in files:
         path = os.path.join(get_basedir(), "sinica_treebank", file)
-        for line in open(path).readlines():
+        for line in open(path):
             yield line.split()[1:]
 
 def tagged(files = 'parsed'):
@@ -75,7 +75,7 @@ def tagged(files = 'parsed'):
 
     for file in files:
         path = os.path.join(get_basedir(), "sinica_treebank", file)
-        for sent in open(path).readlines():
+        for sent in open(path):
             sent = re.sub(IDENTIFIER, '', sent)
             tagged_tokens = re.findall(TAGWORD, sent)
             yield [(token, tag) for (tag, token) in tagged_tokens]
@@ -92,7 +92,7 @@ def parsed(files = 'parsed'):
 
     for file in files:
         path = os.path.join(get_basedir(), "sinica_treebank", file)
-        for sent in open(path).readlines():
+        for sent in open(path):
             sent = re.sub(IDENTIFIER, '', sent)
             sent = re.sub(APPENDIX, '', sent)
             yield tree.sinica_parse(sent)
