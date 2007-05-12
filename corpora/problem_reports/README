@@ -1,0 +1,12 @@
+Problem Report Corpus
+http://www.cs.cmu.edu/~marmalade/reports.html
+
+Andrew Ko, Carnegie Mellon University
+
+First 10,000 lines of POS-tagged text extracted from
+files: apache, eclipse, firefox, linux, openoffice.
+Tagged using Stanford Log-linear Part-Of-Speech Tagger.
+
+Kristina Toutanova, Dan Klein, Christopher Manning, and Yoram Singer (2003)
+Feature-Rich Part-of-Speech Tagging with a Cyclic Dependency Network.
+Proceedings of HLT-NAACL pp 252-259  http://nlp.stanford.edu/software/tagger.shtml
