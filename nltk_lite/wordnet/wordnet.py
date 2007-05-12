@@ -315,20 +315,10 @@ class Synset(object):
         >>> str(N['dog'][0].synset)
         '{noun: dog, domestic dog, Canis familiaris}'
         """
-        return "{" + self.pos + ": " + string.join(self.words, ", ") + "}"
+        return "{" + self.words[0] + "}"
     
     def __repr__(self):
-        """
-        If ReadableRepresentations is true, return a human-readable
-        representation, e.g. 'dog(n.)'.
-        
-        If ReadableRepresentations is false, return a machine-readable
-        representation, e.g. "getSynset(pos, 1234)".
-        """
-        if ReadableRepresentations:
-            return str(self)
-
-        return "getSynset" + `(self.pos, self.offset)`
+        return "{" + self.pos + `self.offset` + ": " + string.join(self.words, ", ") + "}"
     
     def __cmp__(self, other):
         return _compareInstances(self, other, ('pos', 'offset'))
@@ -355,6 +345,68 @@ class Synset(object):
     
     def hypernyms(self):
         """
+        Get the set of hypernym synsets of this synset.
+
+        @type  include_self: boolean
+        @param include_self: flag whether to include the source synset in the
+            result list
+        @return: The set of hypernym L{Synset}s of the original L{Synset}.
+        """
+
+        try:
+            self._hypernyms
+        except AttributeError:
+            self._hypernyms = set(self.getPointerTargets(HYPERNYM) + self.getPointerTargets(INSTANCE_HYPERNYM))
+        return self._hypernyms
+
+    def hyponyms(self):
+        """
+        Get the set of hyponym synsets of this synset.
+
+        @type  include_self: boolean
+        @param include_self: flag whether to include the source synset in the
+            result list
+        @return: The set of hyponym L{Synset}s of the original L{Synset}.
+        """
+
+        try:
+            self._hyponyms
+        except AttributeError:
+            self._hyponyms = set(self.getPointerTargets(HYPONYM) + self.getPointerTargets(INSTANCE_HYPONYM))
+        return self._hyponyms
+
+    def max_depth(self):
+        """
+        @return: The length of the longest hypernym path from this synset to the root.
+        """
+
+        if self.hypernyms() == []:
+            return 0
+        
+        deepest = 0
+        for hypernym in self.hypernyms():
+            depth = hypernym.max_depth()
+            if depth > deepest:
+                deepest = depth
+        return deepest + 1
+
+    def min_depth(self):
+        """
+        @return: The length of the shortest hypernym path from this synset to the root.
+        """
+
+        if self.hypernyms() == []:
+            return 0
+
+        shallowest = 1000
+        for hypernym in self.hypernyms():
+            depth = hypernym.max_depth()
+            if depth < shallowest:
+                shallowest = depth
+        return shallowest + 1
+
+    def hypernym_ancestors(self):
+        """
         Get the set of all ancestor hypernym synsets of this synset.
 
         @type  include_self: boolean
@@ -363,12 +415,10 @@ class Synset(object):
         @return: The set of all hypernym L{Synset}s of the original L{Synset}.
         """
 
-        try:
-            self._hypernyms
-        except AttributeError:
-            self._hypernyms = set(self.getPointerTargets('hypernym') +
-                        self.getPointerTargets('hypernym (instance)'))
-        return self._hypernyms
+        for hypernym in self.hypernyms():
+            hypernym_ancestors.add(hypernym)
+            hypernym_ancestors |= hypernym.hypernym_ancestors()
+        return hypernym_ancestors
 
     def hypernym_paths(self):
         """
@@ -381,7 +431,8 @@ class Synset(object):
         paths = []
 
         hypernyms = self.hypernyms()
-        if len(hypernyms) == 0: paths = [[self]]
+        if len(hypernyms) == 0:
+            paths = [[self]]
 
         for hypernym in hypernyms:
             for ancestor_list in hypernym.hypernym_paths():
@@ -389,7 +440,7 @@ class Synset(object):
                 paths.append(ancestor_list)
         return paths
 
-    def hypernym_distances(self, distance):
+    def hypernym_distances(self, distance, verbose=False):
         """
         Get the path(s) from this synset to the root, counting the distance
         of each node from the initial node on the way. A list of
@@ -401,14 +452,15 @@ class Synset(object):
         @return: A list of (L{Synset}, int) tuples where each L{Synset} is
            a hypernym of the first L{Synset}.
         """
-        distances = [(self, distance)]
+        distances = set([(self, distance)])
 
         for hypernym in self.hypernyms():
-            distances.extend(hypernym.hypernym_distances(distance+1))
-
+            distances |= hypernym.hypernym_distances(distance+1, verbose=False)
+        if verbose:
+            print "> Hypernym Distances:", self, string.join(synset.__str__() + ":" + `dist` for synset, dist in distances)
         return distances
 
-    def shortest_path_distance(self, other_synset):
+    def shortest_path_distance(self, other, verbose=False):
         """
         Returns the distance of the shortest path linking the two synsets (if
         one exists). For each synset, all the ancestor nodes and their distances
@@ -417,20 +469,20 @@ class Synset(object):
         ancestor nodes are common, -1 is returned. If a node is compared with
         itself 0 is returned.
 
-        @type  other_synset: L{Synset}
-        @param other_synset: The Synset to which the shortest path will be found.
+        @type  other: L{Synset}
+        @param other: The Synset to which the shortest path will be found.
         @return: The number of edges in the shortest path connecting the two
             nodes, or -1 if no path exists.
         """
 
-        if self == other_synset: return 0
+        if self == other: return 0
 
         path_distance = -1
 
         dist_list1 = self.hypernym_distances(0)
         dist_dict1 = {}
 
-        dist_list2 = other_synset.hypernym_distances(0)
+        dist_list2 = other.hypernym_distances(0)
         dist_dict2 = {}
 
         # Transform each distance list into a dictionary. In cases where
@@ -445,7 +497,7 @@ class Synset(object):
                         d[key] = value
                 else:
                     d[key] = value
-
+        
         # For each ancestor synset common to both subject synsets, find the
         # connecting path length. Return the shortest of these.
 
@@ -456,11 +508,13 @@ class Synset(object):
                     if path_distance < 0 or new_distance < path_distance:
                         path_distance = new_distance
 
+        if verbose:
+            print "> Shortest Path Distance:", self, other, path_distance
         return path_distance
 
-    def getIC(self, freq_data):
+    def information_content(self, freq_data):
         """
-        Get the Information Content (IC) value of this L{Synset}, using
+        Get the Information Content value of this L{Synset}, using
         the supplied dict 'freq_data'.
 
         @type  freq_data: C{dict}
@@ -478,285 +532,30 @@ class Synset(object):
 
         else: return -1
 
-    # Similarity metrics
+    # interface to similarity methods
+     
+    def path_distance_similarity(self, other, verbose=False):
+        return path_distance_similarity(self, other, verbose)
 
-    # TODO: Add in the option to manually add a new root node; this will be
-    # useful for verb similarity as there exist multiple verb taxonomies.
+    def leacock_chodorow_similarity(self, other, verbose=False):
+        return leacock_chodorow_similarity(self, other, verbose)
+        
+    def wu_palmer_similarity(self, other, verbose=False):
+        return wu_palmer_similarity(self, other, verbose)
 
-    # More information about the metrics is available at
-    # http://marimba.d.umn.edu/similarity/measures.html
+    def resnik_similarity(self, other, datafile="", verbose=False):
+        return resnik_similarity(self, other, datafile, verbose)
 
-    def path_distance_similarity(self, other):
-        """
-        Return a score denoting how similar two word senses are, based on the
-        shortest path that connects the senses in the is-a (hypernym/hypnoym)
-        taxonomy. The score is in the range 0 to 1, except in those cases
-        where a path cannot be found (will only be true for verbs as there are
-        many distinct verb taxonomies), in which case -1 is returned. A score of
-        1 represents identity i.e. comparing a sense with itself will return 1.
-
-        >>> from nltk_lite.wordnet import *
-        >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
-        0.33333333333333331
-    
-        >>> N['dog'][0].path_distance_similarity(N['cat'][0])
-        0.20000000000000001
-    
-        >>> V['run'][0].path_distance_similarity(V['walk'][0])
-        0.25
-    
-        >>> V['run'][0].path_distance_similarity(V['think'][0])
-        -1
-
-        @type  other_sense: L{Sense}
-        @param other_sense: The L{Sense} that this L{Sense} is being
-            compared to.
-
-        @return: A score denoting the similarity of the two L{Sense}s,
-            normally between 0 and 1. -1 is returned if no connecting path
-            could be found. 1 is returned if a L{Sense} is compared with
-            itself.
-        """
-
-        path_distance = self.shortest_path_distance(other)
-        if path_distance < 0:
-            return -1
-        else:
-            return 1.0 / (path_distance + 1)
-
-    def leacock_chodorow_similarity(self, other):
-        """
-        Return a score denoting how similar two word senses are, based on the
-        shortest path that connects the senses (as above) and the maximum depth
-        of the taxonomy in which the senses occur. The relationship is given
-        as -log(p/2d) where p is the shortest path length and d the taxonomy
-        depth.
-
-        >>> from nltk_lite.wordnet import *
-        >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
-        2.5389738710582761
-    
-        >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
-        2.0281482472922856
-    
-        >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
-        1.8718021769015913
-    
-        >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
-        -1
-
-        @type  other: L{Sense}
-        @param other: The L{Sense} that this L{Sense} is being compared to.
-
-        @return: A score denoting the similarity of the two L{Sense}s,
-            normally greater than 0. -1 is returned if no connecting path
-            could be found. If a L{Sense} is compared with itself, the
-            maximum score is returned, which varies depending on the taxonomy
-            depth.
-        """
-
-        taxonomy_depths = {NOUN: 19, VERB: 13}
-
-        if self.pos not in taxonomy_depths.keys():
-            raise TypeError, "Can only calculate similarity for nouns or verbs"
-
-        depth = taxonomy_depths[self.pos]
-        path_distance = self.shortest_path_distance(other)
-
-        if path_distance >= 0:
-            return -math.log((path_distance + 1) / (2.0 * depth))
-        else:
-            return -1
-
-    def wu_palmer_similarity(self, other):
-        """
-        Return a score denoting how similar two word senses are, based on the
-        depth of the two senses in the taxonomy and that of their Least Common
-        Subsumer (most specific ancestor node). Note that at this time the
-        scores given do _not_ always agree with those given by Pedersen's Perl
-        implementation of Wordnet Similarity.
-    
-        The LCS does not necessarily feature in the shortest path connecting the
-        two senses, as it is by definition the common ancestor deepest in the
-        taxonomy, not closest to the two senses. Typically, however, it will so
-        feature. Where multiple candidates for the LCS exist, that whose
-        shortest path to the root node is the longest will be selected. Where
-        the LCS has multiple paths to the root, the longer path is used for
-        the purposes of the calculation.
+    def jiang_conrath_similarity(self, other, datafile="", verbose=False):
+        return jiang_conrath_similarity(self, other, datafile, verbose)
+        
+    def lin_similarity(self, other, datafile="", verbose=False):
+        return lin_similarity(self, other, datafile, verbose)
 
 
-        >>> from nltk_lite.wordnet import *
-        >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
-        0.9285714285714286
-    
-        >>> N['dog'][0].wu_palmer_similarity(N['cat'][0])
-        0.84615384615384615
-    
-        >>> V['run'][0].wu_palmer_similarity(V['walk'][0])
-        0.40000000000000002
-    
-        >>> V['run'][0].wu_palmer_similarity(V['think'][0])
-        -1
-
-        @type  other: L{Sense}
-        @param other: The L{Sense} that this L{Sense} is being compared to.
-        @return: A float score denoting the similarity of the two L{Sense}s,
-            normally greater than zero. If no connecting path between the two
-            senses can be found, -1 is returned.
-        """
-
-        subsumer = _lcs_by_depth(self, other)
-
-        # If no LCS was found return -1
-        if subsumer == None: return -1
-
-        # Get the longest path from the LCS to the root.
-        lcs_path = []
-        lcs_paths = subsumer.hypernym_paths()
-
-        for candidate_path in lcs_paths:
-            if len(candidate_path) > len(lcs_path):
-                lcs_path = candidate_path
-
-        # Get the shortest path from the LCS to each of the synsets it is
-        # subsuming. Add this to the LCS path length to get the path length
-        # from each synset to the root.
-
-        len1 = self.shortest_path_distance(subsumer) + len(lcs_path)
-        len2 = other.shortest_path_distance(subsumer) + len(lcs_path)
-        return (2.0 * len(lcs_path)) / (len1 + len2)
-
-    def resnik_similarity(self, other, datafile=""):
-        """
-        Return a score denoting how similar two word senses are, based on the
-        Information Content (IC) of the Least Common Subsumer (most specific
-        ancestor node). Note that at this time the scores given do _not_
-        always agree with those given by Pedersen's Perl implementation of
-        Wordnet Similarity, although they are mostly very similar.
-
-        The required IC values are precomputed and stored in a file, the name
-        of which should be passed as the 'datafile' argument. For more
-        information on how they are calculated, check brown_ic.py.
-
-        @type  other: L{Sense}
-        @param other: The L{Sense} that this L{Sense} is being compared to.
-        @return: A float score denoting the similarity of the two L{Sense}s.
-            Synsets whose LCS is the root node of the taxonomy will have a
-            score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
-            between the two synsets a score of -1 is returned.
-        """
-
-        if datafile is "":
-            print("You must supply the path of a datafile containing frequency")
-            print("information, as generated by brown_information_content() in")
-            print("'brown_ic.py'")
-            return
-
-        # TODO: Once this data has been loaded for the first time preserve it
-        # in memory in some way to prevent unnecessary recomputation.
-        (noun_freqs, verb_freqs) = _load_ic_data(datafile)
-
-        if self.pos is NOUN:
-            (lcs, lcs_ic) = _lcs_by_content(self, other, noun_freqs)
-
-        elif self.pos is VERB:
-            (lcs, lcs_ic) = _lcs_by_content(self, other, verb_freqs)
-
-        return lcs_ic
-
-    def jiang_conrath_similarity(self, other, datafile=""):
-        """
-        Return a score denoting how similar two word senses are, based on the
-        Information Content (IC) of the Least Common Subsumer (most specific
-        ancestor node) and that of the two input Synsets. The relationship is
-        given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
-
-        Note that at this time the scores given do _not_ always agree with
-        those given by Pedersen's Perl implementation of Wordnet Similarity,
-        although they are mostly very similar.
-
-        The required IC values are calculated using precomputed frequency
-        counts, which are accessed from the 'datafile' file which is supplied
-        as an argument. For more information on how they are calculated,
-        check brown_ic.py.
-
-        @type  other: L{Sense}
-        @param other: The L{Sense} that this L{Sense} is being compared to.
-        @return: A float score denoting the similarity of the two L{Sense}s.
-            If no path exists between the two synsets a score of -1 is returned.
-        """
-
-        if datafile is "":
-            print("You must supply the path of a datafile containing frequency")
-            print("information, as generated by brown_information_content() in")
-            print("'brown_ic.py'")
-            return
-
-        if self == other:
-            return inf
-
-        # TODO: Once this data has been loaded for the first time preserve it
-        # in memory in some way to prevent unnecessary recomputation.
-        (noun_freqs, verb_freqs) = _load_ic_data(datafile)
-
-        # Get the correct frequency dict as dependent on the input synsets'
-        # pos (Part of Speech) attribute.
-        if self.pos is NOUN: freqs = noun_freqs
-        elif self.pos is VERB: freqs = verb_freqs
-        else: return -1
-
-        ic1 = self.getIC(freqs)
-        ic2 = other.getIC(freqs)
-        (lcs, lcs_ic) = _lcs_by_content(self, other, freqs)
-
-        # If either of the input synsets are the root synset, or have a
-        # frequency of 0 (sparse data problem), return 0.
-        if ic1 is 0 or ic2 is 0: return 0
-
-        return 1 / (ic1 + ic2 - 2 * lcs_ic)
-
-    def lin_similarity(self, other, datafile=""):
-        """
-        Return a score denoting how similar two word senses are, based on the
-        Information Content (IC) of the Least Common Subsumer (most specific
-        ancestor node) and that of the two input Synsets. The relationship is
-        given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
-
-        Note that at this time the scores given do _not_ always agree with
-        those given by Pedersen's Perl implementation of Wordnet Similarity,
-        although they are mostly very similar.
-
-        The required IC values are calculated using precomputed frequency
-        counts, which are accessed from the 'datafile' file which is supplied
-        as an argument. For more information on how they are calculated,
-        check brown_ic.py.
-
-        @type  other: L{Sense}
-        @param other: The L{Sense} that this L{Sense} is being compared to.
-        @return: A float score denoting the similarity of the two L{Sense}s,
-            in the range 0 to 1. If no path exists between the two synsets a
-            score of -1 is returned.
-        """
-
-        if datafile is "":
-            print("You must supply the path of a datafile containing frequency")
-            print("information, as generated by brown_information_content() in")
-            print("'brown_ic.py'")
-            return
-
-        # TODO: Once this data has been loaded for the first time preserve it
-        # in memory in some way to prevent unnecessary recomputation.
-        (noun_freqs, verb_freqs) = _load_ic_data(datafile)
-
-        if self.pos is NOUN: freqs = noun_freqs
-        elif self.pos is VERB: freqs = verb_freqs
-        else: return -1
-
-        ic1 = self.getIC(freqs)
-        ic2 = other.getIC(freqs)
-        (lcs, lcs_ic) = _lcs_by_content(self, other, freqs)
-
-        return (2 * lcs_ic) / (ic1 + ic2)
+def _check_datafile(datafile):
+    if datafile is "":
+        raise RuntimeError, "You must supply the path of a datafile containing frequency information, as generated by brown_information_content() in 'brown_ic.py'"
 
 class Pointer(object):
     """
@@ -891,87 +690,6 @@ def getSynset(pos, offset):
     return dictionaryFor(pos).getSynset(offset)
 
 # Utility functions
-
-def _lcs_by_depth(synset1, synset2):
-    """
-    Finds the least common subsumer of two synsets in a Wordnet taxonomy,
-    where the least common subsumer is defined as the ancestor node common
-    to both input synsets whose shortest path to the root node is the longest.
-
-    @type  synset1: L{Synset}
-    @param synset1: First input synset.
-    @type  synset2: L{Synset}
-    @param synset2: Second input synset.
-    @return: The ancestor synset common to both input synsets which is also the LCS.
-    """
-    subsumer = None
-    max_min_path_length = -1
-
-    eliminated = set()
-    subsumers = synset1.hypernyms() & synset2.hypernyms()
-    subsumers.add(synset1)
-    subsumers.add(synset2)
-
-    # Eliminate those synsets which are ancestors of other synsets in the
-    # set of subsumers.
-
-    for candidate in subsumers:
-        for subcandidate in subsumers:
-            if subcandidate in candidate.hypernyms():
-                eliminated.add(subcandidate)
-
-    subsumers -= eliminated
-
-    # Calculate the length of the shortest path to the root for each
-    # subsumer. Select the subsumer with the longest of these.
-
-    for candidate in subsumers:
-
-        paths_to_root = candidate.hypernym_paths()
-        min_path_length = -1
-
-        for path in paths_to_root:
-            if min_path_length < 0 or len(path) < min_path_length:
-                min_path_length = len(path)
-
-        if min_path_length > max_min_path_length:
-            max_min_path_length = min_path_length
-            subsumer = candidate
-
-    return subsumer
-
-def _lcs_by_content(synset1, synset2, freqs):
-    """
-    Get the least common subsumer of the two input synsets, where the least
-    common subsumer is defined as the ancestor synset common to both input
-    synsets which has the highest information content (IC) value. The IC
-    value is calculated by extracting the probability of an ancestor synset
-    from a precomputed set.
-
-    @type  synset1: L{Synset}
-    @param synset1: First input synset.
-
-    @type  synset2: L{Synset}
-    @param synset2: Second input synset.
-
-    @return: The ancestor synset common to both input synsets which is also
-        the LCS.
-    """
-    subsumer = None
-    subsumer_ic = -1
-
-    subsumers = synset1.hypernyms() & synset2.hypernyms()
-    subsumers.add(synset1)
-    subsumers.add(synset2)
-
-    # For each candidate, calculate its IC value. Keep track of the candidate
-    # with the highest score.
-    for candidate in subsumers:
-        ic = candidate.getIC(freqs)
-        if (subsumer == None and ic > 0) or ic > subsumer_ic:
-            subsumer = candidate
-            subsumer_ic = ic
-    return (subsumer, subsumer_ic)
 
 def _load_ic_data(filename):
     """
@@ -1606,7 +1324,7 @@ def demo():
     print N['dog'][0].shortest_path_distance(N['cat'][0])
     
     print
-    print "Similarity:"
+    print "Similarity: dog~cat"
     print
     
     print "Path Distance Similarity:",
