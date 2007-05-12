@@ -42,7 +42,6 @@ def generate_compound_list(filename=None):
 
         for term in dict:
             term = term.form
-
             if ' ' in term: outfile.write("%s:%s\n" % (term, type))
 
 def read_word_list(filename):
@@ -59,27 +58,19 @@ def read_word_list(filename):
     return word_list
 
 def get_roots(dictionary):
-
     roots = []
-
     for word in dictionary:
-
         for sense in word:
-
             synset = sense.synset
-            hypernyms = set(synset.getPointerTargets("hypernym")) | set(synset.getPointerTargets("hypernym (instance)"))
-
+            hypernyms = set(synset[HYPERNYM]) | set(synset[INSTANCE_HYPERNYM])
             if len(hypernyms) == 0: roots.append(synset)
-
     return roots
 
-def propogate_frequencies(freq_dist, node):
+def propogate_frequencies(freq_dist, synset):
 
-    hyponyms = set(node.getPointerTargets("hyponym")) | set(node.getPointerTargets("hyponym (instance)"))
-
+    hyponyms = set(synset[HYPONYM]) | set(synset[INSTANCE_HYPONYM])
     for hyponym in hyponyms:
         freq_dist.inc(node, propogate_frequencies(freq_dist, hyponym))
-
     return freq_dist.count(node)
 
 def brown_information_content(output_filename, compounds_filename, \
