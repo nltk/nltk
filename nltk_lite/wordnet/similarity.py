@@ -36,9 +36,9 @@ def path_distance_similarity(synset1, synset2, verbose=False):
         itself.
     """
 
-    path_distance = synset1.shortest_path_distance(synset2, verbose)
-    if path_distance >= 0:
-        return 1.0 / (path_distance + 1)
+    distance = synset1.shortest_path_distance(synset2)
+    if distance >= 0:
+        return 1.0 / (distance + 1)
     else:
         return -1
 
@@ -63,7 +63,7 @@ def leacock_chodorow_similarity(synset1, synset2, verbose=False):
         raise TypeError, "Can only calculate similarity for nouns or verbs"
     depth = taxonomy_depths[synset1.pos]
 
-    distance = synset1.shortest_path_distance(synset2, verbose)
+    distance = synset1.shortest_path_distance(synset2)
     if distance >= 0:
         return -math.log((distance + 1) / (2.0 * depth))
     else:
@@ -104,8 +104,8 @@ def wu_palmer_similarity(synset1, synset2, verbose=False):
     # Get the shortest path from the LCS to each of the synsets it is subsuming.
     # Add this to the LCS path length to get the path length from each synset to the root.
 
-    len1 = synset1.shortest_path_distance(subsumer, verbose) + depth
-    len2 = synset2.shortest_path_distance(subsumer, verbose) + depth
+    len1 = synset1.shortest_path_distance(subsumer) + depth
+    len2 = synset2.shortest_path_distance(subsumer) + depth
     return (2.0 * depth) / (len1 + len2)
 
 def resnik_similarity(synset1, synset2, datafile="", verbose=False):
@@ -244,7 +244,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     subsumer = None
     max_min_path_length = -1
 
-    subsumers = synset1.hypernyms() & synset2.hypernyms()
+    subsumers = set(synset1.hypernyms()) & set(synset2.hypernyms())
     subsumers.add(synset1)
     subsumers.add(synset2)
 
