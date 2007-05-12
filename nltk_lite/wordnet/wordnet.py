@@ -72,6 +72,12 @@ class Word(object):
     def __getitem__(self, idx):
         return self.synsets()[idx]
     
+    def __iter__(self):
+        return iter(self.synsets())
+
+    def __contains__(self, item):
+        return item in self.synsets()
+    
     def __getslice__(self, i, j):
         return self.synsets()[i:j]
 
@@ -232,67 +238,43 @@ class Synset(object):
 #             del self.words
 
 #         return self._senses
-
-    def getPointers(self, pointerType=None):
+    
+    def relations(self):
         """
-        Return a sequence of Pointers.
+        Return a dictionary of synsets
 
         If pointerType is specified, only pointers of that type are
         returned. In this case, pointerType should be an element of
         POINTER_TYPES.
 
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].getPointers()[:5]
-        [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-        >>> N['dog'][0].getPointers(HYPERNYM)
-        [hypernym -> {noun: canine, canid}]
-
-        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-
-        @return: A sequence of L{Pointer}s to L{Synset}s immediately
-            connected to this L{Synset}.
+        @return: relations defined on this L{Synset}.
         """
 
         # Load the pointers from the Wordnet files if necessary.
-        if not hasattr(self, '_pointers'):
-            self._pointers = []
+        if not hasattr(self, '_relations'):
+            self._relations = {}
 
-            for tuple in self._pointerTuples:
-                self._pointers.append(Pointer(self.offset, tuple))
+            for (type, offset, pos, indices) in self._pointerTuples:
+                key = _RELATION_TABLE[type]
+                if key not in self._relations:
+                    self._relations[key] = []
+                idx = int(indices, 16) & 255
+                synset_ref = normalizePOS(pos), int(offset), idx
+                self._relations[key].append(synset_ref)
             del self._pointerTuples
+        return self._relations
 
-        if pointerType == None:
-            return self._pointers
-
-        elif pointerType not in POINTER_TYPES:
-            raise TypeError, `pointerType` + " is not a pointer type"
-
-        else:
-            return filter(lambda pointer, type=pointerType: pointer.type == type, self._pointers)
-
-    def getPointerTargets(self, pointerType=None):
-        """
-        Return a sequence of Senses or Synsets.
-        
-        If pointerType is specified, only targets of pointers of that
-        type are returned.  In this case, pointerType should be an
-        element of POINTER_TYPES.
-
-        >>> from nltk_lite.wordnet import *
-        >>> N['dog'][0].getPointerTargets()[:5]
-        [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-        >>> N['dog'][0].getPointerTargets(HYPERNYM)
-        [{noun: canine, canid}]
-
-        @type  pointerType: C{string} or constant (one of POINTER_TYPES)
-        @param pointerType: a relation linking two synsets e.g. 'hypernym'
-        @return: A list of L{Synsets} connected to this L{Synset}.
-        """
-        return map(Pointer.getTarget, self.getPointers(pointerType))
-
+    def relation(self, rel):
+        synsets = []
+        for synset_ref in self.relations().get(rel, []):
+            pos, offset, idx = synset_ref
+            synset = getSynset(pos, offset)
+            if idx:
+                synsets.append(synset[self.targetIndex-1])
+            else:
+                synsets.append(synset)
+        return synsets
+    
     ### BROKEN:
     def isTagged(self):
         """
@@ -318,7 +300,7 @@ class Synset(object):
         return "{" + self.words[0] + "}"
     
     def __repr__(self):
-        return "{" + self.pos + `self.offset` + ": " + string.join(self.words, ", ") + "}"
+        return "{" + self.pos + ": " + string.join(self.words, ", ") + "}"
     
     def __cmp__(self, other):
         return _compareInstances(self, other, ('pos', 'offset'))
@@ -327,7 +309,16 @@ class Synset(object):
         return _compareInstances(self, other, ('pos', 'offset')) == 0
     
     def __getitem__(self, idx):
-        return self.words[idx]
+        try:
+            return self.words[idx]
+        except TypeError:
+            return self.relation(idx)
+    
+    def __iter__(self):
+        return iter(self.words)
+
+    def __contains__(self, item):
+        return item in self.words
     
     def __getslice__(self, i, j):
         return self.words[i:j]
@@ -343,48 +334,16 @@ class Synset(object):
         """
         return len(self.words())
     
-    def hypernyms(self):
-        """
-        Get the set of hypernym synsets of this synset.
-
-        @type  include_self: boolean
-        @param include_self: flag whether to include the source synset in the
-            result list
-        @return: The set of hypernym L{Synset}s of the original L{Synset}.
-        """
-
-        try:
-            self._hypernyms
-        except AttributeError:
-            self._hypernyms = set(self.getPointerTargets(HYPERNYM) + self.getPointerTargets(INSTANCE_HYPERNYM))
-        return self._hypernyms
-
-    def hyponyms(self):
-        """
-        Get the set of hyponym synsets of this synset.
-
-        @type  include_self: boolean
-        @param include_self: flag whether to include the source synset in the
-            result list
-        @return: The set of hyponym L{Synset}s of the original L{Synset}.
-        """
-
-        try:
-            self._hyponyms
-        except AttributeError:
-            self._hyponyms = set(self.getPointerTargets(HYPONYM) + self.getPointerTargets(INSTANCE_HYPONYM))
-        return self._hyponyms
-
     def max_depth(self):
         """
         @return: The length of the longest hypernym path from this synset to the root.
         """
 
-        if self.hypernyms() == []:
+        if self[HYPERNYM] == []:
             return 0
         
         deepest = 0
-        for hypernym in self.hypernyms():
+        for hypernym in self[HYPERNYM]:
             depth = hypernym.max_depth()
             if depth > deepest:
                 deepest = depth
@@ -395,30 +354,29 @@ class Synset(object):
         @return: The length of the shortest hypernym path from this synset to the root.
         """
 
-        if self.hypernyms() == []:
+        if self[HYPERNYM] == []:
             return 0
 
         shallowest = 1000
-        for hypernym in self.hypernyms():
+        for hypernym in self[HYPERNYM]:
             depth = hypernym.max_depth()
             if depth < shallowest:
                 shallowest = depth
         return shallowest + 1
 
-    def hypernym_ancestors(self):
+    def closure(self, rel, depth=-1):
+        """Return the transitive closure of source under the rel relationship, breadth-first
+    
+        >>> dog = N['dog'][0]
+        >>> dog.closure(HYPERNYM)
+        [{noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
         """
-        Get the set of all ancestor hypernym synsets of this synset.
-
-        @type  include_self: boolean
-        @param include_self: flag whether to include the source synset in the
-            result list
-        @return: The set of all hypernym L{Synset}s of the original L{Synset}.
-        """
-
-        for hypernym in self.hypernyms():
-            hypernym_ancestors.add(hypernym)
-            hypernym_ancestors |= hypernym.hypernym_ancestors()
-        return hypernym_ancestors
+        from nltk_lite.utilities import breadth_first
+        synsets = []
+        for synset in breadth_first(self, lambda s:s[rel], depth):
+            if synset not in synsets:
+                synsets.append(synset)
+        return synsets
 
     def hypernym_paths(self):
         """
@@ -430,7 +388,7 @@ class Synset(object):
         """
         paths = []
 
-        hypernyms = self.hypernyms()
+        hypernyms = self[HYPERNYM]
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -454,13 +412,13 @@ class Synset(object):
         """
         distances = set([(self, distance)])
 
-        for hypernym in self.hypernyms():
+        for hypernym in self[HYPERNYM]:
             distances |= hypernym.hypernym_distances(distance+1, verbose=False)
         if verbose:
             print "> Hypernym Distances:", self, string.join(synset.__str__() + ":" + `dist` for synset, dist in distances)
         return distances
 
-    def shortest_path_distance(self, other, verbose=False):
+    def shortest_path_distance(self, other):
         """
         Returns the distance of the shortest path linking the two synsets (if
         one exists). For each synset, all the ancestor nodes and their distances
@@ -508,8 +466,6 @@ class Synset(object):
                     if path_distance < 0 or new_distance < path_distance:
                         path_distance = new_distance
 
-        if verbose:
-            print "> Shortest Path Distance:", self, other, path_distance
         return path_distance
 
     def information_content(self, freq_data):
@@ -531,6 +487,26 @@ class Synset(object):
             return -math.log(prob)
 
         else: return -1
+
+    def tree(self, rel):
+        """
+        >>> dog = N['dog'][0]
+        >>> from pprint import pprint
+        >>> pprint(dog.tree(HYPERNYM))
+        ['dog' in {noun: dog, domestic dog, Canis familiaris},
+         [{noun: canine, canid},
+          [{noun: carnivore},
+           [{noun: placental, placental mammal, eutherian, eutherian mammal},
+            [{noun: mammal, mammalian},
+             [{noun: vertebrate, craniate},
+              [{noun: chordate},
+               [{noun: animal, animate being, beast, brute, creature, fauna},
+                [{noun: organism, being},
+                 [{noun: living thing, animate thing},
+                  [{noun: object, physical object},
+                   [{noun: physical entity}, [{noun: entity}]]]]]]]]]]]]]
+        """
+        return [self] + map(lambda s, rel=rel:s.tree(rel), self[rel])
 
     # interface to similarity methods
      
@@ -557,96 +533,19 @@ def _check_datafile(datafile):
     if datafile is "":
         raise RuntimeError, "You must supply the path of a datafile containing frequency information, as generated by brown_information_content() in 'brown_ic.py'"
 
-class Pointer(object):
-    """
-    A typed directional relationship between Synsets.
+# Lexical Relations
+
+_RELATION_TABLE = {
+    '!': ANTONYM,           '@': HYPERNYM,           '~': HYPONYM,        '=': ATTRIBUTE,
+    '^': ALSO_SEE,          '*': ENTAILMENT,         '>': CAUSE,          '$': VERB_GROUP,
+    '#m': MEMBER_MERONYM,   '#s': SUBSTANCE_MERONYM, '#p': PART_MERONYM, 
+    '%m': MEMBER_HOLONYM,   '%s': SUBSTANCE_HOLONYM, '%p': PART_HOLONYM,
+    '&': SIMILAR,           '<': PARTICIPLE_OF,      '\\': PERTAINYM,     '+': FRAMES,
+    ';c': CLASSIF_CATEGORY, ';u': CLASSIF_USAGE,     ';r': CLASSIF_REGIONAL,
+    '-c': CLASS_CATEGORY,   '-u': CLASS_USAGE,       '-r': CLASS_REGIONAL,
+    '@i': INSTANCE_HYPERNYM,'~i': INSTANCE_HYPONYM,
+    }
     
-    @type  type: C{string}
-    @param type: One of POINTER_TYPES.
-    @type  pos: C{string}
-    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
-    """
-    
-    _POINTER_TYPE_TABLE = {
-        '!': ANTONYM,
-        '@': HYPERNYM,
-        '~': HYPONYM,
-        '=': ATTRIBUTE,
-        '^': ALSO_SEE,
-        '*': ENTAILMENT,
-        '>': CAUSE,
-        '$': VERB_GROUP,
-        '#m': MEMBER_MERONYM,
-        '#s': SUBSTANCE_MERONYM,
-        '#p': PART_MERONYM,
-        '%m': MEMBER_HOLONYM,
-        '%s': SUBSTANCE_HOLONYM,
-        '%p': PART_HOLONYM,
-        '&': SIMILAR,
-        '<': PARTICIPLE_OF,
-        '\\': PERTAINYM,
-        # New in wn 2.0:
-        '+': FRAMES,
-        ';c': CLASSIF_CATEGORY,
-        ';u': CLASSIF_USAGE,
-        ';r': CLASSIF_REGIONAL,
-        '-c': CLASS_CATEGORY,
-        '-u': CLASS_USAGE,
-        '-r': CLASS_REGIONAL,
-        # New in wn 2.1:
-        '@i': INSTANCE_HYPERNYM,
-        '~i': INSTANCE_HYPONYM,
-        }
-    
-    def __init__(self, sourceOffset, pointerTuple):
-        (type, offset, pos, indices) = pointerTuple
-
-        # One of POINTER_TYPES
-        self.type = Pointer._POINTER_TYPE_TABLE[type]
-
-        self.sourceOffset = sourceOffset
-        self.targetOffset = int(offset)
-
-        # Part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB
-        self.pos = normalizePOS(pos)
-
-        indices = int(indices, 16)
-        self.sourceIndex = indices >> 8
-        self.targetIndex = indices & 255
-    
-    def getSource(self):
-        synset = getSynset(self.pos, self.sourceOffset)
-
-        if self.sourceIndex: return synset[self.sourceIndex - 1]
-        else: return synset
-
-    def getTarget(self):
-        synset = getSynset(self.pos, self.targetOffset)
-
-        if self.targetIndex: return synset[self.targetIndex - 1]
-        else: return synset
-
-    def __str__(self):
-        return "%s -> %s" % (self.type, str(self.getTarget()))
-    
-    def __repr__(self):
-
-        if ReadableRepresentations:
-            return str(self)
-
-        return "<" + str(self) + ">"
-    
-    def __cmp__(self, other):
-        diff = _compareInstances(self, other, ('pos', 'sourceOffset'))
-
-        if diff: return diff
-
-        synset = self.source()
-
-        def pointerIndex(sense, synset=synset):
-            return _index(sense, synset.getPointers(), testfn=lambda a,b: not _compareInstances(a, b, ('type', 'sourceIndex', 'targetIndex')))
-        return cmp(pointerIndex(self), pointerIndex(other))
-
 # Lookup functions
 
 def getWord(form, pos=NOUN):
@@ -1292,15 +1191,18 @@ def dictionaryFor(pos):
 
 
 def demo():
-    from nltk_lite.wordnet import N, V, HYPERNYM
+    from nltk_lite.wordnet import N, V, ADJ, ADV, HYPERNYM
+    from pprint import pprint
     
+    dog = N['dog']
+    cat = N['cat']
+
     print "N['dog']"
-    print N['dog']
-    print N['dog'].pos
-    print N['dog'].form
-    print N['dog'].taggedSenseCount
-    print N['dog'].synsets()
-    print N['dog'].isTagged()
+    print dog
+    print dog.pos, dog.form
+    print dog.taggedSenseCount
+    print dog.synsets()
+    print dog.isTagged()
     # ADJ['clear'].getAdjectivePositions()
     # N['cat'] < N['dog']
     # N['dog'] < V['dog']
@@ -1308,21 +1210,43 @@ def demo():
     print "Verb Frames:",
     print V['think'][0].verbFrameStrings
 
-    print "Pointers:"
-    print N['dog'][0].getPointers()[:5]
-    print N['dog'][0].getPointers(HYPERNYM)
-
-    print N['dog'][0].getPointerTargets()[:5]
-    print N['dog'][0].getPointerTargets(HYPERNYM)
+    print "Relations:"
+    print dog[0].relations()
+    print dog[0].relation(HYPERNYM)
 
     print
     print "Paths and Distances:"
     print
 
-    print N['dog'][0].hypernym_paths()
-    print N['dog'][0].hypernym_distances(0)
-    print N['dog'][0].shortest_path_distance(N['cat'][0])
+    print dog[0].hypernym_paths()
+    print dog[0].hypernym_distances(0)
+    print dog[0].shortest_path_distance(cat[0])
     
+    print
+    print "Closures and Trees:"
+    print
+    
+    print ADJ['red'][0].closure(SIMILAR, depth=1)
+    print ADJ['red'][0].closure(SIMILAR, depth=2)
+    pprint(dog[0].tree(HYPERNYM))
+    
+    print "All the words in the hyponym synsets of dog[0]"
+    print [word for synset in dog[0][HYPONYM] for word in synset]
+
+    # Adjectives that are transitively SIMILAR to any of the senses of 'red'
+    #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
+
+    # Hyponyms of the main sense of 'dog'(n.) that are homophonous with verbs
+    # filter(lambda sense:V.get(sense.form), flatten1(map(lambda e:e.getSenses(), hyponyms(N['dog'][0]))))
+    
+    print [word for synset in dog[0][HYPONYM] for word in synset if word in V]
+
+    # Find the senses of 'raise'(v.) and 'lower'(v.) that are antonyms
+    # filter(lambda p:p[0] in p[1].getPointerTargets(ANTONYM), product(V['raise'].getSenses(), V['lower'].getSenses()))
+
+def product(u, v):
+    return [(a,b) for a in u for b in v]
+
     print
     print "Similarity: dog~cat"
     print

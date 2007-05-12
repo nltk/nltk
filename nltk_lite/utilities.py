@@ -322,7 +322,7 @@ class Counter:
 
 
 ##########################################################################
-# COUNTER, FOR UNIQUE NAMING
+# TRIES
 ##########################################################################
 
 # Trie structure, by James Tauber and Leonardo Maffi (V. 1.2, July 18 2006)
@@ -420,6 +420,27 @@ class Trie:
 
     def __repr__(self):
         return "Trie(%r)" % self._root
+
+##########################################################################
+# Breadth-First Search
+##########################################################################
+
+# Adapted from a Python cookbook entry; original version by David Eppstein
+def breadth_first(tree, children=iter, depth=-1):
+    """Traverse the nodes of a tree in breadth-first order.
+    The first argument should be the tree root; children
+    should be a function taking as argument a tree node and
+    returning an iterator of the node's children.
+    """
+    yield tree
+    last = tree
+    if depth != 0:
+        for node in breadth_first(tree, children, depth-1):
+            for child in children(node):
+                yield child
+                last = child
+            if last == node:
+                return
 
 ##########################################################################
 # Guess Character Encoding
