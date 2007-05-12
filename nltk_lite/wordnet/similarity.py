@@ -244,7 +244,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     subsumer = None
     max_min_path_length = -1
 
-    subsumers = set(synset1.hypernyms()) & set(synset2.hypernyms())
+    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))
     subsumers.add(synset1)
     subsumers.add(synset2)
 
@@ -254,7 +254,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     eliminated = set()
     for candidate in subsumers:
         for subcandidate in subsumers:
-            if subcandidate in candidate.hypernyms():
+            if subcandidate in candidate.closure(HYPERNYM):
                 eliminated.add(subcandidate)
 
     subsumers -= eliminated
@@ -299,7 +299,7 @@ def _lcs_by_content(synset1, synset2, freqs, verbose=False):
     subsumer = None
     subsumer_ic = -1
 
-    subsumers = synset1.hypernyms() & synset2.hypernyms()
+    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))
     subsumers.add(synset1)
     subsumers.add(synset2)
 

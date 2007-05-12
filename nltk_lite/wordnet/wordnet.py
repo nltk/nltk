@@ -270,7 +270,7 @@ class Synset(object):
             pos, offset, idx = synset_ref
             synset = getSynset(pos, offset)
             if idx:
-                synsets.append(synset[self.targetIndex-1])
+                synsets.append(synset[idx-1])
             else:
                 synsets.append(synset)
         return synsets
@@ -310,9 +310,9 @@ class Synset(object):
     
     def __getitem__(self, idx):
         try:
-            return self.words[idx]
+            return self.words[idx]       # integer key
         except TypeError:
-            return self.relation(idx)
+            return self.relation(idx)    # string key
     
     def __iter__(self):
         return iter(self.words)
@@ -674,15 +674,10 @@ def _equalsIgnoreCase(a, b):
 
 #############################################################################
 # Dictionary classes, which allow users to access
-# Wordnet data via a handy dict notation (see below). Also defined are the
-# low level _IndexFile class and various file utilities, which do the actual
-# lookups in the Wordnet database files.
+# Wordnet data via a handy dict notation (see below).
 #############################################################################
 
-from types import IntType, ListType, StringType, TupleType
-
-# Work around a Windows Python bug
-_FILE_OPEN_MODE = os.name in ('dos', 'nt') and 'rb' or 'r'
+from types import IntType, StringType
 
 class Dictionary(object):
     """
@@ -709,8 +704,8 @@ class Dictionary(object):
         @param filenameroot: filename of the relevant Wordnet dictionary file
         """
         self.pos = pos
-        self.indexFile = _IndexFile(pos, filenameroot)
-        self.dataFile = open(_dataFilePathname(filenameroot), _FILE_OPEN_MODE)
+        self.indexFile = IndexFile(pos, filenameroot)
+        self.dataFile = open(dataFilePathname(filenameroot), FILE_OPEN_MODE)
     
     def __repr__(self):
         dictionaryVariables = {}
@@ -815,6 +810,12 @@ class Dictionary(object):
         else:
             raise TypeError, "%s is not a String or Int" % `index`
     
+    def __iter__(self):
+        return iter(self.keys())
+
+    def __contains__(self, item):
+        return self.has_key(item)
+    
     def get(self, key, default=None):
         """
         Return the Word whose form is key, or default.
@@ -884,285 +885,6 @@ class Dictionary(object):
         file.close()
         print "done."
 
-class _IndexFile(object):
-    """
-    An _IndexFile is an implementation class that presents a
-    Sequence and Dictionary interface to a sorted index file.
-    """
-    
-    def __init__(self, pos, filenameroot):
-        """
-        @type  pos: {string}
-        @param pos: The part of speech of this index file e.g. 'noun'
-        @type  filenameroot: {string}
-        @param filenameroot: The base filename of the index file.
-        """
-        self.pos = pos
-        self.file = open(_indexFilePathname(filenameroot), _FILE_OPEN_MODE)
-
-        # Table of (pathname, offset) -> (line, nextOffset)
-        self.offsetLineCache = {}
-
-        self.rewind()
-
-        # The following code gives errors on import. As far as I can
-        # understand, this code checks to see if the required data already
-        # exists as a serialised Python object. More investigation required.
-
-        # self.shelfname = os.path.join(WNSEARCHDIR, pos + ".pyidx")
-
-        # try:
-            # import shelve
-            # self.indexCache = shelve.open(self.shelfname, 'r')
-
-        # except:
-            # pass
-    
-    def rewind(self):
-        """
-        Rewind to the beginning of the file. Place the file pointer at the
-        beginning of the first line whose first character is not whitespace.
-        """
-        self.file.seek(0)
-
-        while 1:
-            offset = self.file.tell()
-            line = self.file.readline()
-
-            if (line[0] != ' '):
-                break
-
-        self.nextIndex = 0
-        self.nextOffset = offset
-    
-    def __nonzero__(self):
-        return 1
-    
-    def __len__(self):
-
-        if hasattr(self, 'indexCache'):
-            return len(self.indexCache)
-
-        self.rewind()
-        lines = 0
-
-        while 1:
-            line = self.file.readline()
-
-            if line == "":
-                break
-
-            lines = lines + 1
-
-        return lines
-    
-    def __nonzero__(self):
-        return 1
-    
-    def __getitem__(self, index):
-
-        if isinstance(index, StringType):
-
-            if hasattr(self, 'indexCache'):
-                return self.indexCache[index]
-
-            return binarySearchFile(self.file, index, self.offsetLineCache, 8)
-
-        elif isinstance(index, IntType):
-
-            if hasattr(self, 'indexCache'):
-                return self.get(self.keys[index])
-
-            if index < self.nextIndex:
-                self.rewind()
-
-            while self.nextIndex <= index:
-                self.file.seek(self.nextOffset)
-                line = self.file.readline()
-
-                if line == "":
-                    raise IndexError, "index out of range"
-
-                self.nextIndex = self.nextIndex + 1
-                self.nextOffset = self.file.tell()
-
-            return line
-
-        else: raise TypeError, "%s is not a String or Int" % `index`
-        
-    def get(self, key, default=None):
-        """
-        @type  key: {string}
-        @param key: first word of a line from an index file.
-        @param default: Return this if no entry exists for 'key'.
-        """
-        try:
-            return self[key]
-
-        except LookupError:
-            return default
-    
-    def keys(self):
-        """
-        @return: a list of the keys of this index file.
-        """
-
-        if hasattr(self, 'indexCache'):
-            keys = self.indexCache.keys()
-            keys.sort()
-            return keys
-
-        else:
-            keys = []
-            self.rewind()
-
-            while 1:
-                line = self.file.readline()
-
-                if not line: break
-
-                key = line.split(' ', 1)[0]
-                keys.append(key.replace('_', ' '))
-
-            return keys
-    
-    def has_key(self, key):
-        """
-        @type  key: {string}
-        @param key: the first word of a line in this index file.
-        @return: True/false if this key is a valid index into the file.
-        """
-        key = key.replace(' ', '_') # test case: V['haze over']
-
-        if hasattr(self, 'indexCache'):
-            return self.indexCache.has_key(key)
-
-        return self.get(key) != None
-    
-    def _buildIndexCacheFile(self):
-
-        import shelve
-        import os
-
-        print "Building %s:" % (self.shelfname,),
-        tempname = self.shelfname + ".temp"
-
-        try:
-            indexCache = shelve.open(tempname)
-            self.rewind()
-            count = 0
-
-            while 1:
-                offset, line = self.file.tell(), self.file.readline()
-                if not line: break
-                key = line[:string.find(line, ' ')]
-                if (count % 1000) == 0:
-                    print "%s..." % (key,),
-                    import sys
-                    sys.stdout.flush()
-                indexCache[key] = line
-                count = count + 1
-            indexCache.close()
-            os.rename(tempname, self.shelfname)
-
-        finally:
-            try: os.remove(tempname)
-            except: pass
-
-        print "done."
-        self.indexCache = shelve.open(self.shelfname, 'r')
-
-# File utilities
-
-def _dataFilePathname(filenameroot):
-    """
-    @type  filenameroot: {string}
-    @param filenameroot: base form of the data file's filename.
-    @return: the full path to the data file.
-    """
-
-    if os.name in ('dos', 'nt'):
-        path = os.path.join(WNSEARCHDIR, filenameroot + ".dat")
-
-        if os.path.exists(path):
-            return path
-
-    return os.path.join(WNSEARCHDIR, "data." + filenameroot)
-
-def _indexFilePathname(filenameroot):
-    """
-    @type  filenameroot: {string}
-    @param filenameroot: base form of the index file's filename.
-    @return: the full path to the index file.
-    """
-
-    if os.name in ('dos', 'nt'):
-        path = os.path.join(WNSEARCHDIR, filenameroot + ".idx")
-
-        if os.path.exists(path):
-            return path
-
-    return os.path.join(WNSEARCHDIR, "index." + filenameroot)
-
-def binarySearchFile(file, key, cache={}, cacheDepth=-1):
-    """
-    Searches through a sorted file using the binary search algorithm.
-
-    @type  file: file
-    @param file: the file to be searched through.
-    @type  key: {string}
-    @param key: the identifier we are searching for.
-    @return: The line from the file with first word key.
-    """
-    from stat import ST_SIZE
-    
-    key = key + ' '
-    keylen = len(key)
-    start, end = 0, os.stat(file.name)[ST_SIZE]
-    currentDepth = 0
-    
-    while start < end:
-        lastState = start, end
-        middle = (start + end) / 2
-
-        if cache.get(middle):
-            offset, line = cache[middle]
-
-        else:
-            file.seek(max(0, middle - 1))
-
-            if middle > 0:
-                file.readline()
-
-            offset, line = file.tell(), file.readline()
-
-            if currentDepth < cacheDepth:
-                cache[middle] = (offset, line)
-
-        if offset > end:
-            assert end != middle - 1, "infinite loop"
-            end = middle - 1
-
-        elif line[:keylen] == key:
-            return line
-
-        elif line > key:
-            assert end != middle - 1, "infinite loop"
-            end = middle - 1
-
-        elif line < key:
-            start = offset + len(line) - 1
-
-        currentDepth = currentDepth + 1
-        thisState = start, end
-
-        if lastState == thisState:
-            # Detects the condition where we're searching past the end
-            # of the file, which is otherwise difficult to detect
-            return None
-
-    return None
-
 # Dictionaries
 
 N = Dictionary(NOUN, NOUN)
@@ -1198,6 +920,7 @@ def demo():
     cat = N['cat']
 
     print "N['dog']"
+    print 'dog' in N
     print dog
     print dog.pos, dog.form
     print dog.taggedSenseCount
@@ -1213,6 +936,10 @@ def demo():
     print "Relations:"
     print dog[0].relations()
     print dog[0].relation(HYPERNYM)
+
+    print "Glosses:"
+    print dog[0].gloss
+    print dog[0].relation(HYPERNYM)[0].gloss
 
     print
     print "Paths and Distances:"
@@ -1230,33 +957,37 @@ def demo():
     print ADJ['red'][0].closure(SIMILAR, depth=2)
     pprint(dog[0].tree(HYPERNYM))
     
-    print "All the words in the hyponym synsets of dog[0]"
-    print [word for synset in dog[0][HYPONYM] for word in synset]
-
     # Adjectives that are transitively SIMILAR to any of the senses of 'red'
     #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
 
-    # Hyponyms of the main sense of 'dog'(n.) that are homophonous with verbs
-    # filter(lambda sense:V.get(sense.form), flatten1(map(lambda e:e.getSenses(), hyponyms(N['dog'][0]))))
-    
+    print "All the words in the hyponym synsets of dog[0]"
+    print [word for synset in dog[0][HYPONYM] for word in synset]
+
+    print "Hyponyms of the main sense of dog that are homophonous with verbs:"
     print [word for synset in dog[0][HYPONYM] for word in synset if word in V]
 
-    # Find the senses of 'raise'(v.) and 'lower'(v.) that are antonyms
-    # filter(lambda p:p[0] in p[1].getPointerTargets(ANTONYM), product(V['raise'].getSenses(), V['lower'].getSenses()))
-
-def product(u, v):
-    return [(a,b) for a in u for b in v]
+    # BROKEN
+    print "Senses of 'raise'(v.) and 'lower'(v.) that are antonyms:"
+    print filter(lambda p:p[0] in p[1][ANTONYM], [(r,l) for r in V['raise'] for l in V['lower']])
 
     print
     print "Similarity: dog~cat"
     print
     
     print "Path Distance Similarity:",
-    print N['dog'][0].path_distance_similarity(N['cat'][0])
-    print "Leacock Chodorow Similarity:"
-    print N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
-    print "Wu Palmer Similarity:"
-    print N['dog'][0].wu_palmer_similarity(N['cat'][0])
+    print dog[0].path_distance_similarity(cat[0])
+    print "Leacock Chodorow Similarity:",
+    print dog[0].leacock_chodorow_similarity(cat[0])
+    print "Wu Palmer Similarity:",
+    print dog[0].wu_palmer_similarity(cat[0])
+
+#    set up the data file
+#    print "Resnik Similarity:",
+#    print dog[0].resnik_similarity(cat[0], datafile)
+#    print "Jiang-Conrath Similarity:",
+#    print dog[0].jiang_conrath_similarity(cat[0], datafile)
+#    print "Lin Similarity:",
+#    print dog[0].lin_similarity(cat[0], datafile)
 
 if __name__ == '__main__':
     demo()
