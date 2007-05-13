@@ -80,6 +80,9 @@ class Word(object):
     
     def __getslice__(self, i, j):
         return self.synsets()[i:j]
+    
+    def __len__(self):
+        return len(self.synsets())
 
     def __repr__(self):
 #        return "<Word:" + self.form + '/' + self.pos + ">"
@@ -297,7 +300,7 @@ class Synset(object):
         >>> str(N['dog'][0].synset)
         '{noun: dog, domestic dog, Canis familiaris}'
         """
-        return "{" + self.words[0] + "}"
+        return "{" + self.pos + ": " + string.join(self.words, ", ") + "}"
     
     def __repr__(self):
         return "{" + self.pos + ": " + string.join(self.words, ", ") + "}"
@@ -374,9 +377,10 @@ class Synset(object):
         from nltk_lite.utilities import breadth_first
         synsets = []
         for synset in breadth_first(self, lambda s:s[rel], depth):
-            if synset not in synsets:
-                synsets.append(synset)
-        return synsets
+            if synset.offset not in synsets:
+                synsets.append(synset.offset)
+                yield synset
+#        return synsets
 
     def hypernym_paths(self):
         """
@@ -488,7 +492,7 @@ class Synset(object):
 
         else: return -1
 
-    def tree(self, rel):
+    def tree(self, rel, depth=-1):
         """
         >>> dog = N['dog'][0]
         >>> from pprint import pprint
@@ -506,7 +510,10 @@ class Synset(object):
                   [{noun: object, physical object},
                    [{noun: physical entity}, [{noun: entity}]]]]]]]]]]]]]
         """
-        return [self] + map(lambda s, rel=rel:s.tree(rel), self[rel])
+        if depth == 0:
+            return [self]
+        else:
+            return [self] + map(lambda s, rel=rel:s.tree(rel, depth=1), self[rel])
 
     # interface to similarity methods
      
@@ -963,8 +970,8 @@ def demo():
     print "All the words in the hyponym synsets of dog[0]"
     print [word for synset in dog[0][HYPONYM] for word in synset]
 
-    print "Hyponyms of the main sense of dog that are homophonous with verbs:"
-    print [word for synset in dog[0][HYPONYM] for word in synset if word in V]
+    print "Hyponyms of the only sense of 'animal that are homophonous with verbs:"
+    print [word for synset in N['animal'][0].closure(HYPONYM) for word in synset if word in V]
 
     # BROKEN
     print "Senses of 'raise'(v.) and 'lower'(v.) that are antonyms:"
