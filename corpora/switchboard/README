@@ -1,0 +1,35 @@
+Switchboard Corpus Sample
+
+Derived from "TalkBank Switchboard Corpus, Version 0.1"
+
+Speech data and text transcription is Copyright (C) 2000 University of
+Pennsylvania.  Other transcriptions and annotations are the copyright of
+their individual authors (as identified below).
+
+Permission is granted for use of this material in accordance with the
+Open Content License [http://opencontent.org/opl.shtml].
+This corpus contains transcripts and annotations for 36 calls from
+the Switchboard Corpus [http://www.ldc.upenn.edu/Catalog/LDC93S7.html].
+
+The Switchboard corpus has been enriched with various kinds of annotations
+since it was first published [1].
+
+From the original set of 2438 calls, 36 calls were selected which had
+complete discourse and treebank annotations and significant phonetic
+annotation.
+
+transcript           orthographic transcription (TI, LDC, BBN, ISIP)
+timed-transcript     orthographic transcription with audio offsets (TI, LDC, BBN, ISIP)
+tagged               part-of-speech tagged transcription
+discourse            discourse annotation (Jurafsky, Colorado; Shriberg, SRI)
+disfluency           disfluency annotation (Shriberg, SRI)
+
+We gratefully acknowledge the support of Steve Greenberg (UC Berkeley),
+Dan Jurafsky (University of Colorado), Joe Picone (Mississippi State),
+and Elizabeth Shriberg (SRI), in furnishing this data.
+
+[1] David Graff & Steven Bird (2000).  Many uses, many annotations for large
+    speech corpora: Switchboard and TDT as case studies.  Proceedings of the
+    Second International Conference on Language Resources and Evaluation,
+    pp. 427-433, Paris: European Language Resources Association, 2000.
+    http://arXiv.org/abs/cs/0007024
