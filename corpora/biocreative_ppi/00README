@@ -1,0 +1,40 @@
+http://www.mitre.org/public/biocreative/
+
+
+Task 1.A
+
+The first task (1.A) requires the identification of which terms in a
+biomedical research article are gene and/or protein names. This is
+analagous to the named entity tagging evaluation (e.g. person, place,
+and organization) of the Message Understanding Conference (MUC)
+evaluations. Identifying the mentions of the genes and proteins is
+foundational to a more deep natural language processing such as
+extracting the relationships among genes and proteins (e.g. binding,
+inhibition, promotion of expression). This part of the evaluation was
+prepared by Lorrie Tanabe and John Wilbur of the National Library of
+Medicine.
+
+===========================================================================
+*
+*                            PUBLIC DOMAIN NOTICE
+*               National Center for Biotechnology Information
+*
+*  This software/database is a "United States Government Work" under the
+*  terms of the United States Copyright Act.  It was written as part of
+*  the author's official duties as a United States Government employee and
+*  thus cannot be copyrighted.  This software/database is freely available
+*  to the public for use. The National Library of Medicine and the U.S.
+*  Government have not placed any restriction on its use or reproduction.
+*
+*  Although all reasonable efforts have been taken to ensure the accuracy
+*  and reliability of the software and data, the NLM and the U.S.
+*  Government do not and cannot warrant the performance or results that
+*  may be obtained by using this software or data. The NLM and the U.S.
+*  Government disclaim all warranties, express or implied, including
+*  warranties of performance, merchantability or fitness for any particular
+*  purpose.
+*
+*  Please cite the author in any work or product based on this material.
+*
+*
+=========================================================================== 

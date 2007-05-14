@@ -1,0 +1,255 @@
+0001|PKR-Gal4|50|HIS3|59|activation|56|+|
+0001|PKR-Gal4|50|lacZ|61|activation|56|+|
+0003|TPO|19|ERKs|26|enhanced|21|+|
+0003|ERKs|26|thrombin|32|activation|24|-|
+0005|AP-1|29|CRE / TRE element|33|bind|30|+|
+0005|CREB / ATF|25|CRE / TRE element|33|bind|30|+|
+0006|RsmC|5|rsmB|8|regulates|7|+|
+0006|RsmC|5|RsmA|13|affects|12|+|
+0007|VDR / RXR|1|VDREs|8|bound|4|+|
+0007|VDR / RXR|1|DR4|11|bound|4|+|
+0007|VDR / RXR|1|DR5|13|bound|4|+|
+0009|human factor IX|12|factor IXa|16|conversion|10|+|context protein is "factor XIa"
+0012|LBP-1|6|TFIID|15|inhibiting|11|+|
+0014|yeast TAF145;yTAF145|6;9|TBP|13|binds|11|+|
+0015|C / EBP dimer|7|C / EBP site|15|binding|11|+|
+0015|ATF / CREB sites|25|CREB|34|bound|32|-|
+0021|Tax1|13|CCAAT binding protein NF-Y;NF-Y|22;25|interact|11|*|
+0023|UBC9|7|TEL|12|interacts|9|+|
+0025|DAF16|1|insulin / IGF-1 receptor|23|includes|19|*|
+0025|DAF16|1|PtdIns 3-kinase|28|includes|19|*|
+0025|DAF16|1|PKB|31|includes|19|*|
+0029|BCL6|1|POZ / Zn finger protein|4|encodes|2|+|
+0036|IL-6|4|JRE-IL6|6|activates|5|+|
+0037|PCE|4|Pbx dimer partner|7|binds|5|+|
+0039|RPM / RGL3|1|M-Ras|14|interacting|9|+|
+0039|RPM / RGL3|1|p21 Ras|16|interacting|9|+|
+0040|p27 ( KIP1 )|10|PI3K-induced FKHR-L1|16|inhibition|8|-|
+0043|Chick brain actin depolymerizing factor;ADF|1;7|actin filaments|15|severs|14|+|
+0043|Chick brain actin depolymerizing factor;ADF|1;7|actin monomers|19|binds|18|+|
+0045|zeta 2 globin|9|alpha globin regulatory element;HS-40|15;20|interaction|5|*|
+0050|SOCS-3|6|IGFIR|11|binds|8|+|
+0051|U1-70K|4|SRZ proteins|7|interaction|2|+|
+0053|TRAF2|1|TRADD|7|associate|5|+|
+0053|TRAF2 mutant|16|JNK|24|inhibit|22|+|
+0054|NF-kappaB|22|Tat|25|activated|23|-|
+0056|H-2Eb|3|IAP retrotransposon|6|interaction|1|+|
+0057|apolipoprotein B mRNA|4|hnRNP C1 protein|10|inhibition|1|-|
+0057|apolipoprotein B mRNA|4|40S hnRNP complexes|14|inhibition|1|-|
+0060|beta4|12|AP-4|21|component|15|*|
+0060|sigma4 polypeptide|27|AP-4|21|contains|25|*|
+0060|mu4;mu-ARP2|36;38|AP-4|21|contains|25|*|
+0060|epsilon|41|AP-4|21|contains|25|*|
+0061|IL-3|15|FKHR-L1|17|inhibited|16|+|
+0062|Tat|9|hCycT1|11|interaction|7|*|
+0063|syk|15|Jak3|18|activation|13|+|
+0066|EGF|8|Ras|14|induced|13|+|
+0067|NDF|26|EGF|28|effect|24|+|
+0071|pDeltaCREC / EBP|5|C / EBPalpha and beta|10|binds|9|+|
+0072|Src|1|FGF1|5|induced|3|-|
+0072|PP2|15|Src|21|inhibitor|19|+|
+0073|dShc protein|5|Drosophila epidermal growth factor receptor homolog;DER|12;19|associates|8|+|
+0073|dShc protein|5|DER|28|phosphorylated|24|-|
+0074|glucan synthase|3|Rho1p|11|activated|9|-|
+0075|Sos|3|EGF|17|inhibited|12|+|
+0076|Arf|6|oncoprotein Hdm2|9|inhibits|7|+|
+0077|EGF receptor promoter|5|E1A protein|12|modulated|10|-|
+0078|temperature-sensitive rad54-3 allele|6|DYZ3 satellite sequences|15|blocks|9|+|
+0078|temperature-sensitive rad54-3 allele|6|human DYZ5|22|stabilizes|20|+|
+0079|Insulin-like growth factor-I|1|bcl-2 promoter|5|induces|4|+|
+0081|Epstein-Barr virus nuclear protein 2 ( EBNA2 )|1|human SNF-SWI complex|15|binds|9|+|
+0081|Epstein-Barr virus nuclear protein 2 ( EBNA2 )|1|hSNF5 / Ini1|19|binds|9|+|
+0082|TGF-betaf|5|c-fos SRE|8|potentiates|6|+|
+0082|c-fos SRE|8|PKC|12|activated|10|-|no context protein!
+0083|G1-G2|3|link protein|9|bound|4|+|
+0084|PPARalpha|19|RIP-140|23|interaction|17|+|
+0084|PPARalpha|29|SMRT|33|interaction|27|+|
+0085|PTP phi|31|paxillin|35|binds|34|+|
+0085|PTP phi|31|Pyk2|37|binds|34|+|
+0085|PTP phi|6|paxillin|9|complex|4|*|
+0085|PTP phi|6|paxillin-associated tyrosine kinase;Pyk2|13;17|complex|4|*|
+0085|paxillin|9|paxillin-associated tyrosine kinase;Pyk2|13;17|complex|4|*|
+0087|NF-Y / CBF|8|TKC1|12|binding|6|+|
+0088|hGRbeta|3|hGRalpha|12|inhibitor|10|+|
+0090|Hsk1|2|Cdc19;Mcm2|5;7|phosphorylates|3|+|
+0093|StAR gene|4|DAX-1|8|inhibition|2|-|
+0094|mitogen-activated protein kinase ( MAPK ) kinase;MKK|5;13|stress kinases stress-activated protein kinase;SAPKs|27;33|activate|25|+|
+0094|MKK4|17|stress kinases stress-activated protein kinase;SAPKs|27;33|activate|25|+|
+0095|Cyclin D1 promoter|1|mitogen-activated protein kinase;p41MAPK|10;14|stimulated|6|-|
+0095|Cyclin D1 promoter|1|c-Ets-2|17|stimulated|6|-|
+0097|TFIID|19|eUSF|22|complex|26|*|
+0098|RVR|7|ROR alpha|32|repressor|30|+|
+0099|Steel factor|2|tyrosine kinase|7|induces|4|+|
+0099|Steel factor|2|c-kit;c-kit gene-encoded protein|15;15|induces|4|+|
+0102|alpha 1B-AR gene|24|CRE binding protein|28|bound|27|+|
+0104|Cut proteins|11|PKC|16|modulated|14|-|
+0106|c-Jun|17|JNK|19|interaction|15|*|
+0107|isl-1|2|insulin|7|binds|3|+|
+0107|isl-1|2|amylin gene promoter elements|9|binds|3|+|
+0108|mitogen-activated protein-extracellular signal-regulated kinase kinase;MEK|6;12|S6K2|17|inhibited|16|+|
+0108|mitogen-activated protein-extracellular signal-regulated kinase kinase;MEK|6;12|S6K1|24|inhibited|16|+|
+0109|Ras- and ultra-violet-responsive protein kinases|1|c-Jun|8|phosphorylate|7|+|
+0110|RMP|2|RPB5|9|interacting|6|+|
+0112|Zta fusion proteins|18|TGTGCAA-like motifs|25|bound|21|+|context is DSL!
+0115|IFN-stimulated gene factor-3|1|IFN-stimulated response element;ISRE|11;15|formed;bound|7;9|*|
+0115|STAT1 homodimers|5|gamma-activated sequence;GAS|18;21|formed;bound|7;9|*|
+0118|LMP2A|1|Lyn|3|enhances|2|+|
+0118|LMP2A|1|Syk|5|enhances|2|+|
+0119|ZAP-70|4|SRC-family kinases|18|regulated|13|-|ACHTUNG: Interaktion bezieht sich auf "localization of ZAP-70 ..."
+0119|SRC-family kinases|18|TCR|33|phosphorylate|26|+|
+0122|mIRS3|10|p85 subunit|15|bound|11|+|ACHTUNG: Interaktion bezieht sich auf "p85 subunit of phosphatidylinositol 3-kinase"
+0124|human glycoprotein alpha-subunit promoter|4|FSK|12|induced|9|-|
+0127|serum response factor|3|CArG box sequences|7|binding|1|+|
+0130|E1A|7|E1A-associated 300 kDa protein;p300|12;17|induce|8|+|
+0130|RA|5|E1A-associated 300 kDa protein;p300|12;17|induce|8|+|is "RA" a protein?
+0133|C / EBP alpha|1|rat class-I ADH gene|11|activates|6|+|interaction with the "promoter of the rat class-I.." !
+0134|GnRH|15|cGMP-dependent protein kinase|34|repressed|18|-|
+0135|Smad2|2|TGF-beta|7|phosphorylated|5|-|
+0135|Smad2|2|Agc|15|activation|13|+|
+0136|ARF promoter|2|E2F1|12|responsive|10|+|promotor!
+0137|Pol II-specific U snRNA genes|16|U2 transcripts|29|formation|27|+|interactor is "essential for[..] formation of"!
+0142|p72syk protein tyrosine kinase|6|TCR / CD3 complex|15|associated|12|+|
+0143|class I and II histone deacetylases;HDACs|2;9|BCoR|15|interact|11|+|
+0145|human Pim-1 enzyme|26|protein tyrosine kinase|35|exhibit|34|+|
+0146|IL-1beta|4|Rel proteins p50|13|induced|8|+|
+0146|IL-1beta|4|p65|17|induced|8|+|
+0146|TNF-alpha|6|Rel proteins p50|13|induced|8|+|
+0146|TNF-alpha|6|p65|17|induced|8|+|
+0146|Rel proteins p50|13|NF-kappaB consensus oligonucleotide|20|binding|10|+|
+0146|p65|17|NF-kappaB consensus oligonucleotide|20|binding|10|+|
+0146|IL-1beta|45|PDGF-Ralpha|47|upregulated|46|+|
+0147|Ty1|4|mitogen-activated protein kinase Fus3|7|regulation|2|-|
+0149|metH gene in Salmonella typhimurium and Escherichia coli|4|metR gene product|17|regulated|14|-|
+0151|Grb2|5|HPK1|15|bound|6|+|
+0151|Grb2|26|HPK1|28|binding|24|+|
+0158|Rho1p|5|Bni1p|12|regulates|6|-|interaktion refers to "regulates cytoskeletal reorganization.."
+0158|Rho1p|5|Pkc1p|14|regulates|6|-|interaktion refers to "regulates cytoskeletal reorganization.."
+0162|cak1At|27|animal CAKs|33|encodes|28|+|
+0163|PKA|1|WT1|3|phosphorylated|2|+|
+0165|P-CIP1|1|peptidylglycine alpha-amidating monooxygenase|13|interacts|7|+|
+0167|mTOR|6|phosphatidylinositol ( PI ) 3-kinase|15|regulated|13|-|
+0168|MCAD nuclear receptor response element 1;NRRE-1|2;9|ERR alpha|15|interacts|11|+|
+0170|CINC promoter|4|IL-17|7|induction|1|-|
+0171|terminase|3|gp20 portal peptide|8|interacts|5|+|
+0175|RRD genes|21|Hog1p signal transduction pathway|25|interaction|18|*|
+0178|Sp1|1|Sp3 isoforms|4|complexes|15|*|"Sp1 and Sp3 isoforms and NF-kappaB-proximal site" --> form a Complex
+0178|Sp1|1|NF-kappaB-proximal site|19|complexes|15|*|"Sp1 and Sp3 isoforms and NF-kappaB-proximal site" --> form a Complex
+0178|Sp3 isoforms|4|NF-kappaB-proximal site|19|complexes|15|*|"Sp1 and Sp3 isoforms and NF-kappaB-proximal site" --> form a Complex
+0179|Cbl|5|Grb2|10|associated|8|+|
+0181|Skp1p|7|SCFCdc4p ubiquitin ligase complex|23|form|21|+|
+0181|F-box / WD-repeat protein Cdc4p|16|SCFCdc4p ubiquitin ligase complex|23|form|21|+|
+0181|cullin-family member Cdc53p|10|SCFCdc4p ubiquitin ligase complex|23|form|21|+|
+0182|TPS1|7|trehalose-6-phosphate synthase / phosphatase complex|17|encoding|12|+|
+0184|UhpB|12|glutathione S-transferase;GST|15;18|fused|13|+|
+0184|UhpB|12|Uhp|23|interfered|21|+|
+0186|RFX complex|13|MHC-II promoters|16|binding|10|+|
+0187|meis1|4|cAMP-responsive sequence;CRS1|13;16|bind|11|+|
+0187|pbx homeodomain protein families|6|cAMP-responsive sequence;CRS1|13;16|bind|11|+|
+0189|calcitonin|5|beta-endorphin|8|induced|6|+|interaktion refers to "induced a beta-endorphin increase.."
+0191|bacteriophage K1F tail gene|6|endo-N-acylneuraminidase;endo-N|11;13|encoding|10|+|
+0192|TIF5|9|eIF-5|6|encodes|5|+|
+0192|TIF5|9|eIF-5 protein|24|yield|20|+|
+0193|HSE|5|HS transcription factor-1 ( HSF-1 )|10|bound|8|-|
+0194|HEED|1|MA protein|7|bind|5|+|
+0198|gcd1-101 mutation|5|GCN4-lacZ mRNA|13|suppressed|7|+|
+0201|H / ACA snoRNAs|3|Gar1p|9|associated|7|+|
+0204|Rel|20|kappa B site|23|binding|18|+|
+0206|D ( 2L ) receptors|10|ERK kinase|17|activate|15|+|
+0206|D ( 4 )|5|ERK kinase|17|activate|15|+|
+0210|Rev-Erb|10|TR binding sites|14|bound|11|+|
+0212|C / EBPbeta|28|C / EBP binding site|35|binding|31|+|
+0213|102kD protein|18|U5|27|interacts|20|+|
+0213|102kD protein|18|U4 / U6 snRNPs|29|interacts|20|+|
+0214|TEF-1-Max heterotypic complex|25|EM motif|37|binding|31|+|
+0215|CBF-A|4|CBF-C|6|interact|7|*|
+0215|CBF-B|18|CBF-A-CBF-C complex|33|associates|30|+|
+0217|GR|6|nGRE|17|binding|2|*|
+0217|AP-1 nucleoproteins|8|nGRE|17|binding|2|*|
+0218|Wingless / Wnt|6|Armadillo / beta-catenin|11|stabilizes|10|+|
+0218|Armadillo / beta-catenin|11|TCF / LEF family proteins|22|binds|21|+|
+0219|PEPCK|11|PKA|13|induction|9|-|
+0219|PEPCK|11|insulin|17|inhibition|15|-|
+0220|MHC-B|8|cdc2 kinase|11|phosphorylated|9|-|
+0226|CD7+ / CD3-|1|V delta 2D delta 3 rearrangements|7|exhibit|6|+|
+0230|gene lac-1|2|laccase|8|encoding|5|+|
+0244|Recombinant HRMT1L2 protein|1|methyltransferase|11|exhibited|10|+|
+0269|oryzacystatin;Oc|6;8|cysteine proteinase;cystatin|12;16|inhibitor|14|+|"inhibitor" is part of the second protein name!
+0324|OsPSK|6|phytosulfokine-alpha|14|encoding|10|+|
+0334|CE2 element|7|Hoxa1|11|regulating|10|+|
+0335|cyclops;cyc|2;4|Transforming Growth Factor beta;TGFbeta|8;13|encodes|6|+|
+0343|hematopoietic growth factor FLT3 ligand;FL|3;9|FLT3|17|ligand|14|+|
+0366|84 . 1C mAb|2|IgE|10|recognizes|6|+|regognizes a site on IgE
+0367|Cbf3|1|Cbf3a|6|contains|2|+|
+0367|Cbf3|1|Cbf3b|8|contains|2|+|
+0367|Cbf3|1|Cbf3c|10|contains|2|+|
+0368|IL-7R alpha chains|7|JAKs|17|activation|15|+|
+0368|IL-7R alpha chains|7|STATs|19|activation|15|+|
+0428|E2F|7|nonmuscle myosin|19|regulation|17|+|
+0428|E2F-related transcription factor|10|nonmuscle myosin|19|regulation|17|+|
+0432|JNK / p38|9|E-selectin gene|24|expression|26|+|
+0455|p53|3|E6|6|Abrogation|1|-|Abrogation of p53 function by E6
+0457|Arix|7|DBH promoter|19|exhibit|10|+|
+0457|NBPhox|9|DBH promoter|19|exhibit|10|+|
+0460|NF-kappaB|1|human NOS II promoter|12|activity|9|+|probably important for basal activity
+0468|NOT4|1|NOT1|4|interacts|2|+|
+0468|NOT4|1|NOT3|6|interacts|2|+|
+0500|RNA 5'-triphosphatase;Cet1p|15;18|RNA guanylyltransferase;Ceg1p|21;24|apparatus|11|*|
+0500|RNA 5'-triphosphatase;Cet1p|15;18|Abd1p|28|apparatus|11|*|
+0500|RNA guanylyltransferase;Ceg1p|21;24|Abd1p|28|apparatus|11|*|
+0500|triphosphatase-guanylyltransferase Mce1p|43|methyltransferase Hcm1 ( 121-476 ) p|47|apparatus|38|*|
+0505|cvi|19|colicin V immunity protein|23|encoding|21|+|
+0521|human HSF1|20|HSF1 monomer-trimer|41|regulating|39|+|
+0532|Rho|4|AP-1|6|effect|2|+|
+0555|gene CP A1|7|carbamoyl-phosphate synthetase|18|encoding|10|+|
+0568|PTH|5|collagen promoter|10|repress|9|+|
+0568|PTH|41|collagen gene|46|repression|44|+|
+0583|Bob1|21|Oct-1|33|contacting|26|*|
+0583|Bob1|21|Oct-2|35|contacting|26|*|
+0585|Mod ( mdg4 );E ( var ) 3-93D|1;9|gypsy insulator sequences|38|control|36|+|
+0585|Mod ( mdg4 );E ( var ) 3-93D|1;9|homeotic gene|44|regulation|42|+|
+0587|RET gene|4|receptor tyrosine kinase|9|encoding|7|+|
+0609|SIN4 gene product|5|RNA polymerase II|17|associated|15|+|
+0625|NGF|1|ERK|8|phosphorylation|9|+|
+0625|EGF|11|ERK|8|phosphorylation|9|+|
+0626|IHF|8|dmsA-lacZ|17|regulation|15|+|
+0630|herpes simplex virus type 1 thymidine kinase promoter|10|chloramphenicol acetyltransferase gene|21|linked|18|+|
+0633|Pokeweed mitogen;PWM|1;4|c-jun messenger RNA ( mRNA )|10|increases|9|+|
+0633|anti-CD3|7|c-jun messenger RNA ( mRNA )|10|increases|9|+|
+0634|nit-3 gene of the filamentous fungus Neurospora crassa|2|nitrate reductase|11|encodes|10|+|
+0673|AgfA|6|SEF17|14|comprising|10|+|
+0673|SefA|8|SEF14|16|comprising|10|+|
+0673|PT3|26|metalloprotease gp63|38|derived|35|+|
+0700|fission yeast dsk1+ gene|2|dis1 mutants|12|suppressor|9|+|
+0700|fission yeast dsk1+ gene|2|61-kd protein kinase|18|encodes|15|+|
+0706|SH2-containing protein tyrosine phosphatase;SH-PTP2|4;9|insulin receptor substrate-1|16|Activation|1|-|
+0725|HNF-4|15|HNF-4 constructs|22|inhibition|13|-|
+0725|HNF-4|37|apoCII gene|44|regulator|41|+|
+0743|pregnancy-associated plasma protein-A;PAPP-A|13;17|EST-YD1|26|cluster|2|*|
+0795|GCD10|1|GCN4|11|repressor|9|+|
+0805|scr regulon|2|ScrR|25|controlled|19|-|repressor
+0805|chromosomally encoded scr regulon of Klebsiella pneumoniae KAY2026|8|ScrR|25|controlled|19|-|repressor
+0810|RAP74 protein|6|RAP30|26|interact|24|+|
+0831|rat HDL receptor SR-BI promoter|9|SREBP-1a|26|bind|28|-|bind and activate
+0832|KCC3|4|KCC1|19|regulation|17|-|
+0835|FAK|6|Src kinases|8|complex|4|*|
+0857|c-Jun|2|c-Fos|7|inhibited|5|-|
+0857|c-Fos|7|c-Jun|15|form|17|*|form the transcription factor AP-1
+0857|c-Fos|7|AP-1|21|form|17|*|
+0857|c-Jun|15|AP-1|21|form|17|*|
+0871|SPC97|19|TUB4|27|suppressed|23|-|
+0871|SPC97|19|SPC98|29|suppressed|23|-|
+0873|COL7A1 gene|2|type VII collagen|7|encodes|6|+|
+0895|chloramphenicol acetyltransferase;CAT|10;13|CAT enzyme|32|synthesis|30|+|
+0895|pCAT-Basic|41|CAT enzyme|32|synthesis|30|+|
+0899|Mif1 5' flanking region|2|ER stress-responsive element|9|contains|6|*|
+0912|Cbl|1|SH3 domains|6|interacts|3|+|
+0912|Cbl|1|Shc|26|recruited|24|+|recruited to = bilden einen complex!
+0922|LTR-binding proteins|2|c-myc|9|hyperexpression|10|+|essential for c-myc hyperexpression
+0940|RRE;Rev response element|16;19|virus-encoded protein Rev|25|interaction|3|*|
+0941|hnRNP K|2|RNA polymerase II|13|interactions|10|*|interactions with the RNA polymerase II transcription apparatus
+0968|beta-1|5|beta-zein gene|19|regulator|13|+|
+0973|Mek1|7|p96h2bk|10|activate|9|+|
+0984|ERF repressor|4|ets family|13|Obstruction|1|-|
+0985|CaMig1|4|URS1 region|10|complexes|7|*|formed specific complexes
+0987|type 1 transmembrane glycoprotein|10|gE;gI Fc receptor|21;23|component|17|*|
+0993|muscle-specific Xenopus cardiac actin gene promoter|8|cardiac actin-beta-globin reporter gene|26|expression|23|+|
