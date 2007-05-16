@@ -11,7 +11,7 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 
-import re, types
+import re, types, string
 from nltk_lite import tokenize
 from nltk_lite.probability import ProbabilisticMixIn
 from nltk_lite.parse import *
@@ -276,7 +276,7 @@ class Tree(list):
         draw_trees(self)
 
     def __repr__(self):
-        childstr = ' '.join(repr(c) for c in self)
+        childstr = string.join(repr(c) for c in self)
         return '(%s: %s)' % (repr(self.node), childstr)
 
     def __str__(self):
@@ -292,7 +292,7 @@ class Tree(list):
             else:
                 childstrs.append('%s' % child.__repr__())
         return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
-                                ' '.join(childstrs), parens[1])
+                                string.join(childstrs), parens[1])
 
     def pp(self, margin=70, indent=0, nodesep=':', parens='()', quotes=True):
         """
@@ -530,7 +530,7 @@ def sinica_parse(s):
         elif tokens[i] == '|':
             tokens[i] = ''
 
-    treebank_string = ' '.join(tokens)
+    treebank_string = string.join(tokens)
     return bracket_parse(treebank_string)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier

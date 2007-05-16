@@ -9,7 +9,7 @@
 from nltk_lite.chunk import *
 from nltk_lite import tokenize
 from nltk_lite.parse.tree import Tree
-import re
+import re, string
 
 def tagstr2tree(s, chunk_node="NP", top_node="S"):
     """
@@ -140,7 +140,7 @@ def tree2conllstr(t):
     @return: A multiline string where each line contains a word, tag and IOB tag.
     @rtype: C{string}
     """
-    lines = [' '.join(token) for token in tree2conlltags(t)]
+    lines = [string.join(token) for token in tree2conlltags(t)]
     return '\n'.join(lines)
 
 ### IEER

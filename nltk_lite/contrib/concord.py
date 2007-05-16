@@ -7,7 +7,7 @@
 
 from nltk_lite.corpora import brown
 from math import *
-import re
+import re, string
 from nltk_lite.probability import *
 
 class SentencesIndex(object):
@@ -737,7 +737,7 @@ class Aggregator(object):
                         rightList.append(word[0].lower() + "/" + word[1].lower())
 
                 # join the tokens together to form a key string
-                key = " ".join(leftList) + " " + midString + " " + " ".join(rightList)
+                key = string.join(leftList) + " " + midString + " " + string.join(rightList)
                 # keep track of the longest key length
                 if len(key) > maxKeyLength:
                     maxKeyLength = len(key)
