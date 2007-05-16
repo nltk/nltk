@@ -2056,7 +2056,7 @@ class ChartDemo(object):
             if filename.endswith('.pickle'):
                 grammar = pickle.load(open(filename, 'r'))
             else:
-                grammar = cfg.parse_grammar(open(filename, 'r').read())
+                grammar = cfg.parse_cfg(open(filename, 'r').read())
             self.set_grammar(grammar)
         except Exception, e:
             tkMessageBox.showerror('Error Loading Grammar', 
@@ -2256,7 +2256,7 @@ class ChartDemo(object):
         self.apply_strategy(self._EARLEY, PseudoEarleyEdgeRule)
         
 def demo():
-    grammar = cfg.parse_grammar("""
+    grammar = cfg.parse_cfg("""
     # Grammatical productions.
         S -> NP VP
         VP -> VP PP | V NP | V

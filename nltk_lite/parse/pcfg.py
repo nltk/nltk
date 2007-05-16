@@ -138,9 +138,9 @@ _PARSE_RE = re.compile(r'''^\s*                 # leading whitespace
                        re.VERBOSE)
 _SPLIT_RE = re.compile(r'''(\w+(?:/\w+)?|\[[01]?\.\d+\]|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
-def parse_production(s):
+def parse_pcfg_production(s):
     """
-    Returns a list of productions
+    Returns a list of PCFG productions
     """
     # Use _PARSE_RE to check that it's valid.
     if not _PARSE_RE.match(s):
@@ -151,25 +151,31 @@ def parse_production(s):
     lhside = Nonterminal(pieces[0])
     rhsides = [[]]
     probabilities = [0.0]
+    found_terminal = found_non_terminal = False
     for piece in pieces[2:]:
         if piece == '|':
             rhsides.append([])                     # Vertical bar
             probabilities.append(0.0)
+            found_terminal = found_non_terminal = False
         elif piece[0] in ('"', "'"):
             rhsides[-1].append(piece[1:-1])        # Terminal
+            found_terminal = True
         elif piece[0] in "[":
             probabilities[-1] = float(piece[1:-1]) # Probability
         else:
             rhsides[-1].append(Nonterminal(piece)) # Nonterminal
+            found_non_terminal = True
+        if found_terminal and found_non_terminal:
+            raise ValueError, 'Bad right-hand-side: do not mix terminals and non-terminals'
     return [WeightedProduction(lhside, rhside, prob=probability)
             for (rhside, probability) in zip(rhsides, probabilities)]
 
-def parse_grammar(s):
+def parse_pcfg(s):
     productions = []
     for linenum, line in enumerate(s.split('\n')):
         line = line.strip()
         if line.startswith('#') or line=='': continue
-        try: productions += parse_production(line)
+        try: productions += parse_pcfg_production(line)
         except ValueError:
             raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
     if len(productions) == 0:
@@ -178,7 +184,7 @@ def parse_grammar(s):
     return WeightedGrammar(start, productions)
 
 
-toy1 = parse_grammar("""
+toy1 = parse_pcfg("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     Det -> 'the' [0.8] | 'my' [0.2]
@@ -189,7 +195,7 @@ toy1 = parse_grammar("""
     P -> 'with' [0.61] | 'under' [0.39]
     """)
 
-toy2 = parse_grammar("""
+toy2 = parse_pcfg("""
     S    -> NP VP         [1.0]
     VP   -> V NP          [.59]
     VP   -> V             [.40]
@@ -271,4 +277,5 @@ def demo():
     for parse in parser.get_parse_list(sent):
         print parse
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    demo()

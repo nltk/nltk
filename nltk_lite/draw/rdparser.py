@@ -870,7 +870,7 @@ def demo():
     text.
     """    
     from nltk_lite.parse import cfg
-    grammar = cfg.parse_grammar("""
+    grammar = cfg.parse_cfg("""
     # Grammatical productions.
         S -> NP VP
         NP -> Det N PP | Det N

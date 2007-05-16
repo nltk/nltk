@@ -635,7 +635,7 @@ def demo():
 
     from nltk_lite import parse
     
-    grammar = parse.cfg.parse_grammar("""
+    grammar = parse.cfg.parse_cfg("""
     S -> NP 'saw' NP | NP VP
     NP -> Det N | Det N PP
     VP -> V NP PP
