@@ -117,6 +117,7 @@ def raw(files = items):
 def demo():
     from nltk_lite.corpora import senseval
     from itertools import islice
+    import string
 
     # Print one example of each sense
     
@@ -126,7 +127,7 @@ def demo():
             seen.add(senses)
             print "senses:", senses
             print "position:", position
-            print "context:", ' '.join('%s/%s' % ttok for ttok in context)
+            print "context:", string.join('%s/%s' % ttok for ttok in context)
             print
         
 if __name__ == '__main__':

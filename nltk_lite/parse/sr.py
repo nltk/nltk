@@ -9,7 +9,7 @@
 from types import *
 from nltk_lite import tokenize
 from nltk_lite.parse import *
-#
+import string
 
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
@@ -82,7 +82,7 @@ class ShiftReduce(AbstractParse):
         
         # Trace output.
         if self._trace:
-            print 'Parsing %r' % ' '.join(tokens)
+            print 'Parsing %r' % string.join(tokens)
             self._trace_stack(stack, remaining_text)
 
         # iterate through the text, pushing the token onto
@@ -220,7 +220,7 @@ class ShiftReduce(AbstractParse):
                 str += `cfg.Nonterminal(elt.node)` + ' '
             else:
                 str += `elt` + ' '
-        str += '* ' + ' '.join(remaining_text) + ']'
+        str += '* ' + string.join(remaining_text) + ']'
         print str
 
     def _trace_shift(self, stack, remaining_text):
@@ -241,7 +241,7 @@ class ShiftReduce(AbstractParse):
         @rtype: C{None}
         """
         if self._trace > 2:
-            rhs = ' '.join(production.rhs())
+            rhs = string.join(production.rhs())
             print 'Reduce %r <- %s' % (production.lhs(), rhs)
         if self._trace == 2: self._trace_stack(stack, remaining_text, 'R')
         elif self._trace > 1: self._trace_stack(stack, remaining_text)
