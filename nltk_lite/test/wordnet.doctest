@@ -46,7 +46,6 @@ Synsets
 
 L{Synset}: a set of synonyms that share a common meaning.
 
-Synsets are attributes of L{Sense}s.
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.  Senses can be retrieved via
 synset.getSenses() or through the index notations synset[0],
@@ -57,60 +56,30 @@ be retrieved via synset.getPointerTargets() or
 synset.getPointerTargets(pointerType), which are equivalent to
 map(Pointer.getTarget(), synset.getPointerTargets(...)).
 
-    >>> V['think'][0].synset.verbFrames
+    >>> V['think'][0].verbFrames
     (5, 9)
 
-    >>> V['think'][0].synset.verbFrameStrings
+    >>> V['think'][0].verbFrameStrings
     ['Something think something Adjective/Noun', 'Somebody think somebody']
 
-    >>> N['dog'][0].synsets()
+    >>> N['dog'][0]
     [{noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}]
 
-    >>> N['dog'][0].getPointers()[:5]
-    [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
+    >>> N['dog'][0].relations()
+    {'hypernym': {noun: canine, canid}, 'member meronym': {noun: Canis, genus Canis}, 'member meronym': {noun: pack}, 'hyponym': {noun: puppy}, 'hyponym': {noun: pooch, doggie, doggy, barker, bow-wow}}
 
-    >>> N['dog'][0].getPointers(HYPERNYM)
-    [hypernym -> {noun: canine, canid}]
+    >>> N['dog'][0][HYPERNYM]
+    {noun: canine, canid}
 
-getPointerTargets(self, pointerType=None):
-Return a sequence of Senses or Synsets.
-
-If pointerType is specified, only targets of pointers of that type are
-returned.  In this case, pointerType should be an element of
-POINTER_TYPES.
-
-    >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: Canis, genus_Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-    >>> N['dog'][0].getPointerTargets(HYPERNYM)
-    [{noun: canine, canid}]
-
-    >>> N['dog'][0].isTagged()
-    True
-    >>> N['dog'][1].isTagged()
-    False
-
-    >>> str(N['dog'][0])
-    '{noun: dog, domestic dog, Canis familiaris}'
-
-If ReadableRepresentations is true, return a human-readable
-representation, e.g. 'dog(n.)'.
-
-If ReadableRepresentations is false, return a machine-readable
-representation, e.g. "getSynset(pos, 1234)".
- 
     >>> len(N['dog'][0])
     3
     >>> N['cat'][6]
     {noun: big cat, cat}
 
-parent_hypernyms(self):
+hypernyms(self):
 Get the set of parent hypernym synsets of this synset.
 
-hypernyms(self, include_self=False):
-Get the set of all ancestor hypernym synsets of this synset.
-
-hypernym_paths(self):
+closure(HYPERNYM):
 Get the path(s) from this synset to the root, where each path is a
 list of the synset nodes traversed on the way to the root.
 
@@ -130,58 +99,6 @@ itself 0 is returned.
 getIC(self, freq_data):
 Get the Information Content (IC) value of this L{Synset}, using
 the supplied dict 'freq_data'.
-
----------------------------------------------------------------------------
-Senses
----------------------------------------------------------------------------
-
-L{Sense}: A specific meaning of a specific word -- the intersection
-of a Word and a Synset.
-
-    >>> str(N['dog'])
-    'dog(n.)'
-
-If ReadableRepresentations is true, return a human-readable
-representation, e.g. dog(n.).
-
-Otherwise return a machine-readable form, e.g. getWord('dog', 'noun').
-
-getPointers(self, pointerType=None):
-Return a sequence of L{Pointer}s from the synset of which this
-L{Sense} is a member.
-
-If pointerType is specified, only pointers of that type are
-returned.  In this case, pointerType should be an element of
-POINTER_TYPES.
-
-    >>> N['dog'][0].getPointers()[:5]
-    [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
-    >>> N['dog'][0].getPointers(HYPERNYM)
-    [hypernym -> {noun: canine, canid}]
-
-
-getPointerTargets(self, pointerType=None):
-Return a sequence of L{Synset}s connected to the L{Synset} of which
-this L{Sense} is a member.
-
-If pointerType is specified, only targets of pointers of that
-type are returned. In this case, pointerType should be an
-element of POINTER_TYPES.
-
-    >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-    >>> N['dog'][0].getPointerTargets(HYPERNYM)
-    [{noun: canine, canid}]
-
-
-isTagged(self):
-
-    >>> N['dog'][0].isTagged()
-    True
-    >>> N['dog'][1].isTagged()
-    False
-
 
 ---------------------------------------------------------------------------
 Similarity
@@ -336,9 +253,9 @@ filter.
 
     >>> N.pos
     'noun'
-    >>> N.getWord('dog')
+    >>> N['dog']
     dog (noun)
-    >>> N.getWord('inu')
+    >>> N['inu']
     Traceback (most recent call last):
        ...
     KeyError: "'inu' is not in the 'noun' database"
@@ -348,7 +265,7 @@ index.  If index is an integer n, return the Word
 indexed by the n'th Word in the Index file.
         
     >>> N['dog']
-    dog(n.)
+    dog (noun)
     >>> N[0]
     'hood (noun)
  
