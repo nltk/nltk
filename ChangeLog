@@ -2,6 +2,7 @@ Version 0.7.5 2007-05-16
 
 Code:
 - improved WordNet and WordNet-Similarity interface
+- the Lancaster Stemmer (contributed by Steven Tomcavage)
 Corpora:
 - Web text samples
 - BioCreAtIvE-PPI - a corpus for protein-protein interactions
