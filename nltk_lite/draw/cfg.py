@@ -707,7 +707,6 @@ def demo():
     grammar = cfg.parse_cfg("""
     S -> NP VP
     PP -> P NP
-    PP -> 'up' 'over' NP
     NP -> Det N
     NP -> NP PP
     VP -> V NP
@@ -722,6 +721,8 @@ def demo():
     N -> 'statue'
     V -> 'saw'
     P -> 'in'
+    P -> 'up'
+    P -> 'over'
     P -> 'with'
     """)
 
