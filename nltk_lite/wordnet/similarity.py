@@ -250,20 +250,29 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     subsumer = None
     max_min_path_length = -1
 
-    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))
-    subsumers.add(synset1)
-    subsumers.add(synset2)
+    # can't use set operations here
+    hypernyms1 = [synset1] + list(synset1.closure(HYPERNYM))
+    hypernyms2 = [synset2] + list(synset2.closure(HYPERNYM))
+    subsumers = [s for s in hypernyms1 if s in hypernyms2]
+    
+    if verbose:
+        print "> Subsumers1:", subsumers
 
     # Eliminate those synsets which are ancestors of other synsets in the
     # set of subsumers.
 
     eliminated = set()
-    for candidate in subsumers:
-        for subcandidate in subsumers:
-            if subcandidate in candidate.closure(HYPERNYM):
-                eliminated.add(subcandidate)
+    for s1 in subsumers:
+        for s2 in subsumers:
+            if s2 in s1.closure(HYPERNYM):
+                eliminated.add(s2)
+    if verbose:
+        print "> Eliminated:", eliminated
+    
+    subsumers = [s for s in subsumers if s not in eliminated]
 
-    subsumers -= eliminated
+    if verbose:
+        print "> Subsumers2:", subsumers
 
     # Calculate the length of the shortest path to the root for each
     # subsumer. Select the subsumer with the longest of these.
@@ -305,7 +314,13 @@ def _lcs_by_content(synset1, synset2, freqs, verbose=False):
     subsumer = None
     subsumer_ic = -1
 
-    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))
+#    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))  -- Broken
+
+    subsumers = set()
+    for s1 in synset1.closure(HYPERNYM):
+        for s2 in synset2.closure(HYPERNYM):
+            if s1 == s2:
+                subsumers.add(s1)
     subsumers.add(synset1)
     subsumers.add(synset2)
 
