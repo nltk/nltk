@@ -1,0 +1,159 @@
+<!-- last modified: 21/09/98						-->
+<!-- in SGML file, include: 						-->
+<!-- <!DOCTYPE DOCUMENT SYSTEM "icon.dtd" []>		 -->
+
+<!-- The documentation for this DTD is in file annotation.tex/ps  -->
+
+<!-- DTD for ICONOCLAST layout objects                           	 -->
+<!-- Author: N.Bouayad-Agha                       		  		 -->
+<!-- with help from K.Van Deemter, R.Kibble & A.Kilgariff 	  -->        
+<!-- Created: 30.04.98                                            	 	 	-->
+
+<!-- attribute list common to various elements			 	 -->
+<!-- box has values "crectangle" and "orectangle" for close and    -->
+<!-- open rectangle respectively. The latter being a rectangle         -->
+<!-- with no sides, just 2 parallel line.                                 	         -->
+
+<!-- ltag is for tags on the left					-->
+<!-- rtag is for tags on the right					-->
+<!-- ltag has value "drop-initial" to mean that the first letter extends below its own line-->
+
+<!ENTITY % rightag '(no2 | unsure4 | newline | break | oneblank | twoblank | undef8)'>
+<!ENTITY % leftag   '(no3 | unsure5 | bullet | tab | drop-initial | indent | NAMES | undef7)'  > 
+
+
+<!ENTITY % rend  	
+	'weight (bold | normal | light | undef1)		    		    undef1
+	slant	(upright | italic | undef2)		   		   undef2
+	font	NMTOKEN 				    	   undef3
+	size	NMTOKEN 				   	   undef4
+	case	(smallcaps | upper | mixed | undef5)	    		   undef5
+	justified  (no1 | left-right | left | right | center | undef6)  		   undef6
+	ltag         %leftag; 				   		   undef7
+            rtag         %rightag;				    		   undef8
+	box	(no4 | unsure1 | circle | crectangle | orectangle | undef9) undef9
+	screen  (no5 | unsure2 | reverse | color | undef10) 		   undef10
+	uline	(no6 | unsure3 | dotted | plain | undef11)		   undef11'>
+
+
+<!ELEMENT DOCUMENT - - (pb?,cb?,figure?,div+)					>
+<!ATTLIST DOCUMENT 
+	author 	NAMES 		"name"
+	datec   	CDATA 		"datecreation"
+	dater		CDATA		"daterevision"
+	title 		CDATA		"leaflet"
+	book 	CDATA		"ABPI"
+	edition 	CDATA  	"1996-97"
+	pages 	CDATA		"pp-pp"	
+	section  CDATA		"company"			
+	id	 ID 				#IMPLIED                     >
+
+
+<!ELEMENT div   - - ( (head,pb?,cb?)+,body)		            >
+<!ATTLIST div
+	id	ID		#IMPLIED
+	type CDATA  #IMPLIED
+	%rend;								>
+
+
+<!-- milestone elements: page break and column break		------>
+<!ELEMENT pb - o  EMPTY					>
+<!ATTLIST pb 
+	n 	CDATA		#IMPLIED	       		 
+	id	ID 		        #IMPLIED			>
+
+<!ELEMENT cb - o EMPTY					>
+<!ATTLIST cb
+	n	CDATA			#IMPLIED
+	id	ID				#IMPLIED			>
+
+<!ELEMENT head   - - (#PCDATA | emph)+ 		>
+<!ATTLIST head 
+	id	ID 						#IMPLIED	
+	type (unsure | main | sub | sur) 	main		    
+	%rend;									>
+
+
+<!ELEMENT body o o (pb?, cb?, (div | list | table | figure | block))*        >
+<!ATTLIST body
+	id	ID		#IMPLIED
+	%rend;										>
+
+<!-- a block is a piece of orthographic text  set off by some layout mark --> 
+<!-- (tabulation, blank line, etc.) 								   -->
+<!-- It's a purely orthographic notion of paragraph				   -->
+
+<!ELEMENT block - - (#PCDATA | emph | pb | cb)+ 	>
+<!ATTLIST block
+	id	ID		#IMPLIED
+	%rend;										>
+
+<!ELEMENT table - - (head*, row+)				>
+<!ATTLIST table 
+	rows 	NUMBER 				#IMPLIED 
+	cols 	NUMBER 				#IMPLIED	
+	id	ID 					#IMPLIED	
+	%rend;									>
+
+<!ELEMENT row - o ((cell | table)+)			  	    >
+<!ATTLIST row 
+	id	ID 						#IMPLIED	
+	role (unsure | data | label) 				"data"
+	%rend;   							>
+
+<!ELEMENT cell - o (#PCDATA)				   >
+<!ATTLIST cell 
+	id	ID 			#IMPLIED	
+	role (unsure | data | label)	"data"			 
+	rows NUMBER 		1
+	cols NUMBER 		1					    
+	%rend;							>
+
+
+
+<!-- for linking a figure and a piece of text			-->
+<!ELEMENT link - o EMPTY				>
+<!ATTLIST link
+	id	ID		#IMPLIED
+	type	CDATA		"illustration"
+	targType	NAMES		"figure item"
+	targOrder (Y | N | U)	N
+	targets	IDREFS		#REQUIRED		>
+
+<!ELEMENT figure - - (head?, block*, figDesc?,figure*)	 >
+<!ATTLIST figure 
+	             id ID #IMPLIED			 	>
+
+<!ELEMENT figDesc - - (block)+	>
+<!ATTLIST figDesc
+	id ID	#IMPLIED
+	%rend;			>
+
+<!-- list consists of items with eventually figure, page break or column break -->
+<!-- some regular expressions are really complex and not necessarily the best -->
+<!ELEMENT list - - (head?, pb?, cb?, ( (item, (pb,cb,figure)*)+ |  
+		     ( headLabel?, headItem?, ((label, item), (pb,cb,figure)*)+)))  >
+<!ATTLIST list 
+	type 	(unsure | simple | ordered | bulleted | gloss)      bulleted
+	id	ID 					#IMPLIED	
+	%rend;								>
+
+<!ELEMENT item - o (pb | cb | list | table | figure| block | #PCDATA | emph )+ >
+<!ATTLIST item 			
+	id 	ID 					#IMPLIED	
+	%rend;								>
+
+<!ELEMENT label - o (#PCDATA | emph)+		>
+<!ATTLIST label		
+	id 	ID 					#IMPLIED	
+	%rend;								>
+
+
+<!-- an emphasized text can have further emphasized parts         -->
+<!ELEMENT emph	- -  (#PCDATA | emph)+	>
+<!ATTLIST    emph
+	n 	CDATA 			#IMPLIED		
+	id 	ID 				#IMPLIED		
+	%rend;							>
+
+

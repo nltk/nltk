@@ -1,0 +1,588 @@
+<!DOCTYPE DOCUMENT SYSTEM "icon.dtd" []>
+
+<DOCUMENT author="perl program" datec=020199 title="leaflet" book="ABPI" edition="1996-97" section="company">
+<PB n=1>
+<CB n=1>
+<DIV type=0>
+
+<HEAD weight="bold" >
+NovoSeven eptacog alfa (activated)
+</HEAD>
+
+<DIV type=1>
+
+<HEAD weight="bold" >
+Name of the medicinal product NovoSeven Composition
+</HEAD>
+
+
+<BLOCK>
+Active ingredient: Recombinant coagulation factor Vlla.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Excipients:
+</HEAD>
+
+
+<BLOCK>
+Sodium Chloride, Calcium Chloride Dihydrate Glycylglycine, Polysorbate 80, Mannitol, Water for Injections PhEur.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Pharmaceutical form
+</HEAD>
+
+
+<BLOCK>
+Powder for injection.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Strength of active ingredient
+</HEAD>
+
+
+<BLOCK>
+The powder for injection contains: 60 KlU/vial corresponding to 1.2 mg/vial.
+</BLOCK>
+
+
+<BLOCK>
+The reconstituted product contains: 30 KlU/ml corresponding to 0.6 mg/ml.
+</BLOCK>
+
+
+<BLOCK>
+1 KIU equals 1000 IU (International Units).
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Description - Package
+</HEAD>
+
+
+<BLOCK>
+The NovoSeven package contains:
+</BLOCK>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+1 vial with white powder for injection
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+1 vial with accompanying diluent (water for injections) for reconstitution
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+1 sterile needle for reconstitution (transfer needle)
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+1 sterile disposable syringe for reconstitution and administration and 2 alcohol swabs for cleansing the rubber stoppers on the vials.
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Pharmacotherapeutic group
+</HEAD>
+
+
+<BLOCK>
+Coagulation factors, ATC code B02B D05.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH weight="bold">
+Marketing authorisation holder:
+</EMPH>
+ Novo Nordist A/S Novo All&eacute;, DK-2880 Bagsvaerd, Denmark.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH weight="bold">
+Manufacturer:
+</EMPH>
+ Novo Nordisk A/S, Novo All&eacute;, DK-2880 Bagsvaerd, Denmark.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH weight="bold">
+What you must know about the product which the doctor has prescribed for you
+</EMPH>
+ General information NovoSeven is a medicine that works by activating the clotting system in the blood at the site of bleeding in patients with bleeding complications due to the development of inhibitors against coagulation factor VlIl or IX Therapeutic indications
+</BLOCK>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+Treatment of serious bleeding
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Prevention of excessive bleeding in connection with surgery
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Contra-indications Inform your doctor before taking this product if you: - have just undergone surgery
+</HEAD>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+suffer from crush injury
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+suffer from thrombotic complications or advanced atherosclerotic disease
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+suffer from blood poisoning
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+are allergic to mice, hamsters, or cattle
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+<BLOCK>
+
+<EMPH weight="bold">
+Special warnings and special precautions during use
+</EMPH>
+ Medication with NovoSeven should be guided by a specialised centre.
+</BLOCK>
+
+
+<BLOCK>
+See your doctor if your bleeding does not stop.
+</BLOCK>
+
+
+<BLOCK>
+Inform your doctor of known hypersensitivity to foreign protein.
+</BLOCK>
+
+
+<BLOCK>
+Keep all medicines safely away from children.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Pregnancy and breastfeeding
+</HEAD>
+
+
+<BLOCK>
+NovoSeven should only be given to a pregnant woman if clearly needed.
+</BLOCK>
+
+
+<BLOCK>
+If you are breast-feeding, your doctor may advise you to stop the treatment with NovoSeven or stop breast-feeding.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Interactions with other medicines
+</HEAD>
+
+
+<BLOCK>
+Before you take this medicine, you should consult your doctor concerning any other medicine you use.
+</BLOCK>
+
+<CB n=2>
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Dosage
+</HEAD>
+
+
+<BLOCK>
+After reconstitution the medicine should be injected intravenously over 2-5 minutes (bolus injection).
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Dosage range
+</HEAD>
+
+
+<BLOCK>
+3-6 KIU (60-120 &gt;9) per kg body weight per single dose. The initial dose is usually 4.5 KIU (90 µg) per kg body weight. Your doctor might change the dosage.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Dosage intervals
+</HEAD>
+
+
+<BLOCK>
+Consult your doctor regarding the dosage schedule and duration of treatment. The treatment may be continued for 2-3 weeks. Omission of dosage and sudden discontinuation of treatment should be advised by your doctor.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Reconstitution
+</HEAD>
+
+
+<BLOCK>
+Always use aseptic technique (eg wash your hands prior to use etc).
+</BLOCK>
+
+
+<LIST type="ordered">
+
+<ITEM>
+
+<BLOCK>
+Bring NovoSeven (powder) and Water for Injections PhEur (diluent) to room temperature (but not above 37 C), e.g. by holding the product in your hands.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Remove the protective plastic caps from powder and diluent vials to expose central portions of rubber stoppers.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Cleanse stoppers with alcohol swabs and allow to dry prior to use.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Take the transfer needle out of the package by pressing the needle end. Break protective covering from the transfer needle and attach the disposable syringe supplied in the package. Remove the last part of the needle covering.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Draw back the plunger (to the same volume as in the diluent vial) to admit air into the syringe.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Insert the transfer needle through the diluent vial stopper at its centre and inject the air into the vial. Hold the vial upside down, then withdraw the total contents of the vial into the syringe (cc=ml),
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Inject the diluent from the syringe into the vial containing the powder through the centre of the stopper (the powder does not contain a vacuum}.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Gently swirl until all material is dissolved.
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Administration
+</HEAD>
+
+
+<LIST type="ordered">
+
+<ITEM>
+
+<BLOCK>
+Draw back the plunger (to the same volume as you are going to inject) to admit air into the syringe.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Insert transfer needle into the vial containing reconstituted NovoSeven.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Inject air into the vial and then withdraw the reconstituted NovoSeven into the syringe.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Remove and discard the transfer needle.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Attach a suitable intravenous injection needle and administer.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Discard the administration needle.
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+<BLOCK>
+Remember to discard the used needles in a safe way (e.g. use the needle disposal can).
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Overdose
+</HEAD>
+
+
+<BLOCK>
+If too much NovoSeven is injected, seek medical advice at once.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Undesirable side effects
+</HEAD>
+
+
+<BLOCK>
+Serious side effects are rarely seen with NovoSeven but in case anything unusual does happen, consult your doctor.
+</BLOCK>
+
+
+<BLOCK>
+On rare occasions reactions such as rash, itching fever, nausea, headache, general discomfort, perspiration or changes in blood pressure may occur.
+</BLOCK>
+
+
+<BLOCK>
+Major adverse events possibly related to treatment with NovoSeven have been reported in seven cases (renal failure, ataxia, cerebrovascular disorder, angina pectoris, atrial arrythmia and circulatory shock).
+</BLOCK>
+
+<PB n=2>
+<CB n=1>
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Expiry date
+</HEAD>
+
+
+<BLOCK>
+The expiry date is stated on the outer carton and labels. Do not use the product after this date.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Special precautions for storage Keep NovoSeven refrigerated (2°C-8°C)
+</HEAD>
+
+
+<BLOCK>
+Do not freeze, to prevent damage to the diluent bottle.
+</BLOCK>
+
+<CB n=2>
+
+<BLOCK>
+Use preferably immediately or at least within 3 hours after reconstitution.
+</BLOCK>
+
+
+<BLOCK>
+Do not store reconstituted NovoSeven in plastic syringes.
+</BLOCK>
+
+
+<BLOCK>
+Do not expose to direct sunlight.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH weight="bold">
+Last revision:
+</EMPH>
+ October 1995.
+</BLOCK>
+
+</DIV>
+
+</DIV>
+
+</DOCUMENT>
