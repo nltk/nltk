@@ -1,3 +1,19 @@
+Version 0.7.5 2007-05-16
+
+Code:
+- improved WordNet and WordNet-Similarity interface
+Corpora:
+- Web text samples
+- BioCreAtIvE-PPI - a corpus for protein-protein interactions
+- Switchboard Telephone Speech Corpus Sample (via Talkbank)
+- CMU Problem Reports Corpus sample
+- CONLL2002 POS+NER data
+- Patient Information Leaflet corpus
+- WordNet 3.0 data files
+- English wordlists: basic English, frequent words
+Tutorials:
+- more improvements to text and images
+
 Version 0.7.4 2007-05-01
 
 Code:

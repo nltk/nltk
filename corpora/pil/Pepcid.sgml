@@ -1,0 +1,401 @@
+<!DOCTYPE DOCUMENT SYSTEM "icon.dtd" []>
+
+<DOCUMENT author="perl program" datec=020199 title="leaflet" book="ABPI" edition="1996-97" section="company">
+<PB n=1>
+<CB n=1>
+<DIV type=0>
+
+<HEAD weight="bold" >
+Pepcid (famotidine, MSD)
+</HEAD>
+
+
+<BLOCK>
+PLEASE READ BOTH SIDES OF THIS LEAFLET CAREFULLY BEFORE YOU START TO TAKE YOUR TABLETS.
+</BLOCK>
+
+
+<BLOCK>
+Keep this leaflet. You may want to read it again.
+</BLOCK>
+
+<DIV type=1>
+
+<HEAD weight="bold" >
+What is in your tablets?
+</HEAD>
+
+<DIV type=2>
+
+<HEAD slant="italic" >
+Active ingredient
+</HEAD>
+
+
+<BLOCK>
+The active ingredient in Pepcid Tablets is famotidine USP. The beige-coloured tablets contain 20 mg famotidine and the brown-coloured tablets contain 40 mg famotidine.
+</BLOCK>
+
+
+</DIV>
+<DIV type=2>
+
+<HEAD slant="italic" >
+Other ingredients
+</HEAD>
+
+
+<BLOCK>
+Carnuba wax EP; magnesium stearate EP; pregelatinised maize starch BP; hydroxypropylcellulose EP; hypromellose EP; red iron oxide E172; yellow iron oxide E172; talc EP; titanium dioxide E171; microcrystalline cellulose EP.
+</BLOCK>
+
+
+<BLOCK>
+Famotidine is available in calendar packs containing 28 tablets. Sample packs containing 2 and 4 tablets are also available.
+</BLOCK>
+
+
+</DIV>
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+How do your tablets work?
+</HEAD>
+
+
+<BLOCK>
+The active ingredient in your tablets is famotidine (either 20 or 40 mg). This belongs to a group of medicines called 'H2-blockers' which work by reducing the amount of acid you produce in your stomach and so help improve your condition.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Who makes your tablets?
+</HEAD>
+
+
+<BLOCK>
+Your tablets are made by Merck Manufacturing Division, Merck Sharp &amp; Dohme Limited, Shotton Lane, Cramlington, Northumberland, for Merck Sharp &amp; Dohme Limited, Hoddesdon, Hertfordshire, UK, who hold the Product Licence in the UK and the Product Authorisation in Eire.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Why do you need to take these tablets?
+</HEAD>
+
+
+<BLOCK>
+Your doctor has prescribed Pepcid for you to treat the acid condition in your stomach. The amount of acid in your stomach may have resulted in:
+</BLOCK>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+the development of an ulcer in your stomach (gastric ulcer)or the first part of your small intestine attached to your stomach (duodenal ulcer).
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+gastro-oesophageal reflux disease - a condition caused when stomach acid and food from the stomach go back up (reflux) into the food pipe (oesophagus).
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+<BLOCK>
+Your doctor may also have prescribed Pepcid for you to treat a rare condition called 'Zollinger-Ellison syndrome' in which the stomach produces an excessive amount of acid.
+</BLOCK>
+
+
+<BLOCK>
+Pepcid will help reduce the amount of acid you are producing, allow healing of ulcers, and give you relief from your symptoms. Pepcid may also be used to decrease the chance that a duodenal ulcer or the symptoms of gastro-oesophageal reflux disease will come back.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Are there patients who should not take these tablets?
+</HEAD>
+
+
+<BLOCK>
+Yes; do not take the tablets if:
+</BLOCK>
+
+
+<LIST type="ordered">
+
+<ITEM>
+
+<BLOCK>
+you are or think you may be pregnant.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+you are planning to become pregnant.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+you are breast-feeding.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+you have had a bad reaction to this or similar medicines or to any of the ingredients in the past.
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+<BLOCK>
+If you think any of these apply to you, do not take the tablets, go and talk to your doctor first and follow his advice.
+</BLOCK>
+
+
+<BLOCK>
+Pepcid Tablets should not be given to children.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+What else should you know about taking your tablets?
+</HEAD>
+
+
+<BLOCK>
+You should check with your doctor before taking 'Pepcid' if you have kidney problems.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+Can you take Pepcid with other medicines?
+</HEAD>
+
+
+<BLOCK>
+Pepcid does not usually interfere with other medicines you may be taking It is important, however, that you tell your doctor about all the medicines you are taking, <CB n=2> including those obtained without a doctor's prescription.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+How should you take Pepcid?
+</HEAD>
+
+
+<BLOCK>
+
+<EMPH slant = "italic">
+For the treatment of an ulcer:
+</EMPH>
+ You should take your tablets exactly as advised by your doctor or pharmacist. The number of tablets you take each day will depend upon your condition and whether you have kidney problems. For many people this is one 40 mg tablet, swallowed with a drink of water, at night. However, this might be changed by your doctor, depending on how you respond to the treatment. Your doctor may ask you to take your tablets for four to eight weeks.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH slant = "italic">
+For decreasing the chance that a duodenal ulcer will return:
+</EMPH>
+ Your doctor may ask you to take one 20 mg tablet at night in order to help stop your ulcer from returning.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH slant = "italic">
+For relief of symptoms of oesophageal reflux:
+</EMPH>
+ Your doctor may ask you to take two 20 mg tablets a day (usually one tablet in the morning and one tablet at night) and to continue taking your tablets for six to twelve weeks.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH slant = "italic">
+For treatment of more severe oesophageal reflux:
+</EMPH>
+ For patients in whom oesophageal reflux is more severe and is associated with erosions or ulcerations your doctor may ask you to take two 40 mg tablets a day (usually one tablet in the morning and one tablet at night) for six to twelve weeks.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH slant = "italic">
+For decreasing the chance that the symptoms and signs (erosion or ulcerations) of oesophageal reflux will return:
+</EMPH>
+ Your doctor may ask you to take two 20 mg tablets a day (usually one tablet in the morning and one tablet at night).
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH slant = "italic">
+For the treatment of Zollinger-Ellison syndrome:
+</EMPH>
+ Your doctor may ask you to take one 20 mg tablet every six hours. Some patients may need higher doses for this condition.
+</BLOCK>
+
+
+<BLOCK>
+Your doctor may ask you to take the tablets more often than once a day. Do not take more or less than your doctor has prescribed.
+</BLOCK>
+
+
+<BLOCK>
+You should keep taking the tablets for as long as your doctor has asked, even though you may feel better very quickly. It is important that you do not stop taking the tablets without consulting your doctor. If you have any questions, consult your doctor.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+What if you forget to take a tablet or take too many?
+</HEAD>
+
+
+<BLOCK>
+If you miss a dose, just carry on with the next one as normal. Do not take an extra one to make up.
+</BLOCK>
+
+
+<BLOCK>
+
+<EMPH weight="bold">
+If you take too many tablets by mistake, contact your doctor immediately.
+</EMPH>
+
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+What unwanted effects could your tablets have?
+</HEAD>
+
+
+<BLOCK>
+Like all medicines, Pepcid may occasionally cause side effects in some patients. Rarely, some people suffer headache, dizziness, constipation, or diarrhoea. Other side effects reported even less frequently are nausea, vomiting, mild stomach pain or bloating, dry mouth, loss of appetite, tiredness, rash, itching, jaundice, painful joints, and changes in liver enzyme tests. Rarely, breast enlargement has been reported in males and usually goes away after stopping treatment. Blood tests showing lowered blood-cell counts and worsening liver disease have been reported rarely, but these may not have been caused by the medicine. If any of these happen, or you have any other unusual symptoms or feelings, contact your doctor.
+</BLOCK>
+
+
+<BLOCK>
+A few people may be allergic to some medicines. If any of the following side effects occur after taking Pepcid, stop taking this medicine and contact your doctor immediately: swelling of the hands or face, lips, tongue and/or throat (with wheezing or difficulty in swallowing), or nettle-like rash, or severe skin reactions (very rarely reported with this group of medicines).
+</BLOCK>
+
+<PB n=2>
+<CB n=1>
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+How should your tablets be kept?
+</HEAD>
+
+
+<BLOCK>
+Keep your tablets out of reach of children. Store below 25ºC.
+</BLOCK>
+
+
+<BLOCK>
+Do not put them into another container as they might get mixed up.
+</BLOCK>
+
+
+<BLOCK>
+If you have any tablets left over when your doctor tells you to stop taking them, return them to your doctor or pharmacist.
+</BLOCK>
+
+
+<BLOCK>
+Do not take them past the expiry date which is clearly marked on the pack.
+</BLOCK>
+
+
+<BLOCK>
+REMEMBER, this medicine is for you. Do not share it with anyone else. It may not suit them.
+</BLOCK>
+
+
+<BLOCK>
+This leaflet was revised August 1995.
+</BLOCK>
+
+<CB n=2>
+
+</DIV>
+<DIV type=1>
+
+<HEAD weight="bold" >
+How can you obtain more information about Pepcid?
+</HEAD>
+
+
+<BLOCK>
+This leaflet gives you some of the most important patient information about Pepcid. If you have any questions after you have read it, ask your doctor or pharmacist, who will give you further information.
+</BLOCK>
+
+
+<BLOCK>
+ denotes registered trademark of Merck &amp; Co., Inc., Whitehouse Station, NJ, USA.
+</BLOCK>
+
+
+<BLOCK>
+&copy; Merck Sharp &amp; Dohme Limited, 1995. All rights reserved.
+</BLOCK>
+
+</DIV>
+
+</DIV>
+
+</DOCUMENT>

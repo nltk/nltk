@@ -1,0 +1,994 @@
+<!DOCTYPE DOCUMENT SYSTEM "icon.dtd" []>
+
+<DOCUMENT author="perl program" datec=020199 title="leaflet" book="ABPI" edition="1996-97" section="company">
+
+<BLOCK>
+&#22;&#0;&#1;&#0;Macintosh       &#0;&#0;&agrave;&#0; &#0;&#1;&#0;&#0;&#1;^&#0;&#1;&#0;&#8;&#0;Ñ&#0;≤1oG≤1oG≤1oG&#0;W6BNMSWD&#0;&ETH;&Iuml;&#17;&agrave;°±&#26;&aacute;&#0;;&#3;&#0;&thorn;&yuml;&#6;&#0;&#0;&#1;&#0;&#16;&#0;&#0;&#1;&#0;&thorn;&yuml;&yuml;&yuml;&#0;h&#0;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yacute;&yuml;&yuml;&yuml;¢&#0;&thorn;&yuml;&yuml;&yuml;£&#0;&#0;&#6;&#7;&#0;&#8;&#0;
+</BLOCK>
+
+<DIV type=0>
+
+<HEAD ltag="bullet" >
+&#0;+&#0;,&#0;-&#0;.&#0;/&#0;0&#0;1&#0;2&#0;3&#0;4&#0;5&#0;6&#0;7&#0;8&#0;9&#0;:&#0;;&#0;&lt;&#0;=&#0;&gt;&#0;?&#0;@&#0;A&#0;B&#0;C&#0;D&#0;E&#0;F&#0;G&#0;H&#0;I&#0;J&#0;K&#0;L&#0;M&#0;N&#0;O&#0;P&#0;Q&#0;R&#0;S&#0;T&#0;U&#0;V&#0;W&#0;X&#0;Y&#0;Z&#0;[&#0;\]&#0;^&#0;_&#0;`&#0;a&#0;b&#0;c&#0;d&#0;e&#0;f&#0;g&#0;i&#0;&yacute;&yuml;&yuml;&yuml;j&#0;k&#0;l&#0;m&#0;n&#0;o&#0;p&#0;q&#0;r&#0;s&#0;t&#0;u&#0;v&#0;w&#0;x&#0;y&#0;z&#0;{|&#0;}~&#0;&#0;ÄR&#0;&#0;&#0;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&#3;&#0;&#0;&Agrave;&#0;F&#0;LC û&egrave;Ω&#1;&#3;&#0;@&#0;&#1;&#0;C&#0;o&#0;m&#0;p&#0;O&#0;b&#0;j&#0;&#18;&#0;&#1;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&#0;\W&#0;o&#0;r&#0;d&#0;D&#0;o&#0;c&#0;u&#0;m&#0;e&#0;n&#0;t&#0;&#26;&#0;&#1;&yuml;&yuml;&yuml;&yuml;&#4;&#0;&yuml;&yuml;&yuml;&yuml;&#0;&#4;&#0;mL&#1;&#0;O&#0;b&#0;j&#0;e&#0;c&#0;t&#0;P&#0;o&#0;o&#0;l&#0;&#22;&#0;&#1;&#1;&#1;&#0;&#0;&yuml;&yuml;&yuml;&yuml;&#0;Äµ™û&egrave;Ω&#1;Äµ™û&egrave;Ω&#1;&#0;&#1;&#0;&thorn;&yuml;&yuml;&yuml;&#3;&#0;&#4;&#0;&#0;&#6;&#0;&#7;&#0;&#8;&#0;&thorn;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&#1;&#0;&thorn;&yuml;&#0;&#1;&#0;&yuml;&yuml;&yu
+</HEAD>
+
+
+
+
+<BLOCK>
+BEFORE YOU START YOUR TREATMENT.
+</BLOCK>
+
+
+<BLOCK>
+IF YOU HAVE ANY QUESTIONS OR ARE NOT SURE ABOUT SOMETHING IN THIS LEAFLET, ASK YOUR DOCTOR OR PHARMACIST (CHEMIST)
+</BLOCK>
+
+
+<BLOCK>
+WHAT IS VAGINAL THRUSH?
+</BLOCK>
+
+
+<BLOCK>
+Vaginal thrush (candidiasis) is a common infection caused by a fungus which may live harmlessly in the vagina without you even noticing it.  However, in certain circumstances it may develop into an infection in the vagina and the symptoms may spread to the surrounding area .
+</BLOCK>
+
+
+<BLOCK>
+The common symptoms of thrush are:
+</BLOCK>
+
+
+<BLOCK>
+itching of the vagina and  surrounding area (the vulva) redness and swelling of the tissues of the vagina and vulva soreness of the vagina a white non-smelling discharge from the vagina
+</BLOCK>
+
+
+<BLOCK>
+Not everybody who has thrush has all of these symptoms.  You may have only one of them.&#7;If this is the first time you have had these symptoms, talk to your doctor before using any treatment.
+</BLOCK>
+
+
+<BLOCK>
+See your doctor as soon as possible and do not use Canesten Vaginal Cream 2% if you have any of the following symptoms:
+</BLOCK>
+
+
+<BLOCK>
+irregular vaginal bleeding abnormal vaginal bleeding or a blood-stained discharge ulcers, blisters, sores or pain of the vagina or vulva  lower abdominal pain pain or difficulty in passing urine fever or chills feeling sick or vomiting diarrhoea a foul smelling discharge from the vagina&#7;&#7;
+</BLOCK>
+
+
+<BLOCK>
+This is because Canesten Vaginal Cream 2% may not be the right treatment for you.
+</BLOCK>
+
+
+<BLOCK>
+If you are unsure whether you have thrush, check with your doctor.
+</BLOCK>
+
+
+<BLOCK>
+HOW CAN CANESTEN VAGINAL CREAM 2% HELP YOU?
+</BLOCK>
+
+
+<BLOCK>
+The name of your medicine is Canesten Vaginal Cream 2%.  This is one of a group of medicines called imidazoles which work by killing the fungus which has caused your symptoms.
+</BLOCK>
+
+
+<BLOCK>
+WHAT IS CANESTEN VAGINAL CREAM 2%?
+</BLOCK>
+
+
+<BLOCK>
+It is a white  vaginal cream containing 2% of the active ingredient clotrimazole.  The other ingredients are sorbitan monostearate, polysorbate, cetyl esters wax, cetostearyl alcohol, 2-octyldodecanol, benzyl alcohol and water.
+</BLOCK>
+
+
+<BLOCK>
+A single 35g tube of 2% vaginal cream is a full course of treatment.
+</BLOCK>
+
+<DIV type=1>
+
+<HEAD>
+BEFORE USING CANESTEN VAGINAL CREAM 2%
+</HEAD>
+
+
+<BLOCK>
+You should see your doctor before using Canesten Vaginal Cream 2% if:
+</BLOCK>
+
+
+<BLOCK>
+you have had more than two infections in the last six months you or your partner have ever had a sexually transmitted disease you are pregnant or think you might be pregnant you are aged under 16 or over 60 years you have ever had an allergic reaction to Canesten or any other antifungal drug.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD>
+HOW TO USE CANESTEN VAGINAL CREAM 2%
+</HEAD>
+
+
+<BLOCK>
+The carton contains a 35 g tube of 2% vaginal cream and six applicators for insertion of the cream into the vagina.
+</BLOCK>
+
+
+<BLOCK>
+Special care should be taken when using the applicator if you are pregnant.
+</BLOCK>
+
+
+<BLOCK>
+One filled applicator should be used to insert  vaginal cream into the vagina once daily for six consecutive days at night before going to sleep or twice daily for three consecutive days (once in the morning and once at night before going to sleep).
+</BLOCK>
+
+
+<BLOCK>
+In addition the cream should be applied to the vulva and surrounding area and/or to the sexual partner&Otilde;s penis to prevent re-infection.
+</BLOCK>
+
+
+<BLOCK>
+Please follow the instructions below carefully:
+</BLOCK>
+
+
+<BLOCK>
+&#1;&#7;&#7;
+</BLOCK>
+
+
+<BLOCK>
+Remove the applicator from the packaging and fill the applicator with the cream provided.  This is achieved by depressing the plunger fully into the barrel of the applicator, removing the cap from the tube and pressing the applicator firmly onto the end of the tube.  The applicator is filled by squeezing the tube of cream from the bottom until the applicator is full of cream (Diagram 1).  Remove the applicator from the tube.
+</BLOCK>
+
+
+<BLOCK>
+Carefully put the filled applicator as deeply as is comfortable into the vagina (this is easiest when lying on your back with your knees bent up) (Diagram 2).
+</BLOCK>
+
+
+<BLOCK>
+&#1;
+</BLOCK>
+
+
+<BLOCK>
+Holding the applicator in place, slowly press the plunger until it stops, so that the measured dose of cream is deposited into the vagina.  Remove the applicator.
+</BLOCK>
+
+
+<BLOCK>
+After use, remove plunger A completely by pulling it out of the applicator B.  Then wash it in warm (not boiling) soapy water, rinse and dry carefully (Diagram 3).
+</BLOCK>
+
+
+<BLOCK>
+&#1;
+</BLOCK>
+
+
+<BLOCK>
+Remove the applicator.  Dispose of the applicator in a safe place, out of the reach of children.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD>
+IN THE EVENT OF MISUSE OR ACCIDENTAL SWALLOWING
+</HEAD>
+
+
+<BLOCK>
+Canesten Vaginal Cream 2% is for external use.&#7;It should be used only in the vagina and surrounding area and/or on the sexual partner's penis.
+</BLOCK>
+
+
+<BLOCK>
+Do not put the cream in your mouth or swallow it.  If you do accidentally swallow it, tell your doctor straight away or contact the Accident and Emergency Department of your nearest hospital.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD>
+THINGS TO LOOK OUT FOR AFTER USING CANESTEN VAGINAL CREAM 2% 
+</HEAD>
+
+
+<BLOCK>
+The symptoms of thrush such as burning, soreness or itching of the vagina and surrounding area should disappear within three days of treatment.  If no improvement is seen after seven days, tell your doctor.
+</BLOCK>
+
+
+<BLOCK>
+Canesten Vaginal Cream 2% may rarely cause side-effects in some people.  The side-effects are very similar to the symptoms of thrush.  If the redness, burning, irritation or swelling get worse, stop using the vaginal cream and see your doctor as soon as possible.
+</BLOCK>
+
+
+<BLOCK>
+If you feel you are reacting badly to this medicine in any other way, discuss this with your doctor or pharmacist (chemist).
+</BLOCK>
+
+
+<BLOCK>
+HOW YOU CAN HELP PREVENT FURTHER INFECTIONS Try to avoid wearing tights, nylon knickers and close fitting jeans too often. These provide warm and&#7;&#7; airless conditions which help the thrush fungus to grow.
+</BLOCK>
+
+
+<BLOCK>
+Wash daily, but use simple, bland soaps - not heavily scented or medicated ones.  Do not scrub hard with sponges or flannels, and avoid hot baths with strong perfumed oils or disinfectants.  The most soothing bath to have, if you have thrush, is a warm one with some salt in it.
+</BLOCK>
+
+
+<BLOCK>
+After going to the toilet do get into the habit of wiping yourself from front to back, as a thrush infection may be transferred from the bowel. 
+</BLOCK>
+
+
+<BLOCK>
+If you are still worried or have any further questions about the symptoms or the treatment, do not hesitate to ask your doctor or pharmacist for advice.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD>
+HOW TO STORE YOUR MEDICINE
+</HEAD>
+
+
+<BLOCK>
+Canesten Vaginal Cream 2% should be stored in the original carton in a cool, dry place, below 25°C.
+</BLOCK>
+
+
+<BLOCK>
+Use by date:
+</BLOCK>
+
+
+<BLOCK>
+The expiry date is printed on one end of the carton (and also on the tube of cream). Do not use your medicine after this date.  Return any cream that has gone past this date to your pharmacist (chemist). 
+</BLOCK>
+
+
+<BLOCK>
+Keep all medicines in a safe place, out of the reach of children.  Your Canesten Vaginal Cream 2% could harm them. 
+</BLOCK>
+
+
+<BLOCK>
+REMEMBER:
+</BLOCK>
+
+
+<BLOCK>
+This medicine is for you.  It has been recommended by your doctor or pharmacist for the treatment of your symptoms. Never give it to someone else even if their symptoms are the same as yours.
+</BLOCK>
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD>
+Made by Bayer AG, Germany
+</HEAD>
+
+
+<BLOCK>
+UK Subsidiary:
+</BLOCK>
+
+
+<BLOCK>
+Bayer plc Pharmaceutical Division Bayer House Strawberry Hill Newbury, Berkshire RG14 1JA Product Licence Number: 0010/0077 Date of leaflet preparation: March 1995 &#1;&#7;&#7; &ETH;&Iuml;&#17;&agrave;&#23;&#0;ê&#1;&#0;§|.•&Egrave;Aä&#0;à&#0;&Ograve;&#20;â&#0;&ETH;à&#1;&Ecirc;&#8;|&#0;&#8;&#0;&#3;&#0;H&#0;H&#0;&#3; &#25;&yuml;&aacute;&yuml;&atilde;&#3;+6&#3;G|&#3;&agrave;&#0;&#0;H&#0;H&#0;&#3; &#26;&#0;&#1;&#0;d&#0;&#1;&#0;&#3;&#3;&#3;&#0;&yuml;&#0;&#1;'&#15;&#0;&#1;&#0;&#1;&#0;`&#8;&#0;&#25;&#1;ê&#1;&#0;&#23;&#0;ê&#1;&#0;§|.•&Egrave;Aä&#0;à&#0;&iuml;&#19;â&#0;&ETH;à&#1;≠|&#0;&#8;&#0;&#3;&#0;H&#0;H&#0;&#3; &#25;&yuml;&aacute;&yuml;&atilde;&#3;+6&#3;G|&#3;&agrave;&#0;&#0;H&#0;H&#0;&#3; &#26;&#0;&#1;&#0;d&#0;&#1;&#0;&#3;&#3;&#3;&#0;&yuml;&#0;&#1;'&#15;&#0;&#1;&#0;&#1;&#0;`&#8;&#0;&#25;&#1;ê&#1;&#0;GI^ç:&#0;&#8;&#0; Microsoft Word &amp;&#6;&#15;&#0;&#18;&#0;Word&yuml;&yuml;&#8;&#0;&#1;&#0;&#26;å&#0;&#0; &#7;&#0;&#27;&#4;&#0;&#0;&#20;&#0;&#0;&#19;&#0;&#20;&#0;&#0;&#19;&#0;&#25;&#0;2@&#0;@&#0;$&#0;Use Word 6.0c or later to           &#25;&#0;2Ä&#1;@&#0;$&#0;view Macintosh picture.             &#3;&#0;å&#26;0&#0;∞&#6;&#0;&#4;`&#0;&#17;&yuml; &yuml;&yuml;&yuml;&yuml;&#0;∞&#0;0&#0;&#4;`&#0;&#6;&#0;&#1;&#0;0&#0;∞&#6;&#0;&#4;`&#0;ò&#0;v0&#0;∞&#6;&#0;&#4;`0&#0;∞&#6;&#0;&#4;`0&#0;∞&#6;&#0;&#4;`&#0;ã&#0;ã&#0;ã&#0;ã&#0;&#6;é&#4;&yuml;&#0;&#21;ø&#0;H&yacute;&#0;#&#15;ê_~&#1;&eth;&Iuml;ø&Yacute;&yuml;&#0;&agrave;&#21;&szlig;&#0;  `&#0;Å7-&#1;&yuml;Ω&iuml;&#16;&yuml;&yuml;&Iuml;º&yuml;&#0;&eth;&#4;&#0;&#15;&yuml;&oslash;wë&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#7;&#1;&#0;?é&yuml;&#0;&eth;&#20;&#1;&#0;?´&yuml;&#0;&thorn;&yacute;&yuml;&#0;&ucirc;&ucirc;&yuml;&#1;&eth;&#1;&ograve;&yuml;&#0;&eth;:&#1;&#0;?◊&yuml;&#0;ø&iacute;&yuml;&#1;&#0;&#15;&yacute;&yuml;&#0;&ucirc;&yacute;&yuml;&#1;&uuml;&thorn;&yuml;&#1;&eth;&thorn;&yuml;?&yuml;&uuml;&#0;&#24;&#24;`&#3;&yuml;&#0;&#1;&thorn;&yuml;&#0;?&yuml;&yuml;Ä&#15;&yuml;&yuml;&eth;&#1;&ucirc;&yuml;&#0;&eth;Y&#1;&#0;?&ograve;&yuml;&#0;&ugrave;&yacute;&yuml;&#0;&ccedil;&ntilde;&yuml;&atilde;&yuml;ü&yuml;x?&thorn;&yuml;&#18;&#0;É&yuml; &yuml;&yuml;&agrave;&#7;&yuml;Ä&#1;&#0;&#7;&yuml;&yuml;&oslash;&#0;&#1;&thorn;&yuml;&#7;Ä&#3;&yuml;&yuml;&thorn;&#0;?&thorn;&yuml;&#7;&#0;?&yuml;&yuml;&thorn;?&yuml;&uuml;&yacute;&#0;&#17;&#3;&yuml;Ä&#7;&yuml;&yuml;&uuml;&oslash;&#15;&yuml;&yuml;&agrave;&#7;&yuml;&yuml;&oslash;&#7;&ucirc;&yuml;&#0;&eth;o&#1;&#0;?&ucirc;&yuml;&Agrave;&#0;&#15;&thorn;&yuml;&#3;&thorn;&yuml;&oslash;&yacute;&#0;&#17;&#7;&uuml;&#0;&#3;&yuml;&Agrave;&#0;&#3;&yuml;&Agrave;&#7;&yuml;&yuml;&oslash;&#0;&yuml;&Agrave;&yacute;&#0;?&thorn;&yuml;&quot;Ä&#7;&yuml;&Agrave;&#15;&yuml;&yuml;&eth;&#15;&yuml;&agrave;&#0;0&#7;&yuml;&yuml;&agrave;&yuml;&Agrave;&yuml;&yuml;&Agrave;&#15;Ä&yuml;&yuml;Ä&thorn;&yuml
+</BLOCK>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+&aacute;&egrave;&acirc;Ä x=&#0;4&eth;&otilde;&ucirc;G˜&Yacute;_&yuml;}&yacute;&yuml;&yacute;&yuml;&szlig;&aelig;&yuml;&#0;&Agrave;8&#1;&#0;?&ccedil;&yuml;&#0;˜&thorn;&yuml; &szlig;w&yuml;&#23;&#21;p&#0;@I&#4;&#4;&#16;&uuml;&#0;&#24;&acirc;ÄÇ &#8;&agrave;Ä™Ç&#0;(ä &#0; `ÄÇ&#0;&Oslash;&yuml;&#0;&Agrave;8&#1;&#0;?&egrave;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+a&Oslash;&yuml;&#0;&agrave;;&#1;&#0;?&eacute;&yuml;&#0;&thorn;&thorn;&#0;&#1;&#1;Ä&#1;&#16;V&ucirc;&#0; &#0; w&quot;Q]&otilde;◊&Aring;&yuml;&Agrave;_&thorn;&yacute;&#1;˜A&yacute;&#0;&#4;&yacute;&#0;&#4;&#8;&#0; &#0;&oacute;&yuml;&#0;&ucirc;&ccedil;&yuml;&#0;&agrave;'&#1;&#0;?&eacute;&yuml;&#0;&thorn;&iuml;&#0;&#18; ˜&szlig;&Aacute;&yuml;&yuml;&szlig;&Ntilde;&thorn;`_&yuml;&yacute;&yuml;&gt;&#20;&#0;&#16;&otilde;&#0;&oacute;&yuml;&#0;&ucirc;&ccedil;&yuml;&#0;&agrave;4&#1;&#0;?&eacute;&yuml;&#0;&thorn;&uacute;&#0;&#8;&#0;&#8;&ugrave;&#0;&#16; ;?&aacute;&thorn; $&#0;@PA&#0;@&uacute;&#0;&#1;&thorn;&#0;&#3;&#1;&#0;&#4;&yacute;&ocirc;&yuml;&#0;&ucirc;&ccedil;&yuml;&#0;&agrave;-&#1;&#0;?&eacute;&yuml;&#0;&thorn;&ugrave;&#0;Ä&oslash;&#0; &uacute;&#15;&atilde;&iuml;&#15;æ  ˜&#0; &#0;Ä&uuml;&#0;&#3;&#1;&#4;&#20;&yacute;&oacute;&yuml;&#0;&thorn;&egrave;&yuml;&#0;&Agrave;2&#1;&#0;?&eacute;&yuml;&#0;&thorn;&uacute;&#0;&#1;˜&#0;&#16; &uacute;&#15;&ucirc;&euml;ØééÇ&#0;&#8;&#8;  (&uuml;&#0;&#8;&uacute;&#0;&#1; &yacute;&ocirc;&yuml;&yacute;&yuml;&eacute;&yuml;&#0;&Agrave;+&#1;&#0;?&eacute;&yuml;&#0;&thorn;&iuml;&#0;&#4;à a&euml;&yacute;&#0;&#7;;&agrave;&iuml;&aelig;z&iuml;&icirc;8&uuml;&#0;Ä&uacute;&#0;&#1; &yacute;&yacute;&yuml;&#0;&THORN;&yuml;&#0;&Agrave;+&#1;&#0;?&eacute;&yuml;&#0;&thorn;&iuml;&#0;&#4;ù&thorn;A&yacute;&yacute;&#0;&#7;&agrave;&aelig;|&atilde;&aelig;0&uuml;&#0;$&uacute;&#0;&#1;&uuml;&oacute;&yuml;&#0;˜&egrave;&yuml;&#0;&agrave;)&#1;&#0;?&eacute;&yuml;&#0;&uuml;&iuml;&#0; &Iuml;C}&#16;&#0;X&#17;&agrave;Gg&#4;&uacute;&#0;@&oslash;&#0;&uuml;&oacute;&yuml;&#1;??&eacute;&yuml;&#0;&agrave;%&#1;&#0;?&eacute;&yuml;&#0;&uuml;&iuml;&#0; &quot;&Aring;&#20;p1&#1;C&oslash;O&AElig;W|&iuml;&#0;|&ocirc;&yuml;&thorn;&yuml;ø&eacute;&yuml;&#0;&agrave;$&#1;&#0;?&eacute;&yuml;&#0;&uuml;&iuml;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#1;&#0;?&eacute;&yuml;&#0;&uuml;&iuml;&#0;&#15;" ("0 à &uuml;&Ntilde;&szlig;&#23;&yuml;&yuml;º&aring;&yuml;&thorn;&#16;&#0;&Agrave;y&ccedil;&yuml;&Ccedil;&#7;&Oacute;&yuml;&#0;&agrave; &#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&Iuml;&gt;&lt;ú&yuml;&oacute;&yuml;&szlig;&thorn;&yuml;&#0;&uuml;&agrave;&yuml;&#0;&thorn;&eacute;&yuml;&#0;&agrave; &#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;π&yuml;&#0;&agrave;&#19;&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&ecirc;&yuml;&#0;&iuml;&Ograve;&yuml;&#0;&Agrave;&#15;&#1;&#0;?&eacute;&yuml;&#0;Ä&iuml;&#0;?∫&yuml;&#0;&agrave; &#1;&#0;?&ecirc;&yuml;&#0;&thorn;&icirc;&#0;π&yuml;&#0;&agrave; &#1;&#0;?&ecirc;&yuml;&#0;&thorn;&icirc;&#0;π&yuml;&#0;&agrave; &#1;&ntilde;&agrave;&#0;&lt;&ucirc;&#0;˜&yuml;&uuml;&#0;&ograve;&yuml;&#1;&oslash;◊&yuml;&#0;&agrave;#&#1;&#0;?&eacute;&yuml;&#0;Ä&uuml;&#0;&#6;-&#1;&yuml;&Agrave;&#0; &ucirc;&#0;˜&yuml;&#3;&oslash;&#0;?&oacute;&yuml;&#1;&oslash;◊&yuml;&#0;&agrave;#&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&uuml;&#0;&#6;&lt;&#0;&#1;&yuml;&Agrave;&#0;&#15;&ucirc;&#0;˜&yuml;&#3;&eth;&#0;&oacute;&yuml;&#1;&oslash;◊&yuml;&#0;&agrave;#&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&uuml;&#0;&#6;x&#0;&yuml;Ä&#7;&ucirc;&#0;˜&yuml;&#3;&agrave;&#3;Ä&oacute;&yuml;&#1;&oslash;◊&yuml;&#0;&agrave;$&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&uuml;&#0;&#7;p&#0;&gt;&#0;&#3;Ä&uuml;&#0;˜&yuml;&#3;&Agrave;&eth;&#15;&oacute;&yuml;&#1;&uuml;◊&yuml;&#0;&agrave;$&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&uuml;&#0;&#7;&eth;&#0;-&#3;&Agrave;&uuml;&#0;˜&yuml;&#3;&Agrave;&oslash;&#15;&oacute;&yuml;&#1;&oslash;◊&yuml;&#0;&agrave;1&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&uuml;&#0;&#7;&agrave;&#0;&gt;&#0;&#1;&Agrave;&uuml;&#0;˜&yuml;&#3;Ä&yuml;&uuml;&#7;&ugrave;&yuml;&#0;&ugrave;&thorn;&yuml;&#7;&yuml;&eth;&#15;&yuml;&eth;&yuml;&Ccedil;&agrave;&THORN;&yuml;&#0;&agrave;7&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&yacute;&#0;&#8;&#1;&agrave;&#0;?&#0;&#1;&agrave;&uuml;&#0;˜&yuml;&#26;Ä&yuml;&uuml;&#7;&yuml;&agrave;&yuml;&yuml;&Agrave;?&yuml;&Agrave;&#15;&yuml;&eth;&#0;&Agrave;&#0;&yuml;Ä&#7;&yuml;ÉÄ&#15;&THORN;&yuml;&#0;&agrave;7&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&yacute;&#0;&#4;&#1;&Agrave;&#0;&thorn;&#0;&agrave;&uuml;&#0;˜&yuml;&#26;&#1;&yuml;&thorn;&#7;&thorn;&#0;&#7;&yuml;&#7;&#0;&yuml;&#0;&#1;&yuml;&agrave;&#0;&Agrave;&#0;&thorn;&#0;&#1;&yuml;Å&#7;&THORN;&yuml;&#0;&agrave;7&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&yacute;&#0;&#8;&#3;ÄÄp&uuml;&#0;˜&yuml;&#0;&#1;&thorn;&yuml;&#22;&oslash;&#0;&#3;&thorn;&#6;&#0;&#15;&thorn;&#0;&yuml;&Agrave;&#0;&#15;&Agrave;&#0;&uuml;&#0;&yuml;Ä&#3;&THORN;&yuml;&#0;&agrave;7&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&yacute;&#0;&#8;&#3;ÄsÄp&uuml;&#0;˜&yuml;&#0;&#1;&thorn;&yuml;&#22;&oslash;&#0;&#1;&thorn;&#0;&#7;&uuml;&#0;&yuml;Ä&#15;&agrave;&#3;&oslash;&#1;&#0;&yuml;&#0;&#8;&#3;&THORN;&yuml;&#0;&agrave;7&#1;&#0;?&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#3;&thorn;&#0;&#4;&yuml;&Agrave;&#0;x&uuml;&#0;˜&yuml;&#0;&#3;&thorn;&yuml;&#22;&eth;&#4;&#0;&thorn;&#0;&#7;&uuml;&#3;&Agrave;Å&uuml;&#7;&oslash;&#15;&oslash;&#15;&Agrave;&#0;&#1;&THORN;&yuml;&#0;&agrave;8&#1;&#0;?&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#7;&thorn;&#0;&#4;&yuml;&Agrave;&#0;8&uuml;&#0;&oslash;&yuml;&#1;&thorn;&#3;&thorn;&yuml;&#22;&eth;Ä&thorn;&#0;|&#3;&oslash;&#15;&agrave;?Å&thorn;&#7;&oslash;&eth;&agrave;?Ä&yuml;Å&THORN;&yuml;&#0;&agrave;8&#1;&#0;?&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#8;&#7;&#0;&#1;&yuml;&agrave;&#0;8&uuml;&#0;&oslash;&yuml;&#1;&thorn;&#3;&thorn;&yuml;&#22;&eth;?&Agrave;&thorn;&#1;&thorn;&#3;&eth;&eth;?&#3;&yuml;&#7;&oslash;&eth;?&eth;?&#1;&yuml;Å&THORN;&yuml;&#0;&agrave;8&#1;&#0;?&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#8;&#6;&#0;&#1;&aacute;&agrave;&#0;8&uuml;&#0;&oslash;&yuml;&#1;&thorn;&#3;&thorn;&yuml;&#22;&eth;&Agrave;&thorn;&#3;&thorn;&#3;&eth;?&oslash;&#1;&yuml;&yuml;&oslash;&eth;?&eth;?Å&yuml;Å&THORN;&yuml;&#0;&agrave;6&#1;&#0;?&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#8;&#6;&#0;&#1;Ä&agrave;&#0;&quot;&uuml;&#0;&oslash;&yuml;&#1;&thorn;&#3;&uuml;&yuml;&#20;&Agrave;&thorn;&#3;&yuml;&#3;&eth;?&oslash;&yuml;&yuml;&u
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#6;&yuml;&yuml;&Ccedil;&thorn;|&uuml;&thorn;&yuml;&#3;&oslash;&yuml;&yuml;&ocirc;&yuml;&#0;˜&thorn;&yuml;û&ucirc;&yacute;&yuml;&#0;&yacute;&agrave;&yuml;&#0;&agrave;.&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#6;&yuml;&yuml;&atilde;&thorn;&lt;&uuml;&thorn;&yuml;&#3;&oacute;&yuml;&thorn;&szlig;&uuml;&yuml;&#0;&ucirc;&yacute;&yuml;&#0;&iuml;&ucirc;&yuml;û&ucirc;&yacute;&yuml;&#0;&yacute;&agrave;&yuml;&#0;&Agrave;)&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#6;&yuml;&yuml;&oacute;&thorn;&lt;&uuml;&thorn;&yuml;&#3;&Ccedil;&yuml;&yacute;&iuml;&uuml;&yuml;&#0;&ucirc;&uacute;&yuml;&#0;&Iuml;&thorn;&yuml;&#1;û&Uacute;&yuml;&#0;&agrave;(&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#6;&yuml;&ucirc;&oacute;æ|x&thorn;&yuml;&#3;è&yuml;&yacute;&iuml;&ocirc;&yuml;&#0;&THORN;&thorn;&yuml;&#0;&Icirc;&thorn;&yuml;&#0;&szlig;&Yacute;&yuml;&#0;&agrave;,&#1;&#0;&eacute;&yuml;&#0;&Agrave;&iuml;&#0;&#6;&yuml;&ugrave;&atilde;ú~p&thorn;&yuml;&#7;á&yuml;&yacute;&iuml;&ugrave;&yuml;&yuml;&oslash;&yuml;&#0;&szlig;&thorn;&yuml;&#0;&Aring;&thorn;&yuml;&#0;&szlig;&Yacute;&yuml;&#0;&agrave; &#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#6;&yuml;&uuml;GÄ&yuml;&#0;&thorn;&yuml;&#7;Ä&thorn;&ucirc;&yuml;&yuml;&Euml;&yuml;&#0;&agrave;&quot;&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#6;&yuml;&thorn;O&aacute;&yuml;Ä&thorn;&yuml;&#0;&eacute;&ucirc;&yuml;&#0;&Euml;&yuml;&#0;&agrave;&#19;&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&uuml;&yuml;&#0;&uuml;&Agrave;&yuml;&#0;&agrave;&#19;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&iuml;&#0;&uuml;&yuml;&#0;&uuml;&Agrave;&yuml;&#0;&agrave;&#20;&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&yacute;&yuml;&#1;&thorn;8&Agrave;&yuml;&#0;&agrave;&#19;&#1;&#0;?&eacute;&yuml;&#0;&Agrave;&iuml;&#0;&uuml;&yuml;&#0;&#1;&Agrave;&yuml;&#0;&agrave;&#15;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&iuml;&#0;∫&yuml;&#0;&agrave;&#21;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&iuml;&#0;&Otilde;&yuml;˜&oacute;&Egrave;&eacute;&yuml;&#0;&agrave; &#1;&#0;&eacute;&yuml;&#0;&Agrave;&iuml;&#0;&auml;&yuml;&ucirc;&yuml;&ccedil;É&#7;Ç&#8;&#0; &ugrave;&#0;&ecirc;&yuml;&#0;&agrave;"&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;?&oslash;&yuml; &#3;(8&oslash;&ucirc;˜&yuml;&yuml;&thorn;&#0;&ecirc;&yuml;&#0;&agrave;&#25;&#1;&#0;&eacute;&yuml;&#0;&agrave;◊&#0;&#4;\&#21;9&ugrave;˜&eth;&yuml;&thorn;&#0;&ecirc;&yuml;&#0;&agrave;%&#1;&#0;&eacute;&yuml;&#0;&agrave;&Oslash;&#0;&#7;&ucirc;&yuml;&#18;&ucirc;&yuml;&yuml;&iuml;&yuml;&yuml;&thorn;&yuml;&yuml;&ucirc;&aacute;&aacute;&aelig;Ç&#0;&#7;&#0;&ecirc;&yuml;&#0;&agrave;-&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;&yuml;&yuml;`&icirc;&#0;&#6;&#0;&iacute;&#0;&#7;&#0;&ecirc;&yuml;&#0;&agrave;&quot;&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;&agrave;&#0;0&icirc;&#0;&#4;&euml;&#0;&#7;&#0;&ecirc;&yuml;&#0;&agrave;"&#1;&#0;?&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;@&#0;0&icirc;&#0;&#4;&ntilde;&#0;&#8;t&#0;C&#8;&#7;&#0;&ecirc;&yuml;&#0;&agrave;/&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;@&#16;&icirc;&#0;&#25;&#6;&#1;Ä8.&#0;&oslash;&#0;&oslash;&uuml;&yuml; &#3;&#8;&#1;&#4;~|&#3;&ugrave;&AElig;&Atilde;&#24;&#7;&#0;&ecirc;&yuml;&#0;&agrave;/&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;@&#0;&#16;&icirc;&#0;&#25;&#6;&#1;&oslash;&uuml;oÉ&ugrave;à&uuml;&oslash;&yuml;x&Ccedil; &#1;&#6;&icirc;x&#7;&quot;&AElig;&Atilde;∏&#7;&#0;&ecirc;&yuml;&#0;&agrave;/&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;@Ä0&icirc;&#0;&#25;&#6;&#1;Å&Icirc;aÉÄ&Oslash;p&Agrave;&atilde;&oslash;&Ccedil;å&#1; &Agrave;`&#6; &aelig;&aacute;&eth;&#7;&#0;&ecirc;&yuml;&#0;&agrave;4&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;@&#24;&Agrave;0&icirc;&#0;&#25;&#6;&#1;ÅÉaÉÄ&oslash;1&Agrave;&ccedil;&yacute;&Iuml;å&#1;&#6;&agrave;r&#6; &aelig;&aacute;&agrave;&#7;&#0;&uuml;&yuml;&#1;&oacute;?&ntilde;&yuml;&#0;&agrave;4&#1;&#0;&eacute;&yuml;&#0;&agrave;&iuml;&#0;&#3;&Agrave;&#24;&Agrave;0&icirc;&#0;&#25;&#6;&#1;&aacute;&#3;wÉ&eth;&eth;1&oslash;&yuml;&Iuml;&Oslash;&#1;Ü&uuml;~&#6; ∑&agrave;&agrave
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#1;&#0;&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#8;&#1;&yuml;&eth;&ccedil;&agrave;x-xp◊&#0;&#1;Ä&#7;&yuml;&#24;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&thorn;&#0;&#25;&szlig;&uacute;&yuml;&#1;&#25;&ograve;&yuml;&#0;&agrave;&amp;&#1;&#0;&eacute;&yuml;&#0;&agrave;&yacute;&#0;&#8;&#1;&yuml;&agrave;&eth;p&#15;&eth;`&Otilde;&#0;&#7;/&ograve;&#0;é&thorn;&#0;ø&ugrave;&yuml;&#0;&ntilde;&yuml;&#0;&agrave;$&#1;&#0;&eacute;&yuml;&#0;&agrave;&uuml;&#0;&#6;&#6;&#0;&quot;&#16;p&#1;&Agrave;&Otilde;&#0;&#7;&#3;&iuml;Äè&Icirc;&thorn;&#0;&#3;&oslash;&yuml;&#0;O&ntilde;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&agrave;&oslash;&#0;`&Ocirc;&#0;&#8; &euml;&#0;&yuml;&Ccedil;&thorn;&#0;É&oslash;&yuml;&#0;á&ntilde;&yuml;&#0;&agrave; &#1;&#0;&eacute;&yuml;&#0;&agrave;&oslash;&#0;&agrave;&Ocirc;&#0;?&agrave;;o&ccedil;&agrave;&#0; ø&ugrave;&yuml;&#0;ü&ntilde;&yuml;&#0;&agrave;"&#1;&#0;&eacute;&yuml;&#0;&agrave;&ugrave;&#0;&#1;&#1;&agrave;&Otilde;&#0;&#1;&thorn;&#0;g&acirc;&#7;Äü&szlig;&ugrave;&yuml;&#0;&Eacute;&ntilde;&yuml;&#0;&agrave;!&#1;&#0;&eacute;&yuml;&#0;&agrave;&ugrave;&#0;&#1;&#3;&Agrave;&Otilde;&#0;&#1;&agrave;&#0;?&otilde;@&#15;&Agrave;W&oslash;&yuml;&#0;±&ntilde;&yuml;&#0;&agrave;!&#1;&#0;&eacute;&yuml;&#0;&agrave;&ugrave;&#0;&#1;&#1;Ä&Otilde;&#0;&#15;ú&#0;?&eth;&#0;&yuml;&Aacute;&oslash;&yuml;&#0;∑&ntilde;&yuml;&#0;&agrave;-&#1;&#0;&eacute;&yuml;&#0;&agrave;&Igrave;&#0;&#8;&szlig;Ä?&aacute;≥&yuml;&acirc;&szlig;&oslash;&yuml;&#1;&Iuml;&ograve;&yuml;&#0;&agrave;&quot;&#1;&#0;&eacute;&yuml;&#0;&agrave;&Igrave;&#0;&#1;-&icirc;&thorn;&#0;&#4;0&#3;&ucirc;&yuml;&atilde;˜&yuml;&#0;ó&ntilde;&yuml;&#0;&agrave;&quot;&#1;&#0;&eacute;&yuml;&#0;&agrave;&Igrave;&#0;&#1; `&thorn;&#0;&#4;&atilde;&yuml;&yuml;&Aacute;˜&yuml;&#0;&szlig;&ntilde;&yuml;&#0;&agrave;&quot;&#1;&#0;&eacute;&yuml;&#0;&agrave;&Iacute;&#0;&#1;&#15;&Auml;&yacute;&#0;&#4;&#15;&oacute;&THORN;&uuml;Ä˜&yuml;&#0;è&ntilde;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&agrave;&Icirc;&#0; &#7;&thorn;&#1;&#7;&eth;&#0;&ugrave;&Agrave;&#0;&#23;˜&yuml;&#0;è&ntilde;&yuml;&#0;&agrave;!&#1;&#0;&eacute;&yuml;&#0;&agrave;&Ntilde;&#0; &THORN;&#0;&#1;&yuml;&agrave;&#1;&szlig;&eth;&#0;&#15;&ugrave;&Agrave;&#4;&#23;˜&yuml;&#0;◊&ntilde;&yuml;&#0;&agrave;"&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Ograve;&#0;&#15; &aelig;&#0;#&ccedil;&#0;&Iuml;&yuml;p&#0; &Agrave;&#0;O˜&yuml;◊&ntilde;&yuml;&#0;&agrave;#&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Oacute;&#0;&#8;&#1;&Iuml;&agrave;&#8;|Ä&#1;&yuml;∞&thorn;&#0;&#4; ø˜&yuml;&#0;&Iuml;&ntilde;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Oacute;&#0;&#8;&#19;&thorn;&agrave;&yuml;&oslash;&#3;Ø&yuml;Ä&ucirc;&#0;&#3;&otilde;&yuml;&#0;&ograve;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Oacute;&#0;&#7;{&thorn;&#0;&yacute;&eth;&#7;&yuml;&uacute;&uacute;&#0;&#1;&#3;˜&yuml;&#0;&ucirc;&ntilde;&yuml;&#0;&agrave;-&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Ocirc;&#0;&#7;&#7;&yuml;&eth;&#16;&Agrave;&#0;&#7;&yuml;&ugrave;&#0;&#6;&ouml;&yuml;&#0;&euml;&ntilde;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Ocirc;&#0;&#7;w&yacute;&#0;x&#0;&#4;&#7;&uuml;&ugrave;&#0;&#1;&quot;˜&yuml;&#0;◊&ntilde;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Otilde;&#0;&#8;&#3;&ucirc;&agrave;?&oslash;&#0;&#15;É&Agrave;&ugrave;&#0;O&ouml;&yuml;&#0;&Iuml;&ntilde;&yuml;&#0;&agrave;&#26;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Otilde;&#0;&#7;{&Oslash;&#0;?ò&#8;=&Agrave;&oslash;&#0;7&aring;&yuml;&#0;&agrave;&#1;&#0;&eacute;&yuml;&#0;&Agrave;&Otilde;&#0;&#7;yà &euml;&#0;:∏&Agrave;&ugrave;&#0;&#1;&otilde;&yuml;&#0;˜&ograve;&yuml;&#0;&agrave;&#27;&#1;&#0;&eacute;&yuml;&#0;Ä&Ouml;&#0;&#8;vpÄ?&Egrave;&#1;&ucirc;&eth;Ä&ugrave;&#0;&#3;&auml;&yuml;&#0;&agrave;!&#1;&#0;&eacute;&yuml;&#0;Ä&Ouml;&#0;&#7;w0b&lt;&atilde;`&uacute;&#0;&#8;&#0;/&otilde;&yuml;&#1;&iuml;&iuml;&ograve;&yuml;&#0;&agrave;&#26;&#1;&#0;&eacute;&yuml;&#0;Ä◊&#0;&oslash;&#3;&Atilde;@&#7;&auml;&#1;ñ&ugrave;&#0;&atilde;&yuml;&#0;&agrave;#&#1;&#0;&eacute;&yuml;&#0;&Agrave;◊&#0; &uuml;&quot;&#7;&Atilde;&#0;&#3;&yacute;&Agrave;&#25;&thorn;&#0;Ä&yacute;&#0;?&oacute;&yuml;&iuml;&ograve;&yuml;&#0;&agrave; &#1;&#0;&eacute;&yuml;&#0;&Agrave;&Oslash;&#0; :&uuml;&#0;7Ä&#7;&Atilde; 8&thorn;&#0;&#3;&uuml
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&uacute;™ä¢ã´™(&#8;&ccedil;&#0;&#1;&#3;&thorn;&oslash;&#0;&#3;˜&yuml;&#4;&Atilde;?&#7;&Agrave;&atilde;&thorn;&yuml;&#0;&ccedil;&iuml;&yuml;&#1;˜w&oacute;&yuml;&#0;&agrave;&lt;&#1;&#0;&ugrave;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Ä&#8;&euml;&euml;™£&icirc;™ä+&uacute;¢&aelig;&#0;&#1;&#7;&thorn;&uuml;&#0;&#4;Ä&#3;&yacute;&yuml;&#1;Ä&#15;&yacute;&yuml;&#4;&Agrave;á&agrave;&thorn;&yuml;&#0;&szlig;&iuml;&yuml;&#1;&uuml;?&oacute;&yuml;&#0;&agrave;=&#1;&#0;&ugrave;&yuml; Ä&#15;&Iuml;&Iuml;æ&uacute;∏&egrave;&acirc;Ç(&auml;&#0;&#1;&#7;&thorn;&yacute;&#0;&#3;&yuml;&uuml;&#0;&#3;&thorn;&yuml;&#15;&thorn;&#0;&#1;&yuml;&yuml;Ä&Aacute;&yuml;á&agrave;&yuml;&yuml;&ugrave;&yuml;&Iuml;&iuml;&yuml;&#1;&ograve;&oacute;&yuml;&#0;&Agrave;&lt;&#1;&#0;&ugrave;&yuml; &eth;&#6;&#0;?&oslash;&gt;&#15;&Aacute;&yuml;&atilde;&aacute;&yuml;&oacute;&oslash;&#0;&icirc;&yuml;&#1;&eth;?&oacute;&yuml;&#0;&Agrave;;&#1;&#0;&ugrave;&yuml;&#7;&Agrave;&#17;&yuml;&yacute;&szlig;W&ntilde;&Aring;&szlig;&#0;&#1;&#15;&yuml;&yacute;&#0;&yuml;&uuml;&#3;&oslash;&#0;&#1;&thorn;&yuml; &agrave;&eth;&agrave;&yuml;&#7;&aacute;&yuml;&atilde;&aacute;&yuml;&atilde;&uuml;&#7;&ugrave;&yuml;&#0;&yacute;˜&yuml;&#1;&eth;&oacute;&yuml;&#0;&agrave;&lt;&#1;&#0;&ugrave;&yuml;&#8;&agrave;&#15;ø&thorn;&yuml;&oslash;&copy;Ä&agrave;&#0;&#1;&yuml;&thorn;&#0;&#6;&#3;&oacute;&thorn;&#0;&thorn;&#0;&#1;&thorn;&yuml; &agrave;&oslash;&aacute;&yuml;á&aacute;&yuml;&atilde;&agrave;&yuml;&atilde;&ugrave;&yuml;&#1;&ouml;&szlig;&ouml;&yuml;&#1;&eth;?&oacute;&yuml;&#0;&agrave;&lt;&#1;&#0;&ugrave;&yuml;&#7;&egrave;.ø&ucirc;&euml;&yuml;&iuml;&szlig;&#0;&#1;&yuml;&thorn;&#0;&#6;&#7;&Ccedil;&thorn;&#0;?&#0;&#1;&thorn;&yuml; &Aacute;&yuml;&uuml;&aacute;&yuml;á&aacute;&yuml;&atilde;&eth;&yuml;á&uacute;&yuml;&thorn;&yuml;&iuml;&ouml;&yuml;&#1;&eth;&oacute;&yuml;&#0;&agrave;;&#1;&#0;&ugrave;&yuml;&uacute;øø&yacute;&yuml;&#0;&thorn;&szlig;&#0; &yuml;&yuml;&#7;&yuml;&yuml;&#7;&Aacute;&yuml;Å&ugrave;&yuml;&#1;&Agrave;&#3;&ucirc;&yuml;Ä&ugrave;&yuml;&#1;&uuml;&#0;&oacute;&yuml;&#0;&agrave;8&#1;&#0;&#15;&ocirc;&yuml;&yuml;&Agrave;&szlig;&#0;&#21;&#7;&yuml;&agrave;&#0;&#7;Ä&gt;&#0;&#15;&#0;&yuml;&yuml;&#3;&yuml;&yuml;&#7;&Aacute;&yuml;A&uacute;&yuml;&#3;&uuml;@C&szlig;&yacute;&yuml;&ugrave;&#0;&#1;&oslash;&yuml;&#1;&thorn;&#0;&oacute;&yuml;&#0;&agrave;:&#1;&#0;&#15;&ocirc;&yuml;_&yuml;Ä&szlig;&#0;&#21;&#3;&yuml;&agrave;&#0;&#7;&#0;?&#0;&#15;&#0;?&yuml;&yuml;É&yuml;&thorn;&#15;&Agrave;&uuml;&atilde;&ucirc;&yuml;&#3;&thorn;  &#7;&yacute;&yuml;&#3;&yacute;&aacute;&#0;&#23;&oslash;&yuml;&thorn;&#0;&ocirc;&yuml;&#0;&agrave;9&#1;&#0;&#15;&otilde;&yuml;&oslash;&#15;P&THORN;&#0;&#20;&#1;&yuml;&eth;&#0;&#6;&#0;Ä&#7;&#0;?&yuml;&yuml;Å&yuml;&thorn;&#15;&Agrave;&Egrave;&uacute;&yuml;&#3;&ocirc;&#0;x&#7;&yacute;&yuml;&#3;&oslash;&Agrave;_&oslash;&yuml;&thorn;&#0;&ocirc;&yuml;&#0;&agrave;6&#1;&#0;&#15;&otilde;&yuml;&#1;&agrave;&#6;&Uuml;&#0;&#19;X&eth;&#0; &Agrave;&#0;Ä?&yuml;&yuml;Å&yuml;&uuml;&#15;&agrave;&#3;&uacute;&yuml;&#3;&#0;&oslash;˜&thorn;&yuml;&#3;&thorn;&Aacute;&#1;&#15;&ouml;&yuml;&#1;&#0;&ocirc;&yuml;&#0;&agrave;4&#1;&#0;&#15;&otilde;&yuml;&#0;&Agrave;&Uacute;&#0;&#18;&eth;&#0; &Agrave;&#7;&yuml;Ä?&yuml;&yuml;&Agrave;&yuml;&oslash;&eth;&#15;&ucirc;&yuml;&acirc;@&yuml;&yuml;&thorn;&thorn;&yuml;&oslash;&#8;&#25;&otilde;&yuml;&#1;&#0;&szlig;&ocirc;&yuml;&#0;&agrave;7&#1;&#0;&otilde;&yuml;&#0;Ä&Uacute;&#0;&#16;&eth;&#0; &yuml;&aacute;O&yuml;Ä?&yuml;&yuml;&Agrave;&eth;?&uacute;&yuml;&thorn; &#0;&thorn;&yuml;&#8;&uuml;&thorn;&icirc;&#0;ø&yuml;&yuml;&iuml;&ugrave;&yuml;&thorn;&#0;&ocirc;&yuml;&#0;&agrave;4&#1;&#0;&otilde;&yuml;&Ugrave;&#0;&#16;x&#0;&quot;&ntilde;&yuml;&iuml;&yuml;Ä?&yuml;&yuml;&agrave;?&Agrave;&uacute;&yuml;&ETH; A&thorn;&yuml;&#4;º&thorn;@&#0;o&thorn;&yuml;&#0;ß&oslash;&yuml;&#1;Ä&#15;&ocirc;&yuml;&#0;&agrave;4&#1;&#0;&otilde;&yuml;&Ugrave;&#0;&#16;0&#0;&quot;&aacute;&yuml;&iuml;&yuml;Ä?&yuml;&yuml;&agrave;&#4;&#0;&ucirc;&yuml;&#3;&uuml;&#0;&thorn;&yuml;&#3;&uuml;&thorn;&#0;&yacute;&yuml;&#0;&#1;&oslash;&yuml;&#1;Ä&ocirc;&yuml;&#0;&agrave;3&#1;&#0;&#15;&otilde;&yuml;&Ugrave;&#0;&#15;&#24;&#0;&quot;&aacute;&yuml;&iuml;&yuml;Ä&yuml;&yuml;&oslash;&#0;&uacute;&yuml;&#1;&#0;$&ocirc;ø&uuml;`&#4;&#21;&yacute;&yuml;&#0;A&osl
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Ö&yuml;&yuml;&oslash;&Icirc;;&iacute;&uuml;á&yuml;&yuml;&thorn;&#0;&ugrave;&yuml;&#0;˜&oacute;&yuml;&#0;&agrave;6&#1;&#0;&ouml;&yuml;&#0;&thorn;&oacute;&#0;&aelig;&#0;&#8;&quot;üè˜ü&Agrave;&oslash;&yuml;&#19;&thorn;&#0;&#16;Ç&Agrave;&#0;&yuml;&yuml;Ä/&yuml;&icirc;&uacute;&#1;&yuml;&yuml;&thorn;Ä&uacute;&yuml;&#0;&ntilde;&ograve;&yuml;&#0;&agrave;7&#1;&#0;&ouml;&yuml;&#0;&thorn;&ocirc;&#0;&#1;&aelig;&#0;&#8;&yuml;èè˜É&Agrave;&oslash;&yuml;&#3;&uuml;C&#1;&#1;&thorn;&#0; &yuml;∫&yuml;&iuml;&ouml;&#0;&yuml;&yuml;&thorn;&#0;/&uacute;&yuml;&#0;&aacute;&ograve;&yuml;&#0;&agrave;3&#1;&#0;&#15;&ouml;&yuml;&#0;&thorn;◊&#0;&#8;&yuml;ø&Ccedil;&#15;&ograve;&#3;Ä&ugrave;&yuml;&#4;&thorn;T&#23;A&thorn;&#0;&yuml;;&thorn;&yuml;&#6;&oslash;&#0;&yuml;&yuml;&uuml;&#0;&#15;&uacute;&yuml;&#0;&agrave;&ograve;&yuml;&#0;&Agrave;6&#1;&#0;&#15;&otilde;&yuml;&ugrave;&#0;@&agrave;&#0;&#8;&yuml;ø&ccedil;&#15;&Agrave;&#3;Ä&#15;&ugrave;&yuml;&#20;&Egrave;A &otilde;ê&#16;&#0;@y?&yuml;˜&yuml;&ugrave;&#0;&yuml;&uuml;&#0;&uacute;&yuml;&#1;&Agrave;&oacute;&yuml;&#0;&agrave;;&#1;&#0;&#15;&ouml;&yuml;&#0;&thorn;&ucirc;&#0;&#1;&thorn;&#0;&#16;&acirc;&#0;&#8;&quot;&yuml;&yuml;&oacute;Ä&#3;Ä&#15;&uacute;&yuml;&#4;&thorn;&#0;2&oslash;&yacute;&#0;ë&yacute;&yuml;&#7;&uuml;&#0;&yuml;&oslash;&#0;&#7;&uacute;&yuml;&#1;&agrave;&oacute;&yuml;&#0;&agrave;;&#1;&#0;&#15;&otilde;&yuml;&ucirc;&#0; &THORN;&#0;&#8;&quot;&yuml;&yuml;&ucirc;Ä&#3;Ä&uacute;&yuml;Ä2&yuml;&oslash;&#0;&#0;?&thorn;&yuml;&#8;˜&yuml;&ugrave;&#0;?&yuml;&#20;&#0;&#7;&uacute;&yuml;&#1;&Agrave;?&ugrave;&yuml;&#0;&uuml;&yuml;&#0;&agrave;;&#1;&#0;&#15;&otilde;&yuml;&#3;Ä?&agrave;&Ucirc;&#0;&#8;&yuml;&oslash;&agrave;&#0;&#3;Ä&ucirc;&yuml;&ograve;&#0; &#16;&THORN;&#0;&#8; &uuml;&#0;&eth;&#0;&#7;&#0;&#15;&yacute;&yuml;&yacute;6WS&yuml;&yuml;&oslash;&#1;&#17;w&uacute;&yuml;&#6;&agrave;&#0;&#15;&THORN;&#0;/&thorn;&yuml;Ä?&yuml;&yuml;&#0;&#15;&yacute;&yuml;&#0;&iuml;&thorn;&yuml;&#0;ó&uuml;&yuml;&#0;&agrave;E&#1;&#0;&#15;&ntilde;&yuml;&#0;&#1;&aacute;&#0; @&#0;&eth;&#0;&#15;&#0;&#15;&yacute;&yuml;&#3;&Euml;o&#7;?&thorn;&yuml;&#4;&yacute;&#1;u&otilde;˜&ucirc;&yuml;0&#0;&#7;&uuml;&#0;&yacute;&yuml;Ä&yuml;&ucirc;&#0;&#15;&yacute;&yuml;&#0;&iuml;&thorn;&yuml;&#0;è&uuml;&yuml;&#0;&agrave;K&#1;&#0;&#15;&ntilde;&yuml;&#6;&#0;&#16;&#16;&#0;A&#1;&aring;&#0; &#15;&thorn;&yuml;&#3;&uuml;è-è&yacute;&yuml;&#4;&uuml;á&yuml;&thorn;&szlig;&uuml;&yuml;&#6;&Ntilde;&#0;&#15;d&#0;&#22;&yacute;&yuml;&Agrave;&#15;&yuml;&ETH;&#0;&#7;&thorn;&yuml;&#1;&thorn;É&thorn;&yuml;&#0;&#15;&uuml;&yuml;&#0;&agrave;F&#1;&#0;&#15;&ntilde;&yuml;&#6;Ä&#1;T&#0;&aring;&#0; &#15;&thorn;&yuml;Ñøø&uuml;&yuml;&#1;&thorn;ø&ugrave;&yuml;&#6;8&#0;&#7;&ETH;&#0;&yacute;&yuml;&Agrave;&#15;&yuml;&Aacute;&#0;&#7;&yacute;&yuml;&#4;A&yuml;&yuml;&quot;&uuml;&yuml;&#0;&agrave;J&#1;&#0;&#15;&ntilde;&yuml;&#7;Ä`&iuml;&yuml;&yuml;Ä&aelig;&#0;&#18;&Agrave;&#0;&#7;&#0;&oslash;&#0;&quot;&#7;&yuml;&yuml;&uacute;B&yuml;?&thorn;&yuml;&#1;&thorn;&thorn;&ugrave;&yuml;&#8;&eacute; &#0;&#7;&Oacute;&#7;&yuml;&thorn;&yuml;Ä&#7;&yuml;&Ccedil;&#0;&#7;&yacute;&yuml;&#4;&Agrave;&yuml;&yuml;A&uuml;&yuml;&#0;&agrave;F&#1;&#0;&#15;&ntilde;&yuml;&#3;Ä£&iuml;&thorn;&yuml;&aring;&#0;&#18;@&#0;&#3;Ä&oslash;&#0;&lt;&#0;&#7;&yuml;&yuml;Å@&thorn;&yacute;&yuml;&#0;&thorn;&ucirc;&yuml;&#7;&thorn;æÇÄ &#3;&ucirc;&yuml;&yuml;ø&yuml;&yuml;&thorn;&#0;&#3;&yuml;à&#0;?&yacute;&yuml;&#4;@&yuml;&yuml;ó&uuml;&yuml;&#0;&agrave;@&#1;&#0;&#15;&ograve;&yuml;&#1;&yacute;&#3;&uuml;&yuml;&#0;&thorn;&aring;&#0;&#18;&Agrave;&#0;&#3;&Agrave;&#0;&#15;&oslash;&#0;x&#0;&#7;&thorn;&Agrave;&#23;&yuml;&yuml;&thorn;&ouml;&yuml;&#0;˜&uuml;&#0;&#3;&thorn;&yuml;&#0;&szlig;&thorn;&yuml;&#4;&#0;&#3;&yuml;∏&yacute;&yuml;&thorn;&#16;&ugrave;&yuml;&#0;&agrave;E&#1;&#0;&#15;&ograve;&yuml;&#1;&uuml;&yacute;&yuml;&#1;&yacute;@&aring;&#0; `&#1;&Agrave;&#0;&#15;&uuml;&#0;&eth;&#0;&#3;&Ugrave;a/&thorn;&yuml;&yuml;&thorn;&yuml;&#6;&szlig;&szlig;&yuml;&yuml;&yacute;&yuml;&ocirc;&uuml;&#0;&#3;&uacute;&yuml;&#4;&#0;&#3;&yuml;∫-
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+<BLOCK>
+&quot;&thorn;&#0;Aa&ugrave;&yuml;&#0;&szlig;&ocirc;&yuml;&#0;&agrave;I&#1;&#0;&#15;&ograve;&yuml;ø&thorn;&thorn;&oslash;Ä&#16;&#0;&#1;&uacute;&#0;&#1;E&thorn;&yuml;◊q@&ucirc;&#0;&#8;&#4;&#23;&yuml;&otilde;&#1;&#1;_&szlig;&thorn;&yuml;$%&ucirc;&yuml;&#1;&yacute;º&uacute;&#0;&#8;ø&ucirc;&yuml;&iuml;&yuml;#§&thorn;&#0;&#1;&#8;m&ecirc;&yuml;&#0;&agrave;O&#1;&#0;&#15;&iuml;&yuml;
+</BLOCK>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+&uuml;&yuml;&#1;Ç &uacute;&#0;&yacute;&yuml;&#3;&thorn;&#3;&#3;&szlig;&thorn;&yuml;&#3;&thorn;&Uuml;&#16;S&uuml;&yuml;&#1;˜P&ugrave;&#0; &oslash;ø&uacute;n&aacute;&egrave;""&#0;&#8;&#0;+&iuml;&uuml;&yuml;&#0;&iuml;&eth;&yuml;&#0;&Agrave;I&#1;&#0;&#15;&icirc;&yuml;&#4;&agrave;&#3;&yuml;&yuml;&agrave;&yacute;&#0;&#4;Äø&thorn;&yuml;&#3;&egrave;&agrave;ÇÄ&ucirc;&#0;&#3;&uuml;&yuml;&thorn;&#15;!&uuml;&yuml;&#8;I˜&yuml;&yuml;&szlig;&yuml;&yuml;&aacute;&ugrave;&#0;t&yacute;&yacute;&yuml;gg0&thorn;&#0;´&uuml;&yuml;&#0;&thorn;&iuml;&yuml;&#0;&agrave;N&#1;&#0;&#7;&ntilde;&yuml;&#7;}_&yuml;&eth;&#7;&yuml;&yuml;&agrave;&ucirc;&#0;&yacute;&yuml;&#6;&uacute;&#0;Ä&#8;&#0; &yacute;&#0;&#15;&uuml;&yuml;&#16;&uacute;áß&iuml;&yuml;&yuml;&thorn; 8+&ucirc;&iuml;&yuml;&iuml;&yuml;æ&Agrave;&uacute;&#0; &#23;&szlig;&yacute;}&yacute;t&Auml;&ETH;@&#0;@&#0;&#16;ø&ucirc;&yuml;&#0;Ø&eth;&yuml;&#0;&agrave;L&#1;&#0;&#15;&ntilde;&yuml; }_&yuml;&Otilde;&yuml;&yuml;&eth;&#0;@&#0;&#1;&#7;&yacute;&yuml;&#1;&oslash;&eth;&uuml;&#0;&#8;&yacute;&#0;&ucirc;&yuml;&#15;&thorn;&#15;&ucirc;&euml;&ucirc;&euml;™&#6;¢ã&Euml;&yuml;&yuml;ø&yuml;∞&ugrave;&#0;&#7;w&yuml;&Yacute;◊˜&#3;D@&uuml;&#0;&#25;&yuml;&yacute;&yuml;&#1;&oacute;I&eth;&yuml;&#0;&agrave;M&#1;&#0;&#3;&ntilde;&yuml;&#7;_&yuml;&uuml;&yuml;&yuml;&eth;&yacute;&#0;&#1;&#23;_&thorn;&yuml;&#1;&ntilde;@&ucirc;&#0;@&thorn;&#0;&#1;&#7;&ucirc;&yuml; &#15;ß&iuml;&yuml;Ä&#0;iØß¶&thorn;&yuml;&ecirc;&ugrave;&#0;&#8;&#3;˜&yuml;&Iuml;ü&thorn;&#1;&#4;@&thorn;&#0;&#1;&#4;&ucirc;&yuml;&#1;&otilde;∑&eth;&yuml;&#0;&agrave;M&#1;&#0;&#15;&oacute;&yuml;&yacute;&ograve;&ucirc;&ucirc;&yuml;&icirc;&yuml;&yuml;&eth;&thorn;&#0;g&yacute;&yuml;&#6;=&#16;&#0;P&#0;@&ucirc;&#0;&uacute;&yuml; &#15;&yuml;&ugrave;&#1;&#4;&#4;&#1;&szlig;&szlig;_&yuml;&iacute;&uacute;&#0; ;&uacute;&yuml;&ucirc;&copy;&iuml;ßÑ&#0;&#0;&#1;e&uacute;&yuml;&#0;}&iuml;&yuml;&#0;&agrave;S&#1;&#0;&#15;˜&yuml;&#16;&ucirc;&thorn;&yuml;ø&ucirc;´™Ø&ucirc;&oslash;?&yuml;&yuml;&eth;&#0;+&yacute;&yuml;&#1;&oslash;0&uuml;&#0;&#7;&#16;&#0;PP&#0;AA&#7;&ucirc;&yuml; &yacute;&#15;˜&Yacute;&#0; &#4;U&yuml;˜˜&yuml;&Auml;&ugrave;&#0;&#7;&acirc;+&icirc;&thorn;∫&uacute;k&ucirc;&#0;&Ecirc;&thorn;&yuml;&#0;&yacute;&thorn;&yuml;&#0;&yacute;&iuml;&yuml;&#0;&agrave;O&#1;&#0;&#15;&ouml;&yuml; &thorn;&yuml;&yuml;&oslash;ª&euml;&atilde;&euml;¢?&yuml;&yuml;&oslash;&#0;+&yacute;&yuml;&#1;&thorn;ä&ugrave;&#0;a&#0;&#4;&#4;&#0;&#1;&ucirc;&yuml; &thorn;&#15;w@&#0;&#19;&#0;AEu˜&Otilde;&thorn;&ugrave;&#0;&#8;&#4;&thorn;&acirc;&ucirc;&ugrave;É¢&uuml;&#0;&#3;&#1;&iuml;&yuml;ø&thorn;&yuml;&#1;&euml;&iacute;&icirc;&yuml;&#0;&agrave;M&#0;&#7;˜&otilde;&yuml; &Ccedil;&yuml;èø&yuml;øp?&yuml;&yuml;&agrave;ø&thorn;&yuml;&egrave; &uuml;&#0;&#8;&#8;&#8;&agrave;&#8;Ä&#3;&ucirc;&yuml; &uacute;&#15;¢&#0;&#17; ¥&Ocirc;&yuml;&ugrave;&Iacute;D&ugrave;&#0;&#7;]&yacute;&yuml;&szlig;&ccedil;o&agrave;&#6;&ucirc;&#0;&#3;&ucirc;&yuml;&#0;&oacute;&iacute;&yuml;&#0;&agrave;N&#1;&#0;&#15;&otilde;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&ucirc;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+é&THORN;&oslash;&#0;&#8;øø&egrave;ø{&auml;@&agrave;&ucirc;&#0;&#1;U&yuml;&thorn;&szlig;&#3;&yuml;&yuml;&yacute;&szlig;&iacute;&yuml;&#0;&agrave;O&#1;&#0;&#15;&oslash;&yuml;&#0;&ccedil;&uuml;&yuml; &#1;&#1;&#21;&#0;&#20;&#20;&#16;p@A&#1;&#4;&uuml;&yuml;&Agrave;&#0;&#4;&#24;&#24;-{I&igrave;&oslash;&#0;&#7;®øª&ucirc;ª&euml;¶Ç&uacute;&#0;&Ccedil;&Oacute;&szlig;&thorn;&yuml;&#1;&yacute;&yacute;&igrave;&yuml;&#0;&agrave;T&#1;&#0;&#15;&uacute;&yuml;&#18;&iuml;&yuml;&iuml;&iuml;&yuml;&thorn;&yuml;&ucirc;&ecirc;Ø¢&uacute;Ä(&#0; ®&uacute;&#0; &#20;&#0;&#16;&#0;PT&#1;DD&#4;&#4;&#0;&yacute;&yuml;&#0;˜&thorn;&#0;&#4;&#16;&#16;sa&Eacute;&oslash;&#0;&#8;&#3;ø&yuml;øæ∫&uacute;&ecirc;Ä&uuml;&#0;C&euml;´&yuml;ø&thorn;&yuml;&#0;&szlig;&igrave;&yuml;&#0;&agrave;R&#0;&#7;◊&ouml;&yuml;&quot;&iuml;&yuml;&ecirc;é&icirc;8&agrave; Ä&#0;( &#0;ÄÄÄ&#16;8&#20;&#16;`&thorn;&#0;&#1;&yacute;&yuml;&Auml;&#0;&#16;&#4;&#0;5&#4;Ä&oslash;&#0;&#7;∏r˜&ucirc;&Ugrave;í&ucirc;&#0;&#8;ÄÜ&oacute;∫&uacute;&yuml;&yuml;&uuml;&euml;&yuml;&#0;&agrave;V&#0;&szlig;&yacute;&yuml;}&yuml;&yacute;&yuml;&yuml;&szlig;&thorn;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+(&#0;0Ä&uuml;&#0;&#1; &thorn;&yuml;&#0;&Acirc;&yacute;&#0;&#3;&#4;êÉ&#16;˜&#0;&#8;E&Yacute;vw]&Yacute;T0&ucirc;&#0;&#8;&#8;&thorn;&yuml;&thorn;&yuml;&thorn;&yuml;&yuml;&euml;&yuml;&#0;&agrave;V&#7;&#0;&#1;˜&yuml;&yuml;&szlig;&yuml;&szlig;&thorn; &yuml;&yacute;˜&yuml;&yuml;&Ccedil;ü&yuml;&lt;?x@@&#0;&ucirc;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+*  &thorn;&#0;&#4;Çø&yuml;&yuml;&thorn;&uuml;&#0;&#3;Ç8˜&#0;&#8;W]_&ntilde;5&yacute;◊◊P&uuml;&#0;&#4;&ucirc;&ucirc;&yuml;}ø&yuml;ø&thorn;&euml;&yuml;&#0;&agrave;Y&#0;&#15;Ø&thorn;&yuml;&#24;&yacute;&yuml;&yacute;&yuml;&szlig;◊&yuml;u&Otilde;u&Ntilde;W˜MT&#20;&#0;&#4;&#0;P@&#0;&#1;&yacute;&#0;&#16;(&#24;®ÄÄ&#8; ª&yuml;&yuml;®&thorn;&#0;&#0;&#8;&#0;&oslash;&#0;&#8;Ä&yuml;ã&Ccedil;∂4}&#17;p&ucirc;&#0;&#8; &yuml;&ocirc;&ocirc;&szlig;[&szlig;o&ecirc;&yuml;&#0;&agrave;S AaAUE&#4;&#20;&#16;T@&#0;@A&#1;@&#4;&yacute;&#0;&#16;&oacute;&#0;&#8;&#3;&gt;~ª&ograve;¢&Acirc;"&#1;&yacute;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;\{&yuml;&yuml;&ograve;&ucirc;&yuml;&yuml;&Iuml;&yuml;&yuml;&ecirc;™∫®&copy;é™Ø&ecirc;*ä(( (&acirc;¢Ä&#0;&#4;&quot;&#4;@@&#0;&#1;&#0;@&yacute;&#0;@&ugrave;&#0;&#4;&ouml;&#0;&#8;XSdw˜&quot;f&#8;&ucirc;&#0;&#6;&#6;&yuml;&yuml;&ucirc;&uacute;+ø¨ø&eacute;&yuml;&#0;&agrave;H&#26;&#0;&Ntilde;˜&yuml;&yuml;&#23;_&szlig;&yuml;&yacute;&yacute;˜&oacute;&atilde;&Iuml;é
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+:æ&ecirc;ª&atilde;&euml;&atilde;£ä&thorn; ™®&acirc;ÄÄ&#8; &eacute;&#0;&#8; &#20;&ouml;w]&#25;&#16;d&uacute;&#0;&gt;&yacute;&yuml;&#4;û&yuml;&thorn;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#22;P&ucirc;&#0;&#1;R{&yacute;&yuml;&#4;û&yuml;&yuml;[&eacute;&yuml;&#0;&agrave;P+&#0;&iuml;&Iuml;&Iuml;&yuml;á-&yuml;Q◊&otilde;&szlig;_&szlig;&#21;&quot;&quot;}uUq&otilde;E◊&#6;-&quot;0&#8;0&#8;"&#8; &#8;&#0; Ä&otilde;&#0; &oslash;&#0;&#3;ü x|êêp@&uuml;&#0;&#3;&#16;&#20;w&yuml;&thorn;&szlig;&#3;}Ωù&egrave;&yuml;&#0;&agrave;K&#6;&#0;∫&ucirc;&ucirc;&eth;&thorn;&yuml;&Ccedil;&Ccedil;&yacute;]}utu&Ntilde;uWWUw&quot;\UPAU&Aacute;Ñ&#0;&#8;&#0;&#8;&#0;@&#3;Ä&eacute;&#0;&#8;(âØ¢≤&uacute;à &thorn;&#0;&#16;&thorn;&#0;&#1;&#3;&yacute;&yuml;&#3;&ocirc;}]&egrave;&yuml;&#0;&agrave;G'&#0;¢ä´&ecirc;æø&thorn;k&atilde;&ugrave;&iuml;&iuml;&Ccedil;&aelig;&lt;=uU&ntilde;&ugrave;˜&Aring;&#7;&#23;&#23;&#21;UP&#21;UA@Q&#1;&#21;&quot;&#4;&ccedil;&#0;&#8;¢&Uacute;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+™&uacute; ™&atilde;Çäèæ∏&#0;t&oacute;&Ugrave;&aacute;&#0;&#20;&#4;&#20;T&#0;PQAA&#0;&#4;&euml;&#0;&#7;&gt;&oslash;?≥∫Éä&#8;&ucirc;&#0;+Øøæ&yuml;&yuml;&Euml;&iuml;m≠&ccedil;&yuml;&#0;&agrave;G'&#0;&#1;&Ntilde;A&Iuml;ø&gt;.&oslash;&eacute;&euml;&yuml;£¢É™ä.™∫™´´™äÜ´ä™&#0;`&#0;&#17;&Agrave;&#0;&#20;&eacute;&#0;&#8;@A&yuml;&yacute;&#23;Ñ&#16;&#1;X&uacute;&#0;8&uacute;&iuml;&yuml;&ucirc;&yuml;≥≤∫&ccedil;&yuml;&#0;&agrave;C$&#0;&#21;\&otilde;&Otilde;w˜&iuml;&Eacute;&yuml;ø&icirc;*£&egrave;&Egrave;®¢&ecirc;äø™*. &atilde;£Ç &#8;`&ccedil;&#0;&#8;&#1;&#0;U&thorn;}_QA&#1;&ugrave;&#0;#ª&szlig;&iuml;&yuml;&yuml;&thorn;∏&egrave;i&aelig;&yuml;&#0;&Agrave;C"&#0;&#1;E◊G˜W&#23;]U]&ntilde;&yacute;&Atilde;CÉ&#6;-@&#1;x&amp;&aacute;&atilde;Ä&#7;ÇÇ®*®*¢&thorn;Ç&ccedil;&#0;&#8;&ETH;O&yacute;}ù&ocirc;&#22;&#0;P&ucirc;&#0;&#1;&#1;o&uuml;&yuml;&#4;&ucirc;Ri)ø&ccedil;&yuml;&#0;&agrave;G(&#0;&#4;|&ocirc;tC&Otilde;◊W&otilde;_U&#21;&#20;PTQC&Aring;&#7;&Ocirc;_&#16;Tp&agrave;mÇÄ&#3;Ä((&#0;Ä&euml;&#0;&#6;Äò&gt;|&yacute;&yacute;&ntilde;&ugrave;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&oslash;"&acirc;&atilde;¢´&icirc;&yuml;&quot;x&quot;H&aacute;&Agrave;A&Aacute;&#15;&#7;&quot;\U&thorn;Q&#7;A&#1;&#4;&#4;&#0;P@&ccedil;&#0;&#7;Ä++Ωº¢Ç&uacute;&#0;b&yuml;&ucirc;&yuml;˜˜&yuml;&#23;&quot;&ETH;&aring;&yuml;&#0;&agrave;H'&#0;#ä¢ä
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+∫™™&yuml;®´Çéä&#0;&#8;É&#0;&Agrave;C&#7;&#20;&#20;&#4;P&#20;&#0;AQE&#0;&#4;&euml;&#0;&#8;&#16;&agrave;&#0;≥øû- &ucirc;&#0; -&quot;8(Çä  &#0;Ä&ecirc;&#0;&#6;D&#1;4ëV&#16;Q&uacute;&#0;&#3;@ &#21;w&thorn;&yuml;&#4;&Ucirc;m/æø&auml;&yuml;&#0;&Agrave;B%&#0;&ocirc;S&Aacute;&#21;&#1;TTQQ&otilde;QGQA&#21;&#21;&#0;&#16;&#16;&#0;&#17;P@&#3;É&#8;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&otilde;&AElig;_&atilde;&yuml;&#0;&agrave;F- -&agrave;pA&Agrave;◊&Aring;&#23;W&#20;&#20;|PU&#21;AAUTPD@P&#0;&#4;&uacute;&#0;Ä&icirc;&#0; &#0;Äûöh&#8;)Ä&ucirc;&#0; &#4;&#0;&#24;w&Ccedil;&yuml;˜WóD\Ω&auml;&yuml;&#0;&agrave;C&#18;&#0;ãä£¢ &#0;@É≥ø&szlig;&yuml;;aPXø&auml;&yuml;&#0;&agrave;?&#19;&#0;à8(™®ä.
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#8;(``0&#0;Ä&uuml;&#0;&quot;`D&#1;&#0;&#4;D&#4;&#0;&#4;&egrave;&#0;&#7;&#3;&#0;ü&#26;(&#8;Ä&uacute;&#0;(&acirc;ª&ucirc;&yuml;&iuml;&iuml;)§ê◊&acirc;&yuml;&#0;&Agrave;E &Aacute;áÄé ∏(¢à&thorn;Çä&#8;à(( &#0;¢Ç&#0;&thorn;&#0;&#4;x&#0;@&#1;&#1;&iacute;&#0;&#0;&#1;&#4;&#20;T◊&ETH;A&ugrave;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+(&#8;®  &#0;&thorn;Ä¢&auml;&#0;&#4;EMU&#20;&#20;&ugrave;&#0; Fπ¢&thorn;&uacute;∏Ä/&#15;ø&thorn;&atilde;&yuml;&#0;&Agrave;=!&#0;&#1;A&#1;ED&#21;&#21;&quot;Px&Agrave;@&#0; &#8;&#24;à(&#8;&#0;Ä¢&#8;&#0;&#8;&#0; &aelig;&#0;&#4;t&#0;&ETH;SA&ugrave;&#0;&#1;u˜&ugrave;É&yuml;&euml;&quot; &gt;ó&aacute;&yuml;&#0;&Agrave;B &#8;&#0;s&ntilde;&yuml;˜&#7;&#23;&Uuml;p&#16;&quot;e&aacute;&yuml;&#0;&agrave;C-&#8;®&#0; Ä  (¢&uacute;&ecirc;&yuml;Ø≠Øæ0&#18;O&agrave;&yuml;&#0;&agrave;=&#0;&#8;&thorn;&#0;&#18;ÄÄ&#8;&#0;&#8;&#0;"&egrave;&#0;&#15;Ç&#0;&thorn;&#0;&#16;&uuml;&#0;&#16;&ecirc;&#0;&#3;&ETH;&Agrave;AA&oslash;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+™ ÄÇà&#0;(&auml;&#0;&#4;@&#0;0&#4;&#16;&ugrave;&#0;  &#0;&#0;&#3;ÇÄ&#8;&#0;&#8;&#0; &auml;&#0;&Agrave;&ouml;&#0; &#1;&#21;&otilde;?&Ouml;&yuml;| æ &#0;ö&ucirc;&ocirc;&yuml;&#0;&thorn;&iacute;&yuml;&#0;&Agrave;;&#21;&#0;@D&#4;&#4;&#0;&#16;T&#0;@&#0;&#4;&#16;&#24;&#0;@@&yacute;&#0;&#8;&#0; &atilde;&#0;&#1;&#8;&#16;&oslash;&#0; &#23;\&ugrave;_&ccedil;&yuml;&yuml;&Ocirc;^&#0;&#1;}˜&ocirc;&yuml;&#1;&iuml;&iuml;&icirc;&yuml;&#0;&Agrave;&gt;&#4;&#0; &#4;&#16;&thorn;&#0;&#1;&#1;@&uuml;&#0; &#16;P&#16;@&#4;&#0;&#16;&#0;@&#0; &ccedil;&#0;&#6;&#16;@&#0; &#4;&ugrave;&#0; &#7;&Oacute;&yuml;&szlig;&ccedil;}&THORN;&Ocirc;P&#0;@Ww&ocirc;&yuml;&#0;&thorn;&iacute;&yuml;&#0;&agrave;:&#0;&Atilde;Ç&#4;&thorn;&#0; @&#0;A&#1;&#0;&#4;&#0;&#16;@&#17;&#1;&#0;&#16;&yacute;&#0;&#4;&aelig;&#0;&ouml;&#0; &#8;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&thorn;&#0;Ä&thorn;&#0;&#7; &#0; ÇÄ&#0;&Uacute;&#0;&#1;&#1;&ouml;&#0; &gt;&thorn;&thorn;&uacute;&uacute;&ucirc;&iuml;&icirc;&Euml;&#0;&uacute;ø&THORN;&yuml;&#0;&agrave;6&otilde;&#0;&#6;&#8;&#8; &#0;&#0;Ä&thorn;&#0;&#3;&#0; &ccedil;&#0;&#16;&thorn;&#0;&#3;&#4;&#4;&#16;@&ugrave;&#0; &#16;&eacute;&yuml;øæû&iuml;&uuml;&#24;&#0;&oslash;?&ouml;&yuml;&#1;&iuml;&icirc;&euml;&yuml;&#0;&Agrave;0&yacute;&#0;&#4;&ugrave;&#0;&#3;&#0;&thorn;&#0; &Ouml;&#0;&#17;&#1;&#0;&#1;5TT&szlig;_y5gêò&oslash;?&ouml;&yuml;&#4;´&iuml;&yuml;&ucirc;&icirc;&yuml;&#0;&Agrave;'&#4;&#0;&#4;&#0;&#16;&aelig;&#0;&szlig;&#0; &#17;qUuo&Iuml;◊&Ocirc;@H&#1;7&eth;?&ouml;&yuml;&#3;&iuml;øø&iacute;&yuml;&#0;&Agrave;$&iacute;&#0;&#16;&Ocirc;&#0;&#15;û&#15;W|U˜pUA
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;&#8;&ocirc;&#0;&#3;@&#0;&#1;&#1;&Oacute;&#0;&#15;&#3;(äß≥|K&Iuml;0$&#0;ê&#19;&eth;&oslash;&yuml;&#4;&szlig;˜w_ü&igrave;&yuml;&#0;&agrave; ø&#0;&#15;ä&Euml;o´æÄ∫&#26;z&#0;)&yuml;&yuml;&ograve;˜&yuml;}t}&yuml;˜˜&icirc;&yuml;&#0;&agrave;'&ugrave;&#0;Ä&uuml;&#0;&#8;&Icirc;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+-&#8;c&yuml;&iuml;&icirc;Çé&lt;&#0;;&thorn;&yuml;&#0;?&ugrave;&yuml;&#0;˜&thorn;&yuml;&#0;&euml;&yuml;&#0;&Agrave;'&Yacute;&#0;&#1;&otilde;&#0;&#20;&ograve;&#0; &#1;M&#0;&#7;æø&uacute;&Ecirc;&oslash;  &#0;ø&yuml;&iuml;˜&yuml;ø∫æ&thorn;&yuml;&ucirc;&igrave;&yuml;&#0;&Agrave;(&icirc;&#0;Ä&auml;&#0;|&oacute;&#0; &#16;&#16;&Auml;BQ&Yacute;o˜&#0;êB&#0;?&ouml;&yuml;&#7;&euml;&iuml;¢™&icirc;Ø&euml;ø&iacute;&yuml;&#0;&Agrave;'&uuml;&#0;&#4;◊&#0;&#1;&#15;&uuml;&oacute;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&oacute;&#0;&#16;&agrave;&#0;&#1;&yuml;&oslash;&oacute;&#0; &#26;y`=&yacute;˜˜&ucirc;&szlig;&#0;&#1;4&quot;&ouml;&yuml;&yacute;˜&Yacute;◊&iuml;˜&yuml;&yuml;&thorn;&icirc;&yuml;&#0;&agrave;'&Ograve;&#0;&#15;&yuml;&oslash;&ocirc;&#0; ∞&Uacute;&Euml;&euml;&yuml;&oslash;&auml;&#0;S&Iuml;&ouml;&yuml;&#4;&yacute;u\]u&thorn;&yuml;&#0;&szlig;&iacute;&yuml;&#0;&agrave;&amp;&Ograve;&#0;&yuml;&yuml;&Agrave;&ocirc;&#0; 8 /&iacute;&iuml;ªö&uacute;H&#0;&#1;&#23;&otilde;&yuml;&#4;&otilde;qU&yuml;˜&thorn;&yuml;&#0;&szlig;&iacute;&yuml;&#0;&agrave;%&Oacute;&#0;&#23;&yuml;&yacute;&oacute;&#0; üÅÄ&#15;øüøà( &#0;&#3;&ucirc;&otilde;&yuml;&#3;Üò&quot;&yacute;&yuml;&#0;˜&iacute;&yuml;&#0;&agrave;%&Ocirc;&#0;&#3;&#21;&yuml;&ntilde;&ocirc;&#0; =Ä&#22;&yuml;&Ucirc;&szlig;&agrave;l&#0;&ouml;&yuml;∫(®¶ø&eacute;&yuml;&#0;&Agrave;&amp;&Otilde;&#0;&#3;&#1;_&yuml;&uuml;&oacute;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+:z&eacute;&yuml;&#0;&Agrave;)&Ucirc;&#0;&#1;&eth;&Agrave;&uuml;&#0;&#1;&yuml;&thorn;&oacute;&#0; &#4;@&#20;&#20;&#16;w&ntilde;&Ugrave;&szlig;AD&#0;&#16;&#19;&ouml;&yuml;&#6;&uuml;&acirc;Ç∫∫&yuml;&iuml;&eacute;&yuml;&#0;&Agrave;,&Uuml;&#0; H`!Ä∞˜&Ograve;]_&#1;d&#16;&#16;s&ouml;&yuml;&#6;&Auml;G&#20;&gt;8&yuml;&thorn;&eacute;&yuml;&#0;&Agrave;2&Uuml;&#0;&yuml;&yuml;&agrave;&thorn;&#0;&#3;&#15;&yuml;&thorn; &ocirc;&#0; Ç  "&Egrave;ko&igrave;Ωæ&#3;@&#19;&ouml;&yuml;&#0;&otilde;&thorn;P&#4;QA&yuml;&yuml;&eth;&yuml;&#0;&ucirc;&uuml;&yuml;&#0;&agrave;1&Yacute;&#0;&#3;&#1;&yuml;&yuml;&agrave;&thorn;&#0;&yuml;&yuml;&oslash;&ograve;&#0; "ÄÄÇ¢∫å&#26;h &#0;2ó˜&yuml;&#8;˜}&#16;&#20;&#4;]}&thorn;&yuml;&#0;˜&iacute;&yuml;&#0;&agrave;0&Yacute;&#0;&#8;&#1;&yuml;&yuml;&Agrave;&#0;&#23;&yuml;&oslash;&oacute;&#0; &#0;&#8;&#0;:{&ecirc;£&#0;&#26;ø˜&yuml;&#6;&thorn;&gt;@&#0;AL&quot;&ucirc;&yuml;&#0;&yacute;&icirc;&yuml;&#0;&agrave;/&Yacute;&#0;&#8;&#7;&yuml;&yuml;&Agrave;&#0;&#1;&yuml;&Agrave;&oacute;&#0;&thorn;&#0;&Agrave;KIoØ¥ÇÄJ[&ouml;&yuml;&#6;&icirc;™Ç&#0; (&#27;&thorn;&yuml;&#0;&yacute;&euml;&yuml;&#0;&Agrave;.&Yacute;&#0;&#7;&#7;&yuml;&yuml;&Agrave;&#0;&#7;&yuml;&uuml;&ograve;&#0;&#7;&yacute;&#0;&#3;&#16;&#20;&Ccedil;&Ouml;&thorn;&#0;&#1;%ø˜&yuml; D&#16;&#0;@&#1;P w&#20;&#0;&#16;&#0;C&ouml;&yuml; 0&#0;&#4;&#7;&ouml;&yuml;&#8;&Agrave;&#0;&#4;&#0;@&Ouml;&Atilde;&iuml;&Iuml;&oslash;&yuml;&#0;ø&ograve;&yuml;&#0;&agrave;.&Yacute;&#0;&#3;&yuml;Ä&gt;&uacute;&ntilde;&#0;&#8;&#16;&#8; &#0; &#0;&#6;&gt;&thorn;&#0;&#1;(?˜&yuml;&#8;&otilde;&ETH;@&#0;&#1;UE&otilde;&yuml;&#0;&ucirc;&ocirc;&yuml;&#0;&agrave;1&Uuml;&#0;&#4;&ucirc;&#0;&#8;&ograve;&#0;  Ä Ä&#0;  &#0;Ç&uuml;&yuml;&#0;&thorn;&uuml;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&Uuml;&#0;&#16;&iuml;&#0;&#0;&#8;&#0;/&agrave;&yacute;&#0;&#4;&#0;&#8;;˜&yuml;&#1;&thorn;&agrave;&thorn;&#0;&#8; Ö◊W_&yuml;&yacute;&otilde;&otilde;&euml;&yuml;&#0;&agrave;0&Ecirc;&#0;&#15;&#1; &#20;&#0;B_&Agrave;&#0;&#1;Ä&#16;&#0;I&iuml;˜&yuml; &acirc;&#0;&#8;&#0;®&atilde;g&iuml;&yuml;&yuml;&yacute;&Yacute;&thorn;&yuml;&#0;˜&thorn;&yuml;&#0;_&oacute;&yuml;&#0;&Agrave;/&Ecirc;&#0;&#7;&#0;&#20;&#0;5&yuml;&Agrave;&#0;&#1;&yacute;&#0;&#16;˜&yuml; &thorn;Ä Äà´.Ø&yuml;&yuml;ª&iuml;&thorn;&yuml;&#0;&szlig;&thorn;&yuml;&#0;&oacute;&yuml;&#0;&Agrave;.&Ntilde;&#0;@&ugrave;&#0;&#3;@&#0;&yuml;&thorn;&#0;&#16;&yacute;&#0;&#1;&#1;&oslash;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+∑&ugrave;&yuml;&#1;&yacute;@&yacute;&#0;D&#16;@a&aacute;_&yuml;&yuml;&iuml;&Icirc;&thorn;&yuml;&#1;&iuml;&ucirc;&ucirc;&yuml;&#0;&iuml;˜&yuml;&#0;&Agrave;2&Ntilde;&#0;`&uuml;&#0;&#6;ÇÇ&#8;?&yuml;&thorn;&uuml;&#0;&#3;&#24;&#27;+&oslash;&yuml;&#0;&otilde;&uuml;&#0; &#1;&#0;UT]˜&Aring;&yuml;&yuml;˜&szlig;&uacute;&yuml;&#0;˜˜&yuml;&#0;&agrave;2&Ntilde;&#0;`&yacute;&#0;&#7;&#1;&#8;&#0;&#7;&yuml;&yuml;&uacute;&uuml;&#0;&#3;&#3;®£ø&ugrave;&yuml;&#1;&ucirc;&Acirc;&yacute;&#0; &gt;4&yuml;&iacute;&Yacute;&yuml;◊_&yuml;˜&yacute;&yuml;&szlig;&ocirc;&yuml;&#0;&agrave;3&Ntilde;&#0;`&yacute;&#0;&#6;&#16;&#20;&#0;w&yuml;&yuml;&ocirc;&ucirc;&#0;&#22;&yuml;&Ucirc;&oslash;&yuml;&#1;Ä&yacute;&#0;&#18;(à"&agrave; ™∑?&thorn;&yacute;&yuml;&uuml;&yuml;&yuml;&oacute;&yuml;&oacute;&yuml;&#0;&Agrave;3&Ntilde;&#0;p&yacute;&#0;&#6;@&#1;&#4;?&yuml;&yuml;&#16;&ucirc;&#0;&#1;6w&oslash;&yuml;&#0;&thorn;&ucirc;&#0;&#16;ÇÇ&euml;ã∏.∫∫&uacute;&yuml;&euml;&yuml;&thorn;ø&thorn;ª&uacute;&yuml;&#0;&szlig;&ugrave;&yuml;&#0;&Agrave;1&Ntilde;&#0;p&yacute;&#0;&#4;&#0;&#19;&yuml;&yuml;&otilde;&uuml;&#0;&#24;&#0;|˜&yuml;&#0;&eth;&ucirc;&#0;&#18;&quot;$&ouml;ó&acirc;&Icirc;kØ~ø&ucirc;&yuml;&uacute;&yuml;&euml;´ø&thorn;&oacute;&yuml;&#0;&Agrave;4&Ntilde;&#0;`&ucirc;&#0;&#3;/&yuml;&yuml;&eth;&uuml;&#0;Ñ&#6;?&oslash;&yuml;&#0;&yacute;&ucirc;&#0; @A&#7; &quot;^y˜&ccedil;&iuml;&szlig;&thorn;&yuml;∫™ø&ucirc;&yuml;&#1;&thorn;&ucirc;&uacute;&yuml;&#0;&Agrave;4&Ntilde;&#0;`&yacute;&#0;&#8;&#0;&yuml;&yuml;&uacute;Ä&ucirc;&#0;&#1;&#3;i&oslash;&yuml;&#0;&eth;&uuml;&#0; &#1;&#0;&#4;@YQ]E˜±&#23;&Ccedil;&uuml;&yacute;&yuml;&szlig;&atilde;ø&uacute;&yuml;&#0;&iuml;&uacute;&yuml;&#0;&agrave;2&Ntilde;&#0; &uuml;&#0;&#3;ã&yuml;&yuml;&oslash;&ucirc;&#0;@ Ie5µñW&Yacute;]_&otilde;&yuml;˜O&thorn;&yuml;&#0;&yacute;˜&yuml;&#0;&thorn;&yacute;&yuml;&#0;&Agrave;1&Ntilde;&#0; &#0;&#16;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+0¢&acirc;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+! ,∞0&Acirc;&#1;;® &oslash;&yuml;&yuml;&uuml;&ccedil;&oacute;◊&yacute;_&yuml;&yacute;˜&yuml;&Iacute;w˜&yacute;&yuml;&#0;&Agrave;2&Aring;&#0;&uuml;@`&#0;&#7;&szlig;&thorn;&yuml;&otilde;&#0;&#21; $¶ö&Ecirc;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&ETH;B]]ù&thorn;&gt;&szlig;õ&yuml;&euml;&yuml;è&icirc;?&thorn;&yuml;&#7;&ucirc;&iuml;&yuml;&yuml;øø&thorn;&agrave;6&Aring;&#0;&#7;ø&yuml;&oslash;&#0;o&yuml;&yuml;&icirc;˜&#0;&quot;&#3;&#24;&#0;2&#1;&atilde;a&#1;&#4;&#20;&#20;&#16;&Ugrave;]qE_ï&#23;_]]&yuml;&yuml;&otilde;&yuml;&szlig;&szlig;&thorn;&yuml;&#0;ø&thorn;&yuml;&#3;&ucirc;&yuml;&yuml;&agrave;2&AElig;&#0;&#4;&#1;&yuml;&yuml;&oslash;&#0;&thorn;&yuml;&#0;&ecirc;˜&#0;-&#1; &#0;Ç&#8;&#0;&#8; &#1;&Aacute;Å&#3;&#4;_]1&#21;&Ocirc;◊◊&yuml;&Aring;&yacute;w&szlig;7˜&oacute;&ugrave;&yuml;&#0;&Agrave;5&Aring;&#0;&#6;&yuml;&eth;&#1;&yuml;&yuml;&thorn;&ouml;&#0; &#0;&#8;ÄÄ&#8; &#8;Ä2&#0;&Iuml;&Iuml;#&#7;V&szlig;&yuml;&Ocirc;&otilde;˜◊&yuml;W&yuml;˜&thorn;&yuml;&#3;&Yacute;&yuml;Ä4&AElig;&#0;&#7;&#1;&yuml;&eth;&#7;&yuml;&yuml;&eth;&ocirc;&#0;&#27;Ä&#8; ¨ 2&Egrave;b)ØØ&ouml;ö-k&yacute;≠ø˜&yuml;&ucirc;&szlig;y&thorn;&yuml;&#6;&szlig;&szlig;&yuml;&szlig;&yuml;&Agrave;1&AElig;&#0;&#7;&yuml;&yuml;&eth;?&yuml;&yuml;&Agrave;&ograve;&#0;&#24; &#0;Ä&Acirc;&#0;&quot; 2 &acirc;&Euml;&euml;™æ&thorn;&uacute;ª&iuml;ª&iuml;&iuml;&ograve;&yacute;&yuml;&#6;&iuml;&yuml;&yuml;ø&yuml;&yuml;&Agrave;2&AElig;&#0;&#6;&#3;&yuml;&yuml;&agrave;&yuml;&yuml;&oslash;&ograve;&#0;&#8;&#0;&#16;&#0;@&#16;&#0;`&thorn;&#0;&#24;&#6;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+8à&euml;&atilde;πÄ?∂øª&uacute;&euml;&uacute;&yuml;Ø&yuml;&quot;&yuml;&yuml;oøæ&Agrave;7&icirc;&#0;0&Ugrave;&#0;&yuml;&yuml;Ä+&euml;Ä&otilde;&#0;&#4;&yacute;&#0;&#24;@&#0;&#17;&#0;&#20;&thorn;&#0;&#21;`du∞◊&Iuml;&iuml;Ä&gt;ø&thorn;&ucirc;&ograve;&yuml;&ucirc;&yuml;&iuml;&thorn;&yuml;&yuml;&ucirc;&thorn;&yuml;&#0;&agrave;1&AElig;&#0;&yuml;&ucirc;&ntilde;&#0;'Ä&#1;&#0;&#20;&#4;PX&#1;M&#0;&#4;ê&#18;@]}u&Ouml;&Ouml;&Oacute;&szlig;M&yuml;&uuml;ø&yuml;&yuml;&ucirc;&yuml;&iuml;&yuml;&yuml;øü&yuml;&agrave;,&Aring;&#0;&#1;=&eth;&iacute;&#0; &thorn;&#0;&#25;å&#0;&#24;&#0;&#8;&#0;a&Auml;&#16;&#19;_&szlig;&Igrave;&#17;&Otilde;&THORN;_&Ucirc;Ue}&yacute;ü◊&thorn;&yuml;?&yuml;&Agrave;,&Auml;&#0;@&icirc;&#0;Ç&thorn;&#0;&#3;(®&#0;0&thorn;&#0;&#25;&#6; &#8;;&ntilde;&yuml;&aacute;&#3;_&Iuml;&yuml;=&ouml;W&yuml;&yuml;˜&yacute;&yuml;_&yuml;&Agrave;&amp;&#0; &#0;Äà&#8;&thorn;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&uacute;&euml;+ØØøí&thorn;&Atilde;&yuml;m&yuml;&uuml;∑&szlig;&yuml;&szlig;&thorn;&yuml;&#0;&Agrave;"¨&#0;@&uuml;&#0;&#26;&#24;&#0; #&#6;&#6;ÜÇ/&euml;°&igrave;£&yuml;∫&thorn;&uacute;+ª&yacute;&icirc;ø&oacute;&yuml;&Agrave;%≠&#0;!&#4;&#0;P&#0; &#0;&#1;&#0;&quot;K&#4;&amp;&Agrave;ÅÉ∑è™&thorn;øæ&egrave;&yuml;&uacute;ª&uacute;&yuml;&iuml;´´&yuml;&agrave;&amp;&#0;"@&#0;&#4;&#0;Ä&#16;&#18;@E$&quot;◊&Ograve;SYè∑æ&uacute;&thorn;{k&iuml;&iuml;&thorn;øæ&yuml;&yuml;&ucirc;&ucirc;&yuml;&agrave;,ª&#0; &ugrave;&#0;&#3;Ä&#8;&uuml;&#0;&quot;&agrave;&#1;&#0;&#4;&#20;&#0;&quot;]pu◊C◊C_&iacute;w4w˜&szlig;&yuml;yg&yuml;&yacute;&thorn;&THORN;&Agrave;&amp;¥&#0;&uacute;&#0;&#1;Ä&uuml;&#0;&#25;&#16;&#0;&quot;&Agrave;&#1;&otilde;-&#1;&#1;&Otilde;&eth;&Ccedil;&Ntilde;˜o˜˜◊&yuml;&szlig;&yuml;O&yuml;&agrave;(¥&#0;&#1;&uacute;&#0; &#8;ÄÄ&#8;&#1;&#0;Ü&uacute;í&oslash;x&#8;=ß˜&oacute;&#15;&szlig;&yuml;&yuml;˜˜&ccedil;&yuml;&szlig;&yuml;_&yuml;&Agrave;'Ø&#0;# ÄÄB&#8;(,&#0;&#16;Ç&eacute;;°¨∂∫&gt;Ky&iacute;èß&ouml;ó&yuml;&#15;&iuml;&yacute;&yacute;&yuml;˜&yuml;&yuml;&Agrave;*≤&#0;@&#0;&#1;&#0;&#4;@&#0;`&thorn;&#0;&#25;&#6;&#8;8≤®&ucirc;&aacute;™Ü2ö&uacute;&yuml;-&uuml;¶&yuml;ö&yuml;&Ucirc;&atilde;ø&Agrave;(≥&#0;&#1;&#4;&#0;&#16;&#0;@@&#0;&#4;&ucirc;&#0;&#22;π&agrave; &yuml; &#4;&#16;&#22;&#0;H d&#20;&ouml;í&ucirc;k&iuml;πØææ-&ucirc;&ucirc;&euml;¢&yuml;&icirc;øø&thorn;&agrave;%≥&#0;&oslash;&#0;&quot;&#4;&#16;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+Ç≤≤&Euml;k/ß&amp;∂&Oacute;&yuml;O&yuml;=&yuml;&ouml;w&yuml;&yuml;?&yuml;&yuml;&Agrave;#∂&#0;@&oacute;&#0;&#27;&#8;&#0;  ÉãÇ &ecirc;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+ê&#1;Ck &#4;$&gt;∫&thorn;&Euml;&euml;&iuml;Ø&yuml;æ™&thorn;&thorn;ø&yuml;&iuml;&Agrave;#´&#0;@&#0;&#1;&#0;&#4;&#0;&#6;T]&quot;&#1;&#21;&ETH;&Auml;&#16;&quot;-&#21;˜&THORN;G&Ucirc;&euml;&aacute;&iuml;&yuml;ûü&icirc;&Agrave; ®&#0;&#8;&#0;&#16;`D&#17;&#0;&#4;D&thorn;&#20; &Ntilde;&Yacute;&#17;q&iacute;wë◊VC&iuml;&Yacute;/&ocirc;Ä&quot;§&#0;&#24; Ñ&#26;&#16;!&Agrave;@&#1;&#7;wU]&#23;&otilde;&yacute;&ntilde;&Ugrave;˜wG˜&szlig;&yuml;@%≠&#0;!&#0;&#1;&#0; &#0;Ä&#16;&euml;+!ÜÄ&#26;K{m&iacute;µ˜&yuml;&yuml;&szlig;}?&otilde;&ugrave;&szlig;&yuml;Ä-¶&#0;&#26;Äò &#0;Ä&#8;&#0;"æä&Uacute;hs&ugrave;&iacute;&aelig;∂&yuml;&szlig;&Icirc;y=&yuml;Ä¨&#0;@&ugrave;&#0;&#23;&#1;Ä&#6;&#0;&#8;":&egrave;&iuml;¢∑ª&Icirc;n?Øæû&ucirc;ª&yuml;&Agrave;%≠&#0;!&#16;PP&#0;&#4;&#16;&#0;B&#3;&#1;&#0;4&#16;ê&#3;&iuml;?æø&thorn;&uacute;j&euml;&iuml;&iuml;ü&yuml;?æ&agrave;%≠&#0;&#1;&thorn;&#0;&quot;&#16;&#0;@AE&#1;&#4;&#0;&#16; &quot;ñ&Oacute;&szlig;&szlig;&yacute;Ω∑&thorn;&yuml;&szlig;&yuml;üÄ!&copy;&#0;0&thorn;&#0;&#25;&#3;&#4;&#4;&#0;&#16;&#0;@&#1;&#3;&#21;&#20;E&otilde;4&#16;&ograve;CKwwü&thorn;~&#0; ≠&#0;&thorn;&#0; &ugrave;&#0;&#20;&#4;&#0;&quot;&#20;TU&otilde;SU&aring;&#7;&quot;W}&yacute;&Yacute;˜&yuml;Ä"™&#0;&#6;Ä&#8;&#0;  &thorn;&#0;&#20;A!,Äñ&THORN;&szlig;[}}%4&yuml;w&yuml;&szlig;&yacute;&yacute;&#0;&#26;§&#0; &uuml;&#0;&#18;&#24;&#8; u}&yuml;◊&szlig;&aacute;&Agrave;!&copy;&#0;&thorn;&#0;&#25;&#8;&#0;&#8;&#8;&#0;@a¨&#4;&#18;&#18;&Oslash;&#15;'m•&thorn;≤◊&Ugrave;&yuml;eΩt&Agrave;&#25;°&#0;&#21;Ç&#8;&#8;.&#0; ÄÄÜ2&#15;&Egrave;y&yuml;&Yacute;&thorn;&quot;≥x@-¶&#0;&#16;&thorn;&#0;&#22;&#1;&#0;Ä&Egrave;&#0;&#8;&#0;ä:&gt;&egrave;&euml;&ucirc;&uacute;&Iuml;&thorn;2∫8Äß&#0;&#1;&#8;&thorn;&#0;&#22;&#16;&#3;A&#0;$0&#6;@ä[ioææ&thorn;&euml;&ucirc;)§Ä&quot;§&#0;&#24;&#4;&#0;&#16;&#0;&#1;&Aacute;@&#1;&#0; @!&#16;&#16;&Ouml;@[&iuml;πê&AElig;k&#0;ß&#0;&#27;&#8;&#0;&#1;@E&#1;&#0;&#4;&#1;&#16;&#20;@Që
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+ÑG◊ &quot;}u&ntilde;&yuml;˜_G¥&gt;|@%≠&#0;&#1;Ä&thorn;&#0;&quot;  &#16;&#0;&#3;Å&iuml;ÄÄ&#16;&#0;&#27;A/&aring;Ñ&#18;^&szlig;Xm?&auml;&ETH;&Oslash;@ ®&#0;&#4;&thorn;&#0;&#4;&#0;Ä &thorn;&#0;&#16; &egrave;&#8; (¨Ä∑&#26;^Kx?&eth;Ä-¶&#0;&#26;&#8;&#0; &#0;&#1;Ç&#0;&#8;&#0;&amp; &#0;&agrave;Ä Éé&ecirc;£,&igrave;&uacute;ø&uacute;&#0;"™&#0;-@&#0;&#4;&#0;@&#8;&#1;&#4;&#0;&#16;&Agrave;&#0;CH&#1;§&#16;2&ecirc;&eacute;&atilde;Ø @AYÅ&#4; &#26;&#20;&#4;[&Eacute;&Aacute;&ouml;&#0;&#23;ü&#0;@&thorn;&#0;&#15;&#0;&quot;&#24;D&#20;@pQ&Auml;G&Yacute;Ñ_|@&#27;£&#4;&#1;(&#0;Ä&thorn;&#0;&#15;&#1;!Ñ&#20;&#6;&#18;KIY&auml;}&Otilde;◊W}@&#24;£&#0;&#1;&#8;&#8;&ucirc;&#0;&#15;Ç&Egrave;&#1;&#0; &#4;ÄírL&Iuml;&atilde;$&lt;&Agrave;&#26;¢&#0;&#22;Ä&#0;&#8;&#8;&#0; ÄÇÄÇN80|§&aelig;≥ã&#8;&#0;!™&#0;&#1;&yacute;&#0;&#25;&#0;&#8;&#0;&amp;&#0;à&#1;!Ä&#7;Ä:z&ucirc;: oé≥ö8&#0;&quot;¨&#0;&#1;&#1;&#4;˜&#0;&#20;&#0;&#1;&#0;∞&#0;&Acirc; D&#0;&#16;&#20;~e&#25;Ä&#7;ùò&uacute;&acirc;&Agrave;&#25;•&#0;&#16;&uacute;&#0;&#17;&#16;&#0;&#17;d&#1;&#21;_W&#25;&#16;&#20;&Yacute;&ntilde;uwÄ-¶&#0;&#8;&thorn;&#0;&#22;&#0;&#1;&#1;Ä&quot;SQYE=5&Ouml;&#16;W_]&aring;5p&Agrave;&#25;°&#0;&thorn;&#0;&#17;&#8;&#0;!ÖÄ&#6;-&Ecirc;a$&igrave;&quot;&oacute;&#18;x&Agrave;&#26;¢&#0;&#8;&#8;&#0;ÄÄ&thorn;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+(&agrave;&acirc;&ograve;:l&#15;ª8¥&Agrave;&#25;°&#0;&#21;&#1;&#8;&#4; ∞ö™&eacute;&egrave;¶Ø¢:&gt;&egrave;;ª&yuml;&atilde;Ä&#26;¢&#0;&#22;&#4;&#4;&#0;&Agrave;&#0;i-∞≤&Ograve;&Euml;&aacute; .&auml;∏û&yuml;&euml;&#22;û&#18;&#4;&#0;&#16;&Agrave;&Auml;A&#17;&quot;$êê&#6;&aacute;&Ugrave; w&auml;Ä&#20;ú&#0;&#16;&#1;&Aring;D&#21;&#8;&#16;&#21;p&Aacute;&Agrave;&#7;u&Auml;&quot;~w@&quot;§&#0;&#24;&#8;&#0;&#1;&#0;Ä&#8;&#8;Mm5Ñ&#22;&#7;&quot;Gu45&Ocirc;&#4;G@&#20;ú&#0;&#16;&#16;&#18;à&#8;  &#0;&#8;&#6;ä¨ä: &agrave;a££ãè≤&gt;&agrave; ¨&#0;&#4;&uacute;&#0;&#24;@&#0;&#0;`&#0;Ä&#22;Ç{&Euml;&egrave;$§¢≤&uacute;&Euml;´&copy;.Ä&quot;®&#0;@&ucirc;&#0;&#21;&#16;&#0;&#3;&#0;&#4;&#0;8&#1;&eth;`@&#1;Ç$•öÜrb&#0;&#23;°&#0;&#3;&#1;&#0;&#4;&#7;&uuml;&#0; &#1;&Agrave;D&#0;&#1;&#0;&#7;p&Ugrave;&Iacute;˜gÄ&#24;&#20;&#8;&#0;%&#1;&quot;&#16;CMd&#21;&Agrave;&Agrave;GA&Ntilde;}t&#0;&#22;û&#18;&#16;&#0;@  ÖP&#8;I&#0;&#4;\&ETH;◊&ugrave;Y@&quot;¶&#0;Ä&uuml;&#0;&#20;&#8;&#0;ÄÄ&#0;&#8;&#0; &#0;áÉ&quot;@s0ÄÄ&#23;¢&#0;ÄÄ&#8;&ucirc;&#0; @Ä&#8;&#0;ö:&gt;|£&oacute;¢ãÄ&#26;¢&#0;&#22;`&#0;ÄÇ&#0; $ÄÇ&Acirc;&Ecirc;;&copy;.&gt;Ø∫ä&#0;&#23;¢&#0;@&ucirc;&#0;&#15;Ä&#1;&#0; &#0;ò&#0; ^ &#4;&#18;êYACa&aring;&ocirc;&#18;W_&quot;E&aring;&yuml;Ä&#21;ù&#17;&#8;&#0;&#1;&#0;Ä&#3; !0&#0;DÜ&quot;&Atilde;&THORN;@&#24; &thorn;&#0;&#16;&#3;&#8;&#0;&#18; &#0; ∏Ñé;!&Agrave;&#27;¶&#0;&#1;&ucirc;&#0;&#19;&#8; &#0;¢êà&#0;&#3;Ä§¶∏&#8;&egrave;k+¢§Ä&#25;¶&#0;&#1;&ugrave;&#0;&#1;&#1;H&thorn;&#0; &#16;&#18;ÄA- däê&ecirc;j&#0;&#20;ú&#0;&#16;&#16;&#16;@&#0;&#1;@%ê&#4;@aIÖ&amp;$&#0;&#18;ú&#0;&#1;&#16;&#6;&uuml;&#0;0ê&#1;GG]&#23;6&quot;@&#23;ü&#0;&#19;&#16;&#16;&#0;@&#1;&#1;&#0;ê&#16;P@&#1;&#21;ñ&Ocirc;SL@ &quot;&#6;Ä&#0; &#1;&#4;&yuml;&#0;ã&#0;ã&#0;ã&#0;&yuml;&#0;&#6;&#18;7&#0;:&#0;&#8;&#0;&Ucirc;t%B&#0;@BÄ%&quot;&#1;&quot;&#1;&#0;&#1;&#0;&#3;S&#0;&#20;&#0;&#20;&#0;&amp;&#6;&#15;&#0;-&yuml;&yuml;&yuml;&yuml;&#4;&#0;&#20;&#0;Word Microsoft Word &amp;&#6;&#15;&#0;&#18;&#0;Word&yuml;&yuml;&#8;&#0;&#1;&#0;&Icirc;5&#0;&#0; &#7;&#0;&#27;&#4;&#0;&#0;&#20;&#0;&#0;&#19;&#0;&#20;&#0;&#0;&#19;&#0;&#25;&#0;2@&#0;@&#0;$&#0;Use Word 6.0c or later to           &#25;&#0;2Ä&#1;@&#0;$&#0;view Macintosh picture.             &#3;&#0;5&Icirc;∞&#3;&#4;ê&#6;&eth;&#0;&#17;&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+(&#8; &#0;¢ä™&#8;&#8;(Ç&#0;&ucirc;&#0;kN&acirc;Çà&#6;&lt;UPAFqèº&#8;h&Agrave;&Agrave;BÅÄ&quot;&#4;&#20;&#0;QAUUQ&#21;&#16;PP@A@@&#0;&quot; &#0; ÄÄ&#8;( (&#0;&#8;&Aacute;E&#4;&#4;&#16;&#0;&#1;&#0;A&#4;&#4;T&#4;P&#16;DAA@&#1;&#0;&#20;&#20;&thorn;&#0;&#17;Ä&#0;&#8; &#0;¢Äà &#0; ®&thorn;&#0;ä&#0;h+:™&agrave;Q&#21;&#20;&#22;@8∏´&agrave;£&ecirc;ä&#8;* ®(ÄÇ&#8;&#0;P&#16;Q&#0;EA&#1;@&#4;&#4;T&#16;&#0;&#4;A&#0;&#4;&yacute;&#0;"Çä*&#8;*"™&thorn;&#0;&#4;&thorn;&#0;&#3;&#16;PE&#0;&thorn;&#4;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#16;@&#0;PQAA&#20;&#0;&#4;&#0;&#16;&#16;@&Aacute;&thorn;&#0;&#7;&#4;&#0;&#24;&#0; &#0;Ä&uuml;&#8;&#1; X&quot;+&thorn;U\]&uuml;&oacute;ä´æà∏ &agrave;™(äÇÄ(&#8;&#0;Ä&Acirc;&#0;&#4;&thorn;&#0;&quot;P&#1;P&#1;&#4;&#20;&#20;P&#0;AA&#4;@&#0;&#8;&#8;&#0;(Ä¢Çä&#0;(&#0;ä&thorn;&#0;Ä&#4;&oslash;&#0;&#16;&#0;DP@&#0;@A&#4;&thorn;&#0;&#1;&ograve;&#0;=&#0;?&oslash;&yuml;&eth;Ä Ä&#8;&#8;&thorn;&#0;ÄÄ&#0; &#0;Ä&uuml;&#0;8&uacute;&#0;&#1;&#4;&#4;&uuml;&#0;@&ucirc;&#0;&#4; &#0;ÄÇ&thorn;&#0; &iuml;&#0;&#16;&ugrave;&#0;&#1;&#16;@&ouml;&#0; &iuml;&oslash;&yuml;&#0;&eth;&yacute;&#0;&#1;®&#0;&#20;&#0;&oslash;&yuml;&#0;&eth;£&#0;Q&#8;&#0;&szlig;&oslash;&yuml;&#0;&eth;¢&#0;?&oslash;&yuml;&#0;&eth;£&#0;Ä &aelig;&#0;&#26;$&uuml;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Otilde;&#0;&yuml;Ä&yacute;&#0;&yacute;&yuml;&oslash;&#0;&#3;&oslash;&yuml;&uuml;&#7;&thorn;&#0;&gt;&aelig;&#0;(&#0;&szlig;&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Ouml;&#0;&#1;&yuml;&uuml;&yacute;&#0;&#6;&#7;&yuml;&uuml;&#0;&yuml;&yuml;&thorn;&#0;&#6;&yuml;&yuml;Ä&#7;&oslash;&#1;&thorn;&aelig;&#0;&#8;&amp;&#0;ø&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Ouml;&#0;&#1;&yuml;&Agrave;&yacute;&#0;&#15;&yuml;Ä&thorn;&#0;&agrave;&#0;&#3;&yuml;&eth;&#0;&#3;Ä&uuml;&aring;&#0;'&#0;è&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Ouml;&#0;&#1;&yuml;&oslash;&yacute;&#0;&#1;&#15;Ä&yacute;&#0;&oslash;&#0;?&uuml;&#0;&#3;ü&yuml;&agrave;&aelig;&#0;&#16;$&#0;&#15;&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Otilde;&#0;&#1;?&uuml;&yacute;&#0;&#15;&uuml;&#0;&uuml;&#7;&yuml;&Agrave;&#0;&#3;&yuml;&oslash;&aring;&#0;@#&#0;_&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Otilde;&#0;&#1;&#3;&uuml;&yacute;&#0;&#7;&uuml;&#0;&#3;&uuml;?&yuml;&eth;&thorn;&#0;&#1;&#3;&yuml;&auml;&#0;&#16; &#0;_&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Ocirc;&#0;|&yacute;&#0;&#1;&#7;Ä&yacute;&#0;&oslash;&yuml;&yacute;&#0;&#1;&#3;&Agrave;&atilde;&#0;!&#0;&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Ocirc;&#0; &yacute;&#0;&#1;&#3;&Agrave;&thorn;&#0;&#3;&#1;&eth;&#15;&agrave;&yacute;&#0;&#1;&#1;Ä&atilde;&#0;?&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Iuml;&#0;&#1;&#1;&agrave;&thorn;&#0;&#3;&#3;&eth;&#7;Ä&yacute;&#0;&#1;&#1;Ä&auml;&#0;Ä&quot;è&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Icirc;&#0;&eth;&thorn;&#0;&#3;&eth;&#7;Ä&yacute;&#0;&#1;&#3;Ä&atilde;&#0;-/&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Icirc;&#0;&#7;|&#0;&#3;&yuml;&agrave;&#7;Ä&yacute;&#0;&#1;Ä&auml;&#0;&#1;-è&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Icirc;&#0;&#7;&Agrave;&#0;&yuml;&agrave;&#7;&Agrave;&thorn;&#0;&#1;&#15;&yuml;&atilde;&#0;&#16;&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Icirc;&#0; &#15;&yuml;&Iuml;&yuml;è&agrave;&#7;&Agrave;&#0;&#3;&yuml;&oslash;&auml;&#0;&#1;&#1;&#0;&quot;_&yacute;&yuml;&#0;Å&yacute;&yuml;&#0;&eth;&Icirc;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;è&oslash;&yuml;&#0;&eth;&acirc;&#0;?&yacute;&yuml;&#6;&Agrave;&yuml;&uuml;&#0; &eth;&thorn;&#0;&#1;&#7;Ä&uuml;&#0;&#15;&yuml;&oslash;&#0;&#1;&Agrave;x&#0;p&acirc;&#0;&#16;-&#0;&oslash;&yuml;&#0;&eth;&atilde;&#0;&#15;&thorn;&yuml;&#3;&agrave;&#7;&yuml;&yuml;&thorn;&#0;&#1; p&thorn;&#0;&#7;&uuml;&#0;&#1;&yuml;&oslash;x&#0;&#1;&Agrave;8&#0;p&atilde;&#0;&#1;&#1;&#4;)&#0;&szlig;&oslash;&yuml;&#0;&eth;&atilde;&#0;&thorn;&yuml;&#4;&oslash;&#0;&#15;&yuml;&agrave;&thorn;&#0;&#1; 8&thorn;&#0;&#3;&uuml;&#0;?&uuml;&#0;p&#0;&#1;&Agrave;8&#0;p&aacute;&#0;,&#0;?&oslash;&yuml;&#0;&eth;&auml;&#0;&#7;&yuml;&yuml;&uuml;&#0;&#1;&yuml;&oslash;&yacute;&#0;&#6; -&#15;&agrave;&#0;&#3;Ä&thorn;&#0; &#15;&yuml;&eth;&#0;&#3;Ä&#1;&yuml;&oslash;&#0;p&#0;&#3;Ä8&#0;p&acirc;&#0;&#8;/&#0;?&oslash;&yuml;&#0;&eth;&aelig;&#0;&#8;&#1;&yuml;&yuml;&oslash;&#0;&yuml;&Agrave;&uuml;&#0;&#6;&#7;&yuml;&eth;&#0;&#3;Ä&yuml;&thorn;&#0;&#7;p&#0;&#3;Ä8&#0;8&acirc;&#0;Ä.&#0;Ø&oslash;&yuml;&#0;&eth;&aelig;&#0;&#7;&yuml;&uuml;&#0;&#3;&yuml;&eth;&ucirc;&#0;&#21;&#6;&#7;&yuml;&eth;&#0;&#1;Ä&#3;&yuml;&eth;&#0;|&oslash;p&#0;&#3;Ä8&#0;8&acirc;&#0;&#16;/&#0;&iuml;&oslash;&yuml;&#0;&eth;&ccedil;&#0;&#7;&#7;&yuml;&yuml;Ä&#3;&yuml;&uuml;&uacute;&#0;&#21;&#6;&#3;&Yacute;&eth;&#0;&#1;Ä&yuml;&yuml;&agrave;&#0;&yuml;&oslash;p&#0;&#3;Ä8&#0;8&atilde;&#0;&#1;&#1;Q-&#0;&Iuml;&oslash;&yuml;&#0;&eth;&ccedil;&#0;&#6;&yuml;&yuml;&eth;&#0;&yuml;&ugrave;&#0;&#21;&#7;&#3;&Igrave;&eth;&#0;&#1;&Agrave;&#15;&yuml;Å&agrave;&#1;&yuml;&uuml;p&#0;&#3;Ä8&#0;8&acirc;&#0;P/&#0;&oslash;&yuml;&#0;&eth;&egrave;&#0;&#7;&yuml;&oslash;&#0;&#15;&yuml;&agrave;&ugrave;&#0;&#21;&#7;&#3;&auml;&oslash;&#0;&#1;&Ccedil;&yuml;&eth;&#1;&Agrave;&#3;&yacute;&quot;p&#0;&#3;Ä8&#0;8&atilde;&#0;&#1;&#1;&Atilde;-&#0;&szlig;&oslash;&yuml;&#0;&eth;&egrave;&#0;&#6;&thorn;&#0;&#3;&yuml;&oslash;&oslash;&#0;&#21;&#3;&#3;&auml;&oslash;&#0;&#1;&yuml;&thorn;&#0;&#1;&Agrave;&#3;&Agrave;&quot;p&#0;&#3;&agrave;8&#0;8&acirc;&#0;-&#0;w&oslash;&yuml;&#0;&agrave;&eacute;&#0;&#6;&#3;&yuml;&Agrave;&#0;&thorn;˜&#0;&#21;&#3;&#1;&acirc;x&#0;&yuml;Ä&#3;&Agrave;&#7;&#0;-&eth;&#0;&#3;&agrave;8&#0;8&acirc;&#0;Ç'&#0;Ä&szlig;&#0;&#6;&#15;&thorn;&#0;&yuml;Ä˜&#0;&#3;&#3;&#1;&ograve;x&uuml;&#0; &#3;Ä&#15;&#0; &agrave;&#0;&#3;&agrave;x&#0;8&acirc;&#0;&#8;$&#0;Ä&szlig;&#0;?&eth;&#0;&#7;&yuml;&eth;&ouml;&#0;&#3;&#3;Å&oacute;x&uuml;&#0; &#3;Ä&#15;&#0; &agrave;&#0;&#3;&agrave;x&#0;&quot;&aacute;&#0;%&#0;Ä&szlig;&#0;&#4;&Agrave;&#1;&yuml;&uuml;&otilde;&#0;&#3;&#3;Å&ucirc;&uuml;&uuml;&#0; &#7;Ä-&#15;&agrave;&#0;&#3;&agrave;p&#0;&quot;&acirc;&#0;&#4;$&szlig;&#0;&#4;&#3;&thorn;&#0;&yuml;&ocirc;&#0;&#3;&#1;Å&yuml;&uuml;&uuml;&#0; &#15;Ä&quot;&#7;&agrave;&#0;&#3;&agrave;p&#0;&quot;&atilde;&#0;&#1;&#1;%&#0;&Agrave;&agrave;&#0;&#4;&#15;&oslash;&#15;&yuml;&oslash;&ocirc;&#0;&#3;&#1;Å&yuml;&eth;&uuml;&#0; Ä&lt;&#0;&#7;&agrave;&#0;&#7;&eth;p&#0;&quot;&acirc;&#0;&#20;$&#0;P&agrave;&#0;&#4;&ntilde;&yuml;&yuml;&uuml;&ocirc;&#0;&#1;Å&thorn;&ucirc;&#0; ?&#0;8&#0;&#7;&agrave;&#0;&#7;&eth;p&#0;&quot;&acirc;&#0;Ç$&#0;@&agrave;&#0;&uuml;&yuml;&#0;&agrave;&ouml;&#0;&#1;&Aacute;&Agrave;&ucirc;&#0; ?&#0;x&#0;&#3;&agrave;&#0;&#3;&eth;p&#0;&quot;&acirc;&#0;®$&#0;@&aacute;&#0;&#1;&uacute;&yuml;&#0;&eth;˜&#0;&#1;&Aacute;Ä&ucirc;&#0; &yuml;&#0;&eth;&#0;&#3;&agrave;&#0;&#3;&eth;p&#0;&quot;&acirc;&#0;ä%&#0;&Agrave;&aacute;&#0;&#15;&uacute;&yuml;&#0;&thorn;˜&#0;&#1;&Atilde;Ä&uuml;&#0; &#1;&yuml;&#1;&agrave;&#0;&#3;&agrave;&#0;&#3;&eth;p&#0;&quot;&acirc;&#0;&#8;)&#0;&aacute;&#0;&thorn;&yuml;&#6;&oslash;&#0;&#15;&yuml;&yuml;Ä˜&#0;&#1;&Atilde;Ä&uuml;&#0; &#3;&yuml;&#7;&yuml;&#0;&#3;&agrave;&#0;&#3;∞p&#0; &atilde;&#0;&#1;&#1;'&#0;Ä&aacute;&#0;&thorn;&yuml;&#6;Ä&#1;&#0;&#7;&agrave;˜&#0;&Atilde;&ucirc;&#0; &#3;&ccedil;&yuml;&yuml;Ä&#3;&Agrave;&#0;&#7;∞p&#0; &acirc;&#0;&#20;(&aacute;&#0;&#3;&#1;˜&yuml;&agrave;&thorn;&#0;&#3;&#1;Ä&agrave;˜&#0;&ccedil;&ucirc;&#0; &#3;&Ccedil;&yuml;&yuml;&Agrave;&#1;&Agrave;&#0;&#7;8`&#0; &atilde;&#0;&#1;&#1;&Aring;&amp;&#0;&Agrave;&acirc;&#0;&#3;&yuml;&thorn;&yacu
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;Ä&aelig;&#0;&#1;&#15;&Agrave;&uuml;&#0;&#1;?&Agrave;&yacute;&#0;&#1;&yuml;&oslash;&thorn;&#0;&yuml;&Agrave;&oacute;&#0;&#1;&lt;&agrave;&thorn;&#0;&eth;&thorn;&#0;&quot;&atilde;&#0;&#1;&#1;Ä%&#0;Ä&aelig;&#0;&#1;Ä&uuml;&#0;&yuml;&uuml;&#0;&#1;?&yuml;&thorn;&#0;&#7;&yuml;&oslash;&ograve;&#0;&#1;&lt;&agrave;&thorn;&#0;&agrave;&thorn;&#0;&quot;&aacute;&#0;'&aring;&#0;?&uuml;&#0;&#1;&#1;&thorn;&yacute;&#0;&#8;&#7;&yuml;&agrave;&#0;&#1;&yuml;&yuml;Ä&ograve;&#0;&#1;9&Agrave;&thorn;&#0;`&thorn;&#0;8&atilde;&#0;&#1;&#1;'&#0;Ä&aelig;&#0;~&uuml;&#0;&#1;&#7;&oslash;&yacute;&#0;&#7;&thorn;&#0;?&oslash;&yuml;&oslash;&ntilde;&#0;&#1;y&Agrave;&thorn;&#0;`&thorn;&#0;0&acirc;&#0;&#16;'&#0;@&aelig;&#0;&uuml;&uuml;&#0;&#1;&#15;&eth;&thorn;&#0;&#7;&yuml;Ä&yuml;&uuml;&yuml;&yuml;&eth;&#0;&#1;q&Agrave;&thorn;&#0;`&thorn;&#0;0&acirc;&#0;Ä'&#0;@&ccedil;&#0;&#1;&#3;&oslash;&uuml;&#0;&#7;?&agrave;&#0;&#3;&yuml;&oslash;&#15;&yacute;&yuml;&#0;&eth;&eth;&#0;&#1;qÄ&thorn;&#0; &thorn;&#0;p&acirc;&#0;®"&aelig;&#0;&#1;&#7;&eth;&uuml;&#0;&#6;Ä&yuml;&#3;&uuml;&yuml;&iuml;&#0;&#1;&ntilde;Ä&thorn;&#0;0&thorn;&#0;p&acirc;&#0;Ä%&#0;&Agrave;&ccedil;&#0;&#1;&#7;&agrave;&uuml;&#0; &#1;&yuml;Ä&yuml;&yuml;&#1;&yuml;&thorn;&#0;&#7;&eth;&iuml;&#0;&#1;&atilde;Ä&thorn;&#0;0&thorn;&#0;&agrave;&atilde;&#0;&#1;&#1;)&#0;Ä&ccedil;&#0;&#1;Ä&yacute;&#0; &#1;&oacute;Ä&yuml;&Iuml;?&yuml;&oslash;&#0;&#3;&eth;&eth;&#0;&#1;&atilde;Ä&thorn;&#0;0&thorn;&#0;&Agrave;&acirc;&#0;T)&#0;Ä&ccedil;&#0;?&uuml;&#0; &#1;&atilde;&Atilde;&yuml;&eth;&#15;&yuml;&yuml;&Agrave;&#0;&#1;&oslash;&eth;&#0;&#1;&Ccedil;Ä&thorn;&#0;0&thorn;&#0;&Agrave;&atilde;&#0;&#1;&#1;$&#0;&Agrave;&ccedil;&#0;~&uuml;&#0;&#7;&#1;&Aacute;&yuml;&thorn;&#0;&#15;&yuml;&uuml;&yacute;&#0;&oslash;&eth;&#0;&#1;&#1;&Ccedil;&yacute;&#0;&#4;&#24;&#0;&#1;&Agrave;&aacute;&#0;&amp;&#0;P&ccedil;&#0;&uuml;&uuml;&#0;&#7;&#1;&ccedil;&yuml;&Agrave;&#0;&#15;&yuml;&eth;&yacute;&#0;&oslash;&eth;&#0;&#1;&#1;&Ccedil;&yacute;&#0;&#4;&#24;&#0;&#1;&Agrave;&acirc;&#0;™%&ccedil;&#0;&#1;&#1;&oslash;&uuml;&#0;&#7;&#1;&yuml;&thorn;&#0; &#7;&agrave;&yacute;&#0;&uuml;&eth;&#0;&#1;&#3;á&yacute;&#0;&#4;&#24;&#0;&#3;Ä&acirc;&#0;™%&ccedil;&#0;&#1;&#3;&oslash;&uuml;&#0;&#7;&#1;&yuml;&Agrave;&#0; &#15;&Agrave;&yacute;&#0;x&eth;&#0;&#1;&#3;é&yacute;&#0;&#4;&#8;&#0;&#3;Ä&acirc;&#0;#&ccedil;&#0;&#1;&#7;&eth;&uuml;&#0;&#1;&#1;&oslash;&thorn;&#0;&#3; Ä &thorn;&#0;x&eth;&#0;&#1;&#3;é&uacute;&#0;&#1;&#3;Ä&acirc;&#0;p#&#0; &egrave;&#0;&#1;&#15;&agrave;&ucirc;&#0;&eth;&thorn;&#0;&#3;--0&thorn;&#0;x&eth;&#0;&#1;&#3; &uacute;&#0;&#7;&aacute;&#0;T!&ccedil;&#0;&#1;&Agrave;&ucirc;&#0;&eth;&thorn;&#0;&#3;&quot;&lt;&#0;0&thorn;&#0;x&eth;&#0;&#1;&#7; &uacute;&#0;&#7;&aacute;&#0;|#&#0;&#16;&egrave;&#0;&#1;?Ä&ucirc;&#0;&eth;&thorn;&#0;&#3;&quot;&lt;&#0;0&thorn;&#0;x&eth;&#0;&#1;&#7; &uacute;&#0;&#15;&aacute;&#0;û"&#0;&Agrave;&egrave;&#0;&uacute;&#0;&eth;&thorn;&#0;&#3;&lt;8&#0;0&thorn;&#0;&oslash;&eth;&#0;&#1;&#6; &uacute;&#0; &aacute;&#0;:$&#0;P&eacute;&#0;&#1;&#1;&thorn;&ucirc;&#0;&#1;&#1;&eth;&thorn;&#0;&#7;&lt;p&#0;0&#0;&#3;&eth;&eth;&#0;&#1;&#6;&quot;&uacute;&#0; &aacute;&#0;™$&#0;@&eacute;&#0;&#1;&#3;&uuml;&ucirc;&#0;&#1;&#1;&agrave;&thorn;&#0;&#7;&lt;p&#0;0&#0;&#15;&agrave;&eth;&#0;&#1; &quot;&uacute;&#0;-&aacute;&#0;x$&#0;`&eacute;&#0;&#1;&#7;&oslash;&ucirc;&#0;&#1;&#1;&agrave;&thorn;&#0;&#7;|p&#0;0&#0;&Agrave;&eth;&#0;&#1; &#24;&uacute;&#0;&quot;&aacute;&#0;]$&#0;&agrave;&eacute;&#0;&#1;&#15;&agrave;&ucirc;&#0;&#1;&#1;&agrave;&thorn;&#0;&#1;xp&thorn;&#0;&#15;&yuml;Ä&eth;&#0;&#1; &#24;&uacute;&#0;&lt;&aacute;&#0;U$&#0;&agrave;&eacute;&#0;&#1;&Agrave;&ucirc;&#0;&#1;&#3;&agrave;&thorn;&#0;&#6;x|&#0;&#3;&yuml;&yuml;&iuml;&#0;&#1; 8&uacute;&#0;8&acirc;&#0;&#1;&#1;E#&#0;&Agrave;&eacute;&#0;&#1;Ä&ucirc;&#0;&#1;&#3;&agrave;&thorn;&#0;&#6;&oslash;?&yuml;á&yuml;&yuml;&oslash;&iuml;&#0;&#1;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&eacute;&#0;&#1;&eth;&uacute;&#0;&#1;&#15;&Agrave;&thorn;&#0;&#4;&agrave;?&yuml;&yuml;&thorn;&iacute;&#0;&#1;&#24;p&uacute;&#0;&eth;&aacute;&#0;p"&#0; &ecirc;&#0;&#1;&Agrave;&uacute;&#0;Ä&#1;&aacute;&yuml;&oslash;&#0;&gt;&iacute;&#0;&#1;8p&uacute;&#0;&agrave;&acirc;&#0;&#1;&#1;E"&#0;Ä&euml;&#0;&#1;&#3;&yuml;&ugrave;&#0;&thorn;&#0;&#1;&yuml;&thorn;&#0;&iacute;&#0;&#1;8&eth;&ucirc;&#0;&#1;&#1;&agrave;&aacute;&#0;Q"&#0; &euml;&#0;&#1;&thorn;&ugrave;&#0;&thorn;&#0;&#1;&yuml;&eth;&#0;&#15;&iacute;&#0;&#1;0&agrave;&ucirc;&#0;&#1;&#1;&agrave;&aacute;&#0;&#3;#&#0;@&euml;&#0;&#1;&oslash;&ugrave;&#0;&gt;&thorn;&#0;&#1;&#1;&yuml;&thorn;&#0;&#1;&#7;Ä&icirc;&#0;&#1;p&agrave;&ucirc;&#0;&#1;&#3;&Agrave;&aacute;&#0;¢$&#0;P&euml;&#0;&#1;&yuml;&agrave;&ugrave;&#0;|&thorn;&#0;&#1;&#3;&uuml;&thorn;&#0;&#1;&#7;Ä&icirc;&#0;&#1;p&agrave;&ucirc;&#0;&#1;&#3;&Agrave;&acirc;&#0;&#1;ä$&#0;@&igrave;&#0;&#7;&yuml;Ä&ugrave;&#0;x&thorn;&#0;&#1;&#15;&eth;&thorn;&#0;&#1;&#3;Ä&icirc;&#0;&#1;p&agrave;&ucirc;&#0;&#1;&#3;&Agrave;&aacute;&#0;2#&#0;@&igrave;&#0;&#1;&uuml;&oslash;&#0;&oslash;&thorn;&#0;&#1;?&Agrave;&thorn;&#0;&#1;&#3;Ä&icirc;&#0;&#1;p&Agrave;&ucirc;&#0;&#1;&#7;Ä&aacute;&#0;&#1;$&#0;Ä&igrave;&#0;&#1;&yuml;&eth;&ugrave;&#0;&#1;&#1;&eth;&thorn;&#0;&#1;&Agrave;&thorn;&#0;&#1;&#3;Ä&icirc;&#0;&#1;a&Agrave;&ucirc;&#0;&#1;&#7;Ä&aacute;&#0;&#16;$&#0;Ä&iacute;&#0;&#3;&yuml;&Agrave;&ugrave;&#0;&#1;&#3;&agrave;&thorn;&#0;&yuml;&yacute;&#0;&#1;&#3;Ä&icirc;&#0;&#1;&aacute;&Agrave;&ucirc;&#0;&#15;&aacute;&#0;&#1;&#1;&#1;#&#0;Ä&iacute;&#0;&#1;&thorn;&oslash;&#0;&#6;&#7;&agrave;&#0;&#1;&eth;&#6;&thorn;&#0;&#1;&#7;Ä&icirc;&#0;&#1;&aacute;&Agrave;&ucirc;&#0;&#15;&agrave;&#0;0"&#0;&eth;&iacute;&#0;&#1;&eth;&oslash;&#0;&#6;&#15;&Agrave;&#0;&#1;&Agrave;&#6;&thorn;&#0;&#7;&iacute;&#0;&#1;&aacute;Ä&ucirc;&#0;&#15;&agrave;&#0; &ucirc;&#0;&#1;&#1;&agrave;&aacute;&#0;&#1;&#3;Ç&quot;@&auml;&#0;&#1;&#7;Ä&yacute;&#0;&#3;&#3;&Agrave;&#3;&uuml;&euml;&#0;&#1;&#7; &ucirc;&#0;&#1;&#3;&Agrave;&aacute;&#0;&#1;Ç&quot;p&auml;&#0;&#15;&uuml;&#0;&#3;&#3;&Agrave;&eth;&euml;&#0;&#1;&#7; &ucirc;&#0;&#1;&#3;&Agrave;&aacute;&#0;&#1;&#27;&#0;&Agrave;&auml;&#0;-&uuml;&#0;&#3;&#7;Å&yuml;&Agrave;&euml;&#0;&#1;&#7; &ucirc;&#0;&#1;&#3;Ä&agrave;&#0;&quot;&auml;&#0;8&uuml;&#0;&#3;&#7;á&yuml;Ä&euml;&#0;&#1;&#7; &ucirc;&#0;&#1;&#7;Ä&aacute;&#0;&#1;&#1;&#26;&#0;Ä&auml;&#0;p&uuml;&#0;&#7;&yuml;&eth;&ecirc;&#0;&#1;&#7;&#6;&ucirc;&#0;&#1;&#7;Ä&agrave;&#0;]&#26;&#0;&auml;&#0;&agrave;&uuml;&#0;&#7;&yuml;&Agrave;&ecirc;&#0;&#1;&#7;&#6;&ucirc;&#0;&#7;&agrave;&#0;&#1;&#1;]&#25;&#0;&Agrave;&aring;&#0;&#1;&#3;Ä&uuml;&#0;&#1;&#7;&thorn;&eacute;&#0;&#1;&#7;Ü&ucirc;&#0;&#7;&szlig;&#0;&oslash;&#25;&#0;&eth;&aring;&#0;&#7;&ucirc;&#0;&#1;&#15;&eth;&eacute;&#0;&#1;&#3;Ü&ucirc;&#0;&#15;&agrave;&#0;&#1;&#24;&#0;&Agrave;&aring;&#0;&ucirc;&#0;&#1;&Agrave;&eacute;&#0;&#1;&#3;á&ucirc;&#0; &szlig;&#0;&ecirc;&#20;&#0;&eth;&THORN;&#0;&#1;Ä&eacute;&#0;&#1;&#3;É&ucirc;&#0; &szlig;&#0;n&#19;&#0;&Agrave;&THORN;&#0;&thorn;&egrave;&#0;&#1;&#1;É&ucirc;&#0; &szlig;&#0;q&#22;&#0;&agrave;&szlig;&#0;&#1;&#3;&uuml;&egrave;&#0;&#1;&Atilde;Ä&uuml;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+ñóò&#0;&trade;&#0;ö&#0;õ&#0;ú&#0;ùûü&#0;°&#0;§&#0;&thorn;&yuml;&yuml;&yuml;&thorn;&yuml;&yuml;&yuml;•&#0;¶&#0;ß&#0;®&#0;&copy;&#0;™&#0;´&#0;¨&#0;≠&#0;&thorn;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&yuml;&thorn;&yuml;&#0;&eth;&acirc;&#0;&#1;&#3;Ä&uuml;&#0;0&agrave;&#0;&#1;&#1;&#21;&#22;&#0;&agrave;&ccedil;&#0;&#3;&thorn;&oslash;&aacute;&#0;&#1;&#3;Ä&uuml;&#0;0&szlig;&#0;&ntilde;&#21;&#0;&agrave;&egrave;&#0;&#1;&yuml;&agrave;&szlig;&#0;&#1;&#7;Ä&uuml;&#0;0&szlig;&#0;~&#21;&#0;&agrave;&egrave;&#0;&#15;&yuml;Ä&szlig;&#0;&#1;&#3;Ä&uuml;&#0;0&szlig;&#0;"&#20;&#0;&agrave;&egrave;&#0;&#1;&yuml;&thorn;&THORN;&#0;&#1;&#3;Ä&uuml;&#0;0&szlig;&#0;*&#21;&#0;&Agrave;&eacute;&#0;&#7;&yuml;&agrave;&THORN;&#0;&#1;&#3;Ä&uuml;&#0;0&szlig;&#0;#&#21;&#0;P&eacute;&#0;&#1;?&yuml;&Yacute;&#0;&#1;&#3;Ä&uuml;&#0;0&agrave;&#0;&#1;&#1;&#19;&egrave;&#0;&#1;&yuml;&eth;&Yacute;&#0;&#1;&#3;Ä&uuml;&#0;0&agrave;&#0;&#1;&#1;U&#21;&#0;&agrave;&ecirc;&#0;&#15;&yuml;Ä&Yacute;&#0;&#1;&#3;Ä&uuml;&#0;0&szlig;&#0;&#20;&#20;&#0;&ecirc;&#0;&#1;?&oslash;&Uuml;&#0;&#1;&#3;&Agrave;&uuml;&#0;0&szlig;&#0;&#22;&#0;&euml;&#0;&#1;&yuml;&Agrave;&Uuml;&#0;&#1;&#1;&Agrave;&uuml;&#0;p&agrave;&#0;&#1;à&#20;&#0;Ä&euml;&#0;&#1;&thorn;&Ucirc;&#0;&#1;&#1;&Agrave;&uuml;&#0;p&szlig;&#0;Ä&#20;&#0;@&euml;&#0;&#1;?&oslash;&Ucirc;&#0;&#1;&#1;&Agrave;&uuml;&#0;p&szlig;&#0; &ecirc;&#0;&Uacute;&#0;&#1;&#1;&Agrave;&Ugrave;&#0;P &ecirc;&#0;0&Uacute;&#0;&#1;&#3;&Agrave;&Ugrave;&#0;&#16; &agrave;&Atilde;&#0;&#1;&#1;&Agrave;&Uacute;&#0;&#1;&#1;&quot; &#3;&yuml;&yuml;&eth;&thorn;&#0;?&eth;&yuml;&#0;&lt;&uuml;&#0;&yuml;&uuml;&Uuml;&#0;&quot;$&#0;∞&aacute;&#0;&#4;?&Agrave;&#0;&eth;&oslash;&#0; &yuml;&uuml;&#0;&yuml;&#0;Ä˜&#0;&lt;&yacute;&#0;&#3;&yuml;&thorn;&Ucirc;&#0;%&#0;&eth;&aacute;&#0;&#4;&Agrave;&#0;x&ugrave;&#0; &#15;&yuml;&yuml;ÄÄ|&#0;&yuml;&icirc;&#0;8&yacute;&#0;&yuml;&yuml;&Agrave;&Ucirc;&#0;&#8;'&#0;&oslash;&aacute;&#0;&#4;&#15;&eth;&#0;&lt;&uacute;&#0;&#15;&yuml;&yuml;&thorn;&#0;&#8;w&Agrave;&#0;&uuml;&yuml;&Icirc;&#0;8&thorn;&#0;&yuml;&eth;&Ucirc;&#0;&#1;¢&amp;&#0;&eth;&aacute;&#0
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+-&szlig;&#0;&#7;&#1;&yuml;&#0;&oslash;&yuml;&agrave;&oslash;&#0;&#1;&#24;&quot;&thorn;&#0;&#6;&oslash;&#15;&atilde;&yuml;Ä&#7;◊&#0;:-@&szlig;&#0;&yuml;&Agrave;&#0;&yuml;&yuml;&uuml;˜&#0;&#1;&#24;&quot;&thorn;&#0;&#6;&eth;&#3;&yuml;&atilde;Ä&#7;◊&#0;&#24;&quot;&ETH;&szlig;&#0;&#4;&agrave;/&yuml;&uuml;&ouml;&#0; &#3;&agrave;&#0;?&atilde;Ä&#7;◊&#0;&#17;&quot;&eth;&szlig;&#0;&#3;&yuml;&yuml;&thorn;&otilde;&#0; &agrave;&#0;&#15;&Atilde;Ä&#7;◊&#0;&quot;&quot;&oslash;&szlig;&#0;&#3;&#7;&yuml;&yuml;&Agrave;&otilde;&#0; &#7;&yuml;&Agrave;&#0;&#3;&Ccedil;Ä&#7;◊&#0;&#26;&#0;&eth;&THORN;&#0;&#1;&yuml;&oslash;&ocirc;&#0; &#7;&yuml;&yuml;&Agrave;&#0;&#3;&Ccedil;Ä&#7;◊&#0;:-&oslash;&ntilde;&#0;0&iuml;&#0;&#1;&eth;&ocirc;&#0;&#1; &thorn;&yuml;&#6;Ä&#3;áÄ&#7;◊&#0;´-&eth;&ntilde;&#0;x&iuml;&#0;&#1;&#15;&uuml;&ocirc;&#0; &#15;&yuml;&eth;&yuml;Ä&#7;á&#0;&#7;◊&#0;¢ &#0;&eth;&ntilde;&#0;&gt;&iuml;&#0;&#3;&#7;&yuml;&#0;Ä&ouml;&#0; &#15;&yuml;&#0;&yuml;&#0;&#7;á&#0; ◊&#0;á &#0;&eth;&ntilde;&#0;&#1;Ä&iuml;&#0;&yuml;Ä&Agrave;&ouml;&#0; &eth;&#0;&thorn;&#0;&#7;è ◊&#0;T!&#0;P&ntilde;&#0;&#1;&agrave;&iuml;&#0;?&agrave;&agrave;&ouml;&#0; -&agrave;&#1;&thorn;&#0;&#7;&#15;&#0; &Oslash;&#0;&#1;&#1;A#&#0;&eth;&ntilde;&#0;&#4;&#7;&eth;&#0;8&ograve;&#0;&eth;`&ouml;&#0; ◊&#0;@)&#0;&oslash;&ntilde;&#0;&#4;&#1;&uuml;&#0;&gt;&ucirc;&#0;&#1;&#7;&agrave;&uacute;&#0;&#3;&oslash;0&ouml;&#0; &Oslash;&#0;&#1;&#1;ã(&#0;&agrave;&eth;&#0;&#4;&yuml;&#0;?Ä&uuml;&#0;&#1;&#7;&uuml;&uacute;&#0;&#1;&uuml;0&ouml;&#0; ◊&#0;´(&#0;&oslash;&eth;&#0;&#4;?Ä&agrave;&uuml;&#0;&#3;&yuml;&egrave;&uacute;&#0;&#1;&thorn;8&ouml;&#0; ◊&#0;´(&#0;&eth;&eth;&#0;&#4;&agrave;&#0;&#7;&oslash;&uuml;&#0;&#1;&thorn;&yuml;&ucirc;&#0;&#1;∏&ouml;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;&eth;&eth;&#0;&#4;&#7;&eth;&#0;&#1;&thorn;&uuml;&#0;&#1;&thorn;&yuml;&#0;&oslash;&uuml;&#0;&#1;&Uuml;&ouml;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;p&iuml;&#0;&#7;&yuml;&#0;?&yuml;Ä-&szlig;&ucirc;&yuml;&#0;&uuml;&thorn;&#0;?&thorn;&ouml;&#0; &#15;&yuml;&ouml;&#0; &#3;&yuml;˜&#0; &#1;&yuml;&uuml;&#15;&Agrave;&#0;&#1;&oslash;|&#0;&lt;◊&#0;(&#0;&eth;&iuml;&#0;&#1;&#1;&uuml;&oslash;&#0;Äp&ntilde;&yuml;&Agrave;&#0;&quot;&yuml;˜&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;&eth;&icirc;&#0;~&oslash;&#0;&thorn;&#0;pp&eth;&#0;&#24;&#0;Ä&ugrave;&#0; &#15;&yuml;&Agrave;x&#0;Ä&#3;&oslash;x&#0;&lt;&Oslash;&#0;&#1;&#1;&#1;)&#0;&eth;&icirc;&#0;?&ugrave;&#0; &#1;&yuml;&uuml;&#0;p&#0;&#0;&#3;&oslash;x&#0;8&Ouml;&#0;,&#0;&oslash;&icirc;&#0;&#1;Ä&uacute;&#0; &yuml;Äp&#0;&thorn;&#0;&#7;&oslash;x&#0;8◊&#0; .&#0;&agrave;&icirc;&#0;&#1;&#15;&Agrave;&ucirc;&#0; &agrave;&agrave;&#0;8p&#1;&yuml;Ä0&#0;Ä&ucirc;&#0;&#15;&yuml;&eth;&#0;&eth;&#0;&uuml;&#0;&#7;&oslash;&oslash;&#0;8◊&#0;à0&#0;&icirc;&#0;&#1;&#3;&eth;&uuml;&#0; &uuml;&eth;&#0;8p&#0;&Agrave; &#0;&#15;Ä&uuml;&#0;&#16;&#3;&yuml;&yacute;&#0;&#1;&agrave;&#1;&uuml;&#0;&#7;&oslash;&eth;&#0;x◊&#0;Ç.&#0;&agrave;&icirc;&#0;&#1;&#1;&oslash;&uuml;&#0; ?&thorn;&uuml;&#0;80&#0;?&eth;&#0;&#15;Ä&uuml;&#0;&#16;?&yuml;&agrave;&#0;&#1;&agrave;&#3;&oslash;&#0;&#15;&eth;&eth;&#0;x&Ouml;&#0;/&#0;&eth;&icirc;&#0;&#1;&#1;&thorn;&uuml;&#0; &yuml;ø&yuml;&#0;88&#0;&#15;&uuml;8&#0;&#15;Ä&yacute;&#0;&#7;&yuml;&oslash;&thorn;&#0; &uuml;&#3;&thorn;&#7;&agrave;88&aacute;&yuml;&yuml;ÄÄ&thorn;&#0;?&yuml;&agrave;&yacute;&#0; &#1;&eth;&aacute;&oslash;&#3;&eth;&#24;8&uuml;&yuml;&uuml;?&thorn;&#0;&#7;&yuml;&oslash;&uuml;&#0; &#7;&yuml;&oslash;&#0;&#1;&yuml;&eth;q&ntilde;&agrave;&uuml;&quot;&quot;?&yacute;&yuml;&thorn;&#0;/&yuml;&eth;&ucirc;&#0; &#1;&yuml;&thorn;&#0;&lt;&yuml;&Agrave;&#0;&eth;◊&#0;é-&#0;&eth;&igrave;&#0;&#20;?&yuml;&yuml;&Ccedil;&yuml;&oslash;&quot;&oslash;p&quot;&quot;|&#0;&yuml;&Auml;&#0;&yuml;&ugrave;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;&eth;&euml;&#0;&thorn;&yuml;&#15;&atilde;&uuml;&#4;&uuml;&lt;&#7;&thorn;&quot;&#15;&yuml;&oslash;&#0;&#1;&yuml;&thorn;&oslash;&#0;&#7;&yuml;&uuml;&thorn;&#0;8&#1;Ä&agrave;◊&#0;Q+&#0;&eth;&euml;&#0;&#18;&#3;&yuml;&yuml;&aacute;&thorn;&#0;|-&#1;&thorn; ?&thorn;&#0;&yuml;&yuml;Ä&oslash;&#0;&#3;&yuml;&uuml;&thorn;&#0;8&thorn;&#0;&#1;&#1;&agrave;◊&#0;&#3;(&#0;&eth;&ecirc;&#0;&#16;&yuml;&aacute;&thorn;&#8;~&#15;&#0;&gt; &yuml;&Agrave;&#0;&#15;&yuml;&oslash;&ouml;&#0;&#1;0&oslash;&thorn;&#0;x&thorn;&#0;&#1;&#1;&agrave;◊&#0;&egrave;%&#0;&eth;&eacute;&#0; &#7;&agrave;&yuml;&#8;?- &#3;&thorn;&#0;&#1;&yuml;&yuml;&ocirc;&#0;&oslash;&thorn;&#0;x&thorn;&#0;&#1;&#1;&agrave;◊&#0;é&amp;&#0;&eth;&eacute;&#0; &#3;&agrave;&yuml;Ä&lt;&#0; &#3;&eth;&#0;&yuml;&agrave;&otilde;&#0;&#1;&#1;&eth;&thorn;&#0;x&thorn;&#0;&#1;&#1;&agrave;◊&#0;à'&#0;&eth;&eacute;&#0; &#1;&eth;gÄ∏&#0;&#6; &#15;&Agrave;&#3;&yuml;&yuml;&Agrave;&otilde;&#0;&#1;&#3;&agrave;&thorn;&#0;x&thorn;&#0;&#1;&#1;&Agrave;&Oslash;&#0;&#1;&#1;Ñ&amp;&#0;&ETH;&eacute;&#0; &#1;&eth;'&Agrave;&#15;Ä&#7; -&yuml;&yuml;&#3;&Agrave;&otilde;&#0;&#1;&#7;&agrave;&thorn;&#0;x&thorn;&#0;&#1;&#1;&Agrave;◊&#0;T&amp;&#0;&eth;&egrave;&#0; &oslash;&atilde;&agrave;&#15;&Agrave;&#0;&#7;&#15;&#0;_&yuml;&Agrave;&#7;&Agrave;&otilde;&#0;&#1;&#7;&Agrave;&thorn;&#0;p&thorn;&#0;&#1;&#3;&Agrave;&Oslash;&#0;&#1;&#1;T%&#0;&agrave;&egrave;&#0;&uuml;&aacute;&agrave;&#7;&agrave;&#0;&thorn;&#7;&#4;&yuml;&oslash;&#0;&#7;Ä&otilde;&#0;&#1;&#15;Ä&thorn;&#0;p&thorn;&#0;&#1;&#3;&Agrave;◊&#0;`$&#0;&Oslash;&egrave;&#0; |Å&eth;&#3;&eth;&#0;&#7;è&yuml;&thorn;&#0;&#15;&ocirc;&#0;&#1;Ä&thorn;&#0;p&thorn;&#0;&#1;&#3;Ä◊&#0;à#&#0;&Agrave;&egrave;&#0; &gt;&#0;&oslash;&#3;&oslash;&#0;&#7;&yuml;&yuml;&thorn;&#0;&ocirc;&#0;&yacute;&#0;&eth;&thorn;&#0;&#1;&#7;Ä◊&#0;("&#0;&egrave;&egrave;&#0; &oslash;&#1;&uuml;&#0;&#3;&yuml;&eth;&lt;&#0;-&ocirc;&#0;?&yacute;&#0;&eth;&thorn;&#0;&#15;&Ouml;&#0;Ä &#0;&agrave;&egrave;&#0; |&#0;&thorn;&#0;&#3;&ucirc;&#0;|&#0;&lt;&ocirc;&#0;&gt;&yacute;&#0;&agrave;&thorn;&#0;&#15;&Otilde;&#0;#&#0;&eth;&egrave;&#0; &#15;Ä&lt;&#0;~&#0;&#3;&#0;x&#0;&oslash;&ocirc;&#0;|&yacute;&#0;&agrave;&thorn;&#0;-◊&#0;&#1;&#1;"&#0;&eth;&egrave;&#0;&#4;&#7;&Agrave;&gt;&#0;?&yacute;&#0;&#3;p&#0;&#1;&oslash;&ocirc;&#0;|&yacute;&#0;&agrave;&thorn;&#0;-◊&#0;&#1;&#1;A#&#0;&eth;&egrave;&#0;&#7;&agrave;&gt;&#0;&Agrave;&thorn;&#0;&#3;p&#0;&#3;&agrave;&ocirc;&#0;x&yacute;&#0;&agrave;&thorn;&#0;&lt;◊&#0;&#1;&#1;&#1;"&#0;&agrave;&egrave;&#0;&#3;&agrave;&#15;&oslash;&thorn;&#0;&#3;&eth;&#0;&#7;&agrave;&ocirc;&#0;&oslash;&yacute;&#0;&agrave;&thorn;&#0;&lt;&Ouml;&#0;"#&#0;&oslash;&egrave;&#0;&#1;&eth;&#15;Ä&#7;&yuml;&thorn;&#0;&#3;p&#0;&#15;&Agrave;&ocirc;&#0;&eth;&yacute;&#0;&agrave;&thorn;&#0;x◊&#0;&#1;ä"&#0;&agrave;&ccedil;&#0;&uuml;&#15;&Agrave;&#3;&yuml;&agrave;&#0;p&#0;?&ocirc;&#0;&#1;&#1;&eth;&thorn;&#0;&#1;&#1;&Agrave;&thorn;&#0;&oslash;&Ouml;&#0;&#8; &#0;&eth;&ccedil;&#0;&uuml;&#7;&agrave;&#0;&yuml;&oslash;&#0;p&#0;~&ocirc;&#0;&#1;&#1;&eth;&thorn;&#0;&#1;&#1;&Agrave;&thorn;&#0;&eth;&Otilde;&#0;"&#0;&eth;&ccedil;&#0;&#3;&oslash;&#0;&yuml;&#0;x&#1;&oslash;&ocirc;&#0;&#1;&#1;&agrave;&thorn;&#0;&#1;&Agrave;&#0;&#1;&agrave;&Ouml;&#0;P#&#0;&eth;&ccedil;&#0;Å&thorn;&#0;&#7;&yuml;&Agrave;&#0;|&#7;&eth;&ocirc;&#0;&#1;&#3;&agrave;&thorn;&#0;&#1;&Agrave;&#0;&#3;&agrave;◊&#0;&#1;&#1;U#&#0;&ETH;&ccedil;&#0;&#15;&Agrave;Ä&yuml;&oslash;&#0;|&#15;&Agrave;&ocirc;&#0;&#1;&#3;&Agrave;&thorn;&#0;&#1;&Agrave;&#0;&#3;&Agrave;◊&#0;&#1;&#1;&ugrave;#&#0;&oslash;&ccedil;&#0;&#7;&eth;?&agrave;&#0;?&thorn;&#1;&yuml;&yuml;Ä&ocirc;&#0;&#1;&#3;&Agrave;&thorn;&#0;&#1;Ä&#7;&Agrave;◊&#0;&#1;&#3;&Oslash;!&#0;&oslash;&ccedil;&#0;&#3;&uuml;&#15;&oslash;&#0;&#15;&thorn;&yuml;&#0;&thorn;&oacute;&#0;&#1;&#7;Ä&yacute;&#0;&#4;Ä&#15;Ä◊&#0;&#1;&egrave;&quot;&oslash;&aelig;&#0;&#8;&thorn;&#3;&thorn;&#0;&#1;&yuml;&yuml;&Ccedil;&oslash;&oacute;&#0;&#1;&#7;Ä&uacute;&#0;&#1;&#15;Ä◊&#0;&#1;&#3;ä&#25;&#0;&agrave;&aelig;&#0;&#6;?Ä&yuml;&Agrave;&#0;&yuml;&ntilde;&#0;&#1;&#7;Ä&uacute;&#
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#15;&#0;&oslash;&Ntilde;&#0;&#1;&#1;&eth;&uacute;&#0;&uuml;&Oacute;&#0;"&#15;&#0;∏&Ntilde;&#0;&#1;&#1;&eth;&uacute;&#0;&oslash;&Oacute;&#0; &oslash;&Ntilde;&#0;&#1;&#3;&eth;&uacute;&#0;&eth;&Ograve;&#0;&#16;&#0;&eth;&Ntilde;&#0;&#1;&#3;&agrave;&ucirc;&#0;&#1;&#1;&eth;&Oacute;&#0;&#17;&#16;&#0;&eth;&Ntilde;&#0;&#1;&#3;&agrave;&ucirc;&#0;&#1;&#3;&agrave;&Oacute;&#0;&#16; &eth;&Ntilde;&#0;&#1;&#3;&agrave;&ucirc;&#0;&#1;&#7;&Agrave;&Ograve;&#0;&#16;&#0;&eth;&Ntilde;&#0;&#1;&#3;&agrave;&ucirc;&#0;&#1;&#15;&Agrave;&Oacute;&#0;à&#16;&#0;&oslash;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;&#1;&#15;Ä&Oacute;&#0;&#8; &agrave;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;&Ntilde;&#0;&#16;&#0;&oslash;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;&gt;&Oacute;&#0;&#1;&#1;&#20;&#15;&#0;&eth;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;&gt;&Ograve;&#0;P&#15;&#0;&eth;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;|&Ograve;&#0;&#16; &ETH;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;&uuml;&Ntilde;&#0;&#15;&#0;&#16;&Ntilde;&#0;&#1;&#7;&Agrave;&ucirc;&#0;&oslash;&Ograve;&#0;&#16;&#0;&Agrave;&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&#1;&#1;&eth;&Ograve;&#0;&uacute;&#16;&#0;&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&#1;&#3;&agrave;&Ograve;&#0;™&#16;&#0;&Agrave;&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&#1;&#7;&Agrave;&Ograve;&#0;q&#17;&#0;∞&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&#1;&#7;&Agrave;&Oacute;&#0;&#1;&#1;&#20;&#16;&#0;&ETH;&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&#1;&#15;Ä&Ograve;&#0;@&#15;&#0;p&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&#15;&Ntilde;&#0;&#15;&#15;&#0;&ETH;&Ntilde;&#0;&#1;&#7;&Agrave;&uuml;&#0;&Ntilde;&#0;+&#16;&#0;`&Ntilde;&#0;&#1;&#15;&Agrave;&uuml;&#0;&gt;&Ograve;&#0;&#1; &agrave;&Ntilde;&#0;&#1;&#15;Ä&uuml;&#0;&gt;&ETH;&#0; &oslash;&Ntilde;&#0;&#1;&#15;Ä&uuml;&#0;~&ETH;&#0;&#15;&#0;&agrave;&Ntilde;&#0;&#1;&#15;Ä&uuml;&#0;|&Ntilde;&#0;A&#15;&#0;p&Ntilde;&#0;&#1;Ä&uuml;&#0;|&Ntilde;&#0;&#1;&#15;&#0;&Agrave;&Ntilde;&#0;&#1;Ä&uuml;&#0;&oslash;&Ntilde;&#0;A P&Ntilde;&#0;&ucirc;&#0;&oslash;&Ntilde;&#0; p&Ntilde;&#0;&ucirc;&#0;&eth;&Ntilde;&#0;  8&Ntilde;&#0;&uuml;&#0;&#1;&#1;&eth;&ETH;&#0;&#15;&#0;&eth;&Ntilde;&#0;&uuml;&#0;&#1;&#1;&agrave;&Ntilde;&#0;@&#16;&#0;&oslash;&Ntilde;&#0;&uuml;&#0;&#1;&#1;&agrave;&Ograve;&#0;&#1;&#1;&#4;&#15;&#0;&eth;&Ntilde;&#0;&gt;&uuml;&#0;&#1;&#1;&agrave;&Ntilde;&#0;E&#15;&#0;x&Ntilde;&#0;&gt;&uuml;&#0;&#1;&#1;&agrave;&Ntilde;&#0;&#4;&#15;&#0;&eth;&Ntilde;&#0;&gt;&uuml;&#0;&#1;&#1;&Agrave;&Ntilde;&#0;&aelig;&#15;&#0;x&Ntilde;&#0;&gt;&uuml;&#0;&#1;&#3;&Agrave;&Ntilde;&#0; &#15;&#0;&agrave;&Ntilde;&#0;&gt;&uuml;&#0;&#1;&#3;&Agrave;&Ntilde;&#0; &#15;&#0;8&Ntilde;&#0;&lt;&uuml;&#0;&#1;&#3;&Agrave;&Ntilde;&#0; &#15;&#0; &Ntilde;&#0;&lt;&uuml;&#0;&#1;&#3;Ä&Ntilde;&#0;A&#16;&#0;p&Ntilde;&#0;&lt;&uuml;&#0;&#1;&#7;Ä&Ograve;&#0;&#1;&#1;T&#15;&#0;&eth;&Ntilde;&#0;|&uuml;&#0;&#1;&#7;Ä&Ntilde;&#0;@ &ocirc;&Ntilde;&#0;x&uuml;&#0;&#7;&ETH;&#0;8 &uuml;&Ntilde;&#0;x&uuml;&#0;&#7;&ETH;&#0;™ &oslash;&Ntilde;&#0;x&uuml;&#0;&#7;&ETH;&#0; &oslash;&Ntilde;&#0;x&uuml;&#0; &ETH;&#0; &eth;&Ntilde;&#0;x&uuml;&#0; &ETH;&#0;&quot; &agrave;&Ntilde;&#0;x&uuml;&#0; &Iuml;&#0; &oslash;&Ntilde;&#0;p&uuml;&#0; &ETH;&#0;&#16; &Uuml;&Ntilde;&#0; &uuml;&#0; &ETH;&#0;&#16;&#0;p&Euml;&#0; &ETH;&#0;&#8;&#0;0&Euml;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;Ä&thorn;&#0;&#4;"Ä
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&thorn;&#0;&ucirc;&#0;&#1;&#16;&#0;&thorn;@&#0;˜&#0;"&#8;™&yacute;&#0;Ä&#8;&ugrave;&#0;&#4;&uuml;&#0;&#1;&#1;&#16;&yacute;&#0;&#20;&thorn;&#0;&#4;&ouml;&#0;Y&#25;&iuml;é&#1;&Otilde;@¢&Euml;û]UQp`™ä(&#8;¢"Ç&thorn; &#6;&#0;ÄÇà&#8;&thorn;&#0;&#6;&Atilde;&#4;&#0;&#20;&yacute;&#0;&#26;&#1;D&#1;&#0;&#16;&#16;&#0;``&#1;Ç&#0;&#8;(&#0;ÄÄ(&#0; &uacute;&#0;&#6;@&#16;&#0;@&#0;&#4;&#20;&ograve;&#0;fB&yuml;&ugrave;◊&Ccedil;äÇò}&Otilde;&Ntilde;p∫&gt;∫&ecirc;&yuml;É&#7;&Ccedil;E@&#20;tTA&#0;ÅÄ&#0;&#8;&#8;"™¢Ç&#8;®8&#0;àÄ&#7;&#0;&#16;&#16;P&#17;UAEE@&#20;&#20;\&oacute;&Aacute;Ä&#8;&thorn;&#0;&#4;(&#8;ÄÄ&thorn;&#7;&#0;Ä¢ &#0;&#3;é&uuml;&#0;&#3;Ä&#1;&#4;&ucirc;&#0;&#1;&thorn;&#0;gIø&szlig;_&egrave;æÉ&Ugrave;u&Yacute;;&egrave;´&iuml;&atilde;è&szlig;&Aring;&quot;UQUQGWUE&#1;&ETH;&#0;@&#1;É&Ntilde;&#0;j &#8;&#0;Ç®Ç™à&#8;&#8;*`&#0;&agrave;A&Auml;&#21;&#4;&#0;QU@QUW@WT\P&#16;&#0;&#1;&Agrave;&#0;&#16;&thorn;&#0;&yacute;Ç&#15;( *™&#0;&agrave;&#0;Ç&#8;&#0;:&#0;@&uuml;&#0;&#3;&#4;&#0;A&#16;eI=&iuml;&ecirc;æ&#7;uy&ecirc;øèè&yuml;&Ntilde;]◊&otilde;&#21;U&#23;UUWPqqAU&Aring;T&#21;&#21;&ocirc;@G&Oacute;@&#0;8 Ä&#8;&ucirc;&#0;&#1;&#6;&#16;jO&szlig;&szlig;:∏&uuml;Q&ntilde;&uacute;&thorn;æÉ&yuml;◊◊W_&yuml;&quot;xBgG&ccedil;á|&#16;&#17;&ntilde;&Otilde;&Otilde;E}A&#7;UP&#0;P&Ntilde;&Aring;Ñ&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+(®¢:¢Ä¢Ä&#8;&#8;!&#3;&Iuml;&oslash;&#0;&#4;T&quot;Pt&#1;TA&#1;&#4;&#21;&#16;PQ&#1;@A&yacute;&#0;&#21;@`&#0;&Agrave;Ä&#3; &#24; &#0;Ä&#8;&#0;ÇÄÄjW~&thorn;&atilde;&yuml;&yuml;qc&agrave;&ecirc;&yuml;&Aring;&szlig;_]}&yuml;&yuml;ää.&amp;øà™∫Ä&#15;&iuml;è&szlig;Lpa&#7;UA&#0;&quot;U&Otilde;P&#0;@QD&#4; &#26;&#8;&#0;∞ àäÇ ∏ 8&acirc;&agrave;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+∫*&ecirc;&ecirc;´&iuml;&Agrave;&Acirc;&Agrave;&#3;?&#1;Ä&#24;U&#17;&#20;TUUT&#17;&#1;&#3;&#24;&#6; &#0;&agrave;Ç¢&thorn;™¢(® Ä¢&#0;&#4; &quot;`@&#4;&#1;D&#21;&#16;PT@@&#1;&#7;&#16;&#0;&#1;&uuml;&#0;&#8;&#8;&#0;&#8;äke&yuml;&ucirc;˜˜^:&oacute;&ouml;W˜&szlig;~&uacute;&yuml;&iuml;&icirc;ä
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#24;&quot;0A&Ntilde;E◊U&#21;&#16;&#4;&#0;p&#0;@&#1;@&#8;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+8(&egrave;&acirc;"ä&#8;(®é  &#0;  &#16;&Agrave; &#1;&#21;&#20;&#0;&#4;&#0;EGA&#4;&#4;&#16;P@&#0;Ä&thorn;&#0; &yuml;&#0; &#6;:&#0;&#8;&#0;à;M.&#0;&Agrave;!@&#26; Microsoft Word &amp;&#6;&#15;&#0;&#18;&#0;Word&yuml;&yuml;&#8;&#0;&#1;&#0;&Acirc;&quot;&#0; &#7;&#0;&#27;&#4;&#0;&#0;&#20;&#0;&#0;&#19;&#0;&#20;&#0;&#0;&#19;&#0;&#25;&#0;2@&#0;@&#0;$&#0;Use Word 6.0c or later to           &#25;&#0;2Ä&#1;@&#0;$&#0;view Macintosh picture.             &#3;&#0;&quot;&Acirc;&#6;@&#3;x&#7;ê(&#0;&#17;&yuml; &yuml;&yuml;&yuml;&yuml;&#3;x&#0;&#6;@&#0;(&#0;&#7;ê&#1;&#0;&#6;@&#3;x&#7;ê(&#0;ò&#0;6&#6;@&#3;x&#7;ê(&#6;@&#3;x&#7;ê(&#6;@&#3;x&#7;ê(&#0;&Euml;&#0;&Euml;&#0;&Euml;&#0;75&#0;&#1;&atilde;&eth;&#0;J&#15;&oslash;c&#0;8&#1;Å&eth;&#3; &#7;Äq&eth;&#0;@&#0;&#19;ü&Agrave;&#0;&iacute;{ü&yuml; &Iuml;&yuml;&yacute;&yuml;&yuml;ó&Ucirc;&ocirc;&yuml;&yuml;ø&Iuml;&yuml;oø&szlig;Ø&yuml;x&#4;&#0;&#1;&Igrave;&yuml;&#4;&#0;&#1;&Igrave;&yuml;-&#1;&ccedil;&yuml;&#1;ø&oacute;&uuml;&yuml;&#19;&#25;&Oacute;∑∂=&yuml;F&ucirc;\&ograve;ÄÜqÑ0|,&#0;&#15;&#0;&#1;&oslash;&yuml;&#0;&oslash;&oslash;&#0;&#1;&agrave;&acirc;&#0;&#7;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;&oslash;&#0;&#1;&#15;&eth;&acirc;&#0;&#7;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;&oslash;&#0;&#1;&#7;&oslash;&acirc;&#0;&#7;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;&oslash;&#0;&#1;&#3;&oslash;&acirc;&#0;&#7;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;&oslash;&#0;&#1;&#1;&uuml;&acirc;&#0;&#7; &#1;&oslash;&yuml;&#0;&agrave;˜&#0;&thorn;&acirc;&#0;&#7; &#1;&oslash;&yuml;&#0;&agrave;˜&#0;&yuml;&acirc;&#0;&#7;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;˜&#0;&#1;?Ä&atilde;&#0;&#7;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;˜&#0;&#1;?&Agrave;&atilde;&#0;&#15;&#15;&#0;&#1;&oslash;&yuml;&#0;&agrave;˜&#0;&#1;&agrave;&atilde;&#0;&yuml;&#16;&#0;&#1;&oslash;&yuml;&#0;&agrave;˜&#0;&#1;&#7;&agrave;&auml;&#0;&#1;?&yuml;&#22;&#0;&#1;&yacute;&yuml;&#1;&agrave;&thorn;&yuml;&#0;&agrave;˜&#0;&#1;&#7;&eth;&aring;&#0;&#15;&yuml;&yuml;&#22;&#0;&#1;&yacute;&yuml;&#1;&#0;&thorn;&yuml;&#0;&agrave;˜&#0;&#1;&#3;&oslash;&aelig;&#0;&#1;&thorn;&yuml;&#22;&#0;&#1;&yacute;&yuml;&#1;Ä&#15;&thorn;&yuml;&#0;&agrave;˜&#0;&#1;&#1;&uuml;&aelig;&#0;&thorn;&yuml;&#23;&#0;&#1;&yacute;&yuml;&#1;&oslash;&#7;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&thorn;&ccedil;&#0;&thorn;&yuml;&#0;á&#24;&#0;&#1;&yacute;&yuml;&#1;&uuml;&#7;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&egrave;&#0;&#3;&thorn;&yuml;&#1;&agrave;&#7;&#26;&#0;&#1;&yacute;&yuml;&#1;&thorn;&#3;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&#1;?Ä&ecirc;&#0;&#1;&thorn;&yuml;&oslash;&#0;&#7;&#26;&#0;&#1;&yacute;&yuml;&#1;&thorn;&#3;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&#1;&Agrave;&ecirc;&#0;&#6;?&yuml;&yuml;&thorn;&#0;&#7;&#26;&#0;&#1;&uuml;&yuml;&#0;&#3;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&#1;&agrave;&euml;&#0;&#3;&thorn;&yuml;&#3;Ä&#7;&#26;&#0;&#1;&uuml;&yuml;&#0;&#3;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&#1;&#15;&eth;&euml;&#0;&#3;&yuml;&yuml;&agrave;&thorn;&#0;&#7;&#25;&#0;&#1;&uuml;&yuml;&#0;&#3;&thorn;&yuml;&#0;&agrave;&ouml;&#0;&#1;&#7;&eth;&igrave;&#0;_&thorn;&yuml;&yacute;&#0;&#7;&#25;&#0;&#1;&uuml;&yuml;&#0;É&thorn;&yuml;&#0;&agrave;&ouml;&#0;&#1;&#3;&oslash;&iacute;&#0;&#7;&thorn;&yuml;&uuml;&#0;&#7;&#25;&#0;&#1;&uuml;&yuml;&#0;É&thorn;&yuml;&#0;&oslash;&ouml;&#0;&#1;&#1;&uuml;&iacute;&#0;&thorn;&yuml;&#0;&agrave;&uuml;&#0;&#7;&#25;&#0;&#1;&uuml;&yuml;&#0;É&thorn;&yuml;&#0;&uuml;&otilde;&#0;&thorn;&icirc;&#0;&#3;?&yuml;&yuml;&oslash;&ucirc;&#0;&#7;&#22;&#0;&#1;&uuml;&yuml;&#0;&#7;&thorn;&yuml;&#0;&thorn;&otilde;&#0;&icirc;&#0;&thorn;&yuml;&uacute;&#0;&#7;&#26;&#1;&uuml;&yuml;&#0;&#7;&yacute;&yuml;&#0;Ä&ouml;&#0;&#1;?Ä&eth;&#0;&#3;&yuml;&yuml;&Agrave;&uacute;&#0;&#7;&#26;&#0;&#1;&uuml;&yuml;&#0;&#15;&yacute;&yuml;&#0;&agrave;&ouml;&#0;&#1;?&Agrave;&ntilde;&#0;&#3;&#15;&yuml;&yuml;&uuml;&ugrave;&#0;&#3;&#26;&#0;&#1;&yacute;&yuml;&#1;&thorn;&#15;&yacute;&yuml;&#0;&oslash;&ouml;&#0;&#1;&agrave;&ntilde;&#0;&thorn;&yuml;&#0;&Agrave;&ugrave;&#0;&#3;&#27;&#0;&#1;&yacute;&yuml;&#1;&thorn;&yacute;&yuml;&#0;&thorn;&ouml;&#0;&#1;&#15;&agrave;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#1;&#0;&#15;&ocirc;&#0;&#1;&#1;&agrave;&thorn;&#3;x&#0;&#7;Ä&uuml;&#0;&#1;&#7;&agrave;&thorn;&#0; è&oslash;&#0;&#1;&Aacute;&iuml;&ntilde;&icirc;-&aacute;&iuml;&quot;&Agrave;&yacute;&#0;8)&#1;&#0;&#15;&oacute;&#0;&eth;&thorn;&#0;&#3;&lt;&#0;&#1;&Agrave;&uuml;&#0;&#1;&#15;Ä&thorn;&#0; &gt;&#1;&uuml;&#0;&#1;&yuml;&Ccedil;&yuml;&iuml;&thorn;&yuml;&iuml;&yacute;&Agrave;&yacute;&#0;8)&#1;&#0;&#15;&oacute;&#0;&eth;&thorn;&#0;&#3; &eth;&uuml;&#0;&#1;?Ä&thorn;&#0; |&#0;~&#0;&#1;&yuml;&AElig;&ccedil;&thorn;&ccedil;&oslash;&Agrave;&yacute;&#0;&lt;(&#1;&#0;&#15;&oacute;&#0;p&thorn;&#0;&#3;&#7;Äx&uuml;&#0;?&yacute;&#0; x&#0;&#1;&yuml;&#6;&gt;&atilde;&uuml;&Aacute;&eth;Ä&yacute;&#0;8&quot;&#1;&#0;&#15;&oacute;&#0;x&thorn;&#0;&#3;&#3;&Agrave;&#0;&lt;&uuml;&#0;|&yacute;&#0;&#3;x&#0;&#15;Ä&ograve;&#0;8&#1;&#0;&#15;&oacute;&#0;8&yacute;&#0;&agrave;&#0;-&yacute;&#0;&#1;&#1;&oslash;&yacute;&#0;p&#0;&#7;&Agrave;&#3;Ä&ocirc;&#0;8 &#1;&#0;&#15;&oacute;&#0;8&yacute;&#0;&#3;x&#0;&#7;Ä&thorn;&#0;&#1;&#1;&eth;&yacute;&#0;&eth;&#0;&#3;&agrave;&#7;Ä&ocirc;&#0;&lt;&#1;&#0;&#15;&oacute;&#0;&lt;&yacute;&#0;&#3;&lt;&#0;&#3;&Agrave;&thorn;&#0;&#1;&#3;&agrave;&yacute;&#0;&#4;&agrave;&#0;&#1;&eth;&#15;&oacute;&#0;&lt;&#1;&#0; &oacute;&#0;&quot;&yacute;&#0;&#3;-&agrave;&thorn;&#0;&#1;&#7;Ä&yacute;&#0;&#4;&agrave;&#0;&oslash;&gt;&oacute;&#0;8 &#1;&#0;&#15;&oacute;&#0;&quot;&yacute;&#0;&#3;&#7;Äx&thorn;&#0;&#7;&#15;&uuml;&thorn;&#0;&#4;&agrave;&#0;x|&oacute;&#0;8 &#1;&#0; &oacute;&#0;-&yacute;&#0;&#3;&#3;&Agrave;&#0;&lt;&thorn;&#0;&#15;&yuml;&yuml;&Agrave;&#0;&agrave;&#0;=&eth;&oacute;&#0;&lt; &#1;&#0;&#7;&oacute;&#0; &yacute;&#0;&#3;&#1;&agrave;&#0;-&thorn;&#0;&#15;&yuml;&yuml;&eth;&#0;&agrave;&#0;?&agrave;&oacute;&#0;&lt;&#1;&#0;&#7;&oacute;&#0;&#15;&uuml;&#0;p&#0;&#7;&thorn;&#0;&#15;&yuml;&uuml;&#0;&agrave;&#0;?Ä&oacute;&#0;8-&#1;&#0;&#15;&oacute;&#0;&#7;&uuml;&#0;&#15;8&#0;&#1;&Agrave;&#0;&#4;&#0;&#3;&yuml;&#0;&eth;&#0;?&ograve;&#0;8&quot;&#1;&#0; &oacute;&#0;&#7;&uuml;&#0;&#3;-&agrave;&uuml;&#0;&#6;Ä&eth;&#0;&gt;&ograve;&#0;8&quot;&#1;&#0;&#6;&oacute;&#0;&#1;&#7;Ä&yacute;&#0;&#3;&#15;&#0;x&uuml;&#0;&#6;&#15;&Agrave;&#0;&eth;&#0;~&ograve;&#0;8&#1;&#0; &oacute;&#0;&#1;&#3;Ä&yacute;&#0;&#15;&#3;Ä&lt;&#0;&#15;&yuml;Ä&#7;&agrave;&#0;p&#0;&thorn;&ograve;&#0;8&#1;&#0; &oacute;&#0;&#1;&#3;&Agrave;&yacute;&#0;&#15;&#1;&agrave;&#0; &yuml;&oslash;&#3;&eth;&#0;p&#0;&#3;&iuml;&ograve;&#0;8-&#1;&#0; &oacute;&#0;&#1;&#3;&Agrave;&uuml;&#0; &eth;&#0;&#7;Ä&yuml;&yuml;&#1;&oslash;&#0;p&#0;&#7;á&ograve;&#0;8-&#1;&#0;&#15;&oacute;&#0;&#1;&#1;&agrave;&uuml;&#0; |&#0;&#3;&Agrave;&#1;&agrave;&#0;&yuml;&agrave;&uuml;&#0;p&#0;&#15;&#7;&ograve;&#0;8-&#1;&#0; &oacute;&#0;&#1;&#1;&agrave;&uuml;&#0; -&agrave;&#3;Ä&eth;|&#0;p&#0; &#7;&ograve;&#0;&#24;-&#1;&#0; &oacute;&#0;&#1;&#1;&agrave;&uuml;&#0; &#15;&#0;x&#7;&#0;&#3;&uuml;&gt;&#0;&eth;&#0;&#8;&#7;&ograve;&#0;&#24;&quot;&#1;&#0; &ograve;&#0;&eth;&uuml;&#0;&#4;&#3;Ä&lt; &thorn;&#0;&#6;&thorn;Ä&agrave;&#0;&#7;&ograve;&#0;&#24;&quot;&#1;&#0;&#15;&ograve;&#0;&eth;&uuml;&#0;&#4;&#1;&agrave;&#0;- &thorn;&#0;&#6;&#15;&Aacute;&agrave;&#0;&#7;&ograve;&#0;8&quot;&#1;&#0;&#15;&ograve;&#0;x&ucirc;&#0;&#3;&eth;&#0;&#7;å&thorn;&#0;&#6;á˜&agrave;&#0;&#7;&ograve;&#0;8&quot;&#1;&#0; &ograve;&#0;x&ucirc;&#0;&#3;8&#0;&#3;&uuml;&thorn;&#0;&#6;&#15;&Atilde;&yuml;&Agrave;&#0;&#7;&ograve;&#0;8&quot;&#1;&#0; &ograve;&#0;|&ucirc;&#0;&#3;-&uuml;&thorn;&#0;&#6;&#7;&agrave;&yuml;Ä&#7;&ograve;&#0;&lt;&quot;&#1;&#0; &ograve;&#0;&lt;&ucirc;&#0;&#3;&#15;&#0;~&thorn;&#0;&#3;&agrave;&quot;&thorn;&#0;&#7;&ograve;&#0;&lt;&#27;&#1;&#0; &ograve;&#0;&lt;&ucirc;&#0;&#3;&#3;Ä&gt;&thorn;&#0;&#1;&#1;&eth;&yacute;&#0;&#7;&ograve;&#0;&lt;&#26;&#1;&#0; &ograve;&#0;&quot;&ucirc;&#0;&#3;&#1;&agrave;&#0;&yacute;&#0;&oslash;&yacute;&#0;&#7;&ograve;&#0;&lt;&#25;&#1;&#0; &ograve;&#0;-&uacute;&#0;&eth;&#0;&#7;&yacute;&#0;&uuml;&yacute;&#0;&#15;&ograve;&#0;&lt;&#26;&#1;&#0;&#15;&ograve;&#0;-&uacute;&#0;&#3;8&#0;&#3;&Agrave;&thorn;&#0;|&yacute;&#0; &ograve;&#0;&lt;&#26;&#1;&#0;&#15;&o
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&quot;v&#24;&#3;&uuml;&#15;&thorn;8&ccedil;&#7;&#15;&oacute;á&ucirc;á&#0;`&atilde;ú&aacute;&Iuml;&ugrave;á&quot;&Ccedil;&quot;?&#0;89&Agrave;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&quot;~8&#3;º&icirc;8&ccedil;&#7;&oacute;á&ucirc;&#7;&#0;`&agrave;&quot;&aacute;&Iuml;&aacute;á&quot;&#7;&#24;?&#0;89&Agrave; &#7;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&quot;|&#24;&#3;ú&quot; 8&atilde;&Ccedil;&quot;&#3;é&#3;á&#0;`&agrave;&lt;&aacute;&Icirc;&#1;á&quot;&#24;?&#0;89Ä&#6; é&#1;Ä&#6; 
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+<BLOCK>
+~&#24;&#3;é&#24;&#7;0&aacute;&ccedil;&quot;&#3;é&#3;á&#0;`&agrave;&uuml;&aacute;&Icirc;&#1;á&quot;~&#24;?Ä89Ä&#6; 
+</BLOCK>
+
+
+<BLOCK>
+g0&#3;è&quot;&#7;&agrave;&agrave;&ccedil; &#3;Ü&#3;á&#0;`&aacute;&uuml;&aacute;&Icirc;&#1;á&quot;&aelig;&#24;;&Agrave;&#24;9Ä w&#7;á&#1;&Agrave; 
+</BLOCK>
+
+
+<BLOCK>
+s&eth;&#3;áú&#7;Ä&auml;g &#3;á&#3;&Ccedil;&#0;p&aacute;&Uuml;&ntilde;&Iuml;&#1;á&quot;&iuml;&#24;9&agrave;&quot;q&Agrave;&#15;&quot;w&#7;&#7;&Ntilde;&Agrave;
+</BLOCK>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+&#6;c&agrave;&#7;É&Iuml;&ccedil;&#0;&icirc;gè&atilde;á&ugrave;&yuml;Äp&aacute;&thorn;&ccedil;&oacute;&Ccedil;-&yuml;º&lt;&eth;&#15;&atilde;&Agrave;&#15;&oslash;Ü&#3;&oacute;&Agrave;&quot;&#7;Å&yuml;É&oslash;&#0;/&ugrave;&#0;$&#3;Å&agrave;&#7;&Aacute;&ccedil;&Iuml;&ugrave;˜&Atilde;&Ccedil;&atilde;&Atilde;&eth;&yuml;Ä9&ntilde;&thorn;?&aacute;&atilde;&Ccedil;-sú8&agrave;&#3;Ä@&#0;1&#6;&#0;Ä&yacute;&#0;&#1;&#16;&oslash;&#0;&#21;&ugrave;&#0;&#7;&#1;&ccedil;ÄAá&uuml;&ccedil;&#0;&#6;&uacute;&#0;&#6;&oslash;&#0;&#15;&oslash;&#0;&yacute;&#0;&#1;&#7;&gt;&ccedil;&#0;&#4;&eth;&#0; &ccedil;&#0; &eth;&#0; &ccedil;&#0;8&eth;&#0; &ccedil;&#0;0&eth;&#0;&#7;&oacute;&#0;&#1;&#7;&oslash;&Otilde;&#0;&#7;&oacute;&#0;&#1;&#7;&agrave;&Otilde;&#0;&#6;&egrave;&#0;8&szlig;&#0;&#7;&eacute;&#0;&#1;&#3;&thorn;&szlig;&#0;&#7;&eacute;&#0;&#1; &#7;&szlig;&#0;&#7;&eacute;&#0;&#1;&quot;&#3;&szlig;&#0;&#7;&eacute;&#0;&#1;&lt;&#1;&szlig;&#0;&#6;&eacute;&#0;8&THORN;&#0;&#6;&eacute;p&THORN;&#0;&#16;&eacute;&#0;p&#0;&#7;&Ccedil;&ccedil;&ucirc;&agrave;xè&quot;&egrave;&#0;&#16;&eacute;&#0;p&#0;&#15;&ccedil;&iuml;&yuml;&ntilde;&uuml;&Iuml;&quot;&egrave;&#0;&#16;&eacute;&#0;p&#0;-&ccedil;è&quot;qúq&Ccedil;&#24;&egrave;&#0;&#16;&eacute;&#0;p&#0;&ccedil;&#7;&quot;p&quot;q&Ccedil;0&egrave;&#0;&#16;&eacute;&#0;p&#15;∫&#7;&#6;&quot;0&lt;q&Atilde;0&egrave;&#0;&#16;&eacute;&#0;x&#7;8&#7;&#6;&quot;0&uuml;q&Atilde;&agrave;&egrave;&#0;&#16;&eacute;&#0;8&#7;8&#7;&#7;&quot;1&uuml;q&Atilde;&agrave;&egrave;&#0;&#17;&eacute;&#0; &#7;g&#7;&quot;{&uuml;q&Aacute;&Aacute;&Agrave;&eacute;&#0;&#17;&eacute;&#0; &ccedil;&#0; &eth;&#0;&#7;&yuml;&Agrave;&ocirc;&#0; &ccedil;&#0; &eth;&#0;&quot;|p&ocirc;&#0;&#4;&ccedil;&#0;&#26;&eth;&#0;0|&#24;&oslash;&#0;&#6;&ucirc;&#0;&#1;&#1;&Agrave;&yacute;&#0;x˜&#0;&#1;&#15;Ä&uuml;&#0; &ograve;&#0;&#4;8&#0;`| &oslash;&#0; &ucirc;&#0;&#1;&#1;&Agrave;&yacute;&#0;ú&eth;&ucirc;&#0;&#3;&#24;&#0;|&eth;&uuml;&#0;&amp;&yacute;&#0;&#1;&Agrave;&oslash;&#0;&#4;8&#0;&Agrave;|&#6;&oslash;&#0; &ucirc;&#0;&#1;&#1;&Agrave;&thorn;&#0;&#3;&#1;Ä-8&ucirc;&#0;&#3;&quot;&agrave;0&uuml;&#0;&amp;&yacute;&#0;&#1;}&agrave;&oslash;&#0;&#4;8&#1;&Agrave;x&oslash;&#0; &ucirc;&#0;&#1;&#1;&Agrave;&thorn;&#0;&#3;&#3;&#0; 8&ucirc;&#0;&#3;&lt;&#1;&Agrave;&#16;&uuml;&#0;$&yacute;&#0;&#1;8p&oslash;&#0;&#4;8&#1;Ä8&#3;&oslash;&#0; &uacute;&#0;&Agrave;&thorn;&#0;&#3;&#3;&#0; &quot;&ucirc;&#0;&gt;&#3;Ä&ucirc;&#0;%&yacute;&#0;&#1;8p&oslash;&#0;8&#3;Ä8&#1;Ä&ugrave;&#0; &ucirc;&#0;&#1;&#1;&Agrave;&thorn;&#0;&#3;&#3;&#0; &quot;&ucirc;&#0;&#1;&gt;&#3;&uacute;&#0;%&yacute;&#0;&#1;8p&oslash;&#0;8&#3;&#0;|&#1;Ä&ugrave;&#0; &ucirc;&#0;&#1;&#1;&Agrave;&thorn;&#0;&#3;&#3;&#0; 8&ucirc;&#0;&#1;n&#7;&uacute;&#0;/&yacute;&#0;&#1;8p&oslash;&#0;8&#3;&#0;|&#0;Ä&yacute;&#0;&#6;&thorn;&#0;&#23;&gt;&#7;&#0;&#25;É&#0;&Agrave;&Eacute;&Agrave;&#0; &#7;Ä x &#8; p&igrave;&#0;g&#7;&uacute;&#0;6&yacute;&#0;0&lt;&eth;&#24;0&#0;&Agrave;ê&#1;&Agrave;&thorn;&#1;&oslash;&#3;&aacute;&szlig;Ä&#7;&atilde;&agrave;&#15;&Iuml;&Ccedil;&Aacute;&thorn;Ä?&yuml;É&ntilde;&yacute;&Ccedil;üÄá&agrave;&#15;&oslash;?&lt;q&uuml;&thorn;&#0;g&#7;&uacute;&#0;6&yacute;&#0;0?&agrave;|x&atilde;&ntilde;&oslash;&#7;&aacute;&yuml;&#15;&oslash;&#7;&oacute;&yuml;&yuml;&Agrave;?è&aelig;p&#15;è&szlig;&Atilde;û?&Agrave;?&yuml;&Ccedil;q&yacute;&Icirc;&#25;Ä1&Ccedil;Ä&#15;&uuml;s&quot;cú&eth;&#0;&yuml;&#7;&uacute;&#0;8&yacute;&#0; ?&eth;&Icirc;x&Ccedil;s&eth; a&Ccedil;-8&#7;&thorn;&yuml;"&Agrave;3è&#15;&eth; &#24;&ccedil; ?&Agrave;&lt;q&AElig;p&agrave;&Uuml;&quot;`&atilde;&#0; &quot;c c&uuml;&agrave;&#0;&yuml;á&#0;&eth;&uuml;&#0;8&yacute;&#0;28xé8&Iuml;&ugrave;&Agrave;&#4;q&Ccedil;&quot;8&#7;&yuml;&ucirc;&yuml;&Agrave;#è&eth; &ccedil; &Agrave;8q&Agrave;p&Aacute;&oslash;-`&atilde;&#0; &#7; G&#0;&agrave;&#0;&Atilde;á&#0;&eth;&uuml;&#0;8&yacute;&#0;28&lt; 9è&#1;&Agrave;&#0;q&Ccedil;&#24;8&#7;&yuml;&ucirc;&szlig;&Agrave;&#3;Ü&quot; &#1;&ccedil; p&#0;8q&Agrave;&eth;&Aacute;&uuml;`&atilde;&#0; &Ccedil;&#0;&agrave;&#1;ÅáÄp&uuml;&#0;8&yacute;&#0;28&lt;-&quot;é&#1;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&yuml;Ñ&#19;&#0;&#3;&#0;&#1;&#24;&#1;&quot;;&#7;&#0;V&#7;&#0;W&#7;&#0;é&#7;&#0;è&#7;&#0;&Ccedil;&#7;&#0;&Egrave;&#7;&#0;&Yacute;&#7;&#0;&THORN;&#7;&#0;&#8;&#0;&#3;&#8;&#0;&#19;&#8;&#0;&#20;&#8;&#0;-&#8;&#0;.&#8;&#0;8&#8;&#0;9&#8;&#0;c&#8;&#0;d&#8;&#0;e&#8;&#0;∏&#8;&#0;π&#8;&#0;&uuml;&#8;&#0;&yacute;&#8;&#0;)&Ugrave;&Uacute;&yacute;&aacute;&#0;&acirc;&#0;'
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&yuml;åÉ&#19;&#0;!&#0; &#17;™&#0;&#19;V&yuml;&#24;&#1; 4&yuml;&#1;&#0;&#8;&#0;&#1;&#0;&#1;&#0;™&#0;∑&#0;!&#0; 4&yuml;&#1;&#0;&#8;&#0;&#1;&#0;&#1;&#0;™&#0;∑&#0;( 
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+
+</DIV>
+<DIV type=1>
+
+<HEAD>
+D k º Ω &acirc; V W £ § û ü
+</HEAD>
+
+
+<LIST type="bulleted">
+
+<ITEM>
+
+<BLOCK>
+&#15;&#0;Z&#15;&#0;[&#15;&#0;]&#15;&#0;^&#15;&#0;_&#15;&#0; &#17;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&yuml;K&#19;&#0;&#0;&#24;&#1;&#0; &#0; 4&yuml;&#1;&#0;&#8;&#0;&#1;&#0;&#1;&#0;™&#0;∑&#0;&#1;&#0;%]&#19;&#0;^&#19;&#0;é&#19;&#0;è&#19;&#0;æ&#19;&#0;-&#20;&#0;&#20;&#0;&szlig;&#20;&#0;&agrave;&#20;&#0;-&#21;&#0;&#21;&#0;&icirc;&#21;&#0;&iuml;&#21;&#0;˜&#22;&#0;&oslash;&#22;&#0;u&#23;&#0;v&#23;&#0;è&#23;&#0;¢&#23;&#0;£&#23;&#0;&#24;&#0;&#24;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&yuml;pK&#19;&#0;!&#0; 4&yuml;&#1;&#0;&#8;&#0;&#1;&#0;&#1;&#0;™&#0;∑&#0;&#0;&#24;&#1;&#25;]&#25;&#0;^&#25;&#0;&iuml;&#25;&#0;&eth;&#25;&#0;â&#26;&#0;ä&#26;&#0;•&#26;&#0;¶&#26;&#0;&#27;&#0; 4&yuml;&#1;&#0;&#8;&#0;&#1;&#0;&#1;&#0;™&#0;∑&#0; &#0; &#17;™&#0;&#19;V&yuml;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&yuml;&#26;&#0;&#3; &#15;&#0;&#8;&#0;&#1;&#0;K&#0;&#15;&#0;&#3;&#0; &#0;`&ntilde;&yuml;&#0; &#0;&#6;Normal&#0;&#0;]&#0;a&#0;c&#16;&#0;0&#0;&#1;`&#1;&#0;&#0;0&#0;Heading 1&#0;&#1;&#0;&#8;&#1;&#21;&eth;&#0;&#22;&lt;&#0;
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&#0;`&#1;&#0;&#0;*&#0;Heading 5&#0;&#8;&#0;&#0;&#21;&eth;&#0;&#22;&lt;&#0;]&#4;&#0;a&#8;c&#22;&#0;"&#0;A`&ograve;&yuml;°&#0;"&#0;&#22;Default Paragraph Font&#0;*
+</BLOCK>
+
+</ITEM>
+
+
+<ITEM>
+
+<BLOCK>
+&uuml;&#26;&#0;&#0;-&#0;&#25;-&#0;-&#0;-&#3;&#0;˜&quot;&auml;8&#1;&#0;ùû&#3;&#0;;&#7;&#0;( &#6;ê&#1;&#0;Symbol&#0; 
+</BLOCK>
+
+</ITEM>
+
+</LIST>
+
+
+</DIV>
+
+</DIV>
+
+</DOCUMENT>

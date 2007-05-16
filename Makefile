@@ -61,6 +61,10 @@ exampledist:
 corporadist:
 	find corpora -print | egrep -v '.svn' | zip dist/nltk_lite-corpora-$(NLTK_VERSION).zip -@
 
+nightlydist: codedist
+	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
+        
+
 # Get the version number.
 INSTALL.txt: INSTALL.txt.in
 	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
@@ -92,7 +96,7 @@ numpy:
 	mv python/win/numpy-1.0.2.win32-py2.5.exe?download python/win/numpy-1.0.2.win32-py2.5.exe
 	mv python/unix/numpy-1.0.2.tar.gz?download python/unix/numpy-1.0.2.tar.gz
 	touch .numpy.done
-	
+
 wordnet:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac/  $(WN21)/WordNet-2.1.tar.gz

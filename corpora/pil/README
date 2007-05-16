@@ -1,0 +1,16 @@
+The Patient Information Leaflet (PIL) Corpus
+Version 2.0 (31 March 2006)
+
+http://mcs.open.ac.uk/nlg/old_projects/pills/corpus/
+
+This directory contains text extracted from version 2.0 of the Patient
+Information Leaflet corpus, a collection of 471 documents giving
+instructions to patients about their medication. The corpus was
+originally created from the ABPI compendium of patient information
+leaflets by manual scanning and conversion.
+
+The PIL corpus was initially developed as part of the ICONOCLAST
+project, supported by the EPSRC (grant no L77102), and is distributed
+with permission.
+
+
