@@ -375,10 +375,10 @@ class Synset(object):
         [{noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
         """
         from nltk_lite.utilities import breadth_first
-        synsets = []
+        synset_offsets = []
         for synset in breadth_first(self, lambda s:s[rel], depth):
-            if synset.offset not in synsets:
-                synsets.append(synset.offset)
+            if synset.offset != self.offset and synset.offset not in synset_offsets:
+                synset_offsets.append(synset.offset)
                 yield synset
 #        return synsets
 
