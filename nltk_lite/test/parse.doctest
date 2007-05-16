@@ -40,7 +40,7 @@ Unit tests for the CFG (Context Free Grammar) class
     >>> prod1 == prod2
     False
 
-    >>> grammar = cfg.parse_grammar("""
+    >>> grammar = cfg.parse_cfg("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> DT N | N PP | DT N PP
@@ -108,7 +108,7 @@ Unit tests for the Chart parser class
 
 Define a grammar.
 
-    >>> grammar = cfg.parse_grammar("""
+    >>> grammar = cfg.parse_cfg("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> DT N | N | NP PP
@@ -207,10 +207,11 @@ Unit tests for the Probabilistic CFG class
 
 Create a set of probabilistic CFG productions.
 
-    >>> grammar = pcfg.parse_grammar("""
+    >>> grammar = pcfg.parse_pcfg("""
     ... A -> B B [.3] | C B C [.7]
-    ... B -> B 'b' [.5] | C [.5]
+    ... B -> B D [.5] | C [.5]
     ... C -> 'a' [.1] | 'b' [0.9]
+    ... D -> 'b' [1.0]
     ... """)
     >>> prod = grammar.productions()[0]
     >>> prod
@@ -229,7 +230,7 @@ Create a set of probabilistic CFG productions.
     <A>
 
     >>> grammar.productions()
-    [A -> B B [0.3], A -> C B C [0.7], B -> B 'b' [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9]]
+    [A -> B B [0.3], A -> C B C [0.7], B -> B D [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9], D -> 'b' [1.0]]
 
 Induce some productions using parsed Treebank data.
 
@@ -248,8 +249,33 @@ Induce some productions using parsed Treebank data.
 Unit tests for the Probabilistic Chart Parse classes
 --------------------------------------------------------------------------------
 
-    >>> tokens = list(tokenize.whitespace("I saw John with my cookie"))
-    >>> grammar = pcfg.toy1
+    >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
+    >>> grammar = pcfg.toy2
+    >>> print grammar
+    Grammar with 23 productions (start state = S)
+        S -> NP VP [1.0]
+        VP -> V NP [0.59]
+        VP -> V [0.4]
+        VP -> VP PP [0.01]
+        NP -> Det N [0.41]
+        NP -> Name [0.28]
+        NP -> NP PP [0.31]
+        PP -> P NP [1.0]
+        V -> 'saw' [0.21]
+        V -> 'ate' [0.51]
+        V -> 'ran' [0.28]
+        N -> 'boy' [0.11]
+        N -> 'cookie' [0.12]
+        N -> 'table' [0.13]
+        N -> 'telescope' [0.14]
+        N -> 'hill' [0.5]
+        Name -> 'Jack' [0.52]
+        Name -> 'Bob' [0.48]
+        P -> 'with' [0.61]
+        P -> 'under' [0.39]
+        Det -> 'the' [0.41]
+        Det -> 'a' [0.31]
+        Det -> 'my' [0.28]
 
 Create several parsers using different queuing strategies and show the
 resulting parses.
@@ -258,19 +284,19 @@ resulting parses.
     
     >>> parser = pchart.InsideParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
+    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
 
     >>> parser = pchart.RandomParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
+    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
 
     >>> parser = pchart.UnsortedParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
+    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
 
     >>> parser = pchart.LongestParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05], ('S': ('NP': 'I') [0.15] ('VP': ('VP': ('V': 'saw') [0.65] ('NP': 'John') [0.1]) [0.0455] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.000138775]) [2.081625e-05]]
+    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
 
     >>> parser = pchart.InsideParse(grammar, beam_size = len(tokens)+1)
     >>> parser.get_parse_list(tokens)
@@ -281,14 +307,14 @@ Unit tests for the Viterbi Parse classes
 ----------------------------------------
 
     >>> from nltk_lite.parse import ViterbiParse
-    >>> tokens = list(tokenize.whitespace("I saw John with my cookie"))
-    >>> grammar = pcfg.toy1
+    >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
+    >>> grammar = pcfg.toy2
 
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParse(grammar)
     >>> parser.get_parse_list(tokens)
-    [('S': ('NP': 'I') [0.15] ('VP': ('V': 'saw') [0.65] ('NP': ('NP': 'John') [0.1] ('PP': ('P': 'with') [0.61] ('NP': ('Det': 'my') [0.2] ('N': 'cookie') [0.5]) [0.05]) [0.0305]) [0.0007625]) [0.0003469375]) [5.2040625e-05]]
+    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06)]
 
 -----------------------------
 Unit tests for the Tree class
