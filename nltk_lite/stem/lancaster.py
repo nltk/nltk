@@ -5,14 +5,15 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import re
-
 """
 A word stemmer based on the Lancaster stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
 
-class Lancaster(object):
+import re
+from nltk_lite.stem import *
+
+class Lancaster(StemI):
 
     # The rule list is static since it doesn't change between instances
     rule_tuple = (
