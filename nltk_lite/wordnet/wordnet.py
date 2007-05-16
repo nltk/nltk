@@ -517,20 +517,20 @@ class Synset(object):
 
     # interface to similarity methods
      
-    def path_distance_similarity(self, other, verbose=False):
-        return path_distance_similarity(self, other, verbose)
+    def path_similarity(self, other, verbose=False):
+        return path_similarity(self, other, verbose)
 
-    def leacock_chodorow_similarity(self, other, verbose=False):
-        return leacock_chodorow_similarity(self, other, verbose)
+    def lch_similarity(self, other, verbose=False):
+        return lch_similarity(self, other, verbose)
         
-    def wu_palmer_similarity(self, other, verbose=False):
-        return wu_palmer_similarity(self, other, verbose)
+    def wup_similarity(self, other, verbose=False):
+        return wup_similarity(self, other, verbose)
 
-    def resnik_similarity(self, other, datafile="", verbose=False):
-        return resnik_similarity(self, other, datafile, verbose)
+    def res_similarity(self, other, datafile="", verbose=False):
+        return res_similarity(self, other, datafile, verbose)
 
-    def jiang_conrath_similarity(self, other, datafile="", verbose=False):
-        return jiang_conrath_similarity(self, other, datafile, verbose)
+    def jcn_similarity(self, other, datafile="", verbose=False):
+        return jcn_similarity(self, other, datafile, verbose)
         
     def lin_similarity(self, other, datafile="", verbose=False):
         return lin_similarity(self, other, datafile, verbose)
@@ -982,11 +982,11 @@ def demo():
     print
     
     print "Path Distance Similarity:",
-    print dog[0].path_distance_similarity(cat[0])
+    print dog[0].path_similarity(cat[0])
     print "Leacock Chodorow Similarity:",
-    print dog[0].leacock_chodorow_similarity(cat[0])
+    print dog[0].lch_similarity(cat[0])
     print "Wu Palmer Similarity:",
-    print dog[0].wu_palmer_similarity(cat[0])
+    print dog[0].wup_similarity(cat[0])
 
 #    set up the data file
 #    print "Resnik Similarity:",
