@@ -46,60 +46,57 @@
 </ul>
 </td></tr></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=Installation&amp;action=edit&amp;section=1" title="Edit section: Windows">edit</a>]</div><a name="Windows"></a><h2> Windows </h2>
-<p>Download and install the following packages.  Python and Numpy are required, Pylab (matplotlib) is optional,
-only being required for some visualizations in the book.
+<p><b>Required:</b>  Please download and install the following:
 </p>
 <ul><li> Python: <a href="http://www.python.org/ftp/python/2.5.1/python-2.5.1.msi" class='external free' title="http://www.python.org/ftp/python/2.5.1/python-2.5.1.msi" rel="nofollow">http://www.python.org/ftp/python/2.5.1/python-2.5.1.msi</a>
-</li><li> Numpy: <a href="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.win32-py2.5.exe" class='external free' title="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.win32-py2.5.exe" rel="nofollow">http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.win32-py2.5.exe</a>
-</li><li> Matplotlib: <a href="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.win32-py2.5.exe" class='external free' title="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.win32-py2.5.exe" rel="nofollow">http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.win32-py2.5.exe</a> (optional)
+</li><li> NLTK: <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.win32.exe" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.win32.exe" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.win32.exe</a>
+</li><li> Corpora: <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip</a>
 </li></ul>
-<p>Download and install NLTK:
-</p>
-<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.win32.exe" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.win32.exe" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.win32.exe</a>
-</li></ul>
-<p>Download the NLTK corpora distribution:
-<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip</a>
-</p><p>Unpack the corpora using a utility such as Winzip, and move the corpora folder to <tt>C:\corpora</tt>
+<p><b>Corpora:</b> Unpack the corpora using a utility such as Winzip, and move the corpora folder to <tt>C:\corpora</tt>
 (or some other central location).
-</p><p>If the corpora folder that you created is not in this location then you will need to set the <tt>NLTK_LITE_CORPORA</tt> environment variable: right click on "My Computer", select Properties &gt; Advanced &gt; Environment Variables &gt; User Variables &gt; New..., then type <tt>NLTK_LITE_CORPORA</tt> into the Variable field, and type the path to the NLTK corpora folder that you created into the Value field.
-</p><p>If you are installing a version of NLTK earlier than 0.7.5, you need to
-install WordNet: <a href="http://wordnet.princeton.edu/2.1/WordNet-2.1.exe" class='external free' title="http://wordnet.princeton.edu/2.1/WordNet-2.1.exe" rel="nofollow">http://wordnet.princeton.edu/2.1/WordNet-2.1.exe</a>
+If the corpora folder that you created is not in this default location then you will need to set the <tt>NLTK_LITE_CORPORA</tt> environment variable: right click on "My Computer", select Properties &gt; Advanced &gt; Environment Variables &gt; User Variables &gt; New..., then type <tt>NLTK_LITE_CORPORA</tt> into the Variable field, and type the path to the NLTK corpora folder that you created into the Value field.
+</p><p><b>Optional:</b>  Some users may need the following:
 </p>
+<ul><li> Numpy: <a href="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.win32-py2.5.exe" class='external free' title="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.win32-py2.5.exe" rel="nofollow">http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.win32-py2.5.exe</a> (for HMM tagging and for clustering)
+</li><li> Matplotlib: <a href="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.win32-py2.5.exe" class='external free' title="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.win32-py2.5.exe" rel="nofollow">http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.win32-py2.5.exe</a> (for some graphical visualizations)
+</li><li> WordNet: <a href="http://wordnet.princeton.edu/2.1/WordNet-2.1.exe" class='external free' title="http://wordnet.princeton.edu/2.1/WordNet-2.1.exe" rel="nofollow">http://wordnet.princeton.edu/2.1/WordNet-2.1.exe</a> (for NLTK versions prior to 0.7.5)
+</li></ul>
 <div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=Installation&amp;action=edit&amp;section=2" title="Edit section: Macintosh">edit</a>]</div><a name="Macintosh"></a><h2> Macintosh </h2>
-<p>NLTK requires Python 2.4 or later.  Open Finder &gt; Applications and check for a version of MacPython.  If necessary, install <a href="http://www.python.org/ftp/python/2.5.1/python-2.5.1-macosx.dmg" class='external free' title="http://www.python.org/ftp/python/2.5.1/python-2.5.1-macosx.dmg" rel="nofollow">http://www.python.org/ftp/python/2.5.1/python-2.5.1-macosx.dmg</a>
-</p><p>Install Numpy 1.0:
-<a href="http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg" class='external free' title="http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg" rel="nofollow">http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg</a>
-</p><p>For some graphical plots described in the book, you will need Pylab (matplotlib)
-<a href="http://pythonmac.org/packages/py25-fat/dmg/matplotlib-0.90.0-py2.5-macosx10.4-2007-02-20.dmg" class='external free' title="http://pythonmac.org/packages/py25-fat/dmg/matplotlib-0.90.0-py2.5-macosx10.4-2007-02-20.dmg" rel="nofollow">http://pythonmac.org/packages/py25-fat/dmg/matplotlib-0.90.0-py2.5-macosx10.4-2007-02-20.dmg</a>
-</p><p>Now proceed with <a href="/wiki/index.php/Installation#NLTK_Source_Installation" title="Installation">NLTK Source Installation</a> (below).
+<p><b>Required:</b>  NLTK requires Python 2.4 or later.  Open Finder &gt; Applications and check for a version of MacPython.
+If necessary, install Python:
+</p>
+<ul><li> Python: <a href="http://www.python.org/ftp/python/2.5.1/python-2.5.1-macosx.dmg" class='external free' title="http://www.python.org/ftp/python/2.5.1/python-2.5.1-macosx.dmg" rel="nofollow">http://www.python.org/ftp/python/2.5.1/python-2.5.1-macosx.dmg</a>
+</li></ul>
+<p><b>Optional</b>  Some users may need the following:
+</p>
+<ul><li> Numpy: <a href="http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg" class='external free' title="http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg" rel="nofollow">http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg</a> (for HMM tagging and for clustering)
+</li><li> Matplotlib: <a href="http://pythonmac.org/packages/py25-fat/dmg/matplotlib-0.90.0-py2.5-macosx10.4-2007-02-20.dmg" class='external free' title="http://pythonmac.org/packages/py25-fat/dmg/matplotlib-0.90.0-py2.5-macosx10.4-2007-02-20.dmg" rel="nofollow">http://pythonmac.org/packages/py25-fat/dmg/matplotlib-0.90.0-py2.5-macosx10.4-2007-02-20.dmg</a> (for some graphical visualizations)
+</li></ul>
+<p>Now proceed with <a href="/wiki/index.php/Installation#NLTK_Source_Installation" title="Installation">NLTK Source Installation</a> (below).
 </p>
 <div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=Installation&amp;action=edit&amp;section=3" title="Edit section: Linux/Unix">edit</a>]</div><a name="Linux.2FUnix"></a><h2> Linux/Unix </h2>
-<p>NLTK requires Python 2.4 or later.  Install this using your favorite package manager, or
+<p><b>Required:</b>  NLTK requires Python 2.4 or later (check with <tt>python -V</tt>).
+If you need to install Python, you can do this using your favorite package manager, or
 <a href="http://rpmfind.net/linux/rpm2html/search.php?query=python" class='external text' title="http://rpmfind.net/linux/rpm2html/search.php?query=python" rel="nofollow">find a suitable RPM</a>,
 or download and build Python from source: <a href="http://www.python.org/ftp/python/2.5.1/Python-2.5.1.tgz" class='external free' title="http://www.python.org/ftp/python/2.5.1/Python-2.5.1.tgz" rel="nofollow">http://www.python.org/ftp/python/2.5.1/Python-2.5.1.tgz</a>
-</p><p>Run <tt>python -V</tt> and ensure you have version 2.4 or later.
-</p><p>Download Numpy 1.0:
-<a href="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.tar.gz</a>
-</p><p>Unpack this archive and install Numpy using:
+</p><p><b>Optional</b>  Some users may need the following:
 </p>
-<pre>
-sudo python setup.py install
-</pre>
-<p>For some graphical plots described in the book, you will need Pylab (matplotlib)
-<a href="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.tar.gz</a>
+<ul><li> Numpy: <a href="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/numpy/numpy-1.0.2.tar.gz</a> (for HMM tagging and for clustering)
+</li><li> Matplotlib: <a href="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/matplotlib/matplotlib-0.90.0.tar.gz</a>
+</li></ul>
+<p>Install these by unpacking the source distribution and running <tt>sudo python setup.py install</tt>
 </p><p>Now proceed with <a href="/wiki/index.php/Installation#NLTK_Source_Installation" title="Installation">NLTK Source Installation</a> (below).
 </p>
 <div class="editsection" style="float:right;margin-left:5px;">[<a href="/wiki/index.php?title=Installation&amp;action=edit&amp;section=4" title="Edit section: NLTK Source Installation">edit</a>]</div><a name="NLTK_Source_Installation"></a><h2> NLTK Source Installation </h2>
 <p><i>These instructions are for Mac, Linux and Unix platforms.</i>
 </p><p>Check your Python installation is adequate: open a terminal and type <tt>python -V</tt> to see what version you get; once you get the python prompt type <tt>import numpy</tt> to check you can load the numerical library (set your <tt>PATH</tt> and <tt>PYTHONPATH</tt> environment variables if necessary).
 </p><p>1. Download the NLTK source distribution:
-<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.tar.gz</a>
+<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.tar.gz" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.tar.gz" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.tar.gz</a>
 </p><p>Unpack the archive (e.g. with gunzip or Stuffit Expander).
 Open the terminal and cd into this new folder, and type
-</p>
-<pre>sudo python setup.py install</pre>
-<p>2. Next, download the NLTK Corpora distribution:
-<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip</a>
+<tt>sudo python setup.py install</tt>
+</p><p>2. Next, download the NLTK Corpora distribution:
+<a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip</a>
 </p><p>Unpack this archive to extract a folder called <tt>corpora</tt>, and move this into
 <tt>/usr/share/nltk_lite</tt> or <tt>~/nltk_lite</tt>.
 </p><p>Set an environment variable to refer to this location, e.g.
@@ -126,14 +123,14 @@ install Wordnet 2.1: <a href="http://wordnet.princeton.edu/2.1/WordNet-2.1.tar.g
 <p>If you don't want to install NLTK in a central location, download and unpack the
 zip distributions:
 </p>
-<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.4.zip</a>
-</li><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.4.zip</a>
+<ul><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-0.7.5.zip</a>
+</li><li> <a href="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip" class='external free' title="http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip" rel="nofollow">http://prdownloads.sourceforge.net/nltk/nltk_lite-corpora-0.7.5.zip</a>
 </li></ul>
 <p>Move NLTK to the desired location, then add this location to your <tt>PYTHONPATH</tt>.
 Similarly, move the NLTK Corpora to the desired location, and set this location
 as the value of <tt>NLTK_LITE_CORPORA</tt>
 </p>
-<!-- Saved in parser cache with key n30982_wikidb:pcache:idhash:1379-0!1!0!0!!en!2 and timestamp 20070516070653 -->
+<!-- Saved in parser cache with key n30982_wikidb:pcache:idhash:1379-0!1!0!0!!en!2 and timestamp 20070516100132 -->
 <div class="printfooter">
 Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation">http://nltk.sourceforge.net/wiki/index.php/Installation</a>"</div>
 						<!-- end content -->
@@ -208,7 +205,7 @@ Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation
 				<li id="t-whatlinkshere"><a href="/wiki/index.php/Special:Whatlinkshere/Installation">What links here</a></li>
 				<li id="t-recentchangeslinked"><a href="/wiki/index.php/Special:Recentchangeslinked/Installation">Related changes</a></li>
 <li id="t-specialpages"><a href="/wiki/index.php/Special:Specialpages">Special pages</a></li>
-				<li id="t-print"><a href="/wiki/index.php?title=Installation&amp;printable=yes&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/wiki/index.php?title=Installation&amp;oldid=1589">Permanent link</a></li>			</ul>
+				<li id="t-print"><a href="/wiki/index.php?title=Installation&amp;printable=yes&amp;printable=yes">Printable version</a></li>				<li id="t-permalink"><a href="/wiki/index.php?title=Installation&amp;oldid=1596">Permanent link</a></li>			</ul>
 		</div>
 	</div>
 		</div><!-- end of the left (by default at least) column -->
@@ -217,8 +214,8 @@ Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation
 				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/wiki/skins/common/images/poweredby_mediawiki_88x31.png" alt="MediaWiki" /></a></div>
 				<div id="f-copyrightico"><a href="http://creativecommons.org/licenses/by-sa/2.5/"><img src="http://i.creativecommons.org/l/by-sa/2.5/88x31.png" alt='Attribution-Share Alike 2.5 ' /></a></div>
 			<ul id="f-list">
-				<li id="lastmod"> This page was last modified 07:05, 16 May 2007.</li>
-				<li id="viewcount">This page has been accessed 500 times.</li>
+				<li id="lastmod"> This page was last modified 09:56, 16 May 2007.</li>
+				<li id="viewcount">This page has been accessed 509 times.</li>
 				<li id="copyright">Content is available under <a href="http://creativecommons.org/licenses/by-sa/2.5/" class='external ' title="http://creativecommons.org/licenses/by-sa/2.5/" rel="nofollow">Attribution-Share Alike 2.5 </a>.</li>
 				<li id="privacy"><a href="/wiki/index.php/NLTK:Privacy_policy" title="NLTK:Privacy policy">Privacy policy</a></li>
 				<li id="about"><a href="/wiki/index.php/NLTK:About" title="NLTK:About">About NLTK</a></li>
@@ -227,5 +224,5 @@ Retrieved from "<a href="http://nltk.sourceforge.net/wiki/index.php/Installation
 		</div>
 	<script type="text/javascript"> if (window.runOnloadHook) runOnloadHook();</script>
 </div>
-<!-- Served by sc8-pr-web8.sourceforge.net in 0.93 secs. -->
+<!-- Served by sc8-pr-web5.sourceforge.net in 1.21 secs. -->
 </body></html>

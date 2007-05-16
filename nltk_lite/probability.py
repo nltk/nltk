@@ -36,7 +36,7 @@ L{ConditionalProbDist}, a derived distribution.
 
 """
 
-import types, math, numpy
+import types, math
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -994,6 +994,11 @@ class MutableProbDist(ProbDistI):
         @param store_logs: whether to store the probabilities as logarithms
         @type store_logs: bool
         """
+        try:
+            import numpy
+        except ImportError:
+	    print "Error: Please install numpy; for instructions see http://nltk.sf.net/install.html"
+            exit()
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
         self._data = numpy.zeros(len(samples), numpy.float64)
