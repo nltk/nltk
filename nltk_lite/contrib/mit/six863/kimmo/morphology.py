@@ -2,6 +2,12 @@ from fsa import FSA
 import yaml
 from featurelite import unify
 
+def startswith(stra, strb):
+    return stra[:len(strb)] == strb
+
+def endswith(stra, strb):
+    return strb == '' or stra[-len(strb):] == strb
+
 class YAMLwrapper(object):
     def __init__(self, yamlstr):
         self.yamlstr = yamlstr
@@ -39,10 +45,10 @@ class KimmoMorphology(object):
     def valid_lexical(self, state, word, alphabet):
         trans = self.fsa()._transitions[state]
         for label in trans.keys():
-            if label is not None and label[0].startswith(word) and len(label[0]) > len(word):
+            if label is not None and startswith(label[0], word) and len(label[0]) > len(word):
                 next = label[0][len(word):]
                 for pair in alphabet:
-                    if next.startswith(pair.input()): yield pair.input()
+                    if startswith(next, pair.input()): yield pair.input()
     def next_states(self, state, word):
         choices = self.fsa()._transitions[state]
         for (key, value) in choices.items():
@@ -56,6 +62,8 @@ class KimmoMorphology(object):
                     
     @staticmethod
     def load(filename):
+        #import codecs
+        #f = codecs.open(filename, encoding='utf-8')
         f = open(filename)
         result = KimmoMorphology.from_text(f.read())
         f.close()
@@ -66,11 +74,11 @@ class KimmoMorphology(object):
         state = 'Begin'
         for line in text.split('\n'):
             line = line.strip()
-            if not line or line.startswith(';'): continue
+            if not line or startswith(line, ';'): continue
             if line[-1] == ':':
                 state = line[:-1]
             else:
-                if line.split()[0].endswith(':'):
+                if endswith(line.split()[0], ':'):
                     parts = line.split()
                     name = parts[0][:-1]
                     next_states = parts[1:]
@@ -79,8 +87,8 @@ class KimmoMorphology(object):
                 elif len(line.split()) > 2:
                     # this is a lexicon entry
                     word, next, features = line.split(None, 2)
-                    if word.startswith('"') or\
-                    word.startswith("'") and word.endswith("'"):
+                    if startswith(word, '"') or\
+                    startswith(word, "'") and endswith(word, "'"):
                         word = eval(word)
                     if features:
                         if features == 'None': features = None
