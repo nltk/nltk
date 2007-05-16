@@ -72,6 +72,7 @@ from nltk_lite import parse
 from nltk_lite import tokenize
 from nltk_lite.draw.cfg import *
 from nltk_lite.draw.cfg import CFGEditor
+import string
 import tkFont
 from Tkinter import *
 
@@ -855,7 +856,7 @@ class RecursiveDescentDemo(object):
             self._prodlist.insert('end', (' %s' % production))
         
     def edit_sentence(self, *e):
-        sentence = ' '.join(self._sent)
+        sentence = string.join(self._sent)
         title = 'Edit Text'
         instr = 'Enter a new sentence to parse.'
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)

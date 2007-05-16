@@ -15,6 +15,7 @@ Read tokens from a webpage
 from urllib import urlopen
 from HTMLParser import HTMLParser
 from nltk_lite import tokenize
+import string
 
 skip = ['script']   # non-nesting tags to skip
 
@@ -52,7 +53,7 @@ def demo():
 
     constitution = "http://www.archives.gov/national-archives-experience/charters/constitution_transcript.html"
 
-    text = " ".join(web.raw(constitution))
+    text = string.join(web.raw(constitution))
     print "\n".join(wrap(text))
 
 if __name__ == '__main__':
