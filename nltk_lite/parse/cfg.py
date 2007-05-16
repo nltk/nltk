@@ -384,7 +384,7 @@ _PARSE_RE = re.compile(r'''^\s*                # leading whitespace
                        re.VERBOSE)
 _SPLIT_RE = re.compile(r'''(\w+(?:/\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
-def parse_production(s):
+def parse_cfg_production(s):
     """
     Returns a list of productions
     """
@@ -396,21 +396,27 @@ def parse_production(s):
     pieces = [p for i,p in enumerate(pieces) if i%2==1]
     lhside = Nonterminal(pieces[0])
     rhsides = [[]]
+    found_terminal = found_non_terminal = False
     for piece in pieces[2:]:
         if piece == '|':
             rhsides.append([])                     # Vertical bar
+            found_terminal = found_non_terminal = False
         elif piece[0] in ('"', "'"):
             rhsides[-1].append(piece[1:-1])        # Terminal
+            found_terminal = True
         else:
             rhsides[-1].append(Nonterminal(piece)) # Nonterminal
+            found_non_terminal = True
+        if found_terminal and found_non_terminal:
+            raise ValueError, 'Bad right-hand-side: do not mix terminals and non-terminals'
     return [Production(lhside, rhside) for rhside in rhsides]
 
-def parse_grammar(s):
+def parse_cfg(s):
     productions = []
     for linenum, line in enumerate(s.split('\n')):
         line = line.strip()
         if line.startswith('#') or line=='': continue
-        try: productions += parse_production(line)
+        try: productions += parse_cfg_production(line)
         except ValueError:
             raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
     if len(productions) == 0:
@@ -441,7 +447,7 @@ def demo():
     print cfg.Production(S, [NP])
 
     # Create some Grammar Productions
-    grammar = cfg.parse_grammar("""
+    grammar = cfg.parse_cfg("""
       S -> NP VP
       PP -> P NP
       NP -> Det N | NP PP

@@ -31,7 +31,7 @@ def _multiply(frag1, frag2):
             frags.append(f1+f2)
     return frags
 
-grammar = cfg.parse_grammar("""
+grammar = cfg.parse_cfg("""
   S -> NP VP
   NP -> Det N
   VP -> V NP
