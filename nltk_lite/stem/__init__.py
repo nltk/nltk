@@ -43,3 +43,4 @@ class StemI(object):
 
 from regexp import *
 from porter import *
+from lancaster import *
