@@ -118,8 +118,8 @@ class KimmoRuleSet(yaml.YAMLObject):
                 return
             
         next_pairs = [p for p in self._pair_alphabet if
-          (lexical is None or lexical.startswith(self._pairtext(p.input()))) and
-          (surface is None or surface.startswith(self._pairtext(p.output())))]
+          (lexical is None or startswith(lexical, self._pairtext(p.input()))) and
+          (surface is None or startswith(surface, self._pairtext(p.output())))]
         for pair in next_pairs:
             if pair.input() == self._null and pair.output() == self._null:
                 continue
