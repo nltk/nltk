@@ -8,9 +8,11 @@ from nltk_lite.corpora import brown
 from nltk_lite.probability import *
 from nltk_lite.tokenize import *
 from nltk_lite.wordnet import *
-from nltk_lite.wordnet.wntools import *
 
 def substr_binary_search(item, list):
+
+    if not list:
+        return None
 
     low = 0
     high = len(list) - 1
@@ -127,10 +129,15 @@ def brown_information_content(output_filename, compounds_filename, \
 
     outfile = open(output_filename, "wb")
 
-    compounds = read_word_list(compounds_filename)
+    if compounds_filename:
+        compounds = read_word_list(compounds_filename)
+    else:
+        compounds = []
 
-    if stopwords_filename: stopwords = read_word_list(stopword_filename)
-    else: stopwords = []
+    if stopwords_filename:
+        stopwords = read_word_list(stopword_filename)
+    else:
+        stopwords = []
 
     noun_fd = FreqDist()
     verb_fd = FreqDist()
@@ -142,18 +149,20 @@ def brown_information_content(output_filename, compounds_filename, \
 
     for sentence in brown.tagged():
 
+        if len(sentence) == 0:
+            continue
+
         # Greedily search for compound nouns/verbs. The search is naive and
         # doesn't account for inflected words within the compound (so
         # variant forms of the compound will not be identified e.g. the
         # compound 'abdominal cavities' will not be recognised as the plural of
-        # 'abdominal cavity'); this is in keeping with the current Pedersen
+        # 'abdominal cavity'); this is in keeping with the original Perl
         # implementation. Rectifying this is mildy tricky in that some compound
         # constituents are expected to be inflected e.g. 'abandoned ship' so
         # it isn't possible to simply uninflect each constituent before
         # searching; rather, a list of variant compounds containing all possible
-        # inflected/uninflected constituents would probably be needed (compounds
-        # rarely exceed length four so the quadratic search space wouldn't be
-        # too scary).
+        # inflected/uninflected constituents would be needed (compounds rarely
+        # exceed length four so the quadratic search space wouldn't be too scary).
 
         new_sentence = []
         compound = sentence.pop(0)
@@ -246,11 +255,8 @@ def brown_information_content(output_filename, compounds_filename, \
             # being no practical way to distinguish between word senses in the
             # Brown corpus (SemCor would be another story).
 
-            if uninflected_token is not None:
-                senses = dictionary[uninflected_token].getSenses()
-
-                for sense in senses:
-                    synset = sense.synset
+            if uninflected_token:
+                for synset in dictionary[uninflected_token]:
                     freq_dist.inc(synset)
 
     # If smoothing is True perform Laplacian smoothing i.e. add 1 to each
@@ -323,3 +329,6 @@ def brown_information_content(output_filename, compounds_filename, \
     sys.stdout.write(" done.\n")
 
     outfile.close()
+    
+brown_information_content('brown_ic.dat', None)
+

@@ -1,0 +1,94 @@
+BioCreAtIvE (Critical Assessment of Information Extraction Systems in Biology)
+
+http://www.mitre.org/public/biocreative/
+
+Task 1.A
+
+The first task (1.A) requires the identification of which terms in a
+biomedical research article are gene and/or protein names. This is
+analagous to the named entity tagging evaluation (e.g. person, place,
+and organization) of the Message Understanding Conference (MUC)
+evaluations. Identifying the mentions of the genes and proteins is
+foundational to a more deep natural language processing such as
+extracting the relationships among genes and proteins (e.g. binding,
+inhibition, promotion of expression). This part of the evaluation was
+prepared by Lorrie Tanabe and John Wilbur of the National Library of
+Medicine.
+
+===========================================================================
+*
+*                            PUBLIC DOMAIN NOTICE
+*               National Center for Biotechnology Information
+*
+*  This software/database is a "United States Government Work" under the
+*  terms of the United States Copyright Act.  It was written as part of
+*  the author's official duties as a United States Government employee and
+*  thus cannot be copyrighted.  This software/database is freely available
+*  to the public for use. The National Library of Medicine and the U.S.
+*  Government have not placed any restriction on its use or reproduction.
+*
+*  Although all reasonable efforts have been taken to ensure the accuracy
+*  and reliability of the software and data, the NLM and the U.S.
+*  Government do not and cannot warrant the performance or results that
+*  may be obtained by using this software or data. The NLM and the U.S.
+*  Government disclaim all warranties, express or implied, including
+*  warranties of performance, merchantability or fitness for any particular
+*  purpose.
+*
+*  Please cite the author in any work or product based on this material.
+*
+*
+=========================================================================== 
+http://www2.informatik.hu-berlin.de/~hakenber/corpora/
+
+BioCreAtIvE-PPI: a corpus for protein-protein interactions
+
+This corpus originated from the BioCreAtIvE task 1A data set for named
+entity recognition of gene/protein names. We randomly selected 1000
+sentences from this set and added additional annotation for
+interactions between genes/proteins. 173 sentences contain at least
+one interaction, 589 sentences contain at least one
+gene/protein. There are 255 interactions, some of which include more
+than two partners (e.g., one partner occurs with full name and
+abbreviated).
+
+ 751013 bc_sentences.xml    - 1000 sentences
+ 751216 bc_sentences_xs.xml - 1000 sentences, with style sheet information
+  15248 bc_solution.txt       - gold standard
+  15125 bc_pubmeds.txt      - mapping from sentence IDs to PubMed-IDs
+
+Sentences are formatted like
+
+    ..<interactor pos="VBZ">regulates</interactor> <gene>rsmB</gene> <token pos="NN">transcription</token>..
+
+where
+
+    interactor   depicts the evidence for an interaction (with its POS tag)
+    gene       denotes a gene or protein (and thus a possible interaction partner)
+    token       is an arbitrary token (with its POS tag)
+
+The solution is formatted as follows:
+
+Example: 0006|RsmC|5|rsmB|8|regulates|7|+|comment
+
+    0006       depicts the sentence ID
+    RsmC      is the (full) name of the first interaction partner (gene or protein)
+    5          is the index of the first partner
+    rsmB       name of the second interaction partner
+    8          index of the second partner
+    regulates   type of interaction, as mentioned in the text
+    7          index of type descriptor
+    +          agent/target relation: (+, agent=1st partner; -, 2nd is agent; *, equal)
+    comment    is an optional comment
+
+Example: 0187|meis1|4|cAMP-responsive sequence;CRS1|13;16|bind|11|+|
+
+    full name and abbreviation occur in the text -> two relations
+
+We copied both tokenization and part-of-speech tagging from the
+BioCreAtIvE data set. Note that especially genes and protein names are
+tagged as one token (<gene>cAMP-responsive sequence</gene>), but the
+indexing counts every single word in such a phrase:
+
+    .. cAMP-responsive sequence (  CRS1 )  ..
+    .. 13              14       15 16   17 ..
