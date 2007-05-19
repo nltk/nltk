@@ -169,9 +169,12 @@ def get_chunks_with_frequency(values, freq):
 
 def ranges_from_chunks(chunks):
     ranges = []
+    if len(chunks) > 0: prev = chunks[0][0]
     for index in range(len(chunks) - 1):
-        ranges.append(r.Range(chunks[index][0], chunks[index + 1][0]))
-    ranges.append(r.Range(chunks[-1][0], chunks[-1][-1], True))
+        mid = float(chunks[index][-1] + chunks[index + 1][0]) / 2
+        ranges.append(r.Range(prev, mid))
+        prev = mid
+    ranges.append(r.Range(prev, chunks[-1][-1], True))
     return ranges
 
 if __name__ == "__main__":
