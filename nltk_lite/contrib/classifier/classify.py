@@ -48,6 +48,8 @@ p_help = "Used to enable calculation of Precision.              " \
 r_help = "Used to enable calculation of Recall.                 " \
         + "Options: True/False or yes/no.                       " \
         + "Default: False.                                      "
+
+w_help = "Writes test/gold back to file with a modified base name"
         
 ZERO_R = '0R'
 ONE_R = '1R'
@@ -64,6 +66,7 @@ class Classify(cl.CommandLineInterface):
         self.add_option("-F", "--f-score", dest="fscore", action="store_false", default=True, help=F_help)
         self.add_option("-p", "--precision", dest="precision", action="store_true", default=False, help=p_help)
         self.add_option("-r", "--recall", dest="recall", action="store_true", default=False, help=r_help)
+        self.add_option("-w", "--write", dest="write", action="store_true", default=False, help=r_help)
         
     def execute(self):
         cl.CommandLineInterface.execute(self)
@@ -79,6 +82,12 @@ class Classify(cl.CommandLineInterface):
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path)
         classifier = ALGORITHM_MAPPINGS[self.algorithm](training, attributes, klass)
         self.classify(classifier, test, gold)
+        if self.get_value('write'):
+            extension = '-c_' + self.algorithm
+            if test is not None:
+                self.data_format.write_test_to_file(test, self.test_path + extension)
+            elif gold is not None:
+                self.data_format.write_gold_to_file(gold, self.gold_path + extension)
         
     def __test_and_gold(self, files):
         if self.get_value('verify'):

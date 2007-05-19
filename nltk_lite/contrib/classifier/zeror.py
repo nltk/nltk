@@ -9,8 +9,8 @@
 from nltk_lite.contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
-    def __init__(self, training, attributes, klass):
-        Classifier.__init__(self, training, attributes, klass)
+    def __init__(self, training, attributes, klass, internal = False):
+        Classifier.__init__(self, training, attributes, klass, internal)
         self.__majority_class = None
         self.__klassCount = {}
         

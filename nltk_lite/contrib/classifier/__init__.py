@@ -9,11 +9,13 @@ from nltk_lite import probability as prob
 import math
 
 class Classifier:
-    def __init__(self, training, attributes, klass):
+    def __init__(self, training, attributes, klass, internal):
         self.attributes = attributes
         self.klass = klass
         self.training = training
-        self.validate_training()
+        self.internal = internal
+        if not self.internal:
+            self.validate_training()
         
     def validate_training(self):
         if not self.training.are_valid(self.klass, self.attributes): 

@@ -41,7 +41,48 @@ class FormatTestCase(unittest.TestCase):
         klass = format.C45_FORMAT.get_klass(datasetsDir(self) + 'numerical' + SEP + 'weather')
         self.assertEqual(2, len(klass))
         self.assertEqual(['yes', 'no'], klass)
+        
+    def test_classified_klass_in_gold_is_not_written_if_asked_not_to(self):
+        gold = format.C45_FORMAT.get_gold_instances(datasetsDir(self) + 'numerical' + SEP + 'weather')
+        fmt = C45FormatStub()
+        self.assertTrue(fmt.dummy_file is None)
+        fmt.write_gold_to_file(gold, '/dummy/path')
+        self.assertFalse(fmt.dummy_file is None)
+        self.assertEqual(len(gold), len(fmt.dummy_file.lines_written))
+        self.assertEqual(['sunny,21,normal,true,yes,None', 'overcast,18,high,true,yes,None', 'overcast,28.3,notmal,false,yes,None', 'rainy,17.9,high,true,no,None'], fmt.dummy_file.lines_written)
+        
+        fmt = C45FormatStub()
+        fmt.write_gold_to_file(gold, '/dummy/path', False)
+        self.assertEqual(['sunny,21,normal,true,yes', 'overcast,18,high,true,yes', 'overcast,28.3,notmal,false,yes', 'rainy,17.9,high,true,no'], fmt.dummy_file.lines_written)
+
+    def test_classified_klass_in_test_is_not_written_if_asked_not_to(self):
+        test = format.C45_FORMAT.get_test_instances(datasetsDir(self) + 'numerical' + SEP + 'weather')
+        fmt = C45FormatStub()
+        self.assertTrue(fmt.dummy_file is None)
+        fmt.write_test_to_file(test, '/dummy/path')
+        self.assertFalse(fmt.dummy_file is None)
+        self.assertEqual(len(test), len(fmt.dummy_file.lines_written))
+        self.assertEqual(['overcast,25.4,high,true,None'], fmt.dummy_file.lines_written)
+        
+        fmt = C45FormatStub()
+        fmt.write_test_to_file(test, '/dummy/path', False)
+        self.assertEqual(['overcast,25.4,high,true'], fmt.dummy_file.lines_written)
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(unittest.TestSuite(unittest.makeSuite(FormatTestCase)))
+
+class C45FormatStub(format.C45Format):
+    def __init__(self):
+        self.dummy_file = None
+        
+    def create_file(self, path, extension):
+        self.dummy_file = LinesFile()
+        return self.dummy_file
+        
+class LinesFile:
+    def __init__(self):
+        self.lines_written = None
+    
+    def write(self, lines):
+        self.lines_written = lines

@@ -116,3 +116,9 @@ class InstanceTestCase(unittest.TestCase):
         training.remove_attributes([id, annual_salary])
         self.assertEqual(6, len(training.attrs))
         self.assertEqual('34', training.attrs[0])
+    
+    def test_get_training_as_gold(self):
+        training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
+        gold = training.as_gold()
+        self.assertEqual(gold.attrs, training.attrs)
+        self.assertEqual(gold.klass_value, training.klass_value)

@@ -213,6 +213,66 @@ class InstancesTestCase(unittest.TestCase):
         training.remove_attributes([attributes[0], attributes[3]])
         self.assertEqual(6, len(training[0].attrs))
         self.assertEqual(6, len(training[-1].attrs))
+
+    def test_stratified_bunches(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        self.assertEqual(6, len(training))
+        
+        bunches = training.stratified_bunches(3)
+        self.assertEqual(3, len(bunches))
+        #training is now sorted.. so content of bunches can be predicted
+        self.assertEqual([training[0], training[3]], bunches[0])
+        self.assertEqual([training[1], training[4]], bunches[1])
+        self.assertEqual([training[2], training[5]], bunches[2])
+        
+    def test_training_as_gold(self):
+        training1 = instance.TrainingInstance(['a','b','c'],'x')
+        training2 = instance.TrainingInstance(['d','b','c'],'y')
+        training3 = instance.TrainingInstance(['e','b','c'],'z')
+        training_instances = [training1, training2, training3]
+        gold_instances = ins.training_as_gold(training_instances)
+        self.assertEqual(3, len(gold_instances))
+        
+        for i in [0,1,2]:
+            self.assertEqual(training_instances[i].attrs, gold_instances[i].attrs)
+            self.assertEqual(training_instances[i].klass_value, gold_instances[i].klass_value)
+
+    def test_training_returns_datasets_for_cross_validation(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        self.assertEqual(6, len(training))
+        datasets = training.cross_validation_datasets(4)
+        
+        self.assertEqual(4, len(datasets))
+        self.assertEqual(ins.TrainingInstances, datasets[0][0].__class__)
+        self.assertEqual(ins.GoldInstances, datasets[0][1].__class__)
+        self.assertEqual(4, len(datasets[0][0]))#first training has 4 instances
+        self.assertEqual(2, len(datasets[0][1]))#first gold has 2 instances
+        self.assertEqual(4, len(datasets[1][0]))#second training has 4 instances
+        self.assertEqual(5, len(datasets[2][0]))#third training has 5 instances
+        self.assertEqual(5, len(datasets[3][0]))#fourth training has 5 instances
+        self.assertEqual(1, len(datasets[3][1]))#fourth gold has 1 instance
+        
+    def test_cross_validation_datasets_with_fold_greater_than_length_of_training(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        self.assertEqual(6, len(training))
+        datasets = training.cross_validation_datasets(8)
+        
+        self.assertEqual(6, len(datasets))
+        self.assertEqual(ins.TrainingInstances, datasets[0][0].__class__)
+        self.assertEqual(ins.GoldInstances, datasets[0][1].__class__)
+        self.assertEqual(5, len(datasets[0][0]))#first training has 4 instances
+        self.assertEqual(1, len(datasets[0][1]))#first gold has 2 instances
+        self.assertEqual(5, len(datasets[1][0]))#second training has 4 instances
+        self.assertEqual(5, len(datasets[2][0]))#third training has 5 instances
+        self.assertEqual(5, len(datasets[5][0]))#eigth training has 5 instances
+        self.assertEqual(1, len(datasets[5][1]))#eigth gold has 1 instance
+
+    def test_flatten(self):
+        result = ins.flatten([[2,3],[4,5],[6,7]])
+        self.assertEqual([2,3,4,5,6,7], result)
         
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
