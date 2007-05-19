@@ -48,7 +48,7 @@ class Range:
             max_limit -= DELTA
         each = size / parts
         if each < DELTA: 
-            return None
+            raise se.SystemError('Splitting of range resulted in elements smaller than delta ' + str(DELTA) + '.')
         lower, ranges = self.lower, []
         for i in range(parts - 1):
             ranges.append(Range(lower, lower + each))
