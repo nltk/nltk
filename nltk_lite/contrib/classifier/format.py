@@ -23,10 +23,10 @@ class FormatI:
     def write_training_to_file(self, training, path):
         return AssertionError()
     
-    def write_test_to_file(self, training, path):
+    def write_test_to_file(self, training, path, including_classification=True):
         return AssertionError()
 
-    def write_gold_to_file(self, instances, path):
+    def write_gold_to_file(self, instances, path, including_classification=True):
         return AssertionError()
         
     def write_metadata_to_file(self, attributes, klass, path):
@@ -87,17 +87,20 @@ class C45Format(FormatI):
     def write_training_to_file(self, instances, path):
         return self.write_to_file(path, self.DATA, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.klass_value))
         
-    def write_test_to_file(self, instances, path):
+    def write_test_to_file(self, instances, path, including_classification=True):
+        if not including_classification:
+            return self.write_to_file(path, self.TEST, instances, lambda instance: instance.attr_values_as_str())
         return self.write_to_file(path, self.TEST, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.classified_klass))
 
-    def write_gold_to_file(self, instances, path):
+    def write_gold_to_file(self, instances, path, including_classification=True):
+        if not including_classification:
+            return self.write_to_file(path, self.GOLD, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.klass_value))
         return self.write_to_file(path, self.GOLD, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.klass_value) + ',' + str(instance.classified_klass))
         
     def write_metadata_to_file(self, attributes, klass, path):
-        new_file = cfile.File(path, self.NAMES)
-        new_file.create(True)
+        new_file = self.create_file(path, self.NAMES)
         klass_values = ''
-        for value in klass_values:
+        for value in klass:
             klass_values += str(value) + ','
         lines = [klass_values[:-1] + '.']
         for attribute in attributes:
@@ -106,13 +109,17 @@ class C45Format(FormatI):
         return path + cfile.DOT + self.NAMES
         
     def write_to_file(self, path, extension, instances, method):
-        new_file = cfile.File(path, extension)
-        new_file.create(True)
+        new_file = self.create_file(path, extension)
         lines = []
         for instance in instances:
             lines.append(method(instance))
         new_file.write(lines)
         return path + cfile.DOT + extension
+    
+    def create_file(self, path, extension):
+        new_file = cfile.File(path, extension)
+        new_file.create(True)
+        return new_file
 
     def __get_comma_sep_values(self, line):
         _line = item.Item(line).stripNewLineAndWhitespace()

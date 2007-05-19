@@ -91,6 +91,23 @@ class Attributes(UserList.UserList):
     def remove_attributes(self, attributes):
         for attribute in attributes:
             self.remove(attribute)
-        #reset indices
+        self.reset_indices()
+            
+    def reset_indices(self):
         for i in range(len(self.data)):
             self.data[i].index = i
+            
+    def __str__(self):
+        str = '['
+        for each in self:
+            str += each.__str__() + ', '
+        if len(str) > 1: str = str[:-1]
+        return str + ']'
+    
+            
+def fact(n):
+    if n==0 or n==1: return 1
+    return n * fact(n -1)
+
+def ncr(n, r):
+    return fact(n) / (fact(r) * fact(n -r))

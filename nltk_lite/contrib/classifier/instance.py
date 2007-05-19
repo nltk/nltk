@@ -38,9 +38,11 @@ class Instance:
     def remove_attributes(self, attributes):
         to_be_removed = []
         for attribute in attributes:
-            to_be_removed.append(self.attrs[attribute.index])
+            to_be_removed.append(attribute.index)
+        to_be_removed.sort()
+        to_be_removed.reverse()
         for r in to_be_removed:
-            self.attrs.remove(r)
+            self.attrs.__delitem__(r)
     
     def __eq__(self, other):
         if other is None: return False
@@ -79,6 +81,9 @@ class TrainingInstance(Instance):
         
     def is_valid(self, klass, attributes):
         return klass.__contains__(self.klass_value) and attributes.has_values(self.attrs)
+    
+    def as_gold(self):
+        return GoldInstance(self.attrs, self.klass_value)
     
     def __str__(self):
         return self.str_attrs() + self.str_class()

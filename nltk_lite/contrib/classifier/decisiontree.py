@@ -9,12 +9,13 @@
 from nltk_lite.contrib.classifier import oner
 
 class DecisionTree(oner.OneR):
-    def __init__(self, training, attributes, klass):
-        oner.OneR.__init__(self, training, attributes, klass)
+    def __init__(self, training, attributes, klass, internal=False):
+        oner.OneR.__init__(self, training, attributes, klass, internal)
         self.root = self.build_tree(self.training, [])
         
     def build_tree(self, instances, used_attributes):
         decision_stump = self.best_decision_stump(instances, used_attributes, 'maximum_information_gain')
+        if len(self.attributes) - len(used_attributes) == 1: return decision_stump
         used_attributes.append(decision_stump.attribute)
         for attr_value in decision_stump.attribute.values:
             if decision_stump.entropy(attr_value) == 0:

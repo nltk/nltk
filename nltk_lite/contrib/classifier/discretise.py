@@ -75,7 +75,7 @@ class Discretise(cl.CommandLineInterface):
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, ignore_missing)
         disc = Discretiser(training, attributes, klass, test, gold, cl.as_integers('Attribute indices', self.attributes_indices), cl.as_integers('Options', self.options))
         getattr(disc, ALGORITHM_MAPPINGS[self.algorithm])()
-        files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold)
+        files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
         print 'The following files were created with discretised values...'
         for file_name in files_written:
             print file_name

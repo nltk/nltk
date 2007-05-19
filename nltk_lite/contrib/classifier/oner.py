@@ -10,8 +10,8 @@ from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, 
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
-    def __init__(self, training, attributes, klass):
-        Classifier.__init__(self, training, attributes, klass)
+    def __init__(self, training, attributes, klass, internal = False):
+        Classifier.__init__(self, training, attributes, klass, internal)
         self.__best_decision_stump = None
         
     def test(self, test_instances, printResults=True):

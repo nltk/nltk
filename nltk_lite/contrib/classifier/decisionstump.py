@@ -15,6 +15,7 @@ from nltk_lite.probability import FreqDist
 class DecisionStump:
     def __init__(self, attribute, klass):
         self.attribute = attribute
+        self.__safe_default = None
         """
         counts is a dictionary in which 
         each key is an attribute value
@@ -43,17 +44,31 @@ class DecisionStump:
     
     def klass(self, instance):
         attr_value = instance.value(self.attribute)
+        if len(self.children) == 0: return self.majority_klass(attr_value)
         if not self.children.has_key(attr_value):
             return self.majority_klass(attr_value)
         return self.children[attr_value].klass(instance)
     
     def majority_klass(self, attr_value):
         klass_values_with_count = self.counts[attr_value]
-        _max, klass_value = 0, None
+        _max, klass_value = 0, self.safe_default() # will consider safe default because at times the test will have an attribute value not present in the stump(can happen in cross validation as well)
         for klass, count in klass_values_with_count.items():
             if count > _max:
                 _max, klass_value = count, klass
         return klass_value
+    
+    def safe_default(self):
+        """
+        Mimics Zero-R behavior by find the majority class among all the occurances at this stumps level
+        """
+        if self.__safe_default == None:
+            max_occurance, klass = -1, None
+            for klass_element in self.root.keys():
+                if self.root[klass_element] > max_occurance:
+                    max_occurance = self.root[klass_element]
+                    klass = klass_element
+            self.__safe_default = klass
+        return self.__safe_default
     
     def entropy(self, attr_value):
         """
