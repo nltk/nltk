@@ -5,8 +5,9 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import featureselect as fs, decisionstump as ds, format
+from nltk_lite.contrib.classifier import featureselect as fs, decisionstump as ds, format, attribute as attr
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
+import copy
 
 class FeatureSelectTestCase(unittest.TestCase):
     def test_decodes_parameters(self):
@@ -27,7 +28,7 @@ class FeatureSelectTestCase(unittest.TestCase):
         self.assertFalse(feat_sel.error_called)        
         feat_sel.parse(['-a', 'RNL', '-t', 'path', '-T', 'path1,path2', '-o', 'IG,4'])
         self.assertTrue(feat_sel.error_called)
-        self.assertEqual('option -a: invalid choice: \'RNL\' (choose from \'RNK\')', feat_sel.message)
+        self.assertEqual('option -a: invalid choice: \'RNL\' (choose from \'RNK\', \'FS\', \'BS\')', feat_sel.message)
 
     def test_validates_required_arguments(self):
         feat_sel = FeatureSelectStub()
@@ -96,7 +97,163 @@ class FeatureSelectTestCase(unittest.TestCase):
         attributes_to_remove = feature_selection.find_attributes_by_ranking('information_gain', 3)
         self.assertEqual(1, len(attributes_to_remove))
         self.assertEqual('windy', attributes_to_remove[0].name)
+        
+    def test_if_wrapper_options_is_invalid(self):
+        self.assertTrue(fs.wrapper_options_invalid(['1R', '3', '5', '6']))
+        self.assertTrue(fs.wrapper_options_invalid(['3', '1R']))
+        self.assertTrue(fs.wrapper_options_invalid(['1R', 'a']))
+        self.assertTrue(fs.wrapper_options_invalid(['1R', '1.0']))
+        self.assertTrue(fs.wrapper_options_invalid(['1R', '1']))
+        self.assertFalse(fs.wrapper_options_invalid(['1R', '2']))
+        self.assertFalse(fs.wrapper_options_invalid(['1R', '2', '5']))
+        self.assertTrue(fs.wrapper_options_invalid(['1R', '2', 'a']))
+        self.assertFalse(fs.wrapper_options_invalid(['1R', '2', '0.1']))
+        
+    def test_get_delta(self):
+        feature_selection = fs.FeatureSelection(None, None, None, None, None, ['IG','3', '5'])
+        self.assertEqual(5, feature_selection.get_delta())
+        feature_selection = fs.FeatureSelection(None, None, None, None, None, ['IG','3'])
+        self.assertEqual(0, feature_selection.get_delta())
+        
+    def test_get_fold(self):
+        feature_selection = fs.FeatureSelection(None, None, None, None, None, ['IG','3', '5'])
+        self.assertEqual(3, feature_selection.get_fold())
+        
+        feature_selection = fs.FeatureSelection(None, None, None, None, None, ['IG'])
+        self.assertEqual(10, feature_selection.get_fold())
+        
+    def test_invert_attrbute_selection(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        attributes = format.C45_FORMAT.get_attributes(path)
+        feature_selection = fs.FeatureSelection(None, attributes, None, None, None, ['IG'])
+        unselected = feature_selection.invert_attribute_selection([attributes[0], attributes[1]])
+        self.assertEqual(len(attributes) - 2, len(unselected))
+        self.assertEqual([attributes[2], attributes[3], attributes[4], attributes[5], attributes[6], attributes[7]], unselected)
+        
+    def test_is_float(self):
+        self.assertTrue(fs.isfloat('1.2'))
+        self.assertTrue(fs.isfloat('1'))
+        self.assertTrue(fs.isfloat('0'))
+        self.assertFalse(fs.isfloat('a'))
+        
+    ## calculations included by using verify variables and comments
+    def test_forward_select(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        training = format.C45_FORMAT.get_training_instances(path)
+        attributes = format.C45_FORMAT.get_attributes(path)
+        klass = format.C45_FORMAT.get_klass(path)
+        test = format.C45_FORMAT.get_test_instances(path)
+        gold = format.C45_FORMAT.get_gold_instances(path)
+        
+        verify_training = copy.deepcopy(training)
+        verify_attributes = copy.deepcopy(attributes)
 
+        feat_sel = fs.FeatureSelection(training, attributes, klass, test, gold, ['1R', '4', '0.1'])
+        feat_sel.forward_select()
+                
+        self.assertEqual(1, len(attributes))
+        self.assertEqual('outlook', attributes[0].name)
+        self.verify_number_of_attributes(training, 1)
+        self.verify_number_of_attributes(test, 1)
+        self.verify_number_of_attributes(gold, 1)
+
+        #verification
+        verification_cv_datasets = verify_training.cross_validation_datasets(4)
+        accuracies = {}
+        for attribute in verify_attributes:
+            accuracies[attribute.name] = feat_sel.avg_accuracy_by_cross_validation(verification_cv_datasets, 4, attr.Attributes([attribute]))
+        
+        #'windy': 0.41666666666666663, 'outlook': 0.79166666666666663, 'temperature': 0.41666666666666663, 'humidity': 0.54166666666666663
+        self.assertAlmostEqual(0.4166666, accuracies['windy'], 6)
+        self.assertAlmostEqual(0.79166666, accuracies['outlook'], 6)
+        self.assertAlmostEqual(0.4166666, accuracies['temperature'], 6)
+        self.assertAlmostEqual(0.5416666, accuracies['humidity'], 6)
+        
+        #outlook selected
+        accuracies = {}
+        for each in verify_attributes:
+            if each.name == 'outlook':
+                outlook = each
+        verify_attributes.remove(outlook)
+        for attribute in verify_attributes:
+            accuracies[('outlook',attribute.name)] = feat_sel.avg_accuracy_by_cross_validation(verification_cv_datasets, 4, attr.Attributes([outlook, attribute]))
+        
+        #{('outlook', 'humidity'): 0.79166666666666663, ('outlook', 'temperature'): 0.79166666666666663, ('outlook', 'windy'): 0.54166666666666663}
+        self.assertAlmostEqual(0.7916666, accuracies[('outlook','humidity')], 6)
+        self.assertAlmostEqual(0.7916666, accuracies['outlook', 'temperature'], 6)
+        self.assertAlmostEqual(0.5416666, accuracies[('outlook','windy')], 6)
+
+    ## calculations included by using verify variables and comments
+    def test_backward_select(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        training = format.C45_FORMAT.get_training_instances(path)
+        attributes = format.C45_FORMAT.get_attributes(path)
+        klass = format.C45_FORMAT.get_klass(path)
+        test = format.C45_FORMAT.get_test_instances(path)
+        gold = format.C45_FORMAT.get_gold_instances(path)
+        
+        verify_training = copy.deepcopy(training)
+        verify_attributes = copy.deepcopy(attributes)
+
+        feat_sel = fs.FeatureSelection(training, attributes, klass, test, gold, ['1R', '4', '0.1'])
+        feat_sel.backward_select()
+                
+        self.assertEqual(3, len(attributes))
+        self.verify_number_of_attributes(training, 3)
+        self.verify_number_of_attributes(test, 3)
+        self.verify_number_of_attributes(gold, 3)
+
+        #verification
+        #level 0
+        avg_acc = feat_sel.avg_accuracy_by_cross_validation(verify_training.cross_validation_datasets(4), 4, verify_attributes)
+        self.assertAlmostEqual(0.5416666, avg_acc, 6)
+        
+        verification_cv_datasets = verify_training.cross_validation_datasets(4)
+        accuracies = {}
+        for attribute in verify_attributes:
+            attributes = verify_attributes[:]
+            attributes.remove(attribute)
+            accuracies[(attributes[0].name,attributes[1].name,attributes[2].name)] = feat_sel.avg_accuracy_by_cross_validation(verification_cv_datasets, 4, attr.Attributes(attributes))
+        
+#        {('outlook', 'humidity', 'windy'): 0.54166666666666663, 
+#        ('outlook', 'temperature', 'windy'): 0.54166666666666663, 
+#        ('temperature', 'humidity', 'windy'): 0.29166666666666663, 
+#        ('outlook', 'temperature', 'humidity'): 0.79166666666666663}
+
+        self.assertAlmostEqual(0.5416666, accuracies[('outlook', 'humidity', 'windy')], 6)
+        self.assertAlmostEqual(0.5416666, accuracies[('outlook', 'temperature', 'windy')], 6)
+        self.assertAlmostEqual(0.2916666, accuracies[('temperature', 'humidity', 'windy')], 6)
+        self.assertAlmostEqual(0.7916666, accuracies[('outlook', 'temperature', 'humidity')], 6)
+#        
+        #('outlook', 'temperature', 'humidity') selected
+        accuracies = {}
+
+        for each in verify_attributes:
+            if each.name == 'windy':
+                windy = each
+        verify_attributes.remove(windy)
+        for attribute in verify_attributes:
+            attributes = verify_attributes[:]
+            attributes.remove(attribute)
+            accuracies[(attributes[0].name,attributes[1].name)] = feat_sel.avg_accuracy_by_cross_validation(verification_cv_datasets, 4, attr.Attributes(attributes))
+        
+        self.assertAlmostEqual(0.7916666, accuracies[('outlook','humidity')], 6)
+        self.assertAlmostEqual(0.7916666, accuracies['outlook', 'temperature'], 6)
+        self.assertAlmostEqual(0.4166666, accuracies[('temperature','humidity')], 6)
+        
+    def test_get_suffix_replaces_decimal_point_in_options_with_hyphen(self):
+        feat_sel = FeatureSelectStub()
+        feat_sel.run(['-a', 'RNK', '-f', 'path', '-o', 'IG,4'])
+        self.assertEqual('-RNK_IG_4', feat_sel.get_suffix())
+
+        feat_sel = FeatureSelectStub()
+        feat_sel.run(['-a', 'FS', '-f', 'path', '-o', '0R,4,0.34'])
+        self.assertEqual('-FS_0R_4_0-34', feat_sel.get_suffix())
+        
+    def verify_number_of_attributes(self, instances, number):
+        for instance in instances:
+            self.assertEqual(number, len(instance.attrs))
+        
 def information_gain(attribute, klass, instances):
     stump = ds.DecisionStump(attribute, klass)
     for instance in instances:

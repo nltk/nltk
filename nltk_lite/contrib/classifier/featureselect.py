@@ -6,8 +6,9 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier import split_ignore_space
-from nltk_lite.contrib.classifier import format, cfile, commandline as cl
+from nltk_lite.contrib.classifier import format, cfile, commandline as cl, attribute as attr, classify as cy
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
+import copy
 
 import sys
 
@@ -32,11 +33,16 @@ o_help = "Algorithm specific options                              " \
        + "followed by a number which indicates the number of      " \
        + "attributes which should be chosen.                      "
 
+R_help = "Ranking algorithm.                                      "
 OPTION_MAPPINGS = {'IG': 'information_gain', 'GR': 'gain_ratio'}
 
 RANK='RNK'
+FORWARD_SELECT='FS'
+BACKWARD_SELECT='BS'
 
-ALGORITHM_MAPPINGS = {RANK:'by_rank'}
+ALGORITHM_MAPPINGS = {RANK:'by_rank', FORWARD_SELECT:'forward_select', BACKWARD_SELECT:'backward_select'}
+DEFAULT_FOLD=10
+MIN_FOLD=2
 
 class FeatureSelect(cl.CommandLineInterface):
     def __init__(self):
@@ -50,8 +56,10 @@ class FeatureSelect(cl.CommandLineInterface):
         if self.get_value('options') is None:
             self.required_arguments_not_present_error()
         self.options = split_ignore_space(self.get_value('options'))
-        if self.algorithm == RANK and (len(self.options) != 2 or not OPTION_MAPPINGS.has_key(self.options[0]) or not int(self.options[1])):
-            self.error("Invalid options for Rank based feature selection. Options Found: " + str(self.options))
+        if self.algorithm == RANK and rank_options_invalid(self.options):
+            self.error("Invalid options for Rank based Feature selection. Options Found: " + str(self.options))
+        if (self.algorithm == FORWARD_SELECT or self.algorithm == BACKWARD_SELECT) and wrapper_options_invalid(self.options):
+            self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
         self.select_features_and_write_to_file()
         
     def select_features_and_write_to_file(self):
@@ -65,7 +73,7 @@ class FeatureSelect(cl.CommandLineInterface):
         feature_sel = FeatureSelection(training, attributes, klass, test, gold, self.options)
         getattr(feature_sel, ALGORITHM_MAPPINGS[self.algorithm])()
         
-        files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold)
+        files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
         print 'The following files were created after feature selection...'
         for file_name in files_written:
             print file_name
@@ -74,7 +82,7 @@ class FeatureSelect(cl.CommandLineInterface):
         if self.options is None: return '-' + self.algorithm
         suf = '-' + self.algorithm
         for option in self.options:
-            suf += '_' + option
+            suf += '_' + option.replace('.','-')
         return suf
 
 class FeatureSelection:
@@ -85,8 +93,8 @@ class FeatureSelection:
     def by_rank(self):
         if self.attributes.has_continuous_attributes():
             raise inv.InvalidDataError("Rank based feature selection cannot be performed on continuous attributes.")
-        if len(self.options) != 2 or not OPTION_MAPPINGS.has_key(self.options[0]) or not int(self.options[1]):
-            raise inv.InvalidDataError("Invalid options for Rank based feature selection.")#Additional validation when not used from command prompt
+        if rank_options_invalid(self.options):
+            raise inv.InvalidDataError("Invalid options for Rank based Feature selection.")#Additional validation when not used from command prompt
         rem_attributes = self.find_attributes_by_ranking(OPTION_MAPPINGS[self.options[0]], int(self.options[1]))
         self.remove(rem_attributes)
     
@@ -103,12 +111,111 @@ class FeatureSelection:
             attributes_to_remove.append(stump.attribute)
         return attributes_to_remove
     
+    def forward_select(self):
+        if wrapper_options_invalid(self.options):
+            raise inv.InvalidDataError("Invalid options for Forward Select Feature selection.")#Additional validation when not used from command prompt
+        selected = self.forward_select_attributes(-1, [], self.attributes[:], self.get_delta())
+        self.remove(self.invert_attribute_selection(selected))
+        
+    def backward_select(self):
+        if wrapper_options_invalid(self.options):
+            raise inv.InvalidDataError("Invalid options for Backward Select Feature selection.")
+        fold = self.get_fold()
+        avg_acc = self.avg_accuracy_by_cross_validation(self.training.cross_validation_datasets(fold), fold, self.attributes)
+        selected = self.backward_select_attributes(avg_acc, self.attributes[:], self.get_delta())
+        self.remove(self.invert_attribute_selection(selected))
+        
+    def backward_select_attributes(self, max, selected, delta):
+        if selected is None or len(selected) == 0 or len(selected) == 1: return selected
+        max_at_level, selections_with_max_acc, fold = -1, None, self.get_fold()
+        datasets = self.training.cross_validation_datasets(fold)
+        selected_for_iter = selected[:]
+        for attribute in selected_for_iter:
+            selected.remove(attribute)
+            avg_accuracy = self.avg_accuracy_by_cross_validation(datasets, fold, attr.Attributes(selected))
+            if avg_accuracy > max_at_level:
+                max_at_level = avg_accuracy
+                selections_with_max_acc = selected[:]
+            selected.append(attribute)
+        if max_at_level - max < delta: return selected
+        return self.backward_select_attributes(max_at_level, selections_with_max_acc, delta)
+    
+    def get_delta(self):
+        if len(self.options) != 3:
+            return 0
+        return float(self.options[2])
+
+    def invert_attribute_selection(self, selected):
+        not_selected = []
+        for attribute in self.attributes:
+            if not selected.__contains__(attribute):
+                not_selected.append(attribute)
+        return not_selected
+        
+    def forward_select_attributes(self, max, selected, others, delta):
+        if others is None or len(others) == 0: return selected
+        max_at_level, attr_with_max_acc, fold = -1, None, self.get_fold()
+        datasets = self.training.cross_validation_datasets(fold)
+        for attribute in others:
+            selected.append(attribute)
+            avg_accuracy = self.avg_accuracy_by_cross_validation(datasets, fold, attr.Attributes(selected))
+            if avg_accuracy > max_at_level:
+                max_at_level = avg_accuracy
+                attr_with_max_acc = attribute
+            selected.remove(attribute)
+        if max_at_level - max < delta: return selected
+        selected.append(attr_with_max_acc)
+        others.remove(attr_with_max_acc)
+        return self.forward_select_attributes(max_at_level, selected, others, delta)
+    
+    def get_fold(self):
+        if len(self.options) == 1:
+            return DEFAULT_FOLD
+        return int(self.options[1])
+
+    def avg_accuracy_by_cross_validation(self, datasets, fold, attributes):
+        total_accuracy = 0;
+        for index in range(fold):
+            training, gold = datasets[index]
+            cm = cy.ALGORITHM_MAPPINGS[self.options[0]](training, attributes, self.klass, True).verify(gold)
+            total_accuracy += cm.accuracy()
+        return total_accuracy / len(datasets)
+    
     def remove(self, attributes):
         self.training.remove_attributes(attributes)
         if self.test is not None: self.test.remove_attributes(attributes)
         if self.gold is not None: self.gold.remove_attributes(attributes)
         self.attributes.remove_attributes(attributes)
-                
+
+def rank_options_invalid(options):
+    return len(options) != 2 or not OPTION_MAPPINGS.has_key(options[0]) or not options[1].isdigit()
+
+def wrapper_options_invalid(options):
+    return (len(options) < 1 or len(options) > 3) \
+           or \
+           (not cy.ALGORITHM_MAPPINGS.has_key(options[0]) \
+                or \
+                ( (len(options) == 2 or len(options) == 3) \
+                     and \
+                     (not options[1].isdigit() or int(options[1]) < MIN_FOLD)
+                )
+                or \
+                len(options) == 3 and not isfloat(options[2])
+           )
+
+def isfloat(stringval):
+    try:
+        float(stringval)
+        return True
+    except (ValueError, TypeError), e: return False 
+                        
+def as_sets_array(array):
+    sets = []
+    for element in array:
+        sets.append(set([element.index]))
+    return sets
+    
+
 if __name__ == "__main__":
     FeatureSelect().run(sys.argv[1:])
 

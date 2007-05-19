@@ -6,7 +6,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import decisiontree, decisionstump as ds, instances as ins, format
+from nltk_lite.contrib.classifier import decisiontree, decisionstump as ds, instances as ins, format, attribute as attr
 from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
 
 class DecisionTreeTestCase(unittest.TestCase):
@@ -68,4 +68,5 @@ class DecisionTreeTestCase(unittest.TestCase):
             self.fail('should have thrown an error')
         except inv.InvalidDataError:
             pass
+            
         

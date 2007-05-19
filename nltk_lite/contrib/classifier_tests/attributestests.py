@@ -97,6 +97,14 @@ class AttributesTestCase(unittest.TestCase):
         attrs.remove_attributes([attrs[0], attrs[6]])
         self.assertEqual(6, len(attrs))
         self.assertEqual(attr1, attrs[0])
+
+#    def test_combinations(self):
+#        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+#        attrs = format.C45_FORMAT.get_attributes(path)
+#        
+#        self.assertEqual(8, len(attrs))
+#        combinations = attrs.combinations(1)
+#        self.assertEqual(8, len(combinations))
         
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

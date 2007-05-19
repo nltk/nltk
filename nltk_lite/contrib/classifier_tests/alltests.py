@@ -15,7 +15,8 @@ from nltk_lite.contrib.classifier_tests import \
         autoclasstests as autoclass, numrangetests as numrange, \
         discretisedattributetests as discretisedattribute, \
         discretisetests as discretise, formattests as format, \
-        featureselecttests as featureselect, inittests as init
+        featureselecttests as featureselect, inittests as init, \
+        commandlinetests as commandline
 import unittest
 
 def allTestsSuite():
@@ -37,7 +38,8 @@ def allTestsSuite():
                                unittest.makeSuite(discretise.DiscretiseTestCase), \
                                unittest.makeSuite(format.FormatTestCase), \
                                unittest.makeSuite(featureselect.FeatureSelectTestCase), \
-                               unittest.makeSuite(init.InitTestCase)))
+                               unittest.makeSuite(init.InitTestCase), \
+                               unittest.makeSuite(commandline.CommandLineTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
