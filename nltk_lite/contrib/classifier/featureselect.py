@@ -37,10 +37,10 @@ R_help = "Ranking algorithm.                                      "
 OPTION_MAPPINGS = {'IG': 'information_gain', 'GR': 'gain_ratio'}
 
 RANK='RNK'
-FORWARD_SELECT='FS'
-BACKWARD_SELECT='BS'
+FORWARD_SELECTION='FS'
+BACKWARD_ELIMINATION='BE'
 
-ALGORITHM_MAPPINGS = {RANK:'by_rank', FORWARD_SELECT:'forward_select', BACKWARD_SELECT:'backward_select'}
+ALGORITHM_MAPPINGS = {RANK:'by_rank', FORWARD_SELECTION:'forward_selection', BACKWARD_ELIMINATION:'backward_elimination'}
 DEFAULT_FOLD=10
 MIN_FOLD=2
 
@@ -58,7 +58,7 @@ class FeatureSelect(cl.CommandLineInterface):
         self.options = split_ignore_space(self.get_value('options'))
         if self.algorithm == RANK and rank_options_invalid(self.options):
             self.error("Invalid options for Rank based Feature selection. Options Found: " + str(self.options))
-        if (self.algorithm == FORWARD_SELECT or self.algorithm == BACKWARD_SELECT) and wrapper_options_invalid(self.options):
+        if (self.algorithm == FORWARD_SELECTION or self.algorithm == BACKWARD_ELIMINATION) and wrapper_options_invalid(self.options):
             self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
         self.select_features_and_write_to_file()
         
@@ -111,21 +111,21 @@ class FeatureSelection:
             attributes_to_remove.append(stump.attribute)
         return attributes_to_remove
     
-    def forward_select(self):
+    def forward_selection(self):
         if wrapper_options_invalid(self.options):
             raise inv.InvalidDataError("Invalid options for Forward Select Feature selection.")#Additional validation when not used from command prompt
-        selected = self.forward_select_attributes(-1, [], self.attributes[:], self.get_delta())
+        selected = self.__select_attributes(-1, [], self.attributes[:], self.get_delta())
         self.remove(self.invert_attribute_selection(selected))
         
-    def backward_select(self):
+    def backward_elimination(self):
         if wrapper_options_invalid(self.options):
             raise inv.InvalidDataError("Invalid options for Backward Select Feature selection.")
         fold = self.get_fold()
         avg_acc = self.avg_accuracy_by_cross_validation(self.training.cross_validation_datasets(fold), fold, self.attributes)
-        selected = self.backward_select_attributes(avg_acc, self.attributes[:], self.get_delta())
+        selected = self.__eliminate_attributes(avg_acc, self.attributes[:], self.get_delta())
         self.remove(self.invert_attribute_selection(selected))
         
-    def backward_select_attributes(self, max, selected, delta):
+    def __eliminate_attributes(self, max, selected, delta):
         if selected is None or len(selected) == 0 or len(selected) == 1: return selected
         max_at_level, selections_with_max_acc, fold = -1, None, self.get_fold()
         datasets = self.training.cross_validation_datasets(fold)
@@ -138,7 +138,7 @@ class FeatureSelection:
                 selections_with_max_acc = selected[:]
             selected.append(attribute)
         if max_at_level - max < delta: return selected
-        return self.backward_select_attributes(max_at_level, selections_with_max_acc, delta)
+        return self.__eliminate_attributes(max_at_level, selections_with_max_acc, delta)
     
     def get_delta(self):
         if len(self.options) != 3:
@@ -152,7 +152,7 @@ class FeatureSelection:
                 not_selected.append(attribute)
         return not_selected
         
-    def forward_select_attributes(self, max, selected, others, delta):
+    def __select_attributes(self, max, selected, others, delta):
         if others is None or len(others) == 0: return selected
         max_at_level, attr_with_max_acc, fold = -1, None, self.get_fold()
         datasets = self.training.cross_validation_datasets(fold)
@@ -166,7 +166,7 @@ class FeatureSelection:
         if max_at_level - max < delta: return selected
         selected.append(attr_with_max_acc)
         others.remove(attr_with_max_acc)
-        return self.forward_select_attributes(max_at_level, selected, others, delta)
+        return self.__select_attributes(max_at_level, selected, others, delta)
     
     def get_fold(self):
         if len(self.options) == 1:
