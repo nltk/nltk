@@ -28,7 +28,7 @@ class FeatureSelectTestCase(unittest.TestCase):
         self.assertFalse(feat_sel.error_called)        
         feat_sel.parse(['-a', 'RNL', '-t', 'path', '-T', 'path1,path2', '-o', 'IG,4'])
         self.assertTrue(feat_sel.error_called)
-        self.assertEqual('option -a: invalid choice: \'RNL\' (choose from \'RNK\', \'FS\', \'BS\')', feat_sel.message)
+        self.assertEqual('option -a: invalid choice: \'RNL\' (choose from \'RNK\', \'BE\', \'FS\')', feat_sel.message)
 
     def test_validates_required_arguments(self):
         feat_sel = FeatureSelectStub()
@@ -149,7 +149,7 @@ class FeatureSelectTestCase(unittest.TestCase):
         verify_attributes = copy.deepcopy(attributes)
 
         feat_sel = fs.FeatureSelection(training, attributes, klass, test, gold, ['1R', '4', '0.1'])
-        feat_sel.forward_select()
+        feat_sel.forward_selection()
                 
         self.assertEqual(1, len(attributes))
         self.assertEqual('outlook', attributes[0].name)
@@ -196,7 +196,7 @@ class FeatureSelectTestCase(unittest.TestCase):
         verify_attributes = copy.deepcopy(attributes)
 
         feat_sel = fs.FeatureSelection(training, attributes, klass, test, gold, ['1R', '4', '0.1'])
-        feat_sel.backward_select()
+        feat_sel.backward_elimination()
                 
         self.assertEqual(3, len(attributes))
         self.verify_number_of_attributes(training, 3)

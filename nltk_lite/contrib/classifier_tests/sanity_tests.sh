@@ -28,8 +28,8 @@ echo 'Entropy based supervised'
 python ../classifier/discretise.py -a ES -f datasets/numerical/person -A 1,4,5,6,7 -o 2,2,2,2,2
 echo 'Rank based feature selection'
 python ../classifier/featureselect.py -a RNK -f datasets/minigolf/weather -o IG,2
-echo 'Forward Select'
+echo 'Forward Selection'
 python ../classifier/featureselect.py -a FS -f datasets/minigolf/weather -o DT,3,0
-echo 'Backward Select'
-python ../classifier/featureselect.py -a BS -f datasets/minigolf/weather -o 1R,4,0.1
+echo 'Backward Elimination'
+python ../classifier/featureselect.py -a BE -f datasets/minigolf/weather -o 1R,4,0.1
 
