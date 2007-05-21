@@ -23,7 +23,7 @@ class Classifier:
         if not self.can_handle_continuous_attributes() and self.attributes.has_continuous_attributes(): 
             raise inv.InvalidDataError('One or more attributes are continuous.')
     
-    def test(self, path, printResults=True):
+    def test(self, path):
         raise AssertionError()
     
     def verify(self, path):

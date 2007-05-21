@@ -32,7 +32,7 @@ class ZeroRTestCase(unittest.TestCase):
         path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
         zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
 
-        zeror.test(format.C45_FORMAT.get_test_instances(path), False)
+        zeror.test(format.C45_FORMAT.get_test_instances(path))
         i = 0
         for i in range(4):
             self.assertEqual('b', zeror.test_instances[i].classified_klass)
