@@ -366,25 +366,20 @@ class Grammar(object):
             str += '\n    %s' % production
         return str
 
-#################################################################
-# Parsing CFGs
-#################################################################
-
-_PARSE_RE = re.compile(r'''^\s*                # leading whitespace
-                          (\w+(?:/\w+)?)\s*    # lhs
-                          (?:[-=]+>)\s*        # arrow
+_PARSE_RE = re.compile(r'''^(\w+)\s*           # lhs
+                          (?:-+>|=+>)\s*       # arrow
                           (?:(                 # rhs:
                                "[^"]+"         # doubled-quoted terminal
-                             | '[^']+'         # single-quoted terminal
-                             | \w+(?:/\w+)?    # non-terminal
-                             | \|              # disjunction
+                               |'[^']+'        # single-quoted terminal
+                               |\w+|           # non-terminal
+                               \|              # disjunction
                              )
                              \s*)              # trailing space
-                             *$''',            # zero or more copies
+                             *$''',
                        re.VERBOSE)
-_SPLIT_RE = re.compile(r'''(\w+(?:/\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''')
+_SPLIT_RE = re.compile(r'''(\w+|-+>|=+>|"[^"]+"|'[^']+'|\|)''')
 
-def parse_cfg_production(s):
+def parse_production(s):
     """
     Returns a list of productions
     """
@@ -396,29 +391,23 @@ def parse_cfg_production(s):
     pieces = [p for i,p in enumerate(pieces) if i%2==1]
     lhside = Nonterminal(pieces[0])
     rhsides = [[]]
-    found_terminal = found_non_terminal = False
     for piece in pieces[2:]:
         if piece == '|':
             rhsides.append([])                     # Vertical bar
-            found_terminal = found_non_terminal = False
         elif piece[0] in ('"', "'"):
             rhsides[-1].append(piece[1:-1])        # Terminal
-            found_terminal = True
         else:
             rhsides[-1].append(Nonterminal(piece)) # Nonterminal
-            found_non_terminal = True
-        if found_terminal and found_non_terminal:
-            raise ValueError, 'Bad right-hand-side: do not mix terminals and non-terminals'
     return [Production(lhside, rhside) for rhside in rhsides]
 
-def parse_cfg(s):
+def parse_grammar(s):
     productions = []
     for linenum, line in enumerate(s.split('\n')):
         line = line.strip()
         if line.startswith('#') or line=='': continue
-        try: productions += parse_cfg_production(line)
+        try: productions += parse_production(line)
         except ValueError:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+            raise ValueError, 'Unable to parse line %s' % linenum
     if len(productions) == 0:
         raise ValueError, 'No productions found!'
     start = productions[0].lhs()
@@ -447,15 +436,21 @@ def demo():
     print cfg.Production(S, [NP])
 
     # Create some Grammar Productions
-    grammar = cfg.parse_cfg("""
-      S -> NP VP
-      PP -> P NP
-      NP -> Det N | NP PP
-      VP -> V NP | VP PP
-      Det -> 'a' | 'the'
-      N -> 'dog' | 'cat'
-      V -> 'chased' | 'sat'
-      P -> 'on' | 'in'
+    grammar = cfg.parse_grammar("""
+    S -> NP VP
+    PP -> P NP
+    NP -> Det N
+    NP -> NP PP
+    VP -> V NP
+    VP -> VP PP
+    Det -> 'a'
+    Det -> 'the'
+    N -> 'dog'
+    N -> 'cat'
+    V -> 'chased'
+    V -> 'sat'
+    P -> 'on'
+    P -> 'in'
     """)
 
     print 'A Grammar:', `grammar`
