@@ -265,6 +265,7 @@ class FeatureSelectStub(fs.FeatureSelect):
         fs.FeatureSelect.__init__(self)
         self.error_called = False
         self.message = None
+        self.log = open('test_log', 'w') # w to over write previous logs.. is append mode in code
         
     def error(self, message):
         #in reality error will display usage and quit

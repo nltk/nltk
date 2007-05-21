@@ -119,11 +119,7 @@ class TrainingInstances(Instances):
 class TestInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
-        
-    def print_all(self):
-        for instance in self.data:
-            print instance
-            
+                    
 class GoldInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)

@@ -14,10 +14,9 @@ class OneR(Classifier):
         Classifier.__init__(self, training, attributes, klass, internal)
         self.__best_decision_stump = None
         
-    def test(self, test_instances, printResults=True):
+    def test(self, test_instances):
         self.test_instances = test_instances
         self.classify(self.test_instances)
-        if printResults: self.test_instances.print_all()
         
     def classify(self, instances):
         if self.__best_decision_stump == None:

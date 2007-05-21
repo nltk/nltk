@@ -35,54 +35,40 @@ class ClassifyTestCase(unittest.TestCase):
 
     def test_classifyDoesNotThrowErrorIfRequiredComponentsArePresent(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
-        classify.parse(['-a', '1R', '-t', path, '-T', path])
-        classify.execute()
-        self.assertTrue(classify.classifyCalled)
+        dns = DoNothingStrategy()
+        
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
+        classify.run(['-a', '1R', '-t', path, '-T', path])
+        self.assertTrue(dns.called)
         self.assertFalse(classify.errorCalled)
         
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
-        classify.parse(['-a', '1R', '-t', path, '-g', path])
-        classify.execute()
-        self.assertTrue(classify.classifyCalled)
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
+        classify.run(['-a', '1R', '-t', path, '-g', path])
+        self.assertTrue(dns.called)
         self.assertFalse(classify.errorCalled)
         
     def test_classify_throws_error_if_neither_test_nor_gold_is_present(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
         classify.parse(['-a', '1R', '-t', path])
-        classify.execute()
+        try:
+            classify.execute()
+        except TypeError:
+            pass
         self.assertTrue(classify.errorCalled)
-        self.assertTrue(classify.classifyCalled)#in reality it will never be called as it exits in the error method
+        self.assertTrue(dns.called)#in reality it will never be called as it exits in the error method
         self.assertEqual('Invalid arguments. One or more required arguments are not present.', classify.message)
         
-    def test_only_files_implies_training_and_test(self):
-        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
-        classify.parse(['-a', '1R', '-f', path])
-        classify.execute()
-        self.assertTrue(classify.classifyCalled)
-        self.assertEqual(1, len(classify.testSet))
-        self.assertEqual(None, classify.goldSet)
-
-    def test_files_with_verify_implies_training_and_gold(self):
-        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
-        classify.parse(['-a', '1R', '-v', '-f', path])
-        classify.execute()
-        self.assertTrue(classify.classifyCalled)
-        self.assertEqual(None, classify.testSet)
-        self.assertEqual(4, len(classify.goldSet))
-
     def test_throws_error_if_both_files_and_other_options_are_present(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
         classify.parse(['-a', '1R', '-f', path, '-t', path])
         classify.execute()
         self.assertTrue(classify.errorCalled)
@@ -90,8 +76,9 @@ class ClassifyTestCase(unittest.TestCase):
 
     def test_throws_error_if_both_test_and_gold_files_are_present(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
         classify.parse(['-a', '1R', '-t', path, '-T', path, '-g', path])
         classify.execute()
         self.assertTrue(classify.errorCalled)
@@ -99,25 +86,71 @@ class ClassifyTestCase(unittest.TestCase):
 
     def test_throws_error_if_verify_options_are_present_for_a_test_file(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        classify = StubClassify()
-        self.assertFalse(classify.classifyCalled)
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
         classify.parse(['-a', '1R', '-v', '-t', path, '-T', path])
         classify.execute()
         self.assertTrue(classify.errorCalled)
         self.assertEqual('Invalid arguments. Cannot verify classification for test data.', classify.message)
         
+    def test_get_file_strategy(self):
+        strategy = c.get_file_strategy('files', None, None, None, True)
+        self.assertEqual(c.CommonBaseNameStrategy, strategy.__class__)
+        values = strategy.values()
+        self.assertEqual(values[0], 'files')
+        self.assertEqual(values[1], None)
+        self.assertEqual(values[2], 'files')
+        
+        strategy = c.get_file_strategy('files', None, None, None, False)
+        self.assertEqual(c.CommonBaseNameStrategy, strategy.__class__)
+        values = strategy.values()
+        self.assertEqual(values[0], 'files')
+        self.assertEqual(values[1], 'files')
+        self.assertEqual(values[2], None)
+        
+        strategy = c.get_file_strategy(None, 'train', 'test', None, False)
+        self.assertEqual(c.ExplicitNamesStrategy, strategy.__class__)
+        values = strategy.values()
+        self.assertEqual(values[0], 'train')
+        self.assertEqual(values[1], 'test')
+        self.assertEqual(values[2], None)
+
+        strategy = c.get_file_strategy(None, 'train', None, 'gold', False)
+        self.assertEqual(c.ExplicitNamesStrategy, strategy.__class__)
+        values = strategy.values()
+        self.assertEqual(values[0], 'train')
+        self.assertEqual(values[1], None)
+        self.assertEqual(values[2], 'gold')
+        
+        
 class StubClassify(c.Classify):
-    def __init__(self):
+    def __init__(self, strategy):
         c.Classify.__init__(self)
         self.errorCalled = False
-        self.classifyCalled = False
+        self.strategy = strategy
         
     def error(self, message):
         #in reality error will display usage and quit
         self.message = message
         self.errorCalled = True
-            
-    def classify(self, classifier, test, gold):
-        self.classifyCalled = True
-        self.testSet = test
-        self.goldSet = gold
+        
+    def get_classification_strategy(self, classifier, test, gold):
+        return self.strategy
+                    
+class DoNothingStrategy:
+    def __init__(self):
+        self.called = False
+        
+    def classify(self):
+        #do nothing
+        self.called = True
+    
+    def print_results(self, log, accuracy, error, fscore, precision, recall):
+        #do nothing
+        pass
+    
+    def write(self, log, should_write, data_format, suffix):
+        #do nothing
+        pass
+        

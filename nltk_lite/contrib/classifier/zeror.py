@@ -14,10 +14,9 @@ class ZeroR(Classifier):
         self.__majority_class = None
         self.__klassCount = {}
         
-    def test(self, test_instances, printResults=True):
+    def test(self, test_instances):
         self.test_instances = test_instances
         self.classify(self.test_instances)
-        if printResults: self.test_instances.print_all()
     
     def classify(self, instances):
         if self.__majority_class == None: 
