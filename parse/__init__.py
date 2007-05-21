@@ -161,3 +161,15 @@ class AbstractParse(ParseI):
             parses = self.parse(line)
             print "%d parses." % len(parses)
             for tree in parses: print tree
+            
+from cfg import *
+from tree import *
+from category import *
+from chart import *
+from featurechart import *
+from treetransforms import *
+from pcfg import *
+from sr import *
+from rd import *
+from pchart import *
+from viterbi import *

@@ -428,7 +428,8 @@ def demo():
     A demonstration showing how C{Grammar}s can be created and used.
     """
 
-    from nltk_lite.parse import cfg
+    #from nltk_lite.parse import cfg
+    import cfg
 
     # Create some nonterminals
     S, NP, VP, PP = cfg.nonterminals('S, NP, VP, PP')
