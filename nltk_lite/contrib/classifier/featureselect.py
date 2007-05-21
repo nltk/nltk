@@ -60,8 +60,10 @@ class FeatureSelect(cl.CommandLineInterface):
             self.error("Invalid options for Rank based Feature selection. Options Found: " + str(self.options))
         if (self.algorithm == FORWARD_SELECTION or self.algorithm == BACKWARD_ELIMINATION) and wrapper_options_invalid(self.options):
             self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
+        self.log_common_params('Feature Selection:')
+        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
         self.select_features_and_write_to_file()
-        
+
     def select_features_and_write_to_file(self):
         ignore_missing = False
         #duplicate code and not tested!!
@@ -74,9 +76,9 @@ class FeatureSelect(cl.CommandLineInterface):
         getattr(feature_sel, ALGORITHM_MAPPINGS[self.algorithm])()
         
         files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
-        print 'The following files were created after feature selection...'
+        print >>self.log, 'The following files were created after feature selection...'
         for file_name in files_written:
-            print file_name
+            print >>self.log, file_name
             
     def get_suffix(self):
         if self.options is None: return '-' + self.algorithm

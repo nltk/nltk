@@ -7,10 +7,12 @@
 from optparse import OptionParser
 from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 from nltk_lite.contrib.classifier import format
+import time
 
 D_help = "Used to specify the data format.                      " \
         + "Options: C45 for C4.5 format.                        " \
         + "Default: C45.                                        "
+l_help = "Used to specify the log file.                         "
 
 
 ALGORITHM = 'algorithm'
@@ -19,6 +21,7 @@ TRAINING = 'training'
 TEST = 'test'
 GOLD = 'gold'
 DATA_FORMAT = 'data_format'
+LOG_FILE = 'log_file'
 
 C45_FORMAT = 'C45' 
 
@@ -36,6 +39,7 @@ class CommandLineInterface(OptionParser):
         
         self.add_option("-D", "--data-format", dest=DATA_FORMAT, type="choice", choices=DATA_FORMAT_MAPPINGS.keys(), \
                 default=C45_FORMAT, help=D_help)
+        self.add_option("-l", "--log-file", dest=LOG_FILE, type="string", help=l_help)
         
     def get_value(self, name):
         return self.values.ensure_value(name, None)
@@ -56,6 +60,12 @@ class CommandLineInterface(OptionParser):
         self.test_path = self.get_value(TEST)
         self.gold_path = self.get_value(GOLD)
         self.data_format = DATA_FORMAT_MAPPINGS[self.get_value(DATA_FORMAT)]
+        log_file = self.get_value(LOG_FILE)
+        self.log = None
+        if log_file is not None:
+            self.log = open(log_file, 'a')
+            print >>self.log, '-' * 40
+            print >>self.log, time.strftime('%c', time.localtime())
 
     def run(self, args):
         """
@@ -63,6 +73,7 @@ class CommandLineInterface(OptionParser):
         """
         self.parse(args)
         self.execute()
+        if self.log is not None: self.log.close()
         
     def validate_basic_arguments_are_present(self):
         if self.algorithm is None or self.files is None and (self.training_path is None or (self.test_path is None and self.gold_path is None)): 
@@ -101,6 +112,11 @@ class CommandLineInterface(OptionParser):
         if gold is not None: files_written.append(self.data_format.write_gold_to_file(gold, self.gold_path + suffix, include_classification))
         files_written.append(self.data_format.write_metadata_to_file(attributes, klass, self.training_path + suffix))
         return files_written
+    
+    def log_common_params(self, name):
+        if self.log is not None: 
+            print >>self.log, name
+            print >>self.log, '\nAlgorithm: ' + str(self.algorithm) + '\nTraining: ' + str(self.training_path) + '\nTest: ' + str(self.test_path) + '\nGold: ' + str(self.gold_path)
 
 def as_integers(name, com_str):
     indices = []
