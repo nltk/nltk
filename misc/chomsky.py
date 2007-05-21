@@ -1,6 +1,8 @@
 # Chomsky random text generator, version 1.1, Raymond Hettinger, 2005/09/13 
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440546
 
+import string
+
 """CHOMSKY is an aid to writing linguistic papers in the style
     of the great master.  It is based on selected phrases taken
     from actual books and articles written by Noam Chomsky.
@@ -115,7 +117,7 @@ def chomsky(times=1, line_length=72):
         random.shuffle(phraselist)
         parts.append(phraselist)
     output = chain(*islice(izip(*parts), 0, times))
-    return textwrap.fill(' '.join(output), line_length)
+    return textwrap.fill(string.join(output), line_length)
 
 print chomsky(5)
 

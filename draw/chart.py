@@ -41,7 +41,7 @@ edge you wish to apply a rule to.
 import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
 import Tkinter, tkFont, tkMessageBox
-import math
+import math, string
 import os.path
 
 from nltk_lite.parse.chart import *
@@ -1113,7 +1113,7 @@ class ChartView(object):
                     rhselts.append(str(elt.symbol()))
                 else:
                     rhselts.append(repr(elt))
-            rhs = ' '.join(rhselts)
+            rhs = string.join(rhselts)
         else:
             lhs = edge.lhs()
             rhs = ''
@@ -1208,8 +1208,8 @@ class ChartView(object):
             rhs = []
             pos = 0
             
-        rhs1 = ' '.join(rhs[:pos])
-        rhs2 = ' '.join(rhs[pos:])
+        rhs1 = string.join(rhs[:pos])
+        rhs2 = string.join(rhs[pos:])
         rhstag1 = c.create_text(x1+3, y, text=rhs1,
                                 font=self._font,
                                 anchor='nw')
@@ -2056,7 +2056,7 @@ class ChartDemo(object):
             if filename.endswith('.pickle'):
                 grammar = pickle.load(open(filename, 'r'))
             else:
-                grammar = cfg.parse_grammar(open(filename, 'r').read())
+                grammar = cfg.parse_cfg(open(filename, 'r').read())
             self.set_grammar(grammar)
         except Exception, e:
             tkMessageBox.showerror('Error Loading Grammar', 
@@ -2105,7 +2105,7 @@ class ChartDemo(object):
         if self._results: self._results.set_grammar(grammar)
 
     def edit_sentence(self, *e):
-        sentence = ' '.join(self._tokens)
+        sentence = string.join(self._tokens)
         title = 'Edit Text'
         instr = 'Enter a new sentence to parse.'
         EntryDialog(self._root, sentence, instr, self.set_sentence, title)
@@ -2256,7 +2256,7 @@ class ChartDemo(object):
         self.apply_strategy(self._EARLEY, PseudoEarleyEdgeRule)
         
 def demo():
-    grammar = cfg.parse_grammar("""
+    grammar = cfg.parse_cfg("""
     # Grammatical productions.
         S -> NP VP
         VP -> VP PP | V NP | V

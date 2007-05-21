@@ -13,6 +13,7 @@
 from nltk_lite.parse import *
 from nltk_lite.featurestructure import *
 from nltk_lite.semantics import logic
+import string
 
 class Category(FeatureStructure, Nonterminal):
     """
@@ -739,7 +740,7 @@ class GrammarFile(object):
             if line[0] == '%':
                 parts = line[1:].split()
                 directive = parts[0]
-                args = " ".join(parts[1:])
+                args = string.join(parts[1:])
                 if directive == 'start':
                     self.start = GrammarCategory.parse(args).freeze()
                 elif directive == 'include':

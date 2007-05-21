@@ -16,6 +16,7 @@ Cosine distance, NaiveBayes, and Spearman-rho
 from nltk_lite.contrib import classify
 from nltk_lite import detect
 from nltk_lite.corpora import udhr
+import string
 
 def run(classifier, training_data, gold_data):
     classifier.train(training_data)
@@ -27,7 +28,7 @@ def run(classifier, training_data, gold_data):
     print correct, "in", len(gold_data), "correct"
 
 # features: character bigrams
-fd = detect.feature({"char-bigrams" : lambda t: [' '.join(t)[n:n+2] for n in range(len(t)-1)]})
+fd = detect.feature({"char-bigrams" : lambda t: [string.join(t)[n:n+2] for n in range(len(t)-1)]})
 
 training_data = udhr.langs(['English-Latin1', 'French_Francais-Latin1', 'Indonesian-Latin1', 'Zapoteco-Latin1'])
 gold_data = {}

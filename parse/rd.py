@@ -9,6 +9,7 @@
 from types import *
 from nltk_lite import tokenize
 from nltk_lite.parse import *
+import string
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
@@ -299,7 +300,7 @@ class RecursiveDescent(AbstractParse):
         print ']'
 
     def _trace_start(self, tree, frontier, text):
-        print 'Parsing %r' % ' '.join(text)
+        print 'Parsing %r' % string.join(text)
         if self._trace > 2: print 'Start:'
         if self._trace > 1: self._trace_tree(tree, frontier, ' ')
         
@@ -635,7 +636,7 @@ def demo():
 
     from nltk_lite import parse
     
-    grammar = parse.cfg.parse_grammar("""
+    grammar = parse.cfg.parse_cfg("""
     S -> NP 'saw' NP | NP VP
     NP -> Det N | Det N PP
     VP -> V NP PP
