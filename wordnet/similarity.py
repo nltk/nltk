@@ -18,8 +18,9 @@ import math
 # More information about the metrics is available at
 # http://marimba.d.umn.edu/similarity/measures.html
 
-def path_distance_similarity(synset1, synset2, verbose=False):
+def path_similarity(synset1, synset2, verbose=False):
     """
+    Path Distance Similarity:
     Return a score denoting how similar two word senses are, based on the
     shortest path that connects the senses in the is-a (hypernym/hypnoym)
     taxonomy. The score is in the range 0 to 1, except in those cases
@@ -42,8 +43,9 @@ def path_distance_similarity(synset1, synset2, verbose=False):
     else:
         return -1
 
-def leacock_chodorow_similarity(synset1, synset2, verbose=False):
+def lch_similarity(synset1, synset2, verbose=False):
     """
+    Leacock Chodorow Similarity:
     Return a score denoting how similar two word senses are, based on the
     shortest path that connects the senses (as above) and the maximum depth
     of the taxonomy in which the senses occur. The relationship is given as
@@ -69,8 +71,9 @@ def leacock_chodorow_similarity(synset1, synset2, verbose=False):
     else:
         return -1
 
-def wu_palmer_similarity(synset1, synset2, verbose=False):
+def wup_similarity(synset1, synset2, verbose=False):
     """
+    Wu-Palmer Similarity:
     Return a score denoting how similar two word senses are, based on the
     depth of the two senses in the taxonomy and that of their Least Common
     Subsumer (most specific ancestor node). Note that at this time the
@@ -108,8 +111,9 @@ def wu_palmer_similarity(synset1, synset2, verbose=False):
     len2 = synset2.shortest_path_distance(subsumer) + depth
     return (2.0 * depth) / (len1 + len2)
 
-def resnik_similarity(synset1, synset2, datafile="", verbose=False):
+def res_similarity(synset1, synset2, datafile="", verbose=False):
     """
+    Resnik Similarity:
     Return a score denoting how similar two word senses are, based on the
     Information Content (IC) of the Least Common Subsumer (most specific
     ancestor node). Note that at this time the scores given do _not_
@@ -142,8 +146,9 @@ def resnik_similarity(synset1, synset2, datafile="", verbose=False):
 
     return lcs_ic
 
-def jiang_conrath_similarity(synset1, synset2, datafile="", verbose=False):
+def jcn_similarity(synset1, synset2, datafile="", verbose=False):
     """
+    Jiang-Conrath Similarity:
     Return a score denoting how similar two word senses are, based on the
     Information Content (IC) of the Least Common Subsumer (most specific
     ancestor node) and that of the two input Synsets. The relationship is
@@ -191,6 +196,7 @@ def jiang_conrath_similarity(synset1, synset2, datafile="", verbose=False):
 
 def lin_similarity(synset1, synset2, datafile="", verbose=False):
     """
+    Lin Similarity:
     Return a score denoting how similar two word senses are, based on the
     Information Content (IC) of the Least Common Subsumer (most specific
     ancestor node) and that of the two input Synsets. The relationship is
@@ -244,20 +250,29 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     subsumer = None
     max_min_path_length = -1
 
-    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))
-    subsumers.add(synset1)
-    subsumers.add(synset2)
+    # can't use set operations here
+    hypernyms1 = [synset1] + list(synset1.closure(HYPERNYM))
+    hypernyms2 = [synset2] + list(synset2.closure(HYPERNYM))
+    subsumers = [s for s in hypernyms1 if s in hypernyms2]
+    
+    if verbose:
+        print "> Subsumers1:", subsumers
 
     # Eliminate those synsets which are ancestors of other synsets in the
     # set of subsumers.
 
     eliminated = set()
-    for candidate in subsumers:
-        for subcandidate in subsumers:
-            if subcandidate in candidate.closure(HYPERNYM):
-                eliminated.add(subcandidate)
+    for s1 in subsumers:
+        for s2 in subsumers:
+            if s2 in s1.closure(HYPERNYM):
+                eliminated.add(s2)
+    if verbose:
+        print "> Eliminated:", eliminated
+    
+    subsumers = [s for s in subsumers if s not in eliminated]
 
-    subsumers -= eliminated
+    if verbose:
+        print "> Subsumers2:", subsumers
 
     # Calculate the length of the shortest path to the root for each
     # subsumer. Select the subsumer with the longest of these.
@@ -299,7 +314,13 @@ def _lcs_by_content(synset1, synset2, freqs, verbose=False):
     subsumer = None
     subsumer_ic = -1
 
-    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))
+#    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))  -- Broken
+
+    subsumers = set()
+    for s1 in synset1.closure(HYPERNYM):
+        for s2 in synset2.closure(HYPERNYM):
+            if s1 == s2:
+                subsumers.add(s1)
     subsumers.add(synset1)
     subsumers.add(synset2)
 

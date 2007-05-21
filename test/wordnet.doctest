@@ -46,7 +46,6 @@ Synsets
 
 L{Synset}: a set of synonyms that share a common meaning.
 
-Synsets are attributes of L{Sense}s.
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.  Senses can be retrieved via
 synset.getSenses() or through the index notations synset[0],
@@ -57,60 +56,30 @@ be retrieved via synset.getPointerTargets() or
 synset.getPointerTargets(pointerType), which are equivalent to
 map(Pointer.getTarget(), synset.getPointerTargets(...)).
 
-    >>> V['think'][0].synset.verbFrames
+    >>> V['think'][0].verbFrames
     (5, 9)
 
-    >>> V['think'][0].synset.verbFrameStrings
+    >>> V['think'][0].verbFrameStrings
     ['Something think something Adjective/Noun', 'Somebody think somebody']
 
-    >>> N['dog'][0].synsets()
+    >>> N['dog'][0]
     [{noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}]
 
-    >>> N['dog'][0].getPointers()[:5]
-    [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
+    >>> N['dog'][0].relations()
+    {'hypernym': {noun: canine, canid}, 'member meronym': {noun: Canis, genus Canis}, 'member meronym': {noun: pack}, 'hyponym': {noun: puppy}, 'hyponym': {noun: pooch, doggie, doggy, barker, bow-wow}}
 
-    >>> N['dog'][0].getPointers(HYPERNYM)
-    [hypernym -> {noun: canine, canid}]
+    >>> N['dog'][0][HYPERNYM]
+    {noun: canine, canid}
 
-getPointerTargets(self, pointerType=None):
-Return a sequence of Senses or Synsets.
-
-If pointerType is specified, only targets of pointers of that type are
-returned.  In this case, pointerType should be an element of
-POINTER_TYPES.
-
-    >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: Canis, genus_Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-    >>> N['dog'][0].getPointerTargets(HYPERNYM)
-    [{noun: canine, canid}]
-
-    >>> N['dog'][0].isTagged()
-    True
-    >>> N['dog'][1].isTagged()
-    False
-
-    >>> str(N['dog'][0])
-    '{noun: dog, domestic dog, Canis familiaris}'
-
-If ReadableRepresentations is true, return a human-readable
-representation, e.g. 'dog(n.)'.
-
-If ReadableRepresentations is false, return a machine-readable
-representation, e.g. "getSynset(pos, 1234)".
- 
     >>> len(N['dog'][0])
     3
     >>> N['cat'][6]
     {noun: big cat, cat}
 
-parent_hypernyms(self):
+hypernyms(self):
 Get the set of parent hypernym synsets of this synset.
 
-hypernyms(self, include_self=False):
-Get the set of all ancestor hypernym synsets of this synset.
-
-hypernym_paths(self):
+closure(HYPERNYM):
 Get the path(s) from this synset to the root, where each path is a
 list of the synset nodes traversed on the way to the root.
 
@@ -132,62 +101,10 @@ Get the Information Content (IC) value of this L{Synset}, using
 the supplied dict 'freq_data'.
 
 ---------------------------------------------------------------------------
-Senses
----------------------------------------------------------------------------
-
-L{Sense}: A specific meaning of a specific word -- the intersection
-of a Word and a Synset.
-
-    >>> str(N['dog'])
-    'dog(n.)'
-
-If ReadableRepresentations is true, return a human-readable
-representation, e.g. dog(n.).
-
-Otherwise return a machine-readable form, e.g. getWord('dog', 'noun').
-
-getPointers(self, pointerType=None):
-Return a sequence of L{Pointer}s from the synset of which this
-L{Sense} is a member.
-
-If pointerType is specified, only pointers of that type are
-returned.  In this case, pointerType should be an element of
-POINTER_TYPES.
-
-    >>> N['dog'][0].getPointers()[:5]
-    [hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: puppy}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}]
-    >>> N['dog'][0].getPointers(HYPERNYM)
-    [hypernym -> {noun: canine, canid}]
-
-
-getPointerTargets(self, pointerType=None):
-Return a sequence of L{Synset}s connected to the L{Synset} of which
-this L{Sense} is a member.
-
-If pointerType is specified, only targets of pointers of that
-type are returned. In this case, pointerType should be an
-element of POINTER_TYPES.
-
-    >>> N['dog'][0].getPointerTargets()[:5]
-    [{noun: canine, canid}, {noun: Canis, genus Canis}, {noun: pack}, {noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}]
-
-    >>> N['dog'][0].getPointerTargets(HYPERNYM)
-    [{noun: canine, canid}]
-
-
-isTagged(self):
-
-    >>> N['dog'][0].isTagged()
-    True
-    >>> N['dog'][1].isTagged()
-    False
-
-
----------------------------------------------------------------------------
 Similarity
 ---------------------------------------------------------------------------
 
-path_distance_similarity(self, other_sense):
+path_similarity(self, other_sense):
 Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses in the is-a (hypernym/hypnoym)
 taxonomy. The score is in the range 0 to 1, except in those cases
@@ -195,39 +112,41 @@ where a path cannot be found (will only be true for verbs as there are
 many distinct verb taxonomies), in which case -1 is returned. A score of
 1 represents identity i.e. comparing a sense with itself will return 1.
 
-    >>> N['poodle'][0].path_distance_similarity(N['dalmatian'][1])
+    >>> N['poodle'][0].path_similarity(N['dalmatian'][1])
     0.33333333333333331
 
-    >>> N['dog'][0].path_distance_similarity(N['cat'][0])
+    >>> N['dog'][0].path_similarity(N['cat'][0])
     0.20000000000000001
 
-    >>> V['run'][0].path_distance_similarity(V['walk'][0])
+    >>> V['run'][0].path_similarity(V['walk'][0])
     0.25
 
-    >>> V['run'][0].path_distance_similarity(V['think'][0])
+    >>> V['run'][0].path_similarity(V['think'][0])
     -1
 
 
-leacock_chodorow_similarity(self, other_sense):
+lch_similarity(self, other_sense):
+Leacock-Chodorow Similarity:
 Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses (as above) and the maximum depth
 of the taxonomy in which the senses occur. The relationship is given
 as -log(p/2d) where p is the shortest path length and d the taxonomy
 depth.
 
-    >>> N['poodle'][0].leacock_chodorow_similarity(N['dalmatian'][1])
+    >>> N['poodle'][0].lch_similarity(N['dalmatian'][1])
     2.5389738710582761
 
-    >>> N['dog'][0].leacock_chodorow_similarity(N['cat'][0])
+    >>> N['dog'][0].lch_similarity(N['cat'][0])
     2.0281482472922856
 
-    >>> V['run'][0].leacock_chodorow_similarity(V['walk'][0])
+    >>> V['run'][0].lch_similarity(V['walk'][0])
     1.8718021769015913
 
-    >>> V['run'][0].leacock_chodorow_similarity(V['think'][0])
+    >>> V['run'][0].lch_similarity(V['think'][0])
     -1
 
-wu_palmer_similarity(self, other_sense):
+wup_similarity(self, other_sense):
+Wu-Palmer Similarity:
 Return a score denoting how similar two word senses are, based on the
 depth of the two senses in the taxonomy and that of their Least Common
 Subsumer (most specific ancestor node). Note that at this time the
@@ -242,19 +161,20 @@ shortest path to the root node is the longest will be selected. Where
 the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
-    >>> N['poodle'][0].wu_palmer_similarity(N['dalmatian'][1])
+    >>> N['poodle'][0].wup_similarity(N['dalmatian'][1])
     0.9285714285714286
 
-    >>> N['dog'][0].wu_palmer_similarity(N['cat'][0])
+    >>> N['dog'][0].wup_similarity(N['cat'][0])
     0.84615384615384615
 
-    >>> V['run'][0].wu_palmer_similarity(V['walk'][0])
+    >>> V['run'][0].wup_similarity(V['walk'][0])
     0.40000000000000002
 
-    >>> V['run'][0].wu_palmer_similarity(V['think'][0])
+    >>> V['run'][0].wup_similarity(V['think'][0])
     -1
 
-resnik_similarity(self, other_sense, datafile=""):
+res_similarity(self, other_sense, datafile=""):
+Resnik Similarity:
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node). Note that at this time the scores given do _not_
@@ -265,7 +185,8 @@ The required IC values are precomputed and stored in a file, the name
 of which should be passed as the 'datafile' argument. For more
 information on how they are calculated, check brown_ic.py.
 
-jiang_conrath_similarity(self, other_sense, datafile=""):
+jcn_similarity(self, other_sense, datafile=""):
+Jiang-Conrath Similarity
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
@@ -281,6 +202,7 @@ as an argument. For more information on how they are calculated,
 check brown_ic.py.
 
 lin_similarity(self, other_sense, datafile=""):
+Lin Similarity:
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
@@ -331,9 +253,9 @@ filter.
 
     >>> N.pos
     'noun'
-    >>> N.getWord('dog')
+    >>> N['dog']
     dog (noun)
-    >>> N.getWord('inu')
+    >>> N['inu']
     Traceback (most recent call last):
        ...
     KeyError: "'inu' is not in the 'noun' database"
@@ -343,7 +265,7 @@ index.  If index is an integer n, return the Word
 indexed by the n'th Word in the Index file.
         
     >>> N['dog']
-    dog(n.)
+    dog (noun)
     >>> N[0]
     'hood (noun)
  

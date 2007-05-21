@@ -17,7 +17,7 @@ class Instances(UserList.UserList):
 
     def are_valid(self, klass, attributes):
         for instance in self.data:
-            if not instance.is_valid(klass, attributes): 
+            if not instance.is_valid(klass, attributes):
                 return False
         return True
     
@@ -28,7 +28,7 @@ class Instances(UserList.UserList):
     def remove_attributes(self, attributes):
         for instance in self.data:
             instance.remove_attributes(attributes)
-
+            
 class TrainingInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
@@ -97,6 +97,24 @@ class TrainingInstances(Instances):
     
     def sort_by(self, attribute):
         self.data.sort(lambda x, y: cmp(x.value(attribute), y.value(attribute)))
+        
+    def cross_validation_datasets(self, fold):
+        if fold > len(self): fold = len(self)
+        stratified = self.stratified_bunches(fold)
+        datasets = []
+        for index in range(len(stratified)):
+            gold = GoldInstances(training_as_gold(stratified[index]))
+            rest = flatten(stratified[:index]) + flatten(stratified[index + 1:])
+            training = TrainingInstances(rest)
+            datasets.append((training, gold))
+        return datasets
+    
+    def stratified_bunches(self, fold):
+        stratified = []
+        for index in range(fold): stratified.append([])
+        self.data.sort(key=lambda instance: instance.klass_value)
+        for index in range(len(self.data)): stratified[index % fold].append(self.data[index])
+        return stratified
         
 class TestInstances(Instances):
     def __init__(self, instances):
@@ -217,3 +235,22 @@ class SupervisedBreakpoints(UserList.UserList):
             lower = mid
         ranges.append(r.Range(lower, self.attr_values[-1], True))
         return ranges
+    
+def training_as_gold(instances):
+    gold = []
+    for instance in instances:
+        gold.append(instance.as_gold())
+    return gold
+
+## Utility method
+#  needs to be pulled out into a common utility class
+def flatten(alist):
+    if type(alist) == list:
+        elements = []
+        for each in alist:
+            if type(each) == list:
+                elements.extend(flatten(each))
+            else:
+                elements.append(each)
+        return elements
+    return None

@@ -94,18 +94,18 @@ class CommandLineInterface(OptionParser):
     def required_arguments_not_present_error(self):
         self.error("Invalid arguments. One or more required arguments are not present.")
         
-    def write_to_file(self, suffix, training, attributes, klass, test, gold):
+    def write_to_file(self, suffix, training, attributes, klass, test, gold, include_classification = True):
         files_written = []
         files_written.append(self.data_format.write_training_to_file(training, self.training_path + suffix))
-        if test is not None: files_written.append(self.data_format.write_test_to_file(test, self.test_path + suffix))
-        if gold is not None: files_written.append(self.data_format.write_gold_to_file(gold, self.gold_path + suffix))
+        if test is not None: files_written.append(self.data_format.write_test_to_file(test, self.test_path + suffix, include_classification))
+        if gold is not None: files_written.append(self.data_format.write_gold_to_file(gold, self.gold_path + suffix, include_classification))
         files_written.append(self.data_format.write_metadata_to_file(attributes, klass, self.training_path + suffix))
         return files_written
 
-def as_integers(name, str_array):
+def as_integers(name, com_str):
     indices = []
-    if str_array is not None:
-        for element in str_array.split(','):
+    if com_str is not None:
+        for element in com_str.split(','):
             try:
                 indices.append(int(element.strip()))
             except ValueError:
