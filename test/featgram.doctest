@@ -1,0 +1,176 @@
+In general, when we are trying to develop even a very small grammar,
+it is convenient to put the rules in a file where they can be edited,
+tested and revised. Assuming we have saved feat0cfg_ as a file named
+``'feat0.cfg'``, the function ``GrammarFile.read_file()`` allows us to
+read the grammar into NLTK, ready for use in parsing.
+
+    >>> from parse import GrammarFile
+    >>> g = GrammarFile.read_file('feat0.cfg')
+    >>> import tokenize
+    >>> sent = 'Kim likes children'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> tokens 
+    ['Kim', 'likes', 'children']
+    >>> cp = g.earley_parser(trace=10)
+    >>> trees = cp.get_parse_list(tokens)
+              |.K.l.c.|
+    Processing queue 0
+    Predictor |> . . .| S -> * NP[NUM=?n] VP[NUM=?n] 
+    Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] 
+    Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] 
+    Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] 
+    Predictor |> . . .| NP[NUM=pl] -> * N[NUM=pl] 
+    Processing queue 1
+    Scanner   |[-] . .| [0:1] 'Kim' 
+    Completer |[-] . .| NP[NUM=sg] -> PropN[NUM=sg] * 
+    Completer |[-> . .| S -> NP[NUM=sg] * VP[NUM=sg] 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP 
+    Processing queue 2
+    Scanner   |. [-] .| [1:2] 'likes' 
+    Completer |. [-> .| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] * NP 
+    Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] 
+    Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] 
+    Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] 
+    Predictor |. . > .| NP[NUM=pl] -> * N[NUM=pl] 
+    Processing queue 3
+    Scanner   |. . [-]| [2:3] 'children' 
+    Completer |. . [-]| NP[NUM=pl] -> N[NUM=pl] * 
+    Completer |. [---]| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] NP * 
+    Completer |[=====]| S -> NP[NUM=sg] VP[NUM=sg] * 
+    Completer |[=====]| [INIT] -> S * 
+    >>> for tree in trees: print tree
+    ([INIT][]:
+      (S[]:
+        (NP[ NUM = sg[] ]: (PropN[ NUM = sg[] ]: 'Kim'))
+        (  [ NUM   = sg[]   ]
+    VP[                ]
+      [ TENSE = pres[] ]:
+          (  [ NUM   = sg[]   ]
+    TV[                ]
+      [ TENSE = pres[] ]:
+            'likes')
+          (NP[ NUM = pl[] ]: (N[ NUM = pl[] ]: 'children')))))
+
+Feature structures in NLTK are ... Atomic feature values can be strings or
+integers.
+
+    >>> fs1 = dict(TENSE='past', NUM='sg') 
+    >>> print fs1
+    {'NUM': 'sg', 'TENSE': 'past'}
+
+We can think of a feature structure as being like a Python dictionary,
+and access its values by indexing in the usual way.
+
+    >>> fs1 = dict(PER=3, NUM='pl', GND='fem')
+    >>> print fs1['GND']
+    fem
+
+We can also define feature structures which have complex values, as
+discussed earlier.
+
+    >>> fs2 = dict(POS='N', AGR=fs1)
+    >>> print fs2
+    {'AGR': {'NUM': 'pl', 'GND': 'fem', 'PER': 3}, 'POS': 'N'}
+    >>> print fs2['AGR']
+    {'NUM': 'pl', 'GND': 'fem', 'PER': 3}
+    >>> print fs2['AGR']['PER']
+    3
+
+An alternative method of specifying feature structures in NLTK is to
+use the ``load`` method of ``yaml``. This gives us the
+facility to use square bracket notation for embedding one feature
+structure within another.
+
+Representing dictionaries in YAML form is useful for making feature
+structures readable:
+    
+    >>> from parse.featurelite import *
+    >>> f1 = yaml.load("NUMBER: SINGULAR")
+    >>> f2 = yaml.load("PERSON: 3")
+    >>> print show(unify(f1, f2))
+    NUMBER: SINGULAR
+    PERSON: 3
+
+    >>> f1 = yaml.load('''
+    ... A:
+    ...   B: b
+    ...   D: d
+    ... ''')
+    >>> f2 = yaml.load('''
+    ... A:
+    ...   C: c
+    ...   D: d
+    ... ''')
+    >>> print show(unify(f1, f2))
+    A:
+      B: b
+      C: c
+      D: d
+
+
+Feature Structures as Graphs
+----------------------------
+
+Feature structures are not inherently tied to linguistic objects; they are
+general purpose structures for representing knowledge. For example, we
+could encode information about a person in a feature structure:
+
+    >>> person01 = yaml.load('''
+    ... NAME: 'Lee'
+    ... TELNO: '01 27 86 42 96'
+    ... AGE: 33
+    ... ''')
+    >>> print show(person01)
+    AGE: 33
+    NAME: Lee
+    TELNO: 01 27 86 42 96
+
+There are a number of notations for representing reentrancy in
+matrix-style representations of feature structures. In NLTK, we adopt
+the following convention: the first occurrence of a shared feature structure 
+is prefixed with an integer in parentheses, such as ``(1)``, and any
+subsequent reference to that structure uses the notation
+``->(1)``, as shown below.
+
+    >>> fs=yaml.load("""
+    ... NAME: 'Lee'
+    ... ADDRESS: &1
+    ...   NUMBER: 74
+    ...   STREET: 'rue Pascal'
+    ... SPOUSE:
+    ...   NAME: 'Kim'
+    ...   ADDRESS: *1
+    ... """)
+    >>> print show(fs)
+    ADDRESS: &id001
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS: *id001
+      NAME: Kim
+
+There can be any number of tags within a single feature structure.
+
+    >>> fs3 = yaml.load("""
+    ... A: 'a'
+    ... B: &1
+    ...   C: 'c'
+    ... D: *1
+    ... E: *1
+    ... """)
+    >>> print show(fs3)
+    A: a
+    B: &id001
+      C: c
+    D: *id001
+    E: *id001
+
+    >>> fs4 = yaml.load("""
+    ... A: ?x
+    ... B: ?y
+    ... C: ?x
+    ... D: ?y
+    ... """)
+    >>> print show(fs4)
