@@ -106,7 +106,7 @@ wordnet:
 
 iso:	.dist.done .python.done .numpy.done .wordnet.done
 	rm -rf iso nltk_lite-$(NLTK_VERSION)
-	mkdir -p iso/web iso/web/screenshots/ iso/mac iso/win iso/unix
+	mkdir -p iso/mac iso/win iso/unix
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
 	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
 	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/unix/
@@ -114,8 +114,6 @@ iso:	.dist.done .python.done .numpy.done .wordnet.done
 	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
 	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
 	cp *.txt *.html					iso
-	cp web/*.{html,css,png}                         iso/web/
-	cp web/screenshots/*.jpg                        iso/web/screenshots
 	cp python/mac/*                                 iso/mac/
 	cp python/win/*                                 iso/win/
 	cp python/unix/*                                iso/unix/
@@ -128,7 +126,7 @@ iso:	.dist.done .python.done .numpy.done .wordnet.done
 
 .PHONY: rsync
 
-WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs/lite
+WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
 rsync:	clean_up
