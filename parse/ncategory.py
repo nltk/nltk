@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Categories
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
-# Author: Contributed by Rob Speer (NLTK version)
+# Author: Contributed by Rob Speer <rspeer@mit.edu> 
 #         Steven Bird <sb@csse.unimelb.edu.au> (NLTK-Lite Port)
 #         Ewan Klein <ewan@inf.ed.ac.uk> (Hooks for semantics)
 #         Peter Wang <wangp@csse.unimelb.edu.au> (Overhaul)
@@ -697,20 +697,27 @@ class GrammarFile(object):
         use parse.get_from_svn() to pull the file from the svn repository.
         """
         gram_index = {}
+        # Try to recover an index of the grammar files from the SVN Repository
         try:
-            gram_index = yaml.load(open('grammars.yml'))
+            qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/branches/new_syn_sem/'
+            remote_fn = get_from_svn('grammars.yml', qualifier = qualifier)
+            gram_index = yaml.load(open(remote_fn))
         except IOError:
             pass
+        # See if we have a local copy
         try:
             f = open(filename)
         except IOError:
+            # Otherwise, try looking up the local path in gram_index, if it's been recovered
             if filename in gram_index:
                 path = gram_index[filename]
                 local = path + filename
+            # Maybe the filename has got enough path information already               
             else:
                 local = filename
             f = open(get_from_svn(local))
         lines = f.readlines()
+        # check that a file we recovered from SVN isn't just a '404 Not Found' page
         for line in lines:
             if 'ViewVCException: 404 Not Found' in line:
                 raise IOError("The file '%s' can't be found in the NLTK SVN Repository" % filename)

@@ -162,7 +162,7 @@ class AbstractParse(ParseI):
             print "%d parses." % len(parses)
             for tree in parses: print tree
  
-def get_from_svn(nltk_file):
+def get_from_svn(nltk_file, qualifier=None):
     """
     Fetch a file from the NLTK SVN repository on Sourceforge.
     
@@ -172,7 +172,8 @@ def get_from_svn(nltk_file):
     wraps the error in a valid HTML page.
     """
     from urllib import urlretrieve
-    qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
+    if qualifier is None:
+        qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
     qname = qualifier + nltk_file
     return urlretrieve(qname)[0] 
 

@@ -4,53 +4,48 @@ tested and revised. Assuming we have saved feat0cfg_ as a file named
 ``'feat0.cfg'``, the function ``GrammarFile.read_file()`` allows us to
 read the grammar into NLTK, ready for use in parsing.
 
-    >>> from parse import GrammarFile
-    >>> g = GrammarFile.read_file('feat0.cfg')
+    >>> from parse import ncategory
+    >>> g = ncategory.GrammarFile.read_file('feat0.cfg')
     >>> import tokenize
     >>> sent = 'Kim likes children'
     >>> tokens = list(tokenize.whitespace(sent))
     >>> tokens 
     ['Kim', 'likes', 'children']
-    >>> cp = g.earley_parser(trace=10)
+    >>> cp = g.earley_parser(trace=2)
     >>> trees = cp.get_parse_list(tokens)
               |.K.l.c.|
     Processing queue 0
-    Predictor |> . . .| S -> * NP[NUM=?n] VP[NUM=?n] 
-    Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] 
-    Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] 
-    Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] 
-    Predictor |> . . .| NP[NUM=pl] -> * N[NUM=pl] 
+    Predictor |> . . .| S -> * NP[NUM=?n] VP[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM='pl'] -> * N[NUM='pl'] {} 
     Processing queue 1
-    Scanner   |[-] . .| [0:1] 'Kim' 
-    Completer |[-] . .| NP[NUM=sg] -> PropN[NUM=sg] * 
-    Completer |[-> . .| S -> NP[NUM=sg] * VP[NUM=sg] 
-    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] 
-    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP 
+    Scanner   |[-] . .| PropN[NUM='sg'] -> Kim * {} 
+    Completer |[-] . .| NP[NUM='sg'] -> PropN[NUM='sg'] * {'n': 'sg'} 
+    Completer |[-> . .| S -> NP[NUM='sg'] * VP[NUM='sg'] {'n': 'sg'} 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] {} 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP {} 
     Processing queue 2
-    Scanner   |. [-] .| [1:2] 'likes' 
-    Completer |. [-> .| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] * NP 
-    Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] 
-    Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] 
-    Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] 
-    Predictor |. . > .| NP[NUM=pl] -> * N[NUM=pl] 
+    Scanner   |. [-] .| TV[NUM='sg', TENSE='pres'] -> likes * {} 
+    Completer |. [-> .| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] * NP {'t': 'pres', 'n': 'sg'} 
+    Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM='pl'] -> * N[NUM='pl'] {} 
     Processing queue 3
-    Scanner   |. . [-]| [2:3] 'children' 
-    Completer |. . [-]| NP[NUM=pl] -> N[NUM=pl] * 
-    Completer |. [---]| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] NP * 
-    Completer |[=====]| S -> NP[NUM=sg] VP[NUM=sg] * 
-    Completer |[=====]| [INIT] -> S * 
+    Scanner   |. . [-]| N[NUM='pl'] -> children * {} 
+    Completer |. . [-]| NP[NUM='pl'] -> N[NUM='pl'] * {'n': 'pl'} 
+    Completer |. [---]| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP * {'t': 'pres', 'n': 'sg'} 
+    Completer |[=====]| S -> NP[NUM='sg'] VP[NUM='sg'] * {'n': 'sg'} 
+    Completer |[=====]| [INIT] -> S * {} 
     >>> for tree in trees: print tree
-    ([INIT][]:
-      (S[]:
-        (NP[ NUM = sg[] ]: (PropN[ NUM = sg[] ]: 'Kim'))
-        (  [ NUM   = sg[]   ]
-    VP[                ]
-      [ TENSE = pres[] ]:
-          (  [ NUM   = sg[]   ]
-    TV[                ]
-      [ TENSE = pres[] ]:
-            'likes')
-          (NP[ NUM = pl[] ]: (N[ NUM = pl[] ]: 'children')))))
+    ([INIT]:
+      (S:
+        (NP[NUM='sg']: (PropN[NUM='sg']: 'Kim'))
+        (VP[NUM='sg', TENSE='pres']:
+          (TV[NUM='sg', TENSE='pres']: 'likes')
+          (NP[NUM='pl']: (N[NUM='pl']: 'children')))))	
 
 Feature structures in NLTK are ... Atomic feature values can be strings or
 integers.
@@ -167,10 +162,147 @@ There can be any number of tags within a single feature structure.
     D: *id001
     E: *id001
 
-    >>> fs4 = yaml.load("""
-    ... A: ?x
-    ... B: ?y
-    ... C: ?x
-    ... D: ?y
+
+    >>> fs1 = yaml.load("""
+    ... NUMBER: 74
+    ... STREET: 'rue Pascal'
     ... """)
-    >>> print show(fs4)
+    >>> fs2 = yaml.load("CITY: Paris")
+    >>> print show(unify(fs1, fs2))
+    CITY: Paris
+    NUMBER: 74
+    STREET: rue Pascal
+
+Unification is symmetric:
+
+    >>> unify(fs1, fs2) == unify(fs2, fs1)
+    True
+
+Unification is commutative:
+
+    >>> fs3 = yaml.load("TELNO: 01 27 86 42 96")
+    >>> unify(unify(fs1, fs2), fs3) == unify(fs1, unify(fs2, fs3))
+    True
+
+Unification between `FS`:math:\ :subscript:`0` and `FS`:math:\
+:subscript:`1` will fail if the two feature structures share a path |pi|,
+but the value of |pi| in `FS`:math:\ :subscript:`0` is a distinct
+atom from the value of |pi| in `FS`:math:\ :subscript:`1`. In NLTK,
+this is implemented by setting the result of unification to be
+``None``.
+
+    >>> fs0 = dict(A='a')
+    >>> fs1 = dict(A='b')
+    >>> unify(fs0, fs1)
+    Traceback (most recent call last):
+    ...
+    UnificationFailure
+
+Now, if we look at how unification interacts with structure-sharing,
+things become really interesting.
+
+    >>> fs0 = yaml.load("""
+    ... NAME: Lee
+    ... ADDRESS: 
+    ...   NUMBER: 74 
+    ...   STREET: 'rue Pascal'
+    ... SPOUSE:  
+    ...   NAME: Kim
+    ...   ADDRESS: 
+    ...     NUMBER: 74
+    ...     STREET: 'rue Pascal'
+    ... """)
+    >>> print show(fs0)
+    ADDRESS:
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS:
+        NUMBER: 74
+        STREET: rue Pascal
+      NAME: Kim
+
+    >>> fs1 = yaml.load("""
+    ... SPOUSE: 
+    ...   ADDRESS: 
+    ...     CITY: Paris
+    ... """)
+    >>> print show(unify(fs0, fs1))
+    ADDRESS:
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS:
+        CITY: Paris
+        NUMBER: 74
+        STREET: rue Pascal
+      NAME: Kim
+
+    >>> fs0 = yaml.load("""
+    ... NAME: Lee
+    ... ADDRESS: &1
+    ...   NUMBER: 74 
+    ...   STREET: 'rue Pascal'
+    ... SPOUSE:  
+    ...   NAME: Kim
+    ...   ADDRESS: *1
+    ... """)
+    >>> print show(fs0)
+    ADDRESS: &id001
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS: *id001
+      NAME: Kim
+
+    >>> print show(unify(fs0, fs1))
+    ADDRESS: &id001
+      CITY: Paris
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS: *id001
+      NAME: Kim
+
+    >>> fs1 = yaml.load("""
+    ... ADDRESS1: 
+    ...   NUMBER: 74
+    ...   STREET: 'rue Pascal'
+    ... """)
+
+    >>> fs2 = yaml.load("""
+    ... ADDRESS1: ?x
+    ... ADDRESS2: ?x
+    ... """)
+
+    >>> print show(unify(fs1, fs2))
+    ADDRESS1: &id001
+      NUMBER: 74
+      STREET: rue Pascal
+    ADDRESS2: *id001
+
+    >>> from parse import ncategory
+    >>> g = ncategory.GrammarFile.read_file('feat1.cfg')
+    >>> import tokenize
+    >>> sent = 'who do you claim that you like'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> cp = g.earley_parser(trace=0)
+    >>> trees = cp.get_parse_list(tokens)
+    >>> for tree in trees: print tree
+    ([INIT]:
+      (S[-INV]:
+        (NP[+WH]: 'who')
+        (S[+INV]/NP:
+          (V[+AUX, SUBCAT=3]: 'do')
+          (NP[-WH]: 'you')
+          (VP/NP:
+            (V[-AUX, SUBCAT=2]: 'claim')
+            (S-BAR/NP:
+              (Comp: 'that')
+              (S[-INV]/NP:
+                (NP[-WH]: 'you')
+                (VP/NP: (V[-AUX, SUBCAT=1]: 'like') (NP/NP: ))))))))
