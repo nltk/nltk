@@ -696,10 +696,20 @@ class GrammarFile(object):
         Look first for a local copy of the file. If that doesn't work,
         use parse.get_from_svn() to pull the file from the svn repository.
         """
+        gram_index = {}
+        try:
+            gram_index = yaml.load(open('grammars.yml'))
+        except IOError:
+            pass
         try:
             f = open(filename)
         except IOError:
-            f = open(get_from_svn(filename))
+            if filename in gram_index:
+                path = gram_index[filename]
+                local = path + filename
+            else:
+                local = filename
+            f = open(get_from_svn(local))
         lines = f.readlines()
         for line in lines:
             if 'ViewVCException: 404 Not Found' in line:
@@ -737,10 +747,15 @@ def demo():
     print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
-    g = GrammarFile.read_file("nltk_lite/parse/test.cfg")
+    print "Find grammar file name in 'grammars.yml' and fetch from SVN"
+    g = GrammarFile.read_file("test.cfg")
     print g.grammar()
+    print
+    print "Fetch from SVN"   
     g = GrammarFile.read_file("examples/parse/feat1.cfg")
-    print g.grammar()	
+    print g.grammar()
+    print
+    print "Find locally"   
     g = GrammarFile.read_file("gazdar6.cfg")
     print g.grammar()
     
