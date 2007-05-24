@@ -10,7 +10,7 @@
 #
 # $Id$
 
-from nltk_lite.semantics import logic
+from semantics import logic
 from cfg import *
 from kimmo import kimmo
 
