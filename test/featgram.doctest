@@ -306,3 +306,31 @@ things become really interesting.
               (S[-INV]/NP:
                 (NP[-WH]: 'you')
                 (VP/NP: (V[-AUX, SUBCAT=1]: 'like') (NP/NP: ))))))))
+
+Try a more succinct interface to the parser:
+
+    >>> from parse.featurechart import *
+    >>> cp = load_earley('feat1.cfg', trace=0)
+    >>> trees = cp.parse(tokens)
+    >>> for tree in trees: print tree
+    (S[-INV]:
+      (NP[+WH]: 'who')
+      (S[+INV]/NP:
+        (V[+AUX, SUBCAT=3]: 'do')
+        (NP[-WH]: 'you')
+        (VP/NP:
+          (V[-AUX, SUBCAT=2]: 'claim')
+          (S-BAR/NP:
+            (Comp: 'that')
+            (S[-INV]/NP:
+              (NP[-WH]: 'you')
+              (VP/NP: (V[-AUX, SUBCAT=1]: 'like') (NP/NP: )))))))
+
+Let's load a German grammar:
+
+    >>> g = ncategory.GrammarFile.read_file('german1.cfg')
+    >>> sent = 'die katze sieht dem hund'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> cp = g.earley_parser(trace=0)
+    >>> trees = cp.get_parse_list(tokens)
+    >>> for tree in trees: print tree
