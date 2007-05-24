@@ -162,9 +162,9 @@ class AbstractParse(ParseI):
             print "%d parses." % len(parses)
             for tree in parses: print tree
  
-def get_from_svn(nltk_file, qualifier=None):
+def get_from_sf(nltk_file, qualifier=None):
     """
-    Fetch a file from the NLTK SVN repository on Sourceforge.
+    Fetch a file from the NLTK site on Sourceforge.
     
     urllib.urlretrieve() returns the name of a locally-cached 
     copy of the file, e.g.'/tmp/tmpmgDTlg.cfg'. Note that ViewVC
@@ -173,7 +173,8 @@ def get_from_svn(nltk_file, qualifier=None):
     """
     from urllib import urlretrieve
     if qualifier is None:
-        qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
+        #qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
+        qualifier = 'http://nltk.sourceforge.net/'
     qname = qualifier + nltk_file
     return urlretrieve(qname)[0] 
 

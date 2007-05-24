@@ -13,7 +13,7 @@
 from semantics import logic
 from cfg import *
 from kimmo import kimmo
-from parse import get_from_svn
+from parse import get_from_sf
 
 from featurelite import *
 from copy import deepcopy
@@ -694,13 +694,13 @@ class GrammarFile(object):
     def apply_file(self, filename):
         """
         Look first for a local copy of the file. If that doesn't work,
-        use parse.get_from_svn() to pull the file from the svn repository.
+        use parse.get_from_sf() to pull the file from the NLTK sourceforge site.
         """
         gram_index = {}
-        # Try to recover an index of the grammar files from the SVN Repository
+        # Try to recover an index of the grammar files from Sourceforge 
         try:
             qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/branches/new_syn_sem/'
-            remote_fn = get_from_svn('grammars.yml', qualifier = qualifier)
+            remote_fn = get_from_sf('grammars.yml', qualifier = qualifier)
             gram_index = yaml.load(open(remote_fn))
         except IOError:
             pass
@@ -715,12 +715,12 @@ class GrammarFile(object):
             # Maybe the filename has got enough path information already               
             else:
                 local = filename
-            f = open(get_from_svn(local))
+            f = open(get_from_sf(local))
         lines = f.readlines()
-        # check that a file we recovered from SVN isn't just a '404 Not Found' page
+        # check that a file we recovered from SF isn't just a '404 Not Found' page
         for line in lines:
             if 'ViewVCException: 404 Not Found' in line:
-                raise IOError("The file '%s' can't be found in the NLTK SVN Repository" % filename)
+                raise IOError("The file '%s' can't be found in the NLTK Sourceforge Site" % filename)
         self.apply_lines(lines)
         f.close()
     
@@ -754,11 +754,11 @@ def demo():
     print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
-    print "Find grammar file name in 'grammars.yml' and fetch from SVN"
+    print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge"
     g = GrammarFile.read_file("test.cfg")
     print g.grammar()
     print
-    print "Fetch from SVN"   
+    print "Fetch from Sourceforge"   
     g = GrammarFile.read_file("examples/parse/feat1.cfg")
     print g.grammar()
     print
