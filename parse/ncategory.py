@@ -13,6 +13,7 @@
 from semantics import logic
 from cfg import *
 from kimmo import kimmo
+from parse import get_from_svn
 
 from featurelite import *
 from copy import deepcopy
@@ -691,8 +692,18 @@ class GrammarFile(object):
                         self.grammatical_productions.append(rule)
 
     def apply_file(self, filename):
-        f = open(filename)
+        """
+        Look first for a local copy of the file. If that doesn't work,
+        use parse.get_from_svn() to pull the file from the svn repository.
+        """
+        try:
+            f = open(filename)
+        except IOError:
+            f = open(get_from_svn(filename))
         lines = f.readlines()
+        for line in lines:
+            if 'ViewVCException: 404 Not Found' in line:
+                raise IOError("The file '%s' can't be found in the NLTK SVN Repository" % filename)
         self.apply_lines(lines)
         f.close()
     
@@ -726,7 +737,11 @@ def demo():
     print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
-    g = GrammarFile.read_file("speer.cfg")
+    g = GrammarFile.read_file("nltk_lite/parse/test.cfg")
+    print g.grammar()
+    g = GrammarFile.read_file("examples/parse/feat1.cfg")
+    print g.grammar()	
+    g = GrammarFile.read_file("gazdar6.cfg")
     print g.grammar()
     
 if __name__ == '__main__':
