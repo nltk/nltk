@@ -161,7 +161,21 @@ class AbstractParse(ParseI):
             parses = self.parse(line)
             print "%d parses." % len(parses)
             for tree in parses: print tree
-            
+ 
+def get_from_svn(nltk_file):
+    """
+    Fetch a file from the NLTK SVN repository on Sourceforge.
+    
+    urllib.urlretrieve() returns the name of a locally-cached 
+    copy of the file, e.g.'/tmp/tmpmgDTlg.cfg'. Note that ViewVC
+    doesn't raise an HTTP 404 error if the file can't be found, but
+    wraps the error in a valid HTML page.
+    """
+    from urllib import urlretrieve
+    qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
+    qname = qualifier + nltk_file
+    return urlretrieve(qname)[0] 
+
 from cfg import *
 from tree import *
 from category import *
