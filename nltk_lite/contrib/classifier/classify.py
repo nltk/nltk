@@ -93,7 +93,7 @@ class Classify(cl.CommandLineInterface):
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path)
         classifier = ALGORITHM_MAPPINGS[self.algorithm](training, attributes, klass)
         classification_strategy = self.get_classification_strategy(classifier, test, gold)
-        self.log_common_params('Classifier:')
+        self.log_common_params('Classification')
         classification_strategy.classify()
         classification_strategy.print_results(self.log, self.get_value(ACCURACY), self.get_value(ERROR), self.get_value(F_SCORE), self.get_value(PRECISION), self.get_value(RECALL))
         classification_strategy.write(self.log, self.get_value(WRITE), self.data_format, '-c_' + self.algorithm)

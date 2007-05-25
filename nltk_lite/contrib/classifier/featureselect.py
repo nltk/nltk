@@ -13,7 +13,10 @@ import copy
 import sys
 
 a_help = "Selects the feature selection algorithm                 " \
-       + "Options: RNK for Ranking(Filter based Feature Selection)" \
+       + "Options: RNK for Ranking(Filter method of Feature       " \
+       + "                         Selection)                     " \
+       + "         FS for Forward Selection(Wrapper)              " \
+       + "         BE for Backward Eliminiation(Wrapper)          " \
        + "Default: RNK.                                           "
        
 f_help = "Base name of attribute, klass, training, test and gold  " \
@@ -26,15 +29,24 @@ T_help = "Base name of test file for feature selection.           "
 g_help = "Base name of gold file for feature selection.           "
 
 o_help = "Algorithm specific options                              " \
-       + "For rank based feature selection the options should     " \
+       + "                                                        " \
+       + "For RNK based feature selection the options should      " \
        + "include the method to calculate the rank:               " \
        + "  IG: for Information gain                              " \
        + "  GR: for Gain ratio                                    " \
        + "followed by a number which indicates the number of      " \
-       + "attributes which should be chosen.                      "
+       + "attributes which should be chosen.                      " \
+       + "                                                        " \
+       + "For FS and BE based feature selection the options should" \
+       + "compulsorily include the induction algorithm as the first" \
+       + "parameter. The second and third parameters are the fold " \
+       + "and delta respectively. The default value of fold is 10." \
+       + "The default value of delta is 0.                        " 
 
 R_help = "Ranking algorithm.                                      "
-OPTION_MAPPINGS = {'IG': 'information_gain', 'GR': 'gain_ratio'}
+INFORMATION_GAIN = 'IG'
+GAIN_RATIO = 'GR'
+OPTION_MAPPINGS = {INFORMATION_GAIN: 'information_gain', GAIN_RATIO: 'gain_ratio'}
 
 RANK='RNK'
 FORWARD_SELECTION='FS'
@@ -60,7 +72,7 @@ class FeatureSelect(cl.CommandLineInterface):
             self.error("Invalid options for Rank based Feature selection. Options Found: " + str(self.options))
         if (self.algorithm == FORWARD_SELECTION or self.algorithm == BACKWARD_ELIMINATION) and wrapper_options_invalid(self.options):
             self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
-        self.log_common_params('Feature Selection:')
+        self.log_common_params('FeatureSelection')
         if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
         self.select_features_and_write_to_file()
 
@@ -93,7 +105,7 @@ class FeatureSelection:
         self.options = options
         
     def by_rank(self):
-        if self.attributes.has_continuous_attributes():
+        if self.attributes.has_continuous():
             raise inv.InvalidDataError("Rank based feature selection cannot be performed on continuous attributes.")
         if rank_options_invalid(self.options):
             raise inv.InvalidDataError("Invalid options for Rank based Feature selection.")#Additional validation when not used from command prompt

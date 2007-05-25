@@ -20,7 +20,7 @@ class Classifier:
     def validate_training(self):
         if not self.training.are_valid(self.klass, self.attributes): 
             raise inv.InvalidDataError('Training data invalid.')
-        if not self.can_handle_continuous_attributes() and self.attributes.has_continuous_attributes(): 
+        if not self.can_handle_continuous_attributes() and self.attributes.has_continuous(): 
             raise inv.InvalidDataError('One or more attributes are continuous.')
     
     def test(self, path):
