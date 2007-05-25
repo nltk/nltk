@@ -115,7 +115,8 @@ class TrainingInstances(Instances):
         self.data.sort(key=lambda instance: instance.klass_value)
         for index in range(len(self.data)): stratified[index % fold].append(self.data[index])
         return stratified
-        
+
+#todo remove this      
 class TestInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)

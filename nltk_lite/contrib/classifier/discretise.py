@@ -64,7 +64,7 @@ class Discretise(cl.CommandLineInterface):
         
         if not self.algorithm == NAIVE_SUPERVISED and self.options is None: 
             self.error("Invalid arguments. One or more required arguments are not present.")
-        self.log_common_params('Discretiser:')    
+        self.log_common_params('Discretisation')    
         if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
         self.discretise_and_write_to_file()
         

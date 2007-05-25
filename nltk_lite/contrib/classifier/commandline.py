@@ -65,7 +65,7 @@ class CommandLineInterface(OptionParser):
         if log_file is not None:
             self.log = open(log_file, 'a')
             print >>self.log, '-' * 40
-            print >>self.log, time.strftime('%c', time.localtime())
+            print >>self.log, 'DateTime: ' + time.strftime('%c', time.localtime())
 
     def run(self, args):
         """
@@ -115,7 +115,7 @@ class CommandLineInterface(OptionParser):
     
     def log_common_params(self, name):
         if self.log is not None: 
-            print >>self.log, name
+            print >>self.log, 'Operation: ' + name
             print >>self.log, '\nAlgorithm: ' + str(self.algorithm) + '\nTraining: ' + str(self.training_path) + '\nTest: ' + str(self.test_path) + '\nGold: ' + str(self.gold_path)
 
 def as_integers(name, com_str):
