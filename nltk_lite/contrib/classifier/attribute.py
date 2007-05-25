@@ -64,7 +64,7 @@ class Attributes(UserList.UserList):
             if not self.data[i].has_value(test_value): return False
         return True
     
-    def has_continuous_attributes(self):
+    def has_continuous(self):
         for attribute in self.data:
             if attribute.is_continuous(): 
                 return True
@@ -97,6 +97,12 @@ class Attributes(UserList.UserList):
         for i in range(len(self.data)):
             self.data[i].index = i
             
+    def continuous_attribute_indices(self):
+        indices = []
+        for atr in self.data:
+            if atr.is_continuous(): indices.append(atr.index)
+        return indices
+        
     def __str__(self):
         str = '['
         for each in self:

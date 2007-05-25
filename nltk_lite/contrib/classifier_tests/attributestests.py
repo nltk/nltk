@@ -41,10 +41,10 @@ class AttributesTestCase(unittest.TestCase):
 
     def test_has_continuous_attibutes_returns_true_if_even_1_attr_is_cont(self):
         has_cont = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
-        self.assertTrue(has_cont.has_continuous_attributes())
+        self.assertTrue(has_cont.has_continuous())
         
         all_disc = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
-        self.assertFalse(all_disc.has_continuous_attributes())
+        self.assertFalse(all_disc.has_continuous())
         
     def test_does_not_check_continuous_attribute_for_validity(self):
         has_cont = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
@@ -98,13 +98,10 @@ class AttributesTestCase(unittest.TestCase):
         self.assertEqual(6, len(attrs))
         self.assertEqual(attr1, attrs[0])
 
-#    def test_combinations(self):
-#        path = datasetsDir(self) + 'numerical' + SEP + 'person'
-#        attrs = format.C45_FORMAT.get_attributes(path)
-#        
-#        self.assertEqual(8, len(attrs))
-#        combinations = attrs.combinations(1)
-#        self.assertEqual(8, len(combinations))
+    def test_continuous_indices(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        attrs = format.C45_FORMAT.get_attributes(path)
+        self.assertEqual([0, 1, 4, 5, 6, 7], attrs.continuous_attribute_indices())
         
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
