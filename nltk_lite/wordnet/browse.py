@@ -8,6 +8,7 @@
 from nltk_lite.wordnet import *
 from textwrap import TextWrapper
 from string import join
+from random import randint
 
 tw = TextWrapper(subsequent_indent="    ")
 
@@ -15,15 +16,21 @@ def show(synsets, index):
     return "%d %s;" % (index, synsets[index][0])
 
 def print_gloss(synsets, index):
-    print "Gloss: " + synsets[index].gloss
+    print index, join(tw.wrap(synsets[index].gloss), "\n")
+
+def print_all_glosses(synsets):
+    for index in range(len(synsets)):
+        print_gloss(synsets, index)
 
 def print_all(synsets):
-    for i in range(len(synsets)):
-        print show(synsets, i),
+    for index in range(len(synsets)):
+        print show(synsets, index),
     print
 
 def help():
-    print '"word", d=down, u=up, g=gloss, s=synonyms, a=all-senses, 0-9=sense'
+    print 'Lookup a word by giving the word in double quotes, e.g. "dog".'
+    print 'Each word has one or more senses, pick a sense by typing a number.'
+    print 'd=down, u=up, g=gloss, s=synonyms, a=all-senses, v=verbose, r=random.'
 
 def browse(word="", index=0):
     print "Wordnet browser (type 'h' for help)"
@@ -39,7 +46,7 @@ def browse(word="", index=0):
             word = input[1:-1]
             synsets = N[word]
             index = 0
-            print show(synsets, index)
+            print_all(synsets)
         elif input[0] in "0123456789":
             if int(input) < len(synsets):
                 index = int(input)
@@ -50,8 +57,13 @@ def browse(word="", index=0):
             print_all(synsets)
         elif input[0] is "g":
             print_gloss(synsets, index)
+        elif input[0] is "v":
+            print_all_glosses(synsets)
         elif input[0] is "h":
             help()
+        elif input[0] is "r":
+            offset = randint(len(N))
+            synsets = N[offset]
         elif input[0] is "u":
             if synsets[index][HYPERNYM]:
                 synsets = synsets[index][HYPERNYM]
@@ -68,6 +80,8 @@ def browse(word="", index=0):
                 print "Cannot go down"
         elif input[0] is "s":
             print "Synonyms:", join(word for word in synsets[index])
+        else:
+            print "Unrecognised command, type 'h' for help"
             
 if __name__ == '__main__':
     browse()
