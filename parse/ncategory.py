@@ -709,8 +709,8 @@ class GrammarFile(object):
             gram_index = {}
             # Try to recover an index of the grammar files from Sourceforge 
             try:
-                qualifier = 'http://nltk.sourceforge.net/examples/'
-                #qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/branches/new_syn_sem/'
+                #qualifier = 'http://nltk.sourceforge.net/examples/'
+                qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/examples/'
                 remote_fn = get_from_sf('grammars.yml', qualifier = qualifier)
                 gram_index = yaml.load(open(remote_fn))
             except IOError:

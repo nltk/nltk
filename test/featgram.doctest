@@ -309,7 +309,7 @@ things become really interesting.
 
 Try a more succinct interface to the parser:
 
-    >>> from parse.featurechart import *
+    >>> from parse import *
     >>> cp = load_earley('feat1.cfg', trace=0)
     >>> trees = cp.parse(tokens)
     >>> for tree in trees: print tree
@@ -328,9 +328,18 @@ Try a more succinct interface to the parser:
 
 Let's load a German grammar:
 
-    >>> g = ncategory.GrammarFile.read_file('german1.cfg')
-    >>> sent = 'die katze sieht dem hund'
+    >>> from parse import *
+    >>> cp = load_earley('german0.cfg', trace=0)
+    >>> sent = 'die katze sieht den hund'
     >>> tokens = list(tokenize.whitespace(sent))
-    >>> cp = g.earley_parser(trace=0)
-    >>> trees = cp.get_parse_list(tokens)
+    >>> trees = cp.parse(tokens)
     >>> for tree in trees: print tree
+    (S:
+      (NP[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']:
+        (Det[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']: 'die')
+        (N[AGR=[GND='fem', NUM='sg', PER=3]]: 'katze'))
+      (VP[AGR=[NUM='sg', PER=3]]:
+        (TV[AGR=[NUM='sg', PER=3], OBJCASE='acc']: 'sieht')
+        (NP[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc']:
+          (Det[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc']: 'den')
+          (N[AGR=[GND='masc', NUM='sg', PER=3]]: 'hund'))))

@@ -173,7 +173,6 @@ def get_from_sf(nltk_file, qualifier=None):
     """
     from urllib import urlretrieve
     if qualifier is None:
-        #qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
         qualifier = 'http://nltk.sourceforge.net/'
     qname = qualifier + nltk_file
     return urlretrieve(qname)[0] 
