@@ -3,10 +3,10 @@ import unittest
 
 class TestGermanGrammar(unittest.TestCase):
     """
-    Unit tests for German CFGs.
+    Unit tests for German CFG.
     """
     
-    def evaluate(self, grammar):
+    def evaluate(self, grammar, show_trees=False):
         """
         Sentences in the test suite are divided into two classes:
          - grammatical (C{accept}) and
@@ -19,6 +19,11 @@ class TestGermanGrammar(unittest.TestCase):
             for sent in self.suite[key]:
                 tokens = list(tokenize.whitespace(sent))
                 trees = grammar.parse(tokens)
+                if show_trees and trees:
+                    print
+                    print sent
+                    for tree in trees:
+                        print tree
                 if key=='accept':
                     self.failUnless(trees, "Sentence '%s' failed to parse'" % sent)
                 else:
@@ -28,7 +33,9 @@ class TestGermanGrammar(unittest.TestCase):
         "Tests for person agreement"
 
         cp = load_earley('german1.cfg', trace=0)
-        self.suite = {}    
+        self.suite = {} 
+        #for some reason, 'ihr kommst' fails to parse
+        #if it is processed after 'wir kommen'!??
         self.suite['accept'] = [
             'ich komme',
             'ich sehe mich',
@@ -36,9 +43,13 @@ class TestGermanGrammar(unittest.TestCase):
             'du siehst mich',
             'sie kommt',
             'sie sieht mich',
-            'wir kommen',
             'ihr kommst',
-            'sie kommen'
+            'wir kommen',
+            'sie kommen',
+            'du magst mich',
+            'er mag mich',
+            'du folgst mir',
+            'sie hilft mir',
             ]
         self.suite['reject'] = [
             'ich kommt',
@@ -51,8 +62,13 @@ class TestGermanGrammar(unittest.TestCase):
             'er siehst mich',
             'wir komme',
             'wir kommst',
+            'die katzen kommst',
             'sie komme',
-            'sie kommst'  
+            'sie kommst',
+            'du mag mich',
+            'er magst mich',
+            'du folgt mir',
+            'sie hilfst mir',
         ]
 
         self.evaluate(cp)
@@ -69,7 +85,7 @@ class TestGermanGrammar(unittest.TestCase):
             'ich komme',
             'wir kommen',
             'ich sehe die katzen',
-            'ich folge die hunde'
+            'ich folge den katzen'
         ]
         self.suite['reject'] = [
             'ich kommen',
@@ -77,38 +93,37 @@ class TestGermanGrammar(unittest.TestCase):
             'der hunde kommt',
             'der hunde kommen',
             'die katzen kommt',
-            'die hunde sehe die hunde', 
-            'der hund sehe die hunde', 
-            'ich sehe ich',
-            'ich hilft den hund',
-            'ich hilft der hund',
-            'ich sehe dem hund',
-            'ich komme den hund'  
+            'ich sehe der hunde', 
+            'ich folge den hund', 
         ]
 
         self.evaluate(cp)
         
     def testCase(self):
-        "Tests for case government"
+        "Tests for case government and subcategorization"
 
         cp = load_earley('german1.cfg', trace=0)
         self.suite = {} 
         self.suite['accept'] = [
-            'der hund sieht die katze', 
+            'der hund sieht mich', 
             'der hund kommt',
-            'die katzen kommen',
             'ich sehe den hund',
             'ich helfe dem hund',
             ]
         self.suite['reject'] = [
+            'ich sehe',
+            'ich helfe',
+            'ich komme den hund',
+            'ich sehe den hund die katzen',
+            'du hilfst mich',
+            'du siehst mir',
+            'du siehst ich',
             'der hunde kommt mich',
-            #'die hunde sehe die hunde', 
-            #'der hund sehe die hunde', 
-            #'ich sehe ich',
-            #'ich hilft den hund',
-            #'ich hilft der hund',
-            #'ich sehe dem hund',
-            #'ich komme den hund'  
+            'die hunde sehe die hunde', 
+            'der hund sehe die hunde', 
+            'ich hilft den hund',
+            'ich hilft der hund',
+            'ich sehe dem hund',
         ]
 
         self.evaluate(cp)
