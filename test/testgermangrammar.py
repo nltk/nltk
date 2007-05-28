@@ -1,16 +1,20 @@
-from featurechart import *
-from parse import ncategory
+from parse import *
+#from featurechart import *
+#from parse import ncategory
 
-g = ncategory.GrammarFile.read_file('german_ma2.cfg')
+#g = ncategory.GrammarFile.read_file('german_ma2.cfg')
 
 good = [
-    'der hund sieht die katze', 
-    'der hund kommt',
-    'ich sehe den hund',
-    'ich helfe dem hund',
-    'der hund sieht mich',
-    'den hund sieht der hund',
-    'mich mag der hund'
+    'die katzen kommt',
+    #'ihr kommst', 
+    #'der hund kommt',
+    #'wir kommen',
+    #'die hunde kommen',
+    #'ich sehe den hund',
+    #'ich helfe dem hund',
+    #'der hund sieht mich',
+    #'den hund sieht der hund',
+    #'mich mag der hund'
 ]
 
 bad = [
@@ -29,7 +33,7 @@ def test_sents(sents, show_tree=False):
     for sent in sents:
         tokens = list(tokenize.whitespace(sent))
         #cp = g.earley_parser(trace=0)
-        cp = load_earley('german_ma2.cfg', trace=0)
+        cp = load_earley('german1.cfg', trace=1)
         trees = cp.parse(tokens)
 
         if not trees is None:
