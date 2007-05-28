@@ -1,13 +1,10 @@
-qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
-local = 'examples/parse/feat0.cfg'
+# requires kimmo 
 
 from featurechart import *
 
-file1 = 'gazdar6.cfg'
-
 def demo():
-    cp = load_earley(file1, trace=2)
-    trees = cp.parse('the man who chased Fido returned')
+    cp = load_earley('gazdar6.cfg', trace=2)
+    trees = cp.parse('the man returned')
     if trees:
         for tree in trees: print tree
 

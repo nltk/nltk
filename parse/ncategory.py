@@ -693,22 +693,28 @@ class GrammarFile(object):
 
     def apply_file(self, filename):
         """
+        Open the grammar file.
+        
         Look first for a local copy of the file. If that doesn't work,
+        look up a path for the file from 'grammars.yml', then
         use parse.get_from_sf() to pull the file from the NLTK sourceforge site.
         """
-        gram_index = {}
-        # Try to recover an index of the grammar files from Sourceforge 
-        try:
-            qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/branches/new_syn_sem/'
-            remote_fn = get_from_sf('grammars.yml', qualifier = qualifier)
-            gram_index = yaml.load(open(remote_fn))
-        except IOError:
-            pass
+ 
         # See if we have a local copy
+        er404 = re.compile('404 (Not Found|error)')
         try:
             f = open(filename)
         except IOError:
             # Otherwise, try looking up the local path in gram_index, if it's been recovered
+            gram_index = {}
+            # Try to recover an index of the grammar files from Sourceforge 
+            try:
+                qualifier = 'http://nltk.sourceforge.net/examples/'
+                #qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/branches/new_syn_sem/'
+                remote_fn = get_from_sf('grammars.yml', qualifier = qualifier)
+                gram_index = yaml.load(open(remote_fn))
+            except IOError:
+                pass
             if filename in gram_index:
                 path = gram_index[filename]
                 local = path + filename
@@ -719,8 +725,8 @@ class GrammarFile(object):
         lines = f.readlines()
         # check that a file we recovered from SF isn't just a '404 Not Found' page
         for line in lines:
-            if 'ViewVCException: 404 Not Found' in line:
-                raise IOError("The file '%s' can't be found in the NLTK Sourceforge Site" % filename)
+            if er404.search(line):
+                raise IOError("The file '%s' can't be found." % filename)
         self.apply_lines(lines)
         f.close()
     

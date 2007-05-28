@@ -5,6 +5,8 @@ class TestGermanGrammar(unittest.TestCase):
     """
     Unit tests for German CFG.
     """
+    def setUp(self):
+        self.test_grammar = 'german0.cfg'
     
     def evaluate(self, grammar, show_trees=False):
         """
@@ -32,7 +34,7 @@ class TestGermanGrammar(unittest.TestCase):
     def testPerson(self):
         "Tests for person agreement"
 
-        cp = load_earley('german1.cfg', trace=0)
+        cp = load_earley(self.test_grammar, trace=0)
         self.suite = {} 
         #for some reason, 'ihr kommst' fails to parse
         #if it is processed after 'wir kommen'!??
@@ -77,7 +79,7 @@ class TestGermanGrammar(unittest.TestCase):
     def testNumber(self):
         "Tests for number agreement"
         
-        cp = load_earley('german1.cfg', trace=0)
+        cp = load_earley(self.test_grammar, trace=0)
         self.suite = {} 
         self.suite['accept'] = [
             'der hund kommt',
@@ -102,7 +104,7 @@ class TestGermanGrammar(unittest.TestCase):
     def testCase(self):
         "Tests for case government and subcategorization"
 
-        cp = load_earley('german1.cfg', trace=0)
+        cp = load_earley(self.test_grammar, trace=0)
         self.suite = {} 
         self.suite['accept'] = [
             'der hund sieht mich', 
