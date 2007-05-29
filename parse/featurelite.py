@@ -1,12 +1,3 @@
-# Natural Language Toolkit: Featurelite
-#
-# Author: Rob Speer <rspeer@mit.edu>
-#
-# URL: <http://nltk.sourceforge.net>
-# For license information, see LICENSE.TXT
-#
-# $Id: category.py 4557 2007-05-24 12:25:25Z ehk $
-
 """
 This module provides utilities for treating Python dictionaries as X{feature
 structures}. Specifically, it contains the C{unify} function, which can be used
@@ -77,6 +68,13 @@ class UnificationFailure(Exception):
     An exception that is raised when two values cannot be unified.
     """
     pass
+
+def makevar(varname):
+    """
+    Given a variable representation such as C{?x}, construct a corresponding
+    Variable object.
+    """
+    return Variable(varname[1:])
 
 def isMapping(obj):
     """
@@ -241,12 +239,48 @@ class Variable(object):
         if self._value is None: return '?%s' % self._name
         else: return '?%s: %r' % (self._name, self._value)
 
+class SubstituteBindingsI:
+    """
+    An interface for classes that can perform substitutions for feature
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        @rtype: (any)
+        """
+        raise NotImplementedError
+
+class SubstituteBindingsMixin(SubstituteBindingsI):
+    def substitute_bindings(self, bindings):
+        newval = self
+        for semvar in self.variables():
+            varstr = str(semvar)
+            # discard Variables which don't look like FeatureVariables
+            if varstr.startswith('?'):
+                var = makevar(varstr)
+                if bindings.has_key(var.name()):
+                    newval = newval.replace(semvar, bindings[var.name()])
+        return newval
+
 def show(data):
     """
     Works like yaml.dump(), but with output suited for doctests. Flow style
     is always off, and there is no blank line at the end.
     """
     return yaml.dump(data, default_flow_style=False).strip()
+
+def object_to_features(obj):
+    if not hasattr(obj, '__dict__'): return obj
+    if str(obj).startswith('?'):
+        return Variable(str(obj)[1:])
+    if isMapping(obj): return obj
+    dict = {}
+    dict['__class__'] = obj.__class__.__name__
+    for (key, value) in obj.__dict__.items():
+        dict[key] = object_to_features(value)
+    return dict
 
 def variable_representer(dumper, var):
     "Output variables in YAML as ?name."
@@ -280,16 +314,23 @@ def _copy_and_bind(feature, bindings, memo=None):
             result = feature.__class__()
             for (key, value) in feature.items():
                 result[key] = _copy_and_bind(value, bindings, memo)
+        elif isinstance(feature, SubstituteBindingsI):
+            if bindings is not None:
+                result = feature.substitute_bindings(bindings).simplify()
+            else:
+                result = feature.simplify()
         else: result = feature
     memo[id(feature)] = result
     memo[id(result)] = result
     return result
 
-def apply(feature, bindings):
+def substitute_bindings(feature, bindings):
     """
     Replace variables in a feature structure with their bound values.
     """
     return _copy_and_bind(feature, bindings.copy())
+
+apply = substitute_bindings
 
 def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
     """
