@@ -1,3 +1,12 @@
+# Natural Language Toolkit: Featurelite
+#
+# Author: Rob Speer <rspeer@mit.edu>
+#
+# URL: <http://nltk.sourceforge.net>
+# For license information, see LICENSE.TXT
+#
+# $Id: category.py 4557 2007-05-24 12:25:25Z ehk $
+
 """
 This module provides utilities for treating Python dictionaries as X{feature
 structures}. Specifically, it contains the C{unify} function, which can be used
