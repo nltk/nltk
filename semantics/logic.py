@@ -8,6 +8,7 @@
 # Modifications by: Steven Bird <sb@csse.unimelb.edu.au>
 #                   Peter Wang
 #                   Ewan Klein <ewan@inf.ed.ac.uk>
+#                   Rob Speer  <rspeer@mit.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -23,10 +24,18 @@ The class of C{Expression} has various subclasses:
 """
 
 from nltk_lite.utilities import Counter
+from featurelite import SubstituteBindingsMixin, FeatureI
+from featurelite import Variable as FeatureVariable
+_counter = Counter()
+
+def unique_variable(counter=None):
+    if counter is None: counter = _counter
+    unique = counter.get()
+    return VariableExpression(Variable('x'+str(unique)))
 
 class Error(Exception): pass
 
-class Variable:
+class Variable(object):
     """A variable, either free or bound."""
     
     def __init__(self, name):
@@ -39,14 +48,14 @@ class Variable:
         self.name = name
 
     def __eq__(self, other):
-	return self.equals(other)
+        return self.equals(other)
 
     def __ne__(self, other):
-	return not self.equals(other)
+        return not self.equals(other)
 
     def equals(self, other):
         """A comparison function."""
-        assert isinstance(other, Variable)
+        if not isinstance(other, Variable): return False
         return self.name == other.name
         
     def __str__(self): return self.name
@@ -68,10 +77,10 @@ class Constant:
         self.name = name
 
     def __eq__(self, other):
-	return self.equals(other)
+        return self.equals(other)
 
     def __ne__(self, other):
-	return not self.equals(other)
+        return not self.equals(other)
 
     def equals(self, other):
         """A comparison function."""
@@ -84,17 +93,17 @@ class Constant:
 
     def __hash__(self): return hash(repr(self))
 
-class Expression:
+class Expression(object):
     """The abstract class of a lambda calculus expression."""
     def __init__(self):
         if self.__class__ is Expression:
             raise NotImplementedError
 
     def __eq__(self, other):
-	return self.equals(other)
+        return self.equals(other)
 
     def __ne__(self, other):
-	return not self.equals(other)
+        return not self.equals(other)
 
     def equals(self, other):
         """Are the two expressions equal, modulo alpha conversion?"""
@@ -113,10 +122,17 @@ class Expression:
         raise NotImplementedError
 
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         raise NotImplementedError
+    
+    def replace_unique(self, variable, counter=None, replace_bound=False):
+        """
+        Replace a variable v with a new, uniquely-named variable.
+        """
+        return self.replace(variable, unique_variable(counter),
+        replace_bound)
 
     def simplify(self):
         """Evaluate the form by repeatedly applying applications."""
@@ -128,10 +144,15 @@ class Expression:
         simply dropped and all variables they introduce are renamed so that
         they are unique.
         """
-	return self._skolemise(set(), Counter())
+        return self._skolemise(set(), Counter())
+
+    skolemize = skolemise
 
     def _skolemise(self, bound_vars, counter):
         raise NotImplementedError
+
+    def clauses(self):
+        return [self]
 
     def __str__(self):
         raise NotImplementedError
@@ -140,7 +161,18 @@ class Expression:
         raise NotImplementedError
 
     def __hash__(self):
-        raise NotImplementedError
+        raise NotImplementedError, self.__class__
+    
+    def normalize(self):
+        if hasattr(self, '_normalized'): return self._normalized
+        result = self
+        vars = self.variables()
+        counter = 0
+        for var in vars:
+            counter += 1
+            result = result.replace(var, Variable(str(counter)), replace_bound=True)
+        self._normalized = result
+        return result
 
 class VariableExpression(Expression):
     """A variable expression which consists solely of a variable."""
@@ -161,7 +193,7 @@ class VariableExpression(Expression):
             return False
 
     def variables(self):
-        return set([self.variable])
+        return [self.variable]
 
     def free(self):
         return set([self.variable])
@@ -169,9 +201,12 @@ class VariableExpression(Expression):
     def subterms(self):
         return set([self])
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         if self.variable.equals(variable):
-            return expression
+            if isinstance(expression, Variable):
+                return VariableExpression(expression)
+            else:
+                return expression
         else:
             return self
         
@@ -185,7 +220,7 @@ class VariableExpression(Expression):
         return self.__str__()
 
     def _skolemise(self, bound_vars, counter):
-	return self
+        return self
 
     def __str__(self): return '%s' % self.variable
 
@@ -237,7 +272,7 @@ class ConstantExpression(Expression):
             return False
 
     def variables(self):
-        return set()
+        return []
 
     def free(self):
         return set()
@@ -245,7 +280,7 @@ class ConstantExpression(Expression):
     def subterms(self):
         return set([self])
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         return self
         
     def simplify(self):
@@ -258,7 +293,7 @@ class ConstantExpression(Expression):
         return self.__str__()
 
     def _skolemise(self, bound_vars, counter):
-	return self
+        return self
 
     def __str__(self): return '%s' % self.constant
 
@@ -336,7 +371,10 @@ class VariableBinderExpression(Expression):
         return other.term.replace(other.variable, var)
 
     def variables(self):
-        return set([self.variable]).union(self.term.variables())
+        vars = [self.variable]
+        for var in self.term.variables():
+            if var not in vars: vars.append(var)
+        return vars
 
     def free(self):
         return self.term.free().difference(set([self.variable]))
@@ -344,14 +382,16 @@ class VariableBinderExpression(Expression):
     def subterms(self):
         return self.term.subterms().union([self])
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         if self.variable == variable:
-            return self
-        if self.variable in expression.free():
+            if not replace_bound: return self
+            else: return self.__class__(expression,
+                self.term.replace(variable, expression, True))
+        if replace_bound or self.variable in expression.free():
             v = 'z' + str(self._counter.get())
-            self = self.alpha_convert(Variable(v))
-        return self.__class__(self.variable, \
-                                self.term.replace(variable, expression))
+            if not replace_bound: self = self.alpha_convert(Variable(v))
+        return self.__class__(self.variable,
+            self.term.replace(variable, expression, replace_bound))
 
     def alpha_convert(self, newvar):
         """
@@ -379,36 +419,38 @@ class VariableBinderExpression(Expression):
             return '%s%s.%s' % (prefix, self.variable, self.term)
 
     def __hash__(self):
-	return hash(repr(self))
-
+        return hash(str(self.normalize()))
+    
 class LambdaExpression(VariableBinderExpression):
     """A lambda expression: \\x.M."""
     PREFIX = '\\'
 
     def _skolemise(self, bound_vars, counter):
-	bv = bound_vars.copy()
-	bv.add(self.variable)
-	return self.__class__(self.variable, self.term._skolemise(bv, counter))
+        bv = bound_vars.copy()
+        bv.add(self.variable)
+        return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-	return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+        return str(self)
+        #return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
 
 class SomeExpression(VariableBinderExpression):
     """An existential quantification expression: some x.M."""
     PREFIX = 'some '
 
     def _skolemise(self, bound_vars, counter):
-	if self.variable in bound_vars:
-	    var = Variable("_s" + str(counter.get()))
-	    term = self.term.replace(self.variable, VariableExpression(var))
-	else:
-	    var = self.variable
-	    term = self.term
-	bound_vars.add(var)
-	return term._skolemise(bound_vars, counter)
+        if self.variable in bound_vars:
+            var = Variable("_s" + str(counter.get()))
+            term = self.term.replace(self.variable, VariableExpression(var))
+        else:
+            var = self.variable
+            term = self.term
+        bound_vars.add(var)
+        return term._skolemise(bound_vars, counter)
 
     def __repr__(self):
-	return "SomeExpression('%s', '%s')" % (self.variable, self.term)
+        return str(self)
+        #return "SomeExpression('%s', '%s')" % (self.variable, self.term)
 
 
 class AllExpression(VariableBinderExpression):
@@ -416,12 +458,13 @@ class AllExpression(VariableBinderExpression):
     PREFIX = 'all '
 
     def _skolemise(self, bound_vars, counter):
-	bv = bound_vars.copy()
-	bv.add(self.variable)
-	return self.__class__(self.variable, self.term._skolemise(bv, counter))
+        bv = bound_vars.copy()
+        bv.add(self.variable)
+        return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-	return "AllExpression('%s', '%s')" % (self.variable, self.term)
+        return str(self)
+        #return "AllExpression('%s', '%s')" % (self.variable, self.term)
 
 
 
@@ -442,7 +485,10 @@ class ApplicationExpression(Expression):
             return False
 
     def variables(self):
-        return self.first.variables().union(self.second.variables())
+        vars = self.first.variables()
+        for var in self.second.variables():
+            if var not in vars: vars.append(var)
+        return vars
 
     def free(self):
         return self.first.free().union(self.second.free())
@@ -488,17 +534,18 @@ class ApplicationExpression(Expression):
         second = self.second.subterms()
         return first.union(second).union(set([self]))
 
-    def replace(self, variable, expression):
-        return self.__class__(self.first.replace(variable, expression),\
-                              self.second.replace(variable, expression))
+    def replace(self, variable, expression, replace_bound=False):
+        return self.__class__(
+            self.first.replace(variable, expression, replace_bound),
+            self.second.replace(variable, expression, replace_bound))
 
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
         if isinstance(first, LambdaExpression):
-	    variable = first.variable
-	    term = first.term
-	    return term.replace(variable, second).simplify()
+            variable = first.variable
+            term = first.term
+            return term.replace(variable, second).simplify()
         else:
             return self.__class__(first, second)
 
@@ -506,15 +553,21 @@ class ApplicationExpression(Expression):
         first = self.first.infixify()
         second = self.second.infixify()
         if isinstance(first, Operator) and not str(first) == 'not':
-	    return self.__class__(second, first)
+            return self.__class__(second, first)
         else:
             return self.__class__(first, second)    
 
     def _skolemise(self, bound_vars, counter):
-	first = self.first._skolemise(bound_vars, counter)
-	second = self.second._skolemise(bound_vars, counter)
-	return self.__class__(first, second)
+        first = self.first._skolemise(bound_vars, counter)
+        second = self.second._skolemise(bound_vars, counter)
+        return self.__class__(first, second)
 
+    def clauses(self):
+        if isinstance(self.first, ApplicationExpression) and\
+           isinstance(self.first.first, Operator) and\
+           self.first.first.operator == 'and':
+           return self.first.second.clauses() + self.second.clauses()
+        else: return [self]
     def __str__(self):
         # Print ((M N) P) as (M N P).
         strFirst = str(self.first)
@@ -523,9 +576,24 @@ class ApplicationExpression(Expression):
                 strFirst = strFirst[1:-1]
         return '(%s %s)' % (strFirst, self.second)
 
-    def __repr__(self): return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
+    def __repr__(self):
+        return str(self)
+        #return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
 
-    def __hash__(self): return hash(repr(self))
+    def __hash__(self):
+        return hash(str(self.normalize()))
+
+class ApplicationExpressionSubst(ApplicationExpression, SubstituteBindingsMixin):
+    pass
+
+class LambdaExpressionSubst(LambdaExpression, SubstituteBindingsMixin):
+    pass
+
+class SomeExpressionSubst(SomeExpression, SubstituteBindingsMixin):
+    pass
+
+class AllExpressionSubst(AllExpression, SubstituteBindingsMixin):
+    pass
 
 class Parser:
     """A lambda calculus expression parser."""
@@ -605,7 +673,7 @@ class Parser:
     def isVariable(self, token):
         """Is this token a variable (that is, not one of the other types)?"""
         TOKENS = [Parser.LAMBDA, Parser.SOME, Parser.ALL,
-	       Parser.DOT, Parser.OPEN, Parser.CLOSE, Parser.EQ]
+               Parser.DOT, Parser.OPEN, Parser.CLOSE, Parser.EQ]
         TOKENS.extend(self.constants)
         TOKENS.extend(Parser.BOOL)
         return token not in TOKENS 
@@ -614,22 +682,22 @@ class Parser:
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-	if tok in [Parser.LAMBDA, Parser.SOME, Parser.ALL]:
+        if tok in [Parser.LAMBDA, Parser.SOME, Parser.ALL]:
             # Expression is a lambda expression: \x.M
-	    # or a some expression: some x.M
-	    if tok == Parser.LAMBDA:
-		factory = LambdaExpression
-	    elif tok == Parser.SOME:
-		factory = SomeExpression
+            # or a some expression: some x.M
+            if tok == Parser.LAMBDA:
+                factory = self.make_LambdaExpression
+            elif tok == Parser.SOME:
+                factory = self.make_SomeExpression
             elif tok == Parser.ALL:
-		factory = AllExpression
-	    else:
-		raise ValueError(tok)
+                factory = self.make_AllExpression
+            else:
+                raise ValueError(tok)
 
             vars = [self.token()]
             while self.isVariable(self.token(0)):
                 # Support expressions like: \x y.M == \x.\y.M
-		# and: some x y.M == some x.some y.M
+                # and: some x y.M == some x.some y.M
                 vars.append(self.token())
             tok = self.token()
 
@@ -640,7 +708,7 @@ class Parser:
             while vars:
                 accum = factory(Variable(vars.pop()), accum)
             return accum
-	    
+            
         elif tok == Parser.OPEN:
             # Expression is an application expression: (M N)
             first = self.next()
@@ -685,7 +753,12 @@ class Parser:
     # other expression types.
     def make_ApplicationExpression(self, first, second):
         return ApplicationExpression(first, second)
-
+    def make_LambdaExpression(self, first, second):
+        return LambdaExpression(first, second)
+    def make_SomeExpression(self, first, second):
+        return SomeExpression(first, second)
+    def make_AllExpression(self, first, second):
+        return AllExpression(first, second)
 
 def expressions():
     """Return a sequence of test expressions."""
@@ -735,7 +808,8 @@ def demo():
         print 'll is:', ll
         assert l.equals(ll)
         print "Serialize and reparse: %s -> %s" % (l, ll)
-        print
+        print "Variables:", ll.variables()
+        print "Normalize: %s" % ll.normalize()
 
 
 if __name__ == '__main__':
