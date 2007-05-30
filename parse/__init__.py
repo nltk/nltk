@@ -162,41 +162,6 @@ class AbstractParse(ParseI):
             print "%d parses." % len(parses)
             for tree in parses: print tree
 
-def myreporthook(count, block_size, total_size):
-    print total_size
- 
-def get_from_sf(nltk_file, qualifier=None, make_local=True, verbose=True):
-    """
-    Fetch a file from the NLTK site on Sourceforge.
-    
-    urllib.urlretrieve() returns the name of a locally-cached 
-    copy of the file, e.g.'/tmp/tmpmgDTlg.cfg'. Note that ViewVC
-    doesn't raise an HTTP 404 error if the file can't be found, but
-    wraps the error in a valid HTML page.
-    """
-    from urllib import urlretrieve, urlcleanup
-    import os
-    if qualifier is None:
-        qualifier = 'http://nltk.sourceforge.net/'
-    qname = qualifier + nltk_file
-    if make_local:
-        base = os.path.basename(nltk_file)
-        local_fn = 'tmp_' + base
-        if os.path.isfile(local_fn):
-            if verbose:
-                print "Using local file: '%s'" % local_fn
-            (fn, header) = urlretrieve(local_fn)
-        else:
-            if verbose:
-                print "Retrieving '%s' from %s" % (nltk_file, qualifier)
-            (fn, header) = urlretrieve(qname, local_fn)
-    else:
-        (fn, header) = urlretrieve(qname)       
-        if verbose:
-            print "Using temporary file: '%s'" % fn
-    urlcleanup()
-    return fn
-
 from cfg import *
 from tree import *
 from category import *

@@ -13,7 +13,7 @@
 from semantics import logic
 from cfg import *
 from kimmo import kimmo
-from parse import get_from_sf
+from filebroker import Broker
 
 from featurelite import *
 from copy import deepcopy
@@ -691,49 +691,17 @@ class GrammarFile(object):
                     else:
                         self.grammatical_productions.append(rule)
 
-    def apply_file(self, filename):
-        """
-        Open the grammar file.
-        
-        Look first for a local copy of the file. If that doesn't work,
-        look up a path for the file from 'grammars.yml', then
-        use parse.get_from_sf() to pull the file from the NLTK sourceforge site.
-        """
- 
-        # See if we have a local copy
-        er404 = re.compile('404 (Not Found|error)')
-        try:
-            f = open(filename)
-        except IOError:
-            # Otherwise, try looking up the local path in gram_index, if it's been recovered
-            gram_index = {}
-            # Try to recover an index of the grammar files from Sourceforge 
-            try:
-                #qualifier = 'http://nltk.sourceforge.net/examples/'
-                qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/examples/'
-                remote_fn = get_from_sf('grammars.yml', qualifier = qualifier)
-                gram_index = yaml.load(open(remote_fn))
-            except IOError:
-                pass
-            if filename in gram_index:
-                path = gram_index[filename]
-                local = path + filename
-            # Maybe the filename has got enough path information already               
-            else:
-                local = filename
-            f = open(get_from_sf(local))
-        lines = f.readlines()
-        # check that a file we recovered from SF isn't just a '404 Not Found' page
-        for line in lines:
-            if er404.search(line):
-                raise IOError("The file '%s' can't be found." % filename)
+    def apply_file(self, filename, verbose=False):
+        #f = open(filename)
+        #lines = f.readlines()
+        lines = Broker.open(filename, verbose=verbose)
         self.apply_lines(lines)
         f.close()
-    
+
     @staticmethod
-    def read_file(filename):
+    def read_file(filename, verbose=False):
         result = GrammarFile()
-        result.apply_file(filename)
+        result.apply_file(filename, verbose=verbose)
         return result
 
 yaml.add_representer(Category, Category.to_yaml)
@@ -761,11 +729,11 @@ def demo():
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
     print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge"
-    g = GrammarFile.read_file("test.cfg")
+    g = GrammarFile.read_file("sem3.cfg")
     print g.grammar()
     print
     print "Fetch from Sourceforge"   
-    g = GrammarFile.read_file("examples/parse/feat1.cfg")
+    g = GrammarFile.read_file("examples/semantics/sem3.cfg")
     print g.grammar()
     print
     print "Find locally"   
