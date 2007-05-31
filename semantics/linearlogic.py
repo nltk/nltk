@@ -1,5 +1,4 @@
-#from nltk_lite.semantics import linearlogic
-
+import glue
 from nltk_lite.utilities import Counter
 
 class Error(Exception): pass
@@ -19,10 +18,10 @@ class Variable:
         self.name = name
 
     def __eq__(self, other):
-	return self.equals(other)
+        return self.equals(other)
 
     def __ne__(self, other):
-	return not self.equals(other)
+        return not self.equals(other)
 
     def equals(self, other):
         """A comparison function."""
@@ -75,10 +74,10 @@ class Constant:
         self.name = name
 
     def __eq__(self, other):
-	return self.equals(other)
+        return self.equals(other)
 
     def __ne__(self, other):
-	return not self.equals(other)
+        return not self.equals(other)
 
     def equals(self, other):
         """A comparison function."""
@@ -117,10 +116,10 @@ class Expression:
             raise NotImplementedError
 
     def __eq__(self, other):
-	return self.equals(other)
+        return self.equals(other)
 
     def __ne__(self, other):
-	return not self.equals(other)
+        return not self.equals(other)
 
     def equals(self, other):
         """Are the two expressions equal, modulo alpha conversion?"""
@@ -162,7 +161,7 @@ class Expression:
         simply dropped and all variables they introduce are renamed so that
         they are unique.
         """
-	return self._skolemise(set(), Counter())
+        return self._skolemise(set(), Counter())
 
     def _skolemise(self, bound_vars, counter):
         raise NotImplementedError
@@ -250,7 +249,7 @@ class VariableExpression(Expression):
         return (self, [])
 
     def _skolemise(self, bound_vars, counter):
-	return self
+        return self
 
     def __str__(self):
         accum = '%s' % self.variable
@@ -400,13 +399,15 @@ class ApplicationExpression(Expression):
                    first_simp.op == Parser.IMPLIES:
                         first_simp.first.second.unify_with(second_simp, self.varbindings)
 
-                        # A.dependencies of (A -o (B -o C)) must be a proper subset of seconds_indicies
-                        if not set(first_simp.first.second.dependencies).issubset(seconds_indicies):
-                            raise LinearLogicApplicationError, \
-                                  'Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
-                        if set(first_simp.first.second.dependencies) == seconds_indicies:
-                            raise LinearLogicApplicationError, \
-                                  'Dependencies not a proper subset of indicies when attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
+                        # If you are running it on complied premises, more conditions apply
+                        if not seconds_indicies == set([]):
+                            # A.dependencies of (A -o (B -o C)) must be a proper subset of seconds_indicies
+                            if not set(first_simp.first.second.dependencies).issubset(seconds_indicies):
+                                raise LinearLogicApplicationError, \
+                                      'Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
+                            if set(first_simp.first.second.dependencies) == seconds_indicies:
+                                raise LinearLogicApplicationError, \
+                                      'Dependencies not a proper subset of indicies when attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
 
             except UnificationError:
                 # self is of the form is '(((-> A) B) C)' a.k.a. '((A -> B) C)'
@@ -551,7 +552,7 @@ class ApplicationExpression(Expression):
         first = self.first.infixify()
         second = self.second.infixify()
         if isinstance(first, Operator):
-	    ret_val = self.__class__(second, first)
+            ret_val = self.__class__(second, first)
         else:
             ret_val = self.__class__()
             ret_val.first = first
@@ -573,7 +574,7 @@ class ApplicationExpression(Expression):
 
     def compile_neg(self, fresh_index):
         """From Iddo Lev's PhD Dissertation p108-109"""
-        from nltk_lite.semantics import glue
+
         # ((-o A) B)
         assert isinstance(self.first, ApplicationExpression) and \
                self.first.op == Parser.IMPLIES
@@ -589,9 +590,9 @@ class ApplicationExpression(Expression):
                 [new_gf]+first_clausified[1]+second_clausified[1])
 
     def _skolemise(self, bound_vars, counter):
-	first = self.first._skolemise(bound_vars, counter)
-	second = self.second._skolemise(bound_vars, counter)
-	return self.__class__(first, second)
+        first = self.first._skolemise(bound_vars, counter)
+        second = self.second._skolemise(bound_vars, counter)
+        return self.__class__(first, second)
 
     def __str__(self, print_varbindings=True):
         # Print ((M N) P) as (M N P).
@@ -671,7 +672,7 @@ class ConstantExpression(Expression):
         return self.constant.name
 
     def _skolemise(self, bound_vars, counter):
-	return self
+        return self
 
     def compile_pos(self, fresh_index):
         """From Iddo Lev's PhD Dissertation p108-109"""
@@ -869,7 +870,7 @@ def demo():
     print q.__repr__()
     print q.simplify().infixify()
     
-    print '\n'
+    print ''
 
     gf = llp.parse('(g -o f)')
     gGG = llp.parse('((g -o G) -o G)')
@@ -880,9 +881,6 @@ def demo():
     ff = HHG.applyto(f)
     print ff
     print ff.simplify().infixify()
-    
-    print '\n'
-
 
 if __name__ == '__main__':
     demo()

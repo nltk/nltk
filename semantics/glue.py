@@ -1,10 +1,9 @@
-#from nltk_lite.semantics import glue
+import logic
+import linearlogic
+from parse import *
 
 class GlueFormula:
-    def __init__(self, meaning, glue, indicies=set([])):
-        from nltk_lite.semantics import logic
-        from nltk_lite.semantics import linearlogic
-
+    def __init__(self, meaning, glue, indices=set([])):
         if isinstance(meaning, str):
             try:
                 self.meaning = logic.Parser().parse(meaning)    # lp.parse('\\x.(<word> x)') -> LambdaExpression('x', '(<word> x)')
@@ -33,36 +32,33 @@ class GlueFormula:
         else:
             raise RuntimeError, 'Glue term neither string or expression: %s' % (glue)
 
-        self.indicies = indicies
+        self.indices = indices
 
     def applyto(self, arg):
         """ self = (\\x.(walk x), (subj -o f))
             arg  = (john        ,  subj)
             returns ((walk john),          f)
         """
-        from nltk_lite.semantics import logic
-        from nltk_lite.semantics import linearlogic
 
-        if self.indicies.intersection(arg.indicies): # if the sets are NOT disjoint
-            raise linearlogic.LinearLogicApplicationError, '%s applied to %s.  Indicies are not disjoint.' % (self, arg)
+        if self.indices.intersection(arg.indices): # if the sets are NOT disjoint
+            raise linearlogic.LinearLogicApplicationError, '%s applied to %s.  Indices are not disjoint.' % (self, arg)
         else: # if the sets ARE disjoint
-            return_indicies = self.indicies.union(arg.indicies)
+            return_indices = self.indices.union(arg.indices)
 
         try:
-            return_glue = linearlogic.ApplicationExpression(self.glue, arg.glue, arg.indicies)
+            return_glue = linearlogic.ApplicationExpression(self.glue, arg.glue, arg.indices)
         except linearlogic.LinearLogicApplicationError:
             raise linearlogic.LinearLogicApplicationError, '%s applied to %s' % (self, arg)
 
         arg_meaning_abstracted = arg.meaning
-        for dep in self.glue.simplify().first.second.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
-            arg_meaning_abstracted = logic.LambdaExpression(logic.Variable('V%s' % dep), arg_meaning_abstracted)
+        if not return_indices == set([]):
+            for dep in self.glue.simplify().first.second.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
+                arg_meaning_abstracted = logic.LambdaExpression(logic.Variable('V%s' % dep), arg_meaning_abstracted)
         return_meaning = logic.ApplicationExpression(self.meaning, arg_meaning_abstracted)
 
-        return self.__class__(return_meaning, return_glue, return_indicies)
+        return self.__class__(return_meaning, return_glue, return_indices)
         
     def lambda_abstract(self, other):
-        from nltk_lite.semantics import logic
-        from nltk_lite.semantics import linearlogic
         assert isinstance(other, GlueFormula)
         assert isinstance(other.meaning, logic.VariableExpression)
         return self.__class__(logic.LambdaExpression(other.meaning.variable, self.meaning), \
@@ -76,22 +72,22 @@ class GlueFormula:
 
     def compile(self, fresh_index=[1]):
         """From Iddo Lev's PhD Dissertation p108-109"""
-        r = self.glue.compile_pos(fresh_index)
+        r = self.glue.simplify().compile_pos(fresh_index)
         return [self.__class__(self.meaning, r[0], set([fresh_index[0]]))]+r[1]
 
     def infixify(self):
-        return self.__class__(self.meaning.infixify(), self.glue.infixify(), self.indicies)
+        return self.__class__(self.meaning.infixify(), self.glue.infixify(), self.indices)
 
     def simplify(self):
-        return self.__class__(self.meaning.simplify(), self.glue.simplify(), self.indicies)
+        return self.__class__(self.meaning.simplify(), self.glue.simplify(), self.indices)
 
     def __str__(self):
-        assert isinstance(self.indicies, set)
-        accum = '%s : %s' % (self.meaning.simplify().infixify(), self.glue.simplify().infixify())
-        if self.indicies:
+        assert isinstance(self.indices, set)
+        accum = '%s : %s' % (self.meaning, self.glue)
+        if self.indices:
             accum += ' : {'
             first = True
-            for index in self.indicies:
+            for index in self.indices:
                 if first:
                     first = False
                 else:
@@ -104,9 +100,7 @@ class GlueFormula:
         return self.__str__()
 
 class GlueDict(dict):
-    def read_file(self, filename = 'C:\\Python25\\Lib\\site-packages\\nltk_lite\\semantics\\glue.cfg', empty_first = True):
-        from nltk_lite.semantics import logic
-        from nltk_lite.semantics import linearlogic
+    def read_file(self, filename = 'glue.cfg', empty_first = True):
 
         if empty_first: self.clear()
 
@@ -158,7 +152,6 @@ class GlueDict(dict):
         return accum
 
     def lookup(self, sem, word, current_subj, fstruct):
-        from nltk_lite.semantics import linearlogic
         
         lookup = self[sem]
         glueformulas = []
@@ -189,8 +182,6 @@ class GlueDict(dict):
 
 class FStructure(dict):
     def __init__(self, pt, current_label = [0], parent = None):
-        from nltk_lite.parse import tree
-
 ##        try:
 ##            assert isinstance(pt, tree.Tree)
 ##        except AssertionError:
@@ -340,7 +331,6 @@ class FStructure(dict):
             raise RuntimeError, 'FStructure creation from\n%s\nwas unsuccessful.' % (pt)
 
     def __repr__(self):
-        from nltk_lite.parse import tree
         try:
             accum = '%s:[' % self.label
         except NameError:
@@ -365,7 +355,6 @@ class FStructure(dict):
         return accum+']'
 
     def __str__(self, indent=3):
-        from nltk_lite.parse import tree
         accum = '%s:[pred \'%s\'' % (self.label, self.pred[0])
         for feature in self:
             if isinstance(self[feature], FStructure):
@@ -387,7 +376,7 @@ class FStructure(dict):
         return accum+']'
 
     def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None):
-        from nltk_lite.parse import tree
+        
         glueformulas = []
 
         if current_subj == None:
@@ -493,7 +482,6 @@ def parse_to_meaning(sentence):
     return readings
 
 def get_readings(agenda):
-    from nltk_lite.semantics import linearlogic
     readings = []
     agenda_length = len(agenda)
     atomics = dict()
@@ -505,9 +493,9 @@ def get_readings(agenda):
             for key in atomics:
                 if cur.glue.simplify().first.second.can_unify_with(key, cur.glue.varbindings):
                     for atomic in atomics[key]:
-                        if cur.indicies.intersection(atomic.indicies):
+                        if cur.indices.intersection(atomic.indices):
                             continue
-                        else: # if the sets of indicies are disjoint
+                        else: # if the sets of indices are disjoint
                             try:
                                 agenda.append(cur.applyto(atomic))
                             except linearlogic.LinearLogicApplicationError:
@@ -521,9 +509,9 @@ def get_readings(agenda):
             for key in nonatomics:
                 for nonatomic in nonatomics[key]:
                     if cur.glue.simplify().can_unify_with(key, nonatomic.glue.varbindings):
-                        if cur.indicies.intersection(nonatomic.indicies):
+                        if cur.indices.intersection(nonatomic.indices):
                             continue
-                        else: # if the sets of indicies are disjoint
+                        else: # if the sets of indices are disjoint
                             try:
                                 agenda.append(nonatomic.applyto(cur))
                             except linearlogic.LinearLogicApplicationError:
@@ -535,11 +523,11 @@ def get_readings(agenda):
                 
     for entry in atomics:
         for gf in atomics[entry]:
-            if len(gf.indicies) == agenda_length:
+            if len(gf.indices) == agenda_length:
                 readings.append(gf.meaning)
     for entry in nonatomics:
         for gf in nonatomics[entry]:
-            if len(gf.indicies) == agenda_length:
+            if len(gf.indices) == agenda_length:
                 readings.append(gf.meaning)
     return readings
         
@@ -555,8 +543,6 @@ def parse_to_glue(sentence='every big gray cat leaves'):
     return [fstruct_to_glue(f) for f in fstructs]
 
 def parse(sentence='a man sees Mary'):
-    from nltk_lite.parse import GrammarFile
-    from nltk_lite import tokenize
 
     return GrammarFile.read_file('grammar.cfg').earley_parser(0).get_parse_list(list(tokenize.whitespace(sentence)))
 
@@ -651,7 +637,7 @@ def proof_demo():
     print 'Meaning of \'every girl chases a dog\''
     print 'Individual words:'
     every = GlueFormula('\P Q.all x.((P x) implies (Q x))', '((gv -o gr) -o ((g -o G) -o G))')
-    print '  \'everx2:                       %s' % every.infixify()
+    print '  \'every x2\':                    %s' % every.infixify()
     girl = GlueFormula('\\x.(girl x)', '(gv -o gr)')
     print '  \'girl\':                        %s' % girl.infixify()
     chases = GlueFormula('\\x y.(chases x y)', '(g -o (h -o f))')
@@ -703,7 +689,7 @@ def proof_demo():
     every_girl_chases_a_dog = a_dog.applyto(every_girl_chases)
     print '      \'every girl chases a dog\': %s' % every_girl_chases_a_dog.simplify().infixify()
 
-def demo(show_example=0):
+def demo(show_example=-1):
     examples = ['David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',
@@ -726,6 +712,8 @@ def demo(show_example=0):
             print '[[[Example %s]]]  %s' % (example_num, sentence)
             for reading in parse_to_meaning(sentence):
                 print reading.simplify().infixify()
-        print ''
+            print ''
         example_num += 1
     
+if __name__ == '__main__':
+    demo()
