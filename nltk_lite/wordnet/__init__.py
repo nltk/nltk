@@ -2,8 +2,8 @@
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Oliver Steele <steele@osteele.com>
-#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Steven Bird <sb@csse.unimelb.edu.au>
+#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -19,32 +19,36 @@ Usage
 Retrieve words from the database
 
     >>> N['dog']
-    dog(n.)
+    dog (noun)
     >>> V['dog']
-    dog(v.)
+    dog (verb)
     >>> ADJ['clear']
-    clear(adj.)
+    clear (adj)
     >>> ADV['clearly']
-    clearly(adv.)
+    clearly (adv)
 
 Examine a word's senses and pointers:
 
-    >>> N['dog'].getSenses()
+    >>> N['dog'].synsets()
+    [{noun: dog, domestic_dog, Canis_familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot_dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
     ('dog' in {noun: dog, domestic dog, Canis familiaris}, 'dog' in {noun: frump, dog}, 'dog' in {noun: dog}, 'dog' in {noun: cad, bounder, blackguard, dog, hound, heel}, 'dog' in {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, 'dog' in {noun: pawl, detent, click, dog}, 'dog' in {noun: andiron, firedog, dog, dog-iron})
 
 Extract the first sense:
 
-    >>> N['dog'][0] # aka N['dog'].getSenses()[0]
-    'dog' in {noun: dog, domestic dog, Canis familiaris}
+    >>> N['dog'][0]
+    {noun: dog, domestic_dog, Canis_familiaris}
 
 Get the first five pointers (relationships) from dog to other synsets:
 
-    >>> N['dog'][0].getPointers()[:5]
-    (hypernym -> {noun: canine, canid}, member meronym -> {noun: Canis, genus Canis}, member meronym -> {noun: pack}, hyponym -> {noun: pooch, doggie, doggy, barker, bow-wow}, hyponym -> {noun: cur, mongrel, mutt})
+    >>> N['dog'][0].relations()
+    {'hypernym': [('noun', 2083346, 0), ('noun', 1317541, 0)],
+     'part holonym': [('noun', 2158846, 0)],
+     'member meronym': [('noun', 2083863, 0), ('noun', 7994941, 0)],
+     'hyponym': [('noun', 1322604, 0), ('noun', 2084732, 0), ...]}
 
 Get those synsets of which 'dog' is a member meronym:
 
-    >>> N['dog'][0].getPointerTargets(MEMBER_MERONYM)
+    >>> N['dog'][0][MEMBER_MERONYM]
     [{noun: Canis, genus Canis}, {noun: pack}]
 
 """
