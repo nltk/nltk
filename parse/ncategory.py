@@ -13,7 +13,7 @@
 from semantics import logic
 from cfg import *
 from kimmo import kimmo
-from filebroker import Broker
+import filebroker
 
 from featurelite import *
 from copy import deepcopy
@@ -692,11 +692,12 @@ class GrammarFile(object):
                         self.grammatical_productions.append(rule)
 
     def apply_file(self, filename, verbose=False):
-        #f = open(filename)
-        #lines = f.readlines()
-        lines = Broker.open(filename, verbose=verbose)
-        self.apply_lines(lines)
-        f.close()
+ 
+        lines = filebroker.load(filename, verbose=verbose)
+        if lines:
+            self.apply_lines(lines)
+        else:
+            return None
 
     @staticmethod
     def read_file(filename, verbose=False):
@@ -728,15 +729,15 @@ def demo():
     print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
-    print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge"
-    g = GrammarFile.read_file("sem3.cfg")
+    print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge:"
+    g = GrammarFile.read_file("sem2.cfg")
     print g.grammar()
     print
-    print "Fetch from Sourceforge"   
-    g = GrammarFile.read_file("examples/semantics/sem3.cfg")
+    print "Attempt to find nonexistent grammar file:"   
+    g = GrammarFile.read_file("missing.cfg")
     print g.grammar()
     print
-    print "Find locally"   
+    print "Find locally:"   
     g = GrammarFile.read_file("gazdar6.cfg")
     print g.grammar()
     

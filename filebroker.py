@@ -1,5 +1,5 @@
 from urllib import urlretrieve, urlcleanup
-import os, re, yaml
+import os, re, yaml, string
 from glob import glob
 
 TMPPREFIX = 'tmp_'
@@ -7,18 +7,24 @@ TMPPREFIX = 'tmp_'
 class Broker(object):
     
     def __init__(self):
+        #name of the registry file
         self.reg_name = 'grammars.yml'
+        
+        # root for where to find the grammar files
         self.qualifier = 'http://nltk.sourceforge.net/'
-        self.reg_qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
+        
+        # temporary location for the registry file
+        self.reg_qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/examples/'
+        
         try:
             reg_localname = self.resolve_filename(self.reg_name, qualifier=self.reg_qualifier, verbose=True)
-            #if self.verify(reg_localname):
-            self.registry = yaml.load(open(reg_localname))
-        except:
-            print "Can't find registry"
+            if self._safe_open(reg_localname):
+                self.registry = yaml.load(open(reg_localname))
 
-    #def myreporthook(self, count, block_size, total_size):
-        #print total_size
+            #self.registry = yaml.load(self._safe_open(reg_localname))
+        except:
+            print "Can't find registry '%s at location '%s'" % (self.reg_name, self.reg_qualifier)
+
         
     def show_registry(self):
         width = 45
@@ -31,20 +37,21 @@ class Broker(object):
         print '=' * width
 
         
-    def verify(self, filehandle):
+    def _safe_open(self, filename):
         """
         
-        @ return: input filename or IOError
+        @return: list(lines) or IOError
         """
-        er404 = re.compile('404 (Not Found|error)')
-        lines = filehandle.readlines()
-        for line in lines:
-            if er404.search(line):
-                print '404'
-                #self.empty_cache()
-                #print "Locally cached file '%s' has been deleted." % filename
-                #raise IOError("The filename '%s' yielded a 404 error." % filename)
-        return True
+        f = open(filename)
+        err404 = re.compile('404 (Not Found|error)')
+        lines = f.readlines()
+        f.close()
+        if filter(lambda s: err404.search(s), lines):
+                print "The filename '%s' yielded a 404 error." % filename
+                os.remove(filename)
+                print "Locally cached file '%s' has been deleted from %s." % (filename, os.getcwd())
+                return None
+        return lines
     
     def empty_cache(self, registry=False, expired=False, verbose=False):
         cwd = os.getcwd()
@@ -88,29 +95,58 @@ class Broker(object):
         @rtype: C{str}
         @return: name of a locally-cached file
         """
-        try:
-            path = self.registry[filename]
-            qname = qualifier +path + filename
-        except:
-            print "Can't find '%s' in registry" % filename
+        # Default
+        qname = filename
         
+        # We're trying to find the registry file
+        if filename == self.reg_name:
+            qname = qualifier + self.reg_name
+
+        # We're trying to resolve a .cfg file
+        elif filename.endswith('.cfg'):
+            try:
+                # Get the path from the registry
+                path = self.registry[filename]
+                qualifier = qualifier + path
+                qname = qualifier + filename
+            except KeyError:
+                print "Can't find '%s' in registry" % filename
+                # Do we want to put or use a cached file in the current directory?
+        else:
+            print "Unknown file type: ", filename
+            return None
+    
         if make_local:
             base = os.path.basename(filename)
             local_fn = TMPPREFIX + base
+            # Do we already have a cached copy?
             if os.path.isfile(local_fn):
-                if verbose:
-                    print "Using local file '%s' in directory %s" % (local_fn, os.getcwd())
+                if verbose and not filename == self.reg_name:
+                    print "Re-using cached file '%s' in directory %s" % (local_fn, os.getcwd())
                 (fn, header) = urlretrieve(local_fn)
+            # Otherwise, fetch it from the NLTK SF web site
             else:
                 if verbose:
-                    print "Retrieving '%s' from %s" % (filename, self.qualifier)
-                (fn, header) = urlretrieve(qname, local_fn)
+                    print "I'll try to retrieve '%s' from %s" % (filename, qualifier)
+                try:
+                    (fn, header) = urlretrieve(qname, local_fn)
+                except IOError:
+                    print "Sorry, I can't find '%s' at %s:" % (filename, self.reg_qualifier)
+                    return None
+        # We still have to fetch the file, but we'll put in /tmp or similar
         else:
-            (fn, header) = urlretrieve(qname)       
-            if verbose:
-                print "Copying file from the NLTK web site to temp file: '%s'" % fn
-                print
-                print header
+            try:
+                (fn, header) = urlretrieve(qname)
+                if verbose:
+                    print "I'll try to copy the file from the NLTK web site to temp file: '%s'" % fn
+                    print
+                    print 'Header file:'
+                    print '------------'
+                    print header
+            except IOError:
+                    print "Sorry, I can't find '%s' at %s:" % (filename, self.reg_qualifier)
+                    return None
+            
         return fn
     
     def open(self, filename, verbose=False):
@@ -120,69 +156,77 @@ class Broker(object):
         Look first for a local copy of the file. If that doesn't work,
         look up a path for the file from 'grammars.yml', then
         use parse.get_from_sf() to pull the file from the NLTK sourceforge site.
+        
+        @param filename: grammar file to be opened
+        @return: the result of applying C{readlines()} to the opened file.
+        @rtype: C{list(str)}
         """
  
         # See if we have a local copy
         try:
-            fh = open(filename)
+            f = open(filename)
+            lines = f.readlines()
+            f.close()
             if verbose:
-                print "'%s' was found locally" % filename
+                print "File '%s' was found locally" % filename
+            return lines
         except IOError:
             # Otherwise, try looking up the local path in self.registry
-            #path = self.registry[filename]
-            #fullname = path + filename
-            local = self.resolve_filename(filename, self.reg_qualifier, verbose=verbose)
-            print local, os.getcwd()
-            fh = open(local)
-            #if verbose: 
-                #self.show_registry()
-            # Maybe the filename has got enough path information already               
-            #else:
-                #local = filename
+            # and try to get a valid locally-cached copy
+            cached = self.resolve_filename(filename, self.qualifier, verbose=verbose)
+            if cached :
+                if verbose:
+                    print "I found '%s' in the directory %s" % (cached, os.getcwd())
+                lines = self._safe_open(cached)
+                if verbose:
+                    print "Grammar file '%s' was successfully opened" % cached
+                    for l in lines:
+                        print l,
+                return lines
+            else:
+                print "Failed to open file '%s'." % filename
+                return None
 
-            #if verbose:
-                #print "Grammar '%s' successfully opened" % local
-        if self.verify(fh):
-            lines = fh.readlines()
-        # check that a file we recovered from SF isn't just a '404 Not Found' page
-        fh.close()
-        return lines
+    
+def load(filename, verbose=False):
+    """
+    Wrapper to call the C{open()} method of a Broker instance.
+    """
+    b = Broker()
+    return b.open(filename, verbose=verbose)
             
 def demo():
 
     qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
     b = Broker()
-    #print
-    #print "Currently cached registry:"
+    print
+    print "Currently cached registry:"
     b.show_registry()
-    #print
+    print
     b.empty_cache(verbose=True)
     print
-    print "Resolving filename with empty cache"
-    f = b.resolve_filename('feat0.cfg', qualifier, verbose=True)
-    for l in open(f):
-        print l,
-    #print
-    #print "Resolving filename with cache present"
-    #b.resolve_filename('feat0.cfg', qualifier, verbose=True)
-    #print
-    #print "Copy filename from Sourceforge site to temporary file"
-    #b.resolve_filename('feat0.cfg', qualifier, make_local=False, verbose=True)
+    print "Resolving filename with empty cache:"
+    b.resolve_filename('feat0.cfg', qualifier, verbose=True)
     print
-    print b.open('feat0.cfg', verbose=True)
-    #b.resolve_filename(b.reg_name, verbose=True)
-    #print
-    #print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge"
-    #g = GrammarFile.read_file("sem3.cfg")
-    #print g.grammar()
-    ##print
-    ##print "Fetch from Sourceforge"   
-    ##g = GrammarFile.read_file("examples/semantics/sem3.cfg")
-    #print g.grammar()
-    #print
-    #print "Find locally"   
-    #g = GrammarFile.read_file("broker_test.cfg")
-    #print g.grammar()
+    print "Resolving filename with cache present:"
+    b.resolve_filename('feat0.cfg', qualifier, verbose=True)
+    print
+    print "Copy filename from Sourceforge site to temporary file:"
+    b.resolve_filename('feat0.cfg', qualifier, make_local=False, verbose=True)
+    print 
+    print "Delete the locally-cached registry file:"
+    b.empty_cache(registry=True, verbose=True)
+    b = Broker()
+    print
+    print "Open a file:"
+    broker('feat0.cfg', verbose=True)
+    print
+    print "Try to find a file that doesn't exist:"
+    broker('missing.cfg', verbose=True)
+    print
+    print "Find locally:"   
+    broker("broker_test.cfg", verbose=True)
+
     
 if __name__ == '__main__':
     demo()
