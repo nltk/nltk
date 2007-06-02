@@ -56,13 +56,15 @@ def process(path, log_path):
         feat_sel.run(['-a', f.RANK, '-f', path + each, '-o', f.GAIN_RATIO + ',' + str(get_number_of_filter_attributes(len(attributes))), '-l', log_path])
         filter_suffixes.append(feat_sel.get_suffix())
         
-    paths = ['']
-    paths.extend(disc_suffixes)
-    paths.extend(filter_suffixes)
+    suffixes = ['']
+    suffixes.extend(disc_suffixes)
+    suffixes.extend(filter_suffixes)
 
     for classification_alg in c.ALGORITHM_MAPPINGS.keys():
         wrapper_inputs = ['']
         wrapper_inputs.extend(disc_suffixes)
+        if has_continuous and not classification_alg.can_handle_continuous_attributes():
+            del wrapper_inputs[0]
         wrapper_suffixes = []
         
         for each in wrapper_inputs:
@@ -74,11 +76,14 @@ def process(path, log_path):
             feat_sel.run(['-a', f.BACKWARD_ELIMINATION, '-f', path + each, '-o', classification_alg + ',25,0.1', '-l', log_path])
             wrapper_suffixes.append(feat_sel.get_suffix())
             
-        all = paths[:]
+        all = suffixes[:]
+        if has_continuous and not classification_alg.can_handle_continuous_attributes():
+            del wrapper_inputs[0]
         all.extend(wrapper_suffixes)
         
         for each in all:
-          c.Classify().run(['-a', classification_alg, '-vf', path + each, '-l', log_path])    
+            
+            c.Classify().run(['-a', classification_alg, '-vf', path + each, '-l', log_path])    
             
 
 def get_number_of_filter_attributes(len_attrs):

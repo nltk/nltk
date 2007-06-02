@@ -103,6 +103,15 @@ class AttributesTestCase(unittest.TestCase):
         attrs = format.C45_FORMAT.get_attributes(path)
         self.assertEqual([0, 1, 4, 5, 6, 7], attrs.continuous_attribute_indices())
         
+    def test_empty_freq_dists(self):
+        attr1 = a.Attribute("first", ['a','b','c'], 0)
+        attr2 = a.Attribute("second", ['d','e'], 0)
+        attrs = a.Attributes([attr1,attr2])
+        freq_dists = attrs.empty_freq_dists()
+        self.assertEqual(2, len(freq_dists))
+        self.assertEqual(3, len(freq_dists[attr1]))
+        self.assertEqual(2, len(freq_dists[attr2]))
+        
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(unittest.TestSuite(unittest.makeSuite(AttributesTestCase)))

@@ -52,4 +52,5 @@ class ZeroR(Classifier):
     
     def can_handle_continuous_attributes(self):
         return True
+    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
     

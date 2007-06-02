@@ -48,3 +48,10 @@ class AttributeTestCase(unittest.TestCase):
         higher_arity = a.Attribute('foo', ['a','b','c', 'd', 'e', 'f', 'g', 'h'], 0)
         self.assertTrue(higher_arity.split_info() > attr.split_info())
         
+    def test_empty_freq_dists(self):
+        attr = a.Attribute('foo', ['a','b','c'], 0)
+        freq_dists = attr.empty_freq_dists()
+        self.assertEqual(3, len(freq_dists))
+        for each in attr.values:
+            self.assertEqual(0, freq_dists[each].N())
+        
