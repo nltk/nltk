@@ -356,6 +356,19 @@ class Grammar(object):
             else:
                 return []
 
+    def covers(self, tokens):
+        """
+        Check whether the grammar rules cover the given list of tokens.
+
+        @param tokens: the given list of tokens.
+        @type sentence: a C{list} of C{string} objects.
+        @return: True/False
+        """
+        for token in tokens:
+            if len(self.productions(rhs=token)) == 0:
+                return False
+        return True
+
     def __repr__(self):
         return '<Grammar with %d productions>' % len(self._productions)
 

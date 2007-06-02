@@ -210,6 +210,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
         EarleyChartParse.__init__(self, grammar, ci_lexicon, trace)
 
     def get_parse_list(self, tokens):
+        self._check_coverage(tokens)
         chart = Chart(tokens)
         grammar = self._grammar
 

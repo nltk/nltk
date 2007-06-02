@@ -68,7 +68,9 @@ class RecursiveDescent(AbstractParse):
 
     def get_parse_list(self, tokens):
         # Inherit docs from ParseI
-
+        
+        self._check_coverage(tokens)
+        
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
         tokens = list(tokens)
@@ -637,9 +639,9 @@ def demo():
     from nltk_lite import parse
     
     grammar = parse.cfg.parse_cfg("""
-    S -> NP 'saw' NP | NP VP
+    S -> NP VP
     NP -> Det N | Det N PP
-    VP -> V NP PP
+    VP -> V NP | V NP PP
     PP -> P NP
     NP -> 'I'
     N -> 'man' | 'park' | 'telescope' | 'dog'

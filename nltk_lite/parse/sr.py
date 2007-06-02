@@ -74,6 +74,8 @@ class ShiftReduce(AbstractParse):
         self._check_grammar()
 
     def get_parse(self, tokens):
+        
+        self._check_coverage(tokens)
 
         # initialize the stack.
         stack = []
@@ -436,9 +438,9 @@ def demo():
     from nltk_lite import parse
 
     grammar = parse.cfg.parse_cfg("""
-    S -> NP 'saw' NP | NP VP
+    S -> NP VP
     NP -> Det N | Det N PP
-    VP -> V NP PP
+    VP -> V NP | V NP PP
     PP -> P NP
     NP -> 'I'
     N -> 'man' | 'park' | 'telescope' | 'dog'
