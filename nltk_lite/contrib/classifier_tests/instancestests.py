@@ -274,6 +274,48 @@ class InstancesTestCase(unittest.TestCase):
         result = ins.flatten([[2,3],[4,5],[6,7]])
         self.assertEqual([2,3,4,5,6,7], result)
         
+    def test_class_frequency_distribution(self): 
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        class_freq_dist = training.class_freq_dist()
+        self.assertEqual(6, class_freq_dist.N())
+        self.assertEqual(2, class_freq_dist.B())
+        self.assertEqual(4, class_freq_dist.count('yes'))
+        self.assertEqual(2, class_freq_dist.count('no'))
+        
+    def test_posterior_probablities_with_discrete_values(self):
+        path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
+        training = format.C45_FORMAT.get_training_instances(path)
+        attributes = format.C45_FORMAT.get_attributes(path)
+        klass = format.C45_FORMAT.get_klass(path)
+        
+        posterior_probabilities = training.posterior_probablities(attributes, klass)
+        self.assertAlmostEqual(0.2, posterior_probabilities.value(attributes[0], 'dual', 'a'))
+        self.assertAlmostEqual(0.2, posterior_probabilities.value(attributes[0], 'dual', 'b'))
+        self.assertAlmostEqual(0.6, posterior_probabilities.value(attributes[0], 'dual', 'c'))
+        
+        self.assertEqual(len(attributes), len(posterior_probabilities.freq_dists))
+        self.assertEqual(len(attributes[0].values), len(posterior_probabilities.freq_dists[attributes[0]]))
+
+    def test_posterior_probabilities_with_cont_values(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        attributes = format.C45_FORMAT.get_attributes(path)
+        klass = format.C45_FORMAT.get_klass(path)
+        
+        posterior_probabilities = training.posterior_probablities(attributes, klass)
+        #numerical verification
+        values_for_class_yes = ins.StatList([25,21,34,31])#from data set
+        mean = values_for_class_yes.mean()
+        sd = values_for_class_yes.std_dev()
+        expected_value = (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((30 - mean), 2)/ (2 * pow(sd, 2)))
+        self.assertEqual(expected_value, posterior_probabilities.value(attributes[1], 30, 'yes'))
+        
+        self.assertTrue(posterior_probabilities.value(attributes[1], 30, 'yes') > posterior_probabilities.value(attributes[1], 30, 'no'))
+        
+    def test_prob_using_gaussian_dist(self):
+        self.assertAlmostEqual(1.0 / math.sqrt(2 * math.pi), ins.calc_prob_based_on_distrbn(2, 1, 2))
+        
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(unittest.TestSuite(unittest.makeSuite(InstancesTestCase)))

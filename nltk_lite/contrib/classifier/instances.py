@@ -9,7 +9,7 @@
 from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk_lite import probability as prob
-import operator, UserList
+import operator, UserList, UserDict, math
 
 class Instances(UserList.UserList):
     def __init__(self, instances):
@@ -29,9 +29,14 @@ class Instances(UserList.UserList):
         for instance in self.data:
             instance.remove_attributes(attributes)
             
+    def convert_to_float(self, indices):
+        for instance in self.data:
+            instance.convert_to_float(indices)
+            
 class TrainingInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
+        self.prior_probabilities = None
             
     def filter(self, attribute, attr_value):
         new_instances = TrainingInstances([])
@@ -115,7 +120,34 @@ class TrainingInstances(Instances):
         self.data.sort(key=lambda instance: instance.klass_value)
         for index in range(len(self.data)): stratified[index % fold].append(self.data[index])
         return stratified
-
+    
+    def posterior_probablities(self, attributes, klass_values):
+        freq_dists = attributes.empty_freq_dists()
+        for attribute in attributes:
+            for value in attribute.values:
+                for klass_value in klass_values:
+                    freq_dists[attribute][value].inc(klass_value) #Laplacian smoothing
+        stat_list_values = {}
+        cont_attrs = filter(lambda attr: attr.is_continuous(), attributes)
+        if attributes.has_continuous():
+            for attribute in cont_attrs:
+                stat_list_values[attribute] = {}
+                for klass_value in klass_values:
+                    stat_list_values[attribute][klass_value] = StatList()
+        for instance in self.data:
+            for attribute in attributes:
+                if attribute.is_continuous():
+                    stat_list_values[attribute][instance.klass_value].append(instance.value(attribute))
+                else:
+                    freq_dists[attribute][instance.value(attribute)].inc(instance.klass_value)
+        return PosteriorProbabilities(freq_dists, stat_list_values)
+                
+    def class_freq_dist(self):
+        class_freq_dist = prob.FreqDist()
+        for instance in self.data:
+            class_freq_dist.inc(instance.klass_value)
+        return class_freq_dist
+            
 #todo remove this      
 class TestInstances(Instances):
     def __init__(self, instances):
@@ -232,7 +264,43 @@ class SupervisedBreakpoints(UserList.UserList):
             lower = mid
         ranges.append(r.Range(lower, self.attr_values[-1], True))
         return ranges
+
+class PosteriorProbabilities(UserDict.UserDict):
+    def __init__(self, freq_dists, stat_list_values):
+        self.freq_dists = freq_dists
+        self.stat_list_values = stat_list_values
+        
+    def value(self, attribute, value, klass_value):
+        if attribute.is_continuous():
+            stat_list = self.stat_list_values[attribute][klass_value]
+            return calc_prob_based_on_distrbn(stat_list.mean(), stat_list.std_dev(), value)
+        return self.freq_dists[attribute][value].freq(klass_value)
+        
+def calc_prob_based_on_distrbn(mean, sd, value):
+    return (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((value - mean), 2)/ (2 * pow(sd, 2)))
+
+class StatList(UserList.UserList):
+    def __init__(self, values=None):
+        UserList.UserList.__init__(self, values)
+        
+    def mean(self):
+        sum = 0
+        if len(self.data) == 0: return 0
+        for each in self.data:
+            sum += each
+        return float(sum) / len(self.data)
     
+    def variance(self):
+        _mean = self.mean()
+        if len(self.data) < 2: return 0
+        sum = 0
+        for each in self.data:
+            sum += pow((each - _mean), 2)
+        return float(sum) / (len(self.data) - 1)
+    
+    def std_dev(self):
+        return math.sqrt(self.variance())
+        
 def training_as_gold(instances):
     gold = []
     for instance in instances:
