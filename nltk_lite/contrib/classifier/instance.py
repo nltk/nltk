@@ -43,6 +43,10 @@ class Instance:
         to_be_removed.reverse()
         for r in to_be_removed:
             self.attrs.__delitem__(r)
+            
+    def convert_to_float(self, indices):
+        for index in indices:
+            self.attrs[index] = float(self.attrs[index])
     
     def __eq__(self, other):
         if other is None: return False
@@ -98,7 +102,7 @@ class TestInstance(Instance):
         
     def is_valid(self, klass, attributes):
         return attributes.has_values(self.attrs)
-    
+        
     def __str__(self):
         return self.str_attrs() + self.str_klassified_klass()
         

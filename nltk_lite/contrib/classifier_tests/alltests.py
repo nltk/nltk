@@ -16,7 +16,7 @@ from nltk_lite.contrib.classifier_tests import \
         discretisedattributetests as discretisedattribute, \
         discretisetests as discretise, formattests as format, \
         featureselecttests as featureselect, inittests as init, \
-        commandlinetests as commandline
+        commandlinetests as commandline, naivebayestests as naivebayes
 import unittest
 
 def allTestsSuite():
@@ -39,7 +39,8 @@ def allTestsSuite():
                                unittest.makeSuite(format.FormatTestCase), \
                                unittest.makeSuite(featureselect.FeatureSelectTestCase), \
                                unittest.makeSuite(init.InitTestCase), \
-                               unittest.makeSuite(commandline.CommandLineTestCase)))
+                               unittest.makeSuite(commandline.CommandLineTestCase), \
+                               unittest.makeSuite(naivebayes.NaiveBayesTestCase)))
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

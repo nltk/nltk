@@ -10,12 +10,21 @@ import math
 
 class Classifier:
     def __init__(self, training, attributes, klass, internal):
+        """
+        The internal parameter is to used only internally while operating on datasets while selecting features.
+        When classifiers are invoked from command line this parameter is set to the default value of False.
+        """
         self.attributes = attributes
         self.klass = klass
         self.training = training
         self.internal = internal
+        self.convert_continuous_values_to_numbers(self.training)
         if not self.internal:
             self.validate_training()
+        
+    def convert_continuous_values_to_numbers(self, instances):
+        if self.attributes.has_continuous():
+            instances.convert_to_float(self.attributes.continuous_attribute_indices())
         
     def validate_training(self):
         if not self.training.are_valid(self.klass, self.attributes): 
@@ -23,14 +32,15 @@ class Classifier:
         if not self.can_handle_continuous_attributes() and self.attributes.has_continuous(): 
             raise inv.InvalidDataError('One or more attributes are continuous.')
     
-    def test(self, path):
+    def test(self, test_instances):
         raise AssertionError()
     
-    def verify(self, path):
+    def verify(self, gold_instances):
         raise AssertionError()
     
-    def can_handle_continuous_attributes(self):
+    def can_handle_continuous_attributes(klass):
         return False
+    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
 
 def split_ignore_space(comma_sep_string):
     _file_names = []

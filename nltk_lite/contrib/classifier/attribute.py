@@ -7,12 +7,16 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_lite.contrib.classifier.exceptions import systemerror as se
 from nltk_lite.contrib.classifier import autoclass as ac, cfile, decisionstump as ds
+from nltk_lite import probability as prob
 import UserList
 
 CONTINUOUS = 'continuous'
 DISCRETE = 'discrete'
 
 class Attribute:
+    """
+    Immutable object which represents an attribute/feature
+    """
     def __init__(self, name, values, index):
         self.name = name
         self.values = values
@@ -51,6 +55,15 @@ class Attribute:
         for value in self.values:
             values_str += value + ','
         return values_str[:-1]
+    
+    def empty_freq_dists(self):
+        freq_dists = {}
+        for value in self.values:
+            freq_dists[value] = prob.FreqDist()
+        return freq_dists
+    
+    def __hash__(self):
+        return hash(self.name) + hash(self.index)        
             
 class Attributes(UserList.UserList):
     def __init__(self, attributes = []):
@@ -82,9 +95,8 @@ class Attributes(UserList.UserList):
             
     def empty_decision_stumps(self, ignore_attributes, klass):
         decision_stumps = []
-        for attribute in self.data:
-            if attribute in ignore_attributes:
-                continue
+        filtered = filter(lambda attribute: attribute not in ignore_attributes, self.data)
+        for attribute in filtered:
             decision_stumps.append(ds.DecisionStump(attribute, klass))
         return decision_stumps
 
@@ -102,6 +114,12 @@ class Attributes(UserList.UserList):
         for atr in self.data:
             if atr.is_continuous(): indices.append(atr.index)
         return indices
+    
+    def empty_freq_dists(self):
+        freq_dists = {}
+        for attribute in self.data:
+            freq_dists[attribute] = attribute.empty_freq_dists()
+        return freq_dists
         
     def __str__(self):
         str = '['
