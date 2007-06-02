@@ -148,6 +148,10 @@ class AbstractParse(ParseI):
         tree = self.get_parse(tokens)
         if tree is None: return []
         else: return [tree]
+    
+    def _check_coverage(self, tokens):
+        if not self._grammar.covers(tokens):
+            raise ValueError, "Grammar does not cover some of the input words"
 
 from cfg import *
 from tree import *

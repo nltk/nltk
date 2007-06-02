@@ -182,6 +182,7 @@ class BottomUpChartParse(AbstractParse):
         self._trace = trace
         
     def get_parse_list(self, tokens):
+        self._check_coverage(tokens)        
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -384,7 +385,7 @@ def demo():
     from nltk_lite.parse import cfg, pcfg, pchart
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    demos = [('I saw John with my cookie', pcfg.toy1),
+    demos = [('I saw John with my telescope', pcfg.toy1),
              ('the boy saw Jack with Bob under the table with a telescope',
               pcfg.toy2)]
 

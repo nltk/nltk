@@ -7,8 +7,9 @@
 # For license information, see LICENSE.TXT
 
 """
-NLTK Ñ the Natural Language Toolkit Ñ is a suite of open source Python modules,
-data sets and tutorials supporting research and development in natural language processing.
+NLTK -- the Natural Language Toolkit -- is a suite of open source
+Python modules, data sets and tutorials supporting research and
+development in natural language processing.
 
 @version: 0.7.5
 
