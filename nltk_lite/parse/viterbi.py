@@ -102,6 +102,8 @@ class ViterbiParse(AbstractParse):
 
     def get_parse_list(self, tokens):
         # Inherit docs from ParseI
+        
+        self._check_coverage(tokens)
 
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
