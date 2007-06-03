@@ -104,6 +104,11 @@ class TrainingInstances(Instances):
         self.data.sort(lambda x, y: cmp(x.value(attribute), y.value(attribute)))
         
     def cross_validation_datasets(self, fold):
+        """
+        Gold instances are completely new objects except for attribute value objects,
+        we wont be changing the attribute value objects in the gold instances anyway 
+        unless something really weird is happening!
+        """
         if fold > len(self): fold = len(self)
         stratified = self.stratified_bunches(fold)
         datasets = []
@@ -253,6 +258,8 @@ class SupervisedBreakpoints(UserList.UserList):
                         break
                     breakpoint = self.data[index]    
         for breakpoint in to_be_removed:
+            print ("data " + str(self.data))
+            print ("breakpoint " + str(breakpoint))
             self.data.remove(breakpoint)
     
     def as_ranges(self):

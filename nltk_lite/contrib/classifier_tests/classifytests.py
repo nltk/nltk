@@ -94,6 +94,35 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertTrue(classify.errorCalled)
         self.assertEqual('Invalid arguments. Cannot verify classification for test data.', classify.message)
         
+    def test_does_not_throw_error_if_cross_validation_option_is_present_and_only_training_exists(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
+        classify.parse(['-a', '1R', '-t', path, '-c', 5])
+        classify.execute()
+        self.assertFalse(classify.errorCalled)
+        self.assertTrue(dns.called)
+
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
+        classify.parse(['-a', '1R', '-f', path, '-c', 5])
+        classify.execute()
+        self.assertFalse(classify.errorCalled)
+        self.assertTrue(dns.called)
+        
+    def test_does_not_throw_error_if_only_file_option_present(self):
+        path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
+        dns = DoNothingStrategy()
+        classify = StubClassify(dns)
+        self.assertFalse(dns.called)
+        classify.parse(['-a', '1R', '-f', path])
+        classify.execute()
+        self.assertFalse(classify.errorCalled)
+        self.assertTrue(dns.called)
+        
+        
     def test_get_file_strategy(self):
         strategy = c.get_file_strategy('files', None, None, None, True)
         self.assertEqual(c.CommonBaseNameStrategy, strategy.__class__)
@@ -135,7 +164,7 @@ class StubClassify(c.Classify):
         self.message = message
         self.errorCalled = True
         
-    def get_classification_strategy(self, classifier, test, gold):
+    def get_classification_strategy(self, classifier, test, gold, training, cross_validation_fold, attributes, klass):
         return self.strategy
                     
 class DoNothingStrategy:

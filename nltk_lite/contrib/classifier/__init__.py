@@ -33,10 +33,18 @@ class Classifier:
             raise inv.InvalidDataError('One or more attributes are continuous.')
     
     def test(self, test_instances):
-        raise AssertionError()
-    
+        self.convert_continuous_values_to_numbers(test_instances)
+        self.test_instances = test_instances
+        self.classify(self.test_instances)
+            
     def verify(self, gold_instances):
-        raise AssertionError()
+        self.convert_continuous_values_to_numbers(gold_instances)
+        self.gold_instances = gold_instances
+        self.classify(self.gold_instances)
+        return self.gold_instances.confusion_matrix(self.klass)
+    
+    def classify(self, instances):
+        AssertionError('Classify called on abstract class')
     
     def can_handle_continuous_attributes(klass):
         return False
