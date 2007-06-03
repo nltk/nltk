@@ -352,11 +352,22 @@ First attempt at doing semantics with features:
     >>> sent = 'Kim barks'
     >>> tokens = list(tokenize.whitespace(sent))
     >>> trees = cp.parse(tokens)
-    >>> for tree in trees: print tree
               |.K.b.|
     Processing queue 0
-    Predictor |> . .| S[sem=] -> * NP VP {} 
-    Predictor |> . .| NP -> * Det N {} 
+    Predictor |> . .| S[sem=?vp] -> * NP[sem=?np] VP[sem=?vp, subj=?np] {} 
     Processing queue 1
+    Scanner   |[-] .| NP[sem=[index='k', name='kim']] -> Kim * {} 
+    Completer |[-> .| S[sem=?vp] -> NP[sem=[index='k', name='kim']] * VP[sem=?vp, subj=[index='k', name='kim']] {'np': {'index': 'k', 'name': 'kim'}} 
+    Predictor |. > .| VP[sem=?v, subj=?np] -> * IV[sem=?v, subj=?np] {} 
     Processing queue 2
-    Scanner   |. [-]| IV[fsem=[rel='bark']] -> barks * {} 
+    Scanner   |. [-]| IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] -> barks * {} 
+    Completer |. [-]| VP[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] -> IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] * {'np': {'sem': {'index': ?i}}, 'v': {'rel': 'bark', 'arg': ?i}} 
+    Completer |[===]| S[sem=[arg=?i, rel='bark']] -> NP[sem=[index='k', name='kim']] VP[sem=[arg=?i, rel='bark'], subj=[index='k', name='kim']] * {'np': {'index': 'k', 'sem': {'index': ?i}, 'name': 'kim'}, 'vp': {'rel': 'bark', 'arg': ?i}} 
+    Completer |[===]| [INIT] -> S * {} 
+    >>> for tree in trees: print tree
+    (S[sem=[arg=?i, rel='bark']]:
+      (NP[sem=[index='k', name='kim']]: 'Kim')
+      (VP[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]]:
+        (IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]]: 'barks')))
+
+
