@@ -1,52 +1,35 @@
-# coding=Latin-1
+"""
+Punkt -- Kiss & Strunk (2006)
+
+Original Python port by Willy <willy@csse.unimelb.edu.au>
+Reworked by Steven Bird <sb@csse.unimelb.edu.au>
+
+Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
+  Boundary Detection.  Computational Linguistics 32: 485-525.
+"""
+
 import sys, re
 
+from nltk_lite import tokenize
 
-"""
-Punkt - in Python
-Original system developed in Perl by Jan Strunk and Tibor Kiss of
-Ruhr-Universitat Bochum, Germany.
+# Parameters
 
-The original paper is:
-Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence Boundary Detection.
-Computational Linguistics Vol. 32, No. 4: 485-525.
+ABBREV = 0.3       # cut-off value whether a "token" is an abbreviation
+ABBREV_BACKOFF = 5 # upper cut-off for Mikheev's(2002) abbreviation detection algorithm
+COLLOCATION = 7.88 # minimal log-likelihood value that two tokens need to be considered as a collocation
+CONTEXT_SIZE = 4   # window size of the tokens that appears around a period that is taken into account for classification
+SENT_STARTER = 30  # minimal log-likelihood value that a token requires to be considered as a frequent sentence starter
 
-Ported to Python for Human Language Technology 2007 Project 
 
-Author          :    Willy
-Login           :    willy
-SID             :    197340
-Last Revised    :    27 May 2007
+# Corpus statistics
 
-Main function can be found at the very bottom of this program
-"""
-
-"""
-The constants below are the required parameters needed to perform various tasks
-throughout the entire program. It can of course be changed and experiments done
-with different values will result in different output.
-"""
-
-ABBREVIATION_BOUNDARY = 0.3       # cut-off value whether a "token" is an abbreviation
-ABBREVIATION_BACKOFF_BOUNDARY = 5 # upper cut-off for Mikheev's(2002) abbreviation detection algorithm
-COLLOCATION_BOUNDARY = 7.88       # minimal log-likelihood value that two tokens need to be considered as a collocation
-CONTEXT_SIZE = 4                  # windows size of the tokens that appears around a period that is taken into account for classification
-SENTENCE_STARTER_BOUNDARY = 30    # minimal log-likelihood value that a token requires to be considered as a frequent sentence starter
-
-"""
-Below are some statistics about the corpus
-"""
-num_of_tokens = 0       # the number of tokens in the corpus
-num_of_types = 0        # the number of unique tokens in the corpus
 num_of_periods = 0      # the number of tokens that ends with a period in the corpus
 num_of_noperiods = 0    # the number of tokens that does not end with a period
 num_of_sentences = 0    # the number of sentences determined by the first stage of the algorithm (type-based classification)
 
-"""
-Below are data structures that are needed to store the information of the corpus
-"""
-input_tokens = []        # all normalised tokens in the corpus
-types = {}               # statistics of unique tokens in the corpus
+
+# data structures that are needed to store the information of the corpus
+
 abbs = {}                # all abbreviation candidates
 abbreviations = {}       # all tokens that have been classified as abbreviations
 rare_abbreviations = {}  # abbreviations detected by Mikheev's algorithm
@@ -56,124 +39,32 @@ orthography_context = {} # simpler orthographic statistics for Mikheev's algorit
 sentence_starters = {}   # tokens that frequently start a new sentence
 
 
-"""
-Below are definitions of the functions used throughout the program. The main
-function is at the very bottom.
-"""
-
-def preprocess(input, output):
-    """
-    Read in input per line and tokenize it. Append all the tokens into the main
-    input_tokens list. Keep the original newline.
-    """
-    import re
-    global input_tokens
+def preprocess(input):
     for line in input:
-        tokens = tokenize_tokens(line)
-        if tokens != []:
+        tokens = list(tokenize.pword(line))
+        if tokens:
             for token in tokens:
-                if token != "":
-                    input_tokens.append(token)
-        input_tokens.append("\n")
-
-def tokenize_tokens(line):
-    """
-    Tokenize an input line. These rules are based on Punkt original implementation 
-    with some omission of symbols that are usually not found in English text, such 
-    as `<<` (I can't type that character here, but that character is generally used in
-    German and French text, for example: <<Le Printemps>> (French) or >>Fruhlings<< (German)).
-    """
-    import re
-    line = re.sub(r'(?=[\(\"\`{\[:;&\#\*@])(.)', r'\1 ', line) #Separate punctuation (except period) from words
-    line = re.sub(r'(.)(?=[?!)\";}\]\*:@\'])', r'\1 ', line)
-    line = re.sub(r'(?=[\)}\]])(.)', r'\1 ', line)
-    line = re.sub(r'(.)(?=[({\[])', r'\1 ', line)
-    line = re.sub(r'((^|\s)\-)(?=[^\-])', r'\1 ', line)
-    line = re.sub(r'([^-])(\-\-+)([^-])', r'\1 \2 \3', line)   #Treat double-hyphen as one token
-    line = re.sub(r'(\s|^)(,)(?=(\S))', r'\1\2 ', line)
-    line = re.sub(r'(.)(,)(\s|$)', r'\1 \2\3', line)           #Only separate comma if space follows
-    line = re.sub(r'\.\s\.\s\.', r'...', line)                 #Combine dots separated by whitespace to be a single token
-
-    #Separate "No.6" (These 2 commented lines are left uncommented in original system)
-##  line = re.sub(r'([A-Za-z]\.)(\d+)', r'\1 \2', line)        
-##  line = re.sub(r'(.|^)(\.{2,})(.)?', r'\1 \2 \3', line)     #Separate words from ellipses
-    line = re.sub(r'(^|\s)(\.{2,})([^\.\s])', r'\1\2 \3', line)
-    line = re.sub(r'([^\.\s])(\.{2,})($|\s)', r'\1 \2\3', line)
-    
-    line = re.sub(r'^\s+', r'', line)
-    line = re.sub(r'\s+$', r'', line)
-    line = re.sub(r'\s+', r' ', line)
-
-    line_list = line.split(" ")
-    return line_list
-
-def get_statistic():
-    """
-    Simple function that will collect all statistics of the corpus
-    """
-    count_tokens(input_tokens)
-    count_types(input_tokens, "lower")
-    count_periods(input_tokens)
-    count_numbers(input_tokens)
+                yield token
+        yield "\n"
 
 def count_tokens(input_tokens):
-    """
-    Simple function to keep track on how many tokens are there in the corpus
-    """
-    global num_of_tokens
+    return len([t for t in input_tokens if t != "\n"])
+
+def count_types(input_tokens):
+    types = {}
     for token in input_tokens:
         if token != "\n":
-            num_of_tokens += 1
-    print "Corpus contains", num_of_tokens, "tokens."
-
-def count_types(input_tokens, how):
-    """
-    Simple function to keep count on how many unique tokens we have in the corpus
-
-    `how` is the method to normalize the tokens, we can of course leave the tokens
-    unchanged. The original implementation normalised the text with lower function, 
-    therefore we're going to keep it as it is here for the sake of comparison.
-    """
-    global num_of_types, types
-    for token in input_tokens:
-        if how == 'lower':
             token = token.lower()
-        elif how == 'upper':
-            token = token.upper()
-        if token not in types:
-            types[token] = 0
-        types[token] += 1
-
-    num_of_types = len(types)
-    print "Corpus contains", num_of_types, "different types."
+            if token not in types:
+                types[token] = 0
+            types[token] += 1
+    return types
 
 def count_periods(input_tokens):
-    """
-    Simple function to keep count of how many tokens that end with a period in the
-    corpus
-    """
-    import re
-    global num_of_periods, num_of_noperiods, num_of_tokens
-    for token in input_tokens:
-        if token.endswith("."):
-    #    if re.search(r"\.$", token):
-            num_of_periods += 1
-    print "Corpus contains", num_of_periods, "possible sentence-ending periods."
-    num_of_noperiods = num_of_tokens - num_of_periods
-    print "Corpus contains", num_of_noperiods, "tokens that do not end with a period."
+    return len([t for t in input_tokens if t.endswith(".")])
 
 def count_numbers(input_tokens):
-    """
-    Simple function to keep count of how many number tokens that exist in the corpus
-    All of those number tokens will be classified as a single generic class '##number##'
-    """
-    import re
-    global types
-    types["##number##"] = 0
-    for token in input_tokens:
-        if re.search(r'^\d+\.?$', token):
-            types["##number##"] += 1
-#    print "Corpus contains", types["##number##"], "number tokens."    
+    return len([t for t in input_tokens if re.match(r'\d+\.?$', t)])
 
 def get_abbreviation_data():
     """
@@ -181,13 +72,13 @@ def get_abbreviation_data():
     1. Generate a dictionary of abbreviation candidates to be stored in `abbs`
        The candidates are tokens that ever occur with a final period in the corpus
     2. Calculates the scaled log-likelihood for each candidate
-    3. Classify all candidates which log-likelihood score is above ABBREVIATION_BOUNDARY
+    3. Classify all candidates which log-likelihood score is above ABBREV
        as abbreviations and store them in `abbreviations`
     """
     from operator import itemgetter
     import re, math
     print "\nProcessing abbreviations..."
-    global types, abbs, abbreviations, num_of_periods, num_of_tokens, ABBREVIATION_BOUNDARY
+    global types, abbs, abbreviations, num_of_periods, num_of_tokens, ABBREV
     for type in sorted(types):
         rule1 = re.search(r'[A-Za-z]', type)
         rule2 = re.search(r'^(?P<no_final_period>.+)\.$', type)
@@ -232,7 +123,7 @@ def get_abbreviation_data():
             abbs[type_no_final_period] = [item0, item1, item2, item3]
             
     for (candidate, _) in sorted(abbs.items(), lambda x,y : cmp(y[1][3],x[1][3])):
-        if abbs[candidate][3] >= ABBREVIATION_BOUNDARY:
+        if abbs[candidate][3] >= ABBREV:
             abbreviations[candidate] = abbs[candidate][3]
             print candidate, "\t\t", abbreviations[candidate]
 
@@ -493,12 +384,12 @@ def get_rare_abbreviations():
     Part of Mikheev's (2002) document centered approach algorithm.
     """
     from operator import itemgetter
-    global abbs, orthography_context, rare_abbreviations, ABBREVIATION_BOUNDARY, ABBREVIATION_BACKOFF_BOUNDARY
+    global abbs, orthography_context, rare_abbreviations, ABBREV, ABBREV_BACKOFF
     for (candidate, _) in sorted(abbs.items(), lambda x,y : cmp(y[1][3],x[1][3])):
         #If candidate has not been classified as an abbreviation by main algorithm
-        if abbs[candidate][3] < ABBREVIATION_BOUNDARY:
+        if abbs[candidate][3] < ABBREV:
             #If it occurs rarely enough
-            if abbs[candidate][2] < ABBREVIATION_BACKOFF_BOUNDARY:
+            if abbs[candidate][2] < ABBREV_BACKOFF:
                 #And there is orthographic evidence that it is an abbreviation
                 #Classify the tokens as rare abbreviations and output them
                 if (candidate in orthography_context) and (orthography_context[candidate] != 0):
@@ -560,7 +451,7 @@ def get_collocation_data():
     """
     Collect collocational data from the corpus for collocatoinal heuristic
     """
-    global collocations, types, num_of_tokens, COLLOCATION_BOUNDARY
+    global collocations, types, num_of_tokens, COLLOCATION
     print "Extracting collocation data..."
 
     #Collect the info first...
@@ -574,7 +465,7 @@ def get_collocation_data():
                 prob = col_log_l(types[type1], types[type2], collocations[type1][type2], num_of_tokens)
 
                 #Filter out the not-so-collocative
-                if prob >= COLLOCATION_BOUNDARY:
+                if prob >= COLLOCATION:
                     if ( 1.0 * num_of_tokens / types[type1] ) > ( 1.0 * types[type2] / collocations[type1][type2] ):
                         keep = 1
 
@@ -667,7 +558,7 @@ def count_sentence_starters(ngrams, extend):
     This function will produce dictionary of frequent sentence starters
     """
     print "Extracting frequent sentence starters..."
-    global sentence_starters, types, num_of_sentences, num_of_tokens, SENTENCE_STARTER_BOUNDARY, input_tokens
+    global sentence_starters, types, num_of_sentences, num_of_tokens, SENT_STARTER, input_tokens
 
     #pad the input_tokens if necessary
     if extend:
@@ -692,7 +583,7 @@ def count_sentence_starters(ngrams, extend):
             prob = col_log_l(num_of_sentences, types[type], sentence_starters[type], num_of_tokens)
 
             #filter out the not very likely candidates
-            if prob >= SENTENCE_STARTER_BOUNDARY:
+            if prob >= SENT_STARTER:
 
                 #only if the candidate occurs significantly more often than expected after a sentence boundary
                 #and not significantly less often after a sentence boundary than expected
@@ -1051,8 +942,14 @@ if __name__ == '__main__':
         print "python", sys.argv[0], "inputfile outputfile"
         sys.exit(1)
 
-    preprocess(input, output)                             # Tokenize the input lines
-    get_statistic()                                       # Get some statistics on the corpus
+    input_tokens = list(preprocess(input))                # Tokenize the input lines
+
+    num_of_tokens = count_tokens(input_tokens)
+    types = count_types(input_tokens)
+    num_of_types = len(types)
+    num_of_periods = count_periods(input_tokens)
+    types["##number##"] = count_numbers(input_tokens)
+
     get_abbreviation_data()                               # Determine which tokens are abbreviations
     annotate()                                            # The end of type-based(first stage) classification stage
     get_orthography_data()                                # Collect the orthography data of the corpus
